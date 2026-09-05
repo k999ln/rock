@@ -39,8 +39,8 @@ if (
   /(?:^|\n)\w*Error:/.test((result.stdout || '') + (result.stderr || ''))
 )
   process.exit(result.status || 1);
-const files = readdirSync(output, { recursive: true }).filter((file) =>
-  /\.json$|\.sql$/.test(file),
+const files = readdirSync(output, { recursive: true, encoding: 'utf8' }).filter(
+  (file) => /\.json$|\.sql$/.test(file),
 );
 for (const file of files) {
   const target = resolve(source, file);

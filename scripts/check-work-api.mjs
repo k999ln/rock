@@ -6,38 +6,21 @@ import {
   mkdtempSync,
   cpSync,
   readFileSync,
-  writeFileSync,
+  readdirSync,
   rmSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createServer } from 'node:net';
-import { spawn, spawnSync } from 'node:child_process';
-import { setTimeout as delay } from 'node:timers/promises';
+import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const temporary = mkdtempSync(join(tmpdir(), 'rock-api-check-'));
 const state = join(temporary, 'state');
-const wrangler = join(root, 'node_modules/wrangler/bin/wrangler.js');
-const environment = {
-  ...process.env,
-  CI: 'true',
-  WRANGLER_SEND_METRICS: 'false',
-  WRANGLER_LOG_PATH: join(temporary, 'wrangler.log'),
-};
-const socket = createServer();
-await new Promise((resolve, reject) => {
-  socket.once('error', reject);
-  socket.listen(0, '127.0.0.1', resolve);
-});
-const port = socket.address().port;
-await new Promise((resolve) => socket.close(resolve));
-const base = `http://127.0.0.1:${port}`;
+let base;
 const alice = `api-check-${randomUUID()}`,
   bob = `api-check-${randomUUID()}`;
 let worker,
-  logs = '',
   assertions = 0;
 function check(actual, expected) {
   assert.deepEqual(actual, expected);
@@ -71,52 +54,40 @@ async function call(method = 'GET', body, options = {}) {
   return response.json();
 }
 async function stop() {
-  if (!worker || worker.exitCode !== null) return;
-  const exited = new Promise((resolve) => worker.once('exit', resolve));
-  worker.kill('SIGTERM');
-  await exited;
+  await worker?.dispose();
+  worker = undefined;
 }
 async function start() {
-  worker = spawn(
-    process.execPath,
-    [
-      wrangler,
-      'dev',
-      '--config',
-      join(temporary, 'dist/server/wrangler.json'),
-      '--local',
-      '--ip',
-      '127.0.0.1',
-      '--port',
-      String(port),
-      '--persist-to',
-      state,
-    ],
-    {
-      cwd: root,
-      env: environment,
-      stdio: ['ignore', 'pipe', 'pipe'],
-    },
+  const directory = join(temporary, 'dist/server');
+  const config = JSON.parse(
+    readFileSync(join(directory, 'wrangler.json'), 'utf8'),
   );
-  worker.stdout.on('data', (chunk) => {
-    logs = (logs + chunk).slice(-20000);
-  });
-  worker.stderr.on('data', (chunk) => {
-    logs = (logs + chunk).slice(-20000);
-  });
-  for (let attempt = 0; attempt < 120; attempt++) {
-    if (worker.exitCode !== null) throw new Error(`Worker exited: ${logs}`);
-    try {
-      const response = await fetch(`${base}/api/jobs`, {
-        signal: AbortSignal.timeout(1000),
-      });
-      if (response.status === 401) return;
-    } catch {
-      /* Wait for the loopback Worker, not an external service. */
-    }
-    await delay(250);
-  }
-  throw new Error(`Worker startup timed out: ${logs}`);
+  // Exercise the exact API bundle in workerd/D1 directly. Wrangler's additional
+  // hot-reload proxy has a known unread-POST transport failure (#15203); it is
+  // not part of the deployed Worker. This suite does not test static asset routing.
+  worker = new Miniflare(
+    convertV4MiniflareOptions({
+      name: config.name,
+      rootPath: directory,
+      modulesRoot: directory,
+      modules: [
+        config.main,
+        ...readdirSync(directory, { recursive: true, encoding: 'utf8' }).filter(
+          (file) => file !== config.main && /\.m?js$/.test(file),
+        ),
+      ].map((file) => ({ type: 'ESModule', path: resolve(directory, file) })),
+      compatibilityDate: config.compatibility_date,
+      compatibilityFlags: config.compatibility_flags,
+      bindings: config.vars,
+      d1Databases: Object.fromEntries(
+        config.d1_databases.map((db) => [db.binding, db.database_id]),
+      ),
+      resourcePersistencePath: state,
+      host: '127.0.0.1',
+      port: 0,
+    }),
+  );
+  base = (await worker.ready).origin;
 }
 try {
   // Workerd discovers extra *.js modules, including ExFAT AppleDouble metadata.
@@ -129,35 +100,16 @@ try {
     recursive: true,
     filter: (source) => !source.split(/[\\/]/).at(-1).startsWith('._'),
   });
-  const config = JSON.parse(
-    readFileSync(join(root, 'wrangler.local.jsonc'), 'utf8'),
-  );
-  config.d1_databases[0].migrations_dir = join(temporary, 'migrations');
-  const configPath = join(temporary, 'wrangler.json');
-  writeFileSync(configPath, JSON.stringify(config));
-  const migrated = spawnSync(
-    process.execPath,
-    [
-      wrangler,
-      'd1',
-      'migrations',
-      'apply',
-      'DB',
-      '--local',
-      '--config',
-      configPath,
-      '--persist-to',
-      state,
-    ],
-    {
-      cwd: root,
-      env: environment,
-      encoding: 'utf8',
-      timeout: 60000,
-    },
-  );
-  assert.equal(migrated.status, 0, migrated.stdout + migrated.stderr);
   await start();
+  const database = await worker.getD1Database('DB');
+  for (const file of readdirSync(join(temporary, 'migrations'))
+    .filter((file) => file.endsWith('.sql'))
+    .sort()) {
+    for (const sql of readFileSync(join(temporary, 'migrations', file), 'utf8')
+      .split('--> statement-breakpoint')
+      .filter((sql) => sql.trim()))
+      await database.prepare(sql).run();
+  }
   await call('GET', undefined, { user: null, status: 401 });
   for (let attempt = 0; attempt < 20; attempt++) {
     await call('POST', {}, { origin: 'https://not-rock.invalid', status: 403 });
@@ -284,9 +236,6 @@ try {
   console.log(
     `仕事API: ${assertions} assertions passed (認証境界・分離・競合・順序・再送・再起動後の保存)`,
   );
-} catch (error) {
-  console.error(logs.slice(-4000));
-  throw error;
 } finally {
   await stop();
   rmSync(temporary, { recursive: true, force: true });

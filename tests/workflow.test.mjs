@@ -26,7 +26,7 @@ function run(job, extra = {}) {
     ...extra,
   };
 }
-test('workflows require ordered real runs, survive serialization, and need a final review', () => {
+void test('workflows require ordered real runs, survive serialization, and need a final review', () => {
   for (const template of ['article', 'coconala']) {
     let job = newJob(template);
     assert.throws(() =>
@@ -68,7 +68,7 @@ test('workflows require ordered real runs, survive serialization, and need a fin
     );
   }
 });
-test('sample, failed and needs-review results never advance a step', () => {
+void test('sample, failed and needs-review results never advance a step', () => {
   let job = newJob('coconala');
   for (const extra of [
     { sample: true },
@@ -90,7 +90,7 @@ test('sample, failed and needs-review results never advance a step', () => {
   assert.equal(job.steps[1].passed, false);
   assert.equal(job.events.length, 5);
 });
-test('replayed receipts are idempotent, conflicting payloads and stale updates fail', () => {
+void test('replayed receipts are idempotent, conflicting payloads and stale updates fail', () => {
   const before = newJob(),
     command = run(before),
     after = applyWorkCommand(before, command, 0);
@@ -108,7 +108,7 @@ test('replayed receipts are idempotent, conflicting payloads and stale updates f
     ),
   );
 });
-test('invalid inputs, unknown fields and mutation after cancellation are rejected', () => {
+void test('invalid inputs, unknown fields and mutation after cancellation are rejected', () => {
   for (const input of [
     null,
     [],
@@ -138,7 +138,7 @@ test('invalid inputs, unknown fields and mutation after cancellation are rejecte
   assert.equal(cancelled.status, 'cancelled');
   assert.throws(() => applyWorkCommand(cancelled, run(cancelled), 1));
 });
-test('real SQLite persists jobs per user and prevents concurrent overwrites', async (t) => {
+void test('real SQLite persists jobs per user and prevents concurrent overwrites', async (t) => {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
   for (const file of readdirSync(new URL('../drizzle/', import.meta.url))

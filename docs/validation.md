@@ -11,7 +11,8 @@
 - このHTTPテストはゲートウェイ認証ヘッダーを合成するローカル専用検証。実際のSitesログイン操作やブラウザ→ローカルMCPの権限操作を検証したものではない。実案件・本番DB・外部サービスには接続していない。
 - 外付けSSDのAppleDoubleメタデータがDrizzle/Workerdに誤読されるため、移行生成とHTTPテストはメタデータを除いた一時コピーを使用。ソースや適用済みSQLは上書きしない。
 - 進捗JSONからREADMEとproject.mdを同期し、`project:check` とGitHub Actionsに同じ検証を組み込んだ。実装commit [`b460ccf`](https://github.com/k999ln/rock/commit/b460ccfe236217af117bbd952b5b4c5cc50869d8) をmainへ保存済み。[GitHub Actions](https://github.com/k999ln/rock/actions/runs/33973073350) がUbuntu/Node.js 22のクリーンインストールから全検証に成功。ローカルmainの追跡先もorigin/mainへ変更済み。
-- その後の[文書更新のCI](https://github.com/k999ln/rock/actions/runs/33973241769)で、403後の次のPOSTがMiniflare内部の `Network connection lost` となる断続的な失敗を検出。型・lint・33テスト・ビルドは成功していた。上流にも[未読のPOST本文を伴うローカルプロキシの報告](https://github.com/cloudflare/workers-sdk/issues/15203)があり、同系統と推定して調査。APIの早期拒否時に未読本文を明示的にcancelし、403→400を20回繰り返す回帰検証へ強化した。テストの成功条件を緩めたり500を再試行で隠したりしていない。修正後のローカル143 assertionsは成功、リモートCIは再確認中。
+- その後の[文書更新のCI](https://github.com/k999ln/rock/actions/runs/33973241769)で、403後の次のPOSTがMiniflare内部の `Network connection lost` となる断続的な失敗を検出。型・lint・33テスト・ビルドは成功していた。上流にも[未読のPOST本文を伴うローカルプロキシの報告](https://github.com/cloudflare/workers-sdk/issues/15203)があり、同系統と推定して調査。APIの早期拒否時に未読本文を明示的にcancelし、403→400を20回繰り返す回帰検証へ強化したが、[CIでは再発](https://github.com/k999ln/rock/actions/runs/33973570547)した。
+- API検証の起動方法をMiniflare直接起動へ変更。コンパイル済みAPIとD1を実行し、静的資産ルーティングとWranglerの追加開発プロキシを検証対象から分離した。HTTP応答の成功条件は変えず、500の再試行も追加していない。Miniflare 5の `resourcePersistencePath` で一時DBを再利用し、全移行・143 assertions・再起動後の復元にローカルで成功。リモートCIは再確認中。開発プロキシ自体の上流不具合が修正されたとは主張しない。
 - ブラウザの画面操作・見た目QA、実ウォレット接続、外部応募・納品・収益回収は未実施。既存Sitesの再公開は今回のGitHub保存とは別で、まだ実施していない。
 
 以下は以前の実装時の記録です。
