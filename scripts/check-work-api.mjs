@@ -159,8 +159,10 @@ try {
   assert.equal(migrated.status, 0, migrated.stdout + migrated.stderr);
   await start();
   await call('GET', undefined, { user: null, status: 401 });
-  await call('POST', {}, { origin: 'https://not-rock.invalid', status: 403 });
-  await call('POST', '{', { raw: true, status: 400 });
+  for (let attempt = 0; attempt < 20; attempt++) {
+    await call('POST', {}, { origin: 'https://not-rock.invalid', status: 403 });
+    await call('POST', '{', { raw: true, status: 400 });
+  }
   await call('POST', 'x'.repeat(12001), { raw: true, status: 413 });
   await call(
     'POST',

@@ -46,6 +46,7 @@ D1の新しい `work_jobs` テーブルに仕事JSONとrevisionを保存しま�
 - 記事・ココナラの順次実行、サンプル・失敗・条件不一致の非通過、最終確認必須をユニットテストする。
 - 実SQLiteに全移行を適用し、ユーザー別の保存と競合拒否をテストする。
 - `npm run test:api` は本番Workerをループバックに起動し、一時D1で認証境界・別Origin・ユーザー分離・二重送信・同時更新・再起動後の復元を検証する。合成ユーザーのIDヘッダーはローカル検証専用で、本番への認証手段ではない。
+- 認証・Originで早期拒否するときは未読のリクエスト本文を解放する。403の直後に不正JSONを送る組を20回繰り返し、拒否後もAPIが応答し続けることを検証する。
 - `npm run verify` で進捗同期、型、対象コードlint、ユニットテスト、本番ビルド、API検証をまとめる。CIでも実行する。
 - ブラウザ画面操作・実ウォレット・外部応募や決済は今回の検証範囲外。結果と未検証事項は [docs/validation.md](docs/validation.md) に記録する。
 
@@ -69,7 +70,7 @@ R1実装は `b460ccf` としてrockのmainへ保存し、GitHub Actionsで検証
 `done` は実装と検証が終わった場合だけ使用。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-05 / R1: Rock starの仕事実行・開発管理基盤 / 完了 5/5件
+最終更新: 2026-09-05 / R1: Rock starの仕事実行・開発管理基盤 / 完了 4/5件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -77,9 +78,9 @@ R1実装は `b460ccf` としてrockのmainへ保存し、GitHub Actionsで検証
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
 | R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) |
-| R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
+| R05 | 回帰検証・移行確認・GitHub保存 | 進行中 | [記録](docs/validation.md) |
 
-次の作業: 次段階: 実案件で必要な制作・返信工程と成果物保存の要件を確定する。既存サイトへの反映は公開依頼後に行う。
+次の作業: CIで再現した拒否リクエスト後の接続エラーを検証し、最終結果を再確認する。
 <!-- project-status:end -->
 
 ## 次段階の設計

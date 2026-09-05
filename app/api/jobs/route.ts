@@ -28,6 +28,14 @@ function failure(error: unknown) {
     503,
   );
 }
+function rejected(request: Request, error: unknown) {
+  // Release an unread body after an early auth/Origin rejection. Do not buffer
+  // untrusted input or wait for it before replying, and never cancel a reader
+  // already owned by the bounded parser.
+  if (request.body && !request.bodyUsed && !request.body.locked)
+    void request.body.cancel().catch(() => {});
+  return failure(error);
+}
 async function body(request: Request) {
   const reader = request.body?.getReader();
   if (!reader) throw new WorkError('入力がありません。');
@@ -56,7 +64,7 @@ export async function GET(request: Request) {
     const user = requestUser(request);
     return json({ jobs: await workStore(database()).list(user) });
   } catch (error) {
-    return failure(error);
+    return rejected(request, error);
   }
 }
 export async function POST(request: Request) {
@@ -72,7 +80,7 @@ export async function POST(request: Request) {
       throw new WorkError('仕事IDが使用されています。', 409);
     return json({ job: saved }, 201);
   } catch (error) {
-    return failure(error);
+    return rejected(request, error);
   }
 }
 export async function PATCH(request: Request) {
@@ -94,6 +102,6 @@ export async function PATCH(request: Request) {
       );
     return json({ job: next });
   } catch (error) {
-    return failure(error);
+    return rejected(request, error);
   }
 }
