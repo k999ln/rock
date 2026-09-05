@@ -2,16 +2,18 @@
 
 自社・第三者の自動化ツールをストアから導入し、利用者が決めた条件・権限・費用上限で仕事を自動実行するOSを開発します。主軸はAOSPベースのOSとし、仮想Androidでの開発から、適合を確認したPixelの実機試験へ進む設計です。
 
-**現在はOSの設計段階です。** 動く資産は既存Web/PC版で、OSイメージ・Android SDK・第三者ストア・Pixel対応はまだありません。ファンド・利用料・分配試算という事業の方向性は保持し、OSの実行権限や実取引とは分離します。
+**現在はOS部品の初期試作段階です。** 既存Web/PCに加え、Java共通実行コア・端末SQLite・AIDL接続・Android診断画面・記事ツールのソースを作成しました。OSイメージの起動・公開SDK/第三者ストア・Pixel対応はまだ確認できていません。ファンド・利用料・分配試算という事業の方向性は保持し、OSの実行権限や実取引とは分離します。
 
 開発の入口: [OS開発設計書](docs/os-development-design.md)。元の設計からの要求追跡、ハードウェアの選定条件、自律実行、Tool API、権限、ストア、署名更新、受入試験、実装チケットをまとめています。
+
+コードの現在地と再開手順: [P1実装・検証手順](docs/os-prototype.md)、[実際のTool契約](contracts/README.md)。AOSPへ組み込む設定は `android/Android.bp` と `os/device/`。これらの存在をOS起動済みの証拠にはしません。
 
 正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。ローカルの `gg` 直下と対応します。事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
 
 ## 開発の現在地
 
 <!-- project-status:start -->
-最終更新: 2026-09-05 / OS-D1: 自動化OSへの開発設計 / 完了 8/13件
+最終更新: 2026-09-05 / OS-P1: 自律実行コアとAndroid統合の試作 / 完了 8/14件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -28,8 +30,9 @@
 | OS03 | CuttlefishでOS起動と自律実行の最小縦断試作 | 未着手 | [記録](docs/os-development-design.md) |
 | OS04 | Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 | [記録](docs/os-development-design.md) |
 | OS05 | 第三者SDK・審査・インストール・失効の閉鎖テスト | 未着手 | [記録](docs/os-development-design.md) |
+| OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 進行中 | [記録](docs/os-development-design.md) |
 
-次の作業: OS設計v0.1を基に、手元のPixelとLinux環境を確認し、ソース/BSP/復旧の適合ゲートから始める。OS01は設計完了のみで、OS実装・実機試験は未着手。
+次の作業: 正式な実行契約・端末DB・再開/停止・Androidサービスの最小実装を作り、ホスト検証とAndroid buildを分けて確認する。OSイメージの起動・Pixel書込はまだ行わない。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
@@ -67,7 +70,7 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 
 ## まだ実装していないこと
 
-OS本体、スマホの画面OFF時の自律実行、端末成果物庫、Android用Tool SDK、第三者パッケージの導入/審査/失効、Pixel書込/復旧、OSの署名OTAは未実装・未検証です。以下も現時点では未接続です。
+OSイメージの起動、スマホの画面OFF時の実動作、専用隔離と強制資源制御、公開Tool SDK、第三者パッケージの導入/審査/失効、Pixel書込/復旧、OSの署名OTAは未実装または未検証です。Android試作のソース・ホスト検証とは区別します。以下も現時点では未接続です。
 
 ココナラでの自動応募・送信・売上取得、外部サービスの自動登録、売上の取得・自動控除、定期決済、資金の受託、収益分配、投資ブースト、端末の電力・通信量の実測、公開サイトへの候補の自動反映。Mr.のココナラ機能のうち、案件条件チェックと納品記録照合を独立して取り込みました。Mr.全体の自律運転は移植していません。
 

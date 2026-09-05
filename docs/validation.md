@@ -1,5 +1,16 @@
 # 検証記録
 
+## Rock star OS P1 実装 / 2026-09-05
+
+- 共通JavaコアをTemurin17/Gradle8.11.1でコンパイルし、実SQLiteの16テストに成功。2工程/再起動後の再開、同時claim、冪等受付、古いtoken/期限切れ結果の拒否、3回までの再試行、停止/中止/人の再試行、sample非通過、transaction失敗時のrollback、改変成果物、未知DB版を含む。
+- 合成fixture12件に対し、Javaと既存TypeScriptの出典整理/無料版/2工程接続を36項目で照合し一致。全入力の同値保証ではない。
+- 既存Web/PCの `npm run verify` は33テスト・API143 assertions・型/lint/buildに成功。OS契約の検査を既存テストへ追加し、最終変更後にも再検証する。
+- 初期のGradle再実行は外付けExFATの生成物削除で失敗。ソースを削除せず、`rockBuildRoot` で一時APFSへ生成先を分離して16テストを再実行した。
+- Java/Gradleは公式配布のチェックサムを照合し、一時領域へ展開。グローバルインストール、OS署名鍵の生成、Android端末への導入/初期化/書込は実施していない。
+- AOSPのr4 manifest commit、Cuttlefish製品継承先、aosp_current→bp4aのrelease aliasを公式Gitで確認した。ただしSoongのbuild/OS起動は未実施。
+- `os:host` はLinux/x86-64/RAM/空き容量/KVMが条件を満たさず終了コード2となることを確認。機材を購入/契約せず、OS02〜05を完了扱いしない。
+- Android APKのbuild/lintとSDK契約テストはGitHub CIで確認中。Binder境界・画面OFF・実電源断・実機の隔離/電池/OTAは未検証。既存Sitesは非公開設定・分岐・公開停止を維持。
+
 ## Rock star OS 設計v0.1 / 2026-09-05
 
 - 利用者の「OS開発をメイン」の指示に基づき、[開発設計書](os-development-design.md)を作成。既存product/architecture/fund/MCP/workflowと、配信側 `c6942d5` のbackend-design/READMEを読み、9要求・OS責務・14受入条件・7初期チケットへ対応付けた。

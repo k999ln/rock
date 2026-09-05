@@ -43,6 +43,15 @@ next-env.d.ts
 /data/discovered.json
 /data/*.tmp
 
+# Android/OS generated artifacts and local toolchains
+/android/.gradle/
+/android/**/build/
+/android/local.properties
+/android/.idea/
+*.jks
+*.keystore
+/os/local/
+
 # Python tool caches
 __pycache__/
 *.pyc

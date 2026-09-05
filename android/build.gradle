@@ -1,0 +1,10 @@
+plugins {
+    id 'com.android.application' version '8.9.2' apply false
+    id 'com.android.library' version '8.9.2' apply false
+}
+
+// ExFAT/macOS metadata can prevent Gradle from cleaning test results. Keep outputs on APFS/ext4.
+if (providers.gradleProperty('rockBuildRoot').isPresent()) {
+    def outputRoot = providers.gradleProperty('rockBuildRoot').get()
+    allprojects { layout.buildDirectory = file("${outputRoot}/${project.name}") }
+}

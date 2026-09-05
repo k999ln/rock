@@ -1,0 +1,46 @@
+// Source-build integration for the virtual OS prototype; not yet Soong-build verified.
+java_library {
+    name: "rock-automation-core",
+    srcs: ["core/src/main/java/**/*.java"],
+    java_resource_dirs: ["core/src/main/resources"],
+    sdk_version: "current",
+    min_sdk_version: "35",
+    java_version: "11",
+}
+
+android_library {
+    name: "rock-tool-sdk",
+    manifest: "tool-sdk/src/main/AndroidManifest.xml",
+    srcs: ["tool-sdk/src/main/java/**/*.java", "tool-sdk/src/main/aidl/**/*.aidl"],
+    aidl: { local_include_dirs: ["tool-sdk/src/main/aidl"] },
+    static_libs: ["rock-automation-core"],
+    sdk_version: "current",
+    min_sdk_version: "35",
+    java_version: "11",
+}
+
+android_app {
+    name: "RockAutomationPrototype",
+    manifest: "automation/src/main/AndroidManifest.xml",
+    srcs: ["automation/src/main/java/**/*.java"],
+    static_libs: ["rock-tool-sdk"],
+    sdk_version: "current",
+    min_sdk_version: "35",
+    target_sdk_version: "35",
+    certificate: "testkey",
+    product_specific: true,
+    optimize: { enabled: false },
+}
+
+android_app {
+    name: "RockArticleToolPrototype",
+    manifest: "article-tool/src/main/AndroidManifest.xml",
+    srcs: ["article-tool/src/main/java/**/*.java"],
+    static_libs: ["rock-tool-sdk"],
+    sdk_version: "current",
+    min_sdk_version: "35",
+    target_sdk_version: "35",
+    certificate: "testkey",
+    product_specific: true,
+    optimize: { enabled: false },
+}

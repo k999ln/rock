@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "packageId": "dev.rock.tools.article",
+  "versionCode": 1,
+  "toolApi": 1,
+  "minAndroidApi": 35,
+  "service": "dev.rock.tools.article.ArticleService",
+  "operations": ["citations@1", "free-article@1"],
+  "effects": "local-transform",
+  "capabilities": ["artifact.read:input", "artifact.write:output"],
+  "network": "none",
+  "maxPayloadBytes": 32768,
+  "trustMode": "fixed-own-author",
+  "thirdPartyInstallEnabled": false
+}

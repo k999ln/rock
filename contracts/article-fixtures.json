@@ -1,0 +1,20 @@
+{
+  "summary": "- 小さく試す\n- 出典を残す\n- 最後に確認する",
+  "price": 500,
+  "paidContents": "実践手順と記録方法",
+  "noteUrl": "https://note.com/your_account/n/your_article",
+  "cases": [
+    {"name":"japanese-crlf","markdown":"# 題名\r\n\r\nまず準備します。（出典: [A](https://a.test)）。\r\n\r\n次に詳しい手順を説明します。さらに記録を残します。","afterChars":4},
+    {"name":"deduplicate","markdown":"# 題名\n\n最初の説明です。（出典: [A](https://a.test)）\n次の説明です。（出典: [A2](https://a.test)）\n\n最後の手順を残します。","afterChars":4},
+    {"name":"sources-before-body","markdown":"# 題名\n\n最初の文です。\n\n## 出典\n- [A](https://a.test)\n\n## 実践\n有料の手順を説明します。詳しい内容を残します。","afterChars":4},
+    {"name":"emoji","markdown":"# 題名\n\n🔒安全に進めます。😀次に確認します。最後に保存します。","afterChars":10},
+    {"name":"protected-code","markdown":"# 題名\n\n最初に説明します。\n\n```python\nif True:\n    print(\"（出典: [code](https://code.test)）\")\n```\n\n`（出典: [inline](https://inline.test)）`\n\nさらに詳しく説明します。（出典: [A](https://a.test)）","afterChars":4},
+    {"name":"source-code","markdown":"# 題名\n\n最初の説明です。次の手順です。さらに記録します。\n\n## 出典\n```text\n# sample\n```\n- [A](https://a.test)","afterChars":4},
+    {"name":"non-link-source","markdown":"# 題名\n\n参考です。（出典: 社内メモ）\n\n次の説明です。最後の詳しい手順です。","afterChars":4},
+    {"name":"only-sources-remain","markdown":"# 題名\n\n全文です。\n\n## 出典\n- [A](https://a.test)","afterChars":5,"reject":true},
+    {"name":"unclosed-code","markdown":"# 題名\n\n```python\nprint(1)","afterChars":4,"reject":true},
+    {"name":"invalid-url","markdown":"# 題名\n\n最初の説明です。次の手順です。","afterChars":4,"noteUrl":"https://note.com.evil.test/a/n/b","reject":true},
+    {"name":"invalid-summary","markdown":"# 題名\n\n最初の説明です。次の手順です。","afterChars":4,"summary":"- one","reject":true},
+    {"name":"invalid-price","markdown":"# 題名\n\n最初の説明です。次の手順です。","afterChars":4,"price":0,"reject":true}
+  ]
+}

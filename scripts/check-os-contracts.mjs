@@ -1,0 +1,33 @@
+import { readFileSync, existsSync } from 'node:fs';
+import assert from 'node:assert/strict';
+const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+const contract = JSON.parse(read('contracts/article-tool.json'));
+assert.deepEqual(Object.keys(contract).sort(), ['schemaVersion', 'packageId', 'versionCode', 'toolApi', 'minAndroidApi', 'service', 'operations', 'effects', 'capabilities', 'network', 'maxPayloadBytes', 'trustMode', 'thirdPartyInstallEnabled'].sort());
+assert.equal(contract.schemaVersion, 1);
+assert.equal(contract.network, 'none');
+assert.equal(contract.trustMode, 'fixed-own-author');
+assert.equal(contract.thirdPartyInstallEnabled, false);
+assert.deepEqual(contract.operations, ['citations@1', 'free-article@1']);
+assert.deepEqual(contract.capabilities, ['artifact.read:input', 'artifact.write:output']);
+assert.equal(contract.maxPayloadBytes, 32768);
+assert.equal(contract.minAndroidApi, 35);
+assert.equal(contract.versionCode, 1);
+const manifest = read('android/article-tool/src/main/AndroidManifest.xml');
+assert.ok(!/uses-permission|sharedUserId/.test(manifest));
+assert.ok(manifest.includes('android:permission="dev.rock.permission.RUN_TOOL"'));
+assert.ok(read('android/article-tool/build.gradle').includes(`applicationId '${contract.packageId}'`));
+assert.ok(read('android/automation/src/main/java/dev/rock/automation/ToolConnection.java').includes(`PACKAGE = "${contract.packageId}"`));
+assert.ok(read('android/automation/src/main/AndroidManifest.xml').includes('android:protectionLevel="signature"'));
+for (const operation of contract.operations) {
+  assert.ok(read('android/core/src/main/java/dev/rock/core/Engine.java').includes(`"${operation}"`));
+  assert.ok(read('android/article-tool/src/main/java/dev/rock/tools/article/ArticleService.java').includes(`"${operation}"`));
+}
+const lock = JSON.parse(read('os/source-lock.json'));
+assert.match(lock.manifestCommit, /^[a-f0-9]{40}$/);
+assert.equal(lock.pixelSupported, false);
+assert.equal(lock.imageBuildVerified, false);
+assert.equal(lock.imageBootVerified, false);
+assert.ok(read('os/device/AndroidProducts.mk').includes(`${lock.product}-${lock.releaseConfig}-${lock.variant}`));
+assert.ok(read('android/Android.bp').includes('RockAutomationPrototype'));
+for (const name of ['android/tool-sdk/src/main/aidl/dev/rock/sdk/ITool.aidl', 'android/core/src/main/resources/schema.sql']) assert.ok(existsSync(new URL(`../${name}`, import.meta.url)));
+console.log('OS source/contract consistency passed. This is not an Android sandbox or OS boot test.');

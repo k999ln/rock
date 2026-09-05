@@ -1,0 +1,45 @@
+name: Rock star Android prototype
+on:
+  push:
+    branches: [main]
+    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', '.github/workflows/android.yml', 'lib/mr-tools.ts']
+  pull_request:
+    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', '.github/workflows/android.yml', 'lib/mr-tools.ts']
+permissions:
+  contents: read
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  prototype:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+      - name: Compile Android packages and test shared SQLite core
+        run: gradle -p android :core:test :tool-sdk:testDebugUnitTest :automation:assembleDebug :article-tool:assembleDebug :automation:lintDebug :article-tool:lintDebug --no-daemon
+      - name: Compare Java tools with existing business behavior
+        run: node --experimental-strip-types scripts/check-os-parity.mjs
+      - name: Check source and contract consistency (not OS boot)
+        run: node scripts/check-os-contracts.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-prototype-reports
+          path: |
+            android/core/build/test-results/test/
+            android/tool-sdk/build/test-results/testDebugUnitTest/
+            android/automation/build/reports/
+            android/article-tool/build/reports/
+          retention-days: 7
+      # No APK publication, signing secrets, OS image deployment, or device flashing.

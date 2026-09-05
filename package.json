@@ -19,7 +19,10 @@
     "project:check": "node scripts/project-status.mjs --check",
     "db:generate": "node scripts/generate-migration.mjs",
     "verify": "npm run project:check && npm run typecheck && npm run lint:product && npm test && npm run build && npm run test:api",
-    "discover": "node scripts/discover.mjs"
+    "discover": "node scripts/discover.mjs",
+    "os:check": "node scripts/check-os-contracts.mjs",
+    "os:host": "node scripts/check-os-host.mjs",
+    "os:parity": "node --experimental-strip-types scripts/check-os-parity.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

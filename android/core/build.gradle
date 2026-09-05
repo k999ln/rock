@@ -1,0 +1,9 @@
+plugins { id 'java-library' }
+java { sourceCompatibility = JavaVersion.VERSION_11; targetCompatibility = JavaVersion.VERSION_11 }
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.xerial:sqlite-jdbc:3.49.1.0'
+    testRuntimeOnly 'org.slf4j:slf4j-nop:2.0.17'
+    testImplementation 'org.json:json:20250107'
+}
+test { testLogging { events 'passed', 'failed', 'skipped' } }
