@@ -9,6 +9,7 @@ import android.os.SystemClock;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import dev.rock.core.Engine;
+import dev.rock.core.ArticleTools;
 import dev.rock.sdk.ArticlePayload;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -32,6 +33,9 @@ public class DeviceIntegrationTest {
             .put("price", 500).put("paidContents", "詳しい手順")
             .put("noteUrl", "https://note.com/example/n/test_article").toString();
         ArticlePayload.parse(payload);
+        // Direct Android-runtime check with synthetic input; no raw production errors in IPC.
+        String expectedCitations = ArticleTools.citations(new JSONObject(payload).getString("markdown"));
+        assertTrue(expectedCitations.contains("## 出典"));
         String id;
         try {
             try (AndroidDatabase db = new AndroidDatabase(isolatedDatabase)) {
@@ -42,6 +46,7 @@ public class DeviceIntegrationTest {
                 ToolConnection.Result formatted = new ToolConnection(target).execute(first);
                 assertEquals("passed", formatted.outcome);
                 ArticlePayload.validateIntermediate(payload, formatted.output);
+                assertEquals(expectedCitations, new JSONObject(formatted.output).getString("markdown"));
                 assertTrue(engine.finish(first, formatted.outcome, formatted.output, "synthetic-boot", SystemClock.elapsedRealtime()));
                 assertFalse(engine.finish(first, formatted.outcome, formatted.output, "synthetic-boot", SystemClock.elapsedRealtime()));
             }

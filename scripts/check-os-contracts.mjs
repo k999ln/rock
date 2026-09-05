@@ -29,5 +29,13 @@ assert.equal(lock.imageBuildVerified, false);
 assert.equal(lock.imageBootVerified, false);
 assert.ok(read('os/device/AndroidProducts.mk').includes(`${lock.product}-${lock.releaseConfig}-${lock.variant}`));
 assert.ok(read('android/Android.bp').includes('RockAutomationPrototype'));
+for (const moduleName of ['automation', 'article-tool', 'tool-sdk']) {
+  const aosp = read(`android/${moduleName}/src/aosp/AndroidManifest.xml`);
+  const standard = read(`android/${moduleName}/src/main/AndroidManifest.xml`);
+  assert.ok(aosp.includes('package="dev.rock.'));
+  if (moduleName !== 'tool-sdk') assert.ok(aosp.includes('android:versionCode="1"'));
+  const normalized = aosp.replace(/ (?:package|android:versionCode|android:versionName)="[^"]*"/g, '');
+  assert.equal(normalized, standard, `${moduleName}: Soong/Gradle manifest drift`);
+}
 for (const name of ['android/tool-sdk/src/main/aidl/dev/rock/sdk/ITool.aidl', 'android/core/src/main/resources/schema.sql']) assert.ok(existsSync(new URL(`../${name}`, import.meta.url)));
 console.log('OS source/contract consistency passed. This is not an Android sandbox or OS boot test.');

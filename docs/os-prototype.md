@@ -93,6 +93,8 @@ Linux環境を確保した後の手順:
 
 この経路は**未実行の手順**。製品makefileの存在やAPKのcompile成功だけでOS build/boot成功とはしない。P1はAOSPのホームを残し、2APKを組み込む段階で、独自OSシェル/特権サービス/独自OTAは次段階。
 
+Gradleはpackage/versionをbuild設定から補うが、Soongではその設定を読まない。そのため `src/aosp/AndroidManifest.xml` にpackageとversionを明示し、それ以外が `src/main` と一致することを `os:check` で検査する。APKで通った設定が自動でOSビルドへ引き継がれるとは仮定しない。
+
 参照したr4のrelease mapでは `aosp_current` は `bp4a` のalias。選択するlunchは `rock_cf_x86_64_phone-aosp_current-userdebug`。[固定版のrelease map](https://android.googlesource.com/platform/build/release/+/refs/tags/android-16.0.0_r4/release_config_map.textproto)
 
 ## 7. 次に埋めるべき穴

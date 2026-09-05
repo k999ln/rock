@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="dev.rock.tools.article" android:versionCode="1" android:versionName="0.1.0">
+    <queries><package android:name="dev.rock.automation" /></queries>
+    <!-- No INTERNET, storage, Accessibility, shared UID, or platform signature. -->
+    <application android:label="Rock article tools · prototype" android:allowBackup="false" android:usesCleartextTraffic="false">
+        <service android:name=".ArticleService" android:exported="true" android:permission="dev.rock.permission.RUN_TOOL" />
+    </application>
+</manifest>

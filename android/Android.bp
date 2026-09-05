@@ -10,7 +10,7 @@ java_library {
 
 android_library {
     name: "rock-tool-sdk",
-    manifest: "tool-sdk/src/main/AndroidManifest.xml",
+    manifest: "tool-sdk/src/aosp/AndroidManifest.xml",
     srcs: ["tool-sdk/src/main/java/**/*.java", "tool-sdk/src/main/aidl/**/*.aidl"],
     aidl: { local_include_dirs: ["tool-sdk/src/main/aidl"] },
     static_libs: ["rock-automation-core"],
@@ -21,7 +21,7 @@ android_library {
 
 android_app {
     name: "RockAutomationPrototype",
-    manifest: "automation/src/main/AndroidManifest.xml",
+    manifest: "automation/src/aosp/AndroidManifest.xml",
     srcs: ["automation/src/main/java/**/*.java"],
     static_libs: ["rock-tool-sdk"],
     sdk_version: "current",
@@ -34,7 +34,7 @@ android_app {
 
 android_app {
     name: "RockArticleToolPrototype",
-    manifest: "article-tool/src/main/AndroidManifest.xml",
+    manifest: "article-tool/src/aosp/AndroidManifest.xml",
     srcs: ["article-tool/src/main/java/**/*.java"],
     static_libs: ["rock-tool-sdk"],
     sdk_version: "current",

@@ -123,7 +123,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | OS05 | 第三者SDK・審査・インストール・失効の閉鎖テスト | 未着手 | [記録](docs/os-development-design.md) |
 | OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 進行中 | [記録](docs/os-development-design.md) |
 
-次の作業: 正式な実行契約・端末DB・再開/停止・Androidサービスの最小実装を作り、ホスト検証とAndroid buildを分けて確認する。OSイメージの起動・Pixel書込はまだ行わない。
+次の作業: 共通コア16テスト・記事照合36項目・2APKのbuild/lintは成功。仮想Androidで検出した正規表現の互換性差を修正し、実Binder/SQLiteの接続を再検証する。OSイメージ起動・Pixel書込は未実施。
 <!-- project-status:end -->
 
 ## 次段階の設計

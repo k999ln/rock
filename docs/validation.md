@@ -9,7 +9,9 @@
 - Java/Gradleは公式配布のチェックサムを照合し、一時領域へ展開。グローバルインストール、OS署名鍵の生成、Android端末への導入/初期化/書込は実施していない。
 - AOSPのr4 manifest commit、Cuttlefish製品継承先、aosp_current→bp4aのrelease aliasを公式Gitで確認した。ただしSoongのbuild/OS起動は未実施。
 - `os:host` はLinux/x86-64/RAM/空き容量/KVMが条件を満たさず終了コード2となることを確認。機材を購入/契約せず、OS02〜05を完了扱いしない。
-- Android APKのbuild/lintとSDK契約テストはGitHub CIで確認中。Binder境界・画面OFF・実電源断・実機の隔離/電池/OTAは未検証。既存Sitesは非公開設定・分岐・公開停止を維持。
+- 2APKのbuild/lint、SDK契約4テスト、コア/照合は[Android CI](https://github.com/k999ln/rock/actions/runs/33982158631)で成功。続く[エミュレーター試験](https://github.com/k999ln/rock/actions/runs/33982402787)は充電条件・権限設定が成功、記事Toolの処理が失敗した。Androidが拒否するJava SEの `UNICODE_CHARACTER_CLASS` フラグを使用していたため、起動時に対応を判定する修正を行い、再検証する。[Android Pattern仕様](https://developer.android.com/reference/java/util/regex/Pattern)
+- 初回Web CIで追加テストのPromiseの明示がなくlintに失敗し、`void test(...)` に修正。さらにOS検査の予約変数名を修正した。検査条件の緩和や失敗テストの除外はしていない。
+- Binder否定試験・画面OFF・実電源断・実機の隔離/電池/OTAは未検証。既存Sitesは非公開設定・分岐・公開停止を維持。
 
 ## Rock star OS 設計v0.1 / 2026-09-05
 

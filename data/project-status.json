@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-05",
   "milestone": "OS-P1: 自律実行コアとAndroid統合の試作",
-  "nextAction": "正式な実行契約・端末DB・再開/停止・Androidサービスの最小実装を作り、ホスト検証とAndroid buildを分けて確認する。OSイメージの起動・Pixel書込はまだ行わない。",
+  "nextAction": "共通コア16テスト・記事照合36項目・2APKのbuild/lintは成功。仮想Androidで検出した正規表現の互換性差を修正し、実Binder/SQLiteの接続を再検証する。OSイメージ起動・Pixel書込は未実施。",
   "tasks": [
     {"id":"R01","title":"4参照元の採用判断と事業方針の固定","status":"done","dependsOn":[],"evidence":["docs/reference-repositories.md"]},
     {"id":"R02","title":"ggをGitHub rockへ紐付け、既存変更と履歴を保全","status":"done","dependsOn":[],"evidence":["project.md"]},

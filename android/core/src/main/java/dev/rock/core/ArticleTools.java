@@ -16,7 +16,14 @@ import java.util.regex.Pattern;
  */
 public final class ArticleTools {
     private ArticleTools() {}
-    private static Pattern p(String regex) { return Pattern.compile(regex, Pattern.UNICODE_CHARACTER_CLASS); }
+    // Android always uses Unicode classes and rejects this Java SE flag.
+    // Probe once, without hiding syntax errors in the actual expressions.
+    private static final int REGEX_FLAGS = unicodeFlags();
+    private static int unicodeFlags() {
+        try { Pattern.compile("", Pattern.UNICODE_CHARACTER_CLASS); return Pattern.UNICODE_CHARACTER_CLASS; }
+        catch (IllegalArgumentException unsupportedOnAndroid) { return 0; }
+    }
+    private static Pattern p(String regex) { return Pattern.compile(regex, REGEX_FLAGS); }
     private static String text(String s) {
         if (s == null || s.trim().isEmpty() || s.length() > 100000) throw new IllegalArgumentException("INVALID_TEXT");
         return s.replaceAll("\r\n?", "\n");
