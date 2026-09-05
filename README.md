@@ -2,7 +2,7 @@
 
 自社・第三者の自動化ツールをストアから導入し、利用者が決めた条件・権限・費用上限で仕事を自動実行するOSを開発します。主軸はAOSPベースのOSとし、仮想Androidでの開発から、適合を確認したPixelの実機試験へ進む設計です。
 
-**現在はOS部品の初期試作段階です。** 既存Web/PCに加え、Java共通実行コア・端末SQLite・AIDL接続・Android診断画面・記事ツールのソースを作成しました。OSイメージの起動・公開SDK/第三者ストア・Pixel対応はまだ確認できていません。ファンド・利用料・分配試算という事業の方向性は保持し、OSの実行権限や実取引とは分離します。
+**現在はOS部品の初期試作段階です。** Java共通実行コア・端末SQLite・AIDL接続・Android診断画面・記事ツールを実装し、2APKのbuild/lintと、仮想Androidでの別アプリ呼出→DB再接続→2工程→最終確認の試験に成功しました。自前OSイメージの起動・公開SDK/第三者ストア・Pixel対応は未検証です。ファンド・利用料・分配試算という事業の方向性は保持し、OSの実行権限や実取引とは分離します。
 
 開発の入口: [OS開発設計書](docs/os-development-design.md)。元の設計からの要求追跡、ハードウェアの選定条件、自律実行、Tool API、権限、ストア、署名更新、受入試験、実装チケットをまとめています。
 
@@ -13,7 +13,7 @@
 ## 開発の現在地
 
 <!-- project-status:start -->
-最終更新: 2026-09-05 / OS-P1: 自律実行コアとAndroid統合の試作 / 完了 8/14件
+最終更新: 2026-09-05 / OS-P1: 自律実行コアとAndroid統合の試作 / 完了 9/14件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -30,9 +30,9 @@
 | OS03 | CuttlefishでOS起動と自律実行の最小縦断試作 | 未着手 | [記録](docs/os-development-design.md) |
 | OS04 | Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 | [記録](docs/os-development-design.md) |
 | OS05 | 第三者SDK・審査・インストール・失効の閉鎖テスト | 未着手 | [記録](docs/os-development-design.md) |
-| OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 進行中 | [記録](docs/os-development-design.md) |
+| OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 完了 | [記録](docs/os-prototype.md) · [記録](docs/validation.md) · [記録](android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java) |
 
-次の作業: 共通コア16テスト・記事照合36項目・2APKのbuild/lintは成功。仮想Androidで検出した正規表現の互換性差を修正し、実Binder/SQLiteの接続を再検証する。OSイメージ起動・Pixel書込は未実施。
+次の作業: Linux/x86-64・RAM64GiB・空き400GB・KVMを満たす開発環境を確保し、固定AOSPでSoong build→Cuttlefish起動へ進む。並行するAndroid検証では不正UID/署名、画面OFF・充電断・再起動を確認する。Pixel機種選定・書込は別ゲート。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

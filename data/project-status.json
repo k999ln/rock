@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-05",
   "milestone": "OS-P1: 自律実行コアとAndroid統合の試作",
-  "nextAction": "共通コア16テスト・記事照合36項目・2APKのbuild/lintは成功。仮想Androidで検出した正規表現の互換性差を修正し、実Binder/SQLiteの接続を再検証する。OSイメージ起動・Pixel書込は未実施。",
+  "nextAction": "Linux/x86-64・RAM64GiB・空き400GB・KVMを満たす開発環境を確保し、固定AOSPでSoong build→Cuttlefish起動へ進む。並行するAndroid検証では不正UID/署名、画面OFF・充電断・再起動を確認する。Pixel機種選定・書込は別ゲート。",
   "tasks": [
     {"id":"R01","title":"4参照元の採用判断と事業方針の固定","status":"done","dependsOn":[],"evidence":["docs/reference-repositories.md"]},
     {"id":"R02","title":"ggをGitHub rockへ紐付け、既存変更と履歴を保全","status":"done","dependsOn":[],"evidence":["project.md"]},
@@ -16,6 +16,6 @@
     {"id":"OS03","title":"CuttlefishでOS起動と自律実行の最小縦断試作","status":"planned","dependsOn":["OS02"],"evidence":["docs/os-development-design.md"]},
     {"id":"OS04","title":"Pixel実機で復旧・省電力・再起動・署名更新を検証","status":"planned","dependsOn":["OS03"],"evidence":["docs/os-development-design.md"]},
     {"id":"OS05","title":"第三者SDK・審査・インストール・失効の閉鎖テスト","status":"planned","dependsOn":["OS04"],"evidence":["docs/os-development-design.md"]},
-    {"id":"OS06","title":"OS共通実行コア・端末DB・Android統合の検証可能な試作","status":"in_progress","dependsOn":["OS01"],"evidence":["docs/os-development-design.md"]}
+    {"id":"OS06","title":"OS共通実行コア・端末DB・Android統合の検証可能な試作","status":"done","dependsOn":["OS01"],"evidence":["docs/os-prototype.md","docs/validation.md","android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java"]}
   ]
 }

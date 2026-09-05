@@ -14,9 +14,11 @@ OS01は設計の完了だけを表す。OS02〜OS05は未着手であり、過�
 
 ## P1: 構想から実装へ
 
-OS06として、Java共通コア・SQLite・固定Tool AIDL・別APKの記事ツール・充電条件のAndroidジョブ・診断画面を作る。[P1実装手順](docs/os-prototype.md)をコードに対応する詳細仕様とする。基本設計のKotlin案は初回の共通コアではJavaへ具体化した。
+OS06として、Java共通コア・SQLite・固定Tool AIDL・別APKの記事ツール・充電条件のAndroidジョブ・診断画面を実装した。[P1実装手順](docs/os-prototype.md)をコードに対応する詳細仕様とする。基本設計のKotlin案は初回の共通コアではJavaへ具体化した。
 
 OS06の完成条件は、共通コアの実SQLiteテスト、既存記事ツールとの照合、Android APKのコンパイル/検査、残課題の記録。OSイメージ起動や実機合格は含めず、OS03/04とは分ける。AOSPの全ソースはggへ入れず、設定と固定参照だけを管理する。
+
+2026-09-05、実装commit `47043ad` の[Android CI](https://github.com/k999ln/rock/actions/runs/33982932964)でコア16・SDK4テスト、2APKのbuild/lint、記事照合36項目、標準Android35の接続2テストに成功し、OS06を完了とした。端末テストは実BinderとSQLite再接続を通すが、画面OFFの周期実行・端末再起動・不正UIDの否定試験ではない。[既存WebのCI](https://github.com/k999ln/rock/actions/runs/33982933087)も成功。OS03〜05を先取りして完了にはしない。
 
 ## 維持する事業方針
 
@@ -104,7 +106,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-05 / OS-P1: 自律実行コアとAndroid統合の試作 / 完了 8/14件
+最終更新: 2026-09-05 / OS-P1: 自律実行コアとAndroid統合の試作 / 完了 9/14件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -121,9 +123,9 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | OS03 | CuttlefishでOS起動と自律実行の最小縦断試作 | 未着手 | [記録](docs/os-development-design.md) |
 | OS04 | Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 | [記録](docs/os-development-design.md) |
 | OS05 | 第三者SDK・審査・インストール・失効の閉鎖テスト | 未着手 | [記録](docs/os-development-design.md) |
-| OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 進行中 | [記録](docs/os-development-design.md) |
+| OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 完了 | [記録](docs/os-prototype.md) · [記録](docs/validation.md) · [記録](android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java) |
 
-次の作業: 共通コア16テスト・記事照合36項目・2APKのbuild/lintは成功。仮想Androidで検出した正規表現の互換性差を修正し、実Binder/SQLiteの接続を再検証する。OSイメージ起動・Pixel書込は未実施。
+次の作業: Linux/x86-64・RAM64GiB・空き400GB・KVMを満たす開発環境を確保し、固定AOSPでSoong build→Cuttlefish起動へ進む。並行するAndroid検証では不正UID/署名、画面OFF・充電断・再起動を確認する。Pixel機種選定・書込は別ゲート。
 <!-- project-status:end -->
 
 ## 次段階の設計

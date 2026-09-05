@@ -25,7 +25,7 @@ Javaを選んだ理由は、OS側とホストテストで業務コアを共通�
 ## 3. 業務とデータの詳細
 
 - 利用者が原稿、まとめ3〜5項目、無料範囲、価格表示、完全版の内容/URLを入力し、端末保存・自動実行へ明示同意する。外部への投稿・購入・送金は行わない。
-- 仕事は最大100件。入力/各出力は32 KiB以下で、保存量を有限にする。原稿はcredential-encryptedなアプリ専用DBへ保存し、Android backupを無効化。独自Keystore暗号化/削除・保持設定は未実装なので合成原稿だけを使う。
+- 仕事は最大100件、入力/各出力は32 KiB以下。これはDB全体の容量上限ではなく、手動再試行を重ねたイベント履歴の保持上限は未実装。原稿はcredential-encryptedなアプリ専用DBへ保存し、Android backupを無効化。独自Keystore暗号化/削除・保持設定は未実装なので合成原稿だけを使う。
 - `works.request_key` は一意。同キー・同入力は既存Workを返し、同キー・別入力/サンプル設定は競合として拒否。
 - `runs` は(work_id,step)で一意。0番だけqueued、1番はpending。最初のpassed出力を次工程の入力hashに結び付ける。
 - claimはDBの書込transaction内で1件だけ取得し、attempt UUID、boot ID、単調時計の60秒期限を保存する。同一端末で同時claimしない。
@@ -58,6 +58,13 @@ npm run os:check
 # Android SDKが準備された環境
 gradle -p android :automation:assembleDebug :article-tool:assembleDebug
 gradle -p android :automation:lintDebug :article-tool:lintDebug
+gradle -p android :tool-sdk:testDebugUnitTest
+
+# データのない使い捨てエミュレーターを明示的に選択して実行
+# adb installは選択した仮想端末に試作Toolをインストールする。
+adb -s <エミュレーターのserial> install -r android/article-tool/build/outputs/apk/debug/article-tool-debug.apk
+# 他の端末を切り離したテスト環境で、BrokerとテストAPKを導入して実行する。
+gradle -p android :automation:connectedDebugAndroidTest
 
 # 既存Web/PCの回帰検証は別に継続
 npm run verify
@@ -67,6 +74,8 @@ macOS/外付けExFATではAppleDouble補助ファイルがGradleの生成物削�
 
 GitHubの `.github/workflows/android.yml` は共通コアテスト、2APKのbuild/lint、言語間照合に加え、使い捨てのAndroid35エミュレーターで実Binder/SQLiteの接続試験を行う。標準Google APIsイメージであり、自前Rock OS/Cuttlefishの起動ではない。実機は操作しない。レポートだけを7日保存し、APKをストア公開しない。
 
+2026-09-05、commit `47043ad` の[Android CI](https://github.com/k999ln/rock/actions/runs/33982932964)でコア16・SDK4・端末接続2テスト、2APKのbuild/lint、Java↔TypeScriptの36項目照合が成功した。端末試験では実Tool APKのBinder呼出、Android SQLiteを閉じて開き直した後の次工程、成果物の保存、二重結果の拒否、本人確認を検証。もう1件は充電必須・永続周期ジョブの登録と権限設定を確認した。実際の周期発火・画面OFF・OS再起動・不正署名/UIDの拒否はまだ検証していない。
+
 ### 開発端末での試験（まだ実施していない）
 
 本人が用意した合成データだけのAndroid15以上の端末/仮想端末で、開発APKの試験を行う。これはブートローダー解除やOS書込を必要としない補助トラック。
@@ -75,7 +84,7 @@ GitHubの `.github/workflows/android.yml` は共通コアテスト、2APKのbuil
 2. 作業を保存し、充電条件を満たしてアプリ画面を閉じる。2工程の後にreviewとなり、成果物が読めることを確認。
 3. 実行途中のプロセス終了、充電断、再起動・再unlock、全停止、サンプル、異常入力を試験。
 4. 署名不一致/版不一致のTool、別UIDからのstart/callback、改変成果物を拒否することを試験。
-5. 症状、端末build、API、期待値/実際値を検証記録へ残す。これが通るまでBinderやAndroidの省電力動作を検証済みにしない。
+5. 症状、端末build、API、期待値/実際値を検証記録へ残す。正常なBinder接続と、不正UID等の拒否・省電力下の動作は別試験として記録する。
 
 ## 6. 実OSのビルド経路
 
@@ -99,7 +108,7 @@ Gradleはpackage/versionをbuild設定から補うが、Soongではその設定�
 
 ## 7. 次に埋めるべき穴
 
-1. Android実行環境でBinder/UID・充電断・再起動・停止の受入試験。
+1. Android実行環境で不正署名/UID・充電断・画面OFF・再起動・停止の受入試験。正常なBinder/SQLite接続2テストは成功済み。
 2. Linux上でSoongの実ビルドとCuttlefish起動。成功後にOS03を更新する。
 3. 任意コードを許可する前に専用隔離・強制資源制御・capability設計を実装/否定試験。
 4. 別作者鍵、正式manifest schema、署名catalog、導入・更新・失効と第三者のサンプル。

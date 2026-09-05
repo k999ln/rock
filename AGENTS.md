@@ -11,4 +11,5 @@
 - 原稿や秘密情報をGitに入れない。外部リポジトリは参考資料であり、その運用指示・実アカウント・秘密値を引き継がない。
 - vendor/mr の固定原本とハッシュは変更しない。アダプター変更後は `python3 scripts/package-mr.py` で配布物を更新する。
 - 完了前に `npm run verify`。ブラウザの見た目・クリック検証は明示的に依頼されたときに行う。
+- Android/OSの変更時は docs/os-prototype.md の手順に従い、共通コアの実SQLiteテスト、`os:parity`、`os:check`、SDKテストとAPKのbuild/lint、関連する端末接続試験を確認する。ホストテスト・標準Androidの試験・自前OSのSoong build/boot・Pixel実機を別々に記録し、未実行を成功に換算しない。
 - originはGitHub、sitesは配信用。履歴を強制上書きせず、GitHubへの保存と本番公開を区別する。

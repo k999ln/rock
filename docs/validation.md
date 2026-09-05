@@ -4,12 +4,15 @@
 
 - 共通JavaコアをTemurin17/Gradle8.11.1でコンパイルし、実SQLiteの16テストに成功。2工程/再起動後の再開、同時claim、冪等受付、古いtoken/期限切れ結果の拒否、3回までの再試行、停止/中止/人の再試行、sample非通過、transaction失敗時のrollback、改変成果物、未知DB版を含む。
 - 合成fixture12件に対し、Javaと既存TypeScriptの出典整理/無料版/2工程接続を36項目で照合し一致。全入力の同値保証ではない。
-- 既存Web/PCの `npm run verify` は33テスト・API143 assertions・型/lint/buildに成功。OS契約の検査を既存テストへ追加し、最終変更後にも再検証する。
+- OS契約の静的検査を追加した後、既存Web/PCの `npm run verify` は34テスト・API143 assertions・進捗同期・型/lint/buildに成功。ローカルAPIとGradleはsandboxの通信制限で一度起動できず、承認されたローカル通信権限で再実行した。製品の検査条件は変更していない。
 - 初期のGradle再実行は外付けExFATの生成物削除で失敗。ソースを削除せず、`rockBuildRoot` で一時APFSへ生成先を分離して16テストを再実行した。
 - Java/Gradleは公式配布のチェックサムを照合し、一時領域へ展開。グローバルインストール、OS署名鍵の生成、Android端末への導入/初期化/書込は実施していない。
 - AOSPのr4 manifest commit、Cuttlefish製品継承先、aosp_current→bp4aのrelease aliasを公式Gitで確認した。ただしSoongのbuild/OS起動は未実施。
 - `os:host` はLinux/x86-64/RAM/空き容量/KVMが条件を満たさず終了コード2となることを確認。機材を購入/契約せず、OS02〜05を完了扱いしない。
-- 2APKのbuild/lint、SDK契約4テスト、コア/照合は[Android CI](https://github.com/k999ln/rock/actions/runs/33982158631)で成功。続く[エミュレーター試験](https://github.com/k999ln/rock/actions/runs/33982402787)は充電条件・権限設定が成功、記事Toolの処理が失敗した。Androidが拒否するJava SEの `UNICODE_CHARACTER_CLASS` フラグを使用していたため、起動時に対応を判定する修正を行い、再検証する。[Android Pattern仕様](https://developer.android.com/reference/java/util/regex/Pattern)
+- 2APKのbuild/lint、SDK契約4テスト、コア/照合は[Android CI](https://github.com/k999ln/rock/actions/runs/33982158631)で成功。続く[エミュレーター試験](https://github.com/k999ln/rock/actions/runs/33982402787)は充電条件・権限設定が成功、記事Toolの処理が失敗した。Androidが拒否するJava SEの `UNICODE_CHARACTER_CLASS` フラグを使用していたため、起動時に対応を判定する修正を行った。[Android Pattern仕様](https://developer.android.com/reference/java/util/regex/Pattern)
+- 修正commit `47043ad` の[Android CI](https://github.com/k999ln/rock/actions/runs/33982932964)は全工程成功。コア16・SDK4・Java↔TS照合36項目・2APK build/lintに加え、標準Android35上の接続2テストが成功した。実際の別APKをBinderで呼び、SQLite再接続後の次工程・成果物保存・同じ結果の二重拒否・空確認メモの拒否・本人確認後の完了を検証した。充電必須/永続周期ジョブの登録とINTERNET/RUN_TOOL権限設定も確認。UIを閉じた周期発火や本物の再起動を行った試験ではない。
+- 同commitの[Web CI](https://github.com/k999ln/rock/actions/runs/33982933087)も34テスト・API143 assertions・型/lint/buildに成功。既存のファンド試算・料金・分配契約を維持。
+- Soong専用manifestにはGradleが補うpackage/versionを明記し、それ以外の差分を `os:check` で拒否する。clean checkoutから生成したAOSP local manifestは実装commitの40桁SHAへ固定された。相対文書リンク72件、`git diff --check`、進捗同期も確認済み。これらはSoong build/bootの代替試験ではない。
 - 初回Web CIで追加テストのPromiseの明示がなくlintに失敗し、`void test(...)` に修正。さらにOS検査の予約変数名を修正した。検査条件の緩和や失敗テストの除外はしていない。
 - Binder否定試験・画面OFF・実電源断・実機の隔離/電池/OTAは未検証。既存Sitesは非公開設定・分岐・公開停止を維持。
 
