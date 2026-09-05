@@ -21,7 +21,7 @@ import loop_tools
 PROTOCOLS = ('2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05')
 MAX_BODY = 16_000_000
 PORT = 38479
-ORIGINS = {'https://loop-automation-hub.kirin-999.chatgpt.site', 'http://127.0.0.1:3001', 'http://localhost:3001'}
+ORIGINS = {'https://loop-automation-hub.kirin-999.chatgpt.site', 'https://rock-star.kirin-999.chatgpt.site', 'http://127.0.0.1:3001', 'http://localhost:3001'}
 
 def schema(properties, required):
     return {'type':'object','properties':properties,'required':required,'additionalProperties':False}

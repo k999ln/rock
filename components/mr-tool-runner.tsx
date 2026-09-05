@@ -24,7 +24,8 @@ import {
   type CoconalaResult,
 } from '@/lib/mr-tools';
 import { DeliveryRunner } from '@/components/delivery-runner';
-import { deviceToken, runDevice, recordRun } from '@/lib/device';
+import { deviceToken, runDevice } from '@/lib/device';
+import { executeTracked, processedBytes } from '@/lib/operations-client';
 export type MrRunner =
   | 'coconala'
   | 'citations'
@@ -96,102 +97,101 @@ export function MrToolRunner({ tool }: { tool: MrRunner }) {
     }
   }
   async function run() {
+    if (running) return;
     setRunning(true);
-    window.dispatchEvent(new CustomEvent('loop-run-state',{detail:tool}));
     setError('');
     setCopied(false);
     setEditing(false);
-    const started = performance.now(),
-      local = !!deviceToken();
-    let completed = false;
+    setOutput('');
+    setResult(null);
+    const local = !!deviceToken();
+    const args =
+      tool === 'coconala'
+        ? {
+            brief: text,
+            proposal,
+            bucket,
+            orderRate: rate.trim() === '' ? null : Number(rate),
+          }
+        : tool === 'citations'
+          ? { text }
+          : {
+              markdown: text,
+              afterChars: Number(after),
+              summary,
+              price: Number(price),
+              paidContents: contents,
+              noteUrl: url,
+            };
     try {
-      if (local) {
-        const name =
+      const tracked = await executeTracked<{
+        output: string;
+        check: CoconalaResult | null;
+      }>({
+        tool:
           tool === 'coconala'
-            ? 'coconala_check'
+            ? 'coconala'
             : tool === 'citations'
-              ? 'format_citations'
-              : 'make_free_article';
-        const args =
-          tool === 'coconala'
-            ? {
-                brief: text,
-                proposal,
-                bucket,
-                orderRate: rate.trim() === '' ? null : Number(rate),
-              }
-            : tool === 'citations'
-              ? { text }
-              : {
-                  markdown: text,
-                  afterChars: Number(after),
-                  summary,
-                  price: Number(price),
-                  paidContents: contents,
-                  noteUrl: url,
-                };
-        const r = await runDevice(name, args);
-        setResult(null);
-        setOutput(r.output);
-      } else if (tool === 'coconala') {
-        const r = checkCoconala({
-          brief: text,
-          proposal,
-          bucket: bucket as 'single' | 'retainer',
-          orderRate: rate.trim() === '' ? null : Number(rate),
-        });
-        setResult(r);
-        setOutput(
-          [
-            '# ココナラ案件チェック',
-            '',
-            r.summary,
-            ...r.reasons.map((s) => '- ' + s),
-            ...r.signals.map((s) => '- 検出: ' + s),
-            ...r.rankingNotes.map((s) => '- ' + s),
-            '',
-            '受注・規約適合・収益を保証せず、応募や送信は行いません。',
-          ].join('\n'),
-        );
-      } else {
-        setResult(null);
-        setOutput(
-          tool === 'citations'
-            ? formatCitations(text)
-            : makeFreeArticle({
-                markdown: text,
-                afterChars: Number(after),
-                summary,
-                price: Number(price),
-                paidContents: contents,
-                noteUrl: url,
-              }),
-        );
-      }
-      completed = true;
-      await recordRun(
-        tool === 'coconala'
-          ? 'coconala'
-          : tool === 'citations'
-            ? 'mr-citations'
-            : 'mr-free-article',
-        local ? 'local-mcp' : 'browser',
-        'completed',
-        started,
-        sampleInput,
-      );
+              ? 'mr-citations'
+              : 'mr-free-article',
+        transport: local ? 'local-mcp' : 'browser',
+        sample: sampleInput,
+        inputBytes: processedBytes(args),
+        task: async () => {
+          if (local) {
+            const name =
+              tool === 'coconala'
+                ? 'coconala_check'
+                : tool === 'citations'
+                  ? 'format_citations'
+                  : 'make_free_article';
+            const response = await runDevice(name, args);
+            return { output: response.output, check: null };
+          }
+          if (tool === 'coconala') {
+            const check = checkCoconala({
+              brief: text,
+              proposal,
+              bucket: bucket as 'single' | 'retainer',
+              orderRate: rate.trim() === '' ? null : Number(rate),
+            });
+            return {
+              check,
+              output: [
+                '# ココナラ案件チェック',
+                '',
+                check.summary,
+                ...check.reasons.map((s) => '- ' + s),
+                ...check.signals.map((s) => '- 検出: ' + s),
+                ...check.rankingNotes.map((s) => '- ' + s),
+                '',
+                '応募や送信は行っていません。',
+              ].join('\n'),
+            };
+          }
+          return {
+            check: null,
+            output:
+              tool === 'citations'
+                ? formatCitations(text)
+                : makeFreeArticle({
+                    markdown: text,
+                    afterChars: Number(after),
+                    summary,
+                    price: Number(price),
+                    paidContents: contents,
+                    noteUrl: url,
+                  }),
+          };
+        },
+      });
+      setResult(tracked.result.check);
+      setOutput(tracked.result.output);
+      setError(tracked.warning);
     } catch (e) {
-      if (!completed) {
-        setOutput('');
-        setResult(null);
-        try {
-          await recordRun(tool==='coconala'?'coconala':tool==='citations'?'mr-citations':'mr-free-article',local?'local-mcp':'browser','failed',started,sampleInput);
-        } catch {}
-      }
       setError(e instanceof Error ? e.message : '入力を確認してください。');
     } finally {
       setRunning(false);
-      window.dispatchEvent(new CustomEvent('loop-run-state',{detail:''}));
     }
   }
   async function copy() {

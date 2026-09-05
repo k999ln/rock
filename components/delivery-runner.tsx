@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { Play, FolderOpen, Copy } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
-import { deviceToken, runDevice, recordRun } from '@/lib/device';
+import { deviceToken, runDevice } from '@/lib/device';
+import { executeTracked, processedBytes } from '@/lib/operations-client';
 export function DeliveryRunner() {
   const [connected, setConnected] = useState(false),
     [review, setReview] = useState(''),
@@ -17,12 +18,13 @@ export function DeliveryRunner() {
     return () => window.removeEventListener('loop-device', update);
   }, []);
   async function run(sample = false) {
+    if (busy) return;
     setBusy(true);
-    window.dispatchEvent(new CustomEvent('loop-run-state',{detail:'mr-delivery'}));
+    window.dispatchEvent(
+      new CustomEvent('loop-run-state', { detail: 'mr-delivery' }),
+    );
     setError('');
     setOutput('');
-    const started = performance.now();
-    let completed = false;
     try {
       let args: Record<string, unknown> = { sample: true };
       if (!sample) {
@@ -47,25 +49,20 @@ export function DeliveryRunner() {
         }
         args = { review: JSON.parse(review), files: entries };
       }
-      const result = await runDevice('verify_delivery', args);
-      completed = true;
-      setOutput(result.output);
-      await recordRun('mr-delivery', 'local-mcp', 'completed', started, sample);
+      const tracked = await executeTracked({
+        tool: 'mr-delivery',
+        transport: 'local-mcp',
+        sample,
+        inputBytes: processedBytes(args),
+        task: () => runDevice('verify_delivery', args),
+      });
+      setOutput(tracked.result.output);
+      setError(tracked.warning);
     } catch (e) {
       setError(e instanceof Error ? e.message : '入力を確認してください。');
-      if (!completed)
-        try {
-          await recordRun(
-            'mr-delivery',
-            'local-mcp',
-            'failed',
-            started,
-            sample,
-          );
-        } catch {}
     } finally {
       setBusy(false);
-      window.dispatchEvent(new CustomEvent('loop-run-state',{detail:''}));
+      window.dispatchEvent(new CustomEvent('loop-run-state', { detail: '' }));
     }
   }
   return (

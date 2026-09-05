@@ -1,4 +1,4 @@
-.native-app {
+:root {
   --app-ink: #142033;
   --app-muted: #657084;
   --app-line: #e4e8ef;
@@ -6,6 +6,8 @@
   --app-bg: #f4f6fa;
   --app-navy: #101a2f;
   --app-indigo: #5367ee;
+}
+.native-app {
   min-height: 100svh;
   color: var(--app-ink);
   background:
@@ -15,6 +17,216 @@
       transparent 32rem
     ),
     var(--app-bg);
+}
+
+.ops-panel {
+  display: grid;
+  gap: 28px;
+  color: var(--app-ink);
+}
+.ops-panel > section {
+  padding-top: 22px;
+  border-top: 1px solid var(--app-line);
+}
+.ops-panel h2 {
+  font-size: 19px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.ops-panel p {
+  color: var(--app-muted);
+  font-size: 14px;
+  margin: 6px 0 14px;
+}
+.ops-tools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.ops-tools > label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--app-line);
+  background: white;
+  border-radius: 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.ops-tools small,
+.ops-device small,
+.ops-job small,
+.ops-book-list small {
+  display: block;
+  font-size: 12px;
+  margin-top: 4px;
+  color: var(--app-muted);
+}
+.ops-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.ops-metrics > div {
+  padding: 18px 14px;
+  background: #eaf0ff;
+  border-radius: 14px;
+}
+.ops-metrics span {
+  display: block;
+  font-size: 13px;
+  color: #5a6c90;
+}
+.ops-metrics b {
+  display: block;
+  font-size: 22px;
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+}
+.ops-device {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--app-line);
+}
+.ops-device > div {
+  flex: 1;
+  min-width: 0;
+}
+.ops-device b {
+  font-size: 15px;
+}
+.ops-panel button:not([data-slot]),
+.ops-job-actions button {
+  min-height: 40px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+.ops-device button,
+.ops-book-list button,
+.ops-job-actions button {
+  color: #455dc5;
+  background: #e9edff;
+}
+.ops-history {
+  display: grid;
+  gap: 12px;
+}
+.ops-job {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: white;
+  border: 1px solid var(--app-line);
+  border-radius: 18px;
+}
+.ops-job b {
+  font-size: 15px;
+}
+.ops-job-actions {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+.ops-job-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ops-state {
+  font-size: 14px;
+  font-weight: 700;
+}
+.state-completed {
+  color: #087c55;
+}
+.state-interrupted,
+.state-failed {
+  color: #a55126;
+}
+.state-running,
+.state-queued {
+  color: #5264da;
+}
+.ops-legacy {
+  font-size: 14px;
+  padding: 16px 0;
+}
+.ops-legacy summary {
+  cursor: pointer;
+}
+.ops-legacy p {
+  padding: 8px 0;
+}
+.ops-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.ops-form-grid label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+}
+.ops-form-grid input,
+.ops-form-grid [data-slot='select-trigger'] {
+  width: 100%;
+  height: 46px;
+  border: 1px solid var(--app-line);
+  border-radius: 10px;
+  background: white;
+  padding: 10px;
+  font-size: 16px;
+}
+.ops-book-list {
+  margin-top: 20px;
+}
+.ops-book-list > div {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid var(--app-line);
+  font-size: 14px;
+}
+.ops-book-list > div > div {
+  flex: 1;
+}
+.ops-book-list strong {
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .ops-tools,
+  .ops-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .ops-job {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+  .ops-job-actions {
+    grid-column: 2;
+    justify-items: start;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .ops-metrics {
+    gap: 7px;
+  }
+  .ops-metrics > div {
+    padding: 12px 8px;
+  }
+  .ops-metrics b {
+    font-size: 17px;
+  }
 }
 
 .app-sidebar {

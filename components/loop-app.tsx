@@ -36,7 +36,14 @@ import { FundDashboard } from '@/components/fund-dashboard';
 import { MrToolRunner } from '@/components/mr-tool-runner';
 import { catalog, type Automation } from '@/lib/catalog';
 import { defaultFund, type FundSnapshot } from '@/lib/fund';
-import { deviceToken } from '@/lib/device';
+import { deviceToken, monitorDevice } from '@/lib/device';
+import { operationRequest } from '@/lib/operations-client';
+import type { OperationsSnapshot } from '@/lib/operations';
+import {
+  OperationsPanel,
+  JobHistory,
+  jobLabels,
+} from '@/components/operations-panel';
 import { parseAccounts, walletError, type WalletProvider } from '@/lib/wallet';
 
 type View = 'home' | 'funds' | 'activity' | 'settings';
@@ -116,6 +123,9 @@ type InstallPrompt = Event & {
 export default function LoopApp() {
   const [view, setView] = useState<View>('home');
   const [snapshot, setSnapshot] = useState<FundSnapshot | null>(null);
+  const [backend, setBackend] = useState<OperationsSnapshot | null>(null);
+  const [operationsOpen, setOperationsOpen] = useState(false);
+  const refreshSequence = useRef(0);
   const [selectedFund, setSelectedFund] = useState<Fund | null>(null);
   const [tool, setTool] = useState<Automation | null>(null);
   const [deviceOpen, setDeviceOpen] = useState(false);
@@ -136,13 +146,18 @@ export default function LoopApp() {
   const provider = useRef<WalletProvider | undefined>(undefined);
 
   const refresh = useCallback(async () => {
+    const sequence = ++refreshSequence.current;
     try {
-      const response = await fetch('/api/fund');
-      const data = (await response.json()) as FundSnapshot & { error?: string };
-      if (!response.ok) throw new Error(data.error);
+      const [data, state] = await Promise.all([
+        operationRequest<FundSnapshot>('/api/fund'),
+        operationRequest<OperationsSnapshot>('/api/operations'),
+      ]);
+      if (sequence !== refreshSequence.current) return;
       setSnapshot(data);
+      setBackend(state);
       setError('');
     } catch (cause) {
+      if (sequence !== refreshSequence.current) return;
       setError(
         cause instanceof Error ? cause.message : '状態を読み込めませんでした。',
       );
@@ -159,8 +174,14 @@ export default function LoopApp() {
     window.addEventListener('loop-device', connection);
     window.addEventListener('loop-fund-refresh', refresh);
     window.addEventListener('loop-run-state', running);
+    const stopMonitor = monitorDevice();
+    const poll = setInterval(() => {
+      if (document.visibilityState === 'visible') void refresh();
+    }, 15000);
     void navigator.serviceWorker?.register('/sw.js').catch(() => {});
     return () => {
+      clearInterval(poll);
+      stopMonitor();
       window.removeEventListener('loop-device', connection);
       window.removeEventListener('loop-fund-refresh', refresh);
       window.removeEventListener('loop-run-state', running);
@@ -391,20 +412,30 @@ export default function LoopApp() {
           </div>
           <div className="app-actions">
             {(quickTools.length ? quickTools : allReadyTools).map((item) => (
-              <button key={item.id} onClick={() => setTool(item)}>
+              <button
+                key={item.id}
+                onClick={() => setTool(item)}
+                disabled={
+                  backend?.tools.find((t) => t.tool === item.id)?.enabled ===
+                  false
+                }
+              >
                 <span className={`app-action-icon action-${item.color}`}>
                   <Play size={18} fill="currentColor" />
                 </span>
                 <span>
                   <b>{item.name}</b>
                   <small>
-                    {item.runner === 'delivery-local'
-                      ? connected
-                        ? 'PCで実行'
-                        : 'PC接続が必要'
-                      : connected
-                        ? 'MCPで実行'
-                        : 'この端末で実行'}
+                    {backend?.tools.find((t) => t.tool === item.id)?.enabled ===
+                    false
+                      ? '設定で停止中'
+                      : item.runner === 'delivery-local'
+                        ? connected
+                          ? 'PCで実行'
+                          : 'PC接続が必要'
+                        : connected
+                          ? 'MCPで実行'
+                          : 'この端末で実行'}
                   </small>
                 </span>
                 <ChevronRight size={18} />
@@ -424,11 +455,13 @@ export default function LoopApp() {
             <strong>
               {runState
                 ? '実行中'
-                : snapshot?.runs[0]
-                  ? snapshot.runs[0].status === 'completed'
-                    ? '完了'
-                    : '要確認'
-                  : '待機中'}
+                : backend?.jobs[0]
+                  ? jobLabels[backend.jobs[0].status]
+                  : snapshot?.runs[0]
+                    ? snapshot.runs[0].status === 'completed'
+                      ? '完了'
+                      : '要確認'
+                    : '待機中'}
             </strong>
           </article>
           <article>
@@ -506,39 +539,17 @@ export default function LoopApp() {
         <div className="app-page-heading">
           <span>ACTIVITY</span>
           <h1>実行履歴</h1>
-          <p>入力内容は保存せず、実行状態だけ記録します。</p>
+          <p>開始待ちから完了までの状態を確認できます。</p>
         </div>
-        <div className="app-activity-list">
-          {snapshot?.runs.length ? (
-            snapshot.runs.map((run) => {
-              const automation = catalog.find((item) => item.id === run.tool);
-              return (
-                <article key={run.id}>
-                  <span className={`app-history-icon ${run.status}`}>
-                    {run.status === 'completed' ? <Check size={17} /> : '!'}
-                  </span>
-                  <div>
-                    <b>{automation?.name || run.tool}</b>
-                    <small>
-                      {run.sample ? 'サンプル · ' : ''}
-                      {run.transport === 'local-mcp' ? 'PC・MCP' : 'ブラウザ'}
-                    </small>
-                  </div>
-                  <time>
-                    {new Date(run.createdAt).toLocaleDateString('ja-JP')}
-                  </time>
-                </article>
-              );
-            })
-          ) : (
-            <div className="app-empty">
-              <Activity size={31} />
-              <h2>まだ実行はありません</h2>
-              <p>ホームからツールを選ぶと、ここに状態が残ります。</p>
-              <button onClick={() => setView('home')}>ホームへ戻る</button>
-            </div>
-          )}
-        </div>
+        <JobHistory
+          data={backend}
+          legacy={snapshot?.runs}
+          refresh={refresh}
+          openTool={(id) => {
+            const item = catalog.find((t) => t.id === id);
+            if (item) setTool(item);
+          }}
+        />
       </section>
     );
   }
@@ -551,6 +562,16 @@ export default function LoopApp() {
           <h1>設定</h1>
         </div>
         <div className="app-settings-list">
+          <button onClick={() => setOperationsOpen(true)}>
+            <span>
+              <Gauge size={20} />
+            </span>
+            <div>
+              <b>運用管理・収支記録</b>
+              <small>ツール停止、接続端末、利用量、売上と経費</small>
+            </div>
+            <ChevronRight size={18} />
+          </button>
           <button onClick={() => setDeviceOpen(true)}>
             <span>
               <Cable size={20} />
@@ -665,7 +686,7 @@ export default function LoopApp() {
 
       <Dialog
         open={Boolean(tool)}
-        onOpenChange={(open) => !open && setTool(null)}
+        onOpenChange={(open) => !open && !runState && setTool(null)}
       >
         <DialogContent className="app-tool-dialog">
           {tool ? (
@@ -719,6 +740,15 @@ export default function LoopApp() {
             PCとの接続を設定します。
           </DialogDescription>
           <DeviceConnection />
+        </DialogContent>
+      </Dialog>
+      <Dialog open={operationsOpen} onOpenChange={setOperationsOpen}>
+        <DialogContent className="app-wide-dialog">
+          <DialogTitle>運用管理・収支記録</DialogTitle>
+          <DialogDescription>
+            自分のツール、端末と記録を管理します。
+          </DialogDescription>
+          <OperationsPanel data={backend} refresh={refresh} />
         </DialogContent>
       </Dialog>
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
