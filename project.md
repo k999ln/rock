@@ -57,6 +57,8 @@ D1の新しい `work_jobs` テーブルに仕事JSONとrevisionを保存しま�
 - 元の `rock-star/` 内をgg直下へ移動し、入れ子のGit管理を解消。履歴は保持。
 - GitHubへの保存とSitesへの再公開は別作業。公開サイトへ反映した場合だけ検証記録に記載。
 
+R1実装は `b460ccf` としてrockのmainへ保存し、GitHub Actionsで検証済みです。READMEと本書の更新も同じmainに継続して保存します。実際の実施結果は [検証記録](docs/validation.md) のR1欄に残します。
+
 ## 進捗の更新方法
 
 1. 着手時に `data/project-status.json` の状態・更新日・次の作業を更新する。
@@ -67,7 +69,7 @@ D1の新しい `work_jobs` テーブルに仕事JSONとrevisionを保存しま�
 `done` は実装と検証が終わった場合だけ使用。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-05 / R1: Rock starの仕事実行・開発管理基盤 / 完了 4/5件
+最終更新: 2026-09-05 / R1: Rock starの仕事実行・開発管理基盤 / 完了 5/5件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -75,9 +77,9 @@ D1の新しい `work_jobs` テーブルに仕事JSONとrevisionを保存しま�
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
 | R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) |
-| R05 | 回帰検証・移行確認・GitHub保存 | 進行中 | [記録](docs/validation.md) |
+| R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 
-次の作業: 最終verifyとGitHub保存を実施し、リモートのCI結果を確認する。
+次の作業: 次段階: 実案件で必要な制作・返信工程と成果物保存の要件を確定する。既存サイトへの反映は公開依頼後に行う。
 <!-- project-status:end -->
 
 ## 次段階の設計

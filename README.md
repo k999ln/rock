@@ -7,7 +7,7 @@
 ## 開発の現在地
 
 <!-- project-status:start -->
-最終更新: 2026-09-05 / R1: Rock starの仕事実行・開発管理基盤 / 完了 4/5件
+最終更新: 2026-09-05 / R1: Rock starの仕事実行・開発管理基盤 / 完了 5/5件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -15,9 +15,9 @@
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
 | R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) |
-| R05 | 回帰検証・移行確認・GitHub保存 | 進行中 | [記録](docs/validation.md) |
+| R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 
-次の作業: 最終verifyとGitHub保存を実施し、リモートのCI結果を確認する。
+次の作業: 次段階: 実案件で必要な制作・返信工程と成果物保存の要件を確定する。既存サイトへの反映は公開依頼後に行う。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

@@ -10,7 +10,7 @@
 - 全3移行を一時D1に適用し、本番WorkerのローカルHTTP検証67 assertionsが成功。401/403/400/413、ユーザー分離、順序違反、サンプル・失敗・確認要の非通過、再送、同時更新の片方だけ成功、最終確認、完了後の変更拒否、Worker再起動後の復元、既存実行履歴との非二重計上を確認。
 - このHTTPテストはゲートウェイ認証ヘッダーを合成するローカル専用検証。実際のSitesログイン操作やブラウザ→ローカルMCPの権限操作を検証したものではない。実案件・本番DB・外部サービスには接続していない。
 - 外付けSSDのAppleDoubleメタデータがDrizzle/Workerdに誤読されるため、移行生成とHTTPテストはメタデータを除いた一時コピーを使用。ソースや適用済みSQLは上書きしない。
-- 進捗JSONからREADMEとproject.mdを同期し、`project:check` とGitHub Actionsに同じ検証を組み込んだ。GitHubへの保存・CI結果は確認後に下記へ追記する。
+- 進捗JSONからREADMEとproject.mdを同期し、`project:check` とGitHub Actionsに同じ検証を組み込んだ。実装commit [`b460ccf`](https://github.com/k999ln/rock/commit/b460ccfe236217af117bbd952b5b4c5cc50869d8) をmainへ保存済み。[GitHub Actions](https://github.com/k999ln/rock/actions/runs/33973073350) がUbuntu/Node.js 22のクリーンインストールから全検証に成功。ローカルmainの追跡先もorigin/mainへ変更済み。
 - ブラウザの画面操作・見た目QA、実ウォレット接続、外部応募・納品・収益回収は未実施。既存Sitesの再公開は今回のGitHub保存とは別で、まだ実施していない。
 
 以下は以前の実装時の記録です。
