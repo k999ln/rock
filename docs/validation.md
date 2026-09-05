@@ -1,5 +1,15 @@
 # 検証記録
 
+## Rock star OS 設計v0.1 / 2026-09-05
+
+- 利用者の「OS開発をメイン」の指示に基づき、[開発設計書](os-development-design.md)を作成。既存product/architecture/fund/MCP/workflowと、配信側 `c6942d5` のbackend-design/READMEを読み、9要求・OS責務・14受入条件・7初期チケットへ対応付けた。
+- AOSP/Android/Googleの一次資料で、Cuttlefish、Pixelの解除/復旧とvendor入手条件、Linuxビルド要件、バックグラウンド制約、UID/SELinux/Keystore、署名/Store、AVB/Virtual A/Bを確認。参照リンクを設計判断の近くへ記載した。MCPとネイティブOAuthの安全境界も公式仕様で確認。
+- 設計案と既存実装を区別し、OS本体/SDK/第三者Store/Pixel対応は未実装・未検証と明示した。工程/電池/資源の数値は将来の仮目標で、測定実績ではない。
+- READMEとproject.mdをOS中心の案内へ更新し、初期仕様とWeb/PC資産・ファンドの試算式は保持。旧WebのAPI/DB衝突は解消しておらず、本番公開は保留のまま。OS設計の依存条件からは分離した。
+- 今回は文書・進捗・継続ルールのみの変更。端末購入/初期化/解除/書込、AOSP取得・build、実機試験、署名鍵作成、サイト公開、branch統合は行っていない。
+- `npm run verify` 成功。進捗整合、型検査、製品lint、既存33テスト、Web build、仕事APIの143 assertionsを確認した。これは既存Web/PCの回帰検証であり、OS/Android/実機の合格を意味しない。
+- 文書内の相対リンク64件、manifestのJSON例、Q01〜Q09の受入条件への対応、AT01〜AT14の存在、コード区切りを検査。`git diff --check` と文書更新後の `npm run project:check` も成功。
+
 ## Rock star R2 / 2026-09-05
 
 ### ブラウザ確認

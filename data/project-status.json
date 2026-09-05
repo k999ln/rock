@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-05",
-  "milestone": "R2: ブラウザ確認と本人限定サイトへの反映",
-  "nextAction": "配信先のアプリ化・実行管理・手入力台帳を残してrockへ統合する方針を確認する。APIとDB移行の衝突を解消するまで本番公開しない。",
+  "milestone": "OS-D1: 自動化OSへの開発設計",
+  "nextAction": "OS設計v0.1を基に、手元のPixelとLinux環境を確認し、ソース/BSP/復旧の適合ゲートから始める。OS01は設計完了のみで、OS実装・実機試験は未着手。",
   "tasks": [
     {"id":"R01","title":"4参照元の採用判断と事業方針の固定","status":"done","dependsOn":[],"evidence":["docs/reference-repositories.md"]},
     {"id":"R02","title":"ggをGitHub rockへ紐付け、既存変更と履歴を保全","status":"done","dependsOn":[],"evidence":["project.md"]},
@@ -10,6 +10,11 @@
     {"id":"R05","title":"回帰検証・移行確認・GitHub保存","status":"done","dependsOn":["R02","R03","R04"],"evidence":["docs/validation.md"]},
     {"id":"R06","title":"ブラウザで仕事の一連の操作を確認","status":"done","dependsOn":["R05"],"evidence":["docs/validation.md"]},
     {"id":"R07","title":"本人限定のSitesへ公開・本番確認","status":"blocked","reason":"sites/mainに別の仕事API・0002移行・アプリUIが存在。追加機能を保持する統合方針の確認が必要","dependsOn":["R06"],"evidence":["docs/deployment-integration.md"]},
-    {"id":"R08","title":"検証結果・公開停止理由と再開設計の文書化","status":"done","dependsOn":["R06"],"evidence":["project.md","docs/validation.md","docs/deployment-integration.md"]}
+    {"id":"R08","title":"検証結果・公開停止理由と再開設計の文書化","status":"done","dependsOn":["R06"],"evidence":["project.md","docs/validation.md","docs/deployment-integration.md"]},
+    {"id":"OS01","title":"既存設計の要件追跡と自動化OS開発設計","status":"done","dependsOn":["R01","R03"],"evidence":["docs/os-development-design.md"]},
+    {"id":"OS02","title":"対象Pixel・ソース/BSP・Linuxビルド環境の適合確認","status":"planned","dependsOn":["OS01"],"evidence":["docs/os-development-design.md"]},
+    {"id":"OS03","title":"CuttlefishでOS起動と自律実行の最小縦断試作","status":"planned","dependsOn":["OS02"],"evidence":["docs/os-development-design.md"]},
+    {"id":"OS04","title":"Pixel実機で復旧・省電力・再起動・署名更新を検証","status":"planned","dependsOn":["OS03"],"evidence":["docs/os-development-design.md"]},
+    {"id":"OS05","title":"第三者SDK・審査・インストール・失効の閉鎖テスト","status":"planned","dependsOn":["OS04"],"evidence":["docs/os-development-design.md"]}
   ]
 }
