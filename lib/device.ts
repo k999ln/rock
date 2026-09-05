@@ -1,4 +1,8 @@
 export const DEVICE_URL = 'http://127.0.0.1:38479';
+export type RunRecorder = (
+  tool: string, transport: 'browser' | 'local-mcp', status: 'completed' | 'failed',
+  started: number, sample: boolean, outcome?: 'passed' | 'needs_review' | 'failed',
+) => Promise<void>;
 const TOKEN = 'loop.device.session';
 export function deviceToken() {
   try {
@@ -47,7 +51,7 @@ export async function connectDevice() {
   const initialized = await call(1, 'initialize', {
     protocolVersion: '2025-11-25',
     capabilities: {},
-    clientInfo: { name: 'loop-site', version: '0.2.0' },
+    clientInfo: { name: 'rock-star-site', version: '0.2.0' },
   });
   if (initialized.protocolVersion !== '2025-11-25')
     throw new Error('対応するMCPバージョンを確認できませんでした。');

@@ -1,0 +1,323 @@
+.work-shell {
+  min-height: 100vh;
+  background: #f5f7fb;
+  color: #202b3a;
+  font:
+    1rem/1.7 Arial,
+    'Hiragino Kaku Gothic ProN',
+    sans-serif;
+}
+.work-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.1rem max(1.25rem, calc((100% - 1240px) /2));
+  background: white;
+  border-bottom: 1px solid #dbe2ed;
+}
+.work-header .work-brand {
+  margin-right: auto;
+  color: #2f74d9;
+  font-size: 1.65rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.work-header a,
+.work-header button,
+.work-title button {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.work-header button,
+.work-title button,
+.work-list-heading button,
+.work-notice button {
+  background: white;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1dbea;
+  border-radius: 0.45rem;
+}
+.work-shell main {
+  max-width: 1280px;
+  padding: 2rem 1.25rem;
+  margin: auto;
+}
+.work-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.work-title h1 {
+  font-size: 1.9rem;
+  letter-spacing: -0.03em;
+}
+.work-title p,
+.work-footnote {
+  color: #546278;
+}
+.work-create {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1rem;
+  align-items: end;
+  background: white;
+  border: 1px solid #dbe2ed;
+  border-radius: 0.8rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.work-create label,
+.work-review label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.work-create input {
+  min-width: 0;
+  border: 1px solid #bac7da;
+  border-radius: 0.4rem;
+  padding: 0.65rem 0.8rem;
+  font: inherit;
+  width: 100%;
+  background: white;
+}
+.work-create [data-slot='select-trigger'] {
+  width: 100%;
+  min-height: 3rem;
+  font-size: 1rem;
+}
+.work-create p {
+  grid-column: 1/-1;
+  color: #546278;
+  font-size: 0.95rem;
+}
+.work-shell .work-primary {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  background: #2465c2;
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 0.45rem;
+  font-weight: 600;
+}
+.work-layout {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+.work-list,
+.work-detail {
+  background: white;
+  border: 1px solid #dbe2ed;
+  border-radius: 0.8rem;
+  padding: 1.25rem;
+  min-width: 0;
+}
+.work-list h2 {
+  font-size: 1rem;
+}
+.work-list-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+.work-list-heading button {
+  font-size: 0.875rem;
+}
+.work-job {
+  display: grid;
+  width: 100%;
+  text-align: left;
+  gap: 0.4rem;
+  background: #f6f8fc;
+  padding: 0.85rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  margin-top: 0.65rem;
+  overflow-wrap: anywhere;
+}
+.work-job.selected {
+  border-color: #2f74d9;
+  background: #edf4ff;
+}
+.work-job span {
+  font-size: 0.875rem;
+  color: #435a79;
+}
+.work-detail-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: start;
+  margin-bottom: 1.25rem;
+}
+.work-detail-heading h2 {
+  font-size: 1.35rem;
+  overflow-wrap: anywhere;
+}
+.work-detail-heading > span {
+  background: #edf4ff;
+  color: #23558b;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.4rem;
+  white-space: nowrap;
+  font-size: 0.875rem;
+}
+.work-steps {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 0 0 1.25rem;
+}
+.work-steps li {
+  display: grid;
+  grid-template-columns: 1.6rem 1fr;
+  gap: 0.35rem 0.5rem;
+  align-items: center;
+  padding: 0.85rem;
+  border: 1px solid #dbe2ed;
+  border-radius: 0.6rem;
+}
+.work-steps li > span {
+  display: grid;
+  place-items: center;
+  height: 1.6rem;
+  background: #e9eef6;
+  border-radius: 50%;
+}
+.work-steps strong {
+  font-size: 0.95rem;
+}
+.work-steps small {
+  grid-column: 2;
+  font-size: 0.875rem;
+  color: #536478;
+}
+.work-steps .passed {
+  background: #eef8f2;
+  border-color: #bddbca;
+}
+.work-runner {
+  margin-top: 1.5rem;
+  border-top: 1px solid #dbe2ed;
+  padding-top: 1rem;
+}
+.work-runner > p {
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  color: #546278;
+}
+.work-runner .mr-workbench {
+  margin-top: 0;
+}
+.work-runner .bench-field,
+.work-runner .subnote,
+.work-runner .bench-helper,
+.work-runner .bench-field input,
+.work-runner textarea {
+  font-size: 0.95rem;
+}
+.work-review {
+  margin-top: 1.5rem;
+  background: #f1f6fe;
+  border-radius: 0.6rem;
+  padding: 1.25rem;
+  display: grid;
+  gap: 1rem;
+}
+.work-review h3,
+.work-history h3 {
+  font-size: 1.1rem;
+}
+.work-history {
+  margin-top: 1.5rem;
+}
+.work-history ol {
+  list-style: none;
+  padding: 0;
+}
+.work-history li {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e4e9f1;
+  overflow-wrap: anywhere;
+}
+.work-history time {
+  font-size: 0.875rem;
+  color: #596b82;
+}
+.work-cancel {
+  background: transparent;
+  color: #775045;
+  padding: 0.6rem 0;
+  margin-top: 1rem;
+  text-decoration: underline;
+}
+.work-notice {
+  background: #fff5e8;
+  border: 1px solid #e7d0ad;
+  color: #704218;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.work-notice a {
+  margin-left: 1rem;
+  text-decoration: underline;
+}
+.work-notice button {
+  margin: 0.5rem 0.75rem 0 0;
+  color: #704218;
+}
+.work-empty {
+  padding: 2rem 0;
+}
+.work-empty h2 {
+  font-size: 1.25rem;
+}
+.work-footnote {
+  font-size: 0.875rem;
+  margin-top: 1.5rem;
+}
+.work-shell button:focus-visible,
+.work-shell a:focus-visible,
+.work-shell input:focus-visible {
+  outline: 3px solid #2465c2;
+  outline-offset: 3px;
+}
+@media (max-width: 800px) {
+  .work-layout {
+    grid-template-columns: 1fr;
+  }
+  .work-create {
+    grid-template-columns: 1fr;
+  }
+  .work-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .work-header .work-brand {
+    width: 100%;
+  }
+  .work-title {
+    align-items: start;
+  }
+  .work-title button {
+    flex-shrink: 0;
+  }
+  .work-steps {
+    grid-template-columns: 1fr;
+  }
+}

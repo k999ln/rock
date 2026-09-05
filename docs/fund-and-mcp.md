@@ -1,8 +1,8 @@
-# LOOPファンドとワンボタン実行
+# Rock starファンドとワンボタン実行
 
 ## 今回の提供範囲
 
-ホームをLOOPファンドに変更。参加状態、4ツールへの予算配分計画、実行履歴、費用控除と分配、ブーストの試算を同じ画面に配置した。参加・配分・試算条件とサイトから報告された実行メタデータはSitesのD1に、ログインした利用者ごとに保存する。未保存の試算はタブ移動でも保持する。
+ホームをRock starファンドに変更。参加状態、4ツールへの予算配分計画、実行履歴、費用控除と分配、ブーストの試算を同じ画面に配置した。参加・配分・試算条件とサイトから報告された実行メタデータはSitesのD1に、ログインした利用者ごとに保存する。未保存の試算はタブ移動でも保持する。
 
 入金・売上・送金は未連携。「残高0円」「分配実績」など実績と誤解する表示をせず、未接続と表示する。支援予定額は購入済み口数でも投資受付でもない。Sitesの公式利用制限ではfinancial transactionsは非対応のため、このホスト上で金銭の受付・自動徴収・払出を有効化しない。
 
@@ -13,7 +13,7 @@
 Rは販売先の手数料を引いた月間共通収益、Cはファンド自身が負担する共通運用費。利用料は実行回数やツール数にかかわらず、このファンドの月合計に最大8.88 USD相当を1回だけ適用する提案。
 
 - 回収運用費 = min(R, C)
-- LOOP利用料 = min(R − 回収運用費, round(8.88 × 入力為替))
+- Rock star利用料 = min(R − 回収運用費, round(8.88 × 入力為替))
 - 分配原資D = R − 回収運用費 − 利用料
 - 基本分配枠 = floor(D × 入力した基本分配率)
 - ブースト枠 = floor(D × 入力したブースト分配率)
@@ -49,6 +49,6 @@ Codex設定: https://learn.chatgpt.com/docs/extend/mcp?surface=cli
 
 ## Fund marketplace front
 
-The final front uses a market-style header/search, horizontal categories, status filters, compact fund cards, and an overview strip. Reference: https://polymarket.com/predictions . LOOP retains its own name and fund/tool content; it does not copy market odds, volume, financial transactions or assets.
+The final front uses a market-style header/search, horizontal categories, status filters, compact fund cards, and an overview strip. Reference: https://polymarket.com/predictions . Rock star retains its own name and fund/tool content; it does not copy market odds, volume, financial transactions or assets.
 
-Four cards are strategy presets over the same four Mr. utilities (Coconala Works, Creators, All-in LOOP, Editor Lab); Voice and Research are clearly preparation-only. Selecting a card opens its tools and status. Joining saves that preset's allocation as the user's active LOOP plan; it does not buy an investment. Switching a plan is explicit. All execution totals belong to the user across LOOP. Detailed allocation/boost assumptions, wallet and PC setup are available on demand.
+Four cards are strategy presets over the same four Mr. utilities (Coconala Works, Creators, All-in Rock star, Editor Lab); Voice and Research are clearly preparation-only. Selecting a card opens its tools and status. Joining saves that preset's allocation as the user's active Rock star plan; it does not buy an investment. Switching a plan is explicit. Home execution totals cover the user's standalone tool runs; `/work` records its own job events without double-counting them in the fund history. Detailed allocation/boost assumptions, wallet and PC setup are available on demand.

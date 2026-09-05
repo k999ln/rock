@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { defaultEstimate, estimate } from '../lib/settlement.ts';
 import { parseAccounts, walletError } from '../lib/wallet.ts';
 
-test('zero income never creates a LOOP debt, but real running costs remain',()=>{
+test('zero income never creates a Rock star debt, but real running costs remain',()=>{
  const actual=estimate(defaultEstimate);assert.equal(actual.fee,0);assert.equal(actual.electricity,74);assert.equal(actual.net,-74);
 });
 test('fee cannot exceed low income and no remainder is carried',()=>{

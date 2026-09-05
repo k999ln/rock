@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""LOOP adapters for pinned Mr. utilities. Local files only; no network or installation."""
+"""Rock star adapters for pinned Mr. utilities. Local files only; no network or installation."""
 from __future__ import annotations
 import argparse
 import contextlib
@@ -48,7 +48,7 @@ def emit(text, output):
 
 def protected_citations(text):
     module = load_module('citation-strip')
-    marker = '\ue000LOOP_CODE_'
+    marker = '\ue000ROCK_STAR_CODE_'
     while marker in text:
         marker += 'X'
     values = []
@@ -146,7 +146,7 @@ def free_article(args):
     if cut is None or not any(s['type'] in ('sentence', 'bullet', 'code') for s in segs[cut + 1:]):
         raise ValueError('Shorten the free range so paid body content remains')
     # Use the verified original assembler with sources separated from the paid-body budget.
-    with tempfile.TemporaryDirectory(prefix='loop-mr-') as temporary:
+    with tempfile.TemporaryDirectory(prefix='rock-star-mr-') as temporary:
         draft = Path(temporary) / 'article.md'
         draft.write_text((title + '\n' if title else '') + body, encoding='utf-8')
         namespace = argparse.Namespace(markdown_file=str(draft), note_url=args.note_url.strip(), price=args.price, paid_contents=args.paid_contents.strip(), summary_file=args.summary, after_chars=args.after_chars)

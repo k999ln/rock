@@ -97,7 +97,7 @@ export function DeviceConnection() {
                 </a>
               </li>
               <li>
-                展開したフォルダの「LOOP接続.command」を開く（macOS / Python
+                展開したフォルダの「Rock star接続.command」を開く（macOS / Python
                 3.10以上）。
               </li>
               <li>
@@ -122,7 +122,7 @@ export function DeviceConnection() {
             <span>verify_delivery</span>
           </div>
           <div className="prompt-example">
-            「LOOPのMCPで、この原稿の出典を整理して」
+            「Rock starのMCPで、この原稿の出典を整理して」
           </div>
           <p className="subnote">
             Codexの接続状態は、このサイトからは読み取れません。PC接続とCodexのMCP登録は別々に確認します。
@@ -134,7 +134,7 @@ export function DeviceConnection() {
             </p>
             <pre>
               {
-                '[mcp_servers.loop_mr]\ncommand = "python3"\nargs = ["/展開先/loop-mr-tools/mcp_server.py"]'
+                '[mcp_servers.rock_star_mr]\ncommand = "python3"\nargs = ["/展開先/rock-star-mr-tools/mcp_server.py"]'
               }
             </pre>
           </details>

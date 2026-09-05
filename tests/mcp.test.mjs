@@ -17,8 +17,14 @@ test('MCP lifecycle lists four tools and runs all four through stdio',()=>{
     call(6,'verify_delivery',{sample:true}),
   ]);
   assert.equal(outputs.length,6);assert.equal(outputs[0].result.protocolVersion,'2025-11-25');assert.equal(outputs[1].result.tools.length,4);
+  assert.equal(outputs[2].result.structuredContent.status,'PASS');
   for(const o of outputs.slice(2)){assert.equal(o.result.isError,false,JSON.stringify(o));assert.ok(o.result.structuredContent.output.length>0);}
   assert.match(outputs[3].result.structuredContent.output,/https:\/\/python.org/);assert.equal(outputs[5].result.structuredContent.status,'PASS');
+});
+test('MCP reports ineligible work as needs-review rather than a passed step',()=>{
+  const output=messages([call(1,'coconala_check',{brief:'毎週Zoom面談への参加が必須です。',proposal:'対応します。',bucket:'retainer'})])[0];
+  assert.equal(output.result.isError,false);
+  assert.equal(output.result.structuredContent.status,'NEEDS_REVIEW');
 });
 function filesFrom(base){return readdirSync(base).flatMap(name=>{const p=path.join(base,name);return statSync(p).isDirectory()?filesFrom(p):[{path:path.relative(path.join(root,'examples/delivery'),p).split(path.sep).join('/'),base64:readFileSync(p).toString('base64')}];});}
 test('delivery verifies supplied bytes and rejects altered artifacts',()=>{

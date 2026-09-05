@@ -143,7 +143,7 @@ export function FundDashboard({
     <fieldset disabled={loading || busy} className="fund-dashboard">
       <div className="page-heading">
         <div>
-          <div className="eyebrow">LOOP COMMUNITY FUND / 01</div>
+          <div className="eyebrow">ROCK STAR COMMUNITY FUND / 01</div>
           <h1>
             自動化を束ねて、
             <br className="mobile-break" />
@@ -160,7 +160,7 @@ export function FundDashboard({
           <span className="dark-label">
             <Layers3 size={14} /> AUTOMATION FUND
           </span>
-          <h2>LOOP ファンド</h2>
+          <h2>Rock star ファンド</h2>
           <p>
             ココナラ案件支援と記事制作から始める、
             <br />
@@ -410,7 +410,7 @@ export function FundDashboard({
         </div>
         <p className="subnote">
           運用費を先に回収し、月最大 $8.88
-          相当のLOOP利用料をファンド全体で1回だけ控除。残りを基本分配・ブースト・共同留保へ分ける案です。
+          相当のRock star利用料をファンド全体で1回だけ控除。残りを基本分配・ブースト・共同留保へ分ける案です。
         </p>
         <div className="distribution-grid">
           <div className="panel scenario-panel">
@@ -482,7 +482,7 @@ export function FundDashboard({
                   </div>
                   <span>−</span>
                   <div>
-                    <span>LOOP利用料</span>
+                    <span>Rock star利用料</span>
                     <strong>{yen(calculation.fee)}</strong>
                   </div>
                 </div>
@@ -519,7 +519,7 @@ export function FundDashboard({
                 {calculation.unrecovered > 0 && (
                   <p className="notice">
                     運用費の未回収分 {yen(calculation.unrecovered)}
-                    。分配・LOOP利用料は0円です。
+                    。分配・Rock star利用料は0円です。
                   </p>
                 )}
                 <p className="subnote">

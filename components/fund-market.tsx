@@ -86,8 +86,8 @@ const funds: Fund[] = [
   },
   {
     id: 'loop',
-    name: 'よくばり LOOP',
-    english: 'ALL-IN LOOP',
+    name: 'よくばり Rock star',
+    english: 'ALL-IN ROCK STAR',
     emoji: '🪄',
     color: '#ffc7dc',
     category: 'ミックス',
@@ -382,7 +382,7 @@ export default function FundMarket() {
         <div className="market-header-inner">
           <Link href="/" className="market-logo">
             <Loop size={32} strokeWidth={2.8} />
-            <span>LOOP</span>
+            <span>Rock star</span>
           </Link>
           <label className="market-search">
             <Search size={18} />
@@ -396,6 +396,7 @@ export default function FundMarket() {
             <kbd>/</kbd>
           </label>
           <div className="market-header-actions">
+            <Link href="/work" className="market-text-button">仕事を進める</Link>
             <button
               className="market-text-button"
               onClick={() => openPanel('settings')}
@@ -647,7 +648,7 @@ export default function FundMarket() {
       <footer className="market-footer">
         <span>
           <Loop size={17} />
-          LOOP
+          Rock star
         </span>
         <button onClick={() => openPanel('device')}>MCP接続</button>
         <button onClick={() => openPanel('settings')}>ファンドのしくみ</button>

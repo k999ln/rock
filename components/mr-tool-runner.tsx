@@ -24,7 +24,12 @@ import {
   type CoconalaResult,
 } from '@/lib/mr-tools';
 import { DeliveryRunner } from '@/components/delivery-runner';
-import { deviceToken, runDevice, recordRun } from '@/lib/device';
+import {
+  deviceToken,
+  runDevice,
+  recordRun,
+  type RunRecorder,
+} from '@/lib/device';
 export type MrRunner =
   | 'coconala'
   | 'citations'
@@ -32,7 +37,16 @@ export type MrRunner =
   | 'delivery-local';
 const demoArticle =
   '# 仕事を小さく自動化する\n\n繰り返している作業を書き出します。毎回同じ手順をひとつ選びます。まずは短い入力で試して、結果を自分で確かめましょう。\n\n## 実践手順\n\nここからは完全版の具体的な手順です。作業を分解して、入力と完成条件を決めます。記録を残すと、次に改善する場所が見つかります。\n\n## 出典\n\n- [Python公式](https://docs.python.org/3/)';
-export function MrToolRunner({ tool }: { tool: MrRunner }) {
+export function MrToolRunner({
+  tool,
+  onRecord,
+  executionDisabled = false,
+}: {
+  tool: MrRunner;
+  onRecord?: RunRecorder;
+  executionDisabled?: boolean;
+}) {
+  const saveRun: RunRecorder = onRecord ?? recordRun;
   const [text, setText] = useState(''),
     [proposal, setProposal] = useState(''),
     [bucket, setBucket] = useState('single'),
@@ -97,13 +111,14 @@ export function MrToolRunner({ tool }: { tool: MrRunner }) {
   }
   async function run() {
     setRunning(true);
-    window.dispatchEvent(new CustomEvent('loop-run-state',{detail:tool}));
+    window.dispatchEvent(new CustomEvent('loop-run-state', { detail: tool }));
     setError('');
     setCopied(false);
     setEditing(false);
     const started = performance.now(),
       local = !!deviceToken();
     let completed = false;
+    let outcome: 'passed' | 'needs_review' = 'passed';
     try {
       if (local) {
         const name =
@@ -131,6 +146,8 @@ export function MrToolRunner({ tool }: { tool: MrRunner }) {
                   noteUrl: url,
                 };
         const r = await runDevice(name, args);
+        if (tool === 'coconala' && r.status !== 'PASS')
+          outcome = 'needs_review';
         setResult(null);
         setOutput(r.output);
       } else if (tool === 'coconala') {
@@ -141,6 +158,7 @@ export function MrToolRunner({ tool }: { tool: MrRunner }) {
           orderRate: rate.trim() === '' ? null : Number(rate),
         });
         setResult(r);
+        if (!r.allowed) outcome = 'needs_review';
         setOutput(
           [
             '# ココナラ案件チェック',
@@ -169,7 +187,7 @@ export function MrToolRunner({ tool }: { tool: MrRunner }) {
         );
       }
       completed = true;
-      await recordRun(
+      await saveRun(
         tool === 'coconala'
           ? 'coconala'
           : tool === 'citations'
@@ -179,19 +197,31 @@ export function MrToolRunner({ tool }: { tool: MrRunner }) {
         'completed',
         started,
         sampleInput,
+        outcome,
       );
     } catch (e) {
       if (!completed) {
         setOutput('');
         setResult(null);
         try {
-          await recordRun(tool==='coconala'?'coconala':tool==='citations'?'mr-citations':'mr-free-article',local?'local-mcp':'browser','failed',started,sampleInput);
+          await saveRun(
+            tool === 'coconala'
+              ? 'coconala'
+              : tool === 'citations'
+                ? 'mr-citations'
+                : 'mr-free-article',
+            local ? 'local-mcp' : 'browser',
+            'failed',
+            started,
+            sampleInput,
+            'failed',
+          );
         } catch {}
       }
       setError(e instanceof Error ? e.message : '入力を確認してください。');
     } finally {
       setRunning(false);
-      window.dispatchEvent(new CustomEvent('loop-run-state',{detail:''}));
+      window.dispatchEvent(new CustomEvent('loop-run-state', { detail: '' }));
     }
   }
   async function copy() {
@@ -210,14 +240,20 @@ export function MrToolRunner({ tool }: { tool: MrRunner }) {
     );
     const a = document.createElement('a');
     a.href = objectUrl;
-    a.download = `loop-${tool}.md`;
+    a.download = `rock-star-${tool}.md`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
   }
-  if (tool === 'delivery-local') return <DeliveryRunner />;
+  if (tool === 'delivery-local')
+    return (
+      <DeliveryRunner
+        onRecord={onRecord}
+        executionDisabled={executionDisabled}
+      />
+    );
   return (
     <section className="mr-workbench">
-      <fieldset disabled={running}>
+      <fieldset disabled={running || executionDisabled}>
         <div className="bench-heading">
           <h3>
             {tool === 'coconala'
@@ -392,43 +428,43 @@ export function MrToolRunner({ tool }: { tool: MrRunner }) {
             {error}
           </p>
         )}
-        {output && !editing && (
-          <div className="bench-output" aria-live="polite">
-            <div className="bench-heading">
-              <h3>{result ? result.summary : '結果ができました'}</h3>
-              <div className="output-actions">
-                <button onClick={copy} aria-label="結果をコピー">
-                  {copied ? <Check size={17} /> : <Copy size={17} />}
-                </button>
-                <button onClick={download} aria-label="結果をMarkdownで保存">
-                  <Download size={17} />
-                </button>
+      </fieldset>
+      {output && !editing && (
+        <div className="bench-output" aria-live="polite">
+          <div className="bench-heading">
+            <h3>{result ? result.summary : '結果ができました'}</h3>
+            <div className="output-actions">
+              <button onClick={copy} aria-label="結果をコピー">
+                {copied ? <Check size={17} /> : <Copy size={17} />}
+              </button>
+              <button onClick={download} aria-label="結果をMarkdownで保存">
+                <Download size={17} />
+              </button>
+            </div>
+          </div>
+          {result && (
+            <div className="review-result">
+              {[
+                ...result.reasons,
+                ...result.signals.map((s) => '検出: ' + s),
+                ...result.rankingNotes,
+              ].map((s) => (
+                <p key={s}>{s}</p>
+              ))}
+              <div className="quiet-note">
+                <CircleHelp size={16} />
+                <p>
+                  Mr.の対応条件を使ったルール照合です。受注・規約適合・収益の保証ではなく、応募や送信も行いません。
+                </p>
               </div>
             </div>
-            {result && (
-              <div className="review-result">
-                {[
-                  ...result.reasons,
-                  ...result.signals.map((s) => '検出: ' + s),
-                  ...result.rankingNotes,
-                ].map((s) => (
-                  <p key={s}>{s}</p>
-                ))}
-                <div className="quiet-note">
-                  <CircleHelp size={16} />
-                  <p>
-                    Mr.の対応条件を使ったルール照合です。受注・規約適合・収益の保証ではなく、応募や送信も行いません。
-                  </p>
-                </div>
-              </div>
-            )}
-            <Textarea aria-label="生成結果" readOnly rows={8} value={output} />
-            <span className="subnote">
-              この結果はページを閉じると消えます。必要なら保存してください。
-            </span>
-          </div>
-        )}
-      </fieldset>
+          )}
+          <Textarea aria-label="生成結果" readOnly rows={8} value={output} />
+          <span className="subnote">
+            この結果はページを閉じると消えます。必要なら保存してください。
+          </span>
+        </div>
+      )}
     </section>
   );
 }

@@ -15,4 +15,4 @@
 - [Transformers.js](https://github.com/huggingface/transformers.js) / [Apache-2.0](https://github.com/huggingface/transformers.js/blob/main/LICENSE): ブラウザでモデル実行。モデルの重みは別条件。
 - [Playwright](https://github.com/microsoft/playwright) / [Apache-2.0](https://github.com/microsoft/playwright/blob/main/LICENSE): 自分の環境や許可されたページでWeb操作・検証。外部サービスの無人操作許可を意味しない。
 
-これらは収益を生む完成品やLOOPとの公式提携ではなく、導入・統合の候補。収益性の検証は行っていない。
+これらは収益を生む完成品やRock starとの公式提携ではなく、導入・統合の候補。収益性の検証は行っていない。

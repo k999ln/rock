@@ -8,8 +8,8 @@ out=root/'public/toolkits/mr-toolkit.zip'
 with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as archive:
     for base,prefix in [(root/'toolkits/mr',''),(root/'vendor/mr','vendor/mr/')]:
         for path in sorted(base.rglob('*')):
-            if path.is_file() and '__pycache__' not in path.parts:
-                info=zipfile.ZipInfo('loop-mr-tools/'+prefix+path.relative_to(base).as_posix(),date_time=(2026,9,5,0,0,0))
+            if path.is_file() and '__pycache__' not in path.parts and not any(part.startswith('._') for part in path.parts):
+                info=zipfile.ZipInfo('rock-star-mr-tools/'+prefix+path.relative_to(base).as_posix(),date_time=(2026,9,5,0,0,0))
                 info.compress_type=zipfile.ZIP_DEFLATED
                 info.external_attr=(0o755 if path.suffix=='.command' else 0o644)<<16
                 archive.writestr(info,path.read_bytes())

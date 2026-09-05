@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { formatCitations, makeFreeArticle, checkCoconala } from '../lib/mr-tools.ts';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const fixtures=resolve(root,'toolkits/mr/examples');
-function cli(args){const r=spawnSync('python3',[resolve(root,'toolkits/mr/loop_tools.py'),...args],{encoding:'utf8',cwd:root});return r;}
+function cli(args){const r=spawnSync('python3',[resolve(root,'toolkits/mr/rock_star_tools.py'),...args],{encoding:'utf8',cwd:root});return r;}
 const article={markdown:readFileSync(join(fixtures,'article.md'),'utf8'),afterChars:40,summary:readFileSync(join(fixtures,'summary.md'),'utf8'),price:500,paidContents:'実践手順と記録方法',noteUrl:'https://note.com/your_account/n/your_article'};
 
 test('citation URLs deduplicate and merge before the next section',()=>{

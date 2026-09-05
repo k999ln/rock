@@ -11,7 +11,7 @@ const query=args.join(' ').trim()||'automation';
 if(query.length>200)throw new Error('検索語は200文字以内にしてください。');
 const root=fileURLToPath(new URL('../',import.meta.url));
 async function getJson(url,headers={}) {
- const response=await fetch(url,{headers:{'User-Agent':'LOOP-discovery/0.1',...headers},signal:AbortSignal.timeout(20000)});
+ const response=await fetch(url,{headers:{'User-Agent':'Rock-Star-discovery/0.1',...headers},signal:AbortSignal.timeout(20000)});
  if(!response.ok)throw new Error(`HTTP ${response.status}${response.status===403||response.status===429?' (rate limit or access restriction)':''}`);
  return response.json();
 }

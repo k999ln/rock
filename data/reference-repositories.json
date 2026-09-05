@@ -1,0 +1,30 @@
+[
+  {
+    "repository": "Daisuke134/life-manager",
+    "url": "https://github.com/Daisuke134/life-manager",
+    "reviewedCommit": "eee65f8a1b998244ebd98622d262989e20d490fc",
+    "reviewedOn": "2026-09-05",
+    "mode": "設計参考のみ（ソース・スキルの一括移植なし）"
+  },
+  {
+    "repository": "k999ln/Mr.",
+    "url": "https://github.com/k999ln/Mr.",
+    "reviewedCommit": "0401b3c78606b6d96af3d017e90b90658f886cb6",
+    "reviewedOn": "2026-09-05",
+    "mode": "既存MITツールを継続利用、新しいcoreは設計参考のみ"
+  },
+  {
+    "repository": "mattpocock/skills",
+    "url": "https://github.com/mattpocock/skills",
+    "reviewedCommit": "3cca18b368ae95cdbdebbff572ccafa662551015",
+    "reviewedOn": "2026-09-05",
+    "mode": "設計参考のみ（ソース・スキルの一括移植なし）"
+  },
+  {
+    "repository": "affaan-m/ECC",
+    "url": "https://github.com/affaan-m/ECC",
+    "reviewedCommit": "e04ea0b9cc8248686edf5ac751cadff550e162b8",
+    "reviewedOn": "2026-09-05",
+    "mode": "設計参考のみ（ソース・スキルの一括移植なし）"
+  }
+]

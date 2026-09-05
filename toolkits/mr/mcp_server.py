@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""LOOP's four allowlisted Mr. tools over MCP stdio or authenticated loopback HTTP.
+"""Rock star's four allowlisted Mr. tools over MCP stdio or authenticated loopback HTTP.
 
 No arbitrary commands, host paths, network fetches, or persistent input storage.
 """
@@ -16,12 +16,12 @@ import secrets
 import sys
 import tempfile
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import loop_tools
+import rock_star_tools
 
 PROTOCOLS = ('2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05')
 MAX_BODY = 16_000_000
 PORT = 38479
-ORIGINS = {'https://loop-automation-hub.kirin-999.chatgpt.site', 'http://127.0.0.1:3001', 'http://localhost:3001'}
+ORIGINS = {'https://rock-star.kirin-999.chatgpt.site', 'https://loop-automation-hub.kirin-999.chatgpt.site', 'http://127.0.0.1:3001', 'http://localhost:3001'}
 
 def schema(properties, required):
     return {'type':'object','properties':properties,'required':required,'additionalProperties':False}
@@ -72,30 +72,31 @@ def unpack_files(root, files):
 
 def execute(name,args):
     validate(name,args)
-    with tempfile.TemporaryDirectory(prefix='loop-mcp-') as temporary:
+    with tempfile.TemporaryDirectory(prefix='rock-star-mcp-') as temporary:
         root=Path(temporary)
         if name=='format_citations':
-            output=loop_tools.protected_citations(args['text'])
+            output=rock_star_tools.protected_citations(args['text'])
         elif name=='coconala_check':
             if not args['brief'].strip() or not args['proposal'].strip():raise ValueError('依頼文と提案文を入力してください。')
-            module=loop_tools.load_module('application_eligibility');module.min_client_order_rate=lambda:40.0
+            module=rock_star_tools.load_module('application_eligibility');module.min_client_order_rate=lambda:40.0
             rate=args.get('orderRate')
             result=module.evaluate_application(args['brief'],args['proposal'],bucket=args.get('bucket','single'),market=None if rate is None else {'client_order_rate':rate})
             labels={'retainer_applications_disabled':'継続案件は対象外です。','synchronous_live_presence_required':'面談など同期での参加が求められています。','buyer_participant_seller_provider_role_mismatch':'依頼者の募集対象と提案内容が食い違う可能性があります。','market_snapshot_missing':'発注率が未確認です。','client_order_rate_below_threshold':'発注率は40%以下です。優先順位を判断する材料です。'}
             output=('条件に一致しました。' if result['allowed'] else '確認が必要な条件があります。')+'\n\n'+'\n'.join('- '+labels.get(k,k) for k in result['reason_codes']+result['ranking_codes'])+'\n\n受注・規約適合・収益の保証ではありません。応募・送信は行っていません。'
+            return {'output':output,'status':'PASS' if result['allowed'] else 'NEEDS_REVIEW'}
         elif name=='make_free_article':
             draft=root/'article.md';draft.write_text(args['markdown'],encoding='utf-8')
             summary=root/'summary.md';summary.write_text(args['summary'],encoding='utf-8')
-            output=loop_tools.free_article(argparse.Namespace(input=str(draft),summary=str(summary),after_chars=args['afterChars'],price=args['price'],paid_contents=args['paidContents'],note_url=args['noteUrl']))
+            output=rock_star_tools.free_article(argparse.Namespace(input=str(draft),summary=str(summary),after_chars=args['afterChars'],price=args['price'],paid_contents=args['paidContents'],note_url=args['noteUrl']))
         else:
             if args.get('sample') is True:
                 if set(args)!={'sample'}:raise ValueError('サンプルと実データは同時に指定できません。')
-                workspace=loop_tools.ROOT/'examples'/'delivery'
-                data=json.loads((loop_tools.ROOT/'examples'/'delivery-review.json').read_text())
+                workspace=rock_star_tools.ROOT/'examples'/'delivery'
+                data=json.loads((rock_star_tools.ROOT/'examples'/'delivery-review.json').read_text())
             else:
                 if not args.get('files') or not isinstance(args.get('review'),dict):raise ValueError('レビューJSONと成果物フォルダが必要です。')
                 unpack_files(root,args['files']);workspace=root;data=args['review']
-            result=loop_tools.verify_delivery(argparse.Namespace(workspace=str(workspace)),data)
+            result=rock_star_tools.verify_delivery(argparse.Namespace(workspace=str(workspace)),data)
             output=('【合成サンプルの照合】\n' if args.get('sample') else '')+json.dumps(result,ensure_ascii=False,indent=2)
             return {'output':output,'status':result['status']}
         return {'output':output}
@@ -109,7 +110,7 @@ def rpc(message):
     method=message['method'];params=message.get('params',{})
     if not isinstance(params,dict):return {'jsonrpc':'2.0','id':ident,'error':{'code':-32602,'message':'Invalid params'}}
     if method=='initialize':
-        requested=params.get('protocolVersion');result={'protocolVersion':requested if requested in PROTOCOLS else PROTOCOLS[0],'capabilities':{'tools':{}},'serverInfo':{'name':'loop-mr','version':'0.2.0'},'instructions':'4つのツールを入力データだけで実行します。金銭・投稿・任意シェル実行は扱いません。'}
+        requested=params.get('protocolVersion');result={'protocolVersion':requested if requested in PROTOCOLS else PROTOCOLS[0],'capabilities':{'tools':{}},'serverInfo':{'name':'rock-star-mr','version':'0.2.0'},'instructions':'4つのツールを入力データだけで実行します。金銭・投稿・任意シェル実行は扱いません。'}
     elif method=='ping':result={}
     elif method=='tools/list':result={'tools':TOOLS}
     elif method=='tools/call':
@@ -168,14 +169,14 @@ class Bridge(BaseHTTPRequestHandler):
         except (json.JSONDecodeError,UnicodeDecodeError,RecursionError):return self.respond(400)
         if self.path=='/connect':
             if data!={}:return self.respond(400)
-            token=self.tokens.setdefault(self.headers['Origin'],secrets.token_urlsafe(32));return self.respond(200,{'token':token,'server':'loop-mr'})
+            token=self.tokens.setdefault(self.headers['Origin'],secrets.token_urlsafe(32));return self.respond(200,{'token':token,'server':'rock-star-mr'})
         result=rpc(data);return self.respond(202 if result is None else 200,result)
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--http',action='store_true');args=parser.parse_args()
     if args.http:
         server=HTTPServer(('127.0.0.1',PORT),Bridge);server.timeout=30
-        print(f'LOOP PC接続を開始しました。サイトの「このPCを接続」を押してください。終了: Ctrl+C',file=sys.stderr)
+        print(f'Rock star PC接続を開始しました。サイトの「このPCを接続」を押してください。終了: Ctrl+C',file=sys.stderr)
         try:server.serve_forever()
         except KeyboardInterrupt:server.server_close()
     else:stdio()

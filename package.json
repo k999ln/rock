@@ -1,5 +1,5 @@
 {
-  "name": "loop-automation-hub",
+  "name": "rock-star",
   "version": "0.1.0",
   "private": true,
   "engines": {
@@ -10,9 +10,15 @@
     "build": "vinext build",
     "start": "wrangler dev --config dist/server/wrangler.json",
     "lint": "oxlint",
+    "lint:product": "oxlint app lib db components/*.tsx scripts/*.mjs tests/*.mjs",
     "format": "oxfmt",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "test:api": "node scripts/check-work-api.mjs",
     "typecheck": "tsc --noEmit",
+    "project:update": "node scripts/project-status.mjs",
+    "project:check": "node scripts/project-status.mjs --check",
+    "db:generate": "node scripts/generate-migration.mjs",
+    "verify": "npm run project:check && npm run typecheck && npm run lint:product && npm test && npm run build && npm run test:api",
     "discover": "node scripts/discover.mjs"
   },
   "dependencies": {

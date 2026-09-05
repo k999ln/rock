@@ -2,8 +2,20 @@
 import { useEffect, useState } from 'react';
 import { Play, FolderOpen, Copy } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
-import { deviceToken, runDevice, recordRun } from '@/lib/device';
-export function DeliveryRunner() {
+import {
+  deviceToken,
+  runDevice,
+  recordRun,
+  type RunRecorder,
+} from '@/lib/device';
+export function DeliveryRunner({
+  onRecord,
+  executionDisabled = false,
+}: {
+  onRecord?: RunRecorder;
+  executionDisabled?: boolean;
+}) {
+  const saveRun: RunRecorder = onRecord ?? recordRun;
   const [connected, setConnected] = useState(false),
     [review, setReview] = useState(''),
     [files, setFiles] = useState<File[]>([]),
@@ -18,7 +30,9 @@ export function DeliveryRunner() {
   }, []);
   async function run(sample = false) {
     setBusy(true);
-    window.dispatchEvent(new CustomEvent('loop-run-state',{detail:'mr-delivery'}));
+    window.dispatchEvent(
+      new CustomEvent('loop-run-state', { detail: 'mr-delivery' }),
+    );
     setError('');
     setOutput('');
     const started = performance.now();
@@ -50,27 +64,35 @@ export function DeliveryRunner() {
       const result = await runDevice('verify_delivery', args);
       completed = true;
       setOutput(result.output);
-      await recordRun('mr-delivery', 'local-mcp', 'completed', started, sample);
+      await saveRun(
+        'mr-delivery',
+        'local-mcp',
+        'completed',
+        started,
+        sample,
+        result.status === 'PASS' ? 'passed' : 'needs_review',
+      );
     } catch (e) {
       setError(e instanceof Error ? e.message : '入力を確認してください。');
       if (!completed)
         try {
-          await recordRun(
+          await saveRun(
             'mr-delivery',
             'local-mcp',
             'failed',
             started,
             sample,
+            'failed',
           );
         } catch {}
     } finally {
       setBusy(false);
-      window.dispatchEvent(new CustomEvent('loop-run-state',{detail:''}));
+      window.dispatchEvent(new CustomEvent('loop-run-state', { detail: '' }));
     }
   }
   return (
     <section className="mr-workbench">
-      <fieldset disabled={busy}>
+      <fieldset disabled={busy || executionDisabled}>
         <div className="bench-heading">
           <h3>PCで納品記録を照合</h3>
           <span className="outline-tag">
@@ -141,38 +163,38 @@ export function DeliveryRunner() {
             {error}
           </p>
         )}
-        {output && (
-          <div className="bench-output" aria-live="polite">
-            <div className="bench-heading">
-              <h3>PCから結果が届きました</h3>
-              <button
-                className="text-link"
-                onClick={() =>
-                  void navigator.clipboard
-                    .writeText(output)
-                    .catch(() =>
-                      setError(
-                        'コピーできませんでした。結果欄から選択してください。',
-                      ),
-                    )
-                }
-              >
-                <Copy size={15} />
-                コピー
-              </button>
-            </div>
-            <Textarea
-              readOnly
-              rows={10}
-              aria-label="納品記録の照合結果"
-              value={output}
-            />
-            <p className="subnote">
-              PASSは記録が整合したという照合結果です。納品内容の品質・受注・送信許可を保証せず、納品送信も行いません。
-            </p>
-          </div>
-        )}
       </fieldset>
+      {output && (
+        <div className="bench-output" aria-live="polite">
+          <div className="bench-heading">
+            <h3>PCから結果が届きました</h3>
+            <button
+              className="text-link"
+              onClick={() =>
+                void navigator.clipboard
+                  .writeText(output)
+                  .catch(() =>
+                    setError(
+                      'コピーできませんでした。結果欄から選択してください。',
+                    ),
+                  )
+              }
+            >
+              <Copy size={15} />
+              コピー
+            </button>
+          </div>
+          <Textarea
+            readOnly
+            rows={10}
+            aria-label="納品記録の照合結果"
+            value={output}
+          />
+          <p className="subnote">
+            PASSは記録が整合したという照合結果です。納品内容の品質・受注・送信許可を保証せず、納品送信も行いません。
+          </p>
+        </div>
+      )}
     </section>
   );
 }

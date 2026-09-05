@@ -1,13 +1,13 @@
 /** Browser adaptations from k999ln/Mr., pinned in vendor/mr/provenance.json.
  * Copyright (c) Anicca contributors. MIT — see vendor/mr/LICENSE.
- * LOOP adds input limits, plain-text results and stricter free-edition guards.
+ * Rock star adds input limits, plain-text results and stricter free-edition guards.
  */
 export const MR_COMMIT='26a39d2c31ea5246cb78dbe42d86e333922db60c';
 export const MR_SOURCE=`https://github.com/k999ln/Mr./tree/${MR_COMMIT}`;
 export const MAX_TEXT=100000;
 function textInput(value:string,name='本文'){if(typeof value!=='string'||!value.trim())throw new Error(`${name}を入力してください。`);if(value.length>MAX_TEXT)throw new Error(`${name}は10万文字以内にしてください。`);return value.replace(/\r\n?/g,'\n');}
 function protectCode(body:string){
- let marker='\uE000LOOP_CODE_';while(body.includes(marker))marker+='X';
+ let marker='\uE000ROCK_STAR_CODE_';while(body.includes(marker))marker+='X';
  const preserved:string[]=[];const keep=(value:string)=>{const token=marker+preserved.length+'\uE001';preserved.push(value);return token;};
  const lines=body.split('\n');const output:string[]=[];let i=0;
  while(i<lines.length){const match=/^\s*(`{3,}|~{3,})/.exec(lines[i]);if(match){const block=[lines[i++]];const close=new RegExp('^\\s*'+match[1][0]+'{'+match[1].length+',}\\s*$');while(i<lines.length){const line=lines[i++];block.push(line);if(close.test(line))break;}output.push(keep(block.join('\n')));}else{output.push(lines[i++].replace(/(`+)([^\n]*?)\1(?!`)/g,m=>keep(m)));}}
@@ -27,7 +27,7 @@ const plain=(s:string)=>s.replace(/^#{1,6}\s*/,'').replace(/^[-*]\s*/,'').replac
 function segments(body:string){const lines=body.split('\n');const out:Segment[]=[];let buf:string[]=[],pid=0,i=0;
  const flush=()=>{if(!buf.length)return;const text=buf.map(l=>l.trim()).filter(Boolean).join(' ');buf=[];for(const raw of text.match(/[^。]*。|[^。]+$/g)||[])if(raw.trim())out.push({type:'sentence',raw,paraId:pid});pid++;};
  while(i<lines.length){const line=lines[i],s=line.trim();if(s.startsWith('```')){flush();const code=[line];i++;while(i<lines.length&&!lines[i].trim().startsWith('```'))code.push(lines[i++]);if(i>=lines.length)throw new Error('コードブロックを閉じてから作成してください。');code.push(lines[i++]);out.push({type:'code',raw:code.join('\n')});continue;}
- if(!s){flush();i++;continue;}if(s==='---'||/^#{1,6}\s/.test(s)||/^[-*]\s/.test(s)){flush();out.push({type:s==='---'?'hr':/^#/.test(s)?'heading':'bullet',raw:line});i++;continue;}buf.push(line);i++;}flush();return out;}
+ if(!s){flush();i++;continue;}if(s==='---'||/^#{1,6}\s/.test(s)||/^[-*]\s/.test(s)){flush();out.push({type:s==='---'?'hr':s.startsWith('#')?'heading':'bullet',raw:line});i++;continue;}buf.push(line);i++;}flush();return out;}
 function renderSegments(items:Segment[]){const lines:string[]=[];let i=0;while(i<items.length){const s=items[i];if(s.type==='sentence'){const joined:string[]=[];while(i<items.length&&items[i].type==='sentence'&&items[i].paraId===s.paraId)joined.push(items[i++].raw);lines.push(joined.join(''),'');}else if(s.type==='bullet'){while(i<items.length&&items[i].type==='bullet')lines.push(items[i++].raw);lines.push('');}else{lines.push(s.raw,'');i++;}}return lines.join('\n').trimEnd();}
 function sourceSection(body:string){
  const lines=body.split('\n');let start=-1,level=0,fence:RegExp|null=null;
@@ -39,7 +39,7 @@ function sourceSection(body:string){
 }
 export type FreeArticleInput={markdown:string;afterChars:number;summary:string;price:number;paidContents:string;noteUrl:string};
 export function makeFreeArticle(input:FreeArticleInput){const source=textInput(input.markdown,'原稿');if(!Number.isInteger(input.afterChars)||input.afterChars<1||input.afterChars>MAX_TEXT)throw new Error('無料範囲は1〜100,000文字の整数にしてください。');if(!Number.isInteger(input.price)||input.price<1||input.price>1000000)throw new Error('価格は1〜1,000,000円の整数にしてください。');const summary=textInput(input.summary,'まとめ').split('\n').map(s=>s.trim()).filter(s=>/^[-*]\s+/.test(s)).map(s=>s.replace(/^[-*]\s+/,''));if(summary.length<3||summary.length>5)throw new Error('まとめは「- 」で始まる箇条書き3〜5個にしてください。');const paidContents=textInput(input.paidContents,'完全版の内容').trim();let url:URL;try{url=new URL(input.noteUrl);}catch{throw new Error('完全版のURLを入力してください。');}if(url.protocol!=='https:'||url.hostname!=='note.com'||url.username||url.password||!/^\/[^/]+\/n\/[^/]+/.test(url.pathname))throw new Error('https://note.com/ で始まる記事URLを入力してください。');
- const lines=source.split('\n');const title=/^#\s+/.test(lines[0].trim())?lines.shift():null;const body=lines.join('\n');const sourceInfo=sourceSection(body);const all=segments(sourceInfo?sourceInfo.body:body);const kept:Segment[]=[];let count=0,cut=-1;for(let i=0;i<all.length;i++){const s=all[i];kept.push(s);if(s.type!=='code'){count+=[...plain(s.raw)].length;if(count>=input.afterChars){cut=i;break;}}}if(cut<0||!all.slice(cut+1).some(s=>s.type==='sentence'||s.type==='bullet'||s.type==='code'))throw new Error('無料範囲が長すぎます。完全版に残す本文ができるよう短くしてください。');const truncated=renderSegments(kept);const sources=sourceInfo?.raw;
+ const lines=source.split('\n');const title=/^#\s+/.test(lines[0].trim())?lines.shift():null;const body=lines.join('\n');const sourceInfo=sourceSection(body);const all=segments(sourceInfo?sourceInfo.body:body);const kept:Segment[]=[];let count=0,cut=-1;for(let i=0;i<all.length;i++){const s=all[i];kept.push(s);if(s.type!=='code'){count+=Array.from(plain(s.raw)).length;if(count>=input.afterChars){cut=i;break;}}}if(cut<0||!all.slice(cut+1).some(s=>s.type==='sentence'||s.type==='bullet'||s.type==='code'))throw new Error('無料範囲が長すぎます。完全版に残す本文ができるよう短くしてください。');const truncated=renderSegments(kept);const sources=sourceInfo?.raw;
  const parts=[...(title?[title,'']:[]),truncated,'','---','','## まとめ','',...summary.map(s=>'- '+s),'',...(sources?[sources,'']:[]),'---','',`この記事は無料版です。完全版（note・${input.price.toLocaleString('en-US')}円買い切り）には、この続き（${paidContents}）が入っています。`,'',input.noteUrl.trim(),''];const output=parts.join('\n').replace(/\n{3,}/g,'\n\n').trimEnd()+'\n';if(output.split('\n').some(l=>/^#{2,6}\s/.test(l.trim())&&l.includes('続き')))throw new Error('「続き」を含む見出しを変更してください。');if(output.includes('——'))throw new Error('原稿中の「——」を別の表現に変更してください。');return output;
 }
 

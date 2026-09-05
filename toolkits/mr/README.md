@@ -1,13 +1,13 @@
-# LOOP PC接続とMCP
+# Rock star PC接続とMCP
 
-初回にmacOSで `LOOP接続.command` を開き、サイトの「PC・MCP接続 → このPCを接続」を押してください。Python 3.10以上が必要です。以降はツールの実行ボタンからPCが処理します。接続アプリを閉じると切断します。OSの自動起動は設定しません。
+初回にmacOSで `Rock star接続.command` を開き、サイトの「PC・MCP接続 → このPCを接続」を押してください。Python 3.10以上が必要です。以降はツールの実行ボタンからPCが処理します。接続アプリを閉じると切断します。OSの自動起動は設定しません。
 
 Windows/Linuxはこのフォルダで `python3 mcp_server.py --http`（WindowsではPythonのインストールに応じて `py -3 mcp_server.py --http`）。MCPとしてCodexに登録する場合は次の設定を使い、パスを実際の展開先に変更します。
 
 ```toml
 [mcp_servers.loop_mr]
 command = "python3"
-args = ["/absolute/path/loop-mr-tools/mcp_server.py"]
+args = ["/absolute/path/rock-star-mr-tools/mcp_server.py"]
 ```
 
 Codexからは4ツールを直接呼べます。記事・出典・案件照合はテキスト引数、納品照合はレビューJSONとfiles（相対pathとbase64）を渡します。納品照合の `sample: true` は同梱の合成データを使い、一回で試せます。実データのフォルダは成果物とrequirements、receiptsを含む作業ルートを選んでください。
@@ -16,21 +16,21 @@ Codexからは4ツールを直接呼べます。記事・出典・案件照合�
 
 ---
 
-# LOOP × Mr. 無料ツールパック
+# Rock star × Mr. 無料ツールパック
 
 Python 3.10以上。追加インストール、APIキー、外部登録は不要。
 
-原本は `vendor/mr/`、MITライセンスと取得元commitは同梱しています。LOOP側のアダプターは入力検証・コード保護・出典の保持を追加しています。利用者の文章やファイルはローカルPC内で処理されます。
+原本は `vendor/mr/`、MITライセンスと取得元commitは同梱しています。Rock star側のアダプターは入力検証・コード保護・出典の保持を追加しています。利用者の文章やファイルはローカルPC内で処理されます。
 
 ## サンプルを試す
 
 パックのフォルダをCodexで開き、以下の処理を依頼できます。
 
 ```sh
-python3 loop_tools.py coconala-check --input examples/coconala.json
-python3 loop_tools.py citations --input examples/article.md --output cleaned.md
-python3 loop_tools.py free-article --input examples/article.md --summary examples/summary.md --after-chars 40 --price 500 --paid-contents '実践手順と記録方法' --note-url 'https://note.com/your_account/n/your_article' --output free.md
-python3 loop_tools.py verify-delivery --workspace examples/delivery --input examples/delivery-review.json
+python3 rock_star_tools.py coconala-check --input examples/coconala.json
+python3 rock_star_tools.py citations --input examples/article.md --output cleaned.md
+python3 rock_star_tools.py free-article --input examples/article.md --summary examples/summary.md --after-chars 40 --price 500 --paid-contents '実践手順と記録方法' --note-url 'https://note.com/your_account/n/your_article' --output free.md
+python3 rock_star_tools.py verify-delivery --workspace examples/delivery --input examples/delivery-review.json
 ```
 
 サンプルのnote URLは説明用です。公開前に自分の記事URLへ置き換えてください。
@@ -52,5 +52,5 @@ python3 loop_tools.py verify-delivery --workspace examples/delivery --input exam
 ## ライセンス
 
 原本: Copyright (c) Anicca contributors / MIT (`vendor/mr/LICENSE`)。
-LOOPのこのパック内のアダプターとサンプルも、同梱MITライセンスの条件で使用できます。
+Rock starのこのパック内のアダプターとサンプルも、同梱MITライセンスの条件で使用できます。
 パックには他人の認証情報、過去の案件データ、投稿・送信処理を含めていません。

@@ -1,11 +1,11 @@
 # Mr.からの取り込み
 
-対象: ユーザーが利用を許可した `k999ln/Mr.`。取り込み先は独立プロダクトLOOP。Mr.自体のファイルや運用設定は変更していない。
+対象: ユーザーが利用を許可した `k999ln/Mr.`。取り込み先は独立プロダクトRock star。Mr.自体のファイルや運用設定は変更していない。
 
 固定commit: `26a39d2c31ea5246cb78dbe42d86e333922db60c`。
-原本は4ファイルをGitHubから直接取得。`vendor/mr/provenance.json` に各Git blob SHAとSHA-256を記録した。ライセンスはMIT / Copyright (c) Anicca contributors。別の目的のAGENTS.md・運用指示・認証情報はLOOPの指示として取り込んでいない。
+原本は4ファイルをGitHubから直接取得。`vendor/mr/provenance.json` に各Git blob SHAとSHA-256を記録した。ライセンスはMIT / Copyright (c) Anicca contributors。別の目的のAGENTS.md・運用指示・認証情報はRock starの指示として取り込んでいない。
 
-| LOOPのツール | 原本 | 実行場所 |
+| Rock starのツール | 原本 | 実行場所 |
 |---|---|---|
 | ココナラ案件チェック | skills/earn/gig/scripts/application_eligibility.py | ブラウザ / PC |
 | 記事の無料版メーカー | skills/writer-agent/scripts/_shared/make-free-version.py | ブラウザ / PC |
