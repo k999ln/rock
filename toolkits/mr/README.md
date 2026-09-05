@@ -1,3 +1,21 @@
+# LOOP PC接続とMCP
+
+初回にmacOSで `LOOP接続.command` を開き、サイトの「PC・MCP接続 → このPCを接続」を押してください。Python 3.10以上が必要です。以降はツールの実行ボタンからPCが処理します。接続アプリを閉じると切断します。OSの自動起動は設定しません。
+
+Windows/Linuxはこのフォルダで `python3 mcp_server.py --http`（WindowsではPythonのインストールに応じて `py -3 mcp_server.py --http`）。MCPとしてCodexに登録する場合は次の設定を使い、パスを実際の展開先に変更します。
+
+```toml
+[mcp_servers.loop_mr]
+command = "python3"
+args = ["/absolute/path/loop-mr-tools/mcp_server.py"]
+```
+
+Codexからは4ツールを直接呼べます。記事・出典・案件照合はテキスト引数、納品照合はレビューJSONとfiles（相対pathとbase64）を渡します。納品照合の `sample: true` は同梱の合成データを使い、一回で試せます。実データのフォルダは成果物とrequirements、receiptsを含む作業ルートを選んでください。
+
+初回のブラウザでローカルネットワーク接続の許可が出る場合があります。データはPC内で処理します。任意コマンドの実行・外部送信・課金は扱いません。
+
+---
+
 # LOOP × Mr. 無料ツールパック
 
 Python 3.10以上。追加インストール、APIキー、外部登録は不要。

@@ -11,6 +11,6 @@ with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as archive:
             if path.is_file() and '__pycache__' not in path.parts:
                 info=zipfile.ZipInfo('loop-mr-tools/'+prefix+path.relative_to(base).as_posix(),date_time=(2026,9,5,0,0,0))
                 info.compress_type=zipfile.ZIP_DEFLATED
-                info.external_attr=0o644<<16
+                info.external_attr=(0o755 if path.suffix=='.command' else 0o644)<<16
                 archive.writestr(info,path.read_bytes())
 print(out)
