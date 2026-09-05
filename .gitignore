@@ -40,3 +40,7 @@ next-env.d.ts
 *.tsbuildinfo
 /data/discovered.json
 /data/*.tmp
+
+# Python tool caches
+__pycache__/
+*.pyc

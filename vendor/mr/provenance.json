@@ -1,0 +1,31 @@
+{
+  "repository": "https://github.com/k999ln/Mr.",
+  "commit": "26a39d2c31ea5246cb78dbe42d86e333922db60c",
+  "license": "MIT",
+  "files": [
+    {
+      "sourcePath": "skills/writer-agent/scripts/_shared/make-free-version.py",
+      "file": "make-free-version.py",
+      "blobSha": "b8769f67d3099fd3891ecca392c11a799de65f0b",
+      "sha256": "4f045a4e54456c687eec190d7650b75a3b00281a466a635c57523e26cce16be9"
+    },
+    {
+      "sourcePath": "skills/writer-agent/scripts/_shared/citation-strip.py",
+      "file": "citation-strip.py",
+      "blobSha": "5443c7632fea2dc110bbe246074ab3c3861f5ffa",
+      "sha256": "ed5c28225402c5885c1265c0648b5d4d227a2345ca71e387275a8f205b4ffd13"
+    },
+    {
+      "sourcePath": "skills/earn/gig/scripts/application_eligibility.py",
+      "file": "application_eligibility.py",
+      "blobSha": "452810000f0531d8f21eed6b1f396d795a2d753d",
+      "sha256": "bb1c79986ee20ed6a2f7304fbe09936cccc019397ff855a3fc112095902825f7"
+    },
+    {
+      "sourcePath": "skills/earn/gig/scripts/deliverable_verifier.py",
+      "file": "deliverable_verifier.py",
+      "blobSha": "9abd9806c505a94eb7963cc44473f30063c409e2",
+      "sha256": "74b30ee9442467d96f6bfc488c0d70421e7624490068daa62ef6a62bf45830c3"
+    }
+  ]
+}
