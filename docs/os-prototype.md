@@ -65,7 +65,7 @@ npm run verify
 
 macOS/外付けExFATではAppleDouble補助ファイルがGradleの生成物削除と衝突した。生成物だけをローカルAPFS等へ移す場合は `-ProckBuildRoot=/絶対パス/生成物専用ディレクトリ` を付け、`node --experimental-strip-types scripts/check-os-parity.mjs /同じディレクトリ/core/classes/java/main` を使う。ソース/履歴は移動しない。
 
-GitHubの `.github/workflows/android.yml` は共通コアテスト、2APKのbuild/lint、言語間照合を実行する。実機操作やOSイメージ起動は行わない。レポートだけを7日保存し、APKをストア公開しない。
+GitHubの `.github/workflows/android.yml` は共通コアテスト、2APKのbuild/lint、言語間照合に加え、使い捨てのAndroid35エミュレーターで実Binder/SQLiteの接続試験を行う。標準Google APIsイメージであり、自前Rock OS/Cuttlefishの起動ではない。実機は操作しない。レポートだけを7日保存し、APKをストア公開しない。
 
 ### 開発端末での試験（まだ実施していない）
 

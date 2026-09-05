@@ -17,7 +17,10 @@ final class AndroidDatabase implements Database {
         db = SQLiteDatabase.openOrCreateDatabase(file, null);
         db.enableWriteAheadLogging();
     }
-    public synchronized void execute(String sql, Object... args) { db.execSQL(sql, args); }
+    public synchronized void execute(String sql, Object... args) {
+        if (sql.equals("PRAGMA foreign_keys=ON")) db.setForeignKeyConstraintsEnabled(true);
+        else db.execSQL(sql, args);
+    }
     public synchronized List<Map<String,String>> query(String sql, Object... args) {
         String[] values = new String[args.length];
         for (int i = 0; i < args.length; i++) values[i] = args[i] == null ? null : args[i].toString();

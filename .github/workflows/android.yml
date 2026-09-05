@@ -13,7 +13,7 @@ concurrency:
 jobs:
   prototype:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -32,6 +32,21 @@ jobs:
         run: node --experimental-strip-types scripts/check-os-parity.mjs
       - name: Check source and contract consistency (not OS boot)
         run: node scripts/check-os-contracts.mjs
+      - name: Permit KVM in the ephemeral test runner
+        run: |
+          test -c /dev/kvm
+          sudo chmod a+rw /dev/kvm
+      - name: Exercise real Binder and SQLite in a disposable Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          script: |
+            adb install -r android/article-tool/build/outputs/apk/debug/article-tool-debug.apk
+            gradle -p android :automation:connectedDebugAndroidTest --no-daemon
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -40,6 +55,7 @@ jobs:
             android/core/build/test-results/test/
             android/tool-sdk/build/test-results/testDebugUnitTest/
             android/automation/build/reports/
+            android/automation/build/outputs/androidTest-results/
             android/article-tool/build/reports/
           retention-days: 7
       # No APK publication, signing secrets, OS image deployment, or device flashing.
