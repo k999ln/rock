@@ -1,12 +1,15 @@
 {
   "updatedAt": "2026-09-05",
-  "milestone": "R1: Rock starの仕事実行・開発管理基盤",
-  "nextAction": "実案件で必要な制作・返信工程と成果物保存の要件を確定する。既存サイトへの反映は公開依頼後に行う。",
+  "milestone": "R2: ブラウザ確認と本人限定サイトへの反映",
+  "nextAction": "画面修正を含む全検証を実行し、同じソースを本人限定のSitesへ反映して本番応答を確認する。",
   "tasks": [
     {"id":"R01","title":"4参照元の採用判断と事業方針の固定","status":"done","dependsOn":[],"evidence":["docs/reference-repositories.md"]},
     {"id":"R02","title":"ggをGitHub rockへ紐付け、既存変更と履歴を保全","status":"done","dependsOn":[],"evidence":["project.md"]},
     {"id":"R03","title":"仕事の作成・実行・確認・再開をAPIと画面で接続","status":"done","dependsOn":["R01"],"evidence":["tests/workflow.test.mjs","scripts/check-work-api.mjs"]},
     {"id":"R04","title":"README・設計進捗の同期とCI検証","status":"done","dependsOn":[],"evidence":["scripts/project-status.mjs",".github/workflows/ci.yml"]},
-    {"id":"R05","title":"回帰検証・移行確認・GitHub保存","status":"done","dependsOn":["R02","R03","R04"],"evidence":["docs/validation.md"]}
+    {"id":"R05","title":"回帰検証・移行確認・GitHub保存","status":"done","dependsOn":["R02","R03","R04"],"evidence":["docs/validation.md"]},
+    {"id":"R06","title":"ブラウザで仕事の一連の操作を確認","status":"done","dependsOn":["R05"],"evidence":["docs/validation.md"]},
+    {"id":"R07","title":"本人限定のSitesへ公開・本番確認","status":"in_progress","dependsOn":["R06"],"evidence":["docs/validation.md"]},
+    {"id":"R08","title":"公開結果・設計進捗を更新してGitHub保存","status":"planned","dependsOn":["R07"],"evidence":["project.md"]}
   ]
 }

@@ -452,6 +452,10 @@ export default function FundMarket() {
         </div>
       </nav>
       <main className="market-main">
+        <Link href="/work" className="market-mobile-work">
+          <BriefcaseBusiness size={18} /> 仕事を進める
+          <ArrowRight size={16} />
+        </Link>
         <div className="market-toolbar">
           <div className="market-filter-tabs">
             {[

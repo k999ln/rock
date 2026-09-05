@@ -4,6 +4,26 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.market-mobile-work { display: none; }
+@media (max-width: 1180px) {
+  .market-mobile-work {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 44px;
+    margin-bottom: 16px;
+    padding: 10px 13px;
+    border: 1px solid #cdddfa;
+    border-radius: 8px;
+    background: #eef4ff;
+    color: #2865c2;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .market-mobile-work svg:last-child { margin-left: auto; }
+  .market-mobile-work:focus-visible { outline: 2px solid #2865c2; outline-offset: 3px; }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

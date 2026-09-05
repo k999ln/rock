@@ -287,7 +287,10 @@ export default function Workbench() {
               disabled={locked}
             >
               <SelectTrigger id="work-template">
-                <SelectValue />
+                <SelectValue>
+                  {workflowTemplates.find((template) => template.id === templateId)
+                    ?.name}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {workflowTemplates.map((template) => (
