@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-05",
   "milestone": "R2: ブラウザ確認と本人限定サイトへの反映",
-  "nextAction": "画面修正を含む全検証を実行し、同じソースを本人限定のSitesへ反映して本番応答を確認する。",
+  "nextAction": "配信先のアプリ化・実行管理・手入力台帳を残してrockへ統合する方針を確認する。APIとDB移行の衝突を解消するまで本番公開しない。",
   "tasks": [
     {"id":"R01","title":"4参照元の採用判断と事業方針の固定","status":"done","dependsOn":[],"evidence":["docs/reference-repositories.md"]},
     {"id":"R02","title":"ggをGitHub rockへ紐付け、既存変更と履歴を保全","status":"done","dependsOn":[],"evidence":["project.md"]},
@@ -9,7 +9,7 @@
     {"id":"R04","title":"README・設計進捗の同期とCI検証","status":"done","dependsOn":[],"evidence":["scripts/project-status.mjs",".github/workflows/ci.yml"]},
     {"id":"R05","title":"回帰検証・移行確認・GitHub保存","status":"done","dependsOn":["R02","R03","R04"],"evidence":["docs/validation.md"]},
     {"id":"R06","title":"ブラウザで仕事の一連の操作を確認","status":"done","dependsOn":["R05"],"evidence":["docs/validation.md"]},
-    {"id":"R07","title":"本人限定のSitesへ公開・本番確認","status":"in_progress","dependsOn":["R06"],"evidence":["docs/validation.md"]},
-    {"id":"R08","title":"公開結果・設計進捗を更新してGitHub保存","status":"planned","dependsOn":["R07"],"evidence":["project.md"]}
+    {"id":"R07","title":"本人限定のSitesへ公開・本番確認","status":"blocked","reason":"sites/mainに別の仕事API・0002移行・アプリUIが存在。追加機能を保持する統合方針の確認が必要","dependsOn":["R06"],"evidence":["docs/deployment-integration.md"]},
+    {"id":"R08","title":"検証結果・公開停止理由と再開設計の文書化","status":"done","dependsOn":["R06"],"evidence":["project.md","docs/validation.md","docs/deployment-integration.md"]}
   ]
 }

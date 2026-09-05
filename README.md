@@ -7,7 +7,7 @@
 ## 開発の現在地
 
 <!-- project-status:start -->
-最終更新: 2026-09-05 / R2: ブラウザ確認と本人限定サイトへの反映 / 完了 6/8件
+最終更新: 2026-09-05 / R2: ブラウザ確認と本人限定サイトへの反映 / 完了 7/8件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -17,13 +17,15 @@
 | R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) |
 | R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 | R06 | ブラウザで仕事の一連の操作を確認 | 完了 | [記録](docs/validation.md) |
-| R07 | 本人限定のSitesへ公開・本番確認 | 進行中 | [記録](docs/validation.md) |
-| R08 | 公開結果・設計進捗を更新してGitHub保存 | 未着手 | [記録](project.md) |
+| R07 | 本人限定のSitesへ公開・本番確認 | 停止中: sites/mainに別の仕事API・0002移行・アプリUIが存在。追加機能を保持する統合方針の確認が必要 | [記録](docs/deployment-integration.md) |
+| R08 | 検証結果・公開停止理由と再開設計の文書化 | 完了 | [記録](project.md) · [記録](docs/validation.md) · [記録](docs/deployment-integration.md) |
 
-次の作業: 画面修正を含む全検証を実行し、同じソースを本人限定のSitesへ反映して本番応答を確認する。
+次の作業: 配信先のアプリ化・実行管理・手入力台帳を残してrockへ統合する方針を確認する。APIとDB移行の衝突を解消するまで本番公開しない。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
+
+R2の画面確認と修正はGitHubへ保存済みですが、**本番サイトへの反映は未実施**です。配信先だけにあるアプリUI・実行管理・手入力台帳と仕事API/DB移行が重なるため、上書きせず停止しました。保持する機能と再開手順は [統合設計](docs/deployment-integration.md) を参照。
 
 ## 現在できること
 
