@@ -1,0 +1,94 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { ArrowUpRight, ArrowRight, AudioLines, Workflow, ScanText, Infinity as Loop, Wallet, Zap, ChevronRight, ExternalLink, Bookmark, Download, Check, Search, Trash2, CircleHelp } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Progress } from '@/components/ui/progress';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { catalog, type Automation } from '@/lib/catalog';
+import { defaultEstimate, estimate, limits, type EstimateInput } from '@/lib/settlement';
+import { parsePlan, buildPlanMarkdown, emptyPlan, type LocalPlan } from '@/lib/local-plan';
+import { parseAccounts, walletError, type WalletProvider } from '@/lib/wallet';
+
+const yen=(n:number)=>new Intl.NumberFormat('ja-JP',{style:'currency',currency:'JPY',maximumFractionDigits:0}).format(n);
+const icons:Record<string,typeof Workflow>={'faster-whisper':AudioLines,'transformers-js':ScanText,'playwright':Workflow,'coconala':Workflow};
+const STORE='loop.local-plan.v1';
+const fields:{key:keyof EstimateInput;label:string;unit:string;help?:string}[]=[
+ {key:'revenue',label:'月の収入見込額',unit:'円',help:'販売先の手数料控除後。実績ではなく自分の仮定を入力。'},
+ {key:'fx',label:'試算用のドル円レート',unit:'円 / USD',help:'初期値150円は仮定です。市場レートではありません。'},
+ {key:'watts',label:'自動化に追加で使う平均電力',unit:'W'},
+ {key:'hours',label:'月の稼働時間',unit:'時間'},
+ {key:'kwhRate',label:'電気料金の単価',unit:'円 / kWh'},
+ {key:'dataGB',label:'月の追加通信量',unit:'GB'},
+ {key:'dataRate',label:'追加通信の単価',unit:'円 / GB',help:'追加請求がない契約なら0。初回ダウンロードも含めて試算。'},
+ {key:'apiCost',label:'有料APIなどの月額費用',unit:'円'}
+];
+function CostCalculator() {
+ const [values,setValues]=useState<Record<keyof EstimateInput,string>>(()=>Object.fromEntries(Object.entries(defaultEstimate).map(([k,v])=>[k,String(v)])) as Record<keyof EstimateInput,string>);
+ let result:ReturnType<typeof estimate>|null=null;
+ try {if(Object.values(values).some(v=>v.trim()===''))throw new Error('empty');result=estimate(Object.fromEntries(Object.entries(values).map(([k,v])=>[k,Number(v)])) as EstimateInput);}catch{}
+ return <div className="calculator-grid"><section className="panel"><div className="section-heading"><h2>あなたの条件で試算</h2><span className="outline-tag">仮の数値</span></div><div className="field-grid">{fields.map(f=><div className={'field '+(f.key==='revenue'?'wide':'')} key={f.key}><label htmlFor={f.key}>{f.label}</label><div className="number-input"><input id={f.key} type="number" min={f.key==='fx'?0.01:0} max={limits[f.key]} step="any" value={values[f.key]} onChange={e=>setValues(v=>({...v,[f.key]:e.target.value}))} aria-describedby={f.help?f.key+'-help':undefined}/><span>{f.unit}</span></div>{f.help&&<small id={f.key+'-help'}>{f.help}</small>}</div>)}</div><p className="subnote">収益を予測する機能ではありません。入力された条件だけで計算します。円換算後は1円単位で四捨五入します。</p></section><section className="estimate-result" aria-live="polite"><div className="eyebrow">YOUR MONTHLY ESTIMATE</div><h2>費用差引後の試算額</h2><div className={'net-amount '+(result&&result.net<0?'negative':'')}>{result?yen(result.net):'—'}</div><span className="result-caption">月あたり / 請求・送金は行われません</span>{result?<><dl className="breakdown"><div><dt>収入見込額</dt><dd>{yen(result.revenue)}</dd></div><div><dt>LOOP利用料の案</dt><dd>−{yen(result.fee)}</dd></div><div><dt>追加の電気代</dt><dd>−{yen(result.electricity)}</dd></div><div><dt>追加の通信費</dt><dd>−{yen(result.data)}</dd></div><div><dt>APIなどの費用</dt><dd>−{yen(result.api)}</dd></div></dl><div className="fee-note"><Zap size={18}/><p>利用料は月$8.88相当（この条件で{yen(result.feeCap)}）が上限。収入の範囲で控除し、不足分は繰り越さない料金案です。</p></div><p className="subnote">収入0円ならLOOP利用料も0円。電気・通信などの費用は残るため、手出しが生じる場合があります。税金・機器代等は含みません。</p></>:<p role="alert" className="subnote">すべての項目に有効な数値を入力してください。稼働時間は0〜744時間、為替は0より大きな値にしてください。</p>}</section></div>;
+}
+
+export default function Home() {
+ const [tab,setTab]=useState('discover');
+ const [query,setQuery]=useState('');
+ const [category,setCategory]=useState('all');
+ const [plan,setPlan]=useState<LocalPlan>(emptyPlan);
+ const [ready,setReady]=useState(false);
+ const [storageError,setStorageError]=useState('');
+ const [selected,setSelected]=useState<Automation|null>(null);
+ const [walletOpen,setWalletOpen]=useState(false);
+ const [address,setAddress]=useState('');
+ const [busy,setBusy]=useState(false);
+ const [walletMessage,setWalletMessage]=useState('');
+ const provider=useRef<WalletProvider|undefined>(undefined);
+ useEffect(()=>{try{setPlan(parsePlan(JSON.parse(localStorage.getItem(STORE)||'null')));}catch{setStorageError('このブラウザに保存できません。変更はページを閉じるまで保持します。');}setReady(true);},[]);
+ useEffect(()=>{if(!ready)return;try{localStorage.setItem(STORE,JSON.stringify(plan));}catch{setStorageError('このブラウザに保存できません。変更はページを閉じるまで保持します。');}},[plan,ready]);
+ useEffect(()=>{
+  const eth=(window as Window & {ethereum?:WalletProvider}).ethereum;provider.current=eth;
+  const accounts=(v:unknown)=>setAddress(current=>current?(parseAccounts(v)[0]||''):'');
+  const disconnect=()=>{setAddress('');setWalletMessage('ウォレットの接続が解除されました。');};
+  eth?.on?.('accountsChanged',accounts);eth?.on?.('disconnect',disconnect);
+  return()=>{eth?.removeListener?.('accountsChanged',accounts);eth?.removeListener?.('disconnect',disconnect);};
+ },[]);
+ useEffect(()=>{
+  type Context={registerTool:(tool:unknown,options:{signal:AbortSignal})=>void|Promise<void>};
+  const ctx=(document as Document & {modelContext?:Context}).modelContext;if(!ctx?.registerTool)return;
+  const lifecycle=new AbortController();
+  const tools=[{name:'list_automation_candidates',title:'自動化候補を取得',description:'導入候補と準備状態を取得します。実行・収益の実績ではありません。',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:false},execute(input:unknown){if(!input||typeof input!=='object'||Object.keys(input).length)throw new Error('空のオブジェクトが必要です。');return catalog.map(t=>({id:t.id,name:t.name,status:t.status,category:t.category}));}},
+  {name:'open_automation_plan',title:'導入プランを開く',description:'指定ツールの導入プランを画面で開きます。保存・実行・課金は行いません。',inputSchema:{type:'object',properties:{toolId:{type:'string',enum:catalog.map(t=>t.id)}},required:['toolId'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute(input:unknown){if(!input||typeof input!=='object'||Object.keys(input).some(k=>k!=='toolId'))throw new Error('toolIdが必要です。');const t=catalog.find(t=>t.id===(input as {toolId?:unknown}).toolId);if(!t)throw new Error('ツールが見つかりません。');setSelected(t);return new Promise(resolve=>requestAnimationFrame(()=>resolve({toolId:t.id,view:'導入プラン'})));}}];
+  for(const tool of tools){try{void Promise.resolve(ctx.registerTool(tool,{signal:lifecycle.signal})).catch(()=>{});}catch{}}
+  return()=>lifecycle.abort();
+ },[]);
+ async function connectWallet(){setWalletMessage('');const eth=provider.current||(window as Window & {ethereum?:WalletProvider}).ethereum;if(!eth){setWalletMessage('対応ウォレットが見つかりません。Ethereum対応のウォレット拡張機能、またはウォレット内のブラウザで開いてください。ウォレットなしでもツールを探せます。');return;}provider.current=eth;setBusy(true);try{const accounts=parseAccounts(await eth.request({method:'eth_requestAccounts'}));if(!accounts.length)throw new Error('no account');setAddress(accounts[0]);setWalletMessage('アドレスを接続しました。署名・送金は行っていません。');}catch(error){setWalletMessage(walletError(error));}finally{setBusy(false);}}
+ function saveTool(id:string){setPlan(p=>({...p,saved:p.saved.includes(id)?p.saved:[...p.saved,id]}));}
+ function removeTool(id:string){setPlan(p=>({...p,saved:p.saved.filter(x=>x!==id)}));}
+ function toggleCheck(id:string,index:number,checked:boolean){setPlan(p=>({...p,checks:{...p.checks,[id]:checked?[...new Set([...(p.checks[id]||[]),index])]:(p.checks[id]||[]).filter(x=>x!==index)}}));}
+ function downloadPlan(t:Automation){const url=URL.createObjectURL(new Blob([buildPlanMarkdown(t.id,plan.checks[t.id]||[])],{type:'text/markdown;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=`loop-${t.id}-plan.md`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+ const filtered=catalog.filter(t=>(category==='all'||t.category===category)&&`${t.name} ${t.category} ${t.description}`.toLowerCase().includes(query.toLowerCase().trim()));
+ function toolCard(t:Automation){const Icon=icons[t.id];return <article className="tool-card" key={t.id}><div className="card-top"><span className={'tool-icon '+t.color}><Icon size={23}/></span><span className="source-tag">OSS · 導入候補</span></div><span className="tool-category">{t.category}</span><h3>{t.name}</h3><p>{t.description}</p><div className="card-bottom"><span>{t.license}</span><button onClick={()=>setSelected(t)} aria-label={t.name+'の詳細を見る'} className="icon-button"><ArrowUpRight size={19}/></button></div></article>;}
+ return <div className="site-shell">
+  <header className="topbar"><a className="brand" href="/"><Loop size={33} strokeWidth={2.8}/>LOOP<span>AUTOMATION HUB</span></a><span className="alpha-tag">EARLY ACCESS · 初期版</span><button className="wallet-button" onClick={()=>setWalletOpen(true)}><Wallet size={17}/>{address?`${address.slice(0,6)}…${address.slice(-4)}`:'ウォレットを接続'}</button></header>
+  <Tabs value={tab} onValueChange={v=>setTab(String(v))}>
+   <div className="nav-wrap"><TabsList variant="line" className="main-nav"><TabsTrigger value="discover">自動化を探す</TabsTrigger><TabsTrigger value="workspace">マイツール {plan.saved.length>0&&<span className="tiny-tag">{plan.saved.length}</span>}</TabsTrigger><TabsTrigger value="fund">収益・ファンド <span className="tiny-tag">構想</span></TabsTrigger></TabsList><span className="nav-note"><span className="status-dot"/>小さく始めて、一緒に育てる</span></div>
+   <main className="main">{storageError&&<p className="notice" role="status">{storageError}</p>}
+    <TabsContent value="discover">
+     <div className="page-heading"><div><div className="eyebrow">THE AUTOMATION COLLECTION</div><h1>自動化を、あなたの力に。</h1><p>無料のツールを見つけて、自分の仕事に組み込もう。</p></div><a href="https://github.com/topics/automation" target="_blank" rel="noreferrer" className="text-link">オープンソースを探索 <ArrowUpRight size={17}/></a></div>
+     <div className="workspace-grid"><section><div className="section-heading"><h2>はじめのコレクション <span>{String(filtered.length).padStart(2,'0')}</span></h2><span className="muted">導入費 ¥0 · 外部コスト別</span></div><div className="filter-row"><div className="search-box"><Search size={16}/><input aria-label="ツールを検索" placeholder="名前・用途で探す" value={query} onChange={e=>setQuery(e.target.value)}/></div><Select value={category} onValueChange={v=>setCategory(v||'all')}><SelectTrigger aria-label="ジャンルで絞り込む"><SelectValue>{category==='all'?'すべてのジャンル':category}</SelectValue></SelectTrigger><SelectContent><SelectItem value="all">すべてのジャンル</SelectItem>{catalog.map(t=><SelectItem key={t.category} value={t.category}>{t.category}</SelectItem>)}</SelectContent></Select></div>
+      {filtered.some(t=>t.id==='coconala')&&<article className="featured-tool"><div className="feature-top"><span className="dark-label">FIRST AUTOMATION</span><span className="preparing">配布準備中</span></div><div className="feature-body"><div><div className="feature-category">ココナラ / 制作・納品支援</div><h2>最初の一歩は、<br/>いつもの仕事の自動化。</h2><p>原稿づくりから納品準備まで。<br/>ココナラ向けツールの無料配布を、ここから。</p></div><Workflow className="feature-icon" size={104} strokeWidth={1.1}/></div><div className="feature-footer"><span>ツール本体・配布条件を確認予定</span><button className="lime-button" onClick={()=>setSelected(catalog[0])}>導入プランを見る <ArrowUpRight size={18}/></button></div></article>}
+      <div className="tool-grid">{filtered.filter(t=>t.id!=='coconala').map(toolCard)}</div>{filtered.length===0&&<section className="empty-panel"><Search size={32}/><h2>該当するツールがありません。</h2><p>別のキーワードやジャンルをお試しください。</p><button className="black-button" onClick={()=>{setQuery('');setCategory('all');}}>絞り込みを解除</button></section>}
+     </section><aside className="right-rail"><section className="your-loop"><div className="eyebrow">YOUR LOOP</div><h2>自分のペースで<br/>始めよう。</h2><p>使いたいツールを保存して、<br/>必要な準備をひとつずつ。</p><div className="step"><span>01</span><div>ツールを選ぶ<small>用途と実行環境を確認</small></div></div><div className="step"><span>02</span><div>必要なサービスを接続<small>登録は必要なものだけ</small></div></div><div className="step"><span>03</span><div>自分で確認して使う<small>利用料・通信量を把握</small></div></div><button className="black-button" onClick={()=>setTab('workspace')}>マイツールを見る <ArrowRight size={18}/></button></section><section className="cost-teaser"><Zap size={23}/><h3>動かすコストも、見える化。</h3><p>月 $8.88 を収入から控除する料金案。端末の電気代・通信費は別にかかります。</p><button className="text-link" onClick={()=>setTab('fund')}>収益・コストを試算 <ChevronRight size={17}/></button></section></aside></div>
+     <section className="source-strip"><div><span className="eyebrow">OPEN POSSIBILITIES</span><h3>次の自動化は、ここから。</h3><small>公開ページを探索 / 自動収集は未連携</small></div><a href="https://github.com/topics/automation" target="_blank" rel="noreferrer">GitHub <ExternalLink size={17}/></a><a href="https://huggingface.co/spaces" target="_blank" rel="noreferrer">Hugging Face <ExternalLink size={17}/></a><a href="https://www.producthunt.com" target="_blank" rel="noreferrer">Product Hunt <ExternalLink size={17}/></a></section>
+    </TabsContent>
+    <TabsContent value="workspace"><div className="page-heading"><div><div className="eyebrow">YOUR WORKSPACE</div><h1>マイツール</h1><p>このブラウザに保存した導入候補。ウォレットや他の端末には同期されません。</p></div><button className="text-link" onClick={()=>setTab('discover')}>ツールを追加 <ArrowUpRight size={17}/></button></div>{plan.saved.length?<div className="saved-grid">{catalog.filter(t=>plan.saved.includes(t.id)).map(t=>{const Icon=icons[t.id];const count=plan.checks[t.id]?.length||0;return <article className="panel saved-card" key={t.id}><div className="saved-card-top"><span className={'tool-icon '+t.color}><Icon size={24}/></span><span className="outline-tag">{t.status==='pending'?'配布準備中':'導入候補'}</span><button className="remove-button" aria-label={t.name+'を保存から削除'} onClick={()=>removeTool(t.id)}><Trash2 size={17}/></button></div><h2>{t.name}</h2><p>{t.description}</p><span className="completion">準備チェック {count} / {t.steps.length}</span><Progress className="plan-progress" aria-label={t.name+'の準備状況'} value={count} max={t.steps.length}/><button className="black-button" onClick={()=>setSelected(t)}>導入プランを開く <ArrowRight size={17}/></button></article>;})}</div>:<section className="empty-panel"><Bookmark size={40}/><h2>最初のツールを選ぼう。</h2><p>ツールの詳細から「マイツールに保存」を選ぶと、ここに表示されます。</p><button className="black-button" onClick={()=>setTab('discover')}>自動化を探す <ArrowRight size={18}/></button></section>}<div className="quiet-note"><CircleHelp size={18}/><p>ここは導入準備の管理画面です。ツールの実行・停止や、外部サービスのアカウント登録は各環境で行います。</p></div></TabsContent>
+    <TabsContent value="fund"><div className="page-heading"><div><div className="eyebrow">ECONOMICS & COMMUNITY</div><h1>収入も、コストも、見通せる。</h1><p>利用料と端末コストを合わせて、始める前に試算しよう。</p></div><span className="outline-tag">料金案 / 未課金</span></div><CostCalculator/><section className="fund-concept"><div><span className="dark-label">COMMUNITY FUND · CONCEPT</span><h2>みんなで、自動化を育てる。</h2><p>ツールの開発や運用をみんなで支え、価値を還元する仕組みを検討しています。</p></div><div className="fund-stages"><div><span>01</span><h3>無料で使う</h3><p>まずは自分に合うツールを選ぶ。</p></div><div><span>02</span><h3>実績を見える化</h3><p>実収入とコストを検証する。</p></div><div><span>03</span><h3>応援と還元</h3><p>支援額による還元率アップを検討。</p></div></div><div className="fund-footer"><span className="preparing">構想段階・受付前</span><p>資金の使途・分配原資・損失負担・必要な登録を整理してから提供を判断します。入金受付や還元率の確約は行っていません。</p><a href="https://www.fsa.go.jp/common/shinsei/fund.html" target="_blank" rel="noreferrer" className="text-link">金融庁の案内 <ExternalLink size={16}/></a></div></section></TabsContent>
+   </main>
+  </Tabs>
+  <footer><a className="brand" href="/"><Loop size={23}/>LOOP</a><span>自動化を選ぶ自由。育てる楽しさ。</span><small>初期版 / 収益実績・稼働データは未連携</small></footer>
+  <Dialog open={!!selected} onOpenChange={open=>{if(!open)setSelected(null);}}><DialogContent className="tool-dialog">{selected&&<><div className="dialog-kicker">{selected.category} · {selected.status==='pending'?'配布準備中':'OSS導入候補'}</div><DialogTitle className="dialog-title">{selected.name}</DialogTitle><DialogDescription>{selected.description}</DialogDescription><div className="detail-facts"><div><span>実行環境</span><p>{selected.environment}</p></div><div><span>利用条件</span><a href={selected.licenseUrl} target="_blank" rel="noreferrer">{selected.license} <ExternalLink size={14}/></a></div><div><span>端末への影響</span><p>{selected.cost}</p></div></div><h3 className="checklist-title">導入前のチェック</h3><div className="checklist">{selected.steps.map((s,i)=><label key={s}><Checkbox checked={(plan.checks[selected.id]||[]).includes(i)} onCheckedChange={checked=>toggleCheck(selected.id,i,checked)} disabled={!ready}/><span>{s}</span></label>)}</div><p className="subnote">{selected.note} チェックはこのブラウザだけに保存されます。</p><div className="dialog-actions"><button disabled={!ready||plan.saved.includes(selected.id)} className="black-button" onClick={()=>saveTool(selected.id)}>{plan.saved.includes(selected.id)?<Check size={17}/>:<Bookmark size={17}/>} {plan.saved.includes(selected.id)?'マイツールに保存済み':'マイツールに保存'}</button><button className="secondary-button" onClick={()=>downloadPlan(selected)}><Download size={17}/>導入プランを保存</button></div><a className="text-link" href={selected.source} target="_blank" rel="noreferrer">{selected.status==='pending'?'ココナラ公式サイト':'公式ソース・導入手順を開く'} <ArrowUpRight size={16}/></a></>}</DialogContent></Dialog>
+  <Dialog open={walletOpen} onOpenChange={setWalletOpen}><DialogContent className="wallet-dialog"><Wallet size={30}/><DialogTitle className="dialog-title">ウォレットでつながる。</DialogTitle><DialogDescription>Ethereum対応ウォレットのアドレスを、この画面に接続します。</DialogDescription>{address?<div className="connected-address"><span><span className="status-dot"/>接続アドレス</span><code>{address}</code><button className="secondary-button" onClick={()=>{setAddress('');setWalletMessage('この画面の接続を解除しました。ウォレット側の接続許可はウォレット設定で管理できます。');}}>この画面の接続を解除</button></div>:<button className="black-button" onClick={connectWallet} disabled={busy}>{busy?'ウォレットを確認しています…':'ウォレットを選んで接続'}<ArrowRight size={17}/></button>}<div className="quiet-note"><CircleHelp size={18}/><p>初期版はアドレスの接続のみです。ログイン認証・実名の本人確認・収益の受け取りは未対応です。秘密鍵やシードフレーズは入力しないでください。</p></div>{walletMessage&&<p className="wallet-status" role="status">{walletMessage}</p>}<p className="subnote">各サービスで必要な登録は別途行います。ツールの検索・保存はウォレットなしでも利用できます。</p></DialogContent></Dialog>
+ </div>;
+}
