@@ -1,9 +1,20 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import './app.css';
 export const metadata: Metadata = {
-  title: 'LOOP — Fund Club',
-  description:
-    '選んで、動かして、みんなで育てる。自動化を詰めたファンドを選び、実行状況と分配プランを確認するLOOP Fund Club。',
+  title: 'LOOP — 自動化アプリ',
+  description: 'ファンドを選び、自動化をワンボタンで実行できるLOOPアプリ。',
+  applicationName: 'LOOP',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'LOOP',
+  },
+  icons: { icon: '/loop-icon-192.png', apple: '/loop-icon-192.png' },
+};
+export const viewport: Viewport = {
+  themeColor: '#101a2f',
+  viewportFit: 'cover',
 };
 export default function RootLayout({
   children,

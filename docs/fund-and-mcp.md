@@ -28,12 +28,12 @@ Rは販売先の手数料を引いた月間共通収益、Cはファンド自身
 
 `toolkits/mr/mcp_server.py` は、固定4ツールをMCPで提供する標準ライブラリのみのPythonサーバー。Codexのstdio接続時はCodexが必要に応じて自動起動する。
 
-| MCP名 | 機能 |
-|---|---|
-| coconala_check | 案件と提案の条件照合 |
-| format_citations | 出典リンク整理 |
-| make_free_article | 入力されたまとめを使った記事の無料版作成 |
-| verify_delivery | 受け取ったファイルと独立レビューの記録照合 |
+| MCP名             | 機能                                       |
+| ----------------- | ------------------------------------------ |
+| coconala_check    | 案件と提案の条件照合                       |
+| format_citations  | 出典リンク整理                             |
+| make_free_article | 入力されたまとめを使った記事の無料版作成   |
+| verify_delivery   | 受け取ったファイルと独立レビューの記録照合 |
 
 Web向けには同じサーバーを `--http` で起動し、127.0.0.1:38479のStreamable HTTPで提供。公開Siteそのものにremote MCP/OAuthを実装したとは表示しない。ブラウザから任意ターミナルを開くのではなく、最初にユーザーが起動したPC接続アプリに処理を渡す。サイトの「このPCを接続」はinitialize → initialized通知 → tools/listの実通信を確認する。接続後のツール実行は同じMCP tools/call経由。
 
@@ -46,9 +46,10 @@ HTTPは固定Origin・Host制限、初回接続で取得するOriginごとのメ
 MCP仕様: https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
 Codex設定: https://learn.chatgpt.com/docs/extend/mcp?surface=cli
 
+## インストール可能なアプリ画面
 
-## Fund marketplace front
+The final front is a mobile-first installable PWA. Home puts the active fund, four direct tool actions, run state, and PC/MCP connection status in the first flow. Fund, activity, and settings each have one dedicated app view. Mobile uses a bottom navigation; desktop uses a fixed sidebar.
 
-The final front uses a market-style header/search, horizontal categories, status filters, compact fund cards, and an overview strip. Reference: https://polymarket.com/predictions . LOOP retains its own name and fund/tool content; it does not copy market odds, volume, financial transactions or assets.
+Four choices are strategy presets over the same four Mr. utilities (Coconala Works, Creators, All-in LOOP, Editor Lab); Voice is clearly preparation-only. Selecting a fund shows its included tools, and switching saves that preset's allocation as the user's active LOOP plan. This does not buy an investment. All execution totals belong to the user across LOOP. Detailed allocation/boost assumptions, wallet, app installation, and PC setup are available from settings.
 
-Four cards are strategy presets over the same four Mr. utilities (Coconala Works, Creators, All-in LOOP, Editor Lab); Voice and Research are clearly preparation-only. Selecting a card opens its tools and status. Joining saves that preset's allocation as the user's active LOOP plan; it does not buy an investment. Switching a plan is explicit. All execution totals belong to the user across LOOP. Detailed allocation/boost assumptions, wallet and PC setup are available on demand.
+The service worker caches only the app shell and same-origin static assets after a successful network response. It excludes `/api/`, so account data and tool execution input are not placed in the app cache.
