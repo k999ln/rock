@@ -90,9 +90,15 @@ D1の新しい `work_jobs` テーブルに仕事JSONとrevisionを保存しま�
 
 - ローカル正本: `/Volumes/Extreme SSD/gg`。
 - `origin`: <https://github.com/k999ln/rock>。通常の開発・README・進捗をここへ保存。
+- 製品は「Rock star / avocadomini」の1つ。`rock`は製品・OS・公開契約、非公開`k999ln/Mr.`はTelegram・クラウド・provider運用だけを担当するcomponentとする。
+- `k999ln/vvvv`は旧履歴で、新規修正・CI・deploy・runtimeの対象にしない。外部の稼働参照を確認できるまでは削除やarchiveを行わない。
+- `k999ln/mr-bot-workrooms`は非公開成果物置場であり、製品source・仕様・進捗の正本にしない。
+- 詳細、78件の完全一致blobの分類、共有方法と禁止事項は [Gitプロジェクト統合方針](docs/git-consolidation.md) と [repository map](data/repository-map.json) を正本とする。
 - `sites`: 既存サイトの配信用リモート。`.openai/hosting.json` とD1を維持。
 - 元の `rock-star/` 内をgg直下へ移動し、入れ子のGit管理を解消。履歴は保持。
 - GitHubへの保存とSitesへの再公開は別作業。公開サイトへ反映した場合だけ検証記録に記載。
+
+2026-09-07、`repository:check`で製品正本1件、active sourceの`vvvv`参照なし、固定Mr.原本4件のblob/SHA-256一致を確認した。既存の型・lint・34テスト・buildも成功し、ローカルAPIは143 assertionsに成功した。GitHub repositoryのarchive、公開範囲変更、運用先切替は実施していない。
 
 R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmainへ保存し、GitHub Actionsで検証済みです。READMEと本書の更新も同じmainに継続して保存します。実際の実施結果は [検証記録](docs/validation.md) のR1欄に残します。
 
@@ -106,7 +112,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-05 / OS-P1: 自律実行コアとAndroid統合の試作 / 完了 9/14件
+最終更新: 2026-09-07 / Git正本整理とOS-P1試作 / 完了 10/16件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -124,8 +130,10 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | OS04 | Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 | [記録](docs/os-development-design.md) |
 | OS05 | 第三者SDK・審査・インストール・失効の閉鎖テスト | 未着手 | [記録](docs/os-development-design.md) |
 | OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 完了 | [記録](docs/os-prototype.md) · [記録](docs/validation.md) · [記録](android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java) |
+| G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
+| G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 
-次の作業: Linux/x86-64・RAM64GiB・空き400GB・KVMを満たす開発環境を確保し、固定AOSPでSoong build→Cuttlefish起動へ進む。並行するAndroid検証では不正UID/署名、画面OFF・充電断・再起動を確認する。Pixel機種選定・書込は別ゲート。
+次の作業: rockを製品・OS・公開契約の正本、Mr.を非公開運用componentとして維持する。vvvvをarchiveする前にGitHub Actions・deployment・scheduler・local serviceの参照を監査する。OS開発はLinux/x86-64・RAM64GiB・空き400GB・KVMを満たす環境確保から再開する。
 <!-- project-status:end -->
 
 ## 次段階の設計

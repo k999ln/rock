@@ -8,12 +8,12 @@
 
 コードの現在地と再開手順: [P1実装・検証手順](docs/os-prototype.md)、[実際のTool契約](contracts/README.md)。AOSPへ組み込む設定は `android/Android.bp` と `os/device/`。これらの存在をOS起動済みの証拠にはしません。
 
-正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。ローカルの `gg` 直下と対応します。事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
+正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。ローカルの `gg` 直下と対応します。製品は「Rock star / avocadomini」の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
 
 ## 開発の現在地
 
 <!-- project-status:start -->
-最終更新: 2026-09-05 / OS-P1: 自律実行コアとAndroid統合の試作 / 完了 9/14件
+最終更新: 2026-09-07 / Git正本整理とOS-P1試作 / 完了 10/16件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -31,8 +31,10 @@
 | OS04 | Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 | [記録](docs/os-development-design.md) |
 | OS05 | 第三者SDK・審査・インストール・失効の閉鎖テスト | 未着手 | [記録](docs/os-development-design.md) |
 | OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 完了 | [記録](docs/os-prototype.md) · [記録](docs/validation.md) · [記録](android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java) |
+| G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
+| G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 
-次の作業: Linux/x86-64・RAM64GiB・空き400GB・KVMを満たす開発環境を確保し、固定AOSPでSoong build→Cuttlefish起動へ進む。並行するAndroid検証では不正UID/署名、画面OFF・充電断・再起動を確認する。Pixel機種選定・書込は別ゲート。
+次の作業: rockを製品・OS・公開契約の正本、Mr.を非公開運用componentとして維持する。vvvvをarchiveする前にGitHub Actions・deployment・scheduler・local serviceの参照を監査する。OS開発はLinux/x86-64・RAM64GiB・空き400GB・KVMを満たす環境確保から再開する。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-05",
-  "milestone": "OS-P1: 自律実行コアとAndroid統合の試作",
-  "nextAction": "Linux/x86-64・RAM64GiB・空き400GB・KVMを満たす開発環境を確保し、固定AOSPでSoong build→Cuttlefish起動へ進む。並行するAndroid検証では不正UID/署名、画面OFF・充電断・再起動を確認する。Pixel機種選定・書込は別ゲート。",
+  "updatedAt": "2026-09-07",
+  "milestone": "Git正本整理とOS-P1試作",
+  "nextAction": "rockを製品・OS・公開契約の正本、Mr.を非公開運用componentとして維持する。vvvvをarchiveする前にGitHub Actions・deployment・scheduler・local serviceの参照を監査する。OS開発はLinux/x86-64・RAM64GiB・空き400GB・KVMを満たす環境確保から再開する。",
   "tasks": [
     {"id":"R01","title":"4参照元の採用判断と事業方針の固定","status":"done","dependsOn":[],"evidence":["docs/reference-repositories.md"]},
     {"id":"R02","title":"ggをGitHub rockへ紐付け、既存変更と履歴を保全","status":"done","dependsOn":[],"evidence":["project.md"]},
@@ -16,6 +16,8 @@
     {"id":"OS03","title":"CuttlefishでOS起動と自律実行の最小縦断試作","status":"planned","dependsOn":["OS02"],"evidence":["docs/os-development-design.md"]},
     {"id":"OS04","title":"Pixel実機で復旧・省電力・再起動・署名更新を検証","status":"planned","dependsOn":["OS03"],"evidence":["docs/os-development-design.md"]},
     {"id":"OS05","title":"第三者SDK・審査・インストール・失効の閉鎖テスト","status":"planned","dependsOn":["OS04"],"evidence":["docs/os-development-design.md"]},
-    {"id":"OS06","title":"OS共通実行コア・端末DB・Android統合の検証可能な試作","status":"done","dependsOn":["OS01"],"evidence":["docs/os-prototype.md","docs/validation.md","android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java"]}
+    {"id":"OS06","title":"OS共通実行コア・端末DB・Android統合の検証可能な試作","status":"done","dependsOn":["OS01"],"evidence":["docs/os-prototype.md","docs/validation.md","android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java"]},
+    {"id":"G01","title":"GitHubリポジトリの役割・重複監査と正本境界の固定","status":"done","dependsOn":["R02"],"evidence":["docs/git-consolidation.md","data/repository-map.json","scripts/check-repository-map.mjs","docs/validation.md"]},
+    {"id":"G02","title":"vvvvの稼働参照監査と安全なarchive判定","status":"planned","dependsOn":["G01"],"evidence":["docs/git-consolidation.md"]}
   ]
 }

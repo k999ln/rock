@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-09-07",
+  "product": {
+    "canonicalName": "Rock star / avocadomini",
+    "publicBrand": "avocadomini",
+    "internalRuntimeName": "Rockstar_ibot",
+    "productRepository": "k999ln/rock"
+  },
+  "repositories": [
+    {
+      "repository": "k999ln/rock",
+      "visibility": "public",
+      "role": "product-ssot",
+      "newWork": true,
+      "owns": [
+        "product direction and project status",
+        "Rock star OS, Android SDK and device integration",
+        "public web core, workflow and fund simulation",
+        "public tool contracts, fixtures and release documentation"
+      ]
+    },
+    {
+      "repository": "k999ln/Mr.",
+      "visibility": "private",
+      "role": "private-operations-component",
+      "newWork": true,
+      "owns": [
+        "Telegram customer and owner bots",
+        "private cloud services and provider connectors",
+        "operator automation, receipts and deployment configuration",
+        "upstream implementations of the four vendored Mr. tools"
+      ]
+    },
+    {
+      "repository": "k999ln/vvvv",
+      "visibility": "private",
+      "role": "legacy-history",
+      "newWork": false,
+      "owns": [],
+      "successor": "k999ln/Mr.",
+      "githubArchived": false,
+      "archiveGate": "Confirm that no GitHub Action, deployment, scheduler or local service still targets this repository."
+    },
+    {
+      "repository": "k999ln/mr-bot-workrooms",
+      "visibility": "private",
+      "role": "work-artifacts",
+      "newWork": false,
+      "owns": [],
+      "productSource": false
+    }
+  ],
+  "sharing": {
+    "contractsOwner": "k999ln/rock",
+    "privateOperationsOwner": "k999ln/Mr.",
+    "mrVendorSnapshot": {
+      "repository": "k999ln/Mr.",
+      "commit": "26a39d2c31ea5246cb78dbe42d86e333922db60c",
+      "path": "vendor/mr/provenance.json",
+      "mode": "immutable-source-snapshot"
+    },
+    "rules": [
+      "Do not copy credentials, account registries, customer data, receipts or private deployment configuration into the public repository.",
+      "Do not create a second implementation of an existing public contract without a parity fixture and an explicit owner.",
+      "Keep the four Mr. source snapshots immutable and place Rock star behavior changes in adapters.",
+      "Do not use k999ln/vvvv as a runtime, CI, deployment or new-development target."
+    ]
+  },
+  "audit": {
+    "rockCommit": "9e4dc89d995ccbf11f9e3a15efa0e65868874d48",
+    "mrCommit": "a82a728",
+    "exactBlobPathPairs": 78,
+    "note": "The exact matches are mainly shared UI boilerplate plus the intentional four-tool source snapshot and MIT license. Equal boilerplate does not justify crossing the public/private boundary."
+  },
+  "activeSourceRoots": [
+    ".github/workflows",
+    "android",
+    "app",
+    "contracts",
+    "lib",
+    "os",
+    "scripts"
+  ]
+}

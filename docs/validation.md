@@ -1,5 +1,14 @@
 # 検証記録
 
+## Gitプロジェクト統合 / 2026-09-07
+
+- `rock` commit `9e4dc89d995ccbf11f9e3a15efa0e65868874d48`と、非公開`Mr.` commit `a82a728`のtracked blobを比較。完全一致するpath組は78件で、主にUI boilerplate、既存4ツールの固定原本、MIT licenseだった。
+- 製品正本を`k999ln/rock`の1件、`k999ln/Mr.`を非公開運用component、`k999ln/vvvv`を新規作業禁止の旧履歴、`k999ln/mr-bot-workrooms`を非正本の成果物置場として [`repository-map.json`](../data/repository-map.json) に固定した。
+- `npm run repository:check`に成功。active sourceに`github.com/k999ln/vvvv`がないこと、`vendor/mr/provenance.json`の取得元/commitと4原本のGit blob SHA/SHA-256が一致することを確認した。
+- `npm run verify`は進捗同期、repository境界、型、対象lint、34テスト、本番buildまで成功。最後のAPI試験だけsandboxのloopback待受が`EPERM`になったため、同じ`npm run test:api`を許可されたローカル通信で再実行し143 assertionsに成功した。
+- 非公開のTelegram、provider、account registry、顧客情報、receipt、deployment設定は公開`rock`へ移していない。`Mr.`のDocker applianceをAOSP OSとして統合・完了扱いしていない。
+- GitHub repositoryのarchive/削除、visibility変更、branch/historyの強制更新、稼働deployment・scheduler・siteの切替は未実施。`vvvv`は外部の稼働参照を監査した後にarchive可否を判断する。
+
 ## Rock star OS P1 実装 / 2026-09-05
 
 - 共通JavaコアをTemurin17/Gradle8.11.1でコンパイルし、実SQLiteの16テストに成功。2工程/再起動後の再開、同時claim、冪等受付、古いtoken/期限切れ結果の拒否、3回までの再試行、停止/中止/人の再試行、sample非通過、transaction失敗時のrollback、改変成果物、未知DB版を含む。
