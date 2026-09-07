@@ -6,6 +6,8 @@
 - 製品正本を`k999ln/rock`の1件、`k999ln/Mr.`を非公開運用component、`k999ln/vvvv`を新規作業禁止の旧履歴、`k999ln/mr-bot-workrooms`を非正本の成果物置場として [`repository-map.json`](../data/repository-map.json) に固定した。
 - `npm run repository:check`に成功。active sourceに`github.com/k999ln/vvvv`がないこと、`vendor/mr/provenance.json`の取得元/commitと4原本のGit blob SHA/SHA-256が一致することを確認した。
 - `npm run verify`は進捗同期、repository境界、型、対象lint、34テスト、本番buildまで成功。最後のAPI試験だけsandboxのloopback待受が`EPERM`になったため、同じ`npm run test:api`を許可されたローカル通信で再実行し143 assertionsに成功した。
+- 整理commit [`42371f0`](https://github.com/k999ln/rock/commit/42371f0cea0a2e1fd1abab25fee078d6a07b1f59)をrock/mainへ保存し、[Rock star verification / 34170597685](https://github.com/k999ln/rock/actions/runs/34170597685)が成功した。非公開`Mr.`にもoperations componentの境界をcommit `c7ecead`として保存した。
+- GitHub descriptionを読み戻し、`rock`はpublic/product SSOT、`Mr.`はprivate operations、`vvvv`はprivate/legacy・archive待ちと一致することを確認した。
 - 非公開のTelegram、provider、account registry、顧客情報、receipt、deployment設定は公開`rock`へ移していない。`Mr.`のDocker applianceをAOSP OSとして統合・完了扱いしていない。
 - GitHub repositoryのarchive/削除、visibility変更、branch/historyの強制更新、稼働deployment・scheduler・siteの切替は未実施。`vvvv`は外部の稼働参照を監査した後にarchive可否を判断する。
 
