@@ -2,7 +2,7 @@
 
 tob側の自動化ツールを商品として管理するHubと、自動化で得たお金を管理するWalletに特化したOSを開発します。実行場所、料金、資格、ライセンスの違いを扱い、利用準備・日々の管理・結果とお金の確認に伴う不便を減らします。
 
-**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ11）です。** [プロンプト作成規約](docs/prompt-playbook.md)、[最新確認時の差分監査](docs/progress-audit-20260909.md)、[次段階の実行プロンプト](docs/prompts/hub-wallet-next.md)を保存しています。既存商品のHub実利用と、不便の改善前後の検証を次の作業に含めます。
+**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ11）です。** [プロンプト作成規約](docs/prompt-playbook.md)、[追補の差分監査](docs/progress-audit-20260909-followup.md)、[次段階の実行プロンプト](docs/prompts/hub-wallet-next.md)を保存しています。引継ぎ未同期・商品条件の制限・実収益未接続・利用価値未検証の4問題に、修正順と合格証拠を付けました。文書保存とnativeへの反映・実利用の完了は別です。
 
 2026-09-09の監査では[PR #1](https://github.com/k999ln/rock/pull/1)にLinux/Buildroot/QEMU native OS、Hub、Wallet、MCP・実行先/予算の試作があります。BlackBerry優先・機種未定、Android/AOSPは別トラックです。PRは監査時OPEN。毎回 `npm run prompt:context` と対象コードを確認してください。以下のmain実装だけで全体の進捗を判断しないでください。
 
@@ -17,7 +17,7 @@ tob側の自動化ツールを商品として管理するHubと、自動化で�
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-09 / Hub＋Walletベース保存（native進捗は関連PRも確認） / 完了 11/19件
+最終更新: 2026-09-09 / 相違解消プロンプト改訂（nativeへの反映・実利用は未実施） / 完了 11/21件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -30,18 +30,20 @@ tob側の自動化ツールを商品として管理するHubと、自動化で�
 | R07 | 本人限定のSitesへ公開・本番確認 | 停止中: sites/mainに別の仕事API・0002移行・アプリUIが存在。追加機能を保持する統合方針の確認が必要 | [記録](docs/deployment-integration.md) |
 | R08 | 検証結果・公開停止理由と再開設計の文書化 | 完了 | [記録](project.md) · [記録](docs/validation.md) · [記録](docs/deployment-integration.md) |
 | OS01 | 既存設計の要件追跡と自動化OS開発設計 | 完了 | [記録](docs/os-development-design.md) |
-| OS02 | 対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 未着手 | [記録](docs/os-development-design.md) |
-| OS03 | CuttlefishでOS起動と自律実行の最小縦断試作 | 未着手 | [記録](docs/os-development-design.md) |
-| OS04 | Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 | [記録](docs/os-development-design.md) |
-| OS05 | 第三者SDK・審査・インストール・失効の閉鎖テスト | 未着手 | [記録](docs/os-development-design.md) |
+| OS02 | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 未着手 | [記録](docs/os-development-design.md) |
+| OS03 | 【Android/AOSP別トラック】CuttlefishでOS起動と自律実行の最小縦断試作 | 未着手 | [記録](docs/os-development-design.md) |
+| OS04 | 【Android/AOSP別トラック】Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 | [記録](docs/os-development-design.md) |
+| OS05 | 【Android/AOSP別トラック】第三者SDK・審査・インストール・失効の閉鎖テスト | 未着手 | [記録](docs/os-development-design.md) |
 | OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 完了 | [記録](docs/os-prototype.md) · [記録](docs/validation.md) · [記録](android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java) |
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 | B01 | Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
+| B04 | main/nativeのベース・引継ぎ入口・優先順位を分離作業branchへ統合 | 未着手 | [記録](docs/progress-audit-20260909-followup.md) · [記録](docs/prompts/hub-wallet-next.md) |
 | B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
+| B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 
-次の作業: 最新mainとnative PRのSHA・証拠を確認し、製品ベースに沿ってB02既存商品のHub実利用・商品条件、B03実行費用と収益Walletを接続する。利用者の不便を改善前後で比較する。native Nタスクと旧Android/Webを混同しない。
+次の作業: 最新main/nativeのSHA・証拠を確認し、B04で分離作業branchへベースとnativeを統合して入口・優先順位を同期する。B02既存商品のHub実利用と改善前測定→商品条件/adapter拡張→B03費用/収益Wallet接続→同条件で再試験。実収益・携帯実機の未検証を別記録にし、Nタスクと旧Android/Webを保持する。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
@@ -116,9 +118,9 @@ Product Hunt APIは商用利用条件の確認前のため未接続。サービ�
 
 ## 次に追加する順番
 
-1. main・native開発PRと同一SHAの証拠を確認し、既存商品を棚卸しする。
-2. 既存ツールをHubから実際に利用し、準備・操作・結果確認でつまずく箇所を改善する。
-3. 商品条件・資格・実行先と、費用/収益照合・既存Walletを接続する。
+1. main・native開発PRと同一SHAの証拠を確認し、B04で分離作業branchへベースとnativeを統合して全入口・優先順位を同期する。
+2. 既存ツールをHubから実際に利用して改善前を測り、準備・操作・結果確認でつまずく箇所を改善する。
+3. 商品条件・資格・実行先と、費用/収益照合・既存Walletを接続し、同じ業務で再試験する。fixture成功と実収益の接続成功は別に判定する。
 4. BlackBerry適合や実PC/cloud/providerは個別に検証する。旧Android/AOSPは別トラックとして保持する。
 5. [差分監査の発展案](docs/progress-audit-20260909.md)に従い、接続診断、費用/収益、offline復元、更新差分を掛け合わせる。
 

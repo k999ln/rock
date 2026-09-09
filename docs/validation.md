@@ -1,5 +1,13 @@
 # 検証記録
 
+## 相違解消プロンプトの改訂 / 2026-09-09
+
+- 15:01 UTCのGitHub取得でmain `f9b1cbd99eeaa20f7cbc80bd2d88909949cca863`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、OPENのPR #1と同SHAのCI成功を確認。[追補監査](progress-audit-20260909-followup.md)へ入力と限界を保存した。
+- GAP01〜04を修正順・担当・合格証拠・未解決条件へ対応付けた。引継ぎ統合を段階0/B04、既存商品実利用と商品条件を段階1〜2/B02、Walletを段階3/B03、最終比較を段階4/B05に分離した。作業branchへの反映と元native/mainへの反映、schemaと実接続、fixtureと実収益、host画面と携帯実機価値を混同しない条件を追加。
+- 別担当の読み取りレビューで、4問題の対応と権限境界を確認。PC商品のpathを正し、B02→B03→最終比較の依存が循環しないようB05を分離した。B03の台帳/fixture基礎が通れば、実サービス待ちでも比較へ進めるが、実収益の未接続は未解決に残す。
+- `npm run verify` は型、製品lint、35テスト、buildまで成功後、sandbox内API待受でEPERM。許可されたローカル通信でverify全体を再実行し、終了コード0、API143 assertions成功。既存Vite configLoader/Node module APIの警告は残る。
+- 本改訂は文書と進捗のみ。既存商品・OS/Hub/Wallet runtimeは変更せず、native統合、Hub操作、実サービス接続、実機・本番は未実施。B04/B02/B03/B05をplannedのまま保持し、完了数を製品完成率に変換しない。
+
 ## 製品ベース・進捗からのプロンプト作成 / 2026-09-09
 
 - main `5cec83478fe97bf272869298160a572ef7fcefee` とPR #1/native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5` をGitHubで確認。PRはOPEN。HEAD一致のWeb/native/Android CIがsuccessであることをAPIで読み戻した。監査対象と限界は [差分監査](progress-audit-20260909.md) に固定した。
