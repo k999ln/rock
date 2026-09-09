@@ -19,7 +19,9 @@
 
 最終native試験はLinux aarch64 / Python3.13.5で05:26:39–05:28:25 UTCに実行し、計1031件のPython試験とC検証が成功。通常gateのskip・未処理ResourceWarningなし。新規CIは同じscriptを使うが、workflowの存在だけをGitHub上での成功とはしない。
 
-最初のGitHub x86_64実行では、実隔離executorが必要とするbubblewrapをCIの依存一覧へ入れておらず、767件中の実Linux隔離1件が `failed` となった。bubblewrap追加後もUbuntu 24.04のAppArmor user namespace制限との組み合わせで同じ1件だけが失敗した。Rockのlauncherはbubblewrap起動前に `no_new_privs` を設定するため、後から追加権限を得るprofile遷移へ依存させない。テストのskip/mock化、launcherの安全策解除、host全体の制限解除は行わず、CIをUbuntu 22.04へ固定して実non-root bwrap＋seccomp隔離を再検証する。他のsuite・C/UI検証と既存Web/Android CIは成功。再実行が成功するまでGitHub native CIをPASSとは記録しない。
+最初のGitHub x86_64実行では、実隔離executorが必要とするbubblewrapをCIの依存一覧へ入れておらず、767件中の実Linux隔離1件が `failed` となった。bubblewrap追加後もUbuntu 24.04のAppArmor user namespace制限との組み合わせで同じ1件だけが失敗した。Rockのlauncherはbubblewrap起動前に `no_new_privs` を設定するため、後から追加権限を得るprofile遷移へ依存できない。Ubuntu 22.04でも試したが、同梱bubblewrap 0.6.1に必要な `--disable-userns` がなく、直接診断で明示的に失敗した。
+
+テストのskip/mock化やlauncherの安全策解除は行わない。CIは新しいbubblewrapを持つUbuntu 24.04とし、外側にあるAppArmorのunprivileged user namespace制限だけを秘密値のない使い捨てrunner内で一時解除する。Rock内部の `no_new_privs`、全namespace分離、capability削除、`--disable-userns`、seccompは維持する。事前診断では製品と同じlauncher・workerを実行し、隔離が成立しなければ1,031件の回帰前に失敗させる。他のsuite・C/UI検証と既存Web/Android CIは成功。再実行が成功するまでGitHub native CIをPASSとは記録しない。
 
 既存WebにはViteの将来のconfigLoader変更とNode module APIの既知の警告が残る。最初のsandbox内API試行はloopback待受の権限制限で失敗したため、許可されたローカル試験環境で再実行し143 assertionsに成功。その後、統合後のverify全体も終了コード0で確認した。
 

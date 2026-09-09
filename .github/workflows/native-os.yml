@@ -12,11 +12,11 @@ concurrency:
   cancel-in-progress: true
 jobs:
   source-tests:
-    # The launcher sets no_new_privs before execing bwrap. Ubuntu 24.04's
-    # AppArmor userns grant therefore cannot be acquired after launch.
-    # 22.04 runs the same real non-root bwrap + seccomp isolation without
-    # weakening the launcher or disabling the host-wide AppArmor control.
-    runs-on: ubuntu-22.04
+    # The launcher needs bwrap's --disable-userns (absent from Ubuntu 22.04).
+    # Ubuntu 24.04 restricts unprivileged userns before bwrap can start; the
+    # disposable runner relaxes that outer host control only for this job.
+    # Rock's no_new_privs, bwrap namespaces/--disable-userns and seccomp stay on.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +24,10 @@ jobs:
         with:
           python-version: '3.13'
       - name: Prepare Linux source-test dependencies
-        run: sudo apt-get update && sudo apt-get install -y build-essential bubblewrap pkg-config libseccomp-dev libcairo2-dev libfreetype6-dev libjson-c-dev openssl e2fsprogs
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential bubblewrap pkg-config libseccomp-dev libcairo2-dev libfreetype6-dev libjson-c-dev openssl e2fsprogs
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Verify real non-root runner isolation
         working-directory: systems/rock-star-os
         run: |

@@ -42,7 +42,7 @@
 | 既存Web | PASS: 34 unit tests、API 143 assertions、type/lint/build |
 | Android契約の静的整合 | PASS |
 | GitHub Web / Android prototype | PASS。Androidはbuild・SDK・APK・emulator・parityを含む |
-| GitHub native source-test | 診断中。1,031件中、実Linux隔離1件だけがGitHub hostで失敗 |
+| GitHub native source-test | 再検証中。host条件を直接診断し、Rock内部の隔離策は維持 |
 | このcheckoutからの新規OS build/boot | NOT RUN。第9の封印済みQEMU結果と区別 |
 | BlackBerry実機、実USB、実資金・ATM、本番公開 | NOT RUN |
 
