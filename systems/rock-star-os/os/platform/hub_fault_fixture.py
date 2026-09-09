@@ -45,13 +45,36 @@ def hashed(value): return hashlib.sha256(canonical(value)).hexdigest()
 
 
 def validate_launcher(child, *, parent_pid, tracer_pid, previous_pids):
-    require(all(type(child.get(key)) is int for key in ('pid','ppid','tgid','tracer_pid','start_ticks')) and
+    valid = (all(type(child.get(key)) is int for key in ('pid','ppid','tgid','tracer_pid','start_ticks')) and
             child['pid'] > 1 and child['pid'] not in previous_pids and
             child.get('ppid') == parent_pid and child.get('tgid') == child['pid'] and
             type(child.get('start_ticks')) is int and child['start_ticks'] > 0 and
             child.get('uid') == [1002]*4 and child.get('gid') == [1002]*4 and
             child.get('exe') == LAUNCHER and child.get('command') == [LAUNCHER, 'recipe'] and
-            child.get('tracer_pid') == tracer_pid, 'not the new exact owned platform recipe launcher')
+            child.get('tracer_pid') == tracer_pid)
+    if not valid:
+        # Diagnose the exact existing guard, without printing unknown argv,
+        # executable paths, UID/GID contents or any other process data.
+        pid, ticks = child.get('pid'), child.get('start_ticks')
+        checks = {
+            'integer_ids': all(type(child.get(key)) is int for key in ('pid','ppid','tgid','tracer_pid','start_ticks')),
+            'pid_gt_one': type(pid) is int and pid > 1,
+            'pid_is_new': type(pid) is int and pid not in previous_pids,
+            'parent_matches': child.get('ppid') == parent_pid,
+            'thread_group_matches': child.get('tgid') == pid,
+            'start_ticks_positive': type(ticks) is int and ticks > 0,
+            'uid_matches': child.get('uid') == [1002]*4,
+            'gid_matches': child.get('gid') == [1002]*4,
+            'exe_matches': child.get('exe') == LAUNCHER,
+            'argv_matches': child.get('command') == [LAUNCHER, 'recipe'],
+            'tracer_matches': child.get('tracer_pid') == tracer_pid,
+        }
+        values = {key: child.get(key) for key in ('pid','ppid','tgid','tracer_pid','start_ticks')}
+        values.update(expected_parent_pid=parent_pid, expected_tracer_pid=tracer_pid)
+        diagnostic = {'schema': 'rock-hub-launcher-diagnostic/1', 'checks': checks,
+                      'ids': {key: value if type(value) is int and 0 <= value < 2**63 else None
+                              for key, value in values.items()}}
+        raise ValueError('not the new exact owned platform recipe launcher; diagnostic=' + canonical(diagnostic).decode())
 
 
 def same_identity(before, after):
