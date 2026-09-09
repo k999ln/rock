@@ -31,6 +31,16 @@ LAUNCHER = '/usr/libexec/rock-sandbox-exec'
 PROOF = Path('/data/hub-fault-proof.json')
 WAIT_ALL = 0x40000000
 MAX_PROCESSES = 4096
+VERIFIER = '/usr/bin/openssl'
+PACKAGE = '/usr/share/rock/registry/org.rockstar.text-tidy--1.0.0.rock.json'
+PACKAGE_HASH = 'f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af'
+# Public development fixture only. These are the exact three input byte hashes
+# produced by the unchanged packages.verify_package for this signed version.
+VERIFIER_INPUT_SHA256 = {
+    'key.der': '06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9',
+    'payload': '2c77b28890e165c1135bec992732cafdafe8bc7860d66beeacbae0a1916d3e3c',
+    'signature': 'a38b19ebf650158a8489209335d95cb0063459e05172ce0add1bb7459c354852',
+}
 
 
 def require(value, message):
@@ -81,6 +91,77 @@ def same_identity(before, after):
     require(all(before.get(key) == after.get(key) for key in
                 ('pid', 'start_ticks', 'ppid', 'tgid', 'uid', 'gid', 'exe', 'command')),
             'launcher identity changed before signal')
+
+
+def validate_verifier(child, *, parent_pid, tracer_pid, previous_pids, already_used):
+    require(already_used is False and
+            all(type(child.get(key)) is int for key in ('pid','ppid','tgid','tracer_pid','start_ticks')) and
+            child['pid'] > 1 and child['pid'] not in previous_pids and child['start_ticks'] > 0 and
+            child['ppid'] == parent_pid and child['tgid'] == child['pid'] and child['tracer_pid'] == tracer_pid and
+            child.get('uid') == child.get('gid') == [1002]*4 and child.get('exe') == VERIFIER and
+            type(child.get('no_new_privs')) is int and child['no_new_privs'] == 1,
+            'not the one new exact owned signature verifier')
+    command = child.get('command')
+    require(type(command) is list and len(command) == 13 and all(type(arg) is str for arg in command) and
+            re.fullmatch(r'/tmp/rock-verify-[a-z0-9_]{8}/key\.der', command[5]),
+            'signature verifier argv is not the fixed verification invocation')
+    directory = command[5][:-len('/key.der')]
+    require(command == ['openssl','pkeyutl','-verify','-pubin','-inkey',directory+'/key.der',
+                        '-keyform','DER','-rawin','-in',directory+'/payload','-sigfile',directory+'/signature'],
+            'signature verifier argv is not the fixed verification invocation')
+    return directory
+
+
+def validate_verification_hashes(observed):
+    require(observed == VERIFIER_INPUT_SHA256, 'signature verifier input bytes differ from the fixed signed Tool')
+
+
+def verified_input_files(directory, deadline):
+    """Read only the three validated public-signature files through owned FDs."""
+    require(re.fullmatch(r'/tmp/rock-verify-[a-z0-9_]{8}', directory), 'fixed verifier directory required')
+    tmp = os.open('/tmp', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    root = None
+    def stable(info):
+        return tuple(getattr(info, key) for key in ('st_dev','st_ino','st_mode','st_uid','st_gid',
+                                                   'st_nlink','st_size','st_mtime_ns','st_ctime_ns'))
+    try:
+        name = directory[len('/tmp/'):]
+        root = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=tmp)
+        before = os.fstat(root)
+        require(before.st_uid == before.st_gid == 1002 and stat.S_IMODE(before.st_mode) == 0o700 and
+                set(os.listdir(root)) == set(VERIFIER_INPUT_SHA256), 'signature verifier directory ownership or members differ')
+        observed = {}
+        for name in VERIFIER_INPUT_SHA256:
+            require(time.monotonic() < deadline, 'signature verification exceeded capture deadline')
+            fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=root)
+            try:
+                info = os.fstat(fd)
+                require(stat.S_ISREG(info.st_mode) and info.st_uid == info.st_gid == 1002 and info.st_nlink == 1 and
+                        not info.st_mode & 0o022 and 0 < info.st_size <= 4096, 'signature input file identity differs')
+                raw = os.read(fd, 4097)
+                require(len(raw) == info.st_size and stable(os.fstat(fd)) == stable(info) and
+                        stable(os.stat(name, dir_fd=root, follow_symlinks=False)) == stable(info), 'signature input file changed during observation')
+                observed[name] = hashlib.sha256(raw).hexdigest()
+            finally: os.close(fd)
+        require(stable(os.fstat(root)) == stable(before) and
+                stable(os.stat(directory[len('/tmp/'):], dir_fd=tmp, follow_symlinks=False)) == stable(before),
+                'signature input directory changed during observation')
+        require(time.monotonic() < deadline, 'signature verification exceeded capture deadline')
+        validate_verification_hashes(observed)
+        return observed
+    finally:
+        if root is not None: os.close(root)
+        os.close(tmp)
+
+
+def validate_verifier_evidence(value, *, parent_pid, tracer_pid, launcher_pid):
+    require(type(value) is dict and set(value) == {'identity','input_sha256','resumed_without_signal','exit_status'},
+            'exactly one verified signature helper completion is required')
+    validate_verifier(value['identity'], parent_pid=parent_pid, tracer_pid=tracer_pid,
+                      previous_pids={launcher_pid}, already_used=False)
+    validate_verification_hashes(value['input_sha256'])
+    require(value['resumed_without_signal'] is True and type(value['exit_status']) is int and value['exit_status'] == 0,
+            'signature helper must resume without a signal and finish normally before the launcher')
 
 
 def validate_fault(mode, proof):
@@ -241,6 +322,7 @@ class LauncherTrace:
     def __init__(self, parent):
         self.parent, self.traced, self.stopped = parent, set(), set()
         self.parent_fd = None
+        self.verifier = None
         self.libc = ctypes.CDLL(None, use_errno=True)
         self.libc.ptrace.restype = ctypes.c_long
         self.libc.ptrace.argtypes = [ctypes.c_uint, ctypes.c_uint, ctypes.c_void_p, ctypes.c_void_p]
@@ -300,6 +382,8 @@ class LauncherTrace:
             except ChildProcessError: continue
             if not observed: continue
             if os.WIFEXITED(status) or os.WIFSIGNALED(status):
+                if self.verifier is not None and pid == self.verifier['identity']['pid']:
+                    self.verifier['exit_status'] = os.waitstatus_to_exitcode(status)
                 self.traced.discard(pid); self.stopped.discard(pid); continue
             require(os.WIFSTOPPED(status), 'unexpected ptrace wait status')
             self.stopped.add(pid)
@@ -335,18 +419,38 @@ class LauncherTrace:
             os.close(self.parent_fd); self.parent_fd = None
 
     def fault(self, mode):
-        deadline = time.monotonic() + 4
+        captured = time.monotonic()
+        deadline = captured + 4
         while time.monotonic() < deadline:
             for pid, event, sig in self.events():
                 if event == 4:
                     self.verify_parent()
                     child = identity(pid)
-                    validate_launcher(child, parent_pid=self.parent['pid'], tracer_pid=os.getpid(), previous_pids=self.previous)
+                    if child.get('exe') == VERIFIER:
+                        directory = validate_verifier(child, parent_pid=self.parent['pid'], tracer_pid=os.getpid(),
+                                                      previous_pids=self.previous, already_used=self.verifier is not None)
+                        fd = os.pidfd_open(pid, 0)
+                        try:
+                            same_identity(child, identity(pid))
+                            require(not select.select([fd], [], [], 0)[0], 'signature verifier exited before observation')
+                            inputs = verified_input_files(directory, deadline)
+                            same_identity(child, identity(pid)); self.verify_parent()
+                            require(time.monotonic() < deadline, 'signature verification exceeded capture deadline')
+                            self.verifier = {'identity': child, 'input_sha256': inputs,
+                                             'resumed_without_signal': True, 'exit_status': None}
+                            self.resume(pid, 0)
+                        finally: os.close(fd)
+                        continue
+                    previous = self.previous | ({self.verifier['identity']['pid']} if self.verifier is not None else set())
+                    validate_launcher(child, parent_pid=self.parent['pid'], tracer_pid=os.getpid(), previous_pids=previous)
+                    validate_verifier_evidence(self.verifier, parent_pid=self.parent['pid'], tracer_pid=os.getpid(), launcher_pid=pid)
                     fd = os.pidfd_open(pid, 0)
                     started = time.monotonic()
                     try:
                         same_identity(child, identity(pid))
                         require(not select.select([fd], [], [], 0)[0], 'launcher exited before fixed signal')
+                        require(time.monotonic() < deadline, 'exact launcher exceeded capture deadline before signal')
+                        capture_elapsed = time.monotonic() - captured
                         signal.pidfd_send_signal(fd, signal.SIGKILL if mode == 'crash' else signal.SIGSTOP)
                         if mode == 'crash':
                             # A ptraced corpse remains waitable by its tracer
@@ -386,6 +490,7 @@ class LauncherTrace:
                             require(time.monotonic() < observation_deadline, 'fixed signal had no observable effect')
                             time.sleep(.001)
                         proof = {'identity': child, 'prearm_inventory': self.prearm,
+                                 'signature_verifier': self.verifier, 'capture_elapsed_seconds': capture_elapsed,
                                  'signal': 9 if mode == 'crash' else 19,
                                  'exited': exited, 'stopped': stopped, 'elapsed_seconds': time.monotonic()-started}
                         validate_fault(mode, proof)
@@ -483,8 +588,11 @@ def main():
     require(not any((p/'device').exists() for p in Path('/sys/class/net').iterdir()), 'hardware network adapter forbidden')
     require(not Path('/dev/fb0').exists(), 'this is a headless API fault fixture, not GUI evidence')
     runtime = json.loads(Path('/usr/libexec/rock-hub-fault-runtime.json').read_text())
+    require({VERIFIER.lstrip('/'), PACKAGE.lstrip('/'), LAUNCHER.lstrip('/')} <= set(runtime),
+            'source-pinned signature helper, signed package and launcher hashes required')
     for path, expected in runtime.items():
         require(hashlib.sha256(Path('/'+path).read_bytes()).hexdigest() == expected, 'installed production runtime changed: '+path)
+    require(hashed(json.loads(Path(PACKAGE).read_bytes())) == PACKAGE_HASH, 'fixed signed Tool bytes required')
     boot_id = Path('/proc/sys/kernel/random/boot_id').read_text().strip(); uuid.UUID(boot_id)
     parent = platform_identity()
     wallet = wallet_state()

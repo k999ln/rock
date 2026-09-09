@@ -144,6 +144,10 @@ def validate_result(proof, mode, rows, package_hash):
         fixture.validate_launcher(fault['identity'], parent_pid=parent['pid'],
                                   tracer_pid=fault['identity']['tracer_pid'], previous_pids=set())
         require(fault['identity']['tracer_pid'] > 1, 'actual root tracer identity missing')
+        fixture.validate_verifier_evidence(fault.get('signature_verifier'), parent_pid=parent['pid'],
+                                          tracer_pid=fault['identity']['tracer_pid'], launcher_pid=fault['identity']['pid'])
+        capture = fault.get('capture_elapsed_seconds')
+        require(type(capture) in (int, float) and 0 <= capture <= 4, 'complete fixed four-second capture evidence required')
         fixture.validate_fault(mode, fault)
         fixture.validate_failure(mode, proof['failed_job'])
         fixture.validate_replay(proof['accepted'],proof['replay'])
@@ -249,6 +253,10 @@ def main():
                     'harness source does not match actual frozen runtime: '+source)
         runtime = {path:original[path]['sha256'] for path in mapping.values()}
         runtime[fixture.LAUNCHER.lstrip('/')] = original[fixture.LAUNCHER.lstrip('/')]['sha256']
+        for path in (fixture.VERIFIER, fixture.PACKAGE):
+            entry = original[path.lstrip('/')]
+            require(entry['kind'] == 'file', 'fixed signature verifier and package must be regular runtime files')
+            runtime[path.lstrip('/')] = entry['sha256']
         report['runtime_sha256'] = runtime
         sys.path.insert(0,str(REPO/'src'))
         from blackberryrock.packages import verify_package, PUBLIC_TEST_KEY, TEST_PUBLISHER
@@ -261,6 +269,9 @@ def main():
                 found.append(package_hash)
         require(len(found) == 1, 'exactly one actual signed test Tool version is required')
         package_hash = found[0]; report['signed_package_sha256'] = package_hash
+        require(package_hash == fixture.PACKAGE_HASH and
+                fixture.hashed(json.loads((output/'original-runtime'/fixture.PACKAGE.lstrip('/')).read_bytes())) == package_hash,
+                'fixed public signature inputs require the exact installed text-tidy version')
         derived = output/'derived-rootfs.ext4'
         subprocess.run(['cp','--sparse=always','--reflink=auto',str(inputs['rootfs.ext4']),str(derived)],check=True,timeout=120)
         derived.chmod(0o600)  # Only this new copy; frozen inputs may be 0444.
