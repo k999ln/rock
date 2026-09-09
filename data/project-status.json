@@ -396,7 +396,7 @@
       "id": "V01-BOOT",
       "task": "V01",
       "title": "OS起動・安全基礎（V01全体の合格ではない）",
-      "status": "in_progress",
+      "status": "planned",
       "dependsOn": [
         "B04-INTEGRATED"
       ],
