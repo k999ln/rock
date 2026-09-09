@@ -27,6 +27,7 @@ import threading
 import time
 import unicodedata
 import uuid
+import zlib
 
 import business_contract as contract
 import guest
@@ -158,6 +159,31 @@ class ParkedInput(native.NativeInput):
         self.record('pointer_park', [705, 860])
 
 
+def primary_text_pixels(image):
+    """White glyphs only inside the observed green contour of each ROI row.
+
+    Rounded exterior corners are the light page background, not label ink.
+    They must not become black border artifacts in the polarity OCR pass.
+    Disabled labels below the existing brightness threshold stay invisible.
+    """
+    rgb = image.convert('RGB')
+    width, height = rgb.size
+    require(0 < width <= 720 and 0 < height <= 90, 'primary OCR crop exceeds fixed bounds')
+    colors, gray = list(rgb.getdata()), list(rgb.convert('L').getdata())
+    require(len(colors) == len(gray) == width * height, 'primary OCR pixel inventory differs')
+    pixels = bytearray(0 if value >= 180 else 255 for value in gray)
+    for y in range(height):
+        start = y * width
+        green = [x for x, (r, g, b) in enumerate(colors[start:start + width])
+                 if r <= 90 and 50 <= g <= 160 and 20 <= b <= 140 and 100*g >= 135*r and 100*g >= 110*b]
+        if not green:
+            pixels[start:start + width] = b'\xff' * width
+        else:
+            pixels[start:start + green[0]] = b'\xff' * green[0]
+            pixels[start + green[-1] + 1:start + width] = b'\xff' * (width - green[-1] - 1)
+    return bytes(pixels)
+
+
 def recognize_frame(path, deadline=None):
     """Analyze page text and accent-button text; original PNG stays intact."""
     def budget():
@@ -182,10 +208,10 @@ def recognize_frame(path, deadline=None):
             for word in words for left, top, right, bottom in boxes)]
         try:
             for left, top, right, bottom in boxes:
-                crop = source.crop((left, top, right, bottom)).convert('L')
+                crop = source.crop((left, top, right, bottom))
                 # White enabled-button glyphs become dark text on white.
                 # Dimmed/disabled labels below 180 are not made clickable.
-                mask = crop.point(lambda value: 0 if value >= 180 else 255)
+                mask = Image.frombytes('L', crop.size, primary_text_pixels(crop))
                 ImageOps.expand(mask, border=10, fill=255).save(analysis)
                 result = subprocess.run(['tesseract', str(analysis), 'stdout', '-l', 'eng+jpn', '--psm', '7',
                                          '-c', 'tessedit_do_invert=0', 'tsv'],
@@ -229,6 +255,47 @@ def accent_rectangles(image):
     return boxes
 
 
+def pending_frame(path):
+    """Recognize bounded QEMU startup pixels; never derive clickable text."""
+    with path.open('rb') as stream: data = stream.read(4097)
+    require(0 < len(data) < 4096 and data[:8] == b'\x89PNG\r\n\x1a\n', 'invalid pending framebuffer PNG')
+    offset, chunks = 8, []
+    while offset + 12 <= len(data):
+        count = struct.unpack('>I', data[offset:offset + 4])[0]
+        end = offset + count + 12
+        require(end <= len(data) and len(chunks) < 32, 'invalid pending framebuffer chunks')
+        kind, payload = data[offset + 4:offset + 8], data[offset + 8:end - 4]
+        require(zlib.crc32(kind + payload) & 0xffffffff == struct.unpack('>I', data[end - 4:end])[0],
+                'invalid pending framebuffer CRC')
+        chunks.append((kind, payload)); offset = end
+    require(offset == len(data) and len(chunks) >= 3 and chunks[0][0] == b'IHDR' and len(chunks[0][1]) == 13 and
+            chunks[-1] == (b'IEND', b'') and all(kind == b'IDAT' for kind, _ in chunks[1:-1]),
+            'invalid pending framebuffer structure')
+    width, height, depth, color, compression, filtering, interlace = struct.unpack('>IIBBBBB', chunks[0][1])
+    require((width, height) in ((640, 480), (720, 960)) and
+            (depth, color, compression, filtering, interlace) == (8, 2, 0, 0, 0),
+            'unexpected pending framebuffer format')
+    expected = height * (1 + width * 3)
+    decoder = zlib.decompressobj()
+    try: pixels = decoder.decompress(b''.join(payload for _, payload in chunks[1:-1]), expected + 1)
+    except zlib.error as error: raise ValueError('invalid pending framebuffer compression') from error
+    require(len(pixels) == expected and decoder.eof and not decoder.unused_data and not decoder.unconsumed_tail,
+            'invalid pending framebuffer decoded size')
+    if (width, height) == (640, 480):
+        # Actual QEMU RGB8 startup frame: “Display output is not active.”
+        # Hash decoded scanlines, so compression or IDAT splitting may differ.
+        require(hashlib.sha256(pixels).hexdigest() == 'd9a4c215a24917d0a11ac1f08d927cb75f52254522a046765c75bd8a966fe97b',
+                'unrecognized QEMU startup framebuffer')
+        kind = 'qemu-display-inactive'
+    else:
+        stride = 1 + width * 3
+        require(all(pixels[index] <= 4 and not any(pixels[index + 1:index + stride])
+                    for index in range(0, len(pixels), stride)), 'nonempty undersized native framebuffer')
+        kind = 'native-empty'
+    return {'name': path.name, 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest(),
+            'dimensions': [width, height], 'boot_pending': kind}
+
+
 class ScreenDriver:
     FATAL = ('結果を確認できません', '接続できません', 'サービスが要求を拒否', 'スナップショットを取得できません',
              '失敗', 'time limit exceeded', 'worker interrupted', 'tool must be installed', 'Walletを取得できません',
@@ -239,6 +306,7 @@ class ScreenDriver:
         self.folder, self.report, self.record, self.sampler, self.limits = folder, report, record, sampler, limits
         self.probes, self.serial, self.booting = 0, 0, True
         self.operation_deadline = None
+        self.pending_kinds = set()
 
     def check(self):
         require(self.operation_deadline is None or time.monotonic() <= self.operation_deadline,
@@ -251,17 +319,19 @@ class ScreenDriver:
         self.check(); self.probes += 1
         require(self.probes <= self.limits['max_probes'], 'screenshot probe budget exceeded')
         path = self.folder / 'probe.png'
+        path.unlink(missing_ok=True)
         try:
             self.native.capture('probe')
             metadata = self.report['screenshots'].pop()
         except AssertionError:
-            # A valid empty framebuffer is expected before UI readiness. It
-            # may be polled during the boot budget, never accepted as ready.
-            header = path.read_bytes()[:24] if path.is_file() else b''
-            require(self.booting and header[:8] == b'\x89PNG\r\n\x1a\n' and header[12:16] == b'IHDR' and
-                    struct.unpack('>II', header[16:24]) == (720, 960) and path.stat().st_size < 4096,
-                    'native framebuffer capture is invalid')
-            metadata = {'name': path.name, 'bytes': path.stat().st_size, 'sha256': guest.digest(path), 'dimensions': [720, 960]}
+            require(self.booting and path.is_file(), 'native framebuffer capture is invalid')
+            metadata = pending_frame(path)
+            kind = metadata['boot_pending']
+            if kind not in self.pending_kinds:
+                self.retain(dict(metadata), 'boot-pending', [], keep_probe=True)
+                self.pending_kinds.add(kind)
+            self.report['boot_pending_probes'] = self.report.get('boot_pending_probes', 0) + 1
+            return [], metadata
         try:
             lines = recognize_frame(path, deadline)
         except (TimeoutError, subprocess.SubprocessError):
@@ -274,11 +344,12 @@ class ScreenDriver:
             raise ValueError('visible native UI failure; stopped without another input action')
         return lines, metadata
 
-    def retain(self, metadata, label, lines):
+    def retain(self, metadata, label, lines, *, keep_probe=False):
         self.serial += 1
         require(len(self.report['screenshots']) < self.limits['max_screenshots'], 'retained screenshot budget exceeded')
         name = f'{self.serial:04d}-{label}.png'
-        (self.folder / 'probe.png').rename(self.folder / name)
+        if keep_probe: shutil.copyfile(self.folder / 'probe.png', self.folder / name)
+        else: (self.folder / 'probe.png').rename(self.folder / name)
         metadata.update(name=name, ocr_sha256=contract.hashed(lines))
         require(sum(item['bytes'] for item in self.report['screenshots']) + metadata['bytes'] <= self.limits['max_screenshot_bytes'],
                 'retained screenshot bytes exceeded budget')
@@ -319,7 +390,7 @@ class ScreenDriver:
                 raise TimeoutError('required UI state was not observed: ' + str(phrase))
             # Page once per observation, bounded to six pages. When the bottom
             # is reached, return to the top and continue state polling.
-            if seek:
+            if seek and not metadata.get('boot_pending'):
                 repeats = repeats + 1 if metadata['sha256'] == previous else 0
                 previous = metadata['sha256']
                 if pages >= 6 or repeats >= 1:
@@ -621,7 +692,7 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
                   wallet_preparation=wallet_backup.plan() if prepare_backup else None,
                   ocr={'languages': 'eng+jpn', 'page_psm': 11, 'primary_psm': 7, 'minimum_confidence': 45,
                        'normalization': 'NFKC, Unicode casefold, remove whitespace; exact phrase only',
-                       'primary_analysis': 'bounded accent regions; grayscale >=180 glyphs to black; 10px white border; no auto-invert',
+                       'primary_analysis': 'bounded accent regions; observed row green contour; grayscale >=180 glyphs to black; 10px white border; no auto-invert',
                        'duplicate_box_min_iou': .70},
                   frozen_at=datetime.now(timezone.utc).isoformat())
     packages = extract_packages(Path(config['images']) / 'rootfs.ext4', output)

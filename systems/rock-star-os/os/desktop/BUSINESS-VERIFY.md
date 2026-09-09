@@ -99,7 +99,10 @@ test contract, and start a separately identified test; retain the failed run.
 State waits use QMP screenshots and Tesseract `eng+jpn`, page segmentation 11,
 with minimum matched-word confidence 45. Bounded dark-green button regions get a
 second OCR pass: bright label pixels become black text on a white background,
-with page segmentation 7. Only words wholly inside the detected region replace
+with page segmentation 7. Only pixels inside each row's observed green contour
+can become label ink; rounded exterior corners stay white rather than becoming
+border noise. Disabled labels below the existing brightness threshold remain
+unselectable. Only words wholly inside the detected region replace
 the original OCR hypothesis there. Region geometry alone cannot select or click
 a control. The original evidence PNG remains unchanged. OCR text uses
 NFKC, case folding and whitespace removal, followed by exact phrase comparison;
@@ -112,7 +115,14 @@ press; this prevents the native cursor dot from covering label text.
 Clicks use the matched words' boxes,
 including when update/rollback/delete share a row. An ambiguous selector,
 unrecognized state, visible error, timeout or resource fault stops the run.
-Only transient blank/disconnected boot frames may wait within the boot budget.
+Only transient blank/disconnected boot frames may wait within the original
+180-second boot budget. The known QEMU 640×480 “Display output is not active.”
+frame and a blank 720×960 native framebuffer return no selectable UI and run no
+OCR. Their PNG structure, CRCs and bounded decoded size are validated; the
+640×480 startup content must match the captured QEMU fixture. The first frame
+of each pending kind is retained with `boot_pending` metadata. Repeated pending
+frames cannot reset the deadline or cause clicks/scrolling. Malformed images,
+other unexpected content, or pending frames after boot are fatal.
 There is no happy-path sleep that substitutes for a state observation and no
 fallback direct platform mutation. NativeInput still supplies its existing short
 key/button delivery intervals. Four actual C-rendered lifecycle frames passed

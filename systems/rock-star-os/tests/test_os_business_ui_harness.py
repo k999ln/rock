@@ -1,13 +1,16 @@
 """Host guards using explicit fixtures; no VM, GUI execution, or money moves."""
+import base64
 import copy
 import importlib.util
 import json
 import os
 from pathlib import Path
+import struct
 import subprocess
 import sys
 import tempfile
 import unittest
+import zlib
 from unittest.mock import Mock, patch
 
 HERE = Path(__file__).resolve().parents[1] / 'os/desktop'
@@ -246,6 +249,143 @@ class LifecycleGuards(unittest.TestCase):
             monitor.return_value.command.assert_not_called()
             failed = json.loads((output / 'report.json').read_text())
             self.assertEqual(failed['status'], 'FAIL'); self.assertTrue(failed['owned_device_running'])
+
+
+# Actual QEMU startup capture, before any native input. No guest data appears.
+QEMU_INACTIVE = base64.b64decode(
+    'iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgCAIAAAC6s0uzAAAFF0lEQVR4nO3bUXKDIBQFUNvpGllkV9mPTB2jgKgoRM/5Mqm9PrED'
+    'gZJhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGDm913qhFpXOZhTUa1itua0aoezL5rK7+25'
+    'ww7frQvgnkII04OT+srxKp1oNfq20mr0hXv4aV0A9xdCeM1XpuNlb2Pnp3taez7tfrklAzANjDObaTc6m+5Mp86vIXz5K/nw6clj'
+    'TvTlas6ynujxMjxV/9acwltebc98QrSdM+2wqc7oc9mXnyoy+nJTO8CVLEHTwLITHHvMl2HRh87ez4eXn5ySqid/0ejxpvpTOXnl'
+    '7ZlPWNaZeS5b64wWsy+/fBDd2g5wJTNguhDel6mPTFP0sEPV9qyl5LmcVKc/CfpkAKYX45gxHOiIM2uPT1OlPWtp+1ya3z5EWYKm'
+    'I9YJ69Ke0DMDMKcr3PEU3ab0oWp9S3V3zsXtefb9ruZH/29dkuP7xDT01boA7im/9TSzUbn8/dWc8L+nNzUCrX4myNczy1/+tG5O'
+    'Yakl7ZYJme2EWs0pr7PwuZTkr26oTp2cyrdGDRBxxhzlynmPORYQZQmaxzHpAXpgCZqupRYbj+QcjNp9XUM+AAAAAAAAAAAAAAAA'
+    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADN/AE19s4U/Fi7QAAA'
+    'AABJRU5ErkJggg=='
+)
+
+
+def rgb_png(width, height, pixels):
+    def chunk(kind, body):
+        return struct.pack('>I', len(body)) + kind + body + struct.pack('>I', zlib.crc32(kind + body) & 0xffffffff)
+    return b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', width, height, 8, 2, 0, 0, 0)) + \
+           chunk(b'IDAT', zlib.compress(pixels)) + chunk(b'IEND', b'')
+
+
+class PendingFramebufferGuards(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix='qemu-pending-'); self.addCleanup(temporary.cleanup)
+        self.folder = Path(temporary.name)
+
+    def driver(self, frames):
+        report = {'input_events': [], 'screenshots': [], 'qmp_events': [], 'ui_states': []}
+        monitor = Mock(); frames = iter(frames)
+        def command(name, args):
+            if name != 'screendump': raise AssertionError('startup must not send input')
+            Path(args['filename']).write_bytes(next(frames))
+        monitor.command.side_effect = command
+        driver = harness.ScreenDriver(monitor, self.folder, report, {}, Mock(), harness.contract.plan('lifecycle')['limits'])
+        driver.check = Mock()
+        return driver
+
+    def metadata(self, data):
+        path = self.folder/'pending.png'; path.write_bytes(data)
+        return harness.pending_frame(path)
+
+    def native_frame(self):
+        # A valid synthetic RGB PNG with native dimensions, never UI evidence.
+        row = bytes(value for x in range(720) for value in (x % 256, x // 3 % 256, x // 5 % 256))
+        return rgb_png(720, 960, b''.join(bytes([0]) + row for _ in range(960)))
+
+    def test_actual_qemu_placeholder_and_empty_native_frame_are_pending_only(self):
+        observed = self.metadata(QEMU_INACTIVE)
+        self.assertEqual(observed['boot_pending'], 'qemu-display-inactive')
+        self.assertEqual(observed['dimensions'], [640, 480])
+        self.assertEqual(observed['sha256'], '3392b61102d466ed7c1afd6a20a33ae1ab10c4bc27b94b8bc654d47991422d37')
+        observed = self.metadata(rgb_png(720, 960, bytes(960 * (1 + 720 * 3))))
+        self.assertEqual(observed['boot_pending'], 'native-empty')
+
+    def test_malformed_crc_truncation_wrong_pixels_and_decoded_overflow_are_fatal(self):
+        damaged = bytearray(QEMU_INACTIVE); damaged[60] ^= 1
+        cases = [bytes(damaged), QEMU_INACTIVE[:-1], QEMU_INACTIVE + b'junk',
+                 rgb_png(640, 480, bytes(480 * (1 + 640 * 3))),
+                 rgb_png(720, 960, bytes(960 * (1 + 720 * 3) + 1)),
+                 rgb_png(720, 960, b'\x01' * (960 * (1 + 720 * 3))),
+                 rgb_png(640, 481, bytes(481 * (1 + 640 * 3)))]
+        for data in cases:
+            with self.subTest(bytes=len(data)), self.assertRaises(ValueError): self.metadata(data)
+
+    def test_pending_capture_preserves_first_evidence_without_running_ocr(self):
+        driver = self.driver([QEMU_INACTIVE, QEMU_INACTIVE])
+        with patch.object(harness, 'recognize_frame') as recognize:
+            for _ in range(2):
+                lines, metadata = driver.scan(deadline=280)
+                self.assertEqual(lines, []); self.assertEqual(metadata['boot_pending'], 'qemu-display-inactive')
+        recognize.assert_not_called()
+        self.assertEqual(driver.report['input_events'], [])
+        self.assertEqual(driver.report['ui_states'], [])
+        self.assertEqual(driver.report['boot_pending_probes'], 2)
+        self.assertEqual(len(driver.report['screenshots']), 1)
+        kept = driver.report['screenshots'][0]
+        self.assertEqual((self.folder/kept['name']).read_bytes(), QEMU_INACTIVE)
+        self.assertEqual((self.folder/'probe.png').read_bytes(), QEMU_INACTIVE)
+
+    def test_pending_frame_after_boot_is_fatal_without_input_or_ocr(self):
+        driver = self.driver([QEMU_INACTIVE]); driver.booting = False
+        with patch.object(harness, 'recognize_frame') as recognize:
+            with self.assertRaisesRegex(ValueError, 'capture is invalid'): driver.scan(deadline=280)
+        recognize.assert_not_called(); self.assertEqual(driver.report['input_events'], [])
+
+    def test_failed_new_capture_cannot_reuse_an_old_pending_png(self):
+        driver = self.driver([])
+        (self.folder/'probe.png').write_bytes(QEMU_INACTIVE)
+        driver.native.monitor.command.side_effect = AssertionError('capture did not complete')
+        with patch.object(harness, 'recognize_frame') as recognize:
+            with self.assertRaisesRegex(ValueError, 'capture is invalid'): driver.scan(deadline=280)
+        recognize.assert_not_called()
+        self.assertEqual(driver.report['screenshots'], [])
+        self.assertEqual(driver.report['input_events'], [])
+
+    def test_pending_wait_keeps_original_180_seconds_and_never_seeks_or_clicks(self):
+        driver = self.driver([QEMU_INACTIVE, QEMU_INACTIVE])
+        with patch.object(harness.time, 'monotonic', side_effect=[100, 101, 101, 280, 280]), \
+             patch.object(harness.time, 'sleep') as sleep, patch.object(harness, 'recognize_frame') as recognize:
+            with self.assertRaises(TimeoutError): driver.click('ツール名・説明・IDで検索', seek=True, seconds=180)
+        recognize.assert_not_called(); sleep.assert_called_once_with(.5)
+        self.assertEqual(driver.report['input_events'], [])
+        self.assertEqual(driver.report['ui_states'], [])
+        self.assertEqual(driver.report['boot_pending_probes'], 2)
+
+    def test_pending_then_actual_native_match_before_deadline_can_be_ready(self):
+        driver = self.driver([QEMU_INACTIVE, self.native_frame()])
+        lines = harness.ocr_lines(tsv([(1, 20, 200, 250, 90, 'ツール名・説明・IDで検索')]))
+        with patch.object(harness.time, 'monotonic', side_effect=[100, 101, 101, 102]), \
+             patch.object(harness.time, 'sleep'), patch.object(harness, 'recognize_frame', return_value=lines) as recognize:
+            result = driver.wait('ツール名・説明・IDで検索', seconds=180)
+        self.assertEqual(result['phrase'], 'ツール名・説明・IDで検索')
+        recognize.assert_called_once()
+        self.assertEqual(len(driver.report['ui_states']), 1)
+        self.assertEqual(driver.report['input_events'], [])
+
+    def test_native_match_after_pending_deadline_cannot_send_input(self):
+        driver = self.driver([QEMU_INACTIVE, self.native_frame()])
+        lines = harness.ocr_lines(tsv([(1, 20, 200, 250, 90, 'ツール名・説明・IDで検索')]))
+        with patch.object(harness.time, 'monotonic', side_effect=[100, 101, 101, 281]), \
+             patch.object(harness.time, 'sleep'), patch.object(harness, 'recognize_frame', return_value=lines):
+            with self.assertRaisesRegex(TimeoutError, 'original deadline'):
+                driver.click('ツール名・説明・IDで検索', seconds=180)
+        self.assertEqual(driver.report['input_events'], [])
+        self.assertEqual(driver.report['ui_states'], [])
 
 
 if __name__ == '__main__': unittest.main()
