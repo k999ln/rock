@@ -1,0 +1,19 @@
+{
+  "schema": "rock-pc-adapter-integration/1",
+  "scope": "C-PC01/C-PC02 PC-only synthetic real CLI; native connection and durable receipts remain pending",
+  "frozen_native_runtime": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+  "full_npm_verify": "PASS",
+  "node_tests": 54,
+  "api_assertions": 143,
+  "macos_and_linux_adapter_tests_each": 19,
+  "source_originals_unchanged": 7,
+  "package_sha256": "e27b90bc173ae5bbcea55312007815d22fd87a88c4449028098e42d831dfafef",
+  "independent_reviewers": 2,
+  "resource_warnings": 0,
+  "skips": 0,
+  "reports": [
+    "macos-root.json",
+    "linux.json",
+    "macos-package.json"
+  ]
+}

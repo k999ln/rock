@@ -17,6 +17,7 @@ import sys
 import tempfile
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import rock_star_tools
+import pc_citations
 
 PROTOCOLS = ('2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05')
 MAX_BODY = 16_000_000
@@ -31,7 +32,8 @@ TOOLS = [
     {'name':'coconala_check','title':'ココナラ案件チェック','description':'依頼文と提案文の条件を照合。応募・送信はしません。',
      'inputSchema':schema({'brief':TEXT,'proposal':TEXT,'bucket':{'type':'string','enum':['single','retainer']},'orderRate':{'type':['number','null'],'minimum':0,'maximum':100}},['brief','proposal'])},
     {'name':'format_citations','title':'出典整理','description':'Markdown中の出典リンクを末尾にまとめます。',
-     'inputSchema':schema({'text':TEXT},['text'])},
+     'inputSchema':schema({'text':{'type':'string','minLength':1,'maxLength':pc_citations.MAX_INPUT,
+       'description':'1–65536 UTF-8 bytes; processed by the fixed local MR CLI.'}},['text'])},
     {'name':'make_free_article','title':'記事の無料版を作成','description':'指定された原稿とまとめから無料版を作成します。投稿しません。',
      'inputSchema':schema({'markdown':TEXT,'summary':{'type':'string','maxLength':3000},'afterChars':{'type':'integer','minimum':1,'maximum':100000},'price':{'type':'integer','minimum':1,'maximum':1000000},'paidContents':{'type':'string','maxLength':300},'noteUrl':{'type':'string','maxLength':2000}},['markdown','summary','afterChars','price','paidContents','noteUrl'])},
     {'name':'verify_delivery','title':'納品記録の照合','description':'渡された契約・成果物・制作記録・独立レビューをPC内で照合。ファイルは一時領域で処理し削除します。sample=trueは合成サンプルです。',
@@ -75,7 +77,7 @@ def execute(name,args):
     with tempfile.TemporaryDirectory(prefix='rock-star-mcp-') as temporary:
         root=Path(temporary)
         if name=='format_citations':
-            output=rock_star_tools.protected_citations(args['text'])
+            output=pc_citations.run_citations(args['text'])
         elif name=='coconala_check':
             if not args['brief'].strip() or not args['proposal'].strip():raise ValueError('依頼文と提案文を入力してください。')
             module=rock_star_tools.load_module('application_eligibility');module.min_client_order_rate=lambda:40.0
@@ -119,6 +121,8 @@ def rpc(message):
             with contextlib.redirect_stdout(io.StringIO()),contextlib.redirect_stderr(io.StringIO()):
                 value=execute(params.get('name'),params.get('arguments',{}))
             result={'content':[{'type':'text','text':value['output']}],'structuredContent':value,'isError':False}
+        except pc_citations.CitationsError as error:
+            result={'content':[{'type':'text','text':str(error)}],'isError':True}
         except (ValueError,TypeError,KeyError,OSError,SystemExit):
             result={'content':[{'type':'text','text':'入力の形式・文字数・必須項目・成果物の記録を確認してください。'}],'isError':True}
     else:return {'jsonrpc':'2.0','id':ident,'error':{'code':-32601,'message':'Method not found'}}
@@ -173,10 +177,17 @@ class Bridge(BaseHTTPRequestHandler):
         result=rpc(data);return self.respond(202 if result is None else 200,result)
 
 if __name__=='__main__':
+    import signal
+    def terminate(*_):
+        raise KeyboardInterrupt
+    signal.signal(signal.SIGTERM, terminate)
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--http',action='store_true');args=parser.parse_args()
     if args.http:
         server=HTTPServer(('127.0.0.1',PORT),Bridge);server.timeout=30
         print(f'Rock star PC接続を開始しました。サイトの「このPCを接続」を押してください。終了: Ctrl+C',file=sys.stderr)
         try:server.serve_forever()
-        except KeyboardInterrupt:server.server_close()
-    else:stdio()
+        except KeyboardInterrupt:pass
+        finally:server.server_close()
+    else:
+        try:stdio()
+        except KeyboardInterrupt:pass

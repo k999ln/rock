@@ -223,7 +223,9 @@
         "B04"
       ],
       "evidence": [
-        "docs/prompts/hub-wallet-next.md"
+        "docs/prompts/hub-wallet-next.md",
+        "docs/pc-citations-adapter.md",
+        "docs/evidence/pc-citations/integration.json"
       ]
     },
     {
