@@ -133,11 +133,14 @@ def file_identity(path):
 
 def readonly(path, *, immutable=True):
     file_identity(path)
-    if immutable:
-        for suffix in ('-wal', '-journal'):
-            sidecar = path.with_name(path.name + suffix)
-            if sidecar.exists():
-                file_identity(sidecar); require(sidecar.stat().st_size == 0, 'checkpointed closed database required')
+    # Both modes reject foreign, linked or replaced sidecar files. Live reads
+    # must consult SQLite's committed WAL instead of an immutable main-file view.
+    for suffix in ('-wal', '-shm', '-journal'):
+        sidecar = path.with_name(path.name + suffix)
+        if sidecar.exists() or sidecar.is_symlink():
+            file_identity(sidecar)
+            if immutable and suffix != '-shm':
+                require(sidecar.stat().st_size == 0, 'checkpointed closed database required')
     db = sqlite3.connect(path.as_uri() + '?mode=ro' + ('&immutable=1' if immutable else ''), uri=True, isolation_level=None)
     db.row_factory = sqlite3.Row; db.execute('PRAGMA query_only=ON'); db.execute('BEGIN')
     return db
@@ -147,8 +150,8 @@ def table_exists(db, table):
     return bool(db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone())
 
 
-def wallet_identity(path):
-    with closing(readonly(path)) as db:
+def wallet_identity(path, *, immutable=True):
+    with closing(readonly(path, immutable=immutable)) as db:
         require(table_exists(db, 'wallet_storage_identity'), 'managed Wallet identity missing')
         rows = db.execute('SELECT * FROM wallet_storage_identity').fetchall()
         require(len(rows) == 1, 'exactly one managed Wallet identity required')
@@ -233,7 +236,7 @@ class _Permit:
             self.initializing = True
         try:
             with self.gate, self._ticket():
-                self.coordinator._verify_marker(self, allow_prepared=True)
+                self.coordinator._verify_marker(self, allow_prepared=True, immutable=self.marker['state'] != 'ACTIVE')
                 self.coordinator._initialize(self)
                 yield
                 self.initialized = True
@@ -262,7 +265,7 @@ class _Permit:
         with self.gate:
             with self.condition:
                 require(self.accepting and not self.released, 'contract quiesced while admission waited')
-                self.coordinator._verify_marker(self)
+                self.coordinator._verify_marker(self, immutable=False)
                 self.inflight += 1
             try:
                 with self._ticket(): yield
@@ -378,11 +381,11 @@ class AuthorityFenceCoordinator:
             fd = self._lock_state(descriptor.canonical_state)
             try:
                 marker = read_json(descriptor.canonical_state / 'AUTHORITY.json')
-                permit = _Permit(self, descriptor, marker, fd); self._verify_marker(permit)
+                permit = _Permit(self, descriptor, marker, fd); self._verify_marker(permit, immutable=False)
                 self.permits[ledger_ref] = permit; return permit
             except BaseException: fcntl.flock(fd, fcntl.LOCK_UN); os.close(fd); raise
 
-    def _verify_marker(self, permit, *, allow_prepared=False):
+    def _verify_marker(self, permit, *, allow_prepared=False, immutable=True):
         with self.mutex:
             self._check_registry(); d = permit.descriptor; private_directory(d.canonical_state)
             lock_info = os.fstat(permit.lock_fd)
@@ -398,7 +401,7 @@ class AuthorityFenceCoordinator:
             require(row and row['descriptor'] == descriptor_value(d) and row['migration_id'] == marker['migration_id'], 'registered identity differs')
             if marker['state'] == 'ACTIVE':
                 require(row['state'] == 'ACTIVE' and row['files'] == self._files(d), 'registered database files changed')
-                self._validate_identity(permit, row['account_id'], allow_unbound_account=True)
+                self._validate_identity(permit, row['account_id'], allow_unbound_account=True, immutable=immutable)
 
     def _files(self, descriptor):
         return {name: file_identity(descriptor.canonical_state / name) for name in DB_NAMES}
@@ -425,8 +428,8 @@ class AuthorityFenceCoordinator:
         self._journal(permit, 'ROUTER_REGISTERED')
         verify_original(permit)
 
-    def _observed_account(self, descriptor):
-        with closing(readonly(descriptor.canonical_state / DB_NAMES[1])) as db:
+    def _observed_account(self, descriptor, *, immutable=True):
+        with closing(readonly(descriptor.canonical_state / DB_NAMES[1], immutable=immutable)) as db:
             require(table_exists(db, 'accounts'), 'contract account schema missing')
             rows = db.execute('SELECT account_id,owner_ref FROM accounts').fetchall()
             require(len(rows) <= 1, 'one contract per database required')
@@ -434,19 +437,21 @@ class AuthorityFenceCoordinator:
             require(rows[0]['owner_ref'] == descriptor.owner_ref, 'contract owner differs')
             return rows[0]['account_id']
 
-    def _validate_identity(self, permit, account, *, allow_unbound_account=False):
-        d = permit.descriptor; identity = wallet_identity(d.canonical_state / DB_NAMES[0]); actual = self._observed_account(d)
+    def _validate_identity(self, permit, account, *, allow_unbound_account=False, immutable=True):
+        d = permit.descriptor
+        identity = wallet_identity(d.canonical_state / DB_NAMES[0], immutable=immutable)
+        actual = self._observed_account(d, immutable=immutable)
         require(identity['singleton'] == 1 and identity['identity_schema'] == 1 and identity['ledger_uuid'] == d.ledger_uuid and
                 identity['migration_id'] == permit.marker['migration_id'], 'stable Wallet identity differs')
         if allow_unbound_account and account is None and actual is not None:
             require(identity['account_id'] in (None, actual), 'partial account registration belongs to another Wallet')
         else: require(actual == identity['account_id'] == account, 'Wallet and contract account differ')
-        with closing(readonly(d.canonical_state / DB_NAMES[0])) as db:
+        with closing(readonly(d.canonical_state / DB_NAMES[0], immutable=immutable)) as db:
             require(table_exists(db, 'wallet_auth_mode'), 'real Wallet authentication schema required')
             rows = db.execute('SELECT authority_id,account_id FROM wallet_auth_mode').fetchall()
             require(len(rows) == 1 and rows[0]['authority_id'] == d.wallet_authority_id and
                     rows[0]['account_id'] in (None, actual), 'Wallet authentication authority/account differs')
-        with closing(readonly(d.canonical_state / DB_NAMES[1])) as db:
+        with closing(readonly(d.canonical_state / DB_NAMES[1], immutable=immutable)) as db:
             require(table_exists(db, 'wallet_bindings_v2'), 'stable entitlement binding schema missing')
             rows = db.execute('SELECT * FROM wallet_bindings_v2').fetchall()
             if actual is None: require(not rows, 'unexpected registered Wallet binding')
@@ -456,7 +461,9 @@ class AuthorityFenceCoordinator:
             else: require(allow_unbound_account and account is None, 'registered stable binding missing')
 
     def _activate(self, permit, account):
-        self._verify_marker(permit, allow_prepared=True); self._validate_identity(permit, account)
+        immutable = permit.marker['state'] != 'ACTIVE'
+        self._verify_marker(permit, allow_prepared=True, immutable=immutable)
+        self._validate_identity(permit, account, immutable=immutable)
         if permit.marker['state'] == 'PREPARED':
             from .adopt_legacy import verify_original
             verify_original(permit)
@@ -473,8 +480,8 @@ class AuthorityFenceCoordinator:
 
     def _bind_account(self, permit, account):
         with self.mutex:
-            self._verify_marker(permit); d = permit.descriptor
-            require(self._observed_account(d) == account, 'account was not created by this contract')
+            self._verify_marker(permit, immutable=False); d = permit.descriptor
+            require(self._observed_account(d, immutable=False) == account, 'account was not created by this contract')
             row = self.registry['contracts'][d.ledger_ref]
             require(row['account_id'] in (None, account) and permit.marker['account_id'] in (None, account), 'registered account replacement rejected')
             # Complete only this same registered account after a two-DB
@@ -491,7 +498,7 @@ class AuthorityFenceCoordinator:
                     Wallet._verify(wallet_db); wallet_db.commit(); store_db.commit()
                 except BaseException:
                     wallet_db.rollback(); store_db.rollback(); raise
-            self._validate_identity(permit, account)
+            self._validate_identity(permit, account, immutable=False)
             permit.marker['account_id'] = account; write_json(d.canonical_state / 'AUTHORITY.json', permit.marker)
             row['account_id'] = account; self._save_registry()
 
@@ -506,6 +513,14 @@ class AuthorityFenceCoordinator:
     def promote_restore(self, restore_id):
         from .adopt_legacy import promote_restore
         return promote_restore(self, restore_id)
+
+    def verified_completed_current_restore(self, restore_id):
+        from .current_restore import verified_completed_current_restore
+        return verified_completed_current_restore(self, restore_id)
+
+    def current_restore_generation(self, restore_id, *, record_sha256):
+        from .current_restore import current_restore_generation
+        return current_restore_generation(self, restore_id, record_sha256=record_sha256)
 
     def _remove_permit(self, permit):
         with self.mutex:

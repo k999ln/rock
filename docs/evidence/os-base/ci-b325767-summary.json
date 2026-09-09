@@ -1,0 +1,27 @@
+{
+  "schema": "rock-public-ci-evidence/1",
+  "source_commit": "b3257678a9c79a7c224483750438c107659adfc3",
+  "runs": {
+    "native": 34416688794,
+    "web": 34416688784,
+    "android": 34416688792
+  },
+  "conclusions": {
+    "native": "success",
+    "web": "success",
+    "android": "success"
+  },
+  "native_python_executions": 1341,
+  "native_checks": 14,
+  "skip_or_unclean_log": false,
+  "all_native_log_hashes_verified": true,
+  "native_source_unchanged": true,
+  "node_wire": {
+    "node": "v22.23.2",
+    "openssl": "3.5.7",
+    "checks": 303,
+    "rejections": 142,
+    "report": "docs/evidence/game-exchange/node-wire-ci-b325767.json"
+  },
+  "scope": "Public same-commit source CI, distinct from frozen b8287bc OS acceptance and actual hardware."
+}

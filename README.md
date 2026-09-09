@@ -23,7 +23,7 @@ Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/o
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-09 / native D0〜D5限定受入・D6再試験とMac試用入口・ゲーム接続実装 / 完了 14/32件
+最終更新: 2026-09-09 / native D0〜D5限定受入・D6再試験とゲーム接続/復元基礎 / 完了 14/32件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -50,7 +50,7 @@ Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/o
 | B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/hub-wallet-pc-comparison-20260909.md) · [記録](docs/evidence/hub-wallet/b05-pc-machine-20260909/report.json) |
 | D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
 | V01 | 最新統合sourceからQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す | 進行中 | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/os-operational-validation-20260909.md) · [記録](docs/evidence/os-base/startup-update-acceptance-b8287bc.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/evidence/os-base/registry-negative-b8287bc.json) · [記録](docs/os-acceptance-b8287bc-20260909.md) · [記録](systems/rock-star-os/os/desktop/LAUNCHER-V2.md) |
-| GX00 | 共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証 | 進行中 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx00-owner-isolation-adr.md) · [記録](docs/evidence/gx00/integration.json) · [記録](systems/rock-star-os/os/wallet_backend/FENCE.md) · [記録](docs/gx00-connection-wire-v1.md) · [記録](docs/evidence/gx00/game-protocol-review.json) · [記録](docs/game-connection-node-wire-20260909.md) · [記録](docs/gx00-connections-runtime.md) · [記録](docs/evidence/gx00/game-connections-root.json) |
+| GX00 | 共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証 | 進行中 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx00-owner-isolation-adr.md) · [記録](docs/evidence/gx00/integration.json) · [記録](systems/rock-star-os/os/wallet_backend/FENCE.md) · [記録](docs/gx00-connection-wire-v1.md) · [記録](docs/evidence/gx00/game-protocol-review.json) · [記録](docs/game-connection-node-wire-20260909.md) · [記録](docs/gx00-connections-runtime.md) · [記録](docs/evidence/gx00/game-connections-root.json) · [記録](docs/gx00-legacy-game-basis.md) · [記録](systems/rock-star-os/os/wallet_backend/CURRENT-RESTORE.md) · [記録](docs/evidence/gx00/current-copy-foundations-root.json) |
 | GX01 | ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
 | GX02 | 指定された実ゲームの正式sandbox接続と交換条件を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
 | DX01 | ゲーム作者向けAPI/SDK・sandbox・複数owner/game分離と導入体験を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
@@ -76,7 +76,7 @@ Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/o
 | GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 未合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
 | DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 未合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) |
 
-次の作業: 凍結b8287bcのD0〜D5と42の正常終了後データを照合済み。host画面認識を直し、同じ閾値の43で全5サイクル・60分を実測中。Macから同じ保存端末を開く試用入口を確認し、GX00の2作者/2game/2owner実接続と互換/復旧を続ける。
+次の作業: 凍結b8287bcのD6新規43を5サイクル・60分の終了後データまで照合する。公開b325767はWeb/Android/native同SHA CI成功。非空legacyとC復元証拠APIを統合し、停止済みcurrent-copyのゲーム引継ぎ・通常起動ガード・同じ認証経路の継続を完成させる。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

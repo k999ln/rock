@@ -83,3 +83,9 @@ B02-NATIVEとB03-FIXTUREの限定基礎は別報告で合格。複数owner/複�
 独立したremote試験も同一Image/rootfsの実2起動でPASS。新規owned TLS registry/runnerに対し、永続受付後の実応答半分切断、virtio NICの切断・再接続、no-NIC再起動を実行した。処理実体は2件だけで、未承認取消は送信0、Wallet/ローカル仕事への収益・実行追加0。production cloud/USBはNOT_RUN。
 
 根拠は `docs/evidence/os-base/business-lifecycle-b8287bc.json`、同plan、`backup-restore-b8287bc.json`、`business-backup-acceptance-b8287bc.json`、`remote-b8287bc.json`。D4の41実起動とATM UI14実画面も完了済み。D6の5通常cycle＋60分反復と引継ぎ報告を残しており、OS雛形全体はまだINCOMPLETE。過去の失敗証拠を保存した。
+
+## 公開b325767の同一source CI
+
+[同SHAの記録](evidence/os-base/ci-b325767-summary.json)でWeb・Android・nativeをすべて成功と確認した。nativeは14検査・Python1341実行、skip/uncleanなし、元source不変と全log hashを照合。独立Node 22 wire verifierは303項目・142拒否を通過した。このsource CIは凍結b8287bcのOS受入や実機合格と別である。
+
+その後のGX00基礎は[非空legacy](gx00-legacy-game-basis.md)と[C current-copy証拠API](../systems/rock-star-os/os/wallet_backend/CURRENT-RESTORE.md)を追加。rootの実TLS2ケースとC API14ケースを確認した。旧WAL問題の失敗記録も保持し、現在ACTIVEのidentityだけをcommit済WALを読む検査へ修正した。source/adoption/初回copyは閉鎖条件を保つ。ゲーム側の明示handover・通常起動制限は次の統合であり、この段階のGX00全体は未合格。

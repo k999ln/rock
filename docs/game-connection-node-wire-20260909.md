@@ -22,7 +22,7 @@
 node systems/rock-star-os/tests/verify_game_connection_vectors.mjs
 ```
 
-固定fixtureのfile hashを最初に照合するため、trusted fixture読取りに使う`JSON.parse`を汎用wire decoderとして扱わない。重複keyや`1.0`/`1e0`という数字の元表記を保持・拒否するNode向けdecoderは実装していない。proofのcontext検査も公開negative vectorsの実行に必要な範囲であり、Python全schema/鍵registryのparityを保証するSDKではない。既存[Node 22 CI](../.github/workflows/ci.yml)の`npm run verify`直後に同入口を1step追加した。Node 22 CI上の実行結果は、このMac証拠には含まれず、次の実CIで確認する。
+固定fixtureのfile hashを最初に照合するため、trusted fixture読取りに使う`JSON.parse`を汎用wire decoderとして扱わない。重複keyや`1.0`/`1e0`という数字の元表記を保持・拒否するNode向けdecoderは実装していない。proofのcontext検査も公開negative vectorsの実行に必要な範囲であり、Python全schema/鍵registryのparityを保証するSDKではない。既存[Node 22 CI](../.github/workflows/ci.yml)の`npm run verify`直後に同入口を1step追加した。後続b325767の[CI 34416688784](https://github.com/k999ln/rock/actions/runs/34416688784)でもNode v22.23.2 / OpenSSL 3.5.7で303checks/142拒否が成功。[CI原stdoutから抽出したJSON](evidence/game-exchange/node-wire-ci-b325767.json)をMac証拠と別に保存した。
 
 両fixtureについてそれぞれ別の所有する短命Node processを起動し、新規一時copyへ空白1byteだけ加えると、pin違いを検出して終了1・成功stdout 0 bytesになることを実測した。[外部改変負例](evidence/game-exchange/node-wire-tamper-20260909.json)。原fixtureは変更せず、一時copyは回収した。
 

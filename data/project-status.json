@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-09",
-  "milestone": "native D0〜D5限定受入・D6再試験とMac試用入口・ゲーム接続実装",
-  "nextAction": "凍結b8287bcのD0〜D5と42の正常終了後データを照合済み。host画面認識を直し、同じ閾値の43で全5サイクル・60分を実測中。Macから同じ保存端末を開く試用入口を確認し、GX00の2作者/2game/2owner実接続と互換/復旧を続ける。",
+  "milestone": "native D0〜D5限定受入・D6再試験とゲーム接続/復元基礎",
+  "nextAction": "凍結b8287bcのD6新規43を5サイクル・60分の終了後データまで照合する。公開b325767はWeb/Android/native同SHA CI成功。非空legacyとC復元証拠APIを統合し、停止済みcurrent-copyのゲーム引継ぎ・通常起動ガード・同じ認証経路の継続を完成させる。",
   "tasks": [
     {
       "id": "R01",
@@ -304,7 +304,10 @@
         "docs/evidence/gx00/game-protocol-review.json",
         "docs/game-connection-node-wire-20260909.md",
         "docs/gx00-connections-runtime.md",
-        "docs/evidence/gx00/game-connections-root.json"
+        "docs/evidence/gx00/game-connections-root.json",
+        "docs/gx00-legacy-game-basis.md",
+        "systems/rock-star-os/os/wallet_backend/CURRENT-RESTORE.md",
+        "docs/evidence/gx00/current-copy-foundations-root.json"
       ]
     },
     {
