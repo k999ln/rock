@@ -486,16 +486,44 @@ sudo python3 -B os/ui/test_wallet_evidence.py -v  # disposable Linux VM only
 ```
 
 The harness owns one fresh 128 MiB userdata image and one NIC-free ARM64 guest.
-At 720×960, bottom Wallet navigation is `(606,913)` and resets the view. The
-unregistered action is `(360,417)`; registered consent/cancel is `(360,616)`;
-monthly billing is `(360,679)`. Three PageDown presses reach the collapsed
-simulator action at `(360,807)`. After expansion, two further PageDown presses
-show the amount `(250,443)` and credit action `(195,521)`; the new settlement
-action is `(560,700)` after the actual credit response. The C regression checks
-these coordinates against the native control hitboxes, including billing error
-text and the post-action message. The actual harness waits for each durable
-guest stage and saves eleven original framebuffer captures. Sending input or
-passing renderer/unit checks does not count as this guest test passing.
+`wallet_replay.py` supplies the same reviewed input sequences to both Wallet and
+ATM live verifiers. Each preserves all fourteen captures, including separate
+registration, authenticator enrollment and Wallet terms. PIN input remains
+redacted; ATM code reveal and actor payout operations are never sent.
+
+At 720×960, Wallet navigation `(606,912)` resets scroll and the response banner.
+Registration is `(360,360)`; authenticator enrollment and Wallet terms are
+`(360,480)`. Enrollment PIN is `(360,419)`, signing `(520,833)`, and separate
+Wallet terms confirmation `(497,576)`. One PageDown places monthly consent or
+cancellation at `(360,504)` and billing at `(360,567)`. Three PageDown presses
+reach the collapsed simulator control `(360,807)`; two after expansion expose
+amount `(360,461)` and sale `(192,537)`. After the actual pending-sale response,
+settlement is `(563,716)`. These points apply to the stated fresh local fixture;
+a remote-backend card or unavailable service is a different layout.
+
+The Linux root host regression drives these exact sequences through the actual
+C renderer, disposable `WalletService` and `SoftwareTestAuthenticator`. It uses
+real enrollment, separate terms, signed ATM quotes and normal page refreshes;
+checks every pointer against the expected enabled C hitbox; and rejects seven
+old coordinates plus missing monthly PageDown before wrong-action dispatch.
+The real scheduler stays alive, with the fixture clock held at the current
+second to preserve the insufficient-funds retry until explicit billing. It
+exports only masked PNGs and geometry; private fixture state is temporary.
+
+```sh
+# From the native project directory, in a disposable Linux test environment:
+sudo make -C os/ui test-wallet-replay FONT=../assets/NotoSansCJKjp-Regular.otf
+# To retain the 14 + 14 positive frames and separate rejected-case frames:
+sudo python3 -B -W error::ResourceWarning os/ui/test_wallet_replay.py \
+  --renderer os/ui/rock-ui-test --font os/assets/NotoSansCJKjp-Regular.otf \
+  --output /path/to/new/host-only-wallet-geometry
+```
+
+This is an explicit separate root fixture gate: no root skips count as success.
+It does not exercise the platform socket, QMP, guest observer or OS shutdown.
+The live verifiers still require their bounded durable guest-stage waits,
+unchanged image hashes and the complete independently validated disk/serial
+proof. Passing host geometry does not count as passing the guest test.
 
 `test_wallet_evidence.py` creates disposable real adapter and double-entry
 ledger state, including an insufficient-funds retry followed by explicit

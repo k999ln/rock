@@ -1,0 +1,351 @@
+{
+  "schema": "rock-native-power-ui-harness/1",
+  "status": "PASS",
+  "started_utc": "2026-09-09T19:41:13.853146+00:00",
+  "scope": "actual evdev UI -> platform -> root daemon -> normal init, two boots",
+  "blackberry": "NOT_RUN",
+  "real_money": "NOT_RUN",
+  "image_sha256_before": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+  },
+  "input_events": [
+    {
+      "action": "click",
+      "value": [
+        636,
+        26
+      ],
+      "sent_unix": 1788982892.176281
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        618
+      ],
+      "sent_unix": 1788982893.4718688
+    },
+    {
+      "action": "keys",
+      "value": [
+        "esc"
+      ],
+      "sent_unix": 1788982894.6859705
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        540
+      ],
+      "sent_unix": 1788982896.5349314
+    },
+    {
+      "action": "click",
+      "value": [
+        497,
+        577
+      ],
+      "sent_unix": 1788982897.8335006
+    },
+    {
+      "action": "click",
+      "value": [
+        636,
+        26
+      ],
+      "sent_unix": 1788982923.7762864
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        618
+      ],
+      "sent_unix": 1788982925.0771031
+    },
+    {
+      "action": "click",
+      "value": [
+        497,
+        577
+      ],
+      "sent_unix": 1788982926.3755221
+    }
+  ],
+  "screenshots": [
+    {
+      "name": "00-first-boot-hub.png",
+      "bytes": 123574,
+      "sha256": "112648e6a90a695b7402065973d4b1141789e2279c96d3a824887e50f588bb8e",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "01-device-page.png",
+      "bytes": 79237,
+      "sha256": "9e533560fd5415d88cb21be8a01b44892e8bbc03a9f561bb169ca1ea3454221b",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "02-poweroff-confirm-before-cancel.png",
+      "bytes": 85980,
+      "sha256": "803df9cecd2f5132742e0054279ab5ea026292aac9859fcd7923b7c579ffac8b",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "03-canceled-without-power-request.png",
+      "bytes": 79089,
+      "sha256": "85b6799a93addef725ffaad6c1ce35ff10823197c3e0df53b4dad1be4cfea625",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "04-reboot-confirm.png",
+      "bytes": 84814,
+      "sha256": "bd0ecdcb62f80ad707be3b1cd62dbdeadafa3b978184f4287083f1a7e1f2d211",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "05-second-boot-hub.png",
+      "bytes": 123709,
+      "sha256": "0be00e859f600aa4a66704b0df6c9b518d8299870545da6765f896bd2d94e234",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "06-device-after-actual-reboot.png",
+      "bytes": 79365,
+      "sha256": "ec0b75c734dba29a37fadcaeb3b915c250fa4d6e24c1ce10227b81cea9d7d19f",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "07-second-boot-shutdown-confirm.png",
+      "bytes": 86094,
+      "sha256": "ad00e2beb42ebfa97268babfa4b3f02e343b3d77f1f6703f063a42f23d3d33f1",
+      "dimensions": [
+        720,
+        960
+      ]
+    }
+  ],
+  "qmp_events": [
+    {
+      "observed_unix": 1788982906.2974784,
+      "timestamp": {
+        "seconds": 1788982906,
+        "microseconds": 293870
+      },
+      "event": "RESET",
+      "data": {
+        "guest": true,
+        "reason": "guest-reset"
+      }
+    },
+    {
+      "observed_unix": 1788982933.5053556,
+      "timestamp": {
+        "seconds": 1788982933,
+        "microseconds": 505064
+      },
+      "event": "SHUTDOWN",
+      "data": {
+        "guest": true,
+        "reason": "guest-shutdown"
+      }
+    }
+  ],
+  "qmp_commands": [
+    "qmp_capabilities",
+    "screendump",
+    "input-send-event",
+    "input-send-event",
+    "screendump",
+    "input-send-event",
+    "input-send-event",
+    "screendump",
+    "send-key",
+    "screendump",
+    "input-send-event",
+    "input-send-event",
+    "screendump",
+    "input-send-event",
+    "input-send-event",
+    "screendump",
+    "input-send-event",
+    "input-send-event",
+    "screendump",
+    "input-send-event",
+    "input-send-event",
+    "screendump",
+    "input-send-event",
+    "input-send-event"
+  ],
+  "command": [
+    "qemu-system-aarch64",
+    "-machine",
+    "virt-10.0,gic-version=3",
+    "-accel",
+    "tcg",
+    "-cpu",
+    "cortex-a53",
+    "-m",
+    "1024",
+    "-smp",
+    "2",
+    "-display",
+    "none",
+    "-serial",
+    "stdio",
+    "-monitor",
+    "none",
+    "-qmp",
+    "unix:/tmp/rock-power-ui-qmp-064uhq2o/qmp.sock,server=on,wait=off",
+    "-nic",
+    "none",
+    "-kernel",
+    "/var/tmp/rk3/systems/rock-star-os/artifacts/os/Image",
+    "-append",
+    "console=ttyAMA0 vt.global_cursor_default=0 root=/dev/vda ro rootflags=noload rootwait panic=-1 rock.ui.power.verify=1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/rootfs.ext4,format=raw,id=osdisk,readonly=on",
+    "-device",
+    "virtio-blk-pci,drive=osdisk,addr=0x1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/power-ui-20260909T194113Z-g_09ythu/userdata.ext4,format=raw,id=userdata",
+    "-device",
+    "virtio-blk-pci,drive=userdata,addr=0x2",
+    "-object",
+    "rng-random,filename=/dev/urandom,id=rockrng",
+    "-device",
+    "virtio-rng-pci,rng=rockrng,addr=0x3",
+    "-device",
+    "virtio-gpu-pci,xres=720,yres=960,addr=0x4",
+    "-device",
+    "virtio-keyboard-pci,addr=0x5",
+    "-device",
+    "virtio-tablet-pci,addr=0x6"
+  ],
+  "cancellation_idle_evidence": [
+    {
+      "boot_id": "1519bce5-2b9e-4d0f-be9e-4d969f4ed58c",
+      "phase": 1,
+      "request_count": 0,
+      "sequence": 14
+    },
+    {
+      "boot_id": "1519bce5-2b9e-4d0f-be9e-4d969f4ed58c",
+      "phase": 1,
+      "request_count": 0,
+      "sequence": 15
+    }
+  ],
+  "exit_code": 0,
+  "boots": [
+    {
+      "boot_id": "1519bce5-2b9e-4d0f-be9e-4d969f4ed58c",
+      "phase": 1
+    },
+    {
+      "boot_id": "3ab21fb1-1e44-46ba-b497-f1ded5a736da",
+      "phase": 2
+    }
+  ],
+  "power_records": [
+    {
+      "key": "ui-cffa8b42cf0d1a07f9073812098d5737",
+      "operation": "reboot",
+      "boot_id": "1519bce5-2b9e-4d0f-be9e-4d969f4ed58c",
+      "instance": "83803f33b89a49618a84ea37d78671d2",
+      "request_json": "{\"key\":\"ui-cffa8b42cf0d1a07f9073812098d5737\",\"op\":\"reboot\",\"v\":1}",
+      "receipt_json": "{\"ok\":true,\"result\":{\"accepted\":true,\"boot_id\":\"1519bce5-2b9e-4d0f-be9e-4d969f4ed58c\",\"key\":\"ui-cffa8b42cf0d1a07f9073812098d5737\",\"meaning\":\"accepted; execution and OS completion are not confirmed by this receipt\",\"op\":\"reboot\"}}",
+      "status": "dispatched",
+      "created_unix": 1788982898.0420625,
+      "replied_unix": 1788982898.0676186,
+      "dispatched_unix": 1788982898.8454633,
+      "command_returncode": 0,
+      "command_error": null
+    },
+    {
+      "key": "ui-d4fde2b0bca437cd913f3a4870af48eb",
+      "operation": "poweroff",
+      "boot_id": "3ab21fb1-1e44-46ba-b497-f1ded5a736da",
+      "instance": "7c1dde74d7b5456c90c521e59589a5ff",
+      "request_json": "{\"key\":\"ui-d4fde2b0bca437cd913f3a4870af48eb\",\"op\":\"poweroff\",\"v\":1}",
+      "receipt_json": "{\"ok\":true,\"result\":{\"accepted\":true,\"boot_id\":\"3ab21fb1-1e44-46ba-b497-f1ded5a736da\",\"key\":\"ui-d4fde2b0bca437cd913f3a4870af48eb\",\"meaning\":\"accepted; execution and OS completion are not confirmed by this receipt\",\"op\":\"poweroff\"}}",
+      "status": "dispatched",
+      "created_unix": 1788982926.2024972,
+      "replied_unix": 1788982926.2243047,
+      "dispatched_unix": 1788982927.0050237,
+      "command_returncode": 0,
+      "command_error": null
+    }
+  ],
+  "guest_proof_sha256": "ce44b84ac04e301d6075fac00efb3b6138331aeddeb5f977926be426b7f57364",
+  "data_filesystem_clean": true,
+  "host_power_commands_sent": 0,
+  "final_business_databases": {
+    "hub": {
+      "integrity": "ok",
+      "row_counts": {
+        "hub_packages": 0,
+        "hub_installed": 0,
+        "hub_revoked": 0,
+        "hub_jobs": 0,
+        "hub_audit": 0,
+        "hub_requests": 0
+      },
+      "sha256": "a7d05d925e2d2494caecf89a865d19c05e50714739c7f0109373e4fa394d319f"
+    },
+    "wallet": {
+      "integrity": "ok",
+      "row_counts": {
+        "wallet_journals": 0,
+        "wallet_postings": 0,
+        "wallet_sales": 0,
+        "wallet_withdrawals": 0,
+        "wallet_consents": 0,
+        "wallet_bills": 0,
+        "wallet_idempotency": 0
+      },
+      "sha256": "40dd4f6583fad5be0b966863c4c51508dbce5ed899a9b9fc79b176470fc80ba9"
+    },
+    "membership": {
+      "integrity": "ok",
+      "row_counts": {
+        "accounts": 0,
+        "consents": 0,
+        "authorizations": 0,
+        "authorization_claims": 0,
+        "wallet_bindings": 0,
+        "device_api_receipts": 0,
+        "device_monthly_due": 0
+      },
+      "sha256": "9f7164541569f0354be9a289319a9f26a6a6b9900847ceea51df96c6c3654c9f"
+    }
+  },
+  "image_sha256_after": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+  },
+  "finished_utc": "2026-09-09T19:42:14.327018+00:00"
+}

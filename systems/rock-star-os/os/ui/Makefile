@@ -5,7 +5,7 @@ override CFLAGS += -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -pthr
 override CPPFLAGS += $(shell $(PKG_CONFIG) --cflags cairo freetype2 json-c)
 override LDLIBS += $(shell $(PKG_CONFIG) --libs cairo freetype2 json-c) -lm -pthread
 
-.PHONY: all clean install test test-health
+.PHONY: all clean install test test-health test-wallet-replay
 all: rock-ui
 
 rock-ui: main.o ui.o device.o ipc.o health.o
@@ -37,7 +37,7 @@ rock-ui-test: test_ui.o ui.o device.o ipc.o
 rock-ipc-test: test_ipc.o ipc.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-test_ui.o: test_ui.c ui.h device.h test_remote.inc test_atm.inc test_auth.inc test_service.inc test_activation.inc test_mcp.inc test_lifecycle.inc test_native_replay.inc
+test_ui.o: test_ui.c ui.h device.h test_remote.inc test_atm.inc test_auth.inc test_service.inc test_activation.inc test_mcp.inc test_lifecycle.inc test_native_replay.inc test_wallet_replay.inc
 test_ipc.o: test_ipc.c ipc.h
 
 test: rock-ui-test rock-ipc-test
@@ -45,3 +45,7 @@ test: rock-ui-test rock-ipc-test
 	python3 test_native_replay.py --renderer ./rock-ui-test --font $(FONT)
 	python3 test_ipc.py
 	python3 -B test_evidence.py
+
+# Separate root-owned provisioning fixture; never installed and no QEMU.
+test-wallet-replay: rock-ui-test
+	python3 -B -W error::ResourceWarning test_wallet_replay.py --renderer ./rock-ui-test --font $(FONT)
