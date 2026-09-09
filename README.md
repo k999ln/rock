@@ -4,7 +4,7 @@
 
 **Linux / Buildroot / ARM64 QEMUで起動するnative OSの試作を追加しました。** kernel・root filesystem・専用サービス・C/CairoのHub画面、Tool SDKと署名配布、Wallet・MCPの試作を `systems/rock-star-os/` にまとめています。仮想端末での検証とBlackBerry実機対応は別です。実機、実USB、外部金融provider、実際の送金・ATMは未検証で、OS全体の完成ではありません。
 
-開発の入口: [現在の製品方針と統合範囲](docs/native-os-integration.md)、[native OSの使い方](systems/rock-star-os/README.md)、[今回の検証結果](docs/native-os-validation.md)。標準Walletの新OS契約は月額**8.88 USD固定**です。既存Webのファンド上限料金は試算として保持し、二重課金や自動的な残高移行は行いません。
+開発の入口: [現在の製品方針と統合範囲](docs/native-os-integration.md)、[native OSの使い方](systems/rock-star-os/README.md)、[今回の検証結果](docs/native-os-validation.md)、[次の担当向けCHECKPOINT](CHECKPOINT.md)。標準Walletの新OS契約は月額**8.88 USD固定**です。既存Webのファンド上限料金は試算として保持し、二重課金や自動的な残高移行は行いません。
 
 既存のAndroid試作も維持しています。[AOSP基本設計と改訂](docs/os-development-design.md)、[Android P1手順](docs/os-prototype.md)、[記事ToolのAIDL契約](contracts/README.md)を参照してください。Java・SQLite・2APKのbuild/lintと標準Androidの接続試験は過去CIで成功していますが、自前AOSP/Cuttlefish起動とPixel実機は未検証です。`android/` と `os/device/` はこの補助トラックで、Linux版とは別に検証します。
 
@@ -43,6 +43,25 @@
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
+
+## 今回完了した範囲
+
+- Linux native OSの公開可能な基準ソースを、既存Android/AOSPと衝突しない `systems/rock-star-os/` へ統合。
+- kernel/rootfs構成、native Hub、Tool SDK、署名配布・sandbox、A/B更新、Wallet・購入者資格、MCP、AI実行先、運営用部品をRockの正本へ追加。
+- BlackBerry優先、月額8.88 USD固定、既存Webの料金試算との境界、実装済み・仮想端末検証済み・未検証を設計書へ反映。
+- 移設後のnative Python 1,031件とC検証、既存Web 34件・API 143項目、既存Android契約の静的整合を確認。
+
+ここでいう完了は、**公開ソースの統合と試作基盤の検証**まで。BlackBerry実機で使える製品版や、実資金サービスの完成を意味しません。
+
+## 次に着手する作業
+
+1. `experiments/startup-health/` の未適用patchを分離環境で実装・検証し、採用または撤回する。
+2. BlackBerry候補を型番・variant単位で比較し、bootloader、BSP、画面・入力・通信・電源、更新、復旧が成立する最初の1機種を決める。
+3. 選定実機で起動し、端末だけでHub検索→直接取得→許可→実行→更新→rollback/uninstallを検証する。
+4. 同じHubからdevice local・cloud・実USB PCを接続し、即時接続・解除・結果復元を検証する。
+5. 本人確認と購入記録の引継ぎ、Wallet月次888 cents、ToB精算、ATM/provider sandbox、運営配信を外部契約ごとに接続する。
+
+実行順、合格条件、既知の失敗、再開コマンドは [CHECKPOINT](CHECKPOINT.md) に固定しています。
 
 R2の画面確認と修正はGitHubへ保存済みですが、**本番サイトへの反映は未実施**です。配信先だけにあるアプリUI・実行管理・手入力台帳と仕事API/DB移行が重なるため、上書きせず停止しました。保持する機能と再開手順は [統合設計](docs/deployment-integration.md) を参照。
 
