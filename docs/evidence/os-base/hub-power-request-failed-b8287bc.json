@@ -1,0 +1,124 @@
+{
+  "all_existing_runtime_files_unchanged": true,
+  "cases": [
+    {
+      "command": [
+        "qemu-system-aarch64",
+        "-machine",
+        "virt-10.0,gic-version=3",
+        "-accel",
+        "tcg",
+        "-cpu",
+        "cortex-a53",
+        "-m",
+        "1024",
+        "-smp",
+        "2",
+        "-display",
+        "none",
+        "-serial",
+        "stdio",
+        "-monitor",
+        "none",
+        "-no-reboot",
+        "-nic",
+        "none",
+        "-kernel",
+        "/var/tmp/rk3/systems/rock-star-os/artifacts/os/Image",
+        "-append",
+        "console=ttyAMA0 root=/dev/vda ro rootflags=noload rootwait panic=-1 rock.hubfault=crash",
+        "-drive",
+        "if=none,file=/var/tmp/rk-hub-faults/hub-fault-fax5o2xi/derived-rootfs.ext4,format=raw,id=osdisk,readonly=on",
+        "-device",
+        "virtio-blk-pci,drive=osdisk,addr=0x1",
+        "-drive",
+        "if=none,file=/var/tmp/rk-hub-faults/hub-fault-fax5o2xi/userdata.ext4,format=raw,id=userdata",
+        "-device",
+        "virtio-blk-pci,drive=userdata,addr=0x2",
+        "-object",
+        "rng-random,filename=/dev/urandom,id=rockrng",
+        "-device",
+        "virtio-rng-pci,rng=rockrng,addr=0x3"
+      ],
+      "mode": "crash",
+      "status": "RUNNING"
+    }
+  ],
+  "derived_filesystem_check": {
+    "exit_code": 0,
+    "output": "Pass 1: Checking inodes, blocks, and sizes\nPass 2: Checking directory structure\nPass 3: Checking directory connectivity\nPass 4: Checking reference counts\nPass 5: Checking group summary information\nrootfs: 1980/98304 files (0.7% non-contiguous), 99852/393216 blocks\ne2fsck 1.47.2 (1-Jan-2025)\n"
+  },
+  "derived_rootfs_sha256": "fdf95c6c72e8c380aafd66ee67be1cda4ed9fc4a55f6fab7536a468673fa6229",
+  "error": "ValueError: guest explicitly reported failure; owned QEMU is stopped as FAIL",
+  "finished_utc": "2026-09-09T21:22:21.833922+00:00",
+  "injections": [
+    {
+      "path": "usr/libexec/rock-hub-fault-fixture.py",
+      "sha256": "fc1e76b77ae0581debbe86de9eae23b8d03ed298a0c3c147ee65618a400fb3d6",
+      "test_only": true
+    },
+    {
+      "path": "usr/libexec/rock-hub-fault-runtime.json",
+      "sha256": "0e0c77faff81eec46e9520e2d3e21f621919aa7297fa347dac933db18c5fe462",
+      "test_only": true
+    },
+    {
+      "path": "etc/init.d/S98rock-hub-fault-verify",
+      "sha256": "68077db73efbcc9f7ad41df80475fc84a05be289fccbd234763de0718fa00e80",
+      "test_only": true
+    }
+  ],
+  "limits": {
+    "Hub_deadline_seconds": 3,
+    "boots": 3,
+    "capture_seconds": 4,
+    "per_boot_seconds": 240,
+    "platform_threads": 16,
+    "prearm_seconds": 2,
+    "process_inventory": 4096,
+    "stat_bytes": 4096
+  },
+  "original_images_unchanged": true,
+  "plan_sha256": "5273590572f09db86c1aa76fe4a738a42ba8b596c34927bef6689326eeb307b5",
+  "runtime_manifest_metadata_scope": "content hashes, file/directory modes and symlink targets; source UID/GID are not attested",
+  "runtime_manifest_prefixes": [
+    "usr",
+    "lib",
+    "bin",
+    "sbin",
+    "etc"
+  ],
+  "runtime_sha256": {
+    "etc/init.d/S50rockplatform": "f5964fd3c4b19550a827fe5e63232e273d1e44509cf438d8386737ffcbf5e751",
+    "usr/bin/openssl": "afd0d523f27d45f9429c98161147382bca85fc9634ef591bb2d0302b2bef3624",
+    "usr/lib/rock-platform/blackberryrock/hub.py": "2f65591cc2d2a4a46c9e44c634c96d8e95a66698d20cc28ebbcbf4035fc57579",
+    "usr/lib/rock-platform/blackberryrock/packages.py": "5fe4bb0da093a92ab2e9c009022c6ad14245ce27d5e6e7d885786e48053f3773",
+    "usr/lib/rock-platform/blackberryrock/recipe_worker.py": "f3bf50337383bfcac2593599285afec1b91d930f6c368ae1e1e6131784dbfe3e",
+    "usr/lib/rock-platform/service.py": "c1215e39648f1b308a68eb3aaba99b4fbbc0cbabb36849ffdc40c37856a16a17",
+    "usr/libexec/rock-sandbox-exec": "01fffd3b500e759d6008f120f9fe1874b22b18296f4d3b45994146fa69008f36",
+    "usr/share/rock/registry/org.rockstar.text-tidy--1.0.0.rock.json": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af"
+  },
+  "schema": "rock-hub-fault-evidence/1",
+  "scope": {
+    "fault_target": "launcher before sandbox execution",
+    "fixture": "derived rootfs; fixed root tracer and owner API",
+    "gui": "NOT_RUN",
+    "network": "none",
+    "platform_service_crash_interruption": "NOT_RUN",
+    "real_funds": "NOT_RUN",
+    "stage0_ab": "NOT_RUN",
+    "whole_D3": "INCOMPLETE"
+  },
+  "signed_package_sha256": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+  "source_image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763",
+    "stage0.cpio.gz": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+  },
+  "source_image_sha256_after": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763",
+    "stage0.cpio.gz": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+  },
+  "status": "FAIL"
+}

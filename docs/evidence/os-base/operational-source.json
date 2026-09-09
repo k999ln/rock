@@ -174,6 +174,23 @@
       "report": "auth-health-b8287bc.json",
       "report_sha256": "645297baf1445d65b0f20bdfb7d1e336f650310c5c7f2f7729d4fa3c37b16b2b",
       "scope": "frozen S97 authenticator health before mark-good, committed recovery; headless public fixture, no Wallet DB shutdown claim"
+    },
+    "qemu_hub_faults": {
+      "status": "PASS_SCOPED",
+      "actual_boots": 3,
+      "report": "hub-faults-b8287bc.json",
+      "report_sha256": "3f63c0169f633fe021cc4b9610da0540e50e5fc2ea1ea67749a90fb374f1f077",
+      "scope": "actual signed package helper then exact launcher crash/deadline; immutable receipt, explicit retry success, preserved Wallet/Hub rows after normal API poweroff and actual restart; no GUI or platform-daemon crash claim"
+    },
+    "host_wallet_ocr_merged": {
+      "status": "PASS_HOST_FIXTURE",
+      "report": "host-business-wallet-ocr-merged.json",
+      "report_sha256": "10faa30ef6cf085b16d49bbcddc99635c3fefbb66433467c2033141e5d5d62bd",
+      "states": 45,
+      "fixed_action_checks": 23,
+      "financial_journals": 5,
+      "postings": 10,
+      "qemu": "NOT_RUN"
     }
   },
   "logs_sha256": {
@@ -392,6 +409,18 @@
       "case": "data-abi-preflight-24",
       "status": "FAIL",
       "reason": "Host source comparison used usr/bin/rockd, while actual frozen install is usr/sbin/rockd. Failed before any QEMU; final audit proved original inputs unchanged. Path corrected; fresh preflight required."
+    },
+    {
+      "case": "hub-23-power-request",
+      "status": "FAIL",
+      "report": "hub-power-request-failed-b8287bc.json",
+      "reason": "Actual signed helper and exact launcher crash, immutable receipt replay and explicit successful retry completed; following fixed fixture power key used colons, rejected by frozen root power key grammar. Whole run FAIL, originals unchanged. Fixed only test key separators and tested against real production validate; fresh three boots pending."
+    },
+    {
+      "case": "data-abi-26-serial-prefix",
+      "status": "FAIL",
+      "report": "data-abi-serial-failed-b8287bc.json",
+      "reason": "Second boot produced ABI refusal proof, unchanged A/B/state and normal kernel poweroff; fixed BusyBox login prompt precedes background proof. Host start-of-line parser missed it. Whole run FAIL, original inputs unchanged. Exact optional prompt recognized with negative guards; fresh three boots pending."
     }
   ]
 }
