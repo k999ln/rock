@@ -2,6 +2,7 @@
 import copy
 from contextlib import ExitStack
 import importlib.util
+import json
 from pathlib import Path
 import shutil
 import sys
@@ -111,7 +112,9 @@ class BackupProfileGuards(unittest.TestCase):
         for version in (1, 2):
             with self.subTest(version=version), ExitStack() as stack:
                 saved = self.manifest(version)
-                saved['backup'] = str(self.saved)
+                saved_dir = self.source / 'backups' / ('fixture-'+str(version))
+                saved_dir.mkdir(mode=0o700, parents=True)
+                saved.update(backup=str(saved_dir), source_device='source')
                 images = self.root / ('images-'+str(version)); images.mkdir()
                 names = ('Image', 'rootfs.ext4') + (('stage0.cpio.gz',) if version == 2 else ())
                 for name in names: (images/name).write_bytes(b'synthetic image '+name.encode())
@@ -119,9 +122,14 @@ class BackupProfileGuards(unittest.TestCase):
                 config.update(name='source', network='none', images=str(images),
                               sha256={name:verify.guest.digest(images/name) for name in names})
                 if version == 2: config['services'] = {'authority_id':'fixture', 'sha256':'a'*64}
+                def save(path, value):
+                    path.write_text(json.dumps(value)); path.chmod(0o600)
+                save(self.source/'device.json', config)
+                save(self.source/'running.json', {'pid':123, 'session':str(self.source/'sessions'/('a'*32)),
+                    'identity':{'start_ticks':'900', 'command':[]}, 'config':config})
+                for name in verify.disk_manifest(saved): shutil.copyfile(self.saved/name, saved_dir/name)
+                save(saved_dir/'backup.json', {key:value for key,value in saved.items() if key != 'backup'})
                 destination = self.root / ('new-'+str(version))
-                session = self.root / ('session-'+str(version)); session.mkdir()
-                (session/'boot.log').write_text('ROCK_PLATFORM_READY\nreboot: Power down\n')
                 profile = verify.retention_profile(config)
                 baseline = {role: {'tables': {name: {'rows':0, 'logical_sha256':'a'*64} for name in tables},
                                    'schema_sha256':'b'*64, 'internal_sequences':{}, 'financial_summary':{}}
@@ -129,20 +137,29 @@ class BackupProfileGuards(unittest.TestCase):
                 def restore(_path, new_name):
                     destination.mkdir()
                     for name in verify.disk_manifest(saved): shutil.copyfile(self.saved/name, destination/name)
-                    return {'config':dict(config, name=new_name, network='none')}
+                    restored_config = dict(config, name=new_name, network='none')
+                    save(destination/'device.json', restored_config)
+                    return {'config':restored_config}
+                def start(restored_config):
+                    session = destination/'sessions'/('b'*32); session.mkdir(parents=True, mode=0o700)
+                    (session/'boot.log').write_text('ROCK_PLATFORM_READY\nreboot: Power down\n')
+                    record = {'pid':456, 'session':str(session), 'qmp_socket':str(session/'qmp'),
+                              'identity':{'start_ticks':'901', 'command':[]}, 'config':restored_config}
+                    save(destination/'running.json', record)
+                    return dict(record, reused=False, running=True)
                 seams = [
-                    (verify.sys, 'platform', 'linux'),
+                    (verify, 'require_execution_host', Mock()),
                     (verify.guest, 'BASE', self.root),
                     (verify.guest, 'state_path', Mock(return_value=self.source)),
                     (verify.guest, 'status', Mock(return_value={'running':False})),
+                    (verify.guest, 'validate_config', Mock()),
                     (verify.backup, 'create_backup', Mock(return_value=saved)),
                     (verify.backup, 'restore_backup', Mock(side_effect=restore)),
                     (verify, 'closed_file_exists', Mock(return_value=False)),
                     (verify, 'business_snapshot', Mock(return_value=(baseline, {}, [{'created_unix':1, 'boot_id':'fixture'}]))),
                     (verify, 'source_receipts', Mock(return_value={})),
                     (verify.power.guest, 'validate_record', Mock()),
-                    (verify.guest, 'start', Mock(return_value={'reused':False, 'session':str(session),
-                        'qmp_socket':str(session/'qmp'), 'identity':{'command':[]}})),
+                    (verify.guest, 'start', Mock(side_effect=start)),
                     (verify.guest, 'running', Mock(return_value=False)),
                     (verify.power, 'Monitor', Mock(ALLOWED=set())),
                     (verify.power.native, 'NativeInput', Mock()),

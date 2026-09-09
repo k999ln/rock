@@ -5,7 +5,7 @@ Never repairs/mounts the source or sends host power/reset commands. Failure
 retains the newly restored device for inspection rather than forcing it off.
 """
 import argparse
-from contextlib import closing
+from contextlib import closing, ExitStack
 from datetime import datetime, timezone
 import hashlib
 import importlib.util
@@ -290,15 +290,83 @@ def power_transition(before,after,events):
 
 def wait_for(predicate,message,record,timeout):
     deadline=time.monotonic()+timeout
-    while time.monotonic()<deadline:
-        if predicate(): return
+    while True:
+        if time.monotonic()>deadline: raise TimeoutError(message+' deadline exceeded')
+        matched=predicate()
+        if time.monotonic()>deadline: raise TimeoutError(message+' deadline exceeded')
+        if matched: return
         guest.require(guest.running(record),'restored device exited before '+message)
-        time.sleep(.2)
-    raise TimeoutError(message)
+        time.sleep(min(.2,max(0,deadline-time.monotonic())))
+
+
+def wait_stopped(record, *, deadline):
+    """The deadline starts before confirmation input and is never extended."""
+    while True:
+        if time.monotonic()>deadline: raise TimeoutError('normal UI shutdown deadline exceeded; device retained')
+        running=guest.running(record)
+        observed=time.monotonic()
+        if observed>deadline: raise TimeoutError('normal UI shutdown deadline exceeded; device retained')
+        if not running: return observed
+        time.sleep(min(.3,max(0,deadline-observed)))
+
+
+def session_record(record):
+    return {key:value for key,value in record.items() if key not in ('running','reused')}
+
+
+def require_stopped_device(state, config, *, expected_record=None, fresh=False):
+    """Caller holds the existing device lock across this guard and every read."""
+    guest.require(backup.exact_json(backup.read_metadata(state/'device.json'),config),
+                  'device configuration changed before closed observation')
+    path=state/'running.json'
+    if fresh:
+        guest.require(not path.exists() and not path.is_symlink() and not (state/'sessions').exists(),
+                      'restored destination already booted; no reuse before baseline observation')
+        current=None
+    else:
+        current=backup.read_metadata(path)
+        guest.require(type(current) is dict and type(current.get('pid')) is int and current['pid']>1 and
+                      type(current.get('session')) is str and Path(current['session']).parent==state/'sessions' and
+                      re.fullmatch('[0-9a-f]{32}',Path(current['session']).name) and
+                      type(current.get('identity')) is dict and set(current['identity'])=={'start_ticks','command'} and
+                      type(current['identity']['command']) is list and type(current['identity']['start_ticks']) is str and
+                      backup.exact_json(current.get('config'),config), 'invalid stopped session identity')
+        if expected_record is not None:
+            guest.require(backup.exact_json(current,session_record(expected_record)),
+                          'device running record changed before closed observation')
+        guest.require(not guest.running(current),'current device is still running; closed observation refused')
+    for name in ('vnc.sock','qmp.sock','websocket.sock'):
+        guest.remove_stale_socket(state/name)
+    return current
+
+
+def require_first_session(state, record):
+    """Reject a complete intervening boot between snapshot lock and start lock."""
+    current=backup.read_metadata(state/'running.json')
+    guest.require(backup.exact_json(current,session_record(record)), 'restored running record changed after start')
+    sessions=state/'sessions'
+    guest.require(sessions.is_dir() and not sessions.is_symlink() and
+                  {path.name for path in sessions.iterdir()}=={Path(record['session']).name},
+                  'restored destination had another session before the observed boot')
+
+
+def verify_saved_metadata(saved, source_state):
+    directory=Path(saved['backup'])
+    guest.require(directory.parent==source_state/'backups' and not directory.is_symlink(), 'unexpected source backup directory')
+    stored=backup.read_metadata(directory/'backup.json')
+    guest.require(backup.exact_json(stored,{key:value for key,value in saved.items() if key not in ('status','backup')}),
+                  'saved backup metadata changed after creation')
+    guest.require(stored['source_device']==source_state.name and stored['config']['name']==source_state.name,
+                  'saved backup belongs to a different source device')
+    return disk_manifest(stored)
+
+
+def require_execution_host():
+    guest.require(sys.platform=='linux' and os.geteuid()!=0,'run as the Linux build VM owner')
 
 
 def run(source_name,restored_name):
-    guest.require(sys.platform=='linux' and os.geteuid()!=0,'run as the Linux build VM owner')
+    require_execution_host()
     guest.require(all(isinstance(name,str) and re.fullmatch(r'[a-z0-9][a-z0-9-]{0,31}',name)
                       for name in (source_name,restored_name)),'invalid virtual-device name')
     guest.require(source_name!=restored_name,'restoration requires another new name')
@@ -311,12 +379,20 @@ def run(source_name,restored_name):
     report={'schema':'rock-desktop-backup-actual/3','status':'FAIL','started_utc':datetime.now(timezone.utc).isoformat(),
             'source_device':source_name,'restored_device':restored_name,'blackberry':'NOT_RUN','physical_usb':'NOT_RUN',
             'real_money':'NOT_RUN','host_power_commands':0,'input_events':[],'screenshots':[],'qmp_events':[],'qmp_commands':[],
-            'visual_review':'PENDING','evidence':str(output),'comparison_contract':COMPARISON_CONTRACT}
+            'visual_review':'PENDING','evidence':str(output),'comparison_contract':COMPARISON_CONTRACT,
+            'time_limits':{'platform_ready_seconds':180,'normal_shutdown_seconds':120},
+            'writer_fencing':'existing source lock held through restored test and final source checks; destination lock for closed reads'}
     record=monitor=None; manifest=None; backup_directory=None
+    source_lock=ExitStack();source_record=source_config=saved=None
     try:
         # create_backup holds the source device lock and checks clean shutdown.
-        saved=backup.create_backup(source_name);backup_directory=Path(saved['backup'])
-        manifest=disk_manifest(saved)
+        # Acquire only after it returns: flock on another open descriptor would
+        # deadlock. Revalidate the gap before touching source or backup disks.
+        saved=backup.create_backup(source_name)
+        source_lock.enter_context(backup.locked(source_state))
+        source_config=saved['config'];guest.validate_config(source_config)
+        source_record=require_stopped_device(source_state,source_config)
+        backup_directory=Path(saved['backup']);manifest=verify_saved_metadata(saved,source_state)
         backup_data=backup_directory/'userdata.ext4'
         report['source_disks_before']=verify_disk_set(manifest,source_state,'source')
         report['backup_disks_before']=verify_disk_set(manifest,backup_directory,'backup')
@@ -333,17 +409,21 @@ def run(source_name,restored_name):
         restored=backup.restore_backup(saved['backup'],restored_name)
         config=restored['config'];guest.require(config.get('network','none')=='none','restored device must remain offline')
         data=guest.BASE/restored_name/'userdata.ext4'
-        report['restored_disks_before_boot']=verify_disk_set(manifest,data.parent,'restored before boot')
-        guest.require(retention_profile(config)==profile,'restored device profile changed')
-        verify_profile_layout(data,profile)
-        restored_before,_,_=business_snapshot(data,profile)
-        guest.require(restored_before==baseline,'restored logical database differs before first boot')
-        image_hashes={name:guest.digest(Path(config['images'])/name) for name in config['sha256']}
-        source_hash=manifest['userdata.ext4']['sha256']
-        report.update(backup=str(backup_directory),backup_schema=saved['schema'],source_sha256_before=source_hash,backup_sha256_before=source_hash,
-                      restored_sha256_before_boot=guest.digest(data),logical_before=baseline,network='none',image_sha256=image_hashes)
+        with backup.locked(destination):
+            require_stopped_device(destination,config,fresh=True)
+            report['restored_disks_before_boot']=verify_disk_set(manifest,data.parent,'restored before boot')
+            guest.require(retention_profile(config)==profile,'restored device profile changed')
+            verify_profile_layout(data,profile)
+            restored_before,_,_=business_snapshot(data,profile)
+            guest.require(restored_before==baseline,'restored logical database differs before first boot')
+            image_hashes={name:guest.digest(Path(config['images'])/name) for name in config['sha256']}
+            source_hash=manifest['userdata.ext4']['sha256']
+            report.update(backup=str(backup_directory),backup_schema=saved['schema'],source_sha256_before=source_hash,backup_sha256_before=source_hash,
+                          restored_sha256_before_boot=guest.digest(data),logical_before=baseline,network='none',image_sha256=image_hashes)
         record=guest.start(config)
         guest.require(not record['reused'],'restore must start a new owned device process')
+        with backup.locked(destination):
+            require_first_session(destination,record)
         report['restored_session']=record['session']
         monitor=power.Monitor(Path(record['qmp_socket']),report)
         ui=power.native.NativeInput(monitor,output,report)
@@ -357,32 +437,32 @@ def run(source_name,restored_name):
         capture_wallet_read_only(ui)
         ui.click(636,26);time.sleep(1);ui.capture('06-device-power')
         ui.click(360,618);time.sleep(1);ui.capture('07-normal-shutdown-confirmation')
+        shutdown_started=time.monotonic();deadline=shutdown_started+report['time_limits']['normal_shutdown_seconds']
         ui.click(497,577)
-        deadline=time.monotonic()+120
-        while guest.running(record) and time.monotonic()<deadline:
-            time.sleep(.3)
-        guest.require(not guest.running(record),'normal UI shutdown did not complete; restored device retained for inspection')
+        report['normal_shutdown_seconds']=wait_stopped(record,deadline=deadline)-shutdown_started
         monitor.reader.join(timeout=3)
         serial=log.read_text(errors='replace')
         guest.require(serial.count('reboot: Power down')==1 and 'reboot: Restarting system' not in serial,'kernel normal shutdown marker missing')
-        report['restored_filesystem_check']=backup.check_disk(data)
-        verify_profile_layout(data,profile)
-        after,after_hub,after_power=business_snapshot(data,profile)
-        compare_business(baseline,after,profile)
-        for role in ('wallet','membership'):
-            if role in after: report[role+'_summary_after']=after[role]['financial_summary']
-        guest.require(source_receipts(after_hub)==report['preserved_receipts'],'installed/job receipts differ after boot')
-        report['boot_transition']=power_transition(baseline_power,after_power,report['qmp_events'])
-        guest.require(set(report['qmp_commands'])<=power.Monitor.ALLOWED and
-                      not any('verify=1' in value for value in record['identity']['command']),'unexpected guest hook or host power command')
-        guest.require({name:guest.digest(Path(config['images'])/name) for name in image_hashes}==image_hashes,'frozen OS image changed')
-        report['restored_slots_after_boot']=verify_disk_set(
-            {name: value for name,value in manifest.items() if name!='userdata.ext4'},data.parent,'restored slot after boot')
-        incomplete=report['external_state']['required']
-        report.update(status='INCOMPLETE' if incomplete else 'AUTOMATED_PASS',local_checks='AUTOMATED_PASS',
-                      logical_after=after,restored_sha256_after_boot=guest.digest(data),
-                      meaning=('local device checks passed; required external authority/runner/provider restoration remains NOT_RUN'
-                               if incomplete else 'local OS/data/receipt/shutdown checks passed; original UI captures require visual review'))
+        with backup.locked(destination):
+            require_stopped_device(destination,config,expected_record=record)
+            report['restored_filesystem_check']=backup.check_disk(data)
+            verify_profile_layout(data,profile)
+            after,after_hub,after_power=business_snapshot(data,profile)
+            compare_business(baseline,after,profile)
+            for role in ('wallet','membership'):
+                if role in after: report[role+'_summary_after']=after[role]['financial_summary']
+            guest.require(source_receipts(after_hub)==report['preserved_receipts'],'installed/job receipts differ after boot')
+            report['boot_transition']=power_transition(baseline_power,after_power,report['qmp_events'])
+            guest.require(set(report['qmp_commands'])<=power.Monitor.ALLOWED and
+                          not any('verify=1' in value for value in record['identity']['command']),'unexpected guest hook or host power command')
+            guest.require({name:guest.digest(Path(config['images'])/name) for name in image_hashes}==image_hashes,'frozen OS image changed')
+            report['restored_slots_after_boot']=verify_disk_set(
+                {name: value for name,value in manifest.items() if name!='userdata.ext4'},data.parent,'restored slot after boot')
+            incomplete=report['external_state']['required']
+            report.update(status='INCOMPLETE' if incomplete else 'AUTOMATED_PASS',local_checks='AUTOMATED_PASS',
+                          logical_after=after,restored_sha256_after_boot=guest.digest(data),
+                          meaning=('local device checks passed; required external authority/runner/provider restoration remains NOT_RUN'
+                                   if incomplete else 'local OS/data/receipt/shutdown checks passed; original UI captures require visual review'))
     except BaseException as error:
         report.update(status='FAIL',error=type(error).__name__+': '+str(error))
         if monitor and record and guest.running(record):
@@ -395,15 +475,29 @@ def run(source_name,restored_name):
             except BaseException as error: errors.append('monitor: '+type(error).__name__)
         if manifest is not None:
             try:
+                require_stopped_device(source_state,source_config,expected_record=source_record)
+                guest.require(verify_saved_metadata(saved,source_state)==manifest,'source backup manifest changed during verification')
                 report['source_disks_after']=verify_disk_set(manifest,source_state,'source after verification')
                 report['backup_disks_after']=verify_disk_set(manifest,backup_directory,'backup after verification')
                 report['source_sha256_after']=report['source_disks_after']['userdata.ext4']['sha256']
                 report['backup_sha256_after']=report['backup_disks_after']['userdata.ext4']['sha256']
             except BaseException as error: errors.append(type(error).__name__+': '+str(error))
-        if record: report['restored_device_still_running']=guest.running(record)
+        if record:
+            try:
+                with backup.locked(destination):
+                    current=backup.read_metadata(destination/'running.json')
+                    report['restored_device_still_running']=guest.running(current)
+                    guest.require(backup.exact_json(current,session_record(record)),
+                                  'restored device record changed before final report')
+            except BaseException as error:
+                report.setdefault('restored_device_still_running','UNKNOWN')
+                errors.append(type(error).__name__+': '+str(error))
         if errors: report.update(status='FAIL',finalization_errors=errors)
         report['finished_utc']=datetime.now(timezone.utc).isoformat()
-        guest.save(output/'report.json',report)
+        try:
+            guest.save(output/'report.json',report)
+        finally:
+            source_lock.close()
     return report
 
 

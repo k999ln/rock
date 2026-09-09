@@ -32,12 +32,25 @@
       "power_fixture_sha256": "6b20e1cb2f5155d82d46250bf6aa9232c0703297f33acb3949f1f4abf9de7e7b"
     },
     "qemu_new_image": {
-      "status": "IN_PROGRESS",
+      "status": "BUILT",
       "source_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
       "new_empty_build_directory": "/var/tmp/rk-build-b8287bc",
       "source_directory": "/var/tmp/rk3",
       "old_build_output_reused": false,
-      "qemu_boot": "NOT_RUN"
+      "qemu_boot": "PASS_TWO_BASIC_BOOTS",
+      "files_sha256": {
+        "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+        "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763",
+        "stage0.cpio.gz": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+      },
+      "freeze_manifest": "freeze-b8287bc.json",
+      "freeze_manifest_sha256": "6a58860076c14aef7d9c6aaa9c9027cc990615fa07719075ccaa59a951096557",
+      "built_at": "2026-09-09T19:29:12Z",
+      "scope": "Two basic boot/persistence cases only; D0–D6 aggregate NOT_RUN",
+      "platform": "PASS",
+      "native_ui": "PASS",
+      "normal_system_power": "PASS",
+      "gui_wallet": "IN_PROGRESS"
     },
     "physical_device": {
       "status": "NOT_RUN"
@@ -73,6 +86,15 @@
       "root_log_sha256": "980b4f2fe6a4dbc3a58d10efff101a45823aadee6551234dfe855188da911212",
       "runtime_changes_after_b8287bc": false,
       "actual_qemu": "NOT_RUN"
+    },
+    "qemu_native_ui": {
+      "status": "PASS",
+      "report": "native-ui-b8287bc.json",
+      "real_screenshots": 9,
+      "image_unchanged": true,
+      "source_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "host_harness_commit": "c7b29a9dc2a6bdf646a098992dfa5104ad6ad7fd",
+      "scope": "Actual native checklist install/approve/input/result/history; Wallet unchanged; proposal lifecycle still NOT_RUN"
     }
   },
   "logs_sha256": {
@@ -130,6 +152,19 @@
       "source_commit": "dea78e326e946f1599d45938e9becdb459403df4",
       "stage": "post-build platform install",
       "reason": "Public source omitted docs/PRODUCT-EXPERIMENTS-OS.md but installer still referenced it. No completed Image/rootfs/stage0 set; boot NOT_RUN."
+    },
+    {
+      "status": "PASS",
+      "source_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "new_empty_build_directory": "/var/tmp/rk-build-b8287bc",
+      "source_archive_sha256": "96a449effab25c97f6280c06540803a6d7dac5f746c54d8fc21aadba93e1e88d",
+      "build_log_sha256": "2803ba103843708d775104f51252260907c8eeeb2538b7ae92901b94320f4cf0",
+      "files_sha256": {
+        "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+        "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763",
+        "stage0.cpio.gz": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+      },
+      "finished_utc": "2026-09-09T19:29:12Z"
     }
   ],
   "ci_history": [
@@ -168,6 +203,21 @@
       },
       "android": {
         "run": 34392915866,
+        "status": "PASS"
+      }
+    },
+    {
+      "head_commit": "c7b29a9dc2a6bdf646a098992dfa5104ad6ad7fd",
+      "native": {
+        "run": 34394252067,
+        "status": "PASS"
+      },
+      "web": {
+        "run": 34394252080,
+        "status": "PASS"
+      },
+      "android": {
+        "run": 34394252183,
         "status": "PASS"
       }
     }

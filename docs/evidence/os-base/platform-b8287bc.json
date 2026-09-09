@@ -1,0 +1,190 @@
+{
+  "status": "PASS",
+  "command": [
+    "qemu-system-aarch64",
+    "-machine",
+    "virt-10.0,gic-version=3",
+    "-accel",
+    "tcg",
+    "-cpu",
+    "cortex-a53",
+    "-m",
+    "1024",
+    "-smp",
+    "2",
+    "-display",
+    "none",
+    "-serial",
+    "stdio",
+    "-monitor",
+    "none",
+    "-qmp",
+    "unix:/var/tmp/rk3/systems/rock-star-os/artifacts/os/platform-20260909T193230Z-fs4o2k5f/qmp.sock,server=on,wait=off",
+    "-no-reboot",
+    "-nic",
+    "none",
+    "-kernel",
+    "/var/tmp/rk3/systems/rock-star-os/artifacts/os/Image",
+    "-append",
+    "console=ttyAMA0 vt.global_cursor_default=0 root=/dev/vda ro rootflags=noload rootwait panic=-1 rock.platform.verify=1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/rootfs.ext4,format=raw,id=osdisk,readonly=on",
+    "-device",
+    "virtio-blk-pci,drive=osdisk,addr=0x1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/platform-20260909T193230Z-fs4o2k5f/userdata.ext4,format=raw,id=userdata",
+    "-device",
+    "virtio-blk-pci,drive=userdata,addr=0x2",
+    "-object",
+    "rng-random,filename=/dev/urandom,id=rockrng",
+    "-device",
+    "virtio-rng-pci,rng=rockrng,addr=0x3",
+    "-device",
+    "virtio-gpu-pci,xres=720,yres=960,addr=0x4",
+    "-device",
+    "virtio-keyboard-pci,addr=0x5",
+    "-device",
+    "virtio-tablet-pci,addr=0x6"
+  ],
+  "image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+  },
+  "network_adapter": "none",
+  "blackberry": "NOT_RUN",
+  "wallet": "SIMULATOR_ONLY",
+  "exit_code": 0,
+  "missing": [],
+  "resource_probes": [
+    {
+      "armed": {
+        "limits": {
+          "as": [
+            268435456,
+            268435456
+          ],
+          "core": [
+            0,
+            0
+          ],
+          "cpu": [
+            2,
+            2
+          ],
+          "fsize": [
+            1048576,
+            1048576
+          ]
+        },
+        "mode": "memory",
+        "schema": "rock-sandbox-resource-probe/1",
+        "uid": 65534
+      },
+      "elapsed_seconds": 0.26919436800000085,
+      "mode": "memory",
+      "outcome": {
+        "mode": "memory",
+        "outcome": "MemoryError"
+      },
+      "returncode": 0,
+      "status": "PASS"
+    },
+    {
+      "armed": {
+        "limits": {
+          "as": [
+            268435456,
+            268435456
+          ],
+          "core": [
+            0,
+            0
+          ],
+          "cpu": [
+            2,
+            2
+          ],
+          "fsize": [
+            1048576,
+            1048576
+          ]
+        },
+        "mode": "cpu",
+        "schema": "rock-sandbox-resource-probe/1",
+        "uid": 65534
+      },
+      "elapsed_seconds": 2.0489997759999987,
+      "mode": "cpu",
+      "outcome": null,
+      "returncode": 137,
+      "status": "PASS"
+    },
+    {
+      "armed": {
+        "limits": {
+          "as": [
+            268435456,
+            268435456
+          ],
+          "core": [
+            0,
+            0
+          ],
+          "cpu": [
+            2,
+            2
+          ],
+          "fsize": [
+            1048576,
+            1048576
+          ]
+        },
+        "mode": "file-size",
+        "schema": "rock-sandbox-resource-probe/1",
+        "uid": 65534
+      },
+      "elapsed_seconds": 0.3685576640000008,
+      "mode": "file-size",
+      "outcome": {
+        "bytes": 1048576,
+        "mode": "file-size",
+        "outcome": "EFBIG"
+      },
+      "returncode": 0,
+      "status": "PASS"
+    },
+    {
+      "armed": {
+        "limits": {
+          "as": [
+            268435456,
+            268435456
+          ],
+          "core": [
+            0,
+            0
+          ],
+          "cpu": [
+            2,
+            2
+          ],
+          "fsize": [
+            1048576,
+            1048576
+          ]
+        },
+        "mode": "crash",
+        "schema": "rock-sandbox-resource-probe/1",
+        "uid": 65534
+      },
+      "elapsed_seconds": 0.2789189279999995,
+      "mode": "crash",
+      "outcome": null,
+      "returncode": 139,
+      "status": "PASS"
+    }
+  ],
+  "resource_probe_scope": "fixed sandbox diagnostics; per-file size only; Hub crash/deadline lifecycle NOT_RUN",
+  "native_framebuffer_capture": true,
+  "finished_utc": "2026-09-09T19:33:42.221504+00:00"
+}

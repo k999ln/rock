@@ -74,7 +74,7 @@ tob側の自動化ツールを商品として管理するHubと、自動化で�
 | GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 未合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
 | DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 未合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) |
 
-次の作業: b8287bc固定runtime1089件、追加host c7b29a9の1119件/root61件はLinux成功。新しい空の領域でOS再build→起動/専用UID/Hub業務商品/合成Wallet→D0〜D6受入。local A/B復元63件はhost成功、実復元起動は未実行。B03-FIXTURE後にGX00→ゲーム交換→SDK。Pixel 10用のP1 APK二本はCI検証・取得済み、実機未確認。
+次の作業: b8287bcの新規buildを完了、3 images固定。実QEMU2回起動/保存とHub/Wallet分離・資源拒否はPASS。native業務UI/Wallet→通常終了/A-B/新規復元/5cycles60分を継続。source1089、追加host1119/root61はLinux成功。B03-FIXTURE後にGX00→ゲーム交換→SDK。Pixel10のP1 APK二本は準備済み、実機未確認。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

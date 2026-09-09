@@ -12,7 +12,7 @@ main/native/設計v1.1を専用branchへ統合した。統合commitは `797c663d
 | startup health | PASS / sourceのみ | Python15件、root→UID1000の実Linux C8群。実nonce/socket/pidfd・loop応答を試験 |
 | backup試験入口・local A/B | PASS / sourceのみ | Linux63件（35既存backup・15purchaser A/B・13local A/B）。2件は実ext4のlocal/purchaser分離。旧schema1、新schema2、追加表、外部正本の未検証表示を保持 |
 | 全UI observer | PASS / sourceのみ | 現行enroll/Wallet terms/quote/approvalに合わせた55件を実Linux root fixtureで実行。skip/warningなし |
-| 新規QEMU image | IN_PROGRESS / 2回目 | 初回`dea78e3`は旧文書参照で停止。公開入力だけの実配置回帰とD3診断を追加した`b8287bc`を、新しい空のbuild領域で再生成中。実起動はNOT_RUN |
+| 新規QEMU image | BUILD PASS / 起動試験中 | `b8287bc`を新しい空の領域で生成。778 source filesとarchive commit・設定・3 imagesのhashを照合して固定。2回の実起動/保存、Hub・Wallet・4資源拒否、通常initのreboot/poweroff、native画面の導入/許可/実行/履歴はPASS。実画面9枚と記録を照合。D0〜D6総合は進行中 |
 | D0〜D6総合 | 未合格 | 上記source試験をOS稼働成功にしない |
 | Pixel 10 | NOT_RUN | 利用者のGrapheneOSを保つ[Android P1 APK試験](android-trial.md)を準備 |
 | BlackBerry・MetaMask実資金・外部game | NOT_RUN | 機種/技術/取引条件が未確定、MetaMask現行コードはアドレス接続のみ |
@@ -35,13 +35,13 @@ local用の明示schema6はnetworkなしで署名済みImage/rootfs/stage0を固
 
 D3の固定診断は、実LinuxのUID1002→65534 sandboxでメモリ512 MiB要求を256 MiB上限で拒否、CPU2秒で終了、1 MiBを越える書込をEFBIGで拒否、明示crashを観測した。通常recipeと16項目の起動診断、未知引数拒否も保持した。実OS内の4ケースと、Hubでのtimeout/crash状態回復、data容量不足は別の受入結果を必要とする。
 
-最新の`2d9bd3a` CIではnativeとAndroidが合格、Webは生成済みproject.mdのcommit漏れで停止した。c7b29a9に同期差分を含め、再検証中。追加のWallet証拠6件はroot必須のため既存CIのroot observer段階へ配置し、非root source試験をskipで通さない。
+`2d9bd3a` CIのWebは生成済みproject.mdのcommit漏れで停止した。c7b29a9に同期差分を含め、同SHAのWeb/native/Androidすべてが再検証で成功。追加のWallet証拠6件はroot必須のため既存CIのroot observer段階へ配置し、非root source試験をskipで通さない。
 
 [ゲームAPI草案](game-api-contract-draft.md)は認証principalから契約を選ぶ境界、専用署名receipt、GX00後の交換/SDK実装入口を整理した設計のみ。新規API・SDKは未提供。
 
 ## 残る実装と受入
 
-1. 新imageの起動、専用UID、read-only root/data、native画面とIPCを確認する。
+1. 新imageの2回の実起動・保存、専用UID、read-only root/data、Hub/Wallet分離と資源拒否は確認済み。nativeチェックリスト商品の画面操作と通常initのreboot/poweroffも成功。業務商品の全ライフサイクルとWallet画面を継続。
 2. Hubで業務商品を取得・同意・処理・保存し、停止・更新・戻す・削除を画面から通す。版選択・停止・再承認の実装とC描画試験は完了し、実OSでの通過を残す。
 3. 実画面Wallet/月額/ATM、更新障害、正常reboot/poweroff、新規復元先、5回の正常起動/終了と60分の反復稼働を同一候補で検証する。
 4. [GX00 ADR](gx00-owner-isolation-adr.md)に沿って既存1契約1台帳の複数owner接続、復元時writer排他、ゲーム本人接続を実装する。現時点は設計のみで、ゲーム交換/SDKは未実装。
