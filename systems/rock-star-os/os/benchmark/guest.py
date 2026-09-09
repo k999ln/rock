@@ -20,7 +20,7 @@ from common import *
 
 SOCKET = '/run/rock-platform/api.sock'
 OUTPUT = Path('/data/benchmark')
-PROTOCOL = Path(__file__).with_name('PRODUCT-EXPERIMENTS-OS.md')
+PROTOCOL = Path(__file__).with_name('preregistration.md')
 DATABASE = '/data/platform/hub.db'
 TERMINAL = {'succeeded', 'failed', 'cancelled', 'interrupted'}
 
@@ -199,7 +199,7 @@ def main():
     OUTPUT.mkdir(mode=0o700)
     info = OUTPUT.lstat()
     require(stat.S_ISDIR(info.st_mode) and info.st_uid == 0 and stat.S_IMODE(info.st_mode) == 0o700, 'private evidence directory required')
-    protocol = PROTOCOL.read_text().split('\n## 結果\n', 1)[0]
+    protocol = PROTOCOL.read_bytes().decode('utf-8')
     report = {'schema': EXPERIMENT, 'status': 'INCOMPLETE', 'scope': 'same QEMU ARM64 OS methods only',
               'started_utc': now(), 'samples': [], 'failures': [], 'preregistration': {'text': protocol, 'sha256': sha(protocol.encode())},
               'blackberry': 'NOT_RUN', 'human_time': 'NOT_MEASURED', 'physical_battery': 'NOT_MEASURED',

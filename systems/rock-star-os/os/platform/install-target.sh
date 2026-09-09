@@ -72,7 +72,7 @@ done
 chmod 0755 "$target/etc/init.d/S99rock-system-verify"
 chmod 0755 "$target/etc/init.d/S99rock-remote-verify"
 mkdir -p "$target/usr/lib/rock-benchmark"
-cp "$repo/os/benchmark/common.py" "$repo/os/benchmark/guest.py" "$repo/docs/PRODUCT-EXPERIMENTS-OS.md" "$target/usr/lib/rock-benchmark/"
+cp "$repo/os/benchmark/common.py" "$repo/os/benchmark/guest.py" "$repo/os/benchmark/prepared/20260908-v1/preregistration.md" "$target/usr/lib/rock-benchmark/"
 chmod 0755 "$target/etc/init.d/S99rock-benchmark-verify"
 for module in __init__ client common transport; do
   cp "$repo/os/registry/$module.py" "$dest/registry/$module.py"

@@ -1,6 +1,6 @@
 # Rock star — 事業・設計・進捗
 
-2026-09-09実装更新: [統合後のOS検証](docs/os-operational-validation-20260909.md)に1056件source回帰と55件全observerの実Linux結果を保存。3系統統合は完了、新規OS build/実起動受入は進行中。[Pixel 10 P1](docs/android-trial.md)はGrapheneOSを保つ記事処理APK試験の準備。[GX00 ADR](docs/gx00-owner-isolation-adr.md)は複数owner実装に向けた設計で、交換実装の成功ではない。
+2026-09-09実装更新: [統合後のOS検証](docs/os-operational-validation-20260909.md)に1069件source回帰と55件全observerの実Linux結果を保存。3系統統合は完了。初回OS buildで公開範囲外の旧文書参照による停止を確認し、公開済み実験仕様への修正と実配置回帰を追加。新規build/実起動受入を続ける。[Pixel 10 P1](docs/android-trial.md)はGrapheneOSを保つ記事処理APKをCIで検証・取得し、実機試験は未実行。[GX00 ADR](docs/gx00-owner-isolation-adr.md)は複数owner実装に向けた設計で、交換実装の成功ではない。
 
 このファイルは当該branchの作業記録です。確定要望は [docs/product-baseline.md](docs/product-baseline.md)、進捗からの指示作成は [docs/prompt-playbook.md](docs/prompt-playbook.md) が正本です。
 

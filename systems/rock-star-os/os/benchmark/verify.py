@@ -15,6 +15,7 @@ import time
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
+PROTOCOL = HERE / 'prepared/20260908-v1/preregistration.md'
 sys.path[:0] = [str(HERE), str(REPO / 'src'), str(REPO / 'os')]
 from common import *
 from blackberryrock.sdk import starter, sign_development
@@ -29,10 +30,10 @@ def file_hash(path):
 
 def prepare(directory):
     directory.mkdir(parents=True, exist_ok=False)
-    protocol = (REPO / 'docs/PRODUCT-EXPERIMENTS-OS.md').read_text().split('\n## 結果\n', 1)[0]
-    report = {'schema': EXPERIMENT, 'prepared_utc': now(), 'preregistration_sha256': sha(protocol.encode()),
+    protocol = PROTOCOL.read_bytes()
+    report = {'schema': EXPERIMENT, 'prepared_utc': now(), 'preregistration_sha256': sha(protocol),
               'packages': {}, 'sources': {name: file_hash(HERE / name) for name in ('common.py', 'guest.py')}}
-    (directory / 'preregistration.md').write_text(protocol)
+    (directory / 'preregistration.md').write_bytes(protocol)
     (directory / 'input.txt').write_bytes(INPUT.encode())
     (directory / 'expected.txt').write_bytes(EXPECTED.encode())
     for name in NAMES:

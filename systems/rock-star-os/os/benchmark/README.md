@@ -2,7 +2,8 @@
 
 This extends the earlier host experiment into one real ARM64 Rock star os
 guest using its UID1000 API client and Linux namespace/seccomp sandbox.
-The preregistration is `docs/PRODUCT-EXPERIMENTS-OS.md`, recorded at
+The public canonical preregistration is
+`os/benchmark/prepared/20260908-v1/preregistration.md`, recorded at
 2026-09-08 09:22:48 UTC before measurements. The actual run completed at
 2026-09-08 10:12:31 UTC using the frozen Linux 6.18.50 `rock-os-wallet-0952`
 image. Evidence is retained in `evidence/20260908T101124Z/`.
@@ -22,8 +23,10 @@ unchanged runtime hashes and unchanged simulator Wallet must match the
 independent observations. Completion and a faster Workflow are separate
 outcomes; a slower Workflow does not invalidate a completed experiment.
 
-Root integration copies `common.py`, `guest.py`, and the preregistration document
-to `/usr/lib/rock-benchmark/`. An init hook runs
+Root integration copies `common.py`, `guest.py`, and the exact public
+preregistration bytes to `/usr/lib/rock-benchmark/preregistration.md`.
+The installer and preparation command require no private design document.
+An init hook runs
 `python3 -I -B /usr/lib/rock-benchmark/guest.py` only for the exact kernel flag
 `rock.benchmark.verify=1`. The root helper persists read-only database evidence
 under its fresh `/data/benchmark/` directory; it forks a persistent UID/GID1000
@@ -41,7 +44,7 @@ guest is running in the Linux build VM:
 
 ```sh
 python3 os/benchmark/verify.py verify \
-  --prepared os/benchmark/prepared/20260908-v1 \
+  --prepared os/benchmark/prepared/NEW-ID \
   --artifacts /path/to/frozen-new-images
 ```
 
@@ -51,9 +54,19 @@ Image/rootfs remain read-only; userdata is a new disposable file. A fresh eviden
 directory retains the preparation, publish receipts, command, whole boot log,
 all samples, durable/serial proof comparison and image hashes. Failed runs are
 retained. Preparing a new directory is required if guest measurement code changes.
+The `20260908-v1` preparation metadata, source hashes, packages and protocol are
+historical fixed inputs: never rewrite them for a new build. The public protocol
+path correction changes `guest.py`, so the current checkout requires a new
+preparation ID even though the protocol bytes remain exactly the same.
 
 Five focused tests cover fixed workload/order, nearest-rank statistics, complete
 and slower synthetic outcomes, missing/duplicate/changed evidence, wrong peer
 identity and partial responses. Synthetic test durations are not OS measurements.
 No host/other-OS speed claim, human time saving, physical BlackBerry performance,
 battery benefit, production signing identity or real Wallet funds are evaluated.
+
+`tests/test_os_platform_install.py` additionally runs the real platform installer
+against a disposable copy of the public Buildroot overlay, imports the installed
+guest to resolve its protocol file, and prepares fresh fixtures. It catches
+missing source inputs without building or booting an OS and checks that the
+historical preparation bytes remain unchanged.
