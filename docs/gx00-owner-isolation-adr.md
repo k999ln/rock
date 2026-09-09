@@ -128,10 +128,11 @@ GX01で予約・outboxを追加するときも同じ契約Walletのtransaction�
 `WalletBridge`のinode bindingに対しては、単純にチェックを外さず次の移行を実装する。
 
 1. まだ元ファイルのinodeが保たれている状態で旧wallet_bindingsを検証。正本のaccount/ATM binding/WalletAuth accountが一致することを確認。
-2. Wallet DB内に `wallet_storage_identity(ledger_uuid, account_id, identity_schema)`、Entitlement DB内に版付き `wallet_bindings_v2(account_id, ledger_uuid, legacy_identity, migration_id)` を追加。どちらも1Wallet1accountでimmutable。旧行は監査履歴として残す。
-3. 2DBなので移行journalを `PREPARED → WALLET_IDENTITY_COMMITTED → ENTITLEMENT_BINDING_COMMITTED → ROUTER_REGISTERED → ACTIVE` と進める。各段階の入力hash/IDを固定し、途中再開は同一migration_idだけ。`ACTIVE`前は全writerを拒否する。クロスDB原子commitとはしない。
-4. 新しいAUTHORITY marker版に `ledger_uuid`、最低writer版、migration IDを固定。旧serverがstrict field/schema検証でledger open前に拒否することを実際に試験する。router registry登録・fence取得後にactivateする。
-5. 継続されるaccount ID、Wallet authority UUID、認証public key/counter、month/consent、ATM hold、bill/journal/receipt/CLAIMED/不明状態を比較し、同keyの再要求が既存結果へ戻ることを確認。
+2. **最初のDB変更より前に**、旧serverがledger open前に拒否する新版AUTHORITYの`PREPARED` markerをfsyncして保存し、migration IDと元の入力hashを固定する。marker済み/journal未作成の中断も同じmigration IDでのみ再開する。旧reader拒否が確認できる前にconstructorのDDLを実行しない。
+3. Wallet DB内に `wallet_storage_identity(ledger_uuid, account_id, identity_schema)`、Entitlement DB内に版付き `wallet_bindings_v2(account_id, ledger_uuid, legacy_identity, migration_id)` を追加。どちらも1Wallet1accountでimmutable。旧行は監査履歴として残す。
+4. 2DBなので移行journalを `PREPARED → WALLET_IDENTITY_COMMITTED → ENTITLEMENT_BINDING_COMMITTED → ROUTER_REGISTERED → ACTIVE` と進める。各段階の入力hash/IDを固定し、途中再開は同一migration_idだけ。`ACTIVE`前は全writerを拒否する。クロスDB原子commitとはしない。
+5. 先に保存した新版AUTHORITY markerに `ledger_uuid`、最低writer版、migration IDを固定。旧serverがstrict field/schema検証でledger open前に拒否することを実際に試験する。router registry登録・fence取得後にactivateする。
+6. 継続されるaccount ID、Wallet authority UUID、認証public key/counter、month/consent、ATM hold、bill/journal/receipt/CLAIMED/不明状態を比較し、同keyの再要求が既存結果へ戻ることを確認。
 
 移行前の古いbackupからすでに別inodeへ復元されたデータは、自動的に新しい元台帳と認めない。元source/backup manifestと旧bindingの照合、元writerの停止証拠、stable identity付与を含む専用legacy restore手続きが必要。証拠不足ならread-only/照合待ちで止める。旧inode情報を現在inodeへ無条件に更新しない。
 

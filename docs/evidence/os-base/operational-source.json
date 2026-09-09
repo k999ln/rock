@@ -138,6 +138,16 @@
       "visual_review": "ui-startup-b8287bc-visual-review.json",
       "boots": 14,
       "scope": "Actual GUI readiness commits B; absent/freeze/crash reject two B trials and recover A. Whole D4 still needs independent corrupt/partial/no-space/data ABI cases."
+    },
+    "pc_citations": {
+      "status": "PASS",
+      "report": "../pc-citations/integration.json",
+      "scope": "Mac/Linux actual fixed CLI + stdio MCP; no native Hub/USB connection or durable keys"
+    },
+    "qemu_business_lifecycle": {
+      "status": "FAIL",
+      "report": "business-wallet-preparation-failed-b8287bc.json",
+      "scope": "Business portion completed; combined nonempty Wallet prerequisite did not complete. Fresh full run pending."
     }
   },
   "logs_sha256": {
@@ -319,6 +329,24 @@
       "case": "business-catalog-version-ocr",
       "status": "FAIL",
       "reason": "Fresh retry passed normal signed boot0 and native shutdown. In cycle1 actual correct proposal search result rendered, but small version OCR exceeded unchanged30-second deadline before any install. Host selector repair pending; failed source preserved."
+    },
+    {
+      "case": "business-lifecycle-16-wallet-preparation",
+      "status": "FAIL",
+      "reason": "Two business cycles closed normally; five proposal jobs and 16 lifecycle actions matched closed DB receipts. Following separate Wallet preparation failed OCR before enrollment. Whole run remains FAIL; fresh retry required.",
+      "report": "business-wallet-preparation-failed-b8287bc.json",
+      "cleanup": "Exact owned guest closed normally by native UI after failure; not acceptance"
+    },
+    {
+      "case": "atm-native-ui-17",
+      "status": "FAIL",
+      "reason": "Enrollment/terms/synthetic5000 settlement passed; issued stage was not observed within25s after PIN/sign input. Fixed C replay was synchronous; actual PIN/render readiness remains under investigation.",
+      "report": "atm-ui-failed-b8287bc.json"
+    },
+    {
+      "case": "hub-launcher-18-diagnostic",
+      "status": "FAIL",
+      "reason": "Only exe/argv predicates differed; nine identity predicates matched. Real DeviceHub.run Linux fixture reproduced its preceding OpenSSL signature-check child. No signal sent to mismatched process; exact verifier observation fix pending."
     }
   ]
 }

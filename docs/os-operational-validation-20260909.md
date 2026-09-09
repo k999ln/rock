@@ -6,7 +6,7 @@ main/native/設計v1.1を専用branchへ統合した。統合commitは `797c663d
 
 | 対象 | 結果 | 範囲 |
 | --- | --- | --- |
-| Web統合回帰 | PASS | 53 unit tests、143 API assertions、型・lint・build・要件/進捗/正本検査 |
+| Web統合回帰 | PASS | 54 unit tests、143 API assertions、型・lint・build・要件/進捗/正本検査 |
 | Linux source回帰 | PASS | `b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9`、1089 Python実行、C core/platform/UIと実IPC・UI操作。入力hash不変、skip/warningなし |
 | 操作・復元host追加回帰 | PASS / sourceのみ | `c7b29a9`の1119 Python実行とroot61件、skip/warningなし。版選択の実描画位置、OCR期限・停止後の排他観測、非空Walletの署名/888一度/ATM1000取消を追加。build runtimeはb8287bcのまま |
 | startup health | PASS / sourceのみ | Python15件、root→UID1000の実Linux C8群。実nonce/socket/pidfd・loop応答を試験 |
@@ -52,3 +52,13 @@ D3の固定診断は、実LinuxのUID1002→65534 sandboxでメモリ512 MiB要�
 4. [GX00 ADR](gx00-owner-isolation-adr.md)に沿って既存1契約1台帳の複数owner接続、復元時writer排他、ゲーム本人接続を実装する。現時点は設計のみで、ゲーム交換/SDKは未実装。
 
 新imageへ変更が入ればsource SHAとimage hashを固定し直して関連受入を再実行する。実機への導入、一般公開サービス、実資金取引はsource合格だけで開始しない。
+
+## 20:55 UTC 時点の追加証拠
+
+`a02401bf1661d75446da858b48e6e90afd2ed263` のWeb・native source・Android CIはすべてPASS。[PC出典整理](pc-citations-adapter.md)は元CLIを変更せず実プロセスへ接続し、Mac/Linux各19件、元CLI・adapter・MCPの155バイト完全一致、配布版一致を確認した。nativeとの接続と永続的な再送照合は残る。
+
+D4の実画面起動は14回PASS。正常2回と、未起動・freeze・crash各4回を同じ元imageで試験し、正常版Bの採用と、不応答版Bを2回拒否して元Aへ戻ることを確認した。5枚の元PPMを画素不変のPNGへ変換して目視照合した。改ざん・中断・容量不足・data ABIは別試験を続ける。
+
+業務試験16では正常2サイクル、提案下書き5job、導入・更新・rollback・利用停止・再承認・削除・削除後履歴・再導入の16actionが実UIと停止後DBで一致した。ただし続く独立Wallet準備が登録直後のOCRで止まり、全runのFAILは保持した。確認した専用guestはその後UIから通常終了した。ATM実画面17も認証入力後の発行を25秒以内に観測できずFAILで、mask済みPINとボタン描画の同期を調査している。個別Wallet実画面14枚PASSとATM protocol34件PASSを、この新しい失敗試験の成功へ流用しない。
+
+Hub障害試験18は実行対象のexe/argvだけが不一致で、その他9識別条件は一致。実Hub処理のLinux再現により、本体の前に正規の署名検証子が起動する順序を確認した。対象条件を緩めず、正規検証子だけを無信号で進めて本体を捕捉するhost観測修正を進める。凍結OS runtimeはb8287bcのまま。
