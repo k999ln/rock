@@ -101,6 +101,7 @@ cp "$repo/os/ui/guest-ui-wallet-evidence.py" "$target/usr/libexec/rock-ui-wallet
 cp "$repo/os/ui/guest-ui-power-evidence.py" "$target/usr/libexec/rock-ui-power-evidence.py"
 cp "$repo/os/ui/guest-ui-runner-evidence.py" "$target/usr/libexec/rock-ui-runner-evidence.py"
 cp "$repo/os/ui/guest-ui-atm-evidence.py" "$target/usr/libexec/rock-ui-atm-evidence.py"
+cp "$repo/os/ui/wallet-evidence-auth.py" "$target/usr/libexec/rock-wallet-evidence-auth.py"
 chmod 0755 "$target/etc/init.d/S98rock-ui-atm-verify"
 chmod 0755 "$target/etc/init.d/S98rock-ui-runner-verify"
 chmod 0755 "$target/etc/init.d/S98rock-ui-wallet-verify"

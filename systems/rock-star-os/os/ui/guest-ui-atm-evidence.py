@@ -22,6 +22,12 @@ if not SOURCE.is_file():
 spec = importlib.util.spec_from_file_location('rock_atm_ui_base', SOURCE)
 base = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(base)
+AUTH_SOURCE = Path('/usr/libexec/rock-wallet-evidence-auth.py')
+if not AUTH_SOURCE.is_file():
+    AUTH_SOURCE = Path(__file__).with_name('wallet-evidence-auth.py')
+auth_spec = importlib.util.spec_from_file_location('atm_evidence_auth', AUTH_SOURCE)
+auth = importlib.util.module_from_spec(auth_spec)
+auth_spec.loader.exec_module(auth)
 ENTITLEMENT_DB = '/data/wallet/entitlement.db'
 LEDGER_DB = '/data/wallet/wallet-simulator.db'
 PROOF = Path('/data/ui-atm-proof.json')
@@ -30,6 +36,7 @@ FORBIDDEN_FIELDS = frozenset(('code', 'token', 'password', 'result_json', 'respo
 
 
 def private_fields_absent(value):
+    auth.no_pin(value)
     if isinstance(value, dict):
         base.require(not FORBIDDEN_FIELDS.intersection(value), 'private or unparsed receipt fields in evidence')
         for item in value.values():
@@ -41,7 +48,8 @@ def private_fields_absent(value):
 
 def redact_issuance(value):
     base.require(set(value) == {'simulation_only', 'real_atm_connection', 'receipt_kind', 'state_at_issue',
-        'withdrawal_id', 'currency', 'amount_minor', 'atm_id', 'issued_at', 'expires_at', 'code', 'code_sha256'},
+        'withdrawal_id', 'currency', 'amount_minor', 'atm_id', 'issued_at', 'expires_at', 'code', 'code_sha256',
+        'quote_id', 'approval_id', 'fee_minor', 'total_debit_minor', 'cash_received_minor', 'authentication'},
         'unexpected issuance receipt fields')
     code = value['code']
     base.require(type(code) is str and re.fullmatch(r'[A-Za-z0-9_-]{32}', code) is not None,
@@ -66,9 +74,15 @@ def database_evidence():
                 rows = [dict(row) for row in db.execute('SELECT rowid AS seq,* FROM ' + table + ' ORDER BY rowid LIMIT 16')]
                 if table == 'wallet_idempotency':
                     for row in rows:
-                        row['input'] = json.loads(row.pop('input_json'))
-                        receipt = json.loads(row.pop('result_json'))
-                        row['result'] = redact_issuance(receipt) if row['operation'] == 'atm.issue' else receipt
+                        if row['operation'].startswith('wallet.'):
+                            parsed = auth.receipt(row)
+                            row.clear()
+                            row.update(parsed)
+                            if row['operation'] == 'wallet.atm.issue':
+                                row['result'] = redact_issuance(row['result'])
+                        else:
+                            row['input'] = json.loads(row.pop('input_json'))
+                            row['result'] = json.loads(row.pop('result_json'))
                 elif table == 'device_api_receipts':
                     for row in rows:
                         row['request'] = json.loads(row.pop('request_json'))
@@ -76,6 +90,7 @@ def database_evidence():
                         row['response'] = json.loads(raw) if raw is not None else None
                 result[table] = rows
             if path == LEDGER_DB:
+                result['authentication'] = auth.read(db)
                 result['balances'] = [dict(row) for row in db.execute('SELECT account,SUM(delta_minor) AS amount_minor FROM wallet_postings GROUP BY account')]
                 result['posting_count'] = db.execute('SELECT COUNT(*) FROM wallet_postings').fetchone()[0]
     private_fields_absent(result)
@@ -109,7 +124,7 @@ def validate_final(wallet, database):
     base.require(membership['registered'] is True, 'native registration missing')
     account = membership['entitlement']['account_id']
     counts = {'device_api_receipts': 1, 'consents': 0, 'device_monthly_due': 0, 'authorizations': 0, 'device_binding': 1,
-              'wallet_idempotency': 4, 'wallet_bills': 0, 'wallet_journals': 4, 'wallet_withdrawals': 1,
+              'wallet_idempotency': 8, 'wallet_bills': 0, 'wallet_journals': 4, 'wallet_withdrawals': 1,
               'atm_credentials': 1, 'atm_wallet_binding': 1}
     base.require(database['counts'] == counts and all(len(database[name]) == count for name, count in counts.items()),
                  'unexpected missing, duplicate or hidden business records')
@@ -121,10 +136,13 @@ def validate_final(wallet, database):
     registered = registration['response']['result']
     base.require(registered['account_id'] == account and registered['additional_personal_fields_required'] == [],
                  'registration does not match the protected membership')
-    rows = database['wallet_idempotency']
-    base.require([row['operation'] for row in rows] == ['sale', 'settle', 'atm.issue', 'atm.cancel'] and
-                 all(ui_key(row['key']) for row in rows) and len({key, *(row['key'] for row in rows)}) == 5,
-                 'native business actions need five distinct durable receipt identities')
+    all_rows = database['wallet_idempotency']
+    base.require([row['operation'] for row in all_rows] == ['wallet.auth.begin', 'wallet.auth.enroll', 'wallet.terms',
+                 'sale', 'settle', 'wallet.atm.quote', 'wallet.atm.issue', 'atm.cancel'] and
+                 all(ui_key(row['key']) for row in all_rows) and len({key, *(row['key'] for row in all_rows)}) == 9,
+                 'native authentication and business actions need nine distinct durable receipt identities')
+    authentication = auth.approved_atm(wallet, database['authentication'], all_rows, WITHDRAWAL, ATM)
+    rows = [all_rows[index] for index in (3, 4, 6, 7)]
     base.require(len(wallet['sales']) == 1 and wallet['sales'][0]['amount_minor'] == AMOUNT and
                  wallet['sales'][0]['status'] == 'SETTLED' and wallet['bills'] == [], 'unexpected sales or monthly debit')
     sale = wallet['sales'][0]
@@ -140,7 +158,7 @@ def validate_final(wallet, database):
                  'ATM credential is not bound to the protected registered owner and device')
     issue, cancel = rows[2]['result'], rows[3]['result']
     ident = credential['withdrawal_id']
-    base.require(rows[2]['input'] == {**scope, 'amount_minor': WITHDRAWAL, 'atm_id': ATM} and
+    base.require(rows[2]['input']['account_id'] == account and rows[2]['input']['device_ref'] == protected_device and
                  rows[3]['input'] == {**scope, 'withdrawal_id': ident}, 'ATM request scope or amount differs')
     base.require(issue['simulation_only'] is True and issue['real_atm_connection'] == 'NOT_CONNECTED' and
                  issue['receipt_kind'] == 'immutable_issuance' and issue['state_at_issue'] == 'ISSUED' and
@@ -172,7 +190,7 @@ def validate_final(wallet, database):
     base.require({row['account']: row['amount_minor'] for row in database['balances']} ==
                  {'AVAILABLE': AMOUNT, 'PENDING_SETTLEMENT': 0, 'SALE_CLEARING': -AMOUNT, 'WITHDRAW_HOLD': 0},
                  'independent double-entry balances differ')
-    return {'registration': registration, 'ledger': rows, 'credential': credential}
+    return {'registration': registration, 'ledger': rows, 'credential': credential, 'authentication': authentication}
 
 
 def observe(report):
@@ -190,6 +208,7 @@ def observe(report):
     initial_hash = base.wallet_baseline(initial['wallet'])
     base.require(member['registered'] is False and all(count == (1 if name == 'device_binding' else 0)
                  for name, count in db['counts'].items()), 'fresh unregistered and unfunded test data required')
+    auth.fresh(db['authentication'])
     hub_hash = base.digest(initial['hub'])
     report.update(environment_initial=environment, wallet_initial=initial['wallet'], wallet_initial_sha256=initial_hash,
                   initial_hub_sha256=hub_hash, registration_without_consent=False,
@@ -201,13 +220,17 @@ def observe(report):
         wallet, db = snapshot['wallet'], database_evidence()
         membership = membership_contract(wallet)
         base.require(base.digest(snapshot['hub']) == hub_hash and base.read_receipts() == [], 'ATM test changed Tool state')
+        if stage == 1:
+            auth.progress(wallet, db['authentication'], db['wallet_idempotency'][:3], report,
+                          lambda value: base.emit('ROCK_UI_ATM_' + value))
         marker = None
         if stage == 0 and membership['registered']:
             base.require(wallet['available_minor'] == wallet['pending_minor'] == wallet['held_minor'] == 0, 'registration manufactured funds')
             report['registration_without_consent'] = True
             stage, marker = 1, 'REGISTERED'
         elif stage == 1 and wallet['sales']:
-            base.require(len(wallet['sales']) == 1 and wallet['sales'][0]['status'] == 'PENDING_SETTLEMENT' and
+            base.require(report.get('wallet_activation_without_funds') is True and
+                         len(wallet['sales']) == 1 and wallet['sales'][0]['status'] == 'PENDING_SETTLEMENT' and
                          wallet['pending_minor'] == AMOUNT and wallet['available_minor'] == wallet['held_minor'] == 0,
                          'native credit must first be unsettled')
             stage, marker = 2, 'CREDIT_PENDING'

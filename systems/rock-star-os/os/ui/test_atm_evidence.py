@@ -23,29 +23,41 @@ def load(name, path):
 observer = load('atm_evidence_test_observer', ROOT / 'os/ui/guest-ui-atm-evidence.py')
 service = load('atm_evidence_test_service', ROOT / 'os/platform/service.py')
 harness = load('atm_evidence_test_harness', ROOT / 'os/ui/verify-atm-ui.py')
+from wallet_auth.fixture import SoftwareTestAuthenticator
 
 
 class ATMEvidenceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.temp = tempfile.TemporaryDirectory(prefix='rock-atm-evidence-test-')
+        cls.addClassCleanup(cls.temp.cleanup)
         state = Path(cls.temp.name)
         cls.server = service.WalletService(state, provisioning_file=ROOT / 'os/entitlement/fixtures/device-handoff.json',
                                           start_scheduler=False, clock=lambda: 1788856800)
+        cls.addClassCleanup(cls.server.close)
+        cls.authenticator = SoftwareTestAuthenticator(state / 'authenticator', 'fixture-rock-arm64-001')
+        cls.addClassCleanup(cls.authenticator.close)
         cls.paths = [state / 'entitlement.db', state / 'wallet-simulator.db']
         def call(op, **fields):
             request = {'v': 1, 'op': op, **fields}
             if op not in ('snapshot', 'wallet.atm.status'):
-                request['key'] = 'ui-' + uuid.uuid4().hex
+                request.setdefault('key', 'ui-' + uuid.uuid4().hex)
             response = cls.server.dispatch(request, peer_uid=1002)
             if response.get('ok') is not True:
                 raise AssertionError('disposable service request failed')
             return response
         cls.initial = call('snapshot')['snapshot']
         call('wallet.register')
+        begin = call('wallet.auth.begin')['result']
+        credential = cls.authenticator.make_credential(begin['options'], '0000', 'ui-' + uuid.uuid4().hex)
+        call('wallet.auth.enroll', challenge_id=begin['challenge_id'], credential=credential)
+        call('wallet.terms', accepted=True, terms_version=observer.auth.TERMS)
         sale = call('wallet.sale', amount_minor=5000)['result']
         call('wallet.settle', id=sale['id'])
-        issuance = call('wallet.atm.issue', amount_minor=1000, atm_id='SIM-ATM-001')['result']
+        issue_key = 'ui-' + uuid.uuid4().hex
+        quote = call('wallet.atm.quote', issue_key=issue_key, amount_minor=1000, atm_id='SIM-ATM-001')['result']
+        assertion = cls.authenticator.get_assertion(quote['options'], '0000', 'ui-' + uuid.uuid4().hex)
+        issuance = call('wallet.atm.issue', key=issue_key, quote_id=quote['quote_id'], credential=assertion)['result']
         cls.raw_code = issuance['code']
         cls.issued_wallet = call('snapshot')['snapshot']
         call('wallet.atm.cancel', withdrawal_id=issuance['withdrawal_id'])
@@ -53,15 +65,13 @@ class ATMEvidenceTests(unittest.TestCase):
         with patch.object(observer, 'ENTITLEMENT_DB', str(cls.paths[0])), patch.object(observer, 'LEDGER_DB', str(cls.paths[1])):
             cls.database = observer.database_evidence()
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.server.close()
-        cls.temp.cleanup()
-
-    def test_real_service_final_state_and_five_distinct_ui_receipts(self):
+    def test_real_service_final_state_and_nine_distinct_ui_receipts(self):
         observer.base.wallet_baseline(self.initial)
         receipts = observer.validate_final(self.wallet, self.database)
         self.assertEqual(len(receipts['ledger']), 4)
+        self.assertEqual(len(self.database['wallet_idempotency']), 8)
+        self.assertIs(receipts['authentication']['registration_and_assertion_reverified'], True)
+        self.assertEqual(receipts['authentication']['rock_atm_fee_minor'], 0)
         self.assertEqual(self.wallet['available_minor'], 5000)
         self.assertEqual(self.wallet['held_minor'], 0)
 
@@ -69,7 +79,7 @@ class ATMEvidenceTests(unittest.TestCase):
         raw = json.dumps(self.database, sort_keys=True)
         self.assertTrue(self.raw_code not in raw, 'private code leaked into evidence')
         observer.private_fields_absent(self.database)
-        issue = self.database['wallet_idempotency'][2]['result']
+        issue = self.database['wallet_idempotency'][6]['result']
         self.assertTrue(issue['code_sha256'] == hashlib.sha256(self.raw_code.encode()).hexdigest())
         self.assertIs(issue['private_code_hash_verified'], True)
 
@@ -84,12 +94,12 @@ class ATMEvidenceTests(unittest.TestCase):
         self.assertFalse(missing.exists())
 
     def test_raw_code_in_nested_report_or_unparsed_json_is_rejected(self):
-        for name in observer.FORBIDDEN_FIELDS:
+        for name in (*observer.FORBIDDEN_FIELDS, 'pin', 'test_pin', 'auth_pin', 'PIN'):
             with self.subTest(field=name), self.assertRaises(AssertionError):
                 observer.private_fields_absent({'nested': [{name: 'private'}]})
 
     def test_bad_hash_and_extra_issuance_fields_do_not_export_private_data(self):
-        issue = copy.deepcopy(self.database['wallet_idempotency'][2]['result'])
+        issue = copy.deepcopy(self.database['wallet_idempotency'][6]['result'])
         issue.pop('private_code_hash_verified')
         issue['code'] = self.raw_code
         for mode in ('hash', 'shape', 'extra'):
@@ -115,9 +125,9 @@ class ATMEvidenceTests(unittest.TestCase):
             if mode == 'device': db['atm_wallet_binding'][0]['device_id'] = 'other-device'
             if mode == 'atm': db['atm_credentials'][0]['atm_id'] = 'SIM-ATM-002'
             if mode == 'hash': db['atm_credentials'][0]['code_sha256'] = '0' * 64
-            if mode == 'rawverified': db['wallet_idempotency'][2]['result']['private_code_hash_verified'] = False
+            if mode == 'rawverified': db['wallet_idempotency'][6]['result']['private_code_hash_verified'] = False
             if mode == 'consumed': db['atm_credentials'][0]['consumed_at'] = 1788856801
-            if mode == 'cash': db['wallet_idempotency'][3]['result']['withdrawal']['dispensed_minor'] = 1000
+            if mode == 'cash': db['wallet_idempotency'][7]['result']['withdrawal']['dispensed_minor'] = 1000
             if mode == 'hold': db['wallet_withdrawals'][0]['released_minor'] = 0
             if mode == 'journal': db['wallet_journals'][0]['kind'] = 'cash_dispense'
             if mode == 'postings': db['posting_count'] += 2

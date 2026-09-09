@@ -17,6 +17,12 @@ if not SOURCE.is_file():
 spec = importlib.util.spec_from_file_location('rock_wallet_ui_base', SOURCE)
 base = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(base)
+AUTH_SOURCE = Path('/usr/libexec/rock-wallet-evidence-auth.py')
+if not AUTH_SOURCE.is_file():
+    AUTH_SOURCE = Path(__file__).with_name('wallet-evidence-auth.py')
+spec = importlib.util.spec_from_file_location('rock_wallet_evidence_auth', AUTH_SOURCE)
+auth = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(auth)
 
 ENTITLEMENT_DB = '/data/wallet/entitlement.db'
 LEDGER_DB = '/data/wallet/wallet-simulator.db'
@@ -41,12 +47,20 @@ def database_evidence():
         db.execute('PRAGMA query_only=ON')
         db.row_factory = sqlite3.Row
         for name, query in {
-            'ui_ledger_receipts': "SELECT rowid AS seq,* FROM wallet_idempotency WHERE substr(key,1,3)='ui-' ORDER BY rowid LIMIT 8",
+            'ui_ledger_receipts': "SELECT rowid AS seq,* FROM wallet_idempotency WHERE substr(key,1,3)='ui-' ORDER BY rowid LIMIT 9",
             'bills': 'SELECT * FROM wallet_bills LIMIT 2',
             'journals': 'SELECT * FROM wallet_journals ORDER BY created_at,id LIMIT 8',
             'balances': 'SELECT account,SUM(delta_minor) AS amount_minor FROM wallet_postings GROUP BY account',
         }.items():
             result[name] = [dict(row) for row in db.execute(query)]
+        result['authentication'] = auth.read(db)
+        rows = result['ui_ledger_receipts']
+        base.require(len(rows) <= 8, 'too many native Wallet actions')
+        result['authentication_receipts'] = [auth.receipt(row) for row in rows if row['operation'].startswith('wallet.')]
+        result['ui_ledger_receipts'] = [row for row in rows if not row['operation'].startswith('wallet.')]
+        result['ui_ledger_operations'] = [row['operation'] for row in rows]
+    # Auth JSON is decoded before this check; PIN fields cannot hide in it.
+    auth.no_pin(result)
     return result
 
 
@@ -69,12 +83,17 @@ def ui_key(value):
 def complete_receipts(database, wallet):
     membership = membership_contract(wallet)
     account = membership['entitlement']['account_id']
+    scope = auth.activation(wallet, database['authentication'], database['authentication_receipts'])
+    base.require(database['ui_ledger_operations'] == ['wallet.auth.begin', 'wallet.auth.enroll', 'wallet.terms', 'sale', 'settle'] and
+                 database['authentication']['wallet_auth_quotes'] == database['authentication']['wallet_auth_approvals'] == [],
+                 'monthly-only flow must follow activation without ATM operations')
     records = database['device_receipts']
     base.require(len(records) == 5, 'expected register, consent, two bill requests and cancellation')
     requests, results = [], []
     for row in records:
         base.require(ui_key(row['key']) and row['response_json'] is not None, 'native device receipt is missing or incomplete')
         request, response = json.loads(row['request_json']), json.loads(row['response_json'])
+        auth.no_pin([request, response])
         base.require(response.get('ok') is True and request.get('key') == row['key'] and type(request.get('v')) is int and request['v'] == 1,
                      'native membership request failed or differs from stored receipt')
         requests.append(request)
@@ -108,7 +127,11 @@ def complete_receipts(database, wallet):
                  json.loads(ledger[0]['result_json'])['id'] == sale['id'] and
                  json.loads(ledger[1]['input_json']) == {'sale_id': sale['id']} and
                  json.loads(ledger[1]['result_json'])['status'] == 'SETTLED', 'native ledger receipts do not match actual credit and settlement')
-    return {'requests': requests, 'results': results, 'ledger_requests': ledger}
+    keys = [row['key'] for row in records + ledger + database['authentication_receipts']]
+    base.require(len(set(keys)) == 10, 'membership, activation and funds actions must have distinct UI keys')
+    return {'requests': requests, 'results': results, 'ledger_requests': ledger,
+            'authentication': {'credential_id': scope['record']['credential_id'], 'registration_reverified': True,
+                               'wallet_terms_version': auth.TERMS, 'transaction_assertions': 0}}
 
 
 def validate_final(wallet, database):
@@ -156,6 +179,8 @@ def observe(report):
     base.require(membership['registered'] is False and membership['registration_status'] == 'REGISTRATION_REQUIRED', 'fresh unregistered handoff fixture required')
     base.require(all(db[name] == [] for name in ('device_receipts', 'ui_ledger_receipts', 'consents', 'due', 'bills', 'journals', 'authorizations')),
                  'fresh empty Wallet membership and ledger actions required')
+    auth.fresh(db['authentication'])
+    base.require(db['authentication_receipts'] == db['ui_ledger_operations'] == [], 'fresh activation receipts required')
     hub_hash = base.digest(initial['hub'])
     report.update(environment_initial=environment, wallet_initial=initial['wallet'], wallet_initial_sha256=initial_hash,
                   initial_hub_sha256=hub_hash, registration_without_consent=False, stages=[])
@@ -168,6 +193,9 @@ def observe(report):
         base.require(base.digest(snapshot['hub']) == hub_hash and base.read_receipts() == [], 'Wallet onboarding changed Tool state')
         base.require(wallet['held_minor'] == wallet['dispensed_minor'] == 0 and wallet['withdrawals'] == [], 'unexpected withdrawal operation')
         ent = membership['entitlement'] or {}
+        if stage == 1:
+            auth.progress(wallet, db['authentication'], db['authentication_receipts'], report,
+                          lambda value: base.emit('ROCK_UI_WALLET_' + value))
         if stage == 0 and membership['registered']:
             base.require(ent['auto_renew'] is False and ent['consent_id'] is None and wallet['billed_minor'] == 0,
                          'registration silently consented or billed')
@@ -175,7 +203,8 @@ def observe(report):
             stage = 1
             base.emit('ROCK_UI_WALLET_REGISTERED')
         if stage == 1 and ent.get('auto_renew') is True:
-            base.require(wallet['billed_minor'] == 0 and wallet['available_minor'] == wallet['pending_minor'] == 0,
+            base.require(report.get('wallet_activation_without_funds') is True and
+                         wallet['billed_minor'] == 0 and wallet['available_minor'] == wallet['pending_minor'] == 0,
                          'consent before credit must not manufacture money')
             stage = 2
             base.emit('ROCK_UI_WALLET_CONSENTED')

@@ -25,6 +25,9 @@ def load(name, path):
 
 observer = load('wallet_evidence_tests', ROOT / 'os/ui/guest-ui-wallet-evidence.py')
 service = load('wallet_evidence_service', ROOT / 'os/platform/service.py')
+from wallet_auth.fixture import SoftwareTestAuthenticator
+
+NOW = 1788856800
 
 
 @unittest.skipUnless(os.geteuid() == 0, 'root-owned disposable handoff fixture test inside Linux VM')
@@ -32,13 +35,17 @@ class WalletEvidenceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.temporary = tempfile.TemporaryDirectory(prefix='rock-wallet-evidence-test-')
+        cls.addClassCleanup(cls.temporary.cleanup)
         directory = Path(cls.temporary.name)
         handoff = directory / 'handoff.json'
         shutil.copyfile(ROOT / 'os/entitlement/fixtures/device-handoff.json', handoff)
         handoff.chmod(0o644)
         state = directory / 'wallet'
         state.mkdir()
-        cls.service = service.WalletService(state, provisioning_file=handoff, start_scheduler=False)
+        cls.service = service.WalletService(state, provisioning_file=handoff, start_scheduler=False, clock=lambda: NOW)
+        cls.addClassCleanup(cls.service.close)
+        cls.authenticator = SoftwareTestAuthenticator(directory / 'authenticator', 'fixture-rock-arm64-001')
+        cls.addClassCleanup(cls.authenticator.close)
         cls.paths = [state / 'entitlement.db', state / 'wallet-simulator.db']
         def call(op, **fields):
             request = {'v': 1, 'op': op, **fields}
@@ -51,11 +58,16 @@ class WalletEvidenceTests(unittest.TestCase):
         cls.initial = call('snapshot')['snapshot']
         call('wallet.register')
         assert call('snapshot')['snapshot']['membership']['entitlement']['auto_renew'] is False
+        begin = call('wallet.auth.begin')['result']
+        credential = cls.authenticator.make_credential(begin['options'], '0000', 'ui-' + uuid.uuid4().hex)
+        call('wallet.auth.enroll', challenge_id=begin['challenge_id'], credential=credential)
+        call('wallet.terms', accepted=True, terms_version=observer.auth.TERMS)
+        assert call('snapshot')['snapshot']['membership']['entitlement']['auto_renew'] is False
         call('wallet.consent', accepted=True, terms_version=observer.TERMS)
         cls.service.membership.tick()  # Observe genuine insufficient-funds retry.
         sale = call('wallet.sale', amount_minor=2000)['result']
         call('wallet.settle', id=sale['id'])
-        period = datetime.now(timezone.utc).strftime('%Y-%m')
+        period = datetime.fromtimestamp(NOW, timezone.utc).strftime('%Y-%m')
         call('wallet.bill', period=period)
         cls.service.membership.tick()
         call('wallet.bill', period=period)
@@ -64,11 +76,6 @@ class WalletEvidenceTests(unittest.TestCase):
         cls.wallet = call('snapshot')['snapshot']
         with patch.object(observer, 'ENTITLEMENT_DB', str(cls.paths[0])), patch.object(observer, 'LEDGER_DB', str(cls.paths[1])):
             cls.database = observer.database_evidence()
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.service.close()
-        cls.temporary.cleanup()
 
     def test_actual_disposable_ledger_and_membership_receipts(self):
         observer.base.wallet_baseline(self.initial)
