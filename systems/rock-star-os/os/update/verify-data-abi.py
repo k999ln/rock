@@ -12,6 +12,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import struct
 import subprocess
@@ -131,6 +132,17 @@ def audit_inputs(report, paths):
     return stable
 
 
+def proof_records(text):
+    # BusyBox getty may print its fixed prompt without a newline before the
+    # background observer writes. Accept only that exact observed prefix.
+    values = []
+    for line in text.replace('\r', '').splitlines():
+        match = re.fullmatch(r'(?:rock-star-os login: )?ROCK_DATA_ABI_PROOF (.+)', line)
+        if match:
+            values.append(json.loads(match.group(1)))
+    return values
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--artifacts', type=Path, required=True)
@@ -217,7 +229,7 @@ def main():
             if number == 1:
                 require('ROCK_AB_PHASE_PASS phase=fault-stage' in text, 'valid B was not staged by the frozen guest installer')
             else:
-                values = [json.loads(line.split(' ',1)[1]) for line in text.splitlines() if line.startswith('ROCK_DATA_ABI_PROOF ')]
+                values = proof_records(text)
                 require(len(values) == 1 and 'reboot: Power down' in text, 'exact ABI proof and normal shutdown required')
                 validate_proof(values[0],retained=number==3,expected_slots=slots,bundle_hash=report['foreign_bundle_sha256'])
                 if number == 2: first_proof = values[0]

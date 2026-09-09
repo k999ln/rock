@@ -23,6 +23,14 @@ def proof():
 
 
 class DataAbiVerifierTests(unittest.TestCase):
+    def test_exact_serial_proof_with_observed_getty_prompt(self):
+        raw = json.dumps(proof())
+        for prefix in ('', '\rrock-star-os login: '):
+            self.assertEqual(v.proof_records(prefix + 'ROCK_DATA_ABI_PROOF ' + raw + '\r\n'), [proof()])
+        self.assertEqual(v.proof_records('quoted ROCK_DATA_ABI_PROOF ' + raw + '\n'), [])
+        self.assertEqual(v.proof_records('other-host login: ROCK_DATA_ABI_PROOF ' + raw + '\n'), [])
+        self.assertEqual(len(v.proof_records(('ROCK_DATA_ABI_PROOF ' + raw + '\n') * 2)), 2)
+
     def test_input_audit_runs_without_overwriting_prior_failure(self):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / 'input'; path.write_bytes(b'fixed')
