@@ -50,6 +50,19 @@ def durable_fixture():
 
 
 class FaultEvidenceGuards(unittest.TestCase):
+    def test_fixed_shutdown_keys_pass_the_unchanged_power_service_contract(self):
+        spec = importlib.util.spec_from_file_location('hub_fixture_power_contract',
+            Path(__file__).resolve().parents[1] / 'os/system/power_service.py')
+        power = importlib.util.module_from_spec(spec); spec.loader.exec_module(power)
+        for mode in contract.MODES:
+            key = 'd3-hub-poweroff-' + mode
+            contract.validate_request({'v': 1, 'op': 'device.poweroff', 'key': key})
+            power.validate({'v': 1, 'op': 'poweroff', 'key': key})
+            with self.assertRaises(ValueError):
+                contract.validate_request({'v': 1, 'op': 'device.poweroff', 'key': 'd3-hub:poweroff:' + mode})
+            with self.assertRaises(power.Rejected):
+                power.validate({'v': 1, 'op': 'poweroff', 'key': 'd3-hub:poweroff:' + mode})
+
     def test_explicit_live_serial_failure_stops_only_its_new_process_promptly(self):
         with tempfile.TemporaryDirectory() as temporary:
             log = Path(temporary) / 'boot.log'

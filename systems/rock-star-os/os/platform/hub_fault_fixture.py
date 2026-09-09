@@ -516,7 +516,7 @@ def validate_request(payload):
                 payload['key'] in {'d3-hub:'+mode+suffix for mode in MODES[:2] for suffix in ('',':explicit-retry')},
                 'only predeclared local fault/retry requests are allowed')
     if op == 'job.result': require(str(uuid.UUID(payload['id'])) == payload['id'], 'actual fixed-format job identity required')
-    if op == 'device.poweroff': require(payload['key'] in {'d3-hub:poweroff:'+mode for mode in MODES}, 'fixed normal poweroff required')
+    if op == 'device.poweroff': require(payload['key'] in {'d3-hub-poweroff-'+mode for mode in MODES}, 'fixed normal poweroff required')
 
 
 def owner_call(payload):
@@ -658,7 +658,7 @@ def main():
     print('ROCK_HUB_FAULT_PROOF '+json.dumps(result, sort_keys=True), flush=True)
     # Real allowed power protocol; the init hook returns so normal shutdown
     # may complete. This is API-driven shutdown, not native GUI acceptance.
-    request('device.poweroff', key='d3-hub:poweroff:'+mode)
+    request('device.poweroff', key='d3-hub-poweroff-'+mode)
 
 
 if __name__ == '__main__':
