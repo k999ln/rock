@@ -1,5 +1,7 @@
 # Rock starの初期仕様
 
+現在の要望は [製品ベース](product-baseline.md) を優先する。本書は旧Webの仕様/試算を保持する履歴。Hub＋Walletとnative進捗は [差分監査](progress-audit-20260909.md) を参照する。
+
 位置付け: 本書は既存Web/PC版の事業と初期仕様を保持する資料。2026-09-05以降の開発主軸は [Rock star OS](os-development-design.md) へ移り、自律実行・第三者ストア・端末保存を追加設計する。以下の「初版」「未実装」は既存版の説明で、将来OSの完成宣言ではない。
 
 ## 意図

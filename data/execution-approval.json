@@ -1,0 +1,46 @@
+{
+  "schema": "rock-execution-approval/1",
+  "recordedAt": "2026-09-09T17:47:40.214265+00:00",
+  "source": "User reply in the current task after design v1.1 was presented; recordedAt is the recording time, not an invented message timestamp.",
+  "status": "approved_for_implementation",
+  "approvedDesignVersion": "1.1",
+  "approvedDesignCommit": "27b34adc02a9e06a4816aa18a5e38cf38b330953",
+  "approvedDesignSha256": "8daaf9d5109ce7e3d347e0166ec005c00ec4196c1b8b47d0c840d77a9765304e",
+  "scope": [
+    "integrate main/native/design on an isolated branch",
+    "native QEMU development OS and D0-D6 validation",
+    "existing Hub products and synthetic Wallet",
+    "GX00/GX01 synthetic exchange and DX01 SDK",
+    "optional Game entry; achievement effects omitted"
+  ],
+  "conditionalRequests": {
+    "publication": {
+      "authorization": "User permits publication if ready",
+      "target": "User asks whether Web is a management interface; awaiting concrete publication target",
+      "readiness": "not_verified"
+    },
+    "hardware": {
+      "authorization": "User has hardware and wants installation if compatible",
+      "model": "Google Pixel 10",
+      "readiness": "not_verified",
+      "currentOs": "GrapheneOS",
+      "blackberry": "ordered; model unspecified",
+      "candidatePath": "Android P1 APK trial without replacing GrapheneOS; native QEMU image is incompatible"
+    },
+    "realFunds": {
+      "authorization": "User permits testing if MetaMask sending and receiving are supported",
+      "chain": null,
+      "asset": null,
+      "amount": null,
+      "recipient": null,
+      "readiness": "not_implemented"
+    }
+  },
+  "notAuthorized": [
+    "force push",
+    "main merge",
+    "prediction market or game asset trading",
+    "automatic game or market investment"
+  ],
+  "notes": "Conditional permission is retained; missing compatibility and transaction facts do not revoke implementation approval or authorize arbitrary transfers."
+}

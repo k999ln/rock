@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-09",
-  "milestone": "BlackBerry優先・native OSのRock統合",
-  "nextAction": "nativeの取り込み検証と起動応答WIPの試験を進める。BlackBerryの型番・BSP・復旧条件を確定し、実機だけのHubを検証する。AOSP/Pixelと実金融・実USBは別ゲートのまま保持する。",
+  "milestone": "設計v1.1実装承認済み・main/native/設計の統合とOS受入準備",
+  "nextAction": "専用Linux環境で統合source回帰→V01起動基礎→既存native商品と合成Wallet→D0〜D6受入。ALIGN03のbackup試験入口とN02起動応答を修正。B03-FIXTURE後にGX00→GX01→DX01。公開/実機/MetaMask実資金は条件付き了承を保持し、対象と技術条件を確認する。",
   "tasks": [
     {
       "id": "R01",
@@ -106,7 +106,7 @@
     },
     {
       "id": "OS02",
-      "title": "Android/AOSP: 対象Pixel・ソース/BSP・Linuxビルド環境の適合確認",
+      "title": "【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認",
       "status": "planned",
       "dependsOn": [
         "OS01"
@@ -117,7 +117,7 @@
     },
     {
       "id": "OS03",
-      "title": "Android/AOSP: CuttlefishでOS起動と自律実行の最小縦断試作",
+      "title": "【Android/AOSP別トラック】CuttlefishでOS起動と自律実行の最小縦断試作",
       "status": "planned",
       "dependsOn": [
         "OS02"
@@ -128,7 +128,7 @@
     },
     {
       "id": "OS04",
-      "title": "Android/AOSP: Pixel実機で復旧・省電力・再起動・署名更新を検証",
+      "title": "【Android/AOSP別トラック】Pixel実機で復旧・省電力・再起動・署名更新を検証",
       "status": "planned",
       "dependsOn": [
         "OS03"
@@ -139,7 +139,7 @@
     },
     {
       "id": "OS05",
-      "title": "Android/AOSP: 第三者SDK・審査・インストール・失効の閉鎖テスト",
+      "title": "【Android/AOSP別トラック】第三者SDK・審査・インストール・失効の閉鎖テスト",
       "status": "planned",
       "dependsOn": [
         "OS04"
@@ -184,6 +184,139 @@
       ],
       "evidence": [
         "docs/git-consolidation.md"
+      ]
+    },
+    {
+      "id": "B01",
+      "title": "Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存",
+      "status": "done",
+      "dependsOn": [
+        "G01"
+      ],
+      "evidence": [
+        "docs/product-baseline.md",
+        "docs/progress-audit-20260909.md",
+        "docs/prompt-playbook.md",
+        "docs/prompts/hub-wallet-next.md",
+        "docs/validation.md"
+      ]
+    },
+    {
+      "id": "B04",
+      "title": "main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合",
+      "status": "in_progress",
+      "dependsOn": [
+        "B01",
+        "D01"
+      ],
+      "evidence": [
+        "docs/design-implementation-alignment-20260909.md",
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "B02",
+      "title": "既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張",
+      "status": "planned",
+      "dependsOn": [
+        "B04"
+      ],
+      "evidence": [
+        "docs/prompts/hub-wallet-next.md"
+      ]
+    },
+    {
+      "id": "B03",
+      "title": "実行費用・認証済み収益を既存Walletへ接続し縦断検証",
+      "status": "planned",
+      "dependsOn": [
+        "B02"
+      ],
+      "evidence": [
+        "docs/prompts/hub-wallet-next.md"
+      ]
+    },
+    {
+      "id": "B05",
+      "title": "Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録",
+      "status": "planned",
+      "dependsOn": [
+        "B02"
+      ],
+      "evidence": [
+        "docs/prompts/hub-wallet-next.md"
+      ]
+    },
+    {
+      "id": "D01",
+      "title": "RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存",
+      "status": "done",
+      "dependsOn": [
+        "B01"
+      ],
+      "evidence": [
+        "docs/product-baseline.md",
+        "docs/os-readiness-audit-20260909.md",
+        "docs/prompts/os-operational-base-next.md",
+        "docs/templates/os-acceptance-report.md",
+        "docs/validation.md"
+      ]
+    },
+    {
+      "id": "V01",
+      "title": "最新統合sourceからQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す",
+      "status": "planned",
+      "dependsOn": [
+        "B04"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md",
+        "docs/templates/os-acceptance-report.md"
+      ]
+    },
+    {
+      "id": "GX00",
+      "title": "共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証",
+      "status": "planned",
+      "dependsOn": [
+        "B04"
+      ],
+      "evidence": [
+        "docs/design-implementation-alignment-20260909.md",
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "GX01",
+      "title": "ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証",
+      "status": "planned",
+      "dependsOn": [
+        "GX00"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "GX02",
+      "title": "指定された実ゲームの正式sandbox接続と交換条件を検証",
+      "status": "planned",
+      "dependsOn": [
+        "GX01"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "DX01",
+      "title": "ゲーム作者向けAPI/SDK・sandbox・複数owner/game分離と導入体験を検証",
+      "status": "planned",
+      "dependsOn": [
+        "GX00"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
       ]
     },
     {
@@ -241,6 +374,142 @@
       ],
       "evidence": [
         "docs/native-os-integration.md"
+      ]
+    }
+  ],
+  "phaseGates": [
+    {
+      "id": "B04-INTEGRATED",
+      "task": "B04",
+      "title": "承認後、main/native/設計reviewの3入力と入口を統合",
+      "status": "planned",
+      "dependsOn": [],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "V01-BOOT",
+      "task": "V01",
+      "title": "OS起動・安全基礎（V01全体の合格ではない）",
+      "status": "planned",
+      "dependsOn": [
+        "B04-INTEGRATED"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "B02-NATIVE",
+      "task": "B02",
+      "title": "既存native商品1件をHubで実処理・保存",
+      "status": "planned",
+      "dependsOn": [
+        "V01-BOOT"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "B03-FIXTURE",
+      "task": "B03",
+      "title": "単一ownerの合成Wallet・商品/費用/売上状態の基礎",
+      "status": "planned",
+      "dependsOn": [
+        "B02-NATIVE"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "V01-ACCEPT",
+      "task": "V01",
+      "title": "同一OS候補でD0〜D6縦断合格",
+      "status": "planned",
+      "dependsOn": [
+        "V01-BOOT",
+        "B02-NATIVE",
+        "B03-FIXTURE"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "B03-PROVIDER",
+      "task": "B03",
+      "title": "実provider/認証済み収益（別の権限・条件が必要）",
+      "status": "planned",
+      "dependsOn": [
+        "B03-FIXTURE"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "B05-COMPARE",
+      "task": "B05",
+      "title": "Wallet基礎後のPC比較/再試験。実機価値は別判定",
+      "status": "planned",
+      "dependsOn": [
+        "B02-NATIVE",
+        "B03-FIXTURE"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "GX00-ISOLATION",
+      "task": "GX00",
+      "title": "ADR・複数owner分離/本人接続・互換/復旧の合成検証",
+      "status": "planned",
+      "dependsOn": [
+        "B03-FIXTURE"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "GX01-CONTRACT",
+      "task": "GX01",
+      "title": "複数owner/gameの交換契約と両台帳fixture",
+      "status": "planned",
+      "dependsOn": [
+        "GX00-ISOLATION"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "GX01-UI",
+      "task": "GX01",
+      "title": "OS上の交換操作と台帳変更後D4/D5再検証",
+      "status": "planned",
+      "dependsOn": [
+        "GX01-CONTRACT",
+        "V01-BOOT"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "DX01-SDK",
+      "task": "DX01",
+      "title": "共通SDK・2作者/2game/2owner・fresh導入測定",
+      "status": "planned",
+      "dependsOn": [
+        "GX01-CONTRACT"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
       ]
     }
   ]

@@ -1,5 +1,7 @@
 # Rock star OS — Linux native開発
 
+現在の作業branchは `codex/operational-base-20260909`。[製品ベース](../../docs/product-baseline.md)と[CHECKPOINT](../../CHECKPOINT.md)に従い、承認済み設計の新規QEMU受入を進める。以下の実行例は環境・対象profile確認後に使う。
+
 標準HubからToolを取得するOSの試作。Linux / Buildroot / ARM64 QEMU virtで、kernel・root filesystem・専用サービス・native画面を開発する。
 
 **このイメージはBlackBerryへ書き込めない。** 初期製品はBlackBerry優先だが機種・variant・BSPは未定。製品方針と既存Android/Webとの関係は [現行方針](../../docs/native-os-integration.md)を参照する。

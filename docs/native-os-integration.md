@@ -1,5 +1,7 @@
 # Rock star OS — native OSの統合と現行方針
 
+現在の製品要望は [製品ベース](product-baseline.md)、実装順と承認範囲は [CHECKPOINT](../CHECKPOINT.md) と [承認記録](execution-approval-20260909.md)。main/native/設計の統合を先行し、下記の旧N順序を最新入口と混同しない。
+
 更新: 2026-09-09。製品・公開コードの正本は `k999ln/rock`。
 この文書は、9月8日〜9日の利用者指示とLinux版の開発を、9月5日のAndroid P1計画へ追加する決定記録である。方針が違う箇所は本書を優先し、過去の実装・試験記録はその対象を限定して保持する。
 

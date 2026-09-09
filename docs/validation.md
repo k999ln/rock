@@ -1,5 +1,43 @@
 # 検証記録
 
+## 設計v1.1と実装の再照合・進捗補助の修正 / 2026-09-09
+
+- 16:51 UTCの3branch監査に加え、修正した `npm run prompt:context` を17:07 UTCにオンライン実行。main/native/reviewのSHAは監査入力と一致し、reviewのcheck-run 0は `NO_CHECKS / allSuccessful:false`。全branchとopen PRの再照合にも成功。これはメタデータ取得でありsourceレビュー済みを自動宣言しない。
+- ALIGN01〜05を監査・設計v1.1・実行プロンプト・受入雛形・進捗へ反映。GX00の単一owner→複数player境界、backup試験入口の新旧形式、台帳変更と旧OS互換、段階依存を訂正。既存native sourceを読み取り確認したがruntimeを修正・試験したわけではない。
+- 追加18テストで、PRなしbranchのchecks取得対象、ref順序/変更/削除、チェックなし/未完了の非成功、段階ゲートの参照/重複/循環/完了根拠/旧形式互換を検証。ベース検査にも設計入力SHA欠落と未承認市場の実装許可化を拒否する負例を追加。
+- 最初の全体verifyは新テスト18箇所のPromise記述をlintが拒否。既存の記述規則に合わせて明示的なvoidを付け、条件を弱めず再実行。
+- 再実行した `npm run verify` は終了コード0。project/repository/baseline、型、製品lint、53 unit tests（fail/skip 0）、既存Web build、合成ローカルAPI143 assertionsが成功。既知のVite configLoader/Node module API警告は残る。ブラウザQA・native新image・実機の試験ではない。
+- 利用者の市場案とGTA補足は、公式一次資料を調べた検討メモへ分離。自動化で人の挑戦を増やす目的を設計に明記し、特定ゲームの未確認機能・通貨値上がり・実資金運営を確定しない。
+- 今回変更は文書/進捗取得・検査補助のみ。native checkoutはcleanのまま、SSD/VM再起動なし。main/nativeのmerge、実ゲーム/SDK実装、実課金/送金/ATM/実機/公開なし。設計承認待ちを維持する。
+
+## OS稼働受入・ゲーム作者向けWallet・ATM手数料のプロンプト / 2026-09-09
+
+- GitHub 16:09 UTCのmain `7cdbb5fedc86ee3978ed329d9312147d137c9199`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、PR #1 OPEN、同SHAの各CI成功を取得しfetchで一致を確認。監査は `docs/os-readiness-audit-20260909.md`。
+- RQ12〜15、OS受入のNOT_RUN雛形、実行プロンプト、進捗入口を保存。手数料0の対象は利用者の補足どおりATM。ゲーム料金を無料とも有料とも確定せず、既存OS月額を保持。新しい「OS内にgame要素を入れるとどうなるか」は相談として扱い、全OSのゲーム化を確定仕様にしていない。
+- 別担当がOS不足/Wallet・ATM・ゲーム境界と最終文書を読み取り確認。逆交換の確定消費と原資のWallet側確認、ゲーム作者のmint権限禁止、復元時の同一authority単一writer、2gameの分離を補強した。
+- `npm run verify` 終了コード0。project/repository/baseline整合、型、製品lint、35 unit tests、build、ローカルAPI143 assertionsに成功。既知のVite configLoaderとNode module API警告は残る。本番サイトを公開せず、合成ローカルAPIのみ。
+- ベース検査にRQ12〜15・受入雛形・ATM手数料0・ATM非依存を追加。欠落、手数料の非0化、ATM必須化を拒否する負例も同じ既存テストへ追加し成功。構造検査は意味の完全一致やOS安全性の証明ではない。
+- native runtime/新imageのbuild/boot・ゲーム/SDK実装・物理ATM・実資金・実機は今回未実施。SSDを再接続/再マウントしていない。D01は文書成果だけの完了で、V01/GX01/GX02/DX01、既存B/Nの未完了を解消したとはしない。
+- 続く利用者の「設計書を確認してから実行」に従い、設計書v1.0と全入口へ承認待ちを追記。Game入口/達成演出を提案として提示し、同意前に実装しない。設計書追加後もproject/baseline/対象テストで入口を検証する。
+
+## 相違解消プロンプトの改訂 / 2026-09-09
+
+- 15:01 UTCのGitHub取得でmain `f9b1cbd99eeaa20f7cbc80bd2d88909949cca863`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、OPENのPR #1と同SHAのCI成功を確認。[追補監査](progress-audit-20260909-followup.md)へ入力と限界を保存した。
+- GAP01〜04を修正順・担当・合格証拠・未解決条件へ対応付けた。引継ぎ統合を段階0/B04、既存商品実利用と商品条件を段階1〜2/B02、Walletを段階3/B03、最終比較を段階4/B05に分離した。作業branchへの反映と元native/mainへの反映、schemaと実接続、fixtureと実収益、host画面と携帯実機価値を混同しない条件を追加。
+- 別担当の読み取りレビューで、4問題の対応と権限境界を確認。PC商品のpathを正し、B02→B03→最終比較の依存が循環しないようB05を分離した。B03の台帳/fixture基礎が通れば、実サービス待ちでも比較へ進めるが、実収益の未接続は未解決に残す。
+- `npm run verify` は型、製品lint、35テスト、buildまで成功後、sandbox内API待受でEPERM。許可されたローカル通信でverify全体を再実行し、終了コード0、API143 assertions成功。既存Vite configLoader/Node module APIの警告は残る。
+- 本改訂は文書と進捗のみ。既存商品・OS/Hub/Wallet runtimeは変更せず、native統合、Hub操作、実サービス接続、実機・本番は未実施。B04/B02/B03/B05をplannedのまま保持し、完了数を製品完成率に変換しない。
+
+## 製品ベース・進捗からのプロンプト作成 / 2026-09-09
+
+- main `5cec83478fe97bf272869298160a572ef7fcefee` とPR #1/native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5` をGitHubで確認。PRはOPEN。HEAD一致のWeb/native/Android CIがsuccessであることをAPIで読み戻した。監査対象と限界は [差分監査](progress-audit-20260909.md) に固定した。
+- 利用者要望を [製品ベース](product-baseline.md) のRQ01〜RQ11に整理し、AGENTSと既存設計の入口を更新。Hub＋Wallet、tobの商品供給、実行/料金/権利の独立軸、既存商品のHub実利用、利用者の不便の比較を次のプロンプトへ保存した。native実装や既存料金の再実装/廃止は指示していない。
+- `npm run verify` 成功。進捗/repository/製品ベース、型、製品lint、35テスト、build、API143 assertions。sandbox内では最後のAPI待受がEPERMとなり、許可されたローカル通信でverify全体を再実行して終了コード0。既存Vite configLoaderとNode module APIの警告は残る。
+- 追加したベース検査はRQ欠落、監査snapshotの最新扱い、SHA不一致、repository外参照、AGENTS入口欠落を拒否する。最終の供給元未確定表現への修正後も対象テストとlintを再実行した。
+- `npm run prompt:context` のonline実行でGitHubのmain/全branch/open PR/同SHA checksを取得。mainとPR headを再取得して取得中の変更も検知する。offline実行は `liveMetadataVerified:false`、ネットワーク失敗時は終了コード2で、最新成功に見せかけない。出力はメタデータで、sourceReviewCompleteはfalseのまま。実装コードの確認を別途必須にする。
+- 別担当の読み取りレビューで、native実装根拠と会話要望の整合を確認。remote/local Walletの正本構成、合成取引の範囲、供給元の独占性未確定、PCツールpathを明確化した。
+- 今回のOS/Hub runtime、商品コード、Wallet資金処理は変更していない。新しいHub操作、不便の比較測定、OS起動、実PC/USB/BlackBerry、実金融・本番公開は未実施。これらはB02/B03とnative側の各受入条件へ残した。
+
 ## Gitプロジェクト統合 / 2026-09-07
 
 - `rock` commit `9e4dc89d995ccbf11f9e3a15efa0e65868874d48`と、非公開`Mr.` commit `a82a728`のtracked blobを比較。完全一致するpath組は78件で、主にUI boilerplate、既存4ツールの固定原本、MIT licenseだった。

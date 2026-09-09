@@ -1,0 +1,98 @@
+{
+  "version": "1.6",
+  "decidedAt": "2026-09-09",
+  "repository": "k999ln/rock",
+  "authority": "docs/product-baseline.md",
+  "promptRules": "docs/prompt-playbook.md",
+  "audit": "docs/os-readiness-audit-20260909.md",
+  "nextPrompt": "docs/prompts/os-operational-base-next.md",
+  "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
+  "designReview": "docs/os-hub-wallet-game-design.md",
+  "alignmentAudit": "docs/design-implementation-alignment-20260909.md",
+  "executionApproval": {
+    "status": "approved_for_implementation",
+    "approvedDesignVersion": "1.1",
+    "approvedDesignCommit": "27b34adc02a9e06a4816aa18a5e38cf38b330953",
+    "record": "data/execution-approval.json",
+    "recordedAt": "2026-09-09T17:47:40.214265+00:00",
+    "scope": "Native QEMU, existing Hub products, synthetic Wallet/game exchange and SDK; conditional publication/hardware/MetaMask requests tracked separately."
+  },
+  "requirements": [
+    "RQ01",
+    "RQ02",
+    "RQ03",
+    "RQ04",
+    "RQ05",
+    "RQ06",
+    "RQ07",
+    "RQ08",
+    "RQ09",
+    "RQ10",
+    "RQ11",
+    "RQ12",
+    "RQ13",
+    "RQ14",
+    "RQ15"
+  ],
+  "primaryCapabilities": [
+    "automation-hub",
+    "automation-earnings-wallet"
+  ],
+  "supplyRoleLabel": "tob",
+  "supplyRoleExclusivity": "unspecified",
+  "auditInputs": {
+    "main": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
+    "nativeBranch": "codex/integrate-native-os-20260909",
+    "nativeHead": "fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5",
+    "designBranch": "codex/os-game-design-review-20260909",
+    "designHead": "de5b102d3525daccf604efd5685bdf8c14ad5d50",
+    "nativePullRequest": 1,
+    "nativePullRequestStateAtAudit": "OPEN",
+    "isLiveStatus": false
+  },
+  "freshContextRequired": [
+    "main",
+    "branches",
+    "open-pull-requests",
+    "relevant-closed-pull-requests",
+    "source-at-sha",
+    "checks-at-sha"
+  ],
+  "commercialPolicy": "Preserve native 888 USD cents per contract per month and legacy Web estimates; Rock ATM fee is zero per RQ15; game fees are unspecified; no live billing authorized here.",
+  "hardwarePolicy": "Native branch prioritizes BlackBerry with model/variant unresolved; Linux QEMU and Android/AOSP are distinct evidence tracks.",
+  "firstOperationalTarget": "QEMU development OS, synthetic data only; not hardware or production certification",
+  "gameExchange": {
+    "requested": true,
+    "game": "unspecified",
+    "direction": "unspecified",
+    "rates": "unspecified",
+    "platformFeePolicy": "unspecified; zero-fee instruction applies to ATM, not game exchange",
+    "externalCosts": "separate, disclosed before consent; unspecified",
+    "atmDependency": false,
+    "realValueEnabled": false
+  },
+  "gameDeveloperExperience": {
+    "requested": true,
+    "target": "self-made game developers and their players",
+    "productionPlayerEligibility": "unspecified, including players without Rock hardware",
+    "multiOwnerReadiness": "not implemented; GX00 ledger isolation and authenticated account linking required",
+    "deliverables": [
+      "API contract",
+      "reference SDK",
+      "synthetic sandbox",
+      "runnable sample",
+      "onboarding and reconciliation diagnostics"
+    ],
+    "osSubscriptionChange": "none; ATM fee clarification does not change existing OS contract"
+  },
+  "atmFees": {
+    "rockFeeMinor": 0,
+    "externalCosts": "separate, disclosed before consent; unspecified"
+  },
+  "marketExploration": {
+    "status": "discussion_only",
+    "runtimeAuthorized": false,
+    "realValueEnabled": false,
+    "scope": "Prediction markets and game asset trading are separate, optional proposals; not an approved OS requirement"
+  }
+}

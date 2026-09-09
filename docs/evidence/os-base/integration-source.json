@@ -1,0 +1,22 @@
+{
+  "schema": "rock-os-integration-source/1",
+  "recordedAt": "2026-09-09T17:51:52.089809+00:00",
+  "inputs": {
+    "main": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
+    "native": "fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5",
+    "design": "27b34adc02a9e06a4816aa18a5e38cf38b330953"
+  },
+  "approvedDesignVersion": "1.1",
+  "branch": "codex/operational-base-20260909",
+  "check": "npm run verify",
+  "result": "PASS",
+  "webUnitTests": 53,
+  "apiAssertions": 143,
+  "logSha256": "c7771f28cea1440b0ced890c185e7368239293eab23062a07149162fe70a1667",
+  "notes": [
+    "First sandbox run failed only at loopback bind EPERM; full rerun in authorized local execution passed.",
+    "Typecheck, product lint, build, baseline/project/repository checks passed.",
+    "Native regression and new image build/boot remain NOT_RUN for this integration.",
+    "No old native source or IMPORT-MANIFEST hashes rewritten."
+  ]
+}

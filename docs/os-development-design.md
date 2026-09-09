@@ -1,5 +1,7 @@
 # Rock star OS — 自動化OS 開発設計書
 
+現行要望は [製品ベース](product-baseline.md)、現在の実装再開先は [CHECKPOINT](../CHECKPOINT.md)。Android/AOSPとLinux nativeの実績を分けます。
+
 改訂日: 2026-09-09。現行方針は [native OS統合記録](native-os-integration.md)。BlackBerryを初期製品端末の優先候補とし、Linux/Buildroot/QEMUの起動済み試作を `systems/rock-star-os/` へ追加した。最終実機方式と型番は未定。Walletの新OS契約は月888 cents固定、既存Webの上限料金は試算として保持する。
 
 以下は**2026-09-05版0.1のAndroid/AOSPトラックの設計と履歴**。AOSP/Pixel主軸という当時の選択は現在の唯一の方式ではない。「未実装」「未検証」はこのトラックに限定する。Linuxで得た証拠をAndroidや実機に移し替えない。将来要件は引き続き参照し、矛盾する優先順位・端末・料金は上記の現行方針を優先する。

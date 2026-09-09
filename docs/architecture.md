@@ -1,5 +1,7 @@
 # 実装と次の接続点
 
+製品要望は [製品ベース](product-baseline.md)。本書の「現在」は既存Web/PCに限定。nativeには別のHub/Wallet/backendがあり、[branch監査](progress-audit-20260909.md)を読まず新規実装と判断しない。
+
 本書は既存Web/PCの実装境界。主開発対象となるOSの構成・権限・更新設計は [OS開発設計書](os-development-design.md) を参照する。WebのサーバーやMCPアダプターだけをOSランタイムとは扱わない。現在のソースとD1は、OSへの移行設計が検証されるまで保持する。
 
 ## 現在の境界

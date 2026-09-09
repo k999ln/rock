@@ -1,6 +1,7 @@
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
+import { phaseGateEvidencePaths, renderPhaseGates, validatePhaseGates } from './project-phase-gates.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const status = JSON.parse(
@@ -42,6 +43,9 @@ function visit(id, stack = new Set()) {
     visit(dep, next);
 }
 for (const id of ids) visit(id);
+const existingGateEvidence = new Set(phaseGateEvidencePaths(status.phaseGates)
+  .filter((file) => existsSync(resolve(root, file)) && statSync(resolve(root, file)).isFile()));
+const phaseGates = validatePhaseGates(status.tasks, status.phaseGates, existingGateEvidence);
 const cell = (value) =>
   String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
 const done = status.tasks.filter((task) => task.status === 'done').length;
@@ -56,6 +60,7 @@ const block = [
       `| ${task.id} | ${cell(task.title)} | ${labels[task.status]}${task.reason ? `: ${cell(task.reason)}` : ''} | ${task.evidence.map((file) => `[記録](${file})`).join(' · ') || '—'} |`,
   ),
   '',
+  ...renderPhaseGates(phaseGates),
   `次の作業: ${status.nextAction}`,
   '<!-- project-status:end -->',
 ].join('\n');
