@@ -91,8 +91,18 @@ def main():
                         process.kill()
                         process.wait()
         content = log.read_text(errors='replace')
-        required = ['ROCK_PLATFORM_READY', 'ROCK_PLATFORM_GUEST_PASS', 'ROCK_PLATFORM_VERIFY_PASS']
+        required = ['ROCK_PLATFORM_READY', 'ROCK_PLATFORM_GUEST_PASS', 'ROCK_PLATFORM_VERIFY_PASS',
+                    'ROCK_SANDBOX_RESOURCE_GUEST_PASS']
         report['missing'] = [marker for marker in required if marker not in content]
+        resource_lines = [line.split('ROCK_SANDBOX_RESOURCE_GUEST_PASS ', 1)[1] for line in content.splitlines()
+                          if line.startswith('ROCK_SANDBOX_RESOURCE_GUEST_PASS ')]
+        if len(resource_lines) != 1:
+            raise RuntimeError('exactly one real sandbox resource proof required')
+        report['resource_probes'] = json.loads(resource_lines[0])
+        report['resource_probe_scope'] = 'fixed sandbox diagnostics; per-file size only; Hub crash/deadline lifecycle NOT_RUN'
+        if [value.get('mode') for value in report['resource_probes']] != ['memory', 'cpu', 'file-size', 'crash'] or \
+                any(value.get('status') != 'PASS' for value in report['resource_probes']):
+            raise RuntimeError('all fixed resource denial cases are required')
         report['native_framebuffer_capture'] = captured
         if process.returncode != 0 or report['missing'] or 'ROCK_PLATFORM_GUEST_FAIL' in content:
             raise RuntimeError('integrated guest checks failed; inspect boot.log')

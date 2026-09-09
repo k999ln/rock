@@ -5,6 +5,7 @@ Uses real services, signatures, namespaces, persistent databases and uid
 transitions. The Wallet side is explicitly the local simulator.
 """
 import json
+import importlib.util
 import os
 from pathlib import Path
 import signal
@@ -138,6 +139,18 @@ def main():
     check('real namespace/seccomp diagnostic', probe.returncode == 0 and result.get('ok') is True)
     for name, passed in result['checks'].items():
         check('sandbox ' + name, passed is True)
+    resource_spec = importlib.util.spec_from_file_location('rock_resource_probe', Path(__file__).with_name('sandbox-probe.py'))
+    resource_probe = importlib.util.module_from_spec(resource_spec)
+    resource_spec.loader.exec_module(resource_probe)
+    resource_results = []
+    for mode in resource_probe.MODES:
+        started = time.monotonic()
+        measured = subprocess.run(['/usr/libexec/rock-sandbox-exec', 'probe-' + mode],
+                                  user=1002, group=1002, extra_groups=[], capture_output=True, text=True,
+                                  timeout=resource_probe.DEADLINES[mode])
+        resource_results.append(resource_probe.validate_resource_result(mode, measured, time.monotonic() - started))
+        check('sandbox actual resource denial ' + mode, resource_results[-1]['status'] == 'PASS')
+    print('ROCK_SANDBOX_RESOURCE_GUEST_PASS ' + json.dumps(resource_results, sort_keys=True), flush=True)
     script = "from pathlib import Path; Path('/data/wallet/wallet-simulator.db').read_bytes()"
     inaccessible = subprocess.run(['/usr/bin/python3', '-I', '-c', script], user=1002, group=1002,
                                   extra_groups=[], capture_output=True, timeout=5)
@@ -255,6 +268,9 @@ def main():
     check('three independent SDK Tools in real guest', True)
     report = {'status': 'PASS', 'checks': checks, 'architecture': os.uname().machine,
               'wallet': 'SIMULATOR_ONLY', 'blackberry': 'NOT_RUN', 'physical_usb': 'NOT_RUN',
+              'resource_probes': resource_results,
+              'resource_probe_scope': 'fixed diagnostic processes under unchanged production sandbox limits; per-file size only',
+              'hub_crash_deadline_lifecycle': 'NOT_RUN',
               'network': Path('/proc/net/dev').read_text(), 'time_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}
     Path('/data/platform-guest-test.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
     print('ROCK_PLATFORM_GUEST_PASS ' + json.dumps(report, ensure_ascii=False), flush=True)

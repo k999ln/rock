@@ -14,7 +14,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-/* Only the immutable finite recipe interpreter and an isolation diagnostic
+/* Only the immutable finite recipe interpreter and fixed isolation diagnostics
  * are entry points. No caller-controlled command, path, bind mount or env. */
 static void fail(const char *message) { perror(message); exit(125); }
 static void limit(int kind, rlim_t value) {
@@ -27,9 +27,15 @@ int main(int argc, char **argv) {
     if (owner == 1 || prctl(PR_SET_PDEATHSIG, SIGKILL) || getppid() != owner) {
         fputs("Platform parent is no longer alive\n", stderr); return 125;
     }
-    const char *script;
-    if (argc != 2 || (strcmp(argv[1], "recipe") && strcmp(argv[1], "probe"))) {
-        fputs("Expected recipe or probe\n", stderr); return 125;
+    const char *script, *probe_mode = NULL;
+    if (argc == 2) {
+        if (!strcmp(argv[1], "probe-memory")) probe_mode = "memory";
+        else if (!strcmp(argv[1], "probe-cpu")) probe_mode = "cpu";
+        else if (!strcmp(argv[1], "probe-file-size")) probe_mode = "file-size";
+        else if (!strcmp(argv[1], "probe-crash")) probe_mode = "crash";
+    }
+    if (argc != 2 || (strcmp(argv[1], "recipe") && strcmp(argv[1], "probe") && !probe_mode)) {
+        fputs("Expected recipe or fixed probe mode\n", stderr); return 125;
     }
     if (getuid() != 1002 || geteuid() != 1002) {
         fputs("Only the platform service can launch tools\n", stderr); return 125;
@@ -85,7 +91,7 @@ int main(int argc, char **argv) {
         "--clearenv", "--setenv", "PATH", "/usr/bin", "--setenv", "LANG", "C.UTF-8",
         "--setenv", "ROCK_OUTER_NETNS", network_identity,
         "--setenv", "HOME", "/tmp", "--seccomp", descriptor, "--",
-        "/usr/bin/python3", "-I", "-B", (char *)script, NULL};
+        "/usr/bin/python3", "-I", "-B", (char *)script, (char *)probe_mode, NULL};
     execv(command[0], command);
     fail("exec bubblewrap");
 }
