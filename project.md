@@ -1,6 +1,6 @@
 # Rock star — 事業・設計・進捗
 
-2026-09-09実装更新: [統合後のOS検証](docs/os-operational-validation-20260909.md)に1089件source回帰と55件全observerの実Linux結果を保存。3系統統合は完了。初回OS buildで公開範囲外の旧文書参照による停止を確認し、公開済み実験仕様への修正と実配置回帰を追加。D3の実資源拒否とlocal A/B復元を追加検証し、`b8287bc`を新しい空の領域で再build中。[Pixel 10 P1](docs/android-trial.md)はGrapheneOSを保つ記事処理APKをCIで検証・取得し、実機試験は未実行。[GX00 ADR](docs/gx00-owner-isolation-adr.md)は複数owner実装に向けた設計で、交換実装の成功ではない。
+2026-09-09実装更新: [統合後のOS検証](docs/os-operational-validation-20260909.md)にbuild runtimeの1089件と、追加hostコードの1119件・root61件の実Linux結果を保存。3系統統合は完了。初回OS buildで公開範囲外の旧文書参照による停止を確認し、公開済み実験仕様への修正と実配置回帰を追加。D3の実資源拒否とlocal A/B復元を追加検証し、`b8287bc`を新しい空の領域で再build中。[Pixel 10 P1](docs/android-trial.md)はGrapheneOSを保つ記事処理APKをCIで検証・取得し、実機試験は未実行。[GX00 ADR](docs/gx00-owner-isolation-adr.md)は複数owner実装に向けた設計で、交換実装の成功ではない。
 
 このファイルは当該branchの作業記録です。確定要望は [docs/product-baseline.md](docs/product-baseline.md)、進捗からの指示作成は [docs/prompt-playbook.md](docs/prompt-playbook.md) が正本です。
 
@@ -215,7 +215,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 未合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
 | DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 未合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) |
 
-次の作業: b8287bc固定source1089件と追加root55件はLinux成功。新しい空の領域でOS再build→起動/専用UID/Hub業務商品/合成Wallet→D0〜D6受入。local A/B復元63件はhost成功、実復元起動は未実行。B03-FIXTURE後にGX00→ゲーム交換→SDK。Pixel 10用のP1 APK二本はCI検証・取得済み、実機未確認。
+次の作業: b8287bc固定runtime1089件、追加host c7b29a9の1119件/root61件はLinux成功。新しい空の領域でOS再build→起動/専用UID/Hub業務商品/合成Wallet→D0〜D6受入。local A/B復元63件はhost成功、実復元起動は未実行。B03-FIXTURE後にGX00→ゲーム交換→SDK。Pixel 10用のP1 APK二本はCI検証・取得済み、実機未確認。
 <!-- project-status:end -->
 
 ## 次段階の設計

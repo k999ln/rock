@@ -8,6 +8,7 @@ main/native/設計v1.1を専用branchへ統合した。統合commitは `797c663d
 | --- | --- | --- |
 | Web統合回帰 | PASS | 53 unit tests、143 API assertions、型・lint・build・要件/進捗/正本検査 |
 | Linux source回帰 | PASS | `b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9`、1089 Python実行、C core/platform/UIと実IPC・UI操作。入力hash不変、skip/warningなし |
+| 操作・復元host追加回帰 | PASS / sourceのみ | `c7b29a9`の1119 Python実行とroot61件、skip/warningなし。版選択の実描画位置、OCR期限・停止後の排他観測、非空Walletの署名/888一度/ATM1000取消を追加。build runtimeはb8287bcのまま |
 | startup health | PASS / sourceのみ | Python15件、root→UID1000の実Linux C8群。実nonce/socket/pidfd・loop応答を試験 |
 | backup試験入口・local A/B | PASS / sourceのみ | Linux63件（35既存backup・15purchaser A/B・13local A/B）。2件は実ext4のlocal/purchaser分離。旧schema1、新schema2、追加表、外部正本の未検証表示を保持 |
 | 全UI observer | PASS / sourceのみ | 現行enroll/Wallet terms/quote/approvalに合わせた55件を実Linux root fixtureで実行。skip/warningなし |
@@ -33,6 +34,10 @@ GitHubの初回native CIは、試験用Pythonの所有者と10msの再試行時�
 local用の明示schema6はnetworkなしで署名済みImage/rootfs/stage0を固定し、A/B/data全体の既存backup2を再利用する。購入者schema5の外部正本をlocalと読み替えず、型違い・重複JSON・data-onlyへの取り違えを拒否する。63件のLinux試験はskip/warningなし。新しいOSでの通常終了・復元後起動はまだ未実行。
 
 D3の固定診断は、実LinuxのUID1002→65534 sandboxでメモリ512 MiB要求を256 MiB上限で拒否、CPU2秒で終了、1 MiBを越える書込をEFBIGで拒否、明示crashを観測した。通常recipeと16項目の起動診断、未知引数拒否も保持した。実OS内の4ケースと、Hubでのtimeout/crash状態回復、data容量不足は別の受入結果を必要とする。
+
+最新の`2d9bd3a` CIではnativeとAndroidが合格、Webは生成済みproject.mdのcommit漏れで停止した。c7b29a9に同期差分を含め、再検証中。追加のWallet証拠6件はroot必須のため既存CIのroot observer段階へ配置し、非root source試験をskipで通さない。
+
+[ゲームAPI草案](game-api-contract-draft.md)は認証principalから契約を選ぶ境界、専用署名receipt、GX00後の交換/SDK実装入口を整理した設計のみ。新規API・SDKは未提供。
 
 ## 残る実装と受入
 

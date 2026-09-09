@@ -59,6 +59,20 @@
       "scope": "Linux build host in outer disposable user namespace; actual target OS NOT_RUN",
       "report": "d3-linux-resource-result.json",
       "evidence_guards": 6
+    },
+    "host_acceptance_harnesses": {
+      "status": "PASS",
+      "source_commit": "c7b29a9dc2a6bdf646a098992dfa5104ad6ad7fd",
+      "python_executions": 1119,
+      "root_ui_tests": 61,
+      "skips": 0,
+      "resource_warnings": 0,
+      "report": "host-c7b29a9.json",
+      "report_sha256": "5a63f005bf1160837f37241eadd67771c5e4184099ea09ddbd2ae35faca51b36",
+      "root_log": "host-c7b29a9-root-ui.log",
+      "root_log_sha256": "980b4f2fe6a4dbc3a58d10efff101a45823aadee6551234dfe855188da911212",
+      "runtime_changes_after_b8287bc": false,
+      "actual_qemu": "NOT_RUN"
     }
   },
   "logs_sha256": {
@@ -138,6 +152,22 @@
       },
       "android": {
         "run": 34390671239,
+        "status": "PASS"
+      }
+    },
+    {
+      "head_commit": "2d9bd3ae32a6febb441c0d8466aeba91560e67d8",
+      "native": {
+        "run": 34392915846,
+        "status": "PASS"
+      },
+      "web": {
+        "run": 34392915867,
+        "status": "FAIL",
+        "reason": "Generated project.md update not included in commit; corrected in c7b29a9."
+      },
+      "android": {
+        "run": 34392915866,
         "status": "PASS"
       }
     }
