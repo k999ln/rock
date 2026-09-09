@@ -296,6 +296,20 @@
         "run": 34399906548,
         "status": "PASS"
       }
+    },
+    {
+      "source_commit": "a02401bf1661d75446da858b48e6e90afd2ed263",
+      "web_run": 34403201347,
+      "native_run": 34403201154,
+      "android_run": 34403201020,
+      "all_status": "PASS",
+      "native_python_executions": 1177,
+      "root_observer_tests": 61,
+      "root_startup_groups": 8,
+      "wallet_replay": "14 Wallet +14 ATM frames; 8 negatives; synchronous host C fixture only",
+      "native_report": "ci-a02401b-native.json",
+      "native_report_sha256": "bec424d2375853ed4b92d65698b7565654b8a4b631c083dd357794cd07cf94fc",
+      "runtime_image_remains": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9"
     }
   ],
   "host_observation_failures": [
