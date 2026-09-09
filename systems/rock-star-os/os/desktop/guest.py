@@ -17,6 +17,7 @@ import uuid
 
 BASE = Path('/var/tmp/rock-star-desktop')
 PASSWORD_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'
+STAGE0_SCHEMAS = ('rock-desktop-device/5', 'rock-desktop-device/6')
 
 
 def require(condition, message):
@@ -79,11 +80,13 @@ def state_path(name):
 def validate_config(config):
     require(isinstance(config, dict), 'invalid desktop configuration')
     fields = {'schema', 'name', 'images', 'sha256'}
-    if config.get('schema') in ('rock-desktop-device/2', 'rock-desktop-device/3', 'rock-desktop-device/4', 'rock-desktop-device/5'):
+    if config.get('schema') in ('rock-desktop-device/2', 'rock-desktop-device/3', 'rock-desktop-device/4', *STAGE0_SCHEMAS):
         fields.add('network')
         modes = ('none', 'closed-services') if config['schema'] in ('rock-desktop-device/4', 'rock-desktop-device/5') else ('none', 'development-services')
         require(config.get('network') in modes,'unsupported virtual network mode')
-        if config['schema'] in ('rock-desktop-device/3', 'rock-desktop-device/4', 'rock-desktop-device/5'):
+        if config['schema'] == 'rock-desktop-device/6':
+            require(config['network'] == 'none', 'local A/B profile requires no network')
+        if config['schema'] in ('rock-desktop-device/3', 'rock-desktop-device/4', *STAGE0_SCHEMAS):
             fields.add('viewer')
             require(config.get('viewer') == 'browser', 'unsupported virtual display viewer')
         if config['schema'] in ('rock-desktop-device/4', 'rock-desktop-device/5'):
@@ -101,12 +104,12 @@ def validate_config(config):
             # actual protected file/hash is checked by ensure after display start.
     else:
         require(config.get('schema') == 'rock-desktop-device/1', 'unknown desktop configuration')
-    if config.get('schema') == 'rock-desktop-device/5':
+    if config.get('schema') in STAGE0_SCHEMAS:
         fields.add('boot')
     require(set(config) == fields, 'invalid desktop configuration')
     require(isinstance(config['images'], str) and Path(config['images']).is_absolute(), 'images must be an absolute directory')
     require(re.fullmatch(r'/[A-Za-z0-9_./-]+', config['images']), 'image path contains unsupported QEMU option characters')
-    image_names = {'Image', 'rootfs.ext4', 'stage0.cpio.gz'} if config.get('schema') == 'rock-desktop-device/5' else {'Image', 'rootfs.ext4'}
+    image_names = {'Image', 'rootfs.ext4', 'stage0.cpio.gz'} if config.get('schema') in STAGE0_SCHEMAS else {'Image', 'rootfs.ext4'}
     require(isinstance(config['sha256'], dict) and set(config['sha256']) == image_names, 'complete image hashes required')
     for name, value in config['sha256'].items():
         require(isinstance(value, str) and re.fullmatch('[0-9a-f]{64}', value), 'invalid image hash')
@@ -115,6 +118,9 @@ def validate_config(config):
     if config.get('schema') == 'rock-desktop-device/5':
         from stage0 import verified_profile
         verified_profile(config)
+    elif config.get('schema') == 'rock-desktop-device/6':
+        from stage0 import verified_local_profile
+        verified_local_profile(config)
 
 
 def command(config, state, session):
@@ -133,7 +139,7 @@ def command(config, state, session):
             '-device', 'virtio-rng-pci,rng=rockrng,addr=0x3',
             '-device', 'virtio-gpu-pci,xres=720,yres=960,addr=0x4',
             '-device', 'virtio-keyboard-pci,addr=0x5', '-device', 'virtio-tablet-pci,addr=0x6']
-    if config.get('schema') == 'rock-desktop-device/5':
+    if config.get('schema') in STAGE0_SCHEMAS:
         args[args.index('-append')+1] = 'console=ttyAMA0 vt.global_cursor_default=0 ro rootwait panic=-1 rock.ui=required'
         args[args.index('-drive')+1] = f'if=none,file={state / "slot-a.ext4"},format=raw,id=osdisk'
         for index, value in enumerate(args):
@@ -225,7 +231,7 @@ def start(config):
         # Inspect before even checking the filesystem of possibly live userdata.
         for name in ('vnc.sock', 'qmp.sock', 'websocket.sock'):
             remove_stale_socket(state / name)
-        if config.get('schema') == 'rock-desktop-device/5':
+        if config.get('schema') in STAGE0_SCHEMAS:
             from stage0 import prepare_disks
             prepare_disks(config, state)
         else:
@@ -306,7 +312,16 @@ def main():
         result = create_backup(args.name)
     elif args.action == 'services':
         device = status(args.name)
-        if device.get('network') == 'closed-services':
+        marker = state_path(args.name)/'device.json'
+        if marker.exists():
+            from stage0 import read_json
+            saved = read_json(marker)
+        else:
+            saved = device.get('config', {})
+        if saved.get('schema') == 'rock-desktop-device/6':
+            result = {'status': 'NOT_APPLICABLE', 'network': 'none',
+                      'meaning': 'explicit local A/B profile has no external service endpoints'}
+        elif device.get('network') == 'closed-services':
             from closed_services import ensure
             result = ensure(device['config']['services'])
         else:

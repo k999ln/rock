@@ -1,4 +1,4 @@
-"""Explicit desktop v5 signed stage0 and stopped A/B/data snapshot boundary.
+"""Explicit purchaser v5 / local v6 stage0 and stopped A/B/data boundary.
 
 Only existing public RFC8032 development verification is reused. No key is
 created, no profile is rewritten, no backend is provisioned and no disk repaired.
@@ -99,6 +99,39 @@ def verified_profile(config):
                     'MCP backend endpoint/profile mismatch')
     return {'factory': envelope, 'factory_sha256': boot['factory_sha256'], 'profile_sha256': boot['profile_sha256'],
             'rootfs_size': manifest['size'], 'binding': record['binding']}
+
+
+def verified_local_profile(config):
+    """Separate local admission; never reinterpret a purchaser configuration.
+
+    The image triple is read-only and independently hash-pinned. Reuse the
+    existing bounded newc parser, real update signature verification, and full
+    unconfigured-base/source/authenticator checks. No keys, profiles or disks
+    are written. There is no purchaser profile.json or backend fallback here.
+    """
+    from service_access import profile
+    require(config.get('schema') == 'rock-desktop-device/6' and config.get('network') == 'none' and
+            'services' not in config, 'explicit offline local A/B configuration required')
+    image, boot = Path(config['images']), config['boot']
+    require(type(boot) is dict and set(boot) == {'mode', 'profile', 'factory_sha256'} and
+            boot['mode'] == 'signed-stage0' and boot['profile'] == 'local-development' and
+            type(boot['factory_sha256']) is str and re.fullmatch('[0-9a-f]{64}', boot['factory_sha256']),
+            'strict local signed-stage0 boot fields required')
+    inputs = profile._inputs(image, config['sha256'])
+    raw = profile._stage0(image/'stage0.cpio.gz')['factory']
+    require(hashlib.sha256(raw).hexdigest() == boot['factory_sha256'], 'local factory pin mismatch')
+    _, update = profile._update_helpers()
+    envelope = update.decode(raw, 8192); manifest = update.verify_envelope(envelope)
+    require(manifest['sha256'] == inputs['rootfs.ext4']['sha256'] and manifest['size'] == inputs['rootfs.ext4']['size'],
+            'signed local factory does not bind the pinned rootfs')
+    # This checks absent purchaser/service/MCP/Wallet configuration, protected
+    # guest directories, exact embedded service+CA sources, and a public test
+    # authenticator. Merely deleting the host services field cannot pass it.
+    source_hashes = profile._image_preflight(image/'rootfs.ext4')
+    require(profile._inputs(image, config['sha256']) == inputs, 'local image triple changed during preflight')
+    return {'profile': 'local-development', 'factory': envelope, 'factory_sha256': boot['factory_sha256'],
+            'rootfs_size': manifest['size'], 'images': inputs, 'source_sha256': source_hashes,
+            'external_authority': False, 'simulation_only': True, 'boot_verified': False}
 
 
 def copy_file(source, destination):

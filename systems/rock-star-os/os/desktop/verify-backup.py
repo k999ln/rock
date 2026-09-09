@@ -68,7 +68,7 @@ def disk_manifest(saved):
         disks = {'userdata.ext4': {'sha256': saved.get('userdata_sha256'), 'bytes': saved.get('bytes')}}
     elif saved.get('schema') == 'rock-desktop-backup/2':
         from stage0 import DISKS
-        guest.require(device == 'rock-desktop-device/5', 'A/B/data backup requires stage0 device')
+        guest.require(device in guest.STAGE0_SCHEMAS, 'A/B/data backup requires stage0 device')
         disks = saved.get('disks')
         guest.require(type(disks) is dict and set(disks) == set(DISKS), 'exact A/B/data manifest required')
     else:
@@ -93,7 +93,7 @@ def verify_disk_set(manifest, directory, label):
 
 def retention_profile(config):
     version = config.get('schema')
-    guest.require(version in tuple('rock-desktop-device/'+str(v) for v in range(1, 6)),
+    guest.require(version in tuple('rock-desktop-device/'+str(v) for v in range(1, 7)),
                   'unknown retention device profile')
     sources = dict(SOURCES)
     if version in ('rock-desktop-device/4', 'rock-desktop-device/5'):
