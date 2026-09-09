@@ -46,7 +46,7 @@
       "freeze_manifest": "freeze-b8287bc.json",
       "freeze_manifest_sha256": "6a58860076c14aef7d9c6aaa9c9027cc990615fa07719075ccaa59a951096557",
       "built_at": "2026-09-09T19:29:12Z",
-      "scope": "Frozen runtime image; basic boot, platform, native checklist, normal power and ATM protocol passed; D0\u2013D6 aggregate remains INCOMPLETE",
+      "scope": "Frozen runtime image; basic boot, platform, native checklist, normal power and ATM protocol passed; D0–D6 aggregate remains INCOMPLETE",
       "platform": "PASS",
       "native_ui": "PASS",
       "normal_system_power": "PASS",
@@ -145,9 +145,15 @@
       "scope": "Mac/Linux actual fixed CLI + stdio MCP; no native Hub/USB connection or durable keys"
     },
     "qemu_business_lifecycle": {
-      "status": "FAIL",
-      "report": "business-wallet-preparation-failed-b8287bc.json",
-      "scope": "Business portion completed; combined nonempty Wallet prerequisite did not complete. Fresh full run pending."
+      "status": "PASS_SCOPED",
+      "report": "business-lifecycle-b8287bc.json",
+      "report_sha256": "740218bf47d95a66f01c428879d814eeb0384dfb30f336a363e39413926c817c",
+      "plan": "business-lifecycle-plan-b8287bc.json",
+      "normal_boots": 4,
+      "business_jobs": 5,
+      "native_actions": 16,
+      "frames": 171,
+      "scope": "Actual no-NIC signed local A/B: full proposal lifecycle plus two synthetic Wallet boots; optional in-flight cancellation NOT_RUN; D6 NOT_RUN. Earlier failed runs retained separately."
     },
     "qemu_ab_updates": {
       "status": "PASS",
@@ -223,6 +229,35 @@
       "input_scope": "actual evdev and masked PIN4/enabled sign pixels; no actor commands or reveal actions",
       "ledger": "synthetic5000 credit/settlement,1000 hold,cancel->5000 available/0 held; monthly consent not inferred; fee0",
       "original_images_unchanged": true
+    },
+    "qemu_backup_restore": {
+      "status": "PASS_SCOPED",
+      "raw_status": "AUTOMATED_PASS",
+      "report": "backup-restore-b8287bc.json",
+      "report_sha256": "d46549399e41fef38f4d2e78dd42934ef746c62ec3e507aae658b658e6f33727",
+      "root_visual_review": "business-backup-acceptance-b8287bc.json",
+      "actual_restored_boots": 1,
+      "frames": 8,
+      "scope": "new offline destination, whole A/B/data bytes before boot, all six DB schemas/tables/sequences retained after boot except one normal power receipt; source/backup unchanged; external backend/runner/game restore not claimed"
+    },
+    "D2_native_use": {
+      "status": "PASS_SCOPED",
+      "report": "business-backup-acceptance-b8287bc.json",
+      "stop": "disable/reapprove; optional timed in-flight cancellation NOT_RUN"
+    },
+    "D5_offline_retention_restore": {
+      "status": "PASS_SCOPED",
+      "report": "business-backup-acceptance-b8287bc.json",
+      "scope": "network-none local synthetic Wallet device; excludes external authority restoration"
+    },
+    "qemu_remote": {
+      "status": "PASS",
+      "report": "remote-b8287bc.json",
+      "report_sha256": "5042cc50b30f7467ed122892650ce061714e8228e84b28cf2074a42222b0e1b4",
+      "actual_boots": 2,
+      "checks": 46,
+      "actual_executor_calls": 2,
+      "scope": "actual guest API and new owned TLS runner; durable acceptance followed by truncated reply and actual virtio link loss/reconnect; second boot no NIC; no production cloud or USB; no local jobs or Wallet proceeds"
     }
   },
   "logs_sha256": {

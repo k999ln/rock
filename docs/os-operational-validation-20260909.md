@@ -73,3 +73,13 @@ Hubの3起動では、正規署名検証子を無信号で完了させた後に�
 PINの実masked4桁と有効buttonを元25秒内に観測するhost修正、実Wallet文字のOCR修正を統合した。Linuxの実CでWallet14/ATM14画面と座標8負例が合格し、業務Wallet45状態/23action/2UIプロセス、閉じた台帳5journals/10postings/15keysも一致。実OSのWallet付き新規backup元・新規復元先と60分稼働はこれから検証する。
 
 B02-NATIVEとB03-FIXTUREの限定基礎は別報告で合格。複数owner/複数端末のGX00実装を隔離候補で並行して進めている。ゲーム交換/SDKや実資金対応の完成を意味しない。
+
+## 22:04 UTC — 業務・Walletの4起動と新規復元先、通信断の実測
+
+凍結runtime `b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9` は変更していない。host観測器 `28ebaf1` で新しい `business-1764f9e8b3464681ab75` を作り、全4回の通常起動/画面終了が PASS_SCOPED。提案下書きの導入・同意・実行・更新・戻す・停止/再同意・削除後の保存結果・再導入の16操作/5件を、実画面171枚と停止後の6DBで照合した。合成Walletは本人試験認証、明示同意、2000入金確定、月888を1回、更新停止、1000予約取消を経てavailable1112/held0、5journal/10posting/15操作キーを保持した。次の起動でも完全一致。試験器の任意項目である実行途中の取消時間はNOT_RUNのまま、原reportのwhole_gate=INCOMPLETEは書き換えていない。指定された「停止」は利用停止/再承認で実施し、D2必須項目の集約はPASS_SCOPEDとした。
+
+その停止済みsourceから `restore-business-1764-20260909` へA/B/dataを新規復元。自動試験AUTOMATED_PASSに加えてrootが実画面6枚を確認した。5件の保存結果・導入済み1.0・更新停止・月888支払済み・試験残高11.12を表示。全6DBの全表/追加表/sequence/schemaを比較し、変化は4件の旧電源receiptを保持した上での新しい通常shutdown1件だけ。通常終了7.33秒、実guest shutdown、read-only e2fsck exit0。source/backupの全disk bytesが前後不変で、source lockは検証終了まで保持。D5はnetwork-noneのlocal Wallet deviceとしてPASS_SCOPED。外部backend/runner/game authorityを含む復元はこの試験の対象外で、成功を主張しない。
+
+独立したremote試験も同一Image/rootfsの実2起動でPASS。新規owned TLS registry/runnerに対し、永続受付後の実応答半分切断、virtio NICの切断・再接続、no-NIC再起動を実行した。処理実体は2件だけで、未承認取消は送信0、Wallet/ローカル仕事への収益・実行追加0。production cloud/USBはNOT_RUN。
+
+根拠は `docs/evidence/os-base/business-lifecycle-b8287bc.json`、同plan、`backup-restore-b8287bc.json`、`business-backup-acceptance-b8287bc.json`、`remote-b8287bc.json`。D4の41実起動とATM UI14実画面も完了済み。D6の5通常cycle＋60分反復と引継ぎ報告を残しており、OS雛形全体はまだINCOMPLETE。過去の失敗証拠を保存した。
