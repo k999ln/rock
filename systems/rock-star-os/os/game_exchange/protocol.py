@@ -210,7 +210,7 @@ def game_record(game):
 
 def owner_context(owner):
     require(type(owner) is OwnerContext,'authenticated internal owner context required')
-    uuid_value(owner.wallet_authority_id);uuid_value(owner.account_id);identifier(owner.owner_ref);identifier(owner.device_ref);integer(owner.credential_revision,1)
+    uuid_value(owner.wallet_authority_id);identifier(owner.account_id);identifier(owner.owner_ref);identifier(owner.device_ref);integer(owner.credential_revision,1)
 
 
 PROOF_FIELDS={'schema','environment','game_authority_id','game_id','game_revision','player_id','player_display',
@@ -255,8 +255,8 @@ BINDING_FIELDS={'schema','environment','wallet_authority_id','owner_ref','accoun
 
 def validate_binding(value):
     fields(value,BINDING_FIELDS);common(value,'rock-game-connection-binding/1')
-    for key in ('wallet_authority_id','account_id','intent_id','connection_id'):uuid_value(value[key])
-    for key in ('owner_ref','device_ref','author_id','game_authority_id','game_id','player_id'):identifier(value[key])
+    for key in ('wallet_authority_id','intent_id','connection_id'):uuid_value(value[key])
+    for key in ('account_id','owner_ref','device_ref','author_id','game_authority_id','game_id','player_id'):identifier(value[key])
     for key in ('credential_revision','game_revision','player_display_revision'):integer(value[key],1)
     text(value['game_name']);text(value['player_display']);digest(value['proof_sha256']);unb64(value['proof_nonce'],32,32);validate_scopes(value['scopes'])
     require(value['terms_version']==TERMS,'unsupported connection terms');integer(value['created_at'],1)
@@ -523,7 +523,7 @@ def required_game_scope(operation):
 
 def scope_digest(value):
     fields(value,{'wallet_authority_id','owner_ref','account_id','device_ref','credential_revision','operation','limit','filter'})
-    for key in ('wallet_authority_id','account_id'):uuid_value(value[key])
+    uuid_value(value['wallet_authority_id']);identifier(value['account_id'])
     for key in ('owner_ref','device_ref'):identifier(value[key])
     integer(value['credential_revision'],1);integer(value['limit'],1,50)
     require(value['operation']=='game.connection.list' and value['filter']=='all','unsupported cursor scope')

@@ -59,7 +59,7 @@ exchange binding/apply/reject、terminal financial receiptのschema/domainはGX0
 | object | 全field |
 | --- | --- |
 | proof | `schema:"rock-game-connection-proof/1",environment:"synthetic",game_authority_id:id,game_id:id,game_revision:int>=1,player_id:id,player_display:text,player_display_revision:int>=1,audience:uuid,nonce:bytes32,issued_at:time,expires_at:time,requested_scopes:scopes,algorithm:"Ed25519",credential_id:id,credential_revision:int>=1,signature:bytes64` |
-| internal binding | `schema:"rock-game-connection-binding/1",environment:"synthetic",wallet_authority_id:uuid,owner_ref:id,account_id:uuid,device_ref:id,credential_revision:int>=1,author_id:id,game_authority_id:id,game_id:id,game_revision:int>=1,game_name:text,player_id:id,player_display:text,player_display_revision:int>=1,proof_sha256:digest,proof_nonce:bytes32,intent_id:uuid,connection_id:uuid,scopes:scopes,terms_version:"rock-game-connection-synthetic/1",created_at:time,intent_expires_at:time,connection_expires_at:time` |
+| internal binding | `schema:"rock-game-connection-binding/1",environment:"synthetic",wallet_authority_id:uuid,owner_ref:id,account_id:id,device_ref:id,credential_revision:int>=1,author_id:id,game_authority_id:id,game_id:id,game_revision:int>=1,game_name:text,player_id:id,player_display:text,player_display_revision:int>=1,proof_sha256:digest,proof_nonce:bytes32,intent_id:uuid,connection_id:uuid,scopes:scopes,terms_version:"rock-game-connection-synthetic/1",created_at:time,intent_expires_at:time,connection_expires_at:time` |
 
 proof TTLは1〜120秒。game ID/revision、署名keyとissuer、audience、requested scopesを現在のprotected GameRecordへ照合する。game nameはregistry由来、player ID/display/revisionは同一proofの署名対象。未署名の別displayを本人名として表示しない。player sessionが本人を認証してproofを発行するHTTP処理はまだない。
 
@@ -129,3 +129,5 @@ HTTP outer response/error envelope・header framingは本差分で既存Wallet�
 `tests/test_game_connection_protocol.py` はMacで18 tests PASS。実OpenSSL Ed25519署名/検証、2作者/2game/2ownerの4つのprotocol binding、実owner assertion、expiry/revocation/domain混用/既存Tool key/Entitlement HMAC/ATM code/表示改ざん/未知scope/別context/署名済み旧head/cursor/retry/reservationの拒否を確認。これは4つのACTIVE接続DBや実game sessionの成功ではない。QEMU/凍結OSとLinux負荷試験は実行していない。
 
 `os/game_exchange/fixtures/connection-v1-vectors.json` は公開専用の完全object、公開keys、canonical hex、署名入力全hex、digest、拒否入力を収録する。owner consent/request/challenge/counterを実署名へjoinし、testでliteral bytesを再照合する。署名器はtestだけが持つ公開seed、runtime protocolは検証のみ。異なる言語の実装を実行した証拠ではなく、他言語が同じbytesを再現するためのvectorである。
+
+既存Entitlementの `account_id` は `acct-` で始まる不透明な識別子でありUUIDを要求しない。既存の文字列をそのまま引き継ぐ。元のUUID形式の合成vectorsは保持し、`connection-v1-prefixed-account-vectors.json` にprefixed accountを含む追加15 objectsと全署名・digestを固定した。

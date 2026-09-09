@@ -322,6 +322,20 @@ class GameConnectionProtocolTests(unittest.TestCase):
                 if field in vector:proof[field]=vector[field]
             with self.subTest(name=vector['name']),self.assertRaises(p.ProtocolError):p.verify_proof(proof,self.keys,self.games['a'],audience=audience,now=now)
 
+    def test_existing_prefixed_account_literal_vectors_and_invalid_account_identifiers(self):
+        value=p.decode((ROOT/'os/game_exchange/fixtures/connection-v1-prefixed-account-vectors.json').read_bytes())
+        owner=p.OwnerContext(**value['owner_context']);p.owner_context(owner)
+        self.assertTrue(owner.account_id.startswith('acct-'))
+        objects=value['objects']
+        for name,obj in objects.items():self.assertEqual(p.canonical(obj).hex(),value['canonical_hex'][name])
+        p.match_begin_intent(objects['intent'],objects['begin_request'],self.games['a'],owner)
+        p.verify_owner_approval(objects['owner_approval'],objects['intent'],owner,value['owner_auth_record_before'],value['owner_user_handle'],now=NOW+1)
+        p.match_owner_consent(objects['owner_consent'],objects['intent'],objects['owner_approval'])
+        p.verify_shared(objects['shared_receipt'],self.keys,now=NOW+2)
+        p.verify_cursor(value['cursor_token'],self.keys,objects['cursor_scope'],now=NOW+1)
+        for invalid in ('', '../acct-other', '/acct-other', 'acct x', 'acct-'+('a'*161), True, 1):
+            with self.subTest(invalid=invalid),self.assertRaises(p.ProtocolError):p.owner_context(replace(owner,account_id=invalid))
+
     def test_cursor_is_signed_bounded_and_bound_to_full_authorization_and_filters(self):
         scope={'wallet_authority_id':UID(1),'owner_ref':self.owner.owner_ref,'account_id':self.owner.account_id,
                'device_ref':self.owner.device_ref,'credential_revision':1,'operation':'game.connection.list','limit':20,'filter':'all'}
