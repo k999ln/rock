@@ -23,6 +23,8 @@
 
 テストのskip/mock化やlauncherの安全策解除は行わない。CIは新しいbubblewrapを持つUbuntu 24.04とし、外側にあるAppArmorのunprivileged user namespace制限だけを秘密値のない使い捨てrunner内で一時解除する。Rock内部の `no_new_privs`、全namespace分離、capability削除、`--disable-userns`、seccompは維持する。事前診断では製品と同じlauncher・workerを実行し、隔離が成立しなければ1,031件の回帰前に失敗させる。他のsuite・C/UI検証と既存Web/Android CIは成功。再実行が成功するまでGitHub native CIをPASSとは記録しない。
 
+直接診断により、x86_64の動的loader `/lib64` がsandbox内に見えず `/usr/bin/python3` を起動できない移植漏れも確認した。launcherはx86_64時だけ `/lib64` をread-only bindする。ARM64のmount列は変えず、x86_64でも同じworker、network/mount namespace差分、socket syscall拒否を検証する。
+
 既存WebにはViteの将来のconfigLoader変更とNode module APIの既知の警告が残る。最初のsandbox内API試行はloopback待受の権限制限で失敗したため、許可されたローカル試験環境で再実行し143 assertionsに成功。その後、統合後のverify全体も終了コード0で確認した。
 
 ## 通常gate外で見つかった残課題

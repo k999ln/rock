@@ -62,6 +62,9 @@ int main(int argc,char **argv) {
     char number[32]; snprintf(number,sizeof(number),"%d",fd);
     char *args[] = {"/usr/bin/bwrap","--unshare-all","--unshare-user","--die-with-parent","--new-session","--cap-drop","ALL",
         "--disable-userns","--ro-bind","/usr","/usr","--ro-bind","/lib","/lib",
+#if defined(__x86_64__)
+        "--ro-bind","/lib64","/lib64",
+#endif
         "--ro-bind",argv[1],"/recipe_worker.py","--ro-bind",argv[2],"/runner_entry.py",
         "--proc","/proc","--dev","/dev","--tmpfs","/tmp","--dir","/data","--dir","/run",
         "--chdir","/tmp","--hostname","rock-remote-tool","--clearenv","--setenv","PATH","/usr/bin",
