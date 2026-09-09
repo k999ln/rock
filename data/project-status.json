@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-09",
   "milestone": "3系統統合済み・native起動/保存検証修正と新規OSビルド",
-  "nextAction": "固定済みb8287bc OSで業務商品のライフサイクルと合成Walletを実画面検証し、更新障害・全disk復元・5正常サイクル/60分稼働を完了する。実機と実資金は未検証。",
+  "nextAction": "凍結b8287bcの更新障害・業務/Wallet再試験・全disk復元・5正常サイクル/60分稼働を完了する。B02/B03基礎の限定証拠を踏まえGX00のhost実装を並行し、実機/実資金の未検証を維持。",
   "tasks": [
     {
       "id": "R01",
@@ -231,7 +231,7 @@
     {
       "id": "B03",
       "title": "実行費用・認証済み収益を既存Walletへ接続し縦断検証",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "B02"
       ],
@@ -281,7 +281,7 @@
     {
       "id": "GX00",
       "title": "共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "B04"
       ],
@@ -414,24 +414,26 @@
       "id": "B02-NATIVE",
       "task": "B02",
       "title": "既存native商品1件をHubで実処理・保存",
-      "status": "planned",
+      "status": "done",
       "dependsOn": [
         "V01-BOOT"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md"
+        "docs/prompts/os-operational-base-next.md",
+        "docs/evidence/os-base/business-wallet-foundation-b8287bc.json"
       ]
     },
     {
       "id": "B03-FIXTURE",
       "task": "B03",
       "title": "単一ownerの合成Wallet・商品/費用/売上状態の基礎",
-      "status": "planned",
+      "status": "done",
       "dependsOn": [
         "B02-NATIVE"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md"
+        "docs/prompts/os-operational-base-next.md",
+        "docs/evidence/os-base/business-wallet-foundation-b8287bc.json"
       ]
     },
     {

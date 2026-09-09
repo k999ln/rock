@@ -148,6 +148,15 @@
       "status": "FAIL",
       "report": "business-wallet-preparation-failed-b8287bc.json",
       "scope": "Business portion completed; combined nonempty Wallet prerequisite did not complete. Fresh full run pending."
+    },
+    "qemu_ab_updates": {
+      "status": "PASS",
+      "report": "ab-updates-b8287bc.json",
+      "report_sha256": "10c77907db18fc6b8a706c6c89dfb99757c1c7ceb8a9dfd197662efb2b602933",
+      "boots": 8,
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "host_commit": "a02401bf1661d75446da858b48e6e90afd2ed263",
+      "scope": "Actual stage0: signature/payload/installed-slot tamper, failed health/init watchdog, actual1MiB partial write and recover, successful newer release and software downgrade refusal. Headless; GUI14 separate. Capacity/ABI independent."
     }
   },
   "logs_sha256": {
