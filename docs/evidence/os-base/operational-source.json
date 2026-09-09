@@ -128,6 +128,16 @@
       "loopback_permission_required": true,
       "unrestricted_test_log_sha256": "c11e30142ec09afdba932e21bf9d1270689aa0741530f6433aaab0629d7e577f",
       "earlier_sandbox_attempt": "FAIL: localhost listen EPERM; same suite rerun with local socket permission"
+    },
+    "qemu_ui_startup": {
+      "status": "PASS",
+      "host_commit": "a21927746c7bac9c6ae7b0d9d574340bdd24eb89",
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "report": "ui-startup-b8287bc.json",
+      "report_sha256": "ae44aff598b60a335234012fe24fcbd2e8abdd44342b30ca9ba189b1e8efd4f2",
+      "visual_review": "ui-startup-b8287bc-visual-review.json",
+      "boots": 14,
+      "scope": "Actual GUI readiness commits B; absent/freeze/crash reject two B trials and recover A. Whole D4 still needs independent corrupt/partial/no-space/data ABI cases."
     }
   },
   "logs_sha256": {
@@ -298,7 +308,7 @@
     {
       "case": "ui-startup-fixture-prepare",
       "status": "FAIL",
-      "reason": "Disposable copy inherited frozen0444 and debugfs could not inject first marker; no QEMU started and original image unchanged. Host copy fix pending. Corrected in d9b8ae6; 20 Linux guards including real ext4 injection passed. Actual retry pending."
+      "reason": "Disposable copy inherited frozen0444 and debugfs could not inject first marker; no QEMU started and original image unchanged. Host copy fix pending. Corrected in d9b8ae6; 20 Linux guards including real ext4 injection passed. Actual retry pending. Fresh GUI-required retry passed all14 boots with original image triple unchanged."
     },
     {
       "case": "hub-launcher-fault-observer",
