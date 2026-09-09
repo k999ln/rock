@@ -197,7 +197,7 @@ def primary_text_pixels(image):
 
 def mapped_ocr(tsv, region, *, scale=2, border=10):
     left, top, right, bottom = region
-    require(type(scale) is int and scale in (1, 2) and border == 10 and 0 <= left < right <= 720 and 0 <= top < bottom <= 856,
+    require(type(scale) is int and scale in (1, 2) and border == 10 and 0 <= left < right <= 720 and 0 <= top < bottom <= 960,
             'invalid fixed OCR region')
     rows = ocr_lines(tsv, bounds=((right - left) * scale + 2 * border, (bottom - top) * scale + 2 * border))
     result = []
@@ -213,6 +213,49 @@ def mapped_ocr(tsv, region, *, scale=2, border=10):
     return result
 
 
+def primary_words_have_ink(words, pixels, region):
+    """Original-color OCR cannot enable a dim label without bright contour ink."""
+    left, top, right, bottom = region
+    width, height = right - left, bottom - top
+    require(0 < width <= 720 and 0 < height <= 90 and len(pixels) == width * height,
+            'invalid primary word mask')
+    for word in words:
+        x, y, w, h = word['box']
+        require(left <= x < x + w <= right and top <= y < y + h <= bottom, 'primary word outside its control')
+        if not any(pixels[row * width + col] == 0 for row in range(y - top, y + h - top)
+                   for col in range(x - left, x + w - left)):
+            return False
+    return bool(words)
+
+
+def wallet_text_rows(lines):
+    """Bounded line segmentation, anchored by a recognized literal word.
+
+    The anchor never selects an action. The complete original label still has
+    to be recognized at confidence >=45 before wait() can use its position.
+    """
+    regions = []
+    for words in lines:
+        for word in words:
+            if word['text'] not in (normalize('金額'), normalize('完了')) or word['confidence'] < 45:
+                continue
+            x, y, width, height = word['box']
+            if not (32 <= x < x + width <= 688 and 200 <= y < y + height <= 844 and height <= 26):
+                continue
+            region = (32, y - 12, 688, y + height + 12)
+            if region not in regions: regions.append(region)
+    require(len(regions) <= 2, 'ambiguous/excessive Wallet label segmentation anchors')
+    return regions
+
+
+def notice_regions(image):
+    region = (32, 148, 688, 188)
+    pixels = list(image.crop(region).convert('RGB').getdata())
+    # The C notice lane uses these exact success/error backgrounds. A row
+    # crop is only a segmentation aid, never evidence of notice semantics.
+    return [region] if sum(pixel in ((225, 236, 219), (242, 225, 217)) for pixel in pixels) >= len(pixels) * .5 else []
+
+
 def recognize_frame(path, deadline=None, *, regions=()):
     """Analyze page text and accent-button text; original PNG stays intact."""
     def budget():
@@ -223,21 +266,24 @@ def recognize_frame(path, deadline=None, *, regions=()):
     require(type(regions) is tuple and len(regions) <= 2 and all(r in (SEARCH_TEXT, CATALOG_TITLE, INSTALLED_TITLE, HISTORY_TITLE) for r in regions),
             'unknown or excessive text OCR regions')
     from PIL import Image, ImageOps
+    ocr_env = dict(os.environ, OMP_THREAD_LIMIT='1', OMP_NUM_THREADS='1')
     result = subprocess.run(['tesseract', str(path), 'stdout', '-l', 'eng+jpn', '--psm', '11', 'tsv'],
-                            capture_output=True, text=True, check=True, timeout=budget())
+                            capture_output=True, text=True, check=True, timeout=budget(), env=ocr_env)
     lines = ocr_lines(result.stdout)
     original_lines = list(lines)
     analysis = path.with_name('probe-primary.png')
     with Image.open(path) as source:
         require(source.size == (720, 960), 'OCR requires the native framebuffer size')
         boxes = accent_rectangles(source.convert('RGB'))
+        secondary = accent_rectangles(source.convert('RGB'), secondary=True)
+        require(len(boxes) + len(secondary) <= 8, 'button OCR region budget exceeded')
         budget()
         # Prefer the dedicated ROI pass for words within a primary button.
         # This removes duplicate OCR hypotheses, not distinct UI controls.
         lines = [words for words in lines if not any(
             left <= word['box'][0] + word['box'][2] / 2 <= right and
             top <= word['box'][1] + word['box'][3] / 2 <= bottom
-            for word in words for left, top, right, bottom in boxes)]
+            for word in words for left, top, right, bottom in (*boxes, *secondary))]
         try:
             for left, top, right, bottom in boxes:
                 crop = source.crop((left, top, right, bottom))
@@ -247,17 +293,26 @@ def recognize_frame(path, deadline=None, *, regions=()):
                 ImageOps.expand(mask.resize((mask.width * 2, mask.height * 2), Image.Resampling.BICUBIC), border=10, fill=255).save(analysis)
                 result = subprocess.run(['tesseract', str(analysis), 'stdout', '-l', 'eng+jpn', '--psm', '7',
                                          '-c', 'tessedit_do_invert=0', 'tsv'],
-                                        capture_output=True, text=True, check=True, timeout=budget())
+                                        capture_output=True, text=True, check=True, timeout=budget(), env=ocr_env)
                 lines.extend(mapped_ocr(result.stdout, (left, top, right, bottom)))
-            for region in regions:
+                # Keep the original antialiasing for dense Japanese glyphs.
+                # Only already detected enabled accent controls get this pass;
+                # every accepted word still needs bright >=180 contour ink.
+                ImageOps.expand(crop.convert('RGB'), border=10, fill='white').save(analysis)
+                result = subprocess.run(['tesseract', str(analysis), 'stdout', '-l', 'eng+jpn', '--psm', '7', 'tsv'],
+                                        capture_output=True, text=True, check=True, timeout=budget(), env=ocr_env)
+                for words in mapped_ocr(result.stdout, (left, top, right, bottom), scale=1):
+                    if primary_words_have_ink(words, primary_text_pixels(crop), (left, top, right, bottom)):
+                        lines.append(words)
+            for region in (*secondary, *regions, *wallet_text_rows(original_lines), *notice_regions(source)):
                 budget()
                 left, top, right, bottom = region
                 crop = source.crop(region)
-                scale = 1 if region == HISTORY_TITLE else 2
+                scale = 2 if region in (SEARCH_TEXT, CATALOG_TITLE, INSTALLED_TITLE) else 1
                 ImageOps.expand(crop.resize((crop.width * scale, crop.height * scale), Image.Resampling.BICUBIC),
                                 border=10, fill='white').save(analysis)
                 result = subprocess.run(['tesseract', str(analysis), 'stdout', '-l', 'eng+jpn', '--psm', '7', 'tsv'],
-                                        capture_output=True, text=True, check=True, timeout=budget())
+                                        capture_output=True, text=True, check=True, timeout=budget(), env=ocr_env)
                 # Prefer this dedicated OCR row within the explicit region;
                 # elsewhere page OCR remains unchanged, including error text.
                 lines = [words for words in lines if not all(
@@ -272,11 +327,14 @@ def recognize_frame(path, deadline=None, *, regions=()):
     return lines
 
 
-def accent_rectangles(image):
+def accent_rectangles(image, *, secondary=False):
     """Find bounded connected accent regions for OCR only, never for clicks."""
     width, height = image.size
     require((width, height) == (720, 960), 'native frame dimensions required')
-    mask = bytearray(1 if r <= 90 and 50 <= g <= 160 and 20 <= b <= 140 and 100*g >= 135*r and 100*g >= 110*b else 0
+    # ui.c's enabled secondary background is e8ede5; disabled e7e7e0
+    # is deliberately excluded. Geometry supplies an OCR crop, never a click.
+    mask = bytearray(int((r, g, b) == (232, 237, 229)) if secondary else
+                     int(r <= 90 and 50 <= g <= 160 and 20 <= b <= 140 and 100*g >= 135*r and 100*g >= 110*b)
                      for r, g, b in image.getdata())
     boxes = []
     for origin in range(len(mask)):
@@ -757,9 +815,9 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
     frozen = contract.plan(mode)
     frozen.update(config=config, source_commit_declared=source_commit, prepare_backup=prepare_backup,
                   wallet_preparation=wallet_backup.plan() if prepare_backup else None,
-                  ocr={'languages': 'eng+jpn', 'page_psm': 11, 'primary_psm': 7, 'minimum_confidence': 45,
+                  ocr={'languages': 'eng+jpn', 'omp_thread_limit': 1, 'omp_num_threads': 1, 'page_psm': 11, 'primary_psm': 7, 'minimum_confidence': 45,
                        'normalization': 'NFKC, Unicode casefold, remove whitespace; exact phrase only',
-                       'primary_scale': 2, 'text_region_scale': {'search_catalog_installed': 2, 'history_title': 1}, 'text_region_psm': 7,
+                       'primary_scale': 2, 'primary_original_color_psm': 7, 'primary_original_color_scale': 1, 'wallet_label_anchors': ['金額', '完了'], 'wallet_label_max_rows': 2, 'wallet_label_scale': 1, 'secondary_color': 'e8ede5', 'secondary_scale': 1, 'max_button_regions': 8, 'notice_region': [32, 148, 688, 188], 'notice_scale': 1, 'text_region_scale': {'search_catalog_installed': 2, 'history_title': 1}, 'text_region_psm': 7,
                        'text_regions': [SEARCH_TEXT, CATALOG_TITLE, INSTALLED_TITLE, HISTORY_TITLE],
                        'primary_analysis': 'bounded accent regions; observed row green contour; grayscale >=180 glyphs to black; 10px white border; no auto-invert',
                        'duplicate_box_min_iou': .70},

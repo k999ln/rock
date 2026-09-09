@@ -102,7 +102,12 @@ second OCR pass: bright label pixels become black text on a white background,
 with fixed 2× bicubic enlargement, a 10-pixel white border and page segmentation 7. Only pixels inside each row's observed green contour
 can become label ink; rounded exterior corners stay white rather than becoming
 border noise. Disabled labels below the existing brightness threshold remain
-unselectable. Only words wholly inside the detected region replace
+unselectable. The same green region also receives an original-size color pass
+to preserve dense Japanese antialiasing; each accepted word must contain bright
+contour ink from the unchanged threshold. Enabled secondary buttons use the
+exact C background `e8ede5`, excluding the disabled `e7e7e0` background, and
+receive original-size one-line OCR. Primary and secondary regions together
+remain bounded to eight. Only words wholly inside the detected region replace
 the original OCR hypothesis there. Region geometry alone cannot select or click
 a control. Search text and the first catalog/installed/history card title may
 receive at most two additional one-line passes over explicit native-layout
@@ -112,6 +117,14 @@ the large signed product name. Detail validation requires its product name,
 publisher and exact version together. Installed/history selection reads the
 first card title; history then requires the unique job label in the opened
 result. Deletion uses the catalog name that the native renderer displays.
+Wallet labels may receive at most two original-size line passes anchored by
+the literal, confident words `金額` or `完了` within the content area. Anchors
+only locate a row for OCR; the complete required phrase must still match at
+confidence 45 before its position can be used. The fixed native notification
+lane receives one original-size pass only when its actual success/error
+background is present. All original recognized errors remain fatal. Tesseract
+uses one OpenMP thread to bound oversubscription during concurrent host work.
+These preprocessing choices are frozen in the plan before a new run.
 The signed package preflight pins these names and publisher. No small catalog
 version or fixed card coordinate triggers navigation. Recognized page errors
 survive text refinement. Tesseract TSV is parsed literally, with CSV quote
@@ -141,6 +154,29 @@ key/button delivery intervals. Saved actual search and power frames, plus
 actual C-rendered product/lifecycle/result fixtures, exercise the OCR selectors.
 They validate recognition only; they do not turn the preserved failed QEMU run
 into a pass or replace a new complete run of the built image.
+
+`check-wallet-ocr.py` runs the same Wallet write/read UI flows against the real
+C renderer and a new Linux-root synthetic Wallet/authenticator fixture. Before
+each click it rejects coordinates outside the expected action from a fixed
+map; it never substitutes a hitbox coordinate when OCR fails. Read-only C
+refresh requests retrieve reservation status. A second fresh C UI process
+checks the retained ledger with default view state. The existing closed Wallet
+oracle then verifies authentication, unique receipts, monthly quiescence and
+the exact five journals/ten postings. The only C bridge additions expose an
+existing action name and park the pointer without pressing a button; neither
+the bridge nor fixture is installed in the OS.
+
+```sh
+sudo python3 os/desktop/check-wallet-ocr.py \
+  --renderer os/ui/rock-ui-test \
+  --font os/assets/NotoSansCJKjp-Regular.otf \
+  --output /absolute/new-private-wallet-ocr-evidence
+```
+
+Its `PASS_HOST_FIXTURE` validates C/OCR/fixture behavior only. It does not run
+QEMU, restart an OS, prove D2/D5 or change an earlier failed run. PIN and ATM
+bearer text are not exported; only public synthetic masked screens and the
+existing redacted Wallet proof are retained.
 
 After actual QMP guest shutdown, the verifier holds the existing device lock,
 checks the current process record and rejects live/orphan display sockets. It

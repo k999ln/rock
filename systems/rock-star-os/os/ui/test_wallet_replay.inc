@@ -13,7 +13,8 @@ static const char *wallet_replay_action(enum rock_action action)
         NAMED_ACTION(ACTION_AMOUNT); NAMED_ACTION(ACTION_SALE);
         NAMED_ACTION(ACTION_SETTLE); NAMED_ACTION(ACTION_ATM_OPEN);
         NAMED_ACTION(ACTION_ATM_ISSUE); NAMED_ACTION(ACTION_ATM_STATUS);
-        NAMED_ACTION(ACTION_ATM_CANCEL); default: return "OTHER";
+        NAMED_ACTION(ACTION_ATM_CANCEL); NAMED_ACTION(ACTION_ATM_RESULT);
+        default: return "OTHER";
     }
 #undef NAMED_ACTION
 }
@@ -52,6 +53,11 @@ static int wallet_replay_bridge(const char *font)
             if (!found) fprintf(stderr, "coordinate=%d,%d expected=%s scroll=%.0f top=%.0f\n", x, y, expected, ui.scroll, ui.content_top);
             require(found, "Wallet replay coordinate targets the expected enabled visible action");
             rock_ui_pointer(&ui, x, y, 1); rock_ui_pointer(&ui, x, y, 0);
+        } else if (!strcmp(op, "park-pointer")) {
+            require(!ui.pointer_down, "pointer parking cannot release a pending click");
+            int before = request_count;
+            rock_ui_pointer(&ui, 705, 860, 0);
+            require(request_count == before && !last_request, "pointer parking sends no operation");
         } else if (!strcmp(op, "keys")) {
             require(json_object_object_get_ex(command, "codes", &item), "key codes required");
             for (size_t i = 0; i < json_object_array_length(item); i++)
