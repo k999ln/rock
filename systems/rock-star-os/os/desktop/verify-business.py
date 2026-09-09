@@ -41,34 +41,45 @@ spec = importlib.util.spec_from_file_location('business_backup_verifier', HERE /
 retention = importlib.util.module_from_spec(spec); spec.loader.exec_module(retention)
 power, native = retention.power, retention.power.native
 require = contract.require
+PRODUCT_NAMES = {'1.0.0': '提案下書き', '1.1.0': '提案下書き（簡潔）'}
+PRODUCT_PUBLISHER = 'org.rockstar.development'
+# OCR-only source-layout regions. A rectangle alone never selects a control.
+SEARCH_TEXT = (40, 172, 580, 211)
+CATALOG_TITLE = (130, 245, 540, 290)
+INSTALLED_TITLE = (130, 173, 540, 218)
+HISTORY_TITLE = (45, 171, 535, 218)
 
 
 def normalize(text):
     return ''.join(unicodedata.normalize('NFKC', text).casefold().split())
 
 
-def ocr_lines(tsv):
+def ocr_lines(tsv, *, bounds=(720, 960)):
     """Retain word boxes, so a phrase on a shared button row gets its own box."""
     require(len(tsv.encode()) <= 512 * 1024, 'OCR response exceeds fixed budget')
+    require(len(bounds) == 2 and all(type(v) is int and 0 < v <= 1940 for v in bounds), 'invalid OCR canvas')
     lines = {}
-    for row in csv.DictReader(io.StringIO(tsv), delimiter='\t'):
+    # Tesseract TSV text is literal, not CSV-quoted. A JSON quote must not
+    # consume later TSV rows into one fabricated OCR word.
+    for row in csv.DictReader(io.StringIO(tsv), delimiter='\t', quoting=csv.QUOTE_NONE):
         if row['level'] != '5' or not row['text'].strip(): continue
         confidence = float(row['conf'])
         box = [int(row[k]) for k in ('left', 'top', 'width', 'height')]
         require(math.isfinite(confidence) and 0 <= confidence <= 100 and
-                box[2] > 0 and box[3] > 0 and 0 <= box[0] < box[0] + box[2] <= 720 and
-                0 <= box[1] < box[1] + box[3] <= 960, 'invalid OCR word box')
+                box[2] > 0 and box[3] > 0 and 0 <= box[0] < box[0] + box[2] <= bounds[0] and
+                0 <= box[1] < box[1] + box[3] <= bounds[1], 'invalid OCR word box')
         key = tuple(row[k] for k in ('page_num', 'block_num', 'par_num', 'line_num'))
         lines.setdefault(key, []).append({'text': normalize(row['text']), 'confidence': confidence, 'box': box})
     require(sum(len(words) for words in lines.values()) <= 4096, 'OCR word budget exceeded')
     return list(lines.values())
 
 
-def locate(lines, phrase):
+def locate(lines, phrase, *, exact_line=False):
     query, matches = normalize(phrase), []
     require(query, 'empty UI selector')
     for words in lines:
         text = ''.join(word['text'] for word in words)
+        if exact_line and text != query: continue
         start, cursor = text.find(query), 0
         if start < 0: continue
         require(text.find(query, start + 1) < 0, 'ambiguous repeated UI phrase')
@@ -184,17 +195,38 @@ def primary_text_pixels(image):
     return bytes(pixels)
 
 
-def recognize_frame(path, deadline=None):
+def mapped_ocr(tsv, region, *, scale=2, border=10):
+    left, top, right, bottom = region
+    require(type(scale) is int and scale in (1, 2) and border == 10 and 0 <= left < right <= 720 and 0 <= top < bottom <= 856,
+            'invalid fixed OCR region')
+    rows = ocr_lines(tsv, bounds=((right - left) * scale + 2 * border, (bottom - top) * scale + 2 * border))
+    result = []
+    for words in rows:
+        inside = []
+        for word in words:
+            x, y, width, height = word['box']
+            x1, y1 = left + math.floor((x - border) / scale), top + math.floor((y - border) / scale)
+            x2, y2 = left + math.ceil((x + width - border) / scale), top + math.ceil((y + height - border) / scale)
+            if left <= x1 < x2 <= right and top <= y1 < y2 <= bottom:
+                inside.append(dict(word, box=[x1, y1, x2 - x1, y2 - y1]))
+        if inside: result.append(inside)
+    return result
+
+
+def recognize_frame(path, deadline=None, *, regions=()):
     """Analyze page text and accent-button text; original PNG stays intact."""
     def budget():
         remaining = 10 if deadline is None else min(10, deadline - time.monotonic())
         if remaining <= 0: raise TimeoutError('OCR exceeded the original UI state deadline')
         return remaining
     budget()
+    require(type(regions) is tuple and len(regions) <= 2 and all(r in (SEARCH_TEXT, CATALOG_TITLE, INSTALLED_TITLE, HISTORY_TITLE) for r in regions),
+            'unknown or excessive text OCR regions')
     from PIL import Image, ImageOps
     result = subprocess.run(['tesseract', str(path), 'stdout', '-l', 'eng+jpn', '--psm', '11', 'tsv'],
                             capture_output=True, text=True, check=True, timeout=budget())
     lines = ocr_lines(result.stdout)
+    original_lines = list(lines)
     analysis = path.with_name('probe-primary.png')
     with Image.open(path) as source:
         require(source.size == (720, 960), 'OCR requires the native framebuffer size')
@@ -212,21 +244,31 @@ def recognize_frame(path, deadline=None):
                 # White enabled-button glyphs become dark text on white.
                 # Dimmed/disabled labels below 180 are not made clickable.
                 mask = Image.frombytes('L', crop.size, primary_text_pixels(crop))
-                ImageOps.expand(mask, border=10, fill=255).save(analysis)
+                ImageOps.expand(mask.resize((mask.width * 2, mask.height * 2), Image.Resampling.BICUBIC), border=10, fill=255).save(analysis)
                 result = subprocess.run(['tesseract', str(analysis), 'stdout', '-l', 'eng+jpn', '--psm', '7',
                                          '-c', 'tessedit_do_invert=0', 'tsv'],
                                         capture_output=True, text=True, check=True, timeout=budget())
-                for words in ocr_lines(result.stdout):
-                    for word in words:
-                        word['box'][0] += left - 10; word['box'][1] += top - 10
-                    # Rounded exterior corners may be segmented as isolated
-                    # dark border noise. Keep only word boxes wholly inside
-                    # the detected control; no text/confidence substitution.
-                    inside = [w for w in words if left <= w['box'][0] < w['box'][0] + w['box'][2] <= right and
-                              top <= w['box'][1] < w['box'][1] + w['box'][3] <= bottom]
-                    if inside: lines.append(inside)
+                lines.extend(mapped_ocr(result.stdout, (left, top, right, bottom)))
+            for region in regions:
+                budget()
+                left, top, right, bottom = region
+                crop = source.crop(region)
+                scale = 1 if region == HISTORY_TITLE else 2
+                ImageOps.expand(crop.resize((crop.width * scale, crop.height * scale), Image.Resampling.BICUBIC),
+                                border=10, fill='white').save(analysis)
+                result = subprocess.run(['tesseract', str(analysis), 'stdout', '-l', 'eng+jpn', '--psm', '7', 'tsv'],
+                                        capture_output=True, text=True, check=True, timeout=budget())
+                # Prefer this dedicated OCR row within the explicit region;
+                # elsewhere page OCR remains unchanged, including error text.
+                lines = [words for words in lines if not all(
+                    left <= w['box'][0] < w['box'][0] + w['box'][2] <= right and
+                    top <= w['box'][1] < w['box'][1] + w['box'][3] <= bottom for w in words)]
+                lines.extend(mapped_ocr(result.stdout, region, scale=scale))
         finally:
             analysis.unlink(missing_ok=True)
+    # Refinement never erases an error observed in the original page pass.
+    lines.extend(words for words in original_lines if any(
+        normalize(value) in ''.join(w['text'] for w in words) for value in ScreenDriver.FATAL))
     return lines
 
 
@@ -315,7 +357,7 @@ class ScreenDriver:
         require(guest.running(self.record), 'QEMU stopped before the native shutdown action')
         require(not any(e['event'] in ('RESET', 'SHUTDOWN') for e in self.report['qmp_events']), 'unexpected QMP power event')
 
-    def scan(self, deadline=None):
+    def scan(self, deadline=None, *, regions=()):
         self.check(); self.probes += 1
         require(self.probes <= self.limits['max_probes'], 'screenshot probe budget exceeded')
         path = self.folder / 'probe.png'
@@ -333,7 +375,7 @@ class ScreenDriver:
             self.report['boot_pending_probes'] = self.report.get('boot_pending_probes', 0) + 1
             return [], metadata
         try:
-            lines = recognize_frame(path, deadline)
+            lines = recognize_frame(path, deadline, regions=regions)
         except (TimeoutError, subprocess.SubprocessError):
             self.retain(metadata, 'ocr-failure', [])
             raise
@@ -356,7 +398,9 @@ class ScreenDriver:
         self.report['screenshots'].append(metadata)
         return metadata
 
-    def wait(self, phrase, *, click=False, seek=False, seconds=None, label='state'):
+    def wait(self, phrase, *, click=False, seek=False, seconds=None, label='state', regions=(), within=None, exact_line=False, required=()):
+        require(type(required) is tuple and len(required) <= 3, 'bounded simultaneous UI state required')
+        require(within is None or within in (CATALOG_TITLE, INSTALLED_TITLE, HISTORY_TITLE), 'unknown selectable text region')
         alternatives = (phrase,) if isinstance(phrase, str) else phrase
         require(type(alternatives) is tuple and 1 <= len(alternatives) <= 2 and all(type(p) is str for p in alternatives),
                 'one or two exact known UI states required')
@@ -364,11 +408,17 @@ class ScreenDriver:
         if self.operation_deadline is not None: deadline = min(deadline, self.operation_deadline)
         pages, previous, repeats = 0, None, 0
         while True:
-            lines, metadata = self.scan(deadline)
+            lines, metadata = self.scan(deadline, regions=regions)
             if time.monotonic() > deadline:
                 self.retain(metadata, 'state-deadline', lines)
                 raise TimeoutError('UI state arrived after its original deadline')
-            found = [(p, locate(lines, p)) for p in alternatives]
+            found = [(p, locate(lines, p, exact_line=exact_line)) for p in alternatives]
+            if within is not None:
+                left, top, right, bottom = within
+                found = [(p, [m for m in hits if left <= m['box'][0] < m['box'][0] + m['box'][2] <= right and
+                              top <= m['box'][1] < m['box'][1] + m['box'][3] <= bottom]) for p, hits in found]
+            corroboration = {p: locate(lines, p, exact_line=True) for p in required}
+            if any(len(hits) != 1 for hits in corroboration.values()): found = []
             found = [(p, [m for m in hits if m['y'] < 856]) for p, hits in found]
             found = [(p, hits) for p, hits in found if hits]
             require(len(found) <= 1, 'mutually exclusive native UI states appeared together')
@@ -380,7 +430,8 @@ class ScreenDriver:
                 if click: require(len(matches) == 1, 'ambiguous clickable UI selector: ' + selected)
                 proof = self.retain(metadata, label, lines)
                 self.report['ui_states'].append({'phrase': selected, 'screenshot_sha256': proof['sha256'],
-                                                 'observed_unix': time.time(), 'matches': matches})
+                                                 'observed_unix': time.time(), 'matches': matches,
+                                                 'required_same_frame': corroboration, 'within': within, 'exact_line': exact_line})
                 if click:
                     require(time.monotonic() <= deadline, 'UI click would exceed its original state deadline')
                     self.native.click(matches[0]['x'], matches[0]['y'])
@@ -409,20 +460,36 @@ class ScreenDriver:
     def top(self):
         for _ in range(6): self.native.keys(['pgup'])
 
+    def verify_detail(self, version, label='installed-version'):
+        require(version in PRODUCT_NAMES, 'unknown signed product version')
+        self.wait('バージョン ' + version, exact_line=True,
+                  required=('ツールの詳細', PRODUCT_NAMES[version], '作成者 ' + PRODUCT_PUBLISHER), label=label)
+
     def detail(self, version):
         self.nav('installed')
-        self.wait('v' + version, label='installed-list')
-        self.native.click(360, 260)
-        self.wait('バージョン ' + version, label='installed-version')
+        self.click(PRODUCT_NAMES[version], exact_line=True, within=INSTALLED_TITLE,
+                   regions=(INSTALLED_TITLE,), required=('マイツール',), label='installed-product')
+        self.verify_detail(version)
 
     def search_catalog(self):
         self.nav('hub')
         placeholder = 'ツール名・説明・IDで検索'
-        state = self.wait((placeholder, contract.TOOL), label='catalog-search-state')
+        state = self.wait((placeholder, contract.TOOL), regions=(SEARCH_TEXT,), label='catalog-search-state')
         if state['phrase'] == contract.TOOL: self.click('消す', label='clear-prior-search')
         self.click(placeholder, label='catalog-search')
         self.native.type(contract.TOOL); self.native.keys(['ret'])
-        self.click('v1.1.0', label='latest-catalog')
+        self.click(PRODUCT_NAMES['1.1.0'], exact_line=True, within=CATALOG_TITLE,
+                   regions=(SEARCH_TEXT, CATALOG_TITLE), required=(contract.TOOL,), label='latest-catalog-product')
+        self.verify_detail('1.1.0', label='catalog-product-reviewed')
+
+    def open_history(self, version, *, deleted=False):
+        self.nav('history')
+        # The actual list is newest first. Read the first card's product name,
+        # then independently require the unique input label in its opened result.
+        # After deletion tool_name() uses the catalog's latest signed manifest.
+        name = PRODUCT_NAMES['1.1.0' if deleted else version]
+        self.click(name, exact_line=True, within=HISTORY_TITLE, regions=(HISTORY_TITLE,),
+                   required=('実行履歴',), label='saved-history-product')
 
 
 def admit(driver, operations, action, version=None):
@@ -461,8 +528,7 @@ def run_job(driver, operations, version, label, output):
     driver.native.keys(['ctrl', 'ret'])
     driver.wait('完了', label='job-completed')
     driver.wait(label, seek=True, label='business-result')
-    driver.nav('history'); driver.wait('v' + version, label='saved-history')
-    driver.native.click(360, 260)
+    driver.open_history(version)
     driver.wait('完了', label='history-completed')
     driver.wait(label, seek=True, label='reopened-result')
     elapsed = time.monotonic() - started
@@ -553,6 +619,7 @@ def extract_packages(rootfs, output):
         package = json.loads(destination.read_text())
         manifest, hashes[version] = verify_package(package, {TEST_PUBLISHER: PUBLIC_TEST_KEY})
         require(manifest['id'] == contract.TOOL and manifest['version'] == version and
+                manifest['name'] == PRODUCT_NAMES[version] and manifest['publisher'] == PRODUCT_PUBLISHER and
                 manifest['execution_targets'] == ['device_local'] and manifest['data']['destinations'] == [] and
                 manifest['permissions'] == ['text.input', 'text.output'] and manifest['price']['amount_minor'] == 0,
                 'business fixture changed permissions, target or price')
@@ -692,6 +759,8 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
                   wallet_preparation=wallet_backup.plan() if prepare_backup else None,
                   ocr={'languages': 'eng+jpn', 'page_psm': 11, 'primary_psm': 7, 'minimum_confidence': 45,
                        'normalization': 'NFKC, Unicode casefold, remove whitespace; exact phrase only',
+                       'primary_scale': 2, 'text_region_scale': {'search_catalog_installed': 2, 'history_title': 1}, 'text_region_psm': 7,
+                       'text_regions': [SEARCH_TEXT, CATALOG_TITLE, INSTALLED_TITLE, HISTORY_TITLE],
                        'primary_analysis': 'bounded accent regions; observed row green contour; grayscale >=180 glyphs to black; 10px white border; no auto-invert',
                        'duplicate_box_min_iou': .70},
                   frozen_at=datetime.now(timezone.utc).isoformat())
@@ -744,7 +813,7 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
             elif cycle_number == 1:
                 driver.search_catalog()
                 driver.click('v1.0.0 を選ぶ', seek=True, label='choose-signed-old-version')
-                driver.top(); driver.wait('バージョン 1.0.0', label='selected-old-version')
+                driver.top(); driver.verify_detail('1.0.0', label='selected-old-version')
                 for index, (action, version) in enumerate((('install', '1.0.0'), ('update', '1.1.0'), ('rollback', '1.0.0'))):
                     if index: driver.detail('1.0.0' if action == 'update' else '1.1.0')
                     admit(driver, operations, action, version); admit(driver, operations, 'approve', version)
@@ -771,8 +840,7 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
             if cycle_number == business_cycles - 1:
                 driver.detail('1.0.0'); admit(driver, operations, 'uninstall')
                 # Deletion must retain a visible saved result as well as DB rows.
-                driver.nav('history'); driver.wait('v1.0.0', label='history-after-delete')
-                driver.native.click(360, 260)
+                driver.open_history('1.0.0', deleted=True)
                 driver.wait(cycle['jobs'][-1]['label'], seek=True, label='result-after-delete')
                 if prepare_backup:
                     # A source for restore acceptance still has an approved
@@ -780,7 +848,7 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
                     # install again through the UI and retain all prior rows.
                     driver.search_catalog()
                     driver.click('v1.0.0 を選ぶ', seek=True, label='reinstall-version')
-                    driver.top(); driver.wait('バージョン 1.0.0', label='reinstall-version-reviewed')
+                    driver.top(); driver.verify_detail('1.0.0', label='reinstall-version-reviewed')
                     admit(driver, operations, 'install', '1.0.0'); admit(driver, operations, 'approve', '1.0.0')
                     cycle['jobs'].append(run_job(driver, operations, '1.0.0', f'C{cycle_number}J999', folder))
             cycle['shutdown_seconds'] = clean_shutdown(driver, record)

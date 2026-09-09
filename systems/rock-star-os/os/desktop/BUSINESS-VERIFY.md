@@ -99,12 +99,24 @@ test contract, and start a separately identified test; retain the failed run.
 State waits use QMP screenshots and Tesseract `eng+jpn`, page segmentation 11,
 with minimum matched-word confidence 45. Bounded dark-green button regions get a
 second OCR pass: bright label pixels become black text on a white background,
-with page segmentation 7. Only pixels inside each row's observed green contour
+with fixed 2× bicubic enlargement, a 10-pixel white border and page segmentation 7. Only pixels inside each row's observed green contour
 can become label ink; rounded exterior corners stay white rather than becoming
 border noise. Disabled labels below the existing brightness threshold remain
 unselectable. Only words wholly inside the detected region replace
 the original OCR hypothesis there. Region geometry alone cannot select or click
-a control. The original evidence PNG remains unchanged. OCR text uses
+a control. Search text and the first catalog/installed/history card title may
+receive at most two additional one-line passes over explicit native-layout
+regions: 2× for search/catalog/installed titles, original size for history titles. Their full text must match; a rectangle alone cannot authorize a click.
+Catalog selection requires the typed product ID in the same frame and clicks
+the large signed product name. Detail validation requires its product name,
+publisher and exact version together. Installed/history selection reads the
+first card title; history then requires the unique job label in the opened
+result. Deletion uses the catalog name that the native renderer displays.
+The signed package preflight pins these names and publisher. No small catalog
+version or fixed card coordinate triggers navigation. Recognized page errors
+survive text refinement. Tesseract TSV is parsed literally, with CSV quote
+handling disabled, so JSON quote text cannot swallow subsequent OCR rows.
+The original evidence PNG remains unchanged. OCR text uses
 NFKC, case folding and whitespace removal, followed by exact phrase comparison;
 there is no fuzzy-text match. Two observations of the same exact phrase are
 deduplicated only when their boxes overlap at least 70 percent by intersection
@@ -125,10 +137,10 @@ frames cannot reset the deadline or cause clicks/scrolling. Malformed images,
 other unexpected content, or pending frames after boot are fatal.
 There is no happy-path sleep that substitutes for a state observation and no
 fallback direct platform mutation. NativeInput still supplies its existing short
-key/button delivery intervals. Four actual C-rendered lifecycle frames passed
-the Linux OCR selector experiment; these are renderer fixtures, not QEMU
-execution. Live-image OCR reliability remains a runtime prerequisite until the
-harness is executed on the built image.
+key/button delivery intervals. Saved actual search and power frames, plus
+actual C-rendered product/lifecycle/result fixtures, exercise the OCR selectors.
+They validate recognition only; they do not turn the preserved failed QEMU run
+into a pass or replace a new complete run of the built image.
 
 After actual QMP guest shutdown, the verifier holds the existing device lock,
 checks the current process record and rejects live/orphan display sockets. It
