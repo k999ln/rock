@@ -41,7 +41,8 @@
 | native入力の前後hash | PASS: 520ファイル不変 |
 | 既存Web | PASS: 34 unit tests、API 143 assertions、type/lint/build |
 | Android契約の静的整合 | PASS |
-| Android build/SDK/APK/端末試験 | 今回NOT RUN。既存コードは未変更 |
+| GitHub Web / Android prototype | PASS。Androidはbuild・SDK・APK・emulator・parityを含む |
+| GitHub native source-test | 再検証中。Ubuntu 24.04のAppArmor profileを追加済み |
 | このcheckoutからの新規OS build/boot | NOT RUN。第9の封印済みQEMU結果と区別 |
 | BlackBerry実機、実USB、実資金・ATM、本番公開 | NOT RUN |
 

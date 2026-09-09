@@ -20,7 +20,12 @@ jobs:
         with:
           python-version: '3.13'
       - name: Prepare Linux source-test dependencies
-        run: sudo apt-get update && sudo apt-get install -y build-essential bubblewrap pkg-config libseccomp-dev libcairo2-dev libfreetype6-dev libjson-c-dev openssl e2fsprogs
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apparmor apparmor-profiles apparmor-utils build-essential bubblewrap pkg-config libseccomp-dev libcairo2-dev libfreetype6-dev libjson-c-dev openssl e2fsprogs
+          sudo install -m 0644 /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d/bwrap-userns-restrict
+          sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict
+          test -x /usr/bin/bwrap
       - name: Native source regressions (not OS boot)
         run: python3 scripts/test-native.py --output work/native-tests
       - uses: actions/upload-artifact@v4
