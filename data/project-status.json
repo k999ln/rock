@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-09",
   "milestone": "3系統統合済み・native起動/保存検証修正と新規OSビルド",
-  "nextAction": "凍結b8287bcはD2利用・D3境界・D4更新復旧・D5新規復元を実測済み。停止観測修正後の新規端末で5正常サイクル/60分稼働と起動手順を完成させる。GX00は認証付き2owner/3端末・旧台帳移行をhost統合済み、2作者/2game接続とSDKを続ける。",
+  "nextAction": "凍結b8287bcはD2利用・D3境界・D4更新復旧・D5新規復元を実測済み。60分試験42の結果画面認識失敗を保存し、同じ閾値で修正・新規再試験と起動手順を完成させる。GX00は認証付き2owner/3端末と接続署名schemaをhost統合済み、2作者/2gameの実接続・SDKを続ける。",
   "tasks": [
     {
       "id": "R01",
@@ -297,7 +297,9 @@
         "docs/prompts/os-operational-base-next.md",
         "docs/gx00-owner-isolation-adr.md",
         "docs/evidence/gx00/integration.json",
-        "systems/rock-star-os/os/wallet_backend/FENCE.md"
+        "systems/rock-star-os/os/wallet_backend/FENCE.md",
+        "docs/gx00-connection-wire-v1.md",
+        "docs/evidence/gx00/game-protocol-review.json"
       ]
     },
     {
