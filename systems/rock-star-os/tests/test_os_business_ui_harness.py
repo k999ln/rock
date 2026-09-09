@@ -1,6 +1,7 @@
 """Host guards using explicit fixtures; no VM, GUI execution, or money moves."""
 import base64
 import copy
+from contextlib import nullcontext
 import importlib.util
 import json
 import os
@@ -190,15 +191,51 @@ class LifecycleGuards(unittest.TestCase):
 
     def test_normal_shutdown_sends_only_ui_confirmation_and_never_force_power(self):
         driver = Mock(); driver.limits = harness.contract.plan('lifecycle')['limits']
-        with patch.object(harness.guest, 'running', return_value=False):
+        with patch.object(harness, 'pinned_exit', return_value=nullcontext(lambda: True)):
             harness.clean_shutdown(driver, {})
         self.assertEqual(driver.native.method_calls, [('click', (636, 26), {})])
         self.assertEqual([call.args[0] for call in driver.click.call_args_list], ['電源を切る', '確認して実行'])
 
     def test_shutdown_exit_first_seen_after_deadline_is_not_a_clean_pass(self):
         driver = Mock(); driver.limits = harness.contract.plan('lifecycle')['limits']
-        with patch.object(harness.guest, 'running', return_value=False), patch.object(harness.time, 'monotonic', side_effect=[100, 161]):
+        with patch.object(harness, 'pinned_exit', return_value=nullcontext(lambda: True)), patch.object(harness.time, 'monotonic', side_effect=[100, 161]):
             with self.assertRaisesRegex(ValueError, 'shutdown deadline'): harness.clean_shutdown(driver, {})
+
+    def test_proc_identity_loss_does_not_bypass_pinned_exit_wait(self):
+        driver = Mock(); driver.limits = harness.contract.plan('lifecycle')['limits']
+        exited = Mock(side_effect=[False, False, True])
+        with patch.object(harness, 'pinned_exit', return_value=nullcontext(exited)), \
+                patch.object(harness.guest, 'running', return_value=False), \
+                patch.object(harness.time, 'monotonic', side_effect=[100, 101, 102, 103]), \
+                patch.object(harness.time, 'sleep') as sleep:
+            self.assertEqual(harness.clean_shutdown(driver, {}), 3)
+        self.assertEqual(sleep.call_count, 2)
+        self.assertEqual(driver.sampler.check.call_count, 2)
+
+    def test_pinned_exit_rechecks_identity_and_closes_on_all_paths(self):
+        record = {'pid': 1234}
+        with patch.object(harness.guest, 'running', side_effect=[True, False]), \
+                patch.object(harness.os, 'pidfd_open', return_value=81, create=True) as opened, \
+                patch.object(harness.os, 'close') as closed:
+            with self.assertRaisesRegex(ValueError, 'identity changed'):
+                with harness.pinned_exit(record): self.fail('unverified descriptor admitted')
+        opened.assert_called_once_with(1234, 0); closed.assert_called_once_with(81)
+        with patch.object(harness.guest, 'running', return_value=True), \
+                patch.object(harness.os, 'pidfd_open', return_value=82, create=True), \
+                patch.object(harness.os, 'close') as closed, \
+                patch.object(harness.select, 'select', return_value=([82], [], [])) as ready:
+            with self.assertRaisesRegex(RuntimeError, 'observer failed'):
+                with harness.pinned_exit(record) as exited:
+                    self.assertTrue(exited())
+                    raise RuntimeError('observer failed')
+        ready.assert_called_once_with([82], [], [], 0); closed.assert_called_once_with(82)
+
+    def test_pinned_exit_refuses_unowned_process_before_open(self):
+        with patch.object(harness.guest, 'running', return_value=False), \
+                patch.object(harness.os, 'pidfd_open', create=True) as opened:
+            with self.assertRaisesRegex(ValueError, 'identity required'):
+                with harness.pinned_exit({'pid': 1234}): self.fail('unowned process admitted')
+        opened.assert_not_called()
 
     def test_resource_summary_is_process_observation_not_guest_memory_claim(self):
         samples = [{'monotonic': 10, 'rss_kib': 100, 'cpu_seconds': 5},

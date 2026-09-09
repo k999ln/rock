@@ -222,3 +222,9 @@ Host fixtures, with no VM or money operations:
 ```sh
 python3 -m unittest discover -s tests -p 'test_os_business_ui_*.py' -v
 ```
+
+## Whole-process shutdown observation
+
+A real 2026-09-09 soak attempt was rejected after native poweroff: the `/proc` identity-based running check returned false but a display socket still accepted a connection. The stopped-disk guard correctly refused all subsequent disk reads. The failed report remains evidence; it is not a completed cycle. Later read-only inspection found the exact PID gone and the remaining sockets refusing connections. This is consistent with a process-exit observation race, not direct proof of its kernel cause.
+
+The host observer now checks the exact QEMU identity before and after opening a Linux pidfd with flags0, before sending normal UI power input. It waits for whole-process exit on that descriptor, including after the leader identity becomes unavailable, within the original60-second shutdown deadline. The descriptor closes even on failure. No signal is sent, and current-record, configuration, live-socket, guest-event, receipt and filesystem checks remain mandatory. Linux pidfd support is required; a missing capability is not a passed shutdown. See the primary [pidfd_open semantics](https://man7.org/linux/man-pages/man2/pidfd_open.2.html). The fixed runtime image and acceptance thresholds are unchanged.

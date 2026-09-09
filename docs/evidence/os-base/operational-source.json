@@ -523,6 +523,14 @@
       "status": "FAIL",
       "report": "business-wallet-header-failed-b8287bc.json",
       "reason": "Four actual business jobs succeeded but fourth history listing contained four completed labels, triggering the incorrectly global Wallet segmentation bound. Failed run preserved and exact guest closed normally by native UI. Same actual history frame now recognized with Wallet-header gate, old confidence/deadlines unchanged; fresh trial required."
+    },
+    {
+      "report": "soak-stopped-socket-failed-b8287bc.json",
+      "status": "FAIL",
+      "reason": "after UI poweroff, /proc-derived running predicate was false while a display socket still accepted; closed-disk guard refused",
+      "preservation": "failure retained, no force/reset/repair; later exact owned PID absent and remaining display sockets refused connection",
+      "diagnosis": "consistent with whole-process exit observation race; cause of this specific occurrence not directly sampled",
+      "followup": "pin Linux pidfd before shutdown, wait whole process exit inside unchanged60s, keep closed socket guards; restart acceptance on a fresh device"
     }
   ]
 }

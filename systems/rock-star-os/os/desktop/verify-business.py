@@ -18,6 +18,7 @@ import math
 import os
 from pathlib import Path
 import re
+import select
 import shutil
 import struct
 import subprocess
@@ -609,19 +610,37 @@ def run_job(driver, operations, version, label, output):
             'input_sha256': hashlib.sha256(text.encode()).hexdigest(), 'version': version}
 
 
+@contextmanager
+def pinned_exit(record):
+    """Observe whole-process exit; a missing /proc/exe is not exit evidence.
+
+    A pidfd opened without PIDFD_THREAD becomes readable only after the last
+    thread exits. Recheck the exact QEMU identity around acquisition; never
+    send a signal. Closed-disk admission still separately rejects live sockets.
+    """
+    require(guest.running(record), 'owned QEMU identity required before pinning exit')
+    fd = os.pidfd_open(record['pid'], 0)
+    try:
+        require(guest.running(record), 'owned QEMU identity changed while pinning exit')
+        yield lambda: bool(select.select([fd], [], [], 0)[0])
+    finally:
+        os.close(fd)
+
+
 def clean_shutdown(driver, record):
-    driver.native.click(636, 26)
-    driver.click('電源を切る', seek=True, label='normal-poweroff')
-    driver.wait('端末の電源を切りますか', label='normal-poweroff-confirm')
-    started = time.monotonic()
-    driver.click('確認して実行', label='normal-poweroff-confirmed')
-    while guest.running(record):
-        driver.sampler.check()
-        require(time.monotonic() - started <= driver.limits['shutdown_seconds'], 'normal shutdown deadline exceeded')
-        time.sleep(.25)
-    elapsed = time.monotonic() - started
-    require(elapsed <= driver.limits['shutdown_seconds'], 'normal shutdown deadline exceeded before observed exit')
-    return elapsed
+    with pinned_exit(record) as exited:
+        driver.native.click(636, 26)
+        driver.click('電源を切る', seek=True, label='normal-poweroff')
+        driver.wait('端末の電源を切りますか', label='normal-poweroff-confirm')
+        started = time.monotonic()
+        driver.click('確認して実行', label='normal-poweroff-confirmed')
+        while not exited():
+            driver.sampler.check()
+            require(time.monotonic() - started <= driver.limits['shutdown_seconds'], 'normal shutdown deadline exceeded')
+            time.sleep(.25)
+        elapsed = time.monotonic() - started
+        require(elapsed <= driver.limits['shutdown_seconds'], 'normal shutdown deadline exceeded before observed exit')
+        return elapsed
 
 
 def verify_power(before, after, events):
@@ -789,6 +808,7 @@ def wallet_only_changes(before, after):
 
 def preflight(images, output_parent, mode, source_commit, boot_profile='legacy-local'):
     require(sys.platform == 'linux', 'NOT_RUN: execute on the Linux QEMU build host')
+    require(hasattr(os, 'pidfd_open'), 'NOT_RUN: Linux pidfd exit observation is required')
     require(re.fullmatch('[0-9a-f]{40}', source_commit), 'exact source commit required')
     require(mode in ('lifecycle', 'soak'), 'unknown verification mode')
     require(boot_profile in ('legacy-local', 'local-ab'), 'explicit supported boot profile required')
