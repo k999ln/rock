@@ -32,7 +32,7 @@ jobs:
           /usr/bin/bwrap --version
           /usr/bin/cc -O2 -Wall -Wextra -Werror -o /tmp/rock-runner-sandbox os/runner/sandbox_launcher.c
           printf '%s' '{"text":"  hello  ","recipe":[{"op":"trim_lines"}]}' \
-            | /tmp/rock-runner-sandbox src/blackberryrock/recipe_worker.py os/runner/isolated_entry.py \
+            | /tmp/rock-runner-sandbox "$PWD/src/blackberryrock/recipe_worker.py" "$PWD/os/runner/isolated_entry.py" \
             | grep -Fx '{"text": "hello"}'
       - name: Native source regressions (not OS boot)
         run: python3 scripts/test-native.py --output work/native-tests
