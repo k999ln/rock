@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-09",
   "milestone": "3系統統合済み・native起動/保存検証修正と新規OSビルド",
-  "nextAction": "凍結b8287bcの更新障害・業務/Wallet再試験・全disk復元・5正常サイクル/60分稼働を完了する。B02/B03基礎の限定証拠を踏まえGX00のhost実装を並行し、実機/実資金の未検証を維持。",
+  "nextAction": "凍結b8287bcはD2利用・D3境界・D4更新復旧・D5新規復元を実測済み。停止観測修正後の新規端末で5正常サイクル/60分稼働と起動手順を完成させる。GX00は認証付き2owner/3端末・旧台帳移行をhost統合済み、2作者/2game接続とSDKを続ける。",
   "tasks": [
     {
       "id": "R01",
@@ -225,7 +225,8 @@
       "evidence": [
         "docs/prompts/hub-wallet-next.md",
         "docs/pc-citations-adapter.md",
-        "docs/evidence/pc-citations/integration.json"
+        "docs/evidence/pc-citations/integration.json",
+        "docs/evidence/os-base/business-backup-acceptance-b8287bc.json"
       ]
     },
     {
@@ -236,18 +237,21 @@
         "B02"
       ],
       "evidence": [
-        "docs/prompts/hub-wallet-next.md"
+        "docs/prompts/hub-wallet-next.md",
+        "docs/evidence/os-base/business-backup-acceptance-b8287bc.json"
       ]
     },
     {
       "id": "B05",
       "title": "Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "B02"
       ],
       "evidence": [
-        "docs/prompts/hub-wallet-next.md"
+        "docs/prompts/hub-wallet-next.md",
+        "docs/hub-wallet-pc-comparison-20260909.md",
+        "docs/evidence/hub-wallet/b05-pc-machine-20260909/report.json"
       ]
     },
     {
@@ -275,7 +279,10 @@
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/templates/os-acceptance-report.md",
-        "docs/os-operational-validation-20260909.md"
+        "docs/os-operational-validation-20260909.md",
+        "docs/evidence/os-base/startup-update-acceptance-b8287bc.json",
+        "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
+        "docs/evidence/os-base/registry-negative-b8287bc.json"
       ]
     },
     {
@@ -288,7 +295,9 @@
       "evidence": [
         "docs/design-implementation-alignment-20260909.md",
         "docs/prompts/os-operational-base-next.md",
-        "docs/gx00-owner-isolation-adr.md"
+        "docs/gx00-owner-isolation-adr.md",
+        "docs/evidence/gx00/integration.json",
+        "systems/rock-star-os/os/wallet_backend/FENCE.md"
       ]
     },
     {
@@ -420,7 +429,8 @@
       ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
-        "docs/evidence/os-base/business-wallet-foundation-b8287bc.json"
+        "docs/evidence/os-base/business-wallet-foundation-b8287bc.json",
+        "docs/evidence/os-base/business-backup-acceptance-b8287bc.json"
       ]
     },
     {
@@ -433,7 +443,8 @@
       ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
-        "docs/evidence/os-base/business-wallet-foundation-b8287bc.json"
+        "docs/evidence/os-base/business-wallet-foundation-b8287bc.json",
+        "docs/evidence/os-base/business-backup-acceptance-b8287bc.json"
       ]
     },
     {
@@ -484,7 +495,8 @@
         "B03-FIXTURE"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md"
+        "docs/prompts/os-operational-base-next.md",
+        "docs/evidence/gx00/integration.json"
       ]
     },
     {
