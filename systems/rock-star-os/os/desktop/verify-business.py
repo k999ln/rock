@@ -234,6 +234,15 @@ def wallet_text_rows(lines):
     The anchor never selects an action. The complete original label still has
     to be recognized at confidence >=45 before wait() can use its position.
     """
+    # Completed Hub jobs also contain 完了. Only the actual Wallet-family
+    # header in this same frame can enable the additional label pass.
+    headers = [match for title in ('Wallet', 'ATMテスト', '予約の状態')
+               for match in locate(lines, title, exact_line=True)
+               if 32 <= match['box'][0] < match['box'][0] + match['box'][2] <= 535
+               and 55 <= match['box'][1] < match['box'][1] + match['box'][3] <= 108]
+    require(len(headers) <= 1, 'ambiguous Wallet page header')
+    if not headers:
+        return []
     regions = []
     for words in lines:
         for word in words:
@@ -817,7 +826,7 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
                   wallet_preparation=wallet_backup.plan() if prepare_backup else None,
                   ocr={'languages': 'eng+jpn', 'omp_thread_limit': 1, 'omp_num_threads': 1, 'page_psm': 11, 'primary_psm': 7, 'minimum_confidence': 45,
                        'normalization': 'NFKC, Unicode casefold, remove whitespace; exact phrase only',
-                       'primary_scale': 2, 'primary_original_color_psm': 7, 'primary_original_color_scale': 1, 'wallet_label_anchors': ['金額', '完了'], 'wallet_label_max_rows': 2, 'wallet_label_scale': 1, 'secondary_color': 'e8ede5', 'secondary_scale': 1, 'max_button_regions': 8, 'notice_region': [32, 148, 688, 188], 'notice_scale': 1, 'text_region_scale': {'search_catalog_installed': 2, 'history_title': 1}, 'text_region_psm': 7,
+                       'primary_scale': 2, 'primary_original_color_psm': 7, 'primary_original_color_scale': 1, 'wallet_header_region': [32, 55, 535, 108], 'wallet_headers': ['Wallet', 'ATMテスト', '予約の状態'], 'wallet_label_anchors': ['金額', '完了'], 'wallet_label_max_rows': 2, 'wallet_label_scale': 1, 'secondary_color': 'e8ede5', 'secondary_scale': 1, 'max_button_regions': 8, 'notice_region': [32, 148, 688, 188], 'notice_scale': 1, 'text_region_scale': {'search_catalog_installed': 2, 'history_title': 1}, 'text_region_psm': 7,
                        'text_regions': [SEARCH_TEXT, CATALOG_TITLE, INSTALLED_TITLE, HISTORY_TITLE],
                        'primary_analysis': 'bounded accent regions; observed row green contour; grayscale >=180 glyphs to black; 10px white border; no auto-invert',
                        'duplicate_box_min_iou': .70},

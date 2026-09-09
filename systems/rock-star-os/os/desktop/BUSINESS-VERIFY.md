@@ -117,6 +117,9 @@ the large signed product name. Detail validation requires its product name,
 publisher and exact version together. Installed/history selection reads the
 first card title; history then requires the unique job label in the opened
 result. Deletion uses the catalog name that the native renderer displays.
+Wallet label refinement first requires a unique literal `Wallet`, `ATMテスト`,
+or `予約の状態` header at confidence45 inside `[32,55,535,108]` in the same
+frame. A completed Hub history row does not establish this page context.
 Wallet labels may receive at most two original-size line passes anchored by
 the literal, confident words `金額` or `完了` within the content area. Anchors
 only locate a row for OCR; the complete required phrase must still match at

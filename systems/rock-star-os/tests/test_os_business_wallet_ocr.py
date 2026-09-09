@@ -39,13 +39,28 @@ class WalletOCRGuards(unittest.TestCase):
         self.assertEqual(h.accent_rectangles(image, secondary=True), [(50, 300, 650, 350)])
 
     def test_segmentation_anchors_are_literal_confident_and_bounded(self):
-        self.assertEqual(h.wallet_text_rows([[word('金額')]]), [(32, 382, 688, 424)])
-        self.assertEqual(h.wallet_text_rows([[word('完了', y=480)]]), [(32, 468, 688, 510)])
+        title = [word('Wallet', x=34, y=70, w=120, height=30)]
+        self.assertEqual(h.wallet_text_rows([title, [word('金額')]]), [(32, 382, 688, 424)])
+        self.assertEqual(h.wallet_text_rows([title, [word('完了', y=480)]]), [(32, 468, 688, 510)])
         for row in [word('金額?', confidence=99), word('金額', confidence=44.99),
                     word('金額', y=160), word('金額', y=840), word('金額', height=27)]:
-            self.assertEqual(h.wallet_text_rows([[row]]), [])
+            self.assertEqual(h.wallet_text_rows([title, [row]]), [])
         with self.assertRaises(ValueError):
-            h.wallet_text_rows([[word('金額', y=y)] for y in (300, 400, 500)])
+            h.wallet_text_rows([title] + [[word('金額', y=y)] for y in (300, 400, 500)])
+
+    def test_wallet_segmentation_requires_unique_literal_header_in_same_frame(self):
+        rows = [[word('完了', y=y)] for y in (300, 450, 600, 750)]
+        self.assertEqual(h.wallet_text_rows(rows), [])
+        for text, y, confidence in [('実行履歴', 70, 99), ('Wallet', 70, 44.99),
+                                    ('Wallet', 890, 99), ('Wallet?', 70, 99)]:
+            title = [word(text, x=34, y=y, w=140, height=30, confidence=confidence)]
+            self.assertEqual(h.wallet_text_rows([title] + rows), [])
+        for text in ('Wallet', 'ATMテスト', '予約の状態'):
+            title = [word(text, x=34, y=70, w=140, height=30)]
+            self.assertEqual(h.wallet_text_rows([title, rows[0]]), [(32, 288, 688, 330)])
+        title = [word('Wallet', x=34, y=70, w=140, height=30)]
+        second = [word('Wallet', x=250, y=70, w=140, height=30)]
+        with self.assertRaises(ValueError): h.wallet_text_rows([title, second, rows[0]])
 
     def test_anchor_and_wrong_or_low_confidence_full_labels_never_click(self):
         for rows in ([[word('金額')]], [[word('テスト人金額 (USD)')]],
