@@ -258,6 +258,14 @@
       "checks": 46,
       "actual_executor_calls": 2,
       "scope": "actual guest API and new owned TLS runner; durable acceptance followed by truncated reply and actual virtio link loss/reconnect; second boot no NIC; no production cloud or USB; no local jobs or Wallet proceeds"
+    },
+    "qemu_store": {
+      "status": "PASS",
+      "report": "store-b8287bc.json",
+      "report_sha256": "22c1e4dc2e523011af206459f274cc7fa885895e24741d8b48f2db077ff7d20b",
+      "actual_boots": 2,
+      "checks": 33,
+      "scope": "actual SDK packages and fresh TLS registry, install/update/rollback/exact approval, actual disconnect and no-NIC restart; signature/revocation negative acceptance is a separate pending run"
     }
   },
   "logs_sha256": {
