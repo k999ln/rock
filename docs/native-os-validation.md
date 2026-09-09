@@ -13,7 +13,9 @@
 | C compile / UI操作 | PASS | core/platform/uiのcompile、native UI操作・入力・描画・framebuffer変換のhost試験 |
 | 入力の前後照合 | PASS / 520ファイル | 現在のnative source・新規WIP資料・manifest・検証script・CI。増減も比較 |
 | 既存Android `npm run os:check` | PASS | AIDL/manifest/Soong設定の静的整合のみ |
-| Android core/SDK/APK/端末/parity | 今回NOT RUN | Java/Android環境未導入。実装の変更なし、過去CI成功と区別 |
+| GitHub x86_64 native CI | PASS | 実隔離事前診断、Python 1,031件、C core/platform/UI、IPC/observer |
+| GitHub Web / Android CI | PASS | Web全verify、Android core/SDK/APK/emulator/parity |
+| Androidのローカル統合時実行 | NOT RUN | Java/Android環境未導入。GitHub CIの成功と区別 |
 | 新規OSイメージbuild/boot | 今回NOT RUN | 第9のQEMU証拠は履歴として引用 |
 | BlackBerry・実USB・実資金・本番公開 | NOT RUN | Git統合の成功に含めない |
 
@@ -21,9 +23,9 @@
 
 最初のGitHub x86_64実行では、実隔離executorが必要とするbubblewrapをCIの依存一覧へ入れておらず、767件中の実Linux隔離1件が `failed` となった。bubblewrap追加後もUbuntu 24.04のAppArmor user namespace制限との組み合わせで同じ1件だけが失敗した。Rockのlauncherはbubblewrap起動前に `no_new_privs` を設定するため、後から追加権限を得るprofile遷移へ依存できない。Ubuntu 22.04でも試したが、同梱bubblewrap 0.6.1に必要な `--disable-userns` がなく、直接診断で明示的に失敗した。
 
-テストのskip/mock化やlauncherの安全策解除は行わない。CIは新しいbubblewrapを持つUbuntu 24.04とし、外側にあるAppArmorのunprivileged user namespace制限だけを秘密値のない使い捨てrunner内で一時解除する。Rock内部の `no_new_privs`、全namespace分離、capability削除、`--disable-userns`、seccompは維持する。事前診断では製品と同じlauncher・workerを実行し、隔離が成立しなければ1,031件の回帰前に失敗させる。他のsuite・C/UI検証と既存Web/Android CIは成功。再実行が成功するまでGitHub native CIをPASSとは記録しない。
+テストのskip/mock化やlauncherの安全策解除は行わない。CIは新しいbubblewrapを持つUbuntu 24.04とし、外側にあるAppArmorのunprivileged user namespace制限だけを秘密値のない使い捨てrunner内で一時解除する。Rock内部の `no_new_privs`、全namespace分離、capability削除、`--disable-userns`、seccompは維持する。事前診断では製品と同じlauncher・workerを実行し、隔離が成立しなければ1,031件の回帰前に失敗させる。
 
-直接診断により、x86_64の動的loader `/lib64` がsandbox内に見えず `/usr/bin/python3` を起動できない移植漏れも確認した。launcherはx86_64時だけ `/lib64` をread-only bindする。ARM64のmount列は変えず、x86_64でも同じworker、network/mount namespace差分、socket syscall拒否を検証する。
+直接診断により、x86_64の動的loader `/lib64` がsandbox内に見えず `/usr/bin/python3` を起動できない移植漏れも確認した。launcherはx86_64時だけ `/lib64` をread-only bindする。ARM64のmount列は変えず、x86_64でも同じworker、network/mount namespace差分、socket syscall拒否を検証する。修正commit `f11f9aa78a228f5ecfd565f4499cf6c15cbfda36` のGitHub run `34318178890` で、事前診断とnative全検証が成功した。同じcommitのWeb run `34318178883`、Android build/emulator run `34318178886` も成功した。
 
 既存WebにはViteの将来のconfigLoader変更とNode module APIの既知の警告が残る。最初のsandbox内API試行はloopback待受の権限制限で失敗したため、許可されたローカル試験環境で再実行し143 assertionsに成功。その後、統合後のverify全体も終了コード0で確認した。
 

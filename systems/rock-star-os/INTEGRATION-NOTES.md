@@ -8,7 +8,7 @@
 - 技術資料の過去の主張に取得時点の範囲を明記。除外した証拠やprivate調査台帳への92リンクを、Git内に存在するかのようなリンクから履歴参照の説明へ変更。具体的な開発ボリュームの記録を汎用の準備説明へ変更。
 - 膨大な過去のscreenshots/logs、privateリポジトリの全tree、実行状態、OSディスク、実資格情報は同梱しない。元の封印済み成果物はこの統合によって変更しない。
 - 起動応答改善21ファイルのWIPは `experiments/startup-health/changes.patch` に未適用で保存。`git apply --check` の成功だけでは動作の成功ではない。
-- 統合後のx86_64 CIで実隔離を検証できるよう、`os/runner/sandbox_launcher.c` はx86_64時だけELF interpreterの `/lib64` をread-only bindする。ARM64の引数列、安全策、worker契約は変更しない。取得時hashは `IMPORT-MANIFEST.json` に保持し、この差分はGit履歴で追跡する。
+- 統合後のx86_64 CIで実隔離を検証できるよう、`os/runner/sandbox_launcher.c` はx86_64時だけELF interpreterの `/lib64` をread-only bindする。ARM64の引数列、安全策、worker契約は変更しない。取得時hashは `IMPORT-MANIFEST.json` に保持し、この差分はGit履歴で追跡する。修正後のGitHub run `34318178890` で実隔離事前診断とnative全検証に成功した。
 
 rootの `scripts/test-native.py` と `.github/workflows/native-os.yml` はこの配置用の検証入口。正常hostのUI observerは元のMakefileと同じ `test_evidence.py` が対象。古いATM observerの認証fixture不整合とroot専用Wallet/power試験は、rootの `docs/native-os-validation.md` に残件として記録する。全ての `test_*evidence.py` が成功したと扱わない。
 
