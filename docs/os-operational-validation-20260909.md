@@ -7,11 +7,11 @@ main/native/設計v1.1を専用branchへ統合した。統合commitは `797c663d
 | 対象 | 結果 | 範囲 |
 | --- | --- | --- |
 | Web統合回帰 | PASS | 53 unit tests、143 API assertions、型・lint・build・要件/進捗/正本検査 |
-| Linux source回帰 | PASS | `f3ec84386421fa3363959b448f9a2a7c71f21ef8`、1056 Python実行、C core/platform/UIと実IPC・UI操作。入力hash不変、skip/warningなし |
-| startup health | PASS / sourceのみ | Python16件、root→UID1000の実Linux C8群。実nonce/socket/pidfd・loop応答を試験 |
+| Linux source回帰 | PASS | `d5fd1d556466b7ee076fa5ad0b90564a1f447663`、1069 Python実行、C core/platform/UIと実IPC・UI操作。入力hash不変、skip/warningなし |
+| startup health | PASS / sourceのみ | Python15件、root→UID1000の実Linux C8群。実nonce/socket/pidfd・loop応答を試験 |
 | backup試験入口 | PASS / sourceのみ | 35件。旧schema1と新schema2、A/B/data、profile別DB・追加表・外部正本の未検証表示 |
 | 全UI observer | PASS / sourceのみ | 現行enroll/Wallet terms/quote/approvalに合わせた55件を実Linux root fixtureで実行。skip/warningなし |
-| 新規QEMU image | IN_PROGRESS | `dea78e3`から空のLinux build領域で開始。実起動・更新・復旧はまだNOT_RUN |
+| 新規QEMU image | FAIL / 修正中 | `dea78e3`を空のLinux build領域で組み立てたが、公開ソースから省かれた旧実験文書への参照で最終処理が停止。完成imageなし、実起動・更新・復旧はNOT_RUN |
 | D0〜D6総合 | 未合格 | 上記source試験をOS稼働成功にしない |
 | Pixel 10 | NOT_RUN | 利用者のGrapheneOSを保つ[Android P1 APK試験](android-trial.md)を準備 |
 | BlackBerry・MetaMask実資金・外部game | NOT_RUN | 機種/技術/取引条件が未確定、MetaMask現行コードはアドレス接続のみ |
@@ -28,10 +28,12 @@ ATM/Wallet observerの古いfixtureは現在の本人確認と規約を満たさ
 
 最初の追加root試験はhandoff所有者とディレクトリ権限のfixture不一致で失敗した。修正後も終了コード0のログにSQLite未解放警告を発見したため未合格とし、allocation traceでpower試験用DBの2か所を特定してcloseを追加した。再実行55件は警告なし。これらの失敗を記録から除去していない。
 
+GitHubの初回native CIは、試験用Pythonの所有者と10msの再試行時刻を壁時計に比較する試験の競合で失敗した。製品の所有者制限や待機時間を緩めず、保護されたsystem Pythonの実peerとcontroller限定の時計を使う試験へ修正。Linuxの対象15件・27件は合格し、CI全体は再実行待ち。WebとAndroid P1のCIは合格し、署名・hashを確認した試用APK二本を取得した。Pixelでの実行は未確認。
+
 ## 残る実装と受入
 
 1. 新imageの起動、専用UID、read-only root/data、native画面とIPCを確認する。
-2. Hubで業務商品を取得・同意・処理・保存し、停止・更新・戻す・削除を画面から通す。旧UIの最新版のみ表示と停止操作の不足を埋める。
+2. Hubで業務商品を取得・同意・処理・保存し、停止・更新・戻す・削除を画面から通す。版選択・停止・再承認の実装とC描画試験は完了し、実OSでの通過を残す。
 3. 実画面Wallet/月額/ATM、更新障害、正常reboot/poweroff、新規復元先、5回の正常起動/終了と60分の反復稼働を同一候補で検証する。
 4. [GX00 ADR](gx00-owner-isolation-adr.md)に沿って既存1契約1台帳の複数owner接続、復元時writer排他、ゲーム本人接続を実装する。現時点は設計のみで、ゲーム交換/SDKは未実装。
 

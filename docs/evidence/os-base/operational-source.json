@@ -1,18 +1,18 @@
 {
   "schema": "rock-operational-source/1",
   "integration_commit": "797c663de60dcf4e7509c29de49447c3a521b90d",
-  "runtime_commit": "f3ec84386421fa3363959b448f9a2a7c71f21ef8",
-  "runtime_report": "runtime-f3ec843.json",
-  "runtime_report_sha256": "e849e31630ef833f4d7f8663d87436145069ca72c154638dfcbc93baab6c1666",
+  "runtime_commit": "d5fd1d556466b7ee076fa5ad0b90564a1f447663",
+  "runtime_report": "runtime-d5fd1d5.json",
+  "runtime_report_sha256": "93bdb2749d486b9a2012b581c21a18b2eb6b01d089ead40a6accd210a36e7d0b",
   "results": {
     "source_regressions": {
       "status": "PASS",
-      "python_executions": 1056,
+      "python_executions": 1069,
       "source_unchanged": true
     },
     "startup_python": {
       "status": "PASS",
-      "tests": 16
+      "tests": 15
     },
     "startup_c_root_uid1000": {
       "status": "PASS",
@@ -32,7 +32,10 @@
       "power_fixture_sha256": "6b20e1cb2f5155d82d46250bf6aa9232c0703297f33acb3949f1f4abf9de7e7b"
     },
     "qemu_new_image": {
-      "status": "IN_PROGRESS"
+      "status": "FAIL",
+      "source_commit": "dea78e326e946f1599d45938e9becdb459403df4",
+      "stage": "post-build platform install",
+      "reason": "Public source omitted docs/PRODUCT-EXPERIMENTS-OS.md but installer still referenced it. No completed Image/rootfs/stage0 set; boot NOT_RUN."
     },
     "physical_device": {
       "status": "NOT_RUN"
@@ -70,6 +73,18 @@
     {
       "result": "FAIL",
       "cause": "All55 tests then exited0 but logs exposed power fixture SQLite connections not closed. Tracemalloc located2 test sites; explicitly close and rerun55 with clean log."
+    },
+    {
+      "result": "FAIL",
+      "cause": "GitHub native CI run 34388326821: four startup fixture cases selected user-owned hosted Python; retry assertion raced 10ms against SQLite latency. Production restrictions/timeouts retained; protected system-interpreter peer fixture and deterministic controller-clock test passed Linux 15/27 targeted cases."
+    }
+  ],
+  "source_history": [
+    {
+      "commit": "f3ec84386421fa3363959b448f9a2a7c71f21ef8",
+      "report": "runtime-f3ec843.json",
+      "report_sha256": "e849e31630ef833f4d7f8663d87436145069ca72c154638dfcbc93baab6c1666",
+      "python_executions": 1056
     }
   ]
 }

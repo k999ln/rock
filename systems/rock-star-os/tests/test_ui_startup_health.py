@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import signal
 import socket
+import stat
 import subprocess
 import sys
 import tempfile
@@ -82,7 +83,19 @@ class StartupLinuxTests(unittest.TestCase):
         self.directory.mkdir(mode=0o700)
         self.endpoint = self.directory / 'ready.sock'
         self.pid_path = self.root / 'rock-ui.pid'
-        self.executable = Path('/proc/self/exe').resolve(strict=True)
+        # CI may run unittest with a user-owned hosted-toolcache Python. The
+        # real checker deliberately rejects that executable and its parent.
+        # Use an explicitly protected system interpreter for every test peer.
+        self.executable = Path('/usr/bin/python3').resolve(strict=True)
+        info = self.executable.lstat()
+        self.assertTrue(stat.S_ISREG(info.st_mode) and info.st_uid == 0 and
+                        info.st_nlink == 1 and not info.st_mode & 0o022 and
+                        info.st_mode & 0o111, 'protected system Python required')
+        for parent in self.executable.parents:
+            info = parent.lstat()
+            self.assertTrue(stat.S_ISDIR(info.st_mode) and info.st_uid == 0 and
+                            not info.st_mode & 0o022,
+                            'protected system Python parent required: ' + str(parent))
         self.process = None
         self.addCleanup(self.stop)
 
@@ -164,12 +177,25 @@ class StartupLinuxTests(unittest.TestCase):
         self.start()
         with self.assertRaisesRegex(ValueError, 'UI_EXECUTABLE_MISMATCH'):
             self.check(executable=Path('/usr/bin/true'))
-        self.pid_path.write_text(str(os.getpid()) + '\n')
-        with self.assertRaisesRegex(ValueError, 'UI_PEER_MISMATCH'):
-            self.check()
-        with self.assertRaisesRegex(ValueError, 'UI_PROCESS_OWNER_MISMATCH'):
-            health.check(health.Paths(self.pid_path, self.endpoint, self.executable),
-                         root_uid=os.geteuid(), peer_uid=os.geteuid() + 1, peer_gid=os.getegid())
+        # Keep executable identity valid while selecting the wrong real PID;
+        # the unittest runner may use a different, unprotected interpreter.
+        other = subprocess.Popen([str(self.executable), '-I', '-B', '-c',
+                                  'import time; print("READY", flush=True); time.sleep(10)'],
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        try:
+            import select
+            self.assertTrue(select.select([other.stdout], [], [], 5)[0], 'fixture startup deadline')
+            self.assertEqual(other.stdout.readline(), 'READY\n')
+            self.pid_path.write_text(str(other.pid) + '\n')
+            with self.assertRaisesRegex(ValueError, 'UI_PEER_MISMATCH'):
+                self.check()
+            with self.assertRaisesRegex(ValueError, 'UI_PROCESS_OWNER_MISMATCH'):
+                health.check(health.Paths(self.pid_path, self.endpoint, self.executable),
+                             root_uid=os.geteuid(), peer_uid=os.geteuid() + 1, peer_gid=os.getegid())
+        finally:
+            if other.poll() is None:
+                other.kill()
+            other.communicate(timeout=5)
 
     def test_pid_symlink_hardlink_mode_and_malformed_rejected(self):
         self.start()

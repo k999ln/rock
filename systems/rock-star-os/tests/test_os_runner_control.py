@@ -271,13 +271,38 @@ class RunnerControlTests(unittest.TestCase):
 
     def test_outage_has_bounded_backoff_and_no_new_key_or_other_mode(self):
         self.submit();self.transport.fail=True
-        self.step();status=self.control.status('job')
-        self.assertEqual(status['state'],'unknown')
-        self.assertGreater(status['next_attempt'],time.time())
-        self.assertFalse(self.control.process_one())
-        self.transport.fail=False;self.finish()
+        now=time.time()
+        # Replace only this controller module's clock, not global time or the
+        # remote transport. Slow SQLite reads must not consume the retry window.
+        with patch.object(module,'time') as clock, \
+                patch.object(self.transport,'exchange',wraps=self.transport.exchange) as exchange:
+            clock.time.return_value=now
+            for delay in (0.01,0.02,0.02):
+                self.assertTrue(self.control.process_one())
+                status=self.control.status('job')
+                self.assertEqual(status['state'],'unknown')
+                due=status['next_attempt']
+                self.assertEqual(due,clock.time.return_value+delay)
+                clock.time.return_value=due-0.001
+                calls=exchange.call_count
+                self.assertFalse(self.control.process_one())
+                self.assertEqual(exchange.call_count,calls)
+                self.assertEqual(self.control.status('job')['next_attempt'],due)
+                clock.time.return_value=due
+            self.transport.fail=False
+            self.assertTrue(self.control.process_one())
+            self.remote.tick()
+            clock.time.return_value=self.control.status('job')['next_attempt']
+            self.assertTrue(self.control.process_one())
+            requests=[call.args[0]['request'] for call in exchange.call_args_list]
+            self.assertTrue(all(request['key']=='job' and request['endpoint_id']=='cloud-test' for request in requests))
+            submitted=[request for request in requests if request['op']=='submit']
+            self.assertEqual(len(submitted),1)
+            self.assertEqual(submitted[0]['consent']['target'],'cloud')
+        self.assertEqual(self.control.status('job')['state'],'succeeded')
         self.assertEqual(self.executor.calls,1)
-        self.assertEqual(len(self.control.snapshot()['history']),1)
+        self.assertEqual([(row['key'],row['target']) for row in self.control.snapshot()['history']],[('job','cloud')])
+        self.assertEqual(self.hub.state()['jobs'],[])
 
     def test_limits_prepared_active_history_bytes_and_unknown_fields(self):
         with self.assertRaisesRegex(ValueError,'64 KiB'):self.prepare(text='é'*32769)
