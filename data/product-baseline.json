@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "decidedAt": "2026-09-09",
+  "repository": "k999ln/rock",
+  "authority": "docs/product-baseline.md",
+  "promptRules": "docs/prompt-playbook.md",
+  "audit": "docs/progress-audit-20260909.md",
+  "nextPrompt": "docs/prompts/hub-wallet-next.md",
+  "requirements": ["RQ01", "RQ02", "RQ03", "RQ04", "RQ05", "RQ06", "RQ07", "RQ08", "RQ09", "RQ10", "RQ11"],
+  "primaryCapabilities": ["automation-hub", "automation-earnings-wallet"],
+  "supplyRoleLabel": "tob",
+  "supplyRoleExclusivity": "unspecified",
+  "auditInputs": {
+    "main": "5cec83478fe97bf272869298160a572ef7fcefee",
+    "nativeBranch": "codex/integrate-native-os-20260909",
+    "nativeHead": "fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5",
+    "nativePullRequest": 1,
+    "nativePullRequestStateAtAudit": "OPEN",
+    "isLiveStatus": false
+  },
+  "freshContextRequired": ["main", "branches", "open-pull-requests", "relevant-closed-pull-requests", "source-at-sha", "checks-at-sha"],
+  "commercialPolicy": "Preserve existing native 888 USD cents per contract per month and legacy Web estimates; no fee change authorized here.",
+  "hardwarePolicy": "Native branch prioritizes BlackBerry with model/variant unresolved; Linux QEMU and Android/AOSP are distinct evidence tracks."
+}

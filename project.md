@@ -1,8 +1,16 @@
 # Rock star — 事業・設計・進捗
 
-このファイルは作業の正本です。機能、判断、検証結果が変わるたびに更新します。製品の入口は [README.md](README.md)、参照元の採用判断は [docs/reference-repositories.md](docs/reference-repositories.md) です。
+このファイルは当該branchの作業記録です。確定要望は [docs/product-baseline.md](docs/product-baseline.md)、進捗からの指示作成は [docs/prompt-playbook.md](docs/prompt-playbook.md) が正本です。
 
-## 現在の優先方針: OS開発
+## 2026-09-09: Hub＋Walletのベースと利用価値を保存
+
+tob側が商品を開発し、Rockが実行方式・料金・ライセンスの異なる商品を管理するHubと収益Walletを作る。既存ツールも商品とし、Git内の商品をHubから実利用して準備/操作/結果確認の不便を改善する。汎用生活機能やエコシステム拡大を主目的にしない。確定ベースはRQ01〜RQ11。
+
+main `5cec834`に加えPR #1/native `fcedcfe`と同一SHAのCIを確認。nativeにはWallet台帳・月888 cents・資格・Hub署名配布・MCP/AI実行先がある。BlackBerry優先機種未定。今回のmain保存はベース/監査/作成規約と検査であり、native本体のmergeではない。[差分監査](docs/progress-audit-20260909.md)、[次の実行プロンプト](docs/prompts/hub-wallet-next.md)を参照。
+
+既存データ、月額契約、旧試算、ツール原本を保持する。B01ベース保存と、B02商品実利用/条件拡張、B03実行費用/収益接続を分けて記録する。
+
+## 2026-09-05時点の履歴: Android/AOSP開発
 
 2026-09-05の利用者指示により、今後の主軸を「Rock star OS: 自社・第三者の自動化ツールを導入し、利用者が決めた範囲で自律実行するOS」へ移す。Pixel等の開発用端末で検証する計画を [OS開発設計書](docs/os-development-design.md) にまとめる。以下のR1/R2は既存Web基盤の履歴として保持する。
 
@@ -20,7 +28,7 @@ OS06の完成条件は、共通コアの実SQLiteテスト、既存記事ツー�
 
 2026-09-05、実装commit `47043ad` の[Android CI](https://github.com/k999ln/rock/actions/runs/33982932964)でコア16・SDK4テスト、2APKのbuild/lint、記事照合36項目、標準Android35の接続2テストに成功し、OS06を完了とした。端末テストは実BinderとSQLite再接続を通すが、画面OFFの周期実行・端末再起動・不正UIDの否定試験ではない。[既存WebのCI](https://github.com/k999ln/rock/actions/runs/33982933087)も成功。OS03〜05を先取りして完了にはしない。
 
-## 維持する事業方針
+## 旧Webで維持する事業方針と試算
 
 Rock starは、自動化ツールを束ね、仕事の準備・制作・確認を進めるハブです。ファンドの参加・配分計画、共通収益に対する月最大8.88 USD相当の利用料、基本分配・ブースト・共同留保の試算という方向を維持します。既存の個人費用計算は別モデルです。
 
@@ -112,7 +120,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-07 / Git正本整理とOS-P1試作 / 完了 10/16件
+最終更新: 2026-09-09 / Hub＋Walletベース保存（native進捗は関連PRも確認） / 完了 11/19件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -132,10 +140,13 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 完了 | [記録](docs/os-prototype.md) · [記録](docs/validation.md) · [記録](android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java) |
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
+| B01 | Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
+| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
+| B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 
-次の作業: rockを製品・OS・公開契約の正本、Mr.を非公開運用componentとして維持する。vvvvをarchiveする前にGitHub Actions・deployment・scheduler・local serviceの参照を監査する。OS開発はLinux/x86-64・RAM64GiB・空き400GB・KVMを満たす環境確保から再開する。
+次の作業: 最新mainとnative PRのSHA・証拠を確認し、製品ベースに沿ってB02既存商品のHub実利用・商品条件、B03実行費用と収益Walletを接続する。利用者の不便を改善前後で比較する。native Nタスクと旧Android/Webを混同しない。
 <!-- project-status:end -->
 
 ## 次段階の設計
 
-今後は [OS開発設計書](docs/os-development-design.md) のG0→仮想OS→Pixel Alpha→第三者Storeの順で進めます。既存の仕事、成果物保存、追加ツール、公式API接続はOS内の責務として再設計します。接続先・運用主体・徴収方法が未定のため、金銭処理をOS Alphaの完成条件に含めません。旧 [初期仕様](docs/product.md) は事業の根拠として保持します。
+今後は [製品ベース](docs/product-baseline.md) と [次の実行プロンプト](docs/prompts/hub-wallet-next.md) に従い、native基盤を既存商品の実利用、商品条件、Walletへ接続します。従来のG0→Cuttlefish→Pixel→StoreはAndroid/AOSPの過去計画。旧 [初期仕様](docs/product.md) は履歴として保持します。

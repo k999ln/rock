@@ -1,5 +1,15 @@
 # 検証記録
 
+## 製品ベース・進捗からのプロンプト作成 / 2026-09-09
+
+- main `5cec83478fe97bf272869298160a572ef7fcefee` とPR #1/native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5` をGitHubで確認。PRはOPEN。HEAD一致のWeb/native/Android CIがsuccessであることをAPIで読み戻した。監査対象と限界は [差分監査](progress-audit-20260909.md) に固定した。
+- 利用者要望を [製品ベース](product-baseline.md) のRQ01〜RQ11に整理し、AGENTSと既存設計の入口を更新。Hub＋Wallet、tobの商品供給、実行/料金/権利の独立軸、既存商品のHub実利用、利用者の不便の比較を次のプロンプトへ保存した。native実装や既存料金の再実装/廃止は指示していない。
+- `npm run verify` 成功。進捗/repository/製品ベース、型、製品lint、35テスト、build、API143 assertions。sandbox内では最後のAPI待受がEPERMとなり、許可されたローカル通信でverify全体を再実行して終了コード0。既存Vite configLoaderとNode module APIの警告は残る。
+- 追加したベース検査はRQ欠落、監査snapshotの最新扱い、SHA不一致、repository外参照、AGENTS入口欠落を拒否する。最終の供給元未確定表現への修正後も対象テストとlintを再実行した。
+- `npm run prompt:context` のonline実行でGitHubのmain/全branch/open PR/同SHA checksを取得。mainとPR headを再取得して取得中の変更も検知する。offline実行は `liveMetadataVerified:false`、ネットワーク失敗時は終了コード2で、最新成功に見せかけない。出力はメタデータで、sourceReviewCompleteはfalseのまま。実装コードの確認を別途必須にする。
+- 別担当の読み取りレビューで、native実装根拠と会話要望の整合を確認。remote/local Walletの正本構成、合成取引の範囲、供給元の独占性未確定、PCツールpathを明確化した。
+- 今回のOS/Hub runtime、商品コード、Wallet資金処理は変更していない。新しいHub操作、不便の比較測定、OS起動、実PC/USB/BlackBerry、実金融・本番公開は未実施。これらはB02/B03とnative側の各受入条件へ残した。
+
 ## Gitプロジェクト統合 / 2026-09-07
 
 - `rock` commit `9e4dc89d995ccbf11f9e3a15efa0e65868874d48`と、非公開`Mr.` commit `a82a728`のtracked blobを比較。完全一致するpath組は78件で、主にUI boilerplate、既存4ツールの固定原本、MIT licenseだった。

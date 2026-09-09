@@ -1,5 +1,7 @@
 # Rock star OS — P1 実装と検証手順
 
+製品要望は [製品ベース](product-baseline.md)を優先。本書はAndroid P1の検証範囲。native OSのHub/Wallet/商品は別branchにあり [差分監査](progress-audit-20260909.md)を参照。記事処理をOS製品全体の価値や完成条件にしない。
+
 2026-09-05。状態: OS部品を組み始めた試作。**OSイメージのビルド/起動、Pixel実機、第三者Storeは未検証。** [基本設計](os-development-design.md) の一般構想と、本書の実装範囲を区別する。
 
 ## 1. 今回の到達目標

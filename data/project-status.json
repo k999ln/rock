@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-07",
-  "milestone": "Git正本整理とOS-P1試作",
-  "nextAction": "rockを製品・OS・公開契約の正本、Mr.を非公開運用componentとして維持する。vvvvをarchiveする前にGitHub Actions・deployment・scheduler・local serviceの参照を監査する。OS開発はLinux/x86-64・RAM64GiB・空き400GB・KVMを満たす環境確保から再開する。",
+  "updatedAt": "2026-09-09",
+  "milestone": "Hub＋Walletベース保存（native進捗は関連PRも確認）",
+  "nextAction": "最新mainとnative PRのSHA・証拠を確認し、製品ベースに沿ってB02既存商品のHub実利用・商品条件、B03実行費用と収益Walletを接続する。利用者の不便を改善前後で比較する。native Nタスクと旧Android/Webを混同しない。",
   "tasks": [
     {"id":"R01","title":"4参照元の採用判断と事業方針の固定","status":"done","dependsOn":[],"evidence":["docs/reference-repositories.md"]},
     {"id":"R02","title":"ggをGitHub rockへ紐付け、既存変更と履歴を保全","status":"done","dependsOn":[],"evidence":["project.md"]},
@@ -18,6 +18,9 @@
     {"id":"OS05","title":"第三者SDK・審査・インストール・失効の閉鎖テスト","status":"planned","dependsOn":["OS04"],"evidence":["docs/os-development-design.md"]},
     {"id":"OS06","title":"OS共通実行コア・端末DB・Android統合の検証可能な試作","status":"done","dependsOn":["OS01"],"evidence":["docs/os-prototype.md","docs/validation.md","android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java"]},
     {"id":"G01","title":"GitHubリポジトリの役割・重複監査と正本境界の固定","status":"done","dependsOn":["R02"],"evidence":["docs/git-consolidation.md","data/repository-map.json","scripts/check-repository-map.mjs","docs/validation.md"]},
-    {"id":"G02","title":"vvvvの稼働参照監査と安全なarchive判定","status":"planned","dependsOn":["G01"],"evidence":["docs/git-consolidation.md"]}
+    {"id":"G02","title":"vvvvの稼働参照監査と安全なarchive判定","status":"planned","dependsOn":["G01"],"evidence":["docs/git-consolidation.md"]},
+    {"id":"B01","title":"Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存","status":"done","dependsOn":["G01"],"evidence":["docs/product-baseline.md","docs/progress-audit-20260909.md","docs/prompt-playbook.md","docs/prompts/hub-wallet-next.md","docs/validation.md"]},
+    {"id":"B02","title":"既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張","status":"planned","dependsOn":["B01"],"evidence":["docs/prompts/hub-wallet-next.md"]},
+    {"id":"B03","title":"実行費用・認証済み収益を既存Walletへ接続し縦断検証","status":"planned","dependsOn":["B02"],"evidence":["docs/prompts/hub-wallet-next.md"]}
   ]
 }

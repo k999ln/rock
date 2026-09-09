@@ -1,19 +1,23 @@
-# Rock star OS — 自動化ツールの実行・配布OS
+# Rock star OS — 自動化HubとWallet
 
-自社・第三者の自動化ツールをストアから導入し、利用者が決めた条件・権限・費用上限で仕事を自動実行するOSを開発します。主軸はAOSPベースのOSとし、仮想Androidでの開発から、適合を確認したPixelの実機試験へ進む設計です。
+tob側の自動化ツールを商品として管理するHubと、自動化で得たお金を管理するWalletに特化したOSを開発します。実行場所、料金、資格、ライセンスの違いを扱い、利用準備・日々の管理・結果とお金の確認に伴う不便を減らします。
 
-**現在はOS部品の初期試作段階です。** Java共通実行コア・端末SQLite・AIDL接続・Android診断画面・記事ツールを実装し、2APKのbuild/lintと、仮想Androidでの別アプリ呼出→DB再接続→2工程→最終確認の試験に成功しました。自前OSイメージの起動・公開SDK/第三者ストア・Pixel対応は未検証です。ファンド・利用料・分配試算という事業の方向性は保持し、OSの実行権限や実取引とは分離します。
+**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ11）です。** [プロンプト作成規約](docs/prompt-playbook.md)、[最新確認時の差分監査](docs/progress-audit-20260909.md)、[次段階の実行プロンプト](docs/prompts/hub-wallet-next.md)を保存しています。既存商品のHub実利用と、不便の改善前後の検証を次の作業に含めます。
 
-開発の入口: [OS開発設計書](docs/os-development-design.md)。元の設計からの要求追跡、ハードウェアの選定条件、自律実行、Tool API、権限、ストア、署名更新、受入試験、実装チケットをまとめています。
+2026-09-09の監査では[PR #1](https://github.com/k999ln/rock/pull/1)にLinux/Buildroot/QEMU native OS、Hub、Wallet、MCP・実行先/予算の試作があります。BlackBerry優先・機種未定、Android/AOSPは別トラックです。PRは監査時OPEN。毎回 `npm run prompt:context` と対象コードを確認してください。以下のmain実装だけで全体の進捗を判断しないでください。
+
+**このmainのOSコードはAndroid P1です。** Java共通コア・SQLite・AIDL・診断画面・記事ツールに対する2APK build/lintと標準Android接続試験の成功記録があります。独自AOSP/Cuttlefish・Pixelは未検証。native branchのQEMU・SDK・Wallet試作と区別します。既存Webのファンド・料金・分配は試算として保持します。
+
+旧Android/AOSPの入口は [OS開発設計書](docs/os-development-design.md)。現在の製品判断には製品ベースと対象branchの現行方針を使います。
 
 コードの現在地と再開手順: [P1実装・検証手順](docs/os-prototype.md)、[実際のTool契約](contracts/README.md)。AOSPへ組み込む設定は `android/Android.bp` と `os/device/`。これらの存在をOS起動済みの証拠にはしません。
 
 正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。ローカルの `gg` 直下と対応します。製品は「Rock star / avocadomini」の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
 
-## 開発の現在地
+## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-07 / Git正本整理とOS-P1試作 / 完了 10/16件
+最終更新: 2026-09-09 / Hub＋Walletベース保存（native進捗は関連PRも確認） / 完了 11/19件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -33,8 +37,11 @@
 | OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 完了 | [記録](docs/os-prototype.md) · [記録](docs/validation.md) · [記録](android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java) |
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
+| B01 | Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
+| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
+| B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 
-次の作業: rockを製品・OS・公開契約の正本、Mr.を非公開運用componentとして維持する。vvvvをarchiveする前にGitHub Actions・deployment・scheduler・local serviceの参照を監査する。OS開発はLinux/x86-64・RAM64GiB・空き400GB・KVMを満たす環境確保から再開する。
+次の作業: 最新mainとnative PRのSHA・証拠を確認し、製品ベースに沿ってB02既存商品のHub実利用・商品条件、B03実行費用と収益Walletを接続する。利用者の不便を改善前後で比較する。native Nタスクと旧Android/Webを混同しない。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
@@ -70,7 +77,7 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 
 通信失敗時は「記録の保存を再試行」で処理を再実行せず保存だけを再送できます。別タブとの競合時は「最新状態を読み直す」で確認します。
 
-## まだ実装していないこと
+## このmainの既存Web/Androidで未実装・未検証のこと
 
 OSイメージの起動、スマホの画面OFF時の実動作、専用隔離と強制資源制御、公開Tool SDK、第三者パッケージの導入/審査/失効、Pixel書込/復旧、OSの署名OTAは未実装または未検証です。Android試作のソース・ホスト検証とは区別します。以下も現時点では未接続です。
 
@@ -109,11 +116,11 @@ Product Hunt APIは商用利用条件の確認前のため未接続。サービ�
 
 ## 次に追加する順番
 
-1. Linuxビルド環境と、候補PixelのOEM解除・対応ソース/BSP・復旧方法を確認する。開発者モードだけで独自OSが載るとは仮定しない。
-2. Cuttlefish上で自前OSを起動し、2つの記事ツール・永続キュー・権限仲介・成果物・確認Inboxを縦につなぐ。
-3. 適合したPixelで画面OFF、再起動、電池/熱、全停止、署名更新と復旧を検証する。
-4. SDKだけで別作者が作ったツールを、閉鎖ストアから導入・実行・更新・失効できるようにする。
-5. 残るツール、PC接続、許可された外部API、任意同期を拡張する。課金・分配は提供主体と条件を別途確定し、OS化を理由に有効化しない。
+1. main・native開発PRと同一SHAの証拠を確認し、既存商品を棚卸しする。
+2. 既存ツールをHubから実際に利用し、準備・操作・結果確認でつまずく箇所を改善する。
+3. 商品条件・資格・実行先と、費用/収益照合・既存Walletを接続する。
+4. BlackBerry適合や実PC/cloud/providerは個別に検証する。旧Android/AOSPは別トラックとして保持する。
+5. [差分監査の発展案](docs/progress-audit-20260909.md)に従い、接続診断、費用/収益、offline復元、更新差分を掛け合わせる。
 
 初期APKでの試験は補助であり、それだけをOS完成とは扱いません。既存のSites公開停止はOSの設計・独立した仮想OS開発を妨げません。端末購入・初期化・書込・サービス契約は、この設計書作成では実施していません。
 
