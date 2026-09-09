@@ -1,8 +1,7 @@
 {
   "schema": "rock-gx00-host-integration/1",
   "status": "PASS_SCOPED_HOST_COMPONENTS",
-  "source_base": "1a96075",
-  "integrated_at": "2026-09-09T22:20:00Z",
+  "source_base": "1a960756fbd5edc7f13a0578f3e7fc50025534c8",
   "patches": {
     "gx00-contract-runtime-A.patch": "4b5760dc1b853d3979552a920d57b622133edc1f8444ff69a0739f3dff3fc708",
     "gx00-owner-router-client.patch": "55d6a9c1d535176fe08d9e626d3a4821041d78296f197b9f1f5ff792e8e89de9",
@@ -36,5 +35,6 @@
   "GX00_whole": "INCOMPLETE",
   "GX01": "NOT_RUN",
   "DX01": "NOT_RUN",
-  "frozen_OS_image": "b8287bc remains unchanged and does not include this host integration"
+  "frozen_OS_image": "b8287bc remains unchanged and does not include this host integration",
+  "recorded_utc": "2026-09-09T22:24:06.300167+00:00"
 }

@@ -265,7 +265,24 @@
       "report_sha256": "22c1e4dc2e523011af206459f274cc7fa885895e24741d8b48f2db077ff7d20b",
       "actual_boots": 2,
       "checks": 33,
-      "scope": "actual SDK packages and fresh TLS registry, install/update/rollback/exact approval, actual disconnect and no-NIC restart; signature/revocation negative acceptance is a separate pending run"
+      "scope": "actual SDK packages and fresh TLS registry, install/update/rollback/exact approval, actual disconnect and no-NIC restart; negative acceptance recorded separately in registry-negative-b8287bc.json"
+    },
+    "qemu_registry_negative": {
+      "status": "PASS",
+      "report": "registry-negative-b8287bc.json",
+      "report_sha256": "6a44ab66981164150bd607e774e3e8823c35558a3815b2c4d09e8d36e9462fd4",
+      "guest_proof": "registry-negative-proof-b8287bc.json",
+      "actual_boots": 1,
+      "denial_cases": 10,
+      "scope": "actual UID1000/Platform/TLS; crypto signature rejection, minimum OS before download, two actual truncated responses, cache ENOSPC, hash-specific consent and signed permanent revocation; observed-rootfs copy preserves all target runtime source bytes; no GUI"
+    },
+    "host_pidfd_exit": {
+      "status": "PASS_HOST_MECHANISM",
+      "report": "pidfd-exit-mechanism.json",
+      "guards": 59,
+      "guards_log": "host-pidfd-business.log",
+      "scope": "real Linux last-thread exit/socket mechanism; not proof of the exact cause of run39; fixed60s and actual guest shutdown/closed socket guards retained",
+      "new_soak": "RUNNING; original failure remains FAIL"
     }
   },
   "logs_sha256": {
@@ -443,6 +460,18 @@
       "native_report": "ci-1809046-native.json",
       "native_report_sha256": "a924a1e18abf1c341376e2a9b5c31893cddd0579bf539a8544a5147b37ee7486",
       "runtime_image_remains": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9"
+    },
+    {
+      "source_commit": "057ea989434fbbca6723b4b8164aea8f05831a1e",
+      "native_run": 34410496387,
+      "web_run": 34410496424,
+      "android_run": 34410496472,
+      "status": "PASS",
+      "native_python_executions": 1199,
+      "root_observers": 61,
+      "root_pin": 11,
+      "report": "ci-057ea98-native.json",
+      "report_sha256": "2da9c4d4014fe16c9d142dd7e8d2f47ee1af6e3da9429289d3714ab6cddd7e58"
     }
   ],
   "host_observation_failures": [
