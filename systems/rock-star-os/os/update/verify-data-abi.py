@@ -170,7 +170,7 @@ def main():
         report['unchanged_guest_files'] = {}
         for path in ('usr/lib/rock-update/rock_update.py','usr/lib/rock-update/guest_test.py',
                      'usr/lib/rock-update/fault_guest.py','etc/init.d/S97rock-update-health',
-                     'etc/init.d/S99rock-ab-test','usr/bin/rock-ui','usr/bin/rockd',
+                     'etc/init.d/S99rock-ab-test','usr/bin/rock-ui','usr/sbin/rockd',
                      'usr/libexec/rock-sandbox-exec','usr/lib/rock-platform/service.py'):
             original = auth.embedded(inputs['rootfs.ext4'], path)
             require(auth.embedded(candidate, path) == original, 'fixture changed production file: ' + path)

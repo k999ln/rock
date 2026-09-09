@@ -46,7 +46,7 @@
       "freeze_manifest": "freeze-b8287bc.json",
       "freeze_manifest_sha256": "6a58860076c14aef7d9c6aaa9c9027cc990615fa07719075ccaa59a951096557",
       "built_at": "2026-09-09T19:29:12Z",
-      "scope": "Frozen runtime image; basic boot, platform, native checklist, normal power and ATM protocol passed; D0–D6 aggregate remains INCOMPLETE",
+      "scope": "Frozen runtime image; basic boot, platform, native checklist, normal power and ATM protocol passed; D0\u2013D6 aggregate remains INCOMPLETE",
       "platform": "PASS",
       "native_ui": "PASS",
       "normal_system_power": "PASS",
@@ -157,6 +157,23 @@
       "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
       "host_commit": "a02401bf1661d75446da858b48e6e90afd2ed263",
       "scope": "Actual stage0: signature/payload/installed-slot tamper, failed health/init watchdog, actual1MiB partial write and recover, successful newer release and software downgrade refusal. Headless; GUI14 separate. Capacity/ABI independent."
+    },
+    "qemu_ab_faults": {
+      "status": "PASS",
+      "report": "ab-faults-b8287bc.json",
+      "report_sha256": "57348ca8090008a7b3ecffc672dcebbada5afa96f7b944264a080f9e6bcf34f2",
+      "boots": 13,
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "host_commit": "a02401bf1661d75446da858b48e6e90afd2ed263",
+      "scope": "Four actual saved-state interruption boundaries and genuine allocated-volume ENOSPC with unchanged failed-write state; valid A/B retained and later B update completed. Headless; data ABI separate."
+    },
+    "qemu_authenticator_health": {
+      "status": "PASS",
+      "actual_boots": 3,
+      "owned_confirmation_power_cuts": 1,
+      "report": "auth-health-b8287bc.json",
+      "report_sha256": "645297baf1445d65b0f20bdfb7d1e336f650310c5c7f2f7729d4fa3c37b16b2b",
+      "scope": "frozen S97 authenticator health before mark-good, committed recovery; headless public fixture, no Wallet DB shutdown claim"
     }
   },
   "logs_sha256": {
@@ -370,6 +387,11 @@
       "case": "hub-launcher-18-diagnostic",
       "status": "FAIL",
       "reason": "Only exe/argv predicates differed; nine identity predicates matched. Real DeviceHub.run Linux fixture reproduced its preceding OpenSSL signature-check child. No signal sent to mismatched process; exact verifier observation fix pending."
+    },
+    {
+      "case": "data-abi-preflight-24",
+      "status": "FAIL",
+      "reason": "Host source comparison used usr/bin/rockd, while actual frozen install is usr/sbin/rockd. Failed before any QEMU; final audit proved original inputs unchanged. Path corrected; fresh preflight required."
     }
   ]
 }
