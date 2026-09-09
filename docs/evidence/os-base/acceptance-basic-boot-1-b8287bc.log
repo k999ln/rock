@@ -1,0 +1,228 @@
+Booting Linux on physical CPU 0x0000000000 [0x410fd034]
+Linux version 6.18.50 (kaiya@lima-rock-native) (aarch64-buildroot-linux-musl-gcc.br_real (Buildroot 2026.08) 15.3.0, GNU ld (GNU Binutils) 2.45.1) #1 SMP Wed Sep  9 19:28:46 UTC 2026
+random: crng init done
+Machine model: linux,dummy-virt
+efi: UEFI not found.
+OF: reserved mem: Reserved memory: No reserved-memory node in the DT
+Zone ranges:
+  DMA      [mem 0x0000000040000000-0x000000005fffffff]
+  DMA32    empty
+  Normal   empty
+Movable zone start for each node
+Early memory node ranges
+  node   0: [mem 0x0000000040000000-0x000000005fffffff]
+Initmem setup node 0 [mem 0x0000000040000000-0x000000005fffffff]
+psci: probing for conduit method from DT.
+psci: PSCIv1.1 detected in firmware.
+psci: Using standard PSCI v0.2 function IDs
+psci: Trusted OS migration not required
+psci: SMC Calling Convention v1.0
+percpu: Embedded 20 pages/cpu s44440 r8192 d29288 u81920
+Detected VIPT I-cache on CPU0
+CPU features: detected: GICv3 CPU interface
+CPU features: detected: ARM erratum 845719
+alternatives: applying boot alternatives
+Kernel command line: console=ttyAMA0 root=/dev/vda ro rootwait panic=-1 rock.verify=1
+printk: log buffer data + meta data: 131072 + 458752 = 589824 bytes
+Dentry cache hash table entries: 65536 (order: 7, 524288 bytes, linear)
+Inode-cache hash table entries: 32768 (order: 6, 262144 bytes, linear)
+software IO TLB: SWIOTLB bounce buffer size adjusted to 0MB
+software IO TLB: area num 2.
+software IO TLB: mapped [mem 0x000000005f540000-0x000000005f5c0000] (0MB)
+Built 1 zonelists, mobility grouping on.  Total pages: 131072
+mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=2, Nodes=1
+rcu: Hierarchical RCU implementation.
+rcu: 	RCU restricting CPUs from NR_CPUS=512 to nr_cpu_ids=2.
+rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=2
+NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+GICv3: 256 SPIs implemented
+GICv3: 0 Extended SPIs implemented
+Root IRQ handler: gic_handle_irq
+GICv3: GICv3 features: 16 PPIs
+GICv3: GICD_CTLR.DS=1, SCR_EL3.FIQ=0
+GICv3: CPU0: found redistributor 0 region 0:0x00000000080a0000
+ITS [mem 0x08080000-0x0809ffff]
+ITS@0x0000000008080000: allocated 8192 Devices @41050000 (indirect, esz 8, psz 64K, shr 1)
+ITS@0x0000000008080000: allocated 8192 Interrupt Collections @41060000 (flat, esz 8, psz 64K, shr 1)
+GICv3: using LPI property table @0x0000000041070000
+GICv3: CPU0: using allocated LPI pending table @0x0000000041080000
+rcu: srcu_init: Setting srcu_struct sizes based on contention.
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+arch_timer: cp15 timer running at 62.50MHz (virt).
+clocksource: arch_sys_counter: mask: 0x1ffffffffffffff max_cycles: 0x1cd42e208c, max_idle_ns: 881590405314 ns
+sched_clock: 57 bits at 63MHz, resolution 16ns, wraps every 4398046511096ns
+Console: colour dummy device 80x25
+Calibrating delay loop (skipped), value calculated using timer frequency.. 125.00 BogoMIPS (lpj=250000)
+pid_max: default: 32768 minimum: 301
+LSM: initializing lsm=capability,landlock,yama
+landlock: Up and running.
+Yama: becoming mindful.
+Mount-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+Mountpoint-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+cacheinfo: Unable to detect cache hierarchy for CPU 0
+rcu: Hierarchical SRCU implementation.
+rcu: 	Max phase no-delay instances is 1000.
+Timer migration: 1 hierarchy levels; 8 children per group; 1 crossnode level
+EFI services will not be available.
+smp: Bringing up secondary CPUs ...
+Detected VIPT I-cache on CPU1
+GICv3: CPU1: found redistributor 1 region 0:0x00000000080c0000
+GICv3: CPU1: using allocated LPI pending table @0x0000000041090000
+CPU1: Booted secondary processor 0x0000000001 [0x410fd034]
+smp: Brought up 1 node, 2 CPUs
+SMP: Total of 2 processors activated.
+CPU: All CPU(s) started at EL1
+CPU features: detected: 32-bit EL0 Support
+CPU features: detected: CRC32 instructions
+CPU features: detected: PMUv3
+alternatives: applying system-wide alternatives
+Memory: 495948K/524288K available (9024K kernel code, 900K rwdata, 2224K rodata, 1152K init, 533K bss, 25884K reserved, 0K cma-reserved)
+devtmpfs: initialized
+posixtimers hash table entries: 1024 (order: 2, 16384 bytes, linear)
+futex hash table entries: 512 (32768 bytes on 1 NUMA nodes, total 32 KiB, linear).
+29248 pages in range for non-PLT usage
+520768 pages in range for PLT usage
+DMI not present or invalid.
+NET: Registered PF_NETLINK/PF_ROUTE protocol family
+DMA: preallocated 128 KiB GFP_KERNEL pool for atomic allocations
+DMA: preallocated 128 KiB GFP_KERNEL|GFP_DMA pool for atomic allocations
+DMA: preallocated 128 KiB GFP_KERNEL|GFP_DMA32 pool for atomic allocations
+audit: initializing netlink subsys (disabled)
+audit: type=2000 audit(0.084:1): state=initialized audit_enabled=0 res=1
+thermal_sys: Registered thermal governor 'step_wise'
+cpuidle: using governor menu
+hw-breakpoint: found 6 breakpoint and 4 watchpoint registers.
+ASID allocator initialised with 65536 entries
+Serial: AMBA PL011 UART driver
+9000000.pl011: ttyAMA0 at MMIO 0x9000000 (irq = 13, base_baud = 0) is a PL011 rev1
+printk: console [ttyAMA0] enabled
+ACPI: Interpreter disabled.
+iommu: Default domain type: Translated
+iommu: DMA domain TLB invalidation policy: strict mode
+SCSI subsystem initialized
+pps_core: LinuxPPS API ver. 1 registered
+pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+PTP clock support registered
+vgaarb: loaded
+clocksource: Switched to clocksource arch_sys_counter
+pnp: PnP ACPI: disabled
+NET: Registered PF_INET protocol family
+IP idents hash table entries: 8192 (order: 4, 65536 bytes, linear)
+tcp_listen_portaddr_hash hash table entries: 256 (order: 0, 4096 bytes, linear)
+Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)
+TCP established hash table entries: 4096 (order: 3, 32768 bytes, linear)
+TCP bind hash table entries: 4096 (order: 5, 131072 bytes, linear)
+TCP: Hash tables configured (established 4096 bind 4096)
+UDP hash table entries: 256 (order: 2, 16384 bytes, linear)
+UDP-Lite hash table entries: 256 (order: 2, 16384 bytes, linear)
+NET: Registered PF_UNIX/PF_LOCAL protocol family
+PCI: CLS 0 bytes, default 64
+workingset: timestamp_bits=46 max_order=17 bucket_order=0
+fuse: init (API version 7.45)
+Block layer SCSI generic (bsg) driver version 0.4 loaded (major 249)
+io scheduler mq-deadline registered
+io scheduler kyber registered
+pci-host-generic 4010000000.pcie: host bridge /pcie@10000000 ranges:
+pci-host-generic 4010000000.pcie:       IO 0x003eff0000..0x003effffff -> 0x0000000000
+pci-host-generic 4010000000.pcie:      MEM 0x0010000000..0x003efeffff -> 0x0010000000
+pci-host-generic 4010000000.pcie:      MEM 0x8000000000..0xffffffffff -> 0x8000000000
+pci-host-generic 4010000000.pcie: Memory resource size exceeds max for 32 bits
+pci-host-generic 4010000000.pcie: ECAM at [mem 0x4010000000-0x401fffffff] for [bus 00-ff]
+pci-host-generic 4010000000.pcie: PCI host bridge to bus 0000:00
+pci_bus 0000:00: root bus resource [bus 00-ff]
+pci_bus 0000:00: root bus resource [io  0x0000-0xffff]
+pci_bus 0000:00: root bus resource [mem 0x10000000-0x3efeffff]
+pci_bus 0000:00: root bus resource [mem 0x8000000000-0xffffffffff]
+pci 0000:00:00.0: [1b36:0008] type 00 class 0x060000 conventional PCI endpoint
+pci 0000:00:01.0: [1af4:1001] type 00 class 0x010000 conventional PCI endpoint
+pci 0000:00:01.0: BAR 0 [io  0x0000-0x007f]
+pci 0000:00:01.0: BAR 1 [mem 0x00000000-0x00000fff]
+pci 0000:00:01.0: BAR 4 [mem 0x00000000-0x00003fff 64bit pref]
+pci 0000:00:02.0: [1af4:1001] type 00 class 0x010000 conventional PCI endpoint
+pci 0000:00:02.0: BAR 0 [io  0x0000-0x007f]
+pci 0000:00:02.0: BAR 1 [mem 0x00000000-0x00000fff]
+pci 0000:00:02.0: BAR 4 [mem 0x00000000-0x00003fff 64bit pref]
+pci 0000:00:03.0: [1af4:1005] type 00 class 0x00ff00 conventional PCI endpoint
+pci 0000:00:03.0: BAR 0 [io  0x0000-0x001f]
+pci 0000:00:03.0: BAR 1 [mem 0x00000000-0x00000fff]
+pci 0000:00:03.0: BAR 4 [mem 0x00000000-0x00003fff 64bit pref]
+pci 0000:00:01.0: BAR 4 [mem 0x8000000000-0x8000003fff 64bit pref]: assigned
+pci 0000:00:02.0: BAR 4 [mem 0x8000004000-0x8000007fff 64bit pref]: assigned
+pci 0000:00:03.0: BAR 4 [mem 0x8000008000-0x800000bfff 64bit pref]: assigned
+pci 0000:00:01.0: BAR 1 [mem 0x10000000-0x10000fff]: assigned
+pci 0000:00:02.0: BAR 1 [mem 0x10001000-0x10001fff]: assigned
+pci 0000:00:03.0: BAR 1 [mem 0x10002000-0x10002fff]: assigned
+pci 0000:00:01.0: BAR 0 [io  0x1000-0x107f]: assigned
+pci 0000:00:02.0: BAR 0 [io  0x1080-0x10ff]: assigned
+pci 0000:00:03.0: BAR 0 [io  0x1100-0x111f]: assigned
+pci_bus 0000:00: resource 4 [io  0x0000-0xffff]
+pci_bus 0000:00: resource 5 [mem 0x10000000-0x3efeffff]
+pci_bus 0000:00: resource 6 [mem 0x8000000000-0xffffffffff]
+virtio-pci 0000:00:01.0: enabling device (0000 -> 0003)
+virtio-pci 0000:00:02.0: enabling device (0000 -> 0003)
+virtio-pci 0000:00:03.0: enabling device (0000 -> 0003)
+virtio_blk virtio0: 2/0/0 default/read/poll queues
+virtio_blk virtio0: [vda] 786432 512-byte logical blocks (403 MB/384 MiB)
+virtio_blk virtio1: 2/0/0 default/read/poll queues
+virtio_blk virtio1: [vdb] 131072 512-byte logical blocks (67.1 MB/64.0 MiB)
+rtc-pl031 9010000.pl031: registered as rtc0
+rtc-pl031 9010000.pl031: setting system clock to 2026-09-09T19:30:51 UTC (1788982251)
+hw perfevents: enabled with armv8_pmuv3 PMU driver, 7 (0,8000003f) counters available
+NET: Registered PF_INET6 protocol family
+Segment Routing with IPv6
+In-situ OAM (IOAM) with IPv6
+sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+NET: Registered PF_PACKET protocol family
+NET: Registered PF_KEY protocol family
+NET: Registered PF_VSOCK protocol family
+registered taskstats version 1
+clk: Disabling unused clocks
+PM: genpd: Disabling unused power domains
+check access for rdinit=/init failed: -2, ignoring
+EXT4-fs (vda): write access unavailable, skipping orphan cleanup
+EXT4-fs (vda): mounted filesystem 9cfee8af-a18c-4ba2-b644-86872de81f7f ro with ordered data mode. Quota mode: disabled.
+VFS: Mounted root (ext4 filesystem) readonly on device 254:0.
+devtmpfs: mounted
+Freeing unused kernel memory: 1152K
+Run /sbin/init as init process
+EXT4-fs (vdb): mounted filesystem 6654182c-6b7f-429d-8d81-a6c294a8db34 r/w with ordered data mode. Quota mode: disabled.
+Saving 256 bits of creditable seed for next boot
+Starting syslogd: OK
+Starting klogd: OK
+Running sysctl: OK
+Starting network: OK
+rockctl: connect: No such file or directory
+OK STATUS product=Rock_star_os service=rockd version=0.1.0 architecture=aarch64 uid=1000 no_new_privs=1 completed=0
+Starting crond: OK
+ROCK_PLATFORM_READY
+Rock native UI: no framebuffer on this boot configuration
+ROCK_BOOT_TEST_BEGIN
+NAME="Rock star os"
+ID=rock-star-os
+VERSION="0.3.0-virtual-development"
+VERSION_ID=0.3.0
+PRETTY_NAME="Rock star os 0.3.0 (ARM64 virtual development OS)"
+BUILD_ID=rock-virt-aarch64-0.3.0
+Linux rock-star-os 6.18.50 #1 SMP Wed Sep  9 19:28:46 UTC 2026 aarch64 GNU/Linux
+ROCK_ROOT_READONLY_PASS
+ROCK_DATA_MOUNT_PASS
+ROCK_RNG_INIT_PASS
+OK STATUS product=Rock_star_os service=rockd version=0.1.0 architecture=aarch64 uid=1000 no_new_privs=1 completed=0
+ROCK_FIRST_BOOT_PASS
+PASS rockctl self-test completed=1
+PASS root service startup refused
+OK STATUS product=Rock_star_os service=rockd version=0.1.0 architecture=aarch64 uid=1000 no_new_privs=1 completed=0
+PASS rockctl self-test completed=1
+PASS root and uid1000 authorized; uid1000 service; no_new_privs; singleton lock
+ERR FORBIDDEN
+PASS uid1001 rejected by SO_PEERCRED even with mode 0666
+PASS 4096-byte boundary, oversized frames, empty text, control bytes, malformed input
+PASS idle request expires; service still responds
+PASS crash/stale-temp recovery and graceful restart preserve monotonic counter
+PASS storage failure returns no success and stops; restart preserves previous counter
+PASS corrupt, symlink, and FIFO state fail closed
+PASS ALL rockd integration tests
+ROCK_OS_VERIFY_PASS
+reboot: Power down

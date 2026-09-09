@@ -302,6 +302,23 @@ class DeviceWalletAdapter:
             with guard:
                 yield TrustedWalletContext(account, binding['device_ref'], eligible)
 
+    @contextmanager
+    def game_connection_guard(self, operation, *, peer_uid):
+        """Connection-only context from the currently authenticated owner scope."""
+        from atm import TrustedWalletContext
+        from game_exchange.protocol import OWNER_OPERATIONS
+        self._peer(peer_uid)
+        if operation not in OWNER_OPERATIONS:
+            raise EntitlementError('unsupported game connection operation')
+        with self._locked():
+            account, binding = self._account()
+            token = PUBLIC_TOKENS[binding['owner_actor']]
+            state = self.store.entitlement(account, token, device_ref=binding['device_ref'])
+            if state['device_eligible'] is not True:
+                raise NotEligible('current purchased device required for game connections')
+            with self.store.authorized_device(binding['device_ref'], token):
+                yield TrustedWalletContext(account, binding['device_ref'], True)
+
     def handoff_reference(self, device_ref):
         """Original signed handoff digest, not caller-supplied identity fields."""
         with closing(self.store._connect()) as db:

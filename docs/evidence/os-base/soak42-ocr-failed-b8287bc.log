@@ -1,0 +1,37 @@
+{"cycle": 0, "status": "VERIFIED_CLOSED", "evidence": "/var/tmp/rk-business/business-d21a8b8cec604d159bdb"}
+{"cycle": 1, "status": "VERIFIED_CLOSED", "evidence": "/var/tmp/rk-business/business-d21a8b8cec604d159bdb"}
+{"cycle": 2, "status": "VERIFIED_CLOSED", "evidence": "/var/tmp/rk-business/business-d21a8b8cec604d159bdb"}
+{"cycle": 3, "status": "VERIFIED_CLOSED", "evidence": "/var/tmp/rk-business/business-d21a8b8cec604d159bdb"}
+{"cycle": 4, "completed_soak_jobs": 1, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 2, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 3, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 4, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 5, "required": 61}
+{"status": "FAIL", "evidence": "/var/tmp/rk-business/business-d21a8b8cec604d159bdb"}
+Traceback (most recent call last):
+  File "/var/tmp/rkh14/systems/rock-star-os/os/desktop/verify-business.py", line 1044, in <module>
+    if __name__ == '__main__': main()
+                               ~~~~^^
+  File "/var/tmp/rkh14/systems/rock-star-os/os/desktop/verify-business.py", line 1040, in main
+    run(args.images, args.output, args.mode, args.source_commit, boot_profile=args.boot_profile,
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        prepare_backup=args.prepare_backup, preflight_only=args.preflight_only)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/rkh14/systems/rock-star-os/os/desktop/verify-business.py", line 919, in run
+    cycle['jobs'].append(run_job(driver, operations, '1.0.0', f'C4J{index}', folder))
+                         ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/rkh14/systems/rock-star-os/os/desktop/verify-business.py", line 598, in run_job
+    driver.wait(label, seek=True, label='business-result')
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/rkh14/systems/rock-star-os/os/desktop/verify-business.py", line 479, in wait
+    lines, metadata = self.scan(deadline, regions=regions)
+                      ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/rkh14/systems/rock-star-os/os/desktop/verify-business.py", line 446, in scan
+    lines = recognize_frame(path, deadline, regions=regions)
+  File "/var/tmp/rkh14/systems/rock-star-os/os/desktop/verify-business.py", line 275, in recognize_frame
+    budget()
+    ~~~~~~^^
+  File "/var/tmp/rkh14/systems/rock-star-os/os/desktop/verify-business.py", line 273, in budget
+    if remaining <= 0: raise TimeoutError('OCR exceeded the original UI state deadline')
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TimeoutError: OCR exceeded the original UI state deadline

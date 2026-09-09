@@ -1,0 +1,63 @@
+{
+  "schema": "rock-gx00-game-connection-integration/1",
+  "status": "PASS_SCOPED_HOST_CONNECTIONS",
+  "scope": "Existing managed contract runtime and authenticated loopback TLS using independent public synthetic game authorities; no OS build or exchange",
+  "runtime_patch_sha256": "05f49d3bc9b75a3c26f71d2f0f940e37c21d683477769b41bd297234c1dd44ad",
+  "input_sha256": {
+    "systems/rock-star-os/os/game_exchange/connections.py": "beb88ab31bee4aecad95fa5bd0b88a979d61992b97b60057d60c441155dc431d",
+    "systems/rock-star-os/os/game_exchange/storage.py": "19fcffb29ef430cf91fd69feb698258e2b0ff5723f4d99fd33d65294c59fe67c",
+    "systems/rock-star-os/os/game_exchange/fixture.py": "532aa8990d48a9aec0b50b434fd39d0d08c4de3a7f46277b4d3f1bf2f5a9c651",
+    "systems/rock-star-os/os/wallet_backend/contract_runtime.py": "6755abd02e389d4d1873eaf4033e02b5f791ae35ff4d86418f8bea170e41847d",
+    "systems/rock-star-os/os/wallet_backend/server.py": "ef76fa5798c7d3eb3b043c5fdc1c61138cd518339fb46f92aa22e431505fbdaa",
+    "systems/rock-star-os/os/entitlement/device.py": "5cfabb3a53b0c95041d8b992d848ad049095b1bfacbedfe1a14a1f71b7120be6",
+    "systems/rock-star-os/os/wallet_auth/fixture.py": "f5b2fb768a863cac0cf5a6fdbb7f1a654fabcec577fda7a40b34bf243d0f5076",
+    "systems/rock-star-os/tests/test_game_connections_tls.py": "c000d73f7e53aa983b4746b444db8f1e0e5f92131071fff410379632159cceb4",
+    "systems/rock-star-os/tests/test_game_storage.py": "2ef14762e245179e36f37bd16d82af8c4c3b19200a1e1a32a9b90a954be2c6b0",
+    "docs/gx00-connections-runtime.md": "ea766354d89d95191fb677393bcbebc764147a92f2cf3d3454d974749f454a03"
+  },
+  "root_mac": {
+    "command": "python3 -B -W error::ResourceWarning -m unittest discover -s systems/rock-star-os/tests -p test_game*.py -v",
+    "executed_tests": 33,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log_sha256": "7410ab92610f45a69d40da8da3a93b55c345abff4518518c0e4836f30ddf4fcf"
+  },
+  "acceptance": {
+    "owners": 2,
+    "devices": 3,
+    "authors": 2,
+    "games": 2,
+    "connection_records": 4,
+    "actual_TLS": true,
+    "actual_SQLite": true,
+    "counter_and_consent_same_transaction": true,
+    "original_account_ids_preserved": true
+  },
+  "pending": [
+    "Linux source CI for this exact addition",
+    "GX00 current-copy restore with retained game index and epoch reconciliation",
+    "OS UI/new data ABI D4/D5",
+    "GX01 exchange and DX01 sample SDK"
+  ],
+  "not_run": [
+    "Physical phone",
+    "External game provider",
+    "MetaMask transfers",
+    "Real funds"
+  ],
+  "followup_constructor_cleanup": {
+    "patch_sha256": "261460ec767cb5f586824b4ec7865b717423f528b170193b50192fd63c196694",
+    "tests": 35,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log_sha256": "4ea32d61b35f93935f6d8b4235933335700c4a36266168efd03321ecdf83a5fe",
+    "changed_inputs_sha256": {
+      "systems/rock-star-os/os/game_exchange/connections.py": "61de8fed8aabf5b557407b32fb614cede6712d7be38c09d245fa23a41d4d6b15",
+      "systems/rock-star-os/os/game_exchange/fixture.py": "cf2029bea041810df433c5e8e427e743a1249529702413f2357fe67c1221b971",
+      "systems/rock-star-os/tests/test_game_constructor_cleanup.py": "510b43a5b54dc108408dc8039c84feca208200a1300a17456a5218bddb55282f"
+    }
+  },
+  "independent_review": "Root reviewed all 10 initial files; separate review found and reproduced two post-construction SQLite/flock leaks; cleanup applied and tested. No other blockers found in the scoped host connection path."
+}

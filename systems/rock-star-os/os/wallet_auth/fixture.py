@@ -68,14 +68,14 @@ def _descriptors(value, *, one=False):
     return identifiers
 
 
-def _options(options, device_ref, creation):
+def _options(options, device_ref, creation, *, game=False):
     # Canonicalizing also bounds all input before database access or signing.
     payload = json_bytes(options).decode()
     options = json_decode(payload)
     _fields(options, {'schema_version', 'device_ref', 'purpose', 'publicKey'})
     require(type(options['schema_version']) is int and options['schema_version'] == 1,
             'unsupported ceremony schema')
-    require(options['device_ref'] == device_ref and options['purpose'] == ('wallet.enroll' if creation else 'wallet.atm.issue'),
+    require(options['device_ref'] == device_ref and options['purpose'] == ('wallet.enroll' if creation else ('wallet.game.connect' if game else 'wallet.atm.issue')),
             'ceremony device or purpose mismatch')
     public = options['publicKey']
     if creation:
@@ -102,7 +102,7 @@ def _options(options, device_ref, creation):
         require(public['rpId'] == RP_ID and public['userVerification'] == 'required', 'RP or verification mismatch')
         _descriptors(public['allowCredentials'], one=True)
     b64decode(public['challenge'], 32, 32)
-    require(type(public['timeout']) is int and public['timeout'] == 120000, 'unsupported ceremony timeout')
+    require(type(public['timeout']) is int and (1 <= public['timeout'] <= 120000 if game else public['timeout'] == 120000), 'unsupported ceremony timeout')
     return payload
 
 
@@ -208,10 +208,17 @@ class SoftwareTestAuthenticator:
     def get_assertion(self, options, pin, key):
         return self._perform(options, pin, key, False)
 
-    def _perform(self, options, pin, key, creation):
+    def get_game_assertion(self, intent, pin, key):
+        """Explicit synthetic game ceremony; normal ATM assertion rejects it."""
+        from game_exchange.protocol import validate_intent, canonical, decode
+        intent = decode(canonical(intent))
+        validate_intent(intent)
+        return self._perform(intent['options'], pin, key, False, game=True)
+
+    def _perform(self, options, pin, key, creation, *, game=False):
         require(type(pin) is str and pin.isascii() and hmac.compare_digest(pin, PUBLIC_TEST_PIN), 'public test PIN rejected')
         key = _identifier(key)
-        payload = _options(options, self.device_ref, creation)
+        payload = _options(options, self.device_ref, creation, game=game)
         # Use the canonical copy throughout: callers cannot mutate signed options
         # concurrently after validation or change the durable retry payload.
         options = json_decode(payload)

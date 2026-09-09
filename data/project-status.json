@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-09",
-  "milestone": "3系統統合済み・native起動/保存検証修正と新規OSビルド",
-  "nextAction": "凍結b8287bcはD2利用・D3境界・D4更新復旧・D5新規復元を実測済み。60分試験42の結果画面認識失敗を保存し、同じ閾値で修正・新規再試験と起動手順を完成させる。GX00は認証付き2owner/3端末と接続署名schemaをhost統合済み、2作者/2gameの実接続・SDKを続ける。",
+  "milestone": "native D0〜D5限定受入・D6再試験とMac試用入口・ゲーム接続実装",
+  "nextAction": "凍結b8287bcのD0〜D5と42の正常終了後データを照合済み。host画面認識を直し、同じ閾値の43で全5サイクル・60分を実測中。Macから同じ保存端末を開く試用入口を確認し、GX00の2作者/2game/2owner実接続と互換/復旧を続ける。",
   "tasks": [
     {
       "id": "R01",
@@ -282,7 +282,9 @@
         "docs/os-operational-validation-20260909.md",
         "docs/evidence/os-base/startup-update-acceptance-b8287bc.json",
         "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
-        "docs/evidence/os-base/registry-negative-b8287bc.json"
+        "docs/evidence/os-base/registry-negative-b8287bc.json",
+        "docs/os-acceptance-b8287bc-20260909.md",
+        "systems/rock-star-os/os/desktop/LAUNCHER-V2.md"
       ]
     },
     {
@@ -299,7 +301,10 @@
         "docs/evidence/gx00/integration.json",
         "systems/rock-star-os/os/wallet_backend/FENCE.md",
         "docs/gx00-connection-wire-v1.md",
-        "docs/evidence/gx00/game-protocol-review.json"
+        "docs/evidence/gx00/game-protocol-review.json",
+        "docs/game-connection-node-wire-20260909.md",
+        "docs/gx00-connections-runtime.md",
+        "docs/evidence/gx00/game-connections-root.json"
       ]
     },
     {

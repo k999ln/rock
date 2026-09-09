@@ -117,6 +117,21 @@ the large signed product name. Detail validation requires its product name,
 publisher and exact version together. Installed/history selection reads the
 first card title; history then requires the unique job label in the opened
 result. Deletion uses the catalog name that the native renderer displays.
+Result inspection adds one fixed `[32,380,688,856]` body pass at 2× bicubic scale,
+10-pixel white border and block segmentation 6, only when the same frame's
+literal `実行結果` header is recognized inside `[32,55,535,108]`, and the
+original page has not already recognized a complete literal `Brief CnJn`
+within the body at confidence 45. The expected input label is not used to
+select the OCR pass: a confidently read different label still fails the
+subsequent exact match. This keeps one result hypothesis and preserves the
+original recognition of concise prose without weakening confidence or box
+overlap requirements. Refinement never erases original-page error text.
+The result must contain exactly one full `Brief CnJn` phrase within the body,
+with non-ASCII-alphanumeric boundaries: `C4J5` cannot match `C4J50`, and `5/S`
+or other visually similar characters are never substituted. This result check
+is used after execution, history reopen and deletion. The same original 30-second
+state and 90-second whole-job deadlines include every OCR pass. This changes
+screen observation only; the stopped-DB output/receipt oracle is unchanged.
 Wallet label refinement first requires a unique literal `Wallet`, `ATMテスト`,
 or `予約の状態` header at confidence45 inside `[32,55,535,108]` in the same
 frame. A completed Hub history row does not establish this page context.

@@ -111,6 +111,8 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_header(AUTHORITY_HEADER, authority)
             if getattr(self, 'authenticated_device', None) is not None:
                 self.send_header(DEVICE_HEADER, self.authenticated_device)
+            if getattr(self, 'authenticated_game', None) is not None:
+                self.send_header('X-Rock-Game', self.authenticated_game)
             self.end_headers()
             self.wfile.write(raw)
         except (OSError, ValueError, TypeError):
@@ -332,21 +334,28 @@ class ManagedHandler(Handler):
     """Explicit v3 entry; all identity and responses are request-local."""
     def do_POST(self):
         self.close_connection = True
-        if self.path != '/v3/wallet':
+        author_route = self.path == '/v1/game' and self.server.game_gateway is not None
+        if self.path != '/v3/wallet' and not author_route:
             self.respond(403, error('unauthorized', 'managed Wallet endpoint required'))
             return
         auth = self.headers.get_all('Authorization', [])
         devices = self.headers.get_all(DEVICE_HEADER, [])
         authorities = self.headers.get_all(AUTHORITY_HEADER, [])
+        games = self.headers.get_all('X-Rock-Game', [])
         if (len(auth) != 1 or not auth[0].startswith('Bearer ') or not auth[0][7:]
-                or len(devices) != 1 or len(authorities) != 1):
-            self.respond(401, error('unauthorized', 'purchased device credential required'))
+                or (author_route and (len(games) != 1 or devices or authorities))
+                or (not author_route and (len(devices) != 1 or len(authorities) != 1 or games))):
+            self.respond(401, error('unauthorized', 'scoped credential required'))
             return
         try:
-            principal = self.server.router.authenticate(devices[0], auth[0][7:], authorities[0])
-            runtime = self.server.router.resolve(principal)
-            self.authenticated_device = principal.device_ref
-            self.authenticated_authority = runtime.descriptor.wallet_authority_id
+            if author_route:
+                principal = self.server.game_gateway.authenticate(games[0], auth[0][7:])
+                self.authenticated_game = principal.game_id
+            else:
+                principal = self.server.router.authenticate(devices[0], auth[0][7:], authorities[0])
+                runtime = self.server.router.resolve(principal)
+                self.authenticated_device = principal.device_ref
+                self.authenticated_authority = runtime.descriptor.wallet_authority_id
         except (PermissionError, ValueError):
             self.respond(401, error('unauthorized', 'purchased device credential required'))
             return
@@ -373,7 +382,12 @@ class ManagedHandler(Handler):
                     raise ValueError('truncated body')
                 chunks.append(part)
                 left -= len(part)
-            request = validate_request(decode(b''.join(chunks)), authentication_required=True)
+            request = decode(b''.join(chunks))
+            if author_route:
+                from game_exchange.protocol import validate_game_request
+                request = validate_game_request(request)
+            else:
+                request = runtime.validate_owner_request(request)
         except PermissionError:
             self.respond(403, error('unauthorized', 'operation not permitted for HTTP owner'))
             return
@@ -383,7 +397,8 @@ class ManagedHandler(Handler):
         try:
             if time.monotonic() >= self.deadline:
                 return
-            reply = runtime.dispatch(principal, request, deadline=self.deadline)
+            reply = (self.server.game_gateway.dispatch_author(principal, request, deadline=self.deadline) if author_route
+                     else runtime.dispatch(principal, request, deadline=self.deadline))
             if not isinstance(reply, dict) or type(reply.get('ok')) is not bool:
                 raise RuntimeError('invalid service response')
             self.respond(200, reply)
@@ -405,7 +420,7 @@ class ManagedWalletBackendServer(_TLSWalletListener):
     managed_contracts = True
 
     def __init__(self, address, *, router, runtimes, cert_file=None, key_file=None,
-                 start_scheduler=True, timeout=DEFAULT_TIMEOUT):
+                 start_scheduler=True, timeout=DEFAULT_TIMEOUT, game_gateway=None):
         if address[0] not in ('127.0.0.1', 'localhost'):
             raise ValueError('development Wallet binds loopback only')
         if (type(address[1]) is not int or not 0 <= address[1] <= 65535
@@ -414,8 +429,11 @@ class ManagedWalletBackendServer(_TLSWalletListener):
         if not isinstance(runtimes, tuple) or not runtimes or len({id(runtime) for runtime in runtimes}) != len(runtimes):
             raise ValueError('distinct managed runtime tuple required')
         self.router, self.runtimes, self._closed = router, runtimes, False
+        self.game_gateway = game_gateway
         try:
             router.bind_runtimes(runtimes)
+            if game_gateway is not None:
+                game_gateway.bind_runtimes(runtimes)
             self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
             self.context.minimum_version = ssl.TLSVersion.TLSv1_2
             self.context.load_cert_chain(str(cert_file or FIXTURES / 'development-ca.pem'),
@@ -445,6 +463,8 @@ class ManagedWalletBackendServer(_TLSWalletListener):
             # not be reopened/retired while any runtime writer is still live.
             raise RuntimeError('managed runtime shutdown incomplete; ownership retained') from failures[0]
         self.router.close()
+        if self.game_gateway is not None:
+            self.game_gateway.close()
 
     def server_close(self):
         if self._closed:

@@ -1,0 +1,943 @@
+{
+  "schema": "rock-os-acceptance/1",
+  "status": "INCOMPLETE",
+  "created_at": "2026-09-09T22:40:14.836934+00:00",
+  "review_type": "independent read-only evidence audit and handoff candidate",
+  "template": "docs/templates/os-acceptance-report.md",
+  "source": {
+    "source_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+    "source_archive_sha256": "96a449effab25c97f6280c06540803a6d7dac5f746c54d8fc21aadba93e1e88d",
+    "archive_commit_verified": true,
+    "archive_files_verified": 778,
+    "build_log_sha256": "2803ba103843708d775104f51252260907c8eeeb2538b7ae92901b94320f4cf0",
+    "configuration_sha256": {
+      "buildroot.config": "b29fa9e5f89d73e222914690d1580a62d396ee19cc43187807fc3631612d28a6",
+      "linux.config": "d744e7f5beb172660189d402bda5c15a9429c33d6dd5bf2a50e5ce7c1c9a829f",
+      "source-lock.json": "6efd72448219b9c226646817656ff4c9d2d808422fe5647cff10c0754473414c",
+      "SHA256SUMS": "4ae246c772b827445ba51c2db1836393147a01bf8305ef6fd2fa293c4bd45aa4"
+    },
+    "repository": "https://github.com/k999ln/rock",
+    "branch": "codex/operational-base-20260909",
+    "main": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
+    "native": "fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5",
+    "design_review": "27b34adc02a9e06a4816aa18a5e38cf38b330953",
+    "design_version": "1.1",
+    "approval_recorded_at": "2026-09-09T17:47:40.214265+00:00",
+    "approved_design_document_sha256": "8daaf9d5109ce7e3d347e0166ec005c00ec4196c1b8b47d0c840d77a9765304e",
+    "baseline": "1.6 / RQ01-RQ15",
+    "intake_manifest": {
+      "path": "systems/rock-star-os/IMPORT-MANIFEST.json",
+      "sha256": "fa802dbd370a069bb5489748ce78945b6825598d4b1c4e9d554e17af5daf4438"
+    },
+    "reviewed_evidence_commit": "851081a45dd70580fdaa73c47e882eb51c3c4725",
+    "frozen_host_tools_commit": "1a960756fbd5edc7f13a0578f3e7fc50025534c8",
+    "new_host_runtime_not_in_image": "023976d6d5949b1fbce903e3faa89fc27a1fd18d",
+    "dirty_diff": "No dirty build overlay: archived commit and all 778 tracked bytes verified. Historical imported snapshot contained uncommitted changes recorded in its unchanged intake manifest."
+  },
+  "images_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763",
+    "stage0.cpio.gz": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+  },
+  "environment": {
+    "host_os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "host_kernel": "6.12.95+deb13-cloud-arm64",
+    "architecture": "aarch64",
+    "compiler": "aarch64-buildroot-linux-musl-gcc.br_real (Buildroot 2026.08) 15.3.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "qemu": "QEMU emulator version 10.0.11 (Debian 1:10.0.11+ds-0+deb13u1)\nCopyright (c) 2003-2025 Fabrice Bellard and the QEMU Project developers",
+    "python": "3.13.5",
+    "lima_vcpu": 4,
+    "lima_ram_gib": 6,
+    "lima_new_disk_gib": 60,
+    "host_mounts": false
+  },
+  "build": {
+    "started": "2026-09-09T19:00:17Z",
+    "finished": "2026-09-09T19:29:12Z",
+    "fresh_directory": true,
+    "old_outputs_reused": false,
+    "reproducibility": "one fresh source build; separate-host bit-identical rebuild NOT_RUN"
+  },
+  "dependencies": {
+    "target": "qemu-virt-aarch64",
+    "blackberry_model": null,
+    "buildroot": {
+      "version": "2026.08",
+      "url": "https://buildroot.org/downloads/buildroot-2026.08.tar.xz",
+      "sha256": "87aaca4164ea9d5c8085854953018263f7963f07c22e73a2a2185cc98c581c34",
+      "license": "GPL-2.0-or-later, with per-file exceptions",
+      "verification": "Official HTTPS release; pinned SHA-256 recorded at intake. Detached signature not independently verified."
+    },
+    "linux": {
+      "version": "6.18.50",
+      "url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.50.tar.xz",
+      "sha256": "d2fc041dab4e11d9645e3ba53be058faa52b8ce28a8a97c889bb2cacee170461",
+      "selection": "Current 6.18 LTS maintenance release on kernel.org at 2026-09-08; earlier 6.18.7 experiment images remain separate evidence",
+      "integrity": "Official SHA-256 plus detached developer signature over the uncompressed archive; os/security/kernel/verification.log",
+      "signer_fingerprint": "647F28654894E3BD457199BE38DBBDC86092693E",
+      "license": "GPL-2.0-only"
+    },
+    "scope": "Local development kernel and root filesystem; no secure-boot signing key, handset flash or public release.",
+    "dash": {
+      "version": "0.5.13.5",
+      "download_url": "https://sources.buildroot.net/dash/dash-0.5.13.5.tar.gz",
+      "sha256": "40090101a2a491f13e901d3d48e90414f26634628b9bfff35ff540363c227a7d",
+      "sha512": "ae326c110713a9da6b7afb977ca6fd931793b03011f0a7aa2c42e873f116ed09448deea9ef5ca4515fe3afe24e210e0aaa580f7de89934edda9cf31ee44c94dd",
+      "license": "BSD-3-Clause, GPL-2.0-or-later (mksignames.c)",
+      "license_sha256": "254a7894923ff62e69184a991dcbccae97edee58a1105e8efbe78caf10595d72",
+      "hash_source": "Buildroot 2026.08 package/dash/dash.hash (previously pinned Buildroot release)",
+      "recorded_utc": "2026-09-08T10:31:40.672345+00:00",
+      "signature": "not independently verified"
+    }
+  },
+  "profiles": {
+    "local_AB": {
+      "schema": "rock-desktop-device/6",
+      "backup_schema": "rock-desktop-backup/2",
+      "network": "none",
+      "data_mib": 256,
+      "factory_sha256": "8e87c9c0e65378fd802cc9bbe0160f7dfa8a41568eff30e28873b433f3344420"
+    },
+    "basic_direct_root": {
+      "persistent_data_mib": 64,
+      "network": "none"
+    },
+    "remote_store": "Only fresh owned TLS fixtures with explicit virtual network; no production endpoint"
+  },
+  "trust": "Public synthetic development credentials and signing keys; not production authenticity or hardware security",
+  "cases": [
+    {
+      "id": "D0.SOURCE",
+      "requirements": [
+        "RQ01",
+        "RQ02",
+        "RQ09",
+        "RQ10",
+        "RQ12"
+      ],
+      "expected": "Approved baseline and exact tested source remain identifiable",
+      "actual": {
+        "frozen_git_files_independently_matched": 778,
+        "frozen_python_executions": 1089,
+        "c_checks": "core/platform/UI/actions/IPC passed",
+        "skips": 0,
+        "unclean_test_logs": 0,
+        "source_unchanged": true
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/integration-source.json",
+          "sha256": "399a8e7a6210d96a514e56ed1f850671213d07274dcfe988d2f9aaa3b3881361"
+        },
+        {
+          "path": "docs/evidence/os-base/runtime-b8287bc.json",
+          "sha256": "18ef906441962f45eb26bede67c42c8c59f359049796928ef52941aef8d4b679"
+        },
+        {
+          "path": "docs/evidence/os-base/freeze-b8287bc.json",
+          "sha256": "6a58860076c14aef7d9c6aaa9c9027cc990615fa07719075ccaa59a951096557"
+        }
+      ]
+    },
+    {
+      "id": "D0.HOST_CI",
+      "requirements": [
+        "RQ09",
+        "RQ10"
+      ],
+      "expected": "Later observer/source CI is reported separately from frozen image",
+      "actual": {
+        "commit": "057ea989434fbbca6723b4b8164aea8f05831a1e",
+        "native_run": 34410496387,
+        "web_run": 34410496424,
+        "android_run": 34410496472,
+        "native_python_executions": 1199,
+        "root_observers": 61,
+        "root_pin_readiness": 11,
+        "root_startup_groups": 8,
+        "runtime_image_rebuilt": false
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/ci-057ea98-native.json",
+          "sha256": "2da9c4d4014fe16c9d142dd7e8d2f47ee1af6e3da9429289d3714ab6cddd7e58"
+        },
+        {
+          "path": "docs/evidence/os-base/operational-source.json",
+          "sha256": "8c24edcf0cf6c60d8d53b7424a1329f7e0dcb0001779f49920496ff67ea13b8b"
+        }
+      ]
+    },
+    {
+      "id": "D1.BUILD_BOOT",
+      "requirements": [
+        "RQ12"
+      ],
+      "expected": "Fresh build then actual ARM64 kernel/init/UID/ro-root/data/randomness/IPC verification",
+      "actual": {
+        "fresh_build": true,
+        "basic_boots": 2,
+        "target": "QEMU virt-10.0 / TCG / cortex-a53",
+        "guest_vcpu": 2,
+        "guest_ram_mib": 1024,
+        "randomness": "both captured guest logs: crng init done",
+        "root_readonly": true,
+        "separate_data": true,
+        "service_uid": 1000,
+        "physical_device": "NOT_RUN"
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/freeze-b8287bc.json",
+          "sha256": "6a58860076c14aef7d9c6aaa9c9027cc990615fa07719075ccaa59a951096557"
+        },
+        {
+          "path": "docs/evidence/os-base/boot-b8287bc.json",
+          "sha256": "5a2388b0687cefd6792d930a5bea7a33a89f06f5d9a048a96f752fda7c23d1d4"
+        },
+        {
+          "path": "docs/evidence/os-base/platform-proof-b8287bc.json",
+          "sha256": "b4707514a2ef230bfbc3da340abc3976fce3cb636109dace25b771def97abecb"
+        }
+      ]
+    },
+    {
+      "id": "D2.BUSINESS",
+      "requirements": [
+        "RQ01",
+        "RQ02",
+        "RQ03",
+        "RQ07",
+        "RQ11"
+      ],
+      "expected": "Native proposal workflow, saved result/history and install/approve/update/rollback/disable/reapprove/delete",
+      "actual": {
+        "normal_business_boots": 2,
+        "operations_declared": 16,
+        "jobs": 5,
+        "tool": "org.rockstar.proposal-draft",
+        "versions": [
+          "1.0.0",
+          "1.1.0"
+        ],
+        "all_business_and_wallet_frames": 171,
+        "native_input": "QMP evdev + semantic screen observations; no mutation RPC",
+        "stop": "disable denies later use, explicit reapproval permits later use",
+        "optional_timed_in_flight_cancel": "NOT_RUN",
+        "raw_D2_whole_gate": "INCOMPLETE; retained, not rewritten"
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/business-lifecycle-plan-b8287bc.json",
+          "sha256": "0968807d5ab89a5c17745fb62c5dce5469ce11178fe32f1f0b9ad77be173039f"
+        },
+        {
+          "path": "docs/evidence/os-base/business-lifecycle-b8287bc.json",
+          "sha256": "740218bf47d95a66f01c428879d814eeb0384dfb30f336a363e39413926c817c"
+        },
+        {
+          "path": "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
+          "sha256": "ecd75defcb394d1b19d8a49f0348fff9c7a7e00059628db48141cf552971aa63"
+        }
+      ],
+      "scope": "Required disable lifecycle passed; optional timed cancellation is a separate untested capability."
+    },
+    {
+      "id": "D2.WALLET",
+      "requirements": [
+        "RQ05",
+        "RQ06"
+      ],
+      "expected": "Explicit registration/enrollment/Wallet terms and separate monthly consent; synthetic integer ledger matches UI",
+      "actual": {
+        "additional_normal_wallet_boots": 2,
+        "synthetic_credit_minor": 2000,
+        "monthly_requests": 2,
+        "actual_bill_count": 1,
+        "monthly_fee_minor": 888,
+        "available_minor": 1112,
+        "pending_minor": 0,
+        "held_minor": 0,
+        "cancelled_hold_minor": 1000,
+        "financial_journals": 5,
+        "postings": 10,
+        "renewal": "REVOKED",
+        "saved_state_after_restart": "unchanged"
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/wallet-ui-b8287bc.json",
+          "sha256": "6d606f091338568d4a557c18616b53b2ac9aff96cc6e9593b0979819b0a79fe1"
+        },
+        {
+          "path": "docs/evidence/os-base/business-lifecycle-b8287bc.json",
+          "sha256": "740218bf47d95a66f01c428879d814eeb0384dfb30f336a363e39413926c817c"
+        },
+        {
+          "path": "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
+          "sha256": "ecd75defcb394d1b19d8a49f0348fff9c7a7e00059628db48141cf552971aa63"
+        }
+      ],
+      "scope": "USD minor-unit simulator; actual authentication uses public software fixture."
+    },
+    {
+      "id": "D3.IPC_SANDBOX",
+      "requirements": [
+        "RQ04",
+        "RQ08",
+        "RQ12"
+      ],
+      "expected": "Peer UID, protected paths, network, input and resource denials under unchanged sandbox",
+      "actual": {
+        "guest_platform_checks": 65,
+        "fixed_resource_cases": 4,
+        "limits": {
+          "address_space_bytes": 268435456,
+          "cpu_seconds": 2,
+          "single_file_bytes": 1048576
+        },
+        "memory_outcome": "MemoryError",
+        "cpu_returncode": 137,
+        "file_outcome": "EFBIG at 1048576 bytes",
+        "crash_returncode": 139,
+        "input_limit_bytes": 65536,
+        "direct_wallet_ipc_from_ui": "denied",
+        "tool_ipc": "denied",
+        "no_implicit_earnings": true
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/platform-b8287bc.json",
+          "sha256": "b7a0e2405a4c6ab00086f269b18a412355aff4153ebe65f0fd59a2b1a36550e0"
+        },
+        {
+          "path": "docs/evidence/os-base/platform-proof-b8287bc.json",
+          "sha256": "b4707514a2ef230bfbc3da340abc3976fce3cb636109dace25b771def97abecb"
+        }
+      ],
+      "scope": "Actual guest diagnostic processes; file limit is per file, not a whole-filesystem storage quota."
+    },
+    {
+      "id": "D3.OWNER_ATM",
+      "requirements": [
+        "RQ06",
+        "RQ08"
+      ],
+      "expected": "Untrusted actor/owner claims denied; unknown consumed outcome retains hold until authenticated reconciliation",
+      "actual": {
+        "actual_no_nic_boots": 2,
+        "guest_checks": 34,
+        "json_owner_override": "denied",
+        "wrong_atm_actor": "denied",
+        "legacy_owner_bypass": "denied",
+        "unknown_hold_minor": 1000,
+        "reconciled_dispensed_minor": 400,
+        "reconciled_released_minor": 600,
+        "duplicate_effects": 0
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/atm-protocol-b8287bc.json",
+          "sha256": "97e0ac34733c8bb44d8af510a0da8c073021b0d25107d644034c929bb64868c6"
+        },
+        {
+          "path": "docs/evidence/os-base/runtime-b8287bc.json",
+          "sha256": "18ef906441962f45eb26bede67c42c8c59f359049796928ef52941aef8d4b679"
+        }
+      ],
+      "scope": "Existing single-contract OS and legacy authenticated host regressions. Multi-owner/game positive routing is GX00, absent from frozen image."
+    },
+    {
+      "id": "D3.HUB_FAULT",
+      "requirements": [
+        "RQ08",
+        "RQ12"
+      ],
+      "expected": "Actual owned launcher crash and deadline produce bounded failure; exact same key keeps original receipt and explicit new key succeeds",
+      "actual": {
+        "actual_boots": 3,
+        "failure_injection": [
+          "SIGKILL exact launcher",
+          "SIGSTOP exact launcher causing existing 3-second deadline"
+        ],
+        "receipt_and_audit_join": "checked for failed and explicit-retry jobs",
+        "restart_retention": "after normal guest API shutdown",
+        "existing_runtime_files_unchanged": true
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/hub-faults-b8287bc.json",
+          "sha256": "3f63c0169f633fe021cc4b9610da0540e50e5fc2ea1ea67749a90fb374f1f077"
+        }
+      ],
+      "scope": "Derived observer rootfs; target is launcher before sandbox. No whole platform-daemon crash or GUI-error-display acceptance is inferred."
+    },
+    {
+      "id": "D3.REMOTE",
+      "requirements": [
+        "RQ04",
+        "RQ08"
+      ],
+      "expected": "Durable remote acceptance followed by lost reply/link loss has no duplicate send; offline state preserved",
+      "actual": {
+        "boots": 2,
+        "checks": 46,
+        "actual_executor_calls": 2,
+        "abandoned_unapproved_send_count": 0,
+        "local_jobs_or_wallet_proceeds": 0,
+        "network": "owned pinned TLS fixture; actual NIC loss/reconnect then no-NIC reboot"
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/remote-b8287bc.json",
+          "sha256": "5042cc50b30f7467ed122892650ce061714e8228e84b28cf2074a42222b0e1b4"
+        }
+      ],
+      "scope": "Real local Linux processes behind synthetic provider; no production cloud, physical USB or real charge."
+    },
+    {
+      "id": "D3.STORE",
+      "requirements": [
+        "RQ02",
+        "RQ03",
+        "RQ08"
+      ],
+      "expected": "Signed SDK packages install/update/rollback with exact approval and survive disconnection/offline restart",
+      "actual": {
+        "boots": 2,
+        "checks": 33,
+        "wallet_changed": false,
+        "installed_runtime_changed": false
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/store-b8287bc.json",
+          "sha256": "22c1e4dc2e523011af206459f274cc7fa885895e24741d8b48f2db077ff7d20b"
+        }
+      ]
+    },
+    {
+      "id": "D3.REGISTRY_DENIALS",
+      "requirements": [
+        "RQ02",
+        "RQ08"
+      ],
+      "expected": "Reject tampered signature, incompatible minimum OS, truncated downloads, ENOSPC, wrong/missing approvals and signed revocation",
+      "actual": {
+        "actual_boots": 1,
+        "denials": 10,
+        "normal_exit_code": 0,
+        "input_images_and_sources_unchanged": true,
+        "embedded_sources_match": true,
+        "publication_stop": "permanent signed revocation",
+        "reversible_publication_pause": "NOT_IMPLEMENTED"
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/registry-negative-b8287bc.json",
+          "sha256": "6a44ab66981164150bd607e774e3e8823c35558a3815b2c4d09e8d36e9462fd4"
+        },
+        {
+          "path": "docs/evidence/os-base/registry-negative-proof-b8287bc.json",
+          "sha256": "7b95ed56f88fa48505f623923f6d159a58a629e656a8bfff63e6a932342bf142"
+        }
+      ],
+      "scope": "Actual guest UID1000 platform + owned TLS; no GUI or real provider claim."
+    },
+    {
+      "id": "D4.STARTUP_UPDATE",
+      "requirements": [
+        "RQ08",
+        "RQ12"
+      ],
+      "expected": "Fresh rendered-loop health before mark-good; invalid/unready update never committed and retained slot recovers",
+      "actual": {
+        "total_boots": 41,
+        "gui_health_boots": 14,
+        "signed_update_boots": 8,
+        "interruption_capacity_boots": 13,
+        "authenticator_health_boots": 3,
+        "data_abi_boots": 3,
+        "tamper_partial_write_real_ENOSPC": "rejected/recovered",
+        "data_abi": "proper development signature but foreign ABI rejected before writes"
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/startup-update-acceptance-b8287bc.json",
+          "sha256": "967fea863eb274a262e3f9b1c12b8a98396b966e7effe745c8126a0b224526ed"
+        },
+        {
+          "path": "docs/evidence/os-base/ui-startup-b8287bc.json",
+          "sha256": "ae44aff598b60a335234012fe24fcbd2e8abdd44342b30ca9ba189b1e8efd4f2"
+        },
+        {
+          "path": "docs/evidence/os-base/ui-startup-b8287bc-visual-review.json",
+          "sha256": "c1f3a5bf24e6d45537a2ec4a1dc65e7d03fe2ae59ab6fb1ce15ad20640e6751b"
+        },
+        {
+          "path": "docs/evidence/os-base/ab-updates-b8287bc.json",
+          "sha256": "10c77907db18fc6b8a706c6c89dfb99757c1c7ceb8a9dfd197662efb2b602933"
+        },
+        {
+          "path": "docs/evidence/os-base/ab-faults-b8287bc.json",
+          "sha256": "57348ca8090008a7b3ecffc672dcebbada5afa96f7b944264a080f9e6bcf34f2"
+        },
+        {
+          "path": "docs/evidence/os-base/auth-health-b8287bc.json",
+          "sha256": "645297baf1445d65b0f20bdfb7d1e336f650310c5c7f2f7729d4fa3c37b16b2b"
+        },
+        {
+          "path": "docs/evidence/os-base/data-abi-b8287bc.json",
+          "sha256": "d9907efe96b3b08306b3f7b531de719b8457e0800402a09537a7665361326ff6"
+        }
+      ],
+      "scope": "Software A/B development trust only; no data migration, hardware antirollback, secure boot or post-commit continuous UI supervision."
+    },
+    {
+      "id": "D5.NORMAL_POWER",
+      "requirements": [
+        "RQ07",
+        "RQ12"
+      ],
+      "expected": "Native cancel/reboot/poweroff proceeds through platform/root power service and normal init teardown",
+      "actual": {
+        "native_power_boots": 2,
+        "native_power_frames": 8,
+        "host_power_commands": 0,
+        "different_boot_ids": true,
+        "normal_services_unmount_guest_events": "observed",
+        "filesystem": "clean"
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/normal-power-b8287bc.json",
+          "sha256": "efcfa375eb4a5cce10e0c1c4129dedef16b2df6aa8068f34f635454100c7fb49"
+        },
+        {
+          "path": "docs/evidence/os-base/power-ui-b8287bc.json",
+          "sha256": "ccced5225377611b5d37532a0cd9c9392bb069795b94f98ee3221c4ae735912c"
+        }
+      ]
+    },
+    {
+      "id": "D5.RESTORE",
+      "requirements": [
+        "RQ06",
+        "RQ07",
+        "RQ12"
+      ],
+      "expected": "Stopped local source A/B/data copied to new offline destination; all observed local DB data retained and original disks unchanged",
+      "actual": {
+        "source_normal_cycles": 4,
+        "new_destination_boots": 1,
+        "frames": 8,
+        "backup_schema": "rock-desktop-backup/2",
+        "device_schema": "rock-desktop-device/6",
+        "databases": {
+          "authenticator": 3,
+          "hub": 7,
+          "membership": 15,
+          "power": 1,
+          "remote": 2,
+          "wallet": 16
+        },
+        "total_observed_tables": 44,
+        "additional_tables_observed": 0,
+        "all_tables_schema_sequences": "five DBs exactly equal; power only one added normal shutdown receipt, four old receipts retained",
+        "preboot_source_backup_destination_full_disk_bytes": "equal for A/B/data",
+        "source_and_backup_postboot": "unchanged",
+        "shutdown_seconds": 7.330272553999748,
+        "e2fsck_exit": 0,
+        "writer_fencing": "existing source lock held through restored test and final source checks",
+        "external_authorities": "not configured; restoration NOT_RUN"
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/backup-restore-b8287bc.json",
+          "sha256": "d46549399e41fef38f4d2e78dd42934ef746c62ec3e507aae658b658e6f33727"
+        },
+        {
+          "path": "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
+          "sha256": "ecd75defcb394d1b19d8a49f0348fff9c7a7e00059628db48141cf552971aa63"
+        },
+        {
+          "path": "docs/evidence/os-base/restore-lock-host.json",
+          "sha256": "5c33bd41a641ec40f2040dd138e4da569a7cbef62f6ca4396b3b4e5279b8e016"
+        }
+      ],
+      "scope": "Offline current local synthetic state only. Additional-table support tested by host fixtures; this actual image contains no game tables. No arbitrary historical backup, remote authority, distributed writer promotion, or same-authority spendable clone guarantee."
+    },
+    {
+      "id": "D6.SOAK",
+      "requirements": [
+        "RQ08",
+        "RQ09",
+        "RQ12"
+      ],
+      "expected": "Five normal cycles and 61 jobs spanning at least 3600 seconds, <=4200 seconds and all predeclared limits, no forbidden effects",
+      "actual": {
+        "execution_state": "FAILED",
+        "measurement_started_at": "2026-09-09T22:20:35.221469+00:00",
+        "source_device": "business-d21a8b8cec604d159bdb",
+        "failure": "TimeoutError: OCR exceeded the original UI state deadline",
+        "closed_normal_cycles": 4,
+        "soak_jobs_recorded_before_failure": 5,
+        "raw_report_D6": "NOT_RUN (not completed), raw overall FAIL retained",
+        "owned_device_running_at_failure": true,
+        "subsequent_teardown": "not evaluated in this snapshot",
+        "root_visual_observation": "sixth result Brief C4J5 visible; does not override original deadline failure",
+        "no_success_inferred": true
+      },
+      "status": "FAIL",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/soak-stopped-socket-failed-b8287bc.json",
+          "sha256": "334476e9a2f8d8d1aaaf03a3f0fb0b489134c8a47eec9862f050c9648a6469e1"
+        },
+        {
+          "path": "docs/evidence/os-base/pidfd-exit-mechanism.json",
+          "sha256": "499b0cf6aa56df5203c8f7e9048be48ee4773712f2629fe51bb157bc0aef2532"
+        },
+        {
+          "path": "docs/evidence/os-base/soak42-ocr-failed-b8287bc.json",
+          "sha256": "a3cc0306769973ea4fb3b9168b0c698a128770afd7098967a4a2afa951de70bf"
+        }
+      ],
+      "scope": "Run42 failed the original 30-second UI criterion before completing 60 minutes/61 jobs. Raw D6 field NOT_RUN is preserved; prior run39 remains FAIL."
+    },
+    {
+      "id": "AF.ATM_FEE",
+      "requirements": [
+        "RQ15"
+      ],
+      "expected": "Rock ATM fee is zero in exact quote, issuance receipt and balanced ledger",
+      "actual": {
+        "actual_native_frames": 14,
+        "synthetic_credit_minor": 5000,
+        "hold_minor": 1000,
+        "cancelled_available_minor": 5000,
+        "final_held_minor": 0,
+        "quote_fee_minor": 0,
+        "rock_atm_fee_minor": 0,
+        "code_reveal_actions": 0,
+        "raw_code_in_public_evidence": false
+      },
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "docs/evidence/os-base/atm-ui-b8287bc.json",
+          "sha256": "42e28ed8acaf7e345dede5ad7d6cf8b9e619639c0e28b3ac04869090d913f9ec"
+        },
+        {
+          "path": "docs/evidence/os-base/atm-ui-proof-b8287bc.json",
+          "sha256": "3f511566d87bf19a69fa6ca5d9396316b424d5b442004894ce64b962504b1302"
+        },
+        {
+          "path": "docs/evidence/os-base/atm-ui-visual-review-b8287bc.json",
+          "sha256": "724cca7ddbc6466e531b24dc87ecc1f92c6bc7f5e6859b364a2716c0087242eb"
+        },
+        {
+          "path": "docs/evidence/os-base/atm-protocol-b8287bc.json",
+          "sha256": "97e0ac34733c8bb44d8af510a0da8c073021b0d25107d644034c929bb64868c6"
+        }
+      ],
+      "scope": "Closed ATM simulator. External actual costs are unmeasured, never silently included in the Rock fee."
+    }
+  ],
+  "gates": [
+    {
+      "id": "D0",
+      "status": "PASS",
+      "scope": "QEMU development / synthetic / recorded cases only"
+    },
+    {
+      "id": "D1",
+      "status": "PASS",
+      "scope": "QEMU development / synthetic / recorded cases only"
+    },
+    {
+      "id": "D2",
+      "status": "PASS",
+      "scope": "QEMU development / synthetic / recorded cases only"
+    },
+    {
+      "id": "D3",
+      "status": "PASS",
+      "scope": "QEMU development / synthetic / recorded cases only"
+    },
+    {
+      "id": "D4",
+      "status": "PASS",
+      "scope": "QEMU development / synthetic / recorded cases only"
+    },
+    {
+      "id": "D5",
+      "status": "PASS",
+      "scope": "QEMU development / synthetic / recorded cases only"
+    },
+    {
+      "id": "D6",
+      "status": "FAIL",
+      "scope": "run42 failed original UI deadline; 60-minute/61-job criterion not completed"
+    }
+  ],
+  "separate_gates": {
+    "AF": "PASS_SIMULATOR_ONLY",
+    "GX0": "NOT_RUN_IN_FROZEN_IMAGE",
+    "GX1": "NOT_RUN",
+    "GX2": "NOT_RUN; reverse direction disabled by default",
+    "GX3": "NOT_RUN",
+    "DX": "NOT_RUN_FOR_GAME_SDK",
+    "H": "NOT_RUN",
+    "S": "NOT_RUN",
+    "P": "NOT_RUN"
+  },
+  "D6_plan": {
+    "path": "docs/evidence/os-base/soak-plan42-b8287bc.json",
+    "sha256": "e36b5b9a17a0b2703797eea220a9f83a7eb535596463e31a74acd6c40203733d",
+    "execution_state": "FAILED",
+    "final_result": "FAIL",
+    "canonical_json_sha256": "6cdd0789adb4d2dcf34dffe8eff49d2b0cec3713dc748d31897ef6762f093850",
+    "failure_report": {
+      "path": "docs/evidence/os-base/soak42-ocr-failed-b8287bc.json",
+      "sha256": "a3cc0306769973ea4fb3b9168b0c698a128770afd7098967a4a2afa951de70bf"
+    },
+    "limits": {
+      "boot_seconds": 180,
+      "cpu_cores_average": 3.5,
+      "job_seconds": 90,
+      "max_evidence_bytes": 629145600,
+      "max_job_start_gap_seconds": 180,
+      "max_probes": 12000,
+      "max_samples": 4000,
+      "max_screenshot_bytes": 268435456,
+      "max_screenshots": 1000,
+      "peak_rss_kib": 2097152,
+      "rss_growth_kib": 524288,
+      "sample_gap_seconds": 10,
+      "sample_seconds": 2,
+      "shutdown_seconds": 60,
+      "soak_max_seconds": 4200,
+      "stored_job_seconds": 30,
+      "ui_state_seconds": 30
+    },
+    "cycles": 5,
+    "jobs": 61,
+    "minimum_soak_seconds": 3600,
+    "maximum_soak_seconds": 4200
+  },
+  "historical_failures": [
+    {
+      "evidence": {
+        "path": "docs/evidence/os-base/atm-pin-golden-failed-b8287bc.json",
+        "sha256": "bb287e1d6bb01e45c241ed7bb1096594a447ecf2178cd20f6c709d7d706cbeeb"
+      },
+      "status": "FAIL",
+      "error": "TimeoutError: reviewed PIN readiness was not observed within the original stage deadline: unrecognized auth frame",
+      "meaning": "Historical failure retained; later scoped evidence does not rewrite this result."
+    },
+    {
+      "evidence": {
+        "path": "docs/evidence/os-base/atm-ui-failed-b8287bc.json",
+        "sha256": "0afb361d8768e8c9273b094b8ca62f6e71dc69de2c93dd08ad0a4acbb637e4d6"
+      },
+      "status": "FAIL",
+      "error": "TimeoutError: missing actual ATM stage: ROCK_UI_ATM_ISSUED",
+      "meaning": "Historical failure retained; later scoped evidence does not rewrite this result."
+    },
+    {
+      "evidence": {
+        "path": "docs/evidence/os-base/business-wallet-header-failed-b8287bc.json",
+        "sha256": "6685ea77d71e96026a7ac77b58ef0400de07ac1f2bc8185349a8c69bd796b46e"
+      },
+      "status": "FAIL",
+      "error": "ValueError: ambiguous/excessive Wallet label segmentation anchors",
+      "meaning": "Historical failure retained; later scoped evidence does not rewrite this result."
+    },
+    {
+      "evidence": {
+        "path": "docs/evidence/os-base/business-wallet-preparation-failed-b8287bc.json",
+        "sha256": "c9686d3635637be1463ed39fa57c3ed1ab4075bead1c5e01e7f7baa662305d41"
+      },
+      "status": "FAIL",
+      "error": "TimeoutExpired: Command '['tesseract', '/var/tmp/rk-business/business-a5778b7a3a2b4e1e8886/cycle-2/probe.png', 'stdout', '-l', 'eng+jpn', '--psm', '11', 'tsv']' timed out after 0.1353878009995242 seconds",
+      "meaning": "Historical failure retained; later scoped evidence does not rewrite this result."
+    },
+    {
+      "evidence": {
+        "path": "docs/evidence/os-base/data-abi-serial-failed-b8287bc.json",
+        "sha256": "b16b7dc218af67b9a3e6d8f05dbfc277136b289c8a94bc5f6468e281b4641d77"
+      },
+      "status": "FAIL",
+      "error": "RuntimeError: exact ABI proof and normal shutdown required",
+      "meaning": "Historical failure retained; later scoped evidence does not rewrite this result."
+    },
+    {
+      "evidence": {
+        "path": "docs/evidence/os-base/hub-power-request-failed-b8287bc.json",
+        "sha256": "ab3fd24ea44152ee93b89f627c9e67137f598186baac3cee10e906d16dc9c237"
+      },
+      "status": "FAIL",
+      "error": "ValueError: guest explicitly reported failure; owned QEMU is stopped as FAIL",
+      "meaning": "Historical failure retained; later scoped evidence does not rewrite this result."
+    },
+    {
+      "evidence": {
+        "path": "docs/evidence/os-base/soak-stopped-socket-failed-b8287bc.json",
+        "sha256": "334476e9a2f8d8d1aaaf03a3f0fb0b489134c8a47eec9862f050c9648a6469e1"
+      },
+      "status": "FAIL",
+      "error": "ValueError: a virtual device is still listening without a matching record; preserve it and recover its session metadata",
+      "meaning": "Historical failure retained; later scoped evidence does not rewrite this result."
+    },
+    {
+      "evidence": {
+        "path": "docs/evidence/os-base/soak42-ocr-failed-b8287bc.json",
+        "sha256": "a3cc0306769973ea4fb3b9168b0c698a128770afd7098967a4a2afa951de70bf"
+      },
+      "status": "FAIL",
+      "error": "TimeoutError: OCR exceeded the original UI state deadline",
+      "meaning": "Run42 raw D6 NOT_RUN retained; this failed attempt does not pass D6."
+    }
+  ],
+  "known_issues": [
+    {
+      "id": "D6-FAILED",
+      "severity": "required_acceptance_pending",
+      "status": "FAIL",
+      "detail": "Run42 ended on OCR timeout at the original 30-second UI deadline after four normal closed cycles and five recorded soak jobs. Overall OS acceptance remains INCOMPLETE.",
+      "next": "Host OCR fixed and run42 normally closed with exact receipts verified. Run43 has started at unchanged workload/limits; no acceptance until complete."
+    },
+    {
+      "id": "SOAK39-OBSERVER",
+      "severity": "historical_failed_attempt",
+      "status": "FAILED_RETRY_PRESERVED",
+      "detail": "Run39 detected a still-listening socket after process identity disappeared. Real pthread_exit fixture proves this mechanism can occur; it does not prove the historical cause. Host pidfd exit guard has 59 tests. Run42 closed four cycles but failed later on OCR; no full D6 retry passed.",
+      "next": "Retain failure; require same 60-second deadline, real guest normal shutdown, pidfd whole-process exit and closed-socket checks."
+    },
+    {
+      "id": "FROZEN-HOST-MATCH",
+      "severity": "handoff_constraint",
+      "status": "SCOPED",
+      "detail": "Current branch includes GX00 runtime changes and is not interchangeable with frozen-image host source checks. Pin 1a960756fbd5edc7f13a0578f3e7fc50025534c8 for frozen-OS host tools; six image-preflight source bindings independently match b8287bc.",
+      "next": "Use isolated exact host tree plus frozen image triple. Do not disable embedded-source checks."
+    },
+    {
+      "id": "D2-INFLIGHT",
+      "severity": "optional_coverage_gap",
+      "status": "NOT_RUN",
+      "detail": "Mandatory stop was disable/reapprove. Timed cancellation of a running job is not measured.",
+      "next": "Separate planned cancellation test if required; do not count disable as in-flight cancellation."
+    },
+    {
+      "id": "D5-EXTERNAL",
+      "severity": "scope_exclusion",
+      "status": "NOT_RUN",
+      "detail": "No external backend/runner/game authority configured. Backup is local A/B/data. Same-path registry rollback, historical backup, spendable duplicate and production writer guarantees are excluded.",
+      "next": "Separate authority reconciliation and writer handover before enabling externally authoritative spending."
+    },
+    {
+      "id": "GX00-NOT-IN-IMAGE",
+      "severity": "separate_development_track",
+      "status": "NOT_RUN_IN_FROZEN_IMAGE",
+      "detail": "Host implementation 023976d6d5949b1fbce903e3faa89fc27a1fd18d is outside frozen OS. GX00 full game/owner acceptance, GX01/exchange and working game SDK are not claimed.",
+      "next": "Complete contract/game gates, then new runtime/data ABI candidate build and D4/D5 migration/rollback/restore regression."
+    },
+    {
+      "id": "B05-SCOPE",
+      "severity": "product_validation_pending",
+      "status": "PARTIAL",
+      "detail": "PC comparison is a same-output process/stdio measurement only. UI operation/switching metrics are N/A; no speed improvement or full B05 product benefit is established.",
+      "next": "Independent GUI/user-workflow comparison when explicitly planned."
+    },
+    {
+      "id": "H-S-P",
+      "severity": "outside_development_acceptance",
+      "status": "NOT_RUN",
+      "detail": "Pixel10/GrapheneOS installation, BlackBerry hardware, MetaMask transfers/receipts, real ATM/game/provider, production keys/funds are untested.",
+      "next": "Resolve exact technical/device/provider transaction conditions in their own tracks."
+    },
+    {
+      "id": "BIT_IDENTICAL",
+      "severity": "reproducibility_limit",
+      "status": "NOT_RUN",
+      "detail": "One fresh build and source/config hashes were verified. A separate-host bit-identical rebuild was not run.",
+      "next": "Separate repeat build with complete toolchain/source identity if required."
+    }
+  ],
+  "audit": {
+    "path": "docs/evidence/os-base/acceptance-audit-b8287bc.json",
+    "sha256": "083b8d8dc7c6797c6270c1a2d3c1fd167a4ae47c99bf6683dfeaae672618a5ae",
+    "checks_passed": 16,
+    "original_business_restore_frames_verified": 179,
+    "visual_review": "Root recorded visual review, independently hash-bound to raw reports and saved frames; no new whole-screen visual inspection claimed by this audit."
+  },
+  "raw_basic_boot_logs": [
+    {
+      "path": "docs/evidence/os-base/acceptance-basic-boot-1-b8287bc.log",
+      "sha256": "91c1077116d031d562ebf9dc033bc00f3605fcda618e660427596589c943aab9",
+      "bytes": 12305
+    },
+    {
+      "path": "docs/evidence/os-base/acceptance-basic-boot-2-b8287bc.log",
+      "sha256": "f157e2ce5b13882d18bc92214524129f194ce7ba441a3636c0e50ceeb672dbe8",
+      "bytes": 12350
+    }
+  ],
+  "scope_limitations": [
+    "No new tests, QEMU operations, wallet transactions or disk changes were performed by this evidence audit.",
+    "No claim that all product features, provider modes, UI failure cases or third-party security are certified.",
+    "Additional-table comparison is supported; actual restored sample contains 44 tables and zero added game tables.",
+    "Postboot non-SQLite trees/unlisted DB files are not separately enumerated; full A/B/data preboot bytes match.",
+    "Immutable freeze and historical reports keep their original NOT_RUN/FAIL labels; this later report does not overwrite history."
+  ],
+  "next_steps": [
+    "Preserve run42 failure and its separate normal-close/closed-inspection reports; finish new predeclared run43 before establishing D6.",
+    "Use exact frozen host/image pairing and local no-network profile for handoff.",
+    "Advance GX00/game development in separate source; rebuild a new candidate and repeat affected D4/D5 gates before merging claims.",
+    "Keep hardware, MetaMask and production-provider/funds tracks separate; no secret handling in public evidence."
+  ],
+  "followup_20260909_2308": {
+    "status": "INCOMPLETE_D6_RETRY_RUNNING",
+    "run42_normal_close": {
+      "path": "docs/evidence/os-base/soak42-normal-close-b8287bc.json",
+      "sha256": "0cd0978dd8c6bc82a02121d3aa9f228a672ba25f89f642438338306100c2936c"
+    },
+    "run42_closed_inspection": {
+      "path": "docs/evidence/os-base/soak42-closed-inspection-b8287bc.json",
+      "sha256": "1be72446b3c40ec88f9afd9e89ca89aea3272220909af5f897848fdef86360e9"
+    },
+    "failed_raw_report_preserved": true,
+    "host_only_ocr_fix": {
+      "path": "docs/evidence/os-base/host-result-ocr.json",
+      "sha256": "4cf006c47d9ceef21b2ec0f2ed03e16dd0319c28a1a98bbabf6f2f8d70e979bf"
+    },
+    "frozen_compatible_host_payload_sha256": "10961504c950726c2f445fca966b80f6bab32772d037b58b1f0ea153403367a8",
+    "new_retry": "43; business-bb2a77c9c3734b88a12d; same limits and workload; no runtime image changes",
+    "ci_851081a": {
+      "native_run": 34412876732,
+      "web_run": 34412876810,
+      "android_run": 34412876776,
+      "conclusion": "SUCCESS",
+      "native_python_executions": 1277,
+      "report": {
+        "path": "docs/evidence/os-base/ci-851081a-native.json",
+        "sha256": "c82d0e93685ea47e5ae0d546005dece6b701c43aa94760c8a757c69a9fe183ba"
+      }
+    }
+  }
+}

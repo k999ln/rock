@@ -472,6 +472,32 @@ class ContractRuntime:
                 self._service.membership.start()
                 self._state = 'RUNNING'
 
+    def bind_game_connections(self, gateway, signer, cursor):
+        from game_exchange.connections import WalletConnections, GameGateway
+        if type(gateway) is not GameGateway or getattr(self, '_games', None) is not None:
+            raise RuntimeUnavailable('game connections already bound or invalid gateway')
+        with self.admit_write(self.descriptor.writer_epoch):
+            self._ensure_account_binding()
+            self._games = WalletConnections(self, gateway, signer, cursor)
+
+    def validate_owner_request(self, request):
+        if isinstance(request, dict) and isinstance(request.get('op'), str) and request['op'].startswith('game.'):
+            from game_exchange.protocol import validate_owner_request
+            if getattr(self, '_games', None) is None:
+                raise RuntimeAdmissionRejected('game connections are disabled')
+            return validate_owner_request(request)
+        return validate_request(request, authentication_required=True)
+
+    def dispatch_game_author(self, gateway, principal, request, *, deadline):
+        games = getattr(self, '_games', None)
+        if games is None or games.gateway is not gateway or time.monotonic() >= deadline:
+            raise RuntimeAdmissionRejected('game connection runtime unavailable')
+        with self.admit_write(self.descriptor.writer_epoch), gateway.author_gate:
+            self._ensure_account_binding()
+            result = games.author(principal, request, deadline)
+            self._ensure_account_binding()
+            return result
+
     def dispatch(self, principal, request, *, deadline):
         if (not isinstance(principal, AuthenticatedDevicePrincipal)
                 or (principal.ledger_ref, principal.owner_actor, principal.owner_ref) !=
@@ -479,7 +505,7 @@ class ContractRuntime:
             raise RuntimeAdmissionRejected('principal does not identify this contract')
         if time.monotonic() >= deadline:
             raise TimeoutError('request expired before contract admission')
-        validate_request(request, authentication_required=True)
+        self.validate_owner_request(request)
         with self.admit_write(self.descriptor.writer_epoch):
             self._verifier.assert_current(principal, self.descriptor)
             if time.monotonic() >= deadline:
@@ -492,7 +518,11 @@ class ContractRuntime:
                 if time.monotonic() >= deadline:
                     raise TimeoutError('request expired during device admission')
                 self._ensure_account_binding()
-                reply = self._service.dispatch(request, peer_uid=1002)
+                if request['op'].startswith('game.'):
+                    with self._games.gateway.author_gate, self._service.membership.game_connection_guard(request['op'], peer_uid=1002) as context:
+                        reply = self._games.owner(principal, request, context, deadline=deadline)
+                else:
+                    reply = self._service.dispatch(request, peer_uid=1002)
                 self._ensure_account_binding()
                 _project_service_status(reply, request, self._service_status_provider, principal.device_ref)
                 return reply

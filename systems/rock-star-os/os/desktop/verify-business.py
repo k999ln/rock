@@ -49,6 +49,7 @@ SEARCH_TEXT = (40, 172, 580, 211)
 CATALOG_TITLE = (130, 245, 540, 290)
 INSTALLED_TITLE = (130, 173, 540, 218)
 HISTORY_TITLE = (45, 171, 535, 218)
+RESULT_TEXT = (32, 380, 688, 856)
 
 
 def normalize(text):
@@ -75,7 +76,7 @@ def ocr_lines(tsv, *, bounds=(720, 960)):
     return list(lines.values())
 
 
-def locate(lines, phrase, *, exact_line=False):
+def locate(lines, phrase, *, exact_line=False, ascii_boundary=False):
     query, matches = normalize(phrase), []
     require(query, 'empty UI selector')
     for words in lines:
@@ -85,6 +86,8 @@ def locate(lines, phrase, *, exact_line=False):
         if start < 0: continue
         require(text.find(query, start + 1) < 0, 'ambiguous repeated UI phrase')
         end, matched = start + len(query), []
+        if ascii_boundary and ((start and text[start-1] in 'abcdefghijklmnopqrstuvwxyz0123456789') or
+                               (end < len(text) and text[end] in 'abcdefghijklmnopqrstuvwxyz0123456789')): continue
         for word in words:
             following = cursor + len(word['text'])
             if following > start and cursor < end: matched.append(word)
@@ -266,6 +269,30 @@ def notice_regions(image):
     return [region] if sum(pixel in ((225, 236, 219), (242, 225, 217)) for pixel in pixels) >= len(pixels) * .5 else []
 
 
+def result_page(lines):
+    """Only the exact native page header enables result-body segmentation."""
+    return len([match for match in locate(lines, '実行結果', exact_line=True)
+                if 32 <= match['box'][0] < match['box'][0] + match['box'][2] <= 535 and
+                   55 <= match['box'][1] < match['box'][1] + match['box'][3] <= 108]) == 1
+
+
+def result_label_known(lines):
+    """Use the original pass if it already reads a complete literal brief.
+
+    The expected input label is deliberately not supplied here. A confidently
+    read different label remains different and fails the later state check.
+    """
+    left, top, right, bottom = RESULT_TEXT
+    for words in lines:
+        text = ''.join(word['text'] for word in words)
+        for candidate in re.findall(r'(?<![a-z0-9])briefc[0-9]j[0-9]{1,3}(?![a-z0-9])', text):
+            if any(left <= match['box'][0] < match['box'][0] + match['box'][2] <= right and
+                   top <= match['box'][1] < match['box'][1] + match['box'][3] <= bottom
+                   for match in locate([words], candidate, ascii_boundary=True)):
+                return True
+    return False
+
+
 def recognize_frame(path, deadline=None, *, regions=()):
     """Analyze page text and accent-button text; original PNG stays intact."""
     def budget():
@@ -273,7 +300,7 @@ def recognize_frame(path, deadline=None, *, regions=()):
         if remaining <= 0: raise TimeoutError('OCR exceeded the original UI state deadline')
         return remaining
     budget()
-    require(type(regions) is tuple and len(regions) <= 2 and all(r in (SEARCH_TEXT, CATALOG_TITLE, INSTALLED_TITLE, HISTORY_TITLE) for r in regions),
+    require(type(regions) is tuple and len(regions) <= 2 and all(r in (SEARCH_TEXT, CATALOG_TITLE, INSTALLED_TITLE, HISTORY_TITLE, RESULT_TEXT) for r in regions),
             'unknown or excessive text OCR regions')
     from PIL import Image, ImageOps
     ocr_env = dict(os.environ, OMP_THREAD_LIMIT='1', OMP_NUM_THREADS='1')
@@ -314,17 +341,23 @@ def recognize_frame(path, deadline=None, *, regions=()):
                 for words in mapped_ocr(result.stdout, (left, top, right, bottom), scale=1):
                     if primary_words_have_ink(words, primary_text_pixels(crop), (left, top, right, bottom)):
                         lines.append(words)
-            for region in (*secondary, *regions, *wallet_text_rows(original_lines), *notice_regions(source)):
+            requested = tuple(r for r in regions if r != RESULT_TEXT or
+                              result_page(original_lines) and not result_label_known(original_lines))
+            for region in (*secondary, *requested, *wallet_text_rows(original_lines), *notice_regions(source)):
                 budget()
                 left, top, right, bottom = region
                 crop = source.crop(region)
-                scale = 2 if region in (SEARCH_TEXT, CATALOG_TITLE, INSTALLED_TITLE) else 1
+                scale = 2 if region in (SEARCH_TEXT, CATALOG_TITLE, INSTALLED_TITLE, RESULT_TEXT) else 1
                 ImageOps.expand(crop.resize((crop.width * scale, crop.height * scale), Image.Resampling.BICUBIC),
                                 border=10, fill='white').save(analysis)
-                result = subprocess.run(['tesseract', str(analysis), 'stdout', '-l', 'eng+jpn', '--psm', '7', 'tsv'],
+                result = subprocess.run(['tesseract', str(analysis), 'stdout', '-l', 'eng+jpn', '--psm',
+                                         '6' if region == RESULT_TEXT else '7', 'tsv'],
                                         capture_output=True, text=True, check=True, timeout=budget(), env=ocr_env)
                 # Prefer this dedicated OCR row within the explicit region;
                 # elsewhere page OCR remains unchanged, including error text.
+                # A single result hypothesis is selected without changing
+                # confidence or overlap thresholds. The original pass stays
+                # authoritative when it already reads a complete brief label.
                 lines = [words for words in lines if not all(
                     left <= w['box'][0] < w['box'][0] + w['box'][2] <= right and
                     top <= w['box'][1] < w['box'][1] + w['box'][3] <= bottom for w in words)]
@@ -466,9 +499,9 @@ class ScreenDriver:
         self.report['screenshots'].append(metadata)
         return metadata
 
-    def wait(self, phrase, *, click=False, seek=False, seconds=None, label='state', regions=(), within=None, exact_line=False, required=()):
+    def wait(self, phrase, *, click=False, seek=False, seconds=None, label='state', regions=(), within=None, exact_line=False, required=(), ascii_boundary=False):
         require(type(required) is tuple and len(required) <= 3, 'bounded simultaneous UI state required')
-        require(within is None or within in (CATALOG_TITLE, INSTALLED_TITLE, HISTORY_TITLE), 'unknown selectable text region')
+        require(within is None or within in (CATALOG_TITLE, INSTALLED_TITLE, HISTORY_TITLE, RESULT_TEXT), 'unknown selectable text region')
         alternatives = (phrase,) if isinstance(phrase, str) else phrase
         require(type(alternatives) is tuple and 1 <= len(alternatives) <= 2 and all(type(p) is str for p in alternatives),
                 'one or two exact known UI states required')
@@ -480,7 +513,8 @@ class ScreenDriver:
             if time.monotonic() > deadline:
                 self.retain(metadata, 'state-deadline', lines)
                 raise TimeoutError('UI state arrived after its original deadline')
-            found = [(p, locate(lines, p, exact_line=exact_line)) for p in alternatives]
+            found = [(p, locate(lines, p, exact_line=exact_line, ascii_boundary=ascii_boundary)) for p in alternatives]
+            if within == RESULT_TEXT and not result_page(lines): found = []
             if within is not None:
                 left, top, right, bottom = within
                 found = [(p, [m for m in hits if left <= m['box'][0] < m['box'][0] + m['box'][2] <= right and
@@ -495,11 +529,14 @@ class ScreenDriver:
             # content matches can drive these phrase-based mutations.
             matches = [m for m in matches if m['y'] < 856]
             if matches:
+                if within == RESULT_TEXT: require(len(matches) == 1, 'ambiguous visible business result label')
                 if click: require(len(matches) == 1, 'ambiguous clickable UI selector: ' + selected)
                 proof = self.retain(metadata, label, lines)
                 self.report['ui_states'].append({'phrase': selected, 'screenshot_sha256': proof['sha256'],
                                                  'observed_unix': time.time(), 'matches': matches,
-                                                 'required_same_frame': corroboration, 'within': within, 'exact_line': exact_line})
+                                                 'required_same_frame': corroboration, 'within': within, 'exact_line': exact_line,
+                                                 'ascii_boundary': ascii_boundary,
+                                                 'result_page_header': result_page(lines) if within == RESULT_TEXT else None})
                 if click:
                     require(time.monotonic() <= deadline, 'UI click would exceed its original state deadline')
                     self.native.click(matches[0]['x'], matches[0]['y'])
@@ -520,6 +557,11 @@ class ScreenDriver:
             time.sleep(.5)
 
     def click(self, phrase, **options): return self.wait(phrase, click=True, **options)
+
+    def result(self, label, *, evidence_label):
+        require(type(label) is str and re.fullmatch(r'C[0-9]J[0-9]{1,3}', label), 'fixed result label required')
+        return self.wait('Brief ' + label, regions=(RESULT_TEXT,), within=RESULT_TEXT,
+                         ascii_boundary=True, seek=True, label=evidence_label)
 
     def nav(self, which):
         self.check()
@@ -595,10 +637,10 @@ def run_job(driver, operations, version, label, output):
     operations.append(operation)
     driver.native.keys(['ctrl', 'ret'])
     driver.wait('完了', label='job-completed')
-    driver.wait(label, seek=True, label='business-result')
+    driver.result(label, evidence_label='business-result')
     driver.open_history(version)
     driver.wait('完了', label='history-completed')
-    driver.wait(label, seek=True, label='reopened-result')
+    driver.result(label, evidence_label='reopened-result')
     elapsed = time.monotonic() - started
     require(elapsed <= driver.limits['job_seconds'], 'business UI job exceeded frozen time budget')
     driver.operation_deadline = None
@@ -848,6 +890,10 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
                        'normalization': 'NFKC, Unicode casefold, remove whitespace; exact phrase only',
                        'primary_scale': 2, 'primary_original_color_psm': 7, 'primary_original_color_scale': 1, 'wallet_header_region': [32, 55, 535, 108], 'wallet_headers': ['Wallet', 'ATMテスト', '予約の状態'], 'wallet_label_anchors': ['金額', '完了'], 'wallet_label_max_rows': 2, 'wallet_label_scale': 1, 'secondary_color': 'e8ede5', 'secondary_scale': 1, 'max_button_regions': 8, 'notice_region': [32, 148, 688, 188], 'notice_scale': 1, 'text_region_scale': {'search_catalog_installed': 2, 'history_title': 1}, 'text_region_psm': 7,
                        'text_regions': [SEARCH_TEXT, CATALOG_TITLE, INSTALLED_TITLE, HISTORY_TITLE],
+                       'result_text': {'region': RESULT_TEXT, 'scale': 2, 'psm': 6, 'max_regions': 1,
+                                       'required_header': '実行結果', 'header_region': [32, 55, 535, 108],
+                                       'selection': 'original page if it reads any complete literal Brief CnJn in body at confidence45; otherwise fixed body refinement; expected input label is not used for pass selection',
+                                       'selector': 'literal Brief + original input label, bounded by non-ASCII-alphanumeric characters'},
                        'primary_analysis': 'bounded accent regions; observed row green contour; grayscale >=180 glyphs to black; 10px white border; no auto-invert',
                        'duplicate_box_min_iou': .70},
                   frozen_at=datetime.now(timezone.utc).isoformat())
@@ -928,7 +974,7 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
                 driver.detail('1.0.0'); admit(driver, operations, 'uninstall')
                 # Deletion must retain a visible saved result as well as DB rows.
                 driver.open_history('1.0.0', deleted=True)
-                driver.wait(cycle['jobs'][-1]['label'], seek=True, label='result-after-delete')
+                driver.result(cycle['jobs'][-1]['label'], evidence_label='result-after-delete')
                 if prepare_backup:
                     # A source for restore acceptance still has an approved
                     # installed Tool. Do not omit or pretend the deletion:

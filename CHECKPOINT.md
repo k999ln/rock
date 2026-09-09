@@ -4,10 +4,15 @@
 
 設計v1.1は実装承認済み。[承認範囲](docs/execution-approval-20260909.md)と[製品ベース](docs/product-baseline.md)を読む。main `7cdbb5fedc86ee3978ed329d9312147d137c9199`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、設計 `27b34adc02a9e06a4816aa18a5e38cf38b330953` の3入力を専用branchへ統合済み。main/既存native PRはまだ未変更。元IMPORT-MANIFESTと旧Nタスクは保持。
 
-次の作業: 新規QEMU imageのbuild→起動/専用UID/Hub業務商品/合成Wallet→D0〜D6受入。全observer55件とsource回帰1056件はLinux成功。GX00のADRを保持しB03-FIXTURE後に複数owner・ゲーム交換・SDKへ進む。Pixel 10はGrapheneOSを保つP1 APK試験を準備。
+次の作業: 凍結b8287bcのD0〜D5は[限定受入](docs/os-acceptance-b8287bc-20260909.md)を照合済み。D6 run42のOCR失敗・正常終了・停止後の12jobs/20actionsを別報告で保存し、hostだけ修正したrun43を同じ5サイクル・60分・61件の条件で実施中。全条件が通るまでV01全体は未合格。
 
-現行の証拠は[統合後のOS検証](docs/os-operational-validation-20260909.md)。新規Linuxでsource回帰1056件、追加全observer55件、startup C8群が成功。OS build/bootの受入は進行中。
-`npm run baseline:check`、`npm run project:update`、`npm run verify`、専用Linuxの `python3 scripts/test-native.py --output <新規ディレクトリ>` を実行して同一版の証拠を残す。新OSのD0〜D6は未合格。MetaMaskはWebアドレス接続のみで、native合成台帳との実資金接続はない。
+Macの[専用launcher v2](systems/rock-star-os/os/desktop/LAUNCHER-V2.md)は既存の隔離VM/画像/保存端末を厳密に指定する。実Chrome画面で商品導入・同意・1件実行・通常終了・再度開いた結果を確認した。ブラウザを閉じるだけではOSを終了しない。実機用の書込みイメージではない。
+
+OS runtimeは`b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9`。凍結OSのhost toolsは`1a960756fbd5edc7f13a0578f3e7fc50025534c8`と必要なhost OCR修正だけを使う。GX00を含む現在のsourceをそのまま混ぜると埋込source照合に失敗するので、guardを解除しない。新台帳をOSへ入れる際は別buildとD4/D5再受入が必要。
+
+公開851081aのWeb/Android/native CIは成功。native Python1277実行・14checks・skipなしの[原報告](docs/evidence/os-base/ci-851081a-native.json)を保存した。後続の接続protocolはMac19件、Node独立wireは303checks/142拒否、画面認識はMac/Linux各68件が成功。これらは凍結OSへの新機能搭載を意味しない。GX00の実TLS/複数作者ゲーム接続・互換/復旧→GX01→DX01を続ける。
+
+`npm run baseline:check`、`npm run project:update`、`npm run verify`、新しいsourceはLinuxの`python3 scripts/test-native.py --output <新規ディレクトリ>`で検証する。Pixel 10 / GrapheneOSにはP1 APKを用意し実機未試験。MetaMaskは既存Webのアドレス接続だけで、送受金・実資金の接続はない。
 
 ## 以下はnative統合時点の履歴
 

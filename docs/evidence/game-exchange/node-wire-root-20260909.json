@@ -1,0 +1,1562 @@
+{
+  "schema": "rock-game-node-wire-verification/2",
+  "executed_at": "2026-09-09T23:04:55.290Z",
+  "status": "PASS_SCOPED_WIRE",
+  "scope": "Independent Node standard crypto over pinned public literal fixtures; no SDK/API/DB/session/game acceptance",
+  "fixtures": [
+    {
+      "id": "historical-UUID-account",
+      "file": "connection-v1-vectors.json",
+      "sha256": "c2382e94932bd42a284ac64dec30519c762eeddcc13b5ee76ae836b82a011871",
+      "counts": {
+        "literal_objects": 15,
+        "signing_payloads": 5,
+        "game_signatures": 5,
+        "owner_assertion_signatures": 1,
+        "digest_links": 26,
+        "checks": 150,
+        "rejections": 70
+      }
+    },
+    {
+      "id": "existing-prefixed-account",
+      "file": "connection-v1-prefixed-account-vectors.json",
+      "sha256": "120f3edc5d5b19b6442e7ba87f2bdee7cd31435534bd5f82af77ef67b6daa346",
+      "counts": {
+        "literal_objects": 15,
+        "signing_payloads": 5,
+        "game_signatures": 5,
+        "owner_assertion_signatures": 1,
+        "digest_links": 26,
+        "checks": 151,
+        "rejections": 70
+      }
+    }
+  ],
+  "verifier_sha256": "6cf2d0df6af5133e43811bfd7184765f634aeb3ac6fb2e59d57f346aab71c665",
+  "node": "v26.0.0",
+  "openssl": "3.6.3",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "counts": {
+    "checks": 303,
+    "rejections": 142
+  },
+  "results": [
+    {
+      "id": "historical-UUID-account/fixed-public-fixture-sha256",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/existing-account-context-exact-joins",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/substituted-context-account",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/literal-object-inventory",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-author_active_view",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-author_active_view",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-author_revoked_view",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-author_revoked_view",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-begin_request",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-begin_request",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-cursor",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-cursor",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-cursor_scope",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-cursor_scope",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-intent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-intent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-owner_approval",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-owner_approval",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-owner_consent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-owner_consent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-owner_view",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-owner_view",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-proof_a",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-proof_a",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-proof_b",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-proof_b",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-revoked_shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-revoked_shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-literal-subject_reservation",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/reordered-keys-subject_reservation",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/literal-signing-inventory",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/signing-payload-literal-proof_a",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/ed25519-proof_a",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/changed-signature-proof_a",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/domain-without-NUL-proof_a",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/domain-literal-backslash-zero-proof_a",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/signing-payload-literal-proof_b",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/ed25519-proof_b",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/changed-signature-proof_b",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/domain-without-NUL-proof_b",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/domain-literal-backslash-zero-proof_b",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/signing-payload-literal-shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/ed25519-shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/changed-signature-shared_receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/domain-without-NUL-shared_receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/domain-literal-backslash-zero-shared_receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/signing-payload-literal-revoked_shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/ed25519-revoked_shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/changed-signature-revoked_shared_receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/domain-without-NUL-revoked_shared_receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/domain-literal-backslash-zero-revoked_shared_receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/signing-payload-literal-cursor",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/ed25519-cursor",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/changed-signature-cursor",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/domain-without-NUL-cursor",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/domain-literal-backslash-zero-cursor",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-proof",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-proof",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-consent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-consent",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-binding-proof",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-binding-proof",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-intent-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-intent-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-approval-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-approval-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-consent-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-consent-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-reservation-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-reservation-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-intent-request",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-intent-request",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-consent-request",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-consent-request",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-consent-assertion",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-consent-assertion",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-publication-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-publication-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-publication-consent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-publication-consent",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-shared-request",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-shared-request",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-revoked-request",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-revoked-request",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-owner-receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-owner-receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-author-receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-author-receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-revoked-author-receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-revoked-author-receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-cursor-scope",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-cursor-scope",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-nested-intent-proof",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-nested-intent-proof",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-nested-consent-proof",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-nested-consent-proof",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-nested-reservation-proof",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-nested-reservation-proof",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-owner-view-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-owner-view-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-owner-view-consent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-owner-view-consent",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-revoked-publication-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-revoked-publication-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-revoked-publication-consent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/digest-domain-change-revoked-publication-consent",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/cursor-token-literal",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/cursor-token-exact-bytes",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/top-level-signature-removal-only",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/numeric-ASCII-key-order",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/UTF8-scalar-and-control-escaping",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/safe-integer-boundary",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-sparse-array",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-symbol-key",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-fraction",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-negative",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-negative-zero",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-unsafe-integer",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-NaN",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-infinity",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-BigInt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-undefined",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-lone-surrogate",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-nonASCII-key",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-long-key",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-structural-array",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-byte-limit",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/canonical-reject-excess-depth",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/base64url-reject-padding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/base64url-reject-invalid-character",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/base64url-reject-nonminimal-bits",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/proof-a-context",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/proof-b-context",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/literal-negative-literal-backslash-zero-domain",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/literal-negative-cross-domain-registry",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/literal-negative-expired-proof",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/literal-negative-unknown-scope",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/literal-negative-decomposed-display",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/literal-negative-different-wallet-audience",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/owner-assertion-context",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/owner-ed25519-assertion",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/owner-client-bytes-tamper",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/proof-other-game-key",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "historical-UUID-account/shared-payload-tamper",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/fixed-public-fixture-sha256",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/literal-existing-account-format",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/existing-account-context-exact-joins",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/substituted-context-account",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/literal-object-inventory",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-author_active_view",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-author_active_view",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-author_revoked_view",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-author_revoked_view",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-begin_request",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-begin_request",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-cursor",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-cursor",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-cursor_scope",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-cursor_scope",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-intent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-intent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-owner_approval",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-owner_approval",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-owner_consent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-owner_consent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-owner_view",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-owner_view",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-proof_a",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-proof_a",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-proof_b",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-proof_b",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-revoked_shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-revoked_shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-literal-subject_reservation",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/reordered-keys-subject_reservation",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/literal-signing-inventory",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/signing-payload-literal-proof_a",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/ed25519-proof_a",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/changed-signature-proof_a",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/domain-without-NUL-proof_a",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/domain-literal-backslash-zero-proof_a",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/signing-payload-literal-proof_b",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/ed25519-proof_b",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/changed-signature-proof_b",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/domain-without-NUL-proof_b",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/domain-literal-backslash-zero-proof_b",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/signing-payload-literal-shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/ed25519-shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/changed-signature-shared_receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/domain-without-NUL-shared_receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/domain-literal-backslash-zero-shared_receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/signing-payload-literal-revoked_shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/ed25519-revoked_shared_receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/changed-signature-revoked_shared_receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/domain-without-NUL-revoked_shared_receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/domain-literal-backslash-zero-revoked_shared_receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/signing-payload-literal-cursor",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/ed25519-cursor",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/changed-signature-cursor",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/domain-without-NUL-cursor",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/domain-literal-backslash-zero-cursor",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-proof",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-proof",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-consent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-consent",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-binding-proof",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-binding-proof",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-intent-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-intent-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-approval-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-approval-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-consent-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-consent-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-reservation-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-reservation-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-intent-request",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-intent-request",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-consent-request",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-consent-request",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-consent-assertion",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-consent-assertion",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-publication-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-publication-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-publication-consent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-publication-consent",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-shared-request",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-shared-request",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-revoked-request",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-revoked-request",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-owner-receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-owner-receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-author-receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-author-receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-revoked-author-receipt",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-revoked-author-receipt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-cursor-scope",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-cursor-scope",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-nested-intent-proof",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-nested-intent-proof",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-nested-consent-proof",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-nested-consent-proof",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-nested-reservation-proof",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-nested-reservation-proof",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-owner-view-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-owner-view-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-owner-view-consent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-owner-view-consent",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-revoked-publication-binding",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-revoked-publication-binding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-revoked-publication-consent",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/digest-domain-change-revoked-publication-consent",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/cursor-token-literal",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/cursor-token-exact-bytes",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/top-level-signature-removal-only",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/numeric-ASCII-key-order",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/UTF8-scalar-and-control-escaping",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/safe-integer-boundary",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-sparse-array",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-symbol-key",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-fraction",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-negative",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-negative-zero",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-unsafe-integer",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-NaN",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-infinity",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-BigInt",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-undefined",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-lone-surrogate",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-nonASCII-key",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-long-key",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-structural-array",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-byte-limit",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/canonical-reject-excess-depth",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/base64url-reject-padding",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/base64url-reject-invalid-character",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/base64url-reject-nonminimal-bits",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/proof-a-context",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/proof-b-context",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/literal-negative-literal-backslash-zero-domain",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/literal-negative-cross-domain-registry",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/literal-negative-expired-proof",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/literal-negative-unknown-scope",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/literal-negative-decomposed-display",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/literal-negative-different-wallet-audience",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/owner-assertion-context",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/owner-ed25519-assertion",
+      "category": "positive",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/owner-client-bytes-tamper",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/proof-other-game-key",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "existing-prefixed-account/shared-payload-tamper",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "cross-fixture/historical-binding-with-prefixed-context",
+      "category": "rejection",
+      "status": "PASS"
+    },
+    {
+      "id": "cross-fixture/prefixed-binding-with-historical-context",
+      "category": "rejection",
+      "status": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+cc -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -D_FORTIFY_SOURCE=2  -o rock-sandbox-exec sandbox-exec.c -lseccomp
