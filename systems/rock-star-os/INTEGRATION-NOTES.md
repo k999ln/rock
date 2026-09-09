@@ -2,6 +2,8 @@
 
 `IMPORT-MANIFEST.json` は封印済み第9ソースの取得時hash、選別した511ファイル、補完1ファイル、変更した文書・テストのhashを記録する。後続開発で取得時の値を塗り替えず、Git差分として変更する。
 
+2026-09-09後続: 起動応答候補にPython16件と実Linux C8群の検証を追加して採用。元WIPは取得時のまま保存する。Wallet/ATM observerを現行enroll/terms/quote/approvalへ追従し、全observer55件をroot fixtureでskip/warningなしで検証した。Hubへ既知の版選択・利用停止・hashに結ぶ再承認入口を追加。実QEMU GUI起動障害/A/B検証器はhost側のみで、通常imageにfault injectorを組み込まない。新imageの起動/復旧はまだ未合格。[現行結果](../../docs/os-operational-validation-20260909.md)を優先し、以下の「未適用」「未実行」は取得時の履歴として読む。
+
 - 本体コード、署名Tool fixture、font・noVNC・第三者noticeは基準版を維持。
 - `os/operations/elf_guard.py` は同じ第9成果物のimage-sourceにあった検証部品を補完。`tests/test_operations_elf_guard.py` の参照を未追跡artifactsからこのファイルへ変更。
 - 取得元のトップレベルREADME/AGENTS/Goal/CHECKPOINT/CIは持ち込まず、Rockの製品・作業管理を正本とする。

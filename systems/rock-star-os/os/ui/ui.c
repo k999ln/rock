@@ -630,6 +630,36 @@ static void draw_detail(struct rock_ui *ui)
     text(ui, 34, y + 21, 16, 0, COLOR_MUTED, value, 650);
     y += 38;
     y += wrapped(ui, 34, y, 650, 20, 32, COLOR_INK, string(manifest, "description"), 4) + 20;
+    if (!item) {
+        json_object *catalog = field(ui->snapshot, "catalog");
+        int choices = 0;
+        for (size_t i = 0; i < array_size(catalog); i++) {
+            json_object *entry = array_item(catalog, i), *candidate = field(entry, "manifest");
+            const char *version = string(candidate, "version");
+            if (!strcmp(string(candidate, "id"), ui->selected_id) && *version && *string(entry, "hash") &&
+                strlen(version) < sizeof(ui->selected_version) && catalog_item(ui, ui->selected_id, version) == entry)
+                choices++;
+        }
+        if (choices > 1) {
+            text(ui, 35, y + 25, 20, 1, COLOR_INK, "選べるバージョン", 650);
+            y += 43;
+            for (size_t i = 0; i < array_size(catalog); i++) {
+                json_object *entry = array_item(catalog, i), *candidate = field(entry, "manifest");
+                const char *version = string(candidate, "version");
+                if (strcmp(string(candidate, "id"), ui->selected_id) || !*version || !*string(entry, "hash") ||
+                    strlen(version) >= sizeof(ui->selected_version) || catalog_item(ui, ui->selected_id, version) != entry)
+                    continue;
+                int chosen = entry == selected;
+                snprintf(value, sizeof(value), chosen ? "v%s を選択中%s" : "v%s を選ぶ%s", version,
+                         entry == latest_item ? "（最新版）" : "");
+                button(ui, 32, y, 656, 48, value, ACTION_VERSION, 0, ui->selected_id, version,
+                       can_act && !chosen, 0);
+                y += 60;
+            }
+            y += wrapped(ui, 35, y, 650, 16, 26, COLOR_MUTED,
+                         "選んだ版の権限と料金を確認してから、インストールしてください。", 2) + 18;
+        }
+    }
     panel(ui, 32, y, 656, 226, COLOR_WHITE);
     text(ui, 56, y + 35, 19, 1, COLOR_INK, "このツールが使うもの", 590);
     text(ui, 56, y + 77, 16, 0, COLOR_MUTED, "権限", 145);
@@ -653,8 +683,9 @@ static void draw_detail(struct rock_ui *ui)
                  string(required, "min_os_version"), string(required, "min_runtime_version"));
         y += wrapped(ui, 35, y, 650, 16, 25, COLOR_MUTED, value, 2) + 16;
     }
+    snprintf(value, sizeof(value), "v%s をインストール", string(manifest, "version"));
     button(ui, 32, y, 656, 60,
-           !tool_compatible(selected) ? "OSの更新が必要です" : item ? (boolean(item, "enabled") ? "ツールを開く" : "この権限を確認して利用を許可") : installation_unknown ? "インストール状態が未取得" : "インストール",
+           !tool_compatible(selected) ? "OSの更新が必要です" : item ? (boolean(item, "enabled") ? "ツールを開く" : "この権限を確認して利用を許可") : installation_unknown ? "インストール状態が未取得" : value,
            item ? (boolean(item, "enabled") ? ACTION_EDITOR : ACTION_APPROVE) : ACTION_INSTALL,
            0, ui->selected_id, string(manifest, "version"), can_act && tool_compatible(selected), 1);
     y += 80;
@@ -667,6 +698,9 @@ static void draw_detail(struct rock_ui *ui)
         button(ui, 255, y, 210, 52, "以前の版へ", ACTION_ROLLBACK, 0, ui->selected_id,
                old_version, can_act && *old_version, 0);
         button(ui, 478, y, 210, 52, "削除", ACTION_UNINSTALL, 0, ui->selected_id, NULL, can_act, 0);
+        y += 70;
+        button(ui, 32, y, 656, 52, boolean(item, "enabled") ? "ツールの利用を停止" : "停止中 · 再開には権限の確認が必要",
+               ACTION_DISABLE, 0, ui->selected_id, NULL, can_act && boolean(item, "enabled"), 0);
         y += 70;
         if (newer && !tool_compatible(latest_item)) {
             json_object *required = field(latest, "compatibility");
@@ -1319,6 +1353,17 @@ static void activate(struct rock_ui *ui, const struct rock_hit *target)
         snprintf(ui->selected_version, sizeof(ui->selected_version), "%s", target->version);
         navigate(ui, PAGE_DETAIL);
         return;
+    case ACTION_VERSION: {
+        json_object *entry = catalog_item(ui, target->id, target->version);
+        if (ui->page != PAGE_DETAIL || !can_mutate(ui) || installed(ui, ui->selected_id) ||
+            boolean(hub(ui), "installed_truncated") || strcmp(target->id, ui->selected_id) ||
+            !*target->version || !entry || !*string(entry, "hash")) return;
+        snprintf(ui->selected_version, sizeof(ui->selected_version), "%s", target->version);
+        ui->scroll = 0;
+        ui->focus = -1;
+        ui->editing = 0;
+        return;
+    }
     case ACTION_EDITOR:
         snprintf(ui->selected_id, sizeof(ui->selected_id), "%s", target->id);
         navigate(ui, PAGE_EDITOR);
@@ -1380,12 +1425,19 @@ static void activate(struct rock_ui *ui, const struct rock_hit *target)
             ui->message_error = 1;
             return;
         }
+        if (installed(ui, target->id) || strcmp(target->id, ui->selected_id) ||
+            strcmp(target->version, ui->selected_version) || !*target->version ||
+            !catalog_item(ui, target->id, target->version) ||
+            !tool_compatible(catalog_item(ui, target->id, target->version))) return;
         request = request_new("install");
         break;
     case ACTION_APPROVE: request = request_new("approve"); break;
     case ACTION_UPDATE: request = request_new("update"); break;
     case ACTION_ROLLBACK: request = request_new("rollback"); break;
     case ACTION_UNINSTALL: request = request_new("uninstall"); break;
+    case ACTION_DISABLE:
+        if (!boolean(installed(ui, target->id), "enabled")) return;
+        request = request_new("disable"); break;
     case ACTION_RUN:
         if (!manifest_target(field(installed(ui, target->id), "manifest"), "device_local")) return;
         request = request_new("run"); break;
@@ -1456,12 +1508,13 @@ static void activate(struct rock_ui *ui, const struct rock_hit *target)
                                target->action == ACTION_RECONCILE ? "total_dispensed_minor" : "amount_minor",
                                json_object_new_int64(minor));
     }
-    if (target->action == ACTION_UNINSTALL || target->action == ACTION_ROLLBACK ||
+    if (target->action == ACTION_UNINSTALL || target->action == ACTION_ROLLBACK || target->action == ACTION_DISABLE ||
         target->action == ACTION_POWEROFF || target->action == ACTION_REBOOT) {
         if (ui->confirm_request) json_object_put(ui->confirm_request);
         ui->confirm_request = request;
         snprintf(ui->confirm_title, sizeof(ui->confirm_title), target->action == ACTION_UNINSTALL ?
-                 "このツールを削除しますか？" : target->action == ACTION_ROLLBACK ? "以前のバージョンへ戻しますか？" :
+                 "このツールを削除しますか？" : target->action == ACTION_DISABLE ? "このツールの利用を停止しますか？" :
+                 target->action == ACTION_ROLLBACK ? "以前のバージョンへ戻しますか？" :
                  target->action == ACTION_POWEROFF ? "端末の電源を切りますか？" : "端末を再起動しますか？");
         ui->focus = -1;
         ui->editing = 0;
@@ -1589,6 +1642,8 @@ void rock_ui_response(struct rock_ui *ui, json_object *request, json_object *res
             snprintf(ui->message, sizeof(ui->message), "インストールしました。権限を確認して利用を許可してください。");
         } else if (!strcmp(operation, "approve")) {
             snprintf(ui->message, sizeof(ui->message), "このツールの利用を許可しました。");
+        } else if (!strcmp(operation, "disable")) {
+            snprintf(ui->message, sizeof(ui->message), "ツールの利用を停止しました。再開するときは権限を確認してください。");
         } else if (!strcmp(operation, "uninstall")) {
             navigate(ui, PAGE_INSTALLED);
             snprintf(ui->message, sizeof(ui->message), "ツールを削除しました。実行履歴は残ります。");
@@ -1817,6 +1872,8 @@ void rock_ui_draw(struct rock_ui *ui)
                 "実行中の道具を終了します。\n保存していない入力は失われます。\n準備ができてから実行してください。" :
                 !strcmp(string(ui->confirm_request, "op"), "uninstall") ?
                 "インストールしたツールを削除します。実行履歴は残ります。" :
+                !strcmp(string(ui->confirm_request, "op"), "disable") ?
+                "このツールの利用を停止します。\n実行中の処理も停止対象です。\n再開するときは権限を確認してください。" :
                 "選択した保存済みバージョンに戻します。権限は再確認が必要です。", 3);
         button(ui, 93, 550, 254, 53, "戻る", ACTION_DISMISS, 0, NULL, NULL, 1, 0);
         button(ui, 369, 550, 256, 53, "確認して実行", ACTION_CONFIRM, 0, NULL, NULL, can_mutate(ui), 1);

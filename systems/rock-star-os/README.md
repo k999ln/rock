@@ -61,4 +61,6 @@ Buildroot本体と依存ソースの取得・compileが必要。ソースを追�
 
 独自コードの一般再利用ライセンスは未選定。第三者のfont・noVNC・Tool由来コードのLICENSE/NOTICEと固定出所を維持する。ソース閲覧と製品の安全性・本番配布許諾は別である。
 
-実機のdriver/省電力/更新、実USB、外部MCP/AIの相互運用、金融provider・ATM・ToB精算、本番運営は未完了。Walletと売上fixtureを実資金として使わない。起動応答確認の追加案は `experiments/startup-health/` に未検証patchとして保存し、通常のbuildには適用していない。
+実機のdriver/省電力/更新、実USB、外部MCP/AIの相互運用、金融provider・ATM・ToB精算、本番運営は未完了。Walletと売上fixtureを実資金として使わない。`experiments/startup-health/` の原本を保持しつつ、追加試験付きの起動応答確認を実装候補へ採用した。実Linuxのsource試験は成功し、実QEMU受入は進行中。現在の結果は [統合後のOS検証](../../docs/os-operational-validation-20260909.md)。
+
+Hubの未導入Tool詳細では、カタログに複数版がある場合に導入する版を選べる。標準は最新版で、選ぶだけでは導入しない。選択版の権限・料金を確認して導入し、利用を許可する。導入後は「最新版」「以前の版へ」「削除」と「ツールの利用を停止」を使う。停止からの再開は現在の版の権限を再確認する。これらのC画面/IPC試験は成功、実OS画面での一連操作は別に検証する。

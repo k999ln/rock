@@ -556,6 +556,7 @@ static void framebuffer_test(void)
 #include "test_service.inc"
 #include "test_activation.inc"
 #include "test_mcp.inc"
+#include "test_lifecycle.inc"
 
 int main(int argc, char **argv)
 {
@@ -571,6 +572,7 @@ int main(int argc, char **argv)
     search_test(&ui);
     partial_installation_test(&ui);
     compatibility_test(&ui);
+    lifecycle_selection_test(&ui);
     snapshot(&ui, 0, 0);
     click(&ui, ACTION_DETAIL);
     require(ui.page == PAGE_DETAIL, "pointer opens tool detail");
