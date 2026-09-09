@@ -39,9 +39,21 @@ jobs:
             | grep -Fx '{"text": "hello"}'
       - name: Native source regressions (not OS boot)
         run: python3 scripts/test-native.py --output work/native-tests
+      - name: Root-owned disposable UI observers and readiness protocol
+        run: |
+          mkdir -p work/native-root-ui
+          sudo "$(command -v python3)" -B -W error::ResourceWarning -m unittest discover -s systems/rock-star-os/os/ui -p 'test_*evidence.py' -v > work/native-root-ui/observers.log 2>&1
+          cat work/native-root-ui/observers.log
+          if grep -E 'ResourceWarning:|Exception ignored|\.\.\. skipped' work/native-root-ui/observers.log; then exit 1; fi
+          cp -R systems/rock-star-os/os/ui work/native-root-ui/ui
+          make -C work/native-root-ui/ui rock-ui-health-test
+          sudo work/native-root-ui/ui/rock-ui-health-test > work/native-root-ui/health.log 2>&1
+          cat work/native-root-ui/health.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: native-source-test-results
-          path: work/native-tests/
+          path: |
+            work/native-tests/
+            work/native-root-ui/*.log
           retention-days: 7

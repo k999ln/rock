@@ -4,10 +4,11 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import shutil
 import sqlite3
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -32,7 +33,10 @@ class ATMEvidenceTests(unittest.TestCase):
         cls.temp = tempfile.TemporaryDirectory(prefix='rock-atm-evidence-test-')
         cls.addClassCleanup(cls.temp.cleanup)
         state = Path(cls.temp.name)
-        cls.server = service.WalletService(state, provisioning_file=ROOT / 'os/entitlement/fixtures/device-handoff.json',
+        handoff = state / 'handoff.json'
+        shutil.copyfile(ROOT / 'os/entitlement/fixtures/device-handoff.json', handoff)
+        handoff.chmod(0o644)
+        cls.server = service.WalletService(state, provisioning_file=handoff,
                                           start_scheduler=False, clock=lambda: 1788856800)
         cls.addClassCleanup(cls.server.close)
         cls.authenticator = SoftwareTestAuthenticator(state / 'authenticator', 'fixture-rock-arm64-001')
@@ -151,6 +155,35 @@ class ATMEvidenceTests(unittest.TestCase):
         with self.assertRaises(AssertionError):
             observer.validate_final(wallet, self.database)
 
+    def test_enrollment_terms_signed_quote_and_zero_rock_fee_are_required(self):
+        for mode in ('credential', 'terms', 'terms-version', 'terms-consent', 'quote', 'approval', 'signature',
+                     'quote-fee', 'issue-fee', 'boolean-fee', 'quote-owner', 'quote-challenge', 'approval-link', 'pin'):
+            db = copy.deepcopy(self.database)
+            evidence, rows = db['authentication'], db['wallet_idempotency']
+            if mode == 'credential': evidence['wallet_auth_credentials'] = []
+            if mode == 'terms': evidence['wallet_auth_terms'] = []
+            if mode == 'terms-version': evidence['wallet_auth_terms'][0]['terms_version'] = 'monthly-is-not-wallet-terms'
+            if mode == 'terms-consent': rows[2]['input']['request']['accepted'] = False
+            if mode == 'quote': evidence['wallet_auth_quotes'] = []
+            if mode == 'approval': evidence['wallet_auth_approvals'] = []
+            if mode == 'signature':
+                response = rows[6]['input']['request']['credential']['response']
+                value = response['signature']
+                response['signature'] = ('A' if value[0] != 'A' else 'B') + value[1:]
+            if mode in ('quote-fee', 'boolean-fee'):
+                value = 1 if mode == 'quote-fee' else False
+                evidence['wallet_auth_quotes'][0]['quote']['fee_minor'] = value
+                rows[5]['result']['quote']['fee_minor'] = value
+            if mode == 'issue-fee': rows[6]['result']['fee_minor'] = 1
+            if mode == 'quote-owner':
+                evidence['wallet_auth_quotes'][0]['quote']['account_id'] = 'another-account'
+                rows[5]['result']['quote']['account_id'] = 'another-account'
+            if mode == 'quote-challenge': evidence['wallet_auth_quotes'][0]['challenge'] = 'different-challenge'
+            if mode == 'approval-link': evidence['wallet_auth_approvals'][0]['withdrawal_id'] = 'another-withdrawal'
+            if mode == 'pin': rows[6]['input']['request']['metadata'] = {'auth_pin': 'never-export'}
+            with self.subTest(mode=mode), self.assertRaises((AssertionError, ValueError)):
+                observer.validate_final(self.wallet, db)
+
     def test_snapshot_reader_rejects_business_mutations(self):
         for op in ('wallet.atm.issue', 'wallet.atm.cancel', 'atm.redeem', 'wallet.sale', 'wallet.register'):
             with self.subTest(op=op), self.assertRaises(ValueError):
@@ -177,6 +210,7 @@ class ATMEvidenceTests(unittest.TestCase):
         return {'schema': 'rock-native-atm-ui-proof/1', 'status': 'PASS', 'blackberry': 'NOT_RUN', 'real_money': 'NOT_RUN',
                 'real_atm': 'NOT_CONNECTED', 'real_identity': 'NOT_CONNECTED', 'atm_actor_assertions': 0, 'raw_code_in_evidence': False,
                 'wallet_initial': self.initial, 'wallet_final': self.wallet, 'registration_without_consent': True,
+                'wallet_challenge_observed': True, 'wallet_enrollment_observed': True, 'wallet_activation_without_funds': True,
                 'database': self.database, 'receipts': observer.validate_final(self.wallet, self.database),
                 'initial_hub_sha256': '0' * 64, 'final_hub_sha256': '0' * 64, 'tool_state_unchanged': True,
                 'stages': [{'stage': index, 'available_minor': a, 'pending_minor': p, 'held_minor': h} for index, (a, p, h) in
@@ -196,7 +230,7 @@ class ATMEvidenceTests(unittest.TestCase):
                 harness.parse_proof(invalid)
 
     def test_host_validator_rejects_skipped_stage_nic_uid_and_scope_drift(self):
-        for mode in ('stage', 'balance', 'network', 'uid', 'scope', 'actor', 'raw', 'credential', 'hub'):
+        for mode in ('stage', 'balance', 'network', 'uid', 'scope', 'actor', 'raw', 'credential', 'hub', 'activation'):
             proof = copy.deepcopy(self.proof_fixture())
             if mode == 'stage': proof['stages'].pop(4)
             if mode == 'balance': proof['stages'][4]['held_minor'] = 0
@@ -207,8 +241,31 @@ class ATMEvidenceTests(unittest.TestCase):
             if mode == 'raw': proof['nested'] = {'code': 'private'}
             if mode == 'credential': proof['issuance_observed']['credential']['code_sha256'] = '0' * 64
             if mode == 'hub': proof['final_hub_sha256'] = '1' * 64
+            if mode == 'activation': proof['wallet_activation_without_funds'] = False
             with self.subTest(mode=mode), self.assertRaises(AssertionError):
                 harness.validate_proof(proof)
+
+
+class ATMFixtureCleanupTests(unittest.TestCase):
+    def test_setup_failure_closes_allocated_resources_and_removes_temporary_state(self):
+        class FailedSetup(unittest.TestCase):
+            setUpClass = ATMEvidenceTests.__dict__['setUpClass']
+
+            def test_never_reached(self):
+                self.fail('fixture setup should have failed')
+
+        authenticator = Mock()
+        with patch.object(service, 'WalletService') as factory, \
+                patch.dict(globals(), SoftwareTestAuthenticator=Mock(return_value=authenticator)):
+            factory.return_value.dispatch.side_effect = RuntimeError('injected setup failure after resources open')
+            result = unittest.TestResult()
+            unittest.TestSuite([FailedSetup('test_never_reached')]).run(result)
+        self.assertEqual(result.testsRun, 0)
+        self.assertEqual(len(result.errors), 1)
+        self.assertIn('injected setup failure', result.errors[0][1])
+        factory.return_value.close.assert_called_once_with()
+        authenticator.close.assert_called_once_with()
+        self.assertFalse(Path(FailedSetup.temp.name).exists())
 
 
 if __name__ == '__main__':

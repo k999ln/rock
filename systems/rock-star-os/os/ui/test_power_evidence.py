@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Disposable power evidence rejection tests; no actual reboot or poweroff."""
+from contextlib import closing
 import copy
 import importlib.util
 import json
@@ -177,14 +178,14 @@ class PowerEvidenceTests(unittest.TestCase):
             '/wallet/entitlement.db': ('accounts', 'consents', 'authorizations', 'authorization_claims', 'wallet_bindings', 'device_api_receipts', 'device_monthly_due'),
         }
         def export(_data, source, destination):
-            with sqlite3.connect(destination) as db:
+            with closing(sqlite3.connect(destination)) as db, db:
                 for table in table_sets[source]:
                     db.execute('CREATE TABLE IF NOT EXISTS ' + table + ' (value INTEGER)')
         with tempfile.TemporaryDirectory(prefix='rock-power-business-test-') as directory:
             output = Path(directory)
             with patch.object(harness, 'export_closed_database', side_effect=export):
                 self.assertEqual(set(harness.verify_business_databases(Path('unused'), output)), {'hub', 'wallet', 'membership'})
-                with sqlite3.connect(output / 'observed-wallet.db') as db:
+                with closing(sqlite3.connect(output / 'observed-wallet.db')) as db, db:
                     db.execute('INSERT INTO wallet_postings VALUES (888)')
                 with self.assertRaises(AssertionError):
                     harness.verify_business_databases(Path('unused'), output)

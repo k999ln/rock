@@ -2,10 +2,11 @@
 
 作業branch: `codex/operational-base-20260909`。記録: 2026-09-09T17:47:40.214265+00:00。
 
-設計v1.1は実装承認済み。[承認範囲](docs/execution-approval-20260909.md)と[製品ベース](docs/product-baseline.md)を読む。main `7cdbb5fedc86ee3978ed329d9312147d137c9199`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、設計 `27b34adc02a9e06a4816aa18a5e38cf38b330953` の3入力を取得し統合中。main/既存native PRはまだ未変更。元IMPORT-MANIFESTと旧Nタスクは保持。
+設計v1.1は実装承認済み。[承認範囲](docs/execution-approval-20260909.md)と[製品ベース](docs/product-baseline.md)を読む。main `7cdbb5fedc86ee3978ed329d9312147d137c9199`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、設計 `27b34adc02a9e06a4816aa18a5e38cf38b330953` の3入力を専用branchへ統合済み。main/既存native PRはまだ未変更。元IMPORT-MANIFESTと旧Nタスクは保持。
 
-次の作業: 専用Linux環境で統合source回帰→V01起動基礎→既存native商品と合成Wallet→D0〜D6受入。ALIGN03のbackup試験入口とN02起動応答を修正。B03-FIXTURE後にGX00→GX01→DX01。公開/実機/MetaMask実資金は条件付き了承を保持し、対象と技術条件を確認する。
+次の作業: 新規QEMU imageのbuild→起動/専用UID/Hub業務商品/合成Wallet→D0〜D6受入。全observer55件とsource回帰1056件はLinux成功。GX00のADRを保持しB03-FIXTURE後に複数owner・ゲーム交換・SDKへ進む。Pixel 10はGrapheneOSを保つP1 APK試験を準備。
 
+現行の証拠は[統合後のOS検証](docs/os-operational-validation-20260909.md)。新規Linuxでsource回帰1056件、追加全observer55件、startup C8群が成功。OS build/bootの受入は進行中。
 `npm run baseline:check`、`npm run project:update`、`npm run verify`、専用Linuxの `python3 scripts/test-native.py --output <新規ディレクトリ>` を実行して同一版の証拠を残す。新OSのD0〜D6は未合格。MetaMaskはWebアドレス接続のみで、native合成台帳との実資金接続はない。
 
 ## 以下はnative統合時点の履歴

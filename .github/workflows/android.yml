@@ -2,9 +2,9 @@ name: Rock star Android prototype
 on:
   push:
     branches: [main]
-    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', '.github/workflows/android.yml', 'lib/mr-tools.ts']
+    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', 'scripts/package-android-trial.py', 'docs/android-trial.md', '.github/workflows/android.yml', 'lib/mr-tools.ts']
   pull_request:
-    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', '.github/workflows/android.yml', 'lib/mr-tools.ts']
+    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', 'scripts/package-android-trial.py', 'docs/android-trial.md', '.github/workflows/android.yml', 'lib/mr-tools.ts']
 permissions:
   contents: read
 concurrency:
@@ -47,6 +47,16 @@ jobs:
           script: |
             adb install -r android/article-tool/build/outputs/apk/debug/article-tool-debug.apk
             gradle -p android :automation:connectedDebugAndroidTest --no-daemon
+      - name: Verify and collect the successful Android P1 trial pair
+        env:
+          ROCK_REQUESTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python3 scripts/package-android-trial.py --output work/android-p1-trial
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-p1-trial-${{ github.run_id }}
+          path: work/android-p1-trial/
+          if-no-files-found: error
+          retention-days: 7
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -58,4 +68,4 @@ jobs:
             android/automation/build/outputs/androidTest-results/
             android/article-tool/build/reports/
           retention-days: 7
-      # No APK publication, signing secrets, OS image deployment, or device flashing.
+      # Only successful P1 debug trial artifacts; no release keys, OS deployment or device flashing.

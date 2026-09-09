@@ -22,6 +22,15 @@ native = load('rock_wallet_native_input', 'verify-native.py')
 observer = load('rock_wallet_native_observer', 'guest-ui-wallet-evidence.py')
 
 
+class Input(native.NativeInput):
+    def pin(self):
+        # Enter the public fixture explicitly without generic key logging.
+        for _ in range(4):
+            self.monitor.command('send-key', {'keys': [{'type': 'qcode', 'data': '0'}], 'hold-time': 80})
+            time.sleep(0.15)
+        self.record('public-test-pin-entry', {'digits': 4, 'value_recorded': False})
+
+
 def validate_proof(proof):
     require = observer.base.require
     require(proof['schema'] == 'rock-native-wallet-ui-proof/1' and proof['status'] == 'PASS', 'Wallet guest did not pass')
@@ -31,6 +40,9 @@ def validate_proof(proof):
     observer.membership_contract(proof['wallet_initial'])
     require(proof['wallet_initial']['membership']['registered'] is False and proof['registration_without_consent'] is True,
             'registration and consent were not observed separately')
+    require(all(proof.get(name) is True for name in ('wallet_challenge_observed', 'wallet_enrollment_observed',
+                                                    'wallet_activation_without_funds')),
+            'separate enrollment and Wallet terms were not observed before monthly consent')
     require(observer.validate_final(proof['wallet_final'], proof['database']) == proof['receipts'], 'Wallet receipt validation differs')
     require(proof['initial_hub_sha256'] == proof['final_hub_sha256'] and proof['tool_state_unchanged'] is True,
             'Wallet test changed installed Tools or jobs')
@@ -92,7 +104,7 @@ def main():
                         raise RuntimeError('QEMU monitor did not start')
                     time.sleep(0.1)
                 monitor = native.Monitor(qmp)
-                ui = native.NativeInput(monitor, evidence, report)
+                ui = Input(monitor, evidence, report)
                 def wait_marker(marker, seconds=25):
                     deadline = time.monotonic() + seconds
                     while time.monotonic() < deadline:
@@ -117,7 +129,28 @@ def main():
                 time.sleep(3)
                 wallet_home()
                 ui.capture('01-registered-without-consent')
-                ui.click(360, 616)
+                ui.click(360, 537)
+                wait_marker('ROCK_UI_WALLET_AUTH_CHALLENGE')
+                time.sleep(0.5)
+                ui.capture('auth-01-explicit-enrollment')
+                ui.click(250, 420)
+                ui.pin()
+                ui.click(520, 838)
+                wait_marker('ROCK_UI_WALLET_AUTH_ENROLLED')
+                time.sleep(3)
+                wallet_home()
+                ui.capture('auth-02-enrolled-wallet-terms-required')
+                ui.click(360, 537)
+                time.sleep(0.5)
+                ui.capture('auth-03-separate-wallet-terms')
+                ui.click(497, 577)
+                wait_marker('ROCK_UI_WALLET_AUTH_ACTIVE')
+                time.sleep(3)
+                wallet_home()
+                # The auth card adds 245 px. PageDown scrolls 300 px, leaving
+                # monthly consent at 616 + 245 - 300 and billing at 679 + 245 - 300.
+                ui.keys(['pgdn'])
+                ui.click(360, 561)
                 wait_marker('ROCK_UI_WALLET_CONSENTED')
                 time.sleep(3)
                 wallet_home()
@@ -144,17 +177,20 @@ def main():
                 time.sleep(3)
                 ui.capture('06-actual-settlement')
                 wallet_home()
-                ui.click(360, 679)
+                ui.keys(['pgdn'])
+                ui.click(360, 624)
                 wait_marker('ROCK_UI_WALLET_BILLED_ONCE')
                 time.sleep(3)
                 wallet_home()
                 ui.capture('07-888-test-fee-paid')
-                ui.click(360, 679)
+                ui.keys(['pgdn'])
+                ui.click(360, 624)
                 wait_marker('ROCK_UI_WALLET_BILL_REPEATED_ONCE')
                 time.sleep(3)
                 wallet_home()
                 ui.capture('08-second-request-still-one-bill')
-                ui.click(360, 616)
+                ui.keys(['pgdn'])
+                ui.click(360, 561)
                 wait_marker('ROCK_UI_WALLET_CANCELED')
                 time.sleep(3)
                 wallet_home()
@@ -178,7 +214,7 @@ def main():
             if json.loads(disk.stdout) != proof:
                 raise AssertionError('durable Wallet proof differs from serial')
             (evidence / 'ui-wallet-proof.json').write_text(json.dumps(proof, ensure_ascii=False, indent=2) + '\n')
-            if {path.name: native.digest_file(path) for path in (kernel, rootfs)} != before or len(report['screenshots']) != 11:
+            if {path.name: native.digest_file(path) for path in (kernel, rootfs)} != before or len(report['screenshots']) != 14:
                 raise AssertionError('immutable images changed or native captures are incomplete')
             report.update(status='PASS', durable_guest_proof_matches_serial=True, guest_proof_sha256=observer.base.digest(proof))
             print('PASS actual native Wallet registration, explicit consent, simulator settlement, exact 888 fee once and cancellation', flush=True)

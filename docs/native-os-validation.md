@@ -1,5 +1,7 @@
 # Native OSのRock統合検証
 
+現在の統合後の結果は[OS稼働検証](os-operational-validation-20260909.md)。以下は元native取り込み時点の履歴であり、起動改善候補・backup検証器・全observerの後続修正は現在の記録を参照する。
+
 日付: 2026-09-09。取り込み前のRock: `5cec83478fe97bf272869298160a572ef7fcefee`。統合branch: `codex/integrate-native-os-20260909`。
 
 [機械可読の結果・入力hash](evidence/native-integration-20260909.json)に実行条件、開始/終了時刻、各suiteの結果、log hashを記録した。本文書はsource統合の検証であり、OS全体の完成判定ではない。

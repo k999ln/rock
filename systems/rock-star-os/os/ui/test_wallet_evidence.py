@@ -10,7 +10,7 @@ import shutil
 import sqlite3
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -41,7 +41,7 @@ class WalletEvidenceTests(unittest.TestCase):
         shutil.copyfile(ROOT / 'os/entitlement/fixtures/device-handoff.json', handoff)
         handoff.chmod(0o644)
         state = directory / 'wallet'
-        state.mkdir()
+        state.mkdir(mode=0o700)
         cls.service = service.WalletService(state, provisioning_file=handoff, start_scheduler=False, clock=lambda: NOW)
         cls.addClassCleanup(cls.service.close)
         cls.authenticator = SoftwareTestAuthenticator(directory / 'authenticator', 'fixture-rock-arm64-001')
@@ -79,7 +79,11 @@ class WalletEvidenceTests(unittest.TestCase):
 
     def test_actual_disposable_ledger_and_membership_receipts(self):
         observer.base.wallet_baseline(self.initial)
-        self.assertEqual(len(observer.validate_final(self.wallet, self.database)['requests']), 5)
+        receipts = observer.validate_final(self.wallet, self.database)
+        self.assertEqual(len(receipts['requests']), 5)
+        self.assertIs(receipts['authentication']['registration_reverified'], True)
+        self.assertEqual(receipts['authentication']['transaction_assertions'], 0)
+        self.assertEqual(len(self.database['authentication_receipts']), 3)
         self.assertEqual(self.wallet['available_minor'], 1112)
 
     def test_query_only_read_does_not_change_or_create_databases(self):
@@ -132,6 +136,42 @@ class WalletEvidenceTests(unittest.TestCase):
                 observer.main()
             observe.assert_not_called()
             run.assert_not_called()
+
+
+    def test_wallet_terms_cannot_be_replaced_by_monthly_consent(self):
+        for kind in ('credential', 'terms', 'monthly-terms', 'extra-operation', 'pin'):
+            db = copy.deepcopy(self.database)
+            if kind == 'credential': db['authentication']['wallet_auth_credentials'] = []
+            if kind == 'terms': db['authentication']['wallet_auth_terms'] = []
+            if kind == 'monthly-terms': db['authentication_receipts'][2]['input']['request']['terms_version'] = observer.TERMS
+            if kind == 'extra-operation': db['ui_ledger_operations'].append('wallet.atm.quote')
+            if kind == 'pin': db['authentication_receipts'][1]['input']['request']['metadata'] = {'PIN': 'never-export'}
+            with self.subTest(kind=kind), self.assertRaises(AssertionError):
+                observer.validate_final(self.wallet, db)
+
+
+class WalletFixtureCleanupTests(unittest.TestCase):
+    def test_setup_failure_closes_allocated_resources_and_removes_temporary_state(self):
+        # This only tests fixture cleanup with mocked services; it does not run
+        # or bypass the root-owned Linux service fixture above.
+        class FailedSetup(unittest.TestCase):
+            setUpClass = WalletEvidenceTests.__dict__['setUpClass']
+
+            def test_never_reached(self):
+                self.fail('fixture setup should have failed')
+
+        authenticator = Mock()
+        with patch.object(service, 'WalletService') as factory, \
+                patch.dict(globals(), SoftwareTestAuthenticator=Mock(return_value=authenticator)):
+            factory.return_value.dispatch.side_effect = RuntimeError('injected setup failure after resources open')
+            result = unittest.TestResult()
+            unittest.TestSuite([FailedSetup('test_never_reached')]).run(result)
+        self.assertEqual(result.testsRun, 0)
+        self.assertEqual(len(result.errors), 1)
+        self.assertIn('injected setup failure', result.errors[0][1])
+        factory.return_value.close.assert_called_once_with()
+        authenticator.close.assert_called_once_with()
+        self.assertFalse(Path(FailedSetup.temporary.name).exists())
 
 
 if __name__ == '__main__':

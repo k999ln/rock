@@ -27,6 +27,16 @@ ATM_STATUS_CENTER = (360, 782)
 ATM_CANCEL_CENTER = (360, 708)
 
 
+class Input(native.NativeInput):
+    def pin(self):
+        # Generic type/keys records their arguments. Only send the public test
+        # PIN through the monitor, retaining no entered digits in the report.
+        for _ in range(4):
+            self.monitor.command('send-key', {'keys': [{'type': 'qcode', 'data': '0'}], 'hold-time': 80})
+            time.sleep(0.15)
+        self.record('public-test-pin-entry', {'digits': 4, 'value_recorded': False})
+
+
 def parse_proof(log):
     lines = log.replace('\r', '').splitlines()
     if 'ROCK_UI_ATM_GUEST_FAIL' in lines:
@@ -49,6 +59,9 @@ def validate_proof(proof):
     observer.membership_contract(proof['wallet_initial'])
     require(proof['wallet_initial']['membership']['registered'] is False and proof['registration_without_consent'] is True,
             'registration implicitly granted billing consent')
+    require(all(proof.get(name) is True for name in ('wallet_challenge_observed', 'wallet_enrollment_observed',
+                                                    'wallet_activation_without_funds')),
+            'separate enrollment and Wallet terms were not observed before funding')
     require(observer.validate_final(proof['wallet_final'], proof['database']) == proof['receipts'], 'durable ATM receipts differ')
     require(proof['initial_hub_sha256'] == proof['final_hub_sha256'] and proof['tool_state_unchanged'] is True,
             'ATM flow changed installed Tools or jobs')
@@ -98,10 +111,13 @@ def disk_evidence(data, proof, public_text):
             raise AssertionError('independent stopped-disk state differs from guest proof')
         with closing(sqlite3.connect('file:' + str(directory / 'wallet-simulator.db') + '?mode=ro', uri=True)) as db:
             db.execute('PRAGMA query_only=ON')
-            rows = db.execute("SELECT result_json FROM wallet_idempotency WHERE operation='atm.issue'").fetchall()
+            rows = db.execute("SELECT result_json FROM wallet_idempotency WHERE operation='wallet.atm.issue'").fetchall()
             if len(rows) != 1:
                 raise AssertionError('private disk contains a different issuance count')
-            private = json.loads(rows[0][0])
+            response = json.loads(rows[0][0])
+            if set(response) != {'ok', 'result'} or response['ok'] is not True:
+                raise AssertionError('private authenticated issuance failed')
+            private = response['result']
             redacted = observer.redact_issuance(private)
             if private['code'] in public_text or redacted != proof['receipts']['ledger'][2]['result']:
                 raise AssertionError('private issuance proof or public-output privacy differs')
@@ -155,7 +171,7 @@ def main():
                         raise RuntimeError('QEMU monitor did not start')
                     time.sleep(0.1)
                 monitor = native.Monitor(qmp)
-                ui = native.NativeInput(monitor, evidence, report)
+                ui = Input(monitor, evidence, report)
                 def wait_marker(marker, seconds=25):
                     deadline = time.monotonic() + seconds
                     while time.monotonic() < deadline:
@@ -180,6 +196,24 @@ def main():
                 time.sleep(3)
                 wallet_home()
                 ui.capture('01-registered-no-billing-consent')
+                ui.click(360, 537)
+                wait_marker('ROCK_UI_ATM_AUTH_CHALLENGE')
+                time.sleep(0.5)
+                ui.capture('auth-01-explicit-enrollment')
+                ui.click(250, 420)
+                ui.pin()
+                ui.click(520, 838)
+                wait_marker('ROCK_UI_ATM_AUTH_ENROLLED')
+                time.sleep(3)
+                wallet_home()
+                ui.capture('auth-02-enrolled-wallet-terms-required')
+                ui.click(360, 537)
+                time.sleep(0.5)
+                ui.capture('auth-03-separate-wallet-terms')
+                ui.click(497, 577)
+                wait_marker('ROCK_UI_ATM_AUTH_ACTIVE')
+                time.sleep(3)
+                wallet_home()
                 for _ in range(3):
                     ui.keys(['pgdn'])
                 ui.click(360, 807)
@@ -204,7 +238,9 @@ def main():
                 ui.click(*ATM_ISSUE_CENTER)
                 time.sleep(0.5)
                 ui.capture('06-owner-issue-confirmation')
-                ui.click(497, 577)
+                ui.click(250, 536)
+                ui.pin()
+                ui.click(520, 838)
                 wait_marker('ROCK_UI_ATM_ISSUED')
                 time.sleep(3)
                 ui.capture('07-issued-1000-held-code-hidden')
@@ -233,7 +269,7 @@ def main():
             if json.loads(disk.stdout) != proof:
                 raise AssertionError('durable ATM proof differs from serial')
             (evidence / 'ui-atm-proof.json').write_text(json.dumps(proof, ensure_ascii=False, indent=2) + '\n')
-            if {path.name: native.digest_file(path) for path in (kernel, rootfs)} != before or len(report['screenshots']) != 11:
+            if {path.name: native.digest_file(path) for path in (kernel, rootfs)} != before or len(report['screenshots']) != 14:
                 raise AssertionError('immutable images changed or native captures are incomplete')
             report['stopped_disk'] = disk_evidence(data, proof, log.read_text(errors='replace') + json.dumps(report) + json.dumps(proof))
             checked = subprocess.run(['e2fsck', '-fn', str(data)], capture_output=True, timeout=30)
@@ -244,7 +280,7 @@ def main():
             report['power_ui_used'] = False
             report['filesystem_check_exit_code'] = checked.returncode
             report.update(status='PASS', durable_guest_proof_matches_serial=True, guest_proof_sha256=observer.base.digest(proof))
-            print('PASS actual native owner ATM registration, 5000-cent settlement, one 1000-cent hold and unconsumed cancellation; code hidden', flush=True)
+            print('PASS actual native owner ATM enrollment, separate Wallet terms, zero-fee signed quote, one 1000-cent hold and unconsumed cancellation; code hidden', flush=True)
     except BaseException as error:
         report.update(status='FAIL', error=type(error).__name__ + ': ' + str(error))
         # Never take an unplanned failure frame that could contain a credential.

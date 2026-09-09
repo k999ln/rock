@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-09",
-  "milestone": "設計v1.1実装承認済み・main/native/設計の統合とOS受入準備",
-  "nextAction": "専用Linux環境で統合source回帰→V01起動基礎→既存native商品と合成Wallet→D0〜D6受入。ALIGN03のbackup試験入口とN02起動応答を修正。B03-FIXTURE後にGX00→GX01→DX01。公開/実機/MetaMask実資金は条件付き了承を保持し、対象と技術条件を確認する。",
+  "milestone": "3系統統合済み・native起動/保存検証修正と新規OSビルド",
+  "nextAction": "新規QEMU imageのbuild→起動/専用UID/Hub業務商品/合成Wallet→D0〜D6受入。全observer55件とsource回帰1056件はLinux成功。GX00のADRを保持しB03-FIXTURE後に複数owner・ゲーム交換・SDKへ進む。Pixel 10はGrapheneOSを保つP1 APK試験を準備。",
   "tasks": [
     {
       "id": "R01",
@@ -204,14 +204,15 @@
     {
       "id": "B04",
       "title": "main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [
         "B01",
         "D01"
       ],
       "evidence": [
         "docs/design-implementation-alignment-20260909.md",
-        "docs/prompts/os-operational-base-next.md"
+        "docs/prompts/os-operational-base-next.md",
+        "docs/os-operational-validation-20260909.md"
       ]
     },
     {
@@ -265,13 +266,14 @@
     {
       "id": "V01",
       "title": "最新統合sourceからQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "B04"
       ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
-        "docs/templates/os-acceptance-report.md"
+        "docs/templates/os-acceptance-report.md",
+        "docs/os-operational-validation-20260909.md"
       ]
     },
     {
@@ -283,7 +285,8 @@
       ],
       "evidence": [
         "docs/design-implementation-alignment-20260909.md",
-        "docs/prompts/os-operational-base-next.md"
+        "docs/prompts/os-operational-base-next.md",
+        "docs/gx00-owner-isolation-adr.md"
       ]
     },
     {
@@ -382,10 +385,11 @@
       "id": "B04-INTEGRATED",
       "task": "B04",
       "title": "承認後、main/native/設計reviewの3入力と入口を統合",
-      "status": "planned",
+      "status": "done",
       "dependsOn": [],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md"
+        "docs/prompts/os-operational-base-next.md",
+        "docs/os-operational-validation-20260909.md"
       ]
     },
     {

@@ -1,5 +1,7 @@
 # Rock star — 事業・設計・進捗
 
+2026-09-09実装更新: [統合後のOS検証](docs/os-operational-validation-20260909.md)に1056件source回帰と55件全observerの実Linux結果を保存。3系統統合は完了、新規OS build/実起動受入は進行中。[Pixel 10 P1](docs/android-trial.md)はGrapheneOSを保つ記事処理APK試験の準備。[GX00 ADR](docs/gx00-owner-isolation-adr.md)は複数owner実装に向けた設計で、交換実装の成功ではない。
+
 このファイルは当該branchの作業記録です。確定要望は [docs/product-baseline.md](docs/product-baseline.md)、進捗からの指示作成は [docs/prompt-playbook.md](docs/prompt-playbook.md) が正本です。
 
 ## 現在の作業 — 承認済み設計の統合と実装
@@ -160,7 +162,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-09 / 設計v1.1実装承認済み・main/native/設計の統合とOS受入準備 / 完了 13/32件
+最終更新: 2026-09-09 / 3系統統合済み・native起動/保存検証修正と新規OSビルド / 完了 14/32件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -181,13 +183,13 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 | B01 | Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
-| B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 進行中 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) |
+| B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
 | B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
-| V01 | 最新統合sourceからQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す | 未着手 | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) |
-| GX00 | 共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証 | 未着手 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) |
+| V01 | 最新統合sourceからQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す | 進行中 | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/os-operational-validation-20260909.md) |
+| GX00 | 共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証 | 未着手 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx00-owner-isolation-adr.md) |
 | GX01 | ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
 | GX02 | 指定された実ゲームの正式sandbox接続と交換条件を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
 | DX01 | ゲーム作者向けAPI/SDK・sandbox・複数owner/game分離と導入体験を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
@@ -201,7 +203,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 
 | 段階ID | 作業ID | 内容 | 状態 | 先に通す段階 | 根拠 |
 | --- | --- | --- | --- | --- | --- |
-| B04-INTEGRATED | B04 | 承認後、main/native/設計reviewの3入力と入口を統合 | 未合格 | — | [記録](docs/prompts/os-operational-base-next.md) |
+| B04-INTEGRATED | B04 | 承認後、main/native/設計reviewの3入力と入口を統合 | 合格 | — | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
 | V01-BOOT | V01 | OS起動・安全基礎（V01全体の合格ではない） | 未合格 | B04-INTEGRATED | [記録](docs/prompts/os-operational-base-next.md) |
 | B02-NATIVE | B02 | 既存native商品1件をHubで実処理・保存 | 未合格 | V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
 | B03-FIXTURE | B03 | 単一ownerの合成Wallet・商品/費用/売上状態の基礎 | 未合格 | B02-NATIVE | [記録](docs/prompts/os-operational-base-next.md) |
@@ -213,7 +215,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 未合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
 | DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 未合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) |
 
-次の作業: 専用Linux環境で統合source回帰→V01起動基礎→既存native商品と合成Wallet→D0〜D6受入。ALIGN03のbackup試験入口とN02起動応答を修正。B03-FIXTURE後にGX00→GX01→DX01。公開/実機/MetaMask実資金は条件付き了承を保持し、対象と技術条件を確認する。
+次の作業: 新規QEMU imageのbuild→起動/専用UID/Hub業務商品/合成Wallet→D0〜D6受入。全observer55件とsource回帰1056件はLinux成功。GX00のADRを保持しB03-FIXTURE後に複数owner・ゲーム交換・SDKへ進む。Pixel 10はGrapheneOSを保つP1 APK試験を準備。
 <!-- project-status:end -->
 
 ## 次段階の設計
