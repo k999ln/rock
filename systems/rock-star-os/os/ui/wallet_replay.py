@@ -4,6 +4,8 @@ No service/socket access: live calls send only native pointer/key input. Geometr
 is pinned by test_wallet_replay.py with current authenticated service snapshots.
 """
 
+import time
+
 # Names are also the C renderer actions checked before every test pointer input.
 CONTROLS = {
     'home': ('ACTION_NAV', (606, 912)),
@@ -31,6 +33,26 @@ def action(ui, name):
     ui.click(*CONTROLS[name][1])
 
 
+def confirm_pin(ui, profile, capture_name, marker, wait_marker):
+    # Share the original 25-second stage budget across visible readiness,
+    # explicit input, actual enabled-button click and authoritative receipt.
+    deadline = time.monotonic() + 25
+    ui.wait_pin_ready(profile, 0, deadline)
+    ui.capture(capture_name)
+    action(ui, 'enroll_pin' if profile == 'enroll' else 'atm_pin')
+    ui.pin()
+    ui.wait_pin_ready(profile, 4, deadline)
+    if time.monotonic() >= deadline:
+        raise TimeoutError('PIN readiness exhausted the original stage deadline')
+    action(ui, 'sign')
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        raise TimeoutError('PIN confirmation exhausted the original stage deadline')
+    wait_marker(marker, remaining)
+    if time.monotonic() >= deadline:
+        raise TimeoutError('PIN receipt was observed after the original stage deadline')
+
+
 def run_wallet(ui, wait_marker, sleep):
     def wallet_home():
         action(ui, 'home')
@@ -46,12 +68,8 @@ def run_wallet(ui, wait_marker, sleep):
     ui.capture('01-registered-without-consent')
     action(ui, 'enroll')
     wait_marker('ROCK_UI_WALLET_AUTH_CHALLENGE')
-    sleep(0.5)
-    ui.capture('auth-01-explicit-enrollment')
-    action(ui, 'enroll_pin')
-    ui.pin()
-    action(ui, 'sign')
-    wait_marker('ROCK_UI_WALLET_AUTH_ENROLLED')
+    confirm_pin(ui, 'enroll', 'auth-01-explicit-enrollment',
+                'ROCK_UI_WALLET_AUTH_ENROLLED', wait_marker)
     sleep(3)
     wallet_home()
     ui.capture('auth-02-enrolled-wallet-terms-required')
@@ -130,12 +148,8 @@ def run_atm(ui, wait_marker, sleep):
     ui.capture('01-registered-no-billing-consent')
     action(ui, 'enroll')
     wait_marker('ROCK_UI_ATM_AUTH_CHALLENGE')
-    sleep(0.5)
-    ui.capture('auth-01-explicit-enrollment')
-    action(ui, 'enroll_pin')
-    ui.pin()
-    action(ui, 'sign')
-    wait_marker('ROCK_UI_ATM_AUTH_ENROLLED')
+    confirm_pin(ui, 'enroll', 'auth-01-explicit-enrollment',
+                'ROCK_UI_ATM_AUTH_ENROLLED', wait_marker)
     sleep(3)
     wallet_home()
     ui.capture('auth-02-enrolled-wallet-terms-required')
@@ -168,12 +182,8 @@ def run_atm(ui, wait_marker, sleep):
     sleep(2)
     ui.capture('05-owner-atm-before-issue')
     action(ui, 'atm_issue')
-    sleep(0.5)
-    ui.capture('06-owner-issue-confirmation')
-    action(ui, 'atm_pin')
-    ui.pin()
-    action(ui, 'sign')
-    wait_marker('ROCK_UI_ATM_ISSUED')
+    confirm_pin(ui, 'atm', '06-owner-issue-confirmation',
+                'ROCK_UI_ATM_ISSUED', wait_marker)
     sleep(3)
     ui.capture('07-issued-1000-held-code-hidden')
     action(ui, 'atm_status')

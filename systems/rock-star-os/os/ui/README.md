@@ -519,6 +519,28 @@ sudo python3 -B -W error::ResourceWarning os/ui/test_wallet_replay.py \
   --output /path/to/new/host-only-wallet-geometry
 ```
 
+The host needs Linux `memfd_create`, `/proc`, and Pillow (CI pins 12.3.0).
+`pin-readiness.json` pins the reviewed C source/font and exact RGB hashes of
+fixed authentication context, the masked PIN field and the sign button. The
+live Wallet and ATM replays wait for the known empty confirmation, preserve
+that exact planned frame, enter the public synthetic PIN, then wait for four
+masked digits and the enabled sign button before clicking its tested hitbox.
+Readiness, input and the authoritative receipt share the original 25-second
+stage deadline, with a final deadline check after receipt observation. No
+unknown target is clicked. An unsupported or different render fails closed;
+profile hashes must be regenerated from and reviewed against actual C frames.
+
+Readiness screenshots use an owned anonymous memory file through QMP and are
+inspected only at the fixed authentication ROIs. Unknown frames are not saved
+as screenshots, temporary files or failure images. Reports record only the
+profile, masked digit count, enabled state and ROI hashes. The existing fourteen
+planned captures, guest observers and code-redaction requirements remain.
+`test_pin_readiness.py` checks unknown/disabled states, shared deadlines,
+late receipts, retained frames and memory descriptor cleanup; the real C
+replay checks every masked count and reproduces the final-digit/sign event
+batch where the cached disabled hit ignores the sign until the next draw.
+These are host mechanism tests; QMP/OS acceptance remains a separate result.
+
 This is an explicit separate root fixture gate: no root skips count as success.
 It does not exercise the platform socket, QMP, guest observer or OS shutdown.
 The live verifiers still require their bounded durable guest-stage waits,

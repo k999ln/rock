@@ -58,6 +58,15 @@ static int wallet_replay_bridge(const char *font)
                 rock_ui_key(&ui, (unsigned)json_object_get_int(json_object_array_get_idx(item, i)), 1);
             for (size_t i = json_object_array_length(item); i > 0; i--)
                 rock_ui_key(&ui, (unsigned)json_object_get_int(json_object_array_get_idx(item, i - 1)), 0);
+        } else if (!strcmp(op, "batch_pin_last_and_sign")) {
+            /* Reproduce one real main.c poll batch: key then tablet release,
+             * with no intervening draw to refresh the previously disabled hit. */
+            require(ui.page == PAGE_AUTH_PIN && strlen(ui.auth_pin) == 3 && !ui.busy,
+                    "explicit three-digit ready auth fixture required");
+            rock_ui_key(&ui, KEY_0, 1); rock_ui_key(&ui, KEY_0, 0);
+            rock_ui_pointer(&ui, 520, 833, 1); rock_ui_pointer(&ui, 520, 833, 0);
+            require(last_request == NULL && strlen(ui.auth_pin) == 4,
+                    "stale disabled hit ignores same-batch sign despite four digits");
         } else if (!strcmp(op, "text")) {
             require(rock_ui_text(&ui, value(command, "text")) == 0, "real text input accepted");
         } else if (!strcmp(op, "capture")) {
@@ -74,6 +83,7 @@ static int wallet_replay_bridge(const char *font)
         json_object_object_add(output, "scroll", json_object_new_double(ui.scroll));
         json_object_object_add(output, "page", json_object_new_int(ui.page));
         json_object_object_add(output, "busy", json_object_new_boolean(ui.busy));
+        json_object_object_add(output, "pin_digits", json_object_new_int((int)strlen(ui.auth_pin)));
         json_object_object_add(output, "retry", json_object_new_boolean(ui.retry_request != NULL));
         for (int i = 0; i < ui.hit_count; i++) {
             struct rock_hit *h = &ui.hits[i];

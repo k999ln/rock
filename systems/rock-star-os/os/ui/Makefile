@@ -48,4 +48,5 @@ test: rock-ui-test rock-ipc-test
 
 # Separate root-owned provisioning fixture; never installed and no QEMU.
 test-wallet-replay: rock-ui-test
+	python3 -B -W error::ResourceWarning test_pin_readiness.py -v
 	python3 -B -W error::ResourceWarning test_wallet_replay.py --renderer ./rock-ui-test --font $(FONT)

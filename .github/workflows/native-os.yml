@@ -27,6 +27,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential bubblewrap pkg-config libseccomp-dev libcairo2-dev libfreetype6-dev libjson-c-dev openssl e2fsprogs
+          python3 -m pip install --disable-pip-version-check Pillow==12.3.0
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - name: Verify real non-root runner isolation
         working-directory: systems/rock-star-os
@@ -53,6 +54,9 @@ jobs:
             --renderer work/native-root-ui/ui/rock-ui-test \
             --font systems/rock-star-os/os/assets/NotoSansCJKjp-Regular.otf > work/native-root-ui/wallet-replay.log 2>&1
           cat work/native-root-ui/wallet-replay.log
+          sudo "$(command -v python3)" -B -W error::ResourceWarning systems/rock-star-os/os/ui/test_pin_readiness.py -v > work/native-root-ui/pin-readiness.log 2>&1
+          cat work/native-root-ui/pin-readiness.log
+          if grep -E 'ResourceWarning:|Exception ignored|\.\.\. skipped' work/native-root-ui/pin-readiness.log; then exit 1; fi
           if grep -E 'ResourceWarning:|Exception ignored|\.\.\. skipped' work/native-root-ui/wallet-replay.log; then exit 1; fi
       - uses: actions/upload-artifact@v4
         if: always()

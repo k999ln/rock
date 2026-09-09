@@ -21,6 +21,7 @@ import time
 from unittest import mock
 
 import wallet_replay as replay
+import pin_readiness
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -138,9 +139,32 @@ class Renderer:
     def type(self, text):
         self.send({'event': 'text', 'text': text})
 
+    def pin_frame(self):
+        with tempfile.TemporaryDirectory(prefix='rock-test-pin-frame-') as temporary:
+            path = Path(temporary) / 'frame.png'
+            self.raw({'event': 'capture', 'path': str(path)})
+            return path.read_bytes()
+
+    def wait_pin_ready(self, profile, digits, deadline):
+        assert time.monotonic() < deadline
+        observation = pin_readiness.inspect_frame(self.pin_frame(), profile, pin_readiness.profiles())
+        assert observation.get('recognized') and observation['masked_digits'] == digits
+        assert observation['sign_enabled'] == (digits == 4), 'actual C rendered PIN/sign readiness required'
+
     def pin(self):
-        for _ in range(4):
+        profile = 'atm' if self.operations[-1] == 'wallet.atm.quote' else 'enroll'
+        definitions = pin_readiness.profiles()
+        # The pointer is visible over the focused empty field until the first
+        # key. Empty readiness is checked before that explicit pointer input.
+        for count in range(1, 4):
             self.keys(['0'])
+            observed = pin_readiness.inspect_frame(self.pin_frame(), profile, definitions)
+            assert observed.get('recognized') and observed['masked_digits'] == count and not observed['sign_enabled']
+        # Reproduce the frozen main.c event-drain order: fourth key and sign
+        # release before redraw. The stale disabled hit emits no request.
+        frame = self.raw({'event': 'batch_pin_last_and_sign'})
+        assert frame['request'] is None and frame['pin_digits'] == 4 and not frame['busy']
+        assert any(hit['action'] == 'ACTION_AUTH_SIGN' for hit in frame['hits'])
 
     def capture(self, name):
         assert name not in self.captures
@@ -160,7 +184,7 @@ class Renderer:
         self.send({'event': 'refresh'})
 
     def wait_marker(self, marker, seconds=25):
-        assert seconds in (25, 180)
+        assert seconds == 180 or 0 < seconds <= 25
         self.wallet.membership.tick()
         state = self.refresh()
         member, auth = state['membership'], state.get('auth', {})

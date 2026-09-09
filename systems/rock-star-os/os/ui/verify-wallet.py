@@ -23,7 +23,10 @@ replay = load('rock_wallet_replay', 'wallet_replay.py')
 observer = load('rock_wallet_native_observer', 'guest-ui-wallet-evidence.py')
 
 
-class Input(native.NativeInput):
+readiness = load('rock_pin_readiness', 'pin_readiness.py')
+
+
+class Input(readiness.PinReadinessMixin, native.NativeInput):
     def pin(self):
         # Enter the public fixture explicitly without generic key logging.
         for _ in range(4):

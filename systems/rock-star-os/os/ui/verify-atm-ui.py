@@ -23,7 +23,10 @@ replay = load('rock_wallet_replay', 'wallet_replay.py')
 observer = load('rock_atm_native_observer', 'guest-ui-atm-evidence.py')
 
 
-class Input(native.NativeInput):
+readiness = load('rock_pin_readiness', 'pin_readiness.py')
+
+
+class Input(readiness.PinReadinessMixin, native.NativeInput):
     def pin(self):
         # Generic type/keys records their arguments. Only send the public test
         # PIN through the monitor, retaining no entered digits in the report.
