@@ -16,7 +16,8 @@ static json_object *activation_fixture(int active, int ready)
 
 static void activation_ui_test(struct rock_ui *ui)
 {
-    ui->busy = ui->busy_read = ui->editing = ui->activation_seen = 0;
+    ui->busy = ui->busy_read = ui->editing = ui->activation_seen = ui->message_error = 0;
+    ui->message[0] = '\0';
     if (ui->retry_request) { json_object_put(ui->retry_request); ui->retry_request = NULL; }
     if (ui->queued_request) { json_object_put(ui->queued_request); ui->queued_request = NULL; }
     ui->page = PAGE_HUB;
@@ -66,4 +67,127 @@ static void activation_ui_test(struct rock_ui *ui)
     require(rock_ui_refresh_interval(ui) == 1000, "running work retains prompt status updates");
     json_object_put(blocked); json_object_put(complete); json_object_put(complete_snapshot);
     json_object_put(bad); json_object_put(original); json_object_put(response); json_object_put(read);
+}
+
+static int reject_poll(void *unused, json_object *request)
+{
+    (void)unused;
+    require(rock_ui_request_is_read(request), "background submission failure is a read only");
+    return -1;
+}
+
+static void activation_poll_test(struct rock_ui *ui)
+{
+    json_object *pending = activation_fixture(0, 0), *ready = activation_fixture(1, 1);
+    json_object *read = json_tokener_parse("{\"v\":1,\"op\":\"snapshot\"}");
+    ui->busy = ui->busy_read = ui->editing = ui->activation_seen = ui->message_error = 0;
+    ui->message[0] = '\0'; ui->page = PAGE_HUB;
+    rock_ui_poll_reset(ui);
+    int count = request_count;
+    require(rock_ui_poll(ui, 100) && request_count == count + 1 && ui->busy_read,
+            "first automatic request starts without a click");
+    require(!strcmp(value(last_request, "op"), "snapshot") && json_object_object_length(last_request) == 2,
+            "startup automatic request has no key, activation or payment payload");
+    require(!rock_ui_poll(ui, 5000) && request_count == count + 1,
+            "slow outstanding read cannot start a second worker");
+    rock_ui_response(ui, last_request, pending, "");
+    rock_ui_poll_completed(ui, 5000, 0);
+    require(ui->page == PAGE_ACTIVATION && ui->refresh_due_ms == 6000,
+            "first pending response schedules next read after completion");
+    require(!rock_ui_poll(ui, 5999), "read deadline is not early");
+    for (int step = 1; step <= 29; step++) {
+        int64_t now = 5000 + step * 1000;
+        require(rock_ui_poll(ui, now), "initial readiness checks remain one second apart");
+        require(!strcmp(value(last_request, "op"), "snapshot") && json_object_object_length(last_request) == 2,
+                "pending boot cannot activate, sign, consent or pay automatically");
+        rock_ui_response(ui, last_request, pending, "");
+        rock_ui_poll_completed(ui, now, 0);
+        require(ui->refresh_due_ms == now + 1000, "first thirty seconds do not back off readiness");
+    }
+    int64_t now = 35000;
+    for (int delay = 2000; delay <= 8000; delay *= 2) {
+        require(rock_ui_poll(ui, now), "long pending read starts at its deadline");
+        rock_ui_response(ui, last_request, pending, "");
+        rock_ui_poll_completed(ui, now, 0);
+        require(ui->refresh_due_ms == now + delay, "prolonged waiting backs off in bounded steps");
+        now += delay;
+    }
+    require(rock_ui_poll(ui, now), "capped readiness read starts");
+    require(!rock_ui_poll(ui, now + 9000), "long read remains one outstanding request");
+    rock_ui_response(ui, last_request, pending, "");
+    rock_ui_poll_completed(ui, now + 9000, 0);
+    require(ui->refresh_due_ms == now + 17000 && !rock_ui_poll(ui, now + 16999),
+            "backoff caps at eight seconds measured after slow completion");
+
+    snprintf(ui->text, sizeof(ui->text), "draft preserved");
+    snprintf(ui->search, sizeof(ui->search), "search preserved");
+    snprintf(ui->message, sizeof(ui->message), "previous operation error");
+    ui->message_error = 1; ui->scroll = 27; ui->focus = 2; ui->editing = 1;
+    count = request_count;
+    require(rock_ui_poll(ui, ui->refresh_due_ms), "ready state is discovered without manual refresh");
+    rock_ui_response(ui, last_request, ready, "");
+    rock_ui_poll_completed(ui, now + 17000, 0);
+    require(ui->page == PAGE_ACTIVATION && ui->editing == 1 && ui->scroll == 27 && ui->focus == 2 &&
+            !strcmp(ui->text, "draft preserved") && !strcmp(ui->search, "search preserved") &&
+            !strcmp(ui->message, "previous operation error") && ui->message_error,
+            "readiness recovery preserves navigation, draft, focus and operation error");
+    require(request_count == count + 1 && ui->startup_retry_ms == 0 && !ui->startup_waiting,
+            "ready response resets startup backoff without activation or another request");
+    require(action_enabled(ui, ACTION_NAV), "ready response is renderable without a click");
+
+    ui->page = PAGE_EDITOR;
+    rock_ui_poll_reset(ui);
+    ui->retry_request = json_tokener_parse("{\"v\":1,\"op\":\"device.activation.activate\",\"key\":\"original-uncertain\"}");
+    json_object *original = json_object_get(ui->retry_request);
+    require(rock_ui_poll(ui, 60000), "unknown mutation allows only a fresh read");
+    require(!strcmp(value(last_request, "op"), "snapshot"), "automatic polling never retries the mutation");
+    json_object *denied = json_tokener_parse("{\"ok\":false,\"code\":\"unavailable\",\"error\":\"background failure\"}");
+    rock_ui_response(ui, last_request, denied, "");
+    rock_ui_poll_completed(ui, 60000, 0);
+    require(ui->retry_request == original && !strcmp(ui->message, "previous operation error") &&
+            ui->message_error && ui->page == PAGE_EDITOR && !strcmp(ui->text, "draft preserved"),
+            "background refusal retains uncertain request, error and editor");
+    require(!rock_ui_poll(ui, 60999), "transport refusal observes completion delay");
+    require(rock_ui_poll(ui, 61000), "unavailable snapshot can recover by another read");
+    rock_ui_response(ui, last_request, ready, "");
+    rock_ui_poll_completed(ui, 61000, 0);
+    require(ui->retry_request == original && ui->page == PAGE_EDITOR && ui->connected,
+            "successful read preserves original uncertain intent without navigation");
+    json_object_put(ui->retry_request); ui->retry_request = NULL; json_object_put(original);
+
+    ui->busy = 1; count = request_count;
+    rock_ui_poll_reset(ui);
+    require(!rock_ui_poll(ui, 70000), "poll cannot interrupt a mutation");
+    ui->busy = 0; ui->queued_request = json_object_get(read);
+    require(!rock_ui_poll(ui, 70000), "poll cannot displace an explicitly queued request");
+    json_object_put(ui->queued_request); ui->queued_request = NULL;
+    ui->page = PAGE_AUTH_PIN;
+    require(!rock_ui_poll(ui, 70000) && request_count == count, "poll cannot replace a displayed signing challenge");
+
+    ui->page = PAGE_HUB; ui->editing = ui->activation_seen = 0;
+    json_object *missing = activation_fixture(0, 0);
+    json_object_object_del(test_field(missing, "snapshot"), "device_activation");
+    require(rock_ui_poll(ui, 70000), "startup may read an incomplete activation projection");
+    rock_ui_response(ui, last_request, missing, "");
+    rock_ui_poll_completed(ui, 70000, 0);
+    require(ui->page == PAGE_HUB && !ui->activation_seen && ui->refresh_due_ms == 71000,
+            "missing initial activation projection remains eligible for prompt read-only recovery");
+    json_object_put(missing);
+
+    ui->page = PAGE_HUB; ui->editing = 1; ui->activation_seen = ui->message_error = 0;
+    require(rock_ui_poll(ui, 71000), "late first snapshot is read in the current page");
+    rock_ui_response(ui, last_request, pending, "");
+    rock_ui_poll_completed(ui, 71000, 0);
+    require(ui->page == PAGE_HUB && ui->editing == 1 && !strcmp(ui->text, "draft preserved"),
+            "late startup snapshot cannot navigate away from active input");
+    ui->page = PAGE_ACTIVATION; ui->message_error = 1;
+    ui->submit = reject_poll; rock_ui_poll_reset(ui);
+    require(rock_ui_poll(ui, 80000) && !ui->busy && ui->refresh_due_ms == 81000 &&
+            !rock_ui_poll(ui, 80001) && !strcmp(ui->message, "previous operation error"),
+            "worker creation failure preserves error and cannot busy-loop");
+    ui->submit = capture;
+    rock_ui_poll_reset(ui); ui->message_error = ui->editing = 0;
+    ui->message[0] = ui->text[0] = ui->search[0] = '\0';
+    json_object_put(denied); json_object_put(read); json_object_put(ready); json_object_put(pending);
+    puts("PASS startup polling: initial cadence, completion deadline, bounded backoff, recovery and UI/intent preservation");
 }

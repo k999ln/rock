@@ -9,6 +9,7 @@
 - 膨大な過去のscreenshots/logs、privateリポジトリの全tree、実行状態、OSディスク、実資格情報は同梱しない。元の封印済み成果物はこの統合によって変更しない。
 - 起動応答改善21ファイルのWIPは `experiments/startup-health/changes.patch` に未適用で保存。`git apply --check` の成功だけでは動作の成功ではない。
 - 統合後のx86_64 CIで実隔離を検証できるよう、`os/runner/sandbox_launcher.c` はx86_64時だけELF interpreterの `/lib64` をread-only bindする。ARM64の引数列、安全策、worker契約は変更しない。取得時hashは `IMPORT-MANIFEST.json` に保持し、この差分はGit履歴で追跡する。修正後のGitHub run `34318178890` で実隔離事前診断とnative全検証に成功した。
+- ALIGN03の復元検証入口をbackup schema1/schema2へ対応。A/B/data全体の照合を保持し、local Walletとpurchaser remote-cacheのprofileを分離、必須表と追加表を全比較する。既存backup/restore本体を再利用。外部Wallet正本・runner等の復元が必要なら`INCOMPLETE`と`NOT_RUN`を記録し、端末cacheの成功で代替しない。新しいhost fixtureの成功は、最新OS imageのbuild/復元起動や外部正本復元の証拠ではない。
 
 rootの `scripts/test-native.py` と `.github/workflows/native-os.yml` はこの配置用の検証入口。正常hostのUI observerは元のMakefileと同じ `test_evidence.py` が対象。古いATM observerの認証fixture不整合とroot専用Wallet/power試験は、rootの `docs/native-os-validation.md` に残件として記録する。全ての `test_*evidence.py` が成功したと扱わない。
 

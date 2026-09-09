@@ -195,7 +195,7 @@ def boot_phase(base, phase, output, pipe, report, timeout):
     with tempfile.TemporaryDirectory(prefix='rock-purchaser-ab-qmp-') as temporary:
         monitor = Path(temporary) / 'qmp.sock'
         command = base + ['-qmp', f'unix:{monitor},server=on,wait=off', '-append',
-                         f'console=ttyAMA0 ro rootwait panic=-1 rock.purchaser.update={phase}']
+                         f'console=ttyAMA0 ro rootwait panic=-1 rock.ui=required rock.purchaser.update={phase}']
         entry['command'] = command
         try:
             with log.open('xb') as stream:

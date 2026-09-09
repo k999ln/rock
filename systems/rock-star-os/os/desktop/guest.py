@@ -124,7 +124,7 @@ def command(config, state, session):
             '-serial', 'file:' + str(session / 'boot.log'), '-monitor', 'none',
             '-qmp', 'unix:' + str(state / 'qmp.sock') + ',server=on,wait=off',
             '-kernel', str(images / 'Image'), '-append',
-            'console=ttyAMA0 vt.global_cursor_default=0 root=/dev/vda ro rootflags=noload rootwait panic=-1',
+            'console=ttyAMA0 vt.global_cursor_default=0 root=/dev/vda ro rootflags=noload rootwait panic=-1 rock.ui=required',
             '-drive', f'if=none,file={images / "rootfs.ext4"},format=raw,id=osdisk,readonly=on',
             '-device', 'virtio-blk-pci,drive=osdisk,addr=0x1',
             '-drive', f'if=none,file={state / "userdata.ext4"},format=raw,id=userdata',
@@ -134,7 +134,7 @@ def command(config, state, session):
             '-device', 'virtio-gpu-pci,xres=720,yres=960,addr=0x4',
             '-device', 'virtio-keyboard-pci,addr=0x5', '-device', 'virtio-tablet-pci,addr=0x6']
     if config.get('schema') == 'rock-desktop-device/5':
-        args[args.index('-append')+1] = 'console=ttyAMA0 vt.global_cursor_default=0 ro rootwait panic=-1'
+        args[args.index('-append')+1] = 'console=ttyAMA0 vt.global_cursor_default=0 ro rootwait panic=-1 rock.ui=required'
         args[args.index('-drive')+1] = f'if=none,file={state / "slot-a.ext4"},format=raw,id=osdisk'
         for index, value in enumerate(args):
             if value == 'virtio-gpu-pci,xres=720,yres=960,addr=0x4': args[index] = 'virtio-gpu-pci,xres=720,yres=960,addr=0x6'

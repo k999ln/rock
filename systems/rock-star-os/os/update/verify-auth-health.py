@@ -143,6 +143,7 @@ def main():
     evidence.mkdir(mode=0o700, parents=False, exist_ok=False)
     inputs = {name: images / name for name in ('Image', 'rootfs.ext4', 'stage0.cpio.gz')}
     report = {'schema': 'rock-auth-stage0-health/1', 'status': 'RUNNING', 'boots': [],
+              'native_ui_checked': False, 'ui_health_mode': 'explicit-development-headless',
         'started_utc': datetime.now(timezone.utc).isoformat(),
         'scope': 'three actual stage0 boots; required authenticator health and durable confirmation recovery only',
         'full_eight_or_thirteen_boot_suite': False, 'physical_blackberry': 'NOT_RUN',
@@ -198,7 +199,7 @@ def main():
                   ('fault-readback-b', None, 'B sequence=2 reason=committed', '/dev/vdc')]
         for number, (phase, fault, selection, device) in enumerate(phases, 1):
             log = evidence / f'boot-{number}.log'
-            cmdline = f'console=ttyAMA0 ro rootwait panic=1 rock.abtest={phase}'
+            cmdline = f'console=ttyAMA0 ro rootwait panic=1 rock.ui=headless rock.abtest={phase}'
             if fault:
                 cmdline += ' rock.abfault=' + fault
             command = base + ['-append', cmdline]

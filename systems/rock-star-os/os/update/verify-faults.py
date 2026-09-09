@@ -47,6 +47,7 @@ def main():
     report = {'status': 'RUNNING', 'schema': 'rock-ab-faults/1', 'input_sha256': hashes,
               'baseline_ab_evidence': str(previous), 'started_utc': stamp, 'boots': [],
               'scope': 'actual QEMU ARM64 power-loss boundaries and ENOSPC',
+              'native_ui_checked': False, 'ui_health_mode': 'explicit-development-headless',
               'blackberry': 'NOT_RUN', 'production_secure_boot': False, 'hardware_antirollback': False,
               'recovery': 'fixed diagnostics and shutdown only; no independent recovery OS or userdata restore'}
     # phase, fault point, expected actual selector message (None before selection)
@@ -88,7 +89,7 @@ def main():
             for phase, fault, selection in steps:
                 number += 1
                 log = case / f'boot-{number}-{phase}.log'
-                cmdline = f'console=ttyAMA0 ro rootwait panic=1 rock.abtest={phase}' + (f' rock.abfault={fault}' if fault else '')
+                cmdline = f'console=ttyAMA0 ro rootwait panic=1 rock.ui=headless rock.abtest={phase}' + (f' rock.abfault={fault}' if fault else '')
                 command = base + ['-append', cmdline]
                 print(f'Fault guest boot {number}/13 case={name} phase={phase}; {log}', flush=True)
                 marker = ('ROCK_AB_FAULT_READY point=' + fault).encode() if fault else b'unused'

@@ -20,6 +20,17 @@ static int activation_ready(struct rock_ui *ui)
         strict_bool(view, "can_activate", 1) && strict_bool(view, "recovery_required", 0);
 }
 
+static int activation_pending(struct rock_ui *ui)
+{
+    if (!ui->connected || !ui->snapshot) return 1;
+    if (ui->page != PAGE_ACTIVATION && !(ui->page == PAGE_HUB && !ui->activation_seen &&
+        strict_string(field(ui->snapshot, "service_access"), "mode", "purchaser-fixture"))) return 0;
+    json_object *view = field(ui->snapshot, "device_activation");
+    return !activation_view_valid(view) ||
+        !strict_bool(view, "recovery_required", 0) ||
+        (!activation_ready(ui) && !strict_string(view, "state", "ACTIVE"));
+}
+
 static const char *activation_reason(json_object *view)
 {
     const char *reason = string(view, "reason");
@@ -29,7 +40,7 @@ static const char *activation_reason(json_object *view)
         return "この機種でのOS動作をまだ確認できていません。対応機種の確認後に進めます。";
     if (strstr(reason, "IDENTITY") || strstr(reason, "PURCHASE") || strstr(reason, "OWNER") || strstr(reason, "BINDING"))
         return "端末と購入情報の確認が必要です。引き渡し時の情報と接続状態を確認してください。";
-    return "端末の確認情報を取得しています。接続状態を確認して、もう一度更新してください。";
+    return "確認情報を自動で読み直しています。接続と起動の確認が整うと操作できます。";
 }
 
 static void draw_activation(struct rock_ui *ui)

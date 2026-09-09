@@ -661,6 +661,7 @@ int main(int argc, char **argv)
     auth_ui_test(&ui);
     purchaser_ui_test(&ui);
     activation_ui_test(&ui);
+    activation_poll_test(&ui);
     mcp_ui_test(&ui);
     rock_ui_destroy(&ui);
     if (last_request) json_object_put(last_request);

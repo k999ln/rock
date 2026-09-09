@@ -276,7 +276,7 @@ def verify(args):
             argv=['qemu-system-aarch64','-machine','virt-10.0,gic-version=3','-accel','tcg','-cpu','cortex-a53',
                 '-m','1024','-smp','2','-display','none','-serial','file:'+str(log),'-monitor','none','-no-reboot',
                 '-qmp',f'unix:{qmp},server=on,wait=off','-kernel',str(args.private/'profile/Image'),
-                '-initrd',str(args.private/'profile/stage0.cpio.gz'),'-append','console=ttyAMA0 vt.global_cursor_default=0 ro rootwait panic=-1',
+                '-initrd',str(args.private/'profile/stage0.cpio.gz'),'-append','console=ttyAMA0 vt.global_cursor_default=0 ro rootwait panic=-1 rock.ui=required',
                 '-drive',f'if=none,file={a},format=raw,id=slota','-device','virtio-blk-pci,drive=slota,addr=0x1',
                 '-drive',f'if=none,file={data},format=raw,id=userdata','-device','virtio-blk-pci,drive=userdata,addr=0x2',
                 '-object','rng-random,filename=/dev/urandom,id=rockrng','-device','virtio-rng-pci,rng=rockrng,addr=0x3',

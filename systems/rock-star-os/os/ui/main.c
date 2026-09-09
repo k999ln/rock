@@ -2,6 +2,7 @@
 #include "ui.h"
 #include "ipc.h"
 #include "device.h"
+#include "health.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -148,11 +149,12 @@ int main(int argc, char **argv)
     struct rock_input inputs[ROCK_INPUT_MAX];
     struct rock_ui ui;
     struct api_worker worker;
+    struct rock_ui_health health;
     char error[256];
     int count = 0, result = 1, dirty = 1;
-    int64_t next_refresh;
     time_t last_clock_tick = (time_t)-1;
     memset(&fb, 0, sizeof(fb));
+    rock_ui_health_init(&health);
     fb.fd = -1;
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--wallet-tests")) { wallet_tests = 1; continue; }
@@ -258,26 +260,27 @@ int main(int argc, char **argv)
         }
     }
     count = rock_inputs_open(inputs, ROCK_INPUT_MAX, input_pattern);
+    if (rock_ui_health_open(&health) < 0) {
+        perror("rock-ui: readiness socket");
+        goto done;
+    }
     fprintf(stdout, "rock-ui native framebuffer %dx%d, uid=%u, input_devices=%d\n", width, height, (unsigned)geteuid(), count);
     if (count == 0) fprintf(stderr, "rock-ui: no readable evdev input nodes; check init ownership\n");
     fflush(stdout);
-    next_refresh = 0;
+    rock_ui_poll_reset(&ui);
     while (!stopping) {
         struct pollfd polls[ROCK_INPUT_MAX];
         int update = collect(&worker, &ui);
         int64_t now = now_ms();
         if (update) {
             dirty = 1;
-            if (update == 2) next_refresh = 0;
+            rock_ui_poll_completed(&ui, now, update == 2);
         }
         if (!ui.busy && ui.queued_request) {
             rock_ui_flush_queued(&ui);
             dirty = 1;
         }
-        if (!ui.busy && now >= next_refresh) {
-            rock_ui_refresh(&ui);
-            next_refresh = now + rock_ui_refresh_interval(&ui);
-        }
+        if (rock_ui_poll(&ui, now)) dirty = 1;
         /* Minute-only clock does not repaint the full framebuffer every second.
          * Authentication and ATM expiry still update at one-second resolution. */
         time_t wall_now = time(NULL);
@@ -289,6 +292,7 @@ int main(int argc, char **argv)
                 fprintf(stderr, "rock-ui: rendering failed: %s\n", cairo_status_to_string(cairo_status(ui.cr)));
                 goto done;
             }
+            rock_ui_health_present(&health, width, height, count);
             dirty = 0;
         }
         for (int i = 0; i < count; i++) polls[i] = (struct pollfd){ .fd = inputs[i].fd, .events = POLLIN, .revents = 0 };
@@ -296,6 +300,7 @@ int main(int argc, char **argv)
          * owned background response is outstanding. */
         int ready = poll(polls, (nfds_t)count, ui.busy ? 16 : 250);
         if (ready < 0 && errno != EINTR) { perror("rock-ui: input poll"); goto done; }
+        if (ready >= 0) rock_ui_health_after_poll(&health);
         if (ready <= 0) continue;
         for (int i = 0; i < count; i++) {
             if (!(polls[i].revents & POLLIN)) continue;
@@ -322,12 +327,13 @@ int main(int argc, char **argv)
                     rock_ui_key(&ui, event->code, event->value);
                     dirty = 1;
                 }
-                if (ui.page != previous_page) next_refresh = 0;
+                if (ui.page != previous_page) rock_ui_poll_reset(&ui);
             }
         }
     }
     result = 0;
 done:
+    rock_ui_health_close(&health);
     if (worker.started) {
         pthread_join(worker.thread, NULL);
         if (worker.request) json_object_put(worker.request);

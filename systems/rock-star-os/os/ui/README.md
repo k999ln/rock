@@ -1,5 +1,44 @@
 # Native Rock star os Hub
 
+## Startup readiness candidate
+
+The native framebuffer loop now answers a bounded private readiness challenge
+only after Cairo rendering and the framebuffer copy succeed and the main loop
+poll returns. The root update health checker requires two fresh nonces with
+advancing loop counters, stable PID/start time/executable/socket identity,
+UID/GID1000 and at least one input device. Screenshot generation does not open
+the readiness socket. A frozen, unprepared or exited UI cannot confirm a trial
+update. This checks software presentation and loop response, not physical
+display scanout, actual user input or continuous monitoring after confirmation.
+
+Normal GUI boot requires this check, including when no `rock.ui` argument is
+given. The explicit `rock.ui=headless` development mode is reserved for existing
+headless update tests; their reports set `native_ui_checked` to false. Malformed
+or duplicate mode arguments fail closed. An unexpected UI crash can leave its
+private socket until reboot; this condition fails closed and uses the existing
+boot rollback path rather than replacing an unknown live listener.
+
+Startup snapshots refresh automatically without activating, consenting,
+signing or paying. A single outstanding request is retained; retries wait from
+completion, initially every second for thirty seconds and then up to eight
+seconds. Background reads preserve current input, navigation, operation errors
+and uncertain mutation requests.
+
+Verification commands inside an isolated Linux copy:
+
+```sh
+python3 -B -W error::ResourceWarning -m unittest tests.test_ui_startup_health -v
+make -C os/ui all rock-ui-test rock-ui-health-test
+os/ui/rock-ui-test os/assets/NotoSansCJKjp-Regular.otf
+sudo make -C os/ui test-health
+```
+
+The Python adversarial peers use real processes, pidfds, `/proc` and Unix
+seqpacket sockets. They validate the checker; the C target separately exercises
+the production server under real root/UID1000 credentials. Linux/C/QEMU results
+must be recorded for the current candidate before adopting it. Historical
+passes below predate this change and do not validate it.
+
 This is the native Linux UI for the ARM64 virtual development OS. It draws with
 Cairo and FreeType into `/dev/fb0` and reads Linux evdev input. It does not use an
 HTML page, browser, X server, Wayland compositor, Qt, or C++ runtime.

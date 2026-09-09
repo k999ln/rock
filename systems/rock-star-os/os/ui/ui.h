@@ -6,6 +6,7 @@
 #include FT_FREETYPE_H
 #include <json-c/json.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #define ROCK_UI_WIDTH 720
 #define ROCK_UI_HEIGHT 960
@@ -67,6 +68,8 @@ struct rock_ui {
     char text[ROCK_UI_TEXT_MAX + 1], amount[32], search[ROCK_UI_SEARCH_MAX + 1];
     char message[512], connection_error[256], confirm_title[160];
     int connected, busy, busy_read, message_error, wallet_expanded, shift, control, caps_lock, activation_seen;
+    int refresh_background, startup_waiting, startup_retry_ms;
+    int64_t refresh_due_ms, startup_wait_ms;
     int focus, hit_count, editing, select_all;
     struct rock_hit hits[ROCK_UI_HITS];
     double scroll, content_height, content_top;
@@ -91,4 +94,7 @@ void rock_ui_refresh(struct rock_ui *ui);
 void rock_ui_flush_queued(struct rock_ui *ui);
 int rock_ui_request_is_read(json_object *request);
 int rock_ui_refresh_interval(struct rock_ui *ui);
+int rock_ui_poll(struct rock_ui *ui, int64_t now_ms);
+void rock_ui_poll_completed(struct rock_ui *ui, int64_t now_ms, int mutation);
+void rock_ui_poll_reset(struct rock_ui *ui);
 #endif

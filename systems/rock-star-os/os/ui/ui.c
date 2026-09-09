@@ -1160,8 +1160,13 @@ static void send_request(struct rock_ui *ui, json_object *request)
         ui->busy_read = rock_ui_request_is_read(request);
         if (!rock_ui_request_is_read(request)) ui->message[0] = '\0';
     } else {
-        snprintf(ui->message, sizeof(ui->message), "要求を送信できませんでした。");
-        ui->message_error = 1;
+        if (ui->refresh_background && rock_ui_request_is_read(request)) {
+            ui->connected = 0;
+            snprintf(ui->connection_error, sizeof(ui->connection_error), "状態の読み取りを開始できませんでした。");
+        } else {
+            snprintf(ui->message, sizeof(ui->message), "要求を送信できませんでした。");
+            ui->message_error = 1;
+        }
     }
 }
 
@@ -1189,6 +1194,7 @@ static int amount_minor(const char *value, int64_t *minor);
 
 int rock_ui_refresh_interval(struct rock_ui *ui)
 {
+    if (activation_pending(ui)) return ui->startup_retry_ms ? ui->startup_retry_ms : 1000;
     if (!ui->connected || ui->queued_request || ui->retry_request || ui->page == PAGE_ACTIVATION)
         return 1000;
     if (ui->page == PAGE_WALLET || ui->page == PAGE_REMOTE || ui->page == PAGE_REMOTE_RESULT ||
@@ -1198,6 +1204,44 @@ int rock_ui_refresh_interval(struct rock_ui *ui)
     for (size_t i = 0; i < array_size(jobs); i++) if (active_job(array_item(jobs, i))) return 1000;
     if (registry_refreshing(field(ui->snapshot, "registry"))) return 1000;
     return 10000;
+}
+
+void rock_ui_poll_reset(struct rock_ui *ui)
+{
+    ui->refresh_due_ms = 0;
+    ui->startup_waiting = ui->startup_retry_ms = 0;
+}
+
+void rock_ui_poll_completed(struct rock_ui *ui, int64_t now_ms, int mutation)
+{
+    /* Measure from completion: a slow read must not immediately start another.
+     * Keep normal boot responsive for 30 seconds before backing off a prolonged
+     * unavailable state. Only an explicit user action can repeat a mutation. */
+    if (activation_pending(ui)) {
+        if (!ui->startup_waiting) {
+            ui->startup_waiting = 1;
+            ui->startup_wait_ms = now_ms;
+        }
+        if (now_ms - ui->startup_wait_ms < 30000) ui->startup_retry_ms = 1000;
+        else if (ui->startup_retry_ms < 8000) ui->startup_retry_ms =
+            ui->startup_retry_ms < 2000 ? 2000 : ui->startup_retry_ms * 2;
+    } else {
+        ui->startup_waiting = ui->startup_retry_ms = 0;
+    }
+    ui->refresh_due_ms = mutation ? now_ms : now_ms + rock_ui_refresh_interval(ui);
+}
+
+int rock_ui_poll(struct rock_ui *ui, int64_t now_ms)
+{
+    if (ui->busy || ui->queued_request || ui->page == PAGE_AUTH_PIN || now_ms < ui->refresh_due_ms)
+        return 0;
+    ui->refresh_background = 1;
+    rock_ui_refresh(ui);
+    if (!ui->busy) {
+        ui->refresh_background = 0;
+        rock_ui_poll_completed(ui, now_ms, 0);
+    }
+    return 1;
 }
 
 void rock_ui_refresh(struct rock_ui *ui)
@@ -1284,6 +1328,7 @@ static void activate(struct rock_ui *ui, const struct rock_hit *target)
         navigate(ui, PAGE_RESULT);
         return;
     case ACTION_REFRESH:
+        rock_ui_poll_reset(ui);
         rock_ui_refresh(ui);
         return;
     case ACTION_INPUT:
@@ -1431,6 +1476,8 @@ void rock_ui_response(struct rock_ui *ui, json_object *request, json_object *res
     const char *operation = string(request, "op");
     int snapshot = !strcmp(operation, "snapshot");
     int read_only = rock_ui_request_is_read(request);
+    int background_read = ui->refresh_background && read_only;
+    ui->refresh_background = 0;
     ui->busy = 0;
     ui->busy_read = 0;
     if (rock_auth_operation(operation)) { (void)auth_response(ui, request, response); return; }
@@ -1466,8 +1513,10 @@ void rock_ui_response(struct rock_ui *ui, json_object *request, json_object *res
             rock_ui_response(ui, request, NULL, *message ? message : "端末操作の受領結果を確認できません");
             return;
         }
-        snprintf(ui->message, sizeof(ui->message), "%s", *message ? message : "サービスが要求を拒否しました。");
-        ui->message_error = 1;
+        if (!background_read) {
+            snprintf(ui->message, sizeof(ui->message), "%s", *message ? message : "サービスが要求を拒否しました。");
+            ui->message_error = 1;
+        }
         if (is_retry(ui, request) && (!strcmp(string(response, "code"), "rejected") ||
                                       !strcmp(string(response, "code"), "unauthorized") ||
                                       (power_operation(operation) && !strcmp(string(response, "code"), "busy")))) {
@@ -1515,6 +1564,7 @@ void rock_ui_response(struct rock_ui *ui, json_object *request, json_object *res
             strict_string(field(state, "service_access"), "mode", "purchaser-fixture")) {
             ui->activation_seen = 1;
             if (ui->page == PAGE_HUB && !ui->retry_request && !ui->queued_request &&
+                !ui->editing && !ui->confirm_request && !ui->message_error &&
                 (!activation_view_valid(activation) || !strict_string(activation, "state", "ACTIVE") ||
                  !strict_bool(activation, "recovery_required", 0))) navigate(ui, PAGE_ACTIVATION);
         }
@@ -1976,7 +2026,10 @@ void rock_ui_key(struct rock_ui *ui, unsigned code, int value)
         else if (ui->page > PAGE_WALLET) navigate(ui, ui->return_page);
         return;
     }
-    if (ui->control && code == KEY_R) { if (!ui->busy) rock_ui_refresh(ui); return; }
+    if (ui->control && code == KEY_R) {
+        if (!ui->busy) { rock_ui_poll_reset(ui); rock_ui_refresh(ui); }
+        return;
+    }
     if (ui->control && code == KEY_ENTER && ui->page == PAGE_EDITOR && can_mutate(ui)) {
         struct rock_hit run = { .action = ACTION_RUN, .enabled = boolean(installed(ui, ui->selected_id), "enabled") };
         snprintf(run.id, sizeof(run.id), "%s", ui->selected_id);

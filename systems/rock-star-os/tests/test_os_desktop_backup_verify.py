@@ -144,11 +144,11 @@ class CompleteSchemaEvidenceGuards(unittest.TestCase):
         (self.root/'system').mkdir()
         with closing(sqlite3.connect(self.root/'system/power.db')) as db,db: db.executescript(schemas[0])
 
-    def snapshot(self):
+    def snapshot(self,profile=None):
         def export(_data,source,destination):
             shutil.copyfile(self.root/source.lstrip('/'),destination)
         with patch.object(verify.power,'export_closed_database',side_effect=export):
-            return verify.business_snapshot(Path('disposable-closed-data-fixture'))
+            return verify.business_snapshot(Path('disposable-closed-data-fixture'),profile)
 
     def test_all_44_current_business_tables_and_populated_totals_are_observed(self):
         snapshot,_,_=self.snapshot()
@@ -183,8 +183,58 @@ class CompleteSchemaEvidenceGuards(unittest.TestCase):
     def test_new_table_is_not_silently_omitted(self):
         with closing(sqlite3.connect(self.root/'wallet/wallet-simulator.db')) as db,db:
             db.execute('CREATE TABLE unreviewed_business(value TEXT)')
-        with self.assertRaisesRegex(ValueError,'unreviewed business table'):
+            db.execute("INSERT INTO unreviewed_business VALUES ('private extra value')")
+        before=self.snapshot()[0]
+        self.assertEqual(before['wallet']['additional_tables'],['unreviewed_business'])
+        self.assertEqual(before['wallet']['tables']['unreviewed_business']['rows'],1)
+        self.assertNotIn('private extra value',json.dumps(before))
+        with closing(sqlite3.connect(self.root/'wallet/wallet-simulator.db')) as db,db:
+            db.execute("UPDATE unreviewed_business SET value='changed private extra value'")
+        with self.assertRaisesRegex(ValueError,'changed: wallet'):
+            verify.compare_business(before,self.snapshot()[0])
+
+    def test_required_table_cannot_be_dropped_to_reduce_comparison_scope(self):
+        with closing(sqlite3.connect(self.root/'platform/hub.db')) as db,db:
+            db.execute('DROP TABLE hub_revoked')
+        with self.assertRaisesRegex(ValueError,'missing required business table'):
             self.snapshot()
+
+    def test_added_power_table_is_not_covered_by_shutdown_receipt_exception(self):
+        with closing(sqlite3.connect(self.root/'system/power.db')) as db,db:
+            db.execute('CREATE TABLE additional_power_audit(value TEXT)')
+            db.execute("INSERT INTO additional_power_audit VALUES ('original')")
+        before=self.snapshot()[0]
+        with closing(sqlite3.connect(self.root/'system/power.db')) as db,db:
+            db.execute("UPDATE additional_power_audit SET value='tampered'")
+        with self.assertRaisesRegex(ValueError,'additional power business data changed'):
+            verify.compare_business(before,self.snapshot()[0])
+
+    def test_purchaser_profile_preserves_actual_remote_cache_and_all_additional_tables(self):
+        from types import SimpleNamespace
+        from wallet_backend.client import RemoteWalletService
+        remote=RemoteWalletService(self.root/'wallet/backend-cache',SimpleNamespace(fingerprint='fixture-authority'))
+        remote.close()
+        path=self.root/'wallet/backend-cache/remote-cache.db'
+        with closing(sqlite3.connect(path)) as db,db:
+            db.execute("INSERT INTO requests VALUES ('same-key','private request','private response')")
+            db.execute('CREATE TABLE game_reconciliation_fixture(exchange_id TEXT,status TEXT)')
+            db.execute("INSERT INTO game_reconciliation_fixture VALUES ('private-exchange','resolved')")
+        profile=verify.retention_profile({'schema':'rock-desktop-device/5'})
+        before=self.snapshot(profile)[0]
+        self.assertEqual(set(before),set(profile['sources']))
+        self.assertNotIn('wallet',before)
+        self.assertEqual(before['wallet_cache']['tables']['requests']['rows'],1)
+        self.assertEqual(before['wallet_cache']['additional_tables'],['game_reconciliation_fixture'])
+        self.assertNotIn('private-exchange',json.dumps(before))
+        verify.compare_business(before,self.snapshot(profile)[0],profile)
+        with closing(sqlite3.connect(path)) as db,db:
+            db.execute("UPDATE game_reconciliation_fixture SET status='changed'")
+        with self.assertRaisesRegex(ValueError,'changed: wallet_cache'):
+            verify.compare_business(before,self.snapshot(profile)[0],profile)
+        with closing(sqlite3.connect(path)) as db,db:
+            db.execute("INSERT INTO requests VALUES ('unresolved','private unresolved',NULL)")
+        with self.assertRaisesRegex(ValueError,'not quiescent.*wallet_cache'):
+            self.snapshot(profile)
 
     def test_all_added_identity_stream_event_and_credential_hashes_are_compared(self):
         before=self.snapshot()[0]

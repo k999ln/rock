@@ -6,6 +6,8 @@ source_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 [ -d "$target/etc" ] && [ -d "$target/usr" ]
 mkdir -p "$target/usr/lib/rock-update" "$target/usr/libexec" "$target/usr/sbin" "$target/etc/rock-update" "$target/etc/init.d" "$target/data" "$target/run"
 install -m 0644 "$source_dir/rock_update.py" "$target/usr/lib/rock-update/rock_update.py"
+install -m 0644 "$source_dir/ui_health.py" "$target/usr/lib/rock-update/ui_health.py"
+install -m 0755 "$source_dir/rock-ui-health" "$target/usr/libexec/rock-ui-health"
 install -m 0755 "$source_dir/rock-update" "$target/usr/sbin/rock-update"
 install -m 0755 "$source_dir/S97rock-update-health" "$target/etc/init.d/S97rock-update-health"
 install -m 0755 "$source_dir/rock-boot-watchdog" "$target/usr/libexec/rock-boot-watchdog"

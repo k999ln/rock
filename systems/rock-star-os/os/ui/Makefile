@@ -5,22 +5,31 @@ override CFLAGS += -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -pthr
 override CPPFLAGS += $(shell $(PKG_CONFIG) --cflags cairo freetype2 json-c)
 override LDLIBS += $(shell $(PKG_CONFIG) --libs cairo freetype2 json-c) -lm -pthread
 
-.PHONY: all clean install test
+.PHONY: all clean install test test-health
 all: rock-ui
 
-rock-ui: main.o ui.o device.o ipc.o
+rock-ui: main.o ui.o device.o ipc.o health.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-main.o: main.c ui.h ipc.h device.h
+main.o: main.c ui.h ipc.h device.h health.h
 ui.o: ui.c ui.h ipc.h remote-ui.inc atm-ui.inc auth-ui.inc service-ui.inc activation-ui.inc mcp-ui.inc
 device.o: device.c device.h
 ipc.o: ipc.c ipc.h
+health.o: health.c health.h
 
 install: rock-ui
 	install -D -m 0755 rock-ui $(DESTDIR)/usr/bin/rock-ui
 
 clean:
-	rm -f rock-ui *.o rock-ui-test rock-ipc-test
+	rm -f rock-ui *.o rock-ui-test rock-ipc-test rock-ui-health-test
+
+# Real root -> UID1000 peer checks require root; this separate Linux target is
+# not installed and never changes the normal unprivileged visual test target.
+rock-ui-health-test: test_health.c health.c health.h
+	$(CC) $(CFLAGS) -DROCK_UI_HEALTH_TEST $(LDFLAGS) -o $@ test_health.c health.c
+
+test-health: rock-ui-health-test
+	./rock-ui-health-test
 
 rock-ui-test: test_ui.o ui.o device.o ipc.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)

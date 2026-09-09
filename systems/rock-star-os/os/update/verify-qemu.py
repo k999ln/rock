@@ -124,6 +124,7 @@ def main():
     input_hashes = {path.name: sha256(path) for path in (kernel, rootfs, initrd)}
     report = {"status": "RUNNING", "started_utc": stamp, "target": "QEMU virt-10.0 ARM64",
               "physical_blackberry": "NOT TESTED", "production_secure_boot": False,
+              "native_ui_checked": False, "ui_health_mode": "explicit-development-headless",
               "hardware_antirollback": False, "trust": "PUBLIC RFC 8032 development fixture",
               "input_sha256": input_hashes, "boots": [], "network_adapter": "none",
               "selector": "same guest stage0 initramfs on every boot; no host slot/state patches"}
@@ -220,7 +221,7 @@ def main():
         ]
         for number, (phase, selection, markers) in enumerate(phases, 1):
             log = evidence / f"boot-{number}-{phase}.log"
-            command = base + ["-append", f"console=ttyAMA0 ro rootwait panic=1 rock.abtest={phase}"]
+            command = base + ["-append", f"console=ttyAMA0 ro rootwait panic=1 rock.ui=headless rock.abtest={phase}"]
             print(f"A/B guest boot {number}/8 phase={phase}; {log}", flush=True)
             result = boot(command, log, args.timeout, power_cut=phase == "interrupt")
             if phase == 'interrupt':

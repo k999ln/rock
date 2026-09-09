@@ -13,6 +13,15 @@ case "${1:-start}" in
       chown 1000:1000 "$device"
       chmod 0600 "$device"
     done
+    # Volatile private listener directory. The UI owns the endpoint; the root
+    # checker authenticates its actual process, not just this pathname.
+    if [ -e /run/rock-ui-health ] || [ -L /run/rock-ui-health ]; then
+      [ -d /run/rock-ui-health ] && [ ! -L /run/rock-ui-health ] || exit 1
+    else
+      mkdir /run/rock-ui-health
+    fi
+    chown 1000:1000 /run/rock-ui-health
+    chmod 0700 /run/rock-ui-health
     touch /var/log/rock-ui.log
     chown 1000:1000 /var/log/rock-ui.log
     chmod 0600 /var/log/rock-ui.log

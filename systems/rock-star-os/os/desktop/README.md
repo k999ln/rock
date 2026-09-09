@@ -83,11 +83,26 @@ membership and balance (navigation/scroll only), and normal shutdown confirmatio
 It cannot send a host power/reset command and never
 forces the restored process off on failure.
 
-After the guest's UI-initiated shutdown, the harness checks clean ext4, exact
-retention of 32 fixed SQLite business tables: Hub/registry 7, Wallet/ATM 9,
-membership 13, OS remote controller 2, and the power receipt table. It verifies
+The harness accepts the actual backup schema `/1` (data only) and `/2`
+(complete A/B/data) without converting or relabeling either format. Every
+manifest disk is checked by size and full SHA-256 at source, backup and restored
+destination before boot. Source and backup disks are rechecked on exit even
+after failures; both restored A/B slots must also remain unchanged after boot.
+Schema 5's pinned stage0 image is included in the frozen-image checks.
+
+After the guest's UI-initiated shutdown, the harness checks clean ext4 and exact
+retention of every table in the profile's required SQLite databases. Device
+schemas 1–3 require the local simulator profile's 44 base tables: Hub/registry 7,
+Wallet/ATM/authentication 16, membership 15, OS remote controller 2,
+authenticator 3, and power 1. Schemas 4–5 require the purchaser profile's 16
+local tables, replacing the local Wallet/membership databases with the remote
+Wallet cache's identity, requests and snapshot tables. A conflicting second
+Wallet database is refused. Required databases/tables cannot be omitted, and
+every additional table is included in the bounded hash comparison. It verifies
 database integrity/foreign keys, complete table coverage, schema and internal
-autoincrement sequences. Unknown tables fail instead of being omitted. Each completed job's
+autoincrement sequences. Added table content/schema changes fail the comparison.
+The power exception applies only to its requests table, never additional tables.
+Each completed job's
 durable request receipt, and exactly one additional native power request with a
 different kernel boot ID must agree. Wallet evidence contains only counts/digests
 and financial totals (including balance and bill count); exported
@@ -95,21 +110,34 @@ databases exist only in a temporary directory. The source and saved backup must
 still have their original full hashes. Failures retain the new device/data and
 report for inspection.
 
-Its successful automated status is `AUTOMATED_PASS`, with `visual_review:
-PENDING`. Original screenshots need a separate visual review before claiming
-the screen shows the restored Tools/results/Wallet. Fourteen focused fixture tests
-pass on macOS and Linux; these are not actual restoration or boot evidence.
-The expanded harness uses report schema `/2` and eight original frames; the
-six-frame 1305 report and images below remain unchanged.
+For local-only scope its successful automated status is `AUTOMATED_PASS`, with
+`visual_review: PENDING`. Original screenshots need a separate visual review
+before claiming the screen shows restored Tools/results/Wallet. If the source
+uses an external authority or runner, local success instead returns `INCOMPLETE`
+(nonzero exit) and `local_checks: AUTOMATED_PASS`. The report names external
+Wallet/membership, registry, runner and optional MCP/provider state as `NOT_RUN`.
+These journals and authority bindings are not backed up by the existing device
+backup module. Fresh external restoration, reconciliation and writer fencing
+remain required; a remote cache cannot substitute for that evidence. There is
+no flag to waive required external coverage.
+
+The current harness uses report schema `/3` and the same eight frame captures.
+The schema `/2` and six-frame 1305 reports/images below are historical and remain
+unchanged. Host fixture checks for both manifest formats, actual SQLite schemas,
+extra-table retention and missing external coverage do not prove actual ext4,
+QEMU startup/shutdown or restored backend operation.
 
 This strict comparison requires quiescent local/remote jobs, registry requests
-and monthly due work. The same UTC-month counter and all business rows must
+and monthly due work, plus unresolved remote Wallet requests. The same
+UTC-month counter and all business rows must
 remain unchanged; a legitimate new-month scheduler transition is not silently
 excluded or called data loss. Power alone may append the one verified shutdown.
 Entropy seeds, locks, filesystem metadata and OS boot-health metadata can change
 during normal boot and are outside the postboot SQLite comparison. The full
 preboot image hash covers all disk files; postboot registry cache/file trees and
-external runner/provider state are not separately enumerated. The exact scope
+unlisted databases are not separately enumerated after boot. External
+runner/provider state is recorded as a separate incomplete scope when needed.
+The exact scope
 and exclusions are embedded as `comparison_contract` in each new report.
 
 The first restricted Mac invocation passed the new file/launcher checks, but its

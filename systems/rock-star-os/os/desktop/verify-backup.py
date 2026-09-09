@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import re
 import sqlite3
+import subprocess
 import sys
 import tempfile
 import time
@@ -42,19 +43,108 @@ SOURCES = {
 }
 BUSINESS_ROLES = ('hub','wallet','membership','remote','authenticator')
 MAX_ROWS, MAX_ROW_BYTES, MAX_SNAPSHOT_BYTES = 20000, 2*1024*1024, 64*1024*1024
+MAX_TABLES, MAX_SCHEMA_OBJECTS = 256, 1024
 COMPARISON_CONTRACT = {
-    'schema': 'rock-closed-business-retention/4',
-    'business_tables': 44,
+    'schema': 'rock-closed-business-retention/5',
+    'business_tables': 'profile-required tables plus every additional observed table; no table exclusions',
     'before_boot': 'whole source/backup/restored image bytes and all observed SQLite schema, sequence and rows must match',
-    'after_boot': 'all Hub, Wallet/ATM, entitlement and OS remote controller rows/schema/sequences must match exactly',
+    'after_boot': 'all profile DB rows/schema/sequences must match exactly except the single native power request',
     'power_exception': 'old power receipts unchanged; exactly one additional dispatched native shutdown for a different boot',
     'quiescence': 'no unfinished local/remote execution, registry refresh, monthly due work or incomplete registration receipt',
     'utc_month': 'same-month strict preservation; month-counter advance is not silently ignored or called data loss',
     'excluded_after_boot': ['entropy seed rotation', 'transient lock/PID/socket state', 'filesystem access/allocation metadata',
                             'OS update boot-health metadata', 'external runner/provider state outside the data disk'],
-    'scope_limit': '44 fixed SQLite business tables including contract-device links, registration origins, Wallet authentication ceremonies and authenticator counters/receipts; whole-image preboot comparison also covers other files, but postboot cache/file trees are not separately enumerated',
+    'scope_limit': 'local-ledger or purchaser-cache profile; every table in each required DB is compared, including added tables; external authority/runner/provider restoration is a separate required gate when configured or used; postboot non-SQLite file trees and unlisted DB files are not separately enumerated',
     'privacy': 'private temporary DB copies only; public evidence contains counts, logical/schema hashes and financial totals, never Wallet/membership/credential rows',
 }
+
+
+def disk_manifest(saved):
+    """Normalize both real backup formats without pretending data-only is A/B."""
+    device = saved.get('config', {}).get('schema')
+    if saved.get('schema') == 'rock-desktop-backup/1':
+        guest.require(device in tuple('rock-desktop-device/'+str(v) for v in range(1, 5)),
+                      'legacy backup requires a non-stage0 device')
+        disks = {'userdata.ext4': {'sha256': saved.get('userdata_sha256'), 'bytes': saved.get('bytes')}}
+    elif saved.get('schema') == 'rock-desktop-backup/2':
+        from stage0 import DISKS
+        guest.require(device == 'rock-desktop-device/5', 'A/B/data backup requires stage0 device')
+        disks = saved.get('disks')
+        guest.require(type(disks) is dict and set(disks) == set(DISKS), 'exact A/B/data manifest required')
+    else:
+        raise ValueError('unknown backup format')
+    for value in disks.values():
+        guest.require(type(value) is dict and set(value) == {'sha256', 'bytes'} and
+                      type(value['bytes']) is int and 0 < value['bytes'] <= 2*1024**3 and
+                      type(value['sha256']) is str and re.fullmatch('[0-9a-f]{64}', value['sha256']),
+                      'invalid backup disk manifest')
+    return {name: dict(value) for name, value in disks.items()}
+
+
+def verify_disk_set(manifest, directory, label):
+    observed = {}
+    for name, expected in manifest.items():
+        path = Path(directory)/name
+        info = backup.regular(path)
+        observed[name] = {'sha256': guest.digest(path), 'bytes': info.st_size}
+        guest.require(observed[name] == expected, label+' disk '+name+' differs from manifest')
+    return observed
+
+
+def retention_profile(config):
+    version = config.get('schema')
+    guest.require(version in tuple('rock-desktop-device/'+str(v) for v in range(1, 6)),
+                  'unknown retention device profile')
+    sources = dict(SOURCES)
+    if version in ('rock-desktop-device/4', 'rock-desktop-device/5'):
+        del sources['wallet'], sources['membership']
+        sources['wallet_cache'] = ('/wallet/backend-cache/remote-cache.db', ('identity', 'requests', 'snapshot'))
+        return {'name': 'purchaser-remote-authority/1', 'sources': sources,
+                'forbidden_databases': [SOURCES['wallet'][0], SOURCES['membership'][0]]}
+    return {'name': 'local-wallet-simulator/1', 'sources': sources,
+            'forbidden_databases': ['/wallet/backend-cache/remote-cache.db']}
+
+
+def closed_file_exists(data, path):
+    guest.require(re.fullmatch('/[A-Za-z0-9_./-]+', path), 'fixed guest database path required')
+    result = subprocess.run(['debugfs', '-R', 'stat '+path, str(data)], capture_output=True, check=True, timeout=20)
+    if b'File not found by ext2_lookup' in result.stderr:
+        return False
+    guest.require(b'Inode:' in result.stdout and b'Type:' in result.stdout,
+                  'could not establish database presence: '+path)
+    return True
+
+
+def verify_profile_layout(data, profile):
+    for path in profile['forbidden_databases']:
+        guest.require(not closed_file_exists(data, path), 'conflicting Wallet database for retention profile')
+
+
+def external_coverage(config, baseline):
+    """Inventory missing external evidence; never infer authority restore from a cache."""
+    purchaser = config['schema'] in ('rock-desktop-device/4', 'rock-desktop-device/5')
+    required = purchaser or config.get('network', 'none') != 'none' or any(
+        table['rows'] for table in baseline['remote']['tables'].values())
+    components = {}
+    if required:
+        components['runner'] = {'database': 'runner/jobs.sqlite3',
+                                'required_tables': ['metadata', 'jobs', 'revocations'],
+                                'additional_tables': 'all, including runner_service_access for purchaser profiles'}
+        components['registry'] = {'scope': 'registry state, package files and publisher/consumer bindings'}
+    if purchaser:
+        components['wallet_authority'] = {
+            'wallet_database': 'wallet/wallet-simulator.db', 'wallet_tables': list(SOURCES['wallet'][1]),
+            'membership_database': 'wallet/entitlement.db',
+            'membership_tables': [*SOURCES['membership'][1], 'service_access_mode', 'service_access_consumers'],
+            'additional_tables': 'all; no omission of future game/account/migration tables',
+            'authority_marker': 'wallet/AUTHORITY.json'}
+        components['optional_mcp_providers'] = {'scope': 'saved backend configuration and provider/gateway journals if configured',
+                                               'configuration_inventory': 'NOT_RUN'}
+    return {'required': required, 'status': 'NOT_RUN' if required else 'NOT_APPLICABLE',
+            'included_in_device_backup': False, 'required_components': components,
+            'authority_id': config.get('services', {}).get('authority_id'),
+            'backend_config_sha256': config.get('services', {}).get('sha256'),
+            'meaning': 'external backup, fresh-target restore and reconciliation are not performed by this offline guest harness'}
 
 
 def canonical(value):
@@ -65,11 +155,12 @@ def hashed(value):
     return hashlib.sha256(canonical(value)).hexdigest()
 
 
-def business_snapshot(data):
-    """Export fixed closed DBs temporarily; return hashes/counts, never Wallet rows."""
+def business_snapshot(data, profile=None):
+    """Require profile DBs and hash all their tables; return no private rows."""
+    sources = SOURCES if profile is None else profile['sources']
     result, hub_rows, power_rows, used = {}, {}, [], 0
     with tempfile.TemporaryDirectory(prefix='rock-backup-db-') as temporary:
-        for role,(source,tables) in SOURCES.items():
+        for role,(source,tables) in sources.items():
             destination=Path(temporary)/(role+'.sqlite3')
             power.export_closed_database(data,source,destination)
             destination.chmod(0o600)
@@ -79,13 +170,18 @@ def business_snapshot(data):
                 guest.require(db.execute('PRAGMA integrity_check').fetchone()[0]=='ok','database integrity failed: '+role)
                 guest.require(db.execute('PRAGMA foreign_key_check').fetchone() is None,'database foreign key check failed: '+role)
                 db.row_factory=sqlite3.Row
-                actual={row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
-                guest.require(actual - {'sqlite_sequence'} == set(tables),'missing or unreviewed business table in '+role)
-                schema=[dict(row) for row in db.execute('SELECT type,name,tbl_name,sql FROM sqlite_master ORDER BY type,name')]
+                actual={row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table' LIMIT "+str(MAX_TABLES+1))}
+                guest.require(len(actual)<=MAX_TABLES, 'bounded database table budget exceeded: '+role)
+                guest.require(set(tables) <= actual, 'missing required business table in '+role)
+                schema=[dict(row) for row in db.execute('SELECT type,name,tbl_name,sql FROM sqlite_master ORDER BY type,name LIMIT '+str(MAX_SCHEMA_OBJECTS+1))]
+                guest.require(len(schema)<=MAX_SCHEMA_OBJECTS, 'bounded database schema budget exceeded: '+role)
+                used+=len(canonical(schema))
+                guest.require(used<=MAX_SNAPSHOT_BYTES, 'bounded private snapshot byte budget exceeded')
                 observed,internal={},{}
-                for table in (*tables, *(('sqlite_sequence',) if 'sqlite_sequence' in actual else ())):
+                for table in sorted(actual):
                     rows,encoded=[],[]
-                    for record in db.execute('SELECT * FROM '+table+' LIMIT '+str(MAX_ROWS+1)):
+                    quoted = '"'+table.replace('"', '""')+'"'
+                    for record in db.execute('SELECT * FROM '+quoted+' LIMIT '+str(MAX_ROWS+1)):
                         guest.require(len(rows)<MAX_ROWS,'bounded database evidence exceeded: '+role+'/'+table)
                         row=dict(record)
                         raw=canonical(row)
@@ -96,9 +192,10 @@ def business_snapshot(data):
                     entry={'rows':len(rows),'logical_sha256':hashed(sorted(encoded))}
                     (internal if table=='sqlite_sequence' else observed)[table]=entry
                     if role=='hub': hub_rows[table]=rows
-                    if role=='power': power_rows=rows
+                    if role=='power' and table=='requests': power_rows=rows
                 result[role]={'integrity':'ok','foreign_keys':'ok','tables':observed,'internal_sequences':internal,
-                              'schema_sha256':hashed(schema)}
+                              'schema_sha256':hashed(schema),
+                              'additional_tables':sorted(actual-set(tables)-{'sqlite_sequence'})}
                 if role=='wallet': result[role]['financial_summary']=wallet_totals(db)
                 if role=='membership':
                     result[role]['financial_summary']={
@@ -113,6 +210,8 @@ def business_snapshot(data):
                 elif role=='membership':
                     unfinished=db.execute("SELECT COUNT(*) FROM device_monthly_due WHERE status IN ('due','processing','retry_wait')").fetchone()[0]
                     unfinished+=db.execute('SELECT COUNT(*) FROM device_api_receipts WHERE response_json IS NULL').fetchone()[0]
+                elif role=='wallet_cache':
+                    unfinished=db.execute('SELECT COUNT(*) FROM requests WHERE response IS NULL').fetchone()[0]
                 else: unfinished=0
                 guest.require(unfinished==0,'source is not quiescent for strict restoration: '+role)
     return result,hub_rows,power_rows
@@ -151,12 +250,16 @@ def source_receipts(hub_rows):
     return {'installed':installed,'completed_jobs':summary,'total_receipts':len(receipts)}
 
 
-def compare_business(before,after):
-    guest.require(set(before)==set(after)==set(SOURCES),'restored database role coverage differs')
-    for role in BUSINESS_ROLES:
+def compare_business(before,after,profile=None):
+    sources = SOURCES if profile is None else profile['sources']
+    guest.require(set(before)==set(after)==set(sources),'restored database role coverage differs')
+    for role in set(sources)-{'power'}:
         guest.require(before[role]==after[role],'restored business data changed: '+role)
     for name in ('schema_sha256','internal_sequences'):
         guest.require(before['power'][name]==after['power'][name],'restored power schema changed')
+    guest.require({name: value for name, value in before['power']['tables'].items() if name != 'requests'} ==
+                  {name: value for name, value in after['power']['tables'].items() if name != 'requests'},
+                  'restored additional power business data changed')
 
 
 def capture_wallet_read_only(ui):
@@ -205,31 +308,39 @@ def run(source_name,restored_name):
     guest.require(not destination.exists(),'restored device name already exists; no overwrite or reuse')
     directory=source_state/'backup-verifications';guest.directory(directory)
     output=Path(tempfile.mkdtemp(prefix=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')+'-',dir=directory))
-    report={'schema':'rock-desktop-backup-actual/2','status':'FAIL','started_utc':datetime.now(timezone.utc).isoformat(),
+    report={'schema':'rock-desktop-backup-actual/3','status':'FAIL','started_utc':datetime.now(timezone.utc).isoformat(),
             'source_device':source_name,'restored_device':restored_name,'blackberry':'NOT_RUN','physical_usb':'NOT_RUN',
             'real_money':'NOT_RUN','host_power_commands':0,'input_events':[],'screenshots':[],'qmp_events':[],'qmp_commands':[],
             'visual_review':'PENDING','evidence':str(output),'comparison_contract':COMPARISON_CONTRACT}
-    record=monitor=None; source_hash=backup_hash=None; backup_data=None
+    record=monitor=None; manifest=None; backup_directory=None
     try:
         # create_backup holds the source device lock and checks clean shutdown.
-        saved=backup.create_backup(source_name);backup_data=Path(saved['backup'])/'userdata.ext4'
-        source_hash=saved['userdata_sha256'];backup_hash=guest.digest(backup_data)
-        guest.require(guest.digest(source_state/'userdata.ext4')==source_hash==backup_hash,'source/backup copy hash differs')
-        baseline,baseline_hub,baseline_power=business_snapshot(backup_data)
-        report['wallet_summary_before']=baseline['wallet']['financial_summary']
-        report['membership_summary_before']=baseline['membership']['financial_summary']
+        saved=backup.create_backup(source_name);backup_directory=Path(saved['backup'])
+        manifest=disk_manifest(saved)
+        backup_data=backup_directory/'userdata.ext4'
+        report['source_disks_before']=verify_disk_set(manifest,source_state,'source')
+        report['backup_disks_before']=verify_disk_set(manifest,backup_directory,'backup')
+        profile=retention_profile(saved['config']);report['business_profile']=profile
+        verify_profile_layout(backup_data,profile)
+        baseline,baseline_hub,baseline_power=business_snapshot(backup_data,profile)
+        report['external_state']=external_coverage(saved['config'],baseline)
+        for role in ('wallet','membership'):
+            if role in baseline: report[role+'_summary_before']=baseline[role]['financial_summary']
         report['preserved_receipts']=source_receipts(baseline_hub)
         previous=max(baseline_power,key=lambda row:row['created_unix']) if baseline_power else None
         guest.require(previous is not None,'source normal-shutdown receipt missing')
         power.guest.validate_record(previous,'poweroff',previous['boot_id'],dispatched=True)
         restored=backup.restore_backup(saved['backup'],restored_name)
-        config=restored['config'];guest.require(config.get('network')=='none','restored device must remain offline')
+        config=restored['config'];guest.require(config.get('network','none')=='none','restored device must remain offline')
         data=guest.BASE/restored_name/'userdata.ext4'
-        guest.require(guest.digest(data)==source_hash,'restored whole image differs before first boot')
-        restored_before,_,_=business_snapshot(data)
+        report['restored_disks_before_boot']=verify_disk_set(manifest,data.parent,'restored before boot')
+        guest.require(retention_profile(config)==profile,'restored device profile changed')
+        verify_profile_layout(data,profile)
+        restored_before,_,_=business_snapshot(data,profile)
         guest.require(restored_before==baseline,'restored logical database differs before first boot')
-        image_hashes={name:guest.digest(Path(config['images'])/name) for name in ('Image','rootfs.ext4')}
-        report.update(backup=str(Path(saved['backup'])),source_sha256_before=source_hash,backup_sha256_before=backup_hash,
+        image_hashes={name:guest.digest(Path(config['images'])/name) for name in config['sha256']}
+        source_hash=manifest['userdata.ext4']['sha256']
+        report.update(backup=str(backup_directory),backup_schema=saved['schema'],source_sha256_before=source_hash,backup_sha256_before=source_hash,
                       restored_sha256_before_boot=guest.digest(data),logical_before=baseline,network='none',image_sha256=image_hashes)
         record=guest.start(config)
         guest.require(not record['reused'],'restore must start a new owned device process')
@@ -255,17 +366,23 @@ def run(source_name,restored_name):
         serial=log.read_text(errors='replace')
         guest.require(serial.count('reboot: Power down')==1 and 'reboot: Restarting system' not in serial,'kernel normal shutdown marker missing')
         report['restored_filesystem_check']=backup.check_disk(data)
-        after,after_hub,after_power=business_snapshot(data)
-        compare_business(baseline,after)
-        report['wallet_summary_after']=after['wallet']['financial_summary']
-        report['membership_summary_after']=after['membership']['financial_summary']
+        verify_profile_layout(data,profile)
+        after,after_hub,after_power=business_snapshot(data,profile)
+        compare_business(baseline,after,profile)
+        for role in ('wallet','membership'):
+            if role in after: report[role+'_summary_after']=after[role]['financial_summary']
         guest.require(source_receipts(after_hub)==report['preserved_receipts'],'installed/job receipts differ after boot')
         report['boot_transition']=power_transition(baseline_power,after_power,report['qmp_events'])
         guest.require(set(report['qmp_commands'])<=power.Monitor.ALLOWED and
                       not any('verify=1' in value for value in record['identity']['command']),'unexpected guest hook or host power command')
         guest.require({name:guest.digest(Path(config['images'])/name) for name in image_hashes}==image_hashes,'frozen OS image changed')
-        report.update(status='AUTOMATED_PASS',logical_after=after,restored_sha256_after_boot=guest.digest(data),
-                      meaning='OS/data/receipt/shutdown checks passed; original UI captures require visual review')
+        report['restored_slots_after_boot']=verify_disk_set(
+            {name: value for name,value in manifest.items() if name!='userdata.ext4'},data.parent,'restored slot after boot')
+        incomplete=report['external_state']['required']
+        report.update(status='INCOMPLETE' if incomplete else 'AUTOMATED_PASS',local_checks='AUTOMATED_PASS',
+                      logical_after=after,restored_sha256_after_boot=guest.digest(data),
+                      meaning=('local device checks passed; required external authority/runner/provider restoration remains NOT_RUN'
+                               if incomplete else 'local OS/data/receipt/shutdown checks passed; original UI captures require visual review'))
     except BaseException as error:
         report.update(status='FAIL',error=type(error).__name__+': '+str(error))
         if monitor and record and guest.running(record):
@@ -276,12 +393,12 @@ def run(source_name,restored_name):
         if monitor:
             try: monitor.close()
             except BaseException as error: errors.append('monitor: '+type(error).__name__)
-        if source_hash is not None:
+        if manifest is not None:
             try:
-                report['source_sha256_after']=guest.digest(source_state/'userdata.ext4')
-                report['backup_sha256_after']=guest.digest(backup_data)
-                guest.require(report['source_sha256_after']==source_hash and report['backup_sha256_after']==backup_hash,
-                              'source or backup changed during verification')
+                report['source_disks_after']=verify_disk_set(manifest,source_state,'source after verification')
+                report['backup_disks_after']=verify_disk_set(manifest,backup_directory,'backup after verification')
+                report['source_sha256_after']=report['source_disks_after']['userdata.ext4']['sha256']
+                report['backup_sha256_after']=report['backup_disks_after']['userdata.ext4']['sha256']
             except BaseException as error: errors.append(type(error).__name__+': '+str(error))
         if record: report['restored_device_still_running']=guest.running(record)
         if errors: report.update(status='FAIL',finalization_errors=errors)
