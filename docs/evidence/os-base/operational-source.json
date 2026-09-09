@@ -253,6 +253,29 @@
         "run": 34394252183,
         "status": "PASS"
       }
+    },
+    {
+      "head_commit": "a21927746c7bac9c6ae7b0d9d574340bdd24eb89",
+      "native": {
+        "run": 34399906544,
+        "status": "PASS",
+        "python_executions": 1157,
+        "root_ui_tests": 61,
+        "root_readiness_groups": 8,
+        "wallet_replay_frames": 28,
+        "wallet_replay_negative_cases": 8,
+        "skips": 0,
+        "resource_warnings": 0,
+        "report": "ci-a219277-native.json"
+      },
+      "web": {
+        "run": 34399906545,
+        "status": "PASS"
+      },
+      "android": {
+        "run": 34399906548,
+        "status": "PASS"
+      }
     }
   ],
   "host_observation_failures": [
