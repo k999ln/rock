@@ -306,8 +306,7 @@ def main():
             try:
                 rootfs, a, b, data, payloads = (directory / name for name in
                     ('release-2.ext4', 'slot-a.ext4', 'slot-b.ext4', 'userdata.ext4', 'payloads.ext4'))
-                subprocess.run(['cp', '--sparse=always', '--reflink=auto', str(inputs['rootfs.ext4']), str(rootfs)],
-                               check=True, timeout=120)
+                verify.sparse_copy(inputs['rootfs.ext4'], rootfs)
                 entry['injections'] = [write_guest_file(rootfs, directory, 'release-marker',
                     'etc/rock-update/build-marker', b'release-2\n')]
                 if mode == 'absent':
@@ -333,8 +332,7 @@ def main():
                 candidate_hash = envelope['manifest']['sha256']
                 entry['candidate_manifest'] = envelope['manifest']
                 (directory / 'candidate-envelope.json').write_text(json.dumps(envelope, indent=2) + '\n')
-                subprocess.run(['cp', '--sparse=always', '--reflink=auto', str(inputs['rootfs.ext4']), str(a)],
-                               check=True, timeout=120)
+                verify.sparse_copy(inputs['rootfs.ext4'], a)
                 for path, size in ((b, rootfs.stat().st_size), (data, 128 * 1024**2),
                                    (payloads, (fixtures / 'release-2.rock').stat().st_size * 12 // 10 + 64 * 1024**2)):
                     with path.open('xb') as stream:

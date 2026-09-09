@@ -13,6 +13,7 @@ from pathlib import Path
 import selectors
 import shutil
 import signal
+import stat
 import struct
 import subprocess
 import sys
@@ -29,7 +30,40 @@ def sha256(path):
 
 
 def sparse_copy(source, target):
-    subprocess.run(["cp", "--sparse=always", "--reflink=auto", str(source), str(target)], check=True)
+    """Copy immutable input into a fresh private writable fixture (Linux).
+
+    Keep both descriptors open through cp: path replacement cannot redirect a
+    write/chmod to the original or an existing shared file. Failed partial
+    fixtures remain in the private evidence directory, and cannot be reused.
+    """
+    source_fd = os.open(source, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    target_fd = None
+    try:
+        original = os.fstat(source_fd)
+        if not stat.S_ISREG(original.st_mode):
+            raise RuntimeError('fixture source must be a regular file')
+        target_fd = os.open(target, os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+        created = os.fstat(target_fd)
+        # Only this exclusively created inode is ever chmodded, including when
+        # a restrictive umask removed its owner write bit during creation.
+        os.fchmod(target_fd, 0o600)
+        subprocess.run(['cp', '--sparse=always', '--reflink=auto',
+                        f'/proc/self/fd/{source_fd}', f'/proc/self/fd/{target_fd}'],
+                       pass_fds=(source_fd, target_fd), check=True, timeout=120)
+        os.fsync(target_fd)
+        actual, named = os.fstat(target_fd), os.lstat(target)
+        if (not stat.S_ISREG(named.st_mode) or actual.st_nlink != 1 or
+                (named.st_dev, named.st_ino) != (created.st_dev, created.st_ino) or
+                actual.st_size != original.st_size or stat.S_IMODE(actual.st_mode) != 0o600):
+            raise RuntimeError('fixture destination changed during copy')
+        current = os.fstat(source_fd)
+        fields = ('st_dev', 'st_ino', 'st_mode', 'st_size', 'st_mtime_ns', 'st_ctime_ns')
+        if any(getattr(original, field) != getattr(current, field) for field in fields):
+            raise RuntimeError('immutable source changed during copy')
+    finally:
+        if target_fd is not None:
+            os.close(target_fd)
+        os.close(source_fd)
 
 
 def span_digest(path, start, size):
