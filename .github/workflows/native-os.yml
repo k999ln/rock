@@ -12,7 +12,11 @@ concurrency:
   cancel-in-progress: true
 jobs:
   source-tests:
-    runs-on: ubuntu-24.04
+    # The launcher sets no_new_privs before execing bwrap. Ubuntu 24.04's
+    # AppArmor userns grant therefore cannot be acquired after launch.
+    # 22.04 runs the same real non-root bwrap + seccomp isolation without
+    # weakening the launcher or disabling the host-wide AppArmor control.
+    runs-on: ubuntu-22.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -20,12 +24,7 @@ jobs:
         with:
           python-version: '3.13'
       - name: Prepare Linux source-test dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y apparmor apparmor-profiles apparmor-utils build-essential bubblewrap pkg-config libseccomp-dev libcairo2-dev libfreetype6-dev libjson-c-dev openssl e2fsprogs
-          sudo install -m 0644 /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d/bwrap-userns-restrict
-          sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict
-          test -x /usr/bin/bwrap
+        run: sudo apt-get update && sudo apt-get install -y build-essential bubblewrap pkg-config libseccomp-dev libcairo2-dev libfreetype6-dev libjson-c-dev openssl e2fsprogs
       - name: Native source regressions (not OS boot)
         run: python3 scripts/test-native.py --output work/native-tests
       - uses: actions/upload-artifact@v4
