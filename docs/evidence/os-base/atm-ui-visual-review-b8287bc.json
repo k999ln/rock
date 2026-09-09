@@ -1,0 +1,18 @@
+{
+  "schema": "rock-atm-ui-visual-review/1",
+  "status": "PASS_SCOPED",
+  "runtime": "b8287bc",
+  "reviewer": "root",
+  "checked_all_frame_hashes": 14,
+  "reviewed_frames": {
+    "06-owner-issue-confirmation.png": "6f146f79da7ad2677b340810dc29add6c0576cd43375a0f1c40fa440acd7dcd5",
+    "07-issued-1000-held-code-hidden.png": "bcbb9868cf6007f6c43c0cc5ffbedbf3fe3d83884501d473c80e9e0d3e060cb3",
+    "10-wallet-5000-returned-zero-held.png": "e7ba714d488e4e8546cea9535adb85b7508fb3fb9a868cd50cba09302868f574"
+  },
+  "observations": [
+    "explicit1000 amount/0fee/1000total and public software PIN consent",
+    "issued1000hold and bearer hidden; no test dispense/refund yet",
+    "cancelled flow returned available5000 and monthly consent remains separate"
+  ],
+  "scope": "actual saved native screens plus closed guest proof; not real ATM/funds"
+}

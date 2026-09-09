@@ -213,6 +213,16 @@
       "actual_failed_history_review": "business-history-header-review.json",
       "limits_unchanged": true,
       "qemu": "NOT_RUN"
+    },
+    "qemu_atm_ui": {
+      "status": "PASS",
+      "report": "atm-ui-b8287bc.json",
+      "report_sha256": "42e28ed8acaf7e345dede5ad7d6cf8b9e619639c0e28b3ac04869090d913f9ec",
+      "proof": "atm-ui-proof-b8287bc.json",
+      "frames": 14,
+      "input_scope": "actual evdev and masked PIN4/enabled sign pixels; no actor commands or reveal actions",
+      "ledger": "synthetic5000 credit/settlement,1000 hold,cancel->5000 available/0 held; monthly consent not inferred; fee0",
+      "original_images_unchanged": true
     }
   },
   "logs_sha256": {
