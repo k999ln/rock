@@ -1,0 +1,51 @@
+{
+  "schema": "rock-business-wallet-host-report/1",
+  "patch": "work/business-wallet-followup.patch",
+  "patch_sha256": "ead76efb29f79f2677cf230ea6c6925559f7cec35e996907e77d780b22070100",
+  "changed_files": [
+    "os/desktop/verify-business.py",
+    "os/desktop/BUSINESS-VERIFY.md",
+    "tests/test_os_business_ui_harness.py",
+    "os/desktop/wallet_backup.py",
+    "tests/test_wallet_backup_evidence.py"
+  ],
+  "linux_root_tests": {
+    "wallet_real_service": 6,
+    "business_contract_and_guards": 30,
+    "passed": 36,
+    "skipped": 0,
+    "qemu_started": false
+  },
+  "mac_host_business_tests": {
+    "passed": 30,
+    "skipped": 0
+  },
+  "regressions": [
+    "shared OCR deadline rejects late visible match before click",
+    "normal shutdown rejects exit observed after deadline",
+    "all stopped-disk reads under existing device lock",
+    "replacement running record refuses read",
+    "separate process cannot acquire lock during closed observation"
+  ],
+  "wallet_contract": {
+    "credit_minor": 2000,
+    "monthly_bill_minor": 888,
+    "bill_count": 1,
+    "hold_and_full_cancellation_minor": 1000,
+    "available_final_minor": 1112,
+    "signed_registration_and_assertion_reverified": true,
+    "native_keys": 15,
+    "financial_journals": 5,
+    "postings": 10,
+    "real_funds": "NOT_RUN",
+    "actual_ui": "NOT_RUN"
+  },
+  "additional_wallet_boots_predeclared": 2,
+  "original_D6_cycles": 5,
+  "D2": "NOT_RUN",
+  "D5": "NOT_RUN",
+  "D6": "NOT_RUN",
+  "runtime_image_changes": false,
+  "live_wallet_ocr": "NOT_RUN; requires built-image execution",
+  "linux_log_sha256": "9a52a178b65d6bf63c7beb8caa6f02a6bc3633c52f14e91c8188c4cd27639083"
+}

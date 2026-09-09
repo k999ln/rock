@@ -215,7 +215,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 未合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
 | DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 未合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) |
 
-次の作業: 新規QEMU imageのbuild→起動/専用UID/Hub業務商品/合成Wallet→D0〜D6受入。全observer55件とsource回帰1056件はLinux成功。GX00のADRを保持しB03-FIXTURE後に複数owner・ゲーム交換・SDKへ進む。Pixel 10はGrapheneOSを保つP1 APK試験を準備。
+次の作業: b8287bc固定source1089件と追加root55件はLinux成功。新しい空の領域でOS再build→起動/専用UID/Hub業務商品/合成Wallet→D0〜D6受入。local A/B復元63件はhost成功、実復元起動は未実行。B03-FIXTURE後にGX00→ゲーム交換→SDK。Pixel 10用のP1 APK二本はCI検証・取得済み、実機未確認。
 <!-- project-status:end -->
 
 ## 次段階の設計
