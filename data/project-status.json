@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-09",
   "milestone": "3系統統合済み・native起動/保存検証修正と新規OSビルド",
-  "nextAction": "新規QEMU imageのbuild→起動/専用UID/Hub業務商品/合成Wallet→D0〜D6受入。全observer55件とsource回帰1056件はLinux成功。GX00のADRを保持しB03-FIXTURE後に複数owner・ゲーム交換・SDKへ進む。Pixel 10はGrapheneOSを保つP1 APK試験を準備。",
+  "nextAction": "b8287bc固定source1089件と追加root55件はLinux成功。新しい空の領域でOS再build→起動/専用UID/Hub業務商品/合成Wallet→D0〜D6受入。local A/B復元63件はhost成功、実復元起動は未実行。B03-FIXTURE後にGX00→ゲーム交換→SDK。Pixel 10用のP1 APK二本はCI検証・取得済み、実機未確認。",
   "tasks": [
     {
       "id": "R01",
@@ -396,7 +396,7 @@
       "id": "V01-BOOT",
       "task": "V01",
       "title": "OS起動・安全基礎（V01全体の合格ではない）",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "B04-INTEGRATED"
       ],

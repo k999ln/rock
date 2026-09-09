@@ -7,11 +7,11 @@ main/native/設計v1.1を専用branchへ統合した。統合commitは `797c663d
 | 対象 | 結果 | 範囲 |
 | --- | --- | --- |
 | Web統合回帰 | PASS | 53 unit tests、143 API assertions、型・lint・build・要件/進捗/正本検査 |
-| Linux source回帰 | PASS | `d5fd1d556466b7ee076fa5ad0b90564a1f447663`、1069 Python実行、C core/platform/UIと実IPC・UI操作。入力hash不変、skip/warningなし |
+| Linux source回帰 | PASS | `b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9`、1089 Python実行、C core/platform/UIと実IPC・UI操作。入力hash不変、skip/warningなし |
 | startup health | PASS / sourceのみ | Python15件、root→UID1000の実Linux C8群。実nonce/socket/pidfd・loop応答を試験 |
 | backup試験入口・local A/B | PASS / sourceのみ | Linux63件（35既存backup・15purchaser A/B・13local A/B）。2件は実ext4のlocal/purchaser分離。旧schema1、新schema2、追加表、外部正本の未検証表示を保持 |
 | 全UI observer | PASS / sourceのみ | 現行enroll/Wallet terms/quote/approvalに合わせた55件を実Linux root fixtureで実行。skip/warningなし |
-| 新規QEMU image | FAIL / 修正中 | `dea78e3`を空のLinux build領域で組み立てたが、公開ソースから省かれた旧実験文書への参照で最終処理が停止。完成imageなし、実起動・更新・復旧はNOT_RUN |
+| 新規QEMU image | IN_PROGRESS / 2回目 | 初回`dea78e3`は旧文書参照で停止。公開入力だけの実配置回帰とD3診断を追加した`b8287bc`を、新しい空のbuild領域で再生成中。実起動はNOT_RUN |
 | D0〜D6総合 | 未合格 | 上記source試験をOS稼働成功にしない |
 | Pixel 10 | NOT_RUN | 利用者のGrapheneOSを保つ[Android P1 APK試験](android-trial.md)を準備 |
 | BlackBerry・MetaMask実資金・外部game | NOT_RUN | 機種/技術/取引条件が未確定、MetaMask現行コードはアドレス接続のみ |
@@ -28,9 +28,11 @@ ATM/Wallet observerの古いfixtureは現在の本人確認と規約を満たさ
 
 最初の追加root試験はhandoff所有者とディレクトリ権限のfixture不一致で失敗した。修正後も終了コード0のログにSQLite未解放警告を発見したため未合格とし、allocation traceでpower試験用DBの2か所を特定してcloseを追加した。再実行55件は警告なし。これらの失敗を記録から除去していない。
 
-GitHubの初回native CIは、試験用Pythonの所有者と10msの再試行時刻を壁時計に比較する試験の競合で失敗した。製品の所有者制限や待機時間を緩めず、保護されたsystem Pythonの実peerとcontroller限定の時計を使う試験へ修正。Linuxの対象15件・27件は合格し、CI全体は再実行待ち。WebとAndroid P1のCIは合格し、署名・hashを確認した試用APK二本を取得した。Pixelでの実行は未確認。
+GitHubの初回native CIは、試験用Pythonの所有者と10msの再試行時刻を壁時計に比較する試験の競合で失敗した。製品の所有者制限や待機時間を緩めず、保護されたsystem Pythonの実peerとcontroller限定の時計を使う試験へ修正。Linuxの対象15件・27件は合格し、`82faec4`のnative CI全体とroot55/C8群が再実行で合格。WebとAndroid P1のCIは合格し、署名・hashを確認した試用APK二本を取得した。Pixelでの実行は未確認。
 
 local用の明示schema6はnetworkなしで署名済みImage/rootfs/stage0を固定し、A/B/data全体の既存backup2を再利用する。購入者schema5の外部正本をlocalと読み替えず、型違い・重複JSON・data-onlyへの取り違えを拒否する。63件のLinux試験はskip/warningなし。新しいOSでの通常終了・復元後起動はまだ未実行。
+
+D3の固定診断は、実LinuxのUID1002→65534 sandboxでメモリ512 MiB要求を256 MiB上限で拒否、CPU2秒で終了、1 MiBを越える書込をEFBIGで拒否、明示crashを観測した。通常recipeと16項目の起動診断、未知引数拒否も保持した。実OS内の4ケースと、Hubでのtimeout/crash状態回復、data容量不足は別の受入結果を必要とする。
 
 ## 残る実装と受入
 
