@@ -458,31 +458,51 @@ class Platform:
 
 class WalletService:
     def __init__(self, state, *, provisioning_file=None, start_scheduler=True, clock=None, contract_devices=False,
-                 authentication_required=True, authority_id=None, max_automatic_failures=3):
+                 authentication_required=True, authority_id=None, max_automatic_failures=3,
+                 managed_write_hooks=None, write_admission=None):
         if type(authentication_required) is not bool:
             raise ValueError('explicit Wallet authentication mode must be boolean')
+        if (managed_write_hooks is None) != (write_admission is None):
+            raise ValueError('managed Wallet requires its hooks and admission together')
+        if managed_write_hooks is not None:
+            if not authentication_required:
+                raise ValueError('managed Wallet authentication cannot be disabled')
+            managed_write_hooks.require_held()
         from entitlement.device import DeviceWalletAdapter
-        self.wallet = Wallet(Path(state) / 'wallet-simulator.db')
-        if not authentication_required:
-            with closing(self.wallet._connect()) as db:
-                if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='wallet_auth_mode'").fetchone():
-                    raise ValueError('an authenticated Wallet cannot downgrade to a legacy fixture')
-        self.membership = DeviceWalletAdapter(state, self.wallet, provisioning_file=provisioning_file,
-                                              start_scheduler=False, clock=clock,
-                                              max_automatic_failures=max_automatic_failures)
-        from atm import CardlessATMSimulator
-        self.atm = CardlessATMSimulator(self.wallet, clock=clock if clock is not None else time.time,
-                                      device_authorizer=self.membership.authorize_atm_device if contract_devices else None)
-        self.authentication = None
-        if authentication_required:
-            from wallet_auth.service import WalletAuthorization
-            self.authentication = WalletAuthorization(self.wallet, self.atm, authority_id=authority_id,
-                                                       clock=clock if clock is not None else time.time)
-            self.membership.authentication = self.authentication
-            self.atm.redemption_authorizer = self._authorize_redemption
-            self.wallet.new_bill_authorizer = self._authorize_new_bill
-        if start_scheduler:
-            self.membership.start()
+        self._managed_write_hooks = managed_write_hooks
+        self.membership = None
+        options = {'managed_write_hooks': managed_write_hooks} if managed_write_hooks is not None else {}
+        try:
+            self.wallet = Wallet(Path(state) / 'wallet-simulator.db', **options)
+            if not authentication_required:
+                with closing(self.wallet._connect()) as db:
+                    if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='wallet_auth_mode'").fetchone():
+                        raise ValueError('an authenticated Wallet cannot downgrade to a legacy fixture')
+            self.membership = DeviceWalletAdapter(state, self.wallet, provisioning_file=provisioning_file,
+                                                  start_scheduler=False, clock=clock,
+                                                  max_automatic_failures=max_automatic_failures,
+                                                  managed_write_hooks=managed_write_hooks, write_admission=write_admission)
+            from atm import CardlessATMSimulator
+            self.atm = CardlessATMSimulator(self.wallet, clock=clock if clock is not None else time.time,
+                                          device_authorizer=self.membership.authorize_atm_device if contract_devices else None)
+            self.authentication = None
+            if authentication_required:
+                from wallet_auth.service import WalletAuthorization
+                self.authentication = WalletAuthorization(self.wallet, self.atm, authority_id=authority_id,
+                                                           clock=clock if clock is not None else time.time)
+                self.membership.authentication = self.authentication
+                self.atm.redemption_authorizer = self._authorize_redemption
+                self.wallet.new_bill_authorizer = self._authorize_new_bill
+            if start_scheduler:
+                self.membership.start()
+
+        except BaseException:
+            if self.membership is not None:
+                self.membership.close()
+                thread = self.membership.thread
+                if thread is not None and thread.is_alive():
+                    raise RuntimeError('partial Wallet scheduler still owns its state')
+            raise
 
     def _authorize_redemption(self, account_id, device_ref, withdrawal_id):
         return (self.membership.authorize_credential_origin(account_id, device_ref) and
@@ -511,6 +531,8 @@ class WalletService:
         return result
 
     def dispatch(self, request, *, peer_uid=None):
+        if self._managed_write_hooks is not None:
+            self._managed_write_hooks.require_held()
         self.membership._peer(peer_uid)
         if not isinstance(request, dict) or type(request.get('v')) is not int or request['v'] != 1:
             raise ValueError('Wallet protocol version 1 is required')

@@ -54,12 +54,13 @@ FIELDS.update({
 AUTH_ISSUE_FIELDS = {'v', 'op', 'key', 'quote_id', 'credential'}
 
 
-def read_protected(path, limit):
-    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+def read_protected(path, limit, *, private=False):
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     with os.fdopen(descriptor, 'rb') as stream:
         info = os.fstat(stream.fileno())
         if (not stat.S_ISREG(info.st_mode) or info.st_uid not in (0, os.geteuid())
-                or info.st_mode & 0o022 or info.st_size > limit):
+                or info.st_mode & 0o022 or info.st_size > limit
+                or private and (info.st_uid != os.geteuid() or stat.S_IMODE(info.st_mode) != 0o600 or info.st_nlink != 1)):
             raise ValueError('Wallet configuration must be a protected bounded regular file')
         result = stream.read(limit + 1)
     if len(result) > limit:
@@ -88,7 +89,7 @@ def decode(raw):
 
 
 class HTTPSWalletTransport:
-    def __init__(self, origin, ca_file, token_file, *, authority_id, timeout=1.0, device_ref=None):
+    def __init__(self, origin, ca_file, token_file, *, authority_id, timeout=1.0, device_ref=None, protocol_version=None):
         try:
             u = urlsplit(origin)
             port = u.port or 443
@@ -103,7 +104,11 @@ class HTTPSWalletTransport:
             raise ValueError('explicit canonical Wallet authority UUID is required')
         self.authority_id = authority_id
         self.device_ref = identifier(device_ref, fixture=True) if device_ref is not None else None
-        token = read_protected(token_file, 256).decode('ascii').strip()
+        if protocol_version is not None and (type(protocol_version) is not int or protocol_version != 3 or self.device_ref is None):
+            raise ValueError('owner routing requires explicit version 3 and a fixed purchased device')
+        self.protocol_version = 3 if protocol_version == 3 else (2 if self.device_ref is not None else 1)
+        self.endpoint = '/v'+str(self.protocol_version)+'/wallet'
+        token = read_protected(token_file, 256, private=self.protocol_version == 3).decode('ascii').strip()
         if not 16 <= len(token) <= 240 or any(ord(x) < 33 or ord(x) > 126 for x in token):
             raise ValueError('invalid protected Wallet token file')
         ca = read_protected(ca_file, 65536)
@@ -111,7 +116,7 @@ class HTTPSWalletTransport:
         self.origin, self.token = f'https://{u.hostname}:{port}', token
         identity = [self.origin, authority_id, hashlib.sha256(ca).hexdigest(), hashlib.sha256(token.encode()).hexdigest()]
         if self.device_ref is not None:
-            identity.extend(['device-bound/2', self.device_ref])
+            identity.extend(['owner-routed/3' if self.protocol_version == 3 else 'device-bound/2', self.device_ref])
         self.fingerprint = hashlib.sha256(canonical(identity)).hexdigest()
         self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
         self.context.minimum_version = ssl.TLSVersion.TLSv1_2
@@ -135,12 +140,21 @@ class HTTPSWalletTransport:
                        'Content-Type': 'application/json', 'Connection': 'close'}
             if self.device_ref is not None:
                 headers['X-Rock-Wallet-Device'] = self.device_ref
-            connection.request('POST', '/v2/wallet' if self.device_ref is not None else '/v1/wallet', raw, headers=headers)
+            connection.request('POST', self.endpoint, raw, headers=headers)
             response = connection.getresponse()
-            if response.headers.get_all('X-Rock-Wallet-Authority', []) != [self.authority_id]:
+            authorities = response.headers.get_all('X-Rock-Wallet-Authority', [])
+            devices = response.headers.get_all('X-Rock-Wallet-Device', [])
+            # A v3 gateway cannot disclose a request-local contract before
+            # authentication. Its verified TLS endpoint may deny all access
+            # without either identity header; this never acknowledges a write.
+            unbound_denial = (self.protocol_version == 3 and response.status in (401, 403)
+                              and authorities == [] and devices == [])
+            if not unbound_denial and authorities != [self.authority_id]:
                 raise BackendUnavailable('Wallet authority identity mismatch')
             if (self.device_ref is not None and response.status == 200 and
-                    response.headers.get_all('X-Rock-Wallet-Device', []) != [self.device_ref]):
+                    devices != [self.device_ref]):
+                raise BackendUnavailable('Wallet device acknowledgement mismatch')
+            if self.protocol_version == 3 and not unbound_denial and devices != [self.device_ref]:
                 raise BackendUnavailable('Wallet device acknowledgement mismatch')
             lengths = response.headers.get_all('Content-Length', [])
             if (len(lengths) != 1 or not lengths[0].isascii() or not lengths[0].isdigit()
@@ -159,6 +173,10 @@ class HTTPSWalletTransport:
             result = decode(b''.join(chunks))
             if not isinstance(result, dict) or type(result.get('ok')) is not bool:
                 raise BackendUnavailable('malformed Wallet response')
+            if unbound_denial and not (set(result) == {'ok', 'code', 'error'} and result['ok'] is False
+                                       and result['code'] == 'unauthorized' and type(result['error']) is str
+                                       and 1 <= len(result['error']) <= 300):
+                raise BackendUnavailable('unbound Wallet response is not a strict authentication denial')
             if response.status in (400, 401, 403, 409, 422) and result.get('ok') is False and result.get('code') in ('rejected', 'unauthorized'):
                 return result
             if response.status != 200:
@@ -517,16 +535,25 @@ class RemoteWalletService:
 
 def configured_service(config_file, wallet_state):
     """Explicit new-device opt-in only; never silently migrate/clone a local ledger."""
-    config = decode(read_protected(config_file, 8192))
+    raw_config = read_protected(config_file, 8192)
+    config = decode(raw_config)
     base_fields = {'schema_version','mode','origin','ca_file','token_file','authority_id'}
     version = config.get('schema_version') if isinstance(config, dict) else None
-    expected = base_fields | ({'device_ref'} if version == 2 else set())
-    if (not isinstance(config, dict) or type(version) is not int or version not in (1, 2)
+    expected = base_fields | ({'device_ref'} if version in (2, 3) else set())
+    if (not isinstance(config, dict) or type(version) is not int or version not in (1, 2, 3)
             or set(config) != expected or config['mode'] != 'development-remote-authority'):
         raise ValueError('invalid protected remote Wallet configuration')
-    options = {'device_ref': identifier(config['device_ref'], fixture=True)} if version == 2 else {}
+    options = {'device_ref': identifier(config['device_ref'], fixture=True)} if version in (2, 3) else {}
+    if version == 3:
+        if read_protected(config_file, 8192, private=True) != raw_config:
+            raise ValueError('private v3 Wallet profile changed while reading')
+        options['protocol_version'] = 3
     state = Path(wallet_state)
-    if any((state/name).exists() for name in ('wallet-simulator.db','entitlement.db')):
+    remnants = ('wallet-simulator.db','entitlement.db')
+    if version == 3:
+        remnants += ('wallet-simulator.db-wal','wallet-simulator.db-shm','entitlement.db-wal',
+                     'entitlement.db-shm','AUTHORITY.json','GX00-MIGRATION.json','authority.lock')
+    if any((state/name).exists() or (version == 3 and (state/name).is_symlink()) for name in remnants):
         raise ValueError('existing local Wallet cannot be switched to a remote authority; migration is not implemented')
     transport = HTTPSWalletTransport(config['origin'], config['ca_file'], config['token_file'], authority_id=config['authority_id'], **options)
     return RemoteWalletService(state/'backend-cache', transport)

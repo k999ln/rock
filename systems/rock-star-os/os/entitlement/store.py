@@ -15,6 +15,7 @@ import threading
 import time
 
 from blackberryrock.packages import canonical
+from blackberryrock.wallet import _managed_write_guard
 from .protocol import (MONTHLY_FEE_MINOR, CURRENCY, TERMS_VERSION, AuthenticationError,
                        Capacity, Conflict, EntitlementError, NotEligible,
                        authenticate, fields, identifier, integer, verify_event)
@@ -33,8 +34,11 @@ def _period(now):
 
 
 class EntitlementStore:
-    def __init__(self, db_path, *, clock=None, max_records=10000, max_pending=64, authorization_ttl=300):
+    def __init__(self, db_path, *, clock=None, max_records=10000, max_pending=64, authorization_ttl=300,
+                 managed_write_hooks=None):
         self.path = Path(db_path)
+        self.managed_write_hooks = managed_write_hooks
+        _managed_write_guard(self.path, self.managed_write_hooks)
         self.clock = clock or time.time
         self._mutex = threading.RLock()
         self.max_records = integer(max_records, 10, 100000)
@@ -188,6 +192,7 @@ class EntitlementStore:
 
     @contextmanager
     def _transaction(self):
+        _managed_write_guard(self.path, self.managed_write_hooks)
         with self._mutex:
             db = self._connect()
             try:

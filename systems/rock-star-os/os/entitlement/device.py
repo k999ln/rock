@@ -40,7 +40,7 @@ MUTATION_FIELDS = {
 class DeviceWalletAdapter:
     def __init__(self, state_dir, wallet, *, provisioning_file=None, clock=None,
                  start_scheduler=True, poll_seconds=5, retry_seconds=60,
-                 max_automatic_failures=3):
+                 max_automatic_failures=3, managed_write_hooks=None, write_admission=None):
         if not isinstance(wallet, Wallet):
             raise TypeError('pass the existing Wallet, never another ledger')
         if (isinstance(poll_seconds, bool) or isinstance(retry_seconds, bool)
@@ -49,7 +49,11 @@ class DeviceWalletAdapter:
             raise ValueError('invalid bounded scheduler timing')
         if type(max_automatic_failures) is not int or not 1 <= max_automatic_failures <= 100:
             raise ValueError('invalid sandbox automatic payment failure limit')
-        self.store = EntitlementStore(Path(state_dir) / 'entitlement.db', clock=clock)
+        if (managed_write_hooks is None) != (write_admission is None):
+            raise ValueError('managed Wallet requires its hooks and admission together')
+        self._write_admission = write_admission
+        options = {'managed_write_hooks': managed_write_hooks} if managed_write_hooks is not None else {}
+        self.store = EntitlementStore(Path(state_dir) / 'entitlement.db', clock=clock, **options)
         self.wallet = wallet
         # Installed by the owning WalletService before its scheduler starts.
         self.authentication = None
@@ -133,22 +137,23 @@ class DeviceWalletAdapter:
 
     @contextmanager
     def _locked(self):
-        with self._mutex:
-            depth = getattr(self._local, 'depth', 0)
-            descriptor = None
-            if depth == 0:
-                descriptor = os.open(self.lock_file, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
-                if not stat.S_ISREG(os.fstat(descriptor).st_mode):
-                    os.close(descriptor)
-                    raise EntitlementError('invalid device state lock')
-                fcntl.flock(descriptor, fcntl.LOCK_EX)
-            self._local.depth = depth + 1
-            try:
-                yield
-            finally:
-                self._local.depth = depth
-                if descriptor is not None:
-                    os.close(descriptor)
+        with self._write_admission() if self._write_admission is not None else nullcontext():
+            with self._mutex:
+                depth = getattr(self._local, 'depth', 0)
+                descriptor = None
+                if depth == 0:
+                    descriptor = os.open(self.lock_file, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+                    if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+                        os.close(descriptor)
+                        raise EntitlementError('invalid device state lock')
+                    fcntl.flock(descriptor, fcntl.LOCK_EX)
+                self._local.depth = depth + 1
+                try:
+                    yield
+                finally:
+                    self._local.depth = depth
+                    if descriptor is not None:
+                        os.close(descriptor)
 
     def _load_provisioning(self, path):
         descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)

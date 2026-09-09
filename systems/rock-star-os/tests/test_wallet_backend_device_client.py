@@ -231,7 +231,7 @@ class WalletBackendDeviceClientTests(unittest.TestCase):
                 'token_file': str(self.token_file), 'authority_id': AUTHORITY_ID,
                 'device_ref': DEVICE_REF}
         path = self.root / 'backend.json'
-        bad = [dict(base, schema_version=True), dict(base, schema_version=3),
+        bad = [dict(base, schema_version=True), dict(base, schema_version=4),
                {k: v for k, v in base.items() if k != 'device_ref'},
                dict(base, device_ref=None), dict(base, device_ref=True), dict(base, device_ref=2),
                dict(base, device_ref='other-device'), dict(base, extra=True),

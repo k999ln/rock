@@ -13,12 +13,47 @@ from .protocol import (TERMS_VERSION, Conflict, NotEligible, authenticate,
 from .store import _period
 
 
+def bind_managed_identity(db, wallet_db, account_id, wallet_path):
+    """Shared same-account repair; caller already holds one managed admission."""
+    stable = db.execute('SELECT * FROM wallet_bindings_v2').fetchall()
+    legacy = db.execute('SELECT * FROM wallet_bindings').fetchall()
+    identities = wallet_db.execute('SELECT * FROM wallet_storage_identity').fetchall()
+    if len(identities) != 1:
+        raise Conflict('one managed Wallet identity required')
+    identity = identities[0]
+    if identity['account_id'] not in (None, account_id):
+        raise Conflict('managed Wallet is bound to another account')
+    if stable:
+        if (len(stable) != 1 or len(legacy) != 1 or stable[0]['account_id'] != account_id or
+                stable[0]['ledger_uuid'] != identity['ledger_uuid'] or
+                stable[0]['migration_id'] != identity['migration_id'] or
+                legacy[0]['account_id'] != account_id or
+                legacy[0]['wallet_identity'] != stable[0]['legacy_identity']):
+            raise Conflict('managed Wallet binding differs from its retained identity')
+    else:
+        info = wallet_path.stat()
+        original = hashlib.sha256(canonical([info.st_dev, info.st_ino])).hexdigest()
+        if legacy:
+            if len(legacy) != 1 or legacy[0]['account_id'] != account_id or legacy[0]['wallet_identity'] != original:
+                raise Conflict('unverified legacy Wallet file cannot become a managed binding')
+        else: db.execute('INSERT INTO wallet_bindings VALUES (?,?)', (account_id, original))
+        db.execute('INSERT INTO wallet_bindings_v2 VALUES (?,?,?,?)',
+                   (account_id, identity['ledger_uuid'], original, identity['migration_id']))
+    if identity['account_id'] is None:
+        wallet_db.execute('UPDATE wallet_storage_identity SET account_id=? WHERE singleton=1', (account_id,))
+
+
 class WalletBridge:
     def __init__(self, store, wallet, account_id, token):
         authenticate(token, "wallet")
         if not isinstance(wallet, Wallet) or wallet.path.resolve() == store.path.resolve():
             raise Conflict("use a separate existing Wallet database")
         self.store, self.wallet, self.account_id = store, wallet, account_id
+        if store.managed_write_hooks is not wallet.managed_write_hooks:
+            raise Conflict('Wallet and contract must share the same managed admission')
+        if wallet.managed_write_hooks is not None:
+            self._bind_managed()
+            return
         info = wallet.path.stat()
         identity = hashlib.sha256(canonical([info.st_dev, info.st_ino])).hexdigest()
         with store._transaction() as db:
@@ -29,6 +64,19 @@ class WalletBridge:
                 raise Conflict("a Wallet database is bound to exactly one fixture account")
             if not previous:
                 db.execute("INSERT INTO wallet_bindings VALUES (?,?)", (account_id, identity))
+
+    def _bind_managed(self):
+        """Retain the legacy inode receipt and use the managed stable identity.
+
+        The coordinator admits the original registration and verifies both DBs
+        before returning its response. Cross-DB interruption remains recoverable
+        by the same account; it is never presented as an atomic two-DB commit.
+        """
+        self.wallet.managed_write_hooks.require_held()
+        with self.store._transaction() as db:
+            self.store._account(db, self.account_id)
+            with self.wallet._transaction() as wallet_db:
+                bind_managed_identity(db, wallet_db, self.account_id, self.wallet.path)
 
     def execute(self, authorization_id, key, token):
         principal = authenticate(token, "wallet")

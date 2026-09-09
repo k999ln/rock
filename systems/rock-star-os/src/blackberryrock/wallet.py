@@ -5,6 +5,7 @@ from __future__ import annotations
 from contextlib import closing, contextmanager
 from datetime import UTC, date, datetime
 import json
+import os
 from pathlib import Path
 import re
 import sqlite3
@@ -34,6 +35,41 @@ class InsufficientFunds(WalletError):
 
 class ConsentRequired(WalletError):
     pass
+
+
+def _managed_write_guard(path, hooks):
+    """Check a caller-owned ticket; never acquire admission under a DB lock.
+
+    This is supported-library plumbing, not protection from a host owner who
+    directly edits SQLite. Real managed tickets come from the coordinator.
+    """
+    if hooks is not None:
+        hooks.require_held()
+        if hooks.held_by_current_thread() is not True:
+            raise PermissionError('managed write admission is not held by this thread')
+        return
+    marker = path.parent / 'AUTHORITY.json'
+    if marker.exists() or marker.is_symlink():
+        descriptor = os.open(marker, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        try:
+            raw = os.read(descriptor, 16385)
+            if len(raw) > 16384:
+                raise WalletError('authority marker exceeds the supported bound')
+            try:
+                value = json.loads(raw)
+            except (ValueError, UnicodeError) as error:
+                raise WalletError('invalid authority marker; explicit managed open required') from error
+            if not isinstance(value, dict) or value.get('schema') != 'public-wallet-authority/1':
+                raise WalletError('managed authority requires an owned write admission')
+        finally:
+            os.close(descriptor)
+    if path.is_file():
+        # A copied managed database cannot silently become unmanaged by losing
+        # its neighboring marker. No constructor or PRAGMA write precedes this.
+        with closing(sqlite3.connect(path.resolve().as_uri() + '?mode=ro', uri=True)) as db:
+            if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND "
+                          "name IN ('wallet_storage_identity','wallet_bindings_v2') LIMIT 1").fetchone():
+                raise WalletError('managed database identity requires an owned write admission')
 
 
 def _now() -> str:
@@ -66,8 +102,10 @@ class Wallet:
     The caller must protect any HTTP interface separately.
     """
 
-    def __init__(self, db_path: str | Path):
+    def __init__(self, db_path: str | Path, *, managed_write_hooks=None):
         self.path = Path(db_path)
+        self.managed_write_hooks = managed_write_hooks
+        _managed_write_guard(self.path, self.managed_write_hooks)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with closing(self._connect()) as connection:
             connection.execute("PRAGMA journal_mode = WAL")
@@ -151,6 +189,7 @@ class Wallet:
 
     @contextmanager
     def _transaction(self) -> Iterator[sqlite3.Connection]:
+        _managed_write_guard(self.path, self.managed_write_hooks)
         connection = self._connect()
         try:
             connection.execute("BEGIN IMMEDIATE")

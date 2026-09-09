@@ -2,7 +2,65 @@
 
 この構成では、端末の Wallet service をbackend上の Wallet 台帳への HTTPS proxy に切り替え、別プロセスの backend が台帳・同意・月次 scheduler を所有する。端末には authority の識別、要求と応答の控え、最後に同期した表示用 snapshot だけを保存する。端末の cache から残高を増減したり、別のローカル台帳で請求を代行したりしない。
 
-対象は **公開 Alice fixture 1契約・1台帳の開発シミュレーター**。任意のbound v2構成では同じownerの複数購入端末をこの契約へ結び付ける。金額はすべてテスト用 USD cents で、月額は **888 cents = USD 8.88**。公開cloud、実金融provider、本番の本人確認・秘密token・passkey認証・実売上・現金ATMには接続していない。TLS証明書・鍵とtokenは明示された公開fixtureを使う。
+既存 v1/v2 の対象は **公開 Alice fixture 1契約・1台帳の開発シミュレーター**。任意のbound v2構成では同じownerの複数購入端末をこの契約へ結び付ける。金額はすべてテスト用 USD cents で、月額は **888 cents = USD 8.88**。公開cloud、実金融provider、本番の本人確認・秘密token・passkey認証・実売上・現金ATMには接続していない。TLS証明書・鍵とtokenは明示された公開fixtureを使う。
+
+## GX00 の契約 runtime と明示 v3 listener
+
+GX00 の host 実装では、`ContractRuntime` が契約ごとに既存
+`WalletService` を1組だけ所有する。Wallet/Entitlement の2 DB、ATM、本人確認、
+月額 scheduler を作り直さず、保護された `ContractDescriptor` と coordinator の
+write permit を周囲へ接続する。`open_fresh` / `open_active` / `open_adopted` は
+coordinator の初期化許可内でだけ constructor を呼び、本人確認を常に有効にする。
+各 public open は `verifier.registry_identity()` の canonical path/UUID を読み、
+`coordinator.bind_owner_registry(path, uuid)` を storage permit の取得前に必ず行う。
+別 registry への差替えを管理者の任意 bootstrap 手順に依存させない。owner registry
+と coordinator は今回の Wallet 復元対象外の独立した正本として維持し、registry の
+古い同 path/UUID copy を復元する機能は未対応。
+初期化直後は scheduler をまだ開始しない。登録前 account は None のまま保持し、
+既存の正規登録結果を同じ admission 内で stable identity へ結び付ける。中断した
+binding は次の別操作より先に同じ account で照合する。
+
+`ManagedWalletBackendServer(address, router=..., runtimes=(...))` は、先に開いた
+全 runtime を同じ listener へ束ねる Python 管理入口。router の全対応照合、TLS
+listener 初期化が成功してから scheduler を開始する。共有 coordinator は呼出し側が
+所有し、server の正常終了後に閉じる。既存 CLI の `--state` は引き続き旧 v1/v2
+profile であり、設定を黙って v3 や別契約へ読み替えない。
+
+v3 owner 要求は `POST /v3/wallet`、body は既存 `v: 1`、同じ限定 operation/field
+契約を使う。単一の Bearer、device header、固定 authority header を transport
+認証後に router が照合し、principal からだけ runtime を選ぶ。owner/ledger/path を
+body から選べず、HTTP owner に売上作成・精算・fulfillment・資格失効の管理 API を
+公開しない。成功応答の authority/device はその要求で選んだ契約の値だけを返す。
+未認証要求には他契約の authority header を付けない。
+
+runtime は同じ write admission の内側で credential revision を再確認し、既存の
+`device_scope` と Wallet dispatch を完了する。constructor、scheduler、Store ingress、
+Auth revoke、fixture credit/settlement も同じ permit を通す。下位 write hook は
+ticket の保有を検査し、DB lock を取った後に新しい admission を取得しない。
+管理用 `ingest_fulfillment` は署名検証に加え同じ owner の handoff、または既知の
+同契約 device の suspend/restore だけを既存 Store へ渡す。
+
+終了順は受付停止、実 HTTP worker の終了、各 runtime の新規 admission 停止、
+scheduler 終了、write permit 解放、router 終了。時間切れや途中の close 失敗では
+writer 所有を残し、同じ close を再試行する。managed open の cleanup 自体が失敗した
+場合は内部 `RuntimeCleanupRequired.runtime.close()` が回収入口で、HTTP 応答へ
+この object や内部 path を含めない。
+
+`test_contract_runtime_lifetime.py` は明示 component/permit doubles による順序・
+期限・部分失敗の負例。`test_contract_runtime_wallet.py` は実 coordinator、
+Wallet/ATM/Auth による合成月額888・ATM Rock手数料0・別ownerの同一keyを確認する。
+`test_contract_runtime_fence.py` は実行中の登録を残した close、部分初期化の cleanup
+失敗、実 scheduler 停止と lock 解放の順序を実 DB/permit で確認する。
+`test_contract_runtime_adoption.py` は C の停止済み旧backend fixtureを実 runtimeへ
+開き、既存の請求・hold・未解決quote・失効credential・全原表を保持する。
+これらの試験用 principal verifier と、実 owner router / 同一 TLS を用いる
+`test_wallet_managed_tls.py` の検証範囲は分ける。host 試験を OS boot/復元、
+ゲーム交換、実資金、本番本人確認の合格には換算しない。
+
+旧backendの移行は `inspect_legacy(coordinator, spec, migration_id=...)` の検査結果を
+明示的に `open_adopted` へ渡す。原台帳が中断位置と整合する同じ migration ID だけを
+再開し、完成後は `open_active` を使う。OS の local Wallet、コピーされた旧inode、
+ownerの曖昧な台帳をこの入口で自動移行しない。
 
 ## 複数端末のbound v2構成
 
