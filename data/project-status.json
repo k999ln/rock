@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-09",
-  "milestone": "相違解消プロンプト改訂（nativeへの反映・実利用は未実施）",
-  "nextAction": "最新main/nativeのSHA・証拠を確認し、B04で分離作業branchへベースとnativeを統合して入口・優先順位を同期する。B02既存商品のHub実利用と改善前測定→商品条件/adapter拡張→B03費用/収益Wallet接続→同条件で再試験。実収益・携帯実機の未検証を別記録にし、Nタスクと旧Android/Webを保持する。",
+  "milestone": "確認用設計書と実行プロンプトを保存・利用者承認待ち（実装は未着手）",
+  "nextAction": "まずdocs/os-hub-wallet-game-design.md v1.0を利用者に提示し明示承認を待つ。承認後だけdocs/prompts/os-operational-base-next.mdに従い、最新ref確認→B04統合→V01起動/安全基礎→既存商品/Wallet基礎→OS受入へ。ゲームfixture/GX01と作者SDK/DX01は独立、実ゲーム/実資金/実機は別ゲート。ATM自社手数料0・ゲーム料金未定・OS月888 cents維持。",
   "tasks": [
     {"id":"R01","title":"4参照元の採用判断と事業方針の固定","status":"done","dependsOn":[],"evidence":["docs/reference-repositories.md"]},
     {"id":"R02","title":"ggをGitHub rockへ紐付け、既存変更と履歴を保全","status":"done","dependsOn":[],"evidence":["project.md"]},
@@ -23,6 +23,11 @@
     {"id":"B04","title":"main/nativeのベース・引継ぎ入口・優先順位を分離作業branchへ統合","status":"planned","dependsOn":["B01"],"evidence":["docs/progress-audit-20260909-followup.md","docs/prompts/hub-wallet-next.md"]},
     {"id":"B02","title":"既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張","status":"planned","dependsOn":["B04"],"evidence":["docs/prompts/hub-wallet-next.md"]},
     {"id":"B03","title":"実行費用・認証済み収益を既存Walletへ接続し縦断検証","status":"planned","dependsOn":["B02"],"evidence":["docs/prompts/hub-wallet-next.md"]},
-    {"id":"B05","title":"Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録","status":"planned","dependsOn":["B02"],"evidence":["docs/prompts/hub-wallet-next.md"]}
+    {"id":"B05","title":"Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録","status":"planned","dependsOn":["B02"],"evidence":["docs/prompts/hub-wallet-next.md"]},
+    {"id":"D01","title":"RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存","status":"done","dependsOn":["B01"],"evidence":["docs/product-baseline.md","docs/os-readiness-audit-20260909.md","docs/prompts/os-operational-base-next.md","docs/templates/os-acceptance-report.md","docs/validation.md"]},
+    {"id":"V01","title":"最新統合sourceからQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す","status":"planned","dependsOn":["B04"],"evidence":["docs/prompts/os-operational-base-next.md","docs/templates/os-acceptance-report.md"]},
+    {"id":"GX01","title":"ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証","status":"planned","dependsOn":["B04"],"evidence":["docs/prompts/os-operational-base-next.md"]},
+    {"id":"GX02","title":"指定された実ゲームの正式sandbox接続と交換条件を検証","status":"planned","dependsOn":["GX01"],"evidence":["docs/prompts/os-operational-base-next.md"]},
+    {"id":"DX01","title":"ゲーム作者向けAPI/SDK・sandbox・サンプル・2game分離と導入体験を検証","status":"planned","dependsOn":["GX01"],"evidence":["docs/prompts/os-operational-base-next.md"]}
   ]
 }

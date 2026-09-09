@@ -2,6 +2,20 @@
 
 このファイルは当該branchの作業記録です。確定要望は [docs/product-baseline.md](docs/product-baseline.md)、進捗からの指示作成は [docs/prompt-playbook.md](docs/prompt-playbook.md) が正本です。
 
+## 現在の再開条件 — 設計承認待ち
+
+利用者の「プロンプトを作成して、そのあとは設計書を出して確認させて、確認したらプロンプトを進める」に従い、[設計書v1.0](docs/os-hub-wallet-game-design.md) とプロンプトの提示までで停止する。以下の実装順は承認後のみ。任意のGame入口と軽い達成演出は提案/選択項目であり、勝手に確定・実装しない。承認対象版・範囲・日時を記録してから再開する。現在のruntime/SDK/新OS imageは未変更。
+
+## 2026-09-09: OS稼働雛形・ゲーム作者向けWallet・ATM手数料の追加指示
+
+16:09 UTCのGitHub確認でmain `7cdbb5fedc86ee3978ed329d9312147d137c9199`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、PR #1 OPENと各同SHAのCI成功を再確認した。[OS稼働監査](docs/os-readiness-audit-20260909.md)へ対象と不足を記録。
+
+RQ12は現設計をbuild/boot・操作・保存・正常終了・復旧まで検証できるOSへ進める要求。まずQEMUの合成データ専用雛形を受け入れ、実機/本番安全性とは分離する。RQ13はゲーム通貨交換とATM独立、RQ14は自作ゲーム作者向けAPI/SDK・sandbox・導入体験、RQ15はATMでRockが徴収する手数料0。利用者の「atm手数料の話」を受け、ゲーム手数料0という初稿解釈は訂正。ゲーム料金は未定、OS月888 centsは既存契約を保持する。
+
+最新入口は [OS稼働・ゲーム連携プロンプト](docs/prompts/os-operational-base-next.md)。旧GAP01〜04を保持し、B04統合→V01の起動/安全基礎→既存商品/Wallet基礎→OS縦断受入へ進む。GX01ゲームfixture、DX01作者SDKは独立、GX02実ゲームと実資金/実機は別条件。V01全体とB02/B03の機械依存を循環させず、細かな着手ゲートはプロンプトで明示する。
+
+D01は文書と検査の保存だけ。V01/GX01/GX02/DX01とB04/B02/B03/B05は未着手。native code・OS image・ゲーム本体・ATM実運用は今回変更せず、SSDを再マウントしていない。新しい [受入報告雛形](docs/templates/os-acceptance-report.md) は全行NOT_RUNで、合格実績ではない。
+
 ## 2026-09-09: 指摘した4問題を解消する実行プロンプトへ改訂
 
 利用者の「指摘した問題を解決する内容を含めて作業を進めるプロンプトを作成」に対応。15:01 UTCにmain `f9b1cbd99eeaa20f7cbc80bd2d88909949cca863`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、OPENのPR #1と同SHAのCIを再確認した。詳細は [追補監査](docs/progress-audit-20260909-followup.md)。
@@ -128,7 +142,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-09 / 相違解消プロンプト改訂（nativeへの反映・実利用は未実施） / 完了 11/21件
+最終更新: 2026-09-09 / 確認用設計書と実行プロンプトを保存・利用者承認待ち（実装は未着手） / 完了 12/26件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -153,10 +167,15 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
+| D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
+| V01 | 最新統合sourceからQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す | 未着手 | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) |
+| GX01 | ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
+| GX02 | 指定された実ゲームの正式sandbox接続と交換条件を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
+| DX01 | ゲーム作者向けAPI/SDK・sandbox・サンプル・2game分離と導入体験を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
 
-次の作業: 最新main/nativeのSHA・証拠を確認し、B04で分離作業branchへベースとnativeを統合して入口・優先順位を同期する。B02既存商品のHub実利用と改善前測定→商品条件/adapter拡張→B03費用/収益Wallet接続→同条件で再試験。実収益・携帯実機の未検証を別記録にし、Nタスクと旧Android/Webを保持する。
+次の作業: まずdocs/os-hub-wallet-game-design.md v1.0を利用者に提示し明示承認を待つ。承認後だけdocs/prompts/os-operational-base-next.mdに従い、最新ref確認→B04統合→V01起動/安全基礎→既存商品/Wallet基礎→OS受入へ。ゲームfixture/GX01と作者SDK/DX01は独立、実ゲーム/実資金/実機は別ゲート。ATM自社手数料0・ゲーム料金未定・OS月888 cents維持。
 <!-- project-status:end -->
 
 ## 次段階の設計
 
-今後は [製品ベース](docs/product-baseline.md) と [次の実行プロンプト](docs/prompts/hub-wallet-next.md) に従い、native基盤を既存商品の実利用、商品条件、Walletへ接続します。従来のG0→Cuttlefish→Pixel→StoreはAndroid/AOSPの過去計画。旧 [初期仕様](docs/product.md) は履歴として保持します。
+今後は [製品ベース](docs/product-baseline.md) と [次の実行プロンプト](docs/prompts/os-operational-base-next.md) に従い、native OSの稼働受入、既存商品の実利用、Wallet、作者向けゲーム連携へ進めます。従来のG0→Cuttlefish→Pixel→StoreはAndroid/AOSPの過去計画。旧 [初期仕様](docs/product.md) は履歴として保持します。

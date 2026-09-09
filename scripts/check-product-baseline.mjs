@@ -11,7 +11,7 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
   requireValue(/^\d+\.\d+$/.test(data.version), '版が必要です');
   requireValue(/^\d{4}-\d{2}-\d{2}$/.test(data.decidedAt), '決定日が必要です');
   const documents = {};
-  for (const key of ['authority', 'promptRules', 'audit', 'nextPrompt']) {
+  for (const key of ['authority', 'promptRules', 'audit', 'nextPrompt', 'acceptanceTemplate', 'designReview']) {
     const path = data[key];
     requireValue(typeof path === 'string' && !isAbsolute(path), `${key}: 相対pathが必要です`);
     const resolved = resolve(root, path);
@@ -19,8 +19,8 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
     documents[key] = read(resolved);
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
-  const expected = Array.from({ length: 11 }, (_, i) => `RQ${String(i + 1).padStart(2, '0')}`);
-  requireValue(JSON.stringify(data.requirements) === JSON.stringify(expected), '確定要望RQ01〜RQ11の順序/欠落/重複を確認してください');
+  const expected = Array.from({ length: 15 }, (_, i) => `RQ${String(i + 1).padStart(2, '0')}`);
+  requireValue(JSON.stringify(data.requirements) === JSON.stringify(expected), '確定要望RQ01〜RQ15の順序/欠落/重複を確認してください');
   for (const id of expected) {
     requireValue(documents.authority.split(`## ${id} `).length === 2, `${id}: 正本の見出しが一意ではありません`);
   }
@@ -31,6 +31,8 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
     requireValue(documents.nextPrompt.includes(data.auditInputs[field]), `${field}: プロンプトの起点SHAがありません`);
   }
   requireValue(data.supplyRoleExclusivity === 'unspecified', 'tobの供給元/独占性は未確定です');
+  requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');
+  requireValue(data.gameExchange?.atmDependency === false, 'ゲーム交換をATM必須にしないでください');
   for (const file of ['AGENTS.md', 'README.md', 'project.md', 'docs/product.md', 'docs/architecture.md', 'docs/fund-and-mcp.md', 'docs/os-development-design.md', 'docs/os-prototype.md']) {
     requireValue(read(resolve(root, file)).includes('product-baseline.md'), `${file}: ベースへの入口がありません`);
   }
@@ -40,5 +42,5 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   validateBaseline(JSON.parse(readFileSync(resolve(root, 'data/product-baseline.json'), 'utf8')));
-  console.log('製品ベース: RQ01〜RQ11、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）');
+  console.log('製品ベース: RQ01〜RQ15、ATM手数料0、ATM独立、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）');
 }

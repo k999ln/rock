@@ -4,6 +4,8 @@
 
 ## 1. 読む順番
 
+現在は利用者による設計確認を先行する指示がある。data/product-baseline.jsonのdesignReview/executionApprovalを読み、docs/os-hub-wallet-game-design.mdの承認前は文書の提示・修正だけにする。プロンプト内の実装手順を見つけても自動開始しない。
+
 1. `AGENTS.md`、`docs/product-baseline.md`、`data/product-baseline.json`。
 2. GitHubのdefault/main SHA、全branch、open PR、関連するclosed/merged PR。`npm run prompt:context` で読み取り専用の最新メタデータを出せる。GitHubに接続できなければ「最新確認未了」とし、過去snapshotを最新と表示しない。
 3. 対象SHAのREADME、project.md、data/project-status.json、CHECKPOINT.md（存在する場合）。PRに記載された別branchの関連開発も調べる。
@@ -44,7 +46,7 @@ SDKの接続基盤と商品の業務開発を区別する。remote MCP認可を�
 - 改善候補の相乗効果と測定指標。確定ベースを変更するものは別判断として記録。
 - 既存データ/契約の互換、未決条件、Git保存範囲、次の再開点。
 
-プロンプト末尾でRQ01〜RQ11の漏れ・矛盾を自己点検する。「全部やる」「OSを完成する」だけの完了条件にしない。実装のない宣言schema、mock成功、画面だけの残高表示を完成と呼ばない。
+プロンプト末尾でRQ01〜RQ15の漏れ・矛盾を自己点検する。「全部やる」「OSを完成する」だけの完了条件にしない。実装のない宣言schema、mock成功、画面だけの残高表示を完成と呼ばない。最新入口はdata/product-baseline.jsonのnextPrompt。OS受入はdocs/templates/os-acceptance-report.mdで環境別に記録する。ゲーム通貨交換はATMから独立させ、未確定のゲーム/方向/レートと実資金未検証を引き継ぐ。作者向けAPI/SDK/sandboxの導入体験とATM自社手数料0を保持し、ゲーム料金・外部実費・OS月額の判断を混ぜない。
 
 ## 5. Gitへの引継ぎ
 

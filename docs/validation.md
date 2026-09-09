@@ -1,5 +1,15 @@
 # 検証記録
 
+## OS稼働受入・ゲーム作者向けWallet・ATM手数料のプロンプト / 2026-09-09
+
+- GitHub 16:09 UTCのmain `7cdbb5fedc86ee3978ed329d9312147d137c9199`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、PR #1 OPEN、同SHAの各CI成功を取得しfetchで一致を確認。監査は `docs/os-readiness-audit-20260909.md`。
+- RQ12〜15、OS受入のNOT_RUN雛形、実行プロンプト、進捗入口を保存。手数料0の対象は利用者の補足どおりATM。ゲーム料金を無料とも有料とも確定せず、既存OS月額を保持。新しい「OS内にgame要素を入れるとどうなるか」は相談として扱い、全OSのゲーム化を確定仕様にしていない。
+- 別担当がOS不足/Wallet・ATM・ゲーム境界と最終文書を読み取り確認。逆交換の確定消費と原資のWallet側確認、ゲーム作者のmint権限禁止、復元時の同一authority単一writer、2gameの分離を補強した。
+- `npm run verify` 終了コード0。project/repository/baseline整合、型、製品lint、35 unit tests、build、ローカルAPI143 assertionsに成功。既知のVite configLoaderとNode module API警告は残る。本番サイトを公開せず、合成ローカルAPIのみ。
+- ベース検査にRQ12〜15・受入雛形・ATM手数料0・ATM非依存を追加。欠落、手数料の非0化、ATM必須化を拒否する負例も同じ既存テストへ追加し成功。構造検査は意味の完全一致やOS安全性の証明ではない。
+- native runtime/新imageのbuild/boot・ゲーム/SDK実装・物理ATM・実資金・実機は今回未実施。SSDを再接続/再マウントしていない。D01は文書成果だけの完了で、V01/GX01/GX02/DX01、既存B/Nの未完了を解消したとはしない。
+- 続く利用者の「設計書を確認してから実行」に従い、設計書v1.0と全入口へ承認待ちを追記。Game入口/達成演出を提案として提示し、同意前に実装しない。設計書追加後もproject/baseline/対象テストで入口を検証する。
+
 ## 相違解消プロンプトの改訂 / 2026-09-09
 
 - 15:01 UTCのGitHub取得でmain `f9b1cbd99eeaa20f7cbc80bd2d88909949cca863`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、OPENのPR #1と同SHAのCI成功を確認。[追補監査](progress-audit-20260909-followup.md)へ入力と限界を保存した。

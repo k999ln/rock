@@ -1,17 +1,20 @@
 {
-  "version": "1.1",
+  "version": "1.5",
   "decidedAt": "2026-09-09",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
-  "audit": "docs/progress-audit-20260909-followup.md",
-  "nextPrompt": "docs/prompts/hub-wallet-next.md",
-  "requirements": ["RQ01", "RQ02", "RQ03", "RQ04", "RQ05", "RQ06", "RQ07", "RQ08", "RQ09", "RQ10", "RQ11"],
+  "audit": "docs/os-readiness-audit-20260909.md",
+  "nextPrompt": "docs/prompts/os-operational-base-next.md",
+  "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
+  "designReview": "docs/os-hub-wallet-game-design.md",
+  "executionApproval": {"status": "awaiting_design_review", "approvedDesignVersion": null, "scope": "No runtime implementation before explicit user approval"},
+  "requirements": ["RQ01", "RQ02", "RQ03", "RQ04", "RQ05", "RQ06", "RQ07", "RQ08", "RQ09", "RQ10", "RQ11", "RQ12", "RQ13", "RQ14", "RQ15"],
   "primaryCapabilities": ["automation-hub", "automation-earnings-wallet"],
   "supplyRoleLabel": "tob",
   "supplyRoleExclusivity": "unspecified",
   "auditInputs": {
-    "main": "f9b1cbd99eeaa20f7cbc80bd2d88909949cca863",
+    "main": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
     "nativeBranch": "codex/integrate-native-os-20260909",
     "nativeHead": "fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5",
     "nativePullRequest": 1,
@@ -19,6 +22,24 @@
     "isLiveStatus": false
   },
   "freshContextRequired": ["main", "branches", "open-pull-requests", "relevant-closed-pull-requests", "source-at-sha", "checks-at-sha"],
-  "commercialPolicy": "Preserve existing native 888 USD cents per contract per month and legacy Web estimates; no fee change authorized here.",
-  "hardwarePolicy": "Native branch prioritizes BlackBerry with model/variant unresolved; Linux QEMU and Android/AOSP are distinct evidence tracks."
+  "commercialPolicy": "Preserve native 888 USD cents per contract per month and legacy Web estimates; Rock ATM fee is zero per RQ15; game fees are unspecified; no live billing authorized here.",
+  "hardwarePolicy": "Native branch prioritizes BlackBerry with model/variant unresolved; Linux QEMU and Android/AOSP are distinct evidence tracks.",
+  "firstOperationalTarget": "QEMU development OS, synthetic data only; not hardware or production certification",
+  "gameExchange": {
+    "requested": true,
+    "game": "unspecified",
+    "direction": "unspecified",
+    "rates": "unspecified",
+    "platformFeePolicy": "unspecified; zero-fee instruction applies to ATM, not game exchange",
+    "externalCosts": "separate, disclosed before consent; unspecified",
+    "atmDependency": false,
+    "realValueEnabled": false
+  },
+  "gameDeveloperExperience": {
+    "requested": true,
+    "target": "self-made game developers and their players",
+    "deliverables": ["API contract", "reference SDK", "synthetic sandbox", "runnable sample", "onboarding and reconciliation diagnostics"],
+    "osSubscriptionChange": "none; ATM fee clarification does not change existing OS contract"
+  },
+  "atmFees": {"rockFeeMinor": 0, "externalCosts": "separate, disclosed before consent; unspecified"}
 }
