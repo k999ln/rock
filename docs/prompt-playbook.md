@@ -14,11 +14,15 @@
 
 remote内容は読み取り後に作業checkoutへfetchし、refを40桁SHAに固定する。利用者のdirty checkoutを切り替えず、必要なら分離checkout/worktreeを作る。対象コードがmainにない場合は存在するbranchを出発点にする。別branchにあるから新規作成する、という判断をしない。
 
+現在はmain/nativeに加え `codex/os-game-design-review-20260909` の最新設計も必須入力。mainに新設計があると仮定せず、PRのない設計branchも同一SHAのchecksを取得し、チェックなしを成功にしない。取得中のbranch追加/更新/削除も再照合する。`auditInputs.designHead` は改訂前入力の履歴であり、未来の最新SHAの固定指定ではない。
+
 ## 2. 進捗の記録方式
 
 各能力を `要望ID / repository / branch / SHA / path / 実装状態 / 検証段階 / 未検証部分 / 次の作業` で記録する。実装状態は未実装・試作・実装あり、検証段階は未検証・host・fixture・仮想OS・provider sandbox・実機・本番を使う。複数段階はそれぞれ証拠を付ける。
 
 `data/project-status.json` は当該branchの作業一覧。branch間の完了数は単純合算しない。未マージN01の完了をmainのOS起動済みに置換しない。過去の監査は履歴であり毎回読み直す起点。
+
+旧Web/Android/文書を含む作業数はOSの完成率ではない。phaseGatesの起動基礎・単一owner商品/Wallet基礎・OS縦断・複数owner基礎・交換契約を分け、実provider待ちを独立fixtureの前提にしない。文書で訂正した相違と、実装で修正・再試験済みの相違も区別する。
 
 ## 3. 差分から作業を決める
 

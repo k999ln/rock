@@ -4,22 +4,22 @@ tob側の自動化ツールを商品として管理するHubと、自動化で�
 
 **製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ15）です。** [プロンプト作成規約](docs/prompt-playbook.md)、[OS稼働・ゲーム連携監査](docs/os-readiness-audit-20260909.md)、[最新の実行プロンプト](docs/prompts/os-operational-base-next.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を保存しています。まず現設計をQEMUで稼働・復旧まで検証できる開発OSへ進め、ゲーム交換と作者向けAPI/SDKを別に開発します。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持。文書保存と実装・実機/本番合格は別です。
 
-**現在は [確認用設計書 v1.0](docs/os-hub-wallet-game-design.md) の利用者承認待ち。** 設計・プロンプトを提示し、承認後に実装へ進みます。任意のGame入口・達成演出は確認用の提案で、承認前にruntimeを作り始めません。
+**現在は [確認用設計書 v1.1](docs/os-hub-wallet-game-design.md) の利用者承認待ち。** [実装との相違](docs/design-implementation-alignment-20260909.md)を反映した設計・プロンプトを提示し、承認後にruntime実装へ進みます。Game入口・達成演出は提案、市場案は検討のみです。
 
 2026-09-09の監査では[PR #1](https://github.com/k999ln/rock/pull/1)にLinux/Buildroot/QEMU native OS、Hub、Wallet、MCP・実行先/予算の試作があります。BlackBerry優先・機種未定、Android/AOSPは別トラックです。PRは監査時OPEN。毎回 `npm run prompt:context` と対象コードを確認してください。以下のmain実装だけで全体の進捗を判断しないでください。
 
-**このmainのOSコードはAndroid P1です。** Java共通コア・SQLite・AIDL・診断画面・記事ツールに対する2APK build/lintと標準Android接続試験の成功記録があります。独自AOSP/Cuttlefish・Pixelは未検証。native branchのQEMU・SDK・Wallet試作と区別します。既存Webのファンド・料金・分配は試算として保持します。
+**main由来のこの確認用branchのOSコードはAndroid P1です。** Java共通コア・SQLite・AIDL・診断画面・記事ツールに対する2APK build/lintと標準Android接続試験の成功記録があります。独自AOSP/Cuttlefish・Pixelは未検証。native branchのQEMU・SDK・Wallet試作と区別します。最新設計は `codex/os-game-design-review-20260909` に保存し、main/native未反映です。既存Webのファンド・料金・分配は試算として保持します。
 
 旧Android/AOSPの入口は [OS開発設計書](docs/os-development-design.md)。現在の製品判断には製品ベースと対象branchの現行方針を使います。
 
 コードの現在地と再開手順: [P1実装・検証手順](docs/os-prototype.md)、[実際のTool契約](contracts/README.md)。AOSPへ組み込む設定は `android/Android.bp` と `os/device/`。これらの存在をOS起動済みの証拠にはしません。
 
-正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。ローカルの `gg` 直下と対応します。製品は「Rock star / avocadomini」の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
+正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。旧ローカル作業名は `gg`。現在の設計再開先は `codex/os-game-design-review-20260909` で、SSD上の旧checkoutを最新と仮定しません。製品は「Rock star / avocadomini」の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
 
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-09 / 確認用設計書と実行プロンプトを保存・利用者承認待ち（実装は未着手） / 完了 12/26件
+最終更新: 2026-09-09 / 実装との差を訂正した設計v1.1・プロンプトの確認待ち（既存native試作あり、新指示のruntime作業は未着手） / 完了 12/27件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -40,17 +40,34 @@ tob側の自動化ツールを商品として管理するHubと、自動化で�
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 | B01 | Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
-| B04 | main/nativeのベース・引継ぎ入口・優先順位を分離作業branchへ統合 | 未着手 | [記録](docs/progress-audit-20260909-followup.md) · [記録](docs/prompts/hub-wallet-next.md) |
+| B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 未着手 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) |
 | B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
 | V01 | 最新統合sourceからQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す | 未着手 | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) |
+| GX00 | 共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証 | 未着手 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) |
 | GX01 | ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
 | GX02 | 指定された実ゲームの正式sandbox接続と交換条件を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
-| DX01 | ゲーム作者向けAPI/SDK・sandbox・サンプル・2game分離と導入体験を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
+| DX01 | ゲーム作者向けAPI/SDK・sandbox・複数owner/game分離と導入体験を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
 
-次の作業: まずdocs/os-hub-wallet-game-design.md v1.0を利用者に提示し明示承認を待つ。承認後だけdocs/prompts/os-operational-base-next.mdに従い、最新ref確認→B04統合→V01起動/安全基礎→既存商品/Wallet基礎→OS受入へ。ゲームfixture/GX01と作者SDK/DX01は独立、実ゲーム/実資金/実機は別ゲート。ATM自社手数料0・ゲーム料金未定・OS月888 cents維持。
+段階ゲート（作業全体の完了とは別判定）
+
+| 段階ID | 作業ID | 内容 | 状態 | 先に通す段階 | 根拠 |
+| --- | --- | --- | --- | --- | --- |
+| B04-INTEGRATED | B04 | 承認後、main/native/設計reviewの3入力と入口を統合 | 未合格 | — | [記録](docs/prompts/os-operational-base-next.md) |
+| V01-BOOT | V01 | OS起動・安全基礎（V01全体の合格ではない） | 未合格 | B04-INTEGRATED | [記録](docs/prompts/os-operational-base-next.md) |
+| B02-NATIVE | B02 | 既存native商品1件をHubで実処理・保存 | 未合格 | V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
+| B03-FIXTURE | B03 | 単一ownerの合成Wallet・商品/費用/売上状態の基礎 | 未合格 | B02-NATIVE | [記録](docs/prompts/os-operational-base-next.md) |
+| V01-ACCEPT | V01 | 同一OS候補でD0〜D6縦断合格 | 未合格 | V01-BOOT · B02-NATIVE · B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
+| B03-PROVIDER | B03 | 実provider/認証済み収益（別の権限・条件が必要） | 未合格 | B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
+| B05-COMPARE | B05 | Wallet基礎後のPC比較/再試験。実機価値は別判定 | 未合格 | B02-NATIVE · B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
+| GX00-ISOLATION | GX00 | ADR・複数owner分離/本人接続・互換/復旧の合成検証 | 未合格 | B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
+| GX01-CONTRACT | GX01 | 複数owner/gameの交換契約と両台帳fixture | 未合格 | GX00-ISOLATION | [記録](docs/prompts/os-operational-base-next.md) |
+| GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 未合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
+| DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 未合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) |
+
+次の作業: 設計v1.1と相違監査を提示し明示承認を待つ。承認後はmain/native/設計reviewの3入力固定→B04統合→V01起動基礎→選定native商品/合成Wallet基礎→OS受入。phaseGatesで途中依存を確認。GX00複数owner基礎→GX01交換契約→DX01 SDKは別系列。実ゲーム/実資金/実機は別ゲート、市場案は検討のみ。ATM自社手数料0・ゲーム料金未定・OS月888 cents維持。作業件数はOS完成率ではない。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

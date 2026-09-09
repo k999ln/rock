@@ -1,5 +1,15 @@
 # 検証記録
 
+## 設計v1.1と実装の再照合・進捗補助の修正 / 2026-09-09
+
+- 16:51 UTCの3branch監査に加え、修正した `npm run prompt:context` を17:07 UTCにオンライン実行。main/native/reviewのSHAは監査入力と一致し、reviewのcheck-run 0は `NO_CHECKS / allSuccessful:false`。全branchとopen PRの再照合にも成功。これはメタデータ取得でありsourceレビュー済みを自動宣言しない。
+- ALIGN01〜05を監査・設計v1.1・実行プロンプト・受入雛形・進捗へ反映。GX00の単一owner→複数player境界、backup試験入口の新旧形式、台帳変更と旧OS互換、段階依存を訂正。既存native sourceを読み取り確認したがruntimeを修正・試験したわけではない。
+- 追加18テストで、PRなしbranchのchecks取得対象、ref順序/変更/削除、チェックなし/未完了の非成功、段階ゲートの参照/重複/循環/完了根拠/旧形式互換を検証。ベース検査にも設計入力SHA欠落と未承認市場の実装許可化を拒否する負例を追加。
+- 最初の全体verifyは新テスト18箇所のPromise記述をlintが拒否。既存の記述規則に合わせて明示的なvoidを付け、条件を弱めず再実行。
+- 再実行した `npm run verify` は終了コード0。project/repository/baseline、型、製品lint、53 unit tests（fail/skip 0）、既存Web build、合成ローカルAPI143 assertionsが成功。既知のVite configLoader/Node module API警告は残る。ブラウザQA・native新image・実機の試験ではない。
+- 利用者の市場案とGTA補足は、公式一次資料を調べた検討メモへ分離。自動化で人の挑戦を増やす目的を設計に明記し、特定ゲームの未確認機能・通貨値上がり・実資金運営を確定しない。
+- 今回変更は文書/進捗取得・検査補助のみ。native checkoutはcleanのまま、SSD/VM再起動なし。main/nativeのmerge、実ゲーム/SDK実装、実課金/送金/ATM/実機/公開なし。設計承認待ちを維持する。
+
 ## OS稼働受入・ゲーム作者向けWallet・ATM手数料のプロンプト / 2026-09-09
 
 - GitHub 16:09 UTCのmain `7cdbb5fedc86ee3978ed329d9312147d137c9199`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、PR #1 OPEN、同SHAの各CI成功を取得しfetchで一致を確認。監査は `docs/os-readiness-audit-20260909.md`。

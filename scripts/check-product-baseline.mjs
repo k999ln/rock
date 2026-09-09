@@ -11,7 +11,7 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
   requireValue(/^\d+\.\d+$/.test(data.version), '版が必要です');
   requireValue(/^\d{4}-\d{2}-\d{2}$/.test(data.decidedAt), '決定日が必要です');
   const documents = {};
-  for (const key of ['authority', 'promptRules', 'audit', 'nextPrompt', 'acceptanceTemplate', 'designReview']) {
+  for (const key of ['authority', 'promptRules', 'audit', 'nextPrompt', 'acceptanceTemplate', 'designReview', 'alignmentAudit']) {
     const path = data[key];
     requireValue(typeof path === 'string' && !isAbsolute(path), `${key}: 相対pathが必要です`);
     const resolved = resolve(root, path);
@@ -25,7 +25,7 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
     requireValue(documents.authority.split(`## ${id} `).length === 2, `${id}: 正本の見出しが一意ではありません`);
   }
   requireValue(data.auditInputs?.isLiveStatus === false, '監査snapshotを最新状態にしないでください');
-  for (const field of ['main', 'nativeHead']) {
+  for (const field of ['main', 'nativeHead', 'designHead']) {
     requireValue(/^[a-f0-9]{40}$/.test(data.auditInputs[field]), `${field}: 40桁SHAが必要です`);
     requireValue(documents.audit.includes(data.auditInputs[field]), `${field}: 監査本文とSHAが一致しません`);
     requireValue(documents.nextPrompt.includes(data.auditInputs[field]), `${field}: プロンプトの起点SHAがありません`);
@@ -33,6 +33,7 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
   requireValue(data.supplyRoleExclusivity === 'unspecified', 'tobの供給元/独占性は未確定です');
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');
   requireValue(data.gameExchange?.atmDependency === false, 'ゲーム交換をATM必須にしないでください');
+  requireValue(data.marketExploration?.runtimeAuthorized === false && data.marketExploration?.realValueEnabled === false, '市場案は検討のみで実装・実資金未承認です');
   for (const file of ['AGENTS.md', 'README.md', 'project.md', 'docs/product.md', 'docs/architecture.md', 'docs/fund-and-mcp.md', 'docs/os-development-design.md', 'docs/os-prototype.md']) {
     requireValue(read(resolve(root, file)).includes('product-baseline.md'), `${file}: ベースへの入口がありません`);
   }

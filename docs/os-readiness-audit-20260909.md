@@ -2,6 +2,8 @@
 
 確認: 2026-09-09 16:09 UTC。これは作成時snapshotであり実行開始時には再確認する。
 
+追補: 16:51 UTCに再確認し、main/nativeは下記同SHA、設計review `codex/os-game-design-review-20260909` / `de5b102d3525daccf604efd5685bdf8c14ad5d50` を加えた3branch。review SHAのcheck-runは0でCI成功ではない。[設計と実装の再照合](design-implementation-alignment-20260909.md)で単一owner、復元試験入口、台帳移行、段階依存の不足を追加し、設計v1.1/プロンプトを訂正した。以下16:09時点の2branch記録は履歴。新しいruntime実装・VM試験は未実施、設計承認待ちを維持。
+
 - main: `7cdbb5fedc86ee3978ed329d9312147d137c9199`、同SHAの[verify成功](https://github.com/k999ln/rock/actions/runs/34368901643/job/102524716373)。
 - native: `codex/integrate-native-os-20260909` / `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`。[PR #1](https://github.com/k999ln/rock/pull/1)はOPEN、未マージ。
 - nativeの同SHA: [source-tests](https://github.com/k999ln/rock/actions/runs/34318525801/job/102359820423)、[Android prototype](https://github.com/k999ln/rock/actions/runs/34318525747/job/102359820156)、[Web verify](https://github.com/k999ln/rock/actions/runs/34318525748/job/102359820133)成功。

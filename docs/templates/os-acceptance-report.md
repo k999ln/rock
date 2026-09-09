@@ -6,6 +6,7 @@
 
 - 作成日時 / 実行担当 / レビュー担当: 未記入
 - repository / branch / 40桁commit: 未記入
+- main/native/設計reviewの入力SHA / 承認設計版・日時・範囲: 未記入
 - dirty差分のhash（cleanならclean）/ 移植元manifest hash: 未記入
 - buildホストOS・architecture・toolchain・QEMU・依存lock: 未記入
 - build方法 / 実行profile / CPU・RAM・disk・network条件: 未記入
@@ -28,10 +29,11 @@
 | D4 | startup healthとA/B・容量不足 | 不正/無応答版を正常確定せず、検証済みslotへ回復 | 未記入 | NOT_RUN |
 | D5 | 正常終了・再起動・backup/restore | init停止/unmount、永続データ保持、別の復元先で照合 | 未記入 | NOT_RUN |
 | D6 | 繰返し/継続稼働・引継ぎ | 事前に定めた回数/時間/資源基準を満たし、手順が再実行可能 | 未記入 | NOT_RUN |
+| GX0 | owner分離と本人認証からのplayer接続 | 2作者/2game/2owner（1ownerは2端末）の正当系・越境拒否・同時処理非漏洩、旧契約保持 | 未記入 | NOT_RUN |
 | GX1 | Wallet→模擬ゲーム | 専用quote/承認/予約/付与/両台帳照合、重複0 | 未記入 | NOT_RUN |
 | GX2 | 模擬ゲーム→Wallet（条件付き） | 方向許可、ゲーム側確定消費とWallet側原資確認後に一度だけ記帳 | 未記入 | NOT_RUN |
 | GX3 | 通信断/競合/解除/再照合 | 不明は保留、ATM/月額と競合しても二重使用0 | 未記入 | NOT_RUN |
-| DX | 作者向けAPI/SDK・sandbox・導入 | fresh環境導入、2game分離、鍵失効、測定/改善 | 未記入 | NOT_RUN |
+| DX | 作者向けAPI/SDK・sandbox・導入 | fresh環境導入、GX0の複数owner/game分離、鍵失効、測定/改善 | 未記入 | NOT_RUN |
 | AF | ATM自社手数料0 | quote/receipt/台帳の自社徴収0、外部実費は別明示 | 未記入 | NOT_RUN |
 | H | 指定実機のboot・入力・通信・電源・復旧 | 機種/variantごとの実測 | 未記入 | NOT_RUN |
 | S | 実ゲーム/金融provider sandbox | 提供者の正規APIと履歴を照合 | 未記入 | NOT_RUN |
@@ -53,6 +55,8 @@ GX/H/S/PはD0〜D6の代替ではない。ゲーム実装を含まないOS候補
 OS正常終了は電源要求の受付やQEMU process消滅だけで判断せず、initのサービス停止・unmount・guest power eventを確認する。失敗注入の強制断は使い捨て対象だけに限定し、通常終了成功へ混ぜない。
 
 ## 4. backup / restoreの対象表
+
+試験入口の旧backup schema1/新schema2対応、A/B/data全diskのhash、profile別DB/追加表/backendを確認する。旧44表の照合だけで新ゲーム台帳の保存成功にしない。台帳変更時は旧台帳/旧client/直前OSの互換表、署名data ABI、移行中断・更新後rollback・保留交換保持のD4/D5再試験結果を添付する。Game入口がなくても必要。
 
 | 対象 | 正本と保存先 | 含む/除外 | 静止/整合方法 | 新規復元先での確認 |
 | --- | --- | --- | --- | --- |

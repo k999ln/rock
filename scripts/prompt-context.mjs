@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { root, validateBaseline } from './check-product-baseline.mjs';
+import { canonicalRefs, collectCheckShas, refsUnchanged, selectPull, summarizeChecks } from './prompt-context-model.mjs';
 
 const exec = promisify(execFile);
 async function run(command, args) {
@@ -39,20 +40,29 @@ try {
       api(`${prefix}/pulls?state=open&per_page=100`, true),
       api(`${prefix}/pulls?state=closed&sort=updated&direction=desc&per_page=30`),
     ]);
-    const selectPull = (p) => ({ number: p.number, state: p.state, mergedAt: p.merged_at, url: p.html_url, base: p.base.ref, head: p.head.ref, sha: p.head.sha, repository: p.head.repo?.full_name ?? null });
     const open = pullPages.flat().map(selectPull);
     const branches = branchPages.flat().map((b) => ({ name: b.name, sha: b.commit.sha }));
-    const shas = [...new Set([main.sha, ...open.filter((p) => p.repository === data.repository).map((p) => p.sha)])];
+    const initialRefs = canonicalRefs({ main: main.sha, branches, openPullRequests: open });
+    const shas = collectCheckShas(data.repository, main.sha, branches, open);
     const checks = await Promise.all(shas.map(async (sha) => {
       const pages = await api(`${prefix}/commits/${sha}/check-runs?per_page=100`, true);
-      return { sha, checks: pages.flatMap((p) => p.check_runs).map((c) => ({ name: c.name, status: c.status, conclusion: c.conclusion, url: c.html_url })) };
+      const runs = pages.flatMap((p) => p.check_runs).map((c) => ({ name: c.name, status: c.status, conclusion: c.conclusion, url: c.html_url }));
+      return { sha, ...summarizeChecks(runs), checks: runs };
     }));
-    const finalMain = await api(`${prefix}/commits/main`);
-    const finalPulls = (await api(`${prefix}/pulls?state=open&per_page=100`, true)).flat().map(selectPull);
-    if (main.sha !== finalMain.sha || JSON.stringify(open) !== JSON.stringify(finalPulls)) {
+    const [finalMain, finalBranchPages, finalPullPages] = await Promise.all([
+      api(`${prefix}/commits/main`),
+      api(`${prefix}/branches?per_page=100`, true),
+      api(`${prefix}/pulls?state=open&per_page=100`, true),
+    ]);
+    const finalRefs = {
+      main: finalMain.sha,
+      branches: finalBranchPages.flat().map((b) => ({ name: b.name, sha: b.commit.sha })),
+      openPullRequests: finalPullPages.flat().map(selectPull),
+    };
+    if (!refsUnchanged(initialRefs, finalRefs)) {
       throw new Error('GitHub refs changed during collection');
     }
-    console.log(JSON.stringify({ ...result, liveMetadataVerified: true, main: main.sha, branches, openPullRequests: open, recentClosedPullRequests: closed.map(selectPull), checks, recordedAuditOnly: data.auditInputs, note: 'Metadata only. Read selected source, tests and evidence before writing the prompt. Other branches and older closed PRs may require further investigation.' }, null, 2));
+    console.log(JSON.stringify({ ...result, liveMetadataVerified: true, ...initialRefs, recentClosedPullRequests: closed.map(selectPull), checks, recordedAuditOnly: data.auditInputs, note: 'Metadata only. Checks cover main, every repository branch and same-repository open PR heads. NO_CHECKS is not a successful test result. Read selected source, tests and evidence before writing the prompt. Fork PRs and older closed PRs require separate investigation. Ref rechecks detect observed changes, not an atomic GitHub snapshot.' }, null, 2));
   }
 } catch {
   console.error('最新コンテキストを確定できません。GitHub接続・gh認証・ref変更・ベース検査を確認してください。必要なら同等の読み取りで再取得してください。--offline は過去参照のみで、最新確認の代わりにはなりません。');

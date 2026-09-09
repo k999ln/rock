@@ -4,7 +4,13 @@
 
 ## 現在の再開条件 — 設計承認待ち
 
-利用者の「プロンプトを作成して、そのあとは設計書を出して確認させて、確認したらプロンプトを進める」に従い、[設計書v1.0](docs/os-hub-wallet-game-design.md) とプロンプトの提示までで停止する。以下の実装順は承認後のみ。任意のGame入口と軽い達成演出は提案/選択項目であり、勝手に確定・実装しない。承認対象版・範囲・日時を記録してから再開する。現在のruntime/SDK/新OS imageは未変更。
+利用者の「プロンプトを作成して、そのあとは設計書を出して確認させて、確認したらプロンプトを進める」に従い、[設計書v1.1](docs/os-hub-wallet-game-design.md) とプロンプトの提示までで停止する。以下の実装順は承認後のみ。任意のGame入口と軽い達成演出は提案/選択項目であり、勝手に確定・実装しない。承認対象版・範囲・日時を記録してから再開する。今回runtime/SDK/新OS imageは未変更。
+
+## 2026-09-09: 現設計と開発内容の再照合・訂正
+
+16:51 UTCにmain/native/設計reviewの3branchを再確認。[相違監査](docs/design-implementation-alignment-20260909.md)のALIGN01〜05に、設計branch参照漏れ、単一ownerと一般player基盤の違い、最新backupと復元試験入口の不一致、台帳移行と旧OS互換、途中依存の表現を記録した。設計v1.1/プロンプト/受入雛形に修正必須内容を反映し、Git進捗取得・段階ゲートの検査補助を改善する。runtimeの問題解消は未実施で承認後の作業。
+
+再開先は `codex/os-game-design-review-20260909`。mainだけには最新設計がない。B04は3入力を統合、V01は単一ownerの既存native商品/合成Walletで先行、GX00→GX01契約→DX01は別系列。実providerやゲーム市場の完成をOS稼働の前提にしない。新たな予測市場/ゲーム資産売買の相談は未承認の検討案で、実行範囲を自動拡張しない。以下の過去記録は各時点の履歴。
 
 ## 2026-09-09: OS稼働雛形・ゲーム作者向けWallet・ATM手数料の追加指示
 
@@ -142,7 +148,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-09 / 確認用設計書と実行プロンプトを保存・利用者承認待ち（実装は未着手） / 完了 12/26件
+最終更新: 2026-09-09 / 実装との差を訂正した設計v1.1・プロンプトの確認待ち（既存native試作あり、新指示のruntime作業は未着手） / 完了 12/27件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -163,17 +169,34 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 | B01 | Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
-| B04 | main/nativeのベース・引継ぎ入口・優先順位を分離作業branchへ統合 | 未着手 | [記録](docs/progress-audit-20260909-followup.md) · [記録](docs/prompts/hub-wallet-next.md) |
+| B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 未着手 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) |
 | B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
 | V01 | 最新統合sourceからQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す | 未着手 | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) |
+| GX00 | 共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証 | 未着手 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) |
 | GX01 | ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
 | GX02 | 指定された実ゲームの正式sandbox接続と交換条件を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
-| DX01 | ゲーム作者向けAPI/SDK・sandbox・サンプル・2game分離と導入体験を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
+| DX01 | ゲーム作者向けAPI/SDK・sandbox・複数owner/game分離と導入体験を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
 
-次の作業: まずdocs/os-hub-wallet-game-design.md v1.0を利用者に提示し明示承認を待つ。承認後だけdocs/prompts/os-operational-base-next.mdに従い、最新ref確認→B04統合→V01起動/安全基礎→既存商品/Wallet基礎→OS受入へ。ゲームfixture/GX01と作者SDK/DX01は独立、実ゲーム/実資金/実機は別ゲート。ATM自社手数料0・ゲーム料金未定・OS月888 cents維持。
+段階ゲート（作業全体の完了とは別判定）
+
+| 段階ID | 作業ID | 内容 | 状態 | 先に通す段階 | 根拠 |
+| --- | --- | --- | --- | --- | --- |
+| B04-INTEGRATED | B04 | 承認後、main/native/設計reviewの3入力と入口を統合 | 未合格 | — | [記録](docs/prompts/os-operational-base-next.md) |
+| V01-BOOT | V01 | OS起動・安全基礎（V01全体の合格ではない） | 未合格 | B04-INTEGRATED | [記録](docs/prompts/os-operational-base-next.md) |
+| B02-NATIVE | B02 | 既存native商品1件をHubで実処理・保存 | 未合格 | V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
+| B03-FIXTURE | B03 | 単一ownerの合成Wallet・商品/費用/売上状態の基礎 | 未合格 | B02-NATIVE | [記録](docs/prompts/os-operational-base-next.md) |
+| V01-ACCEPT | V01 | 同一OS候補でD0〜D6縦断合格 | 未合格 | V01-BOOT · B02-NATIVE · B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
+| B03-PROVIDER | B03 | 実provider/認証済み収益（別の権限・条件が必要） | 未合格 | B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
+| B05-COMPARE | B05 | Wallet基礎後のPC比較/再試験。実機価値は別判定 | 未合格 | B02-NATIVE · B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
+| GX00-ISOLATION | GX00 | ADR・複数owner分離/本人接続・互換/復旧の合成検証 | 未合格 | B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
+| GX01-CONTRACT | GX01 | 複数owner/gameの交換契約と両台帳fixture | 未合格 | GX00-ISOLATION | [記録](docs/prompts/os-operational-base-next.md) |
+| GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 未合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
+| DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 未合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) |
+
+次の作業: 設計v1.1と相違監査を提示し明示承認を待つ。承認後はmain/native/設計reviewの3入力固定→B04統合→V01起動基礎→選定native商品/合成Wallet基礎→OS受入。phaseGatesで途中依存を確認。GX00複数owner基礎→GX01交換契約→DX01 SDKは別系列。実ゲーム/実資金/実機は別ゲート、市場案は検討のみ。ATM自社手数料0・ゲーム料金未定・OS月888 cents維持。作業件数はOS完成率ではない。
 <!-- project-status:end -->
 
 ## 次段階の設計

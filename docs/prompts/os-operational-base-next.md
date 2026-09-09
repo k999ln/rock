@@ -1,6 +1,6 @@
 # Rock — 現設計を稼働可能なOSへ進め、ゲーム通貨交換を独立して実装するプロンプト
 
-作成: 2026-09-09。以下は次の実行担当へ渡す指示。保存しただけではOS build、ゲーム接続、実資金提供を完了扱いにしない。
+改訂: 2026-09-09 / 確認用設計v1.1対応。以下は次の実行担当へ渡す指示。保存しただけではOS build、ゲーム接続、実資金提供を完了扱いにしない。
 
 ## 実行前の承認ゲート
 
@@ -16,18 +16,21 @@ https://github.com/k999ln/rock を確認し、現在のHub＋Wallet設計を最�
 
 最初に `AGENTS.md`、`docs/product-baseline.md`、`data/product-baseline.json`、`docs/prompt-playbook.md` を全文読み、RQ01〜RQ15を維持してください。`README.md`、`project.md`、進捗JSON、対象branchの `CHECKPOINT.md`、`docs/native-os-integration.md`、`docs/native-os-validation.md`、`systems/rock-star-os/README.md` と対象コード/テストも読んでください。既存の詳細作業は `docs/prompts/hub-wallet-next.md` の段階1〜4を再利用し、順番と新要望は本書を優先します。
 
-作成時のGitHub確認は2026-09-09 16:09 UTC:
+今回のGitHub再確認は2026-09-09 16:51 UTC（改訂前の入力snapshot）:
 
 - main `7cdbb5fedc86ee3978ed329d9312147d137c9199`、verify成功。
 - native `codex/integrate-native-os-20260909` / `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、PR #1 OPEN・未マージ。同SHAのWeb/Android/native source-tests成功。
+- 設計 `codex/os-game-design-review-20260909` / `de5b102d3525daccf604efd5685bdf8c14ad5d50`。新要望/設計/本プロンプトはこのbranchにありmain/native未反映。監査時check-runは0でCI成功とはしません。この改訂の保存先も同じreview branchです。開始時にはその最新SHAと承認対象版を再取得してください。
 - nativeにはLinux/Buildroot/ARM64 QEMU、専用UID、native Hub、Tool隔離、Wallet simulator、A/B更新の試作と旧第9の起動実績があります。しかしこのRock配置からの新image build/bootはNOT RUN。通常source回帰1,031件は最新OSの起動証明ではありません。
 - startup-healthの21files WIPは未適用。通常gate外のATM observerは認証fixture不適合1error、power6/Wallet5skip、別UID C試験も通常host対象外です。
 - 対象main/nativeでゲーム本体・交換契約は未発見。ATM simulatorは存在します。実ATM設置・実現金払出しの実績をこのコードから保証しません。
+- 既存Walletは単一owner/Aliceの複数端末試作で、一般の複数プレイヤー台帳ではありません。最新backup形式と復元試験入口に差、台帳移行と旧OS rollbackに未設計部分があります。下記GX00/B/Dで修正し、コード修正済みと扱わないでください。
 
-`npm run prompt:context` または同等の読み取りでmain・全branch・open/関連closed PR・同一SHAのCIを再取得し、fetchして40桁SHAを固定してください。取得失敗を最新確認済みとしない。すでに解消した問題は対象証拠を確認して重複実装しないでください。詳細は `docs/os-readiness-audit-20260909.md`。
+`npm run prompt:context` または同等の読み取りでmain・全branch・open/関連closed PR・各対象SHAのCIを再取得し、fetchして40桁SHAを固定してください。特にmain/native/設計reviewの3入力を確認し、PRのないbranchも除外しない。checksなしは未報告であり成功ではありません。取得失敗や取得途中のbranch変更を最新確認済みとしない。すでに解消した問題は対象証拠を確認して重複実装しないでください。詳細は `docs/os-readiness-audit-20260909.md` と `docs/design-implementation-alignment-20260909.md`。
 
 ## 1. 維持するベースと安全境界
 
+- 製品の目的は、自動化で生まれる時間/収入の余地を本人の創作・学習・ゲーム・現実の挑戦につなげること。削減時間・実費後の確定収支・利用者の選択肢を測り、売上や値上がりを保証しません。GTA VI等の未確認の外部Wallet機能を前提にせず、ゲームの正式なAPI/権利/対応能力が確認できた範囲だけを接続します。自動化収益を本人の別承認なしにゲーム/市場へ投入しません。
 - tob側が商品を開発・保守し、RockはHub、adapter/SDK、認証、資格、実行先、費用、成果、収益照合、Walletの共通基盤を作ります。既存ツールも独立商品。業務ロジックやWalletを新規に作り直しません。
 - OS標準の中心はHub＋Wallet。ゲームは追加連携であり、ゲーム中心OSや汎用エコシステムへ転換しません。開発用Web管理画面は補助であり、native OSの代わりにWebだけ作って完了にしません。
 - 端末/PC/cloud/self-host、運用者、接続方式、料金、ライセンス、資格、BYOK、実行費は別軸。未対応や不明は具体的に表示し、全商品MCP化や無料扱いを強制しません。
@@ -36,16 +39,17 @@ https://github.com/k999ln/rock を確認し、現在のHub＋Wallet設計を最�
 - BlackBerry優先・機種/variant未定。Linux QEMUと旧Android/AOSPを区別。QEMU imageを実機へ書き込まず、実機ゲートを合成テストで代用しません。
 - SSDは直前に安全に取り外してあります。再接続・正しいvolume/VM・保存先・空き容量を確認するまでその環境を起動しません。内蔵の旧Limaやユーザーの既存OSディスクを勝手に再利用・初期化しない。既存固定export、秘密値、復旧控えを上書き・公開しません。
 - 公開試験鍵は開発用。合成データで隔離検証し、開発imageに実秘密・個人情報・実資金を入れない。本番鍵生成/保管、端末購入/解除/書込み、サービス契約、課金/送金、本番公開は別の明示承認が必要です。
+- 追加相談の予測市場/ゲーム資産売買は検討のみで、本プロンプトの実行対象ではありません。非換金の模擬案も別の承認を受けてから実装し、交換対応Walletがあることを市場運営・賭け・投資機能の許可としないでください。
 
 ## 2. 作業順と依存関係
 
 ### A — ベースとnativeを分離作業branchへ統合（B04 / GAP01）
 
-最新nativeが未マージならそのsourceを出発点にし、マージ済みなら最新mainを使います。ユーザーのdirty checkoutを切り替えず、分離作業branchを作って最新ベース・本プロンプト・受入雛形・検査を取り込みます。AGENTS、README、project、status、CHECKPOINT、native設計を同期し、旧Nタスク・Android/Web・IMPORT-MANIFESTの取得基準を保持してください。
+最新nativeが未マージならそのsourceを出発点にし、マージ済みなら最新mainを使います。ユーザーのdirty checkoutを切り替えず、分離作業branchを作ってmainの既存変更に加え、設計review branchの最新ベース・承認対象設計・本プロンプト・受入雛形・検査を取り込みます。mainだけから文書を取って新要望を落とさない。AGENTS、README、project、status、CHECKPOINT、native設計を同期し、旧Nタスク・Android/Web・IMPORT-MANIFESTの取得基準を保持してください。
 
-作業順は「A統合→BのOS起動/安全基礎→Cの既存商品実利用とWallet基礎→Bの縦断受入完了」。Dのゲーム交換は共通Walletの基礎が確認できれば独立して進め、Eの開発者向け設計は並行可能、動くSDKの合格はDの契約/fixtureに依存します。ゲーム/ATM/provider/実機の条件待ちをQEMU OS雛形の合格条件にしません。GAP02〜04の実商品多様化・実売上・携帯価値は別の未完了事項として残します。
+作業順は「A統合→BのOS起動/安全基礎→Cの選定済み既存native商品1件と合成Wallet基礎→Bの縦断受入完了」。PC adapter/有料/BYOKなどC全体や実providerの完成をV01の前提にしませんが、未完事項は残します。Dのゲーム交換は共通Wallet基礎とGX00のowner分離/認証接続を先行し、Eの設計は並行可能、動くSDKはDの契約/fixtureに依存します。進捗JSONのphaseGatesでもこの順番を保持します。ゲーム/ATM/provider/実機の条件待ちをQEMU OS雛形の合格条件にしません。GAP02〜04の実商品多様化・実売上・携帯価値は別の未完了事項として残します。
 
-合格証拠: 両入力SHA、統合commit/差分、競合解消、全入口の次作業一致、baseline/project検査。mainの文書保存と作業branch反映、mainへのmergeは別状態です。
+合格証拠: main/native/設計reviewの3入力SHA、承認版、統合commit/差分、競合解消、全入口の次作業一致、baseline/project検査。review保存、nativeへの反映、mainへのmergeは別状態です。mainへの直接push/mergeは含めません。
 
 ### B — OSとして稼働する受入候補を作る（V01 / OS-GAP01〜05）
 
@@ -67,6 +71,8 @@ OS基本操作・保存済み成果物・復旧は契約切れやgame/cloud停�
 
 `os/desktop/backup.py` のOS backupはbackendを含みません。backend/runner/game authorityの正本と整合時点を別々に記録し、未照合の外部取引を巻戻し/再実行しない復元手順にします。同じauthorityの元台帳と復元台帳を同時に支出可能にしない。単一writerと世代/切替の排他を維持し、復元試験は外部通信のない合成環境で行うか、元writer停止と正本切替を検証してから支出許可します。復元後は正本との照合前に支出を有効化しません。休止・単なるsync・電源受付receipt・強制終了を通常終了成功に換算しません。
 
+先行修正（ALIGN03 / D5）: device schema5のbackupは `rock-desktop-backup/2` の `disks` にhashを持ちますが、現行 `verify-backup.py` は旧schema1の `userdata_sha256` を必須参照し、44固定local表だけを照合します。backup/restore本体の既存A/B/data対応は再利用し、試験入口を旧schema1/新schema2・A/B/data・対象profileの正本DB/追加表/外部backendへ対応させてください。新形式fixtureと旧互換の試験を先に追加し、schemaを偽装したり必要表を省略/skipして成功にしないでください。静的確認の不整合であり、この改訂時点で再現・修正実行済みとはしません。
+
 既存入口（native root内）: `os/build-os.sh`、`os/verify-boot.py`、`os/verify-system.py`、`os/verify-platform.py`、`os/update/verify-qemu.py`、`os/update/verify-faults.py`、`os/ui/verify-*.py`、`os/desktop/verify-backup.py`。各help/実装を読んで引数・破壊範囲・対応profileを確認し、存在する全scriptを盲目的に一括実行しない。rootfs/stage0を省く軽量boot試験だけではD4完了にしません。
 
 `docs/templates/os-acceptance-report.md` を用い、機械可読JSONと人向け報告を作成。必須D0〜D6にFAIL/NOT_RUN/SKIPがあれば「QEMU OS雛形合格」としない。対象範囲の重大な未解決脆弱性も合格を妨げます。公開試験鍵等の本番不適合は隠さず、隔離開発専用という制限として明示します。ビルド手順の再実行可能性と別環境でのbit-identical再現性は区別してください。
@@ -79,11 +85,18 @@ OS基本操作・保存済み成果物・復旧は契約切れやgame/cloud停�
 
 既存Walletの整数台帳、認証、同意、重複排除、月888 cents、remote正本を再利用。実行成功を売上へ変換せず、合成売上と認証済み実取引を分けます。B03のfixture/台帳基礎が通ればB05を実行できますが、実収益や携帯実機の未検証はGAP03/GAP04に残します。QEMU開発OSの限定合格と、商品カタログ全対応/実売上/実機価値の合格は同じではありません。
 
-### D — ATMから独立したゲーム通貨交換（GX01/GX02 / GAME-GAP01〜02）
+### D — ATMから独立したゲーム通貨交換（GX00/GX01/GX02 / GAME-GAP01〜04）
+
+**先行GX00（ALIGN02 / GAME-GAP04）**: `os/wallet_backend/server.py` のAlice固定、`os/entitlement/wallet_bridge.py` の1DB1account、`os/wallet_auth/service.py` の単一account bindingを前提として読みます。同ownerの認証付き多端末はありますが、複数ownerの正当系は未実装です。制約の単純除去で同一AVAILABLE/同意/月period/冪等キーを共有しない。1契約1DBを分離維持するか版付きmulti-owner台帳へ移すかを、設計判断記録（ADR）で比較・選定します。
+
+Wallet owner、購入端末、作者、game ID、game内player IDを別IDにし、本人認証/同意から両authority・owner/account・developer/game/player・scope・期限・失効を固定した接続を作ります。server側で認証済み接続から台帳を選び、requestやgame作者の自己申告でownerを選ばせない。ゲームへWallet全残高/自動化収入/他ゲーム履歴を既定公開しない。Rock端末のない一般playerの本番利用資格は未決なので、既存購入資格を黙って撤廃せず、作者sandboxへ端末購入も強制せず、提供対象を別判断に残します。ゲーム利用だけで未同意のOS月額を開始しません。
+
+GX00合格は2作者・2ゲーム・2owner/player（1ownerは2端末）を認証有効の同一統合経路へ接続し、正当な分離と越境拒否を両方通すこと。同じplayer文字列/交換ID/冪等キーの誤衝突防止、同owner月額1回/別owner独立、他ownerのquote/receipt/同意参照拒否、失効/残高不足の非波及、同時処理/worker再利用/再起動でscope非漏洩を検証。旧単一owner台帳・ATM hold・月額・credential・receiptを保持した移行/復旧を含めます。GX00はOS単一ownerのV01受入の前提にはしません。
 
 ゲーム名/repository、所有者の権限、正式server API、交換方向、対象資産、レート/手数料/上限/端数/返金/地域/年齢等の提供条件を確認します。未確定なら質問を記録し、独立した合成game authorityで安全契約を実装・試験します。ゲーム本編を勝手に開発せず、実ゲーム接続済みとも表示しません。本番の両方向とも未承認のまま有効化しません。
 
 1. `src/blackberryrock/wallet.py` のtransaction、append-only記帳、冪等性、`os/wallet_backend/`、`os/wallet_auth/protocol.py`、entitlementを再利用。現行台帳はUSD cents、holdはwithdrawalsと対応し、認証quoteはATM専用です。ATM払出しをゲーム交換と偽装せず、専用namespace/権限/quote/取引種別と、既存DBを保持する版付き移行を追加します。
+   - ALIGN04: 現行更新は固定 `data_abi=rock-data-v1`、台帳migration engine/userdata rollbackなし。旧台帳・旧client・直前OSとの互換表、移行途中停止、更新後A/B戻し、未確定交換保持の復元を試験してください。互換不能なら署名data ABIと移行/復旧方針を先に設計し、同じABIだから旧slotへ安全に戻せると仮定しない。Game入口の採否に関係なくGX00/GX01台帳変更後はBのD4/D5を再実行。既存台帳再作成・保留消去で通さない。
 2. Wallet authorityとgame authorityをそれぞれ正本とし、OS/ゲーム画面は表示・承認の入口にします。asset IDは発行者/ゲーム/単位を含め、金額は整数最小単位。USDとゲーム通貨を合算しない。購入/獲得/bonus等を区別し、交換可能条件を満たす資産だけ扱います。
 3. quoteにはexchange ID、owner/device、両authority、game/account、方向、source/destination assetと量、rate版・端数規則、手数料/総引落し、期限、規約版を固定。本人承認を全内容に結び、改ざん/期限切れ/失効/別ownerは拒否。レートはfixtureのテスト値と明記し実条件を創作しません。
 4. 予約・指示・outbox・provider取引ID・結果receipt・照合履歴を永続化。同じ交換IDに別キーで要求しても重複させず、同じキーのpayload変更は拒否します。serverを跨ぐ処理を単一SQLite transactionで原子的とは称さず、認証された相手の冪等処理と照会で確定させます。相手の冪等保持期限後に不明取引を盲目的に再送しません。
@@ -103,11 +116,11 @@ GX01合格は合成serverと模擬Walletのコード・移行・両台帳・UI�
 - API契約、version、権限scope、エラーコード、再送/照合手順、sandbox/prod境界を明示。playerのaccount接続/同意と、作者のgame登録/鍵を分離します。
 - 合成通貨sandbox、copyして動く最小サンプル、導入手順、取引照会/接続診断を用意。作者にOS再buildや金融台帳の自作を求めません。管理用Webを必要とするなら限定的な開発者画面として作り、現金mintや万能root操作の入口にしません。
 - 開発者向け秘密鍵はserver専用でゲームクライアントへ埋め込まない。game単位のcredential発行/失効、allowed scope、利用上限を扱い、他game/playerの残高や履歴を見られないことを確認。
-- 同じSDKで2つの合成gameを接続し、Game AのID/receipt/credentialをGame Bに流用できないこと、同じplayerでも資産・同意が混ざらないことを試験。SDKの便利関数が結果不明を自動返金・新しい取引IDの再送へ変換しない。
+- 同じSDKでGX00の2作者・2game・2owner/player・複数端末を接続し、Game AのID/receipt/credentialをGame Bに流用できないこと、異なるownerの正当な交換成功と相互アクセス拒否、同じplayer文字列でも資産・同意が混ざらないことを試験。SDKの便利関数が結果不明を自動返金・新しい取引IDの再送へ変換しない。
 - 新しい作業領域で手順通り導入し、設定数/コード量/最初の交換までの時間/成功率/エラー復旧時間を測定。作者の操作は「game登録→sandbox設定→サンプル起動→player接続/同意→合成交換→履歴/照合確認」まで通す。
 - 初見の外部作者による評価は許可と協力者がある場合に別pilotで実施。内部のやり直し試験を市場の使いやすさ実証へ換算しない。「一番使いやすい」は目標であり、比較していなければ主張しません。
 
-合格証拠: 動くSDK/サンプル、2game分離・権限/鍵失効・再送異常系、fresh環境導入記録、測定結果、つまずき→修正→再試験、未対応と次のpilot条件。DX01はDのGX01基礎に依存するが、実ゲームsandbox GX02、実資金や実ATMを一律の前提にしません。
+合格証拠: 動くSDK/サンプル、GX00の複数owner/game分離・権限/鍵失効・再送異常系、fresh環境導入記録、測定結果、つまずき→修正→再試験、未対応と次のpilot条件。DX01はDのGX00/GX01基礎に依存するが、実ゲームsandbox GX02、実資金や実ATMを一律の前提にしません。
 
 ### F — OS内のGame体験（設計承認された場合のみ）
 
@@ -121,7 +134,7 @@ GX01合格は合成serverと模擬Walletのコード・移行・両台帳・UI�
 
 - rootで `npm run baseline:check`、`npm run project:update`、`npm run verify`。nativeはREADMEに従いLinuxの `python3 scripts/test-native.py --output <新しい専用フォルダー>` とBのguest/UI/失敗注入を実行。Androidに変更した場合は追加のAndroid検証も行います。
 - `docs/evidence/os-base/`、`docs/evidence/game-exchange/` に公開可能な合成証拠とhash付きmanifestを保存し、既存同等資料があれば再利用。OSディスクや秘密付きruntimeを公開Gitへ入れません。
-- 受入報告、起動/停止/復旧手順、ゲーム連携契約、GAP01〜04・OS-GAP01〜05・GAME-GAP01〜02の解消表を残し、AGENTS/README/project/status/CHECKPOINTを同期。旧Nタスクを消さず関連付けます。
+- 受入報告、起動/停止/復旧手順、ゲーム連携契約、GAP01〜04・OS-GAP01〜05・GAME-GAP01〜04・ALIGN01〜05の解消表を残し、AGENTS/README/project/status/CHECKPOINTを同期。文書の訂正完了とruntimeの問題解消を別に記録し、旧Nタスクを消さず関連付けます。
 - 許可範囲の実装を分離branchへcommit/pushし、変更SHA・同じ版の試験結果・次の入口を報告。既存PRのmain merge、force push、元のdirty tree上書き、本番公開・実課金・送金・ATM操作・実機書込みはこの指示に含めません。
 - 最後にRQ01〜RQ15を自己点検し、「QEMU OSの合格範囲」「ゲーム連携/作者向けSDKの合格範囲」「ATM独立・自社手数料0の回帰証拠」「未検証の実機/実資金」「減った不便」「残課題と次の条件」を日本語で分けて報告してください。
 

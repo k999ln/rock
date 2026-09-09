@@ -31,6 +31,12 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const mismatch = structuredClone(source);
   mismatch.auditInputs.nativeHead = 'a'.repeat(40);
   assert.throws(() => validateBaseline(mismatch), /SHA/);
+  const missingReview = structuredClone(source);
+  delete missingReview.auditInputs.designHead;
+  assert.throws(() => validateBaseline(missingReview), /designHead/);
+  const unapprovedMarket = structuredClone(source);
+  unapprovedMarket.marketExploration.runtimeAuthorized = true;
+  assert.throws(() => validateBaseline(unapprovedMarket), /未承認/);
   const escaped = structuredClone(source);
   escaped.authority = '../external.md';
   assert.throws(() => validateBaseline(escaped), /repository外/);
