@@ -49,7 +49,7 @@
         865
       ],
       "sign_disabled_sha256": "b03cf17e550ab92d5a42d008a8acfe4fff2740369cd8eeb6725243eb331830db",
-      "sign_enabled_sha256": "84867c88bc79208f7e9994b1a61d29467b6b054d1a638e189f1560aa14353d7c"
+      "sign_enabled_sha256": "6fa5e21249208ba66071d0f87c2a631cac466ba0f594aedbf2b111f95a9029dd"
     },
     "atm": {
       "fixed": [
@@ -92,7 +92,7 @@
         865
       ],
       "sign_disabled_sha256": "6d398bfbe88b3d8d3c44d5baec5792e3b1efe24cc6b329b7b4353ad3ae013dec",
-      "sign_enabled_sha256": "2f948cbb8c7d75ff23843fe3d2669071a26e71eb0c13a394abe0ed4a50522235"
+      "sign_enabled_sha256": "a6095d40560358790623740fa35c25b5ccdd76a622c2a1e39cc076b401be8f8e"
     }
   }
 }

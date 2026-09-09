@@ -73,6 +73,13 @@ static int wallet_replay_bridge(const char *font)
             rock_ui_pointer(&ui, 520, 833, 1); rock_ui_pointer(&ui, 520, 833, 0);
             require(last_request == NULL && strlen(ui.auth_pin) == 4,
                     "stale disabled hit ignores same-batch sign despite four digits");
+        } else if (!strcmp(op, "park_auth_pointer")) {
+            /* Test-only pointer motion, no click. This reviewed point is
+             * outside every fixed context/PIN/sign ROI. */
+            require(ui.page == PAGE_AUTH_PIN && strlen(ui.auth_pin) == 4 && !ui.busy,
+                    "four-digit auth frame required for pointer comparison");
+            rock_ui_pointer(&ui, 705, 860, -1);
+            require(last_request == NULL, "pointer motion cannot submit authentication");
         } else if (!strcmp(op, "text")) {
             require(rock_ui_text(&ui, value(command, "text")) == 0, "real text input accepted");
         } else if (!strcmp(op, "capture")) {

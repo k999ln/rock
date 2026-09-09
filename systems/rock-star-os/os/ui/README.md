@@ -539,7 +539,12 @@ planned captures, guest observers and code-redaction requirements remain.
 late receipts, retained frames and memory descriptor cleanup; the real C
 replay checks every masked count and reproduces the final-digit/sign event
 batch where the cached disabled hit ignores the sign until the next draw.
-These are host mechanism tests; QMP/OS acceptance remains a separate result.
+The enabled-sign golden is rendered after four keyboard inputs only. The C
+regression separately rejects a software pointer over the sign button, then
+moves that pointer outside all fixed ROIs and requires the identical keys-only
+classification. This prevents an event-batch diagnostic frame from contaminating
+the live input golden. These are host mechanism tests; QMP/OS acceptance remains
+a separate result.
 
 This is an explicit separate root fixture gate: no root skips count as success.
 It does not exercise the platform socket, QMP, guest observer or OS shutdown.

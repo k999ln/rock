@@ -133,7 +133,7 @@ class Renderer:
         assert matches, 'target must be within the expected rendered control'
 
     def keys(self, names):
-        codes = {'pgdn': 109, 'pgup': 104, 'ctrl': 29, 'a': 30, '0': 11}
+        codes = {'pgdn': 109, 'pgup': 104, 'ctrl': 29, 'a': 30, '0': 11, 'backspace': 14}
         self.send({'event': 'keys', 'codes': [codes[name] for name in names]})
 
     def type(self, text):
@@ -160,11 +160,22 @@ class Renderer:
             self.keys(['0'])
             observed = pin_readiness.inspect_frame(self.pin_frame(), profile, definitions)
             assert observed.get('recognized') and observed['masked_digits'] == count and not observed['sign_enabled']
-        # Reproduce the frozen main.c event-drain order: fourth key and sign
-        # release before redraw. The stale disabled hit emits no request.
+        # Golden readiness must be the actual live sequence: four keys only,
+        # with no pointer rendered over the enabled sign button.
+        self.keys(['0'])
+        keys_only = pin_readiness.inspect_frame(self.pin_frame(), profile, definitions)
+        assert keys_only.get('recognized') and keys_only['masked_digits'] == 4 and keys_only['sign_enabled']
+        self.keys(['backspace'])
+        # Separate event-order negative: last key and sign without a draw.
         frame = self.raw({'event': 'batch_pin_last_and_sign'})
         assert frame['request'] is None and frame['pin_digits'] == 4 and not frame['busy']
         assert any(hit['action'] == 'ACTION_AUTH_SIGN' for hit in frame['hits'])
+        # That sign click leaves the C software pointer inside the sign ROI;
+        # this is not the keys-only golden and must fail the exact classifier.
+        assert not pin_readiness.inspect_frame(self.pin_frame(), profile, definitions).get('recognized')
+        self.raw({'event': 'park_auth_pointer'})
+        parked = pin_readiness.inspect_frame(self.pin_frame(), profile, definitions)
+        assert parked == keys_only, 'four keys and batch + pointer outside fixed ROIs must classify identically'
 
     def capture(self, name):
         assert name not in self.captures
