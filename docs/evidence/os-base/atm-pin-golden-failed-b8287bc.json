@@ -1,0 +1,158 @@
+{
+  "schema": "rock-native-atm-ui-harness/1",
+  "status": "FAIL",
+  "started_utc": "2026-09-09T21:33:43.963668+00:00",
+  "scope": "actual native ARM64 framebuffer/evdev input and closed simulator ATM",
+  "blackberry": "NOT_RUN",
+  "real_money": "NOT_RUN",
+  "real_atm": "NOT_CONNECTED",
+  "real_identity": "NOT_CONNECTED",
+  "code_reveal_actions_sent": 0,
+  "atm_actor_actions_sent": 0,
+  "image_sha256_before": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+  },
+  "input_events": [
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788989640.3389506
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        360
+      ],
+      "sent_unix": 1788989642.1476252
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788989645.6388097
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        480
+      ],
+      "sent_unix": 1788989647.4456031
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        419
+      ],
+      "sent_unix": 1788989648.0353785
+    },
+    {
+      "action": "public-test-pin-entry",
+      "value": {
+        "digits": 4,
+        "value_recorded": false
+      },
+      "sent_unix": 1788989648.8652182
+    }
+  ],
+  "screenshots": [
+    {
+      "name": "00-unregistered-zero-wallet.png",
+      "bytes": 96135,
+      "sha256": "45fc1aa53c59ae5bfe325900712e1fb23e7cf85e505d6ddcead895f0e061330d",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "01-registered-no-billing-consent.png",
+      "bytes": 114594,
+      "sha256": "9b44561f3b672b894a5de30ec1ef6e597fac074928d517c60fd29cbcc767f7b3",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "auth-01-explicit-enrollment.png",
+      "bytes": 70102,
+      "sha256": "53da709bfe71a17e0ba52fe8ab0a318e8aca928b47fba63886eab7ea426aecd2",
+      "dimensions": [
+        720,
+        960
+      ]
+    }
+  ],
+  "command": [
+    "qemu-system-aarch64",
+    "-machine",
+    "virt-10.0,gic-version=3",
+    "-accel",
+    "tcg",
+    "-cpu",
+    "cortex-a53",
+    "-m",
+    "1024",
+    "-smp",
+    "2",
+    "-display",
+    "none",
+    "-serial",
+    "stdio",
+    "-monitor",
+    "none",
+    "-qmp",
+    "unix:/tmp/rock-atm-qmp-baop9bo8/qmp.sock,server=on,wait=off",
+    "-no-reboot",
+    "-nic",
+    "none",
+    "-kernel",
+    "/var/tmp/rk3/systems/rock-star-os/artifacts/os/Image",
+    "-append",
+    "console=ttyAMA0 vt.global_cursor_default=0 root=/dev/vda ro rootflags=noload rootwait panic=-1 rock.ui.atm.verify=1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/rootfs.ext4,format=raw,id=osdisk,readonly=on",
+    "-device",
+    "virtio-blk-pci,drive=osdisk,addr=0x1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/atm-ui-20260909T213343Z-287so8tf/userdata.ext4,format=raw,id=userdata",
+    "-device",
+    "virtio-blk-pci,drive=userdata,addr=0x2",
+    "-object",
+    "rng-random,filename=/dev/urandom,id=rockrng",
+    "-device",
+    "virtio-rng-pci,rng=rockrng,addr=0x3",
+    "-device",
+    "virtio-gpu-pci,xres=720,yres=960,addr=0x4",
+    "-device",
+    "virtio-keyboard-pci,addr=0x5",
+    "-device",
+    "virtio-tablet-pci,addr=0x6"
+  ],
+  "pin_readiness": [
+    {
+      "recognized": true,
+      "profile": "enroll",
+      "masked_digits": 0,
+      "sign_enabled": false,
+      "pin_roi_sha256": "955bd5829705cd162e163bfc5d04156a8ff98c4b8f7b641a902644a1025e07f1",
+      "sign_roi_sha256": "b03cf17e550ab92d5a42d008a8acfe4fff2740369cd8eeb6725243eb331830db",
+      "samples": 1
+    }
+  ],
+  "error": "TimeoutError: reviewed PIN readiness was not observed within the original stage deadline: unrecognized auth frame",
+  "image_sha256_after": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+  },
+  "finished_utc": "2026-09-09T21:34:33.325458+00:00"
+}

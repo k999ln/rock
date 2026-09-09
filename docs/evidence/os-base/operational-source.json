@@ -204,6 +204,15 @@
       "report": "startup-update-acceptance-b8287bc.json",
       "actual_boots": 41,
       "scope": "QEMU public-development fixture; no migration, hardware trust or full OS acceptance"
+    },
+    "host_wallet_page_header": {
+      "status": "PASS_HOST_FIXTURE",
+      "report": "host-wallet-header-flow.json",
+      "states": 45,
+      "fixed_action_checks": 23,
+      "actual_failed_history_review": "business-history-header-review.json",
+      "limits_unchanged": true,
+      "qemu": "NOT_RUN"
     }
   },
   "logs_sha256": {
@@ -449,6 +458,18 @@
       "status": "FAIL",
       "report": "data-abi-serial-failed-b8287bc.json",
       "reason": "Second boot produced ABI refusal proof, unchanged A/B/state and normal kernel poweroff; fixed BusyBox login prompt precedes background proof. Host start-of-line parser missed it. Whole run FAIL, original inputs unchanged. Exact optional prompt recognized with negative guards; fresh three boots pending."
+    },
+    {
+      "case": "atm-31-pin-golden",
+      "status": "FAIL",
+      "report": "atm-pin-golden-failed-b8287bc.json",
+      "reason": "Actual QMP anonymous-memory capture and empty PIN recognition passed. After4 keys, sign golden was unknown. Real C reproduction proved golden came from diagnostic pointer-on-sign frame, not keys-only. Replaced only two golden hashes from actual C keys-only frames; pointer-over-button negative and parked equivalence added. Fresh actual trial pending."
+    },
+    {
+      "case": "business-32-wallet-labels-on-history",
+      "status": "FAIL",
+      "report": "business-wallet-header-failed-b8287bc.json",
+      "reason": "Four actual business jobs succeeded but fourth history listing contained four completed labels, triggering the incorrectly global Wallet segmentation bound. Failed run preserved and exact guest closed normally by native UI. Same actual history frame now recognized with Wallet-header gate, old confidence/deadlines unchanged; fresh trial required."
     }
   ]
 }
