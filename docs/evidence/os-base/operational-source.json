@@ -191,6 +191,19 @@
       "financial_journals": 5,
       "postings": 10,
       "qemu": "NOT_RUN"
+    },
+    "qemu_data_abi": {
+      "status": "PASS",
+      "actual_boots": 3,
+      "report": "data-abi-b8287bc.json",
+      "report_sha256": "d9907efe96b3b08306b3f7b531de719b8457e0800402a09537a7665361326ff6",
+      "scope": "host independently verified proper development signature; fixed guest Updater rejected foreign ABI before slot/state writes; retained proof and valid B on next real boot; no data migration or GUI claim"
+    },
+    "D4_startup_update": {
+      "status": "PASS_SCOPED",
+      "report": "startup-update-acceptance-b8287bc.json",
+      "actual_boots": 41,
+      "scope": "QEMU public-development fixture; no migration, hardware trust or full OS acceptance"
     }
   },
   "logs_sha256": {
@@ -352,6 +365,21 @@
       "wallet_replay": "14 Wallet +14 ATM frames; 8 negatives; synchronous host C fixture only",
       "native_report": "ci-a02401b-native.json",
       "native_report_sha256": "bec424d2375853ed4b92d65698b7565654b8a4b631c083dd357794cd07cf94fc",
+      "runtime_image_remains": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9"
+    },
+    {
+      "source_commit": "180904620b66023081a04a7d9fdc7f8ec3dbf00c",
+      "web_run": 34407409574,
+      "native_run": 34407409570,
+      "android_run": 34407409642,
+      "all_status": "PASS",
+      "native_python_executions": 1198,
+      "root_observer_tests": 61,
+      "root_pin_readiness_tests": 11,
+      "root_startup_groups": 8,
+      "wallet_replay": "14 Wallet +14 ATM, eight geometry negatives; host C fixture only",
+      "native_report": "ci-1809046-native.json",
+      "native_report_sha256": "a924a1e18abf1c341376e2a9b5c31893cddd0579bf539a8544a5147b37ee7486",
       "runtime_image_remains": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9"
     }
   ],
