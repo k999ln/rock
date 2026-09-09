@@ -19,7 +19,7 @@ import subprocess
 import tempfile
 import time
 
-from replay_qmp import Monitor, character_keys
+from replay_qmp import Monitor, character_keys, native_install_steps, native_permission_review_steps, native_primary_steps
 
 
 def load_observer():
@@ -119,6 +119,15 @@ class NativeInput:
         self.record('keys', names)
         time.sleep(0.15)
 
+    def perform(self, steps):
+        for step in steps:
+            if set(step) == {'keys'}:
+                self.keys(step['keys'])
+            elif set(step) == {'click'}:
+                self.click(*step['click'])
+            else:
+                raise ValueError('unsupported shared native install step')
+
     def type(self, value):
         for character in value:
             self.keys(character_keys(character))
@@ -199,15 +208,16 @@ def main():
                 native.click(360, 363)
                 time.sleep(0.8)
                 native.capture('01-tool-detail')
-                native.click(360, 793)
+                native.perform(native_install_steps())
                 wait_marker('ROCK_UI_INSTALLED_OBSERVED', 20)
                 time.sleep(3)
+                native.perform(native_permission_review_steps())
                 native.capture('02-installed-permission-review')
-                native.click(360, 835)
+                native.perform(native_primary_steps())
                 wait_marker('ROCK_UI_APPROVED_OBSERVED', 20)
                 time.sleep(3)
                 native.capture('03-approved')
-                native.click(360, 835)
+                native.perform(native_primary_steps())
                 time.sleep(0.8)
                 native.capture('04-editor')
                 native.click(250, 425)

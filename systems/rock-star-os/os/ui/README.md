@@ -244,10 +244,14 @@ the primary button is below the content area.
    approximately **(360, 363)**. For the current
    embedded catalog, this is the checklist tool. Its detail page shows author,
    version, permissions, processing location, destinations and price.
-2. Tap **(360, 793)** to install. After the success banner appears and the live
-   snapshot arrives, the same primary button becomes permission approval near
-   **(360, 835)**. Tap it to approve the displayed installed hash.
-3. After approval and snapshot refresh, tap **(360, 835)** to open the tool.
+2. The current checklist catalog has both v1.0.0 and v2.0.0. Leave the
+   default **v2.0.0** selected, press **PageDown once**, then tap **(360, 793)**
+   to install. The version selector has moved the install button below the
+   initial viewport; tapping that position before scrolling does not install.
+   After the success banner and live installed snapshot arrive, press
+   **PageUp once**. The permission approval button is then near **(360, 758)**.
+   Tap it to approve the displayed installed hash.
+3. After approval and snapshot refresh, tap **(360, 758)** to open the tool.
    On the editor page, click **(250, 425)** and send real evdev keys, or choose
    the explicit sample-input button at **(190, 708)**.
 4. To exercise keyboard entry, use Ctrl+A, type `Native OS`, press Enter, type
@@ -258,6 +262,12 @@ the primary button is below the content area.
 6. Bottom navigation centers are Hub **(114, 913)**, installed tools
    **(278, 913)**, history **(442, 913)** and Wallet **(606, 913)**. History opens
 actual jobs; Wallet initially shows the actual simulator zero balance.
+
+`test_native_replay.py` verifies the public package signatures, loads their
+actual manifests into the C renderer, and runs the shared default replay
+through the install/approval/editor hitboxes. It also rejects the old unscrolled
+install sequence. This is a host geometry test, not guest lifecycle proof; the
+native verifier still requires its independent observer and all nine captures.
 
 The images in `evidence/target-native-0814/` record a real, passing guest run
 before the later registry/search header was added. That older build's first

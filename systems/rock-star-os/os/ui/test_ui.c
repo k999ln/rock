@@ -557,11 +557,13 @@ static void framebuffer_test(void)
 #include "test_activation.inc"
 #include "test_mcp.inc"
 #include "test_lifecycle.inc"
+#include "test_native_replay.inc"
 
 int main(int argc, char **argv)
 {
     struct rock_ui ui;
     char error[256];
+    if (argc == 4 && !strcmp(argv[1], "--native-replay")) return native_replay_geometry(argv[2], argv[3]);
     if (argc != 2 && argc != 3) return 2;
     if (argc == 3) test_image_directory = argv[2];
     require(rock_ui_init(&ui, 720, 960, argv[1], capture, NULL, error, sizeof(error)) == 0, error);

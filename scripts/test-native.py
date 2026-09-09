@@ -106,6 +106,10 @@ def main():
                 run('c-ui-build-tests', ['make', 'rock-ui-test', 'rock-ipc-test'], target)
                 run('c-ui-actions', ['./rock-ui-test', str(NATIVE / 'os/assets/NotoSansCJKjp-Regular.otf')], target,
                     success_marker='PASS native UI actions, request identities')
+                run('c-ui-native-replay', [sys.executable, '-B', '-W', 'error::ResourceWarning',
+                    str(NATIVE / 'os/ui/test_native_replay.py'), '--renderer', str(target / 'rock-ui-test'),
+                    '--font', str(NATIVE / 'os/assets/NotoSansCJKjp-Regular.otf')], target,
+                    success_marker='PASS public signed catalog native replay geometry')
                 run('c-ui-ipc', [sys.executable, '-B', '-W', 'error::ResourceWarning', 'test_ipc.py'], target, unittest=True)
     # Matches os/ui/Makefile's normal host gate. Legacy ATM/wallet/power observer
     # fixtures need separate auth/root setup; see native-os-validation.md.

@@ -37,10 +37,11 @@ rock-ui-test: test_ui.o ui.o device.o ipc.o
 rock-ipc-test: test_ipc.o ipc.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-test_ui.o: test_ui.c ui.h device.h test_remote.inc test_atm.inc test_auth.inc test_service.inc test_activation.inc test_mcp.inc test_lifecycle.inc
+test_ui.o: test_ui.c ui.h device.h test_remote.inc test_atm.inc test_auth.inc test_service.inc test_activation.inc test_mcp.inc test_lifecycle.inc test_native_replay.inc
 test_ipc.o: test_ipc.c ipc.h
 
 test: rock-ui-test rock-ipc-test
 	./rock-ui-test $(FONT)
+	python3 test_native_replay.py --renderer ./rock-ui-test --font $(FONT)
 	python3 test_ipc.py
 	python3 -B test_evidence.py

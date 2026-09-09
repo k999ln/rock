@@ -51,13 +51,28 @@ class Monitor:
         self.connection.close()
 
 
+def native_install_steps():
+    # The two signed catalog versions put install below the initial viewport.
+    return [{"keys": ["pgdn"]}, {"click": [360, 793]}]
+
+
+def native_permission_review_steps():
+    # Installation removes the version selector but preserves detail scroll.
+    return [{"keys": ["pgup"]}]
+
+
+def native_primary_steps():
+    return [{"click": [360, 758]}]
+
+
 def native_sequence():
     return [
         {"capture": "00-hub"},
         {"click": [360, 363]}, {"wait": 0.7}, {"capture": "01-tool-detail"},
-        {"click": [360, 793]}, {"wait": 1.6}, {"capture": "02-install-response"},
-        {"click": [360, 835]}, {"wait": 1.6}, {"capture": "03-approval-response"},
-        {"click": [360, 835]}, {"wait": 0.7}, {"capture": "04-editor"},
+        *native_install_steps(), {"wait": 1.6}, *native_permission_review_steps(),
+        {"capture": "02-install-response"},
+        *native_primary_steps(), {"wait": 1.6}, {"capture": "03-approval-response"},
+        *native_primary_steps(), {"wait": 0.7}, {"capture": "04-editor"},
         {"click": [250, 425]}, {"keys": ["ctrl", "a"]},
         {"type": "Native OS\nLocal resultx"}, {"keys": ["backspace"]},
         {"wait": 1.2},
