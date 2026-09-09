@@ -30,6 +30,7 @@ MODES = ('crash', 'deadline', 'recovery')
 LAUNCHER = '/usr/libexec/rock-sandbox-exec'
 PROOF = Path('/data/hub-fault-proof.json')
 WAIT_ALL = 0x40000000
+MAX_PROCESSES = 4096
 
 
 def require(value, message):
@@ -163,6 +164,52 @@ def platform_identity():
     return value
 
 
+def bounded_pids(directory, limit, deadline):
+    result = set()
+    for path in directory.iterdir():
+        require(time.monotonic() < deadline, 'pre-arm process inventory deadline exceeded')
+        if path.name.isdecimal():
+            result.add(int(path.name))
+            require(len(result) <= limit, 'pre-arm process inventory limit exceeded')
+    return result
+
+
+def process_inventory(parent_pid, thread_ids, *, proc=Path('/proc'), deadline):
+    """Called with all platform threads stopped; never use optional /children.
+
+    Linux reports the parent thread group's ID as stat PPID. Include every
+    verified platform TID as well, and reject zombies, disappearing/unreadable
+    entries and malformed/truncated stat data instead of assuming no child.
+    """
+    pids = bounded_pids(proc, MAX_PROCESSES, deadline)
+    require(parent_pid in pids, 'platform missing from pre-arm process inventory')
+    for pid in sorted(pids):
+        require(time.monotonic() < deadline, 'pre-arm process inventory deadline exceeded')
+        with (proc / str(pid) / 'stat').open('rb') as stream:
+            raw = stream.read(4097)
+        prefix, separator, tail = raw.rpartition(b') ')
+        fields = tail.split()
+        require(len(raw) <= 4096 and prefix.startswith(f'{pid} ('.encode()) and separator and
+                len(fields) >= 20 and fields[1].isdigit() and fields[19].isdigit(),
+                'invalid or truncated pre-arm process stat')
+        require(int(fields[1]) not in thread_ids | {parent_pid},
+                'platform already has a child; no fault is armed')
+    require(time.monotonic() < deadline, 'pre-arm process inventory deadline exceeded')
+    return pids
+
+
+def validate_prearm(value, parent_pid):
+    require(type(value) is dict and
+            value.get('method') == 'all-platform-threads-stopped-and-proc-stat-ppid' and
+            type(value.get('process_count')) is int and 0 < value['process_count'] <= MAX_PROCESSES and
+            type(value.get('existing_children')) is int and value['existing_children'] == 0 and
+            type(value.get('thread_ids')) is list and 0 < len(value['thread_ids']) <= 16 and
+            all(type(tid) is int and tid > 0 for tid in value['thread_ids']) and
+            value['thread_ids'] == sorted(set(value['thread_ids'])) and parent_pid in value['thread_ids'] and
+            type(value.get('elapsed_seconds')) in (int, float) and math.isfinite(value['elapsed_seconds']) and
+            0 <= value['elapsed_seconds'] <= 2, 'complete bounded pre-arm process evidence required')
+
+
 class LauncherTrace:
     """No memory/register writes; only fork/exec event observation and detach."""
     SEIZE, INTERRUPT, GETEVENTMSG, CONT, DETACH = 0x4206, 0x4207, 0x4201, 7, 17
@@ -186,16 +233,39 @@ class LauncherTrace:
         self.parent_fd = os.pidfd_open(self.parent['pid'],0)
         self.verify_parent()
         tasks = Path('/proc')/str(self.parent['pid'])/'task'
-        self.previous = {int(p.name) for p in Path('/proc').iterdir() if p.name.isdecimal()}
-        for path in tasks.iterdir():
-            require(not (path/'children').read_text().strip(), 'platform already has a live child; no fault is armed')
+        started = time.monotonic()
+        deadline = started + 2
+        tids = bounded_pids(tasks, 16, deadline)
+        require(self.parent['pid'] in tids, 'platform main thread missing before observation')
+        for tid in sorted(tids):
             self.verify_parent()
-            tid = int(path.name); thread = identity(tid)
+            thread = identity(tid)
             require(thread['tgid'] == self.parent['pid'] and thread['uid'] == thread['gid'] == [1002]*4 and
                     thread['exe'] == self.parent['exe'] and thread['command'] == self.parent['command'] and thread['tracer_pid'] == 0,
                     'platform thread identity changed before observation')
             self.ptrace(self.SEIZE, tid, self.OPTIONS); self.traced.add(tid)
-        require(0 < len(self.traced) <= 16, 'bounded platform thread inventory required')
+        # Quiesce the complete verified thread set before observing PPIDs. A
+        # fork/clone during attachment is a refusal, not an eligible new job.
+        for tid in sorted(tids):
+            self.ptrace(self.INTERRUPT, tid)
+        while self.stopped != tids:
+            require(time.monotonic() < deadline, 'pre-arm process inventory deadline exceeded')
+            for tid, event, sig in self.events():
+                require(tid in tids and event == 128 and sig == signal.SIGTRAP,
+                        'platform changed while stopping for pre-arm inventory')
+            if self.stopped != tids:
+                time.sleep(.001)
+        require(bounded_pids(tasks, 16, deadline) == tids and self.traced == tids,
+                'platform thread inventory changed before fault arming')
+        self.verify_parent()
+        self.previous = process_inventory(self.parent['pid'], tids, deadline=deadline)
+        self.verify_parent()
+        self.prearm = {'method': 'all-platform-threads-stopped-and-proc-stat-ppid',
+                       'thread_ids': sorted(tids), 'process_count': len(self.previous),
+                       'existing_children': 0, 'elapsed_seconds': time.monotonic() - started}
+        validate_prearm(self.prearm, self.parent['pid'])
+        for tid in sorted(tids):
+            self.resume(tid)
 
     def verify_parent(self):
         require(self.parent_fd is not None and not select.select([self.parent_fd],[],[],0)[0], 'platform exited before capture')
@@ -292,7 +362,8 @@ class LauncherTrace:
                             if (mode == 'crash' and exited) or (mode == 'deadline' and stopped): break
                             require(time.monotonic() < observation_deadline, 'fixed signal had no observable effect')
                             time.sleep(.001)
-                        proof = {'identity': child, 'signal': 9 if mode == 'crash' else 19,
+                        proof = {'identity': child, 'prearm_inventory': self.prearm,
+                                 'signal': 9 if mode == 'crash' else 19,
                                  'exited': exited, 'stopped': stopped, 'elapsed_seconds': time.monotonic()-started}
                         validate_fault(mode, proof)
                         return proof

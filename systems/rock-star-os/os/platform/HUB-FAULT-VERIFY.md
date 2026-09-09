@@ -55,6 +55,15 @@ accepts only a new child whose PID/start time, parent, UID/GID, executable and
 entire argv identify `/usr/libexec/rock-sandbox-exec recipe`. It does not read or
 write process memory/registers and has no configurable target or signal.
 
+Before any owner run request, the tracer temporarily stops every validated
+platform thread and rechecks that the thread set is unchanged. A read-only
+`/proc/<pid>/stat` PPID inventory must prove no existing child, including any
+zombie; it does not depend on the optional kernel checkpoint/restore `children`
+file. The fixed pre-arm bounds are 16 platform threads, 4096 processes, 4096
+bytes per stat and two seconds. A concurrent fork/clone, missing or malformed
+stat, or exceeded bound refuses to arm; traced threads are detached on failure.
+The host requires this pre-arm evidence before accepting either fault result.
+
 The crash case sends SIGKILL through a revalidated pidfd. The deadline case
 hands off a genuine SIGSTOP delivery-stop and detaches every traced platform
 thread so the original Hub's `communicate(timeout=3)` can expire and kill its
@@ -88,11 +97,14 @@ Success is `PASS_SCOPED`, only after all three real boots. Any failure is `FAIL`
 the host may kill only its own newly spawned QEMU to enforce its finite bound,
 which is never counted as a successful shutdown. Whole D3, GUI, hardware,
 stage0/A-B, platform-service crash interruption and real funds are not attested.
+An exact complete `ROCK_HUB_FAULT_FAIL` serial record ends its own QEMU promptly
+as FAIL; the unchanged 240-second boot deadline remains the outer limit.
 
 Host negative guards are run without a VM:
 
 ```sh
 python3 -B -m unittest discover -s tests -p test_os_hub_fault_evidence.py -v
+python3 -B -m unittest discover -s tests -p test_hub_fault_process_inventory.py -v
 ```
 
 The standalone Linux process fixture additionally validated five crashes and

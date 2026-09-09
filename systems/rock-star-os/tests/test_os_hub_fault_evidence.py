@@ -5,7 +5,9 @@ import importlib.util
 import io
 import json
 from pathlib import Path
+import sys
 import tempfile
+import time
 import unittest
 
 SOURCE = Path(__file__).resolve().parents[1] / 'os/platform/hub_fault_fixture.py'
@@ -48,6 +50,24 @@ def durable_fixture():
 
 
 class FaultEvidenceGuards(unittest.TestCase):
+    def test_explicit_live_serial_failure_stops_only_its_new_process_promptly(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            log = Path(temporary) / 'boot.log'
+            started = time.monotonic()
+            with self.assertRaisesRegex(ValueError, 'explicitly reported failure'):
+                host.boot([sys.executable, '-u', '-c',
+                           "import time; print('ROCK_HUB_FAULT_FAIL explicit synthetic failure'); time.sleep(8)"], log)
+            self.assertLess(time.monotonic() - started, 4)
+            self.assertIn('ROCK_HUB_FAULT_FAIL', log.read_text())
+
+    def test_serial_failure_requires_an_exact_complete_record(self):
+        for text in (b'ROCK_HUB_FAULT_FAIL refused\n', b'ROCK_HUB_FAULT_FAIL\r\n'):
+            with self.assertRaises(ValueError):
+                host.reject_serial_failure(text)
+        for text in (b'quoted ROCK_HUB_FAULT_FAIL refused\n', b'ROCK_HUB_FAULT_FAIL refused',
+                     b'ROCK_HUB_FAULT_FAILURE not a marker\n'):
+            host.reject_serial_failure(text)
+
     def test_both_receipts_request_hashes_and_ordered_audits_bind_actual_jobs(self):
         rows,sha=durable_fixture();contract.validate_durable_rows(rows,sha)
         mutations=[lambda r:r['hub_requests'][-1].update(key='unrelated-receipt'),

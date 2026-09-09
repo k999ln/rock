@@ -140,6 +140,7 @@ def validate_result(proof, mode, rows, package_hash):
             'actual job/receipt/audit counts differ')
     if mode != 'recovery':
         fault = proof['fault']; parent = proof['platform_identity']
+        fixture.validate_prearm(fault.get('prearm_inventory'), parent['pid'])
         fixture.validate_launcher(fault['identity'], parent_pid=parent['pid'],
                                   tracer_pid=fault['identity']['tracer_pid'], previous_pids=set())
         require(fault['identity']['tracer_pid'] > 1, 'actual root tracer identity missing')
@@ -160,6 +161,12 @@ def validate_result(proof, mode, rows, package_hash):
                 'same-key conflicting payload was not rejected')
 
 
+def reject_serial_failure(content):
+    lines = content.replace(b'\r', b'').split(b'\n')[:-1]
+    require(not any(line == b'ROCK_HUB_FAULT_FAIL' or line.startswith(b'ROCK_HUB_FAULT_FAIL ') for line in lines),
+            'guest explicitly reported failure; owned QEMU is stopped as FAIL')
+
+
 def boot(command, log):
     process = None; started = time.monotonic()
     try:
@@ -168,6 +175,7 @@ def boot(command, log):
             while process.poll() is None:
                 require(time.monotonic()-started <= TIMEOUT, 'fixed boot deadline exceeded')
                 require(log.stat().st_size <= 4*1024*1024, 'serial evidence exceeds fixed byte limit')
+                reject_serial_failure(log.read_bytes())
                 time.sleep(.1)
             require(process.returncode == 0, 'owned QEMU did not exit normally')
         content = log.read_text(errors='replace')
@@ -220,7 +228,8 @@ def main():
     identities = {name:regular(path) for name,path in inputs.items()}
     before = {name:digest(path) for name,path in inputs.items()}
     report = {'schema':'rock-hub-fault-evidence/1','status':'RUNNING','source_image_sha256':before,'cases':[],
-              'limits':{'boots':3,'per_boot_seconds':TIMEOUT,'capture_seconds':4,'Hub_deadline_seconds':3},
+              'limits':{'boots':3,'per_boot_seconds':TIMEOUT,'capture_seconds':4,'Hub_deadline_seconds':3,
+                        'prearm_seconds':2,'platform_threads':16,'process_inventory':4096,'stat_bytes':4096},
               'scope':{'fixture':'derived rootfs; fixed root tracer and owner API', 'fault_target':'launcher before sandbox execution',
                        'gui':'NOT_RUN','stage0_ab':'NOT_RUN','whole_D3':'INCOMPLETE','real_funds':'NOT_RUN',
                        'platform_service_crash_interruption':'NOT_RUN','network':'none'},
