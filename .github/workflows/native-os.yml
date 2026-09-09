@@ -39,16 +39,21 @@ jobs:
             | grep -Fx '{"text": "hello"}'
       - name: Native source regressions (not OS boot)
         run: python3 scripts/test-native.py --output work/native-tests
-      - name: Root-owned disposable UI observers and readiness protocol
+      - name: Root-owned disposable UI observers, replay geometry and readiness protocol
         run: |
           mkdir -p work/native-root-ui
           sudo "$(command -v python3)" -B -W error::ResourceWarning -m unittest discover -s systems/rock-star-os/os/ui -p 'test_*evidence.py' -v > work/native-root-ui/observers.log 2>&1
           cat work/native-root-ui/observers.log
           if grep -E 'ResourceWarning:|Exception ignored|\.\.\. skipped' work/native-root-ui/observers.log; then exit 1; fi
           cp -R systems/rock-star-os/os/ui work/native-root-ui/ui
-          make -C work/native-root-ui/ui rock-ui-health-test
+          make -C work/native-root-ui/ui rock-ui-health-test rock-ui-test
           sudo work/native-root-ui/ui/rock-ui-health-test > work/native-root-ui/health.log 2>&1
           cat work/native-root-ui/health.log
+          sudo "$(command -v python3)" -B -W error::ResourceWarning systems/rock-star-os/os/ui/test_wallet_replay.py \
+            --renderer work/native-root-ui/ui/rock-ui-test \
+            --font systems/rock-star-os/os/assets/NotoSansCJKjp-Regular.otf > work/native-root-ui/wallet-replay.log 2>&1
+          cat work/native-root-ui/wallet-replay.log
+          if grep -E 'ResourceWarning:|Exception ignored|\.\.\. skipped' work/native-root-ui/wallet-replay.log; then exit 1; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
