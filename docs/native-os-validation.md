@@ -19,6 +19,8 @@
 
 最終native試験はLinux aarch64 / Python3.13.5で05:26:39–05:28:25 UTCに実行し、計1031件のPython試験とC検証が成功。通常gateのskip・未処理ResourceWarningなし。新規CIは同じscriptを使うが、workflowの存在だけをGitHub上での成功とはしない。
 
+最初のGitHub x86_64実行では、実隔離executorが必要とするbubblewrapをCIの依存一覧へ入れておらず、767件中の実Linux隔離1件が `failed` となった。他のsuite・C/UI検証と既存Web/Android CIは成功。テストをskipやmockへ変更せず、workflowへbubblewrapを追加して再実行する。再実行が成功するまでGitHub native CIをPASSとは記録しない。
+
 既存WebにはViteの将来のconfigLoader変更とNode module APIの既知の警告が残る。最初のsandbox内API試行はloopback待受の権限制限で失敗したため、許可されたローカル試験環境で再実行し143 assertionsに成功。その後、統合後のverify全体も終了コード0で確認した。
 
 ## 通常gate外で見つかった残課題
