@@ -1,0 +1,28 @@
+#!/bin/sh
+set -eu
+case "${1:-start}" in
+  start)
+    if [ ! -c /dev/fb0 ]; then
+      echo 'Rock native UI: no framebuffer on this boot configuration'
+      exit 0
+    fi
+    chown 1000:1000 /dev/fb0
+    chmod 0600 /dev/fb0
+    for device in /dev/input/event*; do
+      [ -c "$device" ] || continue
+      chown 1000:1000 "$device"
+      chmod 0600 "$device"
+    done
+    touch /var/log/rock-ui.log
+    chown 1000:1000 /var/log/rock-ui.log
+    chmod 0600 /var/log/rock-ui.log
+    start-stop-daemon --start --background --make-pidfile --pidfile /run/rock-ui.pid --chuid rock:rock --exec /usr/libexec/rock-ui-launch
+    ;;
+  stop)
+    if [ -f /run/rock-ui.pid ]; then
+      start-stop-daemon --stop --pidfile /run/rock-ui.pid --exec /usr/bin/rock-ui || true
+      rm -f /run/rock-ui.pid
+    fi
+    ;;
+  *) exit 2 ;;
+esac

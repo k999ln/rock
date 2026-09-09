@@ -1,0 +1,7 @@
+# Preserve patch context, whitespace test inputs and pinned upstream bytes.
+systems/rock-star-os/experiments/startup-health/changes.patch -whitespace
+systems/rock-star-os/os/benchmark/prepared/20260908-v1/input.txt -whitespace
+systems/rock-star-os/os/buildroot/patches/python3/0011-a0d023fbd23773e24b35d8368789470e22cda5d8.patch -whitespace
+systems/rock-star-os/os/buildroot/patches/python3/0012-31980e84b9a708424a0a1dfecde3fc991e313f89.patch -whitespace
+systems/rock-star-os/os/desktop/browser/novnc/AUTHORS -whitespace
+systems/rock-star-os/os/desktop/browser/novnc/README.md -whitespace

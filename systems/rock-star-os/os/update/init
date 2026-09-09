@@ -1,0 +1,51 @@
+#!/bin/sh
+# QEMU virtual development boot chain. No secure-boot or physical-device claim.
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+export PYTHONDONTWRITEBYTECODE=1
+export TMPDIR=/run/tmp
+set -eu
+recover() {
+  echo "ROCK_AB_RECOVERY boot selector refused all permitted roots" >&2
+  sync
+  poweroff -f
+  while :; do sleep 60; done
+}
+trap recover EXIT
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
+mount -t tmpfs -o mode=0755,nosuid,nodev tmpfs /run
+mkdir -p /run/tmp
+chmod 0700 /run/tmp
+for device in vda vdb vdc; do
+  attempts=0
+  while [ ! -b "/dev/$device" ]; do
+    attempts=$((attempts + 1))
+    [ "$attempts" -lt 30 ] || exit 1
+    sleep 1
+  done
+done
+mount -t ext4 -o rw,nosuid,nodev,noexec /dev/vdb /data
+selector=/usr/lib/rock-update/rock_update.py
+# This fixed shim exists only in initramfs builds with --include-tests.
+[ ! -f /usr/lib/rock-update/fault_cli.py ] || selector=/usr/lib/rock-update/fault_cli.py
+root_device=$(/usr/bin/python3 -B -I "$selector" boot-select)
+case "$root_device" in /dev/vda|/dev/vdc) ;; *) exit 1 ;; esac
+# ro alone still permits ext4 journal replay. The selector first rejects an
+# unclean signed image, so suppress recovery instead of changing signed bytes.
+mount -t ext4 -o ro,noload "$root_device" /newroot
+[ -x /newroot/sbin/init ]
+[ -x /newroot/bin/sh ]
+[ -x /newroot/usr/libexec/rock-boot-watchdog ]
+[ -d /newroot/data ]
+[ -d /newroot/run ]
+mount --move /data /newroot/data
+mount --move /run /newroot/run
+mount --move /dev /newroot/dev
+mount --move /proc /newroot/proc
+mount --move /sys /newroot/sys
+# This child already sees the selected root when PID 1 transfers into it.
+# It also covers init/service hangs that never reach S97's health check.
+chroot /newroot /bin/sh /usr/libexec/rock-boot-watchdog &
+echo "ROCK_AB_SWITCH_ROOT device=$root_device"
+exec switch_root /newroot /sbin/init

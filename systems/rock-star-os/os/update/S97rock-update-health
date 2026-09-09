@@ -1,0 +1,32 @@
+#!/bin/sh
+set -eu
+[ "${1:-start}" = start ] || exit 0
+# The legacy single-root QEMU boot remains supported.
+[ -f /run/rock-boot.json ] || exit 0
+healthy=0
+for attempt in 1 2 3 4 5 6 7 8 9 10; do
+  if [ ! -e /etc/rock-update/health-fail ] &&
+     /usr/libexec/rock-mount-check / - ext4 ro &&
+     /usr/libexec/rock-mount-check /data /dev/vdb ext4 rw,nosuid,nodev,noexec &&
+     /usr/bin/rockctl status &&
+     [ -x /usr/libexec/rock-platform-health ] &&
+     /usr/libexec/rock-platform-health &&
+     [ -x /usr/libexec/rock-authenticator-health ] &&
+     /usr/libexec/rock-authenticator-health; then
+    healthy=1
+    break
+  fi
+  sleep 1
+done
+if [ "$healthy" = 1 ] && /usr/sbin/rock-update mark-good; then
+  echo ROCK_AB_HEALTH_CONFIRMED
+  # Publish only locally verified facts for this stage0 boot. Activation is
+  # optional: absence of live purchase/payment/network never prevents OS boot.
+  if ! /usr/libexec/rock-activation-boot-status; then
+    echo ROCK_ACTIVATION_BOOT_UNAVAILABLE
+  fi
+else
+  echo ROCK_AB_HEALTH_FAILED_REBOOT
+  sync
+  reboot -f
+fi

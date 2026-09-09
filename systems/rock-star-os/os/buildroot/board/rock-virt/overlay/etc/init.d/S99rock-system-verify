@@ -1,0 +1,6 @@
+#!/bin/sh
+[ "${1:-start}" = start ] || exit 0
+case " $(cat /proc/cmdline) " in
+  *" rock.system.verify=1 "*) /usr/bin/python3 -I -B /usr/lib/rock-platform/system-guest-test.py & ;;
+esac
+exit 0

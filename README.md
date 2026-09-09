@@ -1,19 +1,19 @@
 # Rock star OS — 自動化ツールの実行・配布OS
 
-自社・第三者の自動化ツールをストアから導入し、利用者が決めた条件・権限・費用上限で仕事を自動実行するOSを開発します。主軸はAOSPベースのOSとし、仮想Androidでの開発から、適合を確認したPixelの実機試験へ進む設計です。
+標準Hubから自社・第三者のToolを導入し、利用者が許可した条件・権限・費用の範囲で仕事を実行するOSを開発しています。最初の製品端末は**BlackBerryを優先**し、機種・variantはこれから適合確認します。
 
-**現在はOS部品の初期試作段階です。** Java共通実行コア・端末SQLite・AIDL接続・Android診断画面・記事ツールを実装し、2APKのbuild/lintと、仮想Androidでの別アプリ呼出→DB再接続→2工程→最終確認の試験に成功しました。自前OSイメージの起動・公開SDK/第三者ストア・Pixel対応は未検証です。ファンド・利用料・分配試算という事業の方向性は保持し、OSの実行権限や実取引とは分離します。
+**Linux / Buildroot / ARM64 QEMUで起動するnative OSの試作を追加しました。** kernel・root filesystem・専用サービス・C/CairoのHub画面、Tool SDKと署名配布、Wallet・MCPの試作を `systems/rock-star-os/` にまとめています。仮想端末での検証とBlackBerry実機対応は別です。実機、実USB、外部金融provider、実際の送金・ATMは未検証で、OS全体の完成ではありません。
 
-開発の入口: [OS開発設計書](docs/os-development-design.md)。元の設計からの要求追跡、ハードウェアの選定条件、自律実行、Tool API、権限、ストア、署名更新、受入試験、実装チケットをまとめています。
+開発の入口: [現在の製品方針と統合範囲](docs/native-os-integration.md)、[native OSの使い方](systems/rock-star-os/README.md)、[今回の検証結果](docs/native-os-validation.md)。標準Walletの新OS契約は月額**8.88 USD固定**です。既存Webのファンド上限料金は試算として保持し、二重課金や自動的な残高移行は行いません。
 
-コードの現在地と再開手順: [P1実装・検証手順](docs/os-prototype.md)、[実際のTool契約](contracts/README.md)。AOSPへ組み込む設定は `android/Android.bp` と `os/device/`。これらの存在をOS起動済みの証拠にはしません。
+既存のAndroid試作も維持しています。[AOSP基本設計と改訂](docs/os-development-design.md)、[Android P1手順](docs/os-prototype.md)、[記事ToolのAIDL契約](contracts/README.md)を参照してください。Java・SQLite・2APKのbuild/lintと標準Androidの接続試験は過去CIで成功していますが、自前AOSP/Cuttlefish起動とPixel実機は未検証です。`android/` と `os/device/` はこの補助トラックで、Linux版とは別に検証します。
 
-正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。ローカルの `gg` 直下と対応します。製品は「Rock star / avocadomini」の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
+正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。従来の `gg` checkoutに加え、このリポジトリでnative OSも管理します。製品は「Rock star / avocadomini」の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
 
 ## 開発の現在地
 
 <!-- project-status:start -->
-最終更新: 2026-09-07 / Git正本整理とOS-P1試作 / 完了 10/16件
+最終更新: 2026-09-09 / BlackBerry優先・native OSのRock統合 / 完了 11/21件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -26,15 +26,20 @@
 | R07 | 本人限定のSitesへ公開・本番確認 | 停止中: sites/mainに別の仕事API・0002移行・アプリUIが存在。追加機能を保持する統合方針の確認が必要 | [記録](docs/deployment-integration.md) |
 | R08 | 検証結果・公開停止理由と再開設計の文書化 | 完了 | [記録](project.md) · [記録](docs/validation.md) · [記録](docs/deployment-integration.md) |
 | OS01 | 既存設計の要件追跡と自動化OS開発設計 | 完了 | [記録](docs/os-development-design.md) |
-| OS02 | 対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 未着手 | [記録](docs/os-development-design.md) |
-| OS03 | CuttlefishでOS起動と自律実行の最小縦断試作 | 未着手 | [記録](docs/os-development-design.md) |
-| OS04 | Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 | [記録](docs/os-development-design.md) |
-| OS05 | 第三者SDK・審査・インストール・失効の閉鎖テスト | 未着手 | [記録](docs/os-development-design.md) |
+| OS02 | Android/AOSP: 対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 未着手 | [記録](docs/os-development-design.md) |
+| OS03 | Android/AOSP: CuttlefishでOS起動と自律実行の最小縦断試作 | 未着手 | [記録](docs/os-development-design.md) |
+| OS04 | Android/AOSP: Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 | [記録](docs/os-development-design.md) |
+| OS05 | Android/AOSP: 第三者SDK・審査・インストール・失効の閉鎖テスト | 未着手 | [記録](docs/os-development-design.md) |
 | OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 完了 | [記録](docs/os-prototype.md) · [記録](docs/validation.md) · [記録](android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java) |
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
+| N01 | Linux native OS基準版の公開ソース統合・既存資産の回帰検証 | 完了 | [記録](docs/native-os-integration.md) · [記録](docs/native-os-validation.md) |
+| N02 | 起動応答確認と自動再読込WIPの検証・採用判断 | 進行中 | [記録](docs/native-os-integration.md) |
+| N03 | BlackBerryの型番・boot/BSP・更新/復旧の適合確認 | 進行中 | [記録](docs/native-os-integration.md) |
+| N04 | BlackBerry実機だけでHub取得・実行・更新・復旧 | 未着手 | [記録](docs/native-os-integration.md) |
+| N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
 
-次の作業: rockを製品・OS・公開契約の正本、Mr.を非公開運用componentとして維持する。vvvvをarchiveする前にGitHub Actions・deployment・scheduler・local serviceの参照を監査する。OS開発はLinux/x86-64・RAM64GiB・空き400GB・KVMを満たす環境確保から再開する。
+次の作業: nativeの取り込み検証と起動応答WIPの試験を進める。BlackBerryの型番・BSP・復旧条件を確定し、実機だけのHubを検証する。AOSP/Pixelと実金融・実USBは別ゲートのまま保持する。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
@@ -72,7 +77,7 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 
 ## まだ実装していないこと
 
-OSイメージの起動、スマホの画面OFF時の実動作、専用隔離と強制資源制御、公開Tool SDK、第三者パッケージの導入/審査/失効、Pixel書込/復旧、OSの署名OTAは未実装または未検証です。Android試作のソース・ホスト検証とは区別します。以下も現時点では未接続です。
+BlackBerry実機起動・driver・省電力・端末だけのHub操作、実USB、一般公開Store、実providerの本人確認・売上・送金・ATM、本番運営は未検証です。Linux版の署名package・隔離・A/B更新には限定した仮想端末試験があり、その範囲を統合文書に記載しています。自前AOSP/Cuttlefish、Pixel書込/復旧も未検証のままです。以下は既存Web/PC版の未接続事項です。
 
 ココナラでの自動応募・送信・売上取得、外部サービスの自動登録、売上の取得・自動控除、定期決済、資金の受託、収益分配、投資ブースト、端末の電力・通信量の実測、公開サイトへの候補の自動反映。Mr.のココナラ機能のうち、案件条件チェックと納品記録照合を独立して取り込みました。Mr.全体の自律運転は移植していません。
 
@@ -109,13 +114,12 @@ Product Hunt APIは商用利用条件の確認前のため未接続。サービ�
 
 ## 次に追加する順番
 
-1. Linuxビルド環境と、候補PixelのOEM解除・対応ソース/BSP・復旧方法を確認する。開発者モードだけで独自OSが載るとは仮定しない。
-2. Cuttlefish上で自前OSを起動し、2つの記事ツール・永続キュー・権限仲介・成果物・確認Inboxを縦につなぐ。
-3. 適合したPixelで画面OFF、再起動、電池/熱、全停止、署名更新と復旧を検証する。
-4. SDKだけで別作者が作ったツールを、閉鎖ストアから導入・実行・更新・失効できるようにする。
-5. 残るツール、PC接続、許可された外部API、任意同期を拡張する。課金・分配は提供主体と条件を別途確定し、OS化を理由に有効化しない。
+1. native OSの公開ソースと再現手順を維持し、起動応答・自動再読込の未検証変更を試験する。
+2. BlackBerry候補の型番・variant、bootloader、BSP、更新・復旧を確認し、実機へ載せる方式を固定する。
+3. 実機だけでHub検索・取得・導入・実行・更新・復旧を通し、第三者SDKの体験を検証する。
+4. 実USB、許可した外部MCP/AI、金融provider sandbox・ToB精算、運営配信を順次接続する。
 
-初期APKでの試験は補助であり、それだけをOS完成とは扱いません。既存のSites公開停止はOSの設計・独立した仮想OS開発を妨げません。端末購入・初期化・書込・サービス契約は、この設計書作成では実施していません。
+AOSP/Pixelは比較・移植候補として保持します。GitHubへの追加と本番サイト公開は別作業です。既存Sitesの公開停止条件は維持しています。
 
 詳細は `docs/product.md`、`docs/architecture.md`、`docs/research.md`、`docs/validation.md` を参照。
 

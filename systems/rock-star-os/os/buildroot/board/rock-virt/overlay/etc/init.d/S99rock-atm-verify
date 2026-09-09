@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+case "${1:-}" in start) ;; *) exit 0;; esac
+case " $(cat /proc/cmdline) " in *" rock.atm.verify=1 "*) ;; *) exit 0;; esac
+/usr/bin/python3 -I -B /usr/lib/rock-platform/atm-guest-test.py >>/var/log/rock-atm-verify.log 2>&1 &
+exit 0

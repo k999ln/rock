@@ -1,23 +1,247 @@
 {
-  "updatedAt": "2026-09-07",
-  "milestone": "Git正本整理とOS-P1試作",
-  "nextAction": "rockを製品・OS・公開契約の正本、Mr.を非公開運用componentとして維持する。vvvvをarchiveする前にGitHub Actions・deployment・scheduler・local serviceの参照を監査する。OS開発はLinux/x86-64・RAM64GiB・空き400GB・KVMを満たす環境確保から再開する。",
+  "updatedAt": "2026-09-09",
+  "milestone": "BlackBerry優先・native OSのRock統合",
+  "nextAction": "nativeの取り込み検証と起動応答WIPの試験を進める。BlackBerryの型番・BSP・復旧条件を確定し、実機だけのHubを検証する。AOSP/Pixelと実金融・実USBは別ゲートのまま保持する。",
   "tasks": [
-    {"id":"R01","title":"4参照元の採用判断と事業方針の固定","status":"done","dependsOn":[],"evidence":["docs/reference-repositories.md"]},
-    {"id":"R02","title":"ggをGitHub rockへ紐付け、既存変更と履歴を保全","status":"done","dependsOn":[],"evidence":["project.md"]},
-    {"id":"R03","title":"仕事の作成・実行・確認・再開をAPIと画面で接続","status":"done","dependsOn":["R01"],"evidence":["tests/workflow.test.mjs","scripts/check-work-api.mjs"]},
-    {"id":"R04","title":"README・設計進捗の同期とCI検証","status":"done","dependsOn":[],"evidence":["scripts/project-status.mjs",".github/workflows/ci.yml"]},
-    {"id":"R05","title":"回帰検証・移行確認・GitHub保存","status":"done","dependsOn":["R02","R03","R04"],"evidence":["docs/validation.md"]},
-    {"id":"R06","title":"ブラウザで仕事の一連の操作を確認","status":"done","dependsOn":["R05"],"evidence":["docs/validation.md"]},
-    {"id":"R07","title":"本人限定のSitesへ公開・本番確認","status":"blocked","reason":"sites/mainに別の仕事API・0002移行・アプリUIが存在。追加機能を保持する統合方針の確認が必要","dependsOn":["R06"],"evidence":["docs/deployment-integration.md"]},
-    {"id":"R08","title":"検証結果・公開停止理由と再開設計の文書化","status":"done","dependsOn":["R06"],"evidence":["project.md","docs/validation.md","docs/deployment-integration.md"]},
-    {"id":"OS01","title":"既存設計の要件追跡と自動化OS開発設計","status":"done","dependsOn":["R01","R03"],"evidence":["docs/os-development-design.md"]},
-    {"id":"OS02","title":"対象Pixel・ソース/BSP・Linuxビルド環境の適合確認","status":"planned","dependsOn":["OS01"],"evidence":["docs/os-development-design.md"]},
-    {"id":"OS03","title":"CuttlefishでOS起動と自律実行の最小縦断試作","status":"planned","dependsOn":["OS02"],"evidence":["docs/os-development-design.md"]},
-    {"id":"OS04","title":"Pixel実機で復旧・省電力・再起動・署名更新を検証","status":"planned","dependsOn":["OS03"],"evidence":["docs/os-development-design.md"]},
-    {"id":"OS05","title":"第三者SDK・審査・インストール・失効の閉鎖テスト","status":"planned","dependsOn":["OS04"],"evidence":["docs/os-development-design.md"]},
-    {"id":"OS06","title":"OS共通実行コア・端末DB・Android統合の検証可能な試作","status":"done","dependsOn":["OS01"],"evidence":["docs/os-prototype.md","docs/validation.md","android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java"]},
-    {"id":"G01","title":"GitHubリポジトリの役割・重複監査と正本境界の固定","status":"done","dependsOn":["R02"],"evidence":["docs/git-consolidation.md","data/repository-map.json","scripts/check-repository-map.mjs","docs/validation.md"]},
-    {"id":"G02","title":"vvvvの稼働参照監査と安全なarchive判定","status":"planned","dependsOn":["G01"],"evidence":["docs/git-consolidation.md"]}
+    {
+      "id": "R01",
+      "title": "4参照元の採用判断と事業方針の固定",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "docs/reference-repositories.md"
+      ]
+    },
+    {
+      "id": "R02",
+      "title": "ggをGitHub rockへ紐付け、既存変更と履歴を保全",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "project.md"
+      ]
+    },
+    {
+      "id": "R03",
+      "title": "仕事の作成・実行・確認・再開をAPIと画面で接続",
+      "status": "done",
+      "dependsOn": [
+        "R01"
+      ],
+      "evidence": [
+        "tests/workflow.test.mjs",
+        "scripts/check-work-api.mjs"
+      ]
+    },
+    {
+      "id": "R04",
+      "title": "README・設計進捗の同期とCI検証",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "scripts/project-status.mjs",
+        ".github/workflows/ci.yml"
+      ]
+    },
+    {
+      "id": "R05",
+      "title": "回帰検証・移行確認・GitHub保存",
+      "status": "done",
+      "dependsOn": [
+        "R02",
+        "R03",
+        "R04"
+      ],
+      "evidence": [
+        "docs/validation.md"
+      ]
+    },
+    {
+      "id": "R06",
+      "title": "ブラウザで仕事の一連の操作を確認",
+      "status": "done",
+      "dependsOn": [
+        "R05"
+      ],
+      "evidence": [
+        "docs/validation.md"
+      ]
+    },
+    {
+      "id": "R07",
+      "title": "本人限定のSitesへ公開・本番確認",
+      "status": "blocked",
+      "reason": "sites/mainに別の仕事API・0002移行・アプリUIが存在。追加機能を保持する統合方針の確認が必要",
+      "dependsOn": [
+        "R06"
+      ],
+      "evidence": [
+        "docs/deployment-integration.md"
+      ]
+    },
+    {
+      "id": "R08",
+      "title": "検証結果・公開停止理由と再開設計の文書化",
+      "status": "done",
+      "dependsOn": [
+        "R06"
+      ],
+      "evidence": [
+        "project.md",
+        "docs/validation.md",
+        "docs/deployment-integration.md"
+      ]
+    },
+    {
+      "id": "OS01",
+      "title": "既存設計の要件追跡と自動化OS開発設計",
+      "status": "done",
+      "dependsOn": [
+        "R01",
+        "R03"
+      ],
+      "evidence": [
+        "docs/os-development-design.md"
+      ]
+    },
+    {
+      "id": "OS02",
+      "title": "Android/AOSP: 対象Pixel・ソース/BSP・Linuxビルド環境の適合確認",
+      "status": "planned",
+      "dependsOn": [
+        "OS01"
+      ],
+      "evidence": [
+        "docs/os-development-design.md"
+      ]
+    },
+    {
+      "id": "OS03",
+      "title": "Android/AOSP: CuttlefishでOS起動と自律実行の最小縦断試作",
+      "status": "planned",
+      "dependsOn": [
+        "OS02"
+      ],
+      "evidence": [
+        "docs/os-development-design.md"
+      ]
+    },
+    {
+      "id": "OS04",
+      "title": "Android/AOSP: Pixel実機で復旧・省電力・再起動・署名更新を検証",
+      "status": "planned",
+      "dependsOn": [
+        "OS03"
+      ],
+      "evidence": [
+        "docs/os-development-design.md"
+      ]
+    },
+    {
+      "id": "OS05",
+      "title": "Android/AOSP: 第三者SDK・審査・インストール・失効の閉鎖テスト",
+      "status": "planned",
+      "dependsOn": [
+        "OS04"
+      ],
+      "evidence": [
+        "docs/os-development-design.md"
+      ]
+    },
+    {
+      "id": "OS06",
+      "title": "OS共通実行コア・端末DB・Android統合の検証可能な試作",
+      "status": "done",
+      "dependsOn": [
+        "OS01"
+      ],
+      "evidence": [
+        "docs/os-prototype.md",
+        "docs/validation.md",
+        "android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java"
+      ]
+    },
+    {
+      "id": "G01",
+      "title": "GitHubリポジトリの役割・重複監査と正本境界の固定",
+      "status": "done",
+      "dependsOn": [
+        "R02"
+      ],
+      "evidence": [
+        "docs/git-consolidation.md",
+        "data/repository-map.json",
+        "scripts/check-repository-map.mjs",
+        "docs/validation.md"
+      ]
+    },
+    {
+      "id": "G02",
+      "title": "vvvvの稼働参照監査と安全なarchive判定",
+      "status": "planned",
+      "dependsOn": [
+        "G01"
+      ],
+      "evidence": [
+        "docs/git-consolidation.md"
+      ]
+    },
+    {
+      "id": "N01",
+      "title": "Linux native OS基準版の公開ソース統合・既存資産の回帰検証",
+      "status": "done",
+      "dependsOn": [
+        "G01"
+      ],
+      "evidence": [
+        "docs/native-os-integration.md",
+        "docs/native-os-validation.md"
+      ]
+    },
+    {
+      "id": "N02",
+      "title": "起動応答確認と自動再読込WIPの検証・採用判断",
+      "status": "in_progress",
+      "dependsOn": [
+        "N01"
+      ],
+      "evidence": [
+        "docs/native-os-integration.md"
+      ]
+    },
+    {
+      "id": "N03",
+      "title": "BlackBerryの型番・boot/BSP・更新/復旧の適合確認",
+      "status": "in_progress",
+      "dependsOn": [
+        "OS01"
+      ],
+      "evidence": [
+        "docs/native-os-integration.md"
+      ]
+    },
+    {
+      "id": "N04",
+      "title": "BlackBerry実機だけでHub取得・実行・更新・復旧",
+      "status": "planned",
+      "dependsOn": [
+        "N01",
+        "N03"
+      ],
+      "evidence": [
+        "docs/native-os-integration.md"
+      ]
+    },
+    {
+      "id": "N05",
+      "title": "実USB・外部MCP/AI・金融provider・ToB精算と運営pilot",
+      "status": "planned",
+      "dependsOn": [
+        "N01"
+      ],
+      "evidence": [
+        "docs/native-os-integration.md"
+      ]
+    }
   ]
 }

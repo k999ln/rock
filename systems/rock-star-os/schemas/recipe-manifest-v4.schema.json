@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://blackberryrock.local/schemas/recipe-manifest-v4.schema.json",
+  "title": "Rock star os signed recipe manifest schema 4",
+  "description": "Structural authoring schema. Package signature, bounded recipe and current OS/runtime admission are checked separately by blackberryrock.packages.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "id", "name", "description", "publisher", "version",
+    "kind", "runtime", "compatibility", "execution_targets", "permissions",
+    "data", "resources", "price", "source", "recipe_sha256", "lifecycle"
+  ],
+  "$defs": {
+    "numericSemver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "minimumVersion": {
+      "allOf": [{"$ref": "#/$defs/numericSemver"}],
+      "maxLength": 64
+    }
+  },
+  "properties": {
+    "schema_version": {"const": 4},
+    "id": {"type": "string", "maxLength": 100, "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$"},
+    "name": {"type": "string", "minLength": 1, "maxLength": 80, "pattern": "\\S"},
+    "description": {"type": "string", "minLength": 1, "maxLength": 1000, "pattern": "\\S"},
+    "publisher": {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "\\S"},
+    "version": {"$ref": "#/$defs/numericSemver"},
+    "kind": {"enum": ["Tool", "Workflow"]},
+    "runtime": {"const": "rock-recipe/1"},
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["os", "min_os_version", "min_runtime_version"],
+      "properties": {
+        "os": {"const": "rock-star-os"},
+        "min_os_version": {"$ref": "#/$defs/minimumVersion"},
+        "min_runtime_version": {"$ref": "#/$defs/minimumVersion"}
+      }
+    },
+    "execution_targets": {
+      "type": "array", "minItems": 1, "maxItems": 3, "uniqueItems": true,
+      "items": {"enum": ["device_local", "cloud", "pc_usb"]}
+    },
+    "permissions": {
+      "oneOf": [
+        {"const": ["text.input", "text.output"]},
+        {"const": ["text.input", "text.output", "execution.remote"]}
+      ]
+    },
+    "data": {
+      "type": "object", "additionalProperties": false,
+      "required": ["input", "destinations"],
+      "properties": {
+        "input": {"const": "user_supplied_text"},
+        "destinations": {
+          "type": "array", "maxItems": 2, "uniqueItems": true,
+          "items": {"enum": ["cloud", "pc_usb"]}
+        }
+      }
+    },
+    "resources": {
+      "const": {"input_bytes": 65536, "output_bytes": 131072, "timeout_seconds": 3, "max_steps": 16}
+    },
+    "price": {"const": {"currency": "USD", "amount_minor": 0, "unit": "run"}},
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["repository", "commit", "license"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1, "maxLength": 300},
+        "commit": {"type": "string", "pattern": "^(local-development|[0-9a-f]{40})$"},
+        "license": {"type": "string", "minLength": 1, "maxLength": 300}
+      }
+    },
+    "recipe_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "lifecycle": {
+      "const": {"updates": "explicit_approval", "rollback": "cached_signed_version", "uninstall": "retain_receipts"}
+    },
+    "remote": {
+      "const": {"consent": "per_job_input_sha256", "retention": "job_receipts", "protocol": "rock-runner/1"}
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "execution_targets": {"const": ["device_local"]},
+        "permissions": {"const": ["text.input", "text.output"]},
+        "data": {"const": {"input": "user_supplied_text", "destinations": []}}
+      },
+      "not": {"required": ["remote"]}
+    },
+    {
+      "required": ["remote"],
+      "properties": {
+        "execution_targets": {"contains": {"enum": ["cloud", "pc_usb"]}},
+        "permissions": {"const": ["text.input", "text.output", "execution.remote"]}
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "execution_targets": {"enum": [["cloud"], ["device_local", "cloud"], ["cloud", "device_local"]]},
+            "data": {"const": {"input": "user_supplied_text", "destinations": ["cloud"]}}
+          }
+        },
+        {
+          "properties": {
+            "execution_targets": {"enum": [["pc_usb"], ["device_local", "pc_usb"], ["pc_usb", "device_local"]]},
+            "data": {"const": {"input": "user_supplied_text", "destinations": ["pc_usb"]}}
+          }
+        },
+        {
+          "properties": {
+            "execution_targets": {"enum": [["cloud", "pc_usb"], ["device_local", "cloud", "pc_usb"], ["cloud", "device_local", "pc_usb"], ["cloud", "pc_usb", "device_local"]]},
+            "data": {"const": {"input": "user_supplied_text", "destinations": ["cloud", "pc_usb"]}}
+          }
+        },
+        {
+          "properties": {
+            "execution_targets": {"enum": [["pc_usb", "cloud"], ["device_local", "pc_usb", "cloud"], ["pc_usb", "device_local", "cloud"], ["pc_usb", "cloud", "device_local"]]},
+            "data": {"const": {"input": "user_supplied_text", "destinations": ["pc_usb", "cloud"]}}
+          }
+        }
+      ]
+    }
+  ]
+}

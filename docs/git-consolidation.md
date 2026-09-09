@@ -1,6 +1,6 @@
 # Gitプロジェクト統合方針
 
-整理日: 2026-09-07。機械可読の正本は [`data/repository-map.json`](../data/repository-map.json) です。
+整理日: 2026-09-07。native OS追加: 2026-09-09。機械可読の正本は [`data/repository-map.json`](../data/repository-map.json) です。
 
 ## 結論
 
@@ -10,12 +10,16 @@ Gitは公開範囲が異なるため、物理的な1 repositoryにはしませ�
 
 | repository | 位置付け | 新規開発 | 内容 |
 | --- | --- | --- | --- |
-| `k999ln/rock` | 製品正本・公開 | 可 | 製品方針、OS/AOSP、Android SDK、公開Web、Work/Fund、公開契約とfixture |
+| `k999ln/rock` | 製品正本・公開 | 可 | 製品方針、Linux native OS、OS/AOSP、Android SDK、公開Web、Work/Fund、公開契約とfixture |
 | `k999ln/Mr.` | 非公開の運用component | 可 | Telegram、クラウド、provider接続、運用receipt、private deployment |
 | `k999ln/vvvv` | 旧履歴 | 不可 | 新しい修正先・CI・deploy先にしない。稼働参照の監査後にarchive候補 |
 | `k999ln/mr-bot-workrooms` | 非公開の作業成果物 | 不可 | 製品sourceや仕様の正本にしない |
 
 `Mr.`内のTelegramやprovider接続を`rock`へコピーしないのは未統合だからではなく、顧客・運用・credential境界を公開Gitから分離するためです。逆に、OS契約や製品方針を`Mr.`で別仕様として増やしません。
+
+## Linux開発成果の追加
+
+`systems/rock-star-os/` に独立開発の封印済みソースから公開可能な実装を取り込む。以後この領域の変更先もrockとする。取得前の開発履歴・個別環境は移管しない。既存 `os/` はAOSP設定のまま保持する。出所と変更理由はIMPORT-MANIFESTと[統合記録](native-os-integration.md)で追跡する。Mr.の非公開全tree・調査台帳・運用データを公開Gitへ入れない。既存の4件の固定vendorは変更しない。
 
 ## 重複監査
 

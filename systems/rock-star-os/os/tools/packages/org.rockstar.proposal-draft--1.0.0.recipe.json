@@ -1,0 +1,51 @@
+{
+  "manifest": {
+    "schema_version": 2,
+    "id": "org.rockstar.proposal-draft",
+    "name": "提案下書き",
+    "description": "入力した募集条件から提案文の下書きと確認項目を作ります。JSONでtitle、requirements、deliverablesを入力してください。送信や売上計上は行いません。",
+    "publisher": "org.rockstar.development",
+    "version": "1.0.0",
+    "kind": "Tool",
+    "runtime": "rock-recipe/1",
+    "execution_targets": [
+      "device_local"
+    ],
+    "permissions": [
+      "text.input",
+      "text.output"
+    ],
+    "data": {
+      "input": "user_supplied_text",
+      "destinations": []
+    },
+    "resources": {
+      "input_bytes": 65536,
+      "output_bytes": 131072,
+      "timeout_seconds": 3,
+      "max_steps": 16
+    },
+    "price": {
+      "currency": "USD",
+      "amount_minor": 0,
+      "unit": "run"
+    },
+    "source": {
+      "repository": "local-development",
+      "commit": "local-development",
+      "license": "LicenseRef-Development-Only"
+    },
+    "recipe_sha256": "229cf1e1232b275ae971fa08dcca8dc63af8d86dc2d7e08a819fe9081641c05e",
+    "lifecycle": {
+      "updates": "explicit_approval",
+      "rollback": "cached_signed_version",
+      "uninstall": "retain_receipts"
+    }
+  },
+  "recipe": [
+    {
+      "op": "proposal_draft",
+      "format": "standard"
+    }
+  ]
+}

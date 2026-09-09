@@ -1,0 +1,5 @@
+rock 1000 rock 1000 ! /data/rock /bin/false - Rock OS service
+rock-tool 1001 rock-tool 1001 ! /nonexistent /bin/false - Untrusted tool test identity
+rock-platform 1002 rock-platform 1002 ! /data/platform /bin/false rock Native Hub platform
+rock-wallet 1003 rock-wallet 1003 ! /data/wallet /bin/false rock-platform Isolated Wallet simulator
+rock-authenticator 1004 rock-authenticator 1004 ! /data/authenticator /bin/false rock Public software test authenticator

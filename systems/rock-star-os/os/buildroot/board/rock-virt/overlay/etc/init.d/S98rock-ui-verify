@@ -1,0 +1,14 @@
+#!/bin/sh
+set -eu
+[ "${1:-start}" = start ] || exit 0
+case " $(cat /proc/cmdline) " in
+  *' rock.ui.remote.verify=1 '*)
+    /usr/bin/python3 -I -B /usr/libexec/rock-ui-remote-evidence.py &
+    exit 0
+    ;;
+  *' rock.ui.verify=1 '*) ;;
+  *) exit 0 ;;
+esac
+# This verification-only observer reads the native GUI's real receipts.
+# Normal boots never invoke it; it cannot install, approve, or run a Tool.
+/usr/bin/python3 -I -B /usr/libexec/rock-ui-evidence.py &

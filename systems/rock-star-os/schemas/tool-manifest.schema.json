@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://blackberryrock.local/schemas/tool-manifest.schema.json",
+  "title": "blackberryrock ToolManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "name",
+    "version",
+    "description",
+    "source",
+    "runtime",
+    "entrypoint",
+    "permissions",
+    "resources",
+    "confirmation"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)+$"
+    },
+    "name": {"type": "string", "minLength": 1, "maxLength": 100},
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:[-+][0-9A-Za-z.-]+)?$"
+    },
+    "description": {"type": "string", "minLength": 1, "maxLength": 500},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "license"],
+      "properties": {
+        "type": {"enum": ["local", "github"]},
+        "url": {"type": "string", "pattern": "^https://github\\.com/"},
+        "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "license": {"type": "string", "minLength": 1},
+        "notice": {"type": "string"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"type": {"const": "github"}}},
+          "then": {"required": ["url", "commit"]}
+        }
+      ]
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {"enum": ["python", "wasm", "android", "container"]},
+        "version": {"type": "string"}
+      }
+    },
+    "entrypoint": {"type": "string", "minLength": 1},
+    "permissions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "anyOf": [
+          {"enum": ["files.read:selected", "files.write:workspace", "clipboard.write", "notifications.create"]},
+          {"pattern": "^network:https:[a-z0-9.-]+$"}
+        ]
+      }
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timeout_seconds", "memory_mb", "disk_mb"],
+      "properties": {
+        "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 86400},
+        "memory_mb": {"type": "integer", "minimum": 16, "maximum": 32768},
+        "disk_mb": {"type": "integer", "minimum": 1, "maximum": 102400}
+      }
+    },
+    "confirmation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["external_side_effects"],
+      "properties": {
+        "external_side_effects": {"enum": ["always", "never"]}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256"],
+      "properties": {
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  }
+}

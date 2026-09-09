@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+[ "${1:-start}" = start ] || exit 0
+case " $(cat /proc/cmdline) " in
+  *' rock.ui.runner.verify=1 '*) ;;
+  *) exit 0 ;;
+esac
+/usr/bin/python3 -I -B /usr/libexec/rock-ui-runner-evidence.py &
+exit 0

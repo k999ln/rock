@@ -1,0 +1,50 @@
+{
+  "manifest": {
+    "schema_version": 2,
+    "id": "org.rockstar.utf8-sha256",
+    "name": "入力テキストの SHA-256",
+    "description": "入力したテキストをUTF-8にしたバイト列のSHA-256とサイズを計算します。改行も対象です。ファイル全体の検査や読み取りは行いません。",
+    "publisher": "org.rockstar.development",
+    "version": "1.0.0",
+    "kind": "Tool",
+    "runtime": "rock-recipe/1",
+    "execution_targets": [
+      "device_local"
+    ],
+    "permissions": [
+      "text.input",
+      "text.output"
+    ],
+    "data": {
+      "input": "user_supplied_text",
+      "destinations": []
+    },
+    "resources": {
+      "input_bytes": 65536,
+      "output_bytes": 131072,
+      "timeout_seconds": 3,
+      "max_steps": 16
+    },
+    "price": {
+      "currency": "USD",
+      "amount_minor": 0,
+      "unit": "run"
+    },
+    "source": {
+      "repository": "local-development",
+      "commit": "local-development",
+      "license": "LicenseRef-Development-Only"
+    },
+    "recipe_sha256": "f417a22eff6a7e090b15c42d32cf92c0b9851c7f320c5aedfbb1c658bd064443",
+    "lifecycle": {
+      "updates": "explicit_approval",
+      "rollback": "cached_signed_version",
+      "uninstall": "retain_receipts"
+    }
+  },
+  "recipe": [
+    {
+      "op": "utf8_sha256"
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "status": "UNVERIFIED_NOT_APPLIED",
+  "base_source_archive_sha256": "5187b50e558e5b121a1b7772cd4dc7fcc2ddb4b78382c7ad49a149930bca0ab3",
+  "patch_sha256": "15a006f38260f0d22e7e66c8ce47b64fefa7b276bd45a8e87fafc103886d0106",
+  "files": [
+    {
+      "path": "os/buildroot/board/rock-virt/overlay/etc/init.d/S60rockui",
+      "base_sha256": "00ba9f203ac5fcd6d3916c84e094c5a28c01da6b5acb26c5e098d09285a1c8f8",
+      "wip_sha256": "87154a6c68abaf1455ccf7cd34431439d828cc13ca4f31ddb94ac998e325587a",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/desktop/guest.py",
+      "base_sha256": "b359ff002729f88a3999aa95db8456c09f8bbea101a1a08b05482db2772329f6",
+      "wip_sha256": "37124a6347052e0d7b5a007555a8a1057fdb8f713b3f0ec15d28355325acb0ee",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/operations/verify_native.py",
+      "base_sha256": "bb373b27b3f74b517997cfb470dacf4e5fe452e024ffdb04645aa2377b656f4a",
+      "wip_sha256": "31ed7ec078d3474c72f9f29bbd9a060b8d4c84ff3909af59f6c560f2d4d50db2",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/ui/Makefile",
+      "base_sha256": "af4dd33e1d3a0bb2866c46aeff2f68b9298ced51042909cf1664e2d59271cb3e",
+      "wip_sha256": "677959291c6da34fa0431355ed8cae8e78d2ba520be860de8037b9207296fba4",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/ui/activation-ui.inc",
+      "base_sha256": "5f6d39b85f40837febf7abec0bc66a89c7de395878504ad42bd3e0bc65fc9670",
+      "wip_sha256": "656d3ac0b8731842e8ec70e81d754992cc0524877bb4e95795ca620e980ab968",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/ui/health.c",
+      "base_sha256": null,
+      "wip_sha256": "d05cd0ba2ee1c00d3c41b534ecad4dee8ed22a08e78a7b3ef12760740079c4cc",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/ui/health.h",
+      "base_sha256": null,
+      "wip_sha256": "427c33937189421c474c6dd6860ed47862165b6ee1f90c5fbdb6b7000a805dac",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/ui/main.c",
+      "base_sha256": "58e9904971115a702e7fa78f9a98ee9752d42e95b0e97b760064cf8eea0ad209",
+      "wip_sha256": "534568c1251e1d904e3df69612470413e5cae379502ed85618c29adb67f3b52a",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/ui/test_activation.inc",
+      "base_sha256": "dbe51f498164411a165bd27f0da68fd71c2d4b61131de01fcef64ca0e4d983c9",
+      "wip_sha256": "dda5f44c4c577fd5c17e137e3f036f8f4245bbc9eecdcf3829b0e6e2963476ff",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/ui/test_health.c",
+      "base_sha256": null,
+      "wip_sha256": "585f7ab80010a090dead5ae3594bec88b881c7ed76d5461f05865105aa07f488",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/ui/test_ui.c",
+      "base_sha256": "0bb112baacdcfe219609e6783b440196c5043ba48125f5d682cadae5bcf9f2c6",
+      "wip_sha256": "e9ffb9b3d76ad3a3092de629aceac13ddb08302cbc725081a9c2307ee25eba1d",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/ui/ui.c",
+      "base_sha256": "363e2da021a9e8b3565a199fed198bc6319eff812c671667dfb04d496881639d",
+      "wip_sha256": "52eb954fe0e72cbae974540526242c2a5384c77d4092d643d83b392d3d2bc1a7",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/ui/ui.h",
+      "base_sha256": "1a6bbc5e41e6d4a5aef1c9ca9d7dfd98a3a54b9f990a9cc82fd4f96d4fb04235",
+      "wip_sha256": "6208a0752e51f1bb7e13bed72d20a09eb89cf40430308edae67cde418f78ea56",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/update/S97rock-update-health",
+      "base_sha256": "5798915f9fdf7a3a78d837e64071cd94fe553643a934e2e6b400d793c24fecde",
+      "wip_sha256": "9b1e47650b210bd2bdf1c43ee2533390c6c5224b271d61ecef2443756c9d1692",
+      "mode": "0o755"
+    },
+    {
+      "path": "os/update/install-target.sh",
+      "base_sha256": "4e00889e86c610a37472f8e47166a39f6c75a749cdc3c552ce1acc23230bcbb0",
+      "wip_sha256": "227af2e232192b9f23e97d34d8b0eab4702462e1eb91b10fc9ec5974b8c60b0c",
+      "mode": "0o755"
+    },
+    {
+      "path": "os/update/rock-ui-health",
+      "base_sha256": null,
+      "wip_sha256": "89daae633f51f26540206cdc2a3c29674e766b6f07945db9435db033f11e93c7",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/update/ui_health.py",
+      "base_sha256": null,
+      "wip_sha256": "de424731d34acdb6bedf990ed82d7b5dc54672899848e8245cc9bb03a5427a77",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/update/verify-auth-health.py",
+      "base_sha256": "4f1e62241f3155a084afa9e785732898cc3689ccb0b2cc64d5ee8a15c525dee3",
+      "wip_sha256": "3b591e3a30b3175bb18346ce30056faab7be3c5f51e96ab433871a858f987a51",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/update/verify-faults.py",
+      "base_sha256": "858a929240071332e416ab4931cde1e35a8c366bc393c9189107244e74e70dd8",
+      "wip_sha256": "adbd2c83126fbbb1d35547363617e987c578a8f8911576321ef47ac06e2730b9",
+      "mode": "0o644"
+    },
+    {
+      "path": "os/update/verify-qemu.py",
+      "base_sha256": "08f787b21e78565c6aff6fb53945be607cdebf8dc22c6a1dbfba505b3216e0d0",
+      "wip_sha256": "1b5e806de8cc42e6743aead744b234531a735b4c97c6bcd9d05af6e07bf1be8a",
+      "mode": "0o755"
+    },
+    {
+      "path": "os/update/verify_purchaser.py",
+      "base_sha256": "f8d5fa9a1b641f8630b17575c444079548b99c404dc8474fc6e7b98794c07ce0",
+      "wip_sha256": "09c24de503d2286aebddcf03202196cb3bfc0f485ea4d7041ac1f75dae530855",
+      "mode": "0o644"
+    }
+  ],
+  "missing_test_file": "tests/test_ui_startup_health.py has not been created"
+}

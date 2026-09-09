@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "created_at_utc": "2026-09-08T11:10:32.755230+00:00",
+  "status": "READY_FOR_ROOT_INTEGRATION_SIMULATOR_ONLY",
+  "runtime_files": [
+    "os/atm/__init__.py",
+    "os/atm/simulator.py"
+  ],
+  "module_import": "from atm import CardlessATMSimulator, TrustedWalletContext, ATMActor, PUBLIC_ATM_FIXTURES",
+  "runtime_dependency": "Existing blackberryrock.wallet.Wallet and Python standard library; same Wallet database, no separate ledger.",
+  "constructor": "CardlessATMSimulator(wallet, *, clock=time.time, max_credentials=10000)",
+  "storage": {
+    "parent": "daemon-owned directory with no group/other permissions (0700)",
+    "database": "owned regular SQLite file, tightened to 0600; existing WAL/SHM tightened too",
+    "tables_added": [
+      "atm_wallet_binding",
+      "atm_credentials"
+    ],
+    "tables_reused": [
+      "wallet_withdrawals",
+      "wallet_journals",
+      "wallet_postings",
+      "wallet_idempotency"
+    ],
+    "transaction": "Existing Wallet._transaction BEGIN IMMEDIATE with credential, journal, withdrawal and receipt in one commit",
+    "raw_code": "Only private atm.issue wallet_idempotency result_json; naturally may persist in WAL/backups",
+    "encrypted_or_deleted_receipts": "NOT_IMPLEMENTED"
+  },
+  "trusted_owner_boundary": {
+    "constructor": "TrustedWalletContext(owner_id, device_id, eligible_for_new_withdrawals)",
+    "source": "Authenticated protected membership only, passed outside request JSON",
+    "guard": "Hold membership admission guard across eligibility resolution and issue; same owner/device may resolve existing holds after expiry/cancellation",
+    "binding": "First successful issue permanently binds current simulator Wallet to owner/device; transfer is not implemented",
+    "snapshot": "Use the existing shared adapter snapshot guard across Wallet, membership and ATM reads, and serialize mutations with the same guard."
+  },
+  "trusted_atm_boundary": {
+    "constructor": "ATMActor(actor_id, token)",
+    "source": "Separate test-only ATM actor path, never owner request JSON",
+    "fixtures": "PUBLIC_ATM_FIXTURES contains intentionally public tokens for SIM-ATM-001 and SIM-ATM-002",
+    "production_authentication": "NOT_IMPLEMENTED",
+    "physical_atm": "NOT_CONNECTED"
+  },
+  "dispatch": {
+    "signature": "dispatch(request, *, context=None, actor=None)",
+    "return": {
+      "ok": true,
+      "result": "operation dictionary"
+    },
+    "request_version": 1,
+    "exact_fields": {
+      "atm.issue": [
+        "amount_minor",
+        "atm_id",
+        "key"
+      ],
+      "atm.status": [
+        "withdrawal_id"
+      ],
+      "atm.history": [
+        "limit"
+      ],
+      "atm.cancel": [
+        "withdrawal_id",
+        "key"
+      ],
+      "atm.expire": [
+        "withdrawal_id",
+        "key"
+      ],
+      "atm.timeout": [
+        "withdrawal_id",
+        "key"
+      ],
+      "atm.expire_due": [
+        "limit",
+        "key"
+      ],
+      "atm.redeem": [
+        "code",
+        "atm_id",
+        "key"
+      ],
+      "atm.dispense": [
+        "withdrawal_id",
+        "dispensed_minor",
+        "atm_id",
+        "key"
+      ],
+      "atm.reconcile": [
+        "withdrawal_id",
+        "total_dispensed_minor",
+        "atm_id",
+        "key"
+      ]
+    },
+    "owner_operations": [
+      "atm.issue",
+      "atm.status",
+      "atm.history",
+      "atm.cancel",
+      "atm.expire",
+      "atm.timeout",
+      "atm.expire_due"
+    ],
+    "separate_atm_actor_operations": [
+      "atm.redeem",
+      "atm.dispense",
+      "atm.reconcile"
+    ],
+    "errors": "ATMError / AuthenticationError subclass WalletError; existing InsufficientFunds and IdempotencyConflict; SQLite / OSError propagate."
+  },
+  "limits": {
+    "currency": "USD",
+    "issue_step_minor": 1000,
+    "minimum_issue_minor": 1000,
+    "maximum_issue_minor": 50000,
+    "credential_lifetime_seconds": 300,
+    "retained_credentials_default_and_max": 10000,
+    "history_limit_default": 50,
+    "history_limit_max": 100,
+    "cleanup_batch_max": 64
+  },
+  "receipt_contract": {
+    "issue": "Immutable historical issuance receipt; code must never be logged; state_at_issue is not current state.",
+    "redeem": "Same authorization_id on same-key replay; repeated authorization receipt is not a second dispense instruction.",
+    "current_state": "Call status or history; these contain code_sha256 only.",
+    "io_error": "An error may follow a successful commit. Keep the original key and payload; retry or inspect status, never assume failure means rollback.",
+    "cash_assertion": "Both dispense and reconcile amounts are cumulative. Source is PUBLIC_ATM_FIXTURE_ASSERTION, not physical dispenser proof."
+  },
+  "cleanup": {
+    "automatic_worker": false,
+    "caller_action": "Schedule expire_due with a fresh key for each new pass; retain that key when retrying the same pass.",
+    "expired_unconsumed": "Redemption blocked at deadline; cleanup/redeem/cancel/expire atomically releases hold.",
+    "consumed_timeout_cancel_expiry": "UNKNOWN; retain remaining hold until separately authenticated final cumulative assertion.",
+    "close": "No close method needed; no persistent connections or threads."
+  },
+  "integration_limits": [
+    "Existing ordinary Wallet reserve / dispense / mark_unknown / reconcile authentication is unchanged and must not be exposed as bypasses.",
+    "Wallet / credential divergence is detected but does not secure separate legacy endpoints.",
+    "No real ATM transport, physical cash dispenser, provider, real funds, KYC validation, secure clock, hardware antirollback, production secret management or device transfer.",
+    "Host focused tests only; target guest acceptance is NOT_RUN."
+  ],
+  "verification": "os/atm/evidence/host-verification.json",
+  "verification_sha256": "6df1f16c4ce6d5157068cb4cc6337dbd8ab714193b249288ede0b9dec5515532",
+  "source_sha256": {
+    "os/atm/__init__.py": "2f608bb68bd02a59ad574b1bfa986ec2b2daf660d26d223e710df282f0634a39",
+    "os/atm/simulator.py": "5afd45f3bf87ab93be79b5d019101bc863ff2aaa75a48049fa3daad6528575b8",
+    "os/atm/tests/test_simulator.py": "45921d45ace3f06110c1992e4118128259b592dbaf83ad24ebd12a8f3987b5c0",
+    "os/atm/README.md": "8bcdd3e0fe49935652e3f967df4658a08feb706100de4015e78cbcf9815a6484",
+    "src/blackberryrock/wallet.py": "3476c35697936667c6b7d87bb81b72d04260239ad94662eeb96c98fadcc0470e"
+  },
+  "modified_scope": [
+    "os/atm/"
+  ],
+  "third_party_implementation_imported": false,
+  "production_signing_keys_generated": false,
+  "public_deployment_or_external_sending": false
+}

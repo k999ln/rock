@@ -1,0 +1,31 @@
+name: Rock star native OS source
+on:
+  push:
+    branches: [main]
+    paths: ['systems/rock-star-os/**', 'scripts/test-native.py', '.github/workflows/native-os.yml']
+  pull_request:
+    paths: ['systems/rock-star-os/**', 'scripts/test-native.py', '.github/workflows/native-os.yml']
+permissions:
+  contents: read
+concurrency:
+  group: native-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  source-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Prepare Linux source-test dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential pkg-config libseccomp-dev libcairo2-dev libfreetype6-dev libjson-c-dev openssl e2fsprogs
+      - name: Native source regressions (not OS boot)
+        run: python3 scripts/test-native.py --output work/native-tests
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-source-test-results
+          path: work/native-tests/
+          retention-days: 7

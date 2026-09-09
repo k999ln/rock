@@ -1,0 +1,13 @@
+{
+  "name": "Noto Sans CJK JP Regular",
+  "repository": "https://github.com/notofonts/noto-cjk",
+  "commit": "523d033d6cb47f4a80c58a35753646f5c3608a78",
+  "release": "Sans2.004",
+  "path": "Sans/OTF/Japanese/NotoSansCJKjp-Regular.otf",
+  "sha256": "68a3fc98800b2a27b371f2fb79991daf3633bd89309d4ffaa6946fd587f375b5",
+  "license": "SIL Open Font License 1.1",
+  "license_path": "LICENSE",
+  "license_sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2",
+  "modified": false,
+  "retrieved_utc": "2026-09-08"
+}
