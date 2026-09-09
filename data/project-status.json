@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-09",
   "milestone": "3系統統合済み・native起動/保存検証修正と新規OSビルド",
-  "nextAction": "b8287bcの新規buildを完了、3 images固定。実QEMU2回起動/保存とHub/Wallet分離・資源拒否はPASS。native業務UI/Wallet→通常終了/A-B/新規復元/5cycles60分を継続。source1089、追加host1119/root61はLinux成功。B03-FIXTURE後にGX00→ゲーム交換→SDK。Pixel10のP1 APK二本は準備済み、実機未確認。",
+  "nextAction": "固定済みb8287bc OSで業務商品のライフサイクルと合成Walletを実画面検証し、更新障害・全disk復元・5正常サイクル/60分稼働を完了する。実機と実資金は未検証。",
   "tasks": [
     {
       "id": "R01",
@@ -218,7 +218,7 @@
     {
       "id": "B02",
       "title": "既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "B04"
       ],
@@ -396,12 +396,16 @@
       "id": "V01-BOOT",
       "task": "V01",
       "title": "OS起動・安全基礎（V01全体の合格ではない）",
-      "status": "planned",
+      "status": "done",
       "dependsOn": [
         "B04-INTEGRATED"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md"
+        "docs/prompts/os-operational-base-next.md",
+        "docs/evidence/os-base/freeze-b8287bc.json",
+        "docs/evidence/os-base/boot-b8287bc.json",
+        "docs/evidence/os-base/platform-b8287bc.json",
+        "docs/evidence/os-base/native-ui-b8287bc.json"
       ]
     },
     {

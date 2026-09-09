@@ -31,17 +31,22 @@ ATM/Wallet observerの古いfixtureは現在の本人確認と規約を満たさ
 
 GitHubの初回native CIは、試験用Pythonの所有者と10msの再試行時刻を壁時計に比較する試験の競合で失敗した。製品の所有者制限や待機時間を緩めず、保護されたsystem Pythonの実peerとcontroller限定の時計を使う試験へ修正。Linuxの対象15件・27件は合格し、`82faec4`のnative CI全体とroot55/C8群が再実行で合格。WebとAndroid P1のCIは合格し、署名・hashを確認した試用APK二本を取得した。Pixelでの実行は未確認。
 
-local用の明示schema6はnetworkなしで署名済みImage/rootfs/stage0を固定し、A/B/data全体の既存backup2を再利用する。購入者schema5の外部正本をlocalと読み替えず、型違い・重複JSON・data-onlyへの取り違えを拒否する。63件のLinux試験はskip/warningなし。新しいOSでの通常終了・復元後起動はまだ未実行。
+local用の明示schema6はnetworkなしで署名済みImage/rootfs/stage0を固定し、A/B/data全体の既存backup2を再利用する。購入者schema5の外部正本をlocalと読み替えず、型違い・重複JSON・data-onlyへの取り違えを拒否する。63件のLinux試験はskip/warningなし。新しいOSの画面からの通常終了はPASS。非空Walletを含む全diskの新規復元先での起動はまだ未実行。
 
-D3の固定診断は、実LinuxのUID1002→65534 sandboxでメモリ512 MiB要求を256 MiB上限で拒否、CPU2秒で終了、1 MiBを越える書込をEFBIGで拒否、明示crashを観測した。通常recipeと16項目の起動診断、未知引数拒否も保持した。実OS内の4ケースと、Hubでのtimeout/crash状態回復、data容量不足は別の受入結果を必要とする。
+D3の固定診断は、実LinuxのUID1002→65534 sandboxでメモリ512 MiB要求を256 MiB上限で拒否、CPU2秒で終了、1 MiBを越える書込をEFBIGで拒否、明示crashを観測した。通常recipeと16項目の起動診断、未知引数拒否も保持した。同じ4ケースは凍結済みb8287bcの実OSでもPASS。Hubでのtimeout/crash状態回復とdata容量不足は別の受入結果を必要とする。
 
 `2d9bd3a` CIのWebは生成済みproject.mdのcommit漏れで停止した。c7b29a9に同期差分を含め、同SHAのWeb/native/Androidすべてが再検証で成功。追加のWallet証拠6件はroot必須のため既存CIのroot observer段階へ配置し、非root source試験をskipで通さない。
 
 [ゲームAPI草案](game-api-contract-draft.md)は認証principalから契約を選ぶ境界、専用署名receipt、GX00後の交換/SDK実装入口を整理した設計のみ。新規API・SDKは未提供。
 
+
+実画面からの電源取消・再起動・終了は2回のkernel bootと8枚の元画像、保存済みpower receiptでPASS。serialには実initのサービス停止とext4 unmountも残る。模擬ATMの独立protocol試験も2起動34項目PASSで、結果不明時の保留維持、部分400/残600の照合、再送・再起動後の二重計上防止を確認。実ATM・実資金には接続していない。
+
+実測で発見したhost試験器の不一致も保存した。Wallet旧座標は登録ボタンを外したため、実C描画＋認証有効Walletで14+14画面と8負例を確認した共通手順へ修正。業務試験器はQEMU初期640×480待機画面を早すぎて拒否し、正常終了ボタンの丸角がOCRノイズにもなった。元180秒/30秒・confidence45を維持した待機判別と輪郭補正はLinux/macOS40件、保存済み実画面/C描画7件PASS。更新試験では0444元imageの属性が派生コピーへ残って準備に失敗したため、新規0600 inodeだけへコピーするhost修正を実ext4と20件で検証。Hub障害fixtureは固定kernelにないproc children情報で停止し、観測側の対応を残す。これらの失敗をOS成功へ書換えず、同じ元imageで新規試験を行う。
+
 ## 残る実装と受入
 
-1. 新imageの2回の実起動・保存、専用UID、read-only root/data、Hub/Wallet分離と資源拒否は確認済み。nativeチェックリスト商品の画面操作と通常initのreboot/poweroffも成功。業務商品の全ライフサイクルとWallet画面を継続。
+1. 新imageの2回の実起動・保存、専用UID、read-only root/data、Hub/Wallet分離と資源拒否は確認済み。nativeチェックリスト商品の画面操作と通常initのreboot/poweroffも成功。Wallet登録/認証/同意/合成売上/月888一度/取消も実画面14枚と台帳でPASS。業務商品の全ライフサイクルを継続。
 2. Hubで業務商品を取得・同意・処理・保存し、停止・更新・戻す・削除を画面から通す。版選択・停止・再承認の実装とC描画試験は完了し、実OSでの通過を残す。
 3. 実画面Wallet/月額/ATM、更新障害、正常reboot/poweroff、新規復元先、5回の正常起動/終了と60分の反復稼働を同一候補で検証する。
 4. [GX00 ADR](gx00-owner-isolation-adr.md)に沿って既存1契約1台帳の複数owner接続、復元時writer排他、ゲーム本人接続を実装する。現時点は設計のみで、ゲーム交換/SDKは未実装。

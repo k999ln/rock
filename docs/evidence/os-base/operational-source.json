@@ -46,11 +46,13 @@
       "freeze_manifest": "freeze-b8287bc.json",
       "freeze_manifest_sha256": "6a58860076c14aef7d9c6aaa9c9027cc990615fa07719075ccaa59a951096557",
       "built_at": "2026-09-09T19:29:12Z",
-      "scope": "Two basic boot/persistence cases only; D0–D6 aggregate NOT_RUN",
+      "scope": "Frozen runtime image; basic boot, platform, native checklist, normal power and ATM protocol passed; D0–D6 aggregate remains INCOMPLETE",
       "platform": "PASS",
       "native_ui": "PASS",
       "normal_system_power": "PASS",
-      "gui_wallet": "IN_PROGRESS"
+      "gui_wallet": "PASS",
+      "native_power_ui": "PASS",
+      "atm_protocol": "PASS"
     },
     "physical_device": {
       "status": "NOT_RUN"
@@ -95,6 +97,37 @@
       "source_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
       "host_harness_commit": "c7b29a9dc2a6bdf646a098992dfa5104ad6ad7fd",
       "scope": "Actual native checklist install/approve/input/result/history; Wallet unchanged; proposal lifecycle still NOT_RUN"
+    },
+    "qemu_power_ui": {
+      "status": "PASS",
+      "report": "power-ui-b8287bc.json",
+      "report_sha256": "ccced5225377611b5d37532a0cd9c9392bb069795b94f98ee3221c4ae735912c",
+      "scope": "Actual native UI cancel, reboot and normal shutdown; two kernel boot IDs, eight captures, no host power commands",
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9"
+    },
+    "qemu_atm_protocol": {
+      "status": "PASS",
+      "report": "atm-protocol-b8287bc.json",
+      "report_sha256": "97e0ac34733c8bb44d8af510a0da8c073021b0d25107d644034c929bb64868c6",
+      "scope": "Two actual no-NIC guest boots, 34 checks; synthetic funds, unknown/partial/reconcile; no physical ATM",
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9"
+    },
+    "qemu_wallet_ui": {
+      "status": "PASS",
+      "report": "wallet-ui-b8287bc.json",
+      "report_sha256": "6d606f091338568d4a557c18616b53b2ac9aff96cc6e9593b0979819b0a79fe1",
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "host_harness_commit": "b8d8305",
+      "original_frames": 14,
+      "scope": "Actual native registration/enrollment/terms, synthetic credit2000, 888 billed once despite two requests, renewal canceled; available1112. Public test authenticator; real funds NOT_RUN."
+    },
+    "web_regressions_current": {
+      "status": "PASS",
+      "source_base": "d9b8ae6",
+      "command": "npm run verify",
+      "loopback_permission_required": true,
+      "unrestricted_test_log_sha256": "c11e30142ec09afdba932e21bf9d1270689aa0741530f6433aaab0629d7e577f",
+      "earlier_sandbox_attempt": "FAIL: localhost listen EPERM; same suite rerun with local socket permission"
     }
   },
   "logs_sha256": {
@@ -220,6 +253,39 @@
         "run": 34394252183,
         "status": "PASS"
       }
+    }
+  ],
+  "host_observation_failures": [
+    {
+      "case": "wallet-native-ui",
+      "status": "FAIL",
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "reason": "Stale host registration point hit blank area; no registration performed. Host-only geometry replay corrected and 14+14 C fixture frames passed; actual retry pending. Fresh actual GUI retry passed14 original frames on unchanged b828 images."
+    },
+    {
+      "case": "business-lifecycle-initial",
+      "status": "FAIL",
+      "reason": "Host rejected actual 640x480 QEMU startup placeholder before any input. Fixed bounded known-pixel wait in b8d8305; failed device later closed by actual native UI; cleanup is not acceptance."
+    },
+    {
+      "case": "business-normal-cleanup-ocr",
+      "status": "FAIL",
+      "reason": "Rounded exterior button corners corrupted OCR. Original screenshot retained; row-wise actual green contour fix kept confidence45 and deadlines; exact saved/rendered frames7/7 passed."
+    },
+    {
+      "case": "ui-startup-fixture-prepare",
+      "status": "FAIL",
+      "reason": "Disposable copy inherited frozen0444 and debugfs could not inject first marker; no QEMU started and original image unchanged. Host copy fix pending. Corrected in d9b8ae6; 20 Linux guards including real ext4 injection passed. Actual retry pending."
+    },
+    {
+      "case": "hub-launcher-fault-observer",
+      "status": "FAIL",
+      "reason": "Actual kernel omits proc task children interface used by tracer; job not submitted. Fixture observer adjustment pending; no runtime change."
+    },
+    {
+      "case": "business-catalog-version-ocr",
+      "status": "FAIL",
+      "reason": "Fresh retry passed normal signed boot0 and native shutdown. In cycle1 actual correct proposal search result rendered, but small version OCR exceeded unchanged30-second deadline before any install. Host selector repair pending; failed source preserved."
     }
   ]
 }

@@ -43,7 +43,7 @@ tob側の自動化ツールを商品として管理するHubと、自動化で�
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 | B01 | Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
 | B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
-| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
+| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
 | D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
@@ -63,7 +63,7 @@ tob側の自動化ツールを商品として管理するHubと、自動化で�
 | 段階ID | 作業ID | 内容 | 状態 | 先に通す段階 | 根拠 |
 | --- | --- | --- | --- | --- | --- |
 | B04-INTEGRATED | B04 | 承認後、main/native/設計reviewの3入力と入口を統合 | 合格 | — | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
-| V01-BOOT | V01 | OS起動・安全基礎（V01全体の合格ではない） | 未合格 | B04-INTEGRATED | [記録](docs/prompts/os-operational-base-next.md) |
+| V01-BOOT | V01 | OS起動・安全基礎（V01全体の合格ではない） | 合格 | B04-INTEGRATED | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/evidence/os-base/freeze-b8287bc.json) · [記録](docs/evidence/os-base/boot-b8287bc.json) · [記録](docs/evidence/os-base/platform-b8287bc.json) · [記録](docs/evidence/os-base/native-ui-b8287bc.json) |
 | B02-NATIVE | B02 | 既存native商品1件をHubで実処理・保存 | 未合格 | V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
 | B03-FIXTURE | B03 | 単一ownerの合成Wallet・商品/費用/売上状態の基礎 | 未合格 | B02-NATIVE | [記録](docs/prompts/os-operational-base-next.md) |
 | V01-ACCEPT | V01 | 同一OS候補でD0〜D6縦断合格 | 未合格 | V01-BOOT · B02-NATIVE · B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
@@ -74,7 +74,7 @@ tob側の自動化ツールを商品として管理するHubと、自動化で�
 | GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 未合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
 | DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 未合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) |
 
-次の作業: b8287bcの新規buildを完了、3 images固定。実QEMU2回起動/保存とHub/Wallet分離・資源拒否はPASS。native業務UI/Wallet→通常終了/A-B/新規復元/5cycles60分を継続。source1089、追加host1119/root61はLinux成功。B03-FIXTURE後にGX00→ゲーム交換→SDK。Pixel10のP1 APK二本は準備済み、実機未確認。
+次の作業: 固定済みb8287bc OSで業務商品のライフサイクルと合成Walletを実画面検証し、更新障害・全disk復元・5正常サイクル/60分稼働を完了する。実機と実資金は未検証。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

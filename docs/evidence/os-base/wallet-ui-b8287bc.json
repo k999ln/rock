@@ -1,0 +1,502 @@
+{
+  "schema": "rock-native-wallet-ui-harness/1",
+  "status": "PASS",
+  "started_utc": "2026-09-09T20:05:14.863952+00:00",
+  "scope": "actual native ARM64 framebuffer/evdev input and closed simulator Wallet",
+  "blackberry": "NOT_RUN",
+  "real_money": "NOT_RUN",
+  "real_identity": "NOT_CONNECTED",
+  "image_sha256_before": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+  },
+  "input_events": [
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788984333.3854694
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        360
+      ],
+      "sent_unix": 1788984335.1863163
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788984338.672498
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        480
+      ],
+      "sent_unix": 1788984340.4739766
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        419
+      ],
+      "sent_unix": 1788984341.4786847
+    },
+    {
+      "action": "public-test-pin-entry",
+      "value": {
+        "digits": 4,
+        "value_recorded": false
+      },
+      "sent_unix": 1788984342.2872212
+    },
+    {
+      "action": "click",
+      "value": [
+        520,
+        833
+      ],
+      "sent_unix": 1788984342.3725653
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788984346.2649782
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        480
+      ],
+      "sent_unix": 1788984348.0629368
+    },
+    {
+      "action": "click",
+      "value": [
+        497,
+        576
+      ],
+      "sent_unix": 1788984348.8673594
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788984352.353142
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788984354.0562947
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        504
+      ],
+      "sent_unix": 1788984354.2895472
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788984357.9823506
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788984359.7039456
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788984359.8546753
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788984360.005906
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        807
+      ],
+      "sent_unix": 1788984360.2407055
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788984360.446098
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788984360.5975778
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        461
+      ],
+      "sent_unix": 1788984360.8428342
+    },
+    {
+      "action": "keys",
+      "value": [
+        "ctrl",
+        "a"
+      ],
+      "sent_unix": 1788984361.0485528
+    },
+    {
+      "action": "keys",
+      "value": [
+        "2"
+      ],
+      "sent_unix": 1788984361.2003753
+    },
+    {
+      "action": "keys",
+      "value": [
+        "0"
+      ],
+      "sent_unix": 1788984361.3508716
+    },
+    {
+      "action": "keys",
+      "value": [
+        "dot"
+      ],
+      "sent_unix": 1788984361.5040004
+    },
+    {
+      "action": "keys",
+      "value": [
+        "0"
+      ],
+      "sent_unix": 1788984361.6562192
+    },
+    {
+      "action": "keys",
+      "value": [
+        "0"
+      ],
+      "sent_unix": 1788984361.8119595
+    },
+    {
+      "action": "click",
+      "value": [
+        192,
+        537
+      ],
+      "sent_unix": 1788984363.2582018
+    },
+    {
+      "action": "click",
+      "value": [
+        563,
+        716
+      ],
+      "sent_unix": 1788984366.76357
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788984370.2586775
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788984371.964891
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        567
+      ],
+      "sent_unix": 1788984372.1979249
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788984376.0889788
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788984377.8123388
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        567
+      ],
+      "sent_unix": 1788984378.049124
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788984381.5427399
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788984383.267738
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        504
+      ],
+      "sent_unix": 1788984383.4992027
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788984387.1963704
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788984388.9192264
+    }
+  ],
+  "screenshots": [
+    {
+      "name": "00-unregistered-zero-wallet.png",
+      "bytes": 96485,
+      "sha256": "a2781ba1d38421494e646b6cc14303ae778490cf2a57029553adf8c83232ebcd",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "01-registered-without-consent.png",
+      "bytes": 114812,
+      "sha256": "8109e035178307cbdf417b7a7e26b8d8651c99e5edf0df7854e370fe121d6f69",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "auth-01-explicit-enrollment.png",
+      "bytes": 70366,
+      "sha256": "6d4485e5475b79d19bce3af32ce632a25a0fbf0463a0bc0a012c5cccafe6891c",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "auth-02-enrolled-wallet-terms-required.png",
+      "bytes": 115031,
+      "sha256": "12c1bf44f5032150c19f8044cdd2f527b4967644f3b80a5c557016b0e05f4a50",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "auth-03-separate-wallet-terms.png",
+      "bytes": 113231,
+      "sha256": "35253b9443ee28a3c0626dd52099d19d4adca13b972999a74e1e1b676e79de5b",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "02-explicit-consent-before-credit.png",
+      "bytes": 120770,
+      "sha256": "cc51c02ab7d73c82286d260774bfbf70169f71308f1c6380c5bba95f252aac2e",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "03-simulator-controls.png",
+      "bytes": 97352,
+      "sha256": "51f3fa87e9fa321f85ece19ea067c1f671fc29c78a1c5508b4bb36df26ef92fe",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "04-native-test-amount-input.png",
+      "bytes": 98723,
+      "sha256": "242e3afe9264ed99e9492e672c067e982b3386388370ffdcf4c49434474844dc",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "05-actual-unsettled-credit.png",
+      "bytes": 92387,
+      "sha256": "fafdca98d9b52a771c6dc47cd4c8d47bed285d7ed72e21c639793bdb545e2b3c",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "06-actual-settlement.png",
+      "bytes": 89874,
+      "sha256": "29bcb506e1086c41301852a886d315577fe02d96eff383cc8062af841746d06b",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "07-888-test-fee-paid.png",
+      "bytes": 114661,
+      "sha256": "a92fcc36f2d929958b2fd90af7c3aa130cea2e09067f828be4aba55f1862cc63",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "08-second-request-still-one-bill.png",
+      "bytes": 114501,
+      "sha256": "8e916743f5dfca5fa5c3558c6e08a4e407244751427c28f5dbe378dfa61f9baa",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "09-renewal-canceled-paid-period-kept.png",
+      "bytes": 118755,
+      "sha256": "f09cefa81cbc0c9c0e7d726f7434276d7b3a1c072b9867c9652ddf1f5936ac52",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "10-actual-1112-test-balance.png",
+      "bytes": 107935,
+      "sha256": "8be535ec2ef29cdd52811a259b67ce45b00efebf0afc6c5c6b3e7aedc714e956",
+      "dimensions": [
+        720,
+        960
+      ]
+    }
+  ],
+  "command": [
+    "qemu-system-aarch64",
+    "-machine",
+    "virt-10.0,gic-version=3",
+    "-accel",
+    "tcg",
+    "-cpu",
+    "cortex-a53",
+    "-m",
+    "1024",
+    "-smp",
+    "2",
+    "-display",
+    "none",
+    "-serial",
+    "stdio",
+    "-monitor",
+    "none",
+    "-qmp",
+    "unix:/tmp/rock-wallet-qmp-5wzhkmuh/qmp.sock,server=on,wait=off",
+    "-no-reboot",
+    "-nic",
+    "none",
+    "-kernel",
+    "/var/tmp/rk3/systems/rock-star-os/artifacts/os/Image",
+    "-append",
+    "console=ttyAMA0 vt.global_cursor_default=0 root=/dev/vda ro rootflags=noload rootwait panic=-1 rock.ui.wallet.verify=1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/rootfs.ext4,format=raw,id=osdisk,readonly=on",
+    "-device",
+    "virtio-blk-pci,drive=osdisk,addr=0x1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/wallet-ui-20260909T200514Z-xkgvagva/userdata.ext4,format=raw,id=userdata",
+    "-device",
+    "virtio-blk-pci,drive=userdata,addr=0x2",
+    "-object",
+    "rng-random,filename=/dev/urandom,id=rockrng",
+    "-device",
+    "virtio-rng-pci,rng=rockrng,addr=0x3",
+    "-device",
+    "virtio-gpu-pci,xres=720,yres=960,addr=0x4",
+    "-device",
+    "virtio-keyboard-pci,addr=0x5",
+    "-device",
+    "virtio-tablet-pci,addr=0x6"
+  ],
+  "exit_code": 0,
+  "durable_guest_proof_matches_serial": true,
+  "guest_proof_sha256": "c149d1ddc6e5d26876aa34a899dc25a876636c35782cf6ecac155bc6d4a2a3a1",
+  "image_sha256_after": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+  },
+  "finished_utc": "2026-09-09T20:06:55.152113+00:00"
+}
