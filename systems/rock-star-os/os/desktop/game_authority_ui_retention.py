@@ -49,7 +49,7 @@ def validate(record):
             'typed index UUID, path and configuration required')
     require(str(uuid.UUID(cells[2][1])) == cells[2][1] and Path(cells[3][1]).is_absolute() and
             0 < len(cells[4][1].encode()) <= 1024**2, 'bounded canonical index identity required')
-    require(type(maximum) is int and 0 <= maximum <= 2**63 - 1, 'index maximum_time must remain a nonnegative SQLite INTEGER')
+    require(type(maximum) is int and 0 <= maximum <= 2**53 - 1, 'index maximum_time must remain a nonnegative SQLite INTEGER')
     table = identity_table(snapshot)
     require(table['row_count'] == 1 and table['intrinsic_rowid'] == '_rowid_' and
             table['columns_sha256'] == observer.digest(COLUMNS) and

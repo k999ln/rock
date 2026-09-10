@@ -53,7 +53,7 @@ class UIAuthorityRetention(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'regressed'):ui.compare(before,clock(copy.deepcopy(before),122),policy=ui.POLICY)
 
     def test_clock_storage_type_and_bounds_refused(self):
-        for value in (False,True,123.0,'123',-1,2**63,None):
+        for value in (False,True,123.0,'123',-1,2**53,2**63,None):
             with self.subTest(value=value),self.assertRaises(ValueError):ui.validate(clock(observation(),value))
 
     def test_forged_projection_without_matching_full_snapshot_refused(self):
