@@ -4,9 +4,15 @@
 
 ## 正本と境界
 
+2026-09-10 22:03 UTC再開時、GitHubの候補は `97d952937add42de04092a2e6c2fac8aba3d8bad`、[同SHAの全9check成功](evidence/launch/ci-97d9529.json)、PR #4 MERGEABLE。Hubの実装・検証を保持して、TLS fixtureの分離と新候補の署名前準備を進める。Sitesは再確認でもNOT_FOUND、署名Environment/control ref/初回workflow登録は未設定だった。
+
+署名の初回登録にはdefault branch配置が必要なため、[Draft PR #5](https://github.com/k999ln/rock/pull/5)でworkflow1ファイルのみのbootstrapを準備した。SHA `a4411622031858d6d9684c599d857cadaf90bb94`、mainには未merge。利用者がその限定bootstrapを明示承認するまでは実署名リハーサルに進めない。これは一般公開と製品PR #4のmerge承認とは別。条件が満たされた後はPR #5→実署名/全受入→最終承認→PR #4の順となり、mainが変わった時点で最終tree/CIを再照合する。
+
+Draft編集後のURL変化と新旧証拠の取り違えを避けるため、[tag・numeric ID・hashで再取得する手順](release-artifact-access.md)を追加した。元の固定済み証拠内URLや旧配布物は書き換えない。
+
 - 開始時GitHub取得: main `7cdbb5fedc86ee3978ed329d9312147d137c9199`、再開 `codex/rockstaros-release-20260910` の `29e4f7203f72d9949e2dfc90b64c4215d4bbb765`。
 - 保存済みSites source `c6942d5ef72e9dd16345b9363e68e0e18ca25079` を実merge。両親と元migrationを保持する。先行Hub改修commit `d713e50`。この文書を含む統合commitはGit履歴、最終40桁SHAと結果はPR/CIの原証拠を正本とする（文書の自己参照SHAは作らない）。
-- 凍結native/同梱host toolsは `9abf78a80d27aa9f847c4051d20e4c552e407276`。今回のnative変更は試験診断と証拠検査だけ。image・runtime・元1GB packageのbytesを変更していない。新Web/MCP adapterと旧配布host toolsを同一版の受入と表示しない。
+- 既存配布の凍結native/同梱host toolsは `9abf78a80d27aa9f847c4051d20e4c552e407276`。初回作業は試験診断と証拠検査のみだったが、再開時には新sourceのpackagerへ `--unsigned-external` も追加した。image・runtime・元1GB packageのbytesは変更していない。変更したpackagerを旧freezeと組み合わせることは拒否されるため、実生成には新source・fresh build/freeze・受入が必要。新Web/MCP adapter/packagerと旧配布host toolsを同一版の受入と表示しない。
 - macOS 15.7.4 / Apple Silicon / Lima 2.2.0 / Debian 13 / ARM64 QEMU virt-10.0に限定。Web package `rock-star@0.1.0`、表示製品 `RockstarOS 1.0 Developer Preview`、旧package `1.0.0-preview.20260910`、旧Draft tag `v1.0.0-preview.20260910-rc1` は別の版識別子。
 
 ## 記録済みの検証結果（85620ec）
@@ -16,6 +22,10 @@
 ローカルの `npm run verify` は93tests、fresh/両upgrade D1、仕事API143assertionsと実行APIに成功。`os:check`、production/全依存audit0、公式Sites build、署名fixture22、診断/証拠検証21も確認。これらはWeb/host/source/fixtureの範囲であり、未承認の新package受入ではない。本文同期後のcommitは、この記録を自分の成功に転記せず、PR #4のそのHEADのCIを改めて確認する。
 
 ## LCH01 — 原TLS原因: BLOCKED_HISTORICAL_CAUSE_UNDETERMINED
+
+再開調査で、`test_contract_runtime_lifetime.py` が共有 `time.monotonic` を差し替えて別threadの時計を壊すfixture不具合を決定的に再現した。対象moduleだけのclock proxyへ修正し、新規 `test_contract_runtime_clock_isolation.py` を追加。修正前1FAIL、修正後13PASS/skip0をrootでも確認。runtime/通信期限は不変。[追加所見](evidence/launch/tls/resume-findings.md)、[元FAIL・原artifact・再現結果](evidence/launch/tls/resume-evidence.json)。再現harnessを含む原本ZIPは `lch01-resume-evidence-20260910-v1.zip`、178,035bytes、SHA256 `9766205647ae8ceac17253e01ba1c636182ad2be796ba2f535c435bcd4ca0d3c`。
+
+関連70caseのcleanup観測はPASS/skip0で残存threadなし。別の歴史的順序prefixはmacOSで既存Linux専用2caseをskipしたため、全回帰PASSには数えない。原e430 artifact15fileには同時刻server stack/timingがなく、fixture不具合の試験はTLS失敗の117case前に正常終了していた。したがって原TLSの原因は未確定のまま。次の必要観測は、同じ1秒失敗時のserver処理段階/stackとCPU/待機時間であり、別事象のfixture修正を原TLS解消へ読み替えない。
 
 9ab ARM64のWallet10 TLS ERROR、e430 run34477407336のGame承認1秒timeout、ba900/3d07の600秒累積終了を区別して保持。[原因調査と原証拠](evidence/launch/tls/findings.md)、[機械可読観測](evidence/launch/tls/evidence.json)。1byteずつのTLS header readとGIL競合の増幅は実測したが、buffer化でも強い競合下のtimeoutは消えず、歴史的原因の確定とはしない。
 
@@ -34,6 +44,8 @@
 次: 権利者正式名/許諾権限、A/B/Cと対象、商標・support窓口、source同梱/同経路提供、第三者条件の確認担当を一括決定。決定後に対象SHA/artifact/承認者/日時を記録し、新候補のLICENSE/NOTICE/Buildroot Rock package metadataへ反映・再検証する。担当: 所有者/法務確認者。未承認のためNOT_CLEARED。
 
 ## LCH03 — 配布元認証: AWAITING_SIGNING_SETUP
+
+再開時に、秘密鍵を使わず新しい候補を作るproducer modeと `scripts/prepare_release_candidate.py` を実装した。[候補準備手順](candidate-preparation.md)。新規15＋既存署名22＝37fixture、既存desktop50がrootでもPASS。旧envelopeの付替え、pin不一致、freeze/source改変、symlink/hardlink、追加asset衝突、出力先の競合・途中中断を拒否。独立レビューで見つかった空directory上書き競合も修正し、排他的mkdirとdirfd/O_EXCLで既存directoryを保持する。これは候補生成の実装検証で、実管理鍵による署名・新image生成・legal承認は未実施。
 
 旧RFC8032試験鍵は誰でも署名できる。本番署名のfingerprintは未登録。GitHub Environment `rock-release-signing` は読み取りで404、管理鍵の利用実績なし。保護control ref限定のworkflow、管理鍵と公開RFC試験鍵の分離、全asset/offline verifier、独立承認・失効/rotation・圧縮tar拒否のscaffoldを実装し、22fixture試験で検証した。[設定・運用・未実証の範囲](release-signing-operations.md)を参照。実Environment/管理鍵を使う合格ではない。試験鍵で旧archiveを本番扱いにしない。
 
@@ -69,6 +81,8 @@ PR1→2→3を読み取り、レビュー/コメントなし、PR1とmainの文�
 変更: README/project/CHECKPOINT/status/release notes/導線を同期。Web versionとnative versionの意味は上記のとおり。Web/native/Android CI checkoutをPR headの40桁SHAへ固定し、合成merge-refの成功をheadへ読み替えない。現candidateのHEAD/tree・main包含・全checkは上記で確認済み。残るlicense/署名/CM/Siteの内容決定でsourceを変えた場合は、新HEADで同じ照合を行う。main mergeは未承認のため実施しない。
 
 ## LCH07 — 最終配布: WAITING_FOR_LCH01_TO_06
+
+新packagerは `UNSIGNED_PACKAGE_NOT_ACCEPTED` receipt、control側の準備処理は `UNSIGNED_CANDIDATE_PREPARED_NOT_ACCEPTED` と固定indexを出力する。試験では小さい模擬image/Git/stage0を使用し、二回のindexとコピーbytesが同一であることを確認した。実1GB新候補の二回生成は未実施。現実装はNOT_CLEARED/CANDIDATEを必須にしており、所有者がlicenseを選んだだけでCLEAREDにはならない。次の明示決定を新source/許諾metadataへ反映するレビューと、実build/freeze/全受入が必要。
 
 旧Draftは `CANDIDATE / NOT_CLEARED / PACKAGED_NOT_ACCEPTED`、archive SHA256 `121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2`、1,000,928,255bytesのまま。旧9abの限定D0〜D6、fresh導入・保存・同一VM復旧・削除、Game/SDKの合格は[既存受入](os-acceptance-9abf78a-20260910.md)を保持し、今回の署名/許諾/新配布受入へ転記しない。
 

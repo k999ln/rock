@@ -3,17 +3,27 @@ on:
   push:
     paths:
       - scripts/release_signing*.py
+      - scripts/prepare_release_candidate.py
+      - systems/rock-star-os/os/desktop/package_preview.py
+      - systems/rock-star-os/os/desktop/preview.py
       - tests/test_release_signing.py
+      - tests/test_prepare_release_candidate.py
       - .github/workflows/release-signing*.yml
       - data/release-trust*.json
       - data/release-signing-policy*.json
+      - data/release-signing-control-protection.json
   pull_request:
     paths:
       - scripts/release_signing*.py
+      - scripts/prepare_release_candidate.py
+      - systems/rock-star-os/os/desktop/package_preview.py
+      - systems/rock-star-os/os/desktop/preview.py
       - tests/test_release_signing.py
+      - tests/test_prepare_release_candidate.py
       - .github/workflows/release-signing*.yml
       - data/release-trust*.json
       - data/release-signing-policy*.json
+      - data/release-signing-control-protection.json
 permissions:
   contents: read
 jobs:
@@ -28,5 +38,7 @@ jobs:
       - name: Verify public-fixture mechanics and rejection boundaries
         env:
           PYTHONDONTWRITEBYTECODE: '1'
-        run: python3 -m unittest discover -s tests -p test_release_signing.py -v
+        run: |
+          python3 -m unittest discover -s tests -p test_release_signing.py -v
+          python3 -m unittest discover -s tests -p test_prepare_release_candidate.py -v
       # No production Environment, signing secret, dependency install, or write token.

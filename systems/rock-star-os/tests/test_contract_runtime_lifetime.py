@@ -218,7 +218,10 @@ class RuntimeLifetimeTests(unittest.TestCase):
 
     def test_expiry_after_waiting_for_admission_never_dispatches(self):
         runtime, _, service, verifier, _ = self.make_runtime()
-        with patch('wallet_backend.contract_runtime.time.monotonic', side_effect=[0.0,2.0]):
+        # Isolate the clock double to this module; the time module is shared by
+        # unrelated server/deadline threads in the native test process.
+        with patch('wallet_backend.contract_runtime.time', wraps=time) as clock:
+            clock.monotonic.side_effect = [0.0, 2.0]
             with self.assertRaises(TimeoutError):
                 runtime.dispatch(PRINCIPAL,{'v':1,'op':'health'},deadline=1.0)
         service.dispatch.assert_not_called()

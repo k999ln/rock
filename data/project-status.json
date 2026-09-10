@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
   "milestone": "RockstarOS 1.0 ローンチ準備・Hubのユーザー体験改善",
-  "nextAction": "Hubを標準入口に改修して実ブラウザで操作を検証。LCH01〜07でTLS原因、配布法務、署名鍵、既存Sites、完成CM、PR統合、最終候補を追跡。最終承認前の一般公開・main merge・実請求・実機書込み・実資金は実行しない。",
+  "nextAction": "新候補の未署名生成とclock fixture分離を実装済み。PR #4の新HEADで全CIを照合し、専用control branchを固定・保護する。所有者のlicense/CM/独立reviewer決定、元Sites再接続、限定bootstrap PR #5の明示承認後に、新sourceのbuild/freeze・管理署名・本人限定preview・導入/復旧を実施する。一般公開と製品PR #4のmain mergeは最終承認まで行わない。",
   "tasks": [
     {
       "id": "R01",
@@ -720,14 +720,19 @@
     "campaign": "AWAITING_SELECTION",
     "nativeHistoricalTlsCause": "UNDETERMINED",
     "candidateBranch": "codex/rockstaros-launch-candidate-20260910",
-    "recordedCiCommit": "85620ec8b0d5d9913cd2d50f8ead4fbe109ee9bb",
-    "recordedCiEvidence": "docs/evidence/launch/ci-85620ec.json",
+    "recordedCiCommit": "97d952937add42de04092a2e6c2fac8aba3d8bad",
+    "recordedCiEvidence": "docs/evidence/launch/ci-97d9529.json",
     "candidatePr": 4,
-    "recordedChecks": "ALL_10_SUCCESS",
+    "recordedChecks": "ALL_9_SUCCESS",
     "recordedNativeTests": 1670,
     "recordedNativeChecks": 17,
     "recordedNativeSkips": 0,
     "recordedWebTests": 93,
-    "currentHeadValidation": "See exact HEAD checks of PR4; recorded snapshot is not a self-attestation of later commits"
+    "currentHeadValidation": "See exact HEAD checks of PR4; recorded snapshot is not a self-attestation of later commits",
+    "unsignedCandidatePreparation": "IMPLEMENTED_FIXTURES_PASS_NEW_FREEZE_REQUIRED",
+    "signingBootstrapPr": 5,
+    "signingBootstrapCommit": "a4411622031858d6d9684c599d857cadaf90bb94",
+    "signingBootstrapApproval": "AWAITING_EXPLICIT_LIMITED_MAIN_APPROVAL",
+    "nativeClockFixture": "DETERMINISTIC_FAILURE_FIXED_13_PASS_NOT_HISTORICAL_TLS_ATTRIBUTION"
   }
 }

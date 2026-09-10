@@ -12,6 +12,7 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import stat
 import subprocess
@@ -154,10 +155,35 @@ def release_profile(tree, images, commit, raw_factory, profile_name, freeze):
     return boot, game, [('images/profile.json', profile_path), ('provenance/base-freeze-manifest.json', base_path)]
 
 
+def export_unsigned(args, value, tree):
+    """Emit unsigned inputs only; signature/installer acceptance remains downstream."""
+    preview.require(value['trust'] == 'EXTERNAL_RELEASE_KEY' and
+                    value['legal']['status'] == 'NOT_CLEARED' and value['acceptance']['status'] == 'CANDIDATE',
+                    'unsigned export cannot change trust or acceptance')
+    (args.output / 'candidate-manifest.json').write_bytes(preview.canonical(value) + b'\n')
+    shutil.copyfile(tree / 'native/os/desktop/preview.py', args.output / 'preview.py')
+    for name in ('preview-installation-ja.md', 'preview-release-notes.md', 'preview-legal-notice.md'):
+        shutil.copyfile(tree / 'docs' / name, args.output / name)
+    assets = {path.name: {'sha256': preview.digest(path), 'bytes': path.stat().st_size}
+              for path in sorted(args.output.iterdir())}
+    result = {'schema': 'rock-preview-unsigned-export/1', 'status': 'UNSIGNED_PACKAGE_NOT_ACCEPTED',
+              'source_commit': value['source_commit'], 'host_tools_commit': value['host_tools_commit'],
+              'version': value['version'],
+              'producer': {'path': NATIVE_PREFIX + 'os/desktop/package_preview.py',
+                           'sha256': preview.digest(Path(__file__))},
+              'assets': assets}
+    (args.output / 'candidate-export.json').write_bytes(preview.canonical(result) + b'\n')
+    return result
+
+
 def make(args):
     repository = args.repository.resolve(strict=True)
     commit = subprocess.check_output(['git', '-C', str(repository), 'rev-parse', args.source + '^{commit}'], text=True).strip()
     preview.require(commit == args.source, '--source must be the complete immutable 40-character commit')
+    if getattr(args, 'unsigned_external', False):
+        preview.require(not getattr(args, 'public_test_signature', False) and getattr(args, 'signing_key', None) is None,
+                        'unsigned export is mutually exclusive with every signing mode')
+        preview.require(re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9.+_-]{0,63}', args.version), 'safe explicit new version required')
     preview.require(not args.output.exists(), 'output already exists; select a new release directory')
     images = args.images.resolve(strict=True)
     image_hashes = {name: preview.digest(images / name) for name in preview.IMAGE_NAMES}
@@ -233,6 +259,8 @@ def make(args):
                            'buildroot_legal_info_included': args.legal_info is not None,
                            'notice': 'docs/preview-legal-notice.md'},
                  'acceptance': {'status': 'CANDIDATE', 'meaning': 'Build/package integrity only. Immutable archive must be bound to separate D0-D6, Game/SDK and fresh-install acceptance.'}}
+        if getattr(args, 'unsigned_external', False):
+            return export_unsigned(args, value, tree)
         envelope, public = sign(value, args.signing_key, development=args.public_test_signature)
         (args.output / 'release-manifest.json').write_bytes(preview.canonical(envelope) + b'\n')
         (args.output / 'release-key.der').write_bytes(public)
@@ -267,6 +295,8 @@ def main():
     signer = parser.add_mutually_exclusive_group(required=True)
     signer.add_argument('--public-test-signature', action='store_true')
     signer.add_argument('--signing-key', type=Path)
+    signer.add_argument('--unsigned-external', action='store_true',
+                        help='export unsigned external-key candidate inputs; no signature or acceptance claim')
     parser.add_argument('--legal-info', type=Path)
     args = parser.parse_args()
     print(json.dumps(make(args), indent=2))
