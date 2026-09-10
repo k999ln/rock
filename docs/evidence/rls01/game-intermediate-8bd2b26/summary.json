@@ -6,7 +6,7 @@
   "source_commit": "8bd2b26b23bbb953c12027f69d0f68297c49e2ae",
   "archive_sha256": "001a43c10df411496ce3df4604e06ed3c1bcb1d2ac27ebbcbd3fe32c5b5f8d56",
   "manifest_sha256": "f31538170e84dd186c6be2b6e4614f25a60b4507bef80257c5e3f99854e332eb",
-  "release_schema": null,
+  "release_schema": "rockstaros-preview-release/2",
   "host": {
     "architecture": "arm64",
     "lima": "limactl version 2.2.0",
