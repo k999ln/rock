@@ -254,3 +254,10 @@ Aの同9ab ARM64追加全回帰は13:02:34に14checks/1631件/skip0 PASS、main1
 [進捗・CM完成後の残件](release-followup-20260910.md)、最終CI原本2件と時刻抜粋を追加し、README／project／CHECKPOINT／進捗JSON／導入計画／戦略を同期。製品ベースJSONの実行状態とSDKの古い未実装表示を限定受入の実績へ訂正したが、要望version・RQ01〜RQ17・料金・承認範囲・task／phaseGateの状態は変更しない。今回の追記ではruntime、配布9files、公開先、原FAILを変更せず、main mergeも行わない。
 
 文書同期の検証（15:54 UTC）: `npm run project:update`、`npm run verify`、`git diff --check` がすべて成功。verifyは進捗／参照／baseline整合、型、lint、unit tests、build、API 143 assertionsまで完走。旧HEADとの比較でtask状態・phaseGate全体・RQ／料金／承認範囲の不変、新規追記のローカルリンク全件、CI原本2件のbyte一致も確認した。今回の文書commitに対するGitHub CIはpush後の別判定であり、1a2f4d1の成功を継承したとは記録しない。
+
+
+## 16:30 UTC以降 — native CI失敗通知への対応
+
+3d07df0 run34498721201は主suiteの進行中に600秒へ到達、後続13checks／root UIは未実行。570秒stackのMCPケースは後にokとなりbackupケースへ進んでいたため永久TLS hangとは判定しない。成功1a2と697入力一致を確認し原FAIL／stackを保持。[4独立枠への分割と集計](native-ci-partition-fix-20260910.md)を追加した。
+
+Linuxは347＋309＋402＋338＝1396件とsupport264件、計1660件／17checks／skip0 PASS。元1392件の全出現を保持、新規4件だけの増加を照合。699入力・17原ログも一致。Mac対象11tests、npm verify（API143 assertions）、workflow YAMLと差分整合が成功。GitHub同commit検証はpush後に取得する。OS runtime／凍結9ab配布9filesとtask／phaseGate状態は変更しない。先行TLS ERRORの原因未確定・公開条件・CM完成済みを引き継ぐ。

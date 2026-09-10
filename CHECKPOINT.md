@@ -1,3 +1,7 @@
+# 2026-09-10 native CIタイムアウト修正の入口
+
+[CI修正記録](docs/native-ci-partition-fix-20260910.md)を先に読む。3d07df0の600秒FAILを保持し、進行中の主suiteを4独立jobへ分割。Linux1660件／17checksとWeb verifyは成功、GitHubの同commit結果は確認待ち。先行TLS ERRORの原因・LICENSE・既存Sitesアクセスは別の残件。凍結9ab配布物とCM完成済みを維持する。以下は前回の記録。
+
 # 2026-09-10 最終結果・CM完成後の再開入口
 
 現在の入口は[進捗・CM完成後の残件](docs/release-followup-20260910.md)。配布native／同梱host toolsは `9abf78a80d27aa9f847c4051d20e4c552e407276`、後続統合版は `1a2f4d1afc68e8920b084302e8c9f1271c1478e2`、再開branchは `codex/rockstaros-release-20260910`。内部の限定D0〜D6／導入・復旧／Game・SDK・実動画と、統合1a2のWeb/native CIは完了。先行する間欠障害の原因、LICENSE、既存Sitesアクセスは未解決。PR #3はdraft／OPEN、main未統合。

@@ -11,13 +11,17 @@ concurrency:
   group: native-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  source-tests:
+  partitions:
     # The launcher needs bwrap's --disable-userns (absent from Ubuntu 22.04).
     # Ubuntu 24.04 restricts unprivileged userns before bwrap can start; the
     # disposable runner relaxes that outer host control only for this job.
     # Rock's no_new_privs, bwrap namespaces/--disable-userns and seccomp stay on.
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [main-0, main-1, main-2, main-3, support]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -39,8 +43,17 @@ jobs:
             | /tmp/rock-runner-sandbox "$PWD/src/blackberryrock/recipe_worker.py" "$PWD/os/runner/isolated_entry.py" \
             | grep -Fx '{"text": "hello"}'
       - name: Native source regressions (not OS boot)
-        run: python3 scripts/test-native.py --output work/native-tests --diagnostic-stacks
+        env:
+          NATIVE_PART: ${{ matrix.part }}
+        run: |
+          if [ "$NATIVE_PART" = support ]; then
+            python3 scripts/test-native.py --output work/native-tests --diagnostic-stacks --part support
+          else
+            python3 scripts/test-native.py --output work/native-tests --diagnostic-stacks \
+              --part main --shard-index "${NATIVE_PART#main-}" --shard-count 4
+          fi
       - name: Root-owned disposable UI observers, replay geometry and readiness protocol
+        if: matrix.part == 'support'
         run: |
           mkdir -p work/native-root-ui
           sudo "$(command -v python3)" -B -W error::ResourceWarning -m unittest discover -s systems/rock-star-os/os/ui -p 'test_*evidence.py' -v > work/native-root-ui/observers.log 2>&1
@@ -61,8 +74,37 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: native-source-test-results
+          name: native-source-part-${{ matrix.part }}
           path: |
             work/native-tests/
             work/native-root-ui/*.log
+          retention-days: 7
+  source-tests:
+    name: source-tests
+    if: always()
+    needs: partitions
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: native-source-part-*
+          path: work/native-parts
+      - name: Require every partition and root UI gate to succeed
+        env:
+          PARTITION_RESULT: ${{ needs.partitions.result }}
+        run: test "$PARTITION_RESULT" = success
+      - name: Verify complete discovery, source inventories and original logs
+        run: python3 scripts/test-native.py --merge-parts work/native-parts --output work/native-merged --shard-count 4
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-source-test-results
+          path: |
+            work/native-merged/
+            work/native-parts/
           retention-days: 7

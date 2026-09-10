@@ -38,7 +38,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
-| R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) |
+| R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) · [記録](docs/native-ci-partition-fix-20260910.md) |
 | R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 | R06 | ブラウザで仕事の一連の操作を確認 | 完了 | [記録](docs/validation.md) |
 | R07 | 本人限定のSitesへ公開・本番確認 | 停止中: 既存Sitesの固有機能を保持する統合が必要。2026-09-10は既存projectを接続accountから取得できず、別projectを作らず停止 | [記録](docs/deployment-integration.md) · [記録](docs/release-followup-20260910.md) |
@@ -88,7 +88,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: CM制作は利用者申告で完成済み。既存CMの表現確認と告知・導入ページへの接続を進める。同一9abの限定D0〜D6／fresh導入・復旧／Game・SDK・実動画は内部受入済み、統合1a2f4d1のWeb/native CIも成功。先行TLS ERROR／600秒TIMEOUTの原因は未確定のため切り分けと必要な修正・再検証が残る。公開は製品LICENSE／第三者再配布条件と既存Sites NOT_FOUNDの解消待ち。追加1〜2日は外部条件の待ちを除くQEMU Preview仕上げの条件付き概算で、公開日・実機版の納期ではない。詳細はdocs/release-followup-20260910.md。
+次の作業: 3d07df0のnative CIは主suiteが進行中に600秒制限へ到達。4独立jobへの分割と全件照合を実装し、Linux 1660件／17checksとWeb verifyが成功。同commitのGitHub CIを確認する。OS本体と9ab配布候補は不変、先行するTLS ERRORの原因は未確定。CM制作は完成済み。公開は製品LICENSE／第三者再配布条件と既存Sitesアクセス待ち、既存CMから導入案内への接続が残る。追加1〜2日は外部条件の待ちを除く条件付き概算。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

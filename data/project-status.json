@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
   "milestone": "RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備",
-  "nextAction": "CM制作は利用者申告で完成済み。既存CMの表現確認と告知・導入ページへの接続を進める。同一9abの限定D0〜D6／fresh導入・復旧／Game・SDK・実動画は内部受入済み、統合1a2f4d1のWeb/native CIも成功。先行TLS ERROR／600秒TIMEOUTの原因は未確定のため切り分けと必要な修正・再検証が残る。公開は製品LICENSE／第三者再配布条件と既存Sites NOT_FOUNDの解消待ち。追加1〜2日は外部条件の待ちを除くQEMU Preview仕上げの条件付き概算で、公開日・実機版の納期ではない。詳細はdocs/release-followup-20260910.md。",
+  "nextAction": "3d07df0のnative CIは主suiteが進行中に600秒制限へ到達。4独立jobへの分割と全件照合を実装し、Linux 1660件／17checksとWeb verifyが成功。同commitのGitHub CIを確認する。OS本体と9ab配布候補は不変、先行するTLS ERRORの原因は未確定。CM制作は完成済み。公開は製品LICENSE／第三者再配布条件と既存Sitesアクセス待ち、既存CMから導入案内への接続が残る。追加1〜2日は外部条件の待ちを除く条件付き概算。",
   "tasks": [
     {
       "id": "R01",
@@ -40,7 +40,8 @@
       "dependsOn": [],
       "evidence": [
         "scripts/project-status.mjs",
-        ".github/workflows/ci.yml"
+        ".github/workflows/ci.yml",
+        "docs/native-ci-partition-fix-20260910.md"
       ]
     },
     {

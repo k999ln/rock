@@ -18,6 +18,9 @@ ROOT = Path(__file__).resolve().parents[1]
 NATIVE = ROOT / 'systems/rock-star-os'
 SUITES = ('tests', 'os/wallet_auth/tests', 'os/entitlement/tests',
           'os/atm/tests', 'os/service_access/tests', 'os/ai_routes/tests')
+SUPPORT_CHECKS = tuple(suite.replace('/', '-') for suite in SUITES[1:]) + (
+    'c-core', 'c-platform', 'c-ui', 'c-ui-build-tests', 'c-ui-actions',
+    'c-ui-native-replay', 'c-ui-ipc', 'ui-observers')
 
 # Optional child-side observation. It neither retries nor changes the parent's
 # deadline. Keep the file open through interpreter thread shutdown, too.
@@ -107,14 +110,115 @@ def log_result(text, code, *, unittest=False, success_marker=None):
     return {'tests': count, 'skipped': skipped, 'unclean_log': dirty, 'passed': bool(valid)}
 
 
+def merge_parts(parts, output, count):
+    """Fail closed on missing/duplicate partitions, inventory or log changes."""
+    if not 1 <= count <= 16:
+        raise ValueError('invalid native partition count')
+    expected_inputs = inventory()
+    reports = []
+    for path in sorted(parts.rglob('report.json')):
+        report = json.loads(path.read_text())
+        if (report.get('schema') != 'rock-native-regressions/1' or report.get('status') != 'PASS'
+                or report.get('source_unchanged') is not True or report.get('changed_inputs') != []
+                or report.get('input_sha256') != expected_inputs
+                or not report.get('started_utc') or not report.get('finished_utc')):
+            raise ValueError('incomplete or different-source native partition: ' + str(path))
+        reports.append((path, report))
+    if len(reports) != count + 1:
+        raise ValueError('missing or duplicate native partition reports')
+    main, support, all_ids = {}, None, None
+    for path, report in reports:
+        part = report.get('partition', {})
+        if part.get('kind') == 'main':
+            index = part.get('index')
+            if type(index) is not int or not 0 <= index < count or part.get('count') != count or index in main:
+                raise ValueError('duplicate or invalid main partition')
+            plan_path = path.parent / 'tests.selection.json'
+            raw = plan_path.read_bytes()
+            if hashlib.sha256(raw).hexdigest() != part.get('selection_sha256'):
+                raise ValueError('native selection hash differs')
+            plan = json.loads(raw)
+            ids = plan.get('tests')
+            if not isinstance(ids, list) or not ids or not all(type(name) is str and name for name in ids):
+                raise ValueError('invalid native discovery inventory')
+            if all_ids is None:
+                all_ids = ids
+            if ids != all_ids:
+                raise ValueError('native discovery inventories differ')
+            selected = [i for i, name in enumerate(ids) if
+                int.from_bytes(hashlib.sha256(name.split('.')[0].encode()).digest()[:8], 'big') % count == index]
+            if (plan.get('schema') != 'rock-native-selection/1' or plan.get('index') != index
+                    or plan.get('count') != count or plan.get('selected_ordinals') != selected or not selected
+                    or [check.get('name') for check in report.get('checks', [])] != ['tests']
+                    or report['checks'][0].get('tests') != len(selected)):
+                raise ValueError('native partition coverage differs')
+            main[index] = (path, report)
+        elif part == {'kind': 'support'} and support is None:
+            if [check.get('name') for check in report.get('checks', [])] != list(SUPPORT_CHECKS):
+                raise ValueError('native support checks differ')
+            support = (path, report)
+        else:
+            raise ValueError('duplicate or invalid support partition')
+    if set(main) != set(range(count)) or support is None:
+        raise ValueError('native partition coverage incomplete')
+    output.mkdir(parents=True, exist_ok=False, mode=0o700)
+    checks, sources = [], []
+    for index, (path, report) in enumerate([main[i] for i in range(count)] + [support]):
+        prefix = 'main-' + str(index) if index < count else 'support'
+        destination = output / prefix
+        shutil.copytree(path.parent, destination)
+        for check in report['checks']:
+            name = check['name']
+            log = path.parent / (name + '.log')
+            raw = log.read_bytes()
+            is_unittest = name == 'tests' or name.startswith('os-') or name in ('c-ui-ipc', 'ui-observers')
+            if (check.get('passed') is not True or type(check.get('exit_code')) is not int
+                    or check['exit_code'] != 0 or check.get('skipped') is not False
+                    or check.get('unclean_log') is not False
+                    or hashlib.sha256(raw).hexdigest() != check.get('log_sha256')
+                    or log_result(raw.decode(errors='replace'), 0, unittest=is_unittest) != {
+                        key: check[key] for key in ('tests', 'skipped', 'unclean_log', 'passed')}):
+                raise ValueError('native partition check or original log differs: ' + name)
+            checks.append({**check, 'name': prefix + '-' + name if index < count else name,
+                           'log_file': prefix + '/' + name + '.log'})
+        if report.get('total_python_test_executions') != sum(check['tests'] for check in report['checks']):
+            raise ValueError('native partition totals differ')
+        sources.append({'partition': report['partition'], 'report_file': prefix + '/report.json',
+                        'report_sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                        'platform': report['platform'], 'machine': report['machine'], 'python': report['python']})
+    merged = {'schema': 'rock-native-regressions/1', 'status': 'PASS',
+              'scope': 'Host source regressions across isolated CI jobs; no OS boot, device, provider or funds',
+              'started_utc': min(report['started_utc'] for _, report in reports),
+              'finished_utc': max(report['finished_utc'] for _, report in reports),
+              'checks': checks, 'total_python_test_executions': sum(check['tests'] for check in checks),
+              'input_sha256': expected_inputs, 'source_unchanged': True, 'changed_inputs': [],
+              'partitioned': True, 'main_test_executions': len(all_ids),
+              'partition_count': count, 'partition_reports': sources}
+    (output / 'report.json').write_text(json.dumps(merged, indent=2) + '\n')
+    print('PASS', merged['total_python_test_executions'], 'Python test executions; complete partition coverage')
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=ROOT / 'work/native-tests')
     parser.add_argument('--diagnostic-stacks', action='store_true',
                         help='Collect Python -m suite stacks before existing deadlines; direct scripts are unchanged')
+    parser.add_argument('--part', choices=('all', 'main', 'support'), default='all')
+    parser.add_argument('--shard-index', type=int)
+    parser.add_argument('--shard-count', type=int, default=4)
+    parser.add_argument('--merge-parts', type=Path)
     args = parser.parse_args()
     if sys.platform != 'linux':
         parser.exit(2, 'Native regressions require Linux. Android and Web checks are separate.\n')
+    if args.merge_parts:
+        return merge_parts(args.merge_parts.resolve(), args.output.resolve(), args.shard_count)
+    if args.part == 'main':
+        if (args.shard_index is None or not 1 <= args.shard_count <= 16
+                or not 0 <= args.shard_index < args.shard_count):
+            parser.error('main partition requires a valid index and count')
+    elif args.shard_index is not None:
+        parser.error('shard index only applies to the main partition')
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False, mode=0o700 if args.diagnostic_stacks else 0o777)
     before = inventory()
@@ -127,6 +231,11 @@ def main():
               'checks': [], 'input_sha256': before}
     if args.diagnostic_stacks:
         report['diagnostic_stacks'] = True
+    if args.part != 'all':
+        report['partition'] = {'kind': args.part}
+    if args.part == 'main':
+        report['partition'].update(index=args.shard_index, count=args.shard_count)
+        env['PYTHONPATH'] += os.pathsep + str(NATIVE / 'tests')
 
     def run(name, argv, cwd, timeout=300, *, unittest=False, success_marker=None):
         log = output / (name + '.log')
@@ -147,32 +256,39 @@ def main():
             (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
             raise SystemExit(1)
 
-    for suite in SUITES:
+    if args.part == 'main':
+        selection_path = output / 'tests.selection.json'
+        run('tests', [sys.executable, '-B', '-W', 'error::ResourceWarning', '-m', 'native_partition',
+                      '--index', str(args.shard_index), '--count', str(args.shard_count),
+                      '--selection', str(selection_path)], NATIVE, timeout=600, unittest=True)
+        report['partition']['selection_sha256'] = hashlib.sha256(selection_path.read_bytes()).hexdigest()
+    for suite in SUITES if args.part == 'all' else SUITES[1:] if args.part == 'support' else ():
         run(suite.replace('/', '-'), [sys.executable, '-B', '-W', 'error::ResourceWarning',
                                      '-m', 'unittest', 'discover', '-s', suite, '-v'], NATIVE,
             timeout=600 if suite == 'tests' else 300, unittest=True)
     # C outputs go to a disposable copy; the imported sources remain unchanged.
-    with tempfile.TemporaryDirectory(prefix='rock-native-c-') as directory:
-        work = Path(directory)
-        for component in ('core', 'platform', 'ui'):
-            target = work / component
-            shutil.copytree(NATIVE / 'os' / component, target)
-            run('c-' + component, ['make', 'all'], target)
-            if component == 'ui':
-                # Observer tests resolve the native project relative to __file__.
-                # Run binary/UI IPC here; observer Python suites are covered below.
-                run('c-ui-build-tests', ['make', 'rock-ui-test', 'rock-ipc-test'], target)
-                run('c-ui-actions', ['./rock-ui-test', str(NATIVE / 'os/assets/NotoSansCJKjp-Regular.otf')], target,
-                    success_marker='PASS native UI actions, request identities')
-                run('c-ui-native-replay', [sys.executable, '-B', '-W', 'error::ResourceWarning',
-                    str(NATIVE / 'os/ui/test_native_replay.py'), '--renderer', str(target / 'rock-ui-test'),
-                    '--font', str(NATIVE / 'os/assets/NotoSansCJKjp-Regular.otf')], target,
-                    success_marker='PASS public signed catalog native replay geometry')
-                run('c-ui-ipc', [sys.executable, '-B', '-W', 'error::ResourceWarning', 'test_ipc.py'], target, unittest=True)
-    # Matches os/ui/Makefile's normal host gate. Legacy ATM/wallet/power observer
-    # fixtures need separate auth/root setup; see native-os-validation.md.
-    run('ui-observers', [sys.executable, '-B', '-W', 'error::ResourceWarning',
-                        '-m', 'unittest', 'discover', '-s', 'os/ui', '-p', 'test_evidence.py', '-v'], NATIVE, unittest=True)
+    if args.part != 'main':
+        with tempfile.TemporaryDirectory(prefix='rock-native-c-') as directory:
+            work = Path(directory)
+            for component in ('core', 'platform', 'ui'):
+                target = work / component
+                shutil.copytree(NATIVE / 'os' / component, target)
+                run('c-' + component, ['make', 'all'], target)
+                if component == 'ui':
+                    # Observer tests resolve the native project relative to __file__.
+                    # Run binary/UI IPC here; observer Python suites are covered below.
+                    run('c-ui-build-tests', ['make', 'rock-ui-test', 'rock-ipc-test'], target)
+                    run('c-ui-actions', ['./rock-ui-test', str(NATIVE / 'os/assets/NotoSansCJKjp-Regular.otf')], target,
+                        success_marker='PASS native UI actions, request identities')
+                    run('c-ui-native-replay', [sys.executable, '-B', '-W', 'error::ResourceWarning',
+                        str(NATIVE / 'os/ui/test_native_replay.py'), '--renderer', str(target / 'rock-ui-test'),
+                        '--font', str(NATIVE / 'os/assets/NotoSansCJKjp-Regular.otf')], target,
+                        success_marker='PASS public signed catalog native replay geometry')
+                    run('c-ui-ipc', [sys.executable, '-B', '-W', 'error::ResourceWarning', 'test_ipc.py'], target, unittest=True)
+        # Matches os/ui/Makefile's normal host gate. Legacy ATM/wallet/power observer
+        # fixtures need separate auth/root setup; see native-os-validation.md.
+        run('ui-observers', [sys.executable, '-B', '-W', 'error::ResourceWarning',
+                            '-m', 'unittest', 'discover', '-s', 'os/ui', '-p', 'test_evidence.py', '-v'], NATIVE, unittest=True)
     after = inventory()
     report['source_unchanged'] = before == after
     report['changed_inputs'] = [name for name in sorted(before.keys() | after.keys()) if before.get(name) != after.get(name)]
