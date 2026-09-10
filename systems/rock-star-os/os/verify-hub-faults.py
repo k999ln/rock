@@ -28,6 +28,8 @@ SOURCE = REPO/'os/platform/hub_fault_fixture.py'
 spec = importlib.util.spec_from_file_location('fixed_hub_fault_contract', SOURCE)
 fixture = importlib.util.module_from_spec(spec); spec.loader.exec_module(fixture)
 require = fixture.require
+inventory_spec = importlib.util.spec_from_file_location('hub_fault_image_inventory', REPO/'os/desktop/image_inventory.py')
+image_inventory = importlib.util.module_from_spec(inventory_spec); inventory_spec.loader.exec_module(image_inventory)
 PREFIXES = ('usr', 'lib', 'bin', 'sbin', 'etc')
 HOOK = 'usr/libexec/rock-hub-fault-fixture.py'
 RUNTIME = 'usr/libexec/rock-hub-fault-runtime.json'
@@ -51,8 +53,9 @@ def regular(path):
 
 def embedded(image, path):
     result = subprocess.run(['debugfs', '-R', 'cat /'+path, str(image)], capture_output=True, timeout=30)
-    require(result.returncode == 0 and result.stdout and len(result.stdout) <= 32*1024*1024,
-            'missing or oversized embedded file: '+path)
+    errors = [line for line in result.stderr.splitlines() if line and not line.startswith(b'debugfs ')]
+    require(result.returncode == 0 and not errors and result.stdout and len(result.stdout) <= 32*1024*1024,
+            'missing, failed or oversized embedded file: '+path)
     return result.stdout
 
 
@@ -63,38 +66,38 @@ def check_fs(image):
 
 
 def tree_manifest(image, parent):
-    """Read-only debugfs exports; directories never become a guest root mount."""
+    """Read-only inode exports attest image metadata without host chown."""
     parent.mkdir(mode=0o700)
-    for prefix in PREFIXES:
-        # Map only this invoking user to namespace root so rdump can preserve
-        # root-owned runtime metadata without sudo or changing host ownership.
-        # Everything except the new export directory is bound read-only.
-        command = ['bwrap','--unshare-user','--uid','0','--gid','0','--unshare-net','--die-with-parent',
-                   '--ro-bind','/','/','--bind',str(parent),str(parent),
-                   '--cap-add','CAP_CHOWN','--cap-add','CAP_FOWNER',
-                   'debugfs','-R','rdump /'+prefix+' '+str(parent),str(image)]
-        result = subprocess.run(command,
-                                capture_output=True, text=True, timeout=120)
-        lines = [line for line in result.stderr.splitlines() if line and not line.startswith('debugfs ')]
-        require(result.returncode == 0 and not lines and (parent/prefix).exists(),
-                'runtime export failed: '+prefix+'; '+result.stderr[:2000])
+    actual = image_inventory.inventory(image, parent)
+    paths = actual['paths']
+    require(all('/'+prefix in paths for prefix in PREFIXES), 'required runtime prefix is missing')
     manifest, total = {}, 0
-    for directory, directories, files in os.walk(parent, followlinks=False):
-        for name in sorted(directories+files):
-            path = Path(directory)/name; value = path.lstat(); relative = path.relative_to(parent).as_posix()
-            if stat.S_ISLNK(value.st_mode): item = {'kind':'symlink','target':os.readlink(path)}
-            elif stat.S_ISDIR(value.st_mode): item = {'kind':'directory'}
-            else:
-                require(stat.S_ISREG(value.st_mode), 'unexpected special file in installed runtime')
-                total += value.st_size
-                require(total <= 2*1024**3, 'runtime export exceeds fixed byte limit')
-                item = {'kind':'file','bytes':value.st_size,'sha256':digest(path)}
-            item['mode'] = stat.S_IMODE(value.st_mode)
-            manifest[relative] = item
-            require(len(manifest) <= 20000, 'runtime inventory exceeds fixed path limit')
+    for path, value in paths.items():
+        relative = path.lstrip('/')
+        if relative.split('/')[0] not in PREFIXES: continue
+        item = {name:value[name] for name in ('kind','mode','uid','gid')}
+        require(item['kind'] in ('file','directory','symlink'), 'unexpected special file in installed runtime')
+        if item['kind'] in ('file','symlink'):
+            item.update(bytes=value['size'], sha256=value['sha256'])
+            total += value['size']
+            require(total <= 2*1024**3, 'runtime export exceeds fixed byte limit')
+        manifest[relative] = item
+        require(len(manifest) <= 20000, 'runtime inventory exceeds fixed path limit')
     require(len(manifest) >= 100 and manifest.get('usr/libexec/rock-sandbox-exec',{}).get('kind') == 'file',
             'installed runtime inventory is incomplete')
     return manifest
+
+
+def verified_embedded(image, path, manifest):
+    """Bind every separately read source/package to its inventoried path/bytes."""
+    path = path.lstrip('/')
+    require(re.fullmatch('[A-Za-z0-9_./-]+',path) and '..' not in path.split('/'), 'fixed safe embedded path required')
+    entry = manifest.get(path,{})
+    require(entry.get('kind') == 'file', 'inventoried regular embedded file required: '+path)
+    raw = embedded(image,path)
+    require(len(raw) == entry['bytes'] and hashlib.sha256(raw).hexdigest() == entry['sha256'],
+            'embedded content differs from runtime inventory: '+path)
+    return raw
 
 
 def inject(image, directory, name, path, raw, executable=False):
@@ -239,13 +242,14 @@ def main():
                        'gui':'NOT_RUN','stage0_ab':'NOT_RUN','whole_D3':'INCOMPLETE','real_funds':'NOT_RUN',
                        'platform_service_crash_interruption':'NOT_RUN','network':'none'},
               'runtime_manifest_prefixes':list(PREFIXES),
-              'runtime_manifest_metadata_scope':'content hashes, file/directory modes and symlink targets; source UID/GID are not attested'}
+              'runtime_manifest_schema':'rock-hub-runtime-manifest/2',
+              'runtime_manifest_metadata_scope':'all selected paths: kind, mode, source UID/GID; regular content and symlink target bytes bound by size and SHA256; inode numbers excluded'}
     try:
         game_gate = None
         if args.scope=='game-isolation':
             sys.path.insert(0,str(REPO/'os/desktop'))
             from game_gate_observer import Gate
-            game_gate = Gate(images,output,('os/verify-hub-faults.py','os/platform/hub_fault_fixture.py'),report['limits'])
+            game_gate = Gate(images,output,('os/verify-hub-faults.py','os/platform/hub_fault_fixture.py','os/desktop/image_inventory.py'),report['limits'])
             report.update(verification_scope=args.scope,wallet='NOT_RUN',game_scope_plan_sha256=game_gate.plan_sha)
         check_fs(inputs['rootfs.ext4'])
         original = tree_manifest(inputs['rootfs.ext4'],output/'original-runtime')
@@ -256,7 +260,7 @@ def main():
                    'src/blackberryrock/packages.py':'usr/lib/rock-platform/blackberryrock/packages.py',
                    'os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform':'etc/init.d/S50rockplatform'}
         for source,path in mapping.items():
-            require((output/'original-runtime'/path).read_bytes() == (REPO/source).read_bytes(),
+            require(verified_embedded(inputs['rootfs.ext4'],path,original) == (REPO/source).read_bytes(),
                     'harness source does not match actual frozen runtime: '+source)
         runtime = {path:original[path]['sha256'] for path in mapping.values()}
         runtime[fixture.LAUNCHER.lstrip('/')] = original[fixture.LAUNCHER.lstrip('/')]['sha256']
@@ -268,8 +272,10 @@ def main():
         sys.path.insert(0,str(REPO/'src'))
         from blackberryrock.packages import verify_package, PUBLIC_TEST_KEY, TEST_PUBLISHER
         found = []
-        for path in (output/'original-runtime/usr/share/rock/registry').glob('*.rock.json'):
-            package = json.loads(path.read_text())
+        for path in sorted(original):
+            if not (path.startswith('usr/share/rock/registry/') and path.endswith('.rock.json') and
+                    '/' not in path[len('usr/share/rock/registry/'):]): continue
+            package = json.loads(verified_embedded(inputs['rootfs.ext4'],path,original))
             if package.get('manifest',{}).get('id') == fixture.TOOL and package['manifest'].get('version') == fixture.VERSION:
                 manifest, package_hash = verify_package(package,{TEST_PUBLISHER:PUBLIC_TEST_KEY})
                 require(manifest['execution_targets'] == ['device_local'], 'fixture must use the signed local execution target')
@@ -277,7 +283,7 @@ def main():
         require(len(found) == 1, 'exactly one actual signed test Tool version is required')
         package_hash = found[0]; report['signed_package_sha256'] = package_hash
         require(package_hash == fixture.PACKAGE_HASH and
-                fixture.hashed(json.loads((output/'original-runtime'/fixture.PACKAGE.lstrip('/')).read_bytes())) == package_hash,
+                fixture.hashed(json.loads(verified_embedded(inputs['rootfs.ext4'],fixture.PACKAGE,original))) == package_hash,
                 'fixed public signature inputs require the exact installed text-tidy version')
         derived = output/'derived-rootfs.ext4'
         subprocess.run(['cp','--sparse=always','--reflink=auto',str(inputs['rootfs.ext4']),str(derived)],check=True,timeout=120)

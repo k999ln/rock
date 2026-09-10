@@ -9,6 +9,9 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
+import hashlib
+import subprocess
 
 SOURCE = Path(__file__).resolve().parents[1] / 'os/platform/hub_fault_fixture.py'
 spec = importlib.util.spec_from_file_location('hub_fault_contract_test', SOURCE)
@@ -159,6 +162,58 @@ class FaultEvidenceGuards(unittest.TestCase):
         with self.assertRaises(ValueError): contract.validate_manifest(before, added, set(added))
         with self.assertRaises(ValueError): contract.validate_manifest(before, {**before, 'etc/other': {}}, set(added))
         with self.assertRaises(ValueError): contract.validate_manifest(before, {**before, **added, 'usr/bin/python3.13': {}}, set(added))
+
+    def runtime_inventory(self):
+        paths = {'/'+prefix:{'kind':'directory','mode':0o755,'uid':0,'gid':0} for prefix in host.PREFIXES}
+        for i in range(100):
+            paths['/usr/file'+str(i)] = {'kind':'file','mode':0o644,'uid':0,'gid':0,'size':1,'sha256':'a'*64}
+        paths['/usr/libexec/rock-sandbox-exec'] = dict(paths['/usr/file0'],mode=0o755)
+        paths['/etc/rock-wallet/backend.json'] = dict(paths['/usr/file0'],mode=0o600,uid=1003,gid=1003)
+        paths['/bin/sh'] = {'kind':'symlink','mode':0o777,'uid':0,'gid':0,'size':7,'sha256':hashlib.sha256(b'busybox').hexdigest()}
+        paths['/data'] = {'kind':'directory','mode':0o700,'uid':1003,'gid':1003}
+        return {'paths':paths}
+
+    def project_inventory(self, value):
+        with tempfile.TemporaryDirectory() as temporary, patch.object(host.image_inventory,'inventory',return_value=value):
+            return host.tree_manifest(Path('/synthetic.ext4'),Path(temporary)/'inventory')
+
+    def test_runtime_projection_retains_private_ownership_and_symlink_content(self):
+        before=self.project_inventory(self.runtime_inventory())
+        self.assertNotIn('data',before)
+        self.assertEqual((1003,1003,0o600),tuple(before['etc/rock-wallet/backend.json'][key] for key in ('uid','gid','mode')))
+        self.assertEqual(hashlib.sha256(b'busybox').hexdigest(),before['bin/sh']['sha256'])
+        for path,field in [('etc/rock-wallet/backend.json','uid'),('etc/rock-wallet/backend.json','gid'),
+                           ('etc/rock-wallet/backend.json','mode'),('bin/sh','bytes'),('bin/sh','sha256')]:
+            changed=copy.deepcopy(before);changed[path][field]='changed'
+            with self.subTest(path=path,field=field),self.assertRaises(ValueError):
+                contract.validate_manifest(before,changed,set())
+
+    def test_runtime_projection_requires_each_prefix_and_fixed_path_byte_bounds(self):
+        cases=[]
+        value=self.runtime_inventory();del value['paths']['/etc'];cases.append(value)
+        value=self.runtime_inventory();del value['paths']['/usr/libexec/rock-sandbox-exec'];cases.append(value)
+        value=self.runtime_inventory();value['paths']['/usr/file0']['size']=2*1024**3+1;cases.append(value)
+        value=self.runtime_inventory();value['paths']['/usr/file0']['kind']='device';cases.append(value)
+        value=self.runtime_inventory()
+        for i in range(20001):value['paths']['/usr/extra'+str(i)]=dict(value['paths']['/usr/file0'])
+        cases.append(value)
+        for value in cases:
+            with self.assertRaises(ValueError):self.project_inventory(value)
+
+    def test_separate_embedded_read_must_match_inventoried_path_size_and_bytes(self):
+        raw=b'fixed signed content'
+        entry={'kind':'file','bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+        with patch.object(host,'embedded',return_value=raw):
+            self.assertEqual(raw,host.verified_embedded(Path('/synthetic'),'usr/file',{'usr/file':entry}))
+            for changed in ({},dict(entry,kind='symlink'),dict(entry,bytes=len(raw)+1),dict(entry,sha256='b'*64)):
+                with self.assertRaises(ValueError):host.verified_embedded(Path('/synthetic'),'usr/file',{'usr/file':changed})
+            for path in ('usr/../file','usr/file;quit','usr/file\n'):
+                with self.assertRaises(ValueError):host.verified_embedded(Path('/synthetic'),path,{'usr/file':entry})
+
+    def test_embedded_read_rejects_debugfs_error_even_with_success_and_content(self):
+        result=subprocess.CompletedProcess([],0,b'content',b'debugfs 1.47.2\ncat: read failed\n')
+        with patch.object(host.subprocess,'run',return_value=result),self.assertRaises(ValueError):
+            host.embedded(Path('/synthetic'),'usr/file')
 
     def test_complete_matrix_cannot_skip_a_fault_or_restart(self):
         with self.assertRaises(ValueError): contract.validate_matrix([])
