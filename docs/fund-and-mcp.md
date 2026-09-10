@@ -49,8 +49,12 @@ MCP仕様: https://modelcontextprotocol.io/specification/2025-11-25/basic/transp
 Codex設定: https://learn.chatgpt.com/docs/extend/mcp?surface=cli
 
 
-## Fund marketplace front
+## Hub / retained plans and operations
 
-The final front uses a market-style header/search, horizontal categories, status filters, compact fund cards, and an overview strip. Reference: https://polymarket.com/predictions . Rock star retains its own name and fund/tool content; it does not copy market odds, volume, financial transactions or assets.
+The standard homepage is the automation Hub. The existing four Mr. tools open directly, with prerequisites, processing location, output review and file export. `/fund` retains saved strategy presets, allocation and cost assumptions without changing their storage contract. It never purchases an investment.
 
-Four cards are strategy presets over the same four Mr. utilities (Coconala Works, Creators, All-in Rock star, Editor Lab); Voice and Research are clearly preparation-only. Selecting a card opens its tools and status. Joining saves that preset's allocation as the user's active Rock star plan; it does not buy an investment. Switching a plan is explicit. Home execution totals cover the user's standalone tool runs; `/work` records its own job events without double-counting them in the fund history. Detailed allocation/boost assumptions, wallet and PC setup are available on demand.
+The preserved Sites execution lifecycle at `/api/jobs` authorizes every tool before actual execution. The workflow at `/work` uses `/api/work-jobs` and its existing revision/idempotent event contract. The same tool execution enters tool_runs once; the workflow event is separate progress, not another execution.
+
+`/activity` shows execution history. `/wallet` keeps manual JPY bookkeeping marked unverified, with append-only reversals. `/settings` exposes tool admission controls and verified PC connection records. These are not native Wallet balances or financial provider connections.
+
+PWA metadata and service-worker upgrading are retained. Cache v3 excludes all APIs, sign-in/out paths, RSC requests, private/no-store responses; cacheable static assets and successful public Hub shell only. Published user identity is still enforced by the Sites gateway. Local validation does not establish live Sites access or migration acceptance.

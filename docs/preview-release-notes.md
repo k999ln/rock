@@ -2,6 +2,10 @@
 
 この文書は Mac arm64 package の共通リリースノートです。具体的な版、40 桁 source/host tools commit、image triple と factory hash、boot profile と Game authority/config hash、archive hash は隣接する `release-manifest.json` が正本です。資料の存在を受入済みや公開済みとは扱いません。
 
+## 2026-09-10 公開準備の補足
+
+Webの入口はHub、手順型仕事/実行履歴/手入力Wallet/接続設定へ更新し、旧SitesのPWA/API/DB履歴を統合した。これは旧9ab native packageの再受入ではない。[最新の公開条件](launch-readiness-20260910.md)と[許諾判断資料](evidence/launch/legal/decision-one-page.md)を参照。元packageの同build legal-info/対応sourceを実物照合し、別assetの全inventoryを既存Draftへ追記した。製品LICENSE未決定・本番署名なし・元Sites未接続・CM選択未確定のため、旧candidateとDraft状態を保持する。
+
 ## 導入で変わること
 
 初回の利用者が既存 Lima VM の識別子や開発担当の絶対 path を用意する必要がなくなります。署名・hash を検証した配布物から専用 VM を作り、既存の signed A/B OS と private browser viewer を利用します。保存結果へ戻るための起動・正常終了案内・再開・検証付き backup・別端末名 restore・所有 VM の削除を同じ入口へまとめています。

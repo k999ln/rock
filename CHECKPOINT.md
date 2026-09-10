@@ -1,6 +1,6 @@
 # ローンチ準備の現在入口
 
-[ローンチ準備記録](docs/launch-readiness-20260910.md)とLCH01〜07を先に読む。再開branchは `codex/rockstaros-release-20260910`。最新の主作業はHubフロントの改修、既存Sites履歴の復旧、配布・署名・CM・原TLSエラーの照合。開始時29e4f72、配布候補9abは別のまま。以下は過去の履歴。
+[ローンチ準備記録](docs/launch-readiness-20260910.md)とLCH01〜07を先に読む。Hubフロント/既存Sites API・PWA・DB履歴の統合、D1両upgrade、実ブラウザ、PC17回帰、原TLS診断、配布全inventoryを実施。再開branch `codex/rockstaros-release-20260910` から最終 `codex/rockstaros-launch-candidate-20260910` をmain基点no-ffで用意する。開始29e4、凍結配布9abは別のまま。**BLOCKED_FOR_LAUNCH**。詳細な原因・path・証拠・次の操作は上記を参照。以下は過去の履歴。
 
 # 2026-09-10 native CIタイムアウト修正の入口
 

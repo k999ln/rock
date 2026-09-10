@@ -713,6 +713,13 @@
     "distributionCommit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
     "validatedCurrentCommit": null,
     "publicRelease": false,
-    "mainMerged": false
+    "mainMerged": false,
+    "sitesSourceCommit": "c6942d5ef72e9dd16345b9363e68e0e18ca25079",
+    "siteAccess": "NOT_FOUND_IN_CONNECTED_ACCOUNT",
+    "license": "AWAITING_OWNER_DECISION",
+    "signing": "AWAITING_SIGNING_SETUP",
+    "campaign": "AWAITING_SELECTION",
+    "nativeHistoricalTlsCause": "UNDETERMINED",
+    "candidateBranch": "codex/rockstaros-launch-candidate-20260910"
   }
 }

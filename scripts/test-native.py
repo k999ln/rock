@@ -10,6 +10,7 @@ import platform
 import re
 import shutil
 import signal
+import stat
 import subprocess
 import sys
 import tempfile
@@ -110,6 +111,50 @@ def log_result(text, code, *, unittest=False, success_marker=None):
     return {'tests': count, 'skipped': skipped, 'unclean_log': dirty, 'passed': bool(valid)}
 
 
+def verified_sidecars(directory, check, *, diagnostic, main, prefix):
+    """Bind each declared stack to its raw bytes before copying the artifact."""
+    observed = {}
+    name = check['name']
+    python_check = (name == 'tests' or name.startswith('os-') or name in
+                    ('c-ui-native-replay', 'c-ui-ipc', 'ui-observers'))
+    specifications = (
+        ('diagnostic_stacks', name + '.stacks.log', diagnostic and python_check),
+        ('test_failure_stacks', 'tests.selection.failures.stacks.log',
+         diagnostic and main and name == 'tests'),
+    )
+    for field, expected_name, required in specifications:
+        value = check.get(field)
+        if value is None:
+            if required:
+                raise ValueError('missing required native stack metadata: ' + field)
+            continue
+        if not isinstance(value, dict):
+            raise ValueError('invalid native stack metadata: ' + field)
+        if field == 'test_failure_stacks' and not (main and name == 'tests'):
+            raise ValueError('unexpected per-test native stack metadata')
+        if field == 'diagnostic_stacks' and value.get('status') == 'NOT_APPLICABLE_DIRECT_SCRIPT':
+            if name not in ('c-ui-native-replay', 'c-ui-ipc') or 'file' in value:
+                raise ValueError('invalid native direct-script diagnostic exception')
+            observed[field] = dict(value)
+            continue
+        if (value.get('file') != expected_name or type(value.get('bytes')) is not int
+                or value['bytes'] < 0 or not isinstance(value.get('sha256'), str)
+                or re.fullmatch('[0-9a-f]{64}', value['sha256']) is None):
+            raise ValueError('invalid native stack identity: ' + field)
+        path = directory / expected_name
+        try:
+            info = path.lstat()
+        except OSError as error:
+            raise ValueError('missing native stack: ' + expected_name) from error
+        if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
+            raise ValueError('native stack must be a distinct regular file: ' + expected_name)
+        raw = path.read_bytes()
+        if len(raw) != value['bytes'] or hashlib.sha256(raw).hexdigest() != value['sha256']:
+            raise ValueError('native stack bytes differ: ' + expected_name)
+        observed[field] = {**value, 'file': prefix + '/' + expected_name}
+    return observed
+
+
 def merge_parts(parts, output, count):
     """Fail closed on missing/duplicate partitions, inventory or log changes."""
     if not 1 <= count <= 16:
@@ -166,7 +211,6 @@ def merge_parts(parts, output, count):
     for index, (path, report) in enumerate([main[i] for i in range(count)] + [support]):
         prefix = 'main-' + str(index) if index < count else 'support'
         destination = output / prefix
-        shutil.copytree(path.parent, destination)
         for check in report['checks']:
             name = check['name']
             log = path.parent / (name + '.log')
@@ -179,10 +223,16 @@ def merge_parts(parts, output, count):
                     or log_result(raw.decode(errors='replace'), 0, unittest=is_unittest) != {
                         key: check[key] for key in ('tests', 'skipped', 'unclean_log', 'passed')}):
                 raise ValueError('native partition check or original log differs: ' + name)
-            checks.append({**check, 'name': prefix + '-' + name if index < count else name,
+            sidecars = verified_sidecars(path.parent, check,
+                diagnostic=report.get('diagnostic_stacks') is True, main=index < count, prefix=prefix)
+            checks.append({**check, **sidecars, 'name': prefix + '-' + name if index < count else name,
                            'log_file': prefix + '/' + name + '.log'})
         if report.get('total_python_test_executions') != sum(check['tests'] for check in report['checks']):
             raise ValueError('native partition totals differ')
+        shutil.copytree(path.parent, destination)
+        for check in report['checks']:
+            verified_sidecars(destination, check,
+                diagnostic=report.get('diagnostic_stacks') is True, main=index < count, prefix=prefix)
         sources.append({'partition': report['partition'], 'report_file': prefix + '/report.json',
                         'report_sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
                         'platform': report['platform'], 'machine': report['machine'], 'python': report['python']})
@@ -249,6 +299,12 @@ def main():
                  'log_sha256': hashlib.sha256(log.read_bytes()).hexdigest()}
         if diagnostic is not None:
             entry['diagnostic_stacks'] = diagnostic
+        if name == 'tests' and args.part == 'main' and args.diagnostic_stacks:
+            failure_path = output / 'tests.selection.failures.stacks.log'
+            if failure_path.exists():
+                raw = failure_path.read_bytes()
+                entry['test_failure_stacks'] = {'file': failure_path.name,
+                    'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
         report['checks'].append(entry)
         print(json.dumps(entry), flush=True)
         if code == 124:
@@ -260,7 +316,9 @@ def main():
         selection_path = output / 'tests.selection.json'
         run('tests', [sys.executable, '-B', '-W', 'error::ResourceWarning', '-m', 'native_partition',
                       '--index', str(args.shard_index), '--count', str(args.shard_count),
-                      '--selection', str(selection_path)], NATIVE, timeout=600, unittest=True)
+                      '--selection', str(selection_path)] +
+                      (['--capture-test-failures'] if args.diagnostic_stacks else []),
+                      NATIVE, timeout=600, unittest=True)
         report['partition']['selection_sha256'] = hashlib.sha256(selection_path.read_bytes()).hexdigest()
     for suite in SUITES if args.part == 'all' else SUITES[1:] if args.part == 'support' else ():
         run(suite.replace('/', '-'), [sys.executable, '-B', '-W', 'error::ResourceWarning',

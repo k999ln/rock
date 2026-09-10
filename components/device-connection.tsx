@@ -27,8 +27,7 @@ export function DeviceConnection() {
         'MCPの4つの機能を確認しました。ツールの実行ボタンからPCで処理できます。',
       );
     } catch {
-      disconnectDevice();
-      setConnected(false);
+      setConnected(!!deviceToken());
       setMessage(
         'PCに接続できませんでした。接続アプリが起動しているか確認し、ブラウザにローカルネットワークの許可が出た場合は許可してから再接続してください。',
       );
@@ -97,8 +96,8 @@ export function DeviceConnection() {
                 </a>
               </li>
               <li>
-                展開したフォルダの「Rock star接続.command」を開く（macOS / Python
-                3.10以上）。
+                展開したフォルダの「Rock star接続.command」を開く（macOS /
+                Python 3.10以上）。
               </li>
               <li>
                 この画面で「このPCを接続」を押す。2回目からも、接続アプリの起動だけで使えます。
@@ -144,7 +143,7 @@ export function DeviceConnection() {
         <Cable size={18} />
         <p>
           接続先は自分のPC（{DEVICE_URL}
-          ）だけです。原稿やファイルはPC内で処理し、サイトにはツール名・成否・所要時間だけを記録します。利用するブラウザによっては初回の接続許可が必要です。
+          ）だけです。原稿やファイルはPC内で処理し、サイトには実行履歴・処理量などのメタデータだけを記録します。利用するブラウザによっては初回の接続許可が必要です。
         </p>
       </div>
     </section>

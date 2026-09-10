@@ -1,21 +1,27 @@
 'use client';
 import { useEffect, useState } from 'react';
+import {
+  ExecutionSignin,
+  useExecutionAccess,
+} from '@/components/execution-access';
 import { Play, FolderOpen, Copy } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  deviceToken,
-  runDevice,
-  recordRun,
-  type RunRecorder,
-} from '@/lib/device';
+  executeTracked,
+  processedBytes,
+  OperationRequestError,
+} from '@/lib/operations-client';
+import { deviceToken, runDevice, type RunRecorder } from '@/lib/device';
 export function DeliveryRunner({
   onRecord,
+  onRunningChange,
   executionDisabled = false,
 }: {
   onRecord?: RunRecorder;
+  onRunningChange?: (running: boolean) => void;
   executionDisabled?: boolean;
 }) {
-  const saveRun: RunRecorder = onRecord ?? recordRun;
+  const { needsSignin, setNeedsSignin } = useExecutionAccess();
   const [connected, setConnected] = useState(false),
     [review, setReview] = useState(''),
     [files, setFiles] = useState<File[]>([]),
@@ -29,14 +35,14 @@ export function DeliveryRunner({
     return () => window.removeEventListener('loop-device', update);
   }, []);
   async function run(sample = false) {
+    if (busy || executionDisabled) return;
     setBusy(true);
-    window.dispatchEvent(
-      new CustomEvent('loop-run-state', { detail: 'mr-delivery' }),
-    );
+    onRunningChange?.(true);
     setError('');
     setOutput('');
     const started = performance.now();
-    let completed = false;
+    let completed = false,
+      executed = false;
     try {
       let args: Record<string, unknown> = { sample: true };
       if (!sample) {
@@ -61,22 +67,36 @@ export function DeliveryRunner({
         }
         args = { review: JSON.parse(review), files: entries };
       }
-      const result = await runDevice('verify_delivery', args);
+      const tracked = await executeTracked({
+        tool: 'mr-delivery',
+        transport: 'local-mcp',
+        sample,
+        inputBytes: processedBytes(args),
+        task: () => {
+          executed = true;
+          return runDevice('verify_delivery', args);
+        },
+      });
+      const result = tracked.result;
+      setError(tracked.warning);
       completed = true;
       setOutput(result.output);
-      await saveRun(
-        'mr-delivery',
-        'local-mcp',
-        'completed',
-        started,
-        sample,
-        result.status === 'PASS' ? 'passed' : 'needs_review',
-      );
+      if (onRecord)
+        await onRecord(
+          'mr-delivery',
+          'local-mcp',
+          'completed',
+          started,
+          sample,
+          result.status === 'PASS' ? 'passed' : 'needs_review',
+        );
     } catch (e) {
+      if (e instanceof OperationRequestError && e.status === 401)
+        setNeedsSignin(true);
       setError(e instanceof Error ? e.message : '入力を確認してください。');
-      if (!completed)
+      if (executed && !completed && onRecord)
         try {
-          await saveRun(
+          await onRecord(
             'mr-delivery',
             'local-mcp',
             'failed',
@@ -87,12 +107,13 @@ export function DeliveryRunner({
         } catch {}
     } finally {
       setBusy(false);
-      window.dispatchEvent(new CustomEvent('loop-run-state', { detail: '' }));
+      onRunningChange?.(false);
     }
   }
   return (
     <section className="mr-workbench">
-      <fieldset disabled={busy || executionDisabled}>
+      {needsSignin && <ExecutionSignin />}
+      <fieldset disabled={busy || executionDisabled || needsSignin}>
         <div className="bench-heading">
           <h3>PCで納品記録を照合</h3>
           <span className="outline-tag">
@@ -104,7 +125,7 @@ export function DeliveryRunner({
         </p>
         {!connected && (
           <p className="notice">
-            「PC・MCP接続」タブでこのPCを接続してください。一度つなぐと、ここからワンボタンで実行できます。
+            画面右上の「PCを接続」から、このPCを接続してください。一度つなぐと、ここからワンボタンで実行できます。
           </p>
         )}
         <label htmlFor="delivery-review" className="bench-field">

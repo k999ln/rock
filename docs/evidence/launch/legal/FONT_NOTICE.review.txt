@@ -1,0 +1,17 @@
+Noto Sans CJK JP Regular — Version 2.004
+
+© 2014-2021 Adobe (http://www.adobe.com/).
+Noto is a trademark of Google Inc.
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+The unmodified license text is included in native/os/assets/NotoSansCJK-LICENSE.txt
+and in the OS at /usr/share/licenses/rock-font/NotoSansCJK-LICENSE.txt.
+
+Original font: notofonts/noto-cjk
+Commit: 523d033d6cb47f4a80c58a35753646f5c3608a78
+Path: Sans/OTF/Japanese/NotoSansCJKjp-Regular.otf
+SHA-256: 68a3fc98800b2a27b371f2fb79991daf3633bd89309d4ffaa6946fd587f375b5
+
+Review material only. The existing candidate was not modified. This text records
+the font's verified embedded notices and can be included with a newly approved
+candidate so that the notices are visible without reading binary font metadata.

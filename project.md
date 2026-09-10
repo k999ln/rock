@@ -1,9 +1,10 @@
 # Rock star — 事業・設計・進捗
 
-## 2026-09-10 — ローンチ準備とHubデザインの改修を開始
+## 2026-09-10 — Hub改修と既存Sites履歴を統合
 
-利用者の実行プロンプトとフロント改善指示を受領。GitHubを再取得しmain `7cdbb5fedc86ee3978ed329d9312147d137c9199`、再開branch `codex/rockstaros-release-20260910` の `29e4f7203f72d9949e2dfc90b64c4215d4bbb765` から分離worktreeで着手。Hubを標準入口へ変更し、既存Web商品・仕事API・旧ファンド保存を再利用する。LCH01〜07は[ローンチ準備記録](docs/launch-readiness-20260910.md)で追跡。元9ab image/host toolsと過去受入は保持。一般公開とmain mergeはまだ行わない。
+Hub・仕事/履歴・Wallet・接続設定へ導線を再設計し、旧ファンド/PWA/認証実行/手入力会計を保持。2つの仕事APIを分離し、両DB履歴からのD1移行、ブラウザの未認証→サンプル実行、PCの再接続race/実行session固定を検証した。全依存auditの4highはsharpの限定更新で0。原TLSの観測を強化し、434,096recordの配布inventoryと許諾判断資料をDraftへ追加した。元9ab配布物は不変。
 
+[現在のLCH01〜07と次の一操作](docs/launch-readiness-20260910.md)を正本とする。**BLOCKED_FOR_LAUNCH**。原TLS原因、所有者のlicense決定、管理署名設定、元Sitesアカウント、確定CM、最終新配布受入は残る。最終main候補は別Draft PRで正確なHEAD/treeを検証し、一般公開/main mergeはまだ行わない。以下は過去の日付付き履歴。
 
 ## 2026-09-10 — 3d07df0のnative CIタイムアウト修正・GitHub検証済み
 

@@ -1,9 +1,123 @@
 export const DEVICE_URL = 'http://127.0.0.1:38479';
 export type RunRecorder = (
-  tool: string, transport: 'browser' | 'local-mcp', status: 'completed' | 'failed',
-  started: number, sample: boolean, outcome?: 'passed' | 'needs_review' | 'failed',
+  tool: string,
+  transport: 'browser' | 'local-mcp',
+  status: 'completed' | 'failed',
+  started: number,
+  sample: boolean,
+  outcome?: 'passed' | 'needs_review' | 'failed',
 ) => Promise<void>;
 const TOKEN = 'loop.device.session';
+const DEVICE_ID = 'loop.device.id';
+let verifying: {
+  token: string;
+  id: string;
+  generation: number;
+  promise: Promise<void>;
+} | null = null;
+let activeCalls = 0;
+let sessionGeneration = 0;
+export function deviceId() {
+  let id = sessionStorage.getItem(DEVICE_ID);
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem(DEVICE_ID, id);
+  }
+  return id;
+}
+function currentSession(token: string, id: string, generation: number) {
+  return (
+    sessionGeneration === generation &&
+    deviceToken() === token &&
+    sessionStorage.getItem(DEVICE_ID) === id
+  );
+}
+export function captureDeviceSession() {
+  const token = deviceToken();
+  if (!token) throw new Error('PCを接続してください。');
+  const id = deviceId(),
+    generation = sessionGeneration;
+  return { id, isCurrent: () => currentSession(token, id, generation) };
+}
+async function reportDevice(
+  action: 'connect' | 'heartbeat' | 'disconnect',
+  id = deviceId(),
+) {
+  const response = await fetch('/api/devices', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      id,
+      action,
+      ...(action === 'connect' ? { name: 'このPC' } : {}),
+    }),
+    signal: AbortSignal.timeout(5000),
+  });
+  if (!response.ok)
+    throw new Error('PC接続の保存を確認できません。再接続してください。');
+}
+export function verifyDevice(): Promise<void> {
+  const token = deviceToken();
+  if (!token) return Promise.reject(new Error('PCを接続してください。'));
+  const id = deviceId();
+  const generation = sessionGeneration;
+  if (
+    verifying?.token === token &&
+    verifying.id === id &&
+    verifying.generation === generation
+  )
+    return verifying.promise;
+  const promise = (async () => {
+    const response = await fetch(DEVICE_URL + '/mcp', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+        'MCP-Protocol-Version': '2025-11-25',
+        Accept: 'application/json, text/event-stream',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: crypto.randomUUID(),
+        method: 'ping',
+      }),
+      signal: AbortSignal.timeout(5000),
+    });
+    const message = (await response.json()) as {
+      error?: unknown;
+      result?: unknown;
+    };
+    if (!response.ok || message.error || !message.result)
+      throw new Error('PCとの接続が切れました。');
+    if (!currentSession(token, id, generation))
+      throw new Error('PC接続が変更されました。もう一度実行してください。');
+    await reportDevice('heartbeat', id);
+    if (!currentSession(token, id, generation))
+      throw new Error('PC接続が変更されました。もう一度実行してください。');
+  })()
+    .catch((error) => {
+      // An old ping must never disconnect or admit work on a newly connected PC.
+      if (currentSession(token, id, generation)) disconnectDevice();
+      throw error;
+    })
+    .finally(() => {
+      if (verifying?.promise === promise) verifying = null;
+    });
+  verifying = { token, id, generation, promise };
+  return promise;
+}
+export function monitorDevice() {
+  const check = () => {
+    if (deviceToken() && !activeCalls) void verifyDevice().catch(() => {});
+  };
+  check();
+  const timer = setInterval(check, 30000);
+  window.addEventListener('online', check);
+  return () => {
+    clearInterval(timer);
+    window.removeEventListener('online', check);
+  };
+}
 export function deviceToken() {
   try {
     return sessionStorage.getItem(TOKEN) || '';
@@ -12,12 +126,16 @@ export function deviceToken() {
   }
 }
 export function disconnectDevice() {
+  sessionGeneration++;
+  if (deviceToken()) void reportDevice('disconnect').catch(() => {});
   try {
     sessionStorage.removeItem(TOKEN);
+    sessionStorage.removeItem(DEVICE_ID);
   } catch {}
   window.dispatchEvent(new Event('loop-device'));
 }
 export async function connectDevice() {
+  const generation = ++sessionGeneration;
   const r = await fetch(DEVICE_URL + '/connect', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -70,67 +188,73 @@ export async function connectDevice() {
   const listed = await call(2, 'tools/list');
   if (listed.tools?.length !== 4)
     throw new Error('MCPツールを確認できませんでした。');
+  if (generation !== sessionGeneration)
+    throw new Error('接続確認は取り消されました。');
+  const id = crypto.randomUUID();
+  sessionStorage.setItem(DEVICE_ID, id);
   sessionStorage.setItem(TOKEN, data.token);
+  try {
+    await reportDevice('connect', id);
+    if (!currentSession(data.token, id, generation))
+      throw new Error('PC接続が変更されました。接続状態を確認してください。');
+  } catch (error) {
+    if (currentSession(data.token, id, generation)) {
+      sessionStorage.removeItem(TOKEN);
+      sessionStorage.removeItem(DEVICE_ID);
+    }
+    throw error;
+  }
   window.dispatchEvent(new Event('loop-device'));
   return data;
 }
 export async function runDevice(name: string, args: Record<string, unknown>) {
   const token = deviceToken();
   if (!token) throw new Error('「PC・MCP接続」からこのPCを接続してください。');
-  const r = await fetch(DEVICE_URL + '/mcp', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json, text/event-stream',
-      'MCP-Protocol-Version': '2025-11-25',
-      Authorization: 'Bearer ' + token,
-    },
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      id: crypto.randomUUID(),
-      method: 'tools/call',
-      params: { name, arguments: args },
-    }),
-    signal: AbortSignal.timeout(60000),
-  }).catch(()=>{disconnectDevice();throw new Error('PCとの接続が切れました。接続し直してください。');});
-  if (!r.ok) {disconnectDevice();throw new Error('PCとの接続が切れました。接続し直してください。');}
-  const data = (await r.json()) as {
-    error?: { message: string };
-    result?: {
-      isError?: boolean;
-      content: { text?: string }[];
-      structuredContent: { output: string; status?: string };
+  const id = deviceId();
+  const generation = sessionGeneration;
+  activeCalls++;
+  try {
+    const r = await fetch(DEVICE_URL + '/mcp', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/event-stream',
+        'MCP-Protocol-Version': '2025-11-25',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: crypto.randomUUID(),
+        method: 'tools/call',
+        params: { name, arguments: args },
+      }),
+      signal: AbortSignal.timeout(60000),
+    }).catch(() => {
+      if (currentSession(token, id, generation)) disconnectDevice();
+      throw new Error('PCとの接続が切れました。接続し直してください。');
+    });
+    if (!r.ok) {
+      if (currentSession(token, id, generation)) disconnectDevice();
+      throw new Error('PCとの接続が切れました。接続し直してください。');
+    }
+    const data = (await r.json()) as {
+      error?: { message: string };
+      result?: {
+        isError?: boolean;
+        content: { text?: string }[];
+        structuredContent: { output: string; status?: string };
+      };
     };
-  };
-  if (data.error || data.result?.isError)
-    throw new Error(
-      data.error?.message ||
-        data.result?.content[0]?.text ||
-        '入力を確認してください。',
-    );
-  if (!data.result?.structuredContent) throw new Error('MCPの応答が不正です。');
-  return data.result.structuredContent as { output: string; status?: string };
-}
-export async function recordRun(
-  tool: string,
-  transport: 'browser' | 'local-mcp',
-  status: 'completed' | 'failed',
-  started: number,
-  sample = false,
-) {
-  const r = await fetch('/api/runs', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      id: crypto.randomUUID(),
-      tool,
-      transport,
-      status,
-      sample,
-      durationMs: Math.min(300000, Math.round(performance.now() - started)),
-    }),
-  });
-  if (!r.ok)
-    throw new Error('結果はできましたが、実行履歴の保存に失敗しました。');
-  window.dispatchEvent(new Event('loop-fund-refresh'));
+    if (data.error || data.result?.isError)
+      throw new Error(
+        data.error?.message ||
+          data.result?.content[0]?.text ||
+          '入力を確認してください。',
+      );
+    if (!data.result?.structuredContent)
+      throw new Error('MCPの応答が不正です。');
+    return data.result.structuredContent as { output: string; status?: string };
+  } finally {
+    activeCalls--;
+  }
 }

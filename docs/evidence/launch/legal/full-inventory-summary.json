@@ -1,0 +1,2480 @@
+{
+  "archive_sha256": "121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2",
+  "bounded_fixture_members": [
+    {
+      "bytes": 536870912,
+      "container_sha256": "675b784cae33a0a4856b66b1752a3892455b983f505d3e27505b07a525d61055",
+      "content_read_status": "NOT_EXPANDED_RESOURCE_BOUND",
+      "path": "test2/sparse"
+    },
+    {
+      "bytes": 60000000000,
+      "container_sha256": "027bb1a0d7f778fde347be353b1920141bc4d4d2da6828ace084cb339787fd17",
+      "content_read_status": "NOT_EXPANDED_RESOURCE_BOUND",
+      "path": "gnu-sparse"
+    },
+    {
+      "bytes": 17179869184,
+      "container_sha256": "36edba10087c389ffab0200dbf56013237af1ec8867a2442187c7147d899e7e4",
+      "content_read_status": "NOT_EXPANDED_RESOURCE_BOUND",
+      "path": "longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/16gig.txt"
+    },
+    {
+      "bytes": 17179869184,
+      "container_sha256": "5a0bee74a7bd0caa1d572ff1ae58c3c79310c8fc646a5e84fb5e1eea488ea4b5",
+      "content_read_status": "NOT_EXPANDED_RESOURCE_BOUND",
+      "path": "tmp/16gig.txt"
+    }
+  ],
+  "inventory": {
+    "bytes": 41224933,
+    "path": "full-distribution-inventory.jsonl.gz",
+    "sha256": "0bcc5633243e4993ba3273d134c10e0ae605afaecf19fc27876d2dd6feea97ff"
+  },
+  "limitations": [
+    "Each actual compressed source/container file is fully hashed. Four enormous sparse/truncated nested test fixtures are represented by metadata without resource-expensive expansion.",
+    "Malformed/non-archive nested upstream test fixtures are fully hashed as their actual distributed binary files; their fictional member contents are not represented as complete.",
+    "Notice/SPDX scanner examines at most first 64 KiB of nested source files; manual legal conclusion remains NOASSERTION.",
+    "Known patch headers are mapped to source files; generic libtool/generated changes and upstream provenance beyond retained originals still require review.",
+    "Directory and link rows are inventory records, not independent copyright grants.",
+    "The product owner has not selected or approved RockstarOS licensing."
+  ],
+  "nested_containers": {
+    "01845c437f4655e3cf9cc4fc4e49cfd607431f22675e1b611129a90239f34822": {
+      "container_sha256": "01845c437f4655e3cf9cc4fc4e49cfd607431f22675e1b611129a90239f34822",
+      "entry_count": 8,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python-setuptools-80.9.0/setuptools-80.9.0.tar.gz!/setuptools-80.9.0/pkg_resources/tests/data/my-test-package-zip/my-test-package.zip",
+      "nested": [],
+      "regular_files": 7,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 502
+    },
+    "027bb1a0d7f778fde347be353b1920141bc4d4d2da6828ace084cb339787fd17": {
+      "container_sha256": "027bb1a0d7f778fde347be353b1920141bc4d4d2da6828ace084cb339787fd17",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/gnu-sparse-big.tar",
+      "nested": [
+        {
+          "bytes": 60000000000,
+          "path": "gnu-sparse",
+          "review": "oversize fixture not expanded"
+        }
+      ],
+      "regular_files": 0,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "02c7627d46aca0d21ff727cd607f3ff146ea5f2506c976e6caff2d2f5cb67b46": {
+      "container_sha256": "02c7627d46aca0d21ff727cd607f3ff146ea5f2506c976e6caff2d2f5cb67b46",
+      "entry_count": 3,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProjectLocal/Step1NoDir.tar.xz",
+      "nested": [],
+      "regular_files": 3,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1294
+    },
+    "02e95784ed0c0a6c028eb2959c2c6393094d9687cfb44100fd7305955dbe6b0a": {
+      "container_sha256": "02e95784ed0c0a6c028eb2959c2c6393094d9687cfb44100fd7305955dbe6b0a",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/pax-bad-mtime-file.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 684
+    },
+    "058b9c059e88fcd17d8e8bee4239f31073969c8affa4993498dbb7e5c1508518": {
+      "container_sha256": "058b9c059e88fcd17d8e8bee4239f31073969c8affa4993498dbb7e5c1508518",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/time-winrar.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "065f7d6cdcebbb9a2a0afbac24849165d1fe83872550b0abad9460520854ad4d": {
+      "container_sha256": "065f7d6cdcebbb9a2a0afbac24849165d1fe83872550b0abad9460520854ad4d",
+      "entry_count": 16,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/hdr-only.tar",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 92
+    },
+    "06dac239be3973ed79a00e357a68aab996e6ed2fd496ee2cc6e6a34020344ac9": {
+      "container_sha256": "06dac239be3973ed79a00e357a68aab996e6ed2fd496ee2cc6e6a34020344ac9",
+      "entry_count": 244,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/corresponding-source/rock-source.tar!/systems/rock-star-os/os/desktop/browser-intake/noVNC-63107bd.tar.gz",
+      "nested": [],
+      "regular_files": 217,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 2471032
+    },
+    "0b82831d5093d2ba8897a3ccbee7fbdc3347fa5a4a371d3d02ac5c4b104f64e4": {
+      "container_sha256": "0b82831d5093d2ba8897a3ccbee7fbdc3347fa5a4a371d3d02ac5c4b104f64e4",
+      "entry_count": 28,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProject/svnrepo.tgz",
+      "nested": [],
+      "regular_files": 19,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 7329
+    },
+    "0bbbeb9b2d78ca64c6867f364dae1d72a9cee99ca3835cf8f8c316118cb3d668": {
+      "container_sha256": "0bbbeb9b2d78ca64c6867f364dae1d72a9cee99ca3835cf8f8c316118cb3d668",
+      "entry_count": 4,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProjectLocal/Step1.zip",
+      "nested": [],
+      "regular_files": 3,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1294
+    },
+    "0d4fdab6215964d659b7fdd9d9c6a15e67e358a6a099835f8f7788dc980304f0": {
+      "container_sha256": "0d4fdab6215964d659b7fdd9d9c6a15e67e358a6a099835f8f7788dc980304f0",
+      "entry_count": 3,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProjectLocal/Step1NoDir.zip",
+      "nested": [],
+      "regular_files": 3,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1294
+    },
+    "0d621e562fd932ccf67b9660fb018e468a683d7b827541df27813228c996bb11": {
+      "container_sha256": "0d621e562fd932ccf67b9660fb018e468a683d7b827541df27813228c996bb11",
+      "entry_count": 346,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/libcap-2.78/libcap-2.78.tar.xz",
+      "nested": [],
+      "regular_files": 312,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 821633
+    },
+    "0e129eb30eeda61f7bec57f7708047750e4cf6add713a289d4b879b394459846": {
+      "container_sha256": "0e129eb30eeda61f7bec57f7708047750e4cf6add713a289d4b879b394459846",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/time-infozip.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "0e9483900e92cd5de8fd48d16bf9200145a61f7fd5be542a5ac81d8a9516eb9c": {
+      "container_sha256": "0e9483900e92cd5de8fd48d16bf9200145a61f7fd5be542a5ac81d8a9516eb9c",
+      "entry_count": 54,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/sqlite-3.53.4/sqlite-autoconf-3530400.tar.gz",
+      "nested": [],
+      "regular_files": 49,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 12796578
+    },
+    "0eea60fbe89771b88fcf415c8f2f0a6ccfe9edebbcf3ba5dc0212718d98884db": {
+      "container_sha256": "0eea60fbe89771b88fcf415c8f2f0a6ccfe9edebbcf3ba5dc0212718d98884db",
+      "entry_count": 154,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/fakeroot-1.37.2/fakeroot_1.37.2.orig.tar.gz",
+      "nested": [
+        {
+          "container_sha256": "9ca2fb47c8729866762225618758522a645fe5923b2711f44c74e42d34e1e052"
+        }
+      ],
+      "regular_files": 131,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 2348446
+    },
+    "101499f7585994bbd2ccdcbf5f0e65030338b52ea490eb897aeed3cf39e0b94b": {
+      "container_sha256": "101499f7585994bbd2ccdcbf5f0e65030338b52ea490eb897aeed3cf39e0b94b",
+      "entry_count": 26,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProject/hgrepo.tgz",
+      "nested": [],
+      "regular_files": 19,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 2572
+    },
+    "12baf28af8cda91ab096a30a2c4b2f74972e375e6003ac84d44eaae3a439390d": {
+      "container_sha256": "12baf28af8cda91ab096a30a2c4b2f74972e375e6003ac84d44eaae3a439390d",
+      "entry_count": 22,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProject/gitrepo-sub-rec.tgz",
+      "nested": [],
+      "regular_files": 12,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 3921
+    },
+    "12e1b7b71a0943547acca38516aef5d89d2466c79dae5279a915389b7beace4d": {
+      "container_sha256": "12e1b7b71a0943547acca38516aef5d89d2466c79dae5279a915389b7beace4d",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/time-7zip.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "146a47c77ea4b77dff0d94403a80e6164629262d66ec56d8dbad0195174c8a47": {
+      "container_sha256": "146a47c77ea4b77dff0d94403a80e6164629262d66ec56d8dbad0195174c8a47",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/gnu-long-nul.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "14c6877e7348e820e85cc319e4e0d582142975aaf723fbe4bc516c4ceb5ed5e2": {
+      "container_sha256": "14c6877e7348e820e85cc319e4e0d582142975aaf723fbe4bc516c4ceb5ed5e2",
+      "entry_count": 64,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/ppc-qemu.tar.gz",
+      "nested": [],
+      "regular_files": 47,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1830
+    },
+    "18019b813010ecf907fd7d4b529c1480d7e8a430b2c28c8b313059dbbd68630f": {
+      "container_sha256": "18019b813010ecf907fd7d4b529c1480d7e8a430b2c28c8b313059dbbd68630f",
+      "entry_count": 256,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/s390-nested-virt.tar.gz",
+      "nested": [],
+      "regular_files": 210,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 6627
+    },
+    "18f63100d6f94385c6ed57a72073443e1a71a4acb4339491615d0f16d6ff01b2": {
+      "container_sha256": "18f63100d6f94385c6ed57a72073443e1a71a4acb4339491615d0f16d6ff01b2",
+      "entry_count": 102,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python-flit-core-3.12.0/flit_core-3.12.0.tar.gz",
+      "nested": [],
+      "regular_files": 102,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 189115
+    },
+    "19cb87050b0fb410da3b88df752c2e1bdaeec77ac052b04febef31a68823cfcb": {
+      "container_sha256": "19cb87050b0fb410da3b88df752c2e1bdaeec77ac052b04febef31a68823cfcb",
+      "entry_count": 3,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz!/Python-3.14.7/Lib/test/archivetestdata/zipdir.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "1a0f564ddc6039457b2fb26b3d6a316c15eba20a886449847c3210c35821a693": {
+      "container_sha256": "1a0f564ddc6039457b2fb26b3d6a316c15eba20a886449847c3210c35821a693",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/Fuzzing/corpus/archive/spaces.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "1d46bde4ea43f780c4f184a7ef11b11cdde9f9e02d6892a03c67d9b6c6608973": {
+      "container_sha256": "1d46bde4ea43f780c4f184a7ef11b11cdde9f9e02d6892a03c67d9b6c6608973",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/gnu-utf8.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "1e859bd5c40fae9448642dd871adf459e5e2084186e8d2c2a79a824c970da1f8": {
+      "container_sha256": "1e859bd5c40fae9448642dd871adf459e5e2084186e8d2c2a79a824c970da1f8",
+      "entry_count": 58,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python-pyproject-hooks-1.2.0/pyproject_hooks-1.2.0.tar.gz",
+      "nested": [],
+      "regular_files": 58,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 67755
+    },
+    "1fac2382110401638dd9ea6d5d5d4d67bf902b5198f5bd38a187c66508719532": {
+      "container_sha256": "1fac2382110401638dd9ea6d5d5d4d67bf902b5198f5bd38a187c66508719532",
+      "entry_count": 1575,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/corresponding-source/rock-source.tar",
+      "nested": [
+        {
+          "container_sha256": "e27b90bc173ae5bbcea55312007815d22fd87a88c4449028098e42d831dfafef"
+        },
+        {
+          "container_sha256": "06dac239be3973ed79a00e357a68aab996e6ed2fd496ee2cc6e6a34020344ac9"
+        },
+        {
+          "container_sha256": "40090101a2a491f13e901d3d48e90414f26634628b9bfff35ff540363c227a7d",
+          "duplicate_bytes_reuse": true
+        }
+      ],
+      "regular_files": 1364,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 36802621
+    },
+    "23e918b9f11389dfad0d8c91f1fd4e149dede6efc8a36de4d1c6d0c494d43782": {
+      "container_sha256": "23e918b9f11389dfad0d8c91f1fd4e149dede6efc8a36de4d1c6d0c494d43782",
+      "entry_count": 6,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz!/Python-3.14.7/Lib/test/test_importlib/metadata/data/example-21.12-py3-none-any.whl",
+      "nested": [],
+      "regular_files": 6,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 850
+    },
+    "2460bc8037992b627181697a9c5aa0e4a6c68cf981c0770ff89f0b5665a13785": {
+      "container_sha256": "2460bc8037992b627181697a9c5aa0e4a6c68cf981c0770ff89f0b5665a13785",
+      "entry_count": 232,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/vbox-win.tar.gz",
+      "nested": [],
+      "regular_files": 168,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 9545
+    },
+    "2507eab0cb7a594b25fb2fc1c6a0b0f27af53d1980ba358d4e0c1b1dc32a9e63": {
+      "container_sha256": "2507eab0cb7a594b25fb2fc1c6a0b0f27af53d1980ba358d4e0c1b1dc32a9e63",
+      "entry_count": 3,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz!/Python-3.14.7/Lib/test/test_importlib/namespace_pkgs/missing_directory.zip",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 61
+    },
+    "255ee6ec4f471c1263be4afe9977ffaa96ef756942c19a0598811d6039681423": {
+      "container_sha256": "255ee6ec4f471c1263be4afe9977ffaa96ef756942c19a0598811d6039681423",
+      "entry_count": 4,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProjectLocal/Step1.tar",
+      "nested": [],
+      "regular_files": 3,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1294
+    },
+    "261f3807fa134322126c117bb3ef987d019d00bc25e882fb3ebdd81cf57c812e": {
+      "container_sha256": "261f3807fa134322126c117bb3ef987d019d00bc25e882fb3ebdd81cf57c812e",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/pax-records.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "28774f00d29804f65a6af708a125d9b56ea20a98b1681ae4ab0e001474710e2a": {
+      "container_sha256": "28774f00d29804f65a6af708a125d9b56ea20a98b1681ae4ab0e001474710e2a",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/time-win7.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "28eb403f51f0f7405249132cecfe82ea5c0ef97f1b32c5a65828814ae0d34775": {
+      "container_sha256": "28eb403f51f0f7405249132cecfe82ea5c0ef97f1b32c5a65828814ae0d34775",
+      "entry_count": 669,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/libpng-1.6.58/libpng-1.6.58.tar.xz",
+      "nested": [],
+      "regular_files": 610,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 6336919
+    },
+    "2dd5af8471c89f54ca46451d9e1012972f0882594c955a0763a362deb6981960": {
+      "container_sha256": "2dd5af8471c89f54ca46451d9e1012972f0882594c955a0763a362deb6981960",
+      "entry_count": 16,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/automake-1.16.5/automake-1.16.5.tar.xz!/automake-1.16.5/doc/amhello-1.0.tar.gz",
+      "nested": [],
+      "regular_files": 14,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 304822
+    },
+    "2f078dc38ddee06c692cdaeae4cc591507667819f10c465242fb71cdfef2fcc3": {
+      "container_sha256": "2f078dc38ddee06c692cdaeae4cc591507667819f10c465242fb71cdfef2fcc3",
+      "entry_count": 4,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProjectLocal/Step1.tgz",
+      "nested": [],
+      "regular_files": 3,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1294
+    },
+    "2f434250f98a8aad5e77b8695d751b11bca1625d4d0264638113ad27ebeb11c7": {
+      "container_sha256": "2f434250f98a8aad5e77b8695d751b11bca1625d4d0264638113ad27ebeb11c7",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/pax-path-hdr.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "31585b656cf569c03f800d79e43b311c54c8ec88018a44e9e2ec05009abc8f5f": {
+      "container_sha256": "31585b656cf569c03f800d79e43b311c54c8ec88018a44e9e2ec05009abc8f5f",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/pax-nil-sparse-data.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1512
+    },
+    "3256174a67b1a54fbc6b37794a7ed9b269be823e0b67d68591b9ec70513b9906": {
+      "container_sha256": "3256174a67b1a54fbc6b37794a7ed9b269be823e0b67d68591b9ec70513b9906",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/Fuzzing/corpus/archive/cab-huffman-uninit.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "34f9ea6ff8636f2c9241153b9114eefa9e65674a45318ae1ef95bb5f31c53bb2": {
+      "container_sha256": "34f9ea6ff8636f2c9241153b9114eefa9e65674a45318ae1ef95bb5f31c53bb2",
+      "entry_count": 3148,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/busybox-1.38.0/busybox-1.38.0.tar.bz2",
+      "nested": [
+        {
+          "container_sha256": "e41016555fae6a69548ace9acbafb65c060b9b2c9066724724e4082aaf3446a7"
+        },
+        {
+          "container_sha256": "ee87767de57b973d084c9f0bcda3266bf443b8d18803ed4588064f31f9c48069"
+        },
+        {
+          "container_sha256": "6917569008ed8665c736b1d5b2dbbf8d863edac2478a1f05e998d535dea5b017"
+        },
+        {
+          "container_sha256": "93715edc6a69666915edcd72e80960e33e1b5619c9aae090d7a303b0072502ba"
+        }
+      ],
+      "regular_files": 2981,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 10699616
+    },
+    "3560b7b37f487f1c41a46b39b74d9f00a52d6b9f3430d64a6e42544df3c14c95": {
+      "container_sha256": "3560b7b37f487f1c41a46b39b74d9f00a52d6b9f3430d64a6e42544df3c14c95",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/gnu-not-utf8.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "36bc4f1cc413335368ee656c42afca65c5a3987e8768cc28cf11ba775e785a5f": {
+      "container_sha256": "36bc4f1cc413335368ee656c42afca65c5a3987e8768cc28cf11ba775e785a5f",
+      "entry_count": 937,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/freetype-2.14.3/freetype-2.14.3.tar.xz",
+      "nested": [],
+      "regular_files": 855,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 19676826
+    },
+    "36edba10087c389ffab0200dbf56013237af1ec8867a2442187c7147d899e7e4": {
+      "container_sha256": "36edba10087c389ffab0200dbf56013237af1ec8867a2442187c7147d899e7e4",
+      "entry_count": 1,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/writer-big-long.tar",
+      "nested": [
+        {
+          "bytes": 17179869184,
+          "path": "longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/16gig.txt",
+          "review": "oversize fixture not expanded"
+        }
+      ],
+      "regular_files": 0,
+      "status": "MALFORMED_ARCHIVE_OR_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "3a9080ac51d03615e7c1910a0a2a8df08424892b5f13b0628a204d3fcce0ea8b": {
+      "container_sha256": "3a9080ac51d03615e7c1910a0a2a8df08424892b5f13b0628a204d3fcce0ea8b",
+      "entry_count": 194,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/pkgconf-2.3.0/pkgconf-2.3.0.tar.xz",
+      "nested": [],
+      "regular_files": 178,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1927803
+    },
+    "3ad0e6b7c0646fda819f5382373c7c02d40288a6898a3126e287b6f07f5c6176": {
+      "container_sha256": "3ad0e6b7c0646fda819f5382373c7c02d40288a6898a3126e287b6f07f5c6176",
+      "entry_count": 74,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/s390-kvm.tar.gz",
+      "nested": [],
+      "regular_files": 60,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 2617
+    },
+    "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81": {
+      "container_sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81",
+      "entry_count": 5557,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz",
+      "nested": [
+        {
+          "container_sha256": "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e"
+        },
+        {
+          "container_sha256": "d80f55ac66a2570c8a19d2b1dad7c057cf4c944d9c2f8adaf5bf6c8539881e13"
+        },
+        {
+          "container_sha256": "760200dda3cfdff2cd31d8ab6c806794f3770faa465e7eae00a1cb3a2fbcbe3a",
+          "review": "malformed source fixture; never extracted or executed"
+        },
+        {
+          "container_sha256": "89e0326292b96a5700582a37ebf3d8ba60f1d136772b5cd15b2c2ae653fda188"
+        },
+        {
+          "container_sha256": "e2cdb56febb5106607bf5f9b92b2b7a9516814e7650139cfe46f6b36bfcfa327"
+        },
+        {
+          "container_sha256": "19cb87050b0fb410da3b88df752c2e1bdaeec77ac052b04febef31a68823cfcb"
+        },
+        {
+          "container_sha256": "afdfa1f139c91c2b486f3a4a931bef18e08883fc5f5c81975f5bd19cf92e6d1f"
+        },
+        {
+          "container_sha256": "23e918b9f11389dfad0d8c91f1fd4e149dede6efc8a36de4d1c6d0c494d43782"
+        },
+        {
+          "container_sha256": "59ecf7fd1d2a1d72a7acf81ebc772b3a220cdb3afac6481bc5000d431d5bd2d3"
+        },
+        {
+          "container_sha256": "2507eab0cb7a594b25fb2fc1c6a0b0f27af53d1980ba358d4e0c1b1dc32a9e63"
+        },
+        {
+          "container_sha256": "9d6e1c27870cb53512a2e29ab03e61c25188ebed57e933ee5ce4e749d72c0a87"
+        },
+        {
+          "container_sha256": "42376ede22fbd49cd23ecb7fcd690206b53e5304c1c75fcf36358ab8acdda62a"
+        },
+        {
+          "container_sha256": "e147c0549f27767ba362f9da434eab9c5dc0045d5304feb602a0af001089fc51"
+        }
+      ],
+      "regular_files": 5123,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 117008344
+    },
+    "3dfc8596ba248ba48e18fc2c635753d033bfe8987d34121cea69a4a3a8e2ef40": {
+      "container_sha256": "3dfc8596ba248ba48e18fc2c635753d033bfe8987d34121cea69a4a3a8e2ef40",
+      "entry_count": 5,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/sparse-formats.tar",
+      "nested": [],
+      "regular_files": 5,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 804
+    },
+    "40090101a2a491f13e901d3d48e90414f26634628b9bfff35ff540363c227a7d": {
+      "container_sha256": "40090101a2a491f13e901d3d48e90414f26634628b9bfff35ff540363c227a7d",
+      "entry_count": 82,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/dash-0.5.13.5/dash-0.5.13.5.tar.gz",
+      "nested": [],
+      "regular_files": 79,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 961752
+    },
+    "4185c6845f8eb7fc49425a49c4771ade03afb9e585d4578cc2aa73c619b30a52": {
+      "container_sha256": "4185c6845f8eb7fc49425a49c4771ade03afb9e585d4578cc2aa73c619b30a52",
+      "entry_count": 309,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/loongarch-loongson_3a5000_hv.tar.gz",
+      "nested": [],
+      "regular_files": 251,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 10269
+    },
+    "42376ede22fbd49cd23ecb7fcd690206b53e5304c1c75fcf36358ab8acdda62a": {
+      "container_sha256": "42376ede22fbd49cd23ecb7fcd690206b53e5304c1c75fcf36358ab8acdda62a",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz!/Python-3.14.7/Lib/test/test_importlib/namespace_pkgs/top_level_portion1.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 26
+    },
+    "425c590fbf9e2ff27eac45b2006820de8dfec3b4ba48be935327353f86fc66f0": {
+      "container_sha256": "425c590fbf9e2ff27eac45b2006820de8dfec3b4ba48be935327353f86fc66f0",
+      "entry_count": 2578,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lsmem/dumps/x86_64-16g.tar.bz2",
+      "nested": [],
+      "regular_files": 2060,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 9247
+    },
+    "445ed8208a6e4823de1226a74ca319d3600e83f6369f99b14265006599c32ccb": {
+      "container_sha256": "445ed8208a6e4823de1226a74ca319d3600e83f6369f99b14265006599c32ccb",
+      "entry_count": 4958,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/cairo-1.18.4/cairo-1.18.4.tar.xz",
+      "nested": [],
+      "regular_files": 4931,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 60800341
+    },
+    "45c2b43fd74e27b3a511a2f3f31de08651689366e4344ff5e4a644b3be35f4b9": {
+      "container_sha256": "45c2b43fd74e27b3a511a2f3f31de08651689366e4344ff5e4a644b3be35f4b9",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/time-go.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "4635a876c70af74b13976fdf86811e809ec29dc1ccb2a18c1174a493240edf8b": {
+      "container_sha256": "4635a876c70af74b13976fdf86811e809ec29dc1ccb2a18c1174a493240edf8b",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/gnu.tar",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 16
+    },
+    "487398c2ea3956e31eb1af05abfde951df98df75cee59afd0630d543e0992ae6": {
+      "container_sha256": "487398c2ea3956e31eb1af05abfde951df98df75cee59afd0630d543e0992ae6",
+      "entry_count": 943,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lsblk/dumps/simple-lvm.tar.xz",
+      "nested": [],
+      "regular_files": 796,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 19818
+    },
+    "4aa2030fa9a0e41a4039dc13cfcec4b96f4741aff99f3de8c1134e0c1f2d6bcd": {
+      "container_sha256": "4aa2030fa9a0e41a4039dc13cfcec4b96f4741aff99f3de8c1134e0c1f2d6bcd",
+      "entry_count": 9,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProject/cvsrepo.tgz",
+      "nested": [],
+      "regular_files": 6,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 2948
+    },
+    "4b20adc149ee15d062910e1f41371841eff1b9e60ec9e7f4922a71251a32bbea": {
+      "container_sha256": "4b20adc149ee15d062910e1f41371841eff1b9e60ec9e7f4922a71251a32bbea",
+      "entry_count": 1233,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/arm-A510-A710-A715-X3.tar.gz",
+      "nested": [],
+      "regular_files": 1019,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 33329
+    },
+    "4c26ef64ea626534786ca84cdc58e62b34150b2fc0d28d730427a89dc29c62d1": {
+      "container_sha256": "4c26ef64ea626534786ca84cdc58e62b34150b2fc0d28d730427a89dc29c62d1",
+      "entry_count": 879,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/s390-lpar-drawer.tar.gz",
+      "nested": [],
+      "regular_files": 739,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 11979
+    },
+    "4c7ed4bcfc1a114d6286e4a0d3c1a90db147a4c3adda1814ee0eee0f9ee917ed": {
+      "container_sha256": "4c7ed4bcfc1a114d6286e4a0d3c1a90db147a4c3adda1814ee0eee0f9ee917ed",
+      "entry_count": 85,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/patchelf-0.13/patchelf-0.13.tar.bz2",
+      "nested": [],
+      "regular_files": 76,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1673754
+    },
+    "4e964bced030deed64cf23af09b795508fddde60cd3f2c357b57b853bf826487": {
+      "container_sha256": "4e964bced030deed64cf23af09b795508fddde60cd3f2c357b57b853bf826487",
+      "entry_count": 22,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProject/gitrepo.tgz",
+      "nested": [],
+      "regular_files": 12,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 3690
+    },
+    "506d08fe8bbee110612f4672e632e5e9a6373cafba15cbd5866bdd09e3f79d2b": {
+      "container_sha256": "506d08fe8bbee110612f4672e632e5e9a6373cafba15cbd5866bdd09e3f79d2b",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/gnu-nil-sparse-hole.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1000
+    },
+    "53642ff1f7c299190439fddce6b37cb18fbeee013d6821cada096b142a352e1b": {
+      "container_sha256": "53642ff1f7c299190439fddce6b37cb18fbeee013d6821cada096b142a352e1b",
+      "entry_count": 93,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/s390-zvm.tar.gz",
+      "nested": [],
+      "regular_files": 77,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 2813
+    },
+    "53fe0bb9e743531a01d601f70482f6e47e43469894ca101abf7069424edbe81f": {
+      "container_sha256": "53fe0bb9e743531a01d601f70482f6e47e43469894ca101abf7069424edbe81f",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/invalid-go17.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "571ff633a6951cfa23332d357a3eabe8d22f126c4f420f6311372a4d9fe9cdc0": {
+      "container_sha256": "571ff633a6951cfa23332d357a3eabe8d22f126c4f420f6311372a4d9fe9cdc0",
+      "entry_count": 2213,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/rv64-milkvpioneer.tar.gz",
+      "nested": [],
+      "regular_files": 1749,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 30028
+    },
+    "577d18c199858f40ddb297b18de9b31041e253c04019f00b06067c1015925605": {
+      "container_sha256": "577d18c199858f40ddb297b18de9b31041e253c04019f00b06067c1015925605",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/xattrs.tar",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 16
+    },
+    "57be2655401e9cb4b79515257a2978db683ca5b3c9b4ea0a3f1adcd1b43d56a7": {
+      "container_sha256": "57be2655401e9cb4b79515257a2978db683ca5b3c9b4ea0a3f1adcd1b43d56a7",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/hardlink.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 15
+    },
+    "59b6b112db4107ed60bf30cd4a0a81b96f4f955808c06ce029194eff31e8d8ce": {
+      "container_sha256": "59b6b112db4107ed60bf30cd4a0a81b96f4f955808c06ce029194eff31e8d8ce",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/v7.tar",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 16
+    },
+    "59ecf7fd1d2a1d72a7acf81ebc772b3a220cdb3afac6481bc5000d431d5bd2d3": {
+      "container_sha256": "59ecf7fd1d2a1d72a7acf81ebc772b3a220cdb3afac6481bc5000d431d5bd2d3",
+      "entry_count": 5,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz!/Python-3.14.7/Lib/test/test_importlib/metadata/data/example2-1.0.0-py3-none-any.whl",
+      "nested": [],
+      "regular_files": 5,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 590
+    },
+    "5a0bee74a7bd0caa1d572ff1ae58c3c79310c8fc646a5e84fb5e1eea488ea4b5": {
+      "container_sha256": "5a0bee74a7bd0caa1d572ff1ae58c3c79310c8fc646a5e84fb5e1eea488ea4b5",
+      "entry_count": 1,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/writer-big.tar",
+      "nested": [
+        {
+          "bytes": 17179869184,
+          "path": "tmp/16gig.txt",
+          "review": "oversize fixture not expanded"
+        }
+      ],
+      "regular_files": 0,
+      "status": "MALFORMED_ARCHIVE_OR_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "5a5d5073070cc7e0c7a7a3c6ec2a0e1780850c8b47b3e3892226b93ffcb9cb54": {
+      "container_sha256": "5a5d5073070cc7e0c7a7a3c6ec2a0e1780850c8b47b3e3892226b93ffcb9cb54",
+      "entry_count": 714,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/kmod-34.2/kmod-34.2.tar.xz",
+      "nested": [],
+      "regular_files": 499,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 2784431
+    },
+    "5b2c91807111f19460f952c4b02f8cd7e635fb3429bed1ddbcc99287667faa7b": {
+      "container_sha256": "5b2c91807111f19460f952c4b02f8cd7e635fb3429bed1ddbcc99287667faa7b",
+      "entry_count": 3,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProjectLocal/Step1NoDir.tar.bz2",
+      "nested": [],
+      "regular_files": 3,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1294
+    },
+    "5da98564f0188c6ea25c5a681adac2bcf402a22b7e16bfdf087034be9e8b17a5": {
+      "container_sha256": "5da98564f0188c6ea25c5a681adac2bcf402a22b7e16bfdf087034be9e8b17a5",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/utf8-osx.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "5fe101e6fe9d18fdec95962d81ed670fdee5f37e3f48f0bef87bddf862513aa5": {
+      "container_sha256": "5fe101e6fe9d18fdec95962d81ed670fdee5f37e3f48f0bef87bddf862513aa5",
+      "entry_count": 28952,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/binutils-2.45.1/binutils-2.45.1.tar.xz",
+      "nested": [],
+      "regular_files": 28952,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 302337359
+    },
+    "63d5e53472b1ea35cd8814f9d4dee7597601c99eca367177bbaaab1e09d30468": {
+      "container_sha256": "63d5e53472b1ea35cd8814f9d4dee7597601c99eca367177bbaaab1e09d30468",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/pax-bad-hdr-file.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "656ae1cc8da3b4ea513bb4e254f33e6243938084c0ec6239da873376b09985a7": {
+      "container_sha256": "656ae1cc8da3b4ea513bb4e254f33e6243938084c0ec6239da873376b09985a7",
+      "entry_count": 183,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/expat-2.8.4/expat-2.8.4.tar.xz",
+      "nested": [],
+      "regular_files": 170,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 3854581
+    },
+    "65757f442fdd242e27f1728fc26dc0cba4164f7a0791a5c788631c00080369bc": {
+      "container_sha256": "65757f442fdd242e27f1728fc26dc0cba4164f7a0791a5c788631c00080369bc",
+      "entry_count": 33033,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz",
+      "nested": [
+        {
+          "container_sha256": "4aa2030fa9a0e41a4039dc13cfcec4b96f4741aff99f3de8c1134e0c1f2d6bcd"
+        },
+        {
+          "container_sha256": "12baf28af8cda91ab096a30a2c4b2f74972e375e6003ac84d44eaae3a439390d"
+        },
+        {
+          "container_sha256": "88c5f5423eb3dcde188619c0c64f77008b1d1008636b5511b2ae56ba9685eb83"
+        },
+        {
+          "container_sha256": "4e964bced030deed64cf23af09b795508fddde60cd3f2c357b57b853bf826487"
+        },
+        {
+          "container_sha256": "101499f7585994bbd2ccdcbf5f0e65030338b52ea490eb897aeed3cf39e0b94b"
+        },
+        {
+          "container_sha256": "0b82831d5093d2ba8897a3ccbee7fbdc3347fa5a4a371d3d02ac5c4b104f64e4"
+        },
+        {
+          "container_sha256": "255ee6ec4f471c1263be4afe9977ffaa96ef756942c19a0598811d6039681423"
+        },
+        {
+          "container_sha256": "7fef5e2f3cecd2c1faf783e15a045a9fb06bff73c598c7e41ce9fcdfc5435da7"
+        },
+        {
+          "container_sha256": "b11d5affb274827676c5cdfb353c2037c825b6f71a4cd32026c5f3b0b0a337ee"
+        },
+        {
+          "container_sha256": "2f078dc38ddee06c692cdaeae4cc591507667819f10c465242fb71cdfef2fcc3"
+        },
+        {
+          "container_sha256": "0bbbeb9b2d78ca64c6867f364dae1d72a9cee99ca3835cf8f8c316118cb3d668"
+        },
+        {
+          "container_sha256": "852f5231e694f6b7995dd5fb87420df636e61c106661965f85cf1e4f2aa91c8e"
+        },
+        {
+          "container_sha256": "5b2c91807111f19460f952c4b02f8cd7e635fb3429bed1ddbcc99287667faa7b"
+        },
+        {
+          "container_sha256": "02c7627d46aca0d21ff727cd607f3ff146ea5f2506c976e6caff2d2f5cb67b46"
+        },
+        {
+          "container_sha256": "b9aff8a865842b21cb3bc2ec8bed426b46ef560518962a81242c7f2e089c00de"
+        },
+        {
+          "container_sha256": "0d4fdab6215964d659b7fdd9d9c6a15e67e358a6a099835f8f7788dc980304f0"
+        },
+        {
+          "container_sha256": "f2a80a6a398c1e35bb1f5e0a07fd8fe90ecb1f9f313f03839da8eb2d65fdf2e5"
+        },
+        {
+          "container_sha256": "3256174a67b1a54fbc6b37794a7ed9b269be823e0b67d68591b9ec70513b9906"
+        },
+        {
+          "container_sha256": "7c6f2503bef7d2111c58f4a3e9a3392431a1ba7655049533bae142b6ce1ed05d"
+        },
+        {
+          "container_sha256": "ec472d6ce49a0527d6eab73dace33c4e330e0c0509fd298f85fba9eba21ff308"
+        },
+        {
+          "container_sha256": "f294beb5b6bf4259983109e37d9c18db3b9174ed3cf3ff49addfe89f62df83e6"
+        },
+        {
+          "container_sha256": "846a00ca1d983a800b596f89724cfb7d9ed72bbbc253d6fb89c6e435e3447702"
+        },
+        {
+          "container_sha256": "1a0f564ddc6039457b2fb26b3d6a316c15eba20a886449847c3210c35821a693"
+        },
+        {
+          "container_sha256": "efafdfa1a7779877a16d53a4cc6f1ebb7c49040da40ffdd82cd362bb0a29611e"
+        },
+        {
+          "container_sha256": "ae3e952c19856b28cda6e79ef6c6d705af6dc482d9f59c785ca59e8784d8373a"
+        }
+      ],
+      "regular_files": 30212,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 59729318
+    },
+    "675b784cae33a0a4856b66b1752a3892455b983f505d3e27505b07a525d61055": {
+      "container_sha256": "675b784cae33a0a4856b66b1752a3892455b983f505d3e27505b07a525d61055",
+      "entry_count": 3,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/gnu-incremental.tar",
+      "nested": [
+        {
+          "bytes": 536870912,
+          "path": "test2/sparse",
+          "review": "oversize fixture not expanded"
+        }
+      ],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 64
+    },
+    "6788ae299979643f8d841bcaf64352558436cae45a0355148a3aeeccf7913866": {
+      "container_sha256": "6788ae299979643f8d841bcaf64352558436cae45a0355148a3aeeccf7913866",
+      "entry_count": 7376,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz",
+      "nested": [
+        {
+          "container_sha256": "d0ddc5e60fdb27d808552f5ac8d0bb603ea2cba306538b4427b985535b26c9c5"
+        },
+        {
+          "container_sha256": "9ed8f67d75e43d3be161efb6eddf30dd01995a958ca83951ea64234bac8908c1"
+        },
+        {
+          "container_sha256": "d3eb539a556352f3f47881d71fb0e5777b2f3e9a4251d283c18c67ce996774b7"
+        },
+        {
+          "container_sha256": "d3eb539a556352f3f47881d71fb0e5777b2f3e9a4251d283c18c67ce996774b7",
+          "duplicate_bytes_reuse": true
+        },
+        {
+          "container_sha256": "fdaebe0886a25d56eea690c1f53a7da173fb1a449c25de765a60b48aa2c4de71"
+        },
+        {
+          "container_sha256": "f0f61948530dc0d33e3028cd71a9f8ee869f6b3665960d8f41d715cf4aed6467"
+        },
+        {
+          "container_sha256": "c073a96b7251937e53216578f6f03d91b84816618a0f1ce3ecfb867beddf1498"
+        },
+        {
+          "container_sha256": "cc2f34e570dcd5f9fe32e6863ee16ee73a356d3b77bce0d8c78501b8bc81a860"
+        },
+        {
+          "container_sha256": "c5dd7e8fca93045f736c83700686722b0fbc20b7dc4597b295060684c5b05b72"
+        },
+        {
+          "container_sha256": "c2ceccbb9dbdd80f62114aa2a993d721d2b5046e723a778604f0eb7593b3c1a5"
+        },
+        {
+          "container_sha256": "dc6003a83f606030140c9f9cc3d9b0e776ea95de67afaac3fc2ea2bb6c4aecc2"
+        }
+      ],
+      "regular_files": 5305,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 11601348
+    },
+    "68135f04e9b4fc6bc6a46508779912050028428f19f2eced56706a0bd297c13a": {
+      "container_sha256": "68135f04e9b4fc6bc6a46508779912050028428f19f2eced56706a0bd297c13a",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/pax-nil-sparse-hole.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 512
+    },
+    "6917569008ed8665c736b1d5b2dbbf8d863edac2478a1f05e998d535dea5b017": {
+      "container_sha256": "6917569008ed8665c736b1d5b2dbbf8d863edac2478a1f05e998d535dea5b017",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/busybox-1.38.0/busybox-1.38.0.tar.bz2!/busybox-1.38.0/testsuite/unzip_bad_lzma_1.zip",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "698edd0ea270bde950f53aed21f3a0135672206f3911e0176261a31e0e07b397": {
+      "container_sha256": "698edd0ea270bde950f53aed21f3a0135672206f3911e0176261a31e0e07b397",
+      "entry_count": 72,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python-pypa-build-1.3.0/build-1.3.0.tar.gz",
+      "nested": [],
+      "regular_files": 72,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 173838
+    },
+    "69abc30005d2186baf7737feacd8da35633b93cf5af38838ecff17c5f8e924f6": {
+      "container_sha256": "69abc30005d2186baf7737feacd8da35633b93cf5af38838ecff17c5f8e924f6",
+      "entry_count": 61,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/bubblewrap-0.11.2/bubblewrap-0.11.2.tar.xz",
+      "nested": [],
+      "regular_files": 49,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 389649
+    },
+    "6be41a66578438afdda77edfaec1857ca553fa091dc31a2bd7db0d8a3a3e9a30": {
+      "container_sha256": "6be41a66578438afdda77edfaec1857ca553fa091dc31a2bd7db0d8a3a3e9a30",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/go-with-datadesc-sig.zip",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 8
+    },
+    "6c8a2148a7b85043b68492bce43316b0e2e214fc4e628c7ede078e76e216330b": {
+      "container_sha256": "6c8a2148a7b85043b68492bce43316b0e2e214fc4e628c7ede078e76e216330b",
+      "entry_count": 148,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/attr-2.6.0/attr-2.6.0.tar.xz",
+      "nested": [],
+      "regular_files": 133,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 2221610
+    },
+    "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e": {
+      "container_sha256": "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e",
+      "entry_count": 476,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz!/Python-3.14.7/Lib/ensurepip/_bundled/pip-26.2.1-py3-none-any.whl",
+      "nested": [],
+      "regular_files": 476,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 5664531
+    },
+    "71513a31c01a428bccd5367a32fd95f115d6dac50fb5b60c779d5c7942aec071": {
+      "container_sha256": "71513a31c01a428bccd5367a32fd95f115d6dac50fb5b60c779d5c7942aec071",
+      "entry_count": 178,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/libxcrypt-4.5.2/libxcrypt-4.5.2.tar.xz",
+      "nested": [],
+      "regular_files": 170,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 3960040
+    },
+    "7445b1987611850b4810e9b56a99188923f9dc467b7b240e0431f37f58cc6df3": {
+      "container_sha256": "7445b1987611850b4810e9b56a99188923f9dc467b7b240e0431f37f58cc6df3",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/pax-multi-hdrs.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "760200dda3cfdff2cd31d8ab6c806794f3770faa465e7eae00a1cb3a2fbcbe3a": {
+      "container_sha256": "760200dda3cfdff2cd31d8ab6c806794f3770faa465e7eae00a1cb3a2fbcbe3a",
+      "entry_count": 39,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz!/Python-3.14.7/Lib/test/archivetestdata/testtar.tar",
+      "nested": [],
+      "regular_files": 26,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 570300
+    },
+    "78abc8ce449751044e0f423259fd016f862e1e6ff643f01f43854dc8b8f3858b": {
+      "container_sha256": "78abc8ce449751044e0f423259fd016f862e1e6ff643f01f43854dc8b8f3858b",
+      "entry_count": 33,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/hardlink/testdir1.tar.xz",
+      "nested": [],
+      "regular_files": 26,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 212992
+    },
+    "79afcefd316736c75581deb0838da767821a191f958c6c4a95053fe0753566ed": {
+      "container_sha256": "79afcefd316736c75581deb0838da767821a191f958c6c4a95053fe0753566ed",
+      "entry_count": 6435,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/x86_64-64cpu.tar.gz",
+      "nested": [],
+      "regular_files": 5460,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 167525
+    },
+    "7bcd5d001916f3a50ed7436f4f700e3d2b1bade3ed803219c592d62502a57363": {
+      "container_sha256": "7bcd5d001916f3a50ed7436f4f700e3d2b1bade3ed803219c592d62502a57363",
+      "entry_count": 1211,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/autoconf-archive-2024.10.16/autoconf-archive-2024.10.16.tar.xz",
+      "nested": [],
+      "regular_files": 1207,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 5540763
+    },
+    "7c6f2503bef7d2111c58f4a3e9a3392431a1ba7655049533bae142b6ce1ed05d": {
+      "container_sha256": "7c6f2503bef7d2111c58f4a3e9a3392431a1ba7655049533bae142b6ce1ed05d",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/Fuzzing/corpus/archive/no-pathname.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "7da3e2d9a171eb0a038f592ecad3ff2bb2550f3496d87b3b29ad0cf4430c0db4": {
+      "container_sha256": "7da3e2d9a171eb0a038f592ecad3ff2bb2550f3496d87b3b29ad0cf4430c0db4",
+      "entry_count": 534,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/libffi-3.8.0/libffi-3.8.0.tar.gz",
+      "nested": [],
+      "regular_files": 481,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 5906918
+    },
+    "7e32117562c2f62d577107799d8f9b3a901c83459a686b9c2bfda84da55c2150": {
+      "container_sha256": "7e32117562c2f62d577107799d8f9b3a901c83459a686b9c2bfda84da55c2150",
+      "entry_count": 676,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/ppc64-POWER7.tar.gz",
+      "nested": [],
+      "regular_files": 585,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 22945
+    },
+    "7eafa3b2f293d90eca480a6630941775dbfe332f54c344162ff1913e3746a96f": {
+      "container_sha256": "7eafa3b2f293d90eca480a6630941775dbfe332f54c344162ff1913e3746a96f",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/pax-pos-size-file.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 999
+    },
+    "7fef5e2f3cecd2c1faf783e15a045a9fb06bff73c598c7e41ce9fcdfc5435da7": {
+      "container_sha256": "7fef5e2f3cecd2c1faf783e15a045a9fb06bff73c598c7e41ce9fcdfc5435da7",
+      "entry_count": 4,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProjectLocal/Step1.tar.bz2",
+      "nested": [],
+      "regular_files": 3,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1294
+    },
+    "831bd782db9d2b552cbcfcb87adfded0941762596e5d8fbd742dba03c6dc357b": {
+      "container_sha256": "831bd782db9d2b552cbcfcb87adfded0941762596e5d8fbd742dba03c6dc357b",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/neg-size.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "83b6085232d1588c379dc9b9cae47bb37407cf262e6e74993c61ba72d2a784dc": {
+      "container_sha256": "83b6085232d1588c379dc9b9cae47bb37407cf262e6e74993c61ba72d2a784dc",
+      "entry_count": 359,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/libseccomp-2.6.0/libseccomp-2.6.0.tar.gz",
+      "nested": [],
+      "regular_files": 347,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 3390330
+    },
+    "846a00ca1d983a800b596f89724cfb7d9ed72bbbc253d6fb89c6e435e3447702": {
+      "container_sha256": "846a00ca1d983a800b596f89724cfb7d9ed72bbbc253d6fb89c6e435e3447702",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/Fuzzing/corpus/archive/simple.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 12
+    },
+    "852f5231e694f6b7995dd5fb87420df636e61c106661965f85cf1e4f2aa91c8e": {
+      "container_sha256": "852f5231e694f6b7995dd5fb87420df636e61c106661965f85cf1e4f2aa91c8e",
+      "entry_count": 3,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProjectLocal/Step1NoDir.tar",
+      "nested": [],
+      "regular_files": 3,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1294
+    },
+    "876ab046479166b869afc6896d288183bbc0e5843f141200c677b3e8dfb11724": {
+      "container_sha256": "876ab046479166b869afc6896d288183bbc0e5843f141200c677b3e8dfb11724",
+      "entry_count": 272,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/json-c-0.18/json-c-0.18.tar.gz",
+      "nested": [],
+      "regular_files": 239,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1970380
+    },
+    "87aaca4164ea9d5c8085854953018263f7963f07c22e73a2a2185cc98c581c34": {
+      "container_sha256": "87aaca4164ea9d5c8085854953018263f7963f07c22e73a2a2185cc98c581c34",
+      "entry_count": 20106,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/corresponding-source/buildroot-2026.08.tar.xz",
+      "nested": [
+        {
+          "container_sha256": "b457c1a37ba7405e8806b93f3d5cc82165db0b0cad25d203f112e32c7a30c0be"
+        }
+      ],
+      "regular_files": 14988,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 23384813
+    },
+    "87b6164e2f758a5298aeac93e2d24efed3769c778847230f2cf07387c213e649": {
+      "container_sha256": "87b6164e2f758a5298aeac93e2d24efed3769c778847230f2cf07387c213e649",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/e2fsprogs-1.47.4/e2fsprogs-1.47.4.tar.xz!/e2fsprogs-1.47.4/tests/j_corrupt_ext_jnl_sb_block/image.tar.bz2",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 4194304
+    },
+    "88c5f5423eb3dcde188619c0c64f77008b1d1008636b5511b2ae56ba9685eb83": {
+      "container_sha256": "88c5f5423eb3dcde188619c0c64f77008b1d1008636b5511b2ae56ba9685eb83",
+      "entry_count": 22,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProject/gitrepo-sub.tgz",
+      "nested": [],
+      "regular_files": 12,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 4054
+    },
+    "899c48e2e5de644d22c985e27d1a0353535c34be61e1ca325a3fa55ed2b98f79": {
+      "container_sha256": "899c48e2e5de644d22c985e27d1a0353535c34be61e1ca325a3fa55ed2b98f79",
+      "entry_count": 2720,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/ppc64-POWER7-64cpu.tar.gz",
+      "nested": [],
+      "regular_files": 2318,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 90574
+    },
+    "89e0326292b96a5700582a37ebf3d8ba60f1d136772b5cd15b2c2ae653fda188": {
+      "container_sha256": "89e0326292b96a5700582a37ebf3d8ba60f1d136772b5cd15b2c2ae653fda188",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz!/Python-3.14.7/Lib/test/archivetestdata/testtar.tar.xz",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "8b6f6bbc9051abb6325983cbb4820093ff3becac6fba4660adf495db3f40e91a": {
+      "container_sha256": "8b6f6bbc9051abb6325983cbb4820093ff3becac6fba4660adf495db3f40e91a",
+      "entry_count": 124,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/sparc64.tar.gz",
+      "nested": [],
+      "regular_files": 91,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1562
+    },
+    "8e55ccd1697b60ea7d25e1e46b19710c541a193dde318e099256fd2194d8f972": {
+      "container_sha256": "8e55ccd1697b60ea7d25e1e46b19710c541a193dde318e099256fd2194d8f972",
+      "entry_count": 464,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/x86_64-dell_e4310.tar.gz",
+      "nested": [],
+      "regular_files": 387,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 22704
+    },
+    "8fd8ee546f8ba2e76d85731c9764e486bf5bb64e7e0450f07084752f73b9f96c": {
+      "container_sha256": "8fd8ee546f8ba2e76d85731c9764e486bf5bb64e7e0450f07084752f73b9f96c",
+      "entry_count": 15802,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/x86_64-epyc_7451.tar.gz",
+      "nested": [],
+      "regular_files": 13186,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 364850
+    },
+    "907ea144b5a97e5409a5a078ae4775471faf6808a5905b3385ee214cdddfccf6": {
+      "container_sha256": "907ea144b5a97e5409a5a078ae4775471faf6808a5905b3385ee214cdddfccf6",
+      "entry_count": 328,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/rv64-visionfive2.tar.gz",
+      "nested": [],
+      "regular_files": 268,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 3841
+    },
+    "91204cd32f164bd3b7c992d4a6a8ce6519511aadab30f78b6982d0bf8d73e931": {
+      "container_sha256": "91204cd32f164bd3b7c992d4a6a8ce6519511aadab30f78b6982d0bf8d73e931",
+      "entry_count": 367,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/mpc-1.4.1/mpc-1.4.1.tar.xz",
+      "nested": [],
+      "regular_files": 358,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 3643945
+    },
+    "93715edc6a69666915edcd72e80960e33e1b5619c9aae090d7a303b0072502ba": {
+      "container_sha256": "93715edc6a69666915edcd72e80960e33e1b5619c9aae090d7a303b0072502ba",
+      "entry_count": 3,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/busybox-1.38.0/busybox-1.38.0.tar.bz2!/busybox-1.38.0/testsuite/awk_t1.tar.bz2",
+      "nested": [],
+      "regular_files": 3,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 57570
+    },
+    "941bf893b024dcb2269684357b6df18ca747ce873d6bdc626796572bf3a3f9e3": {
+      "container_sha256": "941bf893b024dcb2269684357b6df18ca747ce873d6bdc626796572bf3a3f9e3",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/zip64-2.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 36
+    },
+    "974d6b2f4eeefa25625d34da3cb36bdcebe7fbce40f4c16ac0835fd1c0cbae17": {
+      "container_sha256": "974d6b2f4eeefa25625d34da3cb36bdcebe7fbce40f4c16ac0835fd1c0cbae17",
+      "entry_count": 199,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/ninja-1.13.2/ninja-1.13.2.tar.gz",
+      "nested": [],
+      "regular_files": 185,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1268775
+    },
+    "97b7612d21901a62cb80af3b976878da051b512f0a8018c16931ffd6e176067b": {
+      "container_sha256": "97b7612d21901a62cb80af3b976878da051b512f0a8018c16931ffd6e176067b",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/file-and-dir.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 5
+    },
+    "9bffaa1ad1e07b354c21bd3324ec02fa15579f45a7d0494b3e74bc449b7333ef": {
+      "container_sha256": "9bffaa1ad1e07b354c21bd3324ec02fa15579f45a7d0494b3e74bc449b7333ef",
+      "entry_count": 6179,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/libopenssl-3.6.4/openssl-3.6.4.tar.gz",
+      "nested": [],
+      "regular_files": 5873,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 135093194
+    },
+    "9c80a95a15edc3eef8fd6c506c4a92481f517bebd088d5db0eb260033a77c0f6": {
+      "container_sha256": "9c80a95a15edc3eef8fd6c506c4a92481f517bebd088d5db0eb260033a77c0f6",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/issue11169.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "9ca2fb47c8729866762225618758522a645fe5923b2711f44c74e42d34e1e052": {
+      "container_sha256": "9ca2fb47c8729866762225618758522a645fe5923b2711f44c74e42d34e1e052",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/fakeroot-1.37.2/fakeroot_1.37.2.orig.tar.gz!/fakeroot-1.37.2/test/t.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "9d6e1c27870cb53512a2e29ab03e61c25188ebed57e933ee5ce4e749d72c0a87": {
+      "container_sha256": "9d6e1c27870cb53512a2e29ab03e61c25188ebed57e933ee5ce4e749d72c0a87",
+      "entry_count": 3,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz!/Python-3.14.7/Lib/test/test_importlib/namespace_pkgs/nested_portion1.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 26
+    },
+    "9ed8f67d75e43d3be161efb6eddf30dd01995a958ca83951ea64234bac8908c1": {
+      "container_sha256": "9ed8f67d75e43d3be161efb6eddf30dd01995a958ca83951ea64234bac8908c1",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz!/meson-1.11.1/test cases/common/153 wrap file should not failed/subprojects/packagecache/foo-1.0.tar.xz",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 40
+    },
+    "9ee76aa8a1c2ce04924b43424bf9d1b3138f812a80d6239f06f1133876f50d40": {
+      "container_sha256": "9ee76aa8a1c2ce04924b43424bf9d1b3138f812a80d6239f06f1133876f50d40",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/readme.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1096
+    },
+    "9f5cae93f4fffc1fbc05ae99cdfc708cd60dfd6612ffc0512827025c026fa541": {
+      "container_sha256": "9f5cae93f4fffc1fbc05ae99cdfc708cd60dfd6612ffc0512827025c026fa541",
+      "entry_count": 987,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/fontconfig-2.17.1/fontconfig-2.17.1.tar.xz",
+      "nested": [],
+      "regular_files": 956,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 6844302
+    },
+    "9fd672b1c8425fac2fa67fa0477b990987268b90ff36d5f016dae57be0d6b52e": {
+      "container_sha256": "9fd672b1c8425fac2fa67fa0477b990987268b90ff36d5f016dae57be0d6b52e",
+      "entry_count": 168,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/autoconf-2.73/autoconf-2.73.tar.xz",
+      "nested": [],
+      "regular_files": 153,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 7450204
+    },
+    "a0061d050f910d85462c91bae0949e7a8b47702ede1d741bcd2393f2a422035d": {
+      "container_sha256": "a0061d050f910d85462c91bae0949e7a8b47702ede1d741bcd2393f2a422035d",
+      "entry_count": 155,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/rv64-linux.tar.gz",
+      "nested": [],
+      "regular_files": 124,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 2058
+    },
+    "a098c33924754ad43f981b740f6d576c70f9ed1006e12221b1845431ebce1239": {
+      "container_sha256": "a098c33924754ad43f981b740f6d576c70f9ed1006e12221b1845431ebce1239",
+      "entry_count": 235,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/pixman-0.46.4/pixman-0.46.4.tar.xz",
+      "nested": [],
+      "regular_files": 207,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 3114321
+    },
+    "a14b8f41c96d4d00f36642455f734396766397fa5c636115f4881c5b53959b88": {
+      "container_sha256": "a14b8f41c96d4d00f36642455f734396766397fa5c636115f4881c5b53959b88",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/ustar-file-devs.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "a178aeda2cd08b0f738b53120ebd9c27767546736e03ca47516c80ceec1d299c": {
+      "container_sha256": "a178aeda2cd08b0f738b53120ebd9c27767546736e03ca47516c80ceec1d299c",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/star.tar",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 16
+    },
+    "a302db10909ff2822f09f362576eca6e1b4f0d70e34748f6fa1eea79e7d3713a": {
+      "container_sha256": "a302db10909ff2822f09f362576eca6e1b4f0d70e34748f6fa1eea79e7d3713a",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/issue10968.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898": {
+      "container_sha256": "a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898",
+      "entry_count": 2343,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gmp-6.3.0/gmp-6.3.0.tar.xz",
+      "nested": [],
+      "regular_files": 2156,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 16998222
+    },
+    "a47d0adca51594bf284a2a1c50286f877a3718766dae1b262c4568ecd0bfa5e7": {
+      "container_sha256": "a47d0adca51594bf284a2a1c50286f877a3718766dae1b262c4568ecd0bfa5e7",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/pax-nul-path.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "acb77caa34accd11067629705ceb3d7cb01868134ae56fca3f9c6348dbd585d4": {
+      "container_sha256": "acb77caa34accd11067629705ceb3d7cb01868134ae56fca3f9c6348dbd585d4",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/test-trailing-junk.zip",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 811
+    },
+    "ae3e952c19856b28cda6e79ef6c6d705af6dc482d9f59c785ca59e8784d8373a": {
+      "container_sha256": "ae3e952c19856b28cda6e79ef6c6d705af6dc482d9f59c785ca59e8784d8373a",
+      "entry_count": 9,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/RunCMake/CPackSymlinks/testcpacksym.tar",
+      "nested": [],
+      "regular_files": 4,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 155
+    },
+    "ae84fe91799e805724d20949195c4476aa4e7c124a9229c79987a4f7e0cdb178": {
+      "container_sha256": "ae84fe91799e805724d20949195c4476aa4e7c124a9229c79987a4f7e0cdb178",
+      "entry_count": 4,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/unix.zip",
+      "nested": [],
+      "regular_files": 3,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 26
+    },
+    "af5e3cb635c27b492ead712c3eadba4d672398099559680e8176776918ffaf7b": {
+      "container_sha256": "af5e3cb635c27b492ead712c3eadba4d672398099559680e8176776918ffaf7b",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/html/template/testdata/fs.zip",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 100
+    },
+    "afdfa1f139c91c2b486f3a4a931bef18e08883fc5f5c81975f5bd19cf92e6d1f": {
+      "container_sha256": "afdfa1f139c91c2b486f3a4a931bef18e08883fc5f5c81975f5bd19cf92e6d1f",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz!/Python-3.14.7/Lib/test/archivetestdata/zipdir_backslash.zip",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "b11d5affb274827676c5cdfb353c2037c825b6f71a4cd32026c5f3b0b0a337ee": {
+      "container_sha256": "b11d5affb274827676c5cdfb353c2037c825b6f71a4cd32026c5f3b0b0a337ee",
+      "entry_count": 4,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProjectLocal/Step1.tar.xz",
+      "nested": [],
+      "regular_files": 3,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1294
+    },
+    "b1ae5e20dc1608e8fda463f6d19c667f1dd2ce290981565528a1e11ac7452bfa": {
+      "container_sha256": "b1ae5e20dc1608e8fda463f6d19c667f1dd2ce290981565528a1e11ac7452bfa",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/time-winzip.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "b3d342ef9f53fbb2bd1bf30a9c2d0473294aca4be4c13f5d874238129c04ade3": {
+      "container_sha256": "b3d342ef9f53fbb2bd1bf30a9c2d0473294aca4be4c13f5d874238129c04ade3",
+      "entry_count": 545,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lsblk/dumps/simple-nvme.tar.xz",
+      "nested": [],
+      "regular_files": 460,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 12950
+    },
+    "b457c1a37ba7405e8806b93f3d5cc82165db0b0cad25d203f112e32c7a30c0be": {
+      "container_sha256": "b457c1a37ba7405e8806b93f3d5cc82165db0b0cad25d203f112e32c7a30c0be",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/corresponding-source/buildroot-2026.08.tar.xz!/buildroot-2026.08/support/testing/tests/download/sshd/ssh-test-1.0.tar.xz",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 28
+    },
+    "b67ba0383ef7e8a8563734e2e889ef5ec3c3b898a01d00fa0a6869ad81c6ce01": {
+      "container_sha256": "b67ba0383ef7e8a8563734e2e889ef5ec3c3b898a01d00fa0a6869ad81c6ce01",
+      "entry_count": 591,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/mpfr-4.2.2/mpfr-4.2.2.tar.xz",
+      "nested": [],
+      "regular_files": 572,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 9590620
+    },
+    "b9aff8a865842b21cb3bc2ec8bed426b46ef560518962a81242c7f2e089c00de": {
+      "container_sha256": "b9aff8a865842b21cb3bc2ec8bed426b46ef560518962a81242c7f2e089c00de",
+      "entry_count": 3,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProjectLocal/Step1NoDir.tgz",
+      "nested": [],
+      "regular_files": 3,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1294
+    },
+    "bbf109e827cd301e67ef3b08082db8e0bacd9d7fe7e517278bf41821d3207898": {
+      "container_sha256": "bbf109e827cd301e67ef3b08082db8e0bacd9d7fe7e517278bf41821d3207898",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/crc32-not-streamed.zip",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 8
+    },
+    "bfaa9e66fd2df3ebdb3896f85140dacfe39d54cfe8f385a9dd273f9745a8dc4c": {
+      "container_sha256": "bfaa9e66fd2df3ebdb3896f85140dacfe39d54cfe8f385a9dd273f9745a8dc4c",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/e2fsprogs-1.47.4/e2fsprogs-1.47.4.tar.xz!/e2fsprogs-1.47.4/tests/j_corrupt_ext_jnl_sb_csum/image.tar.bz2",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 4194304
+    },
+    "c073a96b7251937e53216578f6f03d91b84816618a0f1ce3ecfb867beddf1498": {
+      "container_sha256": "c073a96b7251937e53216578f6f03d91b84816618a0f1ce3ecfb867beddf1498",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz!/meson-1.11.1/test cases/common/98 subproject subdir/subprojects/sub_implicit/subprojects/subsub/subprojects/packagefiles/subsubsub-1.0.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 83
+    },
+    "c126eb856810b76ae112d2dfeddf2c9aa89531dfc6f5e7c878301495a08d1b6d": {
+      "container_sha256": "c126eb856810b76ae112d2dfeddf2c9aa89531dfc6f5e7c878301495a08d1b6d",
+      "entry_count": 3,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/writer.tar",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 16
+    },
+    "c2c4e0c53aac6558a25ac2ededfaef711242fe84160d54dd949cd2c603108c01": {
+      "container_sha256": "c2c4e0c53aac6558a25ac2ededfaef711242fe84160d54dd949cd2c603108c01",
+      "entry_count": 14,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python-wheel-0.47.0/wheel-0.47.0.tar.gz!/wheel-0.47.0/tests/testdata/test-1.0-py2.py3-none-any.whl",
+      "nested": [],
+      "regular_files": 9,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 8114
+    },
+    "c2ceccbb9dbdd80f62114aa2a993d721d2b5046e723a778604f0eb7593b3c1a5": {
+      "container_sha256": "c2ceccbb9dbdd80f62114aa2a993d721d2b5046e723a778604f0eb7593b3c1a5",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz!/meson-1.11.1/test cases/unit/72 wrap file url/subprojects/foo-patch.tar.xz",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 59
+    },
+    "c374ae7910a6b6b8499c0bb7757474456450c994bf39dbe4d9a1ab8361f50856": {
+      "container_sha256": "c374ae7910a6b6b8499c0bb7757474456450c994bf39dbe4d9a1ab8361f50856",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/time-osx.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "c5dd7e8fca93045f736c83700686722b0fbc20b7dc4597b295060684c5b05b72": {
+      "container_sha256": "c5dd7e8fca93045f736c83700686722b0fbc20b7dc4597b295060684c5b05b72",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz!/meson-1.11.1/test cases/unit/118 meson package cache dir/cache_dir/foo.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 15
+    },
+    "c6d691331621cf3fec4822f5c6f83cab3705f79b316225dc454127411677c71f": {
+      "container_sha256": "c6d691331621cf3fec4822f5c6f83cab3705f79b316225dc454127411677c71f",
+      "entry_count": 23,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python-installer-1.0.0/installer-1.0.0.tar.gz",
+      "nested": [],
+      "regular_files": 23,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 977927
+    },
+    "c871234a8d0c8787eacb357e53245d6663803fef1750518204a1aa97ec321f62": {
+      "container_sha256": "c871234a8d0c8787eacb357e53245d6663803fef1750518204a1aa97ec321f62",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/symlink.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 9
+    },
+    "c9eef0b2ec8532f41dfed026abb2f272a3bad37ab5de1a0079a97668a01345ac": {
+      "container_sha256": "c9eef0b2ec8532f41dfed026abb2f272a3bad37ab5de1a0079a97668a01345ac",
+      "entry_count": 116,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/armv7.tar.gz",
+      "nested": [],
+      "regular_files": 87,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1407
+    },
+    "cc2f34e570dcd5f9fe32e6863ee16ee73a356d3b77bce0d8c78501b8bc81a860": {
+      "container_sha256": "cc2f34e570dcd5f9fe32e6863ee16ee73a356d3b77bce0d8c78501b8bc81a860",
+      "entry_count": 4,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz!/meson-1.11.1/test cases/rust/25 cargo lock/subprojects/packagecache/bar-0.1.tar.gz",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 65
+    },
+    "cc72bd1009ba0cf63922e28f94d9d83b920aa2bb28f798a31d0691b02fa3c9b3": {
+      "container_sha256": "cc72bd1009ba0cf63922e28f94d9d83b920aa2bb28f798a31d0691b02fa3c9b3",
+      "entry_count": 49,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python-wheel-0.47.0/wheel-0.47.0.tar.gz",
+      "nested": [
+        {
+          "container_sha256": "c2c4e0c53aac6558a25ac2ededfaef711242fe84160d54dd949cd2c603108c01"
+        }
+      ],
+      "regular_files": 49,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 206807
+    },
+    "d0ddc5e60fdb27d808552f5ac8d0bb603ea2cba306538b4427b985535b26c9c5": {
+      "container_sha256": "d0ddc5e60fdb27d808552f5ac8d0bb603ea2cba306538b4427b985535b26c9c5",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz!/meson-1.11.1/test cases/common/153 wrap file should not failed/subprojects/packagecache/foo-1.0-patch.tar.xz",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 67
+    },
+    "d1688d66b78b6c14ec30b6f3a9616c31bbcf38231b472b5ddb9fc556a6b6e487": {
+      "container_sha256": "d1688d66b78b6c14ec30b6f3a9616c31bbcf38231b472b5ddb9fc556a6b6e487",
+      "entry_count": 2323,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/loongarch-kvm_on_loongson_3c6000.tar.gz",
+      "nested": [],
+      "regular_files": 1955,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 33091
+    },
+    "d1a659d5a2d292682a17d789834d97b97650b6a8d188799ac1166fd85ace7dbd": {
+      "container_sha256": "d1a659d5a2d292682a17d789834d97b97650b6a8d188799ac1166fd85ace7dbd",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/zip64.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 36
+    },
+    "d2a5221cdcd6bd73be8301f02c266fb13a2cba400d6836cce86ba9b6e044937a": {
+      "container_sha256": "d2a5221cdcd6bd73be8301f02c266fb13a2cba400d6836cce86ba9b6e044937a",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/pax-nul-xattrs.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "d2ed6dea05a1354f9a1c0f89c3993345cafd4227a1c13ad8a81ec87382da6336": {
+      "container_sha256": "d2ed6dea05a1354f9a1c0f89c3993345cafd4227a1c13ad8a81ec87382da6336",
+      "entry_count": 1543,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/x86_64-64cpu-linux6.2.tar.gz",
+      "nested": [],
+      "regular_files": 1316,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 38935
+    },
+    "d2fc041dab4e11d9645e3ba53be058faa52b8ce28a8a97c889bb2cacee170461": {
+      "container_sha256": "d2fc041dab4e11d9645e3ba53be058faa52b8ce28a8a97c889bb2cacee170461",
+      "entry_count": 97252,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/linux-6.18.50/linux-6.18.50.tar.xz",
+      "nested": [],
+      "regular_files": 91119,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1537458393
+    },
+    "d3eb539a556352f3f47881d71fb0e5777b2f3e9a4251d283c18c67ce996774b7": {
+      "container_sha256": "d3eb539a556352f3f47881d71fb0e5777b2f3e9a4251d283c18c67ce996774b7",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz!/meson-1.11.1/test cases/common/153 wrap file should not failed/subprojects/packagecache/zlib-1.2.8-8-wrap.zip",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "d4afb4ca10dbf46d071752d82b2d148a82953f8b8776b7bc57f9f1f0e3c50a64": {
+      "container_sha256": "d4afb4ca10dbf46d071752d82b2d148a82953f8b8776b7bc57f9f1f0e3c50a64",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/pax-sparse-big.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 3584
+    },
+    "d57eff008fa79aab7d863c5e003d2bc35a5f734a9eac8b62289b9c6c395bb71f": {
+      "container_sha256": "d57eff008fa79aab7d863c5e003d2bc35a5f734a9eac8b62289b9c6c395bb71f",
+      "entry_count": 3,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/subdir.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "d585fd3b613c66151fc3249e8ed44f77020cb5e6c1e635a616d3f9f82460512a": {
+      "container_sha256": "d585fd3b613c66151fc3249e8ed44f77020cb5e6c1e635a616d3f9f82460512a",
+      "entry_count": 2897,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/musl-1.2.6/musl-1.2.6.tar.gz",
+      "nested": [],
+      "regular_files": 2660,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 3499201
+    },
+    "d5e201dbd6f30d977d53d223dd46d3f127efdef9d8140779e6774cc902e5e68b": {
+      "container_sha256": "d5e201dbd6f30d977d53d223dd46d3f127efdef9d8140779e6774cc902e5e68b",
+      "entry_count": 358,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/s390-lpar.tar.gz",
+      "nested": [],
+      "regular_files": 313,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 5867
+    },
+    "d60fd70a6de4cc16363b5a424bcf703f5345f01c6a0595f5246ae12822bf719d": {
+      "container_sha256": "d60fd70a6de4cc16363b5a424bcf703f5345f01c6a0595f5246ae12822bf719d",
+      "entry_count": 4,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/winxp.zip",
+      "nested": [],
+      "regular_files": 3,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 26
+    },
+    "d73791c790a2e4593a207d5e9ef7a5fdcb937db571be85747421b951655c98f6": {
+      "container_sha256": "d73791c790a2e4593a207d5e9ef7a5fdcb937db571be85747421b951655c98f6",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/utf8-infozip.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "d7a0654783a4da529d1bb793b7ad9c3318020af77667bcae35f95d0e42a792f3": {
+      "container_sha256": "d7a0654783a4da529d1bb793b7ad9c3318020af77667bcae35f95d0e42a792f3",
+      "entry_count": 291,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/libzlib-1.3.2/zlib-1.3.2.tar.xz",
+      "nested": [],
+      "regular_files": 254,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 3579037
+    },
+    "d80f55ac66a2570c8a19d2b1dad7c057cf4c944d9c2f8adaf5bf6c8539881e13": {
+      "container_sha256": "d80f55ac66a2570c8a19d2b1dad7c057cf4c944d9c2f8adaf5bf6c8539881e13",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz!/Python-3.14.7/Lib/test/archivetestdata/recursion.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "d8c48530459d9eb53bec5f816ee7519bb9e5ba25b6a85f30ba31459a6f6152da": {
+      "container_sha256": "d8c48530459d9eb53bec5f816ee7519bb9e5ba25b6a85f30ba31459a6f6152da",
+      "entry_count": 398,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lsmem/dumps/s390-zvm-6g.tar.bz2",
+      "nested": [],
+      "regular_files": 296,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1290
+    },
+    "dc6003a83f606030140c9f9cc3d9b0e776ea95de67afaac3fc2ea2bb6c4aecc2": {
+      "container_sha256": "dc6003a83f606030140c9f9cc3d9b0e776ea95de67afaac3fc2ea2bb6c4aecc2",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz!/meson-1.11.1/test cases/unit/72 wrap file url/subprojects/foo.tar.xz",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 49
+    },
+    "dcec917ea7852418f21c2b8fe67c8355fd6ff0e875c5bc3718e1b8684a064171": {
+      "container_sha256": "dcec917ea7852418f21c2b8fe67c8355fd6ff0e875c5bc3718e1b8684a064171",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/dd.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 25
+    },
+    "de161ee91e4f1bf9c98b8c5399ebf3d4f1f3d5be719bab8fe9ac8ac255715e02": {
+      "container_sha256": "de161ee91e4f1bf9c98b8c5399ebf3d4f1f3d5be719bab8fe9ac8ac255715e02",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/trailing-slash.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "de7e983cc020b72b10819773e487c794e1269fc5a3793bc13d3c61ffacc553a5": {
+      "container_sha256": "de7e983cc020b72b10819773e487c794e1269fc5a3793bc13d3c61ffacc553a5",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/issue12435.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "e147c0549f27767ba362f9da434eab9c5dc0045d5304feb602a0af001089fc51": {
+      "container_sha256": "e147c0549f27767ba362f9da434eab9c5dc0045d5304feb602a0af001089fc51",
+      "entry_count": 514,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz!/Python-3.14.7/Lib/test/wheeldata/setuptools-79.0.1-py3-none-any.whl",
+      "nested": [
+        {
+          "container_sha256": "01845c437f4655e3cf9cc4fc4e49cfd607431f22675e1b611129a90239f34822",
+          "duplicate_bytes_reuse": true
+        }
+      ],
+      "regular_files": 514,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 4348283
+    },
+    "e18d729821696dc33c7eb0bf32622146365bb3e0c2bd2d72ce4b2e460a84690e": {
+      "container_sha256": "e18d729821696dc33c7eb0bf32622146365bb3e0c2bd2d72ce4b2e460a84690e",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/nil-uid.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 14
+    },
+    "e27b90bc173ae5bbcea55312007815d22fd87a88c4449028098e42d831dfafef": {
+      "container_sha256": "e27b90bc173ae5bbcea55312007815d22fd87a88c4449028098e42d831dfafef",
+      "entry_count": 19,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/corresponding-source/rock-source.tar!/public/toolkits/mr-toolkit.zip",
+      "nested": [],
+      "regular_files": 19,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 83064
+    },
+    "e2cdb56febb5106607bf5f9b92b2b7a9516814e7650139cfe46f6b36bfcfa327": {
+      "container_sha256": "e2cdb56febb5106607bf5f9b92b2b7a9516814e7650139cfe46f6b36bfcfa327",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz!/Python-3.14.7/Lib/test/archivetestdata/zip_cp437_header.zip",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 10
+    },
+    "e313f478c14978e346fb2454f256876de83b154acf75fa49f498d7684964e8e1": {
+      "container_sha256": "e313f478c14978e346fb2454f256876de83b154acf75fa49f498d7684964e8e1",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/pax.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 7
+    },
+    "e36d2ee9fbc41f7fe0b2717dc4b1fdc1978c9396dd28f3398b1f3a1a29dc146c": {
+      "container_sha256": "e36d2ee9fbc41f7fe0b2717dc4b1fdc1978c9396dd28f3398b1f3a1a29dc146c",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/test.zip",
+      "nested": [],
+      "regular_files": 2,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 811
+    },
+    "e41016555fae6a69548ace9acbafb65c060b9b2c9066724724e4082aaf3446a7": {
+      "container_sha256": "e41016555fae6a69548ace9acbafb65c060b9b2c9066724724e4082aaf3446a7",
+      "entry_count": 0,
+      "error_type": "ReadError",
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/busybox-1.38.0/busybox-1.38.0.tar.bz2!/busybox-1.38.0/testsuite/unzip_bad_lzma_2.zip",
+      "nested": [],
+      "regular_files": 0,
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE",
+      "uncompressed_bytes": 0
+    },
+    "e4e6b8700915613e10edbfe16f31c8d3edfd80603fa4f12fd6eeee5881cbd881": {
+      "container_sha256": "e4e6b8700915613e10edbfe16f31c8d3edfd80603fa4f12fd6eeee5881cbd881",
+      "entry_count": 4,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/pax-global-records.tar",
+      "nested": [],
+      "regular_files": 4,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "e661131456d2708a01c614a0f400e11d7d1bfaeb6f3e74b75bb980b72f0161a3": {
+      "container_sha256": "e661131456d2708a01c614a0f400e11d7d1bfaeb6f3e74b75bb980b72f0161a3",
+      "entry_count": 275,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/acl-2.4.0/acl-2.4.0.tar.xz",
+      "nested": [],
+      "regular_files": 258,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 2547960
+    },
+    "e81dbec6483c207ff01013f682d96040c7f936083f5ca7c97456d20965778a89": {
+      "container_sha256": "e81dbec6483c207ff01013f682d96040c7f936083f5ca7c97456d20965778a89",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/ustar-file-reg.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 684
+    },
+    "ec472d6ce49a0527d6eab73dace33c4e330e0c0509fd298f85fba9eba21ff308": {
+      "container_sha256": "ec472d6ce49a0527d6eab73dace33c4e330e0c0509fd298f85fba9eba21ff308",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/Fuzzing/corpus/archive/simple.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 13
+    },
+    "eca0923568a3fe01c41eb29314d2eb352ac8fe96c1dbafe1712c00122ae5eed2": {
+      "container_sha256": "eca0923568a3fe01c41eb29314d2eb352ac8fe96c1dbafe1712c00122ae5eed2",
+      "entry_count": 2665,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz!/util-linux-2.41.5/tests/ts/lscpu/dumps/vmware_fpe.tar.gz",
+      "nested": [],
+      "regular_files": 2228,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 61085
+    },
+    "ee87767de57b973d084c9f0bcda3266bf443b8d18803ed4588064f31f9c48069": {
+      "container_sha256": "ee87767de57b973d084c9f0bcda3266bf443b8d18803ed4588064f31f9c48069",
+      "entry_count": 4,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/busybox-1.38.0/busybox-1.38.0.tar.bz2!/busybox-1.38.0/testsuite/tar.utf8.tar.bz2",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 2106
+    },
+    "efafdfa1a7779877a16d53a4cc6f1ebb7c49040da40ffdd82cd362bb0a29611e": {
+      "container_sha256": "efafdfa1a7779877a16d53a4cc6f1ebb7c49040da40ffdd82cd362bb0a29611e",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/Fuzzing/corpus/archive/with_dir.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 12
+    },
+    "f01d58cd6d9d77fbdca9eb4bbd5ead1988228fdb73d6f7a201f5f8d6b118b469": {
+      "container_sha256": "f01d58cd6d9d77fbdca9eb4bbd5ead1988228fdb73d6f7a201f5f8d6b118b469",
+      "entry_count": 1571,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/automake-1.16.5/automake-1.16.5.tar.xz",
+      "nested": [
+        {
+          "container_sha256": "2dd5af8471c89f54ca46451d9e1012972f0882594c955a0763a362deb6981960"
+        }
+      ],
+      "regular_files": 1548,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 8955558
+    },
+    "f04b2fca5ebaac681e7ca1f859bc0a1abe4193800255a449b2a3a871dc3f64a0": {
+      "container_sha256": "f04b2fca5ebaac681e7ca1f859bc0a1abe4193800255a449b2a3a871dc3f64a0",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/utf8-winzip.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "f0f61948530dc0d33e3028cd71a9f8ee869f6b3665960d8f41d715cf4aed6467": {
+      "container_sha256": "f0f61948530dc0d33e3028cd71a9f8ee869f6b3665960d8f41d715cf4aed6467",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz!/meson-1.11.1/test cases/common/153 wrap file should not failed/subprojects/packagefiles/bar-1.0.tar.xz",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 44
+    },
+    "f25c6ab51548a73a75558742fb031e0625d6485fe5f9155949d6486a2408ab66": {
+      "container_sha256": "f25c6ab51548a73a75558742fb031e0625d6485fe5f9155949d6486a2408ab66",
+      "entry_count": 2053,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/m4-1.4.21/m4-1.4.21.tar.xz",
+      "nested": [],
+      "regular_files": 2031,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 18114153
+    },
+    "f294beb5b6bf4259983109e37d9c18db3b9174ed3cf3ff49addfe89f62df83e6": {
+      "container_sha256": "f294beb5b6bf4259983109e37d9c18db3b9174ed3cf3ff49addfe89f62df83e6",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/Fuzzing/corpus/archive/simple.tar.gz",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 13
+    },
+    "f2a80a6a398c1e35bb1f5e0a07fd8fe90ecb1f9f313f03839da8eb2d65fdf2e5": {
+      "container_sha256": "f2a80a6a398c1e35bb1f5e0a07fd8fe90ecb1f9f313f03839da8eb2d65fdf2e5",
+      "entry_count": 21,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz!/cmake-4.4.0/Tests/ExternalProjectUpdate/gitrepo.tgz",
+      "nested": [],
+      "regular_files": 12,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 5527
+    },
+    "f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c": {
+      "container_sha256": "f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c",
+      "entry_count": 666,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python-setuptools-80.9.0/setuptools-80.9.0.tar.gz",
+      "nested": [
+        {
+          "container_sha256": "01845c437f4655e3cf9cc4fc4e49cfd607431f22675e1b611129a90239f34822"
+        }
+      ],
+      "regular_files": 582,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 5097971
+    },
+    "f3e3e97854feebc6ee48069dc759b93e32c432109ca146ee691d61dc34fedb7b": {
+      "container_sha256": "f3e3e97854feebc6ee48069dc759b93e32c432109ca146ee691d61dc34fedb7b",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/gnu-multi-hdrs.tar",
+      "nested": [],
+      "regular_files": 0,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "f41036f0d011ae1c98de383360b1e26eb41f216cea17ab909f8fcf027ba20791": {
+      "container_sha256": "f41036f0d011ae1c98de383360b1e26eb41f216cea17ab909f8fcf027ba20791",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/utf8-winrar.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "f586e35d320ff537aab3ffeca37e9ecd482ccbe013590db4429a414d8aa6a728": {
+      "container_sha256": "f586e35d320ff537aab3ffeca37e9ecd482ccbe013590db4429a414d8aa6a728",
+      "entry_count": 3884,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz",
+      "nested": [
+        {
+          "container_sha256": "4b20adc149ee15d062910e1f41371841eff1b9e60ec9e7f4922a71251a32bbea"
+        },
+        {
+          "container_sha256": "d1688d66b78b6c14ec30b6f3a9616c31bbcf38231b472b5ddb9fc556a6b6e487"
+        },
+        {
+          "container_sha256": "571ff633a6951cfa23332d357a3eabe8d22f126c4f420f6311372a4d9fe9cdc0"
+        },
+        {
+          "container_sha256": "7e32117562c2f62d577107799d8f9b3a901c83459a686b9c2bfda84da55c2150"
+        },
+        {
+          "container_sha256": "907ea144b5a97e5409a5a078ae4775471faf6808a5905b3385ee214cdddfccf6"
+        },
+        {
+          "container_sha256": "c9eef0b2ec8532f41dfed026abb2f272a3bad37ab5de1a0079a97668a01345ac"
+        },
+        {
+          "container_sha256": "4185c6845f8eb7fc49425a49c4771ade03afb9e585d4578cc2aa73c619b30a52"
+        },
+        {
+          "container_sha256": "14c6877e7348e820e85cc319e4e0d582142975aaf723fbe4bc516c4ceb5ed5e2"
+        },
+        {
+          "container_sha256": "899c48e2e5de644d22c985e27d1a0353535c34be61e1ca325a3fa55ed2b98f79"
+        },
+        {
+          "container_sha256": "a0061d050f910d85462c91bae0949e7a8b47702ede1d741bcd2393f2a422035d"
+        },
+        {
+          "container_sha256": "3ad0e6b7c0646fda819f5382373c7c02d40288a6898a3126e287b6f07f5c6176"
+        },
+        {
+          "container_sha256": "4c26ef64ea626534786ca84cdc58e62b34150b2fc0d28d730427a89dc29c62d1"
+        },
+        {
+          "container_sha256": "d5e201dbd6f30d977d53d223dd46d3f127efdef9d8140779e6774cc902e5e68b"
+        },
+        {
+          "container_sha256": "18019b813010ecf907fd7d4b529c1480d7e8a430b2c28c8b313059dbbd68630f"
+        },
+        {
+          "container_sha256": "53642ff1f7c299190439fddce6b37cb18fbeee013d6821cada096b142a352e1b"
+        },
+        {
+          "container_sha256": "8b6f6bbc9051abb6325983cbb4820093ff3becac6fba4660adf495db3f40e91a"
+        },
+        {
+          "container_sha256": "2460bc8037992b627181697a9c5aa0e4a6c68cf981c0770ff89f0b5665a13785"
+        },
+        {
+          "container_sha256": "eca0923568a3fe01c41eb29314d2eb352ac8fe96c1dbafe1712c00122ae5eed2"
+        },
+        {
+          "container_sha256": "d2ed6dea05a1354f9a1c0f89c3993345cafd4227a1c13ad8a81ec87382da6336"
+        },
+        {
+          "container_sha256": "79afcefd316736c75581deb0838da767821a191f958c6c4a95053fe0753566ed"
+        },
+        {
+          "container_sha256": "8e55ccd1697b60ea7d25e1e46b19710c541a193dde318e099256fd2194d8f972"
+        },
+        {
+          "container_sha256": "8fd8ee546f8ba2e76d85731c9764e486bf5bb64e7e0450f07084752f73b9f96c"
+        },
+        {
+          "container_sha256": "78abc8ce449751044e0f423259fd016f862e1e6ff643f01f43854dc8b8f3858b"
+        },
+        {
+          "container_sha256": "d8c48530459d9eb53bec5f816ee7519bb9e5ba25b6a85f30ba31459a6f6152da"
+        },
+        {
+          "container_sha256": "425c590fbf9e2ff27eac45b2006820de8dfec3b4ba48be935327353f86fc66f0"
+        },
+        {
+          "container_sha256": "487398c2ea3956e31eb1af05abfde951df98df75cee59afd0630d543e0992ae6"
+        },
+        {
+          "container_sha256": "b3d342ef9f53fbb2bd1bf30a9c2d0473294aca4be4c13f5d874238129c04ade3"
+        }
+      ],
+      "regular_files": 3675,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 82852714
+    },
+    "f58d4abcbc3a42dc21788e8aba382b3141ce34585100f7b2e2884601ce45273c": {
+      "container_sha256": "f58d4abcbc3a42dc21788e8aba382b3141ce34585100f7b2e2884601ce45273c",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/ustar.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 6
+    },
+    "f81f5860666b0bc7d84baddefa60d1cb9fa6fceb2398cc3baca6afaa60266675": {
+      "container_sha256": "f81f5860666b0bc7d84baddefa60d1cb9fa6fceb2398cc3baca6afaa60266675",
+      "entry_count": 211,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/libtool-2.5.4/libtool-2.5.4.tar.xz",
+      "nested": [],
+      "regular_files": 202,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 8820068
+    },
+    "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb": {
+      "container_sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb",
+      "entry_count": 150566,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz",
+      "nested": [
+        {
+          "container_sha256": "af5e3cb635c27b492ead712c3eadba4d672398099559680e8176776918ffaf7b"
+        },
+        {
+          "container_sha256": "acb77caa34accd11067629705ceb3d7cb01868134ae56fca3f9c6348dbd585d4"
+        },
+        {
+          "container_sha256": "d1a659d5a2d292682a17d789834d97b97650b6a8d188799ac1166fd85ace7dbd"
+        },
+        {
+          "container_sha256": "941bf893b024dcb2269684357b6df18ca747ce873d6bdc626796572bf3a3f9e3"
+        },
+        {
+          "container_sha256": "6be41a66578438afdda77edfaec1857ca553fa091dc31a2bd7db0d8a3a3e9a30"
+        },
+        {
+          "container_sha256": "bbf109e827cd301e67ef3b08082db8e0bacd9d7fe7e517278bf41821d3207898"
+        },
+        {
+          "container_sha256": "f04b2fca5ebaac681e7ca1f859bc0a1abe4193800255a449b2a3a871dc3f64a0"
+        },
+        {
+          "container_sha256": "5da98564f0188c6ea25c5a681adac2bcf402a22b7e16bfdf087034be9e8b17a5"
+        },
+        {
+          "container_sha256": "fda31b416bcacec89be0a8e1a9fe8f16b07b1761b34285a073f3cdde25209c4e"
+        },
+        {
+          "container_sha256": "45c2b43fd74e27b3a511a2f3f31de08651689366e4344ff5e4a644b3be35f4b9"
+        },
+        {
+          "container_sha256": "058b9c059e88fcd17d8e8bee4239f31073969c8affa4993498dbb7e5c1508518"
+        },
+        {
+          "container_sha256": "d60fd70a6de4cc16363b5a424bcf703f5345f01c6a0595f5246ae12822bf719d"
+        },
+        {
+          "container_sha256": "12e1b7b71a0943547acca38516aef5d89d2466c79dae5279a915389b7beace4d"
+        },
+        {
+          "container_sha256": "ffecd2607b24eb31a12d3d94b8cf951c48b2e17c66b19d71150fb98da0a727e3"
+        },
+        {
+          "container_sha256": "c374ae7910a6b6b8499c0bb7757474456450c994bf39dbe4d9a1ab8361f50856"
+        },
+        {
+          "container_sha256": "ae84fe91799e805724d20949195c4476aa4e7c124a9229c79987a4f7e0cdb178"
+        },
+        {
+          "container_sha256": "d73791c790a2e4593a207d5e9ef7a5fdcb937db571be85747421b951655c98f6"
+        },
+        {
+          "container_sha256": "b1ae5e20dc1608e8fda463f6d19c667f1dd2ce290981565528a1e11ac7452bfa"
+        },
+        {
+          "container_sha256": "9ee76aa8a1c2ce04924b43424bf9d1b3138f812a80d6239f06f1133876f50d40"
+        },
+        {
+          "container_sha256": "e36d2ee9fbc41f7fe0b2717dc4b1fdc1978c9396dd28f3398b1f3a1a29dc146c"
+        },
+        {
+          "container_sha256": "d57eff008fa79aab7d863c5e003d2bc35a5f734a9eac8b62289b9c6c395bb71f"
+        },
+        {
+          "container_sha256": "c871234a8d0c8787eacb357e53245d6663803fef1750518204a1aa97ec321f62"
+        },
+        {
+          "container_sha256": "28774f00d29804f65a6af708a125d9b56ea20a98b1681ae4ab0e001474710e2a"
+        },
+        {
+          "container_sha256": "dcec917ea7852418f21c2b8fe67c8355fd6ff0e875c5bc3718e1b8684a064171"
+        },
+        {
+          "container_sha256": "0e129eb30eeda61f7bec57f7708047750e4cf6add713a289d4b879b394459846"
+        },
+        {
+          "container_sha256": "f41036f0d011ae1c98de383360b1e26eb41f216cea17ab909f8fcf027ba20791"
+        },
+        {
+          "container_sha256": "a302db10909ff2822f09f362576eca6e1b4f0d70e34748f6fa1eea79e7d3713a"
+        },
+        {
+          "container_sha256": "675b784cae33a0a4856b66b1752a3892455b983f505d3e27505b07a525d61055"
+        },
+        {
+          "container_sha256": "3dfc8596ba248ba48e18fc2c635753d033bfe8987d34121cea69a4a3a8e2ef40"
+        },
+        {
+          "container_sha256": "e313f478c14978e346fb2454f256876de83b154acf75fa49f498d7684964e8e1"
+        },
+        {
+          "container_sha256": "de161ee91e4f1bf9c98b8c5399ebf3d4f1f3d5be719bab8fe9ac8ac255715e02"
+        },
+        {
+          "container_sha256": "4635a876c70af74b13976fdf86811e809ec29dc1ccb2a18c1174a493240edf8b"
+        },
+        {
+          "container_sha256": "e18d729821696dc33c7eb0bf32622146365bb3e0c2bd2d72ce4b2e460a84690e"
+        },
+        {
+          "container_sha256": "e4e6b8700915613e10edbfe16f31c8d3edfd80603fa4f12fd6eeee5881cbd881"
+        },
+        {
+          "container_sha256": "57be2655401e9cb4b79515257a2978db683ca5b3c9b4ea0a3f1adcd1b43d56a7"
+        },
+        {
+          "container_sha256": "a14b8f41c96d4d00f36642455f734396766397fa5c636115f4881c5b53959b88"
+        },
+        {
+          "container_sha256": "97b7612d21901a62cb80af3b976878da051b512f0a8018c16931ffd6e176067b"
+        },
+        {
+          "container_sha256": "f3e3e97854feebc6ee48069dc759b93e32c432109ca146ee691d61dc34fedb7b"
+        },
+        {
+          "container_sha256": "027bb1a0d7f778fde347be353b1920141bc4d4d2da6828ace084cb339787fd17"
+        },
+        {
+          "container_sha256": "c126eb856810b76ae112d2dfeddf2c9aa89531dfc6f5e7c878301495a08d1b6d"
+        },
+        {
+          "container_sha256": "831bd782db9d2b552cbcfcb87adfded0941762596e5d8fbd742dba03c6dc357b"
+        },
+        {
+          "container_sha256": "de7e983cc020b72b10819773e487c794e1269fc5a3793bc13d3c61ffacc553a5"
+        },
+        {
+          "container_sha256": "d2a5221cdcd6bd73be8301f02c266fb13a2cba400d6836cce86ba9b6e044937a"
+        },
+        {
+          "container_sha256": "02e95784ed0c0a6c028eb2959c2c6393094d9687cfb44100fd7305955dbe6b0a"
+        },
+        {
+          "container_sha256": "36edba10087c389ffab0200dbf56013237af1ec8867a2442187c7147d899e7e4",
+          "review": "malformed source fixture; never extracted or executed"
+        },
+        {
+          "container_sha256": "1d46bde4ea43f780c4f184a7ef11b11cdde9f9e02d6892a03c67d9b6c6608973"
+        },
+        {
+          "container_sha256": "577d18c199858f40ddb297b18de9b31041e253c04019f00b06067c1015925605"
+        },
+        {
+          "container_sha256": "7eafa3b2f293d90eca480a6630941775dbfe332f54c344162ff1913e3746a96f"
+        },
+        {
+          "container_sha256": "a47d0adca51594bf284a2a1c50286f877a3718766dae1b262c4568ecd0bfa5e7"
+        },
+        {
+          "container_sha256": "a178aeda2cd08b0f738b53120ebd9c27767546736e03ca47516c80ceec1d299c"
+        },
+        {
+          "container_sha256": "59b6b112db4107ed60bf30cd4a0a81b96f4f955808c06ce029194eff31e8d8ce"
+        },
+        {
+          "container_sha256": "f58d4abcbc3a42dc21788e8aba382b3141ce34585100f7b2e2884601ce45273c"
+        },
+        {
+          "container_sha256": "5a0bee74a7bd0caa1d572ff1ae58c3c79310c8fc646a5e84fb5e1eea488ea4b5",
+          "review": "malformed source fixture; never extracted or executed"
+        },
+        {
+          "container_sha256": "31585b656cf569c03f800d79e43b311c54c8ec88018a44e9e2ec05009abc8f5f"
+        },
+        {
+          "container_sha256": "261f3807fa134322126c117bb3ef987d019d00bc25e882fb3ebdd81cf57c812e"
+        },
+        {
+          "container_sha256": "7445b1987611850b4810e9b56a99188923f9dc467b7b240e0431f37f58cc6df3"
+        },
+        {
+          "container_sha256": "fbd8462155e49f06b82b17b8c4c871d85d322e2d95e2fc3108fad51f1f4ce107"
+        },
+        {
+          "container_sha256": "53fe0bb9e743531a01d601f70482f6e47e43469894ca101abf7069424edbe81f"
+        },
+        {
+          "container_sha256": "3560b7b37f487f1c41a46b39b74d9f00a52d6b9f3430d64a6e42544df3c14c95",
+          "review": "malformed source fixture; never extracted or executed"
+        },
+        {
+          "container_sha256": "506d08fe8bbee110612f4672e632e5e9a6373cafba15cbd5866bdd09e3f79d2b"
+        },
+        {
+          "container_sha256": "68135f04e9b4fc6bc6a46508779912050028428f19f2eced56706a0bd297c13a"
+        },
+        {
+          "container_sha256": "e81dbec6483c207ff01013f682d96040c7f936083f5ca7c97456d20965778a89"
+        },
+        {
+          "container_sha256": "2f434250f98a8aad5e77b8695d751b11bca1625d4d0264638113ad27ebeb11c7"
+        },
+        {
+          "container_sha256": "146a47c77ea4b77dff0d94403a80e6164629262d66ec56d8dbad0195174c8a47"
+        },
+        {
+          "container_sha256": "9c80a95a15edc3eef8fd6c506c4a92481f517bebd088d5db0eb260033a77c0f6"
+        },
+        {
+          "container_sha256": "d4afb4ca10dbf46d071752d82b2d148a82953f8b8776b7bc57f9f1f0e3c50a64"
+        },
+        {
+          "container_sha256": "63d5e53472b1ea35cd8814f9d4dee7597601c99eca367177bbaaab1e09d30468"
+        },
+        {
+          "container_sha256": "065f7d6cdcebbb9a2a0afbac24849165d1fe83872550b0abad9460520854ad4d"
+        }
+      ],
+      "regular_files": 144789,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 807854533
+    },
+    "fbd8462155e49f06b82b17b8c4c871d85d322e2d95e2fc3108fad51f1f4ce107": {
+      "container_sha256": "fbd8462155e49f06b82b17b8c4c871d85d322e2d95e2fc3108fad51f1f4ce107",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/tar/testdata/gnu-nil-sparse-data.tar",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1000
+    },
+    "fd5bf388cbdbe006a3d3b318d983b2948382440acc85a87f1e7d108653e8db0b": {
+      "container_sha256": "fd5bf388cbdbe006a3d3b318d983b2948382440acc85a87f1e7d108653e8db0b",
+      "entry_count": 2795,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/e2fsprogs-1.47.4/e2fsprogs-1.47.4.tar.xz",
+      "nested": [
+        {
+          "container_sha256": "87b6164e2f758a5298aeac93e2d24efed3769c778847230f2cf07387c213e649"
+        },
+        {
+          "container_sha256": "bfaa9e66fd2df3ebdb3896f85140dacfe39d54cfe8f385a9dd273f9745a8dc4c"
+        }
+      ],
+      "regular_files": 2333,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 37390649
+    },
+    "fd87e0aba7e43ae054837afd6cd4db03a3f2693deb3619085e6ed9d8d9604ad8": {
+      "container_sha256": "fd87e0aba7e43ae054837afd6cd4db03a3f2693deb3619085e6ed9d8d9604ad8",
+      "entry_count": 340,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gperf-3.3/gperf-3.3.tar.gz",
+      "nested": [],
+      "regular_files": 333,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 6463153
+    },
+    "fda31b416bcacec89be0a8e1a9fe8f16b07b1761b34285a073f3cdde25209c4e": {
+      "container_sha256": "fda31b416bcacec89be0a8e1a9fe8f16b07b1761b34285a073f3cdde25209c4e",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/utf8-7zip.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    },
+    "fdaebe0886a25d56eea690c1f53a7da173fb1a449c25de765a60b48aa2c4de71": {
+      "container_sha256": "fdaebe0886a25d56eea690c1f53a7da173fb1a449c25de765a60b48aa2c4de71",
+      "entry_count": 2,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz!/meson-1.11.1/test cases/common/153 wrap file should not failed/subprojects/packagefiles/bar-1.0-patch.tar.xz",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 71
+    },
+    "ff452ff5a3e828ce110190feff1178bb1f2ea2281fa2075aadb987c2fb221661": {
+      "container_sha256": "ff452ff5a3e828ce110190feff1178bb1f2ea2281fa2075aadb987c2fb221661",
+      "entry_count": 95,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python-packaging-26.2/packaging-26.2.tar.gz",
+      "nested": [],
+      "regular_files": 95,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 1108803
+    },
+    "ffecd2607b24eb31a12d3d94b8cf951c48b2e17c66b19d71150fb98da0a727e3": {
+      "container_sha256": "ffecd2607b24eb31a12d3d94b8cf951c48b2e17c66b19d71150fb98da0a727e3",
+      "entry_count": 1,
+      "first_location": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz!/gcc-15.3.0/libgo/go/archive/zip/testdata/time-22738.zip",
+      "nested": [],
+      "regular_files": 1,
+      "status": "ALL_ENTRIES_READ",
+      "uncompressed_bytes": 0
+    }
+  },
+  "obligation_rule_candidate_counts": {
+    "Apache-2.0": 14444,
+    "BSD": 89068,
+    "GPL": 335766,
+    "LGPL": 237036,
+    "MIT": 60765,
+    "MPL": 5294,
+    "OFL-1.1": 286,
+    "UNRESOLVED": 34748,
+    "Zlib": 352
+  },
+  "record_counts": {
+    "CANDIDATE_FILE": 706,
+    "LEGAL_BUNDLE_MEMBER": 298,
+    "NESTED_SOURCE_ENTRY": 430409,
+    "ROOTFS_PATH": 1981,
+    "STAGE0_ENTRY": 702
+  },
+  "rootfs_generator_gaps_closed": 32,
+  "schema": "rock-full-distribution-review-inventory/1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "source_container_status_counts": {
+    "ALL_ENTRIES_READ": 191,
+    "MALFORMED_ARCHIVE_OR_FIXTURE": 2,
+    "NON_ARCHIVE_OR_TEST_FIXTURE": 14
+  },
+  "stage0_unmapped_regular_bytes": 0,
+  "status": "COMPLETE_OBSERVED_FILE_RECORDS_WITH_EXPLICIT_FIXTURE_BOUNDS_AND_LEGAL_UNKNOWNS",
+  "unresolved_only_rule_counts": {
+    "CANDIDATE_FILE": 641,
+    "LEGAL_BUNDLE_MEMBER": 298,
+    "NESTED_SOURCE_ENTRY": 31201,
+    "ROOTFS_PATH": 1914,
+    "STAGE0_ENTRY": 694
+  }
+}

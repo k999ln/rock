@@ -1,6 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
 import {
+  ExecutionSignin,
+  useExecutionAccess,
+} from '@/components/execution-access';
+import {
   Play,
   Download,
   Copy,
@@ -25,11 +29,11 @@ import {
 } from '@/lib/mr-tools';
 import { DeliveryRunner } from '@/components/delivery-runner';
 import {
-  deviceToken,
-  runDevice,
-  recordRun,
-  type RunRecorder,
-} from '@/lib/device';
+  executeTracked,
+  processedBytes,
+  OperationRequestError,
+} from '@/lib/operations-client';
+import { deviceToken, runDevice, type RunRecorder } from '@/lib/device';
 export type MrRunner =
   | 'coconala'
   | 'citations'
@@ -40,13 +44,14 @@ const demoArticle =
 export function MrToolRunner({
   tool,
   onRecord,
+  onRunningChange,
   executionDisabled = false,
 }: {
   tool: MrRunner;
   onRecord?: RunRecorder;
+  onRunningChange?: (running: boolean) => void;
   executionDisabled?: boolean;
 }) {
-  const saveRun: RunRecorder = onRecord ?? recordRun;
   const [text, setText] = useState(''),
     [proposal, setProposal] = useState(''),
     [bucket, setBucket] = useState('single'),
@@ -61,6 +66,7 @@ export function MrToolRunner({
     [error, setError] = useState(''),
     [copied, setCopied] = useState(false),
     [editing, setEditing] = useState(false);
+  const { needsSignin, setNeedsSignin } = useExecutionAccess();
   const [connected, setConnected] = useState(false),
     [running, setRunning] = useState(false),
     [sampleInput, setSampleInput] = useState(false);
@@ -110,118 +116,145 @@ export function MrToolRunner({
     }
   }
   async function run() {
+    if (running || executionDisabled) return;
     setRunning(true);
-    window.dispatchEvent(new CustomEvent('loop-run-state', { detail: tool }));
+    onRunningChange?.(true);
     setError('');
     setCopied(false);
     setEditing(false);
+    setOutput('');
+    setResult(null);
     const started = performance.now(),
       local = !!deviceToken();
-    let completed = false;
-    let outcome: 'passed' | 'needs_review' = 'passed';
+    const toolId =
+      tool === 'coconala'
+        ? 'coconala'
+        : tool === 'citations'
+          ? 'mr-citations'
+          : 'mr-free-article';
+    const transport = local ? 'local-mcp' : 'browser';
+    const args =
+      tool === 'coconala'
+        ? {
+            brief: text,
+            proposal,
+            bucket,
+            orderRate: rate.trim() === '' ? null : Number(rate),
+          }
+        : tool === 'citations'
+          ? { text }
+          : {
+              markdown: text,
+              afterChars: Number(after),
+              summary,
+              price: Number(price),
+              paidContents: contents,
+              noteUrl: url,
+            };
+    let executed = false,
+      completed = false;
     try {
-      if (local) {
-        const name =
-          tool === 'coconala'
-            ? 'coconala_check'
-            : tool === 'citations'
-              ? 'format_citations'
-              : 'make_free_article';
-        const args =
-          tool === 'coconala'
-            ? {
-                brief: text,
-                proposal,
-                bucket,
-                orderRate: rate.trim() === '' ? null : Number(rate),
-              }
-            : tool === 'citations'
-              ? { text }
-              : {
-                  markdown: text,
-                  afterChars: Number(after),
-                  summary,
-                  price: Number(price),
-                  paidContents: contents,
-                  noteUrl: url,
-                };
-        const r = await runDevice(name, args);
-        if (tool === 'coconala' && r.status !== 'PASS')
-          outcome = 'needs_review';
-        setResult(null);
-        setOutput(r.output);
-      } else if (tool === 'coconala') {
-        const r = checkCoconala({
-          brief: text,
-          proposal,
-          bucket: bucket as 'single' | 'retainer',
-          orderRate: rate.trim() === '' ? null : Number(rate),
-        });
-        setResult(r);
-        if (!r.allowed) outcome = 'needs_review';
-        setOutput(
-          [
-            '# ココナラ案件チェック',
-            '',
-            r.summary,
-            ...r.reasons.map((s) => '- ' + s),
-            ...r.signals.map((s) => '- 検出: ' + s),
-            ...r.rankingNotes.map((s) => '- ' + s),
-            '',
-            '受注・規約適合・収益を保証せず、応募や送信は行いません。',
-          ].join('\n'),
-        );
-      } else {
-        setResult(null);
-        setOutput(
-          tool === 'citations'
-            ? formatCitations(text)
-            : makeFreeArticle({
-                markdown: text,
-                afterChars: Number(after),
-                summary,
-                price: Number(price),
-                paidContents: contents,
-                noteUrl: url,
-              }),
-        );
-      }
+      const tracked = await executeTracked<{
+        output: string;
+        check: CoconalaResult | null;
+        outcome: 'passed' | 'needs_review';
+      }>({
+        tool: toolId,
+        transport,
+        sample: sampleInput,
+        inputBytes: processedBytes(args),
+        task: async () => {
+          executed = true;
+          if (local) {
+            const name =
+              tool === 'coconala'
+                ? 'coconala_check'
+                : tool === 'citations'
+                  ? 'format_citations'
+                  : 'make_free_article';
+            const response = await runDevice(name, args);
+            return {
+              output: response.output,
+              check: null,
+              outcome:
+                tool === 'coconala' && response.status !== 'PASS'
+                  ? 'needs_review'
+                  : 'passed',
+            };
+          }
+          if (tool === 'coconala') {
+            const check = checkCoconala({
+              brief: text,
+              proposal,
+              bucket: bucket as 'single' | 'retainer',
+              orderRate: rate.trim() === '' ? null : Number(rate),
+            });
+            return {
+              check,
+              outcome: check.allowed ? 'passed' : 'needs_review',
+              output: [
+                '# ココナラ案件チェック',
+                '',
+                check.summary,
+                ...check.reasons.map((s) => '- ' + s),
+                ...check.signals.map((s) => '- 検出: ' + s),
+                ...check.rankingNotes.map((s) => '- ' + s),
+                '',
+                '受注・規約適合・収益を保証せず、応募や送信は行いません。',
+              ].join('\n'),
+            };
+          }
+          return {
+            check: null,
+            outcome: 'passed',
+            output:
+              tool === 'citations'
+                ? formatCitations(text)
+                : makeFreeArticle({
+                    markdown: text,
+                    afterChars: Number(after),
+                    summary,
+                    price: Number(price),
+                    paidContents: contents,
+                    noteUrl: url,
+                  }),
+          };
+        },
+      });
       completed = true;
-      await saveRun(
-        tool === 'coconala'
-          ? 'coconala'
-          : tool === 'citations'
-            ? 'mr-citations'
-            : 'mr-free-article',
-        local ? 'local-mcp' : 'browser',
-        'completed',
-        started,
-        sampleInput,
-        outcome,
-      );
+      setResult(tracked.result.check);
+      setOutput(tracked.result.output);
+      setError(tracked.warning);
+      if (onRecord)
+        await onRecord(
+          toolId,
+          transport,
+          'completed',
+          started,
+          sampleInput,
+          tracked.result.outcome,
+        );
     } catch (e) {
-      if (!completed) {
-        setOutput('');
-        setResult(null);
+      if (executed && !completed && onRecord) {
         try {
-          await saveRun(
-            tool === 'coconala'
-              ? 'coconala'
-              : tool === 'citations'
-                ? 'mr-citations'
-                : 'mr-free-article',
-            local ? 'local-mcp' : 'browser',
+          await onRecord(
+            toolId,
+            transport,
             'failed',
             started,
             sampleInput,
             'failed',
           );
-        } catch {}
+        } catch {
+          /* Workbench retains the pending receipt. */
+        }
       }
+      if (e instanceof OperationRequestError && e.status === 401)
+        setNeedsSignin(true);
       setError(e instanceof Error ? e.message : '入力を確認してください。');
     } finally {
       setRunning(false);
-      window.dispatchEvent(new CustomEvent('loop-run-state', { detail: '' }));
+      onRunningChange?.(false);
     }
   }
   async function copy() {
@@ -248,12 +281,14 @@ export function MrToolRunner({
     return (
       <DeliveryRunner
         onRecord={onRecord}
+        onRunningChange={onRunningChange}
         executionDisabled={executionDisabled}
       />
     );
   return (
     <section className="mr-workbench">
-      <fieldset disabled={running || executionDisabled}>
+      {needsSignin && <ExecutionSignin />}
+      <fieldset disabled={running || executionDisabled || needsSignin}>
         <div className="bench-heading">
           <h3>
             {tool === 'coconala'
@@ -268,7 +303,7 @@ export function MrToolRunner({
         </div>
         <div className="bench-helper">
           <span>
-            原稿はこの端末内で処理。サイトにはツール名・成否・所要時間のみ保存します。
+            原稿はこの端末内で処理。サイトには実行履歴・処理量などのメタデータだけを保存します。
           </span>
           <button className="text-link" onClick={sample}>
             <RotateCcw size={14} />

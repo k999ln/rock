@@ -1,6 +1,7 @@
 // Protocol checks only. Synthetic identity headers simulate the Sites gateway on
 // a loopback-only Worker; never send these headers to a deployed site.
 import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import {
   mkdtempSync,
@@ -27,7 +28,7 @@ function check(actual, expected) {
   assertions++;
 }
 async function call(method = 'GET', body, options = {}) {
-  const response = await fetch(`${base}${options.path ?? '/api/jobs'}`, {
+  const response = await fetch(`${base}${options.path ?? '/api/work-jobs'}`, {
     method,
     headers: {
       ...(options.user === null
@@ -47,7 +48,7 @@ async function call(method = 'GET', body, options = {}) {
   });
   if (response.status !== (options.status ?? 200))
     throw new Error(
-      `${method} ${options.path ?? '/api/jobs'}: expected ${options.status ?? 200}, received ${response.status}: ${(await response.text()).slice(0, 2000)}`,
+      `${method} ${options.path ?? '/api/work-jobs'}: expected ${options.status ?? 200}, received ${response.status}: ${(await response.text()).slice(0, 2000)}`,
     );
   check(response.status, options.status ?? 200);
   check(response.headers.get('cache-control'), 'no-store');
@@ -164,7 +165,7 @@ try {
     check(job.steps[0].passed, false);
   }
   const concurrent = await Promise.all([
-    fetch(`${base}/api/jobs`, {
+    fetch(`${base}/api/work-jobs`, {
       method: 'PATCH',
       headers: { Origin: base, 'oai-authenticated-user-id': alice },
       body: JSON.stringify({
@@ -174,7 +175,7 @@ try {
       }),
       signal: AbortSignal.timeout(10000),
     }),
-    fetch(`${base}/api/jobs`, {
+    fetch(`${base}/api/work-jobs`, {
       method: 'PATCH',
       headers: { Origin: base, 'oai-authenticated-user-id': alice },
       body: JSON.stringify({
@@ -233,6 +234,19 @@ try {
     job,
   );
   check((await call('GET', undefined, { user: bob })).jobs, []);
+  await new Promise((resolve, reject) => {
+    const child = spawn(
+      process.execPath,
+      [join(root, 'scripts/verify-backend.mjs'), base],
+      { cwd: root, stdio: 'inherit' },
+    );
+    child.on('error', reject);
+    child.on('exit', (code) =>
+      code === 0
+        ? resolve()
+        : reject(new Error(`Operations API verification exited ${code}`)),
+    );
+  });
   console.log(
     `仕事API: ${assertions} assertions passed (認証境界・分離・競合・順序・再送・再起動後の保存)`,
   );
