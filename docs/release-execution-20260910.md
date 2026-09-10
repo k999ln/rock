@@ -186,3 +186,11 @@ A D2 lifecycleは元runがPASS_SCOPED（2normalboot/16操作/5実job、reportSHA
 PC Mr.155byteとnative151byteの原成果を読み取り照合し、違いはコードブロック後の区切り線1行（---＋改行）だけと記録した。元成果は不変、同じ商品契約や人の品質評価としない。未実施の人操作・待ち・探索・元要求復旧の記録票をdocs/templates/hub-usability-measurement.mdへ用意し、未測定nullと提案pilot目標を実績から区別する。
 
 B独立reviewは元5commandのAST一致、凍結retentionのimport/schema7 profile、nonHub7role＋元power全receiptを確認した。追加観測の失敗原本を厚くする指摘により、未実行v2を残してv3にstdout/stderr/exit/timeout部分出力の保存だけを追加した。v3 SHA2272c33cc7ecefeaa0d9d04ac7f2d8cecca8b763f5cb833c2a8ea2d90aa1ceeb、plan03fe1239d7b7e76aee9d4925cd76a087f2922a638a7e360b354393bf6459e4fb。これを実行版としてLinuxへ配置、CLIhelp/compile PASS。配布9ab/元UIprobe/取引順序は不変。
+
+## 11:25 UTC checkpoint（経過5:42:10）
+
+- root619f82aまでpush済み、原配布native/image9ab不変。db00a9e85a6e42f687750baae3ce4c06acc8682aのWeb34469582665/native34469582669は同SHA両PASS。
+- D4全41 coverageとD2元16ops/5jobs/2normalbootが完了。D1 boot2/system2、D3 isolation47/SDK45とStore2までPASS、Remote2→negative1/Hubfault3をA session50041が継続。Cはまだ開始していない。Aが終了時にsource/image、emptyauthority、QEMU0/ports、Cdir不存在をまとめて照合し引渡す。
+- D6 run34465689434のouter observerは10:23:13開始から継続。11:23のouter60分は前半boot/lifecycleも含むためinner60分合格へ換算しない。Dが原rawの再取得/監査まで担当。
+- 元arm64全回帰の10TLS deadline懸念に対して、C全UI/録画終了後のローカルQEMU停止条件で、exact9ab/元期限/1631/14を一度だけ再実行する計画をAが準備。Cと並行実行せず、PASSでも元FAILと原因未確定を保持しfreezeのCI bindingを書き換えない。
+- 受入雛形に沿った同候補reportをwork/final-handoff/os-acceptance-9abf78a-draft.mdへ準備。最終D6/C未集計の原稿でありoutputsへ完成品として出していない。WebはB独立レビューを反映しtypecheck/lint PASS、finalmedia待ち。終了予定13:43:35 UTC。

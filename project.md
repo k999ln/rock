@@ -257,7 +257,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 10:40 UTC: 同9ab取得版freshSDKと非zero全構成restoreがPASS、DX01-SDK完了。A診断sidecar f7c391c/root d6647e3のcrash4 PASS＋元10でstartup14揃い、残D4 AB8/fault13/auth3/ABI3→D2/D1/D3→freshC待ち。D6実CI34465689434は10:23開始/実行中。BはGitHub取得→直接OS導入/sample/停止/削除を限定確認。配布9files不変、一般公開はlicense/Sitesと全受入待ち。
+次の作業: 11:25 UTC: 同9abの配布実取得・新規導入・非zero全構成restore・freshSDK完了。D4は原complete10＋診断crash4＋元AB8/fault13/auth3/ABI3の41coverage PASS、原wholeFAIL保持。D2元16操作5jobs/2boot PASS_SCOPED、D1/D3最終gate中。A全停止/fresh config引渡し後C v3でGame→監査→金融→引用遠隔→実90秒録画。D6独立CI34465689434継続、inner/raw未判定。C完了後にローカルQEMU停止下で元arm64回帰FAILの同9ab再検証を1回。公開はlicense/Sitesと最終受入待ち。
 <!-- project-status:end -->
 
 ## 次段階の設計
