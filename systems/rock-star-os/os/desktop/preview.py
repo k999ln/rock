@@ -469,6 +469,8 @@ def action(args):
         verify_installed(root, release)
         instance = verify_vm(root, record)
         if instance['status'] != 'Running':
+            require(instance['status'] == 'Stopped',
+                    'owned VM state is not stable Running/Stopped; preserving it for diagnosis')
             if args.action in ('status', 'stop'):
                 return {'running': False, 'vm_status': instance['status'],
                         'active_device': record['active_device'], 'source_commit': record['source_commit'],

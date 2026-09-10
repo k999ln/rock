@@ -326,6 +326,20 @@ class OwnedLifecycle(unittest.TestCase):
                 lima.assert_not_called()
                 module.remote.assert_not_called()
 
+    def test_unknown_vm_state_is_not_relabelled_stopped_or_restarted(self):
+        from contextlib import ExitStack
+        for state in ('Broken', 'Starting', 'Stopping', 'Unknown'):
+            module, patches = self.action_patches()
+            with self.subTest(state=state), ExitStack() as stack:
+                for item in patches:
+                    stack.enter_context(item)
+                stack.enter_context(patch.object(preview, 'verify_vm', return_value={'status': state}))
+                lima = stack.enter_context(patch.object(preview, 'lima'))
+                with self.assertRaisesRegex(ValueError, 'not stable'):
+                    preview.action(SimpleNamespace(directory=self.root, action='status'))
+                lima.assert_not_called()
+                module.remote.assert_not_called()
+
     def test_removal_requires_explicit_data_deletion_and_keeps_other_lima(self):
         with patch.object(preview, 'lima') as lima:
             with self.assertRaisesRegex(ValueError, '--delete-data'):
