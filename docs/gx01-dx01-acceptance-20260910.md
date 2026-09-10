@@ -97,3 +97,46 @@ fresh run remains FAIL_RETAINED: its sample diagnosed a stale cached snapshot as
 verified TLS. `aee3d61` requires fresh backend connectivity and passes an actual
 TLS-stop regression. The corrected full trial used another new VM and client
 state. This result does not replace final OS-image, installer or D0–D6 acceptance.
+
+## Final-source independent contract checks
+
+The [final-source evidence](evidence/gx01/final-9abf78a-20260910.json) binds the
+24 host contract/SDK requirements to commit
+`9abf78a80d27aa9f847c4051d20e4c552e407276` and all692 native source files. These
+are new executions, separate from the earlier9cfe/aee reports:
+
+- The original sequential188-case run completed in102.008s with177 PASS,
+  8 FAIL and3 ERROR. All11 failures were the new evidence-retention wrapper's
+  unprotected0775 intermediate directory; the existing guard rejected the
+  retained SIGKILL fixtures before their intended boundary. The remaining
+  original Game and owner/C cases passed. A missing Linux Node executable then
+  prevented that wrapper's final report; its full log and immutable per-case
+  progress remain the original record.
+- Only the11 affected SIGKILL cases ran again in a newly prepared0700 directory.
+  All11 passed in44.072s using unchanged committed test methods/assertions and
+  deadlines. Actual child exits were−9; restart recovery retained request and
+  receipt identities, balances, counters and unknown typed data. The three
+  current-copy interruptions retained the source as RETIRED at epoch1 and
+  recovered the new writer/Game epochs2. Full stopped snapshots and original
+  process outputs remain outside Git with fixed hashes.
+- Mac Node26 independently verified all six golden vectors directly extracted
+  from the same final archive. The before/after692 source files remained exact;
+  the final audit found no remaining owned test process.
+
+This is not an188-case all-PASS result. Its24-row requirement map identifies
+which of the two runs supplies each case. Earlier failures and intermediate
+successes retain their original source identity.
+
+The same-source full arm64 native run also remains FAIL: its main suite had
+10 Wallet TLS deadline errors among1367 tests in447.965s. It is not replaced by
+these scoped runs or the separate x86_64 CI result. A separate two-case
+observer-only probe passed in2.249s:29 owner RPCs with the unchanged1s deadline
+had a57.187ms maximum;684 measured fsync calls had a0.184ms maximum. The cause of
+the full-suite timeouts is still unconfirmed. The evidence records the prior
+owned observer-process cleanup without asserting it caused those timeouts.
+
+Final-image/UI, D0–D6, fresh installation/current-copy and final-source fresh-VM
+SDK timing remain separate acceptance records. The earlier aee3d61 fresh timing
+is not relabeled as a final9abf78a measurement. Expired/revoked connection
+renewal remains unsupported; exact original-request recovery and history are
+preserved and tested.

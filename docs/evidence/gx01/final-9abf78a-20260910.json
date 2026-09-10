@@ -1,0 +1,1473 @@
+{
+  "corrected_private_kill_fixture": {
+    "all_case_modes": {
+      "test_approval_after_commit_recovers_original_receipt_once": "0o700",
+      "test_approval_before_commit_rolls_back_counter_hold_outbox_together": "0o700",
+      "test_claim_after_commit_keeps_unknown_hold_and_original_apply": "0o700",
+      "test_game_after_commit_recovers_original_terminal_receipt": "0o700",
+      "test_migration_kill_after_commit_recovers_only_original_migration_receipt": "0o700",
+      "test_migration_kill_before_commit_preserves_original_nonempty_schema": "0o700",
+      "test_restore_kill_after_final_receipt_commit_recovers_same_completion": "0o700",
+      "test_restore_kill_after_first_independent_game_epoch_commit": "0o700",
+      "test_restore_kill_after_wallet_epoch_commit": "0o700",
+      "test_wallet_after_settle_commit_cannot_consume_or_grant_again": "0o700",
+      "test_wallet_before_settle_commit_keeps_hold_until_same_terminal": "0o700"
+    },
+    "boundary_evidence": {
+      "test_approval_after_commit_recovers_original_receipt_once": {
+        "all_file_hashes_sha256": "44745a1da4f537f4184b2e6d1567b9dbaad53e39df47a33ac81c6ad0fac74019",
+        "all_typed_sqlite_snapshots_sha256": "ef60ce2ef694eb3b4d73dbf3b25bde352dfc904c8e0a89e6a1573cef9b133220",
+        "children": [
+          {
+            "action": "kill",
+            "arguments_sha256": "2a8b65d812ee01e1677cce25cc6225dad78895484c7ce645724182761586f223",
+            "returncode": -9,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "action": "recover",
+            "arguments_sha256": "e375a336a3214b16f2611d060e25ad58572127c6b9b639d2e5d81fea2538bcb3",
+            "returncode": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "897b83ac4a1261d697150a6e05556bd827ea94bd7440be15c80ba4a61c246301"
+          }
+        ],
+        "file_count": 54,
+        "full_case_sha256": "6ffa738a1de72ddba9f5a376940ea02e7ca827266e41f88df61cedde95f3f270",
+        "recovered": {
+          "after": {
+            "attempts": [
+              [
+                "24df250e-31c5-4d7d-8575-9503907ec8af",
+                "APPROVED"
+              ]
+            ],
+            "balances": {
+              "AVAILABLE": 4897,
+              "CASH_DISPENSED": 0,
+              "GAME_FEES": 3,
+              "GAME_HOLD": 0,
+              "GAME_PURCHASES": 100,
+              "PENDING_SETTLEMENT": 200,
+              "SALE_CLEARING": -5200,
+              "SERVICE_FEES": 0,
+              "WITHDRAW_HOLD": 0
+            },
+            "claims": 1,
+            "credential_sign_counts": [
+              2
+            ],
+            "exchanges": [
+              {
+                "committed_minor": 103,
+                "held_minor": 0,
+                "id": "27ccb36a-27c2-4271-8e36-341a9207fda7",
+                "released_minor": 0,
+                "state": "COMPLETED"
+              }
+            ],
+            "opaque": "00ff6c6567616379"
+          },
+          "approval_receipt_sha256": "6ac853500c9fe3b709844f1085ee14fab963a26586008fc07e1675aad6fe987c",
+          "approval_request_digest": "7f43125b58accaf8a35c2712aa5a934e08d0d66190afc8b4e6905db9ec529aa6",
+          "before": {
+            "attempts": [
+              [
+                "24df250e-31c5-4d7d-8575-9503907ec8af",
+                "APPROVED"
+              ]
+            ],
+            "balances": {
+              "AVAILABLE": 4897,
+              "CASH_DISPENSED": 0,
+              "GAME_FEES": 0,
+              "GAME_HOLD": 103,
+              "GAME_PURCHASES": 0,
+              "PENDING_SETTLEMENT": 200,
+              "SALE_CLEARING": -5200,
+              "SERVICE_FEES": 0,
+              "WITHDRAW_HOLD": 0
+            },
+            "claims": 0,
+            "credential_sign_counts": [
+              2
+            ],
+            "exchanges": [
+              {
+                "committed_minor": 0,
+                "held_minor": 103,
+                "id": "27ccb36a-27c2-4271-8e36-341a9207fda7",
+                "released_minor": 0,
+                "state": "QUEUED"
+              }
+            ],
+            "opaque": "00ff6c6567616379"
+          },
+          "game_after": 10,
+          "game_before": 0,
+          "original_request_retained": true,
+          "pending": [],
+          "quote_sha256": "27ac71fe27b868149f1b1db538361ed47bb3b1522d16dc8a4809a48e03561a94",
+          "terminal_receipt_sha256": "5c39b4cbf28c3da0679b4190133099ae17d8c5fba6dccff242cfd4defd4e7e0a"
+        },
+        "seconds": 4.478756730000896,
+        "sqlite_count": 16,
+        "status": "PASS"
+      },
+      "test_approval_before_commit_rolls_back_counter_hold_outbox_together": {
+        "all_file_hashes_sha256": "6c70a99d01486404f2a1ac4558ec43211b356f2a42e52a26532acec6c85c540d",
+        "all_typed_sqlite_snapshots_sha256": "d3c134bf3e8ea0e21a53d0e5a135e50bbdd5a341a5aa936cf2647e487b537504",
+        "children": [
+          {
+            "action": "kill",
+            "arguments_sha256": "b8353aaf7b4c1b9cf8be3612ecc26bc31341ec04d2c57f0000b5312964f13431",
+            "returncode": -9,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "action": "recover",
+            "arguments_sha256": "80e9d975fd4a87713bad6722864b511d8e40e44912733169239885331df119cf",
+            "returncode": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "8068f285143c4990188a702129463aa5fde3fd750456f6dd8e93fb62551a17e1"
+          }
+        ],
+        "file_count": 54,
+        "full_case_sha256": "aa7b97fdc1fa4500fcdcab410256eeb96db704917fbac40dee8039c1e6749ce1",
+        "recovered": {
+          "after": {
+            "attempts": [
+              [
+                "6d1c0f22-1d74-4752-b7ee-38bcfd64e5ea",
+                "APPROVED"
+              ]
+            ],
+            "balances": {
+              "AVAILABLE": 4897,
+              "CASH_DISPENSED": 0,
+              "GAME_FEES": 3,
+              "GAME_HOLD": 0,
+              "GAME_PURCHASES": 100,
+              "PENDING_SETTLEMENT": 200,
+              "SALE_CLEARING": -5200,
+              "SERVICE_FEES": 0,
+              "WITHDRAW_HOLD": 0
+            },
+            "claims": 1,
+            "credential_sign_counts": [
+              2
+            ],
+            "exchanges": [
+              {
+                "committed_minor": 103,
+                "held_minor": 0,
+                "id": "c1fb764b-7271-48cb-955e-338c12691ab2",
+                "released_minor": 0,
+                "state": "COMPLETED"
+              }
+            ],
+            "opaque": "00ff6c6567616379"
+          },
+          "approval_receipt_sha256": "9dbf29a29f143a8226cedb7d5a1176dc08c4ed18201663e8087fe74c0a14a5d3",
+          "approval_request_digest": "56121ea458c191cf413fd2af665e3894eccbcead98863553a82560b7a6d867ab",
+          "before": {
+            "attempts": [
+              [
+                "6d1c0f22-1d74-4752-b7ee-38bcfd64e5ea",
+                "OPEN"
+              ]
+            ],
+            "balances": {
+              "AVAILABLE": 5000,
+              "CASH_DISPENSED": 0,
+              "GAME_FEES": 0,
+              "GAME_HOLD": 0,
+              "GAME_PURCHASES": 0,
+              "PENDING_SETTLEMENT": 200,
+              "SALE_CLEARING": -5200,
+              "SERVICE_FEES": 0,
+              "WITHDRAW_HOLD": 0
+            },
+            "claims": 0,
+            "credential_sign_counts": [
+              1
+            ],
+            "exchanges": [],
+            "opaque": "00ff6c6567616379"
+          },
+          "game_after": 10,
+          "game_before": 0,
+          "original_request_retained": true,
+          "pending": [],
+          "quote_sha256": "ccac86454128a9c893d50c94e6e57aa4dc5ffd2e605200d138e83662b8f554c0",
+          "terminal_receipt_sha256": "6e581fae37f07af0771f23965d4a4f6e673b32af0a2368d6cf5fc243108670d8"
+        },
+        "seconds": 3.814697993999289,
+        "sqlite_count": 16,
+        "status": "PASS"
+      },
+      "test_claim_after_commit_keeps_unknown_hold_and_original_apply": {
+        "all_file_hashes_sha256": "01650d1e0f8c58d54b69c9b1750bba98002f882626fefbd12494f4bd62ecf06b",
+        "all_typed_sqlite_snapshots_sha256": "71356dfd95611582230ddeec79d31e8353cdb4875aa23dcc01dd3bc002305086",
+        "children": [
+          {
+            "action": "kill",
+            "arguments_sha256": "552579591628f78ad31bc415d2ca80b0201fe6517216eba50084eeef6466e56c",
+            "returncode": -9,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "action": "recover",
+            "arguments_sha256": "524435ad4a897c1c15c9314c8aa79377f48b1afbf5455f78eea73b88917eeb55",
+            "returncode": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "381730d4f5d573fa42ae80556ff716534157cfe2e0b384dae5713c107dcd707f"
+          }
+        ],
+        "file_count": 54,
+        "full_case_sha256": "8aa80d70e2666b5dbb291adef93be4d4a064b84b5b36cf3a76286bfdad72475e",
+        "recovered": {
+          "after": {
+            "attempts": [
+              [
+                "a475a1e2-51fa-4bc7-ba33-a670ffb03df2",
+                "APPROVED"
+              ]
+            ],
+            "balances": {
+              "AVAILABLE": 4897,
+              "CASH_DISPENSED": 0,
+              "GAME_FEES": 3,
+              "GAME_HOLD": 0,
+              "GAME_PURCHASES": 100,
+              "PENDING_SETTLEMENT": 200,
+              "SALE_CLEARING": -5200,
+              "SERVICE_FEES": 0,
+              "WITHDRAW_HOLD": 0
+            },
+            "claims": 3,
+            "credential_sign_counts": [
+              2
+            ],
+            "exchanges": [
+              {
+                "committed_minor": 103,
+                "held_minor": 0,
+                "id": "df45ae34-b492-468c-a290-0cdbf2714d81",
+                "released_minor": 0,
+                "state": "COMPLETED"
+              }
+            ],
+            "opaque": "00ff6c6567616379"
+          },
+          "approval_receipt_sha256": "c45c24a277e8a4c83486c69f304ee70e4f56d2a68e6f6e20e2c214402387420c",
+          "approval_request_digest": "5b68c4b47e95bf2b785daf02e8babd72bd2acd0e8406b4032c10d5c23be1f9e0",
+          "before": {
+            "attempts": [
+              [
+                "a475a1e2-51fa-4bc7-ba33-a670ffb03df2",
+                "APPROVED"
+              ]
+            ],
+            "balances": {
+              "AVAILABLE": 4897,
+              "CASH_DISPENSED": 0,
+              "GAME_FEES": 0,
+              "GAME_HOLD": 103,
+              "GAME_PURCHASES": 0,
+              "PENDING_SETTLEMENT": 200,
+              "SALE_CLEARING": -5200,
+              "SERVICE_FEES": 0,
+              "WITHDRAW_HOLD": 0
+            },
+            "claims": 1,
+            "credential_sign_counts": [
+              2
+            ],
+            "exchanges": [
+              {
+                "committed_minor": 0,
+                "held_minor": 103,
+                "id": "df45ae34-b492-468c-a290-0cdbf2714d81",
+                "released_minor": 0,
+                "state": "CONFIRMING"
+              }
+            ],
+            "opaque": "00ff6c6567616379"
+          },
+          "game_after": 10,
+          "game_before": 0,
+          "original_request_retained": true,
+          "pending": [],
+          "quote_sha256": "cc39ab0575ced70e6a825404dc8f5f9c3cb4e03a0fd8854a4ff2b01c3996afe9",
+          "terminal_receipt_sha256": "7dc7366fc88944c0b1a6075f510344f81b56eba09719de5ee4ee1c339a197197"
+        },
+        "seconds": 4.123634483003116,
+        "sqlite_count": 16,
+        "status": "PASS"
+      },
+      "test_game_after_commit_recovers_original_terminal_receipt": {
+        "all_file_hashes_sha256": "4b585f31ba50c706e93523030b6ed1abfa6d229056f1cbf59ca6171c86161b40",
+        "all_typed_sqlite_snapshots_sha256": "90c6e5d2a29dbab18e8e708e8868ffdaf488bb5bc93bc575a2edd4fd6c485edc",
+        "children": [
+          {
+            "action": "kill",
+            "arguments_sha256": "3e17bb083dcbcfb4b9cbd1df69e41b0fb62061af1de99f341f8e01c21c23f45e",
+            "returncode": -9,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "action": "recover",
+            "arguments_sha256": "78815de430f6025a4cfda1b961fc8065f71028cdcdad3b9067516828162b6d71",
+            "returncode": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "b22c57eacd0335e12e1be723bbdcd84f2e4832eb54be6ed6de61ceb5350b9b59"
+          }
+        ],
+        "file_count": 54,
+        "full_case_sha256": "a0c886500dc5bb0e3d37d9fb58ed3cb086b57c5a886f5889f8d64638834ef0c0",
+        "recovered": {
+          "after": {
+            "attempts": [
+              [
+                "ed97895d-c7ef-4f47-a790-6ec1c4a7a6f0",
+                "APPROVED"
+              ]
+            ],
+            "balances": {
+              "AVAILABLE": 4897,
+              "CASH_DISPENSED": 0,
+              "GAME_FEES": 3,
+              "GAME_HOLD": 0,
+              "GAME_PURCHASES": 100,
+              "PENDING_SETTLEMENT": 200,
+              "SALE_CLEARING": -5200,
+              "SERVICE_FEES": 0,
+              "WITHDRAW_HOLD": 0
+            },
+            "claims": 2,
+            "credential_sign_counts": [
+              2
+            ],
+            "exchanges": [
+              {
+                "committed_minor": 103,
+                "held_minor": 0,
+                "id": "fc287426-d97e-4941-b18a-db3acd638539",
+                "released_minor": 0,
+                "state": "COMPLETED"
+              }
+            ],
+            "opaque": "00ff6c6567616379"
+          },
+          "approval_receipt_sha256": "b84139b0d474ffa9145f62f4b0414b0d9529c1f86c3a39215a328c51606ae285",
+          "approval_request_digest": "d6e1e3894a1b3c1ba4f6f9ba2f843820e432aa14ec80f6c946d648a71c7c6caf",
+          "before": {
+            "attempts": [
+              [
+                "ed97895d-c7ef-4f47-a790-6ec1c4a7a6f0",
+                "APPROVED"
+              ]
+            ],
+            "balances": {
+              "AVAILABLE": 4897,
+              "CASH_DISPENSED": 0,
+              "GAME_FEES": 0,
+              "GAME_HOLD": 103,
+              "GAME_PURCHASES": 0,
+              "PENDING_SETTLEMENT": 200,
+              "SALE_CLEARING": -5200,
+              "SERVICE_FEES": 0,
+              "WITHDRAW_HOLD": 0
+            },
+            "claims": 1,
+            "credential_sign_counts": [
+              2
+            ],
+            "exchanges": [
+              {
+                "committed_minor": 0,
+                "held_minor": 103,
+                "id": "fc287426-d97e-4941-b18a-db3acd638539",
+                "released_minor": 0,
+                "state": "CONFIRMING"
+              }
+            ],
+            "opaque": "00ff6c6567616379"
+          },
+          "game_after": 10,
+          "game_before": 10,
+          "original_request_retained": true,
+          "pending": [],
+          "quote_sha256": "ed2e0116a9970972158b25eabdf237b158a7afa8cfe62f3cbf08c95725ef8084",
+          "terminal_receipt_sha256": "3e9743979c61f644f5d7976f99c10b3b465297b7feeb925045fd50b0425fd9e8"
+        },
+        "seconds": 3.9235151639950345,
+        "sqlite_count": 16,
+        "status": "PASS"
+      },
+      "test_migration_kill_after_commit_recovers_only_original_migration_receipt": {
+        "all_file_hashes_sha256": "adcb35a1bcb657f90336cfbd56ab93e6e08cba46d6407cdfbbe13da4944c0792",
+        "all_typed_sqlite_snapshots_sha256": "2a5c22668c969a381b86ad6ed93efa4fb28c513a5062f7fb5833adfb31fd6aab",
+        "children": [
+          {
+            "action": "migration-kill",
+            "arguments_sha256": "7d6b61c8db93b0e4695d4d2306bc845978032b13760d4123325adf824a3f4f76",
+            "returncode": -9,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "action": "migration-recover",
+            "arguments_sha256": "e5f189db16f7b12606811a50fd2725e2ac3ad2b9dd29d360a0dce7dfa6625746",
+            "returncode": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "363b72ddfe8f39e83b59f7ae624628dc20de3dea042555df95ba1c277302905d"
+          }
+        ],
+        "file_count": 25,
+        "full_case_sha256": "6615bc1c335808459a8588031a3ddfc2e7a32ec03c8f0093594d2329860705e3",
+        "recovered": {
+          "balances": {
+            "AVAILABLE": 5000,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 0,
+            "GAME_HOLD": 0,
+            "GAME_PURCHASES": 0,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "migration_receipt_sha256": "44538e61ddf4d0aa42dacc380ae96958d509fd6d9fb59be653d52d66322d2b21",
+          "opaque": "00ff6f7061717565",
+          "original_typed_tables_preserved": 19,
+          "was_installed": true
+        },
+        "seconds": 0.7080356699952972,
+        "sqlite_count": 4,
+        "status": "PASS"
+      },
+      "test_migration_kill_before_commit_preserves_original_nonempty_schema": {
+        "all_file_hashes_sha256": "fc9d1810b55758b34448153e42333978f2cdea51923f1d4226f2fd89343b7c95",
+        "all_typed_sqlite_snapshots_sha256": "5b68a5e9401108f7724b91718d8b4da709028313205087116be79bfe1f4acda4",
+        "children": [
+          {
+            "action": "migration-kill",
+            "arguments_sha256": "5285723d3f62a3deb322d144cd50e6f203137d366ccbb47738aff3ea026906fe",
+            "returncode": -9,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "action": "migration-recover",
+            "arguments_sha256": "654199534dc582ee73c1791cfc4a7c588b3ac325ab9fcf79752e3e620992c242",
+            "returncode": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "a1a33660656d36ec600b78f3340a12d3f863442d767465c833817d6b3a5bcc9e"
+          }
+        ],
+        "file_count": 25,
+        "full_case_sha256": "fbd07627b6e4a78076191a0af8a1b2cf52ac21e6d8e08c5e270490e90ca4364f",
+        "recovered": {
+          "balances": {
+            "AVAILABLE": 5000,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 0,
+            "GAME_HOLD": 0,
+            "GAME_PURCHASES": 0,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "migration_receipt_sha256": "eb8be4cc7ee06cdcc81431cc6a996ade2760fb3890cd8ef6cd1e99b9a0e3ded7",
+          "opaque": "00ff6f7061717565",
+          "original_typed_tables_preserved": 19,
+          "was_installed": false
+        },
+        "seconds": 1.6835441189978155,
+        "sqlite_count": 4,
+        "status": "PASS"
+      },
+      "test_restore_kill_after_final_receipt_commit_recovers_same_completion": {
+        "all_file_hashes_sha256": "cfc8281a68789d4755f6a07d31c10febeb0b378522308d4b57c066238e468fb0",
+        "all_typed_sqlite_snapshots_sha256": "72e1e702baf16e5005559fdb77503499db6177ecdb3a4ec8f656c360652bec72",
+        "children": [
+          {
+            "action": "restore-kill",
+            "arguments_sha256": "bdd4e8ad34424355e7372562efe06063114751059314b175830b7269312c0e38",
+            "returncode": -9,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "file_count": 51,
+        "full_case_sha256": "b048d7b34ae11f39554db58df947554f8a81f2a42bc0e919383fe5421ae48118",
+        "restored": {
+          "backup_manifest_sha256": "faa0c7104c24ecff50c4a4056362b545e6b8b79054e86b970d321f2db5e52d4d",
+          "game_epochs": {
+            "public-game-a": {
+              "before_sha256": "06f7549987300f9408864c0f91112777a31e5324e11af6a8e83f528ac18faef1",
+              "new_epoch": 2,
+              "old_epoch": 1,
+              "status": "DONE"
+            },
+            "public-game-b": {
+              "before_sha256": "304c3155a4a13890da89464a8a8b9714f7e87cd682b04957f2be3eb92e68dfc3",
+              "new_epoch": 2,
+              "old_epoch": 1,
+              "status": "DONE"
+            }
+          },
+          "intent": "a36aec08-a0f7-4ba3-bb43-d27426f2e67d",
+          "new_epoch": 2,
+          "post_snapshot_sha256": "5f5e092e296553516f6af29912164c8752e3b5be5b4818795af96a91988af7d2",
+          "receipt_sha256": "9f5332cfff7f3a7ad79789e0a7cf021adc51825ee44a07a86eb70024bc87b030",
+          "record": "test_restore_kill_after_final_receipt_commit_recovers_same_completion/fixture-0/authority/restores/a36aec08-a0f7-4ba3-bb43-d27426f2e67d.json",
+          "record_sha256": "2b466dfc3b8857e3d9b73b1a459497d7125e2325df5777039b6b192e5c9f04db",
+          "same_host_current_copy_only": true,
+          "source_epoch": 1,
+          "source_retired": true,
+          "source_state": "RETIRED",
+          "state": "DONE"
+        },
+        "seconds": 1.4123324320025858,
+        "sqlite_count": 12,
+        "status": "PASS"
+      },
+      "test_restore_kill_after_first_independent_game_epoch_commit": {
+        "all_file_hashes_sha256": "b7596e6802a6ebc773d0f6d2a997f300be09efd49a8e6a7582a7a7ffd801fe62",
+        "all_typed_sqlite_snapshots_sha256": "79c48a31d28c6c5e136113dddce90b36cea861bd10097e7589aabc9058a71854",
+        "children": [
+          {
+            "action": "restore-kill",
+            "arguments_sha256": "e26cbe49196cefbcd00135d9a25d23910c13778bb5562708a80124abb67a912b",
+            "returncode": -9,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "file_count": 51,
+        "full_case_sha256": "516b37a98c7cf713e317d51d2ba441fc33f7a610680c2ccb9edf2614ced2d2d6",
+        "restored": {
+          "backup_manifest_sha256": "09ec7440e7cf9c31265541e0cb432361c76a85cc80318324a6192b7e49699e3f",
+          "game_epochs": {
+            "public-game-a": {
+              "before_sha256": "830747567565005177817d70af27867c90aab36427c1894ac8525202bd8e568c",
+              "new_epoch": 2,
+              "old_epoch": 1,
+              "status": "DONE"
+            },
+            "public-game-b": {
+              "before_sha256": "e8802bebd92a83c15802187b432664759ba0ff6132c6ab841d8653d53e4fa2c0",
+              "new_epoch": 2,
+              "old_epoch": 1,
+              "status": "DONE"
+            }
+          },
+          "intent": "a815b534-dcc1-424f-833d-023bf7b9ee02",
+          "new_epoch": 2,
+          "post_snapshot_sha256": "d8c95167fe45ab82f63705b89e47ce6285ec29b195b5fcef162c7e84198ef674",
+          "receipt_sha256": "6d2e5799aa10a8f647d77210207754f7ce42f4528de8e37ea53ec5c8c4769739",
+          "record": "test_restore_kill_after_first_independent_game_epoch_commit/fixture-0/authority/restores/a815b534-dcc1-424f-833d-023bf7b9ee02.json",
+          "record_sha256": "37a369604ae85db8bebc58cc94fc630aeeb36e553d2ca53921d36e5b5a34a3d9",
+          "same_host_current_copy_only": true,
+          "source_epoch": 1,
+          "source_retired": true,
+          "source_state": "RETIRED",
+          "state": "DONE"
+        },
+        "seconds": 2.6933110320023843,
+        "sqlite_count": 12,
+        "status": "PASS"
+      },
+      "test_restore_kill_after_wallet_epoch_commit": {
+        "all_file_hashes_sha256": "7fb010ee38ae3b0e86fbaad111147e7405f78eceeae6b465629de415130a57f7",
+        "all_typed_sqlite_snapshots_sha256": "441ecd78db7978d7f3b4111b0604f8552651ae7ffca2d75cd0b2c60bd7f1512c",
+        "children": [
+          {
+            "action": "restore-kill",
+            "arguments_sha256": "1eb8f7d33aa34a13effe585b07300c6a889e6a9f7beaca536b9157c285766bce",
+            "returncode": -9,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "file_count": 51,
+        "full_case_sha256": "8fb377e797a445c9dd66617de26d5eafe5091ed84009df5b0d1f623e22b6d4dd",
+        "restored": {
+          "backup_manifest_sha256": "fd6c21cfd13affdd02157afe2356b3294509833f31424f9f1e6529d33f959bbb",
+          "game_epochs": {
+            "public-game-a": {
+              "before_sha256": "72e59015ba4793c43f7666dec5efa7b065a0939e358e3c39194632fe68049d86",
+              "new_epoch": 2,
+              "old_epoch": 1,
+              "status": "DONE"
+            },
+            "public-game-b": {
+              "before_sha256": "957b8d91531b20efabd0db55bb7c2b898984cfeab6103716a52b6be088f3899a",
+              "new_epoch": 2,
+              "old_epoch": 1,
+              "status": "DONE"
+            }
+          },
+          "intent": "31ccc871-34d0-4e0f-843f-5c29bb485b78",
+          "new_epoch": 2,
+          "post_snapshot_sha256": "2d30edae948c2fd130338a981112f4a3580ed581fbb1512d0d2a5e4c066f72e9",
+          "receipt_sha256": "b8518e8eaa6888593fec0ab43b515e4d4a95c903eeb41d634c6becedbe0bc28b",
+          "record": "test_restore_kill_after_wallet_epoch_commit/fixture-0/authority/restores/31ccc871-34d0-4e0f-843f-5c29bb485b78.json",
+          "record_sha256": "d77136fc9673b08b58449afcf07d74c1985e752b83ea7249cfed5dbdc6fbc0f8",
+          "same_host_current_copy_only": true,
+          "source_epoch": 1,
+          "source_retired": true,
+          "source_state": "RETIRED",
+          "state": "DONE"
+        },
+        "seconds": 1.7170016000018222,
+        "sqlite_count": 12,
+        "status": "PASS"
+      },
+      "test_wallet_after_settle_commit_cannot_consume_or_grant_again": {
+        "all_file_hashes_sha256": "4cf19955ace8ab09d925f5671fdb95dcb04161e15f7538a067f9488de4523ef8",
+        "all_typed_sqlite_snapshots_sha256": "08b4fb77fdd9d204d80bd75b72b14f7e42db27ffcbde99a99461f007a1c8e9ed",
+        "children": [
+          {
+            "action": "kill",
+            "arguments_sha256": "45351d35cb57fdb88df0ccffd3517be928641412cb1e259a2564ef675a789c6a",
+            "returncode": -9,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "action": "recover",
+            "arguments_sha256": "460a4e13b32c59b62691ca4d2d4c1e0e5f2a44530aba3c139fa8775651459baa",
+            "returncode": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "30aff73577d0568fb89892b97f5691d2c5bdd7491d9f83dc8b973586472d2d14"
+          }
+        ],
+        "file_count": 54,
+        "full_case_sha256": "944b0213d0214402684fe1f8db7918046b6d41f223451b339ad4ec2bd3db8ec0",
+        "recovered": {
+          "after": {
+            "attempts": [
+              [
+                "cfb7a58d-5aba-4666-baf4-96051870aef2",
+                "APPROVED"
+              ]
+            ],
+            "balances": {
+              "AVAILABLE": 4897,
+              "CASH_DISPENSED": 0,
+              "GAME_FEES": 3,
+              "GAME_HOLD": 0,
+              "GAME_PURCHASES": 100,
+              "PENDING_SETTLEMENT": 200,
+              "SALE_CLEARING": -5200,
+              "SERVICE_FEES": 0,
+              "WITHDRAW_HOLD": 0
+            },
+            "claims": 1,
+            "credential_sign_counts": [
+              2
+            ],
+            "exchanges": [
+              {
+                "committed_minor": 103,
+                "held_minor": 0,
+                "id": "b81dd3c3-b94f-48cd-8939-a8bfbd3c82a9",
+                "released_minor": 0,
+                "state": "COMPLETED"
+              }
+            ],
+            "opaque": "00ff6c6567616379"
+          },
+          "approval_receipt_sha256": "5028cdbe5e4d617004bf0924474b53432da84540dbdcf7b74cae94eb6524067d",
+          "approval_request_digest": "1c63957196da7619898fa6820637e3ba03ba11c627b8a771206440846f6af798",
+          "before": {
+            "attempts": [
+              [
+                "cfb7a58d-5aba-4666-baf4-96051870aef2",
+                "APPROVED"
+              ]
+            ],
+            "balances": {
+              "AVAILABLE": 4897,
+              "CASH_DISPENSED": 0,
+              "GAME_FEES": 3,
+              "GAME_HOLD": 0,
+              "GAME_PURCHASES": 100,
+              "PENDING_SETTLEMENT": 200,
+              "SALE_CLEARING": -5200,
+              "SERVICE_FEES": 0,
+              "WITHDRAW_HOLD": 0
+            },
+            "claims": 1,
+            "credential_sign_counts": [
+              2
+            ],
+            "exchanges": [
+              {
+                "committed_minor": 103,
+                "held_minor": 0,
+                "id": "b81dd3c3-b94f-48cd-8939-a8bfbd3c82a9",
+                "released_minor": 0,
+                "state": "COMPLETED"
+              }
+            ],
+            "opaque": "00ff6c6567616379"
+          },
+          "game_after": 10,
+          "game_before": 10,
+          "original_request_retained": true,
+          "pending": [],
+          "quote_sha256": "6b7e3be5b1e7318a57951640e48f9594c245857db31669c34856cc306dc68e11",
+          "terminal_receipt_sha256": "069bb9f5dbf76e153122a2d76053fb652c889db3136c5787b44fab410129d63e"
+        },
+        "seconds": 11.896789070997329,
+        "sqlite_count": 16,
+        "status": "PASS"
+      },
+      "test_wallet_before_settle_commit_keeps_hold_until_same_terminal": {
+        "all_file_hashes_sha256": "31cc01c2e784888061cb18212af5062125888985b3f50c6ffbe98e24f236ac9b",
+        "all_typed_sqlite_snapshots_sha256": "61cbfba235e3159de9abdfd9bc9c4ce84e8647d4fbaa09bec884831109e56b7f",
+        "children": [
+          {
+            "action": "kill",
+            "arguments_sha256": "da1fba3cfcfc4daff93a1cbb367ba7e50e2508dfc0128fa0ba62a28a4a6f5d15",
+            "returncode": -9,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "action": "recover",
+            "arguments_sha256": "189bf2ed9dfcd9f69d8a8a27f1bd6408244bf73241592b05b5e3b75463a5993b",
+            "returncode": 0,
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdout_sha256": "ef57b09599cc01c66bc29d0d3150d622aa330f6d78c284604f44949db770e05a"
+          }
+        ],
+        "file_count": 54,
+        "full_case_sha256": "231afad06716139da8c3c031b17d463a538224bbcf02ca6c530161e564e53d84",
+        "recovered": {
+          "after": {
+            "attempts": [
+              [
+                "7bdd22bc-d575-46c5-9dc4-f1ac954aea2d",
+                "APPROVED"
+              ]
+            ],
+            "balances": {
+              "AVAILABLE": 4897,
+              "CASH_DISPENSED": 0,
+              "GAME_FEES": 3,
+              "GAME_HOLD": 0,
+              "GAME_PURCHASES": 100,
+              "PENDING_SETTLEMENT": 200,
+              "SALE_CLEARING": -5200,
+              "SERVICE_FEES": 0,
+              "WITHDRAW_HOLD": 0
+            },
+            "claims": 2,
+            "credential_sign_counts": [
+              2
+            ],
+            "exchanges": [
+              {
+                "committed_minor": 103,
+                "held_minor": 0,
+                "id": "8879c48f-1203-41df-92e2-fbc9c12a3711",
+                "released_minor": 0,
+                "state": "COMPLETED"
+              }
+            ],
+            "opaque": "00ff6c6567616379"
+          },
+          "approval_receipt_sha256": "69b2a82cf58f6d8f1255a52737f43234ad139196f6bb0d40c7e20c2294590da7",
+          "approval_request_digest": "a35a436d13fef9dbc9bc4e9421b192834be845fdf5094662b988eae0e284f699",
+          "before": {
+            "attempts": [
+              [
+                "7bdd22bc-d575-46c5-9dc4-f1ac954aea2d",
+                "APPROVED"
+              ]
+            ],
+            "balances": {
+              "AVAILABLE": 4897,
+              "CASH_DISPENSED": 0,
+              "GAME_FEES": 0,
+              "GAME_HOLD": 103,
+              "GAME_PURCHASES": 0,
+              "PENDING_SETTLEMENT": 200,
+              "SALE_CLEARING": -5200,
+              "SERVICE_FEES": 0,
+              "WITHDRAW_HOLD": 0
+            },
+            "claims": 1,
+            "credential_sign_counts": [
+              2
+            ],
+            "exchanges": [
+              {
+                "committed_minor": 0,
+                "held_minor": 103,
+                "id": "8879c48f-1203-41df-92e2-fbc9c12a3711",
+                "released_minor": 0,
+                "state": "CONFIRMING"
+              }
+            ],
+            "opaque": "00ff6c6567616379"
+          },
+          "game_after": 10,
+          "game_before": 10,
+          "original_request_retained": true,
+          "pending": [],
+          "quote_sha256": "cb386f554798c8ce3a9736d05a7262b9aec2ebcdb2149a824f6857d70bdd032d",
+          "terminal_receipt_sha256": "05119b62398ba3f1c00003c0cf75f08fafd9f3061d843dddb11f3c9011faa000"
+        },
+        "seconds": 6.457052218000172,
+        "sqlite_count": 16,
+        "status": "PASS"
+      }
+    },
+    "cases": 11,
+    "correction": "Only the evidence-retention path preparation uses explicit0700 protected parents; original committed test methods, assertions and deadlines are unchanged.",
+    "log": {
+      "bytes": 3318,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/kill-corrected.log",
+      "sha256": "0e4277384275b8f8e338715a18270abe792f54bc6c492ad7f0a6fb17d01b7b9d"
+    },
+    "plan": {
+      "bytes": 1342,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/kill-corrected-plan.json",
+      "sha256": "6e6c179695bc83033a42149f7468f12d30ee6eba73bdb65610c82a11232292b9"
+    },
+    "raw": {
+      "bytes": 740022,
+      "linux_path": "/var/tmp/rock-final-game-9abf78a-kill-corrected-02/report.json",
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/kill-corrected-report.json",
+      "sha256": "1d25e58d786e43e27d853e01db2a48bf15dcf29df41e86dc9a17500158473594"
+    },
+    "root_mode": "0o700",
+    "runner": {
+      "bytes": 4552,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/capture-kill-corrected.py",
+      "sha256": "636a5903db58cd3e24e49f4d62eca54e01090f17b3d2f853e2a487609eba95d8"
+    },
+    "seconds": 44.072410583496094,
+    "source_after": {
+      "different": [],
+      "files": 692
+    },
+    "source_before": {
+      "different": [],
+      "files": 692
+    },
+    "status": "PASS_SCOPED_SYNTHETIC"
+  },
+  "coverage_plan": {
+    "bytes": 25527,
+    "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/coverage-plan.json",
+    "sha256": "df9d4d4a7376b51df905921d39c1b7a60e6f7b74180209973b617d60415bff9e"
+  },
+  "earlier_observer_process_cleanup": {
+    "meaning": "Owned leftover initial observer-test process was identified by exact PID/argv/cwd and terminated; no cause attribution to full-suite TLS errors",
+    "record": {
+      "bytes": 2355,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/old-observer-cleanup.json",
+      "sha256": "fa14ad75d89dacf9678f06c57faf754a8243b3fcac4b9a7d94024fc3e00685be"
+    }
+  },
+  "independent_node": {
+    "log": {
+      "bytes": 156,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/node.log",
+      "sha256": "3e9e6d4502a0690b4b3cca124e249161a6b9ee869250e2143c506a6c856f531d"
+    },
+    "plan": {
+      "bytes": 1230,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/node-plan.json",
+      "sha256": "2dc2602157ae3c2ad293d7f35669bdd3df00c675f957d23ddf220505ee53d587"
+    },
+    "result": {
+      "checks": "exact canonical bytes, SHA256, Ed25519 and six separate signing domains",
+      "runtime": "v26.0.0",
+      "simulation_only": true,
+      "status": "PASS",
+      "vectors": 6
+    },
+    "source_files": {
+      "examples/game/verify-golden.mjs": "9020a17ef287e91e0b5701b7659ec0c64664d2fc281bd9f56cc0158ede967fec",
+      "os/game_exchange/fixtures/exchange-v1/apply.json": "9dffd667a79f6183969ca78f986a08d3431158948b064a19a102e259bc10a396",
+      "os/game_exchange/fixtures/exchange-v1/approval.json": "d6912428414242b9ea83fd3bc03db6b8755853220fcbeda04db1f4edabd49bc8",
+      "os/game_exchange/fixtures/exchange-v1/quote.json": "d239f95a7042a4ffa555ad88adb62c1534db3dfa96cc06523dd51743c86c6690",
+      "os/game_exchange/fixtures/exchange-v1/reject.json": "93c2a1548b04f10da3fc9489b2de5b43b72f80896a26642c6eb60e2f95398261",
+      "os/game_exchange/fixtures/exchange-v1/status.json": "d0da2c3d822d5d1ff4acc452db4fde64f9445dcfb37aaeb9cc1e6e9adc3ed001",
+      "os/game_exchange/fixtures/exchange-v1/terminal.json": "6b8997f6fbe9054a2eaa71337020e32de5ba7c180f81bd59aef83b34de5c4a85"
+    },
+    "status": "PASS"
+  },
+  "interpretation": "177 successful cases from the original run and 11 actual SIGKILL cases from a corrected private evidence fixture are distinct runs; the original188-case run remains FAIL. This is not a188-case all-PASS report, not the complete native regression and not OS/fresh-install acceptance.",
+  "isolated_rpc_observation": {
+    "client_timeout_seconds": 1.0,
+    "events": {
+      "bytes": 344068,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/rpc-observer-events.json",
+      "sha256": "71cc73c4de8fc4d97e461cc1ef348af62e2456106564181818f0030cc1d8164b"
+    },
+    "fsync_calls": 684,
+    "log": {
+      "bytes": 713,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/rpc-observer.log",
+      "sha256": "1462c93b387034716ceb037103d1a0f5da9f76c8a25cf43e84a5f5eabd3a1603"
+    },
+    "maximum_fsync_seconds": 0.00018429599731462076,
+    "maximum_owner_rpc_seconds": 0.05718677100230707,
+    "maximum_runtime_seconds": 0.0499205990054179,
+    "meaning": "two unchanged cases did not reproduce the preceding full-suite timeout; this does not establish its cause",
+    "owner_rpc_count": 29,
+    "raw_report": {
+      "bytes": 26117,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/rpc-observer-report.json",
+      "sha256": "61f3319ae65d5dca39ce270ae85aed626e0a9a7d6f7801f71ddc5d19b09e267a"
+    },
+    "seconds": 2.352104232995771,
+    "status": "PASS_DIAGNOSTIC",
+    "tests": 2
+  },
+  "not_claimed": [
+    "final signed OS image and actual UI cycles",
+    "D0-D6",
+    "fresh installer and aggregate restore",
+    "final-source fresh independent SDK VM timing",
+    "external author/human UX evaluation",
+    "real money/external Game/reverse exchange",
+    "expired/revoked connection renewal remains unsupported"
+  ],
+  "original_sequential_run": {
+    "errors": 3,
+    "failure_cause": "The new evidence wrapper created an intermediate kill directory with0775; unchanged private-ancestor guards rejected all11 retained fixtures before the intended SIGKILL boundary. The remaining177 original tests passed. Then unavailable Linux node prevented final wrapper report emission; immutable progress and full terminal log are retained.",
+    "failures": 8,
+    "intended_boundaries_reached": false,
+    "log": {
+      "bytes": 66391,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/acceptance.log",
+      "sha256": "c0e70b81807a27d81d0ae86e83c68dfad0f03981150d287492e6683ee8f634cd"
+    },
+    "missing_node_handled_by": "separate Mac Node26 run against same final Git archive vector bytes",
+    "module_outcomes": {
+      "test_authority_fence": {
+        "PASS": 12
+      },
+      "test_contract_runtime_adoption": {
+        "PASS": 1
+      },
+      "test_contract_runtime_fence": {
+        "PASS": 3
+      },
+      "test_contract_runtime_lifetime": {
+        "PASS": 12
+      },
+      "test_contract_runtime_wallet": {
+        "PASS": 3
+      },
+      "test_game_connection_client": {
+        "PASS": 15
+      },
+      "test_game_connection_protocol": {
+        "PASS": 19
+      },
+      "test_game_connections_tls": {
+        "PASS": 12
+      },
+      "test_game_constructor_cleanup": {
+        "PASS": 2
+      },
+      "test_game_current_restore": {
+        "PASS": 20
+      },
+      "test_game_exchange_deadlines": {
+        "PASS": 5
+      },
+      "test_game_exchange_golden": {
+        "PASS": 3
+      },
+      "test_game_exchange_migration": {
+        "PASS": 1
+      },
+      "test_game_exchange_process_kill": {
+        "ERROR": 3,
+        "FAIL": 8
+      },
+      "test_game_exchange_races": {
+        "PASS": 9
+      },
+      "test_game_exchange_restore": {
+        "PASS": 2
+      },
+      "test_game_exchange_tls": {
+        "PASS": 9
+      },
+      "test_game_legacy_basis": {
+        "PASS": 2
+      },
+      "test_game_reference_sdk": {
+        "PASS": 11
+      },
+      "test_game_sandbox_backup": {
+        "PASS": 6
+      },
+      "test_game_sandbox_config": {
+        "PASS": 3
+      },
+      "test_game_sdk_examples": {
+        "PASS": 2
+      },
+      "test_game_storage": {
+        "PASS": 4
+      },
+      "test_wallet_managed_tls": {
+        "PASS": 10
+      },
+      "test_wallet_owner_router": {
+        "PASS": 11
+      }
+    },
+    "observed_invalid_parent_mode": "0o775",
+    "passed": 177,
+    "plan": {
+      "bytes": 25207,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/acceptance-plan.json",
+      "sha256": "bccbc7879907699f041d479eb6f38625a89965c42e474c7e46f0dfabc3867db0"
+    },
+    "progress": {
+      "bytes": 43782,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/acceptance-progress.json",
+      "sha256": "b908cbc2895bf7dc12e4d37728cd35e7884f9dbc22b016919815092b5f99eb50"
+    },
+    "runner": {
+      "bytes": 8596,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/run-acceptance.py",
+      "sha256": "b13c462860ecf765856dd16fcc9cec890f56dae92f45ed0ac8fd92af7f6ff887"
+    },
+    "seconds": 102.008,
+    "skips": 0,
+    "status": "FAIL_RETAINED_OBSERVER_SETUP",
+    "tests": 188
+  },
+  "requirements": [
+    {
+      "contract": "Versioned per-game reconcile namespace, exact original legacy receipt, changed same-game body refused",
+      "id": "GX00_NAMESPACE",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_connections_tls.GameConnectionsTLS.test_legacy_reconcile_receipt_exact_replay_retained_and_other_game_namespace_migrates",
+        "test_game_connections_tls.GameConnectionsTLS.test_reconcile_same_key_different_games_restart_and_changed_same_game_rejected"
+      ]
+    },
+    {
+      "contract": "Same TLS listener/C/router: two owners each month888; A1/A2 charged once",
+      "id": "GX00_MONTHLY_OWNERS",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_required_same_tls_two_owner_monthly_888_and_two_device_single_charge"
+      ]
+    },
+    {
+      "contract": "Insufficient Alice retry leaves every Bob typed row/schema unchanged",
+      "id": "GX00_INSUFFICIENT_ISOLATION",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_required_same_tls_insufficient_alice_retry_preserves_all_bob_rows_and_schema"
+      ]
+    },
+    {
+      "contract": "Foreign ATM quote/cancel/original receipt refused without unrelated effects",
+      "id": "GX00_ATM_SCOPE",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_required_same_tls_foreign_atm_quote_cancel_and_original_issue_receipt_rejected"
+      ]
+    },
+    {
+      "contract": "Actual same worker A1 to Bob exception to A2 releases authenticated scope",
+      "id": "GX00_WORKER_RELEASE",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_required_actual_single_server_worker_releases_scope_after_real_policy_exception"
+      ]
+    },
+    {
+      "contract": "Original nonempty Wallet/monthly CLAIMED/ATM hold/credential revocation/pending sale/opaque rows retained",
+      "id": "GX00_EXISTING_NONEMPTY",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_contract_runtime_adoption.RuntimeAdoptionCompositionTests.test_actual_runtime_adopts_nonempty_legacy_without_reposting_or_early_scheduler",
+        "test_game_exchange_migration.ExchangeMigration.test_existing_claimed_monthly_atm_hold_pending_revoked_auth_and_opaque_rows_survive",
+        "test_game_legacy_basis.LegacyGameContinuity.test_adopted_original_rows_then_real_three_device_four_game_connections",
+        "test_game_legacy_basis.LegacyGameContinuity.test_stale_original_authentication_and_wrong_owner_never_create_game_consent"
+      ]
+    },
+    {
+      "contract": "Original narrow operation/key client, unchanged bytes and exact reply; auth/TLS/fsync/capacity/unknown guards",
+      "id": "GX00_NARROW_CLIENT",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_connection_client.OwnerClientTests.test_actual_ca_tls_and_registry_changes_rejected_with_same_fingerprint",
+        "test_game_connection_client.OwnerClientTests.test_bad_signed_revoke_and_status_never_fall_back_to_cache",
+        "test_game_connection_client.OwnerClientTests.test_before_send_durable_and_new_key_does_not_replace_unknown",
+        "test_game_connection_client.OwnerClientTests.test_expired_unknown_begin_replays_but_new_proof_request_does_not",
+        "test_game_connection_client.OwnerClientTests.test_fingerprint_other_device_owner_token_ca_protocol_and_keys_rejected",
+        "test_game_connection_client.OwnerClientTests.test_foreign_game_and_modified_consent_or_stored_receipt_refused",
+        "test_game_connection_client.OwnerClientTests.test_four_connections_lost_real_responses_restart_same_ids_once",
+        "test_game_connection_client.OwnerClientTests.test_namespace_operation_key_and_denial_never_returns_old_receipt",
+        "test_game_connection_client.OwnerClientTests.test_owned_lock_unlink_capacity_and_close_fail_before_send",
+        "test_game_connection_client.OwnerClientTests.test_post_response_directory_fsync_failure_is_unknown_with_receipt_retained",
+        "test_game_connection_client.OwnerClientTests.test_prepare_commit_failure_sends_zero_requests",
+        "test_game_connection_client.OwnerClientTests.test_prepare_directory_fsync_failure_sends_zero_and_retains_request",
+        "test_game_connection_client.OwnerClientTests.test_response_after_local_receipt_storage_failure_remains_unknown",
+        "test_game_connection_client.OwnerClientTests.test_timeout_changes_are_rejected_before_send",
+        "test_game_connection_client.OwnerClientTests.test_transport_revocation_denial_after_receipt_and_live_pin_change"
+      ]
+    },
+    {
+      "contract": "Strict integer amounts, domains, golden vectors, stored identity and schema guards",
+      "id": "GX01_PROTOCOL",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_exchange_golden.ExchangeGolden.test_same_id_changed_amount_never_has_the_original_command_or_terminal_digest",
+        "test_game_exchange_golden.ExchangeGolden.test_six_literal_signed_messages_match_exact_bytes_digests_and_distinct_domains",
+        "test_game_exchange_golden.ExchangeGolden.test_unknown_fields_wrong_scalar_types_and_changed_policy_rejected",
+        "test_game_storage.GameStorageGuards.test_real_second_writer_and_replacement_database_are_refused",
+        "test_game_storage.GameStorageGuards.test_unlink_of_either_required_owned_file_stops_old_writer",
+        "test_game_storage.GameStorageGuards.test_unmarked_foreign_sqlite_is_not_adopted",
+        "test_game_storage.GameStorageGuards.test_writable_parent_is_not_a_protected_authority_location"
+      ]
+    },
+    {
+      "contract": "Dedicated assertion, sign counter, attempt, hold/outbox atomic; signed insufficient denial remains final",
+      "id": "GX01_ATOMIC_OWNER_APPROVAL",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_exchange_tls.ExchangeTLS.test_atomic_quote_assertion_hold_outbox_and_exact_retry",
+        "test_game_exchange_tls.ExchangeTLS.test_purpose_and_owner_separation_no_hold_before_exact_assertion",
+        "test_game_exchange_tls.ExchangeTLS.test_signed_insufficient_denial_consumes_counter_and_never_later_approves"
+      ]
+    },
+    {
+      "contract": "Two real TLS Game authorities and separate SQLite grants; once-only original terminal",
+      "id": "GX01_INDEPENDENT_GAMES",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_exchange_tls.ExchangeTLS.test_game_commit_lost_reply_reconciles_real_tls_receipt_once",
+        "test_game_exchange_tls.ExchangeTLS.test_two_independent_real_tls_game_journals_and_exact_receipts"
+      ]
+    },
+    {
+      "contract": "ATM/month888/two Game approvals share AVAILABLE; pending funds and other owner retained",
+      "id": "GX01_AVAILABLE_RACE",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_exchange_races.ExchangeRaces.test_simultaneous_atm_month888_and_two_game_approvals_share_only_available"
+      ]
+    },
+    {
+      "contract": "Current connection/owner transport/owner assertion/author admission before durable first claim; original in-flight work recoverable",
+      "id": "GX01_REVOKE_CLAIM",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_exchange_races.ExchangeRaces.test_author_revoked_before_first_claim_cannot_dispatch_new_apply",
+        "test_game_exchange_races.ExchangeRaces.test_connection_revoked_before_first_claim_creates_only_signed_rejection",
+        "test_game_exchange_races.ExchangeRaces.test_expired_connection_and_reversed_clock_cannot_start_new_apply",
+        "test_game_exchange_races.ExchangeRaces.test_expired_signed_approval_denial_is_permanent_then_explicit_new_quote_version",
+        "test_game_exchange_races.ExchangeRaces.test_owner_assertion_credential_revoked_before_first_claim_cannot_dispatch_new_apply",
+        "test_game_exchange_races.ExchangeRaces.test_owner_transport_revoked_before_first_claim_cannot_dispatch_new_apply",
+        "test_game_exchange_races.ExchangeRaces.test_real_apply_and_conditional_reject_race_has_one_durable_outcome",
+        "test_game_exchange_races.ExchangeRaces.test_revocation_after_claim_keeps_original_apply_authorized_and_receipt_recoverable",
+        "test_game_exchange_races.ExchangeRaces.test_simultaneous_atm_month888_and_two_game_approvals_share_only_available"
+      ]
+    },
+    {
+      "contract": "NOT_FOUND/invalid/foreign terminal retains hold; signed reject prevents later apply",
+      "id": "GX01_UNKNOWN_HOLD",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_exchange_tls.ExchangeTLS.test_foreign_receipt_and_malformed_receipt_cannot_release_hold",
+        "test_game_exchange_tls.ExchangeTLS.test_unknown_not_found_keeps_hold_then_signed_reject_prevents_late_apply"
+      ]
+    },
+    {
+      "contract": "Actual stalled Game A retains hold while B/ATM finish; real post-commit disconnect/truncation/oversize keep original terminal recoverable",
+      "id": "GX01_INDEPENDENT_DEADLINES",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_exchange_deadlines.IndependentGameDeadlines.test_actual_stalled_tls_keeps_hold_while_other_game_and_atm_finish",
+        "test_game_exchange_deadlines.IndependentGameDeadlines.test_actual_tls_disconnect_after_game_commit_keeps_hold_until_same_receipt",
+        "test_game_exchange_deadlines.IndependentGameDeadlines.test_actual_tls_oversized_receipt_after_game_commit_keeps_hold_until_same_receipt",
+        "test_game_exchange_deadlines.IndependentGameDeadlines.test_actual_tls_truncated_receipt_after_game_commit_keeps_hold_until_same_receipt",
+        "test_game_exchange_deadlines.IndependentGameDeadlines.test_game_transport_checks_actual_tls_and_destination_before_send"
+      ]
+    },
+    {
+      "contract": "Eleven actual child SIGKILL boundaries: migration/approval/claim/Game/Wallet/current-copy commit recovery",
+      "id": "GX01_ACTUAL_SIGKILL",
+      "run": "corrected_private_kill_fixture",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_exchange_process_kill.ExchangeProcessKill.test_approval_after_commit_recovers_original_receipt_once",
+        "test_game_exchange_process_kill.ExchangeProcessKill.test_approval_before_commit_rolls_back_counter_hold_outbox_together",
+        "test_game_exchange_process_kill.ExchangeProcessKill.test_claim_after_commit_keeps_unknown_hold_and_original_apply",
+        "test_game_exchange_process_kill.ExchangeProcessKill.test_game_after_commit_recovers_original_terminal_receipt",
+        "test_game_exchange_process_kill.ExchangeProcessKill.test_migration_kill_after_commit_recovers_only_original_migration_receipt",
+        "test_game_exchange_process_kill.ExchangeProcessKill.test_migration_kill_before_commit_preserves_original_nonempty_schema",
+        "test_game_exchange_process_kill.ExchangeProcessKill.test_restore_kill_after_final_receipt_commit_recovers_same_completion",
+        "test_game_exchange_process_kill.ExchangeProcessKill.test_restore_kill_after_first_independent_game_epoch_commit",
+        "test_game_exchange_process_kill.ExchangeProcessKill.test_restore_kill_after_wallet_epoch_commit",
+        "test_game_exchange_process_kill.ExchangeProcessKill.test_wallet_after_settle_commit_cannot_consume_or_grant_again",
+        "test_game_exchange_process_kill.ExchangeProcessKill.test_wallet_before_settle_commit_keeps_hold_until_same_terminal"
+      ]
+    },
+    {
+      "contract": "Stopped current source across C/router/index/A/B, retained original receipts, source retired/new epoch, unknown holds retained, stale/foreign state refused",
+      "id": "GX01_CURRENT_COPY_EPOCH",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_current_restore.CurrentGameRestoreTests.test_done_management_open_rechecks_unknown_blob_before_constructor",
+        "test_game_current_restore.CurrentGameRestoreTests.test_done_management_replay_after_legitimate_activity_is_not_a_history_api",
+        "test_game_current_restore.CurrentGameRestoreTests.test_done_management_resume_rechecks_index_and_preserves_revocation",
+        "test_game_current_restore.CurrentGameRestoreTests.test_explicit_handover_preserves_nonempty_legacy_and_same_tls_receipts",
+        "test_game_current_restore.CurrentGameRestoreTests.test_fully_game_bound_runtime_cannot_start_a_wallet_only_listener",
+        "test_game_current_restore.CurrentGameRestoreTests.test_fully_shadowed_rowid_is_refused_before_prepared_commit",
+        "test_game_current_restore.CurrentGameRestoreTests.test_index_advanced_without_done_is_not_a_valid_intermediate",
+        "test_game_current_restore.CurrentGameRestoreTests.test_initial_author_revocation_and_reserved_only_intent_survive_restore",
+        "test_game_current_restore.CurrentGameRestoreTests.test_no_wallet_only_listener_or_scheduler_can_publish_management_lifetime",
+        "test_game_current_restore.CurrentGameRestoreTests.test_old_index_current_wallet_is_refused_before_constructor",
+        "test_game_current_restore.CurrentGameRestoreTests.test_old_wallet_current_index_is_refused_before_constructor",
+        "test_game_current_restore.CurrentGameRestoreTests.test_original_implicit_rowid_change_is_not_hidden_by_same_column_values",
+        "test_game_current_restore.CurrentGameRestoreTests.test_restart_after_exact_index_prepared_commit",
+        "test_game_current_restore.CurrentGameRestoreTests.test_restart_after_index_done_commit_and_lost_reply",
+        "test_game_current_restore.CurrentGameRestoreTests.test_restart_after_wallet_epoch_commit_with_nonempty_wal",
+        "test_game_current_restore.CurrentGameRestoreTests.test_revocation_after_prepared_is_preserved_and_refuses_epoch_mutation",
+        "test_game_current_restore.CurrentGameRestoreTests.test_second_current_copy_extends_chain_without_rewriting_old_plan_or_receipt",
+        "test_game_current_restore.CurrentGameRestoreTests.test_unplanned_index_row_is_not_removed_from_original_snapshot",
+        "test_game_current_restore.CurrentGameRestoreTests.test_unplanned_wallet_epoch_row_is_not_removed_from_original_snapshot",
+        "test_game_current_restore.CurrentGameRestoreTests.test_without_rowid_unknown_table_retains_all_alias_named_values",
+        "test_game_exchange_restore.ExchangeCurrentRestore.test_each_issuer_cas_retains_rows_then_old_apply_refused_and_original_terminal_recovered",
+        "test_game_exchange_restore.ExchangeCurrentRestore.test_foreign_restore_or_mutated_game_journal_cannot_resume_epoch",
+        "test_game_sandbox_backup.SandboxCurrentCopy.test_aggregate_gate_keeps_pending_and_all_retired_os_names_stopped",
+        "test_game_sandbox_backup.SandboxCurrentCopy.test_full_current_archive_replay_and_restore_exact_intent_retains_all_sources",
+        "test_game_sandbox_backup.SandboxCurrentCopy.test_interrupted_owned_archive_copy_resumes_same_plan",
+        "test_game_sandbox_backup.SandboxCurrentCopy.test_no_unsafe_or_nested_archive_and_modified_archive_is_rejected",
+        "test_game_sandbox_backup.SandboxCurrentCopy.test_pending_intent_fences_start_and_completed_receipt_detects_change",
+        "test_game_sandbox_backup.SandboxCurrentCopy.test_retired_wallet_bytes_and_extra_unfenced_database_are_observed"
+      ]
+    },
+    {
+      "contract": "Same owner and author SDK implementations with two authors/games/owners/players and Alice A1/A2; no moved challenge",
+      "id": "DX01_MULTI_PARTY_SDK",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_reference_sdk.ReferenceSDK.test_real_two_game_same_external_keys_full_restart_exact_receipts",
+        "test_game_reference_sdk.ReferenceSDK.test_reference_author_sdk_has_only_separate_quote_status_capability",
+        "test_game_reference_sdk.ReferenceSDK.test_two_owner_players_and_second_device_use_same_sdk_without_transferring_challenge"
+      ]
+    },
+    {
+      "contract": "Explicit old narrow-client import retains source and original server receipts",
+      "id": "DX01_LEGACY_IMPORT",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_reference_sdk.ReferenceSDK.test_legacy_original_request_import_keeps_source_and_server_receipts"
+      ]
+    },
+    {
+      "contract": "Durable before send, original unknown request across restart; same external keys isolated",
+      "id": "DX01_PENDING_RETRY",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_reference_sdk.ReferenceSDK.test_pending_connection_resumes_original_begin_after_sdk_restart",
+        "test_game_reference_sdk.ReferenceSDK.test_real_two_game_same_external_keys_full_restart_exact_receipts",
+        "test_game_reference_sdk.ReferenceSDK.test_record_is_durable_before_actual_send_and_unknown_retries_original"
+      ]
+    },
+    {
+      "contract": "New key clearly refuses unsupported expired/revoked renewal; exact original key/receipt, balance and completed history retained",
+      "id": "DX01_EXPIRED_RECONNECT",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_reference_sdk.ReferenceSDK.test_expired_active_new_key_refused_completed_purchase_stays_reconcilable",
+        "test_game_reference_sdk.ReferenceSDK.test_expired_pending_new_key_refused_original_retry_and_catalog_preserved",
+        "test_game_reference_sdk.ReferenceSDK.test_revoked_new_key_refused_completed_purchase_stays_reconcilable"
+      ]
+    },
+    {
+      "contract": "Pinned public empty sandbox config; owner explicit credit once; current TLS catalog",
+      "id": "DX01_EXPLICIT_FIXTURE",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_reference_sdk.ReferenceSDK.test_facade_credit_is_explicit_once_and_catalog_uses_current_tls_connection",
+        "test_game_sandbox_config.SandboxConfiguration.test_committed_sample_is_exact_public_configuration",
+        "test_game_sandbox_config.SandboxConfiguration.test_no_implicit_identity_port_or_policy_change",
+        "test_game_sandbox_config.SandboxConfiguration.test_no_other_device_profile_authority_endpoint_or_key_purpose"
+      ]
+    },
+    {
+      "contract": "Three seconds review retains 117000ms existing timeout; dedicated Game purpose not ATM",
+      "id": "DX01_OWNER_CEREMONY",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_reference_sdk.ReferenceSDK.test_purchase_ceremony_retains_remaining_quote_lifetime_after_user_review"
+      ]
+    },
+    {
+      "contract": "Actual registration/consent/quote/purchase/history/diagnose; offline stale cache unavailable and original pending retained",
+      "id": "DX01_RUNNABLE_SAMPLE",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_game_sdk_examples.RunnableExamples.test_diagnosis_marks_cached_snapshot_unavailable_and_retains_original_pending",
+        "test_game_sdk_examples.RunnableExamples.test_new_client_registration_consent_quote_purchase_history_and_diagnosis"
+      ]
+    },
+    {
+      "contract": "Authority fencing/adoption/lifetime and managed TLS owner routing preserve existing Wallet contracts",
+      "id": "OWNER_C_CONTINUITY",
+      "run": "original_sequential_run",
+      "status": "PASS_SCOPED",
+      "test_ids": [
+        "test_authority_fence.FenceTests.test_copied_active_directory_is_not_a_fresh_contract",
+        "test_authority_fence.FenceTests.test_database_replacement_is_rejected_before_next_action",
+        "test_authority_fence.FenceTests.test_initialize_cannot_be_aborted_while_another_thread_owns_it",
+        "test_authority_fence.FenceTests.test_other_thread_admission_serializes_whole_actual_action",
+        "test_authority_fence.FenceTests.test_prepared_marker_is_durable_before_any_database_creation",
+        "test_authority_fence.FenceTests.test_quiesce_preserves_current_nested_action_and_blocks_waiting_writer",
+        "test_authority_fence.FenceTests.test_real_other_process_cannot_open_owned_coordinator",
+        "test_authority_fence.FenceTests.test_real_wallet_action_requires_current_epoch_and_reopens_same_identity",
+        "test_authority_fence.FenceTests.test_registry_pin_replacement_and_new_nested_contract_are_refused",
+        "test_authority_fence.FenceTests.test_same_registration_repairs_commit_between_wallet_and_entitlement",
+        "test_authority_fence.FenceTests.test_two_owner_admissions_cannot_nest_or_share_files",
+        "test_authority_fence.FenceTests.test_unpinned_coordinator_refuses_open_before_state_creation",
+        "test_contract_runtime_adoption.RuntimeAdoptionCompositionTests.test_actual_runtime_adopts_nonempty_legacy_without_reposting_or_early_scheduler",
+        "test_contract_runtime_fence.ActualRuntimeFenceLifetimeTests.test_close_retains_actual_writer_until_admitted_registration_finishes",
+        "test_contract_runtime_fence.ActualRuntimeFenceLifetimeTests.test_partial_open_close_failure_keeps_actual_prepared_permit_until_retry",
+        "test_contract_runtime_fence.ActualRuntimeFenceLifetimeTests.test_real_scheduler_stops_before_actual_authority_lock_release",
+        "test_contract_runtime_lifetime.RuntimeLifetimeTests.test_actual_live_thread_prevents_release_until_it_has_stopped",
+        "test_contract_runtime_lifetime.RuntimeLifetimeTests.test_all_public_opens_bind_protected_registry_before_any_storage_permit",
+        "test_contract_runtime_lifetime.RuntimeLifetimeTests.test_bootstrap_constructs_once_before_activate_and_no_early_scheduler",
+        "test_contract_runtime_lifetime.RuntimeLifetimeTests.test_close_failure_retains_callback_and_writer_for_explicit_retry",
+        "test_contract_runtime_lifetime.RuntimeLifetimeTests.test_constructor_failure_aborts_without_activation_or_scheduler",
+        "test_contract_runtime_lifetime.RuntimeLifetimeTests.test_dispatch_verifies_inside_admission_and_releases_context_after_exception",
+        "test_contract_runtime_lifetime.RuntimeLifetimeTests.test_existing_admission_can_finish_nested_work_while_close_refuses_release",
+        "test_contract_runtime_lifetime.RuntimeLifetimeTests.test_expiry_after_waiting_for_admission_never_dispatches",
+        "test_contract_runtime_lifetime.RuntimeLifetimeTests.test_interrupted_account_binding_blocks_new_mutation_until_same_binding_repairs",
+        "test_contract_runtime_lifetime.RuntimeLifetimeTests.test_option_factory_or_auth_bypass_rejected_before_coordinator",
+        "test_contract_runtime_lifetime.RuntimeLifetimeTests.test_partial_open_cleanup_failure_retains_retryable_handle_and_permit",
+        "test_contract_runtime_lifetime.RuntimeLifetimeTests.test_wrong_principal_and_body_override_rejected_before_any_admission",
+        "test_contract_runtime_wallet.RuntimeWalletCompositionTests.test_actual_mutators_without_ticket_refuse_and_foreign_fulfillment_leaves_db_unchanged",
+        "test_contract_runtime_wallet.RuntimeWalletCompositionTests.test_two_real_services_reuse_auth_monthly_atm_with_independent_same_keys",
+        "test_contract_runtime_wallet.RuntimeWalletCompositionTests.test_wrong_owner_and_revoked_current_revision_do_not_read_or_mutate_other_contract",
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_one_owner_authenticator_revocation_does_not_disable_other_purchased_devices",
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_owner_body_injection_wrong_token_authority_and_legacy_paths_do_not_dispatch",
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_parallel_same_key_atm_jobs_are_separate_and_cross_owner_lookups_fail",
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_real_tls_commit_lost_to_proxy_replays_once_after_complete_managed_restart",
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_required_actual_single_server_worker_releases_scope_after_real_policy_exception",
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_required_same_tls_foreign_atm_quote_cancel_and_original_issue_receipt_rejected",
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_required_same_tls_insufficient_alice_retry_preserves_all_bob_rows_and_schema",
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_required_same_tls_two_owner_monthly_888_and_two_device_single_charge",
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_revoked_transport_blocks_cached_receipt_but_other_devices_keep_their_contracts",
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_same_listener_distinct_owner_accounts_shared_alice_contract_terms_and_monthly_scope",
+        "test_wallet_owner_router.OwnerRouterGuards.test_a_mutated_runtime_descriptor_or_reused_old_rotation_token_is_refused",
+        "test_wallet_owner_router.OwnerRouterGuards.test_bind_is_complete_unique_and_does_not_accept_changed_authority_on_restart",
+        "test_wallet_owner_router.OwnerRouterGuards.test_expiry_and_revocation_invalidate_previously_authenticated_principal",
+        "test_wallet_owner_router.OwnerRouterGuards.test_lifetime_lock_closed_router_and_private_marker_do_not_leak_token",
+        "test_wallet_owner_router.OwnerRouterGuards.test_other_token_device_authority_and_claimed_principal_are_rejected",
+        "test_wallet_owner_router.OwnerRouterGuards.test_protected_file_symlink_hardlink_and_overbroad_modes_are_rejected",
+        "test_wallet_owner_router.OwnerRouterGuards.test_rebinding_or_duplicate_tokens_and_owner_pairs_fail_before_runtime_open",
+        "test_wallet_owner_router.OwnerRouterGuards.test_registry_identity_survives_restart_but_a_different_path_copy_is_refused",
+        "test_wallet_owner_router.OwnerRouterGuards.test_restart_preserves_bindings_and_refuses_credential_rollback_or_missing_marker",
+        "test_wallet_owner_router.OwnerRouterGuards.test_transport_revocation_commits_only_under_its_contract_admission",
+        "test_wallet_owner_router.OwnerRouterGuards.test_two_owners_three_devices_derive_only_the_registered_contract"
+      ]
+    }
+  ],
+  "restore_records": {
+    "bytes": 160911,
+    "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/restore-records.json",
+    "sha256": "4422f0b2c099781244538b534fbbb63ca21d2d745eb051174f34c0d374cb6021"
+  },
+  "same_source_arm64_full_regression": {
+    "errors": 10,
+    "full_executions": 1631,
+    "log": {
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/os-acceptance/final-9abf78a-failed-native/tests.log",
+      "sha256": "e7e8e958b89fe095df559f6abe17544d3bd7d3692ef9b646f9e36040d23fc141"
+    },
+    "not_replaced_by": "scoped Game-only/owner run, isolated observation, or separate x86_64 CI success",
+    "observed_failure": "Wallet TLS read/frame deadlines during owner enrollment/connection/quote/approval; no new SDK expiry guard used by the failed paths. Underlying cause remains unconfirmed.",
+    "report": {
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/os-acceptance/final-9abf78a-failed-native/report.json",
+      "sha256": "5a49bed70b8fb8ab328fb7a40c4e085591ce6e5e91abccb390984315a2e01340"
+    },
+    "seconds": 447.965,
+    "status": "FAIL_RETAINED",
+    "tests": 1367
+  },
+  "schema": "rock-final-game-contract-sdk-evidence/1",
+  "simulation_only": true,
+  "source": {
+    "after": {
+      "own_remaining_processes": [],
+      "source_different": [],
+      "source_files": 692
+    },
+    "archive": {
+      "bytes": 25815040,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/source.tar",
+      "sha256": "305b539fb4e3beb0812c4030a6f7850b9b235e8a10eb80246fa660dbe050038f"
+    },
+    "before": {
+      "different": [],
+      "files": 692
+    },
+    "manifest": {
+      "bytes": 125721,
+      "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/source-manifest.json",
+      "sha256": "6f4ae43d0f2d755e699a5fde121325dd045b873a3e00cfa2342f5e864d064591"
+    },
+    "native_files": 692,
+    "runtime_changed_for_acceptance": false
+  },
+  "status": "PASS_SCOPED_HOST_CONTRACT_AND_SDK_WITH_SEPARATE_RETAINED_RUNS",
+  "stopped_audit": {
+    "bytes": 1262,
+    "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/stopped-audit.json",
+    "sha256": "a633af3ee9fd1c7b6472ac0e9b2f58d3f73d1c5e607376dfd0d4b281e668edb9"
+  },
+  "tested_source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276"
+}
