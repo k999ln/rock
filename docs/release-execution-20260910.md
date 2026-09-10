@@ -80,3 +80,17 @@ root HEAD `996db1e`。draft PR #3の作業branchに `78c90bf` まで保存済み
 - rootのPC切断復帰observerは準備済み未実行。既存署名remote-textと所有TLS runnerの限定経路で、MR native接続や物理USBとは区別。実OSデモはfinalimage後に60〜120秒の実frame収録を予定、動画の存在をまだ主張しない。
 
 次: root4eの再起動保持・全両台帳照合を閉じ、PC切断/再接続と金融月888/ATM取消を実OS確認。DのSDK導入/診断測定、Bのfresh受入を統合。最終D4→初期ゼロD6→Game/Wallet/PC→D5順を維持し09:13までにfreezeする。製品LICENSE未回答、既存Sites project取得不能は継続。
+
+
+## 08:23 UTC checkpoint（経過159分25秒）
+
+root HEAD `e4c3e4e517bddaf73b3e46a9c44e590e9f830273`、最新push済みは `1ff457d`。同一1ffのWeb34453646384/native34453646438は両PASS。後続統合は次のpush対象、main未変更。
+
+- DのSDK公開owner/author sample、診断、6署名用途のliteral goldenと独立Node検証、作者のconnection単位v2 namespace/旧exact receipt read-throughを統合。9cfe6e7→915f9a8では未送信claim直前の4種失効を実FAIL再現から修正。既存保留・元applyを保持し、同AVAILABLEの月888/ATM/Game競合、apply/reject race、SIGKILL/epochの24件と実commit後応答切断/巨大・欠損応答等5件PASS。新source全Game回帰とfresh SDK計測はD/B進行中。
+- Game native4eの原保持FAILは保存。guest接続/交換journalの時刻だけを厳密比較するA helper d38f86cを統合し93 Linux checks PASS。nonzero Game履歴readでexternal index.maximum_timeも進むためB専用停止fence観測03108ae/f168218を追加。2**53上限、全型/rowid/UUID/path/config/他全tableを固定し、default D6の全state完全不変には例外を入れない。
+- Aの4非金融guest gate（store/remote/registry拒否/Hubfaults）対応を04f2106へ統合。元assert/期限を維持し、Wallet unavailableは金融NOT_RUN、外部authorityを停止したまま全表前後一致を固定する。35 host checks PASS、実guestはこれから。A session55377がf168218をarchive export→回帰→build中、root port解放後8boot確認を予定。baselineファイル自体のhash再確認e4c3e4eもfinalに含める。
+- Bは無改変8bd配布archiveからfresh VMでHub成果とGameAの10単位購入、正常終了/再開を観測。全19file/offVM1GiB照合後、実current-copy完了→OS16MiB copy途中SIGKILL→host/authority/direct source起動PENDING拒否→同intent再開DONE/元epoch一度/3disks一致/旧source拒否までPASS。復元先UIと限定clock観測を継続中。中間結果をfinal配布候補へ移し替えない。
+- root PCの初回実TLS処理は1job成功、owned runner正常SIGTERM exit0後2件目をunknownとして保存。Hub成果とWalletを利用でき、23.920秒の継続cycleで正常停止/全非対象DB/外部authority不変までPASS。2boot目の履歴入口OCR失敗を保持し、exec74973 `/var/tmp/rock-pc-link-ui-4e31554-05` が元pendingのまま継続中。原01〜04と通常閉鎖を保存し、入力/送信済み要求を再作成しない。OCRは既存confidence45維持、長い履歴labelの高信頼な識別部分と読み取り専用状態行の2倍cropを使う。D6のOCRや閾値は変更しない。
+- 金融UI observer（月888一度/同月retry/取消/ATMfee0quote/別PINhold1000/cancel/再起動）と90秒の実QMPframe録画器は準備済み未実行。録画は実imageからの原pixels/timestampだけとし、生成出力で代替しない。
+
+次: PC保留回収と金融2bootを08:40頃までに閉じ、Aへ全fixture portを解放。A中間guest結果、B最終復旧/DX、D全回帰を統合し、09:13までにfinalsource/imageを固定。D4→fresh0 D6→D2→Game/金融/PC→aggregateD5・実デモ・配布same candidateを完走する。LICENSE未回答と既存Sites project取得不可は外部条件として残る。

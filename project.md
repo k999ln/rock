@@ -4,6 +4,10 @@
 
 ユーザー指定MDを[今回の実行入口](docs/prompts/rockstaros-release-20260910.md)へ保存し、[実行記録](docs/release-execution-20260910.md)に開始・担当・受入条件を固定。GitHubの4headはMDと一致。PR #2起点の専用worktreeで進める。RQ01〜RQ17、月888 cents、Rock ATM手数料0、既存データを維持。下記の「設計のみ」は前回の履歴。
 
+## 08:23 UTC 境界・復旧の統合
+
+root `e4c3e4e`。初回Game送信のclaim直前に、接続・本人credential・端末・作者の現在の権限を同じtransactionで再確認するよう修正。既存の署名済み要求と保留を保持し、失効・並行ATM/月額/Game・実応答喪失の対象試験に合格。Game SDKの再表示時刻は必要な単調更新だけを型付き列で検証し、他の全行保持を維持。旧失敗の判定を変更しない。新候補のbuildと実gateを継続し、まだ配布完成とは判定しない。
+
 ## 07:53 UTC 実装・受入の更新
 
 release HEAD `996db1e`。Game 2作者/2game/2owner/追加端末SDK、current-copyの世代fenceと実SIGKILL復旧、遅いGameと別Game/ATMの分離を統合。中間4e実OSはA/B交換とHub引用結果、通常終了まで観測し、再起動保持・台帳監査を継続中。購入PINの残り有効期限を誤って拒否する実不具合を修正し、旧失敗と新実動作を分けて保存した。最新の同一版全gate、fresh配布受入、デモが残るため完成判定はしない。[実行checkpoint](docs/release-execution-20260910.md)が現在の正本。
@@ -239,7 +243,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 07:53 UTC: 996db1eまでGame current-copy/SIGKILL、2作者/2game/2owner/追加端末SDK、遅延peer分離を統合。中間4e実OSでGame A/B交換・Hub引用結果・正常終了まで確認、再起動保持/台帳監査は実行中。Bは8bd配布archiveからfresh非zero Game/OS復旧を受入中。最終同候補D0〜D6、配布取得、デモは未合格。08:45統合/09:13凍結目標。LICENSEと既存Sitesアクセスは未解決。docs/release-execution-20260910.md参照。
+次の作業: 08:23 UTC: root e4c3e4e。Game送信直前の失効/同残高競合、SDK作者namespace、厳密なguest/index read-clock観測を統合。中間4eでGame両台帳9794/各10units/fee6/hold0、PC実処理→停止→pending保存/正常終了までPASS、再起動回収は進行中。B実fresh8bdはnonzero全backup→実SIGKILL→同intent復元/旧source拒否を確認中。Aがf168218をbuildして4非金融guest gateを実測予定。最終D0〜D6/配布取得/90秒実デモは未合格。08:45統合/09:13freeze目標、LICENSE/Sitesアクセス未解決。
 <!-- project-status:end -->
 
 ## 次段階の設計

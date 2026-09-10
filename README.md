@@ -86,7 +86,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 07:53 UTC: 996db1eまでGame current-copy/SIGKILL、2作者/2game/2owner/追加端末SDK、遅延peer分離を統合。中間4e実OSでGame A/B交換・Hub引用結果・正常終了まで確認、再起動保持/台帳監査は実行中。Bは8bd配布archiveからfresh非zero Game/OS復旧を受入中。最終同候補D0〜D6、配布取得、デモは未合格。08:45統合/09:13凍結目標。LICENSEと既存Sitesアクセスは未解決。docs/release-execution-20260910.md参照。
+次の作業: 08:23 UTC: root e4c3e4e。Game送信直前の失効/同残高競合、SDK作者namespace、厳密なguest/index read-clock観測を統合。中間4eでGame両台帳9794/各10units/fee6/hold0、PC実処理→停止→pending保存/正常終了までPASS、再起動回収は進行中。B実fresh8bdはnonzero全backup→実SIGKILL→同intent復元/旧source拒否を確認中。Aがf168218をbuildして4非金融guest gateを実測予定。最終D0〜D6/配布取得/90秒実デモは未合格。08:45統合/09:13freeze目標、LICENSE/Sitesアクセス未解決。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
