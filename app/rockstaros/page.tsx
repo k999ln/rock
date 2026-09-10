@@ -57,7 +57,7 @@ export default function RockstarPreview() {
       </section>
       <section className={styles.gameSection} aria-labelledby="game-title">
         <div><p className={styles.eyebrow}>GAME / DEVELOPER SANDBOX</p><h2 id="game-title">仕事の余地を、<br />次の楽しみへ。</h2></div>
-        <div><p>Gameは本人が選んで開く入口です。接続の同意と、一回の購入承認を分けて確認し、照合中の保留と確定した交換を履歴で区別します。</p><p>公開Game A/Bと作者向けSDKを開発中。WalletからGameへの購入方向に限る合成試験で、実ゲームや実際のお金には接続しません。</p></div>
+        <div><p>Gameは本人が選んで開く入口です。接続の同意と、一回の購入承認を分けて確認し、照合中の保留と確定した交換を履歴で区別します。</p><p>合成Game A/Bと作者向けSDKを同じ候補で検証しています。WalletからGameへの購入方向に限る試験で、実ゲームや実際のお金には接続しません。</p><p className={styles.scope}>試験接続は1時間有効です。期限後の新規接続は未対応で、元の要求の照合と購入履歴は保持します。</p><a className={styles.textLink} href="https://github.com/k999ln/rock/blob/9abf78a80d27aa9f847c4051d20e4c552e407276/systems/rock-star-os/examples/game/README.md">作者向けの動くサンプルと診断手順 ↗</a></div>
       </section>
       <footer className={styles.footer}><span>RockstarOS 1.0 Developer Preview</span><Link href="/">既存のWeb・PCツールへ <span aria-hidden="true">↗</span></Link></footer>
     </main>

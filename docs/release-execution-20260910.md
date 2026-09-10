@@ -111,3 +111,17 @@ RQ01–11/12/16 / 0→1・秘密を探す・べき乗則 / 代表商品の切断
 - LICENSE条件は未回答。08:44頃の既存Sites project再照会もNOT_FOUND、既存scope変更/代替公開先作成なし。GitHub正本はPUBLIC/ADMIN、配布物の一般公開は条件待ち。
 
 次: Dの観測器修正と実画面で見つけたGame期限後再接続不具合を閉じ、必要ならWallet/ATMの実C PIN frameを元pixel条件で再検証してsourceだけ更新。09:05〜09:13に全source固定→A回帰/build/D4/D6/D2/D1/D3、B finalfresh/package/legal、root finalGame/金融/引用遠隔/実demo/案内・CI。終了予定13:43:35 UTCは維持し、無意味な反復や待ち埋めはしない。
+
+## 09:19 UTC checkpoint（経過3:36:11）
+
+RQ07–17 / 明確な楽観主義・べき乗則 / 版ごとに検証が混ざり導入後の状態が分からない / 既存freeze・署名package・全gate / nativeと配布共通文書を一つのcommitへ固定 / 同一source/image/authority設定・正常終了・全表保持 / 最終9abf78aの完全回帰と実OS/fresh導入。
+
+- 最終candidate source/host toolsを `9abf78a80d27aa9f847c4051d20e4c552e407276` に固定し、GitHub作業branchへpush。以降のWeb/受入証拠は別commitでも、この配布入力とimageを変更しない。必須runtime不具合があれば別candidateとして再判定する。
+- Game期限後の再接続は既存GX00契約で未対応。永久player/owner予約やTTLを変更せず、SDKは新keyを理由付き拒否し、元begin keyのexact retryと購入履歴を保持する（3925688、実TLS13tests17.591s skip0 PASS）。UIのdisabled表示も説明へ変更。PIN source一項のみ更新、元pixel profiles全部不変。sudo付きcanonical14Wallet+14ATMframes/7stale/missingPageDown/11+1tests PASS。未特権での最初のroot要求拒否も保存した。
+- 3observerの初回を含む毎起動正常終了、設定path/hash、全非対象行比較を5030717へ統合。D6の3SDK DBはmax_time0と全行不変を997ddeaで固定。中間PCの2原要求復旧・保存UIの結果とcleanup観測FAILは別々に保持。
+- A exec26770: exact archive `/var/tmp/rock-final-9abf78a`、tests `/var/tmp/rock-final-9abf78a-tests`、host log `work/os-acceptance/final-9abf78a-build.log`。完全native回帰→base build/freeze→Game profile/legal→D4/D6/D2/D1/D3。rootの全QEMU/fixtureは停止済み。Bは同SHA専用branchへ同期し、画像/legal待ちで9file二回生成・loopback取得・独立fresh OS/aggregate/SDKを準備。
+- npm verify 08:58（5ef6ab4）はexit0/54unit/143API。GitHubの5ef6ab4 Web34458004187/native34458004203両PASS。9abf78a同SHA CIはpush直後で未判定。
+- hostがACからbatteryへ変化。A owned有限caffeinateを記録、ユーザーへ充電接続を案内。恒久設定や他アプリのprocessは変更しない。
+- 公開条件の本体license回答、既存Sitesアクセスは未解決。先に配布物・実試験・公開用ページを完成させる。終了予定13:43:35 UTC。
+
+次: Aのnative完了後D最終契約回帰、B独立fresh導入。rootは公開用guideの確定制限・復旧説明を同期し、Aの初期0 D6/D2正常終了後のfresh専用deviceでGame→監査→金融→引用遠隔→90秒実OS収録を実行する。

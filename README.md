@@ -86,7 +86,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 08:40 UTC: Game契約/実SIGKILL要約、SDK fresh診断修正を統合。中間4eの月888一度とATMfee0予約/取消・再起動2boot PASS。引用整理の同一recipeを明示1.1開発fixtureとして遠隔経路へ接続し対象受入を準備。A最終D2固定・native回帰/build→D4/D6/D2、B freshSDK原証拠/配布、C最終UIと90秒demoへ進む。LICENSE/Sites条件は未解決。
+次の作業: 09:19 UTC: 最終source/host tools 9abf78a80d27aa9f847c4051d20e4c552e407276 固定/push。A完全native回帰/build→D4→初期0 D6/D2→D1/D3、B同9file取得/fresh導入/aggregate/SDK、D最終契約回帰、root最終Game/金融/引用遠隔/90秒実録画と公開用案内を進める。Game再接続未対応の説明と元key保持、PIN元pixel条件を検証済み。製品license/既存Sitesは未解決。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

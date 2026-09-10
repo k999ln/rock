@@ -1,5 +1,10 @@
 # Rock star — 事業・設計・進捗
 
+## 09:19 UTC 配布候補のソース固定
+
+`9abf78a80d27aa9f847c4051d20e4c552e407276` を最終source/host tools候補として固定・pushし、Aの完全native回帰とbuildを開始。Game期限後の再接続未対応を既存契約どおりUI/SDKに説明し、元key再送・履歴とPIN pixel条件を保持。Bは同じ版の9file取得から独立新VMで導入/全構成復旧/SDKを検証する。D0〜D6・最終実UI・配布取得・実demoはこれからの判定で、完成とは表示しない。
+
+
 ## 08:40 UTC 最終候補へ向けた一周の固定
 
 月額888の二重請求防止、ATMfee0予約/取消、2正常bootの保持を4e中間imageで実測。新環境SDKのcached接続診断を修正して別fresh再導入が成功。引用整理の同じ処理を選択したrunnerへ送り、元keyの復旧まで最終候補で測る準備を統合。Game/金融/遠隔/90秒実録画のobserverを再現可能なsourceへ保存する。最終同一imageの受入・配布物・demoはまだ未合格。
@@ -247,7 +252,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 08:40 UTC: Game契約/実SIGKILL要約、SDK fresh診断修正を統合。中間4eの月888一度とATMfee0予約/取消・再起動2boot PASS。引用整理の同一recipeを明示1.1開発fixtureとして遠隔経路へ接続し対象受入を準備。A最終D2固定・native回帰/build→D4/D6/D2、B freshSDK原証拠/配布、C最終UIと90秒demoへ進む。LICENSE/Sites条件は未解決。
+次の作業: 09:19 UTC: 最終source/host tools 9abf78a80d27aa9f847c4051d20e4c552e407276 固定/push。A完全native回帰/build→D4→初期0 D6/D2→D1/D3、B同9file取得/fresh導入/aggregate/SDK、D最終契約回帰、root最終Game/金融/引用遠隔/90秒実録画と公開用案内を進める。Game再接続未対応の説明と元key保持、PIN元pixel条件を検証済み。製品license/既存Sitesは未解決。
 <!-- project-status:end -->
 
 ## 次段階の設計
