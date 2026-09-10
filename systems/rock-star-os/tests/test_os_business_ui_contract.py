@@ -131,6 +131,7 @@ class BusinessEvidence(unittest.TestCase):
         before, _ = fixture(lifecycle()); after, hashes = fixture(operations)
         evidence = contract.validate_hub(after, operations, hashes)
         contract.preserve_rows(before, after)
+        self.assertEqual(len(operations), 16)
         self.assertEqual(len(evidence['jobs']), 5)
         self.assertEqual(evidence['installed'], [{'id': contract.TOOL, 'version': '1.0.0', 'enabled': 1}])
         self.assertEqual([p['version'] for p in after['hub_packages']], ['1.0.0'])

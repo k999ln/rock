@@ -120,6 +120,41 @@ class GameBusinessProfile(unittest.TestCase):
             self.assertEqual(plan['business_profile']['cache_read_sync'], cache.POLICY)
             self.assertEqual(report['plan_sha256'], harness.contract.hashed(plan))
             self.assertEqual(report['D6'], 'NOT_RUN')
+            self.assertNotIn('reinstall_after_delete', plan)
+
+    def test_reinstall_is_lifecycle_only_and_cannot_change_soak(self):
+        with patch.object(harness, 'preflight') as preflight:
+            with self.assertRaisesRegex(ValueError, 'lifecycle-only'):
+                harness.run(Path('/unused'), Path('/unused'), 'soak', 'e' * 40,
+                            reinstall_after_delete=True)
+            preflight.assert_not_called()
+
+    def test_game_reinstall_plan_preserves_empty_authority_without_wallet_preparation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); output = root / 'evidence'; template = root / 'device.json'
+            config = {'schema': 'rock-desktop-device/7', 'name': 'fixture-game', 'images': str(root),
+                'network': 'game-authority', 'viewer': 'browser', 'sha256': {},
+                'boot': {'mode': 'signed-stage0', 'profile': 'development-game-authority'},
+                'game': {'authority_id': AUTHORITY, 'config': str(root / 'sandbox.json'), 'sha256': 'a' * 64}}
+            template.write_text(json.dumps(config))
+            (root / 'freeze-manifest.json').write_text('{"fixture":"provenance checked by mocked preflight"}')
+            instance = Mock(); instance.input_hashes = {'sandbox_cli_sha256': 'b' * 64, 'sandbox_config_sha256': 'a' * 64}
+            instance.invoke.return_value = authoritative_snapshot()
+            with patch.object(harness, 'preflight', return_value=(config, output)), \
+                 patch.object(harness, 'extract_packages', return_value={'1.0.0': 'c' * 64, '1.1.0': 'd' * 64}), \
+                 patch.object(authority, 'Observer', return_value=instance), patch.object(harness.guest, 'start') as start:
+                report = harness.run(root, root, 'lifecycle', 'e' * 40, boot_profile='game-authority-ab',
+                                     device_config=template, preflight_only=True, reinstall_after_delete=True)
+            start.assert_not_called(); instance.invoke.assert_called_once_with('snapshot')
+            plan = json.loads((output / 'plan.json').read_text())
+            self.assertEqual(plan['normal_boot_shutdown_cycles'], 2)
+            self.assertFalse(plan['prepare_backup']); self.assertIsNone(plan['wallet_preparation'])
+            self.assertEqual(plan['reinstall_after_delete']['expected_operations'], 16)
+            self.assertEqual(plan['reinstall_after_delete']['expected_jobs'], 5)
+            self.assertFalse(plan['reinstall_after_delete']['wallet_mutations'])
+            self.assertEqual(plan['authority_observation']['baseline']['status'], 'EMPTY_BEFORE_UI')
+            self.assertEqual(plan['limits'], harness.contract.plan('lifecycle')['limits'])
+            self.assertEqual(report['plan_sha256'], harness.contract.hashed(plan))
 
 
 if __name__ == '__main__':

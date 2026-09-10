@@ -914,7 +914,9 @@ def preflight(images, output_parent, mode, source_commit, boot_profile='legacy-l
     return config, output_parent / name
 
 
-def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-local', prepare_backup=False, preflight_only=False, device_config=None):
+def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-local', prepare_backup=False, reinstall_after_delete=False, preflight_only=False, device_config=None):
+    require(not reinstall_after_delete or mode == 'lifecycle',
+            'reinstall-after-delete is a lifecycle-only acceptance operation')
     require(not (boot_profile == 'game-authority-ab' and prepare_backup),
             'Game authority Wallet preparation requires its separate explicit UI flow; local Wallet preparation cannot be reused')
     config, output = preflight(images, output_parent, mode, source_commit, boot_profile, device_config)
@@ -936,6 +938,10 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
                        'duplicate_box_min_iou': .70},
                   frozen_at=datetime.now(timezone.utc).isoformat())
     frozen['business_profile'] = profile
+    if reinstall_after_delete:
+        frozen['reinstall_after_delete'] = {'enabled': True, 'expected_operations': 16,
+            'expected_jobs': 5, 'wallet_mutations': False,
+            'sequence': ['real-delete', 'saved-result', 'install', 'approve', 'run']}
     if boot_profile == 'game-authority-ab':
         import game_authority_observer as authority_contract
         authority = authority_contract.Observer(HERE.parent / 'game_exchange/sandbox.py',
@@ -1039,7 +1045,7 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
                 # Deletion must retain a visible saved result as well as DB rows.
                 driver.open_history('1.0.0', deleted=True)
                 driver.result(cycle['jobs'][-1]['label'], evidence_label='result-after-delete')
-                if prepare_backup:
+                if prepare_backup or reinstall_after_delete:
                     # A source for restore acceptance still has an approved
                     # installed Tool. Do not omit or pretend the deletion:
                     # install again through the UI and retain all prior rows.
@@ -1115,6 +1121,11 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
         require(contract.hashed(json.loads((output / 'plan.json').read_text())) == expected_plan_hash, 'frozen plan changed')
         report['D2'] = {'business_lifecycle': 'PASS', 'in_flight_cancel': 'NOT_RUN', 'wallet_synthetic_flow': 'NOT_RUN',
                         'whole_gate': 'INCOMPLETE', 'meaning': 'install/approve/run/result/history/update/rollback/disable/reapprove/delete verified'}
+        if reinstall_after_delete:
+            require(len(operations) == 16 and len(all_jobs) == 5,
+                    'complete reinstall lifecycle requires exactly 16 operations and five actual jobs')
+            report['D2']['reinstall_after_delete'] = {'status': 'PASS', 'operations': len(operations),
+                                                    'jobs': len(all_jobs)}
         if mode == 'soak':
             contract.validate_soak(frozen, expected_plan_hash, report)
             report['D6'] = {'workload': 'PASS', 'guest_per_service_resources': 'NOT_RUN',
@@ -1161,10 +1172,13 @@ def main():
     parser.add_argument('--device-config', type=Path,
                         help='fixed matching device/7 configuration; a new business device name is assigned without changing the image/profile')
     parser.add_argument('--prepare-backup', action='store_true', help='after real deletion, reinstall/approve/run through UI for a populated restore source')
+    parser.add_argument('--reinstall-after-delete', action='store_true',
+                        help='lifecycle only: verify 16 operations and five jobs including reinstall after real deletion, without Wallet preparation')
     parser.add_argument('--preflight-only', action='store_true', help='verify exact image/profile/package inputs without launching QEMU or creating device disks')
     args = parser.parse_args()
     run(args.images, args.output, args.mode, args.source_commit, boot_profile=args.boot_profile,
-        prepare_backup=args.prepare_backup, preflight_only=args.preflight_only, device_config=args.device_config)
+        prepare_backup=args.prepare_backup, reinstall_after_delete=args.reinstall_after_delete,
+        preflight_only=args.preflight_only, device_config=args.device_config)
 
 
 if __name__ == '__main__': main()
