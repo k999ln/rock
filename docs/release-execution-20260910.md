@@ -98,3 +98,16 @@ root HEAD `e4c3e4e517bddaf73b3e46a9c44e590e9f830273`、最新push済みは `1ff4
 ## 08:36 UTC 引用整理の遠隔復旧への接続
 
 RQ01–11/12/16 / 0→1・秘密を探す・べき乗則 / 代表商品の切断中要求と結果を見失う不便 / 既存署名Tool・有限organize_citations・RunnerControl・同意/receipt / 元1.0を保ち明示選択する1.1開発fixtureだけ遠隔実行可能にする / 同一150byte入力・151byte結果と元key1回完了/保存/復旧時間 / 実TLS隔離processと実OS UI・停止後typed rows。MR CLIと物理USBは別判定のまま。
+
+## 08:53 UTC checkpoint（経過3時間9分55秒）
+
+- root `6a98fcb`、release branch保存先は既存draft PR #3。128cdddaa6368ccaad658e5c57912bae9a736bd6 の Web34454989585/native34454989622 は同SHA両PASS。
+- D contract132/owner52/管理21＋実SIGKILL11の全原本を保持し、Gitには境界別要約/hashだけを8e2008bへ統合。新freshSDKのcached診断誤表示をa055582で修正し、別fresh aee3d61で初回7.196284秒/診断0.239930秒/元key復旧2.220017秒、停止5DB/71table完全照合PASS（8b3907f/b5e6be3）。人やVM準備の時間には換算しない。
+- A f168全nativeは1611 executions/14checksで1TLS setup ERRORを保持。原因未確定、同source・1秒期限の隔離3回はPASS。最終source全回帰で再判定。D2は16operations/5jobsをWallet操作と分離したflag固定（1c3bdda）、registry wire検査はPASS_SCOPEDにも必須化（6a98fcb）。empty authority実TLS読取v4は全19初期表0/5DB全不変、最終authorityはまだ未作成。
+- root中間4e金融2bootは月888一度/同月retry/autoRenew取消/ATM1000fee0quote→hold→取消release/実払出0を確認し正常停止。独立レビューで初回正常終了証拠とcycle1非対象全表比較が不足していたため、この結果を最終gateへ移さない。DがGame/金融/PCの3observerに事前後power/設定path+SHA/全非対象保持を追加中。
+- 引用整理は元1.0を残す任意1.1署名fixtureと実runner経路を9f1d251で再利用。08:43のLinux実TLS＋framed Unixで同150byte→151byte SHAe5e655…/socketdeny/Wallet不可視/同key同receipt/Store再起動後の実行不変PASS。MR CLI・本物のUSB・一般cloudとは別。
+- 4eの90秒録画pipelineは360原QMPframes、最大frame間隔0.425秒、元jobs保持/新job1/normalpower8.893秒、原画90.001秒を取得。MP4は90.0秒/585030bytes/SHA d15d72f2e51cc6442011a295c428d127ec9d7b1cb9e6b1b7b544389791aec485、デコードした結果/Game画面を視認。final同imageで再収録する。root全fixture/QEMU停止、VMはA/Dへ解放。
+- B8bd新規導入→nonzero全backup→実SIGKILL→同intent再開→retiredsource拒否→復元UI/122table比較を保存（eb3c75f、元guest wholehashFAILは保持）。B自身の全VMを通常停止/削除済み。最終は9配布fileをowned loopbackHTTPから別取得先へ取得し全hash/署名からfresh導入する計画。publicURL取得とは扱わない。
+- LICENSE条件は未回答。08:44頃の既存Sites project再照会もNOT_FOUND、既存scope変更/代替公開先作成なし。GitHub正本はPUBLIC/ADMIN、配布物の一般公開は条件待ち。
+
+次: Dの観測器修正と実画面で見つけたGame期限後再接続不具合を閉じ、必要ならWallet/ATMの実C PIN frameを元pixel条件で再検証してsourceだけ更新。09:05〜09:13に全source固定→A回帰/build/D4/D6/D2/D1/D3、B finalfresh/package/legal、root finalGame/金融/引用遠隔/実demo/案内・CI。終了予定13:43:35 UTCは維持し、無意味な反復や待ち埋めはしない。

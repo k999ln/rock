@@ -17,11 +17,18 @@ def main():
     out=args.output.resolve();out.mkdir(mode=0o700,parents=True,exist_ok=False)
     limits=b.contract.plan('lifecycle')['limits'];profile=b.retention.retention_profile(config)
     observer=authority.Observer(base/'os/game_exchange/sandbox.py',args.sandbox_config.resolve(),config['game']['authority_id'],out)
+    assert args.sandbox_config.resolve(strict=True)==Path(config['game']['config']).resolve(strict=True)
+    assert observer.input_hashes['sandbox_config_sha256']==config['game']['sha256']
     before=observer.invoke('snapshot');b.guest.save(out/'authority-before.json',before)
+    initial_record=json.loads((b.guest.BASE/config['name']/'running.json').read_text())
+    with b.closed_device(config,initial_record) as data:
+        before_state,before_rows,before_powers=b.retention.business_snapshot(data,profile)
+    b.guest.save(out/'guest-before.json',before_state)
+    b.guest.save(out/'power-before.json',before_powers)
     plan={'schema':'rockstaros-qemu-demo-plan/1','source_commit':args.commit,'config':config,'seconds':90,'frames_per_second':4,
           'capture':'QMP original 720x960 pixels; no generated scenes, graphic overlay, speed change or fabricated product result',
           'prepared_device':'Citation tool already installed, account enrolled, Wallet and Game connected earlier; not a first-install timing test',
-          'simulation_only':True,'qemu':True,'operations':['execute actual citation sample','reopen latest saved result','view synthetic Wallet','view Game connections and retained completed receipt'],
+          'simulation_only':True,'qemu':True,'expected_available_minor':8906,'operations':['execute actual citation sample','reopen latest saved result','view synthetic Wallet','view Game connections and retained completed receipt'],
           'observer_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'recorder_sha256':hashlib.sha256(Path(frames.__file__).read_bytes()).hexdigest()}
     b.guest.save(out/'plan.json',plan);(out/'plan.json').chmod(0o444)
     report={'status':'RUNNING','started_utc':datetime.now(timezone.utc).isoformat(),'input_events':[],'screenshots':[],'qmp_events':[],'qmp_commands':[],'ui_states':[],'chapters':[]}
@@ -49,7 +56,10 @@ def main():
         chapter('保存された実行結果');hold_until(29)
         driver.nav('history');driver.click('引用整理',exact_line=True,within=b.HISTORY_TITLE,regions=(b.HISTORY_TITLE,),label='reopen-latest-result')
         driver.wait('紹介文です',label='reopened-same-result');chapter('履歴から再表示');hold_until(40)
-        driver.nav('wallet');driver.wait('シミュレーター',label='synthetic-wallet');chapter('合成Wallet・実際の資金ではありません');hold_until(51)
+        driver.nav('wallet');driver.wait('シミュレーター',label='synthetic-wallet')
+        driver.wait('利用可能なテスト残高',seek=True,label='synthetic-available-balance')
+        driver.wait('$89.06',seek=True,label='actual-post-financial-balance')
+        chapter('合成Wallet・実際の資金ではありません');hold_until(51)
         driver.native.click(152,26);driver.wait('合成WalletからGameへ',label='game-home');chapter('本人が接続した合成Game');hold_until(62)
         driver.wait('交換の履歴',seek=True,label='game-history');driver.wait('交換完了',seek=True,label='completed-game-history')
         chapter('完了した交換の履歴');hold_until(76)
@@ -60,6 +70,12 @@ def main():
         b.guest.save(out/'authority-after.json',observer.invoke('snapshot'))
         with b.closed_device(config,record) as data:
             state,rows,powers=b.retention.business_snapshot(data,profile)
+            b.guest.save(out/'guest-state.json',state)
+            b.guest.save(out/'power-after.json',powers)
+            b.verify_power(before_powers,powers,report['qmp_events'])
+            original_jobs={r['id']:r for r in before_rows['hub_jobs']}
+            final_jobs={r['id']:r for r in rows['hub_jobs']}
+            assert len(final_jobs)==len(original_jobs)+1 and all(final_jobs.get(k)==v for k,v in original_jobs.items())
             citation=[r for r in rows['hub_jobs'] if r['tool_id']=='org.rockstar.citation-organizer'];assert citation
             latest=max(citation,key=lambda r:r['created'])
             assert latest['status']=='succeeded' and hashlib.sha256(latest['output'].encode()).hexdigest()=='e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7'

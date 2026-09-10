@@ -1,0 +1,103 @@
+{
+  "marker": "ROCK_RUNNER_LINUX_ACTUAL_PASS",
+  "platform": "linux",
+  "machine": "aarch64",
+  "fixture": "citations",
+  "input_sha256": "bad73028a4b23b6e046abc4a1463f2fa14ffd4f55844ec9146cdc9acc3b1387e",
+  "expected_output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+  "mr_cli_adapter": "NOT_USED",
+  "production_cloud": "NOT_RUN",
+  "physical_usb": "NOT_RUN",
+  "fixtures_only": true,
+  "launcher_sha256": "e7e91fdfecfa87e0200dc277f9fdb5c956a772892a8a82b5d68df316e1ae8c05",
+  "results": [
+    {
+      "mode": "cloud",
+      "status": {
+        "cancel_requested": false,
+        "error": null,
+        "execution": {
+          "kind": "actual_linux_isolated_process",
+          "mount_namespace": "mnt:[4026532284]",
+          "network_namespace": "net:[4026532289]",
+          "outer_mount_namespace": "mnt:[4026531841]",
+          "outer_network_namespace": "net:[4026531840]",
+          "outer_pid": 1321433,
+          "physical_usb": "NOT_RUN",
+          "pid": 2,
+          "socket_syscall_denied": true,
+          "uid": 501,
+          "wallet_path_visible": false
+        },
+        "found": true,
+        "key": "actual-job-1",
+        "output": "紹介文です。\n\n```text\n（出典: [コード内の例](https://example.test/code)）\n```\n\n## 出典\n\n- [店舗情報](https://example.test/store)\n",
+        "receipt": {
+          "accepted": true,
+          "actual_target": "cloud",
+          "endpoint_id": "runner-linux-cloud",
+          "key": "actual-job-1",
+          "meaning": "accepted; consult status for actual execution and result",
+          "physical_usb": "NOT_RUN",
+          "request_sha256": "710f863764e99212d3e0607ba94f457c6fb2cc57fa185d88942a56e5d291c92f",
+          "simulation_only": true,
+          "transport_evidence": "pinned_tls_loopback_fixture"
+        },
+        "state": "succeeded",
+        "worker_alive": true,
+        "worker_error": null
+      },
+      "duplicate_submit_same_receipt": true,
+      "restart_same_execution": true
+    },
+    {
+      "mode": "pc_usb",
+      "status": {
+        "cancel_requested": false,
+        "error": null,
+        "execution": {
+          "kind": "actual_linux_isolated_process",
+          "mount_namespace": "mnt:[4026532284]",
+          "network_namespace": "net:[4026532289]",
+          "outer_mount_namespace": "mnt:[4026531841]",
+          "outer_network_namespace": "net:[4026531840]",
+          "outer_pid": 1321443,
+          "physical_usb": "NOT_RUN",
+          "pid": 2,
+          "socket_syscall_denied": true,
+          "uid": 501,
+          "wallet_path_visible": false
+        },
+        "found": true,
+        "key": "actual-job-1",
+        "output": "紹介文です。\n\n```text\n（出典: [コード内の例](https://example.test/code)）\n```\n\n## 出典\n\n- [店舗情報](https://example.test/store)\n",
+        "receipt": {
+          "accepted": true,
+          "actual_target": "pc_usb",
+          "endpoint_id": "runner-linux-pc_usb",
+          "key": "actual-job-1",
+          "meaning": "accepted; consult status for actual execution and result",
+          "physical_usb": "NOT_RUN",
+          "request_sha256": "53e87805f8ddfdf7366541af23c43657f89f8b66af5e234cbc8460ac45efb07f",
+          "simulation_only": true,
+          "transport_evidence": "authenticated_unix_fixture"
+        },
+        "state": "succeeded",
+        "worker_alive": true,
+        "worker_error": null
+      },
+      "duplicate_submit_same_receipt": true,
+      "restart_same_execution": true
+    }
+  ],
+  "source_commit": "8b3907ffdf22f0bd970a5a9d665dddb9a584d9cd",
+  "command": "PYTHONPATH=src:os python3 -B -m runner.linux_acceptance --project /var/tmp/rock-citation-host-8b3907f/systems/rock-star-os --work-dir /var/tmp/rock-citation-linux-actual-01 --port 9744 --fixture citations",
+  "exit_code": 0,
+  "source_sha256": {
+    "os/runner/build_fixture.py": "60ad2553f21be556055cc7e2532e87c64164be06a049e0067f76b48503bf1fe6",
+    "os/runner/linux_acceptance.py": "8a50bcc15746300e59d8c43f7b80d73686353cdbf0e670943572fac5d76a5b6f",
+    "os/runner/executor.py": "77bb7211065723af2f8d6a5845871e9fea734ad1b5ef3865db95c4d5268eb655",
+    "src/blackberryrock/recipe_worker.py": "f3bf50337383bfcac2593599285afec1b91d930f6c368ae1e1e6131784dbfe3e",
+    "os/tools/fixtures/citations.md": "bad73028a4b23b6e046abc4a1463f2fa14ffd4f55844ec9146cdc9acc3b1387e"
+  }
+}

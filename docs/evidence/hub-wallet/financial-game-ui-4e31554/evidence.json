@@ -1,0 +1,205 @@
+{
+  "schema": "rock-intermediate-financial-ui-evidence/1",
+  "status": "SCOPED_UI_AMOUNTS_PASS_FINAL_RETENTION_GATES_PENDING",
+  "source_commit": "4e31554a5cfd415b0f9a9878e1e1306f949f1596",
+  "original_status": "PASS_SCOPED_FINANCIAL_UI",
+  "started_utc": "2026-09-10T08:31:41.070026+00:00",
+  "finished_utc": "2026-09-10T08:36:17.102080+00:00",
+  "cycles": [
+    {
+      "elapsed_seconds": 195.6886399369978,
+      "error": null,
+      "owned_device_running": false,
+      "status": "PASS_SCOPED_FINANCIAL_UI"
+    },
+    {
+      "elapsed_seconds": 80.29329144799703,
+      "error": null,
+      "owned_device_running": false,
+      "status": "PASS_SCOPED_FINANCIAL_UI"
+    }
+  ],
+  "ledger_stages": [
+    {
+      "label": "initial-completed-games",
+      "balances": {
+        "AVAILABLE": 9794,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000
+      },
+      "auto_renew": 0,
+      "quote_count": 0,
+      "quote_state": null
+    },
+    {
+      "label": "first-monthly-paid",
+      "balances": {
+        "AVAILABLE": 8906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888
+      },
+      "auto_renew": 1,
+      "quote_count": 0,
+      "quote_state": null
+    },
+    {
+      "label": "same-period-no-second-charge",
+      "balances": {
+        "AVAILABLE": 8906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888
+      },
+      "auto_renew": 1,
+      "quote_count": 0,
+      "quote_state": null
+    },
+    {
+      "label": "future-consent-cancelled",
+      "balances": {
+        "AVAILABLE": 8906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888
+      },
+      "auto_renew": 0,
+      "quote_count": 0,
+      "quote_state": null
+    },
+    {
+      "label": "quote-before-owner-approval",
+      "balances": {
+        "AVAILABLE": 8906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888
+      },
+      "auto_renew": 0,
+      "quote_count": 1,
+      "quote_state": "OPEN"
+    },
+    {
+      "label": "owner-approved-one-hold",
+      "balances": {
+        "AVAILABLE": 7906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888,
+        "WITHDRAW_HOLD": 1000
+      },
+      "auto_renew": 0,
+      "quote_count": 1,
+      "quote_state": "CONSUMED"
+    },
+    {
+      "label": "cancel-restores-only-unused-hold",
+      "balances": {
+        "AVAILABLE": 8906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888,
+        "WITHDRAW_HOLD": 0
+      },
+      "auto_renew": 0,
+      "quote_count": 1,
+      "quote_state": "CONSUMED"
+    },
+    {
+      "label": "read-only-restart-no-charge-or-hold",
+      "balances": {
+        "AVAILABLE": 8906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888,
+        "WITHDRAW_HOLD": 0
+      },
+      "auto_renew": 0,
+      "quote_count": 1,
+      "quote_state": "CONSUMED"
+    }
+  ],
+  "limitations": [
+    "The original observer did not require the first cycle power receipt and guest SHUTDOWN.",
+    "The original observer did not compare every unaffected guest/Game table against the prefinancial baseline.",
+    "Root/D are adding those checks before the final candidate; this intermediate result cannot satisfy the final gate."
+  ],
+  "raw_evidence": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/financial-intermediate-copy",
+  "file_sha256": {
+    "summary.json": "c61e1e14866be673b19fd59a73e0e184fe3fd223fa01e528d0cc4e49b3f9fcbb",
+    "ledger-stages.json": "13c5d4c1244d21ead91b0912b722ca7e3bb22610fd2e9c0f79d40781a48a1944",
+    "authority-before.json": "e7822924cb2be662034bdc157467ca3e69ebe7f74cb2c9a846546ce1836e19bb",
+    "plan.json": "a63c3293200ae3b209e3f21870ddcfeb58cb8a0198ca864526a90b667c423b4f",
+    "1/0028-normal-poweroff-confirmed.png": "77bc7efaa9e986a68679a8e148367c301dad4c3b9a7ba857d3b387c334a04306",
+    "1/0014-future-renewal-stopped.png": "8d5d57308c69ad089ec9c013a98d2866277bff7ad76fb673aa437fd2f743c618",
+    "1/0007-first-month-explicit-request.png": "dd4ccf5044aa00f460816d5b36c577142f7968d935b0a3a34bbedc507291ceb8",
+    "1/0002-boot-pending.png": "be3d89aca8d5db41f8dcc74a2522b3f2d88b54e61831bf7dee51a737219b6fe6",
+    "1/0021-code-hidden.png": "b332978a29e56fed15e6a539abe7929ad21658f566fd5ba6fcdc9075492db91d",
+    "1/0004-separate-consent-still-required.png": "e04e006180eb866feed3c15fd2eb22afd6e9d2ab4da28f26a13504e76ed63bd2",
+    "1/0010-same-period-explicit-retry.png": "20a9459f4e87ed92ff002213a3bd4dac32ece9fa32d7bf6d4d27d391864e6224",
+    "1/report.json": "f4a230c938907abe579586bb23a646366e207530816765d514e5e3e4296ffdc2",
+    "1/0015-actual-atm-entry.png": "69b970775565a34aed651e066e5a0a0c4256eb5c1fb509f8e1d52f3d8c68a85a",
+    "1/0003-boot.png": "043d9335a261752baa5671c3eeaf322cb9581843737840458e4935b1272fa9ad",
+    "1/0023-atm-cancelled.png": "f7d461bb6eba2c279f713ec99944cce1aee46df8320ce96276b20a8a4465b936",
+    "1/0018-public-authenticator-pin.png": "f08a8d0827258d7bfd1e0b9289ba6e382bbf04fabb5e640cb475a3d12e5b3440",
+    "1/0017-signed-atm-quote-review.png": "a5fd26f78a4ba2a2b61da68258edcda0c21e39be561574895629676b10012151",
+    "1/0009-actual-monthly-paid.png": "f25981fd88cb24d20471571830ffdb9cf1e9c6b3a48c255b20b0e3dbf358e911",
+    "1/0013-cancel-future-consent.png": "20a9459f4e87ed92ff002213a3bd4dac32ece9fa32d7bf6d4d27d391864e6224",
+    "1/0024-hub-result-still-available.png": "650f548d418ed2c7e72b83109efa297f56f17035ea7e55783f0b23b1e1236b2b",
+    "1/0026-normal-poweroff.png": "e969ca45f9673b141fc11cd731300d1544d9e61b33c4b2c52f18caa31528bc0a",
+    "1/0005-explicit-monthly-consent.png": "5a27deb4df7768a4cf359cee077b1ee62f97d23ed39a74cb2188fa860946d6aa",
+    "1/0016-quote-without-hold.png": "c9bcb715d360ad1eabc95e3ccb53f66c7767c674f2b695f979a4fca4cb7c1aea",
+    "1/guest-state.json": "4e6469ec069c12831345adec2507bb624167251b027fd80267d7d33f9be25dee",
+    "1/0027-normal-poweroff-confirm.png": "2dfbd73a90ff43c189a0e8ec8e48d5351b620beed8fc08f35707c4c087701389",
+    "1/0019-public-authenticator-confirmed.png": "00e7a67bd0cee28a0f5a692f7c9d5422a1affb4f5500b7f31a8b67c98ccd981f",
+    "1/0001-boot-pending.png": "3392b61102d466ed7c1afd6a20a33ae1ab10c4bc27b94b8bc654d47991422d37",
+    "1/0022-cancel-unconsumed-atm.png": "b332978a29e56fed15e6a539abe7929ad21658f566fd5ba6fcdc9075492db91d",
+    "1/authority-after.json": "39c9baeb516b46e3ff327d804f807ba668b8ba0884d3708bd4ec44b288110eb1",
+    "1/0020-actual-atm-hold-code-hidden.png": "b332978a29e56fed15e6a539abe7929ad21658f566fd5ba6fcdc9075492db91d",
+    "1/0011-retry-acknowledged.png": "f5de7a26e0033378ca4b8a68ae8a15fa563d9543ad8e0a17fc14f12ce4d0f6e2",
+    "1/0012-same-period-still-paid.png": "f25981fd88cb24d20471571830ffdb9cf1e9c6b3a48c255b20b0e3dbf358e911",
+    "1/0008-first-request-acknowledged-not-paid.png": "21a84a9efdef1980e8d558f8c331bcbecbbb37c2f8097318041e5f7bc7f3bc5b",
+    "1/owned-record.json": "19f1f1c263f3dedbd6b82aa3aa08a397e2be39dbc8b1b06aa275e72272ca0ff9",
+    "1/0006-monthly-consent-recorded.png": "dd4ccf5044aa00f460816d5b36c577142f7968d935b0a3a34bbedc507291ceb8",
+    "1/0025-unchanged-real-product-result.png": "e168d11f34c0a7e1e029545e9c0f8836fc2245603dd2ce4f799c355371514895",
+    "2/0002-boot-pending.png": "be3d89aca8d5db41f8dcc74a2522b3f2d88b54e61831bf7dee51a737219b6fe6",
+    "2/report.json": "c6c7c3b1e9707483e0d0b420c3e14d217a4b6db8c67d19ccc713bedcafbe81c5",
+    "2/0010-normal-poweroff-confirm.png": "2cd8c5a7822b41d525578ebb7ed403630248b3d2737c773c01d3959fe038f492",
+    "2/0003-boot.png": "8aa214d5befc3ee7124f29e020ac1d5fd15c7c92d786bf3bd7d1e1af41b1a7e0",
+    "2/0009-normal-poweroff.png": "3daecb2b7f4b422af053dd7cacf0a890bacbf58175e677a18c5cdd660b69b079",
+    "2/0005-retained-one-monthly-bill.png": "c52abd6164587e5b0c7b8e4f600cd943eb3777c21ebe7ec2ac7216bbe69d08db",
+    "2/0006-retained-atm-cancel.png": "92ac66b7484d1ba58aff23b1809e02445235a30238f0cb9ff881c2f1dd413093",
+    "2/0008-unchanged-real-product-result.png": "d2e4ecb9416c0a11edad63dca932edc3aded671713df1275a723b873a0c3e4fe",
+    "2/guest-state.json": "07dae98c8bd9bb1fc1212c95c0c3aa98995b0739f19b320edc8cd6bd23b24e37",
+    "2/0011-normal-poweroff-confirmed.png": "e5b68d891d1143419b1bb8adfe204ed7a42fbddab4d60310adf1950829ea91e9",
+    "2/0001-boot-pending.png": "3392b61102d466ed7c1afd6a20a33ae1ab10c4bc27b94b8bc654d47991422d37",
+    "2/authority-after.json": "39c9baeb516b46e3ff327d804f807ba668b8ba0884d3708bd4ec44b288110eb1",
+    "2/owned-record.json": "1ecf138d61706ec09f333f25a80de3e1a07ee743ad24d51e9d56449cce72736b",
+    "2/0007-hub-result-still-available.png": "565e620f42acad20a9d6e62f266dc745e2fa240b0c4199d282627821fb6374b0",
+    "2/0004-retained-monthly-stop.png": "da4336d372e75bfbfdd21333abf845ba9e2c9f70b03534681982a8f83af58059"
+  }
+}
