@@ -363,6 +363,14 @@ def stop_registry(registry, pipe, report):
     report['registry_exit'] = registry.exitcode
 
 
+def verify_completed_wire(report, output):
+    if report['status'] in ('PASS', 'PASS_SCOPED'):
+        path = output / 'registry-wire.jsonl'
+        events = [json.loads(line) for line in path.read_text().splitlines()]
+        report['wire'] = verify_wire(events, report['packages'])
+        report['wire_log_sha256'] = sha(path)
+
+
 def run(artifacts, output, scope='local-full'):
     require(sys.platform == 'linux' and platform.machine() == 'aarch64', 'authorized ARM64 Linux build VM required')
     require(not output.exists(), 'output must be a new disposable directory')
@@ -515,10 +523,7 @@ def run(artifacts, output, scope='local-full'):
             try:
                 stop_registry(registry, pipe, report)
                 require(registry.exitcode == 0, 'registry process failed')
-                if report['status'] == 'PASS':
-                    events = [json.loads(line) for line in (output / 'registry-wire.jsonl').read_text().splitlines()]
-                    report['wire'] = verify_wire(events, report['packages'])
-                    report['wire_log_sha256'] = sha(output / 'registry-wire.jsonl')
+                verify_completed_wire(report, output)
             except BaseException as error:
                 report['cleanup_errors'].append('registry or wire: ' + type(error).__name__)
             finally:
@@ -618,6 +623,18 @@ class GuardTests(unittest.TestCase):
         self.assertEqual(verify_wire(events, packages)['future_package_get_count'], 0)
         with self.assertRaisesRegex(AssertionError, 'future OS package was downloaded'):
             verify_wire(events + [event('future')], packages)
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary); path = output / 'registry-wire.jsonl'
+            for status in ('PASS', 'PASS_SCOPED'):
+                with self.subTest(status=status):
+                    report = {'status': status, 'packages': packages}
+                    path.write_text(''.join(json.dumps(item)+'\n' for item in events))
+                    verify_completed_wire(report, output)
+                    self.assertEqual(report['wire']['future_package_get_count'], 0)
+                    self.assertEqual(report['wire_log_sha256'], sha(path))
+                    path.write_text(''.join(json.dumps(item)+'\n' for item in events+[event('future')]))
+                    with self.assertRaisesRegex(AssertionError, 'future OS package was downloaded'):
+                        verify_completed_wire(report, output)
 
     def test_broken_stop_pipe_still_reaps_owned_registry(self):
         class Pipe:
