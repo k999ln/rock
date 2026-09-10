@@ -1,0 +1,562 @@
+{
+  "schema": "rock-game-ui-ledger-audit/1",
+  "status": "PASS_SCOPED_STOPPED_LEDGER",
+  "source": "/var/tmp/rock-intermediate-game-4e31554/systems/rock-star-os",
+  "config_sha256": "5322c9def5e741804a0ab7405b31cd13f3d5b2cefd0278933d6ec6156426098d",
+  "started_utc": "2026-09-10T07:55:43.435761+00:00",
+  "observer_sha256": "2544954bc456cc976cefdc68fb833601fdb9f4572d031c55a033f9c95461a6af",
+  "expected_games": 2,
+  "expected_available_minor": 9794,
+  "scope": "Stopped public synthetic authority after actual UI; no real funds or restored state claim",
+  "balances": {
+    "AVAILABLE": 9794,
+    "GAME_FEES": 6,
+    "GAME_HOLD": 0,
+    "GAME_PURCHASES": 200,
+    "PENDING_SETTLEMENT": 0,
+    "SALE_CLEARING": -10000
+  },
+  "exchanges": [
+    {
+      "game": "public-game-a",
+      "exchange_id": "ui-80f9ce5c10356085b47ace0f06444470",
+      "state": "COMPLETED",
+      "held_minor": 0,
+      "committed_minor": 103,
+      "released_minor": 0,
+      "units": 10,
+      "quote_sha256": "cf3c92d31c4991f11306da1dd5905c8a35e7e162ac3c6e4b7c83d92f295cd33a",
+      "command_sha256": "a125fbc67cc15985d5b13ec0ceee5d7d8bb8ef30a9d74dc50a20dbd67b045e1f",
+      "terminal_sha256": "1a370631ed135a2fc10370ac275ddc543f8c844ea68d97e531d3d501f56d4a66",
+      "game_typed_snapshot": {
+        "schema_sha256": "af2e73dacd4bc3488d85660524f6f4443a24e65055ecfcbb4d3f0a12da236976",
+        "tables": [
+          {
+            "name": "asset_journals",
+            "columns_sha256": "a703002225744f41ce29529741997bd206b1d940ce21a158cfcff10c0c025bfd",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "ec65aa974b4235152fba8af916d442f910b0a82b828ab3fed672d7e11b792ff7"
+          },
+          {
+            "name": "asset_postings",
+            "columns_sha256": "f5cadf639d59c2dfa8d542efd0ac5607a0700f4b35a2303f005cbb427e9badcb",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 2,
+            "rows_sha256": "36e49c3c32a04d51fe8348da75addf651794f9457d77825c742dbb1c2971ee1b"
+          },
+          {
+            "name": "grant_decisions",
+            "columns_sha256": "8529b74e0952529da0f0d724f2e16923ad12b9e2dcd764527fa33d846fa20f06",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "f4987b2bd5c1f0c0806ee8707d2251a4b2e7cb7c7469fd1a695ee8bf78b8bbd0"
+          },
+          {
+            "name": "grant_epoch_receipts",
+            "columns_sha256": "8b194a56f14622f8762a71b71355bca411b64c9445d011aaf0b7dcbae946dd20",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 0,
+            "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "grant_issuers",
+            "columns_sha256": "85abcd084b1788e8d0e252c00f794bd028d6155cef4b73ee15cdde0749351781",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "d0aa4bd0705ea7169c1ae7fd8912550eb9242cdc74b4ad500732f9bc3dbedc9f"
+          },
+          {
+            "name": "grant_schema",
+            "columns_sha256": "075171ecfd1b1c69dca4435dd8bdf3eeb5533619fc96e766f08151340aeb8f7f",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "3e6ba1072a386d340d432c702b148ed8b15e48c5ae4020a0e7587bd6663b5bea"
+          },
+          {
+            "name": "identity",
+            "columns_sha256": "3921a587868b1cde50a34f7bb5894e0b173711d673f6a0f1d5c1495264c343b7",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "1fd39258c7a000e23f7063cb14389a8e814078f4c48ad95e5e8ce3752a681aa1"
+          },
+          {
+            "name": "proofs",
+            "columns_sha256": "f867ab0b54615ed21d95203ed7da5d0e1c2bc30666a2416c89ce88ca4cd35bb1",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "92222c346fe83bf501d9a38d43d3e54d3baf0591909d08105bf578539311dd7a"
+          },
+          {
+            "name": "sqlite_sequence",
+            "columns_sha256": "3e2da7186e93f8a5d406ed9853bf0574614efdfd74f5d56b7f1b92a5292580f3",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "ec1e3002fe761f2a0ca0a8d20a023fad1cf18e1a6f9f1bdb01c0010781fbc9c5"
+          }
+        ],
+        "pragmas": {
+          "application_id": 0,
+          "user_version": 0,
+          "encoding": "UTF-8",
+          "auto_vacuum": 0
+        }
+      }
+    },
+    {
+      "game": "public-game-b",
+      "exchange_id": "ui-88b5943aa58b2699037069dfff486e61",
+      "state": "COMPLETED",
+      "held_minor": 0,
+      "committed_minor": 103,
+      "released_minor": 0,
+      "units": 10,
+      "quote_sha256": "56bc0c34714de9a67bbd08531ca09946e710b7bd1f8cb1e5c54e76b19aa929f8",
+      "command_sha256": "da9a25b0d828541c9310d836a8b8844afe6472193fd3750d3c8fe18f6ece6461",
+      "terminal_sha256": "48d1cc7d60738553a3f5bda6023a90b1e4634fbb4c2f629c041b9a2bb1b81181",
+      "game_typed_snapshot": {
+        "schema_sha256": "af2e73dacd4bc3488d85660524f6f4443a24e65055ecfcbb4d3f0a12da236976",
+        "tables": [
+          {
+            "name": "asset_journals",
+            "columns_sha256": "a703002225744f41ce29529741997bd206b1d940ce21a158cfcff10c0c025bfd",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "bd90725702f2df204a5f5a0ca618c910c399a57f892a22e8e1b6742371e0ae79"
+          },
+          {
+            "name": "asset_postings",
+            "columns_sha256": "f5cadf639d59c2dfa8d542efd0ac5607a0700f4b35a2303f005cbb427e9badcb",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 2,
+            "rows_sha256": "97e0ea1a0b9036b359dd44159195ad7c231ddae05bf9e10a3dd8d2d0883bfe26"
+          },
+          {
+            "name": "grant_decisions",
+            "columns_sha256": "8529b74e0952529da0f0d724f2e16923ad12b9e2dcd764527fa33d846fa20f06",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "d80305103b5648eda12d2dd8679f33bfb141f790388f0f698fd9376919b1e872"
+          },
+          {
+            "name": "grant_epoch_receipts",
+            "columns_sha256": "8b194a56f14622f8762a71b71355bca411b64c9445d011aaf0b7dcbae946dd20",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 0,
+            "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "grant_issuers",
+            "columns_sha256": "85abcd084b1788e8d0e252c00f794bd028d6155cef4b73ee15cdde0749351781",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "d0aa4bd0705ea7169c1ae7fd8912550eb9242cdc74b4ad500732f9bc3dbedc9f"
+          },
+          {
+            "name": "grant_schema",
+            "columns_sha256": "075171ecfd1b1c69dca4435dd8bdf3eeb5533619fc96e766f08151340aeb8f7f",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "3e6ba1072a386d340d432c702b148ed8b15e48c5ae4020a0e7587bd6663b5bea"
+          },
+          {
+            "name": "identity",
+            "columns_sha256": "3921a587868b1cde50a34f7bb5894e0b173711d673f6a0f1d5c1495264c343b7",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "8b782dfe14d2cbd49f2c6df7b1f1944f3ab16178514cf62f5b9783ca0e391340"
+          },
+          {
+            "name": "proofs",
+            "columns_sha256": "f867ab0b54615ed21d95203ed7da5d0e1c2bc30666a2416c89ce88ca4cd35bb1",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "8333fd9552da5ec3028c8e7f784d56b6b4597f7fe7b3a627c62bf0f5af27748d"
+          },
+          {
+            "name": "sqlite_sequence",
+            "columns_sha256": "3e2da7186e93f8a5d406ed9853bf0574614efdfd74f5d56b7f1b92a5292580f3",
+            "intrinsic_rowid": "_rowid_",
+            "row_count": 1,
+            "rows_sha256": "ec1e3002fe761f2a0ca0a8d20a023fad1cf18e1a6f9f1bdb01c0010781fbc9c5"
+          }
+        ],
+        "pragmas": {
+          "application_id": 0,
+          "user_version": 0,
+          "encoding": "UTF-8",
+          "auto_vacuum": 0
+        }
+      }
+    }
+  ],
+  "monthly_consent": false,
+  "monthly_charges": 0,
+  "synthetic_sale_count": 1,
+  "wallet_typed_snapshot": {
+    "schema_sha256": "81ba99f302b504958ba82ed92edc00fbf273be66c713feb596886dc81f62ad32",
+    "tables": [
+      {
+        "name": "atm_credentials",
+        "columns_sha256": "657c80fe16abb1440180c8a6b96192bf1e1874d383b13eff3c3a1159cf822be8",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 0,
+        "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "atm_wallet_binding",
+        "columns_sha256": "16e3a4dc2ef0bea0b11020ef273e2ed8b5cdd5ae2a87432e6c64e520ca3afdcc",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 0,
+        "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "sqlite_sequence",
+        "columns_sha256": "3e2da7186e93f8a5d406ed9853bf0574614efdfd74f5d56b7f1b92a5292580f3",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 2,
+        "rows_sha256": "c64360897551e540b466b13b010312d76c7881e910475834ff57b221a37e8e78"
+      },
+      {
+        "name": "wallet_auth_approvals",
+        "columns_sha256": "3de00c552b18f56b30238f73a283e15786e4912a6f5d4ffc96f709f747a7dadb",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 0,
+        "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "wallet_auth_challenges",
+        "columns_sha256": "d8f27a73668d1b365236a1261be145736b00f9231e250522f15fd43e02a229d5",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "bbe8b40a3d4ba443fa155843b99857bf9fe99739c085077c46a5988205eead4c"
+      },
+      {
+        "name": "wallet_auth_credential_state",
+        "columns_sha256": "ebac0350637caf9ffe550f24362986084acb5e0c38fe6cf1954b120f157751fd",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "c45dd94afe77bce8b861df28cd5f9bb8da11a1c479e54c0daec0ed695c11c4e7"
+      },
+      {
+        "name": "wallet_auth_credentials",
+        "columns_sha256": "336fc771c221c205f5f39d6440e273c960806796bced708fcfed050eda29b238",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "8e84cc01440e395d723cfe43b22e54427c66a01cb7aba79d8afc5d0d08fe618d"
+      },
+      {
+        "name": "wallet_auth_mode",
+        "columns_sha256": "bfea8330266ec6126646066bd646a33c62fdc26db40a9e882e145ecf0d13930b",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "33ac9a8086a40ca1415a9063f5fcff713a61dfeb22836275907b18db97037dcc"
+      },
+      {
+        "name": "wallet_auth_quotes",
+        "columns_sha256": "b72ff3ba6e5df65e23a5f500166722a709fe06c4d5b99b9febc5cf1f0714e2b7",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 0,
+        "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "wallet_auth_terms",
+        "columns_sha256": "5fc9030e75bfeb128d069f40d2dcb689b14ed4a82cdd43b13349478c6e1a4308",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "effa4ec4dbf572e47d1db81fd349a669e0d1a08341a8a642437396f243c29c2d"
+      },
+      {
+        "name": "wallet_bills",
+        "columns_sha256": "32814506535fbbe25efc10e7bbf55c2fa1f5309517f4140dbd4fd534c36a7650",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 0,
+        "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "wallet_consents",
+        "columns_sha256": "26fd2457d9338d1c7bc4b3a4e2fded46e1be36c5b485e23ee9ce12b208566424",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 0,
+        "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "wallet_game_consents",
+        "columns_sha256": "2ebf72d6f49f6c28b5511dbb60695e07b1ac9e2d17c61131fcb34bcfc5e24cfa",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 2,
+        "rows_sha256": "aca701a6c8c6216e5ea14f39504b3e7e7b67cc7338b763b99a954207eae33a57"
+      },
+      {
+        "name": "wallet_game_exchange_attempts",
+        "columns_sha256": "95eb8194a374c168bcd84814f965e12fba5acc55ed67bb362dc3f0cb23f2380b",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 2,
+        "rows_sha256": "ee6afa11a4ff6b23cda1be12465ca0b1dc069a992f9f3eb8a081f88290f60cc1"
+      },
+      {
+        "name": "wallet_game_exchange_claims",
+        "columns_sha256": "1ac6522cd2dba01f57c50922e00b225d19a7a9e88df31307b9095650801a9dfe",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 2,
+        "rows_sha256": "ab2740736ef75fa00a197836c8df86dd31e01bb922e11215af60324cc372a5e0"
+      },
+      {
+        "name": "wallet_game_exchange_events",
+        "columns_sha256": "f49e89d0a1b4e60b5b023dc676ad5e299a87706f9bd5b0d42d4edb7f209cbcf5",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 6,
+        "rows_sha256": "6b8181704575844c3520733b03d85a655d4d61336a5ec261cd5c84f2eafbf6ef"
+      },
+      {
+        "name": "wallet_game_exchange_receipts",
+        "columns_sha256": "174abdfb107c4e1c8f90e62e0e8f94f2c03789968b94be183a329be9ffc93cb3",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 2,
+        "rows_sha256": "616d3ee696fbcbd2f78b117f72f61ff2f9d84a42e9fe907999c05968dde84fee"
+      },
+      {
+        "name": "wallet_game_exchange_requests",
+        "columns_sha256": "5a45f053086f5841cb827a344651bff2459565f8625317e2ceaa2ee34835c4b5",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 7,
+        "rows_sha256": "64f23c1fec09d60d01e8615755f3bcbf4198e4bc6f5f4cd7201dea08b6c3dc4b"
+      },
+      {
+        "name": "wallet_game_exchanges",
+        "columns_sha256": "2ad4e4aa9897bc376969510ff2692fa81dc035cd0014fe85fb14d411009f2f3c",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 2,
+        "rows_sha256": "9b235e3992ee2e9c9103c62744bf08764bada9f4de2beb254abd55bcac049a8b"
+      },
+      {
+        "name": "wallet_game_heads",
+        "columns_sha256": "f160818e635c7bd4df43ee2e48764faca4adc2f752d93569e3cbd8cf76870bad",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 2,
+        "rows_sha256": "b848bb44e0e19976519dccf885ac712f27bc390afd118f4a724d55669b96fe13"
+      },
+      {
+        "name": "wallet_game_intents",
+        "columns_sha256": "0199aeef73455101e2bce2e40c02a21545eb7fe5612c6167e04d3380f6b2cc78",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 2,
+        "rows_sha256": "cc260d715fd5216f3bfd7b62e3580c5d04a91f776fa93686bda01cc58efa3411"
+      },
+      {
+        "name": "wallet_game_mode",
+        "columns_sha256": "a5d09df874a42899e33d5dc48fdc339749a4de4954a434f825e3190250c3c588",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "ea91ee33951310db1cac52165ab788e887ab889b5302bf5a2ed0cebc862be3be"
+      },
+      {
+        "name": "wallet_game_outbox",
+        "columns_sha256": "69ab085889786aef13cc48c8f917b30f6a819d5c46e28a065adccbfd4aa9de76",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 2,
+        "rows_sha256": "b571f022bd98a681db6dce267f7ab14f6662f8193606a090dab07b564f94f428"
+      },
+      {
+        "name": "wallet_game_quote_heads",
+        "columns_sha256": "c38ac2a0f14cb113b2f6ace12349d326833804743e7a1d44d91ed39b41cc615a",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 2,
+        "rows_sha256": "6eff2cac19f65bfd34405d8c5082f1202634c8fb4a48859d3c7bfb434fe68858"
+      },
+      {
+        "name": "wallet_game_quotes",
+        "columns_sha256": "97469c8c7fb88d87e90ab093ef550d0ae2417eb0d869a82d95381b0ac9b249c4",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 2,
+        "rows_sha256": "c21d018457106e3a52efb6ff5d39a6b12d119acb0c55daf3c1d7025c857b48df"
+      },
+      {
+        "name": "wallet_game_requests",
+        "columns_sha256": "5dc4b96954a16b0ad894818cf10718cfc98919f61ffccf2a54fada0b93d41e54",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 0,
+        "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "wallet_game_schema",
+        "columns_sha256": "16b8d5775eafd5ed9bd61e69bd62e1fd48d4861b5820bd9dc5104474cc228008",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "2c7e623b2091e0fad11c1b7f26f6fb27a34ab0c1f7196e2ba483eb33fd037855"
+      },
+      {
+        "name": "wallet_idempotency",
+        "columns_sha256": "27274243c020a33ad482260456a874c21d4d4fefb63609f589ec017db6960a8f",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 5,
+        "rows_sha256": "8f550c18c56137e1bc1e51907137de29b9604bcca9ddf94c225da877f3e0c671"
+      },
+      {
+        "name": "wallet_journals",
+        "columns_sha256": "0a439ddc77c76f6d044795f657e96f538a1492227769e128b68b86355509ec50",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 8,
+        "rows_sha256": "ffe01cec55d4739993c86a45bf8cb16b95f541e765cf1f7dbc0b4877064fe350"
+      },
+      {
+        "name": "wallet_postings",
+        "columns_sha256": "40f9edb47981dacc463fb67fa18340d38c78886d98c260b05b08d14f7a4f2ea1",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 16,
+        "rows_sha256": "14a9469416f4ac1937d041fa156592a7a5c6f519764d4bdd317340b0f5d1bd07"
+      },
+      {
+        "name": "wallet_sales",
+        "columns_sha256": "ede6e53e87fcbb4dbcd4b7e078042e4372b9f679cd0f8779f9977529d05860bf",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "d0db9eb291fb702b7481b2a8ecb467a4cddb9079712ea61ac7a344a387ab1896"
+      },
+      {
+        "name": "wallet_storage_identity",
+        "columns_sha256": "446192d265d55a617c7bd59d655bce2c1a088cfb1e52556717ff8e1b90caf314",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "3ef4d62cc03c15ea32964c84b187fa2d2b3258171e4fdff7408d69806ba34715"
+      },
+      {
+        "name": "wallet_withdrawals",
+        "columns_sha256": "8cecf88fa1bc952d7a8721da62bc54e1f2989cadcae78c39eaba5cdb57161f5e",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 0,
+        "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "pragmas": {
+      "application_id": 0,
+      "user_version": 0,
+      "encoding": "UTF-8",
+      "auto_vacuum": 0
+    }
+  },
+  "membership_typed_snapshot": {
+    "schema_sha256": "2f2e08d1ac60b8276302480cc4070f59afd1da57a45c29b1883fdb2be13bd7a1",
+    "tables": [
+      {
+        "name": "account_devices",
+        "columns_sha256": "b70c3be03b844afff4f309211d53512d3a9ad31fbf22627b7e711e34855ae1aa",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "34296409902401594c2d1867b37f097d62c1af7c6a618eb76f9086539fd1245a"
+      },
+      {
+        "name": "accounts",
+        "columns_sha256": "e11cf7be9bc9a0113c331ce4f934201baab47b91b775e8903bc21e951b3af982",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "9251fb1616948fa85afb090fdd26eab890fd79d5440ddf5f2b776258bc209963"
+      },
+      {
+        "name": "authorization_claims",
+        "columns_sha256": "89ebe15e2019c9d4575f059cb03a43a0c39e51691c0fcd5196bfc334de275861",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 0,
+        "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "authorizations",
+        "columns_sha256": "3a4b299171d969e76c042f4b4503e18d567886ed152a105425ff88ac208fdb52",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 0,
+        "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "consents",
+        "columns_sha256": "d9e849bfd2165237bb2a45ac4917510b09cf851af8be40e56fa55ca5cb57ddfe",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 0,
+        "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "device_api_receipts",
+        "columns_sha256": "be77f176b7143c1af09097db6a59883fed5cd58f6ec7c46f802c4560cd33cfc9",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "47608503628fb20110497653d0d52c758a3ebde7ae432444308b239bb8f02be8"
+      },
+      {
+        "name": "device_binding",
+        "columns_sha256": "39a637b9732b0ee190ff1d1b307b88b664035c7c83161f55bddd3b205c54d75d",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "063446952f0a838b5b891fcdd94034c7e2aea30bf9f06fffb44fd3e579e06e8e"
+      },
+      {
+        "name": "device_monthly_due",
+        "columns_sha256": "c60f297eea4f546565782f06127213b95a0a09d52a27b5ea4707fb5414c8a3cf",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 0,
+        "rows_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "device_register_origins",
+        "columns_sha256": "8a02279e96cfb646796be2b635b0fa651f3fdde8ca7a42ffa8a19a609704c49d",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "e2548ca6dc7c9a3b97ceccf22a728fd2f2706f742f15d288c6b5166c1543f010"
+      },
+      {
+        "name": "device_runtime",
+        "columns_sha256": "8cac8a0c4f44fb49d3ecba9419b26fc38d6fc39b34ed8fe63b110caf365e04ca",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "9c40e37740f81d39ff3bdfbb5051dd356b84e7077250927d4edb1a7fed0f031d"
+      },
+      {
+        "name": "devices",
+        "columns_sha256": "bbeb4834ecba9a8e465fb71382788ac718e641b8a9ed9da8a32a2c4961cb833a",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "8b7596511b08e06b27d6e671e0eb23a682c1870756297d3f10a9deb7d8133475"
+      },
+      {
+        "name": "events",
+        "columns_sha256": "089dc1572e52a92f46b4b93b56ed18ffa76e441bc6fb845bfc604c1e641ee6ef",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "bea0ca590db0c263f4f68cbf7d95bce3fea9690d39dd3861308d0ef985df9eda"
+      },
+      {
+        "name": "receipts",
+        "columns_sha256": "1ae5faaa359b1469ba3980872e276199f467f0e371008e2c3944ab5f0b51f867",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "a8a4dd71e3aae5aeb8c5586b3db308d571e5cf9275d9c326cde58e021da7b673"
+      },
+      {
+        "name": "streams",
+        "columns_sha256": "89dc5b776df73400734c939f294ad418e3bd43eec485e79ba8ecb82c8b0aad41",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "b1b84b47080985b4381d4db8e6ad25c7e5d9028c6ca7e549f0eb02eed9bc28cf"
+      },
+      {
+        "name": "wallet_bindings",
+        "columns_sha256": "5f94ecb762092829880f95751f82f1dd0e9a0f9a5f166ea170cd6ceb921f87b5",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "3a96d8434601cb5ef42fde538be5c62f2ec055b7a289292890f81e3fcf3a90a3"
+      },
+      {
+        "name": "wallet_bindings_v2",
+        "columns_sha256": "4d19f905180cbdef1c7c930ee6d2bfcdc1b12ce03c0954e49a4be68e0ff786a5",
+        "intrinsic_rowid": "_rowid_",
+        "row_count": 1,
+        "rows_sha256": "b6150174d0f79ceb2d160862122f20edbc6ba0bb0c3f6375eb706ff93d1a50b9"
+      }
+    ],
+    "pragmas": {
+      "application_id": 0,
+      "user_version": 0,
+      "encoding": "UTF-8",
+      "auto_vacuum": 0
+    }
+  },
+  "finished_utc": "2026-09-10T07:55:43.488574+00:00"
+}

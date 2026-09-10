@@ -1,0 +1,54 @@
+{
+  "schema": "rock-intermediate-two-games-ui-evidence/1",
+  "source_commit": "4e31554a5cfd415b0f9a9878e1e1306f949f1596",
+  "image": "intermediate-game-4e31554-profile",
+  "raw_probe_roots": [
+    "/var/tmp/rock-game-ui-4e31554-01",
+    "/var/tmp/rock-game-ui-4e31554-02",
+    "/var/tmp/rock-game-ui-4e31554-03"
+  ],
+  "original_ui_report_status": "FAIL",
+  "reason": "Whole-row equality includes required client maximum_time / bindings.as_of read clocks; full column projection was not retained before cycle 2, so no retrospective PASS.",
+  "completed_actual_ui": [
+    "registration",
+    "enrollment",
+    "separate Wallet terms",
+    "explicit synthetic 10000 credit",
+    "Game A connection and purchase",
+    "Game B connection and purchase",
+    "Hub citation sample and native 151-byte result",
+    "normal shutdown",
+    "restart and both retained Game histories + same Hub output",
+    "normal shutdown"
+  ],
+  "stopped_ledger_audit_status": "PASS_SCOPED_STOPPED_LEDGER",
+  "expected_and_actual": {
+    "available_minor": 9794,
+    "game_purchases_minor": 200,
+    "game_fees_minor": 6,
+    "held_minor": 0,
+    "units_a": 10,
+    "units_b": 10,
+    "monthly_charges": 0
+  },
+  "prior_observer_failures": [
+    "glyph-prefixed Game history OCR selector",
+    "Wallet-only sync label expected on Game page"
+  ],
+  "retry_boundary": "Same OS after completed A; no registration, credit or Game A purchase replayed.",
+  "not_claimed": [
+    "final same-candidate D0-D6",
+    "complete restore acceptance",
+    "real money",
+    "external author/user measurement"
+  ],
+  "files": {
+    "completed-game-a.png": "a4ad5dbf49c5c638604e64ab2e2a5684f5e71c8eacf8c4f08d065e5c5f9c0b5c",
+    "hub-result.png": "b77c176dc7d5e01d3edd761769cc3cebd90289eb4efa5f05a9385fd7c43e72fe",
+    "restarted-game-history.png": "f7d86ef87e3464d0bf2e22ed3798487daae41c45a3652de19c6d8d518924c421",
+    "stopped-ledger-audit.json": "a6eb6105f6ef183b9dffa5ee99d20ab82f9fc233c8a32d09eedb351164f32657",
+    "stopped-ledger-audit.py": "2544954bc456cc976cefdc68fb833601fdb9f4572d031c55a033f9c95461a6af",
+    "summary.json": "99829c1c6e036fcf25265e5ed27872c27d2818f7f8e29fa6931b58c79918fbd8",
+    "ui-observer.py": "3d24520d40a20540404eb9d58d7d1100ad6277e81792aba29991ae80a6e31ce7"
+  }
+}
