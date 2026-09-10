@@ -4,6 +4,7 @@ import json
 import secrets
 import time
 import uuid
+from dataclasses import asdict
 
 from . import protocol as p
 from . import exchange_protocol as x
@@ -78,6 +79,12 @@ class WalletExchanges:
         if op in ('game.exchange.quote','game.exchange.approval.begin','game.exchange.approve','game.sandbox.credit'):
             self.auth.require_active(context)
         if op=='game.sandbox.credit':return {'ok':True,'result':self.fixture_credit(request,context,deadline)}
+        if op=='game.exchange.connection':
+            intent,consent,shared=self.connection(request['connection_id'],deadline,active=False)
+            owner=p.OwnerContext(self.descriptor.wallet_authority_id,self.descriptor.owner_ref,context.owner_id,principal.device_ref,principal.credential_revision)
+            p.admit_intent_action(intent,owner,'status',now=self.now(deadline))
+            return {'ok':True,'result':{'schema':'rock-game-exchange-connection/1','owner':asdict(owner),
+                'intent':intent,'consent':consent,'shared':shared,'as_of':self.now(deadline),'simulation_only':True}}
         if op=='game.exchange.list':return {'ok':True,'result':self.list(request,deadline)}
         if op=='game.exchange.quote':
             row=self.gateway.index.get('connection_id',request['connection_id'])

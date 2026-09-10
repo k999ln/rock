@@ -139,6 +139,8 @@ class ReferenceOwnerClient:
 
     def dispatch(self,game,request):
         request=p.decode(p.canonical(request));p.require(game in self.locks,'SDK registered game required')
+        if request.get('op')=='game.exchange.connection':
+            x.request(request);return self.recover_connection(game,request['connection_id'])
         if request['op'].startswith('game.connection.'):
             p.require(game!='*' and self.game_for(request)==game,'connection request game mismatch')
             return self.connections[game].dispatch(request)
@@ -176,6 +178,48 @@ class ReferenceOwnerClient:
             row=db.execute('SELECT request FROM requests WHERE namespace=?',(namespace,)).fetchone()
             p.require(row is not None,'original saved SDK request required');request=_loaded(row[0])
         return self.dispatch(game,request)
+
+    def recover_connection(self,game,connection_id):
+        """Learn an existing same-owner connection through current owner TLS.
+
+        This imports no assertion and cannot move the original device's
+        challenge. A later purchase needs this device's new approval ceremony.
+        The narrow GX00 client API and original receipt bytes stay unchanged.
+        """
+        p.require(game in self.connections,'registered Game required');p.uuid_value(connection_id)
+        client=self.connections[game]
+        with self.locks[game],client._mutex:
+            self._check()
+            reply=p.decode(p.canonical(self.transport.exchange({'v':1,'op':'game.exchange.connection','connection_id':connection_id})))
+            self._check()
+            if reply.get('ok') is False:OwnerConnectionClient._denial(reply);return reply
+            p.fields(reply,{'ok','result'});p.require(reply['ok'] is True,'current authenticated connection recovery required')
+            value=reply['result'];p.fields(value,{'schema','owner','intent','consent','shared','as_of','simulation_only'})
+            p.require(value['schema']=='rock-game-exchange-connection/1' and value['simulation_only'] is True,'connection recovery schema required')
+            p.fields(value['owner'],{'wallet_authority_id','owner_ref','account_id','device_ref','credential_revision'})
+            owner=p.OwnerContext(**value['owner']);p.owner_context(owner);p.integer(value['as_of'],1)
+            p.require(owner.wallet_authority_id==self.transport.authority_id and owner.device_ref==self.transport.device_ref,'recovery has another authenticated device/authority')
+            intent=p.validate_intent(value['intent']);consent=p.validate_consent(value['consent']);binding=intent['binding']
+            p.require(consent['binding']==binding and binding['connection_id']==connection_id and binding['game_id']==game and
+                binding['game_authority_id']==self.games[game].game_authority_id,'recovered consent/binding differs')
+            p.admit_intent_action(intent,owner,'status',now=value['as_of'])
+            shared=p.verify_shared(value['shared'],self.connection_keys,now=value['as_of']);p.match_consent(shared,consent)
+            public=shared['publication']
+            with client.store.transaction() as db:
+                now=client._now(db);p.require(value['as_of']<=now and public['decided_at']<=value['as_of'],'connection recovery time is from the future')
+                previous=db.execute('SELECT context FROM owner WHERE singleton=1').fetchone()
+                p.require(previous is None or previous[0]==_encoded(value['owner']),'current owner identity changed')
+                row=db.execute('SELECT * FROM bindings WHERE connection_id=?',(connection_id,)).fetchone()
+                if row:
+                    p.require(row['intent']==_encoded(intent) and row['consent'] in (None,_encoded(consent)) and
+                        row['generation']<=public['revocation_generation'] and row['as_of']<=value['as_of'],'recovered original receipt regressed or changed')
+                    if row['shared'] is not None:p.require(row['shared']==_encoded(shared),'retained signed revocation differs')
+                db.execute('INSERT OR IGNORE INTO owner VALUES(1,?)',(_encoded(value['owner']),))
+                db.execute('INSERT OR IGNORE INTO bindings(intent_id,connection_id,intent) VALUES(?,?,?)',
+                    (binding['intent_id'],connection_id,_encoded(intent)))
+                db.execute('UPDATE bindings SET consent=?,generation=?,as_of=?,shared=? WHERE connection_id=?',
+                    (_encoded(consent),public['revocation_generation'],value['as_of'],_encoded(shared) if public['state']=='REVOKED' else None,connection_id))
+            return reply
 
     def pending(self,*,limit=50):
         p.integer(limit,1,50)

@@ -19,3 +19,12 @@ Initial state contains a public contract handoff and issuer metadata, with AVAIL
 `game_exchange/profile.py prepare --base DIR --images NEW_DIR --expected SHA_JSON --source-commit HASH` requires a source-checked unconfigured base. It retains the kernel and all stage0 members except the existing signed factory descriptor, injects the public Wallet configuration and credential, verifies embedded client bytes and rejects host authority/signing modules in the guest. Output `profile.json` records base/final triples, source hashes, exact injected files and factory envelope hashes. A new signed profile is not yet evidence of a successful boot. `device-config --images DIR` emits explicit `rock-desktop-device/7`, network `game-authority`, profile `development-game-authority`. Existing older device schemas retain their validation and migration behavior.
 
 Validation: actual Linux TLS SDK/facade/core/migration16tests PASS11.388s, skip0. Independent A lifecycle probe started and stopped the real sandbox, rejected a running snapshot, and compared5DB/71tables/8JSON identities exactly; all19 required empty financial/credential/member tables stayed0. No QEMU or OS-image PASS is claimed by this stage.
+
+追加端末では `sdk.recover_connection(game_id, connection_id)` を使う。
+これは `/v3/wallet` の厳密な `game.exchange.connection` 読み取りを通じて、
+現在の owner/account/device と、元の接続 intent/consent、現在の署名済み接続状態を取得する。
+返却 schema は `rock-game-exchange-connection/1`、fields は
+`owner,intent,consent,shared,as_of,simulation_only`。
+同じ owner/account の端末に限って元の intent/consent bytes を private journal へ保持する。
+接続時の challenge を別端末へ移さず、購入には追加端末自身の新しい approval intent と本人署名を要求する。
+別 owner への取得、失効した transport からの履歴取得、失効した作者からの元 quote 再送は拒否する。

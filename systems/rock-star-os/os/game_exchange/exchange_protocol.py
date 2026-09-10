@@ -28,6 +28,7 @@ PURPOSES={kind:'game.exchange.'+kind for kind in DOMAINS}
 SIGNATURE_FIELDS={'algorithm','credential_id','credential_revision','signature'}
 OWNER_FIELDS={
     'game.sandbox.credit':{'key','amount_minor'},
+    'game.exchange.connection':{'connection_id'},
     'game.exchange.quote':{'key','connection_id','exchange_id','principal_minor'},
     'game.exchange.approval.begin':{'key','quote_id'},
     'game.exchange.approve':{'key','attempt_id','quote_sha256','credential'},

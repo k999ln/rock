@@ -139,7 +139,54 @@ class ReferenceSDK(unittest.TestCase):
                 self.purchase(name,conn);self.workers[name].once()
                 status=author.dispatch({'v':1,'op':'exchange.status','connection_id':conn,'exchange_id':'same-external'})
                 self.assertEqual(status['result']['state'],'COMPLETED');self.assertNotIn('owner_ref',support.gx.gp.canonical(status).decode())
+                self.f.gateway.revoke_author(name,1)
+                with self.assertRaises(ConnectionUnavailable):author.retry('same-key')
+                self.assertEqual(self.f.grants[name].balance('alice'),10)
             finally:author.close()
+
+    def test_two_owner_players_and_second_device_use_same_sdk_without_transferring_challenge(self):
+        alice_conn=self.connect('a');self.f.register_activate(support.B1);self.f.register_activate(support.A2)
+        peers=self.f.runtimes['alice']._exchanges.peers
+        self.f.runtimes['bob'].bind_game_exchanges(peers,start_workers=False)
+        def client(device,owner):
+            result=ReferenceOwnerClient(self.f.root/('sdk-'+device),self.f.transports[device],games=tuple(a.game for a in self.f.authorities),
+                connection_keys=self.f.gateway.keys,exchange_keys=self.f.runtimes[owner]._exchanges.keys,clock=lambda:self.f.now)
+            self.addCleanup(result.close);return result
+        bob=client(support.B1,'bob');second=client(support.A2,'alice');game='public-game-a'
+        proof=GameTransport('https://127.0.0.1:'+str(self.f.game_servers[0].server_port),support.gx.ROOT/'os/registry/fixtures/development-ca.pem',game,
+            token=self.f.authorities[0].public_session('bob'),endpoint='/v1/player/proof')
+        begun=bob.begin_connection(game,'same-key',proof)['result']
+        credential=self.f.authenticators[support.B1].get_game_assertion(begun,'0000','bob-connect')
+        approved=bob.dispatch(game,{'v':1,'op':'game.connection.approve','key':'same-approve','intent_id':begun['binding']['intent_id'],
+            'challenge_id':begun['challenge_id'],'binding_sha256':begun['binding_sha256'],'credential':credential})
+        self.assertTrue(approved['ok'],approved);bob_conn=approved['result']['binding']['connection_id']
+        self.assertFalse(bob.recover_connection(game,alice_conn)['ok']);self.assertFalse(self.sdk.recover_connection(game,bob_conn)['ok'])
+        recovered=second.recover_connection(game,alice_conn)
+        self.assertTrue(recovered['ok'],recovered)
+        self.assertEqual(recovered['result']['owner']['device_ref'],support.A2)
+        self.assertEqual(recovered['result']['intent']['binding']['device_ref'],A1)
+        with self.assertRaises(ValueError):self.f.authenticators[support.A2].get_game_assertion(recovered['result']['intent'],'0000','forbidden-moved-challenge')
+        results={}
+        for sdk,device,connection in ((bob,support.B1,bob_conn),(second,support.A2,alice_conn)):
+            quote=sdk.dispatch(game,{'v':1,'op':'game.exchange.quote','key':'same-key','connection_id':connection,'exchange_id':'same-external','principal_minor':100})['result']
+            intent=sdk.dispatch(game,{'v':1,'op':'game.exchange.approval.begin','key':'same-key','quote_id':quote['binding']['quote_id']})['result']
+            self.assertEqual(intent['device_ref'],device)
+            credential=self.f.authenticators[device].get_exchange_assertion(intent,'0000','same-new-purchase')
+            request={'v':1,'op':'game.exchange.approve','key':'same-key','attempt_id':intent['attempt_id'],'quote_sha256':x.quote_digest(quote),'credential':credential}
+            reply=sdk.dispatch(game,request);self.assertTrue(reply['ok'],reply);self.assertEqual(sdk.retry(game,'game.exchange.approve','same-key'),reply)
+            results[device]=reply
+        self.workers['a'].once()
+        from game_exchange.exchange_worker import ExchangeWorker
+        ExchangeWorker(self.f.runtimes['bob']._exchanges,peers[game]).once()
+        self.assertEqual((self.f.grants['a'].balance('alice'),self.f.grants['a'].balance('bob')),(10,10))
+        self.assertNotEqual(results[support.B1]['result']['hold_id'],results[support.A2]['result']['hold_id'])
+        # A1 may read/reconcile A2's purchase in its same owner contract but has
+        # no right to use A2's challenge or approve again.
+        state=self.sdk.dispatch(game,{'v':1,'op':'game.exchange.status','connection_id':alice_conn,'exchange_id':'same-external'})
+        self.assertEqual(state['result']['state'],'COMPLETED')
+        self.f.router.revoke_device_credential(support.A2,1)
+        denied=second.dispatch(game,{'v':1,'op':'game.exchange.status','connection_id':alice_conn,'exchange_id':'same-external'})
+        self.assertFalse(denied['ok'],denied)
 
     def test_legacy_original_request_import_keeps_source_and_server_receipts(self):
         # The old client has its documented global (operation,key) limitation.
