@@ -28,7 +28,7 @@ export default function RockstarPreview() {
         <p className={styles.intro}>何が終わり、どこに結果があり、いくら確定したか。<br className={styles.desktopBreak} />HubとWalletから、仕事の状態と保存した成果をたどれます。</p>
         <div className={styles.actions}>
           <a className={styles.primary} href="#start">試用できる範囲を確認 <span aria-hidden="true">↓</span></a>
-          <span className={styles.status}>配布候補を検証中</span>
+          <span className={styles.status}>内部受入済み・公開準備中</span>
         </div>
         <div className={styles.flow} aria-label="RockstarOSで行うこと">
           <div><span>01 / HUB</span><strong>選ぶ・動かす</strong><p>商品の用途、実行先、必要な許可を確認。</p></div>
@@ -48,7 +48,7 @@ export default function RockstarPreview() {
         </div>
         <figure className={styles.screen}>
           <Image src="/rockstaros/hub-result.png" alt="実OSの引用整理の結果。実行版と端末内処理、保存した出典、実費・実収益は未接続と表示。" width={720} height={960} />
-          <figcaption>開発中の実OS画面 · QEMU / 公開サンプル</figcaption>
+          <figcaption>配布候補9abf78aの実OS画面 · QEMU / 公開サンプル</figcaption>
         </figure>
       </section>
       {preview.demo && <section className={styles.demoSection} aria-labelledby="demo-title">
@@ -61,7 +61,7 @@ export default function RockstarPreview() {
         <p>対応候補はApple SiliconのMac、macOS 15.7.4、Lima 2.2.0。Linuxの仮想端末を使い、公開または合成した入力で検証しています。スマートフォンへのOS書き込みや実資金の取引には対応していません。</p>
         <div className={styles.notice}>
           <strong>ダウンロードは受入検証と公開条件の確認後に案内します。</strong>
-          <p>Hub・Wallet・Game、保存と復旧を一つの配布候補へ統合しています。認証付きの非公開配布先から取得し、新しい環境への導入とサンプル実行を確認しました。製品ライセンスは未確定で、一般公開の配布は開始していません。</p>
+          <p>Hub・Wallet・Game、保存と復旧を一つの配布候補へ統合しています。認証付きの非公開配布先から取得し、対応Mac内に新しく作成したVMへの導入とサンプル実行を確認しました。製品ライセンスは未確定で、一般公開の配布は開始していません。</p>
           <p><a href="https://github.com/k999ln/rock/blob/9abf78a80d27aa9f847c4051d20e4c552e407276/docs/preview-legal-notice.md">利用・配布条件の確認事項 ↗</a></p>
           <Link className={styles.textLink} href="/rockstaros/guide">導入・初回実行・復旧の手順 <span aria-hidden="true">↗</span></Link>
         </div>
@@ -69,7 +69,7 @@ export default function RockstarPreview() {
       </section>
       <section className={styles.gameSection} aria-labelledby="game-title">
         <div><p className={styles.eyebrow}>GAME / DEVELOPER SANDBOX</p><h2 id="game-title">仕事の余地を、<br />次の楽しみへ。</h2></div>
-        <div><p>Gameは本人が選んで開く入口です。接続の同意と、一回の購入承認を分けて確認し、照合中の保留と確定した交換を履歴で区別します。</p><p>作者向けSDKは、同じ配布候補の新しい環境で合成Game A/Bへの購入と通信停止からの回復を内部検証しました。OS上の一周は最終検証中です。WalletからGameへの購入方向に限る試験で、実ゲームや実際のお金には接続しません。</p><p className={styles.scope}>試験接続は1時間有効です。期限後の新規接続は未対応で、元の要求の照合と購入履歴は保持します。</p><a className={styles.textLink} href="https://github.com/k999ln/rock/blob/9abf78a80d27aa9f847c4051d20e4c552e407276/systems/rock-star-os/examples/game/README.md">作者向けの動くサンプルと診断手順 ↗</a></div>
+        <div><p>Gameは本人が選んで開く入口です。接続の同意と、一回の購入承認を分けて確認し、照合中の保留と確定した交換を履歴で区別します。</p><p>作者向けSDKは、同じ配布候補の新しい環境で合成Game A/Bへの購入と通信停止からの回復を内部検証しました。OS上でも、本人の接続同意からGame A/Bの購入・確定履歴・再起動後の保持を確認しました。WalletからGameへの購入方向に限る試験で、実ゲームや実際のお金には接続しません。</p><p className={styles.scope}>試験接続は1時間有効です。期限後の新規接続は未対応で、元の要求の照合と購入履歴は保持します。</p><a className={styles.textLink} href="https://github.com/k999ln/rock/blob/9abf78a80d27aa9f847c4051d20e4c552e407276/systems/rock-star-os/examples/game/README.md">作者向けの動くサンプルと診断手順 ↗</a></div>
       </section>
       <footer className={styles.footer}><span>RockstarOS 1.0 Developer Preview</span><Link href="/">既存のWeb・PCツールへ <span aria-hidden="true">↗</span></Link></footer>
     </main>
