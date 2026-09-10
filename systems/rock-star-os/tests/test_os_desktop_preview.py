@@ -190,6 +190,22 @@ class PreviewRelease(unittest.TestCase):
         self.write_archive()
         self.assertEqual(preview.digest(self.archive), first)
 
+    def test_packager_rejects_an_old_image_relabelled_with_new_source(self):
+        images = self.root / 'image-input'
+        images.mkdir()
+        for name in preview.IMAGE_NAMES:
+            (images / name).write_bytes(b'synthetic image input')
+        (images / 'freeze-manifest.json').write_bytes(preview.canonical({
+            'schema': 'rock-build-freeze/2', 'status': 'BUILD_COMPLETE_FROZEN',
+            'source_commit': 'b' * 40, 'files_sha256': {name: preview.digest(images / name) for name in preview.IMAGE_NAMES},
+            'archive_commit_verified': True, 'source_tests': {'status': 'PASS', 'source_unchanged': True}}))
+        output = self.root / 'must-not-exist'
+        args = SimpleNamespace(repository=self.root, source='a' * 40, images=images, output=output)
+        with patch.object(package_preview.subprocess, 'check_output', return_value='a' * 40 + '\n'):
+            with self.assertRaisesRegex(ValueError, 'do not relabel'):
+                package_preview.make(args)
+        self.assertFalse(output.exists())
+
 
 class OwnedLifecycle(unittest.TestCase):
     def setUp(self):
@@ -217,7 +233,9 @@ class OwnedLifecycle(unittest.TestCase):
         self.assertEqual(config['images'], [preview.BASE_IMAGE])
         self.assertTrue(config['portForwards'][0]['ignore'])
         self.assertEqual(config['containerd'], {'system': False, 'user': False})
-        self.assertNotIn('ssh', config)
+        self.assertFalse(config['ssh']['loadDotSSHPubKeys'])
+        self.assertFalse(config['ssh']['forwardAgent'])
+        self.assertFalse(config['propagateProxyEnv'])
 
     def test_lima_always_uses_private_home(self):
         with patch.object(preview, 'command') as command:
@@ -255,7 +273,7 @@ class OwnedLifecycle(unittest.TestCase):
 
     def action_patches(self, *, running=False):
         module = Mock()
-        module.load.return_value = {'device': {'name': 'preview'}}
+        module.load.return_value = {'device': {'name': 'preview'}, 'host_state': str(self.root / 'display')}
         module.remote.return_value = {'running': running}
         return module, [patch.object(preview, 'installed_release', return_value={}),
                         patch.object(preview, 'verify_installed'),
@@ -297,6 +315,14 @@ class OwnedLifecycle(unittest.TestCase):
             preview.cleanup_failed(SimpleNamespace(directory=self.root, delete_data=True))
         lima.assert_not_called()
 
+    def test_diagnose_works_when_install_or_restore_is_incomplete(self):
+        for state in ('INSTALL_FAILED', 'RESTORE_PENDING', 'REMOVED'):
+            preview.save(self.root / 'installation.json', {**self.record, 'state': state})
+            with self.subTest(state=state), patch.object(preview, 'lima') as lima:
+                result = preview.action(SimpleNamespace(directory=self.root, action='diagnose'))
+            self.assertEqual(result['status'], state)
+            lima.assert_not_called()
+
     def test_fetch_refuses_http_and_preserves_existing_file(self):
         target = self.root / 'download'
         target.write_bytes(b'existing')
@@ -304,6 +330,19 @@ class OwnedLifecycle(unittest.TestCase):
             with self.subTest(url=url), self.assertRaises(ValueError):
                 preview.fetch(SimpleNamespace(url=url, output=target, sha256='0' * 64))
         self.assertEqual(target.read_bytes(), b'existing')
+
+    def test_viewer_cleanup_preserves_a_reused_pid(self):
+        from contextlib import nullcontext
+        import browser_server
+        state = self.root / 'display'
+        state.mkdir(mode=0o700)
+        preview.save(state / 'viewer.json', {'pid': 123, 'command': 'old viewer', 'instance': 'a' * 32, 'build': 'b' * 64})
+        module = SimpleNamespace(launcher_lock=lambda config, state: nullcontext(),
+                                 decode_manifest=preview.decode, private_file=preview.read)
+        with patch.object(browser_server, 'process_command', return_value='unrelated editor'), patch.object(preview.os, 'kill') as kill:
+            result = preview.close_owned_display(module, {'host_state': str(state)})
+        self.assertEqual(result['viewer'], 'OLD_PROCESS_GONE')
+        kill.assert_not_called()
 
 
 if __name__ == '__main__':

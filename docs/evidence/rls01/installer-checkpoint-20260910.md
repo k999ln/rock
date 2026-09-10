@@ -32,3 +32,15 @@ git diff --check
 ```
 
 この checkpoint は installer 実装の中間証拠。PREVIEW-INSTALL、V01-ACCEPT、D0〜D6、Game/SDK、公開の完了宣言ではない。
+
+## 新規テンプレートの実測
+
+判断: **RQ12/16/17 / 明確な楽観主義・秘密を探す / 導入途中で依存・権限・表示資源の原因が分からない不便 / 同じ Lima template と既存 viewer 所有証拠 / fresh provisioning と限定 cleanup を実測 / 作成時間・既存資源変更・削除時間 / [機械報告](template-probe-20260910.json)。**
+
+06:09:04〜06:09:48 UTC、専用の新規 Lima VM が 44 秒で Debian 13.6 / QEMU 10.0.11 の依存導入を完了。base download cache だけを再利用し、既存 VM・userdata は再利用していない。唯一の package mount は `ro`、書込は errno 30 で拒否、guest に host `/Users` はなく、guest root 所有 path への copy と最上位 0755 化の後に user が読めることを確認。Linux で専用 29 tests PASS。
+
+同じ所有 VM の config/identity hash を検査して `limactl stop` と `delete` を終了コード 0 で実行。所要 3.210 秒、`--force` なし、VM directory は消失、host の sentinel は保持された。OS image はこの probe へ導入していないので、PREVIEW-INSTALL の代替にはしない。
+
+コード点検では、restore 後に元 profile の viewer が port 8899 を保持し、新 profile を妨げることを発見。instance/build/完全な process command と lsof socket ownership を合わせて確認した **この導入の viewer だけ** を終了する入口を追加。PID が別アプリへ再利用された場合は終了しない。動的 launcher import の探索 path も配布物内へ固定した。現 Mac の port 8899 にある既存 PID 77657 は B 所有外のため操作せず、統括へ伝えた。
+
+現 host の専用試験は診断・viewer PID reuse・古い image の relabel 拒否を追加し **30 tests PASS**。Linux の 29 件実行はその前の入力 hash に限定され、同じ結果への付替えはしない。Game profile と final image の導入実測は引き続き未実行。

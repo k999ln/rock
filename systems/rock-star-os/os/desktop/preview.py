@@ -16,6 +16,7 @@ import os
 from pathlib import Path, PurePosixPath
 import platform
 import re
+import signal
 import shutil
 import stat
 import subprocess
@@ -277,6 +278,8 @@ def vm_config(root):
             'images': [BASE_IMAGE], 'mounts': [{'location': str(root / 'payload'),
                                                'mountPoint': '/mnt/rockstaros-package', 'writable': False}],
             'mountType': 'virtiofs', 'containerd': {'system': False, 'user': False},
+            'ssh': {'loadDotSSHPubKeys': False, 'forwardAgent': False, 'forwardX11': False},
+            'propagateProxyEnv': False,
             'portForwards': [{'guestIP': '0.0.0.0', 'proto': 'any', 'ignore': True}],
             'provision': [{'mode': 'system', 'script': '#!/bin/sh\nset -eu\nexport DEBIAN_FRONTEND=noninteractive\n'
                           'if ! test -e /var/lib/rockstaros-preview-dependencies; then\n'
@@ -308,10 +311,46 @@ def verify_vm(root, record):
 
 def launcher(root):
     path = root / 'payload/native/os/desktop/launcher.py'
+    sys.path.insert(0, str(path.parent))
     spec = importlib.util.spec_from_file_location('rockstaros_preview_launcher', path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def close_owned_display(module, config):
+    """Close this profile's viewer only after OS shutdown; never take a port."""
+    state = Path(config['host_state'])
+    if not state.exists():
+        return {'viewer': 'NOT_STARTED'}
+    with module.launcher_lock(config, state):
+        record_path = state / 'viewer.json'
+        if not record_path.exists():
+            return {'viewer': 'NOT_STARTED'}
+        record = module.decode_manifest(module.private_file(record_path))
+        import browser_server
+        try:
+            actual = browser_server.process_command(record['pid'])
+        except (OSError, subprocess.SubprocessError):
+            return {'viewer': 'STOPPED'}
+        if actual != record.get('command'):
+            # PID reuse or an unrelated process: leave it completely alone.
+            return {'viewer': 'OLD_PROCESS_GONE'}
+        expected_script = str(Path(module.__file__).with_name('browser_server.py'))
+        require(expected_script in actual and '--instance ' + record['instance'] in actual and
+                record['build'] == browser_server.fingerprint() and browser_server.healthy(record) and
+                module.tunnel_listening({**config, 'port': 8899}, record['pid']),
+                'viewer ownership could not be established; no process was stopped')
+        os.kill(record['pid'], signal.SIGTERM)
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            try:
+                if browser_server.process_command(record['pid']) != actual:
+                    return {'viewer': 'STOPPED'}
+            except (OSError, subprocess.SubprocessError):
+                return {'viewer': 'STOPPED'}
+            time.sleep(.1)
+        raise ValueError('owned viewer has not stopped; no force termination was performed')
 
 
 def launcher_manifest(root, release, record, device):
@@ -402,15 +441,23 @@ print(json.dumps({'image_preflight':'PASS','qemu':subprocess.check_output(['qemu
 def action(args):
     root, record = load(args.directory)
     with locked(root):
+        if args.action == 'diagnose':
+            identity = {'status': 'NOT_CREATED_OR_UNVERIFIABLE'}
+            if 'vm_config_sha256' in record and 'vm_identity_sha256' in record:
+                try:
+                    instance = verify_vm(root, record)
+                    identity = {'status': 'VERIFIED', 'vm_status': instance['status']}
+                except (OSError, ValueError, subprocess.SubprocessError):
+                    identity = {'status': 'MISMATCH_OR_REMOVED; no mutation performed'}
+            return {'status': record['state'], 'source_commit': record['source_commit'], 'host': record['host'],
+                    'guest': record.get('guest'), 'vm_identity': identity,
+                    'active_device': record['active_device'], 'retired_devices': record['retired_devices'],
+                    'pending_restore': record.get('pending_restore'), 'error_type': record.get('error_type'),
+                    'data': 'preserved; simulator only; no secret or raw user data included'}
         require(record['state'] in ('INSTALLED', 'RETIRED'), 'incomplete installation; inspect provision.log and use cleanup-failed')
         release = installed_release(root, record)
         verify_installed(root, release)
         instance = verify_vm(root, record)
-        if args.action == 'diagnose':
-            return {'status': record['state'], 'source_commit': record['source_commit'], 'host': record['host'],
-                    'guest': record.get('guest'), 'vm_status': instance['status'],
-                    'active_device': record['active_device'], 'retired_devices': record['retired_devices'],
-                    'data': 'preserved; simulator only; no secret or raw user data included'}
         if instance['status'] != 'Running':
             lima(root, 'start', '--tty=false', VM_NAME, timeout=180)
             verify_vm(root, record)
@@ -459,6 +506,7 @@ def action(args):
             saved = decode(read(root / 'last-backup.json'))
             require(saved.get('source_device') == record['active_device'] and saved.get('config') == config['device'],
                     'backup does not belong to this active device')
+            close_owned_display(module, config)
             # Persist a fail-closed transaction marker before creating another
             # copy. A killed process cannot silently resume the source writer.
             record['state'] = 'RESTORE_PENDING'
@@ -486,6 +534,8 @@ def action(args):
             for name in record['retired_devices']:
                 other = module.load(root / 'profiles' / (name + '.json'))
                 require(not module.remote(other, 'status').get('running'), 'retired source still running; preserving VM')
+                close_owned_display(module, other)
+            close_owned_display(module, config)
             lima(root, 'stop', VM_NAME, timeout=180)
             verify_vm(root, record)
             lima(root, 'delete', '--tty=false', VM_NAME, timeout=180)

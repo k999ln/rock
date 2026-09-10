@@ -99,6 +99,10 @@ def make(args):
                     freeze.get('source_tests', {}).get('status') == 'PASS' and
                     freeze.get('source_tests', {}).get('source_unchanged') is True,
                     'an exact source-tested frozen build record is required; do not relabel an older image')
+    for path in (Path(__file__), Path(preview.__file__)):
+        field = NATIVE_PREFIX + 'os/desktop/' + path.name
+        preview.require(freeze.get('source_files_sha256', {}).get(field) == preview.digest(path),
+                        'running packager/bootstrap differs from the frozen host tools')
     epoch = int(subprocess.check_output(['git', '-C', str(repository), 'show', '-s', '--format=%ct', commit], text=True))
     args.output.mkdir(parents=True, mode=0o700)
     with tempfile.TemporaryDirectory(prefix='rock-preview-package-') as temporary:
@@ -112,6 +116,7 @@ def make(args):
         # Reuse the original bounded stage0 decoder and Ed25519 verifier from
         # this exact source. Full embedded-source preflight runs in the new VM.
         sys.path[:0] = [str(tree / 'native/src'), str(tree / 'native/os')]
+        os.environ['PATH'] = str(Path(preview.openssl()).parent) + os.pathsep + os.environ.get('PATH', '')
         from service_access import profile
         raw_factory = profile._stage0(images / 'stage0.cpio.gz')['factory']
         _, update = profile._update_helpers()
