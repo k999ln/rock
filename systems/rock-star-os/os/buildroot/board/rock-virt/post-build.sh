@@ -2,12 +2,12 @@
 set -eu
 target=$1
 cat > "$target/usr/lib/os-release" <<'EOF'
-NAME="Rock star os"
+NAME="RockstarOS"
 ID=rock-star-os
-VERSION="0.3.0-virtual-development"
-VERSION_ID=0.3.0
-PRETTY_NAME="Rock star os 0.3.0 (ARM64 virtual development OS)"
-BUILD_ID=rock-virt-aarch64-0.3.0
+VERSION="1.0 Developer Preview"
+VERSION_ID=1.0
+PRETTY_NAME="RockstarOS 1.0 Developer Preview (ARM64 QEMU)"
+BUILD_ID=rock-virt-aarch64-1.0-developer-preview
 EOF
 ln -sf ../usr/lib/os-release "$target/etc/os-release"
 mkdir -p "$target/data" "$target/usr/libexec"
