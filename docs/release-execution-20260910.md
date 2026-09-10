@@ -207,3 +207,26 @@ RQ07–17 / 明確な楽観主義・秘密を探す / 長時間の仕事・保�
 - B legal原934MB/298memberの提供素材を読み取り棚卸ししroot52111eへ統合。Rock3packageは既存LICENSE_FILES未定義/REDISTRIBUTE=NO、製品license未選択。Buildroot元source/libtool補足を同封済み、原warning4は保持。資料一覧は提供許諾の代替ではなくNOT_CLEAREDを維持。
 
 次: A新3bootの停止・source/empty authority/C未作成を受領したらroot C v3を直ちに実行。C全UI＋encode後にA元arm64全native1回再検証。finalmedia/受入報告/案内/PR/CIを統合。終了予定13:43:35 UTC。
+
+
+## 12:01 UTC 工程checkpoint（経過6:17:25）
+
+RQ07–17 / 秘密を探す・明確な楽観主義 / 合成取引の確定と遠隔停止原因を混同する不便 / 同9abの元UI・台帳audit・引用recipe / 検査processのumaskだけ明示し残2stageを続行 / 同じ元要求と残高・8DB保持・元期限 / 原FAILと新境界proof。
+
+- A最終D1/D3は元complete10＋新Hub3bootを完了。引渡し11:45:36 report SHAb6bbbbe65ea51bba3e951f21d6895d605f44ddbd15535608cb34e63c1dd0a9ae。全source/image/空authority19表/8JSON/QEMU0/portsfree/C未作成を確認しroot f0db3fbへ統合。
+- C v3 session82790は11:46:33開始。Game2boot209.581秒、独立audit0.226秒、financial2boot166.136秒PASS。各Game10unitsを一度ずつ/合成Wallet9794/fee6/hold0、月額888一度→同期間再操作で二重請求0→将来同意取消→ATM1000保留→取消後8906/hold0/払出0、8stageと全保持を元reportで確認した。
+- citationsは11:52:49にguest0/実行先ready前FAIL。生成runner-sandboxだけ0775、固定source2files0644。v3がLima umask0002を継承しcc出力がgroup writableとなり、既存executorが正しく拒否した。元C whole FAIL SHA31c6be06bf1ebe9c7bb992b95ff5ab171e4019692da7f928433b52f32e2a893d。購入や課金は再実行しない。
+- 所有registryだけexact argv/cwd/start ticks/pidfd照合後SIGTERMしexitを確認、旧親不在のexit codeは未取得として保持。停止後authority全typed/JSON完全一致・8guest DB bytesが元baseline一致・対象portsfreeを新proofで確認。初回readonlycollectorはPATHにdebugfsがなく部分FAIL、原本保持。v2のdeclared PATHで全観測PASS、追加stop0。境界proof SHA9d6c7545b612b9fa2ec236049aaa9bb72719701fe84ba52cb0c5dbb691576030。
+- 残citations/demoだけのv4を11:59:43.958 UTC、session38258、/var/tmp/rock-final-c-9abf78a-continuation-02で開始。driver SHA3f3232c638c8309d40a9b9ef0dee22269116fe7e8ef9dc872666df8f19a63851、実行前planSHA882448234bca3b8350f6ce1bfed2b783274fd5f80e53e014c093e15dbd563779、umask0077。B独立レビューは元stage command/実行try/limits/demo retention AST一致、全旧hash/重複なし8role/0cycleを確認。配布source/image/元UIprobe/金融取引は不変。
+- 同cb43f6a Web34472941976PASS、native34472941935実行中。既存Sitesのread-only再取得もNOT_FOUND、別site/公開範囲は作成・変更していない。残C＋encode後にA同9ab fullnative R2を一度だけ実行する。終了予定13:43:35 UTC。
+
+
+## 12:31 UTC — Cの金融完了と引用カタログの原状態継続
+
+対象RQ04/08/13–15 / 原則: 秘密を探す・明確な楽観主義 / 不便: 準備済み商品の更新と正しいカタログを見失わない / 再利用: 凍結9ab UI・署名・台帳比較 / 最小変更: host限定selectorと既存service-state引数 / 指標: 元要求2件の回復・追加金融0・全保持 / 証拠: 元FAILと独立通常終了境界を保存。
+
+C01 Game A/B・audit・financialはPASS（正常4boot）。原引用preflightはumask0002でlauncher0775を拒否。v4では既存1.0に対しinstallラベルを探したためFAIL、B664f67a→root8a7b4daの停止台帳/署名検証付きupdate selectorと9 Linux testsを追加。v5は新規registryが既存guest pinと同revision/異内容になり、正しいequivocation guardで更新前にFAIL。固定値消去・署名緩和・金融再操作は行っていない。
+
+v4失敗bootを8.847秒で通常終了。v5は画面遷移と小さい状態labelのOCR失敗も原記録へ保持し、元registry状態を再配信し実画面の署名確認済みを確認した後、9.516秒で通常終了。全authority/nonHub/以前のHub jobsは保持、remote_requests0。直後port bindはTIME_WAITで拒否したため元FAILを保ち、12:30:47に同じbind検査がPASS。成功4bootと失敗2bootは別計上。
+
+12:31開始v6 session66663（未完了）は元service-stateを引き継ぎ、既存3boot・全deadline・署名・isolated runner・原要求再照合を変えず実行。出力 /var/tmp/rock-final-c-9abf78a-continuation-04。配布source/image/同梱toolsは9ab不変。root HEADf85b165は診断/証拠の追加版。GitHub cb43f6aのWeb34472941976/native34472941935はいずれもSUCCESS。A nativeR2はC+encodeと所有QEMU停止まで待機。

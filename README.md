@@ -86,7 +86,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 11:44 UTC: 同9abの独立CI D6が60分46.617秒/61soak jobs/67total/5正常終了でPASS_SCOPED。原raw916filesと全typed保持を再取得照合。D4 41coverage、D2元16操作5jobs完了。D1/D3は原complete10を保持し、host-only inode読取修正後の最後3bootをA session29198で実行中。停止済みfresh C引渡し後v3でGame→監査→金融→引用遠隔→90秒実収録。録画encode後に元arm64全回帰を同9ab/QEMU停止条件で1回再検証。配布/新規導入/非zero復旧/SDKは完了、公開はlicense/Sites/最終画面受入待ち。
+次の作業: 12:31 UTC: C01のGame A/B・独立台帳監査・月額888/ATM hold取消は同9abでPASS、4正常boot。引用遠隔の準備でumask・既存1.0更新selector・新registry同revision拒否の原FAILを保存。host修正のみ、後2失敗bootを通常終了し全authority/nonHub/旧Hub jobs保持、12:30:47停止port境界PASS。元署名catalog状態を再利用するv6 session66663で3boot遠隔回復→90秒実録画中。D0同SHA CI/D1/D3/D4/D5/D6とfresh導入/SDKはscoped完了。C+encode後にA元arm64全回帰1回、媒体/最終CI/公開条件を集計。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
