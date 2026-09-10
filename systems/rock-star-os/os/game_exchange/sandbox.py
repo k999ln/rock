@@ -116,6 +116,9 @@ def provision_files(state):
 
 class Runtime:
     def __init__(self,config,*,prepare=False,serve=False):
+        from game_exchange.sandbox_backup import restore_pending,desktop_ready
+        desktop_ready(config['state'])
+        p.require(not restore_pending(config),'current-copy restore is incomplete; normal service admission is fenced')
         self.config=config;self.state=Path(config['state']);self.coordinator=self.router=self.wallet_server=None
         self.runtime=self.gateway=None;self.authorities=[];self.grants=[];self.game_servers=[];self.threads=[]
         try:
@@ -137,6 +140,10 @@ class Runtime:
             self.grants=[GameGrantAuthority(a,prepare=prepare) for a in self.authorities]
             for grant in self.grants:grant.register_runtime(runtime)
             self.gateway=GameGateway(self.state/'game-index',tuple(self.authorities))
+            if (self.state/'READY.json').exists():
+                ready=read_json(self.state/'READY.json')
+                p.require(ready['config_sha256']==config_digest(config) and ready['game_uuids']=={a.game.game_id:a.store.uuid for a in self.authorities} and
+                    ready['index_uuid']==self.gateway.index.uuid,'original prepared Game/index identity must remain available')
             peers={}
             for index,grant in enumerate(self.grants):
                 game=grant.authority.game.game_id;port=config['ports']['game_'+grant.authority.name]
@@ -225,6 +232,9 @@ def serve(config,path):
 def start(config,path):
     state=Path(config['state'])
     with locked(state/'control.lock',create=True):
+        from game_exchange.sandbox_backup import restore_pending,desktop_ready
+        desktop_ready(config['state'])
+        p.require(not restore_pending(config),'current-copy restore is incomplete; finish only the retained intent')
         current=status(config)
         if current['running']:return current
         p.require((state/'READY.json').is_file(),'prepare sandbox before starting')
@@ -256,53 +266,85 @@ def stop(config):
         return status(config)
 
 
-def snapshot(config):
+@contextmanager
+def stopped_snapshot(config):
     state=Path(config['state'])
-    with locked(state/'control.lock',create=True),locked(state/'sandbox.lock'),ExitStack() as stack:
+    with locked(state/'control.lock',create=True),locked(state/'sandbox.lock'),stopped_authorities(config) as pair:
+        yield pair
+
+
+@contextmanager
+def stopped_authorities(config):
+    state=Path(config['state'])
+    with ExitStack() as stack:
         p.require(not status(config)['running'],'all sandbox writers must stop before snapshot')
         registry=read_json(state/'coordinator/registry.json')
-        descriptor=registry['contracts'][LEDGER]['descriptor'];contract=Path(descriptor['canonical_state'])
-        p.require(contract.is_relative_to(state/'contracts') and contract.resolve()==contract,'managed contract must remain inside this owned instance')
-        for path in (state/'coordinator/coordinator.lock',state/'router/router.lock',contract/'authority.lock',state/'game-index/game.lock',
+        contract=Path(registry['contracts'][LEDGER]['descriptor']['canonical_state'])
+        contracts=retained_contracts(state,registry)
+        for path in (state/'coordinator/coordinator.lock',state/'router/router.lock',*(directory/'authority.lock' for directory in contracts),state/'game-index/game.lock',
                      state/'game-a/game.lock',state/'game-b/game.lock'):stack.enter_context(locked(path))
-        databases={};identities={}
-        # Include unknown SQLite files/tables and all retained C/router metadata.
-        # Process/log/control files are not authority or financial state.
-        roots=[state/'coordinator',state/'router',contract,state/'game-index',state/'game-a',state/'game-b']
-        for root in roots:
-            for path in sorted(root.rglob('*')):
-                p.require(not path.is_symlink(),'symlink in retained authority is forbidden')
-                if not path.is_file():continue
-                name=str(path.relative_to(state));info=path.lstat()
-                p.require(info.st_uid==os.geteuid() and info.st_nlink==1 and not info.st_mode&0o077,'private retained authority file required')
-                if path.suffix in ('.db','.sqlite3'):
-                    # With every lifetime lock held, require checkpointed content.
-                    # immutable=1 prevents a read-only WAL-mode inspection from
-                    # creating a new SHM file or recovering/changing anything.
-                    for suffix in ('-wal','-journal'):
-                        side=Path(str(path)+suffix)
-                        p.require(not side.exists() or side.stat().st_size==0,'unresolved authority journal requires explicit recovery')
-                    uri=path.as_uri()+'?mode=ro&immutable=1'
-                    with closing(sqlite3.connect(uri,uri=True,isolation_level=None)) as db:
-                        db.execute('PRAGMA query_only=ON')
-                        p.require(db.execute('PRAGMA integrity_check').fetchone()[0]=='ok','authority DB integrity failure')
-                        databases[name]=typed_snapshot(db)
-                elif path.suffix=='.json':identities[name]=digest(path)
-                elif path.name.endswith(('-journal','-wal')):p.require(path.stat().st_size==0,'unresolved authority journal requires explicit recovery')
-        for path in (state/'sandbox.json',state/'credentials.json',state/'handoff.json',state/'READY.json'):identities[str(path.relative_to(state))]=digest(path)
-        p.require(len(databases)>=5,'complete Wallet/Entitlement/index/two-Game database set required')
-        return {'schema':'rock-game-sandbox-snapshot/1','authority_id':AUTHORITY,'databases':databases,'identities':identities,'simulation_only':True}
+        yield state,contract
+
+
+def retained_contracts(state,registry):
+    p.require(set(registry['contracts'])=={LEDGER},'fixed public sandbox contract inventory required')
+    paths={Path(registry['contracts'][LEDGER]['descriptor']['canonical_state'])}
+    for record in registry['restores'].values():paths.add(Path(record['source_descriptor']['canonical_state']))
+    for path in paths:p.require(path.is_relative_to(state/'contracts') and path.resolve()==path,'retained contract must remain inside this instance')
+    return sorted(paths)
+
+
+def snapshot(config):
+    with stopped_snapshot(config) as (state,contract):return observe_stopped(state,contract)
+
+
+def observe_stopped(state,contract):
+    databases={};identities={}
+    # Include unknown SQLite files/tables and all retained C/router metadata.
+    # Process/log/control files are not authority or financial state.
+    roots=[state/'coordinator',state/'router',*retained_contracts(state,read_json(state/'coordinator/registry.json')),state/'game-index',state/'game-a',state/'game-b']
+    for path in state.rglob('*'):
+        if path.suffix in ('.db','.sqlite3'):
+            p.require(not path.is_symlink() and any(path.is_relative_to(root) for root in roots),'unfenced extra authority database requires explicit coverage')
+    for root in roots:
+        for path in sorted(root.rglob('*')):
+            p.require(not path.is_symlink(),'symlink in retained authority is forbidden')
+            if not path.is_file():continue
+            name=str(path.relative_to(state));info=path.lstat()
+            p.require(info.st_uid==os.geteuid() and info.st_nlink==1 and not info.st_mode&0o077,'private retained authority file required')
+            if path.suffix in ('.db','.sqlite3'):
+                # With every lifetime lock held, require checkpointed content.
+                # immutable=1 prevents a read-only WAL-mode inspection from
+                # creating a new SHM file or recovering/changing anything.
+                for suffix in ('-wal','-journal'):
+                    side=Path(str(path)+suffix)
+                    p.require(not side.exists() or side.stat().st_size==0,'unresolved authority journal requires explicit recovery')
+                uri=path.as_uri()+'?mode=ro&immutable=1'
+                with closing(sqlite3.connect(uri,uri=True,isolation_level=None)) as db:
+                    db.execute('PRAGMA query_only=ON')
+                    p.require(db.execute('PRAGMA integrity_check').fetchone()[0]=='ok','authority DB integrity failure')
+                    databases[name]=typed_snapshot(db)
+            elif path.suffix=='.json':identities[name]=digest(path)
+            elif path.name.endswith(('-journal','-wal')):p.require(path.stat().st_size==0,'unresolved authority journal requires explicit recovery')
+    for path in (state/'sandbox.json',state/'credentials.json',state/'handoff.json',state/'READY.json'):identities[str(path.relative_to(state))]=digest(path)
+    p.require(len(databases)>=5,'complete Wallet/Entitlement/index/two-Game database set required')
+    return {'schema':'rock-game-sandbox-snapshot/1','authority_id':AUTHORITY,'databases':databases,'identities':identities,'simulation_only':True}
 
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('action',choices=('sample','device-config','prepare','start','serve','stop','status','snapshot'))
-    parser.add_argument('--config',type=Path);parser.add_argument('--state',default='/var/tmp/rockstaros-preview-authority');args=parser.parse_args()
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('action',choices=('sample','device-config','prepare','start','serve','stop','status','snapshot','snapshot-current','restore-current'))
+    parser.add_argument('--config',type=Path);parser.add_argument('--state',default='/var/tmp/rockstaros-preview-authority')
+    parser.add_argument('--backup',type=Path);parser.add_argument('--intent');parser.add_argument('--new-device');args=parser.parse_args()
     os.umask(0o077)
     if args.action=='sample':result=sample(args.state)
     elif args.action=='device-config':result=public_device_config()
     else:
         p.require(sys.platform=='linux' and args.config is not None,'owned Linux config required');config=load(args.config)
-        result=({'prepare':lambda:prepare(config),'start':lambda:start(config,args.config),'serve':lambda:serve(config,args.config),
+        if args.action in ('snapshot-current','restore-current'):
+            from game_exchange.sandbox_backup import snapshot_current,restore_current
+            p.require(args.backup is not None and args.intent is not None,'exact backup path and intent required')
+            result=snapshot_current(config,args.backup,args.intent) if args.action=='snapshot-current' else restore_current(config,args.backup,args.intent,args.new_device)
+        else:result=({'prepare':lambda:prepare(config),'start':lambda:start(config,args.config),'serve':lambda:serve(config,args.config),
             'stop':lambda:stop(config),'status':lambda:status(config),'snapshot':lambda:snapshot(config)}[args.action])()
     if result is not None:print(encoded(result),flush=True)
 

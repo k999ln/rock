@@ -222,6 +222,9 @@ def remove_stale_socket(path):
 def start(config):
     require(sys.platform == 'linux', 'virtual device runs inside the Linux build VM')
     validate_config(config)
+    if config.get('schema')=='rock-desktop-device/7':
+        from game_exchange.sandbox_backup import desktop_ready
+        desktop_ready(Path(config['game']['config']).parent,config['name'])
     state = state_path(config['name'])
     lock = os.open(state / 'lock', os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
     try:

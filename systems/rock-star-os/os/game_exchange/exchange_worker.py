@@ -49,7 +49,11 @@ class ExchangeWorker(threading.Thread):
             else:
                 previous=db.execute('SELECT operation,result FROM wallet_game_exchange_claims WHERE exchange_row=? ORDER BY rowid DESC LIMIT 1',(row['id'],)).fetchone()
                 kind='apply' if previous and previous['operation']=='status' and previous['result']=='"NOT_FOUND"' else 'status'
-            if kind=='apply' and apply['binding']['writer_epoch']!=runtime.descriptor.writer_epoch:kind='status'
+            if kind=='apply' and apply['binding']['writer_epoch']!=runtime.descriptor.writer_epoch:
+                # A restored writer never re-signs or replays an old apply.
+                # The current-epoch conditional rejection either recovers an
+                # existing APPLIED receipt or writes a permanent tombstone.
+                kind='reject'
             if kind=='apply':request=apply
             else:
                 signer=service.signers[kind]

@@ -19,3 +19,5 @@ Linux実行場所: `/var/tmp/rock-release-game-20260910`。既存VM/台帳を触
 - GX01 core / RQ05–08, 14–17 / owner専用承認と未知結果での資金保存 / Gameごとの通貨購入がない / GX00のC・OwnerRouter・private SQLiteとATM認証検証を再利用 / 明示非空DB移行と3つの追加勘定・専用quote/署名・hold/outbox同時commit・独立A/B TLS台帳のみ追加 / duplicate grant・誤解放0、Cロック下external I/O 0、3秒期限 / `test_game_exchange_tls`: Linux 8例 6.967秒 PASS（skip0）；全GX01合格やOS組込完了はまだ主張しない。
 
 - DX01/SDK・公開sandbox / RQ06・08・14–17 / 原requestを保持し秘密と役割を分離 / 二Game同keyと再起動時の接続再開ができない / 既存v3 TLS・GX00 ownerclient・RemoteWallet cache・C lifetime・stage0 source guard / pergame journalと明示旧client import、専用author SDK、初期0のowned lifecycle・新署名profile / 二重付与0・元receipt変更0・起動停止による金融/未知行変化0 / Linux SDK+facade+core+非空migration16tests11.388秒PASS、A独立5DB/71table/8JSON不変PASS。実image派生/OS受入とprocess-kill/epoch復元は別途継続。
+
+- GX01 current-copy・SIGKILL / RQ08・14–17 / 原writerと複製writerの同時支出を拒む / 応答喪失と復元途中で資金の所在が不明になる / actual C proof・既存GX00管理epoch・独立Game journal・typed snapshot / 各Game issuer CAS/receipt、全current archive、aggregate停止gateと累積retired OS名のみ追加 / 元bytes保持・二重付与0・未知時の誤解放0・旧epoch支出0 / 実SIGKILL11境界と既存current-copy/異常系をLinuxで再起動検証、OS aggregateはB/統括の同image受入へ接続。

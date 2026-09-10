@@ -55,7 +55,7 @@ def _cell(value):
     raise p.VerificationUnavailable('unsupported retained SQLite value')
 
 
-def snapshot(db, *, omit_table=None, omit_restore_id=None, normalize_contract=None):
+def snapshot(db, *, omit_table=None, omit_restore_id=None, normalize_contract=None, normalize_grant_issuer=None):
     """Typed rows + every schema object, including SQLite sequence/unknown data.
 
     Only this one new migration row/schema and the exact descriptor CAS may be
@@ -81,11 +81,16 @@ def snapshot(db, *, omit_table=None, omit_restore_id=None, normalize_contract=No
         for row in rows:
             row_id=row[0] if intrinsic else None
             item=dict(zip(columns,row[1:] if intrinsic else row))
-            if omit_restore_id and name in (EPOCH,TRANSITION) and item.get('restore_id')==omit_restore_id:continue
+            if omit_restore_id and name in (EPOCH,TRANSITION,'grant_epoch_receipts') and item.get('restore_id')==omit_restore_id:continue
             if normalize_contract and name=='contracts' and item.get('ledger_ref')==normalize_contract['ledger_ref']:
                 available(item['descriptor'] in (encoded(normalize_contract['old']),encoded(normalize_contract['new'])),
                           'unexpected descriptor during game handover')
                 item['descriptor']=encoded(normalize_contract['old'])
+            if normalize_grant_issuer and name=='grant_issuers' and item.get('wallet_authority_id')==normalize_grant_issuer['wallet_authority_id']:
+                available(item['ledger_uuid']==normalize_grant_issuer['ledger_uuid'] and
+                    item['current_epoch'] in (normalize_grant_issuer['old_epoch'],normalize_grant_issuer['new_epoch']),
+                    'unexpected Game issuer during exact epoch handover')
+                item['current_epoch']=normalize_grant_issuer['old_epoch']
             cells=[_cell(item[column]) for column in columns]
             if intrinsic:cells.insert(0,['intrinsic-rowid',str(row_id)])
             raw=_canonical(cells);available(len(raw)<=64*1024*1024,'retained row too large')

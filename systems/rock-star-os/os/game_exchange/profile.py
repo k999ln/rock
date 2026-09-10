@@ -25,7 +25,7 @@ SOURCE_BINDINGS={**base.SOURCE_BINDINGS,
     **{'/usr/lib/rock-platform/entitlement/'+name+'.py':'os/entitlement/'+name+'.py' for name in ('device','store')},
 }
 FORBIDDEN=tuple('/usr/lib/rock-platform/game_exchange/'+name+'.py' for name in
-    ('fixture','exchange_signer','exchange_authority','exchange_service','exchange_worker','exchange_server','exchange_gateway','exchange_ledger','sandbox','profile'))
+    ('fixture','exchange_signer','exchange_authority','exchange_service','exchange_worker','exchange_server','exchange_gateway','exchange_ledger','exchange_restore','sandbox_backup','sandbox','profile'))
 DIRECTORIES=('/etc','/etc/rock-platform','/etc/rock-authenticator','/usr','/usr/share','/usr/share/rock','/usr/lib',
     '/usr/lib/rock-platform','/usr/lib/rock-platform/service_access','/usr/lib/rock-platform/game_exchange',
     '/usr/lib/rock-platform/wallet_backend','/usr/lib/rock-platform/wallet_auth','/usr/lib/rock-platform/blackberryrock','/usr/lib/rock-platform/entitlement')
