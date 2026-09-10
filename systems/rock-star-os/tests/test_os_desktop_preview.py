@@ -376,6 +376,59 @@ class PreparedGameImageRelease(unittest.TestCase):
             self.package_profile()
 
 
+class CompleteGameExport(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name).resolve(); self.root.chmod(0o700)
+        self.saved = {'backup': '/var/tmp/rockstaros-preview-backups/01234567-89ab-4def-8123-456789abcdef',
+                      'source_device': 'preview', 'os': {'backup': '/var/tmp/rock-star-desktop/preview/backups/complete'},
+                      'authority': {'receipt': {}}, 'files': {}}
+        names = ['os/backup.json', 'os/slot-a.ext4', 'os/slot-b.ext4', 'os/userdata.ext4',
+                 'authority/manifest.json', 'authority/plan.json', *['authority/files/db'+str(i) for i in range(5)]]
+        self.data = {}
+        for name in names:
+            raw = ('opaque fixture '+name).encode()
+            source = self.saved['os']['backup']+'/'+name[3:] if name.startswith('os/') else self.saved['backup']+'/'+name
+            self.saved['files'][name] = {'source': source, 'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+            self.data[source] = raw
+        self.saved['os']['manifest_sha256'] = self.saved['files']['os/backup.json']['sha256']
+        self.saved['authority']['receipt']['manifest_sha256'] = self.saved['files']['authority/manifest.json']['sha256']
+
+    def copy(self, root, action, backend, source, destination, **kwargs):
+        self.assertEqual((action, backend), ('copy', '--backend=scp'))
+        Path(destination).write_bytes(self.data[source.removeprefix('os:')])
+
+    def test_all_components_export_to_private_distinct_host_directory(self):
+        target = self.root/'off-vm'
+        with patch.object(preview, 'lima', side_effect=self.copy):
+            self.assertEqual(preview.export_game_backup(self.root, self.saved, target), str(target))
+        self.assertEqual(preview.decode(preview.read(target/'backup.json')), self.saved)
+        for name, value in self.saved['files'].items():
+            self.assertEqual(preview.digest(target/name), value['sha256'])
+            self.assertEqual((target/name).stat().st_mode & 0o777, 0o600)
+        for path in target.rglob('*'):
+            if path.is_dir(): self.assertEqual(path.stat().st_mode & 0o777, 0o700)
+
+    def test_modified_export_never_gets_complete_manifest(self):
+        self.data[next(iter(self.data))] = b'changed'
+        target = self.root/'partial'
+        with patch.object(preview, 'lima', side_effect=self.copy), self.assertRaisesRegex(ValueError, 'differs'):
+            preview.export_game_backup(self.root, self.saved, target)
+        self.assertFalse((target/'backup.json').exists())
+
+    def test_missing_component_foreign_path_and_traversal_refused_before_copy(self):
+        for change in ('missing', 'foreign', 'traversal', 'typed-size', 'manifest'):
+            value = copy.deepcopy(self.saved)
+            if change == 'missing': del value['files']['os/slot-b.ext4']
+            elif change == 'foreign': value['files']['os/userdata.ext4']['source'] = '/user/foreign'
+            elif change == 'traversal': value['files']['../foreign'] = value['files'].pop('authority/files/db0')
+            elif change == 'typed-size': value['files']['authority/files/db0']['bytes'] = True
+            else: value['authority']['receipt']['manifest_sha256'] = 'e'*64
+            with self.subTest(change=change), patch.object(preview, 'lima') as lima, self.assertRaises(ValueError):
+                preview.export_game_backup(self.root, value, self.root/change)
+            lima.assert_not_called(); self.assertFalse((self.root/change).exists())
+
+
 class OwnedLifecycle(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix='preview-owned-')
@@ -491,6 +544,55 @@ class OwnedLifecycle(unittest.TestCase):
                 preview.action(SimpleNamespace(directory=self.root, action='remove', delete_data=True))
             lima.assert_not_called()
         self.assertEqual(preview.load(self.root)[1]['state'], 'INSTALLED')
+
+    def test_game_restore_persists_intent_before_vm_and_resumes_only_same_name(self):
+        from contextlib import ExitStack
+        module, patches = self.action_patches()
+        saved = {'source_device': 'preview', 'config': module.load.return_value['device'], 'backup': '/backup/full'}
+        preview.save(self.root/'last-backup.json', saved)
+        calls = []
+        def interrupted(*args, **kwargs):
+            if args[3] == 'check-restore': return {'status': 'READY'}
+            record = preview.load(self.root)[1]
+            self.assertEqual(record['state'], 'RESTORE_PENDING')
+            calls.append((args[4], kwargs['name']))
+            raise InterruptedError('lost connection while restoring')
+        with ExitStack() as stack:
+            for item in patches: stack.enter_context(item)
+            stack.enter_context(patch.object(preview, 'installed_release', return_value={'game': {'sha256': 'a'*64}}))
+            stack.enter_context(patch.object(preview, 'close_owned_display'))
+            stack.enter_context(patch.object(preview, 'launcher_manifest'))
+            transaction = stack.enter_context(patch.object(preview, 'game_transaction', side_effect=interrupted))
+            for _ in range(2):
+                with self.assertRaises(InterruptedError):
+                    preview.action(SimpleNamespace(directory=self.root, action='restore', name='restored'))
+            self.assertEqual(calls[0], calls[1])
+            with self.assertRaisesRegex(ValueError, 'pending restore'):
+                preview.action(SimpleNamespace(directory=self.root, action='restore', name='other'))
+            self.assertEqual(transaction.call_count, 3)
+            for action in ('start', 'remove', 'backup'):
+                with self.assertRaisesRegex(ValueError, 'restore is pending'):
+                    preview.action(SimpleNamespace(directory=self.root, action=action))
+            transaction.side_effect = None; transaction.return_value = {'status': 'RESTORED', 'device': 'restored'}
+            self.assertEqual(preview.action(SimpleNamespace(directory=self.root, action='restore', name='restored'))['status'], 'RESTORED')
+        record = preview.load(self.root)[1]
+        self.assertEqual(record['active_device'], 'restored'); self.assertEqual(record['retired_devices'], ['preview'])
+        self.assertNotIn('pending_restore', record)
+
+    def test_changed_complete_backup_cannot_resume_a_pending_restore(self):
+        from contextlib import ExitStack
+        module, patches = self.action_patches()
+        saved = {'source_device': 'preview', 'config': module.load.return_value['device'], 'backup': '/backup/full'}
+        preview.save(self.root/'last-backup.json', saved)
+        preview.save(self.root/'installation.json', {**self.record, 'state': 'RESTORE_PENDING',
+                     'pending_restore': {'name': 'restored', 'source': 'preview', 'backup': '/backup/full', 'backup_sha256': '0'*64}})
+        with ExitStack() as stack:
+            for item in patches: stack.enter_context(item)
+            stack.enter_context(patch.object(preview, 'installed_release', return_value={'game': {'sha256': 'a'*64}}))
+            transaction = stack.enter_context(patch.object(preview, 'game_transaction'))
+            with self.assertRaisesRegex(ValueError, 'pending restore'):
+                preview.action(SimpleNamespace(directory=self.root, action='restore', name='restored'))
+            transaction.assert_not_called()
 
     def run_action(self, args, *, running=False):
         from contextlib import ExitStack

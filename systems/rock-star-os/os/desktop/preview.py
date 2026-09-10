@@ -480,6 +480,112 @@ def optional_sandbox(root, release, action):
                 'meaning': 'Game service is unavailable; Hub may still run; no replacement authority was created'}
 
 
+def game_transaction(root, release, config, action, intent, *, saved=None, name=None, retired=()):
+    require(action in ('backup', 'check-restore', 'restore') and release['game'] is not None, 'explicit complete Game transaction required')
+    member = 'native/os/desktop/game_backup.py'
+    arguments = [action, '--intent', intent]
+    if action != 'backup': arguments += ['--backup', saved['backup'], '--name', name]
+    code = '''import hashlib,json,os,stat,subprocess,sys
+from pathlib import Path
+script=Path(sys.argv[1]);expected=sys.argv[2]
+info=script.lstat()
+if not stat.S_ISREG(info.st_mode) or info.st_uid!=0 or info.st_mode&0o022 or info.st_nlink!=1 or script.resolve()!=script or hashlib.sha256(script.read_bytes()).hexdigest()!=expected:
+ raise ValueError('installed complete-backup component differs from release')
+for parent in script.parents:
+ info=parent.lstat()
+ if not stat.S_ISDIR(info.st_mode) or info.st_uid!=0 or info.st_mode&0o022: raise ValueError('unprotected backup component source parent')
+result=subprocess.run([sys.executable,'-B',str(script),*sys.argv[3:]],input=sys.stdin.read(),capture_output=True,text=True,check=True,timeout=540)
+print(result.stdout,end='')'''
+    result = guest_python(root, code, GUEST_ROOT+'/'+member, release['files'][member]['sha256'], *arguments,
+                          timeout=560, input=json.dumps({'config': config['device'], 'retired_devices': list(retired)}))
+    receipt = decode(result.stdout.encode())
+    require(type(receipt) is dict and receipt.get('simulation_only') is True, 'complete simulation receipt required')
+    if action == 'backup':
+        require(receipt.get('schema') == 'rock-desktop-game-backup/1' and receipt.get('backup_id') == intent and
+                receipt.get('backup') == '/var/tmp/rockstaros-preview-backups/'+intent and
+                receipt.get('source_device') == config['device']['name'] and receipt.get('config') == config['device'],
+                'complete backup source/intent differs')
+        authority = receipt.get('authority', {}).get('receipt', {})
+        require(authority.get('schema') == 'rock-game-sandbox-backup-receipt/1' and authority.get('backup_id') == intent and
+                authority.get('authority_id') == GAME_AUTHORITY and authority.get('config_sha256') == release['game']['sha256'] and
+                authority.get('simulation_only') is True, 'complete backup authority binding differs')
+        validate_game_inventory(receipt)
+    elif action == 'check-restore':
+        require(receipt == {'schema': 'rock-desktop-game-restore-preflight/1', 'status': 'READY', 'intent': intent,
+                           'backup': saved['backup'], 'source_device': config['device']['name'], 'new_device': name, 'simulation_only': True},
+                'complete restore preflight binding differs')
+    else:
+        expected_config = {**config['device'], 'name': name}
+        require(receipt.get('schema') == 'rock-desktop-game-restore/1' and receipt.get('status') == 'RESTORED' and
+                receipt.get('device') == name and receipt.get('config') == expected_config and
+                receipt.get('source_retired') is True and receipt.get('original_device_preserved') is True and
+                receipt.get('same_host_current_copy_only') is True and
+                receipt.get('binding') == {'intent': intent, 'source_device': config['device']['name'], 'new_device': name,
+                    'os_backup_sha256': saved['os']['manifest_sha256'],
+                    'authority_manifest_sha256': saved['authority']['receipt']['manifest_sha256']},
+                'complete restore binding differs')
+        authority = receipt.get('authority', {})
+        require(authority.get('schema') == 'rock-game-sandbox-current-restore-receipt/1' and authority.get('status') == 'DONE' and
+                authority.get('intent') == intent and authority.get('new_device') == name and
+                authority.get('authority_id') == GAME_AUTHORITY and authority.get('config_sha256') == release['game']['sha256'] and
+                authority.get('source_retired') is True and authority.get('same_host_current_copy_only') is True and
+                authority.get('simulation_only') is True and
+                authority.get('backup_manifest_sha256') == saved['authority']['receipt']['manifest_sha256'],
+                'complete authority restore receipt differs')
+        require(receipt.get('disks') == {disk: {key: saved['files']['os/'+disk][key] for key in ('bytes', 'sha256')}
+                for disk in ('slot-a.ext4', 'slot-b.ext4', 'userdata.ext4')}, 'restored OS disks differ from the complete backup')
+    return receipt
+
+
+def validate_game_inventory(saved):
+    files = saved.get('files')
+    require(type(files) is dict and 11 <= len(files) <= 264, 'bounded full OS/authority backup inventory required')
+    require({'os/backup.json', 'os/slot-a.ext4', 'os/slot-b.ext4', 'os/userdata.ext4',
+             'authority/manifest.json', 'authority/plan.json'} <= set(files), 'OS or authority backup component is missing')
+    total = 0
+    for member, value in files.items():
+        safe_member(member)
+        require(type(value) is dict and set(value) == {'source', 'sha256', 'bytes'} and
+                type(value['bytes']) is int and 0 <= value['bytes'] <= 2*1024**3, 'invalid complete backup file')
+        hash_text(value['sha256']); total += value['bytes']
+        if member.startswith('os/'):
+            require(member in {'os/backup.json', 'os/slot-a.ext4', 'os/slot-b.ext4', 'os/userdata.ext4'} and
+                    value['source'] == saved['os']['backup']+'/'+member[3:], 'OS export member/path differs')
+        else:
+            require(member in ('authority/manifest.json', 'authority/plan.json') or member.startswith('authority/files/'),
+                    'unknown authority export member')
+            require(value['source'] == saved['backup']+'/'+member, 'authority export member/path differs')
+        require(Path(value['source']).is_absolute() and str(Path(value['source'])) == value['source'] and
+                '..' not in Path(value['source']).parts, 'canonical absolute export source required')
+    require(total <= 7*1024**3 and saved['os']['backup'].startswith('/var/tmp/rock-star-desktop/'+saved['source_device']+'/backups/'),
+            'complete backup scope or byte bound differs')
+    require(files['os/backup.json']['sha256'] == saved['os']['manifest_sha256'] and
+            files['authority/manifest.json']['sha256'] == saved['authority']['receipt']['manifest_sha256'],
+            'component manifests differ from full inventory')
+
+
+def export_game_backup(root, saved, output):
+    validate_game_inventory(saved)
+    target = protected(output, new=True); target.mkdir(mode=0o700)
+    for member, value in saved['files'].items():
+        destination = target/member
+        destination.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        for parent in destination.parents:
+            if parent == target: break
+            parent.chmod(0o700)
+        lima(root, 'copy', '--backend=scp', VM_NAME+':'+value['source'], str(destination), timeout=180)
+        destination.chmod(0o600)
+        with destination.open('rb') as stream: os.fsync(stream.fileno())
+        require(destination.stat().st_size == value['bytes'] and digest(destination) == value['sha256'],
+                'exported complete backup differs; in-VM originals preserved')
+    save(target/'backup.json', saved)
+    for directory in sorted((path for path in target.rglob('*') if path.is_dir()), reverse=True):
+        fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY)
+        try: os.fsync(fd)
+        finally: os.close(fd)
+    return str(target)
+
+
 def install(args):
     observations = host_check()
     release = verify_release(args.manifest, args.archive, args.trusted_key, args.trusted_key_sha256,
@@ -566,8 +672,11 @@ def action(args):
                     'active_device': record['active_device'], 'retired_devices': record['retired_devices'],
                     'pending_restore': record.get('pending_restore'), 'error_type': record.get('error_type'),
                     'data': 'preserved; simulator only; no secret or raw user data included'}
-        require(record['state'] in ('INSTALLED', 'RETIRED'), 'incomplete installation; inspect provision.log and use cleanup-failed')
+        require(record['state'] in ('INSTALLED', 'RETIRED', 'RESTORE_PENDING'), 'incomplete installation; inspect provision.log and use cleanup-failed')
         release = installed_release(root, record)
+        if record['state'] == 'RESTORE_PENDING':
+            require(args.action == 'restore' and release['game'] is not None,
+                    'restore is pending; keep writers stopped and repeat the same Game restore name to recover')
         verify_installed(root, release)
         instance = verify_vm(root, record)
         if instance['status'] != 'Running':
@@ -605,8 +714,12 @@ def action(args):
             return {'running': False, 'observed': 'owned QEMU stopped; use the OS UI for normal shutdown', 'game': game}
         require(not status.get('running'), 'OS を画面内の電源操作で終了してください。稼働中のデータは変更しません。')
         if args.action == 'backup':
-            require(release['game'] is None,
-                    'complete Game current-copy backup integration is required; disk-only backup refused')
+            if release['game'] is not None:
+                saved = game_transaction(root, release, config, 'backup', str(uuid.uuid4()))
+                save(root/'last-backup.json', saved)
+                exported = export_game_backup(root, saved, args.output) if args.output else None
+                return {'status': 'SAVED', 'backup': saved['backup'], 'export': exported, 'encrypted': False,
+                        'components': 'complete OS A/B/data and independent Wallet/Game/C state', 'restore_scope': saved['restore_scope']}
             saved = module.backup_profile(config)
             if args.output:
                 target = protected(args.output, new=True)
@@ -628,14 +741,37 @@ def action(args):
             return {'status': 'SAVED', 'backup': saved['backup'], 'export': str(args.output) if args.output else None,
                     'encrypted': False, 'restore_scope': 'same owned VM, new offline device; external game servers excluded'}
         if args.action == 'restore':
-            require(release['game'] is None,
-                    'complete Game current-copy restore integration is required; disk-only restore refused')
             require(re.fullmatch(r'[a-z0-9][a-z0-9-]{0,31}', args.name) and
                     args.name != record['active_device'] and args.name not in record['retired_devices'], 'new restore device name required')
-            require(not (root / 'profiles' / (args.name + '.json')).exists(), 'restore profile already exists')
             saved = decode(read(root / 'last-backup.json'))
             require(saved.get('source_device') == record['active_device'] and saved.get('config') == config['device'],
                     'backup does not belong to this active device')
+            if release['game'] is not None:
+                if record['state'] == 'RESTORE_PENDING':
+                    pending = record['pending_restore']
+                    require(pending['name'] == args.name and pending['source'] == record['active_device'] and
+                            pending['backup'] == saved['backup'] and pending['backup_sha256'] == digest(root/'last-backup.json'),
+                            'repeat exactly the pending restore; backup/name cannot change')
+                else:
+                    require(not (root/'profiles'/(args.name+'.json')).exists(), 'restore profile already exists')
+                    pending = {'intent': str(uuid.uuid4()), 'name': args.name, 'source': record['active_device'],
+                               'backup': saved['backup'], 'backup_sha256': digest(root/'last-backup.json')}
+                    game_transaction(root, release, config, 'check-restore', pending['intent'], saved=saved,
+                                     name=args.name, retired=record['retired_devices'])
+                    close_owned_display(module, config)
+                    record.update(state='RESTORE_PENDING', pending_restore=pending)
+                    save(root/'installation.json', record)
+                restored = game_transaction(root, release, config, 'restore', pending['intent'], saved=saved,
+                                            name=args.name, retired=record['retired_devices'])
+                launcher_manifest(root, release, record, args.name)
+                save(root/'last-restore.json', restored)
+                record['retired_devices'].append(record['active_device'])
+                record.update(active_device=args.name, state='INSTALLED')
+                del record['pending_restore']; save(root/'installation.json', record)
+                return {'status': 'RESTORED', 'active_device': args.name, 'original': 'preserved and retired by the OS/authority gate',
+                        'scope': 'same-host current copy, all authority and OS post-state verified',
+                        'next': 'start the restored device and verify saved Hub results and synthetic Wallet/Game'}
+            require(not (root / 'profiles' / (args.name + '.json')).exists(), 'restore profile already exists')
             close_owned_display(module, config)
             # Persist a fail-closed transaction marker before creating another
             # copy. A killed process cannot silently resume the source writer.

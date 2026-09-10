@@ -179,12 +179,12 @@ def create_stage0_backup(name, state, config):
     return {'status':'SAVED','backup':str(destination),**report}
 
 
-def restore_stage0_backup(path, new_name, report):
+def validate_stage0_backup(path, report):
+    """Verify the complete stopped image set without creating a destination."""
     from stage0 import DISKS, regular as private_regular, stopped_slots, validate_disks
     import re
     config = report['config']; validate_config(config)
     require(config.get('schema') in STAGE0_SCHEMAS,'A/B/data backup requires explicit stage0 device')
-    require(new_name != report['source_device'],'復元先には新しい端末名を指定してください。元の端末は保持します。')
     require(set(p.name for p in path.iterdir()) == {'backup.json',*DISKS},'incomplete or unexpected A/B/data backup members')
     disks = report.get('disks')
     require(type(disks) is dict and set(disks) == set(DISKS),'exact A/B/data manifest required')
@@ -197,6 +197,16 @@ def restore_stage0_backup(path, new_name, report):
     validate_disks(config, path)
     check_disk(path/'userdata.ext4')
     require(exact_json(stopped_slots(config,path), report['update']),'saved update metadata/slot set mismatch')
+    return disks
+
+
+def restore_stage0_backup(path, new_name, report):
+    from stage0 import DISKS, stopped_slots
+    config = report['config']
+    require(config.get('schema') != 'rock-desktop-device/7',
+            'Game devices require the complete current authority and OS restore transaction; disk-only restore refused')
+    require(new_name != report['source_device'],'復元先には新しい端末名を指定してください。元の端末は保持します。')
+    disks = validate_stage0_backup(path, report)
     state = state_path(new_name)
     with locked(state):
         require({p.name for p in state.iterdir()} <= {'lock'},'復元先に既存データがあります。新しい端末名を指定してください。')

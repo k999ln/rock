@@ -6,7 +6,7 @@
 
 初回の利用者が既存 Lima VM の識別子や開発担当の絶対 path を用意する必要がなくなります。署名・hash を検証した配布物から専用 VM を作り、既存の signed A/B OS と private browser viewer を利用します。保存結果へ戻るための起動・正常終了案内・再開・検証付き backup・別端末名 restore・所有 VM の削除を同じ入口へまとめています。
 
-既存の `launcher.py` v2、`guest.py` device/6、`stage0.py` の image/source/試験認証器 guard と、`backup.py` の停止済み A/B/data 検証を再利用します。安全な起動を妨げるからという理由で guard を外していません。
+既存の `launcher.py`、`guest.py` device/6・7、`stage0.py` の image/source/試験認証器 guard と、`backup.py` の停止済み A/B/data 検証を再利用します。安全な起動を妨げるからという理由で guard を外していません。
 
 新しい launcher v3 は表示 port を署名 release manifest と個別の起動 manifest へ固定します。この配布では HTTP `8900` / WebSocket `5910` を使い、既存 v1/v2 の `8899/5909` は保持します。利用中の port を奪ったり、別の空き port へ黙って切り替えたりしません。viewer の CSP と接続先もその指定に一致させます。
 
@@ -19,7 +19,8 @@
 - `local-development` は offline device/6、`development-game-authority` は device/7 と同じ専用VM内の独立した公開試験台帳を使います。Game構成は個人の既存台帳を複製せず、空・未登録・未同意の状態から準備します。一般providerには接続しません。
 - Gameサーバーが利用できない場合もHubの起動は継続できます。別のauthorityへ置き換えたり、接続同意・登録・残高を自動生成したりしません。
 - native入力はASCIIのUS配列のみです。日本語IMEとclipboardは未接続で、任意の日本語本文を貼り付ける操作はできません。日本語の引用整理例は「サンプルを入力」ボタンで試せます。この制限下の例を日常業務の入力時間削減とは扱いません。
-- backup は暗号化されていません。local構成の別端末名 restore は同じ VM 内の直近 backup に限ります。Game構成の完全台帳backup/restoreは次の統合工程で、未対応の候補はdisk-only操作を拒否します。別hostの災害復旧は未受入です。
+- backup は暗号化されていません。local 構成の別端末名 restore は同じ VM 内の直近 backup に限ります。Game 構成は OS の A/B/data と独立した Wallet/Game/C 台帳を一組にして保存し、同じ所有 VM の現時点コピーだけを復元します。保存後にどちらかが変化していれば過去へ戻しません。OS のディスク単独復元は拒否します。
+- Game 復元は durable intent と全 writer の停止 gate を持ち、同じ backup・intent・新端末名の中断だけを再開できます。両構成要素の完了 receipt と全 post-state を再検証してから起動を許可します。累積した元端末名は復元後も再起動を拒否します。別 host の災害復旧や export の再投入は未対応で、VM 削除後の照合基盤再構成は合格扱いにしません。
 - 削除は所有権が一致する専用 VM とその内部データに限ります。host の package と記録、別先の export backup は保持します。
 - 製品の新しい license/再配布条件は策定していません。NOTICE と Buildroot legal-info の確認は公開条件として残します。
 

@@ -82,7 +82,7 @@ Hub で「引用整理」を開き、用途・作者・版・権利・実行先�
 
 結果画面で本文から出典注記が取り除かれ、末尾の出典一覧に「店舗情報」が表示され、コード内の例がそのまま残ることを確認します。「履歴」から完了した同じ処理を開き、保存結果を再表示します。引用整理は入力の整理です。記事生成、出典の真偽確認、自動納品、売上発生とは扱いません。Wallet で見積・予約・確定費用・保留・入金の区別と「合成」「未接続」の表示を確認してください。実行成功から実売上や実資金を作りません。
 
-Game 接続・交換はその配布候補に対応する SDK/OS 受入記録と同梱サンプルの範囲だけを試します。独立した game server の DB は、このオフライン端末 backup に含まれません。逆方向交換、実資金、実ゲームを有効化する手順ではありません。
+Game 接続・交換はその配布候補に対応する SDK/OS 受入記録と同梱サンプルの範囲だけを試します。`development-game-authority` 構成の独立した Wallet・Game A/B・照合台帳は専用 VM に作られ、下記の完全 backup に含まれます。逆方向交換、実資金、実ゲームを有効化する手順ではありません。
 
 ## 正常終了と再開
 
@@ -98,7 +98,7 @@ python3 preview.py start --directory "$ROCK_PREVIEW_ROOT"
 
 ## 停止済み backup と別の復元先
 
-OS 内から正常終了してから実行します。A/B slot と userdata の全体、署名済み update state、clean filesystem と各 SHA-256 を検証します。稼働中、変更された image、不完全な backup、既存の復元先は拒否します。
+OS 内から正常終了してから実行します。A/B slot と userdata の全体、署名済み update state、clean filesystem と各 SHA-256 を検証します。Game 構成では独立した台帳の writer も停止し、Wallet・権限・Game index・Game A/B の全 DB と保持された照合情報を一組で保存します。稼働中、変更された image、不完全な backup、既存の復元先は拒否します。
 
 ```sh
 python3 preview.py backup --directory "$ROCK_PREVIEW_ROOT" \
@@ -109,7 +109,11 @@ python3 preview.py start --directory "$ROCK_PREVIEW_ROOT"
 
 `--output` は新しい保存先です。guest 内の検証済み backup に加え、別の host directory へコピーし、disk hash を再照合します。backup は暗号化されていません。許可された合成入力だけを試してください。
 
-復元は **同じ所有 VM の新しい offline 端末名** へ行います。元端末は保持し、この launcher からの起動対象から外してから復元先を active にします。元と復元を同時に動かす手順はありません。復元先で保存結果・Wallet 履歴・通常終了を確認してください。任意の過去 backup や別 host、外部 game 台帳まで整合する一般的な災害復旧機能とは違います。現在の `restore` 入口は同じ VM 内の直近 backup を使用し、host export の別 VM への再投入は未対応です。
+復元は **同じ所有 VM の新しい端末名** へ行います。local 構成は offline のままです。Game 構成は保存後の OS と外部台帳が現在も一致する場合だけ、同じ照合基盤の下で Wallet の現時点コピーと Game の発行 epoch 引継ぎを行います。元端末は保持され、累積した廃止端末一覧により再起動を拒否されます。OS と台帳の両方の検証が完了するまで全 writer を止めたままにします。
+
+Game 復元中に通信や実行が中断した場合は、`diagnose` で `RESTORE_PENDING` と復元名を確認し、**同じ `restore --name recovered-1`** をもう一度実行します。同じ intent・backup・新端末名の完了記録または未起動の部分コピーだけを回収します。別の復元名への変更、backup の差し替え、元 OS や台帳が進んだ後の巻き戻しは拒否します。元と復元を同時に動かす手順はありません。
+
+復元先で保存結果・Wallet/Game 履歴・通常終了を確認してください。任意の過去 backup や別 host の災害復旧は未対応です。現在の `restore` 入口は同じ VM 内の直近 backup を使用し、host export の別 VM への再投入は未対応です。export は全構成要素の保全用コピーであり、VM を削除した後に同じ照合基盤まで新規再構成できることを意味しません。
 
 ## 削除と残るもの
 
