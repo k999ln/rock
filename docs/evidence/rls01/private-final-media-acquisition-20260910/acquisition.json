@@ -1,0 +1,54 @@
+{
+  "schema": "rock-private-final-media-acquisition/1",
+  "status": "PASS_DOWNLOAD_SHA_SIZE",
+  "draft": true,
+  "public_access_verified": false,
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "release_id": 386171909,
+  "started_from_empty_directory": true,
+  "assets": [
+    {
+      "id": 555005163,
+      "name": "rockstaros-demo-9abf78a.mp4",
+      "started_utc": "2026-09-10T13:13:20.867607+00:00",
+      "finished_utc": "2026-09-10T13:13:21.237552+00:00",
+      "exit_code": 0,
+      "bytes": 730404,
+      "sha256": "58c832e84b2b952f6713cdc2abf9a417b8be338e4ccc13e6d6f7ad7a7406fd42",
+      "expected_bytes": 730404,
+      "expected_sha256": "58c832e84b2b952f6713cdc2abf9a417b8be338e4ccc13e6d6f7ad7a7406fd42",
+      "status": "PASS",
+      "authenticated_acquisition": "gh api asset endpoint with Accept application/octet-stream",
+      "path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/private-final-media-download-01/rockstaros-demo-9abf78a.mp4"
+    },
+    {
+      "id": 555005164,
+      "name": "rockstaros-demo-9abf78a.vtt",
+      "started_utc": "2026-09-10T13:13:20.867850+00:00",
+      "finished_utc": "2026-09-10T13:13:21.188459+00:00",
+      "exit_code": 0,
+      "bytes": 630,
+      "sha256": "653fc274fce595d4a3e421dd06a3e8fb45298f004f0d3ffcb127921fc60910b1",
+      "expected_bytes": 630,
+      "expected_sha256": "653fc274fce595d4a3e421dd06a3e8fb45298f004f0d3ffcb127921fc60910b1",
+      "status": "PASS",
+      "authenticated_acquisition": "gh api asset endpoint with Accept application/octet-stream",
+      "path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/private-final-media-download-01/rockstaros-demo-9abf78a.vtt"
+    },
+    {
+      "id": 555005165,
+      "name": "rockstaros-native-ui-evidence-9abf78a.tar.gz",
+      "started_utc": "2026-09-10T13:13:20.867909+00:00",
+      "finished_utc": "2026-09-10T13:13:22.492780+00:00",
+      "exit_code": 0,
+      "bytes": 52135719,
+      "sha256": "19d9cae205b8fd44454d4202c6fcdf988d9640b17b652320a5ba720cab10693c",
+      "expected_bytes": 52135719,
+      "expected_sha256": "19d9cae205b8fd44454d4202c6fcdf988d9640b17b652320a5ba720cab10693c",
+      "status": "PASS",
+      "authenticated_acquisition": "gh api asset endpoint with Accept application/octet-stream",
+      "path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/private-final-media-download-01/rockstaros-native-ui-evidence-9abf78a.tar.gz"
+    }
+  ],
+  "scope": "Authenticated private draft retrieval only; no publish and no public URL availability claim."
+}
