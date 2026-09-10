@@ -340,6 +340,23 @@ class ContractRuntime:
             provisioning_file=provisioning_file, verifier=verifier, **options)
 
     @classmethod
+    def open_current_game_restore(cls, restore_id, *, index, coordinator, provisioning_file, verifier, **options):
+        """Nonpublic management lifetime bound to a real C/index restore plan.
+
+        It never starts a scheduler or serves normal Wallet/game operations.
+        Complete resume, close, then use the ordinary fully joined bootstrap.
+        """
+        from game_exchange.current_restore import _record, GameIndex, AuthorityFenceCoordinator
+        cls._validate_options(verifier,options)
+        if type(index) is not GameIndex or type(coordinator) is not AuthorityFenceCoordinator:
+            raise RuntimeUnavailable('actual retained game index/coordinator required')
+        coordinator.bind_owner_registry(*verifier.registry_identity())
+        _,plan=_record(index,restore_id)
+        return cls._open_with_permit(coordinator.open_active(plan['new_descriptor']['ledger_ref']),
+            provisioning_file=provisioning_file,verifier=verifier,
+            _current_game_restore=(index,coordinator,restore_id),**options)
+
+    @classmethod
     def open_adopted(cls, plan, *, coordinator, provisioning_file, verifier, **options):
         cls._validate_options(verifier, options)
         coordinator.bind_owner_registry(*verifier.registry_identity())
@@ -359,7 +376,7 @@ class ContractRuntime:
 
     @classmethod
     def _open_with_permit(cls, opening, *, provisioning_file, verifier, clock=None,
-                          max_automatic_failures=3, service_status_provider=None):
+                          max_automatic_failures=3, service_status_provider=None, _current_game_restore=None):
         self = cls.__new__(cls)
         self._descriptor = opening.descriptor
         self._hooks = opening.hooks
@@ -371,11 +388,20 @@ class ContractRuntime:
         self._lifetime_lock, self._close_lock = threading.RLock(), threading.Lock()
         self._service_status_provider = service_status_provider
         self._bound_account = None
+        self._restore_management = None
+        self._requires_game_binding = False
         try:
             if not isinstance(self._descriptor, ContractDescriptor):
                 raise ValueError('coordinator descriptor required')
-            with opening.initialize():
+            with opening.initialize(), ExitStack() as bootstrap:
                 self._hooks.require_held()
+                from game_exchange.current_restore import require_normal_open, validate_management_open
+                if _current_game_restore is None:
+                    self._requires_game_binding = require_normal_open(self.descriptor)
+                else:
+                    index,coordinator,restore_id = _current_game_restore
+                    plan_hash = bootstrap.enter_context(validate_management_open(index,coordinator,restore_id,self.descriptor))
+                    self._restore_management = (index,coordinator,restore_id,plan_hash)
                 self._service = platform_service.WalletService(self.descriptor.canonical_state,
                     provisioning_file=provisioning_file, start_scheduler=False,
                     contract_devices=True, authentication_required=True,
@@ -391,7 +417,8 @@ class ContractRuntime:
                 raise ValueError('activation changed runtime identity or write capability')
             self._bound_account = observed.account_id
             self._opening = None
-            self._state = 'READY'
+            self._state = ('RESTORE_MANAGEMENT' if self._restore_management is not None else
+                           'AWAITING_GAME_BIND' if self._requires_game_binding else 'READY')
             return self
         except BaseException:
             # Expose only an internal cleanup handle if release cannot finish;
@@ -462,6 +489,15 @@ class ContractRuntime:
         with writer.admit_write(expected_epoch):
             yield
 
+    def require_serving_ready(self, game_gateway=None):
+        with self._lifetime_lock:
+            if self._state not in ('READY','RUNNING'):
+                raise RuntimeUnavailable('contract is not fully bound for normal service')
+            games=getattr(self,'_games',None)
+            if self._requires_game_binding or games is not None:
+                if games is None or games.gateway is not game_gateway or not game_gateway.bound:
+                    raise RuntimeUnavailable('retained game contract requires its exact current gateway')
+
     def start_scheduler(self):
         with self._close_lock:
             with self._lifetime_lock:
@@ -476,9 +512,24 @@ class ContractRuntime:
         from game_exchange.connections import WalletConnections, GameGateway
         if type(gateway) is not GameGateway or getattr(self, '_games', None) is not None:
             raise RuntimeUnavailable('game connections already bound or invalid gateway')
-        with self.admit_write(self.descriptor.writer_epoch):
-            self._ensure_account_binding()
-            self._games = WalletConnections(self, gateway, signer, cursor)
+        with self._close_lock:
+            with self._lifetime_lock:
+                if self._state not in ('READY','AWAITING_GAME_BIND'):
+                    raise RuntimeUnavailable('runtime cannot bind games in its current lifetime')
+                self._state = 'AWAITING_GAME_BIND'
+            with self._writer.admit_write(self.descriptor.writer_epoch):
+                self._ensure_account_binding()
+                self._games = WalletConnections(self, gateway, signer, cursor)
+            with self._lifetime_lock:self._state = 'READY'
+
+    @contextmanager
+    def _current_game_restore_admission(self,index,coordinator,restore_id,plan_hash):
+        with self._close_lock:
+            with self._lifetime_lock:
+                if self._state != 'RESTORE_MANAGEMENT' or self._restore_management != (index,coordinator,restore_id,plan_hash):
+                    raise RuntimeUnavailable('matching C/index management lifetime required')
+            with self._writer.admit_write(self.descriptor.writer_epoch):
+                yield
 
     def validate_owner_request(self, request):
         if isinstance(request, dict) and isinstance(request.get('op'), str) and request['op'].startswith('game.'):
@@ -567,7 +618,7 @@ class ContractRuntime:
             with self._lifetime_lock:
                 if self._state == 'CLOSED':
                     return
-                if self._state not in ('READY', 'RUNNING', 'CLOSING'):
+                if self._state not in ('READY', 'RUNNING', 'CLOSING','AWAITING_GAME_BIND','RESTORE_MANAGEMENT'):
                     raise RuntimeUnavailable('runtime initialization has not completed')
                 self._state = 'CLOSING'
             if self._writer is not None:

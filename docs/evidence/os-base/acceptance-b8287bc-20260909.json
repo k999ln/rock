@@ -590,16 +590,27 @@
       ],
       "expected": "Five normal cycles and 61 jobs spanning at least 3600 seconds, <=4200 seconds and all predeclared limits, no forbidden effects",
       "actual": {
+        "normal_cycles_completed_before_failure": 4,
+        "failed_cycle": 4,
+        "completed_soak_jobs": 41,
+        "first_soak_job": "C4J0",
+        "last_completed_soak_job": "C4J40",
+        "soak_first_to_last_start_seconds": 2400.0006598029977,
+        "next_job": "C4J41",
+        "next_job_state": "UI input in progress; execution request not submitted",
+        "retained_prior_jobs": 6,
+        "closed_total_jobs": 47,
+        "closed_total_actions": 55,
+        "failure": "Tesseract invocation exceeded 10 seconds during input observation",
+        "observer_failure": "resource observation failed: resource observer missed its sampling deadline",
+        "full_resource_summary": null,
+        "endurance_success": false,
         "execution_state": "FAILED",
-        "measurement_started_at": "2026-09-09T22:20:35.221469+00:00",
-        "source_device": "business-d21a8b8cec604d159bdb",
-        "failure": "TimeoutError: OCR exceeded the original UI state deadline",
-        "closed_normal_cycles": 4,
-        "soak_jobs_recorded_before_failure": 5,
+        "run": 43,
+        "failure_class": "ENVIRONMENT_INTERRUPTION",
         "raw_report_D6": "NOT_RUN (not completed), raw overall FAIL retained",
         "owned_device_running_at_failure": true,
-        "subsequent_teardown": "not evaluated in this snapshot",
-        "root_visual_observation": "sixth result Brief C4J5 visible; does not override original deadline failure",
+        "subsequent_teardown": "CLOSED_NORMALLY_AFTER_FAILED_TEST; closed inspection PASS only",
         "no_success_inferred": true
       },
       "status": "FAIL",
@@ -615,9 +626,26 @@
         {
           "path": "docs/evidence/os-base/soak42-ocr-failed-b8287bc.json",
           "sha256": "a3cc0306769973ea4fb3b9168b0c698a128770afd7098967a4a2afa951de70bf"
+        },
+        {
+          "path": "docs/evidence/os-base/43-summary-b8287bc.json",
+          "sha256": "13b496ead5241401bf37961555da9fca20c067ae2cd3b27a068beacdd82feba9"
         }
       ],
-      "scope": "Run42 failed the original 30-second UI criterion before completing 60 minutes/61 jobs. Raw D6 field NOT_RUN is preserved; prior run39 remains FAIL."
+      "scope": "Run43 failed OCR and resource-sample deadlines during a recorded host low-power hibernation. 41/61 soak jobs completed; run39/run42 remain failed history. Separate normal closure and data retention do not establish D6.",
+      "actual_run42_preserved": {
+        "execution_state": "FAILED",
+        "measurement_started_at": "2026-09-09T22:20:35.221469+00:00",
+        "source_device": "business-d21a8b8cec604d159bdb",
+        "failure": "TimeoutError: OCR exceeded the original UI state deadline",
+        "closed_normal_cycles": 4,
+        "soak_jobs_recorded_before_failure": 5,
+        "raw_report_D6": "NOT_RUN (not completed), raw overall FAIL retained",
+        "owned_device_running_at_failure": true,
+        "subsequent_teardown": "not evaluated in this snapshot",
+        "root_visual_observation": "sixth result Brief C4J5 visible; does not override original deadline failure",
+        "no_success_inferred": true
+      }
     },
     {
       "id": "AF.ATM_FEE",
@@ -692,7 +720,7 @@
     {
       "id": "D6",
       "status": "FAIL",
-      "scope": "run42 failed original UI deadline; 60-minute/61-job criterion not completed"
+      "scope": "run43 environment-interrupted FAIL; 41/61 jobs, OCR/sample deadlines failed; later normal close/retention PASS separately"
     }
   ],
   "separate_gates": {
@@ -707,14 +735,17 @@
     "P": "NOT_RUN"
   },
   "D6_plan": {
-    "path": "docs/evidence/os-base/soak-plan42-b8287bc.json",
-    "sha256": "e36b5b9a17a0b2703797eea220a9f83a7eb535596463e31a74acd6c40203733d",
+    "path": "docs/evidence/os-base/43-plan-b8287bc.json",
+    "sha256": "da45333aa719788941f552b5d364802558ba9f8fe810e38ad6289e4fc5a69442",
+    "publication": "public derived plan; original execution plan was not modified",
+    "original_file_sha256": "22aab2f9597ed892b2cd73f2d13c6f51896709d23909671034f6298c62e26963",
+    "canonical_json_sha256": "3d048948186de0d1dee442cd8689170ba94bb0eb0deee96936d4761cc2774e60",
     "execution_state": "FAILED",
     "final_result": "FAIL",
-    "canonical_json_sha256": "6cdd0789adb4d2dcf34dffe8eff49d2b0cec3713dc748d31897ef6762f093850",
+    "failure_class": "ENVIRONMENT_INTERRUPTION",
     "failure_report": {
-      "path": "docs/evidence/os-base/soak42-ocr-failed-b8287bc.json",
-      "sha256": "a3cc0306769973ea4fb3b9168b0c698a128770afd7098967a4a2afa951de70bf"
+      "path": "docs/evidence/os-base/43-soak-failed-b8287bc.json",
+      "sha256": "b428d45ea68da74239753f756b47ffdbf6e32f43240bc59a8ab0e54af50bba5e"
     },
     "limits": {
       "boot_seconds": 180,
@@ -819,8 +850,8 @@
       "id": "D6-FAILED",
       "severity": "required_acceptance_pending",
       "status": "FAIL",
-      "detail": "Run42 ended on OCR timeout at the original 30-second UI deadline after four normal closed cycles and five recorded soak jobs. Overall OS acceptance remains INCOMPLETE.",
-      "next": "Host OCR fixed and run42 normally closed with exact receipts verified. Run43 has started at unchanged workload/limits; no acceptance until complete."
+      "detail": "Run43 stopped during C4J41 input after 41 soak jobs. OCR exceeded its 10-second subprocess limit and the observer missed its sampling deadline; host pmset records a 2217-second low-power hibernation at 1% battery. Overall acceptance remains INCOMPLETE.",
+      "next": "Run44 is a separate new-device attempt under the unchanged plan workload/limits, AC power and run-lifetime sleep assertion. Preserve run43 as environment-interrupted FAIL regardless of later normal closure."
     },
     {
       "id": "SOAK39-OBSERVER",
@@ -906,13 +937,13 @@
     "Immutable freeze and historical reports keep their original NOT_RUN/FAIL labels; this later report does not overwrite history."
   ],
   "next_steps": [
-    "Preserve run42 failure and its separate normal-close/closed-inspection reports; finish new predeclared run43 before establishing D6.",
+    "Finish and evaluate separately started run44 from its frozen plan and complete evidence; retain run39/run42/run43 failures and separate normal-close/data-retention successes.",
     "Use exact frozen host/image pairing and local no-network profile for handoff.",
     "Advance GX00/game development in separate source; rebuild a new candidate and repeat affected D4/D5 gates before merging claims.",
     "Keep hardware, MetaMask and production-provider/funds tracks separate; no secret handling in public evidence."
   ],
   "followup_20260909_2308": {
-    "status": "INCOMPLETE_D6_RETRY_RUNNING",
+    "status": "INCOMPLETE_D6_RETRY_FAILED_ENVIRONMENT",
     "run42_normal_close": {
       "path": "docs/evidence/os-base/soak42-normal-close-b8287bc.json",
       "sha256": "0cd0978dd8c6bc82a02121d3aa9f228a672ba25f89f642438338306100c2936c"
@@ -927,7 +958,7 @@
       "sha256": "4cf006c47d9ceef21b2ec0f2ed03e16dd0319c28a1a98bbabf6f2f8d70e979bf"
     },
     "frozen_compatible_host_payload_sha256": "10961504c950726c2f445fca966b80f6bab32772d037b58b1f0ea153403367a8",
-    "new_retry": "43; business-bb2a77c9c3734b88a12d; same limits and workload; no runtime image changes",
+    "new_retry": "43; FAIL environment interruption; 41/61 soak jobs; normal close and retained 47 jobs/55 actions verified separately",
     "ci_851081a": {
       "native_run": 34412876732,
       "web_run": 34412876810,
@@ -938,6 +969,72 @@
         "path": "docs/evidence/os-base/ci-851081a-native.json",
         "sha256": "c82d0e93685ea47e5ae0d546005dece6b701c43aa94760c8a757c69a9fe183ba"
       }
+    },
+    "run43_summary": {
+      "path": "docs/evidence/os-base/43-summary-b8287bc.json",
+      "sha256": "13b496ead5241401bf37961555da9fca20c067ae2cd3b27a068beacdd82feba9"
     }
+  },
+  "D6_plan_run42_preserved": {
+    "path": "docs/evidence/os-base/soak-plan42-b8287bc.json",
+    "sha256": "e36b5b9a17a0b2703797eea220a9f83a7eb535596463e31a74acd6c40203733d",
+    "execution_state": "FAILED",
+    "final_result": "FAIL",
+    "canonical_json_sha256": "6cdd0789adb4d2dcf34dffe8eff49d2b0cec3713dc748d31897ef6762f093850",
+    "failure_report": {
+      "path": "docs/evidence/os-base/soak42-ocr-failed-b8287bc.json",
+      "sha256": "a3cc0306769973ea4fb3b9168b0c698a128770afd7098967a4a2afa951de70bf"
+    },
+    "limits": {
+      "boot_seconds": 180,
+      "cpu_cores_average": 3.5,
+      "job_seconds": 90,
+      "max_evidence_bytes": 629145600,
+      "max_job_start_gap_seconds": 180,
+      "max_probes": 12000,
+      "max_samples": 4000,
+      "max_screenshot_bytes": 268435456,
+      "max_screenshots": 1000,
+      "peak_rss_kib": 2097152,
+      "rss_growth_kib": 524288,
+      "sample_gap_seconds": 10,
+      "sample_seconds": 2,
+      "shutdown_seconds": 60,
+      "soak_max_seconds": 4200,
+      "stored_job_seconds": 30,
+      "ui_state_seconds": 30
+    },
+    "cycles": 5,
+    "jobs": 61,
+    "minimum_soak_seconds": 3600,
+    "maximum_soak_seconds": 4200
+  },
+  "followup_20260910_0050": {
+    "status": "INCOMPLETE_D6_FAILED_ENVIRONMENT",
+    "summary": {
+      "path": "docs/evidence/os-base/43-summary-b8287bc.json",
+      "sha256": "13b496ead5241401bf37961555da9fca20c067ae2cd3b27a068beacdd82feba9"
+    },
+    "public_derivation_and_original_hashes_recorded": true,
+    "original_failed_reports_unchanged": true
+  },
+  "followup_20260910_0059": {
+    "status": "INCOMPLETE_D6_RUN44_PENDING",
+    "last_adjudicated_run": 43,
+    "last_adjudicated_result": "FAIL_ENVIRONMENT_INTERRUPTION",
+    "run44_start": {
+      "path": "docs/evidence/os-base/44-start-b8287bc.json",
+      "sha256": "6535778e766e0e00cc05d03adbb7a64283258d53d9251230735aadfb40cc2297"
+    },
+    "run44_acceptance": "NOT_YET_DETERMINED",
+    "mac_third_launch": {
+      "path": "docs/evidence/os-base/mac-trial-20260909/final-mac-trial.json",
+      "sha256": "a1c756ca519cd0685110da3841d733fe1ac4506793604d5741f0ca1d8c9bf3da"
+    },
+    "mac_third_frame": {
+      "path": "docs/evidence/os-base/mac-trial-20260909/final-result.png",
+      "sha256": "5a5fe3e4e9dedba1bd14acf530f1b441f1c5cd84c5ca959bbb7a088a19cbb012"
+    },
+    "scope": "Third Mac launch/normal closure PASS and ongoing run44 do not overwrite prior failed observations or establish D6."
   }
 }

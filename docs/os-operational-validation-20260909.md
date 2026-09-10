@@ -2,6 +2,8 @@
 
 main/native/設計v1.1を専用branchへ統合した。統合commitは `797c663de60dcf4e7509c29de49447c3a521b90d`。main・既存PR #1・元IMPORT-MANIFESTは変更しない。実装承認の範囲は[承認記録](execution-approval-20260909.md)、試験結果とhashは[機械可読記録](evidence/os-base/operational-source.json)。
 
+本書は実行順に追記した履歴であり、後の結果を以前の失敗や未着手へ遡って適用しない。現在の統合範囲は[実装の保存時点](implementation-checkpoint-20260909.md)、凍結OSの現行判定は[OS受入](os-acceptance-b8287bc-20260909.md)を参照する。後続hostのGX00本人接続・current-copy管理引継ぎは実装済みだが、GX00全体、ゲーム通貨交換・作者SDK・実資金は未完了。
+
 ## 現在の結果
 
 | 対象 | 結果 | 範囲 |

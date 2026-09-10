@@ -91,6 +91,12 @@ class PermitFixture:
 
 
 class RuntimeLifetimeTests(unittest.TestCase):
+    def setUp(self):
+        # This protocol-only fixture deliberately owns no storage. Actual
+        # pre-constructor game guards are covered by the real-DB restore suite.
+        probe=patch('game_exchange.current_restore.require_normal_open',return_value=False)
+        probe.start();self.addCleanup(probe.stop)
+
     def make_runtime(self):
         permit = PermitFixture()
         callback = lambda _: {'fixture': True}

@@ -1,0 +1,112 @@
+{
+  "schema": "rock-soak43-public-acceptance/1",
+  "run": 43,
+  "status": "FAIL",
+  "failure_class": "ENVIRONMENT_INTERRUPTION",
+  "D6": "FAIL",
+  "overall_os_acceptance": "INCOMPLETE",
+  "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+  "frozen_compatible_host_payload_sha256": "10961504c950726c2f445fca966b80f6bab32772d037b58b1f0ea153403367a8",
+  "images_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763",
+    "stage0.cpio.gz": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+  },
+  "device": "business-bb2a77c9c3734b88a12d",
+  "original_report_status": "FAIL",
+  "original_report_D6": "NOT_RUN",
+  "original_failure_owned_device_running": true,
+  "required": {
+    "normal_cycles": 5,
+    "soak_jobs": 61,
+    "minimum_soak_seconds": 3600,
+    "maximum_soak_seconds": 4200,
+    "resource_sample_gap_seconds": 10,
+    "ui_state_seconds": 30
+  },
+  "actual": {
+    "normal_cycles_completed_before_failure": 4,
+    "failed_cycle": 4,
+    "completed_soak_jobs": 41,
+    "first_soak_job": "C4J0",
+    "last_completed_soak_job": "C4J40",
+    "soak_first_to_last_start_seconds": 2400.0006598029977,
+    "next_job": "C4J41",
+    "next_job_state": "UI input in progress; execution request not submitted",
+    "retained_prior_jobs": 6,
+    "closed_total_jobs": 47,
+    "closed_total_actions": 55,
+    "failure": "Tesseract invocation exceeded 10 seconds during input observation",
+    "observer_failure": "resource observation failed: resource observer missed its sampling deadline",
+    "full_resource_summary": null,
+    "endurance_success": false
+  },
+  "separate_cleanup": {
+    "status": "CLOSED_NORMALLY_AFTER_FAILED_TEST",
+    "seconds": 8.984114032002253,
+    "normal_guest_shutdown_event": true,
+    "forced_shutdown": false,
+    "closed_inspection_status": "PASS_CLOSED_INSPECTION_ONLY",
+    "e2fsck_exit": 0,
+    "original_failed_report_unchanged": true,
+    "prior_power_receipts_unchanged": true,
+    "power_receipts_before": 4,
+    "power_receipts_after": 5,
+    "no_business_retry": true,
+    "original_six_jobs_and_all_55_operations_retained": true,
+    "non_target_databases_match_last_closed_cycle": true,
+    "slots_match_last_closed_cycle": true,
+    "does_not_resolve_D6_failure": true
+  },
+  "original_files": {
+    "43-soak-plan.json": "22aab2f9597ed892b2cd73f2d13c6f51896709d23909671034f6298c62e26963",
+    "43-soak-failed-report.json": "49de3dfdbecd5dbbf2eeed2a3f57e068f93b24af9e0c7b7c0af8a8c6fc4e7d0e",
+    "43-normal-close-report.json": "952d1bf2afef222bbc5712a2655307eb57947e7dfbbfb7c468521bdb624d5e80",
+    "43-closed-inspection.json": "a921cc35785c3419fba71f3f6e590776c232a6a53924c0ca114df91a36ad4ada",
+    "43-normal-close.log": "7561fb39e8cfb5ec29bd4f9131a50184682c5096cd17c1e654fef5fe1560a6ae",
+    "43-closed-inspection.log": "3f3f0987f505e1a0ae19eaa71ff76df0d8557b7ba1447514544b3697860af4b4",
+    "43-native-soak-result-ocr.log": "453188d5596f441315a9b9e37f2a4b08f264897d6280fabcd2becb57b1610919",
+    "43-failure-probe.png": "2df3bfd355979fe8f0b5b96732d2ada68eaae9faa87bc1dcd4b0dad7a45c9439",
+    "43-pmset-selected-raw.log": "22962cad5cc4f0cc45b2f8030aa8916dc8f1d3cda55a092371af45eef549875c"
+  },
+  "evidence": {
+    "43-plan-b8287bc.json": {
+      "path": "docs/evidence/os-base/43-plan-b8287bc.json",
+      "sha256": "da45333aa719788941f552b5d364802558ba9f8fe810e38ad6289e4fc5a69442"
+    },
+    "43-soak-failed-b8287bc.json": {
+      "path": "docs/evidence/os-base/43-soak-failed-b8287bc.json",
+      "sha256": "b428d45ea68da74239753f756b47ffdbf6e32f43240bc59a8ab0e54af50bba5e"
+    },
+    "43-normal-close-b8287bc.json": {
+      "path": "docs/evidence/os-base/43-normal-close-b8287bc.json",
+      "sha256": "f7bdc3cfb3eeee0b65ec196dbd0a00ca544810475037753db96cd4b7feedcb89"
+    },
+    "43-closed-inspection-b8287bc.json": {
+      "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+      "sha256": "9b397711dd89f1a10fe8fdfddd53a9f662f68597a8107cc8a7cc49692e8c3a6e"
+    },
+    "43-power-environment.json": {
+      "path": "docs/evidence/os-base/43-power-environment.json",
+      "sha256": "66166a6b441d058ac16dc17471b6789f624d27fb3983fea562401b1ef97b23ff"
+    },
+    "43-soak-failed-b8287bc.log": {
+      "path": "docs/evidence/os-base/43-soak-failed-b8287bc.log",
+      "sha256": "acb4998b73f2b22eb0ce4dec1ddee2b3cd003ee06e52a0402c02c03ff176022d"
+    },
+    "43-normal-close-b8287bc.log": {
+      "path": "docs/evidence/os-base/43-normal-close-b8287bc.log",
+      "sha256": "0f623a0d4b7331722199d1d5428e59cac169af455046eb299822418c8c8483fa"
+    },
+    "43-closed-inspection-b8287bc.log": {
+      "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.log",
+      "sha256": "cb42dbcda733ea3976884caa8e7f206b84276c01d81c11a9115a7b61b4f5cc5d"
+    },
+    "43-failure-input-b8287bc.png": {
+      "path": "docs/evidence/os-base/43-failure-input-b8287bc.png",
+      "sha256": "2df3bfd355979fe8f0b5b96732d2ada68eaae9faa87bc1dcd4b0dad7a45c9439"
+    }
+  },
+  "next_gate": "Use a new predeclared run with unchanged workload/limits and an AC-powered host kept awake. Preserve all original failed evidence; do not resume this run as a passing endurance test.",
+  "review_scope": "Read-only source reports plus selected local power readback; no VM/QEMU/disk/runtime changes. Public projections carry original hashes and are not byte-identical raw reports."
+}

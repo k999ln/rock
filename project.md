@@ -162,7 +162,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-09 / native D0〜D5限定受入・D6再試験とゲーム接続/復元基礎 / 完了 14/32件
+最終更新: 2026-09-09 / native試用版・ゲーム接続/復元統合の保存時点 / 完了 14/32件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -189,8 +189,8 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/hub-wallet-pc-comparison-20260909.md) · [記録](docs/evidence/hub-wallet/b05-pc-machine-20260909/report.json) |
 | D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
 | V01 | 最新統合sourceからQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す | 進行中 | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/os-operational-validation-20260909.md) · [記録](docs/evidence/os-base/startup-update-acceptance-b8287bc.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/evidence/os-base/registry-negative-b8287bc.json) · [記録](docs/os-acceptance-b8287bc-20260909.md) · [記録](systems/rock-star-os/os/desktop/LAUNCHER-V2.md) |
-| GX00 | 共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証 | 進行中 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx00-owner-isolation-adr.md) · [記録](docs/evidence/gx00/integration.json) · [記録](systems/rock-star-os/os/wallet_backend/FENCE.md) · [記録](docs/gx00-connection-wire-v1.md) · [記録](docs/evidence/gx00/game-protocol-review.json) · [記録](docs/game-connection-node-wire-20260909.md) · [記録](docs/gx00-connections-runtime.md) · [記録](docs/evidence/gx00/game-connections-root.json) · [記録](docs/gx00-legacy-game-basis.md) · [記録](systems/rock-star-os/os/wallet_backend/CURRENT-RESTORE.md) · [記録](docs/evidence/gx00/current-copy-foundations-root.json) |
-| GX01 | ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
+| GX00 | 共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証 | 進行中 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx00-owner-isolation-adr.md) · [記録](docs/evidence/gx00/integration.json) · [記録](systems/rock-star-os/os/wallet_backend/FENCE.md) · [記録](docs/gx00-connection-wire-v1.md) · [記録](docs/evidence/gx00/game-protocol-review.json) · [記録](docs/game-connection-node-wire-20260909.md) · [記録](docs/gx00-connections-runtime.md) · [記録](docs/evidence/gx00/game-connections-root.json) · [記録](docs/gx00-legacy-game-basis.md) · [記録](systems/rock-star-os/os/wallet_backend/CURRENT-RESTORE.md) · [記録](docs/evidence/gx00/current-copy-foundations-root.json) · [記録](docs/gx00-current-game-restore.md) · [記録](docs/gx00-owner-connection-client.md) · [記録](docs/evidence/gx00/current-game-integration-root.json) · [記録](docs/implementation-checkpoint-20260909.md) |
+| GX01 | ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-contract-implementation-plan.md) |
 | GX02 | 指定された実ゲームの正式sandbox接続と交換条件を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
 | DX01 | ゲーム作者向けAPI/SDK・sandbox・複数owner/game分離と導入体験を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
 | N01 | Linux native OS基準版の公開ソース統合・既存資産の回帰検証 | 完了 | [記録](docs/native-os-integration.md) · [記録](docs/native-os-validation.md) |
@@ -215,7 +215,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 未合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
 | DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 未合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) |
 
-次の作業: 凍結b8287bcのD6新規43を5サイクル・60分の終了後データまで照合する。公開b325767はWeb/Android/native同SHA CI成功。非空legacyとC復元証拠APIを統合し、停止済みcurrent-copyのゲーム引継ぎ・通常起動ガード・同じ認証経路の継続を完成させる。
+次の作業: 凍結b8287bcのD6 run43は低電池休止を伴いFAIL、停止後47 jobs/55 actions保持を確認。AC接続の同条件run44は実行中のため未合格。d16ba2dのWeb/Android/native CI成功（Python1357）とMac試用端末の最終起動・正常終了を記録。ゲーム接続/復元の統合72件は通過したが、同TLS分離の不足例と別game同keyのreconcile衝突を解消してからGX00を再判定する。GX01は設計のみ。
 <!-- project-status:end -->
 
 ## 次段階の設計

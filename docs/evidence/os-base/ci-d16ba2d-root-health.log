@@ -1,0 +1,9 @@
+PASS present, main-loop progress and fresh nonce
+PASS connect-before-send retained and bounded expiry recovered
+PASS fixed capacity, cleanup and repeated close
+PASS exact packet, lowercase nonce, truncation and extra packet rejection
+PASS ancillary rejection closes received and truncated SCM_RIGHTS
+PASS actual UID1000 client denied and actual root accepted
+PASS zero inputs, invalid dimensions and counter overflow fail closed
+PASS fixed UI owner, protected socket and no overwrite
+PASS: 8 native UI readiness protocol/ownership/lifecycle test groups

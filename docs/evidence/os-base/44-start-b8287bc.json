@@ -1,0 +1,14 @@
+{
+  "schema": "rock-native-run44-start/1",
+  "status": "RUNNING_AS_OF_CHECKPOINT",
+  "observed_at": "2026-09-10T00:59:52.405727+00:00",
+  "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+  "plan_file_sha256": "87df318c07e968052563bbb35ef12af4af5d14b478d35bb8dee31b760827010e",
+  "same_run43_limits": true,
+  "normal_cycles": 5,
+  "soak_jobs": 61,
+  "soak_seconds": 3600,
+  "host_power": "AC confirmed before starting; temporary idle/system sleep assertion lasts only for this run.",
+  "previous_failures": "Retained without alteration. No deadline or resource bound relaxed.",
+  "acceptance": "NOT_YET_DETERMINED"
+}

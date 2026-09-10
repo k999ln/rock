@@ -2,6 +2,8 @@
 
 本差分は `023976d` の既存 A/B/C managed Wallet runtime と `connection-v1` schema を使い、public synthetic の2作者・2ゲームを接続する。通常のserverは接続機能を有効にしない。凍結OS b8287bc、QEMU、実ゲーム、実本人、hardware passkey、実資金の受入ではない。GX01の交換・資産snapshot・game履歴は未実装で常にfalse。一般GX00完成、OSでの新データABI・backup/restore完了を意味しない。
 
+後続で[要求を保持するowner client](gx00-owner-connection-client.md)と[停止済みcurrent-copyの管理引継ぎ](gx00-current-game-restore.md)を追加した。後者は元のC/B/indexを保持した限定手続きであり、以下の過去index・任意backup巻戻しの制限を解除しない。現時点では異なるgameの同じowner-reconcile keyの誤衝突と、同TLS分離の追加受入確認が残り、GX00-ISOLATIONは未合格。[保存時点の記録](implementation-checkpoint-20260909.md)。
+
 ## 入口と所有者
 
 管理者が独立した `PublicGameAuthority` A/B、外部正本 `GameGateway`、既にopen済みの契約runtimeを作り、`ManagedWalletBackendServer(..., game_gateway=gateway)` を明示する。既存default/v1/v2を変更しない。gateway bind完了後だけ `gateway.capabilities().connections` はtrueになる。純粋schemaの `protocol.capabilities()` は引き続き全falseであり、そこから実装済みを推定しない。

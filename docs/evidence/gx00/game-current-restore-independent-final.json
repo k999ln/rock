@@ -1,0 +1,56 @@
+{
+  "status": "PASS_SCOPED_INDEPENDENT_REVIEW",
+  "environment": "macOS Python 3.14.7; real temporary legacy/C/OwnerRouter/TLS fixture; no QEMU",
+  "scope": "Current-copy Unit3 initial lease, management-before-constructor C join, index DONE/Wallet epoch readiness, and exact DONE retry retention negative.",
+  "before": {
+    "source_sha256": {
+      "os/game_exchange/current_restore.py": "67bf5202214580df1d1051e728ccfd2d26efbd441750e6560c1a75d4bd2d300f",
+      "os/wallet_backend/contract_runtime.py": "deb5e2f847026aa76bf32a6073ef6335d09967145ee00d928cc595ab29da8847",
+      "os/wallet_backend/server.py": "e56ca67f55863ca57f17c189961914ff5cf7e66008860e0eb9ef18b8ea362441",
+      "os/game_exchange/connections.py": "aa7994fe0b37cb40a3036fb76c709f2434c2f2f53bdf3d7cc90ef64d88d3d04e"
+    },
+    "observation": {
+      "scenario": "DONE then source-retained extra BLOB changed before any normal open",
+      "retained_blob_changed": true,
+      "management_open_accepted": true,
+      "same_done_receipt_returned": true,
+      "source_unchanged": true,
+      "runtime_state": "RESTORE_MANAGEMENT"
+    },
+    "log_note": "Before log transcribed verbatim JSON values from the original exec tool output; original initial report retained."
+  },
+  "after": {
+    "source_sha256": {
+      "os/game_exchange/current_restore.py": "b10100377b4038eb0b73ff33af12d64b150d34f81421675782a5b02da1356f94",
+      "os/wallet_backend/contract_runtime.py": "deb5e2f847026aa76bf32a6073ef6335d09967145ee00d928cc595ab29da8847",
+      "os/wallet_backend/server.py": "e56ca67f55863ca57f17c189961914ff5cf7e66008860e0eb9ef18b8ea362441",
+      "os/game_exchange/connections.py": "aa7994fe0b37cb40a3036fb76c709f2434c2f2f53bdf3d7cc90ef64d88d3d04e"
+    },
+    "unchanged_original_probe_exit": 1,
+    "unchanged_original_probe_expected_exception": "VerificationUnavailable: original contract rows/schema changed during game handover",
+    "assertion_probe": {
+      "status": "PASS",
+      "rejected_before_wallet_constructor": true,
+      "coordinator_permits_released": true,
+      "retired_source_unchanged": true,
+      "destination_db_bytes_unchanged_by_rejection": true,
+      "index_db_bytes_unchanged_by_rejection": true,
+      "qemu_operations": 0
+    },
+    "assertion_probe_seconds": 1.529126334
+  },
+  "changed_boundary": "DONE management open/resume must compare exact allowed-delta snapshots; after resumed normal activity this management replay may fail closed and is not a historical receipt lookup.",
+  "additional_read_review": "C/state lock held through initial PREPARED; real opening/current permit joined before Wallet construction; management lifetime blocks listener/scheduler/general admission; normal runtime awaits exact real gateway; unknown table intrinsic rowid observed or fully shadowed aliases rejected.",
+  "limitations": [
+    "Independent audit ran one actual retained-BLOB negative before and after, not all A cases.",
+    "A separately runs the full durable interruption/rowid/normal-flow regression.",
+    "Arbitrary historical backup, independent index rollback and real game funds are outside this scope."
+  ],
+  "artifact_sha256": {
+    "review-game-done-retention.py": "b7988d37d949938218086b3c8c3dd47784807d1cf203dc50b35a32d3340f4d6b",
+    "review-game-done-retention-assert.py": "6e53faca929b0616bbd9f95d40fe0d72d4b728cc63d3a5c84877d65f4a78413a",
+    "game-current-restore-independent-before.log": "e4e0728dd4396b76c56725678a397b1d5153aca0b492da21d8531709d2e510be",
+    "game-current-restore-independent-after.log": "5826853298dcedf84f559647de4907604b09d3c66e53616e9583b99d4776c573",
+    "game-current-restore-independent-confirmed.log": "d70fbbfc75611301a8b850862f18ccb7abe8780e198a574b353bbf002f434dcb"
+  }
+}

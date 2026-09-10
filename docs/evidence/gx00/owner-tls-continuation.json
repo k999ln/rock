@@ -1,0 +1,50 @@
+{
+  "schema": "rock-gx00-same-tls-continuation/1",
+  "recorded_at": "2026-09-10T01:02:06.394157+00:00",
+  "status": "NOT_IMPLEMENTED_NOT_RUN_NOT_APPLIED",
+  "reason": "Latest user instruction prioritizes recording and integrating completed work. Additional acceptance fixtures stopped after read-only investigation and isolated source copy.",
+  "candidate": "work/gx00-owner-tls-candidate",
+  "copied_source_files": 615,
+  "changed_source_files": [],
+  "new_test_files": [],
+  "tests_executed": 0,
+  "root_files_edited": [],
+  "qemu_operations": 0,
+  "scope": "Four bounded additional same-TLS owner-isolation acceptance tests, test-only patch planned; no runtime implementation change authorized by this continuation record.",
+  "reuse": {
+    "fixture": "systems/rock-star-os/tests/test_wallet_managed_tls.py: ManagedOwnerTLSIntegration",
+    "row_comparison": "systems/rock-star-os/os/game_exchange/current_restore.py: snapshot",
+    "server_worker": "systems/rock-star-os/os/wallet_backend/server.py: _TLSWalletListener.process_request_thread"
+  },
+  "required_unverified_cases": [
+    {
+      "id": "monthly_two_owner_three_device",
+      "gap": "Current same-TLS test bills Alice 888 while Bob declines consent; two-owner 888 evidence is currently only a direct runtime fixture.",
+      "next": "Use real OwnerRouter/C/TLS and existing software authenticators. Accept both owners monthly consent, submit one shared monthly request from A1/A2 and the same key from B1, run actual schedulers, and assert each owner has one 888 bill, Alice devices share one schedule and Bob has a distinct account/schedule."
+    },
+    {
+      "id": "insufficient_alice_bob_unchanged",
+      "gap": "Alice insufficient funds with Bob noninterference is not yet established by the same TLS fixture.",
+      "next": "Give Alice less than 888 and Bob enough through authorized synthetic seed helpers; schedule through TLS, observe real Alice payment failure and Bob successful 888 debit, explicitly retry Alice through TLS, and compare Bob full typed rows/schema unchanged."
+    },
+    {
+      "id": "foreign_quote_and_receipt",
+      "gap": "Existing same-TLS negative covers foreign withdrawal_id but not foreign quote_id or exact original issuance receipt request.",
+      "next": "Issue real signed ATM requests under each owner, preserve full original requests and receipts, deny cross-owner quote cancellation and exact issuance request replay, confirm no foreign bearer code in response, and compare both original ledgers/counters/receipts unchanged. Correct owner replay must return its own immutable receipt."
+    },
+    {
+      "id": "same_worker_exception_scope",
+      "gap": "Client ThreadPool plus ThreadingHTTPServer does not prove one server worker is reused; production closes each HTTP connection and normally creates another request thread.",
+      "next": "A test-only single executor can serially invoke the unmodified actual process_request_thread. Preserve real TLS handshake, Handler, OwnerRouter, C admission and service calls; observe the same thread object through A1 -> B1 real policy exception -> A2, with exact device binding during dispatch and no leftover device scope/C held capability after every request. Do not replace dispatch, principal or DB behavior with mocks."
+    }
+  ],
+  "test_plan_limits": [
+    "Use only temporary public/synthetic fixtures and verified localhost TLS; no external game or funds.",
+    "Reuse original 3-second server request deadlines; do not increase timeouts to pass.",
+    "No additional product functionality or wider acceptance matrix; four test cases only.",
+    "Refresh the isolated source copy from the integrated root before implementing, so later root fixes are retained.",
+    "No current success claim: no new fixture code or execution was completed."
+  ],
+  "base_file_hash_manifest": "work/gx00-owner-tls-candidate/base-file-hashes.json",
+  "base_file_hash_manifest_sha256": "2241ec8ce369df48d159d7607f983b3619acf2a031015c43a578b25603e88fa7"
+}

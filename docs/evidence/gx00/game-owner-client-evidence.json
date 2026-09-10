@@ -1,0 +1,41 @@
+{
+  "schema": "gx00-owner-client-host-evidence/1",
+  "scope": "public synthetic host owner connection client only",
+  "base_commit": "d16ba2d34e42e69ce9c948101f538658c170a68d",
+  "runtime_server_fence_modified": false,
+  "new_tests": 15,
+  "regression_tests": 52,
+  "passed": 52,
+  "skipped": 0,
+  "warnings": 0,
+  "duration_seconds": 40.147,
+  "command": "env PYTHONPATH=src:os:tests python3 -B -W error::ResourceWarning -m unittest discover -s tests -p 'test_game*.py' -v",
+  "log": "<local-work>/game-client-regression.log",
+  "log_sha256": "8e12da9664306d41f2cd78c963a45599b48ea4d1ff0458c6cc95750f3da996ae",
+  "patch": "<local-work>/game-owner-client.patch",
+  "patch_sha256": "2e889582657fb3f386fb9a009f7df9f1af2d9974a35ce37d19758d56ad0c2527",
+  "root_apply_check": "PASS",
+  "files": {
+    "systems/rock-star-os/os/game_exchange/client.py": "2acd6babecf3aee81aaf651751da2212ef9fbd869b6d9d0563c39542b7569449",
+    "systems/rock-star-os/tests/test_game_connection_client.py": "9bb905b5d87a9650faab6755d8ddb7020835a98671c4b80b5d1172e1d3dbdefd",
+    "docs/gx00-owner-connection-client.md": "fc3c62ec607c8ddde63927b823d6a57ba9b724eb38698295b44ccaa7472a8ee8"
+  },
+  "actual_methods": [
+    "legacy adoption with original OwnerRouter pin",
+    "actual same-port managed TLS listener close/open",
+    "four connections and real socket response loss after begin/approve/revoke commit",
+    "original IDs and immutable receipts recovered with one consent and counter transition per approval",
+    "original nonempty financial rows and revoked authentication retained",
+    "pre-send SQLite/fsync failure sends zero",
+    "post-send SQLite/fsync failure retains exact unknown request and receipt",
+    "actual SSLContext CA DER addition refused before send",
+    "current credential/device denial never replaced by cached success"
+  ],
+  "not_run_or_not_implemented": [
+    "Linux/OS/QEMU in this subtask",
+    "index UUID/epoch independent client proof",
+    "new image/UI/hardware authenticator",
+    "game exchange/GX01/real funds",
+    "general GX00 completion"
+  ]
+}

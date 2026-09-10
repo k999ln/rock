@@ -1,0 +1,1 @@
+{"case": "actual HTTPSWalletTransport timeout changed to None after owner-client pin", "accepted_by_current_check": true, "network_sent_after_mutation": false, "original_timeout": 3}

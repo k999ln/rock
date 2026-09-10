@@ -4,11 +4,13 @@
 
 承認済み[製品設計v1.1](os-hub-wallet-game-design.md)、[実装承認記録](execution-approval-20260909.md)、[GX00分離ADR](gx00-owner-isolation-adr.md)の1契約1台帳・認証付き共通gatewayの方針をAPIへ具体化した候補。ADR本文の状態は「実装に渡す設計候補」であり、既存コードがその契約を満たすという意味ではない。
 
-レビューした不変runtime sourceは `b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9`。以下のsource pathはrepository相対であり、実装接続点の短縮pathのみ `systems/rock-star-os/` を基準にする。既存Walletは `/v2/wallet` のdevice認証後もAlice固定であり、本書の `/v3/wallet` は未実装。既存sourceの検証成功を新しいゲームAPIの証拠へ換算しない。
+レビューした不変runtime sourceは `b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9`。以下のsource pathはrepository相対であり、実装接続点の短縮pathのみ `systems/rock-star-os/` を基準にする。この凍結OSの既存Walletは `/v2/wallet` のdevice認証後もAlice固定。後続host sourceでは `/v3/wallet` とGX00本人接続を実装しているが、本書の交換操作まで実装したわけではない。[現在の範囲](implementation-checkpoint-20260909.md)と[接続wire](gx00-connection-wire-v1.md)を区別する。既存sourceの検証成功を新しい交換APIの証拠へ換算しない。
 
 **公開・実装可能な完全schemaではない。** 本書のJSONはreview用の部分例で、`{}`、`<...>`、省略された共通fieldsを受理するvalidatorや成功応答を作らない。署名receipt、厳密field集合、数量型、domain bytesの未確定部分は第11節で管理し、該当ゲートの実装前に試験ベクトル付きで解決する。SDK interfaceも設計案であり、呼び出せるライブラリは提供していない。
 
 この草案は合成USDと独立した2ゲームの合成資産だけを対象にする。実ゲーム、実資金、双方向換金、ゲーム料金、本番利用資格、ゲームengine対応は決定しない。ATMのRock手数料0、月額888 centsと月額同意は維持する。
+
+[既存台帳に接続するGX01実装準備](gx01-contract-implementation-plan.md)で、posting CHECKの版付き移行、同じAVAILABLEの競合、署名済み拒否の永続化、外部I/Oをlock外へ出すworker、未確定交換を残した復元の追加条件を具体化した。これは設計提案であり、交換runtimeやGX01合格ではない。
 
 ## 1. 段階・主体・入口
 

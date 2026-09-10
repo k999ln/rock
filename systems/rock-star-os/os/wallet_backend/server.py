@@ -434,6 +434,8 @@ class ManagedWalletBackendServer(_TLSWalletListener):
             router.bind_runtimes(runtimes)
             if game_gateway is not None:
                 game_gateway.bind_runtimes(runtimes)
+            for runtime in runtimes:
+                runtime.require_serving_ready(game_gateway)
             self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
             self.context.minimum_version = ssl.TLSVersion.TLSv1_2
             self.context.load_cert_chain(str(cert_file or FIXTURES / 'development-ca.pem'),

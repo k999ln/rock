@@ -282,7 +282,20 @@
       "guards": 59,
       "guards_log": "host-pidfd-business.log",
       "scope": "real Linux last-thread exit/socket mechanism; not proof of the exact cause of run39; fixed60s and actual guest shutdown/closed socket guards retained",
-      "new_soak": "RUNNING; original failure remains FAIL"
+      "new_soak": "43 FAIL environment interruption, 41/61 jobs; normal close/47 jobs/55 actions retained separately. New run44 RUNNING_AS_OF_CHECKPOINT with AC and unchanged limits; no D6 acceptance yet."
+    },
+    "soak43": {
+      "status": "FAIL",
+      "failure_class": "ENVIRONMENT_INTERRUPTION",
+      "report": "43-summary-b8287bc.json",
+      "report_sha256": "13b496ead5241401bf37961555da9fca20c067ae2cd3b27a068beacdd82feba9",
+      "soak_jobs_completed": 41,
+      "soak_jobs_required": 61,
+      "normal_cleanup": "PASS_SEPARATE",
+      "closed_jobs": 47,
+      "closed_actions": 55,
+      "e2fsck_exit": 0,
+      "original_reports_preserved": true
     }
   },
   "logs_sha256": {

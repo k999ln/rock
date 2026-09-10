@@ -1,16 +1,16 @@
 # Rock star OS — 現在の実装CHECKPOINT
 
-作業branch: `codex/operational-base-20260909`。記録: 2026-09-09T17:47:40.214265+00:00。
+作業branch: `codex/operational-base-20260909`。保存時点: 2026-09-10 UTC。[実装・検証・未達の統合記録](docs/implementation-checkpoint-20260909.md)を現在の入口とする。
 
 設計v1.1は実装承認済み。[承認範囲](docs/execution-approval-20260909.md)と[製品ベース](docs/product-baseline.md)を読む。main `7cdbb5fedc86ee3978ed329d9312147d137c9199`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、設計 `27b34adc02a9e06a4816aa18a5e38cf38b330953` の3入力を専用branchへ統合済み。main/既存native PRはまだ未変更。元IMPORT-MANIFESTと旧Nタスクは保持。
 
-次の作業: 凍結b8287bcのD0〜D5は[限定受入](docs/os-acceptance-b8287bc-20260909.md)を照合済み。D6 run42のOCR失敗・正常終了・停止後の12jobs/20actionsを別報告で保存し、hostだけ修正したrun43を同じ5サイクル・60分・61件の条件で実施中。全条件が通るまでV01全体は未合格。
+次の作業: 凍結b8287bcのD0〜D5は[限定受入](docs/os-acceptance-b8287bc-20260909.md)を照合済み。D6 run42の失敗に加え、run43は反復41件の後、ホスト低電池休止を伴ってOCR/観測の期限を超過した。失敗後の通常終了と47jobs/55actions保持は別に検証済み。AC接続下の新しい[run44](docs/evidence/os-base/44-start-b8287bc.json)を同じ5サイクル・60分・61件で実施中。再開時は元計画・報告・終了状態を取得する。全条件が通るまでV01全体は未合格。
 
-Macの[専用launcher v2](systems/rock-star-os/os/desktop/LAUNCHER-V2.md)は既存の隔離VM/画像/保存端末を厳密に指定する。実Chrome画面で商品導入・同意・1件実行・通常終了・再度開いた結果を確認した。ブラウザを閉じるだけではOSを終了しない。実機用の書込みイメージではない。
+Macの[専用launcher v2](systems/rock-star-os/os/desktop/LAUNCHER-V2.md)は既存の隔離VM/画像/保存端末を厳密に指定する。実Chrome画面で商品導入・同意・1件実行・通常終了・再度開いた結果を確認した。修正済みlauncherで3回目の起動・結果再表示・通常終了・停止後データ保持も[確認済み](docs/evidence/os-base/mac-trial-20260909/final-mac-trial.json)。ブラウザを閉じるだけではOSを終了しない。実機用の書込みイメージではない。
 
 OS runtimeは`b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9`。凍結OSのhost toolsは`1a960756fbd5edc7f13a0578f3e7fc50025534c8`と必要なhost OCR修正だけを使う。GX00を含む現在のsourceをそのまま混ぜると埋込source照合に失敗するので、guardを解除しない。新台帳をOSへ入れる際は別buildとD4/D5再受入が必要。
 
-公開851081aのWeb/Android/native CIは成功。native Python1277実行・14checks・skipなしの[原報告](docs/evidence/os-base/ci-851081a-native.json)を保存した。後続の接続protocolはMac19件、Node独立wireは303checks/142拒否、画面認識はMac/Linux各68件が成功。これらは凍結OSへの新機能搭載を意味しない。GX00の実TLS/複数作者ゲーム接続・互換/復旧→GX01→DX01を続ける。
+公開d16ba2dのWeb/Android/native CIは成功。native Python1357実行・14checks・skipなしの[同SHA記録](docs/evidence/os-base/ci-d16ba2d-summary.json)を保存した。後続のowner clientとcurrent-copy管理引継ぎを統合し、ゲーム72件が[成功](docs/evidence/gx00/current-game-integration-root.json)。同TLS分離の追加受入4点と別game同reconcile keyの衝突は未解決で、GX00-ISOLATIONは未合格。GX01の[実装計画](docs/gx01-contract-implementation-plan.md)は設計のみ。現在のhost実装を凍結OSへの新機能搭載と扱わない。
 
 `npm run baseline:check`、`npm run project:update`、`npm run verify`、新しいsourceはLinuxの`python3 scripts/test-native.py --output <新規ディレクトリ>`で検証する。Pixel 10 / GrapheneOSにはP1 APKを用意し実機未試験。MetaMaskは既存Webのアドレス接続だけで、送受金・実資金の接続はない。
 

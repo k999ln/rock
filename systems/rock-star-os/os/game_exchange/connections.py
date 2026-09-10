@@ -31,6 +31,7 @@ def available(condition,message):
 
 class GameIndex(PrivateStore):
     def __init__(self,path,authorities):
+        self.author_gate=threading.RLock()
         config=[]
         for authority in authorities:
             game=asdict(authority.game);game['scopes']=list(game['scopes'])
@@ -57,6 +58,8 @@ class GameIndex(PrivateStore):
     def bind(self,descriptor,*,wallet_mode):
         descriptor_value=encoded(identity(descriptor))
         with self.transaction() as db:
+            from .current_restore import assert_index_ready
+            assert_index_ready(db)
             row=db.execute('SELECT descriptor FROM contracts WHERE ledger_ref=?',(descriptor.ledger_ref,)).fetchone()
             if row:
                 available(row[0]==descriptor_value,'Wallet/index descriptor mismatch; restore reconciliation is not implemented')
@@ -66,6 +69,8 @@ class GameIndex(PrivateStore):
                 db.execute('INSERT INTO contracts VALUES (?,?)',(descriptor.ledger_ref,descriptor_value))
     def check_contract(self,descriptor):
         with self.transaction() as db:
+            from .current_restore import assert_index_ready
+            assert_index_ready(db)
             row=db.execute('SELECT descriptor FROM contracts WHERE ledger_ref=?',(descriptor.ledger_ref,)).fetchone()
             available(row is not None and row[0]==encoded(identity(descriptor)),'game contract epoch/binding unavailable')
     def get(self,field,value):
@@ -114,8 +119,8 @@ class GameGateway:
         p.require(type(authorities) is tuple and len(authorities)==2 and all(type(a) is PublicGameAuthority for a in authorities),'two explicit independent public game authorities required')
         p.require({a.name for a in authorities}=={'a','b'},'distinct public game authorities')
         self.authorities={a.game.game_id:a for a in authorities};self.clock=clock;self.runtimes={};self.bound=False
-        self.author_gate=threading.RLock()
         self.index=GameIndex(Path(state),authorities);self.keys=None
+        self.author_gate=self.index.author_gate
     def now(self):
         value=self.clock();p.require(type(value) in (int,float) and math.isfinite(value) and 1<=value<=p.MAX_INT,'finite synthetic Unix-second clock required')
         now=p.integer(int(value),1)
@@ -184,7 +189,9 @@ class WalletConnections:
             tables={row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
             mode=db.execute('SELECT * FROM wallet_game_mode').fetchone() if 'wallet_game_mode' in tables else None
             expected={'index_path':str(gateway.index.path),'index_uuid':gateway.index.uuid,'descriptor':identity(self.descriptor)}
-            if mode:p.require(mode['binding']==encoded(expected),'Wallet has another game index/epoch')
+            if mode:
+                from .current_restore import require_bound_mode
+                require_bound_mode(db,gateway.index,self.descriptor)
             gateway.index.bind(self.descriptor,wallet_mode=mode)
             db.execute('CREATE TABLE IF NOT EXISTS wallet_game_mode (singleton INTEGER PRIMARY KEY CHECK(singleton=1), binding TEXT NOT NULL)')
             if mode is None:db.execute('INSERT INTO wallet_game_mode VALUES (1,?)',(encoded(expected),))
