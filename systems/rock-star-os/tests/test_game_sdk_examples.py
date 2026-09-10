@@ -44,4 +44,20 @@ class RunnableExamples(unittest.TestCase):
             self.assertEqual(self.f.grants['a'].balance('alice'),10)
         finally:client.close()
 
+    def test_diagnosis_marks_cached_snapshot_unavailable_and_retains_original_pending(self):
+        client=example.OwnerExample(self.config,self.f.root/'offline-example');self.addCleanup(client.close)
+        self.assertEqual(client.diagnose()['contact'],'VERIFIED_OWNER_TLS')
+        client.setup_wallet()
+        client.connect('public-game-a')
+        self.f.server.shutdown();self.f.thread.join(5);self.assertFalse(self.f.thread.is_alive())
+        self.f.server.server_close();self.f.server=None
+        with self.assertRaises(OSError):client.quote('public-game-a','original-offline-key')
+        pending=client.sdk.pending();self.assertEqual(len(pending),1)
+        self.assertEqual(pending[0]['key'],'original-offline-key')
+        diagnosed=client.diagnose()
+        self.assertEqual(diagnosed['contact'],'OWNER_TLS_UNAVAILABLE')
+        self.assertIs(diagnosed['wallet_snapshot']['backend']['connected'],False)
+        self.assertIs(diagnosed['wallet_snapshot']['backend']['stale'],True)
+        self.assertEqual(diagnosed['pending'],pending);self.assertEqual(client.sdk.pending(),pending)
+
 if __name__=='__main__':unittest.main()

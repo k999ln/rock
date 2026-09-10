@@ -86,7 +86,9 @@ class OwnerExample:
     def diagnose(self):
         pending=self.sdk.pending();connections={game:client.pending() for game,client in self.sdk.connections.items()}
         try:
-            snapshot=self.wallet_call('snapshot');contact='VERIFIED_OWNER_TLS'
+            snapshot=self.wallet_call('snapshot')
+            backend=snapshot.get('backend',{})
+            contact='VERIFIED_OWNER_TLS' if backend.get('connected') is True and backend.get('stale') is False else 'OWNER_TLS_UNAVAILABLE'
         except OSError:snapshot=None;contact='OWNER_TLS_UNAVAILABLE'
         return {'schema':'rock-game-sdk-diagnostic/1','contact':contact,'pending':pending,'connection_pending':connections,
             'wallet_snapshot':snapshot,'recovery':'Restore the configured authority connection, then retry the listed original operation/key; retain this client state.',
