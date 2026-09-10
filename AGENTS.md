@@ -27,3 +27,4 @@
 - 最新の明示指示により、CM発表に向けた導入可能版を進める。最初はfreshなMac/PCへ導入できるQEMU Developer Preview、次に正確な1機種・variantへ限定したPhysical Device Previewとする。`docs/release-installation-plan-20260909.md`の合格前に実機対応・本番利用可能と表示しない。
 - 省トークンで進める。巨大な全履歴・全差分・全ログを出力せず、対象path、件数、失敗箇所へ絞る。通常は変更箇所の試験を先に実行し、広い回帰はrelease gateまたは必要な失敗時だけ行う。長いログはGit管理外へ置き、要約と再現情報だけ読む。
 - Gitには実装、設定、必要最小限のfixture、要約した証拠、復旧手順を保存する。OS image、build cache、重複ログ、全フレーム、再生成可能な大量出力はrelease artifactまたはGit管理外へ置く。
+- 現段階を `RockstarOS 1.0` の製品ベースとして発表し、互換性を明示しながら継続改善する。最初の配布ラベルはDeveloper Preview。版番号だけで実機・本番金融・一般公開を合格扱いせず、`docs/rockstaros-1.0-architecture.md`とrelease gateを同期する。

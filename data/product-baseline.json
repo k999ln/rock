@@ -1,5 +1,5 @@
 {
-  "version": "1.7",
+  "version": "1.8",
   "decidedAt": "2026-09-09",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -34,7 +34,8 @@
     "RQ13",
     "RQ14",
     "RQ15",
-    "RQ16"
+    "RQ16",
+    "RQ17"
   ],
   "primaryCapabilities": [
     "automation-hub",
@@ -65,11 +66,13 @@
   "firstOperationalTarget": "Fresh-host QEMU Developer Preview with reproducible install, launch, shutdown, reopen, backup and removal; synthetic data only",
   "releaseInstallation": {
     "requested": true,
+    "releaseName": "RockstarOS 1.0",
+    "architecture": "docs/rockstaros-1.0-architecture.md",
     "plan": "docs/release-installation-plan-20260909.md",
     "developerPreview": "in_progress",
     "physicalDevicePreview": "blocked_on_exact_model_and_variant",
     "productionReady": false,
-    "cmRule": "Advertise only the highest installation and validation stage that has passed its recorded gate"
+    "cmRule": "Present the current implementation as the RockstarOS 1.0 base and advertise only the highest installation and validation stage that has passed its recorded gate"
   },
   "gameExchange": {
     "requested": true,

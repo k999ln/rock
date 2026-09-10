@@ -25,7 +25,7 @@ Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/o
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-09 / native試用版・ゲーム接続/復元統合・導入可能版の準備 / 完了 14/34件
+最終更新: 2026-09-09 / RockstarOS 1.0ベース・native試用版・導入可能版の準備 / 完了 14/34件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -61,7 +61,7 @@ Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/o
 | N03 | BlackBerryの型番・boot/BSP・更新/復旧の適合確認 | 進行中 | [記録](docs/native-os-integration.md) |
 | N04 | BlackBerry実機だけでHub取得・実行・更新・復旧 | 未着手 | [記録](docs/native-os-integration.md) |
 | N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
-| RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 進行中 | [記録](docs/release-installation-plan-20260909.md) |
+| RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 進行中 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/rockstaros-1.0-architecture.md) |
 | RLS02 | 正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証 | 未着手 | [記録](docs/release-installation-plan-20260909.md) |
 
 段階ゲート（作業全体の完了とは別判定）
