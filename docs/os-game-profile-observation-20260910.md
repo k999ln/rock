@@ -22,3 +22,7 @@ guest側は従来のauthenticator/Hub/remote queue/power、遠隔Wallet cache、
 実SQLiteを使う8件で、時刻のみの正常更新、逆行、金額/空白変更、identity/requests/未知表/schema/sequence変更、行欠落/重複、非有限/非正/非REAL、追加列、契約を持たないprofileの拒否を確認した。これは観測器の回帰であり、実OSの受入ではない。既存backup47件、business41件も成功。元失敗・旧画像・旧dataには変更を加えていない。
 
 追加した外部観測8件とschema7接続5件では、5個の必須DB/C/router保護JSON/表の欠落、非空の金融/資格/会員表、追加表/schema/pragma/identity変更、別authority、重複表、bool件数、CLI/config変更、非零終了、出力超過を拒否した。business系全73件、backup47件も成功。実sandboxによる全writer停止・snapshot、同じGame imageのD4〜D6、外部復元は、この文書時点でNOT_RUNである。
+
+後続の[実Linux接続記録](evidence/os-base/game-profile-observer-20260910.json)では、AのobserverからDの所有sandboxへ接続した。最初の停止snapshotで5DB/71表/8保護JSONと19個の空表条件を確認。start 0.203秒、稼働中snapshotの実拒否、stop 0.164秒を経て、全snapshotのcanonical hashは前後とも `caade4e968ee125e924614bd6c74a12a469db0a3f28c4ed3a1e6239d34a2c535` だった。snapshotは全lifetime lock保持・空WAL・immutable読取のD実装を通す。QEMU、Game UI、金融操作は行わず、元stateをSTOPPEDへ返した。これは最終source確定前のCLI SHAを固定した接続検査であり、最終imageのD6へ転用しない。
+
+schema7でもremote queueに行がある場合や別services設定がある場合は、runner/registryを外部保存・復元の必須対象に戻す。Gameであることを理由にPC上の開発runnerの状態を省略しない。対応を示す別証拠がない限り外部restore gateはNOT_RUNとする。

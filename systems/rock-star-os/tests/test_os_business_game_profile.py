@@ -76,6 +76,19 @@ class GameBusinessProfile(unittest.TestCase):
         self.assertIn('game_authorities', value['required_components'])
         self.assertEqual(value['authority_id'], AUTHORITY)
 
+    def test_game_profile_does_not_hide_a_used_or_configured_external_runner(self):
+        config = {'schema': 'rock-desktop-device/7', 'network': 'game-authority',
+                  'game': {'authority_id': AUTHORITY, 'sha256': 'a' * 64}}
+        rows = {'remote': {'tables': {'remote_jobs': {'rows': 1}}}}
+        value = harness.retention.external_coverage(config, rows)
+        self.assertEqual(value['status'], 'NOT_RUN')
+        self.assertIn('runner', value['required_components']); self.assertIn('registry', value['required_components'])
+        self.assertIn('game_authorities', value['required_components'])
+        config['services'] = {'authority_id': 'separate-development-services', 'sha256': 'b' * 64}
+        rows['remote']['tables']['remote_jobs']['rows'] = 0
+        value = harness.retention.external_coverage(config, rows)
+        self.assertIn('runner', value['required_components'])
+
     def test_game_cannot_use_the_local_wallet_mutation_preparation(self):
         with patch.object(harness, 'preflight') as preflight:
             with self.assertRaisesRegex(ValueError, 'separate explicit UI flow'):

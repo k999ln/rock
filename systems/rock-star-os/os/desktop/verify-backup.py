@@ -133,10 +133,12 @@ def external_coverage(config, baseline):
     """Inventory missing external evidence; never infer authority restore from a cache."""
     game = config['schema'] == 'rock-desktop-device/7'
     purchaser = config['schema'] in ('rock-desktop-device/4', 'rock-desktop-device/5')
-    required = purchaser or config.get('network', 'none') != 'none' or any(
-        table['rows'] for table in baseline['remote']['tables'].values())
+    remote_rows = any(table['rows'] for table in baseline['remote']['tables'].values())
+    required = game or purchaser or config.get('network', 'none') != 'none' or remote_rows
+    runner_required = purchaser or 'services' in config or remote_rows or (
+        not game and config.get('network', 'none') != 'none')
     components = {}
-    if required and not game:
+    if runner_required:
         components['runner'] = {'database': 'runner/jobs.sqlite3',
                                 'required_tables': ['metadata', 'jobs', 'revocations'],
                                 'additional_tables': 'all, including runner_service_access for purchaser profiles'}
