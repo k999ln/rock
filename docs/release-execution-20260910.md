@@ -170,3 +170,11 @@ RQ07–17 / 明確な楽観主義・販売も重要 / 同じ版の取得・継�
 - 同native recipeのPC実処理5回の成果SHA一致を確認。初回33.812375ms/反復中央値30.841792ms/正常終了後29.021292ms。初runのtimerに保存時間が混入したplan不一致を保持し、別runで修正計測。Mr. CLIや人の操作削減とは別範囲。最終OS原操作logから待ち・操作数を後で算出する。
 
 次: Aから停止済みfresh config受渡し後、元9ab C driverのGame→監査→金融→引用遠隔→90秒実OS録画を一度ずつ実行。D6 raw確認、final媒体/証拠/案内/CIを統合。AC復帰済み、終了予定13:43:35 UTC。製品licenseと既存Sitesアクセスは未解決であり一般公開は未実施。
+
+### 11:12 UTC 案内と録画照合の補強
+
+RQ07–17 / 秘密を探す・販売も重要 / ページだけで公開開始や全writer停止と誤認する不便 / 凍結guide・既存stop・retention CLI / B独立レビューに基づく公開条件とstop案内の補足、録画前後の読み取り専用照合 / 元取引・非Hub全roleの保持、限定した確認済み導入/SDK/復旧の説明 / Web typecheck/lintと最終実録画の停止後証拠。
+
+B読取レビューで、案内の公開条件に製品license未確定を追加し、再開コードへpreview.py stopを追加した。合成月額/SDK/全構成復旧/実draft取得の確認済み範囲を反映し、最終OS一周はまだ検証中とする。配布9fileは不変。
+
+C未起動の段階でorchestration v2を事前固定。元5probe/順序/閾値は不変で、demo前後に同9abのgame_authority_ui_retention capture/compareとverify-backup.compare_businessの非Hub全role比較を加えた。SDK read clockとindex最大時刻の許容は候補内の既存typed policyだけ。原e45driver/planを保持、v2 SHA256c4ce5a926c6db6406d1c25c72473acb5d48b2511d29e3180b0bb9e4fc60bb、plan d1a5f0aa113d0c134b1272db51079f574b59f634f125b499b99b894cc3f69361。追加観測失敗も全体FAIL、強制cleanupなし。Linux CLIhelpとcompile確認済み。Aから実操作受渡し前でauthorityにはアクセスしていない。
