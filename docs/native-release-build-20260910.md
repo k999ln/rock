@@ -1,12 +1,12 @@
 # 同じsource・imageを固定するbuild入口
 
-対象RQ09・12・16・17 / 明確な楽観主義・べき乗則 / テスト版・配布image・再開コマンドの食い違い / 既存Git archive・native回帰・Buildroot cache / [freeze工具](../scripts/freeze-native-build.py)で対応を検査 / source inventory・image triple・configのhash一致 / 8件のartifact異常系＋実build時の機械manifest。
+対象RQ09・12・16・17 / 明確な楽観主義・べき乗則 / テスト版・配布image・再開コマンドの食い違い / 既存Git archive・native回帰・Buildroot cache / [freeze工具](../scripts/freeze-native-build.py)で対応を検査 / source inventory・image triple・configのhash一致 / 9件のartifact異常系＋実build時の機械manifest。
 
 `scripts/freeze-native-build.py`は、完了済みの実buildを一意なGit archiveとnative試験reportに結ぶ。QEMUを起動せず、D0〜D6合格、再現可能build、配布許可を宣言しない。これは過去の固定パス・固定1089件の手元freeze scriptを、今回の候補へ正しく使える入口にしたもの。
 
 ## Linux buildと固定
 
-正本release commitの`git archive --format=tar`を、新しいLinux sourceディレクトリへ展開する。archiveのPAX commentの40桁SHA、全ファイルbytes、native試験入力の完全なinventoryが一致しなければ固定しない。既存のsource・image・保存diskを上書きしない。
+正本release commitの`git archive --format=tar`を、`umask 022`を設定した新しいLinux sourceディレクトリへ展開する。Limaの既定umask0002ではfixture/CAがgroup-writableになり既存の保護guardが拒否する。archiveのPAX commentの40桁SHA、全ファイルbytes、native試験入力の完全なinventoryが一致しなければ固定しない。freezeもgroup/world-write可能なsourceを拒否する。既存のsource・image・保存diskを上書きしない。
 
 ```sh
 python3 scripts/test-native.py --output /var/tmp/rockstaros-candidate-tests
@@ -50,4 +50,4 @@ cacheの容量を確保する際も保存disk・source・原試験報告を消�
 python3 scripts/tests/test-freeze-native-build.py -v
 ```
 
-2026-09-10、Mac上の8件に合格。wrong commit、source改変、新sourceに対する旧test inventory、skip、image改変、hardlink、config不一致を拒否し、cache再利用をfresh buildとして報告しない。これらのsynthetic artifactは実kernel/OS imageではなく、OS受入件数に加算しない。
+2026-09-10、Mac上の9件に合格。wrong commit、source改変、group-write可能なsource、新sourceに対する旧test inventory、skip、image改変、hardlink、config不一致を拒否し、cache再利用をfresh buildとして報告しない。Linux版でも元の8件に合格している。これらのsynthetic artifactは実kernel/OS imageではなく、OS受入件数に加算しない。

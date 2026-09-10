@@ -49,12 +49,14 @@ def verify_source(source, archive_path, commit):
             require(actual.parent.resolve(strict=True) == actual.parent, 'source parent is an alias')
             if member.isfile():
                 require(actual.is_file() and not actual.is_symlink(), 'source missing or aliased: ' + member.name)
+                require(not actual.stat().st_mode & 0o022, 'source is group/world writable: ' + member.name)
                 with archive.extractfile(member) as stream:
                     expected = hashlib.file_digest(stream, 'sha256').hexdigest()
                 require(digest(actual) == expected, 'source changed: ' + member.name)
                 files[member.name] = expected
             elif member.isdir():
                 require(actual.is_dir() and not actual.is_symlink(), 'source directory changed')
+                require(not actual.stat().st_mode & 0o022, 'source directory is group/world writable')
             elif member.issym():
                 require(actual.is_symlink() and os.readlink(actual) == member.linkname, 'source link changed')
             else:

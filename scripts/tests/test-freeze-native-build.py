@@ -85,6 +85,10 @@ class FreezeProvenance(unittest.TestCase):
         (self.source/'systems/rock-star-os/src/runtime.py').write_text('VERSION = 2\n')
         with self.assertRaisesRegex(ValueError,'source changed'): self.run_freeze()
 
+    def test_group_writable_source_cannot_be_frozen_as_protected_input(self):
+        (self.source/'systems/rock-star-os/src/runtime.py').chmod(0o664)
+        with self.assertRaisesRegex(ValueError,'group/world writable'): self.run_freeze()
+
     def test_new_source_not_in_old_regression_inventory_is_rejected(self):
         (self.source/'systems/rock-star-os/src/added.py').write_text('ADDED = True\n')
         self.write_archive()
