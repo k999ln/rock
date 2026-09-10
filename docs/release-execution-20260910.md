@@ -137,3 +137,16 @@ RQ07–17 / 明確な楽観主義・べき乗則 / 版ごとに検証が混ざ�
 - 09:39 host Battery54%・推定1:02、AC未確認。充電について非同期入力を依頼済み。user/他app processは止めず、A有限caffeinateと都度記録を維持。製品licenseと既存Sitesアクセスも未解決。
 
 次: A D4 41boot→初期0 D6 5boot/61jobs/60分→D2 2boot/16ops/5jobs→D1/D3。全fixture停止後Cへ引渡し、Bは独立VMでsame9file取得/導入/全構成復旧/SDK。最終実OS映像・公開用artifact・取得照合を完成する。終了予定13:43:35 UTC。
+
+## 10:20 UTC checkpoint（経過4:36:25）
+
+RQ07–17 / 明確な楽観主義・販売も重要 / 同じ版の取得・継続稼働が確かめられない不便 / 既存packager・署名verifier・canonical D6 / private draftと隔離CI transportのみ追加 / 9file一致・元60分gate・実UI受入 / 原ログとsource/image pins。
+
+- 最終配布9fileを2回生成して全一致。archive1,000,928,255B SHA121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2、manifestSHAe06fb8d9df292103e63f6cd56df95b189202ae0b13b6e1c578cb6eef0ffc5971。legalNOT_CLEARED/PACKAGED_NOT_ACCEPTEDを維持、outputs/へcopy済み。
+- 同repo private draft386171909、tag v1.0.0-preview.20260910-rc1、archiveasset554748551へ保存。draft=true/匿名release・asset GET404を実確認。別emptyfolderへの認証付きGitHub取得も9file全SHA/size一致。初回verifyは公開試験鍵の明示ack不足でguard拒否exit1、原記録保持。独立manifest/key pinsと正規allow-public-test-key指定の別検証はexit0 VERIFIED。一般公開URLではない。
+- B新規16GiB VM導入preflight41.87秒、導入直後free約12.53GiB。実Hub sample、明示Wallet登録/同意/credit100、GameA10COINを確認。一時応答不明は既存更新で同要求を回収し追加購入なし。通常再開/全構成backup/実SIGKILL中断restore/freshSDKは実施中。
+- Web3e5bb56のnpm run verify exit0、API143assert含む。静的exportはWeb1ad0920、全assetSHA/16内部link/各1H1/実browserの案内・guide先頭を確認。最終demoは未収録のためmedia非表示。最初の127.0.0.1 exportはViteの::1待受により接続拒否、空outputを確認してlocalhostで成功。所有Vite26329はcwd/argv確認後停止。
+- 電池33→28%で遠隔継続を準備、10:15:03 UTC AC Power30%charging復帰を実測。D6のみ独立Debian13/QEMU10 CIへ準備継続、重複OS/C jobは起動しない。C fallbackはprivate work/final-ci-contingencyへ保持。実jobID未取得のため稼働中とは扱わない。補足plan f91c2da9aa80c3ccb1d549cf4e04dd21190e17f47da506da292c2e427ea7d9c3がlocal D4→emptyD2→D1/D3→Cと独立D6を事前固定。
+- D4原runは10:11:54に診断専用ui_startup_fixture.pyのTOCTOUでFAIL。12boots PASSの後crash故障操作でpidfd SIGKILL後に/proc stat消失をFileNotFoundErrorとして観測。本体は異常拒否/rebootしたが故障proof未生成で原FAIL。Aは診断fixtureの最小race修正/実pidfd試験を別版で準備中、配布source/image9abは変更していない。
+
+次: D6 transport/provenance review→実job起動/ID保存。A診断差分/非搭載証拠をreviewし影響caseを同candidateで受入。B全構成復旧/SDK。rootはA全gate後のfreshCを凍結orchestratorで一周し、実録画encode/視認/発表媒体へつなぐ。終了予定13:43:35 UTC。

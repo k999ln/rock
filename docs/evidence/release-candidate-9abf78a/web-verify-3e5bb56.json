@@ -1,0 +1,9 @@
+{
+  "source_commit": "3e5bb56",
+  "command": "npm run verify",
+  "exit_code": 0,
+  "status": "PASS",
+  "log_sha256": "a14153de473a4345c588a94d0c76e9f01776a104343c983967e197277410d3e6",
+  "api_assertions": 143,
+  "scope": "Web/project checks only; native acceptance remains separate"
+}

@@ -86,7 +86,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 09:48 UTC: final9ab source/host toolsのCI1631/14 PASSと全694input一致、base/profile build freeze完了。GX01-CONTRACTは同source177通常＋別11実SIGKILL/24要件のfixture範囲でdone、GX01-UI/DX01-SDK/V01-ACCEPTは最終実OS/fresh待ち。A legal collector補助不具合を修正・旧image保管で容量確保→D4→D6→D2/D1/D3、B同配布9file/fresh/aggregate/SDK、root全gate後freshC実UI/実demo。arm64原全回帰10TLS ERRORは原因未確定FAIL保持。公開license/Sites/充電接続は未解決。
+次の作業: 10:20 UTC: source/image9ab固定、配布9files2回一致・private draft実取得/署名検証PASS。A D4専用crash fixtureのproc消失raceを原FAIL保存し別診断版で最小修正/再試験→D2/D1/D3、B非zero全構成復旧/取得版freshSDK、D独立CI D6を準備、root gate後freshC実UI/90秒録画。10:15 AC充電復帰。公開license/Sitesと最終受入は未解決。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

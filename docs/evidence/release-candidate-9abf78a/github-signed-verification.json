@@ -1,0 +1,29 @@
+{
+  "schema": "rock-private-draft-signed-verification/1",
+  "finished_utc": "2026-09-10T10:10:22.223171+00:00",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "release_id": 386171909,
+  "draft": true,
+  "public_download": false,
+  "development_trust_explicit": true,
+  "command": [
+    "python3",
+    "work/github-candidate-download-01/preview.py",
+    "verify",
+    "--manifest",
+    "work/github-candidate-download-01/release-manifest.json",
+    "--archive",
+    "work/github-candidate-download-01/rockstaros-1.0.0-preview.20260910-macos-arm64.tar.gz",
+    "--trusted-key",
+    "work/github-candidate-download-01/release-key.der",
+    "--trusted-key-sha256",
+    "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+    "--allow-public-test-key",
+    "--manifest-sha256",
+    "e06fb8d9df292103e63f6cd56df95b189202ae0b13b6e1c578cb6eef0ffc5971"
+  ],
+  "exit_code": 0,
+  "stdout": "RockstarOS 1.0 Developer Preview\n{\n  \"status\": \"VERIFIED\",\n  \"source_commit\": \"9abf78a80d27aa9f847c4051d20e4c552e407276\",\n  \"trust\": \"PUBLIC_RFC8032_DEVELOPMENT_ONLY\",\n  \"archive_sha256\": \"121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2\",\n  \"OS_acceptance\": \"separate gate\"\n}\n",
+  "stderr": "",
+  "first_attempt": "github-acquisition.json records expected public-test-key guard rejection before explicit development acknowledgement"
+}
