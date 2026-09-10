@@ -1,5 +1,7 @@
 # Rock star — 事業・設計・進捗
 
+署名保護の実API照合: `codex/release-signing-control` と公開変数を `ca7356550b0042d05f60a389a90aebd5210510e6` へ固定し、locked/admin enforcement/force・delete禁止/独立PR承認をreadbackした。個人repoはRESTの空bypass設定を422拒否し、そのfieldを返さないため、PR #4の修正はexact repository/branch prefix/commit/ruleに結び付くGraphQL integer0を必須にする。27署名試験PASS。control branchは旧ca73565のまま保護し、修正・owner policy/trustの反映は独立レビュー付き更新待ち。Environment/管理鍵/初回登録は未設定。ca73565自体の全10checks・native1671/skip0成功はSHA別の原証拠に保存した。
+
 追加実装: packagerの未署名exportとcontrol側の候補準備処理を実装し、37fixtureと既存desktop50を確認。共有clockを差し替えるテスト不具合は修正前FAIL→修正後13PASS。旧9ab配布物・runtime・imageは不変だが、新packagerの実生成には新sourceのbuild/freeze/受入が必要。独立レビューによる出力directory競合も修正した。限定bootstrapはDraft PR #5（a441162、CI成功）に分離し、mainは未merge。原TLS原因と所有者入力は未解決。新HEADの最終CIとcontrol ref/protectionはGitHubの実readbackを別証拠に記録する。
 
 再開確認（2026-09-10 22:03 UTC）: GitHubの最終候補は `97d952937add42de04092a2e6c2fac8aba3d8bad`、Draft PR #4はMERGEABLE・全9check成功。mainと旧9ab配布物は不変。Hub改修をやり直す段階ではなく、TLS原因の追加調査と、新しい配布候補を管理署名へ渡す処理へ進む。Sitesは再度NOT_FOUND、署名Environment/control branch/workflow登録と独立承認者は未設定。以下の検証記録は各SHA時点の履歴として保持する。
@@ -290,7 +292,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 新候補の未署名生成とclock fixture分離を実装済み。PR #4の新HEADで全CIを照合し、専用control branchを固定・保護する。所有者のlicense/CM/独立reviewer決定、元Sites再接続、限定bootstrap PR #5の明示承認後に、新sourceのbuild/freeze・管理署名・本人限定preview・導入/復旧を実施する。一般公開と製品PR #4のmain mergeは最終承認まで行わない。
+次の作業: 署名controlはca73565で固定・保護済み。個人repoのREST省略を明示的GraphQLゼロ件で検証する修正をPR #4へ追加し、新HEADの全CIを照合する。所有者のlicense/CM/独立reviewer決定、元Sites再接続、限定bootstrap PR #5の明示承認後に、controlの独立レビュー付き更新、新sourceのbuild/freeze・管理署名・本人限定preview・導入/復旧を実施する。一般公開と製品PR #4のmain mergeは最終承認まで行わない。
 <!-- project-status:end -->
 
 ## 次段階の設計

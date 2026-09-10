@@ -8,6 +8,8 @@
 
 署名の初回登録にはdefault branch配置が必要なため、[Draft PR #5](https://github.com/k999ln/rock/pull/5)でworkflow1ファイルのみのbootstrapを準備した。SHA `a4411622031858d6d9684c599d857cadaf90bb94`、mainには未merge。利用者がその限定bootstrapを明示承認するまでは実署名リハーサルに進めない。これは一般公開と製品PR #4のmerge承認とは別。条件が満たされた後はPR #5→実署名/全受入→最終承認→PR #4の順となり、mainが変わった時点で最終tree/CIを再照合する。
 
+署名保護の実API照合: `codex/release-signing-control` と公開変数を `ca7356550b0042d05f60a389a90aebd5210510e6` へ固定し、locked/admin enforcement/force・delete禁止/独立PR承認をreadbackした。個人repoはRESTの空bypass設定を422拒否し、そのfieldを返さないため、PR #4の修正はexact repository/branch prefix/commit/ruleに結び付くGraphQL integer0を必須にする。27署名試験PASS。control branchは旧ca73565のまま保護し、修正・owner policy/trustの反映は独立レビュー付き更新待ち。Environment/管理鍵/初回登録は未設定。ca73565自体の全10checks・native1671/skip0成功はSHA別の原証拠に保存した。 [ca73565のCI snapshot](evidence/launch/ci-ca73565.json)。後続修正commitのCIは、そのHEADで別に照合する。
+
 Draft編集後のURL変化と新旧証拠の取り違えを避けるため、[tag・numeric ID・hashで再取得する手順](release-artifact-access.md)を追加した。元の固定済み証拠内URLや旧配布物は書き換えない。
 
 - 開始時GitHub取得: main `7cdbb5fedc86ee3978ed329d9312147d137c9199`、再開 `codex/rockstaros-release-20260910` の `29e4f7203f72d9949e2dfc90b64c4215d4bbb765`。
@@ -49,7 +51,7 @@ Draft編集後のURL変化と新旧証拠の取り違えを避けるため、[ta
 
 旧RFC8032試験鍵は誰でも署名できる。本番署名のfingerprintは未登録。GitHub Environment `rock-release-signing` は読み取りで404、管理鍵の利用実績なし。保護control ref限定のworkflow、管理鍵と公開RFC試験鍵の分離、全asset/offline verifier、独立承認・失効/rotation・圧縮tar拒否のscaffoldを実装し、22fixture試験で検証した。[設定・運用・未実証の範囲](release-signing-operations.md)を参照。実Environment/管理鍵を使う合格ではない。試験鍵で旧archiveを本番扱いにしない。
 
-次: 独立reviewerと保護control ref/Environmentを設定し、管理済み秘密値をGitHub Environmentへ直接登録、公開trust/fingerprintを独立経路へ掲載する。鍵をチャット/Gitへ送らない。実保護設定・改ざん拒否・rotation/revocation・新候補署名が通るまで本項目は未合格。担当: repo管理者/署名担当者。
+次: 独立reviewer/Environmentを設定し、既に保護されたcontrolを修正・owner policy/trustへ独立レビュー付きで更新する。管理済み秘密値をGitHub Environmentへ直接登録、公開trust/fingerprintを独立経路へ掲載する。鍵をチャット/Gitへ送らない。実保護設定・改ざん拒否・rotation/revocation・新候補署名が通るまで本項目は未合格。担当: repo管理者/署名担当者。
 
 ## LCH04 — SitesとUI: LOCAL_PASS / HOSTED_ACCESS_BLOCKED
 

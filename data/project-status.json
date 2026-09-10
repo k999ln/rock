@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
   "milestone": "RockstarOS 1.0 ローンチ準備・Hubのユーザー体験改善",
-  "nextAction": "新候補の未署名生成とclock fixture分離を実装済み。PR #4の新HEADで全CIを照合し、専用control branchを固定・保護する。所有者のlicense/CM/独立reviewer決定、元Sites再接続、限定bootstrap PR #5の明示承認後に、新sourceのbuild/freeze・管理署名・本人限定preview・導入/復旧を実施する。一般公開と製品PR #4のmain mergeは最終承認まで行わない。",
+  "nextAction": "署名controlはca73565で固定・保護済み。個人repoのREST省略を明示的GraphQLゼロ件で検証する修正をPR #4へ追加し、新HEADの全CIを照合する。所有者のlicense/CM/独立reviewer決定、元Sites再接続、限定bootstrap PR #5の明示承認後に、controlの独立レビュー付き更新、新sourceのbuild/freeze・管理署名・本人限定preview・導入/復旧を実施する。一般公開と製品PR #4のmain mergeは最終承認まで行わない。",
   "tasks": [
     {
       "id": "R01",
@@ -720,11 +720,11 @@
     "campaign": "AWAITING_SELECTION",
     "nativeHistoricalTlsCause": "UNDETERMINED",
     "candidateBranch": "codex/rockstaros-launch-candidate-20260910",
-    "recordedCiCommit": "97d952937add42de04092a2e6c2fac8aba3d8bad",
-    "recordedCiEvidence": "docs/evidence/launch/ci-97d9529.json",
+    "recordedCiCommit": "ca7356550b0042d05f60a389a90aebd5210510e6",
+    "recordedCiEvidence": "docs/evidence/launch/ci-ca73565.json",
     "candidatePr": 4,
-    "recordedChecks": "ALL_9_SUCCESS",
-    "recordedNativeTests": 1670,
+    "recordedChecks": "ALL_10_SUCCESS",
+    "recordedNativeTests": 1671,
     "recordedNativeChecks": 17,
     "recordedNativeSkips": 0,
     "recordedWebTests": 93,
@@ -733,6 +733,10 @@
     "signingBootstrapPr": 5,
     "signingBootstrapCommit": "a4411622031858d6d9684c599d857cadaf90bb94",
     "signingBootstrapApproval": "AWAITING_EXPLICIT_LIMITED_MAIN_APPROVAL",
-    "nativeClockFixture": "DETERMINISTIC_FAILURE_FIXED_13_PASS_NOT_HISTORICAL_TLS_ATTRIBUTION"
+    "nativeClockFixture": "DETERMINISTIC_FAILURE_FIXED_13_PASS_NOT_HISTORICAL_TLS_ATTRIBUTION",
+    "signingControlCommit": "ca7356550b0042d05f60a389a90aebd5210510e6",
+    "signingControlProtection": "LOCKED_ADMINS_ENFORCED_FORCE_DELETE_DISABLED_GRAPHQL_BYPASS_ZERO",
+    "signingControlUpdate": "PENDING_INDEPENDENT_REVIEW_WITH_OWNER_POLICY_AND_TRUST",
+    "signingPreflightCompatibility": "PERSONAL_REPOSITORY_GRAPHQL_EXPLICIT_ZERO_FIX_27_TESTS_PASS"
   }
 }

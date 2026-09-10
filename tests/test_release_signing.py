@@ -261,6 +261,76 @@ class PolicyTests(unittest.TestCase):
     def test_strict_protection_policy_passes(self):
         preflight.validate_protection(*self.fixture())
 
+    def graphql_fixture(self):
+        return {'data': {'repository': {'nameWithOwner': preflight.REPOSITORY,
+            'ref': {'name': preflight.CONTROL, 'prefix': 'refs/heads/',
+                    'target': {'__typename': 'Commit', 'oid': 'a' * 40},
+                    'branchProtectionRule': {'id': 'BPR_fixture', 'pattern': preflight.CONTROL,
+                        'bypassPullRequestAllowances': {'totalCount': 0}}}}}}
+
+    def absent_rest_fixture(self):
+        args = self.fixture()
+        del args[2]['required_pull_request_reviews']['bypass_pull_request_allowances']
+        return args
+
+    def test_absent_rest_requires_explicit_bound_graphql_zero(self):
+        self.assertEqual(preflight.validate_protection(*self.absent_rest_fixture(),
+            bypass_evidence=self.graphql_fixture(), control_sha='a' * 40), 'GRAPHQL_REF_BOUND_ZERO')
+        for evidence in (None, {}, {'data': None}, {'data': {}}, {'data': {'repository': None}}):
+            with self.subTest(evidence=evidence), self.assertRaises(ValueError):
+                preflight.validate_protection(*self.absent_rest_fixture(), bypass_evidence=evidence, control_sha='a' * 40)
+
+    def test_graphql_partial_or_misbound_evidence_rejected(self):
+        mutations = [lambda x: x.update(errors=[]), lambda x: x.update(errors=[{'message': 'denied'}]),
+            lambda x: x['data']['repository'].update(nameWithOwner='other/rock'),
+            lambda x: x['data']['repository'].update(ref=None),
+            lambda x: x['data']['repository']['ref'].update(name='main'),
+            lambda x: x['data']['repository']['ref'].update(prefix='refs/tags/'),
+            lambda x: x['data']['repository']['ref'].update(target=None),
+            lambda x: x['data']['repository']['ref']['target'].update(__typename='Tag'),
+            lambda x: x['data']['repository']['ref']['target'].update(oid='b' * 40),
+            lambda x: x['data']['repository']['ref'].update(branchProtectionRule=None),
+            lambda x: x['data']['repository']['ref']['branchProtectionRule'].update(id=' '),
+            lambda x: x['data']['repository']['ref']['branchProtectionRule'].update(pattern='codex/*'),
+            lambda x: x['data']['repository']['ref']['branchProtectionRule'].update(bypassPullRequestAllowances=None)]
+        for i, change in enumerate(mutations):
+            evidence = self.graphql_fixture()
+            change(evidence)
+            with self.subTest(mutation=i), self.assertRaises(ValueError):
+                preflight.validate_protection(*self.absent_rest_fixture(), bypass_evidence=evidence, control_sha='a' * 40)
+
+    def test_graphql_count_must_be_integer_zero(self):
+        for count in (None, False, 0.0, '0', 1, -1, [], {}):
+            evidence = self.graphql_fixture()
+            evidence['data']['repository']['ref']['branchProtectionRule']['bypassPullRequestAllowances']['totalCount'] = count
+            with self.subTest(count=count), self.assertRaises(ValueError):
+                preflight.validate_protection(*self.absent_rest_fixture(), bypass_evidence=evidence, control_sha='a' * 40)
+
+    def test_present_rest_failure_cannot_be_overridden_by_graphql(self):
+        for bypass in (None, {}, [], {'users': [], 'teams': []}, {'users': [{'id': 17}], 'teams': [], 'apps': []}):
+            args = self.fixture()
+            args[2]['required_pull_request_reviews']['bypass_pull_request_allowances'] = bypass
+            with self.subTest(bypass=bypass), self.assertRaises(ValueError):
+                preflight.validate_protection(*args, bypass_evidence=self.graphql_fixture(), control_sha='a' * 40)
+
+    def test_preflight_fallback_only_reads_for_absent_rest_key(self):
+        workflow_env = {'GITHUB_REPOSITORY': preflight.REPOSITORY, 'GITHUB_EVENT_NAME': 'workflow_dispatch',
+            'GITHUB_REF': 'refs/heads/' + preflight.CONTROL, 'GITHUB_SHA': 'a' * 40, 'GITHUB_RUN_ATTEMPT': '1',
+            'GITHUB_WORKFLOW_REF': preflight.REPOSITORY + '/.github/workflows/release-signing.yml@refs/heads/' + preflight.CONTROL}
+        for missing in (False, True):
+            environment, branches, protection, policy = self.absent_rest_fixture() if missing else self.fixture()
+            policy['schema'] = 'rock-release-signing-policy/1'
+            with tempfile.TemporaryDirectory() as directory:
+                path = Path(directory) / 'policy.json'
+                path.write_text(json.dumps(policy))
+                with patch.dict(os.environ, workflow_env), patch.object(preflight, 'api', side_effect=[
+                    {'object': {'sha': 'a' * 40, 'type': 'commit'}}, environment, branches, protection]), \
+                    patch.object(preflight, 'graphql_bypass', return_value=self.graphql_fixture()) as graphql:
+                    result = preflight.preflight('a' * 40, path)
+                self.assertEqual(graphql.call_count, int(missing))
+                self.assertEqual(result['branch_pr_bypass_evidence'], 'GRAPHQL_REF_BOUND_ZERO' if missing else 'REST_EXPLICIT_EMPTY')
+                self.assertFalse(result['independent_approval_checked'])
+
     def test_unsafe_protection_policy_fails(self):
         mutations = [lambda e,b,p: e.update(name='other'),
             lambda e,b,p: e['protection_rules'][0].update(prevent_self_review=False),

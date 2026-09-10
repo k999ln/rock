@@ -95,7 +95,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 新候補の未署名生成とclock fixture分離を実装済み。PR #4の新HEADで全CIを照合し、専用control branchを固定・保護する。所有者のlicense/CM/独立reviewer決定、元Sites再接続、限定bootstrap PR #5の明示承認後に、新sourceのbuild/freeze・管理署名・本人限定preview・導入/復旧を実施する。一般公開と製品PR #4のmain mergeは最終承認まで行わない。
+次の作業: 署名controlはca73565で固定・保護済み。個人repoのREST省略を明示的GraphQLゼロ件で検証する修正をPR #4へ追加し、新HEADの全CIを照合する。所有者のlicense/CM/独立reviewer決定、元Sites再接続、限定bootstrap PR #5の明示承認後に、controlの独立レビュー付き更新、新sourceのbuild/freeze・管理署名・本人限定preview・導入/復旧を実施する。一般公開と製品PR #4のmain mergeは最終承認まで行わない。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
