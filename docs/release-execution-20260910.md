@@ -150,3 +150,14 @@ RQ07–17 / 明確な楽観主義・販売も重要 / 同じ版の取得・継�
 - D4原runは10:11:54に診断専用ui_startup_fixture.pyのTOCTOUでFAIL。12boots PASSの後crash故障操作でpidfd SIGKILL後に/proc stat消失をFileNotFoundErrorとして観測。本体は異常拒否/rebootしたが故障proof未生成で原FAIL。Aは診断fixtureの最小race修正/実pidfd試験を別版で準備中、配布source/image9abは変更していない。
 
 次: D6 transport/provenance review→実job起動/ID保存。A診断差分/非搭載証拠をreviewし影響caseを同candidateで受入。B全構成復旧/SDK。rootはA全gate後のfreshCを凍結orchestratorで一周し、実録画encode/視認/発表媒体へつなぐ。終了予定13:43:35 UTC。
+
+## 10:40 UTC checkpoint（経過4:57:15）
+
+- latest pushed22b8bf8のWeb34465693068/native34465693146両PASS。D6 run34465689434は通常jobtokenによるprivate取得10:22:37–56、UID1001完全source/CI/署名/empty0 prepare10:22:56–10:23:13 PASS、同10:23:13にcanonical observer開始。10分時点も実行中でありinner soak合格は未判定。Dが元raw回収/全67jobs中61soak/5正常終了/全保持を照合する。
+- D4診断修正原f7c391c→root d6647e3、証拠244cae5→root d69842d。source9ab/image/packageは不変、4file診断overlayのbefore/afterSHAをrootも照合。Linux33test/skip0、20productioninputs/ELF/非搭載rootfs/旧5assert関数不変を確認。元全85file archiveをhostで全読取後Linux側大imageだけ退避し12GiB原容量guardを維持。新actualplan5ccd33fc0e85df395f19a3996d58b9b928becf4c9eb289405cf7f6e143127892で10:33:20開始。crash4は10:38:02 PASS_SCOPED、元ready/absent/freeze10bootと合わせstartup14。原D4 whole FAILは保持、残27boot完了まで全D4合格なし。
+- B final lifecycle d9c1d45→root1ddef10。3実boot/normal shutdown、Hub150→151、一度だけGameA10/Wallet9897/hold0、非zero全構成restoreの実16MiB SIGKILL→3経路PENDING拒否→同intent回収→epoch一回/3disk一致/旧端末fence/復元先UI/122table不変がPASS。offVM19file1,074,564,436B原本保持後、所有VMを通常削除。rootが47evidenceSHA全照合。
+- B finalSDK9bc2357→rootb746d27。同privateGitHub取得9fileから直接692native全inventoryを展開してfreshVM。初回交換2.202283459秒、停止診断0.130912789秒、元要求回収1.173279643秒、一周4.625373475秒。機械時間であり人間時間ではない。全5DB71table/独立read-only財務9794 fee6 holds0 A/B各10一度、月額/引出0。原本75,089B保持とSDK専用所有VM通常削除、rootが12evidenceSHA全照合。DX01/DX01-SDKを内部合成範囲done、GX01-UI/PREVIEW-INSTALL全gateは未合格維持。
+- Bは元GitHub取得→フルOS新規install/sample1job/正常終了/削除の入口のみ追加確認中。plan9c6d6ec5bc0ed45708434a992fb4d57d1c3f4daed2557798402822826b6ffb1a、既済みrestore/金融/SDKを反復しない。
+- 原arm64全回帰10ERRORは既存D scoped rawに全10caseのok行が一度ずつ存在することを読み取りで照合。新試験0、原FAILと原因未確定は維持。既存Sites再取得はNOT_FOUNDが継続、公開先を作り替えていない。AC復帰後のローカル継続を確認済み。
+
+次: A残D4/D2/D1/D3完了後のfreshC受渡し→root同9absource全1364file/image照合→Game/独立監査/金融/引用遠隔/90秒実録画。D6原結果照合・B取得入口・最終media/ガイド・branch/CI/PR同期を進める。終了予定13:43:35 UTC。

@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
   "milestone": "RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備",
-  "nextAction": "10:20 UTC: source/image9ab固定、配布9files2回一致・private draft実取得/署名検証PASS。A D4専用crash fixtureのproc消失raceを原FAIL保存し別診断版で最小修正/再試験→D2/D1/D3、B非zero全構成復旧/取得版freshSDK、D独立CI D6を準備、root gate後freshC実UI/90秒録画。10:15 AC充電復帰。公開license/Sitesと最終受入は未解決。",
+  "nextAction": "10:40 UTC: 同9ab取得版freshSDKと非zero全構成restoreがPASS、DX01-SDK完了。A診断sidecar f7c391c/root d6647e3のcrash4 PASS＋元10でstartup14揃い、残D4 AB8/fault13/auth3/ABI3→D2/D1/D3→freshC待ち。D6実CI34465689434は10:23開始/実行中。BはGitHub取得→直接OS導入/sample/停止/削除を限定確認。配布9files不変、一般公開はlicense/Sitesと全受入待ち。",
   "tasks": [
     {
       "id": "R01",
@@ -344,13 +344,16 @@
     {
       "id": "DX01",
       "title": "ゲーム作者向けAPI/SDK・sandbox・複数owner/game分離と導入体験を検証",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [
         "GX00"
       ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
-        "docs/gx01-reference-sdk-sandbox-20260910.md"
+        "docs/gx01-reference-sdk-sandbox-20260910.md",
+        "docs/evidence/rls01/sdk-final-9abf78a/README.md",
+        "docs/evidence/rls01/sdk-final-9abf78a/summary.json",
+        "docs/evidence/gx01/final-9abf78a-20260910.json"
       ]
     },
     {
@@ -583,13 +586,16 @@
       "id": "DX01-SDK",
       "task": "DX01",
       "title": "共通SDK・2作者/2game/2owner・fresh導入測定",
-      "status": "planned",
+      "status": "done",
       "dependsOn": [
         "GX01-CONTRACT"
       ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
-        "docs/gx01-reference-sdk-sandbox-20260910.md"
+        "docs/gx01-reference-sdk-sandbox-20260910.md",
+        "docs/evidence/rls01/sdk-final-9abf78a/README.md",
+        "docs/evidence/rls01/sdk-final-9abf78a/summary.json",
+        "docs/evidence/gx01/final-9abf78a-20260910.json"
       ]
     },
     {
