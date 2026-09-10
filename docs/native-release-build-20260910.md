@@ -51,3 +51,37 @@ python3 scripts/tests/test-freeze-native-build.py -v
 ```
 
 2026-09-10、Mac上の9件に合格。wrong commit、source改変、group-write可能なsource、新sourceに対する旧test inventory、skip、image改変、hardlink、config不一致を拒否し、cache再利用をfresh buildとして報告しない。Linux版でも元の8件に合格している。これらのsynthetic artifactは実kernel/OS imageではなく、OS受入件数に加算しない。
+# Signed Game profile derivation
+
+RQ09/12/16/17; principle: 明確な楽観主義; inconvenience: an injected profile has different image hashes from its native build; reuse: original frozen Git archive/build/source guard/signed factory; smallest change: host-only independent inventory and provenance; measure: exactly two Wallet files plus their directory; acceptance: unchanged base, full source bytes, full filesystem content/ownership/mode, and unchanged non-factory stage0 entries.
+
+After `freeze-native-build.py` and `os/game_exchange/profile.py prepare`, run the
+following from the exact frozen source on Linux:
+
+```sh
+python3 scripts/freeze-native-profile.py \
+  --source-root "$SOURCE" --source-archive "$ARCHIVE" --source-commit "$COMMIT" \
+  --source-report "$REPORT" --base-images "$BASE_IMAGES" \
+  --images-dir "$PROFILE_IMAGES" --evidence-dir "$NEW_EVIDENCE_DIRECTORY"
+```
+
+The result retains schema `rock-build-freeze/2`. Top-level image checksums and
+identities describe the derived triple. `base_build.manifest` preserves the
+complete original freeze and `base_build.manifest_sha256` binds its exact raw
+bytes, also copied to `base-freeze-manifest.json`. `profile_derivation.profile_sha256`
+binds exact `profile.json` bytes. All acceptance fields remain `NOT_RUN`.
+
+The independent read-only `debugfs` inventory includes every path, inode number,
+UID/GID, mode, regular-file bytes, and symlink target, including `/`. Filesystem
+allocation, timestamps and directory byte sizes are outside the content
+comparison. The only permitted additions are root-owned mode 0755
+`/etc/rock-wallet` and UID/GID 1003 mode 0600 `backend.json` and `backend-token`.
+Declared contents must match exactly; all original files and unknown paths
+remain fixed. Complete inventories are stored in the separate evidence
+directory and their hashes/counts are embedded in the freeze. No image is
+mounted or modified during inventory. Unsupported special inodes fail closed.
+
+The host inventory was measured against the preserved 3fa8861 intermediate
+image without writing it; this is a tool check, not Game acceptance. Eight
+negative/positive contract tests cover undeclared content/inode/owner changes,
+removed paths, existing configuration replacement and private token metadata.
