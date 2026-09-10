@@ -260,6 +260,35 @@ class WalletExchanges:
             return {'schema':'rock-game-exchange-list/1','items':result,
                 'next_after':result[-1]['id'] if len(rows)>len(result) else None,'simulation_only':True}
 
+    def admit_first_apply(self,db,row,apply,deadline):
+        # Called only beneath C -> author gate -> this Wallet transaction.
+        # Revocation and first dispatch claim are serialized; no network or
+        # automatic hold release occurs here. An already claimed authorization
+        # remains resolvable through its original command and terminal receipt.
+        from types import SimpleNamespace
+        from wallet_backend.runtime_contracts import AuthenticatedDevicePrincipal,RuntimeAdmissionRejected
+        self.runtime._hooks.require_held();d=self.descriptor;b=apply['binding'];now=self.now(deadline)
+        approval=x.approval(loaded(row['approval']));self.keys.verify('approval',approval,d.wallet_authority_id)
+        quote=x.quote(loaded(db.execute('SELECT quote FROM wallet_game_quotes WHERE quote_id=?',(row['quote_id'],)).fetchone()[0]))
+        self.keys.verify('quote',quote,d.wallet_authority_id)
+        p.require(apply['approval_sha256']==x.approval_digest(approval) and quote['binding']==b,'original approval/quote required for first claim')
+        head=db.execute('SELECT shared FROM wallet_game_heads WHERE connection_id=?',(b['connection_id'],)).fetchone()
+        p.require(head is not None,'original committed connection head required')
+        public=p.verify_shared(loaded(head[0]),self.gateway.keys,now=now)['publication']
+        p.require(all(public[k]==b[k] for k in ('wallet_authority_id','game_authority_id','game_id','connection_id','player_id')),'claim connection identity mismatch')
+        if public['state']!='ACTIVE' or public['revocation_generation']!=b['connection_generation'] or now>=public['expires_at']:return False
+        context=SimpleNamespace(device_id=approval['device_ref'],owner_id=quote['account_id'])
+        credential=self.auth._credential(db,context)
+        if credential is None or credential['credential_id']!=approval['owner_credential_id'] or credential['revoked_at'] is not None or not self.auth._terms(db,context.owner_id):return False
+        principal=AuthenticatedDevicePrincipal(d.ledger_ref,d.owner_actor,d.owner_ref,approval['device_ref'],approval['device_credential_revision'])
+        try:self.runtime._verifier.assert_current(principal,d)
+        except RuntimeAdmissionRejected:return False
+        game=self.gateway.game(b['game_authority_id'],b['game_id'])
+        author=p.GamePrincipal(game.author_id,game.game_authority_id,game.game_id,game.revision,game.scopes,1893456000,False)
+        try:self.gateway.current_author(author)
+        except p.ProtocolError:return False
+        return True
+
     def wake(self):
         for worker in self.workers:worker.wake()
 

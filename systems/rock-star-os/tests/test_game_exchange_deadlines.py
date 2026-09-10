@@ -51,6 +51,37 @@ class IndependentGameDeadlines(unittest.TestCase):
         self.f.now+=2;self.assertTrue(worker.once()) # original apply, one durable grant
         self.assertEqual(self.f.grants['a'].balance('alice'),10);self.assertEqual(self.f.balances()['GAME_HOLD'],0)
 
+    def fault_after_actual_commit(self,mode):
+        from game_exchange.exchange_server import GameHandler
+        a=self.case.connect('a');b=self.case.connect('b');self.case.purchase('a',a);self.case.purchase('b',b)
+        server=self.f.game_servers[0];old=server.RequestHandlerClass;observed=[]
+        class FaultAfterCommit(GameHandler):
+            def respond(handler,status,response):
+                if status!=200 or not response.get('ok') or response.get('result',{}).get('terminal_state')!='APPLIED':return super().respond(status,response)
+                observed.append(response);handler.close_connection=True
+                if mode=='disconnect':return
+                raw=b'x'*65537 if mode=='oversized' else b'{}'
+                handler.send_response(200);handler.send_header('Content-Type','application/json')
+                handler.send_header('X-Rock-Game','public-game-a');handler.send_header('Connection','close')
+                handler.send_header('Content-Length','65537' if mode=='oversized' else '100');handler.end_headers()
+                try:handler.wfile.write(raw);handler.wfile.flush()
+                except OSError:pass # the real bounded client may already close
+        server.RequestHandlerClass=FaultAfterCommit
+        try:
+            began=time.monotonic();self.assertTrue(self.case.workers['a'].once());self.assertLess(time.monotonic()-began,3.4)
+            self.assertEqual(len(observed),1);self.assertEqual(self.f.grants['a'].balance('alice'),10)
+            self.assertEqual(self.f.balances()['GAME_HOLD'],206) # A outcome unknown + B unsent
+            self.assertTrue(self.case.workers['b'].once());self.assertEqual(self.f.grants['b'].balance('alice'),10)
+            self.assertEqual(self.f.balances()['GAME_HOLD'],103)
+        finally:server.RequestHandlerClass=old
+        self.f.now+=5;self.assertTrue(self.case.workers['a'].once())
+        state=self.case.sdk.dispatch('public-game-a',{'v':1,'op':'game.exchange.status','connection_id':a,'exchange_id':'same-external'})['result']
+        self.assertEqual(state['terminal_receipt'],observed[0]['result']);self.assertEqual(state['state'],'COMPLETED')
+        self.assertEqual(self.f.grants['a'].balance('alice'),10);self.assertEqual(self.f.balances()['GAME_HOLD'],0)
+    def test_actual_tls_disconnect_after_game_commit_keeps_hold_until_same_receipt(self):self.fault_after_actual_commit('disconnect')
+    def test_actual_tls_oversized_receipt_after_game_commit_keeps_hold_until_same_receipt(self):self.fault_after_actual_commit('oversized')
+    def test_actual_tls_truncated_receipt_after_game_commit_keeps_hold_until_same_receipt(self):self.fault_after_actual_commit('truncated')
+
     def test_game_transport_checks_actual_tls_and_destination_before_send(self):
         source=self.case.workers['a'].peer.transport
         def fresh():return GameTransport('https://'+source.host+':'+str(source.port),support.support.gx.ROOT/'os/registry/fixtures/development-ca.pem',source.game_id)

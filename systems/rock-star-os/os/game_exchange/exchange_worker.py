@@ -5,7 +5,7 @@ import hashlib
 import threading
 import time
 import uuid
-from blackberryrock.deadline import scope
+from blackberryrock.deadline import scope,locked
 from . import protocol as p
 from . import exchange_protocol as x
 from . import exchange_ledger as ledger
@@ -36,7 +36,7 @@ class ExchangeWorker(threading.Thread):
 
     def claim(self,deadline):
         service=self.service;runtime=service.runtime
-        with scope(deadline),runtime.admit_write(runtime.descriptor.writer_epoch,deadline=deadline),service.wallet._transaction(deadline=deadline) as db:
+        with scope(deadline),runtime.admit_write(runtime.descriptor.writer_epoch,deadline=deadline),locked(service.gateway.author_gate),service.wallet._transaction(deadline=deadline) as db:
             # Reading no jobs does not mutate the remote authority clock or rows.
             now=p.integer(int(service.gateway.clock()),1)
             rows=db.execute("SELECT e.*,o.state AS outbox_state,o.cancel_requested,o.attempts,o.next_at,o.apply_bytes FROM wallet_game_exchanges e JOIN wallet_game_outbox o ON o.exchange_row=e.id WHERE o.state!='TERMINAL' AND o.next_at<=? ORDER BY o.next_at,e.id",(now,)).fetchall()
@@ -49,6 +49,7 @@ class ExchangeWorker(threading.Thread):
             else:
                 previous=db.execute('SELECT operation,result FROM wallet_game_exchange_claims WHERE exchange_row=? ORDER BY rowid DESC LIMIT 1',(row['id'],)).fetchone()
                 kind='apply' if previous and previous['operation']=='status' and previous['result']=='"NOT_FOUND"' else 'status'
+            if kind=='apply' and row['outbox_state']=='UNSENT' and not service.admit_first_apply(db,row,apply,deadline):kind='reject'
             if kind=='apply' and apply['binding']['writer_epoch']!=runtime.descriptor.writer_epoch:
                 # A restored writer never re-signs or replays an old apply.
                 # The current-epoch conditional rejection either recovers an
