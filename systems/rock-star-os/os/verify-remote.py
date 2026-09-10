@@ -105,6 +105,7 @@ def runner_rows(store):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--artifacts', required=True, type=Path)
+    parser.add_argument('--scope', choices=('local-full','game-isolation'), default='local-full')
     args = parser.parse_args()
     if sys.platform != 'linux' or os.geteuid() == 0:
         raise SystemExit('Requires nonroot Linux development VM')
@@ -121,6 +122,13 @@ def main():
     log = (evidence/'registry.log').open('wb')
     print('Actual remote OS evidence: '+str(evidence), flush=True)
     try:
+        game_gate = None
+        if args.scope == 'game-isolation':
+            sys.path.insert(0,str(REPO/'os/desktop'))
+            from game_gate_observer import Gate
+            game_gate = Gate(images,evidence,('os/verify-remote.py','os/verify-store.py','os/platform/remote-guest-test.py'),
+                             {'boots':2,'per_boot_seconds':360,'registry_ready_seconds':10})
+            report.update(verification_scope=args.scope,wallet='NOT_RUN',game_scope_plan_sha256=game_gate.plan_sha)
         for port in (9443,9444):
             with socket.socket() as probe:
                 probe.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
@@ -169,6 +177,7 @@ def main():
                        '-device','virtio-gpu-pci,xres=720,yres=960,addr=0x4','-device','virtio-keyboard-pci,addr=0x5',
                        '-device','virtio-tablet-pci,addr=0x6']
             command += (['-netdev','user,id=store-net','-device','virtio-net-pci,netdev=store-net,id=store-nic,addr=0x7,romfile='] if phase == 1 else ['-nic','none'])
+            if game_gate:command[command.index('-append')+1] += ' rock.remote.scope=game-isolation'
             disconnected = reconnected = False
             with logfile.open('wb') as output:
                 guest = subprocess.Popen(command,stdin=subprocess.DEVNULL,stdout=output,stderr=subprocess.STDOUT)
@@ -190,6 +199,7 @@ def main():
             proofs = [json.loads(line.split('ROCK_REMOTE_GUEST_PROOF ',1)[1]) for line in content.splitlines() if 'ROCK_REMOTE_GUEST_PROOF ' in line]
             if len(proofs) != 1: raise RuntimeError('expected one guest proof')
             proof = proofs[0]
+            if game_gate:game_gate.proof(proof)
             report['boots'].append({'phase':phase,'command':command,'proof':proof,'exit_code':guest.returncode,
                                     'link_disconnected':disconnected,'link_reconnected':reconnected})
             if guest.returncode or proof['status'] != 'PASS':
@@ -221,7 +231,8 @@ def main():
         if {x['key'] for x in store.requests if x['op']=='submit'} != KEYS:
             raise RuntimeError('unexpected remote submit key')
         if {p.name:sha(p) for p in (kernel,rootfs)} != before: raise RuntimeError('OS images changed')
-        report.update(status='PASS',runner_rows=rows,launcher_sha256=sha(launcher),images_unchanged=True)
+        if game_gate:report['game_authority_retention'] = game_gate.finish()
+        report.update(status='PASS_SCOPED' if game_gate else 'PASS',runner_rows=rows,launcher_sha256=sha(launcher),images_unchanged=True)
         print('PASS actual OS remote execution, lost acceptance reply, reconnect and offline reboot',flush=True)
     except BaseException as error:
         report.update(status='FAIL',error=type(error).__name__+': '+str(error))

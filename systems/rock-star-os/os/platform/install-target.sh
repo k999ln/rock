@@ -72,6 +72,7 @@ done
 cp "$repo/os/platform/service.py" "$repo/os/platform/registry_control.py" "$repo/os/platform/sandbox-probe.py" "$repo/os/platform/guest-test.py" "$repo/os/platform/store-guest-test.py" "$dest/"
 cp "$repo/os/platform/system-guest-test.py" "$dest/"
 cp "$repo/os/platform/remote-guest-test.py" "$dest/"
+cp "$repo/os/platform/verification_scope.py" "$dest/"
 cp "$repo/os/security/guest-inventory.py" "$dest/"
 cp "$repo/os/platform/runner_control.py" "$dest/"
 for module in __init__ client protocol transport; do

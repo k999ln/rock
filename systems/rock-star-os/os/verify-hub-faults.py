@@ -217,6 +217,7 @@ def main():
     parser.add_argument('--images',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True,help='existing private evidence parent')
     parser.add_argument('--preflight-only',action='store_true')
+    parser.add_argument('--scope',choices=('local-full','game-isolation'),default='local-full')
     args = parser.parse_args()
     require(sys.platform == 'linux', 'NOT_RUN: Linux host required')
     for command in ('debugfs','e2fsck','mkfs.ext4','qemu-system-aarch64','bwrap','openssl'):
@@ -240,6 +241,12 @@ def main():
               'runtime_manifest_prefixes':list(PREFIXES),
               'runtime_manifest_metadata_scope':'content hashes, file/directory modes and symlink targets; source UID/GID are not attested'}
     try:
+        game_gate = None
+        if args.scope=='game-isolation':
+            sys.path.insert(0,str(REPO/'os/desktop'))
+            from game_gate_observer import Gate
+            game_gate = Gate(images,output,('os/verify-hub-faults.py','os/platform/hub_fault_fixture.py'),report['limits'])
+            report.update(verification_scope=args.scope,wallet='NOT_RUN',game_scope_plan_sha256=game_gate.plan_sha)
         check_fs(inputs['rootfs.ext4'])
         original = tree_manifest(inputs['rootfs.ext4'],output/'original-runtime')
         save(output/'original-runtime-manifest.json',original)
@@ -291,6 +298,7 @@ def main():
                   'signed_package_sha256':package_hash,
                   'injections':report['injections'],'limits':report['limits'],'modes':list(fixture.MODES),
                   'host_verifier_sha256':digest(Path(__file__))}
+        if game_gate:frozen['game_scope_plan_sha256']=game_gate.plan_sha
         save(output/'plan.json',frozen); expected_plan = digest(output/'plan.json'); report['plan_sha256'] = expected_plan
         if args.preflight_only:
             report.update(status='PREFLIGHT_ONLY',qemu='NOT_RUN'); return
@@ -308,25 +316,34 @@ def main():
                        '-drive','if=none,file='+str(derived)+',format=raw,id=osdisk,readonly=on','-device','virtio-blk-pci,drive=osdisk,addr=0x1',
                        '-drive','if=none,file='+str(data)+',format=raw,id=userdata','-device','virtio-blk-pci,drive=userdata,addr=0x2',
                        '-object','rng-random,filename=/dev/urandom,id=rockrng','-device','virtio-rng-pci,rng=rockrng,addr=0x3']
+            if game_gate:command[command.index('-append')+1] += ' rock.hubfault.scope=game-isolation'
             entry = {'mode':mode,'status':'RUNNING','command':command}; report['cases'].append(entry)
             save(output/'report.json',report)
             print('Actual Hub launcher fault: '+mode+'; '+str(folder),flush=True)
             proof, outcome = boot(command,folder/'boot.log')
+            if game_gate:game_gate.proof(proof)
             entry['filesystem_check'] = check_fs(data)
             history = json.loads(embedded(data,'hub-fault-proof.json'))
             require(len(history) == len(proofs)+1 and history[:-1] == proofs and history[-1] == proof,
                     'serial evidence differs from retained proof history')
             rows = closed_rows(data,folder); validate_result(proof,mode,rows,package_hash)
             wallet_directory = folder/'wallet'; wallet_directory.mkdir(mode=0o700)
-            for name in ('wallet-simulator.db','entitlement.db'):
+            for name in (fixture.GAME_DATABASES if game_gate else ('wallet-simulator.db','entitlement.db')):
+                (wallet_directory/name).parent.mkdir(mode=0o700,parents=True,exist_ok=True)
                 closed_export(data,'wallet/'+name,wallet_directory/name)
-            require(fixture.wallet_state(wallet_directory) == proof['wallet_sha256'],
+            if game_gate:
+                # Inspect absence on the actual stopped disk, not only the exported subset.
+                for name in ('wallet-simulator.db','entitlement.db'):
+                    result=subprocess.run(['debugfs','-R','stat /wallet/'+name,str(data)],capture_output=True,check=True,timeout=20)
+                    require(b'File not found by ext2_lookup' in result.stderr,'unexpected local authoritative Wallet database')
+            require(fixture.wallet_state(wallet_directory,args.scope) == proof['wallet_sha256'],
                     'closed Wallet tables differ from the actual pre-fault baseline')
             require(proof['runtime_sha256'] == fixture.hashed(runtime), 'guest used different installed runtime bytes')
             proofs.append(proof); entry.update(status='PASS',proof=proof,**outcome)
             entry['data_sha256'] = digest(data)
         fixture.validate_matrix(proofs)
         require(digest(derived) == frozen['derived_rootfs_sha256'], 'guest changed read-only derived rootfs')
+        if game_gate:report['game_authority_retention'] = game_gate.finish()
         report['status'] = 'PASS_SCOPED'
     except BaseException as error:
         report.update(status='FAIL',error=type(error).__name__+': '+str(error)); raise

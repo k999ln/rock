@@ -60,6 +60,7 @@ def build_package(directory, version):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--artifacts', type=Path, required=True)
+    parser.add_argument('--scope', choices=('local-full','game-isolation'), default='local-full')
     args = parser.parse_args()
     if sys.platform != 'linux':
         raise SystemExit('Run in the Linux build VM')
@@ -80,6 +81,13 @@ def main():
     server, guest = None, None
     server_log = (evidence / 'registry.log').open('wb')
     try:
+        game_gate = None
+        if args.scope == 'game-isolation':
+            sys.path.insert(0,str(REPO/'os/desktop'))
+            from game_gate_observer import Gate
+            game_gate = Gate(artifacts,evidence,('os/verify-store.py','os/platform/store-guest-test.py'),
+                             {'boots':2,'per_boot_seconds':300,'registry_ready_seconds':10})
+            report.update(verification_scope=args.scope,wallet='NOT_RUN',game_scope_plan_sha256=game_gate.plan_sha)
         # Refuse to reuse or stop another test's server.
         with socket.socket() as probe:
             probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -133,6 +141,7 @@ def main():
                 command += ['-netdev','user,id=store-net','-device','virtio-net-pci,netdev=store-net,id=store-nic,addr=0x7,romfile=']
             else:
                 command += ['-nic','none']
+            if game_gate:command[command.index('-append')+1] += ' rock.store.scope=game-isolation'
             updated, disconnected, captured = False, False, False
             with logfile.open('wb') as output:
                 guest = subprocess.Popen(command,stdin=subprocess.DEVNULL,stdout=output,stderr=subprocess.STDOUT)
@@ -156,6 +165,7 @@ def main():
             if len(lines) != 1:
                 raise RuntimeError('exactly one guest proof required; inspect ' + str(logfile))
             proof = json.loads(lines[0])
+            if game_gate:game_gate.proof(proof)
             report['boots'].append({'phase':phase,'command':command,'exit_code':code,'proof':proof,
                                     'updated_through_sdk':updated,'actual_link_disconnected':disconnected,'native_capture':captured})
             if code or proof['status'] != 'PASS' or 'ROCK_STORE_GUEST_FAIL' in content:
@@ -174,7 +184,8 @@ def main():
         access_log = (evidence / 'registry.log').read_text(errors='replace')
         report['registry_access_log'] = 'registry.log'
         report['os_unchanged'] = True
-        report['status'] = 'PASS'
+        if game_gate:report['game_authority_retention'] = game_gate.finish()
+        report['status'] = 'PASS_SCOPED' if game_gate else 'PASS'
         print('PASS actual OS store download/update/disconnect/offline restart',flush=True)
     except BaseException as error:
         report['status'], report['error'] = 'FAIL', type(error).__name__ + ': ' + str(error)

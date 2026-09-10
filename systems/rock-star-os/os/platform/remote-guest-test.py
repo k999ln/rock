@@ -8,6 +8,9 @@ import sqlite3
 import subprocess
 import time
 import traceback
+import sys
+sys.path.insert(0, '/usr/lib/rock-platform')
+import verification_scope
 
 TOOL = 'org.rockstar.remote-text'
 TEXT = '  OSからの実入力  \n  Remote execution  '
@@ -138,7 +141,8 @@ def online(report):
     check('cloud fixture configured and physical USB unavailable', initial['remote']['destinations'][0]['available'] and
           not initial['remote']['destinations'][1]['available'])
     check('remote Tool absent from initial catalog', not any(x['manifest']['id'] == TOOL for x in initial['catalog']))
-    report['wallet_sha256'] = digest(initial['wallet'])
+    report['wallet_observation'] = verification_scope.wallet(initial['wallet'],report.get('verification_scope','local-full'))
+    report['wallet_sha256'] = digest(initial['wallet']) if report.get('verification_scope','local-full') == 'local-full' else None
     api('registry.refresh',key='os-remote-refresh')
     current = wait_for(lambda: (value if (value := api('snapshot'))['registry']['status'] == 'ready' else None))
     item = next(x for x in current['catalog'] if x['manifest']['id'] == TOOL)
@@ -171,7 +175,11 @@ def online(report):
     verify_result(second_result)
     check('reconnected submit has the same original receipt', api('remote.submit',key=KEY2,consent=second['consent']) == second_receipt)
     final = api('snapshot')
-    check('remote execution cannot create local jobs or Wallet proceeds', not final['hub']['jobs'] and digest(final['wallet']) == report['wallet_sha256'])
+    if report.get('verification_scope','local-full') == 'game-isolation':
+        verification_scope.unchanged(report['wallet_observation'],final['wallet'],'game-isolation')
+        check('remote execution creates no local jobs; Wallet financial assertions NOT_RUN',not final['hub']['jobs'])
+    else:
+        check('remote execution cannot create local jobs or Wallet proceeds', not final['hub']['jobs'] and digest(final['wallet']) == report['wallet_sha256'])
     report.update(first=first_result,second=second_result,database=database(),network='actual virtio NIC with observed link loss')
     check('terminal remote raw inputs are erased', all(row['package'] is None and row['input_text'] is None for row in report['database']['remote']))
     rows = {row['key']:row for row in report['database']['remote']}
@@ -186,6 +194,7 @@ def online(report):
 
 def offline(report):
     previous = json.loads(PROOF.read_text())
+    check('previous Remote proof has the same declared scope',previous.get('verification_scope','local-full') == report.get('verification_scope','local-full'))
     check('previous online proof passed', previous['status'] == 'PASS' and previous['phase'] == 'online')
     check('independent second kernel boot', report['boot_id'] != previous['boot_id'])
     check('second boot has no NIC', not Path('/sys/class/net/eth0').exists())
@@ -194,7 +203,12 @@ def offline(report):
         verify_result(current)
         check('exact remote evidence survives offline reboot ' + key, current == previous[name])
     final = api('snapshot')
-    check('Wallet and local jobs unchanged offline', digest(final['wallet']) == previous['wallet_sha256'] and not final['hub']['jobs'])
+    report['wallet_observation'] = verification_scope.wallet(final['wallet'],report.get('verification_scope','local-full'))
+    if report.get('verification_scope','local-full') == 'game-isolation':
+        verification_scope.unchanged(previous['wallet_observation'],final['wallet'],'game-isolation')
+        check('no local jobs after reboot; remote Wallet financial assertions NOT_RUN',not final['hub']['jobs'])
+    else:
+        check('Wallet and local jobs unchanged offline', digest(final['wallet']) == previous['wallet_sha256'] and not final['hub']['jobs'])
     report.update(previous_online_sha256=digest(previous),package_hash=previous['package_hash'],database=database(),
                   first=previous['first'],second=previous['second'],wallet_sha256=previous['wallet_sha256'],network='no NIC')
 
@@ -206,6 +220,8 @@ def main():
               'started_unix':time.time(),'boot_id':Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
               'blackberry':'NOT_RUN','production_cloud':'NOT_RUN','physical_usb':'NOT_RUN','wallet':'SIMULATOR_ONLY'}
     try:
+        report['verification_scope']=verification_scope.scope(Path('/proc/cmdline').read_text(),'rock.remote.scope')
+        if report['verification_scope']=='game-isolation':report['wallet']='NOT_RUN'
         (offline if PROOF.exists() else online)(report)
         report['status'] = 'PASS'
     except BaseException as error:

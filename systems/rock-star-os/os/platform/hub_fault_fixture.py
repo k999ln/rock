@@ -23,6 +23,8 @@ import threading
 import time
 import uuid
 from contextlib import closing
+sys.path[:0] = [str(Path(__file__).resolve().parent), '/usr/lib/rock-platform']
+import verification_scope
 
 TOOL, VERSION = 'org.rockstar.text-tidy', '1.0.0'
 TEXT, OUTPUT = '  Fixed Hub recovery  ', 'Fixed Hub recovery'
@@ -238,6 +240,10 @@ def validate_manifest(before, after, additions):
 
 
 def validate_matrix(proofs):
+    modes = {p.get('verification_scope','local-full') for p in proofs}
+    require(len(modes)==1 and modes <= {'local-full','game-isolation'},'same explicit Hub fault scope required')
+    if modes == {'game-isolation'}:
+        for proof in proofs:verification_scope.validate_game_proof(proof)
     require([p.get('mode') for p in proofs] == list(MODES) and
             all(p.get('status') == 'PASS' for p in proofs) and
             len({p['boot_id'] for p in proofs}) == 3 and
@@ -540,9 +546,17 @@ def request(op, **values):
     return reply
 
 
-def wallet_state(directory=Path('/data/wallet')):
+GAME_DATABASES = ('backend-cache/remote-cache.db','game-client/exchange-journal/game.sqlite3',
+                  'game-client/connection-public-game-a/game.sqlite3','game-client/connection-public-game-b/game.sqlite3')
+
+
+def wallet_state(directory=Path('/data/wallet'), scope='local-full'):
+    require(scope in ('local-full','game-isolation'),'explicit supported Wallet evidence scope required')
+    if scope == 'game-isolation':
+        require(all(not (directory/name).exists() for name in ('wallet-simulator.db','entitlement.db')),
+                'Game scope cannot contain local authoritative Wallet databases')
     result = {}
-    for name in ('wallet-simulator.db', 'entitlement.db'):
+    for name in (GAME_DATABASES if scope=='game-isolation' else ('wallet-simulator.db', 'entitlement.db')):
         path = directory/name
         with closing(sqlite3.connect(path.as_uri()+'?mode=ro', uri=True)) as db:
             db.execute('PRAGMA query_only=ON'); db.execute('BEGIN')
@@ -580,6 +594,7 @@ def main():
     modes = [x.split('=',1)[1] for x in Path('/proc/cmdline').read_text().split() if x.startswith('rock.hubfault=')]
     require(len(modes) == 1 and modes[0] in MODES, 'one fixed boot fixture mode required')
     mode = modes[0]
+    scope = verification_scope.scope(Path('/proc/cmdline').read_text(),'rock.hubfault.scope')
     mounts = [line.split() for line in Path('/proc/mounts').read_text().splitlines()]
     root = next((m for m in mounts if m[1] == '/'), None)
     data = next((m for m in mounts if m[1] == '/data'), None)
@@ -595,11 +610,13 @@ def main():
     require(hashed(json.loads(Path(PACKAGE).read_bytes())) == PACKAGE_HASH, 'fixed signed Tool bytes required')
     boot_id = Path('/proc/sys/kernel/random/boot_id').read_text().strip(); uuid.UUID(boot_id)
     parent = platform_identity()
-    wallet = wallet_state()
+    wallet = wallet_state(scope=scope)
+    observed_wallet = verification_scope.wallet(request('snapshot')['snapshot']['wallet'],scope) if scope=='game-isolation' else None
     history = json.loads(PROOF.read_text()) if PROOF.exists() else []
     require(len(history) == MODES.index(mode), 'fresh ordered fault boots required; uncertain mutation is never retried')
     previous = hub_rows()
     if history:
+        require(all(row.get('verification_scope','local-full')==scope for row in history),'retained fault scope changed')
         require(wallet == history[0]['wallet_sha256'] and previous == history[-1]['durable_rows'], 'reboot changed retained Wallet/Hub rows')
     else:
         require(all(not rows for rows in previous.values()), 'fresh Hub must have no jobs or receipts')
@@ -608,6 +625,9 @@ def main():
     result = {'schema': 'rock-hub-fault-proof/1', 'mode': mode, 'status': 'RUNNING', 'boot_id': boot_id,
               'platform_identity': parent, 'wallet_sha256': wallet, 'runtime_sha256': hashed(runtime),
               'scope': 'fixed production launcher exec fault; actual owner API/Hub deadline; no GUI or sandbox-workload fault claim'}
+    result.update(verification_scope=scope,wallet_state_scope='SDK_DISPLAY_AND_REQUEST_CACHE_ONLY' if scope=='game-isolation' else 'LOCAL_AUTHORITATIVE_SIMULATOR',
+                  wallet='NOT_RUN' if scope=='game-isolation' else 'SIMULATOR_ONLY')
+    if scope=='game-isolation':result['wallet_observation']=observed_wallet
     if mode != 'recovery':
         body = {'v': 1, 'op': 'run', 'id': TOOL, 'text': TEXT, 'target': 'device_local', 'key': 'd3-hub:'+mode}
         response, errors = [], []
@@ -643,7 +663,8 @@ def main():
     require(len(rows['hub_jobs']) == expected_jobs and len(rows['hub_requests']) == len(rows['hub_audit']) == expected_jobs+2 and
             len({j['id'] for j in rows['hub_jobs']}) == len({j['key'] for j in rows['hub_jobs']}) == expected_jobs,
             'job/receipt/audit missing or duplicated')
-    require(wallet_state() == wallet, 'fault or retry changed a Wallet table')
+    require(wallet_state(scope=scope) == wallet, 'fault or retry changed a retained Wallet/cache table')
+    if scope=='game-isolation':verification_scope.unchanged(observed_wallet,request('snapshot')['snapshot']['wallet'],scope)
     install_receipt = next(row for row in rows['hub_requests'] if row['key'] == 'd3-hub:install')
     validate_durable_rows(rows,json.loads(install_receipt['result'])['hash'])
     for old in history:

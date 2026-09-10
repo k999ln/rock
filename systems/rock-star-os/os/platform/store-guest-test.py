@@ -9,6 +9,8 @@ import sys
 import time
 import traceback
 import uuid
+sys.path.insert(0, '/usr/lib/rock-platform')
+import verification_scope
 
 TOOL = 'org.rockstar.remote-text-kit'
 TEXT = '  Zebra  \nApple\nApple\n  Moon'
@@ -103,6 +105,8 @@ def file_hash(path):
 
 
 def wallet_hash(state):
+    if type(state['wallet']) is not dict:
+        raise ValueError('local Wallet unavailable; no financial retention proof')
     return hashlib.sha256(json.dumps(state['wallet'], sort_keys=True).encode()).hexdigest()
 
 
@@ -112,7 +116,8 @@ def online(report):
     check('fresh persistent store has no installation or jobs', not state['hub']['installed'] and not state['hub']['jobs'])
     check('actual network carrier is connected', Path('/sys/class/net/eth0/carrier').read_text().strip() == '1')
     check('store is provisioned but has no prior index', state['registry']['configured'] and state['registry']['revision'] is None)
-    report['initial_wallet_sha256'] = wallet_hash(state)
+    report['wallet_observation'] = verification_scope.wallet(state['wallet'],report.get('verification_scope','local-full'))
+    report['initial_wallet_sha256'] = wallet_hash(state) if report.get('verification_scope','local-full') == 'local-full' else None
     report['runtime_sha256_before'] = file_hash('/usr/lib/rock-platform/blackberryrock/recipe_worker.py')
     index = refresh()
     check('actual HTTPS catalog refresh succeeded', index['status'] == 'ready' and index['fresh'] and index['count'] == 1)
@@ -148,20 +153,30 @@ def online(report):
     failed = refresh()
     check('offline refresh fails visibly and preserves existing catalog', failed['status'] == 'error' and failed['count'] == 2)
     check('OS runtime unchanged by Tool download and update', file_hash('/usr/lib/rock-platform/blackberryrock/recipe_worker.py') == report['runtime_sha256_before'])
-    check('Tool jobs never create Wallet revenue', wallet_hash(snapshot()) == report['initial_wallet_sha256'])
+    if report.get('verification_scope','local-full') == 'game-isolation':
+        verification_scope.unchanged(report['wallet_observation'],snapshot()['wallet'],'game-isolation')
+        check('remote Wallet remains unavailable; financial assertions NOT_RUN',True)
+    else:
+        check('Tool jobs never create Wallet revenue', wallet_hash(snapshot()) == report['initial_wallet_sha256'])
     report['offline_registry'] = failed
-    report['final_wallet_sha256'] = wallet_hash(snapshot())
+    report['final_wallet_sha256'] = wallet_hash(snapshot()) if report.get('verification_scope','local-full') == 'local-full' else None
 
 
 def offline_reboot(report):
     previous = json.loads(PROOF.read_text())
+    check('previous Store proof has the same declared scope',previous.get('verification_scope','local-full') == report.get('verification_scope','local-full'))
     state = snapshot()
     check('second boot has no network adapter', not Path('/sys/class/net/eth0').exists())
     item = next(x for x in state['hub']['installed'] if x['id'] == TOOL)
     check('downloaded version and approval survive offline restart', item['version'] == '2.0.0' and item['enabled'] == 1 and item['hash'] == previous['v2_package_hash'])
     report['reboot_job'] = run_tool(V2)
     check('previous actual job receipt survives reboot', api('job.result', id=previous['v1_job']['id'])['result']['output'] == V1)
-    check('Wallet remains unchanged across offline restart', wallet_hash(snapshot()) == previous['initial_wallet_sha256'])
+    report['wallet_observation'] = verification_scope.wallet(snapshot()['wallet'],report.get('verification_scope','local-full'))
+    if report.get('verification_scope','local-full') == 'game-isolation':
+        verification_scope.unchanged(previous['wallet_observation'],snapshot()['wallet'],'game-isolation')
+        check('remote Wallet unavailable after reboot; financial assertions NOT_RUN',True)
+    else:
+        check('Wallet remains unchanged across offline restart', wallet_hash(snapshot()) == previous['initial_wallet_sha256'])
     report['previous_proof_sha256'] = file_hash(PROOF)
     report['previous_checks'] = previous['checks']
 
@@ -174,6 +189,8 @@ def main():
               'started_unix':time.time(), 'blackberry':'NOT_RUN', 'gui_input':'separate native UI verification',
               'wallet':'SIMULATOR_ONLY', 'phase':2 if 'rock.store.phase=2' in cmdline else 1}
     try:
+        report['verification_scope']=verification_scope.scope(' '.join(cmdline),'rock.store.scope')
+        if report['verification_scope']=='game-isolation':report['wallet']='NOT_RUN'
         (offline_reboot if report['phase'] == 2 else online)(report)
         report['status'] = 'PASS'
     except BaseException as error:

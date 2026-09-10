@@ -16,6 +16,8 @@ import stat
 import subprocess
 import sys
 import time
+sys.path[:0] = [str(Path(__file__).resolve().parents[1]/'platform'), '/usr/lib/rock-platform']
+import verification_scope
 
 TOOL = 'org.rockstar.negative-text-kit'
 BAD = 'org.rockstar.negative-signature'
@@ -257,9 +259,12 @@ def execute(probe, report):
     initial = probe.snapshot()
     require(initial['hub']['installed'] == [] and initial['hub']['jobs'] == [], 'fresh user data required')
     wallet = initial['wallet']
-    require(wallet['simulation_only'] is True and wallet['available_minor'] == 0 and wallet['billed_minor'] == 0,
-            'empty simulator Wallet required')
-    report['wallet_initial_sha256'] = digest(wallet)
+    mode = report.get('verification_scope','local-full')
+    report['wallet_observation'] = verification_scope.wallet(wallet,mode)
+    if mode == 'local-full':
+        require(wallet['simulation_only'] is True and wallet['available_minor'] == 0 and wallet['billed_minor'] == 0,
+                'empty simulator Wallet required')
+    report['wallet_initial_sha256'] = digest(wallet) if mode == 'local-full' else None
     probe.action('registry.refresh', 'refresh-initial')
     state = probe.wait(lambda s: len([x for x in s['catalog'] if x['manifest']['id'] in (TOOL, BAD, FUTURE)]) == 4)
     entries = {(e['manifest']['id'], e['manifest']['version']): e for e in state['catalog']}
@@ -336,8 +341,10 @@ def execute(probe, report):
     require(probe.positive({'v': 1, 'op': 'job.result', 'id': completed['id']})['result'] == completed,
             'revocation altered completed result receipt')
     final = probe.snapshot()
-    require(digest(final['wallet']) == report['wallet_initial_sha256'], 'Store tests changed Wallet')
-    report['wallet_final_sha256'] = digest(final['wallet'])
+    verification_scope.unchanged(report['wallet_observation'],final['wallet'],mode)
+    if mode == 'local-full':
+        require(digest(final['wallet']) == report['wallet_initial_sha256'], 'Store tests changed Wallet')
+    report['wallet_final_sha256'] = digest(final['wallet']) if mode == 'local-full' else None
     report['database'] = snapshot_db()
     require(len(report['database']['jobs']) == 4 and len(report['database']['packages']) == 2,
             'unexpected installed packages or jobs')
@@ -353,6 +360,8 @@ def main():
               'scope': 'actual ARM64 OS UID1000 API; native GUI NOT_RUN; public development fixtures only',
               'physical_blackberry': 'NOT_RUN', 'production_provider': 'NOT_RUN', 'remote_execution': 'NOT_RUN',
               'publication_stop': 'permanent signed revocation; reversible pause NOT_IMPLEMENTED'}
+    report['verification_scope'] = verification_scope.scope(Path('/proc/cmdline').read_text(),'rock.registry.scope')
+    report['wallet'] = 'NOT_RUN' if report['verification_scope']=='game-isolation' else 'SIMULATOR_ONLY'
     try:
         execute(probe, report)
     except BaseException as error:

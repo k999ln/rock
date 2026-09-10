@@ -363,7 +363,7 @@ def stop_registry(registry, pipe, report):
     report['registry_exit'] = registry.exitcode
 
 
-def run(artifacts, output):
+def run(artifacts, output, scope='local-full'):
     require(sys.platform == 'linux' and platform.machine() == 'aarch64', 'authorized ARM64 Linux build VM required')
     require(not output.exists(), 'output must be a new disposable directory')
     output.mkdir(mode=0o700, parents=True)
@@ -387,6 +387,13 @@ def run(artifacts, output):
     except (OSError, subprocess.TimeoutExpired):
         pass
     try:
+        require(scope in ('local-full','game-isolation'),'explicit supported verification scope required')
+        game_gate = None
+        if scope == 'game-isolation':
+            sys.path.insert(0,str(ROOT/'os/desktop'))
+            from game_gate_observer import Gate
+            game_gate = Gate(artifacts,output,source_files,{'boots':1,'per_boot_seconds':360,'denial_cases':10})
+            report.update(verification_scope=scope,wallet='NOT_RUN',game_scope_plan_sha256=game_gate.plan_sha)
         for source, target in TARGET_SOURCES.items():
             require(probe.digest(cat(source_root, target)) == sources[source], 'source differs from actual input rootfs: ' + source)
         report['embedded_sources_match'] = True
@@ -414,6 +421,7 @@ def run(artifacts, output):
         subprocess.run(['mkfs.ext4', '-q', '-F', '-L', 'rock-data', str(data)], check=True, capture_output=True, timeout=15)
         report['fresh_data_sha256'] = sha(data)
         command = qemu_command(kernel, rootfs, data, output / 'qmp.sock')
+        if game_gate:command[command.index('-append')+1] += ' rock.registry.scope=game-isolation'
         report['qemu_command'] = command
         logfile = (output / 'boot.log').open('xb')
         guest = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=logfile, stderr=subprocess.STDOUT)
@@ -459,7 +467,8 @@ def run(artifacts, output):
                 'normal guest shutdown or data unmount missing')
         report['filesystem'] = filesystem_check(data, output, 'negative')
         report['closed_database'] = closed_database(data, proof, packages)
-        require(proof['wallet_initial_sha256'] == proof['wallet_final_sha256'], 'Wallet changed')
+        if game_gate:game_gate.proof(proof)
+        else:require(proof['wallet_initial_sha256'] == proof['wallet_final_sha256'], 'Wallet changed')
         expected_checks = {'ed25519_signature', 'minimum_OS', 'interrupted_download', 'actual_cache_ENOSPC',
                            'old_hash_approval', 'unapproved_update_run', 'per_input_consent_missing', 'per_input_consent_mismatch',
                            'revoked_run', 'revoked_approval'}
@@ -471,7 +480,8 @@ def run(artifacts, output):
         require({p.name: sha(p) for p in (kernel, source_root, artifacts / 'stage0.cpio.gz')} == images, 'input freeze images changed')
         require({name: sha(ROOT / name) for name in source_files} == sources, 'source changed during actual verification')
         report['input_images_and_sources_unchanged'] = True
-        report['status'] = 'PASS'
+        if game_gate:report['game_authority_retention'] = game_gate.finish()
+        report['status'] = 'PASS_SCOPED' if game_gate else 'PASS'
     except BaseException as error:
         report.update(status='FAIL', error_type=type(error).__name__)
         if isinstance(error, AssertionError):
@@ -521,7 +531,7 @@ def run(artifacts, output):
             report['status'] = 'FAIL'
         report['finished_utc'] = utc()
         persisted = checkpoint(report_path, report)
-    success = persisted and report['status'] == 'PASS'
+    success = persisted and report['status'] == ('PASS_SCOPED' if scope == 'game-isolation' else 'PASS')
     print(('PASS' if success else 'FAIL') + ' actual Store negative OS; report=' + str(report_path) +
           (' sha256=' + sha(report_path) if report_path.exists() else ''), flush=True)
     return 0 if success else 1
@@ -644,13 +654,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--artifacts', type=Path)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--scope', choices=('local-full','game-isolation'), default='local-full')
     parser.add_argument('--self-test', action='store_true', help='host-only guards; never starts QEMU or binds a socket')
     args = parser.parse_args()
     if args.self_test:
         result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(GuardTests))
         return 0 if result.wasSuccessful() else 1
     parser.error('--artifacts and --output are required') if args.artifacts is None or args.output is None else None
-    return run(args.artifacts.resolve(), args.output.resolve())
+    return run(args.artifacts.resolve(), args.output.resolve(),args.scope)
 
 
 if __name__ == '__main__':
