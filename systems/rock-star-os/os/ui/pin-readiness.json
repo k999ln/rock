@@ -6,7 +6,7 @@
     "os/ui/activation-ui.inc": "656d3ac0b8731842e8ec70e81d754992cc0524877bb4e95795ca620e980ab968",
     "os/ui/atm-ui.inc": "66225c262e8c9aabe15e3b043200212e8ac79ae63a0b37918b6247c043a22dfe",
     "os/ui/auth-ui.inc": "37e9015e87cdf26e4d22df8beec9520bc40ff296ea7c67cea2ed8f1df6b2b16b",
-    "os/ui/game-ui.inc": "e7c04958815f8f94468b58c486dbee6155926ceb2f5dcdae8a67b94aab3127e1",
+    "os/ui/game-ui.inc": "d6bbef68e2d79deb7dfd27a1badf521f16b2daebd673e505ddd3668c0b1da256",
     "os/ui/ipc.h": "3e6ace92e6f1fcde6cc02cadc8899c51c58d9271caed08c124003db61914bdf4",
     "os/ui/main.c": "5e3e3cf71fec19a9ea0b0b017e6739891403953504ef337e869c122de59bdfb7",
     "os/ui/mcp-ui.inc": "38c3855f2e3bec881e9404b114ef2b6297bc7d16bda89e350330067ad7ea0e13",

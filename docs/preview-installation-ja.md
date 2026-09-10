@@ -16,7 +16,7 @@ Hub の仕事、保存した成果、合成 Wallet の費用を一つの仮想�
 
 ## 配布物を検証する
 
-取得するファイルは、版付き `rockstaros-<版>-macos-arm64.tar.gz`、`release-manifest.json`、`release-key.der`、`SHA256SUMS`、`preview.py`、このガイドとリリースノートです。
+取得するファイルは、版付き `rockstaros-<版>-macos-arm64.tar.gz`、`release-manifest.json`、`release-key.der`、`SHA256SUMS`、`preview.py`、このガイド、リリースノート、`preview-legal-notice.md`、`packaging-result.json` の9ファイルです。
 
 **信頼の起点:** 実行する `preview.py` は、正本 `k999ln/rock` の受入済み source commit から信頼できる経路で取得してください。署名鍵の fingerprint と manifest の SHA-256 は、配布物とは独立した、その commit に結び付く公開記録から照合します。未検証 archive から取り出したプログラムを先に実行してはいけません。archive に鍵が入っているだけでは配布元を認証できません。
 
@@ -126,6 +126,8 @@ python3 preview.py remove --directory "$ROCK_PREVIEW_ROOT" --delete-data
 この導入が作成し、identity を記録した VM のみを削除します。その VM 内の OS、A/B slot、userdata、内部 backup は削除されます。host 側の package・診断・所有権記録と、別先へ export した backup は残ります。表示 server は、この導入の instance・build・process・loopback socket 所有をすべて確認できたものだけ終了します。別のアプリへ PID が再利用されていたら停止しません。Lima の `--force` は使いません。所有権記録が一致しない VM は止めません。
 
 ## 失敗時の診断
+
+合成 Game の接続は試験設定で1時間有効です。期限切れ・失効後は「再接続はこの版では未対応」と表示します。新しい接続や期限延長はできません。元の key による同一要求の再送・照合と、完了済み購入の履歴は保持します。台帳や保存データを消して回避しないでください。
 
 ```sh
 python3 preview.py diagnose --directory "$ROCK_PREVIEW_ROOT"

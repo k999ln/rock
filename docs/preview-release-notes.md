@@ -18,6 +18,7 @@
 - release manifest は archive と全内容を署名します。bootstrap・manifest pin・鍵 fingerprint を別の信頼できる経路で取得する必要があります。
 - `local-development` は offline device/6、`development-game-authority` は device/7 と同じ専用VM内の独立した公開試験台帳を使います。Game構成は個人の既存台帳を複製せず、空・未登録・未同意の状態から準備します。一般providerには接続しません。
 - Gameサーバーが利用できない場合もHubの起動は継続できます。別のauthorityへ置き換えたり、接続同意・登録・残高を自動生成したりしません。
+- 合成 Game の接続は試験設定で1時間有効です。期限切れ・失効後の新しい接続はこの版では未対応で、画面とSDKに理由を表示します。元の key による同一要求の再送・照合と、完了済み購入の履歴は保持します。期限延長や player/owner の予約再割当は行いません。
 - native入力はASCIIのUS配列のみです。日本語IMEとclipboardは未接続で、任意の日本語本文を貼り付ける操作はできません。日本語の引用整理例は「サンプルを入力」ボタンで試せます。この制限下の例を日常業務の入力時間削減とは扱いません。
 - backup は暗号化されていません。local 構成の別端末名 restore は同じ VM 内の直近 backup に限ります。Game 構成は OS の A/B/data と独立した Wallet/Game/C 台帳を一組にして保存し、同じ所有 VM の現時点コピーだけを復元します。保存後にどちらかが変化していれば過去へ戻しません。OS のディスク単独復元は拒否します。
 - Game 復元は durable intent と全 writer の停止 gate を持ち、同じ backup・intent・新端末名の中断だけを再開できます。両構成要素の完了 receipt と全 post-state を再検証してから起動を許可します。累積した元端末名は復元後も再起動を拒否します。別 host の災害復旧や export の再投入は未対応で、VM 削除後の照合基盤再構成は合格扱いにしません。

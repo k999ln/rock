@@ -1,0 +1,3 @@
+usage: test_wallet_replay.py [-h] --renderer RENDERER --font FONT
+                             [--output OUTPUT]
+test_wallet_replay.py: error: real Linux root-owned provisioning fixture required; no skipped PASS

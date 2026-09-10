@@ -68,6 +68,16 @@ static void game_ui_test(struct rock_ui *ui)
 
     /* Current fixture connection and quote: every displayed amount is explicit. */
     json_object *entry = json_object_array_get_idx(test_field(catalog, "games"), 0);
+    const char *closed_states[] = {"EXPIRED", "REVOKED"};
+    for (size_t i = 0; i < 2; i++) {
+        json_object_object_add(entry, "current_state", json_object_new_string(closed_states[i]));
+        ui->game_poll = 0; rock_ui_refresh(ui); game_test_reply(ui, catalog);
+        int count = request_count;
+        require(!action_enabled(ui, ACTION_GAME_CONNECT) && !action_enabled(ui, ACTION_GAME_QUOTE),
+                "closed permanent owner binding permits neither reconnect nor new purchase");
+        test_image(ui, i ? "game-revoked-contract" : "game-expired-contract");
+        require(request_count == count, "viewing a closed connection never submits another intent or purchase");
+    }
     json_object_object_add(entry, "current_state", json_object_new_string("ACTIVE"));
     json_object_object_add(entry, "connection_id", json_object_new_string("11111111-1111-4111-8111-111111111111"));
     ui->game_poll = 0; rock_ui_refresh(ui); game_test_reply(ui, catalog);

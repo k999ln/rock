@@ -1,0 +1,75 @@
+{
+  "schema": "rock-intermediate-pc-link-ui-evidence/1",
+  "status": "UI_RECOVERY_SEQUENCES_PASS_ORIGINAL_PROBE_COMPLETION_FAIL",
+  "source_commit": "4e31554a5cfd415b0f9a9878e1e1306f949f1596",
+  "original_attempts": [
+    "01 refresh-banner selector failed before request",
+    "02 middle-dot OCR failed before submission",
+    "03 green status OCR failed after original two submissions",
+    "04 history label OCR failed after first normal closure",
+    "05 recovered original second request and reopened saved results; registry cleanup assertion failed"
+  ],
+  "cycles": [
+    {
+      "status": "PASS_SCOPED_PC_LINK",
+      "elapsed_seconds": 23.920444998002495,
+      "normal_shutdown_seconds": 8.891598481000983,
+      "owned_device_running": false,
+      "remote_keys": [
+        "ui-c98948031d39a0c1cc15e9bb891d1c3a",
+        "ui-25ed234c5cef6fc5b4e48f56f9794b94"
+      ],
+      "remote_states": [
+        "succeeded",
+        "unknown"
+      ],
+      "runner_jobs": 1,
+      "authority_unchanged": true,
+      "runner_restart_to_result_seconds": null
+    },
+    {
+      "status": "PASS_SCOPED_PC_LINK",
+      "elapsed_seconds": 39.08611412400205,
+      "normal_shutdown_seconds": 10.985028367998893,
+      "owned_device_running": false,
+      "remote_keys": [
+        "ui-c98948031d39a0c1cc15e9bb891d1c3a",
+        "ui-25ed234c5cef6fc5b4e48f56f9794b94"
+      ],
+      "remote_states": [
+        "succeeded",
+        "succeeded"
+      ],
+      "runner_jobs": 2,
+      "authority_unchanged": true,
+      "runner_restart_to_result_seconds": 9.612699884994072
+    },
+    {
+      "status": "PASS_SCOPED_PC_LINK",
+      "elapsed_seconds": 175.5660022450029,
+      "normal_shutdown_seconds": 14.286080796002352,
+      "owned_device_running": false,
+      "remote_keys": [
+        "ui-c98948031d39a0c1cc15e9bb891d1c3a",
+        "ui-25ed234c5cef6fc5b4e48f56f9794b94"
+      ],
+      "remote_states": [
+        "succeeded",
+        "succeeded"
+      ],
+      "runner_jobs": 2,
+      "authority_unchanged": true,
+      "runner_restart_to_result_seconds": null
+    }
+  ],
+  "completion_failure": "Registry server has no SIGTERM handler. The observer required exit0 and raised before storing its actual return code or final summary. Original failure log is retained; actual numeric exit code is NOT_RECORDED.",
+  "scope": "Existing remote-text fixture on owned Linux TLS; not the citation product, MR adapter, physical USB or public cloud.",
+  "new_final_gate_checks": "Each normal shutdown power receipt and unaffected prior Hub jobs will be mandatory; this intermediate report is not final image acceptance.",
+  "raw_original_cycle1_sha256": "4b6a858dfd072d34a7fc2e3983c06d8111f5980d23b528c57730e1af65af4e2d",
+  "raw_original_probe05_log_sha256": "88ee6af042e4bd6d4e26dcac2a3ca2c5494b67091f97c3d153a0efad7e8ca16e",
+  "raw_original_plan_sha256": "b06f2023c2917a96dfc9f7dade35fce3d1b3e3f2e8b5bcb83eb8405da13cea7a",
+  "raw_reports": {
+    "2": "e6fb25841adc73616543410c4b62ad8e0b35ce73d0d4d63242eeef3dc9a5b54e",
+    "3": "6b60e8cd94de464315d0da243ef97ded0b6ae2435a228cab34d95bdfe3465d89"
+  }
+}

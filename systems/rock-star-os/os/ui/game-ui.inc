@@ -159,7 +159,10 @@ static void draw_game(struct rock_ui *ui)
             strict_string(entry, "current_state", "EXPIRED") ? "接続の期限が切れています" :
             strict_string(entry, "current_state", "AWAITING_OWNER_CONSENT") ? "接続の同意が未完了です" : "未接続 · 本人の同意が必要";
         text(ui, 55, y + 99, 16, 0, COLOR_MUTED, connection_label, 600);
-        button(ui, 52, y + 117, 616, 53, active ? "10単位の交換条件を確認" : "ゲームとWalletを接続",
+        const char *action_label = active ? "10単位の交換条件を確認" :
+            (strict_string(entry, "current_state", "EXPIRED") || strict_string(entry, "current_state", "REVOKED")) ?
+            "再接続はこの版では未対応" : "ゲームとWalletを接続";
+        button(ui, 52, y + 117, 616, 53, action_label,
                active ? ACTION_GAME_QUOTE : ACTION_GAME_CONNECT, 0, string(entry, "game_id"), NULL,
                game_ready(ui) && (active || strict_string(entry, "current_state", "NOT_CONNECTED") ||
                                   strict_string(entry, "current_state", "AWAITING_OWNER_CONSENT")), 1);
