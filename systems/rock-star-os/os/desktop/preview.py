@@ -87,6 +87,11 @@ def save(path, value):
         os.fsync(stream.fileno())
     temporary.chmod(0o600)
     os.replace(temporary, path)
+    descriptor = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
 
 
 def command(args, **kwargs):
@@ -495,6 +500,8 @@ def action(args):
                 for name in ('backup.json', 'slot-a.ext4', 'slot-b.ext4', 'userdata.ext4'):
                     lima(root, 'copy', '--backend=scp', VM_NAME + ':' + saved['backup'] + '/' + name, str(target / name), timeout=180)
                     (target / name).chmod(0o600)
+                    with (target / name).open('rb') as exported:
+                        os.fsync(exported.fileno())
                 for name, item in saved['disks'].items():
                     require(digest(target / name) == item['sha256'] and (target / name).stat().st_size == item['bytes'],
                             'exported backup differs; original backup preserved')
