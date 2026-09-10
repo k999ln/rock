@@ -1,0 +1,162 @@
+{
+  "schema": "rock-game-d4-run/1",
+  "status": "PASS_SCOPED",
+  "plan_sha256": "5ccd33fc0e85df395f19a3996d58b9b928becf4c9eb289405cf7f6e143127892",
+  "started_utc": "2026-09-10T10:33:20.165941+00:00",
+  "checks": [
+    {
+      "name": "ui-startup-crash",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/var/tmp/rock-d4-observer-review-1020/systems/rock-star-os/os/update/verify-ui-startup.py",
+        "--artifacts",
+        "/var/tmp/rock-final-9abf78a-profile",
+        "--evidence",
+        "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/ui-startup-crash",
+        "--case",
+        "crash"
+      ],
+      "status": "PASS",
+      "started_utc": "2026-09-10T10:33:20.296621+00:00",
+      "pid": 1377779,
+      "exit_code": 0,
+      "finished_utc": "2026-09-10T10:38:02.127082+00:00",
+      "log_sha256": "ac8b519040e704fabfe242da94a630fe30bbb985f191033fe0fcc8eccb9c58b3",
+      "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/ui-startup-crash",
+      "boots": 4,
+      "report_sha256": "faa485c7511eaeb7b90984bd77e3f3516c45a9bc3d3cc82cfa7e3073535c8572"
+    },
+    {
+      "name": "ab",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/update/verify-qemu.py",
+        "--artifacts",
+        "/var/tmp/rock-final-9abf78a-profile"
+      ],
+      "status": "PASS",
+      "started_utc": "2026-09-10T10:38:02.875056+00:00",
+      "pid": 1377931,
+      "exit_code": 0,
+      "finished_utc": "2026-09-10T10:46:43.589489+00:00",
+      "log_sha256": "b1b776308cb03b690d63bb0201f48638a37dec863b6c929ceb40e04e5eed9572",
+      "evidence": "/var/tmp/rock-final-9abf78a-profile/verify-ab-20260910T103802Z-0o0ppq5w",
+      "boots": 8,
+      "report_sha256": "6f72d5736d93a01a8c7920ea51fcea06d19947eb29c6c0915125ecdc0310ca6d"
+    },
+    {
+      "name": "faults",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/update/verify-faults.py",
+        "--artifacts",
+        "/var/tmp/rock-final-9abf78a-profile",
+        "--ab-evidence",
+        "/var/tmp/rock-final-9abf78a-profile/verify-ab-20260910T103802Z-0o0ppq5w"
+      ],
+      "status": "PASS",
+      "started_utc": "2026-09-10T10:46:44.284782+00:00",
+      "pid": 1378139,
+      "exit_code": 0,
+      "finished_utc": "2026-09-10T10:55:48.649070+00:00",
+      "log_sha256": "6ff5e4ffa3058d0e6f5ae2bed0403b6cfaf62becf46050c74f7e5adc94a29234",
+      "evidence": "/var/tmp/rock-final-9abf78a-profile/verify-faults-20260910T104644Z-q0ir5_0d",
+      "boots": 13,
+      "report_sha256": "90de49142f28891a0ca1ac66ca1847970ace47fcadccc80f91ce541a442c8a8a"
+    },
+    {
+      "name": "auth-health",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/update/verify-auth-health.py",
+        "--artifacts",
+        "/var/tmp/rock-final-9abf78a-profile",
+        "--evidence",
+        "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/auth-health"
+      ],
+      "status": "PASS",
+      "started_utc": "2026-09-10T10:55:49.423816+00:00",
+      "pid": 1378415,
+      "exit_code": 0,
+      "finished_utc": "2026-09-10T10:58:03.585472+00:00",
+      "log_sha256": "fdc7fc430f5342b27eb9ee41075cedeb0dab3f622208b37c52037a2245418a8d",
+      "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/auth-health",
+      "boots": 3,
+      "report_sha256": "e2dcbdd8f69413231674222e6ab530d23df20ad8ab796617fb0e4a80c5c27c3b"
+    },
+    {
+      "name": "data-abi",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/update/verify-data-abi.py",
+        "--artifacts",
+        "/var/tmp/rock-final-9abf78a-profile",
+        "--evidence",
+        "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/data-abi"
+      ],
+      "status": "PASS",
+      "started_utc": "2026-09-10T10:58:04.290352+00:00",
+      "pid": 1378506,
+      "exit_code": 0,
+      "finished_utc": "2026-09-10T11:01:01.100844+00:00",
+      "log_sha256": "9bcbe83404947557ecc82c99235b75c2dea9f7c31740c418e695f69a39cb4b93",
+      "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/data-abi",
+      "boots": 3,
+      "report_sha256": "2744feec51432b3d9348bfdc30726956c1d737f36a09241621c1165ec49b6864"
+    }
+  ],
+  "boots": 41,
+  "new_boots": 31,
+  "reused_boots": 10,
+  "original_whole_run_status": "FAIL_RETAINED",
+  "ui_startup_case_coverage": [
+    {
+      "case": "ready",
+      "boots": 2,
+      "status": "PASS_FROM_COMPLETE_ORIGINAL_CASE",
+      "raw_log_sha256": {
+        "ui-startup/ready/boot-1.log": "6b528e7aae959d19facf669d7e0bf4be968247f4e0f28ff2635112a4d8174802",
+        "ui-startup/ready/boot-2.log": "6438e94c2c33fd83159d298af966bbe437e86b9ab37cc1c982120e55927488cf"
+      }
+    },
+    {
+      "case": "absent",
+      "boots": 4,
+      "status": "PASS_FROM_COMPLETE_ORIGINAL_CASE",
+      "raw_log_sha256": {
+        "ui-startup/absent/boot-1.log": "d6320e238352b833c2d391a30c0346f63bb7b94e9269e5801eda3be9e4c7726b",
+        "ui-startup/absent/boot-2.log": "d33f6d8b04c0a13fbe5dc4676a90ea4284eecce09fa45064753e768ac431c936",
+        "ui-startup/absent/boot-3.log": "189c44fe11213cfd56b9c61ceb8ccb5d78664637a01b382f1edfddc375988601",
+        "ui-startup/absent/boot-4.log": "484b6958c7d093904af6b458582682e16d8eaf73e0e4fa4aa03cdba118187d5c"
+      }
+    },
+    {
+      "case": "freeze",
+      "boots": 4,
+      "status": "PASS_FROM_COMPLETE_ORIGINAL_CASE",
+      "raw_log_sha256": {
+        "ui-startup/freeze/boot-1.log": "a304fc404753d8e6e320263798aad36abe611558ca5a57d2b5d585379e56d03b",
+        "ui-startup/freeze/boot-2.log": "0c951f7a1426dd02ed252eed98a87965588bcc6f1f4d128546b4a1171c1dddd7",
+        "ui-startup/freeze/boot-3.log": "a06b5c830176a07875ad18ae70bcc6f1bc197cf79567b2146f065cab49e6911e",
+        "ui-startup/freeze/boot-4.log": "4227dcde684dcecedaf9a05817da4ae7ed71c84b9b242be0789780b2fb900c96"
+      }
+    },
+    {
+      "case": "crash",
+      "boots": 4,
+      "status": "PASS_NEW_DIAGNOSTIC_OBSERVER"
+    }
+  ],
+  "immutable_image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+    "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+  },
+  "other_acceptance_gates": "NOT_RUN_BY_THIS_ORCHESTRATOR",
+  "finished_utc": "2026-09-10T11:01:01.742617+00:00"
+}
