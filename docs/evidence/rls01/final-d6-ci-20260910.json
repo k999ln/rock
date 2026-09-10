@@ -1,0 +1,257 @@
+{
+  "schema": "rock-final-d6-ci-scoped-acceptance/1",
+  "status": "PASS_SCOPED",
+  "observed_utc": "2026-09-10T11:40:49.047131+00:00",
+  "requirements": [
+    "D6",
+    "RQ07",
+    "RQ08",
+    "RQ09",
+    "RQ10",
+    "RQ12",
+    "RQ16",
+    "RQ17"
+  ],
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+    "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+  },
+  "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+  "profile_sha256": "0d6f4924d98f1cd43d4e3104b9a9c3b4f2a4b2557e96f64bd626f9930f4b34bb",
+  "sandbox_config_sha256": "cdb9609518187dc057a4e747d28b9550da0946c59636fc0cc8346027cdb5ab9c",
+  "authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+  "wrapper": {
+    "source_commit": "22b8bf8c4f2771354b96a2d2f9ca726da378529c",
+    "sha256": "fa2a620d9ca0f7a17d97335b2c836a6876f3ed7af946ff144a4eda9cffd5591d",
+    "workflow_sha256": "035ff55a78ba47356950f7f837588ade3337aee0d6c9a79f70d951c68aeef3ec",
+    "github_run": 34465689434,
+    "github_run_attempt": 1,
+    "url": "https://github.com/k999ln/rock/actions/runs/34465689434",
+    "conclusion": "SUCCESS",
+    "observer_started_utc": "2026-09-10T10:23:13Z",
+    "observer_finished_utc": "2026-09-10T11:35:59Z",
+    "private_asset_fetch": "PASS_ACTUAL_JOB_TOKEN",
+    "prepare": "PASS_SIGNED_SOURCE_PINNED_EMPTY0",
+    "upload": "PASS_SAME_PRIVATE_DRAFT",
+    "container_cleanup": "PASS"
+  },
+  "plan": {
+    "local_master_plan_sha256": "20795f3b4de6e9f562c8ec373b96bfea6407e4b0418064286e73d1096b744e0f",
+    "execution_amendment_sha256": "f91c2da9aa80c3ccb1d549cf4e04dd21190e17f47da506da292c2e427ea7d9c3",
+    "frozen_at": "2026-09-10T10:23:15.554944+00:00",
+    "canonical_sha256": "fb041801adebad7ab5bc3414c80a04f9f9b03700ff54fd72f142d891549ca65e",
+    "mode": "soak",
+    "normal_boot_shutdown_cycles": 5,
+    "soak_seconds": 3600,
+    "soak_jobs": 61,
+    "job_interval_seconds": 60,
+    "limits": {
+      "boot_seconds": 180,
+      "cpu_cores_average": 3.5,
+      "job_seconds": 90,
+      "max_evidence_bytes": 629145600,
+      "max_job_start_gap_seconds": 180,
+      "max_probes": 12000,
+      "max_samples": 4000,
+      "max_screenshot_bytes": 268435456,
+      "max_screenshots": 1000,
+      "peak_rss_kib": 2097152,
+      "rss_growth_kib": 524288,
+      "sample_gap_seconds": 10,
+      "sample_seconds": 2,
+      "shutdown_seconds": 60,
+      "soak_max_seconds": 4200,
+      "stored_job_seconds": 30,
+      "ui_state_seconds": 30
+    },
+    "ocr_minimum_confidence": 45,
+    "game_read_sync_allowed": false,
+    "prepare_backup": false,
+    "original_thresholds_unchanged": true
+  },
+  "host": {
+    "runner": "ubuntu-24.04",
+    "container": "Debian GNU/Linux 13.6 (trixie)",
+    "architecture": "x86_64",
+    "kernel": "6.17.0-1022-azure",
+    "python": "3.13.5",
+    "available_cpus": 4,
+    "ram_bytes": 16766414848,
+    "qemu": "QEMU emulator version 10.0.11 (Debian 1:10.0.11+ds-0+deb13u1)",
+    "tesseract": "tesseract 5.5.0",
+    "openssl": "OpenSSL 3.5.7 9 Jun 2026 (Library: OpenSSL 3.5.7 9 Jun 2026)",
+    "binaries_sha256": {
+      "debugfs": "deb37b9515718738f369dfe0546a50a74fdd7d5837046adac272ef6a3381ccee",
+      "e2fsck": "a1325970ef22dfadd225aa185e2711d85194eb9762efdf408f34f9952ce56bdc",
+      "openssl": "f4aa15f2822f670af7b5c1043d7aa6ebbbc64229fd2fae382edfc6a4524749c1",
+      "python3": "17b78e0a93175e86f9ac03141924fd7a7f0c0c52e66b34bfa0de20ffef989df1",
+      "qemu-system-aarch64": "3484834454a380e88f820248bd00198e4f4d0ad2baacca114e486f9c008cee7b",
+      "tesseract": "74b76a5b994adcc18be362bf64ed5118082b2401d5d9a35242e92fc4c62e2b4b"
+    }
+  },
+  "original_native_provenance": {
+    "meaning": "Previously completed exact-9ab CI, reverified as packaged provenance; not a rerun by this D6 workflow",
+    "source_files": 1364,
+    "native_ci_inputs": 694,
+    "native_ci_checks": 14,
+    "python_executions": 1631,
+    "report_sha256": "34bf46580fe2f3655f765c5266d55e2786143bb28fb423f4e97e537f68a06af8",
+    "all_original_log_hashes_verified": true
+  },
+  "observed": {
+    "cycles": [
+      {
+        "cycle": 0,
+        "boot_seconds": 53.03326126799999,
+        "shutdown_seconds": 12.411992044000016,
+        "jobs": 0,
+        "guest_shutdown": true,
+        "authority_unchanged": true,
+        "guest_nonhub_unchanged": true
+      },
+      {
+        "cycle": 1,
+        "boot_seconds": 43.669877402,
+        "shutdown_seconds": 9.333866960000023,
+        "jobs": 4,
+        "guest_shutdown": true,
+        "authority_unchanged": true,
+        "guest_nonhub_unchanged": true
+      },
+      {
+        "cycle": 2,
+        "boot_seconds": 42.23755101099994,
+        "shutdown_seconds": 9.363463849999903,
+        "jobs": 1,
+        "guest_shutdown": true,
+        "authority_unchanged": true,
+        "guest_nonhub_unchanged": true
+      },
+      {
+        "cycle": 3,
+        "boot_seconds": 42.747904844000004,
+        "shutdown_seconds": 9.34875721200001,
+        "jobs": 1,
+        "guest_shutdown": true,
+        "authority_unchanged": true,
+        "guest_nonhub_unchanged": true
+      },
+      {
+        "cycle": 4,
+        "boot_seconds": 43.796128447,
+        "shutdown_seconds": 9.3682216039997,
+        "jobs": 61,
+        "guest_shutdown": true,
+        "authority_unchanged": true,
+        "guest_nonhub_unchanged": true
+      }
+    ],
+    "soak": {
+      "elapsed_seconds": 3646.6167161860003,
+      "jobs": 61,
+      "max_job_seconds": 48.39538884900003,
+      "max_start_gap_seconds": 60.00011327000004
+    },
+    "resources": {
+      "cpu_cores_average": 0.35954113107970165,
+      "max_sample_gap_seconds": 2.147293267000009,
+      "peak_rss_kib": 902448,
+      "rss_growth_kib": 62480,
+      "samples": 1820
+    },
+    "total_jobs": 67,
+    "soak_jobs": 61,
+    "total_operations": 76,
+    "empty_tables": 19,
+    "authority_databases": 5,
+    "authority_tables": 71,
+    "authority_identities": 8,
+    "authority_snapshot_sha256": "18cf21c5101addbc2877e1a98f6ac6af291a4514fb8840114256391f8a3153d4",
+    "all_game_sdk_clocks_zero": true
+  },
+  "independent_readback": {
+    "status": "PASS_SCOPED_INDEPENDENT_READBACK",
+    "all_raw_resource_summaries_recomputed": true,
+    "soak_resource_summary_matches_contiguous_original_samples": true,
+    "five_distinct_guest_SHUTDOWN_events": true,
+    "all_authority_schema_typed_rows_sequences_identities_unchanged": true,
+    "all_guest_nonhub_retention_verified": true,
+    "signed_slots_unchanged": true,
+    "baseline_disk_unchanged": true,
+    "source_and_frozen_inputs_unchanged": true,
+    "authority_stopped": true,
+    "maximum_game_sdk_time": 0,
+    "game_bindings": []
+  },
+  "evidence": {
+    "release_id": 386171909,
+    "release_tag": "v1.0.0-preview.20260910-rc1",
+    "release_still_draft_at_reacquisition": true,
+    "asset": {
+      "created_at": "2026-09-10T11:36:04Z",
+      "digest": "sha256:aa7c64f1e9c58860d27b04399911c354d62e94a843616207da9c0478d7bb4d4e",
+      "id": 554887744,
+      "name": "rock-rock-d6-ci-evidence-34465689434-1.tar.gz",
+      "size": 89575054,
+      "state": "uploaded",
+      "updated_at": "2026-09-10T11:36:08Z"
+    },
+    "acquisition": {
+      "status": "PRIVATE_DRAFT_RAW_REACQUIRED_HASH_MATCH",
+      "asset_id": 554887744,
+      "archive_sha256": "aa7c64f1e9c58860d27b04399911c354d62e94a843616207da9c0478d7bb4d4e",
+      "archive_bytes": 89575054,
+      "expanded_bytes": 378262134,
+      "regular_files": 916,
+      "release_still_draft": true
+    },
+    "raw_report_sha256": "35a821678ff9c057a210d084c2d1cb6ad9030e99ffd17faf6e3cb255f249df87",
+    "independent_readback_sha256": "022130f937612a1d17e279a92a40303b408449dc4c1dea51e7d4d183a746cb9e",
+    "independent_observer_sha256": "d172d605813d5b514bce3f6da874847a6cd9ecdc2e9f50fe872bf3f0aff6c9ce",
+    "github_original_log_sha256": "45b180ed3dd238eba268c8b03a60ee8fee221ba435eafd78b0580708b25d77da",
+    "launch_plan_sha256": "16db847e7adf2fcdc96820fb1bc6b6c2c03736ee156d668c9385ac8a3602d3ef",
+    "preparation_sha256": "5294c05d3c0523f8775b580606c98bc1b3092355777a69a40b1628dba1e5309d",
+    "local_originals": "work/rock/work/github-d6-run-34465689434/",
+    "raw_archive_contains": [
+      "frozen launch/preparation/execution/result records",
+      "original Git source archive and native CI report plus 14 logs",
+      "unaltered D6 plan/report, all frames/OCR/resource samples and baseline disk",
+      "all closed-cycle authority snapshots and typed guest DB summaries"
+    ]
+  },
+  "reproduce": {
+    "workflow_commit": "22b8bf8c4f2771354b96a2d2f9ca726da378529c",
+    "workflow_path": ".github/workflows/final-d6-candidate.yml",
+    "wrapper_path": "scripts/run-final-d6-ci.py",
+    "command": [
+      "python3",
+      "-B",
+      "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/desktop/verify-business.py",
+      "--images",
+      "/var/tmp/rock-final-9abf78a-profile",
+      "--output",
+      "/var/tmp/rock-d6-ci-evidence",
+      "--source-commit",
+      "9abf78a80d27aa9f847c4051d20e4c552e407276",
+      "--mode",
+      "soak",
+      "--boot-profile",
+      "game-authority-ab",
+      "--device-config",
+      "/var/tmp/rock-final-9abf78a-device.json"
+    ],
+    "new_run_requires": "Fresh independent Linux runner/private default authority, fixed candidate assets and original guards; no adoption of an existing device or time from an earlier run"
+  },
+  "scope": [
+    "Independent x86_64 Linux QEMU D6 acceptance of the identical signed 9ab Game candidate; distinct from local run44 and the concurrent local OS gates.",
+    "Host QEMU RSS/CPU only; guest per-service UID/cgroup resources are NOT_RUN.",
+    "No Wallet registration, credential enrollment, consent, credit, payment, exchange or withdrawal action was performed.",
+    "19 required Wallet/member/credential tables stayed empty; every authoritative table and all eight identity files stayed identical.",
+    "Remote-cache received_at alone follows the predeclared strict read-sync rule; the three Game SDK journals allow no clock/binding mutation in this run.",
+    "Normal guest shutdown and retention are required per cycle; no host force shutdown/reset is counted.",
+    "This does not complete D0-D5, the full D2/backup/reinstall gate, Mac installation acceptance, C visual review, product-license clearance, hardware or real-funds acceptance.",
+    "Draft raw evidence is authenticated maintainer access only; no public download or publication is claimed."
+  ]
+}
