@@ -102,7 +102,7 @@ def _options(options, device_ref, creation, *, game=False, exchange=False):
         require(public['rpId'] == RP_ID and public['userVerification'] == 'required', 'RP or verification mismatch')
         _descriptors(public['allowCredentials'], one=True)
     b64decode(public['challenge'], 32, 32)
-    require(type(public['timeout']) is int and (1 <= public['timeout'] <= 120000 if game else public['timeout'] == 120000), 'unsupported ceremony timeout')
+    require(type(public['timeout']) is int and (1 <= public['timeout'] <= 120000 if game or exchange else public['timeout'] == 120000), 'unsupported ceremony timeout')
     return payload
 
 

@@ -37,13 +37,22 @@ class ReferenceSDK(unittest.TestCase):
             'challenge_id':intent['challenge_id'],'binding_sha256':intent['binding_sha256'],'credential':assertion}
         reply=self.sdk.dispatch('public-game-'+name,req);self.assertTrue(reply['ok'],reply)
         return reply['result']['binding']['connection_id']
-    def purchase(self,name,conn):
+    def purchase(self,name,conn,*,approval_delay=0):
         game='public-game-'+name
         quote=self.sdk.dispatch(game,{'v':1,'op':'game.exchange.quote','key':'same-key','connection_id':conn,'exchange_id':'same-external','principal_minor':100})['result']
+        self.f.now+=approval_delay
         intent=self.sdk.dispatch(game,{'v':1,'op':'game.exchange.approval.begin','key':'same-key','quote_id':quote['binding']['quote_id']})['result']
         credential=self.f.authenticators[A1].get_exchange_assertion(intent,'0000','purchase-'+name)
         request={'v':1,'op':'game.exchange.approve','key':'same-key','attempt_id':intent['attempt_id'],'quote_sha256':x.quote_digest(quote),'credential':credential}
         reply=self.sdk.dispatch(game,request);self.assertTrue(reply['ok'],reply);return request,reply
+    def test_purchase_ceremony_retains_remaining_quote_lifetime_after_user_review(self):
+        conn=self.connect('a');_,reply=self.purchase('a',conn,approval_delay=3)
+        self.assertEqual(reply['result']['decision'],'APPROVED')
+        with self.sdk.store.transaction() as db:
+            intent=support.gx.gp.decode(db.execute('SELECT intent FROM intents').fetchone()[0].encode())
+        self.assertEqual(intent['options']['publicKey']['timeout'],117000)
+        with self.assertRaises(ValueError):self.f.authenticators[A1].get_assertion(intent['options'],'0000','wrong-atm-purpose')
+        self.workers['a'].once();self.assertEqual(self.f.grants['a'].balance('alice'),10)
     def test_real_two_game_same_external_keys_full_restart_exact_receipts(self):
         connections={};saved={}
         for name in ('a','b'):
