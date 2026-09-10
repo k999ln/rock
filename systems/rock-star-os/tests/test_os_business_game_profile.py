@@ -76,6 +76,27 @@ class GameBusinessProfile(unittest.TestCase):
         self.assertIn('game_authorities', value['required_components'])
         self.assertEqual(value['authority_id'], AUTHORITY)
 
+    def test_unconnected_business_scope_rejects_every_game_clock_change(self):
+        profile = self.profile(); profile['game_read_sync_allowed'] = False
+        baseline = self.baseline()
+        for role in ('game_exchange_cache', 'game_connection_a', 'game_connection_b'):
+            baseline[role]['game_read_sync'] = {'identity': {'maximum_time': 0}, 'bindings': []}
+        harness.verify_baseline(baseline, {}, profile)
+        for role in ('game_exchange_cache', 'game_connection_a', 'game_connection_b'):
+            changed = copy.deepcopy(baseline)
+            changed[role]['game_read_sync']['identity']['maximum_time'] = 1
+            with self.subTest(role=role), self.assertRaisesRegex(ValueError, 'unobserved Game SDK'):
+                harness.verify_baseline(changed, {}, profile)
+        for role in ('hub', 'power'):
+            baseline[role]['schema_sha256'] = 'same-schema'
+        with patch.object(cache, 'compare'):
+            harness.unchanged_non_hub(baseline, copy.deepcopy(baseline), profile)
+            for role in ('game_exchange_cache', 'game_connection_a', 'game_connection_b'):
+                changed = copy.deepcopy(baseline)
+                changed[role]['game_read_sync']['identity']['maximum_time'] = 1
+                with self.subTest(role=role), self.assertRaisesRegex(ValueError, 'unexpected business mutation'):
+                    harness.unchanged_non_hub(baseline, changed, profile)
+
     def test_game_profile_does_not_hide_a_used_or_configured_external_runner(self):
         config = {'schema': 'rock-desktop-device/7', 'network': 'game-authority',
                   'game': {'authority_id': AUTHORITY, 'sha256': 'a' * 64}}
@@ -118,6 +139,7 @@ class GameBusinessProfile(unittest.TestCase):
                 self.assertEqual(plan[name], original[name])
             self.assertEqual(plan['authority_observation']['baseline']['status'], 'EMPTY_BEFORE_UI')
             self.assertEqual(plan['business_profile']['cache_read_sync'], cache.POLICY)
+            self.assertFalse(plan['business_profile']['game_read_sync_allowed'])
             self.assertEqual(report['plan_sha256'], harness.contract.hashed(plan))
             self.assertEqual(report['D6'], 'NOT_RUN')
             self.assertNotIn('reinstall_after_delete', plan)

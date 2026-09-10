@@ -711,6 +711,10 @@ def verify_baseline(snapshot, rows, profile=None):
             require(snapshot[role]['tables']['identity']['rows'] == 1 and
                     all(value['rows'] == 0 for name, value in snapshot[role]['tables'].items() if name != 'identity'),
                     'fresh Game SDK journal already contains business state: ' + role)
+            if profile.get('game_read_sync_allowed') is False:
+                sync = snapshot[role]['game_read_sync']
+                require(type(sync['identity']['maximum_time']) is int and sync['identity']['maximum_time'] == 0 and
+                        sync['bindings'] == [], 'fresh unobserved Game SDK clock or bindings changed: ' + role)
     else:
         money = snapshot['wallet']['financial_summary']
         require(all(value == 0 for key, value in money.items() if key not in ('currency', 'simulation_only')),
@@ -742,7 +746,7 @@ def unchanged_non_hub(before, after, profile=None):
         if role == 'wallet_cache' and profile is not None and profile.get('cache_read_sync'):
             import wallet_cache_retention
             wallet_cache_retention.compare(before[role], after[role])
-        elif role.startswith('game_') and profile is not None and profile.get('game_read_sync'):
+        elif role.startswith('game_') and profile is not None and profile.get('game_read_sync') and profile.get('game_read_sync_allowed', True):
             import game_cache_retention
             game_cache_retention.compare(before[role], after[role], role)
         else:
@@ -922,6 +926,8 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
     config, output = preflight(images, output_parent, mode, source_commit, boot_profile, device_config)
     output.mkdir(mode=0o700)
     profile = retention.retention_profile(config)
+    if boot_profile == 'game-authority-ab':
+        profile['game_read_sync_allowed'] = False
     authority, authority_baseline = None, None
     frozen = contract.plan(mode)
     frozen.update(config=config, source_commit_declared=source_commit, prepare_backup=prepare_backup,
