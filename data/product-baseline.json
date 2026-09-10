@@ -1,5 +1,5 @@
 {
-  "version": "1.6",
+  "version": "1.7",
   "decidedAt": "2026-09-09",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -12,10 +12,11 @@
   "executionApproval": {
     "status": "approved_for_implementation",
     "approvedDesignVersion": "1.1",
+    "currentDesignVersion": "1.2",
     "approvedDesignCommit": "27b34adc02a9e06a4816aa18a5e38cf38b330953",
     "record": "data/execution-approval.json",
     "recordedAt": "2026-09-09T17:47:40.214265+00:00",
-    "scope": "Native QEMU, existing Hub products, synthetic Wallet/game exchange and SDK; conditional publication/hardware/MetaMask requests tracked separately."
+    "scope": "Native QEMU, existing Hub products, synthetic Wallet/game exchange and SDK; QEMU Developer Preview packaging and one-model physical-device preparation are authorized, while production and real-value gates remain conditional."
   },
   "requirements": [
     "RQ01",
@@ -32,7 +33,8 @@
     "RQ12",
     "RQ13",
     "RQ14",
-    "RQ15"
+    "RQ15",
+    "RQ16"
   ],
   "primaryCapabilities": [
     "automation-hub",
@@ -60,7 +62,15 @@
   ],
   "commercialPolicy": "Preserve native 888 USD cents per contract per month and legacy Web estimates; Rock ATM fee is zero per RQ15; game fees are unspecified; no live billing authorized here.",
   "hardwarePolicy": "Native branch prioritizes BlackBerry with model/variant unresolved; Linux QEMU and Android/AOSP are distinct evidence tracks.",
-  "firstOperationalTarget": "QEMU development OS, synthetic data only; not hardware or production certification",
+  "firstOperationalTarget": "Fresh-host QEMU Developer Preview with reproducible install, launch, shutdown, reopen, backup and removal; synthetic data only",
+  "releaseInstallation": {
+    "requested": true,
+    "plan": "docs/release-installation-plan-20260909.md",
+    "developerPreview": "in_progress",
+    "physicalDevicePreview": "blocked_on_exact_model_and_variant",
+    "productionReady": false,
+    "cmRule": "Advertise only the highest installation and validation stage that has passed its recorded gate"
+  },
   "gameExchange": {
     "requested": true,
     "game": "unspecified",

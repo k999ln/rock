@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-09",
-  "milestone": "native試用版・ゲーム接続/復元統合の保存時点",
-  "nextAction": "凍結b8287bcのD6 run43は低電池休止を伴いFAIL、停止後47 jobs/55 actions保持を確認。AC接続の同条件run44は実行中のため未合格。d16ba2dのWeb/Android/native CI成功（Python1357）とMac試用端末の最終起動・正常終了を記録。ゲーム接続/復元の統合72件は通過したが、同TLS分離の不足例と別game同keyのreconcile衝突を解消してからGX00を再判定する。GX01は設計のみ。",
+  "milestone": "native試用版・ゲーム接続/復元統合・導入可能版の準備",
+  "nextAction": "最新PRのnative source-tests timeoutとD6未合格を解消し、既存private VMへ依存しないfresh Mac/PC向けQEMU Developer Previewを作る。導入・起動・終了・再開・backup・削除を同一配布物で検証後、CM表現を確定する。物理端末は正確な1機種・variantを固定してから別ゲートで進める。",
   "tasks": [
     {
       "id": "R01",
@@ -404,6 +404,29 @@
       "evidence": [
         "docs/native-os-integration.md"
       ]
+    },
+    {
+      "id": "RLS01",
+      "title": "fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証",
+      "status": "in_progress",
+      "dependsOn": [
+        "V01"
+      ],
+      "evidence": [
+        "docs/release-installation-plan-20260909.md"
+      ]
+    },
+    {
+      "id": "RLS02",
+      "title": "正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証",
+      "status": "planned",
+      "dependsOn": [
+        "RLS01",
+        "N03"
+      ],
+      "evidence": [
+        "docs/release-installation-plan-20260909.md"
+      ]
     }
   ],
   "phaseGates": [
@@ -549,6 +572,30 @@
       ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md"
+      ]
+    },
+    {
+      "id": "PREVIEW-INSTALL",
+      "task": "RLS01",
+      "title": "fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走",
+      "status": "planned",
+      "dependsOn": [
+        "V01-ACCEPT"
+      ],
+      "evidence": [
+        "docs/release-installation-plan-20260909.md"
+      ]
+    },
+    {
+      "id": "DEVICE-INSTALL",
+      "task": "RLS02",
+      "title": "対象1機種でflash・初回起動・OTA rollback・純正復旧を完走",
+      "status": "planned",
+      "dependsOn": [
+        "PREVIEW-INSTALL"
+      ],
+      "evidence": [
+        "docs/release-installation-plan-20260909.md"
       ]
     }
   ]

@@ -162,7 +162,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-09 / native試用版・ゲーム接続/復元統合の保存時点 / 完了 14/32件
+最終更新: 2026-09-09 / native試用版・ゲーム接続/復元統合・導入可能版の準備 / 完了 14/34件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -198,6 +198,8 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | N03 | BlackBerryの型番・boot/BSP・更新/復旧の適合確認 | 進行中 | [記録](docs/native-os-integration.md) |
 | N04 | BlackBerry実機だけでHub取得・実行・更新・復旧 | 未着手 | [記録](docs/native-os-integration.md) |
 | N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
+| RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 進行中 | [記録](docs/release-installation-plan-20260909.md) |
+| RLS02 | 正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証 | 未着手 | [記録](docs/release-installation-plan-20260909.md) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -214,8 +216,10 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | GX01-CONTRACT | GX01 | 複数owner/gameの交換契約と両台帳fixture | 未合格 | GX00-ISOLATION | [記録](docs/prompts/os-operational-base-next.md) |
 | GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 未合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) |
 | DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 未合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) |
+| PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
+| DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 凍結b8287bcのD6 run43は低電池休止を伴いFAIL、停止後47 jobs/55 actions保持を確認。AC接続の同条件run44は実行中のため未合格。d16ba2dのWeb/Android/native CI成功（Python1357）とMac試用端末の最終起動・正常終了を記録。ゲーム接続/復元の統合72件は通過したが、同TLS分離の不足例と別game同keyのreconcile衝突を解消してからGX00を再判定する。GX01は設計のみ。
+次の作業: 最新PRのnative source-tests timeoutとD6未合格を解消し、既存private VMへ依存しないfresh Mac/PC向けQEMU Developer Previewを作る。導入・起動・終了・再開・backup・削除を同一配布物で検証後、CM表現を確定する。物理端末は正確な1機種・variantを固定してから別ゲートで進める。
 <!-- project-status:end -->
 
 ## 次段階の設計

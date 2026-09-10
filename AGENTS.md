@@ -24,3 +24,6 @@
 - originはGitHub、sitesは配信用。履歴を強制上書きせず、GitHubへの保存と本番公開を区別する。
 
 - nativeは systems/rock-star-os/、旧Android/AOSPは android/ と os/。IMPORT-MANIFEST.jsonは取得時基準として変更しない。後続差分はGitとINTEGRATION-NOTES.mdで追跡し、experimentsの未検証patchを本線の成功へ換算しない。
+- 最新の明示指示により、CM発表に向けた導入可能版を進める。最初はfreshなMac/PCへ導入できるQEMU Developer Preview、次に正確な1機種・variantへ限定したPhysical Device Previewとする。`docs/release-installation-plan-20260909.md`の合格前に実機対応・本番利用可能と表示しない。
+- 省トークンで進める。巨大な全履歴・全差分・全ログを出力せず、対象path、件数、失敗箇所へ絞る。通常は変更箇所の試験を先に実行し、広い回帰はrelease gateまたは必要な失敗時だけ行う。長いログはGit管理外へ置き、要約と再現情報だけ読む。
+- Gitには実装、設定、必要最小限のfixture、要約した証拠、復旧手順を保存する。OS image、build cache、重複ログ、全フレーム、再生成可能な大量出力はrelease artifactまたはGit管理外へ置く。
