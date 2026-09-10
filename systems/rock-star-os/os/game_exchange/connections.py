@@ -253,8 +253,26 @@ class WalletConnections:
             return {'ok':True,'result':shared}
         if op=='reconcile':
             self.synchronize(intent,deadline)
-            key=namespace('owner-reconcile',owner.device_ref,request['op'],request['key'])
+            binding=intent['binding']
+            key=namespace('owner-reconcile-v2',owner.device_ref,binding['game_authority_id'],
+                binding['game_id'],request['op'],request['key'])
+            legacy_key=namespace('owner-reconcile',owner.device_ref,request['op'],request['key'])
             with self.wallet._transaction() as db:
+                # Retain old immutable rows/receipts in place. An exact old
+                # request must return its original result, even after restart.
+                # A different game's old key must not consume this namespace;
+                # a changed request in the SAME game remains a conflict.
+                legacy=db.execute('SELECT request,result FROM wallet_game_requests WHERE key=?',(legacy_key,)).fetchone()
+                if legacy:
+                    if legacy['request']==encoded(request):
+                        return {'ok':True,'result':loaded(legacy['result'])}
+                    old_request=loaded(legacy['request'])
+                    old=db.execute('SELECT intent FROM wallet_game_intents WHERE intent_id=?',
+                        (old_request.get('intent_id'),)).fetchone()
+                    available(old is not None,'legacy reconcile intent unavailable')
+                    old_binding=loaded(old[0])['binding']
+                    p.require((old_binding['game_authority_id'],old_binding['game_id']) !=
+                        (binding['game_authority_id'],binding['game_id']),'reconcile request conflict')
                 row=db.execute('SELECT request,result FROM wallet_game_requests WHERE key=?',(key,)).fetchone()
                 if row:
                     p.require(row['request']==encoded(request),'reconcile request conflict')

@@ -4,6 +4,7 @@ No fake coordinator/permit, local ledger fallback, QEMU or real-money claim.
 Requires the separately integrated A runtime and C authority fence modules.
 """
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 import copy
 import json
 from pathlib import Path
@@ -23,6 +24,7 @@ from wallet_backend.owner_router import OwnerRouter
 from wallet_backend.server import ManagedWalletBackendServer
 from wallet_backend.client import HTTPSWalletTransport, RemoteWalletService, BackendUnavailable, READS
 from wallet_auth.fixture import SoftwareTestAuthenticator
+from game_exchange.current_restore import snapshot as typed_snapshot
 
 A1,A2,B1='fixture-gx00-alice-1','fixture-gx00-alice-2','fixture-gx00-bob-1'
 DEVICE_OWNER={A1:'alice',A2:'alice',B1:'bob'}
@@ -110,6 +112,127 @@ class ManagedOwnerTLSIntegration(unittest.TestCase):
         quote=self.call(device,'wallet.atm.quote',key='quote-'+key,issue_key=key,amount_minor=amount,atm_id='SIM-ATM-001')
         credential=self.authenticators[device].get_assertion(quote['options'],'0000','get-'+key)
         return self.call(device,'wallet.atm.issue',key=key,quote_id=quote['quote_id'],credential=credential)
+
+    def database_state(self, owner):
+        runtime=self.runtimes[owner]
+        with runtime.admit_write(runtime.descriptor.writer_epoch):
+            result={}
+            for name,component in (('wallet',runtime._service.wallet),('entitlement',runtime._service.membership.store)):
+                with closing(component._connect()) as db:result[name]=typed_snapshot(db)
+            return result
+
+    def wait_billing(self, device, predicate):
+        deadline=time.monotonic()+5
+        while True:
+            state=self.call(device,'wallet.billing.status')
+            if state['history'] and predicate(state['history'][0]):return state['history'][0]
+            self.assertLess(time.monotonic(),deadline,state)
+            time.sleep(.03)
+
+    def test_required_same_tls_two_owner_monthly_888_and_two_device_single_charge(self):
+        a,_=self.register_activate(A1);a2,_=self.register_activate(A2);b,_=self.register_activate(B1)
+        self.assertEqual(a['account_id'],a2['account_id']);self.assertNotEqual(a['account_id'],b['account_id'])
+        for owner in ('alice','bob'):self.credit(owner,5000)
+        for device in (A1,B1):self.call(device,'wallet.consent',key='same-monthly-consent',accepted=True,terms_version=MONTHLY)
+        schedules=[self.call(device,'wallet.bill',key='same-monthly-request',period='2026-09') for device in (A1,A2,B1)]
+        self.assertEqual(schedules[0],schedules[1]);self.assertNotEqual(schedules[0]['schedule_id'],schedules[2]['schedule_id'])
+        for runtime in self.runtimes.values():runtime.start_scheduler()
+        for device in (A1,B1):self.wait_billing(device,lambda row:row['status']=='paid')
+        for device in (A1,A2,B1):
+            state=self.call(device,'snapshot')
+            self.assertEqual((state['available_minor'],state['billed_minor']),(4112,888))
+        for runtime in self.runtimes.values():
+            with runtime.admit_write(runtime.descriptor.writer_epoch),closing(runtime._service.wallet._connect()) as db:
+                self.assertEqual([tuple(row) for row in db.execute('SELECT period,amount_minor FROM wallet_bills')],[('2026-09',888)])
+
+    def test_required_same_tls_insufficient_alice_retry_preserves_all_bob_rows_and_schema(self):
+        for device in (A1,A2,B1):self.register_activate(device)
+        self.credit('alice',887);self.credit('bob',5000)
+        for device in (A1,B1):
+            self.call(device,'wallet.consent',key='same-monthly-consent',accepted=True,terms_version=MONTHLY)
+            self.call(device,'wallet.bill',key='same-monthly-request',period='2026-09')
+        for runtime in self.runtimes.values():runtime.start_scheduler()
+        self.wait_billing(A1,lambda row:row['automatic_failures']==1)
+        self.wait_billing(B1,lambda row:row['status']=='paid')
+        bob_before=self.database_state('bob')
+        self.call(A2,'wallet.bill',key='explicit-insufficient-retry',period='2026-09')
+        self.wait_billing(A2,lambda row:row['automatic_failures']==2)
+        self.assertEqual(self.database_state('bob'),bob_before)
+        self.assertEqual(self.call(A1,'snapshot')['available_minor'],887)
+        self.assertEqual(self.call(A1,'snapshot')['billed_minor'],0)
+        self.assertEqual(self.call(B1,'snapshot')['billed_minor'],888)
+
+    def test_required_same_tls_foreign_atm_quote_cancel_and_original_issue_receipt_rejected(self):
+        for device in (A1,A2,B1):self.register_activate(device)
+        for owner in ('alice','bob'):self.credit(owner,5000)
+        originals={};quotes={}
+        for device in (A1,B1):
+            quote=self.call(device,'wallet.atm.quote',key='same-quote',issue_key='same-issue',amount_minor=1000,atm_id='SIM-ATM-001')
+            credential=self.authenticators[device].get_assertion(quote['options'],'0000','original-issue')
+            request={'v':1,'op':'wallet.atm.issue','key':'same-issue','quote_id':quote['quote_id'],'credential':credential}
+            receipt=self.transports[device].exchange(request);self.assertTrue(receipt['ok'],receipt)
+            originals[device]=(request,receipt)
+            quotes[device]=self.call(device,'wallet.atm.quote',key='open-quote',issue_key='later-issue',amount_minor=1000,atm_id='SIM-ATM-001')
+        before={owner:self.database_state(owner) for owner in ('alice','bob')}
+        for device,foreign in ((A1,B1),(B1,A1)):
+            request,receipt=originals[foreign]
+            for payload in ({'v':1,'op':'wallet.atm.quote.cancel','key':'foreign-cancel','quote_id':quotes[foreign]['quote_id']},request):
+                denied=self.transports[device].exchange(payload)
+                self.assertFalse(denied['ok'],denied)
+                self.assertEqual(set(denied),{'ok','code','error'})
+                self.assertNotIn(receipt['result']['withdrawal_id'],json.dumps(denied))
+                self.assertNotIn(receipt['result']['code'],json.dumps(denied))
+            self.assertEqual({owner:self.database_state(owner) for owner in ('alice','bob')},before)
+        for device,(request,receipt) in originals.items():
+            self.assertEqual(self.transports[device].exchange(request),receipt)
+        self.assertEqual({owner:self.database_state(owner) for owner in ('alice','bob')},before)
+
+    def test_required_actual_single_server_worker_releases_scope_after_real_policy_exception(self):
+        for device in (A1,A2,B1):self.register_activate(device)
+        observations=[];finished=[];failures=[];futures=[]
+        original_process=self.server.process_request
+        actual_process_thread=self.server.process_request_thread
+        originals={owner:runtime._service.dispatch for owner,runtime in self.runtimes.items()}
+        def observe(owner,dispatch):
+            def call(request,**kwargs):
+                runtime=self.runtimes[owner]
+                observations.append((threading.current_thread(),owner,request['op'],
+                    dict(runtime._service.membership._binding()),runtime._hooks.held_by_current_thread(),
+                    self.runtimes['bob' if owner=='alice' else 'alice']._hooks.held_by_current_thread()))
+                try:return dispatch(request,**kwargs)
+                except ValueError as exc:
+                    failures.append((owner,type(exc).__name__,str(exc)))
+                    raise
+            return call
+        def serve(request,address):
+            actual_process_thread(request,address) # real TLS handshake, Handler, router, C, service
+            finished.append((threading.current_thread(),[
+                (getattr(runtime._service.membership._local,'binding',None),runtime._hooks.held_by_current_thread(),runtime._writer.inflight)
+                for runtime in self.runtimes.values()],dict(self.server.connection_deadlines)))
+        try:
+            with ThreadPoolExecutor(max_workers=1,thread_name_prefix='gx00-real-server-worker') as pool:
+                def enqueue(request,address):
+                    if not self.server.slots.acquire(blocking=False):request.close();return
+                    futures.append(pool.submit(serve,request,address))
+                self.server.process_request=enqueue
+                for owner,runtime in self.runtimes.items():runtime._service.dispatch=observe(owner,originals[owner])
+                self.call(A1,'wallet.auth.status')
+                futures[-1].result(timeout=5)
+                denied=self.transports[B1].exchange({'v':1,'op':'wallet.atm.quote.cancel','key':'real-policy-error','quote_id':'absent-quote'})
+                self.assertFalse(denied['ok'],denied);futures[-1].result(timeout=5)
+                self.call(A2,'wallet.auth.status');futures[-1].result(timeout=5)
+        finally:
+            self.server.process_request=original_process
+            for owner,runtime in self.runtimes.items():runtime._service.dispatch=originals[owner]
+        self.assertEqual([row[1] for row in observations],['alice','bob','alice'])
+        self.assertEqual([row[3]['device_ref'] for row in observations],[A1,B1,A2])
+        self.assertTrue(all(row[4] and not row[5] for row in observations))
+        self.assertEqual(len(failures),1);self.assertEqual(failures[0][0],'bob')
+        self.assertIn('quote belongs to another contract or device',failures[0][2])
+        self.assertEqual(len(finished),3)
+        self.assertTrue(all(row[0] is observations[0][0] for row in observations+finished))
+        for _,scopes,deadlines in finished:
+            self.assertEqual(scopes,[(None,False,0),(None,False,0)]);self.assertEqual(deadlines,{})
 
     def test_same_listener_distinct_owner_accounts_shared_alice_contract_terms_and_monthly_scope(self):
         a,_=self.register_activate(A1);a2,_=self.register_activate(A2);b,_=self.register_activate(B1,accept_terms=False)

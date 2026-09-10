@@ -28,7 +28,7 @@ from wallet_backend.server import ManagedWalletBackendServer
 from wallet_backend.client import HTTPSWalletTransport, RemoteWalletService, BackendUnavailable, READS
 from wallet_auth.fixture import SoftwareTestAuthenticator
 from game_exchange import protocol as gp
-from game_exchange.connections import GameGateway
+from game_exchange.connections import GameGateway, namespace, encoded
 from game_exchange.fixture import PublicGameAuthority, PublicReceiptSigner
 
 A1,A2,B1='fixture-gx00-alice-1','fixture-gx00-alice-2','fixture-gx00-bob-1'
@@ -249,6 +249,59 @@ class GameConnectionsTLS(unittest.TestCase):
         self.now+=1
         self.assertEqual(first,self.owner(A2,'reconcile',key='same-reconcile',intent_id=intent['binding']['intent_id']))
         self.assertEqual(self.counts('alice'),before)
+
+    def shared_key_consent(self,game,*,player='alice',begin_key='cross-game-key'):
+        begun=self.begin(A1,game,player=player,key=begin_key);self.assertTrue(begun['ok'],begun)
+        intent=begun['result']
+        credential=self.authenticators[A1].get_game_assertion(intent,'0000','ceremony-'+game+'-'+player)
+        request={'v':1,'op':'game.connection.approve','key':'cross-game-key','intent_id':intent['binding']['intent_id'],
+            'challenge_id':intent['challenge_id'],'binding_sha256':intent['binding_sha256'],'credential':credential}
+        approved=self.transports[A1].exchange(request);self.assertTrue(approved['ok'],approved)
+        return intent,approved['result']
+
+    def test_reconcile_same_key_different_games_restart_and_changed_same_game_rejected(self):
+        self.register_activate(A1)
+        results={}
+        for game in ('a','b'):
+            intent,consent=self.shared_key_consent(game)
+            request={'v':1,'op':'game.connection.reconcile','key':'shared-reconcile','intent_id':intent['binding']['intent_id']}
+            result=self.transports[A1].exchange(request)
+            self.assertEqual(result,{'ok':True,'result':consent});results[game]=(request,result)
+        changed,_=self.shared_key_consent('a',player='bob',begin_key='another-player')
+        denied=self.transports[A1].exchange(dict(results['a'][0],intent_id=changed['binding']['intent_id']))
+        self.assertFalse(denied['ok'],denied)
+        before=self.counts('alice');self.restart()
+        for request,result in results.values():self.assertEqual(self.transports[A1].exchange(request),result)
+        self.assertEqual(self.counts('alice'),before)
+
+    def test_legacy_reconcile_receipt_exact_replay_retained_and_other_game_namespace_migrates(self):
+        self.register_activate(A1)
+        intent,consent=self.shared_key_consent('a')
+        request={'v':1,'op':'game.connection.reconcile','key':'legacy-shared-key','intent_id':intent['binding']['intent_id']}
+        key=namespace('owner-reconcile',A1,request['op'],request['key'])
+        runtime=self.runtimes['alice']
+        # Literal previous-version namespace and receipt simulate a nonempty
+        # pre-upgrade DB; the consent itself came through the real TLS route.
+        with runtime.admit_write(runtime.descriptor.writer_epoch),runtime._service.wallet._transaction() as db:
+            db.execute('INSERT INTO wallet_game_requests VALUES (?,?,?)',(key,encoded(request),encoded(consent)))
+        self.restart()
+        runtime=self.runtimes['alice']
+        with runtime.admit_write(runtime.descriptor.writer_epoch),closing(runtime._service.wallet._connect()) as db:
+            original=tuple(db.execute('SELECT * FROM wallet_game_requests WHERE key=?',(key,)).fetchone())
+            schema=[tuple(row) for row in db.execute('SELECT type,name,tbl_name,sql FROM sqlite_master ORDER BY name')]
+        self.assertEqual(self.transports[A1].exchange(request),{'ok':True,'result':consent})
+        b,b_consent=self.shared_key_consent('b')
+        b_request=dict(request,intent_id=b['binding']['intent_id'])
+        self.assertEqual(self.transports[A1].exchange(b_request),{'ok':True,'result':b_consent})
+        changed,_=self.shared_key_consent('a',player='bob',begin_key='another-player')
+        self.assertFalse(self.transports[A1].exchange(dict(request,intent_id=changed['binding']['intent_id']))['ok'])
+        self.restart();runtime=self.runtimes['alice']
+        self.assertEqual(self.transports[A1].exchange(request),{'ok':True,'result':consent})
+        self.assertEqual(self.transports[A1].exchange(b_request),{'ok':True,'result':b_consent})
+        with runtime.admit_write(runtime.descriptor.writer_epoch),closing(runtime._service.wallet._connect()) as db:
+            self.assertEqual(tuple(db.execute('SELECT * FROM wallet_game_requests WHERE key=?',(key,)).fetchone()),original)
+            self.assertEqual([tuple(row) for row in db.execute('SELECT type,name,tbl_name,sql FROM sqlite_master ORDER BY name')],schema)
+            self.assertEqual(db.execute('SELECT count(*) FROM wallet_game_requests').fetchone()[0],2)
 
     def test_parallel_shared_worker_routes_preserve_two_owner_game_scopes(self):
         for device in (A1,B1):self.register_activate(device)
