@@ -12,7 +12,37 @@
     "simulation_only": true,
     "transport": "actual loopback TLS, pinned CA and hostname"
   },
-  "fresh_sdk_onboarding": "PENDING separate fresh-Linux report from installer agent; APIs/examples host tests are not substituted for this gate",
+  "fresh_sdk_onboarding": {
+    "earlier_defect": {
+      "cause": "successful stale Wallet cache return was incorrectly classified as live TLS",
+      "evidence": "../sdk-fresh-diagnostic-failure-20260910.json",
+      "source_commit": "9cfe6e7ecec9fcf2af742dc092982e6ce44a39e2",
+      "status": "FAIL_RETAINED"
+    },
+    "evidence_commit": "186ba3e",
+    "example_code_lines": {
+      "author.py": 38,
+      "owner.py": 110
+    },
+    "final_snapshot_sha256": "d9a131f98ee7308fdd49bf8d5a0eca22979ab499a2f4114513de08054fb5d7c6",
+    "independent_stopped": "docs/evidence/rls01/sdk-fresh-aee3d61/independent-stopped.json",
+    "independent_stopped_sha256": "fb7ead4d50f57c32b8321b82a7f47f1318c73ee0bcf6f35832a140aed2fc852b",
+    "machine_elapsed_seconds": {
+      "cause_identification_seconds": 0.23992959500000666,
+      "first_exchange_seconds": 7.1962837969999995,
+      "recovery_seconds": 2.2200168729999916,
+      "total_seconds": 11.700720224000001
+    },
+    "measurement_scope": "CLI harness time inside already provisioned new VM; not download/install time, external author study or human execution/diagnosis time",
+    "original_report": "docs/evidence/rls01/sdk-fresh-aee3d61/original-report.json",
+    "original_report_sha256": "705fcd9eb629cefc722ed545a0cebc554bd57e06734572e8ab3973b905fa2f18",
+    "setting_count_per_role": 2,
+    "source_commit": "aee3d6103a0d9a0439f49ad27a7195af56891589",
+    "source_files_verified_against_current_tree": true,
+    "status": "PASS_INTERNAL_SYNTHETIC",
+    "summary": "docs/evidence/rls01/sdk-fresh-aee3d61/summary.json",
+    "summary_sha256": "b9956f5d84209c1a5937b656bd6f93d71fbfdb5b2f83d9c35a2bdde69ac2f37e"
+  },
   "matrix": "docs/gx01-dx01-acceptance-20260910.md",
   "not_claimed": [
     "final OS image/UI acceptance",

@@ -36,7 +36,7 @@ sandbox preparation; the owner explicitly registers and credits test funds.
 | No duplicate writer or unrelated target adoption | Lifecycle process identity/locks, unfinished local restore gate, aggregate desktop PENDING gate, cumulative retired devices, changed source/target/archive/unknown DB rejection | Actual managed gates and negative tests |
 | Narrow old client and explicit SDK import | Existing GX00 `(operation,key)` client remains supported; `import_legacy_connection_client` preserves original request/receipt bytes and source snapshot, with explicit import and exact retry | No silent original-ID rewrite |
 | Runnable sample and diagnosis | `examples/game/owner.py`, separate `author.py`, pinned public JSON and README; actual 2-Game sample API test with restart/setup/approval exact retry | Internal TLS sample test |
-| Fresh environment and DX timing | `examples/game/acceptance.py` requires empty stopped sandbox, runs separate CLI processes and records all outputs/hashes, setting inputs and code lines; B runs it in a dedicated new Lima | Report required before claiming fresh DX complete |
+| Fresh environment and DX timing | `examples/game/acceptance.py` requires empty stopped sandbox, runs separate CLI processes and records all outputs/hashes, setting inputs and code lines; B runs it in a dedicated new Lima | PASS_INTERNAL_SYNTHETIC aee3d61; separate new Lima, initial0→2 exchanges, offline diagnose/retry and independently stopped5DB/71tables match |
 | Native UI and signed OS | Root uses actual Platform UID1002, Wallet1003 and dedicated authenticator1004; final image installation/source binding and D4/D5/D6 are A/B/root gates | Not substituted by host tests |
 
 ## Persistence and normal read clocks
@@ -79,3 +79,21 @@ The committed host report retains compact per-boundary process exits, financial
 and credential-counter values, request/receipt hashes and old/new writer epochs.
 Full subprocess outputs, SQLite snapshots and duplicate test logs remain outside
 Git at the absolute paths and SHA256 values recorded in that report.
+
+## Fresh SDK result
+
+The independent fresh Lima run of `aee3d61` completed the internal SDK gate.
+[The installer report](evidence/rls01/sdk-fresh-aee3d61/summary.json) records two
+configuration inputs per role, owner110 and author38 nonblank/noncomment lines,
+first exchange7.196284s, diagnosis0.239930s and original-request recovery2.220017s.
+These times start inside the already provisioned VM; they exclude environment
+download and installation. The complete CLI harness took11.700720s.
+
+Stopped observations independently matched the entire final5DB/71-table snapshot:
+AVAILABLE9794, purchases200, fees6, holds0, monthly bills0; GameA/B each have one
+10-unit grant at epoch1. Source-file bytes and the original/independent-report
+SHA256 values were checked before recording this result. The earlier `9cfe6e7`
+fresh run remains FAIL_RETAINED: its sample diagnosed a stale cached snapshot as
+verified TLS. `aee3d61` requires fresh backend connectivity and passes an actual
+TLS-stop regression. The corrected full trial used another new VM and client
+state. This result does not replace final OS-image, installer or D0–D6 acceptance.

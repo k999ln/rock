@@ -36,4 +36,10 @@ Linux実行場所: `/var/tmp/rock-release-game-20260910`。既存VM/台帳を触
 
 - GX01-CONTRACT / unknownで保留維持・独立Game / 実Game commit後の壊れた応答で決済済みか判別できない不便 / actual GameHandler/SQLite commit と TLS transport を再利用 / test-only disconnect・65537byte応答・truncated応答を確定Game commit後に挿入 / A hold維持、B継続、元terminal完全一致、追加grant0 / Linux actual TLS fault matrix5tests14.309s skip0 PASS (`work/gx01-real-tls-fault-matrix.log`)。先行stallではA応答保留中のB/ATM2秒内完了・A3秒期限を保持。
 
+- GX01-CONTRACT/DX01-SDK / 同じsourceで適用範囲を明示 / unit合格だけでは元commit停止の値を後で照合できない不便 / 既存実SIGKILL11件を変更せず再実行しテスト用一時fixtureの削除だけを停止 / child argv/exit/stdout/stderr・前後残高/counter・全closedSQLite typed snapshot・全fileSHAを外部evidenceへ保存 / 9cfe6e7 Game132tests135.155s、owner/C52tests5.303s、guest管理gate21tests5.661s、最終source87files byte一致 / `docs/evidence/gx01/host-contract-sdk-20260910.json`、実SIGKILL11件全PASSと境界別要約 `process-kill-retained-20260910.json`（全rawはGit外の固定SHA原本）。freshSDK導入・最終image/UI/D0-D6は未合格欄を維持。
+
 - DX01-SDK / 接続診断の鮮度を明示 / offline cached snapshot を成功表示した実fresh SDKの不便 / 既存Wallet backend.connected/stale契約を再利用 / host sampleの診断は両fieldの厳密booleanを要求 / 実TLS停止後のcached表示・元quote pending完全保持 / 修正後Linux sample2tests4.929s skip0 PASS (`work/gx01-sdk-diagnosis-fixed-fixture.log`)。元fresh harness INCOMPLETEと、新testの未登録fixture準備不足ERRORも原本保持。core/guest/image/deadlineは非変更。
+
+- GX01-CONTRACT / 証拠の再照合性と最小Git保存 / 再生成可能な大量rawをGitへ重複した不便 / 元の全raw・case/child/SQLite/fileハッシュを再利用 / Gitは11境界のexit・前後金額/counter・request/receipt SHA・旧epoch1/新epoch2・sourceRETIREDに要約 / 原739704bytes→要約37299bytes、全raw SHA e99c02c333ed91b0a2acd890a6407b5de13f331a42c1f8b2cc2167f97f50d2b5不変、重複7logもGit外へ保持 / 要約のraw digest・全11case digestと全7log SHAを再照合。実装/試験判定は非変更。
+
+- DX01-SDK / 導入と元要求復旧の実測 / 未検証sampleでは作者が試せない不便 / 同じowner/author SDKと既存sandboxを再利用 / Bの独立新Lima・空DB/clientでaee3d61完全CLI受入 / 設定2/role、owner110/author38lines、初回7.196284s/診断0.239930s/復旧2.220017s / B186ba3eの原report・独立停止reportSHAと現source4filesをDでも照合、5DB/71table一致・AVAILABLE9794/fee6/hold0/GameA-B各1grant10units PASS_INTERNAL_SYNTHETIC。先行9cfeFAIL保持、VM準備時間/人の時間/外部作者評価/最終OS合格へは換算しない。

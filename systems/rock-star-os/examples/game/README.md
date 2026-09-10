@@ -48,7 +48,9 @@ python3 examples/game/author.py --config examples/game/author-public.json --stat
 ```
 
 Each role has its own private journal. `diagnose` reports verified owner TLS or
-`OWNER_TLS_UNAVAILABLE` and the exact retained pending operations/keys. An
+`OWNER_TLS_UNAVAILABLE` and the exact retained pending operations/keys. A
+snapshot served from the offline cache remains unavailable for this diagnosis;
+verified contact requires `backend.connected=true` and `backend.stale=false`. An
 unreachable authority or unknown reply never releases a hold. Restore the
 configured service, then explicitly recover the original request:
 
