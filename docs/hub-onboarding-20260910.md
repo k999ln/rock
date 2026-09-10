@@ -33,3 +33,11 @@ sampleは既存PC比較と同じ150 bytes、入力SHA `bad73028…`。実recipe�
 自動操作の初回全体77.15秒、実job0.402秒、実行入力から結果描画2.88秒、同bootの履歴再表示1.72秒。再起動の画面準備46.00秒、そこから結果を探して開く操作6.21秒。OCR待ち・QEMU起動を含む機械時間であり、人の操作時間や中央値30%削減の証拠ではない。改善前の汎用sampleは入力が異なるのでpaired速度比較へ使わない。
 
 今回減らした不便は、有効な公開例を最初に別途用意する必要と、削除/更新後に実行時の名前・版を見失う表示。商品ロジック・価格・成果範囲は増やしていない。Game統合前の中間OSの証拠であり、最終同一imageの一周・PC接続断復旧は引き続き必要。
+
+## 同一入力の処理品質と、入力方法の制約
+
+RQ01/02/09/16 / 0→1・秘密を探す / 有用な初回入力を自分で作らなければならない / 既存native recipeとPC CLI / 業務ロジックを変更せず入力例を改善 / 同入力の完全な成果・code/URL保存 / 別版の実processと、改善後実OSの保存結果を照合。
+
+`scripts/compare-citation-quality.py` で旧`b8287bc`・新`1831738`の実recipe workerと既存PC CLIを、同じ公開150byte入力で一回ずつ起動した。native両版は151bytes/SHA `e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7` で完全一致し、改善後実OSの結果とも同じ。PCは155bytes/SHA `30dafde5d3c32d7c690276656f8d5ed0ff924b2c9b5617ede86820efc0b1a0f6` で既存結果と完全一致。PCにだけMarkdown区切り行があるため、nativeとPCのbyte一致は主張しない。コード内の出典例・元URL/labelの保持、本文出典の末尾整理という品質を両方で確認した。[事前planと実結果](evidence/hub-wallet/onboarding-20260910/quality/report.json)。準備時の期待値配置の誤りも保存し、実処理開始前に直した。
+
+旧nativeのキーボード経路はASCII US配列に限られ、日本語IME/clipboardがない。したがって旧OSへこの日本語入力をUIから与えた比較は**NOT_RUN**。新しいsampleボタンで日本語fixtureを実行できたことと、任意の日本語原稿を入力できることは区別する。上の比較は実source processの処理品質であり、旧OSの同入力UI一周を代用しない。旧generic sampleと新citation sampleの時間差、単発processの20/19/40msから、人の時間や速度改善は主張しない。この入力制約を導入guideと既知制限にも反映する。

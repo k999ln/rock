@@ -55,3 +55,15 @@ root HEAD `d849715`。Game core `42afc82`、native UI/Platform `0faf24b`/`81db8a
 - Sitesの既存IDは取得失敗、同accountのeditable一覧にも存在せず。別projectやduplicateを作らずローカル案内ページを継続。実OS中間画面を使い、ダウンロード開始とは表示しない。製品LICENSEは未記載で、利用条件をユーザーへ問い合わせ済み。返答を待つ間も実装・試験を継続する。
 
 次: Web全回帰と実ブラウザ導線を確認して作業branchへ保存。Hub旧版にも同じ公開入力を実操作で与えて品質・操作差を観測する。最終Game profileの必要なPC切断経路と録画を準備する。凍結後はD4→初期状態D6→Game/Wallet操作→D5/復旧の順に実施し、同一imageの証跡を揃える。
+
+
+## 07:28 UTC checkpoint（経過104分25秒）
+
+root HEAD `7ed6cf72d16f77c2cfb804914df1819b4282682d`。release branchをGitHubへ保存し、既存operational branchをbaseとするdraft PR [#3](https://github.com/k999ln/rock/pull/3)を作成。main・旧checkoutは変更していない。
+
+- 直前`bed90b8362af3e43205d4647305a75cbcf0e6b84`のWeb CI34448870223/native CI34448870330は両PASS。前版1831738は通常native1,480件PASS後、root専用PIN検証のsource guardでFAIL。実C再描画を元の全ROI/14+14frames/負例のまま独立確認し、source hashとinclude依存だけを更新。unmodified root検証器を再実行してPASS。guardを弱めず通常suiteにもsource整合試験を追加した。
+- Dのreference SDK/facade/初期ゼロsandboxを`4bfaf7c`、Aのbase/派生image全path照合を`7ed6cf7`へ統合。Aがこのsourceの中間Game imageをbuild開始。実image UI接続・交換・履歴はこれから。process停止/issuer epoch/current-copyはDが継続中で、GX01全体は未合格。
+- Bの中間fresh導入は実Hub→通常終了→再開→offVM保存→別名復元→所有VM削除までPASS。旧8899 viewer保持。最終Game配布候補の同一版受入とpackage再現性はこれから。D sandboxのみの別fresh VM lifecycleもPASSし、最終OS受入と区別している。
+- 引用整理の同入力source品質は旧/新native151bytes完全一致、既存PC155bytes完全一致。PCの区切り行差は保持。旧OSの日本語IME/clipboard未対応により、同じ日本語入力の旧UI比較はNOT_RUN。この制約をguideへ追記し実ブラウザで確認。人の操作時間・性能改善は主張しない。Web guide copy変更はtypecheck/既存lint:product PASS。誤って実行した全tree lintは未変更vendorにも及びFAIL、その結果を別記した。
+
+次: 中間Game OSの実UIを検証し、最終freeze前に不整合を修正。PC側停止/再接続は既存所有VM TLS runnerの独立UI試験を準備する。これはMR adapterのnative直結や物理USBの証拠へ拡大しない。D4→初期状態D6→Game/Wallet→D5/復旧という最終順序と08:45統合/09:13freeze目標を維持。製品ライセンスと既存Sitesアクセスの外部条件は未解決。
