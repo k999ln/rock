@@ -5,7 +5,7 @@
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
   "audit": "docs/os-readiness-audit-20260909.md",
-  "nextPrompt": "docs/prompts/os-operational-base-next.md",
+  "nextPrompt": "docs/prompts/rockstaros-release-20260910.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/os-hub-wallet-game-design.md",
   "strategy": {
@@ -116,5 +116,12 @@
     "runtimeAuthorized": false,
     "realValueEnabled": false,
     "scope": "Prediction markets and game asset trading are separate, optional proposals; not an approved OS requirement"
+  },
+  "releaseExecution": {
+    "startedAt": "2026-09-10T05:43:35Z",
+    "targetEndAt": "2026-09-10T13:43:35Z",
+    "plan": "docs/release-execution-20260910.md",
+    "instructionFileSha256": "63e5f3568a186e7fc733ff449c7ce95c653619dc0c62bddcd895baea7bd95f01",
+    "status": "in_progress"
   }
 }

@@ -1,3 +1,7 @@
+# 2026-09-10 実行再開入口
+
+現在の指示は[8時間の実行プロンプト](docs/prompts/rockstaros-release-20260910.md)、進行中の担当・実commit・process・次操作は[実行checkpoint](docs/release-execution-20260910.md)。T0=2026-09-10T05:43:35Z、終了目標13:43:35Z。以下は開始前までの履歴であり、途中runを現在も実行中とは決めつけない。
+
 # Rock star OS — 現在の実装CHECKPOINT
 
 作業branch: `codex/operational-base-20260909`。保存時点: 2026-09-10 UTC。[実装・検証・未達の統合記録](docs/implementation-checkpoint-20260909.md)を現在の入口とする。

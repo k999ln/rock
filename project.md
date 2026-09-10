@@ -1,5 +1,9 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-10: 8時間の実装・配布準備を開始
+
+ユーザー指定MDを[今回の実行入口](docs/prompts/rockstaros-release-20260910.md)へ保存し、[実行記録](docs/release-execution-20260910.md)に開始・担当・受入条件を固定。GitHubの4headはMDと一致。PR #2起点の専用worktreeで進める。RQ01〜RQ17、月888 cents、Rock ATM手数料0、既存データを維持。下記の「設計のみ」は前回の履歴。
+
 ## 現在の設計更新 — RockstarOS 1.0と8原則
 
 利用者の8原則を [製品・事業・開発設計](docs/rockstaros-1.0-strategy.md)へ具体化。RQ01〜RQ17と技術ベースを維持し、対象仮説・代表商品候補・縦断体験・system境界・pilot指標・CM導線・担当責任を整理した。機能追加、配布、外部連絡、実取引は行わない。既存task/phaseGateの完了数は増やさない。
@@ -172,7 +176,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-09 / RockstarOS 1.0の製品設計・導入可能版・代表商品の実用検証 / 完了 14/34件
+最終更新: 2026-09-10 / RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備 / 完了 14/34件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -229,7 +233,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 8e6d217のWeb/Android/native CI成功を確認済み。D6 run44の最終結果を取得し、未合格なら原因を解消して同じ基準で再試験する。並行してRLS01のfresh環境向けQEMU導入パッケージを作り、対応hostを固定して導入・終了・再開・復旧・削除を同一候補で検証する。8原則の設計に従い、既存引用整理を候補にHubから成果/費用確認までの実用検証を準備する。GX00分離→GX01→DX01は継続必須。BlackBerry実機と実資金は別ゲート。
+次の作業: 05:43:35–13:43:35 UTCの実作業。専用release branchでA=run44回収/OS build受入、B=fresh導入package、統括=Hub実用/統合/発表入口、D=GX00分離→GX01合成交換→DX01 SDKを並行。現状の未合格gateを維持し、同一配布候補の証拠でのみ更新。詳細はdocs/release-execution-20260910.md。
 <!-- project-status:end -->
 
 ## 次段階の設計

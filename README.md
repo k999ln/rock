@@ -27,7 +27,7 @@ Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/o
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-09 / RockstarOS 1.0の製品設計・導入可能版・代表商品の実用検証 / 完了 14/34件
+最終更新: 2026-09-10 / RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備 / 完了 14/34件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -84,7 +84,7 @@ Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/o
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 8e6d217のWeb/Android/native CI成功を確認済み。D6 run44の最終結果を取得し、未合格なら原因を解消して同じ基準で再試験する。並行してRLS01のfresh環境向けQEMU導入パッケージを作り、対応hostを固定して導入・終了・再開・復旧・削除を同一候補で検証する。8原則の設計に従い、既存引用整理を候補にHubから成果/費用確認までの実用検証を準備する。GX00分離→GX01→DX01は継続必須。BlackBerry実機と実資金は別ゲート。
+次の作業: 05:43:35–13:43:35 UTCの実作業。専用release branchでA=run44回収/OS build受入、B=fresh導入package、統括=Hub実用/統合/発表入口、D=GX00分離→GX01合成交換→DX01 SDKを並行。現状の未合格gateを維持し、同一配布候補の証拠でのみ更新。詳細はdocs/release-execution-20260910.md。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
