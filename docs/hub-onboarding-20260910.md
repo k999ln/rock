@@ -23,3 +23,13 @@ run44の[削除後の結果](evidence/os-base/run44/0621-result-after-delete.png
 `verify-business.py`の削除後の期待名は実行版へ合わせた。5boot、61jobs、3600秒、元期限、OCR確信度、資源上限は変更していない。旧凍結hosttoolsは変更せず保持する。
 
 次は統合した同一配布candidateで、sample→実処理→成果/Wallet→再起動後再表示を再測定する。native引用recipeとMr.版は出力形式が異なるという既存比較を保持し、成果品質を正規化して同一扱いしない。実PC切断/再接続、手動操作時間、継続利用、実機価値は、このhost修正だけでは未検証。
+
+## 中間OSの実操作（06:32〜06:34 UTC）
+
+中間 `d7927dd69ddc53e3b95d501c7292ea7f8c015123` の凍結imageで[一周と再起動](evidence/hub-wallet/onboarding-20260910/after/summary.json)を完走した。新規deviceから引用整理を選び、版・権限確認、導入、sample、明示実行、履歴の再表示、[費用の未接続表示](evidence/hub-wallet/onboarding-20260910/after/result-and-cost.png)、[Wallet](evidence/hub-wallet/onboarding-20260910/after/wallet.png)、通常終了、同device再起動後の再表示・通常終了を行った。
+
+sampleは既存PC比較と同じ150 bytes、入力SHA `bad73028…`。実recipeの151-byte結果SHA `e5e655f…`を停止後のSQLiteから確認し、再起動後も同じjob・結果・全Hub行が不変。Walletの残高・保留・売上・請求はすべて0のまま、二つの通常終了receiptを保持した。PCの155-byte結果は出典の前にMarkdownの横線`---`を付けるためbyte一致ではない。入力、本文、コード保護、出典URL/名称は比較できるが、結果を正規化して「完全一致」と表示しない。
+
+自動操作の初回全体77.15秒、実job0.402秒、実行入力から結果描画2.88秒、同bootの履歴再表示1.72秒。再起動の画面準備46.00秒、そこから結果を探して開く操作6.21秒。OCR待ち・QEMU起動を含む機械時間であり、人の操作時間や中央値30%削減の証拠ではない。改善前の汎用sampleは入力が異なるのでpaired速度比較へ使わない。
+
+今回減らした不便は、有効な公開例を最初に別途用意する必要と、削除/更新後に実行時の名前・版を見失う表示。商品ロジック・価格・成果範囲は増やしていない。Game統合前の中間OSの証拠であり、最終同一imageの一周・PC接続断復旧は引き続き必要。
