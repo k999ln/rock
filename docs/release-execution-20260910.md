@@ -194,3 +194,16 @@ B独立reviewは元5commandのAST一致、凍結retentionのimport/schema7 profi
 - D6 run34465689434のouter observerは10:23:13開始から継続。11:23のouter60分は前半boot/lifecycleも含むためinner60分合格へ換算しない。Dが原rawの再取得/監査まで担当。
 - 元arm64全回帰の10TLS deadline懸念に対して、C全UI/録画終了後のローカルQEMU停止条件で、exact9ab/元期限/1631/14を一度だけ再実行する計画をAが準備。Cと並行実行せず、PASSでも元FAILと原因未確定を保持しfreezeのCI bindingを書き換えない。
 - 受入雛形に沿った同候補reportをwork/final-handoff/os-acceptance-9abf78a-draft.mdへ準備。最終D6/C未集計の原稿でありoutputsへ完成品として出していない。WebはB独立レビューを反映しtypecheck/lint PASS、finalmedia待ち。終了予定13:43:35 UTC。
+
+
+## 11:44 UTC checkpoint（経過6:00:25）
+
+RQ07–17 / 明確な楽観主義・秘密を探す / 長時間の仕事・保存と障害原因を確認できない不便 / 凍結D6と既存read-only image inventory / host検査のUID1003 export問題だけ修正 / 元閾値・同一image・全保持 / raw再取得監査と新3boot。
+
+- 配布native/image/9fileは9abf78a不変。root3b159d4まで診断・証拠を統合（未push）。D6 run34465689434は11:36:32時点SUCCESS、canonical observerは10:23:13–11:35:59、private raw upload11:36:09完了。inner3646.616716秒/61soak/67totaljobs/76操作/5guest-only正常終了。peak902448KiB/growth62480KiB/avg0.359541cores/samplegap2.147293秒、1820samples。元閾値変更0。
+- D6 private asset554887744の実再取得89,575,054B SHAaa7c64f1e9c58860d27b04399911c354d62e94a843616207da9c0478d7bb4d4e。D独立auditで19empty・5DB71tables/8JSON完全一致・SDK clock0・非Hub全role/slot保持、raw資源再計算。rootも全916regularfiles/378,262,134Bのarchive↔回収原本と6根拠hash、同9abの3既存純粋検査helper、compact値を再照合。証拠原608d164→root3b159d4。全D0–D5/金融UI/一般公開へ拡張しない。
+- D1/D3元runはboot/system/isolation/Store/Remote/negativeの10bootを完了後、Hub fault最初の起動前read-only exportでFAIL。debugfs rdumpがsingle UID usernamespace内でWallet秘密設定のUID/GID1003へchownできない原因。原wholeとpreflightの3FAILを保持。
+- 診断専用7e9dcc9→root04d24a3は、凍結profileでも使うimage_inventoryのread-only inode取得を再利用し、全7後続embedded読取をinventory size/SHAへ照合、UID/GID/許可/symlinkも比較。Linux24検査とactual rootfs1945paths preflight PASS、全1364source/3images/productionと非搭載を確認。新plan2ca063992194547ed84b3751e2f6062bac148de1f01a7ca46e0b1207318c1563で3bootだけ開始、A session29198。期限4s/240s/3bootとguest fixture変更0。元10＋新3が全て閉じるまでD3完了としない。
+- B legal原934MB/298memberの提供素材を読み取り棚卸ししroot52111eへ統合。Rock3packageは既存LICENSE_FILES未定義/REDISTRIBUTE=NO、製品license未選択。Buildroot元source/libtool補足を同封済み、原warning4は保持。資料一覧は提供許諾の代替ではなくNOT_CLEAREDを維持。
+
+次: A新3bootの停止・source/empty authority/C未作成を受領したらroot C v3を直ちに実行。C全UI＋encode後にA元arm64全native1回再検証。finalmedia/受入報告/案内/PR/CIを統合。終了予定13:43:35 UTC。

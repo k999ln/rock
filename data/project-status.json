@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
   "milestone": "RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備",
-  "nextAction": "11:25 UTC: 同9abの配布実取得・新規導入・非zero全構成restore・freshSDK完了。D4は原complete10＋診断crash4＋元AB8/fault13/auth3/ABI3の41coverage PASS、原wholeFAIL保持。D2元16操作5jobs/2boot PASS_SCOPED、D1/D3最終gate中。A全停止/fresh config引渡し後C v3でGame→監査→金融→引用遠隔→実90秒録画。D6独立CI34465689434継続、inner/raw未判定。C完了後にローカルQEMU停止下で元arm64回帰FAILの同9ab再検証を1回。公開はlicense/Sitesと最終受入待ち。",
+  "nextAction": "11:44 UTC: 同9abの独立CI D6が60分46.617秒/61soak jobs/67total/5正常終了でPASS_SCOPED。原raw916filesと全typed保持を再取得照合。D4 41coverage、D2元16操作5jobs完了。D1/D3は原complete10を保持し、host-only inode読取修正後の最後3bootをA session29198で実行中。停止済みfresh C引渡し後v3でGame→監査→金融→引用遠隔→90秒実収録。録画encode後に元arm64全回帰を同9ab/QEMU停止条件で1回再検証。配布/新規導入/非zero復旧/SDKは完了、公開はlicense/Sites/最終画面受入待ち。",
   "tasks": [
     {
       "id": "R01",
@@ -284,7 +284,10 @@
         "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
         "docs/evidence/os-base/registry-negative-b8287bc.json",
         "docs/os-acceptance-b8287bc-20260909.md",
-        "systems/rock-star-os/os/desktop/LAUNCHER-V2.md"
+        "systems/rock-star-os/os/desktop/LAUNCHER-V2.md",
+        "docs/evidence/rls01/final-d6-ci-20260910.json",
+        "docs/evidence/rls01/final-d6-root-audit-20260910.json",
+        "docs/os-local-final-20260910.md"
       ]
     },
     {
