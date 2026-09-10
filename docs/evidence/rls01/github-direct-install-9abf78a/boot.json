@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "boot_count": 1,
+  "logs": {
+    "preview/sessions/9038323b74034080a082a1eeb4c60480/boot.log": {
+      "sha256": "93a4ab07c4536b8ef6d70f7b39a4361d92f954e81ed87d68e763b8c065c3f802",
+      "bytes": 15809,
+      "native_ui_health_ready": true,
+      "ab_health_confirmed": true,
+      "normal_power_down": true
+    }
+  }
+}

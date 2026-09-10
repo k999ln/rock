@@ -1,0 +1,80 @@
+{
+  "schema": "rock-github-direct-install-smoke-plan/1",
+  "status": "FROZEN_BEFORE_NEW_VM_CREATION",
+  "frozen_utc": "2026-09-10T10:38:41.633837+00:00",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "root": "/Users/kaiya/Library/RockstarOS/rls01-github-smoke1",
+  "acquisition": "Actual authenticated private GitHub draft386171909 nine files; direct downloaded bootstrap install, original independent manifest/key pins",
+  "files": {
+    "preview.py": {
+      "bytes": 55048,
+      "sha256": "6c18029c00654aaa17a88e644ba88ccb819067c35c20a59ce6eeb33c1c3a87ce"
+    },
+    "preview-release-notes.md": {
+      "bytes": 6985,
+      "sha256": "7fdc6a86f3f917de650b913f265606261e2074c0c216e0bcc09bc5f8cd3267ba"
+    },
+    "release-key.der": {
+      "bytes": 44,
+      "sha256": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9"
+    },
+    "preview-legal-notice.md": {
+      "bytes": 2863,
+      "sha256": "11401fa9e337b282a65f552e9354c41591ebaa0b2a6c2c78c75bdf2e207387c0"
+    },
+    "release-manifest.json": {
+      "bytes": 104790,
+      "sha256": "e06fb8d9df292103e63f6cd56df95b189202ae0b13b6e1c578cb6eef0ffc5971"
+    },
+    "preview-installation-ja.md": {
+      "bytes": 13520,
+      "sha256": "d9b526ef55f189133c300084b43b0339c5c94f5fa584f5ff5309453a23e33f82"
+    },
+    "packaging-result.json": {
+      "bytes": 511,
+      "sha256": "2a1bdf89136a05153e931644f6b33ac534971dda45d7093251e7caf9d3a1932c"
+    },
+    "rockstaros-1.0.0-preview.20260910-macos-arm64.tar.gz": {
+      "bytes": 1000928255,
+      "sha256": "121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2"
+    },
+    "SHA256SUMS": {
+      "bytes": 728,
+      "sha256": "7a5f03bd9d4c6e68dc6781c1deaaaaaef7faaae174d0c04d6f2c4a9cba761355"
+    }
+  },
+  "parent_acquisition_sha256": "5aae991ab7b2b50d249adf2a2a9843a0b3cd44dba46074e38b956246754c1f14",
+  "parent_verification_sha256": "3900d861d954b7ebe1bbde64419190f8cc67082b02d6b37a1ff7ef1b2341f2d9",
+  "public_download": false,
+  "scope": [
+    "new empty dedicated Lima root and default16GiB template",
+    "exact final signed package install",
+    "stopped authority empty snapshot before first boot",
+    "native Hub citations1.0.0 explicit install/local permission/sample150bytes/execute exactly once",
+    "native151byteoutput/history1record",
+    "native normal poweroff plus downloaded bootstrap stop",
+    "frozen observer exact full authoritative typed snapshot unchanged and empty",
+    "stopped userdata sample job/status/output verification; boot UI/ABhealth/nativepowerdown",
+    "private output/boot records retained; ownedVMnormalremove; old8899 preserved"
+  ],
+  "not_repeated": [
+    "financialregistration/consent/credit",
+    "Gamepurchases",
+    "wholeSIGKILLrestore",
+    "SDKfresh"
+  ],
+  "existing_passes_preserved": [
+    "d9c1d45 whole lifecycle",
+    "9bc2357 SDKfresh"
+  ],
+  "product_mutations": false,
+  "default_capacity_unchanged": true,
+  "no_policy_or_deadline_relaxation": true,
+  "observers": {
+    "work/github-smoke1-citation-readback.py": "0e801071d75be22b07d76f4ae92865482a58520a0750e8618bb1ffa2d294bf0b",
+    "work/github-smoke1-empty-authority.py": "4d9e6b46de4c1fb1be9aa9192e2402504a07469af6e6a1f1f469cdc1917961fd",
+    "systems/rock-star-os/os/desktop/game_authority_observer.py": "451532903b86be2639a79c05d9853bca414a4faabe6eeb2fe4f0a551073015b7",
+    "systems/rock-star-os/os/desktop/verify-backup.py": "53a1eda3dc3faf2e538b4fa0cbcbae25c070a4cae531d6baea10f891da0f63d2"
+  },
+  "capacity_pre_host_free_bytes": 33493823488
+}

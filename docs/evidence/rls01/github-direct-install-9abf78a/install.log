@@ -1,0 +1,12 @@
+RockstarOS 1.0 Developer Preview
+署名・hash を検証しました。専用の新規 Linux VM を作成しています。
+{
+  "status": "INSTALLED",
+  "directory": "/Users/kaiya/Library/RockstarOS/rls01-github-smoke1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "acceptance": "installation preparation only; OS/UI/restore acceptance is separate",
+  "next": "python3 preview.py start --directory /Users/kaiya/Library/RockstarOS/rls01-github-smoke1"
+}
+real 30.64
+user 1.91
+sys 1.48

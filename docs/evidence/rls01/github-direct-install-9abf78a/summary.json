@@ -1,0 +1,108 @@
+{
+  "schema": "rock-github-direct-install-smoke/1",
+  "status": "PASS_DIRECT_ACQUISITION_TO_FRESH_OS_SAMPLE",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "finished_utc": "2026-09-10T10:45:38.027933+00:00",
+  "requirements": [
+    "RQ-12",
+    "RQ-16",
+    "RQ-17",
+    "PREVIEW-INSTALL acquisition entry"
+  ],
+  "release_manifest_sha256": "e06fb8d9df292103e63f6cd56df95b189202ae0b13b6e1c578cb6eef0ffc5971",
+  "archive_sha256": "121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2",
+  "acquisition": "direct authenticated private GitHub draft nine files, independently pinned signature verified by downloaded bootstrap",
+  "public_download": false,
+  "host": {
+    "architecture": "arm64",
+    "lima": "limactl version 2.2.0",
+    "openssl": "OpenSSL 3.6.3 9 Jun 2026 (Library: OpenSSL 3.6.3 9 Jun 2026)",
+    "os": "15.7.4",
+    "python": "3.14.7"
+  },
+  "guest": {
+    "image_preflight": "PASS",
+    "linux": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "package_versions": "e2fsprogs\t1.47.2-3+b11\nopenssl\t3.5.7-1~deb13u2\npython3\t3.13.5-1\nqemu-system-arm\t1:10.0.11+ds-0+deb13u1\nqemu-utils\t1:10.0.11+ds-0+deb13u1\n",
+    "python": "3.13.5",
+    "qemu": "QEMU emulator version 10.0.11 (Debian 1:10.0.11+ds-0+deb13u1)"
+  },
+  "preparation_cli_seconds": 30.64,
+  "default_vm_disk_gib": 16,
+  "installed_files_unchanged": 706,
+  "native_boot": {
+    "status": "PASS",
+    "boot_count": 1,
+    "logs": {
+      "preview/sessions/9038323b74034080a082a1eeb4c60480/boot.log": {
+        "sha256": "93a4ab07c4536b8ef6d70f7b39a4361d92f954e81ed87d68e763b8c065c3f802",
+        "bytes": 15809,
+        "native_ui_health_ready": true,
+        "ab_health_confirmed": true,
+        "normal_power_down": true
+      }
+    }
+  },
+  "citation": {
+    "schema": "rock-final-citation-result-readback/1",
+    "status": "PASS",
+    "job_count": 1,
+    "tool_id": "org.rockstar.citation-organizer",
+    "version": "1.0.0",
+    "job_status": "succeeded",
+    "input_bytes": 150,
+    "output_bytes": 151,
+    "output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+    "public_sample_output": "紹介文です。\n\n```text\n（出典: [コード内の例](https://example.test/code)）\n```\n\n## 出典\n\n- [店舗情報](https://example.test/store)\n",
+    "stopped_data_before_after_sha256": "b022956b195ab67c1fdf53a14d7767ca51e765e1bf67a4d40bd4110bbb01bf59",
+    "installed_export_observer_sha256": "53a1eda3dc3faf2e538b4fa0cbcbae25c070a4cae531d6baea10f891da0f63d2"
+  },
+  "authority": {
+    "schema": "rock-github-smoke-authority-unchanged/1",
+    "status": "PASS",
+    "policy": "full exact typed authority unchanged; no read-clock exclusions",
+    "authority_snapshot_sha256": "3805540ddf0727f946986fbf7eb8b85b6d53b6fdecf5a6a6328ae2662252cda0",
+    "empty_registration_consent_credential_money_tables": true,
+    "game_grants_and_asset_postings_empty": true,
+    "database_count": 5,
+    "table_count": 71
+  },
+  "removal": {
+    "status": "PASS",
+    "installation_state": "REMOVED",
+    "owned_vm_directory_absent": true,
+    "force_used": false,
+    "private_original_bytes_still_match": true,
+    "viewer_tab_closed": "48015107",
+    "listener_pids": {
+      "8899": [
+        "77657"
+      ],
+      "8900": [],
+      "5910": []
+    },
+    "host_free_bytes": 30021398528
+  },
+  "kept_prior_evidence": [
+    "d9c1d45 full nonzero restore lifecycle",
+    "9bc2357 final SDKfresh"
+  ],
+  "full_release_and_publication": "Separate OS gates and licensing status remain outside this bounded entry smoke; manifest remains candidate/NOT_CLEARED",
+  "evidence_sha256": {
+    "authority-after.json": "c32485898dc1bfe68d2f0beaf3a41b3773fe81ed6151eb9caf27d60e9f43bd71",
+    "authority-before.json": "c32485898dc1bfe68d2f0beaf3a41b3773fe81ed6151eb9caf27d60e9f43bd71",
+    "authority-comparison.json": "744e7ab7916d6c8fa4c26a28e596262d21965c656d6d83c08328d8ea0ae62ddc",
+    "boot.json": "9751352d0f6c32744616533cd984f43a2bfeca35a6356d386322c3ab0c058ea9",
+    "citation-observer.py": "0e801071d75be22b07d76f4ae92865482a58520a0750e8618bb1ffa2d294bf0b",
+    "citation-readback.json": "031299ffcb58b1a987cfc7e4df1709f23ec12a7971d8d53a03dc6b17f993a24f",
+    "empty-authority-observer.py": "4d9e6b46de4c1fb1be9aa9192e2402504a07469af6e6a1f1f469cdc1917961fd",
+    "install.log": "5b40e4cd1a96ed8e3702ebaa5a2f6b288d810c5f9b01ebd9c1b29853dc4ce41f",
+    "plan.json": "9c6d6ec5bc0ed45708434a992fb4d57d1c3f4daed2557798402822826b6ffb1a",
+    "preserve-probe.py": "ba7d794d8709a4c4c1a16013d21fd1a56f0afd96bc3516b7156c4b8923e6ef2d",
+    "preserved-originals.json": "b17f29c6a49ebc7c5f9cdd837638a728c0ae7996932db76e68cd8a8e6e5edf14",
+    "removal.json": "f6028d2ed1d5b1668598c70c8b94a6beb7386718745925c6ce60a5c45af2bed3",
+    "remove.log": "03adf46b4c3fa3a02d9d020aa398f10997e99d9fe8b6c3c4a8db65d36120fb75",
+    "stop.log": "6ccdf5540664c9a63453990fa092a0b10eb6327f808b69ab77037c950b8ceff5",
+    "ui-observation.json": "a3b29502cb4ea2600100ac0243e8507466535b2fe1dd29ed9b20a31d895cf22e"
+  }
+}

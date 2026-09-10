@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "installation_state": "REMOVED",
+  "owned_vm_directory_absent": true,
+  "force_used": false,
+  "private_original_bytes_still_match": true,
+  "viewer_tab_closed": "48015107",
+  "listener_pids": {
+    "8899": [
+      "77657"
+    ],
+    "8900": [],
+    "5910": []
+  },
+  "host_free_bytes": 30021398528
+}

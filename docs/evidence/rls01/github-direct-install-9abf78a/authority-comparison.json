@@ -1,0 +1,10 @@
+{
+  "schema": "rock-github-smoke-authority-unchanged/1",
+  "status": "PASS",
+  "policy": "full exact typed authority unchanged; no read-clock exclusions",
+  "authority_snapshot_sha256": "3805540ddf0727f946986fbf7eb8b85b6d53b6fdecf5a6a6328ae2662252cda0",
+  "empty_registration_consent_credential_money_tables": true,
+  "game_grants_and_asset_postings_empty": true,
+  "database_count": 5,
+  "table_count": 71
+}
