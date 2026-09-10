@@ -67,3 +67,16 @@ root HEAD `7ed6cf72d16f77c2cfb804914df1819b4282682d`。release branchをGitHub�
 - 引用整理の同入力source品質は旧/新native151bytes完全一致、既存PC155bytes完全一致。PCの区切り行差は保持。旧OSの日本語IME/clipboard未対応により、同じ日本語入力の旧UI比較はNOT_RUN。この制約をguideへ追記し実ブラウザで確認。人の操作時間・性能改善は主張しない。Web guide copy変更はtypecheck/既存lint:product PASS。誤って実行した全tree lintは未変更vendorにも及びFAIL、その結果を別記した。
 
 次: 中間Game OSの実UIを検証し、最終freeze前に不整合を修正。PC側停止/再接続は既存所有VM TLS runnerの独立UI試験を準備する。これはMR adapterのnative直結や物理USBの証拠へ拡大しない。D4→初期状態D6→Game/Wallet→D5/復旧という最終順序と08:45統合/09:13freeze目標を維持。製品ライセンスと既存Sitesアクセスの外部条件は未解決。
+
+
+## 07:53 UTC checkpoint（経過129分25秒）
+
+root HEAD `996db1e`。draft PR #3の作業branchに `78c90bf` まで保存済み、後続統合分は次のpush対象。9cbd97fの同一SHA Web34449579524/native34449579554はPASS。mainに変更なし。
+
+- Gameの実OS `7ed6cf7` で、quote作成後の購入PIN認証が残存117秒を拒否する実不具合を観測。ATM用固定120秒規則をGame交換へ適用した原因を `4e31554` で修正。元失敗の実画面・通常停止・Wallet10000/交換0/保留0の独立監査を保存し、帳簿を初期化していない。
+- 新中間image `4e31554` はnative1516/14checksと実D3 game-isolation47checks/SDK45checksに合格。金融fixtureの全面合格と区別。rootはUI登録/認証/条件確認/明示credit→A/B各10unit交換→Hub引用整理151bytes→Wallet→正常停止まで観測した。exec19599 `/var/tmp/rock-game-ui-4e31554-03` が再起動保持を実行中。継続前のobserver失敗は `‹` OCR selectorとGameにWallet専用「同期済み」を期待した誤り。閾値変更や購入再実行をせず、A完了状態から継続した。
+- D current-copy/SIGKILL `4623841`、全Game/OS aggregate backup `8bd2b26`、追加端末接続復元 `a235bd1`、実TLS CA/host/route/timeout pinと遅いGame分離 `996db1e` を統合。D対象39件/11実SIGKILL境界、SDK8件、遅延分離2件が実Linux/TLSでPASS。新candidate全回帰はこれから。
+- Aは `8bd2b26` の固定publicsample配置imageをBへ引渡し済み。freeze4180e9e8e9d8564b1390ee01cc08052ab91f81791323e16c30b2b54d586d6af4、Aはdefaultauthorityを作成/起動していない。Bがfresh独立VMでGameを含む非zero交換→offVM保存→current-copy中断→同intent復旧→旧端末拒否を実受入する。
+- rootのPC切断復帰observerは準備済み未実行。既存署名remote-textと所有TLS runnerの限定経路で、MR native接続や物理USBとは区別。実OSデモはfinalimage後に60〜120秒の実frame収録を予定、動画の存在をまだ主張しない。
+
+次: root4eの再起動保持・全両台帳照合を閉じ、PC切断/再接続と金融月888/ATM取消を実OS確認。DのSDK導入/診断測定、Bのfresh受入を統合。最終D4→初期ゼロD6→Game/Wallet/PC→D5順を維持し09:13までにfreezeする。製品LICENSE未回答、既存Sites project取得不能は継続。

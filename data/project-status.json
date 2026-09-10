@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
   "milestone": "RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備",
-  "nextAction": "06:58 UTC: GX01 coreとnative UI/Platformを統合、Linux1464試験/14checks/skip0 PASS（中間sourceのみ）。Hub改善後の実OS再開で同結果を確認。fresh installerは実導入→再開→offVM backup→新名復元まで確認中。最終Game profile/SDK/停止・epoch復旧を実装中、08:45統合・09:13凍結目標。最終同候補D0〜D6/Game UI/配布取得は未合格。LICENSE条件と既存Sitesアクセスは未解決。詳細はdocs/release-execution-20260910.md。",
+  "nextAction": "07:53 UTC: 996db1eまでGame current-copy/SIGKILL、2作者/2game/2owner/追加端末SDK、遅延peer分離を統合。中間4e実OSでGame A/B交換・Hub引用結果・正常終了まで確認、再起動保持/台帳監査は実行中。Bは8bd配布archiveからfresh非zero Game/OS復旧を受入中。最終同候補D0〜D6、配布取得、デモは未合格。08:45統合/09:13凍結目標。LICENSEと既存Sitesアクセスは未解決。docs/release-execution-20260910.md参照。",
   "tasks": [
     {
       "id": "R01",
@@ -324,7 +324,10 @@
       ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
-        "docs/gx01-contract-implementation-plan.md"
+        "docs/gx01-contract-implementation-plan.md",
+        "docs/gx01-native-ui-20260910.md",
+        "docs/gx01-reference-sdk-sandbox-20260910.md",
+        "docs/game-wallet-release-checkpoint-20260910.md"
       ]
     },
     {
@@ -346,7 +349,8 @@
         "GX00"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md"
+        "docs/prompts/os-operational-base-next.md",
+        "docs/gx01-reference-sdk-sandbox-20260910.md"
       ]
     },
     {
@@ -550,7 +554,10 @@
         "GX00-ISOLATION"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md"
+        "docs/prompts/os-operational-base-next.md",
+        "docs/gx01-native-ui-20260910.md",
+        "docs/gx01-reference-sdk-sandbox-20260910.md",
+        "docs/game-wallet-release-checkpoint-20260910.md"
       ]
     },
     {
@@ -563,7 +570,10 @@
         "V01-BOOT"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md"
+        "docs/prompts/os-operational-base-next.md",
+        "docs/gx01-native-ui-20260910.md",
+        "docs/gx01-reference-sdk-sandbox-20260910.md",
+        "docs/game-wallet-release-checkpoint-20260910.md"
       ]
     },
     {
@@ -575,7 +585,8 @@
         "GX01-CONTRACT"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md"
+        "docs/prompts/os-operational-base-next.md",
+        "docs/gx01-reference-sdk-sandbox-20260910.md"
       ]
     },
     {
