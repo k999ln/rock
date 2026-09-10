@@ -742,6 +742,9 @@ def unchanged_non_hub(before, after, profile=None):
         if role == 'wallet_cache' and profile is not None and profile.get('cache_read_sync'):
             import wallet_cache_retention
             wallet_cache_retention.compare(before[role], after[role])
+        elif role.startswith('game_') and profile is not None and profile.get('game_read_sync'):
+            import game_cache_retention
+            game_cache_retention.compare(before[role], after[role], role)
         else:
             require(before[role] == after[role], 'unexpected business mutation: ' + role)
     for role, allowed in (('hub', {'hub_jobs', 'hub_requests', 'hub_audit', 'hub_installed', 'hub_packages'}),

@@ -103,7 +103,10 @@ def retention_profile(config):
                    'forbidden_databases': [SOURCES['wallet'][0], SOURCES['membership'][0]]}
         if version == 'rock-desktop-device/7':
             import wallet_cache_retention
-            profile.update(name='development-game-authority/1', cache_read_sync=wallet_cache_retention.POLICY)
+            import game_cache_retention
+            profile.update(name='development-game-authority/1', cache_read_sync=wallet_cache_retention.POLICY,
+                           game_read_sync=game_cache_retention.POLICY,
+                           game_read_sync_observer_sha256=guest.digest(Path(game_cache_retention.__file__)))
             sources['game_exchange_cache'] = ('/wallet/game-client/exchange-journal/game.sqlite3',
                 ('identity', 'requests', 'quotes', 'intents', 'player_proofs', 'migrations'))
             for game in ('a', 'b'):
@@ -212,6 +215,12 @@ def business_snapshot(data, profile=None):
                 result[role]={'integrity':'ok','foreign_keys':'ok','tables':observed,'internal_sequences':internal,
                               'schema_sha256':hashed(schema),
                               'additional_tables':sorted(actual-set(tables)-{'sqlite_sequence'})}
+                if role.startswith('game_') and profile is not None and profile.get('game_read_sync'):
+                    import game_cache_retention
+                    guest.require(profile['game_read_sync']==game_cache_retention.POLICY and
+                                  profile['game_read_sync_observer_sha256']==guest.digest(Path(game_cache_retention.__file__)),
+                                  'fixed Game read-clock policy or observer changed')
+                    result[role]['game_read_sync']=game_cache_retention.observe(db,role)
                 if role=='wallet': result[role]['financial_summary']=wallet_totals(db)
                 if role=='membership':
                     result[role]['financial_summary']={
@@ -276,6 +285,9 @@ def compare_business(before,after,profile=None):
         if role=='wallet_cache' and profile is not None and profile.get('cache_read_sync'):
             import wallet_cache_retention
             wallet_cache_retention.compare(before[role],after[role])
+        elif role.startswith('game_') and profile is not None and profile.get('game_read_sync'):
+            import game_cache_retention
+            game_cache_retention.compare(before[role],after[role],role)
         else:
             guest.require(before[role]==after[role],'restored business data changed: '+role)
     for name in ('schema_sha256','internal_sequences'):
