@@ -47,7 +47,8 @@ class GameGrantAuthority:
         """Protected admin bootstrap; no wire endpoint can register an issuer."""
         from wallet_backend.contract_runtime import ContractRuntime
         p.require(type(runtime) is ContractRuntime,'real C-managed runtime required')
-        with runtime.admit_write(runtime.descriptor.writer_epoch):
+        p.require(runtime._state in ('READY','AWAITING_GAME_BIND'),'issuer registration requires a stopped service bootstrap')
+        with runtime._writer.admit_write(runtime.descriptor.writer_epoch):
             runtime._ensure_account_binding();d=runtime.descriptor
             keys=[PublicExchangeSigner(d.wallet_authority_id,k).record for k in ('apply','status','reject')]
             key_json=encoded({'keys':[{'issuer':k.issuer,'purpose':k.purpose,'key_id':k.key_id,'revision':k.revision,'public_key':k.public_key.hex()} for k in keys]})

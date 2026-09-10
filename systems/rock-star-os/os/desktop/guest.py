@@ -17,7 +17,7 @@ import uuid
 
 BASE = Path('/var/tmp/rock-star-desktop')
 PASSWORD_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'
-STAGE0_SCHEMAS = ('rock-desktop-device/5', 'rock-desktop-device/6')
+STAGE0_SCHEMAS = ('rock-desktop-device/5', 'rock-desktop-device/6', 'rock-desktop-device/7')
 
 
 def require(condition, message):
@@ -83,7 +83,10 @@ def validate_config(config):
     if config.get('schema') in ('rock-desktop-device/2', 'rock-desktop-device/3', 'rock-desktop-device/4', *STAGE0_SCHEMAS):
         fields.add('network')
         modes = ('none', 'closed-services') if config['schema'] in ('rock-desktop-device/4', 'rock-desktop-device/5') else ('none', 'development-services')
+        if config['schema']=='rock-desktop-device/7':modes=('game-authority',)
         require(config.get('network') in modes,'unsupported virtual network mode')
+        if config['schema']=='rock-desktop-device/7':
+            fields.add('game')
         if config['schema'] == 'rock-desktop-device/6':
             require(config['network'] == 'none', 'local A/B profile requires no network')
         if config['schema'] in ('rock-desktop-device/3', 'rock-desktop-device/4', *STAGE0_SCHEMAS):
@@ -121,6 +124,9 @@ def validate_config(config):
     elif config.get('schema') == 'rock-desktop-device/6':
         from stage0 import verified_local_profile
         verified_local_profile(config)
+    elif config.get('schema')=='rock-desktop-device/7':
+        from stage0 import verified_game_profile
+        verified_game_profile(config)
 
 
 def command(config, state, session):
@@ -152,7 +158,7 @@ def command(config, state, session):
     if config.get('viewer') == 'browser':
         args[args.index('-vnc')+1] += ',websocket=unix:' + str(state/'websocket.sock') + ',password-secret=rock-vnc'
         args += ['-object', 'secret,id=rock-vnc,file=' + str(session/'vnc-password')]
-    if config.get('network') in ('development-services', 'closed-services'):
+    if config.get('network') in ('development-services', 'closed-services', 'game-authority'):
         args += ['-netdev','user,id=store-net','-device','virtio-net-pci,netdev=store-net,id=store-nic,addr=0x7,romfile=']
     else:
         args += ['-nic','none']
@@ -318,7 +324,9 @@ def main():
             saved = read_json(marker)
         else:
             saved = device.get('config', {})
-        if saved.get('schema') == 'rock-desktop-device/6':
+        if saved.get('schema') == 'rock-desktop-device/7':
+            result={'configured':False,'mode':'development-game-authority','supervisor':'explicit-sandbox-cli','local_hub_available':True}
+        elif saved.get('schema') == 'rock-desktop-device/6':
             result = {'status': 'NOT_APPLICABLE', 'network': 'none',
                       'meaning': 'explicit local A/B profile has no external service endpoints'}
         elif device.get('network') == 'closed-services':

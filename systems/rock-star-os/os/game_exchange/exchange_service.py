@@ -75,8 +75,9 @@ class WalletExchanges:
         with self.wallet._transaction(deadline=deadline) as db:
             credential=self.auth._credential(db,context)
             p.require(credential is not None and credential['revoked_at'] is None,'current enrolled owner credential required')
-        if op in ('game.exchange.quote','game.exchange.approval.begin','game.exchange.approve'):
+        if op in ('game.exchange.quote','game.exchange.approval.begin','game.exchange.approve','game.sandbox.credit'):
             self.auth.require_active(context)
+        if op=='game.sandbox.credit':return {'ok':True,'result':self.fixture_credit(request,context,deadline)}
         if op=='game.exchange.list':return {'ok':True,'result':self.list(request,deadline)}
         if op=='game.exchange.quote':
             row=self.gateway.index.get('connection_id',request['connection_id'])
@@ -108,6 +109,21 @@ class WalletExchanges:
             result=self.project(db,row)
             if scope is not None: ledger.remember(db,scope,request,result)
         self.wake();return {'ok':True,'result':result}
+
+    def fixture_credit(self,request,context,deadline):
+        # This separate, visibly public-fixture operation is one explicit fixed
+        # credit per owner. It is not available to either Game author credential.
+        p.require(request['amount_minor']==10000,'fixed public fixture amount required')
+        scope=ledger.namespace('public-fixture',[self.descriptor.owner_ref],'game.sandbox.credit','one-credit-v1')
+        with self.wallet._transaction(deadline=deadline) as db:
+            row=db.execute('SELECT result FROM wallet_game_exchange_requests WHERE namespace=?',(scope,)).fetchone()
+            if row:return loaded(row[0])
+        sale=self.wallet.simulate_sale(10000,'game-public-fixture-credit-v1')
+        settled=self.wallet.settle_sale(sale['id'],'game-public-fixture-settle-v1')
+        p.require(settled['status']=='SETTLED','fixture settlement unresolved')
+        result={'schema':'rock-game-sandbox-credit/1','amount_minor':10000,'sale_id':sale['id'],'settled':True,'simulation_only':True}
+        with self.wallet._transaction(deadline=deadline) as db:ledger.remember(db,scope,request,result)
+        return result
 
     def author(self,principal,request,deadline):
         x.request(request,author=True)

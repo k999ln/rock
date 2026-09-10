@@ -27,6 +27,7 @@ DOMAINS={
 PURPOSES={kind:'game.exchange.'+kind for kind in DOMAINS}
 SIGNATURE_FIELDS={'algorithm','credential_id','credential_revision','signature'}
 OWNER_FIELDS={
+    'game.sandbox.credit':{'key','amount_minor'},
     'game.exchange.quote':{'key','connection_id','exchange_id','principal_minor'},
     'game.exchange.approval.begin':{'key','quote_id'},
     'game.exchange.approve':{'key','attempt_id','quote_sha256','credential'},
@@ -64,6 +65,7 @@ def request(value,*,author=False):
     for name in ('connection_id','quote_id','attempt_id'):
         if name in value:p.uuid_value(value[name])
     if 'principal_minor' in value:amounts(value['principal_minor'])
+    if value['op']=='game.sandbox.credit':p.require(type(value['amount_minor']) is int and value['amount_minor']==10000,'explicit public fixture credit is exactly 10000 cents')
     if 'quote_sha256' in value:p.digest(value['quote_sha256'])
     if 'credential' in value:p.require(type(value['credential']) is dict,'owner credential required')
     if 'limit' in value:p.integer(value['limit'],1,50)

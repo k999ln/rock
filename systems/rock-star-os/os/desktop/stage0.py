@@ -134,6 +134,12 @@ def verified_local_profile(config):
             'external_authority': False, 'simulation_only': True, 'boot_verified': False}
 
 
+def verified_game_profile(config):
+    """Separate signed Game profile admission, preserving local/v5 guards."""
+    from game_exchange.profile import verified
+    return verified(config)
+
+
 def copy_file(source, destination):
     before = regular(source)
     fd = os.open(destination, os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW, 0o600)

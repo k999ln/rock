@@ -537,6 +537,9 @@ def configured_service(config_file, wallet_state):
     """Explicit new-device opt-in only; never silently migrate/clone a local ledger."""
     raw_config = read_protected(config_file, 8192)
     config = decode(raw_config)
+    if isinstance(config,dict) and config.get('mode')=='development-game-authority':
+        from game_exchange.device_client import configured_service as game_service
+        return game_service(config_file,wallet_state)
     base_fields = {'schema_version','mode','origin','ca_file','token_file','authority_id'}
     version = config.get('schema_version') if isinstance(config, dict) else None
     expected = base_fields | ({'device_ref'} if version in (2, 3) else set())

@@ -1,9 +1,9 @@
-from blackberryrock import deadline as request_deadline
 """Transactional entitlement state; no balances, postings, identity documents or network.
 
 All accepted identities are public development fixtures. SQLite protects
 concurrent application mutations, not a hostile OS or a rollback of its disk.
 """
+from blackberryrock import deadline as request_deadline
 from contextlib import contextmanager, closing
 from datetime import datetime, timezone
 import hashlib

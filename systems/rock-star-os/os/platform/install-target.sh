@@ -58,7 +58,7 @@ mkdir -p "$dest/game_exchange"
 chmod 0755 "$dest/game_exchange"
 # Device contains protocol/client modules only, never Game/Wallet issuer signers,
 # author credentials, Game asset journals, C coordinator or grant worker.
-for module in __init__ protocol exchange_protocol storage client http; do
+for module in __init__ protocol exchange_protocol storage client http reference_sdk device_client; do
   cp "$repo/os/game_exchange/$module.py" "$dest/game_exchange/"
   chmod 0644 "$dest/game_exchange/$module.py"
 done

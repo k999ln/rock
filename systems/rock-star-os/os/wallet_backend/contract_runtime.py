@@ -549,7 +549,7 @@ class ContractRuntime:
             from game_exchange.protocol import validate_owner_request
             if getattr(self, '_games', None) is None:
                 raise RuntimeAdmissionRejected('game connections are disabled')
-            if request['op'].startswith('game.exchange.'):
+            if request['op'].startswith('game.exchange.') or request['op']=='game.sandbox.credit':
                 from game_exchange.exchange_protocol import request as validate_exchange
                 if getattr(self, '_exchanges', None) is None:
                     raise RuntimeAdmissionRejected('game exchanges are disabled')
@@ -589,7 +589,7 @@ class ContractRuntime:
                     raise TimeoutError('request expired during device admission')
                 self._ensure_account_binding()
                 if request['op'].startswith('game.'):
-                    exchange = request['op'].startswith('game.exchange.')
+                    exchange = request['op'].startswith('game.exchange.') or request['op']=='game.sandbox.credit'
                     guard = self._service.membership.game_exchange_guard if exchange else self._service.membership.game_connection_guard
                     gate=self._games.gateway.author_gate
                     if not gate.acquire(timeout=max(0,deadline-time.monotonic())):
