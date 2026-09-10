@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './workspace.css';
 export const metadata: Metadata = {
-  title: 'Rock star — Fund Club',
+  title: 'RockstarOS — 自動化Hub',
   description:
-    '選んで、動かして、みんなで育てる。自動化を詰めたファンドを選び、実行状況と分配プランを確認するRock star Fund Club。',
+    '自分の仕事に合うツールを選び、実行して、結果を確かめる。RockstarOSの自動化HubとDeveloper Preview。',
 };
 export default function RootLayout({
   children,

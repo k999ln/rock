@@ -31,7 +31,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-10 / RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備 / 完了 19/34件
+最終更新: 2026-09-10 / RockstarOS 1.0 ローンチ準備・Hubのユーザー体験改善 / 完了 19/41件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -69,6 +69,13 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
 | RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 完了 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/rockstaros-1.0-architecture.md) · [記録](docs/rockstaros-1.0-strategy.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) · [記録](docs/release-followup-20260910.md) |
 | RLS02 | 正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証 | 未着手 | [記録](docs/release-installation-plan-20260909.md) |
+| LCH01 | TLS／累積timeoutの原因と最終CIの照合 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH02 | 全同梱物inventory・対応source・製品LICENSEの明示決定 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH03 | production署名・保護環境・失効運用 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH04 | 既存Sites履歴の統合・本人限定プレビュー・Hub改善 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH05 | 完成CMの特定・表示内容の照合・導入案内への接続 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -88,7 +95,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 3d07df0のnative CIタイムアウトは4独立枠と全件照合へ変更し、修正f88b392のGitHub native全6job／1660件・root UI・Web CIが成功。原FAILを保持し、先行TLS ERRORの原因未確定は別の残件として切り分ける。CM制作は完成済み。公開は製品LICENSE／第三者再配布条件と既存Sitesアクセス待ち、既存CMから導入案内への接続が残る。追加1〜2日は外部条件の待ちを除くQEMU版仕上げの条件付き概算。
+次の作業: Hubを標準入口に改修して実ブラウザで操作を検証。LCH01〜07でTLS原因、配布法務、署名鍵、既存Sites、完成CM、PR統合、最終候補を追跡。最終承認前の一般公開・main merge・実請求・実機書込み・実資金は実行しない。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

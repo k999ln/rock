@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
-  "milestone": "RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備",
-  "nextAction": "3d07df0のnative CIタイムアウトは4独立枠と全件照合へ変更し、修正f88b392のGitHub native全6job／1660件・root UI・Web CIが成功。原FAILを保持し、先行TLS ERRORの原因未確定は別の残件として切り分ける。CM制作は完成済み。公開は製品LICENSE／第三者再配布条件と既存Sitesアクセス待ち、既存CMから導入案内への接続が残る。追加1〜2日は外部条件の待ちを除くQEMU版仕上げの条件付き概算。",
+  "milestone": "RockstarOS 1.0 ローンチ準備・Hubのユーザー体験改善",
+  "nextAction": "Hubを標準入口に改修して実ブラウザで操作を検証。LCH01〜07でTLS原因、配布法務、署名鍵、既存Sites、完成CM、PR統合、最終候補を追跡。最終承認前の一般公開・main merge・実請求・実機書込み・実資金は実行しない。",
   "tasks": [
     {
       "id": "R01",
@@ -450,6 +450,69 @@
       "evidence": [
         "docs/release-installation-plan-20260909.md"
       ]
+    },
+    {
+      "id": "LCH01",
+      "title": "TLS／累積timeoutの原因と最終CIの照合",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/launch-readiness-20260910.md"
+      ]
+    },
+    {
+      "id": "LCH02",
+      "title": "全同梱物inventory・対応source・製品LICENSEの明示決定",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/launch-readiness-20260910.md"
+      ]
+    },
+    {
+      "id": "LCH03",
+      "title": "production署名・保護環境・失効運用",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/launch-readiness-20260910.md"
+      ]
+    },
+    {
+      "id": "LCH04",
+      "title": "既存Sites履歴の統合・本人限定プレビュー・Hub改善",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/launch-readiness-20260910.md"
+      ]
+    },
+    {
+      "id": "LCH05",
+      "title": "完成CMの特定・表示内容の照合・導入案内への接続",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/launch-readiness-20260910.md"
+      ]
+    },
+    {
+      "id": "LCH06",
+      "title": "PR系列・正確なmain統合tree・版表示の整合",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/launch-readiness-20260910.md"
+      ]
+    },
+    {
+      "id": "LCH07",
+      "title": "同一最終候補の再現配布・導入・復旧リハーサル",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/launch-readiness-20260910.md"
+      ]
     }
   ],
   "phaseGates": [
@@ -642,5 +705,14 @@
         "docs/release-installation-plan-20260909.md"
       ]
     }
-  ]
+  ],
+  "launchReadiness": {
+    "status": "BLOCKED_FOR_LAUNCH",
+    "startingSourceCommit": "29e4f7203f72d9949e2dfc90b64c4215d4bbb765",
+    "mainCommit": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
+    "distributionCommit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+    "validatedCurrentCommit": null,
+    "publicRelease": false,
+    "mainMerged": false
+  }
 }

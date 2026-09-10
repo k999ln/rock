@@ -1,5 +1,10 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-10 — ローンチ準備とHubデザインの改修を開始
+
+利用者の実行プロンプトとフロント改善指示を受領。GitHubを再取得しmain `7cdbb5fedc86ee3978ed329d9312147d137c9199`、再開branch `codex/rockstaros-release-20260910` の `29e4f7203f72d9949e2dfc90b64c4215d4bbb765` から分離worktreeで着手。Hubを標準入口へ変更し、既存Web商品・仕事API・旧ファンド保存を再利用する。LCH01〜07は[ローンチ準備記録](docs/launch-readiness-20260910.md)で追跡。元9ab image/host toolsと過去受入は保持。一般公開とmain mergeはまだ行わない。
+
+
 ## 2026-09-10 — 3d07df0のnative CIタイムアウト修正・GitHub検証済み
 
 Linuxで全1660件／17checks、元1392件＋新規4件の主suite網羅、Web verifyに合格。16:38 UTC、修正f88b392のGitHub native全6job（root UIを含む）とWebの成功、download原本の699入力・17原ログ・全割当てを確認。[成功証拠](docs/evidence/native-ci-3d07df0/github-f88b392.json)。
@@ -214,7 +219,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-10 / RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備 / 完了 19/34件
+最終更新: 2026-09-10 / RockstarOS 1.0 ローンチ準備・Hubのユーザー体験改善 / 完了 19/41件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -252,6 +257,13 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
 | RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 完了 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/rockstaros-1.0-architecture.md) · [記録](docs/rockstaros-1.0-strategy.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) · [記録](docs/release-followup-20260910.md) |
 | RLS02 | 正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証 | 未着手 | [記録](docs/release-installation-plan-20260909.md) |
+| LCH01 | TLS／累積timeoutの原因と最終CIの照合 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH02 | 全同梱物inventory・対応source・製品LICENSEの明示決定 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH03 | production署名・保護環境・失効運用 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH04 | 既存Sites履歴の統合・本人限定プレビュー・Hub改善 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH05 | 完成CMの特定・表示内容の照合・導入案内への接続 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -271,7 +283,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 3d07df0のnative CIタイムアウトは4独立枠と全件照合へ変更し、修正f88b392のGitHub native全6job／1660件・root UI・Web CIが成功。原FAILを保持し、先行TLS ERRORの原因未確定は別の残件として切り分ける。CM制作は完成済み。公開は製品LICENSE／第三者再配布条件と既存Sitesアクセス待ち、既存CMから導入案内への接続が残る。追加1〜2日は外部条件の待ちを除くQEMU版仕上げの条件付き概算。
+次の作業: Hubを標準入口に改修して実ブラウザで操作を検証。LCH01〜07でTLS原因、配布法務、署名鍵、既存Sites、完成CM、PR統合、最終候補を追跡。最終承認前の一般公開・main merge・実請求・実機書込み・実資金は実行しない。
 <!-- project-status:end -->
 
 ## 次段階の設計

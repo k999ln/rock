@@ -1,4 +1,4 @@
-import FundMarket from '@/components/fund-market';
+import HubWorkspace from '@/components/hub-workspace';
 export default function Home() {
-  return <FundMarket />;
+  return <HubWorkspace />;
 }

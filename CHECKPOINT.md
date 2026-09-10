@@ -1,3 +1,7 @@
+# ローンチ準備の現在入口
+
+[ローンチ準備記録](docs/launch-readiness-20260910.md)とLCH01〜07を先に読む。再開branchは `codex/rockstaros-release-20260910`。最新の主作業はHubフロントの改修、既存Sites履歴の復旧、配布・署名・CM・原TLSエラーの照合。開始時29e4f72、配布候補9abは別のまま。以下は過去の履歴。
+
 # 2026-09-10 native CIタイムアウト修正の入口
 
 [CI修正記録](docs/native-ci-partition-fix-20260910.md)を先に読む。3d07df0の600秒FAILを保持し、進行中の主suiteを4独立jobへ分割。Linux1660件／17checksとWeb verify、修正f88b392のGitHub native全6job／root UIとWebが成功。原ログと699入力の独立照合も完了。先行TLS ERRORの原因・LICENSE・既存Sitesアクセスは別の残件。凍結9ab配布物とCM完成済みを維持する。以下は前回の記録。
