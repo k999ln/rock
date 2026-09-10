@@ -57,7 +57,7 @@ root HEAD `d849715`。Game core `42afc82`、native UI/Platform `0faf24b`/`81db8a
 次: Web全回帰と実ブラウザ導線を確認して作業branchへ保存。Hub旧版にも同じ公開入力を実操作で与えて品質・操作差を観測する。最終Game profileの必要なPC切断経路と録画を準備する。凍結後はD4→初期状態D6→Game/Wallet操作→D5/復旧の順に実施し、同一imageの証跡を揃える。
 
 
-## 07:28 UTC checkpoint（経過104分25秒）
+## 07:24 UTC checkpoint（経過100分25秒）
 
 root HEAD `7ed6cf72d16f77c2cfb804914df1819b4282682d`。release branchをGitHubへ保存し、既存operational branchをbaseとするdraft PR [#3](https://github.com/k999ln/rock/pull/3)を作成。main・旧checkoutは変更していない。
 
