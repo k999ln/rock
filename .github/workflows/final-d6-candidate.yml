@@ -1,0 +1,44 @@
+name: Final candidate D6 (independent Linux host)
+on:
+  push:
+    branches: [codex/rockstaros-release-20260910]
+    paths: ['.github/workflows/final-d6-candidate.yml', 'scripts/run-final-d6-ci.py']
+permissions:
+  contents: write # Read private draft assets; append raw evidence to that draft only.
+concurrency:
+  group: final-d6-candidate-9abf78a
+  cancel-in-progress: false
+jobs:
+  d6:
+    if: github.repository == 'k999ln/rock' && github.ref == 'refs/heads/codex/rockstaros-release-20260910'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 170
+    container: debian:13-slim
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install host dependencies (guest and observer remain frozen)
+        run: |
+          set -euo pipefail
+          apt-get update
+          apt-get install -y --no-install-recommends python3 python3-pil qemu-system-arm qemu-utils e2fsprogs openssl tesseract-ocr tesseract-ocr-eng tesseract-ocr-jpn ca-certificates passwd util-linux
+          useradd --uid 1001 --create-home d6
+          python3 -B scripts/run-final-d6-ci.py self-test
+      - name: Fetch hash-pinned assets from the private draft
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 -B scripts/run-final-d6-ci.py fetch
+      - name: Verify candidate and prepare a fresh empty authority
+        run: runuser -u d6 -- env -i PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin HOME=/home/d6 LANG=C.UTF-8 GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" GITHUB_SHA="$GITHUB_SHA" python3 -B scripts/run-final-d6-ci.py prepare
+      - name: Run original D6 once with unchanged limits
+        timeout-minutes: 125
+        run: runuser -u d6 -- env -i PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin HOME=/home/d6 LANG=C.UTF-8 python3 -B scripts/run-final-d6-ci.py run
+      - name: Preserve raw evidence in the same private draft (never Actions artifacts)
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 -B scripts/run-final-d6-ci.py upload

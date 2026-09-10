@@ -1,0 +1,26 @@
+{
+  "schema": "rock-independent-d6-launch-review/1",
+  "status": "REVIEWED_NOT_STARTED",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "release_id": 386171909,
+  "archive_asset_id": 554748551,
+  "candidate_public": false,
+  "files_sha256": {
+    ".github/workflows/final-d6-candidate.yml": "035ff55a78ba47356950f7f837588ade3337aee0d6c9a79f70d951c68aeef3ec",
+    "scripts/run-final-d6-ci.py": "fa2a620d9ca0f7a17d97335b2c836a6876f3ed7af946ff144a4eda9cffd5591d"
+  },
+  "transport_guard_checks": 7,
+  "original_package_source_ci_check": {
+    "checks": 14,
+    "ci_inputs": 694,
+    "elapsed_seconds": 1.957670041010715,
+    "not_linux_prepare_or_os_acceptance": true,
+    "python_executions": 1631,
+    "selected_original_members": 17,
+    "signature_archive": "PASS",
+    "source_files": 1364,
+    "status": "PASS_PACKAGE_AND_ORIGINAL_SOURCE_CI"
+  },
+  "scope": "Independent Debian13/QEMU10 D6 only, fresh empty authority. No Mac installation acceptance, public release or shortened native criteria. C and other OS gates remain local.",
+  "authority_mutations": "No registration, Wallet consent or synthetic credit; original immutable full-table baseline remains required."
+}
