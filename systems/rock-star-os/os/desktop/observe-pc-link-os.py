@@ -21,17 +21,53 @@ import time
 import traceback
 
 
+LOCAL_CITATION_PACKAGE_SHA256 = 'e26178e828b45f651f4c1ff5c0fa20450195548edc4e6e116005a730238a0535'
+LOCAL_CITATION_FIXTURE_SHA256 = 'a1b8cf21232875b6118e7adf8db91131e2e3f7a7ef2833915f7d05b820c4b635'
+
+
+def verify_existing_local_citation(database, base):
+    """Verify the exported stopped baseline, without Hub mutation or repair."""
+    from blackberryrock.packages import canonical, verify_package, TEST_PUBLISHER, PUBLIC_TEST_KEY
+    fixture = base/'os/tools/packages/org.rockstar.citation-organizer--1.0.0.recipe.json'
+    raw = fixture.read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == LOCAL_CITATION_FIXTURE_SHA256, 'original public local citation fixture changed'
+    original = json.loads(raw)
+    manifest, expected = original['manifest'], LOCAL_CITATION_PACKAGE_SHA256
+    assert (manifest['id'], manifest['version'], manifest['publisher']) == ('org.rockstar.citation-organizer', '1.0.0', TEST_PUBLISHER)
+    before = hashlib.sha256(database.read_bytes()).hexdigest()
+    with closing(sqlite3.connect(database.resolve(strict=True).as_uri()+'?mode=ro&immutable=1', uri=True)) as db:
+        db.execute('PRAGMA query_only=ON')
+        assert db.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'
+        rows = db.execute('SELECT version,enabled FROM hub_installed WHERE id=?', (manifest['id'],)).fetchall()
+        assert rows == [('1.0.0', 1)] and type(rows[0][1]) is int, 'exact enabled local citation 1.0.0 baseline required'
+        rows = db.execute('SELECT hash,body FROM hub_packages WHERE id=? AND version=?', (manifest['id'], '1.0.0')).fetchall()
+        assert len(rows) == 1 and rows[0][0] == expected and type(rows[0][1]) is str, 'installed citation package hash differs from original public fixture'
+        package = json.loads(rows[0][1])
+        assert rows[0][1] == canonical(package).decode() and {k: package[k] for k in ('manifest', 'recipe')} == original, 'installed citation body differs from original public fixture'
+        revoked = {row[0] for row in db.execute('SELECT subject FROM hub_revoked')}
+        _, verified = verify_package(package, {TEST_PUBLISHER: PUBLIC_TEST_KEY}, revoked)
+        assert verified == expected
+    assert hashlib.sha256(database.read_bytes()).hexdigest() == before, 'read-only citation baseline changed'
+    return {'status': 'PASS_EXACT_ENABLED_LOCAL_PUBLIC_FIXTURE', 'hub_database_sha256': before,
+            'id': manifest['id'], 'version': '1.0.0', 'publisher': TEST_PUBLISHER,
+            'fixture_file_sha256': LOCAL_CITATION_FIXTURE_SHA256, 'package_sha256': expected}
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ('source','config','sandbox-config','output'):
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--commit',required=True)
     parser.add_argument('--fixture',choices=('remote-text','citations'),default='remote-text')
+    parser.add_argument('--existing-local-citation',action='store_true',help='Verify stopped public citation 1.0.0, then select its explicit 1.1.0 update')
     parser.add_argument('--service-state',type=Path)
     parser.add_argument('--resume-from',type=Path)
     parser.add_argument('--baseline-from',type=Path)
     parser.add_argument('--resume-stage',choices=('editor','offline-pending','restart-history'),default='editor')
-    args=parser.parse_args(); base=args.source.resolve(strict=True)
+    args=parser.parse_args()
+    if args.existing_local_citation and (args.fixture!='citations' or args.resume_from):
+        parser.error('--existing-local-citation requires --fixture citations and a stopped baseline without --resume-from')
+    base=args.source.resolve(strict=True)
     sys.path[:0]=[str(base/'os/desktop'),str(base/'os'),str(base/'src')]
     spec=importlib.util.spec_from_file_location('pc_link_business',base/'os/desktop/verify-business.py')
     b=importlib.util.module_from_spec(spec);spec.loader.exec_module(b)
@@ -89,6 +125,7 @@ def main():
           'physical_usb':'NOT_RUN','mr_adapter_native_connection':'NOT_IMPLEMENTED',
           'scope':'Explicit signed '+args.fixture+' fixture through owned Linux VM TLS; no real funds or human timing claim'}
     if previous:plan['continuation']={'previous':str(previous),'previous_plan_sha256':hashlib.sha256((previous/'plan.json').read_bytes()).hexdigest(),'previous_report_sha256':hashlib.sha256((previous/('2' if args.resume_stage=='restart-history' else '1')/'report.json').read_bytes()).hexdigest(),'boundary':'same original running OS at '+args.resume_stage+'; retain every already submitted request without repeating it'}
+    if args.existing_local_citation:plan['existing_local_citation']={'baseline_version':'1.0.0','package_sha256':LOCAL_CITATION_PACKAGE_SHA256,'setup_button':'v1.1.0へ更新','original_default_changed':False}
     b.guest.save(output/'plan.json',plan);(output/'plan.json').chmod(0o444)
     b.guest.save(output/'authority-before.json',before_authority)
     summary={'status':'RUNNING','started_utc':datetime.now(timezone.utc).isoformat(),'cycles':[],'services':[]}
@@ -223,7 +260,9 @@ def main():
             initial_remote=json.loads((baseline/'remote-private.json').read_text())
             prior_power=json.loads((baseline/'power-rows.json').read_text())
         else:
-            with b.closed_device(config,initial_record) as data:old_device,initial_remote,prior_power=device_snapshot(data,initial_folder)
+            with b.closed_device(config,initial_record) as data:
+                old_device,initial_remote,prior_power=device_snapshot(data,initial_folder)
+                if args.existing_local_citation:summary['existing_local_citation']=verify_existing_local_citation(initial_folder/'hub.sqlite3',base)
         assert not initial_remote,'dedicated PC probe requires no prior remote jobs'
         if previous and args.resume_stage=='restart-history':
             old_device=json.loads((previous/'1/device-snapshot.json').read_text());old_remote=json.loads((previous/'1/remote-private.json').read_text());old_host=json.loads((previous/'1/runner-snapshot.json').read_text());prior_power=json.loads((previous/'1/power-rows.json').read_text())
@@ -261,7 +300,7 @@ def main():
                             driver.click('ツール名・説明・IDで検索',label='remote-tool-search')
                             driver.native.type(tool_id);driver.native.keys(['ret'])
                             driver.click(tool_title,label='remote-tool-detail')
-                            driver.click('v'+tool_version+' をインストール',seek=True,label='remote-tool-install')
+                            driver.click('v1.1.0へ更新' if args.existing_local_citation else 'v'+tool_version+' をインストール',seek=True,label='remote-tool-install')
                             driver.click('この権限を確認して利用を許可',seek=True,label='remote-tool-approve')
                             driver.click('ツールを開く',seek=True,label='remote-editor')
                         submit(driver,inputs[0]);driver.wait('遠隔で完了',label='connected-complete')
