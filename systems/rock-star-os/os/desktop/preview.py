@@ -29,13 +29,17 @@ from urllib.parse import urlsplit
 from urllib.request import urlopen
 
 TITLE = 'RockstarOS 1.0 Developer Preview'
-SCHEMA = 'rockstaros-preview-release/1'
+SCHEMA = 'rockstaros-preview-release/2'
 OWNERSHIP = 'rockstaros-preview-installation/1'
 PUBLIC_TEST_KEY = bytes.fromhex('302a300506032b6570032100d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a')
 IMAGE_NAMES = ('Image', 'rootfs.ext4', 'stage0.cpio.gz')
 GUEST_ROOT = '/opt/rockstaros-preview'
 VM_NAME = 'os'
 PREVIEW_DISPLAY = {'viewer_port': 8900, 'websocket_port': 5910}
+GAME_AUTHORITY = '6fdcc9a6-90c7-4e28-a165-aadf9c904910'
+GAME_STATE = '/var/tmp/rockstaros-preview-authority'
+GAME_CONFIG = GAME_STATE + '/sandbox.json'
+GAME_CONFIG_MEMBER = 'native/os/game_exchange/fixtures/sandbox-20260910.json'
 MAX_ARCHIVE = 4 * 1024**3
 MAX_EXPANDED = 6 * 1024**3
 BASE_IMAGE = {
@@ -139,7 +143,7 @@ def verify_release(manifest_path, archive, trusted_key, key_sha256,
     require(type(value) is dict and value.get('schema') == SCHEMA and value.get('product') == TITLE,
             'unknown release product/schema')
     required = {'schema', 'product', 'version', 'source_commit', 'host_tools_commit', 'host', 'archive',
-                'files', 'image_sha256', 'factory_sha256', 'trust', 'legal', 'acceptance', 'display'}
+                'files', 'image_sha256', 'factory_sha256', 'trust', 'legal', 'acceptance', 'display', 'boot', 'game'}
     require(set(value) == required and re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9.+_-]{0,63}', value['version']) and
             all(re.fullmatch('[0-9a-f]{40}', value[field]) for field in ('source_commit', 'host_tools_commit')),
             'incomplete release identity')
@@ -183,6 +187,23 @@ def verify_release(manifest_path, archive, trusted_key, key_sha256,
         require(files.get('images/' + name, {}).get('sha256') == hash_text(value['image_sha256'][name]),
                 'image hash and release inventory differ')
     hash_text(value['factory_sha256'])
+    boot = value['boot']
+    require(type(boot) is dict and boot.get('mode') == 'signed-stage0' and
+            boot.get('factory_sha256') == value['factory_sha256'], 'release boot/factory binding differs')
+    if boot.get('profile') == 'local-development':
+        require(set(boot) == {'mode', 'profile', 'factory_sha256'} and value['game'] is None,
+                'local release cannot carry an implicit Game authority')
+    else:
+        require(boot.get('profile') == 'development-game-authority' and
+                set(boot) == {'mode', 'profile', 'factory_sha256', 'profile_sha256'} and
+                files.get('images/profile.json', {}).get('sha256') == hash_text(boot['profile_sha256']),
+                'explicit immutable Game image profile required')
+        game = value['game']
+        require(type(game) is dict and set(game) == {'authority_id', 'config', 'sha256', 'config_member'} and
+                game['authority_id'] == GAME_AUTHORITY and game['config'] == GAME_CONFIG and
+                game['config_member'] == GAME_CONFIG_MEMBER and
+                files.get(GAME_CONFIG_MEMBER, {}).get('sha256') == hash_text(game['sha256']),
+                'fixed public Game authority/config inventory binding differs')
     return value
 
 
@@ -190,6 +211,7 @@ def extract_verified(archive, destination, files):
     """No tar.extractall: links, devices, duplicates, traversal and extra files fail."""
     destination.mkdir(mode=0o700)
     seen = set()
+    directories = {destination}
     with tarfile.open(archive, 'r:gz') as incoming:
         for member in incoming:
             name = safe_member(member.name)
@@ -200,7 +222,13 @@ def extract_verified(archive, destination, files):
             require(member.size == expected['bytes'] and member.mode == expected['mode'],
                     'archive entry metadata differs')
             path = destination / name
-            path.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
+            parent = destination
+            for part in PurePosixPath(name).parts[:-1]:
+                parent /= part
+                if parent not in directories:
+                    parent.mkdir(mode=0o755)
+                    parent.chmod(0o755)
+                    directories.add(parent)
             source = incoming.extractfile(member)
             require(source is not None, 'missing archive payload')
             with source, path.open('xb') as target:
@@ -372,12 +400,84 @@ def launcher_manifest(root, release, record, device):
              'device': {'schema': 'rock-desktop-device/6', 'name': device,
                         'images': GUEST_ROOT + '/images', 'sha256': release['image_sha256'],
                         'network': 'none', 'viewer': 'browser',
-                        'boot': {'mode': 'signed-stage0', 'profile': 'local-development',
-                                 'factory_sha256': release['factory_sha256']}}}
+                        'boot': dict(release['boot'])}}
+    if release['game'] is not None:
+        value['device'].update(schema='rock-desktop-device/7', network='game-authority',
+                               game={key: release['game'][key] for key in ('config', 'sha256', 'authority_id')})
     path = root / 'profiles' / (device + '.json')
     require(not path.exists(), 'existing launch profile cannot be replaced')
     save(path, value)
     return path
+
+
+def sandbox_command(root, release, action):
+    """Use the source-pinned host sandbox CLI; never call authority internals."""
+    require(release['game'] is not None and action in ('prepare', 'start', 'stop', 'status'),
+            'explicit public Game sandbox action required')
+    expected = release['files']['native/os/game_exchange/sandbox.py']['sha256']
+    code = '''import hashlib,json,os,stat,subprocess,sys
+from pathlib import Path
+script=Path(sys.argv[1]);expected=sys.argv[2];config=Path(sys.argv[3]);config_sha=sys.argv[4];action=sys.argv[5]
+info=script.lstat()
+if not stat.S_ISREG(info.st_mode) or info.st_uid!=0 or info.st_mode&0o022 or info.st_nlink!=1 or script.resolve()!=script or hashlib.sha256(script.read_bytes()).hexdigest()!=expected:
+ raise ValueError('installed sandbox source differs from the release')
+for parent in script.parents:
+ info=parent.lstat()
+ if not stat.S_ISDIR(info.st_mode) or info.st_uid!=0 or info.st_mode&0o022: raise ValueError('unprotected installed sandbox source parent')
+info=config.lstat();parent=config.parent.lstat()
+if not stat.S_ISREG(info.st_mode) or info.st_uid!=os.geteuid() or stat.S_IMODE(info.st_mode)!=0o600 or info.st_nlink!=1 or config.resolve()!=config:
+ raise ValueError('owned private sandbox config required')
+if not stat.S_ISDIR(parent.st_mode) or parent.st_uid!=os.geteuid() or stat.S_IMODE(parent.st_mode)!=0o700 or hashlib.sha256(config.read_bytes()).hexdigest()!=config_sha:
+ raise ValueError('sandbox state/config binding differs')
+result=subprocess.run([sys.executable,'-B',str(script),action,'--config',str(config)],check=True,capture_output=True,text=True,timeout=90)
+print(result.stdout,end='')'''
+    raw = guest_python(root, code, GUEST_ROOT + '/native/os/game_exchange/sandbox.py', expected,
+                       GAME_CONFIG, release['game']['sha256'], action, timeout=110).stdout
+    receipt = decode(raw.encode())
+    require(type(receipt) is dict and receipt.get('authority_id') == GAME_AUTHORITY and
+            receipt.get('config_sha256') == release['game']['sha256'] and receipt.get('simulation_only') is True,
+            'sandbox receipt authority/config binding differs')
+    if action == 'prepare':
+        require(receipt.get('schema') == 'rock-game-sandbox-prepared/1' and
+                receipt.get('initialization') == 'explicit-public-fixture' and
+                type(receipt.get('descriptor')) is dict and type(receipt.get('game_uuids')) is dict,
+                'complete prepared sandbox receipt required')
+    else:
+        require(receipt.get('schema') == 'rock-game-sandbox-status/1' and type(receipt.get('running')) is bool,
+                'typed sandbox process status required')
+        if action in ('start', 'stop'):
+            require(receipt['running'] == (action == 'start'), 'sandbox lifecycle result differs from the requested action')
+    return receipt
+
+
+def prepare_sandbox(root, release):
+    if release['game'] is None:
+        return None
+    code = '''import hashlib,os,shutil,sys
+from pathlib import Path
+source=Path(sys.argv[1]);state=Path(sys.argv[2]);expected=sys.argv[3]
+if state.exists() or state.is_symlink(): raise ValueError('existing sandbox state cannot be adopted')
+if hashlib.sha256(source.read_bytes()).hexdigest()!=expected: raise ValueError('public fixture config differs')
+state.mkdir(mode=0o700);target=state/'sandbox.json'
+with source.open('rb') as incoming,target.open('xb') as outgoing:
+ shutil.copyfileobj(incoming,outgoing);outgoing.flush();os.fsync(outgoing.fileno())
+target.chmod(0o600)
+fd=os.open(state,os.O_RDONLY|os.O_DIRECTORY)
+try: os.fsync(fd)
+finally: os.close(fd)'''
+    guest_python(root, code, GUEST_ROOT + '/' + GAME_CONFIG_MEMBER, GAME_STATE, release['game']['sha256'])
+    return sandbox_command(root, release, 'prepare')
+
+
+def optional_sandbox(root, release, action):
+    """Hub remains usable when an independently owned Game service is offline."""
+    if release['game'] is None:
+        return {'status': 'NOT_CONFIGURED'}
+    try:
+        return sandbox_command(root, release, action)
+    except (OSError, ValueError, subprocess.SubprocessError) as error:
+        return {'status': 'UNAVAILABLE', 'error_type': type(error).__name__, 'simulation_only': True,
+                'meaning': 'Game service is unavailable; Hub may still run; no replacement authority was created'}
 
 
 def install(args):
@@ -425,6 +525,8 @@ def install(args):
             # path. The host home and all pre-existing Lima instances are absent.
             setup = 'set -eu; test ! -e ' + GUEST_ROOT + '; sudo cp -R /mnt/rockstaros-package ' + GUEST_ROOT + '; sudo chmod 755 ' + GUEST_ROOT
             lima(root, 'shell', '--workdir', '/', VM_NAME, '/bin/sh', '-c', setup, timeout=120)
+            record['game_prepared'] = prepare_sandbox(root, release)
+            save(root / 'installation.json', record)
             probe = '''import json,subprocess,sys
 from pathlib import Path
 root=Path(sys.argv[1]);sys.path[:0]=[str(root/'native/os/desktop'),str(root/'native/os'),str(root/'native/src')]
@@ -482,12 +584,16 @@ def action(args):
         config = module.load(root / 'profiles' / (record['active_device'] + '.json'))
         if args.action == 'start':
             require(record['active_device'] not in record['retired_devices'], 'source was retired after restore')
-            return module.launch(config, not args.no_open)
+            game = optional_sandbox(root, release, 'start')
+            result = module.launch(config, not args.no_open)
+            result['game'] = game
+            return result
         status = module.remote(config, 'status')
         module.verify_device_record(config, status)
         if args.action == 'status':
             return {'running': status['running'], 'active_device': record['active_device'],
-                    'source_commit': record['source_commit'], 'wallet': 'SIMULATOR_ONLY'}
+                    'source_commit': record['source_commit'], 'wallet': 'SIMULATOR_ONLY',
+                    'game': optional_sandbox(root, release, 'status')}
         if args.action == 'stop':
             print('OS 右上の端末操作 → 電源を切る → 確認して実行を選んでください。ブラウザを閉じるだけでは終了しません。', flush=True)
             deadline = time.monotonic() + args.timeout
@@ -495,9 +601,12 @@ def action(args):
                 time.sleep(1)
                 status = module.remote(config, 'status')
             require(not status.get('running'), 'normal UI shutdown was not observed before timeout; OS and data preserved')
-            return {'running': False, 'observed': 'owned QEMU stopped; use the OS UI for normal shutdown'}
+            game = sandbox_command(root, release, 'stop') if release['game'] is not None else {'status': 'NOT_CONFIGURED'}
+            return {'running': False, 'observed': 'owned QEMU stopped; use the OS UI for normal shutdown', 'game': game}
         require(not status.get('running'), 'OS を画面内の電源操作で終了してください。稼働中のデータは変更しません。')
         if args.action == 'backup':
+            require(release['game'] is None,
+                    'complete Game current-copy backup integration is required; disk-only backup refused')
             saved = module.backup_profile(config)
             if args.output:
                 target = protected(args.output, new=True)
@@ -519,6 +628,8 @@ def action(args):
             return {'status': 'SAVED', 'backup': saved['backup'], 'export': str(args.output) if args.output else None,
                     'encrypted': False, 'restore_scope': 'same owned VM, new offline device; external game servers excluded'}
         if args.action == 'restore':
+            require(release['game'] is None,
+                    'complete Game current-copy restore integration is required; disk-only restore refused')
             require(re.fullmatch(r'[a-z0-9][a-z0-9-]{0,31}', args.name) and
                     args.name != record['active_device'] and args.name not in record['retired_devices'], 'new restore device name required')
             require(not (root / 'profiles' / (args.name + '.json')).exists(), 'restore profile already exists')
@@ -555,6 +666,8 @@ def action(args):
                 require(not module.remote(other, 'status').get('running'), 'retired source still running; preserving VM')
                 close_owned_display(module, other)
             close_owned_display(module, config)
+            if release['game'] is not None:
+                sandbox_command(root, release, 'stop')
             lima(root, 'stop', VM_NAME, timeout=180)
             verify_vm(root, record)
             lima(root, 'delete', '--tty=false', VM_NAME, timeout=180)

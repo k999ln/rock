@@ -82,3 +82,6 @@ This lifecycle pass does not clear the package reproducibility failure above, pr
 ### Stopped VM status remains observational
 
 RQ12/RQ16 · explicit, understandable lifecycle · `status` previously restarted an externally stopped owned VM to query QEMU · reused the pinned Lima identity/status record · `status`/`stop` now return the observed stopped VM state without launching it · regression asserts no Lima mutation or remote query · preview suite 32 PASS. The response does not infer that the earlier OS shutdown was clean from VM state alone; backup/restore retain their existing clean-filesystem checks.
+
+- RQ12/16/17・原則1/5/6/8: Game profile 配布の外部 authority 依存と復元境界を明示。既存 sandbox CLI と signed image provenance を再利用し manifest v2 に profile/source/base freeze/config SHA を固定、fresh state のみ初期化。独立 Lima で 2 回 start/stop、3 TLS1.3 peer の CA/hostname と loopback listener を検証、全 SQL 表/C identity snapshot 不変、所有 VM の正常停止・削除 PASS。証拠 game-sandbox-probe-20260910.json。OS image 未起動、final 候補の受入には未算入。Game 完全 backup/current-copy 統合までは disk-only restore を明示拒否。
+- 新規抽出先の umask による root 所有 payload の unreadable/group-write を解消: 既知 archive directory を 0755 で生成し root 自体は 0700 を保持。umask 000/002/077 回帰を追加。任意日本語 IME/clipboard 未接続、ASCII US 配列限定を guide に明示。

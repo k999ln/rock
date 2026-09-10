@@ -98,6 +98,62 @@ def frozen_native_inputs(tree, inventory):
     return result
 
 
+def release_profile(tree, images, commit, raw_factory, profile_name, freeze):
+    factory_sha256 = hashlib.sha256(raw_factory).hexdigest()
+    boot = {'mode': 'signed-stage0', 'profile': profile_name, 'factory_sha256': factory_sha256}
+    if profile_name == 'local-development':
+        preview.require(not (images / 'profile.json').exists(),
+                        'configured images cannot be relabelled as a local-only release')
+        return boot, None, []
+    preview.require(profile_name == 'development-game-authority', 'unsupported release boot profile')
+    profile_path = images / 'profile.json'
+    info = profile_path.lstat()
+    preview.require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and not info.st_mode & 0o222,
+                    'immutable single-link Game image profile required')
+    record = preview.decode(preview.read(profile_path))
+    preview.require(record.get('schema') == 'rock-game-authority-image-profile/1' and
+                    record.get('status') == 'PREPARED' and record.get('profile') == profile_name and
+                    record.get('source_commit') == commit and record.get('authority_id') == preview.GAME_AUTHORITY and
+                    record.get('simulation_only') is True and record.get('device_data_created') is False and
+                    record.get('base_images_unchanged') is True and
+                    record.get('initial_state') == 'empty-unregistered-no-consent',
+                    'exact source-bound empty public Game profile required')
+    preview.require(record.get('stage0', {}).get('output_factory_sha256') == factory_sha256 and
+                    record['stage0'].get('output_factory') == preview.decode(raw_factory),
+                    'Game profile and signed factory differ')
+    for name in preview.IMAGE_NAMES:
+        item = record.get('images', {}).get(name, {})
+        preview.require(item.get('sha256') == preview.digest(images / name) and
+                        item.get('size') == (images / name).stat().st_size,
+                        'Game profile and image triple differ')
+    config_path = tree / preview.GAME_CONFIG_MEMBER
+    raw_config = preview.read(config_path)
+    configuration = preview.decode(raw_config)
+    preview.require(raw_config == preview.canonical(configuration) + b'\n' and
+                    configuration == record.get('sandbox_configuration') and
+                    configuration.get('state') == preview.GAME_STATE and
+                    configuration.get('authority_id') == preview.GAME_AUTHORITY and
+                    configuration.get('simulation_only') is True and
+                    hashlib.sha256(raw_config).hexdigest() == record.get('sandbox_configuration_sha256'),
+                    'committed public sandbox config differs from the prepared image')
+    boot['profile_sha256'] = preview.digest(profile_path)
+    base_path = images / 'base-freeze-manifest.json'
+    base_raw = preview.read(base_path)
+    base_record = preview.decode(base_raw)
+    preview.require(type(freeze.get('base_build')) is dict and
+                    freeze['base_build'].get('manifest_sha256') == hashlib.sha256(base_raw).hexdigest() and
+                    freeze['base_build'].get('manifest') == base_record and
+                    base_record.get('schema') == 'rock-build-freeze/2' and
+                    base_record.get('status') == 'BUILD_COMPLETE_FROZEN' and base_record.get('source_commit') == commit and
+                    freeze.get('profile_derivation', {}).get('profile_sha256') == boot['profile_sha256'],
+                    'exact base-build bytes and explicit profile derivation binding required')
+    preview.require({name: record.get('base_images', {}).get(name, {}).get('sha256') for name in preview.IMAGE_NAMES} ==
+                    base_record.get('files_sha256'), 'profile base image identities differ from the original frozen build')
+    game = {'authority_id': preview.GAME_AUTHORITY, 'config': preview.GAME_CONFIG,
+            'sha256': record['sandbox_configuration_sha256'], 'config_member': preview.GAME_CONFIG_MEMBER}
+    return boot, game, [('images/profile.json', profile_path), ('provenance/base-freeze-manifest.json', base_path)]
+
+
 def make(args):
     repository = args.repository.resolve(strict=True)
     commit = subprocess.check_output(['git', '-C', str(repository), 'rev-parse', args.source + '^{commit}'], text=True).strip()
@@ -137,6 +193,7 @@ def make(args):
         preview.require(factory['sha256'] == image_hashes['rootfs.ext4'] and
                         factory['size'] == (images / 'rootfs.ext4').stat().st_size,
                         'signed stage0 factory does not match the package rootfs')
+        boot, game, profile_inputs = release_profile(tree, images, commit, raw_factory, args.boot_profile, freeze)
         docs = tree / 'docs'
         docs.mkdir()
         for name in ('preview-installation-ja.md', 'preview-release-notes.md', 'preview-legal-notice.md'):
@@ -150,6 +207,7 @@ def make(args):
                 inputs = frozen_native_inputs(tree, frozen_source)
                 inputs += [('docs/' + path.name, path) for path in docs.iterdir()]
                 inputs += [('images/' + name, images / name) for name in preview.IMAGE_NAMES]
+                inputs += profile_inputs
                 inputs += [('provenance/freeze-manifest.json', images / 'freeze-manifest.json')]
                 for name, expected in freeze['configuration_sha256'].items():
                     preview.safe_member(name)
@@ -168,6 +226,7 @@ def make(args):
                           'lima_version': '2.2.0', 'vm_type': 'vz', 'base_image': preview.BASE_IMAGE},
                  'archive': {'name': archive_name, 'sha256': preview.digest(archive_path), 'bytes': archive_path.stat().st_size},
                  'files': files, 'image_sha256': image_hashes, 'factory_sha256': hashlib.sha256(raw_factory).hexdigest(),
+                 'boot': boot, 'game': game,
                  'display': preview.PREVIEW_DISPLAY,
                  'trust': 'PUBLIC_RFC8032_DEVELOPMENT_ONLY' if args.public_test_signature else 'EXTERNAL_RELEASE_KEY',
                  'legal': {'status': 'NOT_CLEARED', 'product_license': 'not specified in source; no new terms invented',
@@ -203,6 +262,7 @@ def main():
     parser.add_argument('--source', required=True)
     parser.add_argument('--images', type=Path, required=True)
     parser.add_argument('--version', required=True)
+    parser.add_argument('--boot-profile', choices=('local-development', 'development-game-authority'), required=True)
     parser.add_argument('--output', type=Path, required=True)
     signer = parser.add_mutually_exclusive_group(required=True)
     signer.add_argument('--public-test-signature', action='store_true')

@@ -42,6 +42,8 @@ class PreviewRelease(unittest.TestCase):
                       'archive': {'name': self.archive.name, 'sha256': preview.digest(self.archive), 'bytes': self.archive.stat().st_size},
                       'files': self.files, 'image_sha256': {name: self.files['images/' + name]['sha256'] for name in preview.IMAGE_NAMES},
                       'factory_sha256': 'b' * 64, 'trust': 'PUBLIC_RFC8032_DEVELOPMENT_ONLY',
+                      'boot': {'mode': 'signed-stage0', 'profile': 'local-development', 'factory_sha256': 'b' * 64},
+                      'game': None,
                       'display': preview.PREVIEW_DISPLAY,
                       'legal': {'status': 'NOT_CLEARED'}, 'acceptance': {'status': 'CANDIDATE'}}
         self.sign()
@@ -88,6 +90,65 @@ class PreviewRelease(unittest.TestCase):
         (native / 'source.py').write_bytes(b'# modified source\n')
         with self.assertRaisesRegex(ValueError, 'source changed'):
             package_preview.frozen_native_inputs(self.root, inventory)
+
+    def test_extract_directory_modes_do_not_depend_on_invoking_umask(self):
+        for mask in (0o000, 0o002, 0o077):
+            destination = self.root / ('mask-' + str(mask))
+            previous = os.umask(mask)
+            try:
+                preview.extract_verified(self.archive, destination, self.files)
+            finally:
+                os.umask(previous)
+            self.assertEqual(destination.stat().st_mode & 0o777, 0o700)
+            for path in destination.rglob('*'):
+                self.assertEqual(path.stat().st_mode & 0o777, 0o755 if path.is_dir() else 0o444)
+
+    def configure_game_release(self):
+        self.payloads['images/profile.json'] = b'{"scope":"manifest unit fixture only"}\n'
+        self.payloads[preview.GAME_CONFIG_MEMBER] = preview.canonical({
+            'authority_id': preview.GAME_AUTHORITY, 'state': preview.GAME_STATE, 'simulation_only': True}) + b'\n'
+        self.write_archive()
+        self.value['archive'].update(sha256=preview.digest(self.archive), bytes=self.archive.stat().st_size)
+        self.value['boot'].update(profile='development-game-authority',
+                                 profile_sha256=self.files['images/profile.json']['sha256'])
+        self.value['game'] = {'authority_id': preview.GAME_AUTHORITY, 'config': preview.GAME_CONFIG,
+                             'config_member': preview.GAME_CONFIG_MEMBER,
+                             'sha256': self.files[preview.GAME_CONFIG_MEMBER]['sha256']}
+        self.sign()
+
+    def test_game_release_binds_profile_and_authority_config_to_signed_inventory(self):
+        self.configure_game_release()
+        release = self.verify()
+        (self.root / 'profiles').mkdir()
+        record = {'vm_config_sha256': '1' * 64, 'vm_identity_sha256': '2' * 64}
+        path = preview.launcher_manifest(self.root, release, record, 'new-preview')
+        device = preview.decode(preview.read(path))['device']
+        self.assertEqual(device['schema'], 'rock-desktop-device/7')
+        self.assertEqual(device['network'], 'game-authority')
+        self.assertEqual(device['boot'], release['boot'])
+        self.assertEqual(device['game'], {key: release['game'][key] for key in ('config', 'sha256', 'authority_id')})
+
+    def test_signed_game_release_still_refuses_crossed_bindings(self):
+        self.configure_game_release()
+        initial = copy.deepcopy(self.value)
+        for section, field, value in (
+                ('boot', 'factory_sha256', '3' * 64), ('boot', 'profile_sha256', '4' * 64),
+                ('boot', 'profile', 'local-development'),
+                ('game', 'sha256', '5' * 64), ('game', 'authority_id', 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa'),
+                ('game', 'config', '/var/tmp/another-authority/sandbox.json'),
+                ('game', 'config_member', 'native/config.json')):
+            with self.subTest(section=section, field=field):
+                self.value = copy.deepcopy(initial)
+                self.value[section][field] = value
+                self.sign()
+                with self.assertRaises(ValueError):
+                    self.verify()
+
+    def test_local_release_cannot_hide_an_implicit_game_binding(self):
+        self.value['game'] = {'authority_id': preview.GAME_AUTHORITY}
+        self.sign()
+        with self.assertRaisesRegex(ValueError, 'implicit Game'):
+            self.verify()
 
     def test_public_test_key_requires_opt_in_and_independent_manifest_pin(self):
         for options in ({'allow_public_test_key': False}, {'manifest_sha256': None}):
@@ -222,6 +283,99 @@ class PreviewRelease(unittest.TestCase):
         self.assertFalse(output.exists())
 
 
+
+class PreparedGameImageRelease(unittest.TestCase):
+    """Profile metadata fixtures; real factory signatures are checked separately."""
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix='preview-game-profile-')
+        self.addCleanup(self.temp.cleanup)
+        self.tree = Path(self.temp.name).resolve()
+        self.images = self.tree / 'images'
+        self.images.mkdir()
+        for name in preview.IMAGE_NAMES:
+            (self.images / name).write_bytes(('unit-' + name).encode())
+        self.commit = '1' * 40
+        self.factory = preview.canonical({'manifest': {'sha256': preview.digest(self.images / 'rootfs.ext4')},
+                                          'signature': 'not-a-real-factory-signature'}) + b'\n'
+        config = {'authority_id': preview.GAME_AUTHORITY, 'state': preview.GAME_STATE, 'simulation_only': True}
+        path = self.tree / preview.GAME_CONFIG_MEMBER
+        path.parent.mkdir(parents=True)
+        path.write_bytes(preview.canonical(config) + b'\n')
+        base = {'schema': 'rock-build-freeze/2', 'status': 'BUILD_COMPLETE_FROZEN', 'source_commit': self.commit,
+                'files_sha256': {name: '2' * 64 for name in preview.IMAGE_NAMES}}
+        self.base_raw = preview.canonical(base) + b'\n'
+        (self.images / 'base-freeze-manifest.json').write_bytes(self.base_raw)
+        self.record = {'schema': 'rock-game-authority-image-profile/1', 'status': 'PREPARED',
+                       'profile': 'development-game-authority', 'source_commit': self.commit,
+                       'authority_id': preview.GAME_AUTHORITY, 'simulation_only': True,
+                       'device_data_created': False, 'base_images_unchanged': True,
+                       'initial_state': 'empty-unregistered-no-consent',
+                       'stage0': {'output_factory_sha256': hashlib.sha256(self.factory).hexdigest(),
+                                  'output_factory': preview.decode(self.factory)},
+                       'images': {name: {'sha256': preview.digest(self.images / name),
+                                        'size': (self.images / name).stat().st_size} for name in preview.IMAGE_NAMES},
+                       'base_images': {name: {'sha256': base['files_sha256'][name]} for name in preview.IMAGE_NAMES},
+                       'sandbox_configuration': config, 'sandbox_configuration_sha256': preview.digest(path)}
+        self.freeze = {'base_build': {'manifest': base, 'manifest_sha256': hashlib.sha256(self.base_raw).hexdigest()},
+                       'profile_derivation': {}}
+        self.write_profile()
+
+    def write_profile(self):
+        path = self.images / 'profile.json'
+        if path.exists(): path.chmod(0o600)
+        path.write_bytes(preview.canonical(self.record) + b'\n')
+        path.chmod(0o444)
+        self.freeze['profile_derivation']['profile_sha256'] = preview.digest(path)
+
+    def package_profile(self, name='development-game-authority'):
+        return package_preview.release_profile(self.tree, self.images, self.commit, self.factory, name, self.freeze)
+
+    def test_exact_profile_and_original_build_bytes_are_included(self):
+        boot, game, files = self.package_profile()
+        self.assertEqual(boot['profile_sha256'], preview.digest(self.images / 'profile.json'))
+        self.assertEqual(game['sha256'], self.record['sandbox_configuration_sha256'])
+        self.assertEqual([name for name, _ in files], ['images/profile.json', 'provenance/base-freeze-manifest.json'])
+
+    def test_configured_profile_cannot_be_called_local_only(self):
+        with self.assertRaisesRegex(ValueError, 'relabelled'):
+            self.package_profile('local-development')
+
+    def test_profile_requires_same_source_empty_state_and_factory(self):
+        initial = copy.deepcopy(self.record)
+        for key, value in (('source_commit', '3' * 40), ('initial_state', 'funded'),
+                           ('device_data_created', True), ('authority_id', 'foreign'), ('simulation_only', False)):
+            self.record = {**initial, key: value}
+            self.write_profile()
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                self.package_profile()
+        self.record = copy.deepcopy(initial)
+        self.record['stage0']['output_factory_sha256'] = '4' * 64
+        self.write_profile()
+        with self.assertRaisesRegex(ValueError, 'factory differ'):
+            self.package_profile()
+
+    def test_base_freeze_raw_bytes_and_inline_record_must_agree(self):
+        for mutate in ('raw', 'inline', 'profile'):
+            self.freeze['base_build']['manifest_sha256'] = hashlib.sha256(self.base_raw).hexdigest()
+            self.freeze['base_build']['manifest'] = preview.decode(self.base_raw)
+            (self.images / 'base-freeze-manifest.json').write_bytes(self.base_raw)
+            self.write_profile()
+            if mutate == 'raw': (self.images / 'base-freeze-manifest.json').write_bytes(self.base_raw + b'\n')
+            elif mutate == 'inline': self.freeze['base_build']['manifest']['source_commit'] = '5' * 40
+            else: self.freeze['profile_derivation']['profile_sha256'] = '6' * 64
+            with self.subTest(mutate=mutate), self.assertRaisesRegex(ValueError, 'base-build bytes'):
+                self.package_profile()
+
+    def test_profile_copy_cannot_select_different_images_or_sandbox_configuration(self):
+        (self.images / 'rootfs.ext4').write_bytes(b'changed image')
+        with self.assertRaisesRegex(ValueError, 'image triple'):
+            self.package_profile()
+        (self.images / 'rootfs.ext4').write_bytes(b'unit-rootfs.ext4')
+        (self.tree / preview.GAME_CONFIG_MEMBER).write_bytes(b'changed config')
+        with self.assertRaises(ValueError):
+            self.package_profile()
+
+
 class OwnedLifecycle(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix='preview-owned-')
@@ -290,10 +444,53 @@ class OwnedLifecycle(unittest.TestCase):
         module = Mock()
         module.load.return_value = {'device': {'name': 'preview'}, 'host_state': str(self.root / 'display')}
         module.remote.return_value = {'running': running}
-        return module, [patch.object(preview, 'installed_release', return_value={}),
+        return module, [patch.object(preview, 'installed_release', return_value={'game': None}),
                         patch.object(preview, 'verify_installed'),
                         patch.object(preview, 'verify_vm', return_value={'status': 'Running'}),
                         patch.object(preview, 'launcher', return_value=module)]
+
+    def test_sandbox_receipt_requires_expected_authority_hash_and_process_state(self):
+        release = {'game': {'sha256': 'a' * 64},
+                   'files': {'native/os/game_exchange/sandbox.py': {'sha256': 'b' * 64}}}
+        receipt = {'schema': 'rock-game-sandbox-status/1', 'authority_id': preview.GAME_AUTHORITY,
+                   'config_sha256': 'a' * 64, 'simulation_only': True, 'running': True, 'pid': 123}
+        with patch.object(preview, 'guest_python', return_value=SimpleNamespace(stdout=json.dumps(receipt))):
+            self.assertEqual(preview.sandbox_command(self.root, release, 'start'), receipt)
+        for field, changed in (('authority_id', 'foreign'), ('config_sha256', 'c' * 64),
+                               ('simulation_only', False), ('running', False), ('running', 1), ('schema', 'foreign')):
+            bad = {**receipt, field: changed}
+            with self.subTest(field=field, changed=changed), \
+                 patch.object(preview, 'guest_python', return_value=SimpleNamespace(stdout=json.dumps(bad))), \
+                 self.assertRaises(ValueError):
+                preview.sandbox_command(self.root, release, 'start')
+
+    def test_unavailable_game_server_does_not_prevent_hub_start(self):
+        from contextlib import ExitStack
+        module, patches = self.action_patches()
+        module.launch.return_value = {'running': True}
+        with ExitStack() as stack:
+            for item in patches:
+                stack.enter_context(item)
+            stack.enter_context(patch.object(preview, 'installed_release', return_value={'game': {'sha256': 'a' * 64}}))
+            stack.enter_context(patch.object(preview, 'sandbox_command', side_effect=ValueError('fixture server unavailable')))
+            result = preview.action(SimpleNamespace(directory=self.root, action='start', no_open=True))
+        self.assertTrue(result['running'])
+        self.assertEqual(result['game']['status'], 'UNAVAILABLE')
+        module.launch.assert_called_once()
+
+    def test_failed_game_writer_stop_blocks_vm_deletion(self):
+        from contextlib import ExitStack
+        module, patches = self.action_patches()
+        with ExitStack() as stack:
+            for item in patches:
+                stack.enter_context(item)
+            stack.enter_context(patch.object(preview, 'installed_release', return_value={'game': {'sha256': 'a' * 64}}))
+            stack.enter_context(patch.object(preview, 'sandbox_command', side_effect=ValueError('writer identity changed')))
+            lima = stack.enter_context(patch.object(preview, 'lima'))
+            with self.assertRaisesRegex(ValueError, 'writer identity changed'):
+                preview.action(SimpleNamespace(directory=self.root, action='remove', delete_data=True))
+            lima.assert_not_called()
+        self.assertEqual(preview.load(self.root)[1]['state'], 'INSTALLED')
 
     def run_action(self, args, *, running=False):
         from contextlib import ExitStack

@@ -1,6 +1,6 @@
 # RockstarOS 1.0 Developer Preview — 配布候補の変更点
 
-この文書は Mac arm64 package の共通リリースノートです。具体的な版、40 桁 source/host tools commit、image triple と factory hash、archive hash は隣接する `release-manifest.json` が正本です。資料の存在を受入済みや公開済みとは扱いません。
+この文書は Mac arm64 package の共通リリースノートです。具体的な版、40 桁 source/host tools commit、image triple と factory hash、boot profile と Game authority/config hash、archive hash は隣接する `release-manifest.json` が正本です。資料の存在を受入済みや公開済みとは扱いません。
 
 ## 導入で変わること
 
@@ -16,8 +16,10 @@
 - OS は Developer Preview、Wallet は合成環境です。実売上、実資金送受金、実 ATM、実ゲームは含みません。
 - OS の署名は公開 RFC8032 開発試験鍵です。公開 seed により誰でも署名を作成でき、本番の配布元認証には使えません。
 - release manifest は archive と全内容を署名します。bootstrap・manifest pin・鍵 fingerprint を別の信頼できる経路で取得する必要があります。
-- 端末は offline device/6。cloud/PC の接続状態や Game/SDK の試験範囲は、その候補の個別受入記録に従います。一般 provider に接続済みとは表示しません。
-- backup は暗号化されていません。別端末名 restore は同じ VM 内の直近 backup に限り、外部 game/authority DB や別 host の災害復旧は含みません。
+- `local-development` は offline device/6、`development-game-authority` は device/7 と同じ専用VM内の独立した公開試験台帳を使います。Game構成は個人の既存台帳を複製せず、空・未登録・未同意の状態から準備します。一般providerには接続しません。
+- Gameサーバーが利用できない場合もHubの起動は継続できます。別のauthorityへ置き換えたり、接続同意・登録・残高を自動生成したりしません。
+- native入力はASCIIのUS配列のみです。日本語IMEとclipboardは未接続で、任意の日本語本文を貼り付ける操作はできません。日本語の引用整理例は「サンプルを入力」ボタンで試せます。この制限下の例を日常業務の入力時間削減とは扱いません。
+- backup は暗号化されていません。local構成の別端末名 restore は同じ VM 内の直近 backup に限ります。Game構成の完全台帳backup/restoreは次の統合工程で、未対応の候補はdisk-only操作を拒否します。別hostの災害復旧は未受入です。
 - 削除は所有権が一致する専用 VM とその内部データに限ります。host の package と記録、別先の export backup は保持します。
 - 製品の新しい license/再配布条件は策定していません。NOTICE と Buildroot legal-info の確認は公開条件として残します。
 
@@ -32,10 +34,13 @@
 ```sh
 python3 systems/rock-star-os/os/desktop/package_preview.py \
   --repository . --source "$SOURCE_COMMIT" --images "$IMMUTABLE_IMAGES" \
+  --boot-profile local-development \
   --version 1.0.0-preview.1 --output "$NEW_OUTPUT_DIRECTORY" \
   --public-test-signature
 ```
 
-入力 source は完全な 40 桁 commit に限定します。`git archive` の追跡済み native source と immutable image triple を使い、cache・個人 VM・秘密値を採取しません。入力の signed stage0 factory が rootfs を指すことを確認します。tar の順序・uid/gid・mode・mtime と gzip timestamp を固定しています。同じ入力では同じ archive/hash を作ります。
+入力 source は完全な 40 桁 commit に限定します。`git archive` の追跡済み native source と immutable image triple を使い、cache・個人 VM・秘密値を採取しません。入力の signed stage0 factory が rootfs を指すことを確認します。tar の順序・uid/gid・mode・mtime と gzip timestamp を固定し、検証時のPython cacheは収録しません。最終候補では同じ入力から二回生成したarchive/manifestの完全一致を実測します。
+
+Game候補は `--boot-profile development-game-authority` を明示します。image directoryには署名済み派生triple、`profile.json`、元freezeの正確なbytesを持つ `base-freeze-manifest.json`、現在の `freeze-manifest.json` が必要です。現在のfreezeは `profile_derivation.profile_sha256` と `base_build.manifest_sha256` / `base_build.manifest` で派生前後を結びます。公開sandbox設定は同じsourceの固定fixtureと一致させ、新規VMごとにimageを書き換えません。
 
 既存の非公開 Ed25519 release key を使用する場合は `--public-test-signature` の代わりに `--signing-key <管理済みPEM>` を使います。新しい OS 鍵の生成・本番 trust の決定を行う機能ではありません。第三者の Buildroot legal-info archive は `--legal-info <tar.gz>` で同梱できますが、同梱しただけで製品・再配布条件の承認済みにしません。
