@@ -85,9 +85,10 @@ class GameWalletFacade:
             with client.store.transaction() as db:
                 row=db.execute('SELECT connection_id,intent,consent FROM bindings ORDER BY rowid LIMIT 1').fetchone()
                 unknown=db.execute("SELECT key FROM requests WHERE operation='game.connection.begin' ORDER BY rowid LIMIT 1").fetchone()
+                pending_expired=bool(row and row['consent'] is None and client._now(db)>=_loaded(row['intent'])['binding']['intent_expires_at'])
             state='NOT_CONNECTED';connection=None
             if row:
-                connection=row['connection_id'];state='AWAITING_OWNER_CONSENT'
+                connection=row['connection_id'];state='EXPIRED' if pending_expired else 'AWAITING_OWNER_CONSENT'
                 if row['consent']:
                     fresh=client.dispatch({'v':1,'op':'game.connection.status','connection_id':connection})
                     p.require(fresh['ok'] is True,'current owner connection status required');state=fresh['result']['current_state']

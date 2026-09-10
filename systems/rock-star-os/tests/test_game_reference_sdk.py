@@ -70,6 +70,46 @@ class ReferenceSDK(unittest.TestCase):
         self.assertEqual(repeated,original)
         with self.sdk.connections['public-game-a'].store.transaction() as db:
             self.assertEqual(db.execute("SELECT count(*) FROM requests WHERE operation='game.connection.begin'").fetchone()[0],1)
+    def retained_connection_rows(self):
+        with self.sdk.connections['public-game-a'].store.transaction() as db:
+            return [tuple(r) for r in db.execute('SELECT rowid,* FROM requests ORDER BY rowid')]
+
+    def check_terminal_begin_refused(self,transport,original):
+        before=self.retained_connection_rows();balance=self.f.balances()
+        with self.assertRaisesRegex(ValueError,'reconnection is not supported in this version'):
+            self.sdk.begin_connection('public-game-a','fresh-ui-key',transport)
+        self.assertEqual(self.retained_connection_rows(),before)
+        self.assertEqual(self.f.balances(),balance)
+        self.assertEqual(self.sdk.begin_connection('public-game-a','same-key',transport),original)
+        self.assertEqual(self.sdk.connections['public-game-a'].retry('game.connection.begin','same-key'),original)
+        self.assertEqual(self.retained_connection_rows(),before)
+        with self.sdk.store.transaction() as db:
+            self.assertEqual(db.execute('SELECT count(*) FROM player_proofs').fetchone()[0],1)
+
+    def test_expired_pending_new_key_refused_original_retry_and_catalog_preserved(self):
+        from game_exchange.device_client import GameWalletFacade
+        original,transport=self.begin('a')
+        self.f.now=original['result']['binding']['intent_expires_at']
+        self.check_terminal_begin_refused(transport,original)
+        facade=GameWalletFacade.__new__(GameWalletFacade);facade.sdk=self.sdk
+        self.assertEqual(facade.catalog()['games'][0]['current_state'],'EXPIRED')
+
+    def test_expired_active_new_key_refused_completed_purchase_stays_reconcilable(self):
+        connection=self.connect('a');self.purchase('a',connection);self.workers['a'].once()
+        original,transport=self.begin('a')
+        self.f.now=original['result']['binding']['connection_expires_at']
+        self.check_terminal_begin_refused(transport,original)
+        status=self.sdk.dispatch('public-game-a',{'v':1,'op':'game.exchange.status','connection_id':connection,'exchange_id':'same-external'})
+        self.assertEqual(status['result']['state'],'COMPLETED');self.assertEqual(self.f.grants['a'].balance('alice'),10)
+
+    def test_revoked_new_key_refused_completed_purchase_stays_reconcilable(self):
+        connection=self.connect('a');self.purchase('a',connection);self.workers['a'].once()
+        original,transport=self.begin('a')
+        self.assertTrue(self.sdk.dispatch('public-game-a',{'v':1,'op':'game.connection.revoke','key':'explicit-revoke','connection_id':connection})['ok'])
+        self.check_terminal_begin_refused(transport,original)
+        status=self.sdk.dispatch('public-game-a',{'v':1,'op':'game.exchange.status','connection_id':connection,'exchange_id':'same-external'})
+        self.assertEqual(status['result']['state'],'COMPLETED');self.assertEqual(self.f.grants['a'].balance('alice'),10)
+
     def test_record_is_durable_before_actual_send_and_unknown_retries_original(self):
         conn=self.connect('a');game='public-game-a'
         request={'v':1,'op':'game.exchange.quote','key':'lost-quote','connection_id':conn,'exchange_id':'lost-external','principal_minor':100}

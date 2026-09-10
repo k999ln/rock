@@ -232,7 +232,24 @@ class ReferenceOwnerClient:
         with self.locks[game]:
             with client.store.transaction() as db:
                 prior=db.execute("SELECT key FROM requests WHERE operation='game.connection.begin' ORDER BY rowid LIMIT 1").fetchone()
-            if prior:return client.retry('game.connection.begin',prior[0])
+            if prior:
+                # The original key is always an explicit receipt recovery.
+                # A new UI key may resume a live pending ceremony, but cannot
+                # renew the permanent GX00 subject reservation in this version.
+                reply=client.retry('game.connection.begin',prior[0])
+                if key==prior[0] or reply.get('ok') is False:return reply
+                with client.store.transaction() as db:
+                    row=client._binding(db,'intent_id',reply['result']['binding']['intent_id'])
+                    now=client._now(db);intent=_loaded(row['intent']);consent=row['consent']
+                if consent is None:
+                    p.require(now<intent['binding']['intent_expires_at'],
+                        'connection intent expired; reconnection is not supported in this version; use the original key only for receipt recovery')
+                else:
+                    current=client.dispatch({'v':1,'op':'game.connection.status','connection_id':intent['binding']['connection_id']})
+                    p.require(current.get('ok') is True,'current connection status required before resuming a saved connection')
+                    p.require(current['result']['current_state'] not in ('EXPIRED','REVOKED'),
+                        'connection expired or revoked; reconnection is not supported in this version; history and original-request recovery remain available')
+                return reply
             request={'v':1,'op':'connection.proof','key':key,'audience':self.transport.authority_id,'scopes':list(p.SCOPES)}
             with self.store.transaction() as db:
                 old=db.execute('SELECT request,proof FROM player_proofs WHERE game_id=? AND key=?',(game,key)).fetchone()
