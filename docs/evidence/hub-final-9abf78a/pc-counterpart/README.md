@@ -15,3 +15,7 @@ RQ01–11 / 0→1・秘密を探す / 異なる商品の成果を比較して改
 - 実行器: `scripts/measure-native-citation-path.py`
 
 再現は独立取得したfreezeを指定し、未使用の出力先で `python3 -B scripts/measure-native-citation-path.py --repository . --freeze <freeze-manifest.json> --output <new-directory>`。Wallet、Game、遠隔runner、実金銭は操作しない。人のactive時間・画面切替・手動copyはnull、時間削減の実証はfalseのままである。
+
+## Mr.版との出力契約の差
+
+既存155-byte出力と今回151-byte出力を、保存した原bytesのまま追加照合した。Mr.版はコードブロック直後に区切り線 `---` と改行が1行あり、native版はその行がない。他の全行は一致する。本文・コード中出典・末尾一覧を保持しているが、出力が完全一致する商品とは表示しない。[原出力diff](mr-native-original-output.diff) と [契約差の記録](mr-native-output-contract.json) を保存した。出力の加工・新しい商品実行・人の品質評価は行っていない。
