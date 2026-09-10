@@ -27,3 +27,7 @@ Linux実行場所: `/var/tmp/rock-release-game-20260910`。既存VM/台帳を触
 - GX01-CONTRACT / 期限と独立台帳 / Game A の遅延で B・ATM を止めない / 実 TLS listener と既存 worker・ATM を再利用 / transport の実 CA/hostname/宛先/credential/期限を送信前後に固定検査 / A の 3 秒期限、B と ATM の 2 秒内完了、hold 103 保持・ATM fee 0・最終 grant 一度 / Linux real stalled TLS 2 tests 4.249s skip 0 PASS (`work/gx01-real-tls-stall-first.log`)。A 応答保留中に B 決済と ATM 発行/取消が完了。A timeout→実 NOT_FOUND→元 apply の照合で資産を一度だけ付与。
 
 - DX01-SDK / 作者と owner の権限分離・元要求保持 / 新しい環境で接続・購入・障害診断を再現できない不便 / 同じ reference SDK と software test authenticator / host-only owner/author CLI・公開 pin config・120秒限定 onboarding harness / 設定入力2、実コード行数、初回交換・原因特定・復旧の machine elapsed / 例の実 TLS 2 Game 登録→同意→購入→再起動→元 setup/購入再送 test 1.911s PASS、fresh Linux メトリクスは別実行で保存予定。
+
+- DX01-SDK / 複数 owner の独立 authority と元 receipt 保存 / 一作者の同 key が別 player へ衝突する不便 / 既存 author SDK journal を再利用 / connection_id 入り v2 namespace・元 v1 exact read-through・明示した追加 Wallet UUID pin / 同じ作者インスタンスの Alice/Bob quote、曖昧 retry 拒否、再起動元 receipt 一致、未知 Wallet pin 拒否 / Linux SDK/golden/sample12tests13.578s PASS、その後追加の restart/pin 拒否を個別受入。既存単一 Wallet constructor/identity は変更せず、多 Wallet 構成は初回の明示 tuple で固定。
+
+- GX01-CONTRACT / 厳密 JSON と署名 purpose 分離 / 他実装が canonical bytes を再現できない不便 / 実 TLS で作った quote/approval/apply/status/reject/terminal を再利用 / literal signed golden6件と独立 Node 検査 / exact bytes・SHA256・Ed25519・他 purpose 拒否・bool/float/未知field拒否 / Python3tests0.108s PASS、Node v26.0.0 six vectors PASS。公開合成 fixture 以外の鍵や利用者情報を含まない。

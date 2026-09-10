@@ -166,6 +166,44 @@ class ReferenceSDK(unittest.TestCase):
         self.assertEqual(recovered['result']['owner']['device_ref'],support.A2)
         self.assertEqual(recovered['result']['intent']['binding']['device_ref'],A1)
         with self.assertRaises(ValueError):self.f.authenticators[support.A2].get_game_assertion(recovered['result']['intent'],'0000','forbidden-moved-challenge')
+        # One author SDK serves both owner/player connections with the same
+        # external key. Its retained v1 receipt is read through exactly while
+        # the other connection gets the versioned connection namespace.
+        from game_exchange.reference_sdk import ReferenceAuthorClient
+        from game_exchange.exchange_gateway import ExchangeGateway,public_token
+        self.f.server.exchange_gateway=ExchangeGateway(self.f.gateway)
+        author_transport=GameTransport('https://127.0.0.1:'+str(self.f.server.server_port),support.gx.ROOT/'os/registry/fixtures/development-ca.pem',game,
+            token=public_token('a'),endpoint='/v1/game-exchange')
+        author=ReferenceAuthorClient(self.f.root/'one-author-two-players',author_transport,game=self.f.authorities[0].game,
+            wallet_authority_id=self.f.transports[A1].authority_id,terminal_key=self.f.grants['a'].signer.record,
+            additional_wallet_authority_ids=(self.f.transports[support.B1].authority_id,));self.addCleanup(author.close)
+        old_request={'v':1,'op':'exchange.quote','key':'same-author-key','connection_id':alice_conn,'exchange_id':'same-external','principal_minor':100}
+        old_reply=author_transport.exchange(old_request);self.assertTrue(old_reply['ok'],old_reply)
+        with author.store.transaction() as db:
+            old_namespace=author._legacy_namespace(old_request)
+            original=(old_namespace,support.gx.encoded(old_request),support.gx.encoded(old_reply),'ACKNOWLEDGED')
+            db.execute('INSERT INTO requests VALUES(?,?,?,?)',original)
+        self.assertEqual(author.dispatch(old_request),old_reply)
+        bob_reply=author.dispatch(dict(old_request,connection_id=bob_conn));self.assertTrue(bob_reply['ok'],bob_reply)
+        self.assertNotEqual(old_reply['result']['quote_id'],bob_reply['result']['quote_id'])
+        self.assertEqual(author.retry('same-author-key',connection_id=alice_conn),old_reply)
+        self.assertEqual(author.retry('same-author-key',connection_id=bob_conn),bob_reply)
+        with self.assertRaises(ValueError):author.retry('same-author-key')
+        with author.store.transaction() as db:
+            self.assertEqual(tuple(db.execute('SELECT * FROM requests WHERE namespace=?',(old_namespace,)).fetchone()),original)
+            self.assertEqual(db.execute('SELECT count(*) FROM requests').fetchone()[0],2)
+        author.close()
+        with self.assertRaises(ValueError):
+            ReferenceAuthorClient(self.f.root/'one-author-two-players',author_transport,game=self.f.authorities[0].game,
+                wallet_authority_id=self.f.transports[A1].authority_id,terminal_key=self.f.grants['a'].signer.record)
+        author=ReferenceAuthorClient(self.f.root/'one-author-two-players',author_transport,game=self.f.authorities[0].game,
+            wallet_authority_id=self.f.transports[A1].authority_id,terminal_key=self.f.grants['a'].signer.record,
+            additional_wallet_authority_ids=(self.f.transports[support.B1].authority_id,));self.addCleanup(author.close)
+        self.assertEqual(author.retry('same-author-key',connection_id=alice_conn),old_reply)
+        self.assertEqual(author.retry('same-author-key',connection_id=bob_conn),bob_reply)
+        unlisted=ReferenceAuthorClient(self.f.root/'unlisted-author-wallet',author_transport,game=self.f.authorities[0].game,
+            wallet_authority_id=self.f.transports[A1].authority_id,terminal_key=self.f.grants['a'].signer.record);self.addCleanup(unlisted.close)
+        with self.assertRaises(ConnectionUnavailable):unlisted.dispatch(dict(old_request,connection_id=bob_conn))
         results={}
         for sdk,device,connection in ((bob,support.B1,bob_conn),(second,support.A2,alice_conn)):
             quote=sdk.dispatch(game,{'v':1,'op':'game.exchange.quote','key':'same-key','connection_id':connection,'exchange_id':'same-external','principal_minor':100})['result']

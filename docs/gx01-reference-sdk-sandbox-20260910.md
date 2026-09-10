@@ -28,3 +28,20 @@ Validation: actual Linux TLS SDK/facade/core/migration16tests PASS11.388s, skip0
 同じ owner/account の端末に限って元の intent/consent bytes を private journal へ保持する。
 接続時の challenge を別端末へ移さず、購入には追加端末自身の新しい approval intent と本人署名を要求する。
 別 owner への取得、失効した transport からの履歴取得、失効した作者からの元 quote 再送は拒否する。
+
+作者 SDK の v2 namespace は role/transport/Game/connection/operation/key を含む。
+旧 v1 namespace の元 request/receipt は、同じ connection への完全再送の場合だけ
+その行を変更せず読み通す。別 connection の同 key は v2 行に分かれ、
+`retry(key, connection_id=...)` で元要求を特定する。複数 connection が同 key を
+持つ場合、connection_id のない曖昧な retry は拒否する。
+Alice/Bob の Wallet authority は別 UUID のため、一作者 SDK が両方を扱う場合は
+既存の `wallet_authority_id` に加えて
+`additional_wallet_authority_ids=(bob_wallet_uuid,)` を初期設定時に明示する。
+信頼する UUID 集合は private journal の identity に固定し、再起動時の変更と
+未登録 UUID の応答を拒否する。既存単一 Wallet 構成の identity bytes は保つ。
+
+Runnable examples と実行手順は
+`systems/rock-star-os/examples/game/README.md`。別々の owner/author 公開設定を使い、
+診断は未確定要求の元 operation/key を表示する。6 purpose の実 TLS golden vectors
+は `os/game_exchange/fixtures/exchange-v1`、独立 Node の canonical/署名検査は
+`node examples/game/verify-golden.mjs`。これは JavaScript 全機能 SDK の提供という主張ではない。

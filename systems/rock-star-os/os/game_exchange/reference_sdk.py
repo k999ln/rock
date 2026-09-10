@@ -302,22 +302,30 @@ class ReferenceOwnerClient:
 
 class ReferenceAuthorClient:
     """Separate author role: quote/status only, never approval or Wallet credit."""
-    def __init__(self,state,transport,*,game,wallet_authority_id,terminal_key):
+    def __init__(self,state,transport,*,game,wallet_authority_id,terminal_key,additional_wallet_authority_ids=()):
         from .http import GameTransport
         p.require(type(transport) is GameTransport and transport.endpoint=='/v1/game-exchange' and transport.game_id==game.game_id,
             'dedicated author TLS transport required')
         p.game_record(game);p.uuid_value(wallet_authority_id)
+        p.require(type(additional_wallet_authority_ids) is tuple and len(additional_wallet_authority_ids)<=63,'explicit bounded additional Wallet authority pins required')
+        for value in additional_wallet_authority_ids:p.uuid_value(value)
+        authorities=(wallet_authority_id,)+additional_wallet_authority_ids
+        p.require(len(set(authorities))==len(authorities),'distinct pinned Wallet authorities required')
+        self.wallet_authority_ids=frozenset(authorities)
         self.transport,self.game,self.wallet_authority_id=transport,game,wallet_authority_id
         self.keys=x.KeyRegistry((terminal_key,));self.pin=transport.fingerprint;self.mutex=threading.RLock()
-        self.store=PrivateStore(Path(state),{'schema':'rock-game-reference-author-sdk/1','transport':self.pin,
-            'game_id':game.game_id,'game_authority_id':game.game_authority_id,'wallet_authority_id':wallet_authority_id,'simulation_only':True})
+        configuration={'schema':'rock-game-reference-author-sdk/1','transport':self.pin,
+            'game_id':game.game_id,'game_authority_id':game.game_authority_id,'wallet_authority_id':wallet_authority_id,'simulation_only':True}
+        if additional_wallet_authority_ids:configuration['additional_wallet_authority_ids']=sorted(additional_wallet_authority_ids)
+        self.store=PrivateStore(Path(state),configuration)
         with self.store.transaction() as db:
             db.execute('CREATE TABLE IF NOT EXISTS requests (namespace TEXT PRIMARY KEY,request TEXT NOT NULL,receipt TEXT,last_contact TEXT NOT NULL)')
             db.execute("CREATE TRIGGER IF NOT EXISTS author_requests_retained BEFORE DELETE ON requests BEGIN SELECT RAISE(ABORT,'retained author request'); END")
             db.execute("CREATE TRIGGER IF NOT EXISTS author_request_binding BEFORE UPDATE OF namespace,request ON requests BEGIN SELECT RAISE(ABORT,'immutable author request'); END")
             db.execute("CREATE TRIGGER IF NOT EXISTS author_receipt_binding BEFORE UPDATE OF receipt ON requests WHEN OLD.receipt IS NOT NULL AND NEW.receipt IS NOT OLD.receipt BEGIN SELECT RAISE(ABORT,'immutable author receipt'); END")
     def close(self):self.store.close()
-    def _namespace(self,request):return hashlib.sha256(p.canonical(['reference-author-v1',self.pin,self.game.game_authority_id,self.game.game_id,request['op'],request['key']])).hexdigest()
+    def _legacy_namespace(self,request):return hashlib.sha256(p.canonical(['reference-author-v1',self.pin,self.game.game_authority_id,self.game.game_id,request['op'],request['key']])).hexdigest()
+    def _namespace(self,request):return hashlib.sha256(p.canonical(['reference-author-v2',self.pin,self.game.game_authority_id,self.game.game_id,request['connection_id'],request['op'],request['key']])).hexdigest()
     def _accept(self,request,reply):
         if reply.get('ok') is False:OwnerConnectionClient._denial(reply);return
         p.fields(reply,{'ok','result'});p.require(reply['ok'] is True,'author acknowledgement required');value=reply['result']
@@ -330,8 +338,9 @@ class ReferenceAuthorClient:
             p.require(value['schema']=='rock-game-exchange-author-state/1' and value['simulation_only'] is True and value['state'] in
                 ('QUEUED','CONFIRMING','REVIEW_REQUIRED','COMPLETED','REVERSED','CANCELLED'),'author state projection required')
         b=x.binding(value['binding'])
-        p.require((b['wallet_authority_id'],b['game_authority_id'],b['game_id'],b['connection_id'],b['exchange_id'])==
-            (self.wallet_authority_id,self.game.game_authority_id,self.game.game_id,request['connection_id'],request['exchange_id']),'author acknowledgement scope mismatch')
+        p.require(b['wallet_authority_id'] in self.wallet_authority_ids and
+            (b['game_authority_id'],b['game_id'],b['connection_id'],b['exchange_id'])==
+            (self.game.game_authority_id,self.game.game_id,request['connection_id'],request['exchange_id']),'author acknowledgement scope mismatch')
         if request['op']=='exchange.quote':p.require(value['quote_id']==b['quote_id'] and request['principal_minor']==b['principal_minor'],'author quote amount mismatch')
         elif value['terminal_receipt'] is not None:
             terminal=x.terminal(value['terminal_receipt']);self.keys.verify('terminal',terminal,self.game.game_authority_id)
@@ -339,11 +348,15 @@ class ReferenceAuthorClient:
     def dispatch(self,request):
         request=p.decode(p.canonical(request));x.request(request,author=True);namespace=self._namespace(request) if 'key' in request else None
         with self.mutex:
-            p.require(self.transport.fingerprint==self.pin,'author transport changed');self.store.check()
+            p.require(self.transport.fingerprint==self.pin,'author transport changed');self.transport.check();self.store.check()
             if namespace:
                 with self.store.transaction() as db:
+                    legacy=self._legacy_namespace(request)
+                    previous=db.execute('SELECT request FROM requests WHERE namespace=?',(legacy,)).fetchone()
+                    if previous is not None and _loaded(previous[0])['connection_id']==request['connection_id']:
+                        p.require(previous[0]==_encoded(request),'legacy author key already binds another request');namespace=legacy
                     old=db.execute('SELECT request FROM requests WHERE namespace=?',(namespace,)).fetchone()
-                    p.require(old is None or old[0]==_encoded(request),'author key already binds another request')
+                    p.require(old is None or old[0]==_encoded(request),'author connection/key already binds another request')
                     if old is None:
                         p.require(db.execute('SELECT count(*) FROM requests').fetchone()[0]<x.MAX_ROWS,'author SDK capacity')
                         db.execute("INSERT INTO requests VALUES (?, ?,NULL,'PREPARED')",(namespace,_encoded(request)))
@@ -361,12 +374,18 @@ class ReferenceAuthorClient:
                 if namespace:
                     with self.store.transaction() as db:db.execute("UPDATE requests SET last_contact='UNKNOWN' WHERE namespace=?",(namespace,))
                 raise ConnectionUnavailable('author result unknown; retain exact request') from exc
-    def retry(self,key):
-        namespace=self._namespace({'op':'exchange.quote','key':key})
+    def retry(self,key,*,connection_id=None):
+        p.identifier(key,128)
+        if connection_id is not None:p.uuid_value(connection_id)
         with self.store.transaction() as db:
-            row=db.execute('SELECT request FROM requests WHERE namespace=?',(namespace,)).fetchone()
-            p.require(row is not None,'original author quote request required');request=_loaded(row[0])
-        return self.dispatch(request)
+            rows=db.execute('SELECT request FROM requests ORDER BY namespace LIMIT ?',(x.MAX_ROWS+1,)).fetchall()
+            p.require(len(rows)<=x.MAX_ROWS,'author SDK capacity')
+            found=[_loaded(row[0]) for row in rows if _loaded(row[0])['key']==key and
+                (connection_id is None or _loaded(row[0])['connection_id']==connection_id)]
+            p.require(len(found)==1,'one original author quote required; specify connection_id for a shared key')
+        return self.dispatch(found[0])
     def pending(self,*,limit=50):
         p.integer(limit,1,50)
-        with self.store.transaction() as db:return [dict(row) for row in db.execute("SELECT namespace,last_contact FROM requests WHERE last_contact!='ACKNOWLEDGED' ORDER BY namespace LIMIT ?",(limit,))]
+        with self.store.transaction() as db:
+            rows=db.execute("SELECT namespace,request,last_contact FROM requests WHERE last_contact!='ACKNOWLEDGED' ORDER BY namespace LIMIT ?",(limit,)).fetchall()
+            return [dict(namespace=row[0],last_contact=row[2],**{k:_loaded(row[1])[k] for k in ('connection_id','exchange_id','key')}) for row in rows]

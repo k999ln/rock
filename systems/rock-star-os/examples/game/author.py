@@ -28,7 +28,7 @@ def main(argv=None):
         transport=GameTransport(config['origin'],ROOT/config['ca_file'],game.game_id,token=item['public_author_token'],endpoint='/v1/game-exchange')
         client=ReferenceAuthorClient(args.state,transport,game=game,wallet_authority_id=config['authority_id'],terminal_key=key_records([item['terminal_key']])[0])
         if args.action=='pending':value=client.pending()
-        elif args.action=='retry':value=client.retry(args.key)
+        elif args.action=='retry':value=client.retry(args.key,connection_id=args.connection_id)
         else:
             request={'v':1,'op':'exchange.'+args.action,'connection_id':args.connection_id,'exchange_id':args.exchange_id}
             if args.action=='quote':request.update(key=args.key,principal_minor=100)

@@ -200,7 +200,8 @@ class KeyRegistry:
         for record in records:
             p.require(type(record) is p.KeyRecord and record.purpose in PURPOSES.values(),'exchange purpose key required')
             p.identifier(record.key_id);p.identifier(record.issuer)
-            p.require(record.revision==1 and record.not_before==1 and record.not_after==p.MAX_INT and
+            p.require(all(type(v) is int for v in (record.revision,record.not_before,record.not_after)) and
+                      record.revision==1 and record.not_before==1 and record.not_after==p.MAX_INT and
                       record.retired_at is None and record.revoked_at is None,'only fixed public fixture key policy implemented')
             auth._validate_public_point(record.public_key)
             p.require(record.public_key not in material and record.public_key.hex()!=p.PUBLIC_TEST_KEY,'purpose keys cannot share material')
