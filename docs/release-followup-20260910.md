@@ -1,6 +1,6 @@
 # RockstarOS 1.0 — 8時間作業の完了記録とCM完成後の残件
 
-2026-09-10追加: 文書commit3d07df0のnative CIが600秒で失敗したため、[主suiteの分割と原証拠照合](native-ci-partition-fix-20260910.md)を実装。Linux1660件は成功し、GitHubの同commit検証へ進む。以下の1a2成功はその時点の履歴として保持する。
+2026-09-10追加: 文書commit3d07df0のnative CIが600秒で失敗したため、[主suiteの分割と原証拠照合](native-ci-partition-fix-20260910.md)を実装。Linux1660件と修正f88b392のGitHub native全6job／root UI／Webは成功し、原本を独立照合済み。以下の1a2成功はその時点の履歴として保持する。
 
 記録日: 2026-09-10 UTC。利用者の「ここまでのところをrockに矛盾しないように追加して」に基づく追記。会話の申告、検証済みの進捗、担当AIの見積もりを区別する。RQ01〜RQ17、同契約月888 USD cents・複数端末で1回、Rock ATM手数料0、ゲーム料金未定を維持する。
 

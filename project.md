@@ -1,8 +1,8 @@
 # Rock star — 事業・設計・進捗
 
-## 2026-09-10 — 3d07df0のnative CI失敗へ対処・Linux検証済み
+## 2026-09-10 — 3d07df0のnative CIタイムアウト修正・GitHub検証済み
 
-Linuxで全1660件／17checks、元1392件＋新規4件の主suite網羅、Web verifyに合格。GitHubの同commit CIを次に確認する。
+Linuxで全1660件／17checks、元1392件＋新規4件の主suite網羅、Web verifyに合格。16:38 UTC、修正f88b392のGitHub native全6job（root UIを含む）とWebの成功、download原本の699入力・17原ログ・全割当てを確認。[成功証拠](docs/evidence/native-ci-3d07df0/github-f88b392.json)。
 
 通知に対応し原ログ・570秒時点のstackと成功1a2の入力を照合。native入力697件は一致し、570秒のMCPケースから終了時にはbackupケースへ進んでいるため、永久hangとは判定しない。1,392件を単一600秒枠へ集中させたCIを4独立jobへ分割し、module fixture・順序・重複した発見回数を保持して最後に全件照合する。13support checksとroot UIも必須。OS本体・9ab配布物・通信期限を維持する。[修正記録](docs/native-ci-partition-fix-20260910.md)。先行TLS ERROR原因と公開条件は別の残件。
 
@@ -271,7 +271,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 3d07df0のnative CIは主suiteが進行中に600秒制限へ到達。4独立jobへの分割と全件照合を実装し、Linux 1660件／17checksとWeb verifyが成功。同commitのGitHub CIを確認する。OS本体と9ab配布候補は不変、先行するTLS ERRORの原因は未確定。CM制作は完成済み。公開は製品LICENSE／第三者再配布条件と既存Sitesアクセス待ち、既存CMから導入案内への接続が残る。追加1〜2日は外部条件の待ちを除く条件付き概算。
+次の作業: 3d07df0のnative CIタイムアウトは4独立枠と全件照合へ変更し、修正f88b392のGitHub native全6job／1660件・root UI・Web CIが成功。原FAILを保持し、先行TLS ERRORの原因未確定は別の残件として切り分ける。CM制作は完成済み。公開は製品LICENSE／第三者再配布条件と既存Sitesアクセス待ち、既存CMから導入案内への接続が残る。追加1〜2日は外部条件の待ちを除くQEMU版仕上げの条件付き概算。
 <!-- project-status:end -->
 
 ## 次段階の設計

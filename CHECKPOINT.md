@@ -1,6 +1,6 @@
 # 2026-09-10 native CIタイムアウト修正の入口
 
-[CI修正記録](docs/native-ci-partition-fix-20260910.md)を先に読む。3d07df0の600秒FAILを保持し、進行中の主suiteを4独立jobへ分割。Linux1660件／17checksとWeb verifyは成功、GitHubの同commit結果は確認待ち。先行TLS ERRORの原因・LICENSE・既存Sitesアクセスは別の残件。凍結9ab配布物とCM完成済みを維持する。以下は前回の記録。
+[CI修正記録](docs/native-ci-partition-fix-20260910.md)を先に読む。3d07df0の600秒FAILを保持し、進行中の主suiteを4独立jobへ分割。Linux1660件／17checksとWeb verify、修正f88b392のGitHub native全6job／root UIとWebが成功。原ログと699入力の独立照合も完了。先行TLS ERRORの原因・LICENSE・既存Sitesアクセスは別の残件。凍結9ab配布物とCM完成済みを維持する。以下は前回の記録。
 
 # 2026-09-10 最終結果・CM完成後の再開入口
 

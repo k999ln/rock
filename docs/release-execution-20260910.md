@@ -261,3 +261,10 @@ Aの同9ab ARM64追加全回帰は13:02:34に14checks/1631件/skip0 PASS、main1
 3d07df0 run34498721201は主suiteの進行中に600秒へ到達、後続13checks／root UIは未実行。570秒stackのMCPケースは後にokとなりbackupケースへ進んでいたため永久TLS hangとは判定しない。成功1a2と697入力一致を確認し原FAIL／stackを保持。[4独立枠への分割と集計](native-ci-partition-fix-20260910.md)を追加した。
 
 Linuxは347＋309＋402＋338＝1396件とsupport264件、計1660件／17checks／skip0 PASS。元1392件の全出現を保持、新規4件だけの増加を照合。699入力・17原ログも一致。Mac対象11tests、npm verify（API143 assertions）、workflow YAMLと差分整合が成功。GitHub同commit検証はpush後に取得する。OS runtime／凍結9ab配布9filesとtask／phaseGate状態は変更しない。先行TLS ERRORの原因未確定・公開条件・CM完成済みを引き継ぐ。
+
+
+## 16:38 UTC — 修正f88b392のGitHub受入を完了
+
+[native34502833180](https://github.com/k999ln/rock/actions/runs/34502833180)の全6job（4主枠／support・root UI／最終集計）と[Web34502833025](https://github.com/k999ln/rock/actions/runs/34502833025)がSUCCESS。主枠は32.815／68.473／101.388／116.423秒、計1396件、support込み1660件／17checks。download原本の699入力・全割当て・17原ログ・root UI4ログとjob step成功を独立照合した。[GitHub原本要約](evidence/native-ci-3d07df0/github-f88b392.json)。既存freeze validatorとの整合もPASS。
+
+進捗JSON／README／project／CHECKPOINTを検証完了へ同期する。これは修正source f88b392の結果を保存する文書更新であり、この証拠保存commitのCI結果を先取りしない。元3d07 FAIL、先行TLS ERROR原因未確定、凍結9ab配布物、公開停止条件とCM完成済みは保持する。
