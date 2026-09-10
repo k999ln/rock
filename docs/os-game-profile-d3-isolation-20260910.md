@@ -38,5 +38,23 @@ dispense/release totals and restart recovery; no PASS for those is inferred
 from this scope. Physical USB/ATM and real funds remain outside this fixture.
 
 Four host contract tests check the scope/marker and stopped-data boundaries.
-Actual Game guest execution remains `NOT_RUN` until the report is collected
-from the final image with this observer embedded.
+The intermediate source `4e31554a5cfd415b0f9a9878e1e1306f949f1596`
+completed the actual no-NIC guest run on 2026-09-10: **47 isolation/Tool
+checks plus 45 SDK Tool checks**, with real memory/CPU/file-size/crash probes.
+The guest powered down normally; the serial proof equaled the stopped ext4
+proof and read-only e2fsck succeeded. The full image triple stayed unchanged.
+The independent root-UI authority remained stopped and empty with every
+typed table and protected identity unchanged before handoff.
+
+[Receipt](evidence/os-base/game-isolation-4e31554/receipt.json),
+[original report](evidence/os-base/game-isolation-4e31554/report.json),
+[actual serial log](evidence/os-base/game-isolation-4e31554/boot.log), and
+[early catalog framebuffer](evidence/os-base/game-isolation-4e31554/native-display.png)
+retain the measured evidence. The screenshot shows the early catalog before
+the resource/Tool checks finish; it is not a financial result screenshot.
+
+This intermediate proof carries `PASS_SCOPED_INTERMEDIATE_ONLY`. Its source
+passed 1,516 Linux Python executions and all 14 native checks. The final
+distribution image must rerun the guest scope; no intermediate PASS is
+transferred to final D3. Online financial assertions remain explicitly
+`NOT_RUN` in this proof.

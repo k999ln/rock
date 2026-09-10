@@ -1,0 +1,35 @@
+{
+  "schema": "rock-game-isolation-acceptance-receipt/1",
+  "status": "PASS_SCOPED_INTERMEDIATE_ONLY",
+  "source_commit": "4e31554a5cfd415b0f9a9878e1e1306f949f1596",
+  "freeze_sha256": "713369a532d4a644fa82ce767bfae3146414ee983c40d34e50378664c8ce1598",
+  "profile_sha256": "8b70b34e9b647bdf421d0fe38b16034962d7e398c473f1c246c6bbfec6369380",
+  "images_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "1aa9dd0e6d29d231d87614a70328d97559d1b64504a110361a5aeff40450cfcb",
+    "stage0.cpio.gz": "e554afc5ec18fe1a432ffa87452f71c9ffe499c255ed8c95513dd36fd19dfb78"
+  },
+  "guest_checks": 47,
+  "sdk_tool_checks": 45,
+  "normal_shutdown": true,
+  "filesystem_consistent": true,
+  "serial_and_stopped_proof_equal": true,
+  "authority": "STOPPED_EMPTY_COMPLETE_TYPED_SNAPSHOT_UNCHANGED_BEFORE_ROOT_UI",
+  "image_unchanged": true,
+  "screenshot_scope": "one actual early catalog framebuffer, before resource/Tool completion; not financial or complete UI acceptance",
+  "financial_assertions": "NOT_RUN",
+  "final_D3": "NOT_RUN; repeat on the final frozen distribution image",
+  "resource_scope": "fixed sandbox diagnostics; per-file size only; Hub crash/deadline lifecycle NOT_RUN",
+  "source_tests": {
+    "status": "PASS",
+    "python_executions": 1516,
+    "checks": 14,
+    "source_unchanged": true
+  },
+  "files_sha256": {
+    "boot.log": "f8a78c891af44c4dcba35ffeb3f8dbcba571b1a9be988e4eb233ff2f85e3a2da",
+    "native-display.png": "ead4975c4093d6b0f46bbb54700f60f75da3d400311cba48c386809eb11edab1",
+    "report.json": "4257030333204f784c2fd3b77531d5ad675e3af2f5049ee22310eda698963406",
+    "authority-handoff.json": "4e24d7f4850c4b64577f4a56018b0716d5fa16916856fe3718d963cd5c14a9d4"
+  }
+}

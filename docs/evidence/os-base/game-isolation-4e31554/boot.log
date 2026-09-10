@@ -1,0 +1,325 @@
+Booting Linux on physical CPU 0x0000000000 [0x410fd034]
+Linux version 6.18.50 (kaiya@lima-rock-native) (aarch64-buildroot-linux-musl-gcc.br_real (Buildroot 2026.08) 15.3.0, GNU ld (GNU Binutils) 2.45.1) #1 SMP Wed Sep  9 19:28:46 UTC 2026
+random: crng init done
+Machine model: linux,dummy-virt
+efi: UEFI not found.
+OF: reserved mem: Reserved memory: No reserved-memory node in the DT
+Zone ranges:
+  DMA      [mem 0x0000000040000000-0x000000007fffffff]
+  DMA32    empty
+  Normal   empty
+Movable zone start for each node
+Early memory node ranges
+  node   0: [mem 0x0000000040000000-0x000000007fffffff]
+Initmem setup node 0 [mem 0x0000000040000000-0x000000007fffffff]
+psci: probing for conduit method from DT.
+psci: PSCIv1.1 detected in firmware.
+psci: Using standard PSCI v0.2 function IDs
+psci: Trusted OS migration not required
+psci: SMC Calling Convention v1.0
+percpu: Embedded 20 pages/cpu s44440 r8192 d29288 u81920
+Detected VIPT I-cache on CPU0
+CPU features: detected: GICv3 CPU interface
+CPU features: detected: ARM erratum 845719
+alternatives: applying boot alternatives
+Kernel command line: console=ttyAMA0 vt.global_cursor_default=0 root=/dev/vda ro rootflags=noload rootwait panic=-1 rock.platform.verify=1 rock.platform.verify_scope=game-isolation
+printk: log buffer data + meta data: 131072 + 458752 = 589824 bytes
+Dentry cache hash table entries: 131072 (order: 8, 1048576 bytes, linear)
+Inode-cache hash table entries: 65536 (order: 7, 524288 bytes, linear)
+software IO TLB: SWIOTLB bounce buffer size adjusted to 1MB
+software IO TLB: area num 2.
+software IO TLB: mapped [mem 0x000000007eb00000-0x000000007ec00000] (1MB)
+Built 1 zonelists, mobility grouping on.  Total pages: 262144
+mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=2, Nodes=1
+rcu: Hierarchical RCU implementation.
+rcu: 	RCU restricting CPUs from NR_CPUS=512 to nr_cpu_ids=2.
+rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=2
+NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+GICv3: 256 SPIs implemented
+GICv3: 0 Extended SPIs implemented
+Root IRQ handler: gic_handle_irq
+GICv3: GICv3 features: 16 PPIs
+GICv3: GICD_CTLR.DS=1, SCR_EL3.FIQ=0
+GICv3: CPU0: found redistributor 0 region 0:0x00000000080a0000
+ITS [mem 0x08080000-0x0809ffff]
+ITS@0x0000000008080000: allocated 8192 Devices @41050000 (indirect, esz 8, psz 64K, shr 1)
+ITS@0x0000000008080000: allocated 8192 Interrupt Collections @41060000 (flat, esz 8, psz 64K, shr 1)
+GICv3: using LPI property table @0x0000000041070000
+GICv3: CPU0: using allocated LPI pending table @0x0000000041080000
+rcu: srcu_init: Setting srcu_struct sizes based on contention.
+clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+arch_timer: cp15 timer running at 62.50MHz (virt).
+clocksource: arch_sys_counter: mask: 0x1ffffffffffffff max_cycles: 0x1cd42e208c, max_idle_ns: 881590405314 ns
+sched_clock: 57 bits at 63MHz, resolution 16ns, wraps every 4398046511096ns
+Console: colour dummy device 80x25
+Calibrating delay loop (skipped), value calculated using timer frequency.. 125.00 BogoMIPS (lpj=250000)
+pid_max: default: 32768 minimum: 301
+LSM: initializing lsm=capability,landlock,yama
+landlock: Up and running.
+Yama: becoming mindful.
+Mount-cache hash table entries: 2048 (order: 2, 16384 bytes, linear)
+Mountpoint-cache hash table entries: 2048 (order: 2, 16384 bytes, linear)
+cacheinfo: Unable to detect cache hierarchy for CPU 0
+rcu: Hierarchical SRCU implementation.
+rcu: 	Max phase no-delay instances is 1000.
+Timer migration: 1 hierarchy levels; 8 children per group; 1 crossnode level
+EFI services will not be available.
+smp: Bringing up secondary CPUs ...
+Detected VIPT I-cache on CPU1
+GICv3: CPU1: found redistributor 1 region 0:0x00000000080c0000
+GICv3: CPU1: using allocated LPI pending table @0x0000000041090000
+CPU1: Booted secondary processor 0x0000000001 [0x410fd034]
+smp: Brought up 1 node, 2 CPUs
+SMP: Total of 2 processors activated.
+CPU: All CPU(s) started at EL1
+CPU features: detected: 32-bit EL0 Support
+CPU features: detected: CRC32 instructions
+CPU features: detected: PMUv3
+alternatives: applying system-wide alternatives
+Memory: 1008136K/1048576K available (9024K kernel code, 900K rwdata, 2224K rodata, 1152K init, 533K bss, 36384K reserved, 0K cma-reserved)
+devtmpfs: initialized
+posixtimers hash table entries: 1024 (order: 2, 16384 bytes, linear)
+futex hash table entries: 512 (32768 bytes on 1 NUMA nodes, total 32 KiB, linear).
+29248 pages in range for non-PLT usage
+520768 pages in range for PLT usage
+DMI not present or invalid.
+NET: Registered PF_NETLINK/PF_ROUTE protocol family
+DMA: preallocated 128 KiB GFP_KERNEL pool for atomic allocations
+DMA: preallocated 128 KiB GFP_KERNEL|GFP_DMA pool for atomic allocations
+DMA: preallocated 128 KiB GFP_KERNEL|GFP_DMA32 pool for atomic allocations
+audit: initializing netlink subsys (disabled)
+audit: type=2000 audit(0.136:1): state=initialized audit_enabled=0 res=1
+thermal_sys: Registered thermal governor 'step_wise'
+cpuidle: using governor menu
+hw-breakpoint: found 6 breakpoint and 4 watchpoint registers.
+ASID allocator initialised with 65536 entries
+Serial: AMBA PL011 UART driver
+9000000.pl011: ttyAMA0 at MMIO 0x9000000 (irq = 13, base_baud = 0) is a PL011 rev1
+printk: console [ttyAMA0] enabled
+ACPI: Interpreter disabled.
+iommu: Default domain type: Translated
+iommu: DMA domain TLB invalidation policy: strict mode
+SCSI subsystem initialized
+pps_core: LinuxPPS API ver. 1 registered
+pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+PTP clock support registered
+vgaarb: loaded
+clocksource: Switched to clocksource arch_sys_counter
+pnp: PnP ACPI: disabled
+NET: Registered PF_INET protocol family
+IP idents hash table entries: 16384 (order: 5, 131072 bytes, linear)
+tcp_listen_portaddr_hash hash table entries: 512 (order: 1, 8192 bytes, linear)
+Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)
+TCP established hash table entries: 8192 (order: 4, 65536 bytes, linear)
+TCP bind hash table entries: 8192 (order: 6, 262144 bytes, linear)
+TCP: Hash tables configured (established 8192 bind 8192)
+UDP hash table entries: 512 (order: 3, 32768 bytes, linear)
+UDP-Lite hash table entries: 512 (order: 3, 32768 bytes, linear)
+NET: Registered PF_UNIX/PF_LOCAL protocol family
+PCI: CLS 0 bytes, default 64
+workingset: timestamp_bits=46 max_order=18 bucket_order=0
+fuse: init (API version 7.45)
+Block layer SCSI generic (bsg) driver version 0.4 loaded (major 249)
+io scheduler mq-deadline registered
+io scheduler kyber registered
+pci-host-generic 4010000000.pcie: host bridge /pcie@10000000 ranges:
+pci-host-generic 4010000000.pcie:       IO 0x003eff0000..0x003effffff -> 0x0000000000
+pci-host-generic 4010000000.pcie:      MEM 0x0010000000..0x003efeffff -> 0x0010000000
+pci-host-generic 4010000000.pcie:      MEM 0x8000000000..0xffffffffff -> 0x8000000000
+pci-host-generic 4010000000.pcie: Memory resource size exceeds max for 32 bits
+pci-host-generic 4010000000.pcie: ECAM at [mem 0x4010000000-0x401fffffff] for [bus 00-ff]
+pci-host-generic 4010000000.pcie: PCI host bridge to bus 0000:00
+pci_bus 0000:00: root bus resource [bus 00-ff]
+pci_bus 0000:00: root bus resource [io  0x0000-0xffff]
+pci_bus 0000:00: root bus resource [mem 0x10000000-0x3efeffff]
+pci_bus 0000:00: root bus resource [mem 0x8000000000-0xffffffffff]
+pci 0000:00:00.0: [1b36:0008] type 00 class 0x060000 conventional PCI endpoint
+pci 0000:00:01.0: [1af4:1001] type 00 class 0x010000 conventional PCI endpoint
+pci 0000:00:01.0: BAR 0 [io  0x0000-0x007f]
+pci 0000:00:01.0: BAR 1 [mem 0x00000000-0x00000fff]
+pci 0000:00:01.0: BAR 4 [mem 0x00000000-0x00003fff 64bit pref]
+pci 0000:00:02.0: [1af4:1001] type 00 class 0x010000 conventional PCI endpoint
+pci 0000:00:02.0: BAR 0 [io  0x0000-0x007f]
+pci 0000:00:02.0: BAR 1 [mem 0x00000000-0x00000fff]
+pci 0000:00:02.0: BAR 4 [mem 0x00000000-0x00003fff 64bit pref]
+pci 0000:00:03.0: [1af4:1005] type 00 class 0x00ff00 conventional PCI endpoint
+pci 0000:00:03.0: BAR 0 [io  0x0000-0x001f]
+pci 0000:00:03.0: BAR 1 [mem 0x00000000-0x00000fff]
+pci 0000:00:03.0: BAR 4 [mem 0x00000000-0x00003fff 64bit pref]
+pci 0000:00:04.0: [1af4:1050] type 00 class 0x038000 conventional PCI endpoint
+pci 0000:00:04.0: BAR 1 [mem 0x00000000-0x00000fff]
+pci 0000:00:04.0: BAR 4 [mem 0x00000000-0x00003fff 64bit pref]
+pci 0000:00:05.0: [1af4:1052] type 00 class 0x090000 conventional PCI endpoint
+pci 0000:00:05.0: BAR 1 [mem 0x00000000-0x00000fff]
+pci 0000:00:05.0: BAR 4 [mem 0x00000000-0x00003fff 64bit pref]
+pci 0000:00:06.0: [1af4:1052] type 00 class 0x098000 conventional PCI endpoint
+pci 0000:00:06.0: BAR 1 [mem 0x00000000-0x00000fff]
+pci 0000:00:06.0: BAR 4 [mem 0x00000000-0x00003fff 64bit pref]
+pci 0000:00:01.0: BAR 4 [mem 0x8000000000-0x8000003fff 64bit pref]: assigned
+pci 0000:00:02.0: BAR 4 [mem 0x8000004000-0x8000007fff 64bit pref]: assigned
+pci 0000:00:03.0: BAR 4 [mem 0x8000008000-0x800000bfff 64bit pref]: assigned
+pci 0000:00:04.0: BAR 4 [mem 0x800000c000-0x800000ffff 64bit pref]: assigned
+pci 0000:00:05.0: BAR 4 [mem 0x8000010000-0x8000013fff 64bit pref]: assigned
+pci 0000:00:06.0: BAR 4 [mem 0x8000014000-0x8000017fff 64bit pref]: assigned
+pci 0000:00:01.0: BAR 1 [mem 0x10000000-0x10000fff]: assigned
+pci 0000:00:02.0: BAR 1 [mem 0x10001000-0x10001fff]: assigned
+pci 0000:00:03.0: BAR 1 [mem 0x10002000-0x10002fff]: assigned
+pci 0000:00:04.0: BAR 1 [mem 0x10003000-0x10003fff]: assigned
+pci 0000:00:05.0: BAR 1 [mem 0x10004000-0x10004fff]: assigned
+pci 0000:00:06.0: BAR 1 [mem 0x10005000-0x10005fff]: assigned
+pci 0000:00:01.0: BAR 0 [io  0x1000-0x107f]: assigned
+pci 0000:00:02.0: BAR 0 [io  0x1080-0x10ff]: assigned
+pci 0000:00:03.0: BAR 0 [io  0x1100-0x111f]: assigned
+pci_bus 0000:00: resource 4 [io  0x0000-0xffff]
+pci_bus 0000:00: resource 5 [mem 0x10000000-0x3efeffff]
+pci_bus 0000:00: resource 6 [mem 0x8000000000-0xffffffffff]
+virtio-pci 0000:00:01.0: enabling device (0000 -> 0003)
+virtio-pci 0000:00:02.0: enabling device (0000 -> 0003)
+virtio-pci 0000:00:03.0: enabling device (0000 -> 0003)
+virtio-pci 0000:00:04.0: enabling device (0000 -> 0002)
+virtio-pci 0000:00:05.0: enabling device (0000 -> 0002)
+virtio-pci 0000:00:06.0: enabling device (0000 -> 0002)
+input: QEMU Virtio Keyboard as /devices/platform/4010000000.pcie/pci0000:00/0000:00:05.0/virtio4/input/input0
+input: QEMU Virtio Tablet as /devices/platform/4010000000.pcie/pci0000:00/0000:00:06.0/virtio5/input/input1
+[drm] pci: virtio-gpu-pci detected at 0000:00:04.0
+[drm] features: -virgl +edid -resource_blob -host_visible
+[drm] features: -context_init
+[drm] number of scanouts: 1
+[drm] number of cap sets: 0
+[drm] Initialized virtio_gpu 0.1.0 for 0000:00:04.0 on minor 0
+Console: switching to colour frame buffer device 90x60
+virtio-pci 0000:00:04.0: [drm] fb0: virtio_gpudrmfb frame buffer device
+virtio_blk virtio0: 2/0/0 default/read/poll queues
+virtio_blk virtio0: [vda] 786432 512-byte logical blocks (403 MB/384 MiB)
+virtio_blk virtio1: 2/0/0 default/read/poll queues
+virtio_blk virtio1: [vdb] 262144 512-byte logical blocks (134 MB/128 MiB)
+rtc-pl031 9010000.pl031: registered as rtc0
+rtc-pl031 9010000.pl031: setting system clock to 2026-09-10T07:41:19 UTC (1789026079)
+hw perfevents: enabled with armv8_pmuv3 PMU driver, 7 (0,8000003f) counters available
+NET: Registered PF_INET6 protocol family
+Segment Routing with IPv6
+In-situ OAM (IOAM) with IPv6
+sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+NET: Registered PF_PACKET protocol family
+NET: Registered PF_KEY protocol family
+NET: Registered PF_VSOCK protocol family
+registered taskstats version 1
+clk: Disabling unused clocks
+PM: genpd: Disabling unused power domains
+check access for rdinit=/init failed: -2, ignoring
+EXT4-fs: Mount option(s) incompatible with ext2
+EXT4-fs (vda): write access unavailable, skipping orphan cleanup
+EXT4-fs (vda): mounted filesystem 555eab01-e0e6-41cc-83a6-bd485207b084 ro without journal. Quota mode: disabled.
+VFS: Mounted root (ext4 filesystem) readonly on device 254:0.
+devtmpfs: mounted
+Freeing unused kernel memory: 1152K
+Run /sbin/init as init process
+EXT4-fs (vdb): mounted filesystem 1d80ed14-87ff-430a-bda5-66b8093a5c93 r/w with ordered data mode. Quota mode: disabled.
+Saving 256 bits of creditable seed for next boot
+Starting syslogd: OK
+Starting klogd: OK
+Running sysctl: OK
+Starting network: OK
+rockctl: connect: No such file or directory
+OK STATUS product=Rock_star_os service=rockd version=0.1.0 architecture=aarch64 uid=1000 no_new_privs=1 completed=0
+Starting crond: OK
+ROCK_PLATFORM_READY
+PASS root test orchestrator in actual ARM64 guest
+ROCK_RUNTIME_INVENTORY {"busybox_applet_count": 281, "excluded_applets": ["ash", "awk", "hush", "sh"], "normal_archive_roundtrips": [{"chunk_read_bytes": 127, "compression": 0, "input_bytes": 1140, "roundtrip": true}, {"chunk_read_bytes": 127, "compression": 8, "input_bytes": 1140, "roundtrip": true}], "python": "3.14.7 (main, Sep  9 2026, 19:24:48) [GCC 15.3.0]", "python_official_backport_symbols_present": true, "schema": "rock-runtime-inventory/1", "scope": "installed source/binary inventory and ordinary compatibility; not a complete security audit", "sha256": {"/bin/dash": "11b1cafedd954f4fc2ebc84ee71b687abfd01da576c2a60e0a59dbdc05e1c24e", "/usr/lib/python3.14/urllib/request.py": "48fcaa1b047f09f53abf37a36184686a96d56ddaacc63ae6f9ebe9db1827f784", "/usr/lib/python3.14/zipfile/__init__.py": "e81ad327bc02bd9831fb191bdbb3e262bd74fb3be6188adfd3629bdbba340164"}, "shell": "/bin/dash", "shell_required_options": {"errexit": true, "nounset": true, "set_eu": true}, "status": "PASS"}
+
+PASS installed runtime inventory and ordinary compatibility
+PASS actual platform health
+PASS native OS catalog signed packages
+PASS guest platform maturity
+PASS explicit Game profile is offline with unknown Wallet, never fabricated zero
+PASS Game profile contains no local financial authority databases
+PASS tool identity denied platform IPC
+PASS native UI denied direct Wallet IPC
+PASS peer identity enforced with permissive DAC /run/rock-platform/api.sock
+PASS peer identity enforced with permissive DAC /run/rock-wallet/api.sock
+SANDBOX_DIAGNOSTIC {"exit": 0, "result": {"checks": {"cpu_bounded": true, "data_hidden": true, "fds_bounded": true, "fork_denied": true, "host_root_hidden": true, "inet_denied": true, "memory_bounded": true, "network_namespace": true, "no_new_privs": true, "platform_socket_hidden": true, "proc_isolated": true, "seccomp_filter": true, "system_readonly": true, "uid_unprivileged": true, "unix_denied": true, "wallet_socket_hidden": true}, "network_interfaces": ["lo", "sit0"], "ok": true}}
+PASS real namespace/seccomp diagnostic
+PASS sandbox cpu_bounded
+PASS sandbox data_hidden
+PASS sandbox fds_bounded
+PASS sandbox fork_denied
+PASS sandbox host_root_hidden
+PASS sandbox inet_denied
+PASS sandbox memory_bounded
+PASS sandbox network_namespace
+PASS sandbox no_new_privs
+PASS sandbox platform_socket_hidden
+PASS sandbox proc_isolated
+PASS sandbox seccomp_filter
+PASS sandbox system_readonly
+PASS sandbox uid_unprivileged
+PASS sandbox unix_denied
+PASS sandbox wallet_socket_hidden
+PASS sandbox actual resource denial memory
+PASS sandbox actual resource denial cpu
+PASS sandbox actual resource denial file-size
+PASS sandbox actual resource denial crash
+ROCK_SANDBOX_RESOURCE_GUEST_PASS [{"armed": {"limits": {"as": [268435456, 268435456], "core": [0, 0], "cpu": [2, 2], "fsize": [1048576, 1048576]}, "mode": "memory", "schema": "rock-sandbox-resource-probe/1", "uid": 65534}, "elapsed_seconds": 0.2678800800000012, "mode": "memory", "outcome": {"mode": "memory", "outcome": "MemoryError"}, "returncode": 0, "status": "PASS"}, {"armed": {"limits": {"as": [268435456, 268435456], "core": [0, 0], "cpu": [2, 2], "fsize": [1048576, 1048576]}, "mode": "cpu", "schema": "rock-sandbox-resource-probe/1", "uid": 65534}, "elapsed_seconds": 2.027624224, "mode": "cpu", "outcome": null, "returncode": 137, "status": "PASS"}, {"armed": {"limits": {"as": [268435456, 268435456], "core": [0, 0], "cpu": [2, 2], "fsize": [1048576, 1048576]}, "mode": "file-size", "schema": "rock-sandbox-resource-probe/1", "uid": 65534}, "elapsed_seconds": 0.32611780799999934, "mode": "file-size", "outcome": {"bytes": 1048576, "mode": "file-size", "outcome": "EFBIG"}, "returncode": 0, "status": "PASS"}, {"armed": {"limits": {"as": [268435456, 268435456], "core": [0, 0], "cpu": [2, 2], "fsize": [1048576, 1048576]}, "mode": "crash", "schema": "rock-sandbox-resource-probe/1", "uid": 65534}, "elapsed_seconds": 0.25068892799999887, "mode": "crash", "outcome": null, "returncode": 139, "status": "PASS"}]
+PASS protected Wallet database actually exists
+PASS platform cannot open Wallet database
+PASS install exact retry receipt
+PASS install retry does not revoke approval
+PASS job exact retry identity
+PASS signed Tool executes inside OS sandbox
+PASS independent package update changes behavior
+PASS cached signed version rollback
+PASS uninstall removes package but retains receipts
+PASS offline local Tool activity does not invent Wallet availability
+PASS tool authenticated platform health
+PASS tool actual guest runtime mode
+PASS tool signed catalog entry org.rockstar.proposal-draft
+PASS tool catalog hash matches install org.rockstar.proposal-draft
+PASS tool approval required org.rockstar.proposal-draft
+PASS tool install retry receipt org.rockstar.proposal-draft
+PASS tool install retry keeps approval org.rockstar.proposal-draft
+PASS tool exact run retry identity org.rockstar.proposal-draft
+PASS tool actual job succeeded 060e80eb-edf2-44e7-8ce5-fe22f471638b
+PASS tool receipt pins package org.rockstar.proposal-draft
+PASS tool conflicting retry rejected org.rockstar.proposal-draft
+PASS tool proposal uses actual input and remains a draft
+PASS tool signed catalog entry org.rockstar.citation-organizer
+PASS tool catalog hash matches install org.rockstar.citation-organizer
+PASS tool approval required org.rockstar.citation-organizer
+PASS tool install retry receipt org.rockstar.citation-organizer
+PASS tool install retry keeps approval org.rockstar.citation-organizer
+PASS tool exact run retry identity org.rockstar.citation-organizer
+PASS tool actual job succeeded eb8b1b32-8b2f-44d1-815f-818d5a0f2048
+PASS tool receipt pins package org.rockstar.citation-organizer
+PASS tool conflicting retry rejected org.rockstar.citation-organizer
+PASS tool citation Tool preserves code bytes and collects external marker
+PASS tool signed catalog entry org.rockstar.utf8-sha256
+PASS tool catalog hash matches install org.rockstar.utf8-sha256
+PASS tool approval required org.rockstar.utf8-sha256
+PASS tool install retry receipt org.rockstar.utf8-sha256
+PASS tool install retry keeps approval org.rockstar.utf8-sha256
+PASS tool exact run retry identity org.rockstar.utf8-sha256
+PASS tool actual job succeeded b07672a0-4c17-43b7-a2ca-01b4fb6826e5
+PASS tool receipt pins package org.rockstar.utf8-sha256
+PASS tool conflicting retry rejected org.rockstar.utf8-sha256
+PASS tool UTF-8 input-only SHA-256 known vector
+PASS tool signed proposal update in catalog
+PASS tool previous version approval rejected
+PASS tool update retry has same durable receipt
+PASS tool actual job succeeded 297777a8-4529-4c20-a97a-eaaa7c786a65
+PASS tool independent signed package update changes actual output
+PASS tool rollback requires approval
+PASS tool actual job succeeded 652cba97-53bf-4da0-a0d3-d63ec6424d04
+PASS tool cached rollback restores actual output
+PASS tool OS core and recipe runtime unchanged during package update
+PASS tool offline Wallet display remains unknown during Tool execution
+PASS tool OS execution audit org.rockstar.proposal-draft
+PASS tool OS execution audit org.rockstar.citation-organizer
+PASS tool OS execution audit org.rockstar.utf8-sha256
+ROCK_TOOLS_GUEST_PASS {"status": "PASS", "checks": ["authenticated platform health", "actual guest runtime mode", "signed catalog entry org.rockstar.proposal-draft", "catalog hash matches install org.rockstar.proposal-draft", "approval required org.rockstar.proposal-draft", "install retry receipt org.rockstar.proposal-draft", "install retry keeps approval org.rockstar.proposal-draft", "exact run retry identity org.rockstar.proposal-draft", "actual job succeeded 060e80eb-edf2-44e7-8ce5-fe22f471638b", "receipt pins package org.rockstar.proposal-draft", "conflicting retry rejected org.rockstar.proposal-draft", "proposal uses actual input and remains a draft", "signed catalog entry org.rockstar.citation-organizer", "catalog hash matches install org.rockstar.citation-organizer", "approval required org.rockstar.citation-organizer", "install retry receipt org.rockstar.citation-organizer", "install retry keeps approval org.rockstar.citation-organizer", "exact run retry identity org.rockstar.citation-organizer", "actual job succeeded eb8b1b32-8b2f-44d1-815f-818d5a0f2048", "receipt pins package org.rockstar.citation-organizer", "conflicting retry rejected org.rockstar.citation-organizer", "citation Tool preserves code bytes and collects external marker", "signed catalog entry org.rockstar.utf8-sha256", "catalog hash matches install org.rockstar.utf8-sha256", "approval required org.rockstar.utf8-sha256", "install retry receipt org.rockstar.utf8-sha256", "install retry keeps approval org.rockstar.utf8-sha256", "exact run retry identity org.rockstar.utf8-sha256", "actual job succeeded b07672a0-4c17-43b7-a2ca-01b4fb6826e5", "receipt pins package org.rockstar.utf8-sha256", "conflicting retry rejected org.rockstar.utf8-sha256", "UTF-8 input-only SHA-256 known vector", "signed proposal update in catalog", "previous version approval rejected", "update retry has same durable receipt", "actual job succeeded 297777a8-4529-4c20-a97a-eaaa7c786a65", "independent signed package update changes actual output", "rollback requires approval", "actual job succeeded 652cba97-53bf-4da0-a0d3-d63ec6424d04", "cached rollback restores actual output", "OS core and recipe runtime unchanged during package update", "offline Wallet display remains unknown during Tool execution", "OS execution audit org.rockstar.proposal-draft", "OS execution audit org.rockstar.citation-organizer", "OS execution audit org.rockstar.utf8-sha256"], "architecture": "aarch64", "actual_environment": "ARM64 Rock OS guest via authenticated platform IPC", "time_utc": "2026-09-10T07:41:45Z", "receipts": [{"tool_id": "org.rockstar.proposal-draft", "job_id": "060e80eb-edf2-44e7-8ce5-fe22f471638b", "status": "succeeded", "version": "1.0.0", "package_hash": "f8178a88bc192ed98d177311ec63cbe1a46b45704e82502c175c776c26e90a77", "output": "{\n  \"checklist\": [\n    \"募集内容と提案内容の一致を確認\",\n    \"納品物と修正範囲を確認\",\n    \"納期と金額を確認\"\n  ],\n  \"external_submission\": false,\n  \"format\": \"standard\",\n  \"kind\": \"proposal_draft\",\n  \"proposal\": \"ご依頼「店舗紹介」について、次の内容で進める案です。\\n\\n確認する要件\\n- 日本語で紹介\\n\\n予定する納品物\\n- 原稿の下書き\\n\\n希望納期: 未確認\\n希望金額: 未確認\\n\\n内容を確認してから、提案文を仕上げます。\",\n  \"revenue_verified\": false,\n  \"schema_version\": 1,\n  \"state\": \"draft\",\n  \"warnings\": [\n    \"納期が未指定です。\",\n    \"金額が未指定です。\"\n  ]\n}", "retry_same_job": true}, {"tool_id": "org.rockstar.citation-organizer", "job_id": "eb8b1b32-8b2f-44d1-815f-818d5a0f2048", "status": "succeeded", "version": "1.0.0", "package_hash": "e26178e828b45f651f4c1ff5c0fa20450195548edc4e6e116005a730238a0535", "output": "本文\n```text\n（出典: [コード](https://example.test/code)）\n```\n\n## 出典\n\n- [店舗](https://example.test/store)\n", "retry_same_job": true}, {"tool_id": "org.rockstar.utf8-sha256", "job_id": "b07672a0-4c17-43b7-a2ca-01b4fb6826e5", "status": "succeeded", "version": "1.0.0", "package_hash": "9ebd10b02a573aebcaf506f2e0fd79a30dd5e43674391c38e279f7b5efff0df1", "output": "{\n  \"byte_length\": 3,\n  \"encoding\": \"UTF-8\",\n  \"file_verified\": false,\n  \"kind\": \"utf8_text_sha256\",\n  \"schema_version\": 1,\n  \"scope\": \"user_supplied_text_only\",\n  \"sha256\": \"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\"\n}", "retry_same_job": true}], "proposal_update": {"job": {"created": 1789026105.058812, "error": null, "finished": 1789026105.3038166, "id": "297777a8-4529-4c20-a97a-eaaa7c786a65", "input_bytes": 105, "key": "tools-4714d08b72594ee4b4fe95310d6cfc11:9435f8df52e2400e9b4464cbfc6740e4", "output": "{\n  \"checklist\": [\n    \"募集内容と提案内容の一致を確認\",\n    \"納品物と修正範囲を確認\",\n    \"納期と金額を確認\"\n  ],\n  \"external_submission\": false,\n  \"format\": \"concise\",\n  \"kind\": \"proposal_draft\",\n  \"proposal\": \"「店舗紹介」の提案案\\n要件: 日本語で紹介\\n納品物: 原稿の下書き\\n希望納期: 未確認\\n希望金額: 未確認\",\n  \"revenue_verified\": false,\n  \"schema_version\": 1,\n  \"state\": \"draft\",\n  \"warnings\": [\n    \"納期が未指定です。\",\n    \"金額が未指定です。\"\n  ]\n}", "output_bytes": 551, "output_truncated": false, "package_hash": "92cf1541da056bf068eb4030e817ff7a5e49b7bf7dd93f9f62f6a3eaf3070183", "request_hash": "dc37dbb7830c7d98f71585d6a22bf3977ea2ed0ce10194ba3e77c1bd53c65792", "status": "succeeded", "tool_id": "org.rockstar.proposal-draft", "version": "1.1.0"}, "rollback_job": {"created": 1789026105.530001, "error": null, "finished": 1789026105.7849689, "id": "652cba97-53bf-4da0-a0d3-d63ec6424d04", "input_bytes": 105, "key": "tools-4714d08b72594ee4b4fe95310d6cfc11:d2398cce446e456a8ab4dcfdd20b79cd", "output": "{\n  \"checklist\": [\n    \"募集内容と提案内容の一致を確認\",\n    \"納品物と修正範囲を確認\",\n    \"納期と金額を確認\"\n  ],\n  \"external_submission\": false,\n  \"format\": \"standard\",\n  \"kind\": \"proposal_draft\",\n  \"proposal\": \"ご依頼「店舗紹介」について、次の内容で進める案です。\\n\\n確認する要件\\n- 日本語で紹介\\n\\n予定する納品物\\n- 原稿の下書き\\n\\n希望納期: 未確認\\n希望金額: 未確認\\n\\n内容を確認してから、提案文を仕上げます。\",\n  \"revenue_verified\": false,\n  \"schema_version\": 1,\n  \"state\": \"draft\",\n  \"warnings\": [\n    \"納期が未指定です。\",\n    \"金額が未指定です。\"\n  ]\n}", "output_bytes": 698, "output_truncated": false, "package_hash": "f8178a88bc192ed98d177311ec63cbe1a46b45704e82502c175c776c26e90a77", "request_hash": "dc37dbb7830c7d98f71585d6a22bf3977ea2ed0ce10194ba3e77c1bd53c65792", "status": "succeeded", "tool_id": "org.rockstar.proposal-draft", "version": "1.0.0"}}, "runtime_before_sha256": {"/usr/sbin/rockd": "3a56c1d8ea201ff61dde0552d58a51c4c81bdfa07a2ec0fa4fd36fd1585aaa8a", "/usr/libexec/rock-sandbox-exec": "01fffd3b500e759d6008f120f9fe1874b22b18296f4d3b45994146fa69008f36", "/usr/lib/rock-platform/service.py": "3fa60f3239083fe749c423ab3906c7daf1843392c68705bdf754c2796cc53e30", "/usr/lib/rock-platform/blackberryrock/packages.py": "5fe4bb0da093a92ab2e9c009022c6ad14245ce27d5e6e7d885786e48053f3773", "/usr/lib/rock-platform/blackberryrock/recipe_worker.py": "f3bf50337383bfcac2593599285afec1b91d930f6c368ae1e1e6131784dbfe3e"}, "runtime_after_sha256": {"/usr/sbin/rockd": "3a56c1d8ea201ff61dde0552d58a51c4c81bdfa07a2ec0fa4fd36fd1585aaa8a", "/usr/libexec/rock-sandbox-exec": "01fffd3b500e759d6008f120f9fe1874b22b18296f4d3b45994146fa69008f36", "/usr/lib/rock-platform/service.py": "3fa60f3239083fe749c423ab3906c7daf1843392c68705bdf754c2796cc53e30", "/usr/lib/rock-platform/blackberryrock/packages.py": "5fe4bb0da093a92ab2e9c009022c6ad14245ce27d5e6e7d885786e48053f3773", "/usr/lib/rock-platform/blackberryrock/recipe_worker.py": "f3bf50337383bfcac2593599285afec1b91d930f6c368ae1e1e6131784dbfe3e"}, "wallet_unchanged": "NOT_RUN", "wallet_observation": "unknown offline; authoritative financial equality NOT_RUN", "production_trust": false, "blackberry_hardware": "NOT_RUN", "physical_usb": "NOT_RUN"}
+PASS three independent SDK Tools in real guest
+ROCK_PLATFORM_ISOLATION_GUEST_PASS {"schema": "rock-os-platform-isolation/1", "status": "PASS_SCOPED", "scope": "game-isolation", "checks": ["root test orchestrator in actual ARM64 guest", "installed runtime inventory and ordinary compatibility", "actual platform health", "native OS catalog signed packages", "guest platform maturity", "explicit Game profile is offline with unknown Wallet, never fabricated zero", "Game profile contains no local financial authority databases", "tool identity denied platform IPC", "native UI denied direct Wallet IPC", "peer identity enforced with permissive DAC /run/rock-platform/api.sock", "peer identity enforced with permissive DAC /run/rock-wallet/api.sock", "real namespace/seccomp diagnostic", "sandbox cpu_bounded", "sandbox data_hidden", "sandbox fds_bounded", "sandbox fork_denied", "sandbox host_root_hidden", "sandbox inet_denied", "sandbox memory_bounded", "sandbox network_namespace", "sandbox no_new_privs", "sandbox platform_socket_hidden", "sandbox proc_isolated", "sandbox seccomp_filter", "sandbox system_readonly", "sandbox uid_unprivileged", "sandbox unix_denied", "sandbox wallet_socket_hidden", "sandbox actual resource denial memory", "sandbox actual resource denial cpu", "sandbox actual resource denial file-size", "sandbox actual resource denial crash", "protected Wallet database actually exists", "platform cannot open Wallet database", "new install disabled until approval", "install exact retry receipt", "install retry does not revoke approval", "job exact retry identity", "signed Tool executes inside OS sandbox", "conflicting retry rejected", "64KiB input boundary enforced", "no silent cloud fallback", "independent package update changes behavior", "cached signed version rollback", "uninstall removes package but retains receipts", "offline local Tool activity does not invent Wallet availability", "three independent SDK Tools in real guest"], "architecture": "aarch64", "resource_probes": [{"mode": "memory", "status": "PASS", "returncode": 0, "elapsed_seconds": 0.2678800800000012, "armed": {"limits": {"as": [268435456, 268435456], "core": [0, 0], "cpu": [2, 2], "fsize": [1048576, 1048576]}, "mode": "memory", "schema": "rock-sandbox-resource-probe/1", "uid": 65534}, "outcome": {"mode": "memory", "outcome": "MemoryError"}}, {"mode": "cpu", "status": "PASS", "returncode": 137, "elapsed_seconds": 2.027624224, "armed": {"limits": {"as": [268435456, 268435456], "core": [0, 0], "cpu": [2, 2], "fsize": [1048576, 1048576]}, "mode": "cpu", "schema": "rock-sandbox-resource-probe/1", "uid": 65534}, "outcome": null}, {"mode": "file-size", "status": "PASS", "returncode": 0, "elapsed_seconds": 0.32611780799999934, "armed": {"limits": {"as": [268435456, 268435456], "core": [0, 0], "cpu": [2, 2], "fsize": [1048576, 1048576]}, "mode": "file-size", "schema": "rock-sandbox-resource-probe/1", "uid": 65534}, "outcome": {"bytes": 1048576, "mode": "file-size", "outcome": "EFBIG"}}, {"mode": "crash", "status": "PASS", "returncode": 139, "elapsed_seconds": 0.25068892799999887, "armed": {"limits": {"as": [268435456, 268435456], "core": [0, 0], "cpu": [2, 2], "fsize": [1048576, 1048576]}, "mode": "crash", "schema": "rock-sandbox-resource-probe/1", "uid": 65534}, "outcome": null}], "resource_probe_scope": "fixed diagnostic processes under unchanged production sandbox limits; per-file size only", "wallet_financial_assertions": "NOT_RUN; requires same-image online authority acceptance", "tool_implicit_earnings": "NOT_RUN; requires stopped authoritative before/after comparison", "hub_crash_deadline_lifecycle": "NOT_RUN", "physical_usb": "NOT_RUN", "network": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\ndummy0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n  sit0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n", "time_utc": "2026-09-10T07:41:46Z"}
+ROCK_PLATFORM_VERIFY_PASS
+Console: switching to colour dummy device 80x25
+reboot: Power down
