@@ -219,7 +219,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 最新PRのnative source-tests timeoutとD6未合格を解消し、既存private VMへ依存しないfresh Mac/PC向けQEMU Developer Previewを作る。導入・起動・終了・再開・backup・削除を同一配布物で検証後、CM表現を確定する。物理端末は正確な1機種・variantを固定してから別ゲートで進める。
+次の作業: 最初の大規模native suiteを省略せず旧5分から10分上限へ拡張したため同SHAのCI完走を確認し、D6未合格を解消する。次に既存private VMへ依存しないfresh Mac/PC向けQEMU Developer Previewを作り、導入・起動・終了・再開・backup・削除を同一配布物で検証する。物理端末は正確な1機種・variantを固定してから別ゲートで進める。
 <!-- project-status:end -->
 
 ## 次段階の設計

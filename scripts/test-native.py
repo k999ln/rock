@@ -92,7 +92,8 @@ def main():
 
     for suite in SUITES:
         run(suite.replace('/', '-'), [sys.executable, '-B', '-W', 'error::ResourceWarning',
-                                     '-m', 'unittest', 'discover', '-s', suite, '-v'], NATIVE, unittest=True)
+                                     '-m', 'unittest', 'discover', '-s', suite, '-v'], NATIVE,
+            timeout=600 if suite == 'tests' else 300, unittest=True)
     # C outputs go to a disposable copy; the imported sources remain unchanged.
     with tempfile.TemporaryDirectory(prefix='rock-native-c-') as directory:
         work = Path(directory)

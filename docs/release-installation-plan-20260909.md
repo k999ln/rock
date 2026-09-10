@@ -35,7 +35,7 @@ Developer Previewの合格後は「仮想端末向けDeveloper Previewを導入�
 
 ## 3. 現在の停止条件
 
-- 最新PRのnative source-testsが5分でtimeoutしている。
+- 最新PRのnative source-testsは最初の大規模suiteが旧5分上限でtimeoutした。suiteを省略せず10分上限へ拡張し、同SHAのCI再実行結果を待つ。
 - D6長時間試験が未合格。
 - 配布物に必要な汎用VM作成、image取得、署名検証、削除の導線がない。
 - 実機の正確な型番とvariantが未確定。
