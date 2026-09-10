@@ -530,6 +530,15 @@ stage deadline, with a final deadline check after receipt observation. No
 unknown target is clicked. An unsupported or different render fails closed;
 profile hashes must be regenerated from and reviewed against actual C frames.
 
+After a source change, `scripts/review-native-pin-source.py` at the repository
+root runs a separate disposable Linux review against the existing pixel
+definitions and writes a candidate manifest without replacing the guard.
+Inspect the actual masked frames, apply a source-only candidate only when the
+pixels still match, then run the original replay and readiness tests without
+the review probe. A real pixel change requires a new explicit visual review;
+do not substitute hashes to silence a failed classifier. The ordinary source
+gate also checks the current pins and the direct `ui.c` include dependencies.
+
 Readiness screenshots use an owned anonymous memory file through QMP and are
 inspected only at the fixed authentication ROIs. Unknown frames are not saved
 as screenshots, temporary files or failure images. Reports record only the
