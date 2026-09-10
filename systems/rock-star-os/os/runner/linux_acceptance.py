@@ -14,7 +14,7 @@ import threading
 import time
 
 from blackberryrock.packages import PUBLIC_TEST_KEY, TEST_PUBLISHER
-from .build_fixture import remote_fixture
+from .build_fixture import remote_fixture, remote_citation_fixture
 from .client import RunnerClient, consent_for
 from .executor import IsolatedRecipeExecutor
 from .protocol import PUBLIC_ALICE_TOKEN, TERMINAL
@@ -43,6 +43,7 @@ def main():
     parser.add_argument('--work-dir', type=Path, required=True)
     parser.add_argument('--project', type=Path, required=True)
     parser.add_argument('--port', type=int, default=9444)
+    parser.add_argument('--fixture', choices=('remote-text', 'citations'), default='remote-text')
     args = parser.parse_args()
     if sys.platform != 'linux' or os.geteuid() == 0:
         raise SystemExit('NOT_RUN: requires nonroot Linux with bubblewrap and a C compiler')
@@ -52,7 +53,11 @@ def main():
     subprocess.run(['/usr/bin/cc', '-O2', '-Wall', '-Wextra', '-Werror', '-o', str(launcher), str(base / 'sandbox_launcher.c')], check=True)
     launcher.chmod(0o755)
     executor = IsolatedRecipeExecutor(launcher, args.project / 'src/blackberryrock/recipe_worker.py', base / 'isolated_entry.py')
-    package = remote_fixture()
+    package = remote_citation_fixture() if args.fixture == 'citations' else remote_fixture()
+    text = ((args.project / 'os/tools/fixtures/citations.md').read_text()
+            if args.fixture == 'citations' else '  actual remote process  \n  世界  ')
+    expected_sha256 = ('e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7'
+                       if args.fixture == 'citations' else hashlib.sha256('actual remote process\n世界'.encode()).hexdigest())
     results = []
     for mode, evidence in [('cloud', 'pinned_tls_loopback_fixture'), ('pc_usb', 'authenticated_unix_fixture')]:
         state = args.work_dir / mode
@@ -73,7 +78,6 @@ def main():
         thread.start()
         try:
             client = RunnerClient(transport, endpoint_id=endpoint, owner='alice', token=PUBLIC_ALICE_TOKEN)
-            text = '  actual remote process  \n  世界  '
             key = 'actual-job-1'
             consent = consent_for(package, text, target=mode, endpoint_id=endpoint, key=key)
             receipt = client.submit(package, text, key, consent=consent)
@@ -83,7 +87,7 @@ def main():
                 if status['state'] in TERMINAL or time.monotonic() > deadline:
                     break
                 time.sleep(0.05)
-            if status['state'] != 'succeeded' or status['output'] != 'actual remote process\n世界':
+            if status['state'] != 'succeeded' or hashlib.sha256(status['output'].encode()).hexdigest() != expected_sha256:
                 raise RuntimeError('actual isolated execution failed: ' + json.dumps(status, ensure_ascii=False))
             assert status['execution']['kind'] == 'actual_linux_isolated_process'
             assert status['execution']['socket_syscall_denied'] is True
@@ -106,6 +110,8 @@ def main():
         finally:
             reopened.close()
     report = {'marker': 'ROCK_RUNNER_LINUX_ACTUAL_PASS', 'platform': sys.platform, 'machine': os.uname().machine,
+              'fixture': args.fixture, 'input_sha256': hashlib.sha256(text.encode()).hexdigest(),
+              'expected_output_sha256': expected_sha256, 'mr_cli_adapter': 'NOT_USED',
               'production_cloud': 'NOT_RUN', 'physical_usb': 'NOT_RUN', 'fixtures_only': True,
               'launcher_sha256': hashlib.sha256(launcher.read_bytes()).hexdigest(), 'results': results}
     (args.work_dir / 'linux-actual.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')

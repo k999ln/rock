@@ -94,3 +94,7 @@ root HEAD `e4c3e4e517bddaf73b3e46a9c44e590e9f830273`、最新push済みは `1ff4
 - 金融UI observer（月888一度/同月retry/取消/ATMfee0quote/別PINhold1000/cancel/再起動）と90秒の実QMPframe録画器は準備済み未実行。録画は実imageからの原pixels/timestampだけとし、生成出力で代替しない。
 
 次: PC保留回収と金融2bootを08:40頃までに閉じ、Aへ全fixture portを解放。A中間guest結果、B最終復旧/DX、D全回帰を統合し、09:13までにfinalsource/imageを固定。D4→fresh0 D6→D2→Game/金融/PC→aggregateD5・実デモ・配布same candidateを完走する。LICENSE未回答と既存Sites project取得不可は外部条件として残る。
+
+## 08:36 UTC 引用整理の遠隔復旧への接続
+
+RQ01–11/12/16 / 0→1・秘密を探す・べき乗則 / 代表商品の切断中要求と結果を見失う不便 / 既存署名Tool・有限organize_citations・RunnerControl・同意/receipt / 元1.0を保ち明示選択する1.1開発fixtureだけ遠隔実行可能にする / 同一150byte入力・151byte結果と元key1回完了/保存/復旧時間 / 実TLS隔離processと実OS UI・停止後typed rows。MR CLIと物理USBは別判定のまま。

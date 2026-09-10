@@ -1,5 +1,9 @@
 # Rock star — 事業・設計・進捗
 
+## 08:40 UTC 最終候補へ向けた一周の固定
+
+月額888の二重請求防止、ATMfee0予約/取消、2正常bootの保持を4e中間imageで実測。新環境SDKのcached接続診断を修正して別fresh再導入が成功。引用整理の同じ処理を選択したrunnerへ送り、元keyの復旧まで最終候補で測る準備を統合。Game/金融/遠隔/90秒実録画のobserverを再現可能なsourceへ保存する。最終同一imageの受入・配布物・demoはまだ未合格。
+
 ## 2026-09-10: 8時間の実装・配布準備を開始
 
 ユーザー指定MDを[今回の実行入口](docs/prompts/rockstaros-release-20260910.md)へ保存し、[実行記録](docs/release-execution-20260910.md)に開始・担当・受入条件を固定。GitHubの4headはMDと一致。PR #2起点の専用worktreeで進める。RQ01〜RQ17、月888 cents、Rock ATM手数料0、既存データを維持。下記の「設計のみ」は前回の履歴。
@@ -243,7 +247,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 08:23 UTC: root e4c3e4e。Game送信直前の失効/同残高競合、SDK作者namespace、厳密なguest/index read-clock観測を統合。中間4eでGame両台帳9794/各10units/fee6/hold0、PC実処理→停止→pending保存/正常終了までPASS、再起動回収は進行中。B実fresh8bdはnonzero全backup→実SIGKILL→同intent復元/旧source拒否を確認中。Aがf168218をbuildして4非金融guest gateを実測予定。最終D0〜D6/配布取得/90秒実デモは未合格。08:45統合/09:13freeze目標、LICENSE/Sitesアクセス未解決。
+次の作業: 08:40 UTC: Game契約/実SIGKILL要約、SDK fresh診断修正を統合。中間4eの月888一度とATMfee0予約/取消・再起動2boot PASS。引用整理の同一recipeを明示1.1開発fixtureとして遠隔経路へ接続し対象受入を準備。A最終D2固定・native回帰/build→D4/D6/D2、B freshSDK原証拠/配布、C最終UIと90秒demoへ進む。LICENSE/Sites条件は未解決。
 <!-- project-status:end -->
 
 ## 次段階の設計

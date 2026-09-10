@@ -86,7 +86,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 08:23 UTC: root e4c3e4e。Game送信直前の失効/同残高競合、SDK作者namespace、厳密なguest/index read-clock観測を統合。中間4eでGame両台帳9794/各10units/fee6/hold0、PC実処理→停止→pending保存/正常終了までPASS、再起動回収は進行中。B実fresh8bdはnonzero全backup→実SIGKILL→同intent復元/旧source拒否を確認中。Aがf168218をbuildして4非金融guest gateを実測予定。最終D0〜D6/配布取得/90秒実デモは未合格。08:45統合/09:13freeze目標、LICENSE/Sitesアクセス未解決。
+次の作業: 08:40 UTC: Game契約/実SIGKILL要約、SDK fresh診断修正を統合。中間4eの月888一度とATMfee0予約/取消・再起動2boot PASS。引用整理の同一recipeを明示1.1開発fixtureとして遠隔経路へ接続し対象受入を準備。A最終D2固定・native回帰/build→D4/D6/D2、B freshSDK原証拠/配布、C最終UIと90秒demoへ進む。LICENSE/Sites条件は未解決。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
