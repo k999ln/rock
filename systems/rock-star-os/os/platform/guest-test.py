@@ -2,7 +2,9 @@
 """Real guest integration checks. Must run as root inside Rock OS.
 
 Uses real services, signatures, namespaces, persistent databases and uid
-transitions. The Wallet side is explicitly the local simulator.
+transitions. The default Wallet checks use the local simulator. The explicit
+game-isolation scope proves the same isolation/Tool boundaries with no NIC;
+it emits a distinct partial-coverage marker and performs no financial action.
 """
 import json
 import importlib.util
@@ -106,6 +108,11 @@ def wait_job(job_id):
 
 
 def main():
+    scope_flags = [part for part in Path('/proc/cmdline').read_text().split()
+                   if part.startswith('rock.platform.verify_scope=')]
+    if scope_flags not in ([], ['rock.platform.verify_scope=game-isolation']):
+        raise ValueError('unknown or duplicate platform verification scope')
+    game_isolation = bool(scope_flags)
     check('root test orchestrator in actual ARM64 guest', os.geteuid() == 0 and os.uname().machine == 'aarch64')
     inventory = subprocess.run(['/usr/bin/python3','-I','-B','/usr/lib/rock-platform/guest-inventory.py'],capture_output=True,timeout=10)
     print(inventory.stdout.decode(errors='replace'),flush=True)
@@ -116,7 +123,14 @@ def main():
     snapshot = request('snapshot')['snapshot']
     check('native OS catalog signed packages', len(snapshot['catalog']) >= 5 and snapshot['catalog_rejected'] == 0)
     check('guest platform maturity', snapshot['hub']['maturity'] == 'virtual_os_integrated')
-    check('Wallet is explicitly simulator', snapshot['wallet']['simulation_only'] is True)
+    if game_isolation:
+        from game_exchange.device_client import configuration
+        configuration(json.loads(Path('/etc/rock-wallet/backend.json').read_bytes()))
+        check('explicit Game profile is offline with unknown Wallet, never fabricated zero', snapshot['wallet'] is None)
+        check('Game profile contains no local financial authority databases',
+              not any(Path('/data/wallet', name).exists() for name in ('wallet-simulator.db', 'entitlement.db')))
+    else:
+        check('Wallet is explicitly simulator', snapshot['wallet']['simulation_only'] is True)
     check('tool identity denied platform IPC', denied_as(1001, PLATFORM_SOCKET, {'v': 1, 'op': 'snapshot'}))
     check('native UI denied direct Wallet IPC', denied_as(1000, WALLET_SOCKET, {'v': 1, 'op': 'snapshot'}))
     # Make DAC permissive briefly to independently test kernel peer authorization.
@@ -151,7 +165,9 @@ def main():
         resource_results.append(resource_probe.validate_resource_result(mode, measured, time.monotonic() - started))
         check('sandbox actual resource denial ' + mode, resource_results[-1]['status'] == 'PASS')
     print('ROCK_SANDBOX_RESOURCE_GUEST_PASS ' + json.dumps(resource_results, sort_keys=True), flush=True)
-    script = "from pathlib import Path; Path('/data/wallet/wallet-simulator.db').read_bytes()"
+    protected = '/data/wallet/backend-cache/remote-cache.db' if game_isolation else '/data/wallet/wallet-simulator.db'
+    check('protected Wallet database actually exists', Path(protected).is_file())
+    script = 'from pathlib import Path; Path(' + repr(protected) + ').read_bytes()'
     inaccessible = subprocess.run(['/usr/bin/python3', '-I', '-c', script], user=1002, group=1002,
                                   extra_groups=[], capture_output=True, timeout=5)
     check('platform cannot open Wallet database', inaccessible.returncode != 0 and b'PermissionError' in inaccessible.stderr)
@@ -199,6 +215,20 @@ def main():
     request('uninstall', id=tool)
     state = request('snapshot')['snapshot']
     check('uninstall removes package but retains receipts', not any(x['id'] == tool for x in state['hub']['installed']) and any(x['id'] == first['id'] for x in state['hub']['jobs']))
+    if game_isolation:
+        check('offline local Tool activity does not invent Wallet availability', state['wallet'] is None)
+        subprocess.run(['/usr/bin/python3', '-I', '-B', '/usr/lib/rock-platform/tools-guest-acceptance.py'], check=True, timeout=90)
+        check('three independent SDK Tools in real guest', True)
+        report = {'schema':'rock-os-platform-isolation/1','status':'PASS_SCOPED','scope':'game-isolation',
+            'checks':checks,'architecture':os.uname().machine,'resource_probes':resource_results,
+            'resource_probe_scope':'fixed diagnostic processes under unchanged production sandbox limits; per-file size only',
+            'wallet_financial_assertions':'NOT_RUN; requires same-image online authority acceptance',
+            'tool_implicit_earnings':'NOT_RUN; requires stopped authoritative before/after comparison',
+            'hub_crash_deadline_lifecycle':'NOT_RUN','physical_usb':'NOT_RUN',
+            'network':Path('/proc/net/dev').read_text(),'time_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())}
+        Path('/data/platform-isolation-test.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+        print('ROCK_PLATFORM_ISOLATION_GUEST_PASS '+json.dumps(report,ensure_ascii=False),flush=True)
+        return
     # No tool completion above can credit even simulated money.
     before = state['wallet']['available_minor']
     check('tool completion has no implicit earnings', before == snapshot['wallet']['available_minor'])

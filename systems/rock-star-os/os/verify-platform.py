@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Boot the real integrated OS with a native display, no NIC, and guest tests."""
+import argparse
 import hashlib
 import json
 import os
@@ -35,9 +36,26 @@ def digest(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
+def scoped_proof(content, persisted):
+    marker = 'ROCK_PLATFORM_ISOLATION_GUEST_PASS '
+    rows = [json.loads(line[len(marker):]) for line in content.splitlines() if line.startswith(marker)]
+    if len(rows) != 1 or rows[0].get('schema') != 'rock-os-platform-isolation/1' or \
+            rows[0].get('status') != 'PASS_SCOPED' or rows[0].get('scope') != 'game-isolation' or \
+            not isinstance(rows[0].get('checks'), list) or not rows[0]['checks'] or \
+            not rows[0].get('wallet_financial_assertions', '').startswith('NOT_RUN;'):
+        raise RuntimeError('exactly one scoped guest proof with explicit financial exclusion required')
+    if json.loads(persisted) != rows[0]:
+        raise RuntimeError('stopped guest proof differs from actual serial observation')
+    return rows[0]
+
+
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--scope', choices=('local-full', 'game-isolation'), default='local-full')
+    parser.add_argument('--artifacts', type=Path)
+    args = parser.parse_args()
     repo = Path(__file__).resolve().parents[1]
-    artifacts = Path(os.environ.get('ROCK_OS_ARTIFACTS', str(repo / 'artifacts/os'))).resolve()
+    artifacts = (args.artifacts or Path(os.environ.get('ROCK_OS_ARTIFACTS', str(repo / 'artifacts/os')))).resolve()
     evidence = Path(tempfile.mkdtemp(prefix='platform-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ') + '-', dir=artifacts))
     kernel, rootfs = artifacts / 'Image', artifacts / 'rootfs.ext4'
     data, monitor, log = evidence / 'userdata.ext4', evidence / 'qmp.sock', evidence / 'boot.log'
@@ -60,7 +78,13 @@ def main():
                '-device', 'virtio-keyboard-pci,addr=0x5',
                '-device', 'virtio-tablet-pci,addr=0x6']
     report = {'status': 'RUNNING', 'command': command, 'image_sha256': before,
-              'network_adapter': 'none', 'blackberry': 'NOT_RUN', 'wallet': 'SIMULATOR_ONLY'}
+              'network_adapter': 'none', 'blackberry': 'NOT_RUN', 'scope':args.scope,
+              'wallet': 'NOT_RUN' if args.scope == 'game-isolation' else 'SIMULATOR_ONLY'}
+    if args.scope == 'game-isolation':
+        from game_exchange import profile
+        binding = profile.verified(profile.device_config(artifacts, 'platform-isolation'))
+        report['profile_binding'] = {key:binding[key] for key in ('profile','profile_sha256','factory_sha256')}
+        command[command.index('-append')+1] += ' rock.platform.verify_scope=game-isolation'
     print('Integrated OS boot evidence: ' + str(evidence), flush=True)
     try:
         with log.open('wb') as output:
@@ -91,7 +115,8 @@ def main():
                         process.kill()
                         process.wait()
         content = log.read_text(errors='replace')
-        required = ['ROCK_PLATFORM_READY', 'ROCK_PLATFORM_GUEST_PASS', 'ROCK_PLATFORM_VERIFY_PASS',
+        guest_marker = 'ROCK_PLATFORM_ISOLATION_GUEST_PASS' if args.scope == 'game-isolation' else 'ROCK_PLATFORM_GUEST_PASS'
+        required = ['ROCK_PLATFORM_READY', guest_marker, 'ROCK_PLATFORM_VERIFY_PASS',
                     'ROCK_SANDBOX_RESOURCE_GUEST_PASS']
         report['missing'] = [marker for marker in required if marker not in content]
         resource_lines = [line.split('ROCK_SANDBOX_RESOURCE_GUEST_PASS ', 1)[1] for line in content.splitlines()
@@ -108,7 +133,18 @@ def main():
             raise RuntimeError('integrated guest checks failed; inspect boot.log')
         if {p.name: digest(p) for p in (kernel, rootfs)} != before:
             raise RuntimeError('read-only OS images changed')
-        report['status'] = 'PASS'
+        if args.scope == 'game-isolation':
+            if 'reboot: Power down' not in content:
+                raise RuntimeError('scoped guest did not shut down normally')
+            persisted = subprocess.run(['debugfs','-R','cat /platform-isolation-test.json',str(data)],capture_output=True,check=True,timeout=30)
+            proof = scoped_proof(content, persisted.stdout)
+            check = subprocess.run(['e2fsck','-f','-n',str(data)],capture_output=True,timeout=30)
+            (evidence/'filesystem-check.log').write_bytes(check.stdout+check.stderr)
+            if check.returncode:
+                raise RuntimeError('scoped normal shutdown did not leave a consistent filesystem')
+            report.update(guest_proof=proof,normal_shutdown=True,filesystem_consistent=True,
+                          wallet_financial_assertions='NOT_RUN',tool_implicit_earnings='NOT_RUN')
+        report['status'] = 'PASS_SCOPED' if args.scope == 'game-isolation' else 'PASS'
         print('PASS: native OS platform checks; ' + str(evidence), flush=True)
     except BaseException as error:
         report['status'], report['error'] = 'FAIL', str(error)
