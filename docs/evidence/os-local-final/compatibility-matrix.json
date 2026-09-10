@@ -1,0 +1,225 @@
+{
+  "schema": "rock-final-compatibility-evidence-mapping/1",
+  "created_utc": "2026-09-10T11:55:07.020293+00:00",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "method": "Only already-copied local raw evidence and immutable Git source read; no VM or current C authority access",
+  "rows": [
+    {
+      "id": "C01",
+      "case": "旧GX00 narrow client → 新SDK明示import",
+      "expected": "元request/key/receiptとsource DBを保存し同一key replay",
+      "actual": "PASS。旧clientで実begin→1requestを明示import→import再試行同receipt→元source全typed不変→SDK retryが元server replyと一致",
+      "scope_limit": "既存狭い(operation,key) APIのみ。旧配布OS/binary一般互換・黙示migrationではない",
+      "normal_test_ids": [
+        "test_game_reference_sdk.ReferenceSDK.test_legacy_original_request_import_keeps_source_and_server_receipts"
+      ],
+      "actual_sigkill_evidence": [],
+      "references": [
+        "D",
+        "P"
+      ]
+    },
+    {
+      "id": "C02",
+      "case": "managed listenerへの旧/unbound Wallet path",
+      "expected": "owner境界を迂回するlegacy path/body/tokenをdispatch前拒否",
+      "actual": "PASS。owner body injection/別token/authority/legacy pathが拒否",
+      "scope_limit": "旧v2 clientを新Game台帳へ移行できるという証明ではない",
+      "normal_test_ids": [
+        "test_wallet_managed_tls.ManagedOwnerTLSIntegration.test_owner_body_injection_wrong_token_authority_and_legacy_paths_do_not_dispatch"
+      ],
+      "actual_sigkill_evidence": [],
+      "references": [
+        "D",
+        "P"
+      ]
+    },
+    {
+      "id": "C03",
+      "case": "非空legacy Wallet/Entitlement → Game勘定migration",
+      "expected": "CLAIMED月額、ATM hold、pending sale、失効credential/counter、receipt/BLOB/rowid/sequenceを保存",
+      "actual": "PASS。全旧typed table/pragmaとEntitlement全体、Walletのposting CHECK以外の旧schemaを照合。同migration IDのみ。旧失効approvalから新支出は拒否",
+      "scope_limit": "停止managed authorityへの明示host操作。OS local台帳→remote Gameprofile転換ではない",
+      "normal_test_ids": [
+        "test_game_exchange_migration.ExchangeMigration.test_existing_claimed_monthly_atm_hold_pending_revoked_auth_and_opaque_rows_survive"
+      ],
+      "actual_sigkill_evidence": [],
+      "references": [
+        "D",
+        "P"
+      ]
+    },
+    {
+      "id": "C04",
+      "case": "migration commit前/後 SIGKILL",
+      "expected": "前は元schema、後は完全新版と元migration receiptのみで同ID再開",
+      "actual": "2/2 PASS。直後was_installed=False/True、双方19旧typed tables保存、AVAILABLE5000/PENDING200、opaque BLOB不変",
+      "scope_limit": "実SIGKILL・software SQL境界。電源断認証/任意schema rollbackではない",
+      "normal_test_ids": [],
+      "actual_sigkill_evidence": [
+        {
+          "test": "test_migration_kill_before_commit_preserves_original_nonempty_schema",
+          "full_case_sha256": "fbd07627b6e4a78076191a0af8a1b2cf52ac21e6d8e08c5e270490e90ca4364f",
+          "all_typed_sqlite_snapshots_sha256": "5b68a5e9401108f7724b91718d8b4da709028313205087116be79bfe1f4acda4"
+        },
+        {
+          "test": "test_migration_kill_after_commit_recovers_only_original_migration_receipt",
+          "full_case_sha256": "6615bc1c335808459a8588031a3ddfc2e7a32ec03c8f0093594d2329860705e3",
+          "all_typed_sqlite_snapshots_sha256": "2a5c22668c969a381b86ad6ed93efa4fb28c513a5062f7fb5833adfb31fd6aab"
+        }
+      ],
+      "references": [
+        "D",
+        "K"
+      ]
+    },
+    {
+      "id": "C05",
+      "case": "未確定交換・claim後 SIGKILL",
+      "expected": "応答不明を失敗と決めずhold/元apply bytesを保存、一度だけ照合",
+      "actual": "PASS。復旧前hold103→後principal100+fee3、hold0、Game0→10、元request保持、PENDING200不変",
+      "scope_limit": "元signed terminalによる確定。timeout/NOT_FOUNDだけでhold解除しない",
+      "normal_test_ids": [
+        "test_game_reference_sdk.ReferenceSDK.test_record_is_durable_before_actual_send_and_unknown_retries_original",
+        "test_game_reference_sdk.ReferenceSDK.test_pending_connection_resumes_original_begin_after_sdk_restart"
+      ],
+      "actual_sigkill_evidence": [
+        {
+          "test": "test_claim_after_commit_keeps_unknown_hold_and_original_apply",
+          "full_case_sha256": "8aa80d70e2666b5dbb291adef93be4d4a064b84b5b36cf3a76286bfdad72475e",
+          "all_typed_sqlite_snapshots_sha256": "71356dfd95611582230ddeec79d31e8353cdb4875aa23dcc01dd3bc002305086"
+        }
+      ],
+      "references": [
+        "D",
+        "P",
+        "K"
+      ]
+    },
+    {
+      "id": "C06",
+      "case": "current-copy: Wallet epoch/最初のGame epoch/最終receipt直後 SIGKILL",
+      "expected": "元current sourceと同intentで中断再開、元writerを無効化、独立A/B epochを一度だけ進める",
+      "actual": "3/3 PASS。Wallet/A/B epoch1→2、same intent DONE、source RETIRED、全typed snapshotと各epoch receipt hash保持",
+      "scope_limit": "同host・停止した正確なcurrent copyのみ。任意過去backup、cross-host restore、revocation取消ではない",
+      "normal_test_ids": [],
+      "actual_sigkill_evidence": [
+        {
+          "test": "test_restore_kill_after_wallet_epoch_commit",
+          "full_case_sha256": "8fb377e797a445c9dd66617de26d5eafe5091ed84009df5b0d1f623e22b6d4dd",
+          "all_typed_sqlite_snapshots_sha256": "441ecd78db7978d7f3b4111b0604f8552651ae7ffca2d75cd0b2c60bd7f1512c"
+        },
+        {
+          "test": "test_restore_kill_after_first_independent_game_epoch_commit",
+          "full_case_sha256": "516b37a98c7cf713e317d51d2ba441fc33f7a610680c2ccb9edf2614ced2d2d6",
+          "all_typed_sqlite_snapshots_sha256": "79c48a31d28c6c5e136113dddce90b36cea861bd10097e7589aabc9058a71854"
+        },
+        {
+          "test": "test_restore_kill_after_final_receipt_commit_recovers_same_completion",
+          "full_case_sha256": "b048d7b34ae11f39554db58df947554f8a81f2a42bc0e919383fe5421ae48118",
+          "all_typed_sqlite_snapshots_sha256": "72e1e702baf16e5005559fdb77503499db6177ecdb3a4ec8f656c360652bec72"
+        }
+      ],
+      "references": [
+        "D",
+        "K"
+      ]
+    },
+    {
+      "id": "C07",
+      "case": "旧Wallet/current index・current Wallet/旧index・旧epoch apply",
+      "expected": "混在をopen前拒否、遅延旧applyを拒否、元terminal/holdだけ照合",
+      "actual": "PASS。両方向混在拒否。issuer CAS後の元APPLIEDは一度だけCOMPLETED、未適用側は永久REJECTEDを照合してhold解除、元request receipt保持",
+      "scope_limit": "全構成old-copy rollbackの自動調停なし。新epochへ旧applyを再署名しない",
+      "normal_test_ids": [
+        "test_game_current_restore.CurrentGameRestoreTests.test_old_index_current_wallet_is_refused_before_constructor",
+        "test_game_current_restore.CurrentGameRestoreTests.test_old_wallet_current_index_is_refused_before_constructor",
+        "test_game_exchange_restore.ExchangeCurrentRestore.test_each_issuer_cas_retains_rows_then_old_apply_refused_and_original_terminal_recovered"
+      ],
+      "actual_sigkill_evidence": [],
+      "references": [
+        "D",
+        "P"
+      ]
+    },
+    {
+      "id": "C08",
+      "case": "同9ab派生slot間のA/B rollback・書込中断",
+      "expected": "実stage0で破損拒否/health失敗rollback/途中書込後保持/後続更新/重複排除",
+      "actual": "8/8 PASS（tamper,restage,stage-failed,health-fail×2,interrupt,recover,final）。途中書込の実QEMU SIGKILL1件を含む",
+      "scope_limit": "両slotは同9ab派生release marker。旧b828 OS＋新Gameuserdataの互換を試したものではない",
+      "normal_test_ids": [],
+      "actual_sigkill_evidence": [],
+      "references": [
+        "AB",
+        "D4"
+      ]
+    },
+    {
+      "id": "C09",
+      "case": "正しい署名のforeign data ABI",
+      "expected": "rock-data-v1を維持しincompatible-data-v2を書込前拒否、slots/state不変のまま再起動",
+      "actual": "canonical3/3 PASS。valid B staging→foreign ABI拒否→同拒否proofを保持したcommitted B再起動",
+      "scope_limit": "data migration NOT_IMPLEMENTED。外国ABI拒否は既存旧OSの読書互換を保証しない",
+      "normal_test_ids": [],
+      "actual_sigkill_evidence": [],
+      "references": [
+        "ABI",
+        "D4"
+      ]
+    },
+    {
+      "id": "C10",
+      "case": "既存local Wallet→Gameprofile自動転換／旧b828の新userdata読書／旧OS一般rollback",
+      "expected": "別の明示migration/reader・writer matrixが必要",
+      "actual": "NOT_IMPLEMENTED / NOT_RUN。本候補はfresh Gameprofile導入。旧profile/VMを自動変換・初期化していない",
+      "scope_limit": "C01〜C09のPASSからこの未実施範囲へ拡張しない",
+      "normal_test_ids": [],
+      "actual_sigkill_evidence": [],
+      "references": [
+        "S"
+      ]
+    }
+  ],
+  "references": {
+    "D": {
+      "path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock/docs/evidence/gx01/final-9abf78a-20260910.json",
+      "sha256": "3f5f9093ed989edc9d38e6d6072c950196fbea913409f1f0b084cd3b142cbcf8",
+      "scope": "PASS_SCOPED_HOST_CONTRACT_AND_SDK_WITH_SEPARATE_RETAINED_RUNS"
+    },
+    "P": {
+      "path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/acceptance-progress.json",
+      "sha256": "b908cbc2895bf7dc12e4d37728cd35e7884f9dbc22b016919815092b5f99eb50",
+      "scope": "selected normal per-test PASS; original188 wrapper wholeFAIL retained"
+    },
+    "K": {
+      "path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/final-game-9abf78a/kill-corrected-report.json",
+      "sha256": "1d25e58d786e43e27d853e01db2a48bf15dcf29df41e86dc9a17500158473594",
+      "scope": "new0700 corrected fixture11actualSIGKILL PASS; original0775 setupFAIL retained"
+    },
+    "AB": {
+      "path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/os-acceptance/final-d4-ab-report.json",
+      "sha256": "6f72d5736d93a01a8c7920ea51fcea06d19947eb29c6c0915125ecdc0310ca6d"
+    },
+    "D4": {
+      "path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/os-acceptance/final-d4-continuation-report.json",
+      "sha256": "e93dca22501e92f31d098a99abfdb8f8731e77ca1ac8df1df94dc310be042f7d",
+      "scope": "original wholeFAIL retained; required41coverage"
+    },
+    "ABI": {
+      "path": "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/data-abi/report.json",
+      "sha256": "2744feec51432b3d9348bfdc30726956c1d737f36a09241621c1165ec49b6864",
+      "evidence": "prior complete archive readback inventory + frozen canonical verifier + D4 complete case record; no fresh VM read during C"
+    },
+    "S": {
+      "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+      "paths": {
+        "systems/rock-star-os/os/update/verify-data-abi.py": "3b00a9e952de73f5a845fd309580d6bb4ef515034b16edbc0afe00b501fe9355",
+        "systems/rock-star-os/tests/test_game_exchange_migration.py": "21ad01df82633393da441525b5d9c6918a53d3f496f880c6415c09e8d91ba003",
+        "systems/rock-star-os/tests/test_game_reference_sdk.py": "ffce67467703b0fc34c96c21066cc7b2cf70a92d2385c853ea60efa21591c796",
+        "systems/rock-star-os/tests/test_game_exchange_restore.py": "e8afae9ac68d281f6ea39745edd11d0e601968a514992d17e1949592c8968759"
+      }
+    }
+  },
+  "whole_product": "NO_INFERRED_ACCEPTANCE; D5 and native user flows remain separate"
+}

@@ -77,6 +77,10 @@
     "run-final-hub-continuation.py": {
       "bytes": 4765,
       "sha256": "7efd03785986d6524e819343c84c63a7588e1f42119b773d14c7df074d1ca97f"
+    },
+    "compatibility-matrix.json": {
+      "bytes": 11763,
+      "sha256": "4870b7e8b12c16406153cf643b2ffb24ff2cf5d5ce7ba9db5a93ec428faddb88"
     }
   },
   "status": "SCOPED_LOCAL_GATES_RECORDED_WITH_ORIGINAL_FAILURES"
