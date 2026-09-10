@@ -1,7 +1,14 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import previewData from '../../data/rockstaros-preview.json';
 import styles from './preview.module.css';
+
+type PreviewMedia = {
+  demo: null | { src: string; poster: string; captions: string; durationSeconds: number; sourceCommit: string };
+  acceptanceRecordUrl: string | null;
+};
+const preview: PreviewMedia = previewData;
 
 export const metadata: Metadata = {
   title: 'RockstarOS 1.0 Developer Preview',
@@ -44,6 +51,10 @@ export default function RockstarPreview() {
           <figcaption>開発中の実OS画面 · QEMU / 公開サンプル</figcaption>
         </figure>
       </section>
+      {preview.demo && <section className={styles.demoSection} aria-labelledby="demo-title">
+        <div><p className={styles.eyebrow}>実OSの操作を、そのまま。</p><h2 id="demo-title">仕事を動かし、<br />保存した結果へ戻る。</h2><p>Hubの引用整理、成果の再表示、合成Wallet、Gameの接続と購入履歴。実際のQEMU画面を、操作した時間のまま収録しています。</p><p className={styles.scope}>導入済みの端末で収録した操作例です。初回導入の所要時間ではありません。合成残高を使い、実際の資金や実ゲームには接続していません。</p>{preview.acceptanceRecordUrl && <a className={styles.textLink} href={preview.acceptanceRecordUrl}>同じ候補の検証記録を読む ↗</a>}</div>
+        <figure className={styles.demoScreen}><video controls playsInline preload="metadata" poster={preview.demo.poster} width={720} height={960} aria-label="QEMUで動作するRockstarOS。合成WalletとGameを含む実画面の録画。"><source src={preview.demo.src} type="video/mp4" /><track kind="captions" src={preview.demo.captions} srcLang="ja" label="操作の説明" /><a href={preview.demo.src}>実画面の動画を開く</a></video><figcaption>QEMUの実OS画面 · 合成Wallet / Game · {preview.demo.durationSeconds}秒 · 音声なし</figcaption></figure>
+      </section>}
       <section id="start" className={styles.start} aria-labelledby="start-title">
         <p className={styles.eyebrow}>最初に読むこと</p>
         <h2 id="start-title">Mac上の仮想端末で試す開発版です。</h2>

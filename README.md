@@ -80,13 +80,13 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | B03-PROVIDER | B03 | 実provider/認証済み収益（別の権限・条件が必要） | 未合格 | B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
 | B05-COMPARE | B05 | Wallet基礎後のPC比較/再試験。実機価値は別判定 | 未合格 | B02-NATIVE · B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
 | GX00-ISOLATION | GX00 | ADR・複数owner分離/本人接続・互換/復旧の合成検証 | 合格 | B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/evidence/gx00/integration.json) · [記録](docs/evidence/gx00/release-required-acceptance-20260910.json) |
-| GX01-CONTRACT | GX01 | 複数owner/gameの交換契約と両台帳fixture | 未合格 | GX00-ISOLATION | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-native-ui-20260910.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](docs/game-wallet-release-checkpoint-20260910.md) |
+| GX01-CONTRACT | GX01 | 複数owner/gameの交換契約と両台帳fixture | 合格 | GX00-ISOLATION | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-native-ui-20260910.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](docs/game-wallet-release-checkpoint-20260910.md) · [記録](docs/evidence/gx01/final-9abf78a-20260910.json) · [記録](docs/evidence/release-candidate-9abf78a/native-ci.json) · [記録](docs/gx01-dx01-acceptance-20260910.md) |
 | GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 未合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-native-ui-20260910.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](docs/game-wallet-release-checkpoint-20260910.md) |
 | DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 未合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) |
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 09:19 UTC: 最終source/host tools 9abf78a80d27aa9f847c4051d20e4c552e407276 固定/push。A完全native回帰/build→D4→初期0 D6/D2→D1/D3、B同9file取得/fresh導入/aggregate/SDK、D最終契約回帰、root最終Game/金融/引用遠隔/90秒実録画と公開用案内を進める。Game再接続未対応の説明と元key保持、PIN元pixel条件を検証済み。製品license/既存Sitesは未解決。
+次の作業: 09:48 UTC: final9ab source/host toolsのCI1631/14 PASSと全694input一致、base/profile build freeze完了。GX01-CONTRACTは同source177通常＋別11実SIGKILL/24要件のfixture範囲でdone、GX01-UI/DX01-SDK/V01-ACCEPTは最終実OS/fresh待ち。A legal collector補助不具合を修正・旧image保管で容量確保→D4→D6→D2/D1/D3、B同配布9file/fresh/aggregate/SDK、root全gate後freshC実UI/実demo。arm64原全回帰10TLS ERRORは原因未確定FAIL保持。公開license/Sites/充電接続は未解決。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

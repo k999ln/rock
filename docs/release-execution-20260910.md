@@ -125,3 +125,15 @@ RQ07–17 / 明確な楽観主義・べき乗則 / 版ごとに検証が混ざ�
 - 公開条件の本体license回答、既存Sitesアクセスは未解決。先に配布物・実試験・公開用ページを完成させる。終了予定13:43:35 UTC。
 
 次: Aのnative完了後D最終契約回帰、B独立fresh導入。rootは公開用guideの確定制限・復旧説明を同期し、Aの初期0 D6/D2正常終了後のfresh専用deviceでGame→監査→金融→引用遠隔→90秒実OS収録を実行する。
+
+## 09:48 UTC checkpoint（経過4:04:45）
+
+- Native source/host toolsは9abf78a固定のまま。Web/証拠head6047b78、配布版ソースと別。GitHub同9ab Web34459916174/native34459916162両PASS。nativeは1631executions/14checksとroot UI追加step、Linux x86_64/Python3.13.15。原reportSHA `34bf46580fe2f3655f765c5266d55e2786143bb28fb423f4e97e537f68a06af8` と694input全SHA/全14logを独立照合済み。
+- Mac上のarm64全nativeは09:18:19–09:26:41、主1367tests447.965秒で10TLS deadline ERROR。他13checksはPASS、source不変、原FAIL report/log保持。Dの同source2case実測は2.249秒/29RPC最大57.187ms・684fsync最大0.184msで非再現。所有残留observer processはexact argv/cwdで照合後終了。原因は未確定で、CIや隔離PASSで原FAILを取り消さない。
+- 既存freeze CLIはtest/build host同一条件を置かず、全source一致・clean PASS・全log/件数照合を要求する。これを解除せずCI原本を --source-reportへ指定。base build09:38:05–09:40:02 PASS、Game profile/freeze09:41完成。image `a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197` / rootfs `0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c` / stage0 `bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01`。freezeSHA d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc。実guest受入は未開始。
+- D最終host契約: 原188runの通常177PASS、保存harnessの中間0775directoryは保護guardが11境界を実行前拒否。原8FAIL/3ERRORとLinuxNode不在を保存。新owned0700の別runで実SIGKILL11PASS44.072秒、同sourceのMacNode署名6vectorPASS。全692native source不変、24要件・21原本hashをrootも照合。GX01-CONTRACTのみfixture範囲でdone、GX01-UI/DX01-SDK/全OSは未完。
+- A実行planSHA20795f3b4de6e9f562c8ec373b96bfea6407e4b0418064286e73d1096b744e0f。legal約934MBの末尾で補助スクリプトの変数衝突TypeErrorを保持し、新runで同source全工程を再確認。再生成可能な旧7ed imageだけhost保管/hash照合後に整理しD4最低12GiBを確保。実userdata/旧FAIL/sourceは保持。Bは16GiB VMの最大disk併存＋2GiB余裕を実測して導入する。
+- root preview Vite PID26795は自己所有argv/cwd照合後09:26 SIGTERM終了、5173解放。Webの確定制限copyはtypecheck/lint/実ブラウザreadbackPASS。公開用静的ページexportはローカル作業版で内部リンク/画像hash/見出し/JS非同梱を確認、最終媒体・視認はこれから。実OS Cの8bootを凍結source全file/image照合→Game→監査→金融→引用遠隔→90秒録画の順に呼ぶ再現driverを用意。
+- 09:39 host Battery54%・推定1:02、AC未確認。充電について非同期入力を依頼済み。user/他app processは止めず、A有限caffeinateと都度記録を維持。製品licenseと既存Sitesアクセスも未解決。
+
+次: A D4 41boot→初期0 D6 5boot/61jobs/60分→D2 2boot/16ops/5jobs→D1/D3。全fixture停止後Cへ引渡し、Bは独立VMでsame9file取得/導入/全構成復旧/SDK。最終実OS映像・公開用artifact・取得照合を完成する。終了予定13:43:35 UTC。

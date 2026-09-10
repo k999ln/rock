@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
   "milestone": "RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備",
-  "nextAction": "09:19 UTC: 最終source/host tools 9abf78a80d27aa9f847c4051d20e4c552e407276 固定/push。A完全native回帰/build→D4→初期0 D6/D2→D1/D3、B同9file取得/fresh導入/aggregate/SDK、D最終契約回帰、root最終Game/金融/引用遠隔/90秒実録画と公開用案内を進める。Game再接続未対応の説明と元key保持、PIN元pixel条件を検証済み。製品license/既存Sitesは未解決。",
+  "nextAction": "09:48 UTC: final9ab source/host toolsのCI1631/14 PASSと全694input一致、base/profile build freeze完了。GX01-CONTRACTは同source177通常＋別11実SIGKILL/24要件のfixture範囲でdone、GX01-UI/DX01-SDK/V01-ACCEPTは最終実OS/fresh待ち。A legal collector補助不具合を修正・旧image保管で容量確保→D4→D6→D2/D1/D3、B同配布9file/fresh/aggregate/SDK、root全gate後freshC実UI/実demo。arm64原全回帰10TLS ERRORは原因未確定FAIL保持。公開license/Sites/充電接続は未解決。",
   "tasks": [
     {
       "id": "R01",
@@ -549,7 +549,7 @@
       "id": "GX01-CONTRACT",
       "task": "GX01",
       "title": "複数owner/gameの交換契約と両台帳fixture",
-      "status": "planned",
+      "status": "done",
       "dependsOn": [
         "GX00-ISOLATION"
       ],
@@ -557,7 +557,10 @@
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-native-ui-20260910.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
-        "docs/game-wallet-release-checkpoint-20260910.md"
+        "docs/game-wallet-release-checkpoint-20260910.md",
+        "docs/evidence/gx01/final-9abf78a-20260910.json",
+        "docs/evidence/release-candidate-9abf78a/native-ci.json",
+        "docs/gx01-dx01-acceptance-20260910.md"
       ]
     },
     {
