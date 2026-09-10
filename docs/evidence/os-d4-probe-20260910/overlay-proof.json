@@ -1,0 +1,77 @@
+{
+  "schema": "rock-d4-diagnostic-overlay-proof/1",
+  "status": "PASS_SCOPED",
+  "time_utc": "2026-09-10T10:28:47.998243+00:00",
+  "candidate_source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+  "image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+    "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+  },
+  "original_source_files": 1364,
+  "candidate_source_unchanged": true,
+  "candidate_images_unchanged": true,
+  "modified_existing_files": {
+    "systems/rock-star-os/os/update/ui_startup_fixture.py": {
+      "before_sha256": "3fe75db24123827cc3140a5f874c64af8a427c847e45e3115947f9dc05ba5530",
+      "after_sha256": "70db98c1a8ffe68a9686970dceda41994ea6fcb7bacd5245c3b4a21677732d4d"
+    },
+    "systems/rock-star-os/os/update/verify-ui-startup.py": {
+      "before_sha256": "895120541d31cdd0d4e1eb9ba5a257e860c37201d137f9f4e1a3832d55f7bca0",
+      "after_sha256": "5887cb2ed198429df20f3cc27b2c6252c20d1aa8ffae56d28a8321b28dd48be7"
+    },
+    "systems/rock-star-os/tests/test_ui_startup_verifier.py": {
+      "before_sha256": "00008bd74d1b1cf71ac0b3b9c88d7d9a76b9b33f5230d5fc3bba84bc57fe5278",
+      "after_sha256": "b9555e8a66391f7612c50a54adb815448ca8152bd7b2822566a1f2f4c4326c32"
+    }
+  },
+  "new_test_file": {
+    "systems/rock-star-os/tests/test_ui_startup_fixture.py": "6c8412b495a31bb8ce1ecb32da56b752fad1ad6e4d44dbf74b65236fc8b24281"
+  },
+  "installed_production_guard": {
+    "os/update/S97rock-update-health": "9b1e47650b210bd2bdf1c43ee2533390c6c5224b271d61ecef2443756c9d1692",
+    "os/update/S99rock-ab-test": "1ed09a171cd70cf90af6b1f8b2f69e3bc8abd2c2f19b0ee96f78603fdb873c66",
+    "os/update/guest_test.py": "7cf2c7b990bed028fab012eaf8f81c413900a9967651de44e284a2503a326357",
+    "os/update/fault_guest.py": "fd82c5d8234b92815d43d9471e210b4d6181461424b77a2faee6a96fd3f65499",
+    "os/update/fault_cli.py": "a0b26837c773ec4cc43c8a55e21103c438a1fac5d6f947ba69e970cab8e178e8",
+    "os/update/test_faults.py": "bfa00522eaa280842beaa213e0635d0a3dc06abf7e381872955d54e6f685469d",
+    "os/update/rock_update.py": "ab5722a3057d72699f135487bed26cd31a120a5e0254d6a5a497c3676275276a",
+    "os/update/rock-boot-watchdog": "c97768c3699b21142fecb8e6fc7c04c64d320b3d87b9ae72ffbcc9a773e325e3",
+    "os/wallet_auth/health.py": "b858f964ea6ea929a5f4aaddd1a2a7b9db95c1b6a9701c1913117a754d0f55a7",
+    "os/wallet_auth/daemon.py": "83bf51eb2e400013989da04f1925e39c3f942ac32ef1d3809b285d230316e9e8",
+    "os/buildroot/board/rock-virt/overlay/etc/init.d/S55rockauthenticator": "5ca12ec132fa72846fde578f96bda28d8c05afac451927e5de27cc9447ab42c1",
+    "os/update/verify-auth-health.py": "8c7661b50fd1bbbbf6f17a6b43f0912c0cd0bca924acbe23e25084d0aaa9a0c1",
+    "os/update/verify-qemu.py": "270723914fe6a10a40e523705ea930a0650d35fad2f1d709dece9cccdadf86f6",
+    "os/update/make_bundle.py": "08a735993b32b351ef8b2f2a2003e8b72e1ae55e8dec68dfb423eeb84c62f2bc",
+    "os/update/init": "eda6fc61066313b7f827a784f09c7c5896ffc1f1457e15b80eb5593134ceb0d0",
+    "os/update/ui_health.py": "de424731d34acdb6bedf990ed82d7b5dc54672899848e8245cc9bb03a5427a77",
+    "os/update/rock-ui-health": "89daae633f51f26540206cdc2a3c29674e766b6f07945db9435db033f11e93c7",
+    "os/buildroot/board/rock-virt/overlay/etc/init.d/S60rockui": "87154a6c68abaf1455ccf7cd34431439d828cc13ca4f31ddb94ac998e325587a",
+    "installed:/usr/bin/rock-ui": "fc53e76042054a0755c00257f911a77629026c6d523314e90bea12c914adcd56",
+    "os/update/verify-ui-startup.py": "5887cb2ed198429df20f3cc27b2c6252c20d1aa8ffae56d28a8321b28dd48be7",
+    "os/update/ui_startup_fixture.py": "70db98c1a8ffe68a9686970dceda41994ea6fcb7bacd5245c3b4a21677732d4d",
+    "os/ui/replay_qmp.py": "994da695f9be740319abd9f79f7430d9487e87635b11d8862908ae09592b2eeb"
+  },
+  "diagnostic_files_absent_from_distribution": {
+    "/usr/lib/rock-update/ui_startup_fixture.py": {
+      "stdout": "",
+      "stderr": "debugfs 1.47.2 (1-Jan-2025)\n/usr/lib/rock-update/ui_startup_fixture.py: File not found by ext2_lookup \n"
+    },
+    "/etc/init.d/S96rock-ui-startup-fixture": {
+      "stdout": "",
+      "stderr": "debugfs 1.47.2 (1-Jan-2025)\n/etc/init.d/S96rock-ui-startup-fixture: File not found by ext2_lookup \n"
+    }
+  },
+  "build_install_dependencies_sha256": {
+    "os/update/install-target.sh": "227af2e232192b9f23e97d34d8b0eab4702462e1eb91b10fc9ec5974b8c60b0c",
+    "os/buildroot/board/rock-virt/post-build.sh": "4be6387a3f30479e528e2c7df7a640a17b64371a359c425a1a841787d5ae3bcf"
+  },
+  "linux_regression": {
+    "tests": 33,
+    "skips": 0,
+    "elapsed_seconds": 5.555,
+    "log_sha256": "1859df0877bb027d1130b5253915dbea343fd83ed16ebd5908d383e5ba413910"
+  },
+  "scope": "diagnostic pidfd fixture and host case selection only; no runtime/image rebuild; actual UI crash acceptance still NOT_RUN"
+}
