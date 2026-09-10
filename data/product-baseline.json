@@ -78,10 +78,16 @@
     "releaseName": "RockstarOS 1.0",
     "architecture": "docs/rockstaros-1.0-architecture.md",
     "plan": "docs/release-installation-plan-20260909.md",
-    "developerPreview": "in_progress",
+    "developerPreview": "internal_acceptance_scoped_publication_blocked",
     "physicalDevicePreview": "blocked_on_exact_model_and_variant",
     "productionReady": false,
-    "cmRule": "Present the current implementation as the RockstarOS 1.0 base and advertise only the highest installation and validation stage that has passed its recorded gate"
+    "cmRule": "Present the current implementation as the RockstarOS 1.0 base and advertise only the highest installation and validation stage that has passed its recorded gate",
+    "followup": "docs/release-followup-20260910.md",
+    "cmProduction": {
+      "status": "completed_per_user_report",
+      "artifactReviewed": false,
+      "record": "docs/release-followup-20260910.md"
+    }
   },
   "gameExchange": {
     "requested": true,
@@ -97,7 +103,7 @@
     "requested": true,
     "target": "self-made game developers and their players",
     "productionPlayerEligibility": "unspecified, including players without Rock hardware",
-    "multiOwnerReadiness": "not implemented; GX00 ledger isolation and authenticated account linking required",
+    "multiOwnerReadiness": "Authenticated multi-owner SDK/contract tests passed; actual OS UI acceptance remains one owner. Production player eligibility and real-value readiness remain unspecified; see docs/release-followup-20260910.md.",
     "deliverables": [
       "API contract",
       "reference SDK",
@@ -122,6 +128,8 @@
     "targetEndAt": "2026-09-10T13:43:35Z",
     "plan": "docs/release-execution-20260910.md",
     "instructionFileSha256": "63e5f3568a186e7fc733ff449c7ce95c653619dc0c62bddcd895baea7bd95f01",
-    "status": "in_progress"
+    "status": "completed_with_release_blockers",
+    "finalCheckpointAt": "2026-09-10T13:45:19.822614+00:00",
+    "followup": "docs/release-followup-20260910.md"
   }
 }

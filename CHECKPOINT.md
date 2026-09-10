@@ -1,6 +1,8 @@
-# 2026-09-10 最終候補の再開入口
+# 2026-09-10 最終結果・CM完成後の再開入口
 
-配布native/同梱host toolsは `9abf78a80d27aa9f847c4051d20e4c552e407276`、作業branchは `codex/rockstaros-release-20260910`。[同一候補受入](docs/os-acceptance-9abf78a-20260910.md)、[元FAILと追加全回帰](docs/os-native-repeat-20260910.md)、[実行checkpoint](docs/release-execution-20260910.md)を現在の入口とする。内部D0〜D6/導入/復旧/Game/SDK/実動画は限定完了。後続CIの間欠的失敗原因、LICENSEと既存Siteアクセスが未解決で、一般公開完成ではない。T0=05:43:35 UTC、終了目標13:43:35 UTC。最終時刻と同branch CIはoutputsの最終引渡しsidecarへ保存する。
+現在の入口は[進捗・CM完成後の残件](docs/release-followup-20260910.md)。配布native／同梱host toolsは `9abf78a80d27aa9f847c4051d20e4c552e407276`、後続統合版は `1a2f4d1afc68e8920b084302e8c9f1271c1478e2`、再開branchは `codex/rockstaros-release-20260910`。内部の限定D0〜D6／導入・復旧／Game・SDK・実動画と、統合1a2のWeb/native CIは完了。先行する間欠障害の原因、LICENSE、既存Sitesアクセスは未解決。PR #3はdraft／OPEN、main未統合。
+
+CM制作は利用者申告で完成済み。既存CMの確認・導入案内への接続を次作業とし、追加1〜2日は外部条件の待ちを除くQEMU Preview仕上げの条件付き概算として扱う。05:43:35 UTC開始、13:45:19.822614 UTC最終判定で約8時間1分44秒（待ちを含む、実作業時間は未計測）。[同一候補受入](docs/os-acceptance-9abf78a-20260910.md)、[元FAILと追加全回帰](docs/os-native-repeat-20260910.md)、[実行履歴](docs/release-execution-20260910.md)を保持する。
 
 以下は開始前の履歴。旧候補b828の未達や実行中processを現在へ転記しない。
 

@@ -243,3 +243,14 @@ Bは1512/390幅の実ブラウザ・導線・再生・3時点seekを確認し、
 Aの同9ab ARM64追加全回帰は13:02:34に14checks/1631件/skip0 PASS、main1367件151.789秒。root7adf1e9へ原b51fbf9を統合。e430 CI34477407336は初期Game承認1秒TLS ERROR、ba900 CI34478360425はlegacyケースでmain600秒TIMEOUT/他13NOT_RUN。どちらもR2ではokだが原因UNDETERMINED。Dの任意thread-stack sidecar実装5bae600→root7da02eb、Mac/Linux各6実子process tests PASS。元600/300秒・exit124・判定・runtime不変。CIだけ明示flagを使い、再発時はprivate sidecarで待機場所を採取する。
 
 同9ab配布9filesは変更しない。Webのnpm verifyは最終媒体でPASS、進捗同期後に最終branchで再確認する。Sites再取得NOT_FOUND、license NOT_CLEAREDを保持。次: 最終branchをpushし同40桁CI、追加媒体download、原refs/停止状態、outputsリンク/sidecar/PRを確定。公開は条件待ち、main mergeなし。
+
+
+## 13:45 UTC 最終判定の回収／15:49 UTC 会話の補足をGitへ同期
+
+8時間作業の最終判定は13:45:19.822614 UTC、開始から28904.822614秒（約8時間1分44秒、tool／CI待ち込み）。後続の成果物書出し・保存とは分ける。統合1a2f4d1のWeb34483209629とnative34483209632はSUCCESS、native14checks／1656実行・697入力・14ログ照合済み。0a46428の診断wrapperによるdirect-scriptの相対path不具合は29a74c5で修正した。先行する9ab ARM64 FAIL、e430 TLS ERROR、ba900 TIMEOUTは保持し、その間欠障害原因はUNDETERMINED。同一9ab配布受入の1631実行とは別の記録。
+
+利用者からCM完成済みとの申告を受け、CM制作を残件から除外。既存CMの実物照合と告知／導入ページへの接続を残件とする。担当AIが会話で示した追加1〜2日は、OSの必要な修正・再検証を終えられる場合のQEMU版仕上げの粗い概算で、LICENSE／Sites待ちは含まず、確定納期・実機／実資金の完成予定ではない。
+
+[進捗・CM完成後の残件](release-followup-20260910.md)、最終CI原本2件と時刻抜粋を追加し、README／project／CHECKPOINT／進捗JSON／導入計画／戦略を同期。製品ベースJSONの実行状態とSDKの古い未実装表示を限定受入の実績へ訂正したが、要望version・RQ01〜RQ17・料金・承認範囲・task／phaseGateの状態は変更しない。今回の追記ではruntime、配布9files、公開先、原FAILを変更せず、main mergeも行わない。
+
+文書同期の検証（15:54 UTC）: `npm run project:update`、`npm run verify`、`git diff --check` がすべて成功。verifyは進捗／参照／baseline整合、型、lint、unit tests、build、API 143 assertionsまで完走。旧HEADとの比較でtask状態・phaseGate全体・RQ／料金／承認範囲の不変、新規追記のローカルリンク全件、CI原本2件のbyte一致も確認した。今回の文書commitに対するGitHub CIはpush後の別判定であり、1a2f4d1の成功を継承したとは記録しない。

@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
   "milestone": "RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備",
-  "nextAction": "同一9abの限定D0〜D6、引用遠隔3boot/元要求2件、Game/金融、fresh導入・復旧・SDK、90.04秒動画と導入ページの内部受入は完了。元FAILは保持。統合e430のTLS期限/ba900の600秒TIMEOUTは原因未確定、任意thread-stack診断を追加して同branch CIを確認する。一般公開は製品LICENSE/第三者再配布条件と既存Sites NOT_FOUNDの解消待ち。内部task完了を公開完成としない。",
+  "nextAction": "CM制作は利用者申告で完成済み。既存CMの表現確認と告知・導入ページへの接続を進める。同一9abの限定D0〜D6／fresh導入・復旧／Game・SDK・実動画は内部受入済み、統合1a2f4d1のWeb/native CIも成功。先行TLS ERROR／600秒TIMEOUTの原因は未確定のため切り分けと必要な修正・再検証が残る。公開は製品LICENSE／第三者再配布条件と既存Sites NOT_FOUNDの解消待ち。追加1〜2日は外部条件の待ちを除くQEMU Preview仕上げの条件付き概算で、公開日・実機版の納期ではない。詳細はdocs/release-followup-20260910.md。",
   "tasks": [
     {
       "id": "R01",
@@ -76,7 +76,8 @@
         "R06"
       ],
       "evidence": [
-        "docs/deployment-integration.md"
+        "docs/deployment-integration.md",
+        "docs/release-followup-20260910.md"
       ]
     },
     {
@@ -433,7 +434,8 @@
         "docs/rockstaros-1.0-architecture.md",
         "docs/rockstaros-1.0-strategy.md",
         "docs/evidence/rls01/final-9abf78a/summary.json",
-        "docs/evidence/rls01/github-direct-install-9abf78a/summary.json"
+        "docs/evidence/rls01/github-direct-install-9abf78a/summary.json",
+        "docs/release-followup-20260910.md"
       ]
     },
     {

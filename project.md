@@ -1,5 +1,13 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-10 15:49 UTC — 最終結果とCM完成後の残件を同期
+
+凍結9abのD0〜D6／導入・復旧／Game・SDK・実録画は限定受入済み。統合1a2f4d1のWeb/native CI成功をGitへ保存し、先行する間欠障害は原因未確定として保持。CMは利用者申告で完成済みのため制作を残件から外し、既存CMの表現確認と導入案内への接続を次作業へ反映した。追加1〜2日はLICENSE／Sitesの待ちを除くQEMU版仕上げの条件付き概算。確定公開日や実機・実資金の完成予定にはしない。[最新の進捗・会話の補足・再開順](docs/release-followup-20260910.md)を現在の入口とする。
+
+15:54 UTC検証: `npm run project:update`、`npm run verify`（API 143 assertionsを含む）、`git diff --check` は成功。
+
+今回の変更は記録の同期と最終CI証拠の保存。RQ01〜RQ17、task／phaseGateの状態・完了19/34件、元FAILと配布9filesを保持する。以下の日付付き節は各時点の履歴で、未判定／実行中の記述を現在の状態に転記しない。
+
 ## 09:48 UTC 最終imageとGame契約
 
 最終9abf78aのbase/profile imageをbuildしてhash固定。正規CI原本1631/14checkと694source一致を既存guardで受理し、Mac arm64原全回帰の10TLS期限ERRORは別FAILとして保持。24要件のGame/Wallet host契約を同sourceで確認しGX01-CONTRACTを完了、実OS UI/fresh SDK/全D0〜D6は未判定。Aは同梱source/NOTICEと容量を確認し長時間試験、Bは実取得から新規VMの全構成復旧、rootは最後に専用端末で実UIと実録画を検証する。
@@ -210,7 +218,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) |
 | R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 | R06 | ブラウザで仕事の一連の操作を確認 | 完了 | [記録](docs/validation.md) |
-| R07 | 本人限定のSitesへ公開・本番確認 | 停止中: 既存Sitesの固有機能を保持する統合が必要。2026-09-10は既存projectを接続accountから取得できず、別projectを作らず停止 | [記録](docs/deployment-integration.md) |
+| R07 | 本人限定のSitesへ公開・本番確認 | 停止中: 既存Sitesの固有機能を保持する統合が必要。2026-09-10は既存projectを接続accountから取得できず、別projectを作らず停止 | [記録](docs/deployment-integration.md) · [記録](docs/release-followup-20260910.md) |
 | R08 | 検証結果・公開停止理由と再開設計の文書化 | 完了 | [記録](project.md) · [記録](docs/validation.md) · [記録](docs/deployment-integration.md) |
 | OS01 | 既存設計の要件追跡と自動化OS開発設計 | 完了 | [記録](docs/os-development-design.md) |
 | OS02 | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 未着手 | [記録](docs/os-development-design.md) |
@@ -236,7 +244,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | N03 | BlackBerryの型番・boot/BSP・更新/復旧の適合確認 | 進行中 | [記録](docs/native-os-integration.md) |
 | N04 | BlackBerry実機だけでHub取得・実行・更新・復旧 | 未着手 | [記録](docs/native-os-integration.md) |
 | N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
-| RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 完了 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/rockstaros-1.0-architecture.md) · [記録](docs/rockstaros-1.0-strategy.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
+| RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 完了 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/rockstaros-1.0-architecture.md) · [記録](docs/rockstaros-1.0-strategy.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) · [記録](docs/release-followup-20260910.md) |
 | RLS02 | 正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証 | 未着手 | [記録](docs/release-installation-plan-20260909.md) |
 
 段階ゲート（作業全体の完了とは別判定）
@@ -257,7 +265,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 同一9abの限定D0〜D6、引用遠隔3boot/元要求2件、Game/金融、fresh導入・復旧・SDK、90.04秒動画と導入ページの内部受入は完了。元FAILは保持。統合e430のTLS期限/ba900の600秒TIMEOUTは原因未確定、任意thread-stack診断を追加して同branch CIを確認する。一般公開は製品LICENSE/第三者再配布条件と既存Sites NOT_FOUNDの解消待ち。内部task完了を公開完成としない。
+次の作業: CM制作は利用者申告で完成済み。既存CMの表現確認と告知・導入ページへの接続を進める。同一9abの限定D0〜D6／fresh導入・復旧／Game・SDK・実動画は内部受入済み、統合1a2f4d1のWeb/native CIも成功。先行TLS ERROR／600秒TIMEOUTの原因は未確定のため切り分けと必要な修正・再検証が残る。公開は製品LICENSE／第三者再配布条件と既存Sites NOT_FOUNDの解消待ち。追加1〜2日は外部条件の待ちを除くQEMU Preview仕上げの条件付き概算で、公開日・実機版の納期ではない。詳細はdocs/release-followup-20260910.md。
 <!-- project-status:end -->
 
 ## 次段階の設計
