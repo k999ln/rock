@@ -9,6 +9,12 @@
 - 凍結native/同梱host toolsは `9abf78a80d27aa9f847c4051d20e4c552e407276`。今回のnative変更は試験診断と証拠検査だけ。image・runtime・元1GB packageのbytesを変更していない。新Web/MCP adapterと旧配布host toolsを同一版の受入と表示しない。
 - macOS 15.7.4 / Apple Silicon / Lima 2.2.0 / Debian 13 / ARM64 QEMU virt-10.0に限定。Web package `rock-star@0.1.0`、表示製品 `RockstarOS 1.0 Developer Preview`、旧package `1.0.0-preview.20260910`、旧Draft tag `v1.0.0-preview.20260910-rc1` は別の版識別子。
 
+## 記録済みの検証結果（85620ec）
+
+現候補 `85620ec8b0d5d9913cd2d50f8ead4fbe109ee9bb` はGitHubでMERGEABLE、Web/native/Android/署名fixtureの全10check成功（同名署名testのpush/PR2件を含む）。[40桁SHAと原check URL](evidence/launch/ci-85620ec.json)。CIはheadを直接checkoutし、native全1,670件/17checks/skip0、root UIも成功。先行release `bfc4ae32f327c4cd08fc39a8fbab0e37b4fb9b2c` の独立native全runも成功した。両者のコード入力比較は別の証拠に記録し、原TLS原因確定とはしない。
+
+ローカルの `npm run verify` は93tests、fresh/両upgrade D1、仕事API143assertionsと実行APIに成功。`os:check`、production/全依存audit0、公式Sites build、署名fixture22、診断/証拠検証21も確認。これらはWeb/host/source/fixtureの範囲であり、未承認の新package受入ではない。本文同期後のcommitは、この記録を自分の成功に転記せず、PR #4のそのHEADのCIを改めて確認する。
+
 ## LCH01 — 原TLS原因: BLOCKED_HISTORICAL_CAUSE_UNDETERMINED
 
 9ab ARM64のWallet10 TLS ERROR、e430 run34477407336のGame承認1秒timeout、ba900/3d07の600秒累積終了を区別して保持。[原因調査と原証拠](evidence/launch/tls/findings.md)、[機械可読観測](evidence/launch/tls/evidence.json)。1byteずつのTLS header readとGIL競合の増幅は実測したが、buffer化でも強い競合下のtimeoutは消えず、歴史的原因の確定とはしない。
@@ -56,11 +62,11 @@
 
 次: 所有者が上記候補を確定→元hashの管理された配信URLと字幕を固定→本人限定同SHAページで実再生/音声/導線を確認。担当: 所有者/開発。
 
-## LCH06 — main候補と版表記: INTEGRATED_WORK / FINAL_CI_GATE
+## LCH06 — main候補と版表記: CURRENT_CANDIDATE_CI_PASS / FINAL_CONTENT_PENDING
 
 PR1→2→3を読み取り、レビュー/コメントなし、PR1とmainの文書衝突を確認。mainは開始releaseの祖先。既存stackをforce push/rebaseせず、最終releaseをmain基点の専用candidateへno-ff mergeし、別Draft PRで正確なmain差分を確認する方式とする。最終PRは1〜3の履歴を包含し、一度だけmainへ通常mergeできる候補。旧stackを先にmergeする手順ではない。
 
-変更: README/project/CHECKPOINT/status/release notes/導線を同期。Web versionとnative versionの意味は上記のとおり。Web/native/Android CI checkoutをPR headの40桁SHAへ固定し、合成merge-refの成功をheadへ読み替えない。次: 最終candidateのHEAD/tree・最新main包含・全required checksを照合し、PRへ原証拠を添付する。main mergeは未承認のため実施しない。
+変更: README/project/CHECKPOINT/status/release notes/導線を同期。Web versionとnative versionの意味は上記のとおり。Web/native/Android CI checkoutをPR headの40桁SHAへ固定し、合成merge-refの成功をheadへ読み替えない。現candidateのHEAD/tree・main包含・全checkは上記で確認済み。残るlicense/署名/CM/Siteの内容決定でsourceを変えた場合は、新HEADで同じ照合を行う。main mergeは未承認のため実施しない。
 
 ## LCH07 — 最終配布: WAITING_FOR_LCH01_TO_06
 

@@ -711,7 +711,6 @@
     "startingSourceCommit": "29e4f7203f72d9949e2dfc90b64c4215d4bbb765",
     "mainCommit": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
     "distributionCommit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
-    "validatedCurrentCommit": null,
     "publicRelease": false,
     "mainMerged": false,
     "sitesSourceCommit": "c6942d5ef72e9dd16345b9363e68e0e18ca25079",
@@ -720,6 +719,15 @@
     "signing": "AWAITING_SIGNING_SETUP",
     "campaign": "AWAITING_SELECTION",
     "nativeHistoricalTlsCause": "UNDETERMINED",
-    "candidateBranch": "codex/rockstaros-launch-candidate-20260910"
+    "candidateBranch": "codex/rockstaros-launch-candidate-20260910",
+    "recordedCiCommit": "85620ec8b0d5d9913cd2d50f8ead4fbe109ee9bb",
+    "recordedCiEvidence": "docs/evidence/launch/ci-85620ec.json",
+    "candidatePr": 4,
+    "recordedChecks": "ALL_10_SUCCESS",
+    "recordedNativeTests": 1670,
+    "recordedNativeChecks": 17,
+    "recordedNativeSkips": 0,
+    "recordedWebTests": 93,
+    "currentHeadValidation": "See exact HEAD checks of PR4; recorded snapshot is not a self-attestation of later commits"
   }
 }

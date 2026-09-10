@@ -1,5 +1,7 @@
 # ローンチ準備の現在入口
 
+検証完了記録: `85620ec8b0d5d9913cd2d50f8ead4fbe109ee9bb` はDraft PR #4でMERGEABLE、Web/native/Android/署名fixtureの全10check成功。native1,670件/17checks/skip0とroot UI、ローカルWeb93tests/API143assertions+実行API、audit0、公式Sites buildを確認。文書更新後のHEADはPR自身のCIで別途判定する。外部条件と原TLS原因の未達を理由にBLOCKED_FOR_LAUNCHを保持する。
+
 [ローンチ準備記録](docs/launch-readiness-20260910.md)とLCH01〜07を先に読む。Hubフロント/既存Sites API・PWA・DB履歴の統合、D1両upgrade、実ブラウザ、PC17回帰、原TLS診断、配布全inventoryを実施。再開branch `codex/rockstaros-release-20260910` から最終 `codex/rockstaros-launch-candidate-20260910` をmain基点no-ffで用意する。開始29e4、凍結配布9abは別のまま。**BLOCKED_FOR_LAUNCH**。詳細な原因・path・証拠・次の操作は上記を参照。以下は過去の履歴。
 
 # 2026-09-10 native CIタイムアウト修正の入口
