@@ -2,13 +2,13 @@
 
 tob側の自動化ツールを商品として管理するHubと、自動化で得たお金を管理するWalletに特化したOSを開発します。実行場所、料金、資格、ライセンスの違いを扱い、利用準備・日々の管理・結果とお金の確認に伴う不便を減らします。
 
-**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ17）です。** [プロンプト作成規約](docs/prompt-playbook.md)、[OS稼働・ゲーム連携監査](docs/os-readiness-audit-20260909.md)、[最新の実行プロンプト](docs/prompts/os-operational-base-next.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を保存しています。まず現設計をQEMUで稼働・復旧まで検証できる開発OSへ進め、ゲーム交換と作者向けAPI/SDKを別に開発します。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持。文書保存と実装・実機/本番合格は別です。
+**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ17）です。** [プロンプト作成規約](docs/prompt-playbook.md)、[OS稼働・ゲーム連携監査](docs/os-readiness-audit-20260909.md)、[最新の実行プロンプト](docs/prompts/rockstaros-release-20260910.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を保存しています。現在はRockstarOS 1.0 Developer Previewの実装・同一候補受入を進めています。[今回の実行checkpoint](docs/release-execution-20260910.md)に中間成果と残作業を記録します。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持。文書保存と実装・実機/本番合格は別です。
 
 [8原則に基づくRockstarOS 1.0設計](docs/rockstaros-1.0-strategy.md)を追加しました。現ベースを維持し、一つの商品で実行・成果・費用・復旧まで確認できる体験を検証します。初期対象の文章系個人事業主と既存引用整理は検証仮説。配布/実用の優先順位、試用指標、CM導線、責任分担を具体化し、未実証の需要や本番利用可能性は主張しません。
 
 **[設計v1.1](docs/os-hub-wallet-game-design.md)の実装は承認済みです。** [承認範囲](docs/execution-approval-20260909.md)に従い、専用branchでnativeと設計を統合しています。公開・実機・MetaMask実資金は条件付き了承を保持し、技術的な準備を検証します。達成演出は見送り、市場案は検討のみです。
 
-**このbranchにはLinux / Buildroot / ARM64 QEMU native OSの試作があります。** main/native/設計の3入力を専用branchへ統合し、凍結した`b8287bc`から新しいOSを生成しました。native Hubの商品利用、合成Wallet、起動・保存・更新失敗からの復帰・別端末への復元は[限定受入D0〜D5](docs/os-acceptance-b8287bc-20260909.md)を通過。D6の長時間試験は未合格で、run44の最終結果は再取得が必要です。[PR #2](https://github.com/k999ln/rock/pull/2)で公開していますが、mainへの統合と実機対応は未実施です。
+**このbranchにはLinux / Buildroot / ARM64 QEMU native OSの試作があります。** main/native/設計の3入力を統合した[PR #2](https://github.com/k999ln/rock/pull/2)を起点に開発しています。旧`b8287bc`の[限定受入D0〜D5](docs/os-acceptance-b8287bc-20260909.md)を保持し、run44は元planの5boot・61jobs・3641.769秒と正常停止を独立照合して回収しました。現在のGame統合候補へ旧合格を移し替えず、同じ候補でD0〜D6を再検証します。mainへの統合と実機対応は未実施です。
 
 開発入口: [native統合方針](docs/native-os-integration.md)、[nativeの使い方](systems/rock-star-os/README.md)、[過去のsource検証](docs/native-os-validation.md)、[現在のCHECKPOINT](CHECKPOINT.md)。BlackBerry優先・正確な機種は確認中。月888 cents固定・同契約の複数端末で1回を維持します。
 
@@ -20,9 +20,11 @@ tob側の自動化ツールを商品として管理するHubと、自動化で�
 
 Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/os/desktop/LAUNCHER-V2.md)。起動時に指定した仮想端末と画像を確認し、同じ保存データを再度開きます。ブラウザは実OSの画面を映すために使います。終了はOS内の「端末」→「電源を切る」→「確認して実行」。Wallet/ATMは合成データ専用で、MetaMask送受金には接続していません。
 
-[ここまでの実装・検証・未達の記録](docs/implementation-checkpoint-20260909.md)に、Mac試用の最終確認、ゲーム接続clientと限定復旧、D6の失敗と再試験、GX00の残課題をまとめています。ゲーム通貨交換は設計段階です。
+[前日の実装・検証・未達の記録](docs/implementation-checkpoint-20260909.md)を履歴として保持しています。現在のGX00は実TLSで複数owner/game分離の必須受入を通過し、GX01の署名quote・別購入承認・両台帳とnative UIを統合しました。公開SDK・Game profile・停止/復旧と実OS受入は進行中で、本番ゲームや実資金には接続していません。
 
-正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。旧ローカル作業名は `gg`。現在の実装再開先は `codex/operational-base-20260909` で、SSD上の旧checkoutを最新と仮定しません。製品は「Rock star / avocadomini」の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
+Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-installation-ja.md)と[既知制限](docs/preview-release-notes.md)を作成しています。`npm run dev` のローカル `/rockstaros` と `/rockstaros/guide` で案内を確認できます。中間OSの実画面を使用し、配布開始とは表示しません。ダウンロード公開は同候補の受入と配布条件の確認後です。
+
+正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。旧ローカル作業名は `gg`。現在の実装再開先は `codex/rockstaros-release-20260910` で、SSD上の旧checkoutを最新と仮定しません。製品は「Rock star / avocadomini」の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
 
 ## このbranchの作業進捗
 
@@ -37,7 +39,7 @@ Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/o
 | R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) |
 | R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 | R06 | ブラウザで仕事の一連の操作を確認 | 完了 | [記録](docs/validation.md) |
-| R07 | 本人限定のSitesへ公開・本番確認 | 停止中: sites/mainに別の仕事API・0002移行・アプリUIが存在。追加機能を保持する統合方針の確認が必要 | [記録](docs/deployment-integration.md) |
+| R07 | 本人限定のSitesへ公開・本番確認 | 停止中: 既存Sitesの固有機能を保持する統合が必要。2026-09-10は既存projectを接続accountから取得できず、別projectを作らず停止 | [記録](docs/deployment-integration.md) |
 | R08 | 検証結果・公開停止理由と再開設計の文書化 | 完了 | [記録](project.md) · [記録](docs/validation.md) · [記録](docs/deployment-integration.md) |
 | OS01 | 既存設計の要件追跡と自動化OS開発設計 | 完了 | [記録](docs/os-development-design.md) |
 | OS02 | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 未着手 | [記録](docs/os-development-design.md) |
@@ -84,7 +86,7 @@ Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/o
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 06:28 UTC: GX00 host合成分離を実TLSで合格。中間d7927ddはLinux1425試験とimage freeze完了、Hub改善後を実OS操作。Game専用quote/承認/両台帳/SDKとschema7 fresh installerを統合中。final候補のD0〜D6/配布取得/導入/Game UIは未合格。08:45 UTC統合、09:13凍結を目標。詳細はdocs/release-execution-20260910.md。
+次の作業: 06:58 UTC: GX01 coreとnative UI/Platformを統合、Linux1464試験/14checks/skip0 PASS（中間sourceのみ）。Hub改善後の実OS再開で同結果を確認。fresh installerは実導入→再開→offVM backup→新名復元まで確認中。最終Game profile/SDK/停止・epoch復旧を実装中、08:45統合・09:13凍結目標。最終同候補D0〜D6/Game UI/配布取得は未合格。LICENSE条件と既存Sitesアクセスは未解決。詳細はdocs/release-execution-20260910.md。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

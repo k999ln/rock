@@ -43,3 +43,15 @@ root HEAD `72da6df`。統合済み: GX00 namespace/実TLS4受入 `e0f3dc8`、旧
 - Web: 既存機能を保ち`/rockstaros`を追加しlocalhost:5173/rockstarosでHTTP200を確認。dev server exec74915。既存Sites project IDの正規取得が`Sites project not found`で失敗し、配布/公開範囲を変更せずローカル原稿を継続。製品LICENSE条件は未記載のため創作しない。
 
 次: Game UIの操作/異常系とPlatformの所有者境界を試験、凍結した中間imageでHub改善後一周と同入力比較、Webの導入/復旧導線を整える。final機能の統合目標08:45 UTC、凍結目標09:13 UTCを維持。中間imageはGame未統合なので発表・最終配布用ではない。
+
+## 06:58 UTC checkpoint（経過74分25秒）
+
+root HEAD `d849715`。Game core `42afc82`、native UI/Platform `0faf24b`/`81db8a4`、Hub実OS成果 `5227492`、cache不変観測 `7dd81fe`、installer fsync/再現性/guide修正を統合。`/rockstaros`と導入・復旧guideを追加し型検査・lint PASS。GitHub保存前、mainは変更なし。
+
+- Linux中間source `42afc82` は14checks・1,464 Python executions・skip0・source不変でPASS。初回は実行時umask0002によってlauncher試験の一時fixtureがgroup-writableとなり既存guardが拒否。判定を変更せず同一sourceをumask0022で再実行した両記録を [証拠](evidence/native-integration-20260910.json) に保持。最終imageの合格とは区別。
+- Hub改善後は中間OS `d7927dd` の二回の正常起動・終了で同じjob/結果/Walletゼロ状態を確認。引用sample150bytesからnative結果151bytes、実行版・処理場所・費用接続状態を表示。二回とも正常停止。人の操作時間・需要・収益は未測定。旧PC同入力155bytesとは区切り行が異なるためbyte一致とはしない。
+- Bは中間archive `3fa8861` からfresh VMで実Hub実行→正常終了→再開→offVM backup→別名復元まで観測中。packageで生成pycの混入による再現性欠陥を発見し `f2c4ffb` でfreeze inventoryだけを収録するよう修正。欠陥を含む中間archiveは最終配布合格にしない。旧8899 viewerは保持、新viewer8900を分離。
+- Game UIは別接続同意・別購入承認・明示試験残高・保留履歴・不明応答の同要求再試行を実装し、C操作試験とPlatform UID/許可操作境界に合格。GX01 coreは専用署名quote、atomic hold/outbox、実TLS両台帳を統合。公開SDK/process停止/epoch復旧/schema7 profileはDが作業中。Aは同profileのD3/D6/backupを準備。
+- Sitesの既存IDは取得失敗、同accountのeditable一覧にも存在せず。別projectやduplicateを作らずローカル案内ページを継続。実OS中間画面を使い、ダウンロード開始とは表示しない。製品LICENSEは未記載で、利用条件をユーザーへ問い合わせ済み。返答を待つ間も実装・試験を継続する。
+
+次: Web全回帰と実ブラウザ導線を確認して作業branchへ保存。Hub旧版にも同じ公開入力を実操作で与えて品質・操作差を観測する。最終Game profileの必要なPC切断経路と録画を準備する。凍結後はD4→初期状態D6→Game/Wallet操作→D5/復旧の順に実施し、同一imageの証跡を揃える。

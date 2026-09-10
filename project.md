@@ -186,7 +186,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) |
 | R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 | R06 | ブラウザで仕事の一連の操作を確認 | 完了 | [記録](docs/validation.md) |
-| R07 | 本人限定のSitesへ公開・本番確認 | 停止中: sites/mainに別の仕事API・0002移行・アプリUIが存在。追加機能を保持する統合方針の確認が必要 | [記録](docs/deployment-integration.md) |
+| R07 | 本人限定のSitesへ公開・本番確認 | 停止中: 既存Sitesの固有機能を保持する統合が必要。2026-09-10は既存projectを接続accountから取得できず、別projectを作らず停止 | [記録](docs/deployment-integration.md) |
 | R08 | 検証結果・公開停止理由と再開設計の文書化 | 完了 | [記録](project.md) · [記録](docs/validation.md) · [記録](docs/deployment-integration.md) |
 | OS01 | 既存設計の要件追跡と自動化OS開発設計 | 完了 | [記録](docs/os-development-design.md) |
 | OS02 | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 未着手 | [記録](docs/os-development-design.md) |
@@ -233,7 +233,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 06:28 UTC: GX00 host合成分離を実TLSで合格。中間d7927ddはLinux1425試験とimage freeze完了、Hub改善後を実OS操作。Game専用quote/承認/両台帳/SDKとschema7 fresh installerを統合中。final候補のD0〜D6/配布取得/導入/Game UIは未合格。08:45 UTC統合、09:13凍結を目標。詳細はdocs/release-execution-20260910.md。
+次の作業: 06:58 UTC: GX01 coreとnative UI/Platformを統合、Linux1464試験/14checks/skip0 PASS（中間sourceのみ）。Hub改善後の実OS再開で同結果を確認。fresh installerは実導入→再開→offVM backup→新名復元まで確認中。最終Game profile/SDK/停止・epoch復旧を実装中、08:45統合・09:13凍結目標。最終同候補D0〜D6/Game UI/配布取得は未合格。LICENSE条件と既存Sitesアクセスは未解決。詳細はdocs/release-execution-20260910.md。
 <!-- project-status:end -->
 
 ## 次段階の設計

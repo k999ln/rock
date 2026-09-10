@@ -1,0 +1,42 @@
+{
+  "schema": "rock-preview-web-check/1",
+  "scope": "Local announcement and guide, no deployment/download release",
+  "status": "PASS_SCOPED_WEB",
+  "observed_utc": "2026-09-10T07:05:00Z",
+  "routes": [
+    "/rockstaros",
+    "/rockstaros/guide"
+  ],
+  "verification": "npm run verify exit0; API143 assertions; source baseline/typecheck/lint/unit/build pass",
+  "verification_log": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/web-verify-01.log",
+  "verification_log_sha256": "98f478826c9a64c181f997e8776a4cb84cdad60642691d18206247fa4ce5a123",
+  "browser": {
+    "kind": "Codex in-app browser",
+    "viewport_width": 652,
+    "document_width": 652,
+    "observed_navigation": [
+      "announcement to guide",
+      "guide first-result anchor",
+      "guide back to announcement",
+      "announcement actual screenshot anchor"
+    ],
+    "images_loaded": true,
+    "screenshots_visually_checked": [
+      "announcement hero",
+      "guide hero",
+      "first-result steps"
+    ],
+    "known_limitations": [
+      "No other viewport was tested",
+      "Links to source guide need branch push",
+      "Screenshot is intermediate OS d7927dd, not final acceptance",
+      "No public download link until final gates pass"
+    ]
+  },
+  "input_sha256": {
+    "app/rockstaros/page.tsx": "027c19a92c94075cd7f4312b314d9ed96376c978230e23c6e6e99a03e40ce213",
+    "app/rockstaros/preview.module.css": "588d3b244d407467b8058e5d6fc5bdc242f9a029dc617d9f6d7a9bf8a9d358c3",
+    "app/rockstaros/guide/page.tsx": "b38d0bba1c783ac88f78d76c10e3615be774a9ee903b920e6986969e46ecd429",
+    "public/rockstaros/hub-result.png": "1b22a786ae3867f2b1aeb6860899067c78982b03a91039e063fef5b2228bc261"
+  }
+}

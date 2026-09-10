@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
   "milestone": "RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備",
-  "nextAction": "06:28 UTC: GX00 host合成分離を実TLSで合格。中間d7927ddはLinux1425試験とimage freeze完了、Hub改善後を実OS操作。Game専用quote/承認/両台帳/SDKとschema7 fresh installerを統合中。final候補のD0〜D6/配布取得/導入/Game UIは未合格。08:45 UTC統合、09:13凍結を目標。詳細はdocs/release-execution-20260910.md。",
+  "nextAction": "06:58 UTC: GX01 coreとnative UI/Platformを統合、Linux1464試験/14checks/skip0 PASS（中間sourceのみ）。Hub改善後の実OS再開で同結果を確認。fresh installerは実導入→再開→offVM backup→新名復元まで確認中。最終Game profile/SDK/停止・epoch復旧を実装中、08:45統合・09:13凍結目標。最終同候補D0〜D6/Game UI/配布取得は未合格。LICENSE条件と既存Sitesアクセスは未解決。詳細はdocs/release-execution-20260910.md。",
   "tasks": [
     {
       "id": "R01",
@@ -71,7 +71,7 @@
       "id": "R07",
       "title": "本人限定のSitesへ公開・本番確認",
       "status": "blocked",
-      "reason": "sites/mainに別の仕事API・0002移行・アプリUIが存在。追加機能を保持する統合方針の確認が必要",
+      "reason": "既存Sitesの固有機能を保持する統合が必要。2026-09-10は既存projectを接続accountから取得できず、別projectを作らず停止",
       "dependsOn": [
         "R06"
       ],
