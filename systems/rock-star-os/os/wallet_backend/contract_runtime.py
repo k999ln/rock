@@ -1,5 +1,5 @@
 """One existing WalletService per owned contract; no replacement ledger engine."""
-from contextlib import contextmanager, closing, nullcontext, ExitStack
+from contextlib import nullcontext, contextmanager, closing, nullcontext, ExitStack
 import fcntl
 import hashlib
 import importlib.util
@@ -326,11 +326,12 @@ class ContractRuntime:
     one admission around each complete operation. No unmanaged fallback.
     """
     @classmethod
-    def open_fresh(cls, spec, *, coordinator, provisioning_file, verifier, **options):
+    def open_fresh(cls, spec, *, coordinator, provisioning_file, verifier, public_fixture_authority_id=None, **options):
         cls._validate_options(verifier, options)
         coordinator.bind_owner_registry(*verifier.registry_identity())
-        return cls._open_with_permit(coordinator.prepare_fresh(spec),
-            provisioning_file=provisioning_file, verifier=verifier, **options)
+        permit=(coordinator.prepare_fresh(spec) if public_fixture_authority_id is None else
+                coordinator.prepare_fresh(spec,public_fixture_authority_id=public_fixture_authority_id))
+        return cls._open_with_permit(permit,provisioning_file=provisioning_file,verifier=verifier,**options)
 
     @classmethod
     def open_active(cls, ledger_ref, *, coordinator, provisioning_file, verifier, **options):
@@ -478,7 +479,7 @@ class ContractRuntime:
                 yield
 
     @contextmanager
-    def admit_write(self, expected_epoch):
+    def admit_write(self, expected_epoch, *, deadline=None):
         # Existing admitted actions can finish nested calls while CLOSING.
         # New actions must go through the coordinator's atomic outer gate.
         with self._lifetime_lock:
@@ -486,7 +487,7 @@ class ContractRuntime:
             if self._writer is None or (self._state not in ('READY', 'RUNNING') and not nested):
                 raise RuntimeUnavailable('contract runtime is not accepting operations')
             writer = self._writer
-        with writer.admit_write(expected_epoch):
+        with (writer.admit_write(expected_epoch) if deadline is None else writer.admit_write(expected_epoch, deadline=deadline)):
             yield
 
     def require_serving_ready(self, game_gateway=None):
@@ -522,6 +523,18 @@ class ContractRuntime:
                 self._games = WalletConnections(self, gateway, signer, cursor)
             with self._lifetime_lock:self._state = 'READY'
 
+    def bind_game_exchanges(self, peers, *, start_workers=True):
+        from game_exchange.exchange_service import WalletExchanges
+        with self._close_lock:
+            if self._state!='READY' or getattr(self,'_games',None) is None or getattr(self,'_exchanges',None) is not None:
+                raise RuntimeUnavailable('fully bound game runtime required before exchange activation')
+            with self.admit_write(self.descriptor.writer_epoch):
+                self._exchanges=WalletExchanges(self,peers)
+            if start_workers:
+                from game_exchange.exchange_worker import ExchangeWorker
+                self._exchanges.workers=[ExchangeWorker(self._exchanges,peer) for peer in peers.values()]
+                for worker in self._exchanges.workers: worker.start()
+
     @contextmanager
     def _current_game_restore_admission(self,index,coordinator,restore_id,plan_hash):
         with self._close_lock:
@@ -536,6 +549,11 @@ class ContractRuntime:
             from game_exchange.protocol import validate_owner_request
             if getattr(self, '_games', None) is None:
                 raise RuntimeAdmissionRejected('game connections are disabled')
+            if request['op'].startswith('game.exchange.'):
+                from game_exchange.exchange_protocol import request as validate_exchange
+                if getattr(self, '_exchanges', None) is None:
+                    raise RuntimeAdmissionRejected('game exchanges are disabled')
+                return validate_exchange(request)
             return validate_owner_request(request)
         return validate_request(request, authentication_required=True)
 
@@ -557,7 +575,8 @@ class ContractRuntime:
         if time.monotonic() >= deadline:
             raise TimeoutError('request expired before contract admission')
         self.validate_owner_request(request)
-        with self.admit_write(self.descriptor.writer_epoch):
+        from blackberryrock.deadline import scope as deadline_scope
+        with (deadline_scope(deadline) if request['op'].startswith('game.') else nullcontext()), self.admit_write(self.descriptor.writer_epoch, deadline=deadline if request['op'].startswith('game.') else None):
             self._verifier.assert_current(principal, self.descriptor)
             if time.monotonic() >= deadline:
                 raise TimeoutError('request expired during contract admission')
@@ -570,8 +589,16 @@ class ContractRuntime:
                     raise TimeoutError('request expired during device admission')
                 self._ensure_account_binding()
                 if request['op'].startswith('game.'):
-                    with self._games.gateway.author_gate, self._service.membership.game_connection_guard(request['op'], peer_uid=1002) as context:
-                        reply = self._games.owner(principal, request, context, deadline=deadline)
+                    exchange = request['op'].startswith('game.exchange.')
+                    guard = self._service.membership.game_exchange_guard if exchange else self._service.membership.game_connection_guard
+                    gate=self._games.gateway.author_gate
+                    if not gate.acquire(timeout=max(0,deadline-time.monotonic())):
+                        raise TimeoutError('game admission deadline elapsed')
+                    try:
+                        with guard(request['op'], peer_uid=1002) as context:
+                            handler=self._exchanges if exchange else self._games
+                            reply = handler.owner(principal, request, context, deadline=deadline)
+                    finally: gate.release()
                 else:
                     reply = self._service.dispatch(request, peer_uid=1002)
                 self._ensure_account_binding()
@@ -623,6 +650,8 @@ class ContractRuntime:
                 self._state = 'CLOSING'
             if self._writer is not None:
                 self._writer.quiesce()
+            exchanges=getattr(self,'_exchanges',None)
+            if exchanges is not None: exchanges.close()
             # Never join while holding admission, Device or Store locks. A
             # timeout retains the writer; release refuses outstanding actions.
             if self._service is not None:

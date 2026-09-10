@@ -1,3 +1,4 @@
+from blackberryrock import deadline as request_deadline
 """Transactional entitlement state; no balances, postings, identity documents or network.
 
 All accepted identities are public development fixtures. SQLite protects
@@ -188,16 +189,19 @@ class EntitlementStore:
         db.execute("PRAGMA foreign_keys=ON")
         db.execute("PRAGMA synchronous=FULL")
         db.execute("PRAGMA busy_timeout=10000")
+        try:request_deadline.database(db)
+        except BaseException:db.close();raise
         return db
 
     @contextmanager
     def _transaction(self):
         _managed_write_guard(self.path, self.managed_write_hooks)
-        with self._mutex:
+        with request_deadline.locked(self._mutex):
             db = self._connect()
             try:
                 db.execute("BEGIN IMMEDIATE")
                 yield db
+                request_deadline.check()
                 db.commit()
             except BaseException:
                 db.rollback()

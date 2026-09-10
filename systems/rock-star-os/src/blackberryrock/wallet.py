@@ -9,10 +9,12 @@ import os
 from pathlib import Path
 import re
 import sqlite3
+import time
 from typing import Any, Iterator
 import uuid
 
 from .storage import IdempotencyConflict
+from . import deadline as request_deadline
 
 
 MONTHLY_FEE_MINOR = 888
@@ -22,6 +24,7 @@ ACCOUNTS = (
     "AVAILABLE", "PENDING_SETTLEMENT", "WITHDRAW_HOLD", "CASH_DISPENSED",
     "SERVICE_FEES", "SALE_CLEARING",
 )
+GAME_ACCOUNTS = ('GAME_HOLD', 'GAME_PURCHASES', 'GAME_FEES')
 FINAL_WITHDRAWAL_STATES = {"DISPENSED", "REVERSED", "PARTIAL_REVERSED"}
 
 
@@ -188,13 +191,16 @@ class Wallet:
         return connection
 
     @contextmanager
-    def _transaction(self) -> Iterator[sqlite3.Connection]:
+    def _transaction(self, *, deadline=None) -> Iterator[sqlite3.Connection]:
         _managed_write_guard(self.path, self.managed_write_hooks)
         connection = self._connect()
         try:
+            deadline=request_deadline.database(connection,deadline)
             connection.execute("BEGIN IMMEDIATE")
             yield connection
             self._verify(connection)
+            if deadline is not None and time.monotonic() >= deadline:
+                raise TimeoutError('Wallet transaction deadline elapsed before commit')
             connection.commit()
         except BaseException:
             connection.rollback()
@@ -205,6 +211,8 @@ class Wallet:
     @staticmethod
     def _balances(connection: sqlite3.Connection) -> dict[str, int]:
         balances = dict.fromkeys(ACCOUNTS, 0)
+        if connection.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='wallet_game_schema'").fetchone():
+            balances.update(dict.fromkeys(GAME_ACCOUNTS, 0))
         for row in connection.execute("SELECT account, SUM(delta_minor) AS balance FROM wallet_postings GROUP BY account"):
             balances[row["account"]] = row["balance"]
         return balances
@@ -218,7 +226,7 @@ class Wallet:
         if invalid:
             raise WalletError("journal integrity failure")
         balances = cls._balances(connection)
-        if any(balances[account] < 0 for account in ACCOUNTS if account != "SALE_CLEARING"):
+        if any(amount < 0 for account, amount in balances.items() if account != "SALE_CLEARING"):
             raise WalletError("negative simulator account balance")
         held, dispensed = connection.execute("""
             SELECT COALESCE(SUM(amount_minor - dispensed_minor - released_minor), 0),
@@ -228,12 +236,61 @@ class Wallet:
         billed = connection.execute("SELECT COALESCE(SUM(amount_minor), 0) FROM wallet_bills").fetchone()[0]
         if (held, dispensed, pending, billed) != (balances["WITHDRAW_HOLD"], balances["CASH_DISPENSED"], balances["PENDING_SETTLEMENT"], balances["SERVICE_FEES"]):
             raise WalletError("simulator records do not reconcile with journal balances")
+        if any(account in balances for account in GAME_ACCOUNTS):
+            cls._verify_game(connection, balances)
+
+    @staticmethod
+    def _verify_game(connection, balances):
+        """Audit additive GX01 journals without changing old Wallet semantics."""
+        if [tuple(row) for row in connection.execute('SELECT singleton,version FROM wallet_game_schema')] != [(1,1)]:
+            raise WalletError('unsupported game ledger schema')
+        rows=connection.execute('SELECT * FROM wallet_game_exchanges').fetchall()
+        if len(rows)>10000:raise WalletError('game ledger capacity exceeded')
+        held=purchased=fees=0
+        journal_ids=set()
+        for row in rows:
+            total=row['principal_minor']+row['fee_minor'];state=row['state']
+            if total!=row['held_minor']+row['committed_minor']+row['released_minor']:
+                raise WalletError('game exchange amount conservation failed')
+            held+=row['held_minor']
+            if state=='COMPLETED':purchased+=row['principal_minor'];fees+=row['fee_minor']
+            expected=[('game.reserve',row['reserve_journal_id'],[('AVAILABLE',-total),('GAME_HOLD',total)])]
+            terminal=connection.execute('SELECT receipt FROM wallet_game_exchange_receipts WHERE exchange_row=?',(row['id'],)).fetchone()
+            outbox=connection.execute('SELECT state FROM wallet_game_outbox WHERE exchange_row=?',(row['id'],)).fetchall()
+            if len(outbox)!=1:raise WalletError('game hold must have exactly one durable outbox')
+            if state in ('QUEUED','CONFIRMING','REVIEW_REQUIRED'):
+                valid=(row['held_minor']==total and row['committed_minor']==row['released_minor']==0 and
+                       row['terminal_journal_id'] is None and terminal is None and outbox[0][0]!='TERMINAL')
+            else:
+                valid=(row['held_minor']==0 and outbox[0][0]=='TERMINAL')
+                if state=='COMPLETED':
+                    valid=valid and row['committed_minor']==total and row['released_minor']==0 and terminal is not None and json.loads(terminal[0])['terminal_state']=='APPLIED'
+                    expected.append(('game.purchase',row['terminal_journal_id'],[('GAME_HOLD',-row['principal_minor']),('GAME_PURCHASES',row['principal_minor'])]))
+                    fee_rows=connection.execute("SELECT id FROM wallet_journals WHERE kind='game.fee' AND reference_id=?",(row['id'],)).fetchall()
+                    if len(fee_rows)!=(1 if row['fee_minor'] else 0):raise WalletError('game fee journal count differs')
+                    if row['fee_minor']:expected.append(('game.fee',fee_rows[0][0],[('GAME_HOLD',-row['fee_minor']),('GAME_FEES',row['fee_minor'])]))
+                elif state in ('REVERSED','CANCELLED'):
+                    valid=valid and row['released_minor']==total and row['committed_minor']==0 and (
+                        terminal is None if state=='CANCELLED' else terminal is not None and json.loads(terminal[0])['terminal_state']=='REJECTED')
+                    expected.append(('game.cancel' if state=='CANCELLED' else 'game.release',row['terminal_journal_id'],[('GAME_HOLD',-total),('AVAILABLE',total)]))
+                else:valid=False
+            if not valid:raise WalletError('game state, hold and terminal records do not reconcile')
+            for kind,journal_id,postings in expected:
+                journal=connection.execute('SELECT kind,reference_id FROM wallet_journals WHERE id=?',(journal_id,)).fetchone()
+                actual=[tuple(p) for p in connection.execute('SELECT account,delta_minor FROM wallet_postings WHERE journal_id=?',(journal_id,))]
+                if journal is None or tuple(journal)!=(kind,row['id']) or sorted(actual)!=sorted(postings) or journal_id in journal_ids:
+                    raise WalletError('game exchange journal binding differs')
+                journal_ids.add(journal_id)
+        if (held,purchased,fees)!=(balances['GAME_HOLD'],balances['GAME_PURCHASES'],balances['GAME_FEES']):
+            raise WalletError('game records do not reconcile with asset accounts')
+        actual={row[0] for row in connection.execute("SELECT id FROM wallet_journals WHERE kind LIKE 'game.%'")}
+        if actual!=journal_ids:raise WalletError('unbound or duplicate game journal')
 
     @staticmethod
     def _post(connection: sqlite3.Connection, kind: str, reference: str,
               debit_from: str, credit_to: str, amount_minor: int) -> str:
         _amount(amount_minor)
-        if debit_from == credit_to or debit_from not in ACCOUNTS or credit_to not in ACCOUNTS:
+        if debit_from == credit_to or debit_from not in ACCOUNTS+GAME_ACCOUNTS or credit_to not in ACCOUNTS+GAME_ACCOUNTS:
             raise WalletError("invalid posting accounts")
         journal_id = str(uuid.uuid4())
         connection.execute("INSERT INTO wallet_journals VALUES (?, ?, ?, ?)",

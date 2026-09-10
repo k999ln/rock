@@ -15,3 +15,5 @@ Linux実行場所: `/var/tmp/rock-release-game-20260910`。既存VM/台帳を触
 ## 未完了
 
 統合候補の全体判定、GX01交換契約・外部Game A/B台帳・worker・復旧、DX01 reference SDK・sandbox導入計測、OS側UIと同image D4/D5は未完了。この記録だけではいずれも合格にしない。
+
+- GX01 core / RQ05–08, 14–17 / owner専用承認と未知結果での資金保存 / Gameごとの通貨購入がない / GX00のC・OwnerRouter・private SQLiteとATM認証検証を再利用 / 明示非空DB移行と3つの追加勘定・専用quote/署名・hold/outbox同時commit・独立A/B TLS台帳のみ追加 / duplicate grant・誤解放0、Cロック下external I/O 0、3秒期限 / `test_game_exchange_tls`: Linux 8例 6.967秒 PASS（skip0）；全GX01合格やOS組込完了はまだ主張しない。

@@ -68,14 +68,14 @@ def _descriptors(value, *, one=False):
     return identifiers
 
 
-def _options(options, device_ref, creation, *, game=False):
+def _options(options, device_ref, creation, *, game=False, exchange=False):
     # Canonicalizing also bounds all input before database access or signing.
     payload = json_bytes(options).decode()
     options = json_decode(payload)
     _fields(options, {'schema_version', 'device_ref', 'purpose', 'publicKey'})
     require(type(options['schema_version']) is int and options['schema_version'] == 1,
             'unsupported ceremony schema')
-    require(options['device_ref'] == device_ref and options['purpose'] == ('wallet.enroll' if creation else ('wallet.game.connect' if game else 'wallet.atm.issue')),
+    require(options['device_ref'] == device_ref and options['purpose'] == ('wallet.enroll' if creation else ('wallet.game.exchange' if exchange else ('wallet.game.connect' if game else 'wallet.atm.issue'))),
             'ceremony device or purpose mismatch')
     public = options['publicKey']
     if creation:
@@ -215,10 +215,16 @@ class SoftwareTestAuthenticator:
         validate_intent(intent)
         return self._perform(intent['options'], pin, key, False, game=True)
 
-    def _perform(self, options, pin, key, creation, *, game=False):
+    def get_exchange_assertion(self, intent, pin, key):
+        from game_exchange import exchange_protocol as x
+        from game_exchange.protocol import canonical, decode
+        intent=x.intent(decode(canonical(intent)))
+        return self._perform(intent['options'],pin,key,False,exchange=True)
+
+    def _perform(self, options, pin, key, creation, *, game=False, exchange=False):
         require(type(pin) is str and pin.isascii() and hmac.compare_digest(pin, PUBLIC_TEST_PIN), 'public test PIN rejected')
         key = _identifier(key)
-        payload = _options(options, self.device_ref, creation, game=game)
+        payload = _options(options, self.device_ref, creation, game=game, exchange=exchange)
         # Use the canonical copy throughout: callers cannot mutate signed options
         # concurrently after validation or change the durable retry payload.
         options = json_decode(payload)

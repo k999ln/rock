@@ -60,6 +60,8 @@ class GameConnectionsTLS(unittest.TestCase):
             self.runtimes[owner]=ContractRuntime.open_fresh(spec,coordinator=self.coordinator,
                 provisioning_file=handoff,verifier=self.router,clock=lambda:self.now)
         self.runtimes['alice'].ingest_fulfillment(self.event(A2))
+        prepare=getattr(self,'prepare_game_exchanges',None)
+        if prepare is not None:prepare()
         self.authorities=[PublicGameAuthority(self.root/('game-'+name),name,clock=lambda:self.now) for name in ('a','b')]
         self.gateway=GameGateway(self.root/'game-index',tuple(self.authorities),clock=lambda:self.now)
         self.server=ManagedWalletBackendServer(('127.0.0.1',0),router=self.router,game_gateway=self.gateway,

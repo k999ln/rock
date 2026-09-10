@@ -15,6 +15,7 @@ import sqlite3
 import stat
 import tempfile
 import threading
+import time
 import uuid
 
 from .runtime_contracts import (FreshContractSpec, ContractDescriptor, ContractIdentity,
@@ -253,7 +254,7 @@ class _Permit:
         return self
 
     @contextmanager
-    def admit_write(self, expected_epoch):
+    def admit_write(self, expected_epoch, *, deadline=None):
         require(type(expected_epoch) is int and expected_epoch == self.descriptor.writer_epoch, 'stale writer epoch')
         previous = getattr(_TLS, 'permit', None)
         require(previous is None or previous is self, 'cross-contract nested admission rejected')
@@ -262,15 +263,25 @@ class _Permit:
             yield; return
         with self.condition:
             require(self.accepting and not self.released and not self.opening, 'contract is not accepting writes')
-        with self.gate:
+        acquired = self.gate.acquire() if deadline is None else self.gate.acquire(timeout=max(0, deadline-time.monotonic()))
+        if not acquired: raise TimeoutError('contract admission deadline elapsed')
+        try:
             with self.condition:
                 require(self.accepting and not self.released, 'contract quiesced while admission waited')
-                self.coordinator._verify_marker(self, immutable=False)
+                acquired_registry = (self.coordinator.mutex.acquire() if deadline is None else
+                    self.coordinator.mutex.acquire(timeout=max(0, deadline-time.monotonic())))
+                if not acquired_registry: raise TimeoutError('coordinator admission deadline elapsed')
+                try:
+                    if deadline is not None and time.monotonic() >= deadline:
+                        raise TimeoutError('contract admission deadline elapsed')
+                    self.coordinator._verify_marker(self, immutable=False)
+                finally: self.coordinator.mutex.release()
                 self.inflight += 1
             try:
                 with self._ticket(): yield
             finally:
                 with self.condition: self.inflight -= 1; self.condition.notify_all()
+        finally: self.gate.release()
 
     def bind_registered_account(self, account_id):
         self.hooks.require_held(); identifier(account_id)
@@ -340,12 +351,18 @@ class AuthorityFenceCoordinator:
         except BaseException: os.close(fd); raise
         return fd
 
-    def prepare_fresh(self, spec):
+    def prepare_fresh(self, spec, *, public_fixture_authority_id=None):
         require(type(spec) is FreshContractSpec, 'explicit fresh contract specification required')
         for value in (spec.ledger_ref, spec.owner_actor, spec.owner_ref, spec.primary_device_ref): identifier(value)
+        if public_fixture_authority_id is not None:
+            require(type(public_fixture_authority_id) is str and str(uuid.UUID(public_fixture_authority_id))==public_fixture_authority_id,
+                    'explicit canonical public fixture authority UUID required')
         with self.mutex:
             self._check_registry()
             self._require_owner_registry()
+            require(public_fixture_authority_id is None or not any(
+                row['descriptor']['wallet_authority_id']==public_fixture_authority_id for row in self.registry['contracts'].values()),
+                'public fixture authority already belongs to a contract')
             self._separate_state(spec.canonical_state)
             state = private_directory(spec.canonical_state, create=True)
             require(not list(state.iterdir()), 'fresh contract directory must be empty; no implicit import')
@@ -354,7 +371,7 @@ class AuthorityFenceCoordinator:
                     'owner already has a managed contract')
             require(len(self.registry['contracts']) < 64, 'managed contract capacity exceeded')
             fd = self._lock_state(state)
-            descriptor = ContractDescriptor(spec.ledger_ref, str(uuid.uuid4()), str(uuid.uuid4()), spec.owner_actor,
+            descriptor = ContractDescriptor(spec.ledger_ref, str(uuid.uuid4()), public_fixture_authority_id or str(uuid.uuid4()), spec.owner_actor,
                                             spec.owner_ref, spec.primary_device_ref, state, 1)
             marker = {'schema': MARKER_SCHEMA, 'minimum_writer_version': 2, 'state': 'PREPARED',
                       'coordinator_id': self.registry['coordinator_id'], 'descriptor': descriptor_value(descriptor),

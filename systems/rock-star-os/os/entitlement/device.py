@@ -319,6 +319,21 @@ class DeviceWalletAdapter:
             with self.store.authorized_device(binding['device_ref'], token):
                 yield TrustedWalletContext(account, binding['device_ref'], True)
 
+    @contextmanager
+    def game_exchange_guard(self, operation, *, peer_uid):
+        """A dedicated purchase context; connection approval is not spending consent."""
+        from atm import TrustedWalletContext
+        from game_exchange.exchange_protocol import OWNER_FIELDS
+        self._peer(peer_uid)
+        if operation not in OWNER_FIELDS:
+            raise EntitlementError('unsupported game exchange operation')
+        with self._locked():
+            account,binding=self._account();token=PUBLIC_TOKENS[binding['owner_actor']]
+            state=self.store.entitlement(account,token,device_ref=binding['device_ref'])
+            if state['device_eligible'] is not True: raise NotEligible('current purchased device required for game exchanges')
+            with self.store.authorized_device(binding['device_ref'],token):
+                yield TrustedWalletContext(account,binding['device_ref'],True)
+
     def handoff_reference(self, device_ref):
         """Original signed handoff digest, not caller-supplied identity fields."""
         with closing(self.store._connect()) as db:

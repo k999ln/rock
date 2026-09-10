@@ -334,7 +334,8 @@ class ManagedHandler(Handler):
     """Explicit v3 entry; all identity and responses are request-local."""
     def do_POST(self):
         self.close_connection = True
-        author_route = self.path == '/v1/game' and self.server.game_gateway is not None
+        exchange_route = self.path == '/v1/game-exchange' and self.server.exchange_gateway is not None
+        author_route = (self.path == '/v1/game' and self.server.game_gateway is not None) or exchange_route
         if self.path != '/v3/wallet' and not author_route:
             self.respond(403, error('unauthorized', 'managed Wallet endpoint required'))
             return
@@ -349,7 +350,7 @@ class ManagedHandler(Handler):
             return
         try:
             if author_route:
-                principal = self.server.game_gateway.authenticate(games[0], auth[0][7:])
+                principal = (self.server.exchange_gateway if exchange_route else self.server.game_gateway).authenticate(games[0], auth[0][7:])
                 self.authenticated_game = principal.game_id
             else:
                 principal = self.server.router.authenticate(devices[0], auth[0][7:], authorities[0])
@@ -385,7 +386,10 @@ class ManagedHandler(Handler):
             request = decode(b''.join(chunks))
             if author_route:
                 from game_exchange.protocol import validate_game_request
-                request = validate_game_request(request)
+                if exchange_route:
+                    from game_exchange.exchange_protocol import request as validate_exchange
+                    request=validate_exchange(request,author=True)
+                else:request = validate_game_request(request)
             else:
                 request = runtime.validate_owner_request(request)
         except PermissionError:
@@ -397,8 +401,9 @@ class ManagedHandler(Handler):
         try:
             if time.monotonic() >= self.deadline:
                 return
-            reply = (self.server.game_gateway.dispatch_author(principal, request, deadline=self.deadline) if author_route
-                     else runtime.dispatch(principal, request, deadline=self.deadline))
+            if exchange_route:reply=self.server.exchange_gateway.dispatch(principal,request,deadline=self.deadline)
+            elif author_route:reply=self.server.game_gateway.dispatch_author(principal,request,deadline=self.deadline)
+            else:reply=runtime.dispatch(principal,request,deadline=self.deadline)
             if not isinstance(reply, dict) or type(reply.get('ok')) is not bool:
                 raise RuntimeError('invalid service response')
             self.respond(200, reply)
@@ -420,7 +425,7 @@ class ManagedWalletBackendServer(_TLSWalletListener):
     managed_contracts = True
 
     def __init__(self, address, *, router, runtimes, cert_file=None, key_file=None,
-                 start_scheduler=True, timeout=DEFAULT_TIMEOUT, game_gateway=None):
+                 start_scheduler=True, timeout=DEFAULT_TIMEOUT, game_gateway=None, exchange_peers=None, start_game_workers=True):
         if address[0] not in ('127.0.0.1', 'localhost'):
             raise ValueError('development Wallet binds loopback only')
         if (type(address[1]) is not int or not 0 <= address[1] <= 65535
@@ -430,10 +435,16 @@ class ManagedWalletBackendServer(_TLSWalletListener):
             raise ValueError('distinct managed runtime tuple required')
         self.router, self.runtimes, self._closed = router, runtimes, False
         self.game_gateway = game_gateway
+        self.exchange_gateway = None
         try:
             router.bind_runtimes(runtimes)
             if game_gateway is not None:
                 game_gateway.bind_runtimes(runtimes)
+            if exchange_peers is not None:
+                if game_gateway is None:raise ValueError('Game connections required before enabling exchange')
+                from game_exchange.exchange_gateway import ExchangeGateway
+                self.exchange_gateway=ExchangeGateway(game_gateway)
+                for runtime in runtimes:runtime.bind_game_exchanges(exchange_peers,start_workers=start_game_workers)
             for runtime in runtimes:
                 runtime.require_serving_ready(game_gateway)
             self.context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)

@@ -54,11 +54,19 @@ cat > "$target/usr/libexec/rock-authenticator-health" <<'EOF'
 exec /usr/bin/python3 -I -B /usr/lib/rock-platform/wallet_auth/health.py
 EOF
 chmod 0755 "$target/usr/libexec/rock-authenticator-health"
+mkdir -p "$dest/game_exchange"
+chmod 0755 "$dest/game_exchange"
+# Device contains protocol/client modules only, never Game/Wallet issuer signers,
+# author credentials, Game asset journals, C coordinator or grant worker.
+for module in __init__ protocol exchange_protocol storage client http; do
+  cp "$repo/os/game_exchange/$module.py" "$dest/game_exchange/"
+  chmod 0644 "$dest/game_exchange/$module.py"
+done
 cp "$repo/os/wallet_backend/__init__.py" "$repo/os/wallet_backend/client.py" "$dest/wallet_backend/"
 cp "$repo/os/atm/__init__.py" "$repo/os/atm/simulator.py" "$dest/atm/"
 cp "$repo/os/platform/atm-guest-test.py" "$dest/"
 chmod 0755 "$target/etc/init.d/S99rock-atm-verify"
-for module in __init__ hub packages recipe_worker storage wallet sdk; do
+for module in __init__ hub packages recipe_worker storage wallet sdk deadline; do
   cp "$repo/src/blackberryrock/$module.py" "$dest/blackberryrock/$module.py"
 done
 cp "$repo/os/platform/service.py" "$repo/os/platform/registry_control.py" "$repo/os/platform/sandbox-probe.py" "$repo/os/platform/guest-test.py" "$repo/os/platform/store-guest-test.py" "$dest/"

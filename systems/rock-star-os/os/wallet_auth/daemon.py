@@ -96,16 +96,21 @@ class Service:
         if op == 'auth.status':
             require(set(request) == {'v', 'op'})
             return {'ok': True, 'metadata': self.authenticator.metadata}
-        require(op in ('auth.create', 'auth.get') and set(request) == {'v', 'op', 'key', 'options', 'pin'})
+        game=op in ('auth.game.connect','auth.game.exchange')
+        payload_field='intent' if game else 'options'
+        require(op in ('auth.create','auth.get','auth.game.connect','auth.game.exchange') and
+                set(request)=={'v','op','key',payload_field,'pin'})
         require(type(request['key']) is str and 1 <= len(request['key']) <= 128 and
                 type(request['pin']) is str and len(request['pin']) == 4 and request['pin'].isascii() and
-                request['pin'].isdigit() and type(request['options']) is dict)
+                request['pin'].isdigit() and type(request[payload_field]) is dict)
         require(len(json_bytes(request)) <= MAX_FRAME)
         with self.lock:
             if deadline is not None and time.monotonic() >= deadline:
                 raise AuthUnavailable('request deadline elapsed before signing')
             method = self.authenticator.make_credential if op == 'auth.create' else self.authenticator.get_assertion
-            credential = method(request['options'], request['pin'], request['key'])
+            if game:
+                method=self.authenticator.get_game_assertion if op=='auth.game.connect' else self.authenticator.get_exchange_assertion
+            credential = method(request[payload_field], request['pin'], request['key'])
         return {'ok': True, 'credential': credential, 'metadata': self.authenticator.metadata}
 
 

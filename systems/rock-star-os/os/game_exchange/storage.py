@@ -8,6 +8,7 @@ import stat
 import threading
 import uuid
 from . import protocol as p
+from blackberryrock import deadline as request_deadline
 
 
 class PrivateStore:
@@ -59,16 +60,19 @@ class PrivateStore:
                 if name=='game.lock':p.require((info.st_dev,info.st_ino)==(os.fstat(self._lock).st_dev,os.fstat(self._lock).st_ino),'game lock replaced')
     @contextmanager
     def transaction(self):
-        with self._mutex:
-            self.check();self.db.execute('BEGIN IMMEDIATE')
+        with request_deadline.locked(self._mutex):
+            self.check();request_deadline.database(self.db);self.db.execute('BEGIN IMMEDIATE')
             try:
-                yield self.db;self.check();self.db.execute('COMMIT')
+                yield self.db;self.check();request_deadline.check();self.db.execute('COMMIT')
                 directory=os.open(self.path,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
                 try:os.fsync(directory)
                 finally:os.close(directory)
             except BaseException:
                 if self.db.in_transaction:self.db.execute('ROLLBACK')
                 raise
+            finally:
+                self.db.set_progress_handler(None,0)
+                self.db.execute('PRAGMA busy_timeout=1000')
     def observe_time(self,db,now):
         p.integer(now,1);old=db.execute('SELECT maximum_time FROM identity').fetchone()[0]
         p.require(now>=old,'game clock moved backwards');db.execute('UPDATE identity SET maximum_time=?',(now,))
