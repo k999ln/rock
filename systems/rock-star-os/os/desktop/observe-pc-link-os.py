@@ -46,6 +46,8 @@ def main():
     service_state=args.service_state.resolve(strict=True) if args.service_state else output
     limits=b.contract.plan('lifecycle')['limits'];profile=b.retention.retention_profile(config)
     observer=authority.Observer(base/'os/game_exchange/sandbox.py',args.sandbox_config.resolve(),config['game']['authority_id'],output)
+    assert args.sandbox_config.resolve() == Path(config['game']['config']), 'observed authority differs from device binding'
+    assert observer.input_hashes['sandbox_config_sha256'] == config['game']['sha256'], 'observed authority bytes differ from device binding'
     previous=args.resume_from.resolve(strict=True) if args.resume_from else None
     if previous:
         original_plan=json.loads((previous/'plan.json').read_text());original_report=json.loads((previous/('2' if args.resume_stage=='restart-history' else '1')/'report.json').read_text())
@@ -70,7 +72,7 @@ def main():
     tool_version='1.1.0' if citation_mode else '1.0.0'
     visible_result='紹介文です' if citation_mode else None
     plan={'schema':'rock-owned-pc-link-ui/1','source_commit':args.commit,'service_state':str(service_state),'config':config,'limits':limits,
-          'observer_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'cycles':3,
+          'observer_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'cycles':3,'shutdown_policy':'every cycle: exactly one new dispatched receipt and guest SHUTDOWN event',
           'ui_phase_seconds':360,'server_start_seconds':10,'server_stop_seconds':10,
           'fixture_stop':{'runner':{'signal':'SIGTERM','expected_returncode':0},
                           'registry':{'signal':'SIGTERM','expected_returncode':-signal.SIGTERM,
@@ -133,7 +135,7 @@ def main():
         return sqlite3.connect(path.resolve().as_uri()+'?mode=ro&immutable=1',uri=True)
 
     def device_snapshot(data,folder):
-        result={};remote=[]
+        result={};remote=[];powers=[]
         for role,(source,_) in profile['sources'].items():
             target=folder/(role+'.sqlite3');b.power.export_closed_database(data,source,target);target.chmod(0o600)
             with closing(closed_sql(target)) as db:
@@ -143,11 +145,14 @@ def main():
                     import wallet_cache_retention
                     cache_profile=dict(profile,sources={'wallet_cache':profile['sources']['wallet_cache']})
                     result[role]=b.retention.business_snapshot(data,cache_profile)[0]['wallet_cache']
+                if role=='power':
+                    db.row_factory=sqlite3.Row;powers=[dict(r) for r in db.execute('SELECT * FROM requests')]
                 if role=='remote':
                     db.row_factory=sqlite3.Row;remote=[dict(r) for r in db.execute('SELECT * FROM remote_jobs ORDER BY created')]
         b.guest.save(folder/'device-snapshot.json',result)
         b.guest.save(folder/'remote-private.json',remote)
-        return result,remote
+        b.guest.save(folder/'power-rows.json',powers)
+        return result,remote,powers
 
     def host_snapshot():
         with closing(closed_sql(service_state/'runner/jobs.sqlite3')) as db:
@@ -216,11 +221,12 @@ def main():
             baseline=(args.baseline_from.resolve(strict=True) if args.baseline_from else previous)/'baseline'
             old_device=json.loads((baseline/'device-snapshot.json').read_text())
             initial_remote=json.loads((baseline/'remote-private.json').read_text())
+            prior_power=json.loads((baseline/'power-rows.json').read_text())
         else:
-            with b.closed_device(config,initial_record) as data:old_device,initial_remote=device_snapshot(data,initial_folder)
+            with b.closed_device(config,initial_record) as data:old_device,initial_remote,prior_power=device_snapshot(data,initial_folder)
         assert not initial_remote,'dedicated PC probe requires no prior remote jobs'
         if previous and args.resume_stage=='restart-history':
-            old_device=json.loads((previous/'1/device-snapshot.json').read_text());old_remote=json.loads((previous/'1/remote-private.json').read_text());old_host=json.loads((previous/'1/runner-snapshot.json').read_text())
+            old_device=json.loads((previous/'1/device-snapshot.json').read_text());old_remote=json.loads((previous/'1/remote-private.json').read_text());old_host=json.loads((previous/'1/runner-snapshot.json').read_text());prior_power=json.loads((previous/'1/power-rows.json').read_text())
         for port in (9443,9444):
             with socket.socket() as probe:probe.bind(('127.0.0.1',port))
         registry=spawn([sys.executable,'-B','-m','registry.server','--state',str(service_state/'registry'),
@@ -239,6 +245,7 @@ def main():
             record=monitor=sampler=None;started=time.monotonic()
             try:
                 observer.invoke('start');record=b.guest.start(config);b.guest.save(folder/'owned-record.json',record)
+                assert record.get('reused') is False or (previous and ((cycle==1 and args.resume_stage!='restart-history') or (cycle==2 and args.resume_stage=='restart-history'))), 'unexpected reused QEMU boot'
                 sampler=b.ResourceSampler(record,limits);sampler.start();monitor=b.power.Monitor(record['qmp_socket'],report)
                 driver=b.ScreenDriver(monitor,folder,report,record,sampler,limits)
                 if previous and cycle==2 and args.resume_stage=='restart-history':driver.wait('実行履歴',label='same-restarted-history')
@@ -283,7 +290,8 @@ def main():
                 report['normal_shutdown_seconds']=b.clean_shutdown(driver,record);sampler.stop()
                 if runner:stop(runner,'runner-post-cycle-'+str(cycle));runner=None
                 observer.invoke('stop');after_authority=observer.invoke('snapshot');authority.unchanged(before_authority,after_authority)
-                with b.closed_device(config,record) as data:state,remote=device_snapshot(data,folder)
+                with b.closed_device(config,record) as data:state,remote,powers=device_snapshot(data,folder)
+                report['power_boot_id']=b.verify_power(prior_power,powers,report['qmp_events']);prior_power=powers
                 host,host_rows=host_snapshot();b.guest.save(folder/'runner-snapshot.json',host)
                 assert len(remote)==2 and len({r['key'] for r in remote})==2
                 assert remote[0]['state']=='succeeded'

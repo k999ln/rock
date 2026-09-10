@@ -39,6 +39,8 @@ def main():
     profile = b.retention.retention_profile(config)
     observer = authority.Observer(base/'os/game_exchange/sandbox.py', args.sandbox_config.resolve(),
                                   config['game']['authority_id'], output)
+    assert args.sandbox_config.resolve() == Path(config['game']['config']), 'observed authority differs from device binding'
+    assert observer.input_hashes['sandbox_config_sha256'] == config['game']['sha256'], 'observed authority bytes differ from device binding'
     previous_probe = None
     if args.resume_from:
         previous_probe = args.resume_from.resolve(strict=True)
@@ -56,12 +58,17 @@ def main():
     else:
         before = observer.invoke('snapshot')
     authority.empty_baseline(before)
+    if previous_probe:
+        assert previous_plan.get('initial_power_rows') == [], 'resumption requires original pre-input power baseline'
+    else:
+        assert not (b.guest.BASE/config['name']).exists(), 'first Game cycle requires a fresh device directory'
     plan = {'schema': 'rock-game-real-ui-probe/1', 'source_commit': args.commit, 'config': config,
             'source_sha256': {str(p.relative_to(base)): hashlib.sha256(p.read_bytes()).hexdigest() for p in
                               [base/'os/ui/game-ui.inc', base/'os/game_exchange/device_client.py',
                                base/'os/game_exchange/reference_sdk.py', base/'os/game_exchange/sandbox.py']},
             'observer_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-            'limits': limits, 'flow_deadline_seconds': 600, 'cycles': 2,
+            'limits': limits, 'flow_deadline_seconds': 600, 'cycles': 2, 'initial_power_rows': [],
+            'shutdown_policy': 'every cycle: exactly one new dispatched receipt and guest SHUTDOWN event',
             'retention_policy': {'guest': GAME_READ_POLICY, 'external': authority_ui.POLICY,
                                  'external_helper_sha256': hashlib.sha256(Path(authority_ui.__file__).read_bytes()).hexdigest()},
             'expected': {'credit_minor': 10000, 'games': 2, 'principal_each': 100, 'fee_each': 3,
@@ -122,7 +129,8 @@ def main():
         driver.native.click(152, 26)
         driver.wait('合成WalletからGameへ', label='game-home')
 
-    previous_rows = previous_state = previous_authority = previous_power = None
+    previous_rows = previous_state = previous_authority = None
+    previous_power = []
     try:
         for cycle in (1,2):
             folder = output/str(cycle); folder.mkdir(mode=0o700)
@@ -138,6 +146,7 @@ def main():
                 else:
                     observer.invoke('start')
                     record = b.guest.start(config)
+                    assert record.get('reused') is False, 'a fresh QEMU boot is required'
                 b.guest.save(folder/'owned-record.json', record)
                 sampler = b.ResourceSampler(record, limits); sampler.start()
                 monitor = b.power.Monitor(record['qmp_socket'], report)
@@ -214,7 +223,7 @@ def main():
                         b.retention.compare_business(previous_state, state, profile)
                         external_comparison = authority_ui.compare(previous_authority, actual_authority, policy=authority_ui.POLICY)
                         b.guest.save(folder/'authority-ui-comparison.json', external_comparison)
-                        b.verify_power(previous_power, powers, report['qmp_events'])
+                    report['power_boot_id'] = b.verify_power(previous_power, powers, report['qmp_events'])
                     previous_rows, previous_state, previous_authority, previous_power = rows, state, actual_authority, powers
                     b.guest.save(folder/'guest-state.json', state)
                     report.update(status='PASS_SCOPED_UI_SEQUENCE', data_sha256=b.guest.digest(data),
