@@ -212,6 +212,9 @@ def business_snapshot(data, profile=None):
                     unfinished+=db.execute('SELECT COUNT(*) FROM device_api_receipts WHERE response_json IS NULL').fetchone()[0]
                 elif role=='wallet_cache':
                     unfinished=db.execute('SELECT COUNT(*) FROM requests WHERE response IS NULL').fetchone()[0]
+                    if profile is not None and profile.get('cache_read_sync'):
+                        import wallet_cache_retention
+                        result[role]['read_sync']=wallet_cache_retention.observe(db)
                 else: unfinished=0
                 guest.require(unfinished==0,'source is not quiescent for strict restoration: '+role)
     return result,hub_rows,power_rows
@@ -254,7 +257,11 @@ def compare_business(before,after,profile=None):
     sources = SOURCES if profile is None else profile['sources']
     guest.require(set(before)==set(after)==set(sources),'restored database role coverage differs')
     for role in set(sources)-{'power'}:
-        guest.require(before[role]==after[role],'restored business data changed: '+role)
+        if role=='wallet_cache' and profile is not None and profile.get('cache_read_sync'):
+            import wallet_cache_retention
+            wallet_cache_retention.compare(before[role],after[role])
+        else:
+            guest.require(before[role]==after[role],'restored business data changed: '+role)
     for name in ('schema_sha256','internal_sequences'):
         guest.require(before['power'][name]==after['power'][name],'restored power schema changed')
     guest.require({name: value for name, value in before['power']['tables'].items() if name != 'requests'} ==
