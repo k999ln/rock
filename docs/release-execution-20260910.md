@@ -31,3 +31,15 @@ macOS 15.7.4 arm64、Lima 2.2.0を候補とする。通常のLima設定にはins
 ## 次の具体操作
 
 Aのrun44回収とLinux接続確認、Bのinstaller対象試験、Dのreconcile衝突修正を進める。統括は既存Hubの実画面操作を準備し、引用整理の成果再表示・費用表示と失敗復旧の不足を確認する。工程完了時と30分ごとに実commit、process/job ID、成果、失敗原因、次操作を追記する。大量logとimageはGit外へ保存する。
+
+## 06:28 UTC checkpoint（経過44分25秒）
+
+root HEAD `72da6df`。統合済み: GX00 namespace/実TLS4受入 `e0f3dc8`、旧run44監査 `d0346f8`、1.0表示 `28e5ca6`、Hub sample/実行版 `5ae80ef`、source freeze `f596018`/`d371ce8`、fresh installer `d7927dd`/`72da6df`。現root WIPはGame native UI/Platform境界と発表ページ。branchはまだpush前。
+
+- A: 旧run44は元planを変えず、5boot・61jobs・3641.769秒・正常停止・保存台帳/741画像hashを独立照合した限定PASS。新候補へ移し替えない。中間commit `d7927dd69ddc53e3b95d501c7292ea7f8c015123` はLinux1,425試験/14checks、skip0、source1,176files整合とimage freezeまでPASS。初回tar展開のumask0002による保護guard拒否を保存し、同archiveをumask0022で新規展開して再試験。OSbuildは既存cache使用で約1分。新Game profileのD6/backup観測器を適応中。
+- B: fresh Lima VMの依存準備44秒、read-only共有拒否・非共有host home・正常停止/所有VM削除までPASS。host30試験と別Linux29試験。最終archiveからのfreshインストールは未実施。既存8899 viewerは旧taskのPID77657と照合し保持、新配布profileは独立portへ調整中。
+- D: GX00既知衝突修正と必須4件を実TLSで合格（Game74＋owner/fence52、skip0）。GX01専用quote、本人承認、両台帳、SDKを実装中。final profileはdevelopment-game-authority/schema7、公開fixture専用、新VMの独立台帳。初期残高0/未登録/未同意。明示的な試験残高追加は別導線。
+- 統括: 旧OSで汎用sampleの無効な初回成果を実操作観測し、正常停止後照合を保存。最小修正後C/UIと業務UI41試験PASS。Game UIの初回compileでtest helper名の誤り、実操作でheader hit領域の不足を検出し修正中。最終UI/TLS/QEMUは未合格。
+- Web: 既存機能を保ち`/rockstaros`を追加しlocalhost:5173/rockstarosでHTTP200を確認。dev server exec74915。既存Sites project IDの正規取得が`Sites project not found`で失敗し、配布/公開範囲を変更せずローカル原稿を継続。製品LICENSE条件は未記載のため創作しない。
+
+次: Game UIの操作/異常系とPlatformの所有者境界を試験、凍結した中間imageでHub改善後一周と同入力比較、Webの導入/復旧導線を整える。final機能の統合目標08:45 UTC、凍結目標09:13 UTCを維持。中間imageはGame未統合なので発表・最終配布用ではない。

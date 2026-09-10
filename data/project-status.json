@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
   "milestone": "RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備",
-  "nextAction": "05:43:35–13:43:35 UTCの実作業。専用release branchでA=run44回収/OS build受入、B=fresh導入package、統括=Hub実用/統合/発表入口、D=GX00分離→GX01合成交換→DX01 SDKを並行。現状の未合格gateを維持し、同一配布候補の証拠でのみ更新。詳細はdocs/release-execution-20260910.md。",
+  "nextAction": "06:28 UTC: GX00 host合成分離を実TLSで合格。中間d7927ddはLinux1425試験とimage freeze完了、Hub改善後を実OS操作。Game専用quote/承認/両台帳/SDKとschema7 fresh installerを統合中。final候補のD0〜D6/配布取得/導入/Game UIは未合格。08:45 UTC統合、09:13凍結を目標。詳細はdocs/release-execution-20260910.md。",
   "tasks": [
     {
       "id": "R01",
@@ -290,7 +290,7 @@
     {
       "id": "GX00",
       "title": "共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [
         "B04"
       ],
@@ -311,13 +311,14 @@
         "docs/gx00-current-game-restore.md",
         "docs/gx00-owner-connection-client.md",
         "docs/evidence/gx00/current-game-integration-root.json",
-        "docs/implementation-checkpoint-20260909.md"
+        "docs/implementation-checkpoint-20260909.md",
+        "docs/evidence/gx00/release-required-acceptance-20260910.json"
       ]
     },
     {
       "id": "GX01",
       "title": "ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "GX00"
       ],
@@ -340,7 +341,7 @@
     {
       "id": "DX01",
       "title": "ゲーム作者向けAPI/SDK・sandbox・複数owner/game分離と導入体験を検証",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "GX00"
       ],
@@ -530,13 +531,14 @@
       "id": "GX00-ISOLATION",
       "task": "GX00",
       "title": "ADR・複数owner分離/本人接続・互換/復旧の合成検証",
-      "status": "planned",
+      "status": "done",
       "dependsOn": [
         "B03-FIXTURE"
       ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
-        "docs/evidence/gx00/integration.json"
+        "docs/evidence/gx00/integration.json",
+        "docs/evidence/gx00/release-required-acceptance-20260910.json"
       ]
     },
     {
