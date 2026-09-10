@@ -78,3 +78,7 @@ The installed source's existing closed SQLite observer checked every observed ta
 `remove --delete-data` stopped and deleted only this verified private VM without force. Its VM directory is absent; ports 8900 and 5910 can be bound again. The unrelated pre-existing 8899 viewer remains PID 77657. The off-VM backup still has all three exact hashes and byte counts. Package, logs and receipts remain local for diagnosis. The three test-only browser tabs were closed.
 
 This lifecycle pass does not clear the package reproducibility failure above, production trust, licensing, external Game authority recovery, or final same-image release acceptance.
+
+### Stopped VM status remains observational
+
+RQ12/RQ16 · explicit, understandable lifecycle · `status` previously restarted an externally stopped owned VM to query QEMU · reused the pinned Lima identity/status record · `status`/`stop` now return the observed stopped VM state without launching it · regression asserts no Lima mutation or remote query · preview suite 32 PASS. The response does not infer that the earlier OS shutdown was clean from VM state alone; backup/restore retain their existing clean-filesystem checks.

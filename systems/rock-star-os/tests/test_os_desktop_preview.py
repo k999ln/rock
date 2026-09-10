@@ -310,6 +310,22 @@ class OwnedLifecycle(unittest.TestCase):
                     self.run_action({'action': action, 'delete_data': True}, running=True)
                 lima.assert_not_called()
 
+    def test_status_and_stop_do_not_wake_a_stopped_vm(self):
+        from contextlib import ExitStack
+        for action in ('status', 'stop'):
+            module, patches = self.action_patches()
+            with self.subTest(action=action), ExitStack() as stack:
+                for item in patches:
+                    stack.enter_context(item)
+                stack.enter_context(patch.object(preview, 'verify_vm', return_value={'status': 'Stopped'}))
+                lima = stack.enter_context(patch.object(preview, 'lima'))
+                result = preview.action(SimpleNamespace(directory=self.root, action=action))
+                self.assertFalse(result['running'])
+                self.assertEqual(result['vm_status'], 'Stopped')
+                self.assertIn('does not infer', result['observed'])
+                lima.assert_not_called()
+                module.remote.assert_not_called()
+
     def test_removal_requires_explicit_data_deletion_and_keeps_other_lima(self):
         with patch.object(preview, 'lima') as lima:
             with self.assertRaisesRegex(ValueError, '--delete-data'):

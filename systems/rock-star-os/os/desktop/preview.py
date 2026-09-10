@@ -469,6 +469,11 @@ def action(args):
         verify_installed(root, release)
         instance = verify_vm(root, record)
         if instance['status'] != 'Running':
+            if args.action in ('status', 'stop'):
+                return {'running': False, 'vm_status': instance['status'],
+                        'active_device': record['active_device'], 'source_commit': record['source_commit'],
+                        'observed': 'owned VM is not running; this does not infer a prior normal OS shutdown',
+                        'wallet': 'SIMULATOR_ONLY'}
             lima(root, 'start', '--tty=false', VM_NAME, timeout=180)
             verify_vm(root, record)
         module = launcher(root)
