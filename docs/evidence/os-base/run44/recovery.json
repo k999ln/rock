@@ -1,0 +1,237 @@
+{
+  "D6": {
+    "guest_per_service_resources": "NOT_RUN",
+    "meaning": "five normal boots, 61 repeated UI jobs over at least 60 min, host QEMU RSS/CPU thresholds",
+    "workload": "PASS"
+  },
+  "audit_operations": "read-only original artifacts and stopped disks, existing lock fence; no QEMU start, repair, mutation RPC or duplicated soak",
+  "audit_script_sha256": "d58548e84d719a6582e37bf23ccc8c1068019ffbc92693061543a99c3ce90d84",
+  "boot_profile": {
+    "factory_sha256": "8e87c9c0e65378fd802cc9bbe0160f7dfa8a41568eff30e28873b433f3344420",
+    "mode": "signed-stage0",
+    "profile": "local-development"
+  },
+  "canonical_plan_sha256": "0a7ab097dbae3d7932f06d0c3141e55ab2b49a326a9d951d04e364ad40176ae3",
+  "checks_manifest_sha256": "5c53e18edeb941ea80eaca72610ab4f06546e38b44e1f952f46e44d26ddb320e",
+  "checks_passed": 788,
+  "cycles": [
+    {
+      "boot_id": "9723dc0f-0989-4728-88f2-3153d10b0337",
+      "boot_log_sha256": "830f0e32de67767fa15fb55d420a02d4f35eb0b87e731794cf1d65d8a3059292",
+      "boot_seconds": 42.51167678400088,
+      "clean_exit": true,
+      "disk_sha256": "c01a9802808a893d93ea5bb802ba7a20a7ee02a4ddce58094e1dbc7b409008fe",
+      "event": {
+        "data": {
+          "guest": true,
+          "reason": "guest-shutdown"
+        },
+        "event": "SHUTDOWN",
+        "observed_unix": 1789001753.1886687,
+        "timestamp": {
+          "microseconds": 179631,
+          "seconds": 1789001753
+        }
+      },
+      "jobs_this_cycle": 0,
+      "number": 0,
+      "retention_verified": true,
+      "shutdown_seconds": 11.156360921002488
+    },
+    {
+      "boot_id": "01d30324-e866-471d-a207-c3c8e80eb827",
+      "boot_log_sha256": "fbebdfb1eae1f885a5b0d2e944f70844e467abecb6a3f3d5f02fbd16178e4bfd",
+      "boot_seconds": 24.166463312001724,
+      "clean_exit": true,
+      "disk_sha256": "d3445a445e118d88db8d1c637c0f951aa4b9728fb2f50fe0c4e2f6f4182712ac",
+      "event": {
+        "data": {
+          "guest": true,
+          "reason": "guest-shutdown"
+        },
+        "event": "SHUTDOWN",
+        "observed_unix": 1789002018.7888384,
+        "timestamp": {
+          "microseconds": 787493,
+          "seconds": 1789002018
+        }
+      },
+      "jobs_this_cycle": 4,
+      "number": 1,
+      "retention_verified": true,
+      "shutdown_seconds": 10.387353621001239
+    },
+    {
+      "boot_id": "bd951104-e51c-42d3-8f34-9988ddcdef41",
+      "boot_log_sha256": "457278bcb723748ad95c621fd2182a2b1c6ca268e06303babe33ebd7ebaa4865",
+      "boot_seconds": 24.661007353999594,
+      "clean_exit": true,
+      "disk_sha256": "31bc78aea5f2a538978063d48a6d279a8944bbe1a4e7056ea18bf8dd19b9bcaf",
+      "event": {
+        "data": {
+          "guest": true,
+          "reason": "guest-shutdown"
+        },
+        "event": "SHUTDOWN",
+        "observed_unix": 1789002097.8004308,
+        "timestamp": {
+          "microseconds": 798827,
+          "seconds": 1789002097
+        }
+      },
+      "jobs_this_cycle": 1,
+      "number": 2,
+      "retention_verified": true,
+      "shutdown_seconds": 8.625928579000174
+    },
+    {
+      "boot_id": "eeb1c7bc-c693-4aef-bbe5-e92f1f3eeea8",
+      "boot_log_sha256": "1dacf37eae53f11c42d2548352fe8c7276db925b0ffe178ba34f81c712ac6a4f",
+      "boot_seconds": 22.468364247000864,
+      "clean_exit": true,
+      "disk_sha256": "0c808d13b45834c7305caa5c5a5db98d62453ffdb7b2a27c529ae5fdcc2ee834",
+      "event": {
+        "data": {
+          "guest": true,
+          "reason": "guest-shutdown"
+        },
+        "event": "SHUTDOWN",
+        "observed_unix": 1789002174.9860637,
+        "timestamp": {
+          "microseconds": 984849,
+          "seconds": 1789002174
+        }
+      },
+      "jobs_this_cycle": 1,
+      "number": 3,
+      "retention_verified": true,
+      "shutdown_seconds": 8.592570821001573
+    },
+    {
+      "boot_id": "e8758e0c-99a5-41f0-91b7-5dac8f0e06b6",
+      "boot_log_sha256": "d830b6e9808b2ec92c176e2a6e5c9f6dd3325d8a0dd25dbd37f69312897027c1",
+      "boot_seconds": 23.9856153719993,
+      "clean_exit": true,
+      "disk_sha256": "5c325487812e3e530e03271b3e06b862471eb59bb0041d1763d43069a54f469d",
+      "event": {
+        "data": {
+          "guest": true,
+          "reason": "guest-shutdown"
+        },
+        "event": "SHUTDOWN",
+        "observed_unix": 1789005862.745755,
+        "timestamp": {
+          "microseconds": 743551,
+          "seconds": 1789005862
+        }
+      },
+      "jobs_this_cycle": 61,
+      "number": 4,
+      "retention_verified": true,
+      "shutdown_seconds": 8.60317562000273
+    }
+  ],
+  "host_tools_base_commit": "1a960756fbd5edc7f13a0578f3e7fc50025534c8",
+  "host_tools_overlay_evidence": "docs/evidence/os-base/host-result-ocr.json",
+  "host_tools_root": "/var/tmp/rkh15/systems/rock-star-os",
+  "host_tools_sha256": {
+    "os/desktop/backup.py": "4ea49c9e2eea0d017dbee1a2e7a59fa4f38c3b26bd52481b814d5eb69240a08d",
+    "os/desktop/browser_server.py": "40556b33337027dcf25b222f62017f3cc145de7eba4a7413c2ab69c227fc030b",
+    "os/desktop/business_contract.py": "7f862080d1142c7e9c29c4e1665a00d969d2f4b8aa17e7e3a9185dd6661a6533",
+    "os/desktop/check-wallet-ocr.py": "516135fd34134a705ea90bd3416fd9f15bc609ee12858d7b4e42666e9b1e1e51",
+    "os/desktop/closed_services.py": "5bf8762930ec915064cb05679e9fb118c301072b1be15a82db75390ad79a4473",
+    "os/desktop/guest.py": "df2487651a1a3680c0b93b6b082514ab4656c466fdffcfbd885a0e70673ea1ca",
+    "os/desktop/launcher.py": "835d7844d71feeac139964161c69f5a0809e5289ee0ab91430baf7f5ff974bc3",
+    "os/desktop/services.py": "ee1dc1620a907b346aa465a2a1ef22ee8600cf831fe8c9914376e403924a8a03",
+    "os/desktop/stage0.py": "d6542cd7fa2f2208523e4e5ee12f24ce339908c380adf3aca98cafcf534c99de",
+    "os/desktop/verify-backup.py": "e836f45279c0d2ce546c2cb35bf8c5d974e855420f55a07b921c6dde0d331c3d",
+    "os/desktop/verify-business.py": "cfe485e5318ab89a9841adad5eed87de4c7ea5fd3f116e567ffeeeb4037c680b",
+    "os/desktop/wallet_backup.py": "de70abd1661d3da0ce9aa6e3693cc37d03a22826f626500d056a6fef3d3cf97d"
+  },
+  "image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763",
+    "stage0.cpio.gz": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+  },
+  "last_process": {
+    "pid": 1021886,
+    "running": false
+  },
+  "not_run": [
+    "new runtime candidate",
+    "guest per-service resources",
+    "Game/SDK",
+    "fresh installation",
+    "real hardware",
+    "real funds"
+  ],
+  "observed_at": "2026-09-10T05:50:58.216922+00:00",
+  "original_plan_file_sha256": "87df318c07e968052563bbb35ef12af4af5d14b478d35bb8dee31b760827010e",
+  "original_report_sha256": "03c43c490f187079e16c57e1111e44c3ceefaf0c453691b33c5a7efd207cbbb7",
+  "resource_files": [
+    {
+      "cycle": 0,
+      "samples": 27,
+      "sha256": "a102fa3fa51d51d2efe5a1188850ff8e441588ee34c326471dbb67e7dc1792ab"
+    },
+    {
+      "cycle": 1,
+      "samples": 131,
+      "sha256": "c5df79f18843dd094a3222b962da8c3358c86a99acffdc9dc6718ad5a1f36226"
+    },
+    {
+      "cycle": 2,
+      "samples": 38,
+      "sha256": "10291bd10848fc14d26b94c2e89079a20a4871aedafb665d4becda9e0616f81c"
+    },
+    {
+      "cycle": 3,
+      "samples": 37,
+      "sha256": "46b9c924f530975ea1c621874832b95909e5108247d08a0d8e9bc323b3fe3294"
+    },
+    {
+      "cycle": 4,
+      "samples": 1839,
+      "sha256": "97014500d9f94f016344694d4540fbf1456695a472d4984b1d8236d355cc6348"
+    }
+  ],
+  "resources": {
+    "cpu_cores_average": 0.29231608717618074,
+    "max_sample_gap_seconds": 2.149993793998874,
+    "peak_rss_kib": 849004,
+    "rss_growth_kib": 42388,
+    "samples": 1817
+  },
+  "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+  "schema": "rock-run44-independent-recovery/1",
+  "scope": {
+    "evidence": "actual QMP input + semantic screenshots + stopped-disk SQLite; no mutation RPC",
+    "hardware": "NOT_RUN",
+    "in_flight_cancel": "NOT_RUN; disable denies later use, not a timed cancellation test",
+    "real_funds": "NOT_RUN",
+    "resources": "host QEMU RSS/CPU only; guest per-service UID/cgroup is NOT_RUN",
+    "wallet": "SIMULATOR_ONLY; no consent, credit, payment or withdrawal actions"
+  },
+  "screenshots_manifest_sha256": "4a46e4ea9bb1894aed9b1830b5bd80557f5f2f5114c0765d05224494ac40813e",
+  "screenshots_verified": 741,
+  "soak": {
+    "elapsed_seconds": 3641.7692381089983,
+    "jobs": 61,
+    "max_job_seconds": 46.624743246000435,
+    "max_start_gap_seconds": 60.005207283000345
+  },
+  "status": "PASS_SCOPED",
+  "stopped_inspection": {
+    "audits": 76,
+    "disk_sha256": "5c325487812e3e530e03271b3e06b862471eb59bb0041d1763d43069a54f469d",
+    "e2fsck_exit": 0,
+    "e2fsck_output_sha256": "611626d378bb2df7f4aa71bc27142c3a9a18098e304cbc95cb3aa30f74f7f60c",
+    "jobs": 67,
+    "logical_databases": 6,
+    "no_mutations": true,
+    "power_receipts": 5,
+    "requests": 76,
+    "snapshot_sha256": "b17bbd1a67843def7287a6fa127aba553b9639770f737661e2b0c610f768b512",
+    "table_count": 44
+  }
+}

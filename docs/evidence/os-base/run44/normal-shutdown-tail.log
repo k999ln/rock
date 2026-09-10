@@ -1,0 +1,25 @@
+Rock star os - ARM64 virtual development OS
+rock-star-os login: hrtimer: interrupt took 23822192 ns
+stopped /usr/bin/rock-ui (pid 243)
+stopped process in pidfile '/run/rock-authenticator.pid' (pid 217)
+stopped process in pidfile '/run/rock-platform.pid' (pid 170)
+stopped process in pidfile '/run/rock-wallet.pid' (pid 167)
+Stopping crond: stopped /usr/sbin/crond (pid 151)
+OK
+stopped process in pidfile '/run/rock-system.pid' (pid 144)
+stopped process in pidfile '/run/rockd.pid' (pid 127)
+Stopping network: OK
+Stopping klogd: stopped /sbin/klogd (pid 98)
+OK
+Stopping syslogd: stopped /sbin/syslogd (pid 94)
+OK
+Seeding 256 bits without crediting
+Saving 256 bits of creditable seed for next boot
+EXT4-fs (vdb): unmounting filesystem 3a7ac9ce-1a1d-4471-8ac7-fd771ee7113c.
+umount: devtmpfs busy - remounted read-only
+The system is going down NOW!
+Sent SIGTERM to all processes
+Sent SIGKILL to all processes
+Requesting system poweroff
+Console: switching to colour dummy device 80x25
+reboot: Power down
