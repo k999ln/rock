@@ -1,0 +1,34 @@
+# RLS01 導入・配布担当 checkpoint
+
+担当 B。統括 T0 は 2026-09-10T05:43:35Z、終了予定 13:43:35Z。分離 worktree の branch は `codex/rockstaros-installer-20260910`、起点は `91debc28174d87be023b789980d2c46112a66979`。README/project/status/CHECKPOINT の統括更新とは担当範囲を分ける。
+
+着手判断: **RQ12/16/17 / 0→1・べき乗則・明確な楽観主義 / 初回の VM 設定と保存結果を復旧する手間 / launcher v2・guest・stage0・backup の再利用 / 署名配布と所有権を扱う薄い入口 / 初回設定・復旧時間・既存 VM 変更 0 / fresh OS 操作と署名・所有権の異常系試験。**
+
+## 06:10 UTC までの実装と確認
+
+- `preview.py`: 外部の鍵 fingerprint と manifest pin による署名/hash 検証、HTTPS 取得、厳密な archive 展開、専用 LIMA_HOME/新 VM、image/source guard、起動・通常終了案内・再開、停止済み backup/export、別名 restore、元端末 retire、所有 VM の削除、診断、失敗 VM の限定 cleanup。
+- `package_preview.py`: 完全な source commit の追跡済み native source、同じ `rock-build-freeze/2` の source/image/config hash と入力台帳を照合。順序・mtime・uid/gid・gzip timestamp を固定した archive、Ed25519 envelope、SHA256SUMS、日本語ガイド・リリースノート・NOTICE を生成。
+- 既存の公開 RFC8032 試験 seed を再利用。鍵生成なし。試験 signature を production trust と表示せず、使用には明示 flag と独立 manifest pin を必須とする。外部管理済み Ed25519 signer の入力口は別。
+- 実測 host: macOS 15.7.4 build 24G517 / arm64 / Lima 2.2.0 / Python 3.14.7 / OpenSSL 3.6.3。元の Linux は Debian 13 / QEMU 10.0.11 と A 担当から受領。installer が新しい VM で実測した値ではない。
+- 27 件の専用試験 PASS。実 OpenSSL Ed25519 検証、改変拒否、archive path/link/device/重複/欠損、public test key 明示、所有権不一致、VM identity 不一致、稼働中 backup/restore/delete 拒否、default LIMA_HOME 非使用を確認。
+- 既存 launcher 23 件 PASS。`py_compile` と `git diff --check` PASS。VM/lifecycle の単体試験は mock であり、fresh VM/OS/UI の受入には数えない。
+- 最初の署名試験で `openssl pkey` の入力形式 flag を `pkeyutl` と共用したことによる失敗。`pkey -inform DER` に分け、実 signature の再試験を通した。暗号 guard は変更していない。
+
+## 次の操作と未達
+
+1. D 担当の development Game authority profile/host sandbox 契約を統合する。現在の device/6 local-only wrapper を最終 image の代替にしない。manifest へ profile/authority hash を追加し、sandbox の停止・保存・復元を既存証明と統合する。
+2. A の最終 image と `freeze-manifest.json` を受領し、同じ source commit から配布 archive を作成する。現在は配布 archive/fresh VM の実測なし。
+3. 実際の取得物から新 VM 作成→Hub 商品→合成 Wallet/Game→保存→正常終了→再開→別復元先→所有 VM 削除を行い、手順/時間/失敗/再試験を記録する。
+4. interrupted restore は開始前に `RESTORE_PENDING` を永続化し、元 writer の再開を fail-closed にする。途中からの自動 roll-forward はまだ実装していない。元/backup と途中の復元先を保持する。
+5. 製品 LICENSE は未確定。既存 license/NOTICE を維持し、A が Buildroot legal-info/対応 source を収集中。package を作成しただけで公開配布条件が揃ったとしない。
+
+対象試験コマンド:
+
+```sh
+python3 -m unittest discover -s systems/rock-star-os/tests -p test_os_desktop_preview.py
+python3 -m unittest discover -s systems/rock-star-os/tests -p 'test_os_desktop_launcher*.py'
+python3 -m py_compile systems/rock-star-os/os/desktop/preview.py systems/rock-star-os/os/desktop/package_preview.py
+git diff --check
+```
+
+この checkpoint は installer 実装の中間証拠。PREVIEW-INSTALL、V01-ACCEPT、D0〜D6、Game/SDK、公開の完了宣言ではない。
