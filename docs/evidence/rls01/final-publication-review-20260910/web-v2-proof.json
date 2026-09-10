@@ -1,0 +1,152 @@
+{
+  "schema": "rock-final-web-text-review/1",
+  "status": "PASS_EXACT_FOUR_TEXT_SUBSTITUTIONS_AND_METADATA_ONLY",
+  "measured_utc": "2026-09-10T13:09:53.594823+00:00",
+  "versions": [
+    {
+      "path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/outputs/rockstaros-preview-final",
+      "source_commit": "ba900e49c5ceac3f6453030518d75a0467c0f6ac",
+      "exporter_sha256": "c6b320bf1729efea6d23b7051afce45bcfbbba26feea1a3a2c18186eaaede28a",
+      "files_sha256": {
+        "README.md": "85566def091332ef833626e7da8899ccbee91157977bf7142bb60045f088bd28",
+        "assets/demo-9abf78a.mp4": "58c832e84b2b952f6713cdc2abf9a417b8be338e4ccc13e6d6f7ad7a7406fd42",
+        "assets/demo-9abf78a.vtt": "653fc274fce595d4a3e421dd06a3e8fb45298f004f0d3ffcb127921fc60910b1",
+        "assets/hub-result.png": "a77effd88723f6f143f670f53609613f6ebaaec30c86e8644cb1c1823dd5c962",
+        "assets/style-1b7f5f327f51099b.css": "1b7f5f327f51099b1076d7493bcfab8abdc7ca158eb1c5a839f097a3e49fc619",
+        "assets/style-2cbedead33dbadda.css": "2cbedead33dbaddadb9fe4e3ff58d91d7b96adab90141ef318d34b2f316da48b",
+        "guide.html": "9bc8b6d404309cc3d4b0d17113b1c885d2f60178856642b683bc964b9e35516c",
+        "index.html": "e1d6ee55c421dd05cea101a468198410dba98b16e6d85f1b222f72dfa817796d",
+        "site-export.json": "dff298edd987c4184e30b96bb4edcdb508b3b0c38f305a9b876b3239d32bcea5"
+      },
+      "source_files_sha256": {
+        "app/rockstaros/page.tsx": "16e32984ffe491b0c5c484d3f2cc5ff5300d6a623209514f916d5f4db9763624",
+        "app/rockstaros/guide/page.tsx": "cbfcd536f27536376103f9bc00249a3f2ce1a10d3fe64976a3cb4816725d34ce",
+        "app/rockstaros/preview.module.css": "5ace33b7c88f34d4eceeb1217d67bf438433d44819a64648b5c88cf172761068",
+        "app/globals.css": "fb79793d0e47180a91450498b2edf5515c159c88fa256e77a5c400e1016acd7b",
+        "data/rockstaros-preview.json": "8f7fbc97c5f66e990db2bf6d5f49ff03750b327787568457199dfc46badb8beb"
+      },
+      "manifest_and_git_source_hashes_verified": true
+    },
+    {
+      "path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/outputs/rockstaros-preview-final-v2",
+      "source_commit": "26d2551c9fb8eef4b47f2cddfcb1fdeb07e7b82e",
+      "exporter_sha256": "c6b320bf1729efea6d23b7051afce45bcfbbba26feea1a3a2c18186eaaede28a",
+      "files_sha256": {
+        "README.md": "85566def091332ef833626e7da8899ccbee91157977bf7142bb60045f088bd28",
+        "assets/demo-9abf78a.mp4": "58c832e84b2b952f6713cdc2abf9a417b8be338e4ccc13e6d6f7ad7a7406fd42",
+        "assets/demo-9abf78a.vtt": "653fc274fce595d4a3e421dd06a3e8fb45298f004f0d3ffcb127921fc60910b1",
+        "assets/hub-result.png": "a77effd88723f6f143f670f53609613f6ebaaec30c86e8644cb1c1823dd5c962",
+        "assets/style-1b7f5f327f51099b.css": "1b7f5f327f51099b1076d7493bcfab8abdc7ca158eb1c5a839f097a3e49fc619",
+        "assets/style-2cbedead33dbadda.css": "2cbedead33dbaddadb9fe4e3ff58d91d7b96adab90141ef318d34b2f316da48b",
+        "guide.html": "b3af59c4e4422506b0ef60358bcefb4a81b553f564bc680afac3e9a26680c2fb",
+        "index.html": "0d5d9874c319dcfbd103f70d4e6a3f26481090a28a4df468b3964c4f19aaab6c",
+        "site-export.json": "9635c5fe44ed0cf7824a1f1da27c85990f3157938467d75e821611358de93e54"
+      },
+      "source_files_sha256": {
+        "app/rockstaros/page.tsx": "26ea513a2685e5e805348748bef65999cd87db2175ded1defa09879ce445601d",
+        "app/rockstaros/guide/page.tsx": "1ecbb5661f571ca607f12eef63541b68f9b5506857317c01e87f651d8fdf504a",
+        "app/rockstaros/preview.module.css": "5ace33b7c88f34d4eceeb1217d67bf438433d44819a64648b5c88cf172761068",
+        "app/globals.css": "fb79793d0e47180a91450498b2edf5515c159c88fa256e77a5c400e1016acd7b",
+        "data/rockstaros-preview.json": "8f7fbc97c5f66e990db2bf6d5f49ff03750b327787568457199dfc46badb8beb"
+      },
+      "manifest_and_git_source_hashes_verified": true
+    }
+  ],
+  "changed_files": [
+    "guide.html",
+    "index.html",
+    "site-export.json"
+  ],
+  "pages": [
+    {
+      "name": "index.html",
+      "exact_text_replacements": [
+        {
+          "from": "内部受入済み・公開準備中",
+          "to": "QEMU・合成環境で検証済み"
+        }
+      ],
+      "only_these_bytes_changed": true,
+      "all_tag_attribute_comment_declaration_tokens_equal": true,
+      "structure_tokens": 179,
+      "structure_sha256": "0a60e6bb6c0b33fe86fb8f15d97afa255968b4db63a1e63b2f963df89a35f431"
+    },
+    {
+      "name": "guide.html",
+      "exact_text_replacements": [
+        {
+          "from": "配布候補を検証中です。",
+          "to": "QEMU・合成環境で内部検証済みです。"
+        },
+        {
+          "from": "受入と公開条件の確認後に案内する配布記録で、",
+          "to": "公開条件を確認した後に案内する配布記録で、"
+        },
+        {
+          "from": "合成Game A/Bを同じ配布候補で受入中です。",
+          "to": "同じ配布候補で、合成Game A/Bの接続・交換・保存履歴を内部検証しました。"
+        }
+      ],
+      "only_these_bytes_changed": true,
+      "all_tag_attribute_comment_declaration_tokens_equal": true,
+      "structure_tokens": 158,
+      "structure_sha256": "03bcd43aeab2a8274cba4cac7007a5a37e9215c97e1e4ebd98d31c62c66187b8"
+    }
+  ],
+  "identical_files": [
+    "README.md",
+    "assets/demo-9abf78a.mp4",
+    "assets/demo-9abf78a.vtt",
+    "assets/hub-result.png",
+    "assets/style-1b7f5f327f51099b.css",
+    "assets/style-2cbedead33dbadda.css"
+  ],
+  "scope": "Static byte/HTML structure and Git source audit. Previous ba900 browser QA is retained with its original source and caption-render limitation; no new playback or browser assertion for v2.",
+  "exact_export_metadata_changes": [
+    {
+      "path": "/source_commit",
+      "before": "ba900e49c5ceac3f6453030518d75a0467c0f6ac",
+      "after": "26d2551c9fb8eef4b47f2cddfcb1fdeb07e7b82e"
+    },
+    {
+      "path": "/source_files_sha256/app/rockstaros/page.tsx",
+      "before": "16e32984ffe491b0c5c484d3f2cc5ff5300d6a623209514f916d5f4db9763624",
+      "after": "26ea513a2685e5e805348748bef65999cd87db2175ded1defa09879ce445601d"
+    },
+    {
+      "path": "/source_files_sha256/app/rockstaros/guide/page.tsx",
+      "before": "cbfcd536f27536376103f9bc00249a3f2ce1a10d3fe64976a3cb4816725d34ce",
+      "after": "1ecbb5661f571ca607f12eef63541b68f9b5506857317c01e87f651d8fdf504a"
+    },
+    {
+      "path": "/pages/index.html/response_sha256",
+      "before": "271b77cc5a7401ea447c61a4a9166344a2f709bc877765fb63a80a3315b55c7d",
+      "after": "5264bbd1dbe4639ac8bf26022c606ac99e55f6f7da650294bf69f2f475a97b13"
+    },
+    {
+      "path": "/pages/index.html/export_sha256",
+      "before": "e1d6ee55c421dd05cea101a468198410dba98b16e6d85f1b222f72dfa817796d",
+      "after": "0d5d9874c319dcfbd103f70d4e6a3f26481090a28a4df468b3964c4f19aaab6c"
+    },
+    {
+      "path": "/pages/guide.html/response_sha256",
+      "before": "ef58fb203691e9b4e7dc4a16a965d632d17eef074d1face809ba3751565c03b7",
+      "after": "204832b794db3c4870b554690cd3f0acddfeaaeaffb2b943f8b276b8167df093"
+    },
+    {
+      "path": "/pages/guide.html/export_sha256",
+      "before": "9bc8b6d404309cc3d4b0d17113b1c885d2f60178856642b683bc964b9e35516c",
+      "after": "b3af59c4e4422506b0ef60358bcefb4a81b553f564bc680afac3e9a26680c2fb"
+    },
+    {
+      "path": "/files_sha256/guide.html",
+      "before": "9bc8b6d404309cc3d4b0d17113b1c885d2f60178856642b683bc964b9e35516c",
+      "after": "b3af59c4e4422506b0ef60358bcefb4a81b553f564bc680afac3e9a26680c2fb"
+    },
+    {
+      "path": "/files_sha256/index.html",
+      "before": "e1d6ee55c421dd05cea101a468198410dba98b16e6d85f1b222f72dfa817796d",
+      "after": "0d5d9874c319dcfbd103f70d4e6a3f26481090a28a4df468b3964c4f19aaab6c"
+    }
+  ]
+}

@@ -1,0 +1,218 @@
+{
+  "started": "2026-09-10T12:52:49.324Z",
+  "source": "ba900e49c5ceac3f6453030518d75a0467c0f6ac",
+  "checks": [
+    {
+      "clientWidth": 1512,
+      "height": 857,
+      "links": [
+        {
+          "href": "index.html",
+          "label": "RockstarOS1.0"
+        },
+        {
+          "href": "#actual",
+          "label": "実際の画面"
+        },
+        {
+          "href": "guide.html",
+          "label": "導入・復旧"
+        },
+        {
+          "href": "#start",
+          "label": "試用できる範囲を確認 ↓"
+        },
+        {
+          "href": "guide.html#first-result",
+          "label": "最初の成果までの操作を見る ↗"
+        },
+        {
+          "href": "https://github.com/k999ln/rock/blob/codex/rockstaros-release-20260910/docs/os-acceptance-9abf78a-20260910.md",
+          "label": "同じ候補の検証記録を読む ↗"
+        },
+        {
+          "href": "assets/demo-9abf78a.mp4",
+          "label": "実画面の動画を開く"
+        },
+        {
+          "href": "https://github.com/k999ln/rock/blob/9abf78a80d27aa9f847c4051d20e4c552e407276/docs/preview-legal-notice.md",
+          "label": "利用・配布条件の確認事項 ↗"
+        },
+        {
+          "href": "guide.html",
+          "label": "導入・初回実行・復旧の手順 ↗"
+        },
+        {
+          "href": "https://github.com/k999ln/rock/blob/9abf78a80d27aa9f847c4051d20e4c552e407276/systems/rock-star-os/examples/game/README.md",
+          "label": "作者向けの動くサンプルと診断手順 ↗"
+        },
+        {
+          "href": "https://github.com/k999ln/rock",
+          "label": "既存Web・PCツールのソースと案内へ ↗"
+        }
+      ],
+      "phase": "desktop",
+      "scrollWidth": 1512,
+      "video": [
+        {
+          "controls": true,
+          "currentSrc": "http://127.0.0.1:8765/assets/demo-9abf78a.mp4",
+          "currentTime": 0,
+          "duration": 90.04,
+          "paused": true,
+          "readyState": 4,
+          "tracks": [
+            {
+              "label": "操作の説明",
+              "src": "http://127.0.0.1:8765/assets/demo-9abf78a.vtt"
+            }
+          ],
+          "videoHeight": 960,
+          "videoWidth": 720
+        }
+      ],
+      "width": 1512
+    },
+    {
+      "anchorTop": 24.0859375,
+      "anchors": [
+        {
+          "exists": true,
+          "href": "#prepare",
+          "text": "01 準備"
+        },
+        {
+          "exists": true,
+          "href": "#install",
+          "text": "02 導入"
+        },
+        {
+          "exists": true,
+          "href": "#first-result",
+          "text": "03 最初の成果"
+        },
+        {
+          "exists": true,
+          "href": "#wallet",
+          "text": "04 WalletとGame"
+        },
+        {
+          "exists": true,
+          "href": "#resume",
+          "text": "05 再開"
+        },
+        {
+          "exists": true,
+          "href": "#recovery",
+          "text": "06 復旧"
+        },
+        {
+          "exists": true,
+          "href": "#help",
+          "text": "07 診断・削除"
+        }
+      ],
+      "phase": "desktop-guide-first-result",
+      "scrollWidth": 1512,
+      "url": "http://127.0.0.1:8765/guide.html#first-result",
+      "width": 1512
+    },
+    {
+      "codeBlocks": [
+        {
+          "client": 343,
+          "overflowX": "auto",
+          "scroll": 473
+        },
+        {
+          "client": 343,
+          "overflowX": "auto",
+          "scroll": 626
+        },
+        {
+          "client": 343,
+          "overflowX": "auto",
+          "scroll": 489
+        }
+      ],
+      "phase": "mobile-guide",
+      "scrollWidth": 390,
+      "url": "http://127.0.0.1:8765/guide.html#recovery",
+      "width": 390
+    },
+    {
+      "phase": "mobile-home",
+      "scrollWidth": 390,
+      "url": "http://127.0.0.1:8765/index.html",
+      "width": 390
+    },
+    {
+      "anchorTop": 20.1875,
+      "phase": "mobile-start-anchor",
+      "url": "http://127.0.0.1:8765/index.html#start"
+    },
+    {
+      "currentTime": 10.375289,
+      "duration": 90.04,
+      "paused": false,
+      "phase": "actual-playback",
+      "readyState": 4
+    },
+    {
+      "currentTime": 23.615702,
+      "paused": true,
+      "phase": "native-seek-near-24",
+      "readyState": 4
+    },
+    {
+      "currentTime": 54.887079,
+      "paused": true,
+      "phase": "native-seek-near-54",
+      "readyState": 4
+    },
+    {
+      "currentTime": 54.078337,
+      "paused": true,
+      "phase": "native-seek-54-refined"
+    },
+    {
+      "currentTime": 69.983606,
+      "paused": true,
+      "phase": "native-seek-near-70"
+    },
+    {
+      "phase": "caption-dom",
+      "currentTime": 69.983606,
+      "paused": true,
+      "textTrackCount": 1,
+      "tracks": [
+        {
+          "default": false,
+          "kind": "captions",
+          "label": "操作の説明",
+          "src": "assets/demo-9abf78a.vtt",
+          "srclang": "ja"
+        }
+      ]
+    },
+    {
+      "currentTime": 23.885283,
+      "paused": true,
+      "phase": "native-seek-24-refined",
+      "tracks": [
+        {
+          "kind": "captions",
+          "label": "操作の説明",
+          "mode": "disabled"
+        }
+      ]
+    }
+  ],
+  "finished": "2026-09-10T12:57:08.641Z",
+  "notes": [
+    "First locator included an aria-hidden arrow; no match, corrected to DOM accessible label.",
+    "Native seekbar does not expose a settable AX value; native pointer seek used and actual media times retained.",
+    "Optional captions track exists; native menu selection/render not confirmed. Four VTT cues and served MIME inspected separately.",
+    "Guide retains conservative old verification-in-progress wording while landing states internal acceptance."
+  ]
+}

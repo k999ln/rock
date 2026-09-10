@@ -1,0 +1,14 @@
+test_already_updated_version_rejected (test_pc_link_existing_citation.ExistingCitationBaseline.test_already_updated_version_rejected) ... ok
+test_disabled_install_rejected (test_pc_link_existing_citation.ExistingCitationBaseline.test_disabled_install_rejected) ... ok
+test_exact_public_enabled_fixture_is_read_only (test_pc_link_existing_citation.ExistingCitationBaseline.test_exact_public_enabled_fixture_is_read_only) ... ok
+test_flag_requires_citations_and_stopped_baseline_before_any_file_read (test_pc_link_existing_citation.ExistingCitationBaseline.test_flag_requires_citations_and_stopped_baseline_before_any_file_read) ... ok
+test_missing_install_rejected (test_pc_link_existing_citation.ExistingCitationBaseline.test_missing_install_rejected) ... ok
+test_name_matching_but_different_recipe_rejected (test_pc_link_existing_citation.ExistingCitationBaseline.test_name_matching_but_different_recipe_rejected) ... ok
+test_package_hash_mismatch_rejected (test_pc_link_existing_citation.ExistingCitationBaseline.test_package_hash_mismatch_rejected) ... ok
+test_public_version_revocation_rejected (test_pc_link_existing_citation.ExistingCitationBaseline.test_public_version_revocation_rejected) ... ok
+test_publisher_revocation_rejected (test_pc_link_existing_citation.ExistingCitationBaseline.test_publisher_revocation_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.190s
+
+OK
