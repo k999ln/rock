@@ -1,0 +1,75 @@
+{
+  "schema": "rock-native-citation-pc-counterpart-result/1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "status": "PASS_SCOPED_SAME_NATIVE_RECIPE_OUTPUT",
+  "plan_sha256": "2c290e908a364375c3e7bb74166615f0113a5a18bb56e65a735a4c11e8f60b7a",
+  "samples": [
+    {
+      "label": "first-process",
+      "pid": 40007,
+      "exit_code": 0,
+      "elapsed_ns": 36856625,
+      "output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "stdout_sha256": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "repeat-1",
+      "pid": 40008,
+      "exit_code": 0,
+      "elapsed_ns": 35241666,
+      "output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "stdout_sha256": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "repeat-2",
+      "pid": 40009,
+      "exit_code": 0,
+      "elapsed_ns": 34163084,
+      "output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "stdout_sha256": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "repeat-3",
+      "pid": 40010,
+      "exit_code": 0,
+      "elapsed_ns": 35493709,
+      "output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "stdout_sha256": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "after-normal-exit",
+      "pid": 40011,
+      "exit_code": 0,
+      "elapsed_ns": 39321958,
+      "output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "stdout_sha256": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "host": {
+    "system": "Darwin",
+    "machine": "arm64",
+    "python": "3.14.7",
+    "load_average_before": [
+      7.39208984375,
+      7.45751953125,
+      7.85400390625
+    ],
+    "load_average_after": [
+      7.39208984375,
+      7.45751953125,
+      7.85400390625
+    ]
+  },
+  "human_active_seconds": null,
+  "manual_copy_actions": null,
+  "screen_transitions": null,
+  "user_time_reduction_demonstrated": false,
+  "source_unchanged": true,
+  "repeat_median_ns": 35241666,
+  "finished_utc": "2026-09-10T10:44:46.128183+00:00"
+}

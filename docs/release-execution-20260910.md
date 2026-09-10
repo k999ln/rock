@@ -161,3 +161,12 @@ RQ07–17 / 明確な楽観主義・販売も重要 / 同じ版の取得・継�
 - 原arm64全回帰10ERRORは既存D scoped rawに全10caseのok行が一度ずつ存在することを読み取りで照合。新試験0、原FAILと原因未確定は維持。既存Sites再取得はNOT_FOUNDが継続、公開先を作り替えていない。AC復帰後のローカル継続を確認済み。
 
 次: A残D4/D2/D1/D3完了後のfreshC受渡し→root同9absource全1364file/image照合→Game/独立監査/金融/引用遠隔/90秒実録画。D6原結果照合・B取得入口・最終media/ガイド・branch/CI/PR同期を進める。終了予定13:43:35 UTC。
+
+## 11:06 UTC checkpoint（経過5:22:46）
+
+- 同2a6c5db066e10b3a42117469fbaf62b6b11f9be5のWeb34467330384/native34467330331両PASS。native配布9abと後続診断/文書sourceは区別する。D6 run34465689434はcanonical observer実行継続、完了raw未回収のため未判定。
+- A D4 continuationは11:01:01に41 coverage PASS_SCOPED。原complete10＋診断専用修正版のcrash4＋canonical A/B8/fault13/auth3/ABI3で、原13boot whole FAILは残す。reportSHA e93dca22501e92f31d098a99abfdb8f8731e77ca1ac8df1df94dc310be042f7d。fresh authorityは19表emptyでSTOPPED、A D2/D1/D3が残るためC起動前。
+- B実GitHub取得→直接新規OS入口718bccfを統合。新16GiB VM install30.64s→標準150入力/151出力/1job→正常終了→全5DB71表/JSON完全不変→706members不変→原本保持→所有VM通常削除。root独立15evidencehash全一致。認証付きdraft取得でありpublicURLとはしない。
+- 同native recipeのPC実処理5回の成果SHA一致を確認。初回33.812375ms/反復中央値30.841792ms/正常終了後29.021292ms。初runのtimerに保存時間が混入したplan不一致を保持し、別runで修正計測。Mr. CLIや人の操作削減とは別範囲。最終OS原操作logから待ち・操作数を後で算出する。
+
+次: Aから停止済みfresh config受渡し後、元9ab C driverのGame→監査→金融→引用遠隔→90秒実OS録画を一度ずつ実行。D6 raw確認、final媒体/証拠/案内/CIを統合。AC復帰済み、終了予定13:43:35 UTC。製品licenseと既存Sitesアクセスは未解決であり一般公開は未実施。
