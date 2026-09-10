@@ -1,0 +1,43 @@
+{
+  "schema": "rock-preview-repeat-package/1",
+  "status": "PASS",
+  "source_commit": "8bd2b26b23bbb953c12027f69d0f68297c49e2ae",
+  "files_sha256": {
+    "SHA256SUMS": [
+      "61bfec1236a4fd6807a7d6bbff1e9daf092b23854566aa51d9eb8a2996f4d1c2",
+      "61bfec1236a4fd6807a7d6bbff1e9daf092b23854566aa51d9eb8a2996f4d1c2"
+    ],
+    "packaging-result.json": [
+      "9caa847a098149f6c31d7f053ec1566af4a0626be3be3720b16292f79ec4cea2",
+      "9caa847a098149f6c31d7f053ec1566af4a0626be3be3720b16292f79ec4cea2"
+    ],
+    "preview-installation-ja.md": [
+      "dad5925a0e92eb411107bf89d5f7392cb140d5e6728d670d54704403fcd8207c",
+      "dad5925a0e92eb411107bf89d5f7392cb140d5e6728d670d54704403fcd8207c"
+    ],
+    "preview-legal-notice.md": [
+      "11401fa9e337b282a65f552e9354c41591ebaa0b2a6c2c78c75bdf2e207387c0",
+      "11401fa9e337b282a65f552e9354c41591ebaa0b2a6c2c78c75bdf2e207387c0"
+    ],
+    "preview-release-notes.md": [
+      "61f241a520c9fcfc98053ba5120c81c5b784f004339d672c5652f72de5e40c4f",
+      "61f241a520c9fcfc98053ba5120c81c5b784f004339d672c5652f72de5e40c4f"
+    ],
+    "preview.py": [
+      "6c18029c00654aaa17a88e644ba88ccb819067c35c20a59ce6eeb33c1c3a87ce",
+      "6c18029c00654aaa17a88e644ba88ccb819067c35c20a59ce6eeb33c1c3a87ce"
+    ],
+    "release-key.der": [
+      "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+      "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9"
+    ],
+    "release-manifest.json": [
+      "f31538170e84dd186c6be2b6e4614f25a60b4507bef80257c5e3f99854e332eb",
+      "f31538170e84dd186c6be2b6e4614f25a60b4507bef80257c5e3f99854e332eb"
+    ],
+    "rockstaros-1.0.0-preview.game1-macos-arm64.tar.gz": [
+      "001a43c10df411496ce3df4604e06ed3c1bcb1d2ac27ebbcbd3fe32c5b5f8d56",
+      "001a43c10df411496ce3df4604e06ed3c1bcb1d2ac27ebbcbd3fe32c5b5f8d56"
+    ]
+  }
+}
