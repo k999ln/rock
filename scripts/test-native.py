@@ -32,13 +32,9 @@ def close_stack_output():
 atexit.register(close_stack_output)
 faulthandler.dump_traceback_later(delay, file=stack_output, repeat=False, exit=False)
 sys.argv = sys.argv[3:]
-if sys.argv[0] == '-m':
-    sys.argv = sys.argv[1:]
-    sys.path[0] = os.getcwd()
-    runpy.run_module(sys.argv[0], run_name='__main__', alter_sys=True)
-else:
-    sys.path[0] = os.path.dirname(os.path.abspath(sys.argv[0]))
-    runpy.run_path(sys.argv[0], run_name='__main__')
+sys.argv = sys.argv[1:]
+sys.path[0] = os.getcwd()
+runpy.run_module(sys.argv[0], run_name='__main__', alter_sys=True)
 '''
 
 
@@ -53,11 +49,18 @@ def run_process(argv, *, cwd, env, stream, timeout, stack_path=None):
             prefix = [sys.executable, '-B', '-W', 'error::ResourceWarning']
             if argv[:4] != prefix or len(argv) < 5:
                 raise ValueError('Stack diagnostics require the canonical Python command')
-            fd = os.open(stack_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
-            delay = timeout - min(30, timeout / 2)
-            command = prefix + ['-c', STACK_WATCHDOG, str(fd), str(delay)] + argv[4:]
-            diagnostic = {'file': stack_path.name, 'capture_after_seconds': delay,
-                          'command': command}
+            if argv[4] != '-m':
+                # run_path is not equivalent to direct interpreter execution:
+                # relative __file__ and argv[0] semantics can change imports and
+                # sibling executable lookup. Keep direct scripts untouched.
+                diagnostic = {'status': 'NOT_APPLICABLE_DIRECT_SCRIPT',
+                              'reason': 'Original interpreter entrypoint retained; no stack sidecar.'}
+            else:
+                fd = os.open(stack_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+                delay = timeout - min(30, timeout / 2)
+                command = prefix + ['-c', STACK_WATCHDOG, str(fd), str(delay)] + argv[4:]
+                diagnostic = {'file': stack_path.name, 'capture_after_seconds': delay,
+                              'command': command}
         kwargs = {'pass_fds': (fd,)} if fd is not None else {}
         with subprocess.Popen(command, cwd=cwd, env=env, stdout=stream,
                               stderr=subprocess.STDOUT, start_new_session=True, **kwargs) as process:
@@ -70,7 +73,7 @@ def run_process(argv, *, cwd, env, stream, timeout, stack_path=None):
     finally:
         if fd is not None:
             os.close(fd)
-    if diagnostic is not None:
+    if fd is not None:
         data = stack_path.read_bytes()
         diagnostic.update(bytes=len(data), sha256=hashlib.sha256(data).hexdigest())
     return code, diagnostic
@@ -108,7 +111,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=ROOT / 'work/native-tests')
     parser.add_argument('--diagnostic-stacks', action='store_true',
-                        help='Collect Python thread stacks before existing deadlines in private sidecars')
+                        help='Collect Python -m suite stacks before existing deadlines; direct scripts are unchanged')
     args = parser.parse_args()
     if sys.platform != 'linux':
         parser.exit(2, 'Native regressions require Linux. Android and Web checks are separate.\n')

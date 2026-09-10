@@ -52,7 +52,24 @@ class NativeStackDiagnostics(unittest.TestCase):
         self.assertEqual(observed[0], 0)
         self.assertIsNone(plain[2])
         self.assertFalse(plain[3].exists())
-        self.assertEqual(observed[3].read_bytes(), b'')
+        self.assertFalse(observed[3].exists())
+        self.assertEqual(observed[2]['status'], 'NOT_APPLICABLE_DIRECT_SCRIPT')
+
+    def test_relative_script_keeps_file_main_and_sibling_executable_lookup(self):
+        executable = self.root / 'rock-ipc-test'
+        executable.write_text('#!/bin/sh\nprintf "sibling executed\\n"\n')
+        executable.chmod(0o700)
+        (self.root / 'test_ipc.py').write_text(
+            'import json, subprocess, sys\nfrom pathlib import Path\n'
+            'subprocess.run([str(Path(__file__).with_name("rock-ipc-test"))], check=True)\n'
+            'print(json.dumps([sys.argv, __file__, sys.modules["__main__"].__file__]))\n')
+        plain = self.child(['test_ipc.py', 'original-request'])
+        observed = self.child(['test_ipc.py', 'original-request'], diagnostic=True)
+        self.assertEqual(plain[:2], observed[:2])
+        self.assertEqual(observed[0], 0)
+        self.assertIn('sibling executed', observed[1])
+        self.assertFalse(observed[3].exists())
+        self.assertEqual(observed[2]['status'], 'NOT_APPLICABLE_DIRECT_SCRIPT')
 
     def test_module_keeps_arguments_and_module_identity(self):
         (self.root / 'probe.py').write_text(
@@ -65,8 +82,8 @@ class NativeStackDiagnostics(unittest.TestCase):
     def test_original_failure_stays_failed_without_diagnostic_log_noise(self):
         script = self.root / 'failed.py'
         script.write_text('import sys\nprint("original failure", flush=True)\nsys.exit(7)\n')
-        plain = self.child([str(script)])
-        observed = self.child([str(script)], diagnostic=True)
+        plain = self.child(['-m', 'failed'])
+        observed = self.child(['-m', 'failed'], diagnostic=True)
         self.assertEqual(plain[:2], observed[:2])
         self.assertEqual(observed[0], 7)
         self.assertFalse(RUNNER.log_result(observed[1], observed[0])['passed'])
@@ -83,7 +100,7 @@ class NativeStackDiagnostics(unittest.TestCase):
             'worker.start()\n'
             'print("started", flush=True)\n' + ('' if shutdown else 'worker.join()\n'))
         started = time.monotonic()
-        code, log, evidence, stack = self.child([str(script)], diagnostic=True, timeout=1)
+        code, log, evidence, stack = self.child(['-m', 'blocked'], diagnostic=True, timeout=1)
         self.assertEqual(code, 124)
         self.assertLess(time.monotonic() - started, 4)
         self.assertEqual(log, 'started\n')
