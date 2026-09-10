@@ -28,7 +28,7 @@ export default function RockstarPreview() {
         <p className={styles.intro}>何が終わり、どこに結果があり、いくら確定したか。<br className={styles.desktopBreak} />HubとWalletから、仕事の状態と保存した成果をたどれます。</p>
         <div className={styles.actions}>
           <a className={styles.primary} href="#start">試用できる範囲を確認 <span aria-hidden="true">↓</span></a>
-          <span className={styles.status}>内部受入済み・公開準備中</span>
+          <span className={styles.status}>QEMU・合成環境で検証済み</span>
         </div>
         <div className={styles.flow} aria-label="RockstarOSで行うこと">
           <div><span>01 / HUB</span><strong>選ぶ・動かす</strong><p>商品の用途、実行先、必要な許可を確認。</p></div>

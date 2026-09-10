@@ -1,0 +1,35 @@
+{
+  "schema": "rock-demo-optional-descriptions/1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "status": "GENERATED_FROM_MEASURED_CHAPTERS_BROWSER_CHECK_PENDING",
+  "cues": 4,
+  "video_sha256": "58c832e84b2b952f6713cdc2abf9a417b8be338e4ccc13e6d6f7ad7a7406fd42",
+  "video_frames_modified": false,
+  "timing_basis": "Measured native navigation input timestamps relative to raw capture start; original assertion-completion chapter markers retained separately",
+  "navigation_cues": [
+    {
+      "seconds": 0,
+      "title": "QEMUの実画面。公開サンプルを実処理し、履歴から引用整理の結果を開きます。"
+    },
+    {
+      "seconds": 40.1242311000824,
+      "title": "合成Walletを開き、月額テストと残高を確認します。実際の資金ではありません。"
+    },
+    {
+      "seconds": 55.96872663497925,
+      "title": "合成Game A/Bの接続と、事前に完了した交換の履歴を確認します。"
+    },
+    {
+      "seconds": 76.1054470539093,
+      "title": "Hubの履歴に戻り、保存した引用整理の結果を開き直します。"
+    }
+  ],
+  "inputs_sha256": {
+    "report": "e7572f193267101293b6a7fb3cf181a1acbb6e5b29b7b3570a89917626867e1d",
+    "plan": "956e3e839a3dbc471e9799738743fa4a07d4470823d9d7bef230392d747a55b9",
+    "encoding": "3a3024b57755e63449f721dc4a5704db27b0a70664e1393271753759833c813f",
+    "frames-index": "189b7c203095f67dc870d9d953a063be19e65108a49e71842e9a2eb77f5b1fd4"
+  },
+  "vtt_sha256": "653fc274fce595d4a3e421dd06a3e8fb45298f004f0d3ffcb127921fc60910b1",
+  "scope": "Optional HTML captions describing actual operation chapters; no audio transcription or pixels burned into the video."
+}

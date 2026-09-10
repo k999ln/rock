@@ -59,11 +59,11 @@ D0の別arm64全回帰は10TLS read/frame deadline ERRORでFAILを保持する�
 
 C01は新しい専用端末で、本人の登録・PIN・合成信用10000一回の同意後、Game A/B各103（購入100・合成fee3）を本人承認し各10units一度だけ付与。2正常boot後の独立監査でAVAILABLE9794、GAME_FEES6、hold0を確認した。元Game reportのPENDING_LEDGER_AUDIT表記は残し、その後の独立audit PASSと組で判定する。
 
-金融一周は月額888を同じ契約月に一度だけ払い、同月の再確認で増えないこと、将来の自動更新取消、ATM1000/fee0のquote→本人承認→hold→未使用分取消を確認。8停止台帳段階と2正常bootで、最終AVAILABLE8906/hold0/dispense0、両Game資産各10を保持した。引用試験の失敗後にこれらの金融操作を再実行していない。
+金融一周は月額888を同じ契約月に一度だけ払い、同月の再確認で増えないこと、将来の自動更新取消、ATM1000/fee0のquote→本人承認→hold→未使用分取消を確認。8段階の整合した読取トランザクションと、2正常終了後の全構成停止照合で、最終AVAILABLE8906/hold0/dispense0、両Game資産各10を保持した。引用試験の失敗後にこれらの金融操作を再実行していない。
 
 引用遠隔は実loopback TLSの所有runnerで2件の同じ公開150-byte入力を実処理する。1件目の完了後にrunnerを停止、2件目を保留のまま通常終了し、2boot目で元要求を回復、3boot目でrunner不在でも保存成果を再表示した。3boot/248.407294秒はPASS_SCOPED_PC_LINK。これは実PC機器・本番cloud接続ではない。90秒の実録画・停止後の全nonHub/authority照合はPASS、Macのffmpegで90.04秒/360原frame+終端1frameのH264に変換。全824原file/58,595,047bytesをLinuxとMacで独立照合した。動画の最終目視/再生確認は別記録へ集計する。
 
-最初の引用試験は親umask0002→0775 launcherをguard拒否（guest0）。次の試験は既存1.0に存在しないinstall labelを探してFAIL（guest1）、host-onlyの停止台帳・署名検証付きupdate selector B664f67aを追加。さらに新registryの同revision異内容をguestが正しく拒否（guest1）。固定値を消さず元署名registryを再利用し、両失敗bootは別の通常終了証跡で閉じ、全authority/nonHub/旧Hub jobsを保持した。失敗時の画面遷移・小ラベルOCR失敗・停止直後TIME_WAITも原FAILとして残す。成功の3bootとこの追加失敗2bootを混同しない。
+最初の引用試験は親umask0002→0775 launcherをguard拒否（guest0）。次の試験は既存1.0に存在しないinstall labelを探してFAIL（guest1）、host-onlyの停止台帳・署名検証付きupdate selector B担当の664f67aを追加。さらに新registryの同revision異内容をguestが正しく拒否（guest1）。固定値を消さず元署名registryを再利用し、両失敗bootは別の通常終了証跡で閉じ、全authority/nonHub/旧Hub jobsを保持した。失敗時の画面遷移・小ラベルOCR失敗・停止直後TIME_WAITも原FAILとして残す。成功の3bootとこの追加失敗2bootを混同しない。
 
 正常終了はQEMU消滅だけでは判定しない。元guest power request/boot identity・init shutdown/unmount・QMP guest SHUTDOWNを要求し、故障注入のSIGKILLと区別する。録画は720×960の元QMP frameと実時刻を保持し、加工scene・固定された偽出力・速度変更を使わない。
 
