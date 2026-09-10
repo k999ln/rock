@@ -52,7 +52,7 @@ def main():
         while True:
             exited = bool(select.select([fd], [], [], 0)[0])
             stopped = False
-            if not exited:
+            if mode == 'freeze' and not exited:
                 raw = Path('/proc', str(proof['pid']), 'stat').read_bytes()
                 stopped = raw[raw.rfind(b') ') + 2:].split()[0] in (b'T', b't')
             if (mode == 'freeze' and stopped) or (mode == 'crash' and exited):

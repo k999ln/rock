@@ -41,6 +41,35 @@ def rejected_boot(mode='freeze'):
 
 
 class StartupVerifierTests(unittest.TestCase):
+    def test_scoped_crash_requires_all_four_boots_and_cannot_promote_other_modes(self):
+        cases = [{'mode': mode, 'status': 'PASS' if mode == 'crash' else 'NOT_RUN',
+                  'boots': [{'status': 'PASS', 'passed': True} for _ in range(4)] if mode == 'crash' else []}
+                 for mode in verifier.CASES]
+        verifier.selected_case_complete(cases, 'crash')
+        for mutate in (lambda rows: rows[-1]['boots'].pop(),
+                       lambda rows: rows[-1]['boots'][1].update(passed=False),
+                       lambda rows: rows[0].update(status='PASS'),
+                       lambda rows: rows[0]['boots'].append({'status': 'PASS', 'passed': True})):
+            broken = copy.deepcopy(cases)
+            mutate(broken)
+            with self.assertRaises(RuntimeError):
+                verifier.selected_case_complete(broken, 'crash')
+
+    def test_scoped_preflight_keeps_deadlines_and_records_unselected_modes_not_run(self):
+        with tempfile.TemporaryDirectory(prefix='rock-ui-case-limit-') as temporary:
+            directory = Path(temporary)
+            result = subprocess.run([sys.executable, '-B', str(Path(verifier.__file__)),
+                '--artifacts', str(directory / 'absent-images'), '--evidence', str(directory / 'evidence'),
+                '--case', 'crash', '--timeout', '0'], capture_output=True, text=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0)
+            report = json.loads((directory / 'evidence/report.json').read_text())
+            self.assertEqual(report['status'], 'FAIL')
+            self.assertEqual(report['selected_case'], 'crash')
+            self.assertFalse(report['full_matrix_verified'])
+            self.assertEqual((report['limits']['cases'], report['limits']['boots'], report['limits']['required_free_gib']), (1, 4, 12))
+            self.assertTrue(all(case['status'] == 'NOT_RUN' and not case['boots'] for case in report['cases']))
+            self.assertEqual(list(directory.rglob('*.ext4')), [])
+
     def test_healthy_factory_requires_real_proof_before_confirmation(self):
         self.assertTrue(verifier.validate_boot(factory_boot(), step=0, mode='ready')['native_ui_checked'])
         for text in (factory_boot().replace('ROCK_UI_HEALTH_READY', 'ROCK_UI_HEALTH_HEADLESS'),

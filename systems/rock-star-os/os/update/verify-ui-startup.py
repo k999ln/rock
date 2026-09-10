@@ -199,6 +199,19 @@ def validate_capture(path):
             'source': 'QMP screendump of real virtio GPU', 'visually_reviewed': False}
 
 
+def selected_case_complete(cases, mode):
+    require(mode in CASES and [entry['mode'] for entry in cases] == list(CASES),
+            'explicit complete case inventory required for scoped evidence')
+    for entry in cases:
+        if entry['mode'] == mode:
+            require(entry['status'] == 'PASS' and len(entry['boots']) == (2 if mode == 'ready' else 4)
+                    and all(boot['status'] == 'PASS' and boot['passed'] is True for boot in entry['boots']),
+                    'selected GUI startup case is incomplete')
+        else:
+            require(entry['status'] == 'NOT_RUN' and not entry['boots'],
+                    'unselected case cannot be promoted by scoped evidence')
+
+
 def boot(command, log, qmp, timeout, capture):
     process, monitor = None, None
     started = time.monotonic()
@@ -255,6 +268,7 @@ def main():
     parser.add_argument('--evidence', required=True, type=Path, help='new directory under an existing parent')
     parser.add_argument('--timeout', type=int, default=180, help='per boot, 120–240 seconds; no automatic retries')
     parser.add_argument('--qemu', default='qemu-system-aarch64')
+    parser.add_argument('--case', choices=CASES, help='run one complete case; yields scoped evidence only')
     args = parser.parse_args()
     images, evidence = evidence_location(args.artifacts, args.evidence)
     os.umask(0o077)
@@ -270,6 +284,9 @@ def main():
               'physical_scanout': 'NOT_TESTED', 'real_user_input': 'NOT_TESTED',
               'post_commit_supervision': 'NOT_TESTED', 'automatic_retries': False,
               'cases': [{'mode': mode, 'status': 'NOT_RUN', 'boots': []} for mode in CASES]}
+    if args.case:
+        report.update(selected_case=args.case, full_matrix_verified=False)
+        report['limits'].update(cases=1, boots=2 if args.case == 'ready' else 4)
     inputs, before, original_identities = {}, {}, {}
     report_path = evidence / 'report.json'
 
@@ -299,6 +316,8 @@ def main():
         save()
         for entry in report['cases']:
             mode = entry['mode']
+            if args.case and mode != args.case:
+                continue
             directory = evidence / mode
             directory.mkdir(mode=0o700)
             entry['status'] = 'RUNNING'
@@ -381,9 +400,13 @@ def main():
                     entry['boots'][-1].update(status='FAIL', passed=False, error=entry['error'])
                 raise
             save()
-        require(sum(len(entry['boots']) for entry in report['cases']) == 14 and
-                all(entry['status'] == 'PASS' for entry in report['cases']), 'incomplete GUI startup matrix')
-        report['status'] = 'PASS'
+        if args.case:
+            selected_case_complete(report['cases'], args.case)
+            report['status'] = 'PASS_SCOPED'
+        else:
+            require(sum(len(entry['boots']) for entry in report['cases']) == 14 and
+                    all(entry['status'] == 'PASS' for entry in report['cases']), 'incomplete GUI startup matrix')
+            report['status'] = 'PASS'
     except BaseException as error:
         report.update(status='FAIL', error=type(error).__name__ + ': ' + str(error))
         raise
@@ -402,8 +425,11 @@ def main():
             report.update(status='FAIL', error='original input identity or content changed')
         report['finished_utc'] = datetime.now(timezone.utc).isoformat()
         save()
-    require(report['status'] == 'PASS', 'GUI startup acceptance failed')
-    print('PASS: 14 real GUI-required boots, genuine readiness, three rejected trial modes and A/B recovery; ' + str(report_path))
+    require(report['status'] == ('PASS_SCOPED' if args.case else 'PASS'), 'GUI startup acceptance failed')
+    if args.case:
+        print('PASS_SCOPED: complete ' + args.case + ' case; other modes NOT_RUN; ' + str(report_path))
+    else:
+        print('PASS: 14 real GUI-required boots, genuine readiness, three rejected trial modes and A/B recovery; ' + str(report_path))
 
 
 if __name__ == '__main__':
