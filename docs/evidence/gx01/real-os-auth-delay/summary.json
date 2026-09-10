@@ -1,0 +1,446 @@
+{
+  "schema": "rock-game-os-auth-delay-failure/1",
+  "status": "FAIL_CONFIRMED_FIXED_SOURCE_RETEST_PENDING",
+  "source_commit": "7ed6cf72d16f77c2cfb804914df1819b4282682d",
+  "config": {
+    "boot": {
+      "factory_sha256": "9cb4ae82253abc8e3fd2eb65bca6eeb8f767412fea0c41c092acc7334a124d98",
+      "mode": "signed-stage0",
+      "profile": "development-game-authority",
+      "profile_sha256": "4405f0a403db2865c0ad3c2086fa7a4cdf1887a9087086159b3e15c0c46db4b9"
+    },
+    "game": {
+      "authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+      "config": "/var/tmp/rockstaros-intermediate-game-7ed6cf7-authority/sandbox.json",
+      "sha256": "5c52349ed7442e4f6ab681c81d75622392bcef0b5c4525e9283f65862ba01928"
+    },
+    "images": "/var/tmp/rock-intermediate-game-7ed6cf7-profile",
+    "name": "intermediate-game-7ed6cf7",
+    "network": "game-authority",
+    "schema": "rock-desktop-device/7",
+    "sha256": {
+      "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+      "rootfs.ext4": "dbeec66f42c3b9df73c84572ec3a8f2807eded9f4ef3c9dd00528e9cf7c0b0dc",
+      "stage0.cpio.gz": "95c589531456a4879c1cbf6460276a7e3afa3b1fa339f76739b495543fb46cd9"
+    },
+    "viewer": "browser"
+  },
+  "runtime_source_sha256": {
+    "os/game_exchange/device_client.py": "450dfdb476a2d3e5863fcc556e5a6c8272ae4c93c7e13b3b4772d956e17a0e88",
+    "os/game_exchange/reference_sdk.py": "1ff60dbcb6f612359a21dd1812161dd38b50b914b3615c0a1f09f38d39ba7aac",
+    "os/game_exchange/sandbox.py": "98f06eb7138307538cbf3f46482e37c91c55a94759cde15c040cfd3077024dc9",
+    "os/ui/game-ui.inc": "e7c04958815f8f94468b58c486dbee6155926ceb2f5dcdae8a67b94aab3127e1"
+  },
+  "scope": "Intermediate frozen real OS UI/TLS only; not final D0-D6, real funds, external authors or human timings",
+  "cause": "exchange=True did not select bounded remaining quote lifetime; a reviewed quote below 120 seconds was rejected by the local authenticator",
+  "fix_commit": "4e31554a5cfd415b0f9a9878e1e1306f949f1596",
+  "regression": "Real TLS SDK quote then controlled 3-second review delay: 117000 ms dedicated approval succeeds; same options rejected for ATM",
+  "actual_fixed_image": "NOT_RUN",
+  "attempts": [
+    {
+      "path": "rock-game-ui-probe-02",
+      "report_sha256": "e1a4261b4c907a48faf6beef74304e9b22746a6aed3ef10af8c0db9f55f97b3c",
+      "status": "FAIL",
+      "error": "TimeoutExpired(['tesseract', '/var/tmp/rock-game-ui-probe-02/1/probe.png', 'stdout', '-l', 'eng+jpn', '--psm', '11', 'tsv'], 0.3167283699949621)",
+      "elapsed_seconds": 90.5811736320029,
+      "owned_device_running": true,
+      "input_events": 26,
+      "ui_states": [
+        "ツール名・説明・IDで検索",
+        "テスト登録を始める",
+        "月額テストへの同意はまだありません",
+        "試験認証器を登録する",
+        "試験PINを入力",
+        "PINを確認して登録",
+        "Wallet利用条件を確認する",
+        "Wallet試験の利用条件",
+        "確認して実行",
+        "試験認証器とWallet利用条件を確認済み",
+        "合成WalletからGameへ",
+        "公開テスト残高 $100 を追加"
+      ],
+      "screenshots": [
+        {
+          "boot_pending": "qemu-display-inactive",
+          "bytes": 1360,
+          "dimensions": [
+            640,
+            480
+          ],
+          "name": "0001-boot-pending.png",
+          "ocr_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "sha256": "3392b61102d466ed7c1afd6a20a33ae1ab10c4bc27b94b8bc654d47991422d37"
+        },
+        {
+          "boot_pending": "native-empty",
+          "bytes": 2089,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0002-boot-pending.png",
+          "ocr_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "sha256": "be3d89aca8d5db41f8dcc74a2522b3f2d88b54e61831bf7dee51a737219b6fe6"
+        },
+        {
+          "bytes": 125415,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0003-boot.png",
+          "ocr_sha256": "717c7c919de67a1ab46d5f83bd8e004b7b5e4f45f5a1549b9994683a7212e81f",
+          "sha256": "4158c6be56d66e070681878e5d7f56e94f5d09d4a679398fd788160d82a30f52"
+        },
+        {
+          "bytes": 110185,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0004-explicit-registration.png",
+          "ocr_sha256": "8dab66bc9130672d5723aa83ad0278a91bd559a774f8512522e909e7cc49d9b1",
+          "sha256": "1a383abfb3f02dea94cba3fa7bdbb2ee9098bc7c1928560b61b0341c31036cd3"
+        },
+        {
+          "bytes": 118414,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0005-monthly-not-consented.png",
+          "ocr_sha256": "e572efdbdba75aab8e85e60e18fee10903edb1edfcd8a323d780635c4d02ccdb",
+          "sha256": "a8543be5ef56f44801acb0854ae722b3f73ba72c037c4bd392039d2474eef5b8"
+        },
+        {
+          "bytes": 118286,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0006-explicit-enrollment.png",
+          "ocr_sha256": "e8107051d4a3321ff7ebc5aff633be67011d065a0bbc69efa9485891fd47d7e9",
+          "sha256": "20cb132dd905b4587e5d30c2488f7ec42ca853ee3b39679ba039fa3d5e62199d"
+        },
+        {
+          "bytes": 70134,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0007-public-authenticator-pin.png",
+          "ocr_sha256": "a84257b5b7ee107817538251decc602a7b266b364cb925987389424ce8fae73c",
+          "sha256": "22ffcc58b5d8f2778ce4c7d6983fbe60ebff011701ed026659524cc768bd2a39"
+        },
+        {
+          "bytes": 70548,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0008-public-authenticator-confirmed.png",
+          "ocr_sha256": "084924ce8c829b7e479186bec54c20730d8b860c0b6fabbd6e47cabca0b32242",
+          "sha256": "fb9dc17e43fdfe15c609b4b0f716e7c313d7bbbf5008e8754283c6b4c49f1f88"
+        },
+        {
+          "bytes": 116827,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0009-explicit-terms.png",
+          "ocr_sha256": "8afbe8fc24736842e9ddd78c141b9ee7f9e57d82f821ce2e6d50aefcafb02322",
+          "sha256": "7ecb65fe7d5c786abe14ec36f37abcf1b6729e3f75d63f3e92a2ad01a7a6eaa9"
+        },
+        {
+          "bytes": 114692,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0010-terms-review.png",
+          "ocr_sha256": "c043558e67a17010fb75302adbfba0503522dd92306ff3ce8c11a69c39fe22c1",
+          "sha256": "ef47f4ba017a8cff2900b628f9c74c89a2849eda35848deedbdf2488a0533211"
+        },
+        {
+          "bytes": 114928,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0011-terms-approved.png",
+          "ocr_sha256": "577f16c9f26e64483217290f78208bcce515580b4bac6cf7fa5e82943ce8225e",
+          "sha256": "b5261786cd81ed9cd7fc1ab9880c9c70943a1463c23a5fe75bca52d547a0dcb7"
+        },
+        {
+          "bytes": 119545,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0012-wallet-active.png",
+          "ocr_sha256": "46ce2c1653bf739166f32301fb410439f68063a40a0d8b58012940ff24657cbb",
+          "sha256": "f82ee13429144f48850f21508aee72bf9ff07697ff1658b3157d4c775838b186"
+        },
+        {
+          "bytes": 76954,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0013-game-home.png",
+          "ocr_sha256": "e1af85cecc52cd8d1721202f86badffa8dc071a04aac7b7fb8a52d1f8588b331",
+          "sha256": "8f50da7b52b59774f6c8f4c2830118866d62039f13f4e15ac5c8c80007a1b348"
+        },
+        {
+          "bytes": 108643,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0014-explicit-public-credit.png",
+          "ocr_sha256": "e198c39afb21b36ff652a0c86ceeb3f16ad3ff13e7901a80bce3dcfe4d30bcee",
+          "sha256": "35823c7e9a2d110fb6c961e4e5bd12d52d1e3a2c6e7367d15c7bf76362a4e7e6"
+        },
+        {
+          "bytes": 127299,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0015-ocr-failure.png",
+          "ocr_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "sha256": "c3fe83db66e408001fbdf7727ee99dc2ecb4c2dfbe8fdaa0b616053b1e4c27ab"
+        }
+      ]
+    },
+    {
+      "path": "rock-game-ui-probe-04",
+      "report_sha256": "60f55c23b583a1542af134d419f756d30b69810e282e68906a660fc9c5c93c1e",
+      "status": "FAIL",
+      "error": "AssertionError()",
+      "elapsed_seconds": 0.0022726250026607886,
+      "owned_device_running": true,
+      "input_events": 0,
+      "ui_states": [],
+      "screenshots": []
+    },
+    {
+      "path": "rock-game-ui-probe-05",
+      "report_sha256": "a48052697353e7197b14d37198f849729b18539d02e1df00b88ac62083be7900",
+      "status": "FAIL",
+      "error": "TimeoutExpired(['tesseract', '/var/tmp/rock-game-ui-probe-05/1/probe.png', 'stdout', '-l', 'eng+jpn', '--psm', '11', 'tsv'], 0.07565066000097431)",
+      "elapsed_seconds": 51.00366886499978,
+      "owned_device_running": true,
+      "input_events": 20,
+      "ui_states": [
+        "Wallet サーバーと同期済み",
+        "合成WalletからGameへ",
+        "ゲームとWalletを接続",
+        "ゲームへの接続を確認",
+        "試験PINを入力",
+        "認証して接続",
+        "接続済み",
+        "10単位の交換条件を確認",
+        "保留する合計",
+        "内容を確認して購入の承認へ",
+        "今回の合成交換を確認",
+        "試験PINを入力",
+        "認証して今回の交換を承認"
+      ],
+      "screenshots": [
+        {
+          "bytes": 127445,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0001-resume-observed-wallet.png",
+          "ocr_sha256": "c77ac013a3a789e59c36f900fa6cc3d94f3d57ea2178b511bb39340c98314467",
+          "sha256": "aa4d043222dee3cc54bcf142998d3ca8a3977f72414300010e60f9b279cdfd47"
+        },
+        {
+          "bytes": 89136,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0002-game-home.png",
+          "ocr_sha256": "71f3aa3c463d225a9d3603032c06786f10a1e12072f989b21e61e2bb634d884d",
+          "sha256": "9ca740cd17d106b74e0132766c704d79ede824eeaa994697eea2585f33e3993f"
+        },
+        {
+          "bytes": 88864,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0003-connect-A.png",
+          "ocr_sha256": "0c173d133bb5cbbedca53af1a4be8eda24be056bd3a6628cb3344ed18d967d26",
+          "sha256": "cb629f499515f820dc03af74774056c5c069b5b5b7c6b69458c7e660bc1da30c"
+        },
+        {
+          "bytes": 74032,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0004-separate-game-approval-review.png",
+          "ocr_sha256": "6bdf1497cde2abe30521b2f4471d8bc61540be00833efaa3cd4f58fc0a61b837",
+          "sha256": "f357702b020ad20c2f0521fc9899ec36d8f9616d1c36ba00368270e477d3f5de"
+        },
+        {
+          "bytes": 74058,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0005-game-public-pin.png",
+          "ocr_sha256": "8ed6fca4c26c41f86b5b4de4ede85a8125904d7befc3ea39a22e6071818b1e5b",
+          "sha256": "9b58885f1d45972e81f6a011a0408f2cdf4e3c817c5168130ad0ec7a2bd27f7a"
+        },
+        {
+          "bytes": 74048,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0006-game-public-approval.png",
+          "ocr_sha256": "1b4ecdab3b9da64ca46bd24eff0ea6888031c93ed81e06d3fc1705359707afd5",
+          "sha256": "c8d3e43b02d7b6d7e1f0dfd7aabc10ae014731d6b547a4665d3d6091ea642fd8"
+        },
+        {
+          "bytes": 91950,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0007-connected-A.png",
+          "ocr_sha256": "6b4a85e98329bab55f749d9da65d2ac378fadabedf8182999503bf50fd4c3988",
+          "sha256": "6601286b04952daa2c187b5329ab084a180be5b41d88b273fea69e0d59b0093d"
+        },
+        {
+          "bytes": 92011,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0008-quote-A.png",
+          "ocr_sha256": "b3beb88fe3fc9467c38b98dea635421a76a26f0e2f6ce050134fbcdc5e38f3af",
+          "sha256": "61942640e8cf92aedd913442252e51b4dc5afdcc98654cd61eddf61477a3285d"
+        },
+        {
+          "bytes": 98126,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0009-quote-total-A.png",
+          "ocr_sha256": "0d2901a7dbcf69dd1ec53c2fe5beede7e20cf1fd235ed3083d7bc612f6053f21",
+          "sha256": "ac181c244a583f63b6cba3155daad1c2ce387068c36994e1abbdbe7ca0dd14e2"
+        },
+        {
+          "bytes": 98126,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0010-separate-purchase-A.png",
+          "ocr_sha256": "0d2901a7dbcf69dd1ec53c2fe5beede7e20cf1fd235ed3083d7bc612f6053f21",
+          "sha256": "ac181c244a583f63b6cba3155daad1c2ce387068c36994e1abbdbe7ca0dd14e2"
+        },
+        {
+          "bytes": 81419,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0011-separate-game-approval-review.png",
+          "ocr_sha256": "83b1702d6173746e4e22019d7d0cca75b4e4f9f5a6df2e71a8a1c9555b7ab965",
+          "sha256": "f2fb7d40ca7f71a14e9e85f1de6d7c1235f4e06de36c1d0fe5aa06c243533c59"
+        },
+        {
+          "bytes": 81376,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0012-game-public-pin.png",
+          "ocr_sha256": "c7c9cd396321ecd6ba750bf383862baaf4fb60c57efe914bd6aa9199cdd6c7bf",
+          "sha256": "9094209347b50fec5e4ed82b8e72d0a4a97a1da83215216fa745b51c98d8ed62"
+        },
+        {
+          "bytes": 81683,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0013-game-public-approval.png",
+          "ocr_sha256": "aadf7ee7d2f017eae663de01a000780c6d7b9644d42f0c16829ddc188a0699c8",
+          "sha256": "565bdbf72676ff5c1605fc85d05672babf24b99f093fdebb146ef69e80b521f3"
+        },
+        {
+          "bytes": 91120,
+          "dimensions": [
+            720,
+            960
+          ],
+          "name": "0014-ocr-failure.png",
+          "ocr_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "sha256": "de7cb71aaa3d1e99f6489a90852144cb1033c6d9ecaa0f03e14d88d00a88490d"
+        }
+      ]
+    }
+  ],
+  "observer_preparation_failures": [
+    {
+      "attempt": "01",
+      "error": "Wrong observer helper name; no VM started"
+    },
+    {
+      "attempt": "03",
+      "error": "Continuation script indentation; no code executed"
+    },
+    {
+      "attempt": "04",
+      "error": "Record comparison included returned-only running/reused fields; no UI mutation"
+    },
+    {
+      "attempt": "rejected-audit-01",
+      "error": "Incorrect control-lock filename; no ledger read or write"
+    }
+  ],
+  "observer_navigation_correction": "Credit intentionally returns to Wallet. Failed probe02 waited on Game; continuation used the same running OS without repeating registration, enrollment, terms or credit.",
+  "normal_stop": {
+    "status": "PASS_NORMAL_STOP_AFTER_FAILED_PURCHASE",
+    "normal_shutdown_seconds": 8.524046286998782,
+    "owned_device_running": false,
+    "qmp_events": [
+      {
+        "data": {
+          "guest": true,
+          "reason": "guest-shutdown"
+        },
+        "event": "SHUTDOWN",
+        "observed_unix": 1789025810.4558215,
+        "timestamp": {
+          "microseconds": 453845,
+          "seconds": 1789025810
+        }
+      }
+    ]
+  },
+  "stopped_ledger_audit": {
+    "status": "PASS_SCOPED_STOPPED_LEDGER",
+    "balances": {
+      "AVAILABLE": 10000,
+      "PENDING_SETTLEMENT": 0,
+      "SALE_CLEARING": -10000
+    },
+    "expected_games": 0,
+    "monthly_consent": false,
+    "monthly_charges": 0,
+    "synthetic_sale_count": 1
+  },
+  "audit_sha256": "10918949f7d40d5999f76199943456bfd1eba9f1cd1e5203ad96406286dbef0c"
+}
