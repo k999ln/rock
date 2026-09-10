@@ -1,0 +1,9 @@
+RockstarOS 1.0 Developer Preview
+{
+  "status": "SAVED",
+  "backup": "/var/tmp/rockstaros-preview-backups/ddca4c80-01b4-4b9e-8b93-baf6f89c81af",
+  "export": "/Users/kaiya/Library/RockstarOS/rls01-final1-backup",
+  "encrypted": false,
+  "components": "complete OS A/B/data and independent Wallet/Game/C state",
+  "restore_scope": "same owned VM and unchanged current authority; original writers stopped; new device only"
+}

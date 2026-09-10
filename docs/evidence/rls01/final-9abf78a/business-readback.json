@@ -1,0 +1,669 @@
+{
+  "schema": "rockstaros-preview-game-readback/1",
+  "status": "PASS",
+  "original_frozen_compare": {
+    "status": "PASS",
+    "profile": {
+      "name": "development-game-authority/1",
+      "sources": {
+        "hub": [
+          "/platform/hub.db",
+          [
+            "hub_packages",
+            "hub_installed",
+            "hub_revoked",
+            "hub_jobs",
+            "hub_audit",
+            "hub_requests",
+            "rock_registry_requests"
+          ]
+        ],
+        "remote": [
+          "/platform/remote/remote.sqlite3",
+          [
+            "remote_jobs",
+            "remote_cancel_receipts"
+          ]
+        ],
+        "authenticator": [
+          "/authenticator/authenticator.sqlite3",
+          [
+            "metadata",
+            "credentials",
+            "requests"
+          ]
+        ],
+        "power": [
+          "/system/power.db",
+          [
+            "requests"
+          ]
+        ],
+        "wallet_cache": [
+          "/wallet/backend-cache/remote-cache.db",
+          [
+            "identity",
+            "requests",
+            "snapshot"
+          ]
+        ],
+        "game_exchange_cache": [
+          "/wallet/game-client/exchange-journal/game.sqlite3",
+          [
+            "identity",
+            "requests",
+            "quotes",
+            "intents",
+            "player_proofs",
+            "migrations"
+          ]
+        ],
+        "game_connection_a": [
+          "/wallet/game-client/connection-public-game-a/game.sqlite3",
+          [
+            "identity",
+            "owner",
+            "requests",
+            "bindings"
+          ]
+        ],
+        "game_connection_b": [
+          "/wallet/game-client/connection-public-game-b/game.sqlite3",
+          [
+            "identity",
+            "owner",
+            "requests",
+            "bindings"
+          ]
+        ]
+      },
+      "forbidden_databases": [
+        "/wallet/wallet-simulator.db",
+        "/wallet/entitlement.db"
+      ],
+      "cache_read_sync": {
+        "database_role": "wallet_cache",
+        "table": "snapshot",
+        "column": "received_at",
+        "type": "SQLite REAL, finite and positive",
+        "order": "after >= before",
+        "row_count": 1,
+        "unchanged": "singleton, exact payload bytes, schema, sequences, identity, requests and every additional table",
+        "authority": "cache is not spendable; all external authority state needs separate complete observation"
+      },
+      "game_read_sync": {
+        "schema": "rock-game-cache-read-policy/1",
+        "database_roles": [
+          "game_exchange_cache",
+          "game_connection_a",
+          "game_connection_b"
+        ],
+        "identity": {
+          "columns": [
+            "singleton",
+            "uuid",
+            "path",
+            "configuration",
+            "maximum_time"
+          ],
+          "mutable": "maximum_time",
+          "row_count": 1
+        },
+        "bindings": {
+          "roles": [
+            "game_connection_a",
+            "game_connection_b"
+          ],
+          "columns": [
+            "intent_id",
+            "connection_id",
+            "intent",
+            "consent",
+            "generation",
+            "as_of",
+            "shared"
+          ],
+          "mutable": "as_of"
+        },
+        "type": "SQLite INTEGER; 0 <= value <= 9007199254740991",
+        "order": "each after >= before; each bindings.as_of <= identity.maximum_time",
+        "unchanged": "every other typed cell, row identity/count, generation, schema, sequence, request, receipt and additional table",
+        "authority": "SDK observations only; every external authoritative table remains separately invariant"
+      },
+      "game_read_sync_observer_sha256": "3151af62bf266144806354f33f89949bca9b5440b2f5f5c4588d0af1c7c66748"
+    }
+  },
+  "scope": "final installed observer against stopped backup and recovered disks; manual native UI run, no QMP event observer claim",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "observer_sha256": "53a1eda3dc3faf2e538b4fa0cbcbae25c070a4cae531d6baea10f891da0f63d2",
+  "source_disks_preserved": {
+    "slot-a.ext4": {
+      "sha256": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+      "bytes": 402653184
+    },
+    "slot-b.ext4": {
+      "sha256": "3201548f7070f0ae5adf2c869b15df99b5f85ca51feda443c1597c130976619a",
+      "bytes": 402653184
+    },
+    "userdata.ext4": {
+      "sha256": "e8c790a2210c16c34b1085f2b82afd017eaf5bf40988366033cfed961904d28c",
+      "bytes": 268435456
+    }
+  },
+  "backup_disks_verified": {
+    "slot-a.ext4": {
+      "sha256": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+      "bytes": 402653184
+    },
+    "slot-b.ext4": {
+      "sha256": "3201548f7070f0ae5adf2c869b15df99b5f85ca51feda443c1597c130976619a",
+      "bytes": 402653184
+    },
+    "userdata.ext4": {
+      "sha256": "e8c790a2210c16c34b1085f2b82afd017eaf5bf40988366033cfed961904d28c",
+      "bytes": 268435456
+    }
+  },
+  "before": {
+    "hub": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "hub_audit": {
+          "rows": 3,
+          "logical_sha256": "e81f3dd334d002debf84440e96bdbefca7342132f51e7f4cc6209acfcfaaebc2"
+        },
+        "hub_installed": {
+          "rows": 1,
+          "logical_sha256": "3f609fe7a7adb25b3e52253cc28111d957ea2d5aef831e7d05f00ba97daf9378"
+        },
+        "hub_jobs": {
+          "rows": 1,
+          "logical_sha256": "472d0fdadc2366cc47942fc599014e545d706003d4ec2b510ace9e369c39548c"
+        },
+        "hub_packages": {
+          "rows": 1,
+          "logical_sha256": "841445c9fab02fa46a5cc533635b616dbbe58318452af4dd16b5340ad8be25ae"
+        },
+        "hub_requests": {
+          "rows": 3,
+          "logical_sha256": "aa043e73abd6c71f4c28852b38e6f9b3c674896203cfcde70f1b7f710477a8ce"
+        },
+        "hub_revoked": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "rock_registry_requests": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {
+        "sqlite_sequence": {
+          "rows": 1,
+          "logical_sha256": "7037311da61af716422afa140a801217c8db0da0a8d9bea4d66f46118ba57b93"
+        }
+      },
+      "schema_sha256": "1aa435eba44f86e29237c32ae88072871b9d98c7e699a50f31bdabd8d1614680",
+      "additional_tables": []
+    },
+    "remote": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "remote_cancel_receipts": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "remote_jobs": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "766974ffea16c93d52b7cbc6242e662dcc30706d908bcbf8778ac32eac7aa7d9",
+      "additional_tables": []
+    },
+    "authenticator": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "credentials": {
+          "rows": 1,
+          "logical_sha256": "752921778812f0f056c764a8b86a449a27e47450a4600fc57a6ec0f2122e0bdc"
+        },
+        "metadata": {
+          "rows": 1,
+          "logical_sha256": "f6aade18d633626f8650aa2299884a03a5cfd4fb93add4e312a34f9f1b578fce"
+        },
+        "requests": {
+          "rows": 3,
+          "logical_sha256": "ac1445d3e9cafbde56e830aed2d8c21d6f2b7045917b858182efe7b89cdbd94d"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "693230298463086a61ea249d4b244b7dd52f435c06afff4ec15f3686648b644d",
+      "additional_tables": []
+    },
+    "power": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "requests": {
+          "rows": 2,
+          "logical_sha256": "b4d86ed3fcf6b69d3a033dc44c63776622137108f79d483ac7e244d8795474a4"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "e57439beed3e8b8bfdc03b3a38e20e7bcb507b2955fe670bd10c1ed659f592bd",
+      "additional_tables": []
+    },
+    "wallet_cache": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "identity": {
+          "rows": 1,
+          "logical_sha256": "58944f485147d567f6fc62f7162b35e5d94e4968b6e431a601bef7ab9f33ec3e"
+        },
+        "requests": {
+          "rows": 4,
+          "logical_sha256": "b57d6a8ef9b33df37595ba960ac06bdb3689594df7ae1578eb3e16cfbbc56db8"
+        },
+        "snapshot": {
+          "rows": 1,
+          "logical_sha256": "a3f97fe721764b793ccc64f409d0967fc1f7de5d462d5c4fca0b4fcc6fb4a1ec"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "e9d0d5a9a4942d5f2f2a62a9e3574c4c0fa9e331d496958bf06516c0cd85efc7",
+      "additional_tables": [],
+      "read_sync": {
+        "schema": "rock-cache-read-sync/1",
+        "singleton": 1,
+        "payload_sha256": "782cef0863e4e69147bd1fa6268ed299c88f1c53c0459a9c539bfe6698b75386",
+        "received_at": 1789035500.3121943,
+        "received_at_sqlite_type": "real"
+      }
+    },
+    "game_exchange_cache": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "identity": {
+          "rows": 1,
+          "logical_sha256": "0b9ca3311791db69123fcad2dcfe00f61af288289a5fb16398345c2cf818cd1a"
+        },
+        "intents": {
+          "rows": 1,
+          "logical_sha256": "5b034dcc88e41c2b9f0a4ba58857cfbaa0fa11acbd3a064c4000a189d733e145"
+        },
+        "migrations": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "player_proofs": {
+          "rows": 1,
+          "logical_sha256": "515d4030303fb757e0df979f4e0c8ed08d578223cf8909d50f566a08cbc17b82"
+        },
+        "quotes": {
+          "rows": 1,
+          "logical_sha256": "64d6862ea632244197476fc8640d922306f5d77e8ef0c5ed38b01574bba0ff6c"
+        },
+        "requests": {
+          "rows": 4,
+          "logical_sha256": "b985009b8e41aaa84e09fdbce104b45e17f755f16adadbf4b569ae622cb1bcc0"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "83476dfd9a97e4d4feb4c114989afe5d9476672ace24bb6e60fd2b9eae63fc87",
+      "additional_tables": [],
+      "game_read_sync": {
+        "schema": "rock-game-cache-read-sync/1",
+        "role": "game_exchange_cache",
+        "identity": {
+          "stable_sha256": "82c84d6782bd2a40b1f9d40b1db85ced5daa9d1e681f0e63ee9b6c0c64080fdf",
+          "maximum_time": 1789035453,
+          "sqlite_type": "integer"
+        },
+        "bindings": []
+      }
+    },
+    "game_connection_a": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "bindings": {
+          "rows": 1,
+          "logical_sha256": "75dfe146c17775dd97a1735a97f9e49391dc8140fee05ea99254bc8672977ef8"
+        },
+        "identity": {
+          "rows": 1,
+          "logical_sha256": "808b583df249a64f8fcdbae9f1283ad75924804b065ba6fd95844fae3d0f3f2f"
+        },
+        "owner": {
+          "rows": 1,
+          "logical_sha256": "7a6e75ac87c5f7b654a1699741feb3a62f59b129620027d6e991e679bd5e18d7"
+        },
+        "requests": {
+          "rows": 2,
+          "logical_sha256": "c08448ce04aec42fcbe5160c1249f692ef03f94c6394a8a51cd310256a4e5e32"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "0b82aea98a0522d990ef1f38a2b41039b1c733cbdb9d2f5a4f0ab4b103824e88",
+      "additional_tables": [],
+      "game_read_sync": {
+        "schema": "rock-game-cache-read-sync/1",
+        "role": "game_connection_a",
+        "identity": {
+          "stable_sha256": "113d207094ff0cf971f6d326318cfbd4b1642d9e9f05c83466b0240b362a36e6",
+          "maximum_time": 1789035455,
+          "sqlite_type": "integer"
+        },
+        "bindings": [
+          {
+            "key_sha256": "7c338ee03f46c6a1fb287a9d2e576f417d66cb6bb93973b91f8056837ccd57f3",
+            "stable_sha256": "34151de353d5b874485b31c79670b8334a4e222b0812d869aabb9f03c8203a00",
+            "as_of": 1789035455,
+            "sqlite_type": "integer"
+          }
+        ]
+      }
+    },
+    "game_connection_b": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "bindings": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "identity": {
+          "rows": 1,
+          "logical_sha256": "4f741eecf2f15b10f319413f79320d3cbd6b1698e8917ebae5404bdcf297c237"
+        },
+        "owner": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "requests": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "0b82aea98a0522d990ef1f38a2b41039b1c733cbdb9d2f5a4f0ab4b103824e88",
+      "additional_tables": [],
+      "game_read_sync": {
+        "schema": "rock-game-cache-read-sync/1",
+        "role": "game_connection_b",
+        "identity": {
+          "stable_sha256": "bfc4a69796ff4ad67fe274b428f4d82949fb728fd22106445ee7359dc34f70d8",
+          "maximum_time": 0,
+          "sqlite_type": "integer"
+        },
+        "bindings": []
+      }
+    }
+  },
+  "after": {
+    "hub": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "hub_audit": {
+          "rows": 3,
+          "logical_sha256": "e81f3dd334d002debf84440e96bdbefca7342132f51e7f4cc6209acfcfaaebc2"
+        },
+        "hub_installed": {
+          "rows": 1,
+          "logical_sha256": "3f609fe7a7adb25b3e52253cc28111d957ea2d5aef831e7d05f00ba97daf9378"
+        },
+        "hub_jobs": {
+          "rows": 1,
+          "logical_sha256": "472d0fdadc2366cc47942fc599014e545d706003d4ec2b510ace9e369c39548c"
+        },
+        "hub_packages": {
+          "rows": 1,
+          "logical_sha256": "841445c9fab02fa46a5cc533635b616dbbe58318452af4dd16b5340ad8be25ae"
+        },
+        "hub_requests": {
+          "rows": 3,
+          "logical_sha256": "aa043e73abd6c71f4c28852b38e6f9b3c674896203cfcde70f1b7f710477a8ce"
+        },
+        "hub_revoked": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "rock_registry_requests": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {
+        "sqlite_sequence": {
+          "rows": 1,
+          "logical_sha256": "7037311da61af716422afa140a801217c8db0da0a8d9bea4d66f46118ba57b93"
+        }
+      },
+      "schema_sha256": "1aa435eba44f86e29237c32ae88072871b9d98c7e699a50f31bdabd8d1614680",
+      "additional_tables": []
+    },
+    "remote": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "remote_cancel_receipts": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "remote_jobs": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "766974ffea16c93d52b7cbc6242e662dcc30706d908bcbf8778ac32eac7aa7d9",
+      "additional_tables": []
+    },
+    "authenticator": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "credentials": {
+          "rows": 1,
+          "logical_sha256": "752921778812f0f056c764a8b86a449a27e47450a4600fc57a6ec0f2122e0bdc"
+        },
+        "metadata": {
+          "rows": 1,
+          "logical_sha256": "f6aade18d633626f8650aa2299884a03a5cfd4fb93add4e312a34f9f1b578fce"
+        },
+        "requests": {
+          "rows": 3,
+          "logical_sha256": "ac1445d3e9cafbde56e830aed2d8c21d6f2b7045917b858182efe7b89cdbd94d"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "693230298463086a61ea249d4b244b7dd52f435c06afff4ec15f3686648b644d",
+      "additional_tables": []
+    },
+    "power": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "requests": {
+          "rows": 3,
+          "logical_sha256": "6c156a904adbacf928c5f555b842479e0bf1d435824a11fc8566ab4ed1554c6e"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "e57439beed3e8b8bfdc03b3a38e20e7bcb507b2955fe670bd10c1ed659f592bd",
+      "additional_tables": []
+    },
+    "wallet_cache": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "identity": {
+          "rows": 1,
+          "logical_sha256": "58944f485147d567f6fc62f7162b35e5d94e4968b6e431a601bef7ab9f33ec3e"
+        },
+        "requests": {
+          "rows": 4,
+          "logical_sha256": "b57d6a8ef9b33df37595ba960ac06bdb3689594df7ae1578eb3e16cfbbc56db8"
+        },
+        "snapshot": {
+          "rows": 1,
+          "logical_sha256": "9384022bf7675a0f476fb746b55b598908cbc71155ab314bc73fb5c6e4e3199a"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "e9d0d5a9a4942d5f2f2a62a9e3574c4c0fa9e331d496958bf06516c0cd85efc7",
+      "additional_tables": [],
+      "read_sync": {
+        "schema": "rock-cache-read-sync/1",
+        "singleton": 1,
+        "payload_sha256": "782cef0863e4e69147bd1fa6268ed299c88f1c53c0459a9c539bfe6698b75386",
+        "received_at": 1789035834.8026652,
+        "received_at_sqlite_type": "real"
+      }
+    },
+    "game_exchange_cache": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "identity": {
+          "rows": 1,
+          "logical_sha256": "b63883f7abb6007a7b0e64adad186180346d66cfbc9e317ede41d6777da9ecb2"
+        },
+        "intents": {
+          "rows": 1,
+          "logical_sha256": "5b034dcc88e41c2b9f0a4ba58857cfbaa0fa11acbd3a064c4000a189d733e145"
+        },
+        "migrations": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "player_proofs": {
+          "rows": 1,
+          "logical_sha256": "515d4030303fb757e0df979f4e0c8ed08d578223cf8909d50f566a08cbc17b82"
+        },
+        "quotes": {
+          "rows": 1,
+          "logical_sha256": "64d6862ea632244197476fc8640d922306f5d77e8ef0c5ed38b01574bba0ff6c"
+        },
+        "requests": {
+          "rows": 4,
+          "logical_sha256": "b985009b8e41aaa84e09fdbce104b45e17f755f16adadbf4b569ae622cb1bcc0"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "83476dfd9a97e4d4feb4c114989afe5d9476672ace24bb6e60fd2b9eae63fc87",
+      "additional_tables": [],
+      "game_read_sync": {
+        "schema": "rock-game-cache-read-sync/1",
+        "role": "game_exchange_cache",
+        "identity": {
+          "stable_sha256": "82c84d6782bd2a40b1f9d40b1db85ced5daa9d1e681f0e63ee9b6c0c64080fdf",
+          "maximum_time": 1789035789,
+          "sqlite_type": "integer"
+        },
+        "bindings": []
+      }
+    },
+    "game_connection_a": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "bindings": {
+          "rows": 1,
+          "logical_sha256": "980cf0e314c53411d8a39e841de3f19674e631211d8b69656ebbbdc68ae2db52"
+        },
+        "identity": {
+          "rows": 1,
+          "logical_sha256": "287bb4707455a887b7db1199afd7aec2e7ca8b32570d5aa7e7d4d9b8e8a0aeb0"
+        },
+        "owner": {
+          "rows": 1,
+          "logical_sha256": "7a6e75ac87c5f7b654a1699741feb3a62f59b129620027d6e991e679bd5e18d7"
+        },
+        "requests": {
+          "rows": 2,
+          "logical_sha256": "c08448ce04aec42fcbe5160c1249f692ef03f94c6394a8a51cd310256a4e5e32"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "0b82aea98a0522d990ef1f38a2b41039b1c733cbdb9d2f5a4f0ab4b103824e88",
+      "additional_tables": [],
+      "game_read_sync": {
+        "schema": "rock-game-cache-read-sync/1",
+        "role": "game_connection_a",
+        "identity": {
+          "stable_sha256": "113d207094ff0cf971f6d326318cfbd4b1642d9e9f05c83466b0240b362a36e6",
+          "maximum_time": 1789035768,
+          "sqlite_type": "integer"
+        },
+        "bindings": [
+          {
+            "key_sha256": "7c338ee03f46c6a1fb287a9d2e576f417d66cb6bb93973b91f8056837ccd57f3",
+            "stable_sha256": "34151de353d5b874485b31c79670b8334a4e222b0812d869aabb9f03c8203a00",
+            "as_of": 1789035768,
+            "sqlite_type": "integer"
+          }
+        ]
+      }
+    },
+    "game_connection_b": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "bindings": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "identity": {
+          "rows": 1,
+          "logical_sha256": "4f741eecf2f15b10f319413f79320d3cbd6b1698e8917ebae5404bdcf297c237"
+        },
+        "owner": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "requests": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "0b82aea98a0522d990ef1f38a2b41039b1c733cbdb9d2f5a4f0ab4b103824e88",
+      "additional_tables": [],
+      "game_read_sync": {
+        "schema": "rock-game-cache-read-sync/1",
+        "role": "game_connection_b",
+        "identity": {
+          "stable_sha256": "bfc4a69796ff4ad67fe274b428f4d82949fb728fd22106445ee7359dc34f70d8",
+          "maximum_time": 0,
+          "sqlite_type": "integer"
+        },
+        "bindings": []
+      }
+    }
+  },
+  "business_roles_observed": [
+    "authenticator",
+    "game_connection_a",
+    "game_connection_b",
+    "game_exchange_cache",
+    "hub",
+    "remote",
+    "wallet_cache"
+  ],
+  "old_power_receipts_preserved": 2,
+  "new_dispatched_native_shutdowns": 1,
+  "new_shutdown_receipt_sha256": "73aea4dcd74e7b00a8e09902c5e3fb769e0acbed041ed0fee21eda0f6c2d0fdb",
+  "hub_jobs": {
+    "rows": 1,
+    "logical_sha256": "472d0fdadc2366cc47942fc599014e545d706003d4ec2b510ace9e369c39548c"
+  }
+}

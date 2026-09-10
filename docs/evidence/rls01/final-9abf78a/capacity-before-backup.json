@@ -1,0 +1,40 @@
+{
+  "default_vm_disk_gib": 16,
+  "guest": {
+    "free": 13044314112,
+    "total": 16694517760,
+    "trees": {
+      "/opt/rockstaros-preview": {
+        "allocated_bytes": 1388568576,
+        "logical_bytes": 1386962768,
+        "regular_files": 706
+      },
+      "/var/tmp/rock-star-desktop": {
+        "allocated_bytes": 413700096,
+        "logical_bytes": 1073777462,
+        "regular_files": 12
+      },
+      "/var/tmp/rockstaros-preview-authority": {
+        "allocated_bytes": 847872,
+        "logical_bytes": 812091,
+        "regular_files": 26
+      },
+      "/var/tmp/rockstaros-preview-backups": {
+        "allocated_bytes": 0,
+        "logical_bytes": 0,
+        "regular_files": 0
+      }
+    },
+    "used": 2920800256
+  },
+  "host": {
+    "free": 30407909376,
+    "total": 494384795648,
+    "used": 463976886272
+  },
+  "minimum_guest_free_bytes": 4294967296,
+  "observed_unix": 1789035527.788198,
+  "phase": "before-backup",
+  "schema": "rock-final-capacity-observation/1",
+  "status": "PASS"
+}

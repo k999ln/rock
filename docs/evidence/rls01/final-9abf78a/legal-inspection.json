@@ -1,0 +1,3328 @@
+{
+  "archive_bytes": 934132130,
+  "archive_sha256": "7c9cdc0d32faf4006b8693d5d8dc85efd8259ae937c90274888da3f943920a0c",
+  "corresponding_sources_manifests": {
+    "manifest.json": {
+      "archive_format": {
+        "file_mode": "0444",
+        "gid": 0,
+        "gzip_mtime": 0,
+        "mtime": 0,
+        "order": "sorted names",
+        "uid": 0
+      },
+      "buildroot": {
+        "archive_sha256": "87aaca4164ea9d5c8085854953018263f7963f07c22e73a2a2185cc98c581c34",
+        "make_legal_info_exit_code": 0,
+        "version": "2026.08"
+      },
+      "configuration_sha256": {
+        "SHA256SUMS": "9d8d1638c0b3a474746c7dd65ae66b051bf2637c0636f70a1be5e9f3a963c43a",
+        "buildroot.config": "17f91594f2609c64ce9b966b148d3d85a02e90920167e8582471ed0277288bb6",
+        "linux.config": "d744e7f5beb172660189d402bda5c15a9429c33d6dd5bf2a50e5ce7c1c9a829f",
+        "source-lock.json": "6efd72448219b9c226646817656ff4c9d2d808422fe5647cff10c0754473414c"
+      },
+      "files": {
+        "buildroot-legal-info/README": {
+          "bytes": 2403,
+          "sha256": "049d3f85300d2f448b0d91cae3580753047ede013289843108bf51047240d9e4"
+        },
+        "buildroot-legal-info/buildroot.config": {
+          "bytes": 170192,
+          "sha256": "17f91594f2609c64ce9b966b148d3d85a02e90920167e8582471ed0277288bb6"
+        },
+        "buildroot-legal-info/host-licenses/acl-2.4.0/doc/COPYING": {
+          "bytes": 18311,
+          "sha256": "a45a845012742796534f7e91fe623262ccfb99460a2bd04015bd28d66fba95b8"
+        },
+        "buildroot-legal-info/host-licenses/acl-2.4.0/doc/COPYING.LGPL": {
+          "bytes": 26762,
+          "sha256": "01b1f9f2c8ee648a7a596a1abe8aa4ed7899b1c9e5551bda06da6e422b04aa55"
+        },
+        "buildroot-legal-info/host-licenses/attr-2.6.0/doc/COPYING": {
+          "bytes": 18312,
+          "sha256": "98f318493be6b08bff3cd295791cde06c54e17882a3c74a1ed245eaa02533d52"
+        },
+        "buildroot-legal-info/host-licenses/attr-2.6.0/doc/COPYING.LGPL": {
+          "bytes": 26763,
+          "sha256": "5decad7e58d90d44335bf2f45ce27563bd911065c6a1a02dfa7647c4efee75c8"
+        },
+        "buildroot-legal-info/host-licenses/autoconf-2.73/COPYING.EXCEPTION": {
+          "bytes": 1866,
+          "sha256": "1f1cde9fb68b9b3cff18c420894bec5bd4defacd700b7d13df54a887301e5350"
+        },
+        "buildroot-legal-info/host-licenses/autoconf-2.73/COPYINGv3": {
+          "bytes": 35149,
+          "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+        },
+        "buildroot-legal-info/host-licenses/autoconf-archive-2024.10.16/COPYING": {
+          "bytes": 35150,
+          "sha256": "e6037104443f9a7829b2aa7c5370d0789a7bda3ca65a0b904cdc0c2e285d9195"
+        },
+        "buildroot-legal-info/host-licenses/autoconf-archive-2024.10.16/COPYING.EXCEPTION": {
+          "bytes": 1865,
+          "sha256": "23ed0b84fa023bfa33433b498192cd08a3bfb1f4864a8ed791a84f3eb48b2dd2"
+        },
+        "buildroot-legal-info/host-licenses/automake-1.16.5/COPYING": {
+          "bytes": 17987,
+          "sha256": "ab15fd526bd8dd18a9e77ebc139656bf4d33e97fc7238cd11bf60e2b9b8666c6"
+        },
+        "buildroot-legal-info/host-licenses/binutils-2.45.1/COPYING": {
+          "bytes": 18002,
+          "sha256": "231f7edcc7352d7734a96eef0b8030f77982678c516876fcb81e25b32d68564c"
+        },
+        "buildroot-legal-info/host-licenses/binutils-2.45.1/COPYING.LIB": {
+          "bytes": 25291,
+          "sha256": "56bdea73b6145ef6ac5259b3da390b981d840c24cb03b8e1cbc678de7ecfa18d"
+        },
+        "buildroot-legal-info/host-licenses/binutils-2.45.1/COPYING3": {
+          "bytes": 35147,
+          "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+        },
+        "buildroot-legal-info/host-licenses/buildroot/COPYING": {
+          "bytes": 18767,
+          "sha256": "9755181e27175cb3510b4da8629caa406fb355a19aa8e7d55f06bf8ab33323c4"
+        },
+        "buildroot-legal-info/host-licenses/cmake-4.4.0/LICENSE.rst": {
+          "bytes": 1498,
+          "sha256": "4382e7c1879ac90e3f101a395d23846fa4dbcaa1eed7265b43681e348754825d"
+        },
+        "buildroot-legal-info/host-licenses/e2fsprogs-1.47.4/NOTICE": {
+          "bytes": 44585,
+          "sha256": "5da5ef153e559c1d990d4c3eedbedd4442db892d37eae1f35fff069de8ec9020"
+        },
+        "buildroot-legal-info/host-licenses/e2fsprogs-1.47.4/lib/et/internal.h": {
+          "bytes": 676,
+          "sha256": "47182fe6631a32f271a15bbe210751b3825b7199f588879aac7d4804fc8b4b8f"
+        },
+        "buildroot-legal-info/host-licenses/e2fsprogs-1.47.4/lib/ss/mit-sipb-copyright.h": {
+          "bytes": 763,
+          "sha256": "032989b508f1a72ebee5b3417e55d06d473f9ee203e45ab11864a7e49cdec63d"
+        },
+        "buildroot-legal-info/host-licenses/expat-2.8.4/COPYING": {
+          "bytes": 1144,
+          "sha256": "31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87"
+        },
+        "buildroot-legal-info/host-licenses/fakeroot-1.37.2/COPYING": {
+          "bytes": 35068,
+          "sha256": "fc82ca8b6fdb18d4e3e85cfd8ab58d1bcd3f1b29abe782895abd91d64763f8e7"
+        },
+        "buildroot-legal-info/host-licenses/gcc-final-15.3.0/COPYING": {
+          "bytes": 18002,
+          "sha256": "231f7edcc7352d7734a96eef0b8030f77982678c516876fcb81e25b32d68564c"
+        },
+        "buildroot-legal-info/host-licenses/gcc-final-15.3.0/COPYING.LIB": {
+          "bytes": 26527,
+          "sha256": "a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861"
+        },
+        "buildroot-legal-info/host-licenses/gcc-final-15.3.0/COPYING3": {
+          "bytes": 35147,
+          "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+        },
+        "buildroot-legal-info/host-licenses/gcc-final-15.3.0/COPYING3.LIB": {
+          "bytes": 7639,
+          "sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c"
+        },
+        "buildroot-legal-info/host-licenses/gcc-initial-15.3.0/COPYING": {
+          "bytes": 18002,
+          "sha256": "231f7edcc7352d7734a96eef0b8030f77982678c516876fcb81e25b32d68564c"
+        },
+        "buildroot-legal-info/host-licenses/gcc-initial-15.3.0/COPYING.LIB": {
+          "bytes": 26527,
+          "sha256": "a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861"
+        },
+        "buildroot-legal-info/host-licenses/gcc-initial-15.3.0/COPYING3": {
+          "bytes": 35147,
+          "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+        },
+        "buildroot-legal-info/host-licenses/gcc-initial-15.3.0/COPYING3.LIB": {
+          "bytes": 7639,
+          "sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c"
+        },
+        "buildroot-legal-info/host-licenses/gmp-6.3.0/COPYING.LESSERv3": {
+          "bytes": 7639,
+          "sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c"
+        },
+        "buildroot-legal-info/host-licenses/gmp-6.3.0/COPYINGv2": {
+          "bytes": 18092,
+          "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+        },
+        "buildroot-legal-info/host-licenses/gperf-3.3/COPYING": {
+          "bytes": 35147,
+          "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+        },
+        "buildroot-legal-info/host-licenses/kmod-34.2/libkmod/COPYING": {
+          "bytes": 26432,
+          "sha256": "6095e9ffa777dd22839f7801aa845b31c9ed07f3d6bf8a26dc5d2dec8ccc0ef3"
+        },
+        "buildroot-legal-info/host-licenses/libffi-3.8.0/LICENSE": {
+          "bytes": 1132,
+          "sha256": "17b64dc60f3b6897a60f971e288b973f655c2edcdf08b25f3c3dd5549857881c"
+        },
+        "buildroot-legal-info/host-licenses/libopenssl-3.6.4/LICENSE.txt": {
+          "bytes": 10175,
+          "sha256": "7d5450cb2d142651b8afa315b5f238efc805dad827d91ba367d8516bc9d49e7a"
+        },
+        "buildroot-legal-info/host-licenses/libtool-2.5.4/COPYING": {
+          "bytes": 17984,
+          "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+        },
+        "buildroot-legal-info/host-licenses/libtool-2.5.4/libltdl/COPYING.LIB": {
+          "bytes": 26419,
+          "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95"
+        },
+        "buildroot-legal-info/host-licenses/libxcrypt-4.5.2/COPYING.LIB": {
+          "bytes": 26530,
+          "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551"
+        },
+        "buildroot-legal-info/host-licenses/libxcrypt-4.5.2/LICENSING": {
+          "bytes": 5854,
+          "sha256": "9144e66d8140feb84f0e4e344906ac425378896320032e0248567ef195cf0135"
+        },
+        "buildroot-legal-info/host-licenses/libzlib-1.3.2/LICENSE": {
+          "bytes": 1002,
+          "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2"
+        },
+        "buildroot-legal-info/host-licenses/m4-1.4.21/COPYING": {
+          "bytes": 35149,
+          "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+        },
+        "buildroot-legal-info/host-licenses/meson-1.11.1/COPYING": {
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        "buildroot-legal-info/host-licenses/mpc-1.4.1/COPYING.LESSER": {
+          "bytes": 7651,
+          "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+        },
+        "buildroot-legal-info/host-licenses/mpfr-4.2.2/COPYING.LESSER": {
+          "bytes": 7652,
+          "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+        },
+        "buildroot-legal-info/host-licenses/ninja-1.13.2/COPYING": {
+          "bytes": 11358,
+          "sha256": "eb7e9ab9690124c5c9f42bdc81383d886a3dede26345b6ed15bbad7caf81f7ea"
+        },
+        "buildroot-legal-info/host-licenses/patchelf-0.13/COPYING": {
+          "bytes": 35147,
+          "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+        },
+        "buildroot-legal-info/host-licenses/pkgconf-2.3.0/COPYING": {
+          "bytes": 509,
+          "sha256": "07ee94b50a41ee3fc4e13a9b9c60b26fc28488494c465639f7e5f07a3952ec04"
+        },
+        "buildroot-legal-info/host-licenses/python-flit-core-3.12.0/LICENSE": {
+          "bytes": 1525,
+          "sha256": "35b4f1dec512e617077fd6980dbb43ef8c2887adc5d0185edb4c04da175dd816"
+        },
+        "buildroot-legal-info/host-licenses/python-installer-1.0.0/LICENSE": {
+          "bytes": 1057,
+          "sha256": "37b8b9f2569892fa54406383d431169dbb2115980d78b7efba6eeae5664c484f"
+        },
+        "buildroot-legal-info/host-licenses/python-packaging-26.2/LICENSE": {
+          "bytes": 197,
+          "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+        },
+        "buildroot-legal-info/host-licenses/python-packaging-26.2/LICENSE.APACHE": {
+          "bytes": 10174,
+          "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+        },
+        "buildroot-legal-info/host-licenses/python-packaging-26.2/LICENSE.BSD": {
+          "bytes": 1344,
+          "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+        },
+        "buildroot-legal-info/host-licenses/python-pypa-build-1.3.0/LICENSE": {
+          "bytes": 1113,
+          "sha256": "aaf9a29ca5907971ccf07de025375db34539a8d5eeebce20b46099805722106f"
+        },
+        "buildroot-legal-info/host-licenses/python-pyproject-hooks-1.2.0/LICENSE": {
+          "bytes": 1081,
+          "sha256": "1b22b049b5267d6dfc23a67bf4a84d8ec04b9fdfb1a51d360e42b4342c8b4154"
+        },
+        "buildroot-legal-info/host-licenses/python-setuptools-80.9.0/LICENSE": {
+          "bytes": 1023,
+          "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+        },
+        "buildroot-legal-info/host-licenses/python-wheel-0.47.0/LICENSE.txt": {
+          "bytes": 1107,
+          "sha256": "30c23618679108f3e8ea1d2a658c7ca417bdfc891c98ef1a89fa4ff0c9828654"
+        },
+        "buildroot-legal-info/host-licenses/python3-3.14.7/LICENSE": {
+          "bytes": 13804,
+          "sha256": "b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231"
+        },
+        "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.BSD-2-Clause": {
+          "bytes": 1245,
+          "sha256": "527f738966ca396cd5a68c1509390de2a780c6b614d9ee57f7544a6161938ed1"
+        },
+        "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.BSD-3-Clause": {
+          "bytes": 1391,
+          "sha256": "9b718a9460fed5952466421235bc79eb49d4e9eacc920d7a9dd6285ab8fd6c6d"
+        },
+        "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.BSD-4-Clause-UC": {
+          "bytes": 1824,
+          "sha256": "ba7640f00d93e72e92b94b9d71f25ec53bac2f1682f5c4adcccb0018359f60f8"
+        },
+        "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.EUPL-1.2": {
+          "bytes": 13827,
+          "sha256": "6fc9e709ccbfe0d77fbffa2427a983282be2eb88e47b1cdb49f21a83b4d1e665"
+        },
+        "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.GPL-2.0-only": {
+          "bytes": 18092,
+          "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+        },
+        "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.GPL-2.0-or-later": {
+          "bytes": 18092,
+          "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+        },
+        "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.GPL-3.0-or-later": {
+          "bytes": 35149,
+          "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+        },
+        "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.ISC": {
+          "bytes": 697,
+          "sha256": "e53348ce276358e9997014071c5294b36a18c4b34f32f00ee57b9acce0aafd63"
+        },
+        "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.LGPL-2.1-or-later": {
+          "bytes": 26530,
+          "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551"
+        },
+        "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.MIT": {
+          "bytes": 1054,
+          "sha256": "8555341619542abb48c102afd954e42d4478e5be16ad3d5af7b0ff71009e7348"
+        },
+        "buildroot-legal-info/host-licenses/util-linux-2.41.5/README.licensing": {
+          "bytes": 1037,
+          "sha256": "4c2db318192bda62f3f8fcf71488bb5e602ae4385eba281d711b46cc13a40bb3"
+        },
+        "buildroot-legal-info/host-manifest.csv": {
+          "bytes": 13822,
+          "sha256": "c30fd6fb9177f8336154be1d007cd9b8dd79b5cceed2490655bb82839f413529"
+        },
+        "buildroot-legal-info/host-sources/acl-2.4.0/0001-Build-with-old-GCC-versions.patch": {
+          "bytes": 975,
+          "sha256": "cc1ddc4f2fa72c1d1555ee4639ba85409ff9f46ef29619b0fab21d05dc951217"
+        },
+        "buildroot-legal-info/host-sources/acl-2.4.0/acl-2.4.0.tar.xz": {
+          "bytes": 384828,
+          "sha256": "e661131456d2708a01c614a0f400e11d7d1bfaeb6f3e74b75bb980b72f0161a3"
+        },
+        "buildroot-legal-info/host-sources/acl-2.4.0/series": {
+          "bytes": 39,
+          "sha256": "ecc16be946d16bbaa3091152be9a3af885acbae478946f6ca74e4e7e1ca4342f"
+        },
+        "buildroot-legal-info/host-sources/attr-2.6.0/0001-build-with-older-GCCs.patch": {
+          "bytes": 3623,
+          "sha256": "6150b5d5f6becba49d06bad7720583661e0090c155d6566dc44c8f7f329eb1e3"
+        },
+        "buildroot-legal-info/host-sources/attr-2.6.0/attr-2.6.0.tar.xz": {
+          "bytes": 343608,
+          "sha256": "6c8a2148a7b85043b68492bce43316b0e2e214fc4e628c7ede078e76e216330b"
+        },
+        "buildroot-legal-info/host-sources/attr-2.6.0/series": {
+          "bytes": 33,
+          "sha256": "9817d669b691651122875d161b06071704a6b67f0c48586a8787e4dd1b16cd4b"
+        },
+        "buildroot-legal-info/host-sources/autoconf-2.73/0001-dont-add-dirty-to-version.patch": {
+          "bytes": 1243,
+          "sha256": "c326c51b172e54dd190f57b5da2acbb6657411402cd5ffd1c3feff68ae8032a8"
+        },
+        "buildroot-legal-info/host-sources/autoconf-2.73/autoconf-2.73.tar.xz": {
+          "bytes": 1417428,
+          "sha256": "9fd672b1c8425fac2fa67fa0477b990987268b90ff36d5f016dae57be0d6b52e"
+        },
+        "buildroot-legal-info/host-sources/autoconf-2.73/series": {
+          "bytes": 37,
+          "sha256": "ec25e5b3a63f517720e2fc3f45c7b085b90604ff2f9e1b0905280131f22a5eb9"
+        },
+        "buildroot-legal-info/host-sources/autoconf-archive-2024.10.16/autoconf-archive-2024.10.16.tar.xz": {
+          "bytes": 677768,
+          "sha256": "7bcd5d001916f3a50ed7436f4f700e3d2b1bade3ed803219c592d62502a57363"
+        },
+        "buildroot-legal-info/host-sources/automake-1.16.5/0001-noman.patch": {
+          "bytes": 1449,
+          "sha256": "9e81c72b12abfa374d47cb40a602345eb9dda006736ea17d864ed57007b40159"
+        },
+        "buildroot-legal-info/host-sources/automake-1.16.5/automake-1.16.5.tar.xz": {
+          "bytes": 1601740,
+          "sha256": "f01d58cd6d9d77fbdca9eb4bbd5ead1988228fdb73d6f7a201f5f8d6b118b469"
+        },
+        "buildroot-legal-info/host-sources/automake-1.16.5/series": {
+          "bytes": 17,
+          "sha256": "9c2fd1ecc1613bc967087f12bf372cefff7f2b12af174f8aaebf815ed6500040"
+        },
+        "buildroot-legal-info/host-sources/binutils-2.45.1/0001-sh-conf.patch": {
+          "bytes": 1507,
+          "sha256": "1452a5ce443c4d674304872af3a0973522a3994dbcc3ac1df23779ab0b8a6271"
+        },
+        "buildroot-legal-info/host-sources/binutils-2.45.1/0002-poison-system-directories.patch": {
+          "bytes": 10927,
+          "sha256": "0bcfbd5e34c4e12f1e6d068aca3ff706761357b25c3cdd0bc8dd212c232deccc"
+        },
+        "buildroot-legal-info/host-sources/binutils-2.45.1/0003-or1k-Mark-undefined-TLS-symbol-as-STT_TLS.patch": {
+          "bytes": 2051,
+          "sha256": "6edb26dba4c416a7e2213aa4beaedc8818f0b2cec061232b717a8ea60464d634"
+        },
+        "buildroot-legal-info/host-sources/binutils-2.45.1/0004-gprofng-protect-against-standard-library-macros.patch": {
+          "bytes": 1275,
+          "sha256": "68a87204e8bd26879b0fb2b25e85ee340645aaad541091e10c5656532b086c13"
+        },
+        "buildroot-legal-info/host-sources/binutils-2.45.1/binutils-2.45.1.tar.xz": {
+          "bytes": 27962312,
+          "sha256": "5fe101e6fe9d18fdec95962d81ed670fdee5f37e3f48f0bef87bddf862513aa5"
+        },
+        "buildroot-legal-info/host-sources/binutils-2.45.1/series": {
+          "bytes": 168,
+          "sha256": "df81d90c4c796e82c3e4f3ec21eea73dd26ef82b381f06f3bef31957577c7aa5"
+        },
+        "buildroot-legal-info/host-sources/cmake-4.4.0/0001-rename-cmake-rootfile.patch": {
+          "bytes": 1594,
+          "sha256": "d3b1b332c07d7a9c1494fe97016e103a5e9c422b3c747141263c239e1edba1e3"
+        },
+        "buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz": {
+          "bytes": 13275398,
+          "sha256": "65757f442fdd242e27f1728fc26dc0cba4164f7a0791a5c788631c00080369bc"
+        },
+        "buildroot-legal-info/host-sources/cmake-4.4.0/series": {
+          "bytes": 33,
+          "sha256": "26d446c37e5512adad206575354e6d5a66972e602d5c637ff15c28a665df2b28"
+        },
+        "buildroot-legal-info/host-sources/e2fsprogs-1.47.4/e2fsprogs-1.47.4.tar.xz": {
+          "bytes": 7337236,
+          "sha256": "fd5bf388cbdbe006a3d3b318d983b2948382440acc85a87f1e7d108653e8db0b"
+        },
+        "buildroot-legal-info/host-sources/expat-2.8.4/expat-2.8.4.tar.xz": {
+          "bytes": 519688,
+          "sha256": "656ae1cc8da3b4ea513bb4e254f33e6243938084c0ec6239da873376b09985a7"
+        },
+        "buildroot-legal-info/host-sources/fakeroot-1.37.2/fakeroot_1.37.2.orig.tar.gz": {
+          "bytes": 595964,
+          "sha256": "0eea60fbe89771b88fcf415c8f2f0a6ccfe9edebbcf3ba5dc0212718d98884db"
+        },
+        "buildroot-legal-info/host-sources/gcc-final-15.3.0/0001-disable-split-stack-for-non-thread-builds.patch": {
+          "bytes": 865,
+          "sha256": "7f163c9d5e7eb73bace2b6e84dbaa81817cd30df913e0eb5eb9a58ba981a4b46"
+        },
+        "buildroot-legal-info/host-sources/gcc-final-15.3.0/0002-gcc-config-microblaze-fix-ira-for-GCC15.patch": {
+          "bytes": 2230,
+          "sha256": "57cb26080b4db65177b347bad9073dcb07975c08de1b2f7a4f4d739ad8ae4c17"
+        },
+        "buildroot-legal-info/host-sources/gcc-final-15.3.0/0003-PR-rtl-optimization-123833-Use-of-insn-attributes-in.patch": {
+          "bytes": 2828,
+          "sha256": "fcce3779f380785c961ec2c36d2e3f1ba230123b2032dc46d3a294a02fa731a5"
+        },
+        "buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz": {
+          "bytes": 101253696,
+          "sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb"
+        },
+        "buildroot-legal-info/host-sources/gcc-final-15.3.0/series": {
+          "bytes": 168,
+          "sha256": "100fa1ffe9b8037915e796724a97b1a6c0aa9c918f6df4cf82a92e6e9007a2aa"
+        },
+        "buildroot-legal-info/host-sources/gcc-initial-15.3.0/0001-disable-split-stack-for-non-thread-builds.patch": {
+          "bytes": 865,
+          "sha256": "7f163c9d5e7eb73bace2b6e84dbaa81817cd30df913e0eb5eb9a58ba981a4b46"
+        },
+        "buildroot-legal-info/host-sources/gcc-initial-15.3.0/0002-gcc-config-microblaze-fix-ira-for-GCC15.patch": {
+          "bytes": 2230,
+          "sha256": "57cb26080b4db65177b347bad9073dcb07975c08de1b2f7a4f4d739ad8ae4c17"
+        },
+        "buildroot-legal-info/host-sources/gcc-initial-15.3.0/0003-PR-rtl-optimization-123833-Use-of-insn-attributes-in.patch": {
+          "bytes": 2828,
+          "sha256": "fcce3779f380785c961ec2c36d2e3f1ba230123b2032dc46d3a294a02fa731a5"
+        },
+        "buildroot-legal-info/host-sources/gcc-initial-15.3.0/gcc-15.3.0.tar.xz": {
+          "bytes": 101253696,
+          "sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb"
+        },
+        "buildroot-legal-info/host-sources/gcc-initial-15.3.0/series": {
+          "bytes": 168,
+          "sha256": "100fa1ffe9b8037915e796724a97b1a6c0aa9c918f6df4cf82a92e6e9007a2aa"
+        },
+        "buildroot-legal-info/host-sources/gmp-6.3.0/0001-Complete-function-prototype-in-acinclude.m4-for-C23-.patch": {
+          "bytes": 1603,
+          "sha256": "b4a584a36e61b3c1050e98a05e2c72b6f5401a72366423b7e62d903b4b44395b"
+        },
+        "buildroot-legal-info/host-sources/gmp-6.3.0/gmp-6.3.0.tar.xz": {
+          "bytes": 2094196,
+          "sha256": "a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898"
+        },
+        "buildroot-legal-info/host-sources/gmp-6.3.0/series": {
+          "bytes": 64,
+          "sha256": "309aac6d53867e03ad318439cb07a15837898ca73db968bff469bbe186d249d4"
+        },
+        "buildroot-legal-info/host-sources/gperf-3.3/gperf-3.3.tar.gz": {
+          "bytes": 1831294,
+          "sha256": "fd87e0aba7e43ae054837afd6cd4db03a3f2693deb3619085e6ed9d8d9604ad8"
+        },
+        "buildroot-legal-info/host-sources/kmod-34.2/kmod-34.2.tar.xz": {
+          "bytes": 443748,
+          "sha256": "5a5d5073070cc7e0c7a7a3c6ec2a0e1780850c8b47b3e3892226b93ffcb9cb54"
+        },
+        "buildroot-legal-info/host-sources/libffi-3.8.0/0001-Fix-use-of-compact-eh-frames-on-MIPS.patch": {
+          "bytes": 1588,
+          "sha256": "c34863b864eb7bb8c823197cdd055f2bee2bc06142e064c5971358648bc4283e"
+        },
+        "buildroot-legal-info/host-sources/libffi-3.8.0/libffi-3.8.0.tar.gz": {
+          "bytes": 1581626,
+          "sha256": "7da3e2d9a171eb0a038f592ecad3ff2bb2550f3496d87b3b29ad0cf4430c0db4"
+        },
+        "buildroot-legal-info/host-sources/libffi-3.8.0/series": {
+          "bytes": 48,
+          "sha256": "73fc0d35fdcf701fa31226857cf998f5a27d2ad508825cd06825095a35a63145"
+        },
+        "buildroot-legal-info/host-sources/libopenssl-3.6.4/0001-Reproducible-build-do-not-leak-compiler-path.patch": {
+          "bytes": 1001,
+          "sha256": "e707bbcaaa0d25318e3d2985a71e726064c3d14ab2b2c145ba06a45477146aac"
+        },
+        "buildroot-legal-info/host-sources/libopenssl-3.6.4/0002-Configure-use-ELFv2-ABI-on-some-ppc64-big-endian-sys.patch": {
+          "bytes": 1152,
+          "sha256": "5f08549121c9d399666e71cb96439a2b3facfb493ab8ad60c4108e0a5696ff0c"
+        },
+        "buildroot-legal-info/host-sources/libopenssl-3.6.4/0003-Revert-Fix-static-builds.patch": {
+          "bytes": 1417,
+          "sha256": "77f7e22ea337fc3e738c708b99a656b3095f5d74749f9be47a91569f0a9e5a7d"
+        },
+        "buildroot-legal-info/host-sources/libopenssl-3.6.4/openssl-3.6.4.tar.gz": {
+          "bytes": 55003802,
+          "sha256": "9bffaa1ad1e07b354c21bd3324ec02fa15579f45a7d0494b3e74bc449b7333ef"
+        },
+        "buildroot-legal-info/host-sources/libopenssl-3.6.4/series": {
+          "bytes": 156,
+          "sha256": "37af627ae1d1ece3e0d2960b9b291315dbb79a0e10c780dac4f6cafcc93d9160"
+        },
+        "buildroot-legal-info/host-sources/libtool-2.5.4/libtool-2.5.4.tar.xz": {
+          "bytes": 1056924,
+          "sha256": "f81f5860666b0bc7d84baddefa60d1cb9fa6fceb2398cc3baca6afaa60266675"
+        },
+        "buildroot-legal-info/host-sources/libxcrypt-4.5.2/libxcrypt-4.5.2.tar.xz": {
+          "bytes": 669820,
+          "sha256": "71513a31c01a428bccd5367a32fd95f115d6dac50fb5b60c779d5c7942aec071"
+        },
+        "buildroot-legal-info/host-sources/libzlib-1.3.2/zlib-1.3.2.tar.xz": {
+          "bytes": 1320064,
+          "sha256": "d7a0654783a4da529d1bb793b7ad9c3318020af77667bcae35f95d0e42a792f3"
+        },
+        "buildroot-legal-info/host-sources/m4-1.4.21/m4-1.4.21.tar.xz": {
+          "bytes": 2080016,
+          "sha256": "f25c6ab51548a73a75558742fb031e0625d6485fe5f9155949d6486a2408ab66"
+        },
+        "buildroot-legal-info/host-sources/meson-1.11.1/0001-Prefer-ext-static-libs-when-default-library-static.patch": {
+          "bytes": 2448,
+          "sha256": "b708e8d8490567737f5ffebcc2a04813c5a201a98edeea69a2a39b54b0fe2ede"
+        },
+        "buildroot-legal-info/host-sources/meson-1.11.1/0002-mesonbuild-dependencies-base.py-add-pkg_config_stati.patch": {
+          "bytes": 3810,
+          "sha256": "39657a41b64afaeeefabd060d828be4516814858d84fe2abc9a17e7be9e85caa"
+        },
+        "buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz": {
+          "bytes": 5190321,
+          "sha256": "6788ae299979643f8d841bcaf64352558436cae45a0355148a3aeeccf7913866"
+        },
+        "buildroot-legal-info/host-sources/meson-1.11.1/series": {
+          "bytes": 126,
+          "sha256": "1eaf21991f88db7893b739e58f40808a3c0f27e4abeaefbf089832d64511fd1a"
+        },
+        "buildroot-legal-info/host-sources/mpc-1.4.1/mpc-1.4.1.tar.xz": {
+          "bytes": 531992,
+          "sha256": "91204cd32f164bd3b7c992d4a6a8ce6519511aadab30f78b6982d0bf8d73e931"
+        },
+        "buildroot-legal-info/host-sources/mpfr-4.2.2/mpfr-4.2.2.tar.xz": {
+          "bytes": 1505596,
+          "sha256": "b67ba0383ef7e8a8563734e2e889ef5ec3c3b898a01d00fa0a6869ad81c6ce01"
+        },
+        "buildroot-legal-info/host-sources/ninja-1.13.2/ninja-1.13.2.tar.gz": {
+          "bytes": 292385,
+          "sha256": "974d6b2f4eeefa25625d34da3cb36bdcebe7fbce40f4c16ac0835fd1c0cbae17"
+        },
+        "buildroot-legal-info/host-sources/patchelf-0.13/0001-Add-option-to-make-the-rpath-relative-under-a-specif.patch": {
+          "bytes": 13668,
+          "sha256": "f29fbe0e32a375d89d6bd5d525dac803af8777f4d4935c6d99249d9ffe83aaa7"
+        },
+        "buildroot-legal-info/host-sources/patchelf-0.13/patchelf-0.13.tar.bz2": {
+          "bytes": 172499,
+          "sha256": "4c7ed4bcfc1a114d6286e4a0d3c1a90db147a4c3adda1814ee0eee0f9ee917ed"
+        },
+        "buildroot-legal-info/host-sources/patchelf-0.13/series": {
+          "bytes": 64,
+          "sha256": "241ad0744e4dae2be6b6237ea5d809847bc7f7b8a385f445be1f78e44c8f0539"
+        },
+        "buildroot-legal-info/host-sources/pkgconf-2.3.0/0001-Only-prefix-with-the-sysroot-a-subset-of-variables.patch": {
+          "bytes": 5754,
+          "sha256": "fe8906a9fb3ba719cbd719c6bc45a8a854bac3f8bdd70d4fc834de821e60930b"
+        },
+        "buildroot-legal-info/host-sources/pkgconf-2.3.0/pkgconf-2.3.0.tar.xz": {
+          "bytes": 316160,
+          "sha256": "3a9080ac51d03615e7c1910a0a2a8df08424892b5f13b0628a204d3fcce0ea8b"
+        },
+        "buildroot-legal-info/host-sources/pkgconf-2.3.0/series": {
+          "bytes": 62,
+          "sha256": "ac3f3fe8aeb3015258d1949702f992f0988b377bcc8e5a1e6681a401739d4741"
+        },
+        "buildroot-legal-info/host-sources/python-flit-core-3.12.0/flit_core-3.12.0.tar.gz": {
+          "bytes": 53690,
+          "sha256": "18f63100d6f94385c6ed57a72073443e1a71a4acb4339491615d0f16d6ff01b2"
+        },
+        "buildroot-legal-info/host-sources/python-installer-1.0.0/installer-1.0.0.tar.gz": {
+          "bytes": 462685,
+          "sha256": "c6d691331621cf3fec4822f5c6f83cab3705f79b316225dc454127411677c71f"
+        },
+        "buildroot-legal-info/host-sources/python-packaging-26.2/packaging-26.2.tar.gz": {
+          "bytes": 228134,
+          "sha256": "ff452ff5a3e828ce110190feff1178bb1f2ea2281fa2075aadb987c2fb221661"
+        },
+        "buildroot-legal-info/host-sources/python-pypa-build-1.3.0/build-1.3.0.tar.gz": {
+          "bytes": 48544,
+          "sha256": "698edd0ea270bde950f53aed21f3a0135672206f3911e0176261a31e0e07b397"
+        },
+        "buildroot-legal-info/host-sources/python-pyproject-hooks-1.2.0/pyproject_hooks-1.2.0.tar.gz": {
+          "bytes": 19228,
+          "sha256": "1e859bd5c40fae9448642dd871adf459e5e2084186e8d2c2a79a824c970da1f8"
+        },
+        "buildroot-legal-info/host-sources/python-setuptools-80.9.0/0001-add-executable.patch": {
+          "bytes": 2886,
+          "sha256": "6d49779b98d369c13c06bf11abb690dfa8ce9682eb908afe050f09ecacfa3514"
+        },
+        "buildroot-legal-info/host-sources/python-setuptools-80.9.0/series": {
+          "bytes": 26,
+          "sha256": "db12e26893d416efec1ce7d441c4c3a50ce231d1edd5247285bfbbad52d47813"
+        },
+        "buildroot-legal-info/host-sources/python-setuptools-80.9.0/setuptools-80.9.0.tar.gz": {
+          "bytes": 1319958,
+          "sha256": "f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c"
+        },
+        "buildroot-legal-info/host-sources/python-wheel-0.47.0/wheel-0.47.0.tar.gz": {
+          "bytes": 63854,
+          "sha256": "cc72bd1009ba0cf63922e28f94d9d83b920aa2bb28f798a31d0691b02fa3c9b3"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/0001-Make-the-build-of-pyc-files-conditional.patch": {
+          "bytes": 2470,
+          "sha256": "8062fb2ed999a9d7ce66892c80b18f4faf0260b07a622f5aec16fda05c6a3dcd"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/0002-Add-an-option-to-disable-pydoc.patch": {
+          "bytes": 3092,
+          "sha256": "35261a8751db4fc46ef0194ab9242d4e874ab91259c25ada43896991471353c9"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/0003-Add-an-option-to-disable-IDLE.patch": {
+          "bytes": 2944,
+          "sha256": "bd26953aa8f5fcad941e18ea2cdc72a3c2745d0b88429e0de6cbd79873ca221e"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/0004-configure.ac-move-PY_STDLIB_MOD_SET_NA-further-up.patch": {
+          "bytes": 1502,
+          "sha256": "4927a2e8928895d356ee4469afb969d2264120d281a912a82ae94a1e3d93cb45"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/0005-Add-option-to-disable-the-sqlite3-module.patch": {
+          "bytes": 1913,
+          "sha256": "8735a295918083ddfa1aa1331452da420631bf12954372be17191c8e668ab136"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/0006-Add-an-option-to-disable-the-tk-module.patch": {
+          "bytes": 2678,
+          "sha256": "ab6f1de160b542a8ce80818b6f3c84ca7260336bd19325cd33fb4a3594802468"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/0007-Add-an-option-to-disable-the-curses-module.patch": {
+          "bytes": 1897,
+          "sha256": "9b778049dea06c5e9628e0fc1ec15c7737b4e79922ad51e064433dc33fcd4cc1"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/0008-Add-an-option-to-disable-expat.patch": {
+          "bytes": 2810,
+          "sha256": "6393a28d03b459cf846510381219673c6bc7c4f7ea15b5a3676a16304dd4462d"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/0009-configure.ac-detect-unusable-termio-operations.patch": {
+          "bytes": 2944,
+          "sha256": "4c23a0b9c83eaba4a4495ae9f32e55d5e42be00f4f79aedaf71043df32c47365"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/0010-gh-139275-Fix-compilation-of-Modules-_remote_debuggi.patch": {
+          "bytes": 2491,
+          "sha256": "3b08ef5a29324903c88d59cff534d7b08ec724efb0562acabdfc320bd4449724"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/0011-a0d023fbd23773e24b35d8368789470e22cda5d8.patch": {
+          "bytes": 8520,
+          "sha256": "9b36c1556c675de473544f1dac0857e3965dbc1a0fbd99c7e33b0f7850615480"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/0012-31980e84b9a708424a0a1dfecde3fc991e313f89.patch": {
+          "bytes": 7695,
+          "sha256": "2218c13228c584b1977a1532c019b5fff665e6175057d2fbc129d78f547cdc11"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz": {
+          "bytes": 24053924,
+          "sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81"
+        },
+        "buildroot-legal-info/host-sources/python3-3.14.7/series": {
+          "bytes": 619,
+          "sha256": "c0463dd34e67a90b574b15248d5540883782dbabd64b0d4d7f36e120db032f89"
+        },
+        "buildroot-legal-info/host-sources/util-linux-2.41.5/0001-include-mount-api-utils.h-fix-LSMT_ROOT-definition.patch": {
+          "bytes": 1319,
+          "sha256": "08b842937e25d1a33974dfb47d0dbe8db37d5b6458dc012633a01e14732aa248"
+        },
+        "buildroot-legal-info/host-sources/util-linux-2.41.5/0002-autotools-optionally-add-libpthread-to-uuid.pc.patch": {
+          "bytes": 1443,
+          "sha256": "b488f9b7b1d0a6fe171b04d72cb79ef8f262945925a19cad2eeee2c372882877"
+        },
+        "buildroot-legal-info/host-sources/util-linux-2.41.5/0003-loopdev-use-openat2-RESOLVE_NO_SYMLINKS-for-backing-.patch": {
+          "bytes": 2191,
+          "sha256": "298a6cdf0c9bc43387816ab9d038958f9ab5577fc447a7efd86db6c4d0a53600"
+        },
+        "buildroot-legal-info/host-sources/util-linux-2.41.5/series": {
+          "bytes": 184,
+          "sha256": "9dfca5367c601f2ce6ba6394cf6bf8a53f2859f1247538918842cff54d706a75"
+        },
+        "buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz": {
+          "bytes": 9474992,
+          "sha256": "f586e35d320ff537aab3ffeca37e9ecd482ccbe013590db4429a414d8aa6a728"
+        },
+        "buildroot-legal-info/legal-info.sha256": {
+          "bytes": 30491,
+          "sha256": "0f8773984cfe54d44409fcde5b593212c8887363e03a344965a494036d1bdd6b"
+        },
+        "buildroot-legal-info/licenses/bubblewrap-0.11.2/COPYING": {
+          "bytes": 25383,
+          "sha256": "b7993225104d90ddd8024fd838faf300bea5e83d91203eab98e29512acebd69c"
+        },
+        "buildroot-legal-info/licenses/busybox-1.38.0/LICENSE": {
+          "bytes": 18348,
+          "sha256": "bbfc9843646d483c334664f651c208b9839626891d8f17604db2146962f43548"
+        },
+        "buildroot-legal-info/licenses/busybox-1.38.0/archival/libarchive/bz/LICENSE": {
+          "bytes": 1999,
+          "sha256": "b5a136ed67798e51fe2e0ca0b2a21cb01b904ff0c9f7d563a6292e276607e58f"
+        },
+        "buildroot-legal-info/licenses/cairo-1.18.4/COPYING": {
+          "bytes": 1576,
+          "sha256": "67228a9f7c5f9b67c58f556f1be178f62da4d9e2e6285318d8c74d567255abdf"
+        },
+        "buildroot-legal-info/licenses/cairo-1.18.4/COPYING-LGPL-2.1": {
+          "bytes": 26533,
+          "sha256": "9e9e8608c4cdda51a78cc3a385f4ec9a2e4c96d5ecad74ac8bca5fca3e563b7d"
+        },
+        "buildroot-legal-info/licenses/cairo-1.18.4/COPYING-MPL-1.1": {
+          "bytes": 25755,
+          "sha256": "53692a2ed6c6a2c6ec9b32dd0b820dfae91e0a1fcdf625ca9ed0bdf8705fcc4f"
+        },
+        "buildroot-legal-info/licenses/dash-0.5.13.5/COPYING": {
+          "bytes": 2689,
+          "sha256": "254a7894923ff62e69184a991dcbccae97edee58a1105e8efbe78caf10595d72"
+        },
+        "buildroot-legal-info/licenses/expat-2.8.4/COPYING": {
+          "bytes": 1144,
+          "sha256": "31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87"
+        },
+        "buildroot-legal-info/licenses/fontconfig-2.17.1/COPYING": {
+          "bytes": 8616,
+          "sha256": "51a51aa9823704fd90bccc616cdd17ebabb5b2b3e9cbde886ca02c7002288067"
+        },
+        "buildroot-legal-info/licenses/freetype-2.14.3/LICENSE.TXT": {
+          "bytes": 2149,
+          "sha256": "bd36c8b474855fa294c2ec5c184544478ef3720aad37d65a6296a4f264fd2d3b"
+        },
+        "buildroot-legal-info/licenses/freetype-2.14.3/docs/FTL.TXT": {
+          "bytes": 6743,
+          "sha256": "5a5ee54c5001bbad1cdc1a57cc3dd4c42199b2da09d39c7ee41fab002d02967f"
+        },
+        "buildroot-legal-info/licenses/freetype-2.14.3/docs/GPLv2.TXT": {
+          "bytes": 17994,
+          "sha256": "c4120c6752c910c299e3bd9cb3a46ff262c268303ca2069b61f92f10a5656c18"
+        },
+        "buildroot-legal-info/licenses/gcc-final-15.3.0/COPYING.RUNTIME": {
+          "bytes": 3324,
+          "sha256": "9d6b43ce4d8de0c878bf16b54d8e7a10d9bd42b75178153e3af6a815bdc90f74"
+        },
+        "buildroot-legal-info/licenses/json-c-0.18/COPYING": {
+          "bytes": 2205,
+          "sha256": "74c1e6ca5eba76b54d0ad00d4815c8315c1b3bc45ff99de61d103dc92486284c"
+        },
+        "buildroot-legal-info/licenses/libcap-2.78/License": {
+          "bytes": 20318,
+          "sha256": "68467e731f4744bd6e0bb69e8df9c3a994e09cd6b203d0c41327ac6d079c581d"
+        },
+        "buildroot-legal-info/licenses/libffi-3.8.0/LICENSE": {
+          "bytes": 1132,
+          "sha256": "17b64dc60f3b6897a60f971e288b973f655c2edcdf08b25f3c3dd5549857881c"
+        },
+        "buildroot-legal-info/licenses/libopenssl-3.6.4/LICENSE.txt": {
+          "bytes": 10175,
+          "sha256": "7d5450cb2d142651b8afa315b5f238efc805dad827d91ba367d8516bc9d49e7a"
+        },
+        "buildroot-legal-info/licenses/libpng-1.6.58/LICENSE": {
+          "bytes": 5345,
+          "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526"
+        },
+        "buildroot-legal-info/licenses/libseccomp-2.6.0/LICENSE": {
+          "bytes": 24428,
+          "sha256": "102900208eef27b766380135906d431dba87edaa7ec6aa72e6ebd3dd67f3a97b"
+        },
+        "buildroot-legal-info/licenses/libzlib-1.3.2/LICENSE": {
+          "bytes": 1002,
+          "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2"
+        },
+        "buildroot-legal-info/licenses/linux-6.18.50/COPYING": {
+          "bytes": 496,
+          "sha256": "fb5a425bd3b3cd6071a3a9aff9909a859e7c1158d54d32e07658398cd67eb6a0"
+        },
+        "buildroot-legal-info/licenses/linux-6.18.50/LICENSES/exceptions/Linux-syscall-note": {
+          "bytes": 1258,
+          "sha256": "8e378ab93586eb55135d3bc119cce787f7324f48394777d00c34fa3d0be3303f"
+        },
+        "buildroot-legal-info/licenses/linux-6.18.50/LICENSES/preferred/GPL-2.0": {
+          "bytes": 18600,
+          "sha256": "8780e78a1a737e127f25a65f6d95269bffd36158dc261114de7859b490bfc5aa"
+        },
+        "buildroot-legal-info/licenses/linux-headers-6.18.50/COPYING": {
+          "bytes": 496,
+          "sha256": "fb5a425bd3b3cd6071a3a9aff9909a859e7c1158d54d32e07658398cd67eb6a0"
+        },
+        "buildroot-legal-info/licenses/linux-headers-6.18.50/LICENSES/exceptions/Linux-syscall-note": {
+          "bytes": 1258,
+          "sha256": "8e378ab93586eb55135d3bc119cce787f7324f48394777d00c34fa3d0be3303f"
+        },
+        "buildroot-legal-info/licenses/linux-headers-6.18.50/LICENSES/preferred/GPL-2.0": {
+          "bytes": 18600,
+          "sha256": "8780e78a1a737e127f25a65f6d95269bffd36158dc261114de7859b490bfc5aa"
+        },
+        "buildroot-legal-info/licenses/musl-1.2.6/COPYRIGHT": {
+          "bytes": 6196,
+          "sha256": "b870108ec5e7790e9f9919064f1b9421d62d5f9b0e6c230c6adf7ea2da62e97b"
+        },
+        "buildroot-legal-info/licenses/pixman-0.46.4/COPYING": {
+          "bytes": 2087,
+          "sha256": "fac9270f0987b96ff4533fca3548c633e02083cbba4a0172a3b149b2e4019793"
+        },
+        "buildroot-legal-info/licenses/python3-3.14.7/LICENSE": {
+          "bytes": 13804,
+          "sha256": "b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231"
+        },
+        "buildroot-legal-info/licenses/sqlite-3.53.4/tea/license.terms": {
+          "bytes": 257,
+          "sha256": "66e056b6e8687f32af30d5187611b98b12a8f46f07aaf62f43585f276e8f0ac9"
+        },
+        "buildroot-legal-info/manifest.csv": {
+          "bytes": 8942,
+          "sha256": "83c6bdfb31f8d15eaf73b0d8432541d44f30b10cacd03074f80535977881fab2"
+        },
+        "buildroot-legal-info/sources/bubblewrap-0.11.2/bubblewrap-0.11.2.tar.xz": {
+          "bytes": 116336,
+          "sha256": "69abc30005d2186baf7737feacd8da35633b93cf5af38838ecff17c5f8e924f6"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/0001-networking-libiproute-use-linux-if_packet.h-instead-.patch": {
+          "bytes": 1249,
+          "sha256": "d4324e1972fd86e20b6b9524c8738baf51a2ad5536f95794493d21990c94cdc3"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/0002-Makefile.flags-strip-non-l-arguments-returned-by-pkg.patch": {
+          "bytes": 1175,
+          "sha256": "bbb362d7beefab00adfef46e7053eaf3786c476e62cd254f08af286f9cf4fe0b"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/0003-libbb-sockaddr2str-ensure-only-printable-characters-.patch": {
+          "bytes": 1512,
+          "sha256": "5d063d321e86c0a40cbc9875491675becb6474123c3426a994c7afb076555f3e"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/0004-nslookup-sanitize-all-printed-strings-with-printable.patch": {
+          "bytes": 2521,
+          "sha256": "dc494525a7120c28dbc0afa238c6cfebfd2a5ee59bb255c481bfd675bcb2a4dd"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/0005-seedrng-fix-getrandom-detection-for-non-glibc-libc.patch": {
+          "bytes": 4152,
+          "sha256": "8f6634f457ad26ab6f88dffe64c971a75f81251e1565085904f9b44bfd3fbc52"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/0006-tc-Fix-compilation-with-Linux-v6.8-rc1.patch": {
+          "bytes": 2266,
+          "sha256": "1e07632c8c7f76eb2d87bcd574dd0f785874c4d307ad0a22e822943c66cc6978"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/0007-awk.c-fix-CVE-2023-42366-bug-15874.patch": {
+          "bytes": 1458,
+          "sha256": "3f221c1015776a8e9f18a2c6941dd6c2a54b0257f7136fd88e86543742de58fc"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/0008-hwclock-Check-for-SYS_settimeofday-before-calling-sy.patch": {
+          "bytes": 2195,
+          "sha256": "f50dae9976a0022de9f0122d724394561daad6266b39e27f1c3fe5eb4164b759"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/0009-syslogd-fix-wrong-OPT_locallog-flag-detection.patch": {
+          "bytes": 1504,
+          "sha256": "f6644c4c40c48c43edd8650b95bb42d685aeb9d7487270226864ec93bf46bb27"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/0010-testsuite-tar-tests-fix-test-after-cve-2025-46394.patch": {
+          "bytes": 1421,
+          "sha256": "738615776b0dca878b170f9242bab7d07023e5cb70dfe7c19fcfed3e72dfad4b"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/0011-wget-dont-allow-control-characters-or-spaces-in-the-URL.patch": {
+          "bytes": 1505,
+          "sha256": "0506f13375c2425d2ff46a453616a9cb88de1a0c6878d26cd5fdc8ae9ebea51f"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/0012-netstat-sanitize-argv0-for-p-CVE-2024-58251.patch": {
+          "bytes": 1844,
+          "sha256": "c111e4aec4459a6a79b4e2a0b990ddbf1d8337cb45f66bcd4b88bb4b9f72b7ea"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/busybox-1.38.0.tar.bz2": {
+          "bytes": 2695723,
+          "sha256": "34f9ea6ff8636f2c9241153b9114eefa9e65674a45318ae1ef95bb5f31c53bb2"
+        },
+        "buildroot-legal-info/sources/busybox-1.38.0/series": {
+          "bytes": 718,
+          "sha256": "0d76c8833124b6af33f157fea64925a17125f5ac79ad2033929413d2967c06f2"
+        },
+        "buildroot-legal-info/sources/cairo-1.18.4/0001-external-cairo-Silence-some-Wincompatible-pointer-ty.patch": {
+          "bytes": 1689,
+          "sha256": "7308c18ad6a9f972a74f8861d7c262053c5048b4912453b3688885adb8c94559"
+        },
+        "buildroot-legal-info/sources/cairo-1.18.4/cairo-1.18.4.tar.xz": {
+          "bytes": 32578804,
+          "sha256": "445ed8208a6e4823de1226a74ca319d3600e83f6369f99b14265006599c32ccb"
+        },
+        "buildroot-legal-info/sources/cairo-1.18.4/series": {
+          "bytes": 64,
+          "sha256": "1940a61649e917896f6f0925177e4d1865f4cdbbc0d03bf5dd730f640cf87d21"
+        },
+        "buildroot-legal-info/sources/dash-0.5.13.5/dash-0.5.13.5.tar.gz": {
+          "bytes": 261540,
+          "sha256": "40090101a2a491f13e901d3d48e90414f26634628b9bfff35ff540363c227a7d"
+        },
+        "buildroot-legal-info/sources/expat-2.8.4/expat-2.8.4.tar.xz": {
+          "bytes": 519688,
+          "sha256": "656ae1cc8da3b4ea513bb4e254f33e6243938084c0ec6239da873376b09985a7"
+        },
+        "buildroot-legal-info/sources/fontconfig-2.17.1/fontconfig-2.17.1.tar.xz": {
+          "bytes": 1326312,
+          "sha256": "9f5cae93f4fffc1fbc05ae99cdfc708cd60dfd6612ffc0512827025c026fa541"
+        },
+        "buildroot-legal-info/sources/freetype-2.14.3/freetype-2.14.3.tar.xz": {
+          "bytes": 2670220,
+          "sha256": "36bc4f1cc413335368ee656c42afca65c5a3987e8768cc28cf11ba775e785a5f"
+        },
+        "buildroot-legal-info/sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz": {
+          "bytes": 101253696,
+          "sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb"
+        },
+        "buildroot-legal-info/sources/json-c-0.18/json-c-0.18.tar.gz": {
+          "bytes": 401788,
+          "sha256": "876ab046479166b869afc6896d288183bbc0e5843f141200c677b3e8dfb11724"
+        },
+        "buildroot-legal-info/sources/libcap-2.78/libcap-2.78.tar.xz": {
+          "bytes": 201040,
+          "sha256": "0d621e562fd932ccf67b9660fb018e468a683d7b827541df27813228c996bb11"
+        },
+        "buildroot-legal-info/sources/libffi-3.8.0/0001-Fix-use-of-compact-eh-frames-on-MIPS.patch": {
+          "bytes": 1588,
+          "sha256": "c34863b864eb7bb8c823197cdd055f2bee2bc06142e064c5971358648bc4283e"
+        },
+        "buildroot-legal-info/sources/libffi-3.8.0/libffi-3.8.0.tar.gz": {
+          "bytes": 1581626,
+          "sha256": "7da3e2d9a171eb0a038f592ecad3ff2bb2550f3496d87b3b29ad0cf4430c0db4"
+        },
+        "buildroot-legal-info/sources/libffi-3.8.0/series": {
+          "bytes": 48,
+          "sha256": "73fc0d35fdcf701fa31226857cf998f5a27d2ad508825cd06825095a35a63145"
+        },
+        "buildroot-legal-info/sources/libopenssl-3.6.4/0001-Reproducible-build-do-not-leak-compiler-path.patch": {
+          "bytes": 1001,
+          "sha256": "e707bbcaaa0d25318e3d2985a71e726064c3d14ab2b2c145ba06a45477146aac"
+        },
+        "buildroot-legal-info/sources/libopenssl-3.6.4/0002-Configure-use-ELFv2-ABI-on-some-ppc64-big-endian-sys.patch": {
+          "bytes": 1152,
+          "sha256": "5f08549121c9d399666e71cb96439a2b3facfb493ab8ad60c4108e0a5696ff0c"
+        },
+        "buildroot-legal-info/sources/libopenssl-3.6.4/0003-Revert-Fix-static-builds.patch": {
+          "bytes": 1417,
+          "sha256": "77f7e22ea337fc3e738c708b99a656b3095f5d74749f9be47a91569f0a9e5a7d"
+        },
+        "buildroot-legal-info/sources/libopenssl-3.6.4/openssl-3.6.4.tar.gz": {
+          "bytes": 55003802,
+          "sha256": "9bffaa1ad1e07b354c21bd3324ec02fa15579f45a7d0494b3e74bc449b7333ef"
+        },
+        "buildroot-legal-info/sources/libopenssl-3.6.4/series": {
+          "bytes": 156,
+          "sha256": "37af627ae1d1ece3e0d2960b9b291315dbb79a0e10c780dac4f6cafcc93d9160"
+        },
+        "buildroot-legal-info/sources/libpng-1.6.58/libpng-1.6.58.tar.xz": {
+          "bytes": 1070096,
+          "sha256": "28eb403f51f0f7405249132cecfe82ea5c0ef97f1b32c5a65828814ae0d34775"
+        },
+        "buildroot-legal-info/sources/libseccomp-2.6.0/libseccomp-2.6.0.tar.gz": {
+          "bytes": 685655,
+          "sha256": "83b6085232d1588c379dc9b9cae47bb37407cf262e6e74993c61ba72d2a784dc"
+        },
+        "buildroot-legal-info/sources/libzlib-1.3.2/zlib-1.3.2.tar.xz": {
+          "bytes": 1320064,
+          "sha256": "d7a0654783a4da529d1bb793b7ad9c3318020af77667bcae35f95d0e42a792f3"
+        },
+        "buildroot-legal-info/sources/linux-6.18.50/linux-6.18.50.tar.xz": {
+          "bytes": 154612024,
+          "sha256": "d2fc041dab4e11d9645e3ba53be058faa52b8ce28a8a97c889bb2cacee170461"
+        },
+        "buildroot-legal-info/sources/linux-headers-6.18.50/linux-6.18.50.tar.xz": {
+          "bytes": 154612024,
+          "sha256": "d2fc041dab4e11d9645e3ba53be058faa52b8ce28a8a97c889bb2cacee170461"
+        },
+        "buildroot-legal-info/sources/musl-1.2.6/0001-avoid-kernel-if_ether.h.patch": {
+          "bytes": 819,
+          "sha256": "7fb1ec8ed9bda3b670d03b8cb9a46f769276ae066c3b975ee9cc974284bd97fd"
+        },
+        "buildroot-legal-info/sources/musl-1.2.6/0002-package-musl-Make-scheduler-functions-Linux-compatib.patch": {
+          "bytes": 2262,
+          "sha256": "d074724a3edc8f9a86b207ce4baf9a9b24a5f24cb26d1075f3df6bdb8e9495a7"
+        },
+        "buildroot-legal-info/sources/musl-1.2.6/0003-fix-pathological-slowness-incorrect-mappings-in-icon.patch": {
+          "bytes": 7666,
+          "sha256": "98506a81bca5f3807b3ab2b10c7ee2298ec73354e8368ea6eb80080af2bacfd7"
+        },
+        "buildroot-legal-info/sources/musl-1.2.6/0004-qsort-fix-leonardo-heap-corruption-from-bug-in-doubl.patch": {
+          "bytes": 1650,
+          "sha256": "435af2170b2929951e664522b29538b98931048e9be566a7780298b0d654fe09"
+        },
+        "buildroot-legal-info/sources/musl-1.2.6/0005-qsort-hard-preclude-oob-array-writes-independent-of-.patch": {
+          "bytes": 3106,
+          "sha256": "322830abe71d97e3348c35c0f5b806135603121b31555f7536e45ef4964c900c"
+        },
+        "buildroot-legal-info/sources/musl-1.2.6/0006-qsort-fix-shift-UB-in-shl-and-shr.patch": {
+          "bytes": 1321,
+          "sha256": "b9d740558f3770b1659ed489bddedb8e9b092f04319f805756eac90c061720df"
+        },
+        "buildroot-legal-info/sources/musl-1.2.6/musl-1.2.6.tar.gz": {
+          "bytes": 1082499,
+          "sha256": "d585fd3b613c66151fc3249e8ed44f77020cb5e6c1e635a616d3f9f82460512a"
+        },
+        "buildroot-legal-info/sources/musl-1.2.6/series": {
+          "bytes": 336,
+          "sha256": "bbd891c363ae691fc60a3799e8fd00c0633eee37815d332dab79d8d79c7281a5"
+        },
+        "buildroot-legal-info/sources/pixman-0.46.4/pixman-0.46.4.tar.xz": {
+          "bytes": 660536,
+          "sha256": "a098c33924754ad43f981b740f6d576c70f9ed1006e12221b1845431ebce1239"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/0001-Make-the-build-of-pyc-files-conditional.patch": {
+          "bytes": 2470,
+          "sha256": "8062fb2ed999a9d7ce66892c80b18f4faf0260b07a622f5aec16fda05c6a3dcd"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/0002-Add-an-option-to-disable-pydoc.patch": {
+          "bytes": 3092,
+          "sha256": "35261a8751db4fc46ef0194ab9242d4e874ab91259c25ada43896991471353c9"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/0003-Add-an-option-to-disable-IDLE.patch": {
+          "bytes": 2944,
+          "sha256": "bd26953aa8f5fcad941e18ea2cdc72a3c2745d0b88429e0de6cbd79873ca221e"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/0004-configure.ac-move-PY_STDLIB_MOD_SET_NA-further-up.patch": {
+          "bytes": 1502,
+          "sha256": "4927a2e8928895d356ee4469afb969d2264120d281a912a82ae94a1e3d93cb45"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/0005-Add-option-to-disable-the-sqlite3-module.patch": {
+          "bytes": 1913,
+          "sha256": "8735a295918083ddfa1aa1331452da420631bf12954372be17191c8e668ab136"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/0006-Add-an-option-to-disable-the-tk-module.patch": {
+          "bytes": 2678,
+          "sha256": "ab6f1de160b542a8ce80818b6f3c84ca7260336bd19325cd33fb4a3594802468"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/0007-Add-an-option-to-disable-the-curses-module.patch": {
+          "bytes": 1897,
+          "sha256": "9b778049dea06c5e9628e0fc1ec15c7737b4e79922ad51e064433dc33fcd4cc1"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/0008-Add-an-option-to-disable-expat.patch": {
+          "bytes": 2810,
+          "sha256": "6393a28d03b459cf846510381219673c6bc7c4f7ea15b5a3676a16304dd4462d"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/0009-configure.ac-detect-unusable-termio-operations.patch": {
+          "bytes": 2944,
+          "sha256": "4c23a0b9c83eaba4a4495ae9f32e55d5e42be00f4f79aedaf71043df32c47365"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/0010-gh-139275-Fix-compilation-of-Modules-_remote_debuggi.patch": {
+          "bytes": 2491,
+          "sha256": "3b08ef5a29324903c88d59cff534d7b08ec724efb0562acabdfc320bd4449724"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/0011-a0d023fbd23773e24b35d8368789470e22cda5d8.patch": {
+          "bytes": 8520,
+          "sha256": "9b36c1556c675de473544f1dac0857e3965dbc1a0fbd99c7e33b0f7850615480"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/0012-31980e84b9a708424a0a1dfecde3fc991e313f89.patch": {
+          "bytes": 7695,
+          "sha256": "2218c13228c584b1977a1532c019b5fff665e6175057d2fbc129d78f547cdc11"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/Python-3.14.7.tar.xz": {
+          "bytes": 24053924,
+          "sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81"
+        },
+        "buildroot-legal-info/sources/python3-3.14.7/series": {
+          "bytes": 619,
+          "sha256": "c0463dd34e67a90b574b15248d5540883782dbabd64b0d4d7f36e120db032f89"
+        },
+        "buildroot-legal-info/sources/sqlite-3.53.4/sqlite-autoconf-3530400.tar.gz": {
+          "bytes": 3283177,
+          "sha256": "0e9483900e92cd5de8fd48d16bf9200145a61f7fd5be542a5ac81d8a9516eb9c"
+        },
+        "corresponding-source/buildroot-2026.08.tar.xz": {
+          "bytes": 6115596,
+          "sha256": "87aaca4164ea9d5c8085854953018263f7963f07c22e73a2a2185cc98c581c34"
+        },
+        "corresponding-source/rock-source.tar": {
+          "bytes": 37980160,
+          "sha256": "1fac2382110401638dd9ea6d5d5d4d67bf902b5198f5bd38a187c66508719532"
+        },
+        "provenance/SHA256SUMS": {
+          "bytes": 231,
+          "sha256": "9d8d1638c0b3a474746c7dd65ae66b051bf2637c0636f70a1be5e9f3a963c43a"
+        },
+        "provenance/base-freeze-manifest.json": {
+          "bytes": 174967,
+          "sha256": "4376d52d7db3e9cda5357287092e9065d5c8227e5a94ede5fa434bc336629b61"
+        },
+        "provenance/buildroot.config": {
+          "bytes": 170192,
+          "sha256": "17f91594f2609c64ce9b966b148d3d85a02e90920167e8582471ed0277288bb6"
+        },
+        "provenance/ci-provenance.json": {
+          "bytes": 3883,
+          "sha256": "38b1f0ac1c4ac70633804ea519e6d2b06f4ce31d3866a6b90cd8701cc99fe858"
+        },
+        "provenance/freeze-manifest.json": {
+          "bytes": 358784,
+          "sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc"
+        },
+        "provenance/linux.config": {
+          "bytes": 111120,
+          "sha256": "d744e7f5beb172660189d402bda5c15a9429c33d6dd5bf2a50e5ce7c1c9a829f"
+        },
+        "provenance/local-arm64-native-logs/c-core.log": {
+          "bytes": 259,
+          "sha256": "fd91775029f963b4f3eb553a49d6c33012ef4a9e6384e1a265eb70ab0ac96403"
+        },
+        "provenance/local-arm64-native-logs/c-platform.log": {
+          "bytes": 130,
+          "sha256": "68e812194c9ae59796ee89d0e42c7a62b163e5ab1b79c326be21ddd75b088daa"
+        },
+        "provenance/local-arm64-native-logs/c-ui-actions.log": {
+          "bytes": 544,
+          "sha256": "3933e9ba3249a51510398cc7ca27fe7a420951629545b55c3e7f39d19dfaa270"
+        },
+        "provenance/local-arm64-native-logs/c-ui-build-tests.log": {
+          "bytes": 744,
+          "sha256": "6dc732f11fb83fb1feb4f934091d1250469bbfe6d0af46fa4de0ab7408ae1bfc"
+        },
+        "provenance/local-arm64-native-logs/c-ui-ipc.log": {
+          "bytes": 1262,
+          "sha256": "4a647d18d1265a7253f66009a9d85cff3558067e2ff6e522004d9a6fd9c300cd"
+        },
+        "provenance/local-arm64-native-logs/c-ui-native-replay.log": {
+          "bytes": 425,
+          "sha256": "1bcb8f552c25044a5c319d249dba0a33f6dac6e46899a2e389aa04f386aacb3f"
+        },
+        "provenance/local-arm64-native-logs/c-ui.log": {
+          "bytes": 1214,
+          "sha256": "0069088559ed14f3efccaad4d0e2cda15a45fceb83b68158eb76fade6db8bdf7"
+        },
+        "provenance/local-arm64-native-logs/os-ai_routes-tests.log": {
+          "bytes": 3893,
+          "sha256": "8e8cefd4d34d3baae18cc53a0931e4f68134220723dc8d58c142a6d3d514a552"
+        },
+        "provenance/local-arm64-native-logs/os-atm-tests.log": {
+          "bytes": 6719,
+          "sha256": "bc72abbacdbd4c6d365037559ddc53b17e30f32a333bb5f3c1e497953ff82a1f"
+        },
+        "provenance/local-arm64-native-logs/os-entitlement-tests.log": {
+          "bytes": 14914,
+          "sha256": "fcdf3c92eb06f971ad377e725a1d13a457f820646f97d138a14f5b3be4d2c1ed"
+        },
+        "provenance/local-arm64-native-logs/os-service_access-tests.log": {
+          "bytes": 4639,
+          "sha256": "b830639b9ee68eaca13a881a3242f70f6d2537bfc1ee469773865014055445e3"
+        },
+        "provenance/local-arm64-native-logs/os-wallet_auth-tests.log": {
+          "bytes": 11036,
+          "sha256": "f8a17a47736b6118882fc80683826446b552a7d698d45bb05de07fbc94fd9555"
+        },
+        "provenance/local-arm64-native-logs/tests.log": {
+          "bytes": 276138,
+          "sha256": "e7e8e958b89fe095df559f6abe17544d3bd7d3692ef9b646f9e36040d23fc141"
+        },
+        "provenance/local-arm64-native-logs/ui-observers.log": {
+          "bytes": 2361,
+          "sha256": "68e6112fa8d8930b94e85636f4bd3ab5d979cfbd07487c71ec39bc05f4f8c3db"
+        },
+        "provenance/local-arm64-native-report.json": {
+          "bytes": 96888,
+          "sha256": "5a49bed70b8fb8ab328fb7a40c4e085591ce6e5e91abccb390984315a2e01340"
+        },
+        "provenance/make-legal-info.log": {
+          "bytes": 12968,
+          "sha256": "9564a0c704f2e063a6e63026832752d52e82ff499bfdd9d068b17d6de73f731a"
+        },
+        "provenance/native-source-logs/c-core.log": {
+          "bytes": 259,
+          "sha256": "fd91775029f963b4f3eb553a49d6c33012ef4a9e6384e1a265eb70ab0ac96403"
+        },
+        "provenance/native-source-logs/c-platform.log": {
+          "bytes": 130,
+          "sha256": "68e812194c9ae59796ee89d0e42c7a62b163e5ab1b79c326be21ddd75b088daa"
+        },
+        "provenance/native-source-logs/c-ui-actions.log": {
+          "bytes": 544,
+          "sha256": "3933e9ba3249a51510398cc7ca27fe7a420951629545b55c3e7f39d19dfaa270"
+        },
+        "provenance/native-source-logs/c-ui-build-tests.log": {
+          "bytes": 744,
+          "sha256": "6dc732f11fb83fb1feb4f934091d1250469bbfe6d0af46fa4de0ab7408ae1bfc"
+        },
+        "provenance/native-source-logs/c-ui-ipc.log": {
+          "bytes": 1262,
+          "sha256": "4116a93c11048da5c14a2d14fbd41da1e960f77e8fc47f7739198ee64f95c4fc"
+        },
+        "provenance/native-source-logs/c-ui-native-replay.log": {
+          "bytes": 425,
+          "sha256": "1bcb8f552c25044a5c319d249dba0a33f6dac6e46899a2e389aa04f386aacb3f"
+        },
+        "provenance/native-source-logs/c-ui.log": {
+          "bytes": 1214,
+          "sha256": "0069088559ed14f3efccaad4d0e2cda15a45fceb83b68158eb76fade6db8bdf7"
+        },
+        "provenance/native-source-logs/os-ai_routes-tests.log": {
+          "bytes": 3893,
+          "sha256": "057f52dda56e5e7a10c690f6ef88802887d212e50c8d633ae19509fd17241560"
+        },
+        "provenance/native-source-logs/os-atm-tests.log": {
+          "bytes": 6719,
+          "sha256": "ec13e1b074276ae1cb351d9b1b1577ea6cf868e4aeed220f1c5c3cc88cfcee07"
+        },
+        "provenance/native-source-logs/os-entitlement-tests.log": {
+          "bytes": 14914,
+          "sha256": "b0ee7f38f3e3b0bb0a0ac42a161a64723731e7cdf2d5ebf365c65c017b6b07d3"
+        },
+        "provenance/native-source-logs/os-service_access-tests.log": {
+          "bytes": 4639,
+          "sha256": "ef68380c6fcbae5312493dce7b5ea98f5d0061dfa317a1b87c285c493715243f"
+        },
+        "provenance/native-source-logs/os-wallet_auth-tests.log": {
+          "bytes": 11036,
+          "sha256": "35960a0a5b836b47761a3381f0eaadad70248a79c4190c5598a2522d63a909f4"
+        },
+        "provenance/native-source-logs/tests.log": {
+          "bytes": 249567,
+          "sha256": "ade133395485818b0eebb561f98b2ec6f80c8427b6ae355711b7931a49e91bf8"
+        },
+        "provenance/native-source-logs/ui-observers.log": {
+          "bytes": 2361,
+          "sha256": "65eb98f5d160f20c1085c7a651c8acb869856f7d6f5c26b7973185fab5854d1c"
+        },
+        "provenance/native-source-report.json": {
+          "bytes": 97194,
+          "sha256": "34bf46580fe2f3655f765c5266d55e2786143bb28fb423f4e97e537f68a06af8"
+        },
+        "provenance/profile.json": {
+          "bytes": 5540,
+          "sha256": "0d6f4924d98f1cd43d4e3104b9a9c3b4f2a4b2557e96f64bd626f9930f4b34bb"
+        },
+        "provenance/source-lock.json": {
+          "bytes": 1871,
+          "sha256": "6efd72448219b9c226646817656ff4c9d2d808422fe5647cff10c0754473414c"
+        }
+      },
+      "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+      "image_sha256": {
+        "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+        "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+        "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+      },
+      "legal": {
+        "meaning": "Correspondence and license materials only; this does not grant project rights or certify redistribution compliance",
+        "product_license": "UNSET",
+        "status": "NOT_CLEARED"
+      },
+      "manually_collected": [
+        "Exact Buildroot archive including support/libtool patches",
+        "Complete exact Git source archive including native local packages, custom build scripts and patches"
+      ],
+      "native_source_regressions": {
+        "build_host": "aarch64",
+        "local_arm64_full_native": "FAIL_ORIGINAL_RETAINED",
+        "report_sha256": "34bf46580fe2f3655f765c5266d55e2786143bb28fb423f4e97e537f68a06af8",
+        "test_host": {
+          "machine": "x86_64",
+          "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+          "python": "3.13.15 (main, Aug  6 2026, 02:15:18) [GCC 13.3.0]"
+        }
+      },
+      "package_manifests": {
+        "host-manifest.csv": [
+          {
+            "DEPENDENCIES WITH LICENSES": "",
+            "LICENSE": "GPL-2.0+",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "buildroot",
+            "SOURCE ARCHIVE": "not saved",
+            "SOURCE SITE": "not saved",
+            "VERSION": "2026.08"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-automake [GPL-2.0+] host-binutils [GPL-3.0+, GPL-2.0+, LGPL-2.1+] host-gcc-initial [GPL-2.0, GPL-3.0, LGPL-2.1, LGPL-3.0] host-gmp [LGPL-3.0+ or GPL-2.0+] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-m4 [GPL-3.0+] host-mpc [LGPL-3.0+] host-mpfr [LGPL-3.0+] host-skeleton [GPL-2.0-or-later] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "GPL-2.0, GPL-3.0, LGPL-2.1, LGPL-3.0",
+            "LICENSE FILES": "COPYING COPYING3 COPYING.LIB COPYING3.LIB",
+            "PACKAGE": "gcc-final",
+            "SOURCE ARCHIVE": "gcc-15.3.0.tar.xz",
+            "SOURCE SITE": "https://ftpmirror.gnu.org/gcc/gcc-15.3.0",
+            "VERSION": "15.3.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "GPL-3.0+, GPL-2.0+, LGPL-2.1+",
+            "LICENSE FILES": "COPYING COPYING3 COPYING.LIB",
+            "PACKAGE": "binutils",
+            "SOURCE ARCHIVE": "binutils-2.45.1.tar.xz",
+            "SOURCE SITE": "https://ftpmirror.gnu.org/binutils",
+            "VERSION": "2.45.1"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-automake [GPL-2.0+] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-m4 [GPL-3.0+] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "LGPL-3.0+ or GPL-2.0+",
+            "LICENSE FILES": "COPYING.LESSERv3 COPYINGv2",
+            "PACKAGE": "gmp",
+            "SOURCE ARCHIVE": "gmp-6.3.0.tar.xz",
+            "SOURCE SITE": "https://ftpmirror.gnu.org/gmp",
+            "VERSION": "6.3.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-m4 [GPL-3.0+] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "GPL-3.0+ with exceptions",
+            "LICENSE FILES": "COPYINGv3 COPYING.EXCEPTION",
+            "PACKAGE": "autoconf",
+            "SOURCE ARCHIVE": "autoconf-2.73.tar.xz",
+            "SOURCE SITE": "https://ftpmirror.gnu.org/autoconf",
+            "VERSION": "2.73"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-m4 [GPL-3.0+] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)",
+            "LICENSE FILES": "COPYING libltdl/COPYING.LIB",
+            "PACKAGE": "libtool",
+            "SOURCE ARCHIVE": "libtool-2.5.4.tar.xz",
+            "SOURCE SITE": "https://ftpmirror.gnu.org/libtool",
+            "VERSION": "2.5.4"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "GPL-3.0+",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "m4",
+            "SOURCE ARCHIVE": "m4-1.4.21.tar.xz",
+            "SOURCE SITE": "https://ftpmirror.gnu.org/m4",
+            "VERSION": "1.4.21"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-m4 [GPL-3.0+] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "GPL-2.0+",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "automake",
+            "SOURCE ARCHIVE": "automake-1.16.5.tar.xz",
+            "SOURCE SITE": "https://ftpmirror.gnu.org/automake",
+            "VERSION": "1.16.5"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-automake [GPL-2.0+] host-gmp [LGPL-3.0+ or GPL-2.0+] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-m4 [GPL-3.0+] host-mpfr [LGPL-3.0+] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "LGPL-3.0+",
+            "LICENSE FILES": "COPYING.LESSER",
+            "PACKAGE": "mpc",
+            "SOURCE ARCHIVE": "mpc-1.4.1.tar.xz",
+            "SOURCE SITE": "https://ftpmirror.gnu.org/mpc",
+            "VERSION": "1.4.1"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-automake [GPL-2.0+] host-gmp [LGPL-3.0+ or GPL-2.0+] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-m4 [GPL-3.0+] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "LGPL-3.0+",
+            "LICENSE FILES": "COPYING.LESSER",
+            "PACKAGE": "mpfr",
+            "SOURCE ARCHIVE": "mpfr-4.2.2.tar.xz",
+            "SOURCE SITE": "http://www.mpfr.org/mpfr-4.2.2",
+            "VERSION": "4.2.2"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-automake [GPL-2.0+] host-binutils [GPL-3.0+, GPL-2.0+, LGPL-2.1+] host-gmp [LGPL-3.0+ or GPL-2.0+] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-m4 [GPL-3.0+] host-mpc [LGPL-3.0+] host-mpfr [LGPL-3.0+] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "GPL-2.0, GPL-3.0, LGPL-2.1, LGPL-3.0",
+            "LICENSE FILES": "COPYING COPYING3 COPYING.LIB COPYING3.LIB",
+            "PACKAGE": "gcc-initial",
+            "SOURCE ARCHIVE": "gcc-15.3.0.tar.xz",
+            "SOURCE SITE": "https://ftpmirror.gnu.org/gcc/gcc-15.3.0",
+            "VERSION": "15.3.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-autoconf-archive [GPL-3.0+ with exception] host-automake [GPL-2.0+] host-cmake [BSD-3-Clause] host-expat [MIT] host-libffi [MIT] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-libzlib [Zlib] host-m4 [GPL-3.0+] host-ninja [Apache-2.0] host-pkgconf [pkgconf license] host-python-flit-core [BSD-3-Clause] host-python-installer [MIT] host-python-packaging [Apache-2.0 or BSD-2-Clause] host-python-pypa-build [MIT] host-python-pyproject-hooks [MIT] host-python-setuptools [MIT] host-python-wheel [MIT] host-python3 [Python-2.0, others] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "Apache-2.0",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "meson",
+            "SOURCE ARCHIVE": "meson-1.11.1.tar.gz",
+            "SOURCE SITE": "https://github.com/mesonbuild/meson/releases/download/1.11.1",
+            "VERSION": "1.11.1"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-cmake [BSD-3-Clause] host-pkgconf [pkgconf license] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "Apache-2.0",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "ninja",
+            "SOURCE ARCHIVE": "ninja-1.13.2.tar.gz",
+            "SOURCE SITE": "https://github.com/ninja-build/ninja/archive/v1.13.2",
+            "VERSION": "1.13.2"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "BSD-3-Clause",
+            "LICENSE FILES": "LICENSE.rst",
+            "PACKAGE": "cmake",
+            "SOURCE ARCHIVE": "cmake-4.4.0.tar.gz",
+            "SOURCE SITE": "https://cmake.org/files/v4.4",
+            "VERSION": "4.4.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "pkgconf license",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "pkgconf",
+            "SOURCE ARCHIVE": "pkgconf-2.3.0.tar.xz",
+            "SOURCE SITE": "https://distfiles.ariadne.space/pkgconf",
+            "VERSION": "2.3.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-autoconf-archive [GPL-3.0+ with exception] host-automake [GPL-2.0+] host-expat [MIT] host-libffi [MIT] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-libzlib [Zlib] host-m4 [GPL-3.0+] host-pkgconf [pkgconf license] host-python-flit-core [BSD-3-Clause] host-python3 [Python-2.0, others] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "MIT",
+            "LICENSE FILES": "LICENSE",
+            "PACKAGE": "python-installer",
+            "SOURCE ARCHIVE": "installer-1.0.0.tar.gz",
+            "SOURCE SITE": "https://files.pythonhosted.org/packages/5f/ef/230b70e66db6ab01d5cbb93329688ed1f06b2b0618a74925e36384ff0fba",
+            "VERSION": "1.0.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-autoconf-archive [GPL-3.0+ with exception] host-automake [GPL-2.0+] host-expat [MIT] host-libffi [MIT] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-libzlib [Zlib] host-m4 [GPL-3.0+] host-pkgconf [pkgconf license] host-python3 [Python-2.0, others] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "BSD-3-Clause",
+            "LICENSE FILES": "LICENSE",
+            "PACKAGE": "python-flit-core",
+            "SOURCE ARCHIVE": "flit_core-3.12.0.tar.gz",
+            "SOURCE SITE": "https://files.pythonhosted.org/packages/69/59/b6fc2188dfc7ea4f936cd12b49d707f66a1cb7a1d2c16172963534db741b",
+            "VERSION": "3.12.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-autoconf-archive [GPL-3.0+ with exception] host-automake [GPL-2.0+] host-expat [MIT] host-libffi [MIT] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-libzlib [Zlib] host-m4 [GPL-3.0+] host-pkgconf [pkgconf license] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "Python-2.0, others",
+            "LICENSE FILES": "LICENSE",
+            "PACKAGE": "python3",
+            "SOURCE ARCHIVE": "Python-3.14.7.tar.xz",
+            "SOURCE SITE": "https://python.org/ftp/python/3.14.7",
+            "VERSION": "3.14.7"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "GPL-3.0+ with exception",
+            "LICENSE FILES": "COPYING COPYING.EXCEPTION",
+            "PACKAGE": "autoconf-archive",
+            "SOURCE ARCHIVE": "autoconf-archive-2024.10.16.tar.xz",
+            "SOURCE SITE": "https://ftpmirror.gnu.org/autoconf-archive",
+            "VERSION": "2024.10.16"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "MIT",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "expat",
+            "SOURCE ARCHIVE": "expat-2.8.4.tar.xz",
+            "SOURCE SITE": "https://github.com/libexpat/libexpat/releases/download/R_2_8_4",
+            "VERSION": "2.8.4"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-automake [GPL-2.0+] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-m4 [GPL-3.0+] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "MIT",
+            "LICENSE FILES": "LICENSE",
+            "PACKAGE": "libffi",
+            "SOURCE ARCHIVE": "libffi-3.8.0.tar.gz",
+            "SOURCE SITE": "https://github.com/libffi/libffi/releases/download/v3.8.0",
+            "VERSION": "3.8.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "Zlib",
+            "LICENSE FILES": "LICENSE",
+            "PACKAGE": "libzlib",
+            "SOURCE ARCHIVE": "zlib-1.3.2.tar.xz",
+            "SOURCE SITE": "https://www.zlib.net",
+            "VERSION": "1.3.2"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-autoconf-archive [GPL-3.0+ with exception] host-automake [GPL-2.0+] host-expat [MIT] host-libffi [MIT] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-libzlib [Zlib] host-m4 [GPL-3.0+] host-pkgconf [pkgconf license] host-python-flit-core [BSD-3-Clause] host-python-installer [MIT] host-python-packaging [Apache-2.0 or BSD-2-Clause] host-python-pyproject-hooks [MIT] host-python3 [Python-2.0, others] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "MIT",
+            "LICENSE FILES": "LICENSE",
+            "PACKAGE": "python-pypa-build",
+            "SOURCE ARCHIVE": "build-1.3.0.tar.gz",
+            "SOURCE SITE": "https://files.pythonhosted.org/packages/25/1c/23e33405a7c9eac261dff640926b8b5adaed6a6eb3e1767d441ed611d0c0",
+            "VERSION": "1.3.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-autoconf-archive [GPL-3.0+ with exception] host-automake [GPL-2.0+] host-expat [MIT] host-libffi [MIT] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-libzlib [Zlib] host-m4 [GPL-3.0+] host-pkgconf [pkgconf license] host-python-flit-core [BSD-3-Clause] host-python-installer [MIT] host-python3 [Python-2.0, others] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "Apache-2.0 or BSD-2-Clause",
+            "LICENSE FILES": "LICENSE LICENSE.APACHE LICENSE.BSD",
+            "PACKAGE": "python-packaging",
+            "SOURCE ARCHIVE": "packaging-26.2.tar.gz",
+            "SOURCE SITE": "https://files.pythonhosted.org/packages/d7/f1/e7a6dd94a8d4a5626c03e4e99c87f241ba9e350cd9e6d75123f992427270",
+            "VERSION": "26.2"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-autoconf-archive [GPL-3.0+ with exception] host-automake [GPL-2.0+] host-expat [MIT] host-libffi [MIT] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-libzlib [Zlib] host-m4 [GPL-3.0+] host-pkgconf [pkgconf license] host-python-flit-core [BSD-3-Clause] host-python-installer [MIT] host-python3 [Python-2.0, others] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "MIT",
+            "LICENSE FILES": "LICENSE",
+            "PACKAGE": "python-pyproject-hooks",
+            "SOURCE ARCHIVE": "pyproject_hooks-1.2.0.tar.gz",
+            "SOURCE SITE": "https://files.pythonhosted.org/packages/e7/82/28175b2414effca1cdac8dc99f76d660e7a4fb0ceefa4b4ab8f5f6742925",
+            "VERSION": "1.2.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-autoconf-archive [GPL-3.0+ with exception] host-automake [GPL-2.0+] host-expat [MIT] host-libffi [MIT] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-libzlib [Zlib] host-m4 [GPL-3.0+] host-pkgconf [pkgconf license] host-python-flit-core [BSD-3-Clause] host-python-installer [MIT] host-python-packaging [Apache-2.0 or BSD-2-Clause] host-python-pypa-build [MIT] host-python-pyproject-hooks [MIT] host-python-wheel [MIT] host-python3 [Python-2.0, others] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "MIT",
+            "LICENSE FILES": "LICENSE",
+            "PACKAGE": "python-setuptools",
+            "SOURCE ARCHIVE": "setuptools-80.9.0.tar.gz",
+            "SOURCE SITE": "https://files.pythonhosted.org/packages/18/5d/3bf57dcd21979b887f014ea83c24ae194cfcd12b9e0fda66b957c69d1fca",
+            "VERSION": "80.9.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-autoconf-archive [GPL-3.0+ with exception] host-automake [GPL-2.0+] host-expat [MIT] host-libffi [MIT] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-libzlib [Zlib] host-m4 [GPL-3.0+] host-pkgconf [pkgconf license] host-python-flit-core [BSD-3-Clause] host-python-installer [MIT] host-python-packaging [Apache-2.0 or BSD-2-Clause] host-python-pypa-build [MIT] host-python-pyproject-hooks [MIT] host-python3 [Python-2.0, others] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "MIT",
+            "LICENSE FILES": "LICENSE.txt",
+            "PACKAGE": "python-wheel",
+            "SOURCE ARCHIVE": "wheel-0.47.0.tar.gz",
+            "SOURCE SITE": "https://files.pythonhosted.org/packages/39/62/75f18a0f03b4219c456652c7780e4d749b929eb605c098ce3a5b6b6bc081",
+            "VERSION": "0.47.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "GPL-3.0+",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "gperf",
+            "SOURCE ARCHIVE": "gperf-3.3.tar.gz",
+            "SOURCE SITE": "https://ftpmirror.gnu.org/gperf",
+            "VERSION": "3.3"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-automake [GPL-2.0+] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-libzlib [Zlib] host-m4 [GPL-3.0+] host-pkgconf [pkgconf license] host-skeleton [GPL-2.0-or-later] host-util-linux [GPL-2.0+, BSD-4-Clause, LGPL-2.1+ (libblkid, libfdisk, libmount), BSD-3-Clause (libuuid), BSD-2-Clause (xxhash), ISC (rfkill), MIT (hardlink, flock)]",
+            "LICENSE": "GPL-2.0, MIT-like with advertising clause (libss and libet)",
+            "LICENSE FILES": "NOTICE lib/ss/mit-sipb-copyright.h lib/et/internal.h",
+            "PACKAGE": "e2fsprogs",
+            "SOURCE ARCHIVE": "e2fsprogs-1.47.4.tar.xz",
+            "SOURCE SITE": "https://cdn.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.47.4",
+            "VERSION": "1.47.4"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-automake [GPL-2.0+] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-libzlib [Zlib] host-m4 [GPL-3.0+] host-pkgconf [pkgconf license] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "GPL-2.0+, BSD-4-Clause, LGPL-2.1+ (libblkid, libfdisk, libmount), BSD-3-Clause (libuuid), BSD-2-Clause (xxhash), ISC (rfkill), MIT (hardlink, flock)",
+            "LICENSE FILES": "README.licensing Documentation/licenses/COPYING.BSD-2-Clause Documentation/licenses/COPYING.BSD-3-Clause Documentation/licenses/COPYING.BSD-4-Clause-UC Documentation/licenses/COPYING.EUPL-1.2 Documentation/licenses/COPYING.GPL-2.0-only Documentation/licenses/COPYING.GPL-2.0-or-later Documentation/licenses/COPYING.GPL-3.0-or-later Documentation/licenses/COPYING.ISC Documentation/licenses/COPYING.LGPL-2.1-or-later Documentation/licenses/COPYING.MIT",
+            "PACKAGE": "util-linux",
+            "SOURCE ARCHIVE": "util-linux-2.41.5.tar.xz",
+            "SOURCE SITE": "https://cdn.kernel.org/pub/linux/utils/util-linux/v2.41",
+            "VERSION": "2.41.5"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-autoconf [GPL-3.0+ with exceptions] host-autoconf-archive [GPL-3.0+ with exception] host-automake [GPL-2.0+] host-cmake [BSD-3-Clause] host-expat [MIT] host-libffi [MIT] host-libtool [GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)] host-libzlib [Zlib] host-m4 [GPL-3.0+] host-meson [Apache-2.0] host-ninja [Apache-2.0] host-pkgconf [pkgconf license] host-python-flit-core [BSD-3-Clause] host-python-installer [MIT] host-python-packaging [Apache-2.0 or BSD-2-Clause] host-python-pypa-build [MIT] host-python-pyproject-hooks [MIT] host-python-setuptools [MIT] host-python-wheel [MIT] host-python3 [Python-2.0, others] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "LGPL-2.1+ (library)",
+            "LICENSE FILES": "libkmod/COPYING",
+            "PACKAGE": "kmod",
+            "SOURCE ARCHIVE": "kmod-34.2.tar.xz",
+            "SOURCE SITE": "https://cdn.kernel.org/pub/linux/utils/kernel/kmod",
+            "VERSION": "34.2"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "GPL-3.0+",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "patchelf",
+            "SOURCE ARCHIVE": "patchelf-0.13.tar.bz2",
+            "SOURCE SITE": "https://github.com/NixOS/patchelf/releases/download/0.13",
+            "VERSION": "0.13"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-libzlib [Zlib] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "Apache-2.0",
+            "LICENSE FILES": "LICENSE.txt",
+            "PACKAGE": "libopenssl",
+            "SOURCE ARCHIVE": "openssl-3.6.4.tar.gz",
+            "SOURCE SITE": "https://github.com/openssl/openssl/releases/download/openssl-3.6.4",
+            "VERSION": "3.6.4"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-attr [GPL-2.0+ (programs), LGPL-2.1+ (libraries)] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "GPL-2.0+ (programs), LGPL-2.1+ (libraries)",
+            "LICENSE FILES": "doc/COPYING doc/COPYING.LGPL",
+            "PACKAGE": "acl",
+            "SOURCE ARCHIVE": "acl-2.4.0.tar.xz",
+            "SOURCE SITE": "https://download.savannah.nongnu.org/releases/acl",
+            "VERSION": "2.4.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "GPL-2.0+ (programs), LGPL-2.1+ (libraries)",
+            "LICENSE FILES": "doc/COPYING doc/COPYING.LGPL",
+            "PACKAGE": "attr",
+            "SOURCE ARCHIVE": "attr-2.6.0.tar.xz",
+            "SOURCE SITE": "http://download.savannah.gnu.org/releases/attr",
+            "VERSION": "2.6.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-acl [GPL-2.0+ (programs), LGPL-2.1+ (libraries)] host-attr [GPL-2.0+ (programs), LGPL-2.1+ (libraries)] host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "GPL-3.0+",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "fakeroot",
+            "SOURCE ARCHIVE": "fakeroot_1.37.2.orig.tar.gz",
+            "SOURCE SITE": "https://snapshot.debian.org/archive/debian/20260401T000000Z/pool/main/f/fakeroot",
+            "VERSION": "1.37.2"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "host-skeleton [GPL-2.0-or-later]",
+            "LICENSE": "LGPL-2.1+",
+            "LICENSE FILES": "LICENSING COPYING.LIB",
+            "PACKAGE": "libxcrypt",
+            "SOURCE ARCHIVE": "libxcrypt-4.5.2.tar.xz",
+            "SOURCE SITE": "https://github.com/besser82/libxcrypt/releases/download/v4.5.2",
+            "VERSION": "4.5.2"
+          }
+        ],
+        "manifest.csv": [
+          {
+            "DEPENDENCIES WITH LICENSES": "linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "GPL-3.0-with-GCC-exception",
+            "LICENSE FILES": "COPYING.RUNTIME",
+            "PACKAGE": "gcc-final",
+            "SOURCE ARCHIVE": "gcc-15.3.0.tar.xz",
+            "SOURCE SITE": "https://ftpmirror.gnu.org/gcc/gcc-15.3.0",
+            "VERSION": "15.3.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "linux-headers [GPL-2.0] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "MIT",
+            "LICENSE FILES": "COPYRIGHT",
+            "PACKAGE": "musl",
+            "SOURCE ARCHIVE": "musl-1.2.6.tar.gz",
+            "SOURCE SITE": "http://musl.libc.org/releases",
+            "VERSION": "1.2.6"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "GPL-2.0",
+            "LICENSE FILES": "COPYING LICENSES/preferred/GPL-2.0 LICENSES/exceptions/Linux-syscall-note",
+            "PACKAGE": "linux-headers",
+            "SOURCE ARCHIVE": "linux-6.18.50.tar.xz",
+            "SOURCE SITE": "https://cdn.kernel.org/pub/linux/kernel/v6.x",
+            "VERSION": "6.18.50"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] libcap [GPL-2.0 or BSD-3-Clause] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "LGPL-2.0+",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "bubblewrap",
+            "SOURCE ARCHIVE": "bubblewrap-0.11.2.tar.xz",
+            "SOURCE SITE": "https://github.com/containers/bubblewrap/releases/download/v0.11.2",
+            "VERSION": "0.11.2"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "GPL-2.0 or BSD-3-Clause",
+            "LICENSE FILES": "License",
+            "PACKAGE": "libcap",
+            "SOURCE ARCHIVE": "libcap-2.78.tar.xz",
+            "SOURCE SITE": "https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2",
+            "VERSION": "2.78"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "GPL-2.0, bzip2-1.0.6",
+            "LICENSE FILES": "LICENSE archival/libarchive/bz/LICENSE",
+            "PACKAGE": "busybox",
+            "SOURCE ARCHIVE": "busybox-1.38.0.tar.bz2",
+            "SOURCE SITE": "https://www.busybox.net/downloads",
+            "VERSION": "1.38.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "expat [MIT] fontconfig [fontconfig license] freetype [FTL or GPL-2.0+] gcc-final [GPL-3.0-with-GCC-exception] libpng [Libpng-2.0] libzlib [Zlib] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] pixman [MIT] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "LGPL-2.1 or MPL-1.1 (library)",
+            "LICENSE FILES": "COPYING COPYING-LGPL-2.1 COPYING-MPL-1.1",
+            "PACKAGE": "cairo",
+            "SOURCE ARCHIVE": "cairo-1.18.4.tar.xz",
+            "SOURCE SITE": "http://cairographics.org/releases",
+            "VERSION": "1.18.4"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "expat [MIT] freetype [FTL or GPL-2.0+] gcc-final [GPL-3.0-with-GCC-exception] libpng [Libpng-2.0] libzlib [Zlib] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "fontconfig license",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "fontconfig",
+            "SOURCE ARCHIVE": "fontconfig-2.17.1.tar.xz",
+            "SOURCE SITE": "https://gitlab.freedesktop.org/api/v4/projects/890/packages/generic/fontconfig/2.17.1",
+            "VERSION": "2.17.1"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "MIT",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "expat",
+            "SOURCE ARCHIVE": "expat-2.8.4.tar.xz",
+            "SOURCE SITE": "https://github.com/libexpat/libexpat/releases/download/R_2_8_4",
+            "VERSION": "2.8.4"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] libpng [Libpng-2.0] libzlib [Zlib] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "FTL or GPL-2.0+",
+            "LICENSE FILES": "LICENSE.TXT docs/FTL.TXT docs/GPLv2.TXT",
+            "PACKAGE": "freetype",
+            "SOURCE ARCHIVE": "freetype-2.14.3.tar.xz",
+            "SOURCE SITE": "https://download.savannah.gnu.org/releases/freetype",
+            "VERSION": "2.14.3"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] libzlib [Zlib] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "Libpng-2.0",
+            "LICENSE FILES": "LICENSE",
+            "PACKAGE": "libpng",
+            "SOURCE ARCHIVE": "libpng-1.6.58.tar.xz",
+            "SOURCE SITE": "https://downloads.sourceforge.net/project/libpng/libpng16/1.6.58",
+            "VERSION": "1.6.58"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "Zlib",
+            "LICENSE FILES": "LICENSE",
+            "PACKAGE": "libzlib",
+            "SOURCE ARCHIVE": "zlib-1.3.2.tar.xz",
+            "SOURCE SITE": "https://www.zlib.net",
+            "VERSION": "1.3.2"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "MIT",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "pixman",
+            "SOURCE ARCHIVE": "pixman-0.46.4.tar.xz",
+            "SOURCE SITE": "https://xorg.freedesktop.org/releases/individual/lib",
+            "VERSION": "0.46.4"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "BSD-3-Clause, GPL-2.0+ (mksignames.c)",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "dash",
+            "SOURCE ARCHIVE": "dash-0.5.13.5.tar.gz",
+            "SOURCE SITE": "http://gondor.apana.org.au/~herbert/dash/files",
+            "VERSION": "0.5.13.5"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "MIT",
+            "LICENSE FILES": "COPYING",
+            "PACKAGE": "json-c",
+            "SOURCE ARCHIVE": "json-c-0.18.tar.gz",
+            "SOURCE SITE": "https://s3.amazonaws.com/json-c_releases/releases",
+            "VERSION": "0.18"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "MIT",
+            "LICENSE FILES": "LICENSE",
+            "PACKAGE": "libffi",
+            "SOURCE ARCHIVE": "libffi-3.8.0.tar.gz",
+            "SOURCE SITE": "https://github.com/libffi/libffi/releases/download/v3.8.0",
+            "VERSION": "3.8.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] libzlib [Zlib] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "Apache-2.0",
+            "LICENSE FILES": "LICENSE.txt",
+            "PACKAGE": "libopenssl",
+            "SOURCE ARCHIVE": "openssl-3.6.4.tar.gz",
+            "SOURCE SITE": "https://github.com/openssl/openssl/releases/download/openssl-3.6.4",
+            "VERSION": "3.6.4"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "LGPL-2.1",
+            "LICENSE FILES": "LICENSE",
+            "PACKAGE": "libseccomp",
+            "SOURCE ARCHIVE": "libseccomp-2.6.0.tar.gz",
+            "SOURCE SITE": "https://github.com/seccomp/libseccomp/releases/download/v2.6.0",
+            "VERSION": "2.6.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] libffi [MIT] libopenssl [Apache-2.0] libzlib [Zlib] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later] sqlite [blessing]",
+            "LICENSE": "Python-2.0, others",
+            "LICENSE FILES": "LICENSE",
+            "PACKAGE": "python3",
+            "SOURCE ARCHIVE": "Python-3.14.7.tar.xz",
+            "SOURCE SITE": "https://python.org/ftp/python/3.14.7",
+            "VERSION": "3.14.7"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "blessing",
+            "LICENSE FILES": "tea/license.terms",
+            "PACKAGE": "sqlite",
+            "SOURCE ARCHIVE": "sqlite-autoconf-3530400.tar.gz",
+            "SOURCE SITE": "https://www.sqlite.org/2026",
+            "VERSION": "3.53.4"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "GPL-2.0",
+            "LICENSE FILES": "COPYING LICENSES/preferred/GPL-2.0 LICENSES/exceptions/Linux-syscall-note",
+            "PACKAGE": "linux",
+            "SOURCE ARCHIVE": "linux-6.18.50.tar.xz",
+            "SOURCE SITE": "https://cdn.kernel.org/pub/linux/kernel/v6.x",
+            "VERSION": "6.18.50"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "gcc-final [GPL-3.0-with-GCC-exception] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "Proprietary (project license not yet selected)",
+            "LICENSE FILES": "",
+            "PACKAGE": "rock-core",
+            "SOURCE ARCHIVE": "rock-core-0.1.0.tar.gz",
+            "SOURCE SITE": "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/buildroot/../core",
+            "VERSION": "0.1.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "bubblewrap [LGPL-2.0+] gcc-final [GPL-3.0-with-GCC-exception] libcap [GPL-2.0 or BSD-3-Clause] libffi [MIT] libopenssl [Apache-2.0] libseccomp [LGPL-2.1] libzlib [Zlib] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] python3 [Python-2.0, others] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later] sqlite [blessing]",
+            "LICENSE": "Proprietary (project license not yet selected)",
+            "LICENSE FILES": "",
+            "PACKAGE": "rock-platform",
+            "SOURCE ARCHIVE": "rock-platform-0.3.0.tar.gz",
+            "SOURCE SITE": "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/buildroot/../platform",
+            "VERSION": "0.3.0"
+          },
+          {
+            "DEPENDENCIES WITH LICENSES": "cairo [LGPL-2.1 or MPL-1.1 (library)] expat [MIT] fontconfig [fontconfig license] freetype [FTL or GPL-2.0+] gcc-final [GPL-3.0-with-GCC-exception] json-c [MIT] libpng [Libpng-2.0] libzlib [Zlib] linux-headers [GPL-2.0] musl [MIT] musl-compat-headers [BSD-3-Clause, Public Domain or CC0] pixman [MIT] skeleton-init-common [GPL-2.0-or-later] skeleton-init-sysv [GPL-2.0-or-later]",
+            "LICENSE": "Proprietary (project license not yet selected)",
+            "LICENSE FILES": "",
+            "PACKAGE": "rock-ui",
+            "SOURCE ARCHIVE": "rock-ui-0.3.0.tar.gz",
+            "SOURCE SITE": "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/buildroot/../ui",
+            "VERSION": "0.3.0"
+          }
+        ]
+      },
+      "profile_sha256": "0d6f4924d98f1cd43d4e3104b9a9c3b4f2a4b2557e96f64bd626f9930f4b34bb",
+      "schema": "rock-build-corresponding-sources/1",
+      "source_archive_sha256": "1fac2382110401638dd9ea6d5d5d4d67bf902b5198f5bd38a187c66508719532",
+      "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+      "status": "COLLECTED_NOT_CLEARED",
+      "warnings": [
+        "WARNING: the Buildroot source code has not been saved",
+        "WARNING: rock-core-0.1.0: cannot save license (ROCK_CORE_LICENSE_FILES not defined)",
+        "WARNING: rock-platform-0.3.0: cannot save license (ROCK_PLATFORM_LICENSE_FILES not defined)",
+        "WARNING: rock-ui-0.3.0: cannot save license (ROCK_UI_LICENSE_FILES not defined)"
+      ]
+    }
+  },
+  "directories": [],
+  "expanded_file_bytes": 953953633,
+  "file_count": 298,
+  "files": {
+    "buildroot-legal-info/README": {
+      "bytes": 2403,
+      "mode": 292,
+      "sha256": "049d3f85300d2f448b0d91cae3580753047ede013289843108bf51047240d9e4"
+    },
+    "buildroot-legal-info/buildroot.config": {
+      "bytes": 170192,
+      "mode": 292,
+      "sha256": "17f91594f2609c64ce9b966b148d3d85a02e90920167e8582471ed0277288bb6"
+    },
+    "buildroot-legal-info/host-licenses/acl-2.4.0/doc/COPYING": {
+      "bytes": 18311,
+      "mode": 292,
+      "sha256": "a45a845012742796534f7e91fe623262ccfb99460a2bd04015bd28d66fba95b8"
+    },
+    "buildroot-legal-info/host-licenses/acl-2.4.0/doc/COPYING.LGPL": {
+      "bytes": 26762,
+      "mode": 292,
+      "sha256": "01b1f9f2c8ee648a7a596a1abe8aa4ed7899b1c9e5551bda06da6e422b04aa55"
+    },
+    "buildroot-legal-info/host-licenses/attr-2.6.0/doc/COPYING": {
+      "bytes": 18312,
+      "mode": 292,
+      "sha256": "98f318493be6b08bff3cd295791cde06c54e17882a3c74a1ed245eaa02533d52"
+    },
+    "buildroot-legal-info/host-licenses/attr-2.6.0/doc/COPYING.LGPL": {
+      "bytes": 26763,
+      "mode": 292,
+      "sha256": "5decad7e58d90d44335bf2f45ce27563bd911065c6a1a02dfa7647c4efee75c8"
+    },
+    "buildroot-legal-info/host-licenses/autoconf-2.73/COPYING.EXCEPTION": {
+      "bytes": 1866,
+      "mode": 292,
+      "sha256": "1f1cde9fb68b9b3cff18c420894bec5bd4defacd700b7d13df54a887301e5350"
+    },
+    "buildroot-legal-info/host-licenses/autoconf-2.73/COPYINGv3": {
+      "bytes": 35149,
+      "mode": 292,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "buildroot-legal-info/host-licenses/autoconf-archive-2024.10.16/COPYING": {
+      "bytes": 35150,
+      "mode": 292,
+      "sha256": "e6037104443f9a7829b2aa7c5370d0789a7bda3ca65a0b904cdc0c2e285d9195"
+    },
+    "buildroot-legal-info/host-licenses/autoconf-archive-2024.10.16/COPYING.EXCEPTION": {
+      "bytes": 1865,
+      "mode": 292,
+      "sha256": "23ed0b84fa023bfa33433b498192cd08a3bfb1f4864a8ed791a84f3eb48b2dd2"
+    },
+    "buildroot-legal-info/host-licenses/automake-1.16.5/COPYING": {
+      "bytes": 17987,
+      "mode": 292,
+      "sha256": "ab15fd526bd8dd18a9e77ebc139656bf4d33e97fc7238cd11bf60e2b9b8666c6"
+    },
+    "buildroot-legal-info/host-licenses/binutils-2.45.1/COPYING": {
+      "bytes": 18002,
+      "mode": 292,
+      "sha256": "231f7edcc7352d7734a96eef0b8030f77982678c516876fcb81e25b32d68564c"
+    },
+    "buildroot-legal-info/host-licenses/binutils-2.45.1/COPYING.LIB": {
+      "bytes": 25291,
+      "mode": 292,
+      "sha256": "56bdea73b6145ef6ac5259b3da390b981d840c24cb03b8e1cbc678de7ecfa18d"
+    },
+    "buildroot-legal-info/host-licenses/binutils-2.45.1/COPYING3": {
+      "bytes": 35147,
+      "mode": 292,
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    },
+    "buildroot-legal-info/host-licenses/buildroot/COPYING": {
+      "bytes": 18767,
+      "mode": 292,
+      "sha256": "9755181e27175cb3510b4da8629caa406fb355a19aa8e7d55f06bf8ab33323c4"
+    },
+    "buildroot-legal-info/host-licenses/cmake-4.4.0/LICENSE.rst": {
+      "bytes": 1498,
+      "mode": 292,
+      "sha256": "4382e7c1879ac90e3f101a395d23846fa4dbcaa1eed7265b43681e348754825d"
+    },
+    "buildroot-legal-info/host-licenses/e2fsprogs-1.47.4/NOTICE": {
+      "bytes": 44585,
+      "mode": 292,
+      "sha256": "5da5ef153e559c1d990d4c3eedbedd4442db892d37eae1f35fff069de8ec9020"
+    },
+    "buildroot-legal-info/host-licenses/e2fsprogs-1.47.4/lib/et/internal.h": {
+      "bytes": 676,
+      "mode": 292,
+      "sha256": "47182fe6631a32f271a15bbe210751b3825b7199f588879aac7d4804fc8b4b8f"
+    },
+    "buildroot-legal-info/host-licenses/e2fsprogs-1.47.4/lib/ss/mit-sipb-copyright.h": {
+      "bytes": 763,
+      "mode": 292,
+      "sha256": "032989b508f1a72ebee5b3417e55d06d473f9ee203e45ab11864a7e49cdec63d"
+    },
+    "buildroot-legal-info/host-licenses/expat-2.8.4/COPYING": {
+      "bytes": 1144,
+      "mode": 292,
+      "sha256": "31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87"
+    },
+    "buildroot-legal-info/host-licenses/fakeroot-1.37.2/COPYING": {
+      "bytes": 35068,
+      "mode": 292,
+      "sha256": "fc82ca8b6fdb18d4e3e85cfd8ab58d1bcd3f1b29abe782895abd91d64763f8e7"
+    },
+    "buildroot-legal-info/host-licenses/gcc-final-15.3.0/COPYING": {
+      "bytes": 18002,
+      "mode": 292,
+      "sha256": "231f7edcc7352d7734a96eef0b8030f77982678c516876fcb81e25b32d68564c"
+    },
+    "buildroot-legal-info/host-licenses/gcc-final-15.3.0/COPYING.LIB": {
+      "bytes": 26527,
+      "mode": 292,
+      "sha256": "a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861"
+    },
+    "buildroot-legal-info/host-licenses/gcc-final-15.3.0/COPYING3": {
+      "bytes": 35147,
+      "mode": 292,
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    },
+    "buildroot-legal-info/host-licenses/gcc-final-15.3.0/COPYING3.LIB": {
+      "bytes": 7639,
+      "mode": 292,
+      "sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c"
+    },
+    "buildroot-legal-info/host-licenses/gcc-initial-15.3.0/COPYING": {
+      "bytes": 18002,
+      "mode": 292,
+      "sha256": "231f7edcc7352d7734a96eef0b8030f77982678c516876fcb81e25b32d68564c"
+    },
+    "buildroot-legal-info/host-licenses/gcc-initial-15.3.0/COPYING.LIB": {
+      "bytes": 26527,
+      "mode": 292,
+      "sha256": "a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861"
+    },
+    "buildroot-legal-info/host-licenses/gcc-initial-15.3.0/COPYING3": {
+      "bytes": 35147,
+      "mode": 292,
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    },
+    "buildroot-legal-info/host-licenses/gcc-initial-15.3.0/COPYING3.LIB": {
+      "bytes": 7639,
+      "mode": 292,
+      "sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c"
+    },
+    "buildroot-legal-info/host-licenses/gmp-6.3.0/COPYING.LESSERv3": {
+      "bytes": 7639,
+      "mode": 292,
+      "sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c"
+    },
+    "buildroot-legal-info/host-licenses/gmp-6.3.0/COPYINGv2": {
+      "bytes": 18092,
+      "mode": 292,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    "buildroot-legal-info/host-licenses/gperf-3.3/COPYING": {
+      "bytes": 35147,
+      "mode": 292,
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    },
+    "buildroot-legal-info/host-licenses/kmod-34.2/libkmod/COPYING": {
+      "bytes": 26432,
+      "mode": 292,
+      "sha256": "6095e9ffa777dd22839f7801aa845b31c9ed07f3d6bf8a26dc5d2dec8ccc0ef3"
+    },
+    "buildroot-legal-info/host-licenses/libffi-3.8.0/LICENSE": {
+      "bytes": 1132,
+      "mode": 292,
+      "sha256": "17b64dc60f3b6897a60f971e288b973f655c2edcdf08b25f3c3dd5549857881c"
+    },
+    "buildroot-legal-info/host-licenses/libopenssl-3.6.4/LICENSE.txt": {
+      "bytes": 10175,
+      "mode": 292,
+      "sha256": "7d5450cb2d142651b8afa315b5f238efc805dad827d91ba367d8516bc9d49e7a"
+    },
+    "buildroot-legal-info/host-licenses/libtool-2.5.4/COPYING": {
+      "bytes": 17984,
+      "mode": 292,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    "buildroot-legal-info/host-licenses/libtool-2.5.4/libltdl/COPYING.LIB": {
+      "bytes": 26419,
+      "mode": 292,
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95"
+    },
+    "buildroot-legal-info/host-licenses/libxcrypt-4.5.2/COPYING.LIB": {
+      "bytes": 26530,
+      "mode": 292,
+      "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551"
+    },
+    "buildroot-legal-info/host-licenses/libxcrypt-4.5.2/LICENSING": {
+      "bytes": 5854,
+      "mode": 292,
+      "sha256": "9144e66d8140feb84f0e4e344906ac425378896320032e0248567ef195cf0135"
+    },
+    "buildroot-legal-info/host-licenses/libzlib-1.3.2/LICENSE": {
+      "bytes": 1002,
+      "mode": 292,
+      "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2"
+    },
+    "buildroot-legal-info/host-licenses/m4-1.4.21/COPYING": {
+      "bytes": 35149,
+      "mode": 292,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "buildroot-legal-info/host-licenses/meson-1.11.1/COPYING": {
+      "bytes": 11358,
+      "mode": 292,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "buildroot-legal-info/host-licenses/mpc-1.4.1/COPYING.LESSER": {
+      "bytes": 7651,
+      "mode": 292,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    "buildroot-legal-info/host-licenses/mpfr-4.2.2/COPYING.LESSER": {
+      "bytes": 7652,
+      "mode": 292,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+    },
+    "buildroot-legal-info/host-licenses/ninja-1.13.2/COPYING": {
+      "bytes": 11358,
+      "mode": 292,
+      "sha256": "eb7e9ab9690124c5c9f42bdc81383d886a3dede26345b6ed15bbad7caf81f7ea"
+    },
+    "buildroot-legal-info/host-licenses/patchelf-0.13/COPYING": {
+      "bytes": 35147,
+      "mode": 292,
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    },
+    "buildroot-legal-info/host-licenses/pkgconf-2.3.0/COPYING": {
+      "bytes": 509,
+      "mode": 292,
+      "sha256": "07ee94b50a41ee3fc4e13a9b9c60b26fc28488494c465639f7e5f07a3952ec04"
+    },
+    "buildroot-legal-info/host-licenses/python-flit-core-3.12.0/LICENSE": {
+      "bytes": 1525,
+      "mode": 292,
+      "sha256": "35b4f1dec512e617077fd6980dbb43ef8c2887adc5d0185edb4c04da175dd816"
+    },
+    "buildroot-legal-info/host-licenses/python-installer-1.0.0/LICENSE": {
+      "bytes": 1057,
+      "mode": 292,
+      "sha256": "37b8b9f2569892fa54406383d431169dbb2115980d78b7efba6eeae5664c484f"
+    },
+    "buildroot-legal-info/host-licenses/python-packaging-26.2/LICENSE": {
+      "bytes": 197,
+      "mode": 292,
+      "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+    },
+    "buildroot-legal-info/host-licenses/python-packaging-26.2/LICENSE.APACHE": {
+      "bytes": 10174,
+      "mode": 292,
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+    },
+    "buildroot-legal-info/host-licenses/python-packaging-26.2/LICENSE.BSD": {
+      "bytes": 1344,
+      "mode": 292,
+      "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+    },
+    "buildroot-legal-info/host-licenses/python-pypa-build-1.3.0/LICENSE": {
+      "bytes": 1113,
+      "mode": 292,
+      "sha256": "aaf9a29ca5907971ccf07de025375db34539a8d5eeebce20b46099805722106f"
+    },
+    "buildroot-legal-info/host-licenses/python-pyproject-hooks-1.2.0/LICENSE": {
+      "bytes": 1081,
+      "mode": 292,
+      "sha256": "1b22b049b5267d6dfc23a67bf4a84d8ec04b9fdfb1a51d360e42b4342c8b4154"
+    },
+    "buildroot-legal-info/host-licenses/python-setuptools-80.9.0/LICENSE": {
+      "bytes": 1023,
+      "mode": 292,
+      "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+    },
+    "buildroot-legal-info/host-licenses/python-wheel-0.47.0/LICENSE.txt": {
+      "bytes": 1107,
+      "mode": 292,
+      "sha256": "30c23618679108f3e8ea1d2a658c7ca417bdfc891c98ef1a89fa4ff0c9828654"
+    },
+    "buildroot-legal-info/host-licenses/python3-3.14.7/LICENSE": {
+      "bytes": 13804,
+      "mode": 292,
+      "sha256": "b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231"
+    },
+    "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.BSD-2-Clause": {
+      "bytes": 1245,
+      "mode": 292,
+      "sha256": "527f738966ca396cd5a68c1509390de2a780c6b614d9ee57f7544a6161938ed1"
+    },
+    "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.BSD-3-Clause": {
+      "bytes": 1391,
+      "mode": 292,
+      "sha256": "9b718a9460fed5952466421235bc79eb49d4e9eacc920d7a9dd6285ab8fd6c6d"
+    },
+    "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.BSD-4-Clause-UC": {
+      "bytes": 1824,
+      "mode": 292,
+      "sha256": "ba7640f00d93e72e92b94b9d71f25ec53bac2f1682f5c4adcccb0018359f60f8"
+    },
+    "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.EUPL-1.2": {
+      "bytes": 13827,
+      "mode": 292,
+      "sha256": "6fc9e709ccbfe0d77fbffa2427a983282be2eb88e47b1cdb49f21a83b4d1e665"
+    },
+    "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.GPL-2.0-only": {
+      "bytes": 18092,
+      "mode": 292,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.GPL-2.0-or-later": {
+      "bytes": 18092,
+      "mode": 292,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.GPL-3.0-or-later": {
+      "bytes": 35149,
+      "mode": 292,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.ISC": {
+      "bytes": 697,
+      "mode": 292,
+      "sha256": "e53348ce276358e9997014071c5294b36a18c4b34f32f00ee57b9acce0aafd63"
+    },
+    "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.LGPL-2.1-or-later": {
+      "bytes": 26530,
+      "mode": 292,
+      "sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551"
+    },
+    "buildroot-legal-info/host-licenses/util-linux-2.41.5/Documentation/licenses/COPYING.MIT": {
+      "bytes": 1054,
+      "mode": 292,
+      "sha256": "8555341619542abb48c102afd954e42d4478e5be16ad3d5af7b0ff71009e7348"
+    },
+    "buildroot-legal-info/host-licenses/util-linux-2.41.5/README.licensing": {
+      "bytes": 1037,
+      "mode": 292,
+      "sha256": "4c2db318192bda62f3f8fcf71488bb5e602ae4385eba281d711b46cc13a40bb3"
+    },
+    "buildroot-legal-info/host-manifest.csv": {
+      "bytes": 13822,
+      "mode": 292,
+      "sha256": "c30fd6fb9177f8336154be1d007cd9b8dd79b5cceed2490655bb82839f413529"
+    },
+    "buildroot-legal-info/host-sources/acl-2.4.0/0001-Build-with-old-GCC-versions.patch": {
+      "bytes": 975,
+      "mode": 292,
+      "sha256": "cc1ddc4f2fa72c1d1555ee4639ba85409ff9f46ef29619b0fab21d05dc951217"
+    },
+    "buildroot-legal-info/host-sources/acl-2.4.0/acl-2.4.0.tar.xz": {
+      "bytes": 384828,
+      "mode": 292,
+      "sha256": "e661131456d2708a01c614a0f400e11d7d1bfaeb6f3e74b75bb980b72f0161a3"
+    },
+    "buildroot-legal-info/host-sources/acl-2.4.0/series": {
+      "bytes": 39,
+      "mode": 292,
+      "sha256": "ecc16be946d16bbaa3091152be9a3af885acbae478946f6ca74e4e7e1ca4342f"
+    },
+    "buildroot-legal-info/host-sources/attr-2.6.0/0001-build-with-older-GCCs.patch": {
+      "bytes": 3623,
+      "mode": 292,
+      "sha256": "6150b5d5f6becba49d06bad7720583661e0090c155d6566dc44c8f7f329eb1e3"
+    },
+    "buildroot-legal-info/host-sources/attr-2.6.0/attr-2.6.0.tar.xz": {
+      "bytes": 343608,
+      "mode": 292,
+      "sha256": "6c8a2148a7b85043b68492bce43316b0e2e214fc4e628c7ede078e76e216330b"
+    },
+    "buildroot-legal-info/host-sources/attr-2.6.0/series": {
+      "bytes": 33,
+      "mode": 292,
+      "sha256": "9817d669b691651122875d161b06071704a6b67f0c48586a8787e4dd1b16cd4b"
+    },
+    "buildroot-legal-info/host-sources/autoconf-2.73/0001-dont-add-dirty-to-version.patch": {
+      "bytes": 1243,
+      "mode": 292,
+      "sha256": "c326c51b172e54dd190f57b5da2acbb6657411402cd5ffd1c3feff68ae8032a8"
+    },
+    "buildroot-legal-info/host-sources/autoconf-2.73/autoconf-2.73.tar.xz": {
+      "bytes": 1417428,
+      "mode": 292,
+      "sha256": "9fd672b1c8425fac2fa67fa0477b990987268b90ff36d5f016dae57be0d6b52e"
+    },
+    "buildroot-legal-info/host-sources/autoconf-2.73/series": {
+      "bytes": 37,
+      "mode": 292,
+      "sha256": "ec25e5b3a63f517720e2fc3f45c7b085b90604ff2f9e1b0905280131f22a5eb9"
+    },
+    "buildroot-legal-info/host-sources/autoconf-archive-2024.10.16/autoconf-archive-2024.10.16.tar.xz": {
+      "bytes": 677768,
+      "mode": 292,
+      "sha256": "7bcd5d001916f3a50ed7436f4f700e3d2b1bade3ed803219c592d62502a57363"
+    },
+    "buildroot-legal-info/host-sources/automake-1.16.5/0001-noman.patch": {
+      "bytes": 1449,
+      "mode": 292,
+      "sha256": "9e81c72b12abfa374d47cb40a602345eb9dda006736ea17d864ed57007b40159"
+    },
+    "buildroot-legal-info/host-sources/automake-1.16.5/automake-1.16.5.tar.xz": {
+      "bytes": 1601740,
+      "mode": 292,
+      "sha256": "f01d58cd6d9d77fbdca9eb4bbd5ead1988228fdb73d6f7a201f5f8d6b118b469"
+    },
+    "buildroot-legal-info/host-sources/automake-1.16.5/series": {
+      "bytes": 17,
+      "mode": 292,
+      "sha256": "9c2fd1ecc1613bc967087f12bf372cefff7f2b12af174f8aaebf815ed6500040"
+    },
+    "buildroot-legal-info/host-sources/binutils-2.45.1/0001-sh-conf.patch": {
+      "bytes": 1507,
+      "mode": 292,
+      "sha256": "1452a5ce443c4d674304872af3a0973522a3994dbcc3ac1df23779ab0b8a6271"
+    },
+    "buildroot-legal-info/host-sources/binutils-2.45.1/0002-poison-system-directories.patch": {
+      "bytes": 10927,
+      "mode": 292,
+      "sha256": "0bcfbd5e34c4e12f1e6d068aca3ff706761357b25c3cdd0bc8dd212c232deccc"
+    },
+    "buildroot-legal-info/host-sources/binutils-2.45.1/0003-or1k-Mark-undefined-TLS-symbol-as-STT_TLS.patch": {
+      "bytes": 2051,
+      "mode": 292,
+      "sha256": "6edb26dba4c416a7e2213aa4beaedc8818f0b2cec061232b717a8ea60464d634"
+    },
+    "buildroot-legal-info/host-sources/binutils-2.45.1/0004-gprofng-protect-against-standard-library-macros.patch": {
+      "bytes": 1275,
+      "mode": 292,
+      "sha256": "68a87204e8bd26879b0fb2b25e85ee340645aaad541091e10c5656532b086c13"
+    },
+    "buildroot-legal-info/host-sources/binutils-2.45.1/binutils-2.45.1.tar.xz": {
+      "bytes": 27962312,
+      "mode": 292,
+      "sha256": "5fe101e6fe9d18fdec95962d81ed670fdee5f37e3f48f0bef87bddf862513aa5"
+    },
+    "buildroot-legal-info/host-sources/binutils-2.45.1/series": {
+      "bytes": 168,
+      "mode": 292,
+      "sha256": "df81d90c4c796e82c3e4f3ec21eea73dd26ef82b381f06f3bef31957577c7aa5"
+    },
+    "buildroot-legal-info/host-sources/cmake-4.4.0/0001-rename-cmake-rootfile.patch": {
+      "bytes": 1594,
+      "mode": 292,
+      "sha256": "d3b1b332c07d7a9c1494fe97016e103a5e9c422b3c747141263c239e1edba1e3"
+    },
+    "buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz": {
+      "bytes": 13275398,
+      "mode": 292,
+      "sha256": "65757f442fdd242e27f1728fc26dc0cba4164f7a0791a5c788631c00080369bc"
+    },
+    "buildroot-legal-info/host-sources/cmake-4.4.0/series": {
+      "bytes": 33,
+      "mode": 292,
+      "sha256": "26d446c37e5512adad206575354e6d5a66972e602d5c637ff15c28a665df2b28"
+    },
+    "buildroot-legal-info/host-sources/e2fsprogs-1.47.4/e2fsprogs-1.47.4.tar.xz": {
+      "bytes": 7337236,
+      "mode": 292,
+      "sha256": "fd5bf388cbdbe006a3d3b318d983b2948382440acc85a87f1e7d108653e8db0b"
+    },
+    "buildroot-legal-info/host-sources/expat-2.8.4/expat-2.8.4.tar.xz": {
+      "bytes": 519688,
+      "mode": 292,
+      "sha256": "656ae1cc8da3b4ea513bb4e254f33e6243938084c0ec6239da873376b09985a7"
+    },
+    "buildroot-legal-info/host-sources/fakeroot-1.37.2/fakeroot_1.37.2.orig.tar.gz": {
+      "bytes": 595964,
+      "mode": 292,
+      "sha256": "0eea60fbe89771b88fcf415c8f2f0a6ccfe9edebbcf3ba5dc0212718d98884db"
+    },
+    "buildroot-legal-info/host-sources/gcc-final-15.3.0/0001-disable-split-stack-for-non-thread-builds.patch": {
+      "bytes": 865,
+      "mode": 292,
+      "sha256": "7f163c9d5e7eb73bace2b6e84dbaa81817cd30df913e0eb5eb9a58ba981a4b46"
+    },
+    "buildroot-legal-info/host-sources/gcc-final-15.3.0/0002-gcc-config-microblaze-fix-ira-for-GCC15.patch": {
+      "bytes": 2230,
+      "mode": 292,
+      "sha256": "57cb26080b4db65177b347bad9073dcb07975c08de1b2f7a4f4d739ad8ae4c17"
+    },
+    "buildroot-legal-info/host-sources/gcc-final-15.3.0/0003-PR-rtl-optimization-123833-Use-of-insn-attributes-in.patch": {
+      "bytes": 2828,
+      "mode": 292,
+      "sha256": "fcce3779f380785c961ec2c36d2e3f1ba230123b2032dc46d3a294a02fa731a5"
+    },
+    "buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz": {
+      "bytes": 101253696,
+      "mode": 292,
+      "sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb"
+    },
+    "buildroot-legal-info/host-sources/gcc-final-15.3.0/series": {
+      "bytes": 168,
+      "mode": 292,
+      "sha256": "100fa1ffe9b8037915e796724a97b1a6c0aa9c918f6df4cf82a92e6e9007a2aa"
+    },
+    "buildroot-legal-info/host-sources/gcc-initial-15.3.0/0001-disable-split-stack-for-non-thread-builds.patch": {
+      "bytes": 865,
+      "mode": 292,
+      "sha256": "7f163c9d5e7eb73bace2b6e84dbaa81817cd30df913e0eb5eb9a58ba981a4b46"
+    },
+    "buildroot-legal-info/host-sources/gcc-initial-15.3.0/0002-gcc-config-microblaze-fix-ira-for-GCC15.patch": {
+      "bytes": 2230,
+      "mode": 292,
+      "sha256": "57cb26080b4db65177b347bad9073dcb07975c08de1b2f7a4f4d739ad8ae4c17"
+    },
+    "buildroot-legal-info/host-sources/gcc-initial-15.3.0/0003-PR-rtl-optimization-123833-Use-of-insn-attributes-in.patch": {
+      "bytes": 2828,
+      "mode": 292,
+      "sha256": "fcce3779f380785c961ec2c36d2e3f1ba230123b2032dc46d3a294a02fa731a5"
+    },
+    "buildroot-legal-info/host-sources/gcc-initial-15.3.0/gcc-15.3.0.tar.xz": {
+      "bytes": 101253696,
+      "mode": 292,
+      "sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb"
+    },
+    "buildroot-legal-info/host-sources/gcc-initial-15.3.0/series": {
+      "bytes": 168,
+      "mode": 292,
+      "sha256": "100fa1ffe9b8037915e796724a97b1a6c0aa9c918f6df4cf82a92e6e9007a2aa"
+    },
+    "buildroot-legal-info/host-sources/gmp-6.3.0/0001-Complete-function-prototype-in-acinclude.m4-for-C23-.patch": {
+      "bytes": 1603,
+      "mode": 292,
+      "sha256": "b4a584a36e61b3c1050e98a05e2c72b6f5401a72366423b7e62d903b4b44395b"
+    },
+    "buildroot-legal-info/host-sources/gmp-6.3.0/gmp-6.3.0.tar.xz": {
+      "bytes": 2094196,
+      "mode": 292,
+      "sha256": "a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898"
+    },
+    "buildroot-legal-info/host-sources/gmp-6.3.0/series": {
+      "bytes": 64,
+      "mode": 292,
+      "sha256": "309aac6d53867e03ad318439cb07a15837898ca73db968bff469bbe186d249d4"
+    },
+    "buildroot-legal-info/host-sources/gperf-3.3/gperf-3.3.tar.gz": {
+      "bytes": 1831294,
+      "mode": 292,
+      "sha256": "fd87e0aba7e43ae054837afd6cd4db03a3f2693deb3619085e6ed9d8d9604ad8"
+    },
+    "buildroot-legal-info/host-sources/kmod-34.2/kmod-34.2.tar.xz": {
+      "bytes": 443748,
+      "mode": 292,
+      "sha256": "5a5d5073070cc7e0c7a7a3c6ec2a0e1780850c8b47b3e3892226b93ffcb9cb54"
+    },
+    "buildroot-legal-info/host-sources/libffi-3.8.0/0001-Fix-use-of-compact-eh-frames-on-MIPS.patch": {
+      "bytes": 1588,
+      "mode": 292,
+      "sha256": "c34863b864eb7bb8c823197cdd055f2bee2bc06142e064c5971358648bc4283e"
+    },
+    "buildroot-legal-info/host-sources/libffi-3.8.0/libffi-3.8.0.tar.gz": {
+      "bytes": 1581626,
+      "mode": 292,
+      "sha256": "7da3e2d9a171eb0a038f592ecad3ff2bb2550f3496d87b3b29ad0cf4430c0db4"
+    },
+    "buildroot-legal-info/host-sources/libffi-3.8.0/series": {
+      "bytes": 48,
+      "mode": 292,
+      "sha256": "73fc0d35fdcf701fa31226857cf998f5a27d2ad508825cd06825095a35a63145"
+    },
+    "buildroot-legal-info/host-sources/libopenssl-3.6.4/0001-Reproducible-build-do-not-leak-compiler-path.patch": {
+      "bytes": 1001,
+      "mode": 292,
+      "sha256": "e707bbcaaa0d25318e3d2985a71e726064c3d14ab2b2c145ba06a45477146aac"
+    },
+    "buildroot-legal-info/host-sources/libopenssl-3.6.4/0002-Configure-use-ELFv2-ABI-on-some-ppc64-big-endian-sys.patch": {
+      "bytes": 1152,
+      "mode": 292,
+      "sha256": "5f08549121c9d399666e71cb96439a2b3facfb493ab8ad60c4108e0a5696ff0c"
+    },
+    "buildroot-legal-info/host-sources/libopenssl-3.6.4/0003-Revert-Fix-static-builds.patch": {
+      "bytes": 1417,
+      "mode": 292,
+      "sha256": "77f7e22ea337fc3e738c708b99a656b3095f5d74749f9be47a91569f0a9e5a7d"
+    },
+    "buildroot-legal-info/host-sources/libopenssl-3.6.4/openssl-3.6.4.tar.gz": {
+      "bytes": 55003802,
+      "mode": 292,
+      "sha256": "9bffaa1ad1e07b354c21bd3324ec02fa15579f45a7d0494b3e74bc449b7333ef"
+    },
+    "buildroot-legal-info/host-sources/libopenssl-3.6.4/series": {
+      "bytes": 156,
+      "mode": 292,
+      "sha256": "37af627ae1d1ece3e0d2960b9b291315dbb79a0e10c780dac4f6cafcc93d9160"
+    },
+    "buildroot-legal-info/host-sources/libtool-2.5.4/libtool-2.5.4.tar.xz": {
+      "bytes": 1056924,
+      "mode": 292,
+      "sha256": "f81f5860666b0bc7d84baddefa60d1cb9fa6fceb2398cc3baca6afaa60266675"
+    },
+    "buildroot-legal-info/host-sources/libxcrypt-4.5.2/libxcrypt-4.5.2.tar.xz": {
+      "bytes": 669820,
+      "mode": 292,
+      "sha256": "71513a31c01a428bccd5367a32fd95f115d6dac50fb5b60c779d5c7942aec071"
+    },
+    "buildroot-legal-info/host-sources/libzlib-1.3.2/zlib-1.3.2.tar.xz": {
+      "bytes": 1320064,
+      "mode": 292,
+      "sha256": "d7a0654783a4da529d1bb793b7ad9c3318020af77667bcae35f95d0e42a792f3"
+    },
+    "buildroot-legal-info/host-sources/m4-1.4.21/m4-1.4.21.tar.xz": {
+      "bytes": 2080016,
+      "mode": 292,
+      "sha256": "f25c6ab51548a73a75558742fb031e0625d6485fe5f9155949d6486a2408ab66"
+    },
+    "buildroot-legal-info/host-sources/meson-1.11.1/0001-Prefer-ext-static-libs-when-default-library-static.patch": {
+      "bytes": 2448,
+      "mode": 292,
+      "sha256": "b708e8d8490567737f5ffebcc2a04813c5a201a98edeea69a2a39b54b0fe2ede"
+    },
+    "buildroot-legal-info/host-sources/meson-1.11.1/0002-mesonbuild-dependencies-base.py-add-pkg_config_stati.patch": {
+      "bytes": 3810,
+      "mode": 292,
+      "sha256": "39657a41b64afaeeefabd060d828be4516814858d84fe2abc9a17e7be9e85caa"
+    },
+    "buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz": {
+      "bytes": 5190321,
+      "mode": 292,
+      "sha256": "6788ae299979643f8d841bcaf64352558436cae45a0355148a3aeeccf7913866"
+    },
+    "buildroot-legal-info/host-sources/meson-1.11.1/series": {
+      "bytes": 126,
+      "mode": 292,
+      "sha256": "1eaf21991f88db7893b739e58f40808a3c0f27e4abeaefbf089832d64511fd1a"
+    },
+    "buildroot-legal-info/host-sources/mpc-1.4.1/mpc-1.4.1.tar.xz": {
+      "bytes": 531992,
+      "mode": 292,
+      "sha256": "91204cd32f164bd3b7c992d4a6a8ce6519511aadab30f78b6982d0bf8d73e931"
+    },
+    "buildroot-legal-info/host-sources/mpfr-4.2.2/mpfr-4.2.2.tar.xz": {
+      "bytes": 1505596,
+      "mode": 292,
+      "sha256": "b67ba0383ef7e8a8563734e2e889ef5ec3c3b898a01d00fa0a6869ad81c6ce01"
+    },
+    "buildroot-legal-info/host-sources/ninja-1.13.2/ninja-1.13.2.tar.gz": {
+      "bytes": 292385,
+      "mode": 292,
+      "sha256": "974d6b2f4eeefa25625d34da3cb36bdcebe7fbce40f4c16ac0835fd1c0cbae17"
+    },
+    "buildroot-legal-info/host-sources/patchelf-0.13/0001-Add-option-to-make-the-rpath-relative-under-a-specif.patch": {
+      "bytes": 13668,
+      "mode": 292,
+      "sha256": "f29fbe0e32a375d89d6bd5d525dac803af8777f4d4935c6d99249d9ffe83aaa7"
+    },
+    "buildroot-legal-info/host-sources/patchelf-0.13/patchelf-0.13.tar.bz2": {
+      "bytes": 172499,
+      "mode": 292,
+      "sha256": "4c7ed4bcfc1a114d6286e4a0d3c1a90db147a4c3adda1814ee0eee0f9ee917ed"
+    },
+    "buildroot-legal-info/host-sources/patchelf-0.13/series": {
+      "bytes": 64,
+      "mode": 292,
+      "sha256": "241ad0744e4dae2be6b6237ea5d809847bc7f7b8a385f445be1f78e44c8f0539"
+    },
+    "buildroot-legal-info/host-sources/pkgconf-2.3.0/0001-Only-prefix-with-the-sysroot-a-subset-of-variables.patch": {
+      "bytes": 5754,
+      "mode": 292,
+      "sha256": "fe8906a9fb3ba719cbd719c6bc45a8a854bac3f8bdd70d4fc834de821e60930b"
+    },
+    "buildroot-legal-info/host-sources/pkgconf-2.3.0/pkgconf-2.3.0.tar.xz": {
+      "bytes": 316160,
+      "mode": 292,
+      "sha256": "3a9080ac51d03615e7c1910a0a2a8df08424892b5f13b0628a204d3fcce0ea8b"
+    },
+    "buildroot-legal-info/host-sources/pkgconf-2.3.0/series": {
+      "bytes": 62,
+      "mode": 292,
+      "sha256": "ac3f3fe8aeb3015258d1949702f992f0988b377bcc8e5a1e6681a401739d4741"
+    },
+    "buildroot-legal-info/host-sources/python-flit-core-3.12.0/flit_core-3.12.0.tar.gz": {
+      "bytes": 53690,
+      "mode": 292,
+      "sha256": "18f63100d6f94385c6ed57a72073443e1a71a4acb4339491615d0f16d6ff01b2"
+    },
+    "buildroot-legal-info/host-sources/python-installer-1.0.0/installer-1.0.0.tar.gz": {
+      "bytes": 462685,
+      "mode": 292,
+      "sha256": "c6d691331621cf3fec4822f5c6f83cab3705f79b316225dc454127411677c71f"
+    },
+    "buildroot-legal-info/host-sources/python-packaging-26.2/packaging-26.2.tar.gz": {
+      "bytes": 228134,
+      "mode": 292,
+      "sha256": "ff452ff5a3e828ce110190feff1178bb1f2ea2281fa2075aadb987c2fb221661"
+    },
+    "buildroot-legal-info/host-sources/python-pypa-build-1.3.0/build-1.3.0.tar.gz": {
+      "bytes": 48544,
+      "mode": 292,
+      "sha256": "698edd0ea270bde950f53aed21f3a0135672206f3911e0176261a31e0e07b397"
+    },
+    "buildroot-legal-info/host-sources/python-pyproject-hooks-1.2.0/pyproject_hooks-1.2.0.tar.gz": {
+      "bytes": 19228,
+      "mode": 292,
+      "sha256": "1e859bd5c40fae9448642dd871adf459e5e2084186e8d2c2a79a824c970da1f8"
+    },
+    "buildroot-legal-info/host-sources/python-setuptools-80.9.0/0001-add-executable.patch": {
+      "bytes": 2886,
+      "mode": 292,
+      "sha256": "6d49779b98d369c13c06bf11abb690dfa8ce9682eb908afe050f09ecacfa3514"
+    },
+    "buildroot-legal-info/host-sources/python-setuptools-80.9.0/series": {
+      "bytes": 26,
+      "mode": 292,
+      "sha256": "db12e26893d416efec1ce7d441c4c3a50ce231d1edd5247285bfbbad52d47813"
+    },
+    "buildroot-legal-info/host-sources/python-setuptools-80.9.0/setuptools-80.9.0.tar.gz": {
+      "bytes": 1319958,
+      "mode": 292,
+      "sha256": "f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c"
+    },
+    "buildroot-legal-info/host-sources/python-wheel-0.47.0/wheel-0.47.0.tar.gz": {
+      "bytes": 63854,
+      "mode": 292,
+      "sha256": "cc72bd1009ba0cf63922e28f94d9d83b920aa2bb28f798a31d0691b02fa3c9b3"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/0001-Make-the-build-of-pyc-files-conditional.patch": {
+      "bytes": 2470,
+      "mode": 292,
+      "sha256": "8062fb2ed999a9d7ce66892c80b18f4faf0260b07a622f5aec16fda05c6a3dcd"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/0002-Add-an-option-to-disable-pydoc.patch": {
+      "bytes": 3092,
+      "mode": 292,
+      "sha256": "35261a8751db4fc46ef0194ab9242d4e874ab91259c25ada43896991471353c9"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/0003-Add-an-option-to-disable-IDLE.patch": {
+      "bytes": 2944,
+      "mode": 292,
+      "sha256": "bd26953aa8f5fcad941e18ea2cdc72a3c2745d0b88429e0de6cbd79873ca221e"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/0004-configure.ac-move-PY_STDLIB_MOD_SET_NA-further-up.patch": {
+      "bytes": 1502,
+      "mode": 292,
+      "sha256": "4927a2e8928895d356ee4469afb969d2264120d281a912a82ae94a1e3d93cb45"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/0005-Add-option-to-disable-the-sqlite3-module.patch": {
+      "bytes": 1913,
+      "mode": 292,
+      "sha256": "8735a295918083ddfa1aa1331452da420631bf12954372be17191c8e668ab136"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/0006-Add-an-option-to-disable-the-tk-module.patch": {
+      "bytes": 2678,
+      "mode": 292,
+      "sha256": "ab6f1de160b542a8ce80818b6f3c84ca7260336bd19325cd33fb4a3594802468"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/0007-Add-an-option-to-disable-the-curses-module.patch": {
+      "bytes": 1897,
+      "mode": 292,
+      "sha256": "9b778049dea06c5e9628e0fc1ec15c7737b4e79922ad51e064433dc33fcd4cc1"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/0008-Add-an-option-to-disable-expat.patch": {
+      "bytes": 2810,
+      "mode": 292,
+      "sha256": "6393a28d03b459cf846510381219673c6bc7c4f7ea15b5a3676a16304dd4462d"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/0009-configure.ac-detect-unusable-termio-operations.patch": {
+      "bytes": 2944,
+      "mode": 292,
+      "sha256": "4c23a0b9c83eaba4a4495ae9f32e55d5e42be00f4f79aedaf71043df32c47365"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/0010-gh-139275-Fix-compilation-of-Modules-_remote_debuggi.patch": {
+      "bytes": 2491,
+      "mode": 292,
+      "sha256": "3b08ef5a29324903c88d59cff534d7b08ec724efb0562acabdfc320bd4449724"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/0011-a0d023fbd23773e24b35d8368789470e22cda5d8.patch": {
+      "bytes": 8520,
+      "mode": 292,
+      "sha256": "9b36c1556c675de473544f1dac0857e3965dbc1a0fbd99c7e33b0f7850615480"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/0012-31980e84b9a708424a0a1dfecde3fc991e313f89.patch": {
+      "bytes": 7695,
+      "mode": 292,
+      "sha256": "2218c13228c584b1977a1532c019b5fff665e6175057d2fbc129d78f547cdc11"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz": {
+      "bytes": 24053924,
+      "mode": 292,
+      "sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81"
+    },
+    "buildroot-legal-info/host-sources/python3-3.14.7/series": {
+      "bytes": 619,
+      "mode": 292,
+      "sha256": "c0463dd34e67a90b574b15248d5540883782dbabd64b0d4d7f36e120db032f89"
+    },
+    "buildroot-legal-info/host-sources/util-linux-2.41.5/0001-include-mount-api-utils.h-fix-LSMT_ROOT-definition.patch": {
+      "bytes": 1319,
+      "mode": 292,
+      "sha256": "08b842937e25d1a33974dfb47d0dbe8db37d5b6458dc012633a01e14732aa248"
+    },
+    "buildroot-legal-info/host-sources/util-linux-2.41.5/0002-autotools-optionally-add-libpthread-to-uuid.pc.patch": {
+      "bytes": 1443,
+      "mode": 292,
+      "sha256": "b488f9b7b1d0a6fe171b04d72cb79ef8f262945925a19cad2eeee2c372882877"
+    },
+    "buildroot-legal-info/host-sources/util-linux-2.41.5/0003-loopdev-use-openat2-RESOLVE_NO_SYMLINKS-for-backing-.patch": {
+      "bytes": 2191,
+      "mode": 292,
+      "sha256": "298a6cdf0c9bc43387816ab9d038958f9ab5577fc447a7efd86db6c4d0a53600"
+    },
+    "buildroot-legal-info/host-sources/util-linux-2.41.5/series": {
+      "bytes": 184,
+      "mode": 292,
+      "sha256": "9dfca5367c601f2ce6ba6394cf6bf8a53f2859f1247538918842cff54d706a75"
+    },
+    "buildroot-legal-info/host-sources/util-linux-2.41.5/util-linux-2.41.5.tar.xz": {
+      "bytes": 9474992,
+      "mode": 292,
+      "sha256": "f586e35d320ff537aab3ffeca37e9ecd482ccbe013590db4429a414d8aa6a728"
+    },
+    "buildroot-legal-info/legal-info.sha256": {
+      "bytes": 30491,
+      "mode": 292,
+      "sha256": "0f8773984cfe54d44409fcde5b593212c8887363e03a344965a494036d1bdd6b"
+    },
+    "buildroot-legal-info/licenses/bubblewrap-0.11.2/COPYING": {
+      "bytes": 25383,
+      "mode": 292,
+      "sha256": "b7993225104d90ddd8024fd838faf300bea5e83d91203eab98e29512acebd69c"
+    },
+    "buildroot-legal-info/licenses/busybox-1.38.0/LICENSE": {
+      "bytes": 18348,
+      "mode": 292,
+      "sha256": "bbfc9843646d483c334664f651c208b9839626891d8f17604db2146962f43548"
+    },
+    "buildroot-legal-info/licenses/busybox-1.38.0/archival/libarchive/bz/LICENSE": {
+      "bytes": 1999,
+      "mode": 292,
+      "sha256": "b5a136ed67798e51fe2e0ca0b2a21cb01b904ff0c9f7d563a6292e276607e58f"
+    },
+    "buildroot-legal-info/licenses/cairo-1.18.4/COPYING": {
+      "bytes": 1576,
+      "mode": 292,
+      "sha256": "67228a9f7c5f9b67c58f556f1be178f62da4d9e2e6285318d8c74d567255abdf"
+    },
+    "buildroot-legal-info/licenses/cairo-1.18.4/COPYING-LGPL-2.1": {
+      "bytes": 26533,
+      "mode": 292,
+      "sha256": "9e9e8608c4cdda51a78cc3a385f4ec9a2e4c96d5ecad74ac8bca5fca3e563b7d"
+    },
+    "buildroot-legal-info/licenses/cairo-1.18.4/COPYING-MPL-1.1": {
+      "bytes": 25755,
+      "mode": 292,
+      "sha256": "53692a2ed6c6a2c6ec9b32dd0b820dfae91e0a1fcdf625ca9ed0bdf8705fcc4f"
+    },
+    "buildroot-legal-info/licenses/dash-0.5.13.5/COPYING": {
+      "bytes": 2689,
+      "mode": 292,
+      "sha256": "254a7894923ff62e69184a991dcbccae97edee58a1105e8efbe78caf10595d72"
+    },
+    "buildroot-legal-info/licenses/expat-2.8.4/COPYING": {
+      "bytes": 1144,
+      "mode": 292,
+      "sha256": "31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87"
+    },
+    "buildroot-legal-info/licenses/fontconfig-2.17.1/COPYING": {
+      "bytes": 8616,
+      "mode": 292,
+      "sha256": "51a51aa9823704fd90bccc616cdd17ebabb5b2b3e9cbde886ca02c7002288067"
+    },
+    "buildroot-legal-info/licenses/freetype-2.14.3/LICENSE.TXT": {
+      "bytes": 2149,
+      "mode": 292,
+      "sha256": "bd36c8b474855fa294c2ec5c184544478ef3720aad37d65a6296a4f264fd2d3b"
+    },
+    "buildroot-legal-info/licenses/freetype-2.14.3/docs/FTL.TXT": {
+      "bytes": 6743,
+      "mode": 292,
+      "sha256": "5a5ee54c5001bbad1cdc1a57cc3dd4c42199b2da09d39c7ee41fab002d02967f"
+    },
+    "buildroot-legal-info/licenses/freetype-2.14.3/docs/GPLv2.TXT": {
+      "bytes": 17994,
+      "mode": 292,
+      "sha256": "c4120c6752c910c299e3bd9cb3a46ff262c268303ca2069b61f92f10a5656c18"
+    },
+    "buildroot-legal-info/licenses/gcc-final-15.3.0/COPYING.RUNTIME": {
+      "bytes": 3324,
+      "mode": 292,
+      "sha256": "9d6b43ce4d8de0c878bf16b54d8e7a10d9bd42b75178153e3af6a815bdc90f74"
+    },
+    "buildroot-legal-info/licenses/json-c-0.18/COPYING": {
+      "bytes": 2205,
+      "mode": 292,
+      "sha256": "74c1e6ca5eba76b54d0ad00d4815c8315c1b3bc45ff99de61d103dc92486284c"
+    },
+    "buildroot-legal-info/licenses/libcap-2.78/License": {
+      "bytes": 20318,
+      "mode": 292,
+      "sha256": "68467e731f4744bd6e0bb69e8df9c3a994e09cd6b203d0c41327ac6d079c581d"
+    },
+    "buildroot-legal-info/licenses/libffi-3.8.0/LICENSE": {
+      "bytes": 1132,
+      "mode": 292,
+      "sha256": "17b64dc60f3b6897a60f971e288b973f655c2edcdf08b25f3c3dd5549857881c"
+    },
+    "buildroot-legal-info/licenses/libopenssl-3.6.4/LICENSE.txt": {
+      "bytes": 10175,
+      "mode": 292,
+      "sha256": "7d5450cb2d142651b8afa315b5f238efc805dad827d91ba367d8516bc9d49e7a"
+    },
+    "buildroot-legal-info/licenses/libpng-1.6.58/LICENSE": {
+      "bytes": 5345,
+      "mode": 292,
+      "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526"
+    },
+    "buildroot-legal-info/licenses/libseccomp-2.6.0/LICENSE": {
+      "bytes": 24428,
+      "mode": 292,
+      "sha256": "102900208eef27b766380135906d431dba87edaa7ec6aa72e6ebd3dd67f3a97b"
+    },
+    "buildroot-legal-info/licenses/libzlib-1.3.2/LICENSE": {
+      "bytes": 1002,
+      "mode": 292,
+      "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2"
+    },
+    "buildroot-legal-info/licenses/linux-6.18.50/COPYING": {
+      "bytes": 496,
+      "mode": 292,
+      "sha256": "fb5a425bd3b3cd6071a3a9aff9909a859e7c1158d54d32e07658398cd67eb6a0"
+    },
+    "buildroot-legal-info/licenses/linux-6.18.50/LICENSES/exceptions/Linux-syscall-note": {
+      "bytes": 1258,
+      "mode": 292,
+      "sha256": "8e378ab93586eb55135d3bc119cce787f7324f48394777d00c34fa3d0be3303f"
+    },
+    "buildroot-legal-info/licenses/linux-6.18.50/LICENSES/preferred/GPL-2.0": {
+      "bytes": 18600,
+      "mode": 292,
+      "sha256": "8780e78a1a737e127f25a65f6d95269bffd36158dc261114de7859b490bfc5aa"
+    },
+    "buildroot-legal-info/licenses/linux-headers-6.18.50/COPYING": {
+      "bytes": 496,
+      "mode": 292,
+      "sha256": "fb5a425bd3b3cd6071a3a9aff9909a859e7c1158d54d32e07658398cd67eb6a0"
+    },
+    "buildroot-legal-info/licenses/linux-headers-6.18.50/LICENSES/exceptions/Linux-syscall-note": {
+      "bytes": 1258,
+      "mode": 292,
+      "sha256": "8e378ab93586eb55135d3bc119cce787f7324f48394777d00c34fa3d0be3303f"
+    },
+    "buildroot-legal-info/licenses/linux-headers-6.18.50/LICENSES/preferred/GPL-2.0": {
+      "bytes": 18600,
+      "mode": 292,
+      "sha256": "8780e78a1a737e127f25a65f6d95269bffd36158dc261114de7859b490bfc5aa"
+    },
+    "buildroot-legal-info/licenses/musl-1.2.6/COPYRIGHT": {
+      "bytes": 6196,
+      "mode": 292,
+      "sha256": "b870108ec5e7790e9f9919064f1b9421d62d5f9b0e6c230c6adf7ea2da62e97b"
+    },
+    "buildroot-legal-info/licenses/pixman-0.46.4/COPYING": {
+      "bytes": 2087,
+      "mode": 292,
+      "sha256": "fac9270f0987b96ff4533fca3548c633e02083cbba4a0172a3b149b2e4019793"
+    },
+    "buildroot-legal-info/licenses/python3-3.14.7/LICENSE": {
+      "bytes": 13804,
+      "mode": 292,
+      "sha256": "b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231"
+    },
+    "buildroot-legal-info/licenses/sqlite-3.53.4/tea/license.terms": {
+      "bytes": 257,
+      "mode": 292,
+      "sha256": "66e056b6e8687f32af30d5187611b98b12a8f46f07aaf62f43585f276e8f0ac9"
+    },
+    "buildroot-legal-info/manifest.csv": {
+      "bytes": 8942,
+      "mode": 292,
+      "sha256": "83c6bdfb31f8d15eaf73b0d8432541d44f30b10cacd03074f80535977881fab2"
+    },
+    "buildroot-legal-info/sources/bubblewrap-0.11.2/bubblewrap-0.11.2.tar.xz": {
+      "bytes": 116336,
+      "mode": 292,
+      "sha256": "69abc30005d2186baf7737feacd8da35633b93cf5af38838ecff17c5f8e924f6"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/0001-networking-libiproute-use-linux-if_packet.h-instead-.patch": {
+      "bytes": 1249,
+      "mode": 292,
+      "sha256": "d4324e1972fd86e20b6b9524c8738baf51a2ad5536f95794493d21990c94cdc3"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/0002-Makefile.flags-strip-non-l-arguments-returned-by-pkg.patch": {
+      "bytes": 1175,
+      "mode": 292,
+      "sha256": "bbb362d7beefab00adfef46e7053eaf3786c476e62cd254f08af286f9cf4fe0b"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/0003-libbb-sockaddr2str-ensure-only-printable-characters-.patch": {
+      "bytes": 1512,
+      "mode": 292,
+      "sha256": "5d063d321e86c0a40cbc9875491675becb6474123c3426a994c7afb076555f3e"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/0004-nslookup-sanitize-all-printed-strings-with-printable.patch": {
+      "bytes": 2521,
+      "mode": 292,
+      "sha256": "dc494525a7120c28dbc0afa238c6cfebfd2a5ee59bb255c481bfd675bcb2a4dd"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/0005-seedrng-fix-getrandom-detection-for-non-glibc-libc.patch": {
+      "bytes": 4152,
+      "mode": 292,
+      "sha256": "8f6634f457ad26ab6f88dffe64c971a75f81251e1565085904f9b44bfd3fbc52"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/0006-tc-Fix-compilation-with-Linux-v6.8-rc1.patch": {
+      "bytes": 2266,
+      "mode": 292,
+      "sha256": "1e07632c8c7f76eb2d87bcd574dd0f785874c4d307ad0a22e822943c66cc6978"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/0007-awk.c-fix-CVE-2023-42366-bug-15874.patch": {
+      "bytes": 1458,
+      "mode": 292,
+      "sha256": "3f221c1015776a8e9f18a2c6941dd6c2a54b0257f7136fd88e86543742de58fc"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/0008-hwclock-Check-for-SYS_settimeofday-before-calling-sy.patch": {
+      "bytes": 2195,
+      "mode": 292,
+      "sha256": "f50dae9976a0022de9f0122d724394561daad6266b39e27f1c3fe5eb4164b759"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/0009-syslogd-fix-wrong-OPT_locallog-flag-detection.patch": {
+      "bytes": 1504,
+      "mode": 292,
+      "sha256": "f6644c4c40c48c43edd8650b95bb42d685aeb9d7487270226864ec93bf46bb27"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/0010-testsuite-tar-tests-fix-test-after-cve-2025-46394.patch": {
+      "bytes": 1421,
+      "mode": 292,
+      "sha256": "738615776b0dca878b170f9242bab7d07023e5cb70dfe7c19fcfed3e72dfad4b"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/0011-wget-dont-allow-control-characters-or-spaces-in-the-URL.patch": {
+      "bytes": 1505,
+      "mode": 292,
+      "sha256": "0506f13375c2425d2ff46a453616a9cb88de1a0c6878d26cd5fdc8ae9ebea51f"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/0012-netstat-sanitize-argv0-for-p-CVE-2024-58251.patch": {
+      "bytes": 1844,
+      "mode": 292,
+      "sha256": "c111e4aec4459a6a79b4e2a0b990ddbf1d8337cb45f66bcd4b88bb4b9f72b7ea"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/busybox-1.38.0.tar.bz2": {
+      "bytes": 2695723,
+      "mode": 292,
+      "sha256": "34f9ea6ff8636f2c9241153b9114eefa9e65674a45318ae1ef95bb5f31c53bb2"
+    },
+    "buildroot-legal-info/sources/busybox-1.38.0/series": {
+      "bytes": 718,
+      "mode": 292,
+      "sha256": "0d76c8833124b6af33f157fea64925a17125f5ac79ad2033929413d2967c06f2"
+    },
+    "buildroot-legal-info/sources/cairo-1.18.4/0001-external-cairo-Silence-some-Wincompatible-pointer-ty.patch": {
+      "bytes": 1689,
+      "mode": 292,
+      "sha256": "7308c18ad6a9f972a74f8861d7c262053c5048b4912453b3688885adb8c94559"
+    },
+    "buildroot-legal-info/sources/cairo-1.18.4/cairo-1.18.4.tar.xz": {
+      "bytes": 32578804,
+      "mode": 292,
+      "sha256": "445ed8208a6e4823de1226a74ca319d3600e83f6369f99b14265006599c32ccb"
+    },
+    "buildroot-legal-info/sources/cairo-1.18.4/series": {
+      "bytes": 64,
+      "mode": 292,
+      "sha256": "1940a61649e917896f6f0925177e4d1865f4cdbbc0d03bf5dd730f640cf87d21"
+    },
+    "buildroot-legal-info/sources/dash-0.5.13.5/dash-0.5.13.5.tar.gz": {
+      "bytes": 261540,
+      "mode": 292,
+      "sha256": "40090101a2a491f13e901d3d48e90414f26634628b9bfff35ff540363c227a7d"
+    },
+    "buildroot-legal-info/sources/expat-2.8.4/expat-2.8.4.tar.xz": {
+      "bytes": 519688,
+      "mode": 292,
+      "sha256": "656ae1cc8da3b4ea513bb4e254f33e6243938084c0ec6239da873376b09985a7"
+    },
+    "buildroot-legal-info/sources/fontconfig-2.17.1/fontconfig-2.17.1.tar.xz": {
+      "bytes": 1326312,
+      "mode": 292,
+      "sha256": "9f5cae93f4fffc1fbc05ae99cdfc708cd60dfd6612ffc0512827025c026fa541"
+    },
+    "buildroot-legal-info/sources/freetype-2.14.3/freetype-2.14.3.tar.xz": {
+      "bytes": 2670220,
+      "mode": 292,
+      "sha256": "36bc4f1cc413335368ee656c42afca65c5a3987e8768cc28cf11ba775e785a5f"
+    },
+    "buildroot-legal-info/sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz": {
+      "bytes": 101253696,
+      "mode": 292,
+      "sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb"
+    },
+    "buildroot-legal-info/sources/json-c-0.18/json-c-0.18.tar.gz": {
+      "bytes": 401788,
+      "mode": 292,
+      "sha256": "876ab046479166b869afc6896d288183bbc0e5843f141200c677b3e8dfb11724"
+    },
+    "buildroot-legal-info/sources/libcap-2.78/libcap-2.78.tar.xz": {
+      "bytes": 201040,
+      "mode": 292,
+      "sha256": "0d621e562fd932ccf67b9660fb018e468a683d7b827541df27813228c996bb11"
+    },
+    "buildroot-legal-info/sources/libffi-3.8.0/0001-Fix-use-of-compact-eh-frames-on-MIPS.patch": {
+      "bytes": 1588,
+      "mode": 292,
+      "sha256": "c34863b864eb7bb8c823197cdd055f2bee2bc06142e064c5971358648bc4283e"
+    },
+    "buildroot-legal-info/sources/libffi-3.8.0/libffi-3.8.0.tar.gz": {
+      "bytes": 1581626,
+      "mode": 292,
+      "sha256": "7da3e2d9a171eb0a038f592ecad3ff2bb2550f3496d87b3b29ad0cf4430c0db4"
+    },
+    "buildroot-legal-info/sources/libffi-3.8.0/series": {
+      "bytes": 48,
+      "mode": 292,
+      "sha256": "73fc0d35fdcf701fa31226857cf998f5a27d2ad508825cd06825095a35a63145"
+    },
+    "buildroot-legal-info/sources/libopenssl-3.6.4/0001-Reproducible-build-do-not-leak-compiler-path.patch": {
+      "bytes": 1001,
+      "mode": 292,
+      "sha256": "e707bbcaaa0d25318e3d2985a71e726064c3d14ab2b2c145ba06a45477146aac"
+    },
+    "buildroot-legal-info/sources/libopenssl-3.6.4/0002-Configure-use-ELFv2-ABI-on-some-ppc64-big-endian-sys.patch": {
+      "bytes": 1152,
+      "mode": 292,
+      "sha256": "5f08549121c9d399666e71cb96439a2b3facfb493ab8ad60c4108e0a5696ff0c"
+    },
+    "buildroot-legal-info/sources/libopenssl-3.6.4/0003-Revert-Fix-static-builds.patch": {
+      "bytes": 1417,
+      "mode": 292,
+      "sha256": "77f7e22ea337fc3e738c708b99a656b3095f5d74749f9be47a91569f0a9e5a7d"
+    },
+    "buildroot-legal-info/sources/libopenssl-3.6.4/openssl-3.6.4.tar.gz": {
+      "bytes": 55003802,
+      "mode": 292,
+      "sha256": "9bffaa1ad1e07b354c21bd3324ec02fa15579f45a7d0494b3e74bc449b7333ef"
+    },
+    "buildroot-legal-info/sources/libopenssl-3.6.4/series": {
+      "bytes": 156,
+      "mode": 292,
+      "sha256": "37af627ae1d1ece3e0d2960b9b291315dbb79a0e10c780dac4f6cafcc93d9160"
+    },
+    "buildroot-legal-info/sources/libpng-1.6.58/libpng-1.6.58.tar.xz": {
+      "bytes": 1070096,
+      "mode": 292,
+      "sha256": "28eb403f51f0f7405249132cecfe82ea5c0ef97f1b32c5a65828814ae0d34775"
+    },
+    "buildroot-legal-info/sources/libseccomp-2.6.0/libseccomp-2.6.0.tar.gz": {
+      "bytes": 685655,
+      "mode": 292,
+      "sha256": "83b6085232d1588c379dc9b9cae47bb37407cf262e6e74993c61ba72d2a784dc"
+    },
+    "buildroot-legal-info/sources/libzlib-1.3.2/zlib-1.3.2.tar.xz": {
+      "bytes": 1320064,
+      "mode": 292,
+      "sha256": "d7a0654783a4da529d1bb793b7ad9c3318020af77667bcae35f95d0e42a792f3"
+    },
+    "buildroot-legal-info/sources/linux-6.18.50/linux-6.18.50.tar.xz": {
+      "bytes": 154612024,
+      "mode": 292,
+      "sha256": "d2fc041dab4e11d9645e3ba53be058faa52b8ce28a8a97c889bb2cacee170461"
+    },
+    "buildroot-legal-info/sources/linux-headers-6.18.50/linux-6.18.50.tar.xz": {
+      "bytes": 154612024,
+      "mode": 292,
+      "sha256": "d2fc041dab4e11d9645e3ba53be058faa52b8ce28a8a97c889bb2cacee170461"
+    },
+    "buildroot-legal-info/sources/musl-1.2.6/0001-avoid-kernel-if_ether.h.patch": {
+      "bytes": 819,
+      "mode": 292,
+      "sha256": "7fb1ec8ed9bda3b670d03b8cb9a46f769276ae066c3b975ee9cc974284bd97fd"
+    },
+    "buildroot-legal-info/sources/musl-1.2.6/0002-package-musl-Make-scheduler-functions-Linux-compatib.patch": {
+      "bytes": 2262,
+      "mode": 292,
+      "sha256": "d074724a3edc8f9a86b207ce4baf9a9b24a5f24cb26d1075f3df6bdb8e9495a7"
+    },
+    "buildroot-legal-info/sources/musl-1.2.6/0003-fix-pathological-slowness-incorrect-mappings-in-icon.patch": {
+      "bytes": 7666,
+      "mode": 292,
+      "sha256": "98506a81bca5f3807b3ab2b10c7ee2298ec73354e8368ea6eb80080af2bacfd7"
+    },
+    "buildroot-legal-info/sources/musl-1.2.6/0004-qsort-fix-leonardo-heap-corruption-from-bug-in-doubl.patch": {
+      "bytes": 1650,
+      "mode": 292,
+      "sha256": "435af2170b2929951e664522b29538b98931048e9be566a7780298b0d654fe09"
+    },
+    "buildroot-legal-info/sources/musl-1.2.6/0005-qsort-hard-preclude-oob-array-writes-independent-of-.patch": {
+      "bytes": 3106,
+      "mode": 292,
+      "sha256": "322830abe71d97e3348c35c0f5b806135603121b31555f7536e45ef4964c900c"
+    },
+    "buildroot-legal-info/sources/musl-1.2.6/0006-qsort-fix-shift-UB-in-shl-and-shr.patch": {
+      "bytes": 1321,
+      "mode": 292,
+      "sha256": "b9d740558f3770b1659ed489bddedb8e9b092f04319f805756eac90c061720df"
+    },
+    "buildroot-legal-info/sources/musl-1.2.6/musl-1.2.6.tar.gz": {
+      "bytes": 1082499,
+      "mode": 292,
+      "sha256": "d585fd3b613c66151fc3249e8ed44f77020cb5e6c1e635a616d3f9f82460512a"
+    },
+    "buildroot-legal-info/sources/musl-1.2.6/series": {
+      "bytes": 336,
+      "mode": 292,
+      "sha256": "bbd891c363ae691fc60a3799e8fd00c0633eee37815d332dab79d8d79c7281a5"
+    },
+    "buildroot-legal-info/sources/pixman-0.46.4/pixman-0.46.4.tar.xz": {
+      "bytes": 660536,
+      "mode": 292,
+      "sha256": "a098c33924754ad43f981b740f6d576c70f9ed1006e12221b1845431ebce1239"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/0001-Make-the-build-of-pyc-files-conditional.patch": {
+      "bytes": 2470,
+      "mode": 292,
+      "sha256": "8062fb2ed999a9d7ce66892c80b18f4faf0260b07a622f5aec16fda05c6a3dcd"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/0002-Add-an-option-to-disable-pydoc.patch": {
+      "bytes": 3092,
+      "mode": 292,
+      "sha256": "35261a8751db4fc46ef0194ab9242d4e874ab91259c25ada43896991471353c9"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/0003-Add-an-option-to-disable-IDLE.patch": {
+      "bytes": 2944,
+      "mode": 292,
+      "sha256": "bd26953aa8f5fcad941e18ea2cdc72a3c2745d0b88429e0de6cbd79873ca221e"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/0004-configure.ac-move-PY_STDLIB_MOD_SET_NA-further-up.patch": {
+      "bytes": 1502,
+      "mode": 292,
+      "sha256": "4927a2e8928895d356ee4469afb969d2264120d281a912a82ae94a1e3d93cb45"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/0005-Add-option-to-disable-the-sqlite3-module.patch": {
+      "bytes": 1913,
+      "mode": 292,
+      "sha256": "8735a295918083ddfa1aa1331452da420631bf12954372be17191c8e668ab136"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/0006-Add-an-option-to-disable-the-tk-module.patch": {
+      "bytes": 2678,
+      "mode": 292,
+      "sha256": "ab6f1de160b542a8ce80818b6f3c84ca7260336bd19325cd33fb4a3594802468"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/0007-Add-an-option-to-disable-the-curses-module.patch": {
+      "bytes": 1897,
+      "mode": 292,
+      "sha256": "9b778049dea06c5e9628e0fc1ec15c7737b4e79922ad51e064433dc33fcd4cc1"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/0008-Add-an-option-to-disable-expat.patch": {
+      "bytes": 2810,
+      "mode": 292,
+      "sha256": "6393a28d03b459cf846510381219673c6bc7c4f7ea15b5a3676a16304dd4462d"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/0009-configure.ac-detect-unusable-termio-operations.patch": {
+      "bytes": 2944,
+      "mode": 292,
+      "sha256": "4c23a0b9c83eaba4a4495ae9f32e55d5e42be00f4f79aedaf71043df32c47365"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/0010-gh-139275-Fix-compilation-of-Modules-_remote_debuggi.patch": {
+      "bytes": 2491,
+      "mode": 292,
+      "sha256": "3b08ef5a29324903c88d59cff534d7b08ec724efb0562acabdfc320bd4449724"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/0011-a0d023fbd23773e24b35d8368789470e22cda5d8.patch": {
+      "bytes": 8520,
+      "mode": 292,
+      "sha256": "9b36c1556c675de473544f1dac0857e3965dbc1a0fbd99c7e33b0f7850615480"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/0012-31980e84b9a708424a0a1dfecde3fc991e313f89.patch": {
+      "bytes": 7695,
+      "mode": 292,
+      "sha256": "2218c13228c584b1977a1532c019b5fff665e6175057d2fbc129d78f547cdc11"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/Python-3.14.7.tar.xz": {
+      "bytes": 24053924,
+      "mode": 292,
+      "sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81"
+    },
+    "buildroot-legal-info/sources/python3-3.14.7/series": {
+      "bytes": 619,
+      "mode": 292,
+      "sha256": "c0463dd34e67a90b574b15248d5540883782dbabd64b0d4d7f36e120db032f89"
+    },
+    "buildroot-legal-info/sources/sqlite-3.53.4/sqlite-autoconf-3530400.tar.gz": {
+      "bytes": 3283177,
+      "mode": 292,
+      "sha256": "0e9483900e92cd5de8fd48d16bf9200145a61f7fd5be542a5ac81d8a9516eb9c"
+    },
+    "corresponding-source/buildroot-2026.08.tar.xz": {
+      "bytes": 6115596,
+      "mode": 292,
+      "sha256": "87aaca4164ea9d5c8085854953018263f7963f07c22e73a2a2185cc98c581c34"
+    },
+    "corresponding-source/rock-source.tar": {
+      "bytes": 37980160,
+      "mode": 292,
+      "sha256": "1fac2382110401638dd9ea6d5d5d4d67bf902b5198f5bd38a187c66508719532"
+    },
+    "manifest.json": {
+      "bytes": 93669,
+      "mode": 292,
+      "sha256": "51c2435711936d3dba6786ffe41ca78f4b8dafbe9901e489f9cd143167913234"
+    },
+    "provenance/SHA256SUMS": {
+      "bytes": 231,
+      "mode": 292,
+      "sha256": "9d8d1638c0b3a474746c7dd65ae66b051bf2637c0636f70a1be5e9f3a963c43a"
+    },
+    "provenance/base-freeze-manifest.json": {
+      "bytes": 174967,
+      "mode": 292,
+      "sha256": "4376d52d7db3e9cda5357287092e9065d5c8227e5a94ede5fa434bc336629b61"
+    },
+    "provenance/buildroot.config": {
+      "bytes": 170192,
+      "mode": 292,
+      "sha256": "17f91594f2609c64ce9b966b148d3d85a02e90920167e8582471ed0277288bb6"
+    },
+    "provenance/ci-provenance.json": {
+      "bytes": 3883,
+      "mode": 292,
+      "sha256": "38b1f0ac1c4ac70633804ea519e6d2b06f4ce31d3866a6b90cd8701cc99fe858"
+    },
+    "provenance/freeze-manifest.json": {
+      "bytes": 358784,
+      "mode": 292,
+      "sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc"
+    },
+    "provenance/linux.config": {
+      "bytes": 111120,
+      "mode": 292,
+      "sha256": "d744e7f5beb172660189d402bda5c15a9429c33d6dd5bf2a50e5ce7c1c9a829f"
+    },
+    "provenance/local-arm64-native-logs/c-core.log": {
+      "bytes": 259,
+      "mode": 292,
+      "sha256": "fd91775029f963b4f3eb553a49d6c33012ef4a9e6384e1a265eb70ab0ac96403"
+    },
+    "provenance/local-arm64-native-logs/c-platform.log": {
+      "bytes": 130,
+      "mode": 292,
+      "sha256": "68e812194c9ae59796ee89d0e42c7a62b163e5ab1b79c326be21ddd75b088daa"
+    },
+    "provenance/local-arm64-native-logs/c-ui-actions.log": {
+      "bytes": 544,
+      "mode": 292,
+      "sha256": "3933e9ba3249a51510398cc7ca27fe7a420951629545b55c3e7f39d19dfaa270"
+    },
+    "provenance/local-arm64-native-logs/c-ui-build-tests.log": {
+      "bytes": 744,
+      "mode": 292,
+      "sha256": "6dc732f11fb83fb1feb4f934091d1250469bbfe6d0af46fa4de0ab7408ae1bfc"
+    },
+    "provenance/local-arm64-native-logs/c-ui-ipc.log": {
+      "bytes": 1262,
+      "mode": 292,
+      "sha256": "4a647d18d1265a7253f66009a9d85cff3558067e2ff6e522004d9a6fd9c300cd"
+    },
+    "provenance/local-arm64-native-logs/c-ui-native-replay.log": {
+      "bytes": 425,
+      "mode": 292,
+      "sha256": "1bcb8f552c25044a5c319d249dba0a33f6dac6e46899a2e389aa04f386aacb3f"
+    },
+    "provenance/local-arm64-native-logs/c-ui.log": {
+      "bytes": 1214,
+      "mode": 292,
+      "sha256": "0069088559ed14f3efccaad4d0e2cda15a45fceb83b68158eb76fade6db8bdf7"
+    },
+    "provenance/local-arm64-native-logs/os-ai_routes-tests.log": {
+      "bytes": 3893,
+      "mode": 292,
+      "sha256": "8e8cefd4d34d3baae18cc53a0931e4f68134220723dc8d58c142a6d3d514a552"
+    },
+    "provenance/local-arm64-native-logs/os-atm-tests.log": {
+      "bytes": 6719,
+      "mode": 292,
+      "sha256": "bc72abbacdbd4c6d365037559ddc53b17e30f32a333bb5f3c1e497953ff82a1f"
+    },
+    "provenance/local-arm64-native-logs/os-entitlement-tests.log": {
+      "bytes": 14914,
+      "mode": 292,
+      "sha256": "fcdf3c92eb06f971ad377e725a1d13a457f820646f97d138a14f5b3be4d2c1ed"
+    },
+    "provenance/local-arm64-native-logs/os-service_access-tests.log": {
+      "bytes": 4639,
+      "mode": 292,
+      "sha256": "b830639b9ee68eaca13a881a3242f70f6d2537bfc1ee469773865014055445e3"
+    },
+    "provenance/local-arm64-native-logs/os-wallet_auth-tests.log": {
+      "bytes": 11036,
+      "mode": 292,
+      "sha256": "f8a17a47736b6118882fc80683826446b552a7d698d45bb05de07fbc94fd9555"
+    },
+    "provenance/local-arm64-native-logs/tests.log": {
+      "bytes": 276138,
+      "mode": 292,
+      "sha256": "e7e8e958b89fe095df559f6abe17544d3bd7d3692ef9b646f9e36040d23fc141"
+    },
+    "provenance/local-arm64-native-logs/ui-observers.log": {
+      "bytes": 2361,
+      "mode": 292,
+      "sha256": "68e6112fa8d8930b94e85636f4bd3ab5d979cfbd07487c71ec39bc05f4f8c3db"
+    },
+    "provenance/local-arm64-native-report.json": {
+      "bytes": 96888,
+      "mode": 292,
+      "sha256": "5a49bed70b8fb8ab328fb7a40c4e085591ce6e5e91abccb390984315a2e01340"
+    },
+    "provenance/make-legal-info.log": {
+      "bytes": 12968,
+      "mode": 292,
+      "sha256": "9564a0c704f2e063a6e63026832752d52e82ff499bfdd9d068b17d6de73f731a"
+    },
+    "provenance/native-source-logs/c-core.log": {
+      "bytes": 259,
+      "mode": 292,
+      "sha256": "fd91775029f963b4f3eb553a49d6c33012ef4a9e6384e1a265eb70ab0ac96403"
+    },
+    "provenance/native-source-logs/c-platform.log": {
+      "bytes": 130,
+      "mode": 292,
+      "sha256": "68e812194c9ae59796ee89d0e42c7a62b163e5ab1b79c326be21ddd75b088daa"
+    },
+    "provenance/native-source-logs/c-ui-actions.log": {
+      "bytes": 544,
+      "mode": 292,
+      "sha256": "3933e9ba3249a51510398cc7ca27fe7a420951629545b55c3e7f39d19dfaa270"
+    },
+    "provenance/native-source-logs/c-ui-build-tests.log": {
+      "bytes": 744,
+      "mode": 292,
+      "sha256": "6dc732f11fb83fb1feb4f934091d1250469bbfe6d0af46fa4de0ab7408ae1bfc"
+    },
+    "provenance/native-source-logs/c-ui-ipc.log": {
+      "bytes": 1262,
+      "mode": 292,
+      "sha256": "4116a93c11048da5c14a2d14fbd41da1e960f77e8fc47f7739198ee64f95c4fc"
+    },
+    "provenance/native-source-logs/c-ui-native-replay.log": {
+      "bytes": 425,
+      "mode": 292,
+      "sha256": "1bcb8f552c25044a5c319d249dba0a33f6dac6e46899a2e389aa04f386aacb3f"
+    },
+    "provenance/native-source-logs/c-ui.log": {
+      "bytes": 1214,
+      "mode": 292,
+      "sha256": "0069088559ed14f3efccaad4d0e2cda15a45fceb83b68158eb76fade6db8bdf7"
+    },
+    "provenance/native-source-logs/os-ai_routes-tests.log": {
+      "bytes": 3893,
+      "mode": 292,
+      "sha256": "057f52dda56e5e7a10c690f6ef88802887d212e50c8d633ae19509fd17241560"
+    },
+    "provenance/native-source-logs/os-atm-tests.log": {
+      "bytes": 6719,
+      "mode": 292,
+      "sha256": "ec13e1b074276ae1cb351d9b1b1577ea6cf868e4aeed220f1c5c3cc88cfcee07"
+    },
+    "provenance/native-source-logs/os-entitlement-tests.log": {
+      "bytes": 14914,
+      "mode": 292,
+      "sha256": "b0ee7f38f3e3b0bb0a0ac42a161a64723731e7cdf2d5ebf365c65c017b6b07d3"
+    },
+    "provenance/native-source-logs/os-service_access-tests.log": {
+      "bytes": 4639,
+      "mode": 292,
+      "sha256": "ef68380c6fcbae5312493dce7b5ea98f5d0061dfa317a1b87c285c493715243f"
+    },
+    "provenance/native-source-logs/os-wallet_auth-tests.log": {
+      "bytes": 11036,
+      "mode": 292,
+      "sha256": "35960a0a5b836b47761a3381f0eaadad70248a79c4190c5598a2522d63a909f4"
+    },
+    "provenance/native-source-logs/tests.log": {
+      "bytes": 249567,
+      "mode": 292,
+      "sha256": "ade133395485818b0eebb561f98b2ec6f80c8427b6ae355711b7931a49e91bf8"
+    },
+    "provenance/native-source-logs/ui-observers.log": {
+      "bytes": 2361,
+      "mode": 292,
+      "sha256": "65eb98f5d160f20c1085c7a651c8acb869856f7d6f5c26b7973185fab5854d1c"
+    },
+    "provenance/native-source-report.json": {
+      "bytes": 97194,
+      "mode": 292,
+      "sha256": "34bf46580fe2f3655f765c5266d55e2786143bb28fb423f4e97e537f68a06af8"
+    },
+    "provenance/profile.json": {
+      "bytes": 5540,
+      "mode": 292,
+      "sha256": "0d6f4924d98f1cd43d4e3104b9a9c3b4f2a4b2557e96f64bd626f9930f4b34bb"
+    },
+    "provenance/source-lock.json": {
+      "bytes": 1871,
+      "mode": 292,
+      "sha256": "6efd72448219b9c226646817656ff4c9d2d808422fe5647cff10c0754473414c"
+    }
+  },
+  "full_git_archive_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "full_git_archive_file_count": 1364,
+  "full_git_archive_inventory_match": true,
+  "schema": "rock-final-legal-bundle-readback/1",
+  "source_image_profile_configuration_and_source_archive_bindings": "PASS",
+  "source_regression_provenance": {
+    "all_success_and_failure_logs_present": true,
+    "checks": 14,
+    "machine": "x86_64",
+    "native_inputs": 694,
+    "original_failure_machines": [
+      "aarch64"
+    ],
+    "original_failure_members": [
+      "provenance/local-arm64-native-report.json"
+    ],
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "python": "3.13.15 (main, Aug  6 2026, 02:15:18) [GCC 13.3.0]",
+    "python_executions": 1631,
+    "success_report_members": [
+      "provenance/native-source-report.json"
+    ],
+    "success_report_sha256": "34bf46580fe2f3655f765c5266d55e2786143bb28fb423f4e97e537f68a06af8"
+  },
+  "status": "REGULAR_ARCHIVE_READBACK_PASS_NOT_LICENSE_CLEARANCE"
+}

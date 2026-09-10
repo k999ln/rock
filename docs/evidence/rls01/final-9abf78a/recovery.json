@@ -1,0 +1,238 @@
+{
+  "schema": "rock-rls01-game-restore-recovery/1",
+  "status": "PASS",
+  "state": {
+    "gate": {
+      "authority_manifest_sha256": "bdd0dac50d3eefc45405b566951d600ed4fdac45074ee081aa4a971e0b27b4a8",
+      "intent": "cbd7927f-573d-42e7-9544-0b74ce5598a5",
+      "new_device": "recovered",
+      "os_backup_sha256": "fdca01e177f56d0977df4ae5194adc37bcb9e5d789b1e2a0d34ef166530b218f",
+      "retired_devices": [
+        "preview"
+      ],
+      "schema": "rock-game-desktop-restore/1",
+      "source_device": "preview",
+      "state": "DONE"
+    },
+    "authority_receipt": {
+      "authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+      "backup_id": "ddca4c80-01b4-4b9e-8b93-baf6f89c81af",
+      "backup_manifest_sha256": "bdd0dac50d3eefc45405b566951d600ed4fdac45074ee081aa4a971e0b27b4a8",
+      "config_sha256": "cdb9609518187dc057a4e747d28b9550da0946c59636fc0cc8346027cdb5ab9c",
+      "connection_receipt": {
+        "c_record_sha256": "7c6add5309c59e508ffbf520132bd0170ddde83923b5391020cb4e7b481238b5",
+        "index_uuid": "ba37e59f-5d79-44b8-b4d7-e8c6d2f92668",
+        "ledger_ref": "public-sandbox-alice",
+        "plan_sha256": "e3943d9dd1a4301dbe93517c48f8b2169bfcbecf3718b44ac913c09e9f894fd4",
+        "restore_id": "cbd7927f-573d-42e7-9544-0b74ce5598a5",
+        "schema": "rock-game-current-restore-receipt/1",
+        "status": "DONE",
+        "writer_epoch": 2
+      },
+      "descriptor": {
+        "canonical_state": "/var/tmp/rockstaros-preview-authority/contracts/current-copy-cbd7927f-573d-42e7-9544-0b74ce5598a5",
+        "ledger_ref": "public-sandbox-alice",
+        "ledger_uuid": "d7b563d7-7ca7-4599-9787-9ea1f07a8b09",
+        "owner_actor": "alice",
+        "owner_ref": "fixture-owner-alice",
+        "primary_device_ref": "fixture-rock-arm64-001",
+        "wallet_authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+        "writer_epoch": 2
+      },
+      "destination": "/var/tmp/rockstaros-preview-authority/contracts/current-copy-cbd7927f-573d-42e7-9544-0b74ce5598a5",
+      "game_epochs": {
+        "public-game-a": {
+          "before_sha256": "c1a77fb3e63464daa247e53b1efad8ad3bfaaee8612246936df41abecbb5276b",
+          "c_record_sha256": "7c6add5309c59e508ffbf520132bd0170ddde83923b5391020cb4e7b481238b5",
+          "game_authority_id": "public-game-authority-a",
+          "game_id": "public-game-a",
+          "game_plan_sha256": "e3943d9dd1a4301dbe93517c48f8b2169bfcbecf3718b44ac913c09e9f894fd4",
+          "game_store_uuid": "900ada3a-158c-4c6a-94fa-5dca0848cc55",
+          "index_uuid": "ba37e59f-5d79-44b8-b4d7-e8c6d2f92668",
+          "ledger_uuid": "d7b563d7-7ca7-4599-9787-9ea1f07a8b09",
+          "new_epoch": 2,
+          "old_epoch": 1,
+          "restore_id": "cbd7927f-573d-42e7-9544-0b74ce5598a5",
+          "schema": "rock-game-grant-epoch-receipt/1",
+          "simulation_only": true,
+          "status": "DONE",
+          "wallet_authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910"
+        },
+        "public-game-b": {
+          "before_sha256": "12aedcc0cec34c588d942a46b84aed0fa477c411ca3602f1c334bb4039c2fba9",
+          "c_record_sha256": "7c6add5309c59e508ffbf520132bd0170ddde83923b5391020cb4e7b481238b5",
+          "game_authority_id": "public-game-authority-b",
+          "game_id": "public-game-b",
+          "game_plan_sha256": "e3943d9dd1a4301dbe93517c48f8b2169bfcbecf3718b44ac913c09e9f894fd4",
+          "game_store_uuid": "6ad06034-4753-4344-b7d2-9d3d8b6da532",
+          "index_uuid": "ba37e59f-5d79-44b8-b4d7-e8c6d2f92668",
+          "ledger_uuid": "d7b563d7-7ca7-4599-9787-9ea1f07a8b09",
+          "new_epoch": 2,
+          "old_epoch": 1,
+          "restore_id": "cbd7927f-573d-42e7-9544-0b74ce5598a5",
+          "schema": "rock-game-grant-epoch-receipt/1",
+          "simulation_only": true,
+          "status": "DONE",
+          "wallet_authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910"
+        }
+      },
+      "intent": "cbd7927f-573d-42e7-9544-0b74ce5598a5",
+      "new_device": "recovered",
+      "post_snapshot_sha256": "9280f830effd14a9fe7df3801ee7735340c352f745aba87380969421fe116055",
+      "same_host_current_copy_only": true,
+      "schema": "rock-game-sandbox-current-restore-receipt/1",
+      "simulation_only": true,
+      "source_retired": true,
+      "status": "DONE"
+    },
+    "authority_journal_state": "DONE",
+    "os_receipt": {
+      "authority": {
+        "authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+        "backup_id": "ddca4c80-01b4-4b9e-8b93-baf6f89c81af",
+        "backup_manifest_sha256": "bdd0dac50d3eefc45405b566951d600ed4fdac45074ee081aa4a971e0b27b4a8",
+        "config_sha256": "cdb9609518187dc057a4e747d28b9550da0946c59636fc0cc8346027cdb5ab9c",
+        "connection_receipt": {
+          "c_record_sha256": "7c6add5309c59e508ffbf520132bd0170ddde83923b5391020cb4e7b481238b5",
+          "index_uuid": "ba37e59f-5d79-44b8-b4d7-e8c6d2f92668",
+          "ledger_ref": "public-sandbox-alice",
+          "plan_sha256": "e3943d9dd1a4301dbe93517c48f8b2169bfcbecf3718b44ac913c09e9f894fd4",
+          "restore_id": "cbd7927f-573d-42e7-9544-0b74ce5598a5",
+          "schema": "rock-game-current-restore-receipt/1",
+          "status": "DONE",
+          "writer_epoch": 2
+        },
+        "descriptor": {
+          "canonical_state": "/var/tmp/rockstaros-preview-authority/contracts/current-copy-cbd7927f-573d-42e7-9544-0b74ce5598a5",
+          "ledger_ref": "public-sandbox-alice",
+          "ledger_uuid": "d7b563d7-7ca7-4599-9787-9ea1f07a8b09",
+          "owner_actor": "alice",
+          "owner_ref": "fixture-owner-alice",
+          "primary_device_ref": "fixture-rock-arm64-001",
+          "wallet_authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+          "writer_epoch": 2
+        },
+        "destination": "/var/tmp/rockstaros-preview-authority/contracts/current-copy-cbd7927f-573d-42e7-9544-0b74ce5598a5",
+        "game_epochs": {
+          "public-game-a": {
+            "before_sha256": "c1a77fb3e63464daa247e53b1efad8ad3bfaaee8612246936df41abecbb5276b",
+            "c_record_sha256": "7c6add5309c59e508ffbf520132bd0170ddde83923b5391020cb4e7b481238b5",
+            "game_authority_id": "public-game-authority-a",
+            "game_id": "public-game-a",
+            "game_plan_sha256": "e3943d9dd1a4301dbe93517c48f8b2169bfcbecf3718b44ac913c09e9f894fd4",
+            "game_store_uuid": "900ada3a-158c-4c6a-94fa-5dca0848cc55",
+            "index_uuid": "ba37e59f-5d79-44b8-b4d7-e8c6d2f92668",
+            "ledger_uuid": "d7b563d7-7ca7-4599-9787-9ea1f07a8b09",
+            "new_epoch": 2,
+            "old_epoch": 1,
+            "restore_id": "cbd7927f-573d-42e7-9544-0b74ce5598a5",
+            "schema": "rock-game-grant-epoch-receipt/1",
+            "simulation_only": true,
+            "status": "DONE",
+            "wallet_authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910"
+          },
+          "public-game-b": {
+            "before_sha256": "12aedcc0cec34c588d942a46b84aed0fa477c411ca3602f1c334bb4039c2fba9",
+            "c_record_sha256": "7c6add5309c59e508ffbf520132bd0170ddde83923b5391020cb4e7b481238b5",
+            "game_authority_id": "public-game-authority-b",
+            "game_id": "public-game-b",
+            "game_plan_sha256": "e3943d9dd1a4301dbe93517c48f8b2169bfcbecf3718b44ac913c09e9f894fd4",
+            "game_store_uuid": "6ad06034-4753-4344-b7d2-9d3d8b6da532",
+            "index_uuid": "ba37e59f-5d79-44b8-b4d7-e8c6d2f92668",
+            "ledger_uuid": "d7b563d7-7ca7-4599-9787-9ea1f07a8b09",
+            "new_epoch": 2,
+            "old_epoch": 1,
+            "restore_id": "cbd7927f-573d-42e7-9544-0b74ce5598a5",
+            "schema": "rock-game-grant-epoch-receipt/1",
+            "simulation_only": true,
+            "status": "DONE",
+            "wallet_authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910"
+          }
+        },
+        "intent": "cbd7927f-573d-42e7-9544-0b74ce5598a5",
+        "new_device": "recovered",
+        "post_snapshot_sha256": "9280f830effd14a9fe7df3801ee7735340c352f745aba87380969421fe116055",
+        "same_host_current_copy_only": true,
+        "schema": "rock-game-sandbox-current-restore-receipt/1",
+        "simulation_only": true,
+        "source_retired": true,
+        "status": "DONE"
+      },
+      "binding": {
+        "authority_manifest_sha256": "bdd0dac50d3eefc45405b566951d600ed4fdac45074ee081aa4a971e0b27b4a8",
+        "intent": "cbd7927f-573d-42e7-9544-0b74ce5598a5",
+        "new_device": "recovered",
+        "os_backup_sha256": "fdca01e177f56d0977df4ae5194adc37bcb9e5d789b1e2a0d34ef166530b218f",
+        "source_device": "preview"
+      },
+      "config": {
+        "boot": {
+          "factory_sha256": "3dde9d407e4917cd381a046660c9a897128dc0c25df2bc09f550c59819af34d8",
+          "mode": "signed-stage0",
+          "profile": "development-game-authority",
+          "profile_sha256": "0d6f4924d98f1cd43d4e3104b9a9c3b4f2a4b2557e96f64bd626f9930f4b34bb"
+        },
+        "game": {
+          "authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+          "config": "/var/tmp/rockstaros-preview-authority/sandbox.json",
+          "sha256": "cdb9609518187dc057a4e747d28b9550da0946c59636fc0cc8346027cdb5ab9c"
+        },
+        "images": "/opt/rockstaros-preview/images",
+        "name": "recovered",
+        "network": "game-authority",
+        "schema": "rock-desktop-device/7",
+        "sha256": {
+          "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+          "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+          "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+        },
+        "viewer": "browser"
+      },
+      "device": "recovered",
+      "disks": {
+        "slot-a.ext4": {
+          "bytes": 402653184,
+          "sha256": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c"
+        },
+        "slot-b.ext4": {
+          "bytes": 402653184,
+          "sha256": "3201548f7070f0ae5adf2c869b15df99b5f85ca51feda443c1597c130976619a"
+        },
+        "userdata.ext4": {
+          "bytes": 268435456,
+          "sha256": "e8c790a2210c16c34b1085f2b82afd017eaf5bf40988366033cfed961904d28c"
+        }
+      },
+      "filesystem_check": {
+        "exit_code": 0,
+        "output": "Pass 1: Checking inodes, blocks, and sizes\nPass 2: Checking directory structure\nPass 3: Checking directory connectivity\nPass 4: Checking reference counts\nPass 5: Checking group summary information\nrock-desktop: 50/65536 files (12.0% non-contiguous), 27093/262144 blocks\ne2fsck 1.47.2 (1-Jan-2025)\n"
+      },
+      "original_device_preserved": true,
+      "same_host_current_copy_only": true,
+      "schema": "rock-desktop-game-restore/1",
+      "simulation_only": true,
+      "source_retired": true,
+      "status": "RESTORED",
+      "update": {
+        "committed": "A",
+        "floor": 1,
+        "mode": "signed-committed",
+        "update_state_sha256": "3fc260aa1d1430d887cf15318f2be1ac655ed5232992ae276e13893709723da9"
+      }
+    },
+    "source_disks": {
+      "slot-a.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+      "slot-b.ext4": "3201548f7070f0ae5adf2c869b15df99b5f85ca51feda443c1597c130976619a",
+      "userdata.ext4": "e8c790a2210c16c34b1085f2b82afd017eaf5bf40988366033cfed961904d28c"
+    },
+    "destination_disks": {
+      "slot-a.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+      "slot-b.ext4": "3201548f7070f0ae5adf2c869b15df99b5f85ca51feda443c1597c130976619a",
+      "userdata.ext4": "e8c790a2210c16c34b1085f2b82afd017eaf5bf40988366033cfed961904d28c"
+    }
+  },
+  "host_state": "INSTALLED",
+  "same_authority_receipt": true,
+  "epoch_not_incremented_twice": true,
+  "retired_source_start_refused": "game_exchange.protocol.ProtocolError: retired source OS cannot spend after current-copy restore"
+}

@@ -1,0 +1,108 @@
+{
+  "schema": "rock-final-original-retention/1",
+  "status": "PASS",
+  "host_payload_original_inventory": "PASS",
+  "guest_inventory": {
+    "status": "PASS",
+    "files": 706,
+    "all_exact_source_image_legal_members": true
+  },
+  "private_records": {
+    "authority-stopped.tar.gz": {
+      "bytes": 82382,
+      "sha256": "97e34b0922160ab5dcde0f0806567b852bf7330f9ee2ff6076a1ae0ffa74f9d3"
+    },
+    "recovered-userdata.ext4": {
+      "bytes": 268435456,
+      "sha256": "8f24aaf417ddd48fa101a5a151af7fb54e235ee4b80f12c61b2bb11e72f8b90b"
+    },
+    "desktop-records.tar.gz": {
+      "bytes": 9616,
+      "sha256": "7713e3791b12b6a4d9baf0252c5e3ade40a6f5252661d32af2e22c232c382fbe"
+    }
+  },
+  "off_vm_export": {
+    "status": "PASS",
+    "files": 19,
+    "data_bytes": 1074564436,
+    "backup_manifest_sha256": "adce5d31f561a28fe904e94df3126d000707a317f5205ec0984adb627cd1444d",
+    "complete_file_inventory": {
+      "authority/files/READY.json": {
+        "bytes": 780,
+        "sha256": "55faccf7ab5edcfceb03a2acd84141fa10a564a11e2c92d3eda0e3bf9161ff80"
+      },
+      "authority/files/contracts/alice/AUTHORITY.json": {
+        "bytes": 626,
+        "sha256": "4ecfc906c183c22a322211cc1394d462d50478c4b77b237910572cbbb2b9966c"
+      },
+      "authority/files/contracts/alice/GX00-MIGRATION.json": {
+        "bytes": 489,
+        "sha256": "08b031d823a45f780a0482024a1d0290cb111250a87f03307bd6f81c234427af"
+      },
+      "authority/files/contracts/alice/entitlement.db": {
+        "bytes": 180224,
+        "sha256": "6554040cf887174fc48a1b085459c9097ffed58f41f6d6a1f31f3de31dbe0fa9"
+      },
+      "authority/files/contracts/alice/wallet-simulator.db": {
+        "bytes": 389120,
+        "sha256": "a87fde7696b19b79ccde71c1a3e9ff93752ad4d58af6f3053c152bc1b7f8bcf5"
+      },
+      "authority/files/coordinator/registry.json": {
+        "bytes": 847,
+        "sha256": "8a190645da38a5cce44407554ae341bccb775b9ed2d1dd9cc63f45c3df56d706"
+      },
+      "authority/files/credentials.json": {
+        "bytes": 339,
+        "sha256": "006f4ead8dd98707d72d9dfbcba091ed4dd535ed663f6ae35a820dc218fde460"
+      },
+      "authority/files/game-a/game.sqlite3": {
+        "bytes": 77824,
+        "sha256": "aaff5de0f8dca76bfe3fa76c28df73e684326b87346b09019934bd21884e0bb1"
+      },
+      "authority/files/game-b/game.sqlite3": {
+        "bytes": 77824,
+        "sha256": "ebedb8cd472e0df827a0ccc261b9786f4521f24a94af8da24f8fb3f4e5ec74ad"
+      },
+      "authority/files/game-index/game.sqlite3": {
+        "bytes": 49152,
+        "sha256": "0a61f0b1fc468c3c4d0c9ce74214a3c0709e350f408c1fceb086726bdb44af25"
+      },
+      "authority/files/handoff.json": {
+        "bytes": 564,
+        "sha256": "d3a92968b3cd8630a38e626694d8a1e3fe02f308e56bbd2ea037df90f3f5b47a"
+      },
+      "authority/files/router/OWNER-DEVICES.json": {
+        "bytes": 835,
+        "sha256": "94718ff115cbdf08edce5dead81b2f0e64a242d25031e96ba39b0d7efccd111a"
+      },
+      "authority/files/sandbox.json": {
+        "bytes": 281,
+        "sha256": "cdb9609518187dc057a4e747d28b9550da0946c59636fc0cc8346027cdb5ab9c"
+      },
+      "authority/manifest.json": {
+        "bytes": 20810,
+        "sha256": "bdd0dac50d3eefc45405b566951d600ed4fdac45074ee081aa4a971e0b27b4a8"
+      },
+      "authority/plan.json": {
+        "bytes": 20810,
+        "sha256": "bdd0dac50d3eefc45405b566951d600ed4fdac45074ee081aa4a971e0b27b4a8"
+      },
+      "os/backup.json": {
+        "bytes": 2087,
+        "sha256": "fdca01e177f56d0977df4ae5194adc37bcb9e5d789b1e2a0d34ef166530b218f"
+      },
+      "os/slot-a.ext4": {
+        "bytes": 402653184,
+        "sha256": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c"
+      },
+      "os/slot-b.ext4": {
+        "bytes": 402653184,
+        "sha256": "3201548f7070f0ae5adf2c869b15df99b5f85ca51feda443c1597c130976619a"
+      },
+      "os/userdata.ext4": {
+        "bytes": 268435456,
+        "sha256": "e8c790a2210c16c34b1085f2b82afd017eaf5bf40988366033cfed961904d28c"
+      }
+    }
+  }
+}
