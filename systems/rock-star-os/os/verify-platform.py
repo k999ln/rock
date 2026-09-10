@@ -62,7 +62,8 @@ def main():
     with data.open('xb') as stream:
         stream.truncate(128 * 1024 * 1024)
     subprocess.run(['mkfs.ext4', '-q', '-F', '-L', 'rock-data', str(data)], check=True)
-    before = {p.name: digest(p) for p in (kernel, rootfs)}
+    immutable_images = (kernel, rootfs, artifacts/'stage0.cpio.gz') if args.scope == 'game-isolation' else (kernel, rootfs)
+    before = {p.name: digest(p) for p in immutable_images}
     command = ['qemu-system-aarch64', '-machine', 'virt-10.0,gic-version=3', '-accel', 'tcg',
                '-cpu', 'cortex-a53', '-m', '1024', '-smp', '2', '-display', 'none',
                '-serial', 'stdio', '-monitor', 'none', '-qmp', f'unix:{monitor},server=on,wait=off',
@@ -131,7 +132,7 @@ def main():
         report['native_framebuffer_capture'] = captured
         if process.returncode != 0 or report['missing'] or 'ROCK_PLATFORM_GUEST_FAIL' in content:
             raise RuntimeError('integrated guest checks failed; inspect boot.log')
-        if {p.name: digest(p) for p in (kernel, rootfs)} != before:
+        if {p.name: digest(p) for p in immutable_images} != before:
             raise RuntimeError('read-only OS images changed')
         if args.scope == 'game-isolation':
             if 'reboot: Power down' not in content:
@@ -145,7 +146,7 @@ def main():
             report.update(guest_proof=proof,normal_shutdown=True,filesystem_consistent=True,
                           wallet_financial_assertions='NOT_RUN',tool_implicit_earnings='NOT_RUN')
         report['status'] = 'PASS_SCOPED' if args.scope == 'game-isolation' else 'PASS'
-        print('PASS: native OS platform checks; ' + str(evidence), flush=True)
+        print(report['status'] + ': native OS platform checks (' + args.scope + '); ' + str(evidence), flush=True)
     except BaseException as error:
         report['status'], report['error'] = 'FAIL', str(error)
         raise

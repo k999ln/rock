@@ -145,7 +145,10 @@ def main():
     after_runtime = runtime_hashes()
     check("OS core and recipe runtime unchanged during package update", after_runtime == before_runtime)
     end = request("snapshot")["snapshot"]
-    check("Tool execution never changes Wallet", end["wallet"] == wallet_before)
+    if wallet_before is None:
+        check("offline Wallet display remains unknown during Tool execution", end["wallet"] is None)
+    else:
+        check("Tool execution never changes Wallet", end["wallet"] == wallet_before)
     audit = [json.loads(item["body"]) for item in end["hub"]["audit"] if item["event"] == "run_approved"]
     for job in initial_jobs.values():
         event = next((a for a in audit if a.get("job_id") == job["id"]), {})
@@ -156,7 +159,9 @@ def main():
               "time_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
               "receipts": receipts, "proposal_update": {"job": after, "rollback_job": restored},
               "runtime_before_sha256": before_runtime, "runtime_after_sha256": after_runtime,
-              "wallet_unchanged": True, "production_trust": False,
+              "wallet_unchanged": True if wallet_before is not None else "NOT_RUN",
+              "wallet_observation": "same displayed snapshot" if wallet_before is not None else "unknown offline; authoritative financial equality NOT_RUN",
+              "production_trust": False,
               "blackberry_hardware": "NOT_RUN", "physical_usb": "NOT_RUN"}
     save_report(report)
     print("ROCK_TOOLS_GUEST_PASS " + json.dumps(report, ensure_ascii=False), flush=True)
