@@ -1,5 +1,5 @@
 {
-  "version": "1.8",
+  "version": "1.9",
   "decidedAt": "2026-09-09",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -8,6 +8,15 @@
   "nextPrompt": "docs/prompts/os-operational-base-next.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/os-hub-wallet-game-design.md",
+  "strategy": {
+    "document": "docs/rockstaros-1.0-strategy.md",
+    "status": "design",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ17 and the current RockstarOS 1.0 technical base",
+    "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
+    "representativeProductCandidate": "org.rockstar.citation-organizer",
+    "marketValidation": "not_run",
+    "runtimeChangedByThisDesign": false
+  },
   "alignmentAudit": "docs/design-implementation-alignment-20260909.md",
   "executionApproval": {
     "status": "approved_for_implementation",

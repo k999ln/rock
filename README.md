@@ -2,11 +2,13 @@
 
 tob側の自動化ツールを商品として管理するHubと、自動化で得たお金を管理するWalletに特化したOSを開発します。実行場所、料金、資格、ライセンスの違いを扱い、利用準備・日々の管理・結果とお金の確認に伴う不便を減らします。
 
-**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ15）です。** [プロンプト作成規約](docs/prompt-playbook.md)、[OS稼働・ゲーム連携監査](docs/os-readiness-audit-20260909.md)、[最新の実行プロンプト](docs/prompts/os-operational-base-next.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を保存しています。まず現設計をQEMUで稼働・復旧まで検証できる開発OSへ進め、ゲーム交換と作者向けAPI/SDKを別に開発します。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持。文書保存と実装・実機/本番合格は別です。
+**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ17）です。** [プロンプト作成規約](docs/prompt-playbook.md)、[OS稼働・ゲーム連携監査](docs/os-readiness-audit-20260909.md)、[最新の実行プロンプト](docs/prompts/os-operational-base-next.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を保存しています。まず現設計をQEMUで稼働・復旧まで検証できる開発OSへ進め、ゲーム交換と作者向けAPI/SDKを別に開発します。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持。文書保存と実装・実機/本番合格は別です。
+
+[8原則に基づくRockstarOS 1.0設計](docs/rockstaros-1.0-strategy.md)を追加しました。現ベースを維持し、一つの商品で実行・成果・費用・復旧まで確認できる体験を検証します。初期対象の文章系個人事業主と既存引用整理は検証仮説。配布/実用の優先順位、試用指標、CM導線、責任分担を具体化し、未実証の需要や本番利用可能性は主張しません。
 
 **[設計v1.1](docs/os-hub-wallet-game-design.md)の実装は承認済みです。** [承認範囲](docs/execution-approval-20260909.md)に従い、専用branchでnativeと設計を統合しています。公開・実機・MetaMask実資金は条件付き了承を保持し、技術的な準備を検証します。達成演出は見送り、市場案は検討のみです。
 
-**このbranchにはLinux / Buildroot / ARM64 QEMU native OSの試作があります。** main/native/設計の3入力を専用branchへ統合し、凍結した`b8287bc`から新しいOSを生成しました。native Hubの商品利用、合成Wallet、起動・保存・更新失敗からの復帰・別端末への復元は[限定受入D0〜D5](docs/os-acceptance-b8287bc-20260909.md)を通過。D6の長時間試験は未合格で、同じ条件で再試験中です。[PR #2](https://github.com/k999ln/rock/pull/2)で公開していますが、mainへの統合と実機対応は未実施です。
+**このbranchにはLinux / Buildroot / ARM64 QEMU native OSの試作があります。** main/native/設計の3入力を専用branchへ統合し、凍結した`b8287bc`から新しいOSを生成しました。native Hubの商品利用、合成Wallet、起動・保存・更新失敗からの復帰・別端末への復元は[限定受入D0〜D5](docs/os-acceptance-b8287bc-20260909.md)を通過。D6の長時間試験は未合格で、run44の最終結果は再取得が必要です。[PR #2](https://github.com/k999ln/rock/pull/2)で公開していますが、mainへの統合と実機対応は未実施です。
 
 開発入口: [native統合方針](docs/native-os-integration.md)、[nativeの使い方](systems/rock-star-os/README.md)、[過去のsource検証](docs/native-os-validation.md)、[現在のCHECKPOINT](CHECKPOINT.md)。BlackBerry優先・正確な機種は確認中。月888 cents固定・同契約の複数端末で1回を維持します。
 
@@ -25,7 +27,7 @@ Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/o
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-09 / RockstarOS 1.0ベース・native試用版・導入可能版の準備 / 完了 14/34件
+最終更新: 2026-09-09 / RockstarOS 1.0の製品設計・導入可能版・代表商品の実用検証 / 完了 14/34件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -61,7 +63,7 @@ Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/o
 | N03 | BlackBerryの型番・boot/BSP・更新/復旧の適合確認 | 進行中 | [記録](docs/native-os-integration.md) |
 | N04 | BlackBerry実機だけでHub取得・実行・更新・復旧 | 未着手 | [記録](docs/native-os-integration.md) |
 | N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
-| RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 進行中 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/rockstaros-1.0-architecture.md) |
+| RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 進行中 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/rockstaros-1.0-architecture.md) · [記録](docs/rockstaros-1.0-strategy.md) |
 | RLS02 | 正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証 | 未着手 | [記録](docs/release-installation-plan-20260909.md) |
 
 段階ゲート（作業全体の完了とは別判定）
@@ -82,7 +84,7 @@ Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/o
 | PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 未合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 最初の大規模native suiteを省略せず旧5分から10分上限へ拡張したため同SHAのCI完走を確認し、D6未合格を解消する。次に既存private VMへ依存しないfresh Mac/PC向けQEMU Developer Previewを作り、導入・起動・終了・再開・backup・削除を同一配布物で検証する。物理端末は正確な1機種・variantを固定してから別ゲートで進める。
+次の作業: 8e6d217のWeb/Android/native CI成功を確認済み。D6 run44の最終結果を取得し、未合格なら原因を解消して同じ基準で再試験する。並行してRLS01のfresh環境向けQEMU導入パッケージを作り、対応hostを固定して導入・終了・再開・復旧・削除を同一候補で検証する。8原則の設計に従い、既存引用整理を候補にHubから成果/費用確認までの実用検証を準備する。GX00分離→GX01→DX01は継続必須。BlackBerry実機と実資金は別ゲート。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

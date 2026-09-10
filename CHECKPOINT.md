@@ -2,9 +2,11 @@
 
 作業branch: `codex/operational-base-20260909`。保存時点: 2026-09-10 UTC。[実装・検証・未達の統合記録](docs/implementation-checkpoint-20260909.md)を現在の入口とする。
 
+最新の設計入口は [RockstarOS 1.0製品・事業・開発設計](docs/rockstaros-1.0-strategy.md)。利用者の8原則を具体化し、現ベースを維持する。対象市場・引用整理の代表商品化・pilot指標は検証仮説。次はD6の最終結果取得とRLS01の導入準備を並行し、一つの商品体験の実用比較を準備する。Game交換/SDKは継続必須。`8e6d217`のWeb/Android/native CI成功を確認済みだが、D6/実機/実資金の合格ではない。本更新は設計のみ。
+
 設計v1.1は実装承認済み。[承認範囲](docs/execution-approval-20260909.md)と[製品ベース](docs/product-baseline.md)を読む。main `7cdbb5fedc86ee3978ed329d9312147d137c9199`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、設計 `27b34adc02a9e06a4816aa18a5e38cf38b330953` の3入力を専用branchへ統合済み。main/既存native PRはまだ未変更。元IMPORT-MANIFESTと旧Nタスクは保持。
 
-次の作業: 凍結b8287bcのD0〜D5は[限定受入](docs/os-acceptance-b8287bc-20260909.md)を照合済み。D6 run42の失敗に加え、run43は反復41件の後、ホスト低電池休止を伴ってOCR/観測の期限を超過した。失敗後の通常終了と47jobs/55actions保持は別に検証済み。AC接続下の新しい[run44](docs/evidence/os-base/44-start-b8287bc.json)を同じ5サイクル・60分・61件で実施中。再開時は元計画・報告・終了状態を取得する。全条件が通るまでV01全体は未合格。
+次の作業: 凍結b8287bcのD0〜D5は[限定受入](docs/os-acceptance-b8287bc-20260909.md)を照合済み。D6 run42の失敗に加え、run43は反復41件の後、ホスト低電池休止を伴ってOCR/観測の期限を超過した。失敗後の通常終了と47jobs/55actions保持は別に検証済み。AC接続下の新しい[run44](docs/evidence/os-base/44-start-b8287bc.json)は同じ5サイクル・60分・61件の開始記録があるが、本設計更新では最終結果を取得していない。再開時は元計画・報告・終了状態を取得する。全条件が通るまでV01全体は未合格。
 
 Macの[専用launcher v2](systems/rock-star-os/os/desktop/LAUNCHER-V2.md)は既存の隔離VM/画像/保存端末を厳密に指定する。実Chrome画面で商品導入・同意・1件実行・通常終了・再度開いた結果を確認した。修正済みlauncherで3回目の起動・結果再表示・通常終了・停止後データ保持も[確認済み](docs/evidence/os-base/mac-trial-20260909/final-mac-trial.json)。ブラウザを閉じるだけではOSを終了しない。実機用の書込みイメージではない。
 

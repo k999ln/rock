@@ -1,6 +1,6 @@
 # Rock star 開発の継続ルール
 
-- 最初に docs/product-baseline.md、data/product-baseline.json、README.md、project.md、data/project-status.json を読む。確定要望はRQ01〜RQ15。新しい明示指示がある場合だけ理由を記録して更新する。最新の実行プロンプトはdata/product-baseline.jsonのnextPrompt。
+- 最初に docs/product-baseline.md、data/product-baseline.json、README.md、project.md、data/project-status.json を読む。確定要望はRQ01〜RQ17。新しい明示指示がある場合だけ理由を記録して更新する。最新の実行プロンプトはdata/product-baseline.jsonのnextPrompt。
 - 設計v1.1の実装は承認済み。docs/execution-approval-20260909.mdとdata/execution-approval.jsonを読み、再承認で止めない。公開・実機導入・MetaMask実資金試験は準備が整うことを条件に了承されている。対象・機種適合・取引条件の未指定を補い、条件付き了承を実行済みとしない。
 - 「現段階の進捗からプロンプト作成」では docs/prompt-playbook.md に従い、npm run prompt:context または同等の読み取りでGitHubのmain・branch・PR・同一SHAのCIを確認する。対象コード/証拠を必ず読む。docs/progress-audit-20260909.mdは履歴snapshot。取得失敗を最新確認済みとしない。
 - 現在はmain/nativeだけでなく codex/os-game-design-review-20260909 の最新設計も必須入力。docs/design-implementation-alignment-20260909.md、statusのphaseGatesを読む。単一owner多端末を複数player基盤に、チェックなしをCI成功に、文書訂正をruntime修正に置き換えない。予測市場/ゲーム資産売買は検討のみ、実行許可ではない。
@@ -28,3 +28,4 @@
 - 省トークンで進める。巨大な全履歴・全差分・全ログを出力せず、対象path、件数、失敗箇所へ絞る。通常は変更箇所の試験を先に実行し、広い回帰はrelease gateまたは必要な失敗時だけ行う。長いログはGit管理外へ置き、要約と再現情報だけ読む。
 - Gitには実装、設定、必要最小限のfixture、要約した証拠、復旧手順を保存する。OS image、build cache、重複ログ、全フレーム、再生成可能な大量出力はrelease artifactまたはGit管理外へ置く。
 - 現段階を `RockstarOS 1.0` の製品ベースとして発表し、互換性を明示しながら継続改善する。最初の配布ラベルはDeveloper Preview。版番号だけで実機・本番金融・一般公開を合格扱いせず、`docs/rockstaros-1.0-architecture.md`とrelease gateを同期する。
+- 8原則を適用した製品判断は `docs/rockstaros-1.0-strategy.md` に従う。対象市場・代表商品・pilot指標は検証仮説であり利用者の確定要望と区別する。既存systemを再利用し、ゲーム要求や実行先の多様性を落とさず、一つの商品体験・保存/復旧・導入の証拠に集中する。未実証の需要・独自性・独占・収益を宣言しない。

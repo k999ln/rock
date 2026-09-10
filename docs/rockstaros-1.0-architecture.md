@@ -2,9 +2,11 @@
 
 RockstarOS 1.0は、現在の検証済み範囲を最初の製品ベースとして発表し、互換性を保ちながら改善するための名称である。最初の配布段階はQEMU Developer Preview。1.0という製品版番号を、実機対応・本番金融・一般公開の合格証明に使わない。
 
+利用者の8原則に基づく対象仮説、代表商品、system間の利用体験、開発優先順位、販売と検証は [製品・事業・開発設計](rockstaros-1.0-strategy.md) を参照する。本書は技術基盤を維持し、新しい設計を実装済みと扱わない。
+
 ## 全体構造
 
-利用者はnative UIからHub、Wallet、Game、端末操作を行う。UIはlocal Platform APIだけを信頼し、Platformが認証、権限、実行、保存、外部接続を仲介する。OS本体は読取専用、利用者データは別diskへ保存する。更新・復旧はA/B slotとbackupで扱う。
+到達設計では利用者はnative UIからHub、Wallet、Game、端末操作を行う。Game交換/SDKは開発要求であり、現imageで利用できる機能とは分ける。UIはlocal Platform APIだけを信頼し、Platformが認証、権限、実行、保存、外部接続を仲介する。OS本体は読取専用、利用者データは別diskへ保存する。更新・復旧はA/B slotとbackupで扱う。
 
 ## 1. Boot・OS image
 

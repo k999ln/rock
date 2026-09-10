@@ -39,12 +39,12 @@ Developer Previewの合格後は「仮想端末向けDeveloper Previewを導入�
 
 ## 3. 現在の停止条件
 
-- 最新PRのnative source-testsは最初の大規模suiteが旧5分上限でtimeoutした。suiteを省略せず10分上限へ拡張し、同SHAのCI再実行結果を待つ。
+- `8e6d217`のWeb/Android/native CIは成功を確認済み（[同SHAの参照](rockstaros-1.0-strategy.md#5-現在地と開発順)）。旧5分timeoutは継続中の停止条件ではない。配布候補を更新した場合はそのsourceのCIと同一imageの受入を取り直す。
 - D6長時間試験が未合格。
 - 配布物に必要な汎用VM作成、image取得、署名検証、削除の導線がない。
 - 実機の正確な型番とvariantが未確定。
 
-実装順は、CI timeoutの原因解消、D6完走、Developer Preview packager、fresh環境導入試験、CM用表示の照合、対象実機の固定、Physical Device Previewの順とする。
+次はD6 run44の最終報告・終了後データを取得し、未合格なら原因を解消して同じ基準で再試験する。Developer Preview packagerの実装は並行できるが、配布はD6とfresh環境導入試験の両方を通してから行う。最初の対応host OS/CPU/版を明示し、CM用表示を照合する。対象実機の固定とPhysical Device Previewは別ゲート。商品の実用検証と継続必須のゲーム系列は [1.0戦略](rockstaros-1.0-strategy.md) に従う。
 
 ## 4. Gitへ保存するもの
 
