@@ -700,12 +700,22 @@ def verify_power(before, after, events):
     return added[0]['boot_id']
 
 
-def verify_baseline(snapshot, rows):
+def verify_baseline(snapshot, rows, profile=None):
     require(all(not value for name, value in rows.items() if name != 'sqlite_sequence'), 'fresh baseline already contains Hub business state')
-    money = snapshot['wallet']['financial_summary']
-    require(all(value == 0 for key, value in money.items() if key not in ('currency', 'simulation_only')),
-            'fresh Wallet baseline has financial/credential side effects')
-    require(all(value == 0 for value in snapshot['membership']['financial_summary'].values()), 'fresh membership baseline is already active')
+    if profile is not None and profile['name'] == 'development-game-authority/1':
+        cached = snapshot['wallet_cache']
+        require(cached['tables']['identity']['rows'] == cached['tables']['snapshot']['rows'] == 1 and
+                all(value['rows'] == 0 for name, value in cached['tables'].items() if name not in ('identity', 'snapshot')),
+                'fresh remote cache contains action requests or unexpected data')
+        for role in ('game_exchange_cache', 'game_connection_a', 'game_connection_b'):
+            require(snapshot[role]['tables']['identity']['rows'] == 1 and
+                    all(value['rows'] == 0 for name, value in snapshot[role]['tables'].items() if name != 'identity'),
+                    'fresh Game SDK journal already contains business state: ' + role)
+    else:
+        money = snapshot['wallet']['financial_summary']
+        require(all(value == 0 for key, value in money.items() if key not in ('currency', 'simulation_only')),
+                'fresh Wallet baseline has financial/credential side effects')
+        require(all(value == 0 for value in snapshot['membership']['financial_summary'].values()), 'fresh membership baseline is already active')
     require(all(table['rows'] == 0 for table in snapshot['remote']['tables'].values()), 'fresh remote baseline has jobs')
 
 
@@ -854,12 +864,14 @@ def wallet_only_changes(before, after):
                 {k: v for k, v in after[role]['tables'].items() if k not in known}, 'Wallet phase changed an additional table')
 
 
-def preflight(images, output_parent, mode, source_commit, boot_profile='legacy-local'):
+def preflight(images, output_parent, mode, source_commit, boot_profile='legacy-local', device_config=None):
     require(sys.platform == 'linux', 'NOT_RUN: execute on the Linux QEMU build host')
     require(hasattr(os, 'pidfd_open'), 'NOT_RUN: Linux pidfd exit observation is required')
     require(re.fullmatch('[0-9a-f]{40}', source_commit), 'exact source commit required')
     require(mode in ('lifecycle', 'soak'), 'unknown verification mode')
-    require(boot_profile in ('legacy-local', 'local-ab'), 'explicit supported boot profile required')
+    require(boot_profile in ('legacy-local', 'local-ab', 'game-authority-ab'), 'explicit supported boot profile required')
+    require((device_config is not None) == (boot_profile == 'game-authority-ab'),
+            'a fixed device configuration is required only for the Game authority profile')
     for command in ('qemu-system-aarch64', 'mkfs.ext4', 'debugfs', 'e2fsck', 'tesseract', 'openssl'):
         require(shutil.which(command) is not None, 'NOT_RUN: missing host prerequisite ' + command)
     try:
@@ -873,7 +885,7 @@ def preflight(images, output_parent, mode, source_commit, boot_profile='legacy-l
     guest.directory(output_parent)
     name = 'business-' + uuid.uuid4().hex[:20]
     require(not (guest.BASE / name).exists(), 'fresh device name already exists; existing data will not be used')
-    names = ('Image', 'rootfs.ext4', 'stage0.cpio.gz') if boot_profile == 'local-ab' else ('Image', 'rootfs.ext4')
+    names = ('Image', 'rootfs.ext4', 'stage0.cpio.gz') if boot_profile != 'legacy-local' else ('Image', 'rootfs.ext4')
     config = {'schema': 'rock-desktop-device/2', 'name': name, 'images': str(images), 'network': 'none',
               'sha256': {f: guest.digest(images / f) for f in names}}
     if boot_profile == 'local-ab':
@@ -882,13 +894,30 @@ def preflight(images, output_parent, mode, source_commit, boot_profile='legacy-l
         config.update(schema='rock-desktop-device/6', viewer='browser',
                       boot={'mode': 'signed-stage0', 'profile': 'local-development',
                             'factory_sha256': hashlib.sha256(factory).hexdigest()})
+    elif boot_profile == 'game-authority-ab':
+        supplied = retention.backup.read_metadata(Path(device_config).resolve(strict=True))
+        require(supplied.get('schema') == 'rock-desktop-device/7' and supplied.get('network') == 'game-authority' and
+                supplied.get('boot', {}).get('mode') == 'signed-stage0' and
+                supplied.get('boot', {}).get('profile') == 'development-game-authority', 'explicit signed Game authority device/7 required')
+        require(supplied.get('images') == str(images) and supplied.get('sha256') == config['sha256'],
+                'supplied Game device is not the exact tested image triple')
+        config = {**supplied, 'name': name}
+        import stage0
+        freeze = stage0.read_json(images / 'freeze-manifest.json', limit=2 * 1024**2)
+        require(freeze.get('schema') == 'rock-build-freeze/2' and freeze.get('status') == 'BUILD_COMPLETE_FROZEN' and
+                freeze.get('source_commit') == source_commit and freeze.get('files_sha256') == config['sha256'],
+                'Game authority image is not bound to the declared complete frozen source')
     guest.validate_config(config)
     return config, output_parent / name
 
 
-def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-local', prepare_backup=False, preflight_only=False):
-    config, output = preflight(images, output_parent, mode, source_commit, boot_profile)
+def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-local', prepare_backup=False, preflight_only=False, device_config=None):
+    require(not (boot_profile == 'game-authority-ab' and prepare_backup),
+            'Game authority Wallet preparation requires its separate explicit UI flow; local Wallet preparation cannot be reused')
+    config, output = preflight(images, output_parent, mode, source_commit, boot_profile, device_config)
     output.mkdir(mode=0o700)
+    profile = retention.retention_profile(config)
+    authority, authority_baseline = None, None
     frozen = contract.plan(mode)
     frozen.update(config=config, source_commit_declared=source_commit, prepare_backup=prepare_backup,
                   wallet_preparation=wallet_backup.plan() if prepare_backup else None,
@@ -903,6 +932,27 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
                        'primary_analysis': 'bounded accent regions; observed row green contour; grayscale >=180 glyphs to black; 10px white border; no auto-invert',
                        'duplicate_box_min_iou': .70},
                   frozen_at=datetime.now(timezone.utc).isoformat())
+    frozen['business_profile'] = profile
+    if boot_profile == 'game-authority-ab':
+        import game_authority_observer as authority_contract
+        authority = authority_contract.Observer(HERE.parent / 'game_exchange/sandbox.py',
+            config['game']['config'], config['game']['authority_id'], output)
+        require(authority.input_hashes['sandbox_config_sha256'] == config['game']['sha256'],
+                'Game authority configuration changed since device preflight')
+        if not preflight_only:
+            authority.invoke('stop')
+        authority_baseline = authority.invoke('snapshot')
+        empty = authority_contract.empty_baseline(authority_baseline)
+        guest.save(output / 'authority-before-ui.json', authority_baseline)
+        frozen['network'] = 'game-authority: QEMU user NAT to the fixed public development authorities, no port forwarding'
+        frozen['scope']['wallet'] = 'remote authority and Game journals retained; pre-UI authoritative financial/credential/member tables empty'
+        frozen['authority_observation'] = {'schema': authority_contract.SCHEMA, 'limits': authority_contract.LIMITS,
+            **authority.input_hashes, 'baseline': empty,
+            'baseline_file_sha256': guest.digest(output / 'authority-before-ui.json'),
+            'comparison': 'complete canonical snapshot equality, including all databases, schemas, typed rows, intrinsic rowid, sequences, pragmas and protected identity JSON',
+            'lifecycle': 'stop and fenced snapshot before UI; start before every boot; stop and fenced snapshot after every normal shutdown'}
+        frozen['device_config_input_sha256'] = guest.digest(Path(device_config))
+        frozen['candidate_freeze_sha256'] = guest.digest(Path(config['images']) / 'freeze-manifest.json')
     packages = extract_packages(Path(config['images']) / 'rootfs.ext4', output)
     if prepare_backup:
         frozen['scope']['wallet'] = 'business cycles preserve the empty baseline; separate two-boot synthetic Wallet prerequisite follows'
@@ -919,6 +969,7 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
         print(json.dumps({'status': report['status'], 'evidence': str(output)}), flush=True)
         return report
     operations, all_jobs, previous_rows, previous_power, baseline = report['operations'], [], None, [], None
+    previous_snapshot = None
     record, monitor, sampler, baseline_slots, nonempty_baseline = None, None, None, None, None
     limits = frozen['limits']
     business_cycles = frozen['normal_boot_shutdown_cycles']
@@ -927,6 +978,10 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
         for cycle_number in range(total_cycles):
             wallet_step = cycle_number - business_cycles
             require(contract.hashed(json.loads((output / 'plan.json').read_text())) == expected_plan_hash, 'frozen plan changed')
+            if authority is not None:
+                require(guest.digest(Path(config['images']) / 'freeze-manifest.json') == frozen['candidate_freeze_sha256'],
+                        'candidate source/build/profile provenance changed')
+                authority.invoke('start')
             started = time.monotonic(); record = guest.start(config)
             require(not record.get('reused'), 'refusing to reuse an already running virtual device')
             folder = output / ('cycle-' + str(cycle_number)); folder.mkdir(mode=0o700)
@@ -995,29 +1050,37 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
             guest.save(folder / 'resource-samples.json', sampler.samples)
             cycle['resource_samples_sha256'] = guest.digest(folder / 'resource-samples.json')
             monitor.close(); monitor = None
+            if authority is not None:
+                authority.invoke('stop')
+                current_authority = authority.invoke('snapshot')
+                authority_contract.unchanged(authority_baseline, current_authority)
+                guest.save(folder / 'authority-snapshot.json', current_authority)
+                cycle['authority_snapshot_sha256'] = guest.digest(folder / 'authority-snapshot.json')
+                cycle['authority_retention'] = 'PASS_ALL_DECLARED_DATABASES_AND_IDENTITIES'
             with closed_device(config, record) as data:
                 check = subprocess.run(['e2fsck', '-f', '-n', str(data)], capture_output=True, text=True, timeout=30)
                 require(check.returncode == 0, 'normal shutdown left filesystem recovery pending; no repair performed')
                 cycle['filesystem_check_sha256'] = hashlib.sha256((check.stdout + check.stderr).encode()).hexdigest()
-                snapshot, rows, power_rows = retention.business_snapshot(data)
+                retention.verify_profile_layout(data, profile)
+                snapshot, rows, power_rows = retention.business_snapshot(data, profile)
                 cycle['boot_id'] = verify_power(previous_power, power_rows, cycle['qmp_events'])
                 cycle['clean_exit'] = True
                 cycle['business'] = contract.validate_hub(rows, operations, packages)
                 if baseline is None:
-                    verify_baseline(snapshot, rows); baseline = snapshot
+                    verify_baseline(snapshot, rows, profile); baseline = snapshot
                     # Byte-preserved baseline artifact; it is never mounted,
                     # repaired, restored over, or used as a running data image.
                     shutil.copyfile(data, output / 'baseline-userdata.ext4')
                     (output / 'baseline-userdata.ext4').chmod(0o600)
                     report['baseline_disk_sha256'] = guest.digest(output / 'baseline-userdata.ext4')
                 elif wallet_step < 0:
-                    unchanged_non_hub(baseline, snapshot); contract.preserve_rows(previous_rows, rows)
+                    unchanged_non_hub(previous_snapshot, snapshot, profile); contract.preserve_rows(previous_rows, rows)
                 elif wallet_step == 0:
                     wallet_only_changes(report['cycles'][-1]['business_snapshot'], snapshot)
                     cycle['nonempty_wallet'] = closed_wallet_proof(data)
                     nonempty_baseline = snapshot
                 else:
-                    unchanged_non_hub(nonempty_baseline, snapshot)
+                    unchanged_non_hub(nonempty_baseline, snapshot, profile)
                     require(snapshot['hub'] == nonempty_baseline['hub'], 'retained Wallet boot changed Hub state')
                     cycle['nonempty_wallet'] = closed_wallet_proof(data)
                     require(cycle['nonempty_wallet'] == report['wallet_cycles'][0]['nonempty_wallet'],
@@ -1025,7 +1088,7 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
                 cycle['retention_verified'] = True
                 cycle['disk_sha256'] = guest.digest(data)
                 cycle['business_snapshot'] = snapshot
-                if config['schema'] == 'rock-desktop-device/6':
+                if config['schema'] in ('rock-desktop-device/6', 'rock-desktop-device/7'):
                     import stage0
                     stage0.validate_disks(config, data.parent)
                     cycle['signed_slots'] = stage0.stopped_slots(config, data.parent)
@@ -1033,7 +1096,7 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
                     if baseline_slots is None: baseline_slots = slots
                     require(slots == baseline_slots, 'business workload unexpectedly changed an OS slot')
                     cycle['slot_sha256'] = slots
-            all_jobs.extend(cycle['jobs']); previous_rows, previous_power = rows, power_rows
+            all_jobs.extend(cycle['jobs']); previous_rows, previous_power, previous_snapshot = rows, power_rows, snapshot
             if cycle_number == 4:
                 # Growth starts at the already booted soak workload, not at
                 # QEMU's initially unpopulated RAM before the kernel starts.
@@ -1053,6 +1116,12 @@ def run(images, output_parent, mode, source_commit, *, boot_profile='legacy-loca
             contract.validate_soak(frozen, expected_plan_hash, report)
             report['D6'] = {'workload': 'PASS', 'guest_per_service_resources': 'NOT_RUN',
                             'meaning': 'five normal boots, 61 repeated UI jobs over at least 60 min, host QEMU RSS/CPU thresholds'}
+            if authority is not None:
+                require(len(report['cycles']) == business_cycles and
+                        all(c.get('authority_retention') == 'PASS_ALL_DECLARED_DATABASES_AND_IDENTITIES' for c in report['cycles']),
+                        'all normal cycles require complete stopped authority retention')
+                report['D6']['external_authority_retention'] = 'PASS_COMPLETE_CANONICAL_SNAPSHOTS'
+                report['D6']['authority_state'] = 'STOPPED'
         if prepare_backup:
             require(len(report['wallet_cycles']) == 2 and all(c['clean_exit'] and c['retention_verified'] for c in report['wallet_cycles']),
                     'nonempty Wallet population and retained-state boots were not completed')
@@ -1084,13 +1153,15 @@ def main():
     parser.add_argument('--output', type=Path, required=True, help='existing private evidence parent, without spaces')
     parser.add_argument('--source-commit', required=True, help='exact 40-character commit used to build these images')
     parser.add_argument('--mode', choices=('lifecycle', 'soak'), default='lifecycle')
-    parser.add_argument('--boot-profile', choices=('legacy-local', 'local-ab'), default='legacy-local',
-                        help='explicit data-only legacy profile or strict signed local A/B device/6')
+    parser.add_argument('--boot-profile', choices=('legacy-local', 'local-ab', 'game-authority-ab'), default='legacy-local',
+                        help='explicit legacy, signed local device/6, or signed Game authority device/7')
+    parser.add_argument('--device-config', type=Path,
+                        help='fixed matching device/7 configuration; a new business device name is assigned without changing the image/profile')
     parser.add_argument('--prepare-backup', action='store_true', help='after real deletion, reinstall/approve/run through UI for a populated restore source')
     parser.add_argument('--preflight-only', action='store_true', help='verify exact image/profile/package inputs without launching QEMU or creating device disks')
     args = parser.parse_args()
     run(args.images, args.output, args.mode, args.source_commit, boot_profile=args.boot_profile,
-        prepare_backup=args.prepare_backup, preflight_only=args.preflight_only)
+        prepare_backup=args.prepare_backup, preflight_only=args.preflight_only, device_config=args.device_config)
 
 
 if __name__ == '__main__': main()

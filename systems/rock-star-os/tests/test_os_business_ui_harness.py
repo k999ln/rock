@@ -270,7 +270,7 @@ class LifecycleGuards(unittest.TestCase):
     def test_ui_failure_retains_owned_running_device_and_never_checks_live_disk(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); output = root / 'evidence'
-            config = {'name': 'fixture-fail', 'images': str(root), 'sha256': {}}
+            config = {'name': 'fixture-fail', 'schema': 'rock-desktop-device/2', 'images': str(root), 'sha256': {}}
             record = {'pid': 123, 'session': '/synthetic/session', 'qmp_socket': '/synthetic/qmp'}
             with patch.object(harness, 'preflight', return_value=(config, output)), \
                  patch.object(harness, 'extract_packages', return_value={'1.0.0': 'c'*64, '1.1.0': 'd'*64}), \

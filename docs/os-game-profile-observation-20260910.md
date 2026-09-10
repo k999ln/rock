@@ -11,6 +11,14 @@
 - cache は支出できる正本ではない。Wallet/Game/索引/router の正本は、全writerを止めた別の完全観測で確認する。cache だけを確認して正本の保持や復元に合格を付けない。
 - 従来のlocal/purchaser profileは、明示した契約がない限り従来どおり全行一致を要求する。
 
-schema7 の D6 接続は後続で固定する。最終 image/profile/config/source SHA と起動前の正本を計画に含める。元run44の5正常boot、61反復jobs、3600秒以上、4200秒以内、OCR confidence45、各deadline、資源上限、副作用0の条件は変更しない。Game機能の明示操作による初回登録やcreditより前に空の基準を確定する。
+schema7 の観測入口は `verify-business.py --boot-profile game-authority-ab --device-config FILE`。渡した完全なdevice設定と同じ三画像を使用し、未使用のbusiness端末名だけを割り当てる。画像/profileを再生成しない。最終 image/profile/config/source SHA、freeze/2、CLI/configのbytes、起動前の正本を計画に含める。元run44の5正常boot、61反復jobs、3600秒以上、4200秒以内、OCR confidence45、各deadline、資源上限、副作用0の条件は変更しない。
+
+外部の操作は `python3 os/game_exchange/sandbox.py {stop,snapshot,start} --config FILE` に限定する。D所有のsandboxは停止を確認し、全lifetime lockを保持してtyped snapshotを返す契約である。Aの観測器はSQLiteを直接変更しない。最初の起動前、各正常停止後にWallet/Game/indexの全DBとC/routerの保護JSONを比較し、金額・資格・登録・月額・ATMの既知表が初めに0行であることも確認する。CLI/configが途中で変更された場合は拒否する。start/stop/snapshotは各30秒、出力2MiBに固定。QEMUの既存資源測定に外部サービスの資源が含まれるとはしない。
+
+guest側は従来のauthenticator/Hub/remote queue/power、遠隔Wallet cache、交換journal、Game A/B接続journalの8DBを読む。SDKは初期identity1行のみ、要求/quote/intent/proof/binding等は0行。以後は全未知表も含めて一致させる。各連続観測間のreceived_at単調性を確認するため、比較の基準は直前の停止snapshotにする。署名A/Bのhash不変、旧receipt保持、guest発の正常終了とread-only filesystem検査も従来どおり必須。
+
+`--preflight-only` は停止済みauthorityのsnapshotだけを取り、start/stopやQEMUを起動しない。従来のlocal Wallet初期化をschema7へ流用する `--prepare-backup` は拒否する。実行順は最終imageでD4、空の新authorityでD6、その保存環境で明示Wallet/Game操作、最後に別復元先のD5とする。D5では元writerの無効化と外部正本の別復元が必要であり、guest cacheの保持だけでは外部gateをNOT_RUNのまま残す。
 
 実SQLiteを使う8件で、時刻のみの正常更新、逆行、金額/空白変更、identity/requests/未知表/schema/sequence変更、行欠落/重複、非有限/非正/非REAL、追加列、契約を持たないprofileの拒否を確認した。これは観測器の回帰であり、実OSの受入ではない。既存backup47件、business41件も成功。元失敗・旧画像・旧dataには変更を加えていない。
+
+追加した外部観測8件とschema7接続5件では、5個の必須DB/C/router保護JSON/表の欠落、非空の金融/資格/会員表、追加表/schema/pragma/identity変更、別authority、重複表、bool件数、CLI/config変更、非零終了、出力超過を拒否した。business系全73件、backup47件も成功。実sandboxによる全writer停止・snapshot、同じGame imageのD4〜D6、外部復元は、この文書時点でNOT_RUNである。

@@ -93,14 +93,23 @@ def verify_disk_set(manifest, directory, label):
 
 def retention_profile(config):
     version = config.get('schema')
-    guest.require(version in tuple('rock-desktop-device/'+str(v) for v in range(1, 7)),
+    guest.require(version in tuple('rock-desktop-device/'+str(v) for v in range(1, 8)),
                   'unknown retention device profile')
     sources = dict(SOURCES)
-    if version in ('rock-desktop-device/4', 'rock-desktop-device/5'):
+    if version in ('rock-desktop-device/4', 'rock-desktop-device/5', 'rock-desktop-device/7'):
         del sources['wallet'], sources['membership']
         sources['wallet_cache'] = ('/wallet/backend-cache/remote-cache.db', ('identity', 'requests', 'snapshot'))
-        return {'name': 'purchaser-remote-authority/1', 'sources': sources,
-                'forbidden_databases': [SOURCES['wallet'][0], SOURCES['membership'][0]]}
+        profile = {'name': 'purchaser-remote-authority/1', 'sources': sources,
+                   'forbidden_databases': [SOURCES['wallet'][0], SOURCES['membership'][0]]}
+        if version == 'rock-desktop-device/7':
+            import wallet_cache_retention
+            profile.update(name='development-game-authority/1', cache_read_sync=wallet_cache_retention.POLICY)
+            sources['game_exchange_cache'] = ('/wallet/game-client/exchange-journal/game.sqlite3',
+                ('identity', 'requests', 'quotes', 'intents', 'player_proofs', 'migrations'))
+            for game in ('a', 'b'):
+                sources['game_connection_' + game] = ('/wallet/game-client/connection-public-game-' + game + '/game.sqlite3',
+                    ('identity', 'owner', 'requests', 'bindings'))
+        return profile
     return {'name': 'local-wallet-simulator/1', 'sources': sources,
             'forbidden_databases': ['/wallet/backend-cache/remote-cache.db']}
 
@@ -122,28 +131,33 @@ def verify_profile_layout(data, profile):
 
 def external_coverage(config, baseline):
     """Inventory missing external evidence; never infer authority restore from a cache."""
+    game = config['schema'] == 'rock-desktop-device/7'
     purchaser = config['schema'] in ('rock-desktop-device/4', 'rock-desktop-device/5')
     required = purchaser or config.get('network', 'none') != 'none' or any(
         table['rows'] for table in baseline['remote']['tables'].values())
     components = {}
-    if required:
+    if required and not game:
         components['runner'] = {'database': 'runner/jobs.sqlite3',
                                 'required_tables': ['metadata', 'jobs', 'revocations'],
                                 'additional_tables': 'all, including runner_service_access for purchaser profiles'}
         components['registry'] = {'scope': 'registry state, package files and publisher/consumer bindings'}
-    if purchaser:
+    if purchaser or game:
         components['wallet_authority'] = {
             'wallet_database': 'wallet/wallet-simulator.db', 'wallet_tables': list(SOURCES['wallet'][1]),
             'membership_database': 'wallet/entitlement.db',
             'membership_tables': [*SOURCES['membership'][1], 'service_access_mode', 'service_access_consumers'],
             'additional_tables': 'all; no omission of future game/account/migration tables',
             'authority_marker': 'wallet/AUTHORITY.json'}
-        components['optional_mcp_providers'] = {'scope': 'saved backend configuration and provider/gateway journals if configured',
-                                               'configuration_inventory': 'NOT_RUN'}
+        if purchaser:
+            components['optional_mcp_providers'] = {'scope': 'saved backend configuration and provider/gateway journals if configured',
+                                                   'configuration_inventory': 'NOT_RUN'}
+        if game:
+            components['game_authorities'] = {'scope': 'both independent Game databases, their index, C and router protected metadata; all typed rows and additional tables',
+                'required': 'separate stopped-current-copy restore, old writer fencing and receipt reconciliation; guest cache is insufficient'}
     return {'required': required, 'status': 'NOT_RUN' if required else 'NOT_APPLICABLE',
             'included_in_device_backup': False, 'required_components': components,
-            'authority_id': config.get('services', {}).get('authority_id'),
-            'backend_config_sha256': config.get('services', {}).get('sha256'),
+            'authority_id': config.get('game' if game else 'services', {}).get('authority_id'),
+            'backend_config_sha256': config.get('game' if game else 'services', {}).get('sha256'),
             'meaning': 'external backup, fresh-target restore and reconciliation are not performed by this offline guest harness'}
 
 
