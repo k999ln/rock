@@ -1,6 +1,6 @@
 # RockstarOS 1.0 Developer Preview — 同一候補の受入報告
 
-12:42 UTC時点の内部受入記録。D0〜D6とCのGame/金融/引用遠隔は限定範囲でPASS。90.04秒の動画を実収録・encodeし、媒体の目視/ブラウザQAと最終追加local回帰を集計中。`docs/templates/os-acceptance-report.md` の対象・全gate・復旧表・残課題に沿って統合する。元の時点別reportは上書きしない。
+13:15 UTC時点の内部受入記録。配布候補9abのD0〜D6、Game/金融/引用遠隔、導入・復旧・SDK・90.04秒の実動作動画は、以下の限定範囲で確認済み。追加ARM64全回帰も14チェック・1,631件・skipなしでPASS。ただし後続統合版のCIで1秒TLS応答期限と600秒全体期限の失敗があり、原因は未確定。一般公開は製品ライセンス・既存Sitesアクセスの条件待ち。元の時点別reportは上書きしない。
 
 ## 1. 対象と許可範囲
 
@@ -30,7 +30,7 @@ buildはDebian13.6 aarch64、kernel6.12.95、Buildroot2026.08/GCC15.3.0、Python
 
 | ID | 必須受入と範囲 | 実測・証拠 | 現段階 |
 | --- | --- | --- | --- |
-| D0 | 同じsourceのnative回帰・固定 | Linux x86_64 CI34459916162、1631 executions/14checks、全694inputs・原logs照合 | PASS（別arm64原FAIL保持） |
+| D0 | 同じsourceのnative回帰・固定 | Linux x86_64 CI34459916162と追加ARM64 R2、各1631 executions/14checks、全inputs・原logs照合 | PASS_SCOPED（元FAIL・後続CI失敗保持） |
 | D1 | 同じbuildの起動・system | boot2・system2、同source/image固定、元report/hash照合 | PASS_SCOPED |
 | D2 | HubのlifecycleとWallet利用 | A元lifecycle 16ops/5jobs/2正常boot＋C金融2boot＋引用遠隔3boot/同要求回復・再表示 | PASS_SCOPED |
 | D3 | 認証・隔離・制限・拒否 | isolation47/SDK45、Store2/Remote2/negative1、Hub crash/deadline/recovery3。元10＋新3boot | PASS_SCOPED（診断読取修正あり） |
@@ -53,7 +53,7 @@ D1/D3の元全体runは10boot完了後、Hub故障の起動前にdebugfs rdump�
 
 D6はクラウドの別Linux x86_64 host上で同じ署名付き配布物を展開し、元9abのcanonical observerを実行した。inner60分46.617秒、61反復・全67job・76操作、5回のguest SHUTDOWNを記録。QEMU host peak RSS902448KiB、増加62480KiB、平均0.359541cores、最大samplegap2.147293秒、1820samplesで元上限内。全5DB71表8JSONと19emptyが不変、Game SDK clock0/bindingsなし、非Hub全role・署名slotも保持。private asset554887744を実取得し、rootが全916file/378262134Bの原本とarchive SHAaa7c64f1e9c58860d27b04399911c354d62e94a843616207da9c0478d7bb4d4eを再照合した。host QEMUの資源でありguest各serviceの計測ではない。
 
-D0の別arm64全回帰は10TLS read/frame deadline ERRORでFAILを保持する。全1631件を同じsourceのx86_64 CIが通り、10caseは別の既存Linux scoped runで各一回okを確認したが、元arm64エラーの原因は未確定。特定host負荷への推測を確定原因として記載しない。
+D0の最初のarm64全回帰は10 TLS read/frame deadline ERRORでFAILを保持する。同9abの追加R2は13:02:34 UTCに14チェック・1,631件すべてPASS、main1,367件は151.789秒、全1364 sourceとimage triple不変。元9abのx86_64 CIもPASS。一方e430のCI34477407336は初期Game接続承認で1秒TLS応答期限ERROR（全1,649件・他13チェックPASS）、ba900のCI34478360425はlegacy継続試験名の後でmain600秒TIMEOUT（他13チェックNOT_RUN）。R2では両ケースもokだが、元失敗原因はUNDETERMINEDであり解決済みとはしない。[別runの対応表](os-native-repeat-20260910.md)を参照。後続診断器は任意のprivate thread-stack sidecarのみ追加し、元600/300秒期限・成功判定・runtimeを変更しない。
 
 ## 3. 利用体験とケース記録
 
@@ -61,7 +61,7 @@ C01は新しい専用端末で、本人の登録・PIN・合成信用10000一回
 
 金融一周は月額888を同じ契約月に一度だけ払い、同月の再確認で増えないこと、将来の自動更新取消、ATM1000/fee0のquote→本人承認→hold→未使用分取消を確認。8段階の整合した読取トランザクションと、2正常終了後の全構成停止照合で、最終AVAILABLE8906/hold0/dispense0、両Game資産各10を保持した。引用試験の失敗後にこれらの金融操作を再実行していない。
 
-引用遠隔は実loopback TLSの所有runnerで2件の同じ公開150-byte入力を実処理する。1件目の完了後にrunnerを停止、2件目を保留のまま通常終了し、2boot目で元要求を回復、3boot目でrunner不在でも保存成果を再表示した。3boot/248.407294秒はPASS_SCOPED_PC_LINK。これは実PC機器・本番cloud接続ではない。90秒の実録画・停止後の全nonHub/authority照合はPASS、Macのffmpegで90.04秒/360原frame+終端1frameのH264に変換。全824原file/58,595,047bytesをLinuxとMacで独立照合した。動画の最終目視/再生確認は別記録へ集計する。
+引用遠隔は実loopback TLSの所有runnerで2件の同じ公開150-byte入力を実処理する。1件目の完了後にrunnerを停止、2件目を保留のまま通常終了し、2boot目で元要求を回復、3boot目でrunner不在でも保存成果を再表示した。3boot/248.407294秒はPASS_SCOPED_PC_LINK。これは実PC機器・本番cloud接続ではない。90秒の実録画・停止後の全nonHub/authority照合はPASS、Macのffmpegで90.04秒/360原frame+終端1frameのH264に変換。全824原file/58,595,047bytesをLinuxとMacで独立照合した。最終目視・ブラウザ再生は[媒体QA](evidence/rls01/final-publication-review-20260910/README.md)で確認済み。
 
 最初の引用試験は親umask0002→0775 launcherをguard拒否（guest0）。次の試験は既存1.0に存在しないinstall labelを探してFAIL（guest1）、host-onlyの停止台帳・署名検証付きupdate selector B担当の664f67aを追加。さらに新registryの同revision異内容をguestが正しく拒否（guest1）。固定値を消さず元署名registryを再利用し、両失敗bootは別の通常終了証跡で閉じ、全authority/nonHub/旧Hub jobsを保持した。失敗時の画面遷移・小ラベルOCR失敗・停止直後TIME_WAITも原FAILとして残す。成功の3bootとこの追加失敗2bootを混同しない。
 
@@ -81,7 +81,7 @@ C01は新しい専用端末で、本人の登録・PIN・合成信用10000一回
 
 ## 5. 残課題と判定
 
-- Cの成功8正常bootと追加失敗2正常closeを区別して全原本を回収済み。媒体QA・最終追加local回帰・案内の集計を追記する。
+- Cの成功8正常bootと追加失敗2正常closeを区別して全原本を回収済み。媒体は1512/390幅・リンク・実再生・3時点seekを確認。任意字幕のネイティブ選択/表示はNOT_CONFIRMED。Web v2は4文言とmetadataのみ変更し、媒体6ファイルと全HTMLタグ/属性が同一。追加ARM64回帰は14チェック・1631件PASS。
 - 製品LICENSEは未確定、legal.statusはNOT_CLEARED。298filesのlicense/source資料を収集したことを新しい許諾としない。
 - GitHub private draft386171909から実取得し、別空環境への導入まで確認した。匿名release/asset GETは404であり、一般公開URLではない。
 - 既存Sites projectの取得はNOT_FOUND。以前の本人限定scopeを変更せず、別public Siteを勝手に作成していない。
@@ -90,4 +90,4 @@ C01は新しい専用端末で、本人の登録・PIN・合成信用10000一回
 - Wallet同期中のGame遷移が無視される場合があり、Hub経由の入口で進めた。初回Game応答不明は既存更新で元要求を回収した。新しい購入で解消したことにしない。
 - 人の操作時間削減・需要・収益・7日再利用は未実証。内部PC機械処理とOS操作の記録を区別する。
 
-最終判定は全入力を集計してから追記する。期限の到来や版名で合格へ変更しない。
+判定: 同一配布候補の記録された内部受入はPASS_SCOPED。公開条件と後続統合版のCI安定性が未解決のため、RockstarOS 1.0 Developer Previewの発表・一般配布完成とは判定しない。この文書を含む最終branchのCIはActionsの同40桁SHAと別の最終sidecarで確認する。期限の到来や版名で合格へ変更しない。

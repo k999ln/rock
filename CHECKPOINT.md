@@ -1,6 +1,8 @@
-# 2026-09-10 実行再開入口
+# 2026-09-10 最終候補の再開入口
 
-現在の指示は[8時間の実行プロンプト](docs/prompts/rockstaros-release-20260910.md)、進行中の担当・実commit・process・次操作は[実行checkpoint](docs/release-execution-20260910.md)。T0=2026-09-10T05:43:35Z、終了目標13:43:35Z。以下は開始前までの履歴であり、途中runを現在も実行中とは決めつけない。
+配布native/同梱host toolsは `9abf78a80d27aa9f847c4051d20e4c552e407276`、作業branchは `codex/rockstaros-release-20260910`。[同一候補受入](docs/os-acceptance-9abf78a-20260910.md)、[元FAILと追加全回帰](docs/os-native-repeat-20260910.md)、[実行checkpoint](docs/release-execution-20260910.md)を現在の入口とする。内部D0〜D6/導入/復旧/Game/SDK/実動画は限定完了。後続CIの間欠的失敗原因、LICENSEと既存Siteアクセスが未解決で、一般公開完成ではない。T0=05:43:35 UTC、終了目標13:43:35 UTC。最終時刻と同branch CIはoutputsの最終引渡しsidecarへ保存する。
+
+以下は開始前の履歴。旧候補b828の未達や実行中processを現在へ転記しない。
 
 # Rock star OS — 現在の実装CHECKPOINT
 

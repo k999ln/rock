@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
   "milestone": "RockstarOS 1.0 Developer Previewの8時間実装・同一候補受入・配布準備",
-  "nextAction": "12:31 UTC: C01のGame A/B・独立台帳監査・月額888/ATM hold取消は同9abでPASS、4正常boot。引用遠隔の準備でumask・既存1.0更新selector・新registry同revision拒否の原FAILを保存。host修正のみ、後2失敗bootを通常終了し全authority/nonHub/旧Hub jobs保持、12:30:47停止port境界PASS。元署名catalog状態を再利用するv6 session66663で3boot遠隔回復→90秒実録画中。D0同SHA CI/D1/D3/D4/D5/D6とfresh導入/SDKはscoped完了。C+encode後にA元arm64全回帰1回、媒体/最終CI/公開条件を集計。",
+  "nextAction": "同一9abの限定D0〜D6、引用遠隔3boot/元要求2件、Game/金融、fresh導入・復旧・SDK、90.04秒動画と導入ページの内部受入は完了。元FAILは保持。統合e430のTLS期限/ba900の600秒TIMEOUTは原因未確定、任意thread-stack診断を追加して同branch CIを確認する。一般公開は製品LICENSE/第三者再配布条件と既存Sites NOT_FOUNDの解消待ち。内部task完了を公開完成としない。",
   "tasks": [
     {
       "id": "R01",
@@ -272,7 +272,7 @@
     {
       "id": "V01",
       "title": "最新統合sourceからQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [
         "B04"
       ],
@@ -287,7 +287,10 @@
         "systems/rock-star-os/os/desktop/LAUNCHER-V2.md",
         "docs/evidence/rls01/final-d6-ci-20260910.json",
         "docs/evidence/rls01/final-d6-root-audit-20260910.json",
-        "docs/os-local-final-20260910.md"
+        "docs/os-local-final-20260910.md",
+        "docs/os-acceptance-9abf78a-20260910.md",
+        "docs/os-native-repeat-20260910.md",
+        "docs/os-final-compatibility-20260910.md"
       ]
     },
     {
@@ -321,7 +324,7 @@
     {
       "id": "GX01",
       "title": "ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [
         "GX00"
       ],
@@ -330,7 +333,9 @@
         "docs/gx01-contract-implementation-plan.md",
         "docs/gx01-native-ui-20260910.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
-        "docs/game-wallet-release-checkpoint-20260910.md"
+        "docs/game-wallet-release-checkpoint-20260910.md",
+        "docs/evidence/hub-final-9abf78a/final-c01-completed-stages.json",
+        "docs/evidence/gx01/final-9abf78a-20260910.json"
       ]
     },
     {
@@ -419,14 +424,16 @@
     {
       "id": "RLS01",
       "title": "fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [
         "V01"
       ],
       "evidence": [
         "docs/release-installation-plan-20260909.md",
         "docs/rockstaros-1.0-architecture.md",
-        "docs/rockstaros-1.0-strategy.md"
+        "docs/rockstaros-1.0-strategy.md",
+        "docs/evidence/rls01/final-9abf78a/summary.json",
+        "docs/evidence/rls01/github-direct-install-9abf78a/summary.json"
       ]
     },
     {
@@ -502,14 +509,17 @@
       "id": "V01-ACCEPT",
       "task": "V01",
       "title": "同一OS候補でD0〜D6縦断合格",
-      "status": "planned",
+      "status": "done",
       "dependsOn": [
         "V01-BOOT",
         "B02-NATIVE",
         "B03-FIXTURE"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md"
+        "docs/prompts/os-operational-base-next.md",
+        "docs/os-acceptance-9abf78a-20260910.md",
+        "docs/os-native-repeat-20260910.md",
+        "docs/os-final-compatibility-20260910.md"
       ]
     },
     {
@@ -573,7 +583,7 @@
       "id": "GX01-UI",
       "task": "GX01",
       "title": "OS上の交換操作と台帳変更後D4/D5再検証",
-      "status": "planned",
+      "status": "done",
       "dependsOn": [
         "GX01-CONTRACT",
         "V01-BOOT"
@@ -582,7 +592,9 @@
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-native-ui-20260910.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
-        "docs/game-wallet-release-checkpoint-20260910.md"
+        "docs/game-wallet-release-checkpoint-20260910.md",
+        "docs/evidence/hub-final-9abf78a/final-c01-completed-stages.json",
+        "docs/evidence/gx01/final-9abf78a-20260910.json"
       ]
     },
     {
@@ -605,12 +617,14 @@
       "id": "PREVIEW-INSTALL",
       "task": "RLS01",
       "title": "fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走",
-      "status": "planned",
+      "status": "done",
       "dependsOn": [
         "V01-ACCEPT"
       ],
       "evidence": [
-        "docs/release-installation-plan-20260909.md"
+        "docs/release-installation-plan-20260909.md",
+        "docs/evidence/rls01/final-9abf78a/summary.json",
+        "docs/evidence/rls01/github-direct-install-9abf78a/summary.json"
       ]
     },
     {

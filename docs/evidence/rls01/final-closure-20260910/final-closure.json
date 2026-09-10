@@ -1,0 +1,114 @@
+{
+  "schema": "rock-final-readonly-closure/1",
+  "status": "PASS_SCOPED_READONLY_CLOSURE",
+  "observed_utc": "2026-09-10T13:18:52.262055+00:00",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "frozen_source_files_verified": 1364,
+  "frozen_source_mismatches": [],
+  "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+  "profile_sha256": "0d6f4924d98f1cd43d4e3104b9a9c3b4f2a4b2557e96f64bd626f9930f4b34bb",
+  "image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+    "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+  },
+  "c_device": {
+    "name": "rock-final-c-ui",
+    "config": "/var/tmp/rock-release-os-20260910/final-9abf78a-empty-authority/root-c-device.json",
+    "config_sha256": "1fbd4924c545823b313a6852b428aadce3f9ef2bc1dc11d57b2d078fb7316b8f",
+    "state": "/var/tmp/rock-star-desktop/rock-final-c-ui",
+    "running": false,
+    "existing_device_lock_available": true
+  },
+  "authority": {
+    "config": "/var/tmp/rockstaros-preview-authority/sandbox.json",
+    "config_sha256": "cdb9609518187dc057a4e747d28b9550da0946c59636fc0cc8346027cdb5ab9c",
+    "status": {
+      "schema": "rock-game-sandbox-status/1",
+      "running": false,
+      "authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+      "config_sha256": "cdb9609518187dc057a4e747d28b9550da0946c59636fc0cc8346027cdb5ab9c",
+      "pid": null,
+      "simulation_only": true
+    },
+    "all_existing_lifetime_locks_available": true
+  },
+  "qemu_and_unittest_processes": [],
+  "ports_free": [
+    9443,
+    9444,
+    9641,
+    9642,
+    9643
+  ],
+  "original_remote_refs": {
+    "remote": "https://github.com/k999ln/rock",
+    "baseline": {
+      "refs/heads/main": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
+      "refs/heads/codex/integrate-native-os-20260909": "fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5",
+      "refs/heads/codex/os-game-design-review-20260909": "27b34adc02a9e06a4816aa18a5e38cf38b330953",
+      "refs/heads/codex/operational-base-20260909": "91debc28174d87be023b789980d2c46112a66979"
+    },
+    "observed": {
+      "refs/heads/codex/integrate-native-os-20260909": "fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5",
+      "refs/heads/codex/operational-base-20260909": "91debc28174d87be023b789980d2c46112a66979",
+      "refs/heads/codex/os-game-design-review-20260909": "27b34adc02a9e06a4816aa18a5e38cf38b330953",
+      "refs/heads/main": "7cdbb5fedc86ee3978ed329d9312147d137c9199"
+    },
+    "all_four_unchanged": true,
+    "command": [
+      "git",
+      "ls-remote",
+      "origin",
+      "refs/heads/main",
+      "refs/heads/codex/integrate-native-os-20260909",
+      "refs/heads/codex/os-game-design-review-20260909",
+      "refs/heads/codex/operational-base-20260909"
+    ],
+    "baseline_document": "work/rock/docs/release-execution-20260910.md",
+    "baseline_document_sha256": "125a779d1b9962b9d7ef0f4a865e722454549ef3e85db382bbda75965f15b29f",
+    "requested_prompt_sha256": "63e5f3568a186e7fc733ff449c7ce95c653619dc0c62bddcd895baea7bd95f01"
+  },
+  "finite_caffeinate": {
+    "pid": 3816,
+    "command": "/usr/bin/caffeinate -i -t 16498",
+    "started_utc": "2026-09-10T09:08:37+00:00",
+    "ends_utc": "2026-09-10T13:43:35+00:00",
+    "modified_or_restarted": false
+  },
+  "retained_extra_check": {
+    "original_status": "FAIL",
+    "reason": "An additional observer check required no files outside the frozen 1364 source inventory. It found generated build artifacts and Python cache files. This requirement was not part of the original freeze source check. The original result is retained unchanged.",
+    "generated_build_files": 9,
+    "python_cache_files": 65,
+    "deletions": 0,
+    "followup_scope": "Verify the exact original 1364 source file hashes and triple, disclose the complete extra-file inventory, and bypass bytecode caches for read-only frozen helper imports. No claim that the Linux directory contains only tracked inputs."
+  },
+  "proofs": {
+    "observe-final-closure.py": {
+      "bytes": 5141,
+      "sha256": "da95e961e73a39c5da780c53dc8dcd2f16fe5793a54874bbfae24e41fdd8e564"
+    },
+    "observe-final-closure-v2.py": {
+      "bytes": 5518,
+      "sha256": "f3f8ae46a6b411ab9ef24fad8586c2ec336103524bbc7e8b3e618030da34d0c0"
+    },
+    "final-closure-linux.json": {
+      "bytes": 5768,
+      "sha256": "4f23a8d2746f1c4f59ff12fc0983125956ef632301d9f0a2e5dfe3222776d910"
+    },
+    "final-closure-linux-v2.json": {
+      "bytes": 14224,
+      "sha256": "ab897aef2528733c7e7b6c13434ff7e462ece18dae2524526a15ccf0f7d23904"
+    },
+    "final-closure-refs.txt": {
+      "bytes": 317,
+      "sha256": "a09dc29e8385994a0ac0b5d4b4c5a9ef58864574a8df247c788a6d2d9c75e8fe"
+    },
+    "final-closure-caffeinate.txt": {
+      "bytes": 76,
+      "sha256": "ee596c4386e640c320b543c814fde4160df5cb66a9c2f90eab477bbede7fd7d2"
+    }
+  },
+  "scope": "Closure of immutable candidate bytes, original remote refs, and stopped C device/authority only. C has intentional synthetic nonzero state; this is not an empty-state or new acceptance run. No VM start/stop, financial call, source/image/userdata/authority modification, or caffeinate change."
+}

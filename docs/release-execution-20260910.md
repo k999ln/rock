@@ -230,3 +230,16 @@ C01 Game A/B・audit・financialはPASS（正常4boot）。原引用preflightは
 v4失敗bootを8.847秒で通常終了。v5は画面遷移と小さい状態labelのOCR失敗も原記録へ保持し、元registry状態を再配信し実画面の署名確認済みを確認した後、9.516秒で通常終了。全authority/nonHub/以前のHub jobsは保持、remote_requests0。直後port bindはTIME_WAITで拒否したため元FAILを保ち、12:30:47に同じbind検査がPASS。成功4bootと失敗2bootは別計上。
 
 12:31開始v6 session66663（未完了）は元service-stateを引き継ぎ、既存3boot・全deadline・署名・isolated runner・原要求再照合を変えず実行。出力 /var/tmp/rock-final-c-9abf78a-continuation-04。配布source/image/同梱toolsは9ab不変。root HEADf85b165は診断/証拠の追加版。GitHub cb43f6aのWeb34472941976/native34472941935はいずれもSUCCESS。A nativeR2はC+encodeと所有QEMU停止まで待機。
+
+
+## 13:15 UTC — 同一候補の受入と実媒体の統合
+
+RQ04/07–17 / 明確な楽観主義・販売も重要 / 成果と復旧と版を一つの入口で辿れない不便 / 凍結9abと既存export・canonical runner / 最終原本照合、4文言同期、任意stack sidecar / 同一bytes・原要求・元期限 / A R2、C原本824files、Bブラウザとv2/overlay照合。
+
+C v6は3boot/248.407秒、元遠隔要求2件の完了・切断保留・同key回復・runner不在再表示がPASS。demoは元QMP 360frames/90.001秒から90.04秒MP4を生成。追加金融0、C成功8boot＋元失敗2boot通常終了、全1364source/image/非対象authority保持。原本824files/58,595,047Bを独立照合し、825member archive52,135,719Bへ保存。3媒体をprivate draftへ追加。
+
+Bは1512/390幅の実ブラウザ・導線・再生・3時点seekを確認し、任意字幕表示だけNOT_CONFIRMED。v2は4文言とmetadataだけ差分、6assetと全HTMLタグ/属性同一。Linux observer overlayは元1364中1363一致＋承認済みhost observer1変更、追加test1/継承pycache65/base artifacts9を全bytes照合。原FAILを消さない。
+
+Aの同9ab ARM64追加全回帰は13:02:34に14checks/1631件/skip0 PASS、main1367件151.789秒。root7adf1e9へ原b51fbf9を統合。e430 CI34477407336は初期Game承認1秒TLS ERROR、ba900 CI34478360425はlegacyケースでmain600秒TIMEOUT/他13NOT_RUN。どちらもR2ではokだが原因UNDETERMINED。Dの任意thread-stack sidecar実装5bae600→root7da02eb、Mac/Linux各6実子process tests PASS。元600/300秒・exit124・判定・runtime不変。CIだけ明示flagを使い、再発時はprivate sidecarで待機場所を採取する。
+
+同9ab配布9filesは変更しない。Webのnpm verifyは最終媒体でPASS、進捗同期後に最終branchで再確認する。Sites再取得NOT_FOUND、license NOT_CLEAREDを保持。次: 最終branchをpushし同40桁CI、追加媒体download、原refs/停止状態、outputsリンク/sidecar/PRを確定。公開は条件待ち、main mergeなし。

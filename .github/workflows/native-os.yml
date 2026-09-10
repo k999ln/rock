@@ -39,7 +39,7 @@ jobs:
             | /tmp/rock-runner-sandbox "$PWD/src/blackberryrock/recipe_worker.py" "$PWD/os/runner/isolated_entry.py" \
             | grep -Fx '{"text": "hello"}'
       - name: Native source regressions (not OS boot)
-        run: python3 scripts/test-native.py --output work/native-tests
+        run: python3 scripts/test-native.py --output work/native-tests --diagnostic-stacks
       - name: Root-owned disposable UI observers, replay geometry and readiness protocol
         run: |
           mkdir -p work/native-root-ui
