@@ -1,0 +1,1561 @@
+{
+  "atm_actor_assertions": 0,
+  "blackberry": "NOT_RUN",
+  "capture_grace_seconds": 30,
+  "database": {
+    "atm_credentials": [
+      {
+        "atm_id": "SIM-ATM-001",
+        "code_sha256": "05904686727728e5582a9cef151e8e745402d8f012ef02151e3ff725203d727f",
+        "consumed_at": null,
+        "consumed_by": null,
+        "device_id": "fixture-rock-arm64-001",
+        "expires_at": 1788990746.8407342,
+        "issued_at": 1788990446.8407342,
+        "owner_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+        "seq": 1,
+        "state": "CANCELED",
+        "updated_at": 1788990452.5003285,
+        "withdrawal_id": "de23c539-7c75-4e70-823c-14b14753e008"
+      }
+    ],
+    "atm_wallet_binding": [
+      {
+        "device_id": "fixture-rock-arm64-001",
+        "owner_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+        "seq": 1,
+        "singleton": 1
+      }
+    ],
+    "authentication": {
+      "wallet_auth_approvals": [
+        {
+          "approval_id": "approval-ba0993f2-fc20-4ecc-a0a3-6f3efc37e865",
+          "assertion_sha256": "3127596c7fa11dace97b67a08cfb50db365dde45204ba17bc80b6ff06556b601",
+          "created_at": 1788990446.8374076,
+          "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+          "quote_id": "quote-880eb00d-c5af-439d-bf26-7dc2ce0e0ab0",
+          "seq": 1,
+          "withdrawal_id": "de23c539-7c75-4e70-823c-14b14753e008"
+        }
+      ],
+      "wallet_auth_challenges": [
+        {
+          "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "challenge": "ePk4ShUs8stOjgFrO5GffUeeG1MLMZwaG7Ispu_4KeU",
+          "challenge_id": "auth-7437262b-7b92-448f-b446-1650e7949b23",
+          "device_id": "fixture-rock-arm64-001",
+          "expires_at": 1788990539.2877316,
+          "handoff_ref": "4595911ca9afa5a5e1ec3825b48691260b24fb87e1b5a520a9f7d9cdd4994b8d",
+          "issued_at": 1788990419.2877316,
+          "options": {
+            "device_ref": "fixture-rock-arm64-001",
+            "publicKey": {
+              "attestation": "direct",
+              "authenticatorSelection": {
+                "residentKey": "required",
+                "userVerification": "required"
+              },
+              "challenge": "ePk4ShUs8stOjgFrO5GffUeeG1MLMZwaG7Ispu_4KeU",
+              "excludeCredentials": [],
+              "pubKeyCredParams": [
+                {
+                  "alg": -8,
+                  "type": "public-key"
+                }
+              ],
+              "rp": {
+                "id": "wallet.rock-star-os.test",
+                "name": "Rock Wallet"
+              },
+              "timeout": 120000,
+              "user": {
+                "displayName": "Rock Wallet member",
+                "id": "vNn0_jm8WxxNtgqQ536mL7kNGZ5QNluWAjlbsn1AsUQ",
+                "name": "Rock Wallet member"
+              }
+            },
+            "purpose": "wallet.enroll",
+            "schema_version": 1
+          },
+          "seq": 1,
+          "state": "USED"
+        }
+      ],
+      "wallet_auth_credential_state": [
+        {
+          "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+          "record": {
+            "aaguid": "00000000000000000000000000000000",
+            "backup_eligible": false,
+            "backup_state": false,
+            "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+            "public_key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+            "sign_count": 1
+          },
+          "revoked_at": null,
+          "seq": 1
+        }
+      ],
+      "wallet_auth_credentials": [
+        {
+          "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "created_at": 1788990420.9732866,
+          "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+          "device_id": "fixture-rock-arm64-001",
+          "enrollment_challenge_id": "auth-7437262b-7b92-448f-b446-1650e7949b23",
+          "record": {
+            "aaguid": "00000000000000000000000000000000",
+            "backup_eligible": false,
+            "backup_state": false,
+            "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+            "public_key": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+            "sign_count": 0
+          },
+          "seq": 1
+        }
+      ],
+      "wallet_auth_mode": [
+        {
+          "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "authority_id": "c899accc-871f-4abf-8ecc-5243fec2e267",
+          "maximum_time": 1788990446.8627028,
+          "schema_version": 1,
+          "seq": 1,
+          "singleton": 1
+        }
+      ],
+      "wallet_auth_quotes": [
+        {
+          "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "amount_minor": 1000,
+          "challenge": "RUlTWOvjPaDs564OmBE-wUm4DzIcxMxaqlYbHlxijYE",
+          "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+          "device_id": "fixture-rock-arm64-001",
+          "expires_at": 1788990565.485374,
+          "issue_key": "ui-7b7dd312445eb7d48c3746aefecee17e",
+          "options": {
+            "device_ref": "fixture-rock-arm64-001",
+            "publicKey": {
+              "allowCredentials": [
+                {
+                  "id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+                  "type": "public-key"
+                }
+              ],
+              "challenge": "RUlTWOvjPaDs564OmBE-wUm4DzIcxMxaqlYbHlxijYE",
+              "rpId": "wallet.rock-star-os.test",
+              "timeout": 120000,
+              "userVerification": "required"
+            },
+            "purpose": "wallet.atm.issue",
+            "schema_version": 1
+          },
+          "quote": {
+            "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+            "amount_minor": 1000,
+            "atm_id": "SIM-ATM-001",
+            "authority_id": "c899accc-871f-4abf-8ecc-5243fec2e267",
+            "cash_received_minor": 1000,
+            "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+            "currency": "USD",
+            "device_ref": "fixture-rock-arm64-001",
+            "expires_at": 1788990565.485374,
+            "fee_minor": 0,
+            "issue_key": "ui-7b7dd312445eb7d48c3746aefecee17e",
+            "issued_at": 1788990445.485374,
+            "policy": "simulator-zero-fee-v1",
+            "quote_id": "quote-880eb00d-c5af-439d-bf26-7dc2ce0e0ab0",
+            "total_debit_minor": 1000
+          },
+          "quote_id": "quote-880eb00d-c5af-439d-bf26-7dc2ce0e0ab0",
+          "seq": 1,
+          "state": "CONSUMED"
+        }
+      ],
+      "wallet_auth_terms": [
+        {
+          "accepted": 1,
+          "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "created_at": 1788990427.226828,
+          "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+          "device_id": "fixture-rock-arm64-001",
+          "seq": 1,
+          "terms_receipt_id": "terms-fa37e303-84b4-4ef9-bf7f-00c5a04ce1f5",
+          "terms_version": "rock-wallet-development/1"
+        }
+      ]
+    },
+    "authorizations": [],
+    "balances": [
+      {
+        "account": "AVAILABLE",
+        "amount_minor": 5000
+      },
+      {
+        "account": "PENDING_SETTLEMENT",
+        "amount_minor": 0
+      },
+      {
+        "account": "SALE_CLEARING",
+        "amount_minor": -5000
+      },
+      {
+        "account": "WITHDRAW_HOLD",
+        "amount_minor": 0
+      }
+    ],
+    "consents": [],
+    "counts": {
+      "atm_credentials": 1,
+      "atm_wallet_binding": 1,
+      "authorizations": 0,
+      "consents": 0,
+      "device_api_receipts": 1,
+      "device_binding": 1,
+      "device_monthly_due": 0,
+      "wallet_bills": 0,
+      "wallet_idempotency": 8,
+      "wallet_journals": 4,
+      "wallet_withdrawals": 1
+    },
+    "device_api_receipts": [
+      {
+        "created_at": 1788990413,
+        "key": "ui-25fca6632f17f334eef121cbd45a3509",
+        "request": {
+          "key": "ui-25fca6632f17f334eef121cbd45a3509",
+          "op": "wallet.register",
+          "v": 1
+        },
+        "response": {
+          "ok": true,
+          "result": {
+            "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+            "additional_personal_fields_required": [],
+            "device_ref": "fixture-rock-arm64-001",
+            "identity_inherited": true,
+            "simulation_only": true,
+            "verification_ref": "fixture-verification-handoff-001"
+          }
+        },
+        "seq": 1
+      }
+    ],
+    "device_binding": [
+      {
+        "device_ref": "fixture-rock-arm64-001",
+        "handoff_digest": "4595911ca9afa5a5e1ec3825b48691260b24fb87e1b5a520a9f7d9cdd4994b8d",
+        "owner_actor": "alice",
+        "seq": 1,
+        "singleton": 1
+      }
+    ],
+    "device_monthly_due": [],
+    "posting_count": 8,
+    "wallet_bills": [],
+    "wallet_idempotency": [
+      {
+        "input": {
+          "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "authority_id": "c899accc-871f-4abf-8ecc-5243fec2e267",
+          "device_ref": "fixture-rock-arm64-001",
+          "handoff_ref": "4595911ca9afa5a5e1ec3825b48691260b24fb87e1b5a520a9f7d9cdd4994b8d",
+          "request": {
+            "key": "ui-7435c20bb291363b909b5a605d7864eb",
+            "op": "wallet.auth.begin",
+            "v": 1
+          }
+        },
+        "key": "ui-7435c20bb291363b909b5a605d7864eb",
+        "operation": "wallet.auth.begin",
+        "result": {
+          "challenge_id": "auth-7437262b-7b92-448f-b446-1650e7949b23",
+          "expires_at": 1788990539.2877316,
+          "options": {
+            "device_ref": "fixture-rock-arm64-001",
+            "publicKey": {
+              "attestation": "direct",
+              "authenticatorSelection": {
+                "residentKey": "required",
+                "userVerification": "required"
+              },
+              "challenge": "ePk4ShUs8stOjgFrO5GffUeeG1MLMZwaG7Ispu_4KeU",
+              "excludeCredentials": [],
+              "pubKeyCredParams": [
+                {
+                  "alg": -8,
+                  "type": "public-key"
+                }
+              ],
+              "rp": {
+                "id": "wallet.rock-star-os.test",
+                "name": "Rock Wallet"
+              },
+              "timeout": 120000,
+              "user": {
+                "displayName": "Rock Wallet member",
+                "id": "vNn0_jm8WxxNtgqQ536mL7kNGZ5QNluWAjlbsn1AsUQ",
+                "name": "Rock Wallet member"
+              }
+            },
+            "purpose": "wallet.enroll",
+            "schema_version": 1
+          },
+          "simulation_only": true
+        },
+        "seq": 1
+      },
+      {
+        "input": {
+          "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "authority_id": "c899accc-871f-4abf-8ecc-5243fec2e267",
+          "device_ref": "fixture-rock-arm64-001",
+          "handoff_ref": "4595911ca9afa5a5e1ec3825b48691260b24fb87e1b5a520a9f7d9cdd4994b8d",
+          "request": {
+            "challenge_id": "auth-7437262b-7b92-448f-b446-1650e7949b23",
+            "credential": {
+              "authenticatorAttachment": "platform",
+              "clientExtensionResults": {},
+              "id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+              "rawId": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+              "response": {
+                "attestationObject": "o2NmbXRmcGFja2VkZ2F0dFN0bXSiY2FsZydjc2lnWEB1IJZJyAroEVi_TLXYO6SxCtuL7uBOzKKtyYY05Wg6m4ONeBsGSTLlzAf4ei42U_hDjsEjVSTy7YqmM0ZbHecHaGF1dGhEYXRhWIEa3shbqw25md14LXKImPPq-_lXV07-QFTgnYT3w3oWmUUAAAAAAAAAAAAAAAAAAAAAAAAAAAAgiKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCSkAQEDJyAGIVgg11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo",
+                "clientDataJSON": "eyJjaGFsbGVuZ2UiOiJlUGs0U2hVczhzdE9qZ0ZyTzVHZmZVZWVHMU1MTVp3YUc3SXNwdV80S2VVIiwiY3Jvc3NPcmlnaW4iOmZhbHNlLCJvcmlnaW4iOiJodHRwczovL3dhbGxldC5yb2NrLXN0YXItb3MudGVzdCIsInR5cGUiOiJ3ZWJhdXRobi5jcmVhdGUifQ",
+                "transports": [
+                  "internal"
+                ]
+              },
+              "type": "public-key"
+            },
+            "key": "ui-275f94645bf1d09355a86ebe8fb533f5",
+            "op": "wallet.auth.enroll",
+            "v": 1
+          }
+        },
+        "key": "ui-275f94645bf1d09355a86ebe8fb533f5",
+        "operation": "wallet.auth.enroll",
+        "result": {
+          "activation_state": "TERMS_REQUIRED",
+          "active": false,
+          "authenticator_kind": "PUBLIC_SOFTWARE_TEST_AUTHENTICATOR",
+          "challenge_id": "auth-7437262b-7b92-448f-b446-1650e7949b23",
+          "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+          "credential_revoked": false,
+          "fee_policy": "simulator-zero-fee-v1",
+          "hardware_backed": false,
+          "receipt_kind": "immutable_enrollment",
+          "simulation_only": true,
+          "wallet_terms_accepted": false,
+          "wallet_terms_version": "rock-wallet-development/1"
+        },
+        "seq": 2
+      },
+      {
+        "input": {
+          "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "authority_id": "c899accc-871f-4abf-8ecc-5243fec2e267",
+          "device_ref": "fixture-rock-arm64-001",
+          "handoff_ref": "4595911ca9afa5a5e1ec3825b48691260b24fb87e1b5a520a9f7d9cdd4994b8d",
+          "request": {
+            "accepted": true,
+            "key": "ui-eab7ac2015a1f37398c43508abef10ff",
+            "op": "wallet.terms",
+            "terms_version": "rock-wallet-development/1",
+            "v": 1
+          }
+        },
+        "key": "ui-eab7ac2015a1f37398c43508abef10ff",
+        "operation": "wallet.terms",
+        "result": {
+          "activation_state": "ACTIVE",
+          "active": true,
+          "authenticator_kind": "PUBLIC_SOFTWARE_TEST_AUTHENTICATOR",
+          "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+          "credential_revoked": false,
+          "fee_policy": "simulator-zero-fee-v1",
+          "hardware_backed": false,
+          "receipt_kind": "immutable_wallet_terms",
+          "simulation_only": true,
+          "terms_receipt_id": "terms-fa37e303-84b4-4ef9-bf7f-00c5a04ce1f5",
+          "wallet_terms_accepted": true,
+          "wallet_terms_version": "rock-wallet-development/1"
+        },
+        "seq": 3
+      },
+      {
+        "input": {
+          "amount_minor": 5000
+        },
+        "key": "ui-efb8a82faf22793b6edd34940afa16ec",
+        "operation": "sale",
+        "result": {
+          "amount_minor": 5000,
+          "created_at": "2026-09-09T21:47:15.970265+00:00",
+          "id": "0f498d78-2311-48ae-ac77-d1b2177202b2",
+          "settled_at": null,
+          "status": "PENDING_SETTLEMENT"
+        },
+        "seq": 4
+      },
+      {
+        "input": {
+          "sale_id": "0f498d78-2311-48ae-ac77-d1b2177202b2"
+        },
+        "key": "ui-2018ab195fdd3be2949c6b74e32bf160",
+        "operation": "settle",
+        "result": {
+          "amount_minor": 5000,
+          "created_at": "2026-09-09T21:47:15.970265+00:00",
+          "id": "0f498d78-2311-48ae-ac77-d1b2177202b2",
+          "settled_at": "2026-09-09T21:47:19.462051+00:00",
+          "status": "SETTLED"
+        },
+        "seq": 5
+      },
+      {
+        "input": {
+          "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "authority_id": "c899accc-871f-4abf-8ecc-5243fec2e267",
+          "device_ref": "fixture-rock-arm64-001",
+          "handoff_ref": "4595911ca9afa5a5e1ec3825b48691260b24fb87e1b5a520a9f7d9cdd4994b8d",
+          "request": {
+            "amount_minor": 1000,
+            "atm_id": "SIM-ATM-001",
+            "issue_key": "ui-7b7dd312445eb7d48c3746aefecee17e",
+            "key": "ui-eda438cabb59b64898d713c7f52c7e78",
+            "op": "wallet.atm.quote",
+            "v": 1
+          }
+        },
+        "key": "ui-eda438cabb59b64898d713c7f52c7e78",
+        "operation": "wallet.atm.quote",
+        "result": {
+          "expires_at": 1788990565.485374,
+          "options": {
+            "device_ref": "fixture-rock-arm64-001",
+            "publicKey": {
+              "allowCredentials": [
+                {
+                  "id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+                  "type": "public-key"
+                }
+              ],
+              "challenge": "RUlTWOvjPaDs564OmBE-wUm4DzIcxMxaqlYbHlxijYE",
+              "rpId": "wallet.rock-star-os.test",
+              "timeout": 120000,
+              "userVerification": "required"
+            },
+            "purpose": "wallet.atm.issue",
+            "schema_version": 1
+          },
+          "quote": {
+            "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+            "amount_minor": 1000,
+            "atm_id": "SIM-ATM-001",
+            "authority_id": "c899accc-871f-4abf-8ecc-5243fec2e267",
+            "cash_received_minor": 1000,
+            "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+            "currency": "USD",
+            "device_ref": "fixture-rock-arm64-001",
+            "expires_at": 1788990565.485374,
+            "fee_minor": 0,
+            "issue_key": "ui-7b7dd312445eb7d48c3746aefecee17e",
+            "issued_at": 1788990445.485374,
+            "policy": "simulator-zero-fee-v1",
+            "quote_id": "quote-880eb00d-c5af-439d-bf26-7dc2ce0e0ab0",
+            "total_debit_minor": 1000
+          },
+          "quote_id": "quote-880eb00d-c5af-439d-bf26-7dc2ce0e0ab0",
+          "simulation_only": true
+        },
+        "seq": 6
+      },
+      {
+        "input": {
+          "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "authority_id": "c899accc-871f-4abf-8ecc-5243fec2e267",
+          "device_ref": "fixture-rock-arm64-001",
+          "handoff_ref": "4595911ca9afa5a5e1ec3825b48691260b24fb87e1b5a520a9f7d9cdd4994b8d",
+          "request": {
+            "credential": {
+              "authenticatorAttachment": "platform",
+              "clientExtensionResults": {},
+              "id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+              "rawId": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+              "response": {
+                "authenticatorData": "Gt7IW6sNuZndeC1yiJjz6vv5V1dO_kBU4J2E98N6FpkFAAAAAQ",
+                "clientDataJSON": "eyJjaGFsbGVuZ2UiOiJSVWxUV092alBhRHM1NjRPbUJFLXdVbTREekljeE14YXFsWWJIbHhpallFIiwiY3Jvc3NPcmlnaW4iOmZhbHNlLCJvcmlnaW4iOiJodHRwczovL3dhbGxldC5yb2NrLXN0YXItb3MudGVzdCIsInR5cGUiOiJ3ZWJhdXRobi5nZXQifQ",
+                "signature": "XqTanfBVTYArKhdyu3G_dHKT7b_7Zb8ufbPvu-SLLIQnbF5vaGGopSCo6hMDFOib7jsFeuijBHmsU8btx_xSBQ",
+                "userHandle": "vNn0_jm8WxxNtgqQ536mL7kNGZ5QNluWAjlbsn1AsUQ"
+              },
+              "type": "public-key"
+            },
+            "key": "ui-7b7dd312445eb7d48c3746aefecee17e",
+            "op": "wallet.atm.issue",
+            "quote_id": "quote-880eb00d-c5af-439d-bf26-7dc2ce0e0ab0",
+            "v": 1
+          }
+        },
+        "key": "ui-7b7dd312445eb7d48c3746aefecee17e",
+        "operation": "wallet.atm.issue",
+        "result": {
+          "amount_minor": 1000,
+          "approval_id": "approval-ba0993f2-fc20-4ecc-a0a3-6f3efc37e865",
+          "atm_id": "SIM-ATM-001",
+          "authentication": "verified_software_test_assertion",
+          "cash_received_minor": 1000,
+          "code_sha256": "05904686727728e5582a9cef151e8e745402d8f012ef02151e3ff725203d727f",
+          "currency": "USD",
+          "expires_at": 1788990746.8407342,
+          "fee_minor": 0,
+          "issued_at": 1788990446.8407342,
+          "private_code_hash_verified": true,
+          "quote_id": "quote-880eb00d-c5af-439d-bf26-7dc2ce0e0ab0",
+          "real_atm_connection": "NOT_CONNECTED",
+          "receipt_kind": "immutable_issuance",
+          "simulation_only": true,
+          "state_at_issue": "ISSUED",
+          "total_debit_minor": 1000,
+          "withdrawal_id": "de23c539-7c75-4e70-823c-14b14753e008"
+        },
+        "seq": 7
+      },
+      {
+        "input": {
+          "device_id": "fixture-rock-arm64-001",
+          "owner_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "withdrawal_id": "de23c539-7c75-4e70-823c-14b14753e008"
+        },
+        "key": "ui-9d32524b67ed81f32b5b4aa11b715bf1",
+        "operation": "atm.cancel",
+        "result": {
+          "atm_id": "SIM-ATM-001",
+          "cleanup_needed": false,
+          "code_sha256": "05904686727728e5582a9cef151e8e745402d8f012ef02151e3ff725203d727f",
+          "code_usable": false,
+          "consumed": false,
+          "currency": "USD",
+          "expires_at": 1788990746.8407342,
+          "issued_at": 1788990446.8407342,
+          "real_atm_connection": "NOT_CONNECTED",
+          "simulation_only": true,
+          "state": "CANCELED",
+          "withdrawal": {
+            "amount_minor": 1000,
+            "created_at": "2026-09-09T21:47:26.840734+00:00",
+            "dispensed_minor": 0,
+            "held_minor": 0,
+            "id": "de23c539-7c75-4e70-823c-14b14753e008",
+            "released_minor": 1000,
+            "status": "REVERSED",
+            "updated_at": "2026-09-09T21:47:32.500329+00:00"
+          },
+          "withdrawal_id": "de23c539-7c75-4e70-823c-14b14753e008"
+        },
+        "seq": 8
+      }
+    ],
+    "wallet_journals": [
+      {
+        "created_at": "2026-09-09T21:47:15.971312+00:00",
+        "id": "0e703dec-3b45-40b7-9371-2955f5fd93de",
+        "kind": "sale_pending",
+        "reference_id": "0f498d78-2311-48ae-ac77-d1b2177202b2",
+        "seq": 1
+      },
+      {
+        "created_at": "2026-09-09T21:47:19.460677+00:00",
+        "id": "ed84b9d0-7700-4401-921d-3d96689f86c9",
+        "kind": "sale_settlement",
+        "reference_id": "0f498d78-2311-48ae-ac77-d1b2177202b2",
+        "seq": 2
+      },
+      {
+        "created_at": "2026-09-09T21:47:26.842983+00:00",
+        "id": "f568b1ae-cc07-4459-820c-92578b48c910",
+        "kind": "withdrawal_reserve",
+        "reference_id": "de23c539-7c75-4e70-823c-14b14753e008",
+        "seq": 3
+      },
+      {
+        "created_at": "2026-09-09T21:47:32.500824+00:00",
+        "id": "0f439878-3f21-4329-b7f1-6d50bc408b81",
+        "kind": "withdrawal_hold_reversal",
+        "reference_id": "de23c539-7c75-4e70-823c-14b14753e008",
+        "seq": 4
+      }
+    ],
+    "wallet_withdrawals": [
+      {
+        "amount_minor": 1000,
+        "created_at": "2026-09-09T21:47:26.840734+00:00",
+        "dispensed_minor": 0,
+        "id": "de23c539-7c75-4e70-823c-14b14753e008",
+        "released_minor": 1000,
+        "seq": 1,
+        "status": "REVERSED",
+        "updated_at": "2026-09-09T21:47:32.500329+00:00"
+      }
+    ]
+  },
+  "environment_final": {
+    "data_mount": [
+      "/dev/vdb",
+      "/data",
+      "ext4",
+      "rw,nosuid,nodev,noexec,relatime"
+    ],
+    "data_owners": {
+      "/data/platform": {
+        "gid": 1002,
+        "mode": "0700",
+        "uid": 1002
+      },
+      "/data/rock": {
+        "gid": 1000,
+        "mode": "0700",
+        "uid": 1000
+      },
+      "/data/wallet": {
+        "gid": 1003,
+        "mode": "0700",
+        "uid": 1003
+      }
+    },
+    "evdev_names": [
+      "QEMU Virtio Tablet",
+      "QEMU Virtio Keyboard"
+    ],
+    "framebuffer": [
+      720,
+      960
+    ],
+    "hardware_network_interfaces": [],
+    "network_interfaces": [
+      "dummy0",
+      "lo",
+      "sit0"
+    ],
+    "processes": {
+      "core": {
+        "executable": "/usr/sbin/rockd",
+        "gid": [
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "no_new_privs": 1,
+        "pid": 108,
+        "uid": [
+          1000,
+          1000,
+          1000,
+          1000
+        ]
+      },
+      "platform": {
+        "executable": "/usr/bin/python3.14",
+        "gid": [
+          1002,
+          1002,
+          1002,
+          1002
+        ],
+        "no_new_privs": 1,
+        "pid": 150,
+        "uid": [
+          1002,
+          1002,
+          1002,
+          1002
+        ]
+      },
+      "ui": {
+        "executable": "/usr/bin/rock-ui",
+        "gid": [
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "no_new_privs": 1,
+        "pid": 212,
+        "uid": [
+          1000,
+          1000,
+          1000,
+          1000
+        ]
+      },
+      "wallet": {
+        "executable": "/usr/bin/python3.14",
+        "gid": [
+          1003,
+          1003,
+          1003,
+          1003
+        ],
+        "no_new_privs": 1,
+        "pid": 147,
+        "uid": [
+          1003,
+          1003,
+          1003,
+          1003
+        ]
+      }
+    },
+    "root_mount": [
+      "/dev/root",
+      "/",
+      "ext4",
+      "ro,relatime,norecovery"
+    ]
+  },
+  "environment_initial": {
+    "data_mount": [
+      "/dev/vdb",
+      "/data",
+      "ext4",
+      "rw,nosuid,nodev,noexec,relatime"
+    ],
+    "data_owners": {
+      "/data/platform": {
+        "gid": 1002,
+        "mode": "0700",
+        "uid": 1002
+      },
+      "/data/rock": {
+        "gid": 1000,
+        "mode": "0700",
+        "uid": 1000
+      },
+      "/data/wallet": {
+        "gid": 1003,
+        "mode": "0700",
+        "uid": 1003
+      }
+    },
+    "evdev_names": [
+      "QEMU Virtio Tablet",
+      "QEMU Virtio Keyboard"
+    ],
+    "framebuffer": [
+      720,
+      960
+    ],
+    "hardware_network_interfaces": [],
+    "network_interfaces": [
+      "dummy0",
+      "lo",
+      "sit0"
+    ],
+    "processes": {
+      "core": {
+        "executable": "/usr/sbin/rockd",
+        "gid": [
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "no_new_privs": 1,
+        "pid": 108,
+        "uid": [
+          1000,
+          1000,
+          1000,
+          1000
+        ]
+      },
+      "platform": {
+        "executable": "/usr/bin/python3.14",
+        "gid": [
+          1002,
+          1002,
+          1002,
+          1002
+        ],
+        "no_new_privs": 1,
+        "pid": 150,
+        "uid": [
+          1002,
+          1002,
+          1002,
+          1002
+        ]
+      },
+      "ui": {
+        "executable": "/usr/bin/rock-ui",
+        "gid": [
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "no_new_privs": 1,
+        "pid": 212,
+        "uid": [
+          1000,
+          1000,
+          1000,
+          1000
+        ]
+      },
+      "wallet": {
+        "executable": "/usr/bin/python3.14",
+        "gid": [
+          1003,
+          1003,
+          1003,
+          1003
+        ],
+        "no_new_privs": 1,
+        "pid": 147,
+        "uid": [
+          1003,
+          1003,
+          1003,
+          1003
+        ]
+      }
+    },
+    "root_mount": [
+      "/dev/root",
+      "/",
+      "ext4",
+      "ro,relatime,norecovery"
+    ]
+  },
+  "final_hub_sha256": "42de8ba505d2865c35bb575e1ab6078b45f1d248f035ddada8f8858ef60c30f4",
+  "finished_unix": 1788990483.4530873,
+  "initial_hub_sha256": "42de8ba505d2865c35bb575e1ab6078b45f1d248f035ddada8f8858ef60c30f4",
+  "issuance_observed": {
+    "credential": {
+      "atm_id": "SIM-ATM-001",
+      "code_sha256": "05904686727728e5582a9cef151e8e745402d8f012ef02151e3ff725203d727f",
+      "consumed_at": null,
+      "consumed_by": null,
+      "device_id": "fixture-rock-arm64-001",
+      "expires_at": 1788990746.8407342,
+      "issued_at": 1788990446.8407342,
+      "owner_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+      "seq": 1,
+      "state": "ISSUED",
+      "updated_at": 1788990446.8407342,
+      "withdrawal_id": "de23c539-7c75-4e70-823c-14b14753e008"
+    },
+    "wallet": {
+      "accounts": {
+        "AVAILABLE": 4000,
+        "CASH_DISPENSED": 0,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -5000,
+        "SERVICE_FEES": 0,
+        "WITHDRAW_HOLD": 1000
+      },
+      "auth": {
+        "activation_state": "ACTIVE",
+        "active": true,
+        "authenticator_kind": "PUBLIC_SOFTWARE_TEST_AUTHENTICATOR",
+        "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+        "credential_revoked": false,
+        "fee_policy": "simulator-zero-fee-v1",
+        "hardware_backed": false,
+        "simulation_only": true,
+        "wallet_terms_accepted": true,
+        "wallet_terms_version": "rock-wallet-development/1"
+      },
+      "available_minor": 4000,
+      "billed_minor": 0,
+      "billing": {
+        "backend_connected": false,
+        "currency": "USD",
+        "history": [],
+        "monthly_fee_minor": 888,
+        "pending_api_receipts": 0,
+        "period_basis": "UTC calendar month",
+        "retry_at_unix": null,
+        "retry_policy": {
+          "counted_failure": "each distinct applied FAILED attempt; manual failures do not replenish the cycle",
+          "funded_recovery": "current period; newly settled sales and increased AVAILABLE of at least 888 cents",
+          "kind": "sandbox-bounded-payment-failures-v1",
+          "manual_retry": "one explicit attempt; automatic budget unchanged",
+          "max_automatic_failures": 3,
+          "retry_seconds": 60,
+          "unknown_outcome": "same-claim reconciliation; no failure-count limit"
+        },
+        "simulation_only": true,
+        "worker_alive": true,
+        "worker_error": null,
+        "worker_failures": 0
+      },
+      "bills": [],
+      "consent": {
+        "accepted": false,
+        "terms_version": "simulator-monthly-usd-8.88-v1"
+      },
+      "currency": "USD",
+      "dispensed_minor": 0,
+      "held_minor": 1000,
+      "history_truncated": {
+        "bills": false,
+        "journals": false,
+        "sales": false,
+        "withdrawals": false
+      },
+      "journals": [
+        {
+          "created_at": "2026-09-09T21:47:26.842983+00:00",
+          "id": "f568b1ae-cc07-4459-820c-92578b48c910",
+          "kind": "withdrawal_reserve",
+          "postings": [
+            {
+              "account": "AVAILABLE",
+              "delta_minor": -1000
+            },
+            {
+              "account": "WITHDRAW_HOLD",
+              "delta_minor": 1000
+            }
+          ],
+          "reference_id": "de23c539-7c75-4e70-823c-14b14753e008"
+        },
+        {
+          "created_at": "2026-09-09T21:47:19.460677+00:00",
+          "id": "ed84b9d0-7700-4401-921d-3d96689f86c9",
+          "kind": "sale_settlement",
+          "postings": [
+            {
+              "account": "PENDING_SETTLEMENT",
+              "delta_minor": -5000
+            },
+            {
+              "account": "AVAILABLE",
+              "delta_minor": 5000
+            }
+          ],
+          "reference_id": "0f498d78-2311-48ae-ac77-d1b2177202b2"
+        },
+        {
+          "created_at": "2026-09-09T21:47:15.971312+00:00",
+          "id": "0e703dec-3b45-40b7-9371-2955f5fd93de",
+          "kind": "sale_pending",
+          "postings": [
+            {
+              "account": "SALE_CLEARING",
+              "delta_minor": -5000
+            },
+            {
+              "account": "PENDING_SETTLEMENT",
+              "delta_minor": 5000
+            }
+          ],
+          "reference_id": "0f498d78-2311-48ae-ac77-d1b2177202b2"
+        }
+      ],
+      "ledger_balance_minor": 0,
+      "membership": {
+        "authentication": {
+          "activation_state": "ACTIVE",
+          "active": true,
+          "authenticator_kind": "PUBLIC_SOFTWARE_TEST_AUTHENTICATOR",
+          "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+          "credential_revoked": false,
+          "fee_policy": "simulator-zero-fee-v1",
+          "hardware_backed": false,
+          "simulation_only": true,
+          "wallet_terms_accepted": true,
+          "wallet_terms_version": "rock-wallet-development/1"
+        },
+        "authentication_required": true,
+        "backend_connected": false,
+        "currency": "USD",
+        "entitlement": {
+          "access_allowed": false,
+          "access_until": 0,
+          "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "auto_renew": false,
+          "consent_id": null,
+          "currency": "USD",
+          "device_eligible": true,
+          "device_ref": "fixture-rock-arm64-001",
+          "identity_inherited": true,
+          "monthly_fee_minor": 888,
+          "simulation_only": true,
+          "subscription_state": "CONSENT_REQUIRED",
+          "verification_ref": "fixture-verification-handoff-001",
+          "verification_valid_until": 1796601600
+        },
+        "identity_source": "public-development-fixture",
+        "monthly_fee_minor": 888,
+        "real_identity_verified": false,
+        "registered": true,
+        "registration_input_fields": [],
+        "registration_status": "REGISTERED",
+        "simulation_only": true,
+        "terms_version": "simulator-monthly-usd-8.88-v1"
+      },
+      "minor_unit": "cent",
+      "monthly_fee_minor": 888,
+      "pending_minor": 0,
+      "record_counts": {
+        "bills": 0,
+        "journals": 3,
+        "sales": 1,
+        "withdrawals": 1
+      },
+      "sales": [
+        {
+          "amount_minor": 5000,
+          "created_at": "2026-09-09T21:47:15.970265+00:00",
+          "id": "0f498d78-2311-48ae-ac77-d1b2177202b2",
+          "settled_at": "2026-09-09T21:47:19.462051+00:00",
+          "status": "SETTLED"
+        }
+      ],
+      "simulation_only": true,
+      "test_device_entitlement_fixture": "TEST_FIXTURE_ELIGIBLE_DEVICE_NOT_ATTESTED",
+      "test_identity_fixture": "TEST_FIXTURE_OWNER_NOT_IDENTITY_VERIFIED",
+      "withdrawals": [
+        {
+          "amount_minor": 1000,
+          "created_at": "2026-09-09T21:47:26.840734+00:00",
+          "dispensed_minor": 0,
+          "held_minor": 1000,
+          "id": "de23c539-7c75-4e70-823c-14b14753e008",
+          "released_minor": 0,
+          "status": "RESERVED",
+          "updated_at": "2026-09-09T21:47:26.840734+00:00"
+        }
+      ]
+    }
+  },
+  "observer": "read-only snapshot API and fixed SQLite mode=ro/query_only queries; no business mutations",
+  "raw_code_in_evidence": false,
+  "real_atm": "NOT_CONNECTED",
+  "real_identity": "NOT_CONNECTED",
+  "real_money": "NOT_RUN",
+  "receipts": {
+    "authentication": {
+      "approval_id": "approval-ba0993f2-fc20-4ecc-a0a3-6f3efc37e865",
+      "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+      "quote": {
+        "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+        "amount_minor": 1000,
+        "atm_id": "SIM-ATM-001",
+        "authority_id": "c899accc-871f-4abf-8ecc-5243fec2e267",
+        "cash_received_minor": 1000,
+        "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+        "currency": "USD",
+        "device_ref": "fixture-rock-arm64-001",
+        "expires_at": 1788990565.485374,
+        "fee_minor": 0,
+        "issue_key": "ui-7b7dd312445eb7d48c3746aefecee17e",
+        "issued_at": 1788990445.485374,
+        "policy": "simulator-zero-fee-v1",
+        "quote_id": "quote-880eb00d-c5af-439d-bf26-7dc2ce0e0ab0",
+        "total_debit_minor": 1000
+      },
+      "registration_and_assertion_reverified": true,
+      "rock_atm_fee_minor": 0
+    },
+    "credential": {
+      "atm_id": "SIM-ATM-001",
+      "code_sha256": "05904686727728e5582a9cef151e8e745402d8f012ef02151e3ff725203d727f",
+      "consumed_at": null,
+      "consumed_by": null,
+      "device_id": "fixture-rock-arm64-001",
+      "expires_at": 1788990746.8407342,
+      "issued_at": 1788990446.8407342,
+      "owner_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+      "seq": 1,
+      "state": "CANCELED",
+      "updated_at": 1788990452.5003285,
+      "withdrawal_id": "de23c539-7c75-4e70-823c-14b14753e008"
+    },
+    "ledger": [
+      {
+        "input": {
+          "amount_minor": 5000
+        },
+        "key": "ui-efb8a82faf22793b6edd34940afa16ec",
+        "operation": "sale",
+        "result": {
+          "amount_minor": 5000,
+          "created_at": "2026-09-09T21:47:15.970265+00:00",
+          "id": "0f498d78-2311-48ae-ac77-d1b2177202b2",
+          "settled_at": null,
+          "status": "PENDING_SETTLEMENT"
+        },
+        "seq": 4
+      },
+      {
+        "input": {
+          "sale_id": "0f498d78-2311-48ae-ac77-d1b2177202b2"
+        },
+        "key": "ui-2018ab195fdd3be2949c6b74e32bf160",
+        "operation": "settle",
+        "result": {
+          "amount_minor": 5000,
+          "created_at": "2026-09-09T21:47:15.970265+00:00",
+          "id": "0f498d78-2311-48ae-ac77-d1b2177202b2",
+          "settled_at": "2026-09-09T21:47:19.462051+00:00",
+          "status": "SETTLED"
+        },
+        "seq": 5
+      },
+      {
+        "input": {
+          "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "authority_id": "c899accc-871f-4abf-8ecc-5243fec2e267",
+          "device_ref": "fixture-rock-arm64-001",
+          "handoff_ref": "4595911ca9afa5a5e1ec3825b48691260b24fb87e1b5a520a9f7d9cdd4994b8d",
+          "request": {
+            "credential": {
+              "authenticatorAttachment": "platform",
+              "clientExtensionResults": {},
+              "id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+              "rawId": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+              "response": {
+                "authenticatorData": "Gt7IW6sNuZndeC1yiJjz6vv5V1dO_kBU4J2E98N6FpkFAAAAAQ",
+                "clientDataJSON": "eyJjaGFsbGVuZ2UiOiJSVWxUV092alBhRHM1NjRPbUJFLXdVbTREekljeE14YXFsWWJIbHhpallFIiwiY3Jvc3NPcmlnaW4iOmZhbHNlLCJvcmlnaW4iOiJodHRwczovL3dhbGxldC5yb2NrLXN0YXItb3MudGVzdCIsInR5cGUiOiJ3ZWJhdXRobi5nZXQifQ",
+                "signature": "XqTanfBVTYArKhdyu3G_dHKT7b_7Zb8ufbPvu-SLLIQnbF5vaGGopSCo6hMDFOib7jsFeuijBHmsU8btx_xSBQ",
+                "userHandle": "vNn0_jm8WxxNtgqQ536mL7kNGZ5QNluWAjlbsn1AsUQ"
+              },
+              "type": "public-key"
+            },
+            "key": "ui-7b7dd312445eb7d48c3746aefecee17e",
+            "op": "wallet.atm.issue",
+            "quote_id": "quote-880eb00d-c5af-439d-bf26-7dc2ce0e0ab0",
+            "v": 1
+          }
+        },
+        "key": "ui-7b7dd312445eb7d48c3746aefecee17e",
+        "operation": "wallet.atm.issue",
+        "result": {
+          "amount_minor": 1000,
+          "approval_id": "approval-ba0993f2-fc20-4ecc-a0a3-6f3efc37e865",
+          "atm_id": "SIM-ATM-001",
+          "authentication": "verified_software_test_assertion",
+          "cash_received_minor": 1000,
+          "code_sha256": "05904686727728e5582a9cef151e8e745402d8f012ef02151e3ff725203d727f",
+          "currency": "USD",
+          "expires_at": 1788990746.8407342,
+          "fee_minor": 0,
+          "issued_at": 1788990446.8407342,
+          "private_code_hash_verified": true,
+          "quote_id": "quote-880eb00d-c5af-439d-bf26-7dc2ce0e0ab0",
+          "real_atm_connection": "NOT_CONNECTED",
+          "receipt_kind": "immutable_issuance",
+          "simulation_only": true,
+          "state_at_issue": "ISSUED",
+          "total_debit_minor": 1000,
+          "withdrawal_id": "de23c539-7c75-4e70-823c-14b14753e008"
+        },
+        "seq": 7
+      },
+      {
+        "input": {
+          "device_id": "fixture-rock-arm64-001",
+          "owner_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "withdrawal_id": "de23c539-7c75-4e70-823c-14b14753e008"
+        },
+        "key": "ui-9d32524b67ed81f32b5b4aa11b715bf1",
+        "operation": "atm.cancel",
+        "result": {
+          "atm_id": "SIM-ATM-001",
+          "cleanup_needed": false,
+          "code_sha256": "05904686727728e5582a9cef151e8e745402d8f012ef02151e3ff725203d727f",
+          "code_usable": false,
+          "consumed": false,
+          "currency": "USD",
+          "expires_at": 1788990746.8407342,
+          "issued_at": 1788990446.8407342,
+          "real_atm_connection": "NOT_CONNECTED",
+          "simulation_only": true,
+          "state": "CANCELED",
+          "withdrawal": {
+            "amount_minor": 1000,
+            "created_at": "2026-09-09T21:47:26.840734+00:00",
+            "dispensed_minor": 0,
+            "held_minor": 0,
+            "id": "de23c539-7c75-4e70-823c-14b14753e008",
+            "released_minor": 1000,
+            "status": "REVERSED",
+            "updated_at": "2026-09-09T21:47:32.500329+00:00"
+          },
+          "withdrawal_id": "de23c539-7c75-4e70-823c-14b14753e008"
+        },
+        "seq": 8
+      }
+    ],
+    "registration": {
+      "created_at": 1788990413,
+      "key": "ui-25fca6632f17f334eef121cbd45a3509",
+      "request": {
+        "key": "ui-25fca6632f17f334eef121cbd45a3509",
+        "op": "wallet.register",
+        "v": 1
+      },
+      "response": {
+        "ok": true,
+        "result": {
+          "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+          "additional_personal_fields_required": [],
+          "device_ref": "fixture-rock-arm64-001",
+          "identity_inherited": true,
+          "simulation_only": true,
+          "verification_ref": "fixture-verification-handoff-001"
+        }
+      },
+      "seq": 1
+    }
+  },
+  "registration_without_consent": true,
+  "schema": "rock-native-atm-ui-proof/1",
+  "scope": "actual native owner GUI; ATM SIMULATOR ONLY",
+  "shutdown": "explicit observer test termination through init; not Power UI input",
+  "stages": [
+    {
+      "available_minor": 0,
+      "held_minor": 0,
+      "observed_unix": 1788990408.7034545,
+      "pending_minor": 0,
+      "stage": 0
+    },
+    {
+      "available_minor": 0,
+      "held_minor": 0,
+      "observed_unix": 1788990414.1579573,
+      "pending_minor": 0,
+      "stage": 1
+    },
+    {
+      "available_minor": 0,
+      "held_minor": 0,
+      "observed_unix": 1788990436.1751132,
+      "pending_minor": 5000,
+      "stage": 2
+    },
+    {
+      "available_minor": 5000,
+      "held_minor": 0,
+      "observed_unix": 1788990439.859093,
+      "pending_minor": 0,
+      "stage": 3
+    },
+    {
+      "available_minor": 4000,
+      "held_minor": 1000,
+      "observed_unix": 1788990447.0251076,
+      "pending_minor": 0,
+      "stage": 4
+    },
+    {
+      "available_minor": 5000,
+      "held_minor": 0,
+      "observed_unix": 1788990452.926412,
+      "pending_minor": 0,
+      "stage": 5
+    }
+  ],
+  "started_unix": 1788990408.6109612,
+  "status": "PASS",
+  "tool_state_unchanged": true,
+  "wallet_activation_without_funds": true,
+  "wallet_challenge_observed": true,
+  "wallet_enrollment_observed": true,
+  "wallet_final": {
+    "accounts": {
+      "AVAILABLE": 5000,
+      "CASH_DISPENSED": 0,
+      "PENDING_SETTLEMENT": 0,
+      "SALE_CLEARING": -5000,
+      "SERVICE_FEES": 0,
+      "WITHDRAW_HOLD": 0
+    },
+    "auth": {
+      "activation_state": "ACTIVE",
+      "active": true,
+      "authenticator_kind": "PUBLIC_SOFTWARE_TEST_AUTHENTICATOR",
+      "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+      "credential_revoked": false,
+      "fee_policy": "simulator-zero-fee-v1",
+      "hardware_backed": false,
+      "simulation_only": true,
+      "wallet_terms_accepted": true,
+      "wallet_terms_version": "rock-wallet-development/1"
+    },
+    "available_minor": 5000,
+    "billed_minor": 0,
+    "billing": {
+      "backend_connected": false,
+      "currency": "USD",
+      "history": [],
+      "monthly_fee_minor": 888,
+      "pending_api_receipts": 0,
+      "period_basis": "UTC calendar month",
+      "retry_at_unix": null,
+      "retry_policy": {
+        "counted_failure": "each distinct applied FAILED attempt; manual failures do not replenish the cycle",
+        "funded_recovery": "current period; newly settled sales and increased AVAILABLE of at least 888 cents",
+        "kind": "sandbox-bounded-payment-failures-v1",
+        "manual_retry": "one explicit attempt; automatic budget unchanged",
+        "max_automatic_failures": 3,
+        "retry_seconds": 60,
+        "unknown_outcome": "same-claim reconciliation; no failure-count limit"
+      },
+      "simulation_only": true,
+      "worker_alive": true,
+      "worker_error": null,
+      "worker_failures": 0
+    },
+    "bills": [],
+    "consent": {
+      "accepted": false,
+      "terms_version": "simulator-monthly-usd-8.88-v1"
+    },
+    "currency": "USD",
+    "dispensed_minor": 0,
+    "held_minor": 0,
+    "history_truncated": {
+      "bills": false,
+      "journals": false,
+      "sales": false,
+      "withdrawals": false
+    },
+    "journals": [
+      {
+        "created_at": "2026-09-09T21:47:32.500824+00:00",
+        "id": "0f439878-3f21-4329-b7f1-6d50bc408b81",
+        "kind": "withdrawal_hold_reversal",
+        "postings": [
+          {
+            "account": "WITHDRAW_HOLD",
+            "delta_minor": -1000
+          },
+          {
+            "account": "AVAILABLE",
+            "delta_minor": 1000
+          }
+        ],
+        "reference_id": "de23c539-7c75-4e70-823c-14b14753e008"
+      },
+      {
+        "created_at": "2026-09-09T21:47:26.842983+00:00",
+        "id": "f568b1ae-cc07-4459-820c-92578b48c910",
+        "kind": "withdrawal_reserve",
+        "postings": [
+          {
+            "account": "AVAILABLE",
+            "delta_minor": -1000
+          },
+          {
+            "account": "WITHDRAW_HOLD",
+            "delta_minor": 1000
+          }
+        ],
+        "reference_id": "de23c539-7c75-4e70-823c-14b14753e008"
+      },
+      {
+        "created_at": "2026-09-09T21:47:19.460677+00:00",
+        "id": "ed84b9d0-7700-4401-921d-3d96689f86c9",
+        "kind": "sale_settlement",
+        "postings": [
+          {
+            "account": "PENDING_SETTLEMENT",
+            "delta_minor": -5000
+          },
+          {
+            "account": "AVAILABLE",
+            "delta_minor": 5000
+          }
+        ],
+        "reference_id": "0f498d78-2311-48ae-ac77-d1b2177202b2"
+      },
+      {
+        "created_at": "2026-09-09T21:47:15.971312+00:00",
+        "id": "0e703dec-3b45-40b7-9371-2955f5fd93de",
+        "kind": "sale_pending",
+        "postings": [
+          {
+            "account": "SALE_CLEARING",
+            "delta_minor": -5000
+          },
+          {
+            "account": "PENDING_SETTLEMENT",
+            "delta_minor": 5000
+          }
+        ],
+        "reference_id": "0f498d78-2311-48ae-ac77-d1b2177202b2"
+      }
+    ],
+    "ledger_balance_minor": 0,
+    "membership": {
+      "authentication": {
+        "activation_state": "ACTIVE",
+        "active": true,
+        "authenticator_kind": "PUBLIC_SOFTWARE_TEST_AUTHENTICATOR",
+        "credential_id": "iKycGdSxHzy-OfnzR3Oohat-WSy1low0KfSgZj8YgCQ",
+        "credential_revoked": false,
+        "fee_policy": "simulator-zero-fee-v1",
+        "hardware_backed": false,
+        "simulation_only": true,
+        "wallet_terms_accepted": true,
+        "wallet_terms_version": "rock-wallet-development/1"
+      },
+      "authentication_required": true,
+      "backend_connected": false,
+      "currency": "USD",
+      "entitlement": {
+        "access_allowed": false,
+        "access_until": 0,
+        "account_id": "acct-4331bb07d213fb6d61da38e2b5710bc2",
+        "auto_renew": false,
+        "consent_id": null,
+        "currency": "USD",
+        "device_eligible": true,
+        "device_ref": "fixture-rock-arm64-001",
+        "identity_inherited": true,
+        "monthly_fee_minor": 888,
+        "simulation_only": true,
+        "subscription_state": "CONSENT_REQUIRED",
+        "verification_ref": "fixture-verification-handoff-001",
+        "verification_valid_until": 1796601600
+      },
+      "identity_source": "public-development-fixture",
+      "monthly_fee_minor": 888,
+      "real_identity_verified": false,
+      "registered": true,
+      "registration_input_fields": [],
+      "registration_status": "REGISTERED",
+      "simulation_only": true,
+      "terms_version": "simulator-monthly-usd-8.88-v1"
+    },
+    "minor_unit": "cent",
+    "monthly_fee_minor": 888,
+    "pending_minor": 0,
+    "record_counts": {
+      "bills": 0,
+      "journals": 4,
+      "sales": 1,
+      "withdrawals": 1
+    },
+    "sales": [
+      {
+        "amount_minor": 5000,
+        "created_at": "2026-09-09T21:47:15.970265+00:00",
+        "id": "0f498d78-2311-48ae-ac77-d1b2177202b2",
+        "settled_at": "2026-09-09T21:47:19.462051+00:00",
+        "status": "SETTLED"
+      }
+    ],
+    "simulation_only": true,
+    "test_device_entitlement_fixture": "TEST_FIXTURE_ELIGIBLE_DEVICE_NOT_ATTESTED",
+    "test_identity_fixture": "TEST_FIXTURE_OWNER_NOT_IDENTITY_VERIFIED",
+    "withdrawals": [
+      {
+        "amount_minor": 1000,
+        "created_at": "2026-09-09T21:47:26.840734+00:00",
+        "dispensed_minor": 0,
+        "held_minor": 0,
+        "id": "de23c539-7c75-4e70-823c-14b14753e008",
+        "released_minor": 1000,
+        "status": "REVERSED",
+        "updated_at": "2026-09-09T21:47:32.500329+00:00"
+      }
+    ]
+  },
+  "wallet_initial": {
+    "accounts": {
+      "AVAILABLE": 0,
+      "CASH_DISPENSED": 0,
+      "PENDING_SETTLEMENT": 0,
+      "SALE_CLEARING": 0,
+      "SERVICE_FEES": 0,
+      "WITHDRAW_HOLD": 0
+    },
+    "auth": {
+      "activation_state": "REGISTRATION_REQUIRED",
+      "active": false,
+      "simulation_only": true
+    },
+    "available_minor": 0,
+    "billed_minor": 0,
+    "billing": {
+      "backend_connected": false,
+      "currency": "USD",
+      "history": [],
+      "monthly_fee_minor": 888,
+      "pending_api_receipts": 0,
+      "period_basis": "UTC calendar month",
+      "retry_at_unix": null,
+      "retry_policy": {
+        "counted_failure": "each distinct applied FAILED attempt; manual failures do not replenish the cycle",
+        "funded_recovery": "current period; newly settled sales and increased AVAILABLE of at least 888 cents",
+        "kind": "sandbox-bounded-payment-failures-v1",
+        "manual_retry": "one explicit attempt; automatic budget unchanged",
+        "max_automatic_failures": 3,
+        "retry_seconds": 60,
+        "unknown_outcome": "same-claim reconciliation; no failure-count limit"
+      },
+      "simulation_only": true,
+      "worker_alive": true,
+      "worker_error": null,
+      "worker_failures": 0
+    },
+    "bills": [],
+    "consent": {
+      "accepted": false,
+      "terms_version": "simulator-monthly-usd-8.88-v1"
+    },
+    "currency": "USD",
+    "dispensed_minor": 0,
+    "held_minor": 0,
+    "history_truncated": {
+      "bills": false,
+      "journals": false,
+      "sales": false,
+      "withdrawals": false
+    },
+    "journals": [],
+    "ledger_balance_minor": 0,
+    "membership": {
+      "authentication": {
+        "activation_state": "REGISTRATION_REQUIRED",
+        "active": false,
+        "simulation_only": true
+      },
+      "authentication_required": true,
+      "backend_connected": false,
+      "currency": "USD",
+      "entitlement": null,
+      "identity_source": "public-development-fixture",
+      "monthly_fee_minor": 888,
+      "real_identity_verified": false,
+      "registered": false,
+      "registration_input_fields": [],
+      "registration_status": "REGISTRATION_REQUIRED",
+      "simulation_only": true,
+      "terms_version": "simulator-monthly-usd-8.88-v1"
+    },
+    "minor_unit": "cent",
+    "monthly_fee_minor": 888,
+    "pending_minor": 0,
+    "record_counts": {
+      "bills": 0,
+      "journals": 0,
+      "sales": 0,
+      "withdrawals": 0
+    },
+    "sales": [],
+    "simulation_only": true,
+    "test_device_entitlement_fixture": "TEST_FIXTURE_ELIGIBLE_DEVICE_NOT_ATTESTED",
+    "test_identity_fixture": "TEST_FIXTURE_OWNER_NOT_IDENTITY_VERIFIED",
+    "withdrawals": []
+  },
+  "wallet_initial_sha256": "b3fe936fa1d6f5e093073b7042dfe080f65f1baf4feeef8506a011b8ce1a4824"
+}

@@ -1,0 +1,11 @@
+native-replay coordinate=360,363 action=2 scroll=0
+native-replay coordinate=360,793 action=6 scroll=125
+native-replay coordinate=360,758 action=7 scroll=0
+native-replay coordinate=360,758 action=3 scroll=0
+native-replay coordinate=250,425 action=13 scroll=0
+PASS public signed catalog native replay geometry; backend and guest execution NOT_RUN
+PASS missing PageDown and PageUp rejected; nine-capture live contract preserved
+PASS purchaser service fee disclosure, stale/context rejection, Wallet navigation, paid recovery, schema4 remote UI
+PASS startup polling: initial cadence, completion deadline, bounded backoff, recovery and UI/intent preservation
+PASS native MCP selection, confirmation, expiry, epoch, exact retry and pending result
+PASS native UI actions, request identities, errors, input limits, rendering, framebuffer conversion, evdev coordinates

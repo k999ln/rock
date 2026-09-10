@@ -1,0 +1,4 @@
+# Public derived log; original basename: 43-normal-close.log
+# Original SHA-256: 7561fb39e8cfb5ec29bd4f9131a50184682c5096cd17c1e654fef5fe1560a6ae
+# Private VM evidence/source paths replaced; original retained unchanged.
+{"status": "CLOSED_NORMALLY_AFTER_FAILED_TEST", "guest_running": false, "evidence": "<owned-normal-close-evidence>"}

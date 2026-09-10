@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+[ "${1:-start}" = start ] || exit 0
+# The virtual board uses eth0 only when a NIC was explicitly attached.
+# No adapter means no DHCP delay and no network fallback for local Tools.
+[ -e /sys/class/net/eth0 ] || exit 0
+if udhcpc -i eth0 -s /usr/share/udhcpc/default.script -n -q -t 3 -T 1; then
+  echo ROCK_NETWORK_CONFIGURED
+else
+  echo ROCK_NETWORK_OFFLINE
+fi

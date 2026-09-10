@@ -1,0 +1,10 @@
+--- Mr CLI - 155 bytes
++++ Native recipe - 151 bytes
+@@ -3,7 +3,6 @@
+ ```text
+ （出典: [コード内の例](https://example.test/code)）
+ ```
+----
+ 
+ ## 出典
+ 

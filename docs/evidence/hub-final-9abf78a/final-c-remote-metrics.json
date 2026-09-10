@@ -1,0 +1,98 @@
+{
+  "schema": "rock-final-c-remote-and-internal-comparison/1",
+  "status": "PASS_SCOPED_ACTUAL_REMOTE_RECOVERY",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "input_bytes": 150,
+  "output_bytes": 151,
+  "expected_output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+  "cycles": [
+    {
+      "cycle": 1,
+      "report_sha256": "a68d906126a9d8ec98c0c539a9acbb89e1e2788494f384173727c0b719fb5c64",
+      "elapsed_seconds": 121.56344097100373,
+      "boot_ui_seconds": 36.31491226300568,
+      "normal_shutdown_seconds": 9.111323156001163,
+      "power_boot_id": "905fb23d-8a3c-49ea-9eef-9bf1790136a6",
+      "runner_restart_to_result_seconds": null,
+      "remote_keys": [
+        "ui-ba58b5de2ef2b3cdab372bbeab24dd1a",
+        "ui-1d0d23727f18feb4d973a0bd71da3740"
+      ],
+      "remote_states": [
+        "succeeded",
+        "unknown"
+      ],
+      "runner_jobs": 1,
+      "authority_unchanged": true,
+      "input_counts": {
+        "click": 21,
+        "keys": 49,
+        "pointer_park": 21
+      }
+    },
+    {
+      "cycle": 2,
+      "report_sha256": "5719bae0c841403a82841a1d9f36dd6ba94a6979c961e4d1892b5be70cfa1714",
+      "elapsed_seconds": 67.21754157300165,
+      "boot_ui_seconds": 35.394578861996706,
+      "normal_shutdown_seconds": 10.302230618006433,
+      "power_boot_id": "b9e379c5-a978-4209-97ba-9d9ba2222b4c",
+      "runner_restart_to_result_seconds": 6.857477779005421,
+      "remote_keys": [
+        "ui-ba58b5de2ef2b3cdab372bbeab24dd1a",
+        "ui-1d0d23727f18feb4d973a0bd71da3740"
+      ],
+      "remote_states": [
+        "succeeded",
+        "succeeded"
+      ],
+      "runner_jobs": 2,
+      "authority_unchanged": true,
+      "input_counts": {
+        "click": 9,
+        "keys": 0,
+        "pointer_park": 9
+      }
+    },
+    {
+      "cycle": 3,
+      "report_sha256": "e9f6dbc4dc4df75c5d2a1817935e03e8a690b995b4e2b135c188ef7b306d8190",
+      "elapsed_seconds": 58.83750549999968,
+      "boot_ui_seconds": 35.48265136699774,
+      "normal_shutdown_seconds": 8.947203536998131,
+      "power_boot_id": "1d68646e-f172-4bea-9f1b-b00bba66f4f0",
+      "runner_restart_to_result_seconds": null,
+      "remote_keys": [
+        "ui-ba58b5de2ef2b3cdab372bbeab24dd1a",
+        "ui-1d0d23727f18feb4d973a0bd71da3740"
+      ],
+      "remote_states": [
+        "succeeded",
+        "succeeded"
+      ],
+      "runner_jobs": 2,
+      "authority_unchanged": true,
+      "input_counts": {
+        "click": 9,
+        "keys": 1,
+        "pointer_park": 9
+      }
+    }
+  ],
+  "distinct_remote_keys": 2,
+  "scope": "Actual QEMU UI and owned loopback TLS runner. First job completes, runner then stops; second original key stays pending over OS restart and completes after runner restarts; third boot reopens the same saved result with runner stopped. Canonical complete private guest/runner snapshots and authority checks passed. Counts are QMP automation events including navigation/power, not human effort.",
+  "comparison": {
+    "pc_same_native_recipe": "docs/evidence/hub-final-9abf78a/pc-counterpart/run-02/report.json",
+    "pc_first_process_validation_ms": 33.812375,
+    "pc_repeat_median_process_validation_ms": 30.841792,
+    "pc_save_included": false,
+    "same_result_bytes": true,
+    "pc_interactive_workflow_time": null,
+    "human_active_time": null,
+    "human_copy_count": null,
+    "human_task_switch_count": null,
+    "time_reduction_percent": null,
+    "human_reuse": null,
+    "reason": "PC process+validation and QEMU UI boot/navigation/wait/recovery have different timing scopes; do not subtract or report unmeasured human metrics as zero."
+  }
+}

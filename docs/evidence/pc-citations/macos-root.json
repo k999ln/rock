@@ -1,0 +1,92 @@
+{
+  "schema": "rock.pc-citations-acceptance/1",
+  "status": "PASS",
+  "scope": "PC-only synthetic CLI/adapter/MCP stdio; no native Hub/USB acceptance",
+  "platform": "macOS-15.7.4-arm64-arm-64bit-Mach-O",
+  "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 17.0.0 (clang-1700.6.4.2)]",
+  "normal_user": true,
+  "synthetic": true,
+  "not_proven": [
+    "native runtime connection",
+    "durable idempotency/crash recovery",
+    "kernel-enforced filesystem/network sandbox",
+    "Windows adapter"
+  ],
+  "input_bytes": 150,
+  "input_sha256": "bad73028a4b23b6e046abc4a1463f2fa14ffd4f55844ec9146cdc9acc3b1387e",
+  "output_bytes": 155,
+  "output_sha256": "30dafde5d3c32d7c690276656f8d5ed0ff924b2c9b5617ede86820efc0b1a0f6",
+  "exact_bytes_equal": true,
+  "source_unchanged": true,
+  "source_sha256": {
+    "vendor/mr/LICENSE": "6cf38019109830262ffd5a3e1dca12e6e972c9750d2a68f99d5494d173960fac",
+    "vendor/mr/application_eligibility.py": "bb1c79986ee20ed6a2f7304fbe09936cccc019397ff855a3fc112095902825f7",
+    "vendor/mr/citation-strip.py": "ed5c28225402c5885c1265c0648b5d4d227a2345ca71e387275a8f205b4ffd13",
+    "vendor/mr/deliverable_verifier.py": "74b30ee9442467d96f6bfc488c0d70421e7624490068daa62ef6a62bf45830c3",
+    "vendor/mr/make-free-version.py": "4f045a4e54456c687eec190d7650b75a3b00281a466a635c57523e26cce16be9",
+    "vendor/mr/provenance.json": "e782c0b741e9bcdcc3a591e2e6c3bcdaf5b03b51d08e77e4becf218b1e4cbd4f",
+    "rock_star_tools.py": "42f138200a472a0351f9b61d5ba7a0b487b0cabff4d9b4e9b96312b55fbff40f",
+    "pc_citations.py": "c6a79b7b8be89fb44f0f6a9e6f133c0748a9cb069667e5ed4f3c25d8cae779bb",
+    "pc_citations_worker.py": "cca361ad08c2c37259877157b892ec092b6a8693f82efb140c46e0984239ae33",
+    "mcp_server.py": "b6c0dacad370e47a41dc08a492f597e6aa06349dd3119b0c22881abd9f943837"
+  },
+  "observer_sha256": "54c74b538297cb289ce42a0b0ac730f7964a9f315a478d2719cb4f29fae9e05c",
+  "processes": {
+    "direct_cli": {
+      "pid": 30333,
+      "exit_code": 0,
+      "elapsed_seconds": 0.043944083037786186
+    },
+    "adapter": {
+      "pid": 30334,
+      "exit_code": 0,
+      "elapsed_seconds": 0.15430033404845744,
+      "child_observations": [
+        {
+          "event": "child_started",
+          "pid": 30335,
+          "parent_pid": 30334,
+          "synthetic_fault": false
+        },
+        {
+          "event": "child_finished",
+          "pid": 30335,
+          "parent_pid": 30334,
+          "exit_code": 0,
+          "temporary_removed": true,
+          "pipes_closed": true,
+          "poisoned": false,
+          "synthetic_fault": false
+        }
+      ]
+    },
+    "plain_mcp": {
+      "pid": 30337,
+      "exit_code": 0,
+      "elapsed_seconds": 0.142450415994972
+    },
+    "observed_mcp": {
+      "pid": 30339,
+      "exit_code": 0,
+      "elapsed_seconds": 0.1412279999931343,
+      "child_observations": [
+        {
+          "event": "child_started",
+          "pid": 30341,
+          "parent_pid": 30339,
+          "synthetic_fault": false
+        },
+        {
+          "event": "child_finished",
+          "pid": 30341,
+          "parent_pid": 30339,
+          "exit_code": 0,
+          "temporary_removed": true,
+          "pipes_closed": true,
+          "poisoned": false,
+          "synthetic_fault": false
+        }
+      ]
+    }
+  }
+}

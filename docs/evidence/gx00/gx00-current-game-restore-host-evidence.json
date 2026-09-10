@@ -1,0 +1,149 @@
+{
+  "schema": "rock-current-game-restore-host-review/1",
+  "status": "PASS_SCOPED_HOST",
+  "recorded_at": "2026-09-10T00:41:33.226798+00:00",
+  "environment": {
+    "platform": "macOS-15.7.4-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7",
+    "qemu_operations": 0,
+    "host_sleep_overlap": {
+      "parent_pmset_observation": {
+        "low_power_sleep_utc": "2026-09-09T23:55:54Z",
+        "ac_wake_utc": "2026-09-10T00:32:51Z"
+      },
+      "independently_observed_log_stat": [
+        {
+          "file": "game-current-restore-19-final.log",
+          "created_utc": "2026-09-09T23:55:24.007455+00:00",
+          "modified_utc": "2026-09-10T00:33:03.356945+00:00"
+        },
+        {
+          "file": "game-current-restore-fixture-recheck.log",
+          "created_utc": "2026-09-10T00:38:05.834487+00:00",
+          "modified_utc": "2026-09-10T00:38:07.262141+00:00"
+        },
+        {
+          "file": "game-current-restore-games-55-final.log",
+          "created_utc": "2026-09-10T00:38:43.316452+00:00",
+          "modified_utc": "2026-09-10T00:39:37.621236+00:00"
+        },
+        {
+          "file": "game-current-restore-wallet-102-final.log",
+          "created_utc": "2026-09-10T00:40:15.081227+00:00",
+          "modified_utc": "2026-09-10T00:40:23.318825+00:00"
+        }
+      ],
+      "interpretation": "The failed suite creation-to-final-write interval spans the parent-observed host sleep. Request-level failure timestamps were not recorded; this is temporal corroboration, not independent proof of a particular request cause. All final tests ran after AC wake with unchanged deadlines."
+    }
+  },
+  "patch": {
+    "patch": "gx00-current-game-restore.patch",
+    "sha256": "c9c86e65d8d6ab5a6ceb0a2366e863b2de1105013e05c190327b930db78a9bef",
+    "review_base_sha": "d16ba2d34e42e69ce9c948101f538658c170a68d",
+    "files": {
+      "docs/gx00-current-game-restore.md": {
+        "base_sha256": null,
+        "candidate_sha256": "99f5b52db60dc00ed78a24326f5eb075c7f0f62c07e939cc65dda5c1e8b41419"
+      },
+      "systems/rock-star-os/os/game_exchange/current_restore.py": {
+        "base_sha256": null,
+        "candidate_sha256": "b10100377b4038eb0b73ff33af12d64b150d34f81421675782a5b02da1356f94"
+      },
+      "systems/rock-star-os/os/game_exchange/connections.py": {
+        "base_sha256": "61de8fed8aabf5b557407b32fb614cede6712d7be38c09d245fa23a41d4d6b15",
+        "candidate_sha256": "aa7994fe0b37cb40a3036fb76c709f2434c2f2f53bdf3d7cc90ef64d88d3d04e"
+      },
+      "systems/rock-star-os/os/wallet_backend/contract_runtime.py": {
+        "base_sha256": "6755abd02e389d4d1873eaf4033e02b5f791ae35ff4d86418f8bea170e41847d",
+        "candidate_sha256": "deb5e2f847026aa76bf32a6073ef6335d09967145ee00d928cc595ab29da8847"
+      },
+      "systems/rock-star-os/os/wallet_backend/server.py": {
+        "base_sha256": "ef76fa5798c7d3eb3b043c5fdc1c61138cd518339fb46f92aa22e431505fbdaa",
+        "candidate_sha256": "e56ca67f55863ca57f17c189961914ff5cf7e66008860e0eb9ef18b8ea362441"
+      },
+      "systems/rock-star-os/tests/test_game_current_restore.py": {
+        "base_sha256": null,
+        "candidate_sha256": "9297cc5efb8b8aac7d8ae49754b117a84834c87a99ae509a8bf9d54c9dc41614"
+      },
+      "systems/rock-star-os/tests/test_contract_runtime_lifetime.py": {
+        "base_sha256": "26ca79c45f539c3062f6e86e40a15c454c4e7715c5f03612d5c908d8caafb65a",
+        "candidate_sha256": "c09a04af0f6a4a7ae04d784a6f90614516c8ea1075ac07bc643b54337dcdb1c1"
+      }
+    }
+  },
+  "dependency_sha256": {
+    "os/wallet_backend/authority_fence.py": "1fdc700bcb1a735d258574ca76e36cd70e664100c5ab83027021c21b08918baf",
+    "os/wallet_backend/current_restore.py": "2da97e52e487435b747402f752c288e8b411b1a25646c1c78fbab6e257efee60",
+    "tests/game_legacy_basis.py": "09adb94581dac474884d5da1cdb46067a3bd8e6a64935d54048e9fbdb730c651",
+    "os/game_exchange/protocol.py": "d58009bf97a514f63ab3c991fa9941cf5f01935cd79e7f6718b7abbe783d4107",
+    "os/wallet_backend/owner_router.py": "cc7817014315e675a12a215604b4d4033c96c2d62afe0b96ba41086aea97a0a9"
+  },
+  "final_tests": [
+    {
+      "pattern": "test_game*.py",
+      "tests": 55,
+      "new_current_restore_tests": 20,
+      "seconds": 54.151,
+      "result": "PASS",
+      "skipped": 0,
+      "warnings": 0
+    },
+    {
+      "patterns": [
+        "test_contract_runtime*.py",
+        "test_wallet_backend*.py",
+        "test_wallet_managed_tls.py"
+      ],
+      "tests": 102,
+      "seconds": 8.077,
+      "result": "PASS",
+      "skipped": 0,
+      "warnings": 0
+    }
+  ],
+  "retained_failures": [
+    {
+      "log": "game-current-restore-done-red-clean.log",
+      "result": "EXPECTED_RED",
+      "description": "Three actual DONE retries accepted changed original rows before the fix; all are now covered by final tests."
+    },
+    {
+      "log": "game-current-restore-19-final.log",
+      "result": "FAIL",
+      "description": "One existing consent replay timed out in setUp connect_four before handover; other 18 tests passed. No timeout or retry was added to the test/product."
+    }
+  ],
+  "failed_setup_recheck": {
+    "log": "game-current-restore-fixture-recheck.log",
+    "tests": 1,
+    "seconds": 1.351,
+    "result": "PASS",
+    "followed_by_full_final_game_suite": "PASS"
+  },
+  "independent_review": {
+    "record": "game-current-restore-independent-final.json",
+    "result": "PASS_SCOPED_INDEPENDENT_REVIEW",
+    "scope": "Actual BLOB changed after DONE before normal use; rejected before constructor with C permit release and unchanged source/destination/index bytes. Read review of lifetime/lease/rowid guards."
+  },
+  "acceptance": [
+    "Real nonempty legacy, two owners, three devices, four game connections; original consent/receipt replay and monthly CLAIMED to PAID acknowledgement retained.",
+    "Actual PREPARED commit, Wallet epoch commit with nonempty WAL, and index DONE commit lost-reply cuts resume with the same protected plan.",
+    "Two consecutive current-copy epoch changes preserve previous immutable plans, receipts, revoked authors, RESERVED-only intent and original source bytes.",
+    "Mixed old/current Wallet/index copies, unplanned migration rows, intrinsic rowid changes, unavailable rowid aliases, and missing gateway listener are refused.",
+    "DONE management opening/resume recheck all original rows; resumed legitimate activity makes this management replay fail closed."
+  ],
+  "limitations": [
+    "Host-only manual maintenance fixture; no HTTP restore route, SDK, OS game UI or frozen b8287bc modification.",
+    "All contracts sharing the retained index stop for PREPARED maintenance. An author revoked after PREPARED remains revoked and blocks automatic same-ID recovery; explicit management investigation is required. No rollback/rebase is provided.",
+    "Current stopped same-host copy with original C/B/index retained only; arbitrary historical copy, independent registry rollback, other-host restore and financial/game exchange acceptance are unsupported."
+  ],
+  "artifact_sha256": {
+    "game-current-restore-games-55-final.log": "81a6c0a0bb867e0fe5d83d36001a244e01bf203931649e4d340a33f8f6ed10fb",
+    "game-current-restore-wallet-102-final.log": "64bafc81f0fd144b658012ed237192bd47a420da14ad43e3b22b29121c01822c",
+    "game-current-restore-done-red-clean.log": "bb3c04b03a1adb8bba6951661be180158b6efc10ca4028556c2d3d4a14a4cfbf",
+    "game-current-restore-19-final.log": "afba97bfb82fe93850a28c6aa6d690de37b29d955c091c46e962c728127bc837",
+    "game-current-restore-fixture-recheck.log": "61ec574b99a635037405b4b4dc187b36fc57a30ddef78244e915accb131538e7",
+    "game-current-restore-independent-final.json": "202fd614bd77b83dc3b0c163b974666a2b7753688461ee706ef8466406953283",
+    "game-current-restore-log-times.json": "b5664ffd5cc05cf9ee6754f6bd734cdab9b477b6c2c3a90740ff4282ea458d61"
+  }
+}

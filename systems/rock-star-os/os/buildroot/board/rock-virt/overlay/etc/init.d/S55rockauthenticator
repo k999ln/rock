@@ -1,0 +1,40 @@
+#!/bin/sh
+set -eu
+case "${1:-start}" in
+  start)
+    mountpoint -q /data
+    for directory in /data/authenticator /run/rock-authenticator; do
+      [ ! -L "$directory" ] || { echo 'Authenticator directory alias rejected' >&2; exit 1; }
+      mkdir -p "$directory"
+    done
+    chown 1004:1004 /data/authenticator
+    chmod 0700 /data/authenticator
+    chown 1004:1000 /run/rock-authenticator
+    chmod 0750 /run/rock-authenticator
+    touch /var/log/rock-authenticator.log
+    chown 1004:1004 /var/log/rock-authenticator.log
+    chmod 0600 /var/log/rock-authenticator.log
+    start-stop-daemon --start --background --make-pidfile --pidfile /run/rock-authenticator.pid --chuid rock-authenticator:rock-authenticator --exec /usr/libexec/rock-authenticator-launch
+    for attempt in 1 2 3 4 5 6 7 8 9 10; do
+      /usr/libexec/rock-authenticator-health >/dev/null 2>&1 && exit 0
+      sleep 1
+    done
+    echo 'Software test authenticator did not become ready' >&2
+    exit 1
+    ;;
+  stop)
+    if [ -f /run/rock-authenticator.pid ]; then
+      service_pid=$(cat /run/rock-authenticator.pid)
+      start-stop-daemon --stop --pidfile /run/rock-authenticator.pid || true
+      for attempt in 1 2 3 4 5 6 7 8 9 10; do
+        kill -0 "$service_pid" 2>/dev/null || break
+        sleep 1
+      done
+      if kill -0 "$service_pid" 2>/dev/null && tr '\000' ' ' < "/proc/$service_pid/cmdline" | grep -q 'wallet_auth/daemon.py'; then
+        kill -KILL "$service_pid"
+      fi
+      rm -f /run/rock-authenticator.pid
+    fi
+    ;;
+  *) exit 2 ;;
+esac

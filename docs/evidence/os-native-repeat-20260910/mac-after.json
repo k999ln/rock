@@ -1,0 +1,27 @@
+{
+  "utc": "2026-09-10T13:03:38.268726+00:00",
+  "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=21233763)\t100%; charged; 0:00 remaining present: true\n",
+  "process_cpu_top_comm_only": [
+    "  PID  PPID   UID  %CPU     ELAPSED COMM",
+    "84857     1   501  86.5       00:07 /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python",
+    "74617   632   501  80.6    05:04:39 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.77/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)",
+    "  381     1    88  36.7 04-07:59:25 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer",
+    "  924   632   501  35.2 04-07:59:12 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.77/Helpers/Google Chrome Helper.app/Contents/MacOS/Google Chrome Helper",
+    "59125     1   501  28.3    19:14:30 /System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine",
+    "14274   632   501  17.5    12:29:26 /Applications/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Versions/152.0.7977.77/Helpers/Google Chrome Helper (Renderer).app/Contents/MacOS/Google Chrome Helper (Renderer)",
+    " 4130  4121   501  11.3    08:01:35 /Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/152.0.7977.83/Helpers/Codex (Service).app/Contents/MacOS/Codex (Service)",
+    "84935     1   501   6.6       00:01 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+    "  554     1     0   6.1 04-07:59:24 /System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+    " 4171  4121   501   5.6    08:01:34 /Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/152.0.7977.83/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)",
+    "  350     1     0   5.1 04-07:59:26 /usr/libexec/opendirectoryd",
+    "  659     1   501   3.6 04-07:59:22 /Applications/Telegram.app/Contents/MacOS/Telegram",
+    "59115     1   501   3.6    19:14:30 /opt/homebrew/bin/limactl",
+    "11812     1     0   3.2    03:32:15 /usr/libexec/sysmond",
+    "  588     1   501   2.7 04-07:59:23 /Applications/ChatGPT.app/Contents/MacOS/ChatGPT",
+    "  311     1     0   1.9 04-07:59:26 /usr/libexec/logd",
+    "  374     1     0   1.8 04-07:59:26 /usr/sbin/notifyd",
+    "    1     0     0   1.7 04-07:59:59 /sbin/launchd",
+    "59616     1   501   1.7    19:14:22 ssh: /private/tmp/rock-20260909-P8wXsN/rock-native/ssh.sock [mux]",
+    "84894  4162   501   1.5       00:01 /opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python"
+  ]
+}

@@ -1,0 +1,228 @@
+{
+  "schema": "rock-final-integrated-native-ci-readback/1",
+  "observed_utc": "2026-09-10T13:40:09.364828+00:00",
+  "head_sha": "1a2f4d1afc68e8920b084302e8c9f1271c1478e2",
+  "run_id": 34483209632,
+  "url": "https://github.com/k999ln/rock/actions/runs/34483209632",
+  "job_status": "completed",
+  "job_conclusion": "success",
+  "native_status": "PASS",
+  "source_unchanged": true,
+  "native_inputs_verified": 697,
+  "logs_verified": 14,
+  "checks": [
+    {
+      "name": "tests",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 1392,
+      "skipped": false
+    },
+    {
+      "name": "os-wallet_auth-tests",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 63,
+      "skipped": false
+    },
+    {
+      "name": "os-entitlement-tests",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 85,
+      "skipped": false
+    },
+    {
+      "name": "os-atm-tests",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 40,
+      "skipped": false
+    },
+    {
+      "name": "os-service_access-tests",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 25,
+      "skipped": false
+    },
+    {
+      "name": "os-ai_routes-tests",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 23,
+      "skipped": false
+    },
+    {
+      "name": "c-core",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 0,
+      "skipped": false
+    },
+    {
+      "name": "c-platform",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 0,
+      "skipped": false
+    },
+    {
+      "name": "c-ui",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 0,
+      "skipped": false
+    },
+    {
+      "name": "c-ui-build-tests",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 0,
+      "skipped": false
+    },
+    {
+      "name": "c-ui-actions",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 0,
+      "skipped": false
+    },
+    {
+      "name": "c-ui-native-replay",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 0,
+      "skipped": false
+    },
+    {
+      "name": "c-ui-ipc",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 12,
+      "skipped": false
+    },
+    {
+      "name": "ui-observers",
+      "passed": true,
+      "exit_code": 0,
+      "tests": 16,
+      "skipped": false
+    }
+  ],
+  "test_executions": 1656,
+  "passed_checks": 14,
+  "native_report_sha256": "1592d914aa8c42466df63960c3d1bf376fb80646b10f0e3b0cd7d7fb21e30865",
+  "logs": [
+    {
+      "name": "tests.log",
+      "sha256": "858dad0e42a669bf8898d6fe5fd6b228350aa821a6946b6b8510c20b845c788d",
+      "bytes": 253843
+    },
+    {
+      "name": "os-wallet_auth-tests.log",
+      "sha256": "413c7c4b090fe14695ac9931e4395f18951795343dc6ae5b40418fd65cb6bb62",
+      "bytes": 11036
+    },
+    {
+      "name": "os-entitlement-tests.log",
+      "sha256": "b0ee7f38f3e3b0bb0a0ac42a161a64723731e7cdf2d5ebf365c65c017b6b07d3",
+      "bytes": 14914
+    },
+    {
+      "name": "os-atm-tests.log",
+      "sha256": "4efb3b265b95f538c65fbb3191605510e284ea7ac7f2946801f0dce159b0149c",
+      "bytes": 6719
+    },
+    {
+      "name": "os-service_access-tests.log",
+      "sha256": "bc12a99d9080a8be7790f4ea2af5de0186d873e33c517ade8764b65d500698e1",
+      "bytes": 4639
+    },
+    {
+      "name": "os-ai_routes-tests.log",
+      "sha256": "69d816e035ae343c1b3441cd5ef0bfd3591d5c7324efd4c88151a806addcb538",
+      "bytes": 3893
+    },
+    {
+      "name": "c-core.log",
+      "sha256": "fd91775029f963b4f3eb553a49d6c33012ef4a9e6384e1a265eb70ab0ac96403",
+      "bytes": 259
+    },
+    {
+      "name": "c-platform.log",
+      "sha256": "68e812194c9ae59796ee89d0e42c7a62b163e5ab1b79c326be21ddd75b088daa",
+      "bytes": 130
+    },
+    {
+      "name": "c-ui.log",
+      "sha256": "0069088559ed14f3efccaad4d0e2cda15a45fceb83b68158eb76fade6db8bdf7",
+      "bytes": 1214
+    },
+    {
+      "name": "c-ui-build-tests.log",
+      "sha256": "6dc732f11fb83fb1feb4f934091d1250469bbfe6d0af46fa4de0ab7408ae1bfc",
+      "bytes": 744
+    },
+    {
+      "name": "c-ui-actions.log",
+      "sha256": "3933e9ba3249a51510398cc7ca27fe7a420951629545b55c3e7f39d19dfaa270",
+      "bytes": 544
+    },
+    {
+      "name": "c-ui-native-replay.log",
+      "sha256": "1bcb8f552c25044a5c319d249dba0a33f6dac6e46899a2e389aa04f386aacb3f",
+      "bytes": 425
+    },
+    {
+      "name": "c-ui-ipc.log",
+      "sha256": "69e05cb310585faa66fbd7c8ac6a6d2e6ca8898690629ca330f87587e9a5c94c",
+      "bytes": 1262
+    },
+    {
+      "name": "ui-observers.log",
+      "sha256": "65eb98f5d160f20c1085c7a651c8acb869856f7d6f5c26b7973185fab5854d1c",
+      "bytes": 2361
+    }
+  ],
+  "stack_sidecars": [
+    {
+      "name": "tests.stacks.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "os-wallet_auth-tests.stacks.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "os-entitlement-tests.stacks.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "os-atm-tests.stacks.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "os-service_access-tests.stacks.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "os-ai_routes-tests.stacks.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "ui-observers.stacks.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "prior_failures_preserved": true,
+  "prior_intermittent_tls_and_hang_cause": "UNDETERMINED",
+  "scope": "Current integrated host source and diagnostic changes. Frozen distribution remains 9ab with its separate 1631-test acceptance."
+}

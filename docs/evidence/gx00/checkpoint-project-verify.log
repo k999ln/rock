@@ -1,0 +1,157 @@
+
+> rock-star@0.1.0 verify
+> npm run project:check && npm run repository:check && npm run baseline:check && npm run typecheck && npm run lint:product && npm test && npm run build && npm run test:api
+
+
+> rock-star@0.1.0 project:check
+> node scripts/project-status.mjs --check
+
+進捗文書: 14/32件完了、整合確認済み
+
+> rock-star@0.1.0 repository:check
+> node scripts/check-repository-map.mjs
+
+repository map: 4件、製品正本1件、legacy参照なし、Mr. snapshot 4件一致
+
+> rock-star@0.1.0 baseline:check
+> node scripts/check-product-baseline.mjs
+
+製品ベース: RQ01〜RQ15、ATM手数料0、ATM独立、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）
+
+> rock-star@0.1.0 typecheck
+> tsc --noEmit
+
+
+> rock-star@0.1.0 lint:product
+> oxlint app lib db components/*.tsx scripts/*.mjs tests/*.mjs
+
+
+> rock-star@0.1.0 test
+> node --experimental-strip-types --test tests/*.test.mjs
+
+✔ fund cash is conserved through fees, member payouts and reserves (5.095042ms)
+✔ boosts never become revenue, even with no income or unrecovered costs (0.204125ms)
+✔ unsupported boost and rounding are reserved; boost share is bounded and monotone (0.638458ms)
+✔ invalid financial assumptions and fictional other members are rejected (0.569209ms)
+✔ MCP lifecycle lists four tools and runs all four through stdio (265.959875ms)
+✔ MCP reports ineligible work as needs-review rather than a passed step (81.7385ms)
+✔ delivery verifies supplied bytes and rejects altered artifacts (146.032084ms)
+✔ MCP rejects filesystem escapes, shell requests, invalid input and gigantic numbers without dying (76.795875ms)
+✔ MCP malformed JSON receives a protocol error and no-id calls never execute (70.430542ms)
+✔ PC citations runs the real fixed CLI with bounded failure and cleanup (8481.213584ms)
+✔ citation URLs deduplicate and merge before the next section (2.294458ms)
+✔ citation formatting preserves fenced code, inline code and non-link sources (0.455291ms)
+✔ free edition retains sources and leaves substantive paid content (28.026125ms)
+✔ source section before paid text remains complete exactly once (0.79225ms)
+✔ source code fences do not truncate the source section (0.525792ms)
+✔ sources alone cannot count as paid remainder (0.307458ms)
+✔ article input rejects open code, invalid price, summary and URL (0.163625ms)
+✔ coconala rules distinguish optional calls, missing evidence and required presence (2.175792ms)
+✔ browser matches the original eligibility module on a standalone example (68.290041ms)
+✔ Python free-edition adapter agrees with browser result and does not log article excerpts (66.819416ms)
+✔ standalone citation adapter agrees with browser and cannot overwrite input (115.399833ms)
+✔ delivery evidence passes, self-review is blocked, changed artifacts are blocked (222.798292ms)
+✔ OS source/contract consistency is checked separately from runtime proof (129.001042ms)
+✔ product baseline rejects lost requirements, stale-as-live claims and mismatched source evidence (25.0355ms)
+✔ old status without phase gates retains compatibility and has no extra output (2.644666ms)
+✔ valid phase graph distinguishes an earlier gate from a whole task completion (0.829625ms)
+✔ phase gate fields and statuses are required and checked (0.828459ms)
+✔ duplicate gate IDs and duplicate dependencies are rejected (0.501916ms)
+✔ dependencies refer to gates only and may not be absent or self-referential (0.16575ms)
+✔ multi-gate cycles are rejected even when all gates are planned (0.104875ms)
+✔ a done gate requires nonempty existing evidence and done prerequisites (0.375333ms)
+✔ planned evidence may describe a future file, but completion requires that file (0.419958ms)
+✔ evidence observation inputs are deduplicated without hiding invalid declarations from validation (0.161375ms)
+✔ phase rendering includes task, dependency, status and evidence without changing whole-task counts (0.197125ms)
+✔ check targets include a branch with no PR (1.800458ms)
+✔ check targets deduplicate main, branches and same-repository PRs, excluding fork heads (0.522291ms)
+✔ ref comparison is stable across branch and PR ordering without mutating input (0.960292ms)
+✔ ref comparison detects main, branch and PR changes (0.516041ms)
+✔ ref comparison detects branch and PR additions and deletions (0.415792ms)
+✔ no check runs are explicitly not successful (0.143833ms)
+✔ only completed successful checks pass; pending, skipped, neutral and unknown results do not (0.186375ms)
+✔ PR selection preserves commit identity and represents deleted source repositories explicitly (0.162ms)
+✔ zero income never creates a Rock star debt, but real running costs remain (0.80225ms)
+✔ fee cannot exceed low income and no remainder is carried (0.0755ms)
+✔ monthly fee capped at 8.88 USD, all operating costs included (2.059375ms)
+✔ zero-cost run and fractional FX round in whole JPY (0.340958ms)
+✔ invalid financial inputs fail instead of silently clamping (0.682791ms)
+✔ only valid EVM addresses can appear as connected (0.716417ms)
+✔ wallet cancellation and pending requests are understandable (0.37675ms)
+✔ workflows require ordered real runs, survive serialization, and need a final review (3.738417ms)
+✔ sample, failed and needs-review results never advance a step (0.24675ms)
+✔ replayed receipts are idempotent, conflicting payloads and stale updates fail (0.731084ms)
+✔ invalid inputs, unknown fields and mutation after cancellation are rejected (0.190875ms)
+✔ real SQLite persists jobs per user and prevents concurrent overwrites (7.107708ms)
+ℹ tests 54
+ℹ suites 0
+ℹ pass 54
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8599.896
+
+> rock-star@0.1.0 build
+> vinext build
+
+
+  vinext build  (Vite 8.2.2)
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - JSON import "./.openai/hosting.json" without import attributes (vite.config.ts:5:27). Add `with { type: 'json' }`
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(node:29256) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - JSON import "./.openai/hosting.json" without import attributes (vite.config.ts:5:27). Add `with { type: 'json' }`
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+[1/5] analyze client references...
+transforming...
+✓ 259 modules transformed.
+rendering chunks...
+✓ built in 1.07s
+[2/5] analyze server references...
+transforming...
+✓ 409 modules transformed.
+rendering chunks...
+✓ built in 506ms
+[3/5] build rsc environment...
+transforming...
+✓ 250 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 851ms
+[4/5] build client environment...
+transforming...
+✓ 2148 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 2.00s
+[5/5] build ssr environment...
+transforming...
+✓ 409 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 1.21s
+[0m
+  Route (app)
+  ┌ ? /        
+  ├ λ /api/fund
+  ├ λ /api/jobs
+  ├ λ /api/runs
+  └ ? /work    
+
+  λ API  ? Unknown
+
+  ? Some routes could not be classified. vinext currently uses static analysis
+    and cannot detect dynamic API usage (headers(), cookies(), etc.) at build time.
+    Automatic classification will be improved in a future release.
+
+  Build complete. Run `vinext start` to start the production server.
+
+
+> rock-star@0.1.0 test:api
+> node scripts/check-work-api.mjs
+
+仕事API: 143 assertions passed (認証境界・分離・競合・順序・再送・再起動後の保存)

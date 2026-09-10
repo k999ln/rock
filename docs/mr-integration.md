@@ -26,3 +26,7 @@
 ココナラの返信生成はagent-runnerや所有者設定に依存し、外部モデル接続が必要。案件の収集/自動応募/正式納品のブラウザ操作は既存のログイン・運用状態と密結合しているため、今回の小さなパックには含めていない。これらを取り込む際はユーザーごとの接続、権限、ログ、本人が確認する流れを実装する。
 
 RSS収集（marketing-engine/intel）や記事公開も追加候補として調査したが、今回は未導入。
+
+## PC出典整理の実プロセス接続（C-PC01/C-PC02）
+
+既存MCPの `format_citations` だけを `toolkits/mr/pc_citations.py` から固定CLIの別プロセスへ接続した。`rock_star_tools.py` と `vendor/mr` の原本・provenanceは変更しない。手順・資源制限・合成入力155バイト一致の受入は [PC実処理接続](pc-citations-adapter.md) に記録する。nativeの recipeと151バイト出力は別実装であり、このPC検証をnative HubやUSBの合格には換算しない。

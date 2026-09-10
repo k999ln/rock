@@ -1,0 +1,106 @@
+{
+  "schema": "rock.native-pin-readiness/1",
+  "scope": "Reviewed fixed C public synthetic Wallet/ATM auth frames; host mechanism only",
+  "sources": {
+    "os/assets/NotoSansCJKjp-Regular.otf": "68a3fc98800b2a27b371f2fb79991daf3633bd89309d4ffaa6946fd587f375b5",
+    "os/ui/activation-ui.inc": "656d3ac0b8731842e8ec70e81d754992cc0524877bb4e95795ca620e980ab968",
+    "os/ui/atm-ui.inc": "66225c262e8c9aabe15e3b043200212e8ac79ae63a0b37918b6247c043a22dfe",
+    "os/ui/auth-ui.inc": "37e9015e87cdf26e4d22df8beec9520bc40ff296ea7c67cea2ed8f1df6b2b16b",
+    "os/ui/game-ui.inc": "d6bbef68e2d79deb7dfd27a1badf521f16b2daebd673e505ddd3668c0b1da256",
+    "os/ui/ipc.h": "3e6ace92e6f1fcde6cc02cadc8899c51c58d9271caed08c124003db61914bdf4",
+    "os/ui/main.c": "5e3e3cf71fec19a9ea0b0b017e6739891403953504ef337e869c122de59bdfb7",
+    "os/ui/mcp-ui.inc": "38c3855f2e3bec881e9404b114ef2b6297bc7d16bda89e350330067ad7ea0e13",
+    "os/ui/remote-ui.inc": "5b4736efec786c2cd7a01daa83671238a40a1c8e6873031de11e07165b987f5e",
+    "os/ui/service-ui.inc": "e33a1104b95df4bf6ce6eae678e464ab2fb5c0eb27e02fa10ba3f11896a8e78c",
+    "os/ui/ui.c": "9e492cd2dac4ae5370f8e1f0191d5236cf6295d86f6cf250437d58f1645b6bfd",
+    "os/ui/ui.h": "318288d8866ec4d7e7a97ed3104a201b2e61eb3432256d5cf56682353a07bbc1"
+  },
+  "profiles": {
+    "enroll": {
+      "fixed": [
+        {
+          "rect": [
+            30,
+            22,
+            682,
+            122
+          ],
+          "sha256": "74d226dbb224dabc5d39ef9bf6355b5309aeecbb2c5347a76bdaac80af4d81d3"
+        },
+        {
+          "rect": [
+            35,
+            150,
+            682,
+            277
+          ],
+          "sha256": "2f4b9322499f1bd98925904ae094223c2d4c75233a6d71a8442074e509f8fed9"
+        }
+      ],
+      "pin_rect": [
+        38,
+        389,
+        682,
+        449
+      ],
+      "pin_sha256": {
+        "0": "955bd5829705cd162e163bfc5d04156a8ff98c4b8f7b641a902644a1025e07f1",
+        "1": "fc74e40fdd9184f1f0bd6d0ee962587b7ea9118d06479a43561b340e03503818",
+        "2": "16570533deb490465d7ccd9351f4bdcc3fde38dc9f79c3a58388c18f98bcce30",
+        "3": "797fac9a284961eece2e35207ddbd13b53b9a36f3df3fb103bb431cd51934db1",
+        "4": "78da27a0a67072ca0b4665a126de683dbfb597e1bc9744aeb5f9735813044b9b"
+      },
+      "sign_rect": [
+        358,
+        811,
+        682,
+        865
+      ],
+      "sign_disabled_sha256": "b03cf17e550ab92d5a42d008a8acfe4fff2740369cd8eeb6725243eb331830db",
+      "sign_enabled_sha256": "6fa5e21249208ba66071d0f87c2a631cac466ba0f594aedbf2b111f95a9029dd"
+    },
+    "atm": {
+      "fixed": [
+        {
+          "rect": [
+            30,
+            22,
+            682,
+            122
+          ],
+          "sha256": "4e68567decc9c14b62589919dff9c12fa1a168a558131cce5047134d17e0ebc0"
+        },
+        {
+          "rect": [
+            35,
+            150,
+            682,
+            405
+          ],
+          "sha256": "397aa6aaf658a60d19934a48c1e82e5f9368aec58c660aa98bfdd029e4e1300a"
+        }
+      ],
+      "pin_rect": [
+        38,
+        506,
+        682,
+        566
+      ],
+      "pin_sha256": {
+        "0": "955bd5829705cd162e163bfc5d04156a8ff98c4b8f7b641a902644a1025e07f1",
+        "1": "fc74e40fdd9184f1f0bd6d0ee962587b7ea9118d06479a43561b340e03503818",
+        "2": "16570533deb490465d7ccd9351f4bdcc3fde38dc9f79c3a58388c18f98bcce30",
+        "3": "797fac9a284961eece2e35207ddbd13b53b9a36f3df3fb103bb431cd51934db1",
+        "4": "78da27a0a67072ca0b4665a126de683dbfb597e1bc9744aeb5f9735813044b9b"
+      },
+      "sign_rect": [
+        358,
+        811,
+        682,
+        865
+      ],
+      "sign_disabled_sha256": "6d398bfbe88b3d8d3c44d5baec5792e3b1efe24cc6b329b7b4353ad3ae013dec",
+      "sign_enabled_sha256": "a6095d40560358790623740fa35c25b5ccdd76a622c2a1e39cc076b401be8f8e"
+    }
+  }
+}

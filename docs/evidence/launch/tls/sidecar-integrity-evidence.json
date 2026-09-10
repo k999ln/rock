@@ -1,0 +1,32 @@
+{
+  "schema": "rock-native-sidecar-integrity-review/1",
+  "proposal": "/Users/kaiya/Documents/Codex/2026-09-10/gi/work/tls-research/native-sidecar-integrity.patch",
+  "sha256": "30ce8eb87623cb05ad55e9bba1f80b7936c06f58dfebc8a59bd063c3c9a6465a",
+  "files": [
+    "scripts/test-native.py",
+    "systems/rock-star-os/tests/test_native_stack_integrity.py"
+  ],
+  "original_reproduction": {
+    "merged_status": "PASS",
+    "merge_returncode": 0,
+    "tampered_sidecar_copied": "TAMPERED SIDE CAR\n",
+    "stale_hash_preserved": "91edcc4c66b433b931006a73368b0d4fe38e25208f4ad153063da00aeac97d52"
+  },
+  "proposed_behavior": [
+    "verify watchdog and per-test failure sidecars before copying and again on delivered copies",
+    "require metadata for requested Python diagnostics; preserve direct-script exception only for its two known check names",
+    "validate exact sidecar filename, length, SHA-256 and distinct regular files; reject missing, symlink and hardlink",
+    "rewrite sidecar file references with main-N/ or support/ prefix in merged report"
+  ],
+  "tests": {
+    "total": 21,
+    "new": 4,
+    "seconds": 2.833,
+    "pass": true,
+    "skipped": 0,
+    "log": "/Users/kaiya/Documents/Codex/2026-09-10/gi/work/tls-research/ci-integrity-tests.log",
+    "log_sha256": "ec103c1543f5d5a497a5b63d445692e9c22ff051e1f2cfdcac2a6bd46b286afd"
+  },
+  "runtime_changed": false,
+  "remaining_limit": "Per-test timing JSONL still has no declared hash in the original producer report; this patch verifies the two declared stack sidecar kinds and primary logs."
+}

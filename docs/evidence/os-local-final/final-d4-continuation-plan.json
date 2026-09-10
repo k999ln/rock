@@ -1,0 +1,129 @@
+{
+  "schema": "rock-game-d4-run-plan/1",
+  "scope": "same frozen Game triple; original ready/absent/freeze cases plus separately pinned crash observer and remaining canonical D4 verifiers",
+  "created_utc": "2026-09-10T10:33:20.165221+00:00",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+  "image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+    "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+  },
+  "harness_sha256": {
+    "verify-ui-startup.py": "5887cb2ed198429df20f3cc27b2c6252c20d1aa8ffae56d28a8321b28dd48be7",
+    "verify-qemu.py": "270723914fe6a10a40e523705ea930a0650d35fad2f1d709dece9cccdadf86f6",
+    "verify-faults.py": "f70fd4deeb8f981bfb9d88fe7cda71187b0f260e6c4662e912e0a2505e742930",
+    "verify-auth-health.py": "8c7661b50fd1bbbbf6f17a6b43f0912c0cd0bca924acbe23e25084d0aaa9a0c1",
+    "verify-data-abi.py": "3b00a9e952de73f5a845fd309580d6bb4ef515034b16edbc0afe00b501fe9355"
+  },
+  "orchestrator_sha256": "a930ea26e5c642b8b8c49c8e99723c0b55b49f3d3429198630b3fc1354f3ed97",
+  "source_files_verified": 1364,
+  "sequence": [
+    {
+      "name": "ui-startup-crash",
+      "boots": 4,
+      "args": [
+        "--evidence",
+        "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/ui-startup-crash",
+        "--case",
+        "crash"
+      ],
+      "outer_deadline_seconds": 1320
+    },
+    {
+      "name": "ab",
+      "boots": 8,
+      "args": [],
+      "outer_deadline_seconds": 3000
+    },
+    {
+      "name": "faults",
+      "boots": 13,
+      "args": [],
+      "outer_deadline_seconds": 4500
+    },
+    {
+      "name": "auth-health",
+      "boots": 3,
+      "args": [
+        "--evidence",
+        "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/auth-health"
+      ],
+      "outer_deadline_seconds": 1200
+    },
+    {
+      "name": "data-abi",
+      "boots": 3,
+      "args": [
+        "--evidence",
+        "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/data-abi"
+      ],
+      "outer_deadline_seconds": 840
+    }
+  ],
+  "boots": 41,
+  "automatic_retry": false,
+  "physical_device": "NOT_RUN",
+  "real_funds": "NOT_USED",
+  "probe_commit": "f7c391c7623c40dd79098e724b9a2b28852ddabf",
+  "probe_source": "/var/tmp/rock-d4-observer-review-1020",
+  "probe_proof_sha256": "e91b85159d701349914a58c115ef51a42e1258d420c325d44fa829d740372f26",
+  "overlay_modified_existing": {
+    "systems/rock-star-os/os/update/ui_startup_fixture.py": {
+      "before_sha256": "3fe75db24123827cc3140a5f874c64af8a427c847e45e3115947f9dc05ba5530",
+      "after_sha256": "70db98c1a8ffe68a9686970dceda41994ea6fcb7bacd5245c3b4a21677732d4d"
+    },
+    "systems/rock-star-os/os/update/verify-ui-startup.py": {
+      "before_sha256": "895120541d31cdd0d4e1eb9ba5a257e860c37201d137f9f4e1a3832d55f7bca0",
+      "after_sha256": "5887cb2ed198429df20f3cc27b2c6252c20d1aa8ffae56d28a8321b28dd48be7"
+    },
+    "systems/rock-star-os/tests/test_ui_startup_verifier.py": {
+      "before_sha256": "00008bd74d1b1cf71ac0b3b9c88d7d9a76b9b33f5230d5fc3bba84bc57fe5278",
+      "after_sha256": "b9555e8a66391f7612c50a54adb815448ca8152bd7b2822566a1f2f4c4326c32"
+    }
+  },
+  "overlay_new_test": {
+    "systems/rock-star-os/tests/test_ui_startup_fixture.py": "6c8412b495a31bb8ce1ecb32da56b752fad1ad6e4d44dbf74b65236fc8b24281"
+  },
+  "original_failed_report_sha256": "f35746b53412aeae8cfc3cc1287fff7687149efa47711dd33163c9d8218bf631",
+  "original_whole_run_status": "FAIL_RETAINED",
+  "original_archive_sha256": "c6009f5bbe563b08cd12ccbe23035a43503972e37a2908555de698789d83cbb3",
+  "original_archive_readback_sha256": "2b38c4c40485b9bcd7b0b5d31cc850954fb45575ef639b81b7b5f09a7e65c677",
+  "reused_complete_cases": [
+    {
+      "case": "ready",
+      "boots": 2,
+      "status": "PASS_FROM_COMPLETE_ORIGINAL_CASE",
+      "raw_log_sha256": {
+        "ui-startup/ready/boot-1.log": "6b528e7aae959d19facf669d7e0bf4be968247f4e0f28ff2635112a4d8174802",
+        "ui-startup/ready/boot-2.log": "6438e94c2c33fd83159d298af966bbe437e86b9ab37cc1c982120e55927488cf"
+      }
+    },
+    {
+      "case": "absent",
+      "boots": 4,
+      "status": "PASS_FROM_COMPLETE_ORIGINAL_CASE",
+      "raw_log_sha256": {
+        "ui-startup/absent/boot-1.log": "d6320e238352b833c2d391a30c0346f63bb7b94e9269e5801eda3be9e4c7726b",
+        "ui-startup/absent/boot-2.log": "d33f6d8b04c0a13fbe5dc4676a90ea4284eecce09fa45064753e768ac431c936",
+        "ui-startup/absent/boot-3.log": "189c44fe11213cfd56b9c61ceb8ccb5d78664637a01b382f1edfddc375988601",
+        "ui-startup/absent/boot-4.log": "484b6958c7d093904af6b458582682e16d8eaf73e0e4fa4aa03cdba118187d5c"
+      }
+    },
+    {
+      "case": "freeze",
+      "boots": 4,
+      "status": "PASS_FROM_COMPLETE_ORIGINAL_CASE",
+      "raw_log_sha256": {
+        "ui-startup/freeze/boot-1.log": "a304fc404753d8e6e320263798aad36abe611558ca5a57d2b5d585379e56d03b",
+        "ui-startup/freeze/boot-2.log": "0c951f7a1426dd02ed252eed98a87965588bcc6f1f4d128546b4a1171c1dddd7",
+        "ui-startup/freeze/boot-3.log": "a06b5c830176a07875ad18ae70bcc6f1bc197cf79567b2146f065cab49e6911e",
+        "ui-startup/freeze/boot-4.log": "4227dcde684dcecedaf9a05817da4ae7ed71c84b9b242be0789780b2fb900c96"
+      }
+    }
+  ],
+  "new_boots": 31,
+  "reused_boots": 10,
+  "all_required_boots": 41,
+  "whole_prior_run_promoted": false
+}

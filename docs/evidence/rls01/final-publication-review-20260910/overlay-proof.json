@@ -1,0 +1,709 @@
+{
+  "schema": "rock-host-observer-overlay-audit/1",
+  "status": "PASS_SOURCE_BOUND_OVERLAY_WITH_EXPLICIT_INHERITED_EXTRAS",
+  "measured_utc": "2026-09-10T13:09:55.998507+00:00",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "freeze_path": "/var/tmp/rock-final-9abf78a-profile/freeze-manifest.json",
+  "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+  "original_source": "/var/tmp/rock-final-9abf78a",
+  "overlay": "/var/tmp/rock-c-citation-selector-1213",
+  "original_source_file_count": 1364,
+  "original_source_mismatches": [],
+  "unchanged_frozen_source_files": 1363,
+  "approved_source_differences": [
+    {
+      "path": "systems/rock-star-os/os/desktop/observe-pc-link-os.py",
+      "original_sha256": "06ef032b89751b707a07808b34d5956715724abd5e26ae0dc45d952926de3004",
+      "overlay_sha256": "58edfb30d45cde34367db2ba8e05b79d787e4040f9cd6c7c4f375dbaa06223df"
+    }
+  ],
+  "unapproved_source_differences": [],
+  "missing_source_paths": [],
+  "nonregular_overlay_entries": [],
+  "overlay_regular_files": 1439,
+  "overlay_regular_bytes": 465590563,
+  "extras": [
+    {
+      "path": "systems/rock-star-os/artifacts/os/Image",
+      "bytes": 13767168,
+      "sha256": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+      "classification": "inherited_base_build_artifact",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/SHA256SUMS",
+      "bytes": 231,
+      "sha256": "ad7468703db23725af1a59bd7d06f055430f68adda068fea23d669490d683bd4",
+      "classification": "inherited_base_build_artifact",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "ad7468703db23725af1a59bd7d06f055430f68adda068fea23d669490d683bd4",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/build.log",
+      "bytes": 188327,
+      "sha256": "271f10b3abd1bf4061b032b2d6f76cbdc9d6c6a19c75bbf617a8153ba5414d25",
+      "classification": "inherited_base_build_artifact",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "271f10b3abd1bf4061b032b2d6f76cbdc9d6c6a19c75bbf617a8153ba5414d25",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/buildroot.config",
+      "bytes": 170192,
+      "sha256": "17f91594f2609c64ce9b966b148d3d85a02e90920167e8582471ed0277288bb6",
+      "classification": "inherited_base_build_artifact",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "17f91594f2609c64ce9b966b148d3d85a02e90920167e8582471ed0277288bb6",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/freeze-manifest.json",
+      "bytes": 174967,
+      "sha256": "4376d52d7db3e9cda5357287092e9065d5c8227e5a94ede5fa434bc336629b61",
+      "classification": "inherited_base_build_artifact",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "4376d52d7db3e9cda5357287092e9065d5c8227e5a94ede5fa434bc336629b61",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/linux.config",
+      "bytes": 111120,
+      "sha256": "d744e7f5beb172660189d402bda5c15a9429c33d6dd5bf2a50e5ce7c1c9a829f",
+      "classification": "inherited_base_build_artifact",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "d744e7f5beb172660189d402bda5c15a9429c33d6dd5bf2a50e5ce7c1c9a829f",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/rootfs.ext4",
+      "bytes": 402653184,
+      "sha256": "bad751e33d17f13a00b9914ff31050fedf5e6607cd7a36e1462632101185fb72",
+      "classification": "inherited_base_build_artifact",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "bad751e33d17f13a00b9914ff31050fedf5e6607cd7a36e1462632101185fb72",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/source-lock.json",
+      "bytes": 1871,
+      "sha256": "6efd72448219b9c226646817656ff4c9d2d808422fe5647cff10c0754473414c",
+      "classification": "inherited_base_build_artifact",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "6efd72448219b9c226646817656ff4c9d2d808422fe5647cff10c0754473414c",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/stage0.cpio.gz",
+      "bytes": 10344480,
+      "sha256": "6ce40edb61897cb0ad0a84ed6aef6d000b1f2be9d62c5e974af0438a802d1bd9",
+      "classification": "inherited_base_build_artifact",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "6ce40edb61897cb0ad0a84ed6aef6d000b1f2be9d62c5e974af0438a802d1bd9",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/atm/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 469,
+      "sha256": "3c0d687ec804c4910d64fdf5c433b5c31fc9cb1373dedcf73acee09990714465",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "3c0d687ec804c4910d64fdf5c433b5c31fc9cb1373dedcf73acee09990714465",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/atm/__pycache__/simulator.cpython-313.pyc",
+      "bytes": 33905,
+      "sha256": "eeaf266c1898f18110e806b1ca3542b124734a0e28aec0b800bdf7130066d2ce",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "eeaf266c1898f18110e806b1ca3542b124734a0e28aec0b800bdf7130066d2ce",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/entitlement/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 260,
+      "sha256": "9a271ca51d20f70d66609388ea563e559d469cc4e8379ff6b1e3747d688e8f31",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "9a271ca51d20f70d66609388ea563e559d469cc4e8379ff6b1e3747d688e8f31",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/entitlement/__pycache__/device.cpython-313.pyc",
+      "bytes": 53860,
+      "sha256": "5a53dfdcc51e935879c55b635091799b8b8ce54e027373fa7a24d834f63a0443",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "5a53dfdcc51e935879c55b635091799b8b8ce54e027373fa7a24d834f63a0443",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/entitlement/__pycache__/protocol.cpython-313.pyc",
+      "bytes": 7037,
+      "sha256": "86c4d8e1abe9002a8aa9131dac808244fddfcc2c6cb48cdaca46a410ee77f79a",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "86c4d8e1abe9002a8aa9131dac808244fddfcc2c6cb48cdaca46a410ee77f79a",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/entitlement/__pycache__/store.cpython-313.pyc",
+      "bytes": 48369,
+      "sha256": "70d32a395fd19f2ab03a0e617227cc0f789ca81909c71880a4e802852b176a94",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "70d32a395fd19f2ab03a0e617227cc0f789ca81909c71880a4e802852b176a94",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/entitlement/__pycache__/wallet_bridge.cpython-313.pyc",
+      "bytes": 10711,
+      "sha256": "4601f8bf805bc953fb7f12210efc80697633c6b59ea1d0dd424b7b30ed7cc8ed",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "4601f8bf805bc953fb7f12210efc80697633c6b59ea1d0dd424b7b30ed7cc8ed",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 264,
+      "sha256": "852ad8425e9b2b30d5a87e21d5fff4dd03b0ca3fddb087aea6a79cfaa84f48e1",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "852ad8425e9b2b30d5a87e21d5fff4dd03b0ca3fddb087aea6a79cfaa84f48e1",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/client.cpython-313.pyc",
+      "bytes": 35794,
+      "sha256": "e737bba243ab613946e7ef1a0b98051328052563b5ee4b275cb0eea07a4e13fa",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "e737bba243ab613946e7ef1a0b98051328052563b5ee4b275cb0eea07a4e13fa",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/connections.cpython-313.pyc",
+      "bytes": 56087,
+      "sha256": "f3ce5c8be57e84a8ddf35b4ed36cc74411d10ece00add301744ff2d412d7a2e5",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "f3ce5c8be57e84a8ddf35b4ed36cc74411d10ece00add301744ff2d412d7a2e5",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/current_restore.cpython-313.pyc",
+      "bytes": 38435,
+      "sha256": "37a4f47f024c9f05520b7da70676783f2d540a8806a281fdcfe63bec4655e845",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "37a4f47f024c9f05520b7da70676783f2d540a8806a281fdcfe63bec4655e845",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/device_client.cpython-313.pyc",
+      "bytes": 13859,
+      "sha256": "cdf1020f440593386f046006d235da35217253b0370b78b077f77255ad842753",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "cdf1020f440593386f046006d235da35217253b0370b78b077f77255ad842753",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_authority.cpython-313.pyc",
+      "bytes": 16134,
+      "sha256": "3b4d01d7273776fdcf742008e9023d291d9976bdc7f73274f8bfb866e8474fed",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "3b4d01d7273776fdcf742008e9023d291d9976bdc7f73274f8bfb866e8474fed",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_gateway.cpython-313.pyc",
+      "bytes": 5756,
+      "sha256": "1a8499d315bbd0e4a4f28ec2b99467401fdcdb2a5f8dfe9716b6c445e6b32811",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "1a8499d315bbd0e4a4f28ec2b99467401fdcdb2a5f8dfe9716b6c445e6b32811",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_ledger.cpython-313.pyc",
+      "bytes": 23467,
+      "sha256": "7a1c03824a91dd9ee8e9f3477a96683bd43b543e723c2343f9b469ec83250470",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "7a1c03824a91dd9ee8e9f3477a96683bd43b543e723c2343f9b469ec83250470",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_protocol.cpython-313.pyc",
+      "bytes": 23557,
+      "sha256": "173f2eaecec3f92107201b8cbc7b07dea700927e30564a4f183593529b507390",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "173f2eaecec3f92107201b8cbc7b07dea700927e30564a4f183593529b507390",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_restore.cpython-313.pyc",
+      "bytes": 6796,
+      "sha256": "ea7ae24979d3e869e48651f148ba4a2e8270c2ed7cbfd1ebb6cbce43b6d290e6",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "ea7ae24979d3e869e48651f148ba4a2e8270c2ed7cbfd1ebb6cbce43b6d290e6",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_server.cpython-313.pyc",
+      "bytes": 6832,
+      "sha256": "256512bdbbb63122719d9e0bc8cedd99b47dec32f9ff4cecb2e7181d7c400ca8",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "256512bdbbb63122719d9e0bc8cedd99b47dec32f9ff4cecb2e7181d7c400ca8",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_service.cpython-313.pyc",
+      "bytes": 35463,
+      "sha256": "d5d482affcd9aa681ee9d607855225cbda9a9648f0be91e011688889042fa45c",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "d5d482affcd9aa681ee9d607855225cbda9a9648f0be91e011688889042fa45c",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_signer.cpython-313.pyc",
+      "bytes": 3372,
+      "sha256": "0ba60dd4ac1537d14f49b3ddc39404c8e86235abdbfa23c83a7b554dd44d194e",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "0ba60dd4ac1537d14f49b3ddc39404c8e86235abdbfa23c83a7b554dd44d194e",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_worker.cpython-313.pyc",
+      "bytes": 14276,
+      "sha256": "20acd7d9034413545b7975f60958026d1cd5f185f14101fa01f7d10716ac1f61",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "20acd7d9034413545b7975f60958026d1cd5f185f14101fa01f7d10716ac1f61",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/fixture.cpython-313.pyc",
+      "bytes": 11962,
+      "sha256": "a3aad65d7bcca843f9eec2c70d0b7984c4b08be486a788dd2effbb24bd6ca8e6",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "a3aad65d7bcca843f9eec2c70d0b7984c4b08be486a788dd2effbb24bd6ca8e6",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/http.cpython-313.pyc",
+      "bytes": 11827,
+      "sha256": "a00114e5ce50241eaaabcccccb2026db7908b88ceafb8aac156a4dc672d9ef6c",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "a00114e5ce50241eaaabcccccb2026db7908b88ceafb8aac156a4dc672d9ef6c",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/protocol.cpython-313.pyc",
+      "bytes": 54433,
+      "sha256": "b1f7ab33a9c5d7e8fe4e4513a0a366aeebd2ef498ad2488f55cec072320a4645",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "b1f7ab33a9c5d7e8fe4e4513a0a366aeebd2ef498ad2488f55cec072320a4645",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/reference_sdk.cpython-313.pyc",
+      "bytes": 58854,
+      "sha256": "88f0637689c97251e5454281d0e69d27ced8fdbc1e4c94dd3f7ae3b44bb4db57",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "88f0637689c97251e5454281d0e69d27ced8fdbc1e4c94dd3f7ae3b44bb4db57",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/sandbox.cpython-313.pyc",
+      "bytes": 40227,
+      "sha256": "679fe394b55696da3182bbf571f2413d1b268449d634722a6bb41abfd90d4c41",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "679fe394b55696da3182bbf571f2413d1b268449d634722a6bb41abfd90d4c41",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/sandbox_backup.cpython-313.pyc",
+      "bytes": 22154,
+      "sha256": "ea01cf9d8329fa9db21476bcbb7e37a7c6f12ebcd355cf699fa0ad07effd1c91",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "ea01cf9d8329fa9db21476bcbb7e37a7c6f12ebcd355cf699fa0ad07effd1c91",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/storage.cpython-313.pyc",
+      "bytes": 12419,
+      "sha256": "8c18fadc311de84906ae7032f2212e3b4ef3cc4565c95c1957c5f0085a1ecae5",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "8c18fadc311de84906ae7032f2212e3b4ef3cc4565c95c1957c5f0085a1ecae5",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/operations/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 261,
+      "sha256": "087a58fa6297d3cf13392a5ee215541428c5c5dcee8a9f3cf73b634fab0408b4",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "087a58fa6297d3cf13392a5ee215541428c5c5dcee8a9f3cf73b634fab0408b4",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/operations/__pycache__/device.cpython-313.pyc",
+      "bytes": 19518,
+      "sha256": "87d87bc235de4672a1f6bdb543c875f72ad0f33bc3b97d78a08977c9b0b67b6f",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "87d87bc235de4672a1f6bdb543c875f72ad0f33bc3b97d78a08977c9b0b67b6f",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/operations/__pycache__/onboarding.cpython-313.pyc",
+      "bytes": 13931,
+      "sha256": "0b1d33927d5a3d56dcc5796ece21d28de413288f215d16f51eb622cef4d6acd2",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "0b1d33927d5a3d56dcc5796ece21d28de413288f215d16f51eb622cef4d6acd2",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/operations/__pycache__/release.cpython-313.pyc",
+      "bytes": 1094,
+      "sha256": "fc722ee52ed627e8b45855b2c3fefe3baeced81f8f3c1b9803664abc79d497d5",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "fc722ee52ed627e8b45855b2c3fefe3baeced81f8f3c1b9803664abc79d497d5",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/operations/__pycache__/state.cpython-313.pyc",
+      "bytes": 16068,
+      "sha256": "37a9ecba182be1271303af2fadba0ada4d40dbb1a59bad398dab4ddbbbd7ad5e",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "37a9ecba182be1271303af2fadba0ada4d40dbb1a59bad398dab4ddbbbd7ad5e",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/platform/__pycache__/registry_control.cpython-313.pyc",
+      "bytes": 16320,
+      "sha256": "d603a362e22da1c9c8455d9c87061061fe260440005e7ddbe4b06068df767603",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "d603a362e22da1c9c8455d9c87061061fe260440005e7ddbe4b06068df767603",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/platform/__pycache__/runner_control.cpython-313.pyc",
+      "bytes": 47466,
+      "sha256": "67a52af426a67e9df453c15d1f5382bf70aebe8057d5f6ec59a0448415ce2fb3",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "67a52af426a67e9df453c15d1f5382bf70aebe8057d5f6ec59a0448415ce2fb3",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/platform/__pycache__/service.cpython-313.pyc",
+      "bytes": 56403,
+      "sha256": "2f4b1d9a013eda180dfad9ce14b1657b9520fbea11da437f0466b7fe9e91f46f",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "2f4b1d9a013eda180dfad9ce14b1657b9520fbea11da437f0466b7fe9e91f46f",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/platform/__pycache__/wallet_view.cpython-313.pyc",
+      "bytes": 7811,
+      "sha256": "890f750d01fc59ea3bddb7fabf0b7b32c3a837ae44eebb78c94eb07d571bf1d4",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "890f750d01fc59ea3bddb7fabf0b7b32c3a837ae44eebb78c94eb07d571bf1d4",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/registry/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 258,
+      "sha256": "a1180986b67d0594d6640a689ee184d53ec2569673b76c8bb930121686fa7b12",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "a1180986b67d0594d6640a689ee184d53ec2569673b76c8bb930121686fa7b12",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/registry/__pycache__/common.cpython-313.pyc",
+      "bytes": 15252,
+      "sha256": "0264bef28d003acd086b50a41b67db02e3e37f88af137beecbd947300694b388",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "0264bef28d003acd086b50a41b67db02e3e37f88af137beecbd947300694b388",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/runner/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 251,
+      "sha256": "9a1a1508c42656c562ac8788e3c0ea620eecc6a82a3b18c59462e6d2b6a18d6d",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "9a1a1508c42656c562ac8788e3c0ea620eecc6a82a3b18c59462e6d2b6a18d6d",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/runner/__pycache__/client.cpython-313.pyc",
+      "bytes": 7348,
+      "sha256": "5152dca0c040474475b6e626ca85ee0ed05553aeef9cc56abb5ecc88d88bfd56",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "5152dca0c040474475b6e626ca85ee0ed05553aeef9cc56abb5ecc88d88bfd56",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/runner/__pycache__/protocol.cpython-313.pyc",
+      "bytes": 8406,
+      "sha256": "0c38279a03acd4c9f8d4bf6260119c5e61c28cff87a057a790776b5d666fa195",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "0c38279a03acd4c9f8d4bf6260119c5e61c28cff87a057a790776b5d666fa195",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/runner/__pycache__/transport.cpython-313.pyc",
+      "bytes": 12867,
+      "sha256": "e7d57a4e6589b5d658acce308a027a014de3a476a323b2985a85cccece0f9b08",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "e7d57a4e6589b5d658acce308a027a014de3a476a323b2985a85cccece0f9b08",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/service_access/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 525,
+      "sha256": "d70bb0ba5fb29def2d4440bdad6d1e9f0d2093b9b48042fb4e5769b8f538825f",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "d70bb0ba5fb29def2d4440bdad6d1e9f0d2093b9b48042fb4e5769b8f538825f",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/service_access/__pycache__/controller.cpython-313.pyc",
+      "bytes": 22039,
+      "sha256": "13c3d06e357fcdcad0d3a9f920be1bfdd0e7ea38ef6233634247fc8dce7c9b32",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "13c3d06e357fcdcad0d3a9f920be1bfdd0e7ea38ef6233634247fc8dce7c9b32",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/service_access/__pycache__/os_client.cpython-313.pyc",
+      "bytes": 14812,
+      "sha256": "97884f8accd34928c3a6a41a5dc5d7e12ec9e0ccb78f148b70946edcdde4d5e0",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "97884f8accd34928c3a6a41a5dc5d7e12ec9e0ccb78f148b70946edcdde4d5e0",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/service_access/__pycache__/status.cpython-313.pyc",
+      "bytes": 10130,
+      "sha256": "47cc1a13cd8ee89cd0b4867d5fd186782a9ba1d18d71f94809f0800bdb93dbd6",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "47cc1a13cd8ee89cd0b4867d5fd186782a9ba1d18d71f94809f0800bdb93dbd6",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/update/__pycache__/rock_update.cpython-313.pyc",
+      "bytes": 34737,
+      "sha256": "fbd1446f025827c0e04e092fe65857b1a4d33e7299f4ae32f714ab4684ea7704",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "fbd1446f025827c0e04e092fe65857b1a4d33e7299f4ae32f714ab4684ea7704",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_auth/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 451,
+      "sha256": "aae4424661bea5f523f53862a9d93a0a56fb557b759c0b7b679ebfa9787d5cac",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "aae4424661bea5f523f53862a9d93a0a56fb557b759c0b7b679ebfa9787d5cac",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_auth/__pycache__/protocol.cpython-313.pyc",
+      "bytes": 27615,
+      "sha256": "20757a8bfa5bd2977b42a68cd532f201349f714ca9bb561596fb3ad8753e81de",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "20757a8bfa5bd2977b42a68cd532f201349f714ca9bb561596fb3ad8753e81de",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_auth/__pycache__/service.cpython-313.pyc",
+      "bytes": 41197,
+      "sha256": "e3a6914113faed1c5243aabfba0cc07260334efa80fd0c333c081786886f8982",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "e3a6914113faed1c5243aabfba0cc07260334efa80fd0c333c081786886f8982",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 265,
+      "sha256": "b386be3338f924a58e9b26828518da262777ded3905191901b7bebbb873cd0f9",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "b386be3338f924a58e9b26828518da262777ded3905191901b7bebbb873cd0f9",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/authority_fence.cpython-313.pyc",
+      "bytes": 58253,
+      "sha256": "95601ddbe6e2edc98fa64af6a3030c2edc2c3aede855e14e9ac40b842879afdd",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "95601ddbe6e2edc98fa64af6a3030c2edc2c3aede855e14e9ac40b842879afdd",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/client.cpython-313.pyc",
+      "bytes": 47503,
+      "sha256": "3e6da86a6c6426b629dda77e1ad9bdae5e6222d22fcac39309baa7a42870dd18",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "3e6da86a6c6426b629dda77e1ad9bdae5e6222d22fcac39309baa7a42870dd18",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/contract_runtime.cpython-313.pyc",
+      "bytes": 53027,
+      "sha256": "db874e5f7d9f90657b03d8a2475311ac4fd7d0ff0e06aee9c261d20f14394b8a",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "db874e5f7d9f90657b03d8a2475311ac4fd7d0ff0e06aee9c261d20f14394b8a",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/owner_router.cpython-313.pyc",
+      "bytes": 32285,
+      "sha256": "5148db3c7a4e8326cdb95dd73c7640daafd091571c7357ce74f72b002ef9cb7f",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "5148db3c7a4e8326cdb95dd73c7640daafd091571c7357ce74f72b002ef9cb7f",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/runtime_contracts.cpython-313.pyc",
+      "bytes": 6977,
+      "sha256": "79dd997b6a12d93bdeb392a38e57f59d3b461e41c15d23019bc78e526cca0771",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "79dd997b6a12d93bdeb392a38e57f59d3b461e41c15d23019bc78e526cca0771",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/server.cpython-313.pyc",
+      "bytes": 35641,
+      "sha256": "7e8767dc641568a1c49ab0a7bb67583839ac57ee59fc1d133d772808b7d5a32d",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "7e8767dc641568a1c49ab0a7bb67583839ac57ee59fc1d133d772808b7d5a32d",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 282,
+      "sha256": "3375881fce34d8d73656e82205439192a3a60dab3db8ec31b3c5153e3c1e3f1e",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "3375881fce34d8d73656e82205439192a3a60dab3db8ec31b3c5153e3c1e3f1e",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/deadline.cpython-313.pyc",
+      "bytes": 3126,
+      "sha256": "f13a454b3fd83a4e53ef3f9617f4e85b1711c6db3b50489c21b036d483fe0803",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "f13a454b3fd83a4e53ef3f9617f4e85b1711c6db3b50489c21b036d483fe0803",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/hub.cpython-313.pyc",
+      "bytes": 26071,
+      "sha256": "1ea192ee8ebdfc3a68c2d68347a248846424fd854809ad483df5d15f4df78384",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "1ea192ee8ebdfc3a68c2d68347a248846424fd854809ad483df5d15f4df78384",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/packages.cpython-313.pyc",
+      "bytes": 16302,
+      "sha256": "e58505a7d025fb36e209c34c00544c05a96b73fa5f52c6b1685e31fb0a15072a",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "e58505a7d025fb36e209c34c00544c05a96b73fa5f52c6b1685e31fb0a15072a",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/recipe_worker.cpython-313.pyc",
+      "bytes": 17985,
+      "sha256": "5b2c282baa05484ad41ba82a23b5ece05d2e31ec59c301c7d957a1138f731ba7",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "5b2c282baa05484ad41ba82a23b5ece05d2e31ec59c301c7d957a1138f731ba7",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/storage.cpython-313.pyc",
+      "bytes": 9519,
+      "sha256": "d2bd527c952b0104472aba7c297b2442edc2df998f757268f316d1dd5ef3f897",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "d2bd527c952b0104472aba7c297b2442edc2df998f757268f316d1dd5ef3f897",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/wallet.cpython-313.pyc",
+      "bytes": 39873,
+      "sha256": "7dde1facf57b14eb642a7c41343ce3a68e6e6668d974ecf4aa11269455012465",
+      "classification": "inherited_python_cache",
+      "original_counterpart_exists": true,
+      "original_counterpart_sha256": "7dde1facf57b14eb642a7c41343ce3a68e6e6668d974ecf4aa11269455012465",
+      "byte_identical_to_original_counterpart": true
+    },
+    {
+      "path": "systems/rock-star-os/tests/test_pc_link_existing_citation.py",
+      "bytes": 4596,
+      "sha256": "a001454d3021e97f3f328e8a9df98e423495cad7cc77f4617f6fc4648c1e729e",
+      "classification": "added_host_observer_test",
+      "original_counterpart_exists": false,
+      "original_counterpart_sha256": null,
+      "byte_identical_to_original_counterpart": false
+    }
+  ],
+  "counts": {
+    "added_test": 1,
+    "inherited_python_cache": 65,
+    "inherited_base_build_artifact": 9
+  },
+  "read_only_method": "stdlib Python -B, no imports from either tree; lstat identity/size/mtime/mode stable around every hash. File access time may be updated by the filesystem. No deletion or changes performed.",
+  "scope": "This is an explicit host observer overlay, not a pristine Git checkout and not a modified release image. Inherited artifacts are the original base build, not the final Game-profile image. Prior strict-extra rejection and original failed OS runs remain unchanged."
+}

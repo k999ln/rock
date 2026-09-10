@@ -1,0 +1,32 @@
+FFF
+======================================================================
+FAIL: test_done_management_open_rechecks_unknown_blob_before_constructor (test_game_current_restore.CurrentGameRestoreTests.test_done_management_open_rechecks_unknown_blob_before_constructor)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-work>/gx00-game-restore-candidate/systems/rock-star-os/tests/test_game_current_restore.py", line 283, in test_done_management_open_rechecks_unknown_blob_before_constructor
+    with self.assertRaisesRegex(RuntimeError,'contract rows'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_done_management_replay_after_legitimate_activity_is_not_a_history_api (test_game_current_restore.CurrentGameRestoreTests.test_done_management_replay_after_legitimate_activity_is_not_a_history_api)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-work>/gx00-game-restore-candidate/systems/rock-star-os/tests/test_game_current_restore.py", line 302, in test_done_management_replay_after_legitimate_activity_is_not_a_history_api
+    with self.assertRaisesRegex(RuntimeError,'rows/schema'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_done_management_resume_rechecks_index_and_preserves_revocation (test_game_current_restore.CurrentGameRestoreTests.test_done_management_resume_rechecks_index_and_preserves_revocation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-work>/gx00-game-restore-candidate/systems/rock-star-os/tests/test_game_current_restore.py", line 291, in test_done_management_resume_rechecks_index_and_preserves_revocation
+    with self.assertRaisesRegex(RuntimeError,'index rows'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 4.734s
+
+FAILED (failures=3)

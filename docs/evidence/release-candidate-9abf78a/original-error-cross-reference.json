@@ -1,0 +1,66 @@
+{
+  "schema": "rock-original-error-case-cross-reference/1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "original_status": "FAIL_RETAINED",
+  "original_errors": 10,
+  "later_scoped_cases_all_pass": true,
+  "new_test_runs": 0,
+  "cause": "UNCONFIRMED",
+  "claim": "All ten errored cases appear once as ok in the existing later scoped Game run. This is a read-only evidence cross-reference; it does not replace the full arm64 run or prove a cause.",
+  "logs_sha256": {
+    "original_full": "e7e8e958b89fe095df559f6abe17544d3bd7d3692ef9b646f9e36040d23fc141",
+    "later_scoped": "c0e70b81807a27d81d0ae86e83c68dfad0f03981150d287492e6683ee8f634cd"
+  },
+  "cases": [
+    {
+      "case": "test_game_exchange_races.ExchangeRaces.test_connection_revoked_before_first_claim_creates_only_signed_rejection",
+      "later_scoped_result": "ok",
+      "scoped_raw_line": "test_connection_revoked_before_first_claim_creates_only_signed_rejection (test_game_exchange_races.ExchangeRaces.test_connection_revoked_before_first_claim_creates_only_signed_rejection) ... ok"
+    },
+    {
+      "case": "test_game_exchange_races.ExchangeRaces.test_expired_signed_approval_denial_is_permanent_then_explicit_new_quote_version",
+      "later_scoped_result": "ok",
+      "scoped_raw_line": "test_expired_signed_approval_denial_is_permanent_then_explicit_new_quote_version (test_game_exchange_races.ExchangeRaces.test_expired_signed_approval_denial_is_permanent_then_explicit_new_quote_version) ... ok"
+    },
+    {
+      "case": "test_game_exchange_races.ExchangeRaces.test_owner_assertion_credential_revoked_before_first_claim_cannot_dispatch_new_apply",
+      "later_scoped_result": "ok",
+      "scoped_raw_line": "test_owner_assertion_credential_revoked_before_first_claim_cannot_dispatch_new_apply (test_game_exchange_races.ExchangeRaces.test_owner_assertion_credential_revoked_before_first_claim_cannot_dispatch_new_apply) ... ok"
+    },
+    {
+      "case": "test_game_exchange_races.ExchangeRaces.test_real_apply_and_conditional_reject_race_has_one_durable_outcome",
+      "later_scoped_result": "ok",
+      "scoped_raw_line": "test_real_apply_and_conditional_reject_race_has_one_durable_outcome (test_game_exchange_races.ExchangeRaces.test_real_apply_and_conditional_reject_race_has_one_durable_outcome) ... ok"
+    },
+    {
+      "case": "test_game_exchange_races.ExchangeRaces.test_revocation_after_claim_keeps_original_apply_authorized_and_receipt_recoverable",
+      "later_scoped_result": "ok",
+      "scoped_raw_line": "test_revocation_after_claim_keeps_original_apply_authorized_and_receipt_recoverable (test_game_exchange_races.ExchangeRaces.test_revocation_after_claim_keeps_original_apply_authorized_and_receipt_recoverable) ... ok"
+    },
+    {
+      "case": "test_game_exchange_restore.ExchangeCurrentRestore.test_each_issuer_cas_retains_rows_then_old_apply_refused_and_original_terminal_recovered",
+      "later_scoped_result": "ok",
+      "scoped_raw_line": "test_each_issuer_cas_retains_rows_then_old_apply_refused_and_original_terminal_recovered (test_game_exchange_restore.ExchangeCurrentRestore.test_each_issuer_cas_retains_rows_then_old_apply_refused_and_original_terminal_recovered) ... ok"
+    },
+    {
+      "case": "test_game_exchange_restore.ExchangeCurrentRestore.test_foreign_restore_or_mutated_game_journal_cannot_resume_epoch",
+      "later_scoped_result": "ok",
+      "scoped_raw_line": "test_foreign_restore_or_mutated_game_journal_cannot_resume_epoch (test_game_exchange_restore.ExchangeCurrentRestore.test_foreign_restore_or_mutated_game_journal_cannot_resume_epoch) ... ok"
+    },
+    {
+      "case": "test_game_exchange_tls.ExchangeTLS.test_foreign_receipt_and_malformed_receipt_cannot_release_hold",
+      "later_scoped_result": "ok",
+      "scoped_raw_line": "test_foreign_receipt_and_malformed_receipt_cannot_release_hold (test_game_exchange_tls.ExchangeTLS.test_foreign_receipt_and_malformed_receipt_cannot_release_hold) ... ok"
+    },
+    {
+      "case": "test_game_exchange_tls.ExchangeTLS.test_separate_author_credential_same_key_namespace_and_private_owner_redaction",
+      "later_scoped_result": "ok",
+      "scoped_raw_line": "test_separate_author_credential_same_key_namespace_and_private_owner_redaction (test_game_exchange_tls.ExchangeTLS.test_separate_author_credential_same_key_namespace_and_private_owner_redaction) ... ok"
+    },
+    {
+      "case": "test_game_exchange_tls.ExchangeTLS.test_signed_insufficient_denial_consumes_counter_and_never_later_approves",
+      "later_scoped_result": "ok",
+      "scoped_raw_line": "test_signed_insufficient_denial_consumes_counter_and_never_later_approves (test_game_exchange_tls.ExchangeTLS.test_signed_insufficient_denial_consumes_counter_and_never_later_approves) ... ok"
+    }
+  ]
+}

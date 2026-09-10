@@ -1,24 +1,135 @@
 {
-  "version": "1.1",
+  "version": "1.9",
   "decidedAt": "2026-09-09",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
-  "audit": "docs/progress-audit-20260909-followup.md",
-  "nextPrompt": "docs/prompts/hub-wallet-next.md",
-  "requirements": ["RQ01", "RQ02", "RQ03", "RQ04", "RQ05", "RQ06", "RQ07", "RQ08", "RQ09", "RQ10", "RQ11"],
-  "primaryCapabilities": ["automation-hub", "automation-earnings-wallet"],
+  "audit": "docs/os-readiness-audit-20260909.md",
+  "nextPrompt": "docs/prompts/rockstaros-release-20260910.md",
+  "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
+  "designReview": "docs/os-hub-wallet-game-design.md",
+  "strategy": {
+    "document": "docs/rockstaros-1.0-strategy.md",
+    "status": "design",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ17 and the current RockstarOS 1.0 technical base",
+    "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
+    "representativeProductCandidate": "org.rockstar.citation-organizer",
+    "marketValidation": "not_run",
+    "runtimeChangedByThisDesign": false
+  },
+  "alignmentAudit": "docs/design-implementation-alignment-20260909.md",
+  "executionApproval": {
+    "status": "approved_for_implementation",
+    "approvedDesignVersion": "1.1",
+    "currentDesignVersion": "1.2",
+    "approvedDesignCommit": "27b34adc02a9e06a4816aa18a5e38cf38b330953",
+    "record": "data/execution-approval.json",
+    "recordedAt": "2026-09-09T17:47:40.214265+00:00",
+    "scope": "Native QEMU, existing Hub products, synthetic Wallet/game exchange and SDK; QEMU Developer Preview packaging and one-model physical-device preparation are authorized, while production and real-value gates remain conditional."
+  },
+  "requirements": [
+    "RQ01",
+    "RQ02",
+    "RQ03",
+    "RQ04",
+    "RQ05",
+    "RQ06",
+    "RQ07",
+    "RQ08",
+    "RQ09",
+    "RQ10",
+    "RQ11",
+    "RQ12",
+    "RQ13",
+    "RQ14",
+    "RQ15",
+    "RQ16",
+    "RQ17"
+  ],
+  "primaryCapabilities": [
+    "automation-hub",
+    "automation-earnings-wallet"
+  ],
   "supplyRoleLabel": "tob",
   "supplyRoleExclusivity": "unspecified",
   "auditInputs": {
-    "main": "f9b1cbd99eeaa20f7cbc80bd2d88909949cca863",
+    "main": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
     "nativeBranch": "codex/integrate-native-os-20260909",
     "nativeHead": "fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5",
+    "designBranch": "codex/os-game-design-review-20260909",
+    "designHead": "de5b102d3525daccf604efd5685bdf8c14ad5d50",
     "nativePullRequest": 1,
     "nativePullRequestStateAtAudit": "OPEN",
     "isLiveStatus": false
   },
-  "freshContextRequired": ["main", "branches", "open-pull-requests", "relevant-closed-pull-requests", "source-at-sha", "checks-at-sha"],
-  "commercialPolicy": "Preserve existing native 888 USD cents per contract per month and legacy Web estimates; no fee change authorized here.",
-  "hardwarePolicy": "Native branch prioritizes BlackBerry with model/variant unresolved; Linux QEMU and Android/AOSP are distinct evidence tracks."
+  "freshContextRequired": [
+    "main",
+    "branches",
+    "open-pull-requests",
+    "relevant-closed-pull-requests",
+    "source-at-sha",
+    "checks-at-sha"
+  ],
+  "commercialPolicy": "Preserve native 888 USD cents per contract per month and legacy Web estimates; Rock ATM fee is zero per RQ15; game fees are unspecified; no live billing authorized here.",
+  "hardwarePolicy": "Native branch prioritizes BlackBerry with model/variant unresolved; Linux QEMU and Android/AOSP are distinct evidence tracks.",
+  "firstOperationalTarget": "Fresh-host QEMU Developer Preview with reproducible install, launch, shutdown, reopen, backup and removal; synthetic data only",
+  "releaseInstallation": {
+    "requested": true,
+    "releaseName": "RockstarOS 1.0",
+    "architecture": "docs/rockstaros-1.0-architecture.md",
+    "plan": "docs/release-installation-plan-20260909.md",
+    "developerPreview": "internal_acceptance_scoped_publication_blocked",
+    "physicalDevicePreview": "blocked_on_exact_model_and_variant",
+    "productionReady": false,
+    "cmRule": "Present the current implementation as the RockstarOS 1.0 base and advertise only the highest installation and validation stage that has passed its recorded gate",
+    "followup": "docs/release-followup-20260910.md",
+    "cmProduction": {
+      "status": "completed_per_user_report",
+      "artifactReviewed": false,
+      "record": "docs/release-followup-20260910.md"
+    }
+  },
+  "gameExchange": {
+    "requested": true,
+    "game": "unspecified",
+    "direction": "unspecified",
+    "rates": "unspecified",
+    "platformFeePolicy": "unspecified; zero-fee instruction applies to ATM, not game exchange",
+    "externalCosts": "separate, disclosed before consent; unspecified",
+    "atmDependency": false,
+    "realValueEnabled": false
+  },
+  "gameDeveloperExperience": {
+    "requested": true,
+    "target": "self-made game developers and their players",
+    "productionPlayerEligibility": "unspecified, including players without Rock hardware",
+    "multiOwnerReadiness": "Authenticated multi-owner SDK/contract tests passed; actual OS UI acceptance remains one owner. Production player eligibility and real-value readiness remain unspecified; see docs/release-followup-20260910.md.",
+    "deliverables": [
+      "API contract",
+      "reference SDK",
+      "synthetic sandbox",
+      "runnable sample",
+      "onboarding and reconciliation diagnostics"
+    ],
+    "osSubscriptionChange": "none; ATM fee clarification does not change existing OS contract"
+  },
+  "atmFees": {
+    "rockFeeMinor": 0,
+    "externalCosts": "separate, disclosed before consent; unspecified"
+  },
+  "marketExploration": {
+    "status": "discussion_only",
+    "runtimeAuthorized": false,
+    "realValueEnabled": false,
+    "scope": "Prediction markets and game asset trading are separate, optional proposals; not an approved OS requirement"
+  },
+  "releaseExecution": {
+    "startedAt": "2026-09-10T05:43:35Z",
+    "targetEndAt": "2026-09-10T13:43:35Z",
+    "plan": "docs/release-execution-20260910.md",
+    "instructionFileSha256": "63e5f3568a186e7fc733ff449c7ce95c653619dc0c62bddcd895baea7bd95f01",
+    "status": "completed_with_release_blockers",
+    "finalCheckpointAt": "2026-09-10T13:45:19.822614+00:00",
+    "followup": "docs/release-followup-20260910.md"
+  }
 }

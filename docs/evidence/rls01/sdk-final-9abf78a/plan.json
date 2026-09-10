@@ -1,0 +1,19 @@
+{
+  "schema": "rock-final-sdk-acquisition-plan/1",
+  "frozen_utc": "2026-09-10T10:19:40.871772+00:00",
+  "parent_plan_sha256": "b2a0a15c3301f6c7370f6ea59a99aa1546be38e33812333fe9cfacca995c26c8",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "status": "FROZEN_BEFORE_SDK_VM_CREATION",
+  "change": "Fresh SDK uses native members extracted directly from the byte-identical actual authenticated GitHub draft download; no native, product, image, protocol, fixture or observer changes. Original OS lifecycle uses loopback acquisition unchanged.",
+  "download_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/github-candidate-download-01",
+  "parent_acquisition_proof_sha256": "5aae991ab7b2b50d249adf2a2a9843a0b3cd44dba46074e38b956246754c1f14",
+  "parent_signed_verification_sha256": "3900d861d954b7ebe1bbde64419190f8cc67082b02d6b37a1ff7ef1b2341f2d9",
+  "public_download": false,
+  "original_guard_rejection_preserved": true,
+  "driver": "work/sdk-final1-github-onboarding.py",
+  "driver_sha256": "255711e91a5ae35cdf5d36de39b477b47e4c00fe57a6ebf62bf8d6225b09c359",
+  "retained_original_driver_sha256": "f685eb8561a1421b046980a899b203546a64e93f385f4b7c18be8e85544d89e2",
+  "native_extraction": "After original package signature+archive verification, exact known regular native members only; all native inventory SHA checked against signed manifest. No legal archive or disk is copied into SDK VM.",
+  "acceptance_harness_and_financial_observer": "unchanged from parent plan",
+  "vm": "/Users/kaiya/Library/RockstarOS/rls01-sdk-final1"
+}

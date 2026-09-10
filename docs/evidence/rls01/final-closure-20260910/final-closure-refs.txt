@@ -1,0 +1,4 @@
+fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5	refs/heads/codex/integrate-native-os-20260909
+91debc28174d87be023b789980d2c46112a66979	refs/heads/codex/operational-base-20260909
+27b34adc02a9e06a4816aa18a5e38cf38b330953	refs/heads/codex/os-game-design-review-20260909
+7cdbb5fedc86ee3978ed329d9312147d137c9199	refs/heads/main

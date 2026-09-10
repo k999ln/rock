@@ -1,0 +1,88 @@
+{
+  "schema": "rock-c-citation-preflight-correction/1",
+  "status": "PASS_ORIGINAL_STATE_UNCHANGED_READY_FOR_REMAINING_STAGES",
+  "observed_utc": "2026-09-10T11:57:36.838431+00:00",
+  "original_orchestration_sha256": "31c6be06bf1ebe9c7bb992b95ff5ab171e4019692da7f928433b52f32e2a893d",
+  "original_citation_summary_sha256": "f0a9288691e2495fe90ec84a599726e26d89706795315cc8f4cee7321dd0fc20",
+  "original_citation_log_sha256": "dd87f825ae34c22c20b7949562f5c3c3858925c453594e26865692ea9a9f29e7",
+  "original_runner_log_sha256": "c6a96b726b77c0472dbeccfa214ae94b5030e16b25bdec325d515418aea16e99",
+  "original_cycles": 0,
+  "prior_read_only_collection_failure": "First collector stopped the owned registry and compared authority, then lacked /usr/sbin for debugfs; original partial evidence retained in correction-01. This second read-only collection sets the declared Linux PATH and performs no further process stop.",
+  "root_c_config_sha256": "1fbd4924c545823b313a6852b428aadce3f9ef2bc1dc11d57b2d078fb7316b8f",
+  "cause": "Inherited Lima umask0002 produced owned cc launcher0775; unchanged executor guard rejected it before guest boot. Frozen source components0644.",
+  "original_metadata": [
+    {
+      "path": "/var/tmp/rock-final-c-9abf78a-01/citations/runner-sandbox",
+      "mode": 509,
+      "sha256": "e7e91fdfecfa87e0200dc277f9fdb5c956a772892a8a82b5d68df316e1ae8c05"
+    },
+    {
+      "path": "/var/tmp/rock-final-9abf78a/systems/rock-star-os/src/blackberryrock/recipe_worker.py",
+      "mode": 420,
+      "sha256": "f3bf50337383bfcac2593599285afec1b91d930f6c368ae1e1e6131784dbfe3e"
+    },
+    {
+      "path": "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/runner/isolated_entry.py",
+      "mode": 420,
+      "sha256": "3499eaf347e47ab42a5c8c32ba50f9e8a5b376831a0b6117230e59596e40063e"
+    }
+  ],
+  "next_process_umask": "0077",
+  "source_or_image_changes": false,
+  "financial_actions_repeated": 0,
+  "authority_complete_unchanged": true,
+  "guest_database_bytes_unchanged": [
+    {
+      "role": "hub",
+      "sha256": "c08d89d0c5a1d0284f1e40eba9229e8fcdedab65f6f8c4488de8af0b5c59cc91",
+      "matches_original_baseline": true
+    },
+    {
+      "role": "remote",
+      "sha256": "3194c1926706a9afab8b3949f6ee422d30e118bfe6a9ad9e0f929ffefe717495",
+      "matches_original_baseline": true
+    },
+    {
+      "role": "authenticator",
+      "sha256": "ad21e195a1c6974e9b596018241aa20af5e55f8a722cfbfc9145d88b8f284480",
+      "matches_original_baseline": true
+    },
+    {
+      "role": "power",
+      "sha256": "f6af2c463f543d83ba8fd99d0d295ed8ec677e9126bd01e0cc31e7a4ce8e8b84",
+      "matches_original_baseline": true
+    },
+    {
+      "role": "wallet_cache",
+      "sha256": "1c250a934ed66a019460d112ec6ad503247157e284242715e31e40b1f15e89fd",
+      "matches_original_baseline": true
+    },
+    {
+      "role": "game_exchange_cache",
+      "sha256": "a60cccc1513c06769780d9d164dced1376d56bcce9b29e1b5076c438485d6672",
+      "matches_original_baseline": true
+    },
+    {
+      "role": "game_connection_a",
+      "sha256": "7be1a0cfe5ed0aa725015c2597c77f8171895f2436cb8f22bc2b98b8c4ac7a7d",
+      "matches_original_baseline": true
+    },
+    {
+      "role": "game_connection_b",
+      "sha256": "de75b38d6fff294b7106d3ccf379b91408f07592ec7f227d3f9d99fdb29609e1",
+      "matches_original_baseline": true
+    }
+  ],
+  "guest_running": false,
+  "authority_running": false,
+  "ports_free": [
+    9443,
+    9444,
+    9641,
+    9642,
+    9643
+  ],
+  "registry_stop_sha256": "51669646e993e9a1325bda569465d70ade773b0757ccef6932ddf048472d2997",
+  "collector_sha256": "e4f1fbb2291133616c3b7eab05862d4e7e78c0282b0def481be03c0b0059a45a",
+  "scope": "Retained original FAIL. Only owned orphan registry stopped; unchanged existing guest and financial state may supply remaining citations and demo in a new directory."
+}

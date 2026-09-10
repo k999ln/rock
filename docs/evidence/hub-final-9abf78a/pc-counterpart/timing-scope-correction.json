@@ -1,0 +1,9 @@
+{
+  "schema": "rock-measurement-scope-correction/1",
+  "original_plan_sha256": "2c290e908a364375c3e7bb74166615f0113a5a18bb56e65a735a4c11e8f60b7a",
+  "original_report_sha256": "b5d665f036a6ed571cd7e9e640f4f35beb1381d7daabb515f1edd410eafe2e3f",
+  "status": "OUTPUT_PARITY_VALID_TIMING_SCOPE_MISMATCH",
+  "cause": "The first wrapper wrote stdout/stderr evidence before stopping the timer, despite a plan saying file saving was excluded. Original plan/report/output bytes are retained.",
+  "correction": "Move exact output verification and timer stop before evidence writes. Run the corrected wrapper in a separate new directory; use only that run for the planned timing interval.",
+  "product_source_changed": false
+}

@@ -1,0 +1,8 @@
+RockstarOS 1.0 Developer Preview
+{
+  "status": "RESTORED",
+  "active_device": "recovered",
+  "original": "preserved and retired by the OS/authority gate",
+  "scope": "same-host current copy, all authority and OS post-state verified",
+  "next": "start the restored device and verify saved Hub results and synthetic Wallet/Game"
+}

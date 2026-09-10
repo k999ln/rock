@@ -1,0 +1,134 @@
+{
+  "schema": "rock-final-sdk-fresh-acceptance/1",
+  "status": "PASS_INTERNAL_SYNTHETIC",
+  "observed_utc": "2026-09-10T10:35:40.806995+00:00",
+  "requirements": [
+    "DX01-SDK",
+    "GX01",
+    "RQ-12",
+    "RQ-16"
+  ],
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "release_manifest_sha256": "e06fb8d9df292103e63f6cd56df95b189202ae0b13b6e1c578cb6eef0ffc5971",
+  "host": {
+    "architecture": "arm64",
+    "lima": "limactl version 2.2.0",
+    "openssl": "OpenSSL 3.6.3 9 Jun 2026 (Library: OpenSSL 3.6.3 9 Jun 2026)",
+    "os": "15.7.4",
+    "python": "3.14.7"
+  },
+  "source_origin": "authenticated maintainer HTTPS download of private GitHub draft release386171909; exact signed archive native members directly extracted after independent key/manifest pins",
+  "native_inventory_count": 692,
+  "runtime_includes_final_expiration_fix_0ace411": true,
+  "initial_authority_blank_before_actions": true,
+  "financial_snapshot_matches_harness": true,
+  "setting_count": 2,
+  "setting_inputs": [
+    "fixed public config",
+    "private client state"
+  ],
+  "example_code_lines": {
+    "author.py": 38,
+    "owner.py": 110
+  },
+  "machine_elapsed_seconds": {
+    "first_exchange_seconds": 2.202283458999993,
+    "cause_identification_seconds": 0.13091278899999992,
+    "recovery_seconds": 1.1732796429999937,
+    "total_seconds": 4.625373474999996
+  },
+  "initial_snapshot_sha256": "c851d371cb9bede617a8d692538828b29fa2e708bc5bbfa39b8dcbf04bdd978c",
+  "final_snapshot_sha256": "7c50142f33066c50969c917baac1b2f378ec56edc737096db5d99cf6f0edef5c",
+  "financial": {
+    "authority_database_count": 5,
+    "authority_snapshot_sha256": "7c50142f33066c50969c917baac1b2f378ec56edc737096db5d99cf6f0edef5c",
+    "authority_table_count": 71,
+    "complete_authority_unchanged_by_readback": true,
+    "games": {
+      "game-a": {
+        "account_units": {
+          "ISSUANCE_CLEARING": -10,
+          "PLAYER_PURCHASED": 10
+        },
+        "epoch": 1,
+        "epoch_receipts": 0,
+        "grants": 1
+      },
+      "game-b": {
+        "account_units": {
+          "ISSUANCE_CLEARING": -10,
+          "PLAYER_PURCHASED": 10
+        },
+        "epoch": 1,
+        "epoch_receipts": 0,
+        "grants": 1
+      }
+    },
+    "schema": "rock-final-stopped-financial-readback/1",
+    "simulation_only": true,
+    "status": "PASS",
+    "wallet": {
+      "accounts_minor": {
+        "AVAILABLE": 9794,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000
+      },
+      "bill_count": 0,
+      "exchange_states": [
+        [
+          "COMPLETED",
+          0,
+          103,
+          0
+        ],
+        [
+          "COMPLETED",
+          0,
+          103,
+          0
+        ]
+      ],
+      "monthly_consent": false,
+      "withdrawal_count": 0
+    }
+  },
+  "cleanup": {
+    "owned_vm_only_removed": true,
+    "force_used": false,
+    "sdk_probe_not_mislabelled_as_full_os_install": true,
+    "normal_os_remove_refusal_preserved": true,
+    "private_originals_preserved": true,
+    "listener_pids": {
+      "8899": [
+        "77657"
+      ],
+      "8900": [],
+      "5910": []
+    }
+  },
+  "scope": [
+    "fresh developer sample integration; public software authenticator and synthetic funds",
+    "actual TLS server unavailable during original GameB request; original operation key retry after restart",
+    "not response loss after committed exchange; separate source-bound SIGKILL evidence covers that contract",
+    "machine elapsed only, no external author/human diagnosis timing claim",
+    "product license remains UNSET/NOT_CLEARED; no public download claim",
+    "9cfe original diagnosis failure and aee prior fresh success remain separate source evidence"
+  ],
+  "evidence_sha256": {
+    "cleanup-probe.py": "8dc9c10714e8a38026e337afda4a2d1e145f1cef254eba33139afcf5ce33b8d9",
+    "cleanup.json": "a8ff425580f3f6fbc1deacae7f1275c1ba0bca8a116102a310f4d736ecfbe9c1",
+    "financial-observer.py": "185e75950e329d22191921434b8d369a6d7e2b69628955b1e85bcc45589f69c7",
+    "fresh-probe.py": "255711e91a5ae35cdf5d36de39b477b47e4c00fe57a6ebf62bf8d6225b09c359",
+    "github-acquisition-original.json": "5aae991ab7b2b50d249adf2a2a9843a0b3cd44dba46074e38b956246754c1f14",
+    "github-signed-verification.json": "3900d861d954b7ebe1bbde64419190f8cc67082b02d6b37a1ff7ef1b2341f2d9",
+    "independent-financial.json": "6760d237049f899bae377caf94e01631099e1d58836bb66250e7c0f4164cd10c",
+    "normal-os-remove-refusal.log": "87333d57724fd7ff9e1f3eb7ed593e540ea99e79d124a3fb6dc9fd4c9b8343ca",
+    "original-report.json": "03031192229d20a64a68e4ed752cc3de967e3a602a8b534b55c76fd4299a1167",
+    "originals-preserved.json": "a3256cd7a8195495528d5081825e292121ffe49ba164bc99e7a45fa20f4b645a",
+    "plan.json": "43685e8c61640d771b1d9bad1bc92037ed00003befcfd1dad5bf8d07cbc41666",
+    "preserve-probe.py": "3bb9f69983530db17e01fa563a92955f6851b99fd90a694f4d8589309ecd0a78"
+  }
+}

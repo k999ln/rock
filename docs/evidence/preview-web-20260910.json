@@ -1,0 +1,51 @@
+{
+  "schema": "rock-preview-web-check/1",
+  "scope": "Local announcement and guide, no deployment/download release",
+  "status": "PASS_SCOPED_WEB",
+  "routes": [
+    "/rockstaros",
+    "/rockstaros/guide"
+  ],
+  "verification": "npm run verify exit0; 54 unit tests/skip0, API143 assertions; source baseline/typecheck/lint/build pass",
+  "verification_log": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/web-verify-01.log",
+  "verification_log_sha256": "98f478826c9a64c181f997e8776a4cb84cdad60642691d18206247fa4ce5a123",
+  "browser": {
+    "kind": "Codex in-app browser",
+    "viewport_width": 652,
+    "document_width": 652,
+    "observed_navigation": [
+      "announcement to guide",
+      "guide first-result anchor",
+      "guide back to announcement",
+      "announcement actual screenshot anchor"
+    ],
+    "images_loaded": true,
+    "screenshots_visually_checked": [
+      "announcement hero",
+      "guide hero",
+      "first-result steps"
+    ],
+    "known_limitations": [
+      "No other viewport was tested",
+      "Screenshot is intermediate OS d7927dd, not final acceptance",
+      "No public download link until final gates pass"
+    ]
+  },
+  "input_sha256": {
+    "app/rockstaros/page.tsx": "027c19a92c94075cd7f4312b314d9ed96376c978230e23c6e6e99a03e40ce213",
+    "app/rockstaros/preview.module.css": "588d3b244d407467b8058e5d6fc5bdc242f9a029dc617d9f6d7a9bf8a9d358c3",
+    "app/rockstaros/guide/page.tsx": "2afd17bd83ad53565eb57570867785daaf24949bda61d82f4dc2d18cefbcb1fe",
+    "public/rockstaros/hub-result.png": "1b22a786ae3867f2b1aeb6860899067c78982b03a91039e063fef5b2228bc261"
+  },
+  "recorded_utc": "2026-09-10T07:05:29.067852+00:00",
+  "source_branch_push": "GitHub codex/rockstaros-release-20260910; draft PR3 opened",
+  "verification_source": "3fcdd75 announcement/guide before input-limit copy edit; follow-up is recorded separately",
+  "follow_up": {
+    "observed_utc": "2026-09-10T07:20:40.108395+00:00",
+    "change": "Guide explains ASCII US keyboard, no Japanese IME or clipboard, Japanese public sample available",
+    "browser": "Actual guide AX readback matches added text",
+    "scope": "Copy-only change; prior full verify remains tied to prior source",
+    "verification": "typecheck exit0; existing lint:product exit0",
+    "additional_unscoped_command": "npm run lint exit1 from unchanged vendored noVNC/pako; vendor and lint rules unchanged. This is not the repository verify command, which uses existing lint:product."
+  }
+}

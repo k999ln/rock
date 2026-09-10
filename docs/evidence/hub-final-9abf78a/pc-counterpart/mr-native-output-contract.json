@@ -1,0 +1,21 @@
+{
+  "schema": "rock-citation-output-contract-difference/1",
+  "status": "DIFFERENT_ORIGINAL_BYTES_SAME_PUBLIC_FIXTURE",
+  "input_bytes": 150,
+  "input_sha256": "bad73028a4b23b6e046abc4a1463f2fa14ffd4f55844ec9146cdc9acc3b1387e",
+  "mr": {
+    "path": "docs/evidence/hub-wallet/b05-pc-machine-20260909/evidence/01-P-session_start_first_result.md",
+    "bytes": 155,
+    "sha256": "30dafde5d3c32d7c690276656f8d5ed0ff924b2c9b5617ede86820efc0b1a0f6"
+  },
+  "native": {
+    "path": "docs/evidence/hub-final-9abf78a/pc-counterpart/run-02/first-process.md",
+    "bytes": 151,
+    "sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7"
+  },
+  "difference": "Mr CLI has one additional --- newline separator after the fenced code block; all other original lines are byte-identical. Original output files are unchanged.",
+  "same_product_contract_claim": false,
+  "same_exact_output_claim": false,
+  "human_quality_rating": null,
+  "new_product_runs": 0
+}

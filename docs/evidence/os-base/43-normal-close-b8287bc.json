@@ -1,0 +1,247 @@
+{
+  "input_events": [
+    {
+      "action": "click",
+      "sent_unix": 1789000860.3123024,
+      "value": [
+        110,
+        913
+      ]
+    },
+    {
+      "action": "pointer_park",
+      "sent_unix": 1789000860.5129168,
+      "value": [
+        705,
+        860
+      ]
+    },
+    {
+      "action": "click",
+      "sent_unix": 1789000861.5714498,
+      "value": [
+        636,
+        26
+      ]
+    },
+    {
+      "action": "pointer_park",
+      "sent_unix": 1789000861.7758172,
+      "value": [
+        705,
+        860
+      ]
+    },
+    {
+      "action": "click",
+      "sent_unix": 1789000863.038052,
+      "value": [
+        360,
+        634
+      ]
+    },
+    {
+      "action": "pointer_park",
+      "sent_unix": 1789000863.243917,
+      "value": [
+        705,
+        860
+      ]
+    },
+    {
+      "action": "click",
+      "sent_unix": 1789000865.503668,
+      "value": [
+        496,
+        578
+      ]
+    },
+    {
+      "action": "pointer_park",
+      "sent_unix": 1789000865.7046132,
+      "value": [
+        705,
+        860
+      ]
+    }
+  ],
+  "original_test_status": "FAIL",
+  "purpose": "normal native UI shutdown of the retained fresh test guest",
+  "qmp_commands": [
+    "qmp_capabilities",
+    "input-send-event",
+    "input-send-event",
+    "input-send-event",
+    "screendump",
+    "input-send-event",
+    "input-send-event",
+    "input-send-event",
+    "screendump",
+    "input-send-event",
+    "input-send-event",
+    "input-send-event",
+    "screendump",
+    "screendump",
+    "input-send-event",
+    "input-send-event",
+    "input-send-event"
+  ],
+  "qmp_events": [
+    {
+      "data": {
+        "guest": true,
+        "reason": "guest-shutdown"
+      },
+      "event": "SHUTDOWN",
+      "observed_unix": 1789000873.0735304,
+      "timestamp": {
+        "microseconds": 59391,
+        "seconds": 1789000873
+      }
+    }
+  ],
+  "schema": "rock-failed-harness-cleanup/1",
+  "screenshots": [
+    {
+      "bytes": 125275,
+      "dimensions": [
+        720,
+        960
+      ],
+      "name": "0001-actual-ready-hub-before-cleanup.png",
+      "ocr_sha256": "8fe998d1e08aa610bbc49ecadbf98f051d94154b1ae4dd111a56f181aaf9163d",
+      "sha256": "af688fe1f4e48e3c8f59ea21a54947120e9089211dbd4226a2fc9c8ead367889"
+    },
+    {
+      "bytes": 79170,
+      "dimensions": [
+        720,
+        960
+      ],
+      "name": "0002-normal-poweroff.png",
+      "ocr_sha256": "dfa9f7528babb4ae704d9493d3efb3f3d73797371337da6e81ac62aec94e8409",
+      "sha256": "765b334bb1e1ba2fdc32b2877009019bdbf6735bf356aff9fb70a551bee38d0b"
+    },
+    {
+      "bytes": 85950,
+      "dimensions": [
+        720,
+        960
+      ],
+      "name": "0003-normal-poweroff-confirm.png",
+      "ocr_sha256": "942197dadfa7a259a40c16724ed5fd97c17dab54c77eb172b19980cd52f654ea",
+      "sha256": "de7d31871425e357ee1662840e6b304da7e501fcc582965ea32800dfaf2123f3"
+    },
+    {
+      "bytes": 86236,
+      "dimensions": [
+        720,
+        960
+      ],
+      "name": "0004-normal-poweroff-confirmed.png",
+      "ocr_sha256": "aa0e6d96b1c75683b5a116da144bca0ce7f9a874cd467dab95056f858c4a433a",
+      "sha256": "7fa4136c0a98f4147f5ed4a926651325ecdafe9734d7e124576edb4079de7848"
+    }
+  ],
+  "shutdown_seconds": 8.984114032002253,
+  "status": "CLOSED_NORMALLY_AFTER_FAILED_TEST",
+  "ui_states": [
+    {
+      "ascii_boundary": false,
+      "exact_line": false,
+      "matches": [
+        {
+          "box": [
+            37,
+            64,
+            196,
+            51
+          ],
+          "x": 135,
+          "y": 90
+        }
+      ],
+      "observed_unix": 1789000861.4872465,
+      "phrase": "自動化を探す",
+      "required_same_frame": {},
+      "result_page_header": null,
+      "screenshot_sha256": "af688fe1f4e48e3c8f59ea21a54947120e9089211dbd4226a2fc9c8ead367889",
+      "within": null
+    },
+    {
+      "ascii_boundary": false,
+      "exact_line": false,
+      "matches": [
+        {
+          "box": [
+            302,
+            620,
+            115,
+            28
+          ],
+          "x": 360,
+          "y": 634
+        }
+      ],
+      "observed_unix": 1789000862.9532206,
+      "phrase": "電源を切る",
+      "required_same_frame": {},
+      "result_page_header": null,
+      "screenshot_sha256": "765b334bb1e1ba2fdc32b2877009019bdbf6735bf356aff9fb70a551bee38d0b",
+      "within": null
+    },
+    {
+      "ascii_boundary": false,
+      "exact_line": false,
+      "matches": [
+        {
+          "box": [
+            95,
+            343,
+            273,
+            40
+          ],
+          "x": 232,
+          "y": 363
+        }
+      ],
+      "observed_unix": 1789000864.2934039,
+      "phrase": "端末の電源を切りますか",
+      "required_same_frame": {},
+      "result_page_header": null,
+      "screenshot_sha256": "de7d31871425e357ee1662840e6b304da7e501fcc582965ea32800dfaf2123f3",
+      "within": null
+    },
+    {
+      "ascii_boundary": false,
+      "exact_line": false,
+      "matches": [
+        {
+          "box": [
+            438,
+            564,
+            117,
+            29
+          ],
+          "x": 496,
+          "y": 578
+        }
+      ],
+      "observed_unix": 1789000865.4217951,
+      "phrase": "確認して実行",
+      "required_same_frame": {},
+      "result_page_header": null,
+      "screenshot_sha256": "7fa4136c0a98f4147f5ed4a926651325ecdafe9734d7e124576edb4079de7848",
+      "within": null
+    }
+  ],
+  "publication": {
+    "kind": "public-derived-evidence",
+    "original_basename": "43-normal-close-report.json",
+    "original_sha256": "952d1bf2afef222bbc5712a2655307eb57947e7dfbbfb7c468521bdb624d5e80",
+    "original_unchanged": true,
+    "derivation": {
+      "report_fields": "unchanged; provenance added"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+#!/bin/sh
+set -eu
+case "${1:-start}" in
+  start)
+    mountpoint -q /data
+    mkdir -p /data/system /run/rock-system /var/log
+    chown 0:0 /data/system
+    chmod 0700 /data/system
+    chown 0:1002 /run/rock-system
+    chmod 0750 /run/rock-system
+    touch /var/log/rock-system.log
+    chown 0:0 /var/log/rock-system.log
+    chmod 0600 /var/log/rock-system.log
+    start-stop-daemon --start --background --make-pidfile --pidfile /run/rock-system.pid --exec /usr/libexec/rock-system-launch
+    for attempt in 1 2 3 4 5; do
+      [ ! -S /run/rock-system/power.sock ] || exit 0
+      sleep 1
+    done
+    echo 'Rock system power service failed to start' >&2
+    exit 1
+    ;;
+  stop)
+    [ -f /run/rock-system.pid ] || exit 0
+    system_pid=$(cat /run/rock-system.pid)
+    start-stop-daemon --stop --pidfile /run/rock-system.pid || true
+    for attempt in $(seq 1 15); do
+      kill -0 "$system_pid" 2>/dev/null || break
+      sleep 1
+    done
+    if kill -0 "$system_pid" 2>/dev/null && tr '\000' ' ' < "/proc/$system_pid/cmdline" | grep -q 'rock-system/power_service.py'; then
+      kill -KILL "$system_pid"
+    fi
+    rm -f /run/rock-system.pid
+    ;;
+  *) exit 2 ;;
+esac

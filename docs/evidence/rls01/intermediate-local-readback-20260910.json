@@ -1,0 +1,589 @@
+{
+  "schema": "rockstaros-preview-local-readback/1",
+  "status": "PASS",
+  "scope": "intermediate local profile only; no QMP event observer in this manual CUA run; final Game candidate requires separate acceptance",
+  "source_commit": "3fa88610fe77317b920efe1dea8f58f8d2113092",
+  "source_disks_preserved": {
+    "slot-a.ext4": {
+      "sha256": "eb8bc90f81a58020ae66a6c6ad835a5f2cd6864d0c458eb18466a31bc51ed79a",
+      "bytes": 402653184
+    },
+    "slot-b.ext4": {
+      "sha256": "3201548f7070f0ae5adf2c869b15df99b5f85ca51feda443c1597c130976619a",
+      "bytes": 402653184
+    },
+    "userdata.ext4": {
+      "sha256": "8547307e88ce96930eac8ba24eaedab50317c0a51a36354aae683c8a32113fb0",
+      "bytes": 268435456
+    }
+  },
+  "backup_disks_verified": {
+    "slot-a.ext4": {
+      "sha256": "eb8bc90f81a58020ae66a6c6ad835a5f2cd6864d0c458eb18466a31bc51ed79a",
+      "bytes": 402653184
+    },
+    "slot-b.ext4": {
+      "sha256": "3201548f7070f0ae5adf2c869b15df99b5f85ca51feda443c1597c130976619a",
+      "bytes": 402653184
+    },
+    "userdata.ext4": {
+      "sha256": "8547307e88ce96930eac8ba24eaedab50317c0a51a36354aae683c8a32113fb0",
+      "bytes": 268435456
+    }
+  },
+  "before": {
+    "hub": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "hub_audit": {
+          "rows": 3,
+          "logical_sha256": "a884b0f6782c442fb436e7bbf48303619e76b7dcc8cdc68e170f0874313e667b"
+        },
+        "hub_installed": {
+          "rows": 1,
+          "logical_sha256": "3f609fe7a7adb25b3e52253cc28111d957ea2d5aef831e7d05f00ba97daf9378"
+        },
+        "hub_jobs": {
+          "rows": 1,
+          "logical_sha256": "1abad87ddb71e5f60dbda6b5b3888b31ce4b69ed2c4d70b12a9595e5177cd542"
+        },
+        "hub_packages": {
+          "rows": 1,
+          "logical_sha256": "841445c9fab02fa46a5cc533635b616dbbe58318452af4dd16b5340ad8be25ae"
+        },
+        "hub_requests": {
+          "rows": 3,
+          "logical_sha256": "bd9757d507d19755ef10b8bbbdee1b7e903492ac118c92fbd04a155d6df2e9f7"
+        },
+        "hub_revoked": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "rock_registry_requests": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {
+        "sqlite_sequence": {
+          "rows": 1,
+          "logical_sha256": "7037311da61af716422afa140a801217c8db0da0a8d9bea4d66f46118ba57b93"
+        }
+      },
+      "schema_sha256": "1aa435eba44f86e29237c32ae88072871b9d98c7e699a50f31bdabd8d1614680",
+      "additional_tables": []
+    },
+    "wallet": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "atm_credentials": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "atm_wallet_binding": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_auth_approvals": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_auth_challenges": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_auth_credential_state": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_auth_credentials": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_auth_mode": {
+          "rows": 1,
+          "logical_sha256": "66c0eac4bbdb451b61e4138042525b9d7a8bc861d48ff5d9a2c3179828db034d"
+        },
+        "wallet_auth_quotes": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_auth_terms": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_bills": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_consents": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_idempotency": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_journals": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_postings": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_sales": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_withdrawals": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {
+        "sqlite_sequence": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "schema_sha256": "56a2506372ee1fc753bb29dbd071ce4880e515542d17d8c7c9fbe577e0b48589",
+      "additional_tables": [],
+      "financial_summary": {
+        "currency": "USD",
+        "simulation_only": true,
+        "available_minor": 0,
+        "pending_minor": 0,
+        "held_minor": 0,
+        "dispensed_minor": 0,
+        "billed_minor": 0,
+        "bill_count": 0,
+        "bill_total_minor": 0,
+        "ledger_balance_minor": 0,
+        "sale_count": 0,
+        "withdrawal_count": 0,
+        "credential_count": 0
+      }
+    },
+    "membership": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "account_devices": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounts": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "authorization_claims": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "authorizations": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "consents": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "device_api_receipts": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "device_binding": {
+          "rows": 1,
+          "logical_sha256": "9fd6f7bef6545cc203d7046b0c3cf1876dd16f95d753bee7a88b8f94e8d531b2"
+        },
+        "device_monthly_due": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "device_register_origins": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "device_runtime": {
+          "rows": 1,
+          "logical_sha256": "07456b53a8652d7c31ab647ec301020650e780f87ee9d5ab91af712081cf59b6"
+        },
+        "devices": {
+          "rows": 1,
+          "logical_sha256": "f726b5509579e2f02cbae8d31e606c0ef30af217f83ac10d61749ef9aaf4f686"
+        },
+        "events": {
+          "rows": 1,
+          "logical_sha256": "adab4e7b6243f3117d37f936ac955e52e31cb81539d54cc0ca96c00503847636"
+        },
+        "receipts": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "streams": {
+          "rows": 1,
+          "logical_sha256": "620124ebc09e5658dc5ac30338f4c5a88588f7a3c68eb833534c6584cef6ef84"
+        },
+        "wallet_bindings": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "bc0622009648a5d9b108e405f1f57786885839da2d669c216cde9df0ec779dd9",
+      "additional_tables": [],
+      "financial_summary": {
+        "registered_accounts": 0,
+        "auto_renew_accounts": 0,
+        "paid_authorizations": 0,
+        "paid_months": 0
+      }
+    },
+    "remote": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "remote_cancel_receipts": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "remote_jobs": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "766974ffea16c93d52b7cbc6242e662dcc30706d908bcbf8778ac32eac7aa7d9",
+      "additional_tables": []
+    },
+    "authenticator": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "credentials": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "metadata": {
+          "rows": 1,
+          "logical_sha256": "f6aade18d633626f8650aa2299884a03a5cfd4fb93add4e312a34f9f1b578fce"
+        },
+        "requests": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "693230298463086a61ea249d4b244b7dd52f435c06afff4ec15f3686648b644d",
+      "additional_tables": []
+    },
+    "power": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "requests": {
+          "rows": 2,
+          "logical_sha256": "ab2d15f449f408b75ce7b7d789d373445a8a03f6ad8889a007fe9df4c4f608f1"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "e57439beed3e8b8bfdc03b3a38e20e7bcb507b2955fe670bd10c1ed659f592bd",
+      "additional_tables": []
+    }
+  },
+  "after": {
+    "hub": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "hub_audit": {
+          "rows": 3,
+          "logical_sha256": "a884b0f6782c442fb436e7bbf48303619e76b7dcc8cdc68e170f0874313e667b"
+        },
+        "hub_installed": {
+          "rows": 1,
+          "logical_sha256": "3f609fe7a7adb25b3e52253cc28111d957ea2d5aef831e7d05f00ba97daf9378"
+        },
+        "hub_jobs": {
+          "rows": 1,
+          "logical_sha256": "1abad87ddb71e5f60dbda6b5b3888b31ce4b69ed2c4d70b12a9595e5177cd542"
+        },
+        "hub_packages": {
+          "rows": 1,
+          "logical_sha256": "841445c9fab02fa46a5cc533635b616dbbe58318452af4dd16b5340ad8be25ae"
+        },
+        "hub_requests": {
+          "rows": 3,
+          "logical_sha256": "bd9757d507d19755ef10b8bbbdee1b7e903492ac118c92fbd04a155d6df2e9f7"
+        },
+        "hub_revoked": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "rock_registry_requests": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {
+        "sqlite_sequence": {
+          "rows": 1,
+          "logical_sha256": "7037311da61af716422afa140a801217c8db0da0a8d9bea4d66f46118ba57b93"
+        }
+      },
+      "schema_sha256": "1aa435eba44f86e29237c32ae88072871b9d98c7e699a50f31bdabd8d1614680",
+      "additional_tables": []
+    },
+    "wallet": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "atm_credentials": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "atm_wallet_binding": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_auth_approvals": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_auth_challenges": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_auth_credential_state": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_auth_credentials": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_auth_mode": {
+          "rows": 1,
+          "logical_sha256": "66c0eac4bbdb451b61e4138042525b9d7a8bc861d48ff5d9a2c3179828db034d"
+        },
+        "wallet_auth_quotes": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_auth_terms": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_bills": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_consents": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_idempotency": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_journals": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_postings": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_sales": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "wallet_withdrawals": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {
+        "sqlite_sequence": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "schema_sha256": "56a2506372ee1fc753bb29dbd071ce4880e515542d17d8c7c9fbe577e0b48589",
+      "additional_tables": [],
+      "financial_summary": {
+        "currency": "USD",
+        "simulation_only": true,
+        "available_minor": 0,
+        "pending_minor": 0,
+        "held_minor": 0,
+        "dispensed_minor": 0,
+        "billed_minor": 0,
+        "bill_count": 0,
+        "bill_total_minor": 0,
+        "ledger_balance_minor": 0,
+        "sale_count": 0,
+        "withdrawal_count": 0,
+        "credential_count": 0
+      }
+    },
+    "membership": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "account_devices": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounts": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "authorization_claims": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "authorizations": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "consents": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "device_api_receipts": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "device_binding": {
+          "rows": 1,
+          "logical_sha256": "9fd6f7bef6545cc203d7046b0c3cf1876dd16f95d753bee7a88b8f94e8d531b2"
+        },
+        "device_monthly_due": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "device_register_origins": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "device_runtime": {
+          "rows": 1,
+          "logical_sha256": "07456b53a8652d7c31ab647ec301020650e780f87ee9d5ab91af712081cf59b6"
+        },
+        "devices": {
+          "rows": 1,
+          "logical_sha256": "f726b5509579e2f02cbae8d31e606c0ef30af217f83ac10d61749ef9aaf4f686"
+        },
+        "events": {
+          "rows": 1,
+          "logical_sha256": "adab4e7b6243f3117d37f936ac955e52e31cb81539d54cc0ca96c00503847636"
+        },
+        "receipts": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "streams": {
+          "rows": 1,
+          "logical_sha256": "620124ebc09e5658dc5ac30338f4c5a88588f7a3c68eb833534c6584cef6ef84"
+        },
+        "wallet_bindings": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "bc0622009648a5d9b108e405f1f57786885839da2d669c216cde9df0ec779dd9",
+      "additional_tables": [],
+      "financial_summary": {
+        "registered_accounts": 0,
+        "auto_renew_accounts": 0,
+        "paid_authorizations": 0,
+        "paid_months": 0
+      }
+    },
+    "remote": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "remote_cancel_receipts": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "remote_jobs": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "766974ffea16c93d52b7cbc6242e662dcc30706d908bcbf8778ac32eac7aa7d9",
+      "additional_tables": []
+    },
+    "authenticator": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "credentials": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "metadata": {
+          "rows": 1,
+          "logical_sha256": "f6aade18d633626f8650aa2299884a03a5cfd4fb93add4e312a34f9f1b578fce"
+        },
+        "requests": {
+          "rows": 0,
+          "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "693230298463086a61ea249d4b244b7dd52f435c06afff4ec15f3686648b644d",
+      "additional_tables": []
+    },
+    "power": {
+      "integrity": "ok",
+      "foreign_keys": "ok",
+      "tables": {
+        "requests": {
+          "rows": 3,
+          "logical_sha256": "a5ccec92a0938ca8ca52aef80ae81a10aca189ca65b1e42a28d3bc364469e11b"
+        }
+      },
+      "internal_sequences": {},
+      "schema_sha256": "e57439beed3e8b8bfdc03b3a38e20e7bcb507b2955fe670bd10c1ed659f592bd",
+      "additional_tables": []
+    }
+  },
+  "business_roles_exact": [
+    "authenticator",
+    "hub",
+    "membership",
+    "remote",
+    "wallet"
+  ],
+  "old_power_receipts_preserved": 2,
+  "new_dispatched_native_shutdowns": 1,
+  "new_shutdown_receipt_sha256": "68201bc1c1c8ef9ba688a69a4a20d016c6e19ac400c18df36a632002bc265892",
+  "hub_jobs": {
+    "rows": 1,
+    "logical_sha256": "1abad87ddb71e5f60dbda6b5b3888b31ce4b69ed2c4d70b12a9595e5177cd542"
+  },
+  "wallet_totals": {
+    "currency": "USD",
+    "simulation_only": true,
+    "available_minor": 0,
+    "pending_minor": 0,
+    "held_minor": 0,
+    "dispensed_minor": 0,
+    "billed_minor": 0,
+    "bill_count": 0,
+    "bill_total_minor": 0,
+    "ledger_balance_minor": 0,
+    "sale_count": 0,
+    "withdrawal_count": 0,
+    "credential_count": 0
+  }
+}

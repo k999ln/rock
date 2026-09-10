@@ -1,8 +1,10 @@
 # Rock star OS — 自動化OS 開発設計書
 
-現行要望は [製品ベース](product-baseline.md)を優先。本書は2026-09-05のAndroid/AOSP設計履歴。nativeはLinux/QEMU・BlackBerry優先でHub/Wallet試作がある。[差分監査](progress-audit-20260909.md)を読み、PC/cloud補助扱い、Pixel優先、SDK/Wallet未実装を製品全体へ適用しない。
+現行要望は [製品ベース](product-baseline.md)、現在の実装再開先は [CHECKPOINT](../CHECKPOINT.md)。Android/AOSPとLinux nativeの実績を分けます。
 
-設計日: 2026-09-05。版: 0.1。状態: 開発着手用の設計案。OS本体・SDK・ストア・実機対応はいずれも未実装/未検証。
+改訂日: 2026-09-09。現行方針は [native OS統合記録](native-os-integration.md)。BlackBerryを初期製品端末の優先候補とし、Linux/Buildroot/QEMUの起動済み試作を `systems/rock-star-os/` へ追加した。最終実機方式と型番は未定。Walletの新OS契約は月888 cents固定、既存Webの上限料金は試算として保持する。
+
+以下は**2026-09-05版0.1のAndroid/AOSPトラックの設計と履歴**。AOSP/Pixel主軸という当時の選択は現在の唯一の方式ではない。「未実装」「未検証」はこのトラックに限定する。Linuxで得た証拠をAndroidや実機に移し替えない。将来要件は引き続き参照し、矛盾する優先順位・端末・料金は上記の現行方針を優先する。
 
 実装追記: 利用者の「考えて組んでみて」を受け、[P1実装・検証手順](os-prototype.md)に対応するコードを追加した。本書は到達先の基本設計案であり、すべてが詳細設計/実装済みではない。現時点の実装範囲はP1を優先する。Java共通コア、32 KiB文字列AIDL、固定自社2操作、標準JobSchedulerが最初の具体化で、第三者SDK/専用隔離/OS起動は引き続き未完成。
 

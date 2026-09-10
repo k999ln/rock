@@ -1,0 +1,22 @@
+{
+  "demo-9abf78a.mp4": {
+    "status": 200,
+    "mime": "video/mp4",
+    "bytes": 730404,
+    "sha256": "58c832e84b2b952f6713cdc2abf9a417b8be338e4ccc13e6d6f7ad7a7406fd42"
+  },
+  "demo-9abf78a.vtt": {
+    "status": 200,
+    "mime": "text/vtt",
+    "bytes": 630,
+    "sha256": "653fc274fce595d4a3e421dd06a3e8fb45298f004f0d3ffcb127921fc60910b1",
+    "cue_timings": [
+      "00:00:00.000 --> 00:00:40.110",
+      "00:00:40.110 --> 00:00:55.954",
+      "00:00:55.954 --> 00:01:16.091",
+      "00:01:16.091 --> 00:01:30.040"
+    ],
+    "cue_count": 4,
+    "vtt": "WEBVTT\n\nNOTE QEMU actual screen recording; synthetic Wallet/Game; optional action descriptions, no spoken audio.\n\n1\n00:00:00.000 --> 00:00:40.110\nQEMUの実画面。公開サンプルを実処理し、履歴から引用整理の結果を開きます。\n\n2\n00:00:40.110 --> 00:00:55.954\n合成Walletを開き、月額テストと残高を確認します。実際の資金ではありません。\n\n3\n00:00:55.954 --> 00:01:16.091\n合成Game A/Bの接続と、事前に完了した交換の履歴を確認します。\n\n4\n00:01:16.091 --> 00:01:30.040\nHubの履歴に戻り、保存した引用整理の結果を開き直します。\n"
+  }
+}

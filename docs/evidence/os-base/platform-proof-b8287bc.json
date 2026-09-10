@@ -1,0 +1,207 @@
+{
+  "status": "PASS",
+  "checks": [
+    "root test orchestrator in actual ARM64 guest",
+    "installed runtime inventory and ordinary compatibility",
+    "actual platform health",
+    "native OS catalog signed packages",
+    "guest platform maturity",
+    "Wallet is explicitly simulator",
+    "tool identity denied platform IPC",
+    "native UI denied direct Wallet IPC",
+    "peer identity enforced with permissive DAC /run/rock-platform/api.sock",
+    "peer identity enforced with permissive DAC /run/rock-wallet/api.sock",
+    "real namespace/seccomp diagnostic",
+    "sandbox cpu_bounded",
+    "sandbox data_hidden",
+    "sandbox fds_bounded",
+    "sandbox fork_denied",
+    "sandbox host_root_hidden",
+    "sandbox inet_denied",
+    "sandbox memory_bounded",
+    "sandbox network_namespace",
+    "sandbox no_new_privs",
+    "sandbox platform_socket_hidden",
+    "sandbox proc_isolated",
+    "sandbox seccomp_filter",
+    "sandbox system_readonly",
+    "sandbox uid_unprivileged",
+    "sandbox unix_denied",
+    "sandbox wallet_socket_hidden",
+    "sandbox actual resource denial memory",
+    "sandbox actual resource denial cpu",
+    "sandbox actual resource denial file-size",
+    "sandbox actual resource denial crash",
+    "platform cannot open Wallet database",
+    "new install disabled until approval",
+    "install exact retry receipt",
+    "install retry does not revoke approval",
+    "job exact retry identity",
+    "signed Tool executes inside OS sandbox",
+    "conflicting retry rejected",
+    "64KiB input boundary enforced",
+    "no silent cloud fallback",
+    "independent package update changes behavior",
+    "cached signed version rollback",
+    "uninstall removes package but retains receipts",
+    "tool completion has no implicit earnings",
+    "Wallet starts unregistered with no extra personal fields",
+    "unregistered Wallet denies new activity",
+    "registration inherits handoff verification without new personal data",
+    "registration exact retry receipt",
+    "purchased registration still requires authentication",
+    "real isolated authenticator enrollment does not accept Wallet terms",
+    "explicit Wallet terms activate separately from monthly consent",
+    "unsettled proceeds unavailable",
+    "registration and settlement do not grant recurring consent",
+    "monthly request is a durable acceptance, not a payment assertion",
+    "monthly USD8.88 once per period",
+    "monthly acceptance retry does not charge twice",
+    "cancellation stops future automatic billing",
+    "new monthly request after cancellation is denied",
+    "ledger balanced after billing",
+    "server quote does not reserve funds",
+    "verified exact quote assertion creates one hold",
+    "same assertion retry returns identical issuance",
+    "unconsumed authenticated hold cancels without dispense",
+    "ledger balanced after ATM simulation",
+    "three independent SDK Tools in real guest"
+  ],
+  "architecture": "aarch64",
+  "wallet": "SIMULATOR_ONLY",
+  "blackberry": "NOT_RUN",
+  "physical_usb": "NOT_RUN",
+  "resource_probes": [
+    {
+      "mode": "memory",
+      "status": "PASS",
+      "returncode": 0,
+      "elapsed_seconds": 0.26919436800000085,
+      "armed": {
+        "limits": {
+          "as": [
+            268435456,
+            268435456
+          ],
+          "core": [
+            0,
+            0
+          ],
+          "cpu": [
+            2,
+            2
+          ],
+          "fsize": [
+            1048576,
+            1048576
+          ]
+        },
+        "mode": "memory",
+        "schema": "rock-sandbox-resource-probe/1",
+        "uid": 65534
+      },
+      "outcome": {
+        "mode": "memory",
+        "outcome": "MemoryError"
+      }
+    },
+    {
+      "mode": "cpu",
+      "status": "PASS",
+      "returncode": 137,
+      "elapsed_seconds": 2.0489997759999987,
+      "armed": {
+        "limits": {
+          "as": [
+            268435456,
+            268435456
+          ],
+          "core": [
+            0,
+            0
+          ],
+          "cpu": [
+            2,
+            2
+          ],
+          "fsize": [
+            1048576,
+            1048576
+          ]
+        },
+        "mode": "cpu",
+        "schema": "rock-sandbox-resource-probe/1",
+        "uid": 65534
+      },
+      "outcome": null
+    },
+    {
+      "mode": "file-size",
+      "status": "PASS",
+      "returncode": 0,
+      "elapsed_seconds": 0.3685576640000008,
+      "armed": {
+        "limits": {
+          "as": [
+            268435456,
+            268435456
+          ],
+          "core": [
+            0,
+            0
+          ],
+          "cpu": [
+            2,
+            2
+          ],
+          "fsize": [
+            1048576,
+            1048576
+          ]
+        },
+        "mode": "file-size",
+        "schema": "rock-sandbox-resource-probe/1",
+        "uid": 65534
+      },
+      "outcome": {
+        "bytes": 1048576,
+        "mode": "file-size",
+        "outcome": "EFBIG"
+      }
+    },
+    {
+      "mode": "crash",
+      "status": "PASS",
+      "returncode": 139,
+      "elapsed_seconds": 0.2789189279999995,
+      "armed": {
+        "limits": {
+          "as": [
+            268435456,
+            268435456
+          ],
+          "core": [
+            0,
+            0
+          ],
+          "cpu": [
+            2,
+            2
+          ],
+          "fsize": [
+            1048576,
+            1048576
+          ]
+        },
+        "mode": "crash",
+        "schema": "rock-sandbox-resource-probe/1",
+        "uid": 65534
+      },
+      "outcome": null
+    }
+  ],
+  "resource_probe_scope": "fixed diagnostic processes under unchanged production sandbox limits; per-file size only",
+  "hub_crash_deadline_lifecycle": "NOT_RUN",
+  "network": "Inter-|   Receive                                                |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed\n    lo:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\ndummy0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n  sit0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0\n",
+  "time_utc": "2026-09-09T19:33:41Z"
+}

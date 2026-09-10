@@ -1,0 +1,26 @@
+{
+  "status": "PASS_FINAL_MAC_TRIAL",
+  "network": "none",
+  "real_funds": false,
+  "frame": {
+    "bytes": 54659,
+    "sha256": "5a5fe3e4e9dedba1bd14acf530f1b441f1c5cd84c5ca959bbb7a088a19cbb012"
+  },
+  "observer_seconds": 29.773990689998755,
+  "old_power_receipts_unchanged": 2,
+  "total_power_receipts": 3,
+  "filesystem_exit": 0,
+  "data_sha256": "522c48834587dcb589deb4ab70a615f2b8f649257e429ba2605d629371ef83a6",
+  "serial_raw_sha256": "d3f9066b6f079b9da1b56e5e6e1c7cb432b1c421815a6f321829914adf779060",
+  "actual_output_sha256": "34230e3614c2d06650ddb8bd08aba9b68ee69974085f26a0810ad036040af90d",
+  "schema": "rock-mac-trial-final-public/1",
+  "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+  "source_report_sha256": "225fc8b948298f65ea8cd868e750e0116eb11be353cd4d74b59753eed702e17e",
+  "launcher_sha256": "16d578cc733881dd90383677061ea2dd87bd122f996e25caf0abf835420388be",
+  "normal_guest_shutdown_events": 1,
+  "non_power_data_unchanged": true,
+  "retained_jobs": 1,
+  "retained_receipts": 3,
+  "publication": "Derived summary; private session and process locations omitted. Original report is preserved locally.",
+  "scope": "Third actual Mac launch through pinned owned listener, saved result opened in Chrome canvas, normal UI shutdown and closed-data verification. Earlier timed-out second observer remains failed."
+}

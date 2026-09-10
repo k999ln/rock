@@ -1,0 +1,26 @@
+{
+  "actual_guest": "NOT_RUN_PREFLIGHT_ONLY",
+  "fixed_guest_limits": {
+    "Hub_deadline_seconds": 3,
+    "boots": 3,
+    "per_boot_seconds": 240
+  },
+  "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+  "frozen_image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+    "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+  },
+  "helper_sha256": "83e91af25cef3fe154da905edd3d86d275bd6025d95abae7d6f16de34fd5cdf9",
+  "new_manifest": "same PREFIXES/max20000 plus UID/GID and symlink target size/SHA; existing entry exact equality and additions3 unchanged",
+  "observer_commit": "7e9dcc9",
+  "old_manifest": "content/modes/symlink target string; UID/GID not attested",
+  "original_preflight_fail": "/var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial/hub-fault-mov_i28m/report.json",
+  "overlay": {
+    "systems/rock-star-os/os/verify-hub-faults.py": "1da9a8197eeb931cc4a4e0c85aaebf33a7d6c32f7350033df44f8090d74057be",
+    "systems/rock-star-os/tests/test_os_hub_fault_evidence.py": "fceee9151eac2287617fb2584215df1c0936cde4d025b269fe04e985345b5075"
+  },
+  "schema": "rock-hub-inventory-observer-probe/1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "started_utc": "2026-09-10T11:36:18.036950+00:00"
+}

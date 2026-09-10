@@ -1,0 +1,240 @@
+{
+  "archive_sha256": "121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2",
+  "bounded_members": [
+    {
+      "bytes": 536870912,
+      "container_sha256": "675b784cae33a0a4856b66b1752a3892455b983f505d3e27505b07a525d61055",
+      "content_read_status": "NOT_EXPANDED_RESOURCE_BOUND",
+      "fixture_file": {
+        "bytes": 2560,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz",
+        "parent_container_sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb",
+        "path": "gcc-15.3.0/libgo/go/archive/tar/testdata/gnu-incremental.tar",
+        "sha256": "675b784cae33a0a4856b66b1752a3892455b983f505d3e27505b07a525d61055"
+      },
+      "path": "test2/sparse"
+    },
+    {
+      "bytes": 60000000000,
+      "container_sha256": "027bb1a0d7f778fde347be353b1920141bc4d4d2da6828ace084cb339787fd17",
+      "content_read_status": "NOT_EXPANDED_RESOURCE_BOUND",
+      "fixture_file": {
+        "bytes": 5120,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz",
+        "parent_container_sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb",
+        "path": "gcc-15.3.0/libgo/go/archive/tar/testdata/gnu-sparse-big.tar",
+        "sha256": "027bb1a0d7f778fde347be353b1920141bc4d4d2da6828ace084cb339787fd17"
+      },
+      "path": "gnu-sparse"
+    },
+    {
+      "bytes": 17179869184,
+      "container_sha256": "36edba10087c389ffab0200dbf56013237af1ec8867a2442187c7147d899e7e4",
+      "content_read_status": "NOT_EXPANDED_RESOURCE_BOUND",
+      "fixture_file": {
+        "bytes": 1536,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz",
+        "parent_container_sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb",
+        "path": "gcc-15.3.0/libgo/go/archive/tar/testdata/writer-big-long.tar",
+        "sha256": "36edba10087c389ffab0200dbf56013237af1ec8867a2442187c7147d899e7e4"
+      },
+      "path": "longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/longname/16gig.txt"
+    },
+    {
+      "bytes": 17179869184,
+      "container_sha256": "5a0bee74a7bd0caa1d572ff1ae58c3c79310c8fc646a5e84fb5e1eea488ea4b5",
+      "content_read_status": "NOT_EXPANDED_RESOURCE_BOUND",
+      "fixture_file": {
+        "bytes": 512,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz",
+        "parent_container_sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb",
+        "path": "gcc-15.3.0/libgo/go/archive/tar/testdata/writer-big.tar",
+        "sha256": "5a0bee74a7bd0caa1d572ff1ae58c3c79310c8fc646a5e84fb5e1eea488ea4b5"
+      },
+      "path": "tmp/16gig.txt"
+    }
+  ],
+  "full_inventory_sha256": "0bcc5633243e4993ba3273d134c10e0ae605afaecf19fc27876d2dd6feea97ff",
+  "legal_bundle_sha256": "7c9cdc0d32faf4006b8693d5d8dc85efd8259ae937c90274888da3f943920a0c",
+  "meaning": "The actual distributed fixture file bytes are fully hashed and bound through parent source archives. Oversized/truncated hypothetical expanded contents are not called verified.",
+  "schema": "rock-lch02-technical-exception-bindings/1",
+  "status": "EXPLICIT_SOURCE_FIXTURES_NOT_PRODUCT_TEST_FAILURES",
+  "unparseable_containers": [
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 4,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz",
+        "parent_container_sha256": "65757f442fdd242e27f1728fc26dc0cba4164f7a0791a5c788631c00080369bc",
+        "path": "cmake-4.4.0/Tests/Fuzzing/corpus/archive/spaces.tar",
+        "sha256": "1a0f564ddc6039457b2fb26b3d6a316c15eba20a886449847c3210c35821a693"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 1024,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz",
+        "parent_container_sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb",
+        "path": "gcc-15.3.0/libgo/go/archive/tar/testdata/pax-path-hdr.tar",
+        "sha256": "2f434250f98a8aad5e77b8695d751b11bca1625d4d0264638113ad27ebeb11c7"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 256,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz",
+        "parent_container_sha256": "65757f442fdd242e27f1728fc26dc0cba4164f7a0791a5c788631c00080369bc",
+        "path": "cmake-4.4.0/Tests/Fuzzing/corpus/archive/cab-huffman-uninit.tar",
+        "sha256": "3256174a67b1a54fbc6b37794a7ed9b269be823e0b67d68591b9ec70513b9906"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 1536,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz",
+        "parent_container_sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb",
+        "path": "gcc-15.3.0/libgo/go/archive/tar/testdata/writer-big-long.tar",
+        "sha256": "36edba10087c389ffab0200dbf56013237af1ec8867a2442187c7147d899e7e4"
+      },
+      "status": "MALFORMED_ARCHIVE_OR_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 512,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz",
+        "parent_container_sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb",
+        "path": "gcc-15.3.0/libgo/go/archive/tar/testdata/writer-big.tar",
+        "sha256": "5a0bee74a7bd0caa1d572ff1ae58c3c79310c8fc646a5e84fb5e1eea488ea4b5"
+      },
+      "status": "MALFORMED_ARCHIVE_OR_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 2560,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz",
+        "parent_container_sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb",
+        "path": "gcc-15.3.0/libgo/go/archive/tar/testdata/pax-bad-hdr-file.tar",
+        "sha256": "63d5e53472b1ea35cd8814f9d4dee7597601c99eca367177bbaaab1e09d30468"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 229,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/busybox-1.38.0/busybox-1.38.0.tar.bz2",
+        "parent_container_sha256": "34f9ea6ff8636f2c9241153b9114eefa9e65674a45318ae1ef95bb5f31c53bb2",
+        "path": "busybox-1.38.0/testsuite/unzip_bad_lzma_1.zip",
+        "sha256": "6917569008ed8665c736b1d5b2dbbf8d863edac2478a1f05e998d535dea5b017"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 28,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/cmake-4.4.0/cmake-4.4.0.tar.gz",
+        "parent_container_sha256": "65757f442fdd242e27f1728fc26dc0cba4164f7a0791a5c788631c00080369bc",
+        "path": "cmake-4.4.0/Tests/Fuzzing/corpus/archive/no-pathname.tar",
+        "sha256": "7c6f2503bef7d2111c58f4a3e9a3392431a1ba7655049533bae142b6ce1ed05d"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 512,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz",
+        "parent_container_sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb",
+        "path": "gcc-15.3.0/libgo/go/archive/tar/testdata/neg-size.tar",
+        "sha256": "831bd782db9d2b552cbcfcb87adfded0941762596e5d8fbd742dba03c6dc357b"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 602,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz",
+        "parent_container_sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb",
+        "path": "gcc-15.3.0/libgo/go/archive/tar/testdata/issue11169.tar",
+        "sha256": "9c80a95a15edc3eef8fd6c506c4a92481f517bebd088d5db0eb260033a77c0f6"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 64,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/fakeroot-1.37.2/fakeroot_1.37.2.orig.tar.gz",
+        "parent_container_sha256": "0eea60fbe89771b88fcf415c8f2f0a6ccfe9edebbcf3ba5dc0212718d98884db",
+        "path": "fakeroot-1.37.2/test/t.tar",
+        "sha256": "9ca2fb47c8729866762225618758522a645fe5923b2711f44c74e42d34e1e052"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 512,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz",
+        "parent_container_sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb",
+        "path": "gcc-15.3.0/libgo/go/archive/tar/testdata/issue10968.tar",
+        "sha256": "a302db10909ff2822f09f362576eca6e1b4f0d70e34748f6fa1eea79e7d3713a"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 6,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/meson-1.11.1/meson-1.11.1.tar.gz",
+        "parent_container_sha256": "6788ae299979643f8d841bcaf64352558436cae45a0355148a3aeeccf7913866",
+        "path": "meson-1.11.1/test cases/common/153 wrap file should not failed/subprojects/packagecache/zlib-1.2.8-8-wrap.zip",
+        "sha256": "d3eb539a556352f3f47881d71fb0e5777b2f3e9a4251d283c18c67ce996774b7"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 516,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/python3-3.14.7/Python-3.14.7.tar.xz",
+        "parent_container_sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81",
+        "path": "Python-3.14.7/Lib/test/archivetestdata/recursion.tar",
+        "sha256": "d80f55ac66a2570c8a19d2b1dad7c057cf4c944d9c2f8adaf5bf6c8539881e13"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 512,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/host-sources/gcc-final-15.3.0/gcc-15.3.0.tar.xz",
+        "parent_container_sha256": "fa59c1beef8995f27c4d71c1df227587189315d3e6faff1bb4306e61b0c530eb",
+        "path": "gcc-15.3.0/libgo/go/archive/tar/testdata/issue12435.tar",
+        "sha256": "de7e983cc020b72b10819773e487c794e1269fc5a3793bc13d3c61ffacc553a5"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    },
+    {
+      "error_type": "ReadError",
+      "fixture_file": {
+        "bytes": 96,
+        "origin": "legal/buildroot-legal-info.tar.gz!/buildroot-legal-info/sources/busybox-1.38.0/busybox-1.38.0.tar.bz2",
+        "parent_container_sha256": "34f9ea6ff8636f2c9241153b9114eefa9e65674a45318ae1ef95bb5f31c53bb2",
+        "path": "busybox-1.38.0/testsuite/unzip_bad_lzma_2.zip",
+        "sha256": "e41016555fae6a69548ace9acbafb65c060b9b2c9066724724e4082aaf3446a7"
+      },
+      "status": "NON_ARCHIVE_OR_TEST_FIXTURE"
+    }
+  ]
+}

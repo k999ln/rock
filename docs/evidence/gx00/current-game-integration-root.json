@@ -1,0 +1,112 @@
+{
+  "schema": "rock-current-game-integration-root/1",
+  "status": "PASS_SCOPED_HOST_TESTS",
+  "base_commit": "d16ba2d34e42e69ce9c948101f538658c170a68d",
+  "root_tests": 72,
+  "root_seconds": 64.988,
+  "skipped": 0,
+  "artifacts": [
+    {
+      "file": "gx00-current-game-restore-host-evidence.json",
+      "original_sha256": "3cebffcf7b4a53d685d56f5bdc4b22b2840f5b8f609c321ca2875aaa79754f2d",
+      "public_sha256": "3cebffcf7b4a53d685d56f5bdc4b22b2840f5b8f609c321ca2875aaa79754f2d",
+      "local_path_substitution": false
+    },
+    {
+      "file": "game-current-restore-games-55-final.log",
+      "original_sha256": "81a6c0a0bb867e0fe5d83d36001a244e01bf203931649e4d340a33f8f6ed10fb",
+      "public_sha256": "81a6c0a0bb867e0fe5d83d36001a244e01bf203931649e4d340a33f8f6ed10fb",
+      "local_path_substitution": false
+    },
+    {
+      "file": "game-current-restore-wallet-102-final.log",
+      "original_sha256": "64bafc81f0fd144b658012ed237192bd47a420da14ad43e3b22b29121c01822c",
+      "public_sha256": "64bafc81f0fd144b658012ed237192bd47a420da14ad43e3b22b29121c01822c",
+      "local_path_substitution": false
+    },
+    {
+      "file": "game-current-restore-done-red-clean.log",
+      "original_sha256": "bb3c04b03a1adb8bba6951661be180158b6efc10ca4028556c2d3d4a14a4cfbf",
+      "public_sha256": "310404cc076064068c8e0bb22843ea10550a158651d08692878b9f039a8877cc",
+      "local_path_substitution": true
+    },
+    {
+      "file": "game-current-restore-19-final.log",
+      "original_sha256": "afba97bfb82fe93850a28c6aa6d690de37b29d955c091c46e962c728127bc837",
+      "public_sha256": "29fa3ad37d9e15dab4382c4bcf57e31f4f42b344dc8dd51309486f81e051db95",
+      "local_path_substitution": true
+    },
+    {
+      "file": "game-current-restore-fixture-recheck.log",
+      "original_sha256": "61ec574b99a635037405b4b4dc187b36fc57a30ddef78244e915accb131538e7",
+      "public_sha256": "61ec574b99a635037405b4b4dc187b36fc57a30ddef78244e915accb131538e7",
+      "local_path_substitution": false
+    },
+    {
+      "file": "game-current-restore-independent-final.json",
+      "original_sha256": "202fd614bd77b83dc3b0c163b974666a2b7753688461ee706ef8466406953283",
+      "public_sha256": "202fd614bd77b83dc3b0c163b974666a2b7753688461ee706ef8466406953283",
+      "local_path_substitution": false
+    },
+    {
+      "file": "game-current-restore-log-times.json",
+      "original_sha256": "b5664ffd5cc05cf9ee6754f6bd734cdab9b477b6c2c3a90740ff4282ea458d61",
+      "public_sha256": "b5664ffd5cc05cf9ee6754f6bd734cdab9b477b6c2c3a90740ff4282ea458d61",
+      "local_path_substitution": false
+    },
+    {
+      "file": "game-owner-client-evidence.json",
+      "original_sha256": "4cab71246f211858bc3a3e2dd52e6a36a0d6c35de6bc29edff425acc8f483f25",
+      "public_sha256": "5031536c5d2c2be0f3b1ace5e20d86ac902fcd247543cf882d1d464c8c616f8c",
+      "local_path_substitution": true
+    },
+    {
+      "file": "game-client-regression.log",
+      "original_sha256": "8e12da9664306d41f2cd78c963a45599b48ea4d1ff0458c6cc95750f3da996ae",
+      "public_sha256": "8e12da9664306d41f2cd78c963a45599b48ea4d1ff0458c6cc95750f3da996ae",
+      "local_path_substitution": false
+    },
+    {
+      "file": "game-client-independent-review.json",
+      "original_sha256": "1320721aa960353c26b1c04d79bf72af79e8b016336b998440a3297a40fb9a0c",
+      "public_sha256": "1320721aa960353c26b1c04d79bf72af79e8b016336b998440a3297a40fb9a0c",
+      "local_path_substitution": false
+    },
+    {
+      "file": "game-client-timeout-independent-before.log",
+      "original_sha256": "61aaa8c63994027b25a9663020c2df9972bd18e65ae1b01b5c5a5d50a42d73f3",
+      "public_sha256": "61aaa8c63994027b25a9663020c2df9972bd18e65ae1b01b5c5a5d50a42d73f3",
+      "local_path_substitution": false
+    },
+    {
+      "file": "game-client-timeout-independent-after.log",
+      "original_sha256": "f87607d9f56b2c7a703fa1be98eb2fd77568aad707835f6b180bf91484b2de9c",
+      "public_sha256": "a6a0a3a0a2289615464234fe76a757ee22397d82a0d8dd2b14e9e1eb5fbbf980",
+      "local_path_substitution": true
+    },
+    {
+      "file": "game-client-close-independent.log",
+      "original_sha256": "1634e22fdd155a0e5aca4b2d432d947058c2cfce0e53b90bff3367d5ae59a14b",
+      "public_sha256": "1634e22fdd155a0e5aca4b2d432d947058c2cfce0e53b90bff3367d5ae59a14b",
+      "local_path_substitution": false
+    },
+    {
+      "file": "game-integrated-root.log",
+      "original_sha256": "6bd2ce6107d755ffb629cbb6b9baedac2b72fb9df654da0b25725b282b80ddab",
+      "public_sha256": "6bd2ce6107d755ffb629cbb6b9baedac2b72fb9df654da0b25725b282b80ddab",
+      "local_path_substitution": false
+    }
+  ],
+  "source_sha256": {
+    "os/game_exchange/client.py": "2acd6babecf3aee81aaf651751da2212ef9fbd869b6d9d0563c39542b7569449",
+    "os/game_exchange/current_restore.py": "b10100377b4038eb0b73ff33af12d64b150d34f81421675782a5b02da1356f94",
+    "os/game_exchange/connections.py": "aa7994fe0b37cb40a3036fb76c709f2434c2f2f53bdf3d7cc90ef64d88d3d04e",
+    "os/wallet_backend/contract_runtime.py": "deb5e2f847026aa76bf32a6073ef6335d09967145ee00d928cc595ab29da8847",
+    "os/wallet_backend/server.py": "e56ca67f55863ca57f17c189961914ff5cf7e66008860e0eb9ef18b8ea362441",
+    "tests/test_game_connection_client.py": "9bb905b5d87a9650faab6755d8ddb7020835a98671c4b80b5d1172e1d3dbdefd",
+    "tests/test_game_current_restore.py": "9297cc5efb8b8aac7d8ae49754b117a84834c87a99ae509a8bf9d54c9dc41614",
+    "tests/test_contract_runtime_lifetime.py": "c09a04af0f6a4a7ae04d784a6f90614516c8ea1075ac07bc643b54337dcdb1c1"
+  },
+  "scope": "Integrated current-copy handover and durable owner client; actual local TLS synthetic fixtures. Public logs with substitutions are explicit derived copies; originals remain unchanged locally.",
+  "gate": "GX00 remains incomplete pending same-TLS isolation acceptance gaps and cross-game reconcile key correction. Frozen b8287bc OS unchanged; no currency exchange or real funds."
+}

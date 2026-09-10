@@ -1,0 +1,6 @@
+#!/bin/sh
+[ "${1:-start}" = start ] || exit 0
+case " $(cat /proc/cmdline) " in
+  *" rock.ui.wallet.verify=1 "*) /usr/bin/python3 -I -B /usr/libexec/rock-ui-wallet-evidence.py & ;;
+esac
+exit 0

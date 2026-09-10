@@ -1,0 +1,106 @@
+{
+  "schema": "rock-native-partition-local-validation/1",
+  "status": "PASS",
+  "scope": "ARM64 Linux host source tests; no new QEMU boot or image acceptance",
+  "base_commit": "3d07df03bac9cf0e03a0fe2b46b19aa5f2a9916e",
+  "native_input_count": 699,
+  "native_input_inventory_sha256": "a297fab7e738f57a295b439e68c2e5d43f230df087019dec0c7d1c3ffa0d4a1c",
+  "merged_report_sha256": "0e63d929ebd1e1056002f537516e9f171f7dae97dd461dd92c24814b642afc16",
+  "archive_sha256": "3821fcc237264d4e38ff4ebe79d803ea4799394dabf02d34e49ae2248c15eff7",
+  "checks": 17,
+  "total_python_test_executions": 1660,
+  "main_test_executions": 1396,
+  "prior_main_tests_preserved": 1392,
+  "new_tests": {
+    "test_native_partition.NativePartitionTests.test_invalid_partitions_never_select_tests": 1,
+    "test_native_partition.NativePartitionTests.test_join_keeps_original_logs_and_counts_every_occurrence": 1,
+    "test_native_partition.NativePartitionTests.test_join_rejects_missing_duplicate_stale_failed_or_tampered_evidence": 1,
+    "test_native_partition.NativePartitionTests.test_nested_discovery_preserves_duplicate_occurrences_and_module_fixtures": 1
+  },
+  "all_original_logs_verified": true,
+  "source_matches_current_files": true,
+  "parts": [
+    {
+      "partition": {
+        "kind": "main",
+        "index": 0,
+        "count": 4,
+        "selection_sha256": "7cca43ac031be1a46114d7ea3cc81311e7ead457e3239f26e8a201ab12a915e6"
+      },
+      "tests": 347,
+      "started_utc": "2026-09-10T16:28:18.712951+00:00",
+      "finished_utc": "2026-09-10T16:28:40.383010+00:00",
+      "report_sha256": "059e65383fa0e8d90121bdd90ea224626485b00798c82b183475dbda4e79cc43",
+      "suite_durations": [
+        "20.970"
+      ]
+    },
+    {
+      "partition": {
+        "kind": "main",
+        "index": 1,
+        "count": 4,
+        "selection_sha256": "6ec0e7a0bb2e39f4d9cc700783c4221893c1fe16db9fca6dcbaf92251da16d33"
+      },
+      "tests": 309,
+      "started_utc": "2026-09-10T16:28:40.451252+00:00",
+      "finished_utc": "2026-09-10T16:29:11.901637+00:00",
+      "report_sha256": "3c025374809382f003238102067b59828c6b4e613c5d9856b3b70c193e1f474a",
+      "suite_durations": [
+        "30.612"
+      ]
+    },
+    {
+      "partition": {
+        "kind": "main",
+        "index": 2,
+        "count": 4,
+        "selection_sha256": "a7fbb4a83a552d27a1a8e6b6bdda276fa252f0c8011a0375afbfc618713758e7"
+      },
+      "tests": 402,
+      "started_utc": "2026-09-10T16:29:11.957316+00:00",
+      "finished_utc": "2026-09-10T16:29:49.042410+00:00",
+      "report_sha256": "1af1c9397016cd23c7025e497e1459e576ee512d389f2fe128b8256bb6211205",
+      "suite_durations": [
+        "36.431"
+      ]
+    },
+    {
+      "partition": {
+        "kind": "main",
+        "index": 3,
+        "count": 4,
+        "selection_sha256": "505423cd9f41560701a09ca3a4090c0bff35465d306088fd03188ca015367d55"
+      },
+      "tests": 338,
+      "started_utc": "2026-09-10T16:29:49.095589+00:00",
+      "finished_utc": "2026-09-10T16:30:37.906765+00:00",
+      "report_sha256": "9629b07f6eba961302868c93bd0f97daf1f36dc521c2f49719f4571419a523fe",
+      "suite_durations": [
+        "48.167"
+      ]
+    },
+    {
+      "partition": {
+        "kind": "support"
+      },
+      "tests": 264,
+      "started_utc": "2026-09-10T16:30:37.962442+00:00",
+      "finished_utc": "2026-09-10T16:31:18.137822+00:00",
+      "report_sha256": "a5e08156b2c3f1c1936eab3d93be92c965aedbf02606e514884e2a314dc563c9",
+      "suite_durations": [
+        "1.042",
+        "0.041",
+        "0.196",
+        "0.153",
+        "32.637",
+        "0.018",
+        "1.148"
+      ]
+    }
+  ],
+  "targeted_mac_tests": 11,
+  "npm_verify": "PASS, including 143 API assertions",
+  "original_3d07df0_failure_retained": true,
+  "prior_tls_error_cause": "UNDETERMINED"
+}

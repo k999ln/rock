@@ -1,0 +1,409 @@
+{
+  "schema": "rock-native-ui-harness/1",
+  "status": "PASS",
+  "started_utc": "2026-09-09T19:36:54.334852+00:00",
+  "scope": "actual QEMU ARM64 native framebuffer/evdev input with independent guest state observation",
+  "blackberry": "NOT_RUN",
+  "wallet": "SIMULATOR_ONLY",
+  "input_events": [
+    {
+      "action": "click",
+      "value": [
+        360,
+        363
+      ],
+      "sent_unix": 1788982631.7186697
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788982632.7535517
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        793
+      ],
+      "sent_unix": 1788982632.9902852
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgup"
+      ],
+      "sent_unix": 1788982636.3943813
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        758
+      ],
+      "sent_unix": 1788982636.6440055
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        758
+      ],
+      "sent_unix": 1788982640.34126
+    },
+    {
+      "action": "click",
+      "value": [
+        250,
+        425
+      ],
+      "sent_unix": 1788982641.445822
+    },
+    {
+      "action": "keys",
+      "value": [
+        "ctrl",
+        "a"
+      ],
+      "sent_unix": 1788982641.6517413
+    },
+    {
+      "action": "keys",
+      "value": [
+        "shift",
+        "n"
+      ],
+      "sent_unix": 1788982641.8023815
+    },
+    {
+      "action": "keys",
+      "value": [
+        "a"
+      ],
+      "sent_unix": 1788982641.9549975
+    },
+    {
+      "action": "keys",
+      "value": [
+        "t"
+      ],
+      "sent_unix": 1788982642.1101718
+    },
+    {
+      "action": "keys",
+      "value": [
+        "i"
+      ],
+      "sent_unix": 1788982642.2614172
+    },
+    {
+      "action": "keys",
+      "value": [
+        "v"
+      ],
+      "sent_unix": 1788982642.4143736
+    },
+    {
+      "action": "keys",
+      "value": [
+        "e"
+      ],
+      "sent_unix": 1788982642.564913
+    },
+    {
+      "action": "keys",
+      "value": [
+        "spc"
+      ],
+      "sent_unix": 1788982642.7153397
+    },
+    {
+      "action": "keys",
+      "value": [
+        "shift",
+        "o"
+      ],
+      "sent_unix": 1788982642.866094
+    },
+    {
+      "action": "keys",
+      "value": [
+        "shift",
+        "s"
+      ],
+      "sent_unix": 1788982643.016815
+    },
+    {
+      "action": "keys",
+      "value": [
+        "ret"
+      ],
+      "sent_unix": 1788982643.1677444
+    },
+    {
+      "action": "keys",
+      "value": [
+        "shift",
+        "l"
+      ],
+      "sent_unix": 1788982643.318934
+    },
+    {
+      "action": "keys",
+      "value": [
+        "o"
+      ],
+      "sent_unix": 1788982643.4696164
+    },
+    {
+      "action": "keys",
+      "value": [
+        "c"
+      ],
+      "sent_unix": 1788982643.620335
+    },
+    {
+      "action": "keys",
+      "value": [
+        "a"
+      ],
+      "sent_unix": 1788982643.7710109
+    },
+    {
+      "action": "keys",
+      "value": [
+        "l"
+      ],
+      "sent_unix": 1788982643.9216087
+    },
+    {
+      "action": "keys",
+      "value": [
+        "spc"
+      ],
+      "sent_unix": 1788982644.0720448
+    },
+    {
+      "action": "keys",
+      "value": [
+        "r"
+      ],
+      "sent_unix": 1788982644.2236154
+    },
+    {
+      "action": "keys",
+      "value": [
+        "e"
+      ],
+      "sent_unix": 1788982644.3740623
+    },
+    {
+      "action": "keys",
+      "value": [
+        "s"
+      ],
+      "sent_unix": 1788982644.5246508
+    },
+    {
+      "action": "keys",
+      "value": [
+        "u"
+      ],
+      "sent_unix": 1788982644.6769311
+    },
+    {
+      "action": "keys",
+      "value": [
+        "l"
+      ],
+      "sent_unix": 1788982644.8274176
+    },
+    {
+      "action": "keys",
+      "value": [
+        "t"
+      ],
+      "sent_unix": 1788982644.9783103
+    },
+    {
+      "action": "keys",
+      "value": [
+        "x"
+      ],
+      "sent_unix": 1788982645.1287827
+    },
+    {
+      "action": "keys",
+      "value": [
+        "backspace"
+      ],
+      "sent_unix": 1788982645.279246
+    },
+    {
+      "action": "keys",
+      "value": [
+        "ctrl",
+        "ret"
+      ],
+      "sent_unix": 1788982646.6463609
+    },
+    {
+      "action": "click",
+      "value": [
+        442,
+        913
+      ],
+      "sent_unix": 1788982650.6998577
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        913
+      ],
+      "sent_unix": 1788982651.8019185
+    }
+  ],
+  "screenshots": [
+    {
+      "name": "00-hub.png",
+      "bytes": 123737,
+      "sha256": "c9d67125a161cb0334f1694639950b1ac8c56980b07754c359e7e8fcc9084c55",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "01-tool-detail.png",
+      "bytes": 107487,
+      "sha256": "1ffed45fcf8cb3eef2d2a187c843cd720c2efc32d27222c66b14bcc34453ff58",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "02-installed-permission-review.png",
+      "bytes": 105848,
+      "sha256": "02688a7ed7f1e6b50d79813c6812607c5b916c44aef8da01cf59b9010ba0ace2",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "03-approved.png",
+      "bytes": 99490,
+      "sha256": "b6021c8563cccacd01f4304504294c3b5e34acbc4e74a7ad6d65031e98c30c04",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "04-editor.png",
+      "bytes": 67038,
+      "sha256": "ebbaaae53662897af534a372822016ce665b022d6e32bf61e7f985cf928ff6ac",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "05-real-keyboard-input.png",
+      "bytes": 68605,
+      "sha256": "760bd199de7917238a0220134117b23adccc2ea6100f6e24980f45dd9f72dedd",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "06-actual-result.png",
+      "bytes": 53865,
+      "sha256": "4651db610598210949ccf5da9dcc47ea53ea3b1e82fe9865cdb3b69383555d84",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "07-actual-history.png",
+      "bytes": 46244,
+      "sha256": "71a9c8937a052613f4b213a4c00d732b3a44c0ecb174285151643a88434766e3",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "08-wallet-unchanged.png",
+      "bytes": 96342,
+      "sha256": "941194d38f48f055c7a700ae05dd20a3d03c073b07050e088ac895dbcb213d23",
+      "dimensions": [
+        720,
+        960
+      ]
+    }
+  ],
+  "image_sha256_before": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+  },
+  "command": [
+    "qemu-system-aarch64",
+    "-machine",
+    "virt-10.0,gic-version=3",
+    "-accel",
+    "tcg",
+    "-cpu",
+    "cortex-a53",
+    "-m",
+    "1024",
+    "-smp",
+    "2",
+    "-display",
+    "none",
+    "-serial",
+    "stdio",
+    "-monitor",
+    "none",
+    "-qmp",
+    "unix:/tmp/rock-ui-qmp-ce4z_w6x/qmp.sock,server=on,wait=off",
+    "-no-reboot",
+    "-nic",
+    "none",
+    "-kernel",
+    "/var/tmp/rk3/systems/rock-star-os/artifacts/os/Image",
+    "-append",
+    "console=ttyAMA0 root=/dev/vda ro rootflags=noload rootwait panic=-1 vt.global_cursor_default=0 rock.ui.verify=1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/rootfs.ext4,format=raw,id=osdisk,readonly=on",
+    "-device",
+    "virtio-blk-pci,drive=osdisk,addr=0x1",
+    "-drive",
+    "if=none,file=/var/tmp/rk-native-gui/native-ui-20260909T193654Z-yxkmfoz9/userdata.ext4,format=raw,id=userdata",
+    "-device",
+    "virtio-blk-pci,drive=userdata,addr=0x2",
+    "-object",
+    "rng-random,filename=/dev/urandom,id=rockrng",
+    "-device",
+    "virtio-rng-pci,rng=rockrng,addr=0x3",
+    "-device",
+    "virtio-gpu-pci,xres=720,yres=960,addr=0x4",
+    "-device",
+    "virtio-keyboard-pci,addr=0x5",
+    "-device",
+    "virtio-tablet-pci,addr=0x6"
+  ],
+  "exit_code": 0,
+  "guest_proof_sha256": "10d314c0db1ebbd8f2debbcb34d34d907552f8a02cad8f60df1f8ebd6ee396b2",
+  "durable_guest_proof_matches_serial": true,
+  "image_sha256_after": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+  },
+  "finished_utc": "2026-09-09T19:37:58.371121+00:00"
+}

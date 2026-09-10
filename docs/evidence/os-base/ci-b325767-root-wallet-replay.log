@@ -1,0 +1,3 @@
+PASS wallet: real C inputs, authenticated Wallet, fourteen frames, closed synthetic balance
+PASS atm: real C inputs, authenticated Wallet, fourteen frames, closed synthetic balance
+PASS seven stale coordinates and missing PageDown rejected before wrong-action dispatch

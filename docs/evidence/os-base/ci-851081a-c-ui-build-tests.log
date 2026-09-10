@@ -1,0 +1,4 @@
+cc -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -pthread -I/usr/include/cairo -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/pixman-1 -I/usr/include/json-c   -c -o test_ui.o test_ui.c
+cc -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -pthread  -o rock-ui-test test_ui.o ui.o device.o ipc.o -lcairo -lfreetype -ljson-c  -lm -pthread
+cc -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -pthread -I/usr/include/cairo -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/pixman-1 -I/usr/include/json-c   -c -o test_ipc.o test_ipc.c
+cc -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -pthread  -o rock-ipc-test test_ipc.o ipc.o -lcairo -lfreetype -ljson-c  -lm -pthread

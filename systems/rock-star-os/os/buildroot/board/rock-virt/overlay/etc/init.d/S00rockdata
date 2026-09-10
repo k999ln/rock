@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+[ "${1:-start}" = start ] || exit 0
+mkdir -p /data
+if ! mountpoint -q /data; then
+  mount -t ext4 -o nosuid,nodev,noexec /dev/vdb /data
+fi
+/usr/libexec/rock-mount-check /data /dev/vdb ext4 rw,nosuid,nodev,noexec
+mkdir -p /data/seedrng
+chown 0:0 /data/seedrng
+chmod 0700 /data/seedrng

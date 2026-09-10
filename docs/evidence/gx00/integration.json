@@ -1,0 +1,40 @@
+{
+  "schema": "rock-gx00-host-integration/1",
+  "status": "PASS_SCOPED_HOST_COMPONENTS",
+  "source_base": "1a960756fbd5edc7f13a0578f3e7fc50025534c8",
+  "patches": {
+    "gx00-contract-runtime-A.patch": "4b5760dc1b853d3979552a920d57b622133edc1f8444ff69a0739f3dff3fc708",
+    "gx00-owner-router-client.patch": "55d6a9c1d535176fe08d9e626d3a4821041d78296f197b9f1f5ff792e8e89de9",
+    "gx00-fence.patch": "386742c57370c91669b4c8c773498d210a5546859887bf3b461590da2ed515ba"
+  },
+  "root_integration": {
+    "environment": "macOS with owned temporary SQLite and real loopback TLS",
+    "executions": 157,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "resource_warnings": 0,
+    "seconds": 10.245,
+    "log": "gx00-root-combined-tests.log",
+    "log_sha256": "f98c7637cf701c4c8c8c5c4d31648a2751b4766280eeb4302fa2fc98f8209fa1"
+  },
+  "actual_route": "existing authenticated Wallet/Auth/ATM via one managed TLS listener, two owners and three purchased devices; one owner has two devices",
+  "storage": "one contract per original Wallet/Entitlement DB pair; existing monthly888, consent, holds, credentials and receipts retained",
+  "adoption": "protected stopped legacy host backend, PREPARED before any constructor/DDL; original rows/schema/extra tables retained through interrupted adoption",
+  "recovery": "same host, current stopped source copied to new owned path, old writer retired and epoch advanced once; independent owner registry stays current",
+  "observed_old_runtime": "actual b8287bc legacy server refuses new markers before constructors; bare old Wallet/Store libraries can still write disposable copied DBs",
+  "not_implemented": [
+    "two-author/two-game connection and exchange",
+    "arbitrary historical backup or missing-source recovery",
+    "different host or distributed writer fencing",
+    "independent owner registry rollback detection for same path/UUID",
+    "local OS ledger migration and signed new data ABI/old-slot refusal",
+    "D4/D5 acceptance for a new image containing these runtime changes",
+    "hardware or actual funds"
+  ],
+  "GX00_whole": "INCOMPLETE",
+  "GX01": "NOT_RUN",
+  "DX01": "NOT_RUN",
+  "frozen_OS_image": "b8287bc remains unchanged and does not include this host integration",
+  "recorded_utc": "2026-09-09T22:24:06.300167+00:00"
+}

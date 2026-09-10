@@ -1,0 +1,91 @@
+/usr/sbin/mkfs.ext4
+test_ancillary_and_control_truncation_do_not_leak_descriptors (test_ui_startup_health.StartupLinuxTests.test_ancillary_and_control_truncation_do_not_leak_descriptors) ... ok
+test_dead_process_and_replaced_pid_record_rejected (test_ui_startup_health.StartupLinuxTests.test_dead_process_and_replaced_pid_record_rejected) ... ok
+test_endpoint_mode_symlink_and_replacement_rejected (test_ui_startup_health.StartupLinuxTests.test_endpoint_mode_symlink_and_replacement_rejected) ... ok
+test_executable_pid_and_peer_mismatch (test_ui_startup_health.StartupLinuxTests.test_executable_pid_and_peer_mismatch) ... ok
+test_frozen_or_regressing_loop_and_frame_rejected (test_ui_startup_health.StartupLinuxTests.test_frozen_or_regressing_loop_and_frame_rejected) ... ok
+test_pid_symlink_hardlink_mode_and_malformed_rejected (test_ui_startup_health.StartupLinuxTests.test_pid_symlink_hardlink_mode_and_malformed_rejected) ... ok
+test_real_pidfd_proc_and_fresh_challenges (test_ui_startup_health.StartupLinuxTests.test_real_pidfd_proc_and_fresh_challenges) ... ok
+test_stopped_process_and_open_connection_timeout (test_ui_startup_health.StartupLinuxTests.test_stopped_process_and_open_connection_timeout) ... ok
+test_wrong_nonce_pid_extra_truncated_and_nul_packets (test_ui_startup_health.StartupLinuxTests.test_wrong_nonce_pid_extra_truncated_and_nul_packets) ... ok
+test_ambiguous_or_malformed_mode_rejected (test_ui_startup_health.StartupProtocolTests.test_ambiguous_or_malformed_mode_rejected) ... ok
+test_exact_response (test_ui_startup_health.StartupProtocolTests.test_exact_response) ... ok
+test_frame_input_and_counter_bounds (test_ui_startup_health.StartupProtocolTests.test_frame_input_and_counter_bounds) ... ok
+test_nonce_pid_and_framing_rejected (test_ui_startup_health.StartupProtocolTests.test_nonce_pid_and_framing_rejected) ... ok
+test_received_rights_are_closed (test_ui_startup_health.StartupProtocolTests.test_received_rights_are_closed) ... ok
+test_required_by_default_and_explicit_headless (test_ui_startup_health.StartupProtocolTests.test_required_by_default_and_explicit_headless) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 4.564s
+
+OK
+test_copy_and_restore_into_new_device_preserve_source (test_os_desktop_backup.OfflineBackup.test_copy_and_restore_into_new_device_preserve_source) ... ok
+test_destination_clean_check_failure_never_activates_device (test_os_desktop_backup.OfflineBackup.test_destination_clean_check_failure_never_activates_device) ... ok
+test_existing_destination_and_same_source_are_never_overwritten (test_os_desktop_backup.OfflineBackup.test_existing_destination_and_same_source_are_never_overwritten) ... ok
+test_final_destination_change_and_wrong_copy_count_are_rejected (test_os_desktop_backup.OfflineBackup.test_final_destination_change_and_wrong_copy_count_are_rejected) ... ok
+test_modified_backup_fails_before_creating_destination (test_os_desktop_backup.OfflineBackup.test_modified_backup_fails_before_creating_destination) ... ok
+test_restore_does_not_replace_old_remote_journal_with_a_fresh_endpoint (test_os_desktop_backup.OfflineBackup.test_restore_does_not_replace_old_remote_journal_with_a_fresh_endpoint) ... ok
+test_running_guest_is_rejected_before_filesystem_or_copy (test_os_desktop_backup.OfflineBackup.test_running_guest_is_rejected_before_filesystem_or_copy) ... ok
+test_source_change_after_initial_validation_never_activates_destination (test_os_desktop_backup.OfflineBackup.test_source_change_after_initial_validation_never_activates_destination) ... ok
+test_symlink_and_hardlink_data_are_not_copied (test_os_desktop_backup.OfflineBackup.test_symlink_and_hardlink_data_are_not_copied) ... ok
+test_unclean_filesystem_is_never_repaired_or_copied (test_os_desktop_backup.OfflineBackup.test_unclean_filesystem_is_never_repaired_or_copied) ... ok
+test_wrong_owner_device_marker_is_rejected (test_os_desktop_backup.OfflineBackup.test_wrong_owner_device_marker_is_rejected) ... ok
+test_closed_profile_requires_remote_cache_not_a_second_local_ledger (test_os_desktop_backup_profiles.BackupProfileGuards.test_closed_profile_requires_remote_cache_not_a_second_local_ledger) ... ok
+test_every_disk_is_compared_at_source_backup_and_restored_destination (test_os_desktop_backup_profiles.BackupProfileGuards.test_every_disk_is_compared_at_source_backup_and_restored_destination) ... ok
+test_external_authority_and_runner_cannot_be_called_restored_from_guest_cache (test_os_desktop_backup_profiles.BackupProfileGuards.test_external_authority_and_runner_cannot_be_called_restored_from_guest_cache) ... ok
+test_legacy_and_ab_manifests_use_their_actual_format (test_os_desktop_backup_profiles.BackupProfileGuards.test_legacy_and_ab_manifests_use_their_actual_format) ... ok
+test_missing_extra_and_invalid_manifest_members_fail_closed (test_os_desktop_backup_profiles.BackupProfileGuards.test_missing_extra_and_invalid_manifest_members_fail_closed) ... ok
+test_run_consumes_both_manifest_versions_and_leaves_external_gate_incomplete (test_os_desktop_backup_profiles.BackupProfileGuards.test_run_consumes_both_manifest_versions_and_leaves_external_gate_incomplete)
+Exercise orchestration only: all guest/UI/DB seams are synthetic. ... ok
+test_symlink_disk_is_rejected_even_if_bytes_match (test_os_desktop_backup_profiles.BackupProfileGuards.test_symlink_disk_is_rejected_even_if_bytes_match) ... ok
+test_added_power_table_is_not_covered_by_shutdown_receipt_exception (test_os_desktop_backup_verify.CompleteSchemaEvidenceGuards.test_added_power_table_is_not_covered_by_shutdown_receipt_exception) ... ok
+test_all_44_current_business_tables_and_populated_totals_are_observed (test_os_desktop_backup_verify.CompleteSchemaEvidenceGuards.test_all_44_current_business_tables_and_populated_totals_are_observed) ... ok
+test_all_added_identity_stream_event_and_credential_hashes_are_compared (test_os_desktop_backup_verify.CompleteSchemaEvidenceGuards.test_all_added_identity_stream_event_and_credential_hashes_are_compared) ... ok
+test_due_retry_is_rejected_before_claiming_strict_restoration (test_os_desktop_backup_verify.CompleteSchemaEvidenceGuards.test_due_retry_is_rejected_before_claiming_strict_restoration) ... ok
+test_new_table_is_not_silently_omitted (test_os_desktop_backup_verify.CompleteSchemaEvidenceGuards.test_new_table_is_not_silently_omitted) ... ok
+test_private_credential_and_membership_rows_are_not_exported (test_os_desktop_backup_verify.CompleteSchemaEvidenceGuards.test_private_credential_and_membership_rows_are_not_exported) ... ok
+test_private_snapshot_byte_budget_fails_closed (test_os_desktop_backup_verify.CompleteSchemaEvidenceGuards.test_private_snapshot_byte_budget_fails_closed) ... ok
+test_purchaser_profile_preserves_actual_remote_cache_and_all_additional_tables (test_os_desktop_backup_verify.CompleteSchemaEvidenceGuards.test_purchaser_profile_preserves_actual_remote_cache_and_all_additional_tables) ... ok
+test_real_identity_row_change_is_detected_without_exporting_it (test_os_desktop_backup_verify.CompleteSchemaEvidenceGuards.test_real_identity_row_change_is_detected_without_exporting_it) ... ok
+test_required_table_cannot_be_dropped_to_reduce_comparison_scope (test_os_desktop_backup_verify.CompleteSchemaEvidenceGuards.test_required_table_cannot_be_dropped_to_reduce_comparison_scope) ... ok
+test_schema_reads_do_not_modify_source_database_bytes (test_os_desktop_backup_verify.CompleteSchemaEvidenceGuards.test_schema_reads_do_not_modify_source_database_bytes) ... ok
+test_sequence_and_schema_changes_are_not_treated_as_harmless_metadata (test_os_desktop_backup_verify.CompleteSchemaEvidenceGuards.test_sequence_and_schema_changes_are_not_treated_as_harmless_metadata) ... ok
+test_all_business_hashes_must_match_after_boot (test_os_desktop_backup_verify.RestoreEvidenceGuards.test_all_business_hashes_must_match_after_boot) ... ok
+test_completed_job_receipt_and_input_are_not_fabricated (test_os_desktop_backup_verify.RestoreEvidenceGuards.test_completed_job_receipt_and_input_are_not_fabricated) ... ok
+test_live_source_existing_destination_and_invalid_name_never_start_actions (test_os_desktop_backup_verify.RestoreEvidenceGuards.test_live_source_existing_destination_and_invalid_name_never_start_actions) ... ok
+test_native_shutdown_requires_new_boot_exact_old_receipts_and_guest_event (test_os_desktop_backup_verify.RestoreEvidenceGuards.test_native_shutdown_requires_new_boot_exact_old_receipts_and_guest_event) ... ok
+test_wallet_capture_path_only_navigates_and_scrolls (test_os_desktop_backup_verify.RestoreEvidenceGuards.test_wallet_capture_path_only_navigates_and_scrolls) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 0.681s
+
+OK
+make: Entering directory '/var/tmp/rock-runtime-candidate-ui'
+cc -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -pthread -DROCK_UI_HEALTH_TEST  -o rock-ui-health-test test_health.c health.c
+make: Leaving directory '/var/tmp/rock-runtime-candidate-ui'
+make: Entering directory '/var/tmp/rock-runtime-candidate-ui'
+./rock-ui-health-test
+PASS present, main-loop progress and fresh nonce
+PASS connect-before-send retained and bounded expiry recovered
+PASS fixed capacity, cleanup and repeated close
+PASS exact packet, lowercase nonce, truncation and extra packet rejection
+PASS ancillary rejection closes received and truncated SCM_RIGHTS
+PASS actual UID1000 client denied and actual root accepted
+PASS zero inputs, invalid dimensions and counter overflow fail closed
+PASS fixed UI owner, protected socket and no overwrite
+PASS: 8 native UI readiness protocol/ownership/lifecycle test groups
+make: Leaving directory '/var/tmp/rock-runtime-candidate-ui'
+{"name": "tests", "command": ["/usr/bin/python3", "-B", "-W", "error::ResourceWarning", "-m", "unittest", "discover", "-s", "tests", "-v"], "exit_code": 0, "tests": 792, "skipped": false, "unclean_log": false, "passed": true, "log_sha256": "4b0a3b80322265089429f75df52491df92c1b9040b4b257a879c3090a29f42da"}
+{"name": "os-wallet_auth-tests", "command": ["/usr/bin/python3", "-B", "-W", "error::ResourceWarning", "-m", "unittest", "discover", "-s", "os/wallet_auth/tests", "-v"], "exit_code": 0, "tests": 63, "skipped": false, "unclean_log": false, "passed": true, "log_sha256": "e31d7d71ef5136c79f51045988799dd805527844991fa0454dceb450bb0fdee6"}
+{"name": "os-entitlement-tests", "command": ["/usr/bin/python3", "-B", "-W", "error::ResourceWarning", "-m", "unittest", "discover", "-s", "os/entitlement/tests", "-v"], "exit_code": 0, "tests": 85, "skipped": false, "unclean_log": false, "passed": true, "log_sha256": "7e7f59a4e51f5fd316ceb2169059e904315f520e0c5573d844878e381eebae2a"}
+{"name": "os-atm-tests", "command": ["/usr/bin/python3", "-B", "-W", "error::ResourceWarning", "-m", "unittest", "discover", "-s", "os/atm/tests", "-v"], "exit_code": 0, "tests": 40, "skipped": false, "unclean_log": false, "passed": true, "log_sha256": "7e4e524db3bdf68418cb62808c5cfbefbd1b78a17b1e52d0ab5591f7261d2c94"}
+{"name": "os-service_access-tests", "command": ["/usr/bin/python3", "-B", "-W", "error::ResourceWarning", "-m", "unittest", "discover", "-s", "os/service_access/tests", "-v"], "exit_code": 0, "tests": 25, "skipped": false, "unclean_log": false, "passed": true, "log_sha256": "d5d20eaea0502be1b844a2c02a0192c4af527905fad352cd2b6e8e9f24c29d84"}
+{"name": "os-ai_routes-tests", "command": ["/usr/bin/python3", "-B", "-W", "error::ResourceWarning", "-m", "unittest", "discover", "-s", "os/ai_routes/tests", "-v"], "exit_code": 0, "tests": 23, "skipped": false, "unclean_log": false, "passed": true, "log_sha256": "593cca2724a5f4f1b657f31d525e3259597738cb562b94680b8e8c021dd17d95"}
+{"name": "c-core", "command": ["make", "all"], "exit_code": 0, "tests": 0, "skipped": false, "unclean_log": false, "passed": true, "log_sha256": "fd91775029f963b4f3eb553a49d6c33012ef4a9e6384e1a265eb70ab0ac96403"}
+{"name": "c-platform", "command": ["make", "all"], "exit_code": 0, "tests": 0, "skipped": false, "unclean_log": false, "passed": true, "log_sha256": "68e812194c9ae59796ee89d0e42c7a62b163e5ab1b79c326be21ddd75b088daa"}
+{"name": "c-ui", "command": ["make", "all"], "exit_code": 0, "tests": 0, "skipped": false, "unclean_log": false, "passed": true, "log_sha256": "0069088559ed14f3efccaad4d0e2cda15a45fceb83b68158eb76fade6db8bdf7"}
+{"name": "c-ui-build-tests", "command": ["make", "rock-ui-test", "rock-ipc-test"], "exit_code": 0, "tests": 0, "skipped": false, "unclean_log": false, "passed": true, "log_sha256": "6dc732f11fb83fb1feb4f934091d1250469bbfe6d0af46fa4de0ab7408ae1bfc"}
+{"name": "c-ui-actions", "command": ["./rock-ui-test", "/var/tmp/rock-runtime-candidate/systems/rock-star-os/os/assets/NotoSansCJKjp-Regular.otf"], "exit_code": 0, "tests": 0, "skipped": false, "unclean_log": false, "passed": true, "log_sha256": "abf124df04f77bb00d49a5d4af44efb5be8b5e048028e71a301f94c9a13951b6"}
+{"name": "c-ui-ipc", "command": ["/usr/bin/python3", "-B", "-W", "error::ResourceWarning", "test_ipc.py"], "exit_code": 0, "tests": 12, "skipped": false, "unclean_log": false, "passed": true, "log_sha256": "ef95273d721b819eec6abd97e4c06f1a59f24bbf8433dd567a4ee15198772e6c"}
+{"name": "ui-observers", "command": ["/usr/bin/python3", "-B", "-W", "error::ResourceWarning", "-m", "unittest", "discover", "-s", "os/ui", "-p", "test_evidence.py", "-v"], "exit_code": 0, "tests": 16, "skipped": false, "unclean_log": false, "passed": true, "log_sha256": "b689178030720b2651edd602ddda02f77168604d8af308483da889767b0b3d43"}
+PASS 1056 Python test executions

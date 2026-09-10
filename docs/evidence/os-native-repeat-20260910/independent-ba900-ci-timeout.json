@@ -1,0 +1,35 @@
+{
+  "schema": "rock-independent-native-ci-timeout-note/1",
+  "observed_utc": "2026-09-10T13:01:26.260809+00:00",
+  "source_commit": "ba900e49c5ceac3f6453030518d75a0467c0f6ac",
+  "run_id": 34478360425,
+  "status": "FAIL",
+  "raw_report_sha256": "3fd639092efd0c051055d9b16451ac4e28c1dc85c4f3c0ac9d79217e3d9a5125",
+  "raw_log_sha256": "061376d0a7ce2d6a9cf4b013827b2b49a04d74003d2676099212f4681c0e8b78",
+  "checks_recorded": [
+    {
+      "name": "tests",
+      "command": [
+        "/opt/hostedtoolcache/Python/3.13.15/x64/bin/python3",
+        "-B",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 124,
+      "tests": 0,
+      "skipped": false,
+      "unclean_log": false,
+      "passed": false,
+      "log_sha256": "061376d0a7ce2d6a9cf4b013827b2b49a04d74003d2676099212f4681c0e8b78"
+    }
+  ],
+  "main_log_final_lines": "er_wallet_epoch_commit (test_game_exchange_process_kill.ExchangeProcessKill.test_restore_kill_after_wallet_epoch_commit) ... ok\ntest_wallet_after_settle_commit_cannot_consume_or_grant_again (test_game_exchange_process_kill.ExchangeProcessKill.test_wallet_after_settle_commit_cannot_consume_or_grant_again) ... ok\ntest_wallet_before_settle_commit_keeps_hold_until_same_terminal (test_game_exchange_process_kill.ExchangeProcessKill.test_wallet_before_settle_commit_keeps_hold_until_same_terminal) ... ok\ntest_author_revoked_before_first_claim_cannot_dispatch_new_apply (test_game_exchange_races.ExchangeRaces.test_author_revoked_before_first_claim_cannot_dispatch_new_apply) ... ok\ntest_connection_revoked_before_first_claim_creates_only_signed_rejection (test_game_exchange_races.ExchangeRaces.test_connection_revoked_before_first_claim_creates_only_signed_rejection) ... ok\ntest_expired_connection_and_reversed_clock_cannot_start_new_apply (test_game_exchange_races.ExchangeRaces.test_expired_connection_and_reversed_clock_cannot_start_new_apply) ... ok\ntest_expired_signed_approval_denial_is_permanent_then_explicit_new_quote_version (test_game_exchange_races.ExchangeRaces.test_expired_signed_approval_denial_is_permanent_then_explicit_new_quote_version) ... ok\ntest_owner_assertion_credential_revoked_before_first_claim_cannot_dispatch_new_apply (test_game_exchange_races.ExchangeRaces.test_owner_assertion_credential_revoked_before_first_claim_cannot_dispatch_new_apply) ... ok\ntest_owner_transport_revoked_before_first_claim_cannot_dispatch_new_apply (test_game_exchange_races.ExchangeRaces.test_owner_transport_revoked_before_first_claim_cannot_dispatch_new_apply) ... ok\ntest_real_apply_and_conditional_reject_race_has_one_durable_outcome (test_game_exchange_races.ExchangeRaces.test_real_apply_and_conditional_reject_race_has_one_durable_outcome) ... ok\ntest_revocation_after_claim_keeps_original_apply_authorized_and_receipt_recoverable (test_game_exchange_races.ExchangeRaces.test_revocation_after_claim_keeps_original_apply_authorized_and_receipt_recoverable) ... ok\ntest_simultaneous_atm_month888_and_two_game_approvals_share_only_available (test_game_exchange_races.ExchangeRaces.test_simultaneous_atm_month888_and_two_game_approvals_share_only_available) ... ok\ntest_each_issuer_cas_retains_rows_then_old_apply_refused_and_original_terminal_recovered (test_game_exchange_restore.ExchangeCurrentRestore.test_each_issuer_cas_retains_rows_then_old_apply_refused_and_original_terminal_recovered) ... ok\ntest_foreign_restore_or_mutated_game_journal_cannot_resume_epoch (test_game_exchange_restore.ExchangeCurrentRestore.test_foreign_restore_or_mutated_game_journal_cannot_resume_epoch) ... ok\ntest_atomic_quote_assertion_hold_outbox_and_exact_retry (test_game_exchange_tls.ExchangeTLS.test_atomic_quote_assertion_hold_outbox_and_exact_retry) ... ok\ntest_foreign_receipt_and_malformed_receipt_cannot_release_hold (test_game_exchange_tls.ExchangeTLS.test_foreign_receipt_and_malformed_receipt_cannot_release_hold) ... ok\ntest_game_commit_lost_reply_reconciles_real_tls_receipt_once (test_game_exchange_tls.ExchangeTLS.test_game_commit_lost_reply_reconciles_real_tls_receipt_once) ... ok\ntest_purpose_and_owner_separation_no_hold_before_exact_assertion (test_game_exchange_tls.ExchangeTLS.test_purpose_and_owner_separation_no_hold_before_exact_assertion) ... ok\ntest_separate_author_credential_same_key_namespace_and_private_owner_redaction (test_game_exchange_tls.ExchangeTLS.test_separate_author_credential_same_key_namespace_and_private_owner_redaction) ... ok\ntest_signed_insufficient_denial_consumes_counter_and_never_later_approves (test_game_exchange_tls.ExchangeTLS.test_signed_insufficient_denial_consumes_counter_and_never_later_approves) ... ok\ntest_sqlite_contention_respects_three_second_request_and_no_late_hold (test_game_exchange_tls.ExchangeTLS.test_sqlite_contention_respects_three_second_request_and_no_late_hold) ... ok\ntest_two_independent_real_tls_game_journals_and_exact_receipts (test_game_exchange_tls.ExchangeTLS.test_two_independent_real_tls_game_journals_and_exact_receipts) ... ok\ntest_unknown_not_found_keeps_hold_then_signed_reject_prevents_late_apply (test_game_exchange_tls.ExchangeTLS.test_unknown_not_found_keeps_hold_then_signed_reject_prevents_late_apply) ... ok\ntest_adopted_original_rows_then_real_three_device_four_game_connections (test_game_legacy_basis.LegacyGameContinuity.test_adopted_original_rows_then_real_three_device_four_game_connections) ... ",
+  "scope": "late integrated branch canonical suite timeout600s/exit124; distinct frome430 singleTLSreadtimeout and all9ab evidence",
+  "cause": "UNDETERMINED; no rerun requested; D readonly investigation separate"
+}

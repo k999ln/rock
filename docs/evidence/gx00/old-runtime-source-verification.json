@@ -1,0 +1,2148 @@
+{
+  "all_exported_blobs_match_git": true,
+  "files": [
+    {
+      "git_blob": "78d808938c4d6e56961a1e8fcc34ec56c76e8651",
+      "path": "systems/rock-star-os/.gitignore"
+    },
+    {
+      "git_blob": "0334de7ae324dd98ff2bf13fa35bcf741a49ce81",
+      "path": "systems/rock-star-os/IMPORT-MANIFEST.json"
+    },
+    {
+      "git_blob": "a21e5e215ae084e52c7ea7810c0164e0c3f20493",
+      "path": "systems/rock-star-os/INTEGRATION-NOTES.md"
+    },
+    {
+      "git_blob": "e159438a6d4f4ff6c3c4bd88366b588b2c3c5881",
+      "path": "systems/rock-star-os/README.md"
+    },
+    {
+      "git_blob": "bde4e61b9b19dfde96d7b10a5e59c727b67fb93a",
+      "path": "systems/rock-star-os/docs/CLOUD-AI-STRATEGY.md"
+    },
+    {
+      "git_blob": "1088fab52a26afacd0b4548cf1e9f6be75aff713",
+      "path": "systems/rock-star-os/docs/DEVELOPER-SETTLEMENT.md"
+    },
+    {
+      "git_blob": "6295c10634b56c0c25b2e139d033839dd9b00f0d",
+      "path": "systems/rock-star-os/docs/MCP-BROKER.md"
+    },
+    {
+      "git_blob": "7b06aee5edbe3f9c67f498f98f2ae84539195ecd",
+      "path": "systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md"
+    },
+    {
+      "git_blob": "bcc8a9d0722ec418ef8c3cefb230b9f0e3c69142",
+      "path": "systems/rock-star-os/docs/MCP-RUNTIME-CONTINUATION.md"
+    },
+    {
+      "git_blob": "6b1e68f5e1973eb4f882fc6183a4d01b910d9b5d",
+      "path": "systems/rock-star-os/docs/OPERATIONS-AND-ONBOARDING.md"
+    },
+    {
+      "git_blob": "91587eb657e2304fb6c6bf6c6a4a74e89e114491",
+      "path": "systems/rock-star-os/docs/RECOVERY-RUNBOOK.md"
+    },
+    {
+      "git_blob": "2bbfbdb074ca9c7c7bd5872533c02cece1d43e0a",
+      "path": "systems/rock-star-os/docs/RELEASE-GATES.md"
+    },
+    {
+      "git_blob": "38b3a5545db10ac3fb446c664daf9b2de3d7b49a",
+      "path": "systems/rock-star-os/docs/TOOL-SDK.md"
+    },
+    {
+      "git_blob": "8ef73f1c0af2be40ed319137ffe3122645dcfe12",
+      "path": "systems/rock-star-os/docs/architecture.md"
+    },
+    {
+      "git_blob": "72b2f1ec50aca8fb0a5a7e7141519e6c31327cc8",
+      "path": "systems/rock-star-os/docs/device-runbook.md"
+    },
+    {
+      "git_blob": "6978cde675012ae52a8fd16138fb0dbde9a7e5fd",
+      "path": "systems/rock-star-os/docs/protocol.md"
+    },
+    {
+      "git_blob": "9703bd88c0d6b5d2ae59d58f7348db936309e657",
+      "path": "systems/rock-star-os/docs/repository-intake.md"
+    },
+    {
+      "git_blob": "e188656975563dcf580e2b1c6b745eb7c0419e4c",
+      "path": "systems/rock-star-os/docs/roadmap.md"
+    },
+    {
+      "git_blob": "6ac06cef5385c4c282d23d682298d36a8000d4de",
+      "path": "systems/rock-star-os/docs/security-model.md"
+    },
+    {
+      "git_blob": "24036e13df86947b045c63a92bc711cb12212be6",
+      "path": "systems/rock-star-os/docs/wallet-simulator.md"
+    },
+    {
+      "git_blob": "6cb1a0bce810b5baeda9f6d0673660f4895a0fd0",
+      "path": "systems/rock-star-os/examples/registry/org.example.action-checklist--1.0.0.rock.json"
+    },
+    {
+      "git_blob": "98c3a6cc3a0e876b473e87ea412eb60515bd8145",
+      "path": "systems/rock-star-os/examples/registry/org.example.action-checklist--2.0.0.rock.json"
+    },
+    {
+      "git_blob": "46f0bc40049482024b316e49c3f3ff828a1226e9",
+      "path": "systems/rock-star-os/examples/registry/org.rockstar.citation-organizer--1.0.0.rock.json"
+    },
+    {
+      "git_blob": "a916e49325f683d4e2121b8b3d80ee09ddb23276",
+      "path": "systems/rock-star-os/examples/registry/org.rockstar.proposal-draft--1.0.0.rock.json"
+    },
+    {
+      "git_blob": "244bde34f3f908fc610e9d036f621317a8fc6e28",
+      "path": "systems/rock-star-os/examples/registry/org.rockstar.proposal-draft--1.1.0.rock.json"
+    },
+    {
+      "git_blob": "73df352d58e54531dc0dfeac15fca5b4e145f436",
+      "path": "systems/rock-star-os/examples/registry/org.rockstar.text-tidy--1.0.0.rock.json"
+    },
+    {
+      "git_blob": "2e7c5892e40152aa764a447ff8bebc1057c418c6",
+      "path": "systems/rock-star-os/examples/registry/org.rockstar.text-tidy--2.0.0.rock.json"
+    },
+    {
+      "git_blob": "4fe45b3f884a26cbcc6c140393cf133ec518c0ac",
+      "path": "systems/rock-star-os/examples/registry/org.rockstar.unique-list--1.0.0.rock.json"
+    },
+    {
+      "git_blob": "140eb017e7de8964d426903efdd7f196e0990709",
+      "path": "systems/rock-star-os/examples/registry/org.rockstar.utf8-sha256--1.0.0.rock.json"
+    },
+    {
+      "git_blob": "9e240196a874f8a2bee73378861736b6cfc723ba",
+      "path": "systems/rock-star-os/examples/tools/hello/hello.py"
+    },
+    {
+      "git_blob": "0a2fdfbf8d203f8c4a4cf8d699b854a4a7348135",
+      "path": "systems/rock-star-os/examples/tools/hello/tool.json"
+    },
+    {
+      "git_blob": "39dd7b04c5906d9c38ee6801496de556696c9285",
+      "path": "systems/rock-star-os/experiments/startup-health/README.md"
+    },
+    {
+      "git_blob": "552c96bf8b8f9ca766d4e590243614230666ed82",
+      "path": "systems/rock-star-os/experiments/startup-health/changes.patch"
+    },
+    {
+      "git_blob": "ab2c76cf8ca2e2476608f0d5b9e6acd3317200b6",
+      "path": "systems/rock-star-os/experiments/startup-health/manifest.json"
+    },
+    {
+      "git_blob": "32104365a1ada1aff4f879d3ca093956135a2f45",
+      "path": "systems/rock-star-os/os/README.md"
+    },
+    {
+      "git_blob": "7d68d19064632af0e5aa39f080ba389ef352f2d9",
+      "path": "systems/rock-star-os/os/ai_routes/__init__.py"
+    },
+    {
+      "git_blob": "abdb25097930c8a387cc699b3dfd39770900d3c4",
+      "path": "systems/rock-star-os/os/ai_routes/fixture.py"
+    },
+    {
+      "git_blob": "ee754a066698e81a46792c8ecd1a059e965ae535",
+      "path": "systems/rock-star-os/os/ai_routes/policy.py"
+    },
+    {
+      "git_blob": "2978a410970fd4569008b9253132e0e35ec54da5",
+      "path": "systems/rock-star-os/os/ai_routes/store.py"
+    },
+    {
+      "git_blob": "7977a5b9879e90d23470c3d62a27155f02578d0f",
+      "path": "systems/rock-star-os/os/ai_routes/tests/test_policy_budget.py"
+    },
+    {
+      "git_blob": "d952d62c065f3f35fb83a173496e90b21525aef3",
+      "path": "systems/rock-star-os/os/assets/NotoSansCJK-LICENSE.txt"
+    },
+    {
+      "git_blob": "f56224957fb13a81b4c14bac34f2f058a017f9fb",
+      "path": "systems/rock-star-os/os/assets/NotoSansCJKjp-Regular.otf"
+    },
+    {
+      "git_blob": "63f5aade81881c3b775eff5a81586149ae7e0b18",
+      "path": "systems/rock-star-os/os/assets/SOURCE.json"
+    },
+    {
+      "git_blob": "989ccf4f9d57e1f82863f948e842f282b8d1cf7b",
+      "path": "systems/rock-star-os/os/atm/OS-INTEGRATION.md"
+    },
+    {
+      "git_blob": "b2c05942ab56cc2463047f6ca78c7b2d831cbf86",
+      "path": "systems/rock-star-os/os/atm/README.md"
+    },
+    {
+      "git_blob": "fcef2e38a7b61ee954e0800bba690cb676e8c932",
+      "path": "systems/rock-star-os/os/atm/__init__.py"
+    },
+    {
+      "git_blob": "ff6a2df2327adf14a1b70ddff0e3711242e61bbd",
+      "path": "systems/rock-star-os/os/atm/handoff.json"
+    },
+    {
+      "git_blob": "0efe217550e63fdf0934cb1e90beaa486a50bb2e",
+      "path": "systems/rock-star-os/os/atm/simulator.py"
+    },
+    {
+      "git_blob": "d5cefffa4a1b65d32ad82f38ed6aa5f557d053c7",
+      "path": "systems/rock-star-os/os/atm/tests/test_multi_device_recovery.py"
+    },
+    {
+      "git_blob": "5533259e41cb2cb0508257fec04466d71561b8af",
+      "path": "systems/rock-star-os/os/atm/tests/test_simulator.py"
+    },
+    {
+      "git_blob": "3e89cc22593fb161343a81cc2842dfe2b9c498e5",
+      "path": "systems/rock-star-os/os/benchmark/README.md"
+    },
+    {
+      "git_blob": "430a80eb1dff1abfba76bb29aba5d510672e4a0d",
+      "path": "systems/rock-star-os/os/benchmark/common.py"
+    },
+    {
+      "git_blob": "ee33e4a5a7a63bc5d15a477198d36840d2dd230c",
+      "path": "systems/rock-star-os/os/benchmark/guest.py"
+    },
+    {
+      "git_blob": "ac23228a97080d720961d48b0ad4c96db9e90541",
+      "path": "systems/rock-star-os/os/benchmark/prepared/20260908-v1/expected.txt"
+    },
+    {
+      "git_blob": "3358454b674d5207734700cb7bbd0864cb8d7044",
+      "path": "systems/rock-star-os/os/benchmark/prepared/20260908-v1/input.txt"
+    },
+    {
+      "git_blob": "c4266f5b2100bb0fd1e3fd0a170e01879cd2d971",
+      "path": "systems/rock-star-os/os/benchmark/prepared/20260908-v1/preparation.json"
+    },
+    {
+      "git_blob": "1f1a6d5ef966f22ae2165fd36945fd33e2393765",
+      "path": "systems/rock-star-os/os/benchmark/prepared/20260908-v1/preregistration.md"
+    },
+    {
+      "git_blob": "45e4b4198366fe322b71f67d69e5ffdf1a1be94b",
+      "path": "systems/rock-star-os/os/benchmark/prepared/20260908-v1/sort_lines.rock.json"
+    },
+    {
+      "git_blob": "f8c110a213f000ca79a2794a8bbee557e7c5ad46",
+      "path": "systems/rock-star-os/os/benchmark/prepared/20260908-v1/sort_lines.source.json"
+    },
+    {
+      "git_blob": "26dc9f228fc8887ddf46a0d9b3f158571d6164f1",
+      "path": "systems/rock-star-os/os/benchmark/prepared/20260908-v1/trim_lines.rock.json"
+    },
+    {
+      "git_blob": "a51d5a54d4e36ed6190fbf9f7cc17809a3037a76",
+      "path": "systems/rock-star-os/os/benchmark/prepared/20260908-v1/trim_lines.source.json"
+    },
+    {
+      "git_blob": "41c8e0f5f4a93b7306882c68fa8d39ddc09791a9",
+      "path": "systems/rock-star-os/os/benchmark/prepared/20260908-v1/unique_lines.rock.json"
+    },
+    {
+      "git_blob": "adbe3479b619472e522a8d1fa72a0b9476395d92",
+      "path": "systems/rock-star-os/os/benchmark/prepared/20260908-v1/unique_lines.source.json"
+    },
+    {
+      "git_blob": "b98110cfecfecd5f92039f9ac01d3721b7f4f016",
+      "path": "systems/rock-star-os/os/benchmark/prepared/20260908-v1/workflow.rock.json"
+    },
+    {
+      "git_blob": "5c9bd30fd00d43df2cca4fa0993b55991dec42e1",
+      "path": "systems/rock-star-os/os/benchmark/prepared/20260908-v1/workflow.source.json"
+    },
+    {
+      "git_blob": "ec50514b6ddc2dd7d122f981ce5ca07999c81425",
+      "path": "systems/rock-star-os/os/benchmark/test_benchmark.py"
+    },
+    {
+      "git_blob": "a39796265be71d15ab3054ee5276b6e66f71b59d",
+      "path": "systems/rock-star-os/os/benchmark/verify.py"
+    },
+    {
+      "git_blob": "77c6362fed3375d35bf0bb68db884ba55895ad0b",
+      "path": "systems/rock-star-os/os/build-os.sh"
+    },
+    {
+      "git_blob": "73dc4e5644b52dd45f748b4e1f5d5be54edf3f07",
+      "path": "systems/rock-star-os/os/buildroot/Config.in"
+    },
+    {
+      "git_blob": "849ab6b58eccc9b67e303d84333e26fb631f7ee8",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/busybox.fragment"
+    },
+    {
+      "git_blob": "6bdf94fcc330df1dc05986bb0b8372eab1ca16f2",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/linux.fragment"
+    },
+    {
+      "git_blob": "019d765da216169143cd05e8a33baa09bbbca28e",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/default/seedrng"
+    },
+    {
+      "git_blob": "b33266627f61e0c6344607980df146bd1bbaae1e",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S00rockdata"
+    },
+    {
+      "git_blob": "037fe9e54ef1dd9b95f184b4fde6c967d6bee201",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S35rocknet"
+    },
+    {
+      "git_blob": "6d5875e42f7a9c1a20b10adba347919ada14614b",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S40rock"
+    },
+    {
+      "git_blob": "0e0fe28e31344f0c9c0a17680930bc5f71c460f5",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S45rocksystem"
+    },
+    {
+      "git_blob": "ec40d59f82929c19dd712ce3cef721aacaa76977",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform"
+    },
+    {
+      "git_blob": "08ad3bd7d6c0bf7c869a9b1ade70df0d0660bb84",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S55rockauthenticator"
+    },
+    {
+      "git_blob": "cd66e25919cc95c4c416f5057a2f0700ab5b750a",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S60rockui"
+    },
+    {
+      "git_blob": "83c888b64b9e096aa07d2eb1020fdb30f428d097",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S98rock-ui-atm-verify"
+    },
+    {
+      "git_blob": "b669ac6e91cfad87273ceba7b4b8a5db45367b09",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S98rock-ui-power-verify"
+    },
+    {
+      "git_blob": "0fa91ad0d125d304df4250f871633189ee9e60a9",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S98rock-ui-runner-verify"
+    },
+    {
+      "git_blob": "cf5981c37e23fafb60b97deeeb8cc13b1cccc32e",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S98rock-ui-verify"
+    },
+    {
+      "git_blob": "7bdf921a6349493181f1d559c03e9049fd61f32a",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S98rock-ui-wallet-verify"
+    },
+    {
+      "git_blob": "a084872b1f083a7a02acdb530ec47f71c20e465c",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S99rock-atm-verify"
+    },
+    {
+      "git_blob": "ae8d3f3cf1e66fa5aada5ad661edb92135ad9fb5",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S99rock-benchmark-verify"
+    },
+    {
+      "git_blob": "d55e4d325687dc265b7f31b931598df132dd4341",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S99rock-platform-verify"
+    },
+    {
+      "git_blob": "edf09e3e7c5ae92632a0559241a928debe60a3a8",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S99rock-remote-verify"
+    },
+    {
+      "git_blob": "b9b371db7dcdc9e2b9949e415620f28b077204a5",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S99rock-store-verify"
+    },
+    {
+      "git_blob": "056afc1a335cccbb9873a9d5eafcd2a2cde21b95",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S99rock-system-verify"
+    },
+    {
+      "git_blob": "35570cadb27281d3cd6586ad8afd00b99cad3528",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S99rock-verify"
+    },
+    {
+      "git_blob": "636085a27c0b73c35e3dc641d0700046dc2e2abd",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/post-build.sh"
+    },
+    {
+      "git_blob": "0908276cf0edfe77b47826d7d6b85273394e3859",
+      "path": "systems/rock-star-os/os/buildroot/board/rock-virt/users.txt"
+    },
+    {
+      "git_blob": "59abe0b7ebf93e77c7eea47a6239a6f7ef0ad597",
+      "path": "systems/rock-star-os/os/buildroot/configs/rock_virt_aarch64_defconfig"
+    },
+    {
+      "git_blob": "d5c0cc615837650b49631e2a69084319ca403a01",
+      "path": "systems/rock-star-os/os/buildroot/external.desc"
+    },
+    {
+      "git_blob": "62722028775dbcc0e48126d4f1d17c27b94efa1a",
+      "path": "systems/rock-star-os/os/buildroot/external.mk"
+    },
+    {
+      "git_blob": "8c9f29ab0145d73d1c183542a892a8ab4e01ef3c",
+      "path": "systems/rock-star-os/os/buildroot/package/rock-core/Config.in"
+    },
+    {
+      "git_blob": "00cbaa92e836f18678a2b77360378b103e943bb6",
+      "path": "systems/rock-star-os/os/buildroot/package/rock-core/rock-core.mk"
+    },
+    {
+      "git_blob": "162e08c8ada1d93602bb306eba7f231aec9673c8",
+      "path": "systems/rock-star-os/os/buildroot/package/rock-platform/Config.in"
+    },
+    {
+      "git_blob": "0519da49f65ce3e0dc6958bb52ebe89a145f60c7",
+      "path": "systems/rock-star-os/os/buildroot/package/rock-platform/rock-platform.mk"
+    },
+    {
+      "git_blob": "8b1ca0b3a47e47a920b14cbd1021d292665f4659",
+      "path": "systems/rock-star-os/os/buildroot/package/rock-ui/Config.in"
+    },
+    {
+      "git_blob": "ab112b4002e6be8d9798c753c3565317fd470355",
+      "path": "systems/rock-star-os/os/buildroot/package/rock-ui/rock-ui.mk"
+    },
+    {
+      "git_blob": "a1040612e5c0a314cd1585ac944c7d92587ace64",
+      "path": "systems/rock-star-os/os/buildroot/patches/linux-headers/linux-headers.hash"
+    },
+    {
+      "git_blob": "42fc790e25a2e8d79ca7c8e43fb72d51b01491ef",
+      "path": "systems/rock-star-os/os/buildroot/patches/linux/linux.hash"
+    },
+    {
+      "git_blob": "39731ca65cb8a072f6fe8967260809673c886afa",
+      "path": "systems/rock-star-os/os/buildroot/patches/python3/0011-a0d023fbd23773e24b35d8368789470e22cda5d8.patch"
+    },
+    {
+      "git_blob": "bc783f93180bc9d8caaa511dc581ee11733132df",
+      "path": "systems/rock-star-os/os/buildroot/patches/python3/0012-31980e84b9a708424a0a1dfecde3fc991e313f89.patch"
+    },
+    {
+      "git_blob": "0ee3c0fdaf07db5e30333a8ce9a5a1aa4862f2aa",
+      "path": "systems/rock-star-os/os/core/Makefile"
+    },
+    {
+      "git_blob": "1bbeffd317fdad0a40ed11ea0c97244ee541d9ec",
+      "path": "systems/rock-star-os/os/core/README.md"
+    },
+    {
+      "git_blob": "53a55df7105349f0cd33340a81784d81a8ecd057",
+      "path": "systems/rock-star-os/os/core/io.h"
+    },
+    {
+      "git_blob": "7138413e47905730dd817de58e7f25311bcd7a64",
+      "path": "systems/rock-star-os/os/core/protocol.h"
+    },
+    {
+      "git_blob": "bc9b9789bed770369ded01524e3b370fd13828aa",
+      "path": "systems/rock-star-os/os/core/rockctl.c"
+    },
+    {
+      "git_blob": "0b52353ffce86131d1d7bc3d1c1d9c681ee93490",
+      "path": "systems/rock-star-os/os/core/rockd.c"
+    },
+    {
+      "git_blob": "35e5d5eabff55d7e4b7b55ca872792d95973471a",
+      "path": "systems/rock-star-os/os/core/rocktest.c"
+    },
+    {
+      "git_blob": "f3204386844976d522c75d3e197c6c9386a0b3df",
+      "path": "systems/rock-star-os/os/desktop/LOCAL-AB.md"
+    },
+    {
+      "git_blob": "fc8d0970f6408220b774c9c601fd64bb90ff8932",
+      "path": "systems/rock-star-os/os/desktop/README.md"
+    },
+    {
+      "git_blob": "7362a8993e8cb0e24846f2f30671872b27ff3513",
+      "path": "systems/rock-star-os/os/desktop/backup.py"
+    },
+    {
+      "git_blob": "0581c11ed02ed57c82335a4691fd805621edd5b6",
+      "path": "systems/rock-star-os/os/desktop/browser-intake/LICENSE.txt"
+    },
+    {
+      "git_blob": "14342d86af7345a6090a08a5577dd207806bb0c8",
+      "path": "systems/rock-star-os/os/desktop/browser-intake/annotated-tag.json"
+    },
+    {
+      "git_blob": "4eb1d2e21bebb87dadf3a7ba951498171d925d7e",
+      "path": "systems/rock-star-os/os/desktop/browser-intake/intake.json"
+    },
+    {
+      "git_blob": "31481149fd8787233bde0b6f5924a47185a9679f",
+      "path": "systems/rock-star-os/os/desktop/browser-intake/noVNC-63107bd.tar.gz"
+    },
+    {
+      "git_blob": "b9f8d987f582fc10f97b7af9d662b2966a5c66a7",
+      "path": "systems/rock-star-os/os/desktop/browser-intake/tag.json"
+    },
+    {
+      "git_blob": "7acadc56457f0cafb1434d14c61215f60e1c7454",
+      "path": "systems/rock-star-os/os/desktop/browser/index.html"
+    },
+    {
+      "git_blob": "e8fb12404b12c78ea3b7d292f9b52c48f410a770",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/AUTHORS"
+    },
+    {
+      "git_blob": "0581c11ed02ed57c82335a4691fd805621edd5b6",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/LICENSE.txt"
+    },
+    {
+      "git_blob": "ee271bb190d1635379372ce91cf4d37469beba5d",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/README.md"
+    },
+    {
+      "git_blob": "db572c2db4c044cb3f3c9e680cbb49584d89f490",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/base64.js"
+    },
+    {
+      "git_blob": "e6aaea7c2f4ac9b9a0bfef675ea998426fe06a2a",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/crypto/aes.js"
+    },
+    {
+      "git_blob": "d34432650e747097bcc6f3580dc153464c580a41",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/crypto/bigint.js"
+    },
+    {
+      "git_blob": "cc17da22855318cc81395e1033a74614934cb65b",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/crypto/crypto.js"
+    },
+    {
+      "git_blob": "8dab31fb43d027da68905a15b612af64f3ce160d",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/crypto/des.js"
+    },
+    {
+      "git_blob": "bd705d9bf1dad9f18f3faf2adcdefafe1014fe31",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/crypto/dh.js"
+    },
+    {
+      "git_blob": "b01ba6fd04bf0226490ffc68143f45aafc55d72c",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/crypto/md5.js"
+    },
+    {
+      "git_blob": "68e8e869f915e906d3a99aca184a95da6aa06044",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/crypto/rsa.js"
+    },
+    {
+      "git_blob": "3c7e0d5dc9e69870f97fd6b8cbafe21e21a835ad",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/decoders/copyrect.js"
+    },
+    {
+      "git_blob": "a508b674181a6af0cac82dab577e23c9e28a7a49",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/decoders/h264.js"
+    },
+    {
+      "git_blob": "db0792bd434d61a3976cd94d9839e9c1ac088d3a",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/decoders/hextile.js"
+    },
+    {
+      "git_blob": "f79846034b12e16457750b0d8c1abec2d4e5a485",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/decoders/jpeg.js"
+    },
+    {
+      "git_blob": "bd5d20445e89e8ad7536dc220a5e4665c715598c",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/decoders/raw.js"
+    },
+    {
+      "git_blob": "a5fea7c46b5bdd38928633f808676dec05f242e4",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/decoders/rre.js"
+    },
+    {
+      "git_blob": "1a145d4e5d6f4c2bd3539f0308ce00c442e2eb01",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/decoders/tight.js"
+    },
+    {
+      "git_blob": "cf1df6ba147b6a1bf6564409664652a34aaaf36b",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/decoders/tightpng.js"
+    },
+    {
+      "git_blob": "a876908b61ab14b9e9b1246714d858c34071b5f1",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/decoders/zlib.js"
+    },
+    {
+      "git_blob": "ef1726f691b7dd3f2ced91a46d21c88f1dd334e4",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/decoders/zrle.js"
+    },
+    {
+      "git_blob": "af24009e1f3c0ab797437fc458c2b770d932113d",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/deflator.js"
+    },
+    {
+      "git_blob": "4efd6f4b97dfda3ab450723ff8c722c8258d60fc",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/display.js"
+    },
+    {
+      "git_blob": "7afcb17fcc0f55210f03ec1bd9e894378ee648e1",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/encodings.js"
+    },
+    {
+      "git_blob": "7ef47f13f656974cef449a7bf695a9050b7dc16d",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/inflator.js"
+    },
+    {
+      "git_blob": "9e599f74882ff5d0c7b64733b8824816af8f0474",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/input/domkeytable.js"
+    },
+    {
+      "git_blob": "6a9221580afd28338bb50453983505f28a83c85f",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/input/fixedkeys.js"
+    },
+    {
+      "git_blob": "b072e01db8d994e27bfd8b41c6330dc8dd6a41da",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/input/gesturehandler.js"
+    },
+    {
+      "git_blob": "3cc89174de31b0b0b086e83f22d0ba3fa1059d68",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/input/keyboard.js"
+    },
+    {
+      "git_blob": "22ba0584eae170150e21827c50142158bb359995",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/input/keysym.js"
+    },
+    {
+      "git_blob": "951cacab673fa34adf7039eac1c8d4ccab934c7e",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/input/keysymdef.js"
+    },
+    {
+      "git_blob": "36b698176512dfc184498f8186fe86785a7b994c",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/input/util.js"
+    },
+    {
+      "git_blob": "d848337a7a7869e52830303b2b50cc44be12e394",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/input/vkeys.js"
+    },
+    {
+      "git_blob": "8ab9c17fde2aa41477f77933712fa72c77286d78",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/input/xtscancodes.js"
+    },
+    {
+      "git_blob": "d330b848d24f370c423e24df06e5b24ee5fc967a",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/ra2.js"
+    },
+    {
+      "git_blob": "80011e4a10203806f14df1ffc3b8425861a965a7",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/rfb.js"
+    },
+    {
+      "git_blob": "63596d211bc3f2ac0c1853d58488dcbb18bd8949",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/util/browser.js"
+    },
+    {
+      "git_blob": "6d689e7d5a30326261306152410449d3fde32b16",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/util/cursor.js"
+    },
+    {
+      "git_blob": "17d82d58f8a5b3d203e779fabeb5d8a4f697edf2",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/util/element.js"
+    },
+    {
+      "git_blob": "26aa97908580392eb51b52b272c3127d93da853a",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/util/events.js"
+    },
+    {
+      "git_blob": "547bf5fa28db3d012be3be991bbb913492fd3c53",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/util/eventtarget.js"
+    },
+    {
+      "git_blob": "303ddc5fd3d394d987086bd2f5531add59055090",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/util/int.js"
+    },
+    {
+      "git_blob": "0db083856e7c7356888e8c059904be2680d22be5",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/util/logging.js"
+    },
+    {
+      "git_blob": "432b0a9d29713b76ba6a03d5da822a9d4a14d7a1",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/util/strings.js"
+    },
+    {
+      "git_blob": "ee8a4bc42819ca0a9f55472ccc29bfd1f25c8887",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/core/websock.js"
+    },
+    {
+      "git_blob": "b1df39020d960b90b7a5702927fbf951b85e0d53",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/package.json"
+    },
+    {
+      "git_blob": "d082ae325333e6fd74d7066de3964f949e006f86",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/LICENSE"
+    },
+    {
+      "git_blob": "755df643d76f0eb92b4e3f4e8d5a6ed71d153528",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/README.md"
+    },
+    {
+      "git_blob": "576fd59dc1b1c16519ced5d1f5b4366530145f03",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/lib/utils/common.js"
+    },
+    {
+      "git_blob": "058a534ad07d06859c34c02e92d9d1f8a6ef99a1",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/lib/zlib/adler32.js"
+    },
+    {
+      "git_blob": "7d80502d6545d4373fb20aa777ad0df861d13a80",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/lib/zlib/constants.js"
+    },
+    {
+      "git_blob": "611ffb29bb76493e7ac07371fc7a5f1c6e43a0a7",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/lib/zlib/crc32.js"
+    },
+    {
+      "git_blob": "c3a5ba49aa7443a864038312f0112664493a4a69",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/lib/zlib/deflate.js"
+    },
+    {
+      "git_blob": "2ec586d3a951e7db665331fc097f623a41399a84",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/lib/zlib/gzheader.js"
+    },
+    {
+      "git_blob": "889dcc7a689537aef93737c963ab3913670ea6fa",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/lib/zlib/inffast.js"
+    },
+    {
+      "git_blob": "1d2063bc40548522d366aed162268cadebf2596e",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/lib/zlib/inflate.js"
+    },
+    {
+      "git_blob": "78b7c9eb578adeb40ce912539af0740a4ebd8b51",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/lib/zlib/inftrees.js"
+    },
+    {
+      "git_blob": "f95cb70405ce1386108d03f173ba89ad9b9f11dc",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/lib/zlib/messages.js"
+    },
+    {
+      "git_blob": "a69b8a592fe02a275b6ddca6ae124f7364e9ad5a",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/lib/zlib/trees.js"
+    },
+    {
+      "git_blob": "e7e674e78598dc7e6a6a2a2d97789193288bbfe2",
+      "path": "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/lib/zlib/zstream.js"
+    },
+    {
+      "git_blob": "b5c8c260083e529ae09b88e8bfda4e96b31b3191",
+      "path": "systems/rock-star-os/os/desktop/browser/viewer.css"
+    },
+    {
+      "git_blob": "9d7018f65364fbc114db79b226b595ee651bffc5",
+      "path": "systems/rock-star-os/os/desktop/browser/viewer.js"
+    },
+    {
+      "git_blob": "e1681952417375693f1dee20590d7dd2ae40c76a",
+      "path": "systems/rock-star-os/os/desktop/browser_server.py"
+    },
+    {
+      "git_blob": "8ce540145122ea184de6499dfa1009a5aaa683f6",
+      "path": "systems/rock-star-os/os/desktop/closed_services.py"
+    },
+    {
+      "git_blob": "a79f73a9ae6848fcbc581f4873f693f9f0ad7d99",
+      "path": "systems/rock-star-os/os/desktop/guest.py"
+    },
+    {
+      "git_blob": "7c45adc282294becf10c121e41332b2efbedad06",
+      "path": "systems/rock-star-os/os/desktop/launcher.py"
+    },
+    {
+      "git_blob": "6fc993364946619b66ff6dca223c71ae53b10a98",
+      "path": "systems/rock-star-os/os/desktop/services.py"
+    },
+    {
+      "git_blob": "1fe2b4df2f82c668748818ff1ddee3d8c77f0201",
+      "path": "systems/rock-star-os/os/desktop/stage0.py"
+    },
+    {
+      "git_blob": "fc3fad1a0806e2fbe041f330b1c3f38fa6443191",
+      "path": "systems/rock-star-os/os/desktop/verify-backup.py"
+    },
+    {
+      "git_blob": "aacce4e2ce9f4c1b757387477d15eda7575802c2",
+      "path": "systems/rock-star-os/os/entitlement/DEVICE-CONTRACT.md"
+    },
+    {
+      "git_blob": "f303fb95abb18c912722f02fcc6299b4c7f14de1",
+      "path": "systems/rock-star-os/os/entitlement/README.md"
+    },
+    {
+      "git_blob": "3a3832a506d976e6b18d1bd35599bb1c9a8f52c0",
+      "path": "systems/rock-star-os/os/entitlement/__init__.py"
+    },
+    {
+      "git_blob": "8350313365046a5757702046f6eaa49f06b61bce",
+      "path": "systems/rock-star-os/os/entitlement/demo.py"
+    },
+    {
+      "git_blob": "b3c09281bf0a314fe454436c9017fdd391349107",
+      "path": "systems/rock-star-os/os/entitlement/device.py"
+    },
+    {
+      "git_blob": "088fe9f9e2166db15e0596029568341c4541b442",
+      "path": "systems/rock-star-os/os/entitlement/fixtures/device-handoff.json"
+    },
+    {
+      "git_blob": "d65dd2391c62dcbeae3a4eea4e045fa0b826eb72",
+      "path": "systems/rock-star-os/os/entitlement/guest_observer.py"
+    },
+    {
+      "git_blob": "91527f42d7ac3c02b76b719b9e1871c68cf31b57",
+      "path": "systems/rock-star-os/os/entitlement/protocol.py"
+    },
+    {
+      "git_blob": "e7fa784337eb26cbebe4461a7b96be99cf636e00",
+      "path": "systems/rock-star-os/os/entitlement/store.py"
+    },
+    {
+      "git_blob": "82217d974091345cacb5a6ce037e8115258899de",
+      "path": "systems/rock-star-os/os/entitlement/tests/test_billing_retry_policy.py"
+    },
+    {
+      "git_blob": "670821c4da5edcccfda8c33056d24015153faa54",
+      "path": "systems/rock-star-os/os/entitlement/tests/test_bridge.py"
+    },
+    {
+      "git_blob": "a610a0f4dd84485e39cdc5d2be8218f41fecd897",
+      "path": "systems/rock-star-os/os/entitlement/tests/test_device_wallet.py"
+    },
+    {
+      "git_blob": "92e3b184b2dc2badb8acb1df84656ec5a7d1d9ef",
+      "path": "systems/rock-star-os/os/entitlement/tests/test_entitlement.py"
+    },
+    {
+      "git_blob": "3ef7d41c6b6383f334a61167501e2a059d4ca246",
+      "path": "systems/rock-star-os/os/entitlement/tests/test_multi_device_contract.py"
+    },
+    {
+      "git_blob": "3b5107e32b2a40b352060d9e62c96de65c1ca094",
+      "path": "systems/rock-star-os/os/entitlement/verify_host.py"
+    },
+    {
+      "git_blob": "b1c8c81a1e5b93d4b081e57f71249c2882206d1a",
+      "path": "systems/rock-star-os/os/entitlement/wallet_bridge.py"
+    },
+    {
+      "git_blob": "ab91b3a196c106d1e3833159afd8ffc6e15a547b",
+      "path": "systems/rock-star-os/os/export-source.py"
+    },
+    {
+      "git_blob": "e60f46d26dd63f731c83fcd7371da0671b46dda3",
+      "path": "systems/rock-star-os/os/mcp_broker/__init__.py"
+    },
+    {
+      "git_blob": "7aeaf174b8c14bbd253d71e7d7557299b216d440",
+      "path": "systems/rock-star-os/os/mcp_broker/broker.py"
+    },
+    {
+      "git_blob": "5f409a5c0b8c30a03087a2a189b2cfa6b6d9f7ba",
+      "path": "systems/rock-star-os/os/mcp_broker/device_client.py"
+    },
+    {
+      "git_blob": "fd3cbba20eb76ac4d0e238cfba1044956178b3c7",
+      "path": "systems/rock-star-os/os/mcp_broker/fixture.py"
+    },
+    {
+      "git_blob": "4770406ca4a06d256c297017df88ffb39accf463",
+      "path": "systems/rock-star-os/os/mcp_broker/gateway.py"
+    },
+    {
+      "git_blob": "6d062cbb7d22e0c5c195306a08f9442f08ba0c0c",
+      "path": "systems/rock-star-os/os/mcp_broker/http.py"
+    },
+    {
+      "git_blob": "0699754e233320ad4185b6686bbe8aa59a9464c9",
+      "path": "systems/rock-star-os/os/mcp_broker/runtime.py"
+    },
+    {
+      "git_blob": "8e8266a4928d7ff9308c5de5ae6d928d2a547159",
+      "path": "systems/rock-star-os/os/mcp_broker/service_access.py"
+    },
+    {
+      "git_blob": "760ef69afdd9ee91d38b0a7b7cf14b4d1a463ef4",
+      "path": "systems/rock-star-os/os/mcp_broker/verify.py"
+    },
+    {
+      "git_blob": "f6e037ef804ee72e4fc9d30397df35b32ed56121",
+      "path": "systems/rock-star-os/os/operations/__init__.py"
+    },
+    {
+      "git_blob": "2db68f37a5d241cf03e01eca0c474369076bbc09",
+      "path": "systems/rock-star-os/os/operations/device.py"
+    },
+    {
+      "git_blob": "b678553b7c3933cef86a3b0d7fcf038d708e1cce",
+      "path": "systems/rock-star-os/os/operations/elf_guard.py"
+    },
+    {
+      "git_blob": "28bde08a9da5fbfe809545a356be74e47db688ed",
+      "path": "systems/rock-star-os/os/operations/onboarding.py"
+    },
+    {
+      "git_blob": "038ada298a57560209dfa2e4b2d76f2be9347ff3",
+      "path": "systems/rock-star-os/os/operations/release.py"
+    },
+    {
+      "git_blob": "acc0bf6e35e1ea65459856c55dd44e4d61372aa1",
+      "path": "systems/rock-star-os/os/operations/state.py"
+    },
+    {
+      "git_blob": "52d071c40e6efefaf95c0055c7e6c5b02ede6cc4",
+      "path": "systems/rock-star-os/os/operations/store.py"
+    },
+    {
+      "git_blob": "ff4144d685f4f19c7387e843c8f4eedfd7046e22",
+      "path": "systems/rock-star-os/os/operations/verify_native.py"
+    },
+    {
+      "git_blob": "afe72959f36171ecfd20aab77ced6e1e97200bb4",
+      "path": "systems/rock-star-os/os/platform/Makefile"
+    },
+    {
+      "git_blob": "0c7149332b0d1f4aabfc1dd09c48f0447a35fe2b",
+      "path": "systems/rock-star-os/os/platform/atm-guest-test.py"
+    },
+    {
+      "git_blob": "d47064da912feb66c90c4bec6bb17a1ee3752fd8",
+      "path": "systems/rock-star-os/os/platform/guest-test.py"
+    },
+    {
+      "git_blob": "5ab9b917f42141af2661dd7f0d619132414fec2a",
+      "path": "systems/rock-star-os/os/platform/install-target.sh"
+    },
+    {
+      "git_blob": "35c77c4e3c68f72d68db41c7036d6e5afebf5dea",
+      "path": "systems/rock-star-os/os/platform/registry-control-contract.md"
+    },
+    {
+      "git_blob": "99a06bcc762316398913a70530faa2aa0ae7506d",
+      "path": "systems/rock-star-os/os/platform/registry_control.py"
+    },
+    {
+      "git_blob": "adcbf48d686e4b5faab22da94adfcfb90e88b56e",
+      "path": "systems/rock-star-os/os/platform/remote-guest-test.py"
+    },
+    {
+      "git_blob": "117a02d79e909802cd161d2408f2d438a3cd2311",
+      "path": "systems/rock-star-os/os/platform/runner_control.py"
+    },
+    {
+      "git_blob": "7bf75409ce6c86f36046e409b31e64b99040bc77",
+      "path": "systems/rock-star-os/os/platform/sandbox-exec.c"
+    },
+    {
+      "git_blob": "9bfa732018f73a250f460d679e72386c3cc31165",
+      "path": "systems/rock-star-os/os/platform/sandbox-probe.py"
+    },
+    {
+      "git_blob": "fc461e984993f83667f3ebb080685cabb287cbdb",
+      "path": "systems/rock-star-os/os/platform/service.py"
+    },
+    {
+      "git_blob": "54c348ee0e55e283eac5403d174c35f4765b2ae1",
+      "path": "systems/rock-star-os/os/platform/store-guest-test.py"
+    },
+    {
+      "git_blob": "5ca2cf86b767a3cd4814195c9ab1cf412ddd9bbd",
+      "path": "systems/rock-star-os/os/platform/system-guest-test.py"
+    },
+    {
+      "git_blob": "8c7a0422406cb566661558e5a80785e2fe664fcd",
+      "path": "systems/rock-star-os/os/platform/wallet_view.py"
+    },
+    {
+      "git_blob": "06ea31384bf61d0bcda340d26378846e0bcd13c5",
+      "path": "systems/rock-star-os/os/registry/README.md"
+    },
+    {
+      "git_blob": "dd20e3903a625f98ff94101628db65840fb6ef2d",
+      "path": "systems/rock-star-os/os/registry/__init__.py"
+    },
+    {
+      "git_blob": "98415845b53e869f0c25198bc651811747f66454",
+      "path": "systems/rock-star-os/os/registry/client.py"
+    },
+    {
+      "git_blob": "fe0bafceafbc483d76a2df360e54a7dee41db989",
+      "path": "systems/rock-star-os/os/registry/common.py"
+    },
+    {
+      "git_blob": "5c0a395401471e263b1c646fac69b8867958e543",
+      "path": "systems/rock-star-os/os/registry/fixtures/NOTICE.txt"
+    },
+    {
+      "git_blob": "728cc7ae3fb31dddadc2ca0a47a05d96290db9c6",
+      "path": "systems/rock-star-os/os/registry/fixtures/PUBLIC-AUTHOR-TOKEN.txt"
+    },
+    {
+      "git_blob": "7cf2b728c969665485e3b58e91f3e70b610e54ac",
+      "path": "systems/rock-star-os/os/registry/fixtures/PUBLIC-FIXTURE-KEY.pem"
+    },
+    {
+      "git_blob": "e246f499fa3ba4308bbe21a78eed6845a4271a98",
+      "path": "systems/rock-star-os/os/registry/fixtures/approved-authors.json"
+    },
+    {
+      "git_blob": "8f4b38be1b749c0bf01d11ced18157955ac44632",
+      "path": "systems/rock-star-os/os/registry/fixtures/development-ca.pem"
+    },
+    {
+      "git_blob": "caa66b2a7f0d5a5c0126eda8cf728547123d68f4",
+      "path": "systems/rock-star-os/os/registry/guest_negative.py"
+    },
+    {
+      "git_blob": "5d2311a9b398db71367cdaf41f9d47682fa78422",
+      "path": "systems/rock-star-os/os/registry/make_fixtures.py"
+    },
+    {
+      "git_blob": "762e27247317514906ba66dca7666ad170a1fbff",
+      "path": "systems/rock-star-os/os/registry/publish.py"
+    },
+    {
+      "git_blob": "66fa98e9a37bf25cc1e3a976e85131cf88a2e5b8",
+      "path": "systems/rock-star-os/os/registry/revoke.py"
+    },
+    {
+      "git_blob": "90c024c40953cdfecc99a32b7eded356c9fc8d63",
+      "path": "systems/rock-star-os/os/registry/seed_development.py"
+    },
+    {
+      "git_blob": "820059faa615e1e519d3fc596bd6fdfaf2951238",
+      "path": "systems/rock-star-os/os/registry/server.py"
+    },
+    {
+      "git_blob": "03bed64440972d491e17bab269b4682e6a434974",
+      "path": "systems/rock-star-os/os/registry/tests/test_registry.py"
+    },
+    {
+      "git_blob": "9d04a3cd39e3ee1a73cbcfacef838573a4b024ca",
+      "path": "systems/rock-star-os/os/registry/tests/test_revoked_get.py"
+    },
+    {
+      "git_blob": "76dd92a69cb74ef4ba0f4a3aa4bdf2c4d4f42bc0",
+      "path": "systems/rock-star-os/os/registry/transport.py"
+    },
+    {
+      "git_blob": "13e631e4a8981eab5f2d405fc7840abeab7170ec",
+      "path": "systems/rock-star-os/os/registry/verify_host.py"
+    },
+    {
+      "git_blob": "5f3072f09e02c678910046dcd4b8c80733f10dda",
+      "path": "systems/rock-star-os/os/registry/verify_negative.py"
+    },
+    {
+      "git_blob": "7198907a7970169979eb138bb05a86d28cc17d18",
+      "path": "systems/rock-star-os/os/runner/README.md"
+    },
+    {
+      "git_blob": "0ab94b037a98fb17a28e7e5ed93784f44eda3e43",
+      "path": "systems/rock-star-os/os/runner/__init__.py"
+    },
+    {
+      "git_blob": "ccdf313ee610bb2a0685508c77d8393ebdf97ffe",
+      "path": "systems/rock-star-os/os/runner/build_fixture.py"
+    },
+    {
+      "git_blob": "577745081a2bf813ff8baa369291de5285955e6b",
+      "path": "systems/rock-star-os/os/runner/client.py"
+    },
+    {
+      "git_blob": "53b15f77c60c9d1441a362bc6f8585b6704cfaea",
+      "path": "systems/rock-star-os/os/runner/executor.py"
+    },
+    {
+      "git_blob": "ef359f94144594d75b3043a0baa1e782dc8e98d1",
+      "path": "systems/rock-star-os/os/runner/fixtures/remote-text.rock.json"
+    },
+    {
+      "git_blob": "b28008bbf3f032033fade4124f0879ee783f4659",
+      "path": "systems/rock-star-os/os/runner/isolated_entry.py"
+    },
+    {
+      "git_blob": "510867440cd9c37cb66a850437a88e536b09061c",
+      "path": "systems/rock-star-os/os/runner/linux_acceptance.py"
+    },
+    {
+      "git_blob": "c95b6ce012ed46b8a4903175c27158a3bfcd92e7",
+      "path": "systems/rock-star-os/os/runner/protocol.py"
+    },
+    {
+      "git_blob": "fc1b639b2a9ff91e847e40864bb33f3a29ca22f9",
+      "path": "systems/rock-star-os/os/runner/sandbox_launcher.c"
+    },
+    {
+      "git_blob": "5e973447b0c1c049c9eb57344da4f95e80907083",
+      "path": "systems/rock-star-os/os/runner/serve.py"
+    },
+    {
+      "git_blob": "1545af8faf3e576fbfc219eafdec25d6d94d5b21",
+      "path": "systems/rock-star-os/os/runner/server.py"
+    },
+    {
+      "git_blob": "65c79ecb6211562592f290fb53633fbd53906dfe",
+      "path": "systems/rock-star-os/os/runner/store.py"
+    },
+    {
+      "git_blob": "9dde5ce7f474b942aa200c9c341f7e8d138c27ee",
+      "path": "systems/rock-star-os/os/runner/tests/test_runner.py"
+    },
+    {
+      "git_blob": "9aa7d779272d17696f26b1a56d2301813855362a",
+      "path": "systems/rock-star-os/os/runner/transport.py"
+    },
+    {
+      "git_blob": "d5c87507a5340d9c9bbc022ba041a6e6023c2c52",
+      "path": "systems/rock-star-os/os/runner/verify_host.py"
+    },
+    {
+      "git_blob": "c2123dcdb756053f9244844949e4574099f3c6e6",
+      "path": "systems/rock-star-os/os/security/collect-cna.py"
+    },
+    {
+      "git_blob": "37f8189c02b0510058fd5c206033ddb22e710023",
+      "path": "systems/rock-star-os/os/security/dash/COPYING"
+    },
+    {
+      "git_blob": "6881d8fc0a2a60bb542de92d2851fed4fbce8dad",
+      "path": "systems/rock-star-os/os/security/dash/dash-0.5.13.5.tar.gz"
+    },
+    {
+      "git_blob": "78ac1fbeff42f054da3f3a7f70839a981c3220f6",
+      "path": "systems/rock-star-os/os/security/dash/intake.json"
+    },
+    {
+      "git_blob": "79acf95186024580c089728a122b89ee6eccd6ba",
+      "path": "systems/rock-star-os/os/security/guest-inventory.py"
+    },
+    {
+      "git_blob": "95b500df4faf1685cfad8f95b86d0d0d82d241b9",
+      "path": "systems/rock-star-os/os/security/kernel-cna.py"
+    },
+    {
+      "git_blob": "1643848c1247c3735ac3011d343efacc66154035",
+      "path": "systems/rock-star-os/os/security/kernel/greg-kroah-hartman.gpg"
+    },
+    {
+      "git_blob": "c05fe80d73393964ba0fdeb35122b79343197250",
+      "path": "systems/rock-star-os/os/security/kernel/linux-6.18.50.tar.sign"
+    },
+    {
+      "git_blob": "661de90d902d82aae862569f69a9bba84c76df28",
+      "path": "systems/rock-star-os/os/security/kernel/sha256sums-20260908.asc"
+    },
+    {
+      "git_blob": "afa82a892bfb02cc44a871b43f1657725fbdbf3b",
+      "path": "systems/rock-star-os/os/security/query-nvd.py"
+    },
+    {
+      "git_blob": "6d2ab332120f0d165af8a53517b09f9cc4a79c82",
+      "path": "systems/rock-star-os/os/security/tests/test_kernel_cna.py"
+    },
+    {
+      "git_blob": "bc88beb00a23d81ff59b1ded4fef35de8a75f2bd",
+      "path": "systems/rock-star-os/os/service_access/__init__.py"
+    },
+    {
+      "git_blob": "36a04a3f994d55a25059507eaf029b1046586e22",
+      "path": "systems/rock-star-os/os/service_access/authority.py"
+    },
+    {
+      "git_blob": "d0feee023a4102a562b3084451c38dc9bd8a767d",
+      "path": "systems/rock-star-os/os/service_access/controller.py"
+    },
+    {
+      "git_blob": "3ca3144ab5a2ddfa3ef8ef8eec879811b31f733f",
+      "path": "systems/rock-star-os/os/service_access/guest_offline_probe.py"
+    },
+    {
+      "git_blob": "f5c91d0627a2a989655f43c61b899251057dd248",
+      "path": "systems/rock-star-os/os/service_access/guest_probe.py"
+    },
+    {
+      "git_blob": "20c2954de7990f0ece112e7d01e0aed3bbd7bd20",
+      "path": "systems/rock-star-os/os/service_access/os_client.py"
+    },
+    {
+      "git_blob": "a88d5445358add7b6ebd4cc981cab874e7cea544",
+      "path": "systems/rock-star-os/os/service_access/profile.py"
+    },
+    {
+      "git_blob": "391a8cb63e842f918a8c8d4a8b3cacfdb941e54b",
+      "path": "systems/rock-star-os/os/service_access/serve.py"
+    },
+    {
+      "git_blob": "d0f91fe9ca4d7344a972e5a705e57cb37031db5f",
+      "path": "systems/rock-star-os/os/service_access/status.py"
+    },
+    {
+      "git_blob": "dca4d3b1d1abfca6b47321bc9c3093e10034fb75",
+      "path": "systems/rock-star-os/os/service_access/tests/test_controller.py"
+    },
+    {
+      "git_blob": "48175b1ba89a4732897b6c0272c840261b81b1fb",
+      "path": "systems/rock-star-os/os/service_access/verify_offline_os.py"
+    },
+    {
+      "git_blob": "2f1f9bc4851db7d51ffe7e650dd03eec606bf78b",
+      "path": "systems/rock-star-os/os/service_access/verify_os.py"
+    },
+    {
+      "git_blob": "f8c2e1e1b717409953458d884ecec60dfdb24182",
+      "path": "systems/rock-star-os/os/settlement/__init__.py"
+    },
+    {
+      "git_blob": "6f5a6b03d7c4289421bf6276a18aad877d2d77cb",
+      "path": "systems/rock-star-os/os/settlement/fixture.py"
+    },
+    {
+      "git_blob": "e9d19a4f96106f7da30c9844b99fd766fa6e6dde",
+      "path": "systems/rock-star-os/os/settlement/protocol.py"
+    },
+    {
+      "git_blob": "36fd74ad38f3f2bd636e377bd22ce5703a1abe1e",
+      "path": "systems/rock-star-os/os/settlement/store.py"
+    },
+    {
+      "git_blob": "eb93b1cefb9326b62d41eb1060a0cc25d842ce1c",
+      "path": "systems/rock-star-os/os/source-lock.json"
+    },
+    {
+      "git_blob": "64d316162d9f5af418b693374cdd4a6b98d02760",
+      "path": "systems/rock-star-os/os/system/Makefile"
+    },
+    {
+      "git_blob": "35652a40a981b1ab805c2fd5e332185978d386a9",
+      "path": "systems/rock-star-os/os/system/README.md"
+    },
+    {
+      "git_blob": "7cdfa4fbb26a9d0a9750ef4461ee50d3440a94a6",
+      "path": "systems/rock-star-os/os/system/mount-check-lib.sh"
+    },
+    {
+      "git_blob": "269c46cc41996d3c649f099f3ca78b77a07573de",
+      "path": "systems/rock-star-os/os/system/power_service.py"
+    },
+    {
+      "git_blob": "adfb4098451f10a776cf984cf77a56b6f55b570d",
+      "path": "systems/rock-star-os/os/system/powerctl.py"
+    },
+    {
+      "git_blob": "0829065ecb3e0c61850a56cb8586164c877b416d",
+      "path": "systems/rock-star-os/os/system/rock-mount-check"
+    },
+    {
+      "git_blob": "792f912cebfe28bfae25fc523b3e56493f8cf2f2",
+      "path": "systems/rock-star-os/os/system/tests/test_power.py"
+    },
+    {
+      "git_blob": "61fb26636cad6dd96e2178e2b21985d0347d4437",
+      "path": "systems/rock-star-os/os/tools/NOTICE-Mr.txt"
+    },
+    {
+      "git_blob": "2c826cd623aa4d55d649575bf8ecd325070e3ae5",
+      "path": "systems/rock-star-os/os/tools/PROVENANCE.json"
+    },
+    {
+      "git_blob": "12963fc913f46439330bfa19b7dfc0d79a355726",
+      "path": "systems/rock-star-os/os/tools/README.md"
+    },
+    {
+      "git_blob": "351b057622500d3d0df0663f0d9fbc051a774206",
+      "path": "systems/rock-star-os/os/tools/build_development.py"
+    },
+    {
+      "git_blob": "5888f18985ed1a9aafd22ef83a04bc46e8d4bdbc",
+      "path": "systems/rock-star-os/os/tools/dist/BUILD-MANIFEST.json"
+    },
+    {
+      "git_blob": "46f0bc40049482024b316e49c3f3ff828a1226e9",
+      "path": "systems/rock-star-os/os/tools/dist/org.rockstar.citation-organizer--1.0.0.rock.json"
+    },
+    {
+      "git_blob": "a916e49325f683d4e2121b8b3d80ee09ddb23276",
+      "path": "systems/rock-star-os/os/tools/dist/org.rockstar.proposal-draft--1.0.0.rock.json"
+    },
+    {
+      "git_blob": "244bde34f3f908fc610e9d036f621317a8fc6e28",
+      "path": "systems/rock-star-os/os/tools/dist/org.rockstar.proposal-draft--1.1.0.rock.json"
+    },
+    {
+      "git_blob": "140eb017e7de8964d426903efdd7f196e0990709",
+      "path": "systems/rock-star-os/os/tools/dist/org.rockstar.utf8-sha256--1.0.0.rock.json"
+    },
+    {
+      "git_blob": "2b4067b9e530120a0c073eb7882832052f2169d2",
+      "path": "systems/rock-star-os/os/tools/fixtures/citations.md"
+    },
+    {
+      "git_blob": "4f11d1885cd98a6c6301d75a909029c94c841713",
+      "path": "systems/rock-star-os/os/tools/fixtures/proposal.json"
+    },
+    {
+      "git_blob": "f2ba8f84ab5c1bce84a7b441cb1959cfc7093b7f",
+      "path": "systems/rock-star-os/os/tools/fixtures/utf8-input.txt"
+    },
+    {
+      "git_blob": "31ac0f271396e185c5913267527f3190dc04dbbd",
+      "path": "systems/rock-star-os/os/tools/guest_acceptance.py"
+    },
+    {
+      "git_blob": "c55126fd0916d8e8703bd70ca9cc1682ea432d74",
+      "path": "systems/rock-star-os/os/tools/packages/org.rockstar.citation-organizer--1.0.0.recipe.json"
+    },
+    {
+      "git_blob": "2c36f73fb3519141b1b08ef70e5c7d446a59d3e7",
+      "path": "systems/rock-star-os/os/tools/packages/org.rockstar.proposal-draft--1.0.0.recipe.json"
+    },
+    {
+      "git_blob": "139ddecc25a38d651ba88b065fbfc236f8dfa788",
+      "path": "systems/rock-star-os/os/tools/packages/org.rockstar.proposal-draft--1.1.0.recipe.json"
+    },
+    {
+      "git_blob": "3418943ddc81bd7d87143d9e42533ea6d8526acc",
+      "path": "systems/rock-star-os/os/tools/packages/org.rockstar.utf8-sha256--1.0.0.recipe.json"
+    },
+    {
+      "git_blob": "503bb72b0edc2ee90565be275f999e838ddef600",
+      "path": "systems/rock-star-os/os/tools/verify_host.py"
+    },
+    {
+      "git_blob": "a9c455bf86ea063ba89c7da8a3747d10215fe5ce",
+      "path": "systems/rock-star-os/os/ui/ATM-UI-CONTRACT.md"
+    },
+    {
+      "git_blob": "3eb7c6c5776ef096d570c5d377a902aa5a7cdeb9",
+      "path": "systems/rock-star-os/os/ui/Makefile"
+    },
+    {
+      "git_blob": "ebd2dcf77dff62b5f7eaffb116e7f67da412aa2e",
+      "path": "systems/rock-star-os/os/ui/README.md"
+    },
+    {
+      "git_blob": "9c2502160daabab60b6ac00ae8550299a1098d28",
+      "path": "systems/rock-star-os/os/ui/REMOTE-UI-CONTRACT.md"
+    },
+    {
+      "git_blob": "f816fbee8e9ff9c0f5d3e50b8ea6936b19c03dcc",
+      "path": "systems/rock-star-os/os/ui/activation-ui.inc"
+    },
+    {
+      "git_blob": "00f299a87b6f1a0d2601dca123f9ae2efd7a1089",
+      "path": "systems/rock-star-os/os/ui/atm-ui.inc"
+    },
+    {
+      "git_blob": "15e6c4b7e5eb4526075e0d148d7d8c8c61d1a832",
+      "path": "systems/rock-star-os/os/ui/auth-ui.inc"
+    },
+    {
+      "git_blob": "43c6e03905f77009d981bad0360e91077145f426",
+      "path": "systems/rock-star-os/os/ui/device.c"
+    },
+    {
+      "git_blob": "6d0f83e718c5e7631f1793c841b2da16989f6e09",
+      "path": "systems/rock-star-os/os/ui/device.h"
+    },
+    {
+      "git_blob": "13dfd2300a2b548840bc4f94648e124ac69e5a12",
+      "path": "systems/rock-star-os/os/ui/guest-ui-atm-evidence.py"
+    },
+    {
+      "git_blob": "0622eca3ef6a5f3dbc1a494672bf929ad788cb0c",
+      "path": "systems/rock-star-os/os/ui/guest-ui-auth-evidence.py"
+    },
+    {
+      "git_blob": "2700a036f29dbffc5849d541c051cab53173ef20",
+      "path": "systems/rock-star-os/os/ui/guest-ui-evidence.py"
+    },
+    {
+      "git_blob": "00892896fa883d12d82a36b72b5fb79de384ebe6",
+      "path": "systems/rock-star-os/os/ui/guest-ui-power-evidence.py"
+    },
+    {
+      "git_blob": "f6924511ca76d734ffd122b212bb449b01e25ef7",
+      "path": "systems/rock-star-os/os/ui/guest-ui-remote-evidence.py"
+    },
+    {
+      "git_blob": "f6e191a2ade5bea00283fcc2de4f56eb81c52e40",
+      "path": "systems/rock-star-os/os/ui/guest-ui-runner-evidence.py"
+    },
+    {
+      "git_blob": "eb3df95b557f79055865fc02815339c577cd259a",
+      "path": "systems/rock-star-os/os/ui/guest-ui-wallet-evidence.py"
+    },
+    {
+      "git_blob": "67759ac3c72c672e9f7cfc0c67dc186781a36cf8",
+      "path": "systems/rock-star-os/os/ui/health.c"
+    },
+    {
+      "git_blob": "0197d49851260836811d8f14b0dac8ad5e1ec7f7",
+      "path": "systems/rock-star-os/os/ui/health.h"
+    },
+    {
+      "git_blob": "3dfc55f35d54421a64b97028d08daa79b343377a",
+      "path": "systems/rock-star-os/os/ui/ipc.c"
+    },
+    {
+      "git_blob": "447e20fadb260a1e13e00101dd6404e4e6185648",
+      "path": "systems/rock-star-os/os/ui/ipc.h"
+    },
+    {
+      "git_blob": "78a857371bc307ca8e77451bf65885b77aae3685",
+      "path": "systems/rock-star-os/os/ui/main.c"
+    },
+    {
+      "git_blob": "b95ace0f913e410d757592e7ffbc9fe58960b5b0",
+      "path": "systems/rock-star-os/os/ui/mcp-ui.inc"
+    },
+    {
+      "git_blob": "b39ce2e33759f8619db64a4c65d454e5152a4849",
+      "path": "systems/rock-star-os/os/ui/preview_live.py"
+    },
+    {
+      "git_blob": "6cd5463d57d528c1e6f4fe121acda2673dcd500a",
+      "path": "systems/rock-star-os/os/ui/remote-ui.inc"
+    },
+    {
+      "git_blob": "2b39d695a6a50120635fe962f074f090509583de",
+      "path": "systems/rock-star-os/os/ui/replay_qmp.py"
+    },
+    {
+      "git_blob": "7d00176ade9e2cd2b26e527540c2a893e23119bc",
+      "path": "systems/rock-star-os/os/ui/service-ui.inc"
+    },
+    {
+      "git_blob": "02d23dfb38eaeca98c89846b78372ee1dae5e18d",
+      "path": "systems/rock-star-os/os/ui/test_activation.inc"
+    },
+    {
+      "git_blob": "69f9c1fb6bfc0e09ef30e9a8ca3ece2d6076779f",
+      "path": "systems/rock-star-os/os/ui/test_atm.inc"
+    },
+    {
+      "git_blob": "5e125d867a9765df8a367817af4ed88cb1e86c5f",
+      "path": "systems/rock-star-os/os/ui/test_atm_evidence.py"
+    },
+    {
+      "git_blob": "3f66b9156b98401a968e8e1b4fbe877006f6a32e",
+      "path": "systems/rock-star-os/os/ui/test_auth.inc"
+    },
+    {
+      "git_blob": "b98e520cdfe855d48cb56c292d22bc89feb385b4",
+      "path": "systems/rock-star-os/os/ui/test_evidence.py"
+    },
+    {
+      "git_blob": "dbbeccb5a7ed353162de27d68e4727988c0037e7",
+      "path": "systems/rock-star-os/os/ui/test_health.c"
+    },
+    {
+      "git_blob": "2b96d0f718e3cb259816459d9310ac63222845da",
+      "path": "systems/rock-star-os/os/ui/test_ipc.c"
+    },
+    {
+      "git_blob": "680dd7e5b2193e4421f165ab718c1cc0e7462b38",
+      "path": "systems/rock-star-os/os/ui/test_ipc.py"
+    },
+    {
+      "git_blob": "942c25783d0037657dca5715e98a72b7d21f05d4",
+      "path": "systems/rock-star-os/os/ui/test_lifecycle.inc"
+    },
+    {
+      "git_blob": "c70f16e936cc9dc5619925c77e6e336955f61a8b",
+      "path": "systems/rock-star-os/os/ui/test_mcp.inc"
+    },
+    {
+      "git_blob": "da527df86a9995d032b9a9d6a8c56f3651cb4ec8",
+      "path": "systems/rock-star-os/os/ui/test_power_evidence.py"
+    },
+    {
+      "git_blob": "fa5e80f758ff2bc5c32990011080722b1e767b73",
+      "path": "systems/rock-star-os/os/ui/test_remote.inc"
+    },
+    {
+      "git_blob": "a2307d23f6882e71badda8b4c32a4161a3ea3f9d",
+      "path": "systems/rock-star-os/os/ui/test_runner_evidence.py"
+    },
+    {
+      "git_blob": "b95d42024b67c1ba488fb17c75fed5106c7249f3",
+      "path": "systems/rock-star-os/os/ui/test_service.inc"
+    },
+    {
+      "git_blob": "a0df0b82d597e1476c2d6c8bc2709382953496cf",
+      "path": "systems/rock-star-os/os/ui/test_ui.c"
+    },
+    {
+      "git_blob": "b4d1322f4fd8963018b9739d03f93c3ff6c4f6b0",
+      "path": "systems/rock-star-os/os/ui/test_wallet_evidence.py"
+    },
+    {
+      "git_blob": "eda60b0f066a15c0b8ad38da5c23853d67ab4880",
+      "path": "systems/rock-star-os/os/ui/ui.c"
+    },
+    {
+      "git_blob": "f654eaaa6851d931d82eb41a8b24dd8dd9db0751",
+      "path": "systems/rock-star-os/os/ui/ui.h"
+    },
+    {
+      "git_blob": "a86c017c8c876987dca022bef098564322435b35",
+      "path": "systems/rock-star-os/os/ui/verify-atm-ui.py"
+    },
+    {
+      "git_blob": "81917d46940c102eef66f79b61d29394c19374e3",
+      "path": "systems/rock-star-os/os/ui/verify-auth.py"
+    },
+    {
+      "git_blob": "0a5d1689b9c06dfbe3078295be82b4d836d015eb",
+      "path": "systems/rock-star-os/os/ui/verify-native.py"
+    },
+    {
+      "git_blob": "2f8936caef0e7602afbe35a46e2ce45b59e09fe6",
+      "path": "systems/rock-star-os/os/ui/verify-power.py"
+    },
+    {
+      "git_blob": "fb106bc6b61e10ad3ef90e00b715dc9ff429ffa4",
+      "path": "systems/rock-star-os/os/ui/verify-remote.py"
+    },
+    {
+      "git_blob": "799346e647e0a2eb9d4533347097747aa47451be",
+      "path": "systems/rock-star-os/os/ui/verify-runner.py"
+    },
+    {
+      "git_blob": "b2f1b1b4df5820fc8e0a30139f49c0cd969cf350",
+      "path": "systems/rock-star-os/os/ui/verify-wallet.py"
+    },
+    {
+      "git_blob": "cd5e6dd852d88104b6c7d90d95ddb0ab3f25e13d",
+      "path": "systems/rock-star-os/os/ui/wallet-evidence-auth.py"
+    },
+    {
+      "git_blob": "37a7ba78fa9467e7f245680609c7d9561da0decd",
+      "path": "systems/rock-star-os/os/update/README.md"
+    },
+    {
+      "git_blob": "b61bcb33dc2f81e109f593cf98414d518ad09077",
+      "path": "systems/rock-star-os/os/update/S01rock-ab-full-recover"
+    },
+    {
+      "git_blob": "58fa64d2c9d1c559395405657665df64c192793b",
+      "path": "systems/rock-star-os/os/update/S97rock-update-health"
+    },
+    {
+      "git_blob": "66fc41d9b4cce8e42d645245228c9e16fb813831",
+      "path": "systems/rock-star-os/os/update/S99rock-ab-test"
+    },
+    {
+      "git_blob": "b6104ec93c7a0feed30280449ff06562b4f80212",
+      "path": "systems/rock-star-os/os/update/UI-STARTUP-VERIFIER.md"
+    },
+    {
+      "git_blob": "b0695351014e10a6acd90883fc127615d67e3e6e",
+      "path": "systems/rock-star-os/os/update/build-initramfs.py"
+    },
+    {
+      "git_blob": "860216b1ab55f807e2ede6fb73adaa85a03f7f74",
+      "path": "systems/rock-star-os/os/update/early_recover.py"
+    },
+    {
+      "git_blob": "2e900e8fa86c9a19951f8ad66560114386cc648d",
+      "path": "systems/rock-star-os/os/update/fault_cli.py"
+    },
+    {
+      "git_blob": "71b19b61f12c7391e5cec4ed445657cd276a1a4e",
+      "path": "systems/rock-star-os/os/update/fault_guest.py"
+    },
+    {
+      "git_blob": "6cef37e084d6d91459ca9c23c6e047fe2f2722e2",
+      "path": "systems/rock-star-os/os/update/guest_test.py"
+    },
+    {
+      "git_blob": "cb6d0266964ed9d8537d5add7ca3db982c302038",
+      "path": "systems/rock-star-os/os/update/init"
+    },
+    {
+      "git_blob": "4efb19ceffa4f81a5c455f9c7deccfbf653ca580",
+      "path": "systems/rock-star-os/os/update/install-target.sh"
+    },
+    {
+      "git_blob": "f87385b120e3fc0b0cf8702828d6bf2754eb5c1d",
+      "path": "systems/rock-star-os/os/update/make_bundle.py"
+    },
+    {
+      "git_blob": "a667c3d7f50b4289e90f4ffe59c4a57df8b2142c",
+      "path": "systems/rock-star-os/os/update/rock-boot-watchdog"
+    },
+    {
+      "git_blob": "1aac5b812d08f6ffd3202a59f90adbfefffddb4c",
+      "path": "systems/rock-star-os/os/update/rock-ui-health"
+    },
+    {
+      "git_blob": "6dea5f0d543163d631fe6783e0e927b623dba449",
+      "path": "systems/rock-star-os/os/update/rock-update"
+    },
+    {
+      "git_blob": "f9890ffac58db41f12ef738dbb5b942e361c2f49",
+      "path": "systems/rock-star-os/os/update/rock-update-test"
+    },
+    {
+      "git_blob": "743c227686f131bff5f1b47d82c2f21255608ff4",
+      "path": "systems/rock-star-os/os/update/rock_update.py"
+    },
+    {
+      "git_blob": "4d91dfbe2762a93b84a9d7d169d0462d2e0b432c",
+      "path": "systems/rock-star-os/os/update/test_early_recover.py"
+    },
+    {
+      "git_blob": "4a06ce659892037589ee76993b062d86ad077e3e",
+      "path": "systems/rock-star-os/os/update/test_faults.py"
+    },
+    {
+      "git_blob": "4eab5a1f5a389af3009d00ba3e83f07b54ea546b",
+      "path": "systems/rock-star-os/os/update/test_full_fixture.py"
+    },
+    {
+      "git_blob": "51491030d9ae8e1f9cadad56dd96037a2942f2b5",
+      "path": "systems/rock-star-os/os/update/test_initramfs_shell.py"
+    },
+    {
+      "git_blob": "b92f7477936b4c431a187ede0c6359d5b2df6265",
+      "path": "systems/rock-star-os/os/update/test_update.py"
+    },
+    {
+      "git_blob": "9fe8854a93c6c40da4134ac0d8f1779d59075bb4",
+      "path": "systems/rock-star-os/os/update/ui_health.py"
+    },
+    {
+      "git_blob": "444349ffd5b37d647bff2610d68d2f40dadf572e",
+      "path": "systems/rock-star-os/os/update/ui_startup_fixture.py"
+    },
+    {
+      "git_blob": "f66bdafaaa0fac0482d3485cb8b92f1df4e89eb1",
+      "path": "systems/rock-star-os/os/update/verify-auth-health.py"
+    },
+    {
+      "git_blob": "a4216ae9ba0be263793628bf9592b7d9c0b54cb3",
+      "path": "systems/rock-star-os/os/update/verify-faults.py"
+    },
+    {
+      "git_blob": "56be9752606b647e16f2135654c32be2b35f533a",
+      "path": "systems/rock-star-os/os/update/verify-qemu.py"
+    },
+    {
+      "git_blob": "c9632edb73c31f6db1bf9c10bd105eba213bd04d",
+      "path": "systems/rock-star-os/os/update/verify-ui-startup.py"
+    },
+    {
+      "git_blob": "5570f876aa9e80f3082a2f62082de4d5330cc607",
+      "path": "systems/rock-star-os/os/update/verify_purchaser.py"
+    },
+    {
+      "git_blob": "5ed97b07ea827b988731a818088b61a2de55db52",
+      "path": "systems/rock-star-os/os/update/verify_purchaser_contract.py"
+    },
+    {
+      "git_blob": "27c92ab1d59485ff5634d77cfa008b155437c577",
+      "path": "systems/rock-star-os/os/update/verify_purchaser_guest.py"
+    },
+    {
+      "git_blob": "ff6a2335da1a80fc53ea65b24330ba46b45cc7ac",
+      "path": "systems/rock-star-os/os/verify-atm.py"
+    },
+    {
+      "git_blob": "fe660c29c31fa37ae08a8c881f6022d6d5eaab12",
+      "path": "systems/rock-star-os/os/verify-boot.py"
+    },
+    {
+      "git_blob": "6a3862fe027142df1d9dae385855be69d2a8b368",
+      "path": "systems/rock-star-os/os/verify-platform.py"
+    },
+    {
+      "git_blob": "c8f0a4d0d3be6374ee4851681f42a58190ae78c0",
+      "path": "systems/rock-star-os/os/verify-remote.py"
+    },
+    {
+      "git_blob": "db4d81b1c1a74c3f92b8e9b413ea72852d940944",
+      "path": "systems/rock-star-os/os/verify-store.py"
+    },
+    {
+      "git_blob": "c85465d0470c34fd903103bbd8d8f7be3cfd99e1",
+      "path": "systems/rock-star-os/os/verify-system.py"
+    },
+    {
+      "git_blob": "8cc6e2b8bad69ff68ff0d9258db23e1d376ee66c",
+      "path": "systems/rock-star-os/os/wallet_auth/README.md"
+    },
+    {
+      "git_blob": "466147905696d08809e462f87292175773566c97",
+      "path": "systems/rock-star-os/os/wallet_auth/__init__.py"
+    },
+    {
+      "git_blob": "3a32f3ce9892c66ffbf05d7256ae085364c05291",
+      "path": "systems/rock-star-os/os/wallet_auth/daemon.py"
+    },
+    {
+      "git_blob": "16afaa77bfef5d98ebdea6b309f4836445f3f009",
+      "path": "systems/rock-star-os/os/wallet_auth/fixture.py"
+    },
+    {
+      "git_blob": "8073b441fe209d9756d71fe36129f591bf941958",
+      "path": "systems/rock-star-os/os/wallet_auth/health.py"
+    },
+    {
+      "git_blob": "0933d331d7c4a16ac9beaa90f89a22fe0d47f0ba",
+      "path": "systems/rock-star-os/os/wallet_auth/protocol.py"
+    },
+    {
+      "git_blob": "0af190476e4ba1729a289f6ca339a885296a77af",
+      "path": "systems/rock-star-os/os/wallet_auth/service.py"
+    },
+    {
+      "git_blob": "969f422efb761022da0333d487225eefb3c1d229",
+      "path": "systems/rock-star-os/os/wallet_auth/tests/test_fixture.py"
+    },
+    {
+      "git_blob": "78620142da87b035b99dfe19af30946fe09e27ae",
+      "path": "systems/rock-star-os/os/wallet_auth/tests/test_protocol.py"
+    },
+    {
+      "git_blob": "97afbbb94f8ab2995e9a55a9dd5aced95d32012c",
+      "path": "systems/rock-star-os/os/wallet_auth/tests/test_service.py"
+    },
+    {
+      "git_blob": "676093835d80dad25258fa8463ab927054367dba",
+      "path": "systems/rock-star-os/os/wallet_backend/README.md"
+    },
+    {
+      "git_blob": "5adcaedc69313d457fe230dae4aa2b4170480ce5",
+      "path": "systems/rock-star-os/os/wallet_backend/__init__.py"
+    },
+    {
+      "git_blob": "b20fc340713786036da6bfb021c46701c9fd47d7",
+      "path": "systems/rock-star-os/os/wallet_backend/client.py"
+    },
+    {
+      "git_blob": "e53c14bc9453aff96326edb367d4fd2007bf22e6",
+      "path": "systems/rock-star-os/os/wallet_backend/guest_multi_device_probe.py"
+    },
+    {
+      "git_blob": "06ab765972322afc84ae35eacaa63b168e47efac",
+      "path": "systems/rock-star-os/os/wallet_backend/guest_probe.py"
+    },
+    {
+      "git_blob": "88bdc45979480982792de36ed4ceae001a445ba9",
+      "path": "systems/rock-star-os/os/wallet_backend/server.py"
+    },
+    {
+      "git_blob": "a7b053a4f09b71404cdadffea2b183bd3d04149f",
+      "path": "systems/rock-star-os/os/wallet_backend/verify_multi_device_os.py"
+    },
+    {
+      "git_blob": "bd041735400dff3ed0daf1355b65723341b97a6e",
+      "path": "systems/rock-star-os/os/wallet_backend/verify_off_device.py"
+    },
+    {
+      "git_blob": "1ea62550a60d62e397defb328fa3f617ca263cc3",
+      "path": "systems/rock-star-os/os/wallet_backend/verify_os.py"
+    },
+    {
+      "git_blob": "684f79e3bdecd90e4627f5bc0bc607b85f8debb2",
+      "path": "systems/rock-star-os/pyproject.toml"
+    },
+    {
+      "git_blob": "0a0ba2c32fbf86e84294e771ab1c4bb1a217e37d",
+      "path": "systems/rock-star-os/schemas/recipe-manifest-v4.schema.json"
+    },
+    {
+      "git_blob": "080d5073e084abf38330a7bf3a7df6125e16fdd0",
+      "path": "systems/rock-star-os/schemas/tool-manifest.schema.json"
+    },
+    {
+      "git_blob": "046646430f2cfc34b0f9b06e56487f5ff1d695df",
+      "path": "systems/rock-star-os/scripts/benchmark-workflow.py"
+    },
+    {
+      "git_blob": "7e363d9ad539a05dc41a5e3f4cdd5b0086848bed",
+      "path": "systems/rock-star-os/scripts/connect-android.sh"
+    },
+    {
+      "git_blob": "546977d966e8303dbcb48d63488c3e0a26d5332b",
+      "path": "systems/rock-star-os/scripts/verify.py"
+    },
+    {
+      "git_blob": "9db90050e496b1be92040f1c5aa4a3a0e6934cf3",
+      "path": "systems/rock-star-os/src/blackberryrock/__init__.py"
+    },
+    {
+      "git_blob": "a049ad7aea97f34e4aab96cc8d30e116fa89790d",
+      "path": "systems/rock-star-os/src/blackberryrock/__main__.py"
+    },
+    {
+      "git_blob": "f72e271a3431bccb958e2001dc904d0854293ab1",
+      "path": "systems/rock-star-os/src/blackberryrock/cli.py"
+    },
+    {
+      "git_blob": "c7d367ba5cd139a074e448a20041074ae12cd30e",
+      "path": "systems/rock-star-os/src/blackberryrock/hub.py"
+    },
+    {
+      "git_blob": "032f30fae55ca3faa12be659bad106a1a6f0d497",
+      "path": "systems/rock-star-os/src/blackberryrock/hub_server.py"
+    },
+    {
+      "git_blob": "35941c44defde176edabeb94eaeeacff9d7f3221",
+      "path": "systems/rock-star-os/src/blackberryrock/manifests.py"
+    },
+    {
+      "git_blob": "2fcf0d90512192dfdb4de3973dd2dd42a1868757",
+      "path": "systems/rock-star-os/src/blackberryrock/packages.py"
+    },
+    {
+      "git_blob": "fc7b0d6c29f556df291bc9f82c94eb345435a399",
+      "path": "systems/rock-star-os/src/blackberryrock/recipe_worker.py"
+    },
+    {
+      "git_blob": "403b24127aabcb2be9cd5571cb10571d3b3cbe9c",
+      "path": "systems/rock-star-os/src/blackberryrock/sdk.py"
+    },
+    {
+      "git_blob": "ecceb28510ef8250cb3e6f40ff8eed2ac711a3d3",
+      "path": "systems/rock-star-os/src/blackberryrock/server.py"
+    },
+    {
+      "git_blob": "5c1cb2e0f5eacde766d3744c4da12b836c3d7670",
+      "path": "systems/rock-star-os/src/blackberryrock/storage.py"
+    },
+    {
+      "git_blob": "1b81d0300879bccedef53ff15566f2f913b77350",
+      "path": "systems/rock-star-os/src/blackberryrock/wallet.py"
+    },
+    {
+      "git_blob": "0ff0442e6ef7de12d9abb3d55539f930d684bc1d",
+      "path": "systems/rock-star-os/src/blackberryrock/web/app.js"
+    },
+    {
+      "git_blob": "60e66b24504caba857f557b176738bcfedeb5fa1",
+      "path": "systems/rock-star-os/src/blackberryrock/web/index.html"
+    },
+    {
+      "git_blob": "e82b28b1637b5a1fa9d230be8329671c0b25b6f1",
+      "path": "systems/rock-star-os/src/blackberryrock/web/style.css"
+    },
+    {
+      "git_blob": "310a3110e3f941404af05ce82738f8a954e30f72",
+      "path": "systems/rock-star-os/tests/test_compatibility_admission.py"
+    },
+    {
+      "git_blob": "b06580e0af964ff80340b75c96f35fefd6296a6b",
+      "path": "systems/rock-star-os/tests/test_desktop_local_ab.py"
+    },
+    {
+      "git_blob": "4c3f5251b772ab0a8093235ed0e26528ea40da42",
+      "path": "systems/rock-star-os/tests/test_desktop_stage0.py"
+    },
+    {
+      "git_blob": "c614bd167bae834b899ed1dcb6d19284fd52f036",
+      "path": "systems/rock-star-os/tests/test_developer_settlement.py"
+    },
+    {
+      "git_blob": "fac9f98448b57f410889b5e4f60d0a9ca655d00b",
+      "path": "systems/rock-star-os/tests/test_hub.py"
+    },
+    {
+      "git_blob": "7af6458f4e5e99801c2ff96c2e23bb6e7f81b0d7",
+      "path": "systems/rock-star-os/tests/test_hub_lifecycle_atomicity.py"
+    },
+    {
+      "git_blob": "b621cdeaa1a1f1169a71f4ca793f4afd76178af8",
+      "path": "systems/rock-star-os/tests/test_hub_requests.py"
+    },
+    {
+      "git_blob": "2c173248168de80c4142e58c638ac2967be1b682",
+      "path": "systems/rock-star-os/tests/test_hub_server.py"
+    },
+    {
+      "git_blob": "a48bd16226dbd5ffcb7d66af9dbbc232f5a0f221",
+      "path": "systems/rock-star-os/tests/test_manifests.py"
+    },
+    {
+      "git_blob": "4de2d23a4e330845c3572e61d8d2c5b6cf594bb4",
+      "path": "systems/rock-star-os/tests/test_mcp_broker_core.py"
+    },
+    {
+      "git_blob": "ec637340852ab2a8d49ed305c3a739cd37976b55",
+      "path": "systems/rock-star-os/tests/test_mcp_broker_lifecycle.py"
+    },
+    {
+      "git_blob": "ad6817d1f54f3d0a490188ef147854fcc0c67e22",
+      "path": "systems/rock-star-os/tests/test_mcp_desktop_profile.py"
+    },
+    {
+      "git_blob": "b04c92d7b7192c35efb97bd91c056e52ce0dfdb6",
+      "path": "systems/rock-star-os/tests/test_mcp_device_client.py"
+    },
+    {
+      "git_blob": "c047d6857284e9f7af80856a694432f70949da58",
+      "path": "systems/rock-star-os/tests/test_mcp_fixture_persistence.py"
+    },
+    {
+      "git_blob": "29b5216f0fffaa27523ec3914e8cdb11f9ef0b06",
+      "path": "systems/rock-star-os/tests/test_mcp_http_deadline.py"
+    },
+    {
+      "git_blob": "d4eb4c838175f7b378cbcbca6edaf130825dc349",
+      "path": "systems/rock-star-os/tests/test_mcp_hub_gateway.py"
+    },
+    {
+      "git_blob": "6546331222e48fb6d9e9b200d7e51bd3232ac8b5",
+      "path": "systems/rock-star-os/tests/test_mcp_runtime.py"
+    },
+    {
+      "git_blob": "9f9714dfbc38ac945524c9b9a0373cd913753041",
+      "path": "systems/rock-star-os/tests/test_mcp_service_access.py"
+    },
+    {
+      "git_blob": "7b1a2660cd820e653992031a3ad66080d7e5186b",
+      "path": "systems/rock-star-os/tests/test_mcp_service_profile.py"
+    },
+    {
+      "git_blob": "aedd40874e0277c26f689507a6738b8839a524be",
+      "path": "systems/rock-star-os/tests/test_onboarding_activation.py"
+    },
+    {
+      "git_blob": "b0e1929e0ca4eccb29a1af6ccb9c83ac272643f5",
+      "path": "systems/rock-star-os/tests/test_operations.py"
+    },
+    {
+      "git_blob": "32f043a299a3e71734ba03bff8a0fc9d0ee16838",
+      "path": "systems/rock-star-os/tests/test_operations_device.py"
+    },
+    {
+      "git_blob": "57ba6819c5be696cec134bf1fab969df3de55295",
+      "path": "systems/rock-star-os/tests/test_operations_elf_guard.py"
+    },
+    {
+      "git_blob": "c8526e430db53a58bdfe67ae75ad641259c0180d",
+      "path": "systems/rock-star-os/tests/test_operations_native_verifier.py"
+    },
+    {
+      "git_blob": "f2920a52358096171ef30ddbeb3b9a11193479b8",
+      "path": "systems/rock-star-os/tests/test_os_atm_integration.py"
+    },
+    {
+      "git_blob": "771c7cd8bfc6145b41eba5b59982cde279ccb717",
+      "path": "systems/rock-star-os/tests/test_os_desktop.py"
+    },
+    {
+      "git_blob": "69149dad60febca000c149af3873039da834d536",
+      "path": "systems/rock-star-os/tests/test_os_desktop_backup.py"
+    },
+    {
+      "git_blob": "084f05bcce31e0e74402b0dd4109adad95f7aa81",
+      "path": "systems/rock-star-os/tests/test_os_desktop_backup_profiles.py"
+    },
+    {
+      "git_blob": "604f7c7d710adf6a720125276cced951d064a7b7",
+      "path": "systems/rock-star-os/tests/test_os_desktop_backup_verify.py"
+    },
+    {
+      "git_blob": "fe0843db6d73661834b722fe9f50e79e8c49af95",
+      "path": "systems/rock-star-os/tests/test_os_desktop_browser.py"
+    },
+    {
+      "git_blob": "a062ac9571a7c8501d631f4ea67cfa5efc5e8f21",
+      "path": "systems/rock-star-os/tests/test_os_desktop_launcher.py"
+    },
+    {
+      "git_blob": "75dda9a2915e251f59c782a59bc2c7f32d193ceb",
+      "path": "systems/rock-star-os/tests/test_os_desktop_services.py"
+    },
+    {
+      "git_blob": "e0c3bba8d2759727561a4522a00a61494596d6d3",
+      "path": "systems/rock-star-os/tests/test_os_desktop_viewer.py"
+    },
+    {
+      "git_blob": "173bb1d54de49da66e5253ef77900a923e5f1750",
+      "path": "systems/rock-star-os/tests/test_os_mount_check.py"
+    },
+    {
+      "git_blob": "6b89b3af3d15a21fd3d4492be67c7cf93af26dfa",
+      "path": "systems/rock-star-os/tests/test_os_platform.py"
+    },
+    {
+      "git_blob": "b2cf874a93c00411c6e3699a6bc5959a6652f3a1",
+      "path": "systems/rock-star-os/tests/test_os_platform_install.py"
+    },
+    {
+      "git_blob": "5ac36aee668ea0da27edaa2d49d380eb6075ca86",
+      "path": "systems/rock-star-os/tests/test_os_power_relay.py"
+    },
+    {
+      "git_blob": "5a4aa3141ca18dfd0971d0364490e05b58c4444b",
+      "path": "systems/rock-star-os/tests/test_os_purchaser_health.py"
+    },
+    {
+      "git_blob": "ae0038222c4cd2591311c0512e3da1840e89ada2",
+      "path": "systems/rock-star-os/tests/test_os_purchaser_recovery_verifier.py"
+    },
+    {
+      "git_blob": "28020214b9eabdc3247f03345e691405ac890e77",
+      "path": "systems/rock-star-os/tests/test_os_registry_control.py"
+    },
+    {
+      "git_blob": "640564d07ae1eb61ff36a5ce51c9dd90426fa9fe",
+      "path": "systems/rock-star-os/tests/test_os_registry_failure_boundaries.py"
+    },
+    {
+      "git_blob": "7c0375b1f8350f68e6fdfb1bcd2d5afab0868982",
+      "path": "systems/rock-star-os/tests/test_os_registry_verification_cache.py"
+    },
+    {
+      "git_blob": "0894917ea0d126b324ed406b5b64bbbc31dec5cc",
+      "path": "systems/rock-star-os/tests/test_os_resource_probes.py"
+    },
+    {
+      "git_blob": "60ce6c6e2771701607dd10cf012cb242a3f5a6df",
+      "path": "systems/rock-star-os/tests/test_os_runner_control.py"
+    },
+    {
+      "git_blob": "74f41cc8576386a15eecd68d13f7a95e5e844d52",
+      "path": "systems/rock-star-os/tests/test_os_source_export.py"
+    },
+    {
+      "git_blob": "e0f5cda6266e999c0709370acdc520bd3b0a2c9c",
+      "path": "systems/rock-star-os/tests/test_os_target_build_isolation.py"
+    },
+    {
+      "git_blob": "36e680e59b5177c437177f40779b85ac4eefa6f9",
+      "path": "systems/rock-star-os/tests/test_os_tools.py"
+    },
+    {
+      "git_blob": "bef0fbc354ca4a3140e5d356b228ee101f21f5cd",
+      "path": "systems/rock-star-os/tests/test_os_wallet_auth.py"
+    },
+    {
+      "git_blob": "2a68331655f55aa21bf2411ea65590bdfadef77d",
+      "path": "systems/rock-star-os/tests/test_os_wallet_membership.py"
+    },
+    {
+      "git_blob": "335afc971744fd1b5f5ae05be6d0af85cdb7045d",
+      "path": "systems/rock-star-os/tests/test_os_wallet_multi_device.py"
+    },
+    {
+      "git_blob": "da536182526c9a7e4de1a0374112a0474684d4a9",
+      "path": "systems/rock-star-os/tests/test_platform_activation.py"
+    },
+    {
+      "git_blob": "8c365377952b1a0bd285246616cf5ee225df87c2",
+      "path": "systems/rock-star-os/tests/test_platform_wallet_view.py"
+    },
+    {
+      "git_blob": "a3e5d3d0cb880278e36943743b4ed927e06184fb",
+      "path": "systems/rock-star-os/tests/test_purchaser_offline_os.py"
+    },
+    {
+      "git_blob": "1550c4cb747de41f7a2441a9da5fbfd35ae6cfb7",
+      "path": "systems/rock-star-os/tests/test_remote_manifest.py"
+    },
+    {
+      "git_blob": "30f25f8d83120e5d40b05129e770b11d14956265",
+      "path": "systems/rock-star-os/tests/test_sdk_compatibility.py"
+    },
+    {
+      "git_blob": "0256d85e9ba2f016c54418affe2d8c2ebebe46b9",
+      "path": "systems/rock-star-os/tests/test_server.py"
+    },
+    {
+      "git_blob": "923e814e194bf6448a27587986598a409903f154",
+      "path": "systems/rock-star-os/tests/test_service_access_authority.py"
+    },
+    {
+      "git_blob": "fb1a7897236ab56ee3d41bb0fe9044159152f16e",
+      "path": "systems/rock-star-os/tests/test_service_access_desktop.py"
+    },
+    {
+      "git_blob": "6b77cd0163d41a5b65f5d7a83ace9d24ede52c06",
+      "path": "systems/rock-star-os/tests/test_service_access_os_client.py"
+    },
+    {
+      "git_blob": "baacc2082dedb6db213db7480870ee2f80034845",
+      "path": "systems/rock-star-os/tests/test_service_access_profile.py"
+    },
+    {
+      "git_blob": "66be4f0225b55f6b4a98c7438d6f9e9ea38dd0a3",
+      "path": "systems/rock-star-os/tests/test_service_access_registry_runner.py"
+    },
+    {
+      "git_blob": "c004c590d8a12a534326f38be4306bccd7f0e77b",
+      "path": "systems/rock-star-os/tests/test_service_access_status.py"
+    },
+    {
+      "git_blob": "6681873e2847693e892017a36b62c25f7b581e19",
+      "path": "systems/rock-star-os/tests/test_storage.py"
+    },
+    {
+      "git_blob": "cab011b172d64d8dafd05269e8c517211d5c712e",
+      "path": "systems/rock-star-os/tests/test_ui_startup_health.py"
+    },
+    {
+      "git_blob": "7d8f30a7871b916aa54540abe62834c2151e8d90",
+      "path": "systems/rock-star-os/tests/test_ui_startup_verifier.py"
+    },
+    {
+      "git_blob": "cca3e840c907415f7d7c44dbc82d9715c5bc1732",
+      "path": "systems/rock-star-os/tests/test_wallet.py"
+    },
+    {
+      "git_blob": "ba6c639fbf3cec2326431d716d629c8babe131b5",
+      "path": "systems/rock-star-os/tests/test_wallet_auth_backend.py"
+    },
+    {
+      "git_blob": "0bb91ea2711f6844d0e65a3ebb17433a8fb3bce6",
+      "path": "systems/rock-star-os/tests/test_wallet_auth_billing_recovery.py"
+    },
+    {
+      "git_blob": "77a03798de906b37234aed1239bf0bb2f76f3c3e",
+      "path": "systems/rock-star-os/tests/test_wallet_auth_native.py"
+    },
+    {
+      "git_blob": "dfff31f028e794d29a1158464ce2174e26ca51ea",
+      "path": "systems/rock-star-os/tests/test_wallet_backend_client.py"
+    },
+    {
+      "git_blob": "89c5ef31bc793b3ba41036651c980c7af147fa98",
+      "path": "systems/rock-star-os/tests/test_wallet_backend_close_lifetime.py"
+    },
+    {
+      "git_blob": "97335b7cf779bab70190446bd6f3c2569d82e2fd",
+      "path": "systems/rock-star-os/tests/test_wallet_backend_device_client.py"
+    },
+    {
+      "git_blob": "1423a2619fb39c3dc6b9e59f28cc7717fdc0a5df",
+      "path": "systems/rock-star-os/tests/test_wallet_backend_integration.py"
+    },
+    {
+      "git_blob": "747ecf84ae2c5a3fcbea20ce128a2c5b73e5ce16",
+      "path": "systems/rock-star-os/tests/test_wallet_backend_multi_device.py"
+    },
+    {
+      "git_blob": "bdd083eb52656d5d3309f1789b4c9212799fa798",
+      "path": "systems/rock-star-os/tests/test_wallet_backend_profile.py"
+    },
+    {
+      "git_blob": "910dd7ce587b239651d21ba71b59cce9f8e31a9d",
+      "path": "systems/rock-star-os/tests/test_wallet_backend_server.py"
+    },
+    {
+      "git_blob": "d8716af33d5672d8d18a09c222fc5bd2402cdd4c",
+      "path": "systems/rock-star-os/tests/test_wallet_http.py"
+    }
+  ],
+  "probe_sha256": "5373fe42d0cb0facc5b4bfc310aa235a08cc082da54ce47a0cf77b6d4e6f68e0",
+  "report_sha256": "90bc99ecd8d2d078182325d43e00ea8e430e4439e0425d9a002de725305f15f9",
+  "source_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9"
+}

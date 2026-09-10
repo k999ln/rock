@@ -1,0 +1,22 @@
+{
+  "schema": "rock-github-smoke-manual-ui/1",
+  "status": "PASS_OBSERVED",
+  "mode": "CUA rendered native framebuffer; no automatic QMP/OCR timing claim",
+  "owned_tab": "48015107",
+  "native_session": "9038323b74034080a082a1eeb4c60480",
+  "actions": [
+    "fresh standard Hub catalog, citation1.0.0 uninstalled",
+    "open detail: local input/result permission, no send destination",
+    "install citation1.0.0",
+    "explicit local permission consent",
+    "open tool",
+    "bundled sample button:150/4096bytes shown",
+    "execute once",
+    "completed output includes introduction, fenced code citation retained and source list store",
+    "history exactly one completion09/10 10:41:58",
+    "device poweroff and confirm; downloadedbootstrapstop returned stopped",
+    "close owned viewer"
+  ],
+  "financial_registration_and_consent_and_game_actions": false,
+  "finished_utc": "2026-09-10T10:45:38.023567+00:00"
+}

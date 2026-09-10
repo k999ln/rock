@@ -1,0 +1,157 @@
+{
+  "schema": "rockstaros-preview-intermediate-lifecycle/1",
+  "status": "LIFECYCLE_PASS_PACKAGE_REPRODUCIBILITY_FAIL",
+  "final_release_acceptance": false,
+  "reason": "Local-only intermediate; volatile validation pyc files were included in the first package. Fixed in f756394; final Game candidate must be independently packaged and accepted.",
+  "source_commit": "3fa88610fe77317b920efe1dea8f58f8d2113092",
+  "archive_sha256": "bd7ba5cd0fc5ec48dc016835a4eeac4ab5fa0cdd8131618b482c27b7ba981714",
+  "manifest_sha256": "0ee687c6f4bfc25d244035ec22119afb81b58c7d95f23858b26993c5e07e364b",
+  "image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "eb8bc90f81a58020ae66a6c6ad835a5f2cd6864d0c458eb18466a31bc51ed79a",
+    "stage0.cpio.gz": "92c33ce85374357882cdb2124c622e9f9777896acfab431cda93dc8de17cc390"
+  },
+  "factory_sha256": "7478fb7430fc4e0111dde1ef3f71600d601737c2474a45c2915326cf63b705fc",
+  "host": {
+    "architecture": "arm64",
+    "lima": "limactl version 2.2.0",
+    "openssl": "OpenSSL 3.6.3 9 Jun 2026 (Library: OpenSSL 3.6.3 9 Jun 2026)",
+    "os": "15.7.4",
+    "python": "3.14.7"
+  },
+  "guest": {
+    "image_preflight": "PASS",
+    "linux": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "package_versions": "e2fsprogs\t1.47.2-3+b11\nopenssl\t3.5.7-1~deb13u2\npython3\t3.13.5-1\nqemu-system-arm\t1:10.0.11+ds-0+deb13u1\nqemu-utils\t1:10.0.11+ds-0+deb13u1\n",
+    "python": "3.13.5",
+    "qemu": "QEMU emulator version 10.0.11 (Debian 1:10.0.11+ds-0+deb13u1)"
+  },
+  "freshness": {
+    "new_private_lima_home": true,
+    "new_vm": true,
+    "base_image_download_cache_reused": true,
+    "existing_vm_or_userdata_reused": false,
+    "host_home_mounted": false,
+    "only_readonly_package_mount": true
+  },
+  "vm_config_sha256": "73353fa4ad4852269eb308dd55a8362c928f8c2194ccef0b0407123ffab72106",
+  "vm_identity_sha256": "b09408f36445707db737f6e39b1cf63f7fecafa198c8b9e111ae627138b080d6",
+  "install_prepare_seconds": 20.170008373260497,
+  "ui_observations": {
+    "interface": "actual noVNC framebuffer operated through CUA Chrome",
+    "hub": "citation installation, local permission, bundled 150-byte valid sample, completion, saved history result",
+    "restart": "same saved output visible",
+    "restored": "same saved output visible",
+    "wallet": "unregistered; available/pending/held $0.00 before and after restore",
+    "normal_shutdowns": 3,
+    "host_qemu_power_or_kill_commands": 0,
+    "scope": "manual screenshot observations; not an automated OCR/QMP acceptance"
+  },
+  "backup": {
+    "disks": {
+      "slot-a.ext4": {
+        "bytes": 402653184,
+        "sha256": "eb8bc90f81a58020ae66a6c6ad835a5f2cd6864d0c458eb18466a31bc51ed79a"
+      },
+      "slot-b.ext4": {
+        "bytes": 402653184,
+        "sha256": "3201548f7070f0ae5adf2c869b15df99b5f85ca51feda443c1597c130976619a"
+      },
+      "userdata.ext4": {
+        "bytes": 268435456,
+        "sha256": "8547307e88ce96930eac8ba24eaedab50317c0a51a36354aae683c8a32113fb0"
+      }
+    },
+    "clean_fs_exit": 0,
+    "off_vm_export": true,
+    "export_sha256_verified_after_removal": true
+  },
+  "restore": {
+    "new_device": "recovered",
+    "original_retired": "preview",
+    "disks_match": true,
+    "clean_fs_exit": 0,
+    "readback_sha256": "39c32498f75307236200d030e39b764007e53ab984d26c2dc3636e46d06990c1"
+  },
+  "removal": {
+    "state": "REMOVED",
+    "owned_vm_directory_absent": true,
+    "old_viewer_8899_pid_preserved": 77657,
+    "preview_ports_8900_5910_free": true,
+    "host_export_preserved": true,
+    "force_used": false
+  },
+  "phase_log_sha256": {
+    "package": {
+      "sha256": "e42c8c314bf091b06367df54c1ce977cf76336e6521ad9662324010b2a7f5562",
+      "bytes": 561
+    },
+    "install": {
+      "sha256": "9c39c7d95fa0c7c86d34e1aad70fa0c9779b2110d2001adafece2cc384af03ae",
+      "bytes": 460
+    },
+    "start": {
+      "sha256": "86d7e5461f307a61dab7e5519cffe4f150ef0dbd5ebd3d41d94736d9940f8e12",
+      "bytes": 321
+    },
+    "open": {
+      "sha256": "86d7e5461f307a61dab7e5519cffe4f150ef0dbd5ebd3d41d94736d9940f8e12",
+      "bytes": 321
+    },
+    "stop1": {
+      "sha256": "322c7cc365f0a25e2cf01293cc462eaf7af5962f0c78ce83fb745185a9e38bd0",
+      "bytes": 279
+    },
+    "restart": {
+      "sha256": "5e28e5b40c8476a307116bf353178de2233321ae6610237f9f9f0ea3829a074e",
+      "bytes": 321
+    },
+    "stop2": {
+      "sha256": "322c7cc365f0a25e2cf01293cc462eaf7af5962f0c78ce83fb745185a9e38bd0",
+      "bytes": 279
+    },
+    "backup": {
+      "sha256": "2865880cc17f755bea020ec071da1d88b98766cc207dcadfb42a24802638b8bd",
+      "bytes": 322
+    },
+    "restore": {
+      "sha256": "37630310c3f26bb0a502d7774933fe4fee704db2a588db3f798779d764823d65",
+      "bytes": 239
+    },
+    "restored-start": {
+      "sha256": "e0495f6b4ddfae2790870488b81181647b1c658aecc4eba3515f9270e2bcd0d9",
+      "bytes": 323
+    },
+    "stop3": {
+      "sha256": "322c7cc365f0a25e2cf01293cc462eaf7af5962f0c78ce83fb745185a9e38bd0",
+      "bytes": 279
+    },
+    "remove": {
+      "sha256": "6efa1097bcdff40fe2ff3faec347adc2c7f0ea8734f2678c638b6d09fb293e23",
+      "bytes": 253
+    }
+  },
+  "boot_log_sha256": {
+    "source-resumed": {
+      "sha256": "9d0084e806504640581477339e3d5c110c1c80cf0f22d85deb59007448310dfa",
+      "bytes": 15100,
+      "native_ui_ready": true,
+      "activation_verified": true,
+      "power_down": true
+    },
+    "restored": {
+      "sha256": "3b303d16e9bdd38e396476e8fdc34d53e1d2324d4700478e8e61b8c31e9e010c",
+      "bytes": 15137,
+      "native_ui_ready": true,
+      "activation_verified": true,
+      "power_down": true
+    },
+    "source-first": {
+      "sha256": "d2e8273220a9cf9fbd6174696eb333c6060f315a61f5756c1246b8361e1d41c2",
+      "bytes": 15101,
+      "native_ui_ready": true,
+      "activation_verified": true,
+      "power_down": true
+    }
+  }
+}

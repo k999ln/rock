@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+[ "${1:-start}" = start ] || exit 0
+case " $(cat /proc/cmdline) " in
+  *' rock.remote.verify=1 '*) ;;
+  *) exit 0 ;;
+esac
+exec /usr/bin/python3 -I -B /usr/lib/rock-platform/remote-guest-test.py

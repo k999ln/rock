@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-07",
+  "updatedAt": "2026-09-09",
   "product": {
     "canonicalName": "Rock star / avocadomini",
     "publicBrand": "avocadomini",
@@ -15,7 +15,7 @@
       "newWork": true,
       "owns": [
         "product direction and project status",
-        "Rock star OS, Android SDK and device integration",
+        "Rock star OS: Linux native, Android SDK and device integration",
         "public web core, workflow and fund simulation",
         "public tool contracts, fixtures and release documentation"
       ]
@@ -80,6 +80,7 @@
     "contracts",
     "lib",
     "os",
-    "scripts"
+    "scripts",
+    "systems/rock-star-os"
   ]
 }

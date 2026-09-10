@@ -1,0 +1,92 @@
+{
+  "schema": "rock-business-backup-root-review/1",
+  "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+  "original_images": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763",
+    "stage0.cpio.gz": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+  },
+  "status": "PASS_SCOPED",
+  "business_report_sha256": "740218bf47d95a66f01c428879d814eeb0384dfb30f336a363e39413926c817c",
+  "backup_report_sha256": "d46549399e41fef38f4d2e78dd42934ef746c62ec3e507aae658b658e6f33727",
+  "all_business_frame_hashes_verified": 171,
+  "all_backup_frame_hashes_verified": 8,
+  "business_visual_frames": [
+    {
+      "path": "cycle-1/0074-history-completed.png",
+      "sha256": "cb5a4d1d71490d9aecfc783a30897def5fa4ca61384f3ecf64afc10e96ce9970"
+    },
+    {
+      "path": "cycle-1/0083-result-after-delete.png",
+      "sha256": "405bbe9979cbe372db8c37adf4ef5c2afbf5967fd30ebf83c60c035d930180dc"
+    },
+    {
+      "path": "cycle-2/0041-actual-cancellation.png",
+      "sha256": "7cfd74328230d2868be0306c93a3dc7151f130a8726199c6ec50cc818956c301"
+    },
+    {
+      "path": "cycle-3/0004-retained-monthly-cancellation.png",
+      "sha256": "18723063adf743aaef3cbad716ec53c059cf7eaefb9409a866fa4bd89615c095"
+    },
+    {
+      "path": "cycle-3/0008-reopen-retained-atm-result.png",
+      "sha256": "9e39c8fc5526a614b9d2fc0ccb8d7f5a117837fdaf4e86ad0479f66308e5e4e5"
+    }
+  ],
+  "backup_visual_frames": [
+    {
+      "path": "01-preserved-installed-tools.png",
+      "sha256": "9b64ba4564806a7daecbe08b53400612cddb354a06eb4013be71f5a63dd06a66"
+    },
+    {
+      "path": "02-preserved-job-history.png",
+      "sha256": "a1d7c4040d2ff2e9ed5f9f2246411fa1f8b8a54c30abe7988c8c0d19cba771ab"
+    },
+    {
+      "path": "03-preserved-job-result.png",
+      "sha256": "c7190ae83992bcd25008aa8b51cc40f2aa2e2eff54b3a03d9a6c6b51664f86df"
+    },
+    {
+      "path": "04-restored-wallet-membership.png",
+      "sha256": "277368f3d8422804cc9daded49bf9867ababe5fa10d66ac4da4a1bdb9f052422"
+    },
+    {
+      "path": "05-restored-wallet-balances.png",
+      "sha256": "231959a06fd419642d3291f8e78459f90cff17ca3952c13024b6904b01aedea3"
+    },
+    {
+      "path": "07-normal-shutdown-confirmation.png",
+      "sha256": "6f5f27d75acc56cfa2ace2f3fb86fe72163270143a5df05bad0d117116e93a7b"
+    }
+  ],
+  "observations": [
+    "Actual proposal output remains visible after deletion; saved results use raw structured output in the current UI.",
+    "Restored installed proposal1.0, five completed histories and Brief C1J999 result are visible.",
+    "Restored Wallet shows software test enrollment, revoked renewal, paid September888 and synthetic available1112.",
+    "Actual cancellation returns held balance to0; restored cancellation history is present.",
+    "Restored native shutdown confirmation leads to a new durable power receipt, actual guest shutdown and clean read-only filesystem check."
+  ],
+  "D2": {
+    "status": "PASS_SCOPED",
+    "required_business_lifecycle": "PASS",
+    "required_synthetic_wallet": "PASS",
+    "stop_semantics": "disable denies later use; reapproval enables use",
+    "optional_in_flight_cancel": "NOT_RUN",
+    "raw_report_whole_gate": "INCOMPLETE remains unchanged because that harness separately tracks optional in-flight cancellation"
+  },
+  "D5": {
+    "status": "PASS_SCOPED",
+    "scope": "offline schema6 signed A/B/data development device only",
+    "normal_source_boot_shutdown_cycles": 4,
+    "new_destination_boots": 1,
+    "source_and_backup_disks_unchanged": true,
+    "all_six_database_tables_schemas_sequences_compared": true,
+    "postboot_exception": "exactly one new normal native power receipt; four old power receipts retained",
+    "external_authorities": "NOT_APPLICABLE to this network-none device; external backend/runner/game restoration is not tested or claimed",
+    "fencing": "source device lifetime lock during restore acceptance and final checks; no production distributed authority promotion"
+  },
+  "D6": "NOT_RUN",
+  "real_funds": "NOT_RUN",
+  "physical_device": "NOT_RUN",
+  "full_OS_acceptance": "INCOMPLETE"
+}

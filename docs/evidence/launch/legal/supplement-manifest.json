@@ -1,0 +1,153 @@
+{
+  "exclusions": [
+    "41MB inventory is a separate supplementary asset, not duplicated inside this evidence tar.",
+    "Original candidate package, signed manifest and source materials are unchanged."
+  ],
+  "files": {
+    "FONT_NOTICE.review.txt": {
+      "bytes": 806,
+      "sha256": "845aebcb7513a7f857721257e8df036fe016f97177eeeda21a8263bfefcdf730"
+    },
+    "LICENSE.review.md": {
+      "bytes": 2823,
+      "sha256": "d7ba50f5f0aeeb0e9063b3e6d697d1ee9ff12688db674f82d4000c568ec5a0ed"
+    },
+    "THIRD_PARTY_NOTICES.review.md": {
+      "bytes": 3226,
+      "sha256": "959477b1b3abd926fff0ae8edb97166c62283a0421e6c30c92e73dc8e0279549"
+    },
+    "applied-patch-file-map.json": {
+      "bytes": 34968,
+      "sha256": "2c62b73101119da47b630ef2167046f2987186f8ea74e39d9b2be87c0fa1e480"
+    },
+    "audit_candidate.py": {
+      "bytes": 4395,
+      "sha256": "16831e388972ddadca534cdf520f081e3d8cc082e9e378a3fed931436e495ff0"
+    },
+    "bootstrap-verification.txt": {
+      "bytes": 293,
+      "sha256": "2dbecabe9f7f22274afb8b8ad9ca8cd66a25027721ee0b0e145e58332e9584db"
+    },
+    "buildroot-generated-provenance.json": {
+      "bytes": 6511,
+      "sha256": "60549ab711c2a53b820705161badbd591a71f83cb22162404acabf53000b7095"
+    },
+    "candidate-byte-inventory.json": {
+      "bytes": 1590570,
+      "sha256": "44bcb26b6129cee9441f9f9da7f5fa405085c74ec023011e146f2607e7a16db0"
+    },
+    "classify_inventory.py": {
+      "bytes": 7410,
+      "sha256": "e7d4ba4c2d963e7edb40c9f80cc5378f70f129d5686d03b6b5936da8c5e8577c"
+    },
+    "consolidate_full_inventory.py": {
+      "bytes": 9330,
+      "sha256": "dc2dc39a7b3d559466ebf073c8d04b13c097aa6c8fc92c861d5349c3e9bea822"
+    },
+    "decision-one-page.md": {
+      "bytes": 3651,
+      "sha256": "3e90ae70d30198c76c8954f6ce8f3215454f69632447d680508c04a2d960cffb"
+    },
+    "draft-release-snapshot.json": {
+      "bytes": 8838,
+      "sha256": "de01fb204556bcd05b92301e4c11ef3206c440697d27d8f8b4cd6d3cd026e3db"
+    },
+    "font-name-table.json": {
+      "bytes": 3924,
+      "sha256": "efc857068e9b6f1d34e78785423f4c51f8df6c3b7b616a10f1b1ab0da0666b27"
+    },
+    "font-upstream-readback.json": {
+      "bytes": 625,
+      "sha256": "afeeceeae45fc1c239818d07d0b8099c3699b184c0cef400e8fef5aca9d75dd0"
+    },
+    "full-inventory-review.md": {
+      "bytes": 4730,
+      "sha256": "982302171156dc92a4dd420fae80eddc0ff6136a5c13d09bdd0e5f76b878d5d2"
+    },
+    "full-inventory-summary.json": {
+      "bytes": 125876,
+      "sha256": "a6c7b68e38f1d98b2937faf44af6946a9b00dc4bae1c1043dda5e056826702d8"
+    },
+    "full-inventory-validation.json": {
+      "bytes": 525,
+      "sha256": "94d6e89f307ac68a65f6404d480835bebae74550503beaeeea4daa3a5d462828"
+    },
+    "generated-rootfs-materials.json": {
+      "bytes": 26701,
+      "sha256": "f2e53f9dd20ae4a0c39b4fd79df450c945dcaeb9901fc89176278a6cc7b34049"
+    },
+    "github-environments-snapshot.json": {
+      "bytes": 35,
+      "sha256": "310b1231b21edb0dde47b2ee59b26a0fc9b4cdd801864140a03561f16fb03c9d"
+    },
+    "github-secret-names-snapshot.json": {
+      "bytes": 30,
+      "sha256": "28c5423a249b6b471b90805492666338fab88266ac6a72b4f2b711fa65c03a68"
+    },
+    "nested-source-name-repairs-summary.json": {
+      "bytes": 1257,
+      "sha256": "cb74577f8880a0293ec56acccdb9286b4ea3bea1d9072f4190abdc20b0a4b61d"
+    },
+    "nested-source-summary.json": {
+      "bytes": 123635,
+      "sha256": "60626b1a394a501002240fdae02b035d3b8112d0a2ac694a5c98fd0fef6a44d9"
+    },
+    "obligation-catalog.json": {
+      "bytes": 5920,
+      "sha256": "4f05e4e9905c5ff94a9687ae98563fe1e32051729bf36df51b292ec3c95cb7b0"
+    },
+    "origin-license-review-inventory.json": {
+      "bytes": 2888085,
+      "sha256": "2ff72fe0eec0eaf092081029778af0fce896cb31383568d4aecdfebfe7ab027d"
+    },
+    "recursive_inventory.py": {
+      "bytes": 10040,
+      "sha256": "23499e24dc9c83959fb6d02720829737a0df39595c0b189079d827ae2ee06172"
+    },
+    "repair_nested_names.py": {
+      "bytes": 2087,
+      "sha256": "92f8d2d150f12ed29177c405a9aeb9ef95cf4bfa7b5d13efbfe3d6040ab8cc43"
+    },
+    "resolve_generated.py": {
+      "bytes": 7525,
+      "sha256": "c9283c54f2b19629ed95c01cff4cdb9a71704ca5d8a61f8544489a046df9c116"
+    },
+    "rootfs-generated-origin-resolution.json": {
+      "bytes": 31113,
+      "sha256": "ef8ae9ff7f0233af791a525b138bcb3ceaf0d9aa6e3cd59b0c5df79114bdfaf8"
+    },
+    "rootfs-readback.json": {
+      "bytes": 732530,
+      "sha256": "68d69dbbbf56389482c5bb4b45c07215f124ce4689c3a9fe02eff32588c8dcd0"
+    },
+    "signing-operations.review.md": {
+      "bytes": 4624,
+      "sha256": "f347bea7bc843cb5a905ee244b18ac389c583708a319697573161c161dde547a"
+    },
+    "source-availability.review.md": {
+      "bytes": 1353,
+      "sha256": "e8379593ab8e6e31d47f21d4bb9f3319a88646ff3638cb92807c6af77ca19ce9"
+    },
+    "stage0-inventory.json": {
+      "bytes": 899149,
+      "sha256": "7138dcd183368d53b9264f8e92f2a3c9274d406f35b1afc872dbd0d2cc1ff0b5"
+    },
+    "stage0_inventory.py": {
+      "bytes": 4348,
+      "sha256": "75d15ca8ea09e1bb2e2ba55220000336f3dc0d01baa187868621be95114b9451"
+    },
+    "technical-exception-bindings.json": {
+      "bytes": 12038,
+      "sha256": "69ff22f09e4abd3af094a6a29de92e07b96e65f1aa7d37da9f05d54f9014dae0"
+    }
+  },
+  "independent_inventory_asset": {
+    "bytes": 41224933,
+    "name": "full-distribution-inventory.jsonl.gz",
+    "sha256": "0bcc5633243e4993ba3273d134c10e0ae605afaecf19fc27876d2dd6feea97ff"
+  },
+  "original_candidate_sha256": "121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2",
+  "schema": "rock-lch02-supplement-assets/1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "status": "SUPPLEMENTARY_REVIEW_MATERIALS_NOT_CLEARED"
+}

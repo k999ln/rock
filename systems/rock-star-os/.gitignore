@@ -1,0 +1,25 @@
+.DS_Store
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.state/
+build/
+dist/
+out/
+local.properties
+*.keystore
+*.jks
+*.pem
+*.key
+.env
+/artifacts/
+/os/core/rockd
+/os/core/rockctl
+/os/core/rocktest
+os/platform/rock-sandbox-exec
+# Exactly these public RFC 8032 development fixtures are part of the source.
+# Other key/certificate paths stay ignored. Never replace these with real keys.
+!/os/registry/fixtures/development-ca.pem
+!/os/registry/fixtures/PUBLIC-FIXTURE-KEY.pem

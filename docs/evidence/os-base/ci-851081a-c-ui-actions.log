@@ -1,0 +1,4 @@
+PASS purchaser service fee disclosure, stale/context rejection, Wallet navigation, paid recovery, schema4 remote UI
+PASS startup polling: initial cadence, completion deadline, bounded backoff, recovery and UI/intent preservation
+PASS native MCP selection, confirmation, expiry, epoch, exact retry and pending result
+PASS native UI actions, request identities, errors, input limits, rendering, framebuffer conversion, evdev coordinates

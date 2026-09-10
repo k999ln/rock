@@ -1,0 +1,48 @@
+{
+  "schema": "rock-ui-startup-frame-review/1",
+  "report_sha256": "ae44aff598b60a335234012fe24fcbd2e8abdd44342b30ca9ba189b1e8efd4f2",
+  "reviewer": "Codex model visual inspection of unchanged QMP pixels",
+  "frames": [
+    {
+      "path": "ready/boot-2.ppm",
+      "ppm_sha256": "171a2a5be83d41c9c3fdaac1ff9e3e93839498961cdec4fa02a0650718f7ff6f",
+      "rgb_sha256": "ecd9587678c340fe25fb8f9de434a3f54e5e4d464e34425f81bccd66d2499386",
+      "png_sha256": "85cc8a19197db72a92f0284b9163466af9fe819e27929fdc29f9ba10e1bc8117",
+      "scope": "Lossless display encoding; no pixel edits",
+      "visual_review": "REVIEWED: actual Hub layout/text present at720x960; readiness/fault state comes from independent live loop/serial/slot proof"
+    },
+    {
+      "path": "freeze/boot-2.ppm",
+      "ppm_sha256": "f9c174dbfba4f103c9d885505cf04681b1f6c2948b35538227e7a79dda443c92",
+      "rgb_sha256": "07b3baa81433a0f8dd437336c3d88d4e053d4d2fdd61672c1a3652ac0e98b6e5",
+      "png_sha256": "e1c0b59525f955f927bbe9214c5c435ddd9bb2f70533cdea8f4d413dfa4b6a48",
+      "scope": "Lossless display encoding; no pixel edits",
+      "visual_review": "REVIEWED: actual Hub layout/text present at720x960; readiness/fault state comes from independent live loop/serial/slot proof"
+    },
+    {
+      "path": "freeze/boot-3.ppm",
+      "ppm_sha256": "c0cd4f754f2faa5825f8028de50ddde7fb306afeeb6697f8bc83ae92505f49ef",
+      "rgb_sha256": "fa257c520232ce731df7ac1ce9581ce84206c0ea8373545a042a99afac37d3eb",
+      "png_sha256": "7827d8a3bf1d2c1060dc4a048b88326768b6033f7a0f735a57bd979c9b6af480",
+      "scope": "Lossless display encoding; no pixel edits",
+      "visual_review": "REVIEWED: actual Hub layout/text present at720x960; readiness/fault state comes from independent live loop/serial/slot proof"
+    },
+    {
+      "path": "crash/boot-2.ppm",
+      "ppm_sha256": "753eba864de042c5ecf7c8c42761e8f578a9b0f46063ff1b6fe5ba2dc83f5aeb",
+      "rgb_sha256": "a9c2d67ce7bbf6c01a5f6adcf293ebd6717e4f2ce36e91ebda5a5e13a6efc303",
+      "png_sha256": "25d787bb9473053098006084333100835b57346dfc51956e9f4270290c624fdb",
+      "scope": "Lossless display encoding; no pixel edits",
+      "visual_review": "REVIEWED: actual Hub layout/text present at720x960; readiness/fault state comes from independent live loop/serial/slot proof"
+    },
+    {
+      "path": "crash/boot-3.ppm",
+      "ppm_sha256": "f94a7d82e24bf80a71a972f2c587f355fe714121bce690bf200da51c99d8b0f0",
+      "rgb_sha256": "d3bd2ae201a004b6c9b43f76899cd47f8d8f5b7ca4557b21855204da9b77bf80",
+      "png_sha256": "be233d2c1f420986171e961fbdd1ac6a5329bc011f56d300a9c513e5cf8cb5fa",
+      "scope": "Lossless display encoding; no pixel edits",
+      "visual_review": "REVIEWED: actual Hub layout/text present at720x960; readiness/fault state comes from independent live loop/serial/slot proof"
+    }
+  ],
+  "raw_report_preserved": true
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "rock-preview-web-follow-up/1",
+  "observed_utc": "2026-09-10T09:30:10.289198+00:00",
+  "status": "PASS_SCOPED_COPY_UPDATE",
+  "changes": [
+    "9-file package list",
+    "fixed candidate source documentation links",
+    "Game connection expiry and unsupported reconnect",
+    "full aggregate backup and interrupted restore",
+    "host export cannot restore a deleted VM"
+  ],
+  "actual_browser": "Codex in-app guide AX readback confirmed all new text and fixed commit links",
+  "tests": "typecheck, lint:product, git diff --check exit0",
+  "source_files_sha256": {
+    "app/rockstaros/page.tsx": "0fa1cbe6a9b1724f6bc38c394867c743e5a7b456027ba27edf9003e31a98947b",
+    "app/rockstaros/guide/page.tsx": "788e21c56e8b3895297d84d87caab8d720bd51efc42c3d77726afa5b6e8dfb52"
+  },
+  "scope": "Local guidance only; no final image acceptance or public deployment"
+}

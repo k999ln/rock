@@ -1,0 +1,70 @@
+{
+  "authority_database_count": 7,
+  "authority_snapshot_sha256": "73aab8cb9939b73433f2fe88c5899a4d01f170f82eb44ea6784b5e967e36dd59",
+  "authority_table_count": 122,
+  "boot_logs": {
+    "/var/tmp/rock-star-desktop/preview/sessions/14e594c32328486c90eeb6e9b7435427/boot.log": {
+      "ab_health_confirmed": true,
+      "bytes": 15883,
+      "native_ui_health_ready": true,
+      "power_down": true,
+      "sha256": "6cc3451abca79b12153bfbc146ef9da9f6a42c4028722a7d03d88eca17edf694"
+    },
+    "/var/tmp/rock-star-desktop/preview/sessions/8f50d668314f4e71929f309cecf92ba5/boot.log": {
+      "ab_health_confirmed": true,
+      "bytes": 15846,
+      "native_ui_health_ready": true,
+      "power_down": true,
+      "sha256": "ffce4a585b3fe9a37c4838daf0d1b9a3a205b8a02ced7fb9aa9e5ef3a888125d"
+    },
+    "/var/tmp/rock-star-desktop/recovered/sessions/45fec14ef7604e7da7dce653bb755060/boot.log": {
+      "ab_health_confirmed": true,
+      "bytes": 15845,
+      "native_ui_health_ready": true,
+      "power_down": true,
+      "sha256": "04edab6295caafa41623ee2fe7153cd828999a55085930a852e128363bfe323f"
+    }
+  },
+  "complete_authority_unchanged_by_readback": true,
+  "games": {
+    "game-a": {
+      "account_units": {
+        "ISSUANCE_CLEARING": -10,
+        "PLAYER_PURCHASED": 10
+      },
+      "epoch": 2,
+      "epoch_receipts": 1,
+      "grants": 1
+    },
+    "game-b": {
+      "account_units": {},
+      "epoch": 2,
+      "epoch_receipts": 1,
+      "grants": 0
+    }
+  },
+  "schema": "rock-final-stopped-financial-readback/1",
+  "simulation_only": true,
+  "status": "PASS",
+  "wallet": {
+    "accounts_minor": {
+      "AVAILABLE": 9897,
+      "GAME_FEES": 3,
+      "GAME_HOLD": 0,
+      "GAME_PURCHASES": 100,
+      "PENDING_SETTLEMENT": 0,
+      "SALE_CLEARING": -10000
+    },
+    "bill_count": 0,
+    "exchange_states": [
+      [
+        "COMPLETED",
+        0,
+        103,
+        0
+      ]
+    ],
+    "monthly_consent": false,
+    "withdrawal_count": 0
+  }
+}

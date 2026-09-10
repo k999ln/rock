@@ -13,9 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
       - run: npm ci
       - run: npm run verify
+      - name: Verify synthetic game wire vectors with Node crypto
+        run: node systems/rock-star-os/tests/verify_game_connection_vectors.mjs

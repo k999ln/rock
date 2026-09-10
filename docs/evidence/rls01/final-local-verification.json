@@ -1,0 +1,25 @@
+{
+  "schema": "rock-final-web-local-checks/1",
+  "recorded_utc": "2026-09-10T13:19:58.847142+00:00",
+  "status": "PASS",
+  "commands": [
+    "npm run project:update",
+    "npm run baseline:check",
+    "npm run verify"
+  ],
+  "exit_code": 0,
+  "verify_log_sha256": "d740d50e4245e170f3666e10ed66ef022c6f9298f7fc0b7b8045d06e36748e11",
+  "verify_log_bytes": 8135,
+  "api_assertions": 143,
+  "checks": [
+    "project",
+    "repository map",
+    "product baseline",
+    "TypeScript",
+    "product lint",
+    "unit tests",
+    "build",
+    "API"
+  ],
+  "scope": "Final media and guide source, updated task/phase gates. Later changes before push are evidence/wording only."
+}

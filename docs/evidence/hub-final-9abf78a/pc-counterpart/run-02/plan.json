@@ -1,0 +1,37 @@
+{
+  "schema": "rock-native-citation-pc-counterpart/1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "prepared_utc": "2026-09-10T10:45:35.964160+00:00",
+  "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+  "source_sha256": {
+    "systems/rock-star-os/src/blackberryrock/recipe_worker.py": "f3bf50337383bfcac2593599285afec1b91d930f6c368ae1e1e6131784dbfe3e",
+    "systems/rock-star-os/os/tools/fixtures/citations.md": "bad73028a4b23b6e046abc4a1463f2fa14ffd4f55844ec9146cdc9acc3b1387e",
+    "systems/rock-star-os/os/tools/packages/org.rockstar.citation-organizer--1.0.0.recipe.json": "a1b8cf21232875b6118e7adf8db91131e2e3f7a7ef2833915f7d05b820c4b635"
+  },
+  "input_sha256": "bad73028a4b23b6e046abc4a1463f2fa14ffd4f55844ec9146cdc9acc3b1387e",
+  "input_bytes": 150,
+  "expected_output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+  "expected_output_bytes": 151,
+  "expected_from": "Pre-existing actual native Linux citation result and final installed OS readback; no output normalization.",
+  "request_sha256": "98351fa51d4da675cc1856384f8c767f3ffe2740dc8418d7b97bfa1a83429e4d",
+  "command": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "-I",
+    "-B",
+    "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/native-citation-pc-counterpart-02/source/systems/rock-star-os/src/blackberryrock/recipe_worker.py"
+  ],
+  "sequence": [
+    "first-process",
+    "repeat-1",
+    "repeat-2",
+    "repeat-3",
+    "after-normal-exit"
+  ],
+  "deadline_seconds": 3,
+  "timer": "monotonic start before fresh process creation through successful exit, JSON decoding and exact output verification; file saving excluded",
+  "source_guard": "Exact bytes exported from frozen Git commit and independently pinned freeze inventory",
+  "driver_sha256": "2a667224dbf3868e32ce3221b66ce9e5f3736c0edc412f39161d127b8c705b8f",
+  "cache_flush": false,
+  "automatic_retries": false,
+  "scope": "Implementation counterpart for the same native recipe, not the separate Mr. CLI, OS isolation, installation, UI or human workflow timing."
+}

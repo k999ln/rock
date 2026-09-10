@@ -1,0 +1,192 @@
+{
+  "schema": "rock-gx00-host-gate-independent-review/1",
+  "recorded_utc": "2026-09-10T01:01:24Z",
+  "status": "HOST_GATE_INCOMPLETE",
+  "review_base_commit": "d16ba2d34e42e69ce9c948101f538658c170a68d",
+  "working_tree": "base plus applied current-copy handover and owner-client additions; not yet final committed SHA at audit",
+  "source_sha256": {
+    "os/game_exchange/connections.py": "aa7994fe0b37cb40a3036fb76c709f2434c2f2f53bdf3d7cc90ef64d88d3d04e",
+    "os/game_exchange/current_restore.py": "b10100377b4038eb0b73ff33af12d64b150d34f81421675782a5b02da1356f94",
+    "os/game_exchange/client.py": "2acd6babecf3aee81aaf651751da2212ef9fbd869b6d9d0563c39542b7569449",
+    "os/game_exchange/storage.py": "19fcffb29ef430cf91fd69feb698258e2b0ff5723f4d99fd33d65294c59fe67c",
+    "os/game_exchange/protocol.py": "d58009bf97a514f63ab3c991fa9941cf5f01935cd79e7f6718b7abbe783d4107",
+    "os/wallet_backend/contract_runtime.py": "deb5e2f847026aa76bf32a6073ef6335d09967145ee00d928cc595ab29da8847",
+    "os/wallet_backend/server.py": "e56ca67f55863ca57f17c189961914ff5cf7e66008860e0eb9ef18b8ea362441",
+    "os/wallet_backend/owner_router.py": "cc7817014315e675a12a215604b4d4033c96c2d62afe0b96ba41086aea97a0a9",
+    "os/wallet_backend/authority_fence.py": "1fdc700bcb1a735d258574ca76e36cd70e664100c5ab83027021c21b08918baf",
+    "os/wallet_backend/current_restore.py": "2da97e52e487435b747402f752c288e8b411b1a25646c1c78fbab6e257efee60",
+    "tests/test_wallet_managed_tls.py": "6645beda60612282fa8bed9c78fb4ff9a3430e25ab61a57b5a1f250e09cac34b",
+    "tests/test_game_connections_tls.py": "c000d73f7e53aa983b4746b444db8f1e0e5f92131071fff410379632159cceb4",
+    "tests/test_game_current_restore.py": "9297cc5efb8b8aac7d8ae49754b117a84834c87a99ae509a8bf9d54c9dc41614",
+    "tests/test_game_connection_client.py": "9bb905b5d87a9650faab6755d8ddb7020835a98671c4b80b5d1172e1d3dbdefd"
+  },
+  "primary_requirement": {
+    "file": "docs/prompts/os-operational-base-next.md",
+    "line": 96,
+    "excerpt": "GX00合格は2作者・2ゲーム・2owner/player（1ownerは2端末）を認証有効の同一統合経路へ接続し、正当な分離と越境拒否を両方通すこと。"
+  },
+  "findings": [
+    {
+      "id": "H01",
+      "status": "FAIL_REPRODUCED",
+      "kind": "cross_game_idempotency_collision",
+      "requirement": "docs/prompts/os-operational-base-next.md:96; docs/gx00-owner-isolation-adr.md:184",
+      "location": "systems/rock-star-os/os/game_exchange/connections.py:256",
+      "finding": "Owner reconcile namespace includes device/op/key but omits game/intent. With one authenticated owner, identical begin and approve key strings work independently for Game A and B, but identical reconcile key succeeds for A and is rejected for B.",
+      "observed": [
+        {
+          "game": "a",
+          "begin_ok": true,
+          "approve_ok": true,
+          "reconcile_ok": true,
+          "reconcile_code": null
+        },
+        {
+          "game": "b",
+          "begin_ok": true,
+          "approve_ok": true,
+          "reconcile_ok": false,
+          "reconcile_code": "rejected"
+        }
+      ],
+      "impact": "False conflict prevents a valid second-game reconcile. This probe observed no cross-owner disclosure, duplicate consent or funds effect; it does not prove the absence of other effects.",
+      "resolution_proposal": "Version the reconcile namespace by authenticated game identity, preserving exact legacy request/receipt retries and rejecting altered payloads. Do not delete or rewrite old successful receipts.",
+      "implementation": "NOT_STARTED; no fix candidate or patch created; latest user instruction freezes this checkpoint."
+    },
+    {
+      "id": "H02",
+      "status": "VERIFICATION_GAP",
+      "kind": "same_route_monthly_and_insufficiency",
+      "requirement": "prompt:96; ADR:180,185",
+      "finding": "Managed TLS tests show Alice monthly888 once and Bob0, while both owners monthly888 is tested only by direct actual runtime with an explicit test principal verifier. The actual shared TLS path has no identified Alice-insufficient/Bob-unchanged case.",
+      "existing": "test_wallet_managed_tls.py:114; test_contract_runtime_wallet.py:85",
+      "proposal": "One actual shared TLS fixture: Alice two devices plus Bob each opt in, same-period parallel billing yields Alice one888 and Bob one888; then Alice insufficient funds leaves Bob typed business rows unchanged.",
+      "followup": "Latest checkpoint instruction stopped design_review after investigation and isolated source copy. New source changes0/tests0/executions0; continuation plan only: work/gx00-owner-tls-continuation.json."
+    },
+    {
+      "id": "H03",
+      "status": "VERIFICATION_GAP",
+      "kind": "foreign_quote_and_receipt",
+      "requirement": "prompt:96; ADR:183",
+      "finding": "Actual shared TLS covers foreign withdrawal ID, foreign game consent/status, wrong owner/body/pin, revoked receipt access. Direct cross-owner ATM quote ID and original issue/register receipt request replay are not identified in the existing same-route owner matrix.",
+      "existing": "test_wallet_managed_tls.py:135,151,168; test_game_legacy_basis.py:19",
+      "proposal": "Submit one owner original quote/issue/receipt request with the other current owner credential and prove refusal plus unchanged original/other financial and credential rows.",
+      "followup": "Latest checkpoint instruction stopped design_review after investigation and isolated source copy. New source changes0/tests0/executions0; continuation plan only: work/gx00-owner-tls-continuation.json."
+    },
+    {
+      "id": "H04",
+      "status": "VERIFICATION_GAP",
+      "kind": "same_worker_scope_reuse",
+      "requirement": "prompt:96; ADR:186",
+      "finding": "TLS concurrency tests use a client ThreadPool; the production server uses ThreadingMixIn with per-request worker creation. Existing tests do not establish a single reused server thread A-to-B-to-A through an exception. The lifetime exception unit uses fixture service/permit.",
+      "existing": "server.py:194,200,210; test_game_connections_tls.py:253; test_contract_runtime_lifetime.py:199",
+      "proposal": "Test-only single executor runs the actual process_request_thread/handshake/handler/router/runtime and records one worker identity over A1/B1/A2 and real policy failure. Label this a reuse mechanism test, not production pooling.",
+      "followup": "Latest checkpoint instruction stopped design_review after investigation and isolated source copy. New source changes0/tests0/executions0; continuation plan only: work/gx00-owner-tls-continuation.json."
+    },
+    {
+      "id": "H05",
+      "status": "DOCUMENTED_LIMIT",
+      "kind": "owner_client_key_scope",
+      "requirement": "ADR:184; GX00 versus DX01 scope",
+      "finding": "OwnerConnectionClient journals PRIMARY KEY(operation,key) within one device client; two-game begin requests with the same operation/key differ in body and are refused before send. The client also omits reconcile/list. Server begin is game-scoped and succeeds in the independent probe.",
+      "existing": "os/game_exchange/client.py:43,247; docs/gx00-owner-connection-client.md section 再送と現在の権限",
+      "impact": "A documented narrower client policy, not a claim that the shared server supports identical keys through this client. It is not a general multi-game SDK acceptance result.",
+      "implementation": "No change proposed for this checkpoint; preserve exact pending request and current policy."
+    },
+    {
+      "id": "H06",
+      "status": "CHECKPOINT_EVIDENCE_PENDING",
+      "kind": "unified_acceptance_and_source_binding",
+      "finding": "Integrated 72-game root tests pass, but historical component manifests have earlier file hashes and earlier NOT_IMPLEMENTED lists. None alone is acceptance for the latest working-tree combination. Final commit/source-hash-bound report and Linux validation for the exact final additions remain separate from historical component PASS.",
+      "evidence": "work/game-integrated-root.log: 72 tests,64.988s,OK; docs/evidence/gx00/integration.json; game-connections-root.json; current-copy-foundations-root.json",
+      "proposal": "Preserve historical reports; add a superseding checkpoint manifest for exact integrated files and explicit unresolved H01-H04. Do not rewrite old results or claim whole GX00 from test count."
+    }
+  ],
+  "passed_scoped_evidence": [
+    {
+      "area": "Actual owner resolution/authentication",
+      "result": "Two owners, one owner two devices, real OwnerRouter/C/Wallet/Auth on one TLS listener; request body cannot select owner/ledger/path.",
+      "evidence": "docs/evidence/gx00/integration.json; test_wallet_managed_tls.py"
+    },
+    {
+      "area": "Actual game connection isolation",
+      "result": "Two public synthetic authors and games; four owner/game connections; dedicated game-purpose assertion/counter/consent commit, subject/nonce reservations, cross-owner/game refusal, revocation, unknown-response and restart recovery.",
+      "evidence": "test_game_connections_tls.py; docs/evidence/gx00/game-connections-root.json"
+    },
+    {
+      "area": "Legacy and current-copy handover",
+      "result": "Nonempty old balances/pending/hold/month888 CLAIMED/credentials/receipts/BLOB preserved; actual C source retirement and new epoch; three durable cuts, live WAL, second copy, old/current mismatch refusal. Strict DONE replay now rejects changed original rows.",
+      "evidence": "test_game_legacy_basis.py; test_game_current_restore.py; work/gx00-current-game-restore-host-evidence.json; work/game-current-restore-independent-final.json"
+    },
+    {
+      "area": "Durable host owner client",
+      "result": "Actual authenticated retries after socket reply loss; request persisted before send; SQLite/fsync failure stays unknown; current denial never returns cached success; TLS/key/game/timeout pins; close waits for actual in-flight operation.",
+      "evidence": "work/game-owner-client-evidence.json; work/game-client-independent-review.json"
+    },
+    {
+      "area": "Root integrated regression",
+      "result": "72 game tests PASS in64.988s. A successful regression run does not cover H01-H04.",
+      "evidence": "work/game-integrated-root.log"
+    }
+  ],
+  "scope_boundaries": [
+    {
+      "area": "Frozen native OS",
+      "status": "SEPARATE_GATE",
+      "detail": "b8287bc contains no GX00 host runtime additions. Its D0-D6/QEMU/backup results do not validate GX00, and GX00 host gaps do not invalidate frozen single-owner V01. No new GX00 image build or D4/D5 acceptance is claimed."
+    },
+    {
+      "area": "Old local libraries/ABI",
+      "status": "UNSUPPORTED",
+      "detail": "Actual frozen b828 legacy server refuses managed markers before constructors; old direct Wallet/Store libraries can write disposable copies. New managed host profile only; do not put these DB changes into old OS slots or claim old ABI rollback safe."
+    },
+    {
+      "area": "Restore",
+      "status": "LIMITED_SUPPORTED_CURRENT_COPY",
+      "detail": "Stopped same-host current copy with original C/B/game index retained, all shared-index runtimes stopped, then explicit management handover. Historical backup/missing source/other host/distributed fence/independent registry rollback unsupported. This is not full disaster recovery."
+    },
+    {
+      "area": "Maintenance after PREPARED",
+      "status": "DOCUMENTED_LIMIT",
+      "detail": "Index PREPARED blocks all contracts sharing it. A later author revocation is retained but prevents automatic same-ID recovery; no rollback or plan rebase provided. Do not advertise uninterrupted cross-owner availability or arbitrary fault recovery."
+    },
+    {
+      "area": "Games/providers/SDK",
+      "status": "OUTSIDE_THIS_HOST_GATE",
+      "detail": "Player proof is real independent synthetic authority storage plus Python fixture API, not an external game HTTP session provider. GX01 asset exchange, financial outbox, game UI, full author SDK/onboarding, real funds/MetaMask/hardware remain unimplemented or untested. No new mandatory OS metrics or in-flight UI cancellation is added."
+    }
+  ],
+  "actions_performed": "Read-only code/evidence review plus one actual cross-game-key probe in independent temporary SQLite/TLS fixtures. No root source edit, QEMU, funds or existing device operation. No patch implemented.",
+  "cross_game_reproduction": {
+    "source_sha256": {
+      "os/game_exchange/connections.py": "aa7994fe0b37cb40a3036fb76c709f2434c2f2f53bdf3d7cc90ef64d88d3d04e",
+      "os/wallet_backend/contract_runtime.py": "deb5e2f847026aa76bf32a6073ef6335d09967145ee00d928cc595ab29da8847",
+      "os/wallet_backend/server.py": "e56ca67f55863ca57f17c189961914ff5cf7e66008860e0eb9ef18b8ea362441"
+    },
+    "qemu_operations": 0,
+    "calls": [
+      {
+        "game": "a",
+        "begin_ok": true,
+        "approve_ok": true,
+        "reconcile_ok": true,
+        "reconcile_code": null
+      },
+      {
+        "game": "b",
+        "begin_ok": true,
+        "approve_ok": true,
+        "reconcile_ok": false,
+        "reconcile_code": "rejected"
+      }
+    ],
+    "source_unchanged": true
+  },
+  "artifact_sha256": {
+    "review-gx00-cross-game-keys.py": "2cf7a82985a162366ec70f6114f980ec4a7482ef18569ee8d05d7ab2ba4687c1",
+    "gx00-cross-game-keys-independent.log": "6a292433f7660eb046f377ab6ef5aaaff71bffdca290cc9dc13247bcbd1bdb54",
+    "game-integrated-root.log": "6bd2ce6107d755ffb629cbb6b9baedac2b72fb9df654da0b25725b282b80ddab",
+    "game-current-restore-independent-final.json": "202fd614bd77b83dc3b0c163b974666a2b7753688461ee706ef8466406953283",
+    "game-client-independent-review.json": "1320721aa960353c26b1c04d79bf72af79e8b016336b998440a3297a40fb9a0c"
+  }
+}

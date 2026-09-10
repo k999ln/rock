@@ -1,0 +1,13 @@
+{
+  "default_vm_disk_gib": 16,
+  "host": {
+    "free": 45918191616,
+    "total": 494384795648,
+    "used": 448466604032
+  },
+  "minimum_guest_free_bytes": 0,
+  "observed_unix": 1789033704.8399282,
+  "phase": "before-final-package",
+  "schema": "rock-final-capacity-observation/1",
+  "status": "PASS"
+}

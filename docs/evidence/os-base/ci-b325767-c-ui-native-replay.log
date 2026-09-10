@@ -1,0 +1,7 @@
+native-replay coordinate=360,363 action=2 scroll=0
+native-replay coordinate=360,793 action=6 scroll=125
+native-replay coordinate=360,758 action=7 scroll=0
+native-replay coordinate=360,758 action=3 scroll=0
+native-replay coordinate=250,425 action=13 scroll=0
+PASS public signed catalog native replay geometry; backend and guest execution NOT_RUN
+PASS missing PageDown and PageUp rejected; nine-capture live contract preserved

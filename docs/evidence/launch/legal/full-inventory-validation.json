@@ -1,0 +1,17 @@
+{
+  "status": "PASS_RECORD_SCHEMA_COUNTS_HASH_AND_RECOVERED_REFERENCE_VALIDATION",
+  "records": 434096,
+  "record_counts": {
+    "CANDIDATE_FILE": 706,
+    "ROOTFS_PATH": 1981,
+    "STAGE0_ENTRY": 702,
+    "LEGAL_BUNDLE_MEMBER": 298,
+    "NESTED_SOURCE_ENTRY": 430409
+  },
+  "missing_required_fields": 0,
+  "unknown_obligation_refs": 0,
+  "recovered_parent_references": 2,
+  "inventory_sha256": "0bcc5633243e4993ba3273d134c10e0ae605afaecf19fc27876d2dd6feea97ff",
+  "inventory_bytes": 41224933,
+  "clearance": "NOT_CLEARED"
+}

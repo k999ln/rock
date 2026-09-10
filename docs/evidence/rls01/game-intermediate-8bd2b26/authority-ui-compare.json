@@ -1,0 +1,13 @@
+{
+  "schema": "rock-game-authority-ui-retention-result/1",
+  "status": "PASS",
+  "policy": "index-identity-maximum-time-only/1",
+  "before_sha256": "3beea24a4573ff5e0ec59a46e06ee8060ccf82862f2efd1afdfe64ab03d1237d",
+  "after_sha256": "e328e3d1ae8cb9720a6fd911404440913c0f5e472ff82e3353654b213987bddb",
+  "database_count": 7,
+  "table_count": 122,
+  "maximum_time_before": 1789027862,
+  "maximum_time_after": 1789028563,
+  "other_typed_rows_schema_sequences_and_identities": "EXACTLY_UNCHANGED",
+  "default_unchanged_policy_modified": false
+}

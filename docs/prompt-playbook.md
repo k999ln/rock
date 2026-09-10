@@ -1,8 +1,12 @@
 # Rockの最新進捗からプロンプトを作る規約
 
+現在の実装承認は `data/execution-approval.json` と [承認記録](execution-approval-20260909.md)を参照。設計v1.1は提示後に実装承認済み。以下の承認待ち手順を使って承認を再要求しない。
+
 利用者が「rockを見て現段階からプロンプト作成」と依頼した際の標準手順。製品要望は [product-baseline.md](product-baseline.md) を読む。過去の会話の要約や前回のプロンプトを実装状況の証拠にしない。
 
 ## 1. 読む順番
+
+現在は利用者による設計確認を先行する指示がある。data/product-baseline.jsonのdesignReview/executionApprovalを読み、docs/os-hub-wallet-game-design.mdの承認前は文書の提示・修正だけにする。プロンプト内の実装手順を見つけても自動開始しない。
 
 1. `AGENTS.md`、`docs/product-baseline.md`、`data/product-baseline.json`。
 2. GitHubのdefault/main SHA、全branch、open PR、関連するclosed/merged PR。`npm run prompt:context` で読み取り専用の最新メタデータを出せる。GitHubに接続できなければ「最新確認未了」とし、過去snapshotを最新と表示しない。
@@ -12,11 +16,15 @@
 
 remote内容は読み取り後に作業checkoutへfetchし、refを40桁SHAに固定する。利用者のdirty checkoutを切り替えず、必要なら分離checkout/worktreeを作る。対象コードがmainにない場合は存在するbranchを出発点にする。別branchにあるから新規作成する、という判断をしない。
 
+現在はmain/nativeに加え `codex/os-game-design-review-20260909` の最新設計も必須入力。mainに新設計があると仮定せず、PRのない設計branchも同一SHAのchecksを取得し、チェックなしを成功にしない。取得中のbranch追加/更新/削除も再照合する。`auditInputs.designHead` は改訂前入力の履歴であり、未来の最新SHAの固定指定ではない。
+
 ## 2. 進捗の記録方式
 
 各能力を `要望ID / repository / branch / SHA / path / 実装状態 / 検証段階 / 未検証部分 / 次の作業` で記録する。実装状態は未実装・試作・実装あり、検証段階は未検証・host・fixture・仮想OS・provider sandbox・実機・本番を使う。複数段階はそれぞれ証拠を付ける。
 
 `data/project-status.json` は当該branchの作業一覧。branch間の完了数は単純合算しない。未マージN01の完了をmainのOS起動済みに置換しない。過去の監査は履歴であり毎回読み直す起点。
+
+旧Web/Android/文書を含む作業数はOSの完成率ではない。phaseGatesの起動基礎・単一owner商品/Wallet基礎・OS縦断・複数owner基礎・交換契約を分け、実provider待ちを独立fixtureの前提にしない。文書で訂正した相違と、実装で修正・再試験済みの相違も区別する。
 
 ## 3. 差分から作業を決める
 
@@ -44,7 +52,7 @@ SDKの接続基盤と商品の業務開発を区別する。remote MCP認可を�
 - 改善候補の相乗効果と測定指標。確定ベースを変更するものは別判断として記録。
 - 既存データ/契約の互換、未決条件、Git保存範囲、次の再開点。
 
-プロンプト末尾でRQ01〜RQ11の漏れ・矛盾を自己点検する。「全部やる」「OSを完成する」だけの完了条件にしない。実装のない宣言schema、mock成功、画面だけの残高表示を完成と呼ばない。
+プロンプト末尾でRQ01〜RQ15の漏れ・矛盾を自己点検する。「全部やる」「OSを完成する」だけの完了条件にしない。実装のない宣言schema、mock成功、画面だけの残高表示を完成と呼ばない。最新入口はdata/product-baseline.jsonのnextPrompt。OS受入はdocs/templates/os-acceptance-report.mdで環境別に記録する。ゲーム通貨交換はATMから独立させ、未確定のゲーム/方向/レートと実資金未検証を引き継ぐ。作者向けAPI/SDK/sandboxの導入体験とATM自社手数料0を保持し、ゲーム料金・外部実費・OS月額の判断を混ぜない。
 
 ## 5. Gitへの引継ぎ
 

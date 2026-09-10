@@ -1,0 +1,51 @@
+{
+  "manifest": {
+    "schema_version": 2,
+    "id": "org.rockstar.proposal-draft",
+    "name": "提案下書き（簡潔）",
+    "description": "入力した募集条件から簡潔な提案文の下書きを作ります。JSONでtitle、requirements、deliverablesを入力してください。送信や売上計上は行いません。",
+    "publisher": "org.rockstar.development",
+    "version": "1.1.0",
+    "kind": "Tool",
+    "runtime": "rock-recipe/1",
+    "execution_targets": [
+      "device_local"
+    ],
+    "permissions": [
+      "text.input",
+      "text.output"
+    ],
+    "data": {
+      "input": "user_supplied_text",
+      "destinations": []
+    },
+    "resources": {
+      "input_bytes": 65536,
+      "output_bytes": 131072,
+      "timeout_seconds": 3,
+      "max_steps": 16
+    },
+    "price": {
+      "currency": "USD",
+      "amount_minor": 0,
+      "unit": "run"
+    },
+    "source": {
+      "repository": "local-development",
+      "commit": "local-development",
+      "license": "LicenseRef-Development-Only"
+    },
+    "recipe_sha256": "bf0dff43055e74a3aa3c222fec35fbfa60d3b347489eea689b30a2112de0355d",
+    "lifecycle": {
+      "updates": "explicit_approval",
+      "rollback": "cached_signed_version",
+      "uninstall": "retain_receipts"
+    }
+  },
+  "recipe": [
+    {
+      "op": "proposal_draft",
+      "format": "concise"
+    }
+  ]
+}

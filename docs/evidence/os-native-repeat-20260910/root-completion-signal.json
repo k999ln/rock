@@ -1,0 +1,10 @@
+{
+  "schema": "rock-root-c-completion-for-native-repeat/1",
+  "observed_utc": "2026-09-10T12:59:16.049369+00:00",
+  "root_c_ui_recording_finished": true,
+  "one_same_source_native_rerun_authorized": true,
+  "root_signal": "START exact9ab R2 now. B heavybrowserQA closed12:57:08. Root text-only guide fix26d2551 newstaticexport complete; Vite99545 stopped exit130, HTTP61940 stopped exit0. No root UI/encoding/build/VM jobs remain. Candidatefrozen unchanged/Cclosed. One canonical1631/14 original9ab with umask022/PATH. Root lightdocs/GitHubremote metadata only.",
+  "candidate_source": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "c_ui_completed_utc": "2026-09-10T12:37:35Z",
+  "b_browser_closed_utc": "2026-09-10T12:57:08Z"
+}

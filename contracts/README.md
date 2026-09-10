@@ -1,6 +1,6 @@
 # Rock Tool API — P1 実装契約
 
-この版は**自社固定の2操作だけを接続する試作**。第三者用の公開SDK/ストアではない。
+この版は**Android P1の自社固定2操作だけを接続する試作**。第三者用の公開SDK/ストアではない。Linux nativeの署名recipe/MCP契約とSDKは `systems/rock-star-os/` にあり、このAIDLとwire互換ではない。[契約の適用範囲](../docs/native-os-integration.md#2-コードと契約の配置)を参照する。
 
 ## 実際のワイヤー契約
 

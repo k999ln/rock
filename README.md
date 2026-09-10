@@ -2,32 +2,46 @@
 
 tob側の自動化ツールを商品として管理するHubと、自動化で得たお金を管理するWalletに特化したOSを開発します。実行場所、料金、資格、ライセンスの違いを扱い、利用準備・日々の管理・結果とお金の確認に伴う不便を減らします。
 
-**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ11）です。** [プロンプト作成規約](docs/prompt-playbook.md)、[追補の差分監査](docs/progress-audit-20260909-followup.md)、[次段階の実行プロンプト](docs/prompts/hub-wallet-next.md)を保存しています。引継ぎ未同期・商品条件の制限・実収益未接続・利用価値未検証の4問題に、修正順と合格証拠を付けました。文書保存とnativeへの反映・実利用の完了は別です。
+**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ17）です。** [プロンプト作成規約](docs/prompt-playbook.md)、[OS稼働・ゲーム連携監査](docs/os-readiness-audit-20260909.md)、[最新の実行プロンプト](docs/prompts/rockstaros-release-20260910.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を保存しています。同一9ab候補の限定受入と統合1a2f4d1のCIは完了しました。[今回の実行checkpoint](docs/release-execution-20260910.md)と[最新の進捗・CM完成後の残件](docs/release-followup-20260910.md)に結果を記録しています。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持。文書保存と実装・実機/本番合格は別です。
 
-2026-09-09の監査では[PR #1](https://github.com/k999ln/rock/pull/1)にLinux/Buildroot/QEMU native OS、Hub、Wallet、MCP・実行先/予算の試作があります。BlackBerry優先・機種未定、Android/AOSPは別トラックです。PRは監査時OPEN。毎回 `npm run prompt:context` と対象コードを確認してください。以下のmain実装だけで全体の進捗を判断しないでください。
+[8原則に基づくRockstarOS 1.0設計](docs/rockstaros-1.0-strategy.md)を追加しました。現ベースを維持し、一つの商品で実行・成果・費用・復旧まで確認できる体験を検証します。初期対象の文章系個人事業主と既存引用整理は検証仮説。配布/実用の優先順位、試用指標、CM導線、責任分担を具体化し、未実証の需要や本番利用可能性は主張しません。
 
-**このmainのOSコードはAndroid P1です。** Java共通コア・SQLite・AIDL・診断画面・記事ツールに対する2APK build/lintと標準Android接続試験の成功記録があります。独自AOSP/Cuttlefish・Pixelは未検証。native branchのQEMU・SDK・Wallet試作と区別します。既存Webのファンド・料金・分配は試算として保持します。
+**[設計v1.1](docs/os-hub-wallet-game-design.md)の実装は承認済みです。** [承認範囲](docs/execution-approval-20260909.md)に従い、専用branchでnativeと設計を統合しています。公開・実機・MetaMask実資金は条件付き了承を保持し、技術的な準備を検証します。達成演出は見送り、市場案は検討のみです。
+
+**このbranchにはLinux / Buildroot / ARM64 QEMU native OSの試作があります。** main/native/設計の3入力を統合した[PR #2](https://github.com/k999ln/rock/pull/2)を起点に開発しています。旧`b8287bc`の[限定受入D0〜D5](docs/os-acceptance-b8287bc-20260909.md)を保持し、run44は元planの5boot・61jobs・3641.769秒と正常停止を独立照合して回収しました。旧合格とは別に、Game統合9ab候補で[D0〜D6の限定受入](docs/os-acceptance-9abf78a-20260910.md)を完了しました。mainへの統合と実機対応は未実施です。
+
+開発入口: [native統合方針](docs/native-os-integration.md)、[nativeの使い方](systems/rock-star-os/README.md)、[過去のsource検証](docs/native-os-validation.md)、[現在のCHECKPOINT](CHECKPOINT.md)。BlackBerry優先・正確な機種は確認中。月888 cents固定・同契約の複数端末で1回を維持します。
 
 旧Android/AOSPの入口は [OS開発設計書](docs/os-development-design.md)。現在の製品判断には製品ベースと対象branchの現行方針を使います。
 
 コードの現在地と再開手順: [P1実装・検証手順](docs/os-prototype.md)、[実際のTool契約](contracts/README.md)。AOSPへ組み込む設定は `android/Android.bp` と `os/device/`。これらの存在をOS起動済みの証拠にはしません。
 
-正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。ローカルの `gg` 直下と対応します。製品は「Rock star / avocadomini」の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
+今回の[統合後の試験結果](docs/os-operational-validation-20260909.md)と、GrapheneOSを保持する[Pixel 10向けP1アプリ試験](docs/android-trial.md)を分けて記録します。P1は記事処理の試作で、Hub＋Walletやゲーム交換の実機版ではありません。
+
+Macからnative OSを試す入口は[専用VM用launcher](systems/rock-star-os/os/desktop/LAUNCHER-V2.md)。起動時に指定した仮想端末と画像を確認し、同じ保存データを再度開きます。ブラウザは実OSの画面を映すために使います。終了はOS内の「端末」→「電源を切る」→「確認して実行」。Wallet/ATMは合成データ専用で、MetaMask送受金には接続していません。
+
+[前日の実装・検証・未達の記録](docs/implementation-checkpoint-20260909.md)を履歴として保持しています。現在のGX00は実TLSで複数owner/game分離の必須受入を通過し、GX01の署名quote・別購入承認・両台帳とnative UIを統合しました。SDK・Game profile・停止/復旧と実OSの限定受入は[最新記録](docs/release-followup-20260910.md)に保存済みで、本番ゲームや実資金には接続していません。
+
+Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-installation-ja.md)と[既知制限](docs/preview-release-notes.md)を作成しています。`npm run dev` のローカル `/rockstaros` と `/rockstaros/guide` で案内を確認できます。最終9ab候補の実画面と90.04秒の技術デモを案内に使用しています。ダウンロード一般公開は配布条件と公開先の解消待ちです。
+
+正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。旧ローカル作業名は `gg`。現在の実装再開先は `codex/rockstaros-release-20260910` で、SSD上の旧checkoutを最新と仮定しません。製品は「Rock star / avocadomini」の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
+
+**2026-09-10追記:** 利用者からCM完成済みと確認し、CM制作を残件から外しました。次はOSの残件と既存CMから導入案内への接続です。「追加1〜2日」はLICENSE／Sitesの待ちを除くQEMU版仕上げの条件付き概算で、確定公開日ではありません。[完了範囲・見積もり・残件の詳細](docs/release-followup-20260910.md)。
 
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-09 / 相違解消プロンプト改訂（nativeへの反映・実利用は未実施） / 完了 11/21件
+最終更新: 2026-09-10 / RockstarOS 1.0 ローンチ準備・Hubのユーザー体験改善 / 完了 19/41件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
-| R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) |
+| R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) · [記録](docs/native-ci-partition-fix-20260910.md) |
 | R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 | R06 | ブラウザで仕事の一連の操作を確認 | 完了 | [記録](docs/validation.md) |
-| R07 | 本人限定のSitesへ公開・本番確認 | 停止中: sites/mainに別の仕事API・0002移行・アプリUIが存在。追加機能を保持する統合方針の確認が必要 | [記録](docs/deployment-integration.md) |
+| R07 | 本人限定のSitesへ公開・本番確認 | 停止中: 既存Sitesの固有機能を保持する統合が必要。2026-09-10は既存projectを接続accountから取得できず、別projectを作らず停止 | [記録](docs/deployment-integration.md) · [記録](docs/release-followup-20260910.md) |
 | R08 | 検証結果・公開停止理由と再開設計の文書化 | 完了 | [記録](project.md) · [記録](docs/validation.md) · [記録](docs/deployment-integration.md) |
 | OS01 | 既存設計の要件追跡と自動化OS開発設計 | 完了 | [記録](docs/os-development-design.md) |
 | OS02 | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 未着手 | [記録](docs/os-development-design.md) |
@@ -38,17 +52,59 @@ tob側の自動化ツールを商品として管理するHubと、自動化で�
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 | B01 | Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
-| B04 | main/nativeのベース・引継ぎ入口・優先順位を分離作業branchへ統合 | 未着手 | [記録](docs/progress-audit-20260909-followup.md) · [記録](docs/prompts/hub-wallet-next.md) |
-| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
-| B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
-| B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 未着手 | [記録](docs/prompts/hub-wallet-next.md) |
+| B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
+| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) |
+| B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) |
+| B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/hub-wallet-pc-comparison-20260909.md) · [記録](docs/evidence/hub-wallet/b05-pc-machine-20260909/report.json) |
+| D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
+| V01 | 最新統合sourceからQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す | 完了 | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/os-operational-validation-20260909.md) · [記録](docs/evidence/os-base/startup-update-acceptance-b8287bc.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/evidence/os-base/registry-negative-b8287bc.json) · [記録](docs/os-acceptance-b8287bc-20260909.md) · [記録](systems/rock-star-os/os/desktop/LAUNCHER-V2.md) · [記録](docs/evidence/rls01/final-d6-ci-20260910.json) · [記録](docs/evidence/rls01/final-d6-root-audit-20260910.json) · [記録](docs/os-local-final-20260910.md) · [記録](docs/os-acceptance-9abf78a-20260910.md) · [記録](docs/os-native-repeat-20260910.md) · [記録](docs/os-final-compatibility-20260910.md) |
+| GX00 | 共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx00-owner-isolation-adr.md) · [記録](docs/evidence/gx00/integration.json) · [記録](systems/rock-star-os/os/wallet_backend/FENCE.md) · [記録](docs/gx00-connection-wire-v1.md) · [記録](docs/evidence/gx00/game-protocol-review.json) · [記録](docs/game-connection-node-wire-20260909.md) · [記録](docs/gx00-connections-runtime.md) · [記録](docs/evidence/gx00/game-connections-root.json) · [記録](docs/gx00-legacy-game-basis.md) · [記録](systems/rock-star-os/os/wallet_backend/CURRENT-RESTORE.md) · [記録](docs/evidence/gx00/current-copy-foundations-root.json) · [記録](docs/gx00-current-game-restore.md) · [記録](docs/gx00-owner-connection-client.md) · [記録](docs/evidence/gx00/current-game-integration-root.json) · [記録](docs/implementation-checkpoint-20260909.md) · [記録](docs/evidence/gx00/release-required-acceptance-20260910.json) |
+| GX01 | ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証 | 完了 | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-contract-implementation-plan.md) · [記録](docs/gx01-native-ui-20260910.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](docs/game-wallet-release-checkpoint-20260910.md) · [記録](docs/evidence/hub-final-9abf78a/final-c01-completed-stages.json) · [記録](docs/evidence/gx01/final-9abf78a-20260910.json) |
+| GX02 | 指定された実ゲームの正式sandbox接続と交換条件を検証 | 未着手 | [記録](docs/prompts/os-operational-base-next.md) |
+| DX01 | ゲーム作者向けAPI/SDK・sandbox・複数owner/game分離と導入体験を検証 | 完了 | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](docs/evidence/rls01/sdk-final-9abf78a/README.md) · [記録](docs/evidence/rls01/sdk-final-9abf78a/summary.json) · [記録](docs/evidence/gx01/final-9abf78a-20260910.json) |
+| N01 | Linux native OS基準版の公開ソース統合・既存資産の回帰検証 | 完了 | [記録](docs/native-os-integration.md) · [記録](docs/native-os-validation.md) |
+| N02 | 起動応答確認と自動再読込WIPの検証・採用判断 | 進行中 | [記録](docs/native-os-integration.md) |
+| N03 | BlackBerryの型番・boot/BSP・更新/復旧の適合確認 | 進行中 | [記録](docs/native-os-integration.md) |
+| N04 | BlackBerry実機だけでHub取得・実行・更新・復旧 | 未着手 | [記録](docs/native-os-integration.md) |
+| N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
+| RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 完了 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/rockstaros-1.0-architecture.md) · [記録](docs/rockstaros-1.0-strategy.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) · [記録](docs/release-followup-20260910.md) |
+| RLS02 | 正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証 | 未着手 | [記録](docs/release-installation-plan-20260909.md) |
+| LCH01 | TLS／累積timeoutの原因と最終CIの照合 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH02 | 全同梱物inventory・対応source・製品LICENSEの明示決定 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH03 | production署名・保護環境・失効運用 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH04 | 既存Sites履歴の統合・本人限定プレビュー・Hub改善 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH05 | 完成CMの特定・表示内容の照合・導入案内への接続 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 
-次の作業: 最新main/nativeのSHA・証拠を確認し、B04で分離作業branchへベースとnativeを統合して入口・優先順位を同期する。B02既存商品のHub実利用と改善前測定→商品条件/adapter拡張→B03費用/収益Wallet接続→同条件で再試験。実収益・携帯実機の未検証を別記録にし、Nタスクと旧Android/Webを保持する。
+段階ゲート（作業全体の完了とは別判定）
+
+| 段階ID | 作業ID | 内容 | 状態 | 先に通す段階 | 根拠 |
+| --- | --- | --- | --- | --- | --- |
+| B04-INTEGRATED | B04 | 承認後、main/native/設計reviewの3入力と入口を統合 | 合格 | — | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
+| V01-BOOT | V01 | OS起動・安全基礎（V01全体の合格ではない） | 合格 | B04-INTEGRATED | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/evidence/os-base/freeze-b8287bc.json) · [記録](docs/evidence/os-base/boot-b8287bc.json) · [記録](docs/evidence/os-base/platform-b8287bc.json) · [記録](docs/evidence/os-base/native-ui-b8287bc.json) |
+| B02-NATIVE | B02 | 既存native商品1件をHubで実処理・保存 | 合格 | V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/evidence/os-base/business-wallet-foundation-b8287bc.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) |
+| B03-FIXTURE | B03 | 単一ownerの合成Wallet・商品/費用/売上状態の基礎 | 合格 | B02-NATIVE | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/evidence/os-base/business-wallet-foundation-b8287bc.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) |
+| V01-ACCEPT | V01 | 同一OS候補でD0〜D6縦断合格 | 合格 | V01-BOOT · B02-NATIVE · B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-acceptance-9abf78a-20260910.md) · [記録](docs/os-native-repeat-20260910.md) · [記録](docs/os-final-compatibility-20260910.md) |
+| B03-PROVIDER | B03 | 実provider/認証済み収益（別の権限・条件が必要） | 未合格 | B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
+| B05-COMPARE | B05 | Wallet基礎後のPC比較/再試験。実機価値は別判定 | 未合格 | B02-NATIVE · B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
+| GX00-ISOLATION | GX00 | ADR・複数owner分離/本人接続・互換/復旧の合成検証 | 合格 | B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/evidence/gx00/integration.json) · [記録](docs/evidence/gx00/release-required-acceptance-20260910.json) |
+| GX01-CONTRACT | GX01 | 複数owner/gameの交換契約と両台帳fixture | 合格 | GX00-ISOLATION | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-native-ui-20260910.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](docs/game-wallet-release-checkpoint-20260910.md) · [記録](docs/evidence/gx01/final-9abf78a-20260910.json) · [記録](docs/evidence/release-candidate-9abf78a/native-ci.json) · [記録](docs/gx01-dx01-acceptance-20260910.md) |
+| GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-native-ui-20260910.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](docs/game-wallet-release-checkpoint-20260910.md) · [記録](docs/evidence/hub-final-9abf78a/final-c01-completed-stages.json) · [記録](docs/evidence/gx01/final-9abf78a-20260910.json) |
+| DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](docs/evidence/rls01/sdk-final-9abf78a/README.md) · [記録](docs/evidence/rls01/sdk-final-9abf78a/summary.json) · [記録](docs/evidence/gx01/final-9abf78a-20260910.json) |
+| PREVIEW-INSTALL | RLS01 | fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走 | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
+| DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
+
+次の作業: Hubを標準入口に改修して実ブラウザで操作を検証。LCH01〜07でTLS原因、配布法務、署名鍵、既存Sites、完成CM、PR統合、最終候補を追跡。最終承認前の一般公開・main merge・実請求・実機書込み・実資金は実行しない。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
 
 R2の画面確認と修正はGitHubへ保存済みですが、**本番サイトへの反映は未実施**です。配信先だけにあるアプリUI・実行管理・手入力台帳と仕事API/DB移行が重なるため、上書きせず停止しました。保持する機能と再開手順は [統合設計](docs/deployment-integration.md) を参照。
+
+## Web/PC版のHubと既存Sites機能
+
+保存済みSites source `c6942d5ef72e9dd16345b9363e68e0e18ca25079` の実行管理、利用停止/再開、PC接続管理、手入力収支、PWAを統合中。`/api/jobs` はSitesの実行受付を保持し、仕事の手順管理は `/api/work-jobs` へ分離。手入力金額は実残高・払出可能額ではありません。既存Sitesの実DB適用履歴はアクセス復旧後に照合します。
 
 ## 既存Web/PC版で現在できること
 
@@ -59,7 +115,7 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 - マイファンドの選択と配分計画。旧マイツール用の保存・導入プラン関数も保持。
 - Ethereum互換の注入型ウォレットでアドレス接続。キャンセル、アカウント変更、切断を処理。
 - 月$8.88相当の利用料と、電力・通信・API費用の試算。
-- ファンドをホームに配置。参加・配分計画・試算条件と実行履歴をアカウントごとに保存。
+- ホームは自動化Hub。旧ファンドは `/fund` に保持し、参加・配分計画・試算条件をアカウントごとに保存。
 - 「仕事を進める」から記事販売準備・ココナラ納品準備を作成し、手順・試行履歴・最終確認をアカウント別に保存して再開。
 - 基本分配・ブースト・共同留保を、共通収益の範囲内で試算。入金・送金は未接続。
 - 同じ4ツールをstdio MCPでCodexから実行。PC接続アプリを起動するとサイトからもMCPでワンボタン実行。
@@ -69,19 +125,19 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 
 ## 仕事の進め方（現行Web版）
 
-1. ホームの「仕事を進める」から `/work` を開き、サインインします。PCではヘッダー、スマホでは検索・カテゴリの下に入口を表示します。
+1. ホームの「仕事を進める」から `/work` を開き、サインインします。PC・スマートフォンともページ冒頭とメニューに入口を表示します。
 2. 仕事名と「記事の販売準備」または「ココナラ納品準備」を選んで作成します。
 3. 表示された手順を実行します。サンプル・失敗・条件不一致は記録されますが、手順は進みません。納品記録照合には最新版のPC接続パックが必要です。
 4. 結果を確認してコピーまたはダウンロードし、次の手順へ進みます。原稿は自動で次へ渡されず、タブを閉じると未保存本文は失われます。
 5. 全手順の通過後に確認メモを入力して完了します。応募・外部納品・売上発生を意味する完了ではありません。
 
-保存するのは仕事名・確認メモ・実行メタデータで、原稿や成果物は保存しません。名前やメモに秘密情報を入れないでください。仕事は最新100件、試行は1仕事につき最大200件です。本文保存・古い仕事のページ送り・削除は今後の拡張です。仕事内の実行は仕事履歴に記録し、ホームの単独ツール実行履歴には二重計上しません。
+保存するのは仕事名・確認メモ・実行メタデータで、原稿や成果物は保存しません。名前やメモに秘密情報を入れないでください。仕事は最新100件、試行は1仕事につき最大200件です。本文保存・古い仕事のページ送り・削除は今後の拡張です。全実行は既存Sitesの受付APIを通り、1実行につきtool_runsに1件だけ記録します。仕事内の進捗は別のwork_jobsへ保存し、ツール実行の集計へ二重計上しません。
 
 通信失敗時は「記録の保存を再試行」で処理を再実行せず保存だけを再送できます。別タブとの競合時は「最新状態を読み直す」で確認します。
 
-## このmainの既存Web/Androidで未実装・未検証のこと
+## 既存Web/Androidで未実装・未検証のこと
 
-OSイメージの起動、スマホの画面OFF時の実動作、専用隔離と強制資源制御、公開Tool SDK、第三者パッケージの導入/審査/失効、Pixel書込/復旧、OSの署名OTAは未実装または未検証です。Android試作のソース・ホスト検証とは区別します。以下も現時点では未接続です。
+以下はAndroid/AOSPトラックの未検証範囲です: 自前OS起動、画面OFF時の実動作、専用隔離、第三者SDK/配布、Pixel書込/復旧、署名OTA。Linux nativeの試作・source試験と区別します。以下も現時点では未接続です。
 
 ココナラでの自動応募・送信・売上取得、外部サービスの自動登録、売上の取得・自動控除、定期決済、資金の受託、収益分配、投資ブースト、端末の電力・通信量の実測、公開サイトへの候補の自動反映。Mr.のココナラ機能のうち、案件条件チェックと納品記録照合を独立して取り込みました。Mr.全体の自律運転は移植していません。
 
@@ -118,11 +174,13 @@ Product Hunt APIは商用利用条件の確認前のため未接続。サービ�
 
 ## 次に追加する順番
 
+設計v1.1の実装承認を受け、次の順番で進めます。現在の状態は上記の段階ゲートとCHECKPOINTを参照してください。
+
 1. main・native開発PRと同一SHAの証拠を確認し、B04で分離作業branchへベースとnativeを統合して全入口・優先順位を同期する。
-2. 既存ツールをHubから実際に利用して改善前を測り、準備・操作・結果確認でつまずく箇所を改善する。
-3. 商品条件・資格・実行先と、費用/収益照合・既存Walletを接続し、同じ業務で再試験する。fixture成功と実収益の接続成功は別に判定する。
-4. BlackBerry適合や実PC/cloud/providerは個別に検証する。旧Android/AOSPは別トラックとして保持する。
-5. [差分監査の発展案](docs/progress-audit-20260909.md)に従い、接続診断、費用/収益、offline復元、更新差分を掛け合わせる。
+2. V01で最新sourceから新しいOSをbuildし、QEMUの起動/安全基礎を検証。既存商品・Wallet基礎を接続してD0〜D6の操作/保存/通常終了/再起動/復旧を完了させる。
+3. B02/B03/B05で商品条件・資格・実行先と、費用/収益照合・既存Walletを接続し、実利用の改善前後/PC比較を測る。fixture成功と実収益/実機価値は別判定。
+4. GX00で複数owner分離・本人接続・台帳互換を通し、GX01でATMから独立したゲーム交換を合成serverで試験し、DX01で作者向けAPI/SDK・サンプル・導入体験を検証。ゲーム料金/方向は未確定、ATM自社手数料0を保持。
+5. GX02実ゲームsandbox、BlackBerry適合、実PC/cloud/provider、実資金・本番は個別ゲート。旧Android/AOSPは別トラックとして保持する。
 
 初期APKでの試験は補助であり、それだけをOS完成とは扱いません。既存のSites公開停止はOSの設計・独立した仮想OS開発を妨げません。端末購入・初期化・書込・サービス契約は、この設計書作成では実施していません。
 
@@ -141,7 +199,7 @@ python3 scripts/package-mr.py
 python3 toolkits/mr/rock_star_tools.py coconala-check --input toolkits/mr/examples/coconala.json
 ```
 
-PCパックは `public/toolkits/mr-toolkit.zip`。元コードのハッシュが変わると実行・再梱包は失敗します。
+PCパックは `public/toolkits/mr-toolkit.zip`。元コードのハッシュが変わると実行・再梱包は失敗します。MCPの出典整理は固定CLIの別プロセスで処理し、入力・出力各65,536 UTF-8バイト、処理3秒、同時1件に制限します。macOSはPython 3.13以上、Linuxは3.10以上の通常利用者が対象です。Windowsの新しい出典整理接続は未対応です。native Hub接続と再起動をまたぐ重複実行防止は残件です。PCだけの再現手順と受入範囲は [PC実処理接続](docs/pc-citations-adapter.md) を参照してください。
 
 詳しい今回の動作と会計モデルは `docs/fund-and-mcp.md` を参照。
 

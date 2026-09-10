@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-installer/work/final1-preserve-originals.py", line 26, in <module>
+    keep('authority-stopped.tar.gz',['tar','-C','/var/tmp','-czf','-','rockstaros-preview-authority'])
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-installer/work/final1-preserve-originals.py", line 23, in keep
+    f.chmod(0o600);subprocess.run(cmd+args,env=env,stdout=f,check=True,timeout=90)
+    ^^^^^^^
+AttributeError: '_io.BufferedWriter' object has no attribute 'chmod'

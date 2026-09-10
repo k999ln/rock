@@ -1,0 +1,11 @@
+{
+  "schema": "rock-game-account-compatibility/1",
+  "status": "PASS_PURE_CONTRACT",
+  "reason": "Actual managed integration found existing Entitlement account_id values use acct- opaque identifiers. Preserve those exact values; do not change the existing Wallet account or require UUID.",
+  "tests": 19,
+  "root_log": "game-account-compatibility.log",
+  "root_log_sha256": "ec1bcaf29ac55375003cada059b1e0bb060c31053d4a7a837eea5a9e943f8a9d",
+  "original_vectors_retained": true,
+  "additional_vectors": "systems/rock-star-os/os/game_exchange/fixtures/connection-v1-prefixed-account-vectors.json",
+  "scope": "schema and signed receipt joins only; actual HTTP connection integration still separate"
+}

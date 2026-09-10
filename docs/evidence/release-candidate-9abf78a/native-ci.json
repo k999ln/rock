@@ -1,0 +1,113 @@
+{
+  "schema": "rock-independent-ci-source-evidence/1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "run_id": 34459916162,
+  "run_url": "https://github.com/k999ln/rock/actions/runs/34459916162",
+  "artifact": "native-source-test-results",
+  "report_sha256": "34bf46580fe2f3655f765c5266d55e2786143bb28fb423f4e97e537f68a06af8",
+  "report_unchanged": true,
+  "matched_git_input_files": 694,
+  "git_input_mismatches": [],
+  "status": "PASS",
+  "python_test_executions": 1631,
+  "checks": 14,
+  "test_host": {
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "python": "3.13.15 (main, Aug  6 2026, 02:15:18) [GCC 13.3.0]"
+  },
+  "separate_build_host": "Debian13.6/arm64 Lima on macOS; local first full native TLS deadline errors remain FAIL",
+  "scope": "Source regressions only. Does not supply OS boot/timing/fresh-install acceptance.",
+  "logs": [
+    {
+      "path": "native-tests/c-platform.log",
+      "sha256": "68e812194c9ae59796ee89d0e42c7a62b163e5ab1b79c326be21ddd75b088daa",
+      "bytes": 130
+    },
+    {
+      "path": "native-tests/os-wallet_auth-tests.log",
+      "sha256": "35960a0a5b836b47761a3381f0eaadad70248a79c4190c5598a2522d63a909f4",
+      "bytes": 11036
+    },
+    {
+      "path": "native-tests/os-ai_routes-tests.log",
+      "sha256": "057f52dda56e5e7a10c690f6ef88802887d212e50c8d633ae19509fd17241560",
+      "bytes": 3893
+    },
+    {
+      "path": "native-tests/c-ui-build-tests.log",
+      "sha256": "6dc732f11fb83fb1feb4f934091d1250469bbfe6d0af46fa4de0ab7408ae1bfc",
+      "bytes": 744
+    },
+    {
+      "path": "native-tests/os-atm-tests.log",
+      "sha256": "ec13e1b074276ae1cb351d9b1b1577ea6cf868e4aeed220f1c5c3cc88cfcee07",
+      "bytes": 6719
+    },
+    {
+      "path": "native-tests/os-service_access-tests.log",
+      "sha256": "ef68380c6fcbae5312493dce7b5ea98f5d0061dfa317a1b87c285c493715243f",
+      "bytes": 4639
+    },
+    {
+      "path": "native-tests/c-ui.log",
+      "sha256": "0069088559ed14f3efccaad4d0e2cda15a45fceb83b68158eb76fade6db8bdf7",
+      "bytes": 1214
+    },
+    {
+      "path": "native-tests/tests.log",
+      "sha256": "ade133395485818b0eebb561f98b2ec6f80c8427b6ae355711b7931a49e91bf8",
+      "bytes": 249567
+    },
+    {
+      "path": "native-tests/c-ui-ipc.log",
+      "sha256": "4116a93c11048da5c14a2d14fbd41da1e960f77e8fc47f7739198ee64f95c4fc",
+      "bytes": 1262
+    },
+    {
+      "path": "native-tests/ui-observers.log",
+      "sha256": "65eb98f5d160f20c1085c7a651c8acb869856f7d6f5c26b7973185fab5854d1c",
+      "bytes": 2361
+    },
+    {
+      "path": "native-tests/c-ui-native-replay.log",
+      "sha256": "1bcb8f552c25044a5c319d249dba0a33f6dac6e46899a2e389aa04f386aacb3f",
+      "bytes": 425
+    },
+    {
+      "path": "native-tests/c-core.log",
+      "sha256": "fd91775029f963b4f3eb553a49d6c33012ef4a9e6384e1a265eb70ab0ac96403",
+      "bytes": 259
+    },
+    {
+      "path": "native-tests/os-entitlement-tests.log",
+      "sha256": "b0ee7f38f3e3b0bb0a0ac42a161a64723731e7cdf2d5ebf365c65c017b6b07d3",
+      "bytes": 14914
+    },
+    {
+      "path": "native-tests/c-ui-actions.log",
+      "sha256": "3933e9ba3249a51510398cc7ca27fe7a420951629545b55c3e7f39d19dfaa270",
+      "bytes": 544
+    },
+    {
+      "path": "native-root-ui/observers.log",
+      "sha256": "cc86f5e997d59cbefd49493d43cda7b6fd478aa5efeb73cf27fa436eeccdd763",
+      "bytes": 10117
+    },
+    {
+      "path": "native-root-ui/wallet-replay.log",
+      "sha256": "2b5f79f2f9854eeca4cfcdea49fee660ccad5f79a40bdbe077690bb0bea60d53",
+      "bytes": 269
+    },
+    {
+      "path": "native-root-ui/health.log",
+      "sha256": "0d07c8c655899f3da139b6ae686ba23a0753d9c49a04ffb200abfae07be89aad",
+      "bytes": 553
+    },
+    {
+      "path": "native-root-ui/pin-readiness.log",
+      "sha256": "11fc4d395890280b9b92abdd425136cb2695a513919639042df9132b9eccca90",
+      "bytes": 1797
+    }
+  ]
+}

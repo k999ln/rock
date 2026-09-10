@@ -1,0 +1,14 @@
+{
+  "nativeSourceCommit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "version": "1.0.0-preview.20260910",
+  "demo": {
+    "src": "/rockstaros/demo-9abf78a.mp4",
+    "poster": "/rockstaros/hub-result.png",
+    "captions": "/rockstaros/demo-9abf78a.vtt",
+    "durationSeconds": 90.04,
+    "sourceCommit": "9abf78a80d27aa9f847c4051d20e4c552e407276"
+  },
+  "acceptanceRecordUrl": "https://github.com/k999ln/rock/blob/codex/rockstaros-release-20260910/docs/os-acceptance-9abf78a-20260910.md",
+  "publicDownloadUrl": null,
+  "campaign": null
+}

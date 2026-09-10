@@ -1,0 +1,243 @@
+{
+  "schema": "rockstaros-preview-intermediate-game-lifecycle/1",
+  "status": "LIFECYCLE_AND_INTERRUPTED_RECOVERY_PASS_ORIGINAL_GUEST_COMPARATOR_FAIL",
+  "final_release_acceptance": false,
+  "reason": "Intermediate 8bd2b26 release. Original guest comparison refused expected SDK read clocks; raw FAIL retained. Separate later fixed observer PASS is supplemental, not a substitute for final candidate acceptance.",
+  "source_commit": "8bd2b26b23bbb953c12027f69d0f68297c49e2ae",
+  "archive_sha256": "001a43c10df411496ce3df4604e06ed3c1bcb1d2ac27ebbcbd3fe32c5b5f8d56",
+  "manifest_sha256": "f31538170e84dd186c6be2b6e4614f25a60b4507bef80257c5e3f99854e332eb",
+  "release_schema": "rockstaros-preview-release/2",
+  "host": {
+    "architecture": "arm64",
+    "lima": "limactl version 2.2.0",
+    "openssl": "OpenSSL 3.6.3 9 Jun 2026 (Library: OpenSSL 3.6.3 9 Jun 2026)",
+    "os": "15.7.4",
+    "python": "3.14.7"
+  },
+  "guest": {
+    "image_preflight": "PASS",
+    "linux": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "package_versions": "e2fsprogs\t1.47.2-3+b11\nopenssl\t3.5.7-1~deb13u2\npython3\t3.13.5-1\nqemu-system-arm\t1:10.0.11+ds-0+deb13u1\nqemu-utils\t1:10.0.11+ds-0+deb13u1\n",
+    "python": "3.13.5",
+    "qemu": "QEMU emulator version 10.0.11 (Debian 1:10.0.11+ds-0+deb13u1)"
+  },
+  "freshness": {
+    "new_private_lima_home": true,
+    "new_vm": true,
+    "existing_vm_or_userdata_reused": false,
+    "download_cache_reused": true,
+    "only_readonly_package_mount": true,
+    "fresh_actual_authority_databases": true,
+    "fixed_public_authority_uuid": true
+  },
+  "vm_config_sha256": "eb095d4425ddeadad30465cacdc2a3e201d3bee638d2274f4574677fcb8d5b89",
+  "vm_identity_sha256": "98798c90d2e52c9b976492585973e2301eb1f1f80b5324ecad402ebeeebced83",
+  "normal_shutdowns": 3,
+  "native_ui_and_AB_confirmed_on_every_boot": true,
+  "ui": {
+    "interface": "manual actual CUA browser framebuffer; no automated OCR/QMP acceptance claim",
+    "saved_hub_output_reopened_after_restart_and_restore": true,
+    "game_a_received_units": 10,
+    "wallet_available_minor": 9897,
+    "game_fee_minor": 3,
+    "held_minor": 0,
+    "monthly_consent": false,
+    "real_money": false,
+    "game_b_purchased": false
+  },
+  "backup": {
+    "schema": "rock-desktop-game-backup/1",
+    "files": 19,
+    "bytes": 1074564436,
+    "off_vm_export_all_hashes_checked_after_vm_removal": true,
+    "encrypted": false,
+    "authority_manifest_sha256": "9f20699dde14a532ee506abddeb9f734cb464b69974311544c16cf415118f6ee",
+    "os_manifest_sha256": "1d3c54b1107022baa2e66286728b6f9ec8f4b26f0290e8df15cdd20dcf89be3f",
+    "historical_or_crosshost_import_supported": false
+  },
+  "fault": {
+    "method": "SIGKILL of test transaction process after committed authority current-copy, during first OS disk copy",
+    "copied_bytes": 16777216,
+    "installed_sources_modified": false,
+    "qemu_signalled": false,
+    "host_and_authority_and_source_os_pending_start_refused": true,
+    "same_intent_unmodified_installer_recovery": true,
+    "same_authority_receipt_without_second_epoch_increment": true,
+    "all_three_restored_disks_initially_exact": true,
+    "retired_source_cannot_start": true
+  },
+  "original_guest_comparison": {
+    "status": "FAIL",
+    "exception": "ValueError",
+    "message": "restored business data changed: game_connection_a"
+  },
+  "supplemental_guest_comparison": {
+    "status": "PASS"
+  },
+  "supplemental_external_authority_ui_comparison": {
+    "schema": "rock-game-authority-ui-retention-result/1",
+    "status": "PASS",
+    "policy": "index-identity-maximum-time-only/1",
+    "before_sha256": "3beea24a4573ff5e0ec59a46e06ee8060ccf82862f2efd1afdfe64ab03d1237d",
+    "after_sha256": "e328e3d1ae8cb9720a6fd911404440913c0f5e472ff82e3353654b213987bddb",
+    "database_count": 7,
+    "table_count": 122,
+    "maximum_time_before": 1789027862,
+    "maximum_time_after": 1789028563,
+    "other_typed_rows_schema_sequences_and_identities": "EXACTLY_UNCHANGED",
+    "default_unchanged_policy_modified": false
+  },
+  "earlier_restart_authority_comparison": {
+    "status": "RAW_HASH_DIFFERENCE_RETAINED",
+    "changed_database_table": "game-index/game.sqlite3 identity",
+    "other_tables_and_identity_JSON_exact": true,
+    "limitation": "No typed identity projection existed for this older pair; not retroactively classified PASS."
+  },
+  "removal": {
+    "owned_vm_absent": true,
+    "force_used": false,
+    "old_viewer_8899_pid_preserved": 77657,
+    "owned_ports_8900_5910_free": true,
+    "host_package_receipts_and_export_preserved": true
+  },
+  "phase_log_sha256": {
+    "preview-game1-backup.log": {
+      "sha256": "415c95db7cd7eaddaae6273cf038b0e41f2cb66bd400fbc375288218b97137b0",
+      "bytes": 420
+    },
+    "preview-game1-install.log": {
+      "sha256": "1a14d63fb42f5354c780989be1bd195e5629897a061c294d0512c5befdf0f4e5",
+      "bytes": 458
+    },
+    "preview-game1-interrupt.log": {
+      "sha256": "b1f2522cd3389c694d27914c6238bcb8647173b9e3900f70e3d35300de95a630",
+      "bytes": 994
+    },
+    "preview-game1-package.log": {
+      "sha256": "68490833e38b2fe88b87c9b5076abbee18c5ae91f7407271593daa2fa7b9c0ca",
+      "bytes": 560
+    },
+    "preview-game1-remove.log": {
+      "sha256": "8ecbefba6e10c065ae4b8fe7c437a059a5d047f76bbc99e4a0744def04acf872",
+      "bytes": 252
+    },
+    "preview-game1-repeat-package.log": {
+      "sha256": "68490833e38b2fe88b87c9b5076abbee18c5ae91f7407271593daa2fa7b9c0ca",
+      "bytes": 560
+    },
+    "preview-game1-restart.log": {
+      "sha256": "96ff3c51a3aae5f34211e74f9571b3d8975e5c4c06ad51e0ad90093c011298c2",
+      "bytes": 607
+    },
+    "preview-game1-restore.log": {
+      "sha256": "40747c202e2015fba68f09554eb1c1e2eb8112cab38fc998f0382d4e7622dd72",
+      "bytes": 329
+    },
+    "preview-game1-start-restored.log": {
+      "sha256": "9e8103d8a2aac3b3d479508628f66ddba22c211a5400b4104803f07517c6108c",
+      "bytes": 609
+    },
+    "preview-game1-start.log": {
+      "sha256": "92f4cd10fc4a8ff2506b8f5f352fa52742e80c47797a78fd09b43b6a2b74b739",
+      "bytes": 607
+    },
+    "preview-game1-stop1.log": {
+      "sha256": "6ccdf5540664c9a63453990fa092a0b10eb6327f808b69ab77037c950b8ceff5",
+      "bytes": 556
+    },
+    "preview-game1-stop2.log": {
+      "sha256": "6ccdf5540664c9a63453990fa092a0b10eb6327f808b69ab77037c950b8ceff5",
+      "bytes": 556
+    },
+    "preview-game1-stop3.log": {
+      "sha256": "6ccdf5540664c9a63453990fa092a0b10eb6327f808b69ab77037c950b8ceff5",
+      "bytes": 556
+    },
+    "preview-game1-verify.log": {
+      "sha256": "a7f84b1e913c11ec82e93ee28b33f2f44c880ffd95232b480869672da2f5d08a",
+      "bytes": 293
+    }
+  },
+  "evidence_files": {
+    "authority-after-restart.json": {
+      "sha256": "12053a5a2aab22861c6c85c80895b194b95414c465538606682f27783ccb7bae",
+      "bytes": 18594
+    },
+    "authority-after-restored-ui.json": {
+      "sha256": "18d5ab3f90df7d87843dfa005d727768f5334e6183dc8bd5e0a04cbb36265b58",
+      "bytes": 32982
+    },
+    "authority-before-restart.json": {
+      "sha256": "4e2b7a9a2a9cfcf50af10137b5414486272b4420ebd04c18a55d11185ed0ad3d",
+      "bytes": 18594
+    },
+    "authority-before-restored-ui.json": {
+      "sha256": "c7b687854c8047751fd84cf3a0454e374574bfcbbbd2d58cbb5971b4764ebe53",
+      "bytes": 32982
+    },
+    "authority-ui-compare.json": {
+      "sha256": "d5c33c112dff7f23859413c1baa548aad8c6195fc7b3091f292e1b09a03ca36d",
+      "bytes": 542
+    },
+    "financial-boot.json": {
+      "sha256": "2e4dc7d632c3c422cdb580e0650797fbbb686abb8d2fa11ff8b752be0b80608c",
+      "bytes": 1515
+    },
+    "interruption.json": {
+      "sha256": "b1f2522cd3389c694d27914c6238bcb8647173b9e3900f70e3d35300de95a630",
+      "bytes": 994
+    },
+    "original-business-compare.json": {
+      "sha256": "f5152d71d2364c538621e946e3067f98779f61dcef9614e8c9261b9c8eefba38",
+      "bytes": 15920
+    },
+    "original-business-observer.py": {
+      "sha256": "1d9e46a35a6c74915ed3fdff5ee3410dabcd60184e8c63f0bebafda11864db0f",
+      "bytes": 2506
+    },
+    "package-repeat.json": {
+      "sha256": "882c3f325bde308b1d44ccb3619c6a5b3808837da630cce905859b711f653d05",
+      "bytes": 1830
+    },
+    "pending-guards.json": {
+      "sha256": "0f11e939fedb2b9e9845b61090ff90d4e516b6172ab287146ea5a9bf7b5853ba",
+      "bytes": 4975
+    },
+    "plan.json": {
+      "sha256": "0364c79427bd7705e6e66ecd6ea8914ec7dff30243a19e995c552c434a76c50a",
+      "bytes": 2027
+    },
+    "recovery.json": {
+      "sha256": "5dcedc5f1176e21b3c98aa9ed1a6f6eb273dcae08764cfdbcec7f3a3439ab84d",
+      "bytes": 11822
+    },
+    "supplemental-business-compare.json": {
+      "sha256": "8553575f0ee57b1855613b7f33773295ca13ce07a25bdef4fd561980031cd3b7",
+      "bytes": 18454
+    },
+    "supplemental-business-observer.py": {
+      "sha256": "f14b651ca6f6edb639a7f125c63e1f8282f159ca02820a606a626b754aed076a",
+      "bytes": 2565
+    },
+    "supplemental-plan.json": {
+      "sha256": "673e81b3039a433b4c6fde2435c1f8e8078f554ca21e27f4c7ee28e2b9cf323a",
+      "bytes": 727
+    },
+    "ui-observation.json": {
+      "sha256": "b9219bd2657b4fb83791815bd870913575642a58692910f782e704601f8aeedd",
+      "bytes": 1067
+    },
+    "fault-harness.py": {
+      "sha256": "ca4b341951d27bc9c0373df67889c9ded25b320afbbbe3554122f0a98486333f",
+      "bytes": 2947
+    },
+    "pending-guard-probe.py": {
+      "sha256": "e08a39bbbf8bfccf9563ddaf69fef478eb2e14b90cf8d0ef192f24704386283b",
+      "bytes": 2374
+    },
+    "recovery-probe.py": {
+      "sha256": "c50521b0400098d9645c8af3ce71355cf9da12f3aa7d0891b3b2960dda075d46",
+      "bytes": 2151
+    }
+  }
+}

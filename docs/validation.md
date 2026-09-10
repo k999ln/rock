@@ -1,5 +1,25 @@
 # 検証記録
 
+## 設計v1.1と実装の再照合・進捗補助の修正 / 2026-09-09
+
+- 16:51 UTCの3branch監査に加え、修正した `npm run prompt:context` を17:07 UTCにオンライン実行。main/native/reviewのSHAは監査入力と一致し、reviewのcheck-run 0は `NO_CHECKS / allSuccessful:false`。全branchとopen PRの再照合にも成功。これはメタデータ取得でありsourceレビュー済みを自動宣言しない。
+- ALIGN01〜05を監査・設計v1.1・実行プロンプト・受入雛形・進捗へ反映。GX00の単一owner→複数player境界、backup試験入口の新旧形式、台帳変更と旧OS互換、段階依存を訂正。既存native sourceを読み取り確認したがruntimeを修正・試験したわけではない。
+- 追加18テストで、PRなしbranchのchecks取得対象、ref順序/変更/削除、チェックなし/未完了の非成功、段階ゲートの参照/重複/循環/完了根拠/旧形式互換を検証。ベース検査にも設計入力SHA欠落と未承認市場の実装許可化を拒否する負例を追加。
+- 最初の全体verifyは新テスト18箇所のPromise記述をlintが拒否。既存の記述規則に合わせて明示的なvoidを付け、条件を弱めず再実行。
+- 再実行した `npm run verify` は終了コード0。project/repository/baseline、型、製品lint、53 unit tests（fail/skip 0）、既存Web build、合成ローカルAPI143 assertionsが成功。既知のVite configLoader/Node module API警告は残る。ブラウザQA・native新image・実機の試験ではない。
+- 利用者の市場案とGTA補足は、公式一次資料を調べた検討メモへ分離。自動化で人の挑戦を増やす目的を設計に明記し、特定ゲームの未確認機能・通貨値上がり・実資金運営を確定しない。
+- 今回変更は文書/進捗取得・検査補助のみ。native checkoutはcleanのまま、SSD/VM再起動なし。main/nativeのmerge、実ゲーム/SDK実装、実課金/送金/ATM/実機/公開なし。設計承認待ちを維持する。
+
+## OS稼働受入・ゲーム作者向けWallet・ATM手数料のプロンプト / 2026-09-09
+
+- GitHub 16:09 UTCのmain `7cdbb5fedc86ee3978ed329d9312147d137c9199`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、PR #1 OPEN、同SHAの各CI成功を取得しfetchで一致を確認。監査は `docs/os-readiness-audit-20260909.md`。
+- RQ12〜15、OS受入のNOT_RUN雛形、実行プロンプト、進捗入口を保存。手数料0の対象は利用者の補足どおりATM。ゲーム料金を無料とも有料とも確定せず、既存OS月額を保持。新しい「OS内にgame要素を入れるとどうなるか」は相談として扱い、全OSのゲーム化を確定仕様にしていない。
+- 別担当がOS不足/Wallet・ATM・ゲーム境界と最終文書を読み取り確認。逆交換の確定消費と原資のWallet側確認、ゲーム作者のmint権限禁止、復元時の同一authority単一writer、2gameの分離を補強した。
+- `npm run verify` 終了コード0。project/repository/baseline整合、型、製品lint、35 unit tests、build、ローカルAPI143 assertionsに成功。既知のVite configLoaderとNode module API警告は残る。本番サイトを公開せず、合成ローカルAPIのみ。
+- ベース検査にRQ12〜15・受入雛形・ATM手数料0・ATM非依存を追加。欠落、手数料の非0化、ATM必須化を拒否する負例も同じ既存テストへ追加し成功。構造検査は意味の完全一致やOS安全性の証明ではない。
+- native runtime/新imageのbuild/boot・ゲーム/SDK実装・物理ATM・実資金・実機は今回未実施。SSDを再接続/再マウントしていない。D01は文書成果だけの完了で、V01/GX01/GX02/DX01、既存B/Nの未完了を解消したとはしない。
+- 続く利用者の「設計書を確認してから実行」に従い、設計書v1.0と全入口へ承認待ちを追記。Game入口/達成演出を提案として提示し、同意前に実装しない。設計書追加後もproject/baseline/対象テストで入口を検証する。
+
 ## 相違解消プロンプトの改訂 / 2026-09-09
 
 - 15:01 UTCのGitHub取得でmain `f9b1cbd99eeaa20f7cbc80bd2d88909949cca863`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、OPENのPR #1と同SHAのCI成功を確認。[追補監査](progress-audit-20260909-followup.md)へ入力と限界を保存した。
@@ -96,6 +116,16 @@
 
 確認日: 2026-09-04（米国東部時間）。
 
+## バックエンド追加の確認（2026-09-05）
+
+- 自動テスト41件が成功。新たに、所有者の分離、同時実行枠、時間あたり上限、停止設定、期限切れ、終端状態の不変性、取消の整合性、DB失敗時のロールバック、完了報告の再送、入力本文の非送信を確認。
+- 公開用WorkerとローカルD1で、認証なし401、異なるOrigin403、形式不正415、サイズ超過413、旧履歴API410を確認。
+- 同じIDの同時作成は1件、同時開始は一方のみ成功、同時完了は履歴1件。別ユーザーによる読込・変更、PC解除後の接続報告、ツール停止後の実行を拒否。
+- アプリの実行管理から、実際のローカルHTTP MCP接続・ping・出典整理・納品サンプル照合・D1への完了/履歴保存まで成功。原稿や成果物は合成データのみ。
+- 公開先の管理情報がRock Starに変更されていたため、保存済みソースの一致で同じアプリと確認。PCパックの許可Originに現在の公開先を追加し、接続検証にも使用。
+- スキーマ追加は新規5テーブルのみ。既存データを保持したローカル移行が成功。過去の適用済み移行ファイルは変更なし。
+- 検証の対象は現在の固定4ツールと管理API。実ウォレット署名、売上取得、決済/分配、アプリ終了後の常駐実行、ブラウザのクリック・画面サイズ確認は未検証・未実装。
+
 ## 実施
 
 - 初期ページのローカルHTTP応答: 200。初期版の表示をCodexへ要求（queued）。
@@ -119,12 +149,12 @@
 - 追加テスト12件: 出典の重複、コード/非リンク出典の保持、出典欄が先にある原稿、出典内のコード、有料本文を残す制約、不正URL等、案件条件、Python原本との照合、結果ファイルの上書き拒否、納品証跡の正常/自己レビュー/改変/パス異常。既存7件と合わせて19件。
 - Pythonのローカルパックは架空の原稿・契約・レビューで実行。実アカウントへの応募・納品・投稿は実施していない。
 
-
 ## Fund Club / MCP update
 
 - 27 Node tests pass, including all four real stdio MCP calls, supplied-file delivery verification, tamper rejection, POSIX/Windows path rejection, huge integer resilience, malformed messages, and 1,200 fund accounting cases.
 - The production Worker build was run locally with the same migrated D1 state directory. Auth required, per-user plan isolation, plan PUT/GET persistence, invalid plan rejection, Origin checks, and idempotent run metadata all pass. Synthetic test users only.
 - Loopback Streamable HTTP: initialize → initialized notification (202) → tools/list (4) → Python delivery sample (PASS). Unauthorized Origin/Bearer, unsupported protocol, GET405, and private-network preflight checked.
 - TypeScript, scoped lint of changed product components/routes, and production build pass. npm audit has zero findings after an esbuild override for Drizzle's development dependency. The untouched generated UI catalog retains baseline full-project lint findings.
-- The final market-style front shows four ready strategy presets and two preparation-only previews. No fabricated balances, yields, participant totals, or paid gacha. Search/category/status filters select the cards shown. Real tool completion and sample runs have distinct labels.
+- The final installable app front has a direct home screen, four ready fund presets, one preparation-only preview, activity history, and settings. No fabricated balances, yields, participant totals, or paid gacha. Real tool completion and sample runs have distinct labels.
+- PWA manifest, 192px/512px icons, and service worker endpoints return 200 locally. The app shell does not cache API responses or tool input.
 - Browser screenshots/click QA were not requested and were not performed. Loopback HTTP was verified at protocol level; a browser may still require the user's initial local-network permission. WebMCP list_funds/select_fund is feature-detected; the stdio/HTTP MCP transport is the verified execution integration.

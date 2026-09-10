@@ -1,0 +1,41 @@
+{
+  "actual_stopped_baseline": {
+    "fixture_file_sha256": "a1b8cf21232875b6118e7adf8db91131e2e3f7a7ef2833915f7d05b820c4b635",
+    "hub_database_sha256": "c08d89d0c5a1d0284f1e40eba9229e8fcdedab65f6f8c4488de8af0b5c59cc91",
+    "id": "org.rockstar.citation-organizer",
+    "package_sha256": "e26178e828b45f651f4c1ff5c0fa20450195548edc4e6e116005a730238a0535",
+    "publisher": "org.rockstar.development",
+    "status": "PASS_EXACT_ENABLED_LOCAL_PUBLIC_FIXTURE",
+    "version": "1.0.0"
+  },
+  "allowed_differences": [
+    "optional citation-only stopped-baseline flag (reject resume-from)",
+    "fixed public 1.0.0 fixture/installed/enabled/signature/revocation/hash guard inside existing closed-device fence",
+    "explicit flag metadata",
+    "one setup selector v1.1.0へ更新"
+  ],
+  "default_path_AST_exact_match": true,
+  "default_path_ast_sha256": "24f1024af0e2b276bd886253bc63ebbaabfcf7f4724f4f5d679eb978ba9aff09",
+  "frozen_source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "modified_host_observer_sha256": "58edfb30d45cde34367db2ba8e05b79d787e4040f9cd6c7c4f375dbaa06223df",
+  "new_VM_or_financial_actions": 0,
+  "original_observer_sha256": "06ef032b89751b707a07808b34d5956715724abd5e26ae0dc45d952926de3004",
+  "os_runtime_or_distribution_modified": false,
+  "schema": "rock-existing-citation-host-observer-proof/1",
+  "status": "PASS_DEFAULT_AST_AND_STOPPED_BASELINE_READ_ONLY",
+  "unchanged": [
+    "other UI inputs",
+    "3 original cycles",
+    "every original time/resource limit",
+    "remote signature/results/same-key recovery",
+    "authority and guest retention",
+    "normal shutdown and owned fixture termination",
+    "financial/refund behavior"
+  ],
+  "unit_tests": {
+    "count": 9,
+    "first_run": "9 setup errors: unsigned recipe source was treated as signed envelope; source remains unsigned, helper now verifies DB signed envelope and exact source manifest/recipe. No VM or financial action.",
+    "seconds": 0.409,
+    "status": "PASS"
+  }
+}

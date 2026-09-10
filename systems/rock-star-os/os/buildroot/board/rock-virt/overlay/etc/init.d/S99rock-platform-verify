@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+[ "${1:-start}" = start ] || exit 0
+case " $(cat /proc/cmdline) " in
+  *' rock.platform.verify=1 '*) ;;
+  *) exit 0 ;;
+esac
+if /usr/bin/python3 -I -B /usr/lib/rock-platform/guest-test.py; then
+  echo ROCK_PLATFORM_VERIFY_PASS
+else
+  echo ROCK_PLATFORM_VERIFY_FAIL
+  cat /var/log/rock-platform.log /var/log/rock-wallet.log
+fi
+sync
+poweroff -f
