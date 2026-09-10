@@ -8,6 +8,8 @@
 
 既存の `launcher.py` v2、`guest.py` device/6、`stage0.py` の image/source/試験認証器 guard と、`backup.py` の停止済み A/B/data 検証を再利用します。安全な起動を妨げるからという理由で guard を外していません。
 
+新しい launcher v3 は表示 port を署名 release manifest と個別の起動 manifest へ固定します。この配布では HTTP `8900` / WebSocket `5910` を使い、既存 v1/v2 の `8899/5909` は保持します。利用中の port を奪ったり、別の空き port へ黙って切り替えたりしません。viewer の CSP と接続先もその指定に一致させます。
+
 ## 対応と制限
 
 - 対象 host は macOS 15.7.4 / Apple Silicon / Lima 2.2.0。Debian 13 VM 内の QEMU `virt-10.0` を使います。ほかの host と実機は未受入です。

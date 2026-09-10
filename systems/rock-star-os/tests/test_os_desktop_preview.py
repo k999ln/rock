@@ -42,6 +42,7 @@ class PreviewRelease(unittest.TestCase):
                       'archive': {'name': self.archive.name, 'sha256': preview.digest(self.archive), 'bytes': self.archive.stat().st_size},
                       'files': self.files, 'image_sha256': {name: self.files['images/' + name]['sha256'] for name in preview.IMAGE_NAMES},
                       'factory_sha256': 'b' * 64, 'trust': 'PUBLIC_RFC8032_DEVELOPMENT_ONLY',
+                      'display': preview.PREVIEW_DISPLAY,
                       'legal': {'status': 'NOT_CLEARED'}, 'acceptance': {'status': 'CANDIDATE'}}
         self.sign()
 

@@ -25,10 +25,18 @@ BROWSER_PORT = 8899
 LINUX_TOOL_PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 
 
+def explicit_profile(config):
+    return config.get('schema') in ('rock-desktop-launcher/2', 'rock-desktop-launcher/3')
+
+
+def browser_port(config):
+    return config['viewer_port'] if config.get('schema') == 'rock-desktop-launcher/3' else BROWSER_PORT
+
+
 def guest_python(config):
     # Lima's non-login shell can omit /usr/sbin, where Debian installs
     # debugfs/e2fsck. Pin the same system-tool path used by OS acceptance.
-    prefix = ['/usr/bin/env', 'PATH=' + LINUX_TOOL_PATH] if config.get('schema') == 'rock-desktop-launcher/2' else []
+    prefix = ['/usr/bin/env', 'PATH=' + LINUX_TOOL_PATH] if explicit_profile(config) else []
     return prefix + ['python3', '-B']
 
 
@@ -100,7 +108,7 @@ def sha256_text(value):
 
 
 def check_guest_source(config):
-    if config.get('schema') != 'rock-desktop-launcher/2': return
+    if not explicit_profile(config): return
     # A fixed read-only probe, not an import of the selected unverified script.
     script = '''import hashlib,json,os,stat,sys
 from pathlib import Path
@@ -149,7 +157,8 @@ def load(path):
     else:
         fields = {'schema','lima_home','vm_name','vm_config_sha256','vm_identity_sha256','guest_source',
                   'guest_script_sha256','host_state','port','device'}
-        require(value.get('schema') == 'rock-desktop-launcher/2' and set(value) == fields, 'unknown/invalid launcher manifest')
+        if value.get('schema') == 'rock-desktop-launcher/3': fields.add('viewer_port')
+        require(explicit_profile(value) and set(value) == fields, 'unknown/invalid launcher manifest')
         require(type(value['vm_name']) is str and re.fullmatch(r'[a-z0-9][a-z0-9-]{0,31}', value['vm_name']), 'invalid existing VM name')
         home = protected_directory(value['lima_home']); vm = protected_directory(str(home/value['vm_name']))
         protected_directory(value['host_state'], optional=True)
@@ -159,17 +168,36 @@ def load(path):
             require(hashlib.sha256(private_file(vm/filename)).hexdigest() == sha256_text(value[field]), 'selected existing VM identity/configuration differs')
         private_file(vm/'ssh.config')
         posix_directory(value['guest_source']); sha256_text(value['guest_script_sha256'])
-        require(type(value['port']) is int and value['port'] == 5909, 'local A/B browser display requires private port 5909')
+        if value.get('schema') == 'rock-desktop-launcher/3':
+            require(all(type(value[field]) is int and 1024 <= value[field] <= 65535 for field in ('port','viewer_port')) and
+                    value['port'] != value['viewer_port'], 'distinct explicit loopback display ports required')
+        else:
+            require(type(value['port']) is int and value['port'] == 5909, 'local A/B browser display requires private port 5909')
         device = value['device']
-        require(type(device) is dict and set(device) == {'schema','name','images','sha256','network','viewer','boot'} and
-                device['schema'] == 'rock-desktop-device/6' and device['network'] == 'none' and device['viewer'] == 'browser',
-                'launcher v2 requires an explicit offline local A/B device/6')
+        game_profile = type(device) is dict and device.get('schema') == 'rock-desktop-device/7'
+        device_fields = {'schema','name','images','sha256','network','viewer','boot'}
+        if game_profile: device_fields.add('game')
+        require(type(device) is dict and set(device) == device_fields and
+                (device['schema'] == 'rock-desktop-device/6' and device['network'] == 'none' or
+                 game_profile and value['schema'] == 'rock-desktop-launcher/3' and device['network'] == 'game-authority') and
+                device['viewer'] == 'browser', 'explicit local device/6 or v3 development Game device/7 required')
         posix_directory(device['images'])
         require(type(device['sha256']) is dict and set(device['sha256']) == {'Image','rootfs.ext4','stage0.cpio.gz'}, 'complete signed image triple pins required')
         for digest in device['sha256'].values(): sha256_text(digest)
-        require(type(device['boot']) is dict and set(device['boot']) == {'mode','profile','factory_sha256'} and
-                device['boot']['mode'] == 'signed-stage0' and device['boot']['profile'] == 'local-development', 'local signed stage0 profile required')
+        boot_fields = {'mode','profile','factory_sha256'}
+        if game_profile: boot_fields.add('profile_sha256')
+        require(type(device['boot']) is dict and set(device['boot']) == boot_fields and
+                device['boot']['mode'] == 'signed-stage0' and
+                device['boot']['profile'] == ('development-game-authority' if game_profile else 'local-development'),
+                'explicit signed stage0 profile required')
         sha256_text(device['boot']['factory_sha256'])
+        if game_profile:
+            sha256_text(device['boot']['profile_sha256'])
+            game = device['game']
+            require(type(game) is dict and set(game) == {'config','sha256','authority_id'}, 'strict Game authority binding required')
+            posix_directory(game['config']); sha256_text(game['sha256'])
+            require(type(game['authority_id']) is str and str(uuid.UUID(game['authority_id'])) == game['authority_id'],
+                    'canonical Game authority UUID required')
         value['binding_sha256'] = hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':')).encode()).hexdigest()
     executable = shutil.which('limactl') or '/opt/homebrew/bin/limactl'
     require(Path(executable).is_file(), '開発用VMを起動するLimaが見つかりません。')
@@ -178,8 +206,12 @@ def load(path):
     require(type(value.get('device')) is dict and type(value['device'].get('name')) is str and
             re.fullmatch(r'[a-z0-9][a-z0-9-]{0,31}', value['device']['name']), 'invalid virtual-device name')
     if value['device'].get('viewer') == 'browser':
-        schemas = ('rock-desktop-device/6',) if value['schema'] == 'rock-desktop-launcher/2' else ('rock-desktop-device/3', 'rock-desktop-device/4', 'rock-desktop-device/5')
-        require(value['device'].get('schema') in schemas and value['port'] == 5909, 'browser display requires the selected schema and private port 5909')
+        schemas = (('rock-desktop-device/6', 'rock-desktop-device/7') if value['schema'] == 'rock-desktop-launcher/3' else
+                   ('rock-desktop-device/6',) if explicit_profile(value) else
+                   ('rock-desktop-device/3', 'rock-desktop-device/4', 'rock-desktop-device/5'))
+        require(value['device'].get('schema') in schemas and
+                (value['schema'] == 'rock-desktop-launcher/3' or value['port'] == 5909),
+                'browser display requires the selected schema and explicit private port')
     return value
 
 
@@ -188,14 +220,15 @@ def display_socket(device):
 
 
 def verify_device_record(config, device, *, started=False):
-    if config.get('schema') != 'rock-desktop-launcher/2': return
+    if not explicit_profile(config): return
     require(type(device) is dict and type(device.get('running')) is bool, 'invalid virtual-device status')
     if started: require(device['running'], 'selected virtual device did not start')
     if 'session' not in device:
         require(not device['running'] and not started, 'running device has no owned session')
         return
     expected = '/var/tmp/rock-star-desktop/' + config['device']['name']
-    require(device.get('config') == config['device'] and device.get('viewer') == 'browser' and device.get('network') == 'none' and
+    require(device.get('config') == config['device'] and device.get('viewer') == 'browser' and
+            device.get('network') == config['device']['network'] and
             type(device.get('session')) is str and re.fullmatch(re.escape(expected) + '/sessions/[0-9a-f]{32}',device['session']),
             'saved virtual device/session belongs to different launcher settings')
     for field, filename in (('vnc_socket','vnc.sock'),('websocket_socket','websocket.sock'),('qmp_socket','qmp.sock')):
@@ -209,7 +242,7 @@ def tunnel_listening(config, pid):
     foreign process can bind after preflight while SSH is still connecting.
     macOS lsof uses kernel descriptor ownership; no endpoint is contacted here.
     """
-    if config.get('schema') != 'rock-desktop-launcher/2': return True
+    if not explicit_profile(config): return True
     if type(pid) is not int or pid <= 0: return False
     try:
         result = run(['/usr/sbin/lsof', '-nP', '-a', '-p', str(pid),
@@ -293,7 +326,7 @@ def save_record(path, record):
 
 @contextmanager
 def launcher_lock(config, state):
-    if config.get('schema') != 'rock-desktop-launcher/2':
+    if not explicit_profile(config):
         with (state/'lock').open('a') as lock:
             fcntl.flock(lock,fcntl.LOCK_EX); yield
         return
@@ -317,7 +350,7 @@ def launcher_lock(config, state):
 
 def verify_instance(config, instance):
     require(instance.get('name') == vm_name(config), '選択した開発用VMが見つかりません。')
-    if config.get('schema') == 'rock-desktop-launcher/2':
+    if explicit_profile(config):
         require(instance.get('dir') == str(Path(config['lima_home'])/vm_name(config)) and
                 instance.get('sshConfigFile') == config['ssh_config'] and
                 instance.get('hostname') == 'lima-'+vm_name(config) and
@@ -337,8 +370,11 @@ def stop_new_child(child):
 
 def browser_display_url(config, device, host_state, with_credentials):
     from browser_server import ensure_viewer
-    url = ensure_viewer(host_state, device['session'])
-    require(url == 'http://127.0.0.1:8899/index.html', 'unexpected browser viewer origin')
+    if config.get('schema') == 'rock-desktop-launcher/3':
+        url = ensure_viewer(host_state, device['session'], port=browser_port(config), websocket_port=config['port'])
+    else:
+        url = ensure_viewer(host_state, device['session'])
+    require(url == 'http://127.0.0.1:' + str(browser_port(config)) + '/index.html', 'unexpected browser viewer origin')
     if not with_credentials:
         return url, url
     credential = remote(config, 'display-secret', {'session': device['session']})
@@ -346,17 +382,20 @@ def browser_display_url(config, device, host_state, with_credentials):
             credential['session'] == device['session'] and isinstance(credential['password'],str) and
             re.fullmatch(r'[A-Za-z0-9_-]{8}',credential['password']), 'display credential does not match the current session')
     # Return the fragment only to the open() call. Never persist or report it.
-    return url, url+'#'+urlencode({'port':5909,'password':credential['password']})
+    return url, url+'#'+urlencode({'port':config.get('port',5909),'password':credential['password']})
 
 
 def browser_port_preflight(config, state):
-    if config.get('schema') != 'rock-desktop-launcher/2': return
+    if not explicit_profile(config): return
     from browser_server import healthy, fingerprint
     path = state/'viewer.json'
     if path.exists():
         record = decode_manifest(private_file(path))
         if healthy(record):
             require(record.get('build') == fingerprint(), 'existing owned viewer uses different display files')
+            if config.get('schema') == 'rock-desktop-launcher/3':
+                require(record.get('port') == browser_port(config) and record.get('websocket_port') == config['port'],
+                        'existing owned viewer uses different pinned display ports')
             return
     # Never start the OS merely to discover a foreign static-viewer listener.
     # ensure_viewer still atomically reserves/rechecks this port later.
@@ -364,7 +403,7 @@ def browser_port_preflight(config, state):
         # Match ThreadingHTTPServer's address reuse: a closed viewer's TCP
         # TIME_WAIT is not a live foreign listener. SO_REUSEPORT is not used.
         probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        probe.bind(('127.0.0.1',BROWSER_PORT)); probe.listen(1)
+        probe.bind(('127.0.0.1',browser_port(config))); probe.listen(1)
 
 
 def launch(config, open_window=True):
@@ -381,7 +420,7 @@ def launch(config, open_window=True):
         if instances[0].get('status') != 'Running':
             print('選択した開発環境を起動しています。', flush=True)
             run([config['limactl'], 'start', '--tty=false', selected], env=environment, timeout=120)
-            if config.get('schema') == 'rock-desktop-launcher/2':
+            if explicit_profile(config):
                 current = [json.loads(line) for line in run([config['limactl'],'list','--json',selected],env=environment).stdout.splitlines() if line.strip()]
                 require(len(current) == 1 and current[0].get('status') == 'Running', 'selected VM did not reach Running')
                 verify_instance(config,current[0])
@@ -390,7 +429,7 @@ def launch(config, open_window=True):
         settings = run(ssh + ['-G', alias]).stdout
         require('\nhostname 127.0.0.1\n' in '\n' + settings, 'display tunnel must end on this Mac')
         record_path = state / 'tunnel.json'
-        record = (decode_manifest(private_file(record_path)) if config.get('schema') == 'rock-desktop-launcher/2'
+        record = (decode_manifest(private_file(record_path)) if explicit_profile(config)
                   else json.loads(record_path.read_text())) if record_path.exists() else {}
         previous = remote(config, 'status')
         verify_device_record(config,previous)
@@ -446,7 +485,8 @@ def launch(config, open_window=True):
         display = 'vnc://127.0.0.1:' + str(config['port'])
         opened_url = display
         if browser:
-            require(config['port'] == 5909, 'browser display requires private port 5909')
+            require(config.get('schema') == 'rock-desktop-launcher/3' or config['port'] == 5909,
+                    'browser display requires the explicit private port')
             display, opened_url = browser_display_url(config, device, state, open_window)
         if open_window:
             # Do not surface a CalledProcessError containing its argv: browser
@@ -472,7 +512,7 @@ def launch(config, open_window=True):
 
 
 def backup_profile(config):
-    if config.get('schema') != 'rock-desktop-launcher/2': return remote(config,'backup')
+    if not explicit_profile(config): return remote(config,'backup')
     state = protected_directory(config['host_state'])
     require((state/'launcher-binding.json').exists(), 'backup requires this launcher profile to have an existing saved binding')
     with launcher_lock(config,state):

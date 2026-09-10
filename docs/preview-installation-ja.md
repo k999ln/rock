@@ -10,7 +10,7 @@ Hub の仕事、保存した成果、合成 Wallet の費用を一つの仮想�
 - 作成する中間 VM: Debian 13 arm64、Lima VZ、2 CPU、3 GiB RAM、16 GiB の仮想ディスク。その中で ARM64 QEMU `virt-10.0` を実行します。
 - 初回には空き容量 10 GiB 以上とインターネット接続が必要です。中間 VM の base image は URL と SHA-512 を配布 manifest に固定しています。Debian の署名付き apt repository から依存を導入し、実際の版を診断記録へ保存します。
 - 別の macOS / Intel Mac / Windows / Linux host、BlackBerry、Pixel への native OS 導入は、この package の受入範囲に含みません。端末へ image を書き込まないでください。
-- ローカル表示には `127.0.0.1:8899` と `127.0.0.1:5909` を使います。使用中なら他のアプリを勝手に止めず、理由を表示して終了します。
+- この配布のローカル表示には署名 manifest に固定した `127.0.0.1:8900` と `127.0.0.1:5910` を使います。使用中なら他のアプリを勝手に止めず、理由を表示して終了します。既存の launcher v1/v2 が使う `8899/5909` は変更しません。
 
 既に Homebrew を導入済みなら Python と OpenSSL は `brew install python openssl@3` で準備できます。Lima は 2.2.0 の導入を確認してください。異なる版は自動的に「対応済み」にしません。
 
@@ -113,7 +113,7 @@ python3 preview.py start --directory "$ROCK_PREVIEW_ROOT"
 python3 preview.py remove --directory "$ROCK_PREVIEW_ROOT" --delete-data
 ```
 
-この導入が作成し、identity を記録した VM のみを削除します。その VM 内の OS、A/B slot、userdata、内部 backup は削除されます。host 側の package・診断・所有権記録と、別先へ export した backup は残ります。Lima の `--force` は使いません。所有権記録が一致しない VM は止めません。
+この導入が作成し、identity を記録した VM のみを削除します。その VM 内の OS、A/B slot、userdata、内部 backup は削除されます。host 側の package・診断・所有権記録と、別先へ export した backup は残ります。表示 server は、この導入の instance・build・process・loopback socket 所有をすべて確認できたものだけ終了します。別のアプリへ PID が再利用されていたら停止しません。Lima の `--force` は使いません。所有権記録が一致しない VM は止めません。
 
 ## 失敗時の診断
 

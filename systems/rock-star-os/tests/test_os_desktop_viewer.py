@@ -70,6 +70,27 @@ class StaticViewerBoundaries(unittest.TestCase):
                 self.assertEqual(code,404); self.assertNotIn(b'MUST NOT BE SERVED',body)
         self.assertEqual(self.request('/viewer.js',method='POST')[0],501)
 
+    def test_pinned_alternate_websocket_port_changes_only_integer_and_csp(self):
+        self.server.websocket_port = 5910
+        (self.root/'viewer.js').write_text('const configuredWebsocketPort = 5909;\n/* no password */')
+        code, headers, body = self.request('/viewer.js')
+        self.assertEqual(code, 200)
+        self.assertEqual(body, b'const configuredWebsocketPort = 5910;\n/* no password */')
+        self.assertIn('connect-src ws://127.0.0.1:5910;', headers['Content-Security-Policy'])
+        self.assertNotIn(':5909', headers['Content-Security-Policy'])
+        self.assertEqual(self.request('/viewer.js', method='HEAD')[2], b'')
+        self.assertEqual(self.request('/viewer.js', host='127.0.0.1:8899')[0], 403)
+
+    def test_alternate_port_refuses_an_unrecognized_viewer_source(self):
+        self.server.websocket_port = 5910
+        self.assertEqual(self.request('/viewer.js')[0], 500)
+
+    def test_explicit_port_parameters_cannot_alias_or_escape_loopback(self):
+        for ports in ({'port': 5909, 'websocket_port': 5909}, {'port': 80}, {'port': True},
+                      {'port': 8900, 'websocket_port': '127.0.0.1:5910'}):
+            with self.subTest(ports=ports), self.assertRaises(ValueError):
+                viewer.ensure_viewer(self.root.parent/'invalid', 'session', **ports)
+
     def test_owned_reuse_requires_process_instance_and_build(self):
         record={'pid':123,'command':'test-owned-command','instance':'test-owned-instance','build':'test-build'}
         with patch.object(viewer,'process_command',return_value='test-owned-command'):

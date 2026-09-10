@@ -44,3 +44,13 @@ git diff --check
 コード点検では、restore 後に元 profile の viewer が port 8899 を保持し、新 profile を妨げることを発見。instance/build/完全な process command と lsof socket ownership を合わせて確認した **この導入の viewer だけ** を終了する入口を追加。PID が別アプリへ再利用された場合は終了しない。動的 launcher import の探索 path も配布物内へ固定した。現 Mac の port 8899 にある既存 PID 77657 は B 所有外のため操作せず、統括へ伝えた。
 
 現 host の専用試験は診断・viewer PID reuse・古い image の relabel 拒否を追加し **30 tests PASS**。Linux の 29 件実行はその前の入力 hash に限定され、同じ結果への付替えはしない。Game profile と final image の導入実測は引き続き未実行。
+
+## 既存 viewer と衝突しない新しい配布 port
+
+判断: **RQ12/16/17 / 秘密を探す・0→1 / 旧 preview の表示を閉じないと新規導入を試せない不便 / v2 の VM・source・socket 所有 guard / v3 の明示 port 2 個だけを追加 / 他 viewer 停止 0・指定 port 一致 / [実 process/socket/CSP 証拠](viewer-ports-20260910.json)。**
+
+統括から既存 8899 viewer を維持する指示を受け、署名 release manifest の HTTP 8900 / WebSocket 5910 と launcher/3 の `viewer_port` を追加した。固定 v1/v2 の契約・既存 listener は変更していない。使用中なら拒否し、空き port の自動探索も行わない。
+
+実 Mac の新しい 8900 viewer process を起動し、HTTP 200、client の接続先整数と CSP が 5910 に一致すること、unique instance/build/process の health、所有証拠を照合した終了、port の再確保を確認した。既存 8899 listener は前後で同じまま。これは実 viewer の試験であり、QEMU の動作や final profile の受入ではない。
+
+launcher 32 件（うち v3 の 9 件）、browser credentials 6 件、HTTP viewer 9 件、preview 30 件、Node の構文確認が PASS。device/7 の新しい Game binding は v3 のみ許可し、network/boot/profile hash/authority UUID/config hash の欠落・混同を拒否する。D が提供する guest/stage0/sandbox と結合した実測は別工程として継続する。

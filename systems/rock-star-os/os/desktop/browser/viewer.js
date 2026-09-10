@@ -1,5 +1,7 @@
 // The launcher supplies this session-only display password in a URL fragment.
 // Once this wrapper executes, clear it before loading the RFB dependency graph.
+// The owned server substitutes this single integer for a pinned v3 profile.
+const configuredWebsocketPort = 5909;
 let password = '';
 let valid = false;
 function receiveCredentials() {
@@ -8,7 +10,7 @@ function receiveCredentials() {
   const port = fragment.get('port');
   history.replaceState(null, '', location.pathname);
   fragment.delete('password');
-  valid = port === '5909' && /^[A-Za-z0-9_-]{8}$/.test(password);
+  valid = port === String(configuredWebsocketPort) && /^[A-Za-z0-9_-]{8}$/.test(password);
   if (!valid) password = '';
 }
 receiveCredentials();
@@ -23,7 +25,7 @@ function connect() {
   if (!RFB) { show('表示部品を読み込んでいます…', 'loading'); return; }
   if (client) client.disconnect();
   show('実OSへ接続しています…', 'connecting');
-  const current = new RFB(screen, 'ws://127.0.0.1:5909/', {credentials: {password}});
+  const current = new RFB(screen, `ws://127.0.0.1:${configuredWebsocketPort}/`, {credentials: {password}});
   client = current;
   current.scaleViewport = true;
   current.resizeSession = false;

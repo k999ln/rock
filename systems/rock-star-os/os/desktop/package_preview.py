@@ -156,6 +156,7 @@ def make(args):
                           'lima_version': '2.2.0', 'vm_type': 'vz', 'base_image': preview.BASE_IMAGE},
                  'archive': {'name': archive_name, 'sha256': preview.digest(archive_path), 'bytes': archive_path.stat().st_size},
                  'files': files, 'image_sha256': image_hashes, 'factory_sha256': hashlib.sha256(raw_factory).hexdigest(),
+                 'display': preview.PREVIEW_DISPLAY,
                  'trust': 'PUBLIC_RFC8032_DEVELOPMENT_ONLY' if args.public_test_signature else 'EXTERNAL_RELEASE_KEY',
                  'legal': {'status': 'NOT_CLEARED', 'product_license': 'not specified in source; no new terms invented',
                            'buildroot_legal_info_included': args.legal_info is not None,
@@ -168,10 +169,6 @@ def make(args):
             shutil.copyfile(tree / 'native/os/desktop' / name, args.output / name)
         for path in docs.iterdir():
             shutil.copyfile(path, args.output / path.name)
-        with (args.output / 'SHA256SUMS').open('x') as output:
-            for path in sorted(args.output.iterdir()):
-                if path.name != 'SHA256SUMS':
-                    output.write(preview.digest(path) + '  ' + path.name + '\n')
         checked = preview.verify_release(args.output / 'release-manifest.json', archive_path,
                    args.output / 'release-key.der', preview.digest(args.output / 'release-key.der'),
                    manifest_sha256=preview.digest(args.output / 'release-manifest.json'),
@@ -181,6 +178,10 @@ def make(args):
                   'key_sha256': preview.digest(args.output / 'release-key.der'), 'trust': checked['trust'],
                   'legal_status': 'NOT_CLEARED', 'files': len(files)}
         preview.save(args.output / 'packaging-result.json', result)
+        with (args.output / 'SHA256SUMS').open('x') as output:
+            for path in sorted(args.output.iterdir()):
+                if path.name != 'SHA256SUMS':
+                    output.write(preview.digest(path) + '  ' + path.name + '\n')
     return result
 
 

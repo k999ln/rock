@@ -84,3 +84,25 @@ The portable profile/ownership tests mock VM/display operations and include a
 real read-only subprocess source-hash check. They are not a QEMU boot or actual
 browser acceptance result. The concrete Mac profile must still be checked with
 the intended immutable image and a fresh device during the separate viewer run.
+
+## Separate release ports: schema v3
+
+`rock-desktop-launcher/3` preserves the same exact VM/source/identity/display
+ownership guards and adds `viewer_port`. Both `port` (WebSocket) and
+`viewer_port` (HTTP) must be distinct integer loopback ports in 1024–65535.
+The release package pins 5910/8900 in its signed manifest; the launcher never
+searches for a spare port or stops a listener owned by another profile. V1/V2
+keep their existing fixed ports and do not accept the new field.
+
+The viewer process records both ports with its unique instance and source build.
+Its command, health endpoint and lsof listener ownership still have to match.
+The CSP allows only the pinned WebSocket endpoint. The viewer server substitutes
+one validated integer into the reviewed client source; session passwords remain
+in URL fragments and never enter HTTP responses or logs.
+
+V3 also admits the separate `rock-desktop-device/7` development Game profile:
+`network=game-authority`, signed-stage0 boot fields `profile`, `factory_sha256`,
+`profile_sha256`, and the strict `game={config,sha256,authority_id}` binding.
+The profile name is `development-game-authority`; it is never reinterpreted as
+offline device/6 or used through a v2 launcher. Actual image, authority and
+service validation remains inside the selected immutable guest toolchain.

@@ -35,6 +35,7 @@ PUBLIC_TEST_KEY = bytes.fromhex('302a300506032b6570032100d75a980182b10ab7d54bfed
 IMAGE_NAMES = ('Image', 'rootfs.ext4', 'stage0.cpio.gz')
 GUEST_ROOT = '/opt/rockstaros-preview'
 VM_NAME = 'os'
+PREVIEW_DISPLAY = {'viewer_port': 8900, 'websocket_port': 5910}
 MAX_ARCHIVE = 4 * 1024**3
 MAX_EXPANDED = 6 * 1024**3
 BASE_IMAGE = {
@@ -133,13 +134,14 @@ def verify_release(manifest_path, archive, trusted_key, key_sha256,
     require(type(value) is dict and value.get('schema') == SCHEMA and value.get('product') == TITLE,
             'unknown release product/schema')
     required = {'schema', 'product', 'version', 'source_commit', 'host_tools_commit', 'host', 'archive',
-                'files', 'image_sha256', 'factory_sha256', 'trust', 'legal', 'acceptance'}
+                'files', 'image_sha256', 'factory_sha256', 'trust', 'legal', 'acceptance', 'display'}
     require(set(value) == required and re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9.+_-]{0,63}', value['version']) and
             all(re.fullmatch('[0-9a-f]{40}', value[field]) for field in ('source_commit', 'host_tools_commit')),
             'incomplete release identity')
     require(value['host'] == {'os': 'macOS', 'tested_version': '15.7.4', 'architecture': 'arm64',
                              'lima_version': '2.2.0', 'vm_type': 'vz', 'base_image': BASE_IMAGE},
             'unsupported host bundle')
+    require(value['display'] == PREVIEW_DISPLAY, 'release display ports differ from the supported pinned profile')
     require(value['trust'] == ('PUBLIC_RFC8032_DEVELOPMENT_ONLY' if key == PUBLIC_TEST_KEY else 'EXTERNAL_RELEASE_KEY'),
             'signature trust label disagrees with the actual verification key')
     signature = envelope['signature']
@@ -339,7 +341,9 @@ def close_owned_display(module, config):
         expected_script = str(Path(module.__file__).with_name('browser_server.py'))
         require(expected_script in actual and '--instance ' + record['instance'] in actual and
                 record['build'] == browser_server.fingerprint() and browser_server.healthy(record) and
-                module.tunnel_listening({**config, 'port': 8899}, record['pid']),
+                record.get('port', 8899) == module.browser_port(config) and
+                record.get('websocket_port', 5909) == config['port'] and
+                module.tunnel_listening({**config, 'port': module.browser_port(config)}, record['pid']),
                 'viewer ownership could not be established; no process was stopped')
         os.kill(record['pid'], signal.SIGTERM)
         deadline = time.monotonic() + 5
@@ -354,11 +358,12 @@ def close_owned_display(module, config):
 
 
 def launcher_manifest(root, release, record, device):
-    value = {'schema': 'rock-desktop-launcher/2', 'lima_home': str(root / 'lima'), 'vm_name': VM_NAME,
+    value = {'schema': 'rock-desktop-launcher/3', 'lima_home': str(root / 'lima'), 'vm_name': VM_NAME,
              'vm_config_sha256': record['vm_config_sha256'], 'vm_identity_sha256': record['vm_identity_sha256'],
              'guest_source': GUEST_ROOT + '/native',
              'guest_script_sha256': release['files']['native/os/desktop/guest.py']['sha256'],
-             'host_state': str(root / 'display' / device), 'port': 5909,
+             'host_state': str(root / 'display' / device), 'port': release['display']['websocket_port'],
+             'viewer_port': release['display']['viewer_port'],
              'device': {'schema': 'rock-desktop-device/6', 'name': device,
                         'images': GUEST_ROOT + '/images', 'sha256': release['image_sha256'],
                         'network': 'none', 'viewer': 'browser',
