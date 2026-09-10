@@ -54,3 +54,13 @@ git diff --check
 実 Mac の新しい 8900 viewer process を起動し、HTTP 200、client の接続先整数と CSP が 5910 に一致すること、unique instance/build/process の health、所有証拠を照合した終了、port の再確保を確認した。既存 8899 listener は前後で同じまま。これは実 viewer の試験であり、QEMU の動作や final profile の受入ではない。
 
 launcher 32 件（うち v3 の 9 件）、browser credentials 6 件、HTTP viewer 9 件、preview 30 件、Node の構文確認が PASS。device/7 の新しい Game binding は v3 のみ許可し、network/boot/profile hash/authority UUID/config hash の欠落・混同を拒否する。D が提供する guest/stage0/sandbox と結合した実測は別工程として継続する。
+
+### 06:42 UTC: real intermediate package found a reproducibility defect
+
+RQ12/RQ16/RQ17 · explicit source/host/image binding · temporary import caches made identical input packaging differ · reused git archive and freeze/2 inventory · select only frozen native files and disable bytecode writes · metric two real package builds plus regression · final acceptance remains pending.
+
+The real `3fa88610fe77317b920efe1dea8f58f8d2113092` image was packaged twice with identical version and source. The first archive was 66,248,330 bytes / SHA-256 `bd7ba5cd0fc5ec48dc016835a4eeac4ab5fa0cdd8131618b482c27b7ba981714`; the repeat was 66,248,331 bytes / `6c7984d789304fdd19f1c4c135f857a400a94e34519427949dde3ebf3a485e71`. Comparison traced all differences to 11 `__pycache__/*.cpython-314.pyc` entries created by the packager's stage0 validation imports. Those files were absent from the committed/frozen inventory and contained temporary-directory-dependent bytecode. This is a failed package reproducibility attempt, not an accepted release.
+
+The first archive did install into a completely new private Lima VM and pass the full image/source preflight; the actual browser showed the Hub and initial unregistered simulator Wallet with $0.00. Its lifecycle observations will remain intermediate defect-finding evidence. Neither successful installation nor the later fix relabels this archive as a final candidate.
+
+The fix pins archive selection to the previously verified freeze inventory, rechecks each selected source hash immediately before tar assembly, and disables bytecode generation. A regression creates an unexpected cache and proves it cannot enter the selected package; changing a pinned source still fails. Preview unit suite: 31 tests PASS. The corrected frozen final candidate will require its own repeated real packaging and fresh-install acceptance.

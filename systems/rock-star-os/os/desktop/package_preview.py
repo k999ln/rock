@@ -19,6 +19,7 @@ import sys
 import tarfile
 import tempfile
 
+sys.dont_write_bytecode = True
 import preview
 
 NATIVE_PREFIX = 'systems/rock-star-os/'
@@ -85,6 +86,18 @@ def source_tree(repository, commit, target):
                 path.chmod(0o755 if member.mode & 0o111 else 0o644)
 
 
+def frozen_native_inputs(tree, inventory):
+    """Select committed inputs, even if validation imports create local caches."""
+    result = []
+    for name, expected in sorted(inventory.items()):
+        preview.require(name.startswith(NATIVE_PREFIX), 'native inventory prefix required')
+        relative = preview.safe_member(name[len(NATIVE_PREFIX):])
+        path = tree / 'native' / relative
+        preview.require(preview.digest(path) == expected, 'native source changed during validation')
+        result.append(('native/' + relative, path))
+    return result
+
+
 def make(args):
     repository = args.repository.resolve(strict=True)
     commit = subprocess.check_output(['git', '-C', str(repository), 'rev-parse', args.source + '^{commit}'], text=True).strip()
@@ -134,8 +147,7 @@ def make(args):
         files = {}
         with archive_path.open('xb') as raw_output, gzip.GzipFile(filename='', mode='wb', fileobj=raw_output, mtime=0) as zipped:
             with tarfile.open(fileobj=zipped, mode='w|', format=tarfile.USTAR_FORMAT) as archive:
-                inputs = [('native/' + str(path.relative_to(tree / 'native')), path)
-                          for path in (tree / 'native').rglob('*') if path.is_file()]
+                inputs = frozen_native_inputs(tree, frozen_source)
                 inputs += [('docs/' + path.name, path) for path in docs.iterdir()]
                 inputs += [('images/' + name, images / name) for name in preview.IMAGE_NAMES]
                 inputs += [('provenance/freeze-manifest.json', images / 'freeze-manifest.json')]

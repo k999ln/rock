@@ -75,6 +75,20 @@ class PreviewRelease(unittest.TestCase):
             self.assertEqual((destination / name).read_bytes(), payload)
             self.assertEqual((destination / name).stat().st_mode & 0o777, 0o444)
 
+    def test_validation_caches_never_enter_committed_package_inventory(self):
+        native = self.root / 'native'
+        native.mkdir()
+        (native / 'source.py').write_bytes(b'# committed source\n')
+        inventory = {package_preview.NATIVE_PREFIX + 'source.py': preview.digest(native / 'source.py')}
+        first = package_preview.frozen_native_inputs(self.root, inventory)
+        (native / '__pycache__').mkdir()
+        (native / '__pycache__/source.cpython-314.pyc').write_bytes(b'volatile import cache with a temporary path')
+        self.assertEqual(package_preview.frozen_native_inputs(self.root, inventory), first)
+        self.assertEqual([name for name, _ in first], ['native/source.py'])
+        (native / 'source.py').write_bytes(b'# modified source\n')
+        with self.assertRaisesRegex(ValueError, 'source changed'):
+            package_preview.frozen_native_inputs(self.root, inventory)
+
     def test_public_test_key_requires_opt_in_and_independent_manifest_pin(self):
         for options in ({'allow_public_test_key': False}, {'manifest_sha256': None}):
             with self.subTest(options=options), self.assertRaisesRegex(ValueError, 'public test key requires'):
