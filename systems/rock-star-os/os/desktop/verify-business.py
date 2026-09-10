@@ -596,8 +596,9 @@ class ScreenDriver:
         self.nav('history')
         # The actual list is newest first. Read the first card's product name,
         # then independently require the unique input label in its opened result.
-        # After deletion tool_name() uses the catalog's latest signed manifest.
-        name = PRODUCT_NAMES['1.1.0' if deleted else version]
+        # Result names remain bound to the executed package after deletion.
+        # The signed historical version remains in this fixture's catalog.
+        name = PRODUCT_NAMES[version]
         self.click(name, exact_line=True, within=HISTORY_TITLE, regions=(HISTORY_TITLE,),
                    required=('実行履歴',), label='saved-history-product')
 

@@ -218,6 +218,27 @@ static const char *tool_name(struct rock_ui *ui, const char *id)
     return *string(manifest, "name") ? string(manifest, "name") : id;
 }
 
+/* A saved result belongs to the executed package, not today's installed or
+ * latest catalog version. Missing historical metadata must remain unknown. */
+static json_object *job_manifest(struct rock_ui *ui, json_object *item)
+{
+    const char *id = string(item, "tool_id"), *version = string(item, "version");
+    const char *hash = string(item, "package_hash");
+    json_object *entry = installed(ui, id);
+    if (!*version) return NULL;
+    if (!entry || strcmp(string(field(entry, "manifest"), "version"), version) ||
+        (*hash && strcmp(string(entry, "hash"), hash)))
+        entry = catalog_item(ui, id, version);
+    if (!entry || (*hash && strcmp(string(entry, "hash"), hash))) return NULL;
+    return field(entry, "manifest");
+}
+
+static const char *job_name(struct rock_ui *ui, json_object *item)
+{
+    const char *name = string(job_manifest(ui, item), "name");
+    return *name ? name : string(item, "tool_id");
+}
+
 static json_object *job(struct rock_ui *ui, const char *id)
 {
     json_object *jobs = field(hub(ui), "jobs");
@@ -788,7 +809,7 @@ static void draw_history(struct rock_ui *ui)
                 strftime(date, sizeof(date), "%m/%d %H:%M:%S", &local);
         }
         panel(ui, 32, y, 656, 132, COLOR_WHITE);
-        text(ui, 55, y + 35, 22, 1, COLOR_INK, tool_name(ui, string(item, "tool_id")), 435);
+        text(ui, 55, y + 35, 22, 1, COLOR_INK, job_name(ui, item), 435);
         pill(ui, 553, y + 18, status_label(status), active_job(item) ? 0xf8ebcf : 0xe9efe5,
              !strcmp(status, "failed") ? COLOR_ERROR : COLOR_ACCENT);
         snprintf(meta, sizeof(meta), "%s · v%s", date, string(item, "version"));
@@ -825,10 +846,12 @@ static void draw_result(struct rock_ui *ui)
         ui->content_height = y + 270 + ui->scroll - ui->content_top;
         return;
     }
-    text(ui, 34, y + 28, 27, 1, COLOR_INK, tool_name(ui, string(item, "tool_id")), 644);
+    text(ui, 34, y + 28, 27, 1, COLOR_INK, job_name(ui, item), 644);
     y += 48;
     pill(ui, 34, y, status_label(string(item, "status")), 0xe4ecdf, COLOR_ACCENT);
-    text(ui, 175, y + 19, 15, 0, COLOR_MUTED, "処理する場所: この端末", 470);
+    char context[200];
+    snprintf(context, sizeof(context), "v%s · この端末で処理", string(item, "version"));
+    text(ui, 175, y + 19, 15, 0, COLOR_MUTED, context, 470);
     y += 60;
     if (active_job(item)) {
         button(ui, 32, y, 656, 55, "実行をキャンセル", ACTION_CANCEL, 0, string(item, "id"), NULL,
@@ -869,6 +892,16 @@ static void draw_result(struct rock_ui *ui)
             text(ui, 36, y + 20, 15, 0, COLOR_MUTED, notice, 644);
             y += 45;
         }
+    }
+    if (boolean(field(ui->snapshot, "wallet"), "simulation_only")) {
+        panel(ui, 32, y, 656, 134, COLOR_WHITE);
+        text(ui, 56, y + 32, 19, 1, COLOR_INK, "費用と入金の確認", 600);
+        text(ui, 56, y + 67, 17, 0, COLOR_MUTED, "実費・実収益の接続: 未接続", 600);
+        wrapped(ui, 56, y + 80, 600, 16, 25, COLOR_MUTED,
+                "この処理の完了でテスト残高は増えません。結果は実行履歴から再表示できます。", 2);
+        y += 152;
+        button(ui, 32, y, 656, 54, "Walletのテスト状態を確認", ACTION_NAV, PAGE_WALLET, NULL, NULL, 1, 0);
+        y += 72;
     }
     button(ui, 32, y, 656, 54, "このツールを開く", ACTION_EDITOR, 0, string(item, "tool_id"), NULL,
            installed(ui, string(item, "tool_id")) != NULL, 0);
@@ -1393,7 +1426,16 @@ static void activate(struct rock_ui *ui, const struct rock_hit *target)
         ui->text[0] = '\0';
         return;
     case ACTION_SAMPLE:
-        snprintf(ui->text, sizeof(ui->text), "  Plan the day  \n\n\n  Make something useful  \n  Share the result  ");
+        if (!strcmp(ui->selected_id, "org.rockstar.citation-organizer"))
+            snprintf(ui->text, sizeof(ui->text),
+                     "紹介文（出典: [店舗情報](https://example.test/store)）です。\n\n"
+                     "```text\n（出典: [コード内の例](https://example.test/code)）\n```\n");
+        else if (!strcmp(ui->selected_id, "org.rockstar.proposal-draft"))
+            snprintf(ui->text, sizeof(ui->text),
+                     "{\"title\":\"店舗紹介の記事\",\"requirements\":[\"日本語で読みやすく\",\"営業時間を確認する\"],"
+                     "\"deliverables\":[\"紹介文の下書き\"],\"deadline\":\"内容確認後に相談\",\"price\":\"見積り後に相談\"}");
+        else
+            snprintf(ui->text, sizeof(ui->text), "  Plan the day  \n\n\n  Make something useful  \n  Share the result  ");
         return;
     case ACTION_WALLET_EXPAND:
         ui->wallet_expanded = !ui->wallet_expanded;
