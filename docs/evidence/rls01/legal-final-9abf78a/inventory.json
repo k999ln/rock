@@ -1,0 +1,637 @@
+{
+  "archive_unchanged_after_review": true,
+  "build_environment_from_original_base_freeze": {
+    "architecture": "aarch64",
+    "compiler": "aarch64-buildroot-linux-musl-gcc.br_real (Buildroot 2026.08) 15.3.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "host_kernel": "6.12.95+deb13-cloud-arm64",
+    "host_os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "python": "3.13.5",
+    "qemu": "QEMU emulator version 10.0.11 (Debian 1:10.0.11+ds-0+deb13u1)\nCopyright (c) 2003-2025 Fabrice Bellard and the QEMU Project developers"
+  },
+  "buildroot_readme_exact": "Most of the packages that were used by Buildroot to produce the image files,\nincluding Buildroot itself, have open-source licenses. It is your\nresponsibility to comply to the requirements of these licenses.\nTo make this easier for you, Buildroot collected in this directory some\nmaterial you may need to get it done.\n\nThis material is composed of the following items.\n * The scripts used to control compilation of the packages and the generation\n   of image files, i.e. the Buildroot sources.\n   Note: this has not been saved due to technical limitations, you must\n   collect it manually.\n * The Buildroot configuration file; this has been saved in buildroot.config.\n * The toolchain (cross-compiler and related tools) used to generate all the\n   compiled programs.\n   Note: this may have not been saved due to technical limitations, you may\n   need to collect it manually.\n * The original source code for target packages in the 'sources/'\n   subdirectory and for host packages in the 'host-sources/' subdirectory\n   (except for the non-redistributable packages, which have not been\n   saved). Patches that were applied are also saved, along with a file\n   named 'series' that lists the patches in the order they were\n   applied. Patches are under the same license as the files that they\n   modify in the original package.\n   Note: Buildroot applies additional patches to Libtool scripts of\n   autotools-based packages. These patches can be found under\n   support/libtool in the Buildroot source and, due to technical\n   limitations, are not saved with the package sources. You may need\n   to collect them manually.\n * Two manifest files listing the configured packages and related\n   information: 'manifest.csv' for target packages and 'host-manifest.csv'\n   for host packages.\n * The license text of the packages, in the 'licenses/' and\n   'host-licenses/' subdirectories for target and host packages\n   respectively.\n\nDue to technical limitations or lack of license definition in the package\nmakefile, some of the material listed above could not been saved, as the\nfollowing list details.\n\nWARNING: the Buildroot source code has not been saved\nWARNING: rock-core-0.1.0: cannot save license (ROCK_CORE_LICENSE_FILES not defined)\nWARNING: rock-platform-0.3.0: cannot save license (ROCK_PLATFORM_LICENSE_FILES not defined)\nWARNING: rock-ui-0.3.0: cannot save license (ROCK_UI_LICENSE_FILES not defined)\n",
+  "counts": {
+    "category_files": {
+      "buildroot-legal-info/README": 1,
+      "buildroot-legal-info/buildroot.config": 1,
+      "buildroot-legal-info/host-licenses": 66,
+      "buildroot-legal-info/host-manifest.csv": 1,
+      "buildroot-legal-info/host-sources": 93,
+      "buildroot-legal-info/legal-info.sha256": 1,
+      "buildroot-legal-info/licenses": 30,
+      "buildroot-legal-info/manifest.csv": 1,
+      "buildroot-legal-info/sources": 62,
+      "corresponding-source/buildroot-2026.08.tar.xz": 1,
+      "corresponding-source/rock-source.tar": 1,
+      "provenance/SHA256SUMS": 1,
+      "provenance/base-freeze-manifest.json": 1,
+      "provenance/buildroot.config": 1,
+      "provenance/ci-provenance.json": 1,
+      "provenance/freeze-manifest.json": 1,
+      "provenance/linux.config": 1,
+      "provenance/local-arm64-native-logs": 14,
+      "provenance/local-arm64-native-report.json": 1,
+      "provenance/make-legal-info.log": 1,
+      "provenance/native-source-logs": 14,
+      "provenance/native-source-report.json": 1,
+      "provenance/profile.json": 1,
+      "provenance/source-lock.json": 1
+    },
+    "full_git_source_files_in_prior_readback": 1364,
+    "patch_files": 75,
+    "patch_series_files": 23,
+    "regular_members_in_prior_full_readback": 298
+  },
+  "inputs": {
+    "archive": {
+      "bytes": 934132130,
+      "sha256": "7c9cdc0d32faf4006b8693d5d8dc85efd8259ae937c90274888da3f943920a0c"
+    },
+    "prior_full_readback_sha256": "dac9a70fbb0bab6b2b50a931766e69de917a821241dbf13d32779cb1f52635ac"
+  },
+  "legal": {
+    "meaning": "Correspondence and license materials only; this does not grant project rights or certify redistribution compliance",
+    "product_license": "UNSET",
+    "status": "NOT_CLEARED"
+  },
+  "manually_collected_buildroot_libtool_members": {
+    "buildroot-2026.08/support/libtool/buildroot-libtool-v1.5.patch": {
+      "bytes": 3139,
+      "sha256": "60a4eb7d8ca539697b6092e5b5b38d6e1b0f0d09bb4a26c3fca9b0ecb33dd4c6"
+    },
+    "buildroot-2026.08/support/libtool/buildroot-libtool-v2.2.patch": {
+      "bytes": 3696,
+      "sha256": "87251e6803df62f3e34e77373e2b73a926d2a23e6b59d2fffc36486bfbadff64"
+    },
+    "buildroot-2026.08/support/libtool/buildroot-libtool-v2.4.4.patch": {
+      "bytes": 3320,
+      "sha256": "bd0afa3fe967b219ac92a9233c918baa18fe4fe00f616ccc2925b5cbcfe8ad07"
+    },
+    "buildroot-2026.08/support/libtool/buildroot-libtool-v2.4.patch": {
+      "bytes": 3143,
+      "sha256": "ce9f060d7d175512d6d81ac504de953d5424104a57ede43c6a8f9436ffc03574"
+    }
+  },
+  "nested_exact_source_members": {
+    "docs/preview-legal-notice.md": {
+      "bytes": 2863,
+      "sha256": "11401fa9e337b282a65f552e9354c41591ebaa0b2a6c2c78c75bdf2e207387c0"
+    },
+    "scripts/freeze-native-build.py": {
+      "bytes": 10837,
+      "sha256": "d34d4d9722671a3f481c64317ff162867ef19608f9c34ead084677b11e71ff18"
+    },
+    "scripts/freeze-native-profile.py": {
+      "bytes": 9300,
+      "sha256": "1cac81c8268b01336eba4c6f3f2d227b926c4a7165d8eac11ceb9c299353576c"
+    },
+    "systems/rock-star-os/os/assets/NotoSansCJK-LICENSE.txt": {
+      "bytes": 4301,
+      "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+    },
+    "systems/rock-star-os/os/build-os.sh": {
+      "bytes": 2714,
+      "sha256": "c07a8da67525107dd161f47ee6f41fc5ffa34e41ad6af2c2ca9f24cff56f8ddd"
+    },
+    "systems/rock-star-os/os/buildroot/board/rock-virt/busybox.fragment": {
+      "bytes": 707,
+      "sha256": "6163d94006181c11a07381c6cf062ea4011d1a1a96482608878e19ad8ef785a9"
+    },
+    "systems/rock-star-os/os/buildroot/board/rock-virt/linux.fragment": {
+      "bytes": 597,
+      "sha256": "d7f7ebf4376be520460fb23c0b5cf5cc4e5867a8adbba3894eeb2a530daf6f8a"
+    },
+    "systems/rock-star-os/os/buildroot/board/rock-virt/post-build.sh": {
+      "bytes": 1381,
+      "sha256": "4be6387a3f30479e528e2c7df7a640a17b64371a359c425a1a841787d5ae3bcf"
+    },
+    "systems/rock-star-os/os/buildroot/configs/rock_virt_aarch64_defconfig": {
+      "bytes": 1671,
+      "sha256": "cf74d5fd9fb16e93034a45b0c9e7d3ee5f4ba97951c76e131408b916b28066c0"
+    },
+    "systems/rock-star-os/os/buildroot/package/rock-core/rock-core.mk": {
+      "bytes": 715,
+      "license_settings": [
+        "ROCK_CORE_LICENSE = Proprietary (project license not yet selected)",
+        "ROCK_CORE_REDISTRIBUTE = NO"
+      ],
+      "sha256": "4cd426d89752b01099cdf92b9391c195136a50c3af98ef6d1d5dd8d0685a9add"
+    },
+    "systems/rock-star-os/os/buildroot/package/rock-platform/rock-platform.mk": {
+      "bytes": 571,
+      "license_settings": [
+        "ROCK_PLATFORM_LICENSE = Proprietary (project license not yet selected)",
+        "ROCK_PLATFORM_REDISTRIBUTE = NO"
+      ],
+      "sha256": "8419ccc28ab779d84715cd57b917e3d260b5cb30bc4ebea28fab803dc5e3f05d"
+    },
+    "systems/rock-star-os/os/buildroot/package/rock-ui/rock-ui.mk": {
+      "bytes": 689,
+      "license_settings": [
+        "ROCK_UI_LICENSE = Proprietary (project license not yet selected)",
+        "ROCK_UI_REDISTRIBUTE = NO"
+      ],
+      "sha256": "1305e0f014b67cc302734ee99065cb845d4237b1aa4f735d2a610c526732d343"
+    },
+    "systems/rock-star-os/os/desktop/browser-intake/LICENSE.txt": {
+      "bytes": 2163,
+      "sha256": "3ccd2242d7f5b6c5ae831a486f63cce1f18d8cd11c511f6a7a7251673763b2d1"
+    },
+    "systems/rock-star-os/os/desktop/browser/novnc/AUTHORS": {
+      "bytes": 358,
+      "sha256": "16ee0ef356d5107a4bc039f91abc99a341dc62b9aa8dd47547a2baed38507509"
+    },
+    "systems/rock-star-os/os/desktop/browser/novnc/LICENSE.txt": {
+      "bytes": 2163,
+      "sha256": "3ccd2242d7f5b6c5ae831a486f63cce1f18d8cd11c511f6a7a7251673763b2d1"
+    },
+    "systems/rock-star-os/os/desktop/browser/novnc/vendor/pako/LICENSE": {
+      "bytes": 1084,
+      "sha256": "3bc404ffa7888053253eedcc5a667619aa08dc1be0bea400e5ff28c51602180f"
+    },
+    "systems/rock-star-os/os/game_exchange/profile.py": {
+      "bytes": 15202,
+      "sha256": "e48d777724c2daecbbad4393712d9461c78c801f320153a05a904c588703716f"
+    },
+    "systems/rock-star-os/os/tools/NOTICE-Mr.txt": {
+      "bytes": 1248,
+      "sha256": "24f25b385f9ec3fe79e66305c15126e6bb36abad170063bc1e1e8610103c4a66"
+    },
+    "systems/rock-star-os/os/update/build-initramfs.py": {
+      "bytes": 8974,
+      "sha256": "4182af8136d6c0a7a8d565f7a72c32c7df3def7a9625560b26a97a2be624deae"
+    },
+    "vendor/mr/LICENSE": {
+      "bytes": 1071,
+      "sha256": "6cf38019109830262ffd5a3e1dca12e6e972c9750d2a68f99d5494d173960fac"
+    }
+  },
+  "original_package_metadata": {
+    "host-manifest.csv": [
+      {
+        "LICENSE": "GPL-2.0+",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "buildroot",
+        "SOURCE ARCHIVE": "not saved",
+        "VERSION": "2026.08"
+      },
+      {
+        "LICENSE": "GPL-2.0, GPL-3.0, LGPL-2.1, LGPL-3.0",
+        "LICENSE FILES": "COPYING COPYING3 COPYING.LIB COPYING3.LIB",
+        "PACKAGE": "gcc-final",
+        "SOURCE ARCHIVE": "gcc-15.3.0.tar.xz",
+        "VERSION": "15.3.0"
+      },
+      {
+        "LICENSE": "GPL-3.0+, GPL-2.0+, LGPL-2.1+",
+        "LICENSE FILES": "COPYING COPYING3 COPYING.LIB",
+        "PACKAGE": "binutils",
+        "SOURCE ARCHIVE": "binutils-2.45.1.tar.xz",
+        "VERSION": "2.45.1"
+      },
+      {
+        "LICENSE": "LGPL-3.0+ or GPL-2.0+",
+        "LICENSE FILES": "COPYING.LESSERv3 COPYINGv2",
+        "PACKAGE": "gmp",
+        "SOURCE ARCHIVE": "gmp-6.3.0.tar.xz",
+        "VERSION": "6.3.0"
+      },
+      {
+        "LICENSE": "GPL-3.0+ with exceptions",
+        "LICENSE FILES": "COPYINGv3 COPYING.EXCEPTION",
+        "PACKAGE": "autoconf",
+        "SOURCE ARCHIVE": "autoconf-2.73.tar.xz",
+        "VERSION": "2.73"
+      },
+      {
+        "LICENSE": "GPL-2.0+ (libtool), LGPL-2.1+ (libltdl)",
+        "LICENSE FILES": "COPYING libltdl/COPYING.LIB",
+        "PACKAGE": "libtool",
+        "SOURCE ARCHIVE": "libtool-2.5.4.tar.xz",
+        "VERSION": "2.5.4"
+      },
+      {
+        "LICENSE": "GPL-3.0+",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "m4",
+        "SOURCE ARCHIVE": "m4-1.4.21.tar.xz",
+        "VERSION": "1.4.21"
+      },
+      {
+        "LICENSE": "GPL-2.0+",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "automake",
+        "SOURCE ARCHIVE": "automake-1.16.5.tar.xz",
+        "VERSION": "1.16.5"
+      },
+      {
+        "LICENSE": "LGPL-3.0+",
+        "LICENSE FILES": "COPYING.LESSER",
+        "PACKAGE": "mpc",
+        "SOURCE ARCHIVE": "mpc-1.4.1.tar.xz",
+        "VERSION": "1.4.1"
+      },
+      {
+        "LICENSE": "LGPL-3.0+",
+        "LICENSE FILES": "COPYING.LESSER",
+        "PACKAGE": "mpfr",
+        "SOURCE ARCHIVE": "mpfr-4.2.2.tar.xz",
+        "VERSION": "4.2.2"
+      },
+      {
+        "LICENSE": "GPL-2.0, GPL-3.0, LGPL-2.1, LGPL-3.0",
+        "LICENSE FILES": "COPYING COPYING3 COPYING.LIB COPYING3.LIB",
+        "PACKAGE": "gcc-initial",
+        "SOURCE ARCHIVE": "gcc-15.3.0.tar.xz",
+        "VERSION": "15.3.0"
+      },
+      {
+        "LICENSE": "Apache-2.0",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "meson",
+        "SOURCE ARCHIVE": "meson-1.11.1.tar.gz",
+        "VERSION": "1.11.1"
+      },
+      {
+        "LICENSE": "Apache-2.0",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "ninja",
+        "SOURCE ARCHIVE": "ninja-1.13.2.tar.gz",
+        "VERSION": "1.13.2"
+      },
+      {
+        "LICENSE": "BSD-3-Clause",
+        "LICENSE FILES": "LICENSE.rst",
+        "PACKAGE": "cmake",
+        "SOURCE ARCHIVE": "cmake-4.4.0.tar.gz",
+        "VERSION": "4.4.0"
+      },
+      {
+        "LICENSE": "pkgconf license",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "pkgconf",
+        "SOURCE ARCHIVE": "pkgconf-2.3.0.tar.xz",
+        "VERSION": "2.3.0"
+      },
+      {
+        "LICENSE": "MIT",
+        "LICENSE FILES": "LICENSE",
+        "PACKAGE": "python-installer",
+        "SOURCE ARCHIVE": "installer-1.0.0.tar.gz",
+        "VERSION": "1.0.0"
+      },
+      {
+        "LICENSE": "BSD-3-Clause",
+        "LICENSE FILES": "LICENSE",
+        "PACKAGE": "python-flit-core",
+        "SOURCE ARCHIVE": "flit_core-3.12.0.tar.gz",
+        "VERSION": "3.12.0"
+      },
+      {
+        "LICENSE": "Python-2.0, others",
+        "LICENSE FILES": "LICENSE",
+        "PACKAGE": "python3",
+        "SOURCE ARCHIVE": "Python-3.14.7.tar.xz",
+        "VERSION": "3.14.7"
+      },
+      {
+        "LICENSE": "GPL-3.0+ with exception",
+        "LICENSE FILES": "COPYING COPYING.EXCEPTION",
+        "PACKAGE": "autoconf-archive",
+        "SOURCE ARCHIVE": "autoconf-archive-2024.10.16.tar.xz",
+        "VERSION": "2024.10.16"
+      },
+      {
+        "LICENSE": "MIT",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "expat",
+        "SOURCE ARCHIVE": "expat-2.8.4.tar.xz",
+        "VERSION": "2.8.4"
+      },
+      {
+        "LICENSE": "MIT",
+        "LICENSE FILES": "LICENSE",
+        "PACKAGE": "libffi",
+        "SOURCE ARCHIVE": "libffi-3.8.0.tar.gz",
+        "VERSION": "3.8.0"
+      },
+      {
+        "LICENSE": "Zlib",
+        "LICENSE FILES": "LICENSE",
+        "PACKAGE": "libzlib",
+        "SOURCE ARCHIVE": "zlib-1.3.2.tar.xz",
+        "VERSION": "1.3.2"
+      },
+      {
+        "LICENSE": "MIT",
+        "LICENSE FILES": "LICENSE",
+        "PACKAGE": "python-pypa-build",
+        "SOURCE ARCHIVE": "build-1.3.0.tar.gz",
+        "VERSION": "1.3.0"
+      },
+      {
+        "LICENSE": "Apache-2.0 or BSD-2-Clause",
+        "LICENSE FILES": "LICENSE LICENSE.APACHE LICENSE.BSD",
+        "PACKAGE": "python-packaging",
+        "SOURCE ARCHIVE": "packaging-26.2.tar.gz",
+        "VERSION": "26.2"
+      },
+      {
+        "LICENSE": "MIT",
+        "LICENSE FILES": "LICENSE",
+        "PACKAGE": "python-pyproject-hooks",
+        "SOURCE ARCHIVE": "pyproject_hooks-1.2.0.tar.gz",
+        "VERSION": "1.2.0"
+      },
+      {
+        "LICENSE": "MIT",
+        "LICENSE FILES": "LICENSE",
+        "PACKAGE": "python-setuptools",
+        "SOURCE ARCHIVE": "setuptools-80.9.0.tar.gz",
+        "VERSION": "80.9.0"
+      },
+      {
+        "LICENSE": "MIT",
+        "LICENSE FILES": "LICENSE.txt",
+        "PACKAGE": "python-wheel",
+        "SOURCE ARCHIVE": "wheel-0.47.0.tar.gz",
+        "VERSION": "0.47.0"
+      },
+      {
+        "LICENSE": "GPL-3.0+",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "gperf",
+        "SOURCE ARCHIVE": "gperf-3.3.tar.gz",
+        "VERSION": "3.3"
+      },
+      {
+        "LICENSE": "GPL-2.0, MIT-like with advertising clause (libss and libet)",
+        "LICENSE FILES": "NOTICE lib/ss/mit-sipb-copyright.h lib/et/internal.h",
+        "PACKAGE": "e2fsprogs",
+        "SOURCE ARCHIVE": "e2fsprogs-1.47.4.tar.xz",
+        "VERSION": "1.47.4"
+      },
+      {
+        "LICENSE": "GPL-2.0+, BSD-4-Clause, LGPL-2.1+ (libblkid, libfdisk, libmount), BSD-3-Clause (libuuid), BSD-2-Clause (xxhash), ISC (rfkill), MIT (hardlink, flock)",
+        "LICENSE FILES": "README.licensing Documentation/licenses/COPYING.BSD-2-Clause Documentation/licenses/COPYING.BSD-3-Clause Documentation/licenses/COPYING.BSD-4-Clause-UC Documentation/licenses/COPYING.EUPL-1.2 Documentation/licenses/COPYING.GPL-2.0-only Documentation/licenses/COPYING.GPL-2.0-or-later Documentation/licenses/COPYING.GPL-3.0-or-later Documentation/licenses/COPYING.ISC Documentation/licenses/COPYING.LGPL-2.1-or-later Documentation/licenses/COPYING.MIT",
+        "PACKAGE": "util-linux",
+        "SOURCE ARCHIVE": "util-linux-2.41.5.tar.xz",
+        "VERSION": "2.41.5"
+      },
+      {
+        "LICENSE": "LGPL-2.1+ (library)",
+        "LICENSE FILES": "libkmod/COPYING",
+        "PACKAGE": "kmod",
+        "SOURCE ARCHIVE": "kmod-34.2.tar.xz",
+        "VERSION": "34.2"
+      },
+      {
+        "LICENSE": "GPL-3.0+",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "patchelf",
+        "SOURCE ARCHIVE": "patchelf-0.13.tar.bz2",
+        "VERSION": "0.13"
+      },
+      {
+        "LICENSE": "Apache-2.0",
+        "LICENSE FILES": "LICENSE.txt",
+        "PACKAGE": "libopenssl",
+        "SOURCE ARCHIVE": "openssl-3.6.4.tar.gz",
+        "VERSION": "3.6.4"
+      },
+      {
+        "LICENSE": "GPL-2.0+ (programs), LGPL-2.1+ (libraries)",
+        "LICENSE FILES": "doc/COPYING doc/COPYING.LGPL",
+        "PACKAGE": "acl",
+        "SOURCE ARCHIVE": "acl-2.4.0.tar.xz",
+        "VERSION": "2.4.0"
+      },
+      {
+        "LICENSE": "GPL-2.0+ (programs), LGPL-2.1+ (libraries)",
+        "LICENSE FILES": "doc/COPYING doc/COPYING.LGPL",
+        "PACKAGE": "attr",
+        "SOURCE ARCHIVE": "attr-2.6.0.tar.xz",
+        "VERSION": "2.6.0"
+      },
+      {
+        "LICENSE": "GPL-3.0+",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "fakeroot",
+        "SOURCE ARCHIVE": "fakeroot_1.37.2.orig.tar.gz",
+        "VERSION": "1.37.2"
+      },
+      {
+        "LICENSE": "LGPL-2.1+",
+        "LICENSE FILES": "LICENSING COPYING.LIB",
+        "PACKAGE": "libxcrypt",
+        "SOURCE ARCHIVE": "libxcrypt-4.5.2.tar.xz",
+        "VERSION": "4.5.2"
+      }
+    ],
+    "manifest.csv": [
+      {
+        "LICENSE": "GPL-3.0-with-GCC-exception",
+        "LICENSE FILES": "COPYING.RUNTIME",
+        "PACKAGE": "gcc-final",
+        "SOURCE ARCHIVE": "gcc-15.3.0.tar.xz",
+        "VERSION": "15.3.0"
+      },
+      {
+        "LICENSE": "MIT",
+        "LICENSE FILES": "COPYRIGHT",
+        "PACKAGE": "musl",
+        "SOURCE ARCHIVE": "musl-1.2.6.tar.gz",
+        "VERSION": "1.2.6"
+      },
+      {
+        "LICENSE": "GPL-2.0",
+        "LICENSE FILES": "COPYING LICENSES/preferred/GPL-2.0 LICENSES/exceptions/Linux-syscall-note",
+        "PACKAGE": "linux-headers",
+        "SOURCE ARCHIVE": "linux-6.18.50.tar.xz",
+        "VERSION": "6.18.50"
+      },
+      {
+        "LICENSE": "LGPL-2.0+",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "bubblewrap",
+        "SOURCE ARCHIVE": "bubblewrap-0.11.2.tar.xz",
+        "VERSION": "0.11.2"
+      },
+      {
+        "LICENSE": "GPL-2.0 or BSD-3-Clause",
+        "LICENSE FILES": "License",
+        "PACKAGE": "libcap",
+        "SOURCE ARCHIVE": "libcap-2.78.tar.xz",
+        "VERSION": "2.78"
+      },
+      {
+        "LICENSE": "GPL-2.0, bzip2-1.0.6",
+        "LICENSE FILES": "LICENSE archival/libarchive/bz/LICENSE",
+        "PACKAGE": "busybox",
+        "SOURCE ARCHIVE": "busybox-1.38.0.tar.bz2",
+        "VERSION": "1.38.0"
+      },
+      {
+        "LICENSE": "LGPL-2.1 or MPL-1.1 (library)",
+        "LICENSE FILES": "COPYING COPYING-LGPL-2.1 COPYING-MPL-1.1",
+        "PACKAGE": "cairo",
+        "SOURCE ARCHIVE": "cairo-1.18.4.tar.xz",
+        "VERSION": "1.18.4"
+      },
+      {
+        "LICENSE": "fontconfig license",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "fontconfig",
+        "SOURCE ARCHIVE": "fontconfig-2.17.1.tar.xz",
+        "VERSION": "2.17.1"
+      },
+      {
+        "LICENSE": "MIT",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "expat",
+        "SOURCE ARCHIVE": "expat-2.8.4.tar.xz",
+        "VERSION": "2.8.4"
+      },
+      {
+        "LICENSE": "FTL or GPL-2.0+",
+        "LICENSE FILES": "LICENSE.TXT docs/FTL.TXT docs/GPLv2.TXT",
+        "PACKAGE": "freetype",
+        "SOURCE ARCHIVE": "freetype-2.14.3.tar.xz",
+        "VERSION": "2.14.3"
+      },
+      {
+        "LICENSE": "Libpng-2.0",
+        "LICENSE FILES": "LICENSE",
+        "PACKAGE": "libpng",
+        "SOURCE ARCHIVE": "libpng-1.6.58.tar.xz",
+        "VERSION": "1.6.58"
+      },
+      {
+        "LICENSE": "Zlib",
+        "LICENSE FILES": "LICENSE",
+        "PACKAGE": "libzlib",
+        "SOURCE ARCHIVE": "zlib-1.3.2.tar.xz",
+        "VERSION": "1.3.2"
+      },
+      {
+        "LICENSE": "MIT",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "pixman",
+        "SOURCE ARCHIVE": "pixman-0.46.4.tar.xz",
+        "VERSION": "0.46.4"
+      },
+      {
+        "LICENSE": "BSD-3-Clause, GPL-2.0+ (mksignames.c)",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "dash",
+        "SOURCE ARCHIVE": "dash-0.5.13.5.tar.gz",
+        "VERSION": "0.5.13.5"
+      },
+      {
+        "LICENSE": "MIT",
+        "LICENSE FILES": "COPYING",
+        "PACKAGE": "json-c",
+        "SOURCE ARCHIVE": "json-c-0.18.tar.gz",
+        "VERSION": "0.18"
+      },
+      {
+        "LICENSE": "MIT",
+        "LICENSE FILES": "LICENSE",
+        "PACKAGE": "libffi",
+        "SOURCE ARCHIVE": "libffi-3.8.0.tar.gz",
+        "VERSION": "3.8.0"
+      },
+      {
+        "LICENSE": "Apache-2.0",
+        "LICENSE FILES": "LICENSE.txt",
+        "PACKAGE": "libopenssl",
+        "SOURCE ARCHIVE": "openssl-3.6.4.tar.gz",
+        "VERSION": "3.6.4"
+      },
+      {
+        "LICENSE": "LGPL-2.1",
+        "LICENSE FILES": "LICENSE",
+        "PACKAGE": "libseccomp",
+        "SOURCE ARCHIVE": "libseccomp-2.6.0.tar.gz",
+        "VERSION": "2.6.0"
+      },
+      {
+        "LICENSE": "Python-2.0, others",
+        "LICENSE FILES": "LICENSE",
+        "PACKAGE": "python3",
+        "SOURCE ARCHIVE": "Python-3.14.7.tar.xz",
+        "VERSION": "3.14.7"
+      },
+      {
+        "LICENSE": "blessing",
+        "LICENSE FILES": "tea/license.terms",
+        "PACKAGE": "sqlite",
+        "SOURCE ARCHIVE": "sqlite-autoconf-3530400.tar.gz",
+        "VERSION": "3.53.4"
+      },
+      {
+        "LICENSE": "GPL-2.0",
+        "LICENSE FILES": "COPYING LICENSES/preferred/GPL-2.0 LICENSES/exceptions/Linux-syscall-note",
+        "PACKAGE": "linux",
+        "SOURCE ARCHIVE": "linux-6.18.50.tar.xz",
+        "VERSION": "6.18.50"
+      },
+      {
+        "LICENSE": "Proprietary (project license not yet selected)",
+        "LICENSE FILES": "",
+        "PACKAGE": "rock-core",
+        "SOURCE ARCHIVE": "rock-core-0.1.0.tar.gz",
+        "VERSION": "0.1.0"
+      },
+      {
+        "LICENSE": "Proprietary (project license not yet selected)",
+        "LICENSE FILES": "",
+        "PACKAGE": "rock-platform",
+        "SOURCE ARCHIVE": "rock-platform-0.3.0.tar.gz",
+        "VERSION": "0.3.0"
+      },
+      {
+        "LICENSE": "Proprietary (project license not yet selected)",
+        "LICENSE FILES": "",
+        "PACKAGE": "rock-ui",
+        "SOURCE ARCHIVE": "rock-ui-0.3.0.tar.gz",
+        "VERSION": "0.3.0"
+      }
+    ]
+  },
+  "original_warning_lines": [
+    "WARNING: the Buildroot source code has not been saved",
+    "WARNING: rock-core-0.1.0: cannot save license (ROCK_CORE_LICENSE_FILES not defined)",
+    "WARNING: rock-platform-0.3.0: cannot save license (ROCK_PLATFORM_LICENSE_FILES not defined)",
+    "WARNING: rock-ui-0.3.0: cannot save license (ROCK_UI_LICENSE_FILES not defined)"
+  ],
+  "schema": "rock-final-legal-material-inventory/1",
+  "scope": "Original archive hash plus selected raw members and nested build/source materials re-read; complete 298-member readback is the separately bound prior report. No permission, licensing choice, legal interpretation, or public release approval is created.",
+  "selected_outer_members": {
+    "buildroot-legal-info/README": {
+      "bytes": 2403,
+      "sha256": "049d3f85300d2f448b0d91cae3580753047ede013289843108bf51047240d9e4"
+    },
+    "buildroot-legal-info/host-manifest.csv": {
+      "bytes": 13822,
+      "sha256": "c30fd6fb9177f8336154be1d007cd9b8dd79b5cceed2490655bb82839f413529"
+    },
+    "buildroot-legal-info/manifest.csv": {
+      "bytes": 8942,
+      "sha256": "83c6bdfb31f8d15eaf73b0d8432541d44f30b10cacd03074f80535977881fab2"
+    },
+    "provenance/base-freeze-manifest.json": {
+      "bytes": 174967,
+      "sha256": "4376d52d7db3e9cda5357287092e9065d5c8227e5a94ede5fa434bc336629b61"
+    },
+    "provenance/freeze-manifest.json": {
+      "bytes": 358784,
+      "sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc"
+    },
+    "provenance/make-legal-info.log": {
+      "bytes": 12968,
+      "sha256": "9564a0c704f2e063a6e63026832752d52e82ff499bfdd9d068b17d6de73f731a"
+    }
+  },
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "status": "MATERIAL_INVENTORY_ONLY_NOT_LICENSE_CLEARANCE"
+}
