@@ -81,6 +81,7 @@ class GameVerifierScope(unittest.TestCase):
             observed=object.__new__(gate.Gate);observed.images=images;observed.output=output
             observed.files={'Image':gate.sha(images/'Image')};observed.sources={};observed.before=before
             observed.plan_sha=gate.sha(output/'game-scope-plan.json')
+            observed.plan={'authority_before_sha256':gate.sha(output/'game-authority-before.json')}
             class Observer:
                 def invoke(self,operation):
                     self.operation=operation;return copy.deepcopy(before)

@@ -57,6 +57,8 @@ class Gate:
 
     def finish(self):
         authority.require(sha(self.output/'game-scope-plan.json') == self.plan_sha, 'fixed Game gate plan changed')
+        authority.require(sha(self.output/'game-authority-before.json') == self.plan['authority_before_sha256'],
+                          'fixed authority baseline evidence changed')
         authority.require({name:sha(self.images/name) for name in self.files} == self.files, 'Game input image changed')
         authority.require({name:sha(ROOT/name) for name in self.sources} == self.sources, 'Game gate observer source changed')
         after = self.observer.invoke('snapshot');save(self.output/'game-authority-after.json',after)
