@@ -114,6 +114,14 @@ static void game_ui_test(struct rock_ui *ui)
     json_object *submission = json_object_get(last_request);
     require(!ui->queued_request && !strcmp(value(submission, "op"), "game.exchange.approve"),
             "queued approval is submitted through the same main-worker path");
+    rock_ui_response(ui, submission, NULL, "test approval reply lost");
+    require(ui->page == PAGE_GAME_PIN && ui->game_pending && action_enabled(ui, ACTION_GAME_BACK),
+            "unknown approval never traps a touch user inside the PIN overlay");
+    click(ui, ACTION_GAME_BACK);
+    require(ui->page == PAGE_GAME && json_object_equal(ui->game_pending, submission),
+            "leaving uncertain approval keeps the exact request and releases navigation");
+    click(ui, ACTION_GAME_RETRY);
+    require(json_object_equal(last_request, submission), "lost approval retries original signed bytes only");
     json_object *denial = json_tokener_parse("{\"ok\":true,\"result\":{\"schema\":\"rock-game-exchange-approval-receipt/1\","
         "\"simulation_only\":true,\"attempt_id\":\"55555555-5555-4555-8555-555555555555\","
         "\"quote_sha256\":\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"decision\":\"DENIED\",\"reason\":\"INSUFFICIENT_FUNDS\"}}");

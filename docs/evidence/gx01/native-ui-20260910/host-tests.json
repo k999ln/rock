@@ -1,15 +1,15 @@
 {
   "schema": "rock-game-native-ui-host/1",
   "status": "PASS_SCOPED_UI_AND_ROUTING",
-  "recorded_at": "2026-09-10T06:38:00Z",
+  "recorded_at": "2026-09-10T06:43:00Z",
   "source_sha256": {
     "os/platform/service.py": "3fa60f3239083fe749c423ab3906c7daf1843392c68705bdf754c2796cc53e30",
-    "os/ui/game-ui.inc": "67fd99cdc48fc673883abd889580d6c6dd47e7353703a3e7090346e1ed976558",
+    "os/ui/game-ui.inc": "e7c04958815f8f94468b58c486dbee6155926ceb2f5dcdae8a67b94aab3127e1",
     "os/ui/ui.c": "9e492cd2dac4ae5370f8e1f0191d5236cf6295d86f6cf250437d58f1645b6bfd",
     "os/ui/ui.h": "318288d8866ec4d7e7a97ed3104a201b2e61eb3432256d5cf56682353a07bbc1",
     "os/ui/ipc.c": "79ed1b140dc361af3ea84fa37721e19b4183deafe51fcddcf51b612885c4348b",
     "os/ui/main.c": "5e3e3cf71fec19a9ea0b0b017e6739891403953504ef337e869c122de59bdfb7",
-    "os/ui/test_game.inc": "b59201049427d45c61d6caf9dbfa96ced1c1d6e0ca59b8a8ee6205eac44820f3",
+    "os/ui/test_game.inc": "50a711b84c8443882e644ec3e0b29b0e5733453410871c9f02a86e18d4b4ceb8",
     "tests/test_platform_game.py": "84878f19c7372ccd81142a2f54967379e2e2f59eb484948562f6285df8dbb4c7"
   },
   "tests": {
@@ -26,7 +26,8 @@
         "quote fee/expiry checks",
         "separate purchase ceremony",
         "durable insufficient-funds denial",
-        "explicit one-time public test credit"
+        "explicit one-time public test credit",
+        "touch navigation away from an unknown submitted approval keeps the exact pending request"
       ]
     },
     "platform_owner_boundary": {

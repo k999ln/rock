@@ -248,8 +248,10 @@ static void draw_game_pin(struct rock_ui *ui)
     text(ui, 57, y + 40, 28, 1, COLOR_INK, *masked ? masked : "PIN", 600);
     hit(ui, 38, y, 644, 60, ACTION_AUTH_PIN, 0, NULL, NULL, !ui->busy && !ui->game_pending);
     if (*ui->game_error) wrapped(ui, 40, y + 76, 640, 16, 26, COLOR_ERROR, ui->game_error, 2);
-    if (ui->game_pending) button(ui, 38, 840, 644, 54, "送信済みの同じ要求を確認", ACTION_GAME_RETRY, 0, NULL, NULL, !ui->busy, 1);
-    else {
+    if (ui->game_pending) {
+        button(ui, 38, 840, 300, 54, "Gameへ戻る", ACTION_GAME_BACK, 0, NULL, NULL, !ui->busy && !ui->queued_request, 0);
+        button(ui, 358, 840, 324, 54, "同じ要求の結果を確認", ACTION_GAME_RETRY, 0, NULL, NULL, !ui->busy, 1);
+    } else {
         button(ui, 38, 840, 300, 54, "戻る・承認しない", ACTION_GAME_BACK, 0, NULL, NULL, !ui->busy && !ui->queued_request, 0);
         button(ui, 358, 840, 324, 54, ui->game_mode == 1 ? "認証して接続" : "認証して今回の交換を承認", ACTION_GAME_SIGN,
                0, NULL, NULL, game_ready(ui) && seconds > 0 && strlen(ui->auth_pin) == 4, 1);
