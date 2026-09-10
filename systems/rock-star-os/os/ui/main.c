@@ -102,7 +102,7 @@ static enum rock_page parse_page(const char *name)
 {
     static const char *names[] = { "hub", "installed", "history", "wallet", "detail", "editor", "result", "system",
                                    "remote", "remote-result", "remote-history", "atm", "atm-status", "auth", "activation",
-                                   "mcp", "mcp-tool", "mcp-result" };
+                                   "mcp", "mcp-tool", "mcp-result", "game", "game-quote", "game-status", "game-pin" };
     for (size_t i = 0; i < sizeof(names) / sizeof(names[0]); i++)
         if (!strcmp(name, names[i])) return (enum rock_page)i;
     return (enum rock_page)-1;
@@ -284,7 +284,8 @@ int main(int argc, char **argv)
         /* Minute-only clock does not repaint the full framebuffer every second.
          * Authentication and ATM expiry still update at one-second resolution. */
         time_t wall_now = time(NULL);
-        time_t clock_tick = ui.page == PAGE_AUTH_PIN || ui.page == PAGE_ATM_STATUS ? wall_now : wall_now / 60;
+        time_t clock_tick = ui.page == PAGE_AUTH_PIN || ui.page == PAGE_ATM_STATUS ||
+                           ui.page == PAGE_GAME_PIN || ui.page == PAGE_GAME_QUOTE ? wall_now : wall_now / 60;
         if (clock_tick != last_clock_tick) { dirty = 1; last_clock_tick = clock_tick; }
         if (dirty) {
             rock_ui_draw(&ui);

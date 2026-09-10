@@ -107,6 +107,8 @@ int rock_ui_request_is_read(json_object *request)
            !strcmp(operation, "mcp.snapshot") || !strcmp(operation, "mcp.status") ||
            !strcmp(operation, "wallet.atm.status") || !strcmp(operation, "wallet.atm.history") ||
            !strcmp(operation, "wallet.auth.status") || !strcmp(operation, "auth.status") ||
+           !strcmp(operation, "game.sandbox.catalog") || !strcmp(operation, "game.connection.status") ||
+           !strcmp(operation, "game.exchange.status") || !strcmp(operation, "game.exchange.list") ||
            !strcmp(operation, "device.activation.snapshot");
 }
 
@@ -415,7 +417,9 @@ static void hit(struct rock_ui *ui, double x, double y, double w, double h,
 {
     struct rock_hit *target;
     int fixed = (y >= 868 && action == ACTION_NAV) || action == ACTION_REFRESH ||
-                action == ACTION_RETRY || action == ACTION_CONFIRM || action == ACTION_DISMISS || action == ACTION_REGISTRY_REFRESH || action == ACTION_SYSTEM || action == ACTION_ATM_OPEN;
+                action == ACTION_RETRY || action == ACTION_CONFIRM || action == ACTION_DISMISS || action == ACTION_REGISTRY_REFRESH || action == ACTION_SYSTEM || action == ACTION_ATM_OPEN ||
+                action == ACTION_GAME_OPEN || (ui->page == PAGE_GAME_PIN &&
+                (action == ACTION_AUTH_PIN || action == ACTION_GAME_BACK || action == ACTION_GAME_SIGN || action == ACTION_GAME_RETRY));
     if (ui->hit_count >= ROCK_UI_HITS || (!fixed && (y + h <= ui->content_top || y >= 856)))
         return;
     target = &ui->hits[ui->hit_count];
@@ -1258,6 +1262,7 @@ static int amount_minor(const char *value, int64_t *minor);
 #include "auth-ui.inc"
 #include "activation-ui.inc"
 #include "mcp-ui.inc"
+#include "game-ui.inc"
 
 int rock_ui_refresh_interval(struct rock_ui *ui)
 {
@@ -1300,7 +1305,7 @@ void rock_ui_poll_completed(struct rock_ui *ui, int64_t now_ms, int mutation)
 
 int rock_ui_poll(struct rock_ui *ui, int64_t now_ms)
 {
-    if (ui->busy || ui->queued_request || ui->page == PAGE_AUTH_PIN || now_ms < ui->refresh_due_ms)
+    if (ui->busy || ui->queued_request || ui->page == PAGE_AUTH_PIN || ui->page == PAGE_GAME_PIN || now_ms < ui->refresh_due_ms)
         return 0;
     ui->refresh_background = 1;
     rock_ui_refresh(ui);
@@ -1313,8 +1318,9 @@ int rock_ui_poll(struct rock_ui *ui, int64_t now_ms)
 
 void rock_ui_refresh(struct rock_ui *ui)
 {
-    if (ui->page == PAGE_AUTH_PIN) return; /* Do not replace displayed authorization while confirming. */
-    if (ui->page >= PAGE_MCP) {
+    if (ui->page == PAGE_AUTH_PIN || ui->page == PAGE_GAME_PIN) return; /* Keep the displayed authorization fixed. */
+    if (game_page(ui)) { game_refresh(ui); return; }
+    if (ui->page >= PAGE_MCP && ui->page <= PAGE_MCP_RESULT) {
         mcp_refresh(ui);
         return;
     }
@@ -1368,6 +1374,7 @@ static void activate(struct rock_ui *ui, const struct rock_hit *target)
     char key[40];
     int64_t minor = 0;
     if (!target->enabled) return;
+    if (game_activate(ui, target)) return;
     if (auth_activate(ui, target)) return;
     if (atm_activate(ui, target)) return;
     if (remote_activate(ui, target)) return;
@@ -1575,6 +1582,7 @@ void rock_ui_response(struct rock_ui *ui, json_object *request, json_object *res
     ui->refresh_background = 0;
     ui->busy = 0;
     ui->busy_read = 0;
+    if (game_response(ui, request, response)) return;
     if (rock_auth_operation(operation)) { (void)auth_response(ui, request, response); return; }
     if (!response) {
         if (!strcmp(operation, "mcp.snapshot")) mcp_replace(&ui->mcp_view, NULL);
@@ -1745,7 +1753,8 @@ void rock_ui_draw(struct rock_ui *ui)
 {
     static const char *titles[] = { "自動化を探す", "マイツール", "実行履歴", "Wallet", "ツールの詳細", "ツールを使う", "実行結果", "端末",
                                     "送信内容の確認", "遠隔の実行結果", "遠隔の実行履歴", "ATMテスト", "予約の状態", "試験認証の確認", "使い始める",
-                                    "接続して使う道具", "内容を確認する", "接続先の実行結果" };
+                                    "接続して使う道具", "内容を確認する", "接続先の実行結果",
+                                    "Game", "交換条件の確認", "交換の状況", "Gameの本人承認" };
     static const char *tabs[] = { "Hub", "ツール", "履歴", "Wallet" };
     char clock_text[32], subtitle[200];
     time_t now = time(NULL);
@@ -1753,7 +1762,7 @@ void rock_ui_draw(struct rock_ui *ui)
     int active = ui->page <= PAGE_WALLET ? (int)ui->page :
                  (ui->page == PAGE_RESULT || ui->page == PAGE_REMOTE_RESULT || ui->page == PAGE_REMOTE_HISTORY) ? PAGE_HISTORY :
                  (ui->page >= PAGE_ATM && ui->page <= PAGE_AUTH_PIN) ? PAGE_WALLET :
-                 ui->page == PAGE_SYSTEM || ui->page == PAGE_ACTIVATION ? -1 : ui->page >= PAGE_MCP ? PAGE_HUB : PAGE_INSTALLED;
+                 ui->page == PAGE_SYSTEM || ui->page == PAGE_ACTIVATION || game_page(ui) ? -1 : ui->page >= PAGE_MCP ? PAGE_HUB : PAGE_INSTALLED;
     json_object *registry = field(ui->snapshot, "registry");
     int registry_failed = ui->page == PAGE_HUB && ui->connected && !strcmp(string(registry, "status"), "error");
     const char *banner = ui->message[0] ? ui->message : NULL;
@@ -1812,6 +1821,8 @@ void rock_ui_draw(struct rock_ui *ui)
         snprintf(subtitle, sizeof(subtitle), "保存してから、端末を終了・再起動");
     else if (ui->page == PAGE_ACTIVATION)
         snprintf(subtitle, sizeof(subtitle), "確認済みの端末から、ひとつのタップで");
+    else if (game_page(ui))
+        snprintf(subtitle, sizeof(subtitle), "合成交換 · 実際のお金ではありません");
     else if (ui->page >= PAGE_MCP)
         snprintf(subtitle, sizeof(subtitle), "接続・確認・解除 · 所有環境での開発試験");
     else if (ui->page >= PAGE_ATM)
@@ -1862,6 +1873,10 @@ void rock_ui_draw(struct rock_ui *ui)
         case PAGE_MCP: draw_mcp(ui); break;
         case PAGE_MCP_TOOL: draw_mcp_tool(ui); break;
         case PAGE_MCP_RESULT: draw_mcp_result(ui); break;
+        case PAGE_GAME: draw_game(ui); break;
+        case PAGE_GAME_QUOTE: draw_game_quote(ui); break;
+        case PAGE_GAME_STATUS: draw_game_status(ui); break;
+        case PAGE_GAME_PIN: break;
         case PAGE_ATM: draw_atm(ui); break;
         case PAGE_ATM_STATUS: draw_atm_status(ui); break;
         case PAGE_AUTH_PIN: break; /* Full native confirmation overlay below. */
@@ -1895,6 +1910,8 @@ void rock_ui_draw(struct rock_ui *ui)
     button(ui, 584, 7, 104, 39, "端末", ACTION_SYSTEM, 0, NULL, NULL, 1, 0);
     if (ui->page == PAGE_WALLET)
         button(ui, 490, 7, 82, 39, "ATM", ACTION_ATM_OPEN, 0, NULL, NULL, 1, 0);
+    button(ui, 108, 7, 88, 39, "Game", ACTION_GAME_OPEN, 0, NULL, NULL,
+           !ui->busy && !ui->queued_request && ui->page != PAGE_AUTH_PIN, game_page(ui));
     if (ui->confirm_request) {
         ui->hit_count = 0;
         cairo_set_source_rgba(cr, .05, .13, .10, .55);
@@ -1921,6 +1938,7 @@ void rock_ui_draw(struct rock_ui *ui)
         button(ui, 369, 550, 256, 53, "確認して実行", ACTION_CONFIRM, 0, NULL, NULL, can_mutate(ui), 1);
     }
     if (ui->page == PAGE_AUTH_PIN) draw_auth_pin(ui);
+    if (ui->page == PAGE_GAME_PIN) draw_game_pin(ui);
     if (ui->pointer_visible) {
         double x = (ui->pointer_x - ui->offset_x) / ui->scale;
         double y = (ui->pointer_y - ui->offset_y) / ui->scale;
@@ -1992,6 +2010,12 @@ void rock_ui_destroy(struct rock_ui *ui)
     if (ui->mcp_view) json_object_put(ui->mcp_view);
     if (ui->mcp_prepared) json_object_put(ui->mcp_prepared);
     if (ui->mcp_status) json_object_put(ui->mcp_status);
+    game_replace(&ui->game_catalog, NULL);
+    game_replace(&ui->game_history, NULL);
+    game_replace(&ui->game_quote, NULL);
+    game_replace(&ui->game_intent, NULL);
+    game_replace(&ui->game_status, NULL);
+    game_replace(&ui->game_pending, NULL);
     if (ui->power_receipt) json_object_put(ui->power_receipt);
     if (ui->retry_request) json_object_put(ui->retry_request);
     if (ui->confirm_request) json_object_put(ui->confirm_request);
@@ -2041,7 +2065,7 @@ void rock_ui_pointer(struct rock_ui *ui, int x, int y, int state)
                 }
             }
         }
-    } else if (ui->pointer_down && !ui->confirm_request && ui->page != PAGE_AUTH_PIN &&
+    } else if (ui->pointer_down && !ui->confirm_request && ui->page != PAGE_AUTH_PIN && ui->page != PAGE_GAME_PIN &&
                (ui->press_y - ui->offset_y) / ui->scale >= ui->content_top &&
                (ui->press_y - ui->offset_y) / ui->scale < 856 && abs(y - ui->press_y) > 12) {
         ui->dragged = 1;
@@ -2061,7 +2085,8 @@ int rock_ui_text(struct rock_ui *ui, const char *value)
         return -1;
     }
     if (ui->editing == 4) {
-        if (ui->page != PAGE_AUTH_PIN || ui->busy || ui->retry_request) return -1;
+        if ((ui->page != PAGE_AUTH_PIN && ui->page != PAGE_GAME_PIN) || ui->busy || ui->retry_request ||
+            (ui->page == PAGE_GAME_PIN && ui->game_pending)) return -1;
         for (const char *p = value; *p; p++) if (*p < '0' || *p > '9') return -1;
     }
     if (ui->editing == 2) {
@@ -2104,6 +2129,11 @@ void rock_ui_key(struct rock_ui *ui, unsigned code, int value)
     ui->pointer_visible = 0;
     if (code == KEY_CAPSLOCK && value == 1) { ui->caps_lock = !ui->caps_lock; return; }
     if (code == KEY_ESC) {
+        if (ui->page == PAGE_GAME_PIN) {
+            struct rock_hit back = { .action = ACTION_GAME_BACK, .enabled = 1 };
+            game_activate(ui, &back);
+            return;
+        }
         if (ui->page == PAGE_AUTH_PIN) {
             struct rock_hit back = { .action = ACTION_AUTH_BACK, .enabled = 1 };
             auth_activate(ui, &back);
@@ -2121,6 +2151,7 @@ void rock_ui_key(struct rock_ui *ui, unsigned code, int value)
         else if (ui->page == PAGE_REMOTE) navigate(ui, PAGE_EDITOR);
         else if (ui->page == PAGE_REMOTE_RESULT) navigate(ui, PAGE_REMOTE_HISTORY);
         else if (ui->page == PAGE_REMOTE_HISTORY) navigate(ui, PAGE_HISTORY);
+        else if (game_page(ui)) navigate(ui, ui->page == PAGE_GAME ? PAGE_HUB : PAGE_GAME);
         else if (ui->page >= PAGE_MCP) navigate(ui, ui->page == PAGE_MCP ? PAGE_HUB : PAGE_MCP);
         else if (ui->page > PAGE_WALLET) navigate(ui, ui->return_page);
         return;

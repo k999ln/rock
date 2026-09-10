@@ -1,0 +1,52 @@
+{
+  "schema": "rock-game-native-ui-host/1",
+  "status": "PASS_SCOPED_UI_AND_ROUTING",
+  "recorded_at": "2026-09-10T06:38:00Z",
+  "source_sha256": {
+    "os/platform/service.py": "3fa60f3239083fe749c423ab3906c7daf1843392c68705bdf754c2796cc53e30",
+    "os/ui/game-ui.inc": "67fd99cdc48fc673883abd889580d6c6dd47e7353703a3e7090346e1ed976558",
+    "os/ui/ui.c": "9e492cd2dac4ae5370f8e1f0191d5236cf6295d86f6cf250437d58f1645b6bfd",
+    "os/ui/ui.h": "318288d8866ec4d7e7a97ed3104a201b2e61eb3432256d5cf56682353a07bbc1",
+    "os/ui/ipc.c": "79ed1b140dc361af3ea84fa37721e19b4183deafe51fcddcf51b612885c4348b",
+    "os/ui/main.c": "5e3e3cf71fec19a9ea0b0b017e6739891403953504ef337e869c122de59bdfb7",
+    "os/ui/test_game.inc": "b59201049427d45c61d6caf9dbfa96ced1c1d6e0ca59b8a8ee6205eac44820f3",
+    "tests/test_platform_game.py": "84878f19c7372ccd81142a2f54967379e2e2f59eb484948562f6285df8dbb4c7"
+  },
+  "tests": {
+    "native_ui": {
+      "environment": "Linux aarch64 Cairo/FreeType/JSON-C",
+      "exit_code": 0,
+      "actual_actions": [
+        "Game discovery",
+        "connect intent",
+        "explicit masked PIN",
+        "cancel",
+        "lost response exact retry",
+        "Hub availability",
+        "quote fee/expiry checks",
+        "separate purchase ceremony",
+        "durable insufficient-funds denial",
+        "explicit one-time public test credit"
+      ]
+    },
+    "platform_owner_boundary": {
+      "environment": "macOS Python3",
+      "tests": 6,
+      "exit_code": 0,
+      "mock_transport": true,
+      "purpose": "routing, unknown-operation/extra-field rejection, Wallet cache invalidation and no Hub lock; not a substitute for TLS/ledger acceptance"
+    }
+  },
+  "native_ui_log_sha256": "a442396d57f6138db9aa77c1c3b167f99231ef6f74a1c4696c96b63d2b50cb16",
+  "failed_attempts": [
+    "Test initially called nonexistent rock_ui_take_queued instead of existing flush API; compile failed, then corrected to actual main worker path.",
+    "First real pointer test could not activate header Game because hit clipping excluded it; added fixed header hit and full PIN overlay hits, preserved existing ATM/header focus order."
+  ],
+  "not_passed_by_this_record": [
+    "GX01-CONTRACT",
+    "GX01-UI final image",
+    "actual Game authority integration",
+    "final same-image D0-D6",
+    "financial or hardware readiness"
+  ]
+}

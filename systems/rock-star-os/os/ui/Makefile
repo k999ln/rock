@@ -12,7 +12,7 @@ rock-ui: main.o ui.o device.o ipc.o health.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 main.o: main.c ui.h ipc.h device.h health.h
-ui.o: ui.c ui.h ipc.h remote-ui.inc atm-ui.inc auth-ui.inc service-ui.inc activation-ui.inc mcp-ui.inc
+ui.o: ui.c ui.h ipc.h remote-ui.inc atm-ui.inc auth-ui.inc service-ui.inc activation-ui.inc mcp-ui.inc game-ui.inc
 device.o: device.c device.h
 ipc.o: ipc.c ipc.h
 health.o: health.c health.h
@@ -37,7 +37,7 @@ rock-ui-test: test_ui.o ui.o device.o ipc.o
 rock-ipc-test: test_ipc.o ipc.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-test_ui.o: test_ui.c ui.h device.h test_remote.inc test_atm.inc test_auth.inc test_service.inc test_activation.inc test_mcp.inc test_lifecycle.inc test_onboarding.inc test_native_replay.inc test_wallet_replay.inc
+test_ui.o: test_ui.c ui.h device.h ipc.h test_remote.inc test_atm.inc test_auth.inc test_service.inc test_activation.inc test_mcp.inc test_lifecycle.inc test_onboarding.inc test_game.inc test_native_replay.inc test_wallet_replay.inc
 test_ipc.o: test_ipc.c ipc.h
 
 test: rock-ui-test rock-ipc-test

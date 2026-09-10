@@ -1,6 +1,7 @@
 #define _GNU_SOURCE
 #include "ui.h"
 #include "device.h"
+#include "ipc.h"
 #include <linux/input.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -558,6 +559,7 @@ static void framebuffer_test(void)
 #include "test_mcp.inc"
 #include "test_lifecycle.inc"
 #include "test_onboarding.inc"
+#include "test_game.inc"
 #include "test_native_replay.inc"
 #include "test_wallet_replay.inc"
 
@@ -671,6 +673,7 @@ int main(int argc, char **argv)
     activation_ui_test(&ui);
     activation_poll_test(&ui);
     mcp_ui_test(&ui);
+    game_ui_test(&ui);
     rock_ui_destroy(&ui);
     if (last_request) json_object_put(last_request);
     puts("PASS native UI actions, request identities, errors, input limits, rendering, framebuffer conversion, evdev coordinates");

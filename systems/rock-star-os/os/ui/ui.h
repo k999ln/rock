@@ -17,7 +17,7 @@
 
 enum rock_page { PAGE_HUB, PAGE_INSTALLED, PAGE_HISTORY, PAGE_WALLET, PAGE_DETAIL, PAGE_EDITOR, PAGE_RESULT, PAGE_SYSTEM,
                  PAGE_REMOTE, PAGE_REMOTE_RESULT, PAGE_REMOTE_HISTORY, PAGE_ATM, PAGE_ATM_STATUS, PAGE_AUTH_PIN, PAGE_ACTIVATION,
-                 PAGE_MCP, PAGE_MCP_TOOL, PAGE_MCP_RESULT };
+                 PAGE_MCP, PAGE_MCP_TOOL, PAGE_MCP_RESULT, PAGE_GAME, PAGE_GAME_QUOTE, PAGE_GAME_STATUS, PAGE_GAME_PIN };
 enum rock_action {
     ACTION_NONE, ACTION_NAV, ACTION_DETAIL, ACTION_EDITOR, ACTION_RESULT, ACTION_REFRESH,
     ACTION_INSTALL, ACTION_APPROVE, ACTION_UPDATE, ACTION_ROLLBACK, ACTION_UNINSTALL,
@@ -32,7 +32,9 @@ enum rock_action {
     ACTION_AUTH_BEGIN, ACTION_AUTH_PIN, ACTION_AUTH_SIGN, ACTION_AUTH_BACK, ACTION_WALLET_TERMS, ACTION_DEVICE_ACTIVATE,
     ACTION_MCP_OPEN, ACTION_MCP_CONNECT, ACTION_MCP_DISCONNECT, ACTION_MCP_TOOL, ACTION_MCP_PREPARE,
     ACTION_MCP_SUBMIT, ACTION_MCP_RESULT, ACTION_MCP_RECONCILE, ACTION_MCP_EDIT,
-    ACTION_VERSION, ACTION_DISABLE
+    ACTION_VERSION, ACTION_DISABLE, ACTION_GAME_OPEN, ACTION_GAME_CONNECT, ACTION_GAME_QUOTE,
+    ACTION_GAME_APPROVAL, ACTION_GAME_SIGN, ACTION_GAME_BACK, ACTION_GAME_STATUS,
+    ACTION_GAME_RECONCILE, ACTION_GAME_CANCEL, ACTION_GAME_RETRY, ACTION_GAME_CREDIT
 };
 
 struct rock_hit {
@@ -65,6 +67,10 @@ struct rock_ui {
     json_object *wallet_auth, *auth_challenge, *atm_quote;
     char auth_pin[5], auth_local_key[40], auth_wallet_key[40];
     int auth_mode, auth_poll;
+    json_object *game_catalog, *game_history, *game_quote, *game_intent, *game_status, *game_pending;
+    char game_id[129], game_connection[40], game_exchange[129], game_ceremony_key[40], game_approval_key[40];
+    char game_error[300];
+    int game_mode, game_poll;
     char selected_id[201], selected_version[80], selected_job[201];
     char text[ROCK_UI_TEXT_MAX + 1], amount[32], search[ROCK_UI_SEARCH_MAX + 1];
     char message[512], connection_error[256], confirm_title[160];

@@ -45,6 +45,36 @@ PLATFORM_UID, WALLET_UID, UI_UID = 1002, 1003, 1000
 PLATFORM_SOCKET = '/run/rock-platform/api.sock'
 WALLET_SOCKET = '/run/rock-wallet/api.sock'
 POWER_SOCKET = '/run/rock-system/power.sock'
+GAME_READS = frozenset({'game.sandbox.catalog', 'game.connection.status', 'game.connection.list',
+                        'game.exchange.status', 'game.exchange.list'})
+
+
+def validate_game_request(request):
+    """Only owner operations cross this boundary; author/authority APIs never do."""
+    from game_exchange import protocol as game
+    op = request.get('op')
+    if op in ('game.sandbox.catalog', 'game.sandbox.connection.begin', 'game.sandbox.credit'):
+        game.canonical(request)
+        expected = {'v', 'op'} | ({'key', 'game_id'} if op.endswith('.begin') else set())
+        if op == 'game.sandbox.credit':
+            expected |= {'key', 'amount_minor'}
+        game.fields(request, expected)
+        game.require(type(request['v']) is int and request['v'] == 1, 'invalid game request version')
+        if op.endswith('.begin'):
+            game.identifier(request['key'], 128)
+            game.identifier(request['game_id'])
+        if op == 'game.sandbox.credit':
+            game.identifier(request['key'], 128)
+            game.integer(request['amount_minor'], 10000, 10000)
+        return request
+    if op in ('game.connection.begin', 'game.connection.approve', 'game.connection.status',
+              'game.connection.list', 'game.connection.revoke', 'game.connection.reconcile'):
+        return game.validate_owner_request(request)
+    if op in ('game.exchange.quote', 'game.exchange.approval.begin', 'game.exchange.approve',
+              'game.exchange.status', 'game.exchange.list', 'game.exchange.cancel', 'game.exchange.reconcile'):
+        from game_exchange.exchange_protocol import request as exchange_request
+        return exchange_request(request)
+    raise ValueError('unsupported owner game operation')
 
 
 def peer_uid(connection):
@@ -370,6 +400,25 @@ class Platform:
             return self.activation.dispatch(request, peer_uid=peer_uid)
         if isinstance(op, str) and op.startswith('atm.'):
             raise PermissionError('ATM assertions require the root Wallet socket, never the owner channel')
+        if isinstance(op, str) and op.startswith('game.'):
+            if peer_uid != UI_UID:
+                raise PermissionError('Game requests require the OS owner channel')
+            validate_game_request(request)
+            invalidate = op not in GAME_READS
+            try:
+                # Network work belongs to the separately owned Wallet facade.
+                # No Hub lock or cached entitlement is held across this call.
+                reply = call(self.wallet_socket, request, self.wallet_uid, return_errors=True)
+                invalidate = invalidate or reply.get('ok') is not True
+                return reply
+            except PermissionError:
+                raise
+            except (OSError, ValueError) as error:
+                invalidate = True
+                raise ServiceUnavailable('Game response unresolved; retry with the same key') from error
+            finally:
+                if self.wallet_view is not None and invalidate:
+                    self.wallet_view.invalidate()
         if isinstance(op, str) and op.startswith('mcp.'):
             if peer_uid != UI_UID:
                 raise PermissionError('MCP Hub requests require the OS owner channel')

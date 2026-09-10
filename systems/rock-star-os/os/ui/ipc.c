@@ -47,7 +47,8 @@ static int wait_fd(int fd, short events, int64_t deadline)
 int rock_auth_operation(const char *operation)
 {
     return operation && (!strcmp(operation, "auth.create") || !strcmp(operation, "auth.get") ||
-                         !strcmp(operation, "auth.status"));
+                         !strcmp(operation, "auth.status") || !strcmp(operation, "auth.game.connect") ||
+                         !strcmp(operation, "auth.game.exchange"));
 }
 
 json_object *rock_api_call(const char *socket_path, uid_t expected_uid,
