@@ -1,0 +1,67 @@
+{
+  "schema": "rock-final-native-clean-repeat-plan/1",
+  "created_utc": "2026-09-10T12:59:18.637720+00:00",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+  "image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+    "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+  },
+  "original_failed_report_sha256": "5a49bed70b8fb8ab328fb7a40c4e085591ce6e5e91abccb390984315a2e01340",
+  "original_main_log_sha256": "e7e8e958b89fe095df559f6abe17544d3bd7d3692ef9b646f9e36040d23fc141",
+  "original_errors": [
+    "test_connection_revoked_before_first_claim_creates_only_signed_rejection (test_game_exchange_races.ExchangeRaces.test_connection_revoked_before_first_claim_creates_only_signed_rejection)",
+    "test_expired_signed_approval_denial_is_permanent_then_explicit_new_quote_version (test_game_exchange_races.ExchangeRaces.test_expired_signed_approval_denial_is_permanent_then_explicit_new_quote_version)",
+    "test_owner_assertion_credential_revoked_before_first_claim_cannot_dispatch_new_apply (test_game_exchange_races.ExchangeRaces.test_owner_assertion_credential_revoked_before_first_claim_cannot_dispatch_new_apply)",
+    "test_real_apply_and_conditional_reject_race_has_one_durable_outcome (test_game_exchange_races.ExchangeRaces.test_real_apply_and_conditional_reject_race_has_one_durable_outcome)",
+    "test_revocation_after_claim_keeps_original_apply_authorized_and_receipt_recoverable (test_game_exchange_races.ExchangeRaces.test_revocation_after_claim_keeps_original_apply_authorized_and_receipt_recoverable)",
+    "test_each_issuer_cas_retains_rows_then_old_apply_refused_and_original_terminal_recovered (test_game_exchange_restore.ExchangeCurrentRestore.test_each_issuer_cas_retains_rows_then_old_apply_refused_and_original_terminal_recovered)",
+    "test_foreign_restore_or_mutated_game_journal_cannot_resume_epoch (test_game_exchange_restore.ExchangeCurrentRestore.test_foreign_restore_or_mutated_game_journal_cannot_resume_epoch)",
+    "test_foreign_receipt_and_malformed_receipt_cannot_release_hold (test_game_exchange_tls.ExchangeTLS.test_foreign_receipt_and_malformed_receipt_cannot_release_hold)",
+    "test_separate_author_credential_same_key_namespace_and_private_owner_redaction (test_game_exchange_tls.ExchangeTLS.test_separate_author_credential_same_key_namespace_and_private_owner_redaction)",
+    "test_signed_insufficient_denial_consumes_counter_and_never_later_approves (test_game_exchange_tls.ExchangeTLS.test_signed_insufficient_denial_consumes_counter_and_never_later_approves)"
+  ],
+  "original_error_count": 10,
+  "root_handoff_record_sha256": "3cb2392f03a1158a828bed557a49eea122c13c8db0bd1167b4f8c23933296901",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/var/tmp/rock-final-9abf78a/scripts/test-native.py",
+    "--output",
+    "/var/tmp/rock-release-os-20260910/final-9abf78a-native-clean-r2/native-tests"
+  ],
+  "canonical_script_sha256": "33f3a72fab2a7245ba53928591606bbc083bbd5fec2e4c34114e764396ea0ba6",
+  "orchestrator_sha256": "449df02b9efa3d3cd99ef472a2937a3c2fa8130b4aa2eec97ee24040bee8ecb0",
+  "execution_count": 1,
+  "source_change": false,
+  "deadline_change": false,
+  "source_tests_binding_change": false,
+  "required_checks": 14,
+  "required_python_executions": 1631,
+  "required_skips": 0,
+  "qemu_and_unittest_processes_at_start": [],
+  "free_ports": [
+    9443,
+    9444,
+    9641,
+    9642,
+    9643
+  ],
+  "environment": {
+    "uid": 501,
+    "gid": 1000,
+    "umask": "0022",
+    "path": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "platform": "Linux-6.12.95+deb13-cloud-arm64-aarch64-with-glibc2.41",
+    "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+    "loadavg": [
+      0.13671875,
+      0.048828125,
+      0.20703125
+    ],
+    "meminfo": "MemTotal:        6070256 kB\nMemFree:         1065516 kB\nMemAvailable:    5722980 kB\nBuffers:          146076 kB\nCached:          4461000 kB\nSwapCached:            0 kB\nActive:          1054536 kB\nInactive:        3597960 kB\nActive(anon):      33308 kB\nInactive(anon):    13700 kB\nActive(file):    1021228 kB\nInactive(file):  3584260 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:             0 kB\nSwapFree:              0 kB\nDirty:                 4 kB\nWriteback:             0 kB\nAnonPages:         45548 kB\nMapped:            28344 kB\nShmem:              1644 kB\nKReclaimable:     247100 kB\nSlab:             306296 kB\nSReclaimable:     247100 kB\nSUnreclaim:        59196 kB\nKernelStack:        1584 kB\nPageTables:         1404 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:     3035128 kB\nCommitted_AS:      76488 kB\nVmallocTotal:   135288315904 kB\nVmallocUsed:        6836 kB\nVmallocChunk:          0 kB\nPercpu:             1168 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:      8192 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:          65536 kB\nCmaFree:             384 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\n",
+    "disk_free_bytes": 10796269568
+  },
+  "interpretation": "A repeat does not establish the cause of the original TLS failures; original failure and original CI freeze binding remain unchanged."
+}
