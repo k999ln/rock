@@ -1,0 +1,39 @@
+# No default-branch bootstrap, candidate access, QEMU, secrets or evidence upload.
+name: rc2 D4 capacity admission only
+on:
+  push:
+    branches: [codex/rockstaros-launch-candidate-20260910]
+    paths: ['.github/workflows/d4-capacity-probe.yml']
+permissions: {}
+concurrency:
+  group: rc2-d4-capacity-only
+  cancel-in-progress: false
+jobs:
+  capacity:
+    if: github.repository == 'k999ln/rock' && github.ref == 'refs/heads/codex/rockstaros-launch-candidate-20260910'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Record actual resources before any candidate transport
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, pathlib, platform, shutil, sys
+          gib = 1024 ** 3
+          workspace = pathlib.Path(os.environ['GITHUB_WORKSPACE']).resolve()
+          measured = {name: {'free_bytes': shutil.disk_usage(path).free,
+                            'filesystem_device': os.stat(path).st_dev}
+                      for name, path in [('workspace', workspace), ('var_tmp', pathlib.Path('/var/tmp'))]}
+          cpus = len(os.sched_getaffinity(0))
+          ram = os.sysconf('SC_PHYS_PAGES') * os.sysconf('SC_PAGE_SIZE')
+          passed = all(x['free_bytes'] >= 31 * gib for x in measured.values()) and cpus >= 4 and ram >= 4 * gib
+          print(json.dumps({'status': 'CAPACITY_ONLY_PASS' if passed else 'CAPACITY_REJECTED',
+              'run_id': os.environ['GITHUB_RUN_ID'], 'run_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+              'workflow_commit': os.environ['GITHUB_SHA'], 'machine': platform.machine(),
+              'measured': measured, 'cpus': cpus, 'ram_bytes': ram,
+              'minimum_pre_dependency_free_bytes': 31 * gib,
+              'required_after_dependency_free_bytes': 27 * gib,
+              'candidate_downloaded': False, 'booted': False, 'not_D4_acceptance': True}, sort_keys=True))
+          sys.exit(0 if passed else 1)
+          PY
