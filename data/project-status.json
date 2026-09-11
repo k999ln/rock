@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-10",
+  "updatedAt": "2026-09-11",
   "milestone": "RockstarOS 1.0 ローンチ準備・Hubのユーザー体験改善",
-  "nextAction": "9月11日: TLS受信の先読み修正は75件、将来のowner許諾照合と候補/署名は55件PASS（hash検証中の増大/縮小も拒否）。新しい固定sourceを独立VMでbuild/freezeし、legal-info・未署名候補・同一image受入を実測する。原TLS原因は未確定。Sites再接続・license/CM/reviewer決定・PR #5限定mergeは回答待ち。一般公開と製品main mergeは行わない。",
+  "nextAction": "9月11日: b7/rc2の二回生成、GitHub全8資産の実取得、専用VMへの導入・3起動・Hub保存・通常再起動・中断復旧と台帳読戻しは内部PASS。正式署名と製品license/許諾、元Sitesアカウントの再接続、CM確定掲載と最新候補の残る全受入が必要。Web導線はローカルで修正・検証済み。一般公開と製品main mergeは最終承認待ち。",
   "tasks": [
     {
       "id": "R01",
@@ -273,7 +273,7 @@
     },
     {
       "id": "V01",
-      "title": "最新統合sourceからQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す",
+      "title": "旧9abf78a候補のQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す（現rc2へ転用しない）",
       "status": "done",
       "dependsOn": [
         "B04"
@@ -530,7 +530,7 @@
     {
       "id": "V01-BOOT",
       "task": "V01",
-      "title": "OS起動・安全基礎（V01全体の合格ではない）",
+      "title": "旧b8287bc候補のOS起動・安全基礎（現rc2の全体合格ではない）",
       "status": "done",
       "dependsOn": [
         "B04-INTEGRATED"
@@ -574,7 +574,7 @@
     {
       "id": "V01-ACCEPT",
       "task": "V01",
-      "title": "同一OS候補でD0〜D6縦断合格",
+      "title": "旧9abf78a候補でD0〜D6縦断合格（現rc2へ転用しない）",
       "status": "done",
       "dependsOn": [
         "V01-BOOT",
@@ -682,7 +682,7 @@
     {
       "id": "PREVIEW-INSTALL",
       "task": "RLS01",
-      "title": "fresh環境でDeveloper Previewの導入・起動・保存・復旧・削除を完走",
+      "title": "旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない）",
       "status": "done",
       "dependsOn": [
         "V01-ACCEPT"
@@ -710,7 +710,7 @@
     "status": "BLOCKED_FOR_LAUNCH",
     "startingSourceCommit": "29e4f7203f72d9949e2dfc90b64c4215d4bbb765",
     "mainCommit": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
-    "distributionCommit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+    "distributionCommit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
     "publicRelease": false,
     "mainMerged": false,
     "sitesSourceCommit": "c6942d5ef72e9dd16345b9363e68e0e18ca25079",
@@ -729,7 +729,7 @@
     "recordedNativeSkips": 0,
     "recordedWebTests": 93,
     "currentHeadValidation": "See exact HEAD checks of PR4; recorded snapshot is not a self-attestation of later commits",
-    "unsignedCandidatePreparation": "IMPLEMENTED_FIXTURES_PASS_NEW_FREEZE_REQUIRED",
+    "unsignedCandidatePreparation": "RC2_REPRODUCIBLE_ALL8_GITHUB_DOWNLOADED_VERIFIED",
     "signingBootstrapPr": 5,
     "signingBootstrapCommit": "a4411622031858d6d9684c599d857cadaf90bb94",
     "signingBootstrapApproval": "AWAITING_EXPLICIT_LIMITED_MAIN_APPROVAL",
@@ -740,7 +740,14 @@
     "signingPreflightCompatibility": "PERSONAL_REPOSITORY_GRAPHQL_EXPLICIT_ZERO_FIX_27_TESTS_PASS",
     "resumedAt": "2026-09-11",
     "tlsReceiveOptimization": "LOCAL_75_PASS_HISTORICAL_CAUSE_UNDETERMINED",
-    "freshCandidateBuild": "FRESH_BUILD_PENDING_AFTER_HOST_HASH_BOUND_FIX",
-    "detachedLegalApproval": "VERIFIER_55_PASS_NO_OWNER_APPROVAL"
+    "freshCandidateBuild": "B7_BUILD_FREEZE_COMPLETE_20260911",
+    "detachedLegalApproval": "VERIFIER_55_PASS_NO_OWNER_APPROVAL",
+    "previousDistributionCommit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+    "distributionVersion": "1.0.0-preview.20260911-rc2",
+    "latestDistributionAcceptance": "PASS_INTERNAL_INSTALL_SAVE_RESTART_SAME_VM_INTERRUPTED_RECOVERY",
+    "latestDistributionAcceptanceEvidence": "docs/os-acceptance-b7d819c-20260911.md",
+    "distributionTrust": "UNSIGNED_CANDIDATE_SEPARATE_PUBLIC_TEST_ACCEPTANCE_ENVELOPE",
+    "ownerRightsDeclaration": "RECEIVED_OWN_WORKS_RELEASE_LICENSE_AND_CLEARANCE_UNSET",
+    "localDownloadFlow": "PASS_RC2_GUIDE_AND_PC_ZIP_HOSTED_ACCESS_BLOCKED"
   }
 }

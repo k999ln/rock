@@ -97,14 +97,14 @@ export function DeviceConnection() {
               </li>
               <li>
                 展開したフォルダの「Rock star接続.command」を開く（macOS /
-                Python 3.10以上）。
+                Python 3.13以上）。
               </li>
               <li>
                 この画面で「このPCを接続」を押す。2回目からも、接続アプリの起動だけで使えます。
               </li>
             </ol>
             <p className="subnote">
-              このPCのアプリが動いている間だけ接続できます。OSの自動起動は設定しません。Windowsでは同梱READMEの起動方法を使ってください。
+              このPCのアプリが動いている間だけ接続できます。OSの自動起動は設定しません。LinuxはPython 3.10以上が必要です。Windowsでは出典整理のMCP実行に未対応です。詳しい対応範囲は同梱READMEで確認してください。
             </p>
           </details>
         </section>
