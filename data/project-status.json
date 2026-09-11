@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
   "milestone": "RockstarOS 1.0 ローンチ準備・Hubのユーザー体験改善",
-  "nextAction": "9月11日: TLS受信の先読み修正は75件、将来のowner許諾照合と候補/署名は53件PASS。新しい固定sourceを独立VMでbuild/freezeし、legal-info・未署名候補・同一image受入を実測する。原TLS原因は未確定。Sites再接続・license/CM/reviewer決定・PR #5限定mergeは回答待ち。一般公開と製品main mergeは行わない。",
+  "nextAction": "9月11日: TLS受信の先読み修正は75件、将来のowner許諾照合と候補/署名は55件PASS（hash検証中の増大/縮小も拒否）。新しい固定sourceを独立VMでbuild/freezeし、legal-info・未署名候補・同一image受入を実測する。原TLS原因は未確定。Sites再接続・license/CM/reviewer決定・PR #5限定mergeは回答待ち。一般公開と製品main mergeは行わない。",
   "tasks": [
     {
       "id": "R01",
@@ -740,7 +740,7 @@
     "signingPreflightCompatibility": "PERSONAL_REPOSITORY_GRAPHQL_EXPLICIT_ZERO_FIX_27_TESTS_PASS",
     "resumedAt": "2026-09-11",
     "tlsReceiveOptimization": "LOCAL_75_PASS_HISTORICAL_CAUSE_UNDETERMINED",
-    "freshCandidateBuild": "NEW_ISOLATED_VM_PROVISIONING_NOT_BUILT",
-    "detachedLegalApproval": "VERIFIER_53_PASS_NO_OWNER_APPROVAL"
+    "freshCandidateBuild": "FRESH_BUILD_PENDING_AFTER_HOST_HASH_BOUND_FIX",
+    "detachedLegalApproval": "VERIFIER_55_PASS_NO_OWNER_APPROVAL"
   }
 }

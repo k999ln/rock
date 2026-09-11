@@ -84,14 +84,21 @@ def read_file(path, limit=MAX_METADATA):
 
 def file_record(path):
     fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
-    with os.fdopen(fd, 'rb') as stream:
+    with os.fdopen(fd, 'rb', buffering=0) as stream:
         before = os.fstat(stream.fileno())
         require(stat.S_ISREG(before.st_mode) and before.st_nlink == 1 and 0 <= before.st_size <= MAX_ASSET, 'unsafe asset')
-        digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+        digest = hashlib.sha256()
+        remaining = before.st_size
+        while remaining:
+            chunk = stream.read(min(1024**2, remaining))
+            require(chunk, 'asset changed during hash')
+            remaining -= len(chunk)
+            digest.update(chunk)
+        require(not stream.read(1), 'asset changed during hash')
         after = os.fstat(stream.fileno())
         require((before.st_ino, before.st_size, before.st_mtime_ns, before.st_ctime_ns) ==
                 (after.st_ino, after.st_size, after.st_mtime_ns, after.st_ctime_ns), 'asset changed during hash')
-        return {'sha256': digest, 'bytes': before.st_size}
+        return {'sha256': digest.hexdigest(), 'bytes': before.st_size}
 
 
 def pinned(path, expected):

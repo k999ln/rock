@@ -4,7 +4,7 @@
 
 ## 9月11日の再開
 
-9月11日追加実装: TLSの1byte受信増幅を最大8KiBの先読みで修正し、期限・header/body上限・単一requestを維持した。修正前の18件中4FAIL→修正後18件＋関連57件＝75PASS/skip0、独立reviewも所見なし。同じ承認経路に4ms/recvを加えた制御実験は旧実装がheader受信中に1秒timeout、新実装は49〜52msで成功したが、原TLS原因の確定ではない。将来のowner許諾を変更しないcandidate bytesへ照合する別置き検証器を追加し、新11＋既存42＝53fixture PASS。所有者の実承認は未受領。旧VM/9ab配布物を保持して、新しい隔離VMで新sourceのbuildを準備中。新image/D0〜D6は未実施、Sitesは再度NOT_FOUND、license/CM/reviewer/PR #5限定mergeは回答待ち。 [開始時のSHA別CI](evidence/launch/ci-0b9f37e.json)。
+9月11日追加実装: TLSの1byte受信増幅を最大8KiBの先読みで修正し、期限・header/body上限・単一requestを維持した。修正前の18件中4FAIL→修正後18件＋関連57件＝75PASS/skip0、独立reviewも所見なし。同じ承認経路に4ms/recvを加えた制御実験は旧実装がheader受信中に1秒timeout、新実装は49〜52msで成功したが、原TLS原因の確定ではない。将来のowner許諾を変更しないcandidate bytesへ照合する別置き検証器を追加し、新11＋既存44＝55fixture PASS。所有者の実承認は未受領。旧VM/9ab配布物を保持して、新しい隔離VMで新sourceのbuildを準備中。配布hash検証は開始時のfile size＋1byteまでに制限し、検証中の増大/縮小を拒否する。新image/D0〜D6は未実施、Sitesは再度NOT_FOUND、license/CM/reviewer/PR #5限定mergeは回答待ち。 [開始時のSHA別CI](evidence/launch/ci-0b9f37e.json)。
 
 ## 正本と境界
 
@@ -43,7 +43,7 @@ Draft編集後のURL変化と新旧証拠の取り違えを避けるため、[ta
 
 ## LCH02 — 配布条件: AWAITING_OWNER_LICENSE_DECISION
 
-9月11日: [別置きowner許諾の検証手順](owner-legal-approval.md)を実装。明示許諾と現行失効policyの独立pinを要求し、全asset/manifest/archive/materialのbytesを再検証する。copy競合・期限切れ・失効・不一致を拒否する53fixture PASS。build時のNOT_CLEARED/CANDIDATEを変更しない。本番release gateへの接続と実許諾は未実施。
+9月11日: [別置きowner許諾の検証手順](owner-legal-approval.md)を実装。明示許諾と現行失効policyの独立pinを要求し、全asset/manifest/archive/materialのbytesを再検証する。copy競合・期限切れ・失効・不一致を拒否する55fixture PASS。build時のNOT_CLEARED/CANDIDATEを変更しない。本番release gateへの接続と実許諾は未実施。
 
 [一枚の判断資料](evidence/launch/legal/decision-one-page.md)にApache-2.0/MPL-2.0/評価用独自条件の比較、推薦理由、権利者が決める範囲を記録した。製品全体のLICENSEを推測で追加していない。
 

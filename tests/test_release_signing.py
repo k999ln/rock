@@ -24,6 +24,53 @@ PUBLIC_FIXTURE_SEEDS = (
 )
 
 
+class AssetHashBoundsTests(unittest.TestCase):
+    def hash_after_resize(self, size):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / 'asset'
+            path.write_bytes(b'init')
+            real_fstat, real_fdopen = os.fstat, os.fdopen
+            observed = {'reads': 0, 'stats': 0}
+
+            class CountedStream:
+                def __init__(self, stream): self.stream = stream
+                def __enter__(self): return self
+                def __exit__(self, *args): self.stream.close()
+                def fileno(self): return self.stream.fileno()
+                def readable(self): return self.stream.readable()
+                def read(self, size=-1):
+                    data = self.stream.read(size)
+                    observed['reads'] += len(data)
+                    return data
+                def readinto(self, buffer):
+                    count = self.stream.readinto(buffer)
+                    observed['reads'] += count
+                    return count
+
+            def resize_after_stat(fd):
+                info = real_fstat(fd)
+                observed['stats'] += 1
+                if observed['stats'] == 1:
+                    with path.open('r+b') as writer:
+                        writer.truncate(size)
+                return info
+
+            with patch.object(signing, 'MAX_ASSET', 16), \
+                    patch.object(signing.os, 'fstat', side_effect=resize_after_stat), \
+                    patch.object(signing.os, 'fdopen', side_effect=lambda *a, **k: CountedStream(real_fdopen(*a, **k))):
+                with self.assertRaisesRegex(ValueError, 'asset changed during hash'):
+                    signing.file_record(path)
+            return observed['reads']
+
+    def test_growth_during_hash_rejected_with_initial_size_budget(self):
+        # The pre-hash stat sees 4 bytes; later growth must not make us consume
+        # the entire 64-byte input, even though the global asset bound is 16.
+        self.assertLessEqual(self.hash_after_resize(64), 5)
+
+    def test_shrink_during_hash_rejected_without_reading_past_original_size(self):
+        self.assertEqual(self.hash_after_resize(2), 2)
+
+
 class SigningTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
