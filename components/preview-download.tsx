@@ -27,10 +27,10 @@ export function PreviewDownload() {
           <strong>最新候補を、公開前に確認しています。</strong>
           <p>
             {download.reviewCandidate.version} は正式署名と配布準備を進めている候補です。
-            候補ファイルは、リポジトリを管理する方のGitHubアカウントで開けます。
+            リポジトリを管理する方のGitHubアカウントで、配布候補の一覧からこの版を選んでください。
             一般向けの配布はまだ始めていません。
           </p>
-          <p><a className={styles.textLink} href={download.reviewCandidate.url}>管理者向けの候補ファイルを開く ↗</a></p>
+          <p><a className={styles.textLink} href={download.reviewCandidate.url}>管理者向けの配布候補一覧を開く ↗</a></p>
           <p className={styles.scope}>
             未署名の候補をそのままインストールすることはできません。
           </p>

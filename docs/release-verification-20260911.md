@@ -22,7 +22,7 @@
 
 元project `appgprj_6a9b70d966fc8191a1ec30efce14582d` は公式Sites getでNOT_FOUND。管理可能一覧の全ページにも該当なし。元アカウントでの再接続を依頼し、同じproject IDと既存D1/PWA/APIを保持する。代替Siteの作成、元DBの初期化、公開先の変更は行っていない。
 
-PC接続画面のPython要件を配布ZIPのREADMEと一致させた。macOS 3.13以上・Linux 3.10以上、Windowsの出典整理MCPは未対応。ZIPと固定vendor原本のbytesは変更しない。OS候補の導線は新rc2の管理者向けDraftへ接続し、未署名・一般配布前を表示。旧9abの動画・記録は版を明記した。localhostの案内→導入ガイドを実ブラウザで確認し、HTML2ページ・ZIP/動画/画像/字幕はHTTP200、全asset bytes一致。最終npm run verifyもPASS。既存Sites上での表示・認証・配布は接続待ちで未確認。
+PC接続画面のPython要件を配布ZIPのREADMEと一致させた。macOS 3.13以上・Linux 3.10以上、Windowsの出典整理MCPは未対応。ZIPと固定vendor原本のbytesは変更しない。OS候補の導線は管理者向けのGitHub Releases一覧へ接続し、新rc2を選ぶよう案内。Draft本文の更新でuntagged URLが変わることを実測したため、変動するURLを固定リンクとして使わない。未署名・一般配布前を表示。旧9abの動画・記録は版を明記した。localhostの案内→導入ガイドを実ブラウザで確認し、HTML2ページ・ZIP/動画/画像/字幕はHTTP200、全asset bytes一致。最終npm run verifyもPASS。既存Sites上での表示・認証・配布は接続待ちで未確認。
 
 ## 再開位置
 
