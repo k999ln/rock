@@ -1,0 +1,28 @@
+{
+  "date": "2026-09-11",
+  "copyrightHolder": "kaiya",
+  "ownCodeIntent": {
+    "modificationAllowed": true,
+    "redistributionAllowed": true,
+    "specificLicense": null,
+    "proposal": "MIT",
+    "proposalStatus": "AWAITING_OWNER_SELECTION"
+  },
+  "signing": {
+    "independentReviewer": null,
+    "interpretation": "No second reviewer supplied; owner-only path proposed",
+    "proposedMode": "OWNER_MANUAL",
+    "status": "PROPOSED_NOT_EXECUTED",
+    "keyProvisioned": false
+  },
+  "sites": {
+    "decision": "CREATE_NEW_SITE",
+    "audience": "owner-only",
+    "restoreOldDatabase": false
+  },
+  "campaign": {
+    "status": "IN_PRODUCTION",
+    "selectedFile": null
+  },
+  "releaseStatus": "BLOCKED_FOR_LAUNCH"
+}

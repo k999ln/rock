@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-11",
   "milestone": "RockstarOS 1.0 ローンチ準備・Hubのユーザー体験改善",
-  "nextAction": "9月11日: b7/rc2の二回生成、GitHub全8資産の実取得、専用VMへの導入・3起動・Hub保存・通常再起動・中断復旧と台帳読戻しは内部PASS。正式署名と製品license/許諾、元Sitesアカウントの再接続、CM確定掲載と最新候補の残る全受入が必要。Web導線はローカルで修正・検証済み。一般公開と製品main mergeは最終承認待ち。",
+  "nextAction": "kaiyaの権利者表記と改変・再配布許可の意向を受領。MIT草案、本人署名経路、新規Sites本人限定公開を準備する。CMは制作途中。正式署名・license最終選択・キャンセル／メモリの追加確認と最終候補受入は未完了。一般公開/main mergeは未実施。",
   "tasks": [
     {
       "id": "R01",
@@ -71,14 +71,14 @@
     {
       "id": "R07",
       "title": "本人限定のSitesへ公開・本番確認",
-      "status": "blocked",
-      "reason": "既存Sitesの固有機能を保持する統合が必要。2026-09-10は既存projectを接続accountから取得できず、別projectを作らず停止",
+      "status": "in_progress",
       "dependsOn": [
         "R06"
       ],
       "evidence": [
         "docs/deployment-integration.md",
-        "docs/release-followup-20260910.md"
+        "docs/release-followup-20260910.md",
+        "docs/owner-setup-20260911.md"
       ]
     },
     {
@@ -480,16 +480,17 @@
     },
     {
       "id": "LCH04",
-      "title": "既存Sites履歴の統合・本人限定プレビュー・Hub改善",
+      "title": "Sites履歴のコード統合・新規本人限定サイト・Hub改善",
       "status": "in_progress",
       "dependsOn": [],
       "evidence": [
-        "docs/launch-readiness-20260910.md"
+        "docs/launch-readiness-20260910.md",
+        "docs/owner-setup-20260911.md"
       ]
     },
     {
       "id": "LCH05",
-      "title": "完成CMの特定・表示内容の照合・導入案内への接続",
+      "title": "制作中CMの完成待ち・内容照合・導入案内への接続",
       "status": "in_progress",
       "dependsOn": [],
       "evidence": [

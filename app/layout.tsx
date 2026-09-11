@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   description:
     '自分の仕事に合うツールを選び、実行して、結果を確かめる。RockstarOSの自動化HubとDeveloper Preview。',
   applicationName: 'RockstarOS',
+  authors: [{ name: 'kaiya' }],
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',

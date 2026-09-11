@@ -1,0 +1,16 @@
+{
+  "date": "2026-09-11",
+  "requestedBy": "kaiya",
+  "request": "Sitesを新規作成",
+  "previousHosting": {
+    "project_id": "appgprj_6a9b70d966fc8191a1ec30efce14582d",
+    "d1": "DB",
+    "r2": null
+  },
+  "previousSiteReadback": "NOT_FOUND",
+  "newSiteStatus": "REGISTERED_NOT_DEPLOYED",
+  "dataPolicy": "New empty D1. Preserve old project and database; no claim of history restoration.",
+  "sourceBase": "98ead9689a7021afc63b57b53f8611229a4b20f3",
+  "audience": "owner-only",
+  "newProjectId": "appgprj_6aa444b6e6508191a19f16405d0be927"
+}

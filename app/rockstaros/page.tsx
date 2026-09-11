@@ -267,7 +267,7 @@ export default function RockstarPreview() {
         </div>
       </section>
       <footer className={styles.footer}>
-        <span>RockstarOS 1.0 Developer Preview</span>
+        <span>RockstarOS 1.0 Developer Preview · © 2026 kaiya</span>
         <Link href="/">
           自動化Hubへ <span aria-hidden="true">↗</span>
         </Link>

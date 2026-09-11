@@ -1,5 +1,7 @@
 # Rock star OS — 自動化HubとWallet
 
+公開設定・本人限定サイトの状況は[今回の設定記録](docs/owner-setup-20260911.md)を参照。
+
 tob側の自動化ツールを商品として管理するHubと、自動化で得たお金を管理するWalletに特化したOSを開発します。実行場所、料金、資格、ライセンスの違いを扱い、利用準備・日々の管理・結果とお金の確認に伴う不便を減らします。
 
 **製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ17）です。** [プロンプト作成規約](docs/prompt-playbook.md)、[OS稼働・ゲーム連携監査](docs/os-readiness-audit-20260909.md)、[最新の実行プロンプト](docs/prompts/rockstaros-release-20260910.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を保存しています。同一9ab候補の限定受入と統合1a2f4d1のCIは完了しました。[今回の実行checkpoint](docs/release-execution-20260910.md)と[最新の進捗・CM完成後の残件](docs/release-followup-20260910.md)に結果を記録しています。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持。文書保存と実装・実機/本番合格は別です。
@@ -41,7 +43,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) · [記録](docs/native-ci-partition-fix-20260910.md) |
 | R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 | R06 | ブラウザで仕事の一連の操作を確認 | 完了 | [記録](docs/validation.md) |
-| R07 | 本人限定のSitesへ公開・本番確認 | 停止中: 既存Sitesの固有機能を保持する統合が必要。2026-09-10は既存projectを接続accountから取得できず、別projectを作らず停止 | [記録](docs/deployment-integration.md) · [記録](docs/release-followup-20260910.md) |
+| R07 | 本人限定のSitesへ公開・本番確認 | 進行中 | [記録](docs/deployment-integration.md) · [記録](docs/release-followup-20260910.md) · [記録](docs/owner-setup-20260911.md) |
 | R08 | 検証結果・公開停止理由と再開設計の文書化 | 完了 | [記録](project.md) · [記録](docs/validation.md) · [記録](docs/deployment-integration.md) |
 | OS01 | 既存設計の要件追跡と自動化OS開発設計 | 完了 | [記録](docs/os-development-design.md) |
 | OS02 | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 未着手 | [記録](docs/os-development-design.md) |
@@ -72,8 +74,8 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | LCH01 | TLS／累積timeoutの原因と最終CIの照合 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | LCH02 | 全同梱物inventory・対応source・製品LICENSEの明示決定 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | LCH03 | production署名・保護環境・失効運用 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
-| LCH04 | 既存Sites履歴の統合・本人限定プレビュー・Hub改善 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
-| LCH05 | 完成CMの特定・表示内容の照合・導入案内への接続 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH04 | Sites履歴のコード統合・新規本人限定サイト・Hub改善 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/owner-setup-20260911.md) |
+| LCH05 | 制作中CMの完成待ち・内容照合・導入案内への接続 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 
@@ -95,7 +97,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: 9月11日: b7/rc2の二回生成、GitHub全8資産の実取得、専用VMへの導入・3起動・Hub保存・通常再起動・中断復旧と台帳読戻しは内部PASS。正式署名と製品license/許諾、元Sitesアカウントの再接続、CM確定掲載と最新候補の残る全受入が必要。Web導線はローカルで修正・検証済み。一般公開と製品main mergeは最終承認待ち。
+次の作業: kaiyaの権利者表記と改変・再配布許可の意向を受領。MIT草案、本人署名経路、新規Sites本人限定公開を準備する。CMは制作途中。正式署名・license最終選択・キャンセル／メモリの追加確認と最終候補受入は未完了。一般公開/main mergeは未実施。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
