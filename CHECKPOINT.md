@@ -1,5 +1,9 @@
 # ローンチ準備の現在入口
 
+## 2026-09-12 — 現進捗の再監査
+
+[現在の開発状態の2026-09-12節](docs/current-state-20260911.md#2026-09-12--github実装実機版ビルド環境の再監査)を最初に読む。Draft PR #4の`c182a5b`は同HEAD 12 check成功だが、スマホ版はsource準備でOS bootではない。Pixel 7／`panther`の相談と既存Pixel 10／`frankel`設定が不一致のため、実機確認前に全OS buildを開始しない。クラウド候補と20〜30 USDの安全側計画枠は未承認。runtime、Site、端末、mainは変更していない。
+
 ## 2026-09-11 — 開発本体へスマホ準備と現状を統合
 
 現在の入口は[統合した開発状態](docs/current-state-20260911.md)、次の指示は[再開手順](docs/prompts/rock-current-next-20260911.md)。スマホ準備3eeeeedをlaunch-candidateへ取り込み、旧QEMU受入、本人限定Site公開、CM制作途中、MIT/署名鍵/クラウド予算の未回答を同期した。main・配布image・Sites配信は今回変更していない。

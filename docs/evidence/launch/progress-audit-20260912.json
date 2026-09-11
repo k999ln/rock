@@ -1,0 +1,110 @@
+{
+  "schema": "rock-progress-audit/1",
+  "recordedAt": "2026-09-11T19:48:23Z",
+  "calendarDateAsiaTokyo": "2026-09-12",
+  "repository": "k999ln/rock",
+  "main": {
+    "branch": "main",
+    "commit": "7cdbb5fedc86ee3978ed329d9312147d137c9199"
+  },
+  "candidate": {
+    "branch": "codex/rockstaros-launch-candidate-20260910",
+    "commit": "c182a5b9c8f5f4da59528a41980eb98750ebd234",
+    "pullRequest": 4,
+    "state": "OPEN",
+    "draft": true,
+    "mergeStateStatus": "CLEAN",
+    "checks": {
+      "total": 12,
+      "successful": 12,
+      "failed": 0,
+      "phoneWorkflowScope": "Phone source preparation (not OS boot)"
+    }
+  },
+  "openPullRequests": {
+    "count": 6,
+    "numbers": [1, 2, 3, 4, 5, 6],
+    "draftNumbers": [2, 3, 4, 5, 6]
+  },
+  "taskSummary": {
+    "tasks": {
+      "total": 41,
+      "done": 19,
+      "inProgress": 15,
+      "planned": 7
+    },
+    "phaseGates": {
+      "total": 13,
+      "done": 10,
+      "planned": 3
+    },
+    "completionPercentageClaimed": false,
+    "reason": "Task and gate sizes differ and do not represent whole-product or phone-OS completion percentages."
+  },
+  "validatedScopes": {
+    "qemuDeveloperPreview": "Internal rc2 install, boot, save, restart and same-VM interrupted recovery with additional scoped acceptance evidence",
+    "androidP1": "Two normal-permission APKs with SQLite, Binder and JobScheduler under emulator CI",
+    "web": "Hub-oriented source and owner-only deployment; authenticated production QA not run",
+    "phone": "Source lock, product make inclusion and preparation/build/diagnostic entry points only"
+  },
+  "notValidated": [
+    "full GrapheneOS source sync and vendor generation on the actual source tree",
+    "Soong full OS build and target-files or OTA/factory image output",
+    "Android Hub, Wallet and Game product-layer port",
+    "production AVB, APK, APEX and OTA signing and updater service",
+    "physical device flashing, first boot, hardware, CTS, VTS, SELinux, OTA rollback and stock recovery",
+    "real payment or revenue provider and designated real-game sandbox",
+    "public release and main merge"
+  ],
+  "physicalDevicePreview": {
+    "status": "SOURCE_INTEGRATION_NOT_BUILT",
+    "configuredCandidate": "Pixel 10 / frankel",
+    "recentConsultationTarget": "Pixel 7 / panther mentioned but not device-confirmed",
+    "targetConfirmed": false,
+    "fullOsBuild": "NOT_RUN",
+    "physicalBoot": "NOT_RUN",
+    "flashReady": false
+  },
+  "cloudBuildResearch": {
+    "cloudProvisioned": false,
+    "spendAuthorized": false,
+    "gpuRequired": false,
+    "previousProposalExcludingTaxUsd": 10,
+    "saferPlanningRangeExcludingTaxUsd": {
+      "minimum": 20,
+      "maximum": 30,
+      "approved": false
+    },
+    "recommendedFirstBuild": {
+      "provider": "DigitalOcean",
+      "plan": "CPU-Optimized Regular",
+      "vcpus": 48,
+      "memoryGiB": 96,
+      "storageGiB": 600,
+      "publishedHourlyPriceUsd": 1.5,
+      "os": "Ubuntu 24.04 LTS x86_64"
+    },
+    "alternative": {
+      "provider": "Google Cloud Compute Engine",
+      "vcpus": "16-32",
+      "memoryGiB": "64-128",
+      "persistentDiskGiB": "600-1024",
+      "note": "Stopped VMs continue to incur persistent disk charges until the disk is deleted."
+    },
+    "sources": [
+      "https://source.android.com/docs/setup/start/requirements",
+      "https://grapheneos.org/build",
+      "https://www.digitalocean.com/pricing/droplets",
+      "https://docs.digitalocean.com/products/droplets/details/pricing/",
+      "https://cloud.google.com/compute/disks-image-pricing"
+    ]
+  },
+  "mutationsPerformedByAudit": {
+    "runtime": false,
+    "osImage": false,
+    "siteDeployment": false,
+    "cloudResource": false,
+    "device": false,
+    "mainMerge": false
+  }
+}

@@ -1,5 +1,7 @@
 # スマホへ書き込むRockstarOSの開発
 
+2026-09-12再監査: 直近相談ではPixel 7が対象として挙がったが、この文書と現在のsource lockはPixel 10／`frankel`用。Pixel 7なら`panther`へ固定し直す必要があるため、実機の型番／SKUを読取り専用で確認するまで全OS buildを開始しない。32 vCPU／64GiB／400GiBはAOSPの400GB空き要件に対する余裕が小さい。初回の安全側候補をDigitalOcean 48 vCPU／96GiB／600GiB、1.50 USD/時、計画枠20〜30 USD（未承認）とし、Google Cloud 16〜32 vCPU／64〜128GB／600GB〜1TBを反復build向け代替とする。GPUは不要。契約・課金・端末操作は未実施。[全体の再監査](current-state-20260911.md#2026-09-12--github実装実機版ビルド環境の再監査)。
+
 ソース準備はlaunch-candidateへ統合済み。[現在の全体状態](current-state-20260911.md)と[再開指示](prompts/rock-current-next-20260911.md)を優先する。前回のクラウド初回サーバー代税別10 USD案は未承認で、今回のGit統合指示は支払い承認ではない。
 
 2026-09-11の利用者指示「スマホ本体にOSを書き込める版を作成して」を受領し、実機版の開発を開始した。利用できるLinux PC／サーバーはないとの回答を受領。以前のPixel 10／GrapheneOSを候補にソース統合を準備したが、今回の対象機種・地域SKUの再確認は未回答。BlackBerry優先という以前の方針を、Pixel対応完了へ読み替えない。

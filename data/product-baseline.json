@@ -135,5 +135,6 @@
     "finalCheckpointAt": "2026-09-10T13:45:19.822614+00:00",
     "followup": "docs/release-followup-20260910.md"
   },
+  "latestProgressAudit": "docs/evidence/launch/progress-audit-20260912.json",
   "currentStateDocument": "docs/current-state-20260911.md"
 }

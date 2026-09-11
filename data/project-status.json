@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-11",
-  "milestone": "RockstarOS 1.0 ローンチ候補とスマホ版準備の統合",
-  "nextAction": "現在の入口はdocs/current-state-20260911.md。スマホ版の機種/SKUとLinux環境を確認し、固定sourceの全OS buildとHub/Wallet/Game移植へ進む。初回クラウド代税別10 USDは提案未承認、環境未作成。本人限定Sitesのログイン後確認、MIT採用/署名鍵、制作中CM、取消実停止/RSS/正式配布受入も残る。一般公開/main mergeは未実施。",
+  "updatedAt": "2026-09-12",
+  "milestone": "RockstarOS 1.0の現進捗を再監査（実装状態は据え置き）",
+  "nextAction": "現在の入口はdocs/current-state-20260911.mdの2026-09-12節。直近相談のPixel 7/pantherと既存設定のPixel 10/frankelが不一致のため、実機の型番/SKUを読取り専用で確認して対象を一つに固定する。その後、未承認のクラウド計画（推奨48 vCPU/96GiB/600GiB、初回計画20〜30 USD）を確定し、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/GameのAndroid移植へ進む。本人限定Sites QA、license/production署名、取消実停止/RSS、CM、正式配布受入、一般公開/main mergeも未完了。",
   "tasks": [
     {
       "id": "R01",
@@ -400,7 +400,8 @@
       "evidence": [
         "docs/native-os-integration.md",
         "docs/phone-preview-20260911.md",
-        "docs/current-state-20260911.md"
+        "docs/current-state-20260911.md",
+        "docs/evidence/launch/progress-audit-20260912.json"
       ]
     },
     {
@@ -453,7 +454,8 @@
       "evidence": [
         "docs/release-installation-plan-20260909.md",
         "docs/phone-preview-20260911.md",
-        "docs/current-state-20260911.md"
+        "docs/current-state-20260911.md",
+        "docs/evidence/launch/progress-audit-20260912.json"
       ]
     },
     {
@@ -472,7 +474,8 @@
       "dependsOn": [],
       "evidence": [
         "docs/launch-readiness-20260910.md",
-        "docs/current-state-20260911.md"
+        "docs/current-state-20260911.md",
+        "docs/evidence/launch/progress-audit-20260912.json"
       ]
     },
     {
@@ -783,7 +786,10 @@
     "previousSiteAccess": "NOT_FOUND_RECHECKED_20260911",
     "siteAuthenticatedQa": "NOT_RUN",
     "siteDeploymentEvidence": "docs/evidence/launch/sites-owner-private-20260911.json",
-    "currentStateDocument": "docs/current-state-20260911.md"
+    "currentStateDocument": "docs/current-state-20260911.md",
+    "latestProgressAudit": "docs/evidence/launch/progress-audit-20260912.json",
+    "auditCandidateHead": "c182a5b9c8f5f4da59528a41980eb98750ebd234",
+    "auditCandidateChecks": "ALL_12_SUCCESS_SOURCE_PREPARATION_NOT_OS_BOOT"
   },
   "physicalDevicePreview": {
     "status": "SOURCE_INTEGRATION_NOT_BUILT",
@@ -804,12 +810,18 @@
     "cloudBudget": {
       "currency": "USD",
       "proposedInitialServerBudgetExcludingTax": 10,
+      "saferPlanningRangeExcludingTax": {
+        "minimum": 20,
+        "maximum": 30
+      },
       "approvedBudget": null,
       "status": "PROPOSED_NOT_APPROVED",
       "accountConfigured": false,
       "spendIncurredByThisWork": false
     },
-    "latestRequest": "Record and integrate completed preparation into rock consistently; not cloud spending authorization"
+    "targetDiscussion": "Current consultation mentions Pixel 7 / panther; current source lock remains Pixel 10 / frankel until exact model and SKU are read-only confirmed",
+    "recommendedBuildEnvironment": "DigitalOcean CPU-Optimized Regular 48 vCPU / 96 GiB / 600 GiB / Ubuntu 24.04 x86_64; Google Cloud is the alternative for detachable persistent storage",
+    "latestRequest": "Record the current audited progress in GitHub; not cloud spending, device flashing, public release or main merge authorization"
   },
   "currentStateDocument": "docs/current-state-20260911.md"
 }

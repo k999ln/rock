@@ -1,5 +1,44 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-12 — GitHub・実装・実機版・ビルド環境の再監査
+
+この節を現在の進捗差分として追加する。2026-09-12 04:48 JST時点で、mainは`7cdbb5fedc86ee3978ed329d9312147d137c9199`、開発本体は`codex/rockstaros-launch-candidate-20260910`の`c182a5b9c8f5f4da59528a41980eb98750ebd234`。製品全体の確認先である[Draft PR #4](https://github.com/k999ln/rock/pull/4)はOPEN／CLEANで、同HEADの12 checkは全てSUCCESSだった。うちスマホ向けcheckの名称自体が`Phone source preparation (not OS boot)`であり、全OS buildや実機起動の証拠ではない。open PRは#1〜#6の6件で、main mergeと一般公開は未実施。機械可読snapshotは[進捗再監査](evidence/launch/progress-audit-20260912.json)。
+
+進捗表は41 task中19 done、15 in progress、7 planned。段階gateは13件中10 done、3 planned。各taskの大きさが異なるため、19/41を製品完成率やスマホOS完成率へ換算しない。この再監査は実装状態の読み取りと文書同期であり、新しいruntime、OS image、署名、Site配信を作成していない。
+
+| 対象 | 到達している範囲 | 未完了の決定的条件 |
+| --- | --- | --- |
+| Web / Sites | Hub中心の画面、仕事・履歴・Wallet・設定、本人限定の新Site | 所有者ログイン後の本番操作確認、一般公開 |
+| Linux / QEMU | `1.0.0-preview.20260911-rc2`の内部導入、起動、保存、再起動、同一VMの中断復旧、D4/D6等の限定受入 | 正式署名、license clearance、取消の実停止、RSS再確認、別host／VM全損復旧、保存データあり端末の削除 |
+| Android P1 | 通常権限の2APK、SQLite／Binder／JobScheduler、emulator CI | Hub／Wallet／GameのAndroid移植、実機OS統合 |
+| スマホOS | 上流版と候補機種のsource lock、product makefile、準備／build／診断script | 全source取得、vendor生成、Soongフルbuild、target-files／OTA／factory image、正式Android署名、flash、実機boot／更新／純正復旧 |
+| Wallet／Game | 合成台帳、複数owner/gameのfixture、作者SDK、ATM自社手数料0の契約 | 実provider、KYC／提供地域／資金保管／通貨／返金／出金／照合、指定実ゲームの正式sandbox |
+| Release | PR #4の現HEAD CI成功、本人限定Site、CM制作途中 | license、第三者許諾、production鍵、実署名、公開受入、main統合 |
+
+### スマホ対象の不一致
+
+現在のsource lockはPixel 10の`frankel`、build targetは`frankel-cur-userdebug`。一方、直近の相談ではPixel 7が対象として挙がっている。Pixel 7ならGrapheneOSの機種名は`panther`であり、`frankel`向け設定・vendor生成・kernel／device hook・出力をそのまま使用できない。実際に使う端末の型番、地域SKU、現在OS、OEM unlocking可否を`inspect-phone.py`等の読取り専用診断で確認するまで、`targetConfirmed=false`とし、クラウドの全OS buildや端末書込みを開始しない。
+
+### ビルド環境の再評価
+
+重い資源が必要なのはRockのWebコードではなく、Android／GrapheneOS全sourceの取得とコンパイルである。[AOSP公式要件](https://source.android.com/docs/setup/start/requirements)は64-bit x86、最低64GB RAM、400GB以上の空き容量を示す。[GrapheneOS公式手順](https://grapheneos.org/build)もUbuntu 24.04 LTS x86_64と大容量source／build領域を前提にする。GPUは不要。
+
+最初の一回を短く進める候補はDigitalOcean CPU-Optimized Regular。32 vCPU／64GiB／400GiBの1.00 USD/時案は総容量がAOSPの「400GB空き」に近すぎるため、安全側の候補を48 vCPU／96GiB／600GiB、掲載価格1.50 USD/時とする。[料金表](https://www.digitalocean.com/pricing/droplets)。停止だけでは課金が終わらないため、成果物とhashを退避後に対象Dropletを削除する。[課金仕様](https://docs.digitalocean.com/products/droplets/details/pricing/)。反復buildやディスクの保持・再接続を重視する場合はGoogle Cloud Compute Engineの16〜32 vCPU／64〜128GB RAM／600GB〜1TB persistent diskを代替候補とするが、停止中もディスク代は残る。[Persistent Disk料金](https://cloud.google.com/compute/disks-image-pricing)。
+
+以前の税別10 USD案は未承認のまま保持する。ただし1.50 USD/時では約6.7時間分で、初回のsource取得、build error修正、再試行まで保証できない。初回計画枠は税別20〜30 USDを安全側の提案とし、`approvedBudget=null`、`cloudProvisioned=false`、`spendIncurredByThisWork=false`を維持する。これは価格調査と推奨構成の更新であり、契約・課金の開始ではない。
+
+### 次に進める順番
+
+1. 実際に使うPixelの型番／SKUを読取り専用で確認し、Pixel 7なら`panther`、Pixel 10なら`frankel`へsource lockとbuild入口を一つに固定する。
+2. クラウド事業者、アカウント、上限予算、成果物保存先、時間上限と削除手順を確定する。
+3. Ubuntu 24.04 x86_64で全source取得、`adevtool generate-all`、Soongフルbuildを行い、同一source・出力hash・失敗ログを保存する。
+4. Android P1の2APK同梱とは別に、Hub／Wallet／Gameの接続層をAndroidへ移植し、既存のowner／同意／台帳／取消／復旧契約と照合する。
+5. 開発鍵で対象実機の初回bootと基本hardwareを確認した後、AVB／APK／APEX／OTAのproduction鍵、独自更新先、失効、rollback、純正復旧を整える。
+6. CTS／VTS／SELinux、保存・再起動・省電力・熱・通信、OTA失敗／rollbackを対象実機で受け入れる。
+7. license、第三者許諾、本人限定Site QA、CM、最終署名配布、PR整理を完了してから一般公開とmain mergeを別途判断する。
+
+したがって、現在不足しているのはクラウドサーバーだけではない。スマホ版は「ビルド入口まで」であり、フルbuild、Androidへの製品移植、production署名／更新、実機受入、実provider／公開条件が残る。QEMU Developer Previewの内部到達は保持するが、スマホへ書き込める完成OSや本番金融対応として表示しない。
+
 2026-09-11、利用者の「ここまでのところをrockに矛盾しないように追加して」に従い、スマホ版の準備をローンチ候補の開発本体へ統合した。本書と`data/project-status.json`を現在の入口にする。日付付きの過去の成功・失敗は保持し、古い「次の作業」を現在の指示として実行しない。
 
 ## 製品の方針
