@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-11",
-  "milestone": "RockstarOS 1.0 ローンチ準備・Hubのユーザー体験改善",
-  "nextAction": "kaiya名の新規Sitesを本人限定公開。ログイン後の本番操作確認、MIT条文の採用、本人署名の方式・鍵保管、制作中CMの完成と掲載が必要。キャンセル実停止とメモリ増加の原因確認、正式署名後の最終配布受入は残る。一般公開/main mergeは未実施。",
+  "milestone": "RockstarOS 1.0 実機スマホ版のソース統合準備",
+  "nextAction": "Pixel 10候補の機種/SKUを確認し、予算とアカウントが決まった専用x86_64 Linuxで固定source取得・Soong/OS buildへ進む。利用できるLinux環境はないとの回答を受領。Hub/Wallet/Game移植・Android署名・実機起動/保存/復旧は未完了。本人限定Sitesは公開済み。既存のMIT/署名鍵/CM/取消/メモリ/正式配布受入と一般公開/main mergeの残件も保持する。",
   "tasks": [
     {
       "id": "R01",
@@ -109,12 +109,13 @@
     {
       "id": "OS02",
       "title": "【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "OS01"
       ],
       "evidence": [
-        "docs/os-development-design.md"
+        "docs/os-development-design.md",
+        "docs/phone-preview-20260911.md"
       ]
     },
     {
@@ -442,13 +443,14 @@
     {
       "id": "RLS02",
       "title": "正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "RLS01",
         "N03"
       ],
       "evidence": [
-        "docs/release-installation-plan-20260909.md"
+        "docs/release-installation-plan-20260909.md",
+        "docs/phone-preview-20260911.md"
       ]
     },
     {
@@ -703,7 +705,8 @@
         "PREVIEW-INSTALL"
       ],
       "evidence": [
-        "docs/release-installation-plan-20260909.md"
+        "docs/release-installation-plan-20260909.md",
+        "docs/phone-preview-20260911.md"
       ]
     }
   ],
@@ -768,5 +771,18 @@
     "technicalInventory": "COMPLETE_READBACK_434523_RECORDS_NOT_LEGAL_CLEARANCE",
     "uiCancelObservation": "NOT_OBSERVED_SINGLE_ATTEMPT_TWO_NORMAL_BOOTS_RESULT_RETAINED_NO_PID_PROOF",
     "cancelResourceBoundary": "OBSERVATION_ONLY_RSS_GROWTH_EXCEEDS_PLAN_NOT_PERFORMANCE_PASS"
+  },
+  "physicalDevicePreview": {
+    "status": "SOURCE_INTEGRATION_NOT_BUILT",
+    "request": "スマホ本体にOSを書き込める版を作成して",
+    "candidateDevice": "Pixel 10 / frankel",
+    "targetConfirmed": false,
+    "buildEnvironment": "USER_HAS_NONE",
+    "cloudProvisioned": false,
+    "sourceLock": "os/physical/frankel-source-lock.json",
+    "record": "docs/phone-preview-20260911.md",
+    "fullOsBuild": "NOT_RUN",
+    "physicalBoot": "NOT_RUN",
+    "flashReady": false
   }
 }

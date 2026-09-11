@@ -1,0 +1,22 @@
+{
+  "schema": "rock-phone-source/1",
+  "stage": "SOURCE_INTEGRATION_NOT_BUILT",
+  "device": "frankel",
+  "model": "Google Pixel 10",
+  "targetConfirmedByOwner": false,
+  "knownSkus": ["GLBW0", "GL066", "GK2MP"],
+  "manifestUrl": "https://github.com/GrapheneOS/platform_manifest.git",
+  "manifestTag": "2026090700",
+  "manifestCommit": "726237f979e7a36cc644f0a784f62ee27fee419b",
+  "adevtoolCommit": "144f004cc484d7e7234cdd167cee48e5f240288f",
+  "hook": "vendor/adevtool/config/mk/google_devices/device/frankel/device.mk",
+  "hookSha256": "3a24ad3ad1f68ca806b181f192d4cd8468c8a57316b2152b953939966c766a2d",
+  "rockCheckoutPath": "external/rockstaros",
+  "lunch": "frankel-cur-userdebug",
+  "buildTargets": ["target-files-package", "otatools-package"],
+  "kernel": {"platform": "laguna", "codename": "muzel", "version": "6.6", "prebuiltCommit": "9535f8a628468a5143c867551773459a8bbe3e7e"},
+  "imageBuildVerified": false,
+  "imageBootVerified": false,
+  "flashReady": false,
+  "notes": "Candidate bring-up source only. Re-check the release and device before any build or installation. Neither GrapheneOS support nor the existing QEMU acceptance proves RockstarOS hardware support."
+}

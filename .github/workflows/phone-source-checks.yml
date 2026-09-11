@@ -1,0 +1,22 @@
+name: Phone source preparation (not OS boot)
+on:
+  push:
+    paths: ['os/physical/**', 'scripts/*phone*.py', 'scripts/*phone*.sh', 'tests/test_*phone*.py', '.github/workflows/phone-source-checks.yml']
+  pull_request:
+    paths: ['os/physical/**', 'scripts/*phone*.py', 'scripts/*phone*.sh', 'tests/test_*phone*.py', '.github/workflows/phone-source-checks.yml']
+permissions:
+  contents: read
+jobs:
+  source-preparation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Check compilation entry syntax
+        run: |
+          bash -n scripts/build-phone-bringup.sh
+          bash -n scripts/check-phone-project.sh
+      - name: Exercise signed source preparation and read-only device transport
+        run: python3 -m unittest discover -s tests -p 'test_*phone*.py' -v

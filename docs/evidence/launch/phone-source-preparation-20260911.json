@@ -1,0 +1,34 @@
+{
+  "schema": "rock-phone-source-evidence/1",
+  "date": "2026-09-11",
+  "scope": "Upstream tag verification and source preparation only; no full OS build or device access",
+  "upstreamTag": "2026090700",
+  "manifestCommit": "726237f979e7a36cc644f0a784f62ee27fee419b",
+  "signersUrl": "https://grapheneos.org/allowed_signers",
+  "signersSha256": "344f59c6f058699e63fea68e35953b341c14e3bf1fbc1256f6baa84aa2aca1d0",
+  "tagVerificationExit": 0,
+  "tagVerificationLogSha256": "1d556d056874a181704c2a91462e48bf29e7d9a9517b6c5a22388a3a3419344d",
+  "globalGitConfigChanged": false,
+  "fullSourceSync": false,
+  "fullOsBuild": "NOT_RUN",
+  "hardwareBoot": "NOT_RUN",
+  "hardwareFlash": "NOT_RUN",
+  "hostChecks": {
+    "scope": "macOS arm64 current host, not cloud",
+    "memoryBytes": 17179869184,
+    "freeBytesObserved": 4895518720,
+    "buildPrerequisitesPassed": false
+  },
+  "localValidation": {
+    "phonePreparationAndTransportTests": "PASS 8 host-only tests",
+    "shellSyntax": "PASS",
+    "osSourceContracts": "PASS static checks only",
+    "webVerify": "PASS 93 tests / 143 synthetic API assertions / typecheck / lint / build",
+    "realAdbConnection": "NOT_RUN"
+  },
+  "independentReview": {
+    "outputDirectoryMismatch": "FIXED: dedicated output and same-filesystem capacity check",
+    "upstreamSourceDrift": "FIXED: mandatory kernel pin, project HEAD/dirty guard, exact Rock-only local manifest",
+    "fullOsExecution": "NOT_RUN"
+  }
+}

@@ -1,6 +1,6 @@
 {
-  "version": "1.9",
-  "decidedAt": "2026-09-09",
+  "version": "1.10",
+  "decidedAt": "2026-09-11",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -71,7 +71,7 @@
     "checks-at-sha"
   ],
   "commercialPolicy": "Preserve native 888 USD cents per contract per month and legacy Web estimates; Rock ATM fee is zero per RQ15; game fees are unspecified; no live billing authorized here.",
-  "hardwarePolicy": "Native branch prioritizes BlackBerry with model/variant unresolved; Linux QEMU and Android/AOSP are distinct evidence tracks.",
+  "hardwarePolicy": "2026-09-11 user explicitly requests a phone-flashable OS. Develop the physical-device track; Pixel 10 / GrapheneOS is a candidate from prior records, pending current model/SKU confirmation. Earlier BlackBerry preference remains unresolved. Linux QEMU and Android/GrapheneOS evidence remain distinct.",
   "firstOperationalTarget": "Fresh-host QEMU Developer Preview with reproducible install, launch, shutdown, reopen, backup and removal; synthetic data only",
   "releaseInstallation": {
     "requested": true,
@@ -79,7 +79,7 @@
     "architecture": "docs/rockstaros-1.0-architecture.md",
     "plan": "docs/release-installation-plan-20260909.md",
     "developerPreview": "internal_acceptance_scoped_publication_blocked",
-    "physicalDevicePreview": "blocked_on_exact_model_and_variant",
+    "physicalDevicePreview": "source_integration_started_exact_target_and_build_environment_pending",
     "productionReady": false,
     "cmRule": "Present the current implementation as the RockstarOS 1.0 base and advertise only the highest installation and validation stage that has passed its recorded gate",
     "followup": "docs/release-followup-20260910.md",
@@ -87,7 +87,8 @@
       "status": "completed_per_user_report",
       "artifactReviewed": false,
       "record": "docs/release-followup-20260910.md"
-    }
+    },
+    "physicalDevelopmentRecord": "docs/phone-preview-20260911.md"
   },
   "gameExchange": {
     "requested": true,

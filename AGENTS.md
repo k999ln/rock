@@ -29,3 +29,5 @@
 - Gitには実装、設定、必要最小限のfixture、要約した証拠、復旧手順を保存する。OS image、build cache、重複ログ、全フレーム、再生成可能な大量出力はrelease artifactまたはGit管理外へ置く。
 - 現段階を `RockstarOS 1.0` の製品ベースとして発表し、互換性を明示しながら継続改善する。最初の配布ラベルはDeveloper Preview。版番号だけで実機・本番金融・一般公開を合格扱いせず、`docs/rockstaros-1.0-architecture.md`とrelease gateを同期する。
 - 8原則を適用した製品判断は `docs/rockstaros-1.0-strategy.md` に従う。対象市場・代表商品・pilot指標は検証仮説であり利用者の確定要望と区別する。既存systemを再利用し、ゲーム要求や実行先の多様性を落とさず、一つの商品体験・保存/復旧・導入の証拠に集中する。未実証の需要・独自性・独占・収益を宣言しない。
+
+- 2026-09-11の最新指示でスマホ本体へ書き込むOS版の開発を開始。`docs/phone-preview-20260911.md`を読む。Pixel 10/frankelは候補で現在の機種/SKU未確認、利用できるLinux環境なし。source組込み・既存Android P1・Hub/Wallet/Game移植・全OS build・正式Android署名・実機flash/復旧を区別する。クラウド契約は予算とアカウント確定後、全OS buildは専用x86_64 Linuxで実施する。

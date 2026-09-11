@@ -1,5 +1,7 @@
 # Rock star OS — 自動化HubとWallet
 
+スマホ実機版の開発を開始しました。現在はPixel 10候補のソース統合準備で、書込み可能なOSは未生成です。[ビルド環境・実装・次の手順](docs/phone-preview-20260911.md)。
+
 公開設定・本人限定サイトの状況は[今回の設定記録](docs/owner-setup-20260911.md)を参照。
 
 tob側の自動化ツールを商品として管理するHubと、自動化で得たお金を管理するWalletに特化したOSを開発します。実行場所、料金、資格、ライセンスの違いを扱い、利用準備・日々の管理・結果とお金の確認に伴う不便を減らします。
@@ -33,7 +35,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-11 / RockstarOS 1.0 ローンチ準備・Hubのユーザー体験改善 / 完了 19/41件
+最終更新: 2026-09-11 / RockstarOS 1.0 実機スマホ版のソース統合準備 / 完了 19/41件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -46,7 +48,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | R07 | 本人限定のSitesへ公開・本番確認 | 進行中 | [記録](docs/deployment-integration.md) · [記録](docs/release-followup-20260910.md) · [記録](docs/owner-setup-20260911.md) |
 | R08 | 検証結果・公開停止理由と再開設計の文書化 | 完了 | [記録](project.md) · [記録](docs/validation.md) · [記録](docs/deployment-integration.md) |
 | OS01 | 既存設計の要件追跡と自動化OS開発設計 | 完了 | [記録](docs/os-development-design.md) |
-| OS02 | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 未着手 | [記録](docs/os-development-design.md) |
+| OS02 | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 進行中 | [記録](docs/os-development-design.md) · [記録](docs/phone-preview-20260911.md) |
 | OS03 | 【Android/AOSP別トラック】CuttlefishでOS起動と自律実行の最小縦断試作 | 未着手 | [記録](docs/os-development-design.md) |
 | OS04 | 【Android/AOSP別トラック】Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 | [記録](docs/os-development-design.md) |
 | OS05 | 【Android/AOSP別トラック】第三者SDK・審査・インストール・失効の閉鎖テスト | 未着手 | [記録](docs/os-development-design.md) |
@@ -70,7 +72,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | N04 | BlackBerry実機だけでHub取得・実行・更新・復旧 | 未着手 | [記録](docs/native-os-integration.md) |
 | N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
 | RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 完了 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/rockstaros-1.0-architecture.md) · [記録](docs/rockstaros-1.0-strategy.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) · [記録](docs/release-followup-20260910.md) |
-| RLS02 | 正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証 | 未着手 | [記録](docs/release-installation-plan-20260909.md) |
+| RLS02 | 正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証 | 進行中 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 | LCH01 | TLS／累積timeoutの原因と最終CIの照合 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | LCH02 | 全同梱物inventory・対応source・製品LICENSEの明示決定 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | LCH03 | production署名・保護環境・失効運用 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
@@ -95,9 +97,9 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-native-ui-20260910.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](docs/game-wallet-release-checkpoint-20260910.md) · [記録](docs/evidence/hub-final-9abf78a/final-c01-completed-stages.json) · [記録](docs/evidence/gx01/final-9abf78a-20260910.json) |
 | DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](docs/evidence/rls01/sdk-final-9abf78a/README.md) · [記録](docs/evidence/rls01/sdk-final-9abf78a/summary.json) · [記録](docs/evidence/gx01/final-9abf78a-20260910.json) |
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
-| DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
+| DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: kaiya名の新規Sitesを本人限定公開。ログイン後の本番操作確認、MIT条文の採用、本人署名の方式・鍵保管、制作中CMの完成と掲載が必要。キャンセル実停止とメモリ増加の原因確認、正式署名後の最終配布受入は残る。一般公開/main mergeは未実施。
+次の作業: Pixel 10候補の機種/SKUを確認し、予算とアカウントが決まった専用x86_64 Linuxで固定source取得・Soong/OS buildへ進む。利用できるLinux環境はないとの回答を受領。Hub/Wallet/Game移植・Android署名・実機起動/保存/復旧は未完了。本人限定Sitesは公開済み。既存のMIT/署名鍵/CM/取消/メモリ/正式配布受入と一般公開/main mergeの残件も保持する。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
