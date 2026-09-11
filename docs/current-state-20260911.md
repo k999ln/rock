@@ -1,5 +1,11 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-12 — 多機種対応の決定
+
+多機種対応を「共通RockstarOS Core＋機種／SKU別Device Support Package」として固定した。一つのimageを無条件に全端末へ書き込むとは扱わず、`native_os`、`gsi_experimental`、`client_only`、`unsupported`の4区分を機械可読台帳で管理する。完全OSを名乗るにはbootloader unlock、kernel／vendor／firmware、partition／AVB、boot／OTA／rollback／stock復旧の機種別証拠が必要。[設計](device-support-architecture.md)／[対応台帳](../data/device-support-matrix.json)。
+
+最初の物理端末はまだ0台で、Pixel 7／`panther`とPixel 10／`frankel`はいずれも候補。BlackBerry Android機は正確な型番と解除経路が判明するまでclient-only、旧BlackBerry OS機は非対応。Apple署名boot chainを置換するiPhone／iPad版は対象外で、既存iOS／iPadOS上のclientとして扱う。この決定はクラウド課金、実機書込み、production鍵、一般公開を許可しない。
+
 ## 2026-09-12 — GitHub・実装・実機版・ビルド環境の再監査
 
 この節を現在の進捗差分として追加する。2026-09-12 04:48 JST時点で、mainは`7cdbb5fedc86ee3978ed329d9312147d137c9199`、開発本体は`codex/rockstaros-launch-candidate-20260910`の`c182a5b9c8f5f4da59528a41980eb98750ebd234`。製品全体の確認先である[Draft PR #4](https://github.com/k999ln/rock/pull/4)はOPEN／CLEANで、同HEADの12 checkは全てSUCCESSだった。うちスマホ向けcheckの名称自体が`Phone source preparation (not OS boot)`であり、全OS buildや実機起動の証拠ではない。open PRは#1〜#6の6件で、main mergeと一般公開は未実施。機械可読snapshotは[進捗再監査](evidence/launch/progress-audit-20260912.json)。

@@ -1,10 +1,12 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-12追記（v1.11）: 利用者は、共通Core、機種別Device Support Package、`native_os`／`gsi_experimental`／`client_only`／`unsupported`の提供区分で多機種対応を進める方針を選択。Pixel候補は未確定、BlackBerryは正確なモデルのunlock・vendor・復旧証拠がある場合だけ実験対象、iPhone/iPadはOS置換ではなくclientとする。[多機種対応設計](device-support-architecture.md)と[対応台帳](../data/device-support-matrix.json)を正本に追加した。この決定はクラウド課金、端末書込み、production鍵、実機対応完了の承認ではない。
+
 2026-09-11追記（v1.10）: 利用者がスマホ本体へ書き込めるOS版の作成を明示。実機版の開発を進める。Pixel 10は以前の記録からの候補で、現在の対象機種/SKUは未確認。Linux環境は利用者にもない。クラウドbuildとAndroid系機種対応の再利用を準備するが、QEMUや2APKを実機完成と表示しない。[実行記録](phone-preview-20260911.md)。以下はRQ01〜RQ17と以前の方針を保持する。
 
 2026-09-09追記: 設計v1.1の実装承認を受領。公開・実機・MetaMask実資金は準備が整うことを条件に了承。現在の承認範囲は [承認記録](execution-approval-20260909.md)。以下の「承認待ち」は作成時の履歴であり、現在の実装を停止させない。RQ01〜RQ15と料金は変更しない。
 
-版: 1.10 / 更新日: 2026-09-11（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
+版: 1.11 / 更新日: 2026-09-12（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
 
 この文書は利用者がこの日に明示した製品要望を固定する。実装状況は [OS稼働・ゲーム連携監査](os-readiness-audit-20260909.md)（過去の追補・初回監査は履歴）、次の指示は [現在の再開指示](prompts/rock-current-next-20260911.md)、毎回の確認方法は [プロンプト作成規約](prompt-playbook.md) を参照する。決定と実装実績を同じものとして扱わない。
 

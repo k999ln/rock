@@ -1,5 +1,5 @@
 {
-  "version": "1.10",
+  "version": "1.11",
   "decidedAt": "2026-09-11",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -71,7 +71,22 @@
     "checks-at-sha"
   ],
   "commercialPolicy": "Preserve native 888 USD cents per contract per month and legacy Web estimates; Rock ATM fee is zero per RQ15; game fees are unspecified; no live billing authorized here.",
-  "hardwarePolicy": "2026-09-11 user explicitly requests a phone-flashable OS. Develop the physical-device track; Pixel 10 / GrapheneOS is a candidate from prior records, pending current model/SKU confirmation. Earlier BlackBerry preference remains unresolved. Linux QEMU and Android/GrapheneOS evidence remain distinct.",
+  "hardwarePolicy": "Develop one shared RockstarOS Core with model-specific Device Support Packages. Physical native OS, experimental Android GSI, client-only and unsupported are distinct delivery modes. Pixel candidates remain unconfirmed; BlackBerry requires exact-model unlock/vendor/recovery evidence; Apple mobile devices are client-only rather than OS-replacement targets. Linux QEMU and physical evidence remain distinct.",
+  "deviceSupportPolicy": {
+    "status": "approved_design_implemented_not_physical_support",
+    "architecture": "docs/device-support-architecture.md",
+    "matrix": "data/device-support-matrix.json",
+    "validation": "npm run device-support:check",
+    "deliveryModes": [
+      "native_os",
+      "gsi_experimental",
+      "client_only",
+      "unsupported"
+    ],
+    "firstPhysicalTarget": null,
+    "cloudSpendApproved": false,
+    "physicalFlashAuthorized": false
+  },
   "firstOperationalTarget": "Fresh-host QEMU Developer Preview with reproducible install, launch, shutdown, reopen, backup and removal; synthetic data only",
   "releaseInstallation": {
     "requested": true,

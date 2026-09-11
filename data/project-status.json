@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "RockstarOS 1.0の現進捗を再監査（実装状態は据え置き）",
-  "nextAction": "現在の入口はdocs/current-state-20260911.mdの2026-09-12節。lock由来のdevice/lunch/hook/target検証と未確認SKUのfull-build fail-closed guardを実装し、local phone tests 10件と総合verify（93 tests・build・API 143 assertions）を確認済み。直近相談のPixel 7/pantherと既存設定のPixel 10/frankelが不一致のため、実機の型番/SKUを読取り専用で確認して対象を一つに固定する。その後、未承認のクラウド計画（推奨48 vCPU/96GiB/600GiB、初回計画20〜30 USD）を確定し、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/GameのAndroid移植へ進む。本人限定Sites QA、license/production署名、取消実停止/RSS、CM、正式配布受入、一般公開/main mergeも未完了。",
+  "milestone": "多機種対応を共通Core＋機種別Device Support Packageへ固定",
+  "nextAction": "多機種対応の正本はdocs/device-support-architecture.mdとdata/device-support-matrix.json。まずCuttlefishでAndroid共通Coreの接続・更新・データ移行契約を検証し、並行して所有端末を読取り専用で確認してPixel 7/pantherまたはPixel 10/frankelの最初のDSPを一つ選ぶ。その後、別途予算承認を得た専用Linuxで全source buildを行う。BlackBerryは正確なmodelのunlock/vendor/recovery確認後に個別判断し、iPhone/iPadはclient-onlyとする。cloud課金、実機flash、production署名、一般公開、main mergeは未承認・未実施。",
   "tasks": [
     {
       "id": "R01",
@@ -104,6 +104,19 @@
       ],
       "evidence": [
         "docs/os-development-design.md"
+      ]
+    },
+    {
+      "id": "DSP01",
+      "title": "共通Core・機種別Device Support Package・4提供区分の設計と検査",
+      "status": "done",
+      "dependsOn": [
+        "OS01"
+      ],
+      "evidence": [
+        "docs/device-support-architecture.md",
+        "data/device-support-matrix.json",
+        "scripts/check-device-support.mjs"
       ]
     },
     {
@@ -821,7 +834,17 @@
     },
     "targetDiscussion": "Current consultation mentions Pixel 7 / panther; current source lock remains Pixel 10 / frankel until exact model and SKU are read-only confirmed",
     "recommendedBuildEnvironment": "DigitalOcean CPU-Optimized Regular 48 vCPU / 96 GiB / 600 GiB / Ubuntu 24.04 x86_64; Google Cloud is the alternative for detachable persistent storage",
-    "latestRequest": "Record the current audited progress in GitHub; not cloud spending, device flashing, public release or main merge authorization"
+    "latestRequest": "Adopt shared Core plus per-model Device Support Packages and separate native OS, experimental GSI, client-only and unsupported delivery modes; no cloud spending or physical flash authorization"
+  },
+  "deviceSupportArchitecture": {
+    "status": "DESIGN_AND_VALIDATION_IMPLEMENTED",
+    "document": "docs/device-support-architecture.md",
+    "matrix": "data/device-support-matrix.json",
+    "validation": "npm run device-support:check",
+    "physicalTargetsSupported": 0,
+    "flashReadyTargets": 0,
+    "firstPhysicalTarget": null,
+    "cloudSpendApproved": false
   },
   "currentStateDocument": "docs/current-state-20260911.md"
 }

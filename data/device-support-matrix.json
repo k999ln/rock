@@ -1,0 +1,122 @@
+{
+  "schema": "rockstaros-device-support/1",
+  "updatedAt": "2026-09-12",
+  "policy": {
+    "architecture": "shared-core-plus-device-support-package",
+    "deliveryModes": [
+      "native_os",
+      "gsi_experimental",
+      "client_only",
+      "unsupported"
+    ],
+    "supportRule": "A physical device is supported only after its exact model and SKU, unlock path, vendor interface, hardware, signed OTA rollback and stock recovery have passed on-device acceptance.",
+    "fallbackRule": "When native OS installation is unavailable, expose the RockstarOS experience through a least-privilege client and approved remote execution instead of claiming OS replacement."
+  },
+  "deviceSupportPackageContract": {
+    "required": [
+      "exact model and regional SKU identity",
+      "bootloader unlock and relock procedure",
+      "kernel, device tree, vendor modules and VINTF compatibility",
+      "partition, AVB and rollback configuration",
+      "display, input, storage, USB, networking, radio, camera, audio, power and thermal capability results",
+      "signed Virtual A/B OTA and failed-update rollback evidence",
+      "stock recovery procedure and verified artifacts",
+      "data schema migration and backup restore evidence",
+      "license and redistribution record"
+    ],
+    "mustRemainSeparate": [
+      "RockstarOS common services and application contracts",
+      "device and SoC vendor implementation",
+      "development signing and production signing",
+      "OS update and user data migration",
+      "virtual acceptance and physical-device acceptance"
+    ]
+  },
+  "targets": [
+    {
+      "id": "qemu-virt-aarch64",
+      "family": "virtual-linux",
+      "deliveryMode": "native_os",
+      "status": "INTERNAL_VIRTUAL_ACCEPTANCE",
+      "exactModelRequired": false,
+      "physicalDevice": false,
+      "flashReady": false,
+      "notes": "Buildroot ARM64 reference image. It is not evidence for any phone."
+    },
+    {
+      "id": "cuttlefish-x86-64",
+      "family": "android-virtual",
+      "deliveryMode": "native_os",
+      "status": "PLANNED",
+      "exactModelRequired": false,
+      "physicalDevice": false,
+      "flashReady": false,
+      "notes": "Device-independent Android integration target for common Hub, Wallet, Game and update contracts."
+    },
+    {
+      "id": "pixel-7-panther",
+      "family": "android-pixel",
+      "deliveryMode": "native_os",
+      "status": "CANDIDATE_NOT_CONFIRMED",
+      "exactModelRequired": true,
+      "confirmedSku": null,
+      "physicalDevice": true,
+      "flashReady": false,
+      "notes": "Consultation candidate only; no full build, flash, boot, OTA or recovery acceptance."
+    },
+    {
+      "id": "pixel-10-frankel",
+      "family": "android-pixel",
+      "deliveryMode": "native_os",
+      "status": "SOURCE_LOCK_CANDIDATE_NOT_CONFIRMED",
+      "exactModelRequired": true,
+      "confirmedSku": null,
+      "physicalDevice": true,
+      "flashReady": false,
+      "notes": "Current source-lock candidate only; it is not selected hardware or a supported release."
+    },
+    {
+      "id": "android-treble-generic",
+      "family": "android-generic",
+      "deliveryMode": "gsi_experimental",
+      "status": "PLANNED_DEVICE_BY_DEVICE_ACCEPTANCE",
+      "exactModelRequired": true,
+      "confirmedSku": null,
+      "physicalDevice": true,
+      "flashReady": false,
+      "notes": "Treble and bootloader unlock are prerequisites; a generic flashing or hardware-support claim is prohibited."
+    },
+    {
+      "id": "blackberry-android",
+      "family": "blackberry-android",
+      "deliveryMode": "client_only",
+      "status": "MODEL_AND_UNLOCK_PATH_UNKNOWN",
+      "exactModelRequired": true,
+      "confirmedSku": null,
+      "physicalDevice": true,
+      "flashReady": false,
+      "notes": "Promote to experimental native OS only after an exact model exposes a supported unlock, vendor and recovery path."
+    },
+    {
+      "id": "blackberry-legacy",
+      "family": "blackberry-bbos-bb10",
+      "deliveryMode": "unsupported",
+      "status": "NO_SUPPORTED_INSTALL_PATH",
+      "exactModelRequired": true,
+      "confirmedSku": null,
+      "physicalDevice": true,
+      "flashReady": false,
+      "notes": "Research is separate from a maintained product and cannot be advertised as supported."
+    },
+    {
+      "id": "apple-ios-ipados",
+      "family": "apple-mobile",
+      "deliveryMode": "client_only",
+      "status": "OS_REPLACEMENT_UNAVAILABLE",
+      "exactModelRequired": false,
+      "physicalDevice": true,
+      "flashReady": false,
+      "notes": "Provide an iOS or web client; do not claim replacement of the Apple secure-boot operating system."
+    }
+  ]
+}
