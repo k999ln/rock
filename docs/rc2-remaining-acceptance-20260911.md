@@ -51,3 +51,11 @@ D4の同じ圧縮2.033GB・全212原本を修正版readerで再取得し、最�
 ## 最終の保存・検証
 
 Web全体の `npm run verify` はPASS（型・lint・93 tests・build・API 143 assertions）。証跡検査のLinux24 fixture、製品要望RQ01〜RQ17と進捗整合、差分チェックも成功。最新commit自身のGitHub CIは[Draft PR #4](https://github.com/k999ln/rock/pull/4)の同SHA checksで確認し、この文書の過去snapshotを後続commitの成功へ読み替えない。今回の変更は作業branchへ保存し、一般公開やmain mergeは行わない。
+
+## 9月11日後続の診断と利用者設定
+
+保存RSSを別readerで再集計した。確実に起動後とみなせる保守的な部分集合は、1回目15sample/28.095秒/7504KiB増、2回目7sample/12.066秒/23376KiB増。ただしready時刻のmonotonicが未保存で、終了操作も含む短い区間なので、steady-state合格やリークなしとは判定しない。元の全区間721328/714104KiB増と512MiB超過は保持する。[計算条件と原本hash](evidence/launch/cancel-memory-reanalysis-20260911.json)。
+
+UIはrun応答の回収前には入力画面に留まり、応答後も対象jobが全snapshotへ現れるまで取消表示を待つ。次はキー受付・API受付/回収・画面present・同じjobのchild PIDをguest monotonicで対応付ける。既存job.resultによる限定取得は改善候補だが、過去の163ms画面の原因確定ではなく、native runtime変更・再build・取消の再受入は未実施。
+
+権利者名kaiya、改変・再配布の意向、新規Sites作成を受領し、CMは制作途中へ訂正。本人限定サイトの公開結果、MIT草案と本人署名方式は[今回の設定](owner-setup-20260911.md)を現在の入口とする。以前の独立reviewer/元Sites再接続が唯一の進行経路という記述を更新する。

@@ -1,0 +1,19 @@
+{
+  "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+  "versionId": "appgprj_6aa444b6e6508191a19f16405d0be927~appgver_bf18eb7aaa5c8191b2c8ec6c5f199b19",
+  "deploymentId": "appgdep_6aa4462524648191917196b6be4ba3f4",
+  "sourceCommit": "a750908329d42bbfb78e07243f414b51d1534cf8",
+  "status": "succeeded",
+  "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site",
+  "audience": "owner-only",
+  "archiveSha256": "eb99ba45118c873327a611a6223fd62b81a300eee6a2f2186831f792cf116209",
+  "deployedAt": "2026-09-11T18:20:16.571980+00:00",
+  "browserReadback": "ChatGPT sign-in required; authenticated live app QA not yet completed",
+  "localProductionBuildQA": {
+    "guideNavigation": "PASS",
+    "mobileWidth": 390,
+    "mobileHeight": 844,
+    "guideLayout": "PASS"
+  },
+  "oldDatabaseRestored": false
+}

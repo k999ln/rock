@@ -1,5 +1,7 @@
 # Protected release signing control
 
+2026-09-11: 独立reviewerを用意できない場合に備え、本人が対象候補を確認して手動署名する別経路を準備する。二人承認は下記GitHub経路のproject policyであり、暗号署名全般の必須条件でも、利用者原文が指定した条件でもない。既存control/保護設定は保持し、別経路を独立した人の承認と表示しない。公開名はkaiya、具体的な署名方式と鍵保管は未承認・鍵未生成。[本人署名の入口と手順](owner-manual-signing.md) / [今回の設定](owner-setup-20260911.md)。
+
 Status: **AWAITING_SIGNING_SETUP**, not LCH03 PASS. These files prepare authentication of candidate bytes. They create no production key/environment, register no secret, publish no release and change no native runtime, image, packager or installer. Existing `preview.py` remains a separate compatibility/installation gate; inner OS keys remain public development fixtures even if an outer release is signed with a managed identity.
 
 ## Current observed setup

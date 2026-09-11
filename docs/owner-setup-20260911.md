@@ -15,3 +15,15 @@
 Webの `npm run verify` に合格（型・lint・93 tests・build・API 143 assertions）。新規D1と両方の旧DB履歴からの移行試験、認証境界・利用者分離・保存/再起動のAPI確認を含む。`npm run os:check`、production依存監査、`git diff --check` も成功。ローカル導入ページはHTTP 200、ブラウザで案内・技術動画・導入リンク・kaiya表記を確認した。サイト本番上の同じ確認やOSのキャンセル/メモリ受入を合格に置き換えない。
 
 Sitesへの保存・本人限定公開は、この変更を保存した後に実施し、その実応答を後続の公開記録へ残す。
+
+## 本人限定公開の実結果
+
+[新しいRockstarOS](https://rockstaros-kaiya.noellesugar1.chatgpt.site) を本人限定で公開した。sourceは `a750908329d42bbfb78e07243f414b51d1534cf8`、保存version 1、Sitesの実応答は `succeeded`。元サイト/元DBは変更していない。[応答と確認範囲](evidence/launch/sites-owner-private-20260911.json)。匿名ブラウザはサインインへ誘導され、ログイン後の本番Hub操作はまだ確認していない。現在接続しているChatGPTアカウントでログインする。
+
+共有node_modulesを使う開発プレビューで、build後に古い動的importへの遷移が失敗した。公開対象のproduction buildへ切り替えて同じ導入リンクを再確認し、正常遷移と390×844の表示を確認した。公開版の障害としても、開発cache問題の恒久修正済みとしても記録しない。
+
+[MITの確認用全文・適用範囲・配布差分案](license-proposal-20260911.md)を用意した。MITには商用利用・販売・再許諾も含まれるため、受領した改変・再配布意向だけで具体条文の採用済みにはしない。
+
+[本人署名CLIと手順](owner-manual-signing.md)を追加した。prepareは未承認の対象確認票のみを生成し、承認後の固定値と全候補を確認してから外部鍵を読む。既存の署名・検証処理を共用する。本番鍵は生成・使用していない。
+
+本人署名の新7試験と既存署名29試験はローカルで成功。全て公開fixtureであり、実管理鍵や実署名の成功ではない。キャンセルの待ち経路と保存RSSの再集計は[追加受入の後続診断](rc2-remaining-acceptance-20260911.md)に記録した。

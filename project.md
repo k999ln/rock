@@ -2,7 +2,7 @@
 
 ## 2026-09-11 — kaiya の公開設定と新規Sites
 
-権利者名kaiya、自作部分の改変・再配布許可、新規Sites作成、CM制作途中を最新指示として記録。MITの具体条文と本人だけで行う署名方式は準備段階。新サイトは本人限定・空のD1で開始し、元サイトとDBの復旧を完了扱いにしない。[今回の設定](docs/owner-setup-20260911.md)。
+権利者名kaiya、自作部分の改変・再配布許可、新規Sites作成、CM制作途中を最新指示として記録。MITの具体条文と本人だけで行う署名方式は準備段階。新サイトは本人限定で公開済み。空のD1で開始し、元サイトとDBの復旧を完了扱いにしない。MIT確認用全文、本人署名CLIと新7＋既存29署名試験、取消/メモリの追加診断を保存した。[今回の設定](docs/owner-setup-20260911.md)。
 
 
 ## 2026-09-11 — rc2の残る受入を再開
@@ -307,7 +307,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: kaiyaの権利者表記と改変・再配布許可の意向を受領。MIT草案、本人署名経路、新規Sites本人限定公開を準備する。CMは制作途中。正式署名・license最終選択・キャンセル／メモリの追加確認と最終候補受入は未完了。一般公開/main mergeは未実施。
+次の作業: kaiya名の新規Sitesを本人限定公開。ログイン後の本番操作確認、MIT条文の採用、本人署名の方式・鍵保管、制作中CMの完成と掲載が必要。キャンセル実停止とメモリ増加の原因確認、正式署名後の最終配布受入は残る。一般公開/main mergeは未実施。
 <!-- project-status:end -->
 
 ## 次段階の設計

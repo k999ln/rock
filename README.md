@@ -97,7 +97,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) |
 
-次の作業: kaiyaの権利者表記と改変・再配布許可の意向を受領。MIT草案、本人署名経路、新規Sites本人限定公開を準備する。CMは制作途中。正式署名・license最終選択・キャンセル／メモリの追加確認と最終候補受入は未完了。一般公開/main mergeは未実施。
+次の作業: kaiya名の新規Sitesを本人限定公開。ログイン後の本番操作確認、MIT条文の採用、本人署名の方式・鍵保管、制作中CMの完成と掲載が必要。キャンセル実停止とメモリ増加の原因確認、正式署名後の最終配布受入は残る。一般公開/main mergeは未実施。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

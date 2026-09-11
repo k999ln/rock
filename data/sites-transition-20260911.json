@@ -8,9 +8,10 @@
     "r2": null
   },
   "previousSiteReadback": "NOT_FOUND",
-  "newSiteStatus": "REGISTERED_NOT_DEPLOYED",
+  "newSiteStatus": "DEPLOYED_OWNER_ONLY",
   "dataPolicy": "New empty D1. Preserve old project and database; no claim of history restoration.",
   "sourceBase": "98ead9689a7021afc63b57b53f8611229a4b20f3",
   "audience": "owner-only",
-  "newProjectId": "appgprj_6aa444b6e6508191a19f16405d0be927"
+  "newProjectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+  "deploymentEvidence": "docs/evidence/launch/sites-owner-private-20260911.json"
 }

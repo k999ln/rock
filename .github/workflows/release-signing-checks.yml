@@ -8,6 +8,7 @@ on:
       - systems/rock-star-os/os/desktop/package_preview.py
       - systems/rock-star-os/os/desktop/preview.py
       - tests/test_release_signing.py
+      - tests/test_release_signing_owner.py
       - tests/test_prepare_release_candidate.py
       - tests/test_owner_legal_approval.py
       - docs/owner-legal-approval.md
@@ -23,6 +24,7 @@ on:
       - systems/rock-star-os/os/desktop/package_preview.py
       - systems/rock-star-os/os/desktop/preview.py
       - tests/test_release_signing.py
+      - tests/test_release_signing_owner.py
       - tests/test_prepare_release_candidate.py
       - tests/test_owner_legal_approval.py
       - docs/owner-legal-approval.md
@@ -46,6 +48,7 @@ jobs:
           PYTHONDONTWRITEBYTECODE: '1'
         run: |
           python3 -m unittest discover -s tests -p test_release_signing.py -v
+          python3 -m unittest discover -s tests -p test_release_signing_owner.py -v
           python3 -m unittest discover -s tests -p test_prepare_release_candidate.py -v
           python3 -m unittest discover -s tests -p test_owner_legal_approval.py -v
       # No production Environment, signing secret, dependency install, or write token.
