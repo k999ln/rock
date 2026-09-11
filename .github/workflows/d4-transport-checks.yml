@@ -1,0 +1,30 @@
+name: D4 transport fixture checks
+on:
+  push:
+    paths:
+      - scripts/ci-d4/**
+      - .github/workflows/d4-transport-checks.yml
+      - .github/workflows/final-d4-candidate.yml
+  pull_request:
+    paths:
+      - scripts/ci-d4/**
+      - .github/workflows/d4-transport-checks.yml
+      - .github/workflows/final-d4-candidate.yml
+permissions:
+  contents: read
+jobs:
+  transport-fixtures:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Check bounded transport and actual GNU sparse fixtures
+        working-directory: scripts/ci-d4
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 -B -m unittest -v test_ci_admission.py test_ci_transport.py
+      # No candidate GET, VM, native matrix, artifact upload, release write,
+      # production Environment, signing key, dependency install or write token.

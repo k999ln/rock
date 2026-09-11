@@ -41,6 +41,27 @@ def split_gzip(root, raw, size=71):
 
 
 class RawPreservation(unittest.TestCase):
+    def test_first_terminal_header_nonzero_cannot_be_silently_consumed(self):
+        raw, inventory = example_tar()
+        # Header at 0, one data byte padded to 512, first end header at 1024.
+        # tarfile.next() previously swallowed this invalid nonzero header.
+        for offset in (1024, 1025, 1535):
+            with self.subTest(offset=offset), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp).resolve(); changed = bytearray(raw); changed[offset] = ord('X')
+                parts = split_gzip(root, changed)
+                with self.assertRaisesRegex(ValueError, 'end marker|trailing'):
+                    transport.verify_raw_archive(root, parts, inventory)
+
+    def test_standard_tar_end_padding_at_all_twenty_record_alignments(self):
+        lengths = []
+        for blocks in range(20):
+            data = b'x' * (blocks * 512); raw, inventory = example_tar(data)
+            lengths.append(len(raw) - 512 - len(data))
+            with self.subTest(blocks=blocks), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp).resolve(); parts = split_gzip(root, raw)
+                transport.verify_raw_archive(root, parts, inventory)
+        self.assertEqual(max(lengths), 10752)
+
     def test_split_gzip_roundtrip_checks_every_original_byte_and_mode(self):
         raw, inventory = example_tar(b'0123456789' * 9000)
         with tempfile.TemporaryDirectory() as temp:

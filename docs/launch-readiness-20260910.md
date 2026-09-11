@@ -2,6 +2,10 @@
 
 状態: **BLOCKED_FOR_LAUNCH**。Webの改修・履歴統合・検証は実施したが、原TLS原因、製品許諾、管理鍵、既存Sitesアクセス、CM選択、最終配布受入は完了していない。一般公開・main merge・実請求・実資金・実機書込みは実施しない。
 
+## 9月11日 rc2の追加受入
+
+D6の60分・D1/D3の13boot・D4の41boot・Game/金融/PC/demoの8bootを原本と停止DBまで照合した。fresh SDKと空の導入先の明示削除も限定合格。90秒技術デモの変換と目視確認を完了した。構成照合は434523記録の読戻しを完了。生成工程の証明10件・正式署名・製品許諾・Sites再接続・CM選定掲載・公開承認は残る。[今回の範囲と未完了条件](rc2-remaining-acceptance-20260911.md)。
+
 ## 9月11日 rc2の実測完了
 
 b7/rc2の実1GB候補を二回生成し、GitHub全8資産の実取得とhost/guest各716member照合に成功。新規導入・3起動・150→151-byte成果1件の保存/再開・16MiB地点の中断から同じ復旧要求を再開・9897c/10 COIN_A/保留0の保持を実OSと停止diskで確認した。[最新の限定受入](os-acceptance-b7d819c-20260911.md)。正式署名、製品許諾、Sites接続、CM確定掲載と残る全受入は未達で、BLOCKED_FOR_LAUNCHを保持する。所有者申告と署名意思は受領したが、未設定の鍵やlicense方式を補わない。以下の再開記述は実測前の履歴。
@@ -100,7 +104,7 @@ PR1→2→3を読み取り、レビュー/コメントなし、PR1とmainの文�
 
 旧Draftは `CANDIDATE / NOT_CLEARED / PACKAGED_NOT_ACCEPTED`、archive SHA256 `121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2`、1,000,928,255bytesのまま。旧9abの限定D0〜D6、fresh導入・保存・同一VM復旧・削除、Game/SDKの合格は[既存受入](os-acceptance-9abf78a-20260910.md)を保持し、今回の署名/許諾/新配布受入へ転記しない。
 
-9月11日補足: 新版rc2で生成・実取得・新規導入・保存・通常再開・同一VM中断復旧は内部PASS。公開試験鍵の別置きmanifestを使用し、正式署名・D0〜D6全体・SDK全体・削除・公開は未合格。
+9月11日補足: 新版rc2で生成・実取得・新規導入・保存・通常再開・同一VM中断復旧は内部PASS。公開試験鍵の別置きmanifestを使用し、fresh SDKと未起動の空導入先削除は追加で限定合格。正式署名・D0〜D6全体・保存データあり端末の削除・公開は未合格。
 
 次: 前提確定後、正式署名と許諾を確認し、必要な内容変更がある場合は**新しい版名**で二回同一bytes生成。新manifestへsource/image/factory/hosttools/boot/Game/legal/CM/siteSHAを結び、新署名・全asset検証・fresh対応Macの導入→Hub→保存→Wallet/Game→通常終了→再開→限定復旧→削除を完走する。旧archiveの中身を後から差し替えない。担当: 開発/受入担当。
 

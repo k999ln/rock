@@ -1,9 +1,10 @@
-# Root reviews the exact control commit and evidence Draft before pushing.
+# A new reviewed launch plan is required to start another full native run.
+# Wrapper/test/workflow maintenance is covered by read-only transport checks.
 name: rc2 D4 independent Linux frozen candidate
 on:
   push:
     branches: [codex/rockstaros-launch-candidate-20260910]
-    paths: ['.github/workflows/final-d4-candidate.yml', 'scripts/ci-d4/**']
+    paths: ['scripts/ci-d4/launch-plan.json']
 permissions: {}
 concurrency:
   group: rc2-d4-387142563

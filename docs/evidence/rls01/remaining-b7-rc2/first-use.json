@@ -1,0 +1,188 @@
+{
+  "schema": "rock-b7-first-use-scoped-evidence/1",
+  "status": "PASS_SCOPED_GAME_FINANCIAL_PC_RAW_DEMO_RETENTION",
+  "source_commit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+  "candidate_version": "1.0.0-preview.20260911-rc2",
+  "device": "rock-b7-first-use",
+  "profile": "development-game-authority",
+  "freeze_sha256": "918ecd2c3e98fbc9f585f2b2f8795ea0ef4752fe684365d2b155ba298a11fcfd",
+  "configuration_sha256": "ffdfd163de3e74dab8748ce5ae8a4b6b8866b196e8a01068c8255f96b44d8449",
+  "images_sha256": {
+    "Image": "8e2a90cd5cb19bbef756a059f4b636acdf9da9042331a0801ad22a40605cdcc1",
+    "rootfs.ext4": "8ac63eca1a9bf49d3e5f45f33a47c2eb337612a5b6fa5951cf88040929b87cf5",
+    "stage0.cpio.gz": "36c868b3e78975bd937a8565562e11f50c6132687f2d2698c3a3d984fdf894b9"
+  },
+  "scope": "固定 b7 の同じ QEMU 開発用 profile / 端末で、公開合成テストを実施した原証跡の独立読戻し。新しい release gate の認定ではない。",
+  "normal_boots": {
+    "game": 2,
+    "financial": 2,
+    "pc_link_v2": 3,
+    "demo": 1,
+    "total": 8
+  },
+  "failed_pc_setup": {
+    "status": "FAIL_BEFORE_GUEST_BOOT_PRESERVED",
+    "boots": 0,
+    "cause": "VM 内 umask 未指定で生成 launcher が mode 0775 となり、元 executor が group/world-write を拒否。",
+    "correction": "VM 内 umask 0077 を明示した fresh pc-link-v2。元失敗原本を保持。",
+    "all_eight_baseline_db_bytes_equal_before_v2": true,
+    "os_source_or_acceptance_limits_changed": false
+  },
+  "game": {
+    "completed_exchanges": 2,
+    "units_each": 10,
+    "principal_minor_each": 100,
+    "fee_minor_each": 3,
+    "available_minor": 9794,
+    "monthly_consent": false,
+    "monthly_charges": 0,
+    "saved_hub_jobs": 1
+  },
+  "financial": {
+    "monthly_period": "2026-09",
+    "monthly_bills": 1,
+    "monthly_amount_minor": 888,
+    "same_period_duplicate_charge": false,
+    "future_auto_renew": false,
+    "atm_quote_before_approval_hold_minor": 0,
+    "approved_hold_minor": 1000,
+    "unused_hold_released_minor": 1000,
+    "cash_dispensed_minor": 0,
+    "final_available_minor": 8906,
+    "same_guest_and_authority_credential_counter_increment": 1,
+    "original_shared_rows_retained": true,
+    "read_only_restart_authority": "全 authority snapshot が完全一致"
+  },
+  "pc_link": {
+    "fixture": "citations / 既存 local 1.0.0 を明示的に 1.1.0 へ更新",
+    "scenario": "通信断 → 同じ元要求で回復 → 別 boot で offline 再表示",
+    "original_request_keys": 2,
+    "actual_runner_jobs": 2,
+    "output_bytes_each": 151,
+    "output_sha256_each": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+    "execution": "所有する Linux VM の TLS / 実隔離 worker。socket syscall 拒否・Wallet path 不可視。",
+    "preserved_guest_db_exports": 32,
+    "preserved_runner_db_exports": 1,
+    "raw_db_typed_snapshot_readback": "全 33 原 DB を host immutable read-only SQLite で照合し、読戻し後の全 bytes も一致",
+    "service_stop_returncodes": [
+      0,
+      0,
+      -15
+    ]
+  },
+  "authority_retention": {
+    "policy": "index-identity-maximum-time-only/1",
+    "game_restart_maximum_time": [
+      1789145303,
+      1789145365
+    ],
+    "demo_maximum_time": [
+      1789145365,
+      1789146278
+    ],
+    "clock_exception_scope": "Game の履歴 UI と demo のみ。整数型・単調増加・元 identity を検証し、その他すべての typed row / schema / sequence / identity は完全一致。",
+    "financial_restart_and_pc_scope": "金融の再起動は全体完全一致。PC は各 cycle の元 unchanged 検査に加え、金融最終 → PC baseline → demo-before の保存全体 snapshot が完全一致。",
+    "post_demo_raw_authority_files": 26,
+    "post_demo_raw_authority_bytes": 865366,
+    "raw_authority_databases": 5,
+    "typed_tables": 71
+  },
+  "post_demo_retention": {
+    "guest_databases": 8,
+    "pc_cycle3_raw_to_demo_before_all_eight_roles_equal": true,
+    "non_hub_business_roles_compared": 7,
+    "old_hub_jobs_retained": 1,
+    "new_actual_hub_jobs": 1,
+    "normal_power_receipts_added": 1,
+    "all_old_power_receipts_retained": true,
+    "pc_fixture_files_byte_unchanged": 5,
+    "source_files_hash_verified_before_after_export": 1725,
+    "whole_userdata_unchanged_during_export_sha256": "58e6438c6871b306eca3847d444b38f7778a56a87363f926ff2baf8578939cc2",
+    "method": "停止した device / authority の元 fence 内で原 DB と全 authority regular tree を新規私有領域へ export。サービス開始・修復・既存状態削除は行わず、host 原本から再導出。"
+  },
+  "images_and_video": {
+    "ui_png_hashes_verified": 192,
+    "raw_demo_frames": 360,
+    "raw_dimensions": [
+      720,
+      960
+    ],
+    "raw_recorded_seconds": 90.00051582699962,
+    "all_original_frame_bytes_order_and_timestamps_verified": true,
+    "encoding": {
+      "status": "PASS_ENCODE_PENDING_VISUAL_REVIEW",
+      "encoded_seconds": 90.04,
+      "mp4_sha256": "23c7a5a63470b5d0522496c7efe9a9f914705d1dbfc492ea50b2f7292d3bc722",
+      "mp4_bytes": 721060,
+      "root_log_sha256": "1c50a70d94bf6ce23592287fb74de81aa83c1dff4d6109bc38ef5e2ffc42107c",
+      "mp4_bytes_independently_rehashed": true
+    },
+    "visual_review": "PASS_SCOPED_ROOT_SAMPLED_REVIEW_SEE_ROOT_VISUAL_REVIEW",
+    "description": "準備済み端末の技術デモ。CM 制作や初回導入の所要時間測定とは別。"
+  },
+  "private_preservation": {
+    "unique_vm_files": 748,
+    "unique_vm_bytes": 56520696,
+    "all_archive_member_hash_size_mode_verified": true,
+    "original_files_unchanged_before_after_copy": true,
+    "explicit_first_tar_endheader_zero_padding_gzip_crc_and_eof_verified": true,
+    "archives": [
+      {
+        "scope": "financial-complete",
+        "files": 155,
+        "original_bytes": 10660556,
+        "archive_bytes": 9435454,
+        "archive_sha256": "ddac47e560279aaef0c6db6ac26a1aa12c9080c6f4f2bd3b72cbf902c8e8efb8"
+      },
+      {
+        "scope": "pc-link-v2-complete",
+        "files": 135,
+        "original_bytes": 7386140,
+        "archive_bytes": 5289154,
+        "archive_sha256": "d12c8923da3b7b243b4d4c50e8efa309dba8e8f0903e0f2952295f3a5300ee24"
+      },
+      {
+        "scope": "demo-complete",
+        "files": 400,
+        "original_bytes": 37542097,
+        "archive_bytes": 35753119,
+        "archive_sha256": "158526143c7d1a7d0aeab7fa9f4d7e562fa1649e8945f0d3585936aea873cca2"
+      },
+      {
+        "scope": "post-demo-exports",
+        "files": 43,
+        "original_bytes": 1311007,
+        "archive_bytes": 106023,
+        "archive_sha256": "6c8354932dd801c7a8154bb201b0b0cf38711efab167f6a5bc3eec2363c8664c"
+      },
+      {
+        "scope": "pc-failed-preserved",
+        "files": 29,
+        "original_bytes": 1030988,
+        "archive_bytes": 228313,
+        "archive_sha256": "b95711b4437775385097612c9912fa12f16b88a2cb7c40efc3773c61985b80a1"
+      }
+    ]
+  },
+  "evidence_pins": {
+    "final_summary_sha256": "ccdd6cffa3ec4e80db2d0a3dafc283e5ce91829a243b122807447fc90b982554",
+    "full_private_manifest_sha256": "d60be12c8475c6eb8c767321a576aba8ef9697d0010ea777dba3c34560a1daca",
+    "game_financial_summary_sha256": "752b5053e16a33d9bd957b9472845ed8573192e96532f9e7f109c5f22a5befe6",
+    "pc_summary_sha256": "75016c980400eec7c74123911100b7b918c1af15c15163e675c1a1a4396c46a4",
+    "demo_summary_sha256": "7f1606588382ab2a49698e66d0fdfef8dc2640173e9ed77da81f6c349c4b2541",
+    "demo_original_report_sha256": "22b13beb792758923abaa1da02cb9c1da19d4baf11ed58e276c9c31e7271bc07",
+    "private_evidence_directory": "work/remaining-20260911/first-use-readback-plan（Git 管理外）"
+  },
+  "limitations": [
+    "元 Game / 金融 observer は各時点の全 8 DB 生バイト・署名原レシート全文を保存しない。署名は固定元 inspector の実行検査であり、hash だけから独立再検証したとは扱わない。",
+    "PC 各 cycle の authority-after 全 JSON は未保存。元実行時検査と、保存済み前後境界の独立完全一致を区別する。",
+    "全 guest 非 SQLite tree の post-boot 列挙、集約 CPU / RSS 成長、D0–D6 全体、物理端末 / ATM / USB、MR CLI 接続、本番 cloud、実資金はこの記録の認定範囲外。",
+    "本番署名・権利者の license/NOTICE 承認・一般公開・main merge・CM 完成の承認や PASS へ換算しない。"
+  ],
+  "root_visual_review": {
+    "status": "PASS_SCOPED_ENCODE_AND_VISUAL_REVIEW",
+    "report_sha256": "cdbf663f4bb7ca4aaeda7c9c8ab4c3cec67ed905427666d8b81a0b17ebcc39a1",
+    "method": "Encoded MP4 decoded at six-second intervals; 15-frame contact sheet visually inspected. All 360 source hashes verified unchanged after encoding.",
+    "not_full_frame_by_frame_review": true
+  }
+}

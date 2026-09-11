@@ -1,0 +1,89 @@
+{
+  "schema": "rock-new-inventory-run/1",
+  "status": "INVENTORY_READBACK_COMPLETE_NOT_LEGAL_CLEARANCE",
+  "source_commit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+  "version": "1.0.0-preview.20260911-rc2",
+  "archive_sha256": "5ce072f65fc4e24212ff6acc6887cbb03f3e7f664b50d574756738892e4ed95e",
+  "candidate_manifest_sha256": "9887796bd85a32263f143c34a6500f7349e33c221b93120e09ea9be9cbc4ecb6",
+  "freeze_sha256": "918ecd2c3e98fbc9f585f2b2f8795ea0ef4752fe684365d2b155ba298a11fcfd",
+  "legal_bundle_sha256": "ad6453366b752e91d4ae1cf0b6384b1534e53e13643ed6b1f426e674d9ec3d94",
+  "build_metadata_sha256": "5f1c150e19270c23a6b1545fadccd3561ba9f9619508cbdfd31e8b320aad0483",
+  "inventory": {
+    "bytes": 44621005,
+    "path": "full-distribution-inventory.jsonl.gz",
+    "sha256": "7aeb53e70b5e6a38384876dbbe41c63e99ece4f65b3888b50120d4c7f43f0cd6"
+  },
+  "record_counts": {
+    "CANDIDATE_FILE": 716,
+    "LEGAL_BUNDLE_MEMBER": 315,
+    "NESTED_SOURCE_ENTRY": 430809,
+    "ROOTFS_PATH": 1981,
+    "STAGE0_ENTRY": 702
+  },
+  "rootfs_generator_unresolved": 10,
+  "stage0_unmapped_regular_bytes": 0,
+  "legal_status": "NOT_CLEARED",
+  "approval": "NOT_CREATED",
+  "acceptance": "NOT_RUN_BY_THIS_READER",
+  "stages_completed": 7,
+  "total_records": 434523,
+  "original_run_report_sha256": "1514b83a1202b6897bdfa591d0e81382576efbe54d323d8e1041d462da68e25e",
+  "metadata": {
+    "selection_complete": true,
+    "files": 1233,
+    "bytes": 19439918,
+    "compiled_hash_inventory_complete": false,
+    "nothing_retired": true,
+    "offvm_readback_sha256": "4333d20f88bf3c1210bd76074d3f76ba2d6398261cc55f2cefa6c8a9db7b8085",
+    "root_recheck_sha256": "dff64fe3e1070803b85d9339469d74201124b176c5af759cef31dfe81222e1e6"
+  },
+  "private_original_preservation": {
+    "status": "ALL_ORIGINALS_FULL_BYTE_READBACK_AND_ACTUAL_JSONL_COUNTS_PASS",
+    "receipt_sha256": "69089eb4c88ef4d7d76f2167499c1ffd0848c56dfc26e7b7e7bbe5675e8b3cff",
+    "original_files": 18,
+    "original_bytes": 92319117,
+    "archive": {
+      "bytes": 71447714,
+      "sha256": "b0e518dd63c5c66fd6b4181f00cf23f2d4f403aa6429efba4fc00e75205cf93a"
+    },
+    "manifest_sha256": "2a31866524abfe8acd1fdf63fed6e3569bc67a2cb10bd1c1100edc16f066021d",
+    "actual_record_counts": {
+      "CANDIDATE_FILE": 716,
+      "LEGAL_BUNDLE_MEMBER": 315,
+      "NESTED_SOURCE_ENTRY": 430809,
+      "ROOTFS_PATH": 1981,
+      "STAGE0_ENTRY": 702
+    },
+    "actual_total_records": 434523,
+    "jsonl_expanded_bytes": 1903339518,
+    "all_vm_originals_unchanged_after_stream": true,
+    "full_raw_extraction_performed": false,
+    "copies": "Closed VM originals plus full tar.gz on connected Extreme SSD; small receipt also in local private workspace",
+    "reader_kit_sha256": "29b94e612ec3101b48fb1a2fab99609928d957e77be0505e1544c0bd01a12c38",
+    "original_input_revalidation_scope": "Producer run_inventory.validate performed before and after seven stages. This collector rechecks output originals only; it does not repeat underlying source/image/legal input reads.",
+    "actual_host_summary_modes": {
+      "full-inventory-summary.json": "0o700",
+      "nested-source-summary.json": "0o700",
+      "rootfs-generated-origin-resolution.json": "0o700",
+      "run-report.json": "0o700",
+      "technical-exception-bindings.json": "0o700"
+    }
+  },
+  "technical_exception_review": {
+    "summary_sha256": "c916aec080d74c69a40fa54ddb8b2de764fb9b2f9515a554d8afdd55213987b0",
+    "kernel_generated_metadata_files": 10,
+    "kernel_generated_metadata_bytes": 18484,
+    "all_target_rootfs_hashes_match": true,
+    "unresolved_current_generator": 0,
+    "exact_regeneration_not_proved": true,
+    "unparseable_container_digests": 16,
+    "unparseable_locations": 17,
+    "bounded_large_members": 4,
+    "unique_exception_containers": 18,
+    "body_of_bounded_members_expanded": false,
+    "all_current_parent_and_container_hashes_match_previous_bytes": true,
+    "previous_legal_decision_reused": false,
+    "legal_status": "NOT_CLEARED",
+    "license_declarations": "NOASSERTION"
+  }
+}

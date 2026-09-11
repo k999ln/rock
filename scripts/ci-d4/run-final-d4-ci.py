@@ -462,7 +462,11 @@ def verify_raw_archive(directory, parts, inventory):
     try:
         with gzip.GzipFile(fileobj=joined, mode='rb') as expanded:
             with tarfile.open(fileobj=expanded, mode='r|') as incoming:
-                for item in incoming:
+                # Stop before next() consumes a terminal header: tarfile can
+                # silently treat a malformed nonzero header as end-of-archive.
+                while len(seen) < len(inventory['files']):
+                    item = incoming.next()
+                    require(item is not None, 'raw archive missing original file')
                     require(item.name in inventory['files'] and item.name not in seen and item.isfile(),
                             'extra/duplicate/nonregular raw archive member')
                     expected = inventory['files'][item.name]; seen.add(item.name)
@@ -470,11 +474,14 @@ def verify_raw_archive(directory, parts, inventory):
                             item.uid == expected['uid'] and item.gid == expected['gid'], 'raw member metadata differs')
                     with incoming.extractfile(item) as stream:
                         checked_stream(stream, expected)
-                # The streaming tar reader has its own read-ahead buffer. Read
-                # THROUGH it so bytes already consumed from gzip are inspected.
-                # One zero header was consumed by next(); require the second.
-                trailer = incoming.fileobj.read(10241)
-                require(512 <= len(trailer) <= 10240 and not trailer.strip(b'\0'),
+                # Read through the streaming reader's buffer. Align past the
+                # last member's padding before inspecting BOTH zero headers.
+                require(incoming.fileobj.seek(incoming.offset) == incoming.offset,
+                        'raw archive has short final member padding')
+                # Two terminal blocks can straddle a 10 KiB tar record, making
+                # the complete standard trailer as large as 10,752 bytes.
+                trailer = incoming.fileobj.read(10753)
+                require(1024 <= len(trailer) <= 10752 and not trailer.strip(b'\0'),
                         'raw archive has missing end marker or trailing data')
             require(expanded.read(1) == b'', 'raw archive has unconsumed gzip data')
         require(joined.read(1) == b'', 'unused raw archive bytes')

@@ -1,0 +1,23 @@
+{
+  "schema": "rock-ci-preservation-hardening/1",
+  "status": "PASS_TARGETED_LINUX_AND_EXISTING_RAW_RECHECK",
+  "scope": "Reject corruption in the first tar end header before tarfile.next can swallow it; no OS/source/image or native deadlines changed",
+  "regression_cases": [
+    "Malformed first header at three positions",
+    "Valid trailer across all twenty tar record alignments"
+  ],
+  "linux_tests": {
+    "tests": 24,
+    "skips": 0,
+    "exit_code": 0,
+    "log_sha256": "1bed2ca8af082ecd4c3370d4df555b592e412321e4d2394616739241cd0ba84e",
+    "inputs_manifest_sha256": "d1a47da7bb0faafe7fa7436a6b4673f83f09357c75d17802ee5c61beba2127de",
+    "wrapper_sha256": "3b10aa62784b0c688930be7234565102986f04a035a7ceb678598490019e2c04"
+  },
+  "same_d4_raw_reread_v2_sha256": "3d160e865867e619ff5899ce19b0125f04eb0ebf3b2e16bddfe896ca2213d32d",
+  "native_matrix_reexecuted": false,
+  "strict_tail_other_current_archives_sha256": "31c9195d21d8755d82093478df8c56f58d3302f0aad614961451c311c60dccf9",
+  "independent_code_review": "No required fixes found in final four-file diff",
+  "future_full_matrix_trigger": "Only a changed scripts/ci-d4/launch-plan.json on the reviewed candidate branch; maintenance receives transport fixtures",
+  "not_a_launch_approval": true
+}
