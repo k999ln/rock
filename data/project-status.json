@@ -714,7 +714,7 @@
     "publicRelease": false,
     "mainMerged": false,
     "sitesSourceCommit": "c6942d5ef72e9dd16345b9363e68e0e18ca25079",
-    "siteAccess": "NOT_FOUND_IN_CONNECTED_ACCOUNT",
+    "siteAccess": "NOT_FOUND_RECHECKED_20260911",
     "license": "AWAITING_OWNER_DECISION",
     "signing": "AWAITING_SIGNING_SETUP",
     "campaign": "AWAITING_SELECTION",
@@ -748,6 +748,15 @@
     "latestDistributionAcceptanceEvidence": "docs/os-acceptance-b7d819c-20260911.md",
     "distributionTrust": "UNSIGNED_CANDIDATE_SEPARATE_PUBLIC_TEST_ACCEPTANCE_ENVELOPE",
     "ownerRightsDeclaration": "RECEIVED_OWN_WORKS_RELEASE_LICENSE_AND_CLEARANCE_UNSET",
-    "localDownloadFlow": "PASS_RC2_GUIDE_AND_PC_ZIP_HOSTED_ACCESS_BLOCKED"
+    "localDownloadFlow": "PASS_RC2_GUIDE_AND_PC_ZIP_HOSTED_ACCESS_BLOCKED",
+    "remainingAcceptance": "IN_PROGRESS_B7_D2_D4_D6_AND_FRESH_SDK_SEPARATE_FROM_COMPLETED_RC2_RECOVERY",
+    "signingControlMaintenancePr": 6,
+    "signingControlMaintenanceStatus": "DRAFT_29_TESTS_PASS_NOT_APPLIED",
+    "latestLifecycleAcceptance": "PASS_SCOPED_16_OPERATIONS_5_JOBS_TWO_NORMAL_BOOTS_NOT_FULL_D2",
+    "freshSdkAcceptance": "PASS_INTERNAL_SYNTHETIC_FRESH_CLIENT_AUTHORITY_RC2",
+    "emptyInstallationRemoval": "PASS_EXPLICIT_DELETE_GUARD_AND_OWNED_VM_REMOVAL_NOT_POPULATED_CASE",
+    "d6Acceptance": "RUNNING_ORIGINAL_FIVE_BOOTS_AND_3600_SECONDS",
+    "d4Acceptance": "CI_EXECUTION_LAUNCHING_ORIGINAL_41_BOOT_MATRIX",
+    "remainingAcceptanceEvidence": "docs/rc2-remaining-acceptance-20260911.md"
   }
 }

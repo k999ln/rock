@@ -1,0 +1,82 @@
+{
+  "schema": "rock-rc2-fresh-sdk-summary/1",
+  "status": "PASS_INTERNAL_SYNTHETIC",
+  "source_commit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+  "archive_sha256": "5ce072f65fc4e24212ff6acc6887cbb03f3e7f664b50d574756738892e4ed95e",
+  "native_member_count": 702,
+  "native_member_bytes": 25285296,
+  "configuration_change": "Separate sandbox state path only; all fixed network/auth/fee fixture values unchanged",
+  "probe": "native/examples/game/acceptance.py",
+  "probe_sha256": "ca0f57be2a1c5f0e9dad3cead2ca10a704ea26f556439d2666e814953544ea73",
+  "first_exchange_seconds": 2.049918099000024,
+  "cause_identification_seconds": 0.11681248100001085,
+  "recovery_seconds": 0.98332963200005,
+  "total_seconds": 4.119084074000057,
+  "report_sha256": "4b2702cbd25bf6efb447655f1f7a865e4adb7f14f59211bd9ee9adce663ee3bb",
+  "independent_readback_sha256": "9294623ca97f4bc171638408deb6b7fb7ae7c897f03ec8ddd9356645dbfd3b93",
+  "matching_final_snapshot_sha256": "c37470590875e799375d962a48026ca8d4656229981e67d13ad1665336eb3af4",
+  "wallet": {
+    "accounts_minor": {
+      "AVAILABLE": 9794,
+      "GAME_FEES": 6,
+      "GAME_HOLD": 0,
+      "GAME_PURCHASES": 200,
+      "PENDING_SETTLEMENT": 0,
+      "SALE_CLEARING": -10000
+    },
+    "bill_count": 0,
+    "exchange_states": [
+      [
+        "COMPLETED",
+        0,
+        103,
+        0
+      ],
+      [
+        "COMPLETED",
+        0,
+        103,
+        0
+      ]
+    ],
+    "monthly_consent": false,
+    "withdrawal_count": 0
+  },
+  "games": {
+    "game-a": {
+      "account_units": {
+        "ISSUANCE_CLEARING": -10,
+        "PLAYER_PURCHASED": 10
+      },
+      "epoch": 1,
+      "epoch_receipts": 0,
+      "grants": 1
+    },
+    "game-b": {
+      "account_units": {
+        "ISSUANCE_CLEARING": -10,
+        "PLAYER_PURCHASED": 10
+      },
+      "epoch": 1,
+      "epoch_receipts": 0,
+      "grants": 1
+    }
+  },
+  "authority_databases": 5,
+  "authority_tables": 71,
+  "scope": "Fresh internal Linux integration, explicit public software authenticator/PIN0000 and fixture funds. No external author or human timing claim.",
+  "does_not_prove": [
+    "fresh VM or OS boot",
+    "human onboarding time",
+    "full D0–D6",
+    "managed signing or public release"
+  ],
+  "private_preservation": {
+    "summary_sha256": "34e9263ff630f4b48a24817438ba5f8e90c474e893bb335f81cdbb8cec2e17d3",
+    "regular_files": 764,
+    "bytes": 26550039,
+    "archive_sha256": "4b945e0968d2f14245942995b07d7b9a42fe087ab77f9868c13e2c0f9e3cfb6a",
+    "all_native_after_hash_size_mode_match": true,
+    "private_only": true
+  }
+}
