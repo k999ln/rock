@@ -4,10 +4,13 @@ on:
     paths:
       - scripts/release_signing*.py
       - scripts/prepare_release_candidate.py
+      - scripts/verify_owner_legal_approval.py
       - systems/rock-star-os/os/desktop/package_preview.py
       - systems/rock-star-os/os/desktop/preview.py
       - tests/test_release_signing.py
       - tests/test_prepare_release_candidate.py
+      - tests/test_owner_legal_approval.py
+      - docs/owner-legal-approval.md
       - .github/workflows/release-signing*.yml
       - data/release-trust*.json
       - data/release-signing-policy*.json
@@ -16,10 +19,13 @@ on:
     paths:
       - scripts/release_signing*.py
       - scripts/prepare_release_candidate.py
+      - scripts/verify_owner_legal_approval.py
       - systems/rock-star-os/os/desktop/package_preview.py
       - systems/rock-star-os/os/desktop/preview.py
       - tests/test_release_signing.py
       - tests/test_prepare_release_candidate.py
+      - tests/test_owner_legal_approval.py
+      - docs/owner-legal-approval.md
       - .github/workflows/release-signing*.yml
       - data/release-trust*.json
       - data/release-signing-policy*.json
@@ -41,4 +47,5 @@ jobs:
         run: |
           python3 -m unittest discover -s tests -p test_release_signing.py -v
           python3 -m unittest discover -s tests -p test_prepare_release_candidate.py -v
+          python3 -m unittest discover -s tests -p test_owner_legal_approval.py -v
       # No production Environment, signing secret, dependency install, or write token.

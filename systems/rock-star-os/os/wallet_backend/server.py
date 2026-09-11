@@ -43,18 +43,35 @@ class DeadlineReader(io.RawIOBase):
     def __init__(self, connection, deadline):
         self.connection, self.deadline = connection, deadline
         self.remaining = MAX_HEADERS
+        self.pending = bytearray()
 
     def readable(self):
         return True
 
+    def close(self):
+        self.pending.clear()
+        super().close()
+
     def readinto(self, buffer):
+        if self.closed:
+            raise ValueError('I/O operation on closed file')
         remaining_time = self.deadline - time.monotonic()
         if remaining_time <= 0:
             raise TimeoutError('request expired')
         if self.remaining <= 0:
             raise ValueError('request byte budget exceeded')
-        self.connection.settimeout(remaining_time)
-        count = self.connection.recv_into(buffer, min(len(buffer), self.remaining))
+        if not len(buffer):
+            return 0
+        if not self.pending:
+            self.connection.settimeout(remaining_time)
+            incoming = bytearray(min(8192, self.remaining))
+            count = self.connection.recv_into(incoming, len(incoming))
+            self.pending.extend(incoming[:count])
+        # Charge bytes when returned, so bounded header read-ahead carries into
+        # the body without bypassing its independent Content-Length budget.
+        count = min(len(buffer), self.remaining, len(self.pending))
+        buffer[:count] = self.pending[:count]
+        del self.pending[:count]
         self.remaining -= count
         return count
 
@@ -70,7 +87,7 @@ class Handler(BaseHTTPRequestHandler):
         self.rfile.close()
         self.deadline = self.server.connection_deadlines[threading.get_ident()]
         self.reader = DeadlineReader(self.connection, self.deadline)
-        # Unbuffered read prevents header reads consuming uncounted body bytes.
+        # Reader bounds read-ahead and charges returned bytes to each phase.
         self.rfile = self.reader
 
     def log_message(self, *_):

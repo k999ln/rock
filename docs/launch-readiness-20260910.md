@@ -2,6 +2,10 @@
 
 状態: **BLOCKED_FOR_LAUNCH**。Webの改修・履歴統合・検証は実施したが、原TLS原因、製品許諾、管理鍵、既存Sitesアクセス、CM選択、最終配布受入は完了していない。一般公開・main merge・実請求・実資金・実機書込みは実施しない。
 
+## 9月11日の再開
+
+9月11日追加実装: TLSの1byte受信増幅を最大8KiBの先読みで修正し、期限・header/body上限・単一requestを維持した。修正前の18件中4FAIL→修正後18件＋関連57件＝75PASS/skip0、独立reviewも所見なし。同じ承認経路に4ms/recvを加えた制御実験は旧実装がheader受信中に1秒timeout、新実装は49〜52msで成功したが、原TLS原因の確定ではない。将来のowner許諾を変更しないcandidate bytesへ照合する別置き検証器を追加し、新11＋既存42＝53fixture PASS。所有者の実承認は未受領。旧VM/9ab配布物を保持して、新しい隔離VMで新sourceのbuildを準備中。新image/D0〜D6は未実施、Sitesは再度NOT_FOUND、license/CM/reviewer/PR #5限定mergeは回答待ち。 [開始時のSHA別CI](evidence/launch/ci-0b9f37e.json)。
+
 ## 正本と境界
 
 2026-09-10 22:03 UTC再開時、GitHubの候補は `97d952937add42de04092a2e6c2fac8aba3d8bad`、[同SHAの全9check成功](evidence/launch/ci-97d9529.json)、PR #4 MERGEABLE。Hubの実装・検証を保持して、TLS fixtureの分離と新候補の署名前準備を進める。Sitesは再確認でもNOT_FOUND、署名Environment/control ref/初回workflow登録は未設定だった。
@@ -25,6 +29,8 @@ Draft編集後のURL変化と新旧証拠の取り違えを避けるため、[ta
 
 ## LCH01 — 原TLS原因: BLOCKED_HISTORICAL_CAUSE_UNDETERMINED
 
+9月11日runtime変更: `DeadlineReader` の最大8KiB先読み、phase別byte課金、固定締切とclose時破棄を検証。18新規＋57関連＝75PASS/skip0。原本bundle `lch01-bounded-reader-evidence-20260911-v1.zip` は189,060bytes/43members、SHA256 `a4d6f05ae540bc32a5cb4989dce05115cfe24fa1c1074980adc89ffb2a826279`。同じ承認経路で注入4ms/recvの旧実装がheaders段階で1.002秒timeout、新実装49〜52ms成功。注入条件の因果証拠であり歴史的帰属ではない。新sourceの全Linux回帰、新freeze/image/全受入が必要。
+
 再開調査で、`test_contract_runtime_lifetime.py` が共有 `time.monotonic` を差し替えて別threadの時計を壊すfixture不具合を決定的に再現した。対象moduleだけのclock proxyへ修正し、新規 `test_contract_runtime_clock_isolation.py` を追加。修正前1FAIL、修正後13PASS/skip0をrootでも確認。runtime/通信期限は不変。[追加所見](evidence/launch/tls/resume-findings.md)、[元FAIL・原artifact・再現結果](evidence/launch/tls/resume-evidence.json)。再現harnessを含む原本ZIPは `lch01-resume-evidence-20260910-v1.zip`、178,035bytes、SHA256 `9766205647ae8ceac17253e01ba1c636182ad2be796ba2f535c435bcd4ca0d3c`。
 
 関連70caseのcleanup観測はPASS/skip0で残存threadなし。別の歴史的順序prefixはmacOSで既存Linux専用2caseをskipしたため、全回帰PASSには数えない。原e430 artifact15fileには同時刻server stack/timingがなく、fixture不具合の試験はTLS失敗の117case前に正常終了していた。したがって原TLSの原因は未確定のまま。次の必要観測は、同じ1秒失敗時のserver処理段階/stackとCPU/待機時間であり、別事象のfixture修正を原TLS解消へ読み替えない。
@@ -36,6 +42,8 @@ Draft編集後のURL変化と新旧証拠の取り違えを避けるため、[ta
 検証: 診断/partition/sidecar対象21件成功（0skip）。最終Linux全partition/root UIはPRの実HEAD checkoutで実行する。次: 原FAILと結び付くthread/負荷の観測を新診断で得て原因を確定し、修正前後の同条件試験を行う。担当: 開発。独立2runは同じ最終source・同じ4partition/root UI条件で比較し、単なる回数で原因確定にしない。runtime/image変更を選ぶ場合は新freezeとD0〜D6・導入/復旧を全て取り直す。
 
 ## LCH02 — 配布条件: AWAITING_OWNER_LICENSE_DECISION
+
+9月11日: [別置きowner許諾の検証手順](owner-legal-approval.md)を実装。明示許諾と現行失効policyの独立pinを要求し、全asset/manifest/archive/materialのbytesを再検証する。copy競合・期限切れ・失効・不一致を拒否する53fixture PASS。build時のNOT_CLEARED/CANDIDATEを変更しない。本番release gateへの接続と実許諾は未実施。
 
 [一枚の判断資料](evidence/launch/legal/decision-one-page.md)にApache-2.0/MPL-2.0/評価用独自条件の比較、推薦理由、権利者が決める範囲を記録した。製品全体のLICENSEを推測で追加していない。
 

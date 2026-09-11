@@ -1,0 +1,26 @@
+{
+  "schema": "rock-resume-local-checks/1",
+  "status": "LOCAL_PASS_NOT_LAUNCH_ACCEPTED",
+  "source_base": "0b9f37e79853765e53184c7298a5a1e06cc28a37",
+  "tls_patch_sha256": "6ff9731231eacb21cdc54917e66e830a105de17b35106f50635e1e57f622fbdc",
+  "tls_tests": {
+    "new": 18,
+    "related": 57,
+    "passed": 75,
+    "skipped": 0,
+    "seconds": 38.138
+  },
+  "historical_tls_cause": "UNDETERMINED",
+  "owner_legal": {
+    "new": 11,
+    "signing": 27,
+    "candidate": 15,
+    "passed": 53,
+    "real_approval": "NOT_RECEIVED"
+  },
+  "evidence_bundle": {
+    "name": "lch01-bounded-reader-evidence-20260911-v1.zip",
+    "bytes": 189060,
+    "sha256": "a4d6f05ae540bc32a5cb4989dce05115cfe24fa1c1074980adc89ffb2a826279"
+  }
+}

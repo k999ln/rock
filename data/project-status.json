@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-10",
   "milestone": "RockstarOS 1.0 ローンチ準備・Hubのユーザー体験改善",
-  "nextAction": "署名controlはca73565で固定・保護済み。個人repoのREST省略を明示的GraphQLゼロ件で検証する修正をPR #4へ追加し、新HEADの全CIを照合する。所有者のlicense/CM/独立reviewer決定、元Sites再接続、限定bootstrap PR #5の明示承認後に、controlの独立レビュー付き更新、新sourceのbuild/freeze・管理署名・本人限定preview・導入/復旧を実施する。一般公開と製品PR #4のmain mergeは最終承認まで行わない。",
+  "nextAction": "9月11日: TLS受信の先読み修正は75件、将来のowner許諾照合と候補/署名は53件PASS。新しい固定sourceを独立VMでbuild/freezeし、legal-info・未署名候補・同一image受入を実測する。原TLS原因は未確定。Sites再接続・license/CM/reviewer決定・PR #5限定mergeは回答待ち。一般公開と製品main mergeは行わない。",
   "tasks": [
     {
       "id": "R01",
@@ -720,8 +720,8 @@
     "campaign": "AWAITING_SELECTION",
     "nativeHistoricalTlsCause": "UNDETERMINED",
     "candidateBranch": "codex/rockstaros-launch-candidate-20260910",
-    "recordedCiCommit": "ca7356550b0042d05f60a389a90aebd5210510e6",
-    "recordedCiEvidence": "docs/evidence/launch/ci-ca73565.json",
+    "recordedCiCommit": "0b9f37e79853765e53184c7298a5a1e06cc28a37",
+    "recordedCiEvidence": "docs/evidence/launch/ci-0b9f37e.json",
     "candidatePr": 4,
     "recordedChecks": "ALL_10_SUCCESS",
     "recordedNativeTests": 1671,
@@ -737,6 +737,10 @@
     "signingControlCommit": "ca7356550b0042d05f60a389a90aebd5210510e6",
     "signingControlProtection": "LOCKED_ADMINS_ENFORCED_FORCE_DELETE_DISABLED_GRAPHQL_BYPASS_ZERO",
     "signingControlUpdate": "PENDING_INDEPENDENT_REVIEW_WITH_OWNER_POLICY_AND_TRUST",
-    "signingPreflightCompatibility": "PERSONAL_REPOSITORY_GRAPHQL_EXPLICIT_ZERO_FIX_27_TESTS_PASS"
+    "signingPreflightCompatibility": "PERSONAL_REPOSITORY_GRAPHQL_EXPLICIT_ZERO_FIX_27_TESTS_PASS",
+    "resumedAt": "2026-09-11",
+    "tlsReceiveOptimization": "LOCAL_75_PASS_HISTORICAL_CAUSE_UNDETERMINED",
+    "freshCandidateBuild": "NEW_ISOLATED_VM_PROVISIONING_NOT_BUILT",
+    "detachedLegalApproval": "VERIFIER_53_PASS_NO_OWNER_APPROVAL"
   }
 }
