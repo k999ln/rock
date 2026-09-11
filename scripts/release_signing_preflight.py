@@ -27,7 +27,40 @@ def api(path):
     return decode(result.stdout)
 
 
-def validate_protection(environment, policies, protection, policy):
+def graphql_bypass():
+    # Personal repositories can omit this REST field. Absence is not proof
+    # of zero allowances: bind the explicit GraphQL total to the same ref/SHA.
+    query = '''query { repository(owner:"k999ln", name:"rock") {
+      nameWithOwner ref(qualifiedName:"refs/heads/codex/release-signing-control") {
+        name prefix target { __typename oid }
+        branchProtectionRule { id pattern bypassPullRequestAllowances(first:1) { totalCount } }
+      }
+    } }'''
+    result = subprocess.run(['gh', 'api', 'graphql', '-f', 'query=' + query], capture_output=True, timeout=45)
+    require(result.returncode == 0, 'GitHub bypass policy read denied or unavailable')
+    return decode(result.stdout)
+
+
+def validate_graphql_bypass(evidence, control_sha):
+    sha_text(control_sha, 40)
+    require(type(evidence) is dict and 'errors' not in evidence and type(evidence.get('data')) is dict,
+            'complete GraphQL bypass evidence required')
+    repository = evidence['data'].get('repository')
+    require(type(repository) is dict and repository.get('nameWithOwner') == REPOSITORY, 'bypass repository differs')
+    ref = repository.get('ref')
+    require(type(ref) is dict and ref.get('name') == CONTROL and ref.get('prefix') == 'refs/heads/', 'bypass branch differs')
+    target = ref.get('target')
+    require(type(target) is dict and target.get('__typename') == 'Commit' and target.get('oid') == control_sha,
+            'bypass control SHA differs')
+    rule = ref.get('branchProtectionRule')
+    require(type(rule) is dict and type(rule.get('id')) is str and bool(rule['id'].strip()) and
+            rule.get('pattern') == CONTROL, 'exact bypass protection rule required')
+    allowances = rule.get('bypassPullRequestAllowances')
+    require(type(allowances) is dict and type(allowances.get('totalCount')) is int and allowances['totalCount'] == 0,
+            'explicit zero GraphQL PR bypass allowances required')
+
+
+def validate_protection(environment, policies, protection, policy, *, bypass_evidence=None, control_sha=None):
     require(environment.get('name') == ENVIRONMENT, 'exact signing environment required')
     reviews = [x for x in environment.get('protection_rules', []) if x.get('type') == 'required_reviewers']
     require(len(reviews) == 1 and reviews[0].get('prevent_self_review') is True, 'environment self-review must be prevented')
@@ -46,9 +79,13 @@ def validate_protection(environment, policies, protection, policy):
     reviews = protection.get('required_pull_request_reviews', {})
     require(reviews.get('required_approving_review_count', 0) >= 1 and reviews.get('dismiss_stale_reviews') is True and
             reviews.get('require_last_push_approval') is True, 'reviewed control-code updates required')
-    bypass = reviews.get('bypass_pull_request_allowances')
-    require(type(bypass) is dict and set(bypass) == {'users', 'teams', 'apps'} and
-            all(bypass[x] == [] for x in ('users', 'teams', 'apps')), 'explicit empty PR bypass allowances required')
+    if 'bypass_pull_request_allowances' in reviews:
+        bypass = reviews['bypass_pull_request_allowances']
+        require(type(bypass) is dict and set(bypass) == {'users', 'teams', 'apps'} and
+                all(bypass[x] == [] for x in ('users', 'teams', 'apps')), 'explicit empty PR bypass allowances required')
+        return 'REST_EXPLICIT_EMPTY'
+    validate_graphql_bypass(bypass_evidence, control_sha)
+    return 'GRAPHQL_REF_BOUND_ZERO'
 
 
 def validate_approval(run, history, environment, policy, control_sha):
@@ -88,7 +125,10 @@ def preflight(control_sha, policy_path, require_approval=False):
     env = api(prefix + '/environments/' + ENVIRONMENT)
     branches = api(prefix + '/environments/' + ENVIRONMENT + '/deployment-branch-policies?per_page=100')
     protection = api(prefix + '/branches/' + quote(CONTROL, safe='') + '/protection')
-    validate_protection(env, branches, protection, policy)
+    bypass_evidence = (graphql_bypass() if 'bypass_pull_request_allowances' not in
+                       protection.get('required_pull_request_reviews', {}) else None)
+    bypass_proof = validate_protection(env, branches, protection, policy,
+                                      bypass_evidence=bypass_evidence, control_sha=control_sha)
     if require_approval:
         run_id = os.environ.get('GITHUB_RUN_ID', '')
         require(re.fullmatch('[1-9][0-9]{0,19}', run_id), 'current run ID required')
@@ -97,6 +137,7 @@ def preflight(control_sha, policy_path, require_approval=False):
         validate_approval(run, history, env, policy, control_sha)
     return {'status': 'POLICY_CHECKED', 'control_sha': control_sha, 'environment': ENVIRONMENT,
             'reviewer_count': len(policy['required_reviewers']), 'independent_approval_checked': require_approval,
+            'branch_pr_bypass_evidence': bypass_proof,
             'environment_admin_bypass_setting': 'NOT_EXPOSED_BY_GITHUB_API', 'production_key_registered': 'NOT_OBSERVED'}
 
 
