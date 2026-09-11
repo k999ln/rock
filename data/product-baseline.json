@@ -5,7 +5,7 @@
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
   "audit": "docs/os-readiness-audit-20260909.md",
-  "nextPrompt": "docs/prompts/rockstaros-release-20260910.md",
+  "nextPrompt": "docs/prompts/rock-current-next-20260911.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/os-hub-wallet-game-design.md",
   "strategy": {
@@ -82,11 +82,13 @@
     "physicalDevicePreview": "source_integration_started_exact_target_and_build_environment_pending",
     "productionReady": false,
     "cmRule": "Present the current implementation as the RockstarOS 1.0 base and advertise only the highest installation and validation stage that has passed its recorded gate",
-    "followup": "docs/release-followup-20260910.md",
+    "followup": "docs/current-state-20260911.md",
     "cmProduction": {
-      "status": "completed_per_user_report",
+      "status": "in_production_per_latest_user_report",
       "artifactReviewed": false,
-      "record": "docs/release-followup-20260910.md"
+      "record": "data/release-owner-intent-20260911.json",
+      "previousStatus": "completed_per_user_report",
+      "previousRecord": "docs/release-followup-20260910.md"
     },
     "physicalDevelopmentRecord": "docs/phone-preview-20260911.md"
   },
@@ -132,5 +134,6 @@
     "status": "completed_with_release_blockers",
     "finalCheckpointAt": "2026-09-10T13:45:19.822614+00:00",
     "followup": "docs/release-followup-20260910.md"
-  }
+  },
+  "currentStateDocument": "docs/current-state-20260911.md"
 }

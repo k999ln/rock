@@ -1,6 +1,6 @@
 # Rock star 開発の継続ルール
 
-- 最初に docs/product-baseline.md、data/product-baseline.json、README.md、project.md、data/project-status.json を読む。確定要望はRQ01〜RQ17。新しい明示指示がある場合だけ理由を記録して更新する。最新の実行プロンプトはdata/product-baseline.jsonのnextPrompt。
+- 最初に docs/product-baseline.md、data/product-baseline.json、README.md、project.md、data/project-status.json を読む。確定要望はRQ01〜RQ17。新しい明示指示がある場合だけ理由を記録して更新する。最新の実行プロンプトはdata/product-baseline.jsonのnextPrompt。現在の統合状態はdocs/current-state-20260911.md。
 - 設計v1.1の実装は承認済み。docs/execution-approval-20260909.mdとdata/execution-approval.jsonを読み、再承認で止めない。公開・実機導入・MetaMask実資金試験は準備が整うことを条件に了承されている。対象・機種適合・取引条件の未指定を補い、条件付き了承を実行済みとしない。
 - 「現段階の進捗からプロンプト作成」では docs/prompt-playbook.md に従い、npm run prompt:context または同等の読み取りでGitHubのmain・branch・PR・同一SHAのCIを確認する。対象コード/証拠を必ず読む。docs/progress-audit-20260909.mdは履歴snapshot。取得失敗を最新確認済みとしない。
 - 現在はmain/nativeだけでなく codex/os-game-design-review-20260909 の最新設計も必須入力。docs/design-implementation-alignment-20260909.md、statusのphaseGatesを読む。単一owner多端末を複数player基盤に、チェックなしをCI成功に、文書訂正をruntime修正に置き換えない。予測市場/ゲーム資産売買は検討のみ、実行許可ではない。
@@ -10,7 +10,7 @@
 - RQ13のゲーム通貨交換はATMと別adapter/同意/試験。既存Walletの予約・台帳・照合を共有して二重使用を防ぐ。ゲーム/交換方向/レートは未確定のため本番無効。fixtureは進められるが実資金・外部ゲームの残高は動かさない。
 - RQ14は自作ゲーム作者向けAPI/SDK・sandbox・動くサンプル・導入診断。導入時間/成功率/復旧時間を測り、市場首位を未実証で宣言しない。作者がゲームポイントを発行する権限とWalletの実資金記帳権限は分離する。
 - RQ15の手数料0はATMでRockが徴収する手数料の話。ゲーム手数料0と読み替えず、ゲーム料金は未定、既存OS月額は維持。外部実費は別明示し、無断の実課金/無制限補填をしない。
-- nativeは関連PR/branchのdocs/native-os-integration.mdとdocs/native-os-validation.mdを読む。Linux/Buildroot/QEMU・BlackBerry優先機種未定と、旧Android/AOSP・Pixelは別トラック。mainにないnative機能を未実装と決めつけず、未マージ機能をmain反映済みと呼ばない。APK/PWA/QEMUだけで実機完成としない。
+- nativeは関連PR/branchのdocs/native-os-integration.mdとdocs/native-os-validation.mdを読む。Linux/Buildroot/QEMU、旧Android P1と、新しいPixel/GrapheneOS候補の実機source準備を分ける。以前のBlackBerry希望は機種未確定。mainにないnative機能を未実装と決めつけず、未マージ機能をmain反映済みと呼ばない。APK/PWA/QEMUだけで実機完成としない。
 - 端末の購入・初期化・bootloader解除・書込、OS署名鍵の生成/保管、公開やサービス契約は、設計依頼から実施許可を推測しない。機種適合・復旧・権限の境界を先に確認する。
 - 正本はこのリポジトリ (`k999ln/rock`)。旧ファンド/料金/分配試算を保持し、製品中心はHub＋Wallet。native既存の月888 cents固定・同一契約複数端末重複防止を勝手に廃止しない。商品料金/実費/OSS/BYOKを独立して扱う。既存Wallet/商品schema/SDKを調べず作り直さない。
 - 作業の着手・判断変更・検証完了時に project.md と進捗JSONを更新し、`npm run project:update` でREADMEにも反映する。利用方法の変更はREADME本文も同じcommitで更新する。

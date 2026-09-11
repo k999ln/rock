@@ -6,6 +6,8 @@ RockstarOS 1.0は、現在の検証済み範囲を最初の製品ベースとし
 
 ## 全体構造
 
+2026-09-11更新: 本文のnative構成はLinux/QEMU版のもの。スマホ版はPixel 10／GrapheneOSを候補にsource統合を開始し、機種構成・Android接続層へ移植する。端末OS build／起動は未実施で、Linux版の受入を流用しない。[現在の区分](current-state-20260911.md)／[スマホ版](phone-preview-20260911.md)。
+
 到達設計では利用者はnative UIからHub、Wallet、Game、端末操作を行う。Game交換/SDKは開発要求であり、現imageで利用できる機能とは分ける。UIはlocal Platform APIだけを信頼し、Platformが認証、権限、実行、保存、外部接続を仲介する。OS本体は読取専用、利用者データは別diskへ保存する。更新・復旧はA/B slotとbackupで扱う。
 
 ## 1. Boot・OS image
@@ -88,22 +90,22 @@ A/B slot、署名bundle、stage0、起動health、mark-good、失敗rollbackを�
 
 ## 14. Game接続・交換
 
-Wallet owner、端末、作者、game、playerを別IDにし、署名契約と本人同意で接続する。現在は認証TLSの接続client、複数owner/gameのrouting、既存接続のcurrent-copy引継ぎまで。実際の通貨交換GX01、正式ゲームGX02、作者SDK DX01は未完成である。
+Wallet owner、端末、作者、game、playerを別IDにし、署名契約と本人同意で接続する。認証TLS、複数owner/game分離、current-copy引継ぎに加え、GX01の合成quote・予約・両台帳・返金／照合、native UI、DX01のSDK・サンプルを実装し、限定受入を記録した。正式ゲームGX02、実資金、Androidへの移植は未完了。[契約／SDKと実OSの確認範囲](rc2-remaining-acceptance-20260911.md)。
 
-進化余地は、交換quote、予約、両台帳commit、返金・照合、正式sandbox、reference SDK、複数engine adapter、公式ゲーム接続である。
+進化余地は、正式ゲームのsandbox、複数engine adapter、公式ゲーム接続、スマホでの同じ契約・利用体験の検証である。
 
 ## 15. Desktop導入
 
-現在のMac launcherは既存Lima VM、固定image、private VNC/noVNC、SSH tunnelを厳密なmanifestで結ぶ。別VMやlistenerを停止せず、秘密をURL fragmentだけで渡す。ただしVM作成やimage配布を行う一般installerではない。
+以前のMac launcherは既存Lima VMと固定imageを使う方式だった。現在は専用VM作成・image検証・起動・保存・再開・backup／復旧・削除のDeveloper Preview導入処理があり、b7/rc2でfresh導入と同一VM中断復旧を内部確認した。受入はmacOS 15.7.4／Apple Silicon／Lima 2.2.0の範囲。正式署名・一般公開と他host対応は未完了。[導入手順](preview-installation-ja.md)／[受入](os-acceptance-b7d819c-20260911.md)。
 
-進化余地は、fresh Mac/PC向けinstaller、仮想化backend選択、署名release artifact、容量確認、自動update、安全な削除、診断bundleである。
+進化余地は、正式署名release、対応hostの拡大、仮想化backend選択、自動update、保存データのある端末での追加削除受入、診断bundleである。
 
-## 16. Web・Android補助トラック
+## 16. Web・Android P1・スマホOS
 
-Webには既存の仕事作成・実行・確認・Wallet address接続がある。Android P1は記事処理の試作APKで、RockstarOS本体ではない。これらはOSの管理・導入・通知を補助できるが、QEMUや実機OSの合格を代替しない。
+WebにはHub、仕事作成・実行・確認、手入力会計、Wallet address接続があり、新Sitesは本人限定で公開済み。Android P1は通常アプリとしての固定2工程・記事処理試作。別にPixel 10／GrapheneOS候補の機種構成へその2APKを組み込むsourceとbuild入口を追加した。OS全体のbuild、Hub／Wallet／GameのAndroid移植、正式署名、実機受入はこれからである。Webや標準エミュレーターの成功をスマホOSの合格にしない。
 
 進化余地は、companion app、device enrollment、通知、遠隔確認、Web管理、正式AOSP device portである。
 
 ## 1.0で発表する範囲
 
-1.0はHub、署名Tool、local実行、合成Wallet、native UI、A/B更新・復旧、backup、開発用remote接続を持つOSベースとして発表する。Game、実機、実資金、実ATM、一般cloud/USBは進行中または将来機能として明示する。最初の配布ラベルはDeveloper Previewとし、合格した機能だけを実演する。
+1.0はHub、署名Tool、local実行、合成Wallet、native UI、A/B更新・復旧、backup、開発用remote接続、合成Game交換／SDKを持つOSベースとして扱う。実ゲーム接続、スマホ実機、実資金、実ATM、一般cloud/USBは未検証の範囲を明示する。最初の配布ラベルはDeveloper Previewとし、合格した機能だけを実演する。

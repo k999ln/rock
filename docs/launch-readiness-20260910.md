@@ -2,17 +2,17 @@
 
 2026-09-11更新: 権利者公開名kaiyaと自作部分の改変・再配布意向を受領。利用者の新規作成指示により別Sitesを本人限定公開し、CMは制作途中と訂正した。MIT具体条文と本人署名方式は準備中。以下の「元Sites再接続・完成CM・別reviewer待ち」は以前の経路の履歴であり、現在の再開条件は[今回の設定](owner-setup-20260911.md)を優先する。一般公開は未完了。
 
-状態: **BLOCKED_FOR_LAUNCH**。Webの改修・履歴統合・検証は実施したが、原TLS原因、製品許諾、管理鍵、既存Sitesアクセス、CM選択、最終配布受入は完了していない。一般公開・main merge・実請求・実資金・実機書込みは実施しない。
+状態: **BLOCKED_FOR_LAUNCH**。新Siteは本人限定公開済み。残る条件は原TLS原因と取消／メモリの追加確認、MITの具体採用・第三者許諾、署名方式と鍵保管・実署名、ログイン後のSite操作、制作中CMの完成・選定、正式配布受入。スマホ版はsource準備で実機未検証、クラウド税別10 USD案は未承認。[現在の正本](current-state-20260911.md)。一般公開・main mergeは未実施。
 
-## 9月11日 rc2の追加受入
+## 9月11日 rc2の追加受入（当時の記録）
 
 D6の60分・D1/D3の13boot・D4の41boot・Game/金融/PC/demoの8bootを原本と停止DBまで照合した。fresh SDKと空の導入先の明示削除も限定合格。90秒技術デモの変換と目視確認を完了した。構成照合は434523記録の読戻しを完了。生成工程の証明10件・正式署名・製品許諾・Sites再接続・CM選定掲載・公開承認は残る。[今回の範囲と未完了条件](rc2-remaining-acceptance-20260911.md)。
 
-## 9月11日 rc2の実測完了
+## 9月11日 rc2の実測完了（当時の記録）
 
 b7/rc2の実1GB候補を二回生成し、GitHub全8資産の実取得とhost/guest各716member照合に成功。新規導入・3起動・150→151-byte成果1件の保存/再開・16MiB地点の中断から同じ復旧要求を再開・9897c/10 COIN_A/保留0の保持を実OSと停止diskで確認した。[最新の限定受入](os-acceptance-b7d819c-20260911.md)。正式署名、製品許諾、Sites接続、CM確定掲載と残る全受入は未達で、BLOCKED_FOR_LAUNCHを保持する。所有者申告と署名意思は受領したが、未設定の鍵やlicense方式を補わない。以下の再開記述は実測前の履歴。
 
-## 9月11日の再開
+## 9月11日の再開（当時の記録）
 
 9月11日追加実装: TLSの1byte受信増幅を最大8KiBの先読みで修正し、期限・header/body上限・単一requestを維持した。修正前の18件中4FAIL→修正後18件＋関連57件＝75PASS/skip0、独立reviewも所見なし。同じ承認経路に4ms/recvを加えた制御実験は旧実装がheader受信中に1秒timeout、新実装は49〜52msで成功したが、原TLS原因の確定ではない。将来のowner許諾を変更しないcandidate bytesへ照合する別置き検証器を追加し、新11＋既存44＝55fixture PASS。所有者の実承認は未受領。旧VM/9ab配布物を保持して、新しい隔離VMで新sourceのbuildを準備中。配布hash検証は開始時のfile size＋1byteまでに制限し、検証中の増大/縮小を拒否する。新image/D0〜D6は未実施、Sitesは再度NOT_FOUND、license/CM/reviewer/PR #5限定mergeは回答待ち。 [開始時のSHA別CI](evidence/launch/ci-0b9f37e.json)。
 
@@ -20,7 +20,7 @@ b7/rc2の実1GB候補を二回生成し、GitHub全8資産の実取得とhost/gu
 
 2026-09-10 22:03 UTC再開時、GitHubの候補は `97d952937add42de04092a2e6c2fac8aba3d8bad`、[同SHAの全9check成功](evidence/launch/ci-97d9529.json)、PR #4 MERGEABLE。Hubの実装・検証を保持して、TLS fixtureの分離と新候補の署名前準備を進める。Sitesは再確認でもNOT_FOUND、署名Environment/control ref/初回workflow登録は未設定だった。
 
-署名の初回登録にはdefault branch配置が必要なため、[Draft PR #5](https://github.com/k999ln/rock/pull/5)でworkflow1ファイルのみのbootstrapを準備した。SHA `a4411622031858d6d9684c599d857cadaf90bb94`、mainには未merge。利用者がその限定bootstrapを明示承認するまでは実署名リハーサルに進めない。これは一般公開と製品PR #4のmerge承認とは別。条件が満たされた後はPR #5→実署名/全受入→最終承認→PR #4の順となり、mainが変わった時点で最終tree/CIを再照合する。
+署名の初回登録にはdefault branch配置が必要なため、[Draft PR #5](https://github.com/k999ln/rock/pull/5)でworkflow1ファイルのみのbootstrapを準備した。SHA `a4411622031858d6d9684c599d857cadaf90bb94`、mainには未merge。このbootstrapは保護GitHub署名経路を選ぶ場合の準備であり、本人署名経路の必須条件ではない。GitHub経路ならPR #5の限定承認・登録→実署名/全受入→最終承認→PR #4の順とし、本人経路なら[本人署名手順](owner-manual-signing.md)に従う。一般公開と製品PR #4のmerge承認は別で、mainが変わった時点で最終tree/CIを再照合する。
 
 署名保護の実API照合: `codex/release-signing-control` と公開変数を `ca7356550b0042d05f60a389a90aebd5210510e6` へ固定し、locked/admin enforcement/force・delete禁止/独立PR承認をreadbackした。個人repoはRESTの空bypass設定を422拒否し、そのfieldを返さないため、PR #4の修正はexact repository/branch prefix/commit/ruleに結び付くGraphQL integer0を必須にする。27署名試験PASS。control branchは旧ca73565のまま保護し、修正・owner policy/trustの反映は独立レビュー付き更新待ち。Environment/管理鍵/初回登録は未設定。ca73565自体の全10checks・native1671/skip0成功はSHA別の原証拠に保存した。 [ca73565のCI snapshot](evidence/launch/ci-ca73565.json)。後続修正commitのCIは、そのHEADで別に照合する。
 
@@ -51,17 +51,17 @@ Draft編集後のURL変化と新旧証拠の取り違えを避けるため、[ta
 
 検証: 診断/partition/sidecar対象21件成功（0skip）。最終Linux全partition/root UIはPRの実HEAD checkoutで実行する。次: 原FAILと結び付くthread/負荷の観測を新診断で得て原因を確定し、修正前後の同条件試験を行う。担当: 開発。独立2runは同じ最終source・同じ4partition/root UI条件で比較し、単なる回数で原因確定にしない。runtime/image変更を選ぶ場合は新freezeとD0〜D6・導入/復旧を全て取り直す。
 
-## LCH02 — 配布条件: AWAITING_OWNER_LICENSE_DECISION
+## LCH02 — 配布条件: MIT_PROPOSED_AWAITING_OWNER_SELECTION
 
 9月11日: [別置きowner許諾の検証手順](owner-legal-approval.md)を実装。明示許諾と現行失効policyの独立pinを要求し、全asset/manifest/archive/materialのbytesを再検証する。copy競合・期限切れ・失効・不一致を拒否する55fixture PASS。build時のNOT_CLEARED/CANDIDATEを変更しない。本番release gateへの接続と実許諾は未実施。
 
-[一枚の判断資料](evidence/launch/legal/decision-one-page.md)にApache-2.0/MPL-2.0/評価用独自条件の比較、推薦理由、権利者が決める範囲を記録した。製品全体のLICENSEを推測で追加していない。
+以前の[判断資料](evidence/launch/legal/decision-one-page.md)にApache-2.0/MPL-2.0/評価用条件の比較を保持する。現在はkaiyaの改変・再配布意向に基づく[MIT草案](license-proposal-20260911.md)が確認対象。製品全体のLICENSEを推測で適用していない。
 
 元archive全706 regular file、rootfs1,981path、stage0702entry、legal298entry、nested source430,409entry、計434,096recordを照合した。元候補には同buildのBuildroot legal-info・対応Git source・Buildroot sourceが既に存在し、未生成と誤表示しない。rootfsの未対応32fileもgeneratorへ対応済み。16不正/非archive試験fixtureと4巨大内部memberは展開限界を明示し、配布する親bytesのhashを固定した。法的concluded licenseはNOASSERTIONを保つ。
 
 変更: `docs/evidence/launch/legal/` のNOTICE/source提供/font表示候補とinventory summary。41MBの全inventory、再現可能なreview evidence tar、manifestを**既存Draftへ追加**し、GitHub asset digestを照合済み。[追加assetの固定値](evidence/launch/legal/draft-supplement-assets.json)。旧packageを差し替えていない。
 
-次: 権利者正式名/許諾権限、A/B/Cと対象、商標・support窓口、source同梱/同経路提供、第三者条件の確認担当を一括決定。決定後に対象SHA/artifact/承認者/日時を記録し、新候補のLICENSE/NOTICE/Buildroot Rock package metadataへ反映・再検証する。担当: 所有者/法務確認者。未承認のためNOT_CLEARED。
+次: 受領済みの権利者名kaiyaと改変・再配布意向を保持し、MITの具体採用、対象範囲、商標・support窓口、source提供、第三者条件を確定する。決定後に対象SHA/artifact/承認者/日時を記録し、新候補のLICENSE/NOTICE/Buildroot Rock package metadataへ反映・再検証する。担当: 所有者/法務確認者。未承認のためNOT_CLEARED。
 
 ## LCH03 — 配布元認証: AWAITING_SIGNING_SETUP
 
@@ -69,11 +69,11 @@ Draft編集後のURL変化と新旧証拠の取り違えを避けるため、[ta
 
 旧RFC8032試験鍵は誰でも署名できる。本番署名のfingerprintは未登録。GitHub Environment `rock-release-signing` は読み取りで404、管理鍵の利用実績なし。保護control ref限定のworkflow、管理鍵と公開RFC試験鍵の分離、全asset/offline verifier、独立承認・失効/rotation・圧縮tar拒否のscaffoldを実装し、22fixture試験で検証した。[設定・運用・未実証の範囲](release-signing-operations.md)を参照。実Environment/管理鍵を使う合格ではない。試験鍵で旧archiveを本番扱いにしない。
 
-次: 独立reviewer/Environmentを設定し、既に保護されたcontrolを修正・owner policy/trustへ独立レビュー付きで更新する。管理済み秘密値をGitHub Environmentへ直接登録、公開trust/fingerprintを独立経路へ掲載する。鍵をチャット/Gitへ送らない。実保護設定・改ざん拒否・rotation/revocation・新候補署名が通るまで本項目は未合格。担当: repo管理者/署名担当者。
+次: 本人署名経路の方式と鍵保管を確認し、実候補へ署名・検証する。実装・公開fixture試験は[本人署名手順](owner-manual-signing.md)に記録済みで、本番鍵は未設定。保護GitHub経路を選ぶ場合だけ、独立reviewer／Environment／control更新を行う。公開trust/fingerprint、改ざん拒否、rotation/revocation、最終配布検証はどちらの経路でも必要。担当: 所有者/署名担当者。
 
-## LCH04 — SitesとUI: LOCAL_PASS / HOSTED_ACCESS_BLOCKED
+## LCH04 — SitesとUI: DEPLOYED_OWNER_ONLY / AUTHENTICATED_QA_PENDING
 
-`.openai/hosting.json` の `appgprj_6a9b70d966fc8191a1ec30efce14582d` は現接続の公式SitesでNOT_FOUND、所有/編集可能一覧にもない。公開SHA・D1適用履歴・可視性・認証設定・移管/削除の事実は未取得。保存済みsourceの発見をSiteの復旧と混同しない。代替projectは作成していない。
+元Site `appgprj_6a9b70d966fc8191a1ec30efce14582d` はNOT_FOUNDとして保持する。利用者の新規作成指示により、現在の `.openai/hosting.json` は別の `appgprj_6aa444b6e6508191a19f16405d0be927` に接続し、source `a750908329d42bbfb78e07243f414b51d1534cf8` を本人限定で公開済み。元DBの復元は未完了、新D1は空から開始した。[公開証拠](evidence/launch/sites-owner-private-20260911.json)。
 
 変更: Hubを `/`、手順型仕事を `/work`、実行履歴を `/activity`、手入力会計を `/wallet`、設定を `/settings` へ整理。旧ファンドは `/fund` に保持。左ナビ、最初の作業、用途検索、空/未認証/失敗状態、モバイルmenu、実行中の閉鎖/画面移動保護を実装した。サインイン前は入力を止める。PCのheartbeat/失効/再接続raceを修正し、検証したsessionだけで実行する。
 
@@ -82,17 +82,17 @@ Draft編集後のURL変化と新旧証拠の取り違えを避けるため、[ta
 - 実Miniflare/D1でfresh/release/sites × filename/実Drizzle migratorの6経路を検証し、再適用・8table/index一致・旧仕事revision/収支/プラン保持を確認。既存hosted D1の取得/backup/upgradeは別の残件。
 - PWAを保持し、旧v2→v3更新で古いcacheを削除。API・認証・RSC・private/no-storeを保存しない。実ローカルbrowserでcache更新とAPI cache0を確認。
 
-検証: [実ブラウザ記録](evidence/launch/browser-local.json)、`tests/migration-union.test.mjs`、`tests/device-lifecycle.test.mjs`、`npm run test:api`。公式Sites build helperとローカルpreviewを使用。次: 元`kirin-999.chatgpt.site`を所有するChatGPTアカウントでSites接続を復旧し、同じprojectのreadback/backup→本人限定preview→認証/動画/404/導入導線を再確認する。担当: 元Site所有者。
+検証: [実ブラウザ記録](evidence/launch/browser-local.json)、`tests/migration-union.test.mjs`、`tests/device-lifecycle.test.mjs`、`npm run test:api`。公式Sites build helperとローカルpreviewを使用。次: 新Siteへ所有者がログインし、本番Hubの操作・保存・導入導線を確認する。元Site/DBの復旧は別件として保持し、新Site利用の必須前提にしない。今回のGit統合を自動配信済みにしない。担当: 所有者/開発。
 
-## LCH05 — CM: AWAITING_SELECTION_AND_HOSTING
+## LCH05 — CM: IN_PRODUCTION_NOT_SELECTED
 
-唯一見つかった完成尺候補 `KAIYA_PV_RockstarOS_1m09.mp4` は69.235833秒、136,497,309bytes、SHA256 `6b4d7a314c77139ff7b26a65b94cadf860fefdc86cd63c8513c4ffc00515ff1b`。他2候補は11秒のscene版。選択を質問済み、未回答を同意に変換しない。
+過去の調査で見つかった69秒の候補 `KAIYA_PV_RockstarOS_1m09.mp4` は69.235833秒、136,497,309bytes、SHA256 `6b4d7a314c77139ff7b26a65b94cadf860fefdc86cd63c8513c4ffc00515ff1b`。他2候補は11秒のscene版。選択を質問済み、未回答を同意に変換しない。
 
 [全音声19segmentと画面の内容照合](evidence/launch/cm/cm-actual-review.md)、[認識/OCR原本hash](evidence/launch/cm/cm-actual-review-evidence.json)。全音声をローカルASR、全編138枚/0.5秒のOCRとcontact sheetを目視。全1660frame逐字照合/人の全音声聴取ではない。28.44〜34.96秒の広い保存/完成表現には、コンセプト演出・限定復旧・公開準備中を再生前に常時表示する条件を付した。
 
 変更: `/rockstaros` に近接注記とguide/実UIへのCTA付き掲載枠。`data/rockstaros-preview.json` の `campaign:null` は選択・管理先・字幕の確定待ち。CM原本を再制作/再編集せず、未確定assetを公開/Git追加していない。90.04秒の技術デモは別動画のまま。
 
-次: 所有者が上記候補を確定→元hashの管理された配信URLと字幕を固定→本人限定同SHAページで実再生/音声/導線を確認。担当: 所有者/開発。
+次: 制作中のCMの完成を待ち、所有者が実際に選んだ完成物の内容・hash・配信先・字幕を確認する。その完成物を本人限定ページへ掲載し、再生/音声/導入導線を確認する。上記69秒候補を自動選定しない。担当: 所有者/開発。
 
 ## LCH06 — main候補と版表記: CURRENT_CANDIDATE_CI_PASS / FINAL_CONTENT_PENDING
 

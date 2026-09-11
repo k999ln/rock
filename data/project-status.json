@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-11",
-  "milestone": "RockstarOS 1.0 実機スマホ版のソース統合準備",
-  "nextAction": "Pixel 10候補の機種/SKUを確認し、予算とアカウントが決まった専用x86_64 Linuxで固定source取得・Soong/OS buildへ進む。利用できるLinux環境はないとの回答を受領。Hub/Wallet/Game移植・Android署名・実機起動/保存/復旧は未完了。本人限定Sitesは公開済み。既存のMIT/署名鍵/CM/取消/メモリ/正式配布受入と一般公開/main mergeの残件も保持する。",
+  "milestone": "RockstarOS 1.0 ローンチ候補とスマホ版準備の統合",
+  "nextAction": "現在の入口はdocs/current-state-20260911.md。スマホ版の機種/SKUとLinux環境を確認し、固定sourceの全OS buildとHub/Wallet/Game移植へ進む。初回クラウド代税別10 USDは提案未承認、環境未作成。本人限定Sitesのログイン後確認、MIT採用/署名鍵、制作中CM、取消実停止/RSS/正式配布受入も残る。一般公開/main mergeは未実施。",
   "tasks": [
     {
       "id": "R01",
@@ -392,13 +392,15 @@
     },
     {
       "id": "N03",
-      "title": "BlackBerryの型番・boot/BSP・更新/復旧の適合確認",
+      "title": "実機候補1機種の型番/SKU・boot/BSP・更新/復旧の適合確認",
       "status": "in_progress",
       "dependsOn": [
         "OS01"
       ],
       "evidence": [
-        "docs/native-os-integration.md"
+        "docs/native-os-integration.md",
+        "docs/phone-preview-20260911.md",
+        "docs/current-state-20260911.md"
       ]
     },
     {
@@ -450,7 +452,8 @@
       ],
       "evidence": [
         "docs/release-installation-plan-20260909.md",
-        "docs/phone-preview-20260911.md"
+        "docs/phone-preview-20260911.md",
+        "docs/current-state-20260911.md"
       ]
     },
     {
@@ -468,7 +471,8 @@
       "status": "in_progress",
       "dependsOn": [],
       "evidence": [
-        "docs/launch-readiness-20260910.md"
+        "docs/launch-readiness-20260910.md",
+        "docs/current-state-20260911.md"
       ]
     },
     {
@@ -477,7 +481,8 @@
       "status": "in_progress",
       "dependsOn": [],
       "evidence": [
-        "docs/launch-readiness-20260910.md"
+        "docs/launch-readiness-20260910.md",
+        "docs/current-state-20260911.md"
       ]
     },
     {
@@ -487,7 +492,8 @@
       "dependsOn": [],
       "evidence": [
         "docs/launch-readiness-20260910.md",
-        "docs/owner-setup-20260911.md"
+        "docs/owner-setup-20260911.md",
+        "docs/current-state-20260911.md"
       ]
     },
     {
@@ -496,7 +502,8 @@
       "status": "in_progress",
       "dependsOn": [],
       "evidence": [
-        "docs/launch-readiness-20260910.md"
+        "docs/launch-readiness-20260910.md",
+        "docs/current-state-20260911.md"
       ]
     },
     {
@@ -505,7 +512,8 @@
       "status": "in_progress",
       "dependsOn": [],
       "evidence": [
-        "docs/launch-readiness-20260910.md"
+        "docs/launch-readiness-20260910.md",
+        "docs/current-state-20260911.md"
       ]
     },
     {
@@ -717,11 +725,11 @@
     "distributionCommit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
     "publicRelease": false,
     "mainMerged": false,
-    "sitesSourceCommit": "c6942d5ef72e9dd16345b9363e68e0e18ca25079",
-    "siteAccess": "NOT_FOUND_RECHECKED_20260911",
-    "license": "AWAITING_OWNER_DECISION",
-    "signing": "AWAITING_SIGNING_SETUP",
-    "campaign": "AWAITING_SELECTION",
+    "sitesSourceCommit": "a750908329d42bbfb78e07243f414b51d1534cf8",
+    "siteAccess": "DEPLOYED_OWNER_ONLY",
+    "license": "MIT_PROPOSED_AWAITING_OWNER_SELECTION",
+    "signing": "OWNER_MANUAL_PREPARED_MODE_AND_KEY_CUSTODY_PENDING",
+    "campaign": "IN_PRODUCTION_NOT_SELECTED",
     "nativeHistoricalTlsCause": "UNDETERMINED",
     "candidateBranch": "codex/rockstaros-launch-candidate-20260910",
     "recordedCiCommit": "0b9f37e79853765e53184c7298a5a1e06cc28a37",
@@ -751,8 +759,8 @@
     "latestDistributionAcceptance": "PASS_INTERNAL_INSTALL_SAVE_RESTART_SAME_VM_INTERRUPTED_RECOVERY",
     "latestDistributionAcceptanceEvidence": "docs/os-acceptance-b7d819c-20260911.md",
     "distributionTrust": "UNSIGNED_CANDIDATE_SEPARATE_PUBLIC_TEST_ACCEPTANCE_ENVELOPE",
-    "ownerRightsDeclaration": "RECEIVED_OWN_WORKS_RELEASE_LICENSE_AND_CLEARANCE_UNSET",
-    "localDownloadFlow": "PASS_RC2_GUIDE_AND_PC_ZIP_HOSTED_ACCESS_BLOCKED",
+    "ownerRightsDeclaration": "KAIYA_OWN_CODE_MODIFICATION_REDISTRIBUTION_INTENT_RECEIVED_SPECIFIC_LICENSE_AND_CLEARANCE_UNSET",
+    "localDownloadFlow": "LOCAL_RC2_GUIDE_AND_PC_ZIP_PASS_NEW_SITE_OWNER_ACCESS_ONLY",
     "remainingAcceptance": "SCOPED_RUNTIME_AND_INVENTORY_READBACK_COMPLETE_CANCEL_NOT_OBSERVED_RELEASE_INPUTS_REQUIRED",
     "signingControlMaintenancePr": 6,
     "signingControlMaintenanceStatus": "DRAFT_29_TESTS_PASS_NOT_APPLIED",
@@ -770,7 +778,12 @@
     "d4EvidenceChecker": "STRICT_FIRST_TAR_END_HEADER_FIX_24_LINUX_FIXTURES_PASS_ALL_D4_RAW_REREAD_NO_NATIVE_RERUN",
     "technicalInventory": "COMPLETE_READBACK_434523_RECORDS_NOT_LEGAL_CLEARANCE",
     "uiCancelObservation": "NOT_OBSERVED_SINGLE_ATTEMPT_TWO_NORMAL_BOOTS_RESULT_RETAINED_NO_PID_PROOF",
-    "cancelResourceBoundary": "OBSERVATION_ONLY_RSS_GROWTH_EXCEEDS_PLAN_NOT_PERFORMANCE_PASS"
+    "cancelResourceBoundary": "OBSERVATION_ONLY_RSS_GROWTH_EXCEEDS_PLAN_NOT_PERFORMANCE_PASS",
+    "previousSitesSourceCommit": "c6942d5ef72e9dd16345b9363e68e0e18ca25079",
+    "previousSiteAccess": "NOT_FOUND_RECHECKED_20260911",
+    "siteAuthenticatedQa": "NOT_RUN",
+    "siteDeploymentEvidence": "docs/evidence/launch/sites-owner-private-20260911.json",
+    "currentStateDocument": "docs/current-state-20260911.md"
   },
   "physicalDevicePreview": {
     "status": "SOURCE_INTEGRATION_NOT_BUILT",
@@ -783,6 +796,20 @@
     "record": "docs/phone-preview-20260911.md",
     "fullOsBuild": "NOT_RUN",
     "physicalBoot": "NOT_RUN",
-    "flashReady": false
-  }
+    "flashReady": false,
+    "sourcePreparationCommit": "3eeeeed66ed438f8d543ae88260e072c63bd0132",
+    "sourcePreparationPr": 7,
+    "integrationBranch": "codex/rockstaros-launch-candidate-20260910",
+    "sourceCiEvidence": "docs/evidence/launch/ci-phone-3eeeeed.json",
+    "cloudBudget": {
+      "currency": "USD",
+      "proposedInitialServerBudgetExcludingTax": 10,
+      "approvedBudget": null,
+      "status": "PROPOSED_NOT_APPROVED",
+      "accountConfigured": false,
+      "spendIncurredByThisWork": false
+    },
+    "latestRequest": "Record and integrate completed preparation into rock consistently; not cloud spending authorization"
+  },
+  "currentStateDocument": "docs/current-state-20260911.md"
 }
