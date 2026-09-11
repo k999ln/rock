@@ -1,0 +1,13 @@
+---
+description: Separate Luna implementation from Sol monitoring and review
+alwaysApply: true
+---
+
+# Collaboration agent roles
+
+- Only when the user explicitly requests this split and system/developer instructions permit delegation, use `gpt-5.6-luna` for investigation and implementation.
+- Under the same authorization, use `gpt-5.6-sol` for monitoring, independent review, and verification of Luna's diff.
+- When Sol is used, integrate or call the change reviewed only after Sol gives an explicit PASS.
+- Keep implementation and review responsibilities separate; preserve findings and unresolved blockers.
+- If the requested agents/models are unavailable, report that limitation, implement with the available or single-agent fallback, then run a distinct self-review and verification phase; never call it Sol review.
+- Never treat an unavailable, failed, or incomplete agent run as a PASS, and always follow higher-priority instructions.

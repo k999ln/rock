@@ -1,0 +1,14 @@
+---
+description: Task-owned Git changes, verification, and safe branch preservation
+alwaysApply: true
+---
+
+# Task Git workflow
+
+- Keep unrelated dirty changes untouched and out of the task diff.
+- Before saving a task change, run the checks relevant to the changed paths.
+- Stage and inspect only task-owned paths, then create a meaningful local commit.
+- Per this repository's standing instruction, push each verified task work unit to the current working branch with a normal push; higher-priority instructions control.
+- Before pushing, verify the remote branch and whether it advanced. If it advanced, fetch and rebase, stop and report conflicts, then rerun checks before pushing.
+- Do not push directly to `main` or another protected branch. Never force-push, merge into `main`, or publish/release here.
+- If the remote, permission, network, check, commit, or push fails, do not bypass safeguards: keep any local commit, report its SHA, destination, and exact reason, and do not guess an unknown remote.
