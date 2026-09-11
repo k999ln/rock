@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
   "milestone": "RockstarOS 1.0の現進捗を再監査（実装状態は据え置き）",
-  "nextAction": "現在の入口はdocs/current-state-20260911.mdの2026-09-12節。直近相談のPixel 7/pantherと既存設定のPixel 10/frankelが不一致のため、実機の型番/SKUを読取り専用で確認して対象を一つに固定する。その後、未承認のクラウド計画（推奨48 vCPU/96GiB/600GiB、初回計画20〜30 USD）を確定し、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/GameのAndroid移植へ進む。本人限定Sites QA、license/production署名、取消実停止/RSS、CM、正式配布受入、一般公開/main mergeも未完了。",
+  "nextAction": "現在の入口はdocs/current-state-20260911.mdの2026-09-12節。lock由来のdevice/lunch/hook/target検証と未確認SKUのfull-build fail-closed guardを実装し、local phone tests 10件と総合verify（93 tests・build・API 143 assertions）を確認済み。直近相談のPixel 7/pantherと既存設定のPixel 10/frankelが不一致のため、実機の型番/SKUを読取り専用で確認して対象を一つに固定する。その後、未承認のクラウド計画（推奨48 vCPU/96GiB/600GiB、初回計画20〜30 USD）を確定し、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/GameのAndroid移植へ進む。本人限定Sites QA、license/production署名、取消実停止/RSS、CM、正式配布受入、一般公開/main mergeも未完了。",
   "tasks": [
     {
       "id": "R01",

@@ -5,6 +5,7 @@
   "model": "Google Pixel 10",
   "targetConfirmedByOwner": false,
   "knownSkus": ["GLBW0", "GL066", "GK2MP"],
+  "confirmedSku": null,
   "manifestUrl": "https://github.com/GrapheneOS/platform_manifest.git",
   "manifestTag": "2026090700",
   "manifestCommit": "726237f979e7a36cc644f0a784f62ee27fee419b",

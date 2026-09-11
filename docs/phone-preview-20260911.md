@@ -13,7 +13,7 @@
 - `os/physical/frankel-source-lock.json`：Pixel 10／frankelの候補版、manifest、adevtool、端末hook、kernel参照を固定。対象確認・OS build・boot・flashは未完了のまま。
 - `os/physical/rockstaros.mk`：既存のRock自動化／記事Toolを端末OSのproductへ組み込む。UID・SELinux・AVB・端末ドライバーは上流を維持。公式GrapheneOSの更新サービスを使う`OFFICIAL_BUILD=true`を拒否。
 - `scripts/prepare-phone-build.py`：容量診断、cleanなRock commit固定のRepo manifest出力、上流署名タグ・adevtool参照・端末hookの一致検証、1か所だけの再実行可能なsource変更。既存のローカル変更を上書きしない。
-- `scripts/build-phone-bringup.sh`：準備済みLinux環境で`frankel-cur-userdebug`のtarget-files／OTAツールをbuildする入口。source一覧とRock commit、端末hook差分を保存する。クラウド作成・正式署名・端末操作は含まない。
+- `scripts/build-phone-bringup.sh`：lockのdevice／SKU確認が完了した準備済みLinux環境で、lock由来の`userdebug` lunch／build targetを実行する入口。未確認lockはフルbuildを拒否し、source一覧とRock commit、端末hook差分を保存する。クラウド作成・正式署名・端末操作は含まない。
 - `scripts/inspect-phone.py`：選択した1端末の機種・SKU・build・起動状態を必要なプロパティだけ読み取る。serialを出力せず、初期化／再起動／root／書込みを実行しない。空の値を適合と判定しない。
 
 この最初の組込みは、既存Android P1の2工程が入った**端末起動のための試作**。Linux nativeのHub・Wallet・Gameは未移植。最終的には商品導入／同意／実行／取消、本人認証・台帳・費用／入金、保存・復旧をAndroidの接続層へ移植し、既存の業務契約と照合する。QEMUのframebuffer、Unix socket、固定UIDをそのままAndroidへ持ち込まない。
@@ -43,8 +43,8 @@
 1. 上流build手順に従い依存物を入れ、空のOS作業ディレクトリで`repo init -u https://github.com/GrapheneOS/platform_manifest.git -b refs/tags/2026090700`を実行する。
 2. 公式の`https://grapheneos.org/allowed_signers`をその環境の専用公開鍵ファイルへ取得し、manifestのタグ署名と固定commitを検証する。ユーザー全体のGit設定は変更しない。
 3. cleanなRock checkoutから`python3 scripts/prepare-phone-build.py manifest`でXMLを生成し、OS作業ディレクトリの`.repo/local_manifests/rock-phone.xml`へ保存する。Rockは`external/rockstaros`へ取得され、既存Cuttlefish専用設定と混ぜない。
-4. `repo sync -c -j8`を完了する。公式手順の`source build/envsetup.sh`、`yarn --cwd vendor/adevtool/ install`、`adevtool generate-all -d frankel`を実施し、vendor取得・照合結果を保存する。
-5. OS作業ディレクトリから`bash external/rockstaros/scripts/build-phone-bringup.sh "$PWD" /absolute/path/to/grapheneos_allowed_signers`を実行する。初回Soong/OS buildの実エラーを解消し、成功した同一sourceと出力hashを記録する。対象機種の`userdebug`出力は開発試験用。
+4. `repo sync -c -j8`を完了する。公式手順の`source build/envsetup.sh`、`yarn --cwd vendor/adevtool/ install`、`adevtool generate-all -d <lockのdevice>`を実施し、vendor取得・照合結果を保存する。
+5. lockへ所有者が正確な機種と既知SKUを確認済みとして記録してから、OS作業ディレクトリで`bash external/rockstaros/scripts/build-phone-bringup.sh "$PWD" /absolute/path/to/grapheneos_allowed_signers`を実行する。入口はRAM 64 GiB以上・空き400 GiB以上を検査し、prepare後とrepo全体検査後にlock指定hookのバイト列を再検証する。初回Soong/OS buildの実エラーを解消し、成功した同一sourceと出力hashを記録する。対象機種の`userdebug`出力は開発試験用。
 6. Hub／Wallet／Gameの移植、Rock独自の表示、Android正式署名、OTA・復旧を整える。機種・SKU・現在build・backupを確認して、書込み手順を別途確定する。
 
 端末の読み取り診断は、adb導入済み・USB接続承認済みの環境で`python3 scripts/inspect-phone.py --serial <本人が選んだ端末ID>`。実行出力を公開Gitへ自動保存しない。今回この診断を実機には実行していない。
@@ -59,4 +59,4 @@
 
 ## この変更の検証
 
-Mac上で、実Gitの署名タグ・source変更保護・異なるrevision拒否と、端末診断の制限を対象に8件PASS。shell構文と既存`os:check`もPASS。`npm run verify`は型・lint・93 tests・build・143 API assertionsを含めPASS。初回fixtureの一時pathがmacOSの`/var` symlinkを正規化していなかった失敗を修正した。実Soong、全source同期、クラウド実行、端末接続は未実行。[証拠要約](evidence/launch/phone-source-preparation-20260911.json)。
+Mac上で、実Gitの署名タグ・source変更保護・異なるrevision拒否、lock整合、full-build gate、hook再検証、host容量境界と端末診断の制限を対象に10件PASS。shell構文と既存`os:check`もPASS。`npm run verify`は型・lint・93 tests・build・143 API assertionsを含めPASS。初回fixtureの一時pathがmacOSの`/var` symlinkを正規化していなかった失敗を修正した。実Soong、全source同期、クラウド実行、端末接続は未実行。[証拠要約](evidence/launch/phone-source-preparation-20260911.json)。

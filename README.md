@@ -1,6 +1,6 @@
 # Rock star OS — 自動化HubとWallet
 
-スマホ実機版の開発を開始しました。現在はソース統合準備で、書込み可能なOSは未生成です。直近相談のPixel 7／`panther`と既存設定のPixel 10／`frankel`が不一致のため、実機確認前に対象を確定しません。[2026-09-12の進捗再監査](docs/current-state-20260911.md#2026-09-12--github実装実機版ビルド環境の再監査)／[ビルド環境・実装・次の手順](docs/phone-preview-20260911.md)。
+スマホ実機版の開発を開始しました。現在はソース統合準備で、書込み可能なOSは未生成です。直近相談のPixel 7／`panther`と既存設定のPixel 10／`frankel`が不一致のため、実機確認前に対象を確定しません。lockの機種/SKU確認が完了するまでfull OS buildは停止し、build入口は64 GiB RAM／400 GiB空きとlock由来sourceの再検証を要求します。[2026-09-12の進捗再監査](docs/current-state-20260911.md#2026-09-12--github実装実機版ビルド環境の再監査)／[ビルド環境・実装・次の手順](docs/phone-preview-20260911.md)。
 
 公開設定・本人限定サイトの状況は[今回の設定記録](docs/owner-setup-20260911.md)を参照。
 
@@ -99,7 +99,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 現在の入口はdocs/current-state-20260911.mdの2026-09-12節。直近相談のPixel 7/pantherと既存設定のPixel 10/frankelが不一致のため、実機の型番/SKUを読取り専用で確認して対象を一つに固定する。その後、未承認のクラウド計画（推奨48 vCPU/96GiB/600GiB、初回計画20〜30 USD）を確定し、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/GameのAndroid移植へ進む。本人限定Sites QA、license/production署名、取消実停止/RSS、CM、正式配布受入、一般公開/main mergeも未完了。
+次の作業: 現在の入口はdocs/current-state-20260911.mdの2026-09-12節。lock由来のdevice/lunch/hook/target検証と未確認SKUのfull-build fail-closed guardを実装し、local phone tests 10件と総合verify（93 tests・build・API 143 assertions）を確認済み。直近相談のPixel 7/pantherと既存設定のPixel 10/frankelが不一致のため、実機の型番/SKUを読取り専用で確認して対象を一つに固定する。その後、未承認のクラウド計画（推奨48 vCPU/96GiB/600GiB、初回計画20〜30 USD）を確定し、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/GameのAndroid移植へ進む。本人限定Sites QA、license/production署名、取消実停止/RSS、CM、正式配布受入、一般公開/main mergeも未完了。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

@@ -10,8 +10,18 @@ if [[ "$(git rev-parse HEAD)" != "$REPO_RREV" ]]; then
   exit 1
 fi
 if [[ "$REPO_PATH" == vendor/adevtool ]]; then
-  # prepare already checked the exact bytes of this sole permitted difference.
-  git diff --exit-code --quiet HEAD -- . ':(exclude)config/mk/google_devices/device/frankel/device.mk'
+  hook_path="${ROCK_PHONE_HOOK_REPO_PATH:-}"
+  expected_hook_sha="${ROCK_PHONE_EXPECTED_HOOK_SHA256:-}"
+  if [[ -z "$hook_path" || -z "$expected_hook_sha" || ! "$hook_path" =~ ^config/mk/google_devices/device/[a-z0-9_]+/device\.mk$ || ! "$expected_hook_sha" =~ ^[0-9a-f]{64}$ ]]; then
+    echo 'The build must pin one lock-derived device hook and its exact hash.' >&2
+    exit 1
+  fi
+  git diff --exit-code --quiet HEAD -- . ":(exclude)$hook_path"
+  actual_hook_sha="$(sha256sum -- "$hook_path" | awk '{print $1}')"
+  if [[ "$actual_hook_sha" != "$expected_hook_sha" ]]; then
+    echo 'The lock-pinned device hook changed after preparation.' >&2
+    exit 1
+  fi
 else
   git diff --exit-code --quiet HEAD -- .
 fi

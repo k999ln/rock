@@ -6,6 +6,8 @@ main `7cdbb5f`とDraft PR #4の候補`c182a5b`を再取得し、PR #4の同HEAD 
 
 直近相談のPixel 7／`panther`と、現在固定済みのPixel 10／`frankel`が不一致。実機の型番/SKUを読取り専用で確認するまで対象を確定しない。初回buildはGPUなし、Ubuntu 24.04 x86_64、48 vCPU／96GiB／600GiBを安全側の候補とし、20〜30 USDを未承認の計画枠に更新した。クラウド作成・課金、端末操作、runtime変更、Site再配信、main mergeは行っていない。
 
+今回の安全な開発差分として、phone build入口をlock由来のdevice／lunch／hook／targetへ限定し、`targetConfirmedByOwner:false`または`confirmedSku:null`のfull OS buildをfail-closedにした。RAM64 GiB／空き400 GiBの最低条件、prepare後とrepo検査後のhook SHA再検証、path／Unicode／`-j`入力拒否を追加し、local phone tests 10件、shell構文、py_compile、diff-check、`npm run verify`（93 tests・build・API 143 assertions）をPASSした。これはsource準備の証拠であり、full OS build／boot／flashの成功ではない。
+
 ## 2026-09-11 — 開発本体へスマホ準備と現状を統合
 
 現在の入口は[統合した開発状態](docs/current-state-20260911.md)、次の指示は[再開手順](docs/prompts/rock-current-next-20260911.md)。スマホ準備3eeeeedをlaunch-candidateへ取り込み、旧QEMU受入、本人限定Site公開、CM制作途中、MIT/署名鍵/クラウド予算の未回答を同期した。main・配布image・Sites配信は今回変更していない。
@@ -328,7 +330,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 現在の入口はdocs/current-state-20260911.mdの2026-09-12節。直近相談のPixel 7/pantherと既存設定のPixel 10/frankelが不一致のため、実機の型番/SKUを読取り専用で確認して対象を一つに固定する。その後、未承認のクラウド計画（推奨48 vCPU/96GiB/600GiB、初回計画20〜30 USD）を確定し、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/GameのAndroid移植へ進む。本人限定Sites QA、license/production署名、取消実停止/RSS、CM、正式配布受入、一般公開/main mergeも未完了。
+次の作業: 現在の入口はdocs/current-state-20260911.mdの2026-09-12節。lock由来のdevice/lunch/hook/target検証と未確認SKUのfull-build fail-closed guardを実装し、local phone tests 10件と総合verify（93 tests・build・API 143 assertions）を確認済み。直近相談のPixel 7/pantherと既存設定のPixel 10/frankelが不一致のため、実機の型番/SKUを読取り専用で確認して対象を一つに固定する。その後、未承認のクラウド計画（推奨48 vCPU/96GiB/600GiB、初回計画20〜30 USD）を確定し、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/GameのAndroid移植へ進む。本人限定Sites QA、license/production署名、取消実停止/RSS、CM、正式配布受入、一般公開/main mergeも未完了。
 <!-- project-status:end -->
 
 ## 次段階の設計

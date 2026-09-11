@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -21,6 +22,76 @@ LOCK = ROOT / "os/physical/frankel-source-lock.json"
 ADDITION = ("\n# RockstarOS device bring-up; prepare-phone-build.py\n"
             "$(call inherit-product, external/rockstaros/os/physical/rockstaros.mk)\n").encode()
 GIB = 1024 ** 3
+
+
+def source_config(lock, *, require_target_confirmation=False):
+    """Validate and return all build identity inputs from one source lock.
+
+    Source preparation can inspect an unconfirmed candidate, but full builds
+    must fail closed until the owner confirms the exact handset and SKU.
+    """
+    if not isinstance(lock, dict):
+        raise ValueError("invalid phone source lock")
+    device, lunch, hook = lock.get("device"), lock.get("lunch"), lock.get("hook")
+    kernel = lock.get("kernel")
+    platform_name = kernel.get("platform") if isinstance(kernel, dict) else None
+    kernel_version = kernel.get("version") if isinstance(kernel, dict) else None
+    targets = lock.get("buildTargets")
+    known_skus = lock.get("knownSkus")
+    confirmed_sku = lock.get("confirmedSku")
+    if (not isinstance(device, str) or not device or re.fullmatch(r"[a-z0-9_]+", device) is None
+            or not isinstance(lunch, str) or lunch != f"{device}-cur-userdebug"
+            or not isinstance(hook, str)
+            or hook != f"vendor/adevtool/config/mk/google_devices/device/{device}/device.mk"
+            or not isinstance(platform_name, str) or re.fullmatch(r"[a-z0-9_]+", platform_name) is None
+            or not isinstance(kernel_version, str) or re.fullmatch(r"[A-Za-z0-9_.-]+", kernel_version) is None
+            or kernel_version in (".", "..")
+            or not isinstance(targets, list) or not targets
+            or any(not isinstance(target, str) or re.fullmatch(r"[A-Za-z0-9_]+(?:-[A-Za-z0-9_]+)*", target) is None
+                   or target.startswith("-")
+                   for target in targets)
+            or not isinstance(known_skus, list) or not known_skus
+            or any(not isinstance(sku, str) or re.fullmatch(r"[A-Za-z0-9_-]+", sku) is None
+                   for sku in known_skus)):
+        raise ValueError("invalid lock-derived phone build inputs")
+    if require_target_confirmation and (lock.get("targetConfirmedByOwner") is not True
+                                        or not isinstance(confirmed_sku, str)
+                                        or confirmed_sku not in known_skus):
+        raise ValueError("exact phone model/SKU must be owner-confirmed before full OS build")
+    return {"device": device, "lunch": lunch, "hook": hook,
+            "hook_repo_path": hook.removeprefix("vendor/adevtool/"),
+            "kernel_path": f"device/google/{platform_name}-kernels/{kernel_version}",
+            "required": ["build/envsetup.sh", f"vendor/google_devices/{device}/{device}.mk",
+                         f"vendor/google_devices/{device}/BoardConfig.mk"],
+            "buildTargets": list(targets),
+            "targetConfirmedByOwner": lock.get("targetConfirmedByOwner") is True,
+            "confirmedSku": confirmed_sku if confirmed_sku in known_skus else None}
+
+
+def build_config(*, require_target_confirmation=True):
+    """Load build settings without touching the OS checkout."""
+    return source_config(json.loads(LOCK.read_text()),
+                         require_target_confirmation=require_target_confirmation)
+
+
+def verify_hook(tree):
+    """Verify the lock-pinned, already-prepared hook without changing it."""
+    lock = json.loads(LOCK.read_text())
+    config = source_config(lock, require_target_confirmation=True)
+    tree = Path(tree).resolve(strict=True)
+    if ROOT != tree / lock["rockCheckoutPath"]:
+        raise ValueError("Run the copy checked out at <OS tree>/external/rockstaros.")
+    hook = tree / config["hook"]
+    if hook.is_symlink() or not hook.resolve().is_relative_to(tree):
+        raise ValueError("Device hook must be a regular file within this OS checkout.")
+    actual = hook.read_bytes()
+    if not actual.endswith(ADDITION):
+        raise ValueError("Device hook is not prepared from the pinned upstream bytes.")
+    original = actual[:-len(ADDITION)]
+    if hashlib.sha256(original).hexdigest() != lock["hookSha256"]:
+        raise ValueError("Device hook differs from the pinned upstream bytes.")
+    return {"hook": config["hook"], "hookSha256": hashlib.sha256(actual).hexdigest(),
+            "targetConfirmedByOwner": True}
 
 
 def git(directory, *args):
@@ -48,8 +119,8 @@ def host_report(directory):
     free = shutil.disk_usage(directory).free
     checks = {
         "linux_x86_64": sys.platform == "linux" and platform.machine() in ("x86_64", "amd64"),
-        "memory_at_least_32_gib": memory >= 32 * GIB,
-        "free_at_least_200_gib": free >= 200 * GIB,
+        "memory_at_least_64_gib": memory >= 64 * GIB,
+        "free_at_least_400_gib": free >= 400 * GIB,
     }
     return {"scope": "existing GrapheneOS checkout build prerequisites, not flash readiness",
             "system": platform.system(), "architecture": platform.machine(),
@@ -84,6 +155,7 @@ def manifest_structure(content):
 
 def prepare(tree, allowed_signers):
     lock = json.loads(LOCK.read_text())
+    config = source_config(lock)
     tree = tree.resolve(strict=True)
     if ROOT != tree / lock["rockCheckoutPath"]:
         raise ValueError("Run the copy checked out at <OS tree>/external/rockstaros.")
@@ -112,14 +184,13 @@ def prepare(tree, allowed_signers):
     adevtool = tree / "vendor/adevtool"
     if git(adevtool, "rev-parse", "HEAD") != lock["adevtoolCommit"]:
         raise ValueError("Wrong adevtool source; do not mix firmware generations.")
-    kernel = tree / "device/google/laguna-kernels/6.6"
+    kernel = tree / config["kernel_path"]
     if git(kernel, "rev-parse", "HEAD") != lock["kernel"]["prebuiltCommit"]:
         raise ValueError("Wrong device kernel source.")
     if git(kernel, "status", "--porcelain", "--untracked-files=normal"):
         raise ValueError("Device kernel contains local changes.")
     # Required inputs, not proof that the entire vendor output is complete.
-    for name in ["build/envsetup.sh", "vendor/google_devices/frankel/frankel.mk",
-                 "vendor/google_devices/frankel/BoardConfig.mk"]:
+    for name in config["required"]:
         if not (tree / name).is_file():
             raise ValueError(f"Missing {name}; complete source sync and vendor generation first.")
     hook = tree / lock["hook"]
@@ -141,10 +212,11 @@ def prepare(tree, allowed_signers):
             os.replace(temporary, hook)
         finally:
             Path(temporary).unlink(missing_ok=True)
-    return {"stage": "SOURCE_PREPARED_NOT_BUILT", "device": lock["device"],
+    return {"stage": "SOURCE_PREPARED_NOT_BUILT", "device": config["device"],
             "rockCommit": git(ROOT, "rev-parse", "HEAD"),
             "manifestCommit": lock["manifestCommit"], "adevtoolCommit": lock["adevtoolCommit"],
-            "hookSha256": hashlib.sha256(after).hexdigest(), "lunch": lock["lunch"],
+            "hookSha256": hashlib.sha256(after).hexdigest(), "lunch": config["lunch"],
+            "targetConfirmedByOwner": config["targetConfirmedByOwner"],
             "flashReady": False,
             "remaining": ["full repo manifest -r and source review", "Soong and OS image build",
                           "Hub / Wallet / Game port", "Android release signing and independent update service",
@@ -157,17 +229,31 @@ def main():
     commands.add_parser("manifest", help="print a local Repo manifest pinned to this clean Rock commit")
     host = commands.add_parser("host", help="read-only build capacity check")
     host.add_argument("directory", type=Path)
+    commands.add_parser("build-config", help="validate owner-confirmed lock and print full-build inputs")
     stage = commands.add_parser("prepare", help="add the Rock product fragment to the pinned device source")
     stage.add_argument("os_tree", type=Path)
     stage.add_argument("--allowed-signers", required=True, type=Path,
                        help="GrapheneOS upstream public trust file, obtained from its official site")
+    verify = commands.add_parser("verify-hook", help="verify the prepared hook immediately before a full build")
+    verify.add_argument("os_tree", type=Path)
     args = parser.parse_args()
     try:
         if args.command == "manifest":
             print(render_manifest())
             return 0
-        result = (host_report(args.directory) if args.command == "host"
-                  else prepare(args.os_tree, args.allowed_signers))
+        if args.command == "host":
+            result = host_report(args.directory)
+        elif args.command == "build-config":
+            result = build_config()
+            print("\t".join((result["device"], result["lunch"], result["hook"],
+                             result["kernel_path"], ",".join(result["buildTargets"]))))
+            return 0
+        elif args.command == "verify-hook":
+            result = verify_hook(args.os_tree)
+            print(result["hook"].removeprefix("vendor/adevtool/") + "\t" + result["hookSha256"])
+            return 0
+        else:
+            result = prepare(args.os_tree, args.allowed_signers)
         print(json.dumps(result, indent=2))
         return 2 if args.command == "host" and not result["ready"] else 0
     except (ValueError, OSError, ET.ParseError, subprocess.SubprocessError) as error:
