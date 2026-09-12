@@ -431,7 +431,20 @@ export default function SkyWorkspace() {
           if (!open && !running) setSelected(null);
         }}
       >
-        <DialogContent className="rock-tool-dialog sky-tool-dialog">
+        <DialogContent
+          initialFocus={
+            selected?.runner === 'legal-intake' ||
+            selected?.runner === 'patent-assistant'
+              ? false
+              : undefined
+          }
+          className={`rock-tool-dialog sky-tool-dialog ${
+            selected?.runner === 'legal-intake' ||
+            selected?.runner === 'patent-assistant'
+              ? 'sky-tool-dialog-wide'
+              : ''
+          }`}
+        >
           {selected && (
             <>
               <p className="rock-eyebrow">

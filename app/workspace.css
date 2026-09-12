@@ -4600,6 +4600,10 @@
   border-radius: 18px !important;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7) !important;
 }
+.sky-tool-dialog.sky-tool-dialog-wide {
+  width: min(980px, calc(100vw - 32px)) !important;
+  max-width: min(980px, calc(100vw - 32px)) !important;
+}
 .sky-tool-dialog > button {
   color: #8b98a5;
   background: #0a0a0a;

@@ -37,7 +37,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / Skyへ特許出願アシスタントを追加 / 完了 26/48件
+最終更新: 2026-09-12 / Sky Agent Hubへ法務受付と特許出願担当を統合 / 完了 26/48件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -108,7 +108,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Sky Agent Hubに特許出願アシスタントを追加し、発明整理、公開状況警告、公式情報に限定した先行技術候補調査、明細書・請求項・要約・提出チェックのドラフト保存を実装した。発明内容は保存せず、AI送信は明示同意後だけ、電子署名・支払・特許庁提出は人の最終確認に残す。本人限定Sitesへの配信後、実環境の画面動線と特許調査AIの秘密設定を確認する。SkyのToB掲載、ToC Timeline、MCP接続の継続設計と、Android/AOSP側のfull build・製品移植・production署名・実機受入は引き続き未完了。
+次の作業: 新しいSky Timeline、役割ボタン、自然文ルーティングから法務受付を開けるようにし、安全確認、相談整理、公式情報に基づくAI回答、無料窓口、必要時だけの弁護士引継ぎを会話型画面へ統合した。刑事弁護が必要な案件は藤原茜弁護士を第一連絡候補にするが、自動送信・受任確定は行わない。本人限定Sitesへの再配信後、実環境の画面動線と法令AI・特許調査AIの秘密設定を確認する。SkyのMCP接続の継続設計と、Android/AOSP側のfull build・製品移植・production署名・実機受入は引き続き未完了。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
@@ -137,8 +137,6 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 - Skyの「日本語法律相談受付」は、安全確認→相談内容→回答・引継ぎを法務受付担当との会話として進めます。政府・裁判所の公式情報に限定した根拠付き一次回答と無料窓口を表示し、刑事弁護が必要な案件は藤原茜弁護士を第一連絡候補にします。法的助言や自動送信は行わず、Skyは相談本文を保存しません。[実装と安全境界](docs/sky-legal-intake-20260912.md)
 - Skyの「特許出願アシスタント」は、システム発明の整理、公式特許情報に限定した候補調査、準備度評価、明細書・請求項・要約・提出チェックのドラフト作成を一つの画面で進めます。発明内容は保存せず、AI調査は明示同意後だけ、電子署名・支払・特許庁提出は本人と専門家の確認に残します。[実装と安全境界](docs/sky-patent-assistant-20260912.md)
 - GitHubとHugging Faceの公開メタデータを収集する管理用コマンド。
-
-日本語法律相談受付は別branch `codex/sky-legal-intake-20260912` のcommit `4169697`で実装・7テスト合格を確認したが、このbranchのSkyへはまだ統合していない。
 
 ファンドの参加・配分・試算条件、単独ツールの実行メタデータ、仕事の進捗はSitesのD1に保存します。旧マイツール用のローカル保存関数も互換用に保持しています。接続アドレスは保存せず、サーバーへ送信しません。ウォレット接続はログイン認証・実名本人確認・送金認可ではありません。
 
