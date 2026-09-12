@@ -30,4 +30,6 @@ Instagram password、Cookie、raw tokenをDBへ保存しない。credentialは`e
 
 2026-09-12のv0.2.0全体検証で、RockstarOS本体103 test、Fashion Brand Ops 14 test、型検査、静的検査、production build、Worker/D1 API 143 assertionsがすべて成功した。MCPの`tools/list`は38 toolを返し、目標保存、投稿計画・下書き・承認要求までの安全な自動run、顧客journey、制作計画、接続診断に加え、既存の承認digest/期限/一回実行、Stripe/Meta署名、account切替、schedule、insights、DM分類、入金eventの冪等反映、分析feedbackをmockまたはfixtureで確認した。さらにSkyのローカル画面でTimeline、catalog、詳細ダイアログを開き、38操作、接続条件、approval gateの表示とエラーoverlayがないことを確認した。
 
+実装commit `d1a428f` を[Draft PR #10](https://github.com/k999ln/rock/pull/10)へpushし、同一SHAの`verify`、native partition 5件、`source-tests`がすべて成功した。これはmock/fixtureとWeb表示の合格であり、Meta credential、Professional account、公開Webhook、実投稿の合格ではない。
+
 決済event反映は公開MCP toolにせず、署名検証済みWebhookだけが呼ぶ内部処理に限定した。公開MCPは読み取り専用`fashion.payment.status.get`を提供する。実Higgsfield、実Meta account、実Stripe、通知先は未接続であり、この検証による外部投稿・広告費・請求・返金・送信はない。

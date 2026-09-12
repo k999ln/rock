@@ -63,9 +63,10 @@
     "goal-driven-brand-operations"
   ],
   "fashionBrandOperations": {
-    "status": "autonomous_mock_in_progress",
+    "status": "autonomous_mock_verified",
     "productId": "org.rockstar.fashion-brand-ops",
     "skyName": "Instagram運用・受注型ブランド管理",
+    "hubName": "Instagram運用・受注型ブランド管理",
     "record": "docs/fashion-brand-ops-integration.md",
     "liveProvidersConnected": false,
     "dangerousEffectsRequireApproval": true,

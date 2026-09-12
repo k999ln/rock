@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "Fashion Brand Ops v0.2.0の目標駆動運営・接客・制作機能を実装し、Sky画面と全体検証に合格",
-  "nextAction": "GitHub PRの同一SHA CIを確認後、Meta OAuthのApp ID/secret、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付きの限定テスト投稿へ進む。実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。",
+  "milestone": "Fashion Brand Ops v0.2.0の目標駆動運営・接客・制作機能を実装し、Sky画面・全体検証・GitHub CIに合格",
+  "nextAction": "Meta OAuthのApp ID/secret、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付きの限定テスト投稿へ進む。実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。",
   "tasks": [
     {
       "id": "SKY01",
