@@ -5,21 +5,15 @@ import Link from 'next/link';
 import {
   ArrowRight,
   ArrowUpRight,
-  Activity,
   BadgeCheck,
   BookOpenCheck,
   BriefcaseBusiness,
   FileCheck2,
   FilePenLine,
-  Laptop,
   Link2,
   PackagePlus,
-  Radio,
   Search,
   Send,
-  ShieldCheck,
-  SlidersHorizontal,
-  Sparkles,
   X,
   Zap,
   type LucideIcon,
@@ -39,7 +33,6 @@ import WorkspaceShell from '@/components/workspace-shell';
 
 type FeedFilter = 'おすすめ' | '今使える' | '導入候補';
 
-const readyTools = catalog.filter((tool) => tool.status === 'ready');
 const feedFilters: FeedFilter[] = ['おすすめ', '今使える', '導入候補'];
 const icons: Record<string, LucideIcon> = {
   coconala: BriefcaseBusiness,
@@ -190,14 +183,7 @@ export default function SkyWorkspace() {
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
           <header className="sky-feed-header">
             <div className="sky-feed-title-row">
-              <div>
-                <span className="sky-feed-kicker">
-                  <Radio size={13} aria-hidden="true" />
-                  LIVE AUTOMATION
-                </span>
-                <h1 id="sky-feed-title">Sky Timeline</h1>
-                <p>やりたいことを送ると、担当の役がすぐ動きます。</p>
-              </div>
+              <h1 id="sky-feed-title">Sky</h1>
               <Link
                 href="/sky/publish"
                 aria-label="Skyにツールを掲載"
@@ -231,21 +217,14 @@ export default function SkyWorkspace() {
               <span>S</span>
             </div>
             <div className="sky-assistant-body">
-              <div className="sky-assistant-heading">
-                <div>
-                  <span>SKY ROUTER</span>
-                  <h2 id="sky-assistant-title">何を進める？</h2>
-                </div>
-                <span className="sky-router-live">
-                  <Activity size={14} aria-hidden="true" />
-                  待機中
-                </span>
-              </div>
+              <h2 id="sky-assistant-title" className="sr-only">
+                Skyに頼む
+              </h2>
               <form className="sky-assistant-composer" onSubmit={submitRequest}>
                 <input
                   value={requestText}
                   onChange={(event) => setRequestText(event.target.value)}
-                  placeholder="いま、何を進めたい？"
+                  placeholder="何をしてほしい？"
                   aria-label="Skyへの依頼"
                 />
                 <button
@@ -253,42 +232,22 @@ export default function SkyWorkspace() {
                   aria-label="Skyへ依頼を送る"
                 >
                   <Send size={18} />
-                  <span>送る</span>
+                  <span>送信</span>
                 </button>
               </form>
-              <div className="sky-routing-flow" aria-label="Skyの実行手順">
-                <span>依頼</span>
-                <i aria-hidden="true" />
-                <span>担当を選択</span>
-                <i aria-hidden="true" />
-                <strong>ツールを開く</strong>
-              </div>
               <div className="sky-role-list" aria-label="Skyの役割">
                 {skyRoles.map((role) => {
                   const tool = catalog.find((item) => item.id === role.toolId)!;
                   return (
                     <button key={role.toolId} onClick={() => openRole(tool)}>
-                      <span
-                        className={'sky-role-dot rock-icon-' + tool.color}
-                        aria-hidden="true"
-                      />
                       {role.label}
-                      <ArrowRight size={13} aria-hidden="true" />
                     </button>
                   );
                 })}
               </div>
-              <p className="sky-assistant-connect-note">
-                <Zap size={14} aria-hidden="true" />
-                ブラウザの役は送信だけで開きます。PCは初回だけ接続します。
-              </p>
               {routeMessage && (
                 <output className="sky-route-reply">
-                  <span className="sky-route-icon">
-                    <Sparkles size={16} />
-                  </span>
                   <div>
-                    <strong>担当が決まりました</strong>
                     <p>{routeMessage}</p>
                   </div>
                   {routedTool && (
@@ -304,7 +263,7 @@ export default function SkyWorkspace() {
             </div>
           </section>
 
-          <div className="sky-mobile-search">
+          <div className="sky-feed-search">
             <Search size={18} />
             <input
               type="search"
@@ -371,20 +330,9 @@ export default function SkyWorkspace() {
                       </span>
                       <ArrowUpRight size={18} />
                     </button>
-                    <span className="sky-post-label">この役ができること</span>
                     <p className="sky-post-description">{tool.description}</p>
-                    <div className="sky-post-facts">
-                      <span>
-                        <Zap size={13} aria-hidden="true" />
-                        {status.detail}
-                      </span>
-                      <span>{tool.environment}</span>
-                    </div>
+                    <p className="sky-post-place">{status.detail}</p>
                     <div className="sky-post-actions">
-                      <button onClick={() => setSelected(tool)}>
-                        <SlidersHorizontal size={16} />
-                        条件を見る
-                      </button>
                       <button
                         className="sky-post-primary"
                         onClick={() => primaryAction(tool)}
@@ -422,71 +370,6 @@ export default function SkyWorkspace() {
             )}
           </div>
         </section>
-
-        <aside className="sky-feed-rail" aria-label="Skyの検索と接続状況">
-          <label className="sky-rail-search">
-            <Search size={18} />
-            <span className="sr-only">Skyを検索</span>
-            <input
-              type="search"
-              placeholder="Skyを検索"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-            />
-            {query && (
-              <button aria-label="検索をクリア" onClick={() => setQuery('')}>
-                <X size={16} />
-              </button>
-            )}
-          </label>
-          <section className="sky-rail-card sky-rail-publish">
-            <span className="sky-rail-card-icon">
-              <PackagePlus size={21} />
-            </span>
-            <h2>ツールをSkyに掲載</h2>
-            <p>
-              必要情報を入れて審査へ。MCPの能力はSkyが接続先から確認します。
-            </p>
-            <Link href="/sky/publish">
-              掲載を始める
-              <ArrowRight size={16} />
-            </Link>
-          </section>
-          <section className="sky-rail-card">
-            <div className="sky-rail-live-heading">
-              <h2>接続ステータス</h2>
-              <span>
-                <i /> LIVE
-              </span>
-            </div>
-            <div className="sky-rail-count">
-              <span>今使える</span>
-              <strong>{readyTools.length}</strong>
-            </div>
-            <div className="sky-rail-count">
-              <span>導入候補</span>
-              <strong>{catalog.length - readyTools.length}</strong>
-            </div>
-            <button
-              className="sky-rail-connect"
-              onClick={() => setDeviceOpen(true)}
-            >
-              <Laptop size={17} />
-              PCを接続
-              <ArrowRight size={15} />
-            </button>
-          </section>
-          <section className="sky-rail-trust">
-            <ShieldCheck size={18} />
-            <p>
-              権限・料金・実行場所を確認してから接続します。候補は実行できるツールに数えません。
-            </p>
-          </section>
-          <Link href="/rockstaros" className="sky-rail-os">
-            RockstarOSについて
-            <ArrowUpRight size={15} />
-          </Link>
-        </aside>
       </div>
 
       <Dialog
