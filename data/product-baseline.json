@@ -1,5 +1,5 @@
 {
-  "version": "1.13",
+  "version": "1.14",
   "decidedAt": "2026-09-12",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -32,6 +32,13 @@
     { "id": "wallet", "role": "automation_income_cost_and_funds" },
     { "id": "polymarket", "role": "separate_external_market_adapter" }
   ],
+  "chatInteraction": {
+    "defaultRouting": "sky_auto",
+    "manualAppSelection": "optional",
+    "unknownIntentPolicy": "ask_for_clarification_without_execution",
+    "receiptSource": "owned_jobs_only",
+    "chatReceiptIsCompletionEvidence": false
+  },
   "executionApproval": {
     "status": "approved_for_implementation",
     "approvedDesignVersion": "1.1",

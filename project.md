@@ -1,5 +1,11 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-12 — ChatをSky Auto中心の一画面へ整理
+
+Chatの左アプリ欄を撤去し、会話・依頼先・最近の処理を一列へまとめた。既定はSky Autoで、利用者は先にアプリを選ばず「案件を見て」「法律の相談」「特許を調べて」のように入力できる。接続済みの役割へ振り分け、担当を会話内へ表示する。アプリの直接指定は上部の小さな切替として残す。
+
+失敗を含む過去jobは会話本文より下の「最近の処理」へまとめた。Chat上の返答は受付・担当選択であり、実jobの完了証拠は保存済みreceiptだけとする。判別不能・未接続・入力不足では勝手に実行せず、次に必要な情報を返す。
+
 ## 2026-09-12 — SkyのMCP導入・利用体験を改善
 
 ToB掲載では、遠隔MCPのURL入力後にSkyが`initialize`と`tools/list`を実行し、ツール自体を動かさず接続状態と公開ツール名を確認する。公開HTTPS以外と内部ネットワークを拒否し、OAuth必須先は認証待ちとして審査へ残す。
@@ -27,6 +33,7 @@ Skyのready商品として、ソフトウェア・システム発明の整理、
 今回はローカルSkyでのPC接続と読み取り会話までを対象とし、HTTPS配信版のloopback接続、Native Sky MCP brokerへの常駐、Walletへの費用転記、解約・支払い・申告は未実装のまま保持する。[実装・安全境界・検証](docs/sky-rockstar-ledger-20260912.md)。
 
 追加で全網羅監査を実装した。Apple、Google Play、カード、銀行、PayPal、請求メールの6情報源と確認期間を追跡し、全情報源の解決と継続契約の更新日入力が揃うまで完了と判定しない。現在の個人台帳は既知18件（過去・終了10件）を保持する一方、情報源0/6確認済み、明細0件、更新日3件不足のため未完了と表示する。SkyチャットとMCPも同じ判定を返す。
+
 ## 2026-09-12 — 基本アプリをSky / Chat / Wallet / Polymarketへ整理
 
 利用者の明示確認により、RockstarOSの基本アプリを4つに固定した。Skyは自動化アプリの発見・掲載・1タップ接続へ集中し、依頼欄を撤去した。Chatは接続済みアプリを選び、依頼・確認・実行状態・完了通知を受け取る独立画面とした。Walletは従来どおり収支・費用を管理する。
@@ -335,7 +342,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / SkyのMCP導入・接続体験を改善 / 完了 29/51件
+最終更新: 2026-09-12 / SkyのMCP導入・接続体験を改善 / 完了 30/52件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -348,6 +355,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY07 | Rock IDにツール利用許可だけを保存する1タップ接続へ変更 | 完了 | [記録](components/sky-workspace.tsx) · [記録](app/api/sky/connections/route.ts) · [記録](docs/sky-identity-connection.md) |
 | SKY08 | Skyをアプリ選択と接続へ絞り、Chatを依頼・状況・結果の受取画面として分離 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/workspace-shell.tsx) · [記録](app/chat/page.tsx) · [記録](app/polymarket/page.tsx) |
 | SKY09 | MCP掲載前診断とPC接続の互換性・初回導線を改善 | 完了 | [記録](lib/mcp-inspection.ts) · [記録](app/api/sky/mcp/inspect/route.ts) · [記録](lib/device.ts) · [記録](components/sky-publisher-form.tsx) · [記録](components/device-connection.tsx) · [記録](tests/mcp-inspection.test.mjs) · [記録](tests/device-lifecycle.test.mjs) |
+| SKY10 | ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](docs/sky-identity-connection.md) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |

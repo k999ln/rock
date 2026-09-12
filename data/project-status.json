@@ -102,6 +102,17 @@
       ]
     },
     {
+      "id": "SKY10",
+      "title": "ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化",
+      "status": "done",
+      "dependsOn": ["SKY08"],
+      "evidence": [
+        "components/sky-chat-workspace.tsx",
+        "app/workspace.css",
+        "docs/sky-identity-connection.md"
+      ]
+    },
+    {
       "id": "R01",
       "title": "4参照元の採用判断と事業方針の固定",
       "status": "done",

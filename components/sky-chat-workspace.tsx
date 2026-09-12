@@ -4,16 +4,17 @@ import { useEffect, useMemo, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import {
-  ArrowRight,
   CheckCircle2,
   Clock3,
   Grid2X2,
+  History,
   MessageCircle,
   Plus,
   Send,
+  Sparkles,
 } from 'lucide-react';
 import { catalog, type Automation } from '@/lib/catalog';
-import { routeSkyRequest, skyRoles } from '@/lib/sky-routing';
+import { routeSkyRequest, skyRoles, type SkyRole } from '@/lib/sky-routing';
 import WorkspaceShell from '@/components/workspace-shell';
 import {
   ExecutionSignin,
@@ -29,12 +30,19 @@ type ChatEntry = {
   id: string;
   side: 'me' | 'sky';
   text: string;
-  tool: string;
+  tool?: string;
 };
 
+const AUTO_MODE = 'sky-auto';
 const readyApps = catalog.filter(
   (tool) => tool.status === 'ready' && tool.runner !== 'delivery-local',
 );
+const quickRequests = [
+  '案件を見て',
+  '記事を整えて',
+  '法律の相談',
+  '特許を調べて',
+];
 
 function roleFor(tool: Automation) {
   return skyRoles.find((role) => role.toolId === tool.id)?.label ?? 'Skyアプリ';
@@ -45,11 +53,25 @@ function markFor(tool: Automation) {
 }
 
 function jobMessage(job: Job) {
-  if (job.status === 'completed') return '処理が完了しました';
-  if (job.status === 'failed') return '処理できませんでした';
-  if (job.status === 'cancelled') return '処理を停止しました';
-  if (job.status === 'running') return '処理中です';
-  return '処理を受け付けました';
+  if (job.status === 'completed') return '完了';
+  if (job.status === 'failed') return '確認が必要';
+  if (job.status === 'cancelled') return '停止';
+  if (job.status === 'running') return '処理中';
+  return '受付済み';
+}
+
+function responseFor(
+  tool: Automation | null,
+  routedRole: SkyRole | null,
+  connectedCount: number,
+) {
+  if (tool)
+    return `Skyが${roleFor(tool)}を選びました。必要な確認と次の操作を、このChatにまとめます。`;
+  if (routedRole)
+    return `${routedRole.label}はまだ接続されていません。Skyで接続すると、次からはここで頼めます。`;
+  if (connectedCount === 0)
+    return '使えるアプリがまだありません。Skyでひとつ接続すれば、次からはここに話すだけです。';
+  return '目的をもう少しだけ教えてください。「案件」「記事」「出典」「法律」「特許」のように一言足すと、自動で選べます。';
 }
 
 export default function SkyChatWorkspace() {
@@ -57,7 +79,7 @@ export default function SkyChatWorkspace() {
   const preferredTool = searchParams.get('tool') ?? '';
   const [connectedTools, setConnectedTools] = useState<string[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [selectedToolId, setSelectedToolId] = useState('');
+  const [selectedToolId, setSelectedToolId] = useState(AUTO_MODE);
   const [draft, setDraft] = useState('');
   const [messages, setMessages] = useState<ChatEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -78,7 +100,7 @@ export default function SkyChatWorkspace() {
         )?.tool;
         setConnectedTools(ids);
         setJobs(recentJobs);
-        setSelectedToolId(preferred ?? ids[0] ?? '');
+        setSelectedToolId(preferred ?? AUTO_MODE);
       })
       .catch((reason) => {
         if (!active) return;
@@ -105,169 +127,222 @@ export default function SkyChatWorkspace() {
   );
   const selectedTool =
     connectedApps.find((tool) => tool.id === selectedToolId) ?? null;
-  const selectedJobs = jobs
-    .filter((job) => job.tool === selectedTool?.id)
-    .slice(0, 4);
-  const selectedMessages = messages.filter(
-    (message) => message.tool === selectedTool?.id,
-  );
+  const visibleJobs = jobs
+    .filter((job) =>
+      selectedTool
+        ? job.tool === selectedTool.id
+        : connectedTools.includes(job.tool),
+    )
+    .slice(0, 3);
+
+  function chooseMode(toolId: string) {
+    setSelectedToolId(toolId);
+    setError('');
+  }
+
+  function updateDraft(value: string) {
+    setDraft(value);
+    setError('');
+  }
 
   function sendMessage(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     const text = draft.trim();
     if (!text) return;
-    let tool = selectedTool;
-    if (!tool) {
-      const routed = routeSkyRequest(text);
-      tool = routed
-        ? (connectedApps.find((item) => item.id === routed.toolId) ?? null)
-        : null;
-    }
-    if (!tool) {
-      setError('先にSkyでアプリを接続してください。');
-      return;
-    }
+
+    const routedRole = selectedTool ? null : routeSkyRequest(text);
+    const routedTool = routedRole
+      ? (connectedApps.find((item) => item.id === routedRole.toolId) ?? null)
+      : null;
+    const onlyConnectedTool =
+      connectedApps.length === 1 ? connectedApps[0] : null;
+    const tool = selectedTool ?? routedTool ?? onlyConnectedTool;
     const messageIndex = messages.length;
+    const toolId = tool?.id;
+
     setDraft('');
     setError('');
-    setSelectedToolId(tool.id);
     setMessages((current) => [
       ...current,
-      { id: `${tool.id}-${messageIndex}-me`, side: 'me', text, tool: tool.id },
       {
-        id: `${tool.id}-${messageIndex}-sky`,
+        id: `chat-${messageIndex}-me`,
+        side: 'me',
+        text,
+        tool: toolId,
+      },
+      {
+        id: `chat-${messageIndex}-sky`,
         side: 'sky',
-        text: `${roleFor(tool)}が受け取りました。確認・処理状況・完了通知は、このChatにまとめます。`,
-        tool: tool.id,
+        text: responseFor(tool, routedRole, connectedApps.length),
+        tool: toolId,
       },
     ]);
   }
 
   return (
     <WorkspaceShell title="Chat" contentClassName="sky-chat-page">
-      <div className="sky-chat-layout">
-        <aside className="sky-chat-app-picker" aria-label="接続済みアプリ">
-          <header>
-            <div>
-              <span>RockstarOS</span>
-              <h1>Chat</h1>
-            </div>
-            <Link href="/" aria-label="Skyを開く">
-              <Grid2X2 size={19} />
-            </Link>
-          </header>
-          <div className="sky-chat-app-list">
-            {connectedApps.map((tool) => (
-              <button
-                key={tool.id}
-                className={selectedToolId === tool.id ? 'is-selected' : ''}
-                onClick={() => {
-                  setSelectedToolId(tool.id);
-                  setError('');
-                }}
-              >
-                <span className={`sky-chat-app-mark rock-icon-${tool.color}`}>
-                  {markFor(tool)}
-                </span>
-                <span>
-                  <strong>{roleFor(tool)}</strong>
-                  <small>{tool.name}</small>
-                </span>
-              </button>
-            ))}
-            <Link href="/" className="sky-chat-add-app">
-              <span>
-                <Plus size={18} />
-              </span>
-              <strong>Skyから追加</strong>
-            </Link>
+      <section className="sky-chat-simple" aria-label="Chatスレッド">
+        <header className="sky-chat-commandbar">
+          <div>
+            <span>RockstarOS</span>
+            <h1>Chat</h1>
           </div>
-        </aside>
+          <Link href="/" aria-label="Skyでアプリを見る">
+            <Grid2X2 size={19} />
+            <span>Sky</span>
+          </Link>
+        </header>
 
-        <section className="sky-chat-thread" aria-label="Chatスレッド">
-          {needsSignin ? (
-            <div className="sky-chat-centered">
-              <ExecutionSignin />
-            </div>
-          ) : loading ? (
-            <div className="sky-chat-centered">Chatを読み込んでいます…</div>
-          ) : selectedTool ? (
-            <>
-              <header className="sky-chat-thread-header">
-                <span
-                  className={`sky-chat-app-mark rock-icon-${selectedTool.color}`}
-                >
-                  {markFor(selectedTool)}
+        <div className="sky-chat-mode-row" aria-label="依頼先を選ぶ">
+          <button
+            className={selectedToolId === AUTO_MODE ? 'is-selected' : ''}
+            onClick={() => chooseMode(AUTO_MODE)}
+          >
+            <span className="sky-chat-auto-mark">
+              <Sparkles size={16} />
+            </span>
+            <span>
+              <strong>Sky Auto</strong>
+              <small>内容から自動で選ぶ</small>
+            </span>
+          </button>
+          {connectedApps.map((tool) => (
+            <button
+              key={tool.id}
+              className={selectedToolId === tool.id ? 'is-selected' : ''}
+              onClick={() => chooseMode(tool.id)}
+            >
+              <span className={`sky-chat-app-mark rock-icon-${tool.color}`}>
+                {markFor(tool)}
+              </span>
+              <span>
+                <strong>{roleFor(tool)}</strong>
+                <small>{tool.name}</small>
+              </span>
+            </button>
+          ))}
+          <Link href="/" className="sky-chat-add-compact">
+            <Plus size={17} />
+            <span>追加</span>
+          </Link>
+        </div>
+
+        {needsSignin ? (
+          <div className="sky-chat-centered">
+            <ExecutionSignin />
+          </div>
+        ) : loading ? (
+          <div className="sky-chat-centered">Chatを読み込んでいます…</div>
+        ) : (
+          <>
+            <div className="sky-chat-messages" aria-live="polite">
+              <div className="sky-chat-day">今日</div>
+              <div className="sky-chat-bubble is-sky sky-chat-welcome">
+                <span className="sky-chat-sky-mark">
+                  <Sparkles size={16} />
                 </span>
                 <div>
-                  <strong>{roleFor(selectedTool)}</strong>
-                  <span>接続済み</span>
-                </div>
-              </header>
-              <div className="sky-chat-messages" aria-live="polite">
-                <div className="sky-chat-day">今日</div>
-                <div className="sky-chat-bubble is-sky">
-                  <MessageCircle size={16} />
+                  <strong>
+                    {selectedTool ? roleFor(selectedTool) : 'Sky Auto'}
+                  </strong>
                   <p>
-                    {selectedTool.name}
-                    です。依頼、確認、完了通知をここで受け取れます。
+                    {selectedTool
+                      ? `${selectedTool.name}に直接頼めます。`
+                      : 'やりたいことを、そのまま話してください。接続済みの役割からSkyが選びます。'}
                   </p>
                 </div>
-                {selectedJobs.map((job) => (
-                  <div className="sky-chat-receipt" key={job.id}>
-                    {job.status === 'completed' ? (
-                      <CheckCircle2 size={17} />
-                    ) : (
-                      <Clock3 size={17} />
-                    )}
-                    <div>
-                      <strong>{jobMessage(job)}</strong>
-                      <span>
-                        {new Date(job.createdAt).toLocaleString('ja-JP')}
-                      </span>
-                    </div>
-                    <Link href="/activity">履歴</Link>
-                  </div>
-                ))}
-                {selectedMessages.map((message) => (
+              </div>
+
+              {messages.length === 0 && !selectedTool && (
+                <div className="sky-chat-quick-requests" aria-label="依頼例">
+                  {quickRequests.map((request) => (
+                    <button key={request} onClick={() => updateDraft(request)}>
+                      {request}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {messages.map((message) => {
+                const messageTool = connectedApps.find(
+                  (tool) => tool.id === message.tool,
+                );
+                return (
                   <div
                     className={`sky-chat-bubble is-${message.side}`}
                     key={message.id}
                   >
-                    {message.side === 'sky' && <MessageCircle size={16} />}
-                    <p>{message.text}</p>
+                    {message.side === 'sky' && (
+                      <MessageCircle size={16} aria-hidden="true" />
+                    )}
+                    <div>
+                      {message.side === 'sky' && messageTool && (
+                        <small>{roleFor(messageTool)}</small>
+                      )}
+                      <p>{message.text}</p>
+                    </div>
                   </div>
-                ))}
-              </div>
-              <form className="sky-chat-composer" onSubmit={sendMessage}>
-                {error && <p role="alert">{error}</p>}
-                <div>
-                  <input
-                    value={draft}
-                    onChange={(event) => setDraft(event.target.value)}
-                    aria-label={`${roleFor(selectedTool)}への依頼`}
-                    placeholder="依頼を入力"
-                  />
-                  <button disabled={!draft.trim()} aria-label="送信">
-                    <Send size={18} />
-                  </button>
+                );
+              })}
+
+              {visibleJobs.length > 0 && (
+                <div className="sky-chat-recent">
+                  <div className="sky-chat-recent-title">
+                    <span>最近の処理</span>
+                    <Link href="/activity">
+                      <History size={14} /> すべて見る
+                    </Link>
+                  </div>
+                  {visibleJobs.map((job) => {
+                    const jobTool = readyApps.find(
+                      (tool) => tool.id === job.tool,
+                    );
+                    return (
+                      <div className="sky-chat-receipt" key={job.id}>
+                        {job.status === 'completed' ? (
+                          <CheckCircle2 size={17} />
+                        ) : (
+                          <Clock3 size={17} />
+                        )}
+                        <div>
+                          <strong>{jobMessage(job)}</strong>
+                          <span>
+                            {jobTool ? roleFor(jobTool) : 'Sky'} ·{' '}
+                            {new Date(job.createdAt).toLocaleString('ja-JP')}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              </form>
-            </>
-          ) : (
-            <div className="sky-chat-empty">
-              <span>
-                <MessageCircle size={28} />
-              </span>
-              <h2>アプリをChatにつなぐ</h2>
-              <p>Skyで使いたいアプリを選ぶと、ここに会話が届きます。</p>
-              <Link href="/">
-                Skyを開く <ArrowRight size={16} />
-              </Link>
+              )}
             </div>
-          )}
-        </section>
-      </div>
+
+            <form className="sky-chat-composer" onSubmit={sendMessage}>
+              {error && <p role="alert">{error}</p>}
+              <div className="sky-chat-composer-box">
+                <span className="sky-chat-composer-mode">
+                  {selectedTool ? roleFor(selectedTool) : 'Auto'}
+                </span>
+                <input
+                  value={draft}
+                  onChange={(event) => updateDraft(event.target.value)}
+                  aria-label={
+                    selectedTool
+                      ? `${roleFor(selectedTool)}への依頼`
+                      : 'Skyへの依頼'
+                  }
+                  placeholder="何をしてほしい？"
+                />
+                <button disabled={!draft.trim()} aria-label="送信">
+                  <Send size={18} />
+                </button>
+              </div>
+              <small>使う役割は送信後に表示されます。</small>
+            </form>
+          </>
+        )}
+      </section>
     </WorkspaceShell>
   );
 }
