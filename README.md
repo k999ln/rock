@@ -39,7 +39,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / 現行SkyフロントへMCP導入・Fashion Brand Ops 38操作・検証済み収益精算核を統合し、本人限定Sitesへローンチ準備 / 完了 37/61件
+最終更新: 2026-09-12 / 現行SkyフロントへMCP導入・Fashion Brand Ops 38操作・検証済み収益精算核を統合し、本人限定Sitesへローンチ準備 / 完了 38/62件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |

@@ -104,9 +104,10 @@ export function validateBaseline(
     'ゲーム交換をATM必須にしないでください',
   );
   requireValue(
-    data.marketExploration?.runtimeAuthorized === false &&
+    data.marketExploration?.appShellAuthorized === true &&
+      data.marketExploration?.runtimeAuthorized === false &&
       data.marketExploration?.realValueEnabled === false,
-    '市場案は検討のみで実装・実資金未承認です',
+    'Polymarketは基本アプリ枠のみ承認され、実接続・実資金は未承認です',
   );
   requireValue(
     data.skyNetworkEconomy?.tobSkyFeeMinor === 0,

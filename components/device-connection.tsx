@@ -34,7 +34,7 @@ export function DeviceConnection() {
     setBusy(true);
     setMessage('');
     try {
-      const connection = await connectDevice();
+      await connectDevice();
       setConnected(true);
       setMessage(
         'Connectorへ接続しました。基本4機能を確認済みです。MCP画面から他の自動化も接続できます。',

@@ -45,9 +45,9 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const missingReview = structuredClone(source);
   delete missingReview.auditInputs.designHead;
   assert.throws(() => validateBaseline(missingReview), /designHead/);
-  const unapprovedMarket = structuredClone(source);
-  unapprovedMarket.marketExploration.runtimeAuthorized = true;
-  assert.throws(() => validateBaseline(unapprovedMarket), /未承認/);
+  const unauthorizedRuntime = structuredClone(source);
+  unauthorizedRuntime.marketExploration.runtimeAuthorized = true;
+  assert.throws(() => validateBaseline(unauthorizedRuntime), /未承認/);
   const fakeLocalMcp = structuredClone(source);
   fakeLocalMcp.skyNetworkEconomy.localMcpConnection.realSessionStateDisplayed = false;
   assert.throws(() => validateBaseline(fakeLocalMcp), /ローカルMCP/);

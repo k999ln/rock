@@ -235,7 +235,9 @@ export async function connectDevice() {
       : [],
   );
   if (!requiredTools.every((name) => availableTools.has(name)))
-    throw new Error('MCPツールを確認できませんでした。');
+    throw new Error(
+      'PC接続アプリを更新してください。必要なMCPツールが不足しています。',
+    );
   if (generation !== sessionGeneration)
     throw new Error('接続確認は取り消されました。');
   const id = crypto.randomUUID();
