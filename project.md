@@ -1,5 +1,11 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-12 — OSバックエンドのローンチ候補を統合・安全化
+
+最新launch-candidateの改善版Sky／Fashion専用ワンタップ接続と、汎用MCP Connector／検証済み収益後の精算核を専用branchへ統合した。現行本人限定SitesをFashion Connectorのexact Originへ追加し、Meta署名済みDMを別brandへ付け替えられない照合、IPv6 link-local／multicastの遠隔MCP遮断、両Connector ZIPの決定的整合検査を追加した。
+
+`npm audit --omit=dev`は既知脆弱性0件。`npm run verify`はWeb 122 tests、Fashion Brand Ops 17 tests、仕事API 143 assertions、型・lint、D1履歴移行、精算Worker dry-run、両MCP配布物、本番buildに合格した。実Meta／Stripe／Higgsfield、精算Worker本番、実送金、実機OSはcredential・口座・sandbox受入がないためfail-closedのままローンチ範囲外とする。[起動・復旧・範囲](docs/backend-launch-20260912.md)。
+
 ## 2026-09-12 — Skyを「稼いだ後だけ最大8.88 USD精算」へ訂正
 
 利用者の明示訂正により、Stripe Checkoutの先払い月額を廃止した。Skyの自動化が生み、外部Providerで入金まで確認できた収益だけをExecution Receiptと結び、署名済みEarning Receiptとして独立Workerへ入れる。実費を先に回収し、ToCの残額から利用者ごと・UTC月ごとに最大888 USD centsをSkyへ、残りを利用者の払出し指図へ記帳する。ToB分のSky利用料は0。売上0時の請求、未達分の債務化・翌月繰越、カード定期請求は行わない。
