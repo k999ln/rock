@@ -1,6 +1,22 @@
 'use client';
 
-import { Cable, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import {
+  Cable,
+  Check,
+  CheckCircle2,
+  Download,
+  RefreshCw,
+  ShieldCheck,
+  Unplug,
+} from 'lucide-react';
+import {
+  connectFashionMcp,
+  disconnectFashionMcp,
+  fashionMcpConnected,
+  FASHION_MCP_URL,
+  verifyFashionMcp,
+} from '@/lib/fashion-mcp-client';
 
 const capabilities = [
   '売上・数量・粗利・期限からCampaign Autopilotを作成',
@@ -10,15 +26,119 @@ const capabilities = [
 ];
 
 export function FashionBrandOpsRunner() {
+  const [connected, setConnected] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const update = () => setConnected(fashionMcpConnected());
+    update();
+    window.addEventListener('sky-fashion-mcp', update);
+    if (fashionMcpConnected()) {
+      void verifyFashionMcp()
+        .then(({ toolCount }) =>
+          setMessage(`${toolCount}個の専用操作へ接続しています。`),
+        )
+        .catch(() =>
+          setMessage('接続が切れました。もう一度接続してください。'),
+        );
+    } else {
+      void connectFashionMcp()
+        .then((result) => {
+          setConnected(true);
+          setMessage(
+            `${result.toolCount}個の専用操作を確認しました。Skyから実行できます。`,
+          );
+        })
+        .catch((error) => {
+          setConnected(fashionMcpConnected());
+          setMessage(
+            error instanceof Error
+              ? error.message
+              : 'Sky接続アプリを起動してから、もう一度お試しください。',
+          );
+        })
+        .finally(() => setBusy(false));
+    }
+    return () => window.removeEventListener('sky-fashion-mcp', update);
+  }, []);
+
+  async function connect() {
+    setBusy(true);
+    setMessage('');
+    try {
+      const result = await connectFashionMcp();
+      setConnected(true);
+      setMessage(
+        `${result.toolCount}個の専用操作を確認しました。Skyから実行できます。`,
+      );
+    } catch (error) {
+      setConnected(fashionMcpConnected());
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : 'Sky接続アプリを起動してから、もう一度お試しください。',
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
-    <section className="fashion-ops-runner" aria-label="ファッションブランド運営の接続状態">
+    <section
+      className="fashion-ops-runner"
+      aria-label="ファッションブランド運営の接続状態"
+    >
       <div className="fashion-ops-status">
-        <Cable size={20} />
+        {connected ? <Check size={20} /> : <Cable size={20} />}
         <div>
-          <strong>PCのMCPとして接続</strong>
-          <p>38個の専用操作をSkyやCodexから確認・呼び出せます。</p>
+          <strong>{connected ? 'MCP接続済み' : 'PCのMCPへ接続'}</strong>
+          <p>
+            {connected
+              ? 'Fashion Brand Opsの38操作を確認できました。'
+              : '接続アプリが動いていれば、このボタン1回で準備が完了します。'}
+          </p>
         </div>
       </div>
+      <div className="fashion-ops-connect-actions">
+        <button
+          className="black-button"
+          disabled={busy}
+          onClick={() => void connect()}
+        >
+          {busy ? (
+            <RefreshCw size={16} className="fashion-ops-spinner" />
+          ) : connected ? (
+            <Check size={16} />
+          ) : (
+            <Cable size={16} />
+          )}
+          {busy
+            ? 'MCPを確認中…'
+            : connected
+              ? '接続を再確認'
+              : 'ワンクリックで接続'}
+        </button>
+        {connected && (
+          <button
+            className="secondary-button"
+            onClick={() => {
+              void disconnectFashionMcp().finally(() => {
+                setConnected(false);
+                setMessage('このタブのMCP接続を解除しました。');
+              });
+            }}
+          >
+            <Unplug size={15} />
+            解除
+          </button>
+        )}
+      </div>
+      <p className="fashion-ops-connection-state" aria-live="polite">
+        <span className={connected ? 'status-dot' : 'offline-dot'} />
+        {connected ? 'このタブはPCのMCPへ接続中' : 'MCP未接続'}
+      </p>
+      {message && <output className="fashion-ops-message">{message}</output>}
       <ul>
         {capabilities.map((capability) => (
           <li key={capability}>
@@ -34,13 +154,24 @@ export function FashionBrandOpsRunner() {
         </p>
       </div>
       <details>
-        <summary>開発版を接続する手順</summary>
+        <summary>初回だけ必要な準備</summary>
         <ol>
-          <li>このリポジトリの toolkits/fashion-brand-ops をPCに用意します。</li>
-          <li>.env.exampleを参考に、利用するProviderだけを安全な秘密情報保管先へ設定します。</li>
-          <li>.mcp.jsonをSky対応MCPクライアントへ登録し、tools/listで専用操作を確認します。</li>
+          <li>
+            <a href="/toolkits/fashion-brand-ops-connector.zip" download>
+              <Download size={14} />
+              Sky接続アプリをダウンロード
+            </a>
+          </li>
+          <li>展開したフォルダの「RockstarOS Sky接続.command」を開きます。</li>
+          <li>
+            .env.exampleを参考に、利用するProviderだけを安全な秘密情報保管先へ設定します。
+          </li>
+          <li>Skyへ戻り「ワンクリックで接続」を押します。</li>
         </ol>
-        <p>初期状態はすべてmockです。外部投稿・請求・返金は行いません。</p>
+        <p>
+          接続先はこのPC（{FASHION_MCP_URL}
+          ）だけです。初期状態はすべてmockで、外部投稿・請求・返金は行いません。
+        </p>
       </details>
     </section>
   );

@@ -1,6 +1,6 @@
 {
   "name": "@rockstaros/fashion-brand-ops-mcp",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "description": "Approval-gated MCP service for made-to-order fashion brand operations",

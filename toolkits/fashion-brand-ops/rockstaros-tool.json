@@ -2,7 +2,7 @@
   "schema": "rockstaros-hub-tool/1",
   "id": "org.rockstar.fashion-brand-ops",
   "name": "Instagram運用・受注型ブランド管理",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "status": "ready",
   "description": "ブランド方針と商品デザインから、Instagram集客、DM、受注、決済、制作・発送、分析までを承認付きで管理します。",
   "runtime": {

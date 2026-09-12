@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "改善版SkyへFashion Brand Opsを統合し、スマホDialog・全体検証・画面確認に合格",
-  "nextAction": "Meta OAuthのApp ID/secret、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付き限定テスト投稿へ進む。Sites再配信は正しい所有ワークスペース接続後に行う。",
+  "milestone": "SkyからFashion Brand Ops MCPへのワンクリック接続・38操作・失効・画面検証に合格",
+  "nextAction": "Meta OAuthのApp ID/secret、Professional account、公開Webhook URLを接続し、read-only discoveryから本人承認付き限定テスト投稿へ進む。Sites再配信は正しい所有ワークスペース接続後に行う。",
   "tasks": [
     {
       "id": "SKY01",
@@ -58,6 +58,23 @@
         "lib/sky-routing.ts",
         "tests/sky-routing.test.mjs",
         "docs/sky-assistant-and-memory.md"
+      ]
+    },
+    {
+      "id": "SKY05",
+      "title": "Skyの商品カード1回でFashion Brand Ops MCPを初期化し、38操作と接続状態を同期",
+      "status": "done",
+      "dependsOn": [
+        "SKY04",
+        "FB01"
+      ],
+      "evidence": [
+        "lib/fashion-mcp-client.ts",
+        "components/fashion-brand-ops-runner.tsx",
+        "toolkits/fashion-brand-ops/src/http.mjs",
+        "toolkits/fashion-brand-ops/test/browser-connect.test.mjs",
+        "tests/fashion-mcp-client.test.mjs",
+        "public/toolkits/fashion-brand-ops-connector.zip"
       ]
     },
     {
