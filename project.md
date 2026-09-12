@@ -1,6 +1,19 @@
 # Rock star — 事業・設計・進捗
 
-## 2026-09-12 — ChatをSky Auto中心の一画面へ整理
+## 2026-09-12 — Skyを「稼いだ後だけ最大8.88 USD精算」へ訂正
+
+利用者の明示訂正により、Stripe Checkoutの先払い月額を廃止した。Skyの自動化が生み、外部Providerで入金まで確認できた収益だけをExecution Receiptと結び、署名済みEarning Receiptとして独立Workerへ入れる。実費を先に回収し、ToCの残額から利用者ごと・UTC月ごとに最大888 USD centsをSkyへ、残りを利用者の払出し指図へ記帳する。ToB分のSky利用料は0。売上0時の請求、未達分の債務化・翌月繰越、カード定期請求は行わない。
+
+WorkerはReceipt/実行/Provider参照の重複防止、改ざん・競合拒否、月集計、追記型4勘定台帳、払出しidempotency key、本人別statusを実装した。旧Checkout・Portal・Stripe subscription webhookは410で停止する。現時点で販売・決済・払出しProviderは未接続なので、実際に稼いだ・回収した・送金したとは扱わない。[実装・境界・接続手順](docs/sky-billing.md)。
+
+`npm run verify`でWeb本体118 tests、Fashion Brand Ops 14 tests、仕事API 143 assertions、型・lint、D1移行互換、収益精算Worker bundle、本番buildを通過した。対象試験は、低収益、月888 cents上限、ToB 0、Receipt改ざん・再送・競合、本人分離、払出しleaseと同一idempotency keyを含む。これはローカルfixtureであり、実口座の入出金実績ではない。
+
+## 2026-09-12 — 改善版Skyへブランド運営役を統合
+
+最新のSkyフロント`6f02f1a`を基準に、依頼受付、6つの役割チップ、ダークなTimeline、短い実行導線をFashion Brand Ops branchへ反映する。`ブランド運営役`はInstagram／広告／DM／受注／決済／制作／発送の依頼を受け、既存の38 MCP操作、Campaign Autopilot、Sales Concierge、Production Cockpit、approval gateを開く。サブスク顧問と既存4役も失わない。
+
+Sky月額請求実装は上記の別境界で完成した。FB05は、役割ルーティング8件、全Web 110件、Fashion Brand Ops 14件、型・静的検査、本番build、Worker/D1 API 143 assertionsと実画面操作で合格した。Fashion Brand Ops側の実Provider、実投稿、実広告、顧客向け実請求、返金は接続済みとは扱わない。
+## 2026-09-12 — SkyからFashion Brand Ops MCPへワンクリック接続
 
 Chatの左アプリ欄を撤去し、会話・依頼先・最近の処理を一列へまとめた。既定はSky Autoで、利用者は先にアプリを選ばず「案件を見て」「法律の相談」「特許を調べて」のように入力できる。接続済みの役割へ振り分け、担当を会話内へ表示する。アプリの直接指定は上部の小さな切替として残す。
 
@@ -22,7 +35,19 @@ Skyのready商品として、ソフトウェア・システム発明の整理、
 
 自動化Hub（Sky）のready商品として、相談内容をブラウザ内だけで整理する日本語法律相談受付を追加した。安全・逮捕・公的書類・期限を先に確認し、一般情報で足りる場合は公的案内、弁護士相談が必要な場合だけ引継ぎ要約と分野・地域に合う候補を表示する。候補は利用者提供の領事館公開リスト33件に基づき、推薦・斡旋・受任保証ではない。
 
-個別の委任契約書に含まれる依頼者情報、事件、報酬、支払条件、署名はGitと画面へ収録していない。相談本文も保存・外部送信せず、連絡は本人が内容を確認して行う。法的助言、期限計算、勝敗予測、弁護士関係・秘匿特権の成立、利益相反確認、予約・契約は対象外。[実装と安全境界](docs/sky-legal-intake-20260912.md)。
+Draft PR #10の初回native CIは、`Hub`から`Sky`への表示変更をPIN画面source guardが検出して停止した。`scripts/review-native-pin-source.py`を隔離Linux環境で実行し、Wallet／ATM各14 frame、既存ROI・PIN桁数・署名ボタン状態、7つの古い座標拒否が同じ画素定義のまま合格したため、`ui.c`と`mcp-ui.inc`のsource hashだけを更新した。画素定義、期限、認証、Wallet処理は変更していない。
+
+## 2026-09-12 — Instagram運用・受注型ブランド管理をSkyへ統合
+
+正本Gitを再確認し、対象は`k999ln/Mr.`のOne Hubではなく`k999ln/rock`のSkyと確定した。Sky開発commit`bf85af6`を隔離branch`codex/fashion-brand-ops-sky`へ統合し、`Instagram運用・受注型ブランド管理`をSkyのready商品、Timeline項目、28操作のMCP serviceとしてmock検証する。account list/switch、content plan、draft/caption、approval、schedule/publish、insights sync、DM classificationを完了条件へ追加した。
+
+実装は`toolkits/fashion-brand-ops`、判断と検証境界は[統合記録](docs/fashion-brand-ops-integration.md)、確定要望はRQ18。Creative/Social/Payment/NotificationをProvider化し、SQLite受注台帳とWebhook照合を持つ。価格変更、外部生成、投稿/広告、DM送信、請求、返金、通知は署名付き個別approvalが必要。初期値はmockで、実Higgsfield/Meta/Stripe、外部費用、QEMU/Android/実機OS、Sites再配信、main mergeは変更していない。
+
+## 2026-09-12 — 多機種対応を共通Core＋機種別packageへ固定
+
+利用者の決定により、RockstarOSは一つの汎用imageを全端末へ書き込む方式ではなく、共通Coreと機種／SKU別Device Support Packageを組み合わせる。提供区分を完全なOS、Android GSI実験版、既存OS上のclient、非対応の4種類に分け、対応台帳と自動検査で誇張を防ぐ。[設計](docs/device-support-architecture.md)／[台帳](data/device-support-matrix.json)。
+
+これは設計・検査の実装であり、実機対応完了や書込み可能imageの生成ではない。最初の物理端末は未確定で、Pixel 7／`panther`とPixel 10／`frankel`を候補として保持する。BlackBerryは正確な機種ごとにbootloader・vendor・recoveryを調査し、iPhone／iPadはclient-onlyとする。クラウド課金、実機flash、production署名、一般公開、main統合は未承認のまま。
 
 ## 2026-09-12 — Skyへ「サブスク顧問」を接続
 
@@ -342,20 +367,19 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / SkyのMCP導入・接続体験を改善 / 完了 30/52件
+最終更新: 2026-09-12 / 現行SkyフロントへMCP導入・Fashion Brand Ops 38操作・検証済み収益精算核を統合し、本人限定Sitesへローンチ準備 / 完了 34/58件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
-| SKY04 | X型Sky Timelineから会話または役ボタンの1タップで実行入口を開く | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
-| SKY05 | Skyの依頼・担当選択・検索・実行を迷わない3段階へ整理 | 完了 | [記録](components/sky-workspace.tsx) · [記録](app/workspace.css) |
-| SKY06 | スマホ幅でSky実行Dialogが左へずれる回帰を修正 | 完了 | [記録](app/workspace.css) · [記録](project.md) |
-| SKY07 | Rock IDにツール利用許可だけを保存する1タップ接続へ変更 | 完了 | [記録](components/sky-workspace.tsx) · [記録](app/api/sky/connections/route.ts) · [記録](docs/sky-identity-connection.md) |
-| SKY08 | Skyをアプリ選択と接続へ絞り、Chatを依頼・状況・結果の受取画面として分離 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/workspace-shell.tsx) · [記録](app/chat/page.tsx) · [記録](app/polymarket/page.tsx) |
-| SKY09 | MCP掲載前診断とPC接続の互換性・初回導線を改善 | 完了 | [記録](lib/mcp-inspection.ts) · [記録](app/api/sky/mcp/inspect/route.ts) · [記録](lib/device.ts) · [記録](components/sky-publisher-form.tsx) · [記録](components/device-connection.tsx) · [記録](tests/mcp-inspection.test.mjs) · [記録](tests/device-lifecycle.test.mjs) |
-| SKY10 | ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](docs/sky-identity-connection.md) |
+| SKY04 | tob無料のConnection Passport・実行契約・ToB/ToC貢献分配を一画面で説明するSky Networkフロント | 完了 | [記録](app/sky/network/page.tsx) · [記録](components/sky-network.tsx) · [記録](components/sky-network.module.css) · [記録](docs/sky-network-economy.md) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) |
+| SKY05 | Sky画面のsidebarを廃止し、MCP接続・管理とToB掲載をSky本体の操作面へ統合 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/sky-mcp-center.tsx) · [記録](components/sky-mcp-center.module.css) · [記録](components/sky-publisher-form.tsx) · [記録](components/workspace-shell.tsx) · [記録](app/sky/network/page.tsx) · [記録](app/sky/publish/page.tsx) |
+| SKY06 | Sky内MCPを実在するPC接続・既存4自動化・3ステップ導入画面へ統合 | 完了 | [記録](components/sky-mcp-center.tsx) · [記録](components/device-connection.tsx) · [記録](tests/sky-mcp-onboarding.test.mjs) · [記録](scripts/verify-mcp-flow.mjs) |
+| SKY07 | MCPごとにこのPC・Sky Cloud・提供者MCPの接続先を選び、対応先へワンタップ接続する | 進行中 | [記録](components/sky-mcp-center.tsx) · [記録](components/sky-mcp-center.module.css) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](scripts/package-sky-mcp.py) · [記録](public/toolkits/sky-mcp-connector.zip) · [記録](docs/sky-mcp-connector.md) · [記録](tests/mcp-connector.test.mjs) · [記録](tests/sky-mcp-onboarding.test.mjs) · [記録](docs/product-baseline.md) |
+| SKY08 | 黒基調の改善版SkyへFashion Brand Opsを統合し、スマホDialogの画面外ずれを修正 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/fashion-brand-ops-runner.tsx) · [記録](app/workspace.css) · [記録](scripts/check-sky.mjs) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
+| SKY09 | Skyの商品カード1回でFashion Brand Ops MCPを初期化し、38操作と接続状態を同期 | 完了 | [記録](lib/fashion-mcp-client.ts) · [記録](components/fashion-brand-ops-runner.tsx) · [記録](toolkits/fashion-brand-ops/src/http.mjs) · [記録](toolkits/fashion-brand-ops/test/browser-connect.test.mjs) · [記録](tests/fashion-mcp-client.test.mjs) · [記録](public/toolkits/fashion-brand-ops-connector.zip) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
@@ -398,6 +422,13 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | LCH05 | 制作中CMの完成待ち・内容照合・導入案内への接続 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| FB01 | Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合 | 完了 | [記録](docs/fashion-brand-ops-integration.md) |
+| FB02 | 売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
+| FB03 | DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
+| FB04 | 入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理 | 完了 | [記録](toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
+| FB05 | 改善版Skyの役割フィードへブランド運営役と38 MCP操作を統合 | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
+| BIL01 | 先払い月額を停止し、検証済み自動化収益からだけ実費後に月最大888 centsを精算 | 完了 | [記録](docs/sky-billing.md) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing.test.mjs) · [記録](tests/billing-worker.test.mjs) · [記録](services/sky-billing/migrations/0002_earnings_settlement.sql) |
+| BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -417,7 +448,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 1タップ接続済みのSky・Chat分離を保ち、第三者MCPの実OAuth、審査画面、公開revision、実行receipt、長時間job、取消・失効をプロバイダーごとに相互運用試験する。Android/AOSP側のfull build・製品移植・production署名・実機受入は引き続き未完了。
+次の作業: 本人限定Sitesへ統合版を公開して認証・D1・MCP導入の本番フローを確認し、Provider sandboxは秘密値と受入条件が揃うまで安全停止を維持する。
 <!-- project-status:end -->
 
 ## 次段階の設計

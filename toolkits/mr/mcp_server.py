@@ -26,6 +26,8 @@ ORIGINS = {
     'https://rockstaros-kaiya.noellesugar1.chatgpt.site',
     'https://rock-star.kirin-999.chatgpt.site',
     'https://loop-automation-hub.kirin-999.chatgpt.site',
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
     'http://127.0.0.1:3001',
     'http://localhost:3001',
 }
@@ -147,12 +149,13 @@ def stdio():
 
 class Bridge(BaseHTTPRequestHandler):
     tokens={}
+    port=PORT
     def setup(self):
         super().setup()
         self.connection.settimeout(10)
     def log_message(self,*args):pass
     def allowed(self):
-        return self.headers.get('Origin') in ORIGINS and self.headers.get('Host')==f'127.0.0.1:{PORT}'
+        return self.headers.get('Origin') in ORIGINS and self.headers.get('Host')==f'127.0.0.1:{self.port}'
     def respond(self,status,data=None):
         encoded=json.dumps(data,ensure_ascii=False).encode() if data is not None else b''
         self.send_response(status)
@@ -188,9 +191,11 @@ if __name__=='__main__':
     def terminate(*_):
         raise KeyboardInterrupt
     signal.signal(signal.SIGTERM, terminate)
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--http',action='store_true');args=parser.parse_args()
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--http',action='store_true');parser.add_argument('--port',type=int,default=PORT);args=parser.parse_args()
     if args.http:
-        server=HTTPServer(('127.0.0.1',PORT),Bridge);server.timeout=30
+        if not 1 <= args.port <= 65535:parser.error('--port must be between 1 and 65535')
+        Bridge.port=args.port
+        server=HTTPServer(('127.0.0.1',args.port),Bridge);server.timeout=30
         print(f'Rock star PC接続を開始しました。サイトの「このPCを接続」を押してください。終了: Ctrl+C',file=sys.stderr)
         try:server.serve_forever()
         except KeyboardInterrupt:pass

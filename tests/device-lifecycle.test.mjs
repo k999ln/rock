@@ -100,7 +100,6 @@ async function harness(t) {
               { name: 'format_citations' },
               { name: 'make_free_article' },
               { name: 'verify_delivery' },
-              { name: 'future_optional_tool' },
             ],
           },
         });
@@ -141,6 +140,26 @@ async function harness(t) {
   });
   return state;
 }
+
+await test('connection accepts compatible MCP extensions when all four core tools remain available', async (t) => {
+  const h = await harness(t);
+  h.handle = ({ body }) =>
+    body.method === 'tools/list'
+      ? json({
+          result: {
+            tools: [
+              { name: 'coconala_check' },
+              { name: 'format_citations' },
+              { name: 'make_free_article' },
+              { name: 'verify_delivery' },
+              { name: 'sky_service_status' },
+            ],
+          },
+        })
+      : undefined;
+  await h.device.connectDevice();
+  assert.equal(h.device.deviceToken(), token);
+});
 
 await test('one explicit reconnect uses a fresh identity and delayed disconnect cannot target its replacement', async (t) => {
   const h = await harness(t);

@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "SkyのMCP導入・接続体験を改善",
-  "nextAction": "1タップ接続済みのSky・Chat分離を保ち、第三者MCPの実OAuth、審査画面、公開revision、実行receipt、長時間job、取消・失効をプロバイダーごとに相互運用試験する。Android/AOSP側のfull build・製品移植・production署名・実機受入は引き続き未完了。",
+  "milestone": "現行SkyフロントへMCP導入・Fashion Brand Ops 38操作・検証済み収益精算核を統合し、本人限定Sitesへローンチ準備",
+  "nextAction": "本人限定Sitesへ統合版を公開して認証・D1・MCP導入の本番フローを確認し、Provider sandboxは秘密値と受入条件が揃うまで安全停止を維持する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -38,9 +38,68 @@
     },
     {
       "id": "SKY04",
-      "title": "X型Sky Timelineから会話または役ボタンの1タップで実行入口を開く",
+      "title": "tob無料のConnection Passport・実行契約・ToB/ToC貢献分配を一画面で説明するSky Networkフロント",
       "status": "done",
-      "dependsOn": ["SKY01"],
+      "dependsOn": ["SKY02", "SKY03"],
+      "evidence": [
+        "app/sky/network/page.tsx",
+        "components/sky-network.tsx",
+        "components/sky-network.module.css",
+        "docs/sky-network-economy.md",
+        "scripts/check-product-baseline.mjs",
+        "tests/product-baseline.test.mjs"
+      ]
+    },
+    {
+      "id": "SKY05",
+      "title": "Sky画面のsidebarを廃止し、MCP接続・管理とToB掲載をSky本体の操作面へ統合",
+      "status": "done",
+      "dependsOn": ["SKY04"],
+      "evidence": [
+        "components/sky-workspace.tsx",
+        "components/sky-mcp-center.tsx",
+        "components/sky-mcp-center.module.css",
+        "components/sky-publisher-form.tsx",
+        "components/workspace-shell.tsx",
+        "app/sky/network/page.tsx",
+        "app/sky/publish/page.tsx"
+      ]
+    },
+    {
+      "id": "SKY06",
+      "title": "Sky内MCPを実在するPC接続・既存4自動化・3ステップ導入画面へ統合",
+      "status": "done",
+      "dependsOn": ["SKY05"],
+      "evidence": [
+        "components/sky-mcp-center.tsx",
+        "components/device-connection.tsx",
+        "tests/sky-mcp-onboarding.test.mjs",
+        "scripts/verify-mcp-flow.mjs"
+      ]
+    },
+    {
+      "id": "SKY07",
+      "title": "MCPごとにこのPC・Sky Cloud・提供者MCPの接続先を選び、対応先へワンタップ接続する",
+      "status": "in_progress",
+      "dependsOn": ["SKY06"],
+      "evidence": [
+        "components/sky-mcp-center.tsx",
+        "components/sky-mcp-center.module.css",
+        "lib/mcp-hub.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "scripts/package-sky-mcp.py",
+        "public/toolkits/sky-mcp-connector.zip",
+        "docs/sky-mcp-connector.md",
+        "tests/mcp-connector.test.mjs",
+        "tests/sky-mcp-onboarding.test.mjs",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "SKY08",
+      "title": "黒基調の改善版SkyへFashion Brand Opsを統合し、スマホDialogの画面外ずれを修正",
+      "status": "done",
+      "dependsOn": ["SKY05", "FB01"],
       "evidence": [
         "components/sky-workspace.tsx",
         "lib/sky-routing.ts",
@@ -49,24 +108,10 @@
       ]
     },
     {
-      "id": "SKY05",
-      "title": "Skyの依頼・担当選択・検索・実行を迷わない3段階へ整理",
+      "id": "SKY09",
+      "title": "Skyの商品カード1回でFashion Brand Ops MCPを初期化し、38操作と接続状態を同期",
       "status": "done",
-      "dependsOn": ["SKY04"],
-      "evidence": ["components/sky-workspace.tsx", "app/workspace.css"]
-    },
-    {
-      "id": "SKY06",
-      "title": "スマホ幅でSky実行Dialogが左へずれる回帰を修正",
-      "status": "done",
-      "dependsOn": ["SKY05"],
-      "evidence": ["app/workspace.css", "project.md"]
-    },
-    {
-      "id": "SKY07",
-      "title": "Rock IDにツール利用許可だけを保存する1タップ接続へ変更",
-      "status": "done",
-      "dependsOn": ["SKY06"],
+      "dependsOn": ["SKY08", "FB01"],
       "evidence": [
         "components/sky-workspace.tsx",
         "app/api/sky/connections/route.ts",
@@ -555,6 +600,75 @@
       "status": "in_progress",
       "dependsOn": [],
       "evidence": ["docs/launch-readiness-20260910.md"]
+    },
+    {
+      "id": "FB01",
+      "title": "Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": ["docs/fashion-brand-ops-integration.md"]
+    },
+    {
+      "id": "FB02",
+      "title": "売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成",
+      "status": "done",
+      "dependsOn": ["FB01"],
+      "evidence": [
+        "toolkits/fashion-brand-ops/src/service.mjs",
+        "toolkits/fashion-brand-ops/test/service.test.mjs"
+      ]
+    },
+    {
+      "id": "FB03",
+      "title": "DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成",
+      "status": "done",
+      "dependsOn": ["FB01"],
+      "evidence": [
+        "toolkits/fashion-brand-ops/src/service.mjs",
+        "toolkits/fashion-brand-ops/test/service.test.mjs"
+      ]
+    },
+    {
+      "id": "FB04",
+      "title": "入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理",
+      "status": "done",
+      "dependsOn": ["FB01"],
+      "evidence": [
+        "toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql",
+        "toolkits/fashion-brand-ops/test/service.test.mjs"
+      ]
+    },
+    {
+      "id": "FB05",
+      "title": "改善版Skyの役割フィードへブランド運営役と38 MCP操作を統合",
+      "status": "done",
+      "dependsOn": ["FB01", "FB02", "FB03", "FB04"],
+      "evidence": [
+        "components/sky-workspace.tsx",
+        "lib/sky-routing.ts",
+        "tests/sky-routing.test.mjs",
+        "docs/sky-assistant-and-memory.md"
+      ]
+    },
+    {
+      "id": "BIL01",
+      "title": "先払い月額を停止し、検証済み自動化収益からだけ実費後に月最大888 centsを精算",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "docs/sky-billing.md",
+        "services/sky-billing/src/worker.ts",
+        "tests/billing.test.mjs",
+        "tests/billing-worker.test.mjs",
+        "services/sky-billing/migrations/0002_earnings_settlement.sql"
+      ]
+    },
+    {
+      "id": "BIL02",
+      "title": "有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入",
+      "status": "in_progress",
+      "dependsOn": ["BIL01"],
+      "evidence": ["docs/sky-billing.md"]
     }
   ],
   "phaseGates": [

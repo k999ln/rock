@@ -17,6 +17,7 @@ import type { FundSnapshot } from '@/lib/fund';
 import { catalog } from '@/lib/catalog';
 import { MrToolRunner } from '@/components/mr-tool-runner';
 import { DeviceConnection } from '@/components/device-connection';
+import { SkyBilling } from '@/components/sky-billing';
 import {
   Dialog,
   DialogContent,
@@ -176,21 +177,24 @@ export default function OperationsWorkspace({ view }: { view: View }) {
         </nav>
       )}
       {view === 'wallet' && (
-        <section className="rock-wallet-boundary">
-          <span className="rock-wallet-symbol">
-            <Wallet size={30} strokeWidth={1.5} />
-          </span>
-          <div>
-            <h2>実際のお金との接続は、準備中です。</h2>
-            <p>
-              ここで管理するのは手入力の収支です。金融サービスとの照合・入金・出金にはまだ対応していません。
-            </p>
-            <span>
-              <ShieldCheck size={15} />
-              この画面から請求・送金は行われません
+        <>
+          <section className="rock-wallet-boundary">
+            <span className="rock-wallet-symbol">
+              <Wallet size={30} strokeWidth={1.5} />
             </span>
-          </div>
-        </section>
+            <div>
+              <h2>稼げた後だけ、Sky利用料を精算</h2>
+              <p>
+                自動化が生んだ実売上をProviderと照合し、実費の後から月最大$8.88だけを回収します。
+              </p>
+              <span>
+                <ShieldCheck size={15} />
+                先払い・未達請求・借金なし
+              </span>
+            </div>
+          </section>
+          <SkyBilling />
+        </>
       )}
       {error && (
         <div className="rock-service-notice" role="alert">

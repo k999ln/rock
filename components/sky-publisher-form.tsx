@@ -27,7 +27,11 @@ const permissions: { value: SkyPermission; label: string }[] = [
   { value: 'financial_action', label: '購入・金融操作' },
 ];
 
-export default function SkyPublisherForm() {
+export default function SkyPublisherForm({
+  embedded = false,
+}: {
+  embedded?: boolean;
+}) {
   const [connectionType, setConnectionType] = useState<SkyConnectionType>(
     'mcp_streamable_http',
   );
@@ -145,8 +149,8 @@ export default function SkyPublisherForm() {
     connectionType === 'mcp_streamable_http' || connectionType === 'https_api';
   const needsSource =
     connectionType === 'mcp_stdio' || connectionType === 'rock_recipe';
-  return (
-    <WorkspaceShell title="Skyに掲載">
+  const content = (
+    <>
       <div className="sky-publish-heading">
         <div>
           <p className="rock-eyebrow">FOR TOOL PROVIDERS</p>
@@ -155,10 +159,12 @@ export default function SkyPublisherForm() {
             利用者が判断するための情報だけを入力。遠隔MCPは送信前にSkyが接続とツール一覧を確認します。
           </p>
         </div>
-        <Link href="/" className="rock-button rock-button-subtle">
-          <ArrowLeft size={16} />
-          Skyへ戻る
-        </Link>
+        {!embedded && (
+          <Link href="/" className="rock-button rock-button-subtle">
+            <ArrowLeft size={16} />
+            Skyへ戻る
+          </Link>
+        )}
       </div>
       <div className="sky-publish-layout">
         <form className="sky-publish-form" onSubmit={submit}>
@@ -425,6 +431,8 @@ export default function SkyPublisherForm() {
           </p>
         </aside>
       </div>
-    </WorkspaceShell>
+    </>
   );
+  if (embedded) return <div className="sky-publish-embedded">{content}</div>;
+  return <WorkspaceShell title="Skyに掲載">{content}</WorkspaceShell>;
 }

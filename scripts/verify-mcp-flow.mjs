@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { build } from 'esbuild';
-const site = 'http://127.0.0.1:3011';
+const site = process.argv[2] || 'http://127.0.0.1:3011';
+if (!/^http:\/\/(127\.0\.0\.1|localhost):\d+$/.test(site))
+  throw new Error('Use a loopback HTTP URL for the local Sky test server.');
 const user = 'loop-mcp-flow-test-' + crypto.randomUUID();
 const nativeFetch = globalThis.fetch;
 const storage = new Map();

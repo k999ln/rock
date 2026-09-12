@@ -66,7 +66,7 @@ ToB
 
 ## 現在地と未実装の境界
 
-現状のRockstarOSには、固定fixtureに対するloopback接続と、`snapshot / connect / disconnect / prepare / submit / status / reconcile`を持つprivate device APIがある。これは一般のMCP 2025-11-25 clientでも、任意MCPサーバーへつなぐ公開SDKでもない。
+RockstarOSには既存native OS向けの固定fixtureとprivate device APIに加え、Web版Sky向けの汎用`Sky MCP Connector`がある。両者は同じものではなく、native側の購入資格・永続reconcile契約をWeb Connectorが代替したとは扱わない。
 
 今回実装した範囲は次の通り。
 
@@ -79,8 +79,14 @@ ToB
 - PC接続は対応MCP版を交渉して保持し、4件の必須ツールがあれば追加ツールを許容。ツール総数の増加だけでは接続を壊さない。
 - 現在の本人限定SiteをPCパックの許可Originへ追加し、公開中のSkyからloopback接続できる配布物へ更新。
 - Web/PCで使用可能4件、OSS候補3件、native内蔵6種類・9版を実数から検査。
+- 審査済みregistryからstdio / Streamable HTTPを扱うPC内Connector。
+- MCP 2025-11-25から2024-11-05までのversion確認、initialize、initialized通知、pagination付きtools/list。
+- server identity、capabilities、tool schema digest、接続時刻を持つConnection Passport。
+- 基本4機能とブランド運営38機能の同一Connector実接続。
+- server・tool・引数・tool digestへ結び付く5分有効の一回承認と、直接`tools/call`迂回の拒否。
+- Sky内の動的server一覧とワンタップ接続、macOS向け配布ZIP。
 
-次に必要な実装は、公式/private registry adapter、OAuthの実ログイン、審査者画面、公開revision、失効配信、実行前の条件再確認、Tasks adapter、第三者の実サーバー相互運用試験である。掲載前診断は到達性と公開能力を確認するもので、安全審査や実行許可の代替ではない。
+次に必要な実装は、公式/private registryの署名・更新adapter、OAuth 2.1 browser flow、審査者画面、公開revision、失効配信、Tasks adapter、公開remote MCP相互運用試験、Sky Cloud常駐である。現在のStreamable HTTP adapterはHTTPS、redirect拒否、private network拒否、環境変数認証までを実装したが、公開remote serverとの受入は未実施である。
 
 会話型の役割振り分けと、アプリを毎回入れずに利用者情報を必要な役だけへ渡す方針は[Sky Assistant / Sky Memory設計](sky-assistant-and-memory.md)に分離する。
 

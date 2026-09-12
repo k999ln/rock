@@ -217,16 +217,25 @@ export async function connectDevice() {
   });
   if (!notification.ok) throw new Error('MCPの初期接続が完了しませんでした。');
   const listed = await call(2, 'tools/list');
-  const available = new Set(
-    listed.tools
-      ?.map((tool) => tool.name)
-      .filter((name): name is string => typeof name === 'string') ?? [],
+  const requiredTools = [
+    'coconala_check',
+    'format_citations',
+    'make_free_article',
+    'verify_delivery',
+  ];
+  const availableTools = new Set(
+    Array.isArray(listed.tools)
+      ? listed.tools.flatMap((tool) =>
+          tool &&
+          typeof tool === 'object' &&
+          typeof (tool as { name?: unknown }).name === 'string'
+            ? [(tool as { name: string }).name]
+            : [],
+        )
+      : [],
   );
-  const missing = REQUIRED_DEVICE_TOOLS.filter((name) => !available.has(name));
-  if (missing.length)
-    throw new Error(
-      `PC接続アプリを更新してください。不足: ${missing.join(', ')}`,
-    );
+  if (!requiredTools.every((name) => availableTools.has(name)))
+    throw new Error('MCPツールを確認できませんでした。');
   if (generation !== sessionGeneration)
     throw new Error('接続確認は取り消されました。');
   const id = crypto.randomUUID();
