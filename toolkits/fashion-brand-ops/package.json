@@ -1,0 +1,20 @@
+{
+  "name": "@rockstaros/fashion-brand-ops-mcp",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Approval-gated MCP service for made-to-order fashion brand operations",
+  "bin": {
+    "fashion-brand-ops-mcp": "src/server.mjs"
+  },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "start:http": "node src/http.mjs",
+    "db:migrate": "node scripts/migrate.mjs",
+    "approval:sign": "node scripts/sign-approval.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}

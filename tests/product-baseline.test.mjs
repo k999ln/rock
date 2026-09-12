@@ -9,10 +9,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ17/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ19/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ17/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ19/);
   const missingTemplate = structuredClone(source);
   delete missingTemplate.acceptanceTemplate;
   assert.throws(() => validateBaseline(missingTemplate), /acceptanceTemplate/);

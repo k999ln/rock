@@ -36,6 +36,13 @@
       "when": 1789140000000,
       "tag": "0004_union_bridge",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1789229872299,
+      "tag": "0005_early_the_enforcers",
+      "breakpoints": true
     }
   ]
 }

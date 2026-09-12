@@ -1,16 +1,18 @@
-# Rock star OS — 自動化HubとWallet
+# Rock star OS — SkyとWallet
+
+多機種対応は、**共通RockstarOS Core＋機種／SKU別Device Support Package**で進めます。提供区分は完全なOS image、Android GSI実験版、既存OS上のclient、非対応を混同しません。Pixel候補は未確定、BlackBerryは機種別調査、iPhone／iPadはOS置換ではなくclientです。[多機種対応設計](docs/device-support-architecture.md)／[機械可読の対応台帳](data/device-support-matrix.json)。
 
 スマホ実機版の開発を開始しました。現在はソース統合準備で、書込み可能なOSは未生成です。直近相談のPixel 7／`panther`と既存設定のPixel 10／`frankel`が不一致のため、実機確認前に対象を確定しません。lockの機種/SKU確認が完了するまでfull OS buildは停止し、build入口は64 GiB RAM／400 GiB空きとlock由来sourceの再検証を要求します。[2026-09-12の進捗再監査](docs/current-state-20260911.md#2026-09-12--github実装実機版ビルド環境の再監査)／[ビルド環境・実装・次の手順](docs/phone-preview-20260911.md)。
 
 公開設定・本人限定サイトの状況は[今回の設定記録](docs/owner-setup-20260911.md)を参照。
 
-tob側の自動化ツールを商品として管理するHubと、自動化で得たお金を管理するWalletに特化したOSを開発します。実行場所、料金、資格、ライセンスの違いを扱い、利用準備・日々の管理・結果とお金の確認に伴う不便を減らします。
+tob側の自動化ツールを商品として管理するSkyと、自動化で得たお金を管理するWalletに特化したOSを開発します。Skyは単なるツール一覧ではなく、**探す→権限・料金を確認→端末/PC/Cloudへ実行→停止→結果と記録を受け取る**までを一か所につなぎます。[Skyの図・優位性・現在の収録ツール](docs/sky.md)を参照してください。
 
-**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ17）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持します。
+**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ19）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持します。
 
 [8原則に基づくRockstarOS 1.0設計](docs/rockstaros-1.0-strategy.md)を追加しました。現ベースを維持し、一つの商品で実行・成果・費用・復旧まで確認できる体験を検証します。初期対象の文章系個人事業主と既存引用整理は検証仮説。配布/実用の優先順位、試用指標、CM導線、責任分担を具体化し、未実証の需要や本番利用可能性は主張しません。
 
-**[設計v1.1](docs/os-hub-wallet-game-design.md)の実装は承認済みです。** [承認範囲](docs/execution-approval-20260909.md)に従い、専用branchでnativeと設計を統合しています。公開・実機・MetaMask実資金は条件付き了承を保持し、技術的な準備を検証します。達成演出は見送り、市場案は検討のみです。
+**[設計v1.1](docs/os-sky-wallet-game-design.md)の実装は承認済みです。** [承認範囲](docs/execution-approval-20260909.md)に従い、専用branchでnativeと設計を統合しています。公開・実機・MetaMask実資金は条件付き了承を保持し、技術的な準備を検証します。達成演出は見送り、市場案は検討のみです。
 
 **このbranchにはLinux / Buildroot / ARM64 QEMU native OSの試作があります。** main/native/設計の3入力を統合した[PR #2](https://github.com/k999ln/rock/pull/2)を起点に開発しています。旧`b8287bc`の[限定受入D0〜D5](docs/os-acceptance-b8287bc-20260909.md)を保持し、run44は元planの5boot・61jobs・3641.769秒と正常停止を独立照合して回収しました。旧合格とは別に、Game統合9ab候補で[D0〜D6の限定受入](docs/os-acceptance-9abf78a-20260910.md)を完了しました。mainへの統合と実機対応は未実施です。
 
@@ -20,7 +22,7 @@ tob側の自動化ツールを商品として管理するHubと、自動化で�
 
 コードの現在地と再開手順: [P1実装・検証手順](docs/os-prototype.md)、[実際のTool契約](contracts/README.md)。AOSPへ組み込む設定は `android/Android.bp` と `os/device/`。これらの存在をOS起動済みの証拠にはしません。
 
-今回の[統合後の試験結果](docs/os-operational-validation-20260909.md)と、GrapheneOSを保持する[Pixel 10向けP1アプリ試験](docs/android-trial.md)を分けて記録します。P1は記事処理の試作で、Hub＋Walletやゲーム交換の実機版ではありません。
+今回の[統合後の試験結果](docs/os-operational-validation-20260909.md)と、GrapheneOSを保持する[Pixel 10向けP1アプリ試験](docs/android-trial.md)を分けて記録します。P1は記事処理の試作で、Sky＋Walletやゲーム交換の実機版ではありません。
 
 Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既存VM向けの[専用launcher](systems/rock-star-os/os/desktop/LAUNCHER-V2.md)も保持しています。起動時に指定した仮想端末と画像を確認し、同じ保存データを再度開きます。ブラウザは実OSの画面を映すために使います。終了はOS内の「端末」→「電源を切る」→「確認して実行」。Wallet/ATMは合成データ専用で、MetaMask送受金には接続していません。
 
@@ -35,10 +37,13 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / Skyのサブスク顧問へ全網羅監査を追加 / 完了 19/41件
+最終更新: 2026-09-12 / 新しいSkyフロントへ全網羅対応のサブスク顧問とFashion Brand Opsを統合 / 完了 27/49件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
+| SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
+| SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
+| SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
@@ -48,6 +53,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | R07 | 本人限定のSitesへ公開・本番確認 | 進行中 | [記録](docs/deployment-integration.md) · [記録](docs/release-followup-20260910.md) · [記録](docs/owner-setup-20260911.md) |
 | R08 | 検証結果・公開停止理由と再開設計の文書化 | 完了 | [記録](project.md) · [記録](docs/validation.md) · [記録](docs/deployment-integration.md) |
 | OS01 | 既存設計の要件追跡と自動化OS開発設計 | 完了 | [記録](docs/os-development-design.md) |
+| DSP01 | 共通Core・機種別Device Support Package・4提供区分の設計と検査 | 完了 | [記録](docs/device-support-architecture.md) · [記録](data/device-support-matrix.json) · [記録](scripts/check-device-support.mjs) |
 | OS02 | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 進行中 | [記録](docs/os-development-design.md) · [記録](docs/phone-preview-20260911.md) |
 | OS03 | 【Android/AOSP別トラック】CuttlefishでOS起動と自律実行の最小縦断試作 | 未着手 | [記録](docs/os-development-design.md) |
 | OS04 | 【Android/AOSP別トラック】Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 | [記録](docs/os-development-design.md) |
@@ -55,11 +61,11 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 完了 | [記録](docs/os-prototype.md) · [記録](docs/validation.md) · [記録](android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java) |
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
-| B01 | Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
+| B01 | Sky＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
 | B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
-| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/sky-role-agents-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) · [記録](tests/subscription-advisor.test.mjs) |
+| B02 | 既存商品のSky実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/sky-role-agents-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) · [記録](tests/subscription-advisor.test.mjs) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) |
-| B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/hub-wallet-pc-comparison-20260909.md) · [記録](docs/evidence/hub-wallet/b05-pc-machine-20260909/report.json) |
+| B05 | Wallet連携基礎を使ったSky縦断再試験・PC比較と未実証の端末価値を記録 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/hub-wallet-pc-comparison-20260909.md) · [記録](docs/evidence/hub-wallet/b05-pc-machine-20260909/report.json) |
 | D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
 | V01 | 旧9abf78a候補のQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す（現rc2へ転用しない） | 完了 | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/os-operational-validation-20260909.md) · [記録](docs/evidence/os-base/startup-update-acceptance-b8287bc.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/evidence/os-base/registry-negative-b8287bc.json) · [記録](docs/os-acceptance-b8287bc-20260909.md) · [記録](systems/rock-star-os/os/desktop/LAUNCHER-V2.md) · [記録](docs/evidence/rls01/final-d6-ci-20260910.json) · [記録](docs/evidence/rls01/final-d6-root-audit-20260910.json) · [記録](docs/os-local-final-20260910.md) · [記録](docs/os-acceptance-9abf78a-20260910.md) · [記録](docs/os-native-repeat-20260910.md) · [記録](docs/os-final-compatibility-20260910.md) |
 | GX00 | 共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx00-owner-isolation-adr.md) · [記録](docs/evidence/gx00/integration.json) · [記録](systems/rock-star-os/os/wallet_backend/FENCE.md) · [記録](docs/gx00-connection-wire-v1.md) · [記録](docs/evidence/gx00/game-protocol-review.json) · [記録](docs/game-connection-node-wire-20260909.md) · [記録](docs/gx00-connections-runtime.md) · [記録](docs/evidence/gx00/game-connections-root.json) · [記録](docs/gx00-legacy-game-basis.md) · [記録](systems/rock-star-os/os/wallet_backend/CURRENT-RESTORE.md) · [記録](docs/evidence/gx00/current-copy-foundations-root.json) · [記録](docs/gx00-current-game-restore.md) · [記録](docs/gx00-owner-connection-client.md) · [記録](docs/evidence/gx00/current-game-integration-root.json) · [記録](docs/implementation-checkpoint-20260909.md) · [記録](docs/evidence/gx00/release-required-acceptance-20260910.json) |
@@ -69,17 +75,21 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | N01 | Linux native OS基準版の公開ソース統合・既存資産の回帰検証 | 完了 | [記録](docs/native-os-integration.md) · [記録](docs/native-os-validation.md) |
 | N02 | 起動応答確認と自動再読込WIPの検証・採用判断 | 進行中 | [記録](docs/native-os-integration.md) |
 | N03 | 実機候補1機種の型番/SKU・boot/BSP・更新/復旧の適合確認 | 進行中 | [記録](docs/native-os-integration.md) · [記録](docs/phone-preview-20260911.md) · [記録](docs/current-state-20260911.md) · [記録](docs/evidence/launch/progress-audit-20260912.json) |
-| N04 | BlackBerry実機だけでHub取得・実行・更新・復旧 | 未着手 | [記録](docs/native-os-integration.md) |
+| N04 | BlackBerry実機だけでSky取得・実行・更新・復旧 | 未着手 | [記録](docs/native-os-integration.md) |
 | N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
 | RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 完了 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/rockstaros-1.0-architecture.md) · [記録](docs/rockstaros-1.0-strategy.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) · [記録](docs/release-followup-20260910.md) |
 | RLS02 | 正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証 | 進行中 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](docs/current-state-20260911.md) · [記録](docs/evidence/launch/progress-audit-20260912.json) |
 | LCH01 | TLS／累積timeoutの原因と最終CIの照合 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | LCH02 | 全同梱物inventory・対応source・製品LICENSEの明示決定 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) · [記録](docs/evidence/launch/progress-audit-20260912.json) |
 | LCH03 | production署名・保護環境・失効運用 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
-| LCH04 | Sites履歴のコード統合・新規本人限定サイト・Hub改善 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/owner-setup-20260911.md) · [記録](docs/current-state-20260911.md) |
+| LCH04 | Sites履歴のコード統合・新規本人限定サイト・Sky改善 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/owner-setup-20260911.md) · [記録](docs/current-state-20260911.md) |
 | LCH05 | 制作中CMの完成待ち・内容照合・導入案内への接続 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| FB01 | Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合 | 完了 | [記録](docs/fashion-brand-ops-integration.md) |
+| FB02 | 売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
+| FB03 | DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
+| FB04 | 入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理 | 完了 | [記録](toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -87,7 +97,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | --- | --- | --- | --- | --- | --- |
 | B04-INTEGRATED | B04 | 承認後、main/native/設計reviewの3入力と入口を統合 | 合格 | — | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
 | V01-BOOT | V01 | 旧b8287bc候補のOS起動・安全基礎（現rc2の全体合格ではない） | 合格 | B04-INTEGRATED | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/evidence/os-base/freeze-b8287bc.json) · [記録](docs/evidence/os-base/boot-b8287bc.json) · [記録](docs/evidence/os-base/platform-b8287bc.json) · [記録](docs/evidence/os-base/native-ui-b8287bc.json) |
-| B02-NATIVE | B02 | 既存native商品1件をHubで実処理・保存 | 合格 | V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/evidence/os-base/business-wallet-foundation-b8287bc.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) |
+| B02-NATIVE | B02 | 既存native商品1件をSkyで実処理・保存 | 合格 | V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/evidence/os-base/business-wallet-foundation-b8287bc.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) |
 | B03-FIXTURE | B03 | 単一ownerの合成Wallet・商品/費用/売上状態の基礎 | 合格 | B02-NATIVE | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/evidence/os-base/business-wallet-foundation-b8287bc.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) |
 | V01-ACCEPT | V01 | 旧9abf78a候補でD0〜D6縦断合格（現rc2へ転用しない） | 合格 | V01-BOOT · B02-NATIVE · B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-acceptance-9abf78a-20260910.md) · [記録](docs/os-native-repeat-20260910.md) · [記録](docs/os-final-compatibility-20260910.md) |
 | B03-PROVIDER | B03 | 実provider/認証済み収益（別の権限・条件が必要） | 未合格 | B03-FIXTURE | [記録](docs/prompts/os-operational-base-next.md) |
@@ -99,14 +109,14 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Skyのサブスク顧問をローカルPC台帳へ読み取り専用で接続し、全網羅・過去契約・月額・要対応・更新を会話で回答するところまで検証した。Apple、Google Play、カード、銀行、PayPal、請求メールの確認状況と期間を追跡し、未確認または更新日不足が残る間は完了と判定しない。現在は6情報源とも未確認、明細0件、更新日3件不足。次は本人が利用する情報源の履歴をローカル取込・照合し、Native Sky MCP brokerを共通policy gatewayにする。HTTPS配信版からloopbackへ直接接続しない経路、Android/AOSPのfull build・Hub/Wallet/Game移植・production署名・実機受入は引き続き未完了。
+次の作業: Skyの新しい操作画面から、サブスク顧問の全網羅・過去契約・月額・要対応・更新を会話で確認できるよう統合した。Apple、Google Play、カード、銀行、PayPal、請求メールは未確認のまま完了扱いにしない。次は本人が利用する情報源の履歴をローカル取込・照合し、Native Sky MCP brokerを共通policy gatewayにする。Fashion Brand OpsはMeta OAuth、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付きの限定テスト投稿へ進む。実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
 
 R2の画面確認と修正はGitHubへ保存済みですが、**本番サイトへの反映は未実施**です。配信先だけにあるアプリUI・実行管理・手入力台帳と仕事API/DB移行が重なるため、上書きせず停止しました。保持する機能と再開手順は [統合設計](docs/deployment-integration.md) を参照。
 
-## Web/PC版のHubと既存Sites機能
+## Web/PC版のSkyと既存Sites機能
 
 保存済みSites source `c6942d5ef72e9dd16345b9363e68e0e18ca25079` の実行管理、利用停止/再開、PC接続管理、手入力収支、PWAを統合中。`/api/jobs` はSitesの実行受付を保持し、仕事の手順管理は `/api/work-jobs` へ分離。手入力金額は実残高・払出可能額ではありません。既存Sitesの実DB適用履歴はアクセス復旧後に照合します。
 
@@ -119,7 +129,7 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 - マイファンドの選択と配分計画。旧マイツール用の保存・導入プラン関数も保持。
 - Ethereum互換の注入型ウォレットでアドレス接続。キャンセル、アカウント変更、切断を処理。
 - 月$8.88相当の利用料と、電力・通信・API費用の試算。
-- ホームは自動化Hub。旧ファンドは `/fund` に保持し、参加・配分計画・試算条件をアカウントごとに保存。
+- ホームはSky。旧ファンドは `/fund` に保持し、参加・配分計画・試算条件をアカウントごとに保存。
 - 「仕事を進める」から記事販売準備・ココナラ納品準備を作成し、手順・試行履歴・最終確認をアカウント別に保存して再開。
 - 基本分配・ブースト・共同留保を、共通収益の範囲内で試算。入金・送金は未接続。
 - 同じ4ツールをstdio MCPでCodexから実行。PC接続アプリを起動するとサイトからもMCPでワンボタン実行。
@@ -199,6 +209,20 @@ Product Hunt APIは商用利用条件の確認前のため未接続。サービ�
 
 GitHubの `rock` は公開リポジトリです。Rock star独自コードの再利用ライセンスは未選定であり、ソースを閲覧できることとOSSとしての再利用許諾は別です。カタログで紹介するOSSは各公式ライセンスに従い、モデルの重みは個別に確認します。Mr.から取り込んだ4ファイルは `vendor/mr/LICENSE` のMIT条件で同梱しています。PCパックのRock starアダプターとサンプルも同じMIT条件で配布します。認証情報や過去の案件データは含めていません。
 
+## Sky商品: Instagram運用・受注型ブランド管理
+
+RockstarOS SkyのTimelineと検索欄から「Instagram運用」で見つけられる商品を追加しました。実装は[`toolkits/fashion-brand-ops`](toolkits/fashion-brand-ops)、統合境界と検証範囲は[`docs/fashion-brand-ops-integration.md`](docs/fashion-brand-ops-integration.md)です。
+
+ブランド方針・商品design、市場判定、Instagram運用、DM、注文、決済、制作・発送、分析に加え、Campaign Autopilot、AI Sales Concierge、Production Cockpit、経営ダッシュボード、本番接続診断を38個のMCP toolとして公開します。目標を入れると投稿計画・下書き・承認要求までの内部作業を自動で進めます。既定は全Providerがmockです。価格変更、外部生成、投稿、広告、DM送信、請求、返金、通知は署名付き個別approvalがない限り実行されません。`paid`と`refunded`は検証済み決済event以外から変更できません。
+
+```sh
+npm run test:fashion-brand-ops
+npm --prefix toolkits/fashion-brand-ops run db:migrate
+npm --prefix toolkits/fashion-brand-ops start
+```
+
+実Higgsfield/Meta/Stripe/通知先、QEMU/Android/実機OSへの組込み、本番投稿・実請求は未接続です。
+
 ## Mr.から取り込んだツール
 
 ブラウザで3ツール、PCで4ツールを使えます。`docs/mr-integration.md` に取得元と移植差分、`toolkits/mr/README.md` に実行方法があります。
@@ -208,7 +232,7 @@ python3 scripts/package-mr.py
 python3 toolkits/mr/rock_star_tools.py coconala-check --input toolkits/mr/examples/coconala.json
 ```
 
-PCパックは `public/toolkits/mr-toolkit.zip`。元コードのハッシュが変わると実行・再梱包は失敗します。MCPの出典整理は固定CLIの別プロセスで処理し、入力・出力各65,536 UTF-8バイト、処理3秒、同時1件に制限します。macOSはPython 3.13以上、Linuxは3.10以上の通常利用者が対象です。Windowsの新しい出典整理接続は未対応です。native Hub接続と再起動をまたぐ重複実行防止は残件です。PCだけの再現手順と受入範囲は [PC実処理接続](docs/pc-citations-adapter.md) を参照してください。
+PCパックは `public/toolkits/mr-toolkit.zip`。元コードのハッシュが変わると実行・再梱包は失敗します。MCPの出典整理は固定CLIの別プロセスで処理し、入力・出力各65,536 UTF-8バイト、処理3秒、同時1件に制限します。macOSはPython 3.13以上、Linuxは3.10以上の通常利用者が対象です。Windowsの新しい出典整理接続は未対応です。native Sky接続と再起動をまたぐ重複実行防止は残件です。PCだけの再現手順と受入範囲は [PC実処理接続](docs/pc-citations-adapter.md) を参照してください。
 
 詳しい今回の動作と会計モデルは `docs/fund-and-mcp.md` を参照。
 

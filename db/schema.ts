@@ -112,10 +112,31 @@ export const bookRecords = sqliteTable(
   ],
 );
 
-export const workJobs = sqliteTable('work_jobs', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').notNull(),
-  payload: text('payload').notNull(),
-  revision: integer('revision').notNull().default(0),
-  updatedAt: text('updated_at').notNull(),
-}, table => [index('idx_work_jobs_user_updated').on(table.userId, table.updatedAt)]);
+export const workJobs = sqliteTable(
+  'work_jobs',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    payload: text('payload').notNull(),
+    revision: integer('revision').notNull().default(0),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    index('idx_work_jobs_user_updated').on(table.userId, table.updatedAt),
+  ],
+);
+
+export const skyToolSubmissions = sqliteTable(
+  'sky_tool_submissions',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    payload: text('payload').notNull(),
+    status: text('status').notNull().default('submitted'),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (table) => [
+    index('idx_sky_submissions_user_created').on(table.userId, table.createdAt),
+  ],
+);
