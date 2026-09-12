@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
   "milestone": "SkyのMCP導入・接続体験を改善",
-  "nextAction": "第三者MCPの実OAuth、長時間job、取消・失効をプロバイダーごとに相互運用試験する。Android/AOSP側のfull build・製品移植・production署名・実機受入は引き続き未完了。",
+  "nextAction": "1タップ接続済みのSky・Chat分離を保ち、第三者MCPの実OAuth、審査画面、公開revision、実行receipt、長時間job、取消・失効をプロバイダーごとに相互運用試験する。Android/AOSP側のfull build・製品移植・production署名・実機受入は引き続き未完了。",
   "tasks": [
     {
       "id": "SKY01",
@@ -64,9 +64,33 @@
     },
     {
       "id": "SKY07",
+      "title": "Rock IDにツール利用許可だけを保存する1タップ接続へ変更",
+      "status": "done",
+      "dependsOn": ["SKY06"],
+      "evidence": [
+        "components/sky-workspace.tsx",
+        "app/api/sky/connections/route.ts",
+        "docs/sky-identity-connection.md"
+      ]
+    },
+    {
+      "id": "SKY08",
+      "title": "Skyをアプリ選択と接続へ絞り、Chatを依頼・状況・結果の受取画面として分離",
+      "status": "done",
+      "dependsOn": ["SKY07"],
+      "evidence": [
+        "components/sky-workspace.tsx",
+        "components/sky-chat-workspace.tsx",
+        "components/workspace-shell.tsx",
+        "app/chat/page.tsx",
+        "app/polymarket/page.tsx"
+      ]
+    },
+    {
+      "id": "SKY09",
       "title": "MCP掲載前診断とPC接続の互換性・初回導線を改善",
       "status": "done",
-      "dependsOn": ["SKY02", "SKY06"],
+      "dependsOn": ["SKY02", "SKY08"],
       "evidence": [
         "lib/mcp-inspection.ts",
         "app/api/sky/mcp/inspect/route.ts",

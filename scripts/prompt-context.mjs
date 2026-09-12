@@ -28,7 +28,7 @@ try {
     local: { head, branch, dirty: changes.length > 0 },
     baseline: { version: data.version, path: data.authority, sha256: createHash('sha256').update(readFileSync(resolve(root, data.authority))).digest('hex') },
     liveMetadataVerified: false, sourceReviewComplete: false,
-    requiredReview: ['Read source and instructions at each selected SHA', 'Compare RQ01-RQ17, RockstarOS 1.0, OS acceptance and installation release, game developer wallet and zero ATM platform fee, actual product usage and user friction', 'Separate host/fixture/guest/provider/device evidence'],
+    requiredReview: ['Read source and instructions at each selected SHA', 'Compare RQ01-RQ18, the Sky/Chat/Wallet/Polymarket base-app boundary, RockstarOS 1.0, OS acceptance and installation release, game developer wallet and zero ATM platform fee, actual product usage and user friction', 'Separate host/fixture/guest/provider/device evidence'],
   };
   if (process.argv.includes('--offline')) {
     console.log(JSON.stringify({ ...result, recordedAuditOnly: data.auditInputs }, null, 2));

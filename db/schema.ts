@@ -140,3 +140,21 @@ export const skyToolSubmissions = sqliteTable(
     index('idx_sky_submissions_user_created').on(table.userId, table.createdAt),
   ],
 );
+
+export const skyConnections = sqliteTable(
+  'sky_connections',
+  {
+    userId: text('user_id').notNull(),
+    tool: text('tool').notNull(),
+    scope: text('scope').notNull().default('execute'),
+    consentVersion: text('consent_version').notNull(),
+    connectedAt: integer('connected_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_connections_user_tool').on(table.userId, table.tool),
+    index('idx_sky_connections_user_connected').on(
+      table.userId,
+      table.connectedAt,
+    ),
+  ],
+);

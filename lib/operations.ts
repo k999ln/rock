@@ -46,6 +46,13 @@ export type BookRecord = {
   reversesId: string | null;
   createdAt: number;
 };
+export type SkyConnection = {
+  tool: JobTool;
+  scope: 'execute';
+  consentVersion: string;
+  connectedAt: number;
+};
+const SKY_CONSENT_VERSION = '2026-09-12';
 export class OperationError extends Error {
   status: number;
   constructor(message: string, status = 400) {
@@ -338,6 +345,40 @@ export function operations(
     return { tool, enabled: v.enabled };
   }
 
+  async function listSkyConnections() {
+    return (
+      await statement(
+        `SELECT tool, scope, consent_version AS consentVersion, connected_at AS connectedAt
+         FROM sky_connections WHERE user_id = ? ORDER BY connected_at DESC, tool ASC`,
+        user,
+      ).all<SkyConnection>()
+    ).results;
+  }
+
+  async function connectSky(value: unknown) {
+    const v = object(value, ['tool']),
+      tool = toolName(v.tool),
+      connectedAt = clock();
+    await statement(
+      `INSERT INTO sky_connections (user_id, tool, scope, consent_version, connected_at)
+       VALUES (?, ?, 'execute', ?, ?)
+       ON CONFLICT(user_id, tool) DO UPDATE SET
+         scope = excluded.scope,
+         consent_version = excluded.consent_version,
+         connected_at = excluded.connected_at`,
+      user,
+      tool,
+      SKY_CONSENT_VERSION,
+      connectedAt,
+    ).run();
+    return {
+      tool,
+      scope: 'execute' as const,
+      consentVersion: SKY_CONSENT_VERSION,
+      connectedAt,
+    };
+  }
+
   async function device(value: unknown) {
     const v = object(value, ['id', 'name', 'action']),
       id = uuid(v.id),
@@ -560,6 +601,8 @@ export function operations(
       return getJob(id);
     },
     control,
+    listSkyConnections,
+    connectSky,
     device,
     book,
     overview,
