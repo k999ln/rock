@@ -26,11 +26,9 @@
 6. 製品LICENSE/第三者NOTICE、production署名・失効手順。
 7. 合格した同一treeをGitへ保存し、限定公開先で反映を確認する。
 
-1〜4はこの変更で完了。5は配布物の取得・完全性確認・fresh導入まで完了し、起動前の
-固定表示port競合で停止した。本人限定Sitesの既存v12はログイン後の読み出しまで確認済みだが、
+1〜5は完了。本人限定Sitesの既存v12はログイン後の読み出しまで確認済みだが、
 sourceは`1763deb56990bc7dc380c72a5b6043cb089c21a0`であり、このバックエンド変更
-`d66c67440700a2c7234472d80b80c27633039fe2`はまだ含まない。5の起動以降と6〜7は
-同一treeで未完了。
+`d66c67440700a2c7234472d80b80c27633039fe2`はまだ含まない。6〜7は同一treeで未完了。
 
 ### P1 — 時間が残る場合
 
@@ -77,9 +75,15 @@ sourceは`1763deb56990bc7dc380c72a5b6043cb089c21a0`であり、このバック�
   `b7d819cd291b653d165aa124f25a52b9898bfb2e`との結合を確認した。production署名ではない。
 - macOS arm64 / Lima 2.2.0 / 72 GiB空きの隔離directoryへfresh installは成功。Debian 13.6、
   QEMU 10.0.13、image preflight、VM identityはPASSした。
-- `start --no-open`は、別の旧preview検証環境が固定viewer port `8900`を既に所有していたため、
-  OSを開始する前に安全に拒否された。旧環境は別作業の一時VMなので停止していない。
-- rc2は拒否前に任意Game sandboxを開始していた。今回作成したsandboxとVMだけを停止して残存を解消し、
+- 初回`start --no-open`は、別の旧preview検証環境が固定viewer port `8900`を所有していたため、
+  OS開始前に安全に拒否された。旧previewを画面内の正規電源操作で正常終了し、所有権を検証した
+  viewerだけを停止した後、同じ未改変rc2を再実行した。
+- rc2の実起動、ブラウザ上のARM64 OS画面、画面内の正常終了、Game writer停止を確認した。
+- OS A/B/dataと独立Wallet/Game/Cを19 files・1,074,543,884 bytesとして保存し、OS manifest
+  `0131ce…5ce`、authority manifest `b9c10e…07c0`へ結合した。host exportは約1.0 GB・20 files。
+- 同じ所有VMの新端末`recovered`へ復元し、元端末を保持・retireしたまま、全3 disk hash、
+  filesystem check、Wallet/Game authorityのwriter epoch更新を検証した。復元端末の起動と正常終了もPASS。
+- rc2は初回拒否前に任意Game sandboxを開始していた。今回作成したsandbox/VMは正常停止して残存を解消し、
   今後の候補ではOS/display preflight成功後にGameを開始するよう修正・回帰試験した。
 
 ## GitHubと実環境の追加確認
@@ -110,8 +114,9 @@ rock-hub --state .state/hub --registry systems/rock-star-os/examples/registry
 
 ## 現在のローンチ判定
 
-**BLOCKED_FOR_GENERAL_LAUNCH**。バックエンドのローカルP0、rc2配布物の完全性、fresh install、
-本人限定Sites v12の既存フローは通ったが、これらはまだ同一sourceではない。rc2のactual start以降は
-別previewの固定port所有により未完了で、production署名、製品許諾、同一最終候補の保存・復旧も未確認。
-最短経路は、既存previewの正常終了後にrc2の起動→保存→復旧を完走し、今回のGame起動順修正を含む
-新候補を再build/D0〜D6受入すること。その同じsourceを本人限定Sitesへ反映してから限定ローンチを判定する。
+**BLOCKED_FOR_GENERAL_LAUNCH**。ローカルバックエンドP0と、未改変rc2の配布物完全性→fresh install→
+actual start→正常終了→完全保存→復元→復元端末の起動/正常終了は通った。ただしrc2は今回の
+バックエンド/Game起動順修正を含まず、本人限定Sites v12も別sourceである。production署名、製品許諾、
+同一最終treeの再配布も未完了。最短経路は今回の修正をlaunch-candidateへ統合し、新候補を再buildして
+D0〜D6受入し、その同じsourceを本人限定Sitesへ反映すること。公開開発鍵・合成データに限る現rc2の
+QEMU Developer Preview利用フローは実証済みだが、一般公開・実資金・実機の根拠にはしない。

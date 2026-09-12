@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "OSバックエンドP0とrc2配布物完全性・fresh導入に合格し、起動失敗時のGame writer残存を修正",
-  "nextAction": "既存previewを正常終了した後にrc2の起動・保存・復旧を完走し、Game起動順修正を含む新候補を再build・D0〜D6受入する。同じsourceを本人限定Sitesへ反映するまで一般公開はBLOCKED_FOR_LAUNCHを維持する。",
+  "milestone": "OSバックエンドP0とrc2の完全性・fresh導入・起動・正常終了・完全保存・復元・再起動に合格",
+  "nextAction": "今回のバックエンドとGame起動順修正をlaunch-candidateへ統合し、新候補を再build・D0〜D6受入する。同じsourceを本人限定Sitesへ反映し、production署名と製品許諾が揃うまで一般公開はBLOCKED_FOR_LAUNCHを維持する。",
   "tasks": [
     {
       "id": "SKY01",

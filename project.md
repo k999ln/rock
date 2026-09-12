@@ -299,7 +299,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 
 ## 進捗の更新方法
 
-2026-09-12、最小ローンチ対象をQEMU Developer Previewのローカルバックエンドへ限定して再監査した。Hubの安全終了、実行中worker回収、再起動時の自動再送禁止、情報を出さないヘルスチェックを実装し、22 unit testsと実processの起動→署名ツール実行→SIGTERM→SQLite整合→再起動→receipt復元に合格した。rc2の配布8資産・716 archive member・公開開発署名・fresh導入も確認したが、別previewが固定表示portを所有していたためactual start以降は未完了。失敗前にGame writerが残る起動順を修正し回帰試験した。production署名、製品許諾、同一候補の保存・復旧、同一sourceのSites反映が未完了のため、全体判定はBLOCKED_FOR_LAUNCHを維持する。[P0/P1/P2と証拠](docs/backend-launch-20260912.md)。
+2026-09-12、最小ローンチ対象をQEMU Developer Previewのローカルバックエンドへ限定して再監査した。Hubの安全終了、実行中worker回収、再起動時の自動再送禁止、情報を出さないヘルスチェックを実装し、22 unit testsと実processの起動→署名ツール実行→SIGTERM→SQLite整合→再起動→receipt復元に合格した。rc2の配布8資産・716 archive member・公開開発署名・fresh導入・実起動・OS画面・正常終了・完全保存・新端末への復元・復元端末の起動/正常終了も同一候補で確認した。固定表示port競合時にGame writerが先行して残る起動順を修正し回帰試験した。production署名、製品許諾、今回修正を含む新候補、同一sourceのSites反映が未完了のため、全体判定はBLOCKED_FOR_LAUNCHを維持する。[P0/P1/P2と証拠](docs/backend-launch-20260912.md)。
 
 1. 着手時に `data/project-status.json` の状態・更新日・次の作業を更新する。
 2. 設計判断を本書、利用方法をREADME、根拠を検証記録へ追記する。
@@ -309,7 +309,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / OSバックエンドP0とrc2配布物完全性・fresh導入に合格し、起動失敗時のGame writer残存を修正 / 完了 30/52件
+最終更新: 2026-09-12 / OSバックエンドP0とrc2の完全性・fresh導入・起動・正常終了・完全保存・復元・再起動に合格 / 完了 30/52件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -384,7 +384,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 既存previewを正常終了した後にrc2の起動・保存・復旧を完走し、Game起動順修正を含む新候補を再build・D0〜D6受入する。同じsourceを本人限定Sitesへ反映するまで一般公開はBLOCKED_FOR_LAUNCHを維持する。
+次の作業: 今回のバックエンドとGame起動順修正をlaunch-candidateへ統合し、新候補を再build・D0〜D6受入する。同じsourceを本人限定Sitesへ反映し、production署名と製品許諾が揃うまで一般公開はBLOCKED_FOR_LAUNCHを維持する。
 <!-- project-status:end -->
 
 ## 次段階の設計
