@@ -16,9 +16,13 @@
     "errorOverlay": false,
     "consoleErrors": 0,
     "pythonUnitTests": 3,
-    "skyNodeTests": 95,
+    "skyNodeTests": 98,
     "workerApiAssertions": 143,
-    "productionBuild": "pass"
+    "productionBuild": "pass",
+    "chatSuggestedQuestion": "pass",
+    "chatFreeTextQuestion": "pass",
+    "chatUsesLocalLedgerOnly": true,
+    "chatAutomaticCancellation": false
   },
   "privacy": {
     "personalDatabaseCommitted": false,

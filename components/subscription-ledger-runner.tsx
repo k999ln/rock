@@ -1,48 +1,52 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { type ComponentProps, useCallback, useEffect, useState } from 'react';
 import {
   AlertTriangle,
   ArrowUpRight,
+  Bot,
   CheckCircle2,
+  CornerDownLeft,
   RefreshCw,
   ShieldCheck,
+  UserRound,
 } from 'lucide-react';
+import {
+  Conversation,
+  ConversationContent,
+  ConversationScrollButton,
+} from '@/components/ai-elements/conversation';
+import {
+  Message,
+  MessageContent,
+  MessageResponse,
+} from '@/components/ai-elements/message';
+import {
+  answerSubscriptionQuestion,
+  formatSubscriptionMoney,
+  type AdvisorSubscription,
+  type AdvisorSummary,
+} from '@/lib/subscription-advisor';
 
 const LEDGER_ORIGIN = 'http://127.0.0.1:8765';
 
-type LedgerAlert = {
-  severity: 'critical' | 'warning' | 'info';
-  subscription: string;
-  message: string;
-};
-
-type LedgerSummary = {
-  counts: {
-    total: number;
-    live: number;
-    active: number;
-    action_required: number;
-  };
-  monthly_totals: Record<string, number>;
-  alerts: LedgerAlert[];
-  offline: boolean;
-};
-
-type Subscription = {
-  id: number;
-  name: string;
-  status: string;
-  amount: number;
-  currency: string;
-  billing_cycle: string;
-  renewal_date: string | null;
-};
-
 type LedgerState = {
-  summary: LedgerSummary;
-  subscriptions: Subscription[];
+  summary: AdvisorSummary;
+  subscriptions: AdvisorSubscription[];
 };
+
+type ChatMessage = {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+};
+
+const suggestedQuestions = [
+  '今月いくら？',
+  '要対応は？',
+  '次の更新は？',
+  '全体を要約して',
+];
 
 const statusLabel: Record<string, string> = {
   active: '有効',
@@ -54,18 +58,6 @@ const statusLabel: Record<string, string> = {
   cancelled: '解約済み',
   paused: '停止中',
 };
-
-function money(amount: number, currency: string) {
-  try {
-    return new Intl.NumberFormat('ja-JP', {
-      style: 'currency',
-      currency,
-      maximumFractionDigits: currency === 'JPY' ? 0 : 2,
-    }).format(amount);
-  } catch {
-    return `${currency} ${amount}`;
-  }
-}
 
 function isLedgerState(value: unknown): value is LedgerState {
   if (!value || typeof value !== 'object') return false;
@@ -90,6 +82,15 @@ export function SubscriptionLedgerRunner({
   const [state, setState] = useState<LedgerState | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [question, setQuestion] = useState('');
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: 'advisor-welcome',
+      role: 'assistant',
+      content:
+        'こんにちは。Skyの**サブスク顧問**です。PC内の台帳だけを見て答えます。まずは下の質問から試してください。',
+    },
+  ]);
 
   const connect = useCallback(
     async (signal?: AbortSignal) => {
@@ -169,7 +170,7 @@ export function SubscriptionLedgerRunner({
     );
 
   const totals = Object.entries(state.summary.monthly_totals)
-    .map(([currency, amount]) => money(amount, currency))
+    .map(([currency, amount]) => formatSubscriptionMoney(amount, currency))
     .join(' ＋ ');
   const visible = state.subscriptions
     .toSorted((left, right) => {
@@ -178,6 +179,33 @@ export function SubscriptionLedgerRunner({
       return weight(left.status) - weight(right.status);
     })
     .slice(0, 8);
+
+  const askAdvisor = (question: string) => {
+    const clean = question.trim();
+    if (!clean) return;
+    const stamp = crypto.randomUUID();
+    setMessages((current) => [
+      ...current,
+      { id: `user-${stamp}`, role: 'user', content: clean },
+      {
+        id: `assistant-${stamp}`,
+        role: 'assistant',
+        content: answerSubscriptionQuestion(
+          clean,
+          state.summary,
+          state.subscriptions,
+        ),
+      },
+    ]);
+  };
+  const submitQuestion: NonNullable<ComponentProps<'form'>['onSubmit']> = (
+    event,
+  ) => {
+    event.preventDefault();
+    if (!question.trim()) return;
+    askAdvisor(question);
+    setQuestion('');
+  };
 
   return (
     <section className="ledger-sky-panel">
@@ -203,6 +231,63 @@ export function SubscriptionLedgerRunner({
           <strong>{state.summary.counts.action_required}</strong>
         </article>
       </div>
+      <section className="ledger-sky-chat" aria-label="サブスク顧問との会話">
+        <header>
+          <span className="ledger-sky-chat-avatar">
+            <Bot size={17} />
+          </span>
+          <div>
+            <strong>サブスク顧問</strong>
+            <span>台帳参照・確認担当</span>
+          </div>
+          <small>LOCAL</small>
+        </header>
+        <Conversation className="ledger-sky-chat-thread">
+          <ConversationContent className="ledger-sky-chat-content">
+            {messages.map((message) => (
+              <Message from={message.role} key={message.id}>
+                <MessageContent>
+                  <span className="ledger-sky-message-role" aria-hidden="true">
+                    {message.role === 'assistant' ? (
+                      <Bot size={14} />
+                    ) : (
+                      <UserRound size={14} />
+                    )}
+                  </span>
+                  <MessageResponse>{message.content}</MessageResponse>
+                </MessageContent>
+              </Message>
+            ))}
+          </ConversationContent>
+          <ConversationScrollButton aria-label="最新の会話へ移動" />
+        </Conversation>
+        <div className="ledger-sky-suggestions" aria-label="質問例">
+          {suggestedQuestions.map((question) => (
+            <button key={question} onClick={() => askAdvisor(question)}>
+              {question}
+            </button>
+          ))}
+        </div>
+        <form className="ledger-sky-prompt" onSubmit={submitQuestion}>
+          <textarea
+            aria-label="サブスク顧問へ質問"
+            onChange={(event) => setQuestion(event.currentTarget.value)}
+            placeholder="例：要対応は？ 次の更新は？"
+            rows={2}
+            value={question}
+          />
+          <footer>
+            <span>外部AIへ送信しません</span>
+            <button
+              aria-label="質問を送信"
+              disabled={!question.trim()}
+              type="submit"
+            >
+              <CornerDownLeft size={15} />
+            </button>
+          </footer>
+        </form>
+      </section>
       {state.summary.alerts.length > 0 ? (
         <div className="ledger-sky-alerts">
           {state.summary.alerts.map((alert) => (
@@ -228,7 +313,10 @@ export function SubscriptionLedgerRunner({
             </div>
             <div>
               <strong>
-                {money(subscription.amount, subscription.currency)}
+                {formatSubscriptionMoney(
+                  subscription.amount,
+                  subscription.currency,
+                )}
               </strong>
               <span>
                 {subscription.renewal_date || subscription.billing_cycle}

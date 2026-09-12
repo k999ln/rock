@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "SkyへローカルMCP対応のサブスク顧問を接続",
-  "nextAction": "Skyのサブスク顧問をローカルPC台帳へ読み取り専用で接続し、配布ZIP・MIT・MCP・安全境界を同じGitへ収録した。次はNative Sky MCP brokerへの常駐接続とWalletへの費用転記を設計し、HTTPS配信版でloopbackへ直接接続しない経路を実装する。Android/AOSP側は実機型番/SKUの読取り専用確認、クラウド計画の承認、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/Game移植、production署名、実機受入が引き続き未完了。",
+  "milestone": "Skyのサブスク顧問を役割エージェント型チャットへ拡張",
+  "nextAction": "Skyのサブスク顧問をローカルPC台帳へ読み取り専用で接続し、質問例と自由入力で月額・要対応・更新・要約を回答する会話UIまで検証した。次はNative Sky MCP brokerを共通policy gatewayにし、各担当のtool allowlist・data scope・本人確認・receiptを実装してWallet担当と営業/編集担当へ展開する。HTTPS配信版からloopbackへ直接接続しない経路、Android/AOSPのfull build・Hub/Wallet/Game移植・production署名・実機受入は引き続き未完了。",
   "tasks": [
     {
       "id": "R01",
@@ -231,8 +231,10 @@
         "docs/evidence/pc-citations/integration.json",
         "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
         "docs/sky-rockstar-ledger-20260912.md",
+        "docs/sky-role-agents-20260912.md",
         "docs/evidence/sky-rockstar-ledger/integration.json",
-        "tests/rockstar-ledger.test.mjs"
+        "tests/rockstar-ledger.test.mjs",
+        "tests/subscription-advisor.test.mjs"
       ]
     },
     {

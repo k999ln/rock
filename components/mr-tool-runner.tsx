@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import {
   ExecutionSignin,
   useExecutionAccess,
@@ -28,13 +28,17 @@ import {
   type CoconalaResult,
 } from '@/lib/mr-tools';
 import { DeliveryRunner } from '@/components/delivery-runner';
-import { SubscriptionLedgerRunner } from '@/components/subscription-ledger-runner';
 import {
   executeTracked,
   processedBytes,
   OperationRequestError,
 } from '@/lib/operations-client';
 import { deviceToken, runDevice, type RunRecorder } from '@/lib/device';
+const SubscriptionLedgerRunner = lazy(() =>
+  import('@/components/subscription-ledger-runner').then((module) => ({
+    default: module.SubscriptionLedgerRunner,
+  })),
+);
 export type MrRunner =
   | 'coconala'
   | 'citations'
@@ -289,10 +293,16 @@ export function MrToolRunner({
     );
   if (tool === 'subscription-ledger')
     return (
-      <SubscriptionLedgerRunner
-        onRunningChange={onRunningChange}
-        executionDisabled={executionDisabled}
-      />
+      <Suspense
+        fallback={
+          <output className="ledger-sky-loading">サブスク顧問を準備中…</output>
+        }
+      >
+        <SubscriptionLedgerRunner
+          onRunningChange={onRunningChange}
+          executionDisabled={executionDisabled}
+        />
+      </Suspense>
     );
   return (
     <section className="mr-workbench">

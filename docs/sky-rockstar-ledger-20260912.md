@@ -10,6 +10,8 @@
 - 契約名、状態、金額、更新日
 - Rockstar Ledgerの完全なローカル画面への入口
 
+追加の会話UIでは「今月いくら？」「要対応は？」「次の更新は？」「全体を要約して」の質問例と自由入力を用意した。回答は外部AIへ送らず、取得済みの台帳データから決定的に生成する。解約相談には要対応を示すが、解約や支払いは実行しない。Sky全体を役割エージェント型へ発展させる共通仕様は[Skyの役割エージェント仕様](sky-role-agents-20260912.md)に分離した。
+
 配布ZIP、MIT全文、Codex向けskill、stdio MCPサーバーをHubと同じGitに同梱した。元パッケージはRockstar Ledger `0d3f29f3f8986669ac6516cea252aa2fa506a1ef`、ZIP SHA-256は `abfdbbc884fb0723f74a1f4ece73cbe755104312eb1ec51e4f4f83bdb0224651`。
 
 ## データと安全境界
@@ -23,8 +25,9 @@
 - Rockstar Ledger Python unit tests: 3件合格
 - loopback CORS: `http://127.0.0.1:3000` へ200と限定Allow-Originを返すことを確認
 - Sky catalog/package tests: `tests/rockstar-ledger.test.mjs`
-- Skyの型、lint、全95 tests、本番build、Worker/D1 API 143 assertions: `npm run verify` 合格
+- Skyの型、lint、全98 tests、本番build、Worker/D1 API 143 assertions: `npm run verify` 合格
 - Sky画面の実接続: 商品選択、通貨別集計、警告、一覧を確認。error overlayなし、console error 0
+- 会話実操作: 質問例の月額回答と自由入力の解約相談を確認。台帳値を回答し、自動解約を拒否。error overlayなし、console error 0
 
 個人の契約名・金額が映る画面画像はGitへ保存せず、個人情報を除いた[機械可読の検証記録](evidence/sky-rockstar-ledger/integration.json)だけを残した。
 

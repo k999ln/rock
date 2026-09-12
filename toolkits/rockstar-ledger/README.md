@@ -8,7 +8,7 @@ Skyの自動化Hubから、PC内で動くRockstar Ledgerのサブスク台帳を
 2. 展開先で `python3 scripts/run_local.py` を実行します。
 3. `http://127.0.0.1:8765` が開いた状態でSkyの「準備を確認」を押します。
 
-Skyには月額換算、契約・候補数、要対応、更新日と警告が表示されます。契約や明細の実データはRockstar Ledgerの `data/ledger.sqlite3` にだけ保存され、Gitには含まれません。
+Skyには月額換算、契約・候補数、要対応、更新日と警告が表示されます。「今月いくら？」「要対応は？」「次の更新は？」などをサブスク顧問へ会話形式で質問できます。回答は表示時に取得したローカル台帳だけから作り、外部AIへ送りません。契約や明細の実データはRockstar Ledgerの `data/ledger.sqlite3` にだけ保存され、Gitには含まれません。
 
 CodexなどからMCPで使う場合は、展開先の `.mcp.json` を読み込むか `python3 scripts/mcp_server.py` をstdioサーバーとして登録します。
 
