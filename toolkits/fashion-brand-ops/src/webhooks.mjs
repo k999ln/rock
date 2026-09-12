@@ -53,3 +53,11 @@ export function extractInstagramMessages(payload) {
   }
   return messages;
 }
+
+export function resolveInstagramBrand(configuredBrand, accountBrand) {
+  if (!accountBrand) throw new Error("instagram_webhook_brand_unresolved");
+  if (configuredBrand && configuredBrand !== accountBrand) {
+    throw new Error("instagram_webhook_brand_mismatch");
+  }
+  return accountBrand;
+}

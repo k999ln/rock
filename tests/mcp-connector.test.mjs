@@ -113,6 +113,14 @@ void test('remote transport rejects credentials, insecure URLs and local network
     () => validateRemoteUrl('https://[::ffff:127.0.0.1]/mcp'),
     /ローカル/,
   );
+  await assert.rejects(
+    () => validateRemoteUrl('https://[febf::1]/mcp'),
+    /ローカル/,
+  );
+  await assert.rejects(
+    () => validateRemoteUrl('https://[ff02::1]/mcp'),
+    /ローカル/,
+  );
 });
 
 void test('one connector discovers registered MCPs with arbitrary tool counts', async (t) => {

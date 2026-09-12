@@ -94,15 +94,17 @@ function privateIp(address) {
       return privateIp(`${high >> 8}.${high & 255}.${low >> 8}.${low & 255}`);
     }
   }
-  if (
-    address === '::1' ||
-    address === '::' ||
-    address.startsWith('fe80:') ||
-    address.startsWith('fc') ||
-    address.startsWith('fd') ||
-    address.startsWith('2001:db8:')
-  )
-    return true;
+  if (isIP(address) === 6) {
+    const first = Number.parseInt(address.split(':', 1)[0] || '0', 16);
+    return (
+      address === '::1' ||
+      address === '::' ||
+      (first & 0xfe00) === 0xfc00 ||
+      (first & 0xffc0) === 0xfe80 ||
+      (first & 0xff00) === 0xff00 ||
+      address.startsWith('2001:db8:')
+    );
+  }
   if (isIP(address) !== 4) return false;
   const [a, b] = address.split('.').map(Number);
   return (
