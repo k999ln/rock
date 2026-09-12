@@ -9,10 +9,10 @@
     "os/ui/game-ui.inc": "d6bbef68e2d79deb7dfd27a1badf521f16b2daebd673e505ddd3668c0b1da256",
     "os/ui/ipc.h": "3e6ace92e6f1fcde6cc02cadc8899c51c58d9271caed08c124003db61914bdf4",
     "os/ui/main.c": "5e3e3cf71fec19a9ea0b0b017e6739891403953504ef337e869c122de59bdfb7",
-    "os/ui/mcp-ui.inc": "38c3855f2e3bec881e9404b114ef2b6297bc7d16bda89e350330067ad7ea0e13",
+    "os/ui/mcp-ui.inc": "bf90ea9c692a448d675eb8ce12b668f5b964fec98d2360b0c9d22812500f48f3",
     "os/ui/remote-ui.inc": "5b4736efec786c2cd7a01daa83671238a40a1c8e6873031de11e07165b987f5e",
     "os/ui/service-ui.inc": "e33a1104b95df4bf6ce6eae678e464ab2fb5c0eb27e02fa10ba3f11896a8e78c",
-    "os/ui/ui.c": "9e492cd2dac4ae5370f8e1f0191d5236cf6295d86f6cf250437d58f1645b6bfd",
+    "os/ui/ui.c": "902c53895c563d96956279ba3608e2a2cc2abe3f2d60f1ff0c9656f2d7694eb3",
     "os/ui/ui.h": "318288d8866ec4d7e7a97ed3104a201b2e61eb3432256d5cf56682353a07bbc1"
   },
   "profiles": {

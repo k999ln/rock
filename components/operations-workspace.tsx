@@ -17,6 +17,7 @@ import type { FundSnapshot } from '@/lib/fund';
 import { catalog } from '@/lib/catalog';
 import { MrToolRunner } from '@/components/mr-tool-runner';
 import { DeviceConnection } from '@/components/device-connection';
+import { ValueSpendPanel } from '@/components/value-spend-panel';
 import {
   Dialog,
   DialogContent,
@@ -146,10 +147,10 @@ export default function OperationsWorkspace({ view }: { view: View }) {
                 ? 'ACTIVITY'
                 : 'CONNECTIONS & CONTROLS'}
           </p>
-          <h1>{view === 'wallet' ? '収支を、見失わない。' : titles[view]}</h1>
+          <h1>{view === 'wallet' ? '価値を、安心して動かす。' : titles[view]}</h1>
           <p>
             {view === 'wallet'
-              ? '売上と経費の記録を、ひとつの場所に。'
+              ? '資産を分けて管理し、使うときは必ず安全な経路へ。'
               : view === 'activity'
                 ? 'いつ、どこで、何を実行したか確認できます。'
                 : 'PCの接続と、ツールごとの利用状態を管理。'}
@@ -175,15 +176,16 @@ export default function OperationsWorkspace({ view }: { view: View }) {
           </Link>
         </nav>
       )}
+      {view === 'wallet' && <ValueSpendPanel />}
       {view === 'wallet' && (
         <section className="rock-wallet-boundary">
           <span className="rock-wallet-symbol">
             <Wallet size={30} strokeWidth={1.5} />
           </span>
           <div>
-            <h2>実際のお金との接続は、準備中です。</h2>
+            <h2>手入力の収支記録も、そのまま残しています。</h2>
             <p>
-              ここで管理するのは手入力の収支です。金融サービスとの照合・入金・出金にはまだ対応していません。
+              従来の売上・経費は下に表示します。金融サービスとの自動照合・入金・出金にはまだ対応していません。
             </p>
             <span>
               <ShieldCheck size={15} />

@@ -1,0 +1,25 @@
+{
+  "id": "0199409d-4e55-4a7d-8b7c-b3dfeec44f9a",
+  "name": "Instagram運用・受注型ブランド管理",
+  "summary": "売上・数量・粗利目標からInstagram施策を組み、DM顧客の次の一手、受注、決済、制作・発送、分析改善までを個別承認付きで進めるブランド経営MCPです。",
+  "providerName": "RockstarOS",
+  "version": "0.2.0",
+  "connectionType": "mcp_stdio",
+  "endpointUrl": null,
+  "sourceUrl": "https://github.com/k999ln/rock/tree/main/toolkits/fashion-brand-ops",
+  "supportUrl": "https://github.com/k999ln/rock/tree/main/toolkits/fashion-brand-ops",
+  "license": "Repository terms",
+  "pricing": "external_contract",
+  "priceNote": "商品本体は料金未設定。Higgsfield、Meta、Stripe、通知先の料金は各外部契約に従い、実行前に表示・承認します。",
+  "dataUse": "ブランド、商品、顧客、注文、DM、決済照合情報をtenant別SQLiteに保存します。raw token、password、Cookieは保存しません。",
+  "executionTargets": ["pc"],
+  "permissions": [
+    "read_user_input",
+    "write_results",
+    "network",
+    "external_account",
+    "long_running",
+    "financial_action"
+  ],
+  "rightsConfirmed": true
+}

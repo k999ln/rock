@@ -1,6 +1,6 @@
 # Rock — 実装・検証の保存時点
 
-記録: 2026-09-10 UTC（作業日の現地日付は2026-09-09）。この文書は途中成果の統合記録であり、製品要件や合格条件を変更しない。承認済みの[設計v1.1](os-hub-wallet-game-design.md)、[実行プロンプト](prompts/os-operational-base-next.md)、[製品基準](product-baseline.md)に従う。過去の監査は当時のsnapshotとして保持し、現在の状態はこの記録と[進捗の正本](../data/project-status.json)を参照する。
+記録: 2026-09-10 UTC（作業日の現地日付は2026-09-09）。この文書は途中成果の統合記録であり、製品要件や合格条件を変更しない。承認済みの[設計v1.1](os-sky-wallet-game-design.md)、[実行プロンプト](prompts/os-operational-base-next.md)、[製品基準](product-baseline.md)に従う。過去の監査は当時のsnapshotとして保持し、現在の状態はこの記録と[進捗の正本](../data/project-status.json)を参照する。
 
 ## 利用形態と公開範囲
 

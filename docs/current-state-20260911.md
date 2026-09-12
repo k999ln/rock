@@ -1,10 +1,22 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-12 — SkyデザインをValue/Spend Walletへ反映
+
+Skyと同じサイドバー、深いグリーン、状態ラベル、時系列の操作言語で、WalletにValue/Spendの安全な支出画面を追加した。SIMULATION/PAPER切替、常時無効のLIVE、crypto/external/game資産の分離、Polymarket dry-run提案、支出・exposure・日次損失・Smart MoneyのRisk Guard、緊急停止、proposalからreconciliationまでの7段階を確認できる。提案プレビューと緊急停止は画面上で操作できる。
+
+このWeb画面はhost runtimeとの接続前のUIプレビューであり、表示する10,000 USDCはテスト用。実残高、外部API、秘密鍵、外部署名、実注文には接続しない。既存の手入力収支は同じWallet下部へ残し、取得失敗時もValue/Spendの安全境界を確認できる。hostの`/api/hub-mcp`をnative transport/通知/本人承認へ接続する作業は引き続き未実装。
+
 ## 2026-09-12 — Value/Spend Runtime host vertical slice
 
-RQ18として、Hub/MCPを同一入口、WalletをValue RouterとするOS標準Value/Spend Runtimeをlaunch-candidate上へ追加した。共通asset registry、Spend Proposal、Policy/Risk Guard、明示承認、同一SQLite取引でのWallet予約・commit・release、Secret Vault/Signing Service抽象、adapter、receipt/reconciliation、共通イベントを実装した。第一号の`polymarket.dry-run`は固定したMrFadiAi/Polymarket-bot監査情報を持つが、botを複製せず共通runtimeから呼び出す。SIMULATION/PAPERのみで、LIVE・実資金・provider API・秘密鍵取込みは無効。
+RQ20として、Sky（内部互換名Hub）/MCPを同一入口、WalletをValue RouterとするOS標準Value/Spend Runtimeをlaunch-candidate上へ追加した。共通asset registry、Spend Proposal、Policy/Risk Guard、明示承認、同一SQLite取引でのWallet予約・commit・release、Secret Vault/Signing Service抽象、adapter、receipt/reconciliation、共通イベントを実装した。第一号の`polymarket.dry-run`は固定したMrFadiAi/Polymarket-bot監査情報を持つが、botを複製せず共通runtimeから呼び出す。SIMULATION/PAPERのみで、LIVE・実資金・provider API・秘密鍵取込みは無効。
 
-host上では残高、position、realized/unrealized PnL、fee/gas、strategy、emergency stop、日次損失・exposure・slippage上限を一つの状態として参照できる。Hubの`/api/hub-mcp`は同じstrict command contractを提供し、`/api/state`へ公開する。native MCP transport、通知配信、provider sandbox、production vault/signer、本人承認UI、LIVEは未実装で、既存QEMU imageやスマホOSへはまだ収録していない。[設計と利用方法](value-spend-runtime.md)／[上流・branch・CI監査](value-spend-runtime-audit-20260912.md)。
+host上では残高、position、realized/unrealized PnL、fee/gas、strategy、emergency stop、日次損失・exposure・slippage上限を一つの状態として参照できる。Skyの内部互換API`/api/hub-mcp`は同じstrict command contractを提供し、`/api/state`へ公開する。native MCP transport、通知配信、provider sandbox、production vault/signer、本人承認UI、LIVEは未実装で、既存QEMU imageやスマホOSへはまだ収録していない。[設計と利用方法](value-spend-runtime.md)／[上流・branch・CI監査](value-spend-runtime-audit-20260912.md)。
+
+## 2026-09-12 — 多機種対応の決定
+
+多機種対応を「共通RockstarOS Core＋機種／SKU別Device Support Package」として固定した。一つのimageを無条件に全端末へ書き込むとは扱わず、`native_os`、`gsi_experimental`、`client_only`、`unsupported`の4区分を機械可読台帳で管理する。完全OSを名乗るにはbootloader unlock、kernel／vendor／firmware、partition／AVB、boot／OTA／rollback／stock復旧の機種別証拠が必要。[設計](device-support-architecture.md)／[対応台帳](../data/device-support-matrix.json)。
+
+最初の物理端末はまだ0台で、Pixel 7／`panther`とPixel 10／`frankel`はいずれも候補。BlackBerry Android機は正確な型番と解除経路が判明するまでclient-only、旧BlackBerry OS機は非対応。Apple署名boot chainを置換するiPhone／iPad版は対象外で、既存iOS／iPadOS上のclientとして扱う。この決定はクラウド課金、実機書込み、production鍵、一般公開を許可しない。
 
 ## 2026-09-12 — GitHub・実装・実機版・ビルド環境の再監査
 
@@ -14,9 +26,9 @@ host上では残高、position、realized/unrealized PnL、fee/gas、strategy、
 
 | 対象 | 到達している範囲 | 未完了の決定的条件 |
 | --- | --- | --- |
-| Web / Sites | Hub中心の画面、仕事・履歴・Wallet・設定、本人限定の新Site | 所有者ログイン後の本番操作確認、一般公開 |
+| Web / Sites | Sky中心の画面、仕事・履歴・Wallet・設定、本人限定の新Site | 所有者ログイン後の本番操作確認、一般公開 |
 | Linux / QEMU | `1.0.0-preview.20260911-rc2`の内部導入、起動、保存、再起動、同一VMの中断復旧、D4/D6等の限定受入 | 正式署名、license clearance、取消の実停止、RSS再確認、別host／VM全損復旧、保存データあり端末の削除 |
-| Android P1 | 通常権限の2APK、SQLite／Binder／JobScheduler、emulator CI | Hub／Wallet／GameのAndroid移植、実機OS統合 |
+| Android P1 | 通常権限の2APK、SQLite／Binder／JobScheduler、emulator CI | Sky／Wallet／GameのAndroid移植、実機OS統合 |
 | スマホOS | 上流版と候補機種のsource lock、product makefile、準備／build／診断script | 全source取得、vendor生成、Soongフルbuild、target-files／OTA／factory image、正式Android署名、flash、実機boot／更新／純正復旧 |
 | Wallet／Game | 合成台帳、複数owner/gameのfixture、作者SDK、ATM自社手数料0の契約 | 実provider、KYC／提供地域／資金保管／通貨／返金／出金／照合、指定実ゲームの正式sandbox |
 | Release | PR #4の現HEAD CI成功、本人限定Site、CM制作途中 | license、第三者許諾、production鍵、実署名、公開受入、main統合 |
@@ -38,7 +50,7 @@ host上では残高、position、realized/unrealized PnL、fee/gas、strategy、
 1. 実際に使うPixelの型番／SKUを読取り専用で確認し、Pixel 7なら`panther`、Pixel 10なら`frankel`へsource lockとbuild入口を一つに固定する。
 2. クラウド事業者、アカウント、上限予算、成果物保存先、時間上限と削除手順を確定する。
 3. Ubuntu 24.04 x86_64で全source取得、`adevtool generate-all`、Soongフルbuildを行い、同一source・出力hash・失敗ログを保存する。
-4. Android P1の2APK同梱とは別に、Hub／Wallet／Gameの接続層をAndroidへ移植し、既存のowner／同意／台帳／取消／復旧契約と照合する。
+4. Android P1の2APK同梱とは別に、Sky／Wallet／Gameの接続層をAndroidへ移植し、既存のowner／同意／台帳／取消／復旧契約と照合する。
 5. 開発鍵で対象実機の初回bootと基本hardwareを確認した後、AVB／APK／APEX／OTAのproduction鍵、独自更新先、失効、rollback、純正復旧を整える。
 6. CTS／VTS／SELinux、保存・再起動・省電力・熱・通信、OTA失敗／rollbackを対象実機で受け入れる。
 7. license、第三者許諾、本人限定Site QA、CM、最終署名配布、PR整理を完了してから一般公開とmain mergeを別途判断する。
@@ -49,7 +61,7 @@ host上では残高、position、realized/unrealized PnL、fee/gas、strategy、
 
 ## 製品の方針
 
-RQ01〜RQ17、Hub＋Walletを中心とする製品、自作ゲーム交換／作者SDK、tobの商品供給、PC／cloud／self-hostの実行先を保持する。既存の月888 USD cents／同一契約の複数端末重複防止、RockのATM手数料0、未定のゲーム料金を変更しない。実行成功を実売上へ変換しない。
+RQ01〜RQ17、Sky＋Walletを中心とする製品、自作ゲーム交換／作者SDK、tobの商品供給、PC／cloud／self-hostの実行先を保持する。既存の月888 USD cents／同一契約の複数端末重複防止、RockのATM手数料0、未定のゲーム料金を変更しない。実行成功を実売上へ変換しない。
 
 スマホ本体へ書き込めるOSを作るという最新指示を実機版の開発方針へ追加した。現在のPixel 10／GrapheneOS候補は以前の端末記録に基づく。今回の対象機種・SKUは未確認で、BlackBerryの型番も未確認。全機種対応・既存OSとの共存・データ無消去の入替えを約束しない。
 
@@ -58,13 +70,13 @@ RQ01〜RQ17、Hub＋Walletを中心とする製品、自作ゲーム交換／作
 | 対象 | 現在確認できること | 残ること |
 | --- | --- | --- |
 | Linux / Buildroot / QEMU | b7/rc2の内部導入、起動、保存、再起動、同じVMでの中断復旧と追加受入を限定確認 | 正式署名後の最終配布受入、キャンセルの実停止、メモリ増加の確認等 |
-| Android P1 | 通常権限の2APK、SQLite／Binder／JobScheduler、標準エミュレーターCI | 実機確認、Hub／Wallet／Gameの移植 |
+| Android P1 | 通常権限の2APK、SQLite／Binder／JobScheduler、標準エミュレーターCI | 実機確認、Sky／Wallet／Gameの移植 |
 | Pixel候補のOS | GrapheneOS安定版の署名タグ確認、機種構成へのRock組込み設定、source検査、Linux build入口、読取り専用診断を実装 | 全source取得、Soong／OS build、正式Android署名、起動・更新・復旧の実機受入 |
-| Web / Sites | Hub改修、履歴のコード統合、新しい本人限定Siteの公開 | ログイン後の本番Hub操作確認、一般公開 |
+| Web / Sites | Sky改修、履歴のコード統合、新しい本人限定Siteの公開 | ログイン後の本番Sky操作確認、一般公開 |
 
 QEMUの凍結sourceは`b7d819cd291b653d165aa124f25a52b9898bfb2e`、版は`1.0.0-preview.20260911-rc2`。今回の統合で既存image・配布bytesは変更していない。QEMUの合格をスマホへ移さず、スマホ用の書込み可能imageはまだ存在しない。[rc2受入](os-acceptance-b7d819c-20260911.md)／[追加受入と未観測条件](rc2-remaining-acceptance-20260911.md)／[スマホ版の実装](phone-preview-20260911.md)。
 
-スマホ版は既存Android P1を機種構成へ組み込む段階から始める。LinuxのHub／Wallet／Game契約を維持しながら接続層を移植する必要があり、2APKの同梱だけで製品移植完了にはしない。旧Cuttlefish用`os/source-lock.json`、新しい`os/physical/frankel-source-lock.json`、Linux QEMUのimageは別の入力である。
+スマホ版は既存Android P1を機種構成へ組み込む段階から始める。LinuxのSky／Wallet／Game契約を維持しながら接続層を移植する必要があり、2APKの同梱だけで製品移植完了にはしない。旧Cuttlefish用`os/source-lock.json`、新しい`os/physical/frankel-source-lock.json`、Linux QEMUのimageは別の入力である。
 
 ## 所有者の回答と公開設定
 

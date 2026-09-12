@@ -6,7 +6,7 @@
 
 ## 1. 読む順番
 
-現在は利用者による設計確認を先行する指示がある。data/product-baseline.jsonのdesignReview/executionApprovalを読み、docs/os-hub-wallet-game-design.mdの承認前は文書の提示・修正だけにする。プロンプト内の実装手順を見つけても自動開始しない。
+現在は利用者による設計確認を先行する指示がある。data/product-baseline.jsonのdesignReview/executionApprovalを読み、docs/os-sky-wallet-game-design.mdの承認前は文書の提示・修正だけにする。プロンプト内の実装手順を見つけても自動開始しない。
 
 1. `AGENTS.md`、`docs/product-baseline.md`、`data/product-baseline.json`。
 2. GitHubのdefault/main SHA、全branch、open PR、関連するclosed/merged PR。`npm run prompt:context` で読み取り専用の最新メタデータを出せる。GitHubに接続できなければ「最新確認未了」とし、過去snapshotを最新と表示しない。

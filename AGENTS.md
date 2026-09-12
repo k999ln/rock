@@ -1,10 +1,10 @@
 # Rock star 開発の継続ルール
 
-- 最初に docs/product-baseline.md、data/product-baseline.json、README.md、project.md、data/project-status.json を読む。確定要望はRQ01〜RQ18。新しい明示指示がある場合だけ理由を記録して更新する。最新の実行プロンプトはdata/product-baseline.jsonのnextPrompt。現在の統合状態はdocs/current-state-20260911.md。
+- 最初に docs/product-baseline.md、data/product-baseline.json、README.md、project.md、data/project-status.json を読む。確定要望はRQ01〜RQ20。新しい明示指示がある場合だけ理由を記録して更新する。最新の実行プロンプトはdata/product-baseline.jsonのnextPrompt。現在の統合状態はdocs/current-state-20260911.md。
 - 設計v1.1の実装は承認済み。docs/execution-approval-20260909.mdとdata/execution-approval.jsonを読み、再承認で止めない。公開・実機導入・MetaMask実資金試験は準備が整うことを条件に了承されている。対象・機種適合・取引条件の未指定を補い、条件付き了承を実行済みとしない。
 - 「現段階の進捗からプロンプト作成」では docs/prompt-playbook.md に従い、npm run prompt:context または同等の読み取りでGitHubのmain・branch・PR・同一SHAのCIを確認する。対象コード/証拠を必ず読む。docs/progress-audit-20260909.mdは履歴snapshot。取得失敗を最新確認済みとしない。
-- 現在はmain/nativeだけでなく codex/os-game-design-review-20260909 の最新設計も必須入力。docs/design-implementation-alignment-20260909.md、statusのphaseGatesを読む。単一owner多端末を複数player基盤に、チェックなしをCI成功に、文書訂正をruntime修正に置き換えない。RQ18により予測市場は共通Value/Spend RuntimeとPolymarket dry-run adapterのSIMULATION/PAPERに限って実装許可済み。LIVE・実資金・外部署名は明示許可まで無効で、ゲーム資産の実売買許可へ拡張しない。
-- RQ18ではHubとMCPを同一の入口/管理・実行面、WalletをValue Routerとして扱う。外部支出はSpend Proposal→Policy/Risk Guard→承認→Signing Service→adapter→execution→receipt/reconciliationを必須とし、botへ秘密鍵/API keyを平文で渡さない。`docs/value-spend-runtime.md`と監査記録を読む。
+- 現在はmain/nativeだけでなく codex/os-game-design-review-20260909 の最新設計も必須入力。docs/design-implementation-alignment-20260909.md、statusのphaseGatesを読む。単一owner多端末を複数player基盤に、チェックなしをCI成功に、文書訂正をruntime修正に置き換えない。RQ20により予測市場は共通Value/Spend RuntimeとPolymarket dry-run adapterのSIMULATION/PAPERに限って実装許可済み。LIVE・実資金・外部署名は明示許可まで無効で、ゲーム資産の実売買許可へ拡張しない。
+- RQ20ではSky（既存API/DBの内部互換名Hub）とMCPを同一の入口/管理・実行面、WalletをValue Routerとして扱う。外部支出はSpend Proposal→Policy/Risk Guard→承認→Signing Service→adapter→execution→receipt/reconciliationを必須とし、botへ秘密鍵/API keyを平文で渡さない。`docs/value-spend-runtime.md`と監査記録を読む。
 - 指摘した相違を、原因・修正順・合格証拠・未解決条件付きで実行プロンプトへ反映する。mainのベースが実装branchに未反映なら、引継ぎ入口と優先順位の同期を最初に行う指示にする。文書保存・作業branch反映・mainへの統合を別々に記録する。
 - 主開発対象は自動化Hub＋WalletのOS。tob側が商品を開発し、Rock側は接続/管理/実行/費用/収益の共通基盤を作る。既存ツールも商品。利用者のどの不便を減らすかと、既存商品のHub実利用検証を作業の合格条件に含める。
 - RQ12の最初の受入はQEMU開発OS雛形。最新sourceからbuildした同一imageで起動・Hub/Wallet操作・境界・保存/再起動・復旧を実測し、docs/templates/os-acceptance-report.mdへ記録する。公開試験鍵や合成データの合格を本番安全認証にしない。

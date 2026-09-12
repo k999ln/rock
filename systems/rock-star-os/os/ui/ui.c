@@ -1755,7 +1755,7 @@ void rock_ui_draw(struct rock_ui *ui)
                                     "送信内容の確認", "遠隔の実行結果", "遠隔の実行履歴", "ATMテスト", "予約の状態", "試験認証の確認", "使い始める",
                                     "接続して使う道具", "内容を確認する", "接続先の実行結果",
                                     "Game", "交換条件の確認", "交換の状況", "Gameの本人承認" };
-    static const char *tabs[] = { "Hub", "ツール", "履歴", "Wallet" };
+    static const char *tabs[] = { "Sky", "ツール", "履歴", "Wallet" };
     char clock_text[32], subtitle[200];
     time_t now = time(NULL);
     struct tm local;
@@ -1906,7 +1906,7 @@ void rock_ui_draw(struct rock_ui *ui)
              active == i ? COLOR_ACCENT : COLOR_MUTED, tabs[i], 155);
         hit(ui, x, 878, 164, 68, ACTION_NAV, i, NULL, NULL, 1);
     }
-    /* Added last to preserve existing Hub/detail keyboard focus order. */
+    /* Added last to preserve the existing Sky/detail keyboard focus order. */
     button(ui, 584, 7, 104, 39, "端末", ACTION_SYSTEM, 0, NULL, NULL, 1, 0);
     if (ui->page == PAGE_WALLET)
         button(ui, 490, 7, 82, 39, "ATM", ACTION_ATM_OPEN, 0, NULL, NULL, 1, 0);

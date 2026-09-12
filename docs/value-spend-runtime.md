@@ -4,7 +4,7 @@
 
 ## 製品境界
 
-HubとMCPは同じ入口/管理・実行面であり、別製品として扱わない。Walletは単なる残高画面ではなく、crypto、game、internal、externalの価値を資産別に正規化するValue Routerとする。ゲーム内資産とUSDCを同一残高へ暗黙変換しない。
+Sky（既存API/DBの内部互換名Hub）とMCPは同じ入口/管理・実行面であり、別製品として扱わない。Walletは単なる残高画面ではなく、crypto、game、internal、externalの価値を資産別に正規化するValue Routerとする。ゲーム内資産とUSDCを同一残高へ暗黙変換しない。
 
 外部効果は必ず次の状態機械を通る。
 
@@ -73,4 +73,4 @@ unit testsは、資産分離、exact approval、idempotency、append-only balanc
 
 未実装はPolymarket API/CLOB、実balance/position取得、実USDC予約、production vault/HSM、provider sandbox、KYC/地域条件、実fee/gas照合、実order cancel/settlement、外部通知、native OSのHTTPS MCP gatewayへの同command配線、Android移植、LIVE enable ceremony。これらが揃うまでLIVEは有効化できない。
 
-既存baselineとの変更理由: v1.10では予測市場runtimeはdiscussion onlyだったが、利用者が2026-09-12に共通runtimeと第一号Polymarket integrationの設計・実装を明示したため、RQ18としてSIMULATION/PAPERの実装許可へ更新した。実資金/LIVEの許可へは拡張していない。月888 cents、ATM自社手数料0、ゲーム交換条件、既存台帳を変更しない。
+既存baselineとの変更理由: v1.10では予測市場runtimeはdiscussion onlyだったが、利用者が2026-09-12に共通runtimeと第一号Polymarket integrationの設計・実装を明示したため、並行追加されたRQ18/RQ19を保持してRQ20としてSIMULATION/PAPERの実装許可へ更新した。実資金/LIVEの許可へは拡張していない。月888 cents、ATM自社手数料0、ゲーム交換条件、既存台帳を変更しない。
