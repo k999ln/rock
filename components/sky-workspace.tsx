@@ -1,293 +1,384 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
   ArrowUpRight,
+  BadgeCheck,
   BookOpenCheck,
   BriefcaseBusiness,
-  Check,
-  ChevronRight,
-  CircleHelp,
-  Clock3,
   FileCheck2,
   FilePenLine,
   Laptop,
   Link2,
+  MessageCircle,
   PackagePlus,
-  PlugZap,
   Search,
+  Send,
   ShieldCheck,
+  SlidersHorizontal,
   X,
+  type LucideIcon,
 } from 'lucide-react';
 import { catalog, type Automation } from '@/lib/catalog';
+import { routeSkyRequest, skyRoles } from '@/lib/sky-routing';
 import {
   Dialog,
   DialogContent,
-  DialogTitle,
   DialogDescription,
+  DialogTitle,
 } from '@/components/ui/dialog';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MrToolRunner } from '@/components/mr-tool-runner';
 import { DeviceConnection } from '@/components/device-connection';
 import WorkspaceShell from '@/components/workspace-shell';
 
+type FeedFilter = 'おすすめ' | '今使える' | '導入候補';
+
 const readyTools = catalog.filter((tool) => tool.status === 'ready');
-const recommended = readyTools.find((tool) => tool.id === 'mr-citations')!;
-const icons = {
+const feedFilters: FeedFilter[] = ['おすすめ', '今使える', '導入候補'];
+const icons: Record<string, LucideIcon> = {
   coconala: BriefcaseBusiness,
   'mr-free-article': FilePenLine,
   'mr-citations': BookOpenCheck,
   'mr-delivery': FileCheck2,
 };
-const filters = ['すべて', '記事制作', '案件・納品支援'] as const;
+const providers: Record<
+  string,
+  { name: string; handle: string; initial: string }
+> = {
+  coconala: { name: 'Sky 案件判断役', handle: '@sky_case', initial: '案' },
+  'mr-free-article': {
+    name: 'Sky 記事編集役',
+    handle: '@sky_editor',
+    initial: '編',
+  },
+  'mr-citations': {
+    name: 'Sky 出典整理役',
+    handle: '@sky_sources',
+    initial: '出',
+  },
+  'mr-delivery': {
+    name: 'Sky 納品確認役',
+    handle: '@sky_delivery',
+    initial: '納',
+  },
+  'faster-whisper': { name: 'SYSTRAN', handle: '@systran', initial: 'S' },
+  'transformers-js': {
+    name: 'Hugging Face',
+    handle: '@huggingface',
+    initial: 'H',
+  },
+  playwright: { name: 'Microsoft', handle: '@microsoft', initial: 'M' },
+};
+function providerFor(tool: Automation) {
+  return (
+    providers[tool.id] ?? {
+      name: 'Sky ツール案内',
+      handle: '@sky_tools',
+      initial: 'M',
+    }
+  );
+}
+
+function statusFor(tool: Automation) {
+  if (tool.status === 'candidate')
+    return {
+      label: '導入候補',
+      detail: 'Skyからの実行は未対応',
+      className: 'is-candidate',
+    };
+  if (tool.runner === 'delivery-local')
+    return {
+      label: 'PC接続後',
+      detail: '利用者のPCで実行',
+      className: 'is-connect',
+    };
+  return {
+    label: '今使える',
+    detail: 'ブラウザ内で実行',
+    className: 'is-ready',
+  };
+}
+
+function roleFor(tool: Automation) {
+  return (
+    skyRoles.find((role) => role.toolId === tool.id)?.label ?? 'ツール案内役'
+  );
+}
 
 export default function SkyWorkspace() {
   const [query, setQuery] = useState('');
-  const [filter, setFilter] = useState<string>('すべて');
+  const [filter, setFilter] = useState<FeedFilter>('おすすめ');
   const [selected, setSelected] = useState<Automation | null>(null);
   const [deviceOpen, setDeviceOpen] = useState(false);
   const [running, setRunning] = useState(false);
-  const tools = readyTools.filter(
-    (tool) =>
-      (filter === 'すべて' || tool.category === filter) &&
-      `${tool.name} ${tool.description} ${tool.category}`
-        .toLowerCase()
-        .includes(query.trim().toLowerCase()),
-  );
+  const [requestText, setRequestText] = useState('');
+  const [routedTool, setRoutedTool] = useState<Automation | null>(null);
+  const [routeMessage, setRouteMessage] = useState('');
+
+  const visibleTools = catalog.filter((tool) => {
+    const matchesFilter =
+      filter === 'おすすめ' ||
+      (filter === '今使える' && tool.status === 'ready') ||
+      (filter === '導入候補' && tool.status === 'candidate');
+    const provider = providerFor(tool);
+    const text =
+      tool.name +
+      ' ' +
+      tool.description +
+      ' ' +
+      tool.category +
+      ' ' +
+      provider.name;
+    return (
+      matchesFilter && text.toLowerCase().includes(query.trim().toLowerCase())
+    );
+  });
+
+  function primaryAction(tool: Automation) {
+    if (tool.runner === 'delivery-local') {
+      setDeviceOpen(true);
+      return;
+    }
+    setSelected(tool);
+  }
+
+  function chooseRole(tool: Automation, request = '') {
+    setRoutedTool(tool);
+    setRouteMessage(
+      request
+        ? `「${request}」は${roleFor(tool)}が進められます。`
+        : `${roleFor(tool)}につなぎました。`,
+    );
+  }
+
+  function submitRequest(event: SyntheticEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const request = requestText.trim();
+    if (!request) return;
+    const role = routeSkyRequest(request);
+    const tool = role
+      ? (catalog.find((item) => item.id === role.toolId) ?? null)
+      : null;
+    if (tool) chooseRole(tool, request);
+    else {
+      setRoutedTool(null);
+      setRouteMessage(
+        'まだ役割を決められません。下の4つから近い役を選んでください。',
+      );
+    }
+  }
+
   return (
     <WorkspaceShell
       running={running}
       title="Sky"
+      contentClassName="sky-main-feed"
       onConnect={() => setDeviceOpen(true)}
     >
-      <div className="rock-page-heading">
-        <div>
-          <p className="rock-eyebrow">SKY · AUTOMATION CONTROL</p>
-          <h1>自動化を選ぶ、動かす、止める。</h1>
-          <p>Skyなら、ツールの条件確認から実行結果まで一か所で追えます。</p>
-        </div>
-        <Link href="/work" className="rock-button rock-button-dark">
-          仕事を進める
-          <ArrowRight size={17} />
-        </Link>
-      </div>
-      <section className="rock-sky-map" aria-labelledby="sky-map-title">
-        <div className="rock-sky-map-copy">
-          <p className="rock-eyebrow">WHAT SKY DOES</p>
-          <h2 id="sky-map-title">ツール置き場ではなく、実行を管理する場所。</h2>
-          <p>
-            Skyは、自動化ツールごとに必要な権限・料金・実行場所を見せ、
-            同意した仕事だけを端末・PC・クラウドへ送り、停止と結果確認までつなぎます。
-          </p>
-        </div>
-        <ol className="rock-sky-flow" aria-label="Skyで自動化を使う流れ">
-          <li>
-            <span>1</span>
-            <strong>探す</strong>
-            <small>目的から選ぶ</small>
-          </li>
-          <li>
-            <span>2</span>
-            <strong>確認</strong>
-            <small>権限・料金</small>
-          </li>
-          <li>
-            <span>3</span>
-            <strong>届ける</strong>
-            <small>端末・PC・Cloud</small>
-          </li>
-          <li>
-            <span>4</span>
-            <strong>制御</strong>
-            <small>実行・停止</small>
-          </li>
-          <li>
-            <span>5</span>
-            <strong>受け取る</strong>
-            <small>結果・記録</small>
-          </li>
-        </ol>
-        <div className="rock-sky-inventory" aria-label="Skyの現在の収録状況">
-          <div>
-            <strong>{readyTools.length}</strong>
-            <span>Web / PCで使用可能</span>
-          </div>
-          <div>
-            <strong>{catalog.length - readyTools.length}</strong>
-            <span>OSS導入候補</span>
-          </div>
-          <div>
-            <strong>6</strong>
-            <span>native OS内蔵・9バージョン</span>
-          </div>
-        </div>
-      </section>
-      <div className="rock-start-grid">
-        <section className="rock-first-task" aria-labelledby="first-task-title">
-          <div className="rock-feature-tag">
-            <span className="rock-small-square" />
-            <span>はじめての方に</span>
-            <span>ブラウザで完結</span>
-          </div>
-          <div className="rock-feature-body">
-            <div>
-              <h2 id="first-task-title">
-                ばらばらの出典を、
-                <br />
-                読みやすい一覧に。
-              </h2>
-              <p>
-                文章を貼り付けるだけで、重複したリンクを整理。
-                <br className="rock-desktop-break" />
-                サインイン後、サンプルから試せます。
-              </p>
-              <button
-                className="rock-button rock-button-dark"
-                onClick={() => setSelected(recommended)}
-              >
-                出典整理を試す
-                <ArrowUpRight size={18} />
-              </button>
+      <div className="sky-feed-layout">
+        <section className="sky-feed-column" aria-labelledby="sky-feed-title">
+          <header className="sky-feed-header">
+            <div className="sky-feed-title-row">
+              <div>
+                <h1 id="sky-feed-title">Sky</h1>
+                <p>頼むだけ。合う役が、その仕事を進めます。</p>
+              </div>
+              <Link href="/sky/publish" aria-label="Skyにツールを掲載">
+                <PackagePlus size={20} />
+              </Link>
             </div>
-            <div className="rock-feature-symbol" aria-hidden="true">
-              <BookOpenCheck size={78} strokeWidth={1.1} />
-            </div>
-          </div>
-          <div className="rock-feature-footer">
-            <span>
-              <ShieldCheck size={15} />
-              外部APIへの本文送信なし
-            </span>
-            <span>追加API料金なし</span>
-          </div>
-        </section>
-        <section className="rock-quickstart" aria-labelledby="quickstart-title">
-          <div className="rock-section-top">
-            <h2 id="quickstart-title">最初の結果まで</h2>
-            <span>3 STEPS</span>
-          </div>
-          <ol>
-            <li>
-              <span>01</span>
-              <div>
-                <strong>自分の作業に合うツールを選ぶ</strong>
-                <p>使う場所と必要な準備を確認。</p>
-              </div>
-            </li>
-            <li>
-              <span>02</span>
-              <div>
-                <strong>入力して、実行する</strong>
-                <p>まずはサンプルでも大丈夫。</p>
-              </div>
-            </li>
-            <li>
-              <span>03</span>
-              <div>
-                <strong>確認して、手元に保存</strong>
-                <p>結果はコピーかファイルで保存。</p>
-              </div>
-            </li>
-          </ol>
-          <Link href="/work">
-            複数の手順をまとめて進める
-            <ChevronRight size={17} />
-          </Link>
-        </section>
-      </div>
-      <section className="sky-timeline" aria-labelledby="sky-timeline-title">
-        <div className="sky-timeline-heading">
-          <div>
-            <p className="rock-eyebrow">SKY TIMELINE</p>
-            <h2 id="sky-timeline-title">
-              流れてきた自動化を、状態を見て接続。
-            </h2>
-            <p>使える、接続が必要、導入候補。違いを隠さず時系列で並べます。</p>
-          </div>
-          <Link href="/sky/publish" className="rock-button rock-button-subtle">
-            <PackagePlus size={17} />
-            ツールを掲載
-          </Link>
-        </div>
-        <div className="sky-timeline-feed">
-          <article className="sky-timeline-item is-ready">
-            <span className="sky-timeline-dot">
-              <Check size={15} />
-            </span>
-            <div className="sky-timeline-copy">
-              <div>
-                <time>今すぐ</time>
-                <span>ブラウザで使用可能</span>
-              </div>
-              <h3>出典整理ツール</h3>
-              <p>外部APIへ本文を送らず、この画面ですぐ実行できます。</p>
-            </div>
-            <button onClick={() => setSelected(recommended)}>
-              使う
-              <ArrowRight size={16} />
-            </button>
-          </article>
-          <article className="sky-timeline-item is-connect">
-            <span className="sky-timeline-dot">
-              <PlugZap size={15} />
-            </span>
-            <div className="sky-timeline-copy">
-              <div>
-                <time>接続後</time>
-                <span>PCで使用可能</span>
-              </div>
-              <h3>納品記録の照合</h3>
-              <p>接続アプリを起動し、手元のPCで処理します。</p>
-            </div>
-            <button onClick={() => setDeviceOpen(true)}>
-              PC接続
-              <ArrowRight size={16} />
-            </button>
-          </article>
-          <article className="sky-timeline-item is-review">
-            <span className="sky-timeline-dot">
-              <Clock3 size={15} />
-            </span>
-            <div className="sky-timeline-copy">
-              <div>
-                <time>審査前</time>
-                <span>OSS導入候補</span>
-              </div>
-              <h3>faster-whisper</h3>
-              <p>音声文字起こし候補。Skyからの取得・実行はまだできません。</p>
-            </div>
-            <button
-              onClick={() =>
-                setSelected(
-                  catalog.find((tool) => tool.id === 'faster-whisper') ?? null,
-                )
-              }
+            <Tabs
+              value={filter}
+              onValueChange={(value) => setFilter(value as FeedFilter)}
             >
-              詳細
-              <ArrowRight size={16} />
-            </button>
-          </article>
-        </div>
-        <p className="sky-timeline-note">
-          MCP掲載ツールは、接続先・権限・料金・データ利用をSkyが確認してから、このタイムラインへ追加します。
-        </p>
-      </section>
-      <section className="rock-tool-section" aria-labelledby="tools-title">
-        <div className="rock-section-heading">
-          <div>
-            <h2 id="tools-title">
-              Skyで今使えるツール<span>{readyTools.length}</span>
-            </h2>
-            <p>用途に合わせて、必要なものから。</p>
-          </div>
-          <label className="rock-search">
+              <TabsList
+                className="sky-feed-tabs"
+                aria-label="Sky Timelineの表示"
+              >
+                {feedFilters.map((item) => (
+                  <TabsTrigger key={item} value={item}>
+                    {item}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </header>
+
+          <section
+            className="sky-assistant"
+            aria-labelledby="sky-assistant-title"
+          >
+            <div className="sky-assistant-avatar" aria-hidden="true">
+              S
+            </div>
+            <div className="sky-assistant-body">
+              <h2 id="sky-assistant-title">Skyに頼む</h2>
+              <form className="sky-assistant-composer" onSubmit={submitRequest}>
+                <input
+                  value={requestText}
+                  onChange={(event) => setRequestText(event.target.value)}
+                  placeholder="いま、何を進めたい？"
+                  aria-label="Skyへの依頼"
+                />
+                <button
+                  disabled={!requestText.trim()}
+                  aria-label="Skyへ依頼を送る"
+                >
+                  <Send size={17} />
+                </button>
+              </form>
+              <div className="sky-role-list" aria-label="Skyの役割">
+                {skyRoles.map((role) => {
+                  const tool = catalog.find((item) => item.id === role.toolId)!;
+                  return (
+                    <button key={role.toolId} onClick={() => chooseRole(tool)}>
+                      {role.label}
+                    </button>
+                  );
+                })}
+              </div>
+              {routeMessage && (
+                <output className="sky-route-reply">
+                  <MessageCircle size={17} />
+                  <div>
+                    <strong>Sky</strong>
+                    <p>{routeMessage}</p>
+                  </div>
+                  {routedTool && (
+                    <button onClick={() => primaryAction(routedTool)}>
+                      {routedTool.runner === 'delivery-local'
+                        ? 'PC接続へ'
+                        : 'この役に頼む'}
+                      <ArrowRight size={15} />
+                    </button>
+                  )}
+                </output>
+              )}
+            </div>
+          </section>
+
+          <div className="sky-mobile-search">
             <Search size={18} />
-            <span className="sr-only">ツールを検索</span>
             <input
               type="search"
-              placeholder="ツール名・やりたいことで検索"
+              aria-label="Skyを検索"
+              placeholder="ツールを検索"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+            />
+            {query && (
+              <button aria-label="検索をクリア" onClick={() => setQuery('')}>
+                <X size={16} />
+              </button>
+            )}
+          </div>
+
+          <div className="sky-feed" aria-live="polite">
+            {visibleTools.map((tool) => {
+              const Icon = icons[tool.id] ?? Link2;
+              const provider = providerFor(tool);
+              const status = statusFor(tool);
+              return (
+                <article className="sky-feed-post" key={tool.id}>
+                  <div
+                    className={'sky-provider-avatar rock-icon-' + tool.color}
+                    aria-hidden="true"
+                  >
+                    {provider.initial}
+                  </div>
+                  <div className="sky-post-body">
+                    <div className="sky-post-author">
+                      <strong>{provider.name}</strong>
+                      {tool.status === 'ready' && (
+                        <BadgeCheck
+                          className="sky-role-verified"
+                          size={16}
+                          aria-label="Skyで利用可能"
+                        />
+                      )}
+                      <span>{provider.handle}</span>
+                      <span>·</span>
+                      <span>{status.label}</span>
+                    </div>
+                    <button
+                      className="sky-post-open"
+                      onClick={() => setSelected(tool)}
+                    >
+                      <span
+                        className={'rock-tool-icon rock-icon-' + tool.color}
+                      >
+                        <Icon size={22} strokeWidth={1.7} />
+                      </span>
+                      <span>
+                        <small>{tool.category}</small>
+                        <strong>{tool.name}</strong>
+                      </span>
+                      <ArrowRight size={18} />
+                    </button>
+                    <p className="sky-post-description">{tool.description}</p>
+                    <div className="sky-post-status-line">
+                      <span className={'sky-status-dot ' + status.className} />
+                      <strong>{status.label}</strong>
+                      <span>{status.detail}</span>
+                    </div>
+                    <div className="sky-post-facts">
+                      <span>{tool.environment}</span>
+                      <span>
+                        {tool.status === 'ready'
+                          ? '追加API料金なし'
+                          : '導入前に条件確認'}
+                      </span>
+                      <span>{tool.license}</span>
+                    </div>
+                    <div className="sky-post-actions">
+                      <button onClick={() => setSelected(tool)}>
+                        <SlidersHorizontal size={16} />
+                        条件を見る
+                      </button>
+                      <button
+                        className="sky-post-primary"
+                        onClick={() => primaryAction(tool)}
+                      >
+                        {tool.status === 'candidate'
+                          ? '詳細を見る'
+                          : tool.runner === 'delivery-local'
+                            ? 'PCを接続'
+                            : '使ってみる'}
+                        <ArrowRight size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+            {visibleTools.length === 0 && (
+              <div className="sky-feed-empty">
+                <Search size={25} />
+                <strong>見つかりませんでした</strong>
+                <p>検索を消すか、別のタブを選んでください。</p>
+                <button
+                  onClick={() => {
+                    setQuery('');
+                    setFilter('おすすめ');
+                  }}
+                >
+                  すべて表示
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <aside className="sky-feed-rail" aria-label="Skyの検索と接続状況">
+          <label className="sky-rail-search">
+            <Search size={18} />
+            <span className="sr-only">Skyを検索</span>
+            <input
+              type="search"
+              placeholder="Skyを検索"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
@@ -297,131 +388,49 @@ export default function SkyWorkspace() {
               </button>
             )}
           </label>
-        </div>
-        <Tabs
-          value={filter}
-          onValueChange={(value) => setFilter(String(value))}
-          className="rock-tool-tabs"
-        >
-          <TabsList aria-label="ツールの用途" className="rock-filter-list">
-            {filters.map((item) => (
-              <TabsTrigger key={item} value={item}>
-                {item}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {filters.map((item) => (
-            <TabsContent key={item} value={item}>
-              <div className="rock-tool-grid">
-                {tools.map((tool) => {
-                  const Icon = icons[tool.id as keyof typeof icons] ?? Link2;
-                  return (
-                    <article className="rock-tool-card" key={tool.id}>
-                      <div className="rock-card-top">
-                        <span
-                          className={`rock-tool-icon rock-icon-${tool.color}`}
-                        >
-                          <Icon size={24} strokeWidth={1.6} />
-                        </span>
-                        <span className="rock-execution-label">
-                          {tool.runner === 'delivery-local' ? (
-                            <Laptop size={14} />
-                          ) : (
-                            <Check size={14} />
-                          )}
-                          {tool.runner === 'delivery-local'
-                            ? 'PCで実行'
-                            : 'ブラウザで実行'}
-                        </span>
-                      </div>
-                      <p className="rock-tool-category">{tool.category}</p>
-                      <h3>{tool.name}</h3>
-                      <p className="rock-tool-description">
-                        {tool.description}
-                      </p>
-                      <div className="rock-card-bottom">
-                        <span>
-                          Mr. <span>· {tool.license}</span>
-                        </span>
-                        <button
-                          aria-label={`${tool.name}を開く`}
-                          onClick={() => setSelected(tool)}
-                        >
-                          {tool.runner === 'delivery-local'
-                            ? '準備を確認'
-                            : '使ってみる'}
-                          <ArrowRight size={17} />
-                        </button>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-              {tools.length === 0 && (
-                <div className="rock-search-empty" aria-live="polite">
-                  <Search size={25} />
-                  <h3>条件に合うツールが見つかりません</h3>
-                  <p>別の言葉で検索するか、絞り込みを解除してください。</p>
-                  <button
-                    className="rock-button rock-button-subtle"
-                    onClick={() => {
-                      setQuery('');
-                      setFilter('すべて');
-                    }}
-                  >
-                    すべてのツールを表示
-                  </button>
-                </div>
-              )}
-            </TabsContent>
-          ))}
-        </Tabs>
-      </section>
-      <div className="rock-secondary-grid">
-        <Link href="/rockstaros" className="rock-os-link">
-          <span className="rock-os-monogram">
-            R<span>1.0</span>
-          </span>
-          <div>
-            <span className="rock-eyebrow">THE NEXT WORKSPACE</span>
-            <h2>RockstarOSを、Macの仮想端末で。</h2>
-            <p>Sky・合成Wallet・Gameの操作例と、開発版の導入案内。</p>
-          </div>
-          <ArrowUpRight size={23} />
-        </Link>
-        <div className="rock-help-link">
-          <CircleHelp size={23} />
-          <div>
-            <h2>PCで使いたいときは</h2>
-            <p>接続方法と、使える4つのツールを確認。</p>
-            <button onClick={() => setDeviceOpen(true)}>
-              PC接続の準備を見る
+          <section className="sky-rail-card sky-rail-publish">
+            <PackagePlus size={24} />
+            <h2>ツールをSkyに掲載</h2>
+            <p>
+              必要情報を入れて審査へ。MCPの能力はSkyが接続先から確認します。
+            </p>
+            <Link href="/sky/publish">
+              掲載を始める
               <ArrowRight size={16} />
+            </Link>
+          </section>
+          <section className="sky-rail-card">
+            <h2>現在のSky</h2>
+            <div className="sky-rail-count">
+              <span>今使える</span>
+              <strong>{readyTools.length}</strong>
+            </div>
+            <div className="sky-rail-count">
+              <span>導入候補</span>
+              <strong>{catalog.length - readyTools.length}</strong>
+            </div>
+            <button
+              className="sky-rail-connect"
+              onClick={() => setDeviceOpen(true)}
+            >
+              <Laptop size={17} />
+              PCを接続
+              <ArrowRight size={15} />
             </button>
-          </div>
-        </div>
+          </section>
+          <section className="sky-rail-trust">
+            <ShieldCheck size={18} />
+            <p>
+              権限・料金・実行場所を確認してから接続します。候補は実行できるツールに数えません。
+            </p>
+          </section>
+          <Link href="/rockstaros" className="sky-rail-os">
+            RockstarOSについて
+            <ArrowUpRight size={15} />
+          </Link>
+        </aside>
       </div>
-      <details className="rock-candidates">
-        <summary>
-          追加のOSS導入候補を見る{' '}
-          <span>
-            {catalog.length - readyTools.length}件 · Skyからの実行は未対応
-          </span>
-        </summary>
-        <div>
-          {catalog
-            .filter((tool) => tool.status === 'candidate')
-            .map((tool) => (
-              <button key={tool.id} onClick={() => setSelected(tool)}>
-                <span>
-                  <strong>{tool.name}</strong>
-                  <span>{tool.description}</span>
-                </span>
-                <ArrowUpRight size={17} />
-              </button>
-            ))}
-        </div>
-      </details>
+
       <Dialog
         open={selected !== null}
         onOpenChange={(open) => {
@@ -490,6 +499,7 @@ export default function SkyWorkspace() {
           )}
         </DialogContent>
       </Dialog>
+
       <Dialog open={deviceOpen} onOpenChange={setDeviceOpen}>
         <DialogContent className="rock-tool-dialog">
           <DialogTitle className="rock-dialog-title">PCを接続する</DialogTitle>
