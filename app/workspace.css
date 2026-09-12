@@ -4886,6 +4886,8 @@
     min-height: 38px;
   }
   .sky-tool-dialog {
+    --tw-translate-x: 0px !important;
+    --tw-translate-y: 0px !important;
     top: auto !important;
     right: 0 !important;
     bottom: 0 !important;
@@ -4898,7 +4900,7 @@
     border-bottom: 0 !important;
     border-left: 0 !important;
     border-radius: 20px 20px 0 0 !important;
-    translate: none !important;
+    translate: 0 0 !important;
     transform: none !important;
   }
 }
