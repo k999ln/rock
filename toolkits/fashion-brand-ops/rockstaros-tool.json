@@ -1,0 +1,76 @@
+{
+  "schema": "rockstaros-hub-tool/1",
+  "id": "org.rockstar.fashion-brand-ops",
+  "name": "Instagram運用・受注型ブランド管理",
+  "version": "0.2.0",
+  "status": "ready",
+  "description": "ブランド方針と商品デザインから、Instagram集客、DM、受注、決済、制作・発送、分析までを承認付きで管理します。",
+  "runtime": {
+    "kind": "local_mcp",
+    "transports": ["stdio", "streamable_http"],
+    "command": "node",
+    "args": ["src/server.mjs"],
+    "httpCommand": ["node", "src/http.mjs"],
+    "minimumNode": "22.13.0"
+  },
+  "capabilities": [
+    "brand.intake",
+    "market.assess",
+    "creative.generate",
+    "instagram.accounts",
+    "instagram.content_plan",
+    "instagram.draft",
+    "instagram.schedule",
+    "instagram.publish",
+    "instagram.insights",
+    "instagram.dm.classify",
+    "instagram.dm.reply",
+    "order.manage",
+    "payment.request",
+    "payment.reconcile",
+    "fulfillment.manage",
+    "notification.send",
+    "analytics.feedback",
+    "campaign.autopilot",
+    "sales.concierge",
+    "production.cockpit",
+    "executive.dashboard"
+  ],
+  "providers": {
+    "creative": ["mock", "higgsfield"],
+    "social": ["mock", "meta-graph", "instagram-http"],
+    "payment": ["mock", "stripe"],
+    "notification": ["mock", "webhook"]
+  },
+  "approval": {
+    "mode": "per_effect_signed_grant",
+    "requiredFor": [
+      "product.price_change",
+      "creative.generate",
+      "social.schedule",
+      "social.publish",
+      "social.create_ad",
+      "dm.reply",
+      "payment.create_link",
+      "payment.send_invoice",
+      "payment.refund",
+      "notification.send"
+    ],
+    "unknownOutcome": "reconciliation_required"
+  },
+  "data": {
+    "storage": "tenant_scoped_sqlite",
+    "credentials": "references_only",
+    "secretFieldsPersisted": false
+  },
+  "commercial": {
+    "productPrice": "not_configured",
+    "externalProviderCosts": "shown_before_approval",
+    "liveBilling": false
+  },
+  "source": {
+    "repository": "https://github.com/k999ln/rock",
+    "path": "toolkits/fashion-brand-ops",
+    "license": "repository-license"
+  }
+}

@@ -1,8 +1,47 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "RockstarOS 1.0の現進捗を再監査（実装状態は据え置き）",
-  "nextAction": "現在の入口はdocs/current-state-20260911.mdの2026-09-12節。lock由来のdevice/lunch/hook/target検証と未確認SKUのfull-build fail-closed guardを実装し、local phone tests 10件と総合verify（93 tests・build・API 143 assertions）を確認済み。直近相談のPixel 7/pantherと既存設定のPixel 10/frankelが不一致のため、実機の型番/SKUを読取り専用で確認して対象を一つに固定する。その後、未承認のクラウド計画（推奨48 vCPU/96GiB/600GiB、初回計画20〜30 USD）を確定し、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/GameのAndroid移植へ進む。本人限定Sites QA、license/production署名、取消実停止/RSS、CM、正式配布受入、一般公開/main mergeも未完了。",
+  "milestone": "Fashion Brand Ops v0.2.0の目標駆動運営・接客・制作機能を実装し、Sky画面・全体検証・GitHub CIに合格",
+  "nextAction": "Meta OAuthのApp ID/secret、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付きの限定テスト投稿へ進む。実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。",
   "tasks": [
+    {
+      "id": "SKY01",
+      "title": "旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化",
+      "status": "done",
+      "dependsOn": [
+        "B01"
+      ],
+      "evidence": [
+        "docs/sky.md",
+        "components/sky-workspace.tsx",
+        "scripts/check-sky.mjs"
+      ]
+    },
+    {
+      "id": "SKY02",
+      "title": "ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装",
+      "status": "done",
+      "dependsOn": [
+        "SKY01"
+      ],
+      "evidence": [
+        "app/sky/publish/page.tsx",
+        "components/sky-publisher-form.tsx",
+        "app/api/sky/submissions/route.ts",
+        "tests/sky-submission.test.mjs"
+      ]
+    },
+    {
+      "id": "SKY03",
+      "title": "MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存",
+      "status": "done",
+      "dependsOn": [
+        "SKY01"
+      ],
+      "evidence": [
+        "docs/sky-mcp-architecture.md",
+        "systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md"
+      ]
+    },
     {
       "id": "R01",
       "title": "4参照元の採用判断と事業方針の固定",
@@ -107,6 +146,19 @@
       ]
     },
     {
+      "id": "DSP01",
+      "title": "共通Core・機種別Device Support Package・4提供区分の設計と検査",
+      "status": "done",
+      "dependsOn": [
+        "OS01"
+      ],
+      "evidence": [
+        "docs/device-support-architecture.md",
+        "data/device-support-matrix.json",
+        "scripts/check-device-support.mjs"
+      ]
+    },
+    {
       "id": "OS02",
       "title": "【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認",
       "status": "in_progress",
@@ -191,7 +243,7 @@
     },
     {
       "id": "B01",
-      "title": "Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存",
+      "title": "Sky＋Walletの製品ベース・branch監査・プロンプト規約を保存",
       "status": "done",
       "dependsOn": [
         "G01"
@@ -220,7 +272,7 @@
     },
     {
       "id": "B02",
-      "title": "既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張",
+      "title": "既存商品のSky実利用と不便の改善・実行/料金/権利の条件拡張",
       "status": "in_progress",
       "dependsOn": [
         "B04"
@@ -229,7 +281,10 @@
         "docs/prompts/hub-wallet-next.md",
         "docs/pc-citations-adapter.md",
         "docs/evidence/pc-citations/integration.json",
-        "docs/evidence/os-base/business-backup-acceptance-b8287bc.json"
+        "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
+        "docs/sky-rockstar-ledger-20260912.md",
+        "docs/evidence/sky-rockstar-ledger/integration.json",
+        "tests/rockstar-ledger.test.mjs"
       ]
     },
     {
@@ -246,7 +301,7 @@
     },
     {
       "id": "B05",
-      "title": "Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録",
+      "title": "Wallet連携基礎を使ったSky縦断再試験・PC比較と未実証の端末価値を記録",
       "status": "in_progress",
       "dependsOn": [
         "B02"
@@ -406,7 +461,7 @@
     },
     {
       "id": "N04",
-      "title": "BlackBerry実機だけでHub取得・実行・更新・復旧",
+      "title": "BlackBerry実機だけでSky取得・実行・更新・復旧",
       "status": "planned",
       "dependsOn": [
         "N01",
@@ -490,7 +545,7 @@
     },
     {
       "id": "LCH04",
-      "title": "Sites履歴のコード統合・新規本人限定サイト・Hub改善",
+      "title": "Sites履歴のコード統合・新規本人限定サイト・Sky改善",
       "status": "in_progress",
       "dependsOn": [],
       "evidence": [
@@ -527,6 +582,51 @@
       "evidence": [
         "docs/launch-readiness-20260910.md"
       ]
+    },
+    {
+      "id": "FB01",
+      "title": "Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "docs/fashion-brand-ops-integration.md"
+      ]
+    },
+    {
+      "id": "FB02",
+      "title": "売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成",
+      "status": "done",
+      "dependsOn": [
+        "FB01"
+      ],
+      "evidence": [
+        "toolkits/fashion-brand-ops/src/service.mjs",
+        "toolkits/fashion-brand-ops/test/service.test.mjs"
+      ]
+    },
+    {
+      "id": "FB03",
+      "title": "DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成",
+      "status": "done",
+      "dependsOn": [
+        "FB01"
+      ],
+      "evidence": [
+        "toolkits/fashion-brand-ops/src/service.mjs",
+        "toolkits/fashion-brand-ops/test/service.test.mjs"
+      ]
+    },
+    {
+      "id": "FB04",
+      "title": "入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理",
+      "status": "done",
+      "dependsOn": [
+        "FB01"
+      ],
+      "evidence": [
+        "toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql",
+        "toolkits/fashion-brand-ops/test/service.test.mjs"
+      ]
     }
   ],
   "phaseGates": [
@@ -560,7 +660,7 @@
     {
       "id": "B02-NATIVE",
       "task": "B02",
-      "title": "既存native商品1件をHubで実処理・保存",
+      "title": "既存native商品1件をSkyで実処理・保存",
       "status": "done",
       "dependsOn": [
         "V01-BOOT"
@@ -821,7 +921,17 @@
     },
     "targetDiscussion": "Current consultation mentions Pixel 7 / panther; current source lock remains Pixel 10 / frankel until exact model and SKU are read-only confirmed",
     "recommendedBuildEnvironment": "DigitalOcean CPU-Optimized Regular 48 vCPU / 96 GiB / 600 GiB / Ubuntu 24.04 x86_64; Google Cloud is the alternative for detachable persistent storage",
-    "latestRequest": "Record the current audited progress in GitHub; not cloud spending, device flashing, public release or main merge authorization"
+    "latestRequest": "Adopt shared Core plus per-model Device Support Packages and separate native OS, experimental GSI, client-only and unsupported delivery modes; no cloud spending or physical flash authorization"
+  },
+  "deviceSupportArchitecture": {
+    "status": "DESIGN_AND_VALIDATION_IMPLEMENTED",
+    "document": "docs/device-support-architecture.md",
+    "matrix": "data/device-support-matrix.json",
+    "validation": "npm run device-support:check",
+    "physicalTargetsSupported": 0,
+    "flashReadyTargets": 0,
+    "firstPhysicalTarget": null,
+    "cloudSpendApproved": false
   },
   "currentStateDocument": "docs/current-state-20260911.md"
 }

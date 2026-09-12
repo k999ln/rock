@@ -1,4 +1,4 @@
-import HubWorkspace from '@/components/hub-workspace';
+import SkyWorkspace from '@/components/sky-workspace';
 export default function Home() {
-  return <HubWorkspace />;
+  return <SkyWorkspace />;
 }

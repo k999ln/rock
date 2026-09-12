@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-12",
+  "scope": "local Sky web and Rockstar Ledger on the same PC",
+  "source": {
+    "rockstarLedgerCommit": "0d3f29f3f8986669ac6516cea252aa2fa506a1ef",
+    "distributionSha256": "abfdbbc884fb0723f74a1f4ece73cbe755104312eb1ec51e4f4f83bdb0224651"
+  },
+  "checks": {
+    "catalogEntryVisible": true,
+    "categoryVisible": true,
+    "localLedgerConnected": true,
+    "currencyTotalsShownSeparately": true,
+    "actionAlertsShown": true,
+    "subscriptionRowsShown": true,
+    "errorOverlay": false,
+    "consoleErrors": 0,
+    "pythonUnitTests": 3,
+    "skyNodeTests": 95,
+    "workerApiAssertions": 143,
+    "productionBuild": "pass"
+  },
+  "privacy": {
+    "personalDatabaseCommitted": false,
+    "personalScreenshotCommitted": false,
+    "skyAccess": "read-only"
+  },
+  "notProven": [
+    "HTTPS hosted Sky to loopback connection",
+    "native Sky MCP broker persistence",
+    "Wallet cost posting",
+    "automated cancellation, payment, or tax filing"
+  ],
+  "result": "PASS_LOCAL_PC"
+}
