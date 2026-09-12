@@ -56,6 +56,13 @@
       "evidence": ["components/sky-workspace.tsx", "app/workspace.css"]
     },
     {
+      "id": "SKY06",
+      "title": "スマホ幅でSky実行Dialogが左へずれる回帰を修正",
+      "status": "done",
+      "dependsOn": ["SKY05"],
+      "evidence": ["app/workspace.css", "project.md"]
+    },
+    {
       "id": "R01",
       "title": "4参照元の採用判断と事業方針の固定",
       "status": "done",
