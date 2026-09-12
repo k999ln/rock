@@ -40,6 +40,37 @@ class Hub:
             ''')
             c.execute("UPDATE hub_jobs SET status='interrupted',error='Host restarted; submit a new explicit retry',finished=? WHERE status IN ('running','cancel_requested')", (time.time(),))
 
+    def close(self):
+        """Stop owned workers and durably fence unfinished work.
+
+        A service manager may stop the HTTP process while a recipe worker is
+        outside SQLite.  Do not leave that child running after the control
+        plane has disappeared, and do not let a caller replay an uncertain
+        effect with the original idempotency key after restart.
+        """
+        with self.lock:
+            processes = list(self.processes.values())
+            for process in processes:
+                try:
+                    if process.poll() is None:
+                        process.kill()
+                except ProcessLookupError:
+                    pass
+            for process in processes:
+                try:
+                    process.wait(timeout=3)
+                except (OSError, subprocess.TimeoutExpired):
+                    pass
+            with self.connect() as c:
+                c.execute(
+                    "UPDATE hub_jobs SET status='interrupted',"
+                    "error='Host stopped; submit a new explicit retry',finished=? "
+                    "WHERE status IN ('running','cancel_requested')",
+                    (time.time(),),
+                )
+            self.processes.clear()
+            self._pending_stops.clear()
+
     @contextmanager
     def connect(self):
         shared = getattr(self._request_context, 'connection', None)

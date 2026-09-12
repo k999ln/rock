@@ -5,6 +5,8 @@ import argparse
 import hmac
 import json
 import secrets
+import signal
+import sqlite3
 from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -19,7 +21,10 @@ MAX_REQUEST = 524288
 
 
 class HubServer(ThreadingHTTPServer):
-    daemon_threads = True
+    # Requests are bounded by body/database/worker deadlines. Waiting for them
+    # prevents a shutdown race in which a handler could spawn a worker after
+    # the final owned-process sweep.
+    daemon_threads = False
 
     def __init__(self, port, state_dir, registry):
         self.session = secrets.token_urlsafe(32)
@@ -42,6 +47,24 @@ class HubServer(ThreadingHTTPServer):
             except (OSError, ValueError, TypeError):
                 rejected += 1
         return result, rejected
+
+    def health(self):
+        """Check both durable stores without exposing user or job data."""
+        try:
+            self.hub.state()
+            self.wallet.snapshot()
+        except (OSError, ValueError, sqlite3.Error):
+            return 503, {'status': 'unavailable'}
+        return 200, {
+            'status': 'ok',
+            'service': 'rockstaros-development-hub',
+            'scope': 'loopback',
+            'simulation_only': True,
+        }
+
+    def server_close(self):
+        super().server_close()
+        self.hub.close()
 
 
 class HubHandler(BaseHTTPRequestHandler):
@@ -80,6 +103,9 @@ class HubHandler(BaseHTTPRequestHandler):
         if not self.host_valid():
             return self.send(403, {'error': 'invalid host'})
         path = urlsplit(self.path).path
+        if path == '/api/health':
+            status, payload = self.server.health()
+            return self.send(status, payload)
         if path == '/':
             return self.send(200, (WEB / 'index.html').read_bytes(), 'text/html; charset=utf-8', cookie=True)
         if path in ('/app.js', '/style.css'):
@@ -163,6 +189,12 @@ def main(argv=None):
     p.add_argument('--registry', type=Path, default=Path('examples/registry'))
     a = p.parse_args(argv)
     server = HubServer(a.port, a.state, a.registry)
+    previous = signal.getsignal(signal.SIGTERM)
+
+    def stop(*_):
+        raise KeyboardInterrupt
+
+    signal.signal(signal.SIGTERM, stop)
     print(f'Rock star os DEVELOPMENT Hub: http://127.0.0.1:{server.server_port}', flush=True)
     try:
         server.serve_forever()
@@ -170,6 +202,7 @@ def main(argv=None):
         pass
     finally:
         server.server_close()
+        signal.signal(signal.SIGTERM, previous)
     return 0
 
 

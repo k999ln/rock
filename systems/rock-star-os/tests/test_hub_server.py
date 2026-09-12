@@ -3,12 +3,15 @@ import copy
 import http.client
 import json
 import shutil
+import sqlite3
 import tempfile
 import threading
 import time
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
+from blackberryrock import hub_server
 from blackberryrock.hub_server import HubServer, MAX_REQUEST
 from blackberryrock.packages import TEST_PUBLISHER, canonical, digest
 
@@ -90,6 +93,18 @@ class HubAPITest(unittest.TestCase):
         return data
 
     def test_authentication_host_origin_and_response_headers(self):
+        status, health, headers = self.request("GET", "/api/health", authenticated=False)
+        self.assertEqual(status, 200)
+        self.assertEqual(health, {
+            "scope": "loopback",
+            "service": "rockstaros-development-hub",
+            "simulation_only": True,
+            "status": "ok",
+        })
+        self.assertEqual(headers["Cache-Control"], "no-store")
+        with patch.object(self.server.hub, "state", side_effect=sqlite3.DatabaseError("private failure")):
+            status, unavailable, _ = self.request("GET", "/api/health", authenticated=False)
+        self.assertEqual((status, unavailable), (503, {"status": "unavailable"}))
         for path in ("/api/state", "/api/catalog", "/registry/org.rockstar.text-tidy--1.0.0.rock.json"):
             self.assertEqual(self.request("GET", path, authenticated=False)[0], 401)
         self.assertEqual(self.request("GET", "/", headers={"Host": "rebind.invalid"})[0], 403)
@@ -219,3 +234,30 @@ class HubAPITest(unittest.TestCase):
         self.assertEqual((snapshot["available_minor"], snapshot["billed_minor"], snapshot["dispensed_minor"], snapshot["held_minor"]), (3412, 888, 700, 0))
         self.assertEqual(snapshot["ledger_balance_minor"], 0)
         self.assertTrue(snapshot["simulation_only"])
+
+
+class HubMainTest(unittest.TestCase):
+    def test_sigterm_uses_graceful_close_path(self):
+        handlers = {}
+
+        class FakeServer:
+            server_port = 8877
+            closed = False
+
+            def serve_forever(self):
+                handlers[hub_server.signal.SIGTERM](hub_server.signal.SIGTERM, None)
+
+            def server_close(self):
+                self.closed = True
+
+        server = FakeServer()
+
+        def remember(signum, handler):
+            handlers[signum] = handler
+
+        with patch.object(hub_server, "HubServer", return_value=server), \
+                patch.object(hub_server.signal, "getsignal", return_value="previous"), \
+                patch.object(hub_server.signal, "signal", side_effect=remember):
+            self.assertEqual(hub_server.main(["--port", "0"]), 0)
+        self.assertTrue(server.closed)
+        self.assertEqual(handlers[hub_server.signal.SIGTERM], "previous")
