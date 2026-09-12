@@ -26,6 +26,21 @@ const original = {
     '3aa55ef1a17c960808c953ef51fad24a800126ec1a0dd424bf85197e8b3b7eb9',
 };
 
+await test('local production start applies the published migrations before serving', () => {
+  const packageJson = JSON.parse(
+    readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
+  );
+  const viteConfig = readFileSync(
+    new URL('../vite.config.ts', import.meta.url),
+    'utf8',
+  );
+  assert.match(
+    packageJson.scripts.start,
+    /^CI=1 wrangler d1 migrations apply site-creator-d1 --local --config dist\/server\/wrangler\.json && wrangler dev --config dist\/server\/wrangler\.json$/,
+  );
+  assert.match(viteConfig, /migrations_dir: 'drizzle'/);
+});
+
 await test('both published migration filenames and exact SQL bytes stay intact', () => {
   for (const [name, expected] of Object.entries(original))
     assert.equal(hash(name), expected);
