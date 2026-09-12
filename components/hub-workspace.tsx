@@ -14,6 +14,7 @@ import {
   FilePenLine,
   Laptop,
   Link2,
+  WalletCards,
   Search,
   ShieldCheck,
   X,
@@ -37,8 +38,14 @@ const icons = {
   'mr-free-article': FilePenLine,
   'mr-citations': BookOpenCheck,
   'mr-delivery': FileCheck2,
+  'rockstar-ledger': WalletCards,
 };
-const filters = ['すべて', '記事制作', '案件・納品支援'] as const;
+const filters = [
+  'すべて',
+  '記事制作',
+  '案件・納品支援',
+  '経費・契約管理',
+] as const;
 
 export default function HubWorkspace() {
   const [query, setQuery] = useState('');
@@ -193,12 +200,14 @@ export default function HubWorkspace() {
                           <Icon size={24} strokeWidth={1.6} />
                         </span>
                         <span className="rock-execution-label">
-                          {tool.runner === 'delivery-local' ? (
+                          {tool.runner === 'delivery-local' ||
+                          tool.runner === 'subscription-ledger' ? (
                             <Laptop size={14} />
                           ) : (
                             <Check size={14} />
                           )}
-                          {tool.runner === 'delivery-local'
+                          {tool.runner === 'delivery-local' ||
+                          tool.runner === 'subscription-ledger'
                             ? 'PCで実行'
                             : 'ブラウザで実行'}
                         </span>
@@ -210,13 +219,15 @@ export default function HubWorkspace() {
                       </p>
                       <div className="rock-card-bottom">
                         <span>
-                          Mr. <span>· {tool.license}</span>
+                          {tool.origin === 'mr' ? 'Mr.' : 'RockstarOS'}{' '}
+                          <span>· {tool.license}</span>
                         </span>
                         <button
                           aria-label={`${tool.name}を開く`}
                           onClick={() => setSelected(tool)}
                         >
-                          {tool.runner === 'delivery-local'
+                          {tool.runner === 'delivery-local' ||
+                          tool.runner === 'subscription-ledger'
                             ? '準備を確認'
                             : '使ってみる'}
                           <ArrowRight size={17} />

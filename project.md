@@ -1,5 +1,11 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-12 — Skyへ「サブスク顧問」を接続
+
+自動化Hub（Sky）のready商品としてRockstar Ledgerを追加し、同じPCで動くSQLite台帳の月額、要対応、更新日、契約一覧を読み取り専用で表示する画面を実装した。配布ZIP、MIT全文、Codex skill、stdio MCPを同じGitへ収録し、個人の契約・明細DBは収録しない。Skyからのブラウザ接続元はloopback HTTPだけに限定した。
+
+今回はローカルSkyでのPC接続までを対象とし、HTTPS配信版のloopback接続、Native Sky MCP brokerへの常駐、Walletへの費用転記、解約・支払い・申告は未実装のまま保持する。[実装・安全境界・検証](docs/sky-rockstar-ledger-20260912.md)。
+
 ## 2026-09-12 — 現進捗・スマホ不足・クラウド条件を再監査
 
 main `7cdbb5f`とDraft PR #4の候補`c182a5b`を再取得し、PR #4の同HEAD 12 checkが全て成功していることを確認した。ただしスマホcheckはsource preparationで、OS bootではない。41 taskは19 done／15 in progress／7 plannedだが、製品完成率には換算しない。QEMU rc2の内部限定受入、Android P1の2APK、本人限定Siteを保持し、スマホ版は全source取得・vendor生成・Soong build・AndroidへのHub/Wallet/Game移植・production署名・実機flash/boot/OTA/復旧が未完了。[現在の再監査](docs/current-state-20260911.md#2026-09-12--github実装実機版ビルド環境の再監査)／[機械可読snapshot](docs/evidence/launch/progress-audit-20260912.json)。
@@ -266,7 +272,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / RockstarOS 1.0の現進捗を再監査（実装状態は据え置き） / 完了 19/41件
+最終更新: 2026-09-12 / SkyへローカルMCP対応のサブスク顧問を接続 / 完了 19/41件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -288,7 +294,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 | B01 | Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
 | B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
-| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) |
+| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) |
 | B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/hub-wallet-pc-comparison-20260909.md) · [記録](docs/evidence/hub-wallet/b05-pc-machine-20260909/report.json) |
 | D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
@@ -330,7 +336,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 現在の入口はdocs/current-state-20260911.mdの2026-09-12節。lock由来のdevice/lunch/hook/target検証と未確認SKUのfull-build fail-closed guardを実装し、local phone tests 10件と総合verify（93 tests・build・API 143 assertions）を確認済み。直近相談のPixel 7/pantherと既存設定のPixel 10/frankelが不一致のため、実機の型番/SKUを読取り専用で確認して対象を一つに固定する。その後、未承認のクラウド計画（推奨48 vCPU/96GiB/600GiB、初回計画20〜30 USD）を確定し、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/GameのAndroid移植へ進む。本人限定Sites QA、license/production署名、取消実停止/RSS、CM、正式配布受入、一般公開/main mergeも未完了。
+次の作業: Skyのサブスク顧問をローカルPC台帳へ読み取り専用で接続し、配布ZIP・MIT・MCP・安全境界を同じGitへ収録した。次はNative Sky MCP brokerへの常駐接続とWalletへの費用転記を設計し、HTTPS配信版でloopbackへ直接接続しない経路を実装する。Android/AOSP側は実機型番/SKUの読取り専用確認、クラウド計画の承認、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/Game移植、production署名、実機受入が引き続き未完了。
 <!-- project-status:end -->
 
 ## 次段階の設計
