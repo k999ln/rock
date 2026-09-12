@@ -21,3 +21,20 @@ void test('Value/Spend UI separates external and game assets', () => {
   assert.match(source, /ゲーム内資産/);
   assert.match(source, /譲渡・換金・外部送出の条件を個別判定/);
 });
+
+void test('Value/Spend UI follows the Sky feed interaction model', () => {
+  assert.match(source, /sky-feed-layout wallet-feed-layout/);
+  assert.match(source, /sky-feed-column wallet-feed-column/);
+  assert.match(source, /sky-feed-post wallet-feed-post/);
+  for (const tab of ['概要', '支出', '記録']) {
+    assert.match(source, new RegExp(tab));
+  }
+  for (const role of [
+    'Value Router',
+    'Polymarket Adapter',
+    'Risk Guard',
+    'Receipt &amp; Reconciliation',
+  ]) {
+    assert.match(source, new RegExp(role));
+  }
+});

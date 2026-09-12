@@ -136,38 +136,37 @@ export default function OperationsWorkspace({ view }: { view: View }) {
     <WorkspaceShell
       running={running}
       title={titles[view]}
+      contentClassName={
+        view === 'wallet' ? 'sky-main-feed wallet-main-feed' : undefined
+      }
       onConnect={() => setDeviceOpen(true)}
     >
-      <div className="rock-page-heading">
-        <div>
-          <p className="rock-eyebrow">
-            {view === 'wallet'
-              ? 'YOUR MONEY, CLEARLY'
-              : view === 'activity'
-                ? 'ACTIVITY'
-                : 'CONNECTIONS & CONTROLS'}
-          </p>
-          <h1>{view === 'wallet' ? '価値を、安心して動かす。' : titles[view]}</h1>
-          <p>
-            {view === 'wallet'
-              ? '資産を分けて管理し、使うときは必ず安全な経路へ。'
-              : view === 'activity'
+      {view !== 'wallet' && (
+        <div className="rock-page-heading">
+          <div>
+            <p className="rock-eyebrow">
+              {view === 'activity' ? 'ACTIVITY' : 'CONNECTIONS & CONTROLS'}
+            </p>
+            <h1>{titles[view]}</h1>
+            <p>
+              {view === 'activity'
                 ? 'いつ、どこで、何を実行したか確認できます。'
                 : 'PCの接続と、ツールごとの利用状態を管理。'}
-          </p>
+            </p>
+          </div>
+          <button
+            className="rock-button rock-button-subtle"
+            disabled={loading}
+            onClick={() => {
+              setLoading(true);
+              void refresh();
+            }}
+          >
+            <RefreshCw size={16} />
+            {loading ? '読み込み中' : '再読込'}
+          </button>
         </div>
-        <button
-          className="rock-button rock-button-subtle"
-          disabled={loading}
-          onClick={() => {
-            setLoading(true);
-            void refresh();
-          }}
-        >
-          <RefreshCw size={16} />
-          {loading ? '読み込み中' : '再読込'}
-        </button>
-      </div>
+      )}
       {view === 'activity' && (
         <nav className="rock-view-nav" aria-label="仕事と履歴">
           <Link href="/work">手順のある仕事</Link>
