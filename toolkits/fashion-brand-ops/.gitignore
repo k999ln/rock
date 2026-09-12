@@ -1,0 +1,6 @@
+data/
+.env
+.rockstar-approval-secret
+*.db
+*.db-shm
+*.db-wal

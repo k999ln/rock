@@ -415,7 +415,7 @@ export default function SkyWorkspace({
             {visibleTools.map((tool, index) => {
               const Icon = icons[tool.id] ?? Link2;
               const provider = providerFor(tool);
-              const status = statusFor(tool);
+              const status = statusFor(tool, fashionConnected);
               return (
                 <article
                   className={'sky-feed-post ' + status.className}
