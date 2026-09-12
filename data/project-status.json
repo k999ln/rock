@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "Skyへ日本語法律相談受付を追加",
-  "nextAction": "Skyへ日本語法律相談受付を追加し、安全・期限の受付、一般情報と弁護士引継ぎの分岐、領事館公開リスト33件の候補表示、端末内処理と本人確認後の連絡境界を実装した。次は本人限定Sitesへ同一sourceを配信して実環境で再確認する。サブスク顧問はNative Sky MCP brokerへの常駐接続とWalletへの費用転記、HTTPS配信版の安全な接続経路が未完了。Android/AOSP側は実機型番/SKU確認、全source取得・build・製品移植・production署名・実機受入が引き続き未完了。",
+  "milestone": "Sky法律相談の3ステップUX改善",
+  "nextAction": "日本語法律相談受付を安全確認、相談内容、回答・引継ぎの3ステップへ整理し、スマートフォン向けの操作サイズ、戻る・修正動線、弁護士候補の折りたたみを実装した。次は本人限定Sitesへ同一sourceを配信し、実環境で3ステップ動線と法令AIの秘密設定を確認する。サブスク顧問はNative Sky MCP brokerへの常駐接続とWalletへの費用転記、HTTPS配信版の安全な接続経路が未完了。Android/AOSP側は実機型番/SKU確認、全source取得・build・製品移植・production署名・実機受入が引き続き未完了。",
   "tasks": [
     {
       "id": "R01",

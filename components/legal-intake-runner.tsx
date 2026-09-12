@@ -3,6 +3,8 @@
 import { useMemo, useState, type SyntheticEvent } from 'react';
 import {
   AlertTriangle,
+  ArrowLeft,
+  ArrowRight,
   Check,
   Copy,
   ExternalLink,
@@ -91,6 +93,46 @@ function contactLabel(
       : '電話する';
 }
 
+function LawyerCard({
+  lawyer,
+  preference,
+  summary,
+  primary,
+}: {
+  lawyer: LawyerDirectoryEntry;
+  preference: LegalContactPreference;
+  summary: string;
+  primary: boolean;
+}) {
+  const href = contactHref(lawyer, preference, summary);
+  return (
+    <article className={primary ? 'legal-runner-primary-lawyer' : undefined}>
+      <span>
+        {primary
+          ? '第一連絡候補 · 刑事弁護'
+          : (lawyer.contactNote ?? '日本語対応窓口')}
+      </span>
+      <h4>{lawyer.name}</h4>
+      <p>{lawyer.focus}</p>
+      {href && (
+        <a
+          href={href}
+          target={href.startsWith('http') ? '_blank' : undefined}
+          rel={href.startsWith('http') ? 'noreferrer' : undefined}
+        >
+          {preference === 'phone' ? (
+            <PhoneCall size={15} />
+          ) : (
+            <ExternalLink size={15} />
+          )}
+          {contactLabel(lawyer, preference)}
+        </a>
+      )}
+      <small>受任可否、費用、対応地域、利益相反を直接確認してください。</small>
+    </article>
+  );
+}
+
 export function LegalIntakeRunner({
   onRunningChange,
   executionDisabled = false,
@@ -106,6 +148,7 @@ export function LegalIntakeRunner({
   const [aiResult, setAiResult] = useState<LegalAiResult | null>(null);
   const [aiError, setAiError] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
 
   const handoffSummary = useMemo(
     () => (assessment ? buildHandoffSummary(input, assessment) : ''),
@@ -145,6 +188,7 @@ export function LegalIntakeRunner({
     onRunningChange?.(true);
     const next = assessLegalIntake(input);
     setAssessment(next);
+    setStep(3);
     setAiResult(null);
     setAiError('');
     setNotice(
@@ -213,7 +257,23 @@ export function LegalIntakeRunner({
         </div>
       </div>
 
-      <div className="legal-runner-privacy">
+      <ol className="legal-runner-progress" aria-label="相談の進み具合">
+        {['安全確認', '相談内容', '回答・引継ぎ'].map((label, index) => {
+          const number = (index + 1) as 1 | 2 | 3;
+          return (
+            <li
+              key={label}
+              className={number === step ? 'current' : number < step ? 'done' : ''}
+              aria-current={number === step ? 'step' : undefined}
+            >
+              <span>{number < step ? <Check size={14} /> : number}</span>
+              {label}
+            </li>
+          );
+        })}
+      </ol>
+
+      <div className="legal-runner-privacy" hidden={step !== 1}>
         <ShieldAlert size={18} />
         <p>
           Skyは相談内容を保存しません。法令AIを使うと入力は回答作成のためOpenAIへ送られ、APIの応答保存機能はオフにします。OpenAI側のデータ保持は契約設定に従います。
@@ -221,7 +281,7 @@ export function LegalIntakeRunner({
         </p>
       </div>
 
-      {input.immediateDanger && (
+      {step === 1 && input.immediateDanger && (
         <div className="legal-runner-emergency" role="alert">
           <AlertTriangle size={20} />
           <div>
@@ -236,9 +296,15 @@ export function LegalIntakeRunner({
       )}
 
       <form className="legal-runner-form" onSubmit={submit}>
-        <fieldset disabled={executionDisabled}>
-          <legend>最初に安全確認</legend>
-          <div className="legal-runner-checks">
+        <div className="legal-runner-step" hidden={step !== 1}>
+          <div className="legal-runner-step-heading">
+            <span>STEP 1 / 3</span>
+            <h3>当てはまるものを選んでください</h3>
+            <p>何もなければ、選ばずに次へ進めます。</p>
+          </div>
+          <fieldset disabled={executionDisabled}>
+            <legend className="sr-only">安全確認</legend>
+            <div className="legal-runner-checks">
             <label>
               <input
                 type="checkbox"
@@ -290,10 +356,39 @@ export function LegalIntakeRunner({
                 書類にある期日を確認してください
               </span>
             </label>
-          </div>
-        </fieldset>
+            </div>
+          </fieldset>
+          <button
+            className="black-button legal-runner-next"
+            type="button"
+            disabled={executionDisabled}
+            onClick={() => setStep(2)}
+          >
+            相談内容へ進む <ArrowRight size={17} />
+          </button>
+        </div>
 
-        <div className="legal-runner-grid">
+        <div className="legal-runner-step" hidden={step !== 2}>
+          <div className="legal-runner-step-heading">
+            <span>STEP 2 / 3</span>
+            <h3>何が起きたか教えてください</h3>
+            <p>名前や番号は書かず、いつ・何があったかを短くまとめてください。</p>
+          </div>
+
+          <label className="legal-runner-text legal-runner-main-question">
+            状況を時系列で教えてください
+            <textarea
+              required
+              minLength={20}
+              maxLength={2000}
+              value={input.situationSummary}
+              onChange={(event) => update('situationSummary', event.target.value)}
+              placeholder="例：9月10日に勤務先から通知を受け取り、9月18日までに返答するよう書かれています。"
+            />
+            <small>{input.situationSummary.length} / 2,000</small>
+          </label>
+
+          <div className="legal-runner-grid">
           <label>
             相談分野
             <select
@@ -349,75 +444,86 @@ export function LegalIntakeRunner({
               }
             />
           </label>
-        </div>
+          </div>
 
-        <label className="legal-runner-text">
-          状況を時系列で教えてください
-          <textarea
-            required
-            minLength={20}
-            maxLength={2000}
-            value={input.situationSummary}
-            onChange={(event) => update('situationSummary', event.target.value)}
-            placeholder="例：9月10日に勤務先から通知を受け取り、9月18日までに返答するよう書かれています。"
-          />
-          <small>{input.situationSummary.length} / 2,000</small>
-        </label>
-        <label className="legal-runner-text">
-          どうなればよいですか？（任意）
-          <textarea
-            maxLength={500}
-            value={input.desiredOutcome}
-            onChange={(event) => update('desiredOutcome', event.target.value)}
-            placeholder="例：期限内に必要な対応を確認したい"
-          />
-          <small>{input.desiredOutcome.length} / 500</small>
-        </label>
-        <label className="legal-runner-contact">
-          希望する連絡方法
-          <select
-            value={input.contactPreference}
-            onChange={(event) =>
-              update(
-                'contactPreference',
-                event.target.value as LegalContactPreference,
-              )
-            }
-          >
-            <option value="email">メール</option>
-            <option value="phone">電話</option>
-            <option value="website">公式サイト</option>
-          </select>
-        </label>
-        <label className="legal-runner-consent">
-          <input
-            type="checkbox"
-            checked={understood}
-            onChange={(event) => setUnderstood(event.target.checked)}
-          />
-          <span>
-            この受付は法的助言ではなく、弁護士・依頼者関係や秘匿特権は成立しないこと、入力が一次回答のためOpenAIへ送られることを理解しました。
-          </span>
-        </label>
-        <button
-          className="black-button legal-runner-submit"
-          type="submit"
-          disabled={
-            executionDisabled ||
-            !understood ||
-            input.situationSummary.trim().length < 20
-          }
-        >
-          公式情報で回答して、必要なら引き継ぐ
-        </button>
+          <label className="legal-runner-text">
+            どうなればよいですか？（任意）
+            <textarea
+              maxLength={500}
+              value={input.desiredOutcome}
+              onChange={(event) => update('desiredOutcome', event.target.value)}
+              placeholder="例：期限内に必要な対応を確認したい"
+            />
+            <small>{input.desiredOutcome.length} / 500</small>
+          </label>
+          <label className="legal-runner-contact">
+            希望する連絡方法
+            <select
+              value={input.contactPreference}
+              onChange={(event) =>
+                update(
+                  'contactPreference',
+                  event.target.value as LegalContactPreference,
+                )
+              }
+            >
+              <option value="email">メール</option>
+              <option value="phone">電話</option>
+              <option value="website">公式サイト</option>
+            </select>
+          </label>
+          <label className="legal-runner-consent">
+            <input
+              type="checkbox"
+              checked={understood}
+              onChange={(event) => setUnderstood(event.target.checked)}
+            />
+            <span>
+              一般情報であること、入力が回答作成のためOpenAIへ送られることを理解しました。
+            </span>
+          </label>
+          <div className="legal-runner-form-actions">
+            <button
+              className="legal-runner-back"
+              type="button"
+              onClick={() => setStep(1)}
+            >
+              <ArrowLeft size={16} /> 安全確認へ戻る
+            </button>
+            <button
+              className="black-button legal-runner-submit"
+              type="submit"
+              disabled={
+                executionDisabled ||
+                !understood ||
+                input.situationSummary.trim().length < 20
+              }
+            >
+              回答を見る <ArrowRight size={17} />
+            </button>
+          </div>
+        </div>
       </form>
 
-      <output className="legal-runner-status" aria-live="polite">
+      <output
+        className="legal-runner-status"
+        aria-live="polite"
+        hidden={step !== 3}
+      >
         {notice}
       </output>
 
-      {assessment && (
+      {step === 3 && assessment && (
         <section className="legal-runner-result" aria-live="polite">
+          <div className="legal-runner-result-heading">
+            <div>
+              <span>STEP 3 / 3</span>
+              <h3>次にすることが分かりました</h3>
+            </div>
+            <button type="button" onClick={() => setStep(2)}>
+              <ArrowLeft size={15} /> 相談内容を修正
+            </button>
+          </div>
           <div className={`legal-runner-triage ${assessment.urgency}`}>
             <span>{urgencyLabels[assessment.urgency]}</span>
             <h3>{assessment.headline}</h3>
@@ -521,52 +627,38 @@ export function LegalIntakeRunner({
                       : `在ニューヨーク日本国総領事館の公開リスト（${LEGAL_DIRECTORY_AS_OF}現在）を使用。推薦・斡旋ではありません。`}
                   </small>
                 </div>
-                {lawyers.map((lawyer) => {
-                  const href = contactHref(
-                    lawyer,
-                    input.contactPreference,
-                    handoffSummary,
-                  );
-                  return (
-                    <article
+                {lawyers
+                  .slice(0, assessment.primaryCounselId ? 1 : 2)
+                  .map((lawyer) => (
+                    <LawyerCard
                       key={lawyer.id}
-                      className={
-                        lawyer.id === assessment.primaryCounselId
-                          ? 'legal-runner-primary-lawyer'
-                          : undefined
-                      }
-                    >
-                      <span>
-                        {lawyer.id === assessment.primaryCounselId
-                          ? '第一連絡候補 · 刑事弁護'
-                          : (lawyer.contactNote ?? '日本語対応窓口')}
-                      </span>
-                      <h4>{lawyer.name}</h4>
-                      <p>{lawyer.focus}</p>
-                      {href && (
-                        <a
-                          href={href}
-                          target={
-                            href.startsWith('http') ? '_blank' : undefined
-                          }
-                          rel={
-                            href.startsWith('http') ? 'noreferrer' : undefined
-                          }
-                        >
-                          {input.contactPreference === 'phone' ? (
-                            <PhoneCall size={15} />
-                          ) : (
-                            <ExternalLink size={15} />
-                          )}
-                          {contactLabel(lawyer, input.contactPreference)}
-                        </a>
-                      )}
-                      <small>
-                        受任可否、費用、対応地域、利益相反を直接確認してください。
-                      </small>
-                    </article>
-                  );
-                })}
+                      lawyer={lawyer}
+                      preference={input.contactPreference}
+                      summary={handoffSummary}
+                      primary={lawyer.id === assessment.primaryCounselId}
+                    />
+                  ))}
+                {lawyers.length > (assessment.primaryCounselId ? 1 : 2) && (
+                  <details className="legal-runner-more-lawyers">
+                    <summary>
+                      ほかの候補を
+                      {lawyers.length - (assessment.primaryCounselId ? 1 : 2)}件見る
+                    </summary>
+                    <div>
+                      {lawyers
+                        .slice(assessment.primaryCounselId ? 1 : 2)
+                        .map((lawyer) => (
+                          <LawyerCard
+                            key={lawyer.id}
+                            lawyer={lawyer}
+                            preference={input.contactPreference}
+                            summary={handoffSummary}
+                            primary={false}
+                          />
+                        ))}
+                    </div>
+                  </details>
+                )}
               </div>
             </div>
           ) : null}

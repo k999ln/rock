@@ -35,7 +35,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / Skyへ日本語法律相談受付を追加 / 完了 19/41件
+最終更新: 2026-09-12 / Sky法律相談の3ステップUX改善 / 完了 19/41件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -99,7 +99,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Skyへ日本語法律相談受付を追加し、安全・期限の受付、一般情報と弁護士引継ぎの分岐、領事館公開リスト33件の候補表示、端末内処理と本人確認後の連絡境界を実装した。次は本人限定Sitesへ同一sourceを配信して実環境で再確認する。サブスク顧問はNative Sky MCP brokerへの常駐接続とWalletへの費用転記、HTTPS配信版の安全な接続経路が未完了。Android/AOSP側は実機型番/SKU確認、全source取得・build・製品移植・production署名・実機受入が引き続き未完了。
+次の作業: 日本語法律相談受付を安全確認、相談内容、回答・引継ぎの3ステップへ整理し、スマートフォン向けの操作サイズ、戻る・修正動線、弁護士候補の折りたたみを実装した。次は本人限定Sitesへ同一sourceを配信し、実環境で3ステップ動線と法令AIの秘密設定を確認する。サブスク顧問はNative Sky MCP brokerへの常駐接続とWalletへの費用転記、HTTPS配信版の安全な接続経路が未完了。Android/AOSP側は実機型番/SKU確認、全source取得・build・製品移植・production署名・実機受入が引き続き未完了。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
@@ -124,7 +124,7 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 - 基本分配・ブースト・共同留保を、共通収益の範囲内で試算。入金・送金は未接続。
 - 同じ4ツールをstdio MCPでCodexから実行。PC接続アプリを起動するとサイトからもMCPでワンボタン実行。
 - Skyの「サブスク顧問」から、PC内のRockstar Ledgerへ読み取り専用で接続。通貨別の月額、更新日、支払い失敗、定期課金候補を確認し、同梱のstdio MCPでも照会できます。契約データはGitやサイトへ送らず、解約・支払い・税務申告は自動実行しません。[導入と境界](toolkits/rockstar-ledger/README.md)
-- Skyの「日本語法律相談受付」で、安全・期限・相談分野を整理し、政府・裁判所の公式情報に限定した根拠付き一次回答と無料窓口を表示します。刑事弁護が必要な案件は藤原茜弁護士を第一連絡候補にします。法的助言や自動送信は行わず、Skyは相談本文を保存しません。[実装と安全境界](docs/sky-legal-intake-20260912.md)
+- Skyの「日本語法律相談受付」は、安全確認→相談内容→回答・引継ぎの3ステップ。政府・裁判所の公式情報に限定した根拠付き一次回答と無料窓口を表示し、刑事弁護が必要な案件は藤原茜弁護士を第一連絡候補にします。法的助言や自動送信は行わず、Skyは相談本文を保存しません。[実装と安全境界](docs/sky-legal-intake-20260912.md)
 - GitHubとHugging Faceの公開メタデータを収集する管理用コマンド。
 
 ファンドの参加・配分・試算条件、単独ツールの実行メタデータ、仕事の進捗はSitesのD1に保存します。旧マイツール用のローカル保存関数も互換用に保持しています。接続アドレスは保存せず、サーバーへ送信しません。ウォレット接続はログイン認証・実名本人確認・送金認可ではありません。
