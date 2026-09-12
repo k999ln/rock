@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "OSバックエンドの安全終了・ヘルスチェック・実process再起動とSQLite復元に合格",
-  "nextAction": "OSバックエンドP0コミットd66c674を本人限定Sites v12の最新source系統へ競合なく統合し、同一treeを再配信・再確認する。rc2配布8資産、production署名、製品許諾、fresh導入と復旧が揃うまで一般公開はBLOCKED_FOR_LAUNCHを維持する。",
+  "milestone": "OSバックエンドP0とrc2配布物完全性・fresh導入に合格し、起動失敗時のGame writer残存を修正",
+  "nextAction": "既存previewを正常終了した後にrc2の起動・保存・復旧を完走し、Game起動順修正を含む新候補を再build・D0〜D6受入する。同じsourceを本人限定Sitesへ反映するまで一般公開はBLOCKED_FOR_LAUNCHを維持する。",
   "tasks": [
     {
       "id": "SKY01",

@@ -26,9 +26,11 @@
 6. 製品LICENSE/第三者NOTICE、production署名・失効手順。
 7. 合格した同一treeをGitへ保存し、限定公開先で反映を確認する。
 
-1〜4はこの変更で完了。本人限定Sitesの既存v12はログイン後の読み出しまで確認済みだが、
+1〜4はこの変更で完了。5は配布物の取得・完全性確認・fresh導入まで完了し、起動前の
+固定表示port競合で停止した。本人限定Sitesの既存v12はログイン後の読み出しまで確認済みだが、
 sourceは`1763deb56990bc7dc380c72a5b6043cb089c21a0`であり、このバックエンド変更
-`d66c67440700a2c7234472d80b80c27633039fe2`はまだ含まない。5〜7は同一treeで未完了。
+`d66c67440700a2c7234472d80b80c27633039fe2`はまだ含まない。5の起動以降と6〜7は
+同一treeで未完了。
 
 ### P1 — 時間が残る場合
 
@@ -51,6 +53,8 @@ sourceは`1763deb56990bc7dc380c72a5b6043cb089c21a0`であり、このバック�
 - SIGTERMを通常の終了経路へ接続し、サービス管理下の停止をexit 0で完了する。
 - `/api/health`は認証前に利用できるが、loopbackと正しいHostだけに限定し、利用者・仕事・残高を返さない。
   両SQLiteを読めない場合は理由を漏らさず503にする。
+- QEMU Previewの起動では、表示portとVM所有権の確認が通ってから任意のGame authorityを起動する。
+  表示競合でOS起動が拒否された場合、新しいGame writerを残さない。
 
 ## 検証
 
@@ -58,7 +62,23 @@ sourceは`1763deb56990bc7dc380c72a5b6043cb089c21a0`であり、このバック�
 - 実process: `npm run os:backend:launch`、PASS。
 - 実process検証は、起動、生存確認、未認証拒否、署名package導入/許可/実行、SIGTERM、
   2つのSQLite integrity check、再起動、旧session拒否、receipt復元を一時データで完走した。
+- QEMU Preview lifecycle対象51件がPASS。OS起動失敗時にGame writerを開始しない回帰試験を含む。
 - 開始SHA `0cc5415` のGitHub workflow 6件はすべてsuccess。今回の差分を含む全体CIはcommit/push後に別判定する。
+
+## rc2配布物とfresh host確認
+
+- private draft release `1.0.0-preview.20260911-rc2` の8資産を取得し、GitHub上のsize/SHA256と
+  ダウンロード済みbytesが全件一致した。
+- `candidate-index.json`が宣言する7資産と、約1 GBのarchive内716 memberを、path・mode・size・SHA256まで
+  extractionなしで照合し `PASS 7 716 NOT_CLEARED CANDIDATE`。
+- 公開開発鍵のfingerprint `06e3…fa9`でcandidate manifestを検証し、source/host tools
+  `b7d819cd291b653d165aa124f25a52b9898bfb2e`との結合を確認した。production署名ではない。
+- macOS arm64 / Lima 2.2.0 / 72 GiB空きの隔離directoryへfresh installは成功。Debian 13.6、
+  QEMU 10.0.13、image preflight、VM identityはPASSした。
+- `start --no-open`は、別の旧preview検証環境が固定viewer port `8900`を既に所有していたため、
+  OSを開始する前に安全に拒否された。旧環境は別作業の一時VMなので停止していない。
+- rc2は拒否前に任意Game sandboxを開始していた。今回作成したsandboxとVMだけを停止して残存を解消し、
+  今後の候補ではOS/display preflight成功後にGameを開始するよう修正・回帰試験した。
 
 ## GitHubと実環境の追加確認
 
@@ -88,8 +108,8 @@ rock-hub --state .state/hub --registry systems/rock-star-os/examples/registry
 
 ## 現在のローンチ判定
 
-**BLOCKED_FOR_GENERAL_LAUNCH**。バックエンドのローカルP0と本人限定Sites v12の既存フローは通ったが、
-両者はまだ同一sourceではない。このcheckoutにrc2の配布8資産もなく、production署名、製品許諾、
-同一最終候補のfresh導入/復旧を再確認できない。最短経路は、`d66c674`をv12以降のsourceへ統合して
-本人限定で再配信し、並行して既存private draft releaseの8資産を所有者アカウントで改変せず検証すること。
-sourceを変更して新imageを作る場合はLinux buildとD0〜D6再受入が必要になる。
+**BLOCKED_FOR_GENERAL_LAUNCH**。バックエンドのローカルP0、rc2配布物の完全性、fresh install、
+本人限定Sites v12の既存フローは通ったが、これらはまだ同一sourceではない。rc2のactual start以降は
+別previewの固定port所有により未完了で、production署名、製品許諾、同一最終候補の保存・復旧も未確認。
+最短経路は、既存previewの正常終了後にrc2の起動→保存→復旧を完走し、今回のGame起動順修正を含む
+新候補を再build/D0〜D6受入すること。その同じsourceを本人限定Sitesへ反映してから限定ローンチを判定する。

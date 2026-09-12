@@ -37,7 +37,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / OSバックエンドの安全終了・ヘルスチェック・実process再起動とSQLite復元に合格 / 完了 30/52件
+最終更新: 2026-09-12 / OSバックエンドP0とrc2配布物完全性・fresh導入に合格し、起動失敗時のGame writer残存を修正 / 完了 30/52件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -112,7 +112,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: OSバックエンドP0コミットd66c674を本人限定Sites v12の最新source系統へ競合なく統合し、同一treeを再配信・再確認する。rc2配布8資産、production署名、製品許諾、fresh導入と復旧が揃うまで一般公開はBLOCKED_FOR_LAUNCHを維持する。
+次の作業: 既存previewを正常終了した後にrc2の起動・保存・復旧を完走し、Game起動順修正を含む新候補を再build・D0〜D6受入する。同じsourceを本人限定Sitesへ反映するまで一般公開はBLOCKED_FOR_LAUNCHを維持する。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
