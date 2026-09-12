@@ -75,8 +75,11 @@ ToB
 - ToC向けの状態付きSky Timeline。
 - 接続先URLから認証情報を排除し、遠隔MCPにnetwork権限を必須化。
 - Web/PCで使用可能4件、OSS候補3件、native内蔵6種類・9版を実数から検査。
+- OS審査済みサービスの固定カタログ、SHA-256照合、安全なZIP展開、MCP preflight、個人データ分離、起動・停止・削除を行う`SkyServiceManager`。
+- Native Platform IPCの`sky.service.status / activate / lifecycle`と、認証済みPC接続MCPの`sky_service_status / activate / lifecycle`。
+- サブスク顧問の商品画面から、表示済み固定ハッシュを渡して「OSに導入して起動」するワンタップ導線。
 
-次に必要な実装は、隔離されたMCP preflight、公式/private registry adapter、OAuth接続、審査者画面、公開revision、失効配信、実行前の条件再確認、Tasks adapter、実サーバー相互運用試験である。
+サブスク顧問ではMCP preflightまで実装した。次に必要な実装は、専用UID・namespace/seccompを適用したサービス実行、公式/private registry adapter、OAuth接続、審査者画面、公開revision、失効配信、実行前の条件再確認、Tasks adapter、実サーバー相互運用試験である。Native rootfs組込みはソースとホストテストまでで、QEMU/実機ブートは未確認である。
 
 ## 受入条件
 

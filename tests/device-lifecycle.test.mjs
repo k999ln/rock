@@ -93,7 +93,19 @@ async function harness(t) {
       case 'notifications/initialized':
         return new Response(null, { status: 202 });
       case 'tools/list':
-        return json({ result: { tools: [{}, {}, {}, {}] } });
+        return json({
+          result: {
+            tools: [
+              'coconala_check',
+              'format_citations',
+              'make_free_article',
+              'verify_delivery',
+              'sky_service_status',
+              'sky_service_activate',
+              'sky_service_lifecycle',
+            ].map((name) => ({ name })),
+          },
+        });
       case 'ping':
         return json({ result: {} });
       case 'tools/call':

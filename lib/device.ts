@@ -9,6 +9,7 @@ export type RunRecorder = (
 ) => Promise<void>;
 const TOKEN = 'loop.device.session';
 const DEVICE_ID = 'loop.device.id';
+const DEVICE_TOOLS = 'loop.device.tools';
 let verifying: {
   token: string;
   id: string;
@@ -125,12 +126,21 @@ export function deviceToken() {
     return '';
   }
 }
+export function deviceHasTool(name: string) {
+  try {
+    const tools = JSON.parse(sessionStorage.getItem(DEVICE_TOOLS) || '[]');
+    return Array.isArray(tools) && tools.includes(name);
+  } catch {
+    return false;
+  }
+}
 export function disconnectDevice() {
   sessionGeneration++;
   if (deviceToken()) void reportDevice('disconnect').catch(() => {});
   try {
     sessionStorage.removeItem(TOKEN);
     sessionStorage.removeItem(DEVICE_ID);
+    sessionStorage.removeItem(DEVICE_TOOLS);
   } catch {}
   window.dispatchEvent(new Event('loop-device'));
 }
@@ -186,13 +196,29 @@ export async function connectDevice() {
   if (notification.status !== 202)
     throw new Error('MCPの初期接続が完了しませんでした。');
   const listed = await call(2, 'tools/list');
-  if (listed.tools?.length !== 4)
+  const toolNames = Array.isArray(listed.tools)
+    ? listed.tools
+        .map((tool) =>
+          tool && typeof tool === 'object' && 'name' in tool
+            ? String(tool.name)
+            : '',
+        )
+        .filter(Boolean)
+    : [];
+  const required = [
+    'coconala_check',
+    'format_citations',
+    'make_free_article',
+    'verify_delivery',
+  ];
+  if (!required.every((name) => toolNames.includes(name)))
     throw new Error('MCPツールを確認できませんでした。');
   if (generation !== sessionGeneration)
     throw new Error('接続確認は取り消されました。');
   const id = crypto.randomUUID();
   sessionStorage.setItem(DEVICE_ID, id);
   sessionStorage.setItem(TOKEN, data.token);
+  sessionStorage.setItem(DEVICE_TOOLS, JSON.stringify(toolNames));
   try {
     await reportDevice('connect', id);
     if (!currentSession(data.token, id, generation))
@@ -201,13 +227,19 @@ export async function connectDevice() {
     if (currentSession(data.token, id, generation)) {
       sessionStorage.removeItem(TOKEN);
       sessionStorage.removeItem(DEVICE_ID);
+      sessionStorage.removeItem(DEVICE_TOOLS);
     }
     throw error;
   }
   window.dispatchEvent(new Event('loop-device'));
   return data;
 }
-export async function runDevice(name: string, args: Record<string, unknown>) {
+export async function runDevice<
+  Result extends { output: string; status?: string } = {
+    output: string;
+    status?: string;
+  },
+>(name: string, args: Record<string, unknown>): Promise<Result> {
   const token = deviceToken();
   if (!token) throw new Error('「PC・MCP接続」からこのPCを接続してください。');
   const id = deviceId();
@@ -253,7 +285,7 @@ export async function runDevice(name: string, args: Record<string, unknown>) {
       );
     if (!data.result?.structuredContent)
       throw new Error('MCPの応答が不正です。');
-    return data.result.structuredContent as { output: string; status?: string };
+    return data.result.structuredContent as Result;
   } finally {
     activeCalls--;
   }

@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "新しいSkyフロントへ全網羅対応のサブスク顧問とFashion Brand Opsを統合",
-  "nextAction": "Skyの新しい操作画面から、サブスク顧問の全網羅・過去契約・月額・要対応・更新を会話で確認できるよう統合した。Apple、Google Play、カード、銀行、PayPal、請求メールは未確認のまま完了扱いにしない。次は本人が利用する情報源の履歴をローカル取込・照合し、Native Sky MCP brokerを共通policy gatewayにする。Fashion Brand OpsはMeta OAuth、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付きの限定テスト投稿へ進む。実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。",
+  "milestone": "SkyからOS審査済みサブスク顧問をワンタップ導入・起動",
+  "nextAction": "Skyの商品画面から、固定ハッシュ・権限・安全な展開先・MCP能力をOSが確認してサブスク顧問を導入・起動できるようにした。アプリ本体と個人台帳を分離し、停止・削除後も台帳とreceiptを保持する。次はQEMU/実機でNative Platform IPCと専用UID・namespace/seccomp起動を受け入れ、本人が利用するApple、Google Play、カード、銀行、PayPal、請求メールの履歴をローカル取込・照合する。Fashion Brand OpsはMeta OAuth、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付きの限定テスト投稿へ進む。実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -40,6 +40,21 @@
       "evidence": [
         "docs/sky-mcp-architecture.md",
         "systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md"
+      ]
+    },
+    {
+      "id": "SKY04",
+      "title": "OS審査済みローカルMCPサービスをSkyからワンタップ導入・起動・停止できる経路を実装",
+      "status": "done",
+      "dependsOn": [
+        "SKY03"
+      ],
+      "evidence": [
+        "docs/sky-os-service-installation-20260912.md",
+        "docs/evidence/sky-rockstar-ledger/integration.json",
+        "systems/rock-star-os/src/blackberryrock/sky_services.py",
+        "systems/rock-star-os/tests/test_sky_services.py",
+        "components/subscription-ledger-runner.tsx"
       ]
     },
     {

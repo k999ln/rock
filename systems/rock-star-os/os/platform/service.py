@@ -32,6 +32,7 @@ if not (ROOT / 'blackberryrock').is_dir():
     sys.path.insert(0, str(ROOT.parent))
 from blackberryrock.hub import Hub
 from blackberryrock.packages import CURRENT_PROFILE, MAX_PACKAGE_BYTES, PUBLIC_TEST_KEY, TEST_PUBLISHER, PackageError, canonical, compatibility_status, verify_package
+from blackberryrock.sky_services import SkyServiceManager
 from blackberryrock.wallet import Wallet
 from registry_control import RegistryControl
 from runner_control import RunnerControl
@@ -181,7 +182,8 @@ class DeviceHub(Hub):
 class Platform:
     def __init__(self, state, registry, wallet_socket=WALLET_SOCKET, wallet_uid=WALLET_UID,
                  remote_registry=None, start_registry=True, remote_clients=None, start_runner=True,
-                 service_status=None, async_wallet_view=False, mcp_client=None, mcp_status=None):
+                 service_status=None, async_wallet_view=False, mcp_client=None, mcp_status=None,
+                 sky_services=None):
         if type(async_wallet_view) is not bool:
             raise ValueError('asynchronous Wallet view opt-in must be boolean')
         self.hub = DeviceHub(Path(state) / 'hub.db', {TEST_PUBLISHER: PUBLIC_TEST_KEY})
@@ -197,6 +199,7 @@ class Platform:
         self.mcp_client = mcp_client
         self.mcp_status = dict(mcp_status or {'configured': mcp_client is not None,
             'state': 'configured' if mcp_client is not None else 'unconfigured', 'simulation_only': True})
+        self.sky_services = sky_services
         self.store = RegistryControl(self.hub, remote_registry, start=start_registry) if remote_registry is not None else None
         # Lost closed configuration is an endpoint outage, not revocation of the
         # user's pending consent. Retain readable remote receipts/input without
@@ -225,15 +228,19 @@ class Platform:
     def close(self):
         # No background reader can survive a successful service close.
         try:
-            if self.wallet_view is not None:
-                self.wallet_view.close()
+            if self.sky_services is not None:
+                self.sky_services.close()
         finally:
             try:
-                if self.runner is not None:
-                    self.runner.close()
+                if self.wallet_view is not None:
+                    self.wallet_view.close()
             finally:
-                if self.store is not None:
-                    self.store.close()
+                try:
+                    if self.runner is not None:
+                        self.runner.close()
+                finally:
+                    if self.store is not None:
+                        self.store.close()
 
     def catalog(self):
         # The initial embedded catalog is immutable. Downloaded catalog support
@@ -325,6 +332,9 @@ class Platform:
             registry_view['source_label'] = ('購入者限定の開発ストア' if self.store else '購入者サービス・設定要確認')
             if self.service_status['state'] != 'configured':
                 registry_view['last_error'] = self.service_status['message']
+        sky_services = self.sky_services.snapshot() if self.sky_services is not None else {
+            'configured': False, 'services': [], 'installation': 'unavailable',
+            'approval': 'exact_bundle_digest', 'receipts_preserved': True}
         return {'catalog': catalog, 'catalog_truncated': len(items) > len(catalog), 'total_catalog': len(items),
                 'catalog_rejected': rejected, 'hub': hub, 'wallet': wallet,
                 'remote': remote, 'service_access': self.purchaser_service_view(wallet),
@@ -332,6 +342,7 @@ class Platform:
                 # The separate MCP page requests live status; ordinary Hub and
                 # offline local Tools never wait for the network here.
                 'mcp': dict(self.mcp_status),
+                'sky_services': sky_services,
                 'device_activation': self.activation.snapshot(wallet=wallet),
                 'registry': registry_view,
                 'device': {'name': 'Rock star os', 'version': CURRENT_PROFILE['os_version'], 'execution': 'device_local',
@@ -426,6 +437,28 @@ class Platform:
                 raise ServiceUnavailable('MCP接続の設定を確認してください。端末内の道具は利用できます。')
             # No Hub lock or reusable cached PAID grant around this network call.
             return {'ok': True, 'result': self.mcp_client.request(request)}
+        if isinstance(op, str) and op.startswith('sky.service.'):
+            if peer_uid != UI_UID:
+                raise PermissionError('Sky service management requires the OS owner channel')
+            if type(request.get('v')) is not int or request['v'] != 1:
+                raise ValueError('Sky service management requires protocol version 1')
+            if self.sky_services is None:
+                raise ServiceUnavailable('Sky service installer is not configured on this OS')
+            if op == 'sky.service.status':
+                if set(request) != {'v', 'op'}:
+                    raise ValueError('Sky service status accepts no additional fields')
+                return {'ok': True, 'result': self.sky_services.snapshot()}
+            if op == 'sky.service.activate':
+                if set(request) != {'v', 'op', 'id', 'expected_sha256', 'key'}:
+                    raise ValueError('Sky service activation requires exact reviewed package approval')
+                result = self.sky_services.activate(request['id'], request['expected_sha256'], request['key'])
+                return {'ok': True, 'result': result}
+            if op == 'sky.service.lifecycle':
+                if set(request) != {'v', 'op', 'id', 'action', 'key'}:
+                    raise ValueError('Sky service lifecycle request is malformed')
+                result = self.sky_services.lifecycle(request['id'], request['action'], request['key'])
+                return {'ok': True, 'result': result}
+            raise ValueError('unsupported Sky service operation')
         if isinstance(op, str) and op.startswith('remote.'):
             if self.runner is None:
                 raise ValueError('remote execution is not configured; no automatic fallback')
@@ -794,9 +827,12 @@ def main():
         mcp_client, mcp_status = resolve_mcp('/data/platform',
             resolve_services('/data/platform', '/etc/rock-platform/service-access.json'),
             '/etc/rock-platform/mcp-services.json', '/usr/share/rock/development-store-ca.pem')
+        sky_services = SkyServiceManager('/data/platform/sky-services',
+            '/usr/share/rock/sky-services/catalog.json', '/usr/share/rock/sky-services',
+            python='/usr/bin/python3')
         service = Platform('/data/platform', '/usr/share/rock/registry', remote_registry=remote_registry,
                            remote_clients=remote_clients, service_status=service_status, async_wallet_view=True,
-                           mcp_client=mcp_client, mcp_status=mcp_status)
+                           mcp_client=mcp_client, mcp_status=mcp_status, sky_services=sky_services)
         server = Server(PLATFORM_SOCKET, service, {0, UI_UID}, UI_UID)
     else:
         service = device_wallet_service('/data/wallet', '/etc/rock-wallet/backend.json',

@@ -1,0 +1,17 @@
+{
+  "schema": "rockstaros-sky-service-catalog/1",
+  "services": [
+    {
+      "id": "rockstar-ledger",
+      "name": "サブスク顧問",
+      "version": "0.2.0",
+      "bundle": "rockstar-ledger.zip",
+      "sha256": "c4a5e30766b333551204658bb5dd66affd4a7b53fc797b31082e65e5f1cda314",
+      "plugin_manifest_sha256": "10459b0edfd05e9c02b6222364d31ecb6c4048a33e07261469dcf0a6cc6222a2",
+      "permissions": ["subscription.read", "subscription.write", "local.files"],
+      "data_policy": {"storage": "device_private", "network": "loopback_only"},
+      "price": {"currency": "USD", "amount_minor": 0, "unit": "install"},
+      "dashboard_url": "http://127.0.0.1:8765"
+    }
+  ]
+}

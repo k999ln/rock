@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rock star's four allowlisted Mr. tools over MCP stdio or authenticated loopback HTTP.
+"""Rock star's allowlisted business tools and OS service controls over MCP.
 
 No arbitrary commands, host paths, network fetches, or persistent input storage.
 """
@@ -11,6 +11,7 @@ import hmac
 import io
 import json
 import math
+import os
 from pathlib import Path, PurePosixPath
 import secrets
 import sys
@@ -19,10 +20,17 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import rock_star_tools
 import pc_citations
 
+try:
+    from blackberryrock.sky_services import SkyServiceError, SkyServiceManager
+except ImportError:
+    REPOSITORY = Path(__file__).resolve().parents[2]
+    sys.path.insert(0, str(REPOSITORY / 'systems' / 'rock-star-os' / 'src'))
+    from blackberryrock.sky_services import SkyServiceError, SkyServiceManager
+
 PROTOCOLS = ('2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05')
 MAX_BODY = 16_000_000
 PORT = 38479
-ORIGINS = {'https://rock-star.kirin-999.chatgpt.site', 'https://loop-automation-hub.kirin-999.chatgpt.site', 'http://127.0.0.1:3001', 'http://localhost:3001'}
+ORIGINS = {'https://rock-star.kirin-999.chatgpt.site', 'https://loop-automation-hub.kirin-999.chatgpt.site', 'http://127.0.0.1:3001', 'http://localhost:3001', 'http://127.0.0.1:3013', 'http://localhost:3013'}
 
 def schema(properties, required):
     return {'type':'object','properties':properties,'required':required,'additionalProperties':False}
@@ -38,9 +46,40 @@ TOOLS = [
      'inputSchema':schema({'markdown':TEXT,'summary':{'type':'string','maxLength':3000},'afterChars':{'type':'integer','minimum':1,'maximum':100000},'price':{'type':'integer','minimum':1,'maximum':1000000},'paidContents':{'type':'string','maxLength':300},'noteUrl':{'type':'string','maxLength':2000}},['markdown','summary','afterChars','price','paidContents','noteUrl'])},
     {'name':'verify_delivery','title':'納品記録の照合','description':'渡された契約・成果物・制作記録・独立レビューをPC内で照合。ファイルは一時領域で処理し削除します。sample=trueは合成サンプルです。',
      'inputSchema':schema({'sample':{'type':'boolean'},'review':{'type':'object'},'files':{'type':'array','maxItems':120,'items':schema({'path':{'type':'string','maxLength':500},'base64':{'type':'string'}},['path','base64'])}},[])},
+    {'name':'sky_service_status','title':'Skyサービスの導入状態','description':'OSが審査済みローカルMCPサービスの導入・起動状態を返します。',
+     'inputSchema':schema({},[])},
+    {'name':'sky_service_activate','title':'Skyサービスを導入して起動','description':'表示済みの権限と固定ハッシュに一致する審査済みサービスだけをOS領域へ導入し、MCP能力確認後に起動します。',
+     'inputSchema':schema({'id':{'type':'string','enum':['rockstar-ledger']},'expected_sha256':{'type':'string','minLength':64,'maxLength':64}},['id','expected_sha256'])},
+    {'name':'sky_service_lifecycle','title':'Skyサービスを停止・削除','description':'OS管理のサービスを停止または削除します。個人データと実行記録は保持します。',
+     'inputSchema':schema({'id':{'type':'string','enum':['rockstar-ledger']},'action':{'type':'string','enum':['stop','uninstall']}},['id','action'])},
 ]
 for tool in TOOLS:
-    tool['annotations'] = {'readOnlyHint':True,'destructiveHint':False,'idempotentHint':True,'openWorldHint':False}
+    mutating = tool['name'] in ('sky_service_activate','sky_service_lifecycle')
+    tool['annotations'] = {'readOnlyHint':not mutating,'destructiveHint':tool['name']=='sky_service_lifecycle','idempotentHint':True,'openWorldHint':False}
+
+_sky_manager = None
+
+def sky_manager():
+    global _sky_manager
+    if _sky_manager is not None:
+        return _sky_manager
+    root = Path(__file__).resolve().parent
+    packaged = root / 'sky-services' / 'catalog.json'
+    if packaged.is_file():
+        catalog, bundles = packaged, packaged.parent
+    else:
+        repository = root.parents[1]
+        catalog = repository / 'systems' / 'rock-star-os' / 'os' / 'sky-services' / 'catalog.json'
+        bundles = repository / 'public' / 'toolkits'
+    configured_state = os.environ.get('ROCKSTAR_SKY_STATE')
+    if configured_state:
+        state = Path(configured_state)
+    elif sys.platform == 'darwin':
+        state = Path.home() / 'Library' / 'Application Support' / 'RockstarOS' / 'Sky'
+    else:
+        state = Path(os.environ.get('XDG_DATA_HOME', Path.home() / '.local' / 'share')) / 'rockstaros' / 'sky'
+    _sky_manager = SkyServiceManager(state, catalog, bundles)
+    return _sky_manager
 
 def validate(name, args):
     tool=next((t for t in TOOLS if t['name']==name),None)
@@ -74,6 +113,15 @@ def unpack_files(root, files):
 
 def execute(name,args):
     validate(name,args)
+    if name == 'sky_service_status':
+        value = sky_manager().snapshot()
+        return {'output':json.dumps(value,ensure_ascii=False,indent=2),'status':'PASS','skyService':value}
+    if name == 'sky_service_activate':
+        value = sky_manager().activate(args['id'],args['expected_sha256'],secrets.token_hex(16))
+        return {'output':'サブスク顧問をOSへ導入し、MCPの能力確認後に起動しました。','status':'READY','skyService':value}
+    if name == 'sky_service_lifecycle':
+        value = sky_manager().lifecycle(args['id'],args['action'],secrets.token_hex(16))
+        return {'output':'Skyサービスの状態を更新しました。個人データと実行記録は保持しています。','status':'PASS','skyService':value}
     with tempfile.TemporaryDirectory(prefix='rock-star-mcp-') as temporary:
         root=Path(temporary)
         if name=='format_citations':
@@ -112,7 +160,7 @@ def rpc(message):
     method=message['method'];params=message.get('params',{})
     if not isinstance(params,dict):return {'jsonrpc':'2.0','id':ident,'error':{'code':-32602,'message':'Invalid params'}}
     if method=='initialize':
-        requested=params.get('protocolVersion');result={'protocolVersion':requested if requested in PROTOCOLS else PROTOCOLS[0],'capabilities':{'tools':{}},'serverInfo':{'name':'rock-star-mr','version':'0.2.0'},'instructions':'4つのツールを入力データだけで実行します。金銭・投稿・任意シェル実行は扱いません。'}
+        requested=params.get('protocolVersion');result={'protocolVersion':requested if requested in PROTOCOLS else PROTOCOLS[0],'capabilities':{'tools':{}},'serverInfo':{'name':'rock-star-sky-agent','version':'0.3.0'},'instructions':'業務ツールと、OS審査済みローカルMCPサービスの導入・停止を扱います。金銭・投稿・任意シェル実行は扱いません。'}
     elif method=='ping':result={}
     elif method=='tools/list':result={'tools':TOOLS}
     elif method=='tools/call':
@@ -123,7 +171,7 @@ def rpc(message):
             result={'content':[{'type':'text','text':value['output']}],'structuredContent':value,'isError':False}
         except pc_citations.CitationsError as error:
             result={'content':[{'type':'text','text':str(error)}],'isError':True}
-        except (ValueError,TypeError,KeyError,OSError,SystemExit):
+        except (ValueError,TypeError,KeyError,OSError,SystemExit,SkyServiceError):
             result={'content':[{'type':'text','text':'入力の形式・文字数・必須項目・成果物の記録を確認してください。'}],'isError':True}
     else:return {'jsonrpc':'2.0','id':ident,'error':{'code':-32601,'message':'Method not found'}}
     return {'jsonrpc':'2.0','id':ident,'result':result}

@@ -28,7 +28,7 @@ Rは販売先の手数料を引いた月間共通収益、Cはファンド自身
 
 ## MCPと実行経路
 
-`toolkits/mr/mcp_server.py` は、固定4ツールをMCPで提供する標準ライブラリのみのPythonサーバー。Codexのstdio接続時はCodexが必要に応じて自動起動する。
+`toolkits/mr/mcp_server.py` は、固定4業務ツールとOS審査済みサービス用の3管理ツールをMCPで提供する標準ライブラリのみのPythonサーバー。Codexのstdio接続時はCodexが必要に応じて自動起動する。管理ツールは固定カタログ以外のURL・package・commandを受け取らない。
 
 | MCP名 | 機能 |
 |---|---|

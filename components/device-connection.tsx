@@ -24,7 +24,7 @@ export function DeviceConnection() {
       await connectDevice();
       setConnected(true);
       setMessage(
-        'MCPの4つの機能を確認しました。ツールの実行ボタンからPCで処理できます。',
+        'MCPの業務機能とSkyサービス管理を確認しました。ツールの実行ボタンからPCで処理できます。',
       );
     } catch {
       setConnected(!!deviceToken());
@@ -39,7 +39,7 @@ export function DeviceConnection() {
     <section className="device-page">
       <div className="page-heading">
         <div>
-          <span className="eyebrow">ONE CONNECTION. FOUR TOOLS.</span>
+          <span className="eyebrow">ONE CONNECTION. SKY SERVICES.</span>
           <h1>つないだら、あとはワンボタン。</h1>
           <p>PCが必要な処理も、MCPが自動で引き受けます。</p>
         </div>
@@ -104,7 +104,8 @@ export function DeviceConnection() {
               </li>
             </ol>
             <p className="subnote">
-              このPCのアプリが動いている間だけ接続できます。OSの自動起動は設定しません。LinuxはPython 3.10以上が必要です。Windowsでは出典整理のMCP実行に未対応です。詳しい対応範囲は同梱READMEで確認してください。
+              このPCのアプリが動いている間だけ接続できます。OSの自動起動は設定しません。LinuxはPython
+              3.10以上が必要です。Windowsでは出典整理のMCP実行に未対応です。詳しい対応範囲は同梱READMEで確認してください。
             </p>
           </details>
         </section>
@@ -119,6 +120,9 @@ export function DeviceConnection() {
             <span>format_citations</span>
             <span>make_free_article</span>
             <span>verify_delivery</span>
+            <span>sky_service_activate</span>
+            <span>sky_service_status</span>
+            <span>sky_service_lifecycle</span>
           </div>
           <div className="prompt-example">
             「Rock starのMCPで、この原稿の出典を整理して」

@@ -16,9 +16,17 @@
     "errorOverlay": false,
     "consoleErrors": 0,
     "pythonUnitTests": 4,
-    "skyNodeTests": 100,
+    "skyServiceTargetedTests": 5,
+    "skyNodeTests": 109,
     "workerApiAssertions": 143,
     "productionBuild": "pass",
+    "oneTapActivation": "pass_via_authenticated_management_tool",
+    "serviceStateAfterActivation": "running",
+    "serviceDashboard": "http://127.0.0.1:8765/",
+    "serviceStoragePolicy": "device_private",
+    "serviceNetworkPolicy": "loopback_only",
+    "ledgerMcpToolCount": 7,
+    "nativeRootfsAndIpc": "implemented_and_host_tested",
     "chatSuggestedQuestion": "pass",
     "chatFreeTextQuestion": "pass",
     "chatUsesLocalLedgerOnly": true,
@@ -36,10 +44,11 @@
   },
   "notProven": [
     "HTTPS hosted Sky to loopback connection",
-    "native Sky MCP broker persistence",
+    "QEMU or physical-device boot of the Native OS service path",
+    "dedicated service UID and namespace/seccomp sandbox",
     "Wallet cost posting",
     "complete Apple, Google Play, card, bank, PayPal, and billing-email account-history audit",
     "automated cancellation, payment, or tax filing"
   ],
-  "result": "PASS_LOCAL_PC"
+  "result": "PASS_LOCAL_PC_AND_SCOPED_OS_INTEGRATION"
 }

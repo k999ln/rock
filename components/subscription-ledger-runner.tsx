@@ -1,12 +1,14 @@
 'use client';
 
 import { type ComponentProps, useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
 import {
-  AlertTriangle,
   ArrowUpRight,
   Bot,
+  Cable,
   CheckCircle2,
   CornerDownLeft,
+  Download,
   RefreshCw,
   ShieldCheck,
   UserRound,
@@ -27,8 +29,11 @@ import {
   type AdvisorSubscription,
   type AdvisorSummary,
 } from '@/lib/subscription-advisor';
+import { deviceHasTool, deviceToken, runDevice } from '@/lib/device';
 
 const LEDGER_ORIGIN = 'http://127.0.0.1:8765';
+const LEDGER_PACKAGE_SHA256 =
+  'c4a5e30766b333551204658bb5dd66affd4a7b53fc797b31082e65e5f1cda314';
 
 type LedgerState = {
   summary: AdvisorSummary;
@@ -84,6 +89,10 @@ export function SubscriptionLedgerRunner({
   const [state, setState] = useState<LedgerState | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deviceConnected, setDeviceConnected] = useState(false);
+  const [installerAvailable, setInstallerAvailable] = useState(false);
+  const [installing, setInstalling] = useState(false);
+  const [installMessage, setInstallMessage] = useState('');
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -145,6 +154,41 @@ export function SubscriptionLedgerRunner({
     return () => controller.abort();
   }, [connect]);
 
+  useEffect(() => {
+    const update = () => {
+      setDeviceConnected(!!deviceToken());
+      setInstallerAvailable(deviceHasTool('sky_service_activate'));
+    };
+    update();
+    window.addEventListener('loop-device', update);
+    return () => window.removeEventListener('loop-device', update);
+  }, []);
+
+  const installWithSky = async () => {
+    setInstalling(true);
+    setInstallMessage('OSがパッケージと権限を確認しています…');
+    try {
+      const result = await runDevice<{
+        output: string;
+        status: string;
+        skyService: { state: string; dashboard_url: string };
+      }>('sky_service_activate', {
+        id: 'rockstar-ledger',
+        expected_sha256: LEDGER_PACKAGE_SHA256,
+      });
+      setInstallMessage(result.output || '導入と起動が完了しました。');
+      await connect();
+    } catch (cause) {
+      setInstallMessage(
+        cause instanceof Error
+          ? cause.message
+          : '導入を完了できませんでした。接続を確認してください。',
+      );
+    } finally {
+      setInstalling(false);
+    }
+  };
+
   if (executionDisabled)
     return <p className="ledger-sky-notice">現在は実行が停止されています。</p>;
 
@@ -159,14 +203,51 @@ export function SubscriptionLedgerRunner({
   if (!state)
     return (
       <section className="ledger-sky-connect" aria-live="polite">
-        <AlertTriangle size={25} />
+        <Download size={25} />
         <div>
-          <h3>Rockstar Ledgerを起動してください</h3>
+          <h3>サブスク顧問をこの端末へ導入</h3>
           <p>{error || 'PC内のローカル台帳へ接続できません。'}</p>
-          <code>python3 scripts/run_local.py</code>
-          <button onClick={() => void connect()}>
-            <RefreshCw size={15} /> 再接続
-          </button>
+          <p>
+            Sky
+            OSが固定ハッシュ・権限・安全な保存先・MCP機能を確認してから、PC内だけで起動します。
+          </p>
+          <div className="ledger-sky-install-actions">
+            {deviceConnected && installerAvailable ? (
+              <button
+                disabled={installing}
+                onClick={() => void installWithSky()}
+              >
+                {installing ? (
+                  <RefreshCw size={15} className="ledger-sky-spin" />
+                ) : (
+                  <Download size={15} />
+                )}
+                {installing ? 'OSが導入中…' : 'OSに導入して起動'}
+              </button>
+            ) : (
+              <Link className="ledger-sky-connect-link" href="/settings">
+                <Cable size={15} />
+                {deviceConnected
+                  ? '接続アプリを最新版にする'
+                  : '先にこの端末を接続'}
+              </Link>
+            )}
+            <button disabled={installing} onClick={() => void connect()}>
+              <RefreshCw size={15} /> 再接続
+            </button>
+          </div>
+          {installMessage && (
+            <output className="ledger-sky-install-message">
+              {installMessage}
+            </output>
+          )}
+          <details className="ledger-sky-manual">
+            <summary>手動で導入する場合</summary>
+            <a href="/toolkits/rockstar-ledger.zip" download>
+              パッケージをダウンロード
+            </a>
+            <code>python3 scripts/run_local.py</code>
+          </details>
         </div>
       </section>
     );

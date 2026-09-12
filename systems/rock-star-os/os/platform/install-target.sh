@@ -4,7 +4,7 @@ target=$1
 repo=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 dest="$target/usr/lib/rock-platform"
 mkdir -p "$dest/blackberryrock" "$dest/registry" "$dest/entitlement" "$dest/runner" "$target/usr/share/rock/registry" "$target/usr/share/fonts/rock" "$target/usr/share/licenses/rock-font"
-mkdir -p "$dest/atm" "$dest/wallet_backend"
+mkdir -p "$dest/atm" "$dest/wallet_backend" "$target/usr/share/rock/sky-services"
 mkdir -p "$dest/wallet_auth" "$target/etc/rock-authenticator"
 cp "$repo/os/wallet_auth/"*.py "$dest/wallet_auth/"
 mkdir -p "$dest/service_access" "$target/etc/rock-platform"
@@ -66,9 +66,12 @@ cp "$repo/os/wallet_backend/__init__.py" "$repo/os/wallet_backend/client.py" "$d
 cp "$repo/os/atm/__init__.py" "$repo/os/atm/simulator.py" "$dest/atm/"
 cp "$repo/os/platform/atm-guest-test.py" "$dest/"
 chmod 0755 "$target/etc/init.d/S99rock-atm-verify"
-for module in __init__ hub packages recipe_worker storage wallet sdk deadline; do
+for module in __init__ hub packages recipe_worker sky_services storage wallet sdk deadline; do
   cp "$repo/src/blackberryrock/$module.py" "$dest/blackberryrock/$module.py"
 done
+cp "$repo/os/sky-services/catalog.json" "$target/usr/share/rock/sky-services/catalog.json"
+cp "$repo/../../public/toolkits/rockstar-ledger.zip" "$target/usr/share/rock/sky-services/rockstar-ledger.zip"
+chmod 0444 "$target/usr/share/rock/sky-services/catalog.json" "$target/usr/share/rock/sky-services/rockstar-ledger.zip"
 cp "$repo/os/platform/service.py" "$repo/os/platform/registry_control.py" "$repo/os/platform/sandbox-probe.py" "$repo/os/platform/guest-test.py" "$repo/os/platform/store-guest-test.py" "$dest/"
 cp "$repo/os/platform/system-guest-test.py" "$dest/"
 cp "$repo/os/platform/remote-guest-test.py" "$dest/"

@@ -84,8 +84,12 @@ def mcp_output(raw):
     values = [json.loads(line) for line in raw.splitlines()]
     require([v['id'] for v in values] == [1, 2, 3, 4], 'MCP response identity/order changed.')
     require(values[0]['result']['protocolVersion'] == '2025-11-25', 'MCP protocol changed.')
-    require({v['name'] for v in values[1]['result']['tools']} ==
-            {'coconala_check', 'format_citations', 'make_free_article', 'verify_delivery'}, 'Tool list changed.')
+    names = {v['name'] for v in values[1]['result']['tools']}
+    require({'coconala_check', 'format_citations', 'make_free_article', 'verify_delivery'}.issubset(names),
+            'Required business tool list changed.')
+    require(names - {'coconala_check', 'format_citations', 'make_free_article', 'verify_delivery'} ==
+            {'sky_service_status', 'sky_service_activate', 'sky_service_lifecycle'},
+            'Unexpected MCP management tool list.')
     require(values[2]['result']['isError'] is False and values[3]['result'] == {}, 'MCP operation failed.')
     output = values[2]['result']['structuredContent']['output']
     require(values[2]['result']['content'] == [{'type': 'text', 'text': output}], 'MCP outputs disagree.')

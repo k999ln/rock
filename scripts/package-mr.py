@@ -13,4 +13,15 @@ with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as archive:
                 info.compress_type=zipfile.ZIP_DEFLATED
                 info.external_attr=(0o755 if path.suffix=='.command' else 0o644)<<16
                 archive.writestr(info,path.read_bytes())
+    extra=[
+        (root/'systems/rock-star-os/src/blackberryrock/__init__.py','rock-star-mr-tools/blackberryrock/__init__.py'),
+        (root/'systems/rock-star-os/src/blackberryrock/sky_services.py','rock-star-mr-tools/blackberryrock/sky_services.py'),
+        (root/'systems/rock-star-os/os/sky-services/catalog.json','rock-star-mr-tools/sky-services/catalog.json'),
+        (root/'public/toolkits/rockstar-ledger.zip','rock-star-mr-tools/sky-services/rockstar-ledger.zip'),
+    ]
+    for path,name in extra:
+        info=zipfile.ZipInfo(name,date_time=(2026,9,12,0,0,0))
+        info.compress_type=zipfile.ZIP_DEFLATED
+        info.external_attr=0o644<<16
+        archive.writestr(info,path.read_bytes())
 print(out)

@@ -10,7 +10,9 @@ command = "python3"
 args = ["/absolute/path/rock-star-mr-tools/mcp_server.py"]
 ```
 
-Codexからは4ツールを直接呼べます。記事・出典・案件照合はテキスト引数、納品照合はレビューJSONとfiles（相対pathとbase64）を渡します。納品照合の `sample: true` は同梱の合成データを使い、一回で試せます。実データのフォルダは成果物とrequirements、receiptsを含む作業ルートを選んでください。
+Codexからは4つの業務ツールに加え、3つのSkyサービス管理ツールを呼べます。記事・出典・案件照合はテキスト引数、納品照合はレビューJSONとfiles（相対pathとbase64）を渡します。納品照合の `sample: true` は同梱の合成データを使い、一回で試せます。実データのフォルダは成果物とrequirements、receiptsを含む作業ルートを選んでください。
+
+`sky_service_status`、`sky_service_activate`、`sky_service_lifecycle` は、OSが審査済みカタログへ固定したローカルMCPサービスだけを管理します。導入時はZIPとプラグイン定義のSHA-256を照合し、安全な相対パスだけを展開してMCP能力を確認します。サブスク顧問の台帳データは交換可能なアプリ本体と分けて保存し、停止・削除後もデータとreceiptを保持します。任意URL、任意コマンド、任意パッケージは受け取りません。
 
 初回のブラウザでローカルネットワーク接続の許可が出る場合があります。データはPC内で処理します。任意コマンドの実行・外部送信・課金は扱いません。
 

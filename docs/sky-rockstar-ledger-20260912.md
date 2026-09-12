@@ -14,6 +14,12 @@
 
 配布ZIP、MIT全文、Codex向けskill、stdio MCPサーバーをHubと同じGitに同梱した。元パッケージはRockstar Ledger `4ddece0266abfc4874c0836192877b5125436007`、ZIP SHA-256は `c4a5e30766b333551204658bb5dd66affd4a7b53fc797b31082e65e5f1cda314`。
 
+## Sky OSワンタップ導入
+
+商品画面でローカル台帳が見つからない場合、最新版のPC接続アプリにつながっていれば「OSに導入して起動」を表示する。ボタンはサービスIDと画面に固定した配布ZIPのSHA-256だけを認証済みloopback MCPへ渡す。OS管理層は同梱カタログとの一致、通常ファイル、サイズ上限、ZIPのパス脱出・symlink禁止、プラグイン定義のハッシュ、MCPの4能力を確認してから起動する。任意URL・任意コマンド・任意保存先は入力できない。
+
+交換可能なアプリ本体はOS管理のpackagesへ、個人の台帳は別のdataへ保存する。停止またはアプリ削除後も台帳と操作receiptを残す。Native OSでは同じ管理層をPlatform IPCの`sky.service.status / activate / lifecycle`としてUI専用peer UIDへ公開し、rootfsへカタログと配布物を組み込む。今回の受入はホストとブラウザ上であり、QEMU/実機ブートは未確認である。
+
 ## 全網羅監査 0.2
 
 既知18件を「全部」と誤認しないよう、Apple、Google Play、クレジットカード、銀行口座、PayPal、請求メール・領収書の6情報源を確認する監査台帳を追加した。各情報源は利用有無、取込済み、確認済み、確認期間、件数を保持する。明細CSVを取り込むと情報源と期間を記録するが、取込だけでは確認済みにしない。
@@ -26,14 +32,16 @@ Skyのチャットへ「全網羅されてる？」「見落としは？」「�
 
 契約・カード明細・検出結果はPC内のSQLiteへ保存し、Gitへ入れない。Skyから許可するブラウザ接続元も `http://127.0.0.1`、`http://localhost`、`http://[::1]` に限定した。Sky画面は表示と更新だけを行い、編集、解約、支払い、申告、外部送信はしない。金額は通貨別に保持し、為替換算なしで合算しない。
 
-現在の直接接続はローカル開発版Skyと同じPCで使う試作である。HTTPS配信版からHTTP loopbackへ直接接続する経路、Native SkyのMCP broker常駐、Walletへの費用転記は未実装として残す。
+現在の直接接続はローカル開発版Skyと同じPCで使う試作である。HTTPS配信版からHTTP loopbackへ直接接続する経路、Native OS上の専用UID・sandbox適用、Walletへの費用転記は未実装として残す。
 
 ## 検証
 
 - Rockstar Ledger Python unit tests: 4件合格
 - loopback CORS: `http://127.0.0.1:3000` へ200と限定Allow-Originを返すことを確認
 - Sky catalog/package tests: `tests/rockstar-ledger.test.mjs`
-- Skyの型、lint、全100 tests、本番build、Worker/D1 API 143 assertions: `npm run verify` 合格
+- Skyの型、lint、全109 tests、本番build、Worker/D1 API 143 assertions: `npm run verify` 合格
+- Sky OSサービス管理の対象試験: 5件合格（導入、改ざん拒否、再実行、停止、データ保持付き削除、rootfs組込み）
+- Sky→PC接続→OS導入→Ledger再接続→チャット照会を、隔離した空の台帳で通し確認
 - Sky画面の実接続: 商品選択、通貨別集計、警告、一覧を確認。error overlayなし、console error 0
 - 会話実操作: 質問例の月額回答と自由入力の解約相談を確認。台帳値を回答し、自動解約を拒否。error overlayなし、console error 0
 - 全網羅画面実操作: 6情報源、確認状態、確認期間、明細0件、更新日不足3件を表示し、未完了判定を確認

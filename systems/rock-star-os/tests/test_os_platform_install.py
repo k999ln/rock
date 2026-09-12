@@ -29,9 +29,15 @@ class PlatformInstallInputsTests(unittest.TestCase):
             protocol = historical['preregistration.md']
             self.assertEqual((target / 'usr/lib/rock-benchmark/preregistration.md').read_bytes(), protocol)
             for path in ('usr/lib/rock-platform/service.py', 'usr/lib/rock-platform/wallet_auth/daemon.py',
+                         'usr/lib/rock-platform/blackberryrock/sky_services.py',
                          'usr/libexec/rock-wallet-evidence-auth.py', 'usr/libexec/rock-platform-health',
+                         'usr/share/rock/sky-services/catalog.json',
+                         'usr/share/rock/sky-services/rockstar-ledger.zip',
                          'usr/share/fonts/rock/NotoSansCJKjp-Regular.otf'):
                 self.assertGreater((target / path).stat().st_size, 0, path)
+            sky_catalog = json.loads((target / 'usr/share/rock/sky-services/catalog.json').read_text())
+            sky_bundle = (target / 'usr/share/rock/sky-services/rockstar-ledger.zip').read_bytes()
+            self.assertEqual(sky_catalog['services'][0]['sha256'], hashlib.sha256(sky_bundle).hexdigest())
             # Resolve the installed guest's actual document path in an isolated
             # interpreter. Import does not run its guarded measurement main().
             probe = subprocess.run([sys.executable, '-I', '-B', '-c',
