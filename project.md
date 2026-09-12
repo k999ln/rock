@@ -5,6 +5,14 @@
 最新の明示指示をRQ20として製品ベースへ追加し、launch-candidateから専用branchを切ってhost vertical sliceを実装した。Sky（内部互換名Hub）/MCPを同一入口、WalletをValue Routerとし、支出はProposal→Policy/Risk→承認→隔離署名→adapter→execution→receipt/reconciliation以外の経路を持たない。既存Walletのappend-only ledger、idempotency、reconciliationを拡張し、asset registry、二相予約、共通イベント、Polymarket向け残高・position・PnL・fee/gas・strategy・emergency stop・risk limitsを統合した。
 
 第一号integrationはMrFadiAi/Polymarket-botの固定revisionを監査した`polymarket.dry-run`で、bot自体や`.env`の秘密鍵方式は取り込まない。SIMULATION/PAPERだけを許可し、LIVE・実資金・provider API・production Vault/Signer・native MCP/通知配信・承認UIは未実装。Smart Money live path、上流PnL/risk/fee accountingの既知不足をRock側のfail-closed境界で上位保護する。[設計](docs/value-spend-runtime.md)／[監査](docs/value-spend-runtime-audit-20260912.md)／[次の指示](docs/prompts/value-spend-runtime-next.md)。
+## 2026-09-12 — 改善版SkyへInstagram運用を統合
+
+黒基調の役割フィード、自然文の「Skyに頼む」、検索・状態タブ、1カード1操作へ整理したSkyを、Fashion Brand Ops v0.2.0を含むローンチ候補へ適用した。Instagram運用・受注型ブランド管理を「ブランド運営役」として追加し、Instagram・ブランド・投稿・広告・DM・受注・制作・発送の依頼を同商品へ案内する。38操作、既存商品、approval gateは維持し、Fashion Brand Opsの接続状態も同じ黒いDialog内で読めるようにした。
+
+幅767px以下のDialogは下端固定のシートとして表示し、中央配置用の`translate`を明示的に解除する。これにより狭い画面でDialogが左上へ半分ずれる問題を防ぐ。実Provider接続、実投稿、Sites再配信はこのUI統合には含めない。
+
+デスクトップと幅585pxのスマホ表示で、ブランド運営役のカード、38操作の詳細、承認境界、Dialogの画面内配置を確認した。`npm run verify`はWeb 105 tests、Fashion Brand Ops 14 tests、型、lint、本番build、Worker/D1 API 143 assertions、migration検証まで全て合格した。
+
 ## 2026-09-12 — SkyのInstagram運用と既存ツールを同時統合
 
 `codex/fashion-brand-ops-sky`へ最新のSkyサブスク顧問branchを取り込み、Instagram運用・受注型ブランド管理、サブスク顧問、既存Web/PCツールを同じSky画面で併用できるよう競合を解消した。検索カテゴリ、Timeline、詳細runner、ready件数、製品ベース検査を6商品の構成へ同期した。
@@ -296,13 +304,14 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / SkyフロントへValue/Spend Runtimeの安全な支出体験を統合し、ブラウザ確認に合格 / 完了 29/51件
+最終更新: 2026-09-12 / 改善版SkyへFashion Brand OpsとValue/Spend Walletを統合し、ブラウザ・全体検証に合格 / 完了 30/52件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
+| SKY04 | 黒基調の改善版SkyへFashion Brand Opsを統合し、スマホDialogの画面外ずれを修正 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/fashion-brand-ops-runner.tsx) · [記録](app/workspace.css) · [記録](scripts/check-sky.mjs) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
@@ -370,7 +379,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: hostのSIMULATION/PAPER vertical sliceをnative MCP transportと通知基盤、Webの本人承認UIへ接続する。provider公式sandboxのquote/receipt照合、production Vault/Signer、本人承認を独立gateで実装する。LIVE・実資金・外部署名は明示許可と法務/地域/本人確認/鍵管理/取消/照合の受入まで無効。Meta実投稿・広告・請求・返金も実credentialと個別approvalが揃うまで別gateとして保持する。
+次の作業: hostのSIMULATION/PAPER vertical sliceをnative MCP transportと通知基盤、Webの本人承認UIへ接続する。provider公式sandboxのquote/receipt照合、production Vault/Signer、本人承認を独立gateで実装する。LIVE・実資金・外部署名は明示許可と法務/地域/本人確認/鍵管理/取消/照合の受入まで無効。Meta実投稿・広告・請求・返金も実credentialと個別approvalが揃うまで別gateとして保持し、Sites再配信は正しい所有ワークスペース接続後に行う。
 <!-- project-status:end -->
 
 ## 次段階の設計

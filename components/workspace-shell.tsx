@@ -37,11 +37,13 @@ const navigation = [
 export default function WorkspaceShell({
   children,
   title,
+  contentClassName,
   onConnect,
   running = false,
 }: {
   children: ReactNode;
   title: string;
+  contentClassName?: string;
   onConnect?: () => void;
   running?: boolean;
 }) {
@@ -195,7 +197,11 @@ export default function WorkspaceShell({
             )}
           </div>
         </header>
-        <main id="workspace-main" className="rock-main" tabIndex={-1}>
+        <main
+          id="workspace-main"
+          className={`rock-main ${contentClassName ?? ''}`}
+          tabIndex={-1}
+        >
           {children}
         </main>
         <div className="rock-bottom-note">

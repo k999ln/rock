@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "SkyフロントへValue/Spend Runtimeの安全な支出体験を統合し、ブラウザ確認に合格",
-  "nextAction": "hostのSIMULATION/PAPER vertical sliceをnative MCP transportと通知基盤、Webの本人承認UIへ接続する。provider公式sandboxのquote/receipt照合、production Vault/Signer、本人承認を独立gateで実装する。LIVE・実資金・外部署名は明示許可と法務/地域/本人確認/鍵管理/取消/照合の受入まで無効。Meta実投稿・広告・請求・返金も実credentialと個別approvalが揃うまで別gateとして保持する。",
+  "milestone": "改善版SkyへFashion Brand OpsとValue/Spend Walletを統合し、ブラウザ・全体検証に合格",
+  "nextAction": "hostのSIMULATION/PAPER vertical sliceをnative MCP transportと通知基盤、Webの本人承認UIへ接続する。provider公式sandboxのquote/receipt照合、production Vault/Signer、本人承認を独立gateで実装する。LIVE・実資金・外部署名は明示許可と法務/地域/本人確認/鍵管理/取消/照合の受入まで無効。Meta実投稿・広告・請求・返金も実credentialと個別approvalが揃うまで別gateとして保持し、Sites再配信は正しい所有ワークスペース接続後に行う。",
   "tasks": [
     {
       "id": "SKY01",
@@ -40,6 +40,24 @@
       "evidence": [
         "docs/sky-mcp-architecture.md",
         "systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md"
+      ]
+    },
+    {
+      "id": "SKY04",
+      "title": "黒基調の改善版SkyへFashion Brand Opsを統合し、スマホDialogの画面外ずれを修正",
+      "status": "done",
+      "dependsOn": [
+        "SKY01",
+        "FB01"
+      ],
+      "evidence": [
+        "components/sky-workspace.tsx",
+        "components/fashion-brand-ops-runner.tsx",
+        "app/workspace.css",
+        "scripts/check-sky.mjs",
+        "lib/sky-routing.ts",
+        "tests/sky-routing.test.mjs",
+        "docs/sky-assistant-and-memory.md"
       ]
     },
     {

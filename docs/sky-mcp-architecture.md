@@ -45,15 +45,15 @@ ToB
 
 基準はMCP 2025-11-25とする。
 
-| 領域 | Skyでの扱い |
-|---|---|
-| Registry | 公開MCPは公式Registryの`server.json`を候補情報として取り込める。非公開MCPは組織のprivate registryまたは直接接続として分ける。Registry掲載だけを安全審査済みとはみなさない。 |
-| Transport | 遠隔はStreamable HTTP、端末・PC内packageはstdioを基本とする。HTTPはOrigin検証、認証、localhost bind要件を満たす。 |
-| Initialization | protocol versionとcapability negotiationを記録し、未対応capabilityをUIに出さない。 |
-| Tool discovery | `tools/list`のname、description、inputSchema、annotationsを取得し、掲載申告との差分を審査する。 |
-| Authorization | OAuth 2.1のprotected resource metadataとresource indicatorを使う。token passthroughは禁止する。 |
-| Elicitation | 一般入力はform mode、秘密情報や決済はURL modeへ分離する。 |
-| Long-running | Tasksはexperimentalとしてcapability negotiation後だけ使う。非対応先はRockの既存job状態へ変換し、同じ意味だと偽らない。 |
+| 領域           | Skyでの扱い                                                                                                                                                                 |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Registry       | 公開MCPは公式Registryの`server.json`を候補情報として取り込める。非公開MCPは組織のprivate registryまたは直接接続として分ける。Registry掲載だけを安全審査済みとはみなさない。 |
+| Transport      | 遠隔はStreamable HTTP、端末・PC内packageはstdioを基本とする。HTTPはOrigin検証、認証、localhost bind要件を満たす。                                                           |
+| Initialization | protocol versionとcapability negotiationを記録し、未対応capabilityをUIに出さない。                                                                                          |
+| Tool discovery | `tools/list`のname、description、inputSchema、annotationsを取得し、掲載申告との差分を審査する。                                                                             |
+| Authorization  | OAuth 2.1のprotected resource metadataとresource indicatorを使う。token passthroughは禁止する。                                                                             |
+| Elicitation    | 一般入力はform mode、秘密情報や決済はURL modeへ分離する。                                                                                                                   |
+| Long-running   | Tasksはexperimentalとしてcapability negotiation後だけ使う。非対応先はRockの既存job状態へ変換し、同じ意味だと偽らない。                                                      |
 
 参照:
 
@@ -77,6 +77,8 @@ ToB
 - Web/PCで使用可能4件、OSS候補3件、native内蔵6種類・9版を実数から検査。
 
 次に必要な実装は、隔離されたMCP preflight、公式/private registry adapter、OAuth接続、審査者画面、公開revision、失効配信、実行前の条件再確認、Tasks adapter、実サーバー相互運用試験である。
+
+会話型の役割振り分けと、アプリを毎回入れずに利用者情報を必要な役だけへ渡す方針は[Sky Assistant / Sky Memory設計](sky-assistant-and-memory.md)に分離する。
 
 ## 受入条件
 
