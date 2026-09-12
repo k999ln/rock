@@ -9,10 +9,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ17/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ18/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ17/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ18/);
   const missingTemplate = structuredClone(source);
   delete missingTemplate.acceptanceTemplate;
   assert.throws(() => validateBaseline(missingTemplate), /acceptanceTemplate/);
@@ -34,9 +34,12 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const missingReview = structuredClone(source);
   delete missingReview.auditInputs.designHead;
   assert.throws(() => validateBaseline(missingReview), /designHead/);
-  const unapprovedMarket = structuredClone(source);
-  unapprovedMarket.marketExploration.runtimeAuthorized = true;
-  assert.throws(() => validateBaseline(unapprovedMarket), /未承認/);
+  const liveMarket = structuredClone(source);
+  liveMarket.marketExploration.realValueEnabled = true;
+  assert.throws(() => validateBaseline(liveMarket), /LIVE実資金/);
+  const missingPaperMode = structuredClone(source);
+  missingPaperMode.marketExploration.allowedModes = ['SIMULATION'];
+  assert.throws(() => validateBaseline(missingPaperMode), /SIMULATION\/PAPER/);
   const escaped = structuredClone(source);
   escaped.authority = '../external.md';
   assert.throws(() => validateBaseline(escaped), /repository外/);

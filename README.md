@@ -1,16 +1,18 @@
 # Rock star OS — 自動化HubとWallet
 
+WalletをOS内外の価値を正規化するValue Routerとして扱い、外部サービスへの支出を必ず提案・リスク判定・承認・隔離署名・adapter実行・receipt照合へ通す[Value/Spend Runtimeのhost vertical slice](docs/value-spend-runtime.md)を追加しました。HubとMCPは同一の入口です。第一号はPolymarket dry-run adapterで、SIMULATION/PAPERのみ利用でき、LIVE・実資金・外部署名は明示許可まで無効です。
+
 スマホ実機版の開発を開始しました。現在はソース統合準備で、書込み可能なOSは未生成です。直近相談のPixel 7／`panther`と既存設定のPixel 10／`frankel`が不一致のため、実機確認前に対象を確定しません。lockの機種/SKU確認が完了するまでfull OS buildは停止し、build入口は64 GiB RAM／400 GiB空きとlock由来sourceの再検証を要求します。[2026-09-12の進捗再監査](docs/current-state-20260911.md#2026-09-12--github実装実機版ビルド環境の再監査)／[ビルド環境・実装・次の手順](docs/phone-preview-20260911.md)。
 
 公開設定・本人限定サイトの状況は[今回の設定記録](docs/owner-setup-20260911.md)を参照。
 
 tob側の自動化ツールを商品として管理するHubと、自動化で得たお金を管理するWalletに特化したOSを開発します。実行場所、料金、資格、ライセンスの違いを扱い、利用準備・日々の管理・結果とお金の確認に伴う不便を減らします。
 
-**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ17）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持します。
+**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ18）です。** [現在の開発状態](docs/current-state-20260911.md)、[Value/Spend Runtimeの次の再開指示](docs/prompts/value-spend-runtime-next.md)、[従来トラックの再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持します。
 
 [8原則に基づくRockstarOS 1.0設計](docs/rockstaros-1.0-strategy.md)を追加しました。現ベースを維持し、一つの商品で実行・成果・費用・復旧まで確認できる体験を検証します。初期対象の文章系個人事業主と既存引用整理は検証仮説。配布/実用の優先順位、試用指標、CM導線、責任分担を具体化し、未実証の需要や本番利用可能性は主張しません。
 
-**[設計v1.1](docs/os-hub-wallet-game-design.md)の実装は承認済みです。** [承認範囲](docs/execution-approval-20260909.md)に従い、専用branchでnativeと設計を統合しています。公開・実機・MetaMask実資金は条件付き了承を保持し、技術的な準備を検証します。達成演出は見送り、市場案は検討のみです。
+**[設計v1.1](docs/os-hub-wallet-game-design.md)の実装は承認済みです。** [承認範囲](docs/execution-approval-20260909.md)に従い、専用branchでnativeと設計を統合しています。RQ18で市場連携の共通runtimeとdry-runが追加承認されましたが、公開・実機・MetaMask実資金・Polymarket LIVEは条件付き了承のままです。達成演出は見送ります。
 
 **このbranchにはLinux / Buildroot / ARM64 QEMU native OSの試作があります。** main/native/設計の3入力を統合した[PR #2](https://github.com/k999ln/rock/pull/2)を起点に開発しています。旧`b8287bc`の[限定受入D0〜D5](docs/os-acceptance-b8287bc-20260909.md)を保持し、run44は元planの5boot・61jobs・3641.769秒と正常停止を独立照合して回収しました。旧合格とは別に、Game統合9ab候補で[D0〜D6の限定受入](docs/os-acceptance-9abf78a-20260910.md)を完了しました。mainへの統合と実機対応は未実施です。
 
@@ -35,7 +37,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / RockstarOS 1.0の現進捗を再監査（実装状態は据え置き） / 完了 19/41件
+最終更新: 2026-09-12 / Value/Spend Runtime host vertical sliceとPolymarket dry-run adapter / 完了 20/42件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -80,6 +82,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | LCH05 | 制作中CMの完成待ち・内容照合・導入案内への接続 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| VS01 | Value/Spend Runtime host vertical sliceとPolymarket dry-run adapter | 完了 | [記録](docs/value-spend-runtime.md) · [記録](docs/value-spend-runtime-audit-20260912.md) · [記録](systems/rock-star-os/src/blackberryrock/spend.py) · [記録](systems/rock-star-os/tests/test_spend_runtime.py) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -99,7 +102,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 現在の入口はdocs/current-state-20260911.mdの2026-09-12節。lock由来のdevice/lunch/hook/target検証と未確認SKUのfull-build fail-closed guardを実装し、local phone tests 10件と総合verify（93 tests・build・API 143 assertions）を確認済み。直近相談のPixel 7/pantherと既存設定のPixel 10/frankelが不一致のため、実機の型番/SKUを読取り専用で確認して対象を一つに固定する。その後、未承認のクラウド計画（推奨48 vCPU/96GiB/600GiB、初回計画20〜30 USD）を確定し、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/GameのAndroid移植へ進む。本人限定Sites QA、license/production署名、取消実停止/RSS、CM、正式配布受入、一般公開/main mergeも未完了。
+次の作業: docs/value-spend-runtime.mdとdocs/prompts/value-spend-runtime-next.mdを入口にする。hostのSIMULATION/PAPER vertical sliceをnative MCP transportと通知基盤へ接続し、provider公式sandboxのquote/receipt照合、production Vault/Signer、本人承認UIを独立gateで実装する。LIVE・実資金・外部署名は明示許可と法務/地域/本人確認/鍵管理/取消/照合の受入まで無効。スマホ版、本人限定Sites QA、license/production署名、CM、正式配布受入、一般公開/main mergeの既存未完了条件も維持する。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

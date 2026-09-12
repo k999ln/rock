@@ -1,11 +1,11 @@
 {
-  "version": "1.10",
-  "decidedAt": "2026-09-11",
+  "version": "1.11",
+  "decidedAt": "2026-09-12",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
-  "audit": "docs/os-readiness-audit-20260909.md",
-  "nextPrompt": "docs/prompts/rock-current-next-20260911.md",
+  "audit": "docs/value-spend-runtime-audit-20260912.md",
+  "nextPrompt": "docs/prompts/value-spend-runtime-next.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/os-hub-wallet-game-design.md",
   "strategy": {
@@ -44,7 +44,8 @@
     "RQ14",
     "RQ15",
     "RQ16",
-    "RQ17"
+    "RQ17",
+    "RQ18"
   ],
   "primaryCapabilities": [
     "automation-hub",
@@ -53,12 +54,12 @@
   "supplyRoleLabel": "tob",
   "supplyRoleExclusivity": "unspecified",
   "auditInputs": {
-    "main": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
-    "nativeBranch": "codex/integrate-native-os-20260909",
-    "nativeHead": "fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5",
+    "main": "9f4930b45e2d38a5371f4a489be4d53b38f28ba7",
+    "nativeBranch": "codex/rockstaros-launch-candidate-20260910",
+    "nativeHead": "2562469c8f6c075822b425cb7c86202980de7036",
     "designBranch": "codex/os-game-design-review-20260909",
-    "designHead": "de5b102d3525daccf604efd5685bdf8c14ad5d50",
-    "nativePullRequest": 1,
+    "designHead": "27b34adc02a9e06a4816aa18a5e38cf38b330953",
+    "nativePullRequest": 4,
     "nativePullRequestStateAtAudit": "OPEN",
     "isLiveStatus": false
   },
@@ -121,10 +122,12 @@
     "externalCosts": "separate, disclosed before consent; unspecified"
   },
   "marketExploration": {
-    "status": "discussion_only",
-    "runtimeAuthorized": false,
+    "status": "simulation_paper_runtime_authorized",
+    "runtimeAuthorized": true,
     "realValueEnabled": false,
-    "scope": "Prediction markets and game asset trading are separate, optional proposals; not an approved OS requirement"
+    "allowedModes": ["SIMULATION", "PAPER"],
+    "firstIntegration": "MrFadiAi/Polymarket-bot via Rock adapter; upstream code is not copied",
+    "scope": "RQ18 authorizes the common Value/Spend Runtime and Polymarket dry-run adapter. LIVE, real USDC and production credentials remain disabled."
   },
   "releaseExecution": {
     "startedAt": "2026-09-10T05:43:35Z",

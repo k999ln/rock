@@ -25,6 +25,7 @@ ACCOUNTS = (
     "SERVICE_FEES", "SALE_CLEARING",
 )
 GAME_ACCOUNTS = ('GAME_HOLD', 'GAME_PURCHASES', 'GAME_FEES')
+SPEND_ACCOUNTS = ('SPEND_HOLD', 'SPEND_COMMITTED', 'SPEND_FEES', 'SPEND_GAS')
 FINAL_WITHDRAWAL_STATES = {"DISPENSED", "REVERSED", "PARTIAL_REVERSED"}
 
 
@@ -213,6 +214,8 @@ class Wallet:
         balances = dict.fromkeys(ACCOUNTS, 0)
         if connection.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='wallet_game_schema'").fetchone():
             balances.update(dict.fromkeys(GAME_ACCOUNTS, 0))
+        if connection.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='value_spend_schema'").fetchone():
+            balances.update(dict.fromkeys(SPEND_ACCOUNTS, 0))
         for row in connection.execute("SELECT account, SUM(delta_minor) AS balance FROM wallet_postings GROUP BY account"):
             balances[row["account"]] = row["balance"]
         return balances
@@ -238,6 +241,66 @@ class Wallet:
             raise WalletError("simulator records do not reconcile with journal balances")
         if any(account in balances for account in GAME_ACCOUNTS):
             cls._verify_game(connection, balances)
+        if any(account in balances for account in SPEND_ACCOUNTS):
+            cls._verify_spend(connection, balances)
+
+    @staticmethod
+    def _verify_spend(connection, balances):
+        """Reconcile Value/Spend reservations with the shared append-only ledger."""
+        schema = [tuple(row) for row in connection.execute(
+            'SELECT singleton,version FROM value_spend_schema'
+        )]
+        if schema != [(1, 1)]:
+            raise WalletError('unsupported Value/Spend ledger schema')
+        rows = connection.execute('SELECT * FROM spend_reservations').fetchall()
+        held = committed = fees = gas = 0
+        expected = []
+        for row in rows:
+            maximum = row['principal_minor'] + row['max_fee_minor'] + row['max_gas_minor']
+            if maximum != row['held_minor'] + row['committed_minor'] + row['released_minor']:
+                raise WalletError('spend reservation amount conservation failed')
+            if (row['state'] == 'COMMITTED' and
+                    row['committed_minor'] != row['principal_minor'] + row['actual_fee_minor'] + row['actual_gas_minor']):
+                raise WalletError('spend committed amount differs from principal and costs')
+            if row['state'] != 'COMMITTED' and (row['committed_minor'] or row['actual_fee_minor'] or row['actual_gas_minor']):
+                raise WalletError('uncommitted spend has committed amounts')
+            if row['actual_fee_minor'] > row['max_fee_minor'] or row['actual_gas_minor'] > row['max_gas_minor']:
+                raise WalletError('spend cost exceeded its reservation')
+            held += row['held_minor']
+            committed += row['principal_minor'] if row['state'] == 'COMMITTED' else 0
+            fees += row['actual_fee_minor'] if row['state'] == 'COMMITTED' else 0
+            gas += row['actual_gas_minor'] if row['state'] == 'COMMITTED' else 0
+            expected.append(('spend.reserve', row['proposal_id'], 'AVAILABLE', -maximum, 'SPEND_HOLD', maximum))
+            if row['state'] == 'COMMITTED':
+                expected.append(('spend.commit', row['proposal_id'], 'SPEND_HOLD', -row['principal_minor'],
+                                 'SPEND_COMMITTED', row['principal_minor']))
+                if row['actual_fee_minor']:
+                    expected.append(('spend.fee', row['proposal_id'], 'SPEND_HOLD', -row['actual_fee_minor'],
+                                     'SPEND_FEES', row['actual_fee_minor']))
+                if row['actual_gas_minor']:
+                    expected.append(('spend.gas', row['proposal_id'], 'SPEND_HOLD', -row['actual_gas_minor'],
+                                     'SPEND_GAS', row['actual_gas_minor']))
+                if row['released_minor']:
+                    expected.append(('spend.release', row['proposal_id'], 'SPEND_HOLD', -row['released_minor'],
+                                     'AVAILABLE', row['released_minor']))
+            elif row['state'] == 'RELEASED':
+                expected.append(('spend.release', row['proposal_id'], 'SPEND_HOLD', -maximum,
+                                 'AVAILABLE', maximum))
+            elif row['state'] != 'HELD':
+                raise WalletError('unknown spend reservation state')
+        if (held, committed, fees, gas) != tuple(balances[name] for name in SPEND_ACCOUNTS):
+            raise WalletError('spend records do not reconcile with asset accounts')
+        actual = []
+        for journal in connection.execute("SELECT id,kind,reference_id FROM wallet_journals WHERE kind LIKE 'spend.%'"):
+            postings = [tuple(row) for row in connection.execute(
+                'SELECT account,delta_minor FROM wallet_postings WHERE journal_id=? ORDER BY id', (journal['id'],)
+            )]
+            if len(postings) != 2:
+                raise WalletError('spend journal must have exactly two postings')
+            actual.append((journal['kind'], journal['reference_id'], postings[0][0], postings[0][1],
+                           postings[1][0], postings[1][1]))
+        if sorted(actual) != sorted(expected):
+            raise WalletError('spend journal binding differs')
 
     @staticmethod
     def _verify_game(connection, balances):
@@ -290,7 +353,8 @@ class Wallet:
     def _post(connection: sqlite3.Connection, kind: str, reference: str,
               debit_from: str, credit_to: str, amount_minor: int) -> str:
         _amount(amount_minor)
-        if debit_from == credit_to or debit_from not in ACCOUNTS+GAME_ACCOUNTS or credit_to not in ACCOUNTS+GAME_ACCOUNTS:
+        allowed = ACCOUNTS + GAME_ACCOUNTS + SPEND_ACCOUNTS
+        if debit_from == credit_to or debit_from not in allowed or credit_to not in allowed:
             raise WalletError("invalid posting accounts")
         journal_id = str(uuid.uuid4())
         connection.execute("INSERT INTO wallet_journals VALUES (?, ?, ?, ?)",

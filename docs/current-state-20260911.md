@@ -1,5 +1,11 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-12 — Value/Spend Runtime host vertical slice
+
+RQ18として、Hub/MCPを同一入口、WalletをValue RouterとするOS標準Value/Spend Runtimeをlaunch-candidate上へ追加した。共通asset registry、Spend Proposal、Policy/Risk Guard、明示承認、同一SQLite取引でのWallet予約・commit・release、Secret Vault/Signing Service抽象、adapter、receipt/reconciliation、共通イベントを実装した。第一号の`polymarket.dry-run`は固定したMrFadiAi/Polymarket-bot監査情報を持つが、botを複製せず共通runtimeから呼び出す。SIMULATION/PAPERのみで、LIVE・実資金・provider API・秘密鍵取込みは無効。
+
+host上では残高、position、realized/unrealized PnL、fee/gas、strategy、emergency stop、日次損失・exposure・slippage上限を一つの状態として参照できる。Hubの`/api/hub-mcp`は同じstrict command contractを提供し、`/api/state`へ公開する。native MCP transport、通知配信、provider sandbox、production vault/signer、本人承認UI、LIVEは未実装で、既存QEMU imageやスマホOSへはまだ収録していない。[設計と利用方法](value-spend-runtime.md)／[上流・branch・CI監査](value-spend-runtime-audit-20260912.md)。
+
 ## 2026-09-12 — GitHub・実装・実機版・ビルド環境の再監査
 
 この節を現在の進捗差分として追加する。2026-09-12 04:48 JST時点で、mainは`7cdbb5fedc86ee3978ed329d9312147d137c9199`、開発本体は`codex/rockstaros-launch-candidate-20260910`の`c182a5b9c8f5f4da59528a41980eb98750ebd234`。製品全体の確認先である[Draft PR #4](https://github.com/k999ln/rock/pull/4)はOPEN／CLEANで、同HEADの12 checkは全てSUCCESSだった。うちスマホ向けcheckの名称自体が`Phone source preparation (not OS boot)`であり、全OS buildや実機起動の証拠ではない。open PRは#1〜#6の6件で、main mergeと一般公開は未実施。機械可読snapshotは[進捗再監査](evidence/launch/progress-audit-20260912.json)。

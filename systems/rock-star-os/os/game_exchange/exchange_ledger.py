@@ -79,8 +79,11 @@ def migrate(runtime,*,migration_id):
         columns=[row[1] for row in db.execute('PRAGMA table_info(wallet_postings)')]
         p.require(columns==['id','journal_id','account','delta_minor'],'unknown posting columns require explicit migration review')
         account_check=re.search(r'CHECK\(account IN \((.*?)\)\)',original,re.S)
-        p.require(account_check is not None and re.findall(r"'([^']+)'",account_check[1])==
-            ['AVAILABLE','PENDING_SETTLEMENT','WITHDRAW_HOLD','CASH_DISPENSED','SERVICE_FEES','SALE_CLEARING'],
+        existing_accounts=re.findall(r"'([^']+)'",account_check[1]) if account_check is not None else []
+        base_accounts=['AVAILABLE','PENDING_SETTLEMENT','WITHDRAW_HOLD','CASH_DISPENSED','SERVICE_FEES','SALE_CLEARING']
+        spend_accounts=['SPEND_HOLD','SPEND_COMMITTED','SPEND_FEES','SPEND_GAS']
+        p.require(existing_accounts[:len(base_accounts)]==base_accounts and
+            all(name in base_accounts+spend_accounts for name in existing_accounts),
             'unknown posting constraint requires explicit migration review')
         for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall():
             name=row[0].replace('"','""')
@@ -90,8 +93,10 @@ def migrate(runtime,*,migration_id):
         sequences=[tuple(row) for row in db.execute('SELECT rowid,name,seq FROM sqlite_sequence ORDER BY rowid')]
         objects=[row[0] for row in db.execute("SELECT sql FROM sqlite_master WHERE tbl_name='wallet_postings' AND type IN ('index','trigger') AND sql IS NOT NULL ORDER BY name")]
         changed=original[:account_check.start(1)]+account_check[1]+", 'GAME_HOLD', 'GAME_PURCHASES', 'GAME_FEES'"+original[account_check.end(1):]
-        changed=changed.replace('CREATE TABLE wallet_postings','CREATE TABLE wallet_postings_game_v1',1)
-        p.require('CREATE TABLE wallet_postings_game_v1' in changed,'unknown original posting table syntax')
+        changed,replacements=re.subn(
+            r'(?i)\bCREATE\s+TABLE\s+(?:"wallet_postings"|`wallet_postings`|\[wallet_postings\]|wallet_postings)(?=\s|\()',
+            'CREATE TABLE wallet_postings_game_v1',changed,count=1)
+        p.require(replacements==1,'unknown original posting table syntax')
         db.execute(changed)
         db.execute('INSERT INTO wallet_postings_game_v1(id,journal_id,account,delta_minor) SELECT id,journal_id,account,delta_minor FROM wallet_postings ORDER BY id')
         db.execute('DROP TABLE wallet_postings')

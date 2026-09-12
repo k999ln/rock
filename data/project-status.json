@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "RockstarOS 1.0の現進捗を再監査（実装状態は据え置き）",
-  "nextAction": "現在の入口はdocs/current-state-20260911.mdの2026-09-12節。lock由来のdevice/lunch/hook/target検証と未確認SKUのfull-build fail-closed guardを実装し、local phone tests 10件と総合verify（93 tests・build・API 143 assertions）を確認済み。直近相談のPixel 7/pantherと既存設定のPixel 10/frankelが不一致のため、実機の型番/SKUを読取り専用で確認して対象を一つに固定する。その後、未承認のクラウド計画（推奨48 vCPU/96GiB/600GiB、初回計画20〜30 USD）を確定し、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/GameのAndroid移植へ進む。本人限定Sites QA、license/production署名、取消実停止/RSS、CM、正式配布受入、一般公開/main mergeも未完了。",
+  "milestone": "Value/Spend Runtime host vertical sliceとPolymarket dry-run adapter",
+  "nextAction": "docs/value-spend-runtime.mdとdocs/prompts/value-spend-runtime-next.mdを入口にする。hostのSIMULATION/PAPER vertical sliceをnative MCP transportと通知基盤へ接続し、provider公式sandboxのquote/receipt照合、production Vault/Signer、本人承認UIを独立gateで実装する。LIVE・実資金・外部署名は明示許可と法務/地域/本人確認/鍵管理/取消/照合の受入まで無効。スマホ版、本人限定Sites QA、license/production署名、CM、正式配布受入、一般公開/main mergeの既存未完了条件も維持する。",
   "tasks": [
     {
       "id": "R01",
@@ -526,6 +526,20 @@
       "dependsOn": [],
       "evidence": [
         "docs/launch-readiness-20260910.md"
+      ]
+    },
+    {
+      "id": "VS01",
+      "title": "Value/Spend Runtime host vertical sliceとPolymarket dry-run adapter",
+      "status": "done",
+      "dependsOn": [
+        "B04"
+      ],
+      "evidence": [
+        "docs/value-spend-runtime.md",
+        "docs/value-spend-runtime-audit-20260912.md",
+        "systems/rock-star-os/src/blackberryrock/spend.py",
+        "systems/rock-star-os/tests/test_spend_runtime.py"
       ]
     }
   ],

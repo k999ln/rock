@@ -19,8 +19,8 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
     documents[key] = read(resolved);
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
-  const expected = Array.from({ length: 17 }, (_, i) => `RQ${String(i + 1).padStart(2, '0')}`);
-  requireValue(JSON.stringify(data.requirements) === JSON.stringify(expected), '確定要望RQ01〜RQ17の順序/欠落/重複を確認してください');
+  const expected = Array.from({ length: 18 }, (_, i) => `RQ${String(i + 1).padStart(2, '0')}`);
+  requireValue(JSON.stringify(data.requirements) === JSON.stringify(expected), '確定要望RQ01〜RQ18の順序/欠落/重複を確認してください');
   for (const id of expected) {
     requireValue(documents.authority.split(`## ${id} `).length === 2, `${id}: 正本の見出しが一意ではありません`);
   }
@@ -33,7 +33,10 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
   requireValue(data.supplyRoleExclusivity === 'unspecified', 'tobの供給元/独占性は未確定です');
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');
   requireValue(data.gameExchange?.atmDependency === false, 'ゲーム交換をATM必須にしないでください');
-  requireValue(data.marketExploration?.runtimeAuthorized === false && data.marketExploration?.realValueEnabled === false, '市場案は検討のみで実装・実資金未承認です');
+  requireValue(data.marketExploration?.runtimeAuthorized === true && data.marketExploration?.realValueEnabled === false,
+    '予測市場runtimeはSIMULATION/PAPERのみ承認済み、LIVE実資金は禁止です');
+  requireValue(JSON.stringify(data.marketExploration?.allowedModes) === JSON.stringify(['SIMULATION', 'PAPER']),
+    '予測市場の標準モードはSIMULATION/PAPERのみです');
   requireValue(data.releaseInstallation?.releaseName === 'RockstarOS 1.0', '1.0の発表名が必要です');
   for (const field of ['architecture', 'plan']) {
     const path = data.releaseInstallation[field];
@@ -51,5 +54,5 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   validateBaseline(JSON.parse(readFileSync(resolve(root, 'data/product-baseline.json'), 'utf8')));
-  console.log('製品ベース: RQ01〜RQ17、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）');
+  console.log('製品ベース: RQ01〜RQ18、Value/SpendはSIMULATION/PAPERのみ、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）');
 }
