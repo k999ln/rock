@@ -13,6 +13,17 @@ const summary = {
       message: '支払い方法を確認してください',
     },
   ],
+  coverage: {
+    complete: false,
+    discovery_complete: false,
+    future_ready: false,
+    source_counts: { total: 6, resolved: 2, imported: 1, unresolved: 4 },
+    unresolved_sources: ['Google Play', 'クレジットカード', '銀行口座', 'PayPal'],
+    transactions_imported: 0,
+    evidence_records: 0,
+    historical_subscriptions: 1,
+    renewal_dates: { required: 2, known: 1, missing: 1 },
+  },
   offline: true,
 };
 
@@ -68,4 +79,27 @@ void test('advisor orders future renewals from the local ledger', () => {
   );
   assert.match(answer, /Next Service/);
   assert.doesNotMatch(answer, /Past Service/);
+  assert.match(answer, /1件は更新日が未登録/);
+});
+
+void test('advisor refuses to claim full coverage while sources remain unresolved', () => {
+  const answer = answerSubscriptionQuestion(
+    'サブスクは全網羅されてる？見落としない？',
+    summary,
+    subscriptions,
+  );
+  assert.match(answer, /まだ全網羅ではありません/);
+  assert.match(answer, /2\/6確認済み/);
+  assert.match(answer, /Google Play/);
+  assert.match(answer, /未確認が1つでも残る間/);
+});
+
+void test('advisor lists historical subscriptions separately', () => {
+  const answer = answerSubscriptionQuestion(
+    '昔入ってたサブスクは？',
+    summary,
+    subscriptions,
+  );
+  assert.match(answer, /過去・解約済みは1件/);
+  assert.match(answer, /Past Service/);
 });

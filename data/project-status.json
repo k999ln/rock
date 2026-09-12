@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "Skyのサブスク顧問を役割エージェント型チャットへ拡張",
-  "nextAction": "Skyのサブスク顧問をローカルPC台帳へ読み取り専用で接続し、質問例と自由入力で月額・要対応・更新・要約を回答する会話UIまで検証した。次はNative Sky MCP brokerを共通policy gatewayにし、各担当のtool allowlist・data scope・本人確認・receiptを実装してWallet担当と営業/編集担当へ展開する。HTTPS配信版からloopbackへ直接接続しない経路、Android/AOSPのfull build・Hub/Wallet/Game移植・production署名・実機受入は引き続き未完了。",
+  "milestone": "Skyのサブスク顧問へ全網羅監査を追加",
+  "nextAction": "Skyのサブスク顧問をローカルPC台帳へ読み取り専用で接続し、全網羅・過去契約・月額・要対応・更新を会話で回答するところまで検証した。Apple、Google Play、カード、銀行、PayPal、請求メールの確認状況と期間を追跡し、未確認または更新日不足が残る間は完了と判定しない。現在は6情報源とも未確認、明細0件、更新日3件不足。次は本人が利用する情報源の履歴をローカル取込・照合し、Native Sky MCP brokerを共通policy gatewayにする。HTTPS配信版からloopbackへ直接接続しない経路、Android/AOSPのfull build・Hub/Wallet/Game移植・production署名・実機受入は引き続き未完了。",
   "tasks": [
     {
       "id": "R01",

@@ -8,6 +8,8 @@
 
 今回はローカルSkyでのPC接続と読み取り会話までを対象とし、HTTPS配信版のloopback接続、Native Sky MCP brokerへの常駐、Walletへの費用転記、解約・支払い・申告は未実装のまま保持する。[実装・安全境界・検証](docs/sky-rockstar-ledger-20260912.md)。
 
+追加で全網羅監査を実装した。Apple、Google Play、カード、銀行、PayPal、請求メールの6情報源と確認期間を追跡し、全情報源の解決と継続契約の更新日入力が揃うまで完了と判定しない。現在の個人台帳は既知18件（過去・終了10件）を保持する一方、情報源0/6確認済み、明細0件、更新日3件不足のため未完了と表示する。SkyチャットとMCPも同じ判定を返す。
+
 ## 2026-09-12 — 現進捗・スマホ不足・クラウド条件を再監査
 
 main `7cdbb5f`とDraft PR #4の候補`c182a5b`を再取得し、PR #4の同HEAD 12 checkが全て成功していることを確認した。ただしスマホcheckはsource preparationで、OS bootではない。41 taskは19 done／15 in progress／7 plannedだが、製品完成率には換算しない。QEMU rc2の内部限定受入、Android P1の2APK、本人限定Siteを保持し、スマホ版は全source取得・vendor生成・Soong build・AndroidへのHub/Wallet/Game移植・production署名・実機flash/boot/OTA/復旧が未完了。[現在の再監査](docs/current-state-20260911.md#2026-09-12--github実装実機版ビルド環境の再監査)／[機械可読snapshot](docs/evidence/launch/progress-audit-20260912.json)。
@@ -274,7 +276,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / Skyのサブスク顧問を役割エージェント型チャットへ拡張 / 完了 19/41件
+最終更新: 2026-09-12 / Skyのサブスク顧問へ全網羅監査を追加 / 完了 19/41件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -338,7 +340,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Skyのサブスク顧問をローカルPC台帳へ読み取り専用で接続し、質問例と自由入力で月額・要対応・更新・要約を回答する会話UIまで検証した。次はNative Sky MCP brokerを共通policy gatewayにし、各担当のtool allowlist・data scope・本人確認・receiptを実装してWallet担当と営業/編集担当へ展開する。HTTPS配信版からloopbackへ直接接続しない経路、Android/AOSPのfull build・Hub/Wallet/Game移植・production署名・実機受入は引き続き未完了。
+次の作業: Skyのサブスク顧問をローカルPC台帳へ読み取り専用で接続し、全網羅・過去契約・月額・要対応・更新を会話で回答するところまで検証した。Apple、Google Play、カード、銀行、PayPal、請求メールの確認状況と期間を追跡し、未確認または更新日不足が残る間は完了と判定しない。現在は6情報源とも未確認、明細0件、更新日3件不足。次は本人が利用する情報源の履歴をローカル取込・照合し、Native Sky MCP brokerを共通policy gatewayにする。HTTPS配信版からloopbackへ直接接続しない経路、Android/AOSPのfull build・Hub/Wallet/Game移植・production署名・実機受入は引き続き未完了。
 <!-- project-status:end -->
 
 ## 次段階の設計

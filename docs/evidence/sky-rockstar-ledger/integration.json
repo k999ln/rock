@@ -3,8 +3,8 @@
   "observedAt": "2026-09-12",
   "scope": "local Sky web and Rockstar Ledger on the same PC",
   "source": {
-    "rockstarLedgerCommit": "0d3f29f3f8986669ac6516cea252aa2fa506a1ef",
-    "distributionSha256": "abfdbbc884fb0723f74a1f4ece73cbe755104312eb1ec51e4f4f83bdb0224651"
+    "rockstarLedgerCommit": "4ddece0266abfc4874c0836192877b5125436007",
+    "distributionSha256": "c4a5e30766b333551204658bb5dd66affd4a7b53fc797b31082e65e5f1cda314"
   },
   "checks": {
     "catalogEntryVisible": true,
@@ -15,14 +15,19 @@
     "subscriptionRowsShown": true,
     "errorOverlay": false,
     "consoleErrors": 0,
-    "pythonUnitTests": 3,
-    "skyNodeTests": 98,
+    "pythonUnitTests": 4,
+    "skyNodeTests": 100,
     "workerApiAssertions": 143,
     "productionBuild": "pass",
     "chatSuggestedQuestion": "pass",
     "chatFreeTextQuestion": "pass",
     "chatUsesLocalLedgerOnly": true,
-    "chatAutomaticCancellation": false
+    "chatAutomaticCancellation": false,
+    "coverageSourcesShown": 6,
+    "coverageRefusesFalseComplete": true,
+    "historicalSubscriptions": 10,
+    "transactionsImported": 0,
+    "missingRenewalDates": 3
   },
   "privacy": {
     "personalDatabaseCommitted": false,
@@ -33,6 +38,7 @@
     "HTTPS hosted Sky to loopback connection",
     "native Sky MCP broker persistence",
     "Wallet cost posting",
+    "complete Apple, Google Play, card, bank, PayPal, and billing-email account-history audit",
     "automated cancellation, payment, or tax filing"
   ],
   "result": "PASS_LOCAL_PC"

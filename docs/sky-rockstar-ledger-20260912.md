@@ -12,7 +12,15 @@
 
 追加の会話UIでは「今月いくら？」「要対応は？」「次の更新は？」「全体を要約して」の質問例と自由入力を用意した。回答は外部AIへ送らず、取得済みの台帳データから決定的に生成する。解約相談には要対応を示すが、解約や支払いは実行しない。Sky全体を役割エージェント型へ発展させる共通仕様は[Skyの役割エージェント仕様](sky-role-agents-20260912.md)に分離した。
 
-配布ZIP、MIT全文、Codex向けskill、stdio MCPサーバーをHubと同じGitに同梱した。元パッケージはRockstar Ledger `0d3f29f3f8986669ac6516cea252aa2fa506a1ef`、ZIP SHA-256は `abfdbbc884fb0723f74a1f4ece73cbe755104312eb1ec51e4f4f83bdb0224651`。
+配布ZIP、MIT全文、Codex向けskill、stdio MCPサーバーをHubと同じGitに同梱した。元パッケージはRockstar Ledger `4ddece0266abfc4874c0836192877b5125436007`、ZIP SHA-256は `c4a5e30766b333551204658bb5dd66affd4a7b53fc797b31082e65e5f1cda314`。
+
+## 全網羅監査 0.2
+
+既知18件を「全部」と誤認しないよう、Apple、Google Play、クレジットカード、銀行口座、PayPal、請求メール・領収書の6情報源を確認する監査台帳を追加した。各情報源は利用有無、取込済み、確認済み、確認期間、件数を保持する。明細CSVを取り込むと情報源と期間を記録するが、取込だけでは確認済みにしない。
+
+全網羅は、全情報源が確認済みまたは利用なしで解決し、かつ継続契約の更新日が揃った場合だけ成立する。現行の個人台帳は6情報源とも未確認、明細0件、継続契約の更新日3件不足のため、明示的に未完了と表示する。過去・解約済み10件は履歴として保持している。
+
+Skyのチャットへ「全網羅されてる？」「見落としは？」「昔入っていたものは？」を追加し、未確認情報源、明細件数、過去件数、更新日不足をローカル回答する。MCPには `subscription_coverage` と `update_coverage_source` を追加した。更新後の元パッケージは `4ddece0266abfc4874c0836192877b5125436007`、配布ZIP SHA-256は `c4a5e30766b333551204658bb5dd66affd4a7b53fc797b31082e65e5f1cda314`。
 
 ## データと安全境界
 
@@ -22,12 +30,13 @@
 
 ## 検証
 
-- Rockstar Ledger Python unit tests: 3件合格
+- Rockstar Ledger Python unit tests: 4件合格
 - loopback CORS: `http://127.0.0.1:3000` へ200と限定Allow-Originを返すことを確認
 - Sky catalog/package tests: `tests/rockstar-ledger.test.mjs`
-- Skyの型、lint、全98 tests、本番build、Worker/D1 API 143 assertions: `npm run verify` 合格
+- Skyの型、lint、全100 tests、本番build、Worker/D1 API 143 assertions: `npm run verify` 合格
 - Sky画面の実接続: 商品選択、通貨別集計、警告、一覧を確認。error overlayなし、console error 0
 - 会話実操作: 質問例の月額回答と自由入力の解約相談を確認。台帳値を回答し、自動解約を拒否。error overlayなし、console error 0
+- 全網羅画面実操作: 6情報源、確認状態、確認期間、明細0件、更新日不足3件を表示し、未完了判定を確認
 
 個人の契約名・金額が映る画面画像はGitへ保存せず、個人情報を除いた[機械可読の検証記録](evidence/sky-rockstar-ledger/integration.json)だけを残した。
 

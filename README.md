@@ -35,7 +35,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / Skyのサブスク顧問を役割エージェント型チャットへ拡張 / 完了 19/41件
+最終更新: 2026-09-12 / Skyのサブスク顧問へ全網羅監査を追加 / 完了 19/41件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -99,7 +99,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Skyのサブスク顧問をローカルPC台帳へ読み取り専用で接続し、質問例と自由入力で月額・要対応・更新・要約を回答する会話UIまで検証した。次はNative Sky MCP brokerを共通policy gatewayにし、各担当のtool allowlist・data scope・本人確認・receiptを実装してWallet担当と営業/編集担当へ展開する。HTTPS配信版からloopbackへ直接接続しない経路、Android/AOSPのfull build・Hub/Wallet/Game移植・production署名・実機受入は引き続き未完了。
+次の作業: Skyのサブスク顧問をローカルPC台帳へ読み取り専用で接続し、全網羅・過去契約・月額・要対応・更新を会話で回答するところまで検証した。Apple、Google Play、カード、銀行、PayPal、請求メールの確認状況と期間を追跡し、未確認または更新日不足が残る間は完了と判定しない。現在は6情報源とも未確認、明細0件、更新日3件不足。次は本人が利用する情報源の履歴をローカル取込・照合し、Native Sky MCP brokerを共通policy gatewayにする。HTTPS配信版からloopbackへ直接接続しない経路、Android/AOSPのfull build・Hub/Wallet/Game移植・production署名・実機受入は引き続き未完了。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
@@ -123,7 +123,7 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 - 「仕事を進める」から記事販売準備・ココナラ納品準備を作成し、手順・試行履歴・最終確認をアカウント別に保存して再開。
 - 基本分配・ブースト・共同留保を、共通収益の範囲内で試算。入金・送金は未接続。
 - 同じ4ツールをstdio MCPでCodexから実行。PC接続アプリを起動するとサイトからもMCPでワンボタン実行。
-- Skyの「サブスク顧問」とチャットし、PC内のRockstar Ledgerを読み取り専用で照会。通貨別の月額、更新日、支払い失敗、定期課金候補へ質問でき、同梱のstdio MCPでも同じ台帳を使えます。契約データはGit・サイト・外部AIへ送らず、解約・支払い・税務申告は自動実行しません。[導入と境界](toolkits/rockstar-ledger/README.md) / [役割エージェント仕様](docs/sky-role-agents-20260912.md)
+- Skyの「サブスク顧問」とチャットし、PC内のRockstar Ledgerを読み取り専用で照会。通貨別の月額、更新日、支払い失敗、過去契約、未確認の情報源へ質問できます。Apple、Google Play、カード、銀行、PayPal、請求メールの確認状況を管理し、未確認または更新日不足が残る間は全網羅と表示しません。同梱のstdio MCPでも同じ台帳を使えます。契約データはGit・サイト・外部AIへ送らず、解約・支払い・税務申告は自動実行しません。[導入と境界](toolkits/rockstar-ledger/README.md) / [役割エージェント仕様](docs/sky-role-agents-20260912.md)
 - GitHubとHugging Faceの公開メタデータを収集する管理用コマンド。
 
 ファンドの参加・配分・試算条件、単独ツールの実行メタデータ、仕事の進捗はSitesのD1に保存します。旧マイツール用のローカル保存関数も互換用に保持しています。接続アドレスは保存せず、サーバーへ送信しません。ウォレット接続はログイン認証・実名本人確認・送金認可ではありません。

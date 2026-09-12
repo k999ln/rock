@@ -42,10 +42,10 @@ type ChatMessage = {
 };
 
 const suggestedQuestions = [
+  '全網羅されてる？',
   '今月いくら？',
   '要対応は？',
   '次の更新は？',
-  '全体を要約して',
 ];
 
 const statusLabel: Record<string, string> = {
@@ -68,6 +68,8 @@ function isLedgerState(value: unknown): value is LedgerState {
     !!item.summary.counts &&
     typeof item.summary.monthly_totals === 'object' &&
     Array.isArray(item.summary.alerts) &&
+    !!item.summary.coverage &&
+    typeof item.summary.coverage === 'object' &&
     Array.isArray(item.subscriptions)
   );
 }
@@ -227,8 +229,11 @@ export function SubscriptionLedgerRunner({
           <strong>{state.summary.counts.total}</strong>
         </article>
         <article className="ledger-sky-danger">
-          <span>要対応</span>
-          <strong>{state.summary.counts.action_required}</strong>
+          <span>網羅確認</span>
+          <strong>
+            {state.summary.coverage.source_counts.resolved} /{' '}
+            {state.summary.coverage.source_counts.total}
+          </strong>
         </article>
       </div>
       <section className="ledger-sky-chat" aria-label="サブスク顧問との会話">
