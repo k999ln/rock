@@ -1,4 +1,4 @@
-/* Native Hub controls. Only the dedicated Platform socket knows device tokens. */
+/* Native Sky controls. Only the dedicated Platform socket knows device tokens. */
 static void mcp_replace(json_object **slot, json_object *value)
 {
     if (*slot) json_object_put(*slot);
@@ -41,7 +41,7 @@ static int mcp_current(struct rock_ui *ui)
 static void draw_mcp(struct rock_ui *ui)
 {
     double y = ui->content_top - ui->scroll;
-    button(ui, 32, y, 170, 42, "‹ Hub", ACTION_NAV, PAGE_HUB, NULL, NULL, 1, 0); y += 63;
+    button(ui, 32, y, 170, 42, "‹ Sky", ACTION_NAV, PAGE_HUB, NULL, NULL, 1, 0); y += 63;
     y += wrapped(ui, 35, y, 648, 18, 29, COLOR_MUTED,
         "使う接続先を選び、送る内容を毎回確認します。\nこの版は無料ツールの開発試験です。", 3) + 22;
     if (!ui->mcp_view) {

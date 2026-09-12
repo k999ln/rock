@@ -31,6 +31,12 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
     requireValue(documents.nextPrompt.includes(data.auditInputs[field]), `${field}: プロンプトの起点SHAがありません`);
   }
   requireValue(data.supplyRoleExclusivity === 'unspecified', 'tobの供給元/独占性は未確定です');
+  requireValue(data.sky?.displayName === 'Sky', '自動化の利用者向け名称はSkyです');
+  requireValue(data.sky?.legacyInternalName === 'hub', '既存データ/API用の内部hub互換名が必要です');
+  requireValue(data.primaryCapabilities?.includes('sky-automation-control'), 'Skyの制御能力が必要です');
+  const skyInventory = resolve(root, data.sky?.inventory || '');
+  requireValue(!relative(root, skyInventory).startsWith('..') && read(skyInventory).includes('Web / PCで現在使える4件'),
+    'Skyの役割と収録ツールの正本が必要です');
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');
   requireValue(data.gameExchange?.atmDependency === false, 'ゲーム交換をATM必須にしないでください');
   requireValue(data.marketExploration?.runtimeAuthorized === false && data.marketExploration?.realValueEnabled === false, '市場案は検討のみで実装・実資金未承認です');
@@ -42,6 +48,27 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
     requireValue(!relative(root, resolved).startsWith('..') && read(resolved).length > 100,
       `releaseInstallation.${field}: repository内の本文が必要です`);
   }
+  const devicePolicy = data.deviceSupportPolicy;
+  requireValue(devicePolicy?.status === 'approved_design_implemented_not_physical_support',
+    '多機種対応は設計済み・実機未対応として記録してください');
+  requireValue(JSON.stringify(devicePolicy?.deliveryModes) === JSON.stringify([
+    'native_os',
+    'gsi_experimental',
+    'client_only',
+    'unsupported'
+  ]), '多機種対応の4提供区分が必要です');
+  for (const field of ['architecture', 'matrix']) {
+    const path = devicePolicy[field];
+    requireValue(typeof path === 'string' && !isAbsolute(path), `deviceSupportPolicy.${field}: 相対pathが必要です`);
+    const resolved = resolve(root, path);
+    requireValue(!relative(root, resolved).startsWith('..') && read(resolved).length > 100,
+      `deviceSupportPolicy.${field}: repository内の本文が必要です`);
+  }
+  requireValue(devicePolicy.validation === 'npm run device-support:check',
+    '多機種対応台帳の検査commandが必要です');
+  requireValue(devicePolicy.firstPhysicalTarget === null, '最初の物理端末は未確定です');
+  requireValue(devicePolicy.cloudSpendApproved === false, 'クラウド課金は未承認です');
+  requireValue(devicePolicy.physicalFlashAuthorized === false, '実機flashは未承認です');
   for (const file of ['AGENTS.md', 'README.md', 'project.md', 'docs/product.md', 'docs/architecture.md', 'docs/fund-and-mcp.md', 'docs/os-development-design.md', 'docs/os-prototype.md']) {
     requireValue(read(resolve(root, file)).includes('product-baseline.md'), `${file}: ベースへの入口がありません`);
   }

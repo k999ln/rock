@@ -53,7 +53,7 @@ export default function RockstarPreview() {
         <p className={styles.intro}>
           何が終わり、どこに結果があり、いくら確定したか。
           <br className={styles.desktopBreak} />
-          HubとWalletから、仕事の状態と保存した成果をたどれます。
+          SkyとWalletから、仕事の状態と保存した成果をたどれます。
         </p>
         <div className={styles.actions}>
           <a className={styles.primary} href="#start">
@@ -63,7 +63,7 @@ export default function RockstarPreview() {
         </div>
         <div className={styles.flow} aria-label="RockstarOSで行うこと">
           <div>
-            <span>01 / HUB</span>
+            <span>01 / SKY</span>
             <strong>選ぶ・動かす</strong>
             <p>商品の用途、実行先、必要な許可を確認。</p>
           </div>
@@ -165,7 +165,7 @@ export default function RockstarPreview() {
         <figure className={styles.screen}>
           <Image
             src="/rockstaros/hub-result.png"
-            alt="実OSの引用整理の結果。実行版と端末内処理、保存した出典、実費・実収益は未接続と表示。"
+            alt="実OSのSkyで動かした引用整理の結果。実行版と端末内処理、保存した出典、実費・実収益は未接続と表示。"
             width={720}
             height={960}
           />
@@ -184,7 +184,7 @@ export default function RockstarPreview() {
               保存した結果へ戻る。
             </h2>
             <p>
-              Hubの引用整理、成果の再表示、合成Wallet、Gameの接続と購入履歴。実際のQEMU画面を、操作した時間のまま収録しています。
+              Skyの引用整理、成果の再表示、合成Wallet、Gameの接続と購入履歴。実際のQEMU画面を、操作した時間のまま収録しています。
             </p>
             <p className={styles.scope}>
               導入済みの端末で収録した操作例です。初回導入の所要時間ではありません。合成残高を使い、実際の資金や実ゲームには接続していません。
@@ -269,7 +269,7 @@ export default function RockstarPreview() {
       <footer className={styles.footer}>
         <span>RockstarOS 1.0 Developer Preview · © 2026 kaiya</span>
         <Link href="/">
-          自動化Hubへ <span aria-hidden="true">↗</span>
+          Skyへ <span aria-hidden="true">↗</span>
         </Link>
       </footer>
     </main>

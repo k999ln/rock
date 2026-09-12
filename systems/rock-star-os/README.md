@@ -2,7 +2,7 @@
 
 現在の作業branchは `codex/operational-base-20260909`。[製品ベース](../../docs/product-baseline.md)と[CHECKPOINT](../../CHECKPOINT.md)に従い、承認済み設計の新規QEMU受入を進める。以下の実行例は環境・対象profile確認後に使う。
 
-標準HubからToolを取得するOSの試作。Linux / Buildroot / ARM64 QEMU virtで、kernel・root filesystem・専用サービス・native画面を開発する。
+標準SkyからToolを取得するOSの試作。Linux / Buildroot / ARM64 QEMU virtで、kernel・root filesystem・専用サービス・native画面を開発する。
 
 **このイメージはBlackBerryへ書き込めない。** 初期製品はBlackBerry優先だが機種・variant・BSPは未定。製品方針と既存Android/Webとの関係は [現行方針](../../docs/native-os-integration.md)を参照する。
 
@@ -14,7 +14,7 @@
 | --- | --- |
 | kernel/rootfs | `os/build-os.sh`, `os/source-lock.json`, `os/buildroot/` |
 | OSサービス・native画面 | `os/core/`, `os/platform/`, `os/ui/`, `os/system/` |
-| Hub・Tool/recipe SDK | `src/blackberryrock/`, `schemas/`, `examples/`, `docs/TOOL-SDK.md` |
+| Sky・Tool/recipe SDK | `src/blackberryrock/`, `schemas/`, `examples/`, `docs/TOOL-SDK.md` |
 | 署名配布・実行・更新 | `os/registry/`, `os/runner/`, `os/update/` |
 | 購入者・Wallet・MCP | `os/entitlement/`, `os/wallet_auth/`, `os/wallet_backend/`, `os/service_access/`, `os/mcp_broker/` |
 | AI処理先と予算・運営 | `os/ai_routes/`, `os/operations/` |
@@ -63,4 +63,4 @@ Buildroot本体と依存ソースの取得・compileが必要。ソースを追�
 
 実機のdriver/省電力/更新、実USB、外部MCP/AIの相互運用、金融provider・ATM・ToB精算、本番運営は未完了。Walletと売上fixtureを実資金として使わない。`experiments/startup-health/` の原本を保持しつつ、追加試験付きの起動応答確認を実装候補へ採用した。実Linuxのsource試験は成功し、実QEMU受入は進行中。現在の結果は [統合後のOS検証](../../docs/os-operational-validation-20260909.md)。
 
-Hubの未導入Tool詳細では、カタログに複数版がある場合に導入する版を選べる。標準は最新版で、選ぶだけでは導入しない。選択版の権限・料金を確認して導入し、利用を許可する。導入後は「最新版」「以前の版へ」「削除」と「ツールの利用を停止」を使う。停止からの再開は現在の版の権限を再確認する。これらのC画面/IPC試験は成功、実OS画面での一連操作は別に検証する。
+Skyの未導入Tool詳細では、カタログに複数版がある場合に導入する版を選べる。標準は最新版で、選ぶだけでは導入しない。選択版の権限・料金を確認して導入し、利用を許可する。導入後は「最新版」「以前の版へ」「削除」と「ツールの利用を停止」を使う。停止からの再開は現在の版の権限を再確認する。これらのC画面/IPC試験は成功、実OS画面での一連操作は別に検証する。

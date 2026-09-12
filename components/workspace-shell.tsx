@@ -13,6 +13,7 @@ import {
   Layers3,
   ListChecks,
   Monitor,
+  PackagePlus,
   Star,
   Wallet,
 } from 'lucide-react';
@@ -27,7 +28,8 @@ import {
 } from '@/components/ui/sidebar';
 
 const navigation = [
-  { href: '/', label: '自動化Hub', Icon: Grid2X2 },
+  { href: '/', label: 'Sky', Icon: Grid2X2 },
+  { href: '/sky/publish', label: 'Skyに掲載', Icon: PackagePlus },
   { href: '/work', label: '仕事・履歴', Icon: ListChecks },
   { href: '/wallet', label: 'Wallet', Icon: Wallet },
 ];
@@ -35,11 +37,13 @@ const navigation = [
 export default function WorkspaceShell({
   children,
   title,
+  contentClassName,
   onConnect,
   running = false,
 }: {
   children: ReactNode;
   title: string;
+  contentClassName?: string;
   onConnect?: () => void;
   running?: boolean;
 }) {
@@ -193,7 +197,11 @@ export default function WorkspaceShell({
             )}
           </div>
         </header>
-        <main id="workspace-main" className="rock-main" tabIndex={-1}>
+        <main
+          id="workspace-main"
+          className={`rock-main ${contentClassName ?? ''}`}
+          tabIndex={-1}
+        >
           {children}
         </main>
         <div className="rock-bottom-note">

@@ -1,5 +1,9 @@
 # スマホへ書き込むRockstarOSの開発
 
+## 多機種対応の境界
+
+実装方式は[共通Core＋機種別Device Support Package](device-support-architecture.md)。端末ごとにboot chain、kernel、vendor、firmware、partition、AVB／OTA／復旧が異なるため、一つのimageをBlackBerry、Pixel、iPhoneへ共通に書き込む方式にはしない。Android GSIは互換性調査用で、電話・カメラ・暗号化・更新・復旧が通るまで完全対応とは表示しない。iPhone／iPadはOS置換対象ではなく、App Store等で動くclient側を設計対象とする。現在の機械可読状態は[対応台帳](../data/device-support-matrix.json)を正本とする。
+
 2026-09-12再監査: 直近相談ではPixel 7が対象として挙がったが、この文書と現在のsource lockはPixel 10／`frankel`用。Pixel 7なら`panther`へ固定し直す必要があるため、実機の型番／SKUを読取り専用で確認するまで全OS buildを開始しない。32 vCPU／64GiB／400GiBはAOSPの400GB空き要件に対する余裕が小さい。初回の安全側候補をDigitalOcean 48 vCPU／96GiB／600GiB、1.50 USD/時、計画枠20〜30 USD（未承認）とし、Google Cloud 16〜32 vCPU／64〜128GB／600GB〜1TBを反復build向け代替とする。GPUは不要。契約・課金・端末操作は未実施。[全体の再監査](current-state-20260911.md#2026-09-12--github実装実機版ビルド環境の再監査)。
 
 ソース準備はlaunch-candidateへ統合済み。[現在の全体状態](current-state-20260911.md)と[再開指示](prompts/rock-current-next-20260911.md)を優先する。前回のクラウド初回サーバー代税別10 USD案は未承認で、今回のGit統合指示は支払い承認ではない。

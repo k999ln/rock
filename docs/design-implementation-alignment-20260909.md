@@ -42,4 +42,4 @@ GitHub全branchは上記3本、open PRは[#1](https://github.com/k999ln/rock/pul
 
 追加相談の予測市場/ゲーム資産売買は別の未承認候補。既存のゲーム通貨交換から市場運営を自動追加しない。市場案が採用されてもHub＋WalletのOS稼働を先に固める。
 
-入口: [確認用設計](os-hub-wallet-game-design.md)、[実行プロンプト](prompts/os-operational-base-next.md)、[受入雛形](templates/os-acceptance-report.md)。今回の文書/補助の実行検証は `docs/validation.md` に別記する。
+入口: [確認用設計](os-sky-wallet-game-design.md)、[実行プロンプト](prompts/os-operational-base-next.md)、[受入雛形](templates/os-acceptance-report.md)。今回の文書/補助の実行検証は `docs/validation.md` に別記する。

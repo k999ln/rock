@@ -1,13 +1,13 @@
 {
-  "version": "1.10",
-  "decidedAt": "2026-09-11",
+  "version": "1.12",
+  "decidedAt": "2026-09-12",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
   "audit": "docs/os-readiness-audit-20260909.md",
   "nextPrompt": "docs/prompts/rock-current-next-20260911.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
-  "designReview": "docs/os-hub-wallet-game-design.md",
+  "designReview": "docs/os-sky-wallet-game-design.md",
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
@@ -18,14 +18,22 @@
     "runtimeChangedByThisDesign": false
   },
   "alignmentAudit": "docs/design-implementation-alignment-20260909.md",
+  "sky": {
+    "displayName": "Sky",
+    "role": "automation_selection_permission_dispatch_control_results",
+    "definition": "Select a Tool, review its author/version/permissions/cost/execution target, consent, dispatch, stop and inspect results from one control surface.",
+    "inventory": "docs/sky.md",
+    "legacyInternalName": "hub",
+    "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
+  },
   "executionApproval": {
     "status": "approved_for_implementation",
     "approvedDesignVersion": "1.1",
-    "currentDesignVersion": "1.2",
+    "currentDesignVersion": "1.3",
     "approvedDesignCommit": "27b34adc02a9e06a4816aa18a5e38cf38b330953",
     "record": "data/execution-approval.json",
     "recordedAt": "2026-09-09T17:47:40.214265+00:00",
-    "scope": "Native QEMU, existing Hub products, synthetic Wallet/game exchange and SDK; QEMU Developer Preview packaging and one-model physical-device preparation are authorized, while production and real-value gates remain conditional."
+    "scope": "Native QEMU, existing Sky products, synthetic Wallet/game exchange and SDK; QEMU Developer Preview packaging and one-model physical-device preparation are authorized, while production and real-value gates remain conditional."
   },
   "requirements": [
     "RQ01",
@@ -47,7 +55,7 @@
     "RQ17"
   ],
   "primaryCapabilities": [
-    "automation-hub",
+    "sky-automation-control",
     "automation-earnings-wallet"
   ],
   "supplyRoleLabel": "tob",
@@ -71,7 +79,22 @@
     "checks-at-sha"
   ],
   "commercialPolicy": "Preserve native 888 USD cents per contract per month and legacy Web estimates; Rock ATM fee is zero per RQ15; game fees are unspecified; no live billing authorized here.",
-  "hardwarePolicy": "2026-09-11 user explicitly requests a phone-flashable OS. Develop the physical-device track; Pixel 10 / GrapheneOS is a candidate from prior records, pending current model/SKU confirmation. Earlier BlackBerry preference remains unresolved. Linux QEMU and Android/GrapheneOS evidence remain distinct.",
+  "hardwarePolicy": "Develop one shared RockstarOS Core with model-specific Device Support Packages. Physical native OS, experimental Android GSI, client-only and unsupported are distinct delivery modes. Pixel candidates remain unconfirmed; BlackBerry requires exact-model unlock/vendor/recovery evidence; Apple mobile devices are client-only rather than OS-replacement targets. Linux QEMU and physical evidence remain distinct.",
+  "deviceSupportPolicy": {
+    "status": "approved_design_implemented_not_physical_support",
+    "architecture": "docs/device-support-architecture.md",
+    "matrix": "data/device-support-matrix.json",
+    "validation": "npm run device-support:check",
+    "deliveryModes": [
+      "native_os",
+      "gsi_experimental",
+      "client_only",
+      "unsupported"
+    ],
+    "firstPhysicalTarget": null,
+    "cloudSpendApproved": false,
+    "physicalFlashAuthorized": false
+  },
   "firstOperationalTarget": "Fresh-host QEMU Developer Preview with reproducible install, launch, shutdown, reopen, backup and removal; synthetic data only",
   "releaseInstallation": {
     "requested": true,
