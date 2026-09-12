@@ -21,7 +21,6 @@ import {
   Search,
   Send,
   Shirt,
-  WalletCards,
   X,
   Zap,
   type LucideIcon,
@@ -42,6 +41,7 @@ import { FashionBrandOpsRunner } from '@/components/fashion-brand-ops-runner';
 import SkyMcpCenter from '@/components/sky-mcp-center';
 import SkyPublisherForm from '@/components/sky-publisher-form';
 import WorkspaceShell from '@/components/workspace-shell';
+import { fashionMcpConnected } from '@/lib/fashion-mcp-client';
 
 type FeedFilter = 'おすすめ' | '今使える' | '導入候補';
 
@@ -52,7 +52,6 @@ const icons: Record<string, LucideIcon> = {
   'mr-free-article': FilePenLine,
   'mr-citations': BookOpenCheck,
   'mr-delivery': FileCheck2,
-  'rockstar-ledger': WalletCards,
 };
 const providers: Record<
   string,
@@ -101,8 +100,7 @@ function providerFor(tool: Automation) {
     }
   );
 }
-
-function statusFor(tool: Automation) {
+function statusFor(tool: Automation, fashionConnected = false) {
   if (tool.status === 'candidate')
     return {
       label: '導入候補',
@@ -115,10 +113,13 @@ function statusFor(tool: Automation) {
       detail: '利用者のPCで実行',
       className: 'is-connect',
     };
-  if (
-    tool.integration === 'fashion-brand-ops' ||
-    tool.runner === 'subscription-ledger'
-  )
+  if (tool.integration === 'fashion-brand-ops')
+    return {
+      label: fashionConnected ? '接続済み' : '1クリック接続',
+      detail: fashionConnected ? '38操作を利用可能' : 'PCのMCPへ接続',
+      className: fashionConnected ? 'is-ready' : 'is-connect',
+    };
+  if (tool.runner === 'subscription-ledger')
     return {
       label: 'PC / MCP',
       detail: 'SkyからPC上の専用システムへ接続',
@@ -157,6 +158,7 @@ export default function SkyWorkspace({
   const [mcpOpen, setMcpOpen] = useState(initialMcpOpen);
   const [publishOpen, setPublishOpen] = useState(initialPublishOpen);
   const [connected, setConnected] = useState(false);
+  const [fashionConnected, setFashionConnected] = useState(false);
   const searchInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -170,6 +172,12 @@ export default function SkyWorkspace({
     if (searchOpen) searchInput.current?.focus();
   }, [searchOpen]);
 
+  useEffect(() => {
+    const update = () => setFashionConnected(fashionMcpConnected());
+    update();
+    window.addEventListener('sky-fashion-mcp', update);
+    return () => window.removeEventListener('sky-fashion-mcp', update);
+  }, []);
   const visibleTools = catalog.filter((tool) => {
     const matchesFilter =
       filter === 'おすすめ' ||
@@ -379,7 +387,7 @@ export default function SkyWorkspace({
             {visibleTools.map((tool, index) => {
               const Icon = icons[tool.id] ?? Link2;
               const provider = providerFor(tool);
-              const status = statusFor(tool);
+              const status = statusFor(tool, fashionConnected);
               return (
                 <article
                   className={'sky-feed-post ' + status.className}
@@ -437,7 +445,11 @@ export default function SkyWorkspace({
                           ? '詳細'
                           : tool.runner === 'delivery-local'
                             ? 'PC接続'
-                            : '使う'}
+                            : tool.integration === 'fashion-brand-ops'
+                              ? fashionConnected
+                                ? '使う'
+                                : '接続'
+                              : '使う'}
                         <ArrowRight size={16} />
                       </button>
                     </div>

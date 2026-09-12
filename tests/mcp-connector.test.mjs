@@ -9,8 +9,8 @@ import {
 
 const registryPath = resolve('toolkits/sky-mcp-connector/registry.json');
 
-async function harness(t) {
-  const connector = await createConnector({ registryPath, port: 0 });
+async function harness(t, path = registryPath) {
+  const connector = await createConnector({ registryPath: path, port: 0 });
   t.after(() => new Promise((done) => connector.server.close(done)));
   const base = `http://127.0.0.1:${connector.port}`;
   const origin = 'http://localhost:3000';
@@ -115,7 +115,7 @@ void test('remote transport rejects credentials, insecure URLs and local network
   );
 });
 
-void test('one connector discovers different MCP protocol versions and arbitrary tool counts', async (t) => {
+void test('one connector discovers registered MCPs with arbitrary tool counts', async (t) => {
   const { request } = await harness(t);
   const before = await (await request('/servers', undefined, 'GET')).json();
   assert.deepEqual(
@@ -132,7 +132,7 @@ void test('one connector discovers different MCP protocol versions and arbitrary
   const fashion = await (
     await request('/servers/fashion-brand-ops/connect', {})
   ).json();
-  assert.equal(fashion.passport.protocolVersion, '2025-06-18');
+  assert.equal(fashion.passport.protocolVersion, '2025-11-25');
   assert.equal(fashion.passport.tools.length, 38);
   assert.notEqual(fashion.passport.toolDigest, mr.passport.toolDigest);
 
@@ -140,6 +140,18 @@ void test('one connector discovers different MCP protocol versions and arbitrary
     await request('/servers/rock-star-mr/connect', {})
   ).json();
   assert.equal(reconnected.passport.tools.length, 4);
+});
+
+void test('connector negotiates a compatible legacy MCP protocol', async (t) => {
+  const legacyRegistry = resolve('tests/fixtures/mcp-legacy-registry.json');
+  const { request } = await harness(t, legacyRegistry);
+  const legacy = await (
+    await request('/servers/legacy-mcp/connect', {})
+  ).json();
+
+  assert.equal(legacy.passport.protocolVersion, '2025-06-18');
+  assert.equal(legacy.passport.tools.length, 1);
+  assert.equal(legacy.passport.tools[0].approval, 'required');
 });
 
 void test('tool execution requires an exact, single-use approval and blocks direct bypass', async (t) => {

@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "Sky内MCP導入を検証しつつ、先払いを廃止して検証済み自動化収益からの月最大888 cents精算核を実装",
-  "nextAction": "有償需要のある自動化商品を1件選び、販売・決済・払出しProvider sandboxをExecution Receiptと接続して、実入金なしのfixtureではなくProvider検証済みEarning Receiptの縦断受入を行う。",
+  "milestone": "改善版Sky、Fashion MCPワンタップ接続、汎用MCP Connector、収益後精算核を一つのローンチ候補へ統合",
+  "nextAction": "統合候補の全検証と本人限定Sitesへの反映を完了し、認証済み主要フローとロールバック手順を確認する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -47,7 +47,14 @@
         "components/sky-network.module.css",
         "docs/sky-network-economy.md",
         "scripts/check-product-baseline.mjs",
-        "tests/product-baseline.test.mjs"
+        "tests/product-baseline.test.mjs",
+        "components/sky-workspace.tsx",
+        "components/fashion-brand-ops-runner.tsx",
+        "app/workspace.css",
+        "scripts/check-sky.mjs",
+        "lib/sky-routing.ts",
+        "tests/sky-routing.test.mjs",
+        "docs/sky-assistant-and-memory.md"
       ]
     },
     {
@@ -79,18 +86,22 @@
     },
     {
       "id": "SKY07",
-      "title": "MCPごとにこのPC・Sky Cloud・提供者MCPの接続先を選び、対応先へワンタップ接続する",
+      "title": "登録済みMCPをこのPCへワンタップ接続し、Sky Cloud・提供者MCPの外部接続を追加する",
       "status": "in_progress",
       "dependsOn": ["SKY06"],
       "evidence": [
         "components/sky-mcp-center.tsx",
         "components/sky-mcp-center.module.css",
+        "components/fashion-brand-ops-runner.tsx",
         "lib/mcp-hub.ts",
+        "lib/fashion-mcp-client.ts",
         "toolkits/sky-mcp-connector/server.mjs",
         "scripts/package-sky-mcp.py",
         "public/toolkits/sky-mcp-connector.zip",
+        "public/toolkits/fashion-brand-ops-connector.zip",
         "docs/sky-mcp-connector.md",
         "tests/mcp-connector.test.mjs",
+        "tests/fashion-mcp-client.test.mjs",
         "tests/sky-mcp-onboarding.test.mjs",
         "docs/product-baseline.md"
       ]

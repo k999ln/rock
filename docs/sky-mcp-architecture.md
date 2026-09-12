@@ -84,6 +84,8 @@ RockstarOSには既存native OS向けの固定fixtureとprivate device APIに加
 
 次に必要な実装は、公式/private registryの署名・更新adapter、OAuth 2.1 browser flow、審査者画面、公開revision、失効配信、Tasks adapter、公開remote MCP相互運用試験、Sky Cloud常駐である。現在のStreamable HTTP adapterはHTTPS、redirect拒否、private network拒否、環境変数認証までを実装したが、公開remote serverとの受入は未実施である。
 
+会話型の役割振り分けと、アプリを毎回入れずに利用者情報を必要な役だけへ渡す方針は[Sky Assistant / Sky Memory設計](sky-assistant-and-memory.md)に分離する。
+
 ## 受入条件
 
 1. ToBは秘密情報を入力せず、3区分のフォームで申請を保存できる。

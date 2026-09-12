@@ -1,6 +1,6 @@
 # Instagram運用・受注型ブランド管理 — RockstarOS Sky統合
 
-更新日: 2026-09-12。対象branch: `codex/fashion-brand-ops-sky`。
+更新日: 2026-09-12。対象branch: `codex/sky-one-click-fashion-mcp-20260912`。
 
 利用者の明示要望により、`k999ln/Mr.`のOne Hubではなく、`k999ln/rock`のSkyを統合先とする。内部互換名のHub catalogを維持しつつ、Skyの商品ごとの実行場所・費用・権限表示、Timeline、MCP接続境界へ統合する。
 
@@ -35,3 +35,9 @@ Instagram password、Cookie、raw tokenをDBへ保存しない。credentialは`e
 実装commit `d1a428f` を[Draft PR #10](https://github.com/k999ln/rock/pull/10)へpushし、同一SHAの`verify`、native partition 5件、`source-tests`がすべて成功した。これはmock/fixtureとWeb表示の合格であり、Meta credential、Professional account、公開Webhook、実投稿の合格ではない。
 
 決済event反映は公開MCP toolにせず、署名検証済みWebhookだけが呼ぶ内部処理に限定した。公開MCPは読み取り専用`fashion.payment.status.get`を提供する。実Higgsfield、実Meta account、実Stripe、通知先は未接続であり、この検証による外部投稿・広告費・請求・返金・送信はない。
+
+## Skyワンクリック接続
+
+Fashion Brand Ops v0.3.0は、許可済みSky originからPCの`127.0.0.1:8787`へ接続するbrowser sessionを追加した。Skyの商品カードを開く1回の操作で、短期session発行、MCP 2025-11-25 initialize、initialized通知、38件のtools/list検査を行い、カード表示を「接続済み」へ同期する。再表示時はpingとtools/listで再検証し、失効・停止・tool不足ならbrowser側credentialを破棄する。解除操作はserver sessionも失効させる。
+
+初回だけ配布ZIPの`RockstarOS Sky接続.command`を利用者が開く必要がある。ブラウザだけで未導入のPC processを起動することはしない。originとloopback Hostはexact allowlist、session tokenはrandomかつ12時間、raw credentialはsessionStorage以外へ渡さず、Meta token等のProvider secretとは分離する。これにより一度接続アプリが動けばワンクリックだが、OSインストール・Meta OAuth・実Provider接続まで無操作になるという意味ではない。

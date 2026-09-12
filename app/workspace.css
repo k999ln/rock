@@ -5003,7 +5003,6 @@
   color: #b3b7bb;
   background: #0a0a0a;
 }
-
 /* The same real local-MCP flow is used from Sky and the legacy Loop surface. */
 .device-page {
   display: grid;
@@ -5188,6 +5187,83 @@
 .sky-tool-dialog .device-advanced-grid pre {
   color: #dce3d7;
   background: #111510;
+}
+
+.sky-tool-dialog .fashion-ops-runner {
+  color: #e7e9ea;
+  background: #050505;
+  border-color: #2f3336;
+}
+.sky-tool-dialog .fashion-ops-status strong {
+  color: #e7e9ea;
+}
+.sky-tool-dialog .fashion-ops-connect-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sky-tool-dialog .fashion-ops-connect-actions button {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 16px;
+}
+.sky-tool-dialog .fashion-ops-connect-actions .secondary-button {
+  width: auto;
+}
+.sky-tool-dialog .fashion-ops-connection-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: #b3b7bb;
+  font-size: 13px;
+}
+.sky-tool-dialog .fashion-ops-message {
+  display: block;
+  padding: 10px 12px;
+  border: 1px solid #2f3336;
+  border-radius: 10px;
+  color: #b3b7bb;
+  background: #0a0a0a;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.sky-tool-dialog .fashion-ops-runner details a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #1d9bf0;
+  text-decoration: none;
+}
+.sky-tool-dialog .fashion-ops-runner details a:hover {
+  text-decoration: underline;
+}
+.fashion-ops-spinner {
+  animation: fashion-ops-spin 0.85s linear infinite;
+}
+@keyframes fashion-ops-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.sky-tool-dialog .fashion-ops-status p,
+.sky-tool-dialog .fashion-ops-approval p,
+.sky-tool-dialog .fashion-ops-runner details {
+  color: #71767b;
+}
+.sky-tool-dialog .fashion-ops-runner li {
+  color: #b3b7bb;
+}
+.sky-tool-dialog .fashion-ops-approval {
+  color: #8b98a5;
+  background: #0a0a0a;
+  border-color: #2f3336;
+}
+.sky-tool-dialog .fashion-ops-runner summary {
+  color: #8b98a5;
 }
 
 @media (max-width: 767px) {
@@ -5411,6 +5487,8 @@
     min-height: 38px;
   }
   .sky-tool-dialog {
+    --tw-translate-x: 0px !important;
+    --tw-translate-y: 0px !important;
     top: auto !important;
     right: 0 !important;
     bottom: 0 !important;
@@ -5423,6 +5501,7 @@
     border-bottom: 0 !important;
     border-left: 0 !important;
     border-radius: 20px 20px 0 0 !important;
+    translate: 0 0 !important;
     transform: none !important;
   }
 }

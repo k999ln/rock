@@ -66,4 +66,4 @@ Sky Memory
 
 ## 完了と呼ばない範囲
 
-Sky Memoryの永続保存、一般MCP接続、OAuth、自由会話型planner、複数役の自動連鎖はまだ実装していない。現在の画面で動くのは6役への入口と、既存ツールの実行導線までである。Fashion Brand Opsの実Provider接続・実投稿・実請求には別途credentialと個別承認が必要になる。
+Sky Memoryの永続保存、OAuth、自由会話型planner、複数役の自動連鎖はまだ実装していない。現在の画面で動くのは6役への入口、既存ツールの実行導線、登録済みローカルMCPとStreamable HTTP MCPの接続までである。Fashion Brand Opsの実Provider接続・実投稿・実請求には別途credentialと個別承認が必要になる。

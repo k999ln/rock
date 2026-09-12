@@ -5,6 +5,7 @@ import { routeSkyRequest, skyRoles } from '../lib/sky-routing.ts';
 void test('Sky routes a plain-language request to each available role', () => {
   const cases = [
     ['Instagramの広告からDM受注と発送まで進めて', 'fashion-brand-ops'],
+    ['Instagramの投稿と受注をまとめて運営して', 'fashion-brand-ops'],
     ['この案件に応募してよいか判断して', 'coconala'],
     ['この原稿から無料版の記事を作って', 'mr-free-article'],
     ['この記事の出典URLをまとめて', 'mr-citations'],
