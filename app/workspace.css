@@ -2143,3 +2143,204 @@
   font-size: 14px;
   line-height: 1.7;
 }
+
+/* Sky chrome and dialogs share the same restrained black surface. */
+.rock-main-column:has(.sky-main-feed) {
+  background: #000;
+}
+.rock-main-column:has(.sky-main-feed) .rock-topbar {
+  min-height: 64px;
+  padding-top: 11px;
+  padding-bottom: 11px;
+  color: #e7e9ea;
+  background: #000;
+  border-bottom-color: #2f3336;
+}
+.rock-main-column:has(.sky-main-feed) .rock-breadcrumb,
+.rock-main-column:has(.sky-main-feed) .rock-web-label {
+  color: #71767b;
+}
+.rock-main-column:has(.sky-main-feed) .rock-breadcrumb > span {
+  color: #536471;
+}
+.rock-main-column:has(.sky-main-feed) .rock-breadcrumb strong,
+.rock-main-column:has(.sky-main-feed) .rock-menu-trigger {
+  color: #e7e9ea;
+}
+.rock-main-column:has(.sky-main-feed) .rock-button-subtle {
+  color: #e7e9ea;
+  background: #000;
+  border-color: #536471;
+  border-radius: 999px;
+}
+.rock-main-column:has(.sky-main-feed) .rock-button-subtle:hover {
+  background: #181818;
+}
+.rock-main-column:has(.sky-main-feed) .rock-bottom-note {
+  color: #536471;
+  background: #000;
+  border-top-color: #2f3336;
+}
+.rock-main-column:has(.sky-main-feed) .rock-bottom-note a {
+  color: #71767b;
+}
+.sky-tool-dialog {
+  max-width: min(720px, calc(100vw - 24px)) !important;
+  padding: 24px !important;
+  color: #e7e9ea !important;
+  background: #000 !important;
+  border: 1px solid #2f3336 !important;
+  border-radius: 18px !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7) !important;
+}
+.sky-tool-dialog > button {
+  color: #8b98a5;
+  background: #0a0a0a;
+  border: 1px solid #2f3336;
+  border-radius: 50%;
+}
+.sky-tool-dialog .rock-eyebrow {
+  color: #71767b;
+}
+.sky-tool-dialog .rock-dialog-title {
+  color: #f2f2f2 !important;
+  font-size: 24px !important;
+}
+.sky-tool-dialog .rock-dialog-description {
+  color: #8b98a5 !important;
+  line-height: 1.7 !important;
+}
+.sky-tool-dialog .rock-tool-facts {
+  padding: 13px 0;
+  border-top-color: #2f3336;
+  border-bottom-color: #2f3336;
+}
+.sky-tool-dialog .rock-tool-facts > div > span,
+.sky-tool-dialog .rock-tool-facts p {
+  color: #71767b;
+}
+.sky-tool-dialog .rock-tool-facts strong {
+  color: #e7e9ea;
+}
+.sky-tool-dialog .mr-workbench,
+.sky-tool-dialog .fashion-ops-runner {
+  padding: 18px;
+  color: #e7e9ea;
+  background: #050505;
+  border: 1px solid #2f3336;
+  border-radius: 12px;
+}
+.sky-tool-dialog .bench-heading h3,
+.sky-tool-dialog .bench-field > span,
+.sky-tool-dialog .fashion-ops-status strong {
+  color: #e7e9ea;
+}
+.sky-tool-dialog .outline-tag {
+  color: #8b98a5;
+  background: #0a0a0a;
+  border-color: #2f3336;
+}
+.sky-tool-dialog .bench-helper,
+.sky-tool-dialog .subnote,
+.sky-tool-dialog .quiet-note,
+.sky-tool-dialog .fashion-ops-status p,
+.sky-tool-dialog .fashion-ops-approval p,
+.sky-tool-dialog .fashion-ops-runner details {
+  color: #71767b;
+}
+.sky-tool-dialog .fashion-ops-runner li {
+  color: #b3b7bb;
+}
+.sky-tool-dialog .fashion-ops-approval {
+  color: #8b98a5;
+  background: #0a0a0a;
+  border-color: #2f3336;
+}
+.sky-tool-dialog .fashion-ops-runner summary {
+  color: #8b98a5;
+}
+.sky-tool-dialog .bench-field input,
+.sky-tool-dialog .bench-field textarea,
+.sky-tool-dialog textarea,
+.sky-tool-dialog [data-slot='select-trigger'] {
+  color: #e7e9ea;
+  background: #000;
+  border-color: #2f3336;
+}
+.sky-tool-dialog textarea::placeholder,
+.sky-tool-dialog input::placeholder {
+  color: #536471;
+}
+.sky-tool-dialog .notice,
+.sky-tool-dialog .folder-picker {
+  color: #b3b7bb;
+  background: #0a0a0a;
+  border-color: #2f3336;
+}
+.sky-tool-dialog .black-button {
+  color: #fff;
+  background: #1d9bf0;
+  border-radius: 999px;
+}
+.sky-tool-dialog .black-button:hover {
+  background: #1a8cd8;
+}
+.sky-tool-dialog .secondary-button {
+  color: #e7e9ea;
+  background: #000;
+  border-color: #536471;
+}
+.sky-tool-dialog .rock-tool-details {
+  padding-top: 4px;
+  border-top: 1px solid #2f3336;
+}
+.sky-tool-dialog .rock-tool-details summary,
+.sky-tool-dialog .rock-tool-details > p,
+.sky-tool-dialog .rock-tool-details li {
+  color: #8b98a5;
+}
+.sky-tool-dialog .rock-running-notice {
+  color: #b3b7bb;
+  background: #0a0a0a;
+}
+
+@media (max-width: 767px) {
+  .rock-main-column:has(.sky-main-feed) .rock-topbar {
+    min-height: 58px;
+    padding-top: max(9px, env(safe-area-inset-top));
+    padding-right: 14px;
+    padding-bottom: 9px;
+    padding-left: 14px;
+  }
+  .rock-main-column:has(.sky-main-feed) .rock-bottom-note {
+    padding: 16px 14px max(16px, env(safe-area-inset-bottom));
+  }
+  .sky-tool-dialog {
+    top: auto !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    translate: none !important;
+    transform: none !important;
+    width: 100vw !important;
+    max-width: none !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top))) !important;
+    padding: 20px 18px max(20px, env(safe-area-inset-bottom)) !important;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+    border-left: 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+  }
+  .sky-tool-dialog .rock-dialog-title {
+    padding-right: 32px;
+    font-size: 21px !important;
+  }
+  .sky-tool-dialog .rock-tool-facts > div {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+  .sky-tool-dialog .mr-workbench,
+  .sky-tool-dialog .fashion-ops-runner {
+    padding: 14px;
+  }
+}

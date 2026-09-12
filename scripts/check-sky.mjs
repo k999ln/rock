@@ -59,6 +59,7 @@ requireValue(
 );
 const sky = read('docs/sky.md');
 const workspace = read('components/sky-workspace.tsx');
+const workspaceCss = read('app/workspace.css');
 for (const marker of [
   'fashion-brand-ops',
   'Instagram運用・受注型ブランド管理',
@@ -76,6 +77,22 @@ for (const marker of [
   '結果・実行記録',
 ])
   requireValue(sky.includes(marker), `Skyの説明に「${marker}」がありません`);
+
+requireValue(
+  (workspace.match(/className="rock-tool-dialog sky-tool-dialog"/g) || [])
+    .length === 2,
+  'Skyのツール・PC接続Dialogに統一外観が適用されていません',
+);
+for (const marker of [
+  '.rock-main-column:has(.sky-main-feed)',
+  '.sky-tool-dialog .fashion-ops-runner',
+  'translate: none !important',
+  'max-height: calc(100dvh',
+])
+  requireValue(
+    workspaceCss.includes(marker),
+    `Skyの画面・モバイルDialog CSSに「${marker}」がありません`,
+  );
 
 console.log(
   `Sky: Web/PC ready ${readyCount}件、候補 ${candidateCount}件、native内蔵 ${toolKinds.size}種類/${packages.length}版、表示名を確認`,

@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "Fashion Brand Ops v0.2.0の目標駆動運営・接客・制作機能を実装し、Sky画面・全体検証・GitHub CIに合格",
-  "nextAction": "Meta OAuthのApp ID/secret、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付きの限定テスト投稿へ進む。実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。",
+  "milestone": "改善版SkyへFashion Brand Opsを統合し、スマホDialogの配置修正を検証中",
+  "nextAction": "改善版SkyでInstagram運用商品とスマホDialogを画面確認し、全体検証後にGitHubへ保存する。実Provider接続とSites再配信は別gateとして保持する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -40,6 +40,21 @@
       "evidence": [
         "docs/sky-mcp-architecture.md",
         "systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md"
+      ]
+    },
+    {
+      "id": "SKY04",
+      "title": "黒基調の改善版SkyへFashion Brand Opsを統合し、スマホDialogの画面外ずれを修正",
+      "status": "in_progress",
+      "dependsOn": [
+        "SKY01",
+        "FB01"
+      ],
+      "evidence": [
+        "components/sky-workspace.tsx",
+        "components/fashion-brand-ops-runner.tsx",
+        "app/workspace.css",
+        "scripts/check-sky.mjs"
       ]
     },
     {

@@ -486,7 +486,7 @@ export default function SkyWorkspace() {
           if (!open && !running) setSelected(null);
         }}
       >
-        <DialogContent className="rock-tool-dialog">
+        <DialogContent className="rock-tool-dialog sky-tool-dialog">
           {selected && (
             <>
               <p className="rock-eyebrow">
@@ -551,7 +551,7 @@ export default function SkyWorkspace() {
         </DialogContent>
       </Dialog>
       <Dialog open={deviceOpen} onOpenChange={setDeviceOpen}>
-        <DialogContent className="rock-tool-dialog">
+        <DialogContent className="rock-tool-dialog sky-tool-dialog">
           <DialogTitle className="rock-dialog-title">PCを接続する</DialogTitle>
           <DialogDescription>
             接続アプリを起動すると、このPCでツールを実行できます。
