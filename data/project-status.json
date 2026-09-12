@@ -712,6 +712,18 @@
       "evidence": ["docs/launch-readiness-20260910.md"]
     },
     {
+      "id": "LCH08",
+      "title": "ローカルOSバックエンドの安全終了・ヘルスチェック・再起動時のreceipt復元を検証",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "docs/backend-launch-20260912.md",
+        "systems/rock-star-os/scripts/verify-backend-launch.py",
+        "systems/rock-star-os/tests/test_hub.py",
+        "systems/rock-star-os/tests/test_hub_server.py"
+      ]
+    },
+    {
       "id": "FB01",
       "title": "Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合",
       "status": "done",
