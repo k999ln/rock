@@ -63,6 +63,17 @@
       "evidence": ["app/workspace.css", "project.md"]
     },
     {
+      "id": "SKY07",
+      "title": "Rock IDにツール利用許可だけを保存する1タップ接続へ変更",
+      "status": "done",
+      "dependsOn": ["SKY06"],
+      "evidence": [
+        "components/sky-workspace.tsx",
+        "app/api/sky/connections/route.ts",
+        "docs/sky-identity-connection.md"
+      ]
+    },
+    {
       "id": "R01",
       "title": "4参照元の採用判断と事業方針の固定",
       "status": "done",
