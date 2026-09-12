@@ -316,7 +316,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 
 ## 進捗の更新方法
 
-2026-09-12、最小ローンチ対象をQEMU Developer Previewのローカルバックエンドへ限定して再監査した。Hubの安全終了、実行中worker回収、再起動時の自動再送禁止、情報を出さないヘルスチェックを実装し、unit testsと実processの起動→署名ツール実行→SIGTERM→SQLite整合→再起動→receipt復元に合格した。配布資産、production署名、製品許諾、本人限定Sitesのログイン後確認は別ゲートとして保持する。[P0/P1/P2と証拠](docs/backend-launch-20260912.md)。
+2026-09-12、最小ローンチ対象を本人限定Sites上のWeb/Skyとloopback上のnative Hubへ限定して再監査した。Hubの安全終了、実行中worker回収、再起動時の自動再送禁止、情報を出さないヘルスチェックを実装し、unit testsと実processの起動→署名ツール実行→SIGTERM→SQLite整合→再起動→receipt復元に合格した。実機OS、外部provider、実資金、一般公開は別ゲートとして保持する。[P0/P1/P2と証拠](docs/backend-launch-20260912.md)。
 
 1. 着手時に `data/project-status.json` の状態・更新日・次の作業を更新する。
 2. 設計判断を本書、利用方法をREADME、根拠を検証記録へ追記する。
