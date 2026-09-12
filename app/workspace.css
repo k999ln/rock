@@ -188,6 +188,16 @@
 .rock-menu-trigger {
   display: none;
 }
+.rock-home-link {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid #34393b;
+  border-radius: 50%;
+  color: #e7e9ea;
+}
 .rock-breadcrumb {
   display: flex;
   align-items: center;

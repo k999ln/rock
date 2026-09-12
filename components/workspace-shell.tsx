@@ -11,8 +11,10 @@ import {
   Settings2,
   CircleHelp,
   Grid2X2,
+  House,
   Layers3,
   ListChecks,
+  MessageCircle,
   Monitor,
   Star,
   Wallet,
@@ -28,7 +30,9 @@ import {
 } from '@/components/ui/sidebar';
 
 const navigation = [
-  { href: '/', label: 'Sky', Icon: Grid2X2 },
+  { href: '/', label: 'ホーム', Icon: House },
+  { href: '/sky', label: 'Sky', Icon: Grid2X2 },
+  { href: '/chat', label: 'Chat', Icon: MessageCircle },
   { href: '/work', label: '仕事・履歴', Icon: ListChecks },
   { href: '/wallet', label: 'Wallet', Icon: Wallet },
   { href: '/polymarket', label: 'Polymarket', Icon: Activity },
@@ -103,6 +107,7 @@ export default function WorkspaceShell({
                   href={href}
                   aria-current={
                     pathname === href ||
+                    (href === '/sky' && pathname.startsWith('/sky/')) ||
                     (href === '/work' && pathname === '/activity')
                       ? 'page'
                       : undefined
@@ -175,6 +180,11 @@ export default function WorkspaceShell({
               className="rock-menu-trigger"
               aria-label="メニューを開閉"
             />
+          )}
+          {!showSidebar && (
+            <Link href="/" className="rock-home-link" aria-label="ホームへ戻る">
+              <House size={18} />
+            </Link>
           )}
           <div className="rock-breadcrumb">
             {showSidebar && (

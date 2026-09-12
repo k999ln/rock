@@ -2,13 +2,13 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'RockstarOS Sky',
+    name: 'RockstarOS',
     short_name: 'RockstarOS',
-    description: 'ツールを選び、実行して、結果と収支の記録を確認。',
+    description: 'Sky、Chat、Wallet、Polymarketを一つのホームから開く。',
     start_url: '/',
     display: 'standalone',
-    background_color: '#f7f9f7',
-    theme_color: '#171a1b',
+    background_color: '#111827',
+    theme_color: '#111827',
     orientation: 'portrait-primary',
     icons: [
       { src: '/rock-icon-192.png', sizes: '192x192', type: 'image/png' },

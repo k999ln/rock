@@ -1,6 +1,6 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "OS Hub lifecycle、Sky MCP、Fashion MCP、収益後精算Workerを本人限定Developer Previewへ統合・公開",
+  "milestone": "OS Hub lifecycle、Sky MCP、Fashion MCP、収益後精算Worker、ホーム・設定UIを本人限定Developer Previewへ統合・公開",
   "nextAction": "有償商品を1件選び、販売・決済・払出しProvider sandbox credentialと署名済み入金eventを接続して、返金・dispute・払出し失敗を含む事業受入を行う。",
   "tasks": [
     {
@@ -164,6 +164,22 @@
         "components/sky-chat-workspace.tsx",
         "app/workspace.css",
         "docs/sky-identity-connection.md"
+      ]
+    },
+    {
+      "id": "HOME01",
+      "title": "iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装",
+      "status": "done",
+      "dependsOn": ["SKY10"],
+      "evidence": [
+        "app/page.tsx",
+        "app/sky/page.tsx",
+        "components/home-screen.tsx",
+        "components/home-screen.module.css",
+        "app/settings/page.tsx",
+        "components/system-settings.tsx",
+        "components/system-settings.module.css",
+        "docs/product-baseline.md"
       ]
     },
     {

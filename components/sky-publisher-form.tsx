@@ -160,7 +160,7 @@ export default function SkyPublisherForm({
           </p>
         </div>
         {!embedded && (
-          <Link href="/" className="rock-button rock-button-subtle">
+          <Link href="/sky" className="rock-button rock-button-subtle">
             <ArrowLeft size={16} />
             Skyへ戻る
           </Link>

@@ -187,7 +187,7 @@ export default function SkyChatWorkspace() {
             <span>RockstarOS</span>
             <h1>Chat</h1>
           </div>
-          <Link href="/" aria-label="Skyでアプリを見る">
+          <Link href="/sky" aria-label="Skyでアプリを見る">
             <Grid2X2 size={19} />
             <span>Sky</span>
           </Link>
@@ -221,7 +221,7 @@ export default function SkyChatWorkspace() {
               </span>
             </button>
           ))}
-          <Link href="/" className="sky-chat-add-compact">
+          <Link href="/sky" className="sky-chat-add-compact">
             <Plus size={17} />
             <span>追加</span>
           </Link>
