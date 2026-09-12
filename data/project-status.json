@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "RockstarOS 1.0の現進捗を再監査（実装状態は据え置き）",
-  "nextAction": "現在の入口はdocs/current-state-20260911.mdの2026-09-12節。lock由来のdevice/lunch/hook/target検証と未確認SKUのfull-build fail-closed guardを実装し、local phone tests 10件と総合verify（93 tests・build・API 143 assertions）を確認済み。直近相談のPixel 7/pantherと既存設定のPixel 10/frankelが不一致のため、実機の型番/SKUを読取り専用で確認して対象を一つに固定する。その後、未承認のクラウド計画（推奨48 vCPU/96GiB/600GiB、初回計画20〜30 USD）を確定し、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/GameのAndroid移植へ進む。本人限定Sites QA、license/production署名、取消実停止/RSS、CM、正式配布受入、一般公開/main mergeも未完了。",
+  "milestone": "Instagram運用・受注型ブランド管理のmock統合をRockstarOS Automation Hubで検証済み",
+  "nextAction": "FB01のHub catalog、MCP 28 tools、Provider/approval/DB/Webhook境界、mock縦断、総合verifyは完了。実Higgsfield/Meta/Stripe/通知credential、本番投稿・広告・請求・返金、QEMU/Android/実機OS組込みは明示承認と契約を要する別gateとして保持する。その後は従来どおり実機の正確な型番/SKU確定、全source取得・vendor生成・Soong full build、Hub/Wallet/GameのAndroid移植、本人限定Sites QA、license/production署名、正式配布受入へ進む。",
   "tasks": [
     {
       "id": "R01",
@@ -526,6 +526,15 @@
       "dependsOn": [],
       "evidence": [
         "docs/launch-readiness-20260910.md"
+      ]
+    },
+    {
+      "id": "FB01",
+      "title": "Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "docs/fashion-brand-ops-integration.md"
       ]
     }
   ],

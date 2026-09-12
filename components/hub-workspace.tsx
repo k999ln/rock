@@ -28,6 +28,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { MrToolRunner } from '@/components/mr-tool-runner';
 import { DeviceConnection } from '@/components/device-connection';
+import { FashionBrandOpsRunner } from '@/components/fashion-brand-ops-runner';
 import WorkspaceShell from '@/components/workspace-shell';
 
 const readyTools = catalog.filter((tool) => tool.status === 'ready');
@@ -38,7 +39,7 @@ const icons = {
   'mr-citations': BookOpenCheck,
   'mr-delivery': FileCheck2,
 };
-const filters = ['すべて', '記事制作', '案件・納品支援'] as const;
+const filters = ['すべて', 'ブランド運営', '記事制作', '案件・納品支援'] as const;
 
 export default function HubWorkspace() {
   const [query, setQuery] = useState('');
@@ -193,14 +194,17 @@ export default function HubWorkspace() {
                           <Icon size={24} strokeWidth={1.6} />
                         </span>
                         <span className="rock-execution-label">
-                          {tool.runner === 'delivery-local' ? (
+                          {tool.runner === 'delivery-local' ||
+                          tool.integration === 'fashion-brand-ops' ? (
                             <Laptop size={14} />
                           ) : (
                             <Check size={14} />
                           )}
-                          {tool.runner === 'delivery-local'
-                            ? 'PCで実行'
-                            : 'ブラウザで実行'}
+                          {tool.integration === 'fashion-brand-ops'
+                            ? 'MCPで実行'
+                            : tool.runner === 'delivery-local'
+                              ? 'PCで実行'
+                              : 'ブラウザで実行'}
                         </span>
                       </div>
                       <p className="rock-tool-category">{tool.category}</p>
@@ -210,15 +214,18 @@ export default function HubWorkspace() {
                       </p>
                       <div className="rock-card-bottom">
                         <span>
-                          Mr. <span>· {tool.license}</span>
+                          {tool.origin === 'rockstaros' ? 'RockstarOS' : 'Mr.'}{' '}
+                          <span>· {tool.license}</span>
                         </span>
                         <button
                           aria-label={`${tool.name}を開く`}
                           onClick={() => setSelected(tool)}
                         >
-                          {tool.runner === 'delivery-local'
-                            ? '準備を確認'
-                            : '使ってみる'}
+                          {tool.integration === 'fashion-brand-ops'
+                            ? '接続を確認'
+                            : tool.runner === 'delivery-local'
+                              ? '準備を確認'
+                              : '使ってみる'}
                           <ArrowRight size={17} />
                         </button>
                       </div>
@@ -325,13 +332,15 @@ export default function HubWorkspace() {
                   実行中です。結果が表示されるまで、この画面を開いたままにしてください。
                 </output>
               )}
-              {selected.runner && (
+              {selected.integration === 'fashion-brand-ops' ? (
+                <FashionBrandOpsRunner />
+              ) : selected.runner ? (
                 <MrToolRunner
                   key={selected.id}
                   tool={selected.runner}
                   onRunningChange={setRunning}
                 />
-              )}
+              ) : null}
               <details className="rock-tool-details">
                 <summary>利用条件・準備・提供元</summary>
                 <ol>

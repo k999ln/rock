@@ -1,6 +1,6 @@
 {
-  "version": "1.10",
-  "decidedAt": "2026-09-11",
+  "version": "1.11",
+  "decidedAt": "2026-09-12",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -11,7 +11,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ17 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ18 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -44,12 +44,22 @@
     "RQ14",
     "RQ15",
     "RQ16",
-    "RQ17"
+    "RQ17",
+    "RQ18"
   ],
   "primaryCapabilities": [
     "automation-hub",
-    "automation-earnings-wallet"
+    "automation-earnings-wallet",
+    "instagram-fashion-brand-operations"
   ],
+  "fashionBrandOperations": {
+    "status": "mock_verified",
+    "productId": "org.rockstar.fashion-brand-ops",
+    "hubName": "Instagram運用・受注型ブランド管理",
+    "record": "docs/fashion-brand-ops-integration.md",
+    "liveProvidersConnected": false,
+    "dangerousEffectsRequireApproval": true
+  },
   "supplyRoleLabel": "tob",
   "supplyRoleExclusivity": "unspecified",
   "auditInputs": {

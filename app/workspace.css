@@ -858,6 +858,65 @@
   text-decoration: underline;
   text-underline-offset: 4px;
 }
+.fashion-ops-runner {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #dce5d6;
+  border-radius: 10px;
+  background: #f7f9f4;
+}
+.fashion-ops-status,
+.fashion-ops-approval {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.fashion-ops-status strong {
+  font-size: 15px;
+  font-weight: 650;
+}
+.fashion-ops-status p,
+.fashion-ops-approval p,
+.fashion-ops-runner details {
+  margin: 3px 0 0;
+  color: #65735e;
+  font-size: 13px;
+  line-height: 1.75;
+}
+.fashion-ops-runner ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fashion-ops-runner li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #394b34;
+  font-size: 13px;
+}
+.fashion-ops-approval {
+  padding: 13px;
+  border: 1px solid #cad8c1;
+  background: #eef4e9;
+}
+.fashion-ops-runner summary {
+  cursor: pointer;
+  color: #4e6341;
+  font-weight: 650;
+}
+.fashion-ops-runner ol {
+  padding-left: 22px;
+}
+@media (max-width: 640px) {
+  .fashion-ops-runner ul {
+    grid-template-columns: 1fr;
+  }
+}
 .legacy-return {
   display: flex;
   gap: 24px;
