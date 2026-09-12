@@ -87,7 +87,7 @@ export function JobHistory({
             <b>{name(job.tool)}</b>
             <small>
               {job.sample ? 'サンプル · ' : ''}
-              {job.transport === 'browser' ? 'この端末' : 'PC・MCP'} ·{' '}
+              {job.transport === 'browser' ? 'この端末' : 'PC接続'} ·{' '}
               {new Date(job.createdAt).toLocaleString('ja-JP')}
             </small>
             {job.status === 'interrupted' && (

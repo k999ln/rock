@@ -486,7 +486,7 @@ export default function Workbench() {
         </div>
         <Dialog open={deviceOpen} onOpenChange={setDeviceOpen}>
           <DialogContent className="market-wide-dialog">
-            <DialogTitle>PC・MCP接続</DialogTitle>
+            <DialogTitle>PC接続</DialogTitle>
             <DialogDescription>
               納品記録の照合に使うPCを接続します。
             </DialogDescription>

@@ -1,4 +1,16 @@
 export const DEVICE_URL = 'http://127.0.0.1:38479';
+export const DEVICE_PROTOCOLS = [
+  '2025-11-25',
+  '2025-06-18',
+  '2025-03-26',
+  '2024-11-05',
+] as const;
+export const REQUIRED_DEVICE_TOOLS = [
+  'coconala_check',
+  'format_citations',
+  'make_free_article',
+  'verify_delivery',
+] as const;
 export type RunRecorder = (
   tool: string,
   transport: 'browser' | 'local-mcp',
@@ -9,6 +21,7 @@ export type RunRecorder = (
 ) => Promise<void>;
 const TOKEN = 'loop.device.session';
 const DEVICE_ID = 'loop.device.id';
+const DEVICE_PROTOCOL = 'loop.device.protocol';
 let verifying: {
   token: string;
   id: string;
@@ -73,7 +86,7 @@ export function verifyDevice(): Promise<void> {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + token,
-        'MCP-Protocol-Version': '2025-11-25',
+        'MCP-Protocol-Version': deviceProtocol(),
         Accept: 'application/json, text/event-stream',
       },
       body: JSON.stringify({
@@ -125,12 +138,23 @@ export function deviceToken() {
     return '';
   }
 }
+export function deviceProtocol() {
+  try {
+    const value = sessionStorage.getItem(DEVICE_PROTOCOL);
+    return DEVICE_PROTOCOLS.includes(value as (typeof DEVICE_PROTOCOLS)[number])
+      ? (value as (typeof DEVICE_PROTOCOLS)[number])
+      : DEVICE_PROTOCOLS[0];
+  } catch {
+    return DEVICE_PROTOCOLS[0];
+  }
+}
 export function disconnectDevice() {
   sessionGeneration++;
   if (deviceToken()) void reportDevice('disconnect').catch(() => {});
   try {
     sessionStorage.removeItem(TOKEN);
     sessionStorage.removeItem(DEVICE_ID);
+    sessionStorage.removeItem(DEVICE_PROTOCOL);
   } catch {}
   window.dispatchEvent(new Event('loop-device'));
 }
@@ -160,18 +184,26 @@ export async function connectDevice() {
     });
     const result = (await response.json()) as {
       error?: unknown;
-      result: { tools?: unknown[]; protocolVersion?: string };
+      result: {
+        tools?: { name?: unknown }[];
+        protocolVersion?: string;
+      };
     };
     if (!response.ok || result.error)
       throw new Error('MCPに接続できませんでした。');
     return result.result;
   };
   const initialized = await call(1, 'initialize', {
-    protocolVersion: '2025-11-25',
+    protocolVersion: DEVICE_PROTOCOLS[0],
     capabilities: {},
     clientInfo: { name: 'rock-star-site', version: '0.2.0' },
   });
-  if (initialized.protocolVersion !== '2025-11-25')
+  if (
+    !initialized.protocolVersion ||
+    !DEVICE_PROTOCOLS.includes(
+      initialized.protocolVersion as (typeof DEVICE_PROTOCOLS)[number],
+    )
+  )
     throw new Error('対応するMCPバージョンを確認できませんでした。');
   headers['MCP-Protocol-Version'] = initialized.protocolVersion;
   const notification = await fetch(DEVICE_URL + '/mcp', {
@@ -183,16 +215,24 @@ export async function connectDevice() {
     }),
     signal: AbortSignal.timeout(5000),
   });
-  if (notification.status !== 202)
-    throw new Error('MCPの初期接続が完了しませんでした。');
+  if (!notification.ok) throw new Error('MCPの初期接続が完了しませんでした。');
   const listed = await call(2, 'tools/list');
-  if (listed.tools?.length !== 4)
-    throw new Error('MCPツールを確認できませんでした。');
+  const available = new Set(
+    listed.tools
+      ?.map((tool) => tool.name)
+      .filter((name): name is string => typeof name === 'string') ?? [],
+  );
+  const missing = REQUIRED_DEVICE_TOOLS.filter((name) => !available.has(name));
+  if (missing.length)
+    throw new Error(
+      `PC接続アプリを更新してください。不足: ${missing.join(', ')}`,
+    );
   if (generation !== sessionGeneration)
     throw new Error('接続確認は取り消されました。');
   const id = crypto.randomUUID();
   sessionStorage.setItem(DEVICE_ID, id);
   sessionStorage.setItem(TOKEN, data.token);
+  sessionStorage.setItem(DEVICE_PROTOCOL, initialized.protocolVersion);
   try {
     await reportDevice('connect', id);
     if (!currentSession(data.token, id, generation))
@@ -201,15 +241,16 @@ export async function connectDevice() {
     if (currentSession(data.token, id, generation)) {
       sessionStorage.removeItem(TOKEN);
       sessionStorage.removeItem(DEVICE_ID);
+      sessionStorage.removeItem(DEVICE_PROTOCOL);
     }
     throw error;
   }
   window.dispatchEvent(new Event('loop-device'));
-  return data;
+  return { ...data, toolCount: available.size };
 }
 export async function runDevice(name: string, args: Record<string, unknown>) {
   const token = deviceToken();
-  if (!token) throw new Error('「PC・MCP接続」からこのPCを接続してください。');
+  if (!token) throw new Error('「PC接続」からこのPCを接続してください。');
   const id = deviceId();
   const generation = sessionGeneration;
   activeCalls++;
@@ -219,7 +260,7 @@ export async function runDevice(name: string, args: Record<string, unknown>) {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json, text/event-stream',
-        'MCP-Protocol-Version': '2025-11-25',
+        'MCP-Protocol-Version': deviceProtocol(),
         Authorization: 'Bearer ' + token,
       },
       body: JSON.stringify({

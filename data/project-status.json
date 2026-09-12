@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "Sky Agent Hubへ法務受付と特許出願担当を統合",
-  "nextAction": "新しいSky Timeline、役割ボタン、自然文ルーティングから法務受付を開けるようにし、安全確認、相談整理、公式情報に基づくAI回答、無料窓口、必要時だけの弁護士引継ぎを会話型画面へ統合した。刑事弁護が必要な案件は藤原茜弁護士を第一連絡候補にするが、自動送信・受任確定は行わない。本人限定Sitesへの再配信後、実環境の画面動線と法令AI・特許調査AIの秘密設定を確認する。SkyのMCP接続の継続設計と、Android/AOSP側のfull build・製品移植・production署名・実機受入は引き続き未完了。",
+  "milestone": "SkyのMCP導入・接続体験を改善",
+  "nextAction": "第三者MCPの実OAuth、長時間job、取消・失効をプロバイダーごとに相互運用試験する。Android/AOSP側のfull build・製品移植・production署名・実機受入は引き続き未完了。",
   "tasks": [
     {
       "id": "SKY01",
@@ -61,6 +61,21 @@
       "status": "done",
       "dependsOn": ["SKY05"],
       "evidence": ["app/workspace.css", "project.md"]
+    },
+    {
+      "id": "SKY07",
+      "title": "MCP掲載前診断とPC接続の互換性・初回導線を改善",
+      "status": "done",
+      "dependsOn": ["SKY02", "SKY06"],
+      "evidence": [
+        "lib/mcp-inspection.ts",
+        "app/api/sky/mcp/inspect/route.ts",
+        "lib/device.ts",
+        "components/sky-publisher-form.tsx",
+        "components/device-connection.tsx",
+        "tests/mcp-inspection.test.mjs",
+        "tests/device-lifecycle.test.mjs"
+      ]
     },
     {
       "id": "R01",

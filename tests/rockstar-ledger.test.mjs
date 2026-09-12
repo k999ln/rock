@@ -12,7 +12,7 @@ void test('Sky exposes Rockstar Ledger as a ready local tool', () => {
   assert.equal(ledger.status, 'ready');
   assert.equal(ledger.runner, 'subscription-ledger');
   assert.equal(ledger.origin, 'rockstaros');
-  assert.match(ledger.environment, /PC・MCP/);
+  assert.match(ledger.environment, /PC接続/);
   assert.match(ledger.cost, /PC内のSQLite/);
   assert.match(ledger.note, /解約、支払い、税務申告を自動実行せず/);
 });

@@ -10,6 +10,7 @@ import type {
   SkyPermission,
   SkyPricing,
 } from '@/lib/sky-submission';
+import type { McpInspection } from '@/lib/mcp-inspection';
 
 const targets: { value: SkyExecutionTarget; label: string }[] = [
   { value: 'device_local', label: 'RockstarOS端末内' },
@@ -37,11 +38,49 @@ export default function SkyPublisherForm() {
     SkyPermission[]
   >(['read_user_input', 'write_results', 'network']);
   const [pending, setPending] = useState(false);
+  const [checking, setChecking] = useState(false);
+  const [endpointUrl, setEndpointUrl] = useState('');
+  const [inspection, setInspection] = useState<
+    (McpInspection & { endpointUrl: string }) | null
+  >(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
   function toggle<T extends string>(items: T[], item: T, checked: boolean) {
     return checked ? [...items, item] : items.filter((value) => value !== item);
+  }
+
+  async function requestInspection(value: string) {
+    const response = await fetch('/api/sky/mcp/inspect', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ endpointUrl: value }),
+    });
+    const result = (await response.json()) as McpInspection & {
+      error?: string;
+    };
+    if (!response.ok)
+      throw new Error(result.error || 'MCPの接続を確認できませんでした。');
+    const checked = { ...result, endpointUrl: value };
+    setInspection(checked);
+    return checked;
+  }
+
+  async function checkConnection() {
+    setChecking(true);
+    setError('');
+    try {
+      await requestInspection(endpointUrl.trim());
+    } catch (cause) {
+      setInspection(null);
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : 'MCPの接続を確認できませんでした。',
+      );
+    } finally {
+      setChecking(false);
+    }
   }
 
   async function submit(event: SyntheticEvent<HTMLFormElement>) {
@@ -77,12 +116,21 @@ export default function SkyPublisherForm() {
           rightsConfirmed: form.get('rightsConfirmed') === 'on',
         }),
       });
-      const result = (await response.json()) as { error?: string };
+      const result = (await response.json()) as {
+        error?: string;
+        mcpInspection?: McpInspection | null;
+      };
       if (!response.ok)
         throw new Error(result.error || '申請を保存できませんでした。');
       event.currentTarget.reset();
+      setEndpointUrl('');
+      setInspection(null);
       setMessage(
-        '掲載申請を審査キューへ保存しました。公開や接続は、技術・権利・安全確認の後です。',
+        result.mcpInspection?.status === 'ready'
+          ? `${result.mcpInspection.toolCount}件のMCPツールを確認し、掲載申請を審査キューへ保存しました。`
+          : result.mcpInspection?.status === 'auth_required'
+            ? '接続先の応答を確認しました。OAuth認証を含む審査後に公開します。'
+            : '掲載申請を審査キューへ保存しました。公開や接続は、技術・権利・安全確認の後です。',
       );
     } catch (cause) {
       setError(
@@ -104,7 +152,7 @@ export default function SkyPublisherForm() {
           <p className="rock-eyebrow">FOR TOOL PROVIDERS</p>
           <h1>自動化ツールを、Skyへ。</h1>
           <p>
-            利用者が判断するための情報だけを入力。MCPの能力一覧や認証方式は、申請後にSkyが接続先から取得して照合します。
+            利用者が判断するための情報だけを入力。遠隔MCPは送信前にSkyが接続とツール一覧を確認します。
           </p>
         </div>
         <Link href="/" className="rock-button rock-button-subtle">
@@ -186,9 +234,10 @@ export default function SkyPublisherForm() {
               接続方式
               <select
                 value={connectionType}
-                onChange={(event) =>
-                  setConnectionType(event.target.value as SkyConnectionType)
-                }
+                onChange={(event) => {
+                  setConnectionType(event.target.value as SkyConnectionType);
+                  setInspection(null);
+                }}
               >
                 <option value="mcp_streamable_http">
                   MCP / Streamable HTTP
@@ -206,12 +255,47 @@ export default function SkyPublisherForm() {
                 disabled={!needsEndpoint}
                 type="url"
                 placeholder="https://example.com/mcp"
+                value={endpointUrl}
+                onChange={(event) => {
+                  setEndpointUrl(event.target.value);
+                  setInspection(null);
+                }}
               />
               <small>
                 認証キーは入力しません。MCP
                 OAuthまたは外部の安全な認証画面を使います。
               </small>
             </label>
+            {connectionType === 'mcp_streamable_http' && (
+              <div className="sky-mcp-check">
+                <button
+                  type="button"
+                  className="rock-button rock-button-subtle"
+                  disabled={checking || pending || !endpointUrl.trim()}
+                  onClick={() => void checkConnection()}
+                >
+                  <ShieldCheck size={16} />
+                  {checking ? '接続を確認中…' : '接続とツールを確認'}
+                </button>
+                {inspection && (
+                  <output
+                    className={
+                      inspection.status === 'unreachable'
+                        ? 'sky-form-error'
+                        : 'sky-form-success'
+                    }
+                  >
+                    <CheckCircle2 size={18} />
+                    <span>
+                      {inspection.message}
+                      {inspection.toolNames.length > 0 && (
+                        <small>{inspection.toolNames.join(' · ')}</small>
+                      )}
+                    </span>
+                  </output>
+                )}
+              </div>
+            )}
             <label>
               ソース・配布元URL
               <input

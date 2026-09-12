@@ -1,5 +1,11 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-12 — SkyのMCP導入・利用体験を改善
+
+ToB掲載では、遠隔MCPのURL入力後にSkyが`initialize`と`tools/list`を実行し、ツール自体を動かさず接続状態と公開ツール名を確認する。公開HTTPS以外と内部ネットワークを拒否し、OAuth必須先は認証待ちとして審査へ残す。
+
+ToCのPC接続はツール総数4件の固定を廃止し、必須4件が存在すれば将来の追加ツールを許容する。初期化で合意した対応MCP版を後続通信へ使い、現在の本人限定SiteをPCパックの許可Originへ追加した。一般利用画面は「PC接続」「PCで実行」と表示し、MCPという内部用語は開発者向け設定へ限定する。[実装・安全境界・検証](docs/sky-mcp-usability-20260912.md)。
+
 ## 2026-09-12 — Skyへ「特許出願アシスタント」を追加
 
 Skyのready商品として、ソフトウェア・システム発明の整理、公開状況警告、公式特許情報に限定した候補調査、明細書・請求項・要約・図面指示・提出前チェックのドラフト作成を追加した。発明内容は保存せず、外部AIへの送信は明示同意後だけ行う。
@@ -21,6 +27,7 @@ Skyのready商品として、ソフトウェア・システム発明の整理、
 今回はローカルSkyでのPC接続と読み取り会話までを対象とし、HTTPS配信版のloopback接続、Native Sky MCP brokerへの常駐、Walletへの費用転記、解約・支払い・申告は未実装のまま保持する。[実装・安全境界・検証](docs/sky-rockstar-ledger-20260912.md)。
 
 追加で全網羅監査を実装した。Apple、Google Play、カード、銀行、PayPal、請求メールの6情報源と確認期間を追跡し、全情報源の解決と継続契約の更新日入力が揃うまで完了と判定しない。現在の個人台帳は既知18件（過去・終了10件）を保持する一方、情報源0/6確認済み、明細0件、更新日3件不足のため未完了と表示する。SkyチャットとMCPも同じ判定を返す。
+
 ## 2026-09-12 — スマホで実行画面が左へずれる不具合を修正
 
 スマホ幅ではDialogを下端固定へ変更していたが、共通Dialogの中央配置用`translate`が残り、画面幅の半分だけ左へずれていた。スマホ用Sky DialogでTailwindのX/Y移動量を0へ上書きし、公開用CSSの最適化後にも指定が残ること、横幅413pxで左端0・右端413pxに収まることを実画面計測で確認した。
@@ -319,7 +326,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / Sky Agent Hubへ法務受付と特許出願担当を統合 / 完了 26/48件
+最終更新: 2026-09-12 / SkyのMCP導入・接続体験を改善 / 完了 27/49件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -329,6 +336,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY04 | X型Sky Timelineから会話または役ボタンの1タップで実行入口を開く | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
 | SKY05 | Skyの依頼・担当選択・検索・実行を迷わない3段階へ整理 | 完了 | [記録](components/sky-workspace.tsx) · [記録](app/workspace.css) |
 | SKY06 | スマホ幅でSky実行Dialogが左へずれる回帰を修正 | 完了 | [記録](app/workspace.css) · [記録](project.md) |
+| SKY07 | MCP掲載前診断とPC接続の互換性・初回導線を改善 | 完了 | [記録](lib/mcp-inspection.ts) · [記録](app/api/sky/mcp/inspect/route.ts) · [記録](lib/device.ts) · [記録](components/sky-publisher-form.tsx) · [記録](components/device-connection.tsx) · [記録](tests/mcp-inspection.test.mjs) · [記録](tests/device-lifecycle.test.mjs) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
@@ -390,7 +398,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 新しいSky Timeline、役割ボタン、自然文ルーティングから法務受付を開けるようにし、安全確認、相談整理、公式情報に基づくAI回答、無料窓口、必要時だけの弁護士引継ぎを会話型画面へ統合した。刑事弁護が必要な案件は藤原茜弁護士を第一連絡候補にするが、自動送信・受任確定は行わない。本人限定Sitesへの再配信後、実環境の画面動線と法令AI・特許調査AIの秘密設定を確認する。SkyのMCP接続の継続設計と、Android/AOSP側のfull build・製品移植・production署名・実機受入は引き続き未完了。
+次の作業: 第三者MCPの実OAuth、長時間job、取消・失効をプロバイダーごとに相互運用試験する。Android/AOSP側のfull build・製品移植・production署名・実機受入は引き続き未完了。
 <!-- project-status:end -->
 
 ## 次段階の設計

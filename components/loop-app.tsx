@@ -434,7 +434,7 @@ export default function LoopApp() {
                           ? 'PCで実行'
                           : 'PC接続が必要'
                         : connected
-                          ? 'MCPで実行'
+                          ? 'PCで実行'
                           : 'この端末で実行'}
                   </small>
                 </span>
@@ -577,7 +577,7 @@ export default function LoopApp() {
               <Cable size={20} />
             </span>
             <div>
-              <b>PC・MCP接続</b>
+              <b>PC接続</b>
               <small>{connected ? '接続中' : '未接続'}</small>
             </div>
             <ChevronRight size={18} />
@@ -735,7 +735,7 @@ export default function LoopApp() {
       </Dialog>
       <Dialog open={deviceOpen} onOpenChange={setDeviceOpen}>
         <DialogContent className="app-wide-dialog">
-          <DialogTitle className="sr-only">PC・MCP接続</DialogTitle>
+          <DialogTitle className="sr-only">PC接続</DialogTitle>
           <DialogDescription className="sr-only">
             PCとの接続を設定します。
           </DialogDescription>

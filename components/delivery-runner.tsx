@@ -117,7 +117,7 @@ export function DeliveryRunner({
         <div className="bench-heading">
           <h3>PCで納品記録を照合</h3>
           <span className="outline-tag">
-            {connected ? 'PC · MCP接続中' : 'PC接続が必要'}
+            {connected ? 'PC接続中' : 'PC接続が必要'}
           </span>
         </div>
         <p className="subnote">

@@ -22,7 +22,13 @@ import pc_citations
 PROTOCOLS = ('2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05')
 MAX_BODY = 16_000_000
 PORT = 38479
-ORIGINS = {'https://rock-star.kirin-999.chatgpt.site', 'https://loop-automation-hub.kirin-999.chatgpt.site', 'http://127.0.0.1:3001', 'http://localhost:3001'}
+ORIGINS = {
+    'https://rockstaros-kaiya.noellesugar1.chatgpt.site',
+    'https://rock-star.kirin-999.chatgpt.site',
+    'https://loop-automation-hub.kirin-999.chatgpt.site',
+    'http://127.0.0.1:3001',
+    'http://localhost:3001',
+}
 
 def schema(properties, required):
     return {'type':'object','properties':properties,'required':required,'additionalProperties':False}
@@ -152,7 +158,8 @@ class Bridge(BaseHTTPRequestHandler):
         self.send_response(status)
         if self.allowed():
             self.send_header('Access-Control-Allow-Origin',self.headers['Origin']);self.send_header('Vary','Origin')
-            self.send_header('Access-Control-Allow-Headers','Content-Type, Authorization, MCP-Protocol-Version')
+            self.send_header('Access-Control-Allow-Headers','Content-Type, Authorization, MCP-Protocol-Version, Mcp-Session-Id')
+            self.send_header('Access-Control-Expose-Headers','Mcp-Session-Id')
             self.send_header('Access-Control-Allow-Methods','POST, OPTIONS')
             self.send_header('Access-Control-Allow-Private-Network','true')
         self.send_header('Cache-Control','no-store');self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(encoded)));self.end_headers();self.wfile.write(encoded)

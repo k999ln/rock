@@ -21,15 +21,17 @@ export function DeviceConnection() {
     setBusy(true);
     setMessage('');
     try {
-      await connectDevice();
+      const connection = await connectDevice();
       setConnected(true);
       setMessage(
-        'MCPの4つの機能を確認しました。ツールの実行ボタンからPCで処理できます。',
+        `PCで使える${connection.toolCount}件の機能を確認しました。ツールの実行ボタンから処理できます。`,
       );
-    } catch {
+    } catch (cause) {
       setConnected(!!deviceToken());
       setMessage(
-        'PCに接続できませんでした。接続アプリが起動しているか確認し、ブラウザにローカルネットワークの許可が出た場合は許可してから再接続してください。',
+        cause instanceof Error && cause.message.startsWith('PC接続アプリを更新')
+          ? cause.message
+          : 'PCに接続できませんでした。接続アプリが起動しているか確認し、ブラウザにローカルネットワークの許可が出た場合は許可してから再接続してください。',
       );
     } finally {
       setBusy(false);
@@ -41,7 +43,7 @@ export function DeviceConnection() {
         <div>
           <span className="eyebrow">ONE CONNECTION. FOUR TOOLS.</span>
           <h1>つないだら、あとはワンボタン。</h1>
-          <p>PCが必要な処理も、MCPが自動で引き受けます。</p>
+          <p>PCが必要な処理も、接続アプリが自動で引き受けます。</p>
         </div>
         <Cable size={35} />
       </div>
@@ -50,7 +52,7 @@ export function DeviceConnection() {
           <Cable size={28} />
           <h2>このサイトとPCをつなぐ</h2>
           <p>
-            初回だけPC接続アプリを起動。接続後は、ツールの「実行」を押すと同じPC内で処理して結果を返します。
+            初回だけ接続アプリを開きます。接続後は、ツールの「実行」を押すだけで同じPC内の処理結果を受け取れます。
           </p>
           <button
             className="black-button"
@@ -104,7 +106,8 @@ export function DeviceConnection() {
               </li>
             </ol>
             <p className="subnote">
-              このPCのアプリが動いている間だけ接続できます。OSの自動起動は設定しません。LinuxはPython 3.10以上が必要です。Windowsでは出典整理のMCP実行に未対応です。詳しい対応範囲は同梱READMEで確認してください。
+              このPCのアプリが動いている間だけ接続できます。OSの自動起動は設定しません。LinuxはPython
+              3.10以上が必要です。Windowsでは出典整理のPC実行に未対応です。詳しい対応範囲は同梱READMEで確認してください。
             </p>
           </details>
         </section>

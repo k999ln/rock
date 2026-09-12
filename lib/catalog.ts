@@ -128,7 +128,7 @@ export const catalog: Automation[] = [
     source:
       'https://github.com/k999ln/rock/tree/codex/sky-rockstar-ledger-20260912/toolkits/rockstar-ledger',
     runner: 'subscription-ledger',
-    environment: 'PC・MCP / ローカル台帳',
+    environment: 'PC接続 / ローカル台帳',
     cost: '追加API料金なし。契約データと明細はPC内のSQLiteに保存し、Skyは読み取り専用で接続します。',
     steps: [
       'Rockstar LedgerをPCへ展開する',

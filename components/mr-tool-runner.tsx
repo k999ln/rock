@@ -325,7 +325,7 @@ export function MrToolRunner({
                 : '記事の無料版を作る'}
           </h3>
           <span className="outline-tag">
-            {connected ? 'PC · MCPで実行' : 'ブラウザ内で実行'} · 無料
+            {connected ? 'PCで実行' : 'ブラウザ内で実行'} · 無料
           </span>
         </div>
         <div className="bench-helper">
