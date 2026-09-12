@@ -1,5 +1,11 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-12 — Skyへ「日本語法律相談受付」を追加
+
+自動化Hub（Sky）のready商品として、相談内容をブラウザ内だけで整理する日本語法律相談受付を追加した。安全・逮捕・公的書類・期限を先に確認し、一般情報で足りる場合は公的案内、弁護士相談が必要な場合だけ引継ぎ要約と分野・地域に合う候補を表示する。候補は利用者提供の領事館公開リスト33件に基づき、推薦・斡旋・受任保証ではない。
+
+個別の委任契約書に含まれる依頼者情報、事件、報酬、支払条件、署名はGitと画面へ収録していない。相談本文も保存・外部送信せず、連絡は本人が内容を確認して行う。法的助言、期限計算、勝敗予測、弁護士関係・秘匿特権の成立、利益相反確認、予約・契約は対象外。[実装と安全境界](docs/sky-legal-intake-20260912.md)。
+
 ## 2026-09-12 — Skyへ「サブスク顧問」を接続
 
 自動化Hub（Sky）のready商品としてRockstar Ledgerを追加し、同じPCで動くSQLite台帳の月額、要対応、更新日、契約一覧を読み取り専用で表示する画面を実装した。配布ZIP、MIT全文、Codex skill、stdio MCPを同じGitへ収録し、個人の契約・明細DBは収録しない。Skyからのブラウザ接続元はloopback HTTPだけに限定した。
@@ -272,7 +278,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / SkyへローカルMCP対応のサブスク顧問を接続 / 完了 19/41件
+最終更新: 2026-09-12 / Skyへ日本語法律相談受付を追加 / 完了 19/41件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -294,7 +300,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 | B01 | Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
 | B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
-| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) |
+| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) · [記録](docs/sky-legal-intake-20260912.md) · [記録](tests/legal-intake.test.mjs) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) |
 | B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/hub-wallet-pc-comparison-20260909.md) · [記録](docs/evidence/hub-wallet/b05-pc-machine-20260909/report.json) |
 | D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
@@ -336,7 +342,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Skyのサブスク顧問をローカルPC台帳へ読み取り専用で接続し、配布ZIP・MIT・MCP・安全境界を同じGitへ収録した。次はNative Sky MCP brokerへの常駐接続とWalletへの費用転記を設計し、HTTPS配信版でloopbackへ直接接続しない経路を実装する。Android/AOSP側は実機型番/SKUの読取り専用確認、クラウド計画の承認、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/Game移植、production署名、実機受入が引き続き未完了。
+次の作業: Skyへ日本語法律相談受付を追加し、安全・期限の受付、一般情報と弁護士引継ぎの分岐、領事館公開リスト33件の候補表示、端末内処理と本人確認後の連絡境界を実装した。次は本人限定Sitesへ同一sourceを配信して実環境で再確認する。サブスク顧問はNative Sky MCP brokerへの常駐接続とWalletへの費用転記、HTTPS配信版の安全な接続経路が未完了。Android/AOSP側は実機型番/SKU確認、全source取得・build・製品移植・production署名・実機受入が引き続き未完了。
 <!-- project-status:end -->
 
 ## 次段階の設計

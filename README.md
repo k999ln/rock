@@ -35,7 +35,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / SkyへローカルMCP対応のサブスク顧問を接続 / 完了 19/41件
+最終更新: 2026-09-12 / Skyへ日本語法律相談受付を追加 / 完了 19/41件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -57,7 +57,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 | B01 | Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
 | B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
-| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) |
+| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) · [記録](docs/sky-legal-intake-20260912.md) · [記録](tests/legal-intake.test.mjs) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) |
 | B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/hub-wallet-pc-comparison-20260909.md) · [記録](docs/evidence/hub-wallet/b05-pc-machine-20260909/report.json) |
 | D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
@@ -99,7 +99,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Skyのサブスク顧問をローカルPC台帳へ読み取り専用で接続し、配布ZIP・MIT・MCP・安全境界を同じGitへ収録した。次はNative Sky MCP brokerへの常駐接続とWalletへの費用転記を設計し、HTTPS配信版でloopbackへ直接接続しない経路を実装する。Android/AOSP側は実機型番/SKUの読取り専用確認、クラウド計画の承認、全source取得・vendor生成・Soongフルbuild・Hub/Wallet/Game移植、production署名、実機受入が引き続き未完了。
+次の作業: Skyへ日本語法律相談受付を追加し、安全・期限の受付、一般情報と弁護士引継ぎの分岐、領事館公開リスト33件の候補表示、端末内処理と本人確認後の連絡境界を実装した。次は本人限定Sitesへ同一sourceを配信して実環境で再確認する。サブスク顧問はNative Sky MCP brokerへの常駐接続とWalletへの費用転記、HTTPS配信版の安全な接続経路が未完了。Android/AOSP側は実機型番/SKU確認、全source取得・build・製品移植・production署名・実機受入が引き続き未完了。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
@@ -124,6 +124,7 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 - 基本分配・ブースト・共同留保を、共通収益の範囲内で試算。入金・送金は未接続。
 - 同じ4ツールをstdio MCPでCodexから実行。PC接続アプリを起動するとサイトからもMCPでワンボタン実行。
 - Skyの「サブスク顧問」から、PC内のRockstar Ledgerへ読み取り専用で接続。通貨別の月額、更新日、支払い失敗、定期課金候補を確認し、同梱のstdio MCPでも照会できます。契約データはGitやサイトへ送らず、解約・支払い・税務申告は自動実行しません。[導入と境界](toolkits/rockstar-ledger/README.md)
+- Skyの「日本語法律相談受付」で、安全・期限・相談分野をブラウザ内だけで整理。一般情報で足りる場合は公的案内、弁護士相談が必要な場合だけ引継ぎ要約と日本語対応候補を表示します。法的助言や自動連絡は行わず、相談本文は保存しません。[実装と安全境界](docs/sky-legal-intake-20260912.md)
 - GitHubとHugging Faceの公開メタデータを収集する管理用コマンド。
 
 ファンドの参加・配分・試算条件、単独ツールの実行メタデータ、仕事の進捗はSitesのD1に保存します。旧マイツール用のローカル保存関数も互換用に保持しています。接続アドレスは保存せず、サーバーへ送信しません。ウォレット接続はログイン認証・実名本人確認・送金認可ではありません。

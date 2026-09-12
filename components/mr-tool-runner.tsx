@@ -29,6 +29,7 @@ import {
 } from '@/lib/mr-tools';
 import { DeliveryRunner } from '@/components/delivery-runner';
 import { SubscriptionLedgerRunner } from '@/components/subscription-ledger-runner';
+import { LegalIntakeRunner } from '@/components/legal-intake-runner';
 import {
   executeTracked,
   processedBytes,
@@ -40,7 +41,8 @@ export type MrRunner =
   | 'citations'
   | 'free-article'
   | 'delivery-local'
-  | 'subscription-ledger';
+  | 'subscription-ledger'
+  | 'legal-intake';
 const demoArticle =
   '# 仕事を小さく自動化する\n\n繰り返している作業を書き出します。毎回同じ手順をひとつ選びます。まずは短い入力で試して、結果を自分で確かめましょう。\n\n## 実践手順\n\nここからは完全版の具体的な手順です。作業を分解して、入力と完成条件を決めます。記録を残すと、次に改善する場所が見つかります。\n\n## 出典\n\n- [Python公式](https://docs.python.org/3/)';
 export function MrToolRunner({
@@ -290,6 +292,13 @@ export function MrToolRunner({
   if (tool === 'subscription-ledger')
     return (
       <SubscriptionLedgerRunner
+        onRunningChange={onRunningChange}
+        executionDisabled={executionDisabled}
+      />
+    );
+  if (tool === 'legal-intake')
+    return (
+      <LegalIntakeRunner
         onRunningChange={onRunningChange}
         executionDisabled={executionDisabled}
       />

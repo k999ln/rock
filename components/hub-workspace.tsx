@@ -14,6 +14,7 @@ import {
   FilePenLine,
   Laptop,
   Link2,
+  Scale,
   WalletCards,
   Search,
   ShieldCheck,
@@ -39,12 +40,14 @@ const icons = {
   'mr-citations': BookOpenCheck,
   'mr-delivery': FileCheck2,
   'rockstar-ledger': WalletCards,
+  'rockstar-legal-intake': Scale,
 };
 const filters = [
   'すべて',
   '記事制作',
   '案件・納品支援',
   '経費・契約管理',
+  '法律・生活支援',
 ] as const;
 
 export default function HubWorkspace() {
@@ -308,7 +311,9 @@ export default function HubWorkspace() {
           if (!open && !running) setSelected(null);
         }}
       >
-        <DialogContent className="rock-tool-dialog">
+        <DialogContent
+          className={`rock-tool-dialog ${selected?.runner === 'legal-intake' ? 'rock-tool-dialog-wide' : ''}`}
+        >
           {selected && (
             <>
               <p className="rock-eyebrow">
