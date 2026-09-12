@@ -37,13 +37,14 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / SkyをToB掲載とToCタイムライン取得・MCP接続の両面へ拡張 / 完了 23/45件
+最終更新: 2026-09-12 / SkyをToB掲載とToCタイムライン取得・MCP接続の両面へ拡張 / 完了 24/46件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
+| SKY04 | X型Sky Timelineから会話または役ボタンの1タップで実行入口を開く | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
@@ -118,7 +119,8 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 
 ## 既存Web/PC版で現在できること
 
-- ジャンル・キーワードからファンドと自動化ツールを検索。
+- Skyへ文章で頼むと、4つの専門役へ振り分けて実行画面を開く。ブラウザの役は送信または役ボタンの1タップで開き、PC処理は初回接続だけを案内する。
+- X型Timelineから、状態・実行場所・費用条件を見ながら自動化ツールを検索。
 - Mr.由来のココナラ案件チェック、記事の無料版作成、出典整理をブラウザ内で実行。
 - Mr.由来の納品記録照合を含むPC用無料パックを配布。元コード4件をMIT・取得commit・ハッシュ付きで同梱。
 - 3件の外部OSS候補も引き続き掲載。
@@ -130,6 +132,8 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 - 基本分配・ブースト・共同留保を、共通収益の範囲内で試算。入金・送金は未接続。
 - 同じ4ツールをstdio MCPでCodexから実行。PC接続アプリを起動するとサイトからもMCPでワンボタン実行。
 - GitHubとHugging Faceの公開メタデータを収集する管理用コマンド。
+
+日本語法律相談受付は別branch `codex/sky-legal-intake-20260912` のcommit `4169697`で実装・7テスト合格を確認したが、このbranchのSkyへはまだ統合していない。
 
 ファンドの参加・配分・試算条件、単独ツールの実行メタデータ、仕事の進捗はSitesのD1に保存します。旧マイツール用のローカル保存関数も互換用に保持しています。接続アドレスは保存せず、サーバーへ送信しません。ウォレット接続はログイン認証・実名本人確認・送金認可ではありません。
 

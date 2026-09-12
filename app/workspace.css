@@ -2447,6 +2447,19 @@
   background: #f1f7ec;
   color: #263329;
 }
+.sky-assistant-connect-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 9px;
+  color: #657168;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.sky-assistant-connect-note svg {
+  flex: 0 0 auto;
+  color: #638d3a;
+}
 .sky-route-reply {
   display: grid;
   grid-template-columns: 20px minmax(0, 1fr) auto;

@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   SlidersHorizontal,
   X,
+  Zap,
   type LucideIcon,
 } from 'lucide-react';
 import { catalog, type Automation } from '@/lib/catalog';
@@ -154,6 +155,11 @@ export default function SkyWorkspace() {
     );
   }
 
+  function openRole(tool: Automation, request = '') {
+    chooseRole(tool, request);
+    primaryAction(tool);
+  }
+
   function submitRequest(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     const request = requestText.trim();
@@ -162,7 +168,7 @@ export default function SkyWorkspace() {
     const tool = role
       ? (catalog.find((item) => item.id === role.toolId) ?? null)
       : null;
-    if (tool) chooseRole(tool, request);
+    if (tool) openRole(tool, request);
     else {
       setRoutedTool(null);
       setRouteMessage(
@@ -234,12 +240,16 @@ export default function SkyWorkspace() {
                 {skyRoles.map((role) => {
                   const tool = catalog.find((item) => item.id === role.toolId)!;
                   return (
-                    <button key={role.toolId} onClick={() => chooseRole(tool)}>
+                    <button key={role.toolId} onClick={() => openRole(tool)}>
                       {role.label}
                     </button>
                   );
                 })}
               </div>
+              <p className="sky-assistant-connect-note">
+                <Zap size={14} aria-hidden="true" />
+                ブラウザの役は送信だけで開きます。PCは初回だけ接続します。
+              </p>
               {routeMessage && (
                 <output className="sky-route-reply">
                   <MessageCircle size={17} />
@@ -251,7 +261,7 @@ export default function SkyWorkspace() {
                     <button onClick={() => primaryAction(routedTool)}>
                       {routedTool.runner === 'delivery-local'
                         ? 'PC接続へ'
-                        : 'この役に頼む'}
+                        : 'もう一度開く'}
                       <ArrowRight size={15} />
                     </button>
                   )}
@@ -346,7 +356,7 @@ export default function SkyWorkspace() {
                           ? '詳細を見る'
                           : tool.runner === 'delivery-local'
                             ? 'PCを接続'
-                            : '使ってみる'}
+                            : '1タップで開く'}
                         <ArrowRight size={16} />
                       </button>
                     </div>

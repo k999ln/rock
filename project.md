@@ -1,5 +1,11 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-12 — Skyの役割をワンタップで開く
+
+SkyのX型Timelineと会話受付を維持し、文章の送信または4つの役ボタンから、ブラウザ実行画面を追加操作なしで開くようにした。PCが必要な納品確認は同じ操作で接続画面を開く。外部送信、料金、権限の本人確認は省略しない。
+
+別作業コピーの`codex/sky-legal-intake-20260912`／`4169697`に、日本語法律相談受付、公開連絡先33件、ブラウザRunner、7テストが存在し合格することを確認した。現在のSky branchには未統合であり、表示・利用可能件数へ加算しない。
+
 ## 2026-09-12 — 多機種対応を共通Core＋機種別packageへ固定
 
 利用者の決定により、RockstarOSは一つの汎用imageを全端末へ書き込む方式ではなく、共通Coreと機種／SKU別Device Support Packageを組み合わせる。提供区分を完全なOS、Android GSI実験版、既存OS上のclient、非対応の4種類に分け、対応台帳と自動検査で誇張を防ぐ。[設計](docs/device-support-architecture.md)／[台帳](data/device-support-matrix.json)。
@@ -28,11 +34,9 @@ main `7cdbb5f`とDraft PR #4の候補`c182a5b`を再取得し、PR #4の同HEAD 
 
 利用者の明示指示で実機版の開発を開始。Pixel 10候補の公式安定版タグ署名を確認し、固定source・端末product組込み・Linux build入口・読取り専用端末診断を追加した。利用できるLinux環境はないとの回答を受領。対象機種/SKUの再確認、クラウド予算/アカウント、全OS build、Sky/Wallet/Game移植、Android署名と実機受入が必要。まだ書込み可能なimageは生成していない。[実装と再開手順](docs/phone-preview-20260911.md)。
 
-
 ## 2026-09-11 — kaiya の公開設定と新規Sites
 
 権利者名kaiya、自作部分の改変・再配布許可、新規Sites作成、CM制作途中を最新指示として記録。MITの具体条文と本人だけで行う署名方式は準備段階。新サイトは本人限定で公開済み。空のD1で開始し、元サイトとDBの復旧を完了扱いにしない。MIT確認用全文、本人署名CLIと新7＋既存29署名試験、取消/メモリの追加診断を保存した。[今回の設定](docs/owner-setup-20260911.md)。
-
 
 ## 2026-09-11 — rc2の残る受入を再開
 
@@ -76,11 +80,9 @@ Linuxで全1660件／17checks、元1392件＋新規4件の主suite網羅、Web v
 
 最終9abf78aのbase/profile imageをbuildしてhash固定。正規CI原本1631/14checkと694source一致を既存guardで受理し、Mac arm64原全回帰の10TLS期限ERRORは別FAILとして保持。24要件のGame/Wallet host契約を同sourceで確認しGX01-CONTRACTを完了、実OS UI/fresh SDK/全D0〜D6は未判定。Aは同梱source/NOTICEと容量を確認し長時間試験、Bは実取得から新規VMの全構成復旧、rootは最後に専用端末で実UIと実録画を検証する。
 
-
 ## 09:19 UTC 配布候補のソース固定
 
 `9abf78a80d27aa9f847c4051d20e4c552e407276` を最終source/host tools候補として固定・pushし、Aの完全native回帰とbuildを開始。Game期限後の再接続未対応を既存契約どおりUI/SDKに説明し、元key再送・履歴とPIN pixel条件を保持。Bは同じ版の9file取得から独立新VMで導入/全構成復旧/SDKを検証する。D0〜D6・最終実UI・配布取得・実demoはこれからの判定で、完成とは表示しない。
-
 
 ## 08:40 UTC 最終候補へ向けた一周の固定
 
@@ -201,15 +203,15 @@ Rock starは、自動化ツールを束ね、仕事の準備・制作・確認�
 
 `/` のファンド画面から `/work` へ進み、テンプレートを選んで仕事を作成します。既存の `MrToolRunner` とPCの4つのMCPツールを再利用します。入力の引き渡しは利用者が結果を確認・コピーして行い、タブを閉じると未保存本文は失われます。
 
-| 層 | 担当 |
-| --- | --- |
-| `lib/workflow.ts` | テンプレート、入力検証、状態遷移、完了条件、冪等性 |
-| `lib/work-store.ts` | D1のユーザー別取得、作成、revision条件付き更新 |
-| `app/api/jobs/route.ts` | 認証・Origin確認、仕事の一覧・作成・更新API |
-| `components/workbench.tsx` | 作成、一覧、次の手順、実行結果、確認と完了 |
-| `lib/device.ts` / 既存runner | ツールの実行結果を仕事へ報告 |
-| `data/project-status.json` | 開発タスクの状態・依存関係・検証根拠 |
-| `scripts/project-status.mjs` | READMEと本書の進捗欄の生成・鮮度確認 |
+| 層                           | 担当                                               |
+| ---------------------------- | -------------------------------------------------- |
+| `lib/workflow.ts`            | テンプレート、入力検証、状態遷移、完了条件、冪等性 |
+| `lib/work-store.ts`          | D1のユーザー別取得、作成、revision条件付き更新     |
+| `app/api/jobs/route.ts`      | 認証・Origin確認、仕事の一覧・作成・更新API        |
+| `components/workbench.tsx`   | 作成、一覧、次の手順、実行結果、確認と完了         |
+| `lib/device.ts` / 既存runner | ツールの実行結果を仕事へ報告                       |
+| `data/project-status.json`   | 開発タスクの状態・依存関係・検証根拠               |
+| `scripts/project-status.mjs` | READMEと本書の進捗欄の生成・鮮度確認               |
 
 仕事は `active → review → completed`。`active` / `review` から `cancelled` に中止可能。通過前のステップを飛ばす操作は拒否します。中止済み・完了済みの仕事には新しい試行を追加しません。
 
@@ -272,13 +274,14 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / SkyをToB掲載とToCタイムライン取得・MCP接続の両面へ拡張 / 完了 23/45件
+最終更新: 2026-09-12 / SkyをToB掲載とToCタイムライン取得・MCP接続の両面へ拡張 / 完了 24/46件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
+| SKY04 | X型Sky Timelineから会話または役ボタンの1タップで実行入口を開く | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |

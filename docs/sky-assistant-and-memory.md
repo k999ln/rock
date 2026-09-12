@@ -57,7 +57,7 @@ Sky Memory
 
 ## 実装順
 
-1. 今回: X型Timeline、Sky受付、4役への決定的な振り分け、既存の実行画面への接続。
+1. 今回: X型Timeline、Sky受付、4役への決定的な振り分け、送信または役ボタン1回で既存の実行画面を開く接続。
 2. 次: `sky_profiles`と`sky_context_grants`、プロフィール編集、roleごとの共有確認、削除・export。
 3. 次: OAuth接続保管庫、MCP preflight、tool capabilityとContext Envelopeの照合。
 4. 次: 会話履歴から複数役を組み立てるplanner。ただし外部送信・購入・公開・納品は本人確認を維持。
