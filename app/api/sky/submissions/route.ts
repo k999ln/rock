@@ -37,7 +37,7 @@ export async function GET(request: Request) {
   try {
     return json({
       submissions: await skySubmissionStore(database()).list(
-        requestUser(request),
+        await requestUser(request),
       ),
     });
   } catch (error) {
@@ -47,7 +47,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const user = requestUser(request);
+    const user = await requestUser(request);
     const submission = parseSkySubmission(await body(request));
     const mcpInspection =
       submission.connectionType === 'mcp_streamable_http'

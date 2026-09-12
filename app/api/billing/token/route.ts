@@ -49,7 +49,7 @@ function failure(error: unknown) {
 
 export async function POST(request: Request) {
   try {
-    const userId = requestUser(request);
+    const userId = await requestUser(request);
     const bindings = env as unknown as BillingEnvironment;
     const serviceOrigin = configuredOrigin(bindings.BILLING_SERVICE_URL);
     const token = await createBillingToken(

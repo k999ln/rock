@@ -1,19 +1,10 @@
 import { env } from 'cloudflare:workers';
 import { defaultFund, type FundPlan } from './fund';
+export { requestUser } from './request-auth';
 export function database(): D1Database {
   const db = (env as unknown as { DB?: D1Database }).DB;
   if (!db) throw new Error('データ保存の準備ができていません。');
   return db;
-}
-export function requestUser(request: Request): string {
-  const id = request.headers.get('oai-authenticated-user-id');
-  if (!id) throw new Error('UNAUTHORIZED');
-  if (request.method !== 'GET') {
-    const origin = request.headers.get('origin');
-    if (!origin || origin !== new URL(request.url).origin)
-      throw new Error('ORIGIN');
-  }
-  return id;
 }
 export async function snapshot(user: string) {
   const db = database();
