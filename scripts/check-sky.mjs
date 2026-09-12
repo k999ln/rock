@@ -9,9 +9,11 @@ const requireValue = (ok, message) => {
 };
 
 const catalogSource = read('lib/catalog.ts');
-const readyCount = (catalogSource.match(/"status":\s*"ready"/g) || []).length;
-const candidateCount = (catalogSource.match(/status:'candidate'/g) || [])
+const readyCount = (catalogSource.match(/status:\s*['"]ready['"],/g) || [])
   .length;
+const candidateCount = (
+  catalogSource.match(/status:\s*['"]candidate['"],/g) || []
+).length;
 requireValue(readyCount === 6, `Web/PC readyは6件です（実際: ${readyCount}）`);
 requireValue(
   candidateCount === 3,
@@ -59,6 +61,7 @@ requireValue(
 );
 const sky = read('docs/sky.md');
 const workspace = read('components/sky-workspace.tsx');
+const passport = read('components/execution-passport.tsx');
 for (const marker of [
   'fashion-brand-ops',
   'Instagram運用・受注型ブランド管理',
@@ -76,6 +79,27 @@ for (const marker of [
   '結果・実行記録',
 ])
   requireValue(sky.includes(marker), `Skyの説明に「${marker}」がありません`);
+for (const marker of [
+  'どこで、何を経由して動くか',
+  'クラウド',
+  'Codex',
+  '自家発電',
+])
+  requireValue(
+    passport.includes(marker),
+    `実行パスポートに「${marker}」がありません`,
+  );
+for (const marker of [
+  'primaryHost',
+  'supportedHosts',
+  'hostOperator',
+  'cloudDependency',
+  'codexRole',
+])
+  requireValue(
+    catalogSource.includes(marker),
+    `Web catalogに実行項目「${marker}」がありません`,
+  );
 
 console.log(
   `Sky: Web/PC ready ${readyCount}件、候補 ${candidateCount}件、native内蔵 ${toolKinds.size}種類/${packages.length}版、表示名を確認`,

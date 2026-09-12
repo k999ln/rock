@@ -571,6 +571,27 @@
   gap: 9px 14px;
   margin-top: 19px;
 }
+.sky-runtime-declaration {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 17px;
+  border: 1px solid #dce5d4;
+  border-radius: 10px;
+  background: #f7faf3;
+}
+.sky-runtime-declaration > strong {
+  color: #33402f;
+  font-size: 13px;
+}
+.sky-runtime-declaration > p {
+  color: #74806e;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.sky-runtime-declaration .sky-form-row > label {
+  margin-top: 0;
+}
 .sky-check-group > strong {
   width: 100%;
   font-size: 12px;
@@ -1175,6 +1196,76 @@
 .rock-tool-facts strong {
   font-weight: 500;
 }
+.execution-passport {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #dce5d4;
+  border-radius: 12px;
+  background: #f7faf3;
+}
+.execution-passport-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+.execution-passport-heading h3 {
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 650;
+}
+.execution-passport-heading > span {
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.execution-passport-heading .is-available {
+  background: #dcefc1;
+  color: #425b2e;
+}
+.execution-passport-heading .is-waiting {
+  background: #f1ead9;
+  color: #75623c;
+}
+.execution-route {
+  padding: 11px 13px;
+  border-radius: 8px;
+  background: #263029;
+  color: #f6f8f3;
+  font-size: 13px;
+  font-weight: 600;
+}
+.execution-passport dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.execution-passport dl > div {
+  padding: 10px 11px;
+  border: 1px solid #e2e8dd;
+  border-radius: 8px;
+  background: #fff;
+}
+.execution-passport dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #7a8674;
+  font-size: 10px;
+}
+.execution-passport dd {
+  margin: 5px 0 0;
+  color: #33402f;
+  font-size: 12px;
+  font-weight: 650;
+}
+.execution-power-note {
+  color: #6b765f;
+  font-size: 11px;
+  line-height: 1.75;
+}
 .rock-tool-dialog .mr-workbench {
   background: #f7f9f4;
   border-color: #e0e7d8;
@@ -1685,6 +1776,15 @@
   .rock-tool-facts > div {
     grid-template-columns: 1fr;
     gap: 3px;
+  }
+  .execution-passport-heading {
+    display: grid;
+  }
+  .execution-passport-heading > span {
+    justify-self: start;
+  }
+  .execution-passport dl {
+    grid-template-columns: 1fr;
   }
   .rock-tool-dialog .mr-workbench {
     padding: 16px;

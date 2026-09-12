@@ -11,6 +11,7 @@ import {
   ChevronRight,
   CircleHelp,
   Clock3,
+  Cpu,
   FileCheck2,
   FilePenLine,
   Laptop,
@@ -34,6 +35,7 @@ import { MrToolRunner } from '@/components/mr-tool-runner';
 import { DeviceConnection } from '@/components/device-connection';
 import { FashionBrandOpsRunner } from '@/components/fashion-brand-ops-runner';
 import WorkspaceShell from '@/components/workspace-shell';
+import { ExecutionPassport } from '@/components/execution-passport';
 
 const readyTools = catalog.filter((tool) => tool.status === 'ready');
 const recommended = readyTools.find((tool) => tool.id === 'mr-citations')!;
@@ -55,6 +57,17 @@ const filters = [
   '案件・納品支援',
   '経費・契約管理',
 ] as const;
+
+function executionLabel(tool: Automation) {
+  if (tool.execution.primaryHost === 'rockstaros_device')
+    return tool.execution.supportedHosts.includes('user_pc')
+      ? 'RockstarOS / PC'
+      : 'RockstarOSで実行';
+  if (tool.execution.primaryHost === 'user_pc') return 'PCで実行';
+  if (tool.execution.primaryHost === 'self_hosted') return '自前サーバー';
+  if (tool.execution.primaryHost === 'provider_cloud') return 'Cloudで実行';
+  return 'ブラウザで実行';
+}
 
 export default function SkyWorkspace() {
   const [query, setQuery] = useState('');
@@ -267,11 +280,13 @@ export default function SkyWorkspace() {
             </span>
             <div className="sky-timeline-copy">
               <div>
-                <time>PC接続後</time>
-                <span>ローカル台帳を読み取り専用で確認</span>
+                <time>RockstarOS / PC接続後</time>
+                <span>端末内のローカル台帳を読み取り専用で確認</span>
               </div>
               <h3>サブスク顧問</h3>
-              <p>契約、更新日、支払い失敗をPC内の台帳から確認します。</p>
+              <p>
+                契約、更新日、支払い失敗をRockstarOS端末または接続PC内の台帳から確認します。
+              </p>
             </div>
             <button onClick={() => setSelected(subscriptionLedger)}>
               接続
@@ -373,19 +388,15 @@ export default function SkyWorkspace() {
                           <Icon size={24} strokeWidth={1.6} />
                         </span>
                         <span className="rock-execution-label">
-                          {tool.runner === 'delivery-local' ||
-                          tool.runner === 'subscription-ledger' ||
-                          tool.integration === 'fashion-brand-ops' ? (
-                            <Laptop size={14} />
-                          ) : (
+                          {tool.execution.primaryHost ===
+                          'rockstaros_device' ? (
+                            <Cpu size={14} />
+                          ) : tool.execution.primaryHost === 'browser' ? (
                             <Check size={14} />
+                          ) : (
+                            <Laptop size={14} />
                           )}
-                          {tool.integration === 'fashion-brand-ops'
-                            ? 'MCPで実行'
-                            : tool.runner === 'delivery-local' ||
-                                tool.runner === 'subscription-ledger'
-                              ? 'PCで実行'
-                              : 'ブラウザで実行'}
+                          {executionLabel(tool)}
                         </span>
                       </div>
                       <p className="rock-tool-category">{tool.category}</p>
@@ -509,6 +520,7 @@ export default function SkyWorkspace() {
                   <p>{selected.cost}</p>
                 </div>
               </div>
+              <ExecutionPassport tool={selected} />
               {running && (
                 <output className="rock-running-notice">
                   実行中です。結果が表示されるまで、この画面を開いたままにしてください。

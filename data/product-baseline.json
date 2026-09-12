@@ -1,5 +1,5 @@
 {
-  "version": "1.14",
+  "version": "1.15",
   "decidedAt": "2026-09-12",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -24,7 +24,24 @@
     "definition": "Select a Tool, review its author/version/permissions/cost/execution target, consent, dispatch, stop and inspect results from one control surface.",
     "inventory": "docs/sky.md",
     "legacyInternalName": "hub",
-    "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
+    "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name.",
+    "executionPassport": {
+      "requiredFields": [
+        "primaryTarget",
+        "supportedTargets",
+        "hostOperator",
+        "connectionType",
+        "cloudDependency",
+        "codexRole",
+        "dataResidency",
+        "offlineCapable",
+        "unattended",
+        "powerClass"
+      ],
+      "separateDeclaredFromObserved": true,
+      "preferredArchitecture": "rockstaros_hardware_local_compute_storage_control",
+      "selfGenerationStatus": "not_implemented_not_verified"
+    }
   },
   "executionApproval": {
     "status": "approved_for_implementation",

@@ -23,6 +23,16 @@ const valid = (change = {}) => ({
   priceNote: '1回10円。実行前に上限を表示。',
   dataUse: '入力は処理後24時間以内に削除し、学習には利用しません。',
   executionTargets: ['cloud'],
+  runtimeProfile: {
+    primaryTarget: 'cloud',
+    hostOperator: 'provider',
+    cloudDependency: 'required',
+    codexRole: 'not_required',
+    dataResidency: 'provider_cloud',
+    unattended: false,
+    offlineCapable: false,
+    powerClass: 'standard',
+  },
   permissions: ['read_user_input', 'write_results', 'network'],
   rightsConfirmed: true,
   ...change,
@@ -32,6 +42,7 @@ void test('Sky accepts a minimal remote MCP listing and normalizes URLs', () => 
   const parsed = parseSkySubmission(valid());
   assert.equal(parsed.endpointUrl, 'https://tools.example.com/mcp');
   assert.deepEqual(parsed.executionTargets, ['cloud']);
+  assert.equal(parsed.runtimeProfile.hostOperator, 'provider');
 });
 
 void test('Sky rejects stale, unsafe, or misleading listing input', () => {
@@ -44,6 +55,15 @@ void test('Sky rejects stale, unsafe, or misleading listing input', () => {
     { version: '1.0' },
     { summary: '                    ' },
     { unrecognized: true },
+    { runtimeProfile: { ...valid().runtimeProfile, primaryTarget: 'pc' } },
+    { runtimeProfile: { ...valid().runtimeProfile, offlineCapable: true } },
+    {
+      runtimeProfile: {
+        ...valid().runtimeProfile,
+        dataResidency: 'device',
+        extra: true,
+      },
+    },
   ];
   for (const change of rejected)
     assert.throws(() => parseSkySubmission(valid(change)), SkySubmissionError);
@@ -56,12 +76,43 @@ void test('Rock recipe is accepted only for device-local execution', () => {
     sourceUrl: 'https://example.com/tool.rock.json',
     executionTargets: ['device_local'],
     permissions: ['read_user_input', 'write_results'],
+    runtimeProfile: {
+      primaryTarget: 'device_local',
+      hostOperator: 'rockstaros',
+      cloudDependency: 'none',
+      codexRole: 'not_required',
+      dataResidency: 'device',
+      unattended: false,
+      offlineCapable: true,
+      powerClass: 'low',
+    },
   });
   assert.equal(parseSkySubmission(recipe).connectionType, 'rock_recipe');
   assert.throws(
     () => parseSkySubmission({ ...recipe, executionTargets: ['pc'] }),
-    /端末内だけ/,
+    /主な実行場所|端末内だけ/,
   );
+});
+
+void test('a user-owned self-hosted system remains distinct from provider cloud', () => {
+  const parsed = parseSkySubmission(
+    valid({
+      connectionType: 'https_api',
+      executionTargets: ['self_hosted'],
+      runtimeProfile: {
+        primaryTarget: 'self_hosted',
+        hostOperator: 'user',
+        cloudDependency: 'optional',
+        codexRole: 'optional_client',
+        dataResidency: 'self_hosted',
+        unattended: false,
+        offlineCapable: false,
+        powerClass: 'standard',
+      },
+    }),
+  );
+  assert.equal(parsed.runtimeProfile.primaryTarget, 'self_hosted');
+  assert.equal(parsed.runtimeProfile.hostOperator, 'user');
 });
 
 void test('Sky stores submissions per owner and keeps them in review state', async (t) => {

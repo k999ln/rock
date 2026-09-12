@@ -4,7 +4,12 @@ export const SKY_CONNECTION_TYPES = [
   'rock_recipe',
   'https_api',
 ] as const;
-export const SKY_EXECUTION_TARGETS = ['device_local', 'pc', 'cloud'] as const;
+export const SKY_EXECUTION_TARGETS = [
+  'device_local',
+  'pc',
+  'self_hosted',
+  'cloud',
+] as const;
 export const SKY_PERMISSIONS = [
   'read_user_input',
   'write_results',
@@ -20,11 +25,42 @@ export const SKY_PRICING = [
   'usage',
   'external_contract',
 ] as const;
+export const SKY_HOST_OPERATORS = ['user', 'rockstaros', 'provider'] as const;
+export const SKY_CLOUD_DEPENDENCIES = ['none', 'optional', 'required'] as const;
+export const SKY_CODEX_ROLES = [
+  'not_required',
+  'optional_client',
+  'required',
+] as const;
+export const SKY_DATA_RESIDENCIES = [
+  'device',
+  'pc',
+  'self_hosted',
+  'provider_cloud',
+  'mixed',
+] as const;
+export const SKY_POWER_CLASSES = ['low', 'standard', 'accelerated'] as const;
 
 export type SkyConnectionType = (typeof SKY_CONNECTION_TYPES)[number];
 export type SkyExecutionTarget = (typeof SKY_EXECUTION_TARGETS)[number];
 export type SkyPermission = (typeof SKY_PERMISSIONS)[number];
 export type SkyPricing = (typeof SKY_PRICING)[number];
+export type SkyHostOperator = (typeof SKY_HOST_OPERATORS)[number];
+export type SkyCloudDependency = (typeof SKY_CLOUD_DEPENDENCIES)[number];
+export type SkyCodexRole = (typeof SKY_CODEX_ROLES)[number];
+export type SkyDataResidency = (typeof SKY_DATA_RESIDENCIES)[number];
+export type SkyPowerClass = (typeof SKY_POWER_CLASSES)[number];
+
+export type SkyRuntimeProfile = {
+  primaryTarget: SkyExecutionTarget;
+  hostOperator: SkyHostOperator;
+  cloudDependency: SkyCloudDependency;
+  codexRole: SkyCodexRole;
+  dataResidency: SkyDataResidency;
+  unattended: boolean;
+  offlineCapable: boolean;
+  powerClass: SkyPowerClass;
+};
 
 export type SkySubmission = {
   id: string;
@@ -41,6 +77,7 @@ export type SkySubmission = {
   priceNote: string;
   dataUse: string;
   executionTargets: SkyExecutionTarget[];
+  runtimeProfile: SkyRuntimeProfile;
   permissions: SkyPermission[];
   rightsConfirmed: true;
 };
@@ -68,6 +105,7 @@ const keys = [
   'priceNote',
   'dataUse',
   'executionTargets',
+  'runtimeProfile',
   'permissions',
   'rightsConfirmed',
 ];
@@ -154,6 +192,90 @@ function choices<T extends readonly string[]>(
   return value as T[number][];
 }
 
+function runtimeProfile(
+  value: unknown,
+  executionTargets: SkyExecutionTarget[],
+  connectionType: SkyConnectionType,
+  permissions: SkyPermission[],
+): SkyRuntimeProfile {
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new SkySubmissionError('実行パスポートを入力してください。');
+  const input = value as Record<string, unknown>;
+  const required = [
+    'primaryTarget',
+    'hostOperator',
+    'cloudDependency',
+    'codexRole',
+    'dataResidency',
+    'unattended',
+    'offlineCapable',
+    'powerClass',
+  ];
+  if (
+    Object.keys(input).some((key) => !required.includes(key)) ||
+    required.some((key) => !(key in input))
+  )
+    throw new SkySubmissionError('実行パスポートの項目を確認してください。');
+  if (
+    typeof input.unattended !== 'boolean' ||
+    typeof input.offlineCapable !== 'boolean'
+  )
+    throw new SkySubmissionError(
+      '無人継続とオフライン対応を正しく申告してください。',
+    );
+  const profile: SkyRuntimeProfile = {
+    primaryTarget: choice(
+      input.primaryTarget,
+      SKY_EXECUTION_TARGETS,
+      '主な実行場所',
+    ),
+    hostOperator: choice(
+      input.hostOperator,
+      SKY_HOST_OPERATORS,
+      '実行先の管理者',
+    ),
+    cloudDependency: choice(
+      input.cloudDependency,
+      SKY_CLOUD_DEPENDENCIES,
+      'クラウド依存',
+    ),
+    codexRole: choice(input.codexRole, SKY_CODEX_ROLES, 'Codexの役割'),
+    dataResidency: choice(
+      input.dataResidency,
+      SKY_DATA_RESIDENCIES,
+      'データ保存先',
+    ),
+    unattended: input.unattended === true,
+    offlineCapable: input.offlineCapable === true,
+    powerClass: choice(input.powerClass, SKY_POWER_CLASSES, '必要な処理能力'),
+  };
+  if (!executionTargets.includes(profile.primaryTarget))
+    throw new SkySubmissionError(
+      '主な実行場所を対応する実行場所から選んでください。',
+    );
+  if (
+    connectionType === 'mcp_streamable_http' &&
+    profile.cloudDependency !== 'required'
+  )
+    throw new SkySubmissionError(
+      '遠隔MCPはクラウドまたはネットワーク接続を必須として申告してください。',
+    );
+  if (profile.cloudDependency === 'required' && profile.offlineCapable)
+    throw new SkySubmissionError(
+      'クラウド必須のツールをオフライン対応にはできません。',
+    );
+  if (profile.unattended && !permissions.includes('long_running'))
+    throw new SkySubmissionError('無人継続にはlong_running権限が必要です。');
+  if (
+    profile.dataResidency === 'provider_cloud' &&
+    profile.cloudDependency === 'none'
+  )
+    throw new SkySubmissionError(
+      '提供者Cloud保存にはクラウド利用の申告が必要です。',
+    );
+  return profile;
+}
+
 export function parseSkySubmission(value: unknown): SkySubmission {
   const input = record(value);
   if (
@@ -179,6 +301,12 @@ export function parseSkySubmission(value: unknown): SkySubmission {
     '実行場所',
   );
   const permissions = choices(input.permissions, SKY_PERMISSIONS, '権限');
+  const parsedRuntime = runtimeProfile(
+    input.runtimeProfile,
+    executionTargets,
+    connectionType,
+    permissions,
+  );
   const endpointRequired =
     connectionType === 'mcp_streamable_http' || connectionType === 'https_api';
   const sourceRequired =
@@ -212,6 +340,7 @@ export function parseSkySubmission(value: unknown): SkySubmission {
     priceNote: text(input.priceNote, '料金の説明', 2, 300),
     dataUse: text(input.dataUse, '扱うデータ', 10, 500),
     executionTargets,
+    runtimeProfile: parsedRuntime,
     permissions,
     rightsConfirmed: true,
   };

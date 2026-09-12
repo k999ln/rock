@@ -8,6 +8,8 @@
 
 tob側の自動化ツールを商品として管理するSkyと、自動化で得たお金を管理するWalletに特化したOSを開発します。Skyは単なるツール一覧ではなく、**探す→権限・料金を確認→端末/PC/Cloudへ実行→停止→結果と記録を受け取る**までを一か所につなぎます。[Skyの図・優位性・現在の収録ツール](docs/sky.md)を参照してください。
 
+各商品には実行パスポートを付け、実行場所、管理者、接続方式、Cloud/Codex依存、データ保存先、オフライン・無人継続、必要処理能力を表示します。開発者の申告と現在確認できた接続は別扱いです。サブスク顧問はRockstarOS端末を主経路、PCをフォールバックとし、CloudとCodexなしでも端末内で計算・保存できます。自家発電連携は未実装・未検証です。
+
 **製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ19）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持します。
 
 [8原則に基づくRockstarOS 1.0設計](docs/rockstaros-1.0-strategy.md)を追加しました。現ベースを維持し、一つの商品で実行・成果・費用・復旧まで確認できる体験を検証します。初期対象の文章系個人事業主と既存引用整理は検証仮説。配布/実用の優先順位、試用指標、CM導線、責任分担を具体化し、未実証の需要や本番利用可能性は主張しません。
@@ -37,7 +39,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / SkyからOS審査済みサブスク顧問をワンタップ導入・起動 / 完了 28/50件
+最終更新: 2026-09-12 / Skyの商品ごとに実行先・接続経路・Cloud/Codex依存・単独運転を実行パスポートで明示 / 完了 29/51件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -45,6 +47,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
 | SKY04 | OS審査済みローカルMCPサービスをSkyからワンタップ導入・起動・停止できる経路を実装 | 完了 | [記録](docs/sky-os-service-installation-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](systems/rock-star-os/src/blackberryrock/sky_services.py) · [記録](systems/rock-star-os/tests/test_sky_services.py) · [記録](components/subscription-ledger-runner.tsx) |
+| SKY05 | 実行先・管理者・接続方式・Cloud/Codex依存・データ所在・単独運転を実行パスポートで申告・審査・表示 | 完了 | [記録](docs/sky-execution-passport-20260912.md) · [記録](components/execution-passport.tsx) · [記録](lib/sky-submission.ts) · [記録](systems/rock-star-os/os/sky-services/catalog.json) · [記録](tests/rockstar-ledger.test.mjs) · [記録](tests/sky-submission.test.mjs) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
@@ -110,7 +113,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Skyの商品画面から、固定ハッシュ・権限・安全な展開先・MCP能力をOSが確認してサブスク顧問を導入・起動できるようにした。アプリ本体と個人台帳を分離し、停止・削除後も台帳とreceiptを保持する。次はQEMU/実機でNative Platform IPCと専用UID・namespace/seccomp起動を受け入れ、本人が利用するApple、Google Play、カード、銀行、PayPal、請求メールの履歴をローカル取込・照合する。Fashion Brand OpsはMeta OAuth、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付きの限定テスト投稿へ進む。実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。
+次の作業: ToB申請、Web catalog、OS固定catalog、稼働状態に共通の実行パスポートを追加し、サブスク顧問をRockstarOS端末主経路・PCフォールバック・Cloud不要・Codex任意として表示した。次はQEMU/実機でNative Platform IPC、専用UID・namespace/seccomp、実行中host観測を受け入れる。自家発電は端末単独計算と分離し、発電入力、蓄電量、消費電力、予測稼働時間を読むEnergy serviceを実ハードウェア選定後に追加する。本人が利用するApple、Google Play、カード、銀行、PayPal、請求メールの履歴取込も未完了。Fashion Brand Opsの実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

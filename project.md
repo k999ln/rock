@@ -295,7 +295,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / SkyからOS審査済みサブスク顧問をワンタップ導入・起動 / 完了 28/50件
+最終更新: 2026-09-12 / Skyの商品ごとに実行先・接続経路・Cloud/Codex依存・単独運転を実行パスポートで明示 / 完了 29/51件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -303,6 +303,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
 | SKY04 | OS審査済みローカルMCPサービスをSkyからワンタップ導入・起動・停止できる経路を実装 | 完了 | [記録](docs/sky-os-service-installation-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](systems/rock-star-os/src/blackberryrock/sky_services.py) · [記録](systems/rock-star-os/tests/test_sky_services.py) · [記録](components/subscription-ledger-runner.tsx) |
+| SKY05 | 実行先・管理者・接続方式・Cloud/Codex依存・データ所在・単独運転を実行パスポートで申告・審査・表示 | 完了 | [記録](docs/sky-execution-passport-20260912.md) · [記録](components/execution-passport.tsx) · [記録](lib/sky-submission.ts) · [記録](systems/rock-star-os/os/sky-services/catalog.json) · [記録](tests/rockstar-ledger.test.mjs) · [記録](tests/sky-submission.test.mjs) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
@@ -368,7 +369,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Skyの商品画面から、固定ハッシュ・権限・安全な展開先・MCP能力をOSが確認してサブスク顧問を導入・起動できるようにした。アプリ本体と個人台帳を分離し、停止・削除後も台帳とreceiptを保持する。次はQEMU/実機でNative Platform IPCと専用UID・namespace/seccomp起動を受け入れ、本人が利用するApple、Google Play、カード、銀行、PayPal、請求メールの履歴をローカル取込・照合する。Fashion Brand OpsはMeta OAuth、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付きの限定テスト投稿へ進む。実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。
+次の作業: ToB申請、Web catalog、OS固定catalog、稼働状態に共通の実行パスポートを追加し、サブスク顧問をRockstarOS端末主経路・PCフォールバック・Cloud不要・Codex任意として表示した。次はQEMU/実機でNative Platform IPC、専用UID・namespace/seccomp、実行中host観測を受け入れる。自家発電は端末単独計算と分離し、発電入力、蓄電量、消費電力、予測稼働時間を読むEnergy serviceを実ハードウェア選定後に追加する。本人が利用するApple、Google Play、カード、銀行、PayPal、請求メールの履歴取込も未完了。Fashion Brand Opsの実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。
 <!-- project-status:end -->
 
 ## 次段階の設計

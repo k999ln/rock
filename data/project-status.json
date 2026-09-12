@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "SkyからOS審査済みサブスク顧問をワンタップ導入・起動",
-  "nextAction": "Skyの商品画面から、固定ハッシュ・権限・安全な展開先・MCP能力をOSが確認してサブスク顧問を導入・起動できるようにした。アプリ本体と個人台帳を分離し、停止・削除後も台帳とreceiptを保持する。次はQEMU/実機でNative Platform IPCと専用UID・namespace/seccomp起動を受け入れ、本人が利用するApple、Google Play、カード、銀行、PayPal、請求メールの履歴をローカル取込・照合する。Fashion Brand OpsはMeta OAuth、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付きの限定テスト投稿へ進む。実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。",
+  "milestone": "Skyの商品ごとに実行先・接続経路・Cloud/Codex依存・単独運転を実行パスポートで明示",
+  "nextAction": "ToB申請、Web catalog、OS固定catalog、稼働状態に共通の実行パスポートを追加し、サブスク顧問をRockstarOS端末主経路・PCフォールバック・Cloud不要・Codex任意として表示した。次はQEMU/実機でNative Platform IPC、専用UID・namespace/seccomp、実行中host観測を受け入れる。自家発電は端末単独計算と分離し、発電入力、蓄電量、消費電力、予測稼働時間を読むEnergy serviceを実ハードウェア選定後に追加する。本人が利用するApple、Google Play、カード、銀行、PayPal、請求メールの履歴取込も未完了。Fashion Brand Opsの実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -55,6 +55,22 @@
         "systems/rock-star-os/src/blackberryrock/sky_services.py",
         "systems/rock-star-os/tests/test_sky_services.py",
         "components/subscription-ledger-runner.tsx"
+      ]
+    },
+    {
+      "id": "SKY05",
+      "title": "実行先・管理者・接続方式・Cloud/Codex依存・データ所在・単独運転を実行パスポートで申告・審査・表示",
+      "status": "done",
+      "dependsOn": [
+        "SKY04"
+      ],
+      "evidence": [
+        "docs/sky-execution-passport-20260912.md",
+        "components/execution-passport.tsx",
+        "lib/sky-submission.ts",
+        "systems/rock-star-os/os/sky-services/catalog.json",
+        "tests/rockstar-ledger.test.mjs",
+        "tests/sky-submission.test.mjs"
       ]
     },
     {

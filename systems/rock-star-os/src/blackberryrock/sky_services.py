@@ -73,7 +73,7 @@ def validate_catalog(value):
         raise SkyServiceError("bounded Sky service catalog required")
     result = {}
     required = {"id", "name", "version", "bundle", "sha256", "plugin_manifest_sha256",
-                "permissions", "data_policy", "price", "dashboard_url"}
+                "permissions", "data_policy", "execution_profile", "price", "dashboard_url"}
     for item in services:
         if not isinstance(item, dict) or set(item) != required:
             raise SkyServiceError("invalid Sky service catalog entry")
@@ -93,6 +93,20 @@ def validate_catalog(value):
             raise SkyServiceError("invalid reviewed service digest")
         if (item["permissions"] != ["subscription.read", "subscription.write", "local.files"]
                 or item["data_policy"] != {"storage": "device_private", "network": "loopback_only"}
+                or item["execution_profile"] != {
+                    "primary_host": "rockstaros_hardware",
+                    "supported_hosts": ["rockstaros_hardware", "connected_pc"],
+                    "host_operator": "rockstaros_or_user",
+                    "controller": "sky",
+                    "transport": "local_mcp_loopback",
+                    "cloud_dependency": "none",
+                    "codex_role": "optional_client",
+                    "offline_capable": True,
+                    "unattended": True,
+                    "data_residency": "device_private",
+                    "power_source": "host_supplied",
+                    "self_generation": "not_verified",
+                }
                 or item["price"] != {"currency": "USD", "amount_minor": 0, "unit": "install"}
                 or item["dashboard_url"] != "http://127.0.0.1:8765"):
             raise SkyServiceError("unsupported service permissions, data policy, price, or endpoint")
@@ -124,13 +138,17 @@ def validate_plugin(value, expected):
 
 
 class SkyServiceManager:
-    def __init__(self, state, catalog, bundles, *, python=None, clock=None, popen=None):
+    def __init__(self, state, catalog, bundles, *, python=None, clock=None, popen=None,
+                 runtime_host="connected_pc"):
         self.state = Path(state)
         self.catalog_path = Path(catalog)
         self.bundle_root = Path(bundles)
         self.python = python or sys.executable
         self.clock = clock or time.time
         self.popen = popen or subprocess.Popen
+        if runtime_host not in ("connected_pc", "rockstaros_hardware"):
+            raise SkyServiceError("unsupported Sky runtime host")
+        self.runtime_host = runtime_host
         self.lock = threading.RLock()
         self.processes = {}
         self.state.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -363,7 +381,8 @@ class SkyServiceManager:
                    row["installed_at"] if row else now, now))
                 return {"id": service_id, "version": service["version"], "state": "running",
                         "dashboard_url": service["dashboard_url"], "mcp_tools": capabilities,
-                        "data_location": "device_private", "network": "loopback_only"}
+                        "data_location": "device_private", "network": "loopback_only",
+                        "execution": {**service["execution_profile"], "active_host": self.runtime_host}}
             return self._receipt(key, request, operation)
 
     def lifecycle(self, service_id, action, key):
@@ -411,9 +430,11 @@ class SkyServiceManager:
                     "state": "running" if running else (row["desired_state"] if row else "not_installed"),
                     "package_sha256": service["sha256"], "dashboard_url": service["dashboard_url"],
                     "permissions": service["permissions"], "data_policy": service["data_policy"],
+                    "execution": {**service["execution_profile"], "active_host": self.runtime_host},
                     "price": service["price"], "last_error": row["last_error"] if row else None})
             return {"configured": True, "services": services, "installation": "os_managed",
-                    "approval": "exact_bundle_digest", "receipts_preserved": True}
+                    "approval": "exact_bundle_digest", "receipts_preserved": True,
+                    "active_host": self.runtime_host}
 
     def close(self):
         with self.lock:

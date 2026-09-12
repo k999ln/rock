@@ -829,7 +829,7 @@ def main():
             '/etc/rock-platform/mcp-services.json', '/usr/share/rock/development-store-ca.pem')
         sky_services = SkyServiceManager('/data/platform/sky-services',
             '/usr/share/rock/sky-services/catalog.json', '/usr/share/rock/sky-services',
-            python='/usr/bin/python3')
+            python='/usr/bin/python3', runtime_host='rockstaros_hardware')
         service = Platform('/data/platform', '/usr/share/rock/registry', remote_registry=remote_registry,
                            remote_clients=remote_clients, service_status=service_status, async_wallet_view=True,
                            mcp_client=mcp_client, mcp_status=mcp_status, sky_services=sky_services)

@@ -60,6 +60,9 @@ class SkyServiceManagerTests(unittest.TestCase):
             key = 'install-test-key'
             result = manager.activate('rockstar-ledger', SERVICE['sha256'], key)
             self.assertEqual('running', result['state'])
+            self.assertEqual('connected_pc', result['execution']['active_host'])
+            self.assertEqual('none', result['execution']['cloud_dependency'])
+            self.assertEqual('optional_client', result['execution']['codex_role'])
             self.assertTrue({'ledger_summary', 'subscription_coverage'}.issubset(result['mcp_tools']))
             self.assertEqual(result, manager.activate('rockstar-ledger', SERVICE['sha256'], key))
             with self.assertRaisesRegex(SkyServiceError, 'idempotency'):
@@ -70,6 +73,14 @@ class SkyServiceManagerTests(unittest.TestCase):
             self.assertEqual('not_installed', removed['state'])
             self.assertTrue(removed['data_preserved'])
             self.assertTrue((Path(temp) / 'state/data/rockstar-ledger').is_dir())
+
+    def test_runtime_host_is_reported_and_unknown_hosts_are_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            manager = self.manager(temp)
+            self.assertEqual('connected_pc', manager.snapshot()['active_host'])
+            with self.assertRaisesRegex(SkyServiceError, 'runtime host'):
+                TestManager(Path(temp) / 'invalid', CATALOG, Path(temp) / 'bundles',
+                            runtime_host='provider_cloud')
 
     def test_wrong_digest_and_zip_path_escape_are_rejected(self):
         with tempfile.TemporaryDirectory() as temp:

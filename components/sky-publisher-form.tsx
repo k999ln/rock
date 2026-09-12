@@ -6,14 +6,20 @@ import { ArrowLeft, CheckCircle2, Send, ShieldCheck } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
 import type {
   SkyConnectionType,
+  SkyCodexRole,
+  SkyCloudDependency,
+  SkyDataResidency,
   SkyExecutionTarget,
+  SkyHostOperator,
   SkyPermission,
+  SkyPowerClass,
   SkyPricing,
 } from '@/lib/sky-submission';
 
 const targets: { value: SkyExecutionTarget; label: string }[] = [
   { value: 'device_local', label: 'RockstarOS端末内' },
   { value: 'pc', label: '利用者のPC' },
+  { value: 'self_hosted', label: '利用者の自前サーバー' },
   { value: 'cloud', label: '提供者Cloud' },
 ];
 const permissions: { value: SkyPermission; label: string }[] = [
@@ -33,6 +39,8 @@ export default function SkyPublisherForm() {
   const [selectedTargets, setSelectedTargets] = useState<SkyExecutionTarget[]>([
     'cloud',
   ]);
+  const [primaryTarget, setPrimaryTarget] =
+    useState<SkyExecutionTarget>('cloud');
   const [selectedPermissions, setSelectedPermissions] = useState<
     SkyPermission[]
   >(['read_user_input', 'write_results', 'network']);
@@ -73,6 +81,16 @@ export default function SkyPublisherForm() {
           priceNote: form.get('priceNote'),
           dataUse: form.get('dataUse'),
           executionTargets: selectedTargets,
+          runtimeProfile: {
+            primaryTarget,
+            hostOperator: form.get('hostOperator') as SkyHostOperator,
+            cloudDependency: form.get('cloudDependency') as SkyCloudDependency,
+            codexRole: form.get('codexRole') as SkyCodexRole,
+            dataResidency: form.get('dataResidency') as SkyDataResidency,
+            unattended: form.get('unattended') === 'on',
+            offlineCapable: form.get('offlineCapable') === 'on',
+            powerClass: form.get('powerClass') as SkyPowerClass,
+          },
           permissions: selectedPermissions,
           rightsConfirmed: form.get('rightsConfirmed') === 'on',
         }),
@@ -231,19 +249,99 @@ export default function SkyPublisherForm() {
                   <input
                     type="checkbox"
                     checked={selectedTargets.includes(item.value)}
-                    onChange={(event) =>
-                      setSelectedTargets(
-                        toggle(
-                          selectedTargets,
-                          item.value,
-                          event.target.checked,
-                        ),
-                      )
-                    }
+                    onChange={(event) => {
+                      const next = toggle(
+                        selectedTargets,
+                        item.value,
+                        event.target.checked,
+                      );
+                      setSelectedTargets(next);
+                      if (!next.includes(primaryTarget) && next[0])
+                        setPrimaryTarget(next[0]);
+                    }}
                   />
                   {item.label}
                 </label>
               ))}
+            </div>
+            <div className="sky-runtime-declaration">
+              <strong>実行パスポート</strong>
+              <p>利用者には、この申告とSkyの接続確認を分けて表示します。</p>
+              <div className="sky-form-row">
+                <label>
+                  主に動かす場所
+                  <select
+                    value={primaryTarget}
+                    onChange={(event) =>
+                      setPrimaryTarget(event.target.value as SkyExecutionTarget)
+                    }
+                  >
+                    {targets
+                      .filter((item) => selectedTargets.includes(item.value))
+                      .map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                <label>
+                  実行先を管理する人
+                  <select name="hostOperator" defaultValue="provider">
+                    <option value="rockstaros">RockstarOS</option>
+                    <option value="user">利用者本人</option>
+                    <option value="provider">ツール提供者</option>
+                  </select>
+                </label>
+              </div>
+              <div className="sky-form-row">
+                <label>
+                  クラウド依存
+                  <select name="cloudDependency" defaultValue="required">
+                    <option value="none">使わない</option>
+                    <option value="optional">機能により任意</option>
+                    <option value="required">必須</option>
+                  </select>
+                </label>
+                <label>
+                  Codexの役割
+                  <select name="codexRole" defaultValue="not_required">
+                    <option value="not_required">不要</option>
+                    <option value="optional_client">任意の操作窓口</option>
+                    <option value="required">必須</option>
+                  </select>
+                </label>
+              </div>
+              <div className="sky-form-row">
+                <label>
+                  データ保存先
+                  <select name="dataResidency" defaultValue="provider_cloud">
+                    <option value="device">RockstarOS端末</option>
+                    <option value="pc">利用者のPC</option>
+                    <option value="self_hosted">利用者の自前サーバー</option>
+                    <option value="provider_cloud">提供者Cloud</option>
+                    <option value="mixed">端末と外部の両方</option>
+                  </select>
+                </label>
+                <label>
+                  必要な処理能力
+                  <select name="powerClass" defaultValue="standard">
+                    <option value="low">小</option>
+                    <option value="standard">標準</option>
+                    <option value="accelerated">GPU等が必要</option>
+                  </select>
+                </label>
+              </div>
+              <div className="sky-check-group">
+                <label>
+                  <input name="offlineCapable" type="checkbox" />
+                  通信なしでも実行可能
+                </label>
+                <label>
+                  <input name="unattended" type="checkbox" />
+                  画面を閉じても継続可能
+                </label>
+              </div>
             </div>
             <div className="sky-check-group">
               <strong>必要な権限</strong>
@@ -333,6 +431,7 @@ export default function SkyPublisherForm() {
             <li>MCPの初期化と能力一覧</li>
             <li>作者・版・配布元の対応</li>
             <li>権限、送信先、料金の差分</li>
+            <li>実行パスポートの申告と実接続の一致</li>
             <li>認証情報をSkyへ直接入力させないこと</li>
             <li>停止、失敗、結果不明時の挙動</li>
           </ol>

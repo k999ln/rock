@@ -13,9 +13,17 @@ void test('Sky exposes Rockstar Ledger as a ready local tool', () => {
   assert.equal(ledger.status, 'ready');
   assert.equal(ledger.runner, 'subscription-ledger');
   assert.equal(ledger.origin, 'rockstaros');
-  assert.match(ledger.environment, /PC・MCP/);
-  assert.match(ledger.cost, /PC内のSQLite/);
+  assert.match(ledger.environment, /RockstarOS端末/);
+  assert.match(ledger.cost, /実行端末内のSQLite/);
   assert.match(ledger.note, /解約、支払い、税務申告を自動実行せず/);
+  assert.equal(ledger.execution.primaryHost, 'rockstaros_device');
+  assert.deepEqual(ledger.execution.supportedHosts, [
+    'rockstaros_device',
+    'user_pc',
+  ]);
+  assert.equal(ledger.execution.cloudDependency, 'none');
+  assert.equal(ledger.execution.codexRole, 'optional_client');
+  assert.equal(ledger.execution.unattended, true);
 });
 
 void test('Sky distribution contains the ledger package and license', () => {
@@ -55,8 +63,34 @@ void test('Sky exposes an OS-reviewed one-tap ledger installer', () => {
     storage: 'device_private',
     network: 'loopback_only',
   });
+  assert.deepEqual(service.execution_profile, {
+    primary_host: 'rockstaros_hardware',
+    supported_hosts: ['rockstaros_hardware', 'connected_pc'],
+    host_operator: 'rockstaros_or_user',
+    controller: 'sky',
+    transport: 'local_mcp_loopback',
+    cloud_dependency: 'none',
+    codex_role: 'optional_client',
+    offline_capable: true,
+    unattended: true,
+    data_residency: 'device_private',
+    power_source: 'host_supplied',
+    self_generation: 'not_verified',
+  });
   assert.match(component, /OSに導入して起動/);
   assert.match(component, new RegExp(service.sha256));
   assert.match(component, /sky_service_activate/);
   assert.match(device, /DEVICE_TOOLS/);
+});
+
+void test('Sky shows an execution passport without claiming self-generation', () => {
+  const passport = readFileSync('components/execution-passport.tsx', 'utf8');
+  const submission = readFileSync('lib/sky-submission.ts', 'utf8');
+
+  assert.match(passport, /どこで、何を経由して動くか/);
+  assert.match(passport, /Cloud/);
+  assert.match(passport, /Codex/);
+  assert.match(passport, /自家発電装置との接続確認はまだありません/);
+  assert.match(submission, /runtimeProfile/);
+  assert.match(submission, /主な実行場所/);
 });

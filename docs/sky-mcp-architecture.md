@@ -25,7 +25,7 @@ ToB
 
 ## ToBの掲載入力
 
-必須情報は、ツール名、一言説明、提供者、semantic version、接続方式、実行場所、必要権限、料金、データ利用、利用規約、サポート先、掲載権限の確認である。Streamable HTTPまたはHTTPS APIは認証情報を含まないHTTPS接続先を、stdio packageまたはRock recipeは公開可能な配布元を求める。
+必須情報は、ツール名、一言説明、提供者、semantic version、接続方式、実行場所、必要権限、料金、データ利用、利用規約、サポート先、掲載権限の確認である。さらに実行パスポートとして、主な実行場所、実行先の管理者、Cloud依存、Codexの役割、データ保存先、オフライン可否、無人継続、必要処理能力を必須にする。Streamable HTTPまたはHTTPS APIは認証情報を含まないHTTPS接続先を、stdio packageまたはRock recipeは公開可能な配布元を求める。
 
 秘密鍵、API key、password、access tokenは掲載フォームへ入力させない。申請は`submitted`として保存し、即時公開しない。`under_review`、`published`、`rejected`の審査状態を分ける。
 
@@ -40,6 +40,8 @@ ToB
 - `停止`: 作者停止、失効、安全上の停止、接続障害を理由付きで表示する。
 
 「タイムラインにある」ことと「実行可能」を同一視しない。ボタンは現在の状態に応じて、使う、接続、条件確認、詳細のいずれかにする。
+
+商品詳細は宣言された経路と現在観測した経路を分ける。例としてサブスク顧問は、宣言上はRockstarOS端末を主実行先、PCをフォールバック、Cloud不要、Codexは任意のMCPクライアントとする。Web SkyがPC接続MCPだけを確認できた場合は「このPCの経路を利用可能」と表示し、RockstarOS実機接続済みとは表示しない。
 
 ## MCP標準との対応
 

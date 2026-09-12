@@ -99,7 +99,7 @@ export function SubscriptionLedgerRunner({
       id: 'advisor-welcome',
       role: 'assistant',
       content:
-        'こんにちは。Skyの**サブスク顧問**です。PC内の台帳だけを見て答えます。まずは下の質問から試してください。',
+        'こんにちは。Skyの**サブスク顧問**です。現在の実行端末内にある台帳だけを見て答えます。まずは下の質問から試してください。',
     },
   ]);
 
@@ -131,10 +131,24 @@ export function SubscriptionLedgerRunner({
         if (!isLedgerState(next))
           throw new Error('ローカル台帳の応答形式を確認してください。');
         setState(next);
+        window.dispatchEvent(
+          new CustomEvent('sky-runtime-observed', {
+            detail: {
+              toolId: 'rockstar-ledger',
+              host: 'user_pc',
+              state: 'running',
+            },
+          }),
+        );
       } catch (cause) {
         if (cause instanceof DOMException && cause.name === 'AbortError')
           return;
         setState(null);
+        window.dispatchEvent(
+          new CustomEvent('sky-runtime-observed', {
+            detail: { toolId: 'rockstar-ledger', state: 'unavailable' },
+          }),
+        );
         setError(
           cause instanceof Error
             ? cause.message
@@ -196,7 +210,7 @@ export function SubscriptionLedgerRunner({
     return (
       <output className="ledger-sky-loading">
         <RefreshCw size={18} className="ledger-sky-spin" />
-        PC内の台帳へ接続しています…
+        実行端末内の台帳へ接続しています…
       </output>
     );
 
@@ -206,10 +220,10 @@ export function SubscriptionLedgerRunner({
         <Download size={25} />
         <div>
           <h3>サブスク顧問をこの端末へ導入</h3>
-          <p>{error || 'PC内のローカル台帳へ接続できません。'}</p>
+          <p>{error || '実行端末内のローカル台帳へ接続できません。'}</p>
           <p>
             Sky
-            OSが固定ハッシュ・権限・安全な保存先・MCP機能を確認してから、PC内だけで起動します。
+            OSが固定ハッシュ・権限・安全な保存先・MCP機能を確認してから、実行端末内だけで起動します。
           </p>
           <div className="ledger-sky-install-actions">
             {deviceConnected && installerAvailable ? (

@@ -2,7 +2,7 @@
 
 ## 今回入れたもの
 
-自動化Hub（Sky）の商品カタログへRockstar Ledgerを「サブスク顧問」として追加した。PCでローカル台帳を起動すると、Skyの商品画面から次を読み取り専用で確認できる。
+Skyの商品カタログへRockstar Ledgerを「サブスク顧問」として追加した。主な実行先はRockstarOS端末、現在の開発・代替経路は接続PCである。どちらも端末内でローカル台帳を起動すると、Skyの商品画面から次を読み取り専用で確認できる。
 
 - 月額換算（通貨ごと）
 - 契約・定期課金候補の件数
@@ -30,7 +30,7 @@ Skyのチャットへ「全網羅されてる？」「見落としは？」「�
 
 ## データと安全境界
 
-契約・カード明細・検出結果はPC内のSQLiteへ保存し、Gitへ入れない。Skyから許可するブラウザ接続元も `http://127.0.0.1`、`http://localhost`、`http://[::1]` に限定した。Sky画面は表示と更新だけを行い、編集、解約、支払い、申告、外部送信はしない。金額は通貨別に保持し、為替換算なしで合算しない。
+契約・カード明細・検出結果は実行中のRockstarOS端末または接続PC内のSQLiteへ保存し、Gitへ入れない。Skyから許可するブラウザ接続元も `http://127.0.0.1`、`http://localhost`、`http://[::1]` に限定した。Sky画面は表示と更新だけを行い、編集、解約、支払い、申告、外部送信はしない。金額は通貨別に保持し、為替換算なしで合算しない。
 
 現在の直接接続はローカル開発版Skyと同じPCで使う試作である。HTTPS配信版からHTTP loopbackへ直接接続する経路、Native OS上の専用UID・sandbox適用、Walletへの費用転記は未実装として残す。
 
@@ -39,8 +39,8 @@ Skyのチャットへ「全網羅されてる？」「見落としは？」「�
 - Rockstar Ledger Python unit tests: 4件合格
 - loopback CORS: `http://127.0.0.1:3000` へ200と限定Allow-Originを返すことを確認
 - Sky catalog/package tests: `tests/rockstar-ledger.test.mjs`
-- Skyの型、lint、全109 tests、本番build、Worker/D1 API 143 assertions: `npm run verify` 合格
-- Sky OSサービス管理の対象試験: 5件合格（導入、改ざん拒否、再実行、停止、データ保持付き削除、rootfs組込み）
+- Skyの型、lint、全111 tests、本番build、Worker/D1 API 143 assertions: `npm run verify` 合格
+- Sky OSサービス管理の対象試験: 6件合格（導入、改ざん拒否、再実行、停止、データ保持付き削除、実行host、rootfs組込み）
 - Sky→PC接続→OS導入→Ledger再接続→チャット照会を、隔離した空の台帳で通し確認
 - Sky画面の実接続: 商品選択、通貨別集計、警告、一覧を確認。error overlayなし、console error 0
 - 会話実操作: 質問例の月額回答と自由入力の解約相談を確認。台帳値を回答し、自動解約を拒否。error overlayなし、console error 0
