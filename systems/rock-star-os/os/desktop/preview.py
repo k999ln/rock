@@ -693,9 +693,12 @@ def action(args):
         config = module.load(root / 'profiles' / (record['active_device'] + '.json'))
         if args.action == 'start':
             require(record['active_device'] not in record['retired_devices'], 'source was retired after restore')
-            game = optional_sandbox(root, release, 'start')
             result = module.launch(config, not args.no_open)
-            result['game'] = game
+            # The Game authority is independently owned and optional.  Start it
+            # only after the OS/display launcher has passed its host-port and
+            # ownership checks, so a failed OS launch cannot leave a new writer
+            # running behind the caller's back.
+            result['game'] = optional_sandbox(root, release, 'start')
             return result
         status = module.remote(config, 'status')
         module.verify_device_record(config, status)
