@@ -183,13 +183,13 @@ export default function OperationsWorkspace({ view }: { view: View }) {
               <Wallet size={30} strokeWidth={1.5} />
             </span>
             <div>
-              <h2>売上台帳とSky利用料を分けて管理</h2>
+              <h2>稼げた後だけ、Sky利用料を精算</h2>
               <p>
-                売上・経費の手入力記録は未照合のまま保持し、月$8.88の利用料だけを署名検証済みのStripe決済で確定します。
+                自動化が生んだ実売上をProviderと照合し、実費の後から月最大$8.88だけを回収します。
               </p>
               <span>
                 <ShieldCheck size={15} />
-                カード情報はStripeが管理
+                先払い・未達請求・借金なし
               </span>
             </div>
           </section>

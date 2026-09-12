@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 22 },
+    { length: 25 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ22の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ25の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -117,6 +117,23 @@ export function validateBaseline(
     'tob売上のSky手数料は0%です',
   );
   requireValue(
+    data.skyNetworkEconomy?.tocMonthlyFeeCapMinor === 888 &&
+      data.skyNetworkEconomy?.tocUpfrontCharge === false &&
+      data.skyNetworkEconomy?.debtCarryForward === false,
+    'ToCは検証済み収益からだけ月最大888 centsを精算してください',
+  );
+  requireValue(
+    data.skyMonthlyBilling?.status === 'retired' &&
+      data.skyMonthlyBilling?.upfrontChargeEnabled === false &&
+      data.skyEarningsSettlement?.monthlyFeeCapMinor === 888 &&
+      data.skyEarningsSettlement?.zeroEarningsFeeMinor === 0 &&
+      data.skyEarningsSettlement?.debtCarryForward === false &&
+      data.skyEarningsSettlement?.tobFeeMinor === 0 &&
+      data.skyEarningsSettlement?.liveCollectionEnabled === false &&
+      data.skyEarningsSettlement?.livePayoutEnabled === false,
+    '先払い月額を使わず、収益連動精算と本番資金gateを維持してください',
+  );
+  requireValue(
     data.skyNetworkEconomy?.liveMcpConnectionEnabled === false &&
       data.skyNetworkEconomy?.livePayoutEnabled === false,
     'Sky Networkの設計previewを実接続・実送金として扱わないでください',
@@ -130,6 +147,50 @@ export function validateBaseline(
     data.skyNetworkEconomy?.providerSubmissionSurface === 'inside_sky' &&
       data.skyNetworkEconomy?.persistentSidebarOnSky === false,
     'Sky機能はSky内へ集約し、Sky画面に常設sidebarを置かないでください',
+  );
+  requireValue(
+    data.skyNetworkEconomy?.externalMcpConnectionEnabled === false &&
+      data.skyNetworkEconomy?.localMcpConnection?.status ===
+        'implemented_requires_user_pc' &&
+      data.skyNetworkEconomy?.localMcpConnection?.toolCount === 4 &&
+      data.skyNetworkEconomy?.localMcpConnection?.installSurface ===
+        'inside_sky' &&
+      data.skyNetworkEconomy?.localMcpConnection?.realSessionStateDisplayed ===
+        true &&
+      data.skyNetworkEconomy?.localMcpConnection?.syntheticUrlCheckRemoved ===
+        true,
+    '実在するローカルMCPの4機能とSky内導入画面を、未実装の外部MCP接続と区別してください',
+  );
+  requireValue(
+    data.skyNetworkEconomy?.connectionTargets?.default === 'device_local' &&
+      data.skyNetworkEconomy?.connectionTargets?.selectionSurface ===
+        'inside_sky' &&
+      data.skyNetworkEconomy?.connectionTargets?.deviceLocal === 'available' &&
+      data.skyNetworkEconomy?.connectionTargets?.skyCloud === 'planned' &&
+      data.skyNetworkEconomy?.connectionTargets?.providerMcp === 'planned' &&
+      data.skyNetworkEconomy?.connectionTargets?.unavailableTargetsDisabled ===
+        true &&
+      data.skyNetworkEconomy?.connectionTargets?.externalOneTapEnabled ===
+        false,
+    'MCP接続先をSky内の3系統で区別し、未実装先を選択不能にしてください',
+  );
+  requireValue(
+    data.skyNetworkEconomy?.multiMcpConnector?.status ===
+      'local_package_and_sky_ui_verified' &&
+      data.skyNetworkEconomy?.multiMcpConnector?.registryServers === 2 &&
+      data.skyNetworkEconomy?.multiMcpConnector?.serverDiscoveryVerified ===
+        true &&
+      data.skyNetworkEconomy?.multiMcpConnector?.singleUseApprovalVerified ===
+        true &&
+      data.skyNetworkEconomy?.multiMcpConnector
+        ?.streamableHttpAdapterImplemented === true &&
+      data.skyNetworkEconomy?.multiMcpConnector?.remoteInteropVerified ===
+        false &&
+      data.skyNetworkEconomy?.multiMcpConnector?.distributionPackageBuilt ===
+        true &&
+      data.skyNetworkEconomy?.multiMcpConnector?.oauthEnabled === false &&
+      data.skyNetworkEconomy?.multiMcpConnector?.skyUiConnected === true,
+    '複数MCP Connectorの配布・Sky接続とremote/OAuth未受入の境界を維持してください',
   );
   requireValue(
     data.releaseInstallation?.releaseName === 'RockstarOS 1.0',
@@ -222,6 +283,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ22、Sky内MCP、tob利用料/売上手数料0、実接続/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ25、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、外部実接続/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

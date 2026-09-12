@@ -45,15 +45,15 @@ ToB
 
 基準はMCP 2025-11-25とする。
 
-| 領域 | Skyでの扱い |
-|---|---|
-| Registry | 公開MCPは公式Registryの`server.json`を候補情報として取り込める。非公開MCPは組織のprivate registryまたは直接接続として分ける。Registry掲載だけを安全審査済みとはみなさない。 |
-| Transport | 遠隔はStreamable HTTP、端末・PC内packageはstdioを基本とする。HTTPはOrigin検証、認証、localhost bind要件を満たす。 |
-| Initialization | protocol versionとcapability negotiationを記録し、未対応capabilityをUIに出さない。 |
-| Tool discovery | `tools/list`のname、description、inputSchema、annotationsを取得し、掲載申告との差分を審査する。 |
-| Authorization | OAuth 2.1のprotected resource metadataとresource indicatorを使う。token passthroughは禁止する。 |
-| Elicitation | 一般入力はform mode、秘密情報や決済はURL modeへ分離する。 |
-| Long-running | Tasksはexperimentalとしてcapability negotiation後だけ使う。非対応先はRockの既存job状態へ変換し、同じ意味だと偽らない。 |
+| 領域           | Skyでの扱い                                                                                                                                                                 |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Registry       | 公開MCPは公式Registryの`server.json`を候補情報として取り込める。非公開MCPは組織のprivate registryまたは直接接続として分ける。Registry掲載だけを安全審査済みとはみなさない。 |
+| Transport      | 遠隔はStreamable HTTP、端末・PC内packageはstdioを基本とする。HTTPはOrigin検証、認証、localhost bind要件を満たす。                                                           |
+| Initialization | protocol versionとcapability negotiationを記録し、未対応capabilityをUIに出さない。                                                                                          |
+| Tool discovery | `tools/list`のname、description、inputSchema、annotationsを取得し、掲載申告との差分を審査する。                                                                             |
+| Authorization  | OAuth 2.1のprotected resource metadataとresource indicatorを使う。token passthroughは禁止する。                                                                             |
+| Elicitation    | 一般入力はform mode、秘密情報や決済はURL modeへ分離する。                                                                                                                   |
+| Long-running   | Tasksはexperimentalとしてcapability negotiation後だけ使う。非対応先はRockの既存job状態へ変換し、同じ意味だと偽らない。                                                      |
 
 参照:
 
@@ -66,7 +66,7 @@ ToB
 
 ## 現在地と未実装の境界
 
-現状のRockstarOSには、固定fixtureに対するloopback接続と、`snapshot / connect / disconnect / prepare / submit / status / reconcile`を持つprivate device APIがある。これは一般のMCP 2025-11-25 clientでも、任意MCPサーバーへつなぐ公開SDKでもない。
+RockstarOSには既存native OS向けの固定fixtureとprivate device APIに加え、Web版Sky向けの汎用`Sky MCP Connector`がある。両者は同じものではなく、native側の購入資格・永続reconcile契約をWeb Connectorが代替したとは扱わない。
 
 今回実装した範囲は次の通り。
 
@@ -75,8 +75,14 @@ ToB
 - ToC向けの状態付きSky Timeline。
 - 接続先URLから認証情報を排除し、遠隔MCPにnetwork権限を必須化。
 - Web/PCで使用可能4件、OSS候補3件、native内蔵6種類・9版を実数から検査。
+- 審査済みregistryからstdio / Streamable HTTPを扱うPC内Connector。
+- MCP 2025-11-25から2024-11-05までのversion確認、initialize、initialized通知、pagination付きtools/list。
+- server identity、capabilities、tool schema digest、接続時刻を持つConnection Passport。
+- 基本4機能とブランド運営38機能の同一Connector実接続。
+- server・tool・引数・tool digestへ結び付く5分有効の一回承認と、直接`tools/call`迂回の拒否。
+- Sky内の動的server一覧とワンタップ接続、macOS向け配布ZIP。
 
-次に必要な実装は、隔離されたMCP preflight、公式/private registry adapter、OAuth接続、審査者画面、公開revision、失効配信、実行前の条件再確認、Tasks adapter、実サーバー相互運用試験である。
+次に必要な実装は、公式/private registryの署名・更新adapter、OAuth 2.1 browser flow、審査者画面、公開revision、失効配信、Tasks adapter、公開remote MCP相互運用試験、Sky Cloud常駐である。現在のStreamable HTTP adapterはHTTPS、redirect拒否、private network拒否、環境変数認証までを実装したが、公開remote serverとの受入は未実施である。
 
 ## 受入条件
 

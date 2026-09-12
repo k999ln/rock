@@ -65,93 +65,84 @@ async function verifyBillingToken(token, secret, nowSeconds = Math.floor(Date.no
 __name(verifyBillingToken, "verifyBillingToken");
 
 // src/domain.ts
-function record(value) {
-  return value && typeof value === "object" && !Array.isArray(value) ? value : null;
-}
-__name(record, "record");
-function stringValue(value) {
-  if (typeof value === "string") return value;
-  const item = record(value);
-  return typeof item?.id === "string" ? item.id : null;
-}
-__name(stringValue, "stringValue");
-function nested(object, ...keys) {
-  let value = object;
-  for (const key of keys) {
-    if (Array.isArray(value) && /^\d+$/u.test(key)) value = value[Number(key)];
-    else value = record(value)?.[key];
-  }
+var SKY_MONTHLY_FEE_CAP_MINOR = 888;
+var SETTLEMENT_CURRENCY = "usd";
+function text(value, name, pattern, maximum = 256) {
+  if (typeof value !== "string" || value.length < 1 || value.length > maximum || !pattern.test(value))
+    throw new Error(`EARNING_RECEIPT_${name}_INVALID`);
   return value;
 }
-__name(nested, "nested");
-function assertMonthlyPrice(value, expectedId) {
-  const price = record(value);
-  const recurring = record(price?.recurring);
-  if (price?.id !== expectedId || price.active !== true || price.currency !== "usd" || price.unit_amount !== 888 || price.type !== "recurring" || recurring?.interval !== "month" || (recurring.interval_count ?? 1) !== 1)
-    throw new Error("STRIPE_PRICE_MUST_BE_USD_888_MONTHLY");
-  return price;
+__name(text, "text");
+function amount(value, name) {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0 || value > 1e10)
+    throw new Error(`EARNING_RECEIPT_${name}_INVALID`);
+  return value;
 }
-__name(assertMonthlyPrice, "assertMonthlyPrice");
-function stripeCustomerId(object) {
-  return stringValue(object.customer);
+__name(amount, "amount");
+function periodForUnix(timestamp) {
+  if (!Number.isSafeInteger(timestamp) || timestamp < 0)
+    throw new Error("EARNING_RECEIPT_OCCURRED_AT_INVALID");
+  return new Date(timestamp * 1e3).toISOString().slice(0, 7);
 }
-__name(stripeCustomerId, "stripeCustomerId");
-function stripeSubscriptionId(object) {
-  return stringValue(object.subscription) ?? stringValue(
-    nested(object, "parent", "subscription_details", "subscription")
-  );
-}
-__name(stripeSubscriptionId, "stripeSubscriptionId");
-function stripeUserId(object) {
-  const candidates = [
-    object.client_reference_id,
-    nested(object, "metadata", "sky_user_id"),
-    nested(object, "subscription_details", "metadata", "sky_user_id"),
-    nested(object, "parent", "subscription_details", "metadata", "sky_user_id")
-  ];
-  return candidates.find(
-    (value) => typeof value === "string" && value.length > 0 && value.length <= 256
-  ) ?? null;
-}
-__name(stripeUserId, "stripeUserId");
-function subscriptionPriceId(object) {
-  const direct = stringValue(nested(object, "items", "data", "0", "price"));
-  if (direct) return direct;
-  const lines = record(object.lines);
-  const data = Array.isArray(lines?.data) ? lines.data : [];
-  for (const entry of data) {
-    const line = record(entry);
-    const price = stringValue(line?.price) ?? stringValue(nested(line ?? {}, "pricing", "price_details", "price"));
-    if (price) return price;
-  }
-  return null;
-}
-__name(subscriptionPriceId, "subscriptionPriceId");
-function currentPeriodEnd(object) {
-  if (typeof object.current_period_end === "number")
-    return object.current_period_end;
-  const items = record(object.items);
-  const data = Array.isArray(items?.data) ? items.data : [];
-  const first = record(data[0]);
-  return typeof first?.current_period_end === "number" ? first.current_period_end : null;
-}
-__name(currentPeriodEnd, "currentPeriodEnd");
-function invoicePeriod(object) {
-  const lines = record(object.lines);
-  const data = Array.isArray(lines?.data) ? lines.data : [];
-  const period = record(record(data[0])?.period);
+__name(periodForUnix, "periodForUnix");
+function validateEarningReceipt(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    throw new Error("EARNING_RECEIPT_INVALID");
+  const item = value;
+  const grossAmountMinor = amount(item.grossAmountMinor, "GROSS");
+  const operatingCostMinor = amount(item.operatingCostMinor, "OPERATING_COST");
+  if (operatingCostMinor > grossAmountMinor)
+    throw new Error("EARNING_RECEIPT_OPERATING_COST_EXCEEDS_GROSS");
+  if (item.beneficiaryRole !== "toc" && item.beneficiaryRole !== "tob")
+    throw new Error("EARNING_RECEIPT_ROLE_INVALID");
+  if (item.currency !== SETTLEMENT_CURRENCY)
+    throw new Error("EARNING_RECEIPT_CURRENCY_INVALID");
+  const occurredAt = amount(item.occurredAt, "OCCURRED_AT");
+  periodForUnix(occurredAt);
   return {
-    start: typeof period?.start === "number" ? period.start : typeof object.period_start === "number" ? object.period_start : null,
-    end: typeof period?.end === "number" ? period.end : typeof object.period_end === "number" ? object.period_end : null
+    receiptId: text(item.receiptId, "ID", /^[A-Za-z0-9][A-Za-z0-9._:-]*$/u),
+    executionReceiptId: text(
+      item.executionReceiptId,
+      "EXECUTION_ID",
+      /^[A-Za-z0-9][A-Za-z0-9._:-]*$/u
+    ),
+    userId: text(item.userId, "USER", /^\S+$/u),
+    beneficiaryRole: item.beneficiaryRole,
+    sourceProvider: text(
+      item.sourceProvider,
+      "PROVIDER",
+      /^[A-Za-z0-9][A-Za-z0-9._:-]*$/u,
+      80
+    ),
+    providerReference: text(
+      item.providerReference,
+      "PROVIDER_REFERENCE",
+      /^[A-Za-z0-9][A-Za-z0-9._:-]*$/u
+    ),
+    payoutAccountId: text(
+      item.payoutAccountId,
+      "PAYOUT_ACCOUNT",
+      /^[A-Za-z0-9][A-Za-z0-9._:-]*$/u
+    ),
+    evidenceSha256: text(
+      item.evidenceSha256,
+      "EVIDENCE",
+      /^[0-9a-f]{64}$/u,
+      64
+    ),
+    currency: SETTLEMENT_CURRENCY,
+    grossAmountMinor,
+    operatingCostMinor,
+    occurredAt
   };
 }
-__name(invoicePeriod, "invoicePeriod");
+__name(validateEarningReceipt, "validateEarningReceipt");
 
-// src/stripe-signature.ts
+// src/receipt-signature.ts
 var encoder2 = new TextEncoder();
 function bytesFromHex(value) {
   if (!/^[0-9a-f]{64}$/iu.test(value))
-    throw new Error("STRIPE_SIGNATURE_INVALID");
+    throw new Error("RECEIPT_SIGNATURE_INVALID");
   return Uint8Array.from(
     { length: value.length / 2 },
     (_, index) => Number.parseInt(value.slice(index * 2, index * 2 + 2), 16)
@@ -166,14 +157,15 @@ function secureEqual(left, right) {
   return difference === 0;
 }
 __name(secureEqual, "secureEqual");
-async function verifyStripeSignature(rawBody, signatureHeader, secret, nowSeconds = Math.floor(Date.now() / 1e3), toleranceSeconds = 300) {
-  if (!signatureHeader || !secret) throw new Error("STRIPE_SIGNATURE_INVALID");
+async function verifyReceiptSignature(rawBody, signatureHeader, secret, nowSeconds = Math.floor(Date.now() / 1e3), toleranceSeconds = 300) {
+  if (!signatureHeader || secret.length < 32)
+    throw new Error("RECEIPT_SIGNATURE_INVALID");
   const fields = signatureHeader.split(",").map((field) => field.split("="));
   const timestampValue = fields.find(([key2]) => key2 === "t")?.[1];
   const candidates = fields.filter(([key2]) => key2 === "v1").map(([, value]) => value);
   const timestamp = Number(timestampValue);
   if (!Number.isInteger(timestamp) || Math.abs(nowSeconds - timestamp) > toleranceSeconds || candidates.length === 0)
-    throw new Error("STRIPE_SIGNATURE_INVALID");
+    throw new Error("RECEIPT_SIGNATURE_INVALID");
   const key = await crypto.subtle.importKey(
     "raw",
     encoder2.encode(secret),
@@ -195,34 +187,23 @@ async function verifyStripeSignature(rawBody, signatureHeader, secret, nowSecond
       return false;
     }
   }))
-    throw new Error("STRIPE_SIGNATURE_INVALID");
+    throw new Error("RECEIPT_SIGNATURE_INVALID");
 }
-__name(verifyStripeSignature, "verifyStripeSignature");
+__name(verifyReceiptSignature, "verifyReceiptSignature");
 
 // src/worker.ts
-var API_VERSION = "2026-02-25.clover";
-var CHECKOUT_TTL_SECONDS = 31 * 60;
-var ACTIVE_STATUSES = [
-  "active",
-  "trialing",
-  "past_due",
-  "unpaid",
-  "incomplete",
-  "checkout_completed"
-];
 function configuration(env) {
   const sky = new URL(env.SKY_ORIGIN);
-  const returning = new URL(env.RETURN_ORIGIN);
-  if (sky.protocol !== "https:" || returning.protocol !== "https:" || !/^price_[A-Za-z0-9]+$/u.test(env.STRIPE_PRICE_ID) || !/^sk_(?:test|live)_[A-Za-z0-9_]+$/u.test(env.STRIPE_SECRET_KEY) || !env.STRIPE_WEBHOOK_SECRET.startsWith("whsec_") || env.STRIPE_WEBHOOK_SECRET.length < 20 || env.BILLING_SHARED_SECRET.length < 32)
-    throw new Error("BILLING_CONFIGURATION_INVALID");
-  return { skyOrigin: sky.origin, returnOrigin: returning.origin };
+  if (sky.protocol !== "https:" || env.BILLING_SHARED_SECRET.length < 32 || env.SETTLEMENT_INGEST_SECRET.length < 32)
+    throw new Error("SETTLEMENT_CONFIGURATION_INVALID");
+  return { skyOrigin: sky.origin };
 }
 __name(configuration, "configuration");
 function cors(origin) {
   return {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Headers": "authorization,content-type",
-    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Access-Control-Allow-Methods": "GET,OPTIONS",
     "Access-Control-Max-Age": "600",
     Vary: "Origin"
   };
@@ -245,7 +226,7 @@ function bearer(request) {
   return match[1];
 }
 __name(bearer, "bearer");
-async function authorize(request, env) {
+async function authorizeUser(request, env) {
   const { skyOrigin } = configuration(env);
   if (request.headers.get("origin") !== skyOrigin) throw new Error("ORIGIN");
   return {
@@ -253,353 +234,326 @@ async function authorize(request, env) {
     token: await verifyBillingToken(bearer(request), env.BILLING_SHARED_SECRET)
   };
 }
-__name(authorize, "authorize");
-async function stripe(env, path, body, idempotencyKey) {
-  const result = await fetch(`https://api.stripe.com/v1/${path}`, {
-    method: body ? "POST" : "GET",
-    headers: {
-      Authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
-      "Stripe-Version": API_VERSION,
-      ...body ? { "Content-Type": "application/x-www-form-urlencoded" } : {},
-      ...idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}
-    },
-    body,
-    signal: AbortSignal.timeout(15e3)
-  });
-  const value = await result.json();
-  if (!result.ok) {
-    const stripeError = value.error && typeof value.error === "object" ? value.error : null;
-    const errorCode = typeof stripeError?.code === "string" ? stripeError.code : "REQUEST_FAILED";
-    throw new Error(`STRIPE_${result.status}_${errorCode}`);
-  }
-  return value;
-}
-__name(stripe, "stripe");
-function stripeRedirect(value, expectedHost) {
-  if (typeof value !== "string") throw new Error("STRIPE_REDIRECT_INVALID");
-  const url = new URL(value);
-  if (url.protocol !== "https:" || url.hostname !== expectedHost)
-    throw new Error("STRIPE_REDIRECT_INVALID");
-  return url.href;
-}
-__name(stripeRedirect, "stripeRedirect");
-async function activeSubscription(db, userId) {
-  const placeholders = ACTIVE_STATUSES.map(() => "?").join(",");
-  return db.prepare(
-    `SELECT stripe_subscription_id, status FROM billing_subscriptions WHERE user_id = ? AND status IN (${placeholders}) ORDER BY updated_at DESC LIMIT 1`
-  ).bind(userId, ...ACTIVE_STATUSES).first();
-}
-__name(activeSubscription, "activeSubscription");
+__name(authorizeUser, "authorizeUser");
 async function status(request, env) {
-  const { origin, token } = await authorize(request, env);
-  const subscription = await env.DB.prepare(
-    `SELECT stripe_subscription_id AS id, status, current_period_end AS currentPeriodEnd,
-      cancel_at_period_end AS cancelAtPeriodEnd, updated_at AS updatedAt
-     FROM billing_subscriptions WHERE user_id = ?
-     ORDER BY CASE WHEN status IN ('active','trialing','past_due','unpaid','incomplete','checkout_completed') THEN 0 ELSE 1 END,
-       updated_at DESC LIMIT 1`
-  ).bind(token.sub).first();
-  const invoice = await env.DB.prepare(
-    `SELECT stripe_invoice_id AS id, status, amount_paid AS amountPaid, currency,
-      period_start AS periodStart, period_end AS periodEnd, paid_at AS paidAt
-     FROM billing_invoices WHERE user_id = ? ORDER BY updated_at DESC LIMIT 1`
-  ).bind(token.sub).first();
+  const { origin, token } = await authorizeUser(request, env);
+  const period = periodForUnix(Math.floor(Date.now() / 1e3));
+  const settlement = await env.DB.prepare(
+    `SELECT gross_minor AS grossMinor, operating_cost_minor AS operatingCostMinor,
+      sky_fee_minor AS skyFeeMinor, distributable_minor AS distributableMinor,
+      receipt_count AS receiptCount, updated_at AS updatedAt
+     FROM monthly_earning_settlements
+     WHERE user_id=? AND period=? AND currency=?`
+  ).bind(token.sub, period, SETTLEMENT_CURRENCY).first();
+  const receipts = await env.DB.prepare(
+    `SELECT r.receipt_id AS receiptId, r.execution_receipt_id AS executionReceiptId,
+      r.source_provider AS sourceProvider, r.gross_minor AS grossMinor,
+      r.operating_cost_minor AS operatingCostMinor, r.sky_fee_minor AS skyFeeMinor,
+      r.distributable_minor AS distributableMinor, r.occurred_at AS occurredAt,
+      p.status AS payoutStatus
+     FROM earning_receipts r
+     LEFT JOIN payout_instructions p ON p.receipt_id=r.receipt_id
+     WHERE r.user_id=? AND r.period=? AND r.applied_at IS NOT NULL
+     ORDER BY r.occurred_at DESC, r.receipt_id DESC LIMIT 20`
+  ).bind(token.sub, period).all();
+  const current = settlement ?? {
+    grossMinor: 0,
+    operatingCostMinor: 0,
+    skyFeeMinor: 0,
+    distributableMinor: 0,
+    receiptCount: 0,
+    updatedAt: null
+  };
   return response(
     {
-      price: { amountMinor: 888, currency: "usd", interval: "month" },
-      subscription,
-      invoice
+      policy: {
+        mode: "verified_earnings_only",
+        currency: SETTLEMENT_CURRENCY,
+        monthlyFeeCapMinor: SKY_MONTHLY_FEE_CAP_MINOR,
+        upfrontCharge: false,
+        debtCarry: false,
+        tobFeeMinor: 0
+      },
+      period,
+      settlement: {
+        ...current,
+        remainingFeeCapMinor: Math.max(
+          0,
+          SKY_MONTHLY_FEE_CAP_MINOR - Number(current.skyFeeMinor ?? 0)
+        )
+      },
+      receipts: receipts.results
     },
     200,
     origin
   );
 }
 __name(status, "status");
-async function checkout(request, env) {
-  const { origin, token } = await authorize(request, env);
-  const existing = await activeSubscription(env.DB, token.sub);
-  if (existing)
-    return response(
-      {
-        error: "\u3059\u3067\u306B\u6708\u984D\u5951\u7D04\u304C\u3042\u308A\u307E\u3059\u3002\u7BA1\u7406\u753B\u9762\u304B\u3089\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002",
-        code: "ALREADY_SUBSCRIBED"
-      },
-      409,
-      origin
-    );
-  const now = Math.floor(Date.now() / 1e3);
-  const lock = await env.DB.prepare(
-    `INSERT INTO billing_checkout_locks(user_id,jti,status,expires_at,created_at,updated_at)
-     VALUES (?,?,'pending',?,?,?)
-     ON CONFLICT(user_id) DO UPDATE SET jti=excluded.jti,status='pending',session_id=NULL,
-       checkout_url=NULL,expires_at=excluded.expires_at,updated_at=excluded.updated_at
-     WHERE billing_checkout_locks.jti=excluded.jti OR billing_checkout_locks.expires_at<?
-       OR billing_checkout_locks.status IN ('failed','completed')`
-  ).bind(token.sub, token.jti, now + CHECKOUT_TTL_SECONDS, now, now, now).run();
-  if ((lock.meta.changes ?? 0) !== 1)
-    return response(
-      {
-        error: "\u5225\u306E\u7533\u8FBC\u307F\u51E6\u7406\u304C\u9032\u884C\u4E2D\u3067\u3059\u3002\u3057\u3070\u3089\u304F\u3057\u3066\u304B\u3089\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002",
-        code: "CHECKOUT_IN_PROGRESS"
-      },
-      409,
-      origin
-    );
-  let checkoutRequested = false;
-  try {
-    assertMonthlyPrice(
-      await stripe(env, `prices/${encodeURIComponent(env.STRIPE_PRICE_ID)}`),
-      env.STRIPE_PRICE_ID
-    );
-    const customer = await env.DB.prepare(
-      "SELECT stripe_customer_id FROM billing_customers WHERE user_id = ?"
-    ).bind(token.sub).first();
-    const { returnOrigin } = configuration(env);
-    const form = new URLSearchParams({
-      mode: "subscription",
-      "line_items[0][price]": env.STRIPE_PRICE_ID,
-      "line_items[0][quantity]": "1",
-      client_reference_id: token.sub,
-      "metadata[sky_user_id]": token.sub,
-      "subscription_data[metadata][sky_user_id]": token.sub,
-      success_url: `${returnOrigin}/wallet?billing=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${returnOrigin}/wallet?billing=cancelled`,
-      expires_at: String(now + CHECKOUT_TTL_SECONDS)
-    });
-    if (customer) form.set("customer", customer.stripe_customer_id);
-    checkoutRequested = true;
-    const session = await stripe(
-      env,
-      "checkout/sessions",
-      form,
-      `sky-checkout-${token.jti}`
-    );
-    if (typeof session.id !== "string")
-      throw new Error("STRIPE_CHECKOUT_RESPONSE_INVALID");
-    const redirect = stripeRedirect(session.url, "checkout.stripe.com");
-    await env.DB.prepare(
-      `UPDATE billing_checkout_locks SET status='ready',session_id=?,checkout_url=?,updated_at=?
-       WHERE user_id=? AND jti=?`
-    ).bind(session.id, redirect, now, token.sub, token.jti).run();
-    return response({ url: redirect }, 201, origin);
-  } catch (error) {
-    await env.DB.prepare(
-      `UPDATE billing_checkout_locks SET status=?,updated_at=?
-       WHERE user_id=? AND jti=?`
-    ).bind(checkoutRequested ? "unknown" : "failed", now, token.sub, token.jti).run();
-    throw error;
-  }
+function sameReceipt(stored, receipt) {
+  return stored.receipt_id === receipt.receiptId && stored.execution_receipt_id === receipt.executionReceiptId && stored.user_id === receipt.userId && stored.beneficiary_role === receipt.beneficiaryRole && stored.source_provider === receipt.sourceProvider && stored.provider_reference === receipt.providerReference && stored.payout_account_id === receipt.payoutAccountId && stored.evidence_sha256 === receipt.evidenceSha256 && stored.currency === receipt.currency && stored.gross_minor === receipt.grossAmountMinor && stored.operating_cost_minor === receipt.operatingCostMinor && stored.occurred_at === receipt.occurredAt;
 }
-__name(checkout, "checkout");
-async function portal(request, env) {
-  const { origin, token } = await authorize(request, env);
-  const customer = await env.DB.prepare(
-    "SELECT stripe_customer_id FROM billing_customers WHERE user_id = ?"
-  ).bind(token.sub).first();
-  if (!customer)
-    return response({ error: "\u7BA1\u7406\u3067\u304D\u308B\u6708\u984D\u5951\u7D04\u304C\u3042\u308A\u307E\u305B\u3093\u3002" }, 404, origin);
-  const { returnOrigin } = configuration(env);
-  const session = await stripe(
-    env,
-    "billing_portal/sessions",
-    new URLSearchParams({
-      customer: customer.stripe_customer_id,
-      return_url: `${returnOrigin}/wallet`
-    }),
-    `sky-portal-${token.jti}`
+__name(sameReceipt, "sameReceipt");
+async function storedReceipt(db, receipt) {
+  return db.prepare(
+    `SELECT * FROM earning_receipts
+       WHERE receipt_id=? OR execution_receipt_id=?
+         OR (source_provider=? AND provider_reference=?) LIMIT 1`
+  ).bind(
+    receipt.receiptId,
+    receipt.executionReceiptId,
+    receipt.sourceProvider,
+    receipt.providerReference
+  ).first();
+}
+__name(storedReceipt, "storedReceipt");
+async function receiptResult(db, receiptId) {
+  return db.prepare(
+    `SELECT r.receipt_id AS receiptId, r.execution_receipt_id AS executionReceiptId,
+        r.user_id AS userId, r.beneficiary_role AS beneficiaryRole,
+        r.period, r.currency, r.gross_minor AS grossMinor,
+        r.operating_cost_minor AS operatingCostMinor,
+        r.sky_fee_minor AS skyFeeMinor, r.distributable_minor AS distributableMinor,
+        r.applied_at AS appliedAt, p.instruction_id AS payoutInstructionId,
+        p.status AS payoutStatus
+       FROM earning_receipts r
+       LEFT JOIN payout_instructions p ON p.receipt_id=r.receipt_id
+       WHERE r.receipt_id=?`
+  ).bind(receiptId).first();
+}
+__name(receiptResult, "receiptResult");
+async function ingest(request, env) {
+  configuration(env);
+  const raw = await request.text();
+  if (new TextEncoder().encode(raw).length > 65536)
+    return response({ error: "payload_too_large" }, 413);
+  await verifyReceiptSignature(
+    raw,
+    request.headers.get("sky-receipt-signature"),
+    env.SETTLEMENT_INGEST_SECRET
   );
+  const receipt = validateEarningReceipt(JSON.parse(raw));
+  const now = Math.floor(Date.now() / 1e3);
+  if (receipt.occurredAt > now + 300)
+    throw new Error("EARNING_RECEIPT_OCCURRED_AT_INVALID");
+  const period = periodForUnix(receipt.occurredAt);
+  const inserted = await env.DB.prepare(
+    `INSERT OR IGNORE INTO earning_receipts(
+      receipt_id,execution_receipt_id,user_id,beneficiary_role,source_provider,
+      provider_reference,payout_account_id,evidence_sha256,currency,gross_minor,
+      operating_cost_minor,sky_fee_minor,distributable_minor,period,occurred_at,
+      received_at,applied_at
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,0,0,?,?,?,NULL)`
+  ).bind(
+    receipt.receiptId,
+    receipt.executionReceiptId,
+    receipt.userId,
+    receipt.beneficiaryRole,
+    receipt.sourceProvider,
+    receipt.providerReference,
+    receipt.payoutAccountId,
+    receipt.evidenceSha256,
+    receipt.currency,
+    receipt.grossAmountMinor,
+    receipt.operatingCostMinor,
+    period,
+    receipt.occurredAt,
+    now
+  ).run();
+  const stored = await storedReceipt(env.DB, receipt);
+  if (!stored || !sameReceipt(stored, receipt))
+    throw new Error("EARNING_RECEIPT_CONFLICT");
+  if (stored.applied_at !== null)
+    return response(
+      { receipt: await receiptResult(env.DB, receipt.receiptId), replay: true },
+      200
+    );
+  const feeExpression = `CASE WHEN beneficiary_role='toc' THEN
+    MIN(gross_minor-operating_cost_minor,
+      MAX(0, ${SKY_MONTHLY_FEE_CAP_MINOR}-COALESCE((
+        SELECT sky_fee_minor FROM monthly_earning_settlements s
+        WHERE s.user_id=earning_receipts.user_id
+          AND s.period=earning_receipts.period
+          AND s.currency=earning_receipts.currency
+      ),0))) ELSE 0 END`;
+  await env.DB.batch([
+    env.DB.prepare(
+      `UPDATE earning_receipts SET sky_fee_minor=${feeExpression}
+       WHERE receipt_id=? AND applied_at IS NULL`
+    ).bind(receipt.receiptId),
+    env.DB.prepare(
+      `UPDATE earning_receipts
+       SET distributable_minor=gross_minor-operating_cost_minor-sky_fee_minor
+       WHERE receipt_id=? AND applied_at IS NULL`
+    ).bind(receipt.receiptId),
+    env.DB.prepare(
+      `INSERT INTO monthly_earning_settlements(
+        user_id,period,currency,gross_minor,operating_cost_minor,sky_fee_minor,
+        distributable_minor,receipt_count,updated_at
+      ) SELECT user_id,period,currency,gross_minor,operating_cost_minor,
+          sky_fee_minor,distributable_minor,1,?
+        FROM earning_receipts WHERE receipt_id=? AND applied_at IS NULL
+       ON CONFLICT(user_id,period,currency) DO UPDATE SET
+        gross_minor=monthly_earning_settlements.gross_minor+excluded.gross_minor,
+        operating_cost_minor=monthly_earning_settlements.operating_cost_minor+excluded.operating_cost_minor,
+        sky_fee_minor=monthly_earning_settlements.sky_fee_minor+excluded.sky_fee_minor,
+        distributable_minor=monthly_earning_settlements.distributable_minor+excluded.distributable_minor,
+        receipt_count=monthly_earning_settlements.receipt_count+1,
+        updated_at=excluded.updated_at`
+    ).bind(now, receipt.receiptId),
+    env.DB.prepare(
+      `INSERT OR IGNORE INTO earning_ledger_entries(
+        entry_id,receipt_id,user_id,period,account,direction,amount_minor,currency,created_at
+      ) SELECT receipt_id||':gross',receipt_id,user_id,period,'AUTOMATION_REVENUE','credit',gross_minor,currency,?
+        FROM earning_receipts WHERE receipt_id=? AND applied_at IS NULL AND gross_minor>0`
+    ).bind(now, receipt.receiptId),
+    env.DB.prepare(
+      `INSERT OR IGNORE INTO earning_ledger_entries(
+        entry_id,receipt_id,user_id,period,account,direction,amount_minor,currency,created_at
+      ) SELECT receipt_id||':cost',receipt_id,user_id,period,'OPERATING_COST','debit',operating_cost_minor,currency,?
+        FROM earning_receipts WHERE receipt_id=? AND applied_at IS NULL AND operating_cost_minor>0`
+    ).bind(now, receipt.receiptId),
+    env.DB.prepare(
+      `INSERT OR IGNORE INTO earning_ledger_entries(
+        entry_id,receipt_id,user_id,period,account,direction,amount_minor,currency,created_at
+      ) SELECT receipt_id||':sky',receipt_id,user_id,period,'SKY_SERVICE_FEE','debit',sky_fee_minor,currency,?
+        FROM earning_receipts WHERE receipt_id=? AND applied_at IS NULL AND sky_fee_minor>0`
+    ).bind(now, receipt.receiptId),
+    env.DB.prepare(
+      `INSERT OR IGNORE INTO earning_ledger_entries(
+        entry_id,receipt_id,user_id,period,account,direction,amount_minor,currency,created_at
+      ) SELECT receipt_id||':payable',receipt_id,user_id,period,'BENEFICIARY_PAYABLE','credit',distributable_minor,currency,?
+        FROM earning_receipts WHERE receipt_id=? AND applied_at IS NULL AND distributable_minor>0`
+    ).bind(now, receipt.receiptId),
+    env.DB.prepare(
+      `INSERT OR IGNORE INTO payout_instructions(
+        instruction_id,receipt_id,user_id,payout_account_id,amount_minor,currency,
+        status,idempotency_key,created_at,updated_at
+      ) SELECT 'pay:'||receipt_id,receipt_id,user_id,payout_account_id,
+          distributable_minor,currency,
+          CASE WHEN distributable_minor>0 THEN 'ready' ELSE 'not_required' END,
+          'sky-payout-'||receipt_id,?,?
+        FROM earning_receipts WHERE receipt_id=? AND applied_at IS NULL`
+    ).bind(now, now, receipt.receiptId),
+    env.DB.prepare(
+      `UPDATE earning_receipts SET applied_at=?
+       WHERE receipt_id=? AND applied_at IS NULL`
+    ).bind(now, receipt.receiptId)
+  ]);
   return response(
-    { url: stripeRedirect(session.url, "billing.stripe.com") },
-    201,
+    {
+      receipt: await receiptResult(env.DB, receipt.receiptId),
+      replay: (inserted.meta.changes ?? 0) === 0
+    },
+    (inserted.meta.changes ?? 0) === 1 ? 201 : 200
+  );
+}
+__name(ingest, "ingest");
+async function signedInput(request, env) {
+  configuration(env);
+  const raw = await request.text();
+  if (new TextEncoder().encode(raw).length > 16384)
+    throw new Error("SIGNED_INPUT_TOO_LARGE");
+  await verifyReceiptSignature(
+    raw,
+    request.headers.get("sky-receipt-signature"),
+    env.SETTLEMENT_INGEST_SECRET
+  );
+  const value = JSON.parse(raw);
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    throw new Error("PAYOUT_INPUT_INVALID");
+  return value;
+}
+__name(signedInput, "signedInput");
+async function payoutInstruction(db, instructionId) {
+  return db.prepare(
+    `SELECT instruction_id AS instructionId,receipt_id AS receiptId,
+        user_id AS userId,payout_account_id AS payoutAccountId,
+        amount_minor AS amountMinor,currency,status,
+        idempotency_key AS idempotencyKey,lease_id AS leaseId,
+        lease_expires_at AS leaseExpiresAt,
+        provider_transfer_reference AS providerTransferReference
+       FROM payout_instructions WHERE instruction_id=?`
+  ).bind(instructionId).first();
+}
+__name(payoutInstruction, "payoutInstruction");
+async function claimPayout(request, env) {
+  const input = await signedInput(request, env);
+  if (Object.keys(input).some((key) => key !== "adapterId") || typeof input.adapterId !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$/u.test(input.adapterId))
+    throw new Error("PAYOUT_INPUT_INVALID");
+  const now = Math.floor(Date.now() / 1e3);
+  const candidate = await env.DB.prepare(
+    `SELECT instruction_id AS instructionId FROM payout_instructions
+     WHERE status='ready' OR (status='processing' AND lease_expires_at<?)
+     ORDER BY created_at, instruction_id LIMIT 1`
+  ).bind(now).first();
+  if (!candidate) return response({ instruction: null });
+  const leaseId = crypto.randomUUID();
+  const claimed = await env.DB.prepare(
+    `UPDATE payout_instructions SET status='processing',lease_id=?,
+      lease_expires_at=?,updated_at=?
+     WHERE instruction_id=? AND
+      (status='ready' OR (status='processing' AND lease_expires_at<?))`
+  ).bind(leaseId, now + 300, now, candidate.instructionId, now).run();
+  if ((claimed.meta.changes ?? 0) !== 1)
+    throw new Error("PAYOUT_CLAIM_CONFLICT");
+  return response({
+    instruction: await payoutInstruction(env.DB, candidate.instructionId)
+  });
+}
+__name(claimPayout, "claimPayout");
+async function completePayout(request, env) {
+  const input = await signedInput(request, env);
+  if (Object.keys(input).some(
+    (key) => ![
+      "instructionId",
+      "leaseId",
+      "status",
+      "providerTransferReference",
+      "errorCode"
+    ].includes(key)
+  ) || typeof input.instructionId !== "string" || typeof input.leaseId !== "string" || !["paid", "failed", "unknown"].includes(String(input.status)) || input.status === "paid" && (typeof input.providerTransferReference !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$/u.test(
+    input.providerTransferReference
+  )) || input.errorCode !== void 0 && (typeof input.errorCode !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$/u.test(input.errorCode)))
+    throw new Error("PAYOUT_INPUT_INVALID");
+  const now = Math.floor(Date.now() / 1e3);
+  const updated = await env.DB.prepare(
+    `UPDATE payout_instructions SET status=?,provider_transfer_reference=?,
+      last_error=?,lease_id=NULL,lease_expires_at=NULL,updated_at=?
+     WHERE instruction_id=? AND status='processing' AND lease_id=?`
+  ).bind(
+    input.status,
+    input.providerTransferReference ?? null,
+    input.errorCode ?? null,
+    now,
+    input.instructionId,
+    input.leaseId
+  ).run();
+  const instruction = await payoutInstruction(env.DB, input.instructionId);
+  if ((updated.meta.changes ?? 0) !== 1) {
+    if (instruction && instruction.status === input.status && instruction.providerTransferReference === (input.providerTransferReference ?? null))
+      return response({ instruction, replay: true });
+    throw new Error("PAYOUT_RESULT_CONFLICT");
+  }
+  return response({ instruction, replay: false });
+}
+__name(completePayout, "completePayout");
+function retired(origin) {
+  return response(
+    {
+      error: "\u5148\u6255\u3044\u306E\u6708\u984D\u5951\u7D04\u306F\u5EC3\u6B62\u3057\u307E\u3057\u305F\u3002Sky\u306F\u691C\u8A3C\u6E08\u307F\u81EA\u52D5\u5316\u53CE\u76CA\u304B\u3089\u3060\u3051\u6700\u5927$8.88\u3092\u7CBE\u7B97\u3057\u307E\u3059\u3002",
+      code: "UPFRONT_BILLING_RETIRED"
+    },
+    410,
     origin
   );
 }
-__name(portal, "portal");
-function stripeEvent(value) {
-  if (!value || typeof value !== "object")
-    throw new Error("STRIPE_EVENT_INVALID");
-  const event = value;
-  if (typeof event.id !== "string" || !event.id.startsWith("evt_") || typeof event.type !== "string" || typeof event.created !== "number" || !event.data || !event.data.object || typeof event.data.object !== "object")
-    throw new Error("STRIPE_EVENT_INVALID");
-  return event;
-}
-__name(stripeEvent, "stripeEvent");
-async function resolveUser(env, object) {
-  const fromEvent = stripeUserId(object);
-  if (fromEvent) return fromEvent;
-  const customer = stripeCustomerId(object);
-  if (customer) {
-    const row = await env.DB.prepare(
-      "SELECT user_id FROM billing_customers WHERE stripe_customer_id = ?"
-    ).bind(customer).first();
-    if (row) return row.user_id;
-  }
-  const subscription = stripeSubscriptionId(object);
-  if (subscription) {
-    const row = await env.DB.prepare(
-      "SELECT user_id FROM billing_subscriptions WHERE stripe_subscription_id = ?"
-    ).bind(subscription).first();
-    if (row) return row.user_id;
-  }
-  return null;
-}
-__name(resolveUser, "resolveUser");
-async function webhook(request, env) {
-  configuration(env);
-  const raw = await request.text();
-  if (new TextEncoder().encode(raw).length > 262144)
-    return response({ error: "payload_too_large" }, 413);
-  await verifyStripeSignature(
-    raw,
-    request.headers.get("stripe-signature"),
-    env.STRIPE_WEBHOOK_SECRET
-  );
-  const event = stripeEvent(JSON.parse(raw));
-  const object = event.data.object;
-  const relevant = /* @__PURE__ */ new Set([
-    "checkout.session.completed",
-    "customer.subscription.created",
-    "customer.subscription.updated",
-    "customer.subscription.deleted",
-    "invoice.paid",
-    "invoice.payment_failed"
-  ]);
-  if (!relevant.has(event.type)) {
-    await env.DB.prepare(
-      "INSERT OR IGNORE INTO billing_events(event_id,type,stripe_created_at,processed_at) VALUES (?,?,?,?)"
-    ).bind(event.id, event.type, event.created, Math.floor(Date.now() / 1e3)).run();
-    return response({ received: true });
-  }
-  const userId = await resolveUser(env, object);
-  if (!userId) throw new Error("STRIPE_EVENT_USER_UNRESOLVED");
-  const customerId = stripeCustomerId(object);
-  const subscriptionId = stripeSubscriptionId(object) ?? (event.type.startsWith("customer.subscription.") ? stringValue(object.id) : null);
-  const now = Math.floor(Date.now() / 1e3);
-  const statements = [
-    env.DB.prepare(
-      "INSERT OR IGNORE INTO billing_events(event_id,type,stripe_created_at,processed_at) VALUES (?,?,?,?)"
-    ).bind(event.id, event.type, event.created, now)
-  ];
-  if (customerId)
-    statements.push(
-      env.DB.prepare(
-        `INSERT INTO billing_customers(user_id,stripe_customer_id,created_at,updated_at) VALUES (?,?,?,?)
-         ON CONFLICT(user_id) DO UPDATE SET stripe_customer_id=excluded.stripe_customer_id,updated_at=excluded.updated_at`
-      ).bind(userId, customerId, now, now)
-    );
-  if (event.type === "checkout.session.completed") {
-    if (!customerId || !subscriptionId)
-      throw new Error("STRIPE_CHECKOUT_EVENT_INVALID");
-    statements.push(
-      env.DB.prepare(
-        `INSERT INTO billing_subscriptions(stripe_subscription_id,user_id,stripe_customer_id,status,price_id,current_period_end,cancel_at_period_end,stripe_event_created_at,updated_at)
-         VALUES (?,?,?,'checkout_completed',?,NULL,0,?,?)
-         ON CONFLICT(stripe_subscription_id) DO UPDATE SET user_id=excluded.user_id,
-           stripe_customer_id=excluded.stripe_customer_id,stripe_event_created_at=excluded.stripe_event_created_at,
-           updated_at=excluded.updated_at
-         WHERE excluded.stripe_event_created_at >= billing_subscriptions.stripe_event_created_at`
-      ).bind(
-        subscriptionId,
-        userId,
-        customerId,
-        env.STRIPE_PRICE_ID,
-        event.created,
-        now
-      ),
-      env.DB.prepare(
-        "UPDATE billing_checkout_locks SET status='completed',updated_at=? WHERE user_id=?"
-      ).bind(now, userId)
-    );
-  }
-  if (event.type.startsWith("customer.subscription.")) {
-    if (!customerId || !subscriptionId || typeof object.status !== "string")
-      throw new Error("STRIPE_SUBSCRIPTION_EVENT_INVALID");
-    const priceId = subscriptionPriceId(object);
-    if (priceId !== env.STRIPE_PRICE_ID)
-      throw new Error("STRIPE_SUBSCRIPTION_PRICE_MISMATCH");
-    statements.push(
-      env.DB.prepare(
-        `INSERT INTO billing_subscriptions(stripe_subscription_id,user_id,stripe_customer_id,status,price_id,current_period_end,cancel_at_period_end,stripe_event_created_at,updated_at)
-         VALUES (?,?,?,?,?,?,?,?,?)
-         ON CONFLICT(stripe_subscription_id) DO UPDATE SET user_id=excluded.user_id,
-           stripe_customer_id=excluded.stripe_customer_id,status=excluded.status,price_id=excluded.price_id,
-           current_period_end=excluded.current_period_end,cancel_at_period_end=excluded.cancel_at_period_end,
-           stripe_event_created_at=excluded.stripe_event_created_at,updated_at=excluded.updated_at
-         WHERE excluded.stripe_event_created_at >= billing_subscriptions.stripe_event_created_at`
-      ).bind(
-        subscriptionId,
-        userId,
-        customerId,
-        object.status,
-        priceId,
-        currentPeriodEnd(object),
-        object.cancel_at_period_end === true ? 1 : 0,
-        event.created,
-        now
-      )
-    );
-  }
-  if (event.type === "invoice.paid" || event.type === "invoice.payment_failed") {
-    if (!customerId || !subscriptionId || typeof object.id !== "string" || object.currency !== "usd")
-      throw new Error("STRIPE_INVOICE_EVENT_INVALID");
-    const invoicePrice = subscriptionPriceId(object);
-    if (invoicePrice !== env.STRIPE_PRICE_ID)
-      throw new Error("STRIPE_INVOICE_PRICE_MISMATCH");
-    const period = invoicePeriod(object);
-    const paid = event.type === "invoice.paid";
-    const transitions = object.status_transitions && typeof object.status_transitions === "object" && !Array.isArray(object.status_transitions) ? object.status_transitions : null;
-    statements.push(
-      env.DB.prepare(
-        `INSERT INTO billing_invoices(stripe_invoice_id,user_id,stripe_subscription_id,stripe_customer_id,status,amount_paid,currency,period_start,period_end,paid_at,stripe_event_created_at,updated_at)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
-         ON CONFLICT(stripe_invoice_id) DO UPDATE SET status=excluded.status,amount_paid=excluded.amount_paid,
-           period_start=excluded.period_start,period_end=excluded.period_end,paid_at=excluded.paid_at,
-           stripe_event_created_at=excluded.stripe_event_created_at,updated_at=excluded.updated_at
-         WHERE excluded.stripe_event_created_at >= billing_invoices.stripe_event_created_at`
-      ).bind(
-        object.id,
-        userId,
-        subscriptionId,
-        customerId,
-        paid ? "paid" : "payment_failed",
-        typeof object.amount_paid === "number" ? object.amount_paid : 0,
-        object.currency,
-        period.start,
-        period.end,
-        paid ? transitions?.paid_at ?? null : null,
-        event.created,
-        now
-      ),
-      env.DB.prepare(
-        `INSERT INTO billing_subscriptions(stripe_subscription_id,user_id,stripe_customer_id,status,price_id,current_period_end,cancel_at_period_end,stripe_event_created_at,updated_at)
-         VALUES (?,?,?,?,?,?,0,?,?)
-         ON CONFLICT(stripe_subscription_id) DO UPDATE SET status=excluded.status,
-           price_id=excluded.price_id,current_period_end=excluded.current_period_end,
-           stripe_event_created_at=excluded.stripe_event_created_at,updated_at=excluded.updated_at
-         WHERE billing_subscriptions.status NOT IN ('canceled','incomplete_expired')
-           AND excluded.stripe_event_created_at >= billing_subscriptions.stripe_event_created_at`
-      ).bind(
-        subscriptionId,
-        userId,
-        customerId,
-        paid ? "active" : "past_due",
-        invoicePrice,
-        period.end,
-        event.created,
-        now
-      )
-    );
-  }
-  await env.DB.batch(statements);
-  return response({ received: true });
-}
-__name(webhook, "webhook");
+__name(retired, "retired");
 function errorResponse(error, origin) {
   const message = error instanceof Error ? error.message : "";
-  const status2 = message === "UNAUTHORIZED" || message.startsWith("TOKEN_") ? 401 : message === "ORIGIN" ? 403 : message.includes("SIGNATURE") || message.includes("EVENT_INVALID") ? 400 : message === "BILLING_CONFIGURATION_INVALID" ? 503 : 502;
+  const status2 = message === "UNAUTHORIZED" || message.startsWith("TOKEN_") ? 401 : message === "ORIGIN" ? 403 : message === "EARNING_RECEIPT_CONFLICT" || message === "PAYOUT_CLAIM_CONFLICT" || message === "PAYOUT_RESULT_CONFLICT" ? 409 : message.includes("SIGNATURE") ? 401 : message.startsWith("EARNING_RECEIPT_") || message === "PAYOUT_INPUT_INVALID" || message === "SIGNED_INPUT_TOO_LARGE" || message === "SETTLEMENT_PREVIOUS_FEE_INVALID" || error instanceof SyntaxError ? 400 : message === "SETTLEMENT_CONFIGURATION_INVALID" ? 503 : 500;
   return response(
     {
-      error: status2 === 401 ? "\u8A8D\u8A3C\u306E\u6709\u52B9\u671F\u9650\u304C\u5207\u308C\u307E\u3057\u305F\u3002Sky\u304B\u3089\u518D\u8A66\u884C\u3057\u3066\u304F\u3060\u3055\u3044\u3002" : status2 === 403 ? "Sky\u4EE5\u5916\u304B\u3089\u306E\u64CD\u4F5C\u306F\u53D7\u3051\u4ED8\u3051\u307E\u305B\u3093\u3002" : status2 === 503 ? "\u6C7A\u6E08\u30B5\u30FC\u30D3\u30B9\u306E\u8A2D\u5B9A\u304C\u5B8C\u4E86\u3057\u3066\u3044\u307E\u305B\u3093\u3002" : "\u6C7A\u6E08\u30B5\u30FC\u30D3\u30B9\u3068\u901A\u4FE1\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\u3002\u518D\u8A66\u884C\u3057\u3066\u304F\u3060\u3055\u3044\u3002"
+      error: status2 === 401 ? "\u7F72\u540D\u307E\u305F\u306F\u8A8D\u8A3C\u3092\u78BA\u8A8D\u3067\u304D\u307E\u305B\u3093\u3002" : status2 === 403 ? "Sky\u4EE5\u5916\u304B\u3089\u5229\u7528\u8005\u60C5\u5831\u3092\u53C2\u7167\u3067\u304D\u307E\u305B\u3093\u3002" : status2 === 409 ? "\u540C\u3058\u5B9F\u884C\u30FB\u5165\u91D1\u53C2\u7167\u306B\u7570\u306A\u308B\u5185\u5BB9\u306EReceipt\u304C\u3042\u308A\u307E\u3059\u3002" : status2 === 503 ? "\u53CE\u76CA\u7CBE\u7B97\u30B5\u30FC\u30D3\u30B9\u306E\u8A2D\u5B9A\u304C\u5B8C\u4E86\u3057\u3066\u3044\u307E\u305B\u3093\u3002" : status2 === 400 ? "Earning Receipt\u306E\u5185\u5BB9\u3092\u78BA\u8A8D\u3067\u304D\u307E\u305B\u3093\u3002" : "\u53CE\u76CA\u7CBE\u7B97\u3092\u5B8C\u4E86\u3067\u304D\u307E\u305B\u3093\u3067\u3057\u305F\u3002"
     },
     status2,
     origin
@@ -620,16 +574,22 @@ var worker_default = {
       if (request.method === "GET" && url.pathname === "/health")
         return response({
           ok: true,
-          price: { amountMinor: 888, currency: "usd", interval: "month" }
+          mode: "verified_earnings_only",
+          monthlyFeeCapMinor: SKY_MONTHLY_FEE_CAP_MINOR,
+          currency: SETTLEMENT_CURRENCY
         });
       if (request.method === "GET" && url.pathname === "/v1/status")
         return await status(request, env);
-      if (request.method === "POST" && url.pathname === "/v1/checkout")
-        return await checkout(request, env);
-      if (request.method === "POST" && url.pathname === "/v1/portal")
-        return await portal(request, env);
-      if (request.method === "POST" && url.pathname === "/v1/webhooks/stripe")
-        return await webhook(request, env);
+      if (request.method === "POST" && url.pathname === "/v1/earnings")
+        return await ingest(request, env);
+      if (request.method === "POST" && url.pathname === "/v1/payouts/claim")
+        return await claimPayout(request, env);
+      if (request.method === "POST" && url.pathname === "/v1/payouts/result")
+        return await completePayout(request, env);
+      if (request.method === "POST" && ["/v1/checkout", "/v1/portal", "/v1/webhooks/stripe"].includes(
+        url.pathname
+      ))
+        return retired(origin);
       return response({ error: "not_found" }, 404, origin);
     } catch (error) {
       return errorResponse(error, origin);

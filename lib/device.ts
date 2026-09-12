@@ -186,7 +186,24 @@ export async function connectDevice() {
   if (notification.status !== 202)
     throw new Error('MCPの初期接続が完了しませんでした。');
   const listed = await call(2, 'tools/list');
-  if (listed.tools?.length !== 4)
+  const requiredTools = [
+    'coconala_check',
+    'format_citations',
+    'make_free_article',
+    'verify_delivery',
+  ];
+  const availableTools = new Set(
+    Array.isArray(listed.tools)
+      ? listed.tools.flatMap((tool) =>
+          tool &&
+          typeof tool === 'object' &&
+          typeof (tool as { name?: unknown }).name === 'string'
+            ? [(tool as { name: string }).name]
+            : [],
+        )
+      : [],
+  );
+  if (!requiredTools.every((name) => availableTools.has(name)))
     throw new Error('MCPツールを確認できませんでした。');
   if (generation !== sessionGeneration)
     throw new Error('接続確認は取り消されました。');

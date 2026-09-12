@@ -6,8 +6,6 @@
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
     "SKY_ORIGIN": "https://replace-with-your-sky-origin.example",
-    "RETURN_ORIGIN": "https://replace-with-your-sky-origin.example",
-    "STRIPE_PRICE_ID": "price_replace_with_monthly_usd_888_price",
   },
   "d1_databases": [
     {

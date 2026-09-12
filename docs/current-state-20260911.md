@@ -1,10 +1,10 @@
 # RockstarOS — 現在の開発状態と再開条件
 
-## 2026-09-12 — Sky月額8.88 USDの本番対応経路
+## 2026-09-12 — Sky自動化収益からの最大8.88 USD精算
 
-ToC向け月額8.88 USDを実際に回収するため、Wallet画面、認証済み短命token、独立Cloudflare Worker、Stripe Checkout／Customer Portal、署名Webhook、D1契約・請求台帳を実装した。WorkerはCheckout前と契約・請求eventでPrice IDを照合し、active、USD 888 cents、月次1回以外を拒否する。有効契約、同時Checkout、Webhook再送を冪等に処理し、カード情報とStripe secretsをSky本体へ保存しない。
+先払いのToC月額課金は利用者意図と異なるため停止した。Wallet画面、認証済み短命token、独立Cloudflare Worker、署名済みEarning Receipt、D1月次精算・追記型台帳・払出し指図を実装した。Workerは自動化のExecution Receipt、Provider入金参照、証拠hashを一意に結び、直接実費を先に回収した残額からだけ、利用者ごと・UTC月ごとにSky利用料を最大888 USD centsまで記帳する。同じReceipt再送は冪等、異なる内容の再利用は拒否する。ToB分は0、売上0時の請求・債務化・翌月繰越・カード請求はない。
 
-これは本番利用を想定したコードの到達であり、実売上開始の証拠ではない。現在はStripe事業者・入金口座、Price、D1、Worker secrets、Webhook、販売表示、sandboxの初回・更新・失敗・再試行・解約・順序逆転・台帳照合が未接続で、live課金は無効。詳細と再開順は[Sky月額決済](sky-billing.md)。
+これは精算核のコード到達であり、実売上開始の証拠ではない。販売、納品・承認、決済、払出しの実Provider、販売主体、資金保管、本人確認、税、返金、chargeback、live資格情報、sandbox照合が未接続で、実入金・実回収・実送金は無効。旧Checkout、Portal、Stripe subscription webhookは410で停止する。詳細と再開順は[Sky自動化収益の精算](sky-billing.md)。
 
 ## 2026-09-12 — 多機種対応の決定
 
@@ -18,14 +18,14 @@ ToC向け月額8.88 USDを実際に回収するため、Wallet画面、認証済
 
 進捗表は41 task中19 done、15 in progress、7 planned。段階gateは13件中10 done、3 planned。各taskの大きさが異なるため、19/41を製品完成率やスマホOS完成率へ換算しない。この再監査は実装状態の読み取りと文書同期であり、新しいruntime、OS image、署名、Site配信を作成していない。
 
-| 対象 | 到達している範囲 | 未完了の決定的条件 |
-| --- | --- | --- |
-| Web / Sites | Sky中心の画面、仕事・履歴・Wallet・設定、本人限定の新Site | 所有者ログイン後の本番操作確認、一般公開 |
-| Linux / QEMU | `1.0.0-preview.20260911-rc2`の内部導入、起動、保存、再起動、同一VMの中断復旧、D4/D6等の限定受入 | 正式署名、license clearance、取消の実停止、RSS再確認、別host／VM全損復旧、保存データあり端末の削除 |
-| Android P1 | 通常権限の2APK、SQLite／Binder／JobScheduler、emulator CI | Sky／Wallet／GameのAndroid移植、実機OS統合 |
-| スマホOS | 上流版と候補機種のsource lock、product makefile、準備／build／診断script | 全source取得、vendor生成、Soongフルbuild、target-files／OTA／factory image、正式Android署名、flash、実機boot／更新／純正復旧 |
-| Wallet／Game | 合成台帳、複数owner/gameのfixture、作者SDK、ATM自社手数料0の契約 | 実provider、KYC／提供地域／資金保管／通貨／返金／出金／照合、指定実ゲームの正式sandbox |
-| Release | PR #4の現HEAD CI成功、本人限定Site、CM制作途中 | license、第三者許諾、production鍵、実署名、公開受入、main統合 |
+| 対象         | 到達している範囲                                                                                | 未完了の決定的条件                                                                                                           |
+| ------------ | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Web / Sites  | Sky中心の画面、仕事・履歴・Wallet・設定、本人限定の新Site                                       | 所有者ログイン後の本番操作確認、一般公開                                                                                     |
+| Linux / QEMU | `1.0.0-preview.20260911-rc2`の内部導入、起動、保存、再起動、同一VMの中断復旧、D4/D6等の限定受入 | 正式署名、license clearance、取消の実停止、RSS再確認、別host／VM全損復旧、保存データあり端末の削除                           |
+| Android P1   | 通常権限の2APK、SQLite／Binder／JobScheduler、emulator CI                                       | Sky／Wallet／GameのAndroid移植、実機OS統合                                                                                   |
+| スマホOS     | 上流版と候補機種のsource lock、product makefile、準備／build／診断script                        | 全source取得、vendor生成、Soongフルbuild、target-files／OTA／factory image、正式Android署名、flash、実機boot／更新／純正復旧 |
+| Wallet／Game | 合成台帳、複数owner/gameのfixture、作者SDK、ATM自社手数料0の契約                                | 実provider、KYC／提供地域／資金保管／通貨／返金／出金／照合、指定実ゲームの正式sandbox                                       |
+| Release      | PR #4の現HEAD CI成功、本人限定Site、CM制作途中                                                  | license、第三者許諾、production鍵、実署名、公開受入、main統合                                                                |
 
 ### スマホ対象の不一致
 
@@ -61,12 +61,12 @@ RQ01〜RQ17、Sky＋Walletを中心とする製品、自作ゲーム交換／作
 
 ## 実装と検証の区分
 
-| 対象 | 現在確認できること | 残ること |
-| --- | --- | --- |
-| Linux / Buildroot / QEMU | b7/rc2の内部導入、起動、保存、再起動、同じVMでの中断復旧と追加受入を限定確認 | 正式署名後の最終配布受入、キャンセルの実停止、メモリ増加の確認等 |
-| Android P1 | 通常権限の2APK、SQLite／Binder／JobScheduler、標準エミュレーターCI | 実機確認、Sky／Wallet／Gameの移植 |
-| Pixel候補のOS | GrapheneOS安定版の署名タグ確認、機種構成へのRock組込み設定、source検査、Linux build入口、読取り専用診断を実装 | 全source取得、Soong／OS build、正式Android署名、起動・更新・復旧の実機受入 |
-| Web / Sites | Sky改修、履歴のコード統合、新しい本人限定Siteの公開 | ログイン後の本番Sky操作確認、一般公開 |
+| 対象                     | 現在確認できること                                                                                            | 残ること                                                                   |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Linux / Buildroot / QEMU | b7/rc2の内部導入、起動、保存、再起動、同じVMでの中断復旧と追加受入を限定確認                                  | 正式署名後の最終配布受入、キャンセルの実停止、メモリ増加の確認等           |
+| Android P1               | 通常権限の2APK、SQLite／Binder／JobScheduler、標準エミュレーターCI                                            | 実機確認、Sky／Wallet／Gameの移植                                          |
+| Pixel候補のOS            | GrapheneOS安定版の署名タグ確認、機種構成へのRock組込み設定、source検査、Linux build入口、読取り専用診断を実装 | 全source取得、Soong／OS build、正式Android署名、起動・更新・復旧の実機受入 |
+| Web / Sites              | Sky改修、履歴のコード統合、新しい本人限定Siteの公開                                                           | ログイン後の本番Sky操作確認、一般公開                                      |
 
 QEMUの凍結sourceは`b7d819cd291b653d165aa124f25a52b9898bfb2e`、版は`1.0.0-preview.20260911-rc2`。今回の統合で既存image・配布bytesは変更していない。QEMUの合格をスマホへ移さず、スマホ用の書込み可能imageはまだ存在しない。[rc2受入](os-acceptance-b7d819c-20260911.md)／[追加受入と未観測条件](rc2-remaining-acceptance-20260911.md)／[スマホ版の実装](phone-preview-20260911.md)。
 

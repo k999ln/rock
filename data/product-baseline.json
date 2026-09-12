@@ -1,5 +1,5 @@
 {
-  "version": "1.17",
+  "version": "1.21",
   "decidedAt": "2026-09-12",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -11,7 +11,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ22 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ25 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -57,14 +57,18 @@
     "RQ19",
     "RQ20",
     "RQ21",
-    "RQ22"
+    "RQ22",
+    "RQ23",
+    "RQ24",
+    "RQ25"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
     "automation-earnings-wallet",
     "instagram-fashion-brand-operations",
     "goal-driven-brand-operations",
-    "sky-monthly-billing"
+    "sky-earnings-settlement",
+    "generic-mcp-connector"
   ],
   "fashionBrandOperations": {
     "status": "autonomous_mock_verified",
@@ -102,16 +106,47 @@
     "source-at-sha",
     "checks-at-sha"
   ],
-  "commercialPolicy": "Implement a production-capable Stripe path for a ToC USD 8.88 monthly base fee while preserving native 888-cent simulation and legacy Web estimates as separate records. Sky charges tob no registration, connection, publication or base usage fee and takes zero Sky commission from tob tool sales. Third-party payment, provider, model and cloud costs remain separate and disclosed. Live collection or payout requires verified merchant and payout details, sales disclosures, live credentials, configured webhooks, sandbox acceptance and owner confirmation. Rock ATM fee remains zero per RQ15; game fees are unspecified.",
+  "commercialPolicy": "Sky has no upfront ToC subscription charge. A trusted provider adapter may settle only externally verified automation earnings linked to an Execution Receipt. Direct operating costs are recovered first; Sky then collects at most USD 8.88 per user per UTC month from the remaining settled earnings. Zero earnings means zero fee; no debt, carry-forward or card charge. Sky charges tob no registration, connection, publication or base usage fee and takes zero Sky commission from tob tool sales. Live collection or payout requires verified sales, payment and payout providers, merchant and beneficiary details, disclosures, credentials, sandbox acceptance and owner confirmation. Rock ATM fee remains zero per RQ15; game fees are unspecified.",
   "skyNetworkEconomy": {
     "tobSkyFeeMinor": 0,
     "tobSkySalesCommissionBps": 0,
-    "tocMonthlyBaseMinor": 888,
-    "tocMonthlyBaseCurrency": "USD",
+    "tocMonthlyFeeCapMinor": 888,
+    "tocMonthlyFeeCapCurrency": "USD",
+    "tocUpfrontCharge": false,
+    "debtCarryForward": false,
     "thirdPartyCostsSeparate": true,
     "connectionPassport": "front_end_design",
     "contributionReceipts": "synthetic_ui_only",
     "liveMcpConnectionEnabled": false,
+    "externalMcpConnectionEnabled": false,
+    "localMcpConnection": {
+      "status": "implemented_requires_user_pc",
+      "transport": "loopback_streamable_http",
+      "toolCount": 4,
+      "installSurface": "inside_sky",
+      "realSessionStateDisplayed": true,
+      "syntheticUrlCheckRemoved": true
+    },
+    "connectionTargets": {
+      "default": "device_local",
+      "selectionSurface": "inside_sky",
+      "deviceLocal": "available",
+      "skyCloud": "planned",
+      "providerMcp": "planned",
+      "unavailableTargetsDisabled": true,
+      "externalOneTapEnabled": false
+    },
+    "multiMcpConnector": {
+      "status": "local_package_and_sky_ui_verified",
+      "registryServers": 2,
+      "serverDiscoveryVerified": true,
+      "singleUseApprovalVerified": true,
+      "streamableHttpAdapterImplemented": true,
+      "remoteInteropVerified": false,
+      "distributionPackageBuilt": true,
+      "oauthEnabled": false,
+      "skyUiConnected": true
+    },
     "livePayoutEnabled": false,
     "payoutRulesFinalized": false,
     "primarySurface": "inside_sky",
@@ -122,21 +157,30 @@
     "record": "docs/sky-network-economy.md"
   },
   "skyMonthlyBilling": {
+    "status": "retired",
+    "upfrontChargeEnabled": false,
+    "legacyEndpointsReturn": "410_UPFRONT_BILLING_RETIRED",
+    "replacement": "skyEarningsSettlement"
+  },
+  "skyEarningsSettlement": {
     "requested": true,
-    "amountMinor": 888,
+    "monthlyFeeCapMinor": 888,
     "currency": "USD",
-    "interval": "month",
-    "provider": "Stripe",
+    "basis": "verified_automation_earnings_after_direct_operating_costs",
+    "zeroEarningsFeeMinor": 0,
+    "debtCarryForward": false,
+    "tobFeeMinor": 0,
     "architecture": "docs/sky-billing.md",
-    "implementationStatus": "production_path_implemented_credentials_and_sandbox_pending",
-    "liveBillingEnabled": false,
-    "cardDataStoredBySky": false,
+    "implementationStatus": "signed_receipt_ledger_and_payout_instruction_implemented_provider_adapters_pending",
+    "liveCollectionEnabled": false,
+    "livePayoutEnabled": false,
     "host": "separate Cloudflare Worker",
     "requiresOwnerInputs": [
-      "verified Stripe merchant account and payout account",
-      "live USD 8.88 monthly Price ID",
-      "Stripe secret and webhook secret installed outside Git",
-      "sales entity, terms, privacy, tax, refund and support disclosures",
+      "approved automation product and paying demand source",
+      "verified sales, payment and payout provider accounts",
+      "merchant and beneficiary identity, custody and payout policy",
+      "terms, privacy, tax, refund, chargeback and support disclosures",
+      "provider credentials installed outside Git",
       "sandbox and minimal live acceptance"
     ]
   },

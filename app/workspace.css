@@ -2448,6 +2448,66 @@
   color: #7f8979;
   font-size: 11px;
 }
+.sky-settlement-body {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid #e8ece5;
+}
+.sky-settlement-progress {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.8fr);
+  gap: 24px;
+  align-items: center;
+}
+.sky-settlement-progress > div {
+  display: grid;
+  gap: 3px;
+}
+.sky-settlement-progress span,
+.sky-settlement-progress small,
+.sky-settlement-metrics dt {
+  color: #7b8676;
+  font-size: 11px;
+}
+.sky-settlement-progress strong {
+  color: #2d4027;
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+}
+.sky-settlement-progress progress {
+  width: 100%;
+  height: 10px;
+  accent-color: #55783f;
+}
+.sky-settlement-metrics {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.sky-settlement-metrics > div {
+  padding: 12px;
+  border-radius: 8px;
+  background: #f5f7f2;
+}
+.sky-settlement-metrics dd {
+  margin-top: 3px;
+  color: #394833;
+  font-size: 15px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.sky-settlement-rule {
+  margin-top: 14px;
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  color: #52684a;
+  font-size: 12px;
+}
+.sky-settlement-rule svg {
+  flex: 0 0 auto;
+}
 .sky-billing-enroll label {
   color: #566052;
   font-size: 13px;
@@ -2711,6 +2771,13 @@
   .sky-billing-enroll {
     align-items: stretch;
     flex-direction: column;
+  }
+  .sky-settlement-progress {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .sky-settlement-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .sky-billing-status button,
   .sky-billing-enroll button {
@@ -4937,6 +5004,192 @@
   background: #0a0a0a;
 }
 
+/* The same real local-MCP flow is used from Sky and the legacy Loop surface. */
+.device-page {
+  display: grid;
+  gap: 22px;
+}
+.device-heading {
+  align-items: flex-start;
+}
+.device-heading p {
+  max-width: 620px;
+}
+.device-install-card {
+  display: grid;
+  gap: 20px;
+}
+.device-install-steps {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.device-install-steps > li {
+  display: grid;
+  grid-template-columns: 30px 42px minmax(0, 1fr);
+  gap: 12px;
+  padding: 19px 0;
+  border-bottom: 1px solid var(--border);
+}
+.device-install-steps > li:first-child {
+  padding-top: 0;
+}
+.device-install-steps > li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.device-step-number,
+.device-step-icon {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+.device-step-number {
+  width: 28px;
+  height: 28px;
+  color: #5d704d;
+  background: #e7efdc;
+  font-size: 13px;
+  font-weight: 800;
+}
+.device-step-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  color: #647b50;
+  background: #f0f4eb;
+}
+.device-install-steps h2 {
+  margin: 0;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+.device-install-steps p {
+  margin: 6px 0 0;
+  color: #6b775f;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.device-install-steps small {
+  display: block;
+  margin-top: 7px;
+  color: #7c8577;
+  font-size: 12px;
+}
+.device-install-steps .black-button,
+.device-download {
+  width: fit-content;
+  margin-top: 12px;
+}
+.device-connection-result {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  padding: 14px 16px;
+  border: 1px solid #d9ded4;
+  border-radius: 11px;
+  background: #f7f9f5;
+}
+.device-connection-result.is-connected {
+  border-color: #c7dba9;
+  background: #f3fae9;
+}
+.device-connection-result strong {
+  font-size: 14px;
+}
+.device-connection-result p {
+  margin-top: 3px;
+  color: #6c7765;
+  font-size: 13px;
+}
+.device-card .device-connection-result .disconnect-button {
+  margin: 0;
+  font-size: 13px;
+}
+.device-advanced {
+  border-top: 1px solid var(--border);
+  padding-top: 17px;
+  font-size: 14px;
+}
+.device-advanced summary {
+  font-weight: 650;
+}
+.device-advanced-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+.device-advanced-grid section {
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.device-advanced-grid h3 {
+  margin-top: 8px;
+  font-size: 14px;
+}
+.device-advanced-grid p {
+  margin-top: 6px;
+  color: #6c7765;
+  font-size: 13px;
+}
+.device-advanced-grid pre {
+  margin-top: 10px;
+  padding: 12px;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: #f2f5ef;
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+.device-privacy-note {
+  margin-top: 0 !important;
+}
+
+.sky-tool-dialog .device-heading,
+.sky-tool-dialog .device-install-card {
+  color: #e7e9ea;
+}
+.sky-tool-dialog .device-install-card {
+  border-color: #2f3336;
+  background: #050505;
+}
+.sky-tool-dialog .device-install-steps > li,
+.sky-tool-dialog .device-advanced {
+  border-color: #2f3336;
+}
+.sky-tool-dialog .device-step-number {
+  color: #c9ff67;
+  background: rgba(201, 255, 103, 0.1);
+}
+.sky-tool-dialog .device-step-icon {
+  color: #c9ff67;
+  background: #111510;
+}
+.sky-tool-dialog .device-install-steps p,
+.sky-tool-dialog .device-install-steps small,
+.sky-tool-dialog .device-connection-result p,
+.sky-tool-dialog .device-advanced-grid p {
+  color: #8b98a5;
+}
+.sky-tool-dialog .device-connection-result,
+.sky-tool-dialog .device-advanced-grid section {
+  border-color: #2f3336;
+  background: #0a0a0a;
+}
+.sky-tool-dialog .device-connection-result.is-connected {
+  border-color: #617c38;
+  background: rgba(201, 255, 103, 0.06);
+}
+.sky-tool-dialog .device-advanced-grid pre {
+  color: #dce3d7;
+  background: #111510;
+}
+
 @media (max-width: 767px) {
   .rock-main-column:has(.sky-main-feed) .rock-topbar {
     min-height: 58px;
@@ -4964,6 +5217,25 @@
   }
   .sky-tool-dialog .mr-workbench {
     padding: 14px;
+  }
+  .device-heading > svg {
+    display: none;
+  }
+  .device-install-steps > li {
+    grid-template-columns: 28px minmax(0, 1fr);
+  }
+  .device-step-icon {
+    display: none;
+  }
+  .device-advanced-grid {
+    grid-template-columns: 1fr;
+  }
+  .device-connection-result {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .device-connection-result .disconnect-button {
+    grid-column: 2;
+    justify-self: start;
   }
 }
 
@@ -4994,17 +5266,23 @@
 .sky-main-feed .sky-feed-header-actions {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 5px;
   padding: 0 9px 0 4px;
 }
 .sky-main-feed .sky-header-action {
-  width: 38px;
+  width: auto;
+  min-width: 38px;
   height: 38px;
-  display: grid;
+  display: inline-flex;
   flex: 0 0 auto;
-  place-items: center;
-  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 11px;
+  border-radius: 999px;
   color: #e7e9ea;
+  font-size: 13px;
+  font-weight: 650;
 }
 .sky-main-feed .sky-header-action:hover,
 .sky-main-feed .sky-header-action:focus-visible {
@@ -5111,7 +5389,12 @@
   }
   .sky-main-feed .sky-header-action {
     width: 36px;
+    min-width: 36px;
     height: 36px;
+    padding: 0;
+  }
+  .sky-main-feed .sky-header-action span {
+    display: none;
   }
   .sky-main-feed .sky-feed-search {
     top: 108px;

@@ -27,6 +27,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { catalog, type Automation } from '@/lib/catalog';
+import { deviceToken } from '@/lib/device';
 import { routeSkyRequest, skyRoles } from '@/lib/sky-routing';
 import {
   Dialog,
@@ -155,7 +156,15 @@ export default function SkyWorkspace({
   const [searchOpen, setSearchOpen] = useState(false);
   const [mcpOpen, setMcpOpen] = useState(initialMcpOpen);
   const [publishOpen, setPublishOpen] = useState(initialPublishOpen);
+  const [connected, setConnected] = useState(false);
   const searchInput = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const updateConnection = () => setConnected(Boolean(deviceToken()));
+    updateConnection();
+    window.addEventListener('loop-device', updateConnection);
+    return () => window.removeEventListener('loop-device', updateConnection);
+  }, []);
 
   useEffect(() => {
     if (searchOpen) searchInput.current?.focus();
@@ -230,7 +239,12 @@ export default function SkyWorkspace({
     >
       <div className="sky-feed-layout">
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
-          <SkyMcpCenter open={mcpOpen} onOpenChange={setMcpOpen} />
+          <SkyMcpCenter
+            open={mcpOpen}
+            connected={connected}
+            onOpenChange={setMcpOpen}
+            onOpenDevice={() => setDeviceOpen(true)}
+          />
           <section
             className="sky-assistant"
             aria-labelledby="sky-assistant-title"
@@ -317,6 +331,7 @@ export default function SkyWorkspace({
                 onClick={() => setMcpOpen(true)}
               >
                 <Network size={19} />
+                <span>MCP</span>
               </button>
               <button
                 className="sky-header-action"
@@ -328,6 +343,7 @@ export default function SkyWorkspace({
                 }}
               >
                 {searchOpen ? <X size={19} /> : <Search size={19} />}
+                <span>{searchOpen ? '閉じる' : '検索'}</span>
               </button>
               <button
                 aria-label="Skyにツールを掲載"
@@ -335,6 +351,7 @@ export default function SkyWorkspace({
                 onClick={() => setPublishOpen(true)}
               >
                 <PackagePlus size={19} />
+                <span>掲載</span>
               </button>
             </div>
           </header>

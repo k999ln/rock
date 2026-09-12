@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "Sky画面のsidebarを外し、MCP接続・管理とToB掲載をSky本体へ統合・検証中",
-  "nextAction": "全検証後、既存Sitesへ保存・公開し、実MCP接続と実送金は別gateのまま維持する。",
+  "milestone": "Sky内MCP導入を検証しつつ、先払いを廃止して検証済み自動化収益からの月最大888 cents精算核を実装",
+  "nextAction": "有償需要のある自動化商品を1件選び、販売・決済・払出しProvider sandboxをExecution Receiptと接続して、実入金なしのfixtureではなくProvider検証済みEarning Receiptの縦断受入を行う。",
   "tasks": [
     {
       "id": "SKY01",
@@ -63,6 +63,36 @@
         "components/workspace-shell.tsx",
         "app/sky/network/page.tsx",
         "app/sky/publish/page.tsx"
+      ]
+    },
+    {
+      "id": "SKY06",
+      "title": "Sky内MCPを実在するPC接続・既存4自動化・3ステップ導入画面へ統合",
+      "status": "done",
+      "dependsOn": ["SKY05"],
+      "evidence": [
+        "components/sky-mcp-center.tsx",
+        "components/device-connection.tsx",
+        "tests/sky-mcp-onboarding.test.mjs",
+        "scripts/verify-mcp-flow.mjs"
+      ]
+    },
+    {
+      "id": "SKY07",
+      "title": "MCPごとにこのPC・Sky Cloud・提供者MCPの接続先を選び、対応先へワンタップ接続する",
+      "status": "in_progress",
+      "dependsOn": ["SKY06"],
+      "evidence": [
+        "components/sky-mcp-center.tsx",
+        "components/sky-mcp-center.module.css",
+        "lib/mcp-hub.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "scripts/package-sky-mcp.py",
+        "public/toolkits/sky-mcp-connector.zip",
+        "docs/sky-mcp-connector.md",
+        "tests/mcp-connector.test.mjs",
+        "tests/sky-mcp-onboarding.test.mjs",
+        "docs/product-baseline.md"
       ]
     },
     {
@@ -554,18 +584,20 @@
     },
     {
       "id": "BIL01",
-      "title": "Skyの月額8.88 USDにStripe Checkout・署名Webhook・台帳・二重防止・解約管理を実装",
+      "title": "先払い月額を停止し、検証済み自動化収益からだけ実費後に月最大888 centsを精算",
       "status": "done",
       "dependsOn": [],
       "evidence": [
         "docs/sky-billing.md",
         "services/sky-billing/src/worker.ts",
-        "tests/billing.test.mjs"
+        "tests/billing.test.mjs",
+        "tests/billing-worker.test.mjs",
+        "services/sky-billing/migrations/0002_earnings_settlement.sql"
       ]
     },
     {
       "id": "BIL02",
-      "title": "Stripe実アカウントをsandbox接続し、全請求lifecycleと台帳照合後にlive最小額を受入",
+      "title": "有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入",
       "status": "in_progress",
       "dependsOn": ["BIL01"],
       "evidence": ["docs/sky-billing.md"]

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { createHmac, randomUUID } from 'node:crypto';
+import { createHmac } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
@@ -10,17 +10,14 @@ class Statement {
   #database;
   #sql;
   #values = [];
-
   constructor(database, sql) {
     this.#database = database;
     this.#sql = sql;
   }
-
   bind(...values) {
     this.#values = values;
     return this;
   }
-
   run() {
     const result = this.#database.prepare(this.#sql).run(...this.#values);
     return Promise.resolve({
@@ -28,13 +25,11 @@ class Statement {
       meta: { changes: Number(result.changes) },
     });
   }
-
   first() {
     return Promise.resolve(
       this.#database.prepare(this.#sql).get(...this.#values) ?? null,
     );
   }
-
   all() {
     return Promise.resolve({
       success: true,
@@ -46,21 +41,23 @@ class Statement {
 class TestD1 {
   constructor() {
     this.database = new DatabaseSync(':memory:');
-    this.database.exec(
-      readFileSync(
-        new URL(
-          '../services/sky-billing/migrations/0001_billing.sql',
-          import.meta.url,
+    for (const migration of [
+      '0001_billing.sql',
+      '0002_earnings_settlement.sql',
+    ])
+      this.database.exec(
+        readFileSync(
+          new URL(
+            `../services/sky-billing/migrations/${migration}`,
+            import.meta.url,
+          ),
+          'utf8',
         ),
-        'utf8',
-      ),
-    );
+      );
   }
-
   prepare(sql) {
     return new Statement(this.database, sql);
   }
-
   async batch(statements) {
     this.database.exec('BEGIN IMMEDIATE');
     try {
@@ -73,7 +70,6 @@ class TestD1 {
       throw error;
     }
   }
-
   close() {
     this.database.close();
   }
@@ -81,62 +77,25 @@ class TestD1 {
 
 const origin = 'https://sky.example';
 const sharedSecret = 'test-billing-shared-secret-that-is-long-enough';
-const webhookSecret = 'whsec_test_secret_that_is_long_enough';
-const priceId = 'price_sky888';
+const ingestSecret = 'test-receipt-ingest-secret-that-is-long-enough';
 
-function stripeSignature(raw, timestamp = Math.floor(Date.now() / 1000)) {
-  return `t=${timestamp},v1=${createHmac('sha256', webhookSecret)
+function signature(raw, timestamp = Math.floor(Date.now() / 1000)) {
+  return `t=${timestamp},v1=${createHmac('sha256', ingestSecret)
     .update(`${timestamp}.${raw}`)
     .digest('hex')}`;
 }
 
-void test('billing Worker completes the safe monthly lifecycle and blocks duplicates', async () => {
+void test('settlement Worker applies verified earnings once and never charges upfront', async () => {
   const DB = new TestD1();
   const env = {
     DB,
     BILLING_SHARED_SECRET: sharedSecret,
+    SETTLEMENT_INGEST_SECRET: ingestSecret,
     SKY_ORIGIN: origin,
-    RETURN_ORIGIN: origin,
-    STRIPE_PRICE_ID: priceId,
-    STRIPE_SECRET_KEY: 'sk_test_worker_lifecycle',
-    STRIPE_WEBHOOK_SECRET: webhookSecret,
   };
-  const stripeCalls = [];
-  let checkoutFailure = false;
-  const originalFetch = globalThis.fetch;
-  globalThis.fetch = async (input, init = {}) => {
-    const url = new URL(input instanceof Request ? input.url : String(input));
-    stripeCalls.push({ url, init });
-    if (url.pathname === `/v1/prices/${priceId}`)
-      return Response.json({
-        id: priceId,
-        active: true,
-        currency: 'usd',
-        unit_amount: 888,
-        type: 'recurring',
-        recurring: { interval: 'month', interval_count: 1 },
-      });
-    if (url.pathname === '/v1/checkout/sessions') {
-      if (checkoutFailure) throw new Error('synthetic timeout');
-      return Response.json({
-        id: `cs_test_${randomUUID().replaceAll('-', '')}`,
-        url: 'https://checkout.stripe.com/c/pay/cs_test_sky',
-      });
-    }
-    if (url.pathname === '/v1/billing_portal/sessions')
-      return Response.json({
-        url: 'https://billing.stripe.com/p/session/test_sky',
-      });
-    return Response.json(
-      { error: { code: 'unexpected_test_request' } },
-      { status: 500 },
-    );
-  };
-
-  const token = (user) => createBillingToken(user, sharedSecret);
   const request = async (path, options = {}) => {
     const response = await billingWorker.fetch(
-      new Request(`https://billing.example${path}`, {
+      new Request(`https://settlement.example${path}`, {
         method: options.method ?? 'GET',
         headers: {
           ...(options.origin === false
@@ -146,7 +105,7 @@ void test('billing Worker completes the safe monthly lifecycle and blocks duplic
             ? { Authorization: `Bearer ${options.token}` }
             : {}),
           ...(options.signature
-            ? { 'Stripe-Signature': options.signature }
+            ? { 'Sky-Receipt-Signature': options.signature }
             : {}),
         },
         body: options.body,
@@ -155,236 +114,171 @@ void test('billing Worker completes the safe monthly lifecycle and blocks duplic
     );
     return { response, body: await response.json() };
   };
-  const webhook = async (event) => {
-    const raw = JSON.stringify(event);
-    return request('/v1/webhooks/stripe', {
+  const token = (user) => createBillingToken(user, sharedSecret);
+  const earning = async (receipt, suppliedSignature) => {
+    const raw = JSON.stringify(receipt);
+    return request('/v1/earnings', {
       method: 'POST',
       origin: false,
       body: raw,
-      signature: stripeSignature(raw),
+      signature: suppliedSignature ?? signature(raw),
     });
+  };
+  const base = {
+    receiptId: 'earn_1',
+    executionReceiptId: 'exec_1',
+    userId: 'alice',
+    beneficiaryRole: 'toc',
+    sourceProvider: 'stripe-connect',
+    providerReference: 'pi_1',
+    payoutAccountId: 'acct_alice',
+    evidenceSha256: 'a'.repeat(64),
+    currency: 'usd',
+    grossAmountMinor: 500,
+    operatingCostMinor: 100,
+    occurredAt: Math.floor(Date.now() / 1000),
   };
 
   try {
-    const aliceToken = await token('alice');
-    assert.equal(
-      (await request('/health', { origin: false })).response.status,
-      200,
-    );
+    const health = await request('/health', { origin: false });
+    assert.equal(health.response.status, 200);
+    assert.equal(health.body.mode, 'verified_earnings_only');
+    const retired = await request('/v1/checkout', { method: 'POST' });
+    assert.equal(retired.response.status, 410);
+    assert.equal(retired.body.code, 'UPFRONT_BILLING_RETIRED');
     assert.equal(
       (
         await request('/v1/status', {
-          token: aliceToken,
+          token: await token('alice'),
           origin: 'https://evil.example',
         })
       ).response.status,
       403,
     );
 
-    const checkout = await request('/v1/checkout', {
-      method: 'POST',
-      token: aliceToken,
-    });
-    assert.equal(checkout.response.status, 201);
-    assert.equal(
-      checkout.body.url,
-      'https://checkout.stripe.com/c/pay/cs_test_sky',
-    );
-    const checkoutCall = stripeCalls.find(
-      ({ url }) => url.pathname === '/v1/checkout/sessions',
-    );
-    const form = new URLSearchParams(checkoutCall.init.body);
-    assert.equal(form.get('mode'), 'subscription');
-    assert.equal(form.get('line_items[0][price]'), priceId);
-    assert.equal(form.get('line_items[0][quantity]'), '1');
-    assert.equal(form.get('client_reference_id'), 'alice');
-    assert.equal(form.get('subscription_data[metadata][sky_user_id]'), 'alice');
-    const expiresIn =
-      Number(form.get('expires_at')) - Math.floor(Date.now() / 1000);
-    assert.ok(expiresIn >= 1858 && expiresIn <= 1860);
-    assert.match(
-      checkoutCall.init.headers['Idempotency-Key'],
-      /^sky-checkout-/u,
-    );
+    const first = await earning(base);
+    assert.equal(first.response.status, 201);
+    assert.equal(first.body.receipt.skyFeeMinor, 400);
+    assert.equal(first.body.receipt.distributableMinor, 0);
+    assert.equal(first.body.receipt.payoutStatus, 'not_required');
 
-    const duplicate = await request('/v1/checkout', {
-      method: 'POST',
-      token: await token('alice'),
-    });
-    assert.equal(duplicate.response.status, 409);
-    assert.equal(duplicate.body.code, 'CHECKOUT_IN_PROGRESS');
-
-    const created = Math.floor(Date.now() / 1000);
-    const checkoutEvent = {
-      id: 'evt_checkout',
-      type: 'checkout.session.completed',
-      created,
-      data: {
-        object: {
-          customer: 'cus_alice',
-          subscription: 'sub_alice',
-          client_reference_id: 'alice',
-        },
-      },
-    };
-    assert.equal((await webhook(checkoutEvent)).response.status, 200);
-    assert.equal((await webhook(checkoutEvent)).response.status, 200);
+    const replay = await earning(base);
+    assert.equal(replay.response.status, 200);
+    assert.equal(replay.body.replay, true);
     assert.equal(
       DB.database
-        .prepare(
-          'SELECT COUNT(*) AS total FROM billing_events WHERE event_id = ?',
-        )
-        .get('evt_checkout').total,
+        .prepare('SELECT COUNT(*) AS total FROM earning_receipts')
+        .get().total,
       1,
     );
 
-    assert.equal(
-      (
-        await webhook({
-          id: 'evt_subscription',
-          type: 'customer.subscription.created',
-          created: created + 1,
-          data: {
-            object: {
-              id: 'sub_alice',
-              customer: 'cus_alice',
-              status: 'active',
-              metadata: { sky_user_id: 'alice' },
-              items: {
-                data: [
-                  {
-                    price: { id: priceId },
-                    current_period_end: created + 2_592_000,
-                  },
-                ],
-              },
-            },
-          },
-        })
-      ).response.status,
-      200,
-    );
-    assert.equal(
-      (
-        await webhook({
-          id: 'evt_invoice',
-          type: 'invoice.paid',
-          created: created + 2,
-          data: {
-            object: {
-              id: 'in_alice',
-              customer: 'cus_alice',
-              currency: 'usd',
-              amount_paid: 888,
-              status_transitions: { paid_at: created + 2 },
-              parent: {
-                subscription_details: {
-                  subscription: 'sub_alice',
-                  metadata: { sky_user_id: 'alice' },
-                },
-              },
-              lines: {
-                data: [
-                  {
-                    pricing: { price_details: { price: priceId } },
-                    period: { start: created, end: created + 2_592_000 },
-                  },
-                ],
-              },
-            },
-          },
-        })
-      ).response.status,
-      200,
-    );
+    const second = await earning({
+      ...base,
+      receiptId: 'earn_2',
+      executionReceiptId: 'exec_2',
+      providerReference: 'pi_2',
+      evidenceSha256: 'b'.repeat(64),
+      grossAmountMinor: 1000,
+    });
+    assert.equal(second.response.status, 201);
+    assert.equal(second.body.receipt.skyFeeMinor, 488);
+    assert.equal(second.body.receipt.distributableMinor, 412);
+    assert.equal(second.body.receipt.payoutStatus, 'ready');
+
+    const third = await earning({
+      ...base,
+      receiptId: 'earn_3',
+      executionReceiptId: 'exec_3',
+      providerReference: 'pi_3',
+      evidenceSha256: 'c'.repeat(64),
+      grossAmountMinor: 500,
+      operatingCostMinor: 0,
+    });
+    assert.equal(third.body.receipt.skyFeeMinor, 0);
+    assert.equal(third.body.receipt.distributableMinor, 500);
+
+    const tob = await earning({
+      ...base,
+      receiptId: 'earn_tob',
+      executionReceiptId: 'exec_tob',
+      userId: 'provider-one',
+      beneficiaryRole: 'tob',
+      providerReference: 'pi_tob',
+      payoutAccountId: 'acct_provider',
+      evidenceSha256: 'd'.repeat(64),
+      grossAmountMinor: 1000,
+    });
+    assert.equal(tob.body.receipt.skyFeeMinor, 0);
+    assert.equal(tob.body.receipt.distributableMinor, 900);
 
     const status = await request('/v1/status', {
       token: await token('alice'),
     });
     assert.equal(status.response.status, 200);
-    assert.equal(status.body.subscription.status, 'active');
-    assert.equal(status.body.invoice.status, 'paid');
-    assert.equal(status.body.invoice.amountPaid, 888);
-    assert.equal(
-      (
-        await request('/v1/checkout', {
-          method: 'POST',
-          token: await token('alice'),
-        })
-      ).response.status,
-      409,
-    );
-    const portal = await request('/v1/portal', {
-      method: 'POST',
-      token: await token('alice'),
-    });
-    assert.equal(portal.response.status, 201);
-    assert.equal(
-      portal.body.url,
-      'https://billing.stripe.com/p/session/test_sky',
-    );
-
-    const wrongPrice = await webhook({
-      id: 'evt_wrong_price',
-      type: 'customer.subscription.created',
-      created: created + 3,
-      data: {
-        object: {
-          id: 'sub_wrong',
-          customer: 'cus_wrong',
-          status: 'active',
-          metadata: { sky_user_id: 'wrong-price-user' },
-          items: { data: [{ price: { id: 'price_other' } }] },
-        },
-      },
-    });
-    assert.equal(wrongPrice.response.status, 502);
+    assert.equal(status.body.policy.upfrontCharge, false);
+    assert.equal(status.body.policy.debtCarry, false);
+    assert.equal(status.body.settlement.grossMinor, 2000);
+    assert.equal(status.body.settlement.operatingCostMinor, 200);
+    assert.equal(status.body.settlement.skyFeeMinor, 888);
+    assert.equal(status.body.settlement.distributableMinor, 912);
+    assert.equal(status.body.settlement.remainingFeeCapMinor, 0);
+    assert.equal(status.body.receipts.length, 3);
     assert.equal(
       DB.database
         .prepare(
-          'SELECT COUNT(*) AS total FROM billing_subscriptions WHERE user_id = ?',
+          "SELECT COUNT(*) AS total FROM earning_ledger_entries WHERE user_id='alice'",
         )
-        .get('wrong-price-user').total,
-      0,
+        .get().total,
+      9,
     );
 
-    checkoutFailure = true;
-    const uncertain = await request('/v1/checkout', {
+    const claimBody = JSON.stringify({ adapterId: 'stripe-connect' });
+    const claim = await request('/v1/payouts/claim', {
       method: 'POST',
-      token: await token('uncertain-user'),
+      origin: false,
+      body: claimBody,
+      signature: signature(claimBody),
     });
-    assert.equal(uncertain.response.status, 502);
+    assert.equal(claim.response.status, 200);
+    assert.equal(claim.body.instruction.status, 'processing');
+    assert.equal(claim.body.instruction.amountMinor, 412);
+    assert.match(claim.body.instruction.idempotencyKey, /^sky-payout-/u);
+    const resultBody = JSON.stringify({
+      instructionId: claim.body.instruction.instructionId,
+      leaseId: claim.body.instruction.leaseId,
+      status: 'paid',
+      providerTransferReference: 'tr_verified_1',
+    });
+    const paid = await request('/v1/payouts/result', {
+      method: 'POST',
+      origin: false,
+      body: resultBody,
+      signature: signature(resultBody),
+    });
+    assert.equal(paid.body.instruction.status, 'paid');
     assert.equal(
-      DB.database
-        .prepare('SELECT status FROM billing_checkout_locks WHERE user_id = ?')
-        .get('uncertain-user').status,
-      'unknown',
+      paid.body.instruction.providerTransferReference,
+      'tr_verified_1',
     );
-    const uncertainRetry = await request('/v1/checkout', {
+    const paidReplay = await request('/v1/payouts/result', {
       method: 'POST',
-      token: await token('uncertain-user'),
+      origin: false,
+      body: resultBody,
+      signature: signature(resultBody),
     });
-    assert.equal(uncertainRetry.response.status, 409);
+    assert.equal(paidReplay.body.replay, true);
 
-    const raw = JSON.stringify({
-      id: 'evt_tampered',
-      type: 'invoice.paid',
-      created,
-      data: { object: {} },
+    const conflict = await earning({ ...base, receiptId: 'changed_receipt' });
+    assert.equal(conflict.response.status, 409);
+    const raw = JSON.stringify({ ...base, receiptId: 'forged' });
+    const forged = await request('/v1/earnings', {
+      method: 'POST',
+      origin: false,
+      body: raw,
+      signature: signature(`${raw}changed`),
     });
-    assert.equal(
-      (
-        await request('/v1/webhooks/stripe', {
-          method: 'POST',
-          origin: false,
-          body: `${raw} `,
-          signature: stripeSignature(raw),
-        })
-      ).response.status,
-      400,
-    );
+    assert.equal(forged.response.status, 401);
   } finally {
-    globalThis.fetch = originalFetch;
     DB.close();
   }
 });

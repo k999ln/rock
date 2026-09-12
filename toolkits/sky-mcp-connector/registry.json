@@ -1,0 +1,26 @@
+{
+  "$schema": "./registry.schema.json",
+  "schema": "rockstaros-mcp-registry/1",
+  "servers": [
+    {
+      "id": "rock-star-mr",
+      "name": "Sky 基本自動化",
+      "description": "案件チェック・出典整理・無料版記事・納品照合",
+      "transport": "stdio",
+      "command": "python3",
+      "args": ["mr/mcp_server.py"],
+      "cwd": "..",
+      "required": true
+    },
+    {
+      "id": "fashion-brand-ops",
+      "name": "受注型ブランド運営",
+      "description": "Instagram・DM・決済・制作・発送を38機能で連携",
+      "transport": "stdio",
+      "command": "node",
+      "args": ["fashion-brand-ops/src/server.mjs"],
+      "cwd": "..",
+      "required": false
+    }
+  ]
+}

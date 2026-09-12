@@ -1,63 +1,174 @@
 'use client';
 
 import {
-  BadgeCheck,
-  Building2,
+  BriefcaseBusiness,
+  Cable,
   Check,
-  Fingerprint,
-  Link2,
+  Cloud,
+  FileCheck2,
+  FilePenLine,
+  Globe2,
+  Laptop2,
   Network,
-  Plus,
-  RefreshCw,
+  PlugZap,
+  Quote,
   ShieldCheck,
-  WalletCards,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  connectMcp,
+  listMcpConnections,
+  type McpConnection,
+} from '@/lib/mcp-hub';
 import styles from '@/components/sky-mcp-center.module.css';
 
-type View = 'connect' | 'manage';
-type CheckState = 'idle' | 'checking' | 'ready';
+type View = 'setup' | 'tools';
+type ConnectionTarget = 'device' | 'sky-cloud' | 'provider';
 
-const steps = [
-  ['1', '識別', '作者・版'],
-  ['2', '検査', '権限・料金'],
-  ['3', '契約', '実行範囲'],
-  ['4', '証跡', '受取人'],
+const connectionTargets = [
+  {
+    id: 'device',
+    name: 'このPC',
+    detail: 'ファイルや本文をPC内で処理',
+    note: '利用可能',
+    ready: true,
+    recommended: true,
+    Icon: Laptop2,
+  },
+  {
+    id: 'sky-cloud',
+    name: 'Sky Cloud',
+    detail: '常時動くSky管理の実行先',
+    note: '準備中',
+    ready: false,
+    recommended: false,
+    Icon: Cloud,
+  },
+  {
+    id: 'provider',
+    name: '提供者のMCP',
+    detail: 'OAuthで提供者へ直接接続',
+    note: '準備中',
+    ready: false,
+    recommended: false,
+    Icon: Globe2,
+  },
+] as const satisfies readonly {
+  id: ConnectionTarget;
+  name: string;
+  detail: string;
+  note: string;
+  ready: boolean;
+  recommended: boolean;
+  Icon: typeof Laptop2;
+}[];
+
+const mcpTools = [
+  {
+    name: '案件チェック',
+    id: 'coconala_check',
+    detail: '依頼と提案の条件差を確認',
+    Icon: BriefcaseBusiness,
+  },
+  {
+    name: '出典整理',
+    id: 'format_citations',
+    detail: 'Markdownの出典を整理',
+    Icon: Quote,
+  },
+  {
+    name: '無料版記事',
+    id: 'make_free_article',
+    detail: '原稿から無料公開版を作成',
+    Icon: FilePenLine,
+  },
+  {
+    name: '納品照合',
+    id: 'verify_delivery',
+    detail: '契約・成果物・記録を照合',
+    Icon: FileCheck2,
+  },
 ] as const;
 
 export default function SkyMcpCenter({
   open,
+  connected,
   onOpenChange,
+  onOpenDevice,
 }: {
   open: boolean;
+  connected: boolean;
   onOpenChange: (open: boolean) => void;
+  onOpenDevice: () => void;
 }) {
-  const [view, setView] = useState<View>('connect');
-  const [source, setSource] = useState('');
-  const [checkState, setCheckState] = useState<CheckState>('idle');
-  const timeoutRef = useRef<number | null>(null);
+  const [view, setView] = useState<View>('setup');
+  const [target, setTarget] = useState<ConnectionTarget>('device');
+  const [servers, setServers] = useState<McpConnection[]>([]);
+  const [busyServer, setBusyServer] = useState('');
+  const [connectionMessage, setConnectionMessage] = useState('');
 
-  useEffect(
-    () => () => {
-      if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
-    },
-    [],
+  const toolCount = useMemo(
+    () =>
+      servers.reduce(
+        (total, server) => total + (server.passport?.tools.length ?? 0),
+        0,
+      ),
+    [servers],
+  );
+  const visibleServers = useMemo(
+    () =>
+      servers.filter((server) =>
+        target === 'device'
+          ? server.transport === 'stdio'
+          : target === 'provider'
+            ? server.transport === 'streamable_http'
+            : false,
+      ),
+    [servers, target],
   );
 
-  function inspect() {
-    if (!source.trim()) return;
-    setCheckState('checking');
-    if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
-    timeoutRef.current = window.setTimeout(() => {
-      setCheckState('ready');
-      timeoutRef.current = null;
-    }, 700);
+  const refreshServers = useCallback(async () => {
+    if (!connected) return setServers([]);
+    try {
+      setServers(await listMcpConnections());
+    } catch {
+      setServers([]);
+    }
+  }, [connected]);
+
+  useEffect(() => {
+    if (!open) return;
+    const timeout = window.setTimeout(() => void refreshServers(), 0);
+    return () => window.clearTimeout(timeout);
+  }, [open, refreshServers]);
+
+  async function connectServer(server: McpConnection) {
+    setBusyServer(server.id);
+    setConnectionMessage('');
+    try {
+      const passport = await connectMcp(server.id);
+      setConnectionMessage(
+        `${server.name}へ接続しました。${passport.tools.length}機能を確認済みです。`,
+      );
+      await refreshServers();
+    } catch (error) {
+      setConnectionMessage(
+        error instanceof Error ? error.message : 'MCPへ接続できませんでした。',
+      );
+    } finally {
+      setBusyServer('');
+    }
+  }
+
+  function openDevice() {
+    onOpenChange(false);
+    onOpenDevice();
   }
 
   return (
@@ -69,19 +180,25 @@ export default function SkyMcpCenter({
         <div className={styles.railCopy}>
           <div>
             <strong>MCP</strong>
-            <span>SKY CORE</span>
+            <span>{toolCount || 4}機能</span>
           </div>
-          <p>外部接続 0件 · 内蔵MCP 1件</p>
+          <p>
+            {connected
+              ? 'このPCで自動化を実行できます'
+              : '初回だけ接続アプリを起動します'}
+          </p>
         </div>
-        <span className={styles.offlineStatus}>
-          <i /> 実接続 OFF
+        <span
+          className={`${styles.connectionStatus} ${connected ? styles.isConnected : ''}`}
+        >
+          <i /> {connected ? 'PC接続中' : 'PC未接続'}
         </span>
         <button
           className={styles.manageButton}
           onClick={() => onOpenChange(true)}
         >
-          <Plus size={16} />
-          接続・管理
+          <PlugZap size={16} />
+          {connected ? '接続・機能' : '導入する'}
         </button>
       </section>
 
@@ -89,204 +206,264 @@ export default function SkyMcpCenter({
         <DialogContent className={styles.dialog}>
           <header className={styles.dialogHeader}>
             <div className={styles.dialogTitleRow}>
-              <span className={styles.dialogMark}>
+              <span className={styles.dialogMark} aria-hidden="true">
                 <Network size={21} />
               </span>
               <div>
-                <DialogTitle>MCP接続・管理</DialogTitle>
+                <DialogTitle>Sky MCP</DialogTitle>
                 <DialogDescription>
-                  Skyから使うMCPと、その権限・料金・受取人を確認します。
+                  自動化ごとのMCPを、共通Connectorから安全に接続します。
                 </DialogDescription>
               </div>
             </div>
             <div className={styles.policyBadges}>
               <span>
-                <Building2 size={14} /> ToB利用料 0円
+                <ShieldCheck size={14} /> 入力はPC内で処理
               </span>
-              <span className={styles.liveOff}>実接続 OFF</span>
+              <span className={connected ? styles.liveOn : styles.liveOff}>
+                {connected ? 'MCP接続中' : 'MCP未接続'}
+              </span>
             </div>
           </header>
 
           <div className={styles.tabs} role="tablist" aria-label="MCPメニュー">
             <button
+              id="sky-mcp-setup-tab"
               role="tab"
-              aria-selected={view === 'connect'}
-              onClick={() => setView('connect')}
+              aria-controls="sky-mcp-setup-panel"
+              aria-selected={view === 'setup'}
+              tabIndex={view === 'setup' ? 0 : -1}
+              onClick={() => setView('setup')}
             >
-              接続する
+              導入・接続
             </button>
             <button
+              id="sky-mcp-tools-tab"
               role="tab"
-              aria-selected={view === 'manage'}
-              onClick={() => setView('manage')}
+              aria-controls="sky-mcp-tools-panel"
+              aria-selected={view === 'tools'}
+              tabIndex={view === 'tools' ? 0 : -1}
+              onClick={() => setView('tools')}
             >
-              管理 <span>1</span>
+              使える機能 <span>{toolCount || 4}</span>
             </button>
           </div>
 
-          {view === 'connect' ? (
-            <div className={styles.connectView}>
-              <form
-                className={styles.connectForm}
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  inspect();
-                }}
-              >
-                <label htmlFor="sky-mcp-source">
-                  MCPのURL・Registry名・package
-                </label>
-                <div className={styles.inputRow}>
-                  <div className={styles.inputWrap}>
-                    <Link2 size={18} aria-hidden="true" />
-                    <input
-                      id="sky-mcp-source"
-                      value={source}
-                      onChange={(event) => {
-                        setSource(event.target.value);
-                        setCheckState('idle');
-                      }}
-                      placeholder="https://example.com/mcp"
-                    />
+          {view === 'setup' ? (
+            <div
+              id="sky-mcp-setup-panel"
+              className={styles.setupView}
+              role="tabpanel"
+              aria-labelledby="sky-mcp-setup-tab"
+            >
+              <section className={styles.targetSection}>
+                <div className={styles.sectionHeading}>
+                  <div>
+                    <strong>接続先を選ぶ</strong>
+                    <p>MCPごとの推奨先をSkyが表示し、対応先だけ選べます。</p>
                   </div>
-                  <button
-                    className={styles.inspectButton}
-                    disabled={!source.trim() || checkState === 'checking'}
-                  >
-                    {checkState === 'checking' ? (
-                      <RefreshCw className={styles.spin} size={16} />
-                    ) : (
-                      <ShieldCheck size={16} />
-                    )}
-                    {checkState === 'checking' ? '確認中' : '安全確認'}
-                  </button>
+                  <span>STEP 1</span>
                 </div>
-                <button
-                  type="button"
-                  className={styles.demoButton}
-                  onClick={() => {
-                    setSource('https://demo.sky.local/mcp');
-                    setCheckState('idle');
-                  }}
-                >
-                  デモ用アドレスを入力
-                </button>
-              </form>
+                <div className={styles.targetGrid}>
+                  {connectionTargets.map(
+                    ({ id, name, detail, note, ready, recommended, Icon }) => {
+                      const available =
+                        ready ||
+                        (id === 'provider' &&
+                          servers.some(
+                            (server) => server.transport === 'streamable_http',
+                          ));
+                      return (
+                        <button
+                          key={id}
+                          type="button"
+                          className={`${styles.targetCard} ${target === id ? styles.targetSelected : ''}`}
+                          aria-pressed={target === id}
+                          aria-disabled={!available}
+                          disabled={!available}
+                          onClick={() => setTarget(id)}
+                        >
+                          <span className={styles.targetIcon}>
+                            <Icon size={19} />
+                          </span>
+                          <span className={styles.targetCopy}>
+                            <strong>{name}</strong>
+                            <small>{detail}</small>
+                          </span>
+                          <span
+                            className={
+                              available
+                                ? styles.targetReady
+                                : styles.targetPending
+                            }
+                          >
+                            {recommended ? '推奨 · ' : ''}
+                            {available && id === 'provider' ? '登録済み' : note}
+                          </span>
+                        </button>
+                      );
+                    },
+                  )}
+                </div>
+              </section>
 
-              <div className={styles.steps} data-state={checkState}>
-                {steps.map(([number, title, detail]) => (
-                  <div key={number}>
-                    <span>
-                      {checkState === 'ready' ? <Check size={13} /> : number}
-                    </span>
-                    <strong>{title}</strong>
-                    <small>{detail}</small>
-                  </div>
-                ))}
-              </div>
+              <section className={styles.currentState}>
+                <div className={connected ? styles.stateOn : styles.stateOff}>
+                  {connected ? <Check size={21} /> : <Cable size={21} />}
+                </div>
+                <div>
+                  <strong>
+                    {connected ? 'このPCは接続済みです' : '3ステップで使えます'}
+                  </strong>
+                  <p>
+                    {connected
+                      ? 'Skyのツール画面から、対応する自動化を実行できます。'
+                      : '追加アカウント・APIキー・有料契約は必要ありません。'}
+                  </p>
+                </div>
+              </section>
 
-              <section className={styles.passport} data-state={checkState}>
-                {checkState === 'idle' && (
-                  <div className={styles.emptyState}>
-                    <Fingerprint size={25} />
+              {connected && servers.length > 0 && (
+                <section className={styles.serverSection}>
+                  <div className={styles.sectionHeading}>
                     <div>
-                      <strong>Connection Passportを作成</strong>
+                      <strong>接続できるMCP</strong>
                       <p>
-                        接続前に、作者・権限・費用・受取人を一枚で確認します。
+                        Connectorが登録定義を読み、安全確認後に機能を取得します。
                       </p>
                     </div>
+                    <span>ONE TAP</span>
                   </div>
-                )}
-                {checkState === 'checking' && (
-                  <div className={styles.emptyState}>
-                    <RefreshCw className={styles.spin} size={25} />
-                    <div>
-                      <strong>公開情報を確認中</strong>
-                      <p>外部への接続や資格情報の送信は行っていません。</p>
-                    </div>
-                  </div>
-                )}
-                {checkState === 'ready' && (
-                  <>
-                    <div className={styles.passportHeading}>
-                      <div>
-                        <BadgeCheck size={20} />
-                        <span>
-                          <small>CONNECTION PASSPORT</small>
-                          <strong>接続条件を確認しました</strong>
+                  <div className={styles.serverList}>
+                    {visibleServers.map((server) => (
+                      <article key={server.id}>
+                        <span className={styles.serverIcon} aria-hidden="true">
+                          {server.transport === 'stdio' ? (
+                            <Laptop2 size={18} />
+                          ) : (
+                            <Globe2 size={18} />
+                          )}
                         </span>
-                      </div>
-                      <em>DEMO</em>
-                    </div>
-                    <div className={styles.facts}>
-                      <div>
-                        <span>Transport</span>
-                        <strong>Streamable HTTP</strong>
-                      </div>
-                      <div>
-                        <span>OAuth audience</span>
-                        <strong>接続時に固定</strong>
-                      </div>
-                      <div>
-                        <span>実行許可</span>
-                        <strong>呼出しごと</strong>
-                      </div>
-                      <div>
-                        <span>SkyのToB手数料</span>
-                        <strong className={styles.zero}>0%</strong>
-                      </div>
-                    </div>
-                    <p className={styles.syntheticNote}>
-                      合成表示です。外部MCPへの通信、公開、課金、送金は行っていません。
-                    </p>
-                  </>
-                )}
-              </section>
+                        <div>
+                          <strong>{server.name}</strong>
+                          <p>{server.description}</p>
+                          <small>
+                            {server.transport === 'stdio'
+                              ? 'このPC内'
+                              : 'Streamable HTTP'}
+                            {server.toolCount !== null
+                              ? ` · ${server.toolCount}機能を確認済み`
+                              : ' · 未接続'}
+                          </small>
+                        </div>
+                        <button
+                          type="button"
+                          disabled={busyServer === server.id}
+                          onClick={() => void connectServer(server)}
+                        >
+                          {server.state === 'connected' ? (
+                            <Check size={15} />
+                          ) : (
+                            <PlugZap size={15} />
+                          )}
+                          {busyServer === server.id
+                            ? '確認中…'
+                            : server.state === 'connected'
+                              ? '再確認'
+                              : '接続'}
+                        </button>
+                      </article>
+                    ))}
+                    {visibleServers.length === 0 && (
+                      <p className={styles.serverEmpty}>
+                        {target === 'provider'
+                          ? '登録済みの外部MCPはありません。OAuthが必要な接続先は、認可対応後に表示します。'
+                          : 'この接続先で利用できるMCPはありません。'}
+                      </p>
+                    )}
+                  </div>
+                  {connectionMessage && (
+                    <output className={styles.connectionMessage}>
+                      {connectionMessage}
+                    </output>
+                  )}
+                </section>
+              )}
 
-              <div className={styles.trustRow}>
-                <span>
-                  <ShieldCheck size={16} /> 実行範囲を固定
-                </span>
-                <span>
-                  <WalletCards size={16} /> 分配receiptを照合
-                </span>
-                <p>決済・API・モデル等の外部実費は別表示</p>
-              </div>
+              <ol className={styles.installSteps}>
+                <li>
+                  <span>1</span>
+                  <div>
+                    <strong>無料パックをダウンロード</strong>
+                    <p>共通Connectorと、導入済みの2つのMCPが入っています。</p>
+                  </div>
+                </li>
+                <li>
+                  <span>2</span>
+                  <div>
+                    <strong>接続アプリを起動</strong>
+                    <p>macOSは「Sky MCP接続.command」を開きます。</p>
+                  </div>
+                </li>
+                <li>
+                  <span>3</span>
+                  <div>
+                    <strong>Skyから接続を確認</strong>
+                    <p>Connectorと登録済みMCPの検出まで自動で確認します。</p>
+                  </div>
+                </li>
+              </ol>
+
+              <button className={styles.primaryAction} onClick={openDevice}>
+                <Cable size={17} />
+                {connected ? 'このPCの接続を確認' : 'このPCへの接続をはじめる'}
+              </button>
+
+              <p className={styles.boundaryNote}>
+                登録済みのstdio MCPとStreamable HTTP
+                MCPに対応します。秘密情報はSkyへ渡さず、OAuthが必要な接続先は権限確認と接続証跡が揃うまで実行できません。
+              </p>
             </div>
           ) : (
-            <div className={styles.manageView}>
-              <section className={styles.manageSummary}>
-                <div>
-                  <span>外部MCP</span>
-                  <strong>0</strong>
-                  <small>接続なし</small>
-                </div>
-                <div>
-                  <span>内蔵MCP</span>
-                  <strong>1</strong>
-                  <small>Developer Preview</small>
-                </div>
-                <div>
-                  <span>要確認</span>
-                  <strong>0</strong>
-                  <small>現在なし</small>
-                </div>
-              </section>
-              <article className={styles.connectionCard}>
-                <span className={styles.toolMark}>服</span>
-                <div>
-                  <p>内蔵MCP · PC接続後</p>
-                  <strong>Instagram運用・受注型ブランド管理</strong>
-                  <small>危険操作は個別承認 · 初期状態はmock</small>
-                </div>
-                <span className={styles.previewState}>PREVIEW</span>
-              </article>
-              <button
-                className={styles.addAnother}
-                onClick={() => setView('connect')}
-              >
-                <Plus size={16} /> 新しいMCPを接続
-              </button>
+            <div
+              id="sky-mcp-tools-panel"
+              className={styles.toolsView}
+              role="tabpanel"
+              aria-labelledby="sky-mcp-tools-tab"
+            >
+              <div className={styles.toolList}>
+                {(servers.length
+                  ? servers.flatMap((server) =>
+                      (server.passport?.tools ?? []).map((tool) => ({
+                        name: tool.title || tool.name,
+                        id: `${server.id}/${tool.name}`,
+                        detail: tool.description || `${server.name}の機能`,
+                        Icon: PlugZap,
+                      })),
+                    )
+                  : mcpTools
+                ).map(({ name, id, detail, Icon }) => (
+                  <article key={id}>
+                    <span className={styles.toolIcon} aria-hidden="true">
+                      <Icon size={18} />
+                    </span>
+                    <div>
+                      <strong>{name}</strong>
+                      <p>{detail}</p>
+                    </div>
+                    <code>{id}</code>
+                  </article>
+                ))}
+              </div>
+              <div className={styles.toolFooter}>
+                <p>
+                  機能の注釈は未信頼として扱い、外部作用は内容に結び付いた1回限りの承認後に実行します。
+                </p>
+                <button onClick={openDevice}>
+                  <Cable size={16} />
+                  {connected ? '接続を確認' : 'PCを接続'}
+                </button>
+              </div>
             </div>
           )}
         </DialogContent>

@@ -3,9 +3,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import {
-  CheckCircle2,
   CircleDollarSign,
-  ExternalLink,
   LoaderCircle,
   ShieldCheck,
   TriangleAlert,
@@ -16,28 +14,38 @@ type BillingGateway = {
   token: string;
 };
 
-type BillingSnapshot = {
-  price: { amountMinor: number; currency: string; interval: string };
-  subscription: null | {
-    id: string;
-    status: string;
-    currentPeriodEnd: number | null;
-    cancelAtPeriodEnd: number;
+type SettlementSnapshot = {
+  policy: {
+    mode: 'verified_earnings_only';
+    currency: 'usd';
+    monthlyFeeCapMinor: number;
+    upfrontCharge: false;
+    debtCarry: false;
+    tobFeeMinor: 0;
   };
-  invoice: null | {
-    id: string;
-    status: string;
-    amountPaid: number;
-    currency: string;
-    paidAt: number | null;
+  period: string;
+  settlement: {
+    grossMinor: number;
+    operatingCostMinor: number;
+    skyFeeMinor: number;
+    distributableMinor: number;
+    remainingFeeCapMinor: number;
+    receiptCount: number;
   };
+  receipts: Array<{
+    receiptId: string;
+    sourceProvider: string;
+    grossMinor: number;
+    skyFeeMinor: number;
+    distributableMinor: number;
+    payoutStatus: string | null;
+  }>;
 };
 
 class BillingError extends Error {
   constructor(
     message: string,
     readonly status: number,
-    readonly code = '',
   ) {
     super(message);
   }
@@ -54,72 +62,48 @@ async function gateway(signal?: AbortSignal) {
   };
   if (!response.ok || !body.serviceOrigin || !body.token)
     throw new BillingError(
-      body.error ?? '月額プランを開けませんでした。',
+      body.error ?? '収益精算を確認できませんでした。',
       response.status,
     );
   return body as BillingGateway;
 }
 
-async function billingRequest(
-  path: '/v1/status' | '/v1/checkout' | '/v1/portal',
-  method: 'GET' | 'POST',
-  signal?: AbortSignal,
-) {
+async function settlementStatus(signal?: AbortSignal) {
   const access = await gateway(signal);
-  const response = await fetch(`${access.serviceOrigin}${path}`, {
-    method,
+  const response = await fetch(`${access.serviceOrigin}/v1/status`, {
     headers: { Authorization: `Bearer ${access.token}` },
     cache: 'no-store',
     signal,
   });
-  const body = (await response.json()) as {
+  const body = (await response.json()) as Partial<SettlementSnapshot> & {
     error?: string;
-    code?: string;
-    url?: string;
   };
-  if (!response.ok)
+  if (!response.ok || !body.policy || !body.settlement)
     throw new BillingError(
-      body.error ?? '決済サービスと通信できませんでした。',
+      body.error ?? '収益精算サービスと通信できませんでした。',
       response.status,
-      body.code,
     );
-  return body;
+  return body as SettlementSnapshot;
 }
 
-function redirect(value: string | undefined, expectedHost: string) {
-  if (!value) throw new BillingError('決済画面のURLを確認できません。', 502);
-  const url = new URL(value);
-  if (url.protocol !== 'https:' || url.hostname !== expectedHost)
-    throw new BillingError('安全な決済画面を確認できません。', 502);
-  window.location.assign(url.href);
+function usd(value: number) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(value / 100);
 }
-
-const labels: Record<string, string> = {
-  active: '利用中',
-  trialing: 'トライアル中',
-  past_due: '支払い確認が必要',
-  unpaid: '未払い',
-  incomplete: '申込み未完了',
-  checkout_completed: '決済確認中',
-  canceled: '解約済み',
-  incomplete_expired: '申込み期限切れ',
-};
 
 export function SkyBilling() {
-  const [snapshot, setSnapshot] = useState<BillingSnapshot | null>(null);
+  const [snapshot, setSnapshot] = useState<SettlementSnapshot | null>(null);
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(true);
   const [needsSignin, setNeedsSignin] = useState(false);
-  const [accepted, setAccepted] = useState(false);
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
-    setBusy(true);
     try {
-      const result = await billingRequest('/v1/status', 'GET', signal);
-      setSnapshot(result as unknown as BillingSnapshot);
-      if (!new URLSearchParams(window.location.search).get('billing'))
-        setMessage('');
+      setSnapshot(await settlementStatus(signal));
       setNeedsSignin(false);
+      setMessage('');
     } catch (error) {
       if (signal?.aborted) return;
       setSnapshot(null);
@@ -127,7 +111,7 @@ export function SkyBilling() {
       setMessage(
         error instanceof Error
           ? error.message
-          : '月額プランを確認できませんでした。',
+          : '収益精算を確認できませんでした。',
       );
     } finally {
       if (!signal?.aborted) setBusy(false);
@@ -136,54 +120,23 @@ export function SkyBilling() {
 
   useEffect(() => {
     const controller = new AbortController();
-    const query = new URLSearchParams(window.location.search).get('billing');
-    const timeout = window.setTimeout(() => {
-      void refresh(controller.signal).then(() => {
-        if (controller.signal.aborted) return;
-        if (query === 'success')
-          setMessage('決済を受け付けました。入金確認を反映しています。');
-        if (query === 'cancelled')
-          setMessage(
-            '申込みはキャンセルされました。請求は開始されていません。',
-          );
-      });
-    }, 0);
+    const timeout = window.setTimeout(() => void refresh(controller.signal), 0);
     return () => {
       window.clearTimeout(timeout);
       controller.abort();
     };
   }, [refresh]);
 
-  async function open(path: '/v1/checkout' | '/v1/portal') {
-    setBusy(true);
-    setMessage('');
-    try {
-      const result = await billingRequest(path, 'POST');
-      redirect(
-        result.url,
-        path === '/v1/checkout' ? 'checkout.stripe.com' : 'billing.stripe.com',
-      );
-    } catch (error) {
-      if (error instanceof BillingError && error.code === 'ALREADY_SUBSCRIBED')
-        await refresh();
-      setMessage(
-        error instanceof Error ? error.message : '決済画面を開けませんでした。',
-      );
-      setBusy(false);
-    }
-  }
+  const settlement = snapshot?.settlement;
+  const percent = settlement
+    ? Math.min(
+        100,
+        Math.round(
+          (settlement.skyFeeMinor / snapshot.policy.monthlyFeeCapMinor) * 100,
+        ),
+      )
+    : 0;
 
-  const subscription = snapshot?.subscription;
-  const active =
-    subscription &&
-    [
-      'active',
-      'trialing',
-      'past_due',
-      'unpaid',
-      'incomplete',
-      'checkout_completed',
-    ].includes(subscription.status);
   return (
     <section className="sky-billing-panel" aria-labelledby="sky-billing-title">
       <div className="sky-billing-heading">
@@ -191,72 +144,63 @@ export function SkyBilling() {
           <CircleDollarSign size={25} />
         </span>
         <div>
-          <p className="rock-eyebrow">SKY MONTHLY PLAN</p>
-          <h2 id="sky-billing-title">月$8.88の利用料</h2>
+          <p className="rock-eyebrow">EARN FIRST · SETTLE AFTER</p>
+          <h2 id="sky-billing-title">自動化収益からだけ精算</h2>
           <p>
-            Stripeの安全な画面で申込み、毎月の成功・失敗・解約をSkyへ反映します。
+            Providerで入金確認済みのEarning
+            Receiptだけを対象に、実費の後から最大$8.88を回収します。
           </p>
         </div>
         <strong>
-          $8.88<small>/ month</small>
+          $8.88<small>monthly cap</small>
         </strong>
       </div>
+
       {busy && !snapshot ? (
         <output className="sky-billing-message">
           <LoaderCircle className="sky-billing-spin" size={18} />
-          契約状況を確認中
+          今月の確定収益を確認中
         </output>
-      ) : active ? (
-        <div className="sky-billing-status">
-          <div>
-            {subscription.status === 'active' ||
-            subscription.status === 'trialing' ? (
-              <CheckCircle2 size={19} />
-            ) : (
-              <TriangleAlert size={19} />
-            )}
-            <span>
-              <strong>
-                {labels[subscription.status] ?? subscription.status}
-              </strong>
-              {subscription.currentPeriodEnd ? (
-                <small>
-                  {subscription.cancelAtPeriodEnd ? '終了予定' : '次回更新'}:{' '}
-                  {new Date(
-                    subscription.currentPeriodEnd * 1000,
-                  ).toLocaleDateString('ja-JP')}
-                </small>
-              ) : (
-                <small>Stripeからの確定情報を待っています</small>
-              )}
-            </span>
+      ) : settlement ? (
+        <div className="sky-settlement-body">
+          <div className="sky-settlement-progress">
+            <div>
+              <span>Sky回収済み</span>
+              <strong>{usd(settlement.skyFeeMinor)}</strong>
+              <small>
+                残り上限 {usd(settlement.remainingFeeCapMinor)} ·{' '}
+                {snapshot.period}
+              </small>
+            </div>
+            <progress max={100} value={percent} aria-label="今月の回収進捗" />
           </div>
-          <button disabled={busy} onClick={() => void open('/v1/portal')}>
-            支払い・解約を管理
-            <ExternalLink size={15} />
-          </button>
+          <dl className="sky-settlement-metrics">
+            <div>
+              <dt>確定売上</dt>
+              <dd>{usd(settlement.grossMinor)}</dd>
+            </div>
+            <div>
+              <dt>実費</dt>
+              <dd>{usd(settlement.operatingCostMinor)}</dd>
+            </div>
+            <div>
+              <dt>利用者へ</dt>
+              <dd>{usd(settlement.distributableMinor)}</dd>
+            </div>
+            <div>
+              <dt>検証Receipt</dt>
+              <dd>{settlement.receiptCount}件</dd>
+            </div>
+          </dl>
+          <div className="sky-settlement-rule">
+            <ShieldCheck size={18} />
+            <p>
+              先払い・カード請求・未達分の借金・翌月繰越はありません。ToBのSky手数料は0です。
+            </p>
+          </div>
         </div>
-      ) : (
-        <div className="sky-billing-enroll">
-          <label>
-            <input
-              type="checkbox"
-              checked={accepted}
-              onChange={(event) => setAccepted(event.target.checked)}
-            />
-            <span>
-              月額8.88 USDが解約まで毎月請求されることを確認しました。
-            </span>
-          </label>
-          <button
-            disabled={busy || !accepted}
-            onClick={() => void open('/v1/checkout')}
-          >
-            {busy ? '準備中…' : 'Stripeで申し込む'}
-            <ExternalLink size={15} />
-          </button>
-        </div>
-      )}
+      ) : null}
+
       {message && (
         <output className="sky-billing-message">
           {needsSignin ? (
@@ -271,7 +215,7 @@ export function SkyBilling() {
         </output>
       )}
       <p className="sky-billing-footnote">
-        カード情報はSkyに保存しません。$8.88は税や値引前の基本料金で、受取額は手数料・税・返金により異なります。
+        ツールの実行成功だけでは売上にしません。外部Providerの入金参照と実行証明が一致した後にだけ台帳へ反映します。
       </p>
     </section>
   );

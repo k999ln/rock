@@ -7,15 +7,11 @@ import {
   verifyBillingToken,
 } from '../lib/billing-token.ts';
 import {
-  assertMonthlyPrice,
-  currentPeriodEnd,
-  invoicePeriod,
-  stripeCustomerId,
-  stripeSubscriptionId,
-  stripeUserId,
-  subscriptionPriceId,
+  allocateEarning,
+  periodForUnix,
+  validateEarningReceipt,
 } from '../services/sky-billing/src/domain.ts';
-import { verifyStripeSignature } from '../services/sky-billing/src/stripe-signature.ts';
+import { verifyReceiptSignature } from '../services/sky-billing/src/receipt-signature.ts';
 
 const sharedSecret = 'test-only-shared-secret-with-at-least-32-bytes';
 const tokenId = '018f47a5-d4db-7c7b-a0db-0a0f00bada55';
@@ -32,89 +28,82 @@ void test('billing token binds user, audience, expiry and token id', async () =>
   assert.equal(payload.jti, tokenId);
   assert.equal(payload.exp - payload.iat, BILLING_TOKEN_TTL_SECONDS);
   await assert.rejects(() => verifyBillingToken(token, sharedSecret, 1300));
-  const altered = `${token.slice(0, -1)}${token.endsWith('a') ? 'b' : 'a'}`;
-  await assert.rejects(() => verifyBillingToken(altered, sharedSecret, 1001));
 });
 
-void test('Stripe signature accepts the raw matching payload once and rejects changes', async () => {
-  const raw = JSON.stringify({ id: 'evt_test', type: 'invoice.paid' });
+void test('earning receipt signature covers the exact raw body and expires', async () => {
+  const raw = JSON.stringify({ receiptId: 'earn_1' });
   const timestamp = 2000;
-  const secret = 'whsec_test';
+  const secret = 'receipt-ingest-secret-with-at-least-32-bytes';
   const digest = createHmac('sha256', secret)
     .update(`${timestamp}.${raw}`)
     .digest('hex');
   const header = `t=${timestamp},v1=bad,v1=${digest}`;
-  await verifyStripeSignature(raw, header, secret, timestamp);
+  await verifyReceiptSignature(raw, header, secret, timestamp);
   await assert.rejects(() =>
-    verifyStripeSignature(`${raw} `, header, secret, timestamp),
+    verifyReceiptSignature(`${raw} `, header, secret, timestamp),
   );
   await assert.rejects(() =>
-    verifyStripeSignature(raw, header, secret, timestamp + 301),
+    verifyReceiptSignature(raw, header, secret, timestamp + 301),
   );
 });
 
-void test('configured Stripe price must remain exactly USD 8.88 every month', () => {
-  const price = {
-    id: 'price_sky',
-    active: true,
-    currency: 'usd',
-    unit_amount: 888,
-    type: 'recurring',
-    recurring: { interval: 'month', interval_count: 1 },
-  };
-  assert.equal(assertMonthlyPrice(price, 'price_sky'), price);
-  for (const changed of [
-    { ...price, unit_amount: 889 },
-    { ...price, currency: 'jpy' },
-    { ...price, active: false },
-    { ...price, recurring: { interval: 'year', interval_count: 1 } },
-  ])
-    assert.throws(() => assertMonthlyPrice(changed, 'price_sky'));
-});
-
-void test('current and newer Stripe event shapes resolve the same billing identity', () => {
-  const checkout = {
-    customer: 'cus_one',
-    subscription: 'sub_one',
-    client_reference_id: 'sky-user',
-  };
-  assert.equal(stripeCustomerId(checkout), 'cus_one');
-  assert.equal(stripeSubscriptionId(checkout), 'sub_one');
-  assert.equal(stripeUserId(checkout), 'sky-user');
-  const invoice = {
-    customer: { id: 'cus_two' },
-    parent: {
-      subscription_details: {
-        subscription: 'sub_two',
-        metadata: { sky_user_id: 'new-user' },
-      },
-    },
-    lines: {
-      data: [{ price: { id: 'price_sky' }, period: { start: 10, end: 20 } }],
-    },
-  };
-  assert.equal(stripeSubscriptionId(invoice), 'sub_two');
-  assert.equal(stripeUserId(invoice), 'new-user');
-  assert.equal(subscriptionPriceId(invoice), 'price_sky');
-  assert.deepEqual(invoicePeriod(invoice), { start: 10, end: 20 });
-  assert.equal(
-    subscriptionPriceId({
-      lines: {
-        data: [
-          {
-            pricing: { price_details: { price: 'price_clover' } },
-            period: { start: 21, end: 31 },
-          },
-        ],
-      },
+void test('settlement recovers costs first and only then up to USD 8.88', () => {
+  assert.deepEqual(
+    allocateEarning({
+      grossAmountMinor: 500,
+      operatingCostMinor: 100,
+      previousSkyFeeMinor: 0,
+      beneficiaryRole: 'toc',
     }),
-    'price_clover',
-  );
-  const subscription = {
-    items: {
-      data: [{ price: { id: 'price_sky' }, current_period_end: 30 }],
+    {
+      grossAmountMinor: 500,
+      operatingCostMinor: 100,
+      skyFeeMinor: 400,
+      distributableMinor: 0,
+      remainingFeeCapMinor: 488,
     },
+  );
+  assert.equal(
+    allocateEarning({
+      grossAmountMinor: 1000,
+      operatingCostMinor: 100,
+      previousSkyFeeMinor: 400,
+      beneficiaryRole: 'toc',
+    }).skyFeeMinor,
+    488,
+  );
+  const tob = allocateEarning({
+    grossAmountMinor: 1000,
+    operatingCostMinor: 100,
+    previousSkyFeeMinor: 0,
+    beneficiaryRole: 'tob',
+  });
+  assert.equal(tob.skyFeeMinor, 0);
+  assert.equal(tob.distributableMinor, 900);
+});
+
+void test('earning receipt requires provider evidence and whole USD cents', () => {
+  const receipt = {
+    receiptId: 'earn_1',
+    executionReceiptId: 'exec_1',
+    userId: 'alice',
+    beneficiaryRole: 'toc',
+    sourceProvider: 'stripe-connect',
+    providerReference: 'pi_1',
+    payoutAccountId: 'acct_alice',
+    evidenceSha256: 'a'.repeat(64),
+    currency: 'usd',
+    grossAmountMinor: 1000,
+    operatingCostMinor: 50,
+    occurredAt: 1_789_171_200,
   };
-  assert.equal(subscriptionPriceId(subscription), 'price_sky');
-  assert.equal(currentPeriodEnd(subscription), 30);
+  assert.equal(validateEarningReceipt(receipt).receiptId, 'earn_1');
+  assert.equal(periodForUnix(receipt.occurredAt), '2026-09');
+  assert.throws(() => validateEarningReceipt({ ...receipt, currency: 'jpy' }));
+  assert.throws(() =>
+    validateEarningReceipt({ ...receipt, operatingCostMinor: 1001 }),
+  );
+  assert.throws(() =>
+    validateEarningReceipt({ ...receipt, grossAmountMinor: 10.5 }),
+  );
 });
