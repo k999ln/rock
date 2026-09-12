@@ -14,6 +14,7 @@ import {
   FilePenLine,
   Laptop,
   Link2,
+  Lightbulb,
   Scale,
   WalletCards,
   Search,
@@ -41,6 +42,7 @@ const icons = {
   'mr-delivery': FileCheck2,
   'rockstar-ledger': WalletCards,
   'rockstar-legal-intake': Scale,
+  'rockstar-patent-assistant': Lightbulb,
 };
 const filters = [
   'すべて',
@@ -312,7 +314,7 @@ export default function HubWorkspace() {
         }}
       >
         <DialogContent
-          className={`rock-tool-dialog ${selected?.runner === 'legal-intake' ? 'rock-tool-dialog-wide' : ''}`}
+          className={`rock-tool-dialog ${selected?.runner === 'legal-intake' || selected?.runner === 'patent-assistant' ? 'rock-tool-dialog-wide' : ''}`}
         >
           {selected && (
             <>

@@ -35,7 +35,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / Sky法律相談の3ステップUX改善 / 完了 19/41件
+最終更新: 2026-09-12 / Skyへ特許出願アシスタントを追加 / 完了 19/41件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -57,7 +57,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 | B01 | Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
 | B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
-| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) · [記録](docs/sky-legal-intake-20260912.md) · [記録](tests/legal-intake.test.mjs) |
+| B02 | 既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/sky-role-agents-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) · [記録](tests/subscription-advisor.test.mjs) · [記録](docs/sky-legal-intake-20260912.md) · [記録](tests/legal-intake.test.mjs) · [記録](docs/sky-patent-assistant-20260912.md) · [記録](tests/patent-assistant.test.mjs) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) |
 | B05 | Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/hub-wallet-pc-comparison-20260909.md) · [記録](docs/evidence/hub-wallet/b05-pc-machine-20260909/report.json) |
 | D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
@@ -99,7 +99,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 日本語法律相談受付を安全確認、相談内容、回答・引継ぎの3ステップへ整理し、スマートフォン向けの操作サイズ、戻る・修正動線、弁護士候補の折りたたみを実装した。次は本人限定Sitesへ同一sourceを配信し、実環境で3ステップ動線と法令AIの秘密設定を確認する。サブスク顧問はNative Sky MCP brokerへの常駐接続とWalletへの費用転記、HTTPS配信版の安全な接続経路が未完了。Android/AOSP側は実機型番/SKU確認、全source取得・build・製品移植・production署名・実機受入が引き続き未完了。
+次の作業: Sky Agent Hubに特許出願アシスタントを追加し、発明整理、公開状況警告、公式情報に限定した先行技術候補調査、明細書・請求項・要約・提出チェックのドラフト保存を実装した。発明内容は保存せず、AI送信は明示同意後だけ、電子署名・支払・特許庁提出は人の最終確認に残す。次は本人限定Sitesへ同一sourceを配信し、実環境でAI秘密設定と一連の画面動線を確認する。Android/AOSP側のfull build・Hub/Wallet/Game移植・production署名・実機受入は引き続き未完了。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
@@ -123,8 +123,9 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 - 「仕事を進める」から記事販売準備・ココナラ納品準備を作成し、手順・試行履歴・最終確認をアカウント別に保存して再開。
 - 基本分配・ブースト・共同留保を、共通収益の範囲内で試算。入金・送金は未接続。
 - 同じ4ツールをstdio MCPでCodexから実行。PC接続アプリを起動するとサイトからもMCPでワンボタン実行。
-- Skyの「サブスク顧問」から、PC内のRockstar Ledgerへ読み取り専用で接続。通貨別の月額、更新日、支払い失敗、定期課金候補を確認し、同梱のstdio MCPでも照会できます。契約データはGitやサイトへ送らず、解約・支払い・税務申告は自動実行しません。[導入と境界](toolkits/rockstar-ledger/README.md)
-- Skyの「日本語法律相談受付」は、安全確認→相談内容→回答・引継ぎの3ステップ。政府・裁判所の公式情報に限定した根拠付き一次回答と無料窓口を表示し、刑事弁護が必要な案件は藤原茜弁護士を第一連絡候補にします。法的助言や自動送信は行わず、Skyは相談本文を保存しません。[実装と安全境界](docs/sky-legal-intake-20260912.md)
+- Skyの「サブスク顧問」とチャットし、PC内のRockstar Ledgerを読み取り専用で照会。通貨別の月額、更新日、支払い失敗、過去契約、未確認の情報源へ質問できます。Apple、Google Play、カード、銀行、PayPal、請求メールの確認状況を管理し、未確認または更新日不足が残る間は全網羅と表示しません。同梱のstdio MCPでも同じ台帳を使えます。契約データはGit・サイト・外部AIへ送らず、解約・支払い・税務申告は自動実行しません。[導入と境界](toolkits/rockstar-ledger/README.md) / [役割エージェント仕様](docs/sky-role-agents-20260912.md)
+- Skyの「日本語法律相談受付」は、安全確認→相談内容→回答・引継ぎを法務受付担当との会話として進めます。政府・裁判所の公式情報に限定した根拠付き一次回答と無料窓口を表示し、刑事弁護が必要な案件は藤原茜弁護士を第一連絡候補にします。法的助言や自動送信は行わず、Skyは相談本文を保存しません。[実装と安全境界](docs/sky-legal-intake-20260912.md)
+- Skyの「特許出願アシスタント」は、システム発明の整理、公式特許情報に限定した候補調査、準備度評価、明細書・請求項・要約・提出チェックのドラフト作成を一つの画面で進めます。発明内容は保存せず、AI調査は明示同意後だけ、電子署名・支払・特許庁提出は本人と専門家の確認に残します。[実装と安全境界](docs/sky-patent-assistant-20260912.md)
 - GitHubとHugging Faceの公開メタデータを収集する管理用コマンド。
 
 ファンドの参加・配分・試算条件、単独ツールの実行メタデータ、仕事の進捗はSitesのD1に保存します。旧マイツール用のローカル保存関数も互換用に保持しています。接続アドレスは保存せず、サーバーへ送信しません。ウォレット接続はログイン認証・実名本人確認・送金認可ではありません。

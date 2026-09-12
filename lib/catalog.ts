@@ -14,7 +14,8 @@ export type Automation = {
     | 'free-article'
     | 'delivery-local'
     | 'subscription-ledger'
-    | 'legal-intake';
+    | 'legal-intake'
+    | 'patent-assistant';
   origin?: 'mr' | 'rockstaros';
   environment: string;
   cost: string;
@@ -144,10 +145,10 @@ export const catalog: Automation[] = [
   },
   {
     id: 'rockstar-legal-intake',
-    name: '日本語法律相談受付',
+    name: '法務受付',
     category: '法律・生活支援',
     description:
-      '公式情報で一次回答し、無料解決を試したうえで、必要な案件だけ日本語対応弁護士へ引き継ぎます。',
+      '日本語で状況を話すと、公式情報と無料窓口を案内。必要な案件だけ弁護士への引継ぎを準備します。',
     source:
       'https://github.com/k999ln/rock/tree/codex/sky-legal-intake-20260912',
     runner: 'legal-intake',
@@ -155,12 +156,37 @@ export const catalog: Automation[] = [
     cost: '利用者への料金は0円で提供できます。法令AI接続時のAPI利用料は運営側に発生し、連絡・依頼後の弁護士費用は別途確認が必要です。',
     steps: [
       '危険・逮捕・公的書類・期限の有無を確認する',
-      '分野・地域・状況と希望を入力する',
-      '政府・裁判所の公式情報に限定した一次回答と無料窓口を確認する',
+      '法務受付との会話で、分野・地域・状況と希望を整理する',
+      '政府・裁判所の公式情報に限定した回答と無料窓口を確認する',
       '刑事弁護が必要な案件は藤原茜弁護士を第一連絡候補として、本人確認後に連絡する',
     ],
     note: '法令AIの回答は一般情報であり、法的助言、期限計算、勝敗予測、受任保証ではありません。自動送信は行わず、受任可否・利益相反・料金・対応地域は弁護士へ直接確認します。差し迫った危険がある場合は米国内では911へ連絡してください。',
     color: 'blue',
+    license: 'MIT',
+    licenseUrl: '/LICENSE',
+    status: 'ready',
+    origin: 'rockstaros',
+  },
+  {
+    id: 'rockstar-patent-assistant',
+    name: '特許出願アシスタント',
+    category: '法律・生活支援',
+    description:
+      'システム発明を整理し、先行技術候補の調査、特許性の予備評価、明細書・請求項・要約のドラフトを一つにまとめます。',
+    source:
+      'https://github.com/k999ln/rock/tree/codex/sky-legal-intake-20260912',
+    runner: 'patent-assistant',
+    environment:
+      'Skyは発明内容を保存しません / AI調査は明示同意後だけOpenAIへ送信',
+    cost: '書類ドラフトはブラウザ内で作成します。AI調査を選んだ場合だけ運営側にAPI利用料が発生し、出願料・弁理士費用は別です。',
+    steps: [
+      '発明者・出願人候補と、公開済みかどうかを確認する',
+      '技術課題、仕組み、構成、効果、既存技術との差を入力する',
+      '公式特許情報の候補と原文を確認し、差分を記録する',
+      '明細書・請求項・要約のドラフトを専門家と本人が確認し、本人が提出する',
+    ],
+    note: '特許性、登録、侵害回避、期限を保証しません。AI調査は漏れを含む可能性があり、電子署名、料金支払、特許庁への提出は自動実行しません。公開済みの場合は公開記録を保存し、弁理士へ早急に確認してください。',
+    color: 'orange',
     license: 'MIT',
     licenseUrl: '/LICENSE',
     status: 'ready',

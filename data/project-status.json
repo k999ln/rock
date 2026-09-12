@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "Sky法律相談の3ステップUX改善",
-  "nextAction": "日本語法律相談受付を安全確認、相談内容、回答・引継ぎの3ステップへ整理し、スマートフォン向けの操作サイズ、戻る・修正動線、弁護士候補の折りたたみを実装した。次は本人限定Sitesへ同一sourceを配信し、実環境で3ステップ動線と法令AIの秘密設定を確認する。サブスク顧問はNative Sky MCP brokerへの常駐接続とWalletへの費用転記、HTTPS配信版の安全な接続経路が未完了。Android/AOSP側は実機型番/SKU確認、全source取得・build・製品移植・production署名・実機受入が引き続き未完了。",
+  "milestone": "Skyへ特許出願アシスタントを追加",
+  "nextAction": "Sky Agent Hubに特許出願アシスタントを追加し、発明整理、公開状況警告、公式情報に限定した先行技術候補調査、明細書・請求項・要約・提出チェックのドラフト保存を実装した。発明内容は保存せず、AI送信は明示同意後だけ、電子署名・支払・特許庁提出は人の最終確認に残す。次は本人限定Sitesへ同一sourceを配信し、実環境でAI秘密設定と一連の画面動線を確認する。Android/AOSP側のfull build・Hub/Wallet/Game移植・production署名・実機受入は引き続き未完了。",
   "tasks": [
     {
       "id": "R01",
@@ -231,10 +231,14 @@
         "docs/evidence/pc-citations/integration.json",
         "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
         "docs/sky-rockstar-ledger-20260912.md",
+        "docs/sky-role-agents-20260912.md",
         "docs/evidence/sky-rockstar-ledger/integration.json",
         "tests/rockstar-ledger.test.mjs",
+        "tests/subscription-advisor.test.mjs",
         "docs/sky-legal-intake-20260912.md",
-        "tests/legal-intake.test.mjs"
+        "tests/legal-intake.test.mjs",
+        "docs/sky-patent-assistant-20260912.md",
+        "tests/patent-assistant.test.mjs"
       ]
     },
     {

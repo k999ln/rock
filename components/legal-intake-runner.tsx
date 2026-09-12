@@ -5,13 +5,26 @@ import {
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
+  Bot,
   Check,
   Copy,
   ExternalLink,
   PhoneCall,
   Scale,
   ShieldAlert,
+  ShieldCheck,
+  UserRound,
 } from 'lucide-react';
+import {
+  Conversation,
+  ConversationContent,
+  ConversationScrollButton,
+} from '@/components/ai-elements/conversation';
+import {
+  Message,
+  MessageContent,
+  MessageResponse,
+} from '@/components/ai-elements/message';
 import {
   LEGAL_DIRECTORY_AS_OF,
   assessLegalIntake,
@@ -244,18 +257,93 @@ export function LegalIntakeRunner({
 
   return (
     <section className="legal-runner">
-      <div className="legal-runner-intro">
-        <span className="legal-runner-mark" aria-hidden="true">
-          <Scale size={22} />
-        </span>
-        <div>
-          <h3>公式情報で解決を試し、必要な案件だけ弁護士へ</h3>
-          <p>
-            法令AIが政府・裁判所の公式情報だけを検索して一般案内を作ります。
-            刑事弁護が必要な案件は、藤原茜弁護士を第一連絡候補として引き継ぎます。
-          </p>
+      <section className="legal-agent-chat" aria-label="法務受付との会話">
+        <header>
+          <span className="legal-agent-avatar" aria-hidden="true">
+            <Scale size={19} />
+          </span>
+          <div>
+            <strong>法務受付</strong>
+            <span>公式情報・窓口案内担当</span>
+          </div>
+          <small>GUIDED</small>
+        </header>
+        <div className="legal-agent-boundaries">
+          <span>
+            <ShieldCheck size={15} /> 相談本文は保存しません
+          </span>
+          <span>
+            <ShieldAlert size={15} /> 法的助言ではありません
+          </span>
         </div>
-      </div>
+        <Conversation className="legal-agent-thread">
+          <ConversationContent className="legal-agent-content">
+            <Message from="assistant">
+              <MessageContent>
+                <span className="legal-agent-message-role" aria-hidden="true">
+                  <Bot size={15} />
+                </span>
+                <MessageResponse>
+                  こんにちは。Skyの**法務受付**です。まず安全と期限を確認し、政府・裁判所の公式情報で一般案内を作ります。弁護士が必要な場合だけ、日本語対応の候補と引継ぎ要約を表示します。
+                </MessageResponse>
+              </MessageContent>
+            </Message>
+            {step >= 2 && (
+              <Message from="assistant">
+                <MessageContent>
+                  <span className="legal-agent-message-role" aria-hidden="true">
+                    <Bot size={15} />
+                  </span>
+                  <MessageResponse>
+                    名前や番号は書かず、**いつ・何が起きたか**を教えてください。分からないことは「不明」で大丈夫です。
+                  </MessageResponse>
+                </MessageContent>
+              </Message>
+            )}
+            {step === 3 && assessment && (
+              <>
+                <Message from="user">
+                  <MessageContent>
+                    <span className="legal-agent-message-role" aria-hidden="true">
+                      <UserRound size={15} />
+                    </span>
+                    <p>{input.situationSummary}</p>
+                  </MessageContent>
+                </Message>
+                <Message from="assistant">
+                  <MessageContent>
+                    <span className="legal-agent-message-role" aria-hidden="true">
+                      <Bot size={15} />
+                    </span>
+                    <MessageResponse>{`**${urgencyLabels[assessment.urgency]} — ${assessment.headline}**\n\n${assessment.explanation}`}</MessageResponse>
+                  </MessageContent>
+                </Message>
+                {assessment.urgency !== 'emergency' && (
+                  <Message from="assistant">
+                    <MessageContent>
+                      <span className="legal-agent-message-role" aria-hidden="true">
+                        <Bot size={15} />
+                      </span>
+                      {aiLoading ? (
+                        <p className="legal-agent-thinking">
+                          政府・裁判所の公式情報を確認しています…
+                        </p>
+                      ) : aiResult ? (
+                        <MessageResponse>{aiResult.answer}</MessageResponse>
+                      ) : (
+                        <p className="legal-agent-thinking">
+                          {aiError || '公式情報の案内を準備しています。'}
+                        </p>
+                      )}
+                    </MessageContent>
+                  </Message>
+                )}
+              </>
+            )}
+          </ConversationContent>
+          <ConversationScrollButton aria-label="最新の会話へ移動" />
+        </Conversation>
+      </section>
 
       <ol className="legal-runner-progress" aria-label="相談の進み具合">
         {['安全確認', '相談内容', '回答・引継ぎ'].map((label, index) => {
@@ -276,8 +364,7 @@ export function LegalIntakeRunner({
       <div className="legal-runner-privacy" hidden={step !== 1}>
         <ShieldAlert size={18} />
         <p>
-          Skyは相談内容を保存しません。法令AIを使うと入力は回答作成のためOpenAIへ送られ、APIの応答保存機能はオフにします。OpenAI側のデータ保持は契約設定に従います。
-          社会保障番号、口座・カード番号、パスワード、移民の受領番号、診療記録の全文は入力しないでください。
+          法令AIを使うと入力は回答作成のためOpenAIへ送られ、APIの応答保存機能はオフにします。OpenAI側の保持は契約設定に従います。社会保障番号、口座・カード番号、パスワード、移民の受領番号、診療記録の全文は入力しないでください。
         </p>
       </div>
 
@@ -298,64 +385,64 @@ export function LegalIntakeRunner({
       <form className="legal-runner-form" onSubmit={submit}>
         <div className="legal-runner-step" hidden={step !== 1}>
           <div className="legal-runner-step-heading">
-            <span>STEP 1 / 3</span>
-            <h3>当てはまるものを選んでください</h3>
-            <p>何もなければ、選ばずに次へ進めます。</p>
+            <span>QUICK CHECK</span>
+            <h3>当てはまるものはありますか？</h3>
+            <p>何もなければ、そのまま相談入力へ進めます。</p>
           </div>
           <fieldset disabled={executionDisabled}>
             <legend className="sr-only">安全確認</legend>
             <div className="legal-runner-checks">
-            <label>
-              <input
-                type="checkbox"
-                checked={input.immediateDanger}
-                onChange={(event) =>
-                  update('immediateDanger', event.target.checked)
-                }
-              />
-              <span>
-                <strong>今すぐ危険がある</strong>暴力、脅迫、追跡、身の危険など
-              </span>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={input.detainedOrArrested}
-                onChange={(event) =>
-                  update('detainedOrArrested', event.target.checked)
-                }
-              />
-              <span>
-                <strong>逮捕・拘束・出頭要請がある</strong>
-                本人または近しい人が対象
-              </span>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={input.domesticViolence}
-                onChange={(event) =>
-                  update('domesticViolence', event.target.checked)
-                }
-              />
-              <span>
-                <strong>家庭内暴力・対人安全の懸念がある</strong>
-                安全な端末で入力してください
-              </span>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={input.receivedOfficialDocument}
-                onChange={(event) =>
-                  update('receivedOfficialDocument', event.target.checked)
-                }
-              />
-              <span>
-                <strong>裁判所・警察・行政機関から書類が届いた</strong>
-                書類にある期日を確認してください
-              </span>
-            </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={input.immediateDanger}
+                  onChange={(event) =>
+                    update('immediateDanger', event.target.checked)
+                  }
+                />
+                <span>
+                  <strong>今すぐ危険がある</strong>暴力、脅迫、追跡、身の危険など
+                </span>
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={input.detainedOrArrested}
+                  onChange={(event) =>
+                    update('detainedOrArrested', event.target.checked)
+                  }
+                />
+                <span>
+                  <strong>逮捕・拘束・出頭要請がある</strong>
+                  本人または近しい人が対象
+                </span>
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={input.domesticViolence}
+                  onChange={(event) =>
+                    update('domesticViolence', event.target.checked)
+                  }
+                />
+                <span>
+                  <strong>家庭内暴力・安全の懸念がある</strong>
+                  安全な端末で入力してください
+                </span>
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={input.receivedOfficialDocument}
+                  onChange={(event) =>
+                    update('receivedOfficialDocument', event.target.checked)
+                  }
+                />
+                <span>
+                  <strong>公的な書類が届いた</strong>
+                  書類にある期日を確認してください
+                </span>
+              </label>
             </div>
           </fieldset>
           <button
@@ -364,87 +451,88 @@ export function LegalIntakeRunner({
             disabled={executionDisabled}
             onClick={() => setStep(2)}
           >
-            相談内容へ進む <ArrowRight size={17} />
+            相談を入力 <ArrowRight size={17} />
           </button>
         </div>
 
         <div className="legal-runner-step" hidden={step !== 2}>
-          <div className="legal-runner-step-heading">
-            <span>STEP 2 / 3</span>
-            <h3>何が起きたか教えてください</h3>
-            <p>名前や番号は書かず、いつ・何があったかを短くまとめてください。</p>
+          <div className="legal-agent-prompt">
+            <label className="legal-runner-text legal-runner-main-question">
+              相談内容
+              <textarea
+                required
+                minLength={20}
+                maxLength={2000}
+                value={input.situationSummary}
+                onChange={(event) =>
+                  update('situationSummary', event.target.value)
+                }
+                placeholder="例：9月10日に勤務先から通知を受け取り、9月18日までに返答するよう書かれています。"
+              />
+              <small>{input.situationSummary.length} / 2,000</small>
+            </label>
           </div>
 
-          <label className="legal-runner-text legal-runner-main-question">
-            状況を時系列で教えてください
-            <textarea
-              required
-              minLength={20}
-              maxLength={2000}
-              value={input.situationSummary}
-              onChange={(event) => update('situationSummary', event.target.value)}
-              placeholder="例：9月10日に勤務先から通知を受け取り、9月18日までに返答するよう書かれています。"
-            />
-            <small>{input.situationSummary.length} / 2,000</small>
-          </label>
-
-          <div className="legal-runner-grid">
-          <label>
-            相談分野
-            <select
-              value={input.issueType}
-              onChange={(event) =>
-                update('issueType', event.target.value as LegalIssueId)
-              }
-            >
-              {legalIssueCategories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            問題が起きている地域
-            <select
-              value={input.location}
-              onChange={(event) =>
-                update('location', event.target.value as LegalLocation)
-              }
-            >
-              {Object.entries(locationLabels).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            現在の段階
-            <select
-              value={input.matterStage}
-              onChange={(event) =>
-                update('matterStage', event.target.value as LegalMatterStage)
-              }
-            >
-              {Object.entries(stageLabels).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            書類にある期限・期日（任意）
-            <input
-              type="date"
-              value={input.deadlineDate ?? ''}
-              onChange={(event) =>
-                update('deadlineDate', event.target.value || undefined)
-              }
-            />
-          </label>
-          </div>
+          <details className="legal-runner-details" open>
+            <summary>分野・地域・期限を設定</summary>
+            <div className="legal-runner-grid">
+              <label>
+                相談分野
+                <select
+                  value={input.issueType}
+                  onChange={(event) =>
+                    update('issueType', event.target.value as LegalIssueId)
+                  }
+                >
+                  {legalIssueCategories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                問題が起きている地域
+                <select
+                  value={input.location}
+                  onChange={(event) =>
+                    update('location', event.target.value as LegalLocation)
+                  }
+                >
+                  {Object.entries(locationLabels).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                現在の段階
+                <select
+                  value={input.matterStage}
+                  onChange={(event) =>
+                    update('matterStage', event.target.value as LegalMatterStage)
+                  }
+                >
+                  {Object.entries(stageLabels).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                書類にある期限・期日（任意）
+                <input
+                  type="date"
+                  value={input.deadlineDate ?? ''}
+                  onChange={(event) =>
+                    update('deadlineDate', event.target.value || undefined)
+                  }
+                />
+              </label>
+            </div>
+          </details>
 
           <label className="legal-runner-text">
             どうなればよいですか？（任意）
@@ -457,7 +545,7 @@ export function LegalIntakeRunner({
             <small>{input.desiredOutcome.length} / 500</small>
           </label>
           <label className="legal-runner-contact">
-            希望する連絡方法
+            弁護士が必要な場合の連絡方法
             <select
               value={input.contactPreference}
               onChange={(event) =>
@@ -499,7 +587,7 @@ export function LegalIntakeRunner({
                 input.situationSummary.trim().length < 20
               }
             >
-              回答を見る <ArrowRight size={17} />
+              法務受付へ送る <ArrowRight size={17} />
             </button>
           </div>
         </div>
@@ -517,66 +605,39 @@ export function LegalIntakeRunner({
         <section className="legal-runner-result" aria-live="polite">
           <div className="legal-runner-result-heading">
             <div>
-              <span>STEP 3 / 3</span>
-              <h3>次にすることが分かりました</h3>
+              <span>NEXT ACTION</span>
+              <h3>次にすること</h3>
             </div>
             <button type="button" onClick={() => setStep(2)}>
               <ArrowLeft size={15} /> 相談内容を修正
             </button>
           </div>
-          <div className={`legal-runner-triage ${assessment.urgency}`}>
-            <span>{urgencyLabels[assessment.urgency]}</span>
-            <h3>{assessment.headline}</h3>
-            <p>{assessment.explanation}</p>
-          </div>
-          {assessment.urgency !== 'emergency' && (
-            <div className="legal-runner-ai">
-              <div className="legal-runner-ai-heading">
-                <div>
-                  <span>公式ドメイン限定</span>
-                  <h3>法令AIの一次回答</h3>
-                </div>
-                {aiResult && (
-                  <small>
-                    {new Date(aiResult.searchedAt).toLocaleString('ja-JP')} 確認
-                  </small>
-                )}
+
+          {assessment.urgency !== 'emergency' && aiResult && (
+            <div className="legal-runner-ai-sources legal-runner-source-panel">
+              <div>
+                <strong>根拠にした公式情報</strong>
+                <small>
+                  {new Date(aiResult.searchedAt).toLocaleString('ja-JP')} 確認
+                </small>
               </div>
-              {aiLoading ? (
-                <p className="legal-runner-ai-state">
-                  政府・裁判所の公式情報を検索しています…
-                </p>
-              ) : aiResult ? (
-                <>
-                  <div className="legal-runner-ai-answer">
-                    {aiResult.answer}
-                  </div>
-                  <div className="legal-runner-ai-sources">
-                    <strong>根拠にした公式情報</strong>
-                    {aiResult.citations.map((citation) => (
-                      <a
-                        key={citation.url}
-                        href={citation.url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {citation.title}
-                        <ExternalLink size={14} />
-                      </a>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <p className="legal-runner-ai-state">
-                  {aiError ||
-                    '入力後に、根拠リンク付きの一般案内を表示します。'}
-                </p>
-              )}
+              {aiResult.citations.map((citation) => (
+                <a
+                  key={citation.url}
+                  href={citation.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {citation.title}
+                  <ExternalLink size={14} />
+                </a>
+              ))}
               <small>
                 一般情報です。個別の権利・期限・取調べ対応・勝敗は弁護士に確認してください。
               </small>
             </div>
           )}
+
           <div className="legal-runner-actions">
             <article>
               <h4>次にすること</h4>
@@ -610,7 +671,7 @@ export function LegalIntakeRunner({
                   {copied ? 'コピーしました' : '要約をコピー'}
                 </button>
                 <small>
-                  連絡ボタンはメール・電話・公式サイトを開くだけです。内容を確認し、ご本人が送信してください。
+                  内容を確認し、ご本人が送信してください。Skyから自動送信はしません。
                 </small>
               </div>
               <div className="legal-runner-lawyers">
@@ -664,10 +725,8 @@ export function LegalIntakeRunner({
           ) : null}
 
           <div className="legal-runner-guide">
-            <h3>まず無料・公的な窓口で解決を試す</h3>
-            <p>
-              書式の作成や一般情報の確認は、次の公式・非営利サービスから始められます。
-            </p>
+            <h3>無料・公的な窓口</h3>
+            <p>書式や一般情報は、次の公式・非営利サービスから確認できます。</p>
             <div className="legal-runner-guide-links">
               {selfHelp.map((resource) => (
                 <a
