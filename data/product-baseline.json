@@ -1,5 +1,5 @@
 {
-  "version": "1.12",
+  "version": "1.13",
   "decidedAt": "2026-09-12",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -26,6 +26,12 @@
     "legacyInternalName": "hub",
     "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
   },
+  "baseApps": [
+    { "id": "sky", "role": "discover_connect_and_manage_automation_apps" },
+    { "id": "chat", "role": "request_clarify_status_and_result_inbox" },
+    { "id": "wallet", "role": "automation_income_cost_and_funds" },
+    { "id": "polymarket", "role": "separate_external_market_adapter" }
+  ],
   "executionApproval": {
     "status": "approved_for_implementation",
     "approvedDesignVersion": "1.1",
@@ -52,7 +58,8 @@
     "RQ14",
     "RQ15",
     "RQ16",
-    "RQ17"
+    "RQ17",
+    "RQ18"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -144,10 +151,11 @@
     "externalCosts": "separate, disclosed before consent; unspecified"
   },
   "marketExploration": {
-    "status": "discussion_only",
+    "status": "base_app_shell_approved",
+    "appShellAuthorized": true,
     "runtimeAuthorized": false,
     "realValueEnabled": false,
-    "scope": "Prediction markets and game asset trading are separate, optional proposals; not an approved OS requirement"
+    "scope": "Polymarket is a base app slot and separate external adapter. Live market data, orders, settlement and Wallet transfers remain disabled pending region, identity, contract and regulatory gates. Game asset trading remains an optional proposal."
   },
   "releaseExecution": {
     "startedAt": "2026-09-10T05:43:35Z",

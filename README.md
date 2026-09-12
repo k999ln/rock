@@ -37,7 +37,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / SkyをToB掲載とToCタイムライン取得・MCP接続の両面へ拡張 / 完了 27/49件
+最終更新: 2026-09-12 / 基本アプリをSky・Chat・Wallet・Polymarketへ分離 / 完了 28/50件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -48,6 +48,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | SKY05 | Skyの依頼・担当選択・検索・実行を迷わない3段階へ整理 | 完了 | [記録](components/sky-workspace.tsx) · [記録](app/workspace.css) |
 | SKY06 | スマホ幅でSky実行Dialogが左へずれる回帰を修正 | 完了 | [記録](app/workspace.css) · [記録](project.md) |
 | SKY07 | Rock IDにツール利用許可だけを保存する1タップ接続へ変更 | 完了 | [記録](components/sky-workspace.tsx) · [記録](app/api/sky/connections/route.ts) · [記録](docs/sky-identity-connection.md) |
+| SKY08 | Skyをアプリ選択と接続へ絞り、Chatを依頼・状況・結果の受取画面として分離 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/workspace-shell.tsx) · [記録](app/chat/page.tsx) · [記録](app/polymarket/page.tsx) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |

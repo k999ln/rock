@@ -4,6 +4,7 @@ import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
+  Activity,
   ArrowUpRight,
   Cable,
   Download,
@@ -11,9 +12,8 @@ import {
   CircleHelp,
   Grid2X2,
   Layers3,
-  ListChecks,
   Monitor,
-  PackagePlus,
+  MessageCircle,
   Star,
   Wallet,
 } from 'lucide-react';
@@ -29,9 +29,9 @@ import {
 
 const navigation = [
   { href: '/', label: 'Sky', Icon: Grid2X2 },
-  { href: '/sky/publish', label: 'Skyに掲載', Icon: PackagePlus },
-  { href: '/work', label: '仕事・履歴', Icon: ListChecks },
+  { href: '/chat', label: 'Chat', Icon: MessageCircle },
   { href: '/wallet', label: 'Wallet', Icon: Wallet },
+  { href: '/polymarket', label: 'Polymarket', Icon: Activity },
 ];
 
 export default function WorkspaceShell({
@@ -100,7 +100,8 @@ export default function WorkspaceShell({
                 href={href}
                 aria-current={
                   pathname === href ||
-                  (href === '/work' && pathname === '/activity')
+                  (href === '/chat' &&
+                    (pathname === '/work' || pathname === '/activity'))
                     ? 'page'
                     : undefined
                 }

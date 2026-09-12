@@ -1641,6 +1641,551 @@
     display: none;
   }
 }
+
+/* RockstarOS four-app shell: Sky is the app ecosystem; Chat receives work. */
+.sky-main-feed .sky-feed-header {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 70px;
+  padding-left: 18px;
+}
+.sky-main-feed .sky-store-title {
+  min-width: 92px;
+}
+.sky-main-feed .sky-store-title span,
+.sky-chat-app-picker header span {
+  display: block;
+  color: #71767b;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+.sky-main-feed .sky-store-title h1,
+.sky-chat-app-picker header h1 {
+  color: #f2f2f2;
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 1.08;
+}
+.sky-main-feed .sky-feed-tabs {
+  justify-content: center;
+}
+
+.rock-main-column:has(.sky-chat-page),
+.rock-main-column:has(.polymarket-page) {
+  min-width: 0;
+  background: #000;
+}
+.rock-main-column:has(.sky-chat-page) .rock-topbar,
+.rock-main-column:has(.sky-chat-page) .rock-bottom-note,
+.rock-main-column:has(.polymarket-page) .rock-topbar,
+.rock-main-column:has(.polymarket-page) .rock-bottom-note {
+  color: #e7e9ea;
+  border-color: #2f3336;
+  background: #000;
+}
+.sky-chat-page.sky-chat-page,
+.polymarket-page.polymarket-page {
+  width: 100%;
+  max-width: none;
+  min-height: calc(100dvh - 126px);
+  margin: 0;
+  padding: 0;
+  color: #e7e9ea;
+  background: #000;
+}
+.sky-chat-layout {
+  min-height: calc(100dvh - 126px);
+  display: grid;
+  grid-template-columns: minmax(230px, 300px) minmax(0, 1fr);
+}
+.sky-chat-app-picker {
+  min-width: 0;
+  border-right: 1px solid #2f3336;
+  background: #050505;
+}
+.sky-chat-app-picker > header {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid #2f3336;
+}
+.sky-chat-app-picker > header a {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #e7e9ea;
+  background: #16181c;
+}
+.sky-chat-app-list {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+}
+.sky-chat-app-list > button,
+.sky-chat-add-app {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 15px;
+  color: #e7e9ea;
+  text-align: left;
+}
+.sky-chat-app-list > button:hover,
+.sky-chat-app-list > button.is-selected,
+.sky-chat-add-app:hover {
+  background: #16181c;
+}
+.sky-chat-app-list > button.is-selected {
+  box-shadow: inset 3px 0 #1d9bf0;
+}
+.sky-chat-app-mark,
+.sky-chat-add-app > span {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 13px;
+  color: #111;
+  background: #e7e9ea;
+  font-size: 17px;
+  font-weight: 850;
+}
+.sky-chat-app-list strong,
+.sky-chat-app-list small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sky-chat-app-list strong {
+  font-size: 14px;
+}
+.sky-chat-app-list small {
+  margin-top: 2px;
+  color: #71767b;
+  font-size: 12px;
+}
+.sky-chat-add-app {
+  color: #8b98a5;
+  font-size: 14px;
+}
+.sky-chat-add-app > span {
+  color: #e7e9ea;
+  background: #242629;
+}
+.sky-chat-thread {
+  min-width: 0;
+  min-height: calc(100dvh - 126px);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background:
+    radial-gradient(
+      circle at 50% -20%,
+      rgba(29, 155, 240, 0.12),
+      transparent 38%
+    ),
+    #000;
+}
+.sky-chat-thread-header {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 22px;
+  border-bottom: 1px solid #2f3336;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(18px);
+}
+.sky-chat-thread-header strong,
+.sky-chat-thread-header span {
+  display: block;
+}
+.sky-chat-thread-header strong {
+  font-size: 16px;
+}
+.sky-chat-thread-header span {
+  margin-top: 2px;
+  color: #00ba7c;
+  font-size: 12px;
+}
+.sky-chat-messages {
+  min-height: 410px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding: 24px clamp(18px, 5vw, 70px);
+}
+.sky-chat-day {
+  align-self: center;
+  color: #71767b;
+  font-size: 12px;
+}
+.sky-chat-bubble {
+  width: fit-content;
+  max-width: min(72%, 620px);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 11px 14px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.sky-chat-bubble svg {
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+.sky-chat-bubble.is-sky {
+  border-bottom-left-radius: 5px;
+  color: #d6d9dc;
+  background: #16181c;
+}
+.sky-chat-bubble.is-me {
+  align-self: flex-end;
+  border-bottom-right-radius: 5px;
+  color: #fff;
+  background: #1d9bf0;
+}
+.sky-chat-receipt {
+  width: min(100%, 620px);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 13px;
+  border: 1px solid #2f3336;
+  border-radius: 14px;
+  color: #8b98a5;
+  background: rgba(8, 8, 8, 0.9);
+}
+.sky-chat-receipt > svg {
+  color: #00ba7c;
+}
+.sky-chat-receipt strong,
+.sky-chat-receipt span {
+  display: block;
+}
+.sky-chat-receipt strong {
+  color: #e7e9ea;
+  font-size: 13px;
+}
+.sky-chat-receipt span {
+  margin-top: 2px;
+  font-size: 11px;
+}
+.sky-chat-receipt a {
+  color: #1d9bf0;
+  font-size: 12px;
+}
+.sky-chat-composer {
+  padding: 12px clamp(18px, 5vw, 70px) max(16px, env(safe-area-inset-bottom));
+  border-top: 1px solid #2f3336;
+  background: rgba(0, 0, 0, 0.94);
+}
+.sky-chat-composer > p {
+  margin-bottom: 8px;
+  color: #f4212e;
+  font-size: 13px;
+}
+.sky-chat-composer > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  gap: 8px;
+  padding: 6px 7px 6px 16px;
+  border: 1px solid #2f3336;
+  border-radius: 24px;
+  background: #16181c;
+}
+.sky-chat-composer input {
+  min-width: 0;
+  color: #e7e9ea;
+  background: transparent;
+  font-size: 16px;
+  outline: none;
+}
+.sky-chat-composer button {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: #1d9bf0;
+}
+.sky-chat-composer button:disabled {
+  color: #536471;
+  background: #242629;
+}
+.sky-chat-centered,
+.sky-chat-empty {
+  grid-row: 1 / -1;
+  align-self: center;
+  justify-self: center;
+  width: min(440px, calc(100% - 36px));
+  color: #8b98a5;
+  text-align: center;
+}
+.sky-chat-empty > span {
+  width: 62px;
+  height: 62px;
+  display: grid;
+  margin: 0 auto 17px;
+  place-items: center;
+  border-radius: 18px;
+  color: #1d9bf0;
+  background: #101923;
+}
+.sky-chat-empty h2 {
+  color: #e7e9ea;
+  font-size: 23px;
+}
+.sky-chat-empty p {
+  margin-top: 7px;
+  font-size: 15px;
+}
+.sky-chat-empty a {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 20px auto 0;
+  padding: 10px 17px;
+  border-radius: 999px;
+  color: #fff;
+  background: #1d9bf0;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.polymarket-shell {
+  width: min(760px, calc(100% - 36px));
+  margin: 0 auto;
+  padding: 56px 0 72px;
+}
+.polymarket-heading {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 15px;
+}
+.polymarket-mark {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  color: #fff;
+  background: linear-gradient(145deg, #2856ff, #1133a8);
+  box-shadow: 0 14px 40px rgba(40, 86, 255, 0.25);
+}
+.polymarket-heading p {
+  color: #71767b;
+  font-size: 13px;
+}
+.polymarket-heading h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  letter-spacing: -0.04em;
+}
+.polymarket-state {
+  padding: 6px 10px;
+  border: 1px solid #536471;
+  border-radius: 999px;
+  color: #8b98a5;
+  font-size: 12px;
+}
+.polymarket-empty-state {
+  display: grid;
+  justify-items: center;
+  margin-top: 42px;
+  padding: 52px 24px;
+  border: 1px solid #2f3336;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #0d0f14, #050505);
+  text-align: center;
+}
+.polymarket-empty-state > span {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #8b98a5;
+  background: #1b1d22;
+}
+.polymarket-empty-state h2 {
+  margin-top: 18px;
+  font-size: 22px;
+}
+.polymarket-empty-state p {
+  max-width: 500px;
+  margin-top: 8px;
+  color: #8b98a5;
+  font-size: 15px;
+}
+.polymarket-boundaries {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.polymarket-boundaries > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 14px;
+  border: 1px solid #2f3336;
+  border-radius: 15px;
+  color: #8b98a5;
+}
+.polymarket-boundaries svg {
+  flex: 0 0 auto;
+  color: #536471;
+}
+.polymarket-boundaries span,
+.polymarket-boundaries strong {
+  display: block;
+}
+.polymarket-boundaries span {
+  font-size: 12px;
+  line-height: 1.45;
+}
+.polymarket-boundaries strong {
+  margin-bottom: 3px;
+  color: #e7e9ea;
+  font-size: 13px;
+}
+.polymarket-settings-link {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 18px auto 0;
+  color: #1d9bf0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+@media (max-width: 767px) {
+  .sky-main-feed .sky-feed-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 64px;
+    padding-left: 14px;
+  }
+  .sky-main-feed .sky-store-title {
+    min-width: 0;
+  }
+  .sky-main-feed .sky-store-title h1 {
+    font-size: 21px;
+  }
+  .sky-main-feed .sky-feed-header > [data-slot='tabs'] {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    width: calc(100% + 14px);
+    margin-left: -14px;
+    border-top: 1px solid #2f3336;
+  }
+  .sky-main-feed .sky-feed-header-actions {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .sky-main-feed .sky-feed-search {
+    top: 158px;
+  }
+  .sky-chat-page.sky-chat-page,
+  .polymarket-page.polymarket-page {
+    min-height: calc(100dvh - 116px);
+  }
+  .sky-chat-layout {
+    min-height: calc(100dvh - 116px);
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .sky-chat-app-picker {
+    border-right: 0;
+    border-bottom: 1px solid #2f3336;
+  }
+  .sky-chat-app-picker > header {
+    min-height: 58px;
+    padding: 9px 14px;
+  }
+  .sky-chat-app-picker header h1 {
+    font-size: 20px;
+  }
+  .sky-chat-app-list {
+    grid-auto-columns: minmax(150px, 56vw);
+    grid-auto-flow: column;
+    overflow-x: auto;
+    padding: 8px 12px 12px;
+    scrollbar-width: none;
+  }
+  .sky-chat-app-list::-webkit-scrollbar {
+    display: none;
+  }
+  .sky-chat-app-list > button,
+  .sky-chat-add-app {
+    border: 1px solid #2f3336;
+    background: #090909;
+  }
+  .sky-chat-app-list > button.is-selected {
+    border-color: #1d9bf0;
+    box-shadow: none;
+  }
+  .sky-chat-thread {
+    min-height: 570px;
+  }
+  .sky-chat-thread-header {
+    min-height: 64px;
+    padding: 10px 14px;
+  }
+  .sky-chat-app-mark,
+  .sky-chat-add-app > span {
+    width: 39px;
+    height: 39px;
+    border-radius: 11px;
+  }
+  .sky-chat-messages {
+    min-height: 330px;
+    padding: 18px 13px;
+  }
+  .sky-chat-bubble {
+    max-width: 86%;
+    font-size: 14px;
+  }
+  .sky-chat-composer {
+    position: sticky;
+    bottom: 0;
+    z-index: 4;
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+  .polymarket-shell {
+    width: calc(100% - 28px);
+    padding-top: 28px;
+  }
+  .polymarket-heading {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .polymarket-state {
+    grid-column: 1 / -1;
+    width: fit-content;
+  }
+  .polymarket-boundaries {
+    grid-template-columns: 1fr;
+  }
+  .polymarket-empty-state {
+    margin-top: 26px;
+    padding: 38px 18px;
+  }
+}
 @media (max-width: 480px) {
   .rock-tool-grid {
     grid-template-columns: 1fr;
@@ -5112,5 +5657,59 @@
     border-radius: 20px 20px 0 0 !important;
     translate: 0 0 !important;
     transform: none !important;
+  }
+}
+
+/* Final Sky store header override. */
+.sky-main-feed .sky-feed-header {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 70px;
+  padding-left: 18px;
+}
+.sky-main-feed .sky-store-title {
+  display: block;
+  min-width: 92px;
+}
+.sky-main-feed .sky-store-title span {
+  display: block;
+  color: #71767b;
+  font-size: 12px;
+  font-weight: 650;
+}
+.sky-main-feed .sky-store-title h1 {
+  color: #f2f2f2;
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 1.08;
+}
+.sky-main-feed .sky-feed-tabs {
+  justify-content: center;
+}
+
+@media (max-width: 767px) {
+  .sky-main-feed .sky-feed-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 64px;
+    padding-left: 14px;
+  }
+  .sky-main-feed .sky-store-title {
+    min-width: 0;
+  }
+  .sky-main-feed .sky-store-title h1 {
+    font-size: 21px;
+  }
+  .sky-main-feed .sky-feed-header > [data-slot='tabs'] {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    width: calc(100% + 14px);
+    margin-left: -14px;
+    border-top: 1px solid #2f3336;
+  }
+  .sky-main-feed .sky-feed-header-actions {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  .sky-main-feed .sky-feed-search {
+    top: 158px;
   }
 }

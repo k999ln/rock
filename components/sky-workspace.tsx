@@ -1,13 +1,8 @@
 'use client';
 
-import {
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type SyntheticEvent,
-} from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   ArrowRight,
   ArrowUpRight,
@@ -20,16 +15,16 @@ import {
   FilePenLine,
   Link2,
   LoaderCircle,
+  MessageCircle,
   PackagePlus,
   Search,
-  Send,
   ShieldCheck,
   X,
   Zap,
   type LucideIcon,
 } from 'lucide-react';
 import { catalog, type Automation } from '@/lib/catalog';
-import { routeSkyRequest, skyRoles } from '@/lib/sky-routing';
+import { skyRoles } from '@/lib/sky-routing';
 import {
   Dialog,
   DialogContent,
@@ -129,18 +124,14 @@ export default function SkyWorkspace() {
   const [selected, setSelected] = useState<Automation | null>(null);
   const [deviceOpen, setDeviceOpen] = useState(false);
   const [running, setRunning] = useState(false);
-  const [requestText, setRequestText] = useState('');
-  const [lastRequest, setLastRequest] = useState('');
-  const [routedTool, setRoutedTool] = useState<Automation | null>(null);
-  const [routeMessage, setRouteMessage] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [connectedTools, setConnectedTools] = useState<string[]>([]);
   const [connectionsLoading, setConnectionsLoading] = useState(true);
   const [connectionBusy, setConnectionBusy] = useState(false);
   const [connectionError, setConnectionError] = useState('');
   const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const router = useRouter();
   const searchInput = useRef<HTMLInputElement>(null);
-  const requestInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (searchOpen) searchInput.current?.focus();
@@ -189,18 +180,7 @@ export default function SkyWorkspace() {
 
   function openConnectedTool(tool: Automation) {
     setSelected(null);
-    setLastRequest('');
-    setRoutedTool(tool);
-    setRouteMessage(
-      `${roleFor(tool)}につながっています。上の欄に依頼を書くだけで使えます。`,
-    );
-    window.setTimeout(() => {
-      requestInput.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      });
-      requestInput.current?.focus({ preventScroll: true });
-    }, 150);
+    router.push(`/chat?tool=${encodeURIComponent(tool.id)}`);
   }
 
   function primaryAction(tool: Automation) {
@@ -235,11 +215,6 @@ export default function SkyWorkspace() {
           ? current
           : [...current, connection.tool],
       );
-      setRoutedTool(selected);
-      setLastRequest('');
-      setRouteMessage(
-        `${roleFor(selected)}をSkyに接続しました。上の欄からそのまま頼めます。`,
-      );
     } catch (error) {
       if (error instanceof OperationRequestError && error.status === 401)
         setNeedsSignin(true);
@@ -252,40 +227,6 @@ export default function SkyWorkspace() {
     }
   }
 
-  function chooseRole(tool: Automation, request = '') {
-    setLastRequest(request);
-    setRoutedTool(tool);
-    setRouteMessage(
-      connectedTools.includes(tool.id)
-        ? `${roleFor(tool)}が担当します。接続済みなので、このまま進められます。`
-        : `${roleFor(tool)}が担当します。最初だけSkyへ接続してください。`,
-    );
-  }
-
-  function openRole(tool: Automation, request = '') {
-    chooseRole(tool, request);
-    primaryAction(tool);
-  }
-
-  function submitRequest(event: SyntheticEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const request = requestText.trim();
-    if (!request) return;
-    const role = routeSkyRequest(request);
-    const tool = role
-      ? (catalog.find((item) => item.id === role.toolId) ?? null)
-      : null;
-    setRequestText('');
-    setLastRequest(request);
-    if (tool) chooseRole(tool, request);
-    else {
-      setRoutedTool(null);
-      setRouteMessage(
-        '近い役割を選んでください。選ぶと、その担当につながります。',
-      );
-    }
-  }
-
   return (
     <WorkspaceShell
       running={running}
@@ -295,73 +236,11 @@ export default function SkyWorkspace() {
     >
       <div className="sky-feed-layout">
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
-          <section
-            className="sky-assistant"
-            aria-labelledby="sky-assistant-title"
-          >
-            <div className="sky-assistant-avatar" aria-hidden="true">
-              <span>S</span>
-            </div>
-            <div className="sky-assistant-body">
-              <h2 id="sky-assistant-title" className="sr-only">
-                Skyに頼む
-              </h2>
-              <form className="sky-assistant-composer" onSubmit={submitRequest}>
-                <input
-                  ref={requestInput}
-                  value={requestText}
-                  onChange={(event) => setRequestText(event.target.value)}
-                  placeholder="何をしてほしい？"
-                  aria-label="Skyへの依頼"
-                />
-                <button
-                  disabled={!requestText.trim()}
-                  aria-label="Skyへ依頼を送る"
-                >
-                  <Send size={18} />
-                  <span>送信</span>
-                </button>
-              </form>
-              <div className="sky-role-list" aria-label="Skyの役割">
-                {skyRoles.map((role) => {
-                  const tool = catalog.find((item) => item.id === role.toolId)!;
-                  return (
-                    <button
-                      key={role.toolId}
-                      onClick={() => openRole(tool, role.label)}
-                    >
-                      {role.label}
-                    </button>
-                  );
-                })}
-              </div>
-              {routeMessage && (
-                <output className="sky-route-reply">
-                  <div className="sky-route-conversation">
-                    {lastRequest && (
-                      <p className="sky-route-request">{lastRequest}</p>
-                    )}
-                    <p className="sky-route-answer">{routeMessage}</p>
-                  </div>
-                  {routedTool && (
-                    <button onClick={() => primaryAction(routedTool)}>
-                      {routedTool.runner === 'delivery-local'
-                        ? 'PC接続へ'
-                        : connectedTools.includes(routedTool.id)
-                          ? 'Skyで使う'
-                          : '1タップで接続'}
-                      <ArrowRight size={15} />
-                    </button>
-                  )}
-                </output>
-              )}
-            </div>
-          </section>
-
           <header className="sky-feed-header">
-            <h1 id="sky-feed-title" className="sr-only">
-              Sky
-            </h1>
+            <div className="sky-store-title">
+              <span>Sky</span>
+              <h1 id="sky-feed-title">アプリ</h1>
+            </div>
             <Tabs
               value={filter}
               onValueChange={(value) => setFilter(value as FeedFilter)}
@@ -378,6 +257,13 @@ export default function SkyWorkspace() {
               </TabsList>
             </Tabs>
             <div className="sky-feed-header-actions">
+              <Link
+                href="/chat"
+                aria-label="Chatを開く"
+                className="sky-header-action"
+              >
+                <MessageCircle size={19} />
+              </Link>
               <button
                 className="sky-header-action"
                 aria-label={searchOpen ? '検索を閉じる' : 'ツールを検索'}
@@ -549,7 +435,7 @@ export default function SkyWorkspace() {
               ) : (
                 <>
                   <DialogDescription className="rock-dialog-description">
-                    接続後はフォームを開かず、Skyに頼むだけで使えます。
+                    接続後はフォームを開かず、Chatから頼めます。
                   </DialogDescription>
 
                   <div className="sky-id-connection" aria-label="接続内容">
@@ -588,10 +474,10 @@ export default function SkyWorkspace() {
                       <CheckCircle2 size={22} />
                       <div>
                         <strong>接続済み</strong>
-                        <span>次からはSkyに話しかけるだけです。</span>
+                        <span>次からはChatでアプリを選ぶだけです。</span>
                       </div>
                       <button onClick={() => openConnectedTool(selected)}>
-                        Skyに頼む
+                        Chatで使う
                         <ArrowRight size={16} />
                       </button>
                     </div>

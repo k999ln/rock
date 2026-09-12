@@ -9,10 +9,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ17/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ18/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ17/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ18/);
   const missingTemplate = structuredClone(source);
   delete missingTemplate.acceptanceTemplate;
   assert.throws(() => validateBaseline(missingTemplate), /acceptanceTemplate/);
@@ -25,6 +25,9 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const atmDependency = structuredClone(source);
   atmDependency.gameExchange.atmDependency = true;
   assert.throws(() => validateBaseline(atmDependency), /ATM必須/);
+  const unapprovedMarket = structuredClone(source);
+  unapprovedMarket.marketExploration.appShellAuthorized = false;
+  assert.throws(() => validateBaseline(unapprovedMarket), /基本アプリ枠/);
   const live = structuredClone(source);
   live.auditInputs.isLiveStatus = true;
   assert.throws(() => validateBaseline(live), /snapshot/);
@@ -34,9 +37,9 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const missingReview = structuredClone(source);
   delete missingReview.auditInputs.designHead;
   assert.throws(() => validateBaseline(missingReview), /designHead/);
-  const unapprovedMarket = structuredClone(source);
-  unapprovedMarket.marketExploration.runtimeAuthorized = true;
-  assert.throws(() => validateBaseline(unapprovedMarket), /未承認/);
+  const runtimeMarket = structuredClone(source);
+  runtimeMarket.marketExploration.runtimeAuthorized = true;
+  assert.throws(() => validateBaseline(runtimeMarket), /未承認/);
   const escaped = structuredClone(source);
   escaped.authority = '../external.md';
   assert.throws(() => validateBaseline(escaped), /repository外/);

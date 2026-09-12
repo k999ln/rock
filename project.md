@@ -1,5 +1,11 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-12 — 基本アプリをSky / Chat / Wallet / Polymarketへ整理
+
+利用者の明示確認により、RockstarOSの基本アプリを4つに固定した。Skyは自動化アプリの発見・掲載・1タップ接続へ集中し、依頼欄を撤去した。Chatは接続済みアプリを選び、依頼・確認・実行状態・完了通知を受け取る独立画面とした。Walletは従来どおり収支・費用を管理する。
+
+Polymarketは4つ目の外部市場アプリ枠として追加したが、安全な未接続画面だけを実装した。市場データ取得、注文、清算、Walletからの資金移動は行わず、提供地域・年齢・本人確認・規制・外部契約を満たした後の別adapterと同意が必要な状態を維持する。
+
 ## 2026-09-12 — SkyをRock IDへの1タップ接続へ変更
 
 Skyの既定導線から長い入力フォームを外し、未接続ツールはRock IDから利用許可だけを保存する1タップ接続、接続済みツールは会話欄へ直接戻る「頼む」導線へ変更した。案件文や原稿など毎回変わる情報はSkyとの会話で渡し、従来の入力画面は必要な場合だけ開く「手動入力」に畳んだ。本人確認とツール権限を分離し、個人番号・住所・生年月日はツールgrantへ保存しない。
@@ -302,7 +308,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / SkyをToB掲載とToCタイムライン取得・MCP接続の両面へ拡張 / 完了 27/49件
+最終更新: 2026-09-12 / 基本アプリをSky・Chat・Wallet・Polymarketへ分離 / 完了 28/50件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -313,6 +319,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY05 | Skyの依頼・担当選択・検索・実行を迷わない3段階へ整理 | 完了 | [記録](components/sky-workspace.tsx) · [記録](app/workspace.css) |
 | SKY06 | スマホ幅でSky実行Dialogが左へずれる回帰を修正 | 完了 | [記録](app/workspace.css) · [記録](project.md) |
 | SKY07 | Rock IDにツール利用許可だけを保存する1タップ接続へ変更 | 完了 | [記録](components/sky-workspace.tsx) · [記録](app/api/sky/connections/route.ts) · [記録](docs/sky-identity-connection.md) |
+| SKY08 | Skyをアプリ選択と接続へ絞り、Chatを依頼・状況・結果の受取画面として分離 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/workspace-shell.tsx) · [記録](app/chat/page.tsx) · [記録](app/polymarket/page.tsx) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
