@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "SkyからFashion Brand Ops MCPへのワンクリック接続・38操作・失効・画面検証に合格",
-  "nextAction": "Meta OAuthのApp ID/secret、Professional account、公開Webhook URLを接続し、read-only discoveryから本人承認付き限定テスト投稿へ進む。Sites再配信は正しい所有ワークスペース接続後に行う。",
+  "milestone": "OSバックエンドの安全終了・ヘルスチェック・実process再起動とSQLite復元に合格",
+  "nextAction": "既存private draft releaseのrc2配布8資産を所有者アカウントで取得し、hash/署名、fresh導入、起動、保存、復旧を同一候補で再確認する。production署名・製品許諾・本人限定Sitesのログイン後確認が揃うまでBLOCKED_FOR_LAUNCHを維持する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -616,6 +616,18 @@
       "dependsOn": [],
       "evidence": [
         "docs/launch-readiness-20260910.md"
+      ]
+    },
+    {
+      "id": "LCH08",
+      "title": "ローカルOSバックエンドの安全終了・ヘルスチェック・再起動時のreceipt復元を検証",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "docs/backend-launch-20260912.md",
+        "systems/rock-star-os/scripts/verify-backend-launch.py",
+        "systems/rock-star-os/tests/test_hub.py",
+        "systems/rock-star-os/tests/test_hub_server.py"
       ]
     },
     {

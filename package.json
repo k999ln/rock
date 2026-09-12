@@ -26,6 +26,7 @@
     "verify": "npm run project:check && npm run repository:check && npm run baseline:check && npm run sky:check && npm run device-support:check && npm run typecheck && npm run lint:product && npm test && npm run test:fashion-brand-ops && npm run build && npm run test:api",
     "discover": "node scripts/discover.mjs",
     "os:check": "node scripts/check-os-contracts.mjs",
+    "os:backend:launch": "python3 systems/rock-star-os/scripts/verify-backend-launch.py",
     "os:host": "node scripts/check-os-host.mjs",
     "os:parity": "node --experimental-strip-types scripts/check-os-parity.mjs",
     "device-support:check": "node scripts/check-device-support.mjs"

@@ -241,6 +241,27 @@ class HubRuntimeTest(unittest.TestCase):
         self.assertEqual(self.hub.job(job["id"])["status"], "cancelled")
         self.assertIsNone(self.hub.job(job["id"])["output"])
 
+    def test_close_kills_owned_child_and_fences_original_request(self):
+        self.install_enable()
+        original_popen = subprocess.Popen
+
+        def controlled_worker(command, *args, **kwargs):
+            if isinstance(command, list) and any(str(x).endswith("recipe_worker.py") for x in command):
+                command = [sys.executable, "-I", "-c", "import sys,time;sys.stdin.buffer.read();time.sleep(10)"]
+            return original_popen(command, *args, **kwargs)
+
+        with patch("blackberryrock.hub.subprocess.Popen", side_effect=controlled_worker):
+            job = self.hub.run(self.tool_id, "example", "stop-during-work")
+            process = wait_for(lambda: self.hub.processes.get(job["id"]))
+            self.hub.close()
+            self.assertIsNotNone(process.poll())
+
+        reopened = Hub(self.path, TRUST)
+        stopped = reopened.job(job["id"])
+        self.assertEqual(stopped["status"], "interrupted")
+        self.assertIn("explicit retry", stopped["error"])
+        self.assertEqual(reopened.run(self.tool_id, "example", "stop-during-work"), stopped)
+
     def test_capacity_rejection_and_cancel_before_worker_launch(self):
         self.install_enable()
         release = threading.Event()
