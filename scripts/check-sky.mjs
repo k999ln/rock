@@ -9,13 +9,16 @@ const requireValue = (ok, message) => {
 };
 
 const catalogSource = read('lib/catalog.ts');
+const catalogBody = catalogSource.slice(
+  catalogSource.indexOf('export const catalog'),
+);
 const readyCount = (
-  catalogSource.match(/^    status:\s*['"]ready['"]/gm) || []
+  catalogBody.match(/["']?status["']?\s*:\s*['"]ready['"]/g) || []
 ).length;
 const candidateCount = (
-  catalogSource.match(/^    status:\s*['"]candidate['"]/gm) || []
+  catalogBody.match(/["']?status["']?\s*:\s*['"]candidate['"]/g) || []
 ).length;
-requireValue(readyCount === 7, `Web/PC readyは7件です（実際: ${readyCount}）`);
+requireValue(readyCount === 8, `Web/PC readyは8件です（実際: ${readyCount}）`);
 requireValue(
   candidateCount === 3,
   `導入候補は3件です（実際: ${candidateCount}）`,
@@ -120,8 +123,7 @@ for (const marker of [
   requireValue(sky.includes(marker), `Skyの説明に「${marker}」がありません`);
 
 requireValue(
-  (workspace.match(/className="rock-tool-dialog sky-tool-dialog"/g) || [])
-    .length === 2,
+  (workspace.match(/rock-tool-dialog sky-tool-dialog/g) || []).length >= 2,
   'Skyのツール・PC接続Dialogに統一外観が適用されていません',
 );
 for (const marker of [

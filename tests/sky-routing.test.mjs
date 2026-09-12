@@ -10,6 +10,8 @@ void test('Sky routes a plain-language request to each available role', () => {
     ['この記事の出典URLをまとめて', 'mr-citations'],
     ['契約と成果物を見て納品確認して', 'mr-delivery'],
     ['サブスクの更新日と支払い失敗を確認して', 'rockstar-ledger'],
+    ['契約上の法的な問題を法務に相談したい', 'rockstar-legal-intake'],
+    ['この発明の先行技術と請求項を整理して', 'rockstar-patent-assistant'],
   ];
 
   for (const [request, toolId] of cases) {
@@ -17,8 +19,8 @@ void test('Sky routes a plain-language request to each available role', () => {
   }
 });
 
-void test('Sky exposes six roles and does not guess an unrelated request', () => {
-  assert.equal(skyRoles.length, 6);
+void test('Sky exposes eight roles and does not guess an unrelated request', () => {
+  assert.equal(skyRoles.length, 8);
   assert.equal(routeSkyRequest('今日の天気を教えて'), null);
   assert.equal(routeSkyRequest('  '), null);
 });

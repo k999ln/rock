@@ -128,10 +128,10 @@
       ]
     },
     {
-      "id": "SKY08",
+      "id": "SKY10",
       "title": "Skyをアプリ選択と接続へ絞り、Chatを依頼・状況・結果の受取画面として分離",
       "status": "done",
-      "dependsOn": ["SKY07"],
+      "dependsOn": ["SKY08"],
       "evidence": [
         "components/sky-workspace.tsx",
         "components/sky-chat-workspace.tsx",
@@ -141,10 +141,10 @@
       ]
     },
     {
-      "id": "SKY09",
+      "id": "SKY11",
       "title": "MCP掲載前診断とPC接続の互換性・初回導線を改善",
       "status": "done",
-      "dependsOn": ["SKY02", "SKY08"],
+      "dependsOn": ["SKY02", "SKY10"],
       "evidence": [
         "lib/mcp-inspection.ts",
         "app/api/sky/mcp/inspect/route.ts",
@@ -156,10 +156,10 @@
       ]
     },
     {
-      "id": "SKY10",
+      "id": "SKY12",
       "title": "ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化",
       "status": "done",
-      "dependsOn": ["SKY08"],
+      "dependsOn": ["SKY10"],
       "evidence": [
         "components/sky-chat-workspace.tsx",
         "app/workspace.css",

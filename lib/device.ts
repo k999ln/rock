@@ -255,7 +255,7 @@ export async function connectDevice() {
     throw error;
   }
   window.dispatchEvent(new Event('loop-device'));
-  return { ...data, toolCount: available.size };
+  return { ...data, toolCount: availableTools.size };
 }
 export async function runDevice(name: string, args: Record<string, unknown>) {
   const token = deviceToken();

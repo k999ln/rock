@@ -12,6 +12,7 @@ import {
   CircleHelp,
   Grid2X2,
   Layers3,
+  ListChecks,
   Monitor,
   Star,
   Wallet,

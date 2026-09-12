@@ -7,6 +7,8 @@ import {
   type CSSProperties,
   type SyntheticEvent,
 } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   ArrowRight,
   ArrowUpRight,
@@ -19,20 +21,23 @@ import {
   FilePenLine,
   Lightbulb,
   Link2,
+  LoaderCircle,
+  MessageCircle,
   Network,
   PackagePlus,
   Scale,
   Search,
   Send,
+  ShieldCheck,
   Shirt,
   WalletCards,
   X,
-  WalletCards,
   Zap,
   type LucideIcon,
 } from 'lucide-react';
 import { catalog, type Automation } from '@/lib/catalog';
 import { deviceToken } from '@/lib/device';
+import { fashionMcpConnected } from '@/lib/fashion-mcp-client';
 import { routeSkyRequest, skyRoles } from '@/lib/sky-routing';
 import {
   Dialog,
@@ -67,6 +72,8 @@ const icons: Record<string, LucideIcon> = {
   'mr-citations': BookOpenCheck,
   'mr-delivery': FileCheck2,
   'rockstar-ledger': WalletCards,
+  'rockstar-legal-intake': Scale,
+  'rockstar-patent-assistant': Lightbulb,
 };
 const providers: Record<
   string,
@@ -94,9 +101,19 @@ const providers: Record<
     initial: '納',
   },
   'rockstar-ledger': {
-    name: 'Sky 契約管理役',
-    handle: '@sky_subscription',
-    initial: '契',
+    name: 'Sky サブスク顧問',
+    handle: '@sky_subscriptions',
+    initial: '顧',
+  },
+  'rockstar-legal-intake': {
+    name: 'Sky 法務受付',
+    handle: '@sky_legal',
+    initial: '法',
+  },
+  'rockstar-patent-assistant': {
+    name: 'Sky 特許出願担当',
+    handle: '@sky_patent',
+    initial: '特',
   },
   'faster-whisper': { name: 'SYSTRAN', handle: '@systran', initial: 'S' },
   'transformers-js': {
@@ -170,6 +187,16 @@ export default function SkyWorkspace({
   const [publishOpen, setPublishOpen] = useState(initialPublishOpen);
   const [connected, setConnected] = useState(false);
   const [fashionConnected, setFashionConnected] = useState(false);
+  const [requestText, setRequestText] = useState('');
+  const [lastRequest, setLastRequest] = useState('');
+  const [routedTool, setRoutedTool] = useState<Automation | null>(null);
+  const [routeMessage, setRouteMessage] = useState('');
+  const [connectedTools, setConnectedTools] = useState<string[]>([]);
+  const [connectionsLoading, setConnectionsLoading] = useState(true);
+  const [connectionBusy, setConnectionBusy] = useState(false);
+  const [connectionError, setConnectionError] = useState('');
+  const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const router = useRouter();
   const searchInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -189,6 +216,29 @@ export default function SkyWorkspace({
     window.addEventListener('sky-fashion-mcp', update);
     return () => window.removeEventListener('sky-fashion-mcp', update);
   }, []);
+
+  useEffect(() => {
+    let active = true;
+    void operationRequest<SkyConnection[]>('/api/sky/connections')
+      .then((connections) => {
+        if (active) setConnectedTools(connections.map(({ tool }) => tool));
+      })
+      .catch((error) => {
+        if (
+          active &&
+          error instanceof OperationRequestError &&
+          error.status === 401
+        )
+          setNeedsSignin(true);
+      })
+      .finally(() => {
+        if (active) setConnectionsLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [setNeedsSignin]);
+
   const visibleTools = catalog.filter((tool) => {
     const matchesFilter =
       filter === 'おすすめ' ||
@@ -255,6 +305,37 @@ export default function SkyWorkspace({
     } finally {
       setConnectionBusy(false);
     }
+  }
+
+  function chooseRole(tool: Automation, request = '') {
+    setLastRequest(request);
+    setRoutedTool(tool);
+    setRouteMessage(
+      `${roleFor(tool)}が進めます。内容を確認してツールを開いてください。`,
+    );
+  }
+
+  function openRole(tool: Automation, request = '') {
+    chooseRole(tool, request);
+    primaryAction(tool);
+  }
+
+  function submitRequest(event: SyntheticEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const request = requestText.trim();
+    if (!request) return;
+    const role = routeSkyRequest(request);
+    setRequestText('');
+    setLastRequest(request);
+    if (role) {
+      const tool = catalog.find((item) => item.id === role.toolId);
+      if (tool) chooseRole(tool, request);
+      return;
+    }
+    setRoutedTool(null);
+    setRouteMessage(
+      '近い役割を選んでください。選ぶと、その担当につながります。',
+    );
   }
 
   return (
@@ -551,6 +632,13 @@ export default function SkyWorkspace({
                   <div className="sky-candidate-state">
                     まだSkyからは接続できません。導入確認中です。
                   </div>
+                </>
+              ) : selected.integration === 'fashion-brand-ops' ? (
+                <>
+                  <DialogDescription className="rock-dialog-description">
+                    PCの接続アプリへ1クリックで接続し、38操作をSkyから利用できます。
+                  </DialogDescription>
+                  <FashionBrandOpsRunner />
                 </>
               ) : (
                 <>
