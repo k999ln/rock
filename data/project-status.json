@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "現行SkyフロントへMCP導入・Fashion Brand Ops 38操作・検証済み収益精算核を統合し、本人限定Sitesへローンチ準備",
-  "nextAction": "本人限定Sitesへ統合版を公開して認証・D1・MCP導入の本番フローを確認し、Provider sandboxは秘密値と受入条件が揃うまで安全停止を維持する。",
+  "milestone": "OS Hub lifecycle、Sky MCP、Fashion MCP、収益後精算Workerを本人限定Developer Previewへ統合・公開",
+  "nextAction": "有償商品を1件選び、販売・決済・払出しProvider sandbox credentialと署名済み入金eventを接続して、返金・dispute・払出し失敗を含む事業受入を行う。",
   "tasks": [
     {
       "id": "SKY01",
@@ -234,14 +234,15 @@
     {
       "id": "R07",
       "title": "本人限定のSitesへ公開・本番確認",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [
         "R06"
       ],
       "evidence": [
         "docs/deployment-integration.md",
         "docs/release-followup-20260910.md",
-        "docs/owner-setup-20260911.md"
+        "docs/owner-setup-20260911.md",
+        "docs/evidence/launch/backend-owner-validation-20260912.json"
       ]
     },
     {
@@ -782,7 +783,8 @@
         "services/sky-billing/src/worker.ts",
         "tests/billing.test.mjs",
         "tests/billing-worker.test.mjs",
-        "services/sky-billing/migrations/0002_earnings_settlement.sql"
+        "services/sky-billing/migrations/0002_earnings_settlement.sql",
+        "docs/evidence/launch/backend-owner-validation-20260912.json"
       ]
     },
     {
