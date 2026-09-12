@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "Instagram運用・受注型ブランド管理とサブスク顧問を同じSky統合候補で検証済み",
-  "nextAction": "Sky統合候補をGitHubへ保存し、開発本体向けDraft PRで差分と同一SHAのCIを確認する。実Higgsfield/Meta/Stripe/通知credential、本番投稿・広告・請求・返金、Native Sky MCP broker、Wallet費用転記、HTTPS配信版のloopback代替、QEMU/Android/実機OS組込みは別gateとして保持する。",
+  "milestone": "Fashion Brand Ops v0.2.0の目標駆動運営・接客・制作機能を実装し、Sky画面と全体検証に合格",
+  "nextAction": "GitHub PRの同一SHA CIを確認後、Meta OAuthのApp ID/secret、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付きの限定テスト投稿へ進む。実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -590,6 +590,42 @@
       "dependsOn": [],
       "evidence": [
         "docs/fashion-brand-ops-integration.md"
+      ]
+    },
+    {
+      "id": "FB02",
+      "title": "売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成",
+      "status": "done",
+      "dependsOn": [
+        "FB01"
+      ],
+      "evidence": [
+        "toolkits/fashion-brand-ops/src/service.mjs",
+        "toolkits/fashion-brand-ops/test/service.test.mjs"
+      ]
+    },
+    {
+      "id": "FB03",
+      "title": "DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成",
+      "status": "done",
+      "dependsOn": [
+        "FB01"
+      ],
+      "evidence": [
+        "toolkits/fashion-brand-ops/src/service.mjs",
+        "toolkits/fashion-brand-ops/test/service.test.mjs"
+      ]
+    },
+    {
+      "id": "FB04",
+      "title": "入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理",
+      "status": "done",
+      "dependsOn": [
+        "FB01"
+      ],
+      "evidence": [
+        "toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql",
+        "toolkits/fashion-brand-ops/test/service.test.mjs"
       ]
     }
   ],

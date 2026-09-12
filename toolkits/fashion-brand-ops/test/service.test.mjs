@@ -91,8 +91,12 @@ test("order payment only advances from verified idempotent provider events", asy
   const runtime = fixture();
   t.after(() => runtime.store.close());
   const { brand, product } = seed(runtime);
+  const incomplete = runtime.service.collectOrder({ brand_id: brand.id, product_id: product.id, customer_external_ref: "buyer-incomplete", customer: { name: "Incomplete" }, shipping: {}, quantity: 1 });
+  assert.throws(() => runtime.service.preparePayment({ order_id: incomplete.order.id, kind: "link" }), /order_information_incomplete/);
   const collected = runtime.service.collectOrder({ brand_id: brand.id, product_id: product.id, customer_external_ref: "buyer1", customer: { name: "A", email: "a@example.com" }, consent: { dm: true }, shipping: { country: "JP", address: "Tokyo" }, quantity: 1 });
   assert.deepEqual(collected.missing_fields, []);
+  assert.throws(() => runtime.service.preparePayment({ order_id: collected.order.id, kind: "invoice", days_until_due: 91 }), /invoice_due_days_invalid/);
+  assert.throws(() => runtime.service.preparePayment({ order_id: collected.order.id, kind: "refund", payment_intent: "pi-too-early" }), /paid_order_required_for_refund/);
   const payment = runtime.service.preparePayment({ order_id: collected.order.id, kind: "link" });
   await grant(runtime, payment.approval, "pay-link-1");
   assert.equal(runtime.service.orderGet(collected.order.id).status, "payment_pending");
@@ -101,4 +105,104 @@ test("order payment only advances from verified idempotent provider events", asy
   assert.equal(processed.order.status, "paid");
   assert.equal(runtime.service.processPaymentEvent(event).duplicate, true);
   assert.throws(() => runtime.service.processPaymentEvent({ ...event, payload: { ...event.payload, amount: 1 } }), /provider_event_digest_conflict/);
+});
+
+test("Campaign Autopilot persists a measurable plan and safely runs internal work", async (t) => {
+  const runtime = fixture();
+  t.after(() => runtime.store.close());
+  const { brand, product } = seed(runtime);
+  const created = runtime.service.createAutopilotGoal({
+    id: "goal1",
+    brand_id: brand.id,
+    product_id: product.id,
+    target_units: 30,
+    target_revenue_minor: 2_640_000,
+    target_gross_margin_bps: 6000,
+    ad_budget_cap_minor: 120_000,
+    starts_at: "2030-01-01T00:00:00.000Z",
+    ends_at: "2030-02-01T00:00:00.000Z",
+  });
+  assert.equal(created.idempotent_replay, false);
+  assert.equal(created.goal.plan.forecast.projected_revenue_minor, 2_640_000);
+  assert.equal(created.goal.plan.guardrails.external_effects_require_approval, true);
+  assert.equal(created.actions.length, 5);
+  assert.equal(runtime.store.get("SELECT COUNT(*) AS count FROM approval_requests").count, 0);
+
+  const tick = runtime.service.autopilotTick({ goal_id: "goal1" });
+  assert.equal(tick.external_effects_executed, false);
+  assert.ok(tick.next_actions.some((action) => action.tool_name === "fashion.creative.prepare"));
+  assert.ok(tick.next_actions.some((action) => action.tool_name === "instagram.content_plan.create"));
+  const run = await runtime.service.autopilotRun({ goal_id: "goal1" });
+  assert.equal(run.external_effects_executed, false);
+  assert.ok(run.completed.some((action) => action.tool_name === "fashion.creative.prepare"));
+  assert.ok(run.completed.some((action) => action.tool_name === "instagram.content_plan.create"));
+  assert.ok(run.completed.some((action) => action.tool_name === "instagram.draft.create"));
+  assert.equal(run.pending_approvals.length, 1);
+  assert.equal(run.processed, 3);
+  assert.equal(runtime.store.get("SELECT COUNT(*) AS count FROM effect_runs").count, 0);
+  assert.equal(runtime.store.get("SELECT COUNT(*) AS count FROM campaigns").count, 1);
+  const campaign = runtime.store.get("SELECT id FROM campaigns LIMIT 1");
+  assert.throws(() => runtime.service.prepareSocial({ campaign_id: campaign.id, action: "create_ad", budget_minor: 120_001, currency: "JPY" }), /ad_budget_exceeds_goal_cap/);
+  const approvedBudget = runtime.service.prepareSocial({ campaign_id: campaign.id, action: "create_ad", budget_minor: 120_000, currency: "JPY" });
+  assert.equal(runtime.service.approvalGet(approvedBudget.approval.approval_id).payload.ad_budget_cap_minor, 120_000);
+  assert.equal(runtime.service.createAutopilotGoal({
+    id: "goal1", brand_id: brand.id, product_id: product.id, target_units: 30,
+    target_revenue_minor: 2_640_000, target_gross_margin_bps: 6000,
+    ad_budget_cap_minor: 120_000, starts_at: "2030-01-01T00:00:00.000Z", ends_at: "2030-02-01T00:00:00.000Z",
+  }).idempotent_replay, true);
+});
+
+test("readiness reports blockers without exposing secrets", (t) => {
+  const runtime = fixture();
+  t.after(() => runtime.store.close());
+  const { brand } = seed(runtime);
+  const readiness = runtime.service.readiness({ brand_id: brand.id });
+  assert.equal(readiness.status, "setup_required");
+  assert.equal(readiness.planning_ready, true);
+  assert.equal(readiness.capabilities.approval.ready, true);
+  assert.equal(readiness.capabilities.instagram.provider, "mock");
+  assert.ok(readiness.missing.includes("live_social_provider"));
+  assert.ok(readiness.missing.includes("connected_instagram_account"));
+  assert.equal(readiness.secrets_exposed, false);
+  assert.doesNotMatch(JSON.stringify(readiness), /test-only-approval-secret/);
+});
+
+test("AI Sales Concierge keeps customer context but leaves DM sending behind approval", (t) => {
+  const runtime = fixture();
+  t.after(() => runtime.store.close());
+  const { brand, product } = seed(runtime);
+  runtime.service.ingestDm({ brand_id: brand.id, provider: "instagram", external_message_id: "sales1", customer_external_ref: "buyer-sales", body: "サイズを確認して購入したいです" });
+  const latest = runtime.service.ingestDm({ brand_id: brand.id, provider: "instagram", external_message_id: "sales2", customer_external_ref: "buyer-sales", body: "このコートを注文したいです" });
+  const concierge = runtime.service.prepareConcierge({ message_id: latest.message_id, product_id: product.id });
+  assert.equal(concierge.journey.stage, "ready_to_buy");
+  assert.equal(concierge.journey.next_action.send_requires_approval, true);
+  assert.equal(concierge.message_sent, false);
+  assert.equal(concierge.send_tool.name, "instagram.dm.reply.prepare");
+  const pipeline = runtime.service.salesPipeline({ brand_id: brand.id });
+  assert.equal(pipeline.summary.ready_to_buy, 1);
+  assert.equal(pipeline.next_best[0].customer_id, latest.customer_id);
+});
+
+test("Production Cockpit requires verified full payment and enforces fulfillment order", async (t) => {
+  const runtime = fixture();
+  t.after(() => runtime.store.close());
+  const { brand, product } = seed(runtime);
+  const collected = runtime.service.collectOrder({ brand_id: brand.id, product_id: product.id, customer_external_ref: "buyer-production", customer: { name: "B", email: "b@example.com" }, shipping: { country: "JP", address: "Osaka" }, quantity: 2 });
+  assert.throws(() => runtime.service.updateOrderStatus({ order_id: collected.order.id, status: "paid" }), /financial_status_requires_verified_provider_event/);
+  assert.throws(() => runtime.service.planProduction({ order_id: collected.order.id }), /verified_payment_required_for_production/);
+  const payment = runtime.service.preparePayment({ order_id: collected.order.id, kind: "link" });
+  await grant(runtime, payment.approval, "production-payment-link");
+  const baseEvent = { provider: "stripe", event_id: "production-paid", event_type: "checkout.session.completed", payload: { id: "cs-production", order_id: collected.order.id, payment_intent: "pi-production", currency: "jpy" } };
+  assert.throws(() => runtime.service.processPaymentEvent({ ...baseEvent, payload: { ...baseEvent.payload, amount: 1 } }), /payment_amount_mismatch/);
+  runtime.service.processPaymentEvent({ ...baseEvent, payload: { ...baseEvent.payload, amount: 176000 } });
+  const planned = runtime.service.planProduction({ order_id: collected.order.id, daily_capacity: 1, lead_days: 14, estimated_unit_cost_minor: 30000, bom: { wool_meters: 6, lining_meters: 4 } });
+  assert.equal(planned.can_start, true);
+  assert.equal(planned.job.cost.estimated_gross_margin_minor, 116000);
+  runtime.service.updateOrderStatus({ order_id: collected.order.id, status: "in_production" });
+  assert.throws(() => runtime.service.updateOrderStatus({ order_id: collected.order.id, status: "delivered" }), /order_status_transition_invalid/);
+  runtime.service.updateOrderStatus({ order_id: collected.order.id, status: "quality_check" });
+  runtime.service.updateOrderStatus({ order_id: collected.order.id, status: "ready_to_ship" });
+  const dashboard = runtime.service.productionDashboard({ brand_id: brand.id });
+  assert.equal(dashboard.summary.active, 1);
+  assert.equal(dashboard.jobs[0].status, "ready_to_ship");
 });

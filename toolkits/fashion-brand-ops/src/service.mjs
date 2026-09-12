@@ -1,8 +1,22 @@
-import { analyzeMarket, buildCreativeBrief, classifyDm, composeCaption, feedbackRecommendations } from "./domain.mjs";
+import { analyzeMarket, buildAutopilotPlan, buildConciergeRecommendation, buildCreativeBrief, classifyDm, composeCaption, feedbackRecommendations } from "./domain.mjs";
 import { createApproval, verifyApprovalGrant } from "./approval.mjs";
 import { assertSecretFree, cleanText, currency, id, jsonObject, nowIso, safeId, sha256, stableJson } from "./util.mjs";
 
 const ORDER_STATUSES = new Set(["collecting", "quoted", "payment_pending", "paid", "in_production", "quality_check", "ready_to_ship", "shipped", "delivered", "cancelled", "refunded"]);
+const FINANCIAL_ORDER_STATUSES = new Set(["payment_pending", "paid", "refunded"]);
+const ORDER_TRANSITIONS = Object.freeze({
+  collecting: new Set(["quoted", "cancelled"]),
+  quoted: new Set(["cancelled"]),
+  payment_pending: new Set(["cancelled"]),
+  paid: new Set(["in_production"]),
+  in_production: new Set(["quality_check"]),
+  quality_check: new Set(["in_production", "ready_to_ship"]),
+  ready_to_ship: new Set(["shipped"]),
+  shipped: new Set(["delivered"]),
+  delivered: new Set(),
+  cancelled: new Set(),
+  refunded: new Set(),
+});
 const CAMPAIGN_ACTIONS = new Set(["social.schedule", "social.publish", "social.create_ad"]);
 const CAPABILITY_BY_ACTION = Object.freeze({
   "product.price_change": "brand.intake",
@@ -45,6 +59,10 @@ export class FashionBrandService {
 
   orderGet(orderId) {
     return requiredRow(this.store.get("SELECT * FROM orders WHERE id = ?", safeId(orderId, "order_id")), "order_not_found");
+  }
+
+  goalGet(goalId) {
+    return requiredRow(this.store.get("SELECT * FROM business_goals WHERE id = ?", safeId(goalId, "goal_id")), "business_goal_not_found");
   }
 
   upsertBrand(input) {
@@ -102,6 +120,201 @@ export class FashionBrandService {
   latestMarket(brand, product) {
     const saved = entity(this.store.get("SELECT * FROM market_assessments WHERE brand_id = ? AND product_id = ? ORDER BY created_at DESC LIMIT 1", brand.id, product.id));
     return saved?.result || analyzeMarket(brand, product);
+  }
+
+  createAutopilotGoal(input) {
+    const brand = this.brandGet(input.brand_id);
+    const product = this.productGet(input.product_id);
+    if (product.brand_id !== brand.id) throw new Error("product_brand_mismatch");
+    const targetUnits = Number(input.target_units);
+    const targetRevenueMinor = input.target_revenue_minor == null ? null : Number(input.target_revenue_minor);
+    const targetGrossMarginBps = Number(input.target_gross_margin_bps ?? 6000);
+    const adBudgetCapMinor = Number(input.ad_budget_cap_minor ?? 0);
+    if (!Number.isSafeInteger(targetUnits) || targetUnits < 1 || targetUnits > 100_000) throw new Error("target_units_invalid");
+    if (targetRevenueMinor !== null && (!Number.isSafeInteger(targetRevenueMinor) || targetRevenueMinor < 0)) throw new Error("target_revenue_invalid");
+    if (!Number.isSafeInteger(targetGrossMarginBps) || targetGrossMarginBps < 0 || targetGrossMarginBps > 10_000) throw new Error("target_margin_invalid");
+    if (!Number.isSafeInteger(adBudgetCapMinor) || adBudgetCapMinor < 0) throw new Error("ad_budget_cap_invalid");
+    const startsAt = new Date(input.starts_at || nowIso(this.clock));
+    const endsAt = new Date(input.ends_at);
+    if (Number.isNaN(startsAt.getTime()) || Number.isNaN(endsAt.getTime()) || endsAt <= startsAt) throw new Error("goal_period_invalid");
+    const objective = {
+      target_units: targetUnits,
+      target_revenue_minor: targetRevenueMinor,
+      target_gross_margin_bps: targetGrossMarginBps,
+      ad_budget_cap_minor: adBudgetCapMinor,
+      starts_at: startsAt.toISOString(),
+      ends_at: endsAt.toISOString(),
+    };
+    const goalId = input.id ? safeId(input.id, "goal_id") : id("gol");
+    const existing = entity(this.store.get("SELECT * FROM business_goals WHERE id = ?", goalId));
+    if (existing) {
+      if (existing.brand_id !== brand.id || existing.product_id !== product.id || sha256(existing.objective) !== sha256(objective)) throw new Error("business_goal_id_conflict");
+      return { idempotent_replay: true, ...this.autopilotGet({ goal_id: goalId }) };
+    }
+    const market = this.latestMarket(brand, product);
+    const feedback = this.latestFeedback(brand.id)?.feedback || null;
+    const plan = buildAutopilotPlan({ brand, product, market, objective, feedback });
+    const at = nowIso(this.clock);
+    const actions = [
+      { kind: "market", priority: 100, risk: "internal", status: "ready", reason: "最新の市場仮説を目標へ固定する", tool_name: "fashion.market.analyze", input: { brand_id: brand.id, product_id: product.id } },
+      { kind: "creative_experiment", priority: 90, risk: "external_write", status: "ready", reason: "3仮説の最初の広告素材を作る。provider実行時は個別承認", tool_name: "fashion.creative.prepare", input: { brand_id: brand.id, product_id: product.id, media_type: "image", format: "4:5" } },
+      { kind: "content_plan", priority: 80, risk: "internal", status: "ready", reason: "目標期間と必要販売ペースから投稿枠を作る", tool_name: "instagram.content_plan.create", input: { brand_id: brand.id, period_start: objective.starts_at, days: Math.max(7, Math.min(90, Math.ceil((endsAt - startsAt) / 86_400_000))), posts_per_week: plan.content.posts_per_week, objective: "qualified_dm_and_paid_orders", pillars: plan.content.pillars } },
+      { kind: "sales_followup", priority: 70, risk: "message", status: "blocked", reason: "購入意向DMを検出したら返信案を作る。送信は個別承認", tool_name: "fashion.sales.pipeline.get", input: { brand_id: brand.id } },
+      { kind: "production", priority: 60, risk: "internal", status: "blocked", reason: "署名検証済み入金後に制作計画を作る", tool_name: "fashion.production.dashboard", input: { brand_id: brand.id } },
+    ];
+    this.store.transaction(() => {
+      this.store.run("INSERT INTO business_goals(id, brand_id, product_id, status, objective_json, plan_json, progress_json, starts_at, ends_at, created_at, updated_at) VALUES (?, ?, ?, 'active', ?, ?, '{}', ?, ?, ?, ?)", goalId, brand.id, product.id, json(objective), json(plan), objective.starts_at, objective.ends_at, at, at);
+      for (const action of actions) {
+        this.store.run("INSERT INTO workflow_actions(id, goal_id, kind, status, priority, risk, reason, tool_name, input_json, due_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", id("act"), goalId, action.kind, action.status, action.priority, action.risk, action.reason, action.tool_name, json(action.input), objective.starts_at, at, at);
+      }
+    });
+    return { idempotent_replay: false, ...this.autopilotGet({ goal_id: goalId }) };
+  }
+
+  autopilotGet(input) {
+    const goal = this.goalGet(input.goal_id);
+    return {
+      goal,
+      actions: this.store.all("SELECT * FROM workflow_actions WHERE goal_id = ? ORDER BY priority DESC, created_at", goal.id).map(entity),
+    };
+  }
+
+  autopilotTick(input) {
+    const goal = this.goalGet(input.goal_id);
+    if (goal.status !== "active") return { ...this.autopilotGet(input), next_actions: [], reason: "goal_not_active" };
+    const analytics = this.analytics({ brand_id: goal.brand_id });
+    const campaignCount = Number(this.store.get("SELECT COUNT(*) AS count FROM campaigns WHERE brand_id = ? AND product_id = ?", goal.brand_id, goal.product_id).count);
+    const contentPlanCount = Number(this.store.get("SELECT COUNT(*) AS count FROM content_plans WHERE brand_id = ?", goal.brand_id).count);
+    const latestContentPlan = entity(this.store.get("SELECT * FROM content_plans WHERE brand_id = ? ORDER BY updated_at DESC LIMIT 1", goal.brand_id));
+    const assetCount = Number(this.store.get("SELECT COUNT(*) AS count FROM creative_assets WHERE brand_id = ? AND product_id = ?", goal.brand_id, goal.product_id).count);
+    const pendingApprovals = Number(this.store.get("SELECT COUNT(*) AS count FROM approval_requests WHERE status = 'pending' AND json_extract(payload_json, '$.brand_id') = ?", goal.brand_id).count);
+    const journeyIntent = Number(this.store.get("SELECT COUNT(*) AS count FROM customer_journeys WHERE brand_id = ? AND score >= 0.6 AND stage NOT IN ('customer','vip')", goal.brand_id).count);
+    const messageIntent = Number(this.store.get("SELECT COUNT(DISTINCT customer_id) AS count FROM dm_messages WHERE brand_id = ? AND direction = 'inbound' AND purchase_intent >= 0.6 AND customer_id IS NOT NULL", goal.brand_id).count);
+    const highIntent = Math.max(journeyIntent, messageIntent);
+    const paidUnplanned = this.store.all("SELECT o.id FROM orders o LEFT JOIN production_jobs p ON p.order_id = o.id WHERE o.brand_id = ? AND o.status = 'paid' AND p.id IS NULL ORDER BY o.updated_at LIMIT 20", goal.brand_id);
+    const soldUnits = Number(this.store.get("SELECT COALESCE(SUM(quantity), 0) AS count FROM orders WHERE brand_id = ? AND product_id = ? AND status IN ('paid','in_production','quality_check','ready_to_ship','shipped','delivered')", goal.brand_id, goal.product_id).count);
+    const revenueMinor = Number(this.store.get("SELECT COALESCE(SUM(quantity * unit_price_minor), 0) AS amount FROM orders WHERE brand_id = ? AND product_id = ? AND status IN ('paid','in_production','quality_check','ready_to_ship','shipped','delivered')", goal.brand_id, goal.product_id).amount);
+    const progress = {
+      sold_units: soldUnits,
+      target_units: goal.objective.target_units,
+      unit_progress: goal.objective.target_units ? Number((soldUnits / goal.objective.target_units).toFixed(4)) : 0,
+      revenue_minor: revenueMinor,
+      campaign_count: campaignCount,
+      content_plan_count: contentPlanCount,
+      creative_asset_count: assetCount,
+      high_intent_customers: highIntent,
+      paid_orders_without_production_plan: paidUnplanned.length,
+      pending_approvals: pendingApprovals,
+      analytics,
+      observed_at: nowIso(this.clock),
+    };
+    const nextActions = [];
+    if (pendingApprovals) nextActions.push({ priority: 100, tool_name: "approval.list", input: { status: "pending", limit: 50 }, reason: `${pendingApprovals}件の外部作用が承認待ち` });
+    if (!assetCount) nextActions.push({ priority: 90, tool_name: "fashion.creative.prepare", input: { brand_id: goal.brand_id, product_id: goal.product_id, media_type: "image", format: "4:5" }, reason: "目標商品に広告素材がない" });
+    if (!contentPlanCount) nextActions.push({ priority: 88, tool_name: "instagram.content_plan.create", input: { brand_id: goal.brand_id, period_start: goal.objective.starts_at, days: Math.max(7, Math.min(90, Math.ceil((Date.parse(goal.objective.ends_at) - Date.parse(goal.objective.starts_at)) / 86_400_000))), posts_per_week: goal.plan.content.posts_per_week, objective: "qualified_dm_and_paid_orders", pillars: goal.plan.content.pillars }, reason: "目標期間の投稿計画がない" });
+    if (!campaignCount && latestContentPlan) nextActions.push({ priority: 80, tool_name: "instagram.draft.create", input: { brand_id: goal.brand_id, product_id: goal.product_id, content_plan_id: latestContentPlan.id, title: "Autopilot experiment A", format: "carousel" }, reason: "目標商品に投稿draftがない" });
+    if (highIntent) nextActions.push({ priority: 85, tool_name: "fashion.sales.pipeline.get", input: { brand_id: goal.brand_id }, reason: `${highIntent}人の購入検討顧客をフォロー` });
+    for (const row of paidUnplanned) nextActions.push({ priority: 95, tool_name: "fashion.production.plan", input: { order_id: row.id }, reason: "入金確認済み注文に制作計画がない" });
+    if (assetCount && campaignCount && !pendingApprovals) nextActions.push({ priority: 50, tool_name: "fashion.feedback.build", input: { brand_id: goal.brand_id }, reason: "直近データを次回creativeへ反映" });
+    nextActions.sort((a, b) => b.priority - a.priority);
+    this.store.run("UPDATE business_goals SET progress_json = ?, updated_at = ? WHERE id = ?", json(progress), nowIso(this.clock), goal.id);
+    return { ...this.autopilotGet({ goal_id: goal.id }), progress, next_actions: nextActions, external_effects_executed: false };
+  }
+
+  async autopilotRun(input) {
+    const goal = this.goalGet(input.goal_id);
+    const maxActions = Number(input.max_actions || 10);
+    if (!Number.isSafeInteger(maxActions) || maxActions < 1 || maxActions > 25) throw new Error("autopilot_max_actions_invalid");
+    const handlers = {
+      "fashion.creative.prepare": (args) => this.prepareCreative(args),
+      "instagram.content_plan.create": (args) => this.createContentPlan(args),
+      "instagram.draft.create": (args) => this.composeSocial(args),
+      "fashion.production.plan": (args) => this.planProduction(args),
+      "fashion.feedback.build": (args) => this.buildFeedback(args),
+    };
+    const attempted = new Set();
+    const completed = [];
+    const failed = [];
+    let processed = 0;
+    let latestContentPlanId = null;
+    for (let cycle = 0; cycle < 3 && processed < maxActions; cycle += 1) {
+      const tick = this.autopilotTick({ goal_id: goal.id });
+      let advanced = false;
+      for (const action of tick.next_actions) {
+        const handler = handlers[action.tool_name];
+        if (!handler || processed >= maxActions) continue;
+        const args = { ...(action.input || {}) };
+        if (action.tool_name === "instagram.draft.create" && latestContentPlanId) args.content_plan_id = latestContentPlanId;
+        const signature = sha256({ tool_name: action.tool_name, input: args });
+        if (attempted.has(signature)) continue;
+        attempted.add(signature);
+        processed += 1;
+        try {
+          const result = await handler(args);
+          if (action.tool_name === "instagram.content_plan.create") latestContentPlanId = result.id;
+          completed.push({ tool_name: action.tool_name, input: args, result });
+          this.store.run(
+            "UPDATE workflow_actions SET status = ?, updated_at = ? WHERE goal_id = ? AND tool_name = ? AND status IN ('ready','blocked','approval_required')",
+            result?.approval_required ? "approval_required" : "completed", nowIso(this.clock), goal.id, action.tool_name,
+          );
+          advanced = true;
+        } catch (error) {
+          failed.push({ tool_name: action.tool_name, input: args, error: error.message });
+        }
+      }
+      if (!advanced) break;
+    }
+    const pendingApprovals = this.listApprovals({ status: "pending", limit: 100 }).filter((approval) => approval.payload?.brand_id === goal.brand_id);
+    return {
+      goal_id: goal.id,
+      completed,
+      failed,
+      processed,
+      pending_approvals: pendingApprovals,
+      next: this.autopilotTick({ goal_id: goal.id }),
+      external_effects_executed: false,
+    };
+  }
+
+  readiness(input = {}) {
+    const brand = input.brand_id ? this.brandGet(input.brand_id) : null;
+    const accounts = brand ? this.listSocialAccounts({ brand_id: brand.id }) : [];
+    const connectedAccounts = accounts.filter((account) => account.connection_status === "connected");
+    const approvalReady = Buffer.byteLength(this.config.approvalSecret || "") >= 32;
+    const socialConfigured = this.providers.social.name === "meta-graph"
+      ? Boolean(this.config.metaGraphApiBaseUrl && this.config.metaAccessToken && this.config.metaAppSecret && this.config.instagramVerifyToken)
+      : this.providers.social.name === "instagram-http"
+        ? Boolean(this.config.socialProviderUrl && this.config.socialProviderToken)
+        : false;
+    const paymentConfigured = this.providers.payment.name === "stripe"
+      ? Boolean(this.config.stripeSecretKey && this.config.stripeWebhookSecret && this.config.stripeSuccessUrl && this.config.stripeCancelUrl)
+      : false;
+    const creativeConfigured = this.providers.creative.name === "higgsfield"
+      ? Boolean(this.config.higgsfieldApiUrl && this.config.higgsfieldApiKey)
+      : false;
+    const notificationConfigured = this.providers.notification.name === "webhook"
+      ? Boolean(this.config.notificationWebhookUrl && this.config.notificationWebhookToken)
+      : false;
+    const instagramReady = approvalReady && socialConfigured && (!brand || connectedAccounts.length > 0);
+    const missing = [];
+    if (!approvalReady) missing.push("approval_secret");
+    if (!socialConfigured) missing.push(this.providers.social.name === "mock" ? "live_social_provider" : "social_provider_configuration");
+    if (brand && !connectedAccounts.length) missing.push("connected_instagram_account");
+    return {
+      status: instagramReady ? "instagram_live_ready" : "setup_required",
+      brand_id: brand?.id || null,
+      planning_ready: true,
+      external_effects_require_approval: true,
+      capabilities: {
+        approval: { ready: approvalReady },
+        instagram: { ready: instagramReady, provider: this.providers.social.name, configured: socialConfigured, connected_accounts: connectedAccounts.length },
+        creative: { ready: approvalReady && creativeConfigured, provider: this.providers.creative.name, configured: creativeConfigured },
+        payment: { ready: approvalReady && paymentConfigured, provider: this.providers.payment.name, configured: paymentConfigured },
+        notification: { ready: approvalReady && notificationConfigured, provider: this.providers.notification.name, configured: notificationConfigured },
+      },
+      missing,
+      secrets_exposed: false,
+    };
   }
 
   listSocialAccounts(input) {
@@ -200,7 +413,7 @@ export class FashionBrandService {
       assetId, brand.id, product.id, this.providers.creative.name, brief.media_type, brief.prompt, feedback?.version || 0, at, at,
     );
     const approval = createApproval(this.store, {
-      action: "creative.generate", risk: "external_write", payload: { asset_id: assetId, ...brief, duration_seconds: input.duration_seconds || null },
+      action: "creative.generate", risk: "external_write", payload: { asset_id: assetId, brand_id: brand.id, product_id: product.id, ...brief, duration_seconds: input.duration_seconds || null },
       summary: `${brand.name} / ${product.name} の${brief.media_type}を ${this.providers.creative.name} で生成`,
     }, this.clock);
     return { asset_id: assetId, brief, approval_required: true, approval };
@@ -237,9 +450,16 @@ export class FashionBrandService {
     }
     const budgetMinor = action === "create_ad" ? Number(input.budget_minor) : null;
     if (action === "create_ad" && (!Number.isSafeInteger(budgetMinor) || budgetMinor <= 0)) throw new Error("budget_minor_invalid");
+    if (action === "create_ad" && !input.currency) throw new Error("ad_currency_required");
+    const adCurrency = action === "create_ad" ? currency(input.currency) : null;
+    if (action === "create_ad" && adCurrency !== this.productGet(campaign.product_id).currency) throw new Error("ad_currency_mismatch");
+    const activeGoal = action === "create_ad"
+      ? entity(this.store.get("SELECT * FROM business_goals WHERE brand_id = ? AND product_id = ? AND status = 'active' ORDER BY updated_at DESC LIMIT 1", campaign.brand_id, campaign.product_id))
+      : null;
+    if (activeGoal && budgetMinor > activeGoal.objective.ad_budget_cap_minor) throw new Error("ad_budget_exceeds_goal_cap");
     if (this.providers.social.name !== "mock" && (!account || account.connection_status !== "connected")) throw new Error("social_account_not_connected");
     if (this.providers.social.name === "meta-graph" && action === "publish" && !input.media_url) throw new Error("instagram_media_url_required");
-    const payload = { campaign_id: campaign.id, brand_id: campaign.brand_id, product_id: campaign.product_id, caption: campaign.caption, asset_ids: campaign.asset_ids, scheduled_for: scheduledFor, budget_minor: budgetMinor, currency: input.currency ? currency(input.currency) : null, social_account_id: account?.id || null, account_external_id: account?.external_account_id || null, media_url: input.media_url || null };
+    const payload = { campaign_id: campaign.id, brand_id: campaign.brand_id, product_id: campaign.product_id, goal_id: activeGoal?.id || null, ad_budget_cap_minor: activeGoal?.objective?.ad_budget_cap_minor ?? null, caption: campaign.caption, asset_ids: campaign.asset_ids, scheduled_for: scheduledFor, budget_minor: budgetMinor, currency: adCurrency, social_account_id: account?.id || null, account_external_id: account?.external_account_id || null, media_url: input.media_url || null };
     const approval = createApproval(this.store, { action: fullAction, risk: action === "create_ad" ? "money" : "publish", payload, summary: action === "create_ad" ? `広告予算 ${budgetMinor} ${payload.currency} で出稿` : `${campaign.id} を${action === "schedule" ? scheduledFor + " に予約" : "公開"}` }, this.clock);
     this.store.run("UPDATE campaigns SET status = 'approval_required', scheduled_for = ?, updated_at = ? WHERE id = ?", scheduledFor, nowIso(this.clock), campaign.id);
     return { approval_required: true, approval };
@@ -277,6 +497,51 @@ export class FashionBrandService {
     return { approval_required: true, approval, reply_draft: body };
   }
 
+  prepareConcierge(input) {
+    const message = requiredRow(this.store.get("SELECT * FROM dm_messages WHERE id = ?", safeId(input.message_id, "message_id")), "dm_message_not_found");
+    if (!message.customer_id) throw new Error("dm_customer_not_linked");
+    const customer = requiredRow(this.store.get("SELECT * FROM customers WHERE id = ? AND brand_id = ?", message.customer_id, message.brand_id), "customer_not_found");
+    const messages = this.store.all("SELECT * FROM dm_messages WHERE brand_id = ? AND customer_id = ? ORDER BY created_at ASC LIMIT 100", message.brand_id, customer.id).map(entity);
+    const orders = this.store.all("SELECT * FROM orders WHERE brand_id = ? AND customer_id = ? ORDER BY created_at ASC", message.brand_id, customer.id).map(entity);
+    let product = null;
+    if (input.product_id) {
+      product = this.productGet(input.product_id);
+      if (product.brand_id !== message.brand_id) throw new Error("product_brand_mismatch");
+    } else if (orders.at(-1)?.product_id) product = this.productGet(orders.at(-1).product_id);
+    else product = entity(this.store.get("SELECT * FROM products WHERE brand_id = ? AND status = 'active' ORDER BY updated_at DESC LIMIT 1", message.brand_id));
+    const latestShipping = orders.at(-1)?.shipping || {};
+    const customerContext = { ...customer, profile: { ...customer.profile, country: customer.profile?.country || latestShipping.country || null } };
+    const recommendation = buildConciergeRecommendation({ customer: customerContext, messages, orders, product });
+    const journeyId = entity(this.store.get("SELECT id FROM customer_journeys WHERE brand_id = ? AND customer_id = ?", message.brand_id, customer.id))?.id || id("jrn");
+    const at = nowIso(this.clock);
+    this.store.run(
+      `INSERT INTO customer_journeys(id, brand_id, customer_id, stage, score, segment, memory_json, next_action_json, last_message_id, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(brand_id, customer_id) DO UPDATE SET stage = excluded.stage, score = excluded.score, segment = excluded.segment, memory_json = excluded.memory_json, next_action_json = excluded.next_action_json, last_message_id = excluded.last_message_id, updated_at = excluded.updated_at`,
+      journeyId, message.brand_id, customer.id, recommendation.stage, recommendation.score, recommendation.segment, json(recommendation.memory), json(recommendation.next_action), message.id, at, at,
+    );
+    return {
+      journey: entity(this.store.get("SELECT * FROM customer_journeys WHERE brand_id = ? AND customer_id = ?", message.brand_id, customer.id)),
+      customer,
+      conversation: { inbound_count: messages.filter((item) => item.direction === "inbound").length, outbound_count: messages.filter((item) => item.direction === "outbound").length },
+      reply_draft: recommendation.next_action.reply_draft,
+      send_tool: { name: "instagram.dm.reply.prepare", input: { message_id: message.id, body: recommendation.next_action.reply_draft } },
+      message_sent: false,
+    };
+  }
+
+  salesPipeline(input) {
+    const brand = this.brandGet(input.brand_id);
+    const rows = this.store.all("SELECT j.*, c.profile_json FROM customer_journeys j JOIN customers c ON c.id = j.customer_id WHERE j.brand_id = ? ORDER BY j.score DESC, j.updated_at DESC LIMIT ?", brand.id, Math.min(Number(input.limit || 50), 100)).map(entity);
+    const summaryRows = this.store.all("SELECT stage, COUNT(*) AS count FROM customer_journeys WHERE brand_id = ? GROUP BY stage", brand.id);
+    return {
+      brand_id: brand.id,
+      summary: Object.fromEntries(summaryRows.map((row) => [row.stage, Number(row.count)])),
+      opportunities: rows,
+      next_best: rows.slice(0, 10).map((row) => ({ customer_id: row.customer_id, stage: row.stage, score: row.score, action: row.next_action?.action, human_escalation: row.next_action?.human_escalation || false })),
+    };
+  }
+
   collectOrder(input) {
     const brand = this.brandGet(input.brand_id);
     const product = this.productGet(input.product_id);
@@ -312,13 +577,21 @@ export class FashionBrandService {
     const product = this.productGet(order.product_id);
     const customer = requiredRow(this.store.get("SELECT * FROM customers WHERE id = ?", order.customer_id), "customer_not_found");
     const kind = String(input.kind || "link");
+    const missingFields = this.orderMissingFields(customer.profile, order.shipping);
     let action;
     let payload = { order_id: order.id, brand_id: order.brand_id, customer_id: customer.id, product_name: product.name, quantity: order.quantity, unit_price_minor: order.unit_price_minor, currency: order.currency };
-    if (kind === "link") action = "payment.create_link";
+    if (kind === "link") {
+      if (missingFields.length) throw new Error(`order_information_incomplete:${missingFields.join(",")}`);
+      action = "payment.create_link";
+    }
     else if (kind === "invoice") {
+      if (missingFields.length) throw new Error(`order_information_incomplete:${missingFields.join(",")}`);
+      const daysUntilDue = Number(input.days_until_due || 7);
+      if (!Number.isSafeInteger(daysUntilDue) || daysUntilDue < 1 || daysUntilDue > 90) throw new Error("invoice_due_days_invalid");
       action = "payment.send_invoice";
-      payload = { ...payload, customer_email: cleanText(customer.profile?.email, "customer_email", 320), customer_name: cleanText(customer.profile?.name, "customer_name", 200), days_until_due: Number(input.days_until_due || 7) };
+      payload = { ...payload, customer_email: cleanText(customer.profile?.email, "customer_email", 320), customer_name: cleanText(customer.profile?.name, "customer_name", 200), days_until_due: daysUntilDue };
     } else if (kind === "refund") {
+      if (!["paid", "in_production", "quality_check", "ready_to_ship", "shipped", "delivered"].includes(order.status)) throw new Error("paid_order_required_for_refund");
       action = "payment.refund";
       const amountMinor = Number(input.amount_minor || order.unit_price_minor * order.quantity);
       if (!Number.isSafeInteger(amountMinor) || amountMinor <= 0 || amountMinor > order.unit_price_minor * order.quantity) throw new Error("refund_amount_invalid");
@@ -341,14 +614,88 @@ export class FashionBrandService {
     };
   }
 
+  planProduction(input) {
+    const order = this.orderGet(input.order_id);
+    if (order.status !== "paid") {
+      const existing = entity(this.store.get("SELECT * FROM production_jobs WHERE order_id = ?", order.id));
+      if (existing) return { idempotent_replay: true, job: existing };
+      throw new Error("verified_payment_required_for_production");
+    }
+    const existing = entity(this.store.get("SELECT * FROM production_jobs WHERE order_id = ?", order.id));
+    if (existing) return { idempotent_replay: true, job: existing };
+    const product = this.productGet(order.product_id);
+    const dailyCapacity = Number(input.daily_capacity || 1);
+    if (!Number.isSafeInteger(dailyCapacity) || dailyCapacity < 1 || dailyCapacity > 10_000) throw new Error("daily_capacity_invalid");
+    const leadDays = Number(input.lead_days || 28);
+    if (!Number.isSafeInteger(leadDays) || leadDays < 1 || leadDays > 365) throw new Error("lead_days_invalid");
+    const dueAt = input.due_at ? new Date(input.due_at) : new Date(new this.clock().getTime() + leadDays * 86_400_000);
+    if (Number.isNaN(dueAt.getTime()) || dueAt.getTime() <= new this.clock().getTime()) throw new Error("production_due_at_invalid");
+    const bom = input.bom ? jsonObject(input.bom, "production_bom") : (product.design?.bom || { primary_material: product.design?.material || product.design?.fabric || null });
+    const rawUnitCost = input.estimated_unit_cost_minor ?? product.design?.unit_cost_minor ?? product.design?.cost_minor;
+    const unitCostMinor = rawUnitCost == null ? null : Number(rawUnitCost);
+    if (unitCostMinor !== null && (!Number.isSafeInteger(unitCostMinor) || unitCostMinor < 0)) throw new Error("unit_cost_invalid");
+    const requiredDays = Math.ceil(order.quantity / dailyCapacity);
+    const availableDays = Math.max(0, Math.floor((dueAt.getTime() - new this.clock().getTime()) / 86_400_000));
+    const blockers = [];
+    if (unitCostMinor === null) blockers.push("unit_cost_missing");
+    if (!Object.values(bom).some(Boolean)) blockers.push("bill_of_materials_missing");
+    if (requiredDays > availableDays) blockers.push("capacity_below_due_date_requirement");
+    const costs = {
+      unit_cost_minor: unitCostMinor,
+      estimated_total_cost_minor: unitCostMinor === null ? null : unitCostMinor * order.quantity,
+      order_revenue_minor: order.unit_price_minor * order.quantity,
+      estimated_gross_margin_minor: unitCostMinor === null ? null : (order.unit_price_minor - unitCostMinor) * order.quantity,
+      currency: order.currency,
+    };
+    const jobId = id("prdjob");
+    const at = nowIso(this.clock);
+    this.store.run("INSERT INTO production_jobs(id, order_id, status, planned_units, completed_units, daily_capacity, due_at, bom_json, cost_json, blockers_json, created_at, updated_at) VALUES (?, ?, 'planned', ?, 0, ?, ?, ?, ?, ?, ?, ?)", jobId, order.id, order.quantity, dailyCapacity, dueAt.toISOString(), json(bom), json(costs), json(blockers), at, at);
+    return { idempotent_replay: false, job: entity(this.store.get("SELECT * FROM production_jobs WHERE id = ?", jobId)), can_start: blockers.length === 0, start_tool: { name: "fashion.order.status.update", input: { order_id: order.id, status: "in_production", details: { production_job_id: jobId } } } };
+  }
+
+  productionDashboard(input) {
+    const brand = this.brandGet(input.brand_id);
+    const jobs = this.store.all(
+      `SELECT p.*, o.brand_id, o.product_id, o.quantity AS order_quantity, o.currency, o.unit_price_minor, pr.name AS product_name
+       FROM production_jobs p JOIN orders o ON o.id = p.order_id JOIN products pr ON pr.id = o.product_id
+       WHERE o.brand_id = ? ORDER BY p.due_at, p.updated_at DESC LIMIT ?`,
+      brand.id, Math.min(Number(input.limit || 100), 200),
+    ).map(entity);
+    const today = new this.clock().getTime();
+    const active = jobs.filter((job) => !["delivered", "cancelled"].includes(job.status));
+    return {
+      brand_id: brand.id,
+      summary: {
+        total: jobs.length,
+        active: active.length,
+        blocked: active.filter((job) => job.status === "blocked" || (job.blockers || []).length).length,
+        overdue: active.filter((job) => Date.parse(job.due_at) < today).length,
+        planned_units: active.reduce((sum, job) => sum + Number(job.planned_units || 0), 0),
+        completed_units: active.reduce((sum, job) => sum + Number(job.completed_units || 0), 0),
+      },
+      jobs,
+    };
+  }
+
   updateOrderStatus(input) {
     const order = this.orderGet(input.order_id);
     const status = String(input.status || "");
     if (!ORDER_STATUSES.has(status)) throw new Error("order_status_invalid");
+    if (FINANCIAL_ORDER_STATUSES.has(status)) throw new Error("financial_status_requires_verified_provider_event");
+    if (status === order.status) return order;
+    if (!ORDER_TRANSITIONS[order.status]?.has(status)) throw new Error("order_status_transition_invalid");
+    if (status === "in_production") {
+      const job = entity(this.store.get("SELECT * FROM production_jobs WHERE order_id = ?", order.id));
+      if (!job) throw new Error("production_plan_required");
+      if ((job.blockers || []).length) throw new Error("production_blockers_unresolved");
+    }
     const at = nowIso(this.clock);
     this.store.transaction(() => {
       this.store.run("UPDATE orders SET status = ?, updated_at = ? WHERE id = ?", status, at, order.id);
       this.store.run("INSERT INTO fulfillment_events(id, order_id, status, details_json, created_at) VALUES (?, ?, ?, ?, ?)", id("ful"), order.id, status, json(input.details || {}), at);
+      if (["in_production", "quality_check", "ready_to_ship", "shipped", "delivered", "cancelled"].includes(status)) {
+        this.store.run("UPDATE production_jobs SET status = ?, completed_units = CASE WHEN ? = 'delivered' THEN planned_units ELSE completed_units END, updated_at = ? WHERE order_id = ?", status, status, at, order.id);
+      }
     });
     return this.orderGet(order.id);
   }
@@ -396,8 +743,8 @@ export class FashionBrandService {
       const doneAt = nowIso(this.clock);
       const { status: providerStatus, ...providerReceipt } = receipt;
       const fullReceipt = {
-        receipt_id: id("rcp"), run_id: runId, server_name: "io.rockstar-ibot/instagram-operations", version: "0.1.0",
-        package_digest: this.config.packageDigest || "20bc662fcf0dc21dfad772e61b6d590de2b9b5330e4482a001e24ac19f33e486", capability_id: CAPABILITY_BY_ACTION[approval.action] || "unknown",
+        receipt_id: id("rcp"), run_id: runId, server_name: "io.rockstar-ibot/instagram-operations", version: "0.2.0",
+        package_digest: this.config.packageDigest || "ad89ea3df0027cdf671fbb91602fb8ea2b14a71f29d0b19db5ac8da822733954", capability_id: CAPABILITY_BY_ACTION[approval.action] || "unknown",
         grant_id: approval.id, action: approval.action, approval_id: approval.id, idempotency_key: idempotencyKey,
         input_sha256: approval.payload_digest, output_sha256: sha256(receipt), provider_status: providerStatus || "unknown", status: "completed", started_at: at, finished_at: doneAt, ...providerReceipt,
       };
@@ -449,7 +796,11 @@ export class FashionBrandService {
     }
     if (action.startsWith("payment.")) {
       const receipt = await this.providers.payment.execute(action, payload, context);
-      this.store.run("UPDATE orders SET status = ?, external_payment_ref = COALESCE(?, external_payment_ref), updated_at = ? WHERE id = ?", action === "payment.refund" ? "refunded" : "payment_pending", receipt.external_ref || null, nowIso(this.clock), payload.order_id);
+      const order = this.orderGet(payload.order_id);
+      const nextStatus = action === "payment.refund"
+        ? (payload.amount_minor === order.unit_price_minor * order.quantity ? "refunded" : order.status)
+        : "payment_pending";
+      this.store.run("UPDATE orders SET status = ?, external_payment_ref = COALESCE(?, external_payment_ref), updated_at = ? WHERE id = ?", nextStatus, receipt.external_ref || null, nowIso(this.clock), payload.order_id);
       return receipt;
     }
     if (action === "notification.send") return this.providers.notification.execute(action, payload, context);
@@ -476,10 +827,17 @@ export class FashionBrandService {
         const paid = new Set(["checkout.session.completed", "invoice.paid", "payment_intent.succeeded"]).has(eventType);
         const refunded = new Set(["charge.refunded", "refund.updated"]).has(eventType) && (payload.status === "succeeded" || payload.refunded === true);
         if (paid || refunded) {
-          const status = refunded ? "refunded" : "paid";
+          const expectedAmount = order.unit_price_minor * order.quantity;
+          const reportedAmount = payload.amount_total ?? payload.amount_paid ?? payload.amount_received ?? payload.amount;
+          if (paid && reportedAmount != null && Number(reportedAmount) !== expectedAmount) throw new Error("payment_amount_mismatch");
+          if (paid && payload.currency && currency(payload.currency) !== order.currency) throw new Error("payment_currency_mismatch");
+          const refundAmount = Number(payload.amount || payload.amount_refunded || expectedAmount);
+          if (refunded && (!Number.isSafeInteger(refundAmount) || refundAmount <= 0 || refundAmount > expectedAmount)) throw new Error("refund_amount_invalid");
+          if (refunded && payload.currency && currency(payload.currency) !== order.currency) throw new Error("payment_currency_mismatch");
+          const status = refunded && refundAmount < expectedAmount ? order.status : refunded ? "refunded" : "paid";
           const paymentRef = payload.payment_intent || payload.id || order.external_payment_ref;
           this.store.run("UPDATE orders SET status = ?, external_payment_ref = ?, updated_at = ? WHERE id = ?", status, paymentRef || null, at, order.id);
-          this.store.run("INSERT INTO metrics(id, brand_id, metric_type, value, dimensions_json, observed_at) VALUES (?, ?, ?, ?, ?, ?)", id("met"), order.brand_id, refunded ? "refund_minor" : "sale_minor", refunded ? Number(payload.amount || order.unit_price_minor * order.quantity) : order.unit_price_minor * order.quantity, json({ order_id: order.id, currency: order.currency, provider }), at);
+          this.store.run("INSERT INTO metrics(id, brand_id, metric_type, value, dimensions_json, observed_at) VALUES (?, ?, ?, ?, ?, ?)", id("met"), order.brand_id, refunded ? "refund_minor" : "sale_minor", refunded ? refundAmount : expectedAmount, json({ order_id: order.id, currency: order.currency, provider }), at);
         }
       }
     });
@@ -532,7 +890,10 @@ export class FashionBrandService {
       brand_id: brand.id,
       dm: Object.fromEntries(dmRows.map((row) => [row.classification, Number(row.count)])),
       orders: Object.fromEntries(orderRows.map((row) => [row.status, { count: Number(row.count), gross_minor: Number(row.gross_minor || 0) }])),
-      sales: { paid_orders: Number(orderRows.find((row) => row.status === "paid")?.count || 0), paid_gross_minor: Number(orderRows.find((row) => row.status === "paid")?.gross_minor || 0) },
+      sales: {
+        paid_orders: orderRows.filter((row) => ["paid", "in_production", "quality_check", "ready_to_ship", "shipped", "delivered"].includes(row.status)).reduce((sum, row) => sum + Number(row.count || 0), 0),
+        paid_gross_minor: orderRows.filter((row) => ["paid", "in_production", "quality_check", "ready_to_ship", "shipped", "delivered"].includes(row.status)).reduce((sum, row) => sum + Number(row.gross_minor || 0), 0),
+      },
       campaigns: campaigns.map((row) => ({ campaign_id: row.campaign_id, value: Number(row.value || 0) })),
       metrics: Object.fromEntries(metrics.map((row) => [row.metric_type, Number(row.value || 0)])),
     };
@@ -558,9 +919,35 @@ export class FashionBrandService {
       brand,
       products: this.store.all("SELECT * FROM products WHERE brand_id = ? ORDER BY updated_at DESC", brand.id).map(entity),
       orders: this.store.all("SELECT * FROM orders WHERE brand_id = ? ORDER BY updated_at DESC LIMIT 100", brand.id).map(entity),
-      pending_approvals: this.store.all("SELECT * FROM approval_requests WHERE status = 'pending' AND payload_json LIKE ? ORDER BY created_at DESC", `%${brand.id}%`).map(entity),
+      pending_approvals: this.store.all("SELECT * FROM approval_requests WHERE status = 'pending' AND json_extract(payload_json, '$.brand_id') = ? ORDER BY created_at DESC", brand.id).map(entity),
       analytics: this.analytics({ brand_id: brand.id }),
       feedback: this.latestFeedback(brand.id),
+    };
+  }
+
+  executiveDashboard(input) {
+    const brand = this.brandGet(input.brand_id);
+    const activeGoal = entity(this.store.get("SELECT * FROM business_goals WHERE brand_id = ? AND status = 'active' ORDER BY updated_at DESC LIMIT 1", brand.id));
+    const approvals = this.listApprovals({ status: "pending", limit: 100 }).filter((approval) => approval.payload?.brand_id === brand.id);
+    const sales = this.salesPipeline({ brand_id: brand.id, limit: 50 });
+    const production = this.productionDashboard({ brand_id: brand.id, limit: 100 });
+    const analytics = this.analytics({ brand_id: brand.id });
+    const priorities = [];
+    if (approvals.length) priorities.push({ priority: 100, kind: "approval", label: `${approvals.length}件の承認待ちを確認`, tool_name: "approval.list" });
+    if ((sales.summary.ready_to_buy || 0) + (sales.summary.considering || 0) > 0) priorities.push({ priority: 90, kind: "sales", label: "購入検討顧客をフォロー", tool_name: "fashion.sales.pipeline.get" });
+    if (production.summary.blocked) priorities.push({ priority: 95, kind: "production", label: `${production.summary.blocked}件の制作blockerを解消`, tool_name: "fashion.production.dashboard" });
+    if (production.summary.overdue) priorities.push({ priority: 98, kind: "production", label: `${production.summary.overdue}件の納期超過を確認`, tool_name: "fashion.production.dashboard" });
+    if (activeGoal) priorities.push({ priority: 80, kind: "autopilot", label: "目標進捗を再計算", tool_name: "fashion.autopilot.tick", input: { goal_id: activeGoal.id } });
+    priorities.sort((a, b) => b.priority - a.priority);
+    return {
+      brand,
+      active_goal: activeGoal,
+      approvals: { pending: approvals.length, items: approvals.slice(0, 20) },
+      sales,
+      production,
+      analytics,
+      priorities: priorities.slice(0, 10),
+      generated_at: nowIso(this.clock),
     };
   }
 }

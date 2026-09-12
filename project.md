@@ -291,7 +291,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / Instagram運用・受注型ブランド管理とサブスク顧問を同じSky統合候補で検証済み / 完了 24/46件
+最終更新: 2026-09-12 / Fashion Brand Ops v0.2.0の目標駆動運営・接客・制作機能を実装し、Sky画面と全体検証に合格 / 完了 27/49件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -341,6 +341,9 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | FB01 | Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合 | 完了 | [記録](docs/fashion-brand-ops-integration.md) |
+| FB02 | 売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
+| FB03 | DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
+| FB04 | 入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理 | 完了 | [記録](toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -360,7 +363,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Sky統合候補をGitHubへ保存し、開発本体向けDraft PRで差分と同一SHAのCIを確認する。実Higgsfield/Meta/Stripe/通知credential、本番投稿・広告・請求・返金、Native Sky MCP broker、Wallet費用転記、HTTPS配信版のloopback代替、QEMU/Android/実機OS組込みは別gateとして保持する。
+次の作業: GitHub PRの同一SHA CIを確認後、Meta OAuthのApp ID/secret、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付きの限定テスト投稿へ進む。実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。
 <!-- project-status:end -->
 
 ## 次段階の設計

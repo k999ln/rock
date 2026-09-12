@@ -1,6 +1,6 @@
 # RockstarOS 受注型Fashion Brand Ops MCP
 
-RockstarOSの自動化Hubへ商品として追加する、受注型ファッションブランド運営用のMCP serviceです。ブランド方針と商品designを入口に、target判定、creative、Instagram、DM、受注、決済、制作・発送、通知、分析feedbackを一つのtenant-scoped workflowとして扱います。
+RockstarOS Skyへ商品として追加する、受注型ファッションブランド運営用のMCP serviceです。ブランド方針と商品designを入口に、目標、target判定、creative、Instagram、DM、受注、決済、制作・発送、通知、分析feedbackを一つのtenant-scoped workflowとして扱います。
 
 PULSE試作の「投稿企画 → caption → 承認 → 予約 → calendar → 分析」を実データ用のdomainへ移し、Instagram運用を独立したMCP tool群として公開しています。既定は全providerが`mock`です。credential不足、未許可host、署名なしapprovalでは外部作用を実行しません。
 
@@ -8,14 +8,17 @@ PULSE試作の「投稿企画 → caption → 承認 → 予約 → calendar →
 
 ```text
 brand policy + product design
+  → sales / units / margin / deadline goal → Campaign Autopilot
   → market assessment
   → creative brief → Creative Provider
   → Instagram content plan / draft / calendar
   → signed approval → Social Provider
   → DM classify / FAQ draft / purchase intent
+  → AI Sales Concierge → customer stage / next-best action / unsent reply
   → customer + made-to-order order
   → signed approval → Payment Provider
   → verified webhook → paid / production / shipping
+  → Production Cockpit → BOM / cost / capacity / due date / blockers
   → metrics + DM + sales → versioned creative feedback
 ```
 
@@ -59,6 +62,10 @@ npm run approval:sign -- <approval-id> <actor-id>
 - `fashion.payment.prepare`, `fashion.payment.status.get`（入金eventの反映は署名検証済みWebhook限定）
 - `fashion.notification.prepare`
 - `fashion.metrics.record`, `fashion.analytics.get`, `fashion.feedback.build`, `fashion.dashboard.get`
+- `fashion.autopilot.goal.create`, `fashion.autopilot.get`, `fashion.autopilot.tick`, `fashion.autopilot.run`
+- `fashion.concierge.prepare`, `fashion.sales.pipeline.get`
+- `fashion.production.plan`, `fashion.production.dashboard`, `fashion.executive.dashboard`
+- `fashion.system.readiness`（秘密値を返さず、本番接続の不足だけを診断）
 
 独立したInstagram運用 tools:
 
@@ -113,6 +120,8 @@ SQLite schemaは`db/migrations`にあり、次を保持します。
 - customers / orders / fulfillment events
 - approvals / effect runs / provider events
 - metrics / versioned feedback snapshots
+- business goals / prioritized workflow actions
+- customer journeys / production jobs
 
 Webhook eventとeffect idempotency keyはuniqueです。Stripe署名はraw body、timestamp tolerance、constant-time comparisonで検証します。local DB fileは`0600`、格納directoryは`0700`へ制限します。productionでは暗号化volumeまたはtenant-isolated databaseを使い、このunique境界とtenant keyを保持してください。
 
@@ -120,6 +129,6 @@ Webhook eventとeffect idempotency keyはuniqueです。Stripe署名はraw body�
 
 [`rockstaros-tool.json`](rockstaros-tool.json)が商品ID、MCP runtime、capability、Provider、approval policy、費用境界の正本です。[`sky-submission.json`](sky-submission.json)はSky掲載契約、Web Skyの`lib/catalog.ts`はready商品とTimeline表示を保持します。
 
-stdioではMCP clientがこのdirectoryの`.mcp.json`を読み、`initialize → tools/list → tools/call`で28個の操作をdiscover/callできます。HTTP modeをloopback以外へbindする場合は、bearer tokenとtenant IDの両方を必須にします。RockstarOSのplatform署名鍵、Wallet送金権限、root、任意shellはこの商品へ渡しません。
+stdioではMCP clientがこのdirectoryの`.mcp.json`を読み、`initialize → tools/list → tools/call`で38個の操作をdiscover/callできます。`fashion.autopilot.run`は投稿計画・下書き・承認要求など内部作業だけを最大25件まで進め、投稿・DM送信・課金などの外部作用は実行しません。HTTP modeをloopback以外へbindする場合は、bearer tokenとtenant IDの両方を必須にします。RockstarOSのplatform署名鍵、Wallet送金権限、root、任意shellはこの商品へ渡しません。
 
 Skyの商品名は **Instagram運用・受注型ブランド管理** です。Timelineと検索欄で「Instagram運用」から直接見つけられます。account list/switch、content plan、draft/caption、approval、schedule/publish、insights sync、DM classificationを同じ商品内の独立MCP toolとして公開します。外部Providerのcredentialと実費契約は商品本体やRockstarOS月額から分離し、実アカウント接続、広告出稿、請求、返金は設定と個別承認が揃うまでfail closedです。

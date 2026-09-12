@@ -3,10 +3,10 @@
 import { Cable, CheckCircle2, ShieldCheck } from 'lucide-react';
 
 const capabilities = [
-  'ブランド方針・商品デザインと市場判定',
-  '画像・動画、投稿案、Instagram運用',
-  'DM分類、FAQ下書き、購入意向判定',
-  '注文・決済・制作・発送・分析',
+  '売上・数量・粗利・期限からCampaign Autopilotを作成',
+  '顧客履歴・購入意向・次の一手をSales Conciergeで管理',
+  '入金後の原価・資材・能力・納期をProduction Cockpitで管理',
+  '広告・DM・売上・制作を経営ダッシュボードで確認',
 ];
 
 export function FashionBrandOpsRunner() {
@@ -16,7 +16,7 @@ export function FashionBrandOpsRunner() {
         <Cable size={20} />
         <div>
           <strong>PCのMCPとして接続</strong>
-          <p>28個の専用操作をSkyやCodexから確認・呼び出せます。</p>
+          <p>38個の専用操作をSkyやCodexから確認・呼び出せます。</p>
         </div>
       </div>
       <ul>
@@ -30,7 +30,7 @@ export function FashionBrandOpsRunner() {
       <div className="fashion-ops-approval">
         <ShieldCheck size={19} />
         <p>
-          価格変更、画像・動画生成、投稿・広告出稿、DM送信、請求、返金は、内容を確認して承認するまで実行されません。
+          計画と下書きは自動化できます。価格変更、画像・動画生成、投稿・広告出稿、DM送信、請求、返金は、内容を確認して承認するまで実行されません。
         </p>
       </div>
       <details>

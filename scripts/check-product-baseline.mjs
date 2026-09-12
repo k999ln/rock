@@ -19,8 +19,8 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
     documents[key] = read(resolved);
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
-  const expected = Array.from({ length: 18 }, (_, i) => `RQ${String(i + 1).padStart(2, '0')}`);
-  requireValue(JSON.stringify(data.requirements) === JSON.stringify(expected), '確定要望RQ01〜RQ18の順序/欠落/重複を確認してください');
+  const expected = Array.from({ length: 19 }, (_, i) => `RQ${String(i + 1).padStart(2, '0')}`);
+  requireValue(JSON.stringify(data.requirements) === JSON.stringify(expected), '確定要望RQ01〜RQ19の順序/欠落/重複を確認してください');
   for (const id of expected) {
     requireValue(documents.authority.split(`## ${id} `).length === 2, `${id}: 正本の見出しが一意ではありません`);
   }
@@ -34,6 +34,9 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
   requireValue(data.sky?.displayName === 'Sky', '自動化の利用者向け名称はSkyです');
   requireValue(data.sky?.legacyInternalName === 'hub', '既存データ/API用の内部hub互換名が必要です');
   requireValue(data.primaryCapabilities?.includes('sky-automation-control'), 'Skyの制御能力が必要です');
+  requireValue(data.primaryCapabilities?.includes('goal-driven-brand-operations'), '目標駆動のブランド運営能力が必要です');
+  requireValue(data.fashionBrandOperations?.externalEffectsExecutedByAutopilot === false,
+    'Autopilotが外部作用を直接実行してはいけません');
   const skyInventory = resolve(root, data.sky?.inventory || '');
   requireValue(!relative(root, skyInventory).startsWith('..') && read(skyInventory).includes('Web / PCで現在使える6件'),
     'Skyの役割と収録ツールの正本が必要です');
@@ -78,5 +81,5 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   validateBaseline(JSON.parse(readFileSync(resolve(root, 'data/product-baseline.json'), 'utf8')));
-  console.log('製品ベース: RQ01〜RQ18、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）');
+  console.log('製品ベース: RQ01〜RQ19、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）');
 }

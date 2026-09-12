@@ -36,6 +36,6 @@ export function loadConfig(env = process.env) {
     stripeCancelUrl: env.STRIPE_CANCEL_URL || "",
     notificationWebhookUrl: env.NOTIFICATION_WEBHOOK_URL || "",
     notificationWebhookToken: env.NOTIFICATION_WEBHOOK_TOKEN || "",
-    packageDigest: env.ROCKSTAR_PACKAGE_DIGEST || "20bc662fcf0dc21dfad772e61b6d590de2b9b5330e4482a001e24ac19f33e486",
+    packageDigest: env.ROCKSTAR_PACKAGE_DIGEST || "ad89ea3df0027cdf671fbb91602fb8ea2b14a71f29d0b19db5ac8da822733954",
   });
 }

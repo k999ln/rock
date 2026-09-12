@@ -91,3 +91,131 @@ export function feedbackRecommendations(snapshot) {
   if (!recommendations.length) recommendations.push("現行のブランド一貫性を維持し、構図またはCTAだけを一変数ずつテストする");
   return recommendations;
 }
+
+export function buildAutopilotPlan({ brand, product, market, objective, feedback = null }) {
+  const targetUnits = Number(objective.target_units);
+  const projectedRevenueMinor = targetUnits * product.price_minor;
+  const targetRevenueMinor = objective.target_revenue_minor ?? projectedRevenueMinor;
+  const rawUnitCost = product.design?.unit_cost_minor ?? product.design?.cost_minor;
+  const unitCostMinor = Number.isSafeInteger(Number(rawUnitCost)) && Number(rawUnitCost) >= 0
+    ? Number(rawUnitCost)
+    : null;
+  const projectedGrossMarginBps = unitCostMinor === null || product.price_minor === 0
+    ? null
+    : Math.round(((product.price_minor - unitCostMinor) / product.price_minor) * 10_000);
+  const startsAt = new Date(objective.starts_at);
+  const endsAt = new Date(objective.ends_at);
+  const days = Math.max(1, Math.ceil((endsAt.getTime() - startsAt.getTime()) / 86_400_000));
+  const weeklyUnitPace = Math.ceil(targetUnits / Math.max(days / 7, 1));
+  const feedbackItems = feedback?.recommendations || [];
+  const pillars = [...new Set([
+    "product_proof",
+    "craft_and_material",
+    "fit_confidence",
+    ...(market.creative_directions || []),
+  ])].slice(0, 6);
+  const feasibility = [];
+  if (targetRevenueMinor > projectedRevenueMinor) feasibility.push("target_revenue_exceeds_current_price_times_units");
+  if (projectedGrossMarginBps === null) feasibility.push("unit_cost_missing");
+  if (projectedGrossMarginBps !== null && projectedGrossMarginBps < objective.target_gross_margin_bps) feasibility.push("gross_margin_below_target");
+  return {
+    objective: {
+      target_units: targetUnits,
+      target_revenue_minor: targetRevenueMinor,
+      target_gross_margin_bps: objective.target_gross_margin_bps,
+      ad_budget_cap_minor: objective.ad_budget_cap_minor,
+      currency: product.currency,
+      starts_at: objective.starts_at,
+      ends_at: objective.ends_at,
+    },
+    forecast: {
+      projected_revenue_minor: projectedRevenueMinor,
+      unit_price_minor: product.price_minor,
+      unit_cost_minor: unitCostMinor,
+      projected_gross_margin_bps: projectedGrossMarginBps,
+      weekly_unit_pace: weeklyUnitPace,
+      feasibility,
+    },
+    audience: market.audience,
+    positioning: market.positioning,
+    content: {
+      pillars,
+      posts_per_week: Math.min(7, Math.max(3, Math.ceil(weeklyUnitPace / 3))),
+      formats: ["carousel", "reel", "story"],
+    },
+    experiments: [
+      { id: "proof", variable: "first_frame", hypothesis: "素材・工程の証拠を先頭に置くと購入意向DMが増える" },
+      { id: "fit", variable: "cta", hypothesis: "採寸相談CTAでサイズ不安による離脱を減らす" },
+      { id: "scarcity", variable: "message", hypothesis: "受注枠と納期を明示すると検討顧客の意思決定が早まる" },
+    ],
+    inherited_feedback: feedbackItems.slice(0, 5),
+    guardrails: {
+      external_effects_require_approval: true,
+      ad_budget_cap_minor: objective.ad_budget_cap_minor,
+      do_not_auto_retry_unknown_outcome: true,
+      preserve_brand_prohibitions: brand.policy?.prohibited || [],
+    },
+  };
+}
+
+export function buildConciergeRecommendation({ customer, messages, orders, product = null }) {
+  const inbound = messages.filter((message) => message.direction === "inbound");
+  const recent = inbound.slice(-8);
+  const weightedTotal = recent.reduce((sum, message, index) => sum + Number(message.purchase_intent || 0) * (index + 1), 0);
+  const weight = recent.reduce((sum, _message, index) => sum + index + 1, 0);
+  const score = weight ? Math.min(1, Math.max(0, weightedTotal / weight)) : 0;
+  const paidOrders = orders.filter((order) => ["paid", "in_production", "quality_check", "ready_to_ship", "shipped", "delivered"].includes(order.status));
+  const stage = paidOrders.length >= 2
+    ? "vip"
+    : paidOrders.length === 1
+      ? "customer"
+      : score >= 0.85
+        ? "ready_to_buy"
+        : score >= 0.6
+          ? "considering"
+          : score >= 0.3
+            ? "exploring"
+            : "new";
+  const profile = customer.profile || {};
+  const missingFields = [
+    ["name", profile.name],
+    ["email", profile.email],
+    ["country", profile.country],
+  ].filter(([, value]) => !value).map(([field]) => field);
+  const classifications = Object.fromEntries(
+    [...new Set(inbound.map((message) => message.classification))]
+      .map((name) => [name, inbound.filter((message) => message.classification === name).length]),
+  );
+  let action = "answer_question";
+  let replyDraft = recent.at(-1)?.reply_draft || "お問い合わせありがとうございます。確認してご案内します。";
+  if (stage === "ready_to_buy") {
+    action = missingFields.length ? "collect_customer_details" : "prepare_order_quote";
+    replyDraft = missingFields.length
+      ? `ご購入のご検討ありがとうございます。正式なお見積りのため、${missingFields.join("、")}をお知らせください。`
+      : `${product?.name || "ご希望の商品"}の在庫・制作枠を確認し、正式なお見積りをご案内します。`;
+  } else if (stage === "considering") {
+    action = Object.keys(classifications).length ? "resolve_fit_or_value_concern" : "clarify_product_interest";
+  } else if (stage === "customer" || stage === "vip") {
+    action = "provide_aftercare_or_priority_access";
+    replyDraft = "いつもありがとうございます。今回のご希望と前回のご注文を確認し、優先してご案内します。";
+  }
+  return {
+    stage,
+    score: Number(score.toFixed(4)),
+    segment: stage === "vip" ? "repeat_high_value" : stage === "customer" ? "existing_customer" : "instagram_prospect",
+    memory: {
+      profile,
+      classifications,
+      paid_order_count: paidOrders.length,
+      last_inbound_at: recent.at(-1)?.created_at || null,
+      product_id: product?.id || null,
+    },
+    next_action: {
+      action,
+      missing_fields: missingFields,
+      human_escalation: classifications.collaboration > 0 || (score >= 0.85 && inbound.length >= 3),
+      reply_draft: replyDraft,
+      send_requires_approval: true,
+    },
+  };
+}

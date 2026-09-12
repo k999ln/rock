@@ -51,6 +51,10 @@ void test('the Sky manifest binds the MCP runtime and every dangerous effect to 
     'instagram.publish',
     'instagram.insights',
     'instagram.dm.classify',
+    'campaign.autopilot',
+    'sales.concierge',
+    'production.cockpit',
+    'executive.dashboard',
   ]) {
     assert.ok(manifest.capabilities.includes(capability), capability);
   }
@@ -71,7 +75,7 @@ void test('the Sky manifest binds the MCP runtime and every dangerous effect to 
 });
 
 void test('MCP discovery exposes the complete fashion workflow and receipts bind the manifest digest', () => {
-  assert.equal(TOOL_DEFINITIONS.length, 28);
+  assert.equal(TOOL_DEFINITIONS.length, 38);
   assert.ok(TOOL_DEFINITIONS.some((tool) => tool.name === 'fashion.payment.status.get'));
   assert.ok(!TOOL_DEFINITIONS.some((tool) => tool.name === 'fashion.payment.event.process'));
   for (const name of [
@@ -88,6 +92,15 @@ void test('MCP discovery exposes the complete fashion workflow and receipts bind
     'instagram.dm.classify',
     'fashion.payment.prepare',
     'fashion.feedback.build',
+    'fashion.autopilot.goal.create',
+    'fashion.autopilot.tick',
+    'fashion.autopilot.run',
+    'fashion.concierge.prepare',
+    'fashion.sales.pipeline.get',
+    'fashion.production.plan',
+    'fashion.production.dashboard',
+    'fashion.executive.dashboard',
+    'fashion.system.readiness',
     'approval.execute',
   ]) {
     assert.ok(TOOL_DEFINITIONS.some((tool) => tool.name === name), name);

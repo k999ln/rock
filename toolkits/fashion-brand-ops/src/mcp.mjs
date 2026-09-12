@@ -6,7 +6,7 @@ export class McpProtocol {
   async handle(message) {
     if (!message || message.jsonrpc !== "2.0" || typeof message.method !== "string") return this.error(message?.id ?? null, -32600, "Invalid Request");
     if (message.method.startsWith("notifications/")) return null;
-    if (message.method === "initialize") return this.result(message.id, { protocolVersion: "2025-06-18", capabilities: { tools: { listChanged: false } }, serverInfo: { name: "fashion-brand-ops-mcp", version: "0.1.0" } });
+    if (message.method === "initialize") return this.result(message.id, { protocolVersion: "2025-06-18", capabilities: { tools: { listChanged: false } }, serverInfo: { name: "fashion-brand-ops-mcp", version: "0.2.0" } });
     if (message.method === "ping") return this.result(message.id, {});
     if (message.method === "tools/list") return this.result(message.id, { tools: TOOL_DEFINITIONS });
     if (message.method === "tools/call") {

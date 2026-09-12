@@ -12,9 +12,10 @@ test("MCP initializes, discovers all required tools, and calls a tool", async (t
   const mcp = new McpProtocol(runtime.callTool);
   const init = await mcp.handle({ jsonrpc: "2.0", id: 1, method: "initialize", params: {} });
   assert.equal(init.result.serverInfo.name, "fashion-brand-ops-mcp");
+  assert.equal(init.result.serverInfo.version, "0.2.0");
   const listed = await mcp.handle({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} });
   const names = listed.result.tools.map((tool) => tool.name);
-  for (const required of ["instagram.accounts.list", "instagram.content_plan.create", "instagram.draft.create", "instagram.schedule.prepare", "instagram.publish.prepare", "instagram.insights.sync", "instagram.dm.classify", "approval.execute"]) assert.ok(names.includes(required));
+  for (const required of ["fashion.autopilot.goal.create", "fashion.autopilot.tick", "fashion.autopilot.run", "fashion.concierge.prepare", "fashion.sales.pipeline.get", "fashion.production.plan", "fashion.production.dashboard", "fashion.executive.dashboard", "fashion.system.readiness", "instagram.accounts.list", "instagram.content_plan.create", "instagram.draft.create", "instagram.schedule.prepare", "instagram.publish.prepare", "instagram.insights.sync", "instagram.dm.classify", "approval.execute"]) assert.ok(names.includes(required));
   assert.equal(new Set(names).size, TOOL_DEFINITIONS.length);
   const called = await mcp.handle({ jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "fashion.brand.upsert", arguments: { id: "brand1", name: "Akume", policy: {} } } });
   assert.equal(called.result.structuredContent.id, "brand1");

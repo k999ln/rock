@@ -1,16 +1,18 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-12追記（v1.14）: 利用者がFashion Brand Opsをより自律的なブランド経営systemへ進める方針を明示。売上・数量・粗利・期限・広告上限から計画するCampaign Autopilot、会話履歴と購入意向から次の一手を作るAI Sales Concierge、署名検証済み入金後の原価・資材・能力・納期を扱うProduction CockpitをRQ19へ追加する。計画と下書きは自動化できるが、投稿、広告、DM、請求、返金等の外部作用は既存approval gateを迂回しない。
+
 2026-09-12追記（v1.13）: 利用者がInstagramを中心にした受注型ファッションブランド運営systemを、`k999ln/rock`のSkyへ追加するよう明示。Provider差替、MCP discover/call、受注DB、分析feedback、危険操作のapproval gateをRQ18へ追加し、Sky catalogとTimelineへ独立商品として統合する。実Provider・実投稿・実請求は接続済みと扱わない。
 
 2026-09-12追記（v1.12）: 利用者向けの自動化ツール入口を **Sky** と命名し、画面・現行設計・案内をこの名称へ統一する。Skyは商品を並べるだけでなく、目的からの選択、作者・版・権限・料金・実行先の確認、本人同意、端末/PC/Cloudへの実行、停止、結果・実行記録までを一つの制御面にする。[Skyの役割と収録ツール](sky.md)を正本に追加した。保存済み履歴、SQLite table、JSON/APIの `hub` は互換性のため内部名として維持し、製品名として新規表示しない。
 
 2026-09-12追記（v1.11）: 利用者は、共通Core、機種別Device Support Package、`native_os`／`gsi_experimental`／`client_only`／`unsupported`の提供区分で多機種対応を進める方針を選択。Pixel候補は未確定、BlackBerryは正確なモデルのunlock・vendor・復旧証拠がある場合だけ実験対象、iPhone/iPadはOS置換ではなくclientとする。[多機種対応設計](device-support-architecture.md)と[対応台帳](../data/device-support-matrix.json)を正本に追加した。この決定はクラウド課金、端末書込み、production鍵、実機対応完了の承認ではない。
 
-2026-09-11追記（v1.10）: 利用者がスマホ本体へ書き込めるOS版の作成を明示。実機版の開発を進める。Pixel 10は以前の記録からの候補で、現在の対象機種/SKUは未確認。Linux環境は利用者にもない。クラウドbuildとAndroid系機種対応の再利用を準備するが、QEMUや2APKを実機完成と表示しない。[実行記録](phone-preview-20260911.md)。以下はRQ01〜RQ18と以前の方針を保持する。
+2026-09-11追記（v1.10）: 利用者がスマホ本体へ書き込めるOS版の作成を明示。実機版の開発を進める。Pixel 10は以前の記録からの候補で、現在の対象機種/SKUは未確認。Linux環境は利用者にもない。クラウドbuildとAndroid系機種対応の再利用を準備するが、QEMUや2APKを実機完成と表示しない。[実行記録](phone-preview-20260911.md)。以下はRQ01〜RQ19と以前の方針を保持する。
 
 2026-09-09追記: 設計v1.1の実装承認を受領。公開・実機・MetaMask実資金は準備が整うことを条件に了承。現在の承認範囲は [承認記録](execution-approval-20260909.md)。以下の「承認待ち」は作成時の履歴であり、現在の実装を停止させない。RQ01〜RQ15と料金は変更しない。
 
-版: 1.13 / 更新日: 2026-09-12（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
+版: 1.14 / 更新日: 2026-09-12（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
 
 この文書は利用者がこの日に明示した製品要望を固定する。実装状況は [OS稼働・ゲーム連携監査](os-readiness-audit-20260909.md)（過去の追補・初回監査は履歴）、次の指示は [現在の再開指示](prompts/rock-current-next-20260911.md)、毎回の確認方法は [プロンプト作成規約](prompt-playbook.md) を参照する。決定と実装実績を同じものとして扱わない。
 
@@ -154,15 +156,23 @@ CM発表に向け、利用者が再現可能な手順でRock star OSを導入・
 
 1.0以後は、保存データ、商品manifest、receipt、台帳、更新・復旧の互換性を明示しながら段階的に改善する。未完成のGame交換、実機、実USB、外部provider、実資金、実ATMは進行中または将来機能として表示し、合格した範囲だけをCMで実演する。各systemの現在地と進化方針は [1.0構成](rockstaros-1.0-architecture.md) を正本とする。
 
-## RQ18 Instagram運用・受注型ファッションブランド運営をHub商品にする
+## RQ18 Instagram運用・受注型ファッションブランド運営をSky商品にする
 
 ブランド方針と商品designを入力し、target/market判定、差替可能な画像・動画Creative Provider、Instagram向け素材・caption・投稿/予約Social Provider、DM受信・分類・FAQ下書き・購入意向判定、注文情報回収、Payment Providerの決済link/Invoice、署名検証Webhookの入金確認、顧客/注文/制作/発送status、通知、広告/DM/売上feedbackまでを一つの商品として扱う。
 
-RockstarOS Automation Hubから`Instagram運用`で見つけられ、account list/switch、content plan、draft/caption、approval、schedule/publish、insights sync、DM classificationを独立MCP toolとしてdiscover/callできるようにする。外部サービスはProvider/Adapter境界へ置き、資格情報を商品DBへ直接保存しない。
+RockstarOS Skyから`Instagram運用`で見つけられ、account list/switch、content plan、draft/caption、approval、schedule/publish、insights sync、DM classificationを独立MCP toolとしてdiscover/callできるようにする。外部サービスはProvider/Adapter境界へ置き、資格情報を商品DBへ直接保存しない。
 
-価格変更、外部creative生成、投稿/予約、広告出稿、DM送信、決済link/Invoice送信、返金、通知は個別approvalを必須にする。初期状態はmock Providerで、実アカウント・実投稿・実決済・実課金を開始しない。曖昧な外部結果は自動再送せず照合待ちにする。Web Hub掲載とMCP host試験は、QEMU/Android/実機OSへの組込みや本番provider接続の合格ではない。
+価格変更、外部creative生成、投稿/予約、広告出稿、DM送信、決済link/Invoice送信、返金、通知は個別approvalを必須にする。初期状態はmock Providerで、実アカウント・実投稿・実決済・実課金を開始しない。曖昧な外部結果は自動再送せず照合待ちにする。Web Sky掲載とMCP host試験は、QEMU/Android/実機OSへの組込みや本番provider接続の合格ではない。
 
-## 1.0への8原則の適用（RQ01〜RQ18を維持）
+## RQ19 目標駆動のブランド経営エージェントへ拡張する
+
+Fashion Brand Opsは単発操作だけでなく、商品ごとの販売数量、売上、粗利率、期間、広告予算上限を保存し、市場仮説、広告実験、投稿ペース、営業、制作の次アクションを優先順位付きで提示するCampaign Autopilotを持つ。Autopilotのtickは現在のcampaign、承認、DM、署名検証済み売上、制作状態を照合するが、外部作用を直接実行しない。
+
+AI Sales Conciergeは顧客ごとのDM履歴、購入意向、既存注文、確認済みプロフィールをtenant内に保存し、営業stage、segment、欠けている注文情報、人間への引継ぎ、返信下書きを生成する。返信送信は既存の`instagram.dm.reply.prepare`と個別approvalを通し、無差別DM、自動follow、自動送信を追加しない。
+
+Production Cockpitは署名検証済み決済eventでpaidになった注文だけを制作計画へ入れ、資材、見積原価、日次能力、納期、blocker、制作・品質・発送工程を追跡する。手動toolからpaid/refundedへ変更できない状態遷移を強制し、金額・通貨が注文と一致しない入金eventを拒否する。実工場発注、資材購入、配送契約、実通知は各Providerと別の承認条件が揃うまで行わない。
+
+## 1.0への8原則の適用（RQ01〜RQ19を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -210,3 +220,5 @@ RockstarOS Automation Hubから`Instagram運用`で見つけられ、account lis
 2026-09-11 v1.10整合追記: スマホ準備をlaunch-candidateへ統合。CM制作途中・新Sites本人限定公開・MIT/鍵/クラウド税別10 USD案の未回答を同期し、N03を実際に選ぶ1機種の適合確認として明確化。RQ01〜RQ17と料金、実機未合格を保持。
 
 2026-09-12 v1.11: `k999ln/rock`のRockstarOS Automation Hubへ、Instagram運用・受注型ファッションブランド管理を商品として追加する要望をRQ18へ固定。Provider差替、MCP tool群、受注/顧客/制作/発送DB、Stripe等の決済照合、分析feedback、危険操作の個別approvalを要求する。Mr. One Hubや古いAutomation Hub archiveを正本にせず、実Provider接続を実装完了へ換算しない。
+
+2026-09-12 v1.14: 利用者の「もっとできる」「そうしよ」を、Campaign Autopilot、AI Sales Concierge、Production Cockpit、経営ダッシュボードへの拡張としてRQ19へ固定。目標駆動の計画と内部下書きは進めるが、既存approval、Provider、入金Webhook境界は維持する。

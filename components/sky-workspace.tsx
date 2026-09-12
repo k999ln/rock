@@ -236,7 +236,7 @@ export default function SkyWorkspace() {
               </div>
               <h3>Instagram運用・受注型ブランド管理</h3>
               <p>
-                投稿企画、DM、受注、決済、制作・発送、分析を28操作で管理します。
+                売上目標から広告、接客、受注、制作・発送、改善までを38操作で管理します。
               </p>
             </div>
             <button onClick={() => setSelected(fashionOps)}>

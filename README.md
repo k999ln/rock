@@ -8,7 +8,7 @@
 
 tob側の自動化ツールを商品として管理するSkyと、自動化で得たお金を管理するWalletに特化したOSを開発します。Skyは単なるツール一覧ではなく、**探す→権限・料金を確認→端末/PC/Cloudへ実行→停止→結果と記録を受け取る**までを一か所につなぎます。[Skyの図・優位性・現在の収録ツール](docs/sky.md)を参照してください。
 
-**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ18）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持します。
+**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ19）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定、OS月額は維持します。
 
 [8原則に基づくRockstarOS 1.0設計](docs/rockstaros-1.0-strategy.md)を追加しました。現ベースを維持し、一つの商品で実行・成果・費用・復旧まで確認できる体験を検証します。初期対象の文章系個人事業主と既存引用整理は検証仮説。配布/実用の優先順位、試用指標、CM導線、責任分担を具体化し、未実証の需要や本番利用可能性は主張しません。
 
@@ -37,7 +37,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / Instagram運用・受注型ブランド管理とサブスク顧問を同じSky統合候補で検証済み / 完了 24/46件
+最終更新: 2026-09-12 / Fashion Brand Ops v0.2.0の目標駆動運営・接客・制作機能を実装し、Sky画面と全体検証に合格 / 完了 27/49件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -87,6 +87,9 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | FB01 | Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合 | 完了 | [記録](docs/fashion-brand-ops-integration.md) |
+| FB02 | 売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
+| FB03 | DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
+| FB04 | 入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理 | 完了 | [記録](toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -106,7 +109,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Sky統合候補をGitHubへ保存し、開発本体向けDraft PRで差分と同一SHAのCIを確認する。実Higgsfield/Meta/Stripe/通知credential、本番投稿・広告・請求・返金、Native Sky MCP broker、Wallet費用転記、HTTPS配信版のloopback代替、QEMU/Android/実機OS組込みは別gateとして保持する。
+次の作業: GitHub PRの同一SHA CIを確認後、Meta OAuthのApp ID/secret、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付きの限定テスト投稿へ進む。実投稿・広告・請求・返金は実credentialと個別approvalが揃うまで別gateとして保持する。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
@@ -210,7 +213,7 @@ GitHubの `rock` は公開リポジトリです。Rock star独自コードの再
 
 RockstarOS SkyのTimelineと検索欄から「Instagram運用」で見つけられる商品を追加しました。実装は[`toolkits/fashion-brand-ops`](toolkits/fashion-brand-ops)、統合境界と検証範囲は[`docs/fashion-brand-ops-integration.md`](docs/fashion-brand-ops-integration.md)です。
 
-ブランド方針・商品design、市場判定、Creative/Social/Payment/Notification Provider、Instagram account list/switch、content plan、draft/caption、schedule/publish、insights、DM分類、注文、制作・発送、分析feedbackを28個のMCP toolとして公開します。既定は全Providerがmockです。価格変更、外部生成、投稿、広告、DM送信、請求、返金、通知は署名付き個別approvalがない限り実行されません。
+ブランド方針・商品design、市場判定、Instagram運用、DM、注文、決済、制作・発送、分析に加え、Campaign Autopilot、AI Sales Concierge、Production Cockpit、経営ダッシュボード、本番接続診断を38個のMCP toolとして公開します。目標を入れると投稿計画・下書き・承認要求までの内部作業を自動で進めます。既定は全Providerがmockです。価格変更、外部生成、投稿、広告、DM送信、請求、返金、通知は署名付き個別approvalがない限り実行されません。`paid`と`refunded`は検証済み決済event以外から変更できません。
 
 ```sh
 npm run test:fashion-brand-ops
