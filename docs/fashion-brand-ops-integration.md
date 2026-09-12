@@ -6,7 +6,7 @@
 
 ## 実装範囲
 
-- Hub表示名: `Instagram運用・受注型ブランド管理`
+- Sky表示名: `Instagram運用・受注型ブランド管理`
 - 商品ID: `org.rockstar.fashion-brand-ops`
 - 実装: `toolkits/fashion-brand-ops`
 - 接続: stdio MCP、または認証・tenant固定のloopback/HTTP MCP
