@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
   "milestone": "OSバックエンドの安全終了・ヘルスチェック・実process再起動とSQLite復元に合格",
-  "nextAction": "既存private draft releaseのrc2配布8資産を所有者アカウントで取得し、hash/署名、fresh導入、起動、保存、復旧を同一候補で再確認する。production署名・製品許諾・本人限定Sitesのログイン後確認が揃うまでBLOCKED_FOR_LAUNCHを維持する。",
+  "nextAction": "OSバックエンドP0コミットd66c674を本人限定Sites v12の最新source系統へ競合なく統合し、同一treeを再配信・再確認する。rc2配布8資産、production署名、製品許諾、fresh導入と復旧が揃うまで一般公開はBLOCKED_FOR_LAUNCHを維持する。",
   "tasks": [
     {
       "id": "SKY01",

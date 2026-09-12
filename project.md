@@ -384,7 +384,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 既存private draft releaseのrc2配布8資産を所有者アカウントで取得し、hash/署名、fresh導入、起動、保存、復旧を同一候補で再確認する。production署名・製品許諾・本人限定Sitesのログイン後確認が揃うまでBLOCKED_FOR_LAUNCHを維持する。
+次の作業: OSバックエンドP0コミットd66c674を本人限定Sites v12の最新source系統へ競合なく統合し、同一treeを再配信・再確認する。rc2配布8資産、production署名、製品許諾、fresh導入と復旧が揃うまで一般公開はBLOCKED_FOR_LAUNCHを維持する。
 <!-- project-status:end -->
 
 ## 次段階の設計

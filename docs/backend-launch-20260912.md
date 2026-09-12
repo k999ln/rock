@@ -23,16 +23,18 @@
 3. SQLiteの整合、再起動後のsession失効と完了receipt復元、不確実な実行の自動再送禁止。
 4. 利用者データを返さないloopbackヘルスチェック。
 5. rc2配布8資産の取得、hash/署名、fresh導入、起動、保存、復旧の同一候補確認。
-6. 製品LICENSE/第三者NOTICE、production署名・失効手順、本人限定Sitesのログイン後確認。
+6. 製品LICENSE/第三者NOTICE、production署名・失効手順。
 7. 合格した同一treeをGitへ保存し、限定公開先で反映を確認する。
 
-1〜4はこの変更で完了。5〜7は外部資産・所有者設定・公開先権限が必要なため未完了。
+1〜4はこの変更で完了。本人限定Sitesの既存v12はログイン後の読み出しまで確認済みだが、
+sourceは`1763deb56990bc7dc380c72a5b6043cb089c21a0`であり、このバックエンド変更
+`d66c67440700a2c7234472d80b80c27633039fe2`はまだ含まない。5〜7は同一treeで未完了。
 
 ### P1 — 時間が残る場合
 
 - 完成済みのSky/Fashion、Rockstar Ledger、Value/SpendをそれぞれのCI結果と競合解消後に統合する。
 - Hubの運用ログを件数・状態だけで集約し、入力、session、秘密値を残さない。
-- owner-only SitesのWebとローカルHubを同じ利用者フローで再確認する。
+- owner-only SitesのWebとローカルHubを、統合後の同一source系列で再確認する。
 
 ### P2 — ローンチ後または別承認
 
@@ -58,6 +60,19 @@
   2つのSQLite integrity check、再起動、旧session拒否、receipt復元を一時データで完走した。
 - 開始SHA `0cc5415` のGitHub workflow 6件はすべてsuccess。今回の差分を含む全体CIはcommit/push後に別判定する。
 
+## GitHubと実環境の追加確認
+
+- OSバックエンド変更はbranch `codex/os-backend-launch-20260912` の
+  `d66c67440700a2c7234472d80b80c27633039fe2`としてGitHubへpush済み。
+- PR #14でWeb `verify`、native partitions 5件、native `source-tests`の全7 checkがPASS。
+- 本人限定Sitesはversion 12、source `1763deb56990bc7dc380c72a5b6043cb089c21a0`、
+  deployment `succeeded`、access mode `custom` / current user `owner`。
+- 実ブラウザで`/chat`が最近の処理まで、`/settings`がtool controls・過去30日の利用記録まで
+  読み込みを完了し、consoleのerror/warnは0件。初期化直後の未認証GETは401で安全に失敗し、
+  認証成立後の本人データ読み出しは成功した。
+- v12はこのOSバックエンドcommitの反映証拠ではない。統合担当がv12以降のsourceへ取り込み、
+  新しいversionを配信してから同一treeの実環境合格に更新する。
+
 ## 起動・監視・復旧
 
 開発用Hubはnative packageをeditable installした環境で次のように起動する。
@@ -73,7 +88,8 @@ rock-hub --state .state/hub --registry systems/rock-star-os/examples/registry
 
 ## 現在のローンチ判定
 
-**BLOCKED_FOR_LAUNCH**。バックエンドのローカルP0は通ったが、このcheckoutにrc2の配布8資産がなく、
-production署名、製品許諾、本人限定Sitesのログイン後操作、同一最終候補のfresh導入/復旧を今回のsourceで
-再確認できない。最短経路は、既存private draft releaseの8資産へアクセスできる所有者アカウントを接続し、
-既存rc2を改変せず検証すること。sourceを変更して新imageを作る場合はLinux buildとD0〜D6再受入が必要になる。
+**BLOCKED_FOR_GENERAL_LAUNCH**。バックエンドのローカルP0と本人限定Sites v12の既存フローは通ったが、
+両者はまだ同一sourceではない。このcheckoutにrc2の配布8資産もなく、production署名、製品許諾、
+同一最終候補のfresh導入/復旧を再確認できない。最短経路は、`d66c674`をv12以降のsourceへ統合して
+本人限定で再配信し、並行して既存private draft releaseの8資産を所有者アカウントで改変せず検証すること。
+sourceを変更して新imageを作る場合はLinux buildとD0〜D6再受入が必要になる。
