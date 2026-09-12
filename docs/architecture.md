@@ -14,7 +14,7 @@
 `lib/settlement.ts`: 有限数と上限を検証する純粋な試算計算。これは送金台帳ではない。
 `scripts/discover.mjs`: 公開APIのみを読む収集コマンド。queryはURLSearchParamsでエンコード。20秒でタイムアウト。取得候補はJSONデータとして保存し実行しない。
 
-Sitesの標準サインインと信頼できるゲートウェイのユーザーIDを使い、D1の `fund_plans`・`tool_runs`・`work_jobs` をユーザー別に読み書きする。更新APIでは同一Originを要求する。Sites以外へデプロイする場合、クライアントが `oai-authenticated-user-id` を偽装できない認証ゲートウェイが必須で、Workerの直公開は安全ではない。
+Sitesの標準サインインと信頼できるゲートウェイのユーザーIDを使い、D1の `fund_plans`・`tool_runs`・`work_jobs` をユーザー別に読み書きする。SitesがIDを付与しない構成では、`chatgpt.site` とSites dispatchの両方を確認した上で、認証済みメールをSHA-256の仮名IDへ変換し、メール本文は保存しない。更新APIでは同一Originを要求する。Sites以外へデプロイする場合、クライアントが認証ヘッダーを偽装できないゲートウェイが必須で、Workerの直公開は安全ではない。
 
 秘密鍵、入出金口座、アプリ独自のウォレット認証セッションはない。外部サイトリンクは利用者が開く。Walletアドレスを収益の所有者として信用したり、支払先として登録するAPIは存在しない。
 

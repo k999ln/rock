@@ -5,7 +5,7 @@ const headers = { 'Cache-Control': 'no-store' };
 
 export async function POST(request: Request) {
   try {
-    requestUser(request);
+    await requestUser(request);
     const raw = await request.text();
     if (new TextEncoder().encode(raw).length > 1_024)
       throw new McpInspectionError('接続確認の入力が大きすぎます。', 413);

@@ -61,7 +61,7 @@ async function body(request: Request) {
 }
 export async function GET(request: Request) {
   try {
-    const user = requestUser(request);
+    const user = await requestUser(request);
     return json({ jobs: await workStore(database()).list(user) });
   } catch (error) {
     return rejected(request, error);
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
 }
 export async function POST(request: Request) {
   try {
-    const user = requestUser(request),
+    const user = await requestUser(request),
       candidate = createWorkJob(await body(request));
     const saved = await workStore(database()).create(user, candidate);
     if (
@@ -85,7 +85,7 @@ export async function POST(request: Request) {
 }
 export async function PATCH(request: Request) {
   try {
-    const user = requestUser(request),
+    const user = await requestUser(request),
       input = objectInput(await body(request), [
         'jobId',
         'revision',
