@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
-    "start": "wrangler dev --config dist/server/wrangler.json",
+    "start": "CI=1 wrangler d1 migrations apply site-creator-d1 --local --config dist/server/wrangler.json && wrangler dev --config dist/server/wrangler.json",
     "lint": "oxlint",
     "lint:product": "oxlint app lib db components/*.tsx services/sky-billing/src scripts/*.mjs tests/*.mjs",
     "format": "oxfmt",
