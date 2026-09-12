@@ -1,5 +1,13 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-12 — SkyからFashion Brand Ops MCPへワンクリック接続
+
+Fashion Brand Ops v0.3.0に、許可済みSky originからPCのloopbackへ接続する短期browser sessionを追加した。Skyの商品カードを1回押すと、session発行、MCP initialize、initialized通知、38操作のtools/list検査まで自動で進み、カードとDialogを「接続済み」へ同期する。再表示時はpingとtool一覧を再確認し、停止・失効・tool不足ではbrowser側sessionを破棄する。解除時はPC側sessionも失効する。
+
+初回準備用の決定的ZIPとmacOS起動ファイルを追加した。接続はexact originとloopback Hostの両方を検査し、random tokenを12時間以内に限定する。Meta OAuth、実投稿、広告、DM送信、請求、返金は既存の個別承認gateが揃うまで実行しない。
+
+実ブラウザで商品カードを1回押し、「接続済み」「38操作を利用可能」への反映、解除後の未接続表示、再接続、error overlay不在を確認した。`npm run verify`はWeb 107 tests、Fashion Brand Ops 15 tests、型、lint、本番build、Worker/D1 API 143 assertions、migration検証まで全て合格した。
+
 ## 2026-09-12 — 改善版SkyへInstagram運用を統合
 
 黒基調の役割フィード、自然文の「Skyに頼む」、検索・状態タブ、1カード1操作へ整理したSkyを、Fashion Brand Ops v0.2.0を含むローンチ候補へ適用した。Instagram運用・受注型ブランド管理を「ブランド運営役」として追加し、Instagram・ブランド・投稿・広告・DM・受注・制作・発送の依頼を同商品へ案内する。38操作、既存商品、approval gateは維持し、Fashion Brand Opsの接続状態も同じ黒いDialog内で読めるようにした。
@@ -299,7 +307,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / 改善版SkyへFashion Brand Opsを統合し、スマホDialog・全体検証・画面確認に合格 / 完了 28/50件
+最終更新: 2026-09-12 / SkyからFashion Brand Ops MCPへのワンクリック接続・38操作・失効・画面検証に合格 / 完了 29/51件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -307,6 +315,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
 | SKY04 | 黒基調の改善版SkyへFashion Brand Opsを統合し、スマホDialogの画面外ずれを修正 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/fashion-brand-ops-runner.tsx) · [記録](app/workspace.css) · [記録](scripts/check-sky.mjs) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
+| SKY05 | Skyの商品カード1回でFashion Brand Ops MCPを初期化し、38操作と接続状態を同期 | 完了 | [記録](lib/fashion-mcp-client.ts) · [記録](components/fashion-brand-ops-runner.tsx) · [記録](toolkits/fashion-brand-ops/src/http.mjs) · [記録](toolkits/fashion-brand-ops/test/browser-connect.test.mjs) · [記録](tests/fashion-mcp-client.test.mjs) · [記録](public/toolkits/fashion-brand-ops-connector.zip) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
@@ -372,7 +381,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Meta OAuthのApp ID/secret、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付き限定テスト投稿へ進む。Sites再配信は正しい所有ワークスペース接続後に行う。
+次の作業: Meta OAuthのApp ID/secret、Professional account、公開Webhook URLを接続し、read-only discoveryから本人承認付き限定テスト投稿へ進む。Sites再配信は正しい所有ワークスペース接続後に行う。
 <!-- project-status:end -->
 
 ## 次段階の設計

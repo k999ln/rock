@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -63,11 +63,49 @@ const workspaceCss = read('app/workspace.css');
 for (const marker of [
   'fashion-brand-ops',
   'Instagram運用・受注型ブランド管理',
-  'MCP接続後',
+  '1クリック接続',
 ])
   requireValue(
     catalogSource.includes(marker) || workspace.includes(marker),
     `Fashion Brand OpsのSky登録に「${marker}」がありません`,
+  );
+
+const fashionClient = read('lib/fashion-mcp-client.ts');
+for (const marker of [
+  'FASHION_MCP_TOOL_COUNT = 38',
+  "'initialize'",
+  "'notifications/initialized'",
+  "'tools/list'",
+  "'/disconnect'",
+])
+  requireValue(
+    fashionClient.includes(marker),
+    `Fashion Brand Opsのワンクリック接続に「${marker}」がありません`,
+  );
+requireValue(
+  read('components/fashion-brand-ops-runner.tsx').includes(
+    '/toolkits/fashion-brand-ops-connector.zip',
+  ),
+  'Fashion Brand OpsのPC接続アプリ導線がありません',
+);
+const fashionConnector = resolve(
+  root,
+  'public/toolkits/fashion-brand-ops-connector.zip',
+);
+requireValue(
+  existsSync(fashionConnector) && statSync(fashionConnector).size > 0,
+  'Fashion Brand OpsのPC接続アプリ配布ZIPがありません',
+);
+for (const marker of [
+  'RockstarOS Sky接続アプリを起動しました',
+  '--env-file=.env',
+  'ROCKSTAR_APPROVAL_SECRET',
+])
+  requireValue(
+    read('toolkits/fashion-brand-ops/RockstarOS Sky接続.command').includes(
+      marker,
+    ),
+    `Fashion Brand Ops接続アプリに「${marker}」がありません`,
   );
 for (const marker of [
   '探す',

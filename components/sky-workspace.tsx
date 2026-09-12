@@ -38,6 +38,7 @@ import { MrToolRunner } from '@/components/mr-tool-runner';
 import { DeviceConnection } from '@/components/device-connection';
 import { FashionBrandOpsRunner } from '@/components/fashion-brand-ops-runner';
 import WorkspaceShell from '@/components/workspace-shell';
+import { fashionMcpConnected } from '@/lib/fashion-mcp-client';
 
 type FeedFilter = 'おすすめ' | '今使える' | '導入候補';
 
@@ -92,7 +93,7 @@ function providerFor(tool: Automation) {
   );
 }
 
-function statusFor(tool: Automation) {
+function statusFor(tool: Automation, fashionConnected = false) {
   if (tool.status === 'candidate')
     return {
       label: '導入候補',
@@ -107,9 +108,9 @@ function statusFor(tool: Automation) {
     };
   if (tool.integration === 'fashion-brand-ops')
     return {
-      label: 'MCP接続後',
-      detail: 'PCのMCPで実行',
-      className: 'is-connect',
+      label: fashionConnected ? '接続済み' : '1クリック接続',
+      detail: fashionConnected ? '38操作を利用可能' : 'PCのMCPへ接続',
+      className: fashionConnected ? 'is-ready' : 'is-connect',
     };
   return {
     label: '今使える',
@@ -135,11 +136,19 @@ export default function SkyWorkspace() {
   const [routedTool, setRoutedTool] = useState<Automation | null>(null);
   const [routeMessage, setRouteMessage] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
+  const [fashionConnected, setFashionConnected] = useState(false);
   const searchInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (searchOpen) searchInput.current?.focus();
   }, [searchOpen]);
+
+  useEffect(() => {
+    const update = () => setFashionConnected(fashionMcpConnected());
+    update();
+    window.addEventListener('sky-fashion-mcp', update);
+    return () => window.removeEventListener('sky-fashion-mcp', update);
+  }, []);
 
   const visibleTools = catalog.filter((tool) => {
     const matchesFilter =
@@ -333,7 +342,7 @@ export default function SkyWorkspace() {
             {visibleTools.map((tool, index) => {
               const Icon = icons[tool.id] ?? Link2;
               const provider = providerFor(tool);
-              const status = statusFor(tool);
+              const status = statusFor(tool, fashionConnected);
               return (
                 <article
                   className={'sky-feed-post ' + status.className}
