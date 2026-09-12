@@ -117,6 +117,11 @@
 .legal-runner-triage.emergency,.legal-runner-triage.urgent{border-left-color:#bf4a3c;background:#fff0ed}
 .legal-runner-triage>span{font-size:11px;font-weight:800;letter-spacing:.08em;color:#6d7b61}
 .legal-runner-triage h3{margin-top:6px;font-size:20px}.legal-runner-triage p{margin-top:6px;color:#5f675d;font-size:13px;line-height:1.75}
+.legal-runner-ai{display:grid;gap:12px;padding:18px;border:1px solid #cad7bc;border-radius:8px;background:#f7faF3}
+.legal-runner-ai-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}.legal-runner-ai-heading span{display:block;color:#66833f;font-size:10px;font-weight:800;letter-spacing:.08em}.legal-runner-ai-heading h3{margin-top:3px;font-size:17px}.legal-runner-ai-heading small,.legal-runner-ai>small{color:#788174;font-size:10px;line-height:1.6}
+.legal-runner-ai-state{padding:14px;border-radius:6px;background:#fff;color:#65705f;font-size:13px}
+.legal-runner-ai-answer{white-space:pre-wrap;padding:16px;border-radius:7px;background:#fff;color:#384036;font-size:13px;line-height:1.8}
+.legal-runner-ai-sources{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.legal-runner-ai-sources strong{width:100%;font-size:12px}.legal-runner-ai-sources a{display:inline-flex;align-items:center;gap:5px;padding:7px 9px;border:1px solid #d4ddc9;border-radius:5px;background:#fff;color:#496b24;font-size:11px;text-decoration:underline;text-underline-offset:2px}
 .legal-runner-actions{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 .legal-runner-actions article{padding:17px;border:1px solid #dce1d8;background:#fff;border-radius:8px}
 .legal-runner-actions h4,.legal-runner-summary h3,.legal-runner-lawyers h3,.legal-runner-guide h3{font-size:15px;margin:0 0 9px}
@@ -129,9 +134,12 @@
 .legal-runner-lawyers{display:grid;gap:10px;background:#e8eddf}
 .legal-runner-lawyers>div>p{color:#6d795f;font-size:10px;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
 .legal-runner-lawyers>article{padding:14px;border:1px solid #d3dbc9;border-radius:7px;background:#fff}
+.legal-runner-lawyers>article.legal-runner-primary-lawyer{border:2px solid #6f9634;box-shadow:0 4px 14px rgba(84,113,43,.12)}
+.legal-runner-primary-lawyer>span{display:inline-block;padding:3px 7px;border-radius:999px;background:#deff7a;color:#385117!important;font-weight:800}
 .legal-runner-lawyers>article>span{font-size:10px;color:#718064}.legal-runner-lawyers h4{margin:3px 0 5px;font-size:14px}.legal-runner-lawyers>article>p{color:#646d62;font-size:12px;line-height:1.65}
 .legal-runner-lawyers a,.legal-runner-guide a{display:inline-flex;align-items:center;gap:6px;margin-top:9px;color:#496b24;font-size:12px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
 .legal-runner-guide p{font-size:13px;color:#646d62}
+.legal-runner-guide-links{display:grid;gap:8px;margin-top:12px}.legal-runner-guide-links a{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0;padding:10px 11px;border:1px solid #d2d9cd;border-radius:6px;background:#fff;text-decoration:none}.legal-runner-guide-links a span{display:grid;gap:2px;color:#687164;font-weight:400}.legal-runner-guide-links a strong{color:#496b24;font-size:12px}.legal-runner-guide-links a span{font-size:11px}
 .legal-runner-resources{display:flex;flex-wrap:wrap;gap:14px;padding-top:4px;border-top:1px solid #e0e4dc}
 .legal-runner-resources a{display:inline-flex;align-items:center;gap:5px;color:#67745e;font-size:11px;text-decoration:underline;text-underline-offset:3px}
 @media(max-width:760px){.legal-runner-checks,.legal-runner-grid,.legal-runner-actions,.legal-runner-handoff{grid-template-columns:1fr}.legal-runner-checks label{border-right:0!important;border-bottom:1px solid #d9dfd5!important}.legal-runner-checks label:last-child{border-bottom:0!important}.legal-runner-submit{width:100%;justify-content:center}.legal-runner-intro{padding:15px}.legal-runner-summary textarea{min-height:220px}}

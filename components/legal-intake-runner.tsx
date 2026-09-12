@@ -14,6 +14,7 @@ import {
   LEGAL_DIRECTORY_AS_OF,
   assessLegalIntake,
   buildHandoffSummary,
+  getSelfHelpResources,
   legalIssueCategories,
   officialLegalResources,
   recommendLawyers,
@@ -25,6 +26,7 @@ import {
   type LegalMatterStage,
   type LawyerDirectoryEntry,
 } from '@/lib/legal-intake';
+import type { LegalAiResult } from '@/lib/legal-ai';
 
 const locationLabels: Record<LegalLocation, string> = {
   nyc: 'ニューヨーク市',
@@ -82,7 +84,11 @@ function contactLabel(
 ) {
   if (preference === 'email' && lawyer.email) return 'メールを作成';
   if (preference === 'phone' && lawyer.phone) return '電話する';
-  return lawyer.website ? '公式サイト' : lawyer.email ? 'メールを作成' : '電話する';
+  return lawyer.website
+    ? '公式サイト'
+    : lawyer.email
+      ? 'メールを作成'
+      : '電話する';
 }
 
 export function LegalIntakeRunner({
@@ -97,6 +103,9 @@ export function LegalIntakeRunner({
   const [assessment, setAssessment] = useState<LegalAssessment | null>(null);
   const [notice, setNotice] = useState('まず安全と期限を確認します。');
   const [copied, setCopied] = useState(false);
+  const [aiResult, setAiResult] = useState<LegalAiResult | null>(null);
+  const [aiError, setAiError] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
 
   const handoffSummary = useMemo(
     () => (assessment ? buildHandoffSummary(input, assessment) : ''),
@@ -109,6 +118,10 @@ export function LegalIntakeRunner({
         : [],
     [assessment, input.issueType, input.location],
   );
+  const selfHelp = useMemo(
+    () => getSelfHelpResources(input.issueType, input.location),
+    [input.issueType, input.location],
+  );
 
   function update<K extends keyof LegalIntakeInput>(
     key: K,
@@ -117,23 +130,62 @@ export function LegalIntakeRunner({
     setInput((current) => ({ ...current, [key]: value }));
     setAssessment(null);
     setCopied(false);
+    setAiResult(null);
+    setAiError('');
   }
 
-  function submit(event: SyntheticEvent<HTMLFormElement>) {
+  async function submit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!understood) {
-      setNotice('法的助言ではなく、入力内容を保存しないことを確認してください。');
+      setNotice(
+        '法的助言ではなく、入力内容を保存しないことを確認してください。',
+      );
       return;
     }
     onRunningChange?.(true);
     const next = assessLegalIntake(input);
     setAssessment(next);
+    setAiResult(null);
+    setAiError('');
     setNotice(
-      next.lawyerRequired
-        ? '弁護士へ渡す要約と候補を準備しました。連絡前に内容を確認してください。'
-        : '一般情報を確認するための次の手順を整理しました。',
+      next.primaryCounselId
+        ? '刑事弁護の第一連絡候補として藤原茜弁護士を表示しました。連絡前に内容を確認してください。'
+        : next.lawyerRequired
+          ? '弁護士へ渡す要約と候補を準備しました。連絡前に内容を確認してください。'
+          : '一般情報を確認するための次の手順を整理しました。',
     );
-    onRunningChange?.(false);
+    if (next.urgency === 'emergency') {
+      onRunningChange?.(false);
+      return;
+    }
+    setAiLoading(true);
+    try {
+      const response = await fetch('/api/legal-guidance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      });
+      const payload = (await response.json()) as LegalAiResult & {
+        error?: string;
+      };
+      if (!response.ok)
+        throw new Error(payload.error || '法令AIを利用できません。');
+      setAiResult(payload);
+      setNotice(
+        next.lawyerRequired
+          ? '公式情報の一次回答と弁護士への引継ぎを用意しました。'
+          : '公式情報の一次回答と無料・公的な次の行動を用意しました。',
+      );
+    } catch (error) {
+      setAiError(
+        error instanceof Error
+          ? error.message
+          : '法令AIを利用できません。公的案内から確認してください。',
+      );
+    } finally {
+      setAiLoading(false);
+      onRunningChange?.(false);
+    }
   }
 
   async function copySummary() {
@@ -153,10 +205,10 @@ export function LegalIntakeRunner({
           <Scale size={22} />
         </span>
         <div>
-          <h3>状況を整理して、次の窓口を決めます</h3>
+          <h3>公式情報で解決を試し、必要な案件だけ弁護士へ</h3>
           <p>
-            この受付は弁護士ではなく、法的助言・期限計算・勝敗予測を行いません。
-            弁護士が必要と判定した場合だけ、日本語対応候補と引継ぎ要約を表示します。
+            法令AIが政府・裁判所の公式情報だけを検索して一般案内を作ります。
+            刑事弁護が必要な案件は、藤原茜弁護士を第一連絡候補として引き継ぎます。
           </p>
         </div>
       </div>
@@ -164,7 +216,7 @@ export function LegalIntakeRunner({
       <div className="legal-runner-privacy">
         <ShieldAlert size={18} />
         <p>
-          入力はブラウザ内だけで処理し、Skyや外部サービスへ保存・送信しません。
+          Skyは相談内容を保存しません。法令AIを使うと入力は回答作成のためOpenAIへ送られ、APIの応答保存機能はオフにします。OpenAI側のデータ保持は契約設定に従います。
           社会保障番号、口座・カード番号、パスワード、移民の受領番号、診療記録の全文は入力しないでください。
         </p>
       </div>
@@ -195,7 +247,9 @@ export function LegalIntakeRunner({
                   update('immediateDanger', event.target.checked)
                 }
               />
-              <span><strong>今すぐ危険がある</strong>暴力、脅迫、追跡、身の危険など</span>
+              <span>
+                <strong>今すぐ危険がある</strong>暴力、脅迫、追跡、身の危険など
+              </span>
             </label>
             <label>
               <input
@@ -205,7 +259,10 @@ export function LegalIntakeRunner({
                   update('detainedOrArrested', event.target.checked)
                 }
               />
-              <span><strong>逮捕・拘束・出頭要請がある</strong>本人または近しい人が対象</span>
+              <span>
+                <strong>逮捕・拘束・出頭要請がある</strong>
+                本人または近しい人が対象
+              </span>
             </label>
             <label>
               <input
@@ -215,7 +272,10 @@ export function LegalIntakeRunner({
                   update('domesticViolence', event.target.checked)
                 }
               />
-              <span><strong>家庭内暴力・対人安全の懸念がある</strong>安全な端末で入力してください</span>
+              <span>
+                <strong>家庭内暴力・対人安全の懸念がある</strong>
+                安全な端末で入力してください
+              </span>
             </label>
             <label>
               <input
@@ -225,7 +285,10 @@ export function LegalIntakeRunner({
                   update('receivedOfficialDocument', event.target.checked)
                 }
               />
-              <span><strong>裁判所・警察・行政機関から書類が届いた</strong>書類にある期日を確認してください</span>
+              <span>
+                <strong>裁判所・警察・行政機関から書類が届いた</strong>
+                書類にある期日を確認してください
+              </span>
             </label>
           </div>
         </fieldset>
@@ -255,7 +318,9 @@ export function LegalIntakeRunner({
               }
             >
               {Object.entries(locationLabels).map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
+                <option key={value} value={value}>
+                  {label}
+                </option>
               ))}
             </select>
           </label>
@@ -268,7 +333,9 @@ export function LegalIntakeRunner({
               }
             >
               {Object.entries(stageLabels).map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
+                <option key={value} value={value}>
+                  {label}
+                </option>
               ))}
             </select>
           </label>
@@ -291,9 +358,7 @@ export function LegalIntakeRunner({
             minLength={20}
             maxLength={2000}
             value={input.situationSummary}
-            onChange={(event) =>
-              update('situationSummary', event.target.value)
-            }
+            onChange={(event) => update('situationSummary', event.target.value)}
             placeholder="例：9月10日に勤務先から通知を受け取り、9月18日までに返答するよう書かれています。"
           />
           <small>{input.situationSummary.length} / 2,000</small>
@@ -331,7 +396,7 @@ export function LegalIntakeRunner({
             onChange={(event) => setUnderstood(event.target.checked)}
           />
           <span>
-            この受付は法的助言ではなく、弁護士・依頼者関係や秘匿特権は成立しないこと、入力内容は保存されないことを理解しました。
+            この受付は法的助言ではなく、弁護士・依頼者関係や秘匿特権は成立しないこと、入力が一次回答のためOpenAIへ送られることを理解しました。
           </span>
         </label>
         <button
@@ -343,7 +408,7 @@ export function LegalIntakeRunner({
             input.situationSummary.trim().length < 20
           }
         >
-          内容を整理して次の窓口を見る
+          公式情報で回答して、必要なら引き継ぐ
         </button>
       </form>
 
@@ -358,6 +423,54 @@ export function LegalIntakeRunner({
             <h3>{assessment.headline}</h3>
             <p>{assessment.explanation}</p>
           </div>
+          {assessment.urgency !== 'emergency' && (
+            <div className="legal-runner-ai">
+              <div className="legal-runner-ai-heading">
+                <div>
+                  <span>公式ドメイン限定</span>
+                  <h3>法令AIの一次回答</h3>
+                </div>
+                {aiResult && (
+                  <small>
+                    {new Date(aiResult.searchedAt).toLocaleString('ja-JP')} 確認
+                  </small>
+                )}
+              </div>
+              {aiLoading ? (
+                <p className="legal-runner-ai-state">
+                  政府・裁判所の公式情報を検索しています…
+                </p>
+              ) : aiResult ? (
+                <>
+                  <div className="legal-runner-ai-answer">
+                    {aiResult.answer}
+                  </div>
+                  <div className="legal-runner-ai-sources">
+                    <strong>根拠にした公式情報</strong>
+                    {aiResult.citations.map((citation) => (
+                      <a
+                        key={citation.url}
+                        href={citation.url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {citation.title}
+                        <ExternalLink size={14} />
+                      </a>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <p className="legal-runner-ai-state">
+                  {aiError ||
+                    '入力後に、根拠リンク付きの一般案内を表示します。'}
+                </p>
+              )}
+              <small>
+                一般情報です。個別の権利・期限・取調べ対応・勝敗は弁護士に確認してください。
+              </small>
+            </div>
+          )}
           <div className="legal-runner-actions">
             <article>
               <h4>次にすること</h4>
@@ -397,9 +510,15 @@ export function LegalIntakeRunner({
               <div className="legal-runner-lawyers">
                 <div>
                   <p>分野＋地域で絞り込み</p>
-                  <h3>日本語対応の候補</h3>
+                  <h3>
+                    {assessment.primaryCounselId
+                      ? '刑事弁護：藤原茜弁護士へ引継ぎ'
+                      : '日本語対応の候補'}
+                  </h3>
                   <small>
-                    在ニューヨーク日本国総領事館の公開リスト（{LEGAL_DIRECTORY_AS_OF}現在）を使用。推薦・斡旋ではありません。
+                    {assessment.primaryCounselId
+                      ? '藤原茜弁護士を第一連絡候補として表示します。自動送信・受任確定は行いません。'
+                      : `在ニューヨーク日本国総領事館の公開リスト（${LEGAL_DIRECTORY_AS_OF}現在）を使用。推薦・斡旋ではありません。`}
                   </small>
                 </div>
                 {lawyers.map((lawyer) => {
@@ -409,15 +528,30 @@ export function LegalIntakeRunner({
                     handoffSummary,
                   );
                   return (
-                    <article key={lawyer.id}>
-                      <span>{lawyer.contactNote ?? '日本語対応窓口'}</span>
+                    <article
+                      key={lawyer.id}
+                      className={
+                        lawyer.id === assessment.primaryCounselId
+                          ? 'legal-runner-primary-lawyer'
+                          : undefined
+                      }
+                    >
+                      <span>
+                        {lawyer.id === assessment.primaryCounselId
+                          ? '第一連絡候補 · 刑事弁護'
+                          : (lawyer.contactNote ?? '日本語対応窓口')}
+                      </span>
                       <h4>{lawyer.name}</h4>
                       <p>{lawyer.focus}</p>
                       {href && (
                         <a
                           href={href}
-                          target={href.startsWith('http') ? '_blank' : undefined}
-                          rel={href.startsWith('http') ? 'noreferrer' : undefined}
+                          target={
+                            href.startsWith('http') ? '_blank' : undefined
+                          }
+                          rel={
+                            href.startsWith('http') ? 'noreferrer' : undefined
+                          }
                         >
                           {input.contactPreference === 'phone' ? (
                             <PhoneCall size={15} />
@@ -435,22 +569,30 @@ export function LegalIntakeRunner({
                 })}
               </div>
             </div>
-          ) : (
-            <div className="legal-runner-guide">
-              <h3>一般情報は公式案内から確認できます</h3>
-              <p>
-                個別の権利・期限・手続選択の判断が必要になったら、弁護士相談へ切り替えてください。
-              </p>
-              <a
-                href={officialLegalResources.nyCourtsFindLawyer}
-                target="_blank"
-                rel="noreferrer"
-              >
-                New York Courts「Find a Lawyer」
-                <ExternalLink size={15} />
-              </a>
+          ) : null}
+
+          <div className="legal-runner-guide">
+            <h3>まず無料・公的な窓口で解決を試す</h3>
+            <p>
+              書式の作成や一般情報の確認は、次の公式・非営利サービスから始められます。
+            </p>
+            <div className="legal-runner-guide-links">
+              {selfHelp.map((resource) => (
+                <a
+                  key={resource.id}
+                  href={resource.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <span>
+                    <strong>{resource.label}</strong>
+                    {resource.description}
+                  </span>
+                  <ExternalLink size={15} />
+                </a>
+              ))}
             </div>
-          )}
+          </div>
         </section>
       )}
 
