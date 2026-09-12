@@ -5,7 +5,7 @@ const moneyFormat = new Intl.NumberFormat('en-US',{style:'currency',currency:'US
 const money = n => moneyFormat.format(n/100);
 let renderedWallet=null,walletMutationPending=false;
 let state={hub:{installed:[],jobs:[]},wallet:{}},catalog=[],view='hub',selected=null,toastTimer,lastFocus;
-const labels={hub:'Automation Hub',installed:'マイツール',history:'実行履歴',wallet:'Rock Wallet',developer:'Developer SDK',device:'端末と実行環境'};
+const labels={hub:'Sky',installed:'マイツール',history:'実行履歴',wallet:'Rock Wallet',developer:'Developer SDK',device:'端末と実行環境'};
 function notice(text){$('#toast').textContent=text;$('#toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.add('hidden'),5500)}
 async function api(path,body){const response=await fetch(path,body===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const data=await response.json();if(!response.ok)throw new Error(data.error||'処理できませんでした');return data}
 // A navigation shares in-flight reads. Mutations invalidate the epoch so a

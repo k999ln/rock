@@ -116,10 +116,10 @@ SQLite schemaは`db/migrations`にあり、次を保持します。
 
 Webhook eventとeffect idempotency keyはuniqueです。Stripe署名はraw body、timestamp tolerance、constant-time comparisonで検証します。local DB fileは`0600`、格納directoryは`0700`へ制限します。productionでは暗号化volumeまたはtenant-isolated databaseを使い、このunique境界とtenant keyを保持してください。
 
-## RockstarOS Automation Hub registration
+## RockstarOS Sky registration
 
-[`rockstaros-tool.json`](rockstaros-tool.json)が商品ID、MCP runtime、capability、Provider、approval policy、費用境界の正本です。Web Hubの`lib/catalog.ts`には同じ商品ID`fashion-brand-ops`で登録されています。
+[`rockstaros-tool.json`](rockstaros-tool.json)が商品ID、MCP runtime、capability、Provider、approval policy、費用境界の正本です。[`sky-submission.json`](sky-submission.json)はSky掲載契約、Web Skyの`lib/catalog.ts`はready商品とTimeline表示を保持します。
 
 stdioではMCP clientがこのdirectoryの`.mcp.json`を読み、`initialize → tools/list → tools/call`で28個の操作をdiscover/callできます。HTTP modeをloopback以外へbindする場合は、bearer tokenとtenant IDの両方を必須にします。RockstarOSのplatform署名鍵、Wallet送金権限、root、任意shellはこの商品へ渡しません。
 
-Hub catalog名は **Instagram運用・受注型ブランド管理** です。検索欄で「Instagram運用」から直接見つけられます。account list/switch、content plan、draft/caption、approval、schedule/publish、insights sync、DM classificationを同じ商品内の独立MCP toolとして公開します。外部Providerのcredentialと実費契約は商品本体やRockstarOS月額から分離し、実アカウント接続、広告出稿、請求、返金は設定と個別承認が揃うまでfail closedです。
+Skyの商品名は **Instagram運用・受注型ブランド管理** です。Timelineと検索欄で「Instagram運用」から直接見つけられます。account list/switch、content plan、draft/caption、approval、schedule/publish、insights sync、DM classificationを同じ商品内の独立MCP toolとして公開します。外部Providerのcredentialと実費契約は商品本体やRockstarOS月額から分離し、実アカウント接続、広告出稿、請求、返金は設定と個別承認が揃うまでfail closedです。

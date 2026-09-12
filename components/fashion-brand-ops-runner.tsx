@@ -16,7 +16,7 @@ export function FashionBrandOpsRunner() {
         <Cable size={20} />
         <div>
           <strong>PCのMCPとして接続</strong>
-          <p>28個の専用操作をHubやCodexから確認・呼び出せます。</p>
+          <p>28個の専用操作をSkyやCodexから確認・呼び出せます。</p>
         </div>
       </div>
       <ul>
@@ -38,7 +38,7 @@ export function FashionBrandOpsRunner() {
         <ol>
           <li>このリポジトリの toolkits/fashion-brand-ops をPCに用意します。</li>
           <li>.env.exampleを参考に、利用するProviderだけを安全な秘密情報保管先へ設定します。</li>
-          <li>.mcp.jsonをMCPクライアントへ登録し、tools/listで専用操作を確認します。</li>
+          <li>.mcp.jsonをSky対応MCPクライアントへ登録し、tools/listで専用操作を確認します。</li>
         </ol>
         <p>初期状態はすべてmockです。外部投稿・請求・返金は行いません。</p>
       </details>

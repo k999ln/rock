@@ -2,7 +2,7 @@
 
 2026-09-09。**設計のみ。新しい endpoint、SDK、ゲーム台帳、交換workerは実装していない。実行結果・GX00/GX01/DX01合格を表す文書ではない。**
 
-承認済み[製品設計v1.1](os-hub-wallet-game-design.md)、[実装承認記録](execution-approval-20260909.md)、[GX00分離ADR](gx00-owner-isolation-adr.md)の1契約1台帳・認証付き共通gatewayの方針をAPIへ具体化した候補。ADR本文の状態は「実装に渡す設計候補」であり、既存コードがその契約を満たすという意味ではない。
+承認済み[製品設計v1.1](os-sky-wallet-game-design.md)、[実装承認記録](execution-approval-20260909.md)、[GX00分離ADR](gx00-owner-isolation-adr.md)の1契約1台帳・認証付き共通gatewayの方針をAPIへ具体化した候補。ADR本文の状態は「実装に渡す設計候補」であり、既存コードがその契約を満たすという意味ではない。
 
 レビューした不変runtime sourceは `b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9`。以下のsource pathはrepository相対であり、実装接続点の短縮pathのみ `systems/rock-star-os/` を基準にする。この凍結OSの既存Walletは `/v2/wallet` のdevice認証後もAlice固定。後続host sourceでは `/v3/wallet` とGX00本人接続を実装しているが、本書の交換操作まで実装したわけではない。[現在の範囲](implementation-checkpoint-20260909.md)と[接続wire](gx00-connection-wire-v1.md)を区別する。既存sourceの検証成功を新しい交換APIの証拠へ換算しない。
 

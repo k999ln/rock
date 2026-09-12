@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { catalog } from '../lib/catalog.ts';
+import { parseSkySubmission } from '../lib/sky-submission.ts';
 import { loadConfig } from '../toolkits/fashion-brand-ops/src/config.mjs';
 import { TOOL_DEFINITIONS } from '../toolkits/fashion-brand-ops/src/tools.mjs';
 
@@ -10,8 +11,14 @@ const root = new URL('../', import.meta.url);
 const manifestUrl = new URL('toolkits/fashion-brand-ops/rockstaros-tool.json', root);
 const manifestBytes = readFileSync(manifestUrl);
 const manifest = JSON.parse(manifestBytes);
+const skySubmission = JSON.parse(
+  readFileSync(
+    new URL('toolkits/fashion-brand-ops/sky-submission.json', root),
+    'utf8',
+  ),
+);
 
-void test('RockstarOS Automation Hub lists Fashion Brand Ops as a ready MCP product', () => {
+void test('RockstarOS Sky lists Fashion Brand Ops as a ready MCP product', () => {
   const item = catalog.find((tool) => tool.id === 'fashion-brand-ops');
   assert.ok(item);
   assert.equal(item.status, 'ready');
@@ -22,7 +29,15 @@ void test('RockstarOS Automation Hub lists Fashion Brand Ops as a ready MCP prod
   assert.match(item.note, /承認/);
 });
 
-void test('the Hub manifest binds the MCP runtime and every dangerous effect to approval', () => {
+void test('Sky accepts the Fashion Brand Ops listing contract', () => {
+  const parsed = parseSkySubmission(skySubmission);
+  assert.equal(parsed.name, 'Instagram運用・受注型ブランド管理');
+  assert.equal(parsed.connectionType, 'mcp_stdio');
+  assert.deepEqual(parsed.executionTargets, ['pc']);
+  assert.ok(parsed.permissions.includes('financial_action'));
+});
+
+void test('the Sky manifest binds the MCP runtime and every dangerous effect to approval', () => {
   assert.equal(manifest.id, 'org.rockstar.fashion-brand-ops');
   assert.equal(manifest.runtime.kind, 'local_mcp');
   assert.deepEqual(manifest.runtime.transports, ['stdio', 'streamable_http']);

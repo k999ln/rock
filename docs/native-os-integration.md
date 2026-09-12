@@ -7,23 +7,23 @@
 
 ## 1. 追加する製品方針
 
-- 名称は **Rock star OS**。自動化を大量に固定搭載するのではなく、標準Hubから独立したTool・Workflow・Connectorを探し、取得・更新・停止・削除できるOSを作る。
+- 名称は **Rock star OS**。自動化を大量に固定搭載するのではなく、標準Skyから独立したTool・Workflow・Connectorを探し、取得・更新・停止・削除できるOSを作る。
 - 最初の製品端末は **BlackBerryを優先**する。機種・variantは未定。解除可能なbootloader、BSP、画面・入力・通信・電源・復旧・更新を確認するまで、対応済み機種を宣言しない。
 - 開発中のOS本体は **Linux / Buildroot / ARM64 QEMU virt**。kernel、root filesystem、init、専用UIDのサービス、C/Cairoのnative画面を持つ。WebサイトやAPKの起動をこのOSの起動と数えない。
 - 既存のAndroid/AOSP試作は比較・移植候補として保持する。Pixelは9月5日時点の候補で、現在の初期製品端末の決定ではない。LinuxのQEMU成功をCuttlefish・Pixel・BlackBerryの成功へ読み替えない。実機のOS方式は適合調査後に固定する。
-- 購入者が引き渡し済み端末を起動し、少ない操作でHubを使える体験を目指す。「タップで利用開始」と「ロックされた任意の端末へのOS書込み」は別工程。前者の仮想端末試作はあるが、後者を回避する新技術や実機成立を主張しない。
+- 購入者が引き渡し済み端末を起動し、少ない操作でSkyを使える体験を目指す。「タップで利用開始」と「ロックされた任意の端末へのOS書込み」は別工程。前者の仮想端末試作はあるが、後者を回避する新技術や実機成立を主張しない。
 - 初期サービスとWalletは本人確認済み端末購入者のclosed方式。引き渡し時の確認を再利用し、入力を最小化する。ただし金融providerが必要とする確認を省略できると決めつけない。SDKで作成・ローカル検証する資格と、本番Walletを利用する資格を分ける。
 - 標準Walletは自動化売上の入金・確定・利用可能残高・出金保留・月額を区別する。新OS契約は **月888 cents（8.88 USD）固定**。明示した継続課金同意に基づきbackendで月1回、同一契約の複数端末でも重複徴収しない。不足時は未払いとして処理し、試算利益や保留残高を使わない。
 - ToBの収益受領は受付、確定、送金中、結果不明、照合済みを分ける。応答が失われたら同じキーで照会し、無条件で再送しない。MCP接続・解除と資金精算は別の状態管理で、切断しても成立済み取引やreceiptを消さない。
 - AIは端末・PC・cloudから選択する設計。処理場所、送る入力、権限、上限費用を事前に示す。cloud停止時に既存の端末処理を継続できるようにし、未導入のAIモデルがofflineで動くと表示しない。
-- 運営用ツールは利用者のHubとは別の権限面に置く。状態診断、停止、版・配信計画、署名・失効・復旧を扱い、任意root shellや利用者の秘密を読む共通入口にしない。
+- 運営用ツールは利用者のSkyとは別の権限面に置く。状態診断、停止、版・配信計画、署名・失効・復旧を扱い、任意root shellや利用者の秘密を読む共通入口にしない。
 - 軽さと使いやすさは、操作数・待ち時間・復旧時間・資源使用を同条件で測る。特許や世界初は目標であり、先行技術調査・特許性判断や実測を終えたという表示にはしない。
 
 ## 2. コードと契約の配置
 
 | 場所 | 役割 | 統合の境界 |
 | --- | --- | --- |
-| `systems/rock-star-os/` | 今回追加するLinux native OS、Hub、SDK、署名配布、Wallet・MCP試作、テスト | このディレクトリをLinux開発の作業rootとする |
+| `systems/rock-star-os/` | 今回追加するLinux native OS、Sky、SDK、署名配布、Wallet・MCP試作、テスト | このディレクトリをLinux開発の作業rootとする |
 | `android/`, `os/device/`, `os/source-lock.json` | 既存Android P1 / AOSP製品設定 | ファイルやAndroid APIをLinux版で上書きしない |
 | `contracts/`, `lib/workflow.ts` | 既存記事Tool契約、Workの業務状態 | native実行結果と同一API・同一DBとはしない |
 | `app/`, `lib/fund.ts`, `db/`, `drizzle/` | 既存Webの仕事・ファンド試算・保存 | 本番移行、残高移管、自動課金を今回の追加で起動しない |
@@ -39,8 +39,8 @@ AndroidのAIDL固定2操作・32 KiB契約と、Linuxの署名recipe・MCP契約
 
 | 確認 | 基準版で確認した範囲 | 残る条件 |
 | --- | --- | --- |
-| OS本体 | ARM64 QEMU、読み取り専用rootfsとデータ分離、native Hub、署名配布・更新、A/B復旧の限定試験 | BlackBerryの起動・driver・省電力・実電源断 |
-| SDK / Hub | package作成・署名、互換・権限判定、取得・実行・更新・停止、担当を分離した内部Tool作成 | 外部開発者pilot、一般公開Store運用、実機だけでの完結 |
+| OS本体 | ARM64 QEMU、読み取り専用rootfsとデータ分離、native Sky、署名配布・更新、A/B復旧の限定試験 | BlackBerryの起動・driver・省電力・実電源断 |
+| SDK / Sky | package作成・署名、互換・権限判定、取得・実行・更新・停止、担当を分離した内部Tool作成 | 外部開発者pilot、一般公開Store運用、実機だけでの完結 |
 | MCP | owned fixtureへの接続、入力の送信確認、実行・結果保存・解除、backend/OS再起動後の状態保持 | 一般の外部MCP、OAuth、providerごとの相互運用、実ToB送金 |
 | Wallet | 合成購入記録、資格・認証・同意・複数端末、固定月額、冪等性・残高不変条件のhost/guest試験 | 正式providerの本人確認、実売上、実送金・ATM |
 | AI / PC | 処理先・許可・予算・fallbackの試作、限定transport | 実AIモデルの品質・性能、実USB輸送、device/cloud/PCの製品E2E |
@@ -67,7 +67,7 @@ AndroidのAIDL固定2操作・32 KiB契約と、Linuxの署名recipe・MCP契約
 1. 公開するソースの出所と秘密情報境界を固定し、既存Web/Androidとnativeの検証を別々に通す。
 2. 起動画面の応答確認・自動再読込の未検証変更を、独立した試験付きで評価する。
 3. BlackBerryの型番を選定し、boot・driver・更新・復旧の実現性を確定する。QEMU向けイメージを書き込まない。
-4. 実機だけで、Hub検索→直接取得→許可→実行→更新→失敗復旧を通す。OS再buildなしの第三者Tool追加を実証する。
+4. 実機だけで、Sky検索→直接取得→許可→実行→更新→失敗復旧を通す。OS再buildなしの第三者Tool追加を実証する。
 5. 実USB、許可した外部MCP/AI、金融provider sandbox、ToB精算、運営配信を各受入条件で接続する。
 
 標準Walletと月額の設計は確定方針として進めるが、実資金の提供開始は別の承認・契約・試験を要する。端末、実USB、providerなどの必須条件が残る間、OS全体の完成とは報告しない。

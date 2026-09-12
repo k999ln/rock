@@ -9,7 +9,7 @@
   "scope": [
     "integrate main/native/design on an isolated branch",
     "native QEMU development OS and D0-D6 validation",
-    "existing Hub products and synthetic Wallet",
+    "existing Sky products and synthetic Wallet",
     "GX00/GX01 synthetic exchange and DX01 SDK",
     "optional Game entry; achievement effects omitted"
   ],

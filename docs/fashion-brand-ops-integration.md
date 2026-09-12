@@ -1,8 +1,8 @@
-# Instagram運用・受注型ブランド管理 — RockstarOS Hub統合
+# Instagram運用・受注型ブランド管理 — RockstarOS Sky統合
 
 更新日: 2026-09-12。対象branch: `codex/fashion-brand-ops-sky`。
 
-利用者の明示要望により、`k999ln/Mr.`のOne Hubではなく、`k999ln/rock`のRockstarOS Automation Hubを統合先とする。既存のHub catalog、商品ごとの実行場所・費用・権限表示、MCP接続境界を維持する。
+利用者の明示要望により、`k999ln/Mr.`のOne Hubではなく、`k999ln/rock`のSkyを統合先とする。内部互換名のHub catalogを維持しつつ、Skyの商品ごとの実行場所・費用・権限表示、Timeline、MCP接続境界へ統合する。
 
 ## 実装範囲
 
@@ -24,10 +24,10 @@ Instagram password、Cookie、raw tokenをDBへ保存しない。credentialは`e
 
 ## 検証境界
 
-ローカルのmock Provider、MCP protocol、SQLite、Webhook署名、Hub catalog/manifest整合を検証する。Higgsfield、Meta、Stripe、通知先の実credentialは接続せず、実投稿、広告費、請求、返金、送信を行わない。QEMU/Android/実機OSへこの商品を組み込んだ証拠ではない。
+ローカルのmock Provider、MCP protocol、SQLite、Webhook署名、Sky catalog/Timeline/掲載契約の整合を検証する。Higgsfield、Meta、Stripe、通知先の実credentialは接続せず、実投稿、広告費、請求、返金、送信を行わない。native Skyの汎用JSON MCP画面、QEMU/Android/実機OSへこの商品を組み込んだ証拠ではない。
 
 ## 検証結果
 
-2026-09-12に`npm run verify`を完走した。RockstarOS本体96 test、Fashion Brand Ops 10 test、型検査、静的検査、production build、Worker/D1 API 143 assertionsがすべて成功した。MCPの`tools/list`は28 toolを返し、tool call、承認digest/期限/一回実行、Stripe/Meta署名、account切替、content plan、draft、schedule、insights、DM分類、受注、入金eventの冪等反映、分析feedbackをmockまたはfixtureで確認した。
+2026-09-12に`npm run verify`を完走した。RockstarOS本体101 test、Fashion Brand Ops 10 test、型検査、静的検査、production build、Worker/D1 API 143 assertionsがすべて成功した。MCPの`tools/list`は28 toolを返し、tool call、承認digest/期限/一回実行、Stripe/Meta署名、account切替、content plan、draft、schedule、insights、DM分類、受注、入金eventの冪等反映、分析feedbackをmockまたはfixtureで確認した。さらにSkyのローカル画面でTimeline、catalog、詳細ダイアログを開き、商品名、MCP接続条件、mock初期状態、approval gateの表示とエラーoverlayがないことを確認した。
 
 決済event反映は公開MCP toolにせず、署名検証済みWebhookだけが呼ぶ内部処理に限定した。公開MCPは読み取り専用`fashion.payment.status.get`を提供する。実Higgsfield、実Meta account、実Stripe、通知先は未接続であり、この検証による外部投稿・広告費・請求・返金・送信はない。
