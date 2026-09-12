@@ -9,6 +9,7 @@ export type SkyRole = {
 };
 
 export const skyRoles: readonly SkyRole[] = [
+  { label: 'ブランド運営役', toolId: 'fashion-brand-ops' },
   { label: '案件判断役', toolId: 'coconala' },
   { label: '記事編集役', toolId: 'mr-free-article' },
   { label: '出典整理役', toolId: 'mr-citations' },

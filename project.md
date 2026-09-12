@@ -51,7 +51,7 @@ Draft PR #10の初回native CIは、`Hub`から`Sky`への表示変更をPIN画�
 
 ## 2026-09-12 — Skyへ「サブスク顧問」を接続
 
-自動化Hub（Sky）のready商品としてRockstar Ledgerを追加し、同じPCで動くSQLite台帳の月額、要対応、更新日、契約一覧を読み取り専用で表示する画面を実装した。配布ZIP、MIT全文、Codex skill、stdio MCPを同じGitへ収録し、個人の契約・明細DBは収録しない。Skyからのブラウザ接続元はloopback HTTPだけに限定した。
+Fashion Brand Ops v0.3.0に、許可済みSky originからPCのloopbackへ接続する短期browser sessionを追加した。Skyの商品カードを1回押すと、session発行、MCP initialize、initialized通知、38操作のtools/list検査まで自動で進み、カードとDialogを「接続済み」へ同期する。再表示時はpingとtool一覧を再確認し、停止・失効・tool不足ではbrowser側sessionを破棄する。解除時はPC側sessionも失効する。
 
 利用者の提案を受け、ツール一覧だけでなく役割を持つ担当者と話して進めるAgent Hub方針を追加した。最初の実装としてサブスク顧問へ質問例と自由入力を追加し、月額、要対応、次回更新、全体要約を外部AIなしで回答する。各担当はMCP allowlist、data scope、本人確認、memory、receiptを持ち、外部変更はpolicy gatewayを通す。[役割エージェント仕様](docs/sky-role-agents-20260912.md)。
 
@@ -71,25 +71,25 @@ Skyの既定導線から長い入力フォームを外し、未接続ツール�
 
 ## 2026-09-12 — スマホで実行画面が左へずれる不具合を修正
 
-スマホ幅ではDialogを下端固定へ変更していたが、共通Dialogの中央配置用`translate`が残り、画面幅の半分だけ左へずれていた。スマホ用Sky DialogでTailwindのX/Y移動量を0へ上書きし、公開用CSSの最適化後にも指定が残ること、横幅413pxで左端0・右端413pxに収まることを実画面計測で確認した。
+実ブラウザで商品カードを1回押し、「接続済み」「38操作を利用可能」への反映、解除後の未接続表示、再接続、error overlay不在を確認した。`npm run verify`はWeb 107 tests、Fashion Brand Ops 15 tests、型、lint、本番build、Worker/D1 API 143 assertions、migration検証まで全て合格した。
 
-## 2026-09-12 — Skyの操作を依頼・選択・実行の3段階へ整理
+## 2026-09-12 — 改善版SkyへInstagram運用を統合
 
-重複していたSky見出しを撤去し、最初に自然文で依頼できる欄、スクロール中も残る絞り込み・検索・掲載操作、各投稿の一つの実行ボタンへ整理した。文章で依頼した場合は会話内で担当を示してから「ツールを開く」へ進み、役割ボタンとTimelineからの1タップ起動は維持する。スマホの実行Dialogは下から開く全面シートに変更し、閉じる・入力・実行を片手で追いやすくする。
+黒基調の役割フィード、自然文の「Skyに頼む」、検索・状態タブ、1カード1操作へ整理したSkyを、Fashion Brand Ops v0.2.0を含むローンチ候補へ適用した。Instagram運用・受注型ブランド管理を「ブランド運営役」として追加し、Instagram・ブランド・投稿・広告・DM・受注・制作・発送の依頼を同商品へ案内する。38操作、既存商品、approval gateは維持し、Fashion Brand Opsの接続状態も同じ黒いDialog内で読めるようにした。
 
-## 2026-09-12 — Skyのヘッド・フッター・実行画面を黒へ統一
+幅767px以下のDialogは下端固定のシートとして表示し、中央配置用の`translate`を明示的に解除する。これにより狭い画面でDialogが左上へ半分ずれる問題を防ぐ。実Provider接続、実投稿、Sites再配信はこのUI統合には含めない。
 
-Sky本体の上下に残っていた白い共通ヘッドとフッター、および白いツール詳細・実行Dialogを、Skyと同じ黒背景・細いグレー境界へ統一した。他ページの共通表示は変更せず、Sky表示時とSkyから開いたDialogだけに適用する。
+デスクトップと幅585pxのスマホ表示で、ブランド運営役のカード、38操作の詳細、承認境界、Dialogの画面内配置を確認した。`npm run verify`はWeb 105 tests、Fashion Brand Ops 14 tests、型、lint、本番build、Worker/D1 API 143 assertions、migration検証まで全て合格した。
 
-## 2026-09-12 — Sky Timelineを一列へ削減
+## 2026-09-12 — SkyのInstagram運用と既存ツールを同時統合
 
-利用者評価を受け、演出中心だったSky画面からLIVE見出し、待機表示、処理フロー、説明ラベル、条件チップ、右側の掲載・接続パネルを撤去した。残したものは依頼欄、4つの役、検索、ツール投稿、実行ボタンだけ。黒地と細い区切り線を基調に、動きは投稿の短い表示とタイムライン上の低速な光だけに限定した。
+`codex/fashion-brand-ops-sky`へ最新のSkyサブスク顧問branchを取り込み、Instagram運用・受注型ブランド管理、サブスク顧問、既存Web/PCツールを同じSky画面で併用できるよう競合を解消した。検索カテゴリ、Timeline、詳細runner、ready件数、製品ベース検査を6商品の構成へ同期した。
 
-文章送信から担当ツールを開く1操作、役ボタンから開く1操作、候補と利用可能ツールの区別、PC初回接続、安全確認用の詳細Dialogは維持した。スマホ幅の実画面で先頭表示と案件判断役の起動を確認した。
+`npm run verify`でWeb 103 tests、Fashion Brand Ops 14 tests、型、lint、Sky／端末対応／製品ベース検査、本番build、Worker/D1 API 143 assertionsが成功した。実Provider・実投稿・実請求、Native Sky MCP broker、Wallet費用転記、Android／実機組込み、Sites再配信、main統合は実施していない。
 
-## 2026-09-12 — Skyをライブ実行タイムラインへ再設計
+Draft PR #10の初回native CIは、`Hub`から`Sky`への表示変更をPIN画面source guardが検出して停止した。`scripts/review-native-pin-source.py`を隔離Linux環境で実行し、Wallet／ATM各14 frame、既存ROI・PIN桁数・署名ボタン状態、7つの古い座標拒否が同じ画素定義のまま合格したため、`ui.c`と`mcp-ui.inc`のsource hashだけを更新した。画素定義、期限、認証、Wallet処理は変更していない。
 
-白い一覧型のSkyを、依頼から担当選択、ツール起動までが一本の流れとして読める濃紺のライブタイムラインへ変更した。光が流れる縦軸、接続状態の脈動、カードの段階表示、担当決定時の応答アニメーションを追加し、ブラウザ実行の1タップ導線とPC初回接続の安全境界は維持する。
+## 2026-09-12 — Instagram運用・受注型ブランド管理をSkyへ統合
 
 スマホでは役割を横送りにし、実行ボタンを優先表示する。`prefers-reduced-motion`では継続アニメーションを止める。実画面で「今使える」への切替と4件への絞り込み、スマホ幅の表示を確認した。
 
@@ -99,6 +99,7 @@ SkyのX型Timelineと会話受付を維持し、文章の送信または4つの�
 
 日本語法律相談受付を現在のSky Agent Hubへ統合した。Timeline投稿、法務受付の役割ボタン、自然文の依頼から会話型受付を開ける。公開連絡先33件、ブラウザRunner、公式情報限定の法令AI、安全判定、弁護士引継ぎを同じ画面で利用できる。
 
+実装は`toolkits/fashion-brand-ops`、判断と検証境界は[統合記録](docs/fashion-brand-ops-integration.md)、確定要望はRQ18。Creative/Social/Payment/NotificationをProvider化し、SQLite受注台帳とWebhook照合を持つ。価格変更、外部生成、投稿/広告、DM送信、請求、返金、通知は署名付き個別approvalが必要。初期値はmockで、実Higgsfield/Meta/Stripe、外部費用、QEMU/Android/実機OS、Sites再配信、main mergeは変更していない。
 ## 2026-09-12 — 多機種対応を共通Core＋機種別packageへ固定
 
 利用者の決定により、RockstarOSは一つの汎用imageを全端末へ書き込む方式ではなく、共通Coreと機種／SKU別Device Support Packageを組み合わせる。提供区分を完全なOS、Android GSI実験版、既存OS上のclient、非対応の4種類に分け、対応台帳と自動検査で誇張を防ぐ。[設計](docs/device-support-architecture.md)／[台帳](data/device-support-matrix.json)。
@@ -127,9 +128,11 @@ main `7cdbb5f`とDraft PR #4の候補`c182a5b`を再取得し、PR #4の同HEAD 
 
 利用者の明示指示で実機版の開発を開始。Pixel 10候補の公式安定版タグ署名を確認し、固定source・端末product組込み・Linux build入口・読取り専用端末診断を追加した。利用できるLinux環境はないとの回答を受領。対象機種/SKUの再確認、クラウド予算/アカウント、全OS build、Sky/Wallet/Game移植、Android署名と実機受入が必要。まだ書込み可能なimageは生成していない。[実装と再開手順](docs/phone-preview-20260911.md)。
 
+
 ## 2026-09-11 — kaiya の公開設定と新規Sites
 
 権利者名kaiya、自作部分の改変・再配布許可、新規Sites作成、CM制作途中を最新指示として記録。MITの具体条文と本人だけで行う署名方式は準備段階。新サイトは本人限定で公開済み。空のD1で開始し、元サイトとDBの復旧を完了扱いにしない。MIT確認用全文、本人署名CLIと新7＋既存29署名試験、取消/メモリの追加診断を保存した。[今回の設定](docs/owner-setup-20260911.md)。
+
 
 ## 2026-09-11 — rc2の残る受入を再開
 
@@ -173,9 +176,11 @@ Linuxで全1660件／17checks、元1392件＋新規4件の主suite網羅、Web v
 
 最終9abf78aのbase/profile imageをbuildしてhash固定。正規CI原本1631/14checkと694source一致を既存guardで受理し、Mac arm64原全回帰の10TLS期限ERRORは別FAILとして保持。24要件のGame/Wallet host契約を同sourceで確認しGX01-CONTRACTを完了、実OS UI/fresh SDK/全D0〜D6は未判定。Aは同梱source/NOTICEと容量を確認し長時間試験、Bは実取得から新規VMの全構成復旧、rootは最後に専用端末で実UIと実録画を検証する。
 
+
 ## 09:19 UTC 配布候補のソース固定
 
 `9abf78a80d27aa9f847c4051d20e4c552e407276` を最終source/host tools候補として固定・pushし、Aの完全native回帰とbuildを開始。Game期限後の再接続未対応を既存契約どおりUI/SDKに説明し、元key再送・履歴とPIN pixel条件を保持。Bは同じ版の9file取得から独立新VMで導入/全構成復旧/SDKを検証する。D0〜D6・最終実UI・配布取得・実demoはこれからの判定で、完成とは表示しない。
+
 
 ## 08:40 UTC 最終候補へ向けた一周の固定
 
@@ -296,15 +301,15 @@ Rock starは、自動化ツールを束ね、仕事の準備・制作・確認�
 
 `/` のファンド画面から `/work` へ進み、テンプレートを選んで仕事を作成します。既存の `MrToolRunner` とPCの4つのMCPツールを再利用します。入力の引き渡しは利用者が結果を確認・コピーして行い、タブを閉じると未保存本文は失われます。
 
-| 層                           | 担当                                               |
-| ---------------------------- | -------------------------------------------------- |
-| `lib/workflow.ts`            | テンプレート、入力検証、状態遷移、完了条件、冪等性 |
-| `lib/work-store.ts`          | D1のユーザー別取得、作成、revision条件付き更新     |
-| `app/api/jobs/route.ts`      | 認証・Origin確認、仕事の一覧・作成・更新API        |
-| `components/workbench.tsx`   | 作成、一覧、次の手順、実行結果、確認と完了         |
-| `lib/device.ts` / 既存runner | ツールの実行結果を仕事へ報告                       |
-| `data/project-status.json`   | 開発タスクの状態・依存関係・検証根拠               |
-| `scripts/project-status.mjs` | READMEと本書の進捗欄の生成・鮮度確認               |
+| 層 | 担当 |
+| --- | --- |
+| `lib/workflow.ts` | テンプレート、入力検証、状態遷移、完了条件、冪等性 |
+| `lib/work-store.ts` | D1のユーザー別取得、作成、revision条件付き更新 |
+| `app/api/jobs/route.ts` | 認証・Origin確認、仕事の一覧・作成・更新API |
+| `components/workbench.tsx` | 作成、一覧、次の手順、実行結果、確認と完了 |
+| `lib/device.ts` / 既存runner | ツールの実行結果を仕事へ報告 |
+| `data/project-status.json` | 開発タスクの状態・依存関係・検証根拠 |
+| `scripts/project-status.mjs` | READMEと本書の進捗欄の生成・鮮度確認 |
 
 仕事は `active → review → completed`。`active` / `review` から `cancelled` に中止可能。通過前のステップを飛ばす操作は拒否します。中止済み・完了済みの仕事には新しい試行を追加しません。
 

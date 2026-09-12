@@ -1,0 +1,9 @@
+{
+  "status": "unverified_screenshot_candidates",
+  "notice": "Do not treat these handles as connected accounts. Confirm them through Meta OAuth readback before registration.",
+  "accounts": [
+    { "username": "insta_akume", "confidence": "candidate" },
+    { "username": "iceiceice.mean", "confidence": "candidate" },
+    { "username": "luckyluckylucky_f", "confidence": "truncated_candidate" }
+  ]
+}

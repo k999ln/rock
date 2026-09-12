@@ -61,6 +61,55 @@ requireValue(
   'native画面の先頭tabがSkyではありません',
 );
 const sky = read('docs/sky.md');
+const workspace = read('components/sky-workspace.tsx');
+const workspaceCss = read('app/workspace.css');
+for (const marker of [
+  'fashion-brand-ops',
+  'Instagram運用・受注型ブランド管理',
+  '1クリック接続',
+])
+  requireValue(
+    catalogSource.includes(marker) || workspace.includes(marker),
+    `Fashion Brand OpsのSky登録に「${marker}」がありません`,
+  );
+
+const fashionClient = read('lib/fashion-mcp-client.ts');
+for (const marker of [
+  'FASHION_MCP_TOOL_COUNT = 38',
+  "'initialize'",
+  "'notifications/initialized'",
+  "'tools/list'",
+  "'/disconnect'",
+])
+  requireValue(
+    fashionClient.includes(marker),
+    `Fashion Brand Opsのワンクリック接続に「${marker}」がありません`,
+  );
+requireValue(
+  read('components/fashion-brand-ops-runner.tsx').includes(
+    '/toolkits/fashion-brand-ops-connector.zip',
+  ),
+  'Fashion Brand OpsのPC接続アプリ導線がありません',
+);
+const fashionConnector = resolve(
+  root,
+  'public/toolkits/fashion-brand-ops-connector.zip',
+);
+requireValue(
+  existsSync(fashionConnector) && statSync(fashionConnector).size > 0,
+  'Fashion Brand OpsのPC接続アプリ配布ZIPがありません',
+);
+for (const marker of [
+  'RockstarOS Sky接続アプリを起動しました',
+  '--env-file=.env',
+  'ROCKSTAR_APPROVAL_SECRET',
+])
+  requireValue(
+    read('toolkits/fashion-brand-ops/RockstarOS Sky接続.command').includes(
+      marker,
+    ),
+    `Fashion Brand Ops接続アプリに「${marker}」がありません`,
+  );
 for (const marker of [
   '探す',
   '権限・料金',
@@ -69,6 +118,22 @@ for (const marker of [
   '結果・実行記録',
 ])
   requireValue(sky.includes(marker), `Skyの説明に「${marker}」がありません`);
+
+requireValue(
+  (workspace.match(/className="rock-tool-dialog sky-tool-dialog"/g) || [])
+    .length === 2,
+  'Skyのツール・PC接続Dialogに統一外観が適用されていません',
+);
+for (const marker of [
+  '.rock-main-column:has(.sky-main-feed)',
+  '.sky-tool-dialog .fashion-ops-runner',
+  'translate: 0 0 !important',
+  'max-height: calc(100dvh',
+])
+  requireValue(
+    workspaceCss.includes(marker),
+    `Skyの画面・モバイルDialog CSSに「${marker}」がありません`,
+  );
 
 console.log(
   `Sky: Web/PC ready ${readyCount}件、候補 ${candidateCount}件、native内蔵 ${toolKinds.size}種類/${packages.length}版、表示名を確認`,

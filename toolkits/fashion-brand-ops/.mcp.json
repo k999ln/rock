@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+    "fashion-brand-ops": {
+      "command": "node",
+      "args": ["src/server.mjs"],
+      "cwd": ".",
+      "env_vars": [
+        "FASHION_BRAND_DB_PATH",
+        "FASHION_MCP_BEARER_TOKEN",
+        "ROCKSTAR_APPROVAL_SECRET",
+        "FASHION_CREATIVE_PROVIDER",
+        "FASHION_SOCIAL_PROVIDER",
+        "FASHION_PAYMENT_PROVIDER",
+        "FASHION_NOTIFICATION_PROVIDER",
+        "FASHION_ALLOWED_HOSTS",
+        "HIGGSFIELD_API_URL",
+        "HIGGSFIELD_API_KEY",
+        "SOCIAL_PROVIDER_URL",
+        "SOCIAL_PROVIDER_TOKEN",
+        "META_GRAPH_API_BASE_URL",
+        "META_ACCESS_TOKEN",
+        "META_APP_SECRET",
+        "META_INSIGHTS_METRICS",
+        "STRIPE_SECRET_KEY",
+        "STRIPE_WEBHOOK_SECRET",
+        "STRIPE_SUCCESS_URL",
+        "STRIPE_CANCEL_URL",
+        "NOTIFICATION_WEBHOOK_URL",
+        "NOTIFICATION_WEBHOOK_TOKEN"
+      ]
+    }
+  }
+}

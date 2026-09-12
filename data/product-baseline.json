@@ -83,6 +83,22 @@
     "sky-earnings-settlement",
     "generic-mcp-connector"
   ],
+  "fashionBrandOperations": {
+    "status": "autonomous_mock_verified",
+    "productId": "org.rockstar.fashion-brand-ops",
+    "skyName": "Instagram運用・受注型ブランド管理",
+    "hubName": "Instagram運用・受注型ブランド管理",
+    "record": "docs/fashion-brand-ops-integration.md",
+    "liveProvidersConnected": false,
+    "dangerousEffectsRequireApproval": true,
+    "autonomousPlanning": [
+      "campaign_autopilot",
+      "sales_concierge",
+      "production_cockpit",
+      "executive_dashboard"
+    ],
+    "externalEffectsExecutedByAutopilot": false
+  },
   "supplyRoleLabel": "tob",
   "supplyRoleExclusivity": "unspecified",
   "auditInputs": {
