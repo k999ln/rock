@@ -86,7 +86,7 @@ requireValue(
 for (const marker of [
   '.rock-main-column:has(.sky-main-feed)',
   '.sky-tool-dialog .fashion-ops-runner',
-  'translate: none !important',
+  'translate: 0 0 !important',
   'max-height: calc(100dvh',
 ])
   requireValue(

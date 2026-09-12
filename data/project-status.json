@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "改善版SkyへFashion Brand Opsを統合し、スマホDialogの配置修正を検証中",
-  "nextAction": "改善版SkyでInstagram運用商品とスマホDialogを画面確認し、全体検証後にGitHubへ保存する。実Provider接続とSites再配信は別gateとして保持する。",
+  "milestone": "改善版SkyへFashion Brand Opsを統合し、スマホDialog・全体検証・画面確認に合格",
+  "nextAction": "Meta OAuthのApp ID/secret、Professional account、公開Webhook URLを接続し、read-only account discoveryから本人承認付き限定テスト投稿へ進む。Sites再配信は正しい所有ワークスペース接続後に行う。",
   "tasks": [
     {
       "id": "SKY01",
@@ -45,7 +45,7 @@
     {
       "id": "SKY04",
       "title": "黒基調の改善版SkyへFashion Brand Opsを統合し、スマホDialogの画面外ずれを修正",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [
         "SKY01",
         "FB01"
@@ -54,7 +54,10 @@
         "components/sky-workspace.tsx",
         "components/fashion-brand-ops-runner.tsx",
         "app/workspace.css",
-        "scripts/check-sky.mjs"
+        "scripts/check-sky.mjs",
+        "lib/sky-routing.ts",
+        "tests/sky-routing.test.mjs",
+        "docs/sky-assistant-and-memory.md"
       ]
     },
     {
