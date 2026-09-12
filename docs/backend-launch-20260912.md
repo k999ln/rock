@@ -26,9 +26,8 @@
 6. 製品LICENSE/第三者NOTICE、production署名・失効手順。
 7. 合格した同一treeをGitへ保存し、限定公開先で反映を確認する。
 
-1〜5は完了。本人限定Sitesの既存v12はログイン後の読み出しまで確認済みだが、
-sourceは`1763deb56990bc7dc380c72a5b6043cb089c21a0`であり、このバックエンド変更
-`d66c67440700a2c7234472d80b80c27633039fe2`はまだ含まない。6〜7は同一treeで未完了。
+1〜5は完了。7はOS変更をGitHubへ保存し、統合担当のowner-only Sites v16を実環境で確認した。
+6は一般配布条件として未完了であり、今回の限定Developer Preview判定には含めない。
 
 ### P1 — 時間が残る場合
 
@@ -83,21 +82,28 @@ sourceは`1763deb56990bc7dc380c72a5b6043cb089c21a0`であり、このバック�
   `0131ce…5ce`、authority manifest `b9c10e…07c0`へ結合した。host exportは約1.0 GB・20 files。
 - 同じ所有VMの新端末`recovered`へ復元し、元端末を保持・retireしたまま、全3 disk hash、
   filesystem check、Wallet/Game authorityのwriter epoch更新を検証した。復元端末の起動と正常終了もPASS。
+- 空状態の復旧だけで終わらせず、復元端末で署名済み`提案下書き（簡潔）` v1.1.0をインストールし、
+  入力テキスト/結果表示、端末内処理、送信先なし、無料を画面で確認して利用を許可した。組み込みの
+  合成サンプルを実行し、`external_submission: false` / `revenue_verified: false`の結果と完了履歴1件を確認した。
+- 非空状態をもう一度OS A/B/data + Wallet/Game/Cの完全backupへ復元し、新端末`launch-restored-2`で
+  インストール済み1件、完了履歴1件、同じ結果を画面で確認した。復元前後とも画面内電源操作で終了し、
+  QMPの`guest: true` SHUTDOWNを確認した。最終状態はOS停止、Game writer停止。
 - rc2は初回拒否前に任意Game sandboxを開始していた。今回作成したsandbox/VMは正常停止して残存を解消し、
   今後の候補ではOS/display preflight成功後にGameを開始するよう修正・回帰試験した。
 
 ## GitHubと実環境の追加確認
 
-- OSバックエンド変更はbranch `codex/os-backend-launch-20260912` の
-  `d66c67440700a2c7234472d80b80c27633039fe2`としてGitHubへpush済み。
-- PR #14でWeb `verify`、native partitions 5件、native `source-tests`の全7 checkがPASS。
-- 本人限定Sitesはversion 12、source `1763deb56990bc7dc380c72a5b6043cb089c21a0`、
-  deployment `succeeded`、access mode `custom` / current user `owner`。
-- 実ブラウザで`/chat`が最近の処理まで、`/settings`がtool controls・過去30日の利用記録まで
-  読み込みを完了し、consoleのerror/warnは0件。初期化直後の未認証GETは401で安全に失敗し、
-  認証成立後の本人データ読み出しは成功した。
-- v12はこのOSバックエンドcommitの反映証拠ではない。統合担当がv12以降のsourceへ取り込み、
-  新しいversionを配信してから同一treeの実環境合格に更新する。
+- OSバックエンド変更はbranch `codex/os-backend-launch-20260912` とPR #14へ保存した。
+  runtime最終変更`1e3d71c`を含む`daef7b2`で、Web `verify`、native partitions 4件、native support、
+  source-tests、release signing fixtureの全8 checkがPASSした。以後の変更は監査記録のみ。
+- 統合担当branch `codex/os-backend-launch-prod-integrated-20260912` は
+  `4b3d85aaa613f223519a70f0b973a6befa3f80e4`でremote一致・clean。OS起動順修正とSites認証修正を含む。
+- 本人限定Sitesはversion 16、source `8047d120415689a6880dc7c6a513874ea335a33a`、
+  publish deployment `succeeded`、environment revision 2、access mode `custom`、current user `owner`、
+  external visitor 0。一般公開への変更はしていない。
+- 実ブラウザで`/chat`が役割・最近の処理・入力欄まで、`/settings`が4 tool controls・過去30日の利用記録まで、
+  `/fund`が6プランと実収益/送金未接続表示まで読み込みを完了した。`/chat`から旧hashのfund静的chunkへの
+  GET 1件が404になったが、`/fund`直アクセスは現行bundleで正常表示した。P0阻害ではなくP1で監視する。
 
 ## 起動・監視・復旧
 
@@ -114,9 +120,9 @@ rock-hub --state .state/hub --registry systems/rock-star-os/examples/registry
 
 ## 現在のローンチ判定
 
-**BLOCKED_FOR_GENERAL_LAUNCH**。ローカルバックエンドP0と、未改変rc2の配布物完全性→fresh install→
-actual start→正常終了→完全保存→復元→復元端末の起動/正常終了は通った。ただしrc2は今回の
-バックエンド/Game起動順修正を含まず、本人限定Sites v12も別sourceである。production署名、製品許諾、
-同一最終treeの再配布も未完了。最短経路は今回の修正をlaunch-candidateへ統合し、新候補を再buildして
-D0〜D6受入し、その同じsourceを本人限定Sitesへ反映すること。公開開発鍵・合成データに限る現rc2の
-QEMU Developer Preview利用フローは実証済みだが、一般公開・実資金・実機の根拠にはしない。
+**LAUNCHABLE_OWNER_PRIVATE_DEVELOPER_PREVIEW / BLOCKED_FOR_GENERAL_LAUNCH**。
+owner-only Sites v16と、公開開発鍵・合成データだけを使うQEMU Developer Previewは利用可能。
+ローカルbackendの起動/認証/署名package実行/安全終了/再起動、rc2のfresh install、実UI処理、正常終了、
+非空完全backup/restore、復元後起動と保存終了まで通った。ただしrc2は今回のbackend/Game起動順修正を含まない
+既存候補であり、Sites sourceも別の配備repo SHAである。production署名、製品LICENSE/第三者許諾、
+同一最終sourceからの新候補buildとD0〜D6再受入、実機、一般公開、実資金は未完了のため、これらへ拡大しない。
