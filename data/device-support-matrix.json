@@ -51,7 +51,7 @@
       "exactModelRequired": false,
       "physicalDevice": false,
       "flashReady": false,
-      "notes": "Device-independent Android integration target for common Hub, Wallet, Game and update contracts."
+      "notes": "Device-independent Android integration target for common Sky, Wallet, Game and update contracts."
     },
     {
       "id": "pixel-7-panther",

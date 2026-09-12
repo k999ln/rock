@@ -39,7 +39,7 @@ k999ln/rock の開発を引き継ぎ、これから8時間、実装・統合・�
 
 完成判定にはコード・受入試験に加え、次の説明ができることを含めます。「誰が、いま何に困り、この1.0でどの操作が減り、結果と費用をどこで確認し、失敗からどう戻り、もう一度使う理由が何か」。発表もこの順番で構成し、実装項目の列挙だけで終えません。
 
-具体的な体験は `docs/os-hub-wallet-game-design.md` の確定事項に合わせます。Hubでは商品選択→PC/cloud/端末・契約確認→許可と費用→実行→結果・失敗・停止/再開までを通し、意味のない通知を増やしません。ゲーム作者にはサンプルから合成交換・履歴・エラー原因確認までの導入しやすさを提供します。達成演出は見送りという確定判断を維持し、旧文書の提案から実装対象へ戻さないでください。
+具体的な体験は `docs/os-sky-wallet-game-design.md` の確定事項に合わせます。Hubでは商品選択→PC/cloud/端末・契約確認→許可と費用→実行→結果・失敗・停止/再開までを通し、意味のない通知を増やしません。ゲーム作者にはサンプルから合成交換・履歴・エラー原因確認までの導入しやすさを提供します。達成演出は見送りという確定判断を維持し、旧文書の提案から実装対象へ戻さないでください。
 
 Git内のpilot目標（初見10人中8人の初回完了、操作時間中央値30%削減、7日間で10人中6人の自主的再利用等）は**提案された検証目標**です。8時間で未実施の外部調査や7日間の実績を作ったことにはせず、今回は内部の同条件比較と、後で測定できる記録/手順を用意します。実利用者への連絡、外部募集、広告購入は実行権限を確認して扱います。
 
@@ -216,7 +216,7 @@ mainへのmergeが未承認でも、検証済みrelease branch/commitを固定�
 
 作成時の主な確認先:
 
-- [開発担当への指示（AGENTS.md）](https://github.com/k999ln/rock/blob/91debc28174d87be023b789980d2c46112a66979/AGENTS.md)、[Hub・Wallet・Gameの確定方針と体験設計](https://github.com/k999ln/rock/blob/91debc28174d87be023b789980d2c46112a66979/docs/os-hub-wallet-game-design.md)
+- [開発担当への指示（AGENTS.md）](https://github.com/k999ln/rock/blob/91debc28174d87be023b789980d2c46112a66979/AGENTS.md)、[当時のHub・Wallet・Gameの確定方針と体験設計](https://github.com/k999ln/rock/blob/91debc28174d87be023b789980d2c46112a66979/docs/os-hub-wallet-game-design.md)
 - [8原則を適用した製品・事業・開発設計](https://github.com/k999ln/rock/blob/91debc28174d87be023b789980d2c46112a66979/docs/rockstaros-1.0-strategy.md) — 開発の判断軸。とくに「製品の核」「8原則から設計への変換」「最初の商品と一周の利用体験」「最初の検証計画」「CM・流通・継続運用」を適用する。
 - [PR #2](https://github.com/k999ln/rock/pull/2)、[同じSHAのWeb CI](https://github.com/k999ln/rock/actions/runs/34430523173)、[native CI](https://github.com/k999ln/rock/actions/runs/34430523094)、[Android CI](https://github.com/k999ln/rock/actions/runs/34430523081)
 - [最新CHECKPOINT](https://github.com/k999ln/rock/blob/91debc28174d87be023b789980d2c46112a66979/CHECKPOINT.md)、[製品ベース](https://github.com/k999ln/rock/blob/91debc28174d87be023b789980d2c46112a66979/docs/product-baseline.md)、[段階ゲート](https://github.com/k999ln/rock/blob/91debc28174d87be023b789980d2c46112a66979/data/project-status.json)

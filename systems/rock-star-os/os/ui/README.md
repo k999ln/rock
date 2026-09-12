@@ -1,4 +1,4 @@
-# Native Rock star os Hub
+# Native Rock star os Sky
 
 ## Startup readiness candidate
 
@@ -115,7 +115,7 @@ have not been verified by this component.
   replacement. Enter adds a newline to tool text.
 - Ctrl+Enter runs the selected tool. Ctrl+R refreshes state. Escape leaves an
   input field, dismisses a confirmation, or returns from a detail screen.
-- Hub search filters the actual catalog's ID, name and description locally.
+- Sky search filters the actual catalog's ID, name and description locally.
   ASCII matching ignores letter case; other UTF-8 text uses exact substring
   matching. Queries are limited to 128 bytes and are never sent to the server.
   Enter finishes search entry, and `消す` restores the full local catalog.
@@ -203,7 +203,7 @@ the authoritative snapshot rather than inventing a local installed state or
 balance. Errors are shown directly. State is refreshed every two seconds.
 On a remote result page, reads alternate between its status and the snapshot.
 
-On Hub, `状態更新` reads the local snapshot; `カタログ更新` explicitly requests a
+On Sky, `状態更新` reads the local snapshot; `カタログ更新` explicitly requests a
 signed catalog refresh from the backend's configured source. The UI has no
 URL field, direct HTTPS code or automatic download trigger. It reads
 `snapshot.registry` fields `configured`, `can_refresh`, `status`, `source_label`,
@@ -259,7 +259,7 @@ the primary button is below the content area.
    the pointer run button is approximately **(360, 786)**.
 5. Wait for the actual job to finish. The result screen must show `完了` only
    when the backend job is `succeeded`/`completed`, with the actual output.
-6. Bottom navigation centers are Hub **(114, 913)**, installed tools
+6. Bottom navigation centers are Sky **(114, 913)**, installed tools
    **(278, 913)**, history **(442, 913)** and Wallet **(606, 913)**. History opens
 actual jobs; Wallet initially shows the actual simulator zero balance.
 
@@ -289,7 +289,7 @@ Its default sequence uses the coordinates above, real key input and Backspace,
 then captures the result/history/Wallet screens. It does not start or stop the
 VM, alter disks, run monitor shell commands, or infer successful installation or
 execution merely because input was sent. The replay report explicitly leaves
-`application_success` unasserted; correlate screenshots with the actual Hub
+`application_success` unasserted; correlate screenshots with the actual Sky
 receipts. `--steps FILE.json` accepts an explicit array of `capture`, `click`,
 `keys`, `type`, `wait` and `wheel` actions for changed catalog/layout state.
 `--validate-only` checks the action schema without connecting to QMP.
@@ -325,7 +325,7 @@ Kernel and rootfs SHA-256 values are checked before and after the run.
 
 The guest observer performs **only** `snapshot`, `job.result` and fixed-path
 SQLite `mode=ro` reads. It never invokes install, approve, run, health probes or
-Wallet mutations. Starting with empty Hub state, it waits for the real GUI
+Wallet mutations. Starting with empty Sky state, it waits for the real GUI
 audit sequence and checks the exact package hash, typed input hash and result,
 the three durable UI request receipts, service UID/GID and `no_new_privs`, root
 and data mount protections, and an unchanged simulator Wallet snapshot.
@@ -347,7 +347,7 @@ read-only `debugfs`, compares it to serial evidence and rechecks its contents.
 Sending input or capturing a PNG alone never produces a PASS. On failure the
 host keeps `boot.log`, `report.json`, data image and any available screenshots.
 
-Nine captures show the Hub, tool details, permission review, approval, editor,
+Nine captures show the Sky, tool details, permission review, approval, editor,
 real keyboard input, result, history and unchanged Wallet. Inspect these actual
 guest framebuffer images to assess layout and rendering. A PASS proves this
 bounded QEMU native flow; it does not prove physical BlackBerry compatibility,
@@ -444,7 +444,7 @@ rendering exits 0. Other initialization/render failures exit 1, usage errors 2.
 
 `preview_live.py` can run only as root in a disposable Linux test VM. It creates
 temporary UID-1002 platform and UID-1003 Wallet instances from the real service
-classes, using the signed embedded catalog and the existing host Hub recipe
+classes, using the signed embedded catalog and the existing host Sky recipe
 interpreter. It verifies live install/approval/run/update/rollback/uninstall and
 captures the same native renderer. Its evidence explicitly says this is a
 Debian renderer integration check, **not a Rock OS boot or sandbox test**. Actual
@@ -595,7 +595,7 @@ retains the same request for retry; a matching accepted key/operation/boot recei
 is displayed explicitly as **acceptance, not confirmed completion**. Returning
 through the device page preserves the original Tool/detail back destination.
 The new header action is added last to the focus order, preserving existing
-Hub/detail keyboard sequences and Wallet control coordinates.
+Sky/detail keyboard sequences and Wallet control coordinates.
 
 For the independent real guest test, install `guest-ui-power-evidence.py` as
 `/usr/libexec/rock-ui-power-evidence.py` beside the base observer and start it as
@@ -617,7 +617,7 @@ status reads; it sends no host reset/shutdown operation. It independently
 requires one guest RESET and one guest SHUTDOWN event, both kernel completion
 markers, exactly two durable GUI requests with different keys and boot IDs,
 unchanged Wallet/Tools, original immutable OS hashes and a clean ext4 data
-filesystem. Fixed post-shutdown Hub, Wallet and membership database tables
+filesystem. Fixed post-shutdown Sky, Wallet and membership database tables
 must still have zero business actions, with independent SQLite integrity checks;
 this extends the snapshot comparison through the final shutdown.
 Eight original framebuffer captures cover the confirmation,
@@ -685,7 +685,7 @@ A local queue receipt is shown as acceptance only. Remote results require an
 actual status object, matching receipt identity/endpoint/target, returned output
 and the fixed isolated-executor evidence (including denied sockets and no Wallet
 path visibility). Incomplete proof stays an explicit error. Remote history is
-separate from local Hub jobs and Wallet sales.
+separate from local Sky jobs and Wallet sales.
 Unavailable responses retain the entire unresolved prepare/submit/cancel
 payload. Read-only status responses cannot resolve a mutation sharing the job
 key, and two cancellations with different cancellation keys are distinct.

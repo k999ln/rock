@@ -1,8 +1,47 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "多機種対応を共通Core＋機種別Device Support Packageへ固定",
-  "nextAction": "多機種対応の正本はdocs/device-support-architecture.mdとdata/device-support-matrix.json。まずCuttlefishでAndroid共通Coreの接続・更新・データ移行契約を検証し、並行して所有端末を読取り専用で確認してPixel 7/pantherまたはPixel 10/frankelの最初のDSPを一つ選ぶ。その後、別途予算承認を得た専用Linuxで全source buildを行う。BlackBerryは正確なmodelのunlock/vendor/recovery確認後に個別判断し、iPhone/iPadはclient-onlyとする。cloud課金、実機flash、production署名、一般公開、main mergeは未承認・未実施。",
+  "milestone": "SkyをToB掲載とToCタイムライン取得・MCP接続の両面へ拡張",
+  "nextAction": "SkyのToB掲載申請とToC Timelineを基礎に、隔離preflight、MCP 2025-11-25 initialize・capability negotiation・tools/list、OAuth、公式／private Registry取込、審査画面、公開revision、接続同意、実行receiptまでをprivate開発環境で縦断実装する。出願候補の詳細は公開repoへpushせず、発明者・先行技術・claim方針を専門家と確認する。cloud課金、実機flash、production署名、一般公開、main merge、Sites再deploy、特許出願は未承認・未実施。",
   "tasks": [
+    {
+      "id": "SKY01",
+      "title": "旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化",
+      "status": "done",
+      "dependsOn": [
+        "B01"
+      ],
+      "evidence": [
+        "docs/sky.md",
+        "components/sky-workspace.tsx",
+        "scripts/check-sky.mjs"
+      ]
+    },
+    {
+      "id": "SKY02",
+      "title": "ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装",
+      "status": "done",
+      "dependsOn": [
+        "SKY01"
+      ],
+      "evidence": [
+        "app/sky/publish/page.tsx",
+        "components/sky-publisher-form.tsx",
+        "app/api/sky/submissions/route.ts",
+        "tests/sky-submission.test.mjs"
+      ]
+    },
+    {
+      "id": "SKY03",
+      "title": "MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存",
+      "status": "done",
+      "dependsOn": [
+        "SKY01"
+      ],
+      "evidence": [
+        "docs/sky-mcp-architecture.md",
+        "systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md"
+      ]
+    },
     {
       "id": "R01",
       "title": "4参照元の採用判断と事業方針の固定",
@@ -204,7 +243,7 @@
     },
     {
       "id": "B01",
-      "title": "Hub＋Walletの製品ベース・branch監査・プロンプト規約を保存",
+      "title": "Sky＋Walletの製品ベース・branch監査・プロンプト規約を保存",
       "status": "done",
       "dependsOn": [
         "G01"
@@ -233,7 +272,7 @@
     },
     {
       "id": "B02",
-      "title": "既存商品のHub実利用と不便の改善・実行/料金/権利の条件拡張",
+      "title": "既存商品のSky実利用と不便の改善・実行/料金/権利の条件拡張",
       "status": "in_progress",
       "dependsOn": [
         "B04"
@@ -259,7 +298,7 @@
     },
     {
       "id": "B05",
-      "title": "Wallet連携基礎を使ったHub縦断再試験・PC比較と未実証の端末価値を記録",
+      "title": "Wallet連携基礎を使ったSky縦断再試験・PC比較と未実証の端末価値を記録",
       "status": "in_progress",
       "dependsOn": [
         "B02"
@@ -419,7 +458,7 @@
     },
     {
       "id": "N04",
-      "title": "BlackBerry実機だけでHub取得・実行・更新・復旧",
+      "title": "BlackBerry実機だけでSky取得・実行・更新・復旧",
       "status": "planned",
       "dependsOn": [
         "N01",
@@ -503,7 +542,7 @@
     },
     {
       "id": "LCH04",
-      "title": "Sites履歴のコード統合・新規本人限定サイト・Hub改善",
+      "title": "Sites履歴のコード統合・新規本人限定サイト・Sky改善",
       "status": "in_progress",
       "dependsOn": [],
       "evidence": [
@@ -573,7 +612,7 @@
     {
       "id": "B02-NATIVE",
       "task": "B02",
-      "title": "既存native商品1件をHubで実処理・保存",
+      "title": "既存native商品1件をSkyで実処理・保存",
       "status": "done",
       "dependsOn": [
         "V01-BOOT"

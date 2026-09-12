@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | `native_os` | RockstarOSのOS imageを対象環境で起動する。物理端末は機種別受入が必要 | QEMUは内部限定受入、Pixelは候補のみ |
 | `gsi_experimental` | Trebleとunlock条件を満たすAndroidへ機種別に試験する | 汎用Androidは計画段階 |
-| `client_only` | 既存OSを置換せず、最小権限clientからHub・Wallet・remote jobを利用する | iOS/iPadOS、現時点のBlackBerry Android |
+| `client_only` | 既存OSを置換せず、最小権限clientからSky・Wallet・remote jobを利用する | iOS/iPadOS、現時点のBlackBerry Android |
 | `unsupported` | 安全な導入・更新・復旧経路がないため製品対応を表示しない | BBOS／BlackBerry 10の旧端末 |
 
 仮想環境の`native_os`合格を、物理スマホの合格へ移さない。`client_only`はRockstarOSのサービス体験を提供できるが、root、OS更新、端末全体の隔離やハードウェア制御を提供できるとは表示しない。
@@ -19,7 +19,7 @@
 
 ```text
 RockstarOS Core
-├── Hub / Wallet / Game / SDK
+├── Sky / Wallet / Game / SDK
 ├── owner・同意・料金・台帳・取消・復旧契約
 ├── 安定したDevice Capability API
 ├── 版付きデータ移行とbackup/restore
@@ -60,7 +60,7 @@ Coreは機種名を条件分岐に埋め込まず、版付きCapability APIか�
 3. source・vendor・firmware・kernel・DSPの版と再配布条件を固定。
 4. 開発署名imageをbuildし、hashとbuild logを保存。
 5. boot、画面、入力、保存、USB、通信、radio、camera、audio、充電、suspend、thermalを実測。
-6. Hub／Wallet／Gameのowner・同意・費用・台帳・停止・復旧を実測。
+6. Sky／Wallet／Gameのowner・同意・費用・台帳・停止・復旧を実測。
 7. 署名OTA、更新失敗、旧slot rollback、データmigrationを実測。
 8. 純正状態へ戻し、端末が起動できることを確認。
 9. production鍵、license、配布、サポート期間を別途承認。

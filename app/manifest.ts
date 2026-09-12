@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'RockstarOS 自動化Hub',
+    name: 'RockstarOS Sky',
     short_name: 'RockstarOS',
     description: 'ツールを選び、実行して、結果と収支の記録を確認。',
     start_url: '/',

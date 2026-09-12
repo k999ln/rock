@@ -31,6 +31,12 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
     requireValue(documents.nextPrompt.includes(data.auditInputs[field]), `${field}: プロンプトの起点SHAがありません`);
   }
   requireValue(data.supplyRoleExclusivity === 'unspecified', 'tobの供給元/独占性は未確定です');
+  requireValue(data.sky?.displayName === 'Sky', '自動化の利用者向け名称はSkyです');
+  requireValue(data.sky?.legacyInternalName === 'hub', '既存データ/API用の内部hub互換名が必要です');
+  requireValue(data.primaryCapabilities?.includes('sky-automation-control'), 'Skyの制御能力が必要です');
+  const skyInventory = resolve(root, data.sky?.inventory || '');
+  requireValue(!relative(root, skyInventory).startsWith('..') && read(skyInventory).includes('Web / PCで現在使える4件'),
+    'Skyの役割と収録ツールの正本が必要です');
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');
   requireValue(data.gameExchange?.atmDependency === false, 'ゲーム交換をATM必須にしないでください');
   requireValue(data.marketExploration?.runtimeAuthorized === false && data.marketExploration?.realValueEnabled === false, '市場案は検討のみで実装・実資金未承認です');

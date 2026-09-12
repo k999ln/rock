@@ -13,6 +13,7 @@ import {
   Layers3,
   ListChecks,
   Monitor,
+  PackagePlus,
   Star,
   Wallet,
 } from 'lucide-react';
@@ -27,7 +28,8 @@ import {
 } from '@/components/ui/sidebar';
 
 const navigation = [
-  { href: '/', label: '自動化Hub', Icon: Grid2X2 },
+  { href: '/', label: 'Sky', Icon: Grid2X2 },
+  { href: '/sky/publish', label: 'Skyに掲載', Icon: PackagePlus },
   { href: '/work', label: '仕事・履歴', Icon: ListChecks },
   { href: '/wallet', label: 'Wallet', Icon: Wallet },
 ];

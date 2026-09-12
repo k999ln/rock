@@ -2,7 +2,7 @@
 
 # Rock star os — OS本体の開発
 
-このディレクトリは、Linuxカーネルとroot filesystemを生成するOS開発用です。既存のPython Hubとは独立して起動する構成です。最初の対象はQEMU `virt` のARM64仮想端末で、BlackBerry機種は未定です。このイメージをBlackBerryへ書き込むことはできません。
+このディレクトリは、Linuxカーネルとroot filesystemを生成するOS開発用です。既存のPython Skyとは独立して起動する構成です。最初の対象はQEMU `virt` のARM64仮想端末で、BlackBerry機種は未定です。このイメージをBlackBerryへ書き込むことはできません。
 
 ## 最初の成果と範囲
 
@@ -12,9 +12,9 @@
 - 端末内IPCで状態確認と有限の文章整形を実行し、完了件数をデータ領域へ永続化する。
 - 仮想端末をネットワークなしで起動し、再起動・許可されていないユーザー・入力制限を検証する。
 
-0.1起動基盤は2boot・権限・永続化PASSです。0.2ではnative Hub（C/Cairo、直接framebuffer）、UID分離したplatformとWallet simulator、bubblewrap/seccompの有限Tool隔離、署名HTTPS取得、実TLS runner、A/B stage0を実装し、Linux6.18.50のguest統合・native入力・A/B8+13boot・Wallet/ATMを限定条件で実証しています。実行入口は`verify-platform.py`、`update/verify-qemu.py`、`ui/`のGUI検証です。最新PASS/FAILは実reportを参照し、実装済みと実証済みを区別します。BlackBerry用BSP、実Wallet・ATMは未完了。Toolの成功を収益として扱いません。
+0.1起動基盤は2boot・権限・永続化PASSです。0.2ではnative Sky（C/Cairo、直接framebuffer）、UID分離したplatformとWallet simulator、bubblewrap/seccompの有限Tool隔離、署名HTTPS取得、実TLS runner、A/B stage0を実装し、Linux6.18.50のguest統合・native入力・A/B8+13boot・Wallet/ATMを限定条件で実証しています。実行入口は`verify-platform.py`、`update/verify-qemu.py`、`ui/`のGUI検証です。最新PASS/FAILは実reportを参照し、実装済みと実証済みを区別します。BlackBerry用BSP、実Wallet・ATMは未完了。Toolの成功を収益として扱いません。
 
-現在の文章整形は、IPC・入力上限・永続化を検証する診断用処理です。製品のToolをOSへ大量に直接組み込む方針ではありません。製品のToolは独立した配布パッケージとし、標準Hubから導入するという要求を維持します。
+現在の文章整形は、IPC・入力上限・永続化を検証する診断用処理です。製品のToolをOSへ大量に直接組み込む方針ではありません。製品のToolは独立した配布パッケージとし、標準Skyから導入するという要求を維持します。
 
 ## ビルド
 

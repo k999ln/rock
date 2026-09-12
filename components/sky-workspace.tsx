@@ -10,10 +10,13 @@ import {
   Check,
   ChevronRight,
   CircleHelp,
+  Clock3,
   FileCheck2,
   FilePenLine,
   Laptop,
   Link2,
+  PackagePlus,
+  PlugZap,
   Search,
   ShieldCheck,
   X,
@@ -40,7 +43,7 @@ const icons = {
 };
 const filters = ['すべて', '記事制作', '案件・納品支援'] as const;
 
-export default function HubWorkspace() {
+export default function SkyWorkspace() {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<string>('すべて');
   const [selected, setSelected] = useState<Automation | null>(null);
@@ -56,20 +59,71 @@ export default function HubWorkspace() {
   return (
     <WorkspaceShell
       running={running}
-      title="自動化Hub"
+      title="Sky"
       onConnect={() => setDeviceOpen(true)}
     >
       <div className="rock-page-heading">
         <div>
-          <p className="rock-eyebrow">YOUR AUTOMATION HUB</p>
-          <h1>次の仕事を、ここから。</h1>
-          <p>ツールを選んで、小さな作業をひとつ片づけよう。</p>
+          <p className="rock-eyebrow">SKY · AUTOMATION CONTROL</p>
+          <h1>自動化を選ぶ、動かす、止める。</h1>
+          <p>Skyなら、ツールの条件確認から実行結果まで一か所で追えます。</p>
         </div>
         <Link href="/work" className="rock-button rock-button-dark">
           仕事を進める
           <ArrowRight size={17} />
         </Link>
       </div>
+      <section className="rock-sky-map" aria-labelledby="sky-map-title">
+        <div className="rock-sky-map-copy">
+          <p className="rock-eyebrow">WHAT SKY DOES</p>
+          <h2 id="sky-map-title">ツール置き場ではなく、実行を管理する場所。</h2>
+          <p>
+            Skyは、自動化ツールごとに必要な権限・料金・実行場所を見せ、
+            同意した仕事だけを端末・PC・クラウドへ送り、停止と結果確認までつなぎます。
+          </p>
+        </div>
+        <ol className="rock-sky-flow" aria-label="Skyで自動化を使う流れ">
+          <li>
+            <span>1</span>
+            <strong>探す</strong>
+            <small>目的から選ぶ</small>
+          </li>
+          <li>
+            <span>2</span>
+            <strong>確認</strong>
+            <small>権限・料金</small>
+          </li>
+          <li>
+            <span>3</span>
+            <strong>届ける</strong>
+            <small>端末・PC・Cloud</small>
+          </li>
+          <li>
+            <span>4</span>
+            <strong>制御</strong>
+            <small>実行・停止</small>
+          </li>
+          <li>
+            <span>5</span>
+            <strong>受け取る</strong>
+            <small>結果・記録</small>
+          </li>
+        </ol>
+        <div className="rock-sky-inventory" aria-label="Skyの現在の収録状況">
+          <div>
+            <strong>{readyTools.length}</strong>
+            <span>Web / PCで使用可能</span>
+          </div>
+          <div>
+            <strong>{catalog.length - readyTools.length}</strong>
+            <span>OSS導入候補</span>
+          </div>
+          <div>
+            <strong>6</strong>
+            <span>native OS内蔵・9バージョン</span>
+          </div>
+        </div>
+      </section>
       <div className="rock-start-grid">
         <section className="rock-first-task" aria-labelledby="first-task-title">
           <div className="rock-feature-tag">
@@ -143,11 +197,88 @@ export default function HubWorkspace() {
           </Link>
         </section>
       </div>
+      <section className="sky-timeline" aria-labelledby="sky-timeline-title">
+        <div className="sky-timeline-heading">
+          <div>
+            <p className="rock-eyebrow">SKY TIMELINE</p>
+            <h2 id="sky-timeline-title">
+              流れてきた自動化を、状態を見て接続。
+            </h2>
+            <p>使える、接続が必要、導入候補。違いを隠さず時系列で並べます。</p>
+          </div>
+          <Link href="/sky/publish" className="rock-button rock-button-subtle">
+            <PackagePlus size={17} />
+            ツールを掲載
+          </Link>
+        </div>
+        <div className="sky-timeline-feed">
+          <article className="sky-timeline-item is-ready">
+            <span className="sky-timeline-dot">
+              <Check size={15} />
+            </span>
+            <div className="sky-timeline-copy">
+              <div>
+                <time>今すぐ</time>
+                <span>ブラウザで使用可能</span>
+              </div>
+              <h3>出典整理ツール</h3>
+              <p>外部APIへ本文を送らず、この画面ですぐ実行できます。</p>
+            </div>
+            <button onClick={() => setSelected(recommended)}>
+              使う
+              <ArrowRight size={16} />
+            </button>
+          </article>
+          <article className="sky-timeline-item is-connect">
+            <span className="sky-timeline-dot">
+              <PlugZap size={15} />
+            </span>
+            <div className="sky-timeline-copy">
+              <div>
+                <time>接続後</time>
+                <span>PCで使用可能</span>
+              </div>
+              <h3>納品記録の照合</h3>
+              <p>接続アプリを起動し、手元のPCで処理します。</p>
+            </div>
+            <button onClick={() => setDeviceOpen(true)}>
+              PC接続
+              <ArrowRight size={16} />
+            </button>
+          </article>
+          <article className="sky-timeline-item is-review">
+            <span className="sky-timeline-dot">
+              <Clock3 size={15} />
+            </span>
+            <div className="sky-timeline-copy">
+              <div>
+                <time>審査前</time>
+                <span>OSS導入候補</span>
+              </div>
+              <h3>faster-whisper</h3>
+              <p>音声文字起こし候補。Skyからの取得・実行はまだできません。</p>
+            </div>
+            <button
+              onClick={() =>
+                setSelected(
+                  catalog.find((tool) => tool.id === 'faster-whisper') ?? null,
+                )
+              }
+            >
+              詳細
+              <ArrowRight size={16} />
+            </button>
+          </article>
+        </div>
+        <p className="sky-timeline-note">
+          MCP掲載ツールは、接続先・権限・料金・データ利用をSkyが確認してから、このタイムラインへ追加します。
+        </p>
+      </section>
       <section className="rock-tool-section" aria-labelledby="tools-title">
         <div className="rock-section-heading">
           <div>
             <h2 id="tools-title">
-              使えるツール<span>{readyTools.length}</span>
+              Skyで今使えるツール<span>{readyTools.length}</span>
             </h2>
             <p>用途に合わせて、必要なものから。</p>
           </div>
@@ -254,7 +385,7 @@ export default function HubWorkspace() {
           <div>
             <span className="rock-eyebrow">THE NEXT WORKSPACE</span>
             <h2>RockstarOSを、Macの仮想端末で。</h2>
-            <p>Hub・合成Wallet・Gameの操作例と、開発版の導入案内。</p>
+            <p>Sky・合成Wallet・Gameの操作例と、開発版の導入案内。</p>
           </div>
           <ArrowUpRight size={23} />
         </Link>
@@ -274,7 +405,7 @@ export default function HubWorkspace() {
         <summary>
           追加のOSS導入候補を見る{' '}
           <span>
-            {catalog.length - readyTools.length}件 · Hubからの実行は未対応
+            {catalog.length - readyTools.length}件 · Skyからの実行は未対応
           </span>
         </summary>
         <div>

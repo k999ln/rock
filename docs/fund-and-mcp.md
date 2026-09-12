@@ -1,6 +1,6 @@
 # Rock starファンドとワンボタン実行
 
-本書は旧Web試算/MCPの記録。現行の中心は [製品ベース](product-baseline.md)のHub＋Wallet。nativeのWallet/月888 centsと以下の未接続記述を混同せず [差分監査](progress-audit-20260909.md)を参照する。ホスティング制限の出典は当時の判断で、現在の提供可否は採用時に再確認する。
+本書は旧Web試算/MCPの記録。現行の中心は [製品ベース](product-baseline.md)のSky＋Wallet。nativeのWallet/月888 centsと以下の未接続記述を混同せず [差分監査](progress-audit-20260909.md)を参照する。ホスティング制限の出典は当時の判断で、現在の提供可否は採用時に再確認する。
 
 ## 今回の提供範囲
 
@@ -49,12 +49,12 @@ MCP仕様: https://modelcontextprotocol.io/specification/2025-11-25/basic/transp
 Codex設定: https://learn.chatgpt.com/docs/extend/mcp?surface=cli
 
 
-## Hub / retained plans and operations
+## Sky / retained plans and operations
 
-The standard homepage is the automation Hub. The existing four Mr. tools open directly, with prerequisites, processing location, output review and file export. `/fund` retains saved strategy presets, allocation and cost assumptions without changing their storage contract. It never purchases an investment.
+The standard homepage is the automation Sky. The existing four Mr. tools open directly, with prerequisites, processing location, output review and file export. `/fund` retains saved strategy presets, allocation and cost assumptions without changing their storage contract. It never purchases an investment.
 
 The preserved Sites execution lifecycle at `/api/jobs` authorizes every tool before actual execution. The workflow at `/work` uses `/api/work-jobs` and its existing revision/idempotent event contract. The same tool execution enters tool_runs once; the workflow event is separate progress, not another execution.
 
 `/activity` shows execution history. `/wallet` keeps manual JPY bookkeeping marked unverified, with append-only reversals. `/settings` exposes tool admission controls and verified PC connection records. These are not native Wallet balances or financial provider connections.
 
-PWA metadata and service-worker upgrading are retained. Cache v3 excludes all APIs, sign-in/out paths, RSC requests, private/no-store responses; cacheable static assets and successful public Hub shell only. Published user identity is still enforced by the Sites gateway. Local validation does not establish live Sites access or migration acceptance.
+PWA metadata and service-worker upgrading are retained. Cache v3 excludes all APIs, sign-in/out paths, RSC requests, private/no-store responses; cacheable static assets and successful public Sky shell only. Published user identity is still enforced by the Sites gateway. Local validation does not establish live Sites access or migration acceptance.
