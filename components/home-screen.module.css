@@ -167,7 +167,6 @@
 .chat { background: linear-gradient(145deg, #5cf7a1, #0cbe7a 58%, #08785d); }
 .wallet { background: linear-gradient(145deg, #3d414a, #171920 60%, #050608); }
 .market { background: linear-gradient(145deg, #62adff, #176ee9 58%, #213f9f); }
-.settings { background: linear-gradient(145deg, #9aa2ad, #545d69 58%, #303640); }
 .settings { background: linear-gradient(145deg, #b6bec8, #68717c 58%, #313740); }
 
 .home[data-editing='true'] .appIcon { animation: wiggle 150ms ease-in-out infinite alternate; }
@@ -194,6 +193,9 @@
   inset: auto 0 max(8px, env(safe-area-inset-bottom));
   display: grid;
   place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 .homeIndicator span { width: min(132px, 34vw); height: 5px; border-radius: 999px; background: rgba(255,255,255,.84); }
 
