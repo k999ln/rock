@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, type SyntheticEvent } from 'react';
+import { useState, type CSSProperties, type SyntheticEvent } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
   ArrowUpRight,
+  Activity,
   BadgeCheck,
   BookOpenCheck,
   BriefcaseBusiness,
@@ -12,12 +13,13 @@ import {
   FilePenLine,
   Laptop,
   Link2,
-  MessageCircle,
   PackagePlus,
+  Radio,
   Search,
   Send,
   ShieldCheck,
   SlidersHorizontal,
+  Sparkles,
   X,
   Zap,
   type LucideIcon,
@@ -189,10 +191,18 @@ export default function SkyWorkspace() {
           <header className="sky-feed-header">
             <div className="sky-feed-title-row">
               <div>
-                <h1 id="sky-feed-title">Sky</h1>
-                <p>頼むだけ。合う役が、その仕事を進めます。</p>
+                <span className="sky-feed-kicker">
+                  <Radio size={13} aria-hidden="true" />
+                  LIVE AUTOMATION
+                </span>
+                <h1 id="sky-feed-title">Sky Timeline</h1>
+                <p>やりたいことを送ると、担当の役がすぐ動きます。</p>
               </div>
-              <Link href="/sky/publish" aria-label="Skyにツールを掲載">
+              <Link
+                href="/sky/publish"
+                aria-label="Skyにツールを掲載"
+                className="sky-publish-orb"
+              >
                 <PackagePlus size={20} />
               </Link>
             </div>
@@ -218,10 +228,19 @@ export default function SkyWorkspace() {
             aria-labelledby="sky-assistant-title"
           >
             <div className="sky-assistant-avatar" aria-hidden="true">
-              S
+              <span>S</span>
             </div>
             <div className="sky-assistant-body">
-              <h2 id="sky-assistant-title">Skyに頼む</h2>
+              <div className="sky-assistant-heading">
+                <div>
+                  <span>SKY ROUTER</span>
+                  <h2 id="sky-assistant-title">何を進める？</h2>
+                </div>
+                <span className="sky-router-live">
+                  <Activity size={14} aria-hidden="true" />
+                  待機中
+                </span>
+              </div>
               <form className="sky-assistant-composer" onSubmit={submitRequest}>
                 <input
                   value={requestText}
@@ -233,15 +252,28 @@ export default function SkyWorkspace() {
                   disabled={!requestText.trim()}
                   aria-label="Skyへ依頼を送る"
                 >
-                  <Send size={17} />
+                  <Send size={18} />
+                  <span>送る</span>
                 </button>
               </form>
+              <div className="sky-routing-flow" aria-label="Skyの実行手順">
+                <span>依頼</span>
+                <i aria-hidden="true" />
+                <span>担当を選択</span>
+                <i aria-hidden="true" />
+                <strong>ツールを開く</strong>
+              </div>
               <div className="sky-role-list" aria-label="Skyの役割">
                 {skyRoles.map((role) => {
                   const tool = catalog.find((item) => item.id === role.toolId)!;
                   return (
                     <button key={role.toolId} onClick={() => openRole(tool)}>
+                      <span
+                        className={'sky-role-dot rock-icon-' + tool.color}
+                        aria-hidden="true"
+                      />
                       {role.label}
+                      <ArrowRight size={13} aria-hidden="true" />
                     </button>
                   );
                 })}
@@ -252,9 +284,11 @@ export default function SkyWorkspace() {
               </p>
               {routeMessage && (
                 <output className="sky-route-reply">
-                  <MessageCircle size={17} />
+                  <span className="sky-route-icon">
+                    <Sparkles size={16} />
+                  </span>
                   <div>
-                    <strong>Sky</strong>
+                    <strong>担当が決まりました</strong>
                     <p>{routeMessage}</p>
                   </div>
                   {routedTool && (
@@ -287,31 +321,40 @@ export default function SkyWorkspace() {
           </div>
 
           <div className="sky-feed" aria-live="polite">
-            {visibleTools.map((tool) => {
+            {visibleTools.map((tool, index) => {
               const Icon = icons[tool.id] ?? Link2;
               const provider = providerFor(tool);
               const status = statusFor(tool);
               return (
-                <article className="sky-feed-post" key={tool.id}>
-                  <div
-                    className={'sky-provider-avatar rock-icon-' + tool.color}
-                    aria-hidden="true"
-                  >
-                    {provider.initial}
+                <article
+                  className={'sky-feed-post ' + status.className}
+                  key={tool.id}
+                  style={{ '--sky-index': index } as CSSProperties}
+                >
+                  <div className="sky-timeline-node" aria-hidden="true">
+                    <span
+                      className={'sky-provider-avatar rock-icon-' + tool.color}
+                    >
+                      {provider.initial}
+                    </span>
                   </div>
                   <div className="sky-post-body">
-                    <div className="sky-post-author">
-                      <strong>{provider.name}</strong>
-                      {tool.status === 'ready' && (
-                        <BadgeCheck
-                          className="sky-role-verified"
-                          size={16}
-                          aria-label="Skyで利用可能"
-                        />
-                      )}
-                      <span>{provider.handle}</span>
-                      <span>·</span>
-                      <span>{status.label}</span>
+                    <div className="sky-post-meta-row">
+                      <div className="sky-post-author">
+                        <strong>{provider.name}</strong>
+                        {tool.status === 'ready' && (
+                          <BadgeCheck
+                            className="sky-role-verified"
+                            size={16}
+                            aria-label="Skyで利用可能"
+                          />
+                        )}
+                        <span>{provider.handle}</span>
+                      </div>
+                      <span className={'sky-post-state ' + status.className}>
+                        <i aria-hidden="true" />
+                        {status.label}
+                      </span>
                     </div>
                     <button
                       className="sky-post-open"
@@ -323,25 +366,19 @@ export default function SkyWorkspace() {
                         <Icon size={22} strokeWidth={1.7} />
                       </span>
                       <span>
-                        <small>{tool.category}</small>
+                        <small>{roleFor(tool)}</small>
                         <strong>{tool.name}</strong>
                       </span>
-                      <ArrowRight size={18} />
+                      <ArrowUpRight size={18} />
                     </button>
+                    <span className="sky-post-label">この役ができること</span>
                     <p className="sky-post-description">{tool.description}</p>
-                    <div className="sky-post-status-line">
-                      <span className={'sky-status-dot ' + status.className} />
-                      <strong>{status.label}</strong>
-                      <span>{status.detail}</span>
-                    </div>
                     <div className="sky-post-facts">
-                      <span>{tool.environment}</span>
                       <span>
-                        {tool.status === 'ready'
-                          ? '追加API料金なし'
-                          : '導入前に条件確認'}
+                        <Zap size={13} aria-hidden="true" />
+                        {status.detail}
                       </span>
-                      <span>{tool.license}</span>
+                      <span>{tool.environment}</span>
                     </div>
                     <div className="sky-post-actions">
                       <button onClick={() => setSelected(tool)}>
@@ -352,6 +389,10 @@ export default function SkyWorkspace() {
                         className="sky-post-primary"
                         onClick={() => primaryAction(tool)}
                       >
+                        {tool.status === 'ready' &&
+                          tool.runner !== 'delivery-local' && (
+                            <Zap size={16} fill="currentColor" />
+                          )}
                         {tool.status === 'candidate'
                           ? '詳細を見る'
                           : tool.runner === 'delivery-local'
@@ -399,7 +440,9 @@ export default function SkyWorkspace() {
             )}
           </label>
           <section className="sky-rail-card sky-rail-publish">
-            <PackagePlus size={24} />
+            <span className="sky-rail-card-icon">
+              <PackagePlus size={21} />
+            </span>
             <h2>ツールをSkyに掲載</h2>
             <p>
               必要情報を入れて審査へ。MCPの能力はSkyが接続先から確認します。
@@ -410,7 +453,12 @@ export default function SkyWorkspace() {
             </Link>
           </section>
           <section className="sky-rail-card">
-            <h2>現在のSky</h2>
+            <div className="sky-rail-live-heading">
+              <h2>接続ステータス</h2>
+              <span>
+                <i /> LIVE
+              </span>
+            </div>
             <div className="sky-rail-count">
               <span>今使える</span>
               <strong>{readyTools.length}</strong>
