@@ -49,6 +49,13 @@
       ]
     },
     {
+      "id": "SKY05",
+      "title": "Skyの依頼・担当選択・検索・実行を迷わない3段階へ整理",
+      "status": "done",
+      "dependsOn": ["SKY04"],
+      "evidence": ["components/sky-workspace.tsx", "app/workspace.css"]
+    },
+    {
       "id": "R01",
       "title": "4参照元の採用判断と事業方針の固定",
       "status": "done",

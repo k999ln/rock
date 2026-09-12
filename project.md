@@ -1,5 +1,9 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-12 — Skyの操作を依頼・選択・実行の3段階へ整理
+
+重複していたSky見出しを撤去し、最初に自然文で依頼できる欄、スクロール中も残る絞り込み・検索・掲載操作、各投稿の一つの実行ボタンへ整理した。文章で依頼した場合は会話内で担当を示してから「ツールを開く」へ進み、役割ボタンとTimelineからの1タップ起動は維持する。スマホの実行Dialogは下から開く全面シートに変更し、閉じる・入力・実行を片手で追いやすくする。
+
 ## 2026-09-12 — Skyのヘッド・フッター・実行画面を黒へ統一
 
 Sky本体の上下に残っていた白い共通ヘッドとフッター、および白いツール詳細・実行Dialogを、Skyと同じ黒背景・細いグレー境界へ統一した。他ページの共通表示は変更せず、Sky表示時とSkyから開いたDialogだけに適用する。
@@ -290,7 +294,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / SkyをToB掲載とToCタイムライン取得・MCP接続の両面へ拡張 / 完了 24/46件
+最終更新: 2026-09-12 / SkyをToB掲載とToCタイムライン取得・MCP接続の両面へ拡張 / 完了 25/47件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -298,6 +302,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
 | SKY04 | X型Sky Timelineから会話または役ボタンの1タップで実行入口を開く | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
+| SKY05 | Skyの依頼・担当選択・検索・実行を迷わない3段階へ整理 | 完了 | [記録](components/sky-workspace.tsx) · [記録](app/workspace.css) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |

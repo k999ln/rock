@@ -1,6 +1,12 @@
 'use client';
 
-import { useState, type CSSProperties, type SyntheticEvent } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type SyntheticEvent,
+} from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -111,8 +117,15 @@ export default function SkyWorkspace() {
   const [deviceOpen, setDeviceOpen] = useState(false);
   const [running, setRunning] = useState(false);
   const [requestText, setRequestText] = useState('');
+  const [lastRequest, setLastRequest] = useState('');
   const [routedTool, setRoutedTool] = useState<Automation | null>(null);
   const [routeMessage, setRouteMessage] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchInput = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (searchOpen) searchInput.current?.focus();
+  }, [searchOpen]);
 
   const visibleTools = catalog.filter((tool) => {
     const matchesFilter =
@@ -142,11 +155,10 @@ export default function SkyWorkspace() {
   }
 
   function chooseRole(tool: Automation, request = '') {
+    setLastRequest(request);
     setRoutedTool(tool);
     setRouteMessage(
-      request
-        ? `「${request}」は${roleFor(tool)}が進められます。`
-        : `${roleFor(tool)}につなぎました。`,
+      `${roleFor(tool)}が進めます。内容を確認してツールを開いてください。`,
     );
   }
 
@@ -163,11 +175,13 @@ export default function SkyWorkspace() {
     const tool = role
       ? (catalog.find((item) => item.id === role.toolId) ?? null)
       : null;
-    if (tool) openRole(tool, request);
+    setRequestText('');
+    setLastRequest(request);
+    if (tool) chooseRole(tool, request);
     else {
       setRoutedTool(null);
       setRouteMessage(
-        'まだ役割を決められません。下の4つから近い役を選んでください。',
+        '近い役割を選んでください。選ぶと、その担当につながります。',
       );
     }
   }
@@ -181,34 +195,6 @@ export default function SkyWorkspace() {
     >
       <div className="sky-feed-layout">
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
-          <header className="sky-feed-header">
-            <div className="sky-feed-title-row">
-              <h1 id="sky-feed-title">Sky</h1>
-              <Link
-                href="/sky/publish"
-                aria-label="Skyにツールを掲載"
-                className="sky-publish-orb"
-              >
-                <PackagePlus size={20} />
-              </Link>
-            </div>
-            <Tabs
-              value={filter}
-              onValueChange={(value) => setFilter(value as FeedFilter)}
-            >
-              <TabsList
-                className="sky-feed-tabs"
-                aria-label="Sky Timelineの表示"
-              >
-                {feedFilters.map((item) => (
-                  <TabsTrigger key={item} value={item}>
-                    {item}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
-          </header>
-
           <section
             className="sky-assistant"
             aria-labelledby="sky-assistant-title"
@@ -239,7 +225,10 @@ export default function SkyWorkspace() {
                 {skyRoles.map((role) => {
                   const tool = catalog.find((item) => item.id === role.toolId)!;
                   return (
-                    <button key={role.toolId} onClick={() => openRole(tool)}>
+                    <button
+                      key={role.toolId}
+                      onClick={() => openRole(tool, role.label)}
+                    >
                       {role.label}
                     </button>
                   );
@@ -247,14 +236,17 @@ export default function SkyWorkspace() {
               </div>
               {routeMessage && (
                 <output className="sky-route-reply">
-                  <div>
-                    <p>{routeMessage}</p>
+                  <div className="sky-route-conversation">
+                    {lastRequest && (
+                      <p className="sky-route-request">{lastRequest}</p>
+                    )}
+                    <p className="sky-route-answer">{routeMessage}</p>
                   </div>
                   {routedTool && (
                     <button onClick={() => primaryAction(routedTool)}>
                       {routedTool.runner === 'delivery-local'
                         ? 'PC接続へ'
-                        : 'もう一度開く'}
+                        : 'ツールを開く'}
                       <ArrowRight size={15} />
                     </button>
                   )}
@@ -263,21 +255,65 @@ export default function SkyWorkspace() {
             </div>
           </section>
 
-          <div className="sky-feed-search">
-            <Search size={18} />
-            <input
-              type="search"
-              aria-label="Skyを検索"
-              placeholder="ツールを検索"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-            />
-            {query && (
-              <button aria-label="検索をクリア" onClick={() => setQuery('')}>
-                <X size={16} />
+          <header className="sky-feed-header">
+            <h1 id="sky-feed-title" className="sr-only">
+              Sky
+            </h1>
+            <Tabs
+              value={filter}
+              onValueChange={(value) => setFilter(value as FeedFilter)}
+            >
+              <TabsList
+                className="sky-feed-tabs"
+                aria-label="Sky Timelineの表示"
+              >
+                {feedFilters.map((item) => (
+                  <TabsTrigger key={item} value={item}>
+                    {item}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+            <div className="sky-feed-header-actions">
+              <button
+                className="sky-header-action"
+                aria-label={searchOpen ? '検索を閉じる' : 'ツールを検索'}
+                aria-expanded={searchOpen}
+                onClick={() => {
+                  setSearchOpen((open) => !open);
+                  if (searchOpen) setQuery('');
+                }}
+              >
+                {searchOpen ? <X size={19} /> : <Search size={19} />}
               </button>
-            )}
-          </div>
+              <Link
+                href="/sky/publish"
+                aria-label="Skyにツールを掲載"
+                className="sky-header-action"
+              >
+                <PackagePlus size={19} />
+              </Link>
+            </div>
+          </header>
+
+          {(searchOpen || query) && (
+            <div className="sky-feed-search">
+              <Search size={18} />
+              <input
+                type="search"
+                aria-label="Skyを検索"
+                placeholder="ツール名・できることで検索"
+                value={query}
+                ref={searchInput}
+                onChange={(event) => setQuery(event.target.value)}
+              />
+              {query && (
+                <button aria-label="検索をクリア" onClick={() => setQuery('')}>
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+          )}
 
           <div className="sky-feed" aria-live="polite">
             {visibleTools.map((tool, index) => {
@@ -315,10 +351,7 @@ export default function SkyWorkspace() {
                         {status.label}
                       </span>
                     </div>
-                    <button
-                      className="sky-post-open"
-                      onClick={() => setSelected(tool)}
-                    >
+                    <div className="sky-post-open">
                       <span
                         className={'rock-tool-icon rock-icon-' + tool.color}
                       >
@@ -328,8 +361,7 @@ export default function SkyWorkspace() {
                         <small>{roleFor(tool)}</small>
                         <strong>{tool.name}</strong>
                       </span>
-                      <ArrowUpRight size={18} />
-                    </button>
+                    </div>
                     <p className="sky-post-description">{tool.description}</p>
                     <p className="sky-post-place">{status.detail}</p>
                     <div className="sky-post-actions">
@@ -342,10 +374,10 @@ export default function SkyWorkspace() {
                             <Zap size={16} fill="currentColor" />
                           )}
                         {tool.status === 'candidate'
-                          ? '詳細を見る'
+                          ? '詳細'
                           : tool.runner === 'delivery-local'
-                            ? 'PCを接続'
-                            : '1タップで開く'}
+                            ? 'PC接続'
+                            : '使う'}
                         <ArrowRight size={16} />
                       </button>
                     </div>

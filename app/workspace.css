@@ -4724,3 +4724,180 @@
     padding: 14px;
   }
 }
+
+/* Sky usability pass: one request first, one sticky control row, one action per post. */
+.rock-main-column:has(.sky-main-feed) .rock-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+.sky-main-feed .sky-feed-header {
+  position: sticky;
+  top: 64px;
+  z-index: 20;
+  min-height: 50px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  padding-left: 8px;
+  border-bottom: 1px solid #2f3336;
+}
+.sky-main-feed .sky-feed-header > [data-slot='tabs'] {
+  min-width: 0;
+}
+.sky-main-feed .sky-feed-tabs {
+  width: 100%;
+  height: 50px;
+}
+.sky-main-feed .sky-feed-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 9px 0 4px;
+}
+.sky-main-feed .sky-header-action {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  color: #e7e9ea;
+}
+.sky-main-feed .sky-header-action:hover,
+.sky-main-feed .sky-header-action:focus-visible {
+  background: #16181c;
+}
+.sky-main-feed .sky-assistant {
+  padding-top: 18px;
+  padding-bottom: 15px;
+}
+.sky-main-feed .sky-role-list {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+.sky-main-feed .sky-role-list::-webkit-scrollbar {
+  display: none;
+}
+.sky-main-feed .sky-role-list button {
+  flex: 0 0 auto;
+  min-height: 34px;
+  font-size: 13px;
+}
+.sky-main-feed .sky-route-reply {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 9px;
+  padding-top: 12px;
+}
+.sky-main-feed .sky-route-conversation {
+  display: grid;
+  gap: 8px;
+}
+.sky-main-feed .sky-route-reply .sky-route-request {
+  width: fit-content;
+  max-width: 88%;
+  justify-self: end;
+  padding: 7px 11px;
+  border-radius: 14px 14px 3px 14px;
+  color: #e7e9ea;
+  background: #1d3a52;
+  font-size: 14px;
+}
+.sky-main-feed .sky-route-reply .sky-route-answer {
+  color: #b3b7bb;
+  font-size: 14px;
+}
+.sky-main-feed .sky-route-reply > button {
+  width: fit-content;
+  min-height: 36px;
+  justify-self: end;
+  padding: 7px 13px;
+  border: 1px solid #536471;
+  border-radius: 999px;
+  color: #fff;
+}
+.sky-main-feed .sky-feed-search {
+  position: sticky;
+  top: 114px;
+  z-index: 19;
+  min-height: 50px;
+  background: rgba(0, 0, 0, 0.96);
+}
+.sky-main-feed .sky-post-open {
+  cursor: default;
+  grid-template-columns: 34px minmax(0, 1fr);
+}
+.sky-main-feed .sky-post-actions .sky-post-primary {
+  min-width: 88px;
+  min-height: 38px;
+  border-color: #1d9bf0;
+  color: #fff;
+  background: #1d9bf0;
+  font-size: 13px;
+}
+.sky-main-feed .sky-post-actions .sky-post-primary:hover {
+  border-color: #1a8cd8;
+  background: #1a8cd8;
+}
+.sky-main-feed .sky-feed-post.is-candidate .sky-post-primary,
+.sky-main-feed .sky-feed-post.is-connect .sky-post-primary {
+  border-color: #536471;
+  color: #e7e9ea;
+  background: transparent;
+}
+.sky-main-feed .sky-feed-post.is-candidate .sky-post-primary:hover,
+.sky-main-feed .sky-feed-post.is-connect .sky-post-primary:hover {
+  border-color: #8b98a5;
+  background: #16181c;
+}
+
+@media (max-width: 767px) {
+  .sky-main-feed .sky-feed-header {
+    top: 58px;
+    padding-left: 2px;
+  }
+  .sky-main-feed .sky-feed-tabs > [data-slot='tabs-trigger'] {
+    padding-right: 6px;
+    padding-left: 6px;
+    font-size: 13px;
+  }
+  .sky-main-feed .sky-feed-header-actions {
+    padding-right: 7px;
+    padding-left: 0;
+  }
+  .sky-main-feed .sky-header-action {
+    width: 36px;
+    height: 36px;
+  }
+  .sky-main-feed .sky-feed-search {
+    top: 108px;
+  }
+  .sky-main-feed .sky-assistant {
+    padding-top: 16px;
+    padding-bottom: 14px;
+  }
+  .sky-main-feed .sky-role-list {
+    margin-right: -14px;
+  }
+  .sky-main-feed .sky-post-actions .sky-post-primary {
+    min-width: 84px;
+    min-height: 38px;
+  }
+  .sky-tool-dialog {
+    top: auto !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    max-width: none !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top))) !important;
+    padding: 20px 18px max(20px, env(safe-area-inset-bottom)) !important;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+    border-left: 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+    transform: none !important;
+  }
+}
