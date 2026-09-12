@@ -4,15 +4,17 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { root, validateBaseline } from '../scripts/check-product-baseline.mjs';
 
-const source = JSON.parse(readFileSync(resolve(root, 'data/product-baseline.json'), 'utf8'));
+const source = JSON.parse(
+  readFileSync(resolve(root, 'data/product-baseline.json'), 'utf8'),
+);
 void test('product baseline rejects lost requirements, stale-as-live claims and mismatched source evidence', () => {
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ19/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ22/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ19/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ22/);
   const missingTemplate = structuredClone(source);
   delete missingTemplate.acceptanceTemplate;
   assert.throws(() => validateBaseline(missingTemplate), /acceptanceTemplate/);
@@ -40,5 +42,13 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const escaped = structuredClone(source);
   escaped.authority = '../external.md';
   assert.throws(() => validateBaseline(escaped), /repository外/);
-  assert.throws(() => validateBaseline(source, (path) => path.endsWith('AGENTS.md') ? 'missing links' : readFileSync(path, 'utf8')), /AGENTS/);
+  assert.throws(
+    () =>
+      validateBaseline(source, (path) =>
+        path.endsWith('AGENTS.md')
+          ? 'missing links'
+          : readFileSync(path, 'utf8'),
+      ),
+    /AGENTS/,
+  );
 });

@@ -1,5 +1,5 @@
 {
-  "version": "1.14",
+  "version": "1.17",
   "decidedAt": "2026-09-12",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -11,7 +11,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ19 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ22 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -54,13 +54,17 @@
     "RQ16",
     "RQ17",
     "RQ18",
-    "RQ19"
+    "RQ19",
+    "RQ20",
+    "RQ21",
+    "RQ22"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
     "automation-earnings-wallet",
     "instagram-fashion-brand-operations",
-    "goal-driven-brand-operations"
+    "goal-driven-brand-operations",
+    "sky-monthly-billing"
   ],
   "fashionBrandOperations": {
     "status": "autonomous_mock_verified",
@@ -98,7 +102,44 @@
     "source-at-sha",
     "checks-at-sha"
   ],
-  "commercialPolicy": "Preserve native 888 USD cents per contract per month and legacy Web estimates; Rock ATM fee is zero per RQ15; game fees are unspecified; no live billing authorized here.",
+  "commercialPolicy": "Implement a production-capable Stripe path for a ToC USD 8.88 monthly base fee while preserving native 888-cent simulation and legacy Web estimates as separate records. Sky charges tob no registration, connection, publication or base usage fee and takes zero Sky commission from tob tool sales. Third-party payment, provider, model and cloud costs remain separate and disclosed. Live collection or payout requires verified merchant and payout details, sales disclosures, live credentials, configured webhooks, sandbox acceptance and owner confirmation. Rock ATM fee remains zero per RQ15; game fees are unspecified.",
+  "skyNetworkEconomy": {
+    "tobSkyFeeMinor": 0,
+    "tobSkySalesCommissionBps": 0,
+    "tocMonthlyBaseMinor": 888,
+    "tocMonthlyBaseCurrency": "USD",
+    "thirdPartyCostsSeparate": true,
+    "connectionPassport": "front_end_design",
+    "contributionReceipts": "synthetic_ui_only",
+    "liveMcpConnectionEnabled": false,
+    "livePayoutEnabled": false,
+    "payoutRulesFinalized": false,
+    "primarySurface": "inside_sky",
+    "standaloneNavigation": false,
+    "providerSubmissionSurface": "inside_sky",
+    "persistentSidebarOnSky": false,
+    "legacyRouteBehavior": "open_sky_with_mcp_manager",
+    "record": "docs/sky-network-economy.md"
+  },
+  "skyMonthlyBilling": {
+    "requested": true,
+    "amountMinor": 888,
+    "currency": "USD",
+    "interval": "month",
+    "provider": "Stripe",
+    "architecture": "docs/sky-billing.md",
+    "implementationStatus": "production_path_implemented_credentials_and_sandbox_pending",
+    "liveBillingEnabled": false,
+    "cardDataStoredBySky": false,
+    "host": "separate Cloudflare Worker",
+    "requiresOwnerInputs": [
+      "verified Stripe merchant account and payout account",
+      "live USD 8.88 monthly Price ID",
+      "Stripe secret and webhook secret installed outside Git",
+      "sales entity, terms, privacy, tax, refund and support disclosures",
+      "sandbox and minimal live acceptance"
+    ]
+  },
   "hardwarePolicy": "Develop one shared RockstarOS Core with model-specific Device Support Packages. Physical native OS, experimental Android GSI, client-only and unsupported are distinct delivery modes. Pixel candidates remain unconfirmed; BlackBerry requires exact-model unlock/vendor/recovery evidence; Apple mobile devices are client-only rather than OS-replacement targets. Linux QEMU and physical evidence remain distinct.",
   "deviceSupportPolicy": {
     "status": "approved_design_implemented_not_physical_support",

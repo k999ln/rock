@@ -1,0 +1,20 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "rockstar-sky-billing",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "SKY_ORIGIN": "https://replace-with-your-sky-origin.example",
+    "RETURN_ORIGIN": "https://replace-with-your-sky-origin.example",
+    "STRIPE_PRICE_ID": "price_replace_with_monthly_usd_888_price",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "rockstar-sky-billing",
+      "database_id": "00000000-0000-4000-8000-000000000000",
+      "migrations_dir": "migrations",
+    },
+  ],
+}

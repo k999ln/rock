@@ -17,6 +17,7 @@ import type { FundSnapshot } from '@/lib/fund';
 import { catalog } from '@/lib/catalog';
 import { MrToolRunner } from '@/components/mr-tool-runner';
 import { DeviceConnection } from '@/components/device-connection';
+import { SkyBilling } from '@/components/sky-billing';
 import {
   Dialog,
   DialogContent,
@@ -176,21 +177,24 @@ export default function OperationsWorkspace({ view }: { view: View }) {
         </nav>
       )}
       {view === 'wallet' && (
-        <section className="rock-wallet-boundary">
-          <span className="rock-wallet-symbol">
-            <Wallet size={30} strokeWidth={1.5} />
-          </span>
-          <div>
-            <h2>実際のお金との接続は、準備中です。</h2>
-            <p>
-              ここで管理するのは手入力の収支です。金融サービスとの照合・入金・出金にはまだ対応していません。
-            </p>
-            <span>
-              <ShieldCheck size={15} />
-              この画面から請求・送金は行われません
+        <>
+          <section className="rock-wallet-boundary">
+            <span className="rock-wallet-symbol">
+              <Wallet size={30} strokeWidth={1.5} />
             </span>
-          </div>
-        </section>
+            <div>
+              <h2>売上台帳とSky利用料を分けて管理</h2>
+              <p>
+                売上・経費の手入力記録は未照合のまま保持し、月$8.88の利用料だけを署名検証済みのStripe決済で確定します。
+              </p>
+              <span>
+                <ShieldCheck size={15} />
+                カード情報はStripeが管理
+              </span>
+            </div>
+          </section>
+          <SkyBilling />
+        </>
       )}
       {error && (
         <div className="rock-service-notice" role="alert">

@@ -1,5 +1,11 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-12追記（v1.17）: 利用者は、MCP機能がSkyの外にある構成では不十分であり、Sky本体の中に必要と明示。独立したSky Networkナビゲーションを標準入口にせず、Skyの最初の画面でMCP接続状態を確認し、接続・管理、Connection Passport、実行契約、料金境界、分配receiptへ進めることをRQ22へ追加する。ツール掲載もSky内で開き、Sky画面では常設sidebarを表示しない。旧`/sky/network`と`/sky/publish`はSky本体を開いて対象機能を表示する互換入口とする。実MCP接続、実課金、実送金の有効化条件は変更しない。
+
+2026-09-12追記（v1.16）: 利用者は、外部tobがSkyへ入る際の登録・接続・公開・Sky売上手数料を0円とし、tobからSky利用料を徴収しない方針を明示。ToC向け月額8.88 USD、外部provider/決済実費、tob自身が設定する商品価格とは分離する。Connection Passport、実行契約、検証済み貢献receipt、取消・不明状態を含む精算を一つの導線で見せるSky NetworkフロントをRQ21へ追加する。現在はフロント設計と合成表示であり、実MCP接続、実報酬分配、実送金を開始したとは扱わない。
+
+2026-09-12追記（v1.15）: 利用者が事業収益のため、Skyで月額8.88 USDを実際に回収できるsystemを必須と明示。Stripe Checkout、署名Webhook、契約・請求台帳、二重申込み防止、支払い・解約管理をRQ20へ追加する。本番コードの準備と実売上の開始は分け、Stripe事業者確認、入金口座、販売表示、live鍵、sandbox受入と本人の最終確認が揃うまで実課金は有効化しない。
+
 2026-09-12追記（v1.14）: 利用者がFashion Brand Opsをより自律的なブランド経営systemへ進める方針を明示。売上・数量・粗利・期限・広告上限から計画するCampaign Autopilot、会話履歴と購入意向から次の一手を作るAI Sales Concierge、署名検証済み入金後の原価・資材・能力・納期を扱うProduction CockpitをRQ19へ追加する。計画と下書きは自動化できるが、投稿、広告、DM、請求、返金等の外部作用は既存approval gateを迂回しない。
 
 2026-09-12追記（v1.13）: 利用者がInstagramを中心にした受注型ファッションブランド運営systemを、`k999ln/rock`のSkyへ追加するよう明示。Provider差替、MCP discover/call、受注DB、分析feedback、危険操作のapproval gateをRQ18へ追加し、Sky catalogとTimelineへ独立商品として統合する。実Provider・実投稿・実請求は接続済みと扱わない。
@@ -8,11 +14,11 @@
 
 2026-09-12追記（v1.11）: 利用者は、共通Core、機種別Device Support Package、`native_os`／`gsi_experimental`／`client_only`／`unsupported`の提供区分で多機種対応を進める方針を選択。Pixel候補は未確定、BlackBerryは正確なモデルのunlock・vendor・復旧証拠がある場合だけ実験対象、iPhone/iPadはOS置換ではなくclientとする。[多機種対応設計](device-support-architecture.md)と[対応台帳](../data/device-support-matrix.json)を正本に追加した。この決定はクラウド課金、端末書込み、production鍵、実機対応完了の承認ではない。
 
-2026-09-11追記（v1.10）: 利用者がスマホ本体へ書き込めるOS版の作成を明示。実機版の開発を進める。Pixel 10は以前の記録からの候補で、現在の対象機種/SKUは未確認。Linux環境は利用者にもない。クラウドbuildとAndroid系機種対応の再利用を準備するが、QEMUや2APKを実機完成と表示しない。[実行記録](phone-preview-20260911.md)。以下はRQ01〜RQ19と以前の方針を保持する。
+2026-09-11追記（v1.10）: 利用者がスマホ本体へ書き込めるOS版の作成を明示。実機版の開発を進める。Pixel 10は以前の記録からの候補で、現在の対象機種/SKUは未確認。Linux環境は利用者にもない。クラウドbuildとAndroid系機種対応の再利用を準備するが、QEMUや2APKを実機完成と表示しない。[実行記録](phone-preview-20260911.md)。以下はRQ01〜RQ20と以前の方針を保持する。
 
 2026-09-09追記: 設計v1.1の実装承認を受領。公開・実機・MetaMask実資金は準備が整うことを条件に了承。現在の承認範囲は [承認記録](execution-approval-20260909.md)。以下の「承認待ち」は作成時の履歴であり、現在の実装を停止させない。RQ01〜RQ15と料金は変更しない。
 
-版: 1.14 / 更新日: 2026-09-12（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
+版: 1.17 / 更新日: 2026-09-12（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
 
 この文書は利用者がこの日に明示した製品要望を固定する。実装状況は [OS稼働・ゲーム連携監査](os-readiness-audit-20260909.md)（過去の追補・初回監査は履歴）、次の指示は [現在の再開指示](prompts/rock-current-next-20260911.md)、毎回の確認方法は [プロンプト作成規約](prompt-playbook.md) を参照する。決定と実装実績を同じものとして扱わない。
 
@@ -172,7 +178,29 @@ AI Sales Conciergeは顧客ごとのDM履歴、購入意向、既存注文、確
 
 Production Cockpitは署名検証済み決済eventでpaidになった注文だけを制作計画へ入れ、資材、見積原価、日次能力、納期、blocker、制作・品質・発送工程を追跡する。手動toolからpaid/refundedへ変更できない状態遷移を強制し、金額・通貨が注文と一致しない入金eventを拒否する。実工場発注、資材購入、配送契約、実通知は各Providerと別の承認条件が揃うまで行わない。
 
-## 1.0への8原則の適用（RQ01〜RQ19を維持）
+## RQ20 Skyで月額8.88 USDを実際に回収できる決済経路を持つ
+
+Skyの認証済み利用者が明示同意した後、Stripe Checkoutで税・値引前の基本料金を月額8.88 USDとする継続契約へ申し込めるようにする。Sky本体はカード情報を保持せず、短命署名tokenで独立した課金serviceに本人を結び付ける。課金serviceは毎回StripeのPriceを取得し、active、USD 888 cents、月次1回に一致しなければ申込みを拒否する。
+
+Checkout、契約更新・解約、請求成功・失敗はStripeのraw body署名を検証したWebhookだけから台帳へ反映する。同一利用者の有効契約、同時Checkout、Webhook再送による二重計上を防ぎ、利用者がStripe Customer Portalで支払方法と解約を管理できるようにする。native Walletの月888 cents契約シミュレータ、旧Webの試算、手入力売上と、Stripeの実契約・実入金台帳を混ぜない。
+
+本番利用に耐えるコードとsandbox導線の実装は進める。ただし、本番課金はStripeの事業者確認、入金口座、販売主体に合う利用規約・プライバシー・税・返金・問い合わせ表示、live鍵、設定済みWebhook、sandbox受入と本人の最終確認が揃ってから有効化する。8.88 USDは純利益ではなく基本料金で、手数料、税、返金、為替により受取額は変わる。設計と運用手順は [Sky月額決済](sky-billing.md)を正本とする。
+
+## RQ21 tob無料と接続・貢献・分配を一体化したSky Network
+
+tobがSkyへ商品を登録、接続、公開し、基本的な検査・利用分析を受けるためのSky利用料は0円とする。tob商品の利用者向け価格はtob自身の収益であり、Skyの売上手数料は0%。決済provider、外部API、モデル、cloud等の第三者実費はSky手数料と混ぜず、発生主体と控除条件を表示する。tob無料は、無制限のRock負担、外部実費の肩代わり、無審査公開を意味しない。
+
+Sky Networkは、MCP URL・registry/package等の入力から、接続方式、作者/版、schema、OAuth audience、権限、実行場所、価格、受取人を確認するConnection Passportの導線を持つ。公開前検査、利用時の実行契約、PC/端末/cloudへの権限を増やさない子lease、実行receipt、取消・不明状態、ToB/ToCの貢献と分配を一つの画面で説明する。
+
+ToC向け月額8.88 USDはRQ20として維持し、tobへの課金へ転用しない。ToC売上からの報酬pool、ToB/ToCの分配率、対象となる貢献、最低払出額、本人確認、税、返金負担は未確定。検証済みreceiptに基づく分配UIは合成データで作るが、実MCP接続、実売上、現金保管、実送金、本番報酬を有効にしない。
+
+## RQ22 MCP接続・管理をSky本体の機能にする
+
+MCPは別製品や別の標準ナビゲーションではなく、Skyの中核機能として扱う。Skyを開いた最初の画面で外部MCPと内蔵MCPの状態を区別して表示し、同じ画面からMCP URL・registry・packageの入力、安全確認、Connection Passport、実行範囲、料金、受取人、分配receiptの確認へ進めるようにする。ToB向け掲載フォームもSky内で開く。
+
+独立した説明ページや常設sidebarを通らなければMCP・掲載へ到達できない構成にしない。既存の`/sky/network`と`/sky/publish`はリンク切れを防ぐ互換入口としてSky本体を表示し、対象機能を最初から開く。外部MCPの実接続数と内蔵商品の状態を混同せず、合成Passportを実接続済みと表示しない。
+
+## 1.0への8原則の適用（RQ01〜RQ22を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -189,7 +217,7 @@ Production Cockpitは署名検証済み決済eventでpaidになった注文だ�
 - 金融provider、資金保管方式、通貨/チェーン、販売/精算主体、返金・出金条件の実接続を確定する。利用者の所在地や事業国を作業フォルダから推測しない。
 - ゲーム名/repository・提供者の権限と公式接続、交換方向、対象資産と原資、交換条件・利用規約・提供地域の確認は未了。実交換を自動開始しない。
 - ATM自社手数料0は確定。ゲーム向け料金、外部実費の扱い、継続運用原資、対象SDK/ゲーム環境は未決定。OS月額は既存契約を維持。
-- 今回は実機準備コードと現状の開発branchへの統合。main merge、実機書込み、一般公開、クラウド課金、実決済の開始は含まない。
+- Stripe課金経路のコードとsandbox導入手順は追加した。main merge、実機書込み、一般公開、live課金、実決済の開始は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
 
@@ -222,3 +250,9 @@ Production Cockpitは署名検証済み決済eventでpaidになった注文だ�
 2026-09-12 v1.11: `k999ln/rock`のRockstarOS Automation Hubへ、Instagram運用・受注型ファッションブランド管理を商品として追加する要望をRQ18へ固定。Provider差替、MCP tool群、受注/顧客/制作/発送DB、Stripe等の決済照合、分析feedback、危険操作の個別approvalを要求する。Mr. One Hubや古いAutomation Hub archiveを正本にせず、実Provider接続を実装完了へ換算しない。
 
 2026-09-12 v1.14: 利用者の「もっとできる」「そうしよ」を、Campaign Autopilot、AI Sales Concierge、Production Cockpit、経営ダッシュボードへの拡張としてRQ19へ固定。目標駆動の計画と内部下書きは進めるが、既存approval、Provider、入金Webhook境界は維持する。
+
+2026-09-12 v1.15: 利用者がSkyで月額8.88 USDを実際に回収できるsystemを事業上の必須条件としたため、Stripe Checkout、署名Webhook、D1契約・請求台帳、二重申込み防止、Customer PortalをRQ20へ追加。本番コードの準備を許可したが、Stripe事業者・入金口座・販売表示・sandbox受入なしにlive課金を開始したことにはしない。
+
+2026-09-12 v1.16: tobからSky利用料とSky売上手数料を取らない方針をRQ21へ固定。ToC月額、tob商品価格、外部実費を分離し、Connection Passport、実行契約、貢献receipt、取消・精算を一画面で説明するSky Networkフロントを追加する。分配条件と実providerは未確定で、合成表示を実送金実績にしない。
+
+2026-09-12 v1.17: 利用者の「Skyの中にMCPの機能がないとダメ」「Skyの機能はSkyに全部入れ、sidebarをやめる」によりRQ22を追加。Sky画面の常設sidebarと独立したSky Networkナビゲーションを外し、Sky本体へMCP状態、接続・管理、ToB掲載を統合。旧URLはSky内の対象機能を開く互換入口として維持し、実接続・実送金OFFの境界は変えない。

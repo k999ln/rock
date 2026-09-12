@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import SkyPublisherForm from '@/components/sky-publisher-form';
+import SkyWorkspace from '@/components/sky-workspace';
 
 export const metadata: Metadata = {
   title: 'Skyにツールを掲載',
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function SkyPublishPage() {
-  return <SkyPublisherForm />;
+  return <SkyWorkspace initialPublishOpen />;
 }

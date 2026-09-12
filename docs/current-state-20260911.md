@@ -1,5 +1,11 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-12 — Sky月額8.88 USDの本番対応経路
+
+ToC向け月額8.88 USDを実際に回収するため、Wallet画面、認証済み短命token、独立Cloudflare Worker、Stripe Checkout／Customer Portal、署名Webhook、D1契約・請求台帳を実装した。WorkerはCheckout前と契約・請求eventでPrice IDを照合し、active、USD 888 cents、月次1回以外を拒否する。有効契約、同時Checkout、Webhook再送を冪等に処理し、カード情報とStripe secretsをSky本体へ保存しない。
+
+これは本番利用を想定したコードの到達であり、実売上開始の証拠ではない。現在はStripe事業者・入金口座、Price、D1、Worker secrets、Webhook、販売表示、sandboxの初回・更新・失敗・再試行・解約・順序逆転・台帳照合が未接続で、live課金は無効。詳細と再開順は[Sky月額決済](sky-billing.md)。
+
 ## 2026-09-12 — 多機種対応の決定
 
 多機種対応を「共通RockstarOS Core＋機種／SKU別Device Support Package」として固定した。一つのimageを無条件に全端末へ書き込むとは扱わず、`native_os`、`gsi_experimental`、`client_only`、`unsupported`の4区分を機械可読台帳で管理する。完全OSを名乗るにはbootloader unlock、kernel／vendor／firmware、partition／AVB、boot／OTA／rollback／stock復旧の機種別証拠が必要。[設計](device-support-architecture.md)／[対応台帳](../data/device-support-matrix.json)。
