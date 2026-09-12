@@ -17,6 +17,7 @@ import {
   Link2,
   PackagePlus,
   PlugZap,
+  WalletCards,
   Search,
   ShieldCheck,
   X,
@@ -37,13 +38,23 @@ import WorkspaceShell from '@/components/workspace-shell';
 const readyTools = catalog.filter((tool) => tool.status === 'ready');
 const recommended = readyTools.find((tool) => tool.id === 'mr-citations')!;
 const fashionOps = readyTools.find((tool) => tool.id === 'fashion-brand-ops')!;
+const subscriptionLedger = readyTools.find(
+  (tool) => tool.id === 'rockstar-ledger',
+)!;
 const icons = {
   coconala: BriefcaseBusiness,
   'mr-free-article': FilePenLine,
   'mr-citations': BookOpenCheck,
   'mr-delivery': FileCheck2,
+  'rockstar-ledger': WalletCards,
 };
-const filters = ['すべて', 'ブランド運営', '記事制作', '案件・納品支援'] as const;
+const filters = [
+  'すべて',
+  'ブランド運営',
+  '記事制作',
+  '案件・納品支援',
+  '経費・契約管理',
+] as const;
 
 export default function SkyWorkspace() {
   const [query, setQuery] = useState('');
@@ -252,6 +263,23 @@ export default function SkyWorkspace() {
           </article>
           <article className="sky-timeline-item is-connect">
             <span className="sky-timeline-dot">
+              <WalletCards size={15} />
+            </span>
+            <div className="sky-timeline-copy">
+              <div>
+                <time>PC接続後</time>
+                <span>ローカル台帳を読み取り専用で確認</span>
+              </div>
+              <h3>サブスク顧問</h3>
+              <p>契約、更新日、支払い失敗をPC内の台帳から確認します。</p>
+            </div>
+            <button onClick={() => setSelected(subscriptionLedger)}>
+              接続
+              <ArrowRight size={16} />
+            </button>
+          </article>
+          <article className="sky-timeline-item is-connect">
+            <span className="sky-timeline-dot">
               <PlugZap size={15} />
             </span>
             <div className="sky-timeline-copy">
@@ -346,6 +374,7 @@ export default function SkyWorkspace() {
                         </span>
                         <span className="rock-execution-label">
                           {tool.runner === 'delivery-local' ||
+                          tool.runner === 'subscription-ledger' ||
                           tool.integration === 'fashion-brand-ops' ? (
                             <Laptop size={14} />
                           ) : (
@@ -353,7 +382,8 @@ export default function SkyWorkspace() {
                           )}
                           {tool.integration === 'fashion-brand-ops'
                             ? 'MCPで実行'
-                            : tool.runner === 'delivery-local'
+                            : tool.runner === 'delivery-local' ||
+                                tool.runner === 'subscription-ledger'
                               ? 'PCで実行'
                               : 'ブラウザで実行'}
                         </span>
@@ -374,7 +404,8 @@ export default function SkyWorkspace() {
                         >
                           {tool.integration === 'fashion-brand-ops'
                             ? '接続を確認'
-                            : tool.runner === 'delivery-local'
+                            : tool.runner === 'delivery-local' ||
+                                tool.runner === 'subscription-ledger'
                               ? '準備を確認'
                               : '使ってみる'}
                           <ArrowRight size={17} />
@@ -420,7 +451,7 @@ export default function SkyWorkspace() {
           <CircleHelp size={23} />
           <div>
             <h2>PCで使いたいときは</h2>
-            <p>接続方法と、使える5つのツールを確認。</p>
+            <p>接続方法と、使える6つのツールを確認。</p>
             <button onClick={() => setDeviceOpen(true)}>
               PC接続の準備を見る
               <ArrowRight size={16} />

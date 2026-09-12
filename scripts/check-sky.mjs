@@ -12,7 +12,7 @@ const catalogSource = read('lib/catalog.ts');
 const readyCount = (catalogSource.match(/"status":\s*"ready"/g) || []).length;
 const candidateCount = (catalogSource.match(/status:'candidate'/g) || [])
   .length;
-requireValue(readyCount === 5, `Web/PC readyは5件です（実際: ${readyCount}）`);
+requireValue(readyCount === 6, `Web/PC readyは6件です（実際: ${readyCount}）`);
 requireValue(
   candidateCount === 3,
   `導入候補は3件です（実際: ${candidateCount}）`,

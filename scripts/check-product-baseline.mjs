@@ -35,7 +35,7 @@ export function validateBaseline(data, read = (path) => readFileSync(path, 'utf8
   requireValue(data.sky?.legacyInternalName === 'hub', '既存データ/API用の内部hub互換名が必要です');
   requireValue(data.primaryCapabilities?.includes('sky-automation-control'), 'Skyの制御能力が必要です');
   const skyInventory = resolve(root, data.sky?.inventory || '');
-  requireValue(!relative(root, skyInventory).startsWith('..') && read(skyInventory).includes('Web / PCで現在使える5件'),
+  requireValue(!relative(root, skyInventory).startsWith('..') && read(skyInventory).includes('Web / PCで現在使える6件'),
     'Skyの役割と収録ツールの正本が必要です');
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');
   requireValue(data.gameExchange?.atmDependency === false, 'ゲーム交換をATM必須にしないでください');

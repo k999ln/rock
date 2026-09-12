@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "Instagram運用・受注型ブランド管理をSkyのcatalogとTimelineへ導入しmock検証済み",
-  "nextAction": "FB01のSky catalog/Timeline、MCP 28 tools、Provider/approval/DB/Webhook境界、mock縦断、総合verifyを完了する。実Higgsfield/Meta/Stripe/通知credential、本番投稿・広告・請求・返金、native Skyの汎用JSON MCP画面、QEMU/Android/実機OS組込みは明示承認と契約を要する別gateとして保持する。その後はSky掲載審査とprivate Registry縦断、実機の正確な型番/SKU確定、全source取得・vendor生成・Soong full build、Sky/Wallet/GameのAndroid移植、本人限定Sites QA、license/production署名、正式配布受入へ進む。",
+  "milestone": "Instagram運用・受注型ブランド管理とサブスク顧問を同じSky統合候補で検証済み",
+  "nextAction": "Sky統合候補をGitHubへ保存し、開発本体向けDraft PRで差分と同一SHAのCIを確認する。実Higgsfield/Meta/Stripe/通知credential、本番投稿・広告・請求・返金、Native Sky MCP broker、Wallet費用転記、HTTPS配信版のloopback代替、QEMU/Android/実機OS組込みは別gateとして保持する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -281,7 +281,10 @@
         "docs/prompts/hub-wallet-next.md",
         "docs/pc-citations-adapter.md",
         "docs/evidence/pc-citations/integration.json",
-        "docs/evidence/os-base/business-backup-acceptance-b8287bc.json"
+        "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
+        "docs/sky-rockstar-ledger-20260912.md",
+        "docs/evidence/sky-rockstar-ledger/integration.json",
+        "tests/rockstar-ledger.test.mjs"
       ]
     },
     {
