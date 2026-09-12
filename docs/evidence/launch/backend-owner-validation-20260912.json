@@ -1,0 +1,72 @@
+{
+  "schema": "rock-backend-owner-validation/1",
+  "observedAt": "2026-09-12T22:12:35Z",
+  "scope": "owner-only Developer Preview; synthetic receipts and wallets only",
+  "source": {
+    "baseCommit": "c7c284a2e43d807018f35c81ee95985d61fbacf0",
+    "status": "committed and verified before private Sites publication"
+  },
+  "localVerification": {
+    "npmRunVerify": "PASS",
+    "webTests": 122,
+    "fashionBrandOpsTests": 15,
+    "apiAssertions": 143,
+    "osBackendLaunch": {
+      "status": "PASS",
+      "checks": [
+        "process_start",
+        "health_without_session",
+        "authenticated_state_boundary",
+        "signed_install_enable_run",
+        "graceful_sigterm",
+        "sqlite_integrity",
+        "restart_rotates_session",
+        "restart_restores_receipt"
+      ]
+    }
+  },
+  "billingWorker": {
+    "url": "https://rockstar-sky-billing.mr-kirin999.workers.dev",
+    "databaseName": "rockstar-sky-billing",
+    "migrations": [
+      "0001_billing.sql",
+      "0002_earnings_settlement.sql"
+    ],
+    "healthStatus": 200,
+    "healthMode": "verified_earnings_only",
+    "syntheticReceiptSmoke": {
+      "receiptStatus": 201,
+      "replayStatus": 200,
+      "userStatus": 200,
+      "invalidOriginStatus": 403,
+      "grossMinor": 888,
+      "skyFeeMinor": 888,
+      "payoutStatus": "not_required",
+      "realFundsMoved": false
+    }
+  },
+  "privateSite": {
+    "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+    "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site",
+    "environmentRevision": 1,
+    "billingServiceConfigured": true,
+    "audience": "owner-only",
+    "deploymentStatus": "succeeded",
+    "rollbackVersion": {
+      "versionNumber": 12,
+      "sourceCommit": "1763deb56990bc7dc380c72a5b6043cb089c21a0"
+    }
+  },
+  "secrets": {
+    "committed": false,
+    "temporaryFilesRemoved": true,
+    "initialDisplayedSecretRotated": true
+  },
+  "knownBoundaries": [
+    "no paid-product provider sandbox credential",
+    "no provider-verified real deposit",
+    "no payout provider or real transfer",
+    "no physical-device image or flash",
+    "no general-public publication"
+  ]
+}

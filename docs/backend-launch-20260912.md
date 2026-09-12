@@ -1,16 +1,15 @@
 # OSバックエンド最小ローンチ監査 — 2026-09-12
 
-対象はGitHub `k999ln/rock` の `codex/rockstaros-launch-candidate-20260910`、開始SHAは
-`0cc5415e4724199505e1f54942918b72eb88ccae`。5時間枠で扱う最小製品を、公開fixtureと
-合成Walletだけを使うローカル/QEMU Developer Previewに限定する。実機、実資金、外部provider、
-一般公開MCPはこの判定へ含めない。
+対象はGitHub `k999ln/rock` の統合候補 `c7c284a2e43d807018f35c81ee95985d61fbacf0` を起点とする。
+最小製品を、本人限定Sites、独立した収益精算Worker、公開fixtureと合成Walletだけを使う
+Developer Previewに限定する。実機、実資金、外部provider、本番払出し、一般公開MCPはこの判定へ含めない。
 
 ## 重複監査
 
-- Fashion Brand Opsは別タスクでSky表示と38操作を検証中。同じUIファイルを編集しない。
+- Fashion Brand OpsのSky表示、38操作、ワンタップ接続は完成済みコミットだけを統合した。
 - Rockstar Ledgerは別branch/PRで進行中。個人SQLiteをこのbranchへコピーしない。
 - Value/Spend RuntimeはPR #11でSIMULATION/PAPERまで実装済みだが未統合。LIVEは無効のまま維持する。
-- 別worktree `codex/backend-launch-hardening-20260912` には競合未解消の変更があるため取り込まない。
+- OS Hub lifecycleの完成済みコミットだけを取り込み、共有worktreeの途中差分は使わない。
 - GitHubの開始SHAではWeb、native source、Android、署名fixture、transport fixture、phone source準備の
   6 workflowが成功済み。OS imageの新規build/bootや実機合格へ読み替えない。
 
@@ -22,11 +21,12 @@
 2. session/Host/Origin境界、署名packageのinstall→明示enable→実行→receipt保存。
 3. SQLiteの整合、再起動後のsession失効と完了receipt復元、不確実な実行の自動再送禁止。
 4. 利用者データを返さないloopbackヘルスチェック。
-5. rc2配布8資産の取得、hash/署名、fresh導入、起動、保存、復旧の同一候補確認。
-6. 製品LICENSE/第三者NOTICE、production署名・失効手順、本人限定Sitesのログイン後確認。
-7. 合格した同一treeをGitへ保存し、限定公開先で反映を確認する。
+5. Web本体とD1の認証・利用者分離・移行、Sky MCP、Fashion MCP、収益精算を同じtreeで全検証する。
+6. 収益精算Workerを専用D1・署名secret・本人限定Sites originへ接続し、合成Receiptで縦断確認する。
+7. 合格した同一treeをGitへ保存し、本人限定Sitesへ反映して旧versionへ戻せることを確認する。
 
-1〜4はこの変更で完了。5〜7は外部資産・所有者設定・公開先権限が必要なため未完了。
+1〜7をDeveloper Preview範囲で完了した。rc2配布資産、production署名、製品許諾は物理OS配布の別ゲート、
+有償商品と販売・決済・払出しProviderは事業ローンチの別ゲートとして未完了を維持する。
 
 ### P1 — 時間が残る場合
 
@@ -56,7 +56,12 @@
 - 実process: `npm run os:backend:launch`、PASS。
 - 実process検証は、起動、生存確認、未認証拒否、署名package導入/許可/実行、SIGTERM、
   2つのSQLite integrity check、再起動、旧session拒否、receipt復元を一時データで完走した。
-- 開始SHA `0cc5415` のGitHub workflow 6件はすべてsuccess。今回の差分を含む全体CIはcommit/push後に別判定する。
+- `npm run verify`: Web 122 tests、Fashion Brand Ops 15 tests、仕事API 143 assertions、型、lint、
+  3系統D1移行、MCP package、Billing Worker dry-run、production buildに合格。
+- 公開Billing Worker: `/health` 200。署名済み合成Receipt 888 centsを201で受け、Sky fee 888、
+  payout `not_required`、同一Receipt再送200、status 200、不正Origin 403を確認した。実入金・実送金ではない。
+- 実環境とロールバック情報は
+  [owner validation evidence](evidence/launch/backend-owner-validation-20260912.json) に保存する。
 
 ## 起動・監視・復旧
 
@@ -71,9 +76,17 @@ rock-hub --state .state/hub --registry systems/rock-star-os/examples/registry
 利用者が入力を確認して新しいkeyで再試行する。配布版全体のbackup/restore/削除は
 `docs/preview-installation-ja.md`に従い、旧候補へ戻す場合も既存状態を先に保全する。
 
+収益精算Workerの生存確認は
+`GET https://rockstar-sky-billing.mr-kirin999.workers.dev/health`。D1移行は
+`npm run billing:migrate`、Worker反映は`npm run billing:deploy`を使う。secretはWranglerとSitesの
+secret storeだけへ置き、Gitへ保存しない。Sitesは直前のversion 12を残しているため、問題時はその保存版を
+再deployできる。D1のEarning Receipt台帳は追記型なので、障害時に削除や巻戻しを行わず取込を停止して照合する。
+
 ## 現在のローンチ判定
 
-**BLOCKED_FOR_LAUNCH**。バックエンドのローカルP0は通ったが、このcheckoutにrc2の配布8資産がなく、
-production署名、製品許諾、本人限定Sitesのログイン後操作、同一最終候補のfresh導入/復旧を今回のsourceで
-再確認できない。最短経路は、既存private draft releaseの8資産へアクセスできる所有者アカウントを接続し、
-既存rc2を改変せず検証すること。sourceを変更して新imageを作る場合はLinux buildとD0〜D6再受入が必要になる。
+**READY_FOR_OWNER_VALIDATION**。OS Hub、Web/D1、Sky MCP、Wallet精算Workerの最小バックエンドは、
+合成データと本人限定環境で起動・停止・再起動・保存・認証・失敗境界・反映を確認した。
+
+ただし**事業としての一般ローンチ／実収益回収は未許可**。有償商品1件、販売・決済・払出しProviderの
+sandbox credential、Provider署名済み入金event、返金・dispute・払出し失敗運用、所在地・主体・規約の確認が残る。
+物理OS配布もrc2資産、production署名、製品許諾、実機受入が揃うまで別途BLOCKEDのまま。
