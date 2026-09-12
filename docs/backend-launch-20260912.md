@@ -62,7 +62,7 @@ sourceは`1763deb56990bc7dc380c72a5b6043cb089c21a0`であり、このバック�
 - 実process: `npm run os:backend:launch`、PASS。
 - 実process検証は、起動、生存確認、未認証拒否、署名package導入/許可/実行、SIGTERM、
   2つのSQLite integrity check、再起動、旧session拒否、receipt復元を一時データで完走した。
-- QEMU Preview lifecycle対象54件がPASS。OS起動失敗時にGame writerを開始しない回帰試験を含む。
+- QEMU Preview lifecycle対象51件がPASS。OS起動失敗時にGame writerを開始しない回帰試験を含む。
 - 最終`npm run verify`はWeb 107件、Fashion Brand Ops 15件、型・lint・production build、
   API 143 assertionsを含めてPASS。
 - 開始SHA `0cc5415` のGitHub workflow 6件はすべてsuccess。今回の差分を含む全体CIはcommit/push後に別判定する。
