@@ -521,15 +521,34 @@ class OwnedLifecycle(unittest.TestCase):
         from contextlib import ExitStack
         module, patches = self.action_patches()
         module.launch.return_value = {'running': True}
+        events = []
+        module.launch.side_effect = lambda *args: events.append('launch') or {'running': True}
+        def unavailable_game(*args):
+            events.append('game')
+            raise ValueError('fixture server unavailable')
         with ExitStack() as stack:
             for item in patches:
                 stack.enter_context(item)
             stack.enter_context(patch.object(preview, 'installed_release', return_value={'game': {'sha256': 'a' * 64}}))
-            stack.enter_context(patch.object(preview, 'sandbox_command', side_effect=ValueError('fixture server unavailable')))
+            stack.enter_context(patch.object(preview, 'sandbox_command', side_effect=unavailable_game))
             result = preview.action(SimpleNamespace(directory=self.root, action='start', no_open=True))
         self.assertTrue(result['running'])
         self.assertEqual(result['game']['status'], 'UNAVAILABLE')
+        self.assertEqual(events, ['launch', 'game'])
         module.launch.assert_called_once()
+
+    def test_failed_os_launch_never_starts_game_writer(self):
+        from contextlib import ExitStack
+        module, patches = self.action_patches()
+        module.launch.side_effect = OSError('foreign display listener')
+        with ExitStack() as stack:
+            for item in patches:
+                stack.enter_context(item)
+            stack.enter_context(patch.object(preview, 'installed_release', return_value={'game': {'sha256': 'a' * 64}}))
+            sandbox = stack.enter_context(patch.object(preview, 'sandbox_command'))
+            with self.assertRaisesRegex(OSError, 'foreign display listener'):
+                preview.action(SimpleNamespace(directory=self.root, action='start', no_open=True))
+        sandbox.assert_not_called()
 
     def test_failed_game_writer_stop_blocks_vm_deletion(self):
         from contextlib import ExitStack
