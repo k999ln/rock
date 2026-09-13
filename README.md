@@ -8,7 +8,7 @@
 
 tob側の自動化ツールを商品として管理するSkyと、自動化で得たお金を管理するWalletに特化したOSを開発します。Skyは単なるツール一覧ではなく、**探す→権限・料金を確認→端末/PC/Cloudへ実行→停止→結果と記録を受け取る**までを一か所につなぎます。[Skyの図・優位性・現在の収録ツール](docs/sky.md)を参照してください。
 
-**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ29）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定です。Skyの8.88 USDは先払い月額ではなく、全自動化ファンドを合算した検証済み純収益からだけ回収する利用者単位の月間上限です。承認済み実費と当月Sky利用料を除く残額は100%利用者に帰属します。
+**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ30）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定です。Skyの8.88 USDは先払い月額ではなく、全自動化ファンドを合算した検証済み純収益からだけ回収する利用者単位の月間上限です。承認済み実費と当月Sky利用料を除く残額は100%利用者に帰属します。
 
 ホームの設定アプリには「システム診断と保全」があります。通信・保存・暗号化・更新・API・PC Connectorをその場で診断し、端末内のRockstarOS設定だけをパスフレーズ付き暗号化バックアップへ保存・復元できます。ログイン、PC接続token、Wallet残高、server receiptは含めません。これはWeb/PWAの保全機能であり、物理端末のBSP・bootloader・正式署名鍵・外部Provider接続の代わりではありません。
 
@@ -41,12 +41,13 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / 数を固定しない自動化ファンド、収益タグ付き精算Worker、OS lifecycle、Sky MCP、ホーム・設定・端末保全UIを本人限定Developer Previewへ統合 / 完了 43/67件
+最終更新: 2026-09-13 / RockstarOS Marketsを読取専用の市場分析アダプターとして動的自動化ファンドへ統合 / 完了 44/68件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
 | FND01 | 利用可能な自動化ツールから数を固定しないファンドを形成し、構成数・参加・版をD1へ保存 | 完了 | [記録](lib/automation-fund.ts) · [記録](lib/automation-fund-store.ts) · [記録](app/api/automation-funds/route.ts) · [記録](components/autonomous-fund-market.tsx) · [記録](drizzle/0008_wooden_avengers.sql) · [記録](tests/automation-fund.test.mjs) |
 | FND02 | ファンド・ツール別の検証済み収益を集計し、全ファンド合算の月最大8.88 USDと利用者帰属額を実Providerで精算 | 進行中 | [記録](services/sky-billing/migrations/0003_automation_funds.sql) · [記録](services/sky-billing/src/domain.ts) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing-worker.test.mjs) · [記録](docs/product-baseline.md) |
+| MKT01 | RockstarOS Marketsを自動化ファンドの読取専用市場分析アダプターとして統合 | 完了 | [記録](lib/markets-adapter.ts) · [記録](app/api/markets/analysis/route.ts) · [記録](components/polymarket-workspace.tsx) · [記録](tests/markets-adapter.test.mjs) · [記録](docs/markets-fund-integration-20260913.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -131,7 +132,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 最初の実収益Providerを一つ選び、契約済みsandboxで成功・取消・返金を照合して、ファンドとツールを付けたEarning Receiptから利用者払出し指図まで通す。
+次の作業: 実注文は無効のまま、最初の実収益Providerを一つ選び、契約済みsandboxで成功・取消・返金と確定実現損益を照合して、ファンドとツールを付けたEarning Receiptから利用者払出し指図まで通す。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

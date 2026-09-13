@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 29 },
+    { length: 30 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ29の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ30の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -119,7 +119,7 @@ export function validateBaseline(
   const skyInventory = resolve(root, data.sky?.inventory || '');
   requireValue(
     !relative(root, skyInventory).startsWith('..') &&
-      read(skyInventory).includes('Web / PCで現在使える9件'),
+      read(skyInventory).includes('Web / PCで現在使える10件'),
     'Skyの役割と収録ツールの正本が必要です',
   );
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');
@@ -129,9 +129,15 @@ export function validateBaseline(
   );
   requireValue(
     data.marketExploration?.appShellAuthorized === true &&
-      data.marketExploration?.runtimeAuthorized === false &&
+      data.marketExploration?.runtimeAuthorized === true &&
+      data.marketExploration?.runtimeScope ===
+        'public_live_market_data_read_only' &&
+      data.marketExploration?.orderExecutionEnabled === false &&
+      data.marketExploration?.countsAsFundRevenue === false &&
+      data.marketExploration?.revenueRecognition ===
+        'provider_confirmed_realized_pnl_only' &&
       data.marketExploration?.realValueEnabled === false,
-    'Polymarketは基本アプリ枠のみ承認され、実接続・実資金は未承認です',
+    'Marketsは公開ライブ市場の読取専用で、注文・実資金・未確定収益計上は未承認です',
   );
   requireValue(
     data.homeExperience?.defaultRoute === '/' &&
@@ -347,6 +353,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ29、動的な自動化ファンド、メルカリ収益ループ、ホーム・設定utility、端末診断・暗号化保全、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、外部実接続/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ30、動的な自動化ファンド、読取専用Marketsアダプター、メルカリ収益ループ、ホーム・設定utility、端末診断・暗号化保全、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、注文/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

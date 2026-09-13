@@ -1,5 +1,13 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-13 — RockstarOS Marketsを自動化ファンドへ安全に統合
+
+公開中のRockstarOS Marketsを、動的自動化ファンドが選べる読取専用の市場分析アダプターとして追加した。OS側は公開ライブ市場だけを取得し、fallback、サンプル値、モック残高、架空取引量、indicative quote、含み損益を収益へ入れない。取得不能時はサンプル表示へ切り替えず停止する。
+
+ファンド会計は既存のD1 membershipとSky Billingを唯一の正本に保ち、Providerで確定した実現損益だけを将来のEarning Receipt候補にする。実注文、自動再投資、Wallet資金移動、公開範囲の変更は行っていない。旧80/10/10は`/fund/legacy`だけに隔離したまま維持する。[比較・安全境界](docs/markets-fund-integration-20260913.md)。
+
+`npm run verify`相当の全項目はWeb 170 tests、Marketsと動的ファンドの集中検証、型、lint、MCP package、Billing Worker dry-run、Fashion Brand Ops 15 tests、本番build、仕事API 143 assertionsまで合格した。ローカル待受を使う試験だけsandbox外で再実行した。検証は合成・sandbox境界内であり、外部市場の注文・実資金移動・公開設定変更は行っていない。
+
 ## 2026-09-12 — OS診断・暗号化保全・更新確認を設定へ追加
 
 設定の「システム」に、通信、端末内保存、Web Crypto、Service Worker、RockstarOS API、PC Connectorの実状態診断を追加した。端末内のRockstarOS外観・設定だけをパスフレーズから導出した鍵とAES-GCMで暗号化して書き出し、改ざんまたは誤ったパスフレーズを拒否して復元できる。ログイン、PC接続token、Wallet残高、server receiptは端末設定バックアップへ含めない。
@@ -386,12 +394,13 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / 数を固定しない自動化ファンド、収益タグ付き精算Worker、OS lifecycle、Sky MCP、ホーム・設定・端末保全UIを本人限定Developer Previewへ統合 / 完了 43/67件
+最終更新: 2026-09-13 / RockstarOS Marketsを読取専用の市場分析アダプターとして動的自動化ファンドへ統合 / 完了 44/68件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
 | FND01 | 利用可能な自動化ツールから数を固定しないファンドを形成し、構成数・参加・版をD1へ保存 | 完了 | [記録](lib/automation-fund.ts) · [記録](lib/automation-fund-store.ts) · [記録](app/api/automation-funds/route.ts) · [記録](components/autonomous-fund-market.tsx) · [記録](drizzle/0008_wooden_avengers.sql) · [記録](tests/automation-fund.test.mjs) |
 | FND02 | ファンド・ツール別の検証済み収益を集計し、全ファンド合算の月最大8.88 USDと利用者帰属額を実Providerで精算 | 進行中 | [記録](services/sky-billing/migrations/0003_automation_funds.sql) · [記録](services/sky-billing/src/domain.ts) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing-worker.test.mjs) · [記録](docs/product-baseline.md) |
+| MKT01 | RockstarOS Marketsを自動化ファンドの読取専用市場分析アダプターとして統合 | 完了 | [記録](lib/markets-adapter.ts) · [記録](app/api/markets/analysis/route.ts) · [記録](components/polymarket-workspace.tsx) · [記録](tests/markets-adapter.test.mjs) · [記録](docs/markets-fund-integration-20260913.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -476,7 +485,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 最初の実収益Providerを一つ選び、契約済みsandboxで成功・取消・返金を照合して、ファンドとツールを付けたEarning Receiptから利用者払出し指図まで通す。
+次の作業: 実注文は無効のまま、最初の実収益Providerを一つ選び、契約済みsandboxで成功・取消・返金と確定実現損益を照合して、ファンドとツールを付けたEarning Receiptから利用者払出し指図まで通す。
 <!-- project-status:end -->
 
 ## 次段階の設計

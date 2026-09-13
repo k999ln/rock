@@ -1,6 +1,6 @@
 {
-  "version": "1.25",
-  "decidedAt": "2026-09-12",
+  "version": "1.26",
+  "decidedAt": "2026-09-13",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -11,7 +11,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ29 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ30 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -104,7 +104,8 @@
     "RQ26",
     "RQ27",
     "RQ28",
-    "RQ29"
+    "RQ29",
+    "RQ30"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -113,6 +114,7 @@
     "goal-driven-brand-operations",
     "sky-earnings-settlement",
     "autonomous-automation-funds",
+    "read-only-market-analysis-adapter",
     "generic-mcp-connector"
   ],
   "fashionBrandOperations": {
@@ -328,11 +330,15 @@
     "externalCosts": "separate, disclosed before consent; unspecified"
   },
   "marketExploration": {
-    "status": "base_app_shell_approved",
+    "status": "live_public_read_only_adapter_integrated",
     "appShellAuthorized": true,
-    "runtimeAuthorized": false,
+    "runtimeAuthorized": true,
+    "runtimeScope": "public_live_market_data_read_only",
+    "orderExecutionEnabled": false,
+    "countsAsFundRevenue": false,
+    "revenueRecognition": "provider_confirmed_realized_pnl_only",
     "realValueEnabled": false,
-    "scope": "Polymarket is a base app slot and separate external adapter. Live market data, orders, settlement and Wallet transfers remain disabled pending region, identity, contract and regulatory gates. Game asset trading remains an optional proposal."
+    "scope": "Polymarket is a base app slot and separate external adapter. Public live market data may be read for analysis only. Sample data, mock balances, venue volume, quotes and unrealized P&L never become fund revenue. Orders, settlement and Wallet transfers remain disabled pending region, KYC, wallet signature, explicit approval, contract and regulatory gates. Only provider-confirmed realized P&L may become an Earning Receipt. Game asset trading remains an optional proposal."
   },
   "releaseExecution": {
     "startedAt": "2026-09-10T05:43:35Z",
