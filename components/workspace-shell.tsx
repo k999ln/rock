@@ -35,7 +35,7 @@ const navigation = [
   { href: '/chat', label: 'Chat', Icon: MessageCircle },
   { href: '/work', label: '仕事・履歴', Icon: ListChecks },
   { href: '/wallet', label: 'Wallet', Icon: Wallet },
-  { href: '/polymarket', label: 'Polymarket', Icon: Activity },
+  { href: '/market', label: 'Market', Icon: Activity },
 ];
 
 export default function WorkspaceShell({

@@ -5,7 +5,7 @@ import './workspace.css';
 export const metadata: Metadata = {
   title: 'RockstarOS',
   description:
-    'Sky、Chat、Wallet、Polymarketを一つのホームから使うRockstarOS Developer Preview。',
+    'Sky、Chat、Wallet、Market、Fundを一つのホームから使うRockstarOS Developer Preview。',
   applicationName: 'RockstarOS',
   authors: [{ name: 'kaiya' }],
   appleWebApp: {

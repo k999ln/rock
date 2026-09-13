@@ -99,6 +99,19 @@ async function status(request: Request, env: Env) {
   )
     .bind(token.sub, period, SETTLEMENT_CURRENCY)
     .all();
+  const tools = await env.DB.prepare(
+    `SELECT automation_tool_id AS automationToolId,
+      COALESCE(SUM(gross_minor),0) AS grossMinor,
+      COALESCE(SUM(operating_cost_minor),0) AS operatingCostMinor,
+      COUNT(*) AS receiptCount
+     FROM earning_receipts
+     WHERE user_id=? AND period=? AND currency=? AND applied_at IS NOT NULL
+       AND automation_tool_id IS NOT NULL
+     GROUP BY automation_tool_id
+     ORDER BY automation_tool_id`,
+  )
+    .bind(token.sub, period, SETTLEMENT_CURRENCY)
+    .all();
   const current = settlement ?? {
     grossMinor: 0,
     operatingCostMinor: 0,
@@ -131,6 +144,7 @@ async function status(request: Request, env: Env) {
         ),
       },
       funds: funds.results,
+      tools: tools.results,
       receipts: receipts.results,
     },
     200,

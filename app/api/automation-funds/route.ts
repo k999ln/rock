@@ -68,7 +68,9 @@ async function handle(
 }
 
 export const GET = (request: Request) =>
-  handle(request, (store) => store.list());
+  handle(request, (store) =>
+    store.list(fundCandidatesFromCatalog(catalog)),
+  );
 
 export const POST = (request: Request) =>
   handle(request, async (store) => {

@@ -1,4 +1,9 @@
-import type { AutomationFundPlan } from './automation-fund';
+import {
+  automationFundAnalytics,
+  refreshAutomationFundPlan,
+  type AutomationFundCandidate,
+  type AutomationFundPlan,
+} from './automation-fund';
 
 export class AutomationFundError extends Error {
   constructor(
@@ -28,7 +33,32 @@ export function automationFundStore(db: D1Database, user: string) {
     };
   }
 
-  async function list() {
+  async function measuredCandidates(
+    candidates: AutomationFundCandidate[],
+  ): Promise<AutomationFundCandidate[]> {
+    const runs = await db
+      .prepare(
+        `SELECT tool,
+           COALESCE(SUM(CASE WHEN status='completed' THEN 1 ELSE 0 END),0) AS completed,
+           COALESCE(SUM(CASE WHEN status='failed' THEN 1 ELSE 0 END),0) AS failed
+         FROM tool_runs WHERE user_id=? GROUP BY tool`,
+      )
+      .bind(user)
+      .all<{ tool: string; completed: number; failed: number }>();
+    const runByTool = new Map(runs.results.map((row) => [row.tool, row]));
+    return candidates.map((candidate) => {
+      const run = runByTool.get(candidate.toolId);
+      return {
+        ...candidate,
+        verifiedGrossMinor: 0,
+        operatingCostMinor: 0,
+        completedReceipts: 0,
+        failedRuns: run?.failed ?? 0,
+      };
+    });
+  }
+
+  async function list(candidates?: AutomationFundCandidate[]) {
     const [funds, membership] = await Promise.all([
       db
         .prepare(
@@ -51,12 +81,30 @@ export function automationFundStore(db: D1Database, user: string) {
           updatedAt: string;
         }>(),
     ]);
-    return {
-      funds: funds.results.map((row) => ({
+    const savedFunds = funds.results.map((row) => ({
         ...(JSON.parse(row.payload) as AutomationFundPlan),
         revision: row.revision,
-      })),
+      }));
+    if (!candidates)
+      return {
+        funds: savedFunds,
+        membership: membership ?? null,
+        analytics: [],
+        candidates: [],
+      };
+    const measured = await measuredCandidates(candidates);
+    const evaluatedAt = new Date().toISOString();
+    const refreshed = savedFunds.map((fund) =>
+      refreshAutomationFundPlan(fund, measured, evaluatedAt),
+    );
+    return {
+      funds: refreshed,
       membership: membership ?? null,
+      analytics: refreshed.map((fund) => ({
+        fundId: fund.id,
+        ...automationFundAnalytics(fund, measured, evaluatedAt),
+      })),
+      candidates: measured,
     };
   }
 
@@ -123,5 +171,5 @@ export function automationFundStore(db: D1Database, user: string) {
     return list();
   }
 
-  return { get, list, create, join };
+  return { get, list, create, join, measuredCandidates };
 }

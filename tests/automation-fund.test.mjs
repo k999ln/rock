@@ -2,7 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   DEFAULT_FUND_TOOL_COUNT,
+  automationFundAnalytics,
   formAutomationFund,
+  refreshAutomationFundPlan,
   validateAutomationFundPlan,
 } from '../lib/automation-fund.ts';
 
@@ -76,4 +78,46 @@ void test('unready, duplicate and insufficient candidates fail safely', () => {
       candidates: [candidates[0], { ...candidates[0] }],
     }),
   );
+});
+
+void test('recalculates composition and only reports observed return from evidence', () => {
+  const plan = formAutomationFund({
+    id: 'fund-realtime',
+    name: 'リアルタイム構成',
+    strategy: 'balanced',
+    targetToolCount: 3,
+    candidates: candidates.map((candidate) => ({
+      ...candidate,
+      verifiedGrossMinor: 0,
+      operatingCostMinor: 0,
+      completedReceipts: 0,
+    })),
+    now: '2026-09-12T00:00:00.000Z',
+  });
+  const refreshed = refreshAutomationFundPlan(
+    plan,
+    candidates,
+    '2026-09-13T00:00:00.000Z',
+  );
+  const analytics = automationFundAnalytics(
+    refreshed,
+    candidates,
+    '2026-09-13T00:00:00.000Z',
+  );
+  assert.equal(refreshed.status, 'ready');
+  assert.equal(analytics.evidence, 'verified_book_and_run_receipts');
+  assert.equal(typeof analytics.observedReturnBps, 'number');
+  assert.equal(analytics.recommendedToolIds.length, 3);
+
+  const unverified = automationFundAnalytics(
+    plan,
+    candidates.map((candidate) => ({
+      ...candidate,
+      verifiedGrossMinor: 0,
+      operatingCostMinor: 0,
+      completedReceipts: 0,
+    })),
+  );
+  assert.equal(unverified.observedReturnBps, null);
+  assert.equal(unverified.evidence, 'insufficient_evidence');
 });

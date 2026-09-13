@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-13",
-  "milestone": "RockstarOSの全非Home画面へ直接Home導線を実装し、共通画面と独自レイアウトの回帰契約へ固定。全6配布対象は証拠不足を残してBLOCKED",
-  "nextAction": "所有者による製品license選択とOWNER_MANUAL本番鍵生成を待ち、QEMU同一最終archiveの署名後受入を行う。",
+  "milestone": "全画面のHome導線を維持したまま、汎用PAPER市場のValue/Spendフローと検証済み実績を再計算する自律型ファンドを統合。全6配布対象は証拠不足を残してBLOCKED",
+  "nextAction": "全体verifyとローカル保存・再計算フローを確認し、所有者による製品license選択とOWNER_MANUAL本番鍵生成後にQEMU同一最終archiveの署名受入を行う。",
   "tasks": [
     {
       "id": "SKY01",
@@ -215,6 +215,36 @@
         "components/wallet-workspace.tsx",
         "lib/operations.ts",
         "tests/wallet-backend.test.mjs"
+      ]
+    },
+    {
+      "id": "MKT01",
+      "title": "あらゆる型付き価値を扱うPAPER市場とexact approval・risk・receipt・position台帳を実装",
+      "status": "done",
+      "dependsOn": ["WLT02"],
+      "evidence": [
+        "app/market/page.tsx",
+        "app/api/market/route.ts",
+        "components/everything-market.tsx",
+        "lib/everything-market.ts",
+        "lib/everything-market-store.ts",
+        "drizzle/0009_sad_giant_girl.sql",
+        "tests/everything-market.test.mjs",
+        "docs/everything-market-and-autonomous-fund-20260913.md"
+      ]
+    },
+    {
+      "id": "FND01",
+      "title": "ツールの検証済み純収益・実費・receipt・失敗から構成と観測利回りを30秒ごとに再計算",
+      "status": "done",
+      "dependsOn": ["WLT02", "MKT01"],
+      "evidence": [
+        "lib/automation-fund.ts",
+        "lib/automation-fund-store.ts",
+        "app/api/automation-funds/route.ts",
+        "components/autonomous-fund-market.tsx",
+        "tests/automation-fund.test.mjs",
+        "docs/everything-market-and-autonomous-fund-20260913.md"
       ]
     },
     {

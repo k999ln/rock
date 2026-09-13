@@ -41,6 +41,19 @@ export type AutomationFundPlan = {
   updatedAt: string;
 };
 
+export type AutomationFundAnalytics = {
+  evaluatedAt: string;
+  refreshIntervalSeconds: 30;
+  verifiedGrossMinor: number;
+  operatingCostMinor: number;
+  verifiedNetMinor: number;
+  observedReturnBps: number | null;
+  completedReceipts: number;
+  failedRuns: number;
+  evidence: 'verified_book_and_run_receipts' | 'insufficient_evidence';
+  recommendedToolIds: string[];
+};
+
 const FUND_ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$/u;
 const TOOL_ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$/u;
 
@@ -50,6 +63,20 @@ function safeInteger(value: unknown, name: string, maximum = 10_000_000_000) {
     !Number.isSafeInteger(value) ||
     value < 0 ||
     value > maximum
+  )
+    throw new Error(`AUTOMATION_FUND_${name}_INVALID`);
+  return value;
+}
+
+function signedSafeInteger(
+  value: unknown,
+  name: string,
+  maximum = 10_000_000_000,
+) {
+  if (
+    typeof value !== 'number' ||
+    !Number.isSafeInteger(value) ||
+    Math.abs(value) > maximum
   )
     throw new Error(`AUTOMATION_FUND_${name}_INVALID`);
   return value;
@@ -90,7 +117,6 @@ function candidateScore(
   const verifiedNet =
     safeInteger(candidate.verifiedGrossMinor, 'GROSS') -
     safeInteger(candidate.operatingCostMinor, 'COST');
-  if (verifiedNet < 0) throw new Error('AUTOMATION_FUND_COST_EXCEEDS_GROSS');
   const completed = safeInteger(candidate.completedReceipts, 'RECEIPTS');
   const failures = safeInteger(candidate.failedRuns, 'FAILURES');
   const strategyFit = candidate.strategyAffinity.includes(strategy)
@@ -235,7 +261,7 @@ export function validateAutomationFundPlan(value: unknown): AutomationFundPlan {
       throw new Error('AUTOMATION_FUND_TOOL_INVALID');
     ids.add(tool.toolId);
     allocationBps += safeInteger(tool.allocationBps, 'ALLOCATION', 10_000);
-    safeInteger(tool.verifiedNetMinor, 'VERIFIED_NET');
+    signedSafeInteger(tool.verifiedNetMinor, 'VERIFIED_NET');
     safeInteger(tool.completedReceipts, 'RECEIPTS');
   }
   if (allocationBps !== 10_000)
@@ -244,4 +270,73 @@ export function validateAutomationFundPlan(value: unknown): AutomationFundPlan {
   if (Number.isNaN(Date.parse(plan.createdAt)) || Number.isNaN(Date.parse(plan.updatedAt)))
     throw new Error('AUTOMATION_FUND_TIMESTAMP_INVALID');
   return structuredClone(plan);
+}
+
+export function refreshAutomationFundPlan(
+  plan: AutomationFundPlan,
+  candidates: AutomationFundCandidate[],
+  now = new Date().toISOString(),
+) {
+  const refreshed = formAutomationFund({
+    id: plan.id,
+    name: plan.name,
+    strategy: plan.strategy,
+    targetToolCount: plan.targetToolCount,
+    candidates,
+    now,
+  });
+  return {
+    ...refreshed,
+    createdAt: plan.createdAt,
+    revision: plan.revision,
+    status: refreshed.tools.some((tool) => tool.completedReceipts > 0)
+      ? ('ready' as const)
+      : ('forming' as const),
+  };
+}
+
+export function automationFundAnalytics(
+  plan: AutomationFundPlan,
+  candidates: AutomationFundCandidate[],
+  now = new Date().toISOString(),
+): AutomationFundAnalytics {
+  const selected = new Set(plan.tools.map((tool) => tool.toolId));
+  const measured = candidates.filter((candidate) =>
+    selected.has(candidate.toolId),
+  );
+  const verifiedGrossMinor = measured.reduce(
+    (sum, candidate) => sum + candidate.verifiedGrossMinor,
+    0,
+  );
+  const operatingCostMinor = measured.reduce(
+    (sum, candidate) => sum + candidate.operatingCostMinor,
+    0,
+  );
+  const completedReceipts = measured.reduce(
+    (sum, candidate) => sum + candidate.completedReceipts,
+    0,
+  );
+  const failedRuns = measured.reduce(
+    (sum, candidate) => sum + candidate.failedRuns,
+    0,
+  );
+  const verifiedNetMinor = verifiedGrossMinor - operatingCostMinor;
+  return {
+    evaluatedAt: now,
+    refreshIntervalSeconds: 30,
+    verifiedGrossMinor,
+    operatingCostMinor,
+    verifiedNetMinor,
+    observedReturnBps:
+      operatingCostMinor > 0
+        ? Math.trunc((verifiedNetMinor * 10_000) / operatingCostMinor)
+        : null,
+    completedReceipts,
+    failedRuns,
+    evidence:
+      completedReceipts > 0
+        ? 'verified_book_and_run_receipts'
+        : 'insufficient_evidence',
+    recommendedToolIds: plan.tools.map((tool) => tool.toolId),
+  };
 }
