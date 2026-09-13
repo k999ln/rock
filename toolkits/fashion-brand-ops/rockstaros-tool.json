@@ -4,7 +4,7 @@
   "name": "Instagram運用・受注型ブランド管理",
   "version": "0.3.0",
   "status": "ready",
-  "description": "ブランド方針と商品デザインから、Instagram集客、DM、受注、決済、制作・発送、分析までを承認付きで管理します。",
+  "description": "世界観と商品だけを決めると、Instagram集客、DM、受注、決済、制作・発送、分析までを承認付きで組み立てます。",
   "runtime": {
     "kind": "local_mcp",
     "transports": ["stdio", "streamable_http"],
@@ -14,6 +14,7 @@
     "minimumNode": "22.13.0"
   },
   "capabilities": [
+    "producer.start",
     "brand.intake",
     "market.assess",
     "creative.generate",

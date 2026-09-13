@@ -1,4 +1,6 @@
 export type FashionQuickPlan = {
+  campaignTitle: string;
+  launchLine: string;
   market: string;
   audience: string;
   positioning: string;
@@ -7,6 +9,16 @@ export type FashionQuickPlan = {
   caption: string;
   dmReply: string;
   orderFields: string[];
+  contentWeek: Array<{
+    day: string;
+    format: string;
+    theme: string;
+  }>;
+  producerFlow: Array<{
+    label: string;
+    detail: string;
+  }>;
+  decisionsNeeded: string[];
   approvalBoundary: string;
 };
 
@@ -35,7 +47,7 @@ export function buildFashionQuickPlan({
 }: QuickPlanInput): FashionQuickPlan {
   const direction = clean(brandDirection, 'ブランド方針');
   const product = clean(productDesign, '商品デザイン');
-  const market = clean(region || '日本', '販売地域', 80);
+  const market = clean(region || '日本を起点にオンライン', '販売地域', 80);
   const context = `${direction} ${product}`.toLowerCase();
 
   const isLuxury = /高級|ラグジュアリー|luxury|静か|無機質|上質/.test(
@@ -71,6 +83,14 @@ export function buildFashionQuickPlan({
   const language = isGlobal ? '日本語と英語の2版' : '日本語';
 
   return {
+    campaignTitle: isLuxury
+      ? '静かな輪郭 — MADE FOR YOU'
+      : isStreet
+        ? 'OWN THE SHAPE'
+        : isSustainable
+          ? '必要な一着だけをつくる'
+          : '着る人から完成する服',
+    launchLine: `${short(direction, 54)}を、${short(product, 54)}で見せる。`,
     market: `${market}向け。投稿は${language}で用意し、反応の良い版へ寄せる。`,
     audience,
     positioning,
@@ -87,6 +107,35 @@ export function buildFashionQuickPlan({
       '配送先の国・地域',
       '希望納期と規約への同意',
     ],
+    contentWeek: [
+      {
+        day: 'DAY 1',
+        format: '4:5 CAROUSEL',
+        theme: `商品の第一印象：${short(product, 46)}`,
+      },
+      {
+        day: 'DAY 3',
+        format: '9:16 REEL',
+        theme: '素材・輪郭・動きを8秒で見せる',
+      },
+      {
+        day: 'DAY 5',
+        format: 'STORY',
+        theme: 'サイズ・納期の質問をDMへ集める',
+      },
+      {
+        day: 'DAY 7',
+        format: '4:5 POST',
+        theme: '受注生産の理由と残り枠を伝える',
+      },
+    ],
+    producerFlow: [
+      { label: 'あなた', detail: '世界観と商品を決める' },
+      { label: 'AI', detail: '市場・広告・投稿・接客を組む' },
+      { label: 'あなた', detail: '公開日・価格・受注上限だけ確認' },
+      { label: 'Sky', detail: '承認後にMCPで運用し、反応を次案へ戻す' },
+    ],
+    decisionsNeeded: ['販売価格', '公開日', '受注上限'],
     approvalBoundary:
       'ここで作るのは下書きだけです。画像生成、投稿、広告出稿、DM送信、請求、返金は実行しません。',
   };

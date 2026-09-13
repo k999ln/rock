@@ -12,7 +12,7 @@ Skyはアプリ一覧ではなく、仕事を受け付ける窓口にする。�
     ▼
 Sky受付 ── 判断できない ──> 6役から本人が選択
     │
-    ├─ ブランド運営役 ──> Fashion Brand Ops（PC / MCP、38操作）
+    ├─ ブランド運営役 ──> AIブランドProducer（ブラウザ / PC / MCP、41操作）
     ├─ 案件判断役 ──> ココナラ案件チェック（ブラウザ）
     ├─ 記事編集役 ──> 記事の無料版メーカー（ブラウザ）
     ├─ 出典整理役 ──> 出典整理ツール（ブラウザ）
@@ -59,7 +59,7 @@ Sky Memory
 
 ## 実装順
 
-1. 今回: X型Timeline、Sky受付、6役への決定的な振り分け、送信または役ボタンから既存の実行画面を開く接続。ブランド運営役は38 MCP操作とapproval gateへ接続する。
+1. 今回: X型Timeline、Sky受付、6役への決定的な振り分け、送信または役ボタンから既存の実行画面を開く接続。ブランド運営役はProducerモードと41 MCP操作、approval gateへ接続する。
 2. 次: `sky_profiles`と`sky_context_grants`、プロフィール編集、roleごとの共有確認、削除・export。
 3. 次: OAuth接続保管庫、MCP preflight、tool capabilityとContext Envelopeの照合。
 4. 次: 会話履歴から複数役を組み立てるplanner。ただし外部送信・購入・公開・納品は本人確認を維持。

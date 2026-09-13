@@ -1,7 +1,7 @@
 {
   "id": "0199409d-4e55-4a7d-8b7c-b3dfeec44f9a",
   "name": "Instagram運用・受注型ブランド管理",
-  "summary": "売上・数量・粗利目標からInstagram施策を組み、DM顧客の次の一手、受注、決済、制作・発送、分析改善までを個別承認付きで進めるブランド経営MCPです。",
+  "summary": "世界観と商品だけを決めると、市場、Instagram施策、DM顧客の次の一手、受注、決済、制作・発送、分析改善までを個別承認付きで組み立てるProducer MCPです。",
   "providerName": "RockstarOS",
   "version": "0.3.0",
   "connectionType": "mcp_stdio",

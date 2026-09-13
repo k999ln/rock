@@ -141,7 +141,7 @@ void test('one connector discovers registered MCPs with arbitrary tool counts', 
     await request('/servers/fashion-brand-ops/connect', {})
   ).json();
   assert.equal(fashion.passport.protocolVersion, '2025-11-25');
-  assert.equal(fashion.passport.tools.length, 38);
+  assert.equal(fashion.passport.tools.length, 41);
   assert.notEqual(fashion.passport.toolDigest, mr.passport.toolDigest);
 
   const reconnected = await (

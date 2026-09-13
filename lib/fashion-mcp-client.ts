@@ -1,10 +1,11 @@
 export const FASHION_MCP_URL = 'http://127.0.0.1:8787';
-export const FASHION_MCP_TOOL_COUNT = 40;
+export const FASHION_MCP_TOOL_COUNT = 41;
 
 const TOKEN_KEY = 'sky.fashion-mcp.session';
 const PROTOCOL_KEY = 'sky.fashion-mcp.protocol';
 const SUPPORTED_PROTOCOLS = new Set(['2025-11-25', '2025-06-18']);
 const REQUIRED_TOOLS = [
+  'fashion.producer.start',
   'fashion.autopilot.run',
   'fashion.system.readiness',
   'instagram.accounts.intake_screenshots',
@@ -80,7 +81,7 @@ async function rpc(
 
 function validateTools(tools: McpResult['tools']) {
   if (!Array.isArray(tools) || tools.length !== FASHION_MCP_TOOL_COUNT)
-    throw new Error('40個の専用操作を確認できませんでした。');
+    throw new Error('41個の専用操作を確認できませんでした。');
   const names = new Set(tools.map((tool) => tool?.name));
   if (REQUIRED_TOOLS.some((name) => !names.has(name)))
     throw new Error('必要なInstagram運用操作を確認できませんでした。');

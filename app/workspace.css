@@ -5230,6 +5230,11 @@
   font-size: 12px;
   font-weight: 700;
 }
+.sky-tool-dialog .fashion-quick-form label > span small {
+  margin-left: 5px;
+  color: #71767b;
+  font-weight: 500;
+}
 .sky-tool-dialog .fashion-quick-form textarea,
 .sky-tool-dialog .fashion-quick-form input {
   width: 100%;
@@ -5266,6 +5271,46 @@
   display: grid;
   gap: 10px;
 }
+.sky-tool-dialog .fashion-producer-head {
+  position: relative;
+  overflow: hidden;
+  padding: 22px 18px;
+  border: 1px solid #46572b;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 90% 20%, rgba(201, 255, 103, 0.17), transparent 38%),
+    linear-gradient(135deg, #171d10, #090b08 58%, #050505);
+}
+.sky-tool-dialog .fashion-producer-head::after {
+  content: '';
+  position: absolute;
+  right: -26px;
+  bottom: -44px;
+  width: 120px;
+  height: 120px;
+  border: 1px solid rgba(201, 255, 103, 0.23);
+  border-radius: 50%;
+}
+.sky-tool-dialog .fashion-producer-head small {
+  color: #c9ff67;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+.sky-tool-dialog .fashion-producer-head h3 {
+  max-width: 85%;
+  margin: 8px 0 5px;
+  color: #f4f7ef;
+  font-size: clamp(20px, 5vw, 28px);
+  line-height: 1.15;
+}
+.sky-tool-dialog .fashion-producer-head p {
+  max-width: 82%;
+  margin: 0;
+  color: #aebc9a;
+  font-size: 12px;
+  line-height: 1.5;
+}
 .sky-tool-dialog .fashion-quick-result > section {
   display: grid;
   grid-template-columns: 22px minmax(0, 1fr);
@@ -5294,6 +5339,51 @@
 }
 .sky-tool-dialog .fashion-quick-copy {
   white-space: pre-line;
+}
+.sky-tool-dialog .fashion-producer-calendar ol,
+.sky-tool-dialog .fashion-producer-flow ol {
+  display: grid;
+  gap: 7px;
+  margin: 9px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.sky-tool-dialog .fashion-producer-calendar li {
+  display: grid;
+  grid-template-columns: 52px 88px minmax(0, 1fr);
+  gap: 7px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  background: #111311;
+}
+.sky-tool-dialog .fashion-producer-calendar li span,
+.sky-tool-dialog .fashion-producer-flow li span {
+  color: #c9ff67;
+  font-size: 10px;
+  font-weight: 800;
+}
+.sky-tool-dialog .fashion-producer-calendar li small {
+  margin: 0;
+  color: #71767b;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+.sky-tool-dialog .fashion-producer-calendar li p,
+.sky-tool-dialog .fashion-producer-flow li p {
+  margin: 0;
+}
+.sky-tool-dialog .fashion-producer-flow li {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #252a26;
+}
+.sky-tool-dialog .fashion-producer-flow li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
 }
 .sky-tool-dialog .fashion-quick-boundary {
   display: flex !important;

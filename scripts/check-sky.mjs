@@ -71,7 +71,7 @@ for (const marker of [
   );
 
 const fashionRunner = read('components/fashion-brand-ops-runner.tsx');
-for (const marker of ['PCなしで今すぐ使う', 'ワンクリックで接続'])
+for (const marker of ['Producerモード', 'プロデュース開始', 'ワンクリックで接続'])
   requireValue(
     fashionRunner.includes(marker),
     `Fashion Brand Opsの簡易版/MCP導線に「${marker}」がありません`,
@@ -79,7 +79,7 @@ for (const marker of ['PCなしで今すぐ使う', 'ワンクリックで接続
 
 const fashionClient = read('lib/fashion-mcp-client.ts');
 for (const marker of [
-  'FASHION_MCP_TOOL_COUNT = 40',
+  'FASHION_MCP_TOOL_COUNT = 41',
   "'initialize'",
   "'notifications/initialized'",
   "'tools/list'",

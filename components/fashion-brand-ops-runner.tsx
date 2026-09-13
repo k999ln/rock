@@ -8,6 +8,7 @@ import {
   Download,
   ImageIcon,
   ImagePlus,
+  ListChecks,
   MessageCircle,
   RefreshCw,
   ShieldCheck,
@@ -51,7 +52,7 @@ export function FashionBrandOpsRunner() {
   const [message, setMessage] = useState('');
   const [brandDirection, setBrandDirection] = useState('');
   const [productDesign, setProductDesign] = useState('');
-  const [region, setRegion] = useState('日本');
+  const [region, setRegion] = useState('');
   const [plan, setPlan] = useState<FashionQuickPlan | null>(null);
   const [planError, setPlanError] = useState('');
   const [candidates, setCandidates] = useState<AccountCandidate[]>([]);
@@ -128,13 +129,13 @@ export function FashionBrandOpsRunner() {
       <div className="fashion-quick-intro">
         <Sparkles size={20} />
         <div>
-          <strong>PCなしで今すぐ使う</strong>
-          <p>2項目を入れるだけで、販売用の下書きをまとめます。</p>
+          <strong>Producerモード</strong>
+          <p>楽しい部分だけ決めると、AIが販売の裏方を組みます。</p>
         </div>
       </div>
       <div className="fashion-quick-form">
         <label>
-          <span>ブランド方針</span>
+          <span>どんな世界にする？</span>
           <textarea
             value={brandDirection}
             maxLength={1200}
@@ -143,7 +144,7 @@ export function FashionBrandOpsRunner() {
           />
         </label>
         <label>
-          <span>商品デザイン</span>
+          <span>何をつくる？</span>
           <textarea
             value={productDesign}
             maxLength={1200}
@@ -152,17 +153,17 @@ export function FashionBrandOpsRunner() {
           />
         </label>
         <label>
-          <span>販売地域</span>
+          <span>どこへ届けたい？ <small>任意</small></span>
           <input
             value={region}
             maxLength={80}
-            placeholder="日本"
+            placeholder="空欄ならAIに任せる"
             onChange={(event) => setRegion(event.target.value)}
           />
         </label>
         <button className="black-button" onClick={createQuickPlan}>
           <Sparkles size={16} />
-          広告・接客案を作る
+          プロデュース開始
         </button>
       </div>
       {planError && (
@@ -170,6 +171,11 @@ export function FashionBrandOpsRunner() {
       )}
       {plan && (
         <div className="fashion-quick-result" aria-label="ブラウザ簡易プラン">
+          <header className="fashion-producer-head">
+            <small>CAMPAIGN 01</small>
+            <h3>{plan.campaignTitle}</h3>
+            <p>{plan.launchLine}</p>
+          </header>
           <section>
             <Target size={18} />
             <div>
@@ -202,6 +208,36 @@ export function FashionBrandOpsRunner() {
               <small>注文時に確認：{plan.orderFields.join(' / ')}</small>
             </div>
           </section>
+          <section className="fashion-producer-calendar">
+            <ListChecks size={18} />
+            <div>
+              <strong>最初の1週間</strong>
+              <ol>
+                {plan.contentWeek.map((item) => (
+                  <li key={item.day}>
+                    <span>{item.day}</span>
+                    <small>{item.format}</small>
+                    <p>{item.theme}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </section>
+          <section className="fashion-producer-flow">
+            <Sparkles size={18} />
+            <div>
+              <strong>あとはこう動く</strong>
+              <ol>
+                {plan.producerFlow.map((item) => (
+                  <li key={`${item.label}-${item.detail}`}>
+                    <span>{item.label}</span>
+                    <p>{item.detail}</p>
+                  </li>
+                ))}
+              </ol>
+              <small>最後に決めること：{plan.decisionsNeeded.join(' / ')}</small>
+            </div>
+          </section>
           <p className="fashion-quick-boundary">
             <ShieldCheck size={16} />
             {plan.approvalBoundary}
@@ -217,7 +253,7 @@ export function FashionBrandOpsRunner() {
             <strong>{connected ? 'MCP接続済み' : 'PCのMCPへ接続'}</strong>
             <p>
               {connected
-                ? 'Fashion Brand Opsの40操作を確認できました。'
+                ? 'Fashion Brand Opsの41操作を確認できました。'
                 : '外部Provider、受注DB、承認フローを使う場合だけ接続します。'}
             </p>
           </div>

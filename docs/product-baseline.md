@@ -222,7 +222,7 @@ Skyの接続先は「このPC」「Sky Cloud」「提供者のMCP」の3系統�
 
 ## RQ25 MCP接続を自動化ツール共通のConnectorにする
 
-Skyと各MCPを個別に直結せず、審査済みregistryを読むPC内Connectorへ統一する。stdioとStreamable HTTPを共通のserver IDで扱い、MCP initialize、initialized通知、protocol/capability交渉、paginationを含むtools/list、tool schema digest、接続時刻をConnection Passportとして返す。機能数を固定せず、同じConnectorで4機能と38機能の異なるMCPを扱えることを実接続で検証する。
+Skyと各MCPを個別に直結せず、審査済みregistryを読むPC内Connectorへ統一する。stdioとStreamable HTTPを共通のserver IDで扱い、MCP initialize、initialized通知、protocol/capability交渉、paginationを含むtools/list、tool schema digest、接続時刻をConnection Passportとして返す。機能数を固定せず、同じConnectorで4機能と41機能の異なるMCPを扱えることを実接続で検証する。
 
 自動化ツールからの操作契約は`servers → connect → prepare → execute`に固定する。tool annotationsは未信頼とし、既定では全操作に内容と引数へ結び付いた一回限りの承認を要求する。承認後の引数変更、券の再利用、`tools/call`への直接迂回を拒否する。送信後timeoutは自動再実行せず`outcome_unknown`にする。UIから任意commandやsecretを登録させず、stdioはshellを介さず起動し、遠隔MCPはHTTPS・redirect拒否・private network拒否・PC環境変数の認証参照を守る。
 

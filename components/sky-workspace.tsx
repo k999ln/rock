@@ -117,7 +117,7 @@ function statusFor(tool: Automation, fashionConnected = false) {
     return {
       label: fashionConnected ? 'MCP接続済み' : '今使える',
       detail: fashionConnected
-        ? 'ブラウザ簡易版＋MCP 40操作'
+        ? 'Producerモード＋MCP 41操作'
         : 'PCなしのブラウザ簡易版',
       className: 'is-ready',
     };

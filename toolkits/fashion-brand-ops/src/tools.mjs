@@ -4,6 +4,7 @@ const integer = (description, minimum = 0) => ({ type: "integer", minimum, descr
 const number = (description, minimum = 0, maximum = 1) => ({ type: "number", minimum, maximum, description });
 
 export const TOOL_DEFINITIONS = Object.freeze([
+  { name: "fashion.producer.start", description: "Turn only a worldview and product idea into a persisted market, 14-day content plan, Instagram draft, and approval-gated creative brief. It never performs external effects.", inputSchema: object({ run_id: str("Caller-generated idempotency key"), worldview: str("Brand worldview and non-negotiables"), product_design: str("Product idea, design, material, and lead-time notes"), region: str("Optional market or delivery region; AI infers a safe default"), brand_name: str("Optional brand name"), product_name: str("Optional product name"), price_minor: integer("Optional confirmed price in minor currency units"), currency: str("Optional ISO currency") }, ["run_id", "worldview", "product_design"]) },
   { name: "fashion.brand.upsert", description: "Create or update brand policy, voice, regions, FAQ, and visual constraints.", inputSchema: object({ id: str("Optional brand ID"), name: str("Brand name"), policy: { type: "object" } }, ["name", "policy"]) },
   { name: "fashion.product.upsert", description: "Create or update a product design. Existing price changes return an approval request.", inputSchema: object({ id: str("Optional product ID"), brand_id: str("Brand ID"), name: str("Product name"), design: { type: "object" }, price_minor: integer("Minor currency units"), currency: str("ISO currency"), status: { enum: ["draft", "active", "paused", "archived"] } }, ["brand_id", "name", "design", "price_minor", "currency"]) },
   { name: "fashion.market.analyze", description: "Assess target audience, regions, positioning, and Instagram channel fit.", inputSchema: object({ brand_id: str("Brand ID"), product_id: str("Product ID") }, ["brand_id", "product_id"]) },
@@ -50,6 +51,7 @@ export const TOOL_DEFINITIONS = Object.freeze([
 
 export function createToolRouter(service) {
   const routes = {
+    "fashion.producer.start": (args) => service.startProducer(args),
     "fashion.brand.upsert": (args) => service.upsertBrand(args),
     "fashion.product.upsert": (args) => service.upsertProduct(args),
     "fashion.market.analyze": (args) => service.analyzeMarket(args),

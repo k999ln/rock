@@ -595,7 +595,7 @@
     },
     {
       "id": "FB05",
-      "title": "改善版Skyの役割フィードへブランド運営役と40 MCP操作を統合",
+      "title": "改善版Skyの役割フィードへブランド運営役と41 MCP操作を統合",
       "status": "done",
       "dependsOn": ["FB01", "FB02", "FB03", "FB04"],
       "evidence": [
@@ -616,6 +616,21 @@
         "toolkits/fashion-brand-ops/src/service.mjs",
         "toolkits/fashion-brand-ops/test/service.test.mjs",
         "components/fashion-brand-ops-runner.tsx"
+      ]
+    },
+    {
+      "id": "FB07",
+      "title": "世界観と商品だけで市場・投稿・接客・受注導線を作るProducerモードを追加",
+      "status": "done",
+      "dependsOn": ["FB01", "FB05", "FB06"],
+      "evidence": [
+        "lib/fashion-quick-plan.ts",
+        "components/fashion-brand-ops-runner.tsx",
+        "toolkits/fashion-brand-ops/src/service.mjs",
+        "toolkits/fashion-brand-ops/src/tools.mjs",
+        "toolkits/fashion-brand-ops/db/migrations/005_producer_runs.sql",
+        "toolkits/fashion-brand-ops/test/service.test.mjs",
+        "tests/fashion-quick-plan.test.mjs"
       ]
     },
     {

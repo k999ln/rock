@@ -78,7 +78,7 @@ RockstarOSには既存native OS向けの固定fixtureとprivate device APIに加
 - 審査済みregistryからstdio / Streamable HTTPを扱うPC内Connector。
 - MCP 2025-11-25から2024-11-05までのversion確認、initialize、initialized通知、pagination付きtools/list。
 - server identity、capabilities、tool schema digest、接続時刻を持つConnection Passport。
-- 基本4機能とブランド運営38機能の同一Connector実接続。
+- 基本4機能とAIブランドProducer 41機能の同一Connector実接続。
 - server・tool・引数・tool digestへ結び付く5分有効の一回承認と、直接`tools/call`迂回の拒否。
 - Sky内の動的server一覧とワンタップ接続、macOS向け配布ZIP。
 

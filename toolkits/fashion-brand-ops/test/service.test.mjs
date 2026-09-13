@@ -24,6 +24,45 @@ function grant(runtime, approval, key) {
   return runtime.service.executeApproved({ approval_id: approval.approval_id, grant_token: grantToken, idempotency_key: key });
 }
 
+test("Producer mode turns two creative inputs into safe persisted launch work", (t) => {
+  const runtime = fixture();
+  t.after(() => runtime.store.close());
+  const input = {
+    run_id: "producer-demo-1",
+    worldview: "静かで無機質な高級感。完全受注生産。",
+    product_design: "黒いウールのワイドスラックス。立体的なタック、納期3週間。",
+    region: "日本・海外",
+  };
+  const started = runtime.service.startProducer(input);
+  assert.equal(started.idempotent_replay, false);
+  assert.equal(started.external_effects_executed, false);
+  assert.equal(started.content_plan.strategy.slots.length, 6);
+  assert.equal(started.first_draft.status, "draft");
+  assert.equal(started.creative.approval_required, true);
+  assert.deepEqual(started.ai_completed, [
+    "target_market",
+    "positioning",
+    "creative_brief",
+    "14_day_content_plan",
+    "instagram_caption",
+    "dm_to_order_flow",
+  ]);
+  assert.ok(started.decisions_needed.some((item) => item.key === "price"));
+  assert.equal(runtime.store.get("SELECT COUNT(*) AS count FROM effect_runs").count, 0);
+  assert.equal(runtime.store.get("SELECT COUNT(*) AS count FROM producer_runs").count, 1);
+  assert.equal(runtime.store.get("SELECT COUNT(*) AS count FROM campaigns").count, 1);
+  assert.equal(runtime.store.get("SELECT COUNT(*) AS count FROM approval_requests").count, 1);
+
+  const replay = runtime.service.startProducer(input);
+  assert.equal(replay.idempotent_replay, true);
+  assert.equal(runtime.store.get("SELECT COUNT(*) AS count FROM campaigns").count, 1);
+  assert.equal(runtime.store.get("SELECT COUNT(*) AS count FROM approval_requests").count, 1);
+  assert.throws(
+    () => runtime.service.startProducer({ ...input, worldview: "別の世界観" }),
+    /producer_run_id_conflict/,
+  );
+});
+
 test("brand, market, creative, analytics, and feedback form a closed loop", async (t) => {
   const runtime = fixture();
   t.after(() => runtime.store.close());
