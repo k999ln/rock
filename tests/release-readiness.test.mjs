@@ -7,6 +7,7 @@ import {
   createCurrentNativeSbom,
   createHistoricalNativeSbom,
   validateAndroidPhysicalReleaseAudit,
+  validateOwnerPrivateSitesAudit,
   validatePersonalNumberReleaseAudit,
   validateQemuPostSigningAcceptance,
   validateQemuReleaseAudit,
@@ -20,6 +21,8 @@ const ownerIntent = read('data/release-owner-intent-20260911.json');
 const lock = read('package-lock.json');
 const androidAudit = read('data/android-physical-release-audit.json');
 const personalNumberAudit = read('data/personal-number-release-audit.json');
+const sitesAudit = read('data/sites-owner-preview-audit.json');
+const sitesHosting = read('.openai/hosting.json');
 const qemuAudit = read('data/qemu-release-audit.json');
 const qemuAcceptance = read('docs/evidence/rls01/final-b7-rc2/acceptance-result.json');
 const qemuInventory = read('docs/evidence/rls01/remaining-b7-rc2/inventory.json');
@@ -35,6 +38,8 @@ const validateMatrix = ({
   dependencyLock = lock,
   android = androidAudit,
   personalNumber = personalNumberAudit,
+  sites = sitesAudit,
+  hosting = sitesHosting,
 } = {}) =>
   validateReleaseReadiness({
     root,
@@ -43,6 +48,8 @@ const validateMatrix = ({
     lock: dependencyLock,
     androidAudit: android,
     personalNumberAudit: personalNumber,
+    sitesAudit: sites,
+    sitesHosting: hosting,
   });
 
 const validateQemu = (audit = qemuAudit) =>
@@ -61,9 +68,30 @@ const validateQemu = (audit = qemuAudit) =>
 
 void test('current release matrix passes while preserving real blockers', () => {
   const result = validateMatrix();
-  assert.deepEqual(result.readyTargets, ['web-pwa-owner-preview']);
-  assert.equal(result.blockedTargets.length, 5);
+  assert.deepEqual(result.readyTargets, []);
+  assert.equal(result.blockedTargets.length, 6);
   assert.equal(result.missingDependencyLicenses, 0);
+  assert.equal(result.sites.status, 'OUTDATED');
+});
+
+void test('owner-private delivery stays safe while latest source sync remains blocked', () => {
+  const changed = structuredClone(readiness);
+  const target = changed.targets.find(({ id }) => id === 'web-pwa-owner-preview');
+  target.gates.find(({ id }) => id === 'latest-approved-source-sync').status = 'pass';
+  target.declaredStatus = 'ready';
+  assert.throws(
+    () => validateOwnerPrivateSitesAudit({ audit: sitesAudit, hosting: sitesHosting, readiness: changed }),
+    /未同期状態または必要な所有者行動/,
+  );
+});
+
+void test('owner-private delivery rejects public or external access readback', () => {
+  const changed = structuredClone(sitesAudit);
+  changed.site.externalVisitors = 1;
+  assert.throws(
+    () => validateOwnerPrivateSitesAudit({ audit: changed, hosting: sitesHosting, readiness }),
+    /本人1名限定/,
+  );
 });
 
 void test('cannot label a target ready while a required gate is blocked', () => {
@@ -73,6 +101,19 @@ void test('cannot label a target ready while a required gate is blocked', () => 
     () => validateMatrix({ matrix: changed }),
     /宣言readyと算出blocked/,
   );
+});
+
+void test('a target cannot become ready by deleting or downgrading a required gate', () => {
+  const deleted = structuredClone(readiness);
+  const publicTarget = deleted.targets.find(({ id }) => id === 'web-pwa-public-preview');
+  publicTarget.gates = publicTarget.gates.filter(({ id }) => id !== 'product-license');
+  assert.throws(() => validateMatrix({ matrix: deleted }), /必須ID集合が不一致/);
+
+  const downgraded = structuredClone(readiness);
+  downgraded.targets
+    .find(({ id }) => id === 'iphone-ipad-client')
+    .gates.find(({ id }) => id === 'client-distribution').required = false;
+  assert.throws(() => validateMatrix({ matrix: downgraded }), /必須区分が不正/);
 });
 
 void test('cannot pass product license with only a license string or placeholder file', () => {

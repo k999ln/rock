@@ -10,6 +10,8 @@
     "qemuAudit": "data/qemu-release-audit.json",
     "androidPhysicalAudit": "data/android-physical-release-audit.json",
     "personalNumberAudit": "data/personal-number-release-audit.json",
+    "ownerPrivateSitesAudit": "data/sites-owner-preview-audit.json",
+    "ownerPrivateSitesHosting": ".openai/hosting.json",
     "generatedCurrentNativeSbom": "work/release/rockstaros-native-rc2.cdx.json",
     "generatedHistoricalNativeSbom": "work/release/rockstaros-native-historical-9abf78a.cdx.json",
     "generatedArtifactsCommitted": false
@@ -19,11 +21,12 @@
       "id": "web-pwa-owner-preview",
       "label": "Web / PWA 本人限定Preview",
       "distribution": "owner_private",
-      "declaredStatus": "ready",
+      "declaredStatus": "blocked",
       "gates": [
         { "id": "source-verification", "required": true, "status": "pass", "evidence": ["package.json", "docs/validation.md"] },
-        { "id": "secure-delivery", "required": true, "status": "pass", "evidence": [".openai/hosting.json", "docs/evidence/launch/sites-owner-private-20260911.json", "docs/evidence/launch/sites-owner-private-20260913.json"] },
+        { "id": "secure-delivery", "required": true, "status": "pass", "evidence": [".openai/hosting.json", "data/sites-owner-preview-audit.json", "docs/evidence/launch/sites-owner-private-20260911.json", "docs/evidence/launch/sites-owner-private-20260913.json"] },
         { "id": "operations-and-recovery", "required": true, "status": "pass", "evidence": ["components/system-maintenance.tsx", "tests/system-backup.test.mjs"] },
+        { "id": "latest-approved-source-sync", "required": true, "status": "blocked", "ownerAction": "最新版を本人限定Sitesへ同期してよいと明示承認し、同じSiteの新versionを配備・再読取りする" },
         { "id": "product-license-for-redistribution", "required": false, "status": "not_applicable", "reason": "本人限定のサービス利用で、ソースまたはOS imageの一般再配布を行わないため" },
         { "id": "production-image-signing", "required": false, "status": "not_applicable", "reason": "Web/PWAの本人限定配信でnative OS imageを配布しないため" }
       ]

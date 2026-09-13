@@ -187,9 +187,9 @@
 
 # 2026-09-12 — 配布方法別の最低条件・SBOM
 
-- `data/release-readiness.json`を追加し、本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android物理端末、iPhone/iPad client、マイナンバー連携の6対象を別判定にした。現状の算出結果はready 1、blocked 5。
+- `data/release-readiness.json`で、本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android物理端末、iPhone/iPad client、マイナンバー連携の6対象を別判定する。本人限定Sitesの安全なaccessと最新版同期も別gateにし、現状の算出結果はready 0、blocked 6。
 - `npm run release:check`で必須gate、根拠file、所有者license選択、top-level LICENSE、production鍵実施記録、マイナンバー無効化を検査した。未決条件をpassへ改変する否定試験5件に合格した。
 - `package-lock.json`の887 package entryを検査し、license metadata欠落0。`npm run release:sbom`でCycloneDX 1.6、854 unique componentを`work/release/rockstaros-web.cdx.json`へ生成し、bom-refが854件すべて一意であることを確認した。これはWeb/npm scopeでありnative Buildroot inventoryではない。
-- 設定の公開準備は同じ台帳を読み、本人限定Web/PWA 3/3、一般Web 2/4、QEMU 2/5、Android実機0/5、iPhone/iPad client 0/1、マイナンバー1/3を表示するよう変更した。過去QEMU候補を現在の配布可能状態として表示しない。
+- 設定の公開準備は値を同じ台帳から導出し、本人限定Web/PWA 3/4、一般Web 2/4、QEMU 6/10、Android実機0/5、iPhone/iPad client 0/1、マイナンバー1/7を表示する。本人限定Sitesは安全なaccessを維持しているが、稼働version 29のsourceが監査HEADより古いため最新版同期gateを未達にする。過去QEMU候補を現在の配布可能状態として表示しない。
 - ローカル待受が許可された環境で`npm run verify`を実行し、Web 168 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、公開gate、製品baseline、MCP配布一致、Billing Worker dry-run、本番buildに合格した。`/settings/system`の実ブラウザ表示はconsole error 0、横切れなし、6対象の数値と台帳が一致した。
 - 製品ライセンスの明示選択、production鍵の作成・保管、一般公開承認、実機/SKUと外部審査は所有者または外部authorityが必要であり、今回完了扱いにしていない。

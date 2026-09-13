@@ -6,7 +6,7 @@
 
 | 配布方法 | 状態 | 完了 | 次に必要なこと |
 | --- | --- | ---: | --- |
-| Web / PWA 本人限定Preview | READY | 3/3 | 現在の本人限定運用を維持し、更新ごとに全検証を再実行する |
+| Web / PWA 本人限定Preview | BLOCKED | 3/4 | 本人1名限定の稼働は確認済み。最新版を同じSiteへ同期し、version・deployment・source・archive・accessを再読取りする |
 | Web / PWA 一般公開Preview | BLOCKED | 2/4 | 製品ライセンスの所有者選択、公開範囲の明示承認 |
 | QEMU Developer Preview配布 | BLOCKED | 6/10 | 製品ライセンス、正式署名、署名後の同一候補受入、公開承認 |
 | Android系物理端末Preview | BLOCKED | 0/5 | 正確な機種/SKU、BSP/driver/boot/recovery、CDD/CTS、署名、販売地域の確認 |
@@ -18,6 +18,8 @@
 ## 自動検査すること
 
 - 配布対象とgateの欠落、重複、宣言状態と算出状態の不一致を拒否する。
+- 6つの配布対象ごとに配布区分、gate ID集合、必須/適用外区分を固定する。未達gateの削除や必須から任意への変更でreadyに見せることを拒否する。
+- 本人限定Sitesの安全な配信と最新版同期を分離する。本人1名、外部visitor 0、custom access、成功deploymentはsecure-deliveryの根拠になるが、稼働versionのsourceが監査HEADより古ければ対象全体をreadyにしない。
 - 根拠fileがrepository内に実在することを確認する。
 - 所有者が具体的なライセンスを選択し、top-level `LICENSE` が存在しない限り、一般Web版とQEMU版の製品ライセンスを合格にできない。
 - 所有者記録に正式鍵の準備と署名運用の実施がない限り、QEMU版とAndroid物理端末版のproduction署名を合格にできない。

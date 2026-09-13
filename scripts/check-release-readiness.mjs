@@ -15,6 +15,8 @@ const ownerIntent = readJson(resolve(root, 'data/release-owner-intent-20260911.j
 const lock = readJson(resolve(root, 'package-lock.json'));
 const androidAudit = readJson(resolve(root, 'data/android-physical-release-audit.json'));
 const personalNumberAudit = readJson(resolve(root, 'data/personal-number-release-audit.json'));
+const sitesAudit = readJson(resolve(root, 'data/sites-owner-preview-audit.json'));
+const sitesHosting = readJson(resolve(root, '.openai/hosting.json'));
 const result = validateReleaseReadiness({
   root,
   readiness,
@@ -22,6 +24,8 @@ const result = validateReleaseReadiness({
   lock,
   androidAudit,
   personalNumberAudit,
+  sitesAudit,
+  sitesHosting,
 });
 const qemuAudit = readJson(resolve(root, 'data/qemu-release-audit.json'));
 const qemuResult = validateQemuReleaseAudit({
@@ -66,7 +70,7 @@ if (historicalNativeSbomIndex !== -1) {
 }
 
 console.log(
-  `公開条件: ready ${result.readyTargets.length}/${result.targetCount}（${result.readyTargets.join(', ')}）、blocked ${result.blockedTargets.length}、npm依存 ${result.dependencyCount}件/license欠落0`,
+  `公開条件: ready ${result.readyTargets.length}/${result.targetCount}（${result.readyTargets.join(', ') || 'なし'}）、blocked ${result.blockedTargets.length}、npm依存 ${result.dependencyCount}件/license欠落0`,
 );
 console.log(
   `QEMU候補: ${qemuResult.candidate} / ${qemuResult.passed}/${qemuResult.required}要件合格 / ${qemuResult.blocked.length}要件未達`,

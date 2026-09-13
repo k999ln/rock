@@ -748,6 +748,97 @@ export function validatePersonalNumberReleaseAudit({ root, audit, readiness }) {
   };
 }
 
+export function validateOwnerPrivateSitesAudit({ audit, hosting, readiness }) {
+  const label = '本人限定Sites監査';
+  if (audit?.schema !== 'rockstaros-owner-private-sites-audit/1') fail(label + ': schemaが違います');
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(audit.observedAt || '')) {
+    fail(label + ': UTC観測時刻が必要です');
+  }
+  const site = audit.site || {};
+  const version = audit.latestVersion || {};
+  const sync = audit.sync || {};
+  const claims = audit.claims || {};
+  if (
+    site.projectId !== hosting?.project_id ||
+    site.status !== 'active' ||
+    site.currentUserRole !== 'owner' ||
+    site.accessMode !== 'custom' ||
+    site.allowedUsers !== 1 ||
+    site.allowedGroups !== 0 ||
+    site.allowedEditors !== 0 ||
+    site.externalVisitors !== 0 ||
+    claims.ownerPrivateDeliveryVerified !== true ||
+    claims.publicAudience !== false ||
+    claims.generalReleaseApproved !== false
+  ) {
+    fail(label + ': 本人1名限定のaccess readbackが一致しません');
+  }
+  let url;
+  try {
+    url = new URL(site.url);
+  } catch {
+    fail(label + ': Site URLが不正です');
+  }
+  if (url.protocol !== 'https:' || !url.hostname.endsWith('.chatgpt.site')) {
+    fail(label + ': HTTPSのSites URLではありません');
+  }
+  if (
+    !Number.isInteger(version.number) ||
+    version.number < 1 ||
+    typeof version.id !== 'string' ||
+    !/^[0-9a-f]{40}$/.test(version.sourceCommit || '') ||
+    !sha256Pattern.test(version.archiveSha256 || '') ||
+    !Number.isInteger(version.archiveBytes) ||
+    version.archiveBytes < 1 ||
+    !Number.isInteger(version.archiveFiles) ||
+    version.archiveFiles < 1 ||
+    typeof version.deploymentId !== 'string' ||
+    version.deploymentStatus !== 'succeeded' ||
+    !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(version.deploymentUpdatedAt || '')
+  ) {
+    fail(label + ': version、archive、deploymentのreadbackが不足しています');
+  }
+
+  const target = readiness.targets.find(({ id }) => id === 'web-pwa-owner-preview');
+  const secure = target?.gates.find(({ id }) => id === 'secure-delivery');
+  const current = target?.gates.find(({ id }) => id === 'latest-approved-source-sync');
+  if (
+    readiness.policy?.ownerPrivateSitesAudit !== 'data/sites-owner-preview-audit.json' ||
+    readiness.policy?.ownerPrivateSitesHosting !== '.openai/hosting.json' ||
+    secure?.status !== 'pass' ||
+    !secure.evidence?.includes('data/sites-owner-preview-audit.json')
+  ) {
+    fail(label + ': 公開台帳から本人限定配備readbackへの参照がありません');
+  }
+  if (sync.status === 'CURRENT') {
+    if (
+      current?.status !== 'pass' ||
+      claims.latestApprovedSourceDeployed !== true ||
+      version.sourceCommit !== sync.comparedReviewHead ||
+      sync.commitsBehind !== 0 ||
+      sync.authorization !== 'OWNER_APPROVED_AND_DEPLOYED'
+    ) {
+      fail(label + ': 最新版同期の合格根拠が一致しません');
+    }
+  } else if (sync.status === 'OUTDATED') {
+    if (
+      current?.status !== 'blocked' ||
+      claims.latestApprovedSourceDeployed !== false ||
+      version.sourceCommit === sync.comparedReviewHead ||
+      !Number.isInteger(sync.commitsBehind) ||
+      sync.commitsBehind < 1 ||
+      sync.authorization !== 'AWAITING_EXPLICIT_OWNER_APPROVAL' ||
+      typeof sync.nextAction !== 'string' ||
+      !sync.nextAction
+    ) {
+      fail(label + ': 未同期状態または必要な所有者行動が一致しません');
+    }
+  } else {
+    fail(label + ': sync状態が不正です');
+  }
+  return { status: sync.status, version: version.number, sourceCommit: version.sourceCommit };
+}
+
 export function validateReleaseReadiness({
   root,
   readiness,
@@ -755,6 +846,8 @@ export function validateReleaseReadiness({
   lock,
   androidAudit,
   personalNumberAudit,
+  sitesAudit,
+  sitesHosting,
 }) {
   if (readiness.schema !== 'rockstaros-release-readiness/1') fail('schemaが違います');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(readiness.evaluatedAt)) fail('評価日が必要です');
@@ -769,17 +862,92 @@ export function validateReleaseReadiness({
     'iphone-ipad-client',
     'personal-number-identity',
   ]);
+  const targetContracts = new Map([
+    ['web-pwa-owner-preview', {
+      distribution: 'owner_private',
+      gates: new Map([
+        ['source-verification', true],
+        ['secure-delivery', true],
+        ['operations-and-recovery', true],
+        ['latest-approved-source-sync', true],
+        ['product-license-for-redistribution', false],
+        ['production-image-signing', false],
+      ]),
+    }],
+    ['web-pwa-public-preview', {
+      distribution: 'public_web',
+      gates: new Map([
+        ['source-verification', true],
+        ['dependency-license-inventory', true],
+        ['product-license', true],
+        ['public-access-approval', true],
+      ]),
+    }],
+    ['qemu-developer-preview', {
+      distribution: 'downloadable_os_image',
+      gates: new Map([
+        ['candidate-identity', true],
+        ['security-baseline', true],
+        ['update-and-rollback', true],
+        ['recovery-and-backup', true],
+        ['diagnostics-and-acceptance', true],
+        ['current-native-component-sbom', true],
+        ['product-license', true],
+        ['production-signing', true],
+        ['post-signing-same-candidate-acceptance', true],
+        ['public-distribution-approval', true],
+      ]),
+    }],
+    ['android-physical-preview', {
+      distribution: 'physical_device_os',
+      gates: new Map([
+        ['exact-model-and-sku', true],
+        ['bsp-driver-boot-recovery', true],
+        ['android-cdd-cts', true],
+        ['gms', false],
+        ['production-signing', true],
+        ['regional-radio-and-sales', true],
+      ]),
+    }],
+    ['iphone-ipad-client', {
+      distribution: 'client_only',
+      gates: new Map([
+        ['replacement-os', false],
+        ['client-distribution', true],
+      ]),
+    }],
+    ['personal-number-identity', {
+      distribution: 'regulated_identity_feature',
+      gates: new Map([
+        ['disabled-until-approved', true],
+        ['purpose-and-necessity', true],
+        ['authorized-operator-and-provider', true],
+        ['data-flow-retention-and-deletion', true],
+        ['security-and-privacy-review', true],
+        ['incident-and-vendor-governance', true],
+        ['activation-approval', true],
+      ]),
+    }],
+  ]);
   for (const target of readiness.targets) {
     if (!target.id || targetIds.has(target.id)) fail(`${target.id || 'unknown'}: 対象IDが不正です`);
     targetIds.add(target.id);
+    const contract = targetContracts.get(target.id);
+    if (!contract || target.distribution !== contract.distribution) {
+      fail(`${target.id}: 配布区分が不正です`);
+    }
     if (!allowedTargetStates.has(target.declaredStatus)) fail(`${target.id}: 対象状態が不正です`);
     if (!Array.isArray(target.gates) || target.gates.length === 0) fail(`${target.id}: gateがありません`);
+    assertExactIds(target.gates, [...contract.gates.keys()], `${target.id} gates`);
     const gateIds = new Set();
     for (const gate of target.gates) {
       if (!gate.id || gateIds.has(gate.id)) fail(`${target.id}: gate IDが不正です`);
       gateIds.add(gate.id);
       if (typeof gate.required !== 'boolean' || !allowedGateStates.has(gate.status)) {
         fail(`${target.id}/${gate.id}: gate状態が不正です`);
+      }
+      if (gate.required !== contract.gates.get(gate.id)) {
+        fail(`${target.id}/${gate.id}: 必須区分が不正です`);
       }
       if (gate.status === 'not_applicable' && (!gate.reason || gate.required)) {
         fail(`${target.id}/${gate.id}: 適用外には理由が必要で、必須にはできません`);
@@ -798,7 +966,14 @@ export function validateReleaseReadiness({
   }
   for (const id of requiredTargets) if (!targetIds.has(id)) fail(`${id}: 必須対象がありません`);
 
-  if (!androidAudit || !personalNumberAudit) fail('Android/マイナンバー監査正本が必要です');
+  if (!androidAudit || !personalNumberAudit || !sitesAudit || !sitesHosting) {
+    fail('Android/マイナンバー/Sites監査正本が必要です');
+  }
+  const sitesResult = validateOwnerPrivateSitesAudit({
+    audit: sitesAudit,
+    hosting: sitesHosting,
+    readiness,
+  });
   const androidResult = validateAndroidPhysicalReleaseAudit({ root, audit: androidAudit, readiness });
   const personalNumberResult = validatePersonalNumberReleaseAudit({
     root,
@@ -827,6 +1002,7 @@ export function validateReleaseReadiness({
     missingDependencyLicenses: missingLicense.length,
     android: androidResult,
     personalNumber: personalNumberResult,
+    sites: sitesResult,
   };
 }
 

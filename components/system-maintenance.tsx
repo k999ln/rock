@@ -63,7 +63,7 @@ type Check = {
 type BackupMode = 'create' | 'restore';
 
 const releaseCopy: Record<string, { short: string; icon: React.ReactNode }> = {
-  'web-pwa-owner-preview': { short: '本人限定版は稼働可能', icon: <AppWindow /> },
+  'web-pwa-owner-preview': { short: '本人限定で稼働中。最新版の同期待ち', icon: <AppWindow /> },
   'web-pwa-public-preview': { short: 'ライセンス選択と公開承認が必要', icon: <AppWindow /> },
   'qemu-developer-preview': { short: 'rc2の基礎と部品表は合格。配布条件は未完了', icon: <HardDrive /> },
   'android-physical-preview': { short: '対象機種未選択。端末固有の実測証拠が必要', icon: <Smartphone /> },
@@ -222,6 +222,7 @@ export default function SystemMaintenance() {
   const readyReleaseCount = releaseReadiness.targets.filter(
     ({ declaredStatus }) => declaredStatus === 'ready',
   ).length;
+  const ownerWebRelease = releaseProgress(releaseReadiness, 'web-pwa-owner-preview');
   const qemuRelease = releaseProgress(releaseReadiness, 'qemu-developer-preview');
   const androidRelease = releaseProgress(releaseReadiness, 'android-physical-preview');
   const personalNumberRelease = releaseProgress(releaseReadiness, 'personal-number-identity');
@@ -468,7 +469,7 @@ export default function SystemMaintenance() {
             })}
           </div>
           <p className={styles.boundary}>
-            緑はその配布方法の最低条件を満たした状態です。QEMU rc2は{qemuRelease.text}。Android実機は対象端末未選択で{androidRelease.text}。マイナンバーは取得無効の境界だけ{personalNumberRelease.text}です。製品ライセンス、正式署名、端末固有試験、法務・安全管理、公開承認が揃うまで配布・有効化可能にはしません。
+            緑はその配布方法の最低条件を満たした状態です。本人限定Webは安全に稼働中ですが最新版同期前で{ownerWebRelease.text}。QEMU rc2は{qemuRelease.text}。Android実機は対象端末未選択で{androidRelease.text}。マイナンバーは取得無効の境界だけ{personalNumberRelease.text}です。製品ライセンス、正式署名、端末固有試験、法務・安全管理、公開承認が揃うまで配布・有効化可能にはしません。
           </p>
         </details>
       </div>
