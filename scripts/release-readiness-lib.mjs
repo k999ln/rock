@@ -858,6 +858,16 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
       readFileSync(resolve(root, 'scripts/check-web-security-response.mjs')),
     ),
     'public/sw.js': sha256(readFileSync(resolve(root, 'public/sw.js'))),
+    'app/manifest.ts': sha256(readFileSync(resolve(root, 'app/manifest.ts'))),
+    'public/rock-icon-192.png': sha256(
+      readFileSync(resolve(root, 'public/rock-icon-192.png')),
+    ),
+    'public/rock-icon-512.png': sha256(
+      readFileSync(resolve(root, 'public/rock-icon-512.png')),
+    ),
+    'public/rock-icon-maskable.svg': sha256(
+      readFileSync(resolve(root, 'public/rock-icon-maskable.svg')),
+    ),
   };
   if (
     localEvidence.schema !== 'rockstaros-web-security-response-evidence/1' ||
@@ -870,8 +880,16 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
     localEvidence.result?.status !== 'PASS' ||
     localEvidence.result?.universalHeaders !== Object.keys(expectedWebSecurityHeaders).length ||
     !Array.isArray(localEvidence.result?.routes) ||
-    localEvidence.result.routes.length !== 5 ||
-    !['/', '/sky', '/sw.js', '/manifest.webmanifest'].every((path) =>
+    localEvidence.result.routes.length !== 8 ||
+    ![
+      '/',
+      '/sky',
+      '/sw.js',
+      '/manifest.webmanifest',
+      '/rock-icon-192.png',
+      '/rock-icon-512.png',
+      '/rock-icon-maskable.svg',
+    ].every((path) =>
       localEvidence.result.routes.includes(path),
     ) ||
     !localEvidence.result.routes.some((path) => /^\/_next\/static\/[^/].+\.js$/.test(path)) ||

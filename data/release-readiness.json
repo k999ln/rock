@@ -24,7 +24,7 @@
       "distribution": "owner_private",
       "declaredStatus": "blocked",
       "gates": [
-        { "id": "source-verification", "required": true, "status": "pass", "evidence": ["package.json", "docs/validation.md"] },
+        { "id": "source-verification", "required": true, "status": "pass", "evidence": ["package.json", "app/manifest.ts", "public/rock-icon-maskable.svg", "tests/pwa-installability.test.mjs", "docs/validation.md"] },
         { "id": "secure-delivery", "required": true, "status": "pass", "evidence": [".openai/hosting.json", "data/sites-owner-preview-audit.json", "docs/evidence/launch/sites-owner-private-20260911.json", "docs/evidence/launch/sites-owner-private-20260913.json"] },
         { "id": "web-security-policy", "required": true, "status": "pass", "evidence": ["data/web-security-policy.json", "next.config.ts", "public/_headers", "scripts/check-web-security-response.mjs", "tests/web-security-policy.test.mjs", "docs/evidence/launch/web-security-local-20260913.json"] },
         { "id": "operations-and-recovery", "required": true, "status": "pass", "evidence": ["components/system-maintenance.tsx", "public/sw.js", "tests/system-backup.test.mjs", "tests/service-worker-update.test.mjs"] },

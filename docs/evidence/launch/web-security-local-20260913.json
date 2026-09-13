@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-09-13T04:23:34Z",
+  "observedAt": "2026-09-13T04:38:50Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
@@ -11,8 +11,12 @@
     "data/web-security-policy.json": "919c45822d2a6c7421a4423f918545f24d406d6acb8579d597472756c66daec5",
     "public/_headers": "267ced696576848bf2882547dddb9f7f41a17a45390cfc3b5647f1d87b06bcb9",
     "next.config.ts": "741bdbbf2bff9c74f23df7954a9db098f708011a7ec65ef470ca5912ce0600df",
-    "scripts/check-web-security-response.mjs": "fcd648eb4f259aaa801d5ea81f46cd5a6da05cceb78b19d8d44b4d6ef27e8b0e",
-    "public/sw.js": "f54ee60c3de43082b08ce2d13f4b03688350ae08563bc0c0191e98ac28d519ab"
+    "scripts/check-web-security-response.mjs": "98f3b59cfcd1d873e222d7a269d22ecdf297a6cfad1e3618faceb4760d5cd605",
+    "public/sw.js": "f54ee60c3de43082b08ce2d13f4b03688350ae08563bc0c0191e98ac28d519ab",
+    "app/manifest.ts": "f9e396588fe88ffaf7d69e6df780377c410a02416e67a360d9f4ab3c96fcf1ae",
+    "public/rock-icon-192.png": "9d983523d02ba07ff74ff3d57e4b92dc023d5b575986272f77baf95aa0688741",
+    "public/rock-icon-512.png": "6efdeff98fdfd19a31451732a8b862f64dc137fea07e33545b6f7345dcedf18a",
+    "public/rock-icon-maskable.svg": "1aad586f5be04ab99609546bf3c8837de76346819e90a1dfdb7d430f9eaac735"
   },
   "result": {
     "status": "PASS",
@@ -22,7 +26,10 @@
       "/sky",
       "/sw.js",
       "/manifest.webmanifest",
-      "/_next/static/chunks/index-B4Z0m5_N.js"
+      "/rock-icon-192.png",
+      "/rock-icon-512.png",
+      "/rock-icon-maskable.svg",
+      "/_next/static/chunks/index-ciZ4WJwa.js"
     ]
   },
   "boundary": {

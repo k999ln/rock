@@ -50,6 +50,43 @@ const manifest = await request('/manifest.webmanifest');
 for (const [key, value] of Object.entries(policy.routeHeaders['/manifest.webmanifest'])) {
   exactHeader(manifest, key, value, '/manifest.webmanifest');
 }
+const manifestBody = await manifest.json();
+for (const [key, expected] of Object.entries({
+  id: '/',
+  start_url: '/',
+  scope: '/',
+  display: 'standalone',
+  lang: 'ja',
+  dir: 'ltr',
+  prefer_related_applications: false,
+})) {
+  if (manifestBody[key] !== expected) {
+    throw new Error(
+      `web-security-response: manifest ${key} expected=${expected} actual=${manifestBody[key]}`,
+    );
+  }
+}
+const requiredIcons = [
+  { src: '/rock-icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+  { src: '/rock-icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+  { src: '/rock-icon-maskable.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'maskable' },
+];
+for (const required of requiredIcons) {
+  const icon = manifestBody.icons?.find((candidate) => candidate.src === required.src);
+  for (const [key, expected] of Object.entries(required)) {
+    if (icon?.[key] !== expected) {
+      throw new Error(
+        `web-security-response: manifest icon ${required.src} ${key} expected=${expected} actual=${icon?.[key]}`,
+      );
+    }
+  }
+  const response = await request(required.src);
+  if (!(response.headers.get('Content-Type') || '').toLowerCase().startsWith(required.type)) {
+    throw new Error(
+      `web-security-response: ${required.src} Content-Type expected=${required.type} actual=${response.headers.get('Content-Type')}`,
+    );
+  }
+}
 
 const html = await home.text();
 const staticAsset = html.match(/\/_next\/static\/[^"'<>\s]+\.js/)?.[0];
@@ -65,6 +102,13 @@ console.log(
     status: 'PASS',
     baseOrigin: base.origin,
     universalHeaders: Object.keys(policy.universalHeaders).length,
-    routes: ['/', '/sky', '/sw.js', '/manifest.webmanifest', staticAsset],
+    routes: [
+      '/',
+      '/sky',
+      '/sw.js',
+      '/manifest.webmanifest',
+      ...requiredIcons.map(({ src }) => src),
+      staticAsset,
+    ],
   }),
 );

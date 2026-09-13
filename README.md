@@ -10,9 +10,9 @@ tob側の自動化ツールを商品として管理するSkyと、自動化で�
 
 **製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ31）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定です。Skyの8.88 USDは先払い月額ではなく、検証済み自動化収益からだけ回収する月間上限です。
 
-ホームの設定アプリには「システム診断と保全」があります。通信・安全な接続・保存・暗号化・更新・通知・PWA表示・API・PC Connectorをその場で診断し、通知テスト、保存保護、個人情報なしの診断共有、暗号化バックアップ・復元、安全なホーム設定初期化を実行できます。PWA新版は自動即時切替せず、「更新を確認」後に本人が「更新を適用」を押した場合だけ切り替えます。公開条件はAndroid互換、GMS、物理端末、署名、OSS、無線規制、マイナンバーを別gateで表示します。これはWeb/PWAの運用機能であり、物理端末のBSP・bootloader・正式署名鍵・外部Provider接続の代わりではありません。
+ホームの設定アプリには「システム診断と保全」があります。通信・安全な接続・保存・暗号化・更新・通知・PWA表示・API・PC Connectorをその場で診断し、通知テスト、保存保護、個人情報なしの診断共有、暗号化バックアップ・復元、安全なホーム設定初期化を実行できます。PWAは固定identity/scopeとiPhone/Android向けinstall iconを持ち、新版は自動即時切替せず、「更新を確認」後に本人が「更新を適用」を押した場合だけ切り替えます。公開条件はAndroid互換、GMS、物理端末、署名、OSS、無線規制、マイナンバーを別gateで表示します。これはWeb/PWAの運用機能であり、物理端末のBSP・bootloader・正式署名鍵・外部Provider接続の代わりではありません。
 
-[最低公開条件](docs/release-minimum-gates.md)は、本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android実機、iPhone/iPad client、マイナンバーを別々に判定します。本人限定Web/PWAは、8 HTTP防御headerをローカルproductionの5経路で実測済みですが、本人限定Sitesの最新版同期と実response再読取り待ちで4/5です。[QEMU rc2の完了監査](docs/qemu-release-completion-audit-20260912.md)は6/10要件合格です。[Android実機・マイナンバー監査](docs/android-and-personal-number-gates-20260913.md)はそれぞれ0/5と1/7で、GMSなしAOSP境界と番号・カード画像の無効化を維持します。`npm run release:check`はこれらの監査を公開台帳へ結合し、旧nativeの転用、証拠なしの端末互換・GMS・販売可能表示、未承認の個人番号取得を拒否します。`npm run release:signing:check`は候補準備・法務承認・保護署名・本人署名の64公開fixture回帰を実行し、全体verifyへ含まれます。`npm run release:sbom`はWeb/npm、現在のrc2 native、旧nativeのCycloneDXをGit対象外の別fileへ生成します。現在はready 0/6です。
+[最低公開条件](docs/release-minimum-gates.md)は、本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android実機、iPhone/iPad client、マイナンバーを別々に判定します。本人限定Web/PWAは、8 HTTP防御headerとPWA manifest・3 iconをローカルproductionの8経路で実測済みですが、本人限定Sitesの最新版同期と実response再読取り待ちで4/5です。[QEMU rc2の完了監査](docs/qemu-release-completion-audit-20260912.md)は6/10要件合格です。[Android実機・マイナンバー監査](docs/android-and-personal-number-gates-20260913.md)はそれぞれ0/5と1/7で、GMSなしAOSP境界と番号・カード画像の無効化を維持します。`npm run release:check`はこれらの監査を公開台帳へ結合し、旧nativeの転用、証拠なしの端末互換・GMS・販売可能表示、未承認の個人番号取得を拒否します。`npm run release:signing:check`は候補準備・法務承認・保護署名・本人署名の64公開fixture回帰を実行し、全体verifyへ含まれます。`npm run release:sbom`はWeb/npm、現在のrc2 native、旧nativeのCycloneDXをGit対象外の別fileへ生成します。現在はready 0/6です。
 
 SkyのWallet画面には、検証済み自動化収益の精算状況を追加しました。独立WorkerがExecution Receipt、Provider入金参照、証拠hashを持つ署名済みEarning Receiptだけを受け、実費の後から月最大888 USD centsを回収し、残額の払出し指図を作ります。売上0時の請求、未達分の債務化・翌月繰越、カード定期請求はありません。先払いCheckout APIは停止済みです。販売・決済・払出しProviderのsandbox接続と本番条件は未完了です。[実装とProvider接続手順](docs/sky-billing.md)。
 
@@ -43,7 +43,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-13 / 本人限定Web/PWAを4/5へ進め、8 HTTP防御headerを5 production経路で実測。全6配布対象は証拠不足を残してBLOCKED / 完了 49/72件
+最終更新: 2026-09-13 / 本人限定Web/PWAを4/5へ進め、8 HTTP防御headerを5 production経路で実測。全6配布対象は証拠不足を残してBLOCKED / 完了 50/73件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -68,6 +68,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | SYS06 | Android物理端末とマイナンバー連携を独立監査し、証拠なしの互換・GMS・販売・個人番号有効化を拒否 | 完了 | [記録](data/android-physical-release-audit.json) · [記録](data/personal-number-release-audit.json) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/android-and-personal-number-gates-20260913.md) · [記録](docs/release-minimum-gates.md) |
 | SYS07 | Web/PWAのHTTP防御を正本化し、Worker・static asset両経路の実responseを検査 | 完了 | [記録](data/web-security-policy.json) · [記録](next.config.ts) · [記録](public/_headers) · [記録](scripts/check-web-security-response.mjs) · [記録](tests/web-security-policy.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260913.json) · [記録](docs/validation.md) |
 | SYS08 | PWA新版の自動即時切替を廃止し、本人確認後の適用・旧cache整理・再読込へ変更 | 完了 | [記録](public/sw.js) · [記録](components/system-maintenance.tsx) · [記録](tests/service-worker-update.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260913.json) · [記録](docs/validation.md) |
+| SYS09 | PWAの同一性・scope・iPhone/Android向けinstall iconを固定し、実HTTP manifestを検査 | 完了 | [記録](app/manifest.ts) · [記録](public/rock-icon-192.png) · [記録](public/rock-icon-512.png) · [記録](public/rock-icon-maskable.svg) · [記録](scripts/check-web-security-response.mjs) · [記録](tests/pwa-installability.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260913.json) · [記録](docs/validation.md) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
