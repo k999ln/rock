@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-09-13T04:14:41Z",
+  "observedAt": "2026-09-13T04:23:34Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
@@ -11,7 +11,8 @@
     "data/web-security-policy.json": "919c45822d2a6c7421a4423f918545f24d406d6acb8579d597472756c66daec5",
     "public/_headers": "267ced696576848bf2882547dddb9f7f41a17a45390cfc3b5647f1d87b06bcb9",
     "next.config.ts": "741bdbbf2bff9c74f23df7954a9db098f708011a7ec65ef470ca5912ce0600df",
-    "scripts/check-web-security-response.mjs": "fcd648eb4f259aaa801d5ea81f46cd5a6da05cceb78b19d8d44b4d6ef27e8b0e"
+    "scripts/check-web-security-response.mjs": "fcd648eb4f259aaa801d5ea81f46cd5a6da05cceb78b19d8d44b4d6ef27e8b0e",
+    "public/sw.js": "f54ee60c3de43082b08ce2d13f4b03688350ae08563bc0c0191e98ac28d519ab"
   },
   "result": {
     "status": "PASS",
@@ -21,7 +22,7 @@
       "/sky",
       "/sw.js",
       "/manifest.webmanifest",
-      "/_next/static/chunks/index-DBjLhonD.js"
+      "/_next/static/chunks/index-B4Z0m5_N.js"
     ]
   },
   "boundary": {

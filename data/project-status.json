@@ -294,6 +294,21 @@
       ]
     },
     {
+      "id": "SYS08",
+      "title": "PWA新版の自動即時切替を廃止し、本人確認後の適用・旧cache整理・再読込へ変更",
+      "status": "done",
+      "dependsOn": [
+        "SYS07"
+      ],
+      "evidence": [
+        "public/sw.js",
+        "components/system-maintenance.tsx",
+        "tests/service-worker-update.test.mjs",
+        "docs/evidence/launch/web-security-local-20260913.json",
+        "docs/validation.md"
+      ]
+    },
+    {
       "id": "R01",
       "title": "4参照元の採用判断と事業方針の固定",
       "status": "done",
@@ -1157,7 +1172,8 @@
     "signingMechanics": "PASS_64_PUBLIC_FIXTURE_REGRESSIONS_IN_FULL_VERIFY_PRODUCTION_KEY_AND_OWNER_APPROVAL_NOT_EXECUTED",
     "distributionReadiness": "READY_0_OF_6_BLOCKED_6_OWNER_WEB_4_OF_5",
     "webSecurityPolicy": "PASS_SOURCE_AND_LOCAL_PRODUCTION_8_HEADERS_5_ROUTES_SITES_RESPONSE_READBACK_PENDING",
-    "latestWebTests": 195,
+    "pwaUpdateControl": "PASS_EXPLICIT_APPLY_OLD_CACHE_CLEANUP_API_AUTH_ORIGIN_EXCLUSIONS",
+    "latestWebTests": 198,
     "latestApiAssertions": 143,
     "signingBootstrapPr": 5,
     "signingBootstrapCommit": "a4411622031858d6d9684c599d857cadaf90bb94",

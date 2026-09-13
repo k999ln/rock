@@ -92,6 +92,7 @@ export default function SystemMaintenance() {
   const [passphrase, setPassphrase] = useState('');
   const [backupFile, setBackupFile] = useState<File | null>(null);
   const [backupBusy, setBackupBusy] = useState(false);
+  const [waitingUpdate, setWaitingUpdate] = useState<ServiceWorker | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
   const runDiagnostics = useCallback(async () => {
@@ -231,15 +232,55 @@ export default function SystemMaintenance() {
     setMessage('更新を確認しています…');
     try {
       const registration = await navigator.serviceWorker?.getRegistration();
+      if (!registration) {
+        setMessage('更新機構を準備中です。再読込してからもう一度確認してください。');
+        return;
+      }
+      const observeInstalling = (worker: ServiceWorker | null) => {
+        if (!worker) return;
+        const handleState = () => {
+          if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+            const candidate = registration.waiting || worker;
+            setWaitingUpdate(candidate);
+            setMessage('新しい版を受け取りました。「更新を適用」で安全に切り替えます。');
+          }
+        };
+        worker.addEventListener('statechange', handleState);
+        handleState();
+      };
+      const handleUpdateFound = () => observeInstalling(registration.installing);
+      registration.addEventListener('updatefound', handleUpdateFound, { once: true });
       await registration?.update();
+      if (registration.waiting) {
+        setWaitingUpdate(registration.waiting);
+        setMessage('新しい版を受け取りました。「更新を適用」で安全に切り替えます。');
+        return;
+      }
       setMessage(
-        registration?.waiting
-          ? '新しい版を受け取りました。再読込すると切り替わります。'
+        registration.installing
+          ? '新しい版を確認しています。準備が終わると適用ボタンが表示されます。'
           : '公開中の最新版を確認しました。',
       );
     } catch {
       setMessage('自動確認できませんでした。通信を確認して再読込してください。');
     }
+  }
+
+  function applyWaitingUpdate() {
+    if (!waitingUpdate) return;
+    setMessage('新しい版へ切り替えています…');
+    const timeout = window.setTimeout(() => {
+      setMessage('切り替えを確認できませんでした。すべてのRockstarOSタブを閉じて開き直してください。');
+    }, 8000);
+    navigator.serviceWorker.addEventListener(
+      'controllerchange',
+      () => {
+        window.clearTimeout(timeout);
+        window.location.reload();
+      },
+      { once: true },
+    );
+    waitingUpdate.postMessage({ type: 'ROCKSTAROS_ACTIVATE_UPDATE' });
   }
 
   async function enableNotifications() {
@@ -422,6 +463,12 @@ export default function SystemMaintenance() {
               <span className={styles.purple}><CloudCog /></span>
               <span><strong>更新を確認</strong><small>Service Workerと公開版を照合</small></span>
             </button>
+            {waitingUpdate && (
+              <button onClick={applyWaitingUpdate}>
+                <span className={styles.green}><RefreshCw /></span>
+                <span><strong>更新を適用</strong><small>確認済みの新しい版へ切り替えて再読込</small></span>
+              </button>
+            )}
             <AlertDialog>
               <AlertDialogTrigger render={<button aria-label="ホーム設定を初期化" />}>
                 <span className={styles.red}><RotateCcw /></span>

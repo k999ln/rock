@@ -857,6 +857,7 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
     'scripts/check-web-security-response.mjs': sha256(
       readFileSync(resolve(root, 'scripts/check-web-security-response.mjs')),
     ),
+    'public/sw.js': sha256(readFileSync(resolve(root, 'public/sw.js'))),
   };
   if (
     localEvidence.schema !== 'rockstaros-web-security-response-evidence/1' ||

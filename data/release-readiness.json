@@ -27,7 +27,7 @@
         { "id": "source-verification", "required": true, "status": "pass", "evidence": ["package.json", "docs/validation.md"] },
         { "id": "secure-delivery", "required": true, "status": "pass", "evidence": [".openai/hosting.json", "data/sites-owner-preview-audit.json", "docs/evidence/launch/sites-owner-private-20260911.json", "docs/evidence/launch/sites-owner-private-20260913.json"] },
         { "id": "web-security-policy", "required": true, "status": "pass", "evidence": ["data/web-security-policy.json", "next.config.ts", "public/_headers", "scripts/check-web-security-response.mjs", "tests/web-security-policy.test.mjs", "docs/evidence/launch/web-security-local-20260913.json"] },
-        { "id": "operations-and-recovery", "required": true, "status": "pass", "evidence": ["components/system-maintenance.tsx", "tests/system-backup.test.mjs"] },
+        { "id": "operations-and-recovery", "required": true, "status": "pass", "evidence": ["components/system-maintenance.tsx", "public/sw.js", "tests/system-backup.test.mjs", "tests/service-worker-update.test.mjs"] },
         { "id": "latest-approved-source-sync", "required": true, "status": "blocked", "ownerAction": "最新版を本人限定Sitesへ同期してよいと明示承認し、同じSiteの新versionを配備・再読取りする" },
         { "id": "product-license-for-redistribution", "required": false, "status": "not_applicable", "reason": "本人限定のサービス利用で、ソースまたはOS imageの一般再配布を行わないため" },
         { "id": "production-image-signing", "required": false, "status": "not_applicable", "reason": "Web/PWAの本人限定配信でnative OS imageを配布しないため" }
