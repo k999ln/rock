@@ -18,6 +18,48 @@ const inside = (root, path) => {
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 const sha256Pattern = /^[0-9a-f]{64}$/;
 const versionedControl = (value) => typeof value === 'string' && /^.+@[^@]+$/.test(value);
+const expectedWebSecurityHeaders = {
+  'Content-Security-Policy': "base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'",
+  'Cross-Origin-Opener-Policy': 'same-origin',
+  'Cross-Origin-Resource-Policy': 'same-origin',
+  'Referrer-Policy': 'no-referrer',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Permissions-Policy':
+    'bluetooth=(), camera=(), geolocation=(), hid=(), microphone=(), payment=(), serial=(), usb=()',
+};
+const expectedWebRouteHeaders = {
+  '/sw.js': {
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Service-Worker-Allowed': '/',
+  },
+  '/manifest.webmanifest': {
+    'Cache-Control': 'no-cache, must-revalidate',
+  },
+  '/_next/static/*': {
+    'Cache-Control': 'public, max-age=31536000, immutable',
+  },
+};
+
+const exactRecord = (actual, expected) =>
+  actual &&
+  typeof actual === 'object' &&
+  !Array.isArray(actual) &&
+  Object.keys(actual).length === Object.keys(expected).length &&
+  Object.entries(expected).every(([key, value]) => actual[key] === value);
+
+const cloudflareHeadersFile = (policy) => {
+  const lines = ['/*'];
+  for (const [key, value] of Object.entries(policy.universalHeaders)) {
+    lines.push(`  ${key}: ${value}`);
+  }
+  for (const [path, headers] of Object.entries(policy.routeHeaders)) {
+    lines.push('', path);
+    for (const [key, value] of Object.entries(headers)) lines.push(`  ${key}: ${value}`);
+  }
+  return lines.join('\n') + '\n';
+};
 
 const qemuPostSigningCheckIds = [
   'authentication',
@@ -748,7 +790,115 @@ export function validatePersonalNumberReleaseAudit({ root, audit, readiness }) {
   };
 }
 
-export function validateOwnerPrivateSitesAudit({ audit, hosting, readiness }) {
+export function validateWebSecurityPolicy({ root, policy, readiness }) {
+  const label = 'Web security policy';
+  if (policy?.schema !== 'rockstaros-web-security-policy/1') fail(label + ': schemaが違います');
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(policy.evaluatedAt || '') ||
+    policy.scope !== 'all_application_responses'
+  ) {
+    fail(label + ': 評価日または適用範囲が不正です');
+  }
+  if (!exactRecord(policy.universalHeaders, expectedWebSecurityHeaders)) {
+    fail(label + ': universal header集合または値が不一致です');
+  }
+  if (
+    !policy.routeHeaders ||
+    typeof policy.routeHeaders !== 'object' ||
+    Array.isArray(policy.routeHeaders) ||
+    Object.keys(policy.routeHeaders).length !== Object.keys(expectedWebRouteHeaders).length ||
+    Object.keys(expectedWebRouteHeaders).some((path) => !(path in policy.routeHeaders)) ||
+    !exactRecord(policy.routeHeaders['/sw.js'], expectedWebRouteHeaders['/sw.js']) ||
+    !exactRecord(
+      policy.routeHeaders['/manifest.webmanifest'],
+      expectedWebRouteHeaders['/manifest.webmanifest'],
+    )
+  ) {
+    fail(label + ': Service Worker/manifest cache policyが不一致です');
+  }
+  const expectedClaims = [
+    'framingRejected',
+    'pluginObjectsRejected',
+    'foreignFormTargetsRejected',
+    'mimeSniffingRejected',
+    'sensitiveBrowserCapabilitiesDisabled',
+    'crossOriginOpenerIsolated',
+    'referrerSuppressed',
+    'hstsDeclared',
+    'serviceWorkerUpdateRevalidated',
+    'hashedStaticAssetsImmutable',
+  ];
+  if (
+    !policy.claims ||
+    Object.keys(policy.claims).length !== expectedClaims.length ||
+    expectedClaims.some((claim) => policy.claims[claim] !== true) ||
+    policy.deploymentAcceptance?.required !== true ||
+    typeof policy.deploymentAcceptance?.rule !== 'string' ||
+    !policy.deploymentAcceptance.rule
+  ) {
+    fail(label + ': security claimまたは配備後受入条件が不足しています');
+  }
+  if (readiness.policy?.webSecurityPolicy !== 'data/web-security-policy.json') {
+    fail(label + ': 公開台帳からsecurity policy正本への参照がありません');
+  }
+  const cloudflareHeadersPath = resolve(root, 'public/_headers');
+  if (
+    !existsSync(cloudflareHeadersPath) ||
+    readFileSync(cloudflareHeadersPath, 'utf8') !== cloudflareHeadersFile(policy)
+  ) {
+    fail(label + ': static asset用_headerがsecurity policy正本と不一致です');
+  }
+  const localEvidencePath = 'docs/evidence/launch/web-security-local-20260913.json';
+  const localEvidence = readJson(resolve(root, localEvidencePath));
+  const localInputs = {
+    'data/web-security-policy.json': sha256(readFileSync(resolve(root, 'data/web-security-policy.json'))),
+    'public/_headers': sha256(readFileSync(resolve(root, 'public/_headers'))),
+    'next.config.ts': sha256(readFileSync(resolve(root, 'next.config.ts'))),
+    'scripts/check-web-security-response.mjs': sha256(
+      readFileSync(resolve(root, 'scripts/check-web-security-response.mjs')),
+    ),
+  };
+  if (
+    localEvidence.schema !== 'rockstaros-web-security-response-evidence/1' ||
+    !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(localEvidence.observedAt || '') ||
+    localEvidence.scope !== 'LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT' ||
+    localEvidence.server?.runtime !== 'wrangler-local' ||
+    localEvidence.server?.origin !== 'http://127.0.0.1:8787' ||
+    localEvidence.server?.productionBuild !== true ||
+    !exactRecord(localEvidence.inputs, localInputs) ||
+    localEvidence.result?.status !== 'PASS' ||
+    localEvidence.result?.universalHeaders !== Object.keys(expectedWebSecurityHeaders).length ||
+    !Array.isArray(localEvidence.result?.routes) ||
+    localEvidence.result.routes.length !== 5 ||
+    !['/', '/sky', '/sw.js', '/manifest.webmanifest'].every((path) =>
+      localEvidence.result.routes.includes(path),
+    ) ||
+    !localEvidence.result.routes.some((path) => /^\/_next\/static\/[^/].+\.js$/.test(path)) ||
+    localEvidence.boundary?.sitesDeploymentVerified !== false ||
+    typeof localEvidence.boundary?.nextAction !== 'string' ||
+    !localEvidence.boundary.nextAction
+  ) {
+    fail(label + ': local production response実測またはinput hashが不一致です');
+  }
+  for (const targetId of ['web-pwa-owner-preview', 'web-pwa-public-preview']) {
+    const target = readiness.targets.find(({ id }) => id === targetId);
+    const gate = target?.gates.find(({ id }) => id === 'web-security-policy');
+    if (
+      gate?.status !== 'pass' ||
+      !gate.evidence?.includes('data/web-security-policy.json') ||
+      !gate.evidence?.includes('next.config.ts') ||
+      !gate.evidence?.includes('public/_headers') ||
+      !gate.evidence?.includes('scripts/check-web-security-response.mjs') ||
+      !gate.evidence?.includes('tests/web-security-policy.test.mjs') ||
+      !gate.evidence?.includes(localEvidencePath)
+    ) {
+      fail(label + ': ' + targetId + 'のsecurity gate根拠が不足しています');
+    }
+  }
+  return { status: 'PASS_SOURCE_POLICY', headers: Object.keys(expectedWebSecurityHeaders).length };
+}
+
+export function validateOwnerPrivateSitesAudit({ audit, hosting, readiness, webSecurityPolicy }) {
   const label = '本人限定Sites監査';
   if (audit?.schema !== 'rockstaros-owner-private-sites-audit/1') fail(label + ': schemaが違います');
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(audit.observedAt || '')) {
@@ -757,6 +907,7 @@ export function validateOwnerPrivateSitesAudit({ audit, hosting, readiness }) {
   const site = audit.site || {};
   const version = audit.latestVersion || {};
   const sync = audit.sync || {};
+  const deploymentSecurity = audit.deploymentSecurity || {};
   const claims = audit.claims || {};
   if (
     site.projectId !== hosting?.project_id ||
@@ -820,6 +971,12 @@ export function validateOwnerPrivateSitesAudit({ audit, hosting, readiness }) {
     ) {
       fail(label + ': 最新版同期の合格根拠が一致しません');
     }
+    if (
+      deploymentSecurity.status !== 'VERIFIED' ||
+      !exactRecord(deploymentSecurity.observedHeaders, webSecurityPolicy?.universalHeaders)
+    ) {
+      fail(label + ': 最新配備のsecurity header実読取りがありません');
+    }
   } else if (sync.status === 'OUTDATED') {
     if (
       current?.status !== 'blocked' ||
@@ -832,6 +989,14 @@ export function validateOwnerPrivateSitesAudit({ audit, hosting, readiness }) {
       !sync.nextAction
     ) {
       fail(label + ': 未同期状態または必要な所有者行動が一致しません');
+    }
+    if (
+      deploymentSecurity.status !== 'PENDING_CURRENT_DEPLOYMENT' ||
+      deploymentSecurity.observedHeaders !== null ||
+      typeof deploymentSecurity.nextAction !== 'string' ||
+      !deploymentSecurity.nextAction
+    ) {
+      fail(label + ': 最新配備後のsecurity header受入が未計画です');
     }
   } else {
     fail(label + ': sync状態が不正です');
@@ -848,6 +1013,7 @@ export function validateReleaseReadiness({
   personalNumberAudit,
   sitesAudit,
   sitesHosting,
+  webSecurityPolicy,
 }) {
   if (readiness.schema !== 'rockstaros-release-readiness/1') fail('schemaが違います');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(readiness.evaluatedAt)) fail('評価日が必要です');
@@ -868,6 +1034,7 @@ export function validateReleaseReadiness({
       gates: new Map([
         ['source-verification', true],
         ['secure-delivery', true],
+        ['web-security-policy', true],
         ['operations-and-recovery', true],
         ['latest-approved-source-sync', true],
         ['product-license-for-redistribution', false],
@@ -878,6 +1045,7 @@ export function validateReleaseReadiness({
       distribution: 'public_web',
       gates: new Map([
         ['source-verification', true],
+        ['web-security-policy', true],
         ['dependency-license-inventory', true],
         ['product-license', true],
         ['public-access-approval', true],
@@ -966,13 +1134,15 @@ export function validateReleaseReadiness({
   }
   for (const id of requiredTargets) if (!targetIds.has(id)) fail(`${id}: 必須対象がありません`);
 
-  if (!androidAudit || !personalNumberAudit || !sitesAudit || !sitesHosting) {
-    fail('Android/マイナンバー/Sites監査正本が必要です');
+  if (!androidAudit || !personalNumberAudit || !sitesAudit || !sitesHosting || !webSecurityPolicy) {
+    fail('Android/マイナンバー/Sites/Web security監査正本が必要です');
   }
+  const webSecurityResult = validateWebSecurityPolicy({ root, policy: webSecurityPolicy, readiness });
   const sitesResult = validateOwnerPrivateSitesAudit({
     audit: sitesAudit,
     hosting: sitesHosting,
     readiness,
+    webSecurityPolicy,
   });
   const androidResult = validateAndroidPhysicalReleaseAudit({ root, audit: androidAudit, readiness });
   const personalNumberResult = validatePersonalNumberReleaseAudit({
@@ -1003,6 +1173,7 @@ export function validateReleaseReadiness({
     android: androidResult,
     personalNumber: personalNumberResult,
     sites: sitesResult,
+    webSecurity: webSecurityResult,
   };
 }
 

@@ -34,6 +34,7 @@
     "os:parity": "node --experimental-strip-types scripts/check-os-parity.mjs",
     "device-support:check": "node scripts/check-device-support.mjs",
     "release:check": "node scripts/check-release-readiness.mjs",
+    "web:security:check": "node scripts/check-web-security-response.mjs",
     "release:signing:check": "node scripts/check-release-signing.mjs",
     "release:sbom": "node scripts/check-release-readiness.mjs --sbom work/release/rockstaros-web.cdx.json --native-sbom work/release/rockstaros-native-rc2.cdx.json --historical-native-sbom work/release/rockstaros-native-historical-9abf78a.cdx.json",
     "billing:deploy": "wrangler deploy --config services/sky-billing/wrangler.jsonc",

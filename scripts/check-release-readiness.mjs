@@ -17,6 +17,7 @@ const androidAudit = readJson(resolve(root, 'data/android-physical-release-audit
 const personalNumberAudit = readJson(resolve(root, 'data/personal-number-release-audit.json'));
 const sitesAudit = readJson(resolve(root, 'data/sites-owner-preview-audit.json'));
 const sitesHosting = readJson(resolve(root, '.openai/hosting.json'));
+const webSecurityPolicy = readJson(resolve(root, 'data/web-security-policy.json'));
 const result = validateReleaseReadiness({
   root,
   readiness,
@@ -26,6 +27,7 @@ const result = validateReleaseReadiness({
   personalNumberAudit,
   sitesAudit,
   sitesHosting,
+  webSecurityPolicy,
 });
 const qemuAudit = readJson(resolve(root, 'data/qemu-release-audit.json'));
 const qemuResult = validateQemuReleaseAudit({

@@ -12,6 +12,7 @@ import {
   validateQemuPostSigningAcceptance,
   validateQemuReleaseAudit,
   validateReleaseReadiness,
+  validateWebSecurityPolicy,
 } from '../scripts/release-readiness-lib.mjs';
 
 const root = resolve(import.meta.dirname, '..');
@@ -23,6 +24,7 @@ const androidAudit = read('data/android-physical-release-audit.json');
 const personalNumberAudit = read('data/personal-number-release-audit.json');
 const sitesAudit = read('data/sites-owner-preview-audit.json');
 const sitesHosting = read('.openai/hosting.json');
+const webSecurityPolicy = read('data/web-security-policy.json');
 const qemuAudit = read('data/qemu-release-audit.json');
 const qemuAcceptance = read('docs/evidence/rls01/final-b7-rc2/acceptance-result.json');
 const qemuInventory = read('docs/evidence/rls01/remaining-b7-rc2/inventory.json');
@@ -40,6 +42,7 @@ const validateMatrix = ({
   personalNumber = personalNumberAudit,
   sites = sitesAudit,
   hosting = sitesHosting,
+  webSecurity = webSecurityPolicy,
 } = {}) =>
   validateReleaseReadiness({
     root,
@@ -50,6 +53,7 @@ const validateMatrix = ({
     personalNumberAudit: personalNumber,
     sitesAudit: sites,
     sitesHosting: hosting,
+    webSecurityPolicy: webSecurity,
   });
 
 const validateQemu = (audit = qemuAudit) =>
@@ -72,6 +76,44 @@ void test('current release matrix passes while preserving real blockers', () => 
   assert.equal(result.blockedTargets.length, 6);
   assert.equal(result.missingDependencyLicenses, 0);
   assert.equal(result.sites.status, 'OUTDATED');
+  assert.deepEqual(result.webSecurity, { status: 'PASS_SOURCE_POLICY', headers: 8 });
+});
+
+void test('Web security source policy is exact and current deployment must prove it independently', () => {
+  assert.deepEqual(
+    validateWebSecurityPolicy({ root, policy: webSecurityPolicy, readiness }),
+    { status: 'PASS_SOURCE_POLICY', headers: 8 },
+  );
+  const weakened = structuredClone(webSecurityPolicy);
+  weakened.universalHeaders['X-Frame-Options'] = 'SAMEORIGIN';
+  assert.throws(
+    () => validateMatrix({ webSecurity: weakened }),
+    /universal header集合または値が不一致/,
+  );
+
+  const falselyCurrent = structuredClone(sitesAudit);
+  falselyCurrent.sync.status = 'CURRENT';
+  falselyCurrent.sync.comparedReviewHead = falselyCurrent.latestVersion.sourceCommit;
+  falselyCurrent.sync.commitsBehind = 0;
+  falselyCurrent.sync.authorization = 'OWNER_APPROVED_AND_DEPLOYED';
+  falselyCurrent.claims.latestApprovedSourceDeployed = true;
+  falselyCurrent.deploymentSecurity.status = 'VERIFIED';
+  falselyCurrent.deploymentSecurity.observedHeaders = {};
+  delete falselyCurrent.deploymentSecurity.nextAction;
+  const changed = structuredClone(readiness);
+  const target = changed.targets.find(({ id }) => id === 'web-pwa-owner-preview');
+  target.gates.find(({ id }) => id === 'latest-approved-source-sync').status = 'pass';
+  target.declaredStatus = 'ready';
+  assert.throws(
+    () =>
+      validateOwnerPrivateSitesAudit({
+        audit: falselyCurrent,
+        hosting: sitesHosting,
+        readiness: changed,
+        webSecurityPolicy,
+      }),
+    /security header実読取り/,
+  );
 });
 
 void test('owner-private delivery stays safe while latest source sync remains blocked', () => {
@@ -80,7 +122,7 @@ void test('owner-private delivery stays safe while latest source sync remains bl
   target.gates.find(({ id }) => id === 'latest-approved-source-sync').status = 'pass';
   target.declaredStatus = 'ready';
   assert.throws(
-    () => validateOwnerPrivateSitesAudit({ audit: sitesAudit, hosting: sitesHosting, readiness: changed }),
+    () => validateOwnerPrivateSitesAudit({ audit: sitesAudit, hosting: sitesHosting, readiness: changed, webSecurityPolicy }),
     /未同期状態または必要な所有者行動/,
   );
 });
@@ -89,7 +131,7 @@ void test('owner-private delivery rejects public or external access readback', (
   const changed = structuredClone(sitesAudit);
   changed.site.externalVisitors = 1;
   assert.throws(
-    () => validateOwnerPrivateSitesAudit({ audit: changed, hosting: sitesHosting, readiness }),
+    () => validateOwnerPrivateSitesAudit({ audit: changed, hosting: sitesHosting, readiness, webSecurityPolicy }),
     /本人1名限定/,
   );
 });

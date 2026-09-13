@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-13",
-  "milestone": "QEMU rc2の6/10公開gateに加え、Android実機5gateとマイナンバー7gateを端末・build・規制単位で機械監査",
-  "nextAction": "所有者が製品licenseと正式鍵の保管先を明示した後、license・production署名を同一最終archiveへ結合しfresh導入・更新・復旧を再受入する。",
+  "milestone": "本人限定Web/PWAを4/5へ進め、8 HTTP防御headerを5 production経路で実測。全6配布対象は証拠不足を残してBLOCKED",
+  "nextAction": "所有者が最新版の本人限定Sites同期、製品license、OWNER_MANUAL本番鍵生成を明示承認した後、Sites実response再読取りとQEMU同一最終archiveの署名後受入を行う。",
   "tasks": [
     {
       "id": "SKY01",
@@ -242,7 +242,7 @@
     },
     {
       "id": "SYS05",
-      "title": "候補準備・法務承認・保護署名・本人署名の62拒否境界試験を全体verifyへ統合",
+      "title": "候補準備・法務承認・保護署名・本人署名の64拒否境界試験を全体verifyへ統合",
       "status": "done",
       "dependsOn": ["SYS04"],
       "evidence": [
@@ -274,6 +274,23 @@
         "tests/release-readiness.test.mjs",
         "docs/android-and-personal-number-gates-20260913.md",
         "docs/release-minimum-gates.md"
+      ]
+    },
+    {
+      "id": "SYS07",
+      "title": "Web/PWAのHTTP防御を正本化し、Worker・static asset両経路の実responseを検査",
+      "status": "done",
+      "dependsOn": [
+        "SYS03"
+      ],
+      "evidence": [
+        "data/web-security-policy.json",
+        "next.config.ts",
+        "public/_headers",
+        "scripts/check-web-security-response.mjs",
+        "tests/web-security-policy.test.mjs",
+        "docs/evidence/launch/web-security-local-20260913.json",
+        "docs/validation.md"
       ]
     },
     {
@@ -1118,8 +1135,8 @@
     "distributionCommit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
     "publicRelease": false,
     "mainMerged": false,
-    "sitesSourceCommit": "a750908329d42bbfb78e07243f414b51d1534cf8",
-    "siteAccess": "DEPLOYED_OWNER_ONLY",
+    "sitesSourceCommit": "25cf0fa2cae303475a9bf54280889a1192be455e",
+    "siteAccess": "DEPLOYED_CUSTOM_ONE_OWNER_ZERO_EXTERNAL_LATEST_SYNC_PENDING",
     "license": "MIT_PROPOSED_AWAITING_OWNER_SELECTION",
     "signing": "OWNER_MANUAL_PREPARED_MODE_AND_KEY_CUSTODY_PENDING",
     "campaign": "IN_PRODUCTION_NOT_SELECTED",
@@ -1137,7 +1154,11 @@
     "unsignedCandidatePreparation": "RC2_REPRODUCIBLE_ALL8_GITHUB_DOWNLOADED_VERIFIED",
     "qemuReleaseAudit": "RC2_EXACT_IDENTITY_6_OF_10_REQUIRED_GATES_PASS",
     "qemuCurrentNativeSbom": "PASS_24_TARGET_37_HOST_COMPONENTS_BOUND_TO_EXACT_RC2_ARCHIVE_PRODUCT_LICENSE_SEPARATE",
-    "signingMechanics": "PASS_62_PUBLIC_FIXTURE_REGRESSIONS_IN_FULL_VERIFY_PRODUCTION_KEY_AND_OWNER_APPROVAL_NOT_EXECUTED",
+    "signingMechanics": "PASS_64_PUBLIC_FIXTURE_REGRESSIONS_IN_FULL_VERIFY_PRODUCTION_KEY_AND_OWNER_APPROVAL_NOT_EXECUTED",
+    "distributionReadiness": "READY_0_OF_6_BLOCKED_6_OWNER_WEB_4_OF_5",
+    "webSecurityPolicy": "PASS_SOURCE_AND_LOCAL_PRODUCTION_8_HEADERS_5_ROUTES_SITES_RESPONSE_READBACK_PENDING",
+    "latestWebTests": 195,
+    "latestApiAssertions": 143,
     "signingBootstrapPr": 5,
     "signingBootstrapCommit": "a4411622031858d6d9684c599d857cadaf90bb94",
     "signingBootstrapApproval": "AWAITING_EXPLICIT_LIMITED_MAIN_APPROVAL",

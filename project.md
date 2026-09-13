@@ -1,5 +1,11 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-13 — Web/PWAのHTTP防御をWorkerとstatic assetの両経路へ固定
+
+Web/PWAのsecurityをアクセス制限から独立した必須gateにした。8つの共通response headerでframe埋込み、plugin object、外部form送信先、MIME sniffing、referrer、不要なcamera/payment/USB等を制限し、HSTS、COOP/CORPを固定する。Service Workerとmanifestは更新再検証、hash付きassetはimmutable cacheを維持する。
+
+最初のproduction実測で、Next configだけではWorker root `/`とstatic assetの`/sw.js`へheaderが届かない差を検出した。root ruleとCloudflare/Sites用`public/_headers`を追加し、再build後に`/`、`/sky`、Service Worker、manifest、実hash付きJSの5経路・8 headerを完全一致で確認した。本人限定Web/PWAは4/5、一般Web/PWAは3/5へ進んだが、Sites v29は古いsourceのため全体はready 0/6のまま。最新版同期後も本人認証済み実responseの再読取りなしにreadyへ変更できない。[実測](docs/evidence/launch/web-security-local-20260913.json)／[最低公開条件](docs/release-minimum-gates.md)。
+
 ## 2026-09-13 — Android実機とマイナンバーを証拠単位の別gateへ固定
 
 Android物理端末版を、正確な機種/SKU、同一SKUのBSP・boot・recovery、同一buildのCDD/CTS、production署名、販売地域の5必須gateへ分けた。Android互換、物理flash、販売可能という表示は対応gateなしに有効化できない。GMSはAOSP外の別ライセンスなので、既定のDeveloper PreviewはGMSなしを維持する。対象機種は未選択で、現在0/5合格である。
@@ -14,7 +20,7 @@ QEMU `1.0.0-preview.20260911-rc2` のversion、source commit、1,003,224,286 byt
 
 ## 2026-09-12 — 公開最低条件を機械判定へ変更
 
-公開状態を本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android物理端末、iPhone/iPad client、マイナンバー連携へ分離した。設定画面は機械可読の同じ台帳から完了数を表示し、現在は本人限定Web/PWAだけをreadyとする。
+公開状態を本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android物理端末、iPhone/iPad client、マイナンバー連携へ分離した。設定画面は機械可読の同じ台帳から完了数を表示する。現在は本人限定Web/PWAも最新版同期待ちの4/5で、ready 0/6である。
 
 公開検査は、必須gateと宣言状態の不一致、根拠file欠落、所有者選択とLICENSEのない製品license合格、正式鍵の実施記録がないproduction署名合格、npm依存のlicense metadata欠落、未審査のマイナンバー有効化を拒否する。Web/npmのCycloneDX 1.6 SBOMはignored領域へ生成し、native Buildroot inventoryとscopeを混ぜない。
 
@@ -412,7 +418,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-13 / QEMU rc2の6/10公開gateに加え、Android実機5gateとマイナンバー7gateを端末・build・規制単位で機械監査 / 完了 47/70件
+最終更新: 2026-09-13 / 本人限定Web/PWAを4/5へ進め、8 HTTP防御headerを5 production経路で実測。全6配布対象は証拠不足を残してBLOCKED / 完了 48/71件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -433,8 +439,9 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SYS02 | 通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装 | 完了 | [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
 | SYS03 | 公開方法別の最低条件を機械判定し、Web/npm SBOMと設定画面へ統合 | 完了 | [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/release-minimum-gates.md) · [記録](components/system-maintenance.tsx) |
 | SYS04 | QEMU rc2を同一候補10要件へ固定し、rc2固有native SBOMを生成して旧inventoryの誤転用を拒否 | 完了 | [記録](data/qemu-release-audit.json) · [記録](data/qemu-rc2-legal-info/manifest.csv) · [記録](data/qemu-rc2-legal-info/host-manifest.csv) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/qemu-release-completion-audit-20260912.md) · [記録](components/system-maintenance.tsx) |
-| SYS05 | 候補準備・法務承認・保護署名・本人署名の62拒否境界試験を全体verifyへ統合 | 完了 | [記録](scripts/check-release-signing.mjs) · [記録](scripts/release_signing.py) · [記録](scripts/release_signing_owner.py) · [記録](scripts/prepare_release_candidate.py) · [記録](scripts/verify_owner_legal_approval.py) · [記録](tests/test_release_signing.py) · [記録](tests/test_release_signing_owner.py) · [記録](tests/test_prepare_release_candidate.py) · [記録](tests/test_owner_legal_approval.py) · [記録](docs/release-signing-operations.md) |
+| SYS05 | 候補準備・法務承認・保護署名・本人署名の64拒否境界試験を全体verifyへ統合 | 完了 | [記録](scripts/check-release-signing.mjs) · [記録](scripts/release_signing.py) · [記録](scripts/release_signing_owner.py) · [記録](scripts/prepare_release_candidate.py) · [記録](scripts/verify_owner_legal_approval.py) · [記録](tests/test_release_signing.py) · [記録](tests/test_release_signing_owner.py) · [記録](tests/test_prepare_release_candidate.py) · [記録](tests/test_owner_legal_approval.py) · [記録](docs/release-signing-operations.md) |
 | SYS06 | Android物理端末とマイナンバー連携を独立監査し、証拠なしの互換・GMS・販売・個人番号有効化を拒否 | 完了 | [記録](data/android-physical-release-audit.json) · [記録](data/personal-number-release-audit.json) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/android-and-personal-number-gates-20260913.md) · [記録](docs/release-minimum-gates.md) |
+| SYS07 | Web/PWAのHTTP防御を正本化し、Worker・static asset両経路の実responseを検査 | 完了 | [記録](data/web-security-policy.json) · [記録](next.config.ts) · [記録](public/_headers) · [記録](scripts/check-web-security-response.mjs) · [記録](tests/web-security-policy.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260913.json) · [記録](docs/validation.md) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
@@ -505,7 +512,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 所有者が製品licenseと正式鍵の保管先を明示した後、license・production署名を同一最終archiveへ結合しfresh導入・更新・復旧を再受入する。
+次の作業: 所有者が最新版の本人限定Sites同期、製品license、OWNER_MANUAL本番鍵生成を明示承認した後、Sites実response再読取りとQEMU同一最終archiveの署名後受入を行う。
 <!-- project-status:end -->
 
 ## 次段階の設計

@@ -31,6 +31,11 @@
     "authorization": "AWAITING_EXPLICIT_OWNER_APPROVAL",
     "nextAction": "最新版sourceを本人限定の同じSiteへ保存・配備し、version、deployment、source commit、archive、access policyを再読取りする"
   },
+  "deploymentSecurity": {
+    "status": "PENDING_CURRENT_DEPLOYMENT",
+    "observedHeaders": null,
+    "nextAction": "最新版を配備後、本人認証済みのHTML responseからdata/web-security-policy.jsonの全universal headerを実読取りする"
+  },
   "claims": {
     "ownerPrivateDeliveryVerified": true,
     "latestApprovedSourceDeployed": false,
