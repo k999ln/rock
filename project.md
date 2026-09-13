@@ -2,9 +2,11 @@
 
 ## 2026-09-13 — 外部Polymarket botをbacktest sandboxへ統合
 
-利用者指定の`MrFadiAi/Polymarket-bot`をcommit `3a04fc842bc3112a11b872263bb55e6712096f9a`で監査した。原botはdry-runでも秘密鍵を要求し、dashboardからLIVEへ即時切替でき、simulation PnLを共通PnLへ加えるため、注文runtimeは直接接続していない。
+利用者指定の`MrFadiAi/Polymarket-bot`をcommit `3a04fc842bc3112a11b872263bb55e6712096f9a`で監査した。原botはdry-runでも秘密鍵を要求し、dashboardからLIVEへ即時切替でき、simulation PnLを共通PnLへ加えるため、注文runtimeは直接接続していない。原本lockfileの`npm audit`は30件（critical 1 / high 7）、production依存だけでも22件（high 3）を報告したため、install script無効・隔離・offline限定を固定した。
 
 固定commit・clean treeを確認し、秘密鍵関連環境変数を除いてoffline backtestだけを起動するwrapperを追加した。report検証APIとMarkets UIは改変source、LIVE設定、秘密情報、矛盾する数値を拒否し、positiveなsimulation PnLもファンド収益と8.88 USD回収原資を0のままにする。[監査・境界](docs/polymarket-bot-sandbox-20260913.md)。
+
+原bot側151 tests、RockstarOS Web 174 tests、Fashion Brand Ops 15 tests、仕事API 143 assertions、型・lint・本番build・Billing Worker dry-runを通過した。追加APIへの実HTTP確認でも固定commitのreportは`eligibleForFundRevenue: false`、秘密鍵フィールドは400拒否、`/polymarket`は200だった。これはbacktest安全境界の合格であり、実注文、実現収益、8.88 USD回収、利用者払出しの実績ではない。
 
 ## 2026-09-13 — RockstarOS Marketsを自動化ファンドへ安全に統合
 
@@ -12,7 +14,7 @@
 
 ファンド会計は既存のD1 membershipとSky Billingを唯一の正本に保ち、Providerで確定した実現損益だけを将来のEarning Receipt候補にする。実注文、自動再投資、Wallet資金移動、公開範囲の変更は行っていない。旧80/10/10は`/fund/legacy`だけに隔離したまま維持する。[比較・安全境界](docs/markets-fund-integration-20260913.md)。
 
-`npm run verify`相当の全項目はWeb 170 tests、Marketsと動的ファンドの集中検証、型、lint、MCP package、Billing Worker dry-run、Fashion Brand Ops 15 tests、本番build、仕事API 143 assertionsまで合格した。ローカル待受を使う試験だけsandbox外で再実行した。検証は合成・sandbox境界内であり、外部市場の注文・実資金移動・公開設定変更は行っていない。
+`npm run verify`相当の全項目はWeb 174 tests、Marketsと動的ファンドの集中検証、型、lint、MCP package、Billing Worker dry-run、Fashion Brand Ops 15 tests、本番build、仕事API 143 assertionsまで合格した。ローカル待受を使う試験だけsandbox外で再実行した。検証は合成・sandbox境界内であり、外部市場の注文・実資金移動・公開設定変更は行っていない。
 
 ## 2026-09-12 — OS診断・暗号化保全・更新確認を設定へ追加
 

@@ -36,9 +36,27 @@ if (status.status !== 0 || status.stdout.trim())
 const runner = resolve(repo, 'node_modules', '.bin', 'tsx');
 if (!existsSync(runner)) fail('Run npm ci in the pinned repository first.');
 const inputBytes = readFileSync(input);
-const environment = { ...process.env, DRY_RUN: 'true' };
-for (const key of Object.keys(environment)) {
-  if (/POLYMARKET_PRIVATE_KEY|MNEMONIC|SEED_PHRASE/iu.test(key)) delete environment[key];
+const environment = {
+  PATH: process.env.PATH,
+  HOME: process.env.HOME,
+  TMPDIR: process.env.TMPDIR,
+  LANG: process.env.LANG ?? 'C',
+  NO_COLOR: '1',
+  DRY_RUN: 'true',
+};
+for (const key of [
+  'BACKTEST_FEE_BPS',
+  'BACKTEST_GAS_USD',
+  'BACKTEST_MAX_SIZE',
+  'BACKTEST_MIN_NET',
+]) {
+  const value = process.env[key];
+  if (value !== undefined) {
+    const number = Number(value);
+    if (!Number.isFinite(number) || number < 0 || number > 1_000_000)
+      fail(`Invalid ${key}.`);
+    environment[key] = String(number);
+  }
 }
 const execution = spawnSync(runner, ['src/backtest/runner.ts', input], {
   cwd: repo,

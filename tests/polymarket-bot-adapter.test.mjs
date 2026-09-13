@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import test from 'node:test';
 import {
   assessPolymarketBotBacktest,
@@ -65,4 +67,15 @@ void test('live mode, unreviewed code, inconsistent PnL and secrets fail closed'
     () => assessPolymarketBotBacktest({ ...report(), privateKey: 'never' }),
     /SECRET_FIELD/u,
   );
+});
+
+void test('sandbox wrapper allowlists its child environment', () => {
+  const wrapper = readFileSync(
+    resolve('toolkits/polymarket-bot-sandbox/run-backtest.mjs'),
+    'utf8',
+  );
+  assert.doesNotMatch(wrapper, /\.\.\.process\.env/u);
+  assert.match(wrapper, /BACKTEST_FEE_BPS/u);
+  assert.match(wrapper, /DRY_RUN: 'true'/u);
+  assert.match(wrapper, /cleanTree: true/u);
 });
