@@ -21,6 +21,8 @@
 - 根拠fileがrepository内に実在することを確認する。
 - 所有者が具体的なライセンスを選択し、top-level `LICENSE` が存在しない限り、一般Web版とQEMU版の製品ライセンスを合格にできない。
 - 所有者記録に正式鍵の準備と署名運用の実施がない限り、QEMU版とAndroid物理端末版のproduction署名を合格にできない。
+- 製品ライセンス合格にはSPDX license ID、`OWNER_SELECTED`、UTC承認時刻、自作コード・文書だけの適用範囲、第三者license維持を要求する。rootとnative配布の `LICENSE` / `LICENSE-SCOPE.md` / `NOTICE` は6つのrole別SHA-256で固定し、同名fileのbyte一致まで確認する。license名だけ、空file、任意pathへの置換では合格にしない。
+- QEMU正式署名合格には `OWNER_MANUAL` または `PROTECTED_ENVIRONMENT` の確定方式、`EXECUTED_VERIFIED`、公開鍵pin、UTC完了時刻、repository外秘密鍵、FileVaultの本人専用0700保管、暗号化backup、key ceremony・public trust・backup・rotation/失効の4つのrole別SHA-256証拠を要求する。単なる `keyProvisioned: true` や任意の完了文字列では合格にしない。Androidのproduction署名は端末固有のAVB/OTA・rollback・rotation証拠で別判定し、QEMU鍵の状態を流用しない。
 - `package-lock.json` の887 package entryにlicense metadataがあることを確認する。
 - `npm run release:signing:check` で候補準備15件、owner legal approval 11件、保護署名29件、本人署名9件の計64公開fixture試験を実行する。試験数の減少も失敗させるが、実鍵・実承認の代用にはしない。本人署名は未暗号化／ExFAT／別mountの保管先を鍵読取り前に拒否する。
 - `npm run release:sbom` でCycloneDX 1.6のWeb/npm SBOM、現在のrc2 native SBOM、旧9ab native SBOMをignored `work/release/`へ分離生成する。Webは854 unique component、現在のrc2と旧9abはそれぞれtarget 24＋host build 37 component。rc2版は配布archiveと同梱legal bundleのSHA-256へ結合し、旧版は方法検証だけに限定する。

@@ -80,6 +80,85 @@ const validateExactHashedEvidenceRoles = (root, evidence, label, requiredRoles) 
   validateHashedEvidence(root, evidence, label);
 };
 
+const validateOwnerLicenseSelection = ({ root, ownerIntent }) => {
+  const label = '製品ライセンス選択';
+  const selection = ownerIntent.ownCodeIntent || {};
+  if (
+    typeof selection.specificLicense !== 'string' ||
+    !/^[A-Za-z0-9][A-Za-z0-9.+-]*$/.test(selection.specificLicense) ||
+    selection.proposalStatus !== 'OWNER_SELECTED'
+  ) {
+    fail(label + ': 所有者が選択したSPDX license IDと確定状態が必要です');
+  }
+  if (
+    selection.scope !== 'KAIYA_OWNED_ORIGINAL_CODE_AND_DOCUMENTATION_ONLY' ||
+    selection.thirdPartyLicensesPreserved !== true ||
+    selection.modificationAllowed !== true ||
+    selection.redistributionAllowed !== true ||
+    !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(selection.ownerApprovedAt || '')
+  ) {
+    fail(label + ': 自作部分だけの適用範囲、第三者license維持、所有者承認時刻が必要です');
+  }
+  const pathsByRole = {
+    'root-license': 'LICENSE',
+    'root-scope': 'LICENSE-SCOPE.md',
+    'root-notice': 'NOTICE',
+    'native-license': 'systems/rock-star-os/LICENSE',
+    'native-scope': 'systems/rock-star-os/LICENSE-SCOPE.md',
+    'native-notice': 'systems/rock-star-os/NOTICE',
+  };
+  validateExactHashedEvidenceRoles(
+    root,
+    selection.selectionEvidence,
+    label,
+    Object.keys(pathsByRole),
+  );
+  for (const evidence of selection.selectionEvidence) {
+    if (evidence.path !== pathsByRole[evidence.role]) {
+      fail(label + ': license roleは所定の配布pathへ固定してください: ' + evidence.role);
+    }
+    if (readFileSync(resolve(root, evidence.path)).length === 0) {
+      fail(label + ': 空のlicense証拠は使えません: ' + evidence.path);
+    }
+  }
+  for (const name of ['LICENSE', 'LICENSE-SCOPE.md', 'NOTICE']) {
+    const rootBytes = readFileSync(resolve(root, name));
+    const nativeBytes = readFileSync(resolve(root, 'systems/rock-star-os', name));
+    if (!rootBytes.equals(nativeBytes)) {
+      fail(label + ': repositoryとnative配布の法的fileが不一致です: ' + name);
+    }
+  }
+};
+
+const validateProductionSigningExecution = ({ root, ownerIntent }) => {
+  const label = 'QEMU正式署名';
+  const signing = ownerIntent.signing || {};
+  if (
+    !['OWNER_MANUAL', 'PROTECTED_ENVIRONMENT'].includes(signing.mode) ||
+    signing.status !== 'EXECUTED_VERIFIED' ||
+    signing.keyProvisioned !== true ||
+    !sha256Pattern.test(signing.publicKeySha256 || '') ||
+    !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(signing.completedAt || '')
+  ) {
+    fail(label + ': 確定方式、実施状態、公開鍵pin、UTC完了時刻が必要です');
+  }
+  if (
+    signing.privateKeyStoredInRepository !== false ||
+    signing.backupPrepared !== true ||
+    signing.preparedStorage?.fileVault !== true ||
+    signing.preparedStorage?.directoryMode !== '0700' ||
+    signing.preparedStorage?.containsProductionKey !== true
+  ) {
+    fail(label + ': repository外保管、暗号化backup、FileVault本人専用保管の証拠が必要です');
+  }
+  validateExactHashedEvidenceRoles(
+    root,
+    signing.executionEvidence,
+    label,
+    ['key-ceremony', 'public-trust', 'encrypted-backup', 'rotation-and-revocation'],
+  );
+};
+
 export function validateQemuPostSigningAcceptance({ root, record, candidate }) {
   const label = 'QEMU署名後受入';
   if (record?.schema !== 'rockstaros-qemu-post-signing-acceptance/1') {
@@ -729,21 +808,12 @@ export function validateReleaseReadiness({
 
   const byId = (id) => readiness.targets.find((target) => target.id === id);
   const gate = (target, id) => byId(target)?.gates.find((item) => item.id === id);
-  const licenseSelected = typeof ownerIntent.ownCodeIntent?.specificLicense === 'string';
-  const licenseFileExists = existsSync(resolve(root, 'LICENSE')) || existsSync(resolve(root, 'LICENSE.md'));
   for (const target of ['web-pwa-public-preview', 'qemu-developer-preview']) {
     const productLicense = gate(target, 'product-license');
-    if (productLicense?.status === 'pass' && (!licenseSelected || !licenseFileExists)) {
-      fail(`${target}: 所有者選択とLICENSEなしに製品ライセンスを合格にできません`);
-    }
+    if (productLicense?.status === 'pass') validateOwnerLicenseSelection({ root, ownerIntent });
   }
-  const signingExecuted =
-    ownerIntent.signing?.keyProvisioned === true &&
-    !String(ownerIntent.signing?.status || '').includes('NOT_EXECUTED');
-  for (const target of ['qemu-developer-preview', 'android-physical-preview']) {
-    if (gate(target, 'production-signing')?.status === 'pass' && !signingExecuted) {
-      fail(`${target}: 正式鍵と実施記録なしに署名を合格にできません`);
-    }
+  if (gate('qemu-developer-preview', 'production-signing')?.status === 'pass') {
+    validateProductionSigningExecution({ root, ownerIntent });
   }
   const dependencies = packageEntries(lock);
   const missingLicense = dependencies.filter((entry) => !entry.license);

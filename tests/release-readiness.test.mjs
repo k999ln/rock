@@ -75,25 +75,31 @@ void test('cannot label a target ready while a required gate is blocked', () => 
   );
 });
 
-void test('cannot pass product license without an owner selection and LICENSE', () => {
+void test('cannot pass product license with only a license string or placeholder file', () => {
   const changed = structuredClone(readiness);
+  const changedIntent = structuredClone(ownerIntent);
   const target = changed.targets.find(({ id }) => id === 'web-pwa-public-preview');
   target.gates.find(({ id }) => id === 'product-license').status = 'pass';
   target.gates.find(({ id }) => id === 'public-access-approval').status = 'pass';
   target.declaredStatus = 'ready';
+  changedIntent.ownCodeIntent.specificLicense = 'MIT';
+  changedIntent.ownCodeIntent.proposalStatus = 'OWNER_SELECTED';
   assert.throws(
-    () => validateMatrix({ matrix: changed }),
-    /所有者選択とLICENSEなし/,
+    () => validateMatrix({ matrix: changed, intent: changedIntent }),
+    /自作部分だけの適用範囲/,
   );
 });
 
-void test('cannot pass production signing without a provisioned owner key', () => {
+void test('cannot pass production signing with an arbitrary status and provisioned flag', () => {
   const changed = structuredClone(readiness);
+  const changedIntent = structuredClone(ownerIntent);
   const target = changed.targets.find(({ id }) => id === 'qemu-developer-preview');
   target.gates.find(({ id }) => id === 'production-signing').status = 'pass';
+  changedIntent.signing.keyProvisioned = true;
+  changedIntent.signing.status = 'DONE';
   assert.throws(
-    () => validateMatrix({ matrix: changed }),
-    /正式鍵と実施記録なし/,
+    () => validateMatrix({ matrix: changed, intent: changedIntent }),
+    /確定方式、実施状態、公開鍵pin、UTC完了時刻/,
   );
 });
 
