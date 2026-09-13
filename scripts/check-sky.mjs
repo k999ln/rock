@@ -63,11 +63,18 @@ const workspaceCss = read('app/workspace.css');
 for (const marker of [
   'fashion-brand-ops',
   'Instagram運用・受注型ブランド管理',
-  '1クリック接続',
+  'PCなしのブラウザ簡易版',
 ])
   requireValue(
     catalogSource.includes(marker) || workspace.includes(marker),
     `Fashion Brand OpsのSky登録に「${marker}」がありません`,
+  );
+
+const fashionRunner = read('components/fashion-brand-ops-runner.tsx');
+for (const marker of ['PCなしで今すぐ使う', 'ワンクリックで接続'])
+  requireValue(
+    fashionRunner.includes(marker),
+    `Fashion Brand Opsの簡易版/MCP導線に「${marker}」がありません`,
   );
 
 const fashionClient = read('lib/fashion-mcp-client.ts');

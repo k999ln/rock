@@ -5190,9 +5190,131 @@
 }
 
 .sky-tool-dialog .fashion-ops-runner {
+  display: grid;
+  gap: 16px;
   color: #e7e9ea;
   background: #050505;
   border-color: #2f3336;
+}
+.sky-tool-dialog .fashion-quick-intro,
+.sky-tool-dialog .fashion-ops-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.sky-tool-dialog .fashion-quick-intro > svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: #c9ff67;
+}
+.sky-tool-dialog .fashion-quick-intro strong {
+  display: block;
+  color: #e7e9ea;
+  font-size: 16px;
+}
+.sky-tool-dialog .fashion-quick-intro p {
+  margin: 4px 0 0;
+  color: #8b98a5;
+  font-size: 13px;
+}
+.sky-tool-dialog .fashion-quick-form {
+  display: grid;
+  gap: 12px;
+}
+.sky-tool-dialog .fashion-quick-form label {
+  display: grid;
+  gap: 6px;
+}
+.sky-tool-dialog .fashion-quick-form label > span {
+  color: #b3b7bb;
+  font-size: 12px;
+  font-weight: 700;
+}
+.sky-tool-dialog .fashion-quick-form textarea,
+.sky-tool-dialog .fashion-quick-form input {
+  width: 100%;
+  border: 1px solid #2f3336;
+  border-radius: 10px;
+  outline: none;
+  color: #e7e9ea;
+  background: #0a0a0a;
+  font: inherit;
+}
+.sky-tool-dialog .fashion-quick-form textarea {
+  min-height: 82px;
+  resize: vertical;
+  padding: 11px 12px;
+  line-height: 1.55;
+}
+.sky-tool-dialog .fashion-quick-form input {
+  min-height: 42px;
+  padding: 0 12px;
+}
+.sky-tool-dialog .fashion-quick-form textarea:focus,
+.sky-tool-dialog .fashion-quick-form input:focus {
+  border-color: #729d37;
+  box-shadow: 0 0 0 3px rgba(201, 255, 103, 0.08);
+}
+.sky-tool-dialog .fashion-quick-form > button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.sky-tool-dialog .fashion-quick-result {
+  display: grid;
+  gap: 10px;
+}
+.sky-tool-dialog .fashion-quick-result > section {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 10px;
+  padding: 13px;
+  border: 1px solid #2f3336;
+  border-radius: 12px;
+  background: #0a0a0a;
+}
+.sky-tool-dialog .fashion-quick-result > section > svg {
+  margin-top: 2px;
+  color: #c9ff67;
+}
+.sky-tool-dialog .fashion-quick-result strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #e7e9ea;
+}
+.sky-tool-dialog .fashion-quick-result p,
+.sky-tool-dialog .fashion-quick-result small {
+  display: block;
+  margin: 3px 0 0;
+  color: #b3b7bb;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.sky-tool-dialog .fashion-quick-copy {
+  white-space: pre-line;
+}
+.sky-tool-dialog .fashion-quick-boundary {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #aebc9a !important;
+  background: rgba(201, 255, 103, 0.07);
+}
+.sky-tool-dialog .fashion-quick-boundary svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+.sky-tool-dialog .fashion-mcp-advanced {
+  padding-top: 14px;
+  border-top: 1px solid #2f3336;
+}
+.sky-tool-dialog .fashion-mcp-advanced[open] {
+  display: grid;
+  gap: 12px;
 }
 .sky-tool-dialog .fashion-ops-status strong {
   color: #e7e9ea;
@@ -5230,6 +5352,10 @@
   background: #0a0a0a;
   font-size: 13px;
   line-height: 1.55;
+}
+.sky-tool-dialog .fashion-ops-message.is-error {
+  border-color: #70413c;
+  color: #ffb4a9;
 }
 .sky-tool-dialog .fashion-ops-runner details a {
   display: inline-flex;

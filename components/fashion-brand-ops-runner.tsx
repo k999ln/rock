@@ -6,8 +6,12 @@ import {
   Check,
   CheckCircle2,
   Download,
+  ImageIcon,
+  MessageCircle,
   RefreshCw,
   ShieldCheck,
+  Sparkles,
+  Target,
   Unplug,
 } from 'lucide-react';
 import {
@@ -17,6 +21,10 @@ import {
   FASHION_MCP_URL,
   verifyFashionMcp,
 } from '@/lib/fashion-mcp-client';
+import {
+  buildFashionQuickPlan,
+  type FashionQuickPlan,
+} from '@/lib/fashion-quick-plan';
 
 const capabilities = [
   '売上・数量・粗利・期限からCampaign Autopilotを作成',
@@ -29,6 +37,11 @@ export function FashionBrandOpsRunner() {
   const [connected, setConnected] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
+  const [brandDirection, setBrandDirection] = useState('');
+  const [productDesign, setProductDesign] = useState('');
+  const [region, setRegion] = useState('日本');
+  const [plan, setPlan] = useState<FashionQuickPlan | null>(null);
+  const [planError, setPlanError] = useState('');
 
   useEffect(() => {
     const update = () => setConnected(fashionMcpConnected());
@@ -42,26 +55,23 @@ export function FashionBrandOpsRunner() {
         .catch(() =>
           setMessage('接続が切れました。もう一度接続してください。'),
         );
-    } else {
-      void connectFashionMcp()
-        .then((result) => {
-          setConnected(true);
-          setMessage(
-            `${result.toolCount}個の専用操作を確認しました。Skyから実行できます。`,
-          );
-        })
-        .catch((error) => {
-          setConnected(fashionMcpConnected());
-          setMessage(
-            error instanceof Error
-              ? error.message
-              : 'Sky接続アプリを起動してから、もう一度お試しください。',
-          );
-        })
-        .finally(() => setBusy(false));
     }
     return () => window.removeEventListener('sky-fashion-mcp', update);
   }, []);
+
+  function createQuickPlan() {
+    setPlanError('');
+    try {
+      setPlan(
+        buildFashionQuickPlan({ brandDirection, productDesign, region }),
+      );
+    } catch (error) {
+      setPlan(null);
+      setPlanError(
+        error instanceof Error ? error.message : '入力を確認してください。',
+      );
+    }
+  }
 
   async function connect() {
     setBusy(true);
@@ -87,74 +97,152 @@ export function FashionBrandOpsRunner() {
   return (
     <section
       className="fashion-ops-runner"
-      aria-label="ファッションブランド運営の接続状態"
+      aria-label="ファッションブランド運営"
     >
-      <div className="fashion-ops-status">
-        {connected ? <Check size={20} /> : <Cable size={20} />}
+      <div className="fashion-quick-intro">
+        <Sparkles size={20} />
         <div>
-          <strong>{connected ? 'MCP接続済み' : 'PCのMCPへ接続'}</strong>
-          <p>
-            {connected
-              ? 'Fashion Brand Opsの38操作を確認できました。'
-              : '接続アプリが動いていれば、このボタン1回で準備が完了します。'}
-          </p>
+          <strong>PCなしで今すぐ使う</strong>
+          <p>2項目を入れるだけで、販売用の下書きをまとめます。</p>
         </div>
       </div>
-      <div className="fashion-ops-connect-actions">
-        <button
-          className="black-button"
-          disabled={busy}
-          onClick={() => void connect()}
-        >
-          {busy ? (
-            <RefreshCw size={16} className="fashion-ops-spinner" />
-          ) : connected ? (
-            <Check size={16} />
-          ) : (
-            <Cable size={16} />
-          )}
-          {busy
-            ? 'MCPを確認中…'
-            : connected
-              ? '接続を再確認'
-              : 'ワンクリックで接続'}
+      <div className="fashion-quick-form">
+        <label>
+          <span>ブランド方針</span>
+          <textarea
+            value={brandDirection}
+            maxLength={1200}
+            placeholder="例：静かで無機質な高級感。完全受注生産。売り込み感は出さない。"
+            onChange={(event) => setBrandDirection(event.target.value)}
+          />
+        </label>
+        <label>
+          <span>商品デザイン</span>
+          <textarea
+            value={productDesign}
+            maxLength={1200}
+            placeholder="例：黒いウールのワイドスラックス。立体的なタック、納期3週間。"
+            onChange={(event) => setProductDesign(event.target.value)}
+          />
+        </label>
+        <label>
+          <span>販売地域</span>
+          <input
+            value={region}
+            maxLength={80}
+            placeholder="日本"
+            onChange={(event) => setRegion(event.target.value)}
+          />
+        </label>
+        <button className="black-button" onClick={createQuickPlan}>
+          <Sparkles size={16} />
+          広告・接客案を作る
         </button>
-        {connected && (
+      </div>
+      {planError && (
+        <output className="fashion-ops-message is-error">{planError}</output>
+      )}
+      {plan && (
+        <div className="fashion-quick-result" aria-label="ブラウザ簡易プラン">
+          <section>
+            <Target size={18} />
+            <div>
+              <strong>売る相手</strong>
+              <p>{plan.audience}</p>
+              <p>{plan.market}</p>
+              <p>{plan.positioning}</p>
+            </div>
+          </section>
+          <section>
+            <ImageIcon size={18} />
+            <div>
+              <strong>広告ビジュアル案</strong>
+              <p>{plan.imageBrief}</p>
+              <small>{plan.videoBrief}</small>
+            </div>
+          </section>
+          <section>
+            <Sparkles size={18} />
+            <div>
+              <strong>Instagramキャプション</strong>
+              <p className="fashion-quick-copy">{plan.caption}</p>
+            </div>
+          </section>
+          <section>
+            <MessageCircle size={18} />
+            <div>
+              <strong>DM初回返信</strong>
+              <p>{plan.dmReply}</p>
+              <small>注文時に確認：{plan.orderFields.join(' / ')}</small>
+            </div>
+          </section>
+          <p className="fashion-quick-boundary">
+            <ShieldCheck size={16} />
+            {plan.approvalBoundary}
+          </p>
+        </div>
+      )}
+
+      <details className="fashion-mcp-advanced">
+        <summary>PC・MCPにつないで本格運用する</summary>
+        <div className="fashion-ops-status">
+          {connected ? <Check size={20} /> : <Cable size={20} />}
+          <div>
+            <strong>{connected ? 'MCP接続済み' : 'PCのMCPへ接続'}</strong>
+            <p>
+              {connected
+                ? 'Fashion Brand Opsの38操作を確認できました。'
+                : '外部Provider、受注DB、承認フローを使う場合だけ接続します。'}
+            </p>
+          </div>
+        </div>
+        <div className="fashion-ops-connect-actions">
           <button
-            className="secondary-button"
-            onClick={() => {
-              void disconnectFashionMcp().finally(() => {
-                setConnected(false);
-                setMessage('このタブのMCP接続を解除しました。');
-              });
-            }}
+            className="black-button"
+            disabled={busy}
+            onClick={() => void connect()}
           >
-            <Unplug size={15} />
-            解除
+            {busy ? (
+              <RefreshCw size={16} className="fashion-ops-spinner" />
+            ) : connected ? (
+              <Check size={16} />
+            ) : (
+              <Cable size={16} />
+            )}
+            {busy
+              ? 'MCPを確認中…'
+              : connected
+                ? '接続を再確認'
+                : 'ワンクリックで接続'}
           </button>
-        )}
-      </div>
-      <p className="fashion-ops-connection-state" aria-live="polite">
-        <span className={connected ? 'status-dot' : 'offline-dot'} />
-        {connected ? 'このタブはPCのMCPへ接続中' : 'MCP未接続'}
-      </p>
-      {message && <output className="fashion-ops-message">{message}</output>}
-      <ul>
-        {capabilities.map((capability) => (
-          <li key={capability}>
-            <CheckCircle2 size={16} />
-            {capability}
-          </li>
-        ))}
-      </ul>
-      <div className="fashion-ops-approval">
-        <ShieldCheck size={19} />
-        <p>
-          計画と下書きは自動化できます。価格変更、画像・動画生成、投稿・広告出稿、DM送信、請求、返金は、内容を確認して承認するまで実行されません。
+          {connected && (
+            <button
+              className="secondary-button"
+              onClick={() => {
+                void disconnectFashionMcp().finally(() => {
+                  setConnected(false);
+                  setMessage('このタブのMCP接続を解除しました。');
+                });
+              }}
+            >
+              <Unplug size={15} />
+              解除
+            </button>
+          )}
+        </div>
+        <p className="fashion-ops-connection-state" aria-live="polite">
+          <span className={connected ? 'status-dot' : 'offline-dot'} />
+          {connected ? 'このタブはPCのMCPへ接続中' : 'MCP未接続'}
         </p>
-      </div>
-      <details>
-        <summary>初回だけ必要な準備</summary>
+        {message && <output className="fashion-ops-message">{message}</output>}
+        <ul>
+          {capabilities.map((capability) => (
+            <li key={capability}>
+              <CheckCircle2 size={16} />
+              {capability}
+            </li>
+          ))}
+        </ul>
         <ol>
           <li>
             <a href="/toolkits/fashion-brand-ops-connector.zip" download>

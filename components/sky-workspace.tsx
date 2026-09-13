@@ -115,9 +115,11 @@ function statusFor(tool: Automation, fashionConnected = false) {
     };
   if (tool.integration === 'fashion-brand-ops')
     return {
-      label: fashionConnected ? '接続済み' : '1クリック接続',
-      detail: fashionConnected ? '38操作を利用可能' : 'PCのMCPへ接続',
-      className: fashionConnected ? 'is-ready' : 'is-connect',
+      label: fashionConnected ? 'MCP接続済み' : '今使える',
+      detail: fashionConnected
+        ? 'ブラウザ簡易版＋MCP 38操作'
+        : 'PCなしのブラウザ簡易版',
+      className: 'is-ready',
     };
   if (tool.runner === 'subscription-ledger')
     return {
@@ -445,11 +447,7 @@ export default function SkyWorkspace({
                           ? '詳細'
                           : tool.runner === 'delivery-local'
                             ? 'PC接続'
-                            : tool.integration === 'fashion-brand-ops'
-                              ? fashionConnected
-                                ? '使う'
-                                : '接続'
-                              : '使う'}
+                            : '使う'}
                         <ArrowRight size={16} />
                       </button>
                     </div>
