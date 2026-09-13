@@ -102,7 +102,8 @@ export default function MercariRevenueStarter() {
     if (busy) return;
     setBusy(true);
     setError('');
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     try {
       const plan = await operationRequest<MercariRevenuePlan>(
         '/api/revenue/mercari',
@@ -124,7 +125,7 @@ export default function MercariRevenueStarter() {
         },
       );
       setPlans((current) => [plan, ...current]);
-      event.currentTarget.reset();
+      formElement.reset();
     } catch (cause) {
       if (cause instanceof OperationRequestError && cause.status === 401)
         setNeedsSignin(true);
