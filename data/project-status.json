@@ -167,6 +167,70 @@
       ]
     },
     {
+      "id": "SKY13",
+      "title": "GrokをモチーフにChatの表示・入力を改善し、依頼から実行・結果までを会話内へ統合",
+      "status": "done",
+      "dependsOn": ["SKY12"],
+      "evidence": [
+        "components/sky-chat-workspace.tsx",
+        "app/workspace.css",
+        "lib/operations.ts",
+        "tests/operations.test.mjs",
+        "docs/chat-usability-20260912.md"
+      ]
+    },
+    {
+      "id": "SKY14",
+      "title": "接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理",
+      "status": "done",
+      "dependsOn": ["SKY13"],
+      "evidence": [
+        "components/sky-chat-workspace.tsx",
+        "components/mcp-bot-runner.tsx",
+        "lib/mcp-hub.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "tests/mcp-connector.test.mjs",
+        "docs/chat-mcp-control-room-20260913.md"
+      ]
+    },
+    {
+      "id": "WLT01",
+      "title": "Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装",
+      "status": "done",
+      "dependsOn": ["BIL01"],
+      "evidence": [
+        "docs/wallet-front-design.md",
+        "components/sky-billing.tsx",
+        "components/operations-workspace.tsx",
+        "app/workspace.css"
+      ]
+    },
+    {
+      "id": "WLT02",
+      "title": "本人別の残高・売上・経費・取消履歴をD1へ保存するWallet専用APIと操作画面を実装",
+      "status": "done",
+      "dependsOn": ["WLT01"],
+      "evidence": [
+        "app/api/wallet/route.ts",
+        "components/wallet-workspace.tsx",
+        "lib/operations.ts",
+        "tests/wallet-backend.test.mjs"
+      ]
+    },
+    {
+      "id": "WEB01",
+      "title": "主要画面のstyle契約と配備asset closureを検査し、GitHubと本人限定Sitesを同一commitへ固定",
+      "status": "in_progress",
+      "dependsOn": ["SKY14", "WLT02", "HOME01"],
+      "evidence": [
+        "tests/web-route-style-contract.test.mjs",
+        "scripts/check-web-asset-closure.mjs",
+        "tests/web-asset-closure.test.mjs",
+        "app/workspace.css",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
       "id": "HOME01",
       "title": "iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装",
       "status": "done",

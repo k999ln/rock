@@ -1,5 +1,5 @@
 {
-  "version": "1.30",
+  "version": "1.31",
   "decidedAt": "2026-09-13",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -11,7 +11,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ31 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ32 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -93,9 +93,22 @@
   "chatInteraction": {
     "defaultRouting": "sky_auto",
     "manualAppSelection": "optional",
+    "connectedMcpPresentation": "one_bot_per_connected_server_or_ready_product",
+    "controlSurface": "chat_thread",
+    "steeringPolicy": "apply_to_next_execution_unless_the_mcp_explicitly_supports_live_steering",
+    "genericExecutionContract": "passport_tool_schema_then_prepare_confirm_execute",
+    "stopPolicy": "disconnect_server_and_invalidate_outstanding_approvals",
     "unknownIntentPolicy": "ask_for_clarification_without_execution",
     "receiptSource": "owned_jobs_only",
     "chatReceiptIsCompletionEvidence": false
+  },
+  "webDeliveryIntegrity": {
+    "canonicalSource": "current_feature_branch_until_owner_approved_main_merge",
+    "sourceAndPrivateSiteCommitMustMatch": true,
+    "requiredStyledSurfaces": ["home", "sky", "chat", "wallet", "polymarket", "settings"],
+    "routeStyleContract": "tests/web-route-style-contract.test.mjs",
+    "assetClosureCheck": "npm run release:web-assets:check",
+    "publicAccessAuthorized": false
   },
   "executionApproval": {
     "status": "approved_for_implementation",
@@ -137,7 +150,8 @@
     "RQ28",
     "RQ29",
     "RQ30",
-    "RQ31"
+    "RQ31",
+    "RQ32"
   ],
   "primaryCapabilities": [
     "sky-automation-control",

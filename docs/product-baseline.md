@@ -1,5 +1,7 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-13追記（v1.31）: 利用者は、個別branchや過去の公開版に散在した良い実装を、現行設計と安全条件へ矛盾しない形で正本へ統合し、崩れた画面を完成版へ上書き保存するよう明示。RQ32を追加する。Chatは接続済みready商品と任意MCPをbotとして扱い、方向修正、1回承認、実行、停止、結果を同じスレッドへ集約する。Walletは本人別の残高・売上・経費・取消履歴を永続化する。主要画面のCSS契約とbuild asset closureを全体verifyへ追加し、GitHubと本人限定Sitesを同一source commitへ固定する。一般公開、実資金、マイナンバー、production鍵のgateは変更しない。
+
 2026-09-13追記（v1.30）: Android物理端末を型番/SKU、BSP/boot/recovery、同一buildのCDD/CTS、production署名、販売地域の5必須gateへ固定する。現在0/5で、Android互換・GMS許諾・物理flash・販売可能を表示しない。マイナンバーは無効化、目的、主体/provider、data flowと保存/削除、安全管理、事故/委託先、最終有効化の7必須gateへ分ける。現在1/7で、番号・カード画像・通常profile項目を取得しない。
 
 2026-09-12追記（v1.29）: 利用者は、OS公開の最低条件を満たすまで作業を継続するよう明示。RQ31を維持する。QEMU rc2の1GB配布archiveをSHA-256照合後に取得し、同梱legal bundle、target 24＋host build 37 componentのmanifestを同じarchiveへ固定した。current native CycloneDXを生成し、10要件中6件の合格と4件の未達を機械判定する。さらに候補準備・法務承認・保護署名・本人署名の計62公開fixture回帰を全体verifyへ必須化するが、実鍵・owner承認・署名後受入の代用にはしない。
@@ -40,7 +42,7 @@
 
 2026-09-09追記: 設計v1.1の実装承認を受領。公開・実機・MetaMask実資金は準備が整うことを条件に了承。現在の承認範囲は [承認記録](execution-approval-20260909.md)。以下の「承認待ち」は作成時の履歴であり、現在の実装を停止させない。RQ01〜RQ15と料金は変更しない。
 
-版: 1.25 / 更新日: 2026-09-12（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
+版: 1.31 / 更新日: 2026-09-13（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
 
 この文書は利用者がこの日に明示した製品要望を固定する。実装状況は [OS稼働・ゲーム連携監査](os-readiness-audit-20260909.md)（過去の追補・初回監査は履歴）、次の指示は [現在の再開指示](prompts/rock-current-next-20260911.md)、毎回の確認方法は [プロンプト作成規約](prompt-playbook.md) を参照する。決定と実装実績を同じものとして扱わない。
 
@@ -286,7 +288,15 @@ native SBOMはtarget runtime componentとhost build dependencyを区別したCyc
 
 QEMUの公開準備は10 gateを同じID・状態で `data/qemu-release-audit.json` と `data/release-readiness.json` に保持し、不一致を自動検査で拒否する。製品license、production鍵、署名後の同一候補受入、一般公開承認は所有者の明示決定前に合格にしない。[QEMU完了監査](qemu-release-completion-audit-20260912.md)を詳細正本とする。
 
-## 1.0への8原則の適用（RQ01〜RQ31を維持）
+## RQ32 完成版を正本と本人限定Webへ同一commitで収束する
+
+main、現在の開発branch、機能branch、Sites公開履歴を比較し、完成度の高い実装を現在の製品ベースへ統合する。履歴が新しいだけ、画面だけ、説明だけを理由に採用せず、保存互換、approval、実行receipt、外部接続・実資金・公開gateを維持できる版を選ぶ。Skyは発見・接続、Chatは接続後の操作、Walletは本人別の永続収支という責任を崩さない。
+
+Skyで接続が成立したMCP serverとready商品はChatへbotとして自動表示し、同じスレッドで依頼、方向修正、公開機能と引数、1回承認、実行結果、失敗、停止を扱う。方向修正は、MCPがlive steeringを明示対応しない限り次の実行へ適用する。停止はsessionと未使用承認を失効させ、送信後timeoutや結果不明を自動再実行しない。Walletは本人別D1を正本とし、残高、売上、経費、取消を追記履歴として保持するが、手入力を検証済み収益へ昇格させない。
+
+Home、Sky、Chat、Wallet、Polymarket、設定は、画面componentだけでなく必要なstylesheetがbuildへ含まれることを自動検査する。server/manifest/HTMLが参照する`_next/static` assetは公開archive内に全て存在しなければならない。GitHubの対象branchと本人限定Sitesへ同じsource commitを保存し、公開後に主要routeとassetの実responseを再確認する。一般公開、main merge、production鍵、実取引・送金、物理端末合格、マイナンバー有効化は、それぞれの既存gateなしにこの統合作業から許可へ変えない。
+
+## 1.0への8原則の適用（RQ01〜RQ32を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -306,6 +316,8 @@ QEMUの公開準備は10 gateを同じID・状態で `data/qemu-release-audit.js
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-13 v1.31: Chatの接続bot管理、本人別永続Wallet、主要画面のstyle契約、配備asset closure、GitHubと本人限定Sitesの同一commit収束をRQ32へ追加。分散branchの無条件mergeではなく、現行の安全契約と検証を満たす完成版だけを採用する。
 
 2026-09-12 v1.27: QEMU rc2を10要件へ分解し、候補identityと範囲付き受入5件を合格、native SBOM・製品license・production署名・署名後受入・公開承認5件を未達として機械判定した。旧9abのtarget 24＋host 37 componentをCycloneDXへ変換するが、rc2へ転用できない検査を追加した。
 

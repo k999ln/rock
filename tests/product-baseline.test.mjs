@@ -11,10 +11,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ31/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ32/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ31/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ32/);
   const missingTemplate = structuredClone(source);
   delete missingTemplate.acceptanceTemplate;
   assert.throws(() => validateBaseline(missingTemplate), /acceptanceTemplate/);
@@ -39,6 +39,12 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const unapprovedMarket = structuredClone(source);
   unapprovedMarket.marketExploration.appShellAuthorized = false;
   assert.throws(() => validateBaseline(unapprovedMarket), /基本アプリ枠/);
+  const missingBotControl = structuredClone(source);
+  delete missingBotControl.chatInteraction.connectedMcpPresentation;
+  assert.throws(() => validateBaseline(missingBotControl), /接続bot管理/);
+  const splitWebDelivery = structuredClone(source);
+  splitWebDelivery.webDeliveryIntegrity.sourceAndPrivateSiteCommitMustMatch = false;
+  assert.throws(() => validateBaseline(splitWebDelivery), /同一commit/);
   const missingHome = structuredClone(source);
   delete missingHome.homeExperience;
   assert.throws(() => validateBaseline(missingHome), /ホームと設定アプリ/);

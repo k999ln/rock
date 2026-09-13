@@ -8112,3 +8112,186 @@
     justify-content: center;
   }
 }
+
+/* Polymarket is an external app surface, not an unstyled placeholder. */
+.polymarket-page.polymarket-page {
+  min-height: 0;
+  padding: clamp(22px, 4vw, 48px);
+  background:
+    radial-gradient(circle at 82% 0%, rgba(214, 238, 173, 0.34), transparent 28rem),
+    var(--rock-paper);
+}
+.polymarket-shell {
+  width: min(100%, 980px);
+  display: grid;
+  gap: 18px;
+  margin: 0 auto;
+}
+.polymarket-heading {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid var(--rock-line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 18px 50px rgba(31, 43, 36, 0.07);
+  backdrop-filter: blur(14px);
+}
+.polymarket-mark {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 17px;
+  color: #e8ffc1;
+  background: #202725;
+}
+.polymarket-heading p {
+  color: var(--rock-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.polymarket-heading h1 {
+  margin-top: 2px;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 780;
+  letter-spacing: -0.045em;
+  line-height: 1.1;
+}
+.polymarket-state {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 11px;
+  border: 1px solid #d5dbd6;
+  border-radius: 999px;
+  color: #6e7772;
+  background: #f5f7f5;
+  font-size: 11px;
+  font-weight: 800;
+}
+.polymarket-empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: clamp(44px, 8vw, 82px) 24px;
+  border: 1px solid #313937;
+  border-radius: 24px;
+  color: #f4f6f3;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(214, 238, 173, 0.13), transparent 42%),
+    #171c1a;
+  box-shadow: 0 22px 70px rgba(24, 31, 27, 0.14);
+}
+.polymarket-empty-state > span {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 5px;
+  border: 1px solid #4a5651;
+  border-radius: 50%;
+  color: #d9f7a7;
+  background: #252d29;
+}
+.polymarket-empty-state h2 {
+  font-size: clamp(22px, 3vw, 31px);
+  letter-spacing: -0.03em;
+}
+.polymarket-empty-state p {
+  max-width: 540px;
+  color: #aeb8b2;
+  font-size: 14px;
+  line-height: 1.75;
+}
+.polymarket-boundaries {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--rock-line);
+  border-radius: 18px;
+  background: var(--rock-line);
+}
+.polymarket-boundaries > div {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 18px;
+  color: #6a746e;
+  background: rgba(255, 255, 255, 0.9);
+}
+.polymarket-boundaries > div > svg {
+  margin-top: 2px;
+  color: #667c53;
+}
+.polymarket-boundaries span,
+.polymarket-boundaries strong {
+  display: block;
+}
+.polymarket-boundaries span {
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.polymarket-boundaries strong {
+  margin-bottom: 3px;
+  color: var(--rock-ink);
+  font-size: 14px;
+}
+.polymarket-settings-link {
+  width: fit-content;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  justify-self: end;
+  padding: 0 16px;
+  border: 1px solid #303936;
+  border-radius: 999px;
+  color: #fff;
+  background: #202725;
+  font-size: 13px;
+  font-weight: 750;
+}
+.polymarket-settings-link:hover,
+.polymarket-settings-link:focus-visible {
+  background: #303936;
+}
+
+@media (max-width: 700px) {
+  .polymarket-page.polymarket-page {
+    padding: 14px;
+  }
+  .polymarket-heading {
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: 17px;
+    border-radius: 18px;
+  }
+  .polymarket-mark {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+  }
+  .polymarket-state {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+  .polymarket-empty-state {
+    padding: 46px 18px;
+    border-radius: 20px;
+  }
+  .polymarket-boundaries {
+    grid-template-columns: 1fr;
+  }
+  .polymarket-settings-link {
+    width: 100%;
+    justify-self: stretch;
+  }
+}
