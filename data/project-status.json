@@ -1,6 +1,6 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "OS Hub lifecycle、Sky MCP、Fashion MCP、収益後精算Worker、ホーム・設定UIを本人限定Developer Previewへ統合・公開",
+  "milestone": "OS Hub lifecycle、Sky MCP、収益後精算Worker、ホーム・設定・端末保全UIを本人限定Developer Previewへ統合・公開",
   "nextAction": "有償商品を1件選び、販売・決済・払出しProvider sandbox credentialと署名済み入金eventを接続して、返金・dispute・払出し失敗を含む事業受入を行う。",
   "tasks": [
     {
@@ -179,6 +179,20 @@
         "app/settings/page.tsx",
         "components/system-settings.tsx",
         "components/system-settings.module.css",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "SYS01",
+      "title": "端末診断・暗号化設定バックアップ・復元・Web更新確認を設定へ実装",
+      "status": "done",
+      "dependsOn": ["HOME01"],
+      "evidence": [
+        "app/settings/system/page.tsx",
+        "components/system-maintenance.tsx",
+        "components/system-maintenance.module.css",
+        "lib/system-backup.ts",
+        "tests/system-backup.test.mjs",
         "docs/product-baseline.md"
       ]
     },

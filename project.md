@@ -1,5 +1,11 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-12 — OS診断・暗号化保全・更新確認を設定へ追加
+
+設定の「システム」に、通信、端末内保存、Web Crypto、Service Worker、RockstarOS API、PC Connectorの実状態診断を追加した。端末内のRockstarOS外観・設定だけをパスフレーズから導出した鍵とAES-GCMで暗号化して書き出し、改ざんまたは誤ったパスフレーズを拒否して復元できる。ログイン、PC接続token、Wallet残高、server receiptは端末設定バックアップへ含めない。
+
+同じ画面からWeb/PWAの更新確認を実行できる。QEMU Developer Preview、物理端末対象、正式署名鍵、外部MCP・販売・決済・払出しProviderを別gateとして表示し、画面追加を実機対応・本番署名・外部接続の完了証拠にはしない。物理端末版は正確な機種/SKU、BSP、bootloader、recoveryと鍵管理の確定後に別受入を行う。
+
 ## 2026-09-12 — ホーム画面と設定アプリをOSの標準入口へ追加
 
 `/`をiPhoneに着想を得たRockstarOSホームへ変更し、Sky本体を`/sky`へ分離した。Sky、Chat、Wallet、Polymarketはアイコンから直接開き、設定はOS標準utilityとして追加する。壁紙4種、アクセント色、アイコンサイズ、アプリ名表示、並び順は端末内へ保存し、本人アカウントや各アプリの権限・記録を変更しない。
@@ -380,7 +386,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / OS Hub lifecycle、Sky MCP、Fashion MCP、収益後精算Worker、ホーム・設定UIを本人限定Developer Previewへ統合・公開 / 完了 40/63件
+最終更新: 2026-09-12 / OS Hub lifecycle、Sky MCP、収益後精算Worker、ホーム・設定・端末保全UIを本人限定Developer Previewへ統合・公開 / 完了 41/64件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -397,6 +403,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY11 | MCP掲載前診断とPC接続の互換性・初回導線を改善 | 完了 | [記録](lib/mcp-inspection.ts) · [記録](app/api/sky/mcp/inspect/route.ts) · [記録](lib/device.ts) · [記録](components/sky-publisher-form.tsx) · [記録](components/device-connection.tsx) · [記録](tests/mcp-inspection.test.mjs) · [記録](tests/device-lifecycle.test.mjs) |
 | SKY12 | ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](docs/sky-identity-connection.md) |
 | HOME01 | iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装 | 完了 | [記録](app/page.tsx) · [記録](app/sky/page.tsx) · [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](app/settings/page.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-settings.module.css) · [記録](docs/product-baseline.md) |
+| SYS01 | 端末診断・暗号化設定バックアップ・復元・Web更新確認を設定へ実装 | 完了 | [記録](app/settings/system/page.tsx) · [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |

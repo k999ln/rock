@@ -2,6 +2,7 @@
 
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in is a top-level gateway route. */
 import {
+  Activity,
   ArrowLeft,
   ArrowRight,
   Cable,
@@ -137,6 +138,7 @@ export default function SystemSettings() {
         </SettingsGroup>
 
         <SettingsGroup title="更新と復旧">
+          <SettingLink href="/settings/system" icon={<Activity />} tone="green" title="システム診断と保全" detail="診断・暗号化バックアップ・復元・更新" />
           <SettingButton icon={<RefreshCw />} tone="blue" title="Web UIを更新" detail="公開中の最新版を読み直す" onClick={() => window.location.reload()} />
           <SettingLink href="/rockstaros/guide#recovery" icon={<Smartphone />} tone="gray" title="OS導入・バックアップ・復旧" detail="Developer Previewの手順と制限" />
         </SettingsGroup>
