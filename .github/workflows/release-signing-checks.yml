@@ -1,6 +1,7 @@
 name: Release signing control tests
 on:
   push:
+    branches: [main]
     paths:
       - scripts/release_signing*.py
       - scripts/check-release-signing.mjs
