@@ -42,6 +42,9 @@ on:
       - package.json
 permissions:
   contents: read
+concurrency:
+  group: release-signing-fixtures-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: true
 jobs:
   public-fixture-tests:
     runs-on: ubuntu-24.04
