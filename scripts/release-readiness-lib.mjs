@@ -17,6 +17,7 @@ const inside = (root, path) => {
 
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 const sha256Pattern = /^[0-9a-f]{64}$/;
+const versionedControl = (value) => typeof value === 'string' && /^.+@[^@]+$/.test(value);
 
 const qemuPostSigningCheckIds = [
   'authentication',
@@ -61,6 +62,22 @@ const validateHashedEvidence = (root, evidence, label, requiredPins = null) => {
       fail(label + ': roleとpinが不一致です: ' + item.role);
     }
   }
+};
+
+const validateExactHashedEvidenceRoles = (root, evidence, label, requiredRoles) => {
+  if (!Array.isArray(requiredRoles) || requiredRoles.length === 0) {
+    fail(label + ': 必須role定義がありません');
+  }
+  if (
+    !Array.isArray(evidence) ||
+    evidence.length !== requiredRoles.length ||
+    new Set(evidence.map(({ role }) => role)).size !== evidence.length ||
+    requiredRoles.some((role) => !evidence.some((item) => item.role === role)) ||
+    new Set(evidence.map(({ path }) => path)).size !== evidence.length
+  ) {
+    fail(label + ': 必須roleごとの別file根拠が必要です');
+  }
+  validateHashedEvidence(root, evidence, label);
 };
 
 export function validateQemuPostSigningAcceptance({ root, record, candidate }) {
@@ -297,6 +314,28 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
   if (target.gates.length !== audit.requirements.length) fail(label + ': 公開台帳のgate数が不一致です');
 
   const requirement = (id) => audit.requirements.find((item) => item.id === id);
+  const androidEvidenceRoles = {
+    'exact-model-and-sku': ['read-only-device-inventory', 'bootloader-state-observation'],
+    'bsp-driver-boot-recovery': ['bsp', 'vendor-drivers', 'boot-chain', 'recovery'],
+    'android-cdd-cts': ['cdd-version', 'cts-revision', 'cts-result', 'cts-verifier-result'],
+    'production-signing': ['key-identity', 'avb-and-ota-verification', 'rollback-policy', 'rotation-and-revocation'],
+    'regional-radio-and-sales': ['distribution-model', 'target-regions', 'radio-impact-determination', 'regional-compliance-review'],
+  };
+  for (const [id, roles] of Object.entries(androidEvidenceRoles)) {
+    if (JSON.stringify(requirement(id).requiredEvidence) !== JSON.stringify(roles)) {
+      fail(label + '/' + id + ': 必須証拠role定義が不一致です');
+    }
+  }
+  for (const id of ['bsp-driver-boot-recovery', 'android-cdd-cts', 'production-signing', 'regional-radio-and-sales']) {
+    if (requirement(id).status === 'pass' && requirement('exact-model-and-sku').status !== 'pass') {
+      fail(label + '/' + id + ': 型番/SKU gateより先に合格にできません');
+    }
+  }
+  for (const id of ['android-cdd-cts', 'production-signing']) {
+    if (requirement(id).status === 'pass' && requirement('bsp-driver-boot-recovery').status !== 'pass') {
+      fail(label + '/' + id + ': BSP/boot/recovery gateより先に合格にできません');
+    }
+  }
   const deviceValues = Object.values(audit.candidate?.device || {});
   const buildValues = Object.values(audit.candidate?.build || {});
   if (audit.candidate?.selectionStatus === 'not_selected') {
@@ -318,6 +357,17 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
     }
   } else {
     fail(label + ': selectionStatusが不正です');
+  }
+  if (requirement('exact-model-and-sku').status === 'pass') {
+    if (audit.candidate?.selectionStatus !== 'selected') {
+      fail(label + ': 型番/SKU gate合格には選択済み実機が必要です');
+    }
+    validateExactHashedEvidenceRoles(
+      root,
+      audit.deviceEvidence,
+      label + '/exact-model-and-sku',
+      androidEvidenceRoles['exact-model-and-sku'],
+    );
   }
 
   const claims = audit.claims || {};
@@ -362,13 +412,16 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
   }
 
   if (requirement('bsp-driver-boot-recovery').status === 'pass') {
-    const roles = new Set((audit.artifacts || []).map(({ role }) => role));
-    for (const role of ['bsp', 'vendor-drivers', 'boot-chain', 'recovery']) {
-      if (!roles.has(role)) fail(label + ': 必須artifactがありません: ' + role);
-    }
-    if ((audit.artifacts || []).some(({ sha256: hash }) => !sha256Pattern.test(hash || ''))) {
-      fail(label + ': artifact SHA-256が不正です');
-    }
+    validateExactHashedEvidenceRoles(
+      root,
+      audit.artifacts,
+      label + '/bsp-driver-boot-recovery',
+      androidEvidenceRoles['bsp-driver-boot-recovery'],
+    );
+    if (
+      audit.candidate?.selectionStatus !== 'selected' ||
+      audit.artifacts.some(({ sku }) => sku !== audit.candidate.device.sku)
+    ) fail(label + ': BSP/boot/recoveryが同じSKUへ結合されていません');
   }
   if (requirement('android-cdd-cts').status === 'pass') {
     const build = audit.candidate.build || {};
@@ -381,11 +434,19 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
       !sha256Pattern.test(build.imageSha256 || '') ||
       !compatibility.cddVersion ||
       !compatibility.ctsRevision ||
+      !sha256Pattern.test(compatibility.cddDocumentSha256 || '') ||
+      !sha256Pattern.test(compatibility.ctsPackageSha256 || '') ||
       !sha256Pattern.test(compatibility.ctsResultSha256 || '') ||
       !sha256Pattern.test(compatibility.ctsVerifierResultSha256 || '')
     ) {
       fail(label + ': 同一buildのCDD/CTS/CTS Verifier識別子が不足しています');
     }
+    validateHashedEvidence(root, compatibility.evidence, label + '/android-cdd-cts', {
+      'cdd-version': compatibility.cddDocumentSha256,
+      'cts-revision': compatibility.ctsPackageSha256,
+      'cts-result': compatibility.ctsResultSha256,
+      'cts-verifier-result': compatibility.ctsVerifierResultSha256,
+    });
   }
   if (requirement('production-signing').status === 'pass') {
     if (
@@ -396,6 +457,12 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
     ) {
       fail(label + ': production署名・rollback・rotation/失効証拠が不足しています');
     }
+    validateExactHashedEvidenceRoles(
+      root,
+      audit.signing.evidence,
+      label + '/production-signing',
+      androidEvidenceRoles['production-signing'],
+    );
   }
   if (requirement('regional-radio-and-sales').status === 'pass') {
     if (
@@ -408,6 +475,12 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
     ) {
       fail(label + ': 販売形態・地域・radio影響・適合審査が不足しています');
     }
+    validateExactHashedEvidenceRoles(
+      root,
+      audit.regionalDistribution.complianceEvidence,
+      label + '/regional-radio-and-sales',
+      androidEvidenceRoles['regional-radio-and-sales'],
+    );
   }
   if (
     audit.personalNumberBoundary?.status !== 'disabled_separate_gate' ||
@@ -465,6 +538,42 @@ export function validatePersonalNumberReleaseAudit({ root, audit, readiness }) {
   if (target.gates.length !== audit.requirements.length) fail(label + ': 公開台帳のgate数が不一致です');
 
   const requirement = (id) => audit.requirements.find((item) => item.id === id);
+  const personalNumberEvidenceRoles = {
+    'purpose-and-necessity': ['authorized-processing', 'necessity-assessment', 'legal-review', 'notice'],
+    'authorized-operator-and-provider': ['controller', 'authorized-personnel', 'identity-provider', 'processor-contracts'],
+    'data-flow-retention-and-deletion': ['data-flow', 'retention', 'deletion', 'media-disposal', 'audit-log'],
+    'security-and-privacy-review': ['organizational', 'personnel', 'physical', 'technical', 'key-management', 'external-environment'],
+    'incident-and-vendor-governance': ['incident-response', 'regulator-notification', 'data-subject-notification', 'vendor-oversight'],
+    'activation-approval': ['independent-review', 'owner-activation'],
+  };
+  for (const [id, roles] of Object.entries(personalNumberEvidenceRoles)) {
+    if (JSON.stringify(requirement(id).requiredEvidence) !== JSON.stringify(roles)) {
+      fail(label + '/' + id + ': 必須証拠role定義が不一致です');
+    }
+    if (requirement(id).status === 'pass') {
+      validateExactHashedEvidenceRoles(
+        root,
+        audit.gateEvidence?.[id],
+        label + '/' + id,
+        roles,
+      );
+    }
+  }
+  for (const id of ['data-flow-retention-and-deletion', 'security-and-privacy-review', 'incident-and-vendor-governance']) {
+    if (
+      requirement(id).status === 'pass' &&
+      (requirement('purpose-and-necessity').status !== 'pass' ||
+        requirement('authorized-operator-and-provider').status !== 'pass')
+    ) {
+      fail(label + '/' + id + ': 目的・取扱主体gateより先に合格にできません');
+    }
+  }
+  if (
+    requirement('incident-and-vendor-governance').status === 'pass' &&
+    requirement('security-and-privacy-review').status !== 'pass'
+  ) {
+    fail(label + '/incident-and-vendor-governance: security gateより先に合格にできません');
+  }
   if (requirement('disabled-until-approved').status !== 'pass') {
     fail(label + ': 審査完了までdefault-deny境界を維持してください');
   }
@@ -486,6 +595,37 @@ export function validatePersonalNumberReleaseAudit({ root, audit, readiness }) {
     capture.storesPersonalNumber === true ||
     capture.storesCardImage === true ||
     capture.normalProfileField === true;
+  const controls = audit.controls || {};
+  if (
+    requirement('purpose-and-necessity').status === 'pass' &&
+    (!capture.authorizedPurpose || !controls.legalBasis || !controls.necessityAssessment)
+  ) {
+    fail(label + ': 目的gateには許された事務・法的根拠・必要性評価が必要です');
+  }
+  if (
+    requirement('authorized-operator-and-provider').status === 'pass' &&
+    (!capture.controller || !capture.identityProvider || !controls.authorizedPersonnelRegister)
+  ) {
+    fail(label + ': 取扱主体gateには主体・provider・担当者台帳が必要です');
+  }
+  if (
+    requirement('data-flow-retention-and-deletion').status === 'pass' &&
+    (!capture.retentionPeriod || !capture.deletionTrigger || !versionedControl(controls.dataFlowVersion))
+  ) {
+    fail(label + ': data flow gateには保存期間・削除trigger・版付きdata flowが必要です');
+  }
+  if (
+    requirement('security-and-privacy-review').status === 'pass' &&
+    !versionedControl(controls.securityReviewVersion)
+  ) {
+    fail(label + ': security gateには版付き審査記録が必要です');
+  }
+  if (
+    requirement('incident-and-vendor-governance').status === 'pass' &&
+    (!versionedControl(controls.incidentPlanVersion) || !versionedControl(controls.vendorOversightVersion))
+  ) {
+    fail(label + ': incident gateには事故対応と委託先監督の版付き記録が必要です');
+  }
   if (requirement('activation-approval').status !== 'pass') {
     if (audit.activationState !== 'disabled' || captureEnabled) {
       fail(label + ': 最終承認前に番号・カード画像・通常profile項目を有効化できません');
@@ -497,11 +637,17 @@ export function validatePersonalNumberReleaseAudit({ root, audit, readiness }) {
     if (
       audit.activationState !== 'enabled' ||
       prerequisites.some(({ status }) => status !== 'pass') ||
+      capture.collectsPersonalNumber !== true ||
+      capture.normalProfileField !== false ||
       !capture.controller ||
       !capture.authorizedPurpose ||
       !capture.identityProvider ||
       !capture.retentionPeriod ||
-      !capture.deletionTrigger
+      !capture.deletionTrigger ||
+      !audit.activation?.environment ||
+      !audit.activation?.startDate ||
+      !audit.activation?.responsiblePerson ||
+      !audit.activation?.independentReviewer
     ) {
       fail(label + ': 有効化には全前提gateと主体・目的・provider・保存/削除条件が必要です');
     }

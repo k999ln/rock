@@ -29,6 +29,7 @@
     "saleReady": false,
     "physicalFlashVerified": false
   },
+  "deviceEvidence": [],
   "gms": {
     "policy": "aosp_without_gms",
     "licenseStatus": "not_requested",
@@ -38,14 +39,18 @@
   "compatibility": {
     "cddVersion": null,
     "ctsRevision": null,
+    "cddDocumentSha256": null,
+    "ctsPackageSha256": null,
     "ctsResultSha256": null,
-    "ctsVerifierResultSha256": null
+    "ctsVerifierResultSha256": null,
+    "evidence": []
   },
   "signing": {
     "status": "not_provisioned",
     "keyId": null,
     "rollbackPolicyEvidence": null,
-    "rotationAndRevocationEvidence": null
+    "rotationAndRevocationEvidence": null,
+    "evidence": []
   },
   "regionalDistribution": {
     "salesModel": null,

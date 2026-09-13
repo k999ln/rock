@@ -27,6 +27,7 @@
 - QEMUの署名後受入を`docs/templates/qemu-post-signing-acceptance.json`へ固定し、同一archiveの署名前後hash、production署名pin、license/NOTICE/SBOM、fresh環境、認証・導入・更新・rollback・backup・restore・中断復旧・診断・正常終了・削除の10項目と各原本hashが揃わない合格宣言を拒否する。
 - Android物理端末は[端末固有監査](android-and-personal-number-gates-20260913.md)で、正確な型番/SKU、BSP/boot/recovery、同一buildのCDD/CTS、production署名、販売地域の5必須gateを固定する。GMSなしAOSP Previewを既定とし、GMS許諾をAndroid互換から推定しない。
 - マイナンバー連携は同じ監査で7必須gateへ分解し、最終有効化まで番号・カード画像・通常profile項目を無効にする。目的や安全対策だけでなく、取扱主体/provider、保存・削除、事故対応・委託先監督、最終承認の証拠を要求する。
+- Androidとマイナンバーの合格証拠は、gateごとに定義した全roleの別ファイル、repository内path、実byteのSHA-256を要求する。型番/SKU→BSP/boot/recovery→CDD/CTS・production署名、および目的/主体→data flow・安全管理→事故/委託先→有効化の依存順序を飛ばしたPASSを拒否する。
 
 QEMUは[候補単位の完了監査](qemu-release-completion-audit-20260912.md)で、rc2の版、source commit、archive SHA-256を受入とinventoryへ結合する。旧9abのlegal-infoをrc2固有SBOMとして転用した場合、または公開台帳とQEMU監査の状態がずれた場合は検査を失敗させる。
 

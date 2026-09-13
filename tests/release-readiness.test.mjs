@@ -171,6 +171,47 @@ void test('Android gate list and public matrix cannot drift apart', () => {
   );
 });
 
+void test('Android gate PASS requires hashed role evidence from the selected device', () => {
+  const changed = structuredClone(androidAudit);
+  changed.candidate.selectionStatus = 'selected';
+  changed.candidate.device = {
+    manufacturer: 'Fixture',
+    commercialModel: 'Fixture Phone',
+    modelNumber: 'MODEL-1',
+    sku: 'SKU-1',
+    region: 'JP',
+    codename: 'fixture',
+    bootloaderUnlockable: true,
+    observedBootloaderState: 'locked',
+  };
+  const requirement = changed.requirements.find(({ id }) => id === 'exact-model-and-sku');
+  requirement.status = 'pass';
+  requirement.evidence = ['docs/android-and-personal-number-gates-20260913.md'];
+  const matrix = structuredClone(readiness);
+  matrix.targets
+    .find(({ id }) => id === 'android-physical-preview')
+    .gates.find(({ id }) => id === 'exact-model-and-sku').status = 'pass';
+  assert.throws(
+    () => validateAndroidPhysicalReleaseAudit({ root, audit: changed, readiness: matrix }),
+    /必須roleごとの別file根拠/,
+  );
+});
+
+void test('Android build gates cannot pass before exact device and BSP gates', () => {
+  const changed = structuredClone(androidAudit);
+  const requirement = changed.requirements.find(({ id }) => id === 'android-cdd-cts');
+  requirement.status = 'pass';
+  requirement.evidence = ['docs/android-and-personal-number-gates-20260913.md'];
+  const matrix = structuredClone(readiness);
+  matrix.targets
+    .find(({ id }) => id === 'android-physical-preview')
+    .gates.find(({ id }) => id === 'android-cdd-cts').status = 'pass';
+  assert.throws(
+    () => validateAndroidPhysicalReleaseAudit({ root, audit: changed, readiness: matrix }),
+    /型番\/SKU gateより先/,
+  );
+});
+
 void test('GMS cannot appear in the default AOSP preview without its separate license gate', () => {
   const changed = structuredClone(androidAudit);
   changed.claims.gmsIncluded = true;
@@ -211,6 +252,21 @@ void test('personal-number gate list and official-source boundary are fail close
   assert.throws(
     () => validatePersonalNumberReleaseAudit({ root, audit: untrustedReference, readiness }),
     /許可されていない/,
+  );
+});
+
+void test('personal-number purpose PASS requires exact hashed legal evidence roles', () => {
+  const changed = structuredClone(personalNumberAudit);
+  const requirement = changed.requirements.find(({ id }) => id === 'purpose-and-necessity');
+  requirement.status = 'pass';
+  requirement.evidence = ['docs/android-and-personal-number-gates-20260913.md'];
+  const matrix = structuredClone(readiness);
+  matrix.targets
+    .find(({ id }) => id === 'personal-number-identity')
+    .gates.find(({ id }) => id === 'purpose-and-necessity').status = 'pass';
+  assert.throws(
+    () => validatePersonalNumberReleaseAudit({ root, audit: changed, readiness: matrix }),
+    /必須roleごとの別file根拠/,
   );
 });
 
