@@ -64,10 +64,10 @@ type BackupMode = 'create' | 'restore';
 const releaseCopy: Record<string, { short: string; icon: React.ReactNode }> = {
   'web-pwa-owner-preview': { short: '本人限定版は稼働可能', icon: <AppWindow /> },
   'web-pwa-public-preview': { short: 'ライセンス選択と公開承認が必要', icon: <AppWindow /> },
-  'qemu-developer-preview': { short: 'rc2基礎・部品表6件合格。配布条件4件が未完了', icon: <HardDrive /> },
-  'android-physical-preview': { short: '機種・BSP・CDD/CTS・実機試験が必要', icon: <Smartphone /> },
+  'qemu-developer-preview': { short: 'rc2の基礎と部品表は合格。配布条件は未完了', icon: <HardDrive /> },
+  'android-physical-preview': { short: '対象機種未選択。端末固有の実測証拠が必要', icon: <Smartphone /> },
   'iphone-ipad-client': { short: '置換OSではなくclient配布として審査', icon: <Smartphone /> },
-  'personal-number-identity': { short: '現在は無効。別の法務・安全管理審査が必要', icon: <ShieldAlert /> },
+  'personal-number-identity': { short: '番号取得は無効。別の法務・安全管理審査が必要', icon: <ShieldAlert /> },
 };
 
 const initialChecks: Check[] = [
@@ -456,7 +456,7 @@ export default function SystemMaintenance() {
                   key={target.id}
                   icon={copy?.icon || <KeyRound />}
                   title={target.label}
-                  state={copy?.short || `${passed} / ${required.length} 条件完了`}
+                  state={`${passed}/${required.length}・${copy?.short || '条件を確認中'}`}
                   progress={`${passed}/${required.length}`}
                   tone={target.declaredStatus === 'ready' ? 'ready' : 'blocked'}
                 />
@@ -464,7 +464,7 @@ export default function SystemMaintenance() {
             })}
           </div>
           <p className={styles.boundary}>
-            緑はその配布方法の最低条件を満たした状態です。QEMU rc2は版・安全基礎・更新・復旧・診断・同一候補のnative部品表まで6/10合格。製品ライセンス、正式署名、署名後の同一版受入、公開承認が揃うまで配布可能にはしません。
+            緑はその配布方法の最低条件を満たした状態です。QEMU rc2は6/10。Android実機は対象端末未選択で0/5。マイナンバーは取得無効の境界だけ1/7です。製品ライセンス、正式署名、端末固有試験、法務・安全管理、公開承認が揃うまで配布・有効化可能にはしません。
           </p>
         </details>
       </div>

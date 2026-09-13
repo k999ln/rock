@@ -1,5 +1,11 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-13 — Android実機とマイナンバーを証拠単位の別gateへ固定
+
+Android物理端末版を、正確な機種/SKU、同一SKUのBSP・boot・recovery、同一buildのCDD/CTS、production署名、販売地域の5必須gateへ分けた。Android互換、物理flash、販売可能という表示は対応gateなしに有効化できない。GMSはAOSP外の別ライセンスなので、既定のDeveloper PreviewはGMSなしを維持する。対象機種は未選択で、現在0/5合格である。
+
+マイナンバー連携は、無効化境界、目的/必要性、取扱主体/provider、data flowと保存/削除、安全管理、事故対応/委託先監督、最終有効化の7必須gateへ分けた。現在1/7合格で、番号・カード画像を取得せず、通常profileにも保存しない。両監査は公開台帳と機械照合し、gate欠落、状態ずれ、非公式根拠、承認前の取得を拒否する。[Android実機・マイナンバー監査](docs/android-and-personal-number-gates-20260913.md)を参照。
+
 ## 2026-09-12 — QEMU rc2を同一候補の10要件へ固定
 
 QEMU `1.0.0-preview.20260911-rc2` のversion、source commit、1,003,224,286 byteのarchive SHA-256を、受入・434,523件inventory・Web表示の3系統で照合した。候補同一性、開発鍵と復旧guard、範囲付き更新・rollback、backup・中断復旧、反復boot・原本照合の5件を合格とし、rc2固有native SBOM、製品license、production署名、署名後の同一候補受入、一般公開承認の5件は未達を維持する。
@@ -406,7 +412,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / QEMU rc2固有SBOMと署名・法務62回帰試験を全体verifyへ統合し、6/10公開gateを本人限定Developer Previewへ反映 / 完了 46/69件
+最終更新: 2026-09-13 / QEMU rc2の6/10公開gateに加え、Android実機5gateとマイナンバー7gateを端末・build・規制単位で機械監査 / 完了 47/70件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -428,6 +434,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SYS03 | 公開方法別の最低条件を機械判定し、Web/npm SBOMと設定画面へ統合 | 完了 | [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/release-minimum-gates.md) · [記録](components/system-maintenance.tsx) |
 | SYS04 | QEMU rc2を同一候補10要件へ固定し、rc2固有native SBOMを生成して旧inventoryの誤転用を拒否 | 完了 | [記録](data/qemu-release-audit.json) · [記録](data/qemu-rc2-legal-info/manifest.csv) · [記録](data/qemu-rc2-legal-info/host-manifest.csv) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/qemu-release-completion-audit-20260912.md) · [記録](components/system-maintenance.tsx) |
 | SYS05 | 候補準備・法務承認・保護署名・本人署名の62拒否境界試験を全体verifyへ統合 | 完了 | [記録](scripts/check-release-signing.mjs) · [記録](scripts/release_signing.py) · [記録](scripts/release_signing_owner.py) · [記録](scripts/prepare_release_candidate.py) · [記録](scripts/verify_owner_legal_approval.py) · [記録](tests/test_release_signing.py) · [記録](tests/test_release_signing_owner.py) · [記録](tests/test_prepare_release_candidate.py) · [記録](tests/test_owner_legal_approval.py) · [記録](docs/release-signing-operations.md) |
+| SYS06 | Android物理端末とマイナンバー連携を独立監査し、証拠なしの互換・GMS・販売・個人番号有効化を拒否 | 完了 | [記録](data/android-physical-release-audit.json) · [記録](data/personal-number-release-audit.json) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/android-and-personal-number-gates-20260913.md) · [記録](docs/release-minimum-gates.md) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |

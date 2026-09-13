@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-release-readiness/1",
-  "evaluatedAt": "2026-09-12",
+  "evaluatedAt": "2026-09-13",
   "policy": {
     "statusRule": "A target is ready only when every required gate passes. Not-applicable gates need an explicit reason.",
     "productLicenseIntent": "data/release-owner-intent-20260911.json",
@@ -8,6 +8,8 @@
     "dependencyInventory": "package-lock.json",
     "generatedSbom": "work/release/rockstaros-web.cdx.json",
     "qemuAudit": "data/qemu-release-audit.json",
+    "androidPhysicalAudit": "data/android-physical-release-audit.json",
+    "personalNumberAudit": "data/personal-number-release-audit.json",
     "generatedCurrentNativeSbom": "work/release/rockstaros-native-rc2.cdx.json",
     "generatedHistoricalNativeSbom": "work/release/rockstaros-native-historical-9abf78a.cdx.json",
     "generatedArtifactsCommitted": false
@@ -62,6 +64,7 @@
       "label": "Android系物理端末Preview",
       "distribution": "physical_device_os",
       "declaredStatus": "blocked",
+      "candidateAudit": "data/android-physical-release-audit.json",
       "gates": [
         { "id": "exact-model-and-sku", "required": true, "status": "blocked", "ownerAction": "実際に使う機種名、型番、SKU、bootloader状態を確認する" },
         { "id": "bsp-driver-boot-recovery", "required": true, "status": "blocked", "ownerAction": "対象機種のBSP、vendor driver、boot chain、復旧imageを取得して実機受入する" },
@@ -86,10 +89,15 @@
       "label": "マイナンバー連携",
       "distribution": "regulated_identity_feature",
       "declaredStatus": "blocked",
+      "candidateAudit": "data/personal-number-release-audit.json",
       "gates": [
-        { "id": "feature-disabled", "required": true, "status": "pass", "evidence": ["docs/sky-identity-connection.md", "docs/product-baseline.md"] },
-        { "id": "purpose-and-necessity", "required": true, "status": "blocked", "ownerAction": "利用目的、必要性、取扱主体、法的根拠を確定する" },
-        { "id": "security-and-privacy-review", "required": true, "status": "blocked", "ownerAction": "特定個人情報を通常profileから分離し、安全管理措置、委託、保存期間、削除、事故対応を審査する" }
+        { "id": "disabled-until-approved", "required": true, "status": "pass", "evidence": ["docs/sky-identity-connection.md", "docs/product-baseline.md", "data/personal-number-release-audit.json"] },
+        { "id": "purpose-and-necessity", "required": true, "status": "blocked", "ownerAction": "番号法上許される具体的事務、必要性、法的根拠、本人への通知内容を専門家と確定する" },
+        { "id": "authorized-operator-and-provider", "required": true, "status": "blocked", "ownerAction": "取扱主体、担当者、本人確認provider、委託・再委託関係と責任を確定する" },
+        { "id": "data-flow-retention-and-deletion", "required": true, "status": "blocked", "nextAction": "取得から保存期限到来・削除・媒体廃棄までのdata flowと証跡を設計・審査する" },
+        { "id": "security-and-privacy-review", "required": true, "status": "blocked", "nextAction": "通常profileから分離し、組織的・人的・物理的・技術的安全管理措置を審査する" },
+        { "id": "incident-and-vendor-governance", "required": true, "status": "blocked", "nextAction": "漏えい報告・本人通知・再発防止と委託先監督を手順化する" },
+        { "id": "activation-approval", "required": true, "status": "blocked", "ownerAction": "全gateの独立確認後、対象環境・開始日・責任者を指定して有効化を明示承認する" }
       ]
     }
   ]

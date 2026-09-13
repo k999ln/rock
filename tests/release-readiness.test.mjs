@@ -5,6 +5,8 @@ import { resolve } from 'node:path';
 import {
   createCurrentNativeSbom,
   createHistoricalNativeSbom,
+  validateAndroidPhysicalReleaseAudit,
+  validatePersonalNumberReleaseAudit,
   validateQemuReleaseAudit,
   validateReleaseReadiness,
 } from '../scripts/release-readiness-lib.mjs';
@@ -14,6 +16,8 @@ const read = (name) => JSON.parse(readFileSync(resolve(root, name), 'utf8'));
 const readiness = read('data/release-readiness.json');
 const ownerIntent = read('data/release-owner-intent-20260911.json');
 const lock = read('package-lock.json');
+const androidAudit = read('data/android-physical-release-audit.json');
+const personalNumberAudit = read('data/personal-number-release-audit.json');
 const qemuAudit = read('data/qemu-release-audit.json');
 const qemuAcceptance = read('docs/evidence/rls01/final-b7-rc2/acceptance-result.json');
 const qemuInventory = read('docs/evidence/rls01/remaining-b7-rc2/inventory.json');
@@ -22,6 +26,22 @@ const historicalNativeInventory = read('docs/evidence/rls01/legal-final-9abf78a/
 const lifecycle = read('docs/evidence/rls01/remaining-b7-rc2/lifecycle.json');
 const d4 = read('docs/evidence/rls01/remaining-b7-rc2/d4.json');
 const d6 = read('docs/evidence/rls01/remaining-b7-rc2/d6.json');
+
+const validateMatrix = ({
+  matrix = readiness,
+  intent = ownerIntent,
+  dependencyLock = lock,
+  android = androidAudit,
+  personalNumber = personalNumberAudit,
+} = {}) =>
+  validateReleaseReadiness({
+    root,
+    readiness: matrix,
+    ownerIntent: intent,
+    lock: dependencyLock,
+    androidAudit: android,
+    personalNumberAudit: personalNumber,
+  });
 
 const validateQemu = (audit = qemuAudit) =>
   validateQemuReleaseAudit({
@@ -38,7 +58,7 @@ const validateQemu = (audit = qemuAudit) =>
   });
 
 void test('current release matrix passes while preserving real blockers', () => {
-  const result = validateReleaseReadiness({ root, readiness, ownerIntent, lock });
+  const result = validateMatrix();
   assert.deepEqual(result.readyTargets, ['web-pwa-owner-preview']);
   assert.equal(result.blockedTargets.length, 5);
   assert.equal(result.missingDependencyLicenses, 0);
@@ -48,7 +68,7 @@ void test('cannot label a target ready while a required gate is blocked', () => 
   const changed = structuredClone(readiness);
   changed.targets.find(({ id }) => id === 'qemu-developer-preview').declaredStatus = 'ready';
   assert.throws(
-    () => validateReleaseReadiness({ root, readiness: changed, ownerIntent, lock }),
+    () => validateMatrix({ matrix: changed }),
     /宣言readyと算出blocked/,
   );
 });
@@ -60,7 +80,7 @@ void test('cannot pass product license without an owner selection and LICENSE', 
   target.gates.find(({ id }) => id === 'public-access-approval').status = 'pass';
   target.declaredStatus = 'ready';
   assert.throws(
-    () => validateReleaseReadiness({ root, readiness: changed, ownerIntent, lock }),
+    () => validateMatrix({ matrix: changed }),
     /所有者選択とLICENSEなし/,
   );
 });
@@ -70,7 +90,7 @@ void test('cannot pass production signing without a provisioned owner key', () =
   const target = changed.targets.find(({ id }) => id === 'qemu-developer-preview');
   target.gates.find(({ id }) => id === 'production-signing').status = 'pass';
   assert.throws(
-    () => validateReleaseReadiness({ root, readiness: changed, ownerIntent, lock }),
+    () => validateMatrix({ matrix: changed }),
     /正式鍵と実施記録なし/,
   );
 });
@@ -80,8 +100,115 @@ void test('dependency inventory rejects a package without license metadata', () 
   const entry = Object.entries(changedLock.packages).find(([path, value]) => path && value?.version)?.[1];
   delete entry.license;
   assert.throws(
-    () => validateReleaseReadiness({ root, readiness, ownerIntent, lock: changedLock }),
+    () => validateMatrix({ dependencyLock: changedLock }),
     /license表記がありません/,
+  );
+});
+
+void test('Android and personal-number audits preserve exact real blockers', () => {
+  const result = validateMatrix();
+  assert.equal(result.android.passed, 0);
+  assert.equal(result.android.required, 5);
+  assert.deepEqual(result.android.blocked, [
+    'exact-model-and-sku',
+    'bsp-driver-boot-recovery',
+    'android-cdd-cts',
+    'production-signing',
+    'regional-radio-and-sales',
+  ]);
+  assert.equal(result.personalNumber.passed, 1);
+  assert.equal(result.personalNumber.required, 7);
+  assert.deepEqual(result.personalNumber.blocked, [
+    'purpose-and-necessity',
+    'authorized-operator-and-provider',
+    'data-flow-retention-and-deletion',
+    'security-and-privacy-review',
+    'incident-and-vendor-governance',
+    'activation-approval',
+  ]);
+});
+
+void test('Android compatibility and physical flash claims require their exact gates', () => {
+  const changedCompatibility = structuredClone(androidAudit);
+  changedCompatibility.claims.androidCompatible = true;
+  assert.throws(
+    () => validateAndroidPhysicalReleaseAudit({ root, audit: changedCompatibility, readiness }),
+    /CDD\/CTS合格なし/,
+  );
+
+  const changedFlash = structuredClone(androidAudit);
+  changedFlash.claims.physicalFlashVerified = true;
+  assert.throws(
+    () => validateAndroidPhysicalReleaseAudit({ root, audit: changedFlash, readiness }),
+    /BSP\/復旧合格なし/,
+  );
+
+  const missingClaim = structuredClone(androidAudit);
+  delete missingClaim.claims.androidCompatible;
+  assert.throws(
+    () => validateAndroidPhysicalReleaseAudit({ root, audit: missingClaim, readiness }),
+    /claimの真偽値がありません/,
+  );
+});
+
+void test('Android gate list and public matrix cannot drift apart', () => {
+  const missingGate = structuredClone(androidAudit);
+  missingGate.requirements.pop();
+  assert.throws(
+    () => validateAndroidPhysicalReleaseAudit({ root, audit: missingGate, readiness }),
+    /必須ID集合が不一致/,
+  );
+
+  const changedMatrix = structuredClone(readiness);
+  changedMatrix.targets
+    .find(({ id }) => id === 'android-physical-preview')
+    .gates.find(({ id }) => id === 'exact-model-and-sku').status = 'pass';
+  assert.throws(
+    () => validateMatrix({ matrix: changedMatrix }),
+    /公開台帳と監査が不一致/,
+  );
+});
+
+void test('GMS cannot appear in the default AOSP preview without its separate license gate', () => {
+  const changed = structuredClone(androidAudit);
+  changed.claims.gmsIncluded = true;
+  assert.throws(
+    () => validateAndroidPhysicalReleaseAudit({ root, audit: changed, readiness }),
+    /GMS同梱・許諾を表示できません/,
+  );
+});
+
+void test('personal number and card images stay disabled before final approval', () => {
+  for (const field of ['collectsPersonalNumber', 'storesPersonalNumber', 'storesCardImage', 'normalProfileField']) {
+    const changed = structuredClone(personalNumberAudit);
+    changed.dataCapture[field] = true;
+    assert.throws(
+      () => validatePersonalNumberReleaseAudit({ root, audit: changed, readiness }),
+      /最終承認前/,
+    );
+  }
+
+  const missingFlag = structuredClone(personalNumberAudit);
+  delete missingFlag.dataCapture.storesCardImage;
+  assert.throws(
+    () => validatePersonalNumberReleaseAudit({ root, audit: missingFlag, readiness }),
+    /取得状態の真偽値がありません/,
+  );
+});
+
+void test('personal-number gate list and official-source boundary are fail closed', () => {
+  const missingGate = structuredClone(personalNumberAudit);
+  missingGate.requirements.splice(2, 1);
+  assert.throws(
+    () => validatePersonalNumberReleaseAudit({ root, audit: missingGate, readiness }),
+    /必須ID集合が不一致/,
+  );
+
+  const untrustedReference = structuredClone(personalNumberAudit);
+  untrustedReference.references[0].url = 'https://example.com/my-number';
+  assert.throws(
+    () => validatePersonalNumberReleaseAudit({ root, audit: untrustedReference, readiness }),
+    /許可されていない/,
   );
 });
 

@@ -153,6 +153,14 @@ export function validateBaseline(
         'data/release-readiness.json' &&
       data.systemMaintenance?.releaseReadiness?.qemuAudit ===
         'data/qemu-release-audit.json' &&
+      data.systemMaintenance?.releaseReadiness?.androidAudit ===
+        'data/android-physical-release-audit.json' &&
+      data.systemMaintenance?.releaseReadiness?.androidAuditStatus ===
+        '0_of_5_required_gates_passed' &&
+      data.systemMaintenance?.releaseReadiness?.personalNumberAudit ===
+        'data/personal-number-release-audit.json' &&
+      data.systemMaintenance?.releaseReadiness?.personalNumberAuditStatus ===
+        '1_of_7_required_gates_passed_feature_disabled' &&
       data.systemMaintenance?.releaseReadiness?.automatedCheck ===
         'npm run release:check' &&
       data.systemMaintenance?.releaseReadiness?.sbom ===

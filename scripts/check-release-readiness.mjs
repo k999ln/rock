@@ -13,7 +13,16 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const readiness = readJson(resolve(root, 'data/release-readiness.json'));
 const ownerIntent = readJson(resolve(root, 'data/release-owner-intent-20260911.json'));
 const lock = readJson(resolve(root, 'package-lock.json'));
-const result = validateReleaseReadiness({ root, readiness, ownerIntent, lock });
+const androidAudit = readJson(resolve(root, 'data/android-physical-release-audit.json'));
+const personalNumberAudit = readJson(resolve(root, 'data/personal-number-release-audit.json'));
+const result = validateReleaseReadiness({
+  root,
+  readiness,
+  ownerIntent,
+  lock,
+  androidAudit,
+  personalNumberAudit,
+});
 const qemuAudit = readJson(resolve(root, 'data/qemu-release-audit.json'));
 const qemuResult = validateQemuReleaseAudit({
   root,
@@ -61,4 +70,7 @@ console.log(
 );
 console.log(
   `QEMU候補: ${qemuResult.candidate} / ${qemuResult.passed}/${qemuResult.required}要件合格 / ${qemuResult.blocked.length}要件未達`,
+);
+console.log(
+  `Android実機: ${result.android.passed}/${result.android.required}必須gate合格 / マイナンバー: ${result.personalNumber.passed}/${result.personalNumber.required}必須gate合格（機能無効）`,
 );

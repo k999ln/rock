@@ -16,6 +16,64 @@ const inside = (root, path) => {
 };
 
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
+const sha256Pattern = /^[0-9a-f]{64}$/;
+
+const assertExactIds = (items, expectedIds, label) => {
+  const actualIds = items.map(({ id }) => id);
+  if (actualIds.length !== new Set(actualIds).size) fail(label + ': IDが重複しています');
+  if (
+    actualIds.length !== expectedIds.length ||
+    expectedIds.some((id) => !actualIds.includes(id))
+  ) {
+    fail(label + ': 必須ID集合が不一致です');
+  }
+};
+
+const validateOfficialReferences = (references, allowedHosts, label) => {
+  if (!Array.isArray(references) || references.length === 0) fail(label + ': 公式参照がありません');
+  const ids = references.map(({ id }) => id);
+  if (ids.some((id) => !id) || ids.length !== new Set(ids).size) fail(label + ': 公式参照IDが不正です');
+  for (const reference of references) {
+    let url;
+    try {
+      url = new URL(reference.url);
+    } catch {
+      fail(label + ': 公式参照URLが不正です');
+    }
+    if (url.protocol !== 'https:' || !allowedHosts.has(url.hostname) || !reference.scope) {
+      fail(label + ': 許可されていない、または説明のない公式参照です');
+    }
+  }
+};
+
+const validateAuditRequirements = ({ root, requirements, expected, label }) => {
+  if (!Array.isArray(requirements)) fail(label + ': requirementsがありません');
+  assertExactIds(requirements, [...expected.keys()], label + ' requirements');
+  for (const requirement of requirements) {
+    if (
+      requirement.required !== expected.get(requirement.id) ||
+      !allowedGateStates.has(requirement.status)
+    ) {
+      fail(label + '/' + requirement.id + ': requirement状態が不正です');
+    }
+    if (requirement.status === 'not_applicable' && (requirement.required || !requirement.reason)) {
+      fail(label + '/' + requirement.id + ': 適用外の宣言が不正です');
+    }
+    if (requirement.status === 'blocked' && !requirement.ownerAction && !requirement.nextAction) {
+      fail(label + '/' + requirement.id + ': 未達時の必要行動がありません');
+    }
+    if (requirement.status === 'pass') {
+      if (!Array.isArray(requirement.evidence) || requirement.evidence.length === 0) {
+        fail(label + '/' + requirement.id + ': 合格根拠がありません');
+      }
+      for (const evidence of requirement.evidence) {
+        if (!inside(root, evidence) || !existsSync(resolve(root, evidence))) {
+          fail(label + '/' + requirement.id + ': 根拠がありません: ' + evidence);
+        }
+      }
+    }
+  }
+};
 
 export function parseBuildrootCsv(source) {
   const rows = [];
@@ -75,7 +133,279 @@ export function packageEntries(lock) {
     }));
 }
 
-export function validateReleaseReadiness({ root, readiness, ownerIntent, lock }) {
+export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) {
+  const label = 'Android物理端末監査';
+  if (audit?.schema !== 'rockstaros-android-physical-release-audit/1') fail(label + ': schemaが違います');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(audit.evaluatedAt || '')) fail(label + ': 評価日が必要です');
+  const expected = new Map([
+    ['exact-model-and-sku', true],
+    ['bsp-driver-boot-recovery', true],
+    ['android-cdd-cts', true],
+    ['gms', false],
+    ['production-signing', true],
+    ['regional-radio-and-sales', true],
+  ]);
+  validateAuditRequirements({ root, requirements: audit.requirements, expected, label });
+  validateOfficialReferences(
+    audit.references,
+    new Set(['source.android.com', 'www.android.com', 'laws.e-gov.go.jp']),
+    label,
+  );
+
+  const target = readiness.targets.find(({ id }) => id === 'android-physical-preview');
+  if (
+    readiness.policy?.androidPhysicalAudit !== 'data/android-physical-release-audit.json' ||
+    target?.candidateAudit !== 'data/android-physical-release-audit.json'
+  ) {
+    fail(label + ': 公開台帳から監査正本への参照がありません');
+  }
+  for (const requirement of audit.requirements) {
+    const gate = target.gates.find(({ id }) => id === requirement.id);
+    if (
+      !gate ||
+      gate.required !== requirement.required ||
+      gate.status !== requirement.status
+    ) {
+      fail(label + '/' + requirement.id + ': 公開台帳と監査が不一致です');
+    }
+  }
+  if (target.gates.length !== audit.requirements.length) fail(label + ': 公開台帳のgate数が不一致です');
+
+  const requirement = (id) => audit.requirements.find((item) => item.id === id);
+  const deviceValues = Object.values(audit.candidate?.device || {});
+  const buildValues = Object.values(audit.candidate?.build || {});
+  if (audit.candidate?.selectionStatus === 'not_selected') {
+    if (
+      deviceValues.some((value) => value !== null) ||
+      buildValues.some((value) => value !== null) ||
+      requirement('exact-model-and-sku').status !== 'blocked'
+    ) {
+      fail(label + ': 未選択候補に端末/build識別子または合格状態を設定できません');
+    }
+  } else if (audit.candidate?.selectionStatus === 'selected') {
+    const device = audit.candidate.device || {};
+    const strings = ['manufacturer', 'commercialModel', 'modelNumber', 'sku', 'region', 'codename', 'observedBootloaderState'];
+    if (
+      strings.some((key) => typeof device[key] !== 'string' || !device[key].trim()) ||
+      typeof device.bootloaderUnlockable !== 'boolean'
+    ) {
+      fail(label + ': 選択済み端末の型番/SKU/bootloader実測が不足しています');
+    }
+  } else {
+    fail(label + ': selectionStatusが不正です');
+  }
+
+  const claims = audit.claims || {};
+  for (const key of [
+    'androidCompatible',
+    'gmsIncluded',
+    'gmsLicensed',
+    'saleReady',
+    'physicalFlashVerified',
+  ]) {
+    if (typeof claims[key] !== 'boolean') fail(label + ': claimの真偽値がありません: ' + key);
+  }
+  if (claims.androidCompatible && requirement('android-cdd-cts').status !== 'pass') {
+    fail(label + ': CDD/CTS合格なしにAndroid互換を表示できません');
+  }
+  if (requirement('android-cdd-cts').status === 'pass' && !claims.androidCompatible) {
+    fail(label + ': CDD/CTS合格後の互換表示状態が一致しません');
+  }
+  if (claims.physicalFlashVerified && requirement('bsp-driver-boot-recovery').status !== 'pass') {
+    fail(label + ': BSP/復旧合格なしに物理flash済みと表示できません');
+  }
+  if (
+    claims.gmsIncluded ||
+    claims.gmsLicensed ||
+    audit.gms?.policy !== 'aosp_without_gms' ||
+    audit.gms?.licenseStatus !== 'not_requested' ||
+    requirement('gms').status !== 'not_applicable'
+  ) {
+    fail(label + ': 現在のAOSP Developer PreviewへGMS同梱・許諾を表示できません');
+  }
+  if (
+    claims.saleReady &&
+    requirement('regional-radio-and-sales').status !== 'pass'
+  ) {
+    fail(label + ': 地域審査なしに販売可能と表示できません');
+  }
+  if (
+    claims.physicalFlashVerified === false &&
+    requirement('bsp-driver-boot-recovery').status === 'pass'
+  ) {
+    fail(label + ': BSP/復旧gate合格には物理flash実測が必要です');
+  }
+
+  if (requirement('bsp-driver-boot-recovery').status === 'pass') {
+    const roles = new Set((audit.artifacts || []).map(({ role }) => role));
+    for (const role of ['bsp', 'vendor-drivers', 'boot-chain', 'recovery']) {
+      if (!roles.has(role)) fail(label + ': 必須artifactがありません: ' + role);
+    }
+    if ((audit.artifacts || []).some(({ sha256: hash }) => !sha256Pattern.test(hash || ''))) {
+      fail(label + ': artifact SHA-256が不正です');
+    }
+  }
+  if (requirement('android-cdd-cts').status === 'pass') {
+    const build = audit.candidate.build || {};
+    const compatibility = audit.compatibility || {};
+    if (
+      !build.androidRelease ||
+      !Number.isInteger(build.apiLevel) ||
+      !build.buildFingerprint ||
+      !sha256Pattern.test(build.sourceCommit || '') ||
+      !sha256Pattern.test(build.imageSha256 || '') ||
+      !compatibility.cddVersion ||
+      !compatibility.ctsRevision ||
+      !sha256Pattern.test(compatibility.ctsResultSha256 || '') ||
+      !sha256Pattern.test(compatibility.ctsVerifierResultSha256 || '')
+    ) {
+      fail(label + ': 同一buildのCDD/CTS/CTS Verifier識別子が不足しています');
+    }
+  }
+  if (requirement('production-signing').status === 'pass') {
+    if (
+      audit.signing?.status !== 'verified' ||
+      !audit.signing.keyId ||
+      !audit.signing.rollbackPolicyEvidence ||
+      !audit.signing.rotationAndRevocationEvidence
+    ) {
+      fail(label + ': production署名・rollback・rotation/失効証拠が不足しています');
+    }
+  }
+  if (requirement('regional-radio-and-sales').status === 'pass') {
+    if (
+      !audit.regionalDistribution?.salesModel ||
+      !audit.regionalDistribution?.radioOperation ||
+      !Array.isArray(audit.regionalDistribution?.regions) ||
+      audit.regionalDistribution.regions.length === 0 ||
+      !Array.isArray(audit.regionalDistribution?.complianceEvidence) ||
+      audit.regionalDistribution.complianceEvidence.length === 0
+    ) {
+      fail(label + ': 販売形態・地域・radio影響・適合審査が不足しています');
+    }
+  }
+  if (
+    audit.personalNumberBoundary?.status !== 'disabled_separate_gate' ||
+    audit.personalNumberBoundary?.audit !== 'data/personal-number-release-audit.json'
+  ) {
+    fail(label + ': マイナンバーをAndroid互換gateへ混在させられません');
+  }
+
+  const derived = audit.requirements.every(({ required, status }) => !required || status === 'pass')
+    ? 'ready'
+    : 'blocked';
+  if (audit.declaredStatus !== derived || target.declaredStatus !== derived) {
+    fail(label + ': 宣言状態と算出状態が不一致です');
+  }
+  return {
+    passed: audit.requirements.filter(({ required, status }) => required && status === 'pass').length,
+    required: audit.requirements.filter(({ required }) => required).length,
+    blocked: audit.requirements.filter(({ required, status }) => required && status === 'blocked').map(({ id }) => id),
+  };
+}
+
+export function validatePersonalNumberReleaseAudit({ root, audit, readiness }) {
+  const label = 'マイナンバー監査';
+  if (audit?.schema !== 'rockstaros-personal-number-release-audit/1') fail(label + ': schemaが違います');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(audit.evaluatedAt || '')) fail(label + ': 評価日が必要です');
+  const expected = new Map([
+    ['disabled-until-approved', true],
+    ['purpose-and-necessity', true],
+    ['authorized-operator-and-provider', true],
+    ['data-flow-retention-and-deletion', true],
+    ['security-and-privacy-review', true],
+    ['incident-and-vendor-governance', true],
+    ['activation-approval', true],
+  ]);
+  validateAuditRequirements({ root, requirements: audit.requirements, expected, label });
+  validateOfficialReferences(audit.references, new Set(['www.ppc.go.jp']), label);
+
+  const target = readiness.targets.find(({ id }) => id === 'personal-number-identity');
+  if (
+    readiness.policy?.personalNumberAudit !== 'data/personal-number-release-audit.json' ||
+    target?.candidateAudit !== 'data/personal-number-release-audit.json'
+  ) {
+    fail(label + ': 公開台帳から監査正本への参照がありません');
+  }
+  for (const requirement of audit.requirements) {
+    const gate = target.gates.find(({ id }) => id === requirement.id);
+    if (
+      !gate ||
+      gate.required !== requirement.required ||
+      gate.status !== requirement.status
+    ) {
+      fail(label + '/' + requirement.id + ': 公開台帳と監査が不一致です');
+    }
+  }
+  if (target.gates.length !== audit.requirements.length) fail(label + ': 公開台帳のgate数が不一致です');
+
+  const requirement = (id) => audit.requirements.find((item) => item.id === id);
+  if (requirement('disabled-until-approved').status !== 'pass') {
+    fail(label + ': 審査完了までdefault-deny境界を維持してください');
+  }
+  if (!['disabled', 'enabled'].includes(audit.activationState)) {
+    fail(label + ': activationStateが不正です');
+  }
+  const capture = audit.dataCapture || {};
+  for (const key of [
+    'collectsPersonalNumber',
+    'storesPersonalNumber',
+    'storesCardImage',
+    'normalProfileField',
+  ]) {
+    if (typeof capture[key] !== 'boolean') fail(label + ': 取得状態の真偽値がありません: ' + key);
+  }
+  if (!Array.isArray(capture.processors)) fail(label + ': 委託・processor一覧がありません');
+  const captureEnabled =
+    capture.collectsPersonalNumber === true ||
+    capture.storesPersonalNumber === true ||
+    capture.storesCardImage === true ||
+    capture.normalProfileField === true;
+  if (requirement('activation-approval').status !== 'pass') {
+    if (audit.activationState !== 'disabled' || captureEnabled) {
+      fail(label + ': 最終承認前に番号・カード画像・通常profile項目を有効化できません');
+    }
+  } else {
+    const prerequisites = audit.requirements.filter(
+      ({ id }) => !['disabled-until-approved', 'activation-approval'].includes(id),
+    );
+    if (
+      audit.activationState !== 'enabled' ||
+      prerequisites.some(({ status }) => status !== 'pass') ||
+      !capture.controller ||
+      !capture.authorizedPurpose ||
+      !capture.identityProvider ||
+      !capture.retentionPeriod ||
+      !capture.deletionTrigger
+    ) {
+      fail(label + ': 有効化には全前提gateと主体・目的・provider・保存/削除条件が必要です');
+    }
+  }
+
+  const derived = audit.requirements.every(({ required, status }) => !required || status === 'pass')
+    ? 'ready'
+    : 'blocked';
+  if (audit.declaredStatus !== derived || target.declaredStatus !== derived) {
+    fail(label + ': 宣言状態と算出状態が不一致です');
+  }
+  if (audit.activationState === 'enabled' && derived !== 'ready') {
+    fail(label + ': 未合格状態で機能を有効化できません');
+  }
+  return {
+    passed: audit.requirements.filter(({ required, status }) => required && status === 'pass').length,
+    required: audit.requirements.filter(({ required }) => required).length,
+    blocked: audit.requirements.filter(({ required, status }) => required && status === 'blocked').map(({ id }) => id),
+  };
+}
+
+export function validateReleaseReadiness({
+  root,
+  readiness,
+  ownerIntent,
+  lock,
+  androidAudit,
+  personalNumberAudit,
+}) {
   if (readiness.schema !== 'rockstaros-release-readiness/1') fail('schemaが違います');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(readiness.evaluatedAt)) fail('評価日が必要です');
   if (!Array.isArray(readiness.targets) || readiness.targets.length < 5) fail('配布対象が不足しています');
@@ -118,6 +448,14 @@ export function validateReleaseReadiness({ root, readiness, ownerIntent, lock })
   }
   for (const id of requiredTargets) if (!targetIds.has(id)) fail(`${id}: 必須対象がありません`);
 
+  if (!androidAudit || !personalNumberAudit) fail('Android/マイナンバー監査正本が必要です');
+  const androidResult = validateAndroidPhysicalReleaseAudit({ root, audit: androidAudit, readiness });
+  const personalNumberResult = validatePersonalNumberReleaseAudit({
+    root,
+    audit: personalNumberAudit,
+    readiness,
+  });
+
   const byId = (id) => readiness.targets.find((target) => target.id === id);
   const gate = (target, id) => byId(target)?.gates.find((item) => item.id === id);
   const licenseSelected = typeof ownerIntent.ownCodeIntent?.specificLicense === 'string';
@@ -136,13 +474,6 @@ export function validateReleaseReadiness({ root, readiness, ownerIntent, lock })
       fail(`${target}: 正式鍵と実施記録なしに署名を合格にできません`);
     }
   }
-  if (byId('android-physical-preview').declaredStatus === 'ready') {
-    fail('実機受入証拠のないAndroid物理端末を合格にできません');
-  }
-  if (gate('personal-number-identity', 'feature-disabled')?.status !== 'pass') {
-    fail('マイナンバー機能は審査完了まで無効を維持してください');
-  }
-
   const dependencies = packageEntries(lock);
   const missingLicense = dependencies.filter((entry) => !entry.license);
   if (missingLicense.length) fail(`依存${missingLicense.length}件にlicense表記がありません`);
@@ -153,6 +484,8 @@ export function validateReleaseReadiness({ root, readiness, ownerIntent, lock })
     blockedTargets: readiness.targets.filter((target) => target.declaredStatus === 'blocked').map((target) => target.id),
     dependencyCount: dependencies.length,
     missingDependencyLicenses: missingLicense.length,
+    android: androidResult,
+    personalNumber: personalNumberResult,
   };
 }
 

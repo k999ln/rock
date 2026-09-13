@@ -1,6 +1,6 @@
 # RockstarOS 最低公開条件
 
-2026-09-12時点。正本は `data/release-readiness.json`、自動検査は `npm run release:check`。この文書は一般的な法的助言ではなく、RockstarOSが未検証の状態を公開可能と誤表示しないための開発gateである。
+2026-09-13時点。正本は `data/release-readiness.json`、自動検査は `npm run release:check`。この文書は一般的な法的助言ではなく、RockstarOSが未検証の状態を公開可能と誤表示しないための開発gateである。
 
 ## 現在の結論
 
@@ -11,7 +11,7 @@
 | QEMU Developer Preview配布 | BLOCKED | 6/10 | 製品ライセンス、正式署名、署名後の同一候補受入、公開承認 |
 | Android系物理端末Preview | BLOCKED | 0/5 | 正確な機種/SKU、BSP/driver/boot/recovery、CDD/CTS、署名、販売地域の確認 |
 | iPhone / iPad | BLOCKED | 0/1 | 置換OSではなくPWAまたはiOS clientとして配布方式と審査を確定 |
-| マイナンバー連携 | BLOCKED | 1/3 | 現在は無効を維持。目的・必要性・取扱主体と安全管理措置を別審査 |
+| マイナンバー連携 | BLOCKED | 1/7 | 現在は番号・カード画像を取得しない。目的、主体/provider、data flow、保存/削除、安全管理、事故/委託先、最終有効化を別審査 |
 
 「OSが一度起動した」「古い候補のQEMU受入に合格した」「Web画面が動く」は、別配布方法のgateを満たした証拠にはしない。各対象は必須gateがすべて `pass` の場合だけ `ready` になる。
 
@@ -24,7 +24,8 @@
 - `package-lock.json` の887 package entryにlicense metadataがあることを確認する。
 - `npm run release:signing:check` で候補準備15件、owner legal approval 11件、保護署名29件、本人署名7件の計62公開fixture試験を実行する。試験数の減少も失敗させるが、実鍵・実承認の代用にはしない。
 - `npm run release:sbom` でCycloneDX 1.6のWeb/npm SBOM、現在のrc2 native SBOM、旧9ab native SBOMをignored `work/release/`へ分離生成する。Webは854 unique component、現在のrc2と旧9abはそれぞれtarget 24＋host build 37 component。rc2版は配布archiveと同梱legal bundleのSHA-256へ結合し、旧版は方法検証だけに限定する。
-- マイナンバー連携は法務・安全管理審査が終わるまで機能無効を必須とする。
+- Android物理端末は[端末固有監査](android-and-personal-number-gates-20260913.md)で、正確な型番/SKU、BSP/boot/recovery、同一buildのCDD/CTS、production署名、販売地域の5必須gateを固定する。GMSなしAOSP Previewを既定とし、GMS許諾をAndroid互換から推定しない。
+- マイナンバー連携は同じ監査で7必須gateへ分解し、最終有効化まで番号・カード画像・通常profile項目を無効にする。目的や安全対策だけでなく、取扱主体/provider、保存・削除、事故対応・委託先監督、最終承認の証拠を要求する。
 
 QEMUは[候補単位の完了監査](qemu-release-completion-audit-20260912.md)で、rc2の版、source commit、archive SHA-256を受入とinventoryへ結合する。旧9abのlegal-infoをrc2固有SBOMとして転用した場合、または公開台帳とQEMU監査の状態がずれた場合は検査を失敗させる。
 
@@ -44,7 +45,7 @@ OWNER_MANUALは提案中だが未実施。agentは明示権限なしにproductio
 
 ### マイナンバー
 
-通常profileの便利な事前入力として番号を保存しない。必要性が確定するまで番号そのものを取得せず、identity連携と特定個人情報の保存を分ける。利用目的、取扱主体、委託先、アクセス制御、保存期間、削除、監査、事故対応を専門家と確認した後に別gateを作る。
+通常profileの便利な事前入力として番号を保存しない。必要性が確定するまで番号そのものを取得せず、identity連携と特定個人情報の保存を分ける。利用目的、取扱主体/provider、委託先、アクセス制御、保存期間、削除、監査、事故対応、最終有効化を7gateで独立確認する。
 
 ## 更新時の手順
 

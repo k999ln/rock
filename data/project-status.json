@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-12",
-  "milestone": "QEMU rc2固有SBOMと署名・法務62回帰試験を全体verifyへ統合し、6/10公開gateを本人限定Developer Previewへ反映",
+  "updatedAt": "2026-09-13",
+  "milestone": "QEMU rc2の6/10公開gateに加え、Android実機5gateとマイナンバー7gateを端末・build・規制単位で機械監査",
   "nextAction": "所有者が製品licenseと正式鍵の保管先を明示した後、license・production署名を同一最終archiveへ結合しfresh導入・更新・復旧を再受入する。",
   "tasks": [
     {
@@ -256,6 +256,24 @@
         "tests/test_prepare_release_candidate.py",
         "tests/test_owner_legal_approval.py",
         "docs/release-signing-operations.md"
+      ]
+    },
+    {
+      "id": "SYS06",
+      "title": "Android物理端末とマイナンバー連携を独立監査し、証拠なしの互換・GMS・販売・個人番号有効化を拒否",
+      "status": "done",
+      "dependsOn": [
+        "SYS03"
+      ],
+      "evidence": [
+        "data/android-physical-release-audit.json",
+        "data/personal-number-release-audit.json",
+        "data/release-readiness.json",
+        "scripts/check-release-readiness.mjs",
+        "scripts/release-readiness-lib.mjs",
+        "tests/release-readiness.test.mjs",
+        "docs/android-and-personal-number-gates-20260913.md",
+        "docs/release-minimum-gates.md"
       ]
     },
     {
