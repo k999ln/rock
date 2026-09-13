@@ -117,7 +117,7 @@
       "label": "production鍵・失効・rotation・rollback",
       "required": true,
       "status": "blocked",
-      "ownerAction": "接続中のExtreme SSDは未暗号化ExFATのため使わず、暗号化APFS volumeまたは暗号化disk image内の本人専用0700 directoryを指定してkey ceremonyを実行する",
+      "ownerAction": "FileVault暗号化済みの本人専用0700 directoryは準備・readback済み。OWNER_MANUAL採用を明示し、key ceremony・別の暗号化backup・失効手順を実施する",
       "evidence": [
         "data/release-owner-intent-20260911.json",
         "docs/release-signing-operations.md",

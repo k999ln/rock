@@ -25,6 +25,8 @@ python3 -B scripts/release_signing_owner.py storage-check \
 
 2026-09-13の実読戻しでは、接続中の`/Volumes/Extreme SSD`はExFATでvolume暗号化の証拠がないため、本番鍵保管先として不合格。再formatはデータ消去を伴うため自動実行しない。暗号化APFS volumeまたは暗号化disk imageを別途用意し、その中の本人専用0700 directoryで再検査する。
 
+同日、内蔵FileVault領域の`/Users/kaiya/Library/Application Support/RockstarOS/signing`をUID 501・mode0700で作成し、`storage-check`の実readbackが`ENCRYPTED_OWNER_PRIVATE_STORAGE_READY`で合格した。これは空directoryの準備だけで、production鍵は0件、別の暗号化backupも未準備。OWNER_MANUALの採用、鍵生成、公開trust、失効手順、実署名を承認した証拠にはしない。
+
 候補の全資産を事前に取得する。旧公開試験鍵 envelope を書き換えず、plain unsigned external-key candidate と独立に照合した index を使う。署名/配布内容の変更に伴う新しい版の二回生成・最終受入は元 LCH07 のまま。rc2 を署名しただけでは license が CLEARED にも、全受入が完了にもならない。
 
 ## 一回の入口
