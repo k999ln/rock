@@ -412,6 +412,7 @@ export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness
   if (missing.length) fail(`依存${missing.length}件にlicense表記がありません`);
 
   const components = new Map();
+  const componentScopes = new Map();
   for (const entry of dependencies) {
     const key = `pkg:npm/${encodeURIComponent(entry.name)}@${entry.version}`;
     const previous = components.get(key);
@@ -419,6 +420,11 @@ export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness
       fail(`${label}: 同一componentのlicense表記が競合しています: ${key}`);
     }
     components.set(key, entry.license);
+    const previousScope = componentScopes.get(key) || { production: false, required: false };
+    componentScopes.set(key, {
+      production: previousScope.production || entry.dev !== true,
+      required: previousScope.required || entry.optional !== true,
+    });
   }
   const counts = new Map();
   for (const license of components.values()) {
@@ -449,9 +455,26 @@ export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness
       purl,
       license,
       reviewClass: webLicenseReviewClass(license),
+      lockScope: componentScopes.get(purl).production
+        ? 'production-reachable'
+        : 'development-only',
+      optional: !componentScopes.get(purl).required,
     }))
     .filter(({ reviewClass }) => reviewClass !== 'standard-license-text-and-notice')
     .sort((left, right) => left.purl.localeCompare(right.purl));
+  const reviewScopeSummary = Object.fromEntries(
+    [
+      ['production-reachable-required', 'production-reachable', false],
+      ['production-reachable-optional', 'production-reachable', true],
+      ['development-only-required', 'development-only', false],
+      ['development-only-optional', 'development-only', true],
+    ].map(([label, lockScope, optional]) => [
+      label,
+      reviewComponents.filter(
+        (component) => component.lockScope === lockScope && component.optional === optional,
+      ).length,
+    ]),
+  );
   if (audit?.schema !== 'rockstaros-web-third-party-license-audit/1') {
     fail(`${label}: schemaが不一致です`);
   }
@@ -479,6 +502,9 @@ export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness
   }
   if (JSON.stringify(audit.reviewComponents) !== JSON.stringify(reviewComponents)) {
     fail(`${label}: 要review component一覧が不一致です`);
+  }
+  if (!exactRecord(audit.reviewScopeSummary, reviewScopeSummary)) {
+    fail(`${label}: 要review componentのlock scope集計が不一致です`);
   }
   if (
     audit.overallStatus !==

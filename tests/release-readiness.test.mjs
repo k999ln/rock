@@ -224,6 +224,19 @@ void test('dependency license review cannot omit an exact review component', () 
   );
 });
 
+void test('dependency license review cannot relabel production reachability or optionality', () => {
+  const changedAudit = structuredClone(webLicenseAudit);
+  const component = changedAudit.reviewComponents.find(
+    ({ lockScope, optional }) => lockScope === 'production-reachable' && optional === false,
+  );
+  component.lockScope = 'development-only';
+  component.optional = true;
+  assert.throws(
+    () => validateMatrix({ webLicense: changedAudit }),
+    /要review component一覧が不一致/,
+  );
+});
+
 void test('dependency license audit is pinned to the complete package-lock', () => {
   const changedAudit = structuredClone(webLicenseAudit);
   changedAudit.packageLockSha256 = '0'.repeat(64);
