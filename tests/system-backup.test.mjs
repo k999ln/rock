@@ -4,6 +4,7 @@ import {
   collectDevicePreferences,
   decryptDeviceBackup,
   encryptDeviceBackup,
+  resetDevicePreferences,
   restoreDevicePreferences,
   SYSTEM_BACKUP_FORMAT,
 } from '../lib/system-backup.ts';
@@ -45,6 +46,17 @@ void test('encrypted device backup round-trips only RockstarOS preferences', asy
     destination.getItem('rockstaros.home.preferences.v1'),
     '{"wallpaper":"night"}',
   );
+});
+
+void test('device reset removes only allowlisted preferences', () => {
+  const storage = new MemoryStorage();
+  storage.setItem('rockstaros.home.preferences.v1', '{"wallpaper":"night"}');
+  storage.setItem('rockstaros.private.future', 'keep-me');
+  storage.setItem('unrelated', 'keep-me-too');
+  resetDevicePreferences(storage);
+  assert.equal(storage.getItem('rockstaros.home.preferences.v1'), null);
+  assert.equal(storage.getItem('rockstaros.private.future'), 'keep-me');
+  assert.equal(storage.getItem('unrelated'), 'keep-me-too');
 });
 
 void test('backup rejects wrong passphrases, tampering and foreign records', async () => {

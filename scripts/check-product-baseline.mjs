@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 28 },
+    { length: 29 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ28の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ29の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -126,6 +126,9 @@ export function validateBaseline(
       data.systemMaintenance?.runtime === 'web_pwa_device_local' &&
       data.systemMaintenance?.diagnostics?.includes('rockstar_api') &&
       data.systemMaintenance?.diagnostics?.includes('pc_connector') &&
+      data.systemMaintenance?.diagnostics?.includes('secure_context') &&
+      data.systemMaintenance?.diagnostics?.includes('notifications') &&
+      data.systemMaintenance?.diagnostics?.includes('persistent_storage') &&
       data.systemMaintenance?.backup?.format === 'rockstaros-device-backup/1' &&
       data.systemMaintenance?.backup?.cipher === 'AES-GCM-256' &&
       data.systemMaintenance?.backup?.kdf === 'PBKDF2-SHA256' &&
@@ -134,11 +137,23 @@ export function validateBaseline(
         'allowlisted_rockstaros_home_preferences_only' &&
       data.systemMaintenance?.backup?.tamperDetection === true &&
       data.systemMaintenance?.backup?.excludes?.includes('device_session_token') &&
+      data.systemMaintenance?.operations?.notificationPermission ===
+        'explicit_user_request_and_test_only' &&
+      data.systemMaintenance?.operations?.diagnosticExport ===
+        'sanitized_no_identity_token_wallet_personal_number_or_content' &&
+      data.systemMaintenance?.operations?.deviceReset ===
+        'confirmed_allowlisted_home_preferences_only' &&
+      data.systemMaintenance?.releaseReadiness?.androidCompatibility ===
+        'cdd_cts_not_run' &&
+      data.systemMaintenance?.releaseReadiness?.googleMobileServices ===
+        'not_applied' &&
+      data.systemMaintenance?.releaseReadiness?.personalNumberHandling ===
+        'not_enabled_requires_separate_compliance_review' &&
       data.systemMaintenance?.physicalDeviceStatus ===
         'blocked_until_exact_model_bsp_bootloader_recovery' &&
       data.systemMaintenance?.productionSigning ===
         'blocked_until_owner_key_ceremony',
-    'システム診断・暗号化保全・物理端末/署名gateを維持してください',
+    'OS運用・暗号化保全・公開審査gateを維持してください',
   );
   requireValue(
     data.skyNetworkEconomy?.tobSkyFeeMinor === 0,
@@ -323,6 +338,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ28、メルカリ収益ループ、ホーム・設定utility、端末診断・暗号化保全、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、外部実接続/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ29、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・公開審査gate、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、外部実接続/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

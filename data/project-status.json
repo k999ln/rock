@@ -1,6 +1,6 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "OS lifecycle、Sky MCP、メルカリ収益スターター、収益後精算Worker、ホーム・設定・端末保全UIを本人限定Developer Previewへ統合",
+  "milestone": "OS lifecycle、Sky MCP、メルカリ収益スターター、収益後精算Worker、ホーム・最低限のOS運用・公開審査gateを本人限定Developer Previewへ統合",
   "nextAction": "メルカリShops契約と日本国内固定IP Connectorを用意し、Sandboxの注文完了・全取消・一部取消をProvider APIで照合してEarning Receiptへ接続する。",
   "tasks": [
     {
@@ -189,6 +189,19 @@
       "dependsOn": ["HOME01"],
       "evidence": [
         "app/settings/system/page.tsx",
+        "components/system-maintenance.tsx",
+        "components/system-maintenance.module.css",
+        "lib/system-backup.ts",
+        "tests/system-backup.test.mjs",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "SYS02",
+      "title": "通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装",
+      "status": "done",
+      "dependsOn": ["SYS01"],
+      "evidence": [
         "components/system-maintenance.tsx",
         "components/system-maintenance.module.css",
         "lib/system-backup.ts",

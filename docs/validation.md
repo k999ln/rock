@@ -165,3 +165,12 @@
 - `tests/system-backup.test.mjs`で、許可済みホーム設定だけの暗号化往復、平文非露出、無関係または将来追加される未許可localStorageの保持、誤パスフレーズ、改ざん、外部key混入の拒否に合格した。
 - 制限外で`npm run verify`を実行し、Web 157 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、製品ベース、MCP配布一致、Billing Worker dry-run、本番buildに合格した。通常sandboxではloopback待受がEPERMとなるため、MCP ConnectorとD1移行試験だけを含む全検証はローカル待受可能な環境で再実行した。
 - 物理端末のBSP/bootloader/recovery、正式署名鍵、外部MCP・販売・決済・払出しProviderは未接続であり、この検証の合格範囲へ含めない。
+
+# 2026-09-12 — 最低限のOS運用と公開審査gate
+
+- `/settings/system`を実ブラウザで確認し、安全な接続、通知、永続保存、PWA表示を含む10項目が実測値へ更新され、「稼働できます」と利用可能数が分離表示されることを確認した。
+- 通知テスト、保存保護、個人情報を除外する診断JSON、暗号化バックアップ、改ざん検知付き復元、Service Worker更新確認、確認付きホーム設定初期化を同じ画面へ配置した。初期化の確認Dialogを開閉し、アカウント、Wallet、実行履歴を削除しない説明を確認した。
+- 公開条件の折り畳みを開き、Web/PWA、QEMU、Android CDD/CTS・GMS、物理端末/BSP、production署名、OSS/法令、マイナンバーを別gateとして表示することを確認した。未実施項目を合格表示していない。
+- `tests/system-backup.test.mjs`で、許可済みホーム設定だけが初期化され、未知のRockstarOS keyと無関係なlocalStorage keyを保持することを確認した。
+- 制限外で`npm run verify`を実行し、Web 163 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、製品ベース、MCP配布一致、Billing Worker dry-run、本番buildに合格した。
+- この確認はWeb/PWA Developer Previewの受入であり、Android CDD/CTS、Google Play/GMS、実機flash、production署名、無線機器認証、特定個人情報の取扱審査を完了した証拠ではない。
