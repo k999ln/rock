@@ -1,3 +1,5 @@
+import { defaultFund, distributeFund, validateFund } from './fund.ts';
+
 // No runtime binding here: the same store is exercised against SQLite in tests.
 export const JOB_TOOLS = [
   'coconala',
@@ -594,7 +596,7 @@ export function operations(
   }
 
   async function wallet() {
-    const [records, totals] = await Promise.all([
+    const [records, totals, fundRow] = await Promise.all([
       statement(
         `SELECT ${bookColumns}, EXISTS(SELECT 1 FROM book_records r WHERE r.reverses_id = book_records.id AND r.user_id = ?) AS reversed FROM book_records WHERE user_id = ? ORDER BY occurred_on DESC, created_at DESC, id DESC LIMIT 100`,
         user,
@@ -604,9 +606,22 @@ export function operations(
         "SELECT COALESCE(SUM(CASE WHEN kind = 'revenue' THEN amount ELSE 0 END),0) AS revenue, COALESCE(SUM(CASE WHEN kind = 'expense' THEN amount ELSE 0 END),0) AS expense FROM book_records WHERE user_id = ?",
         user,
       ).first<{ revenue: number; expense: number }>(),
+      statement(
+        'SELECT plan, updated_at AS updatedAt FROM fund_plans WHERE user_id = ?',
+        user,
+      ).first<{ plan: string; updatedAt: string }>(),
     ]);
     const revenue = totals?.revenue ?? 0;
     const expense = totals?.expense ?? 0;
+    let fundPlan = defaultFund;
+    if (fundRow?.plan) {
+      try {
+        fundPlan = validateFund(JSON.parse(fundRow.plan) as unknown);
+      } catch {
+        fundPlan = defaultFund;
+      }
+    }
+    const fundProjection = distributeFund(fundPlan);
     return {
       currency: 'JPY' as const,
       balance: revenue - expense,
@@ -615,6 +630,14 @@ export function operations(
       records: records.results,
       persistence: 'd1' as const,
       transfers: 'not-connected' as const,
+      fund: {
+        joined: fundPlan.joined,
+        status: 'simulation' as const,
+        commonRevenue: fundProjection.revenue,
+        distributable: fundProjection.distributable,
+        projectedShare: fundProjection.mine,
+        updatedAt: fundRow?.updatedAt ?? null,
+      },
     };
   }
   return {

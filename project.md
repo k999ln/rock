@@ -15,6 +15,13 @@
 ファンド会計は既存のD1 membershipとSky Billingを唯一の正本に保ち、Providerで確定した実現損益だけを将来のEarning Receipt候補にする。実注文、自動再投資、Wallet資金移動、公開範囲の変更は行っていない。旧80/10/10は`/fund/legacy`だけに隔離したまま維持する。[比較・安全境界](docs/markets-fund-integration-20260913.md)。
 
 `npm run verify`相当の全項目はWeb 174 tests、Marketsと動的ファンドの集中検証、型、lint、MCP package、Billing Worker dry-run、Fashion Brand Ops 15 tests、本番build、仕事API 143 assertionsまで合格した。ローカル待受を使う試験だけsandbox外で再実行した。検証は合成・sandbox境界内であり、外部市場の注文・実資金移動・公開設定変更は行っていない。
+
+## 2026-09-13 — Rock Walletを収益の共通精算口座へ再構成
+
+Walletの標準画面を、手入力の収支記録からSky収益・ToB商品の販売収益・ファンド分配・払出しを束ねる状態確認へ変更した。本人別D1の手入力台帳は未照合記録として補助タブへ分離し、受取可能額へ加算しない。保存済みファンド設定から共同収益、分配原資、自分の分配額を本人別に読み取るが、試算・未送金として扱う。
+
+実収益の受取経路が未接続の間は受取可能額を「—」とし、銀行、暗号資産、ゲーム資産、ATMをWalletそのものではなく独立した払出し・交換adapterとして扱う。外部精算サービスへの本人識別子送信は、接続先・目的・保持・失効の確認と明示承認まで自動化しない。[実装境界](docs/rock-wallet-revenue-hub-20260913.md)を参照。
+
 ## 2026-09-13 — Android実機とマイナンバーを証拠単位の別gateへ固定
 
 Android物理端末版を、正確な機種/SKU、同一SKUのBSP・boot・recovery、同一buildのCDD/CTS、production署名、販売地域の5必須gateへ分けた。Android互換、物理flash、販売可能という表示は対応gateなしに有効化できない。GMSはAOSP外の別ライセンスなので、既定のDeveloper PreviewはGMSなしを維持する。対象機種は未選択で、現在0/5合格である。
@@ -66,6 +73,7 @@ WorkerはReceipt/実行/Provider参照の重複防止、改ざん・競合拒否
 最新のSkyフロント`6f02f1a`を基準に、依頼受付、6つの役割チップ、ダークなTimeline、短い実行導線をFashion Brand Ops branchへ反映する。`ブランド運営役`はInstagram／広告／DM／受注／決済／制作／発送の依頼を受け、既存の38 MCP操作、Campaign Autopilot、Sales Concierge、Production Cockpit、approval gateを開く。サブスク顧問と既存4役も失わない。
 
 Sky月額請求実装は上記の別境界で完成した。FB05は、役割ルーティング8件、全Web 110件、Fashion Brand Ops 14件、型・静的検査、本番build、Worker/D1 API 143 assertionsと実画面操作で合格した。Fashion Brand Ops側の実Provider、実投稿、実広告、顧客向け実請求、返金は接続済みとは扱わない。
+
 ## 2026-09-12 — SkyからFashion Brand Ops MCPへワンクリック接続
 
 Chatの左アプリ欄を撤去し、会話・依頼先・最近の処理を一列へまとめた。既定はSky Autoで、利用者は先にアプリを選ばず「案件を見て」「法律の相談」「特許を調べて」のように入力できる。接続済みの役割へ振り分け、担当を会話内へ表示する。アプリの直接指定は上部の小さな切替として残す。
@@ -153,6 +161,7 @@ SkyのX型Timelineと会話受付を維持し、文章の送信または4つの�
 日本語法律相談受付を現在のSky Agent Hubへ統合した。Timeline投稿、法務受付の役割ボタン、自然文の依頼から会話型受付を開ける。公開連絡先33件、ブラウザRunner、公式情報限定の法令AI、安全判定、弁護士引継ぎを同じ画面で利用できる。
 
 実装は`toolkits/fashion-brand-ops`、判断と検証境界は[統合記録](docs/fashion-brand-ops-integration.md)、確定要望はRQ18。Creative/Social/Payment/NotificationをProvider化し、SQLite受注台帳とWebhook照合を持つ。価格変更、外部生成、投稿/広告、DM送信、請求、返金、通知は署名付き個別approvalが必要。初期値はmockで、実Higgsfield/Meta/Stripe、外部費用、QEMU/Android/実機OS、Sites再配信、main mergeは変更していない。
+
 ## 2026-09-12 — 多機種対応を共通Core＋機種別packageへ固定
 
 利用者の決定により、RockstarOSは一つの汎用imageを全端末へ書き込む方式ではなく、共通Coreと機種／SKU別Device Support Packageを組み合わせる。提供区分を完全なOS、Android GSI実験版、既存OS上のclient、非対応の4種類に分け、対応台帳と自動検査で誇張を防ぐ。[設計](docs/device-support-architecture.md)／[台帳](data/device-support-matrix.json)。
@@ -181,11 +190,9 @@ main `7cdbb5f`とDraft PR #4の候補`c182a5b`を再取得し、PR #4の同HEAD 
 
 利用者の明示指示で実機版の開発を開始。Pixel 10候補の公式安定版タグ署名を確認し、固定source・端末product組込み・Linux build入口・読取り専用端末診断を追加した。利用できるLinux環境はないとの回答を受領。対象機種/SKUの再確認、クラウド予算/アカウント、全OS build、Sky/Wallet/Game移植、Android署名と実機受入が必要。まだ書込み可能なimageは生成していない。[実装と再開手順](docs/phone-preview-20260911.md)。
 
-
 ## 2026-09-11 — kaiya の公開設定と新規Sites
 
 権利者名kaiya、自作部分の改変・再配布許可、新規Sites作成、CM制作途中を最新指示として記録。MITの具体条文と本人だけで行う署名方式は準備段階。新サイトは本人限定で公開済み。空のD1で開始し、元サイトとDBの復旧を完了扱いにしない。MIT確認用全文、本人署名CLIと新7＋既存29署名試験、取消/メモリの追加診断を保存した。[今回の設定](docs/owner-setup-20260911.md)。
-
 
 ## 2026-09-11 — rc2の残る受入を再開
 
@@ -229,11 +236,9 @@ Linuxで全1660件／17checks、元1392件＋新規4件の主suite網羅、Web v
 
 最終9abf78aのbase/profile imageをbuildしてhash固定。正規CI原本1631/14checkと694source一致を既存guardで受理し、Mac arm64原全回帰の10TLS期限ERRORは別FAILとして保持。24要件のGame/Wallet host契約を同sourceで確認しGX01-CONTRACTを完了、実OS UI/fresh SDK/全D0〜D6は未判定。Aは同梱source/NOTICEと容量を確認し長時間試験、Bは実取得から新規VMの全構成復旧、rootは最後に専用端末で実UIと実録画を検証する。
 
-
 ## 09:19 UTC 配布候補のソース固定
 
 `9abf78a80d27aa9f847c4051d20e4c552e407276` を最終source/host tools候補として固定・pushし、Aの完全native回帰とbuildを開始。Game期限後の再接続未対応を既存契約どおりUI/SDKに説明し、元key再送・履歴とPIN pixel条件を保持。Bは同じ版の9file取得から独立新VMで導入/全構成復旧/SDKを検証する。D0〜D6・最終実UI・配布取得・実demoはこれからの判定で、完成とは表示しない。
-
 
 ## 08:40 UTC 最終候補へ向けた一周の固定
 
@@ -354,15 +359,15 @@ Rock starは、自動化ツールを束ね、仕事の準備・制作・確認�
 
 `/` のファンド画面から `/work` へ進み、テンプレートを選んで仕事を作成します。既存の `MrToolRunner` とPCの4つのMCPツールを再利用します。入力の引き渡しは利用者が結果を確認・コピーして行い、タブを閉じると未保存本文は失われます。
 
-| 層 | 担当 |
-| --- | --- |
-| `lib/workflow.ts` | テンプレート、入力検証、状態遷移、完了条件、冪等性 |
-| `lib/work-store.ts` | D1のユーザー別取得、作成、revision条件付き更新 |
-| `app/api/jobs/route.ts` | 認証・Origin確認、仕事の一覧・作成・更新API |
-| `components/workbench.tsx` | 作成、一覧、次の手順、実行結果、確認と完了 |
-| `lib/device.ts` / 既存runner | ツールの実行結果を仕事へ報告 |
-| `data/project-status.json` | 開発タスクの状態・依存関係・検証根拠 |
-| `scripts/project-status.mjs` | READMEと本書の進捗欄の生成・鮮度確認 |
+| 層                           | 担当                                               |
+| ---------------------------- | -------------------------------------------------- |
+| `lib/workflow.ts`            | テンプレート、入力検証、状態遷移、完了条件、冪等性 |
+| `lib/work-store.ts`          | D1のユーザー別取得、作成、revision条件付き更新     |
+| `app/api/jobs/route.ts`      | 認証・Origin確認、仕事の一覧・作成・更新API        |
+| `components/workbench.tsx`   | 作成、一覧、次の手順、実行結果、確認と完了         |
+| `lib/device.ts` / 既存runner | ツールの実行結果を仕事へ報告                       |
+| `data/project-status.json`   | 開発タスクの状態・依存関係・検証根拠               |
+| `scripts/project-status.mjs` | READMEと本書の進捗欄の生成・鮮度確認               |
 
 仕事は `active → review → completed`。`active` / `review` から `cancelled` に中止可能。通過前のステップを飛ばす操作は拒否します。中止済み・完了済みの仕事には新しい試行を追加しません。
 
@@ -427,7 +432,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-13 / 本番側の公開gate・永続Walletと、動的自動化ファンド・Markets・固定commit bot sandboxを統合 / 完了 50/74件
+最終更新: 2026-09-13 / 本番側の公開gate・永続Walletと、動的自動化ファンド・Markets・固定commit bot sandboxを統合 / 完了 52/77件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -505,6 +510,9 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | BIL01 | 先払い月額を停止し、検証済み自動化収益からだけ実費後に月最大888 centsを精算 | 完了 | [記録](docs/sky-billing.md) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing.test.mjs) · [記録](tests/billing-worker.test.mjs) · [記録](services/sky-billing/migrations/0002_earnings_settlement.sql) · [記録](docs/evidence/launch/backend-owner-validation-20260912.json) |
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) |
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |
+| WLT01 | 本人別D1台帳で売上・経費・取消・冪等性を実装 | 完了 | [記録](app/api/wallet/route.ts) · [記録](components/wallet-workspace.tsx) · [記録](lib/operations.ts) · [記録](tests/wallet-backend.test.mjs) |
+| WLT02 | WalletをSky収益・ファンド分配・払出しの共通精算口座へ再構成 | 完了 | [記録](components/revenue-wallet-workspace.tsx) · [記録](app/wallet/revenue-wallet.css) · [記録](lib/operations.ts) · [記録](docs/rock-wallet-revenue-hub-20260913.md) · [記録](tests/wallet-backend.test.mjs) |
+| WLT03 | 検証済みEarning Receiptとファンド分配Receiptを受取可能額・払出し状態へ接続 | 進行中 | [記録](docs/rock-wallet-revenue-hub-20260913.md) · [記録](docs/sky-billing.md) |
 
 段階ゲート（作業全体の完了とは別判定）
 

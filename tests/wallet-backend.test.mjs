@@ -33,6 +33,7 @@ function fixture() {
   };
   const clock = () => Date.parse('2026-09-13T12:00:00Z');
   return {
+    sqlite,
     owner: operations(db, 'owner', clock),
     stranger: operations(db, 'stranger', clock),
   };
@@ -45,6 +46,37 @@ const entry = (changes = {}) => ({
   source: 'coconala',
   occurredOn: '2026-09-13',
   ...changes,
+});
+
+await test('wallet exposes the signed-in owners fund projection without treating it as cash', async () => {
+  const { sqlite, owner, stranger } = fixture();
+  sqlite
+    .prepare(
+      'INSERT INTO fund_plans (user_id, plan, updated_at) VALUES (?, ?, ?)',
+    )
+    .run(
+      'owner',
+      JSON.stringify({
+        joined: true,
+        weights: [40, 25, 20, 15],
+        revenue: 50000,
+        commonCost: 5000,
+        fx: 150,
+        members: 2,
+        myBoost: 1,
+        otherBoost: 1,
+        basePercent: 80,
+        boostPercent: 10,
+      }),
+      '2026-09-13T12:00:00.000Z',
+    );
+
+  const wallet = await owner.wallet();
+  assert.equal(wallet.balance, 0);
+  assert.equal(wallet.fund.joined, true);
+  assert.equal(wallet.fund.commonRevenue, 50000);
+  assert.ok(wallet.fund.projectedShare > 0);
+  assert.equal((await stranger.wallet()).fund.joined, false);
 });
 
 await test('wallet stores income and expenses and returns the durable balance', async () => {

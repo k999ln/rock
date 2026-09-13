@@ -16,6 +16,8 @@ tob側の自動化ツールを商品として管理するSkyと、自動化で�
 
 SkyのWallet画面には、検証済み自動化収益の精算状況を追加しました。独立WorkerがExecution Receipt、Provider入金参照、証拠hashを持つ署名済みEarning Receiptだけを受け、実費の後から月最大888 USD centsを回収し、残額の払出し指図を作ります。売上0時の請求、未達分の債務化・翌月繰越、カード定期請求はありません。先払いCheckout APIは停止済みです。販売・決済・払出しProviderのsandbox接続と本番条件は未完了です。[実装とProvider接続手順](docs/sky-billing.md)。
 
+Rock Walletは、Sky収益・ToB商品の販売収益・ファンド分配を確認して払出しへつなぐ共通精算口座として再構成しました。本人別の手入力台帳は未照合記録として分離し、受取可能額へ加算しません。保存済みファンド設定は試算としてWalletへ表示し、Provider確認前の収益を実入金と扱いません。[Walletの実装境界](docs/rock-wallet-revenue-hub-20260913.md)。
+
 [8原則に基づくRockstarOS 1.0設計](docs/rockstaros-1.0-strategy.md)を追加しました。現ベースを維持し、一つの商品で実行・成果・費用・復旧まで確認できる体験を検証します。初期対象の文章系個人事業主と既存引用整理は検証仮説。配布/実用の優先順位、試用指標、CM導線、責任分担を具体化し、未実証の需要や本番利用可能性は主張しません。
 
 **[設計v1.1](docs/os-sky-wallet-game-design.md)の実装は承認済みです。** [承認範囲](docs/execution-approval-20260909.md)に従い、専用branchでnativeと設計を統合しています。公開・実機・MetaMask実資金は条件付き了承を保持し、技術的な準備を検証します。達成演出は見送り、市場案は検討のみです。
@@ -43,7 +45,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-13 / 本番側の公開gate・永続Walletと、動的自動化ファンド・Markets・固定commit bot sandboxを統合 / 完了 50/74件
+最終更新: 2026-09-13 / 本番側の公開gate・永続Walletと、動的自動化ファンド・Markets・固定commit bot sandboxを統合 / 完了 52/77件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -121,6 +123,9 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | BIL01 | 先払い月額を停止し、検証済み自動化収益からだけ実費後に月最大888 centsを精算 | 完了 | [記録](docs/sky-billing.md) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing.test.mjs) · [記録](tests/billing-worker.test.mjs) · [記録](services/sky-billing/migrations/0002_earnings_settlement.sql) · [記録](docs/evidence/launch/backend-owner-validation-20260912.json) |
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) |
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |
+| WLT01 | 本人別D1台帳で売上・経費・取消・冪等性を実装 | 完了 | [記録](app/api/wallet/route.ts) · [記録](components/wallet-workspace.tsx) · [記録](lib/operations.ts) · [記録](tests/wallet-backend.test.mjs) |
+| WLT02 | WalletをSky収益・ファンド分配・払出しの共通精算口座へ再構成 | 完了 | [記録](components/revenue-wallet-workspace.tsx) · [記録](app/wallet/revenue-wallet.css) · [記録](lib/operations.ts) · [記録](docs/rock-wallet-revenue-hub-20260913.md) · [記録](tests/wallet-backend.test.mjs) |
+| WLT03 | 検証済みEarning Receiptとファンド分配Receiptを受取可能額・払出し状態へ接続 | 進行中 | [記録](docs/rock-wallet-revenue-hub-20260913.md) · [記録](docs/sky-billing.md) |
 
 段階ゲート（作業全体の完了とは別判定）
 

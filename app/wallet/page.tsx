@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
-import WalletWorkspace from '@/components/wallet-workspace';
+import RevenueWalletWorkspace from '@/components/revenue-wallet-workspace';
 import './wallet.css';
+import './revenue-wallet.css';
 
 export const metadata: Metadata = { title: 'Wallet — RockstarOS' };
 
 export default function WalletPage() {
-  return <WalletWorkspace />;
+  return <RevenueWalletWorkspace />;
 }
