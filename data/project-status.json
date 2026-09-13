@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-13",
-  "milestone": "本人限定Web/PWAを4/5へ進め、8 HTTP防御headerを5 production経路で実測。全6配布対象は証拠不足を残してBLOCKED",
-  "nextAction": "所有者が最新版の本人限定Sites同期、製品license、OWNER_MANUAL本番鍵生成を明示承認した後、Sites実response再読取りとQEMU同一最終archiveの署名後受入を行う。",
+  "milestone": "RockstarOSの全非Home画面へ直接Home導線を実装し、共通画面と独自レイアウトの回帰契約へ固定。全6配布対象は証拠不足を残してBLOCKED",
+  "nextAction": "所有者による製品license選択とOWNER_MANUAL本番鍵生成を待ち、QEMU同一最終archiveの署名後受入を行う。",
   "tasks": [
     {
       "id": "SKY01",
@@ -243,6 +243,24 @@
         "app/settings/page.tsx",
         "components/system-settings.tsx",
         "components/system-settings.module.css",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "HOME02",
+      "title": "Home以外の全画面へ直接Homeへ戻る導線を常設し、共通・独自レイアウトの回帰を防止",
+      "status": "done",
+      "dependsOn": ["HOME01"],
+      "evidence": [
+        "components/workspace-shell.tsx",
+        "components/sky-chat-workspace.tsx",
+        "components/system-settings.tsx",
+        "components/system-maintenance.tsx",
+        "app/fund/page.tsx",
+        "app/fund/legacy/page.tsx",
+        "app/rockstaros/page.tsx",
+        "app/rockstaros/guide/page.tsx",
+        "tests/web-route-style-contract.test.mjs",
         "docs/product-baseline.md"
       ]
     },

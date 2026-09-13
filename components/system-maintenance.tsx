@@ -13,6 +13,7 @@ import {
   Download,
   FileDown,
   HardDrive,
+  House,
   KeyRound,
   LoaderCircle,
   RefreshCw,
@@ -404,7 +405,10 @@ export default function SystemMaintenance() {
   return (
     <main className={styles.page}>
       <header className={styles.topbar}>
-        <Link href="/settings" aria-label="設定へ戻る"><ArrowLeft size={21} /></Link>
+        <nav className={styles.topbarLinks} aria-label="戻る">
+          <Link href="/" aria-label="ホームへ戻る"><House size={19} /></Link>
+          <Link href="/settings" aria-label="設定へ戻る"><ArrowLeft size={19} /></Link>
+        </nav>
         <strong>システム</strong>
         <button onClick={() => void runDiagnostics()} disabled={running} aria-label="再診断">
           <RefreshCw size={18} className={running ? styles.spin : undefined} />

@@ -1,5 +1,7 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-13追記（v1.32）: 利用者は、RockstarOSの全画面からHomeへ直接戻れる仕様を明示。RQ26へ追加する。共通WorkspaceShellの上部に常設のHome導線を置き、設定、システム、自動化ファンド、旧試算、Developer Preview案内の独自レイアウトにもHome導線を持たせる。ブラウザの戻る操作やロゴの意味を知らないことを前提にせず、今後追加する非Home routeも同じ契約へ従う。
+
 2026-09-13追記（v1.31）: 利用者は、個別branchや過去の公開版に散在した良い実装を、現行設計と安全条件へ矛盾しない形で正本へ統合し、崩れた画面を完成版へ上書き保存するよう明示。RQ32を追加する。Chatは接続済みready商品と任意MCPをbotとして扱い、方向修正、1回承認、実行、停止、結果を同じスレッドへ集約する。Walletは本人別の残高・売上・経費・取消履歴を永続化する。主要画面のCSS契約とbuild asset closureを全体verifyへ追加し、GitHubと本人限定Sitesを同一source commitへ固定する。一般公開、実資金、マイナンバー、production鍵のgateは変更しない。
 
 2026-09-13追記（v1.30）: Android物理端末を型番/SKU、BSP/boot/recovery、同一buildのCDD/CTS、production署名、販売地域の5必須gateへ固定する。現在0/5で、Android互換・GMS許諾・物理flash・販売可能を表示しない。マイナンバーは無効化、目的、主体/provider、data flowと保存/削除、安全管理、事故/委託先、最終有効化の7必須gateへ分ける。現在1/7で、番号・カード画像・通常profile項目を取得しない。
@@ -247,6 +249,8 @@ Skyと各MCPを個別に直結せず、審査済みregistryを読むPC内Connect
 ## RQ26 ホーム画面と設定アプリをOSの標準入口にする
 
 RockstarOSを開いた最初の`/`は、iPhoneに着想を得たタッチ向けホーム画面とする。Sky、Chat、Wallet、Polymarketの基本4アプリはアイコンから直接開き、Sky本体は`/sky`へ分離する。設定は業務上の5つ目の基本アプリではなく、OSを整える標準utilityとしてホームへ置く。
+
+Home以外の全画面には、現在の作業を保存契約どおり保持したまま`/`へ直接移動できる、見つけやすくキーボード・タッチで操作可能なHome導線を置く。共通WorkspaceShellを使わない独自画面も例外にしない。
 
 利用者は壁紙、アクセント色、アイコンサイズ、アプリ名表示、アイコン順をフロントから変更できる。設定値は端末内localStorageへ保存し、本人アカウント、MCP権限、Wallet、実行receiptへ影響させない。設定アプリは、ホーム外観、PWA追加、ブラウザ接続、本人アカウント状態、PC Connector、MCPごとの権限・実行先、Web UI再読込、Developer Previewの導入・バックアップ・復旧案内を一か所へまとめる。
 

@@ -18,6 +18,7 @@ import {
   Clock3,
   Grid2X2,
   History,
+  House,
   LoaderCircle,
   MessageCircle,
   Plus,
@@ -365,10 +366,16 @@ export default function SkyChatWorkspace() {
             <span>RockstarOS</span>
             <h1>Chat</h1>
           </div>
-          <Link href="/sky" aria-label="Skyでアプリを見る">
-            <Grid2X2 size={19} />
-            <span>Sky</span>
-          </Link>
+          <nav aria-label="Chatナビゲーション">
+            <Link href="/" aria-label="ホームへ戻る">
+              <House size={18} />
+              <span>ホーム</span>
+            </Link>
+            <Link href="/sky" aria-label="Skyでアプリを見る">
+              <Grid2X2 size={19} />
+              <span>Sky</span>
+            </Link>
+          </nav>
         </header>
 
         <div className="sky-chat-mode-row" aria-label="依頼先を選ぶ">

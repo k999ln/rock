@@ -137,6 +137,11 @@ export function validateBaseline(
     'ホームと設定アプリの入口・端末内設定・運用機能を維持してください',
   );
   requireValue(
+    data.homeExperience.returnPolicy ===
+      'every_non_home_route_has_a_direct_home_affordance',
+    'Home以外の全画面に直接Homeへ戻る契約が必要です',
+  );
+  requireValue(
     data.systemMaintenance?.route === '/settings/system' &&
       data.systemMaintenance?.runtime === 'web_pwa_device_local' &&
       data.systemMaintenance?.diagnostics?.includes('rockstar_api') &&

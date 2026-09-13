@@ -7,7 +7,10 @@ export default function FundPage() {
   return (
     <>
       <div className="legacy-return">
-        <Link href="/sky">← Skyに戻る</Link>
+        <nav aria-label="戻る">
+          <Link href="/">⌂ ホーム</Link>
+          <Link href="/sky">← Skyに戻る</Link>
+        </nav>
         <span>自律形成 · 検証済み収益のみ · 月最大$8.88</span>
       </div>
       <AutonomousFundMarket />

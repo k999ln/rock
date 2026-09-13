@@ -3,13 +3,13 @@
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in is a top-level gateway route. */
 import {
   Activity,
-  ArrowLeft,
   ArrowRight,
   Cable,
   CheckCircle2,
   Cloud,
   Download,
   HardDrive,
+  House,
   LockKeyhole,
   Palette,
   RefreshCw,
@@ -89,7 +89,7 @@ export default function SystemSettings() {
     <main className={styles.page}>
       <header className={styles.topbar}>
         <Link href="/" aria-label="ホームへ戻る">
-          <ArrowLeft size={21} />
+          <House size={20} />
         </Link>
         <strong>設定</strong>
         <span>1.0</span>

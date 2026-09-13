@@ -37,10 +37,11 @@ export default function RockstarPreview() {
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <Link href="/" className={styles.brand}>
+        <Link href="/" className={styles.brand} aria-label="ホームへ戻る">
           RockstarOS<span>1.0</span>
         </Link>
         <nav className={styles.nav} aria-label="開発版の案内">
+          <Link href="/">ホーム</Link>
           <a href="#actual">実際の画面</a>
           {preview.campaign && <a href="#film">コンセプトCM</a>}
           <Link href="/rockstaros/guide">導入・復旧</Link>

@@ -1,5 +1,5 @@
 {
-  "version": "1.31",
+  "version": "1.32",
   "decidedAt": "2026-09-13",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -35,6 +35,7 @@
   "homeExperience": {
     "defaultRoute": "/",
     "skyRoute": "/sky",
+    "returnPolicy": "every_non_home_route_has_a_direct_home_affordance",
     "visualBasis": "iphone_inspired_app_launcher",
     "systemUtility": "settings",
     "preferencesStorage": "device_local",
