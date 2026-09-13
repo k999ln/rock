@@ -15,7 +15,7 @@
 | diagnostics / acceptance | PASS | D1/D3、D4原本、D6の5boot・61反復・約60分・正常終了を範囲付きで照合。取消操作1回は未観測のまま保持 |
 | rc2固有native SBOM | PASS | SHA-256一致を確認したrc2 archiveから同梱legal bundleを抽出。target 24＋host build 37 componentを同じarchive SHA-256へ結合。製品licenseの許諾判断は別gate |
 | 製品license | BLOCKED | MITは提案であり所有者選択ではない。top-level LICENSEなし |
-| production署名 | BLOCKED | 候補準備・法務承認・保護署名・本人署名の公開fixture 62試験は全体verifyに統合。Ed25519 OWNER_MANUAL案はあるが正式鍵の作成・保管・失効ceremonyは未実施 |
+| production署名 | BLOCKED | 候補準備・法務承認・保護署名・本人署名の公開fixture 64試験は全体verifyに統合。未暗号化／ExFAT保管先は鍵読取り前に拒否。Ed25519 OWNER_MANUAL案はあるが正式鍵の作成・暗号化保管・失効ceremonyは未実施 |
 | 署名後の同一候補受入 | BLOCKED | license、SBOM、署名を加えると配布byteが変わるため、新SHA-256へfresh導入・更新・復旧を結び直す必要がある |
 | 一般公開承認 | BLOCKED | rc2 ReleaseはDraft。全gate合格前に公開しない |
 

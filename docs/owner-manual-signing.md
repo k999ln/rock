@@ -14,7 +14,16 @@
 
 固定 SHA の `release_signing_owner.py` と `release_signing.py` を、通常の開発 checkout/PR/CI と鍵を共有しない本人専用の隔離環境へ用意する。Python と OpenSSL 3 を鍵の解除前に準備し、候補コードは実行しない。network を切る操作と隔離状態は本人が確認する。CLI はオフライン、暗号化、独立した承認者を実測したと表示しない。
 
-署名鍵は本人が管理先から解除した既存48byte Ed25519 PKCS8 DER fileを外部 path で渡す。恒久保管は暗号化し、解除中の原 file と signer の一時 file は本人専用の暗号化 volume 内に置く。キー親dir0700、file0400/0600、同一UID、regular/nlink1を要求し、symlink/hardlinkを拒否する。ExFATの合成modeを秘密保管の代用にしない。原鍵 file はこの CLI が削除しない。本人が利用後の解除状態を閉じる。一時鍵は既存 signer の normal/error/SIGTERM cleanup に従うが、SIGKILL時の削除やメモリ/SSDの完全消去は保証しない。
+署名鍵は本人が管理先から解除した既存48byte Ed25519 PKCS8 DER fileを外部 path で渡す。恒久保管は暗号化し、解除中の原 file と signer の一時 file は本人専用の暗号化 volume 内に置く。キー親dir0700、file0400/0600、同一UID、regular/nlink1を要求し、symlink/hardlinkを拒否する。本人署名入口はmacOSの`diskutil info -plist`を署名前に読み、暗号化APFSとFileVaultまたはvolume固有暗号化を確認できない場合を拒否する。ExFAT/FAT/NTFS、未暗号化volume、別mountのreadbackは鍵を読む前に拒否する。これは現在のローカル状態の誤設定防止であり、隔離端末のremote attestationではない。macOS以外で自動確認できない場合はこの本人経路を拒否し、保護されたmanaged signerを使う。原鍵 file はこの CLI が削除しない。本人が利用後の解除状態を閉じる。一時鍵は既存 signer の normal/error/SIGTERM cleanup に従うが、SIGKILL時の削除やメモリ/SSDの完全消去は保証しない。
+
+鍵を作る前に、既存の本人専用directoryだけを読み取り確認できる。秘密値は不要で、合格しても鍵生成・署名・承認は行わない。
+
+```sh
+python3 -B scripts/release_signing_owner.py storage-check \
+  --directory /Volumes/ENCRYPTED_SIGNING_VOLUME/private-key-directory
+```
+
+2026-09-13の実読戻しでは、接続中の`/Volumes/Extreme SSD`はExFATでvolume暗号化の証拠がないため、本番鍵保管先として不合格。再formatはデータ消去を伴うため自動実行しない。暗号化APFS volumeまたは暗号化disk imageを別途用意し、その中の本人専用0700 directoryで再検査する。
 
 候補の全資産を事前に取得する。旧公開試験鍵 envelope を書き換えず、plain unsigned external-key candidate と独立に照合した index を使う。署名/配布内容の変更に伴う新しい版の二回生成・最終受入は元 LCH07 のまま。rc2 を署名しただけでは license が CLEARED にも、全受入が完了にもならない。
 
@@ -48,4 +57,4 @@ python3 -B scripts/release_signing_owner.py sign \
 
 独立したクリーン環境で既存 `release_signing.py verify` を実行し、現在の別経路 trust pin、fingerprint、release-manifest SHA、sourceを検証する。その後、同じ外部鍵と固定manifestで元 `preview.py verify` / 導入・受入を実施する。改ざん、別fingerprint、失効・期限切れの拒否、rotation の実証も必要。これらが完了する前に認証成功や LCH03 PASS を表明しない。正式 license/全受入/一般公開/main merge の未完了は別に保持する。
 
-対象試験は `python3 -B -m unittest discover -s tests -p test_release_signing_owner.py -v`。既存の公開 fixture builder を共用するが元 tests を継承・重複実行しない。成功 mechanics だけテスト process 内で公開試験鍵 denylist を置き換える。実 CLI に回避フラグはない。
+対象試験は `python3 -B -m unittest discover -s tests -p test_release_signing_owner.py -v`。既存の公開 fixture builder を共用するが元 tests を継承・重複実行しない。成功 mechanics だけテスト process 内で公開試験鍵 denylist とstorage readbackをfixtureへ置き換える。実 CLI に回避フラグはない。9件で、未暗号化／ExFAT／別mountの拒否と、storage不合格時に鍵を読まずattemptも作らない境界を含む。

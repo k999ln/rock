@@ -117,10 +117,11 @@
       "label": "production鍵・失効・rotation・rollback",
       "required": true,
       "status": "blocked",
-      "ownerAction": "正式Ed25519鍵の保管場所と管理者を指定し、所有者管理下でkey ceremonyを実行する",
+      "ownerAction": "接続中のExtreme SSDは未暗号化ExFATのため使わず、暗号化APFS volumeまたは暗号化disk image内の本人専用0700 directoryを指定してkey ceremonyを実行する",
       "evidence": [
         "data/release-owner-intent-20260911.json",
         "docs/release-signing-operations.md",
+        "docs/owner-manual-signing.md",
         "scripts/check-release-signing.mjs",
         "tests/test_release_signing.py",
         "tests/test_release_signing_owner.py"

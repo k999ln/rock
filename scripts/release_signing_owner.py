@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import plistlib
 import re
 import signal
 import stat
@@ -25,6 +26,7 @@ KEY_ENV = 'ROCK_RELEASE_SIGNING_KEY_PKCS8_B64'
 ATTESTATIONS = {'single_owner_mode_accepted', 'external_key_custody_accepted',
                 'isolated_signing_environment_checked_by_owner'}
 require = signing.require
+MAX_STORAGE_INFO = 256 * 1024
 
 
 def private_parent(path):
@@ -33,6 +35,47 @@ def private_parent(path):
     info = path.parent.stat()
     require(stat.S_ISDIR(info.st_mode) and info.st_uid == os.geteuid() and not info.st_mode & 0o077,
             'owner-private parent directory required')
+
+
+def parse_macos_storage_info(raw, expected_device):
+    require(type(raw) is bytes and 0 < len(raw) <= MAX_STORAGE_INFO,
+            'bounded disk encryption readback required')
+    value = plistlib.loads(raw)
+    require(type(value) is dict, 'disk encryption readback must be a dictionary')
+    require(value.get('DeviceNode') == expected_device,
+            'key directory differs from inspected volume')
+    require(value.get('FilesystemType') == 'apfs',
+            'production key storage requires encrypted APFS; ExFAT/FAT/NTFS are refused')
+    require(value.get('Encryption') is True and
+            (value.get('FileVault') is True or value.get('EncryptionThisVolumeProper') is True),
+            'production key volume is not encrypted')
+    require(value.get('Locked') is False, 'production key volume must be mounted and unlocked by its owner')
+    return {'platform': 'macOS', 'filesystem': 'apfs', 'encrypted': True,
+            'filevault': value.get('FileVault') is True,
+            'volume_encryption': value.get('EncryptionThisVolumeProper') is True,
+            'readback': 'diskutil-info-plist'}
+
+
+def key_storage_security(directory):
+    require(directory.is_absolute() and directory.resolve(strict=True) == directory and directory.is_dir(),
+            'canonical key directory required')
+    require(sys.platform == 'darwin',
+            'automatic encrypted-volume verification is unavailable on this platform; use the protected managed signer')
+    mounted = subprocess.run(['/bin/df', '-P', str(directory)],
+                             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                             timeout=10, check=False)
+    require(mounted.returncode == 0 and 0 < len(mounted.stdout) <= MAX_STORAGE_INFO,
+            'key volume lookup failed')
+    lines = mounted.stdout.splitlines()
+    require(len(lines) == 2 and lines[1].split(), 'unexpected key volume lookup')
+    device = lines[1].split()[0].decode('ascii', errors='strict')
+    require(re.fullmatch(r'/dev/disk[0-9]+(?:s[0-9]+)*', device) is not None,
+            'key directory is not on a directly verifiable macOS volume')
+    result = subprocess.run(['/usr/sbin/diskutil', 'info', '-plist', device],
+                            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                            timeout=10, check=False)
+    require(result.returncode == 0, 'disk encryption readback failed')
+    return parse_macos_storage_info(result.stdout, device)
 
 
 def secure_read(path, limit):
@@ -136,12 +179,16 @@ def sign_owner(directory, trust, approval_path, approval_pin, key_file, output):
     require(not any(key_file.is_relative_to(root) for root in (directory, output, code_root)),
             'external key must be outside candidate/output/code checkout')
     require(load_approval(approval_path, approval_pin, output)[0] == raw, 'approval changed after validation')
+    # Refuse common removable-media mistakes before reserving an attempt or reading key bytes.
+    # This is a local safety readback, not remote attestation of the signing machine.
+    storage = key_storage_security(key_file.parent)
     # Atomic reservation: failure leaves this attempt present, never overwritten.
     output.mkdir(mode=0o700)
     signing.write_private(output / 'owner-approval.json', raw)
     signing.write_private(output / 'ATTEMPT.json', signing.canonical({
         'status': 'OWNER_APPROVED_ATTEMPT_RESERVED_NOT_SIGNED', 'approval_sha256': approval_pin,
-        'isolation': 'OWNER_ATTESTED_NOT_SOFTWARE_PROVEN', 'independent_human_approval': False}) + b'\n')
+        'isolation': 'OWNER_ATTESTED_NOT_SOFTWARE_PROVEN', 'independent_human_approval': False,
+        'key_storage': storage}) + b'\n')
     previous_temp = os.environ.get('RUNNER_TEMP')
     try:
         private = read_external_key(key_file)
@@ -161,6 +208,7 @@ def sign_owner(directory, trust, approval_path, approval_pin, key_file, output):
                'approval_sha256': approval_pin, 'inputs': inputs, 'signer_result': result,
                'isolation': 'OWNER_ATTESTED_NOT_SOFTWARE_PROVEN', 'independent_human_approval': False,
                'github_policy_changed': False, 'original_key_file_retained': True,
+               'key_storage': storage,
                'metadata': {p.name: signing.file_record(p) for p in sorted((output / 'signed-metadata').iterdir())}}
     require(set(receipt['metadata']) == signing.OUTPUT_NAMES, 'signer output roster differs')
     signing.write_private(output / 'OWNER-SIGNING-RESULT.json', signing.canonical(receipt) + b'\n')
@@ -171,6 +219,8 @@ def main():
     os.umask(0o077)
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
+    storage_parser = sub.add_parser('storage-check')
+    storage_parser.add_argument('--directory', type=Path, required=True)
     for name in ('prepare', 'sign'):
         p = sub.add_parser(name)
         for flag in ('directory', 'trust-bundle', 'approval', 'output'):
@@ -182,7 +232,11 @@ def main():
             p.add_argument('--approval-sha256', required=True)
             p.add_argument('--key-file', type=Path, required=True)
     args = parser.parse_args()
-    if args.command == 'prepare':
+    if args.command == 'storage-check':
+        private_parent(args.directory / 'key-placeholder')
+        result = {'status': 'ENCRYPTED_OWNER_PRIVATE_STORAGE_READY',
+                  'storage': key_storage_security(args.directory)}
+    elif args.command == 'prepare':
         result = prepare(args.directory, args.source, args.index_sha256, args.trust_bundle, args.trust_sha256,
                          args.fingerprint, args.owner_id, args.approval, args.output)
     else:

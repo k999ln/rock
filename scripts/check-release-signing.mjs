@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process';
 
 const suites = [
   ['protected signer', 'test_release_signing.py', 29],
-  ['owner-manual entry', 'test_release_signing_owner.py', 7],
+  ['owner-manual entry', 'test_release_signing_owner.py', 9],
   ['candidate preparation', 'test_prepare_release_candidate.py', 15],
   ['owner legal approval', 'test_owner_legal_approval.py', 11],
 ];

@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import plistlib
 import shutil
 import sys
 import time
@@ -31,6 +32,10 @@ class OwnerEntryTests(unittest.TestCase):
         os.environ.pop(owner.KEY_ENV, None)
         self.denylist = patch.object(signing, 'RFC8032_KEYS', frozenset())
         self.denylist.start(); self.addCleanup(self.denylist.stop)
+        self.storage = patch.object(owner, 'key_storage_security', return_value={
+            'platform': 'fixture', 'filesystem': 'encrypted-fixture', 'encrypted': True,
+            'filevault': False, 'volume_encryption': True, 'readback': 'fixture'})
+        self.storage.start(); self.addCleanup(self.storage.stop)
         # This denylist patch is test-process-only. Neither CLI has a bypass flag.
         owner.prepare(self.directory, self.fixture.source, self.fixture.index_pin, self.trust,
                       self.fixture.trust_pin, self.fixture.fingerprint, 'public-fixture-owner', self.approval, self.output)
@@ -102,6 +107,26 @@ class OwnerEntryTests(unittest.TestCase):
         self.assertNotIn(owner.KEY_ENV, os.environ)
         # The same approval/output cannot silently resume after a failure.
         with self.assertRaisesRegex(ValueError, 'attempt already exists'): self.invoke(pin)
+
+    def test_unverified_storage_is_rejected_before_attempt_or_key_read(self):
+        pin = self.approve()
+        with patch.object(owner, 'key_storage_security', side_effect=ValueError('not encrypted')), \
+                patch.object(owner, 'read_external_key') as read:
+            with self.assertRaisesRegex(ValueError, 'not encrypted'): self.invoke(pin)
+            read.assert_not_called()
+        self.assertFalse(self.output.exists())
+
+    def test_macos_storage_readback_requires_encrypted_apfs_and_matching_mount(self):
+        secure = {'DeviceNode': '/dev/disk3s5', 'MountPoint': '/', 'FilesystemType': 'apfs', 'Encryption': True,
+                  'FileVault': True, 'EncryptionThisVolumeProper': False, 'Locked': False}
+        result = owner.parse_macos_storage_info(plistlib.dumps(secure), '/dev/disk3s5')
+        self.assertTrue(result['encrypted'])
+        for changed, message in [
+                ({**secure, 'FilesystemType': 'exfat', 'Encryption': False, 'FileVault': False}, 'encrypted APFS'),
+                ({**secure, 'Encryption': False, 'FileVault': False}, 'not encrypted'),
+                ({**secure, 'DeviceNode': '/dev/disk6s1'}, 'differs from inspected')]:
+            with self.subTest(message=message), self.assertRaisesRegex(ValueError, message):
+                owner.parse_macos_storage_info(plistlib.dumps(changed), '/dev/disk3s5')
 
     def test_same_core_signatures_verify_and_secret_is_not_in_child_environment(self):
         pin = self.approve(); original = self.key.read_bytes(); real_openssl = signing.openssl
