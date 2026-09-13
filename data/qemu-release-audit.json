@@ -37,6 +37,10 @@
     "generatedArtifactCommitted": false,
     "status": "component_inventory_complete_product_license_not_cleared"
   },
+  "postSigningAcceptance": {
+    "template": "docs/templates/qemu-post-signing-acceptance.json",
+    "result": null
+  },
   "requirements": [
     {
       "id": "candidate-identity",

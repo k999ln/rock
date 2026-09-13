@@ -18,6 +18,131 @@ const inside = (root, path) => {
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 const sha256Pattern = /^[0-9a-f]{64}$/;
 
+const qemuPostSigningCheckIds = [
+  'authentication',
+  'fresh-install',
+  'update',
+  'rollback',
+  'backup',
+  'restore',
+  'interruption-recovery',
+  'diagnostics',
+  'normal-shutdown',
+  'removal',
+];
+
+const validateHashedEvidence = (root, evidence, label, requiredPins = null) => {
+  if (!Array.isArray(evidence) || evidence.length === 0) fail(label + ': 根拠がありません');
+  if (requiredPins) {
+    const requiredRoles = Object.keys(requiredPins);
+    const actualRoles = evidence.map(({ role }) => role);
+    if (
+      actualRoles.length !== requiredRoles.length ||
+      new Set(actualRoles).size !== actualRoles.length ||
+      requiredRoles.some((role) => !actualRoles.includes(role)) ||
+      new Set(evidence.map(({ path }) => path)).size !== evidence.length
+    ) {
+      fail(label + ': 必須roleごとの別file根拠が必要です');
+    }
+  }
+  for (const item of evidence) {
+    if (
+      !item ||
+      typeof item.path !== 'string' ||
+      !inside(root, item.path) ||
+      !existsSync(resolve(root, item.path)) ||
+      !sha256Pattern.test(item.sha256 || '')
+    ) {
+      fail(label + ': repository内の根拠pathとSHA-256が必要です');
+    }
+    const actual = sha256(readFileSync(resolve(root, item.path)));
+    if (actual !== item.sha256) fail(label + ': 根拠hashが不一致です: ' + item.path);
+    if (requiredPins && requiredPins[item.role] !== item.sha256) {
+      fail(label + ': roleとpinが不一致です: ' + item.role);
+    }
+  }
+};
+
+export function validateQemuPostSigningAcceptance({ root, record, candidate }) {
+  const label = 'QEMU署名後受入';
+  if (record?.schema !== 'rockstaros-qemu-post-signing-acceptance/1') {
+    fail(label + ': schemaが違います');
+  }
+  if (
+    record.status !== 'PASS_POST_SIGNING_SAME_CANDIDATE' ||
+    !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(record.completedAt || '')
+  ) {
+    fail(label + ': 完了状態またはUTC完了時刻が不正です');
+  }
+  if (
+    record.candidate?.version !== candidate.version ||
+    record.candidate?.sourceCommit !== candidate.sourceCommit ||
+    record.candidate?.archive?.name !== candidate.archive.name ||
+    record.candidate?.archive?.bytes !== candidate.archive.bytes ||
+    record.candidate?.archive?.sha256 !== candidate.archive.sha256
+  ) {
+    fail(label + ': auditと同じ候補ではありません');
+  }
+  if (
+    record.immutableCandidate?.beforeSha256 !== candidate.archive.sha256 ||
+    record.immutableCandidate?.afterSha256 !== candidate.archive.sha256 ||
+    record.immutableCandidate?.bytesUnchanged !== true
+  ) {
+    fail(label + ': 署名後候補byteの不変性がありません');
+  }
+
+  const signing = record.signing || {};
+  if (
+    signing.status !== 'PRODUCTION_SIGNATURE_VERIFIED' ||
+    signing.authenticationStatus !== 'AUTHENTICATED_NOT_LAUNCH_ACCEPTED' ||
+    ['releaseManifestSha256', 'releaseAuthenticationSha256', 'publicKeySha256', 'trustBundleSha256']
+      .some((key) => !sha256Pattern.test(signing[key] || ''))
+  ) {
+    fail(label + ': production署名の独立検証pinが不足しています');
+  }
+  validateHashedEvidence(root, signing.evidence, label + '/signing', {
+    'release-manifest': signing.releaseManifestSha256,
+    'release-authentication': signing.releaseAuthenticationSha256,
+    'public-key': signing.publicKeySha256,
+    'trust-bundle': signing.trustBundleSha256,
+  });
+
+  const legal = record.legal || {};
+  if (
+    typeof legal.productLicense !== 'string' ||
+    !legal.productLicense.trim() ||
+    ['licenseFileSha256', 'noticeSha256', 'sbomSha256'].some(
+      (key) => !sha256Pattern.test(legal[key] || ''),
+    )
+  ) {
+    fail(label + ': license・NOTICE・SBOMのpinが不足しています');
+  }
+  validateHashedEvidence(root, legal.evidence, label + '/legal', {
+    license: legal.licenseFileSha256,
+    notice: legal.noticeSha256,
+    sbom: legal.sbomSha256,
+  });
+
+  if (
+    record.freshWorkspace !== true ||
+    record.sourceDeviceReused !== false ||
+    typeof record.environment?.hostOs !== 'string' ||
+    typeof record.environment?.hostVersion !== 'string' ||
+    typeof record.environment?.architecture !== 'string' ||
+    typeof record.environment?.qemuVersion !== 'string' ||
+    record.environment?.machine !== 'virt-10.0'
+  ) {
+    fail(label + ': fresh環境またはQEMU実行環境の識別が不足しています');
+  }
+  if (!Array.isArray(record.checks)) fail(label + ': checksがありません');
+  assertExactIds(record.checks, qemuPostSigningCheckIds, label + ' checks');
+  for (const check of record.checks) {
+    if (check.status !== 'PASS') fail(label + '/' + check.id + ': PASSではありません');
+    validateHashedEvidence(root, check.evidence, label + '/' + check.id);
+  }
+  return { status: record.status, checks: record.checks.length };
+}
+
 const assertExactIds = (items, expectedIds, label) => {
   const actualIds = items.map(({ id }) => id);
   if (actualIds.length !== new Set(actualIds).size) fail(label + ': IDが重複しています');
@@ -624,8 +749,40 @@ export function validateQemuReleaseAudit({
   const productLicense = audit.requirements.find(({ id }) => id === 'product-license');
   const productionSigning = audit.requirements.find(({ id }) => id === 'production-signing');
   const postSigning = audit.requirements.find(({ id }) => id === 'post-signing-same-candidate-acceptance');
+  const postSigningTemplate = audit.postSigningAcceptance?.template;
+  if (
+    typeof postSigningTemplate !== 'string' ||
+    !postSigningTemplate ||
+    !inside(root, postSigningTemplate) ||
+    !existsSync(resolve(root, postSigningTemplate))
+  ) {
+    fail('署名後の同一候補受入templateがありません');
+  }
   if (postSigning?.status === 'pass' && (productLicense?.status !== 'pass' || productionSigning?.status !== 'pass')) {
     fail('licenseとproduction署名より先に最終候補受入を合格にできません');
+  }
+  if (postSigning?.status === 'pass') {
+    const resultPath = audit.postSigningAcceptance?.result;
+    if (
+      typeof resultPath !== 'string' ||
+      !resultPath ||
+      !inside(root, resultPath) ||
+      !existsSync(resolve(root, resultPath))
+    ) {
+      fail('署名後の同一候補受入resultがありません');
+    }
+    let result;
+    try {
+      result = JSON.parse(readFileSync(resolve(root, resultPath), 'utf8'));
+    } catch {
+      fail('署名後の同一候補受入resultを読めません');
+    }
+    validateQemuPostSigningAcceptance({ root, record: result, candidate });
+    if (!postSigning.evidence?.includes(resultPath)) {
+      fail('署名後の同一候補受入resultがgate根拠にありません');
+    }
+  } else if (audit.postSigningAcceptance?.result !== null) {
+    fail('署名後受入が未達なのにresultを設定できません');
   }
 
   const qemuTarget = readiness.targets.find(({ id }) => id === 'qemu-developer-preview');

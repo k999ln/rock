@@ -1,12 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, unlinkSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { mkdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import {
   createCurrentNativeSbom,
   createHistoricalNativeSbom,
   validateAndroidPhysicalReleaseAudit,
   validatePersonalNumberReleaseAudit,
+  validateQemuPostSigningAcceptance,
   validateQemuReleaseAudit,
   validateReleaseReadiness,
 } from '../scripts/release-readiness-lib.mjs';
@@ -223,6 +225,91 @@ void test('QEMU audit binds every pass to the exact rc2 source and archive', () 
     'post-signing-same-candidate-acceptance',
     'public-distribution-approval',
   ]);
+});
+
+void test('QEMU audit rejects post-signing PASS without a same-candidate result', () => {
+  const changed = structuredClone(qemuAudit);
+  for (const id of ['product-license', 'production-signing', 'post-signing-same-candidate-acceptance']) {
+    changed.requirements.find((requirement) => requirement.id === id).status = 'pass';
+  }
+  assert.throws(() => validateQemu(changed), /署名後の同一候補受入resultがありません/);
+});
+
+void test('post-signing acceptance binds ten PASS checks and every evidence hash', () => {
+  const fixtureDirectory = resolve(root, 'work/release/post-signing-fixture');
+  mkdirSync(fixtureDirectory, { recursive: true });
+  const makeEvidence = (role) => {
+    const path = `work/release/post-signing-fixture/${role}.json`;
+    const source = `${JSON.stringify({ role, fixture: 'synthetic-not-release-evidence' })}\n`;
+    const sha256 = createHash('sha256').update(source).digest('hex');
+    writeFileSync(resolve(root, path), source);
+    return { role, path, sha256 };
+  };
+  const signingEvidence = [
+    'release-manifest', 'release-authentication', 'public-key', 'trust-bundle',
+  ].map(makeEvidence);
+  const legalEvidence = ['license', 'notice', 'sbom'].map(makeEvidence);
+  const checkEvidence = [makeEvidence('check-report')].map(({ path, sha256 }) => ({ path, sha256 }));
+  const evidenceSha = (items, role) => items.find((item) => item.role === role).sha256;
+  const record = {
+    schema: 'rockstaros-qemu-post-signing-acceptance/1',
+    status: 'PASS_POST_SIGNING_SAME_CANDIDATE',
+    completedAt: '2026-09-13T04:00:00Z',
+    candidate: structuredClone(qemuAudit.candidate),
+    immutableCandidate: {
+      beforeSha256: qemuAudit.candidate.archive.sha256,
+      afterSha256: qemuAudit.candidate.archive.sha256,
+      bytesUnchanged: true,
+    },
+    signing: {
+      status: 'PRODUCTION_SIGNATURE_VERIFIED',
+      authenticationStatus: 'AUTHENTICATED_NOT_LAUNCH_ACCEPTED',
+      releaseManifestSha256: evidenceSha(signingEvidence, 'release-manifest'),
+      releaseAuthenticationSha256: evidenceSha(signingEvidence, 'release-authentication'),
+      publicKeySha256: evidenceSha(signingEvidence, 'public-key'),
+      trustBundleSha256: evidenceSha(signingEvidence, 'trust-bundle'),
+      evidence: signingEvidence,
+    },
+    legal: {
+      productLicense: 'TEST-ONLY',
+      licenseFileSha256: evidenceSha(legalEvidence, 'license'),
+      noticeSha256: evidenceSha(legalEvidence, 'notice'),
+      sbomSha256: evidenceSha(legalEvidence, 'sbom'),
+      evidence: legalEvidence,
+    },
+    freshWorkspace: true,
+    sourceDeviceReused: false,
+    environment: {
+      hostOs: 'fixture',
+      hostVersion: '1',
+      architecture: 'arm64',
+      qemuVersion: 'fixture',
+      machine: 'virt-10.0',
+    },
+    checks: [
+      'authentication', 'fresh-install', 'update', 'rollback', 'backup', 'restore',
+      'interruption-recovery', 'diagnostics', 'normal-shutdown', 'removal',
+    ].map((id) => ({ id, status: 'PASS', evidence: checkEvidence })),
+  };
+  try {
+    assert.deepEqual(
+      validateQemuPostSigningAcceptance({ root, record, candidate: qemuAudit.candidate }),
+      { status: 'PASS_POST_SIGNING_SAME_CANDIDATE', checks: 10 },
+    );
+    const mismatchedRole = structuredClone(record);
+    mismatchedRole.signing.releaseManifestSha256 = record.signing.publicKeySha256;
+    assert.throws(
+      () => validateQemuPostSigningAcceptance({ root, record: mismatchedRole, candidate: qemuAudit.candidate }),
+      /roleとpinが不一致/,
+    );
+    writeFileSync(resolve(root, checkEvidence[0].path), '{}\n');
+    assert.throws(
+      () => validateQemuPostSigningAcceptance({ root, record, candidate: qemuAudit.candidate }),
+      /根拠hashが不一致/,
+    );
+  } finally {
+    rmSync(fixtureDirectory, { recursive: true, force: true });
+  }
 });
 
 void test('QEMU audit rejects an archive hash that differs from acceptance evidence', () => {
