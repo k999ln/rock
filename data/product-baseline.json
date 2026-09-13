@@ -1,5 +1,5 @@
 {
-  "version": "1.26",
+  "version": "1.27",
   "decidedAt": "2026-09-13",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -11,7 +11,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ30 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ31 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -105,7 +105,8 @@
     "RQ27",
     "RQ28",
     "RQ29",
-    "RQ30"
+    "RQ30",
+    "RQ31"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -115,6 +116,7 @@
     "sky-earnings-settlement",
     "autonomous-automation-funds",
     "read-only-market-analysis-adapter",
+    "pinned-polymarket-bot-backtest-sandbox",
     "generic-mcp-connector"
   ],
   "fashionBrandOperations": {
@@ -337,6 +339,16 @@
     "orderExecutionEnabled": false,
     "countsAsFundRevenue": false,
     "revenueRecognition": "provider_confirmed_realized_pnl_only",
+    "strategyLab": {
+      "repository": "https://github.com/MrFadiAi/Polymarket-bot",
+      "reviewedCommit": "3a04fc842bc3112a11b872263bb55e6712096f9a",
+      "license": "MIT",
+      "mode": "pinned_clean_tree_offline_backtest_only",
+      "privateKeyAccepted": false,
+      "liveModeToggleEnabled": false,
+      "countsAsFundRevenue": false,
+      "reportSchema": "rockstaros-polymarket-bot-backtest/1"
+    },
     "realValueEnabled": false,
     "scope": "Polymarket is a base app slot and separate external adapter. Public live market data may be read for analysis only. Sample data, mock balances, venue volume, quotes and unrealized P&L never become fund revenue. Orders, settlement and Wallet transfers remain disabled pending region, KYC, wallet signature, explicit approval, contract and regulatory gates. Only provider-confirmed realized P&L may become an Earning Receipt. Game asset trading remains an optional proposal."
   },

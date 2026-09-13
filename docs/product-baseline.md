@@ -1,5 +1,7 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-13追記（v1.27）: 利用者指定の`MrFadiAi/Polymarket-bot`をMarketsへ接続する。ただし監査したcommitではdry-runでも秘密鍵を要求し、画面からLIVEへ切替可能で、シミュレーションPnLも共通PnLへ入るため、原botの注文runtimeは直接起動しない。固定commit・clean treeのoffline backtestだけを秘密鍵なしで実行するsandbox adapterと、改変・LIVE・秘密情報・矛盾reportを拒否する検証API/UIをRQ31として追加する。backtest損益はファンド実収益にも8.88 USD回収原資にもならない。
+
 2026-09-13追記（v1.26）: RockstarOS Marketsを、自動化ファンドへ組み込める読取専用の市場分析アダプターとして追加する。公開ライブ市場の確率・出来高・流動性は判断材料に限定し、サンプル値、モック残高、架空取引量、含み損益、見積損益を実収益へ変換しない。実注文は既定で無効とし、将来有効化する場合も所在地・提供地域・年齢・KYC・Wallet署名・注文ごとの明示承認を必須にする。Providerで確定した実現損益だけをRQ20/RQ29のEarning Receipt候補にできる。RQ30を追加する。
 
 2026-09-12追記（v1.25）: 利用者は、増え続ける自動化ツールを動的なファンドへ束ね、利用者が選んだファンド内で自律的に収益化を進める構想を明示。ファンド数は固定せず、1ファンドの初期推奨を5ツールとするが構成数も変更可能にする。メルカリは唯一のモデルではなく収益経路の一つ。Providerで確認できた売上から承認済み実費を引き、Skyは利用者単位・UTC月単位で最大8.88 USDだけを回収し、それ以外は全額利用者の受取可能額とする。成果報酬、共同留保、ファンド間または利用者間の資金配給はP0へ含めない。RQ29を追加する。
@@ -276,7 +278,13 @@ Marketsの分析系統とRQ20/RQ29の会計系統を分離し、ファンド残�
 
 RockstarOSからの注文実行、自動再投資、自動資金移動は既定で無効にする。将来の各注文には、利用者の所在地と提供地域、年齢、KYC、利用規約、規制、Wallet署名、注文内容と最大損失に結び付いた明示承認が必要であり、分析アダプターの接続を取引許可として扱わない。Legacyの80/10/10表示は`/fund/legacy`だけに残し、このアダプターへ適用しない。詳細は [Markets・自動化ファンド統合](markets-fund-integration-20260913.md) を参照する。
 
-## 1.0への8原則の適用（RQ01〜RQ30を維持）
+## RQ31 外部Polymarket botを固定commitのbacktest sandboxとして接続する
+
+`MrFadiAi/Polymarket-bot`はMIT Licenseの固定commit `3a04fc842bc3112a11b872263bb55e6712096f9a`を監査基準とする。原botはdry-runでも秘密鍵を要求し、dashboardからLIVEへ切り替えられ、simulation PnLを共通PnL表示へ加算するため、注文runtime、Wallet接続、approve、redeem、panic sell、秘密鍵入力、LIVE切替をRockstarOSへ直接接続しない。
+
+RockstarOSはclean treeとcommitを確認し、秘密鍵関連の環境変数を子processから除外して、offline JSONLに対するbacktest runnerだけを実行する。出力は`rockstaros-polymarket-bot-backtest/1`へ封入し、Markets画面の検証APIは固定出所、backtest mode、LIVE無効、収益不計上、数値整合、秘密情報不在を検査する。検証済みreportも合成結果であり、実収益、利回り実績、注文推奨、8.88 USD回収原資にしない。詳細は[Polymarket bot sandbox統合](polymarket-bot-sandbox-20260913.md)を参照する。
+
+## 1.0への8原則の適用（RQ01〜RQ31を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -286,7 +294,7 @@ RockstarOSからの注文実行、自動再投資、自動資金移動は既定�
 
 - 設計とnativeの統合後の実装は `codex/rockstaros-launch-candidate-20260910` にある。mainへの製品統合は未実施。複数owner/gameの合成契約・台帳分離、GX01/DX01のSDKと限定OS受入は記録済み。実ゲーム・実資金・Androidへの移植は別の未完了条件。[現在の状態](current-state-20260911.md)を参照し、過去の[設計照合](design-implementation-alignment-20260909.md)の未着手状態へ戻さない。
 - Rock端末を持たないプレイヤーの本番Wallet利用資格は未決。作者sandboxの参加条件と購入者のOS月額契約を混ぜず、ゲーム利用だけで未同意の月額を開始しない。
-- PolymarketはRQ18で基本アプリ枠、RQ30で公開ライブ市場の読取専用分析として採用した。ただし注文・清算・実資金移動は未承認。Sky/Chat/Walletを置換せず、提供地域・対象・許認可等が未決のまま実資金市場を開始しない。ゲーム資産売買は引き続き検討案。
+- PolymarketはRQ18で基本アプリ枠、RQ30で公開ライブ市場の読取専用分析、RQ31で固定commitのoffline backtest sandboxとして採用した。ただしbotの注文runtime、清算・実資金移動は未承認。Sky/Chat/Walletを置換せず、提供地域・対象・許認可等が未決のまま実資金市場を開始しない。ゲーム資産売買は引き続き検討案。
 - GTAのゲーム内経済は将来像の例。新作GTAの現実経済/外部Wallet連携を確定仕様とせず、特定ゲームの未発表機能へ依存しない。公式に許されたAPI/利用条件/資産権利が確認できたゲームへ接続できる共通基盤を設計し、未対応ゲームを対応済みと表示しない。
 - Linux/Buildroot/ARM64 QEMU版を維持し、最新指示でスマホ実機版を開発する。Pixel 10／GrapheneOSは以前の端末記録に基づく候補、今回の機種/SKUは未確認。以前のBlackBerry希望も型番未確認。Android P1・機種構成へのsource組込み・実機合格は別に判定する。
 - tob側の具体的な商品・提供組織・外部API契約・ライセンス・価格は商品ごとに確認する。7種類の仮想fixtureだけでは実商品の統合完了にならない。
@@ -296,6 +304,8 @@ RockstarOSからの注文実行、自動再投資、自動資金移動は既定�
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-13 v1.27: `MrFadiAi/Polymarket-bot`の固定commitを監査し、原botの秘密鍵必須dry-run・即時LIVE切替・simulation PnL混在を境界外にした。clean treeのoffline backtestだけを実行するwrapper、report検証API/UI、秘密情報・改変・LIVE・矛盾を拒否する契約を追加した。注文・Wallet・実収益計上は有効化していない。
 
 2026-09-12 v1.25: 自動化ツール群を動的に編成する自動化ファンドを中核へ追加。ファンド総数を固定せず、1ファンドは初期推奨5ツール・変更可能とした。検証済み純収益から全ファンド合算で月最大8.88 USDのみをSkyが回収し、成果報酬と共同留保を0、残額を100%利用者帰属とした。旧80/10/10試算は履歴画面へ分離し、共同運用・利用者間配給・収益保証は有効化しない。
 

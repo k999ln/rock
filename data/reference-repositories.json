@@ -26,5 +26,12 @@
     "reviewedCommit": "e04ea0b9cc8248686edf5ac751cadff550e162b8",
     "reviewedOn": "2026-09-05",
     "mode": "設計参考のみ（ソース・スキルの一括移植なし）"
+  },
+  {
+    "repository": "MrFadiAi/Polymarket-bot",
+    "url": "https://github.com/MrFadiAi/Polymarket-bot",
+    "reviewedCommit": "3a04fc842bc3112a11b872263bb55e6712096f9a",
+    "reviewedOn": "2026-09-13",
+    "mode": "MIT / 固定commit・clean treeのoffline backtest出力だけをsandbox adapterで利用。注文・秘密鍵・LIVE切替は未統合"
   }
 ]
