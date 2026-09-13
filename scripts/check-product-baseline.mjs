@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 30 },
+    { length: 31 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ30の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ31の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -151,10 +151,16 @@ export function validateBaseline(
         'not_enabled_requires_separate_compliance_review' &&
       data.systemMaintenance?.releaseReadiness?.manifest ===
         'data/release-readiness.json' &&
+      data.systemMaintenance?.releaseReadiness?.qemuAudit ===
+        'data/qemu-release-audit.json' &&
       data.systemMaintenance?.releaseReadiness?.automatedCheck ===
         'npm run release:check' &&
       data.systemMaintenance?.releaseReadiness?.sbom ===
-        'cyclonedx_1_6_generated_to_ignored_work_directory' &&
+        'web_and_historical_native_cyclonedx_1_6_generated_to_separate_ignored_files' &&
+      data.systemMaintenance?.releaseReadiness?.qemuCandidateStatus ===
+        '5_of_10_current_candidate_requirements_passed' &&
+      data.systemMaintenance?.releaseReadiness?.historicalNativeInventoryRule ===
+        'never_substitute_9ab_inventory_for_rc2' &&
       data.systemMaintenance?.physicalDeviceStatus ===
         'blocked_until_exact_model_bsp_bootloader_recovery' &&
       data.systemMaintenance?.productionSigning ===
@@ -344,6 +350,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ30、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・機械判定する公開gate/SBOM、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、外部実接続/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ31、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、外部実接続/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

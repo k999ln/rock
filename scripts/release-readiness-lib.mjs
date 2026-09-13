@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 
 const allowedGateStates = new Set(['pass', 'blocked', 'not_applicable']);
 const allowedTargetStates = new Set(['ready', 'blocked']);
+const allowedQemuRequirementStates = new Set(['pass', 'blocked']);
 
 const fail = (message) => {
   throw new Error(`release-readiness: ${message}`);
@@ -61,7 +62,7 @@ export function validateReleaseReadiness({ root, readiness, ownerIntent, lock })
       if (gate.status === 'not_applicable' && (!gate.reason || gate.required)) {
         fail(`${target.id}/${gate.id}: 適用外には理由が必要で、必須にはできません`);
       }
-      if (gate.status === 'blocked' && !gate.ownerAction) {
+      if (gate.status === 'blocked' && !gate.ownerAction && !gate.nextAction) {
         fail(`${target.id}/${gate.id}: 未達時の必要行動がありません`);
       }
       for (const evidence of gate.evidence || []) {
@@ -113,6 +114,156 @@ export function validateReleaseReadiness({ root, readiness, ownerIntent, lock })
   };
 }
 
+export function validateQemuReleaseAudit({
+  root,
+  audit,
+  acceptance,
+  inventory,
+  preview,
+  historicalInventory,
+  readiness,
+  lifecycle,
+  d4,
+  d6,
+}) {
+  if (audit.schema !== 'rockstaros-qemu-release-audit/1') fail('QEMU audit schemaが違います');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(audit.evaluatedAt)) fail('QEMU audit評価日が必要です');
+  if (!Array.isArray(audit.requirements) || audit.requirements.length < 8) {
+    fail('QEMU配布要件が不足しています');
+  }
+
+  const ids = new Set();
+  for (const requirement of audit.requirements) {
+    if (!requirement.id || ids.has(requirement.id)) fail('QEMU要件IDが不正です');
+    ids.add(requirement.id);
+    if (typeof requirement.required !== 'boolean' || !allowedQemuRequirementStates.has(requirement.status)) {
+      fail(`${requirement.id}: QEMU要件状態が不正です`);
+    }
+    if (requirement.status === 'blocked' && !requirement.ownerAction && !requirement.nextAction) {
+      fail(`${requirement.id}: 未達時の次の行動がありません`);
+    }
+    for (const evidence of requirement.evidence || []) {
+      if (!inside(root, evidence) || !existsSync(resolve(root, evidence))) {
+        fail(`${requirement.id}: QEMU根拠がありません: ${evidence}`);
+      }
+    }
+  }
+
+  const candidate = audit.candidate;
+  const candidates = [
+    {
+      sourceCommit: acceptance.source_commit,
+      version: acceptance.version,
+      archive: acceptance.archive,
+    },
+    {
+      sourceCommit: inventory.source_commit,
+      archive: { sha256: inventory.archive_sha256 },
+    },
+    {
+      sourceCommit: preview.reviewCandidate?.sourceCommit,
+      version: preview.reviewCandidate?.version,
+    },
+  ];
+  for (const observed of candidates) {
+    if (observed.sourceCommit !== candidate.sourceCommit) fail('QEMU候補のsource commitが根拠と不一致です');
+    if (observed.version && observed.version !== candidate.version) fail('QEMU候補のversionが根拠と不一致です');
+    if (observed.archive?.sha256 && observed.archive.sha256 !== candidate.archive.sha256) {
+      fail('QEMU候補のarchive SHA-256が根拠と不一致です');
+    }
+    if (observed.archive?.bytes && observed.archive.bytes !== candidate.archive.bytes) {
+      fail('QEMU候補のarchive sizeが根拠と不一致です');
+    }
+    if (observed.archive?.name && observed.archive.name !== candidate.archive.name) {
+      fail('QEMU候補のarchive名が根拠と不一致です');
+    }
+  }
+  if (acceptance.release_ready !== false || inventory.legal_status === 'CLEARED') {
+    fail('現在のQEMU候補の未公開・未許諾境界が根拠と不一致です');
+  }
+  if (
+    acceptance.status !== 'PASS_INTERNAL_INSTALL_SAVE_RESTART_RECOVERY' ||
+    acceptance.checks?.restore?.status !== 'PASS' ||
+    acceptance.checks?.restore?.retired_source_start_refused?.length < 1 ||
+    acceptance.checks?.interruption?.pending_guards?.length !== 3 ||
+    !Object.values(acceptance.checks?.boot_logs || {}).every(
+      (boot) => boot.ab_health_confirmed === true && boot.power_down === true,
+    )
+  ) {
+    fail('QEMU候補のsecurity/recovery受入証拠が不足しています');
+  }
+  if (
+    lifecycle.source_commit !== candidate.sourceCommit ||
+    lifecycle.result !== 'PASS_SCOPED_CORROBORATED' ||
+    lifecycle.operations !== 16 ||
+    lifecycle.cycles?.length !== 2 ||
+    !lifecycle.cycles.every((cycle) => cycle.normal_guest_shutdown_correlated === true)
+  ) {
+    fail('QEMU候補の範囲付きupdate/rollback証拠が不足しています');
+  }
+  if (
+    d4.source_commit !== candidate.sourceCommit ||
+    d4.status !== 'PASS_ROOT_STREAMED_ALL_RAW_D4_SCOPED' ||
+    d6.source_commit !== candidate.sourceCommit ||
+    d6.status !== 'PASS_SCOPED_CORROBORATED' ||
+    d6.normal_shutdowns !== 5 ||
+    d6.soak_jobs !== 61
+  ) {
+    fail('QEMU候補の範囲付き診断・反復受入証拠が不足しています');
+  }
+
+  const historical = audit.historicalNativeInventory;
+  if (
+    historical.sourceCommit !== historicalInventory.source_commit ||
+    historical.sourceCommit === candidate.sourceCommit
+  ) {
+    fail('旧native inventoryを現在のQEMU候補へ転用できません');
+  }
+  if (historicalInventory.legal?.status === 'CLEARED') {
+    fail('旧native inventoryはlicense clearanceではありません');
+  }
+
+  const currentSbom = audit.requirements.find(({ id }) => id === 'current-native-component-sbom');
+  if (currentSbom?.status === 'pass') {
+    fail('rc2固有のnative SBOM証拠がないため合格にできません');
+  }
+  const productLicense = audit.requirements.find(({ id }) => id === 'product-license');
+  const productionSigning = audit.requirements.find(({ id }) => id === 'production-signing');
+  const postSigning = audit.requirements.find(({ id }) => id === 'post-signing-same-candidate-acceptance');
+  if (postSigning?.status === 'pass' && (productLicense?.status !== 'pass' || productionSigning?.status !== 'pass')) {
+    fail('licenseとproduction署名より先に最終候補受入を合格にできません');
+  }
+
+  const qemuTarget = readiness.targets.find(({ id }) => id === 'qemu-developer-preview');
+  if (!qemuTarget || qemuTarget.candidateAudit !== 'data/qemu-release-audit.json') {
+    fail('公開台帳からQEMU auditへの参照がありません');
+  }
+  for (const requirement of audit.requirements) {
+    const gate = qemuTarget.gates.find(({ id }) => id === requirement.id);
+    if (!gate || gate.required !== requirement.required || gate.status !== requirement.status) {
+      fail(`${requirement.id}: QEMU auditと公開台帳が不一致です`);
+    }
+  }
+  if (qemuTarget.gates.length !== audit.requirements.length) {
+    fail('QEMU auditと公開台帳の要件数が不一致です');
+  }
+
+  const derived = audit.requirements.every(
+    (requirement) => !requirement.required || requirement.status === 'pass',
+  )
+    ? 'ready'
+    : 'blocked';
+  if (audit.declaredStatus !== derived) fail(`QEMU audit宣言${audit.declaredStatus}と算出${derived}が不一致です`);
+
+  return {
+    candidate: candidate.version,
+    sourceCommit: candidate.sourceCommit,
+    passed: audit.requirements.filter(({ required, status }) => required && status === 'pass').length,
+    required: audit.requirements.filter(({ required }) => required).length,
+    blocked: audit.requirements.filter(({ required, status }) => required && status === 'blocked').map(({ id }) => id),
+  };
+}
+
 export function createCycloneDxSbom({ root, lock, outputPath }) {
   const dependencies = packageEntries(lock);
   const componentMap = new Map();
@@ -153,6 +304,69 @@ export function createCycloneDxSbom({ root, lock, outputPath }) {
   mkdirSync(dirname(destination), { recursive: true });
   writeFileSync(destination, `${JSON.stringify(sbom, null, 2)}\n`);
   return { destination, count: components.length };
+}
+
+export function createHistoricalNativeSbom({ root, inventory, outputPath }) {
+  const manifests = inventory.original_package_metadata || {};
+  const scopes = [
+    ['target', manifests['manifest.csv']],
+    ['host-build', manifests['host-manifest.csv']],
+  ];
+  const components = [];
+  for (const [scope, packages] of scopes) {
+    if (!Array.isArray(packages) || packages.length === 0) fail(`native ${scope} manifestがありません`);
+    for (const pkg of packages) {
+      const name = pkg.PACKAGE;
+      const version = pkg.VERSION;
+      if (!name || !version || !pkg.LICENSE) fail(`native ${scope} package metadataが不完全です`);
+      const purl = `pkg:generic/${encodeURIComponent(name)}@${encodeURIComponent(version)}`;
+      components.push({
+        type: 'library',
+        'bom-ref': `${purl}?rockstaros-scope=${scope}`,
+        name,
+        version,
+        purl,
+        licenses: [{ license: { name: pkg.LICENSE } }],
+        properties: [
+          { name: 'rockstaros:scope', value: scope },
+          { name: 'rockstaros:source-archive', value: pkg['SOURCE ARCHIVE'] || 'not recorded' },
+          { name: 'rockstaros:license-files', value: pkg['LICENSE FILES'] || 'not recorded' },
+        ],
+      });
+    }
+  }
+  const serialHash = createHash('sha256')
+    .update(JSON.stringify(components.map(({ 'bom-ref': bomRef }) => bomRef)))
+    .digest('hex');
+  const sbom = {
+    bomFormat: 'CycloneDX',
+    specVersion: '1.6',
+    serialNumber: `urn:uuid:${serialHash.slice(0, 8)}-${serialHash.slice(8, 12)}-4${serialHash.slice(13, 16)}-a${serialHash.slice(17, 20)}-${serialHash.slice(20, 32)}`,
+    version: 1,
+    metadata: {
+      component: {
+        type: 'operating-system',
+        name: 'RockstarOS QEMU Developer Preview historical native inventory',
+        version: inventory.source_commit.slice(0, 7),
+      },
+      properties: [
+        { name: 'rockstaros:source-commit', value: inventory.source_commit },
+        { name: 'rockstaros:status', value: inventory.status },
+        { name: 'rockstaros:disposition', value: 'historical evidence only; not current rc2 and not license clearance' },
+      ],
+    },
+    components,
+  };
+  const destination = resolve(root, outputPath);
+  if (!inside(root, outputPath)) fail('native SBOM出力先はrepository内の相対pathにしてください');
+  mkdirSync(dirname(destination), { recursive: true });
+  writeFileSync(destination, `${JSON.stringify(sbom, null, 2)}\n`);
+  return {
+    destination,
+    count: components.length,
+    targetCount: manifests['manifest.csv'].length,
+    hostCount: manifests['host-manifest.csv'].length,
+  };
 }
 
 export function readJson(path) {

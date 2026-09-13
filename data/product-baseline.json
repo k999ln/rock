@@ -1,5 +1,5 @@
 {
-  "version": "1.26",
+  "version": "1.27",
   "decidedAt": "2026-09-12",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -11,7 +11,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ29 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ31 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -70,8 +70,11 @@
       "radioCertification": "market_and_hardware_scope_required",
       "personalNumberHandling": "not_enabled_requires_separate_compliance_review",
       "manifest": "data/release-readiness.json",
+      "qemuAudit": "data/qemu-release-audit.json",
       "automatedCheck": "npm run release:check",
-      "sbom": "cyclonedx_1_6_generated_to_ignored_work_directory"
+      "sbom": "web_and_historical_native_cyclonedx_1_6_generated_to_separate_ignored_files",
+      "qemuCandidateStatus": "5_of_10_current_candidate_requirements_passed",
+      "historicalNativeInventoryRule": "never_substitute_9ab_inventory_for_rc2"
     },
     "physicalDeviceStatus": "blocked_until_exact_model_bsp_bootloader_recovery",
     "productionSigning": "blocked_until_owner_key_ceremony",
@@ -123,7 +126,8 @@
     "RQ27",
     "RQ28",
     "RQ29",
-    "RQ30"
+    "RQ30",
+    "RQ31"
   ],
   "primaryCapabilities": [
     "sky-automation-control",

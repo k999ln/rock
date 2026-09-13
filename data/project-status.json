@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "OS lifecycle、Sky MCP、ホーム・最低運用、配布方法別の機械判定gateとWeb/npm SBOMを本人限定Developer Previewへ統合",
-  "nextAction": "所有者が製品ライセンスと正式署名方式を明示決定した後、同一QEMU最終候補へlicense、SBOM/native inventory、署名を結合しfresh導入・更新・復旧を再受入する。",
+  "milestone": "QEMU rc2を同一候補10要件へ固定し、旧native SBOMの誤転用を拒否する公開gateを本人限定Developer Previewへ統合",
+  "nextAction": "所有者が製品licenseと正式鍵の保管先を明示した後、rc2固有native SBOM・license・production署名を同一最終archiveへ結合しfresh導入・更新・復旧を再受入する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -220,6 +220,21 @@
         "scripts/release-readiness-lib.mjs",
         "tests/release-readiness.test.mjs",
         "docs/release-minimum-gates.md",
+        "components/system-maintenance.tsx"
+      ]
+    },
+    {
+      "id": "SYS04",
+      "title": "QEMU rc2を同一候補10要件へ固定し、旧native inventoryの誤転用を拒否",
+      "status": "done",
+      "dependsOn": ["SYS03"],
+      "evidence": [
+        "data/qemu-release-audit.json",
+        "data/release-readiness.json",
+        "scripts/check-release-readiness.mjs",
+        "scripts/release-readiness-lib.mjs",
+        "tests/release-readiness.test.mjs",
+        "docs/qemu-release-completion-audit-20260912.md",
         "components/system-maintenance.tsx"
       ]
     },
@@ -1081,6 +1096,8 @@
     "recordedWebTests": 93,
     "currentHeadValidation": "See exact HEAD checks of PR4; recorded snapshot is not a self-attestation of later commits",
     "unsignedCandidatePreparation": "RC2_REPRODUCIBLE_ALL8_GITHUB_DOWNLOADED_VERIFIED",
+    "qemuReleaseAudit": "RC2_EXACT_IDENTITY_5_OF_10_REQUIRED_GATES_PASS",
+    "qemuCurrentNativeSbom": "BLOCKED_HISTORICAL_9AB_INVENTORY_NOT_TRANSFERABLE",
     "signingBootstrapPr": 5,
     "signingBootstrapCommit": "a4411622031858d6d9684c599d857cadaf90bb94",
     "signingBootstrapApproval": "AWAITING_EXPLICIT_LIMITED_MAIN_APPROVAL",

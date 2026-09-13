@@ -7,6 +7,8 @@
     "productionSigningIntent": "data/release-owner-intent-20260911.json",
     "dependencyInventory": "package-lock.json",
     "generatedSbom": "work/release/rockstaros-web.cdx.json",
+    "qemuAudit": "data/qemu-release-audit.json",
+    "generatedHistoricalNativeSbom": "work/release/rockstaros-native-historical-9abf78a.cdx.json",
     "generatedArtifactsCommitted": false
   },
   "targets": [
@@ -40,12 +42,18 @@
       "label": "QEMU Developer Preview配布",
       "distribution": "downloadable_os_image",
       "declaredStatus": "blocked",
+      "candidateAudit": "data/qemu-release-audit.json",
       "gates": [
-        { "id": "historical-candidate-install-recovery", "required": true, "status": "pass", "evidence": ["docs/evidence/rls01/final-9abf78a/summary.json", "docs/evidence/rls01/github-direct-install-9abf78a/summary.json"] },
-        { "id": "component-license-inventory", "required": true, "status": "pass", "evidence": ["docs/license-proposal-20260911.md", "docs/launch-readiness-20260910.md"] },
+        { "id": "candidate-identity", "required": true, "status": "pass", "evidence": ["data/qemu-release-audit.json", "docs/evidence/rls01/final-b7-rc2/acceptance-result.json", "docs/evidence/rls01/remaining-b7-rc2/inventory.json"] },
+        { "id": "security-baseline", "required": true, "status": "pass", "evidence": ["docs/evidence/rls01/final-b7-rc2/acceptance-result.json", "docs/os-acceptance-b7d819c-20260911.md"] },
+        { "id": "update-and-rollback", "required": true, "status": "pass", "evidence": ["docs/evidence/rls01/remaining-b7-rc2/lifecycle.json", "docs/evidence/rls01/remaining-b7-rc2/d1-d3.json"] },
+        { "id": "recovery-and-backup", "required": true, "status": "pass", "evidence": ["docs/evidence/rls01/final-b7-rc2/acceptance-result.json", "docs/os-acceptance-b7d819c-20260911.md"] },
+        { "id": "diagnostics-and-acceptance", "required": true, "status": "pass", "evidence": ["docs/evidence/rls01/remaining-b7-rc2/d4.json", "docs/evidence/rls01/remaining-b7-rc2/d6.json", "docs/rc2-remaining-acceptance-20260911.md"] },
+        { "id": "current-native-component-sbom", "required": true, "status": "blocked", "nextAction": "rc2同梱legal bundleから同一候補のCycloneDXを生成してarchiveへ結合する。旧9abの部品表は方法検証だけに使う" },
         { "id": "product-license", "required": true, "status": "blocked", "ownerAction": "自作部分の製品ライセンスを明示選択する" },
         { "id": "production-signing", "required": true, "status": "blocked", "ownerAction": "OWNER_MANUAL等の方式を確定し、所有者管理下で正式鍵の作成・保管・失効手順を実施する" },
-        { "id": "same-candidate-final-acceptance", "required": true, "status": "blocked", "ownerAction": "ライセンスと署名を結合した同一最終候補でfresh導入・更新・復旧を再実行する" }
+        { "id": "post-signing-same-candidate-acceptance", "required": true, "status": "blocked", "nextAction": "ライセンス、native SBOM、正式署名を結合した同一最終候補でfresh導入・更新・復旧を再実行する" },
+        { "id": "public-distribution-approval", "required": true, "status": "blocked", "ownerAction": "全gate合格後にGitHub ReleaseをDraftから公開するか明示承認する" }
       ]
     },
     {

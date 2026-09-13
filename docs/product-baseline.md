@@ -1,6 +1,8 @@
 # Rock star OS — 確定した製品ベース
 
-2026-09-12追記（v1.26）: 利用者は、OS公開の最低条件を満たすまで作業を継続するよう明示。RQ30を追加する。公開状態を本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android物理端末、iPhone/iPad client、マイナンバー連携へ分け、必須gateから機械判定する。製品ライセンスの所有者選択とtop-level LICENSE、正式鍵の実施記録、同一候補の受入がない状態を合格にできない検査を追加し、Web/npm依存のCycloneDX SBOMはignored領域へ生成する。
+2026-09-12追記（v1.27）: 利用者は、OS公開の最低条件を満たすまで作業を継続するよう明示。RQ31を追加する。QEMU rc2のsource、version、archive SHA-256を受入証拠へ固定し、10要件中5件の合格と5件の未達を機械判定する。旧9abのnative inventoryをCycloneDXへ変換できるようにするが、rc2固有SBOMやlicense clearanceへ転用できない検査を追加する。
+
+2026-09-12追記（v1.26）: RQ30を追加する。公開状態を本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android物理端末、iPhone/iPad client、マイナンバー連携へ分け、必須gateから機械判定する。製品ライセンスの所有者選択とtop-level LICENSE、正式鍵の実施記録、同一候補の受入がない状態を合格にできない検査を追加し、Web/npm依存のCycloneDX SBOMはignored領域へ生成する。
 
 2026-09-12追記（v1.25）: 利用者は、OSを運用するための必要最低限の機能を設定へ入れることと、OS公開時の審査規定の有無を確認するよう明示。RQ29を追加する。端末実測診断に安全な接続、通知許可、永続保存、アプリ表示を加え、通知テスト、保存保護、個人情報を除外した診断レポート、確認付きのホーム設定初期化を実装する。日常運用と公開条件は分離し、Web/PWA、QEMU、Android CDD/CTS、GMS、実機/BSP、正式署名、OSS配布、販売地域の無線規制、マイナンバー取扱いを同じ「合格済み」にしない。
 
@@ -274,7 +276,15 @@ Skyへ「メルカリ収益スターター」を標準搭載し、利用者が�
 
 所有者に代わる製品ライセンスの選択、production鍵の生成・保管、Sitesの一般公開、機種/SKUの確定、実機flash、外部審査・契約、マイナンバー取扱いの法務判断は自動完了しない。それ以外の実装・検証・証拠保存を先に完了し、必要な所有者行動を具体的に一つずつ提示する。[最低公開条件](release-minimum-gates.md)を運用正本とする。
 
-## 1.0への8原則の適用（RQ01〜RQ30を維持）
+## RQ31 QEMU配布候補を同一byte列の証拠へ固定する
+
+QEMU Developer Previewは、候補のversion、native source commit、archive名・size・SHA-256を、導入・復旧受入、構成inventory、Webの公開表示へ同時に固定する。安全基礎、更新・rollback、backup・復旧、診断・反復bootは証拠が示す範囲だけ合格とし、D2全体、別host全損復旧、未観測の取消操作を広く合格扱いにしない。
+
+native SBOMはtarget runtime componentとhost build dependencyを区別したCycloneDX 1.6として生成する。旧9ab legal-infoから生成する61 componentのSBOMは変換方法の検証とし、metadataに旧sourceと「current rc2ではない・license clearanceではない」を固定する。rc2のcurrent native SBOMは同梱legal bundleのmanifestを同じarchive SHA-256へ結び付けるまで未達とする。
+
+QEMUの公開準備は10 gateを同じID・状態で `data/qemu-release-audit.json` と `data/release-readiness.json` に保持し、不一致を自動検査で拒否する。製品license、production鍵、署名後の同一候補受入、一般公開承認は所有者の明示決定前に合格にしない。[QEMU完了監査](qemu-release-completion-audit-20260912.md)を詳細正本とする。
+
+## 1.0への8原則の適用（RQ01〜RQ31を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -294,6 +304,8 @@ Skyへ「メルカリ収益スターター」を標準搭載し、利用者が�
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-12 v1.27: QEMU rc2を10要件へ分解し、候補identityと範囲付き受入5件を合格、native SBOM・製品license・production署名・署名後受入・公開承認5件を未達として機械判定した。旧9abのtarget 24＋host 37 componentをCycloneDXへ変換するが、rc2へ転用できない検査を追加した。
 
 2026-09-12 v1.26: 配布方法ごとの公開最低条件を機械判定する台帳と検査を追加。本人限定Web/PWAだけをreadyとし、一般公開、QEMU配布、物理端末、iPhone/iPad client、マイナンバーは証拠が揃うまでblockedを維持する。Web/npmのCycloneDX SBOM生成を追加した。
 

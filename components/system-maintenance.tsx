@@ -64,7 +64,7 @@ type BackupMode = 'create' | 'restore';
 const releaseCopy: Record<string, { short: string; icon: React.ReactNode }> = {
   'web-pwa-owner-preview': { short: '本人限定版は稼働可能', icon: <AppWindow /> },
   'web-pwa-public-preview': { short: 'ライセンス選択と公開承認が必要', icon: <AppWindow /> },
-  'qemu-developer-preview': { short: '正式署名と最終版の再受入が必要', icon: <HardDrive /> },
+  'qemu-developer-preview': { short: 'rc2基礎5件合格。配布条件5件が未完了', icon: <HardDrive /> },
   'android-physical-preview': { short: '機種・BSP・CDD/CTS・実機試験が必要', icon: <Smartphone /> },
   'iphone-ipad-client': { short: '置換OSではなくclient配布として審査', icon: <Smartphone /> },
   'personal-number-identity': { short: '現在は無効。別の法務・安全管理審査が必要', icon: <ShieldAlert /> },
@@ -464,7 +464,7 @@ export default function SystemMaintenance() {
             })}
           </div>
           <p className={styles.boundary}>
-            緑はその配布方法の最低条件を満たした状態です。QEMUの過去候補が動いていても、製品ライセンス・正式署名・同一最終版の復旧試験が揃うまで配布可能にはしません。
+            緑はその配布方法の最低条件を満たした状態です。QEMU rc2は版・安全基礎・更新・復旧・診断まで5/10合格。rc2固有のnative SBOM、製品ライセンス、正式署名、署名後の同一版受入、公開承認が揃うまで配布可能にはしません。
           </p>
         </details>
       </div>
