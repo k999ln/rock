@@ -2,6 +2,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   createCycloneDxSbom,
+  createCurrentNativeSbom,
   createHistoricalNativeSbom,
   readJson,
   validateQemuReleaseAudit,
@@ -39,6 +40,14 @@ const nativeSbomIndex = process.argv.indexOf('--native-sbom');
 if (nativeSbomIndex !== -1) {
   const outputPath = process.argv[nativeSbomIndex + 1];
   if (!outputPath || outputPath.startsWith('--')) throw new Error('--native-sbom の後に出力pathが必要です');
+  const sbom = createCurrentNativeSbom({ root, audit: qemuAudit, outputPath });
+  console.log(`Current rc2 native CycloneDX SBOM: ${sbom.count} components (${sbom.targetCount} target / ${sbom.hostCount} host) -> ${outputPath}`);
+}
+
+const historicalNativeSbomIndex = process.argv.indexOf('--historical-native-sbom');
+if (historicalNativeSbomIndex !== -1) {
+  const outputPath = process.argv[historicalNativeSbomIndex + 1];
+  if (!outputPath || outputPath.startsWith('--')) throw new Error('--historical-native-sbom の後に出力pathが必要です');
   const sbom = createHistoricalNativeSbom({
     root,
     inventory: readJson(resolve(root, qemuAudit.historicalNativeInventory.source)),

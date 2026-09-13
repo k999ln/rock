@@ -19,6 +19,24 @@
     "generatedSbom": "work/release/rockstaros-native-historical-9abf78a.cdx.json",
     "generatedArtifactCommitted": false
   },
+  "currentNativeInventory": {
+    "sourceCommit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+    "archiveSha256": "5ce072f65fc4e24212ff6acc6887cbb03f3e7f664b50d574756738892e4ed95e",
+    "legalBundleSha256": "ad6453366b752e91d4ae1cf0b6384b1534e53e13643ed6b1f426e674d9ec3d94",
+    "targetManifest": {
+      "path": "data/qemu-rc2-legal-info/manifest.csv",
+      "sha256": "6097748bfdab6974bbe42d8bb1752866d8ad4394d425bd1775d83d28ad8e628d",
+      "components": 24
+    },
+    "hostManifest": {
+      "path": "data/qemu-rc2-legal-info/host-manifest.csv",
+      "sha256": "c30fd6fb9177f8336154be1d007cd9b8dd79b5cceed2490655bb82839f413529",
+      "components": 37
+    },
+    "generatedSbom": "work/release/rockstaros-native-rc2.cdx.json",
+    "generatedArtifactCommitted": false,
+    "status": "component_inventory_complete_product_license_not_cleared"
+  },
   "requirements": [
     {
       "id": "candidate-identity",
@@ -76,11 +94,11 @@
       "id": "current-native-component-sbom",
       "label": "同一rc2のnative部品表とlicense/source対応",
       "required": true,
-      "status": "blocked",
-      "nextAction": "同梱legal bundleのmanifest.csvとhost-manifest.csvからrc2固有のCycloneDXを生成し、archive SHA-256へ結合する",
+      "status": "pass",
       "evidence": [
         "docs/evidence/rls01/remaining-b7-rc2/inventory.json",
-        "docs/evidence/rls01/legal-final-9abf78a/inventory.json"
+        "data/qemu-rc2-legal-info/manifest.csv",
+        "data/qemu-rc2-legal-info/host-manifest.csv"
       ]
     },
     {
@@ -110,7 +128,7 @@
       "label": "署名後の同一配布物でfresh導入・更新・復旧",
       "required": true,
       "status": "blocked",
-      "nextAction": "license、native SBOM、正式署名を結合した最終archiveを固定した後、その同一SHA-256で受入を再実行する"
+      "nextAction": "licenseと正式署名をcurrent native SBOMと同じ最終archiveへ結合した後、その同一SHA-256で受入を再実行する"
     },
     {
       "id": "public-distribution-approval",

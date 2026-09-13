@@ -1,6 +1,6 @@
 # Rock star OS — 確定した製品ベース
 
-2026-09-12追記（v1.27）: 利用者は、OS公開の最低条件を満たすまで作業を継続するよう明示。RQ31を追加する。QEMU rc2のsource、version、archive SHA-256を受入証拠へ固定し、10要件中5件の合格と5件の未達を機械判定する。旧9abのnative inventoryをCycloneDXへ変換できるようにするが、rc2固有SBOMやlicense clearanceへ転用できない検査を追加する。
+2026-09-12追記（v1.28）: 利用者は、OS公開の最低条件を満たすまで作業を継続するよう明示。RQ31を維持する。QEMU rc2の1GB配布archiveをSHA-256照合後に取得し、同梱legal bundle、target 24＋host build 37 componentのmanifestを同じarchiveへ固定した。current native CycloneDXを生成し、10要件中6件の合格と4件の未達を機械判定する。部品一覧の完成は製品license clearanceではなく、旧9abのinventoryもrc2へ転用できない。
 
 2026-09-12追記（v1.26）: RQ30を追加する。公開状態を本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android物理端末、iPhone/iPad client、マイナンバー連携へ分け、必須gateから機械判定する。製品ライセンスの所有者選択とtop-level LICENSE、正式鍵の実施記録、同一候補の受入がない状態を合格にできない検査を追加し、Web/npm依存のCycloneDX SBOMはignored領域へ生成する。
 
@@ -280,7 +280,7 @@ Skyへ「メルカリ収益スターター」を標準搭載し、利用者が�
 
 QEMU Developer Previewは、候補のversion、native source commit、archive名・size・SHA-256を、導入・復旧受入、構成inventory、Webの公開表示へ同時に固定する。安全基礎、更新・rollback、backup・復旧、診断・反復bootは証拠が示す範囲だけ合格とし、D2全体、別host全損復旧、未観測の取消操作を広く合格扱いにしない。
 
-native SBOMはtarget runtime componentとhost build dependencyを区別したCycloneDX 1.6として生成する。旧9ab legal-infoから生成する61 componentのSBOMは変換方法の検証とし、metadataに旧sourceと「current rc2ではない・license clearanceではない」を固定する。rc2のcurrent native SBOMは同梱legal bundleのmanifestを同じarchive SHA-256へ結び付けるまで未達とする。
+native SBOMはtarget runtime componentとhost build dependencyを区別したCycloneDX 1.6として生成する。現在のrc2は、配布archive、同梱legal bundle、target/host manifestのSHA-256とcomponent数を機械照合し、同じ候補へ結合する。自作componentのlicense未選択はそのまま表示し、部品一覧の完成を製品license clearanceとしない。旧9ab legal-infoから生成する61 componentのSBOMは変換方法の比較だけに限定し、metadataに旧sourceと「current rc2ではない・license clearanceではない」を固定する。
 
 QEMUの公開準備は10 gateを同じID・状態で `data/qemu-release-audit.json` と `data/release-readiness.json` に保持し、不一致を自動検査で拒否する。製品license、production鍵、署名後の同一候補受入、一般公開承認は所有者の明示決定前に合格にしない。[QEMU完了監査](qemu-release-completion-audit-20260912.md)を詳細正本とする。
 
@@ -306,6 +306,8 @@ QEMUの公開準備は10 gateを同じID・状態で `data/qemu-release-audit.js
 ## 変更記録
 
 2026-09-12 v1.27: QEMU rc2を10要件へ分解し、候補identityと範囲付き受入5件を合格、native SBOM・製品license・production署名・署名後受入・公開承認5件を未達として機械判定した。旧9abのtarget 24＋host 37 componentをCycloneDXへ変換するが、rc2へ転用できない検査を追加した。
+
+2026-09-12 v1.28: rc2配布archiveと同梱legal bundleのSHA-256を照合し、target 24＋host build 37 componentのcurrent native CycloneDXを同じ候補へ結合。native SBOMを合格へ更新して6/10とし、製品license未許諾は独立gateへ保持した。manifest改ざんと旧9ab差替えを拒否する試験を追加した。
 
 2026-09-12 v1.26: 配布方法ごとの公開最低条件を機械判定する台帳と検査を追加。本人限定Web/PWAだけをreadyとし、一般公開、QEMU配布、物理端末、iPhone/iPad client、マイナンバーは証拠が揃うまでblockedを維持する。Web/npmのCycloneDX SBOM生成を追加した。
 

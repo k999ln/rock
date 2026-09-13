@@ -156,9 +156,11 @@ export function validateBaseline(
       data.systemMaintenance?.releaseReadiness?.automatedCheck ===
         'npm run release:check' &&
       data.systemMaintenance?.releaseReadiness?.sbom ===
-        'web_and_historical_native_cyclonedx_1_6_generated_to_separate_ignored_files' &&
+        'web_current_rc2_and_historical_native_cyclonedx_1_6_generated_to_separate_ignored_files' &&
       data.systemMaintenance?.releaseReadiness?.qemuCandidateStatus ===
-        '5_of_10_current_candidate_requirements_passed' &&
+        '6_of_10_current_candidate_requirements_passed' &&
+      data.systemMaintenance?.releaseReadiness?.currentNativeInventory ===
+        'data/qemu-rc2-legal-info' &&
       data.systemMaintenance?.releaseReadiness?.historicalNativeInventoryRule ===
         'never_substitute_9ab_inventory_for_rc2' &&
       data.systemMaintenance?.physicalDeviceStatus ===

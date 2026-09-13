@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "QEMU rc2を同一候補10要件へ固定し、旧native SBOMの誤転用を拒否する公開gateを本人限定Developer Previewへ統合",
-  "nextAction": "所有者が製品licenseと正式鍵の保管先を明示した後、rc2固有native SBOM・license・production署名を同一最終archiveへ結合しfresh導入・更新・復旧を再受入する。",
+  "milestone": "QEMU rc2そのものからnative部品表を抽出し、同一archiveへ結合したCycloneDXと6/10公開gateを本人限定Developer Previewへ統合",
+  "nextAction": "所有者が製品licenseと正式鍵の保管先を明示した後、license・production署名を同一最終archiveへ結合しfresh導入・更新・復旧を再受入する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -225,11 +225,13 @@
     },
     {
       "id": "SYS04",
-      "title": "QEMU rc2を同一候補10要件へ固定し、旧native inventoryの誤転用を拒否",
+      "title": "QEMU rc2を同一候補10要件へ固定し、rc2固有native SBOMを生成して旧inventoryの誤転用を拒否",
       "status": "done",
       "dependsOn": ["SYS03"],
       "evidence": [
         "data/qemu-release-audit.json",
+        "data/qemu-rc2-legal-info/manifest.csv",
+        "data/qemu-rc2-legal-info/host-manifest.csv",
         "data/release-readiness.json",
         "scripts/check-release-readiness.mjs",
         "scripts/release-readiness-lib.mjs",
@@ -1096,8 +1098,8 @@
     "recordedWebTests": 93,
     "currentHeadValidation": "See exact HEAD checks of PR4; recorded snapshot is not a self-attestation of later commits",
     "unsignedCandidatePreparation": "RC2_REPRODUCIBLE_ALL8_GITHUB_DOWNLOADED_VERIFIED",
-    "qemuReleaseAudit": "RC2_EXACT_IDENTITY_5_OF_10_REQUIRED_GATES_PASS",
-    "qemuCurrentNativeSbom": "BLOCKED_HISTORICAL_9AB_INVENTORY_NOT_TRANSFERABLE",
+    "qemuReleaseAudit": "RC2_EXACT_IDENTITY_6_OF_10_REQUIRED_GATES_PASS",
+    "qemuCurrentNativeSbom": "PASS_24_TARGET_37_HOST_COMPONENTS_BOUND_TO_EXACT_RC2_ARCHIVE_PRODUCT_LICENSE_SEPARATE",
     "signingBootstrapPr": 5,
     "signingBootstrapCommit": "a4411622031858d6d9684c599d857cadaf90bb94",
     "signingBootstrapApproval": "AWAITING_EXPLICIT_LIMITED_MAIN_APPROVAL",

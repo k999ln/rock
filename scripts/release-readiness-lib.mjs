@@ -15,6 +15,48 @@ const inside = (root, path) => {
   return !isAbsolute(path) && !relative(root, candidate).startsWith('..');
 };
 
+const sha256 = (value) => createHash('sha256').update(value).digest('hex');
+
+export function parseBuildrootCsv(source) {
+  const rows = [];
+  let row = [];
+  let field = '';
+  let quoted = false;
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    if (quoted) {
+      if (character === '"' && source[index + 1] === '"') {
+        field += '"';
+        index += 1;
+      } else if (character === '"') quoted = false;
+      else field += character;
+    } else if (character === '"') quoted = true;
+    else if (character === ',') {
+      row.push(field);
+      field = '';
+    } else if (character === '\n') {
+      row.push(field.replace(/\r$/, ''));
+      if (row.some((value) => value.length)) rows.push(row);
+      row = [];
+      field = '';
+    } else field += character;
+  }
+  if (quoted) fail('Buildroot CSVの引用符が閉じていません');
+  if (field.length || row.length) {
+    row.push(field.replace(/\r$/, ''));
+    rows.push(row);
+  }
+  if (rows.length < 2) fail('Buildroot CSVにpackage行がありません');
+  const headers = rows[0];
+  const packages = rows.slice(1).map((values) =>
+    Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ''])),
+  );
+  if (packages.some((pkg) => !pkg.PACKAGE || !pkg.VERSION || !pkg.LICENSE)) {
+    fail('Buildroot CSVのpackage metadataが不完全です');
+  }
+  return packages;
+}
+
 export function deriveTargetStatus(target) {
   return target.gates.every(
     (gate) => !gate.required || gate.status === 'pass',
@@ -224,8 +266,27 @@ export function validateQemuReleaseAudit({
   }
 
   const currentSbom = audit.requirements.find(({ id }) => id === 'current-native-component-sbom');
-  if (currentSbom?.status === 'pass') {
-    fail('rc2固有のnative SBOM証拠がないため合格にできません');
+  const nativeInventory = audit.currentNativeInventory;
+  if (
+    nativeInventory?.sourceCommit !== candidate.sourceCommit ||
+    nativeInventory?.archiveSha256 !== candidate.archive.sha256 ||
+    nativeInventory?.legalBundleSha256 !== inventory.legal_bundle_sha256 ||
+    nativeInventory?.status !== 'component_inventory_complete_product_license_not_cleared'
+  ) {
+    fail('rc2固有native inventoryのcandidate結合が不正です');
+  }
+  for (const manifest of [nativeInventory.targetManifest, nativeInventory.hostManifest]) {
+    if (!inside(root, manifest.path) || !existsSync(resolve(root, manifest.path))) {
+      fail(`rc2固有native manifestがありません: ${manifest.path}`);
+    }
+    const source = readFileSync(resolve(root, manifest.path), 'utf8');
+    if (sha256(source) !== manifest.sha256) fail(`rc2固有native manifestのhashが不一致です: ${manifest.path}`);
+    if (parseBuildrootCsv(source).length !== manifest.components) {
+      fail(`rc2固有native manifestのcomponent数が不一致です: ${manifest.path}`);
+    }
+  }
+  if (currentSbom?.status !== 'pass') {
+    fail('rc2固有native inventoryが揃っているためSBOM gate状態を更新してください');
   }
   const productLicense = audit.requirements.find(({ id }) => id === 'product-license');
   const productionSigning = audit.requirements.find(({ id }) => id === 'production-signing');
@@ -366,6 +427,71 @@ export function createHistoricalNativeSbom({ root, inventory, outputPath }) {
     count: components.length,
     targetCount: manifests['manifest.csv'].length,
     hostCount: manifests['host-manifest.csv'].length,
+  };
+}
+
+export function createCurrentNativeSbom({ root, audit, outputPath }) {
+  const nativeInventory = audit.currentNativeInventory;
+  const manifests = [
+    ['target', nativeInventory.targetManifest],
+    ['host-build', nativeInventory.hostManifest],
+  ];
+  const components = [];
+  for (const [scope, manifest] of manifests) {
+    const source = readFileSync(resolve(root, manifest.path), 'utf8');
+    if (sha256(source) !== manifest.sha256) fail(`native ${scope} manifestのhashが不一致です`);
+    const packages = parseBuildrootCsv(source);
+    if (packages.length !== manifest.components) fail(`native ${scope} component数が不一致です`);
+    for (const pkg of packages) {
+      const purl = `pkg:generic/${encodeURIComponent(pkg.PACKAGE)}@${encodeURIComponent(pkg.VERSION)}`;
+      components.push({
+        type: 'library',
+        'bom-ref': `${purl}?rockstaros-scope=${scope}`,
+        name: pkg.PACKAGE,
+        version: pkg.VERSION,
+        purl,
+        licenses: [{ license: { name: pkg.LICENSE } }],
+        properties: [
+          { name: 'rockstaros:scope', value: scope },
+          { name: 'rockstaros:source-archive', value: pkg['SOURCE ARCHIVE'] || 'not recorded' },
+          { name: 'rockstaros:source-site', value: pkg['SOURCE SITE'] || 'not recorded' },
+          { name: 'rockstaros:license-files', value: pkg['LICENSE FILES'] || 'not recorded' },
+        ],
+      });
+    }
+  }
+  const serialHash = sha256(JSON.stringify(components.map(({ 'bom-ref': bomRef }) => bomRef)));
+  const sbom = {
+    bomFormat: 'CycloneDX',
+    specVersion: '1.6',
+    serialNumber: `urn:uuid:${serialHash.slice(0, 8)}-${serialHash.slice(8, 12)}-4${serialHash.slice(13, 16)}-a${serialHash.slice(17, 20)}-${serialHash.slice(20, 32)}`,
+    version: 1,
+    metadata: {
+      component: {
+        type: 'operating-system',
+        name: 'RockstarOS QEMU Developer Preview',
+        version: audit.candidate.version,
+        hashes: [{ alg: 'SHA-256', content: audit.candidate.archive.sha256 }],
+      },
+      properties: [
+        { name: 'rockstaros:source-commit', value: audit.candidate.sourceCommit },
+        { name: 'rockstaros:archive-name', value: audit.candidate.archive.name },
+        { name: 'rockstaros:legal-bundle-sha256', value: nativeInventory.legalBundleSha256 },
+        { name: 'rockstaros:status', value: nativeInventory.status },
+        { name: 'rockstaros:product-license', value: 'not cleared; see separate product-license gate' },
+      ],
+    },
+    components,
+  };
+  const destination = resolve(root, outputPath);
+  if (!inside(root, outputPath)) fail('current native SBOM出力先はrepository内の相対pathにしてください');
+  mkdirSync(dirname(destination), { recursive: true });
+  writeFileSync(destination, `${JSON.stringify(sbom, null, 2)}\n`);
+  return {
+    destination,
+    count: components.length,
+    targetCount: nativeInventory.targetManifest.components,
+    hostCount: nativeInventory.hostManifest.components,
   };
 }
 

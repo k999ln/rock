@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, unlinkSync } from 'node:fs';
 import { resolve } from 'node:path';
 import {
+  createCurrentNativeSbom,
   createHistoricalNativeSbom,
   validateQemuReleaseAudit,
   validateReleaseReadiness,
@@ -87,10 +88,9 @@ void test('dependency inventory rejects a package without license metadata', () 
 void test('QEMU audit binds every pass to the exact rc2 source and archive', () => {
   const result = validateQemu();
   assert.equal(result.candidate, '1.0.0-preview.20260911-rc2');
-  assert.equal(result.passed, 5);
+  assert.equal(result.passed, 6);
   assert.equal(result.required, 10);
   assert.deepEqual(result.blocked, [
-    'current-native-component-sbom',
     'product-license',
     'production-signing',
     'post-signing-same-candidate-acceptance',
@@ -123,10 +123,52 @@ void test('QEMU audit rejects missing scoped lifecycle or soak evidence', () => 
   );
 });
 
-void test('historical 9ab native inventory cannot pass the current rc2 SBOM gate', () => {
+void test('historical 9ab native inventory cannot replace the current rc2 manifests', () => {
   const changed = structuredClone(qemuAudit);
-  changed.requirements.find(({ id }) => id === 'current-native-component-sbom').status = 'pass';
-  assert.throws(() => validateQemu(changed), /rc2固有のnative SBOM証拠がない/);
+  changed.currentNativeInventory.sourceCommit = historicalNativeInventory.source_commit;
+  assert.throws(() => validateQemu(changed), /candidate結合が不正/);
+});
+
+void test('current rc2 manifest tampering is rejected before SBOM generation', () => {
+  const changed = structuredClone(qemuAudit);
+  changed.currentNativeInventory.targetManifest.sha256 = '0'.repeat(64);
+  assert.throws(() => validateQemu(changed), /manifestのhashが不一致/);
+});
+
+void test('current rc2 native SBOM binds 61 scoped components to the exact archive', () => {
+  const outputPath = 'work/release/test-native-rc2.cdx.json';
+  try {
+    const result = createCurrentNativeSbom({ root, audit: qemuAudit, outputPath });
+    const sbom = read(outputPath);
+    assert.equal(result.count, 61);
+    assert.equal(result.targetCount, 24);
+    assert.equal(result.hostCount, 37);
+    assert.deepEqual(sbom.metadata.component.hashes, [
+      { alg: 'SHA-256', content: qemuAudit.candidate.archive.sha256 },
+    ]);
+    assert.equal(
+      sbom.metadata.properties.find(({ name }) => name === 'rockstaros:source-commit').value,
+      qemuAudit.candidate.sourceCommit,
+    );
+    assert.match(
+      sbom.metadata.properties.find(({ name }) => name === 'rockstaros:product-license').value,
+      /not cleared/,
+    );
+    assert.equal(
+      sbom.components.filter((component) =>
+        component.properties.some(({ name, value }) => name === 'rockstaros:scope' && value === 'target'),
+      ).length,
+      24,
+    );
+    assert.equal(
+      sbom.components.filter((component) =>
+        component.properties.some(({ name, value }) => name === 'rockstaros:scope' && value === 'host-build'),
+      ).length,
+      37,
+    );
+  } finally {
+    unlinkSync(resolve(root, outputPath));
+  }
 });
 
 void test('historical native SBOM is labeled as evidence-only and keeps target and host scope separate', () => {

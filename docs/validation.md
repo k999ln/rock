@@ -2,12 +2,12 @@
 
 ## QEMU rc2配布要件とnative SBOM境界の機械固定 / 2026-09-12
 
-- rc2のversion、source commit、archive名・size・SHA-256を、受入結果、434,523件inventory、公開表示データと照合する `data/qemu-release-audit.json` を追加。10必須要件のうち5件を範囲付きPASS、5件をBLOCKEDとした。
+- rc2のversion、source commit、archive名・size・SHA-256を、受入結果、434,523件inventory、公開表示データと照合する `data/qemu-release-audit.json` を追加。SHA-256一致を確認した1,003,224,286 byteのrc2 archiveから同梱legal bundleを抽出し、10必須要件のうち6件を範囲付きPASS、4件をBLOCKEDとした。
 - QEMU auditと全体公開台帳は同じgate ID・必須状態・statusを要求する。archive SHAの改変、要件数のずれ、未達のnext action欠落、license/production署名より先の最終受入合格を自動拒否する。
-- 旧9abのBuildroot `manifest.csv` 24 target packageと `host-manifest.csv` 37 build dependencyをCycloneDX 1.6へ変換する。componentごとのscope、source archive、license fileを保持し、旧source・current rc2ではない・license clearanceではないことをmetadataへ固定する。
-- `npm run release:sbom` はWeb/npm 854 componentと旧native 61 componentを別のignored fileへ生成。旧native inventoryをrc2のcurrent SBOM gateへ合格転用する負例を含む9 release testsに合格した。
-- GitHubのrc2 Draft Releaseから106,109 byteの `candidate-manifest.json` だけを再取得し、asset digest `9887796b...ecb6`、rc2 archive SHA、source、legal `NOT_CLEARED` を確認した。1GB archive本体は再取得せず、Draft公開状態を変更していない。
-- `npm run verify` は終了コード0。公開台帳・QEMU audit・製品ベース・repository・端末対応、型、lint、Web 173 tests、Fashion Brand Ops 15 tests、MCP package、Billing Worker dry-run、production build、仕事API 143 assertionsが成功した。物理端末、実資金、一般公開、正式鍵生成は実施していない。
+- current rc2同梱のBuildroot `manifest.csv` 24 target packageと `host-manifest.csv` 37 build dependencyをrepositoryへ証拠保存。CSV SHA-256、component数、同梱legal bundle SHA-256 `ad6453…3d94`、配布archive SHA-256を自動照合し、CycloneDX 1.6へ変換する。componentごとのscope、source archive/site、license fileを保持し、自作3 componentのlicense未選択を消さない。
+- `npm run release:sbom` はWeb/npm 854 component、current rc2 native 61 component、旧native 61 componentを別のignored fileへ生成する。旧native inventoryをrc2のcurrent SBOMへ差し替える負例、current manifest hash改変、正確なarchive hashとscopeを含むrelease tests 12件を通した。
+- GitHubのrc2 Draft Releaseから1,003,224,286 byteのarchive本体を取得し、SHA-256 `5ce072…e95e`を照合後、legal bundleだけを展開してmanifestを保存した。Draft公開状態は変更していない。部品表完成は製品license clearanceではない。
+- `npm run verify` は終了コード0。公開台帳・QEMU audit・製品ベース・repository・端末対応、型、lint、Web 175 tests、Fashion Brand Ops 15 tests、MCP package、Billing Worker dry-run、production build、仕事API 143 assertionsが成功した。物理端末、実資金、一般公開、正式鍵生成は実施していない。
 
 ## 設計v1.1と実装の再照合・進捗補助の修正 / 2026-09-09
 
