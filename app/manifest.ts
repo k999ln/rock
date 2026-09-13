@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     id: '/',
     name: 'RockstarOS',
     short_name: 'RockstarOS',
-    description: 'Sky、Chat、Wallet、Polymarketを一つのホームから開く。',
+    description: 'Sky、Chat、Wallet、Market、Fundを一つのホームから開く。',
     start_url: '/',
     scope: '/',
     display: 'standalone',

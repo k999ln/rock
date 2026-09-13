@@ -13,9 +13,13 @@ import {
 } from 'lucide-react';
 import { catalog } from '@/lib/catalog';
 import { fundCandidatesFromCatalog } from '@/lib/automation-fund-catalog';
-import type {
-  AutomationFundPlan,
-  AutomationFundStrategy,
+import {
+  automationFundAnalytics,
+  refreshAutomationFundPlan,
+  type AutomationFundAnalytics,
+  type AutomationFundCandidate,
+  type AutomationFundPlan,
+  type AutomationFundStrategy,
 } from '@/lib/automation-fund';
 
 type Snapshot = {
@@ -26,6 +30,15 @@ type Snapshot = {
     joinedAt: string;
     updatedAt: string;
   } | null;
+  analytics: Array<AutomationFundAnalytics & { fundId: string }>;
+  candidates?: AutomationFundCandidate[];
+};
+
+type VerifiedToolPerformance = {
+  automationToolId: string;
+  grossMinor: number;
+  operatingCostMinor: number;
+  receiptCount: number;
 };
 
 const strategyLabels: Record<AutomationFundStrategy, string> = {
@@ -53,10 +66,68 @@ async function readJson(response: Response) {
   return value;
 }
 
+async function verifiedToolPerformance(): Promise<VerifiedToolPerformance[]> {
+  const gatewayResponse = await fetch('/api/billing/token', {
+    method: 'POST',
+    cache: 'no-store',
+  });
+  const gateway = (await gatewayResponse.json()) as {
+    serviceOrigin?: string;
+    token?: string;
+  };
+  if (!gatewayResponse.ok || !gateway.serviceOrigin || !gateway.token)
+    return [];
+  const response = await fetch(`${gateway.serviceOrigin}/v1/status`, {
+    headers: { Authorization: `Bearer ${gateway.token}` },
+    cache: 'no-store',
+  });
+  if (!response.ok) return [];
+  const value = (await response.json()) as {
+    tools?: VerifiedToolPerformance[];
+  };
+  return value.tools ?? [];
+}
+
+function withVerifiedPerformance(
+  value: Snapshot,
+  performance: VerifiedToolPerformance[],
+): Snapshot {
+  const evidence = new Map(
+    performance.map((tool) => [tool.automationToolId, tool]),
+  );
+  const baseCandidates =
+    value.candidates?.length
+      ? value.candidates
+      : fundCandidatesFromCatalog(catalog);
+  const candidates = baseCandidates.map((candidate) => {
+    const measured = evidence.get(candidate.toolId);
+    return {
+      ...candidate,
+      verifiedGrossMinor: measured?.grossMinor ?? 0,
+      operatingCostMinor: measured?.operatingCostMinor ?? 0,
+      completedReceipts: measured?.receiptCount ?? 0,
+    };
+  });
+  const evaluatedAt = new Date().toISOString();
+  const funds = value.funds.map((fund) =>
+    refreshAutomationFundPlan(fund, candidates, evaluatedAt),
+  );
+  return {
+    ...value,
+    funds,
+    analytics: funds.map((fund) => ({
+      fundId: fund.id,
+      ...automationFundAnalytics(fund, candidates, evaluatedAt),
+    })),
+  };
+}
+
 export default function AutonomousFundMarket() {
   const [snapshot, setSnapshot] = useState<Snapshot>({
     funds: [],
     membership: null,
+    analytics: [],
+    candidates: [],
   });
   const [strategy, setStrategy] =
     useState<AutomationFundStrategy>('balanced');
@@ -74,7 +145,18 @@ export default function AutonomousFundMarket() {
       const value = await readJson(
         await fetch('/api/automation-funds', { cache: 'no-store' }),
       );
-      setSnapshot({ funds: value.funds, membership: value.membership });
+      const performance = await verifiedToolPerformance().catch(() => []);
+      setSnapshot(
+        withVerifiedPerformance(
+          {
+            funds: value.funds,
+            membership: value.membership,
+            analytics: value.analytics ?? [],
+            candidates: value.candidates ?? [],
+          },
+          performance,
+        ),
+      );
       setError('');
     } catch (caught) {
       setError(
@@ -87,13 +169,25 @@ export default function AutonomousFundMarket() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/api/automation-funds', {
-      cache: 'no-store',
-      signal: controller.signal,
-    })
-      .then(readJson)
-      .then((value) => {
-        setSnapshot({ funds: value.funds, membership: value.membership });
+    Promise.all([
+      fetch('/api/automation-funds', {
+        cache: 'no-store',
+        signal: controller.signal,
+      }).then(readJson),
+      verifiedToolPerformance().catch(() => []),
+    ])
+      .then(([value, performance]) => {
+        setSnapshot(
+          withVerifiedPerformance(
+            {
+              funds: value.funds,
+              membership: value.membership,
+              analytics: value.analytics ?? [],
+              candidates: value.candidates ?? [],
+            },
+            performance,
+          ),
+        );
         setError('');
       })
       .catch((caught: unknown) => {
@@ -108,6 +202,11 @@ export default function AutonomousFundMarket() {
       });
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => void refresh(), 30_000);
+    return () => window.clearInterval(timer);
+  }, [refresh]);
 
   const active = useMemo(
     () =>
@@ -152,6 +251,7 @@ export default function AutonomousFundMarket() {
       setNotice(
         `${value.fund.name}を形成しました。中身を確認して参加できます。`,
       );
+      await refresh();
     } catch (caught) {
       setError(
         caught instanceof Error ? caught.message : '形成できませんでした。',
@@ -174,7 +274,12 @@ export default function AutonomousFundMarket() {
           body: JSON.stringify({ action: 'join', fundId }),
         }),
       );
-      setSnapshot({ funds: value.funds, membership: value.membership });
+      setSnapshot((current) => ({
+        funds: value.funds,
+        membership: value.membership,
+        analytics: value.analytics ?? current.analytics,
+        candidates: value.candidates ?? current.candidates,
+      }));
       const joined = value.funds.find((fund) => fund.id === fundId);
       setNotice(`${joined?.name ?? 'ファンド'}に参加しました。`);
     } catch (caught) {
@@ -320,6 +425,9 @@ export default function AutonomousFundMarket() {
           <div className="autofund-grid">
             {snapshot.funds.map((fund) => {
               const joined = fund.id === snapshot.membership?.fundId;
+              const analytics = snapshot.analytics.find(
+                (item) => item.fundId === fund.id,
+              );
               return (
                 <article key={fund.id} className="autofund-card">
                   <div className="autofund-card-top">
@@ -344,6 +452,22 @@ export default function AutonomousFundMarket() {
                       ? '検証済み純収益を基準に配分'
                       : '収益実績前のため、役割の重複を避けて均等配分'}
                   </p>
+                  <div className="autofund-yield">
+                    <span>観測利回り</span>
+                    <strong>
+                      {analytics?.observedReturnBps == null
+                        ? '算定待ち'
+                        : `${(analytics.observedReturnBps / 100).toFixed(2)}%`}
+                    </strong>
+                    <small>
+                      {analytics?.completedReceipts ?? 0}件の検証済み収益 ·
+                      純収益{' '}
+                      {new Intl.NumberFormat('ja-JP', {
+                        style: 'currency',
+                        currency: 'USD',
+                      }).format((analytics?.verifiedNetMinor ?? 0) / 100)}
+                    </small>
+                  </div>
                   <button
                     disabled={busy || joined}
                     onClick={() => void joinFund(fund.id)}
@@ -367,7 +491,7 @@ export default function AutonomousFundMarket() {
 
       <footer className="autofund-footer">
         <p>
-          利回りは保証・予測表示しません。検証済み売上と実費が蓄積した後だけ実績値を表示し、自動配分の根拠を残します。
+          30秒ごとに検証済み売上・実費・実行レシートを再集計します。観測利回りは将来の収益を保証する予測値ではなく、実費に対する過去実績です。
         </p>
         <Link href="/fund/legacy">以前の共同分配試算を見る</Link>
       </footer>

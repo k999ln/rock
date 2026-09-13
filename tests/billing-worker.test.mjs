@@ -230,6 +230,14 @@ void test('settlement Worker applies verified earnings once and never charges up
     assert.equal(status.body.settlement.remainingFeeCapMinor, 0);
     assert.equal(status.body.receipts.length, 3);
     assert.equal(status.body.funds.length, 1);
+    assert.deepEqual(status.body.tools, [
+      {
+        automationToolId: 'tool:test-one',
+        grossMinor: 2000,
+        operatingCostMinor: 200,
+        receiptCount: 3,
+      },
+    ]);
     assert.equal(status.body.funds[0].fundId, 'fund:test-one');
     assert.equal(status.body.funds[0].grossMinor, 2000);
     assert.equal(status.body.funds[0].userPayableMinor, 912);

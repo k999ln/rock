@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-13",
-  "milestone": "本人限定Web/PWAを4/5へ進め、8 HTTP防御headerを5 production経路で実測。全6配布対象は証拠不足を残してBLOCKED",
-  "nextAction": "所有者が最新版の本人限定Sites同期、製品license、OWNER_MANUAL本番鍵生成を明示承認した後、Sites実response再読取りとQEMU同一最終archiveの署名後受入を行う。",
+  "milestone": "汎用PAPER市場のValue/Spendフローと、検証済み実績を30秒ごとに再計算する自律型ファンドを本人限定Webへ統合",
+  "nextAction": "全体verify後に同一commitをGitHubと本人限定Sitesへ反映し、/marketと/fundの保存・再計算フローを実環境で確認する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -215,6 +215,36 @@
         "components/wallet-workspace.tsx",
         "lib/operations.ts",
         "tests/wallet-backend.test.mjs"
+      ]
+    },
+    {
+      "id": "MKT01",
+      "title": "あらゆる型付き価値を扱うPAPER市場とexact approval・risk・receipt・position台帳を実装",
+      "status": "done",
+      "dependsOn": ["WLT02"],
+      "evidence": [
+        "app/market/page.tsx",
+        "app/api/market/route.ts",
+        "components/everything-market.tsx",
+        "lib/everything-market.ts",
+        "lib/everything-market-store.ts",
+        "drizzle/0009_sad_giant_girl.sql",
+        "tests/everything-market.test.mjs",
+        "docs/everything-market-and-autonomous-fund-20260913.md"
+      ]
+    },
+    {
+      "id": "FND01",
+      "title": "ツールの検証済み純収益・実費・receipt・失敗から構成と観測利回りを30秒ごとに再計算",
+      "status": "done",
+      "dependsOn": ["WLT02", "MKT01"],
+      "evidence": [
+        "lib/automation-fund.ts",
+        "lib/automation-fund-store.ts",
+        "app/api/automation-funds/route.ts",
+        "components/autonomous-fund-market.tsx",
+        "tests/automation-fund.test.mjs",
+        "docs/everything-market-and-autonomous-fund-20260913.md"
       ]
     },
     {

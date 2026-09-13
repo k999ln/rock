@@ -1,5 +1,7 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-13追記（v1.32）: 利用者は、Polymarketを掲載・再販売するのではなく、同種の見通しの良い市場UIを参考に、あらゆる価値を型付き取引対象として扱う独自市場と、複数自動化ツールの組合せを実績から更新する自律型ファンドを明示。RQ33を追加する。MarketはPAPER限定で、提案、risk判定、exact digestへの本人承認、予約、実行receipt、position、append-only eventをD1へ保存する。ファンドは本人の検証済み帳簿と実行receiptを30秒ごとに再集計し、構成・配分・観測利回りを更新するが、証拠がなければ利回りを表示せず、資金移動も行わない。Polymarket、外部市場、実Wallet、LIVE注文、清算は有効化しない。
+
 2026-09-13追記（v1.31）: 利用者は、個別branchや過去の公開版に散在した良い実装を、現行設計と安全条件へ矛盾しない形で正本へ統合し、崩れた画面を完成版へ上書き保存するよう明示。RQ32を追加する。Chatは接続済みready商品と任意MCPをbotとして扱い、方向修正、1回承認、実行、停止、結果を同じスレッドへ集約する。Walletは本人別の残高・売上・経費・取消履歴を永続化する。主要画面のCSS契約とbuild asset closureを全体verifyへ追加し、GitHubと本人限定Sitesを同一source commitへ固定する。一般公開、実資金、マイナンバー、production鍵のgateは変更しない。
 
 2026-09-13追記（v1.30）: Android物理端末を型番/SKU、BSP/boot/recovery、同一buildのCDD/CTS、production署名、販売地域の5必須gateへ固定する。現在0/5で、Android互換・GMS許諾・物理flash・販売可能を表示しない。マイナンバーは無効化、目的、主体/provider、data flowと保存/削除、安全管理、事故/委託先、最終有効化の7必須gateへ分ける。現在1/7で、番号・カード画像・通常profile項目を取得しない。
@@ -294,9 +296,17 @@ main、現在の開発branch、機能branch、Sites公開履歴を比較し、�
 
 Skyで接続が成立したMCP serverとready商品はChatへbotとして自動表示し、同じスレッドで依頼、方向修正、公開機能と引数、1回承認、実行結果、失敗、停止を扱う。方向修正は、MCPがlive steeringを明示対応しない限り次の実行へ適用する。停止はsessionと未使用承認を失効させ、送信後timeoutや結果不明を自動再実行しない。Walletは本人別D1を正本とし、残高、売上、経費、取消を追記履歴として保持するが、手入力を検証済み収益へ昇格させない。
 
-Home、Sky、Chat、Wallet、Polymarket、設定は、画面componentだけでなく必要なstylesheetがbuildへ含まれることを自動検査する。server/manifest/HTMLが参照する`_next/static` assetは公開archive内に全て存在しなければならない。GitHubの対象branchと本人限定Sitesへ同じsource commitを保存し、公開後に主要routeとassetの実responseを再確認する。一般公開、main merge、production鍵、実取引・送金、物理端末合格、マイナンバー有効化は、それぞれの既存gateなしにこの統合作業から許可へ変えない。
+Home、Sky、Chat、Wallet、Market、設定は、画面componentだけでなく必要なstylesheetがbuildへ含まれることを自動検査する。server/manifest/HTMLが参照する`_next/static` assetは公開archive内に全て存在しなければならない。GitHubの対象branchと本人限定Sitesへ同じsource commitを保存し、公開後に主要routeとassetの実responseを再確認する。一般公開、main merge、production鍵、実取引・送金、物理端末合格、マイナンバー有効化は、それぞれの既存gateなしにこの統合作業から許可へ変えない。
 
-## 1.0への8原則の適用（RQ01〜RQ32を維持）
+## RQ33 汎用PAPER市場と実績更新型の自律ファンド
+
+独自のRockstar MarketをMarketアプリとして提供し、自動化、デジタル成果物、サービス、商品、稼働枠を共通の型付きasset registryへ登録できるようにする。取引操作は `PAPER` だけを許可し、proposal ID、exact digest、24時間以内の期限、注文上限、総exposure上限を固定する。本人が同一digestを明示承認した後にのみ予約・実行し、simulation-onlyのimmutable receipt、position、`spend.* / trade.*` eventを本人別D1へ保存する。未知field、失効提案、二重実行、LIVE指定はfail closedとする。
+
+自動化ファンドの数と構成ツール数は固定しない。readyなツールについて、署名検証済みEarning Receiptの売上・実費と、本人所有のtool run receiptから、純収益、失敗数、観測return、推奨構成、配分を30秒ごとに再計算する。Walletの手入力帳簿は自己申告なので利回りの証拠に使わない。観測returnは実費を分母とする過去実績で、将来利回りではない。分母または検証receiptがなければ `null / 算定待ち` と表示し、合成値や市場PAPER結果を検証済み収益へ昇格させない。自律処理は構成提案までとし、外部取引、実Wallet移動、再投資、8.88 USDの先取りを行わない。
+
+Polymarketは画面密度、検索、カテゴリ、カード、価格ticketのデザイン参考に限る。名称、コンテンツ、外部注文経路、CLOB、口座、資金、結果判定・清算を取り込まず、独自市場と既存の自動化ファンドを別機能として維持する。LIVE提供にはprovider、本人確認、保管・清算、対象国、契約、法務・規制、異議・取消、監視、owner承認の別gateが必要である。
+
+## 1.0への8原則の適用（RQ01〜RQ33を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 

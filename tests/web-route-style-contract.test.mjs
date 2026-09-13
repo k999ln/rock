@@ -4,24 +4,24 @@ import { resolve } from 'node:path';
 import test from 'node:test';
 
 const root = resolve(import.meta.dirname, '..');
-const workspace = readFileSync(resolve(root, 'app/workspace.css'), 'utf8');
+const workspace = [
+  readFileSync(resolve(root, 'app/workspace.css'), 'utf8'),
+  readFileSync(resolve(root, 'app/globals.css'), 'utf8'),
+].join('\n');
 
 const surfaces = {
   workspace: ['.rock-workspace', '.rock-topbar', '.rock-main', '.rock-bottom-note'],
   sky: ['.sky-main-feed', '.sky-feed-post', '.sky-one-tap-connect'],
   chat: ['.sky-chat-simple', '.sky-chat-commandbar', '.sky-chat-bot-board', '.mcp-bot-runner'],
   wallet: ['.wallet-app', '.wallet-balance', '.wallet-transactions'],
-  polymarket: [
-    '.polymarket-page',
-    '.polymarket-shell',
-    '.polymarket-heading',
-    '.polymarket-empty-state',
-    '.polymarket-boundaries',
-    '.polymarket-settings-link',
-    '.markets-policy-strip',
-    '.markets-analysis-grid',
-    '.markets-bot-lab',
-    '.markets-actions',
+  market: [
+    '.everything-market-page',
+    '.everything-market',
+    '.market-search',
+    '.market-grid',
+    '.market-ticket',
+    '.market-proposal',
+    '.market-safety',
   ],
 };
 

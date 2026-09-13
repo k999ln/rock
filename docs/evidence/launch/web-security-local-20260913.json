@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-09-13T04:38:50Z",
+  "observedAt": "2026-09-13T15:28:27Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
@@ -13,7 +13,7 @@
     "next.config.ts": "741bdbbf2bff9c74f23df7954a9db098f708011a7ec65ef470ca5912ce0600df",
     "scripts/check-web-security-response.mjs": "98f3b59cfcd1d873e222d7a269d22ecdf297a6cfad1e3618faceb4760d5cd605",
     "public/sw.js": "f54ee60c3de43082b08ce2d13f4b03688350ae08563bc0c0191e98ac28d519ab",
-    "app/manifest.ts": "f9e396588fe88ffaf7d69e6df780377c410a02416e67a360d9f4ab3c96fcf1ae",
+    "app/manifest.ts": "e3a1269814f0e98da8bff8b244ff102c314779c26e98ac897980931abb949429",
     "public/rock-icon-192.png": "9d983523d02ba07ff74ff3d57e4b92dc023d5b575986272f77baf95aa0688741",
     "public/rock-icon-512.png": "6efdeff98fdfd19a31451732a8b862f64dc137fea07e33545b6f7345dcedf18a",
     "public/rock-icon-maskable.svg": "1aad586f5be04ab99609546bf3c8837de76346819e90a1dfdb7d430f9eaac735"
@@ -29,7 +29,7 @@
       "/rock-icon-192.png",
       "/rock-icon-512.png",
       "/rock-icon-maskable.svg",
-      "/_next/static/chunks/index-ciZ4WJwa.js"
+      "/_next/static/chunks/index-D9ldsuuc.js"
     ]
   },
   "boundary": {
