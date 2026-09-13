@@ -49,6 +49,7 @@ import {
   resetDevicePreferences,
   restoreDevicePreferences,
 } from '@/lib/system-backup';
+import releaseReadiness from '@/data/release-readiness.json';
 import styles from './system-maintenance.module.css';
 
 type CheckState = 'checking' | 'ready' | 'attention' | 'blocked';
@@ -59,6 +60,15 @@ type Check = {
   state: CheckState;
 };
 type BackupMode = 'create' | 'restore';
+
+const releaseCopy: Record<string, { short: string; icon: React.ReactNode }> = {
+  'web-pwa-owner-preview': { short: '本人限定版は稼働可能', icon: <AppWindow /> },
+  'web-pwa-public-preview': { short: 'ライセンス選択と公開承認が必要', icon: <AppWindow /> },
+  'qemu-developer-preview': { short: '正式署名と最終版の再受入が必要', icon: <HardDrive /> },
+  'android-physical-preview': { short: '機種・BSP・CDD/CTS・実機試験が必要', icon: <Smartphone /> },
+  'iphone-ipad-client': { short: '置換OSではなくclient配布として審査', icon: <Smartphone /> },
+  'personal-number-identity': { short: '現在は無効。別の法務・安全管理審査が必要', icon: <ShieldAlert /> },
+};
 
 const initialChecks: Check[] = [
   { id: 'network', label: '通信', detail: '確認中', state: 'checking' },
@@ -208,6 +218,9 @@ export default function SystemMaintenance() {
     () => checks.filter(({ state }) => state === 'blocked').length,
     [checks],
   );
+  const readyReleaseCount = releaseReadiness.targets.filter(
+    ({ declaredStatus }) => declaredStatus === 'ready',
+  ).length;
 
   async function checkForUpdate() {
     setMessage('更新を確認しています…');
@@ -428,18 +441,30 @@ export default function SystemMaintenance() {
         {message && <output className={styles.notice}>{message}</output>}
 
         <details className={styles.release}>
-          <summary>実機版・公開審査の状態</summary>
+          <summary>
+            <span>公開準備</span>
+            <span className={styles.releaseCount}>{readyReleaseCount} / {releaseReadiness.targets.length}</span>
+          </summary>
+          <p className={styles.releaseLead}>配布方法ごとに必要条件を判定しています。</p>
           <div className={styles.gates}>
-            <Gate icon={<AppWindow />} title="Web / PWA" state="Developer Previewとして公開可能" tone="ready" />
-            <Gate icon={<HardDrive />} title="QEMU版" state="内部受入済み" tone="ready" />
-            <Gate icon={<Smartphone />} title="Android互換・Play" state="CDD / CTS未実施・GMS未申請" tone="blocked" />
-            <Gate icon={<Smartphone />} title="物理端末" state="対象機種・BSP・復旧手順の確定待ち" tone="blocked" />
-            <Gate icon={<KeyRound />} title="正式署名・更新鍵" state="所有者による鍵準備待ち" tone="blocked" />
-            <Gate icon={<ShieldAlert />} title="配布ライセンス・法令" state="SBOM・OSS・販売地域の確認待ち" tone="blocked" />
-            <Gate icon={<ShieldAlert />} title="マイナンバー" state="未接続・別途法務/安全管理審査が必要" tone="blocked" />
+            {releaseReadiness.targets.map((target) => {
+              const required = target.gates.filter(({ required }) => required);
+              const passed = required.filter(({ status }) => status === 'pass').length;
+              const copy = releaseCopy[target.id];
+              return (
+                <Gate
+                  key={target.id}
+                  icon={copy?.icon || <KeyRound />}
+                  title={target.label}
+                  state={copy?.short || `${passed} / ${required.length} 条件完了`}
+                  progress={`${passed}/${required.length}`}
+                  tone={target.declaredStatus === 'ready' ? 'ready' : 'blocked'}
+                />
+              );
+            })}
           </div>
           <p className={styles.boundary}>
-            OSには一律の単一審査はありません。配布先、対象機種、Googleサービス、販売地域、個人情報の扱いごとに合格条件を確定します。
+            緑はその配布方法の最低条件を満たした状態です。QEMUの過去候補が動いていても、製品ライセンス・正式署名・同一最終版の復旧試験が揃うまで配布可能にはしません。
           </p>
         </details>
       </div>
@@ -498,6 +523,6 @@ function StatusIcon({ state }: { state: CheckState }) {
   return <XCircle className={styles.blockedIcon} />;
 }
 
-function Gate({ icon, title, state, tone }: { icon: React.ReactNode; title: string; state: string; tone: 'ready' | 'blocked' }) {
-  return <article><span className={styles[tone]}>{icon}</span><div><strong>{title}</strong><small>{state}</small></div></article>;
+function Gate({ icon, title, state, progress, tone }: { icon: React.ReactNode; title: string; state: string; progress: string; tone: 'ready' | 'blocked' }) {
+  return <article><span className={styles[tone]}>{icon}</span><div><strong>{title}</strong><small>{state}</small></div><b className={styles.gateProgress}>{progress}</b></article>;
 }

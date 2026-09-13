@@ -1,5 +1,5 @@
 {
-  "version": "1.25",
+  "version": "1.26",
   "decidedAt": "2026-09-12",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -68,7 +68,10 @@
       "productionSigning": "blocked_until_owner_key_ceremony",
       "openSourceCompliance": "audit_required_before_distribution",
       "radioCertification": "market_and_hardware_scope_required",
-      "personalNumberHandling": "not_enabled_requires_separate_compliance_review"
+      "personalNumberHandling": "not_enabled_requires_separate_compliance_review",
+      "manifest": "data/release-readiness.json",
+      "automatedCheck": "npm run release:check",
+      "sbom": "cyclonedx_1_6_generated_to_ignored_work_directory"
     },
     "physicalDeviceStatus": "blocked_until_exact_model_bsp_bootloader_recovery",
     "productionSigning": "blocked_until_owner_key_ceremony",
@@ -119,7 +122,8 @@
     "RQ26",
     "RQ27",
     "RQ28",
-    "RQ29"
+    "RQ29",
+    "RQ30"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
