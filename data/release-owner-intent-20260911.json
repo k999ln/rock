@@ -25,11 +25,11 @@
     },
     "preparedStorage": {
       "observedAt": "2026-09-13",
-      "path": "/Users/kaiya/Library/Application Support/RockstarOS/signing",
+      "pathClass": "OWNER_PRIVATE_FILEVAULT_APPLICATION_DATA",
+      "pathStoredInRepository": false,
       "filesystem": "APFS",
       "fileVault": true,
       "directoryMode": "0700",
-      "ownerUid": 501,
       "status": "ENCRYPTED_OWNER_PRIVATE_STORAGE_READY",
       "containsProductionKey": false,
       "backupPrepared": false,
