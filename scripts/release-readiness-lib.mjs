@@ -396,6 +396,106 @@ export function packageEntries(lock) {
     }));
 }
 
+function webLicenseReviewClass(expression) {
+  if (/\sOR\s/.test(expression)) return 'license-choice-review';
+  if (/(?:^|\s|\()(?:(?:L?GPL)|MPL)-/.test(expression)) {
+    return 'reciprocal-source-terms-review';
+  }
+  if (/(?:^|\s|\()CC-BY-/.test(expression)) return 'attribution-review';
+  return 'standard-license-text-and-notice';
+}
+
+export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness }) {
+  const label = 'Web第三者license監査';
+  const dependencies = packageEntries(lock);
+  const missing = dependencies.filter((entry) => !entry.license);
+  if (missing.length) fail(`依存${missing.length}件にlicense表記がありません`);
+
+  const components = new Map();
+  for (const entry of dependencies) {
+    const key = `pkg:npm/${encodeURIComponent(entry.name)}@${entry.version}`;
+    const previous = components.get(key);
+    if (previous && previous !== entry.license) {
+      fail(`${label}: 同一componentのlicense表記が競合しています: ${key}`);
+    }
+    components.set(key, entry.license);
+  }
+  const counts = new Map();
+  for (const license of components.values()) {
+    counts.set(license, (counts.get(license) || 0) + 1);
+  }
+  const licenses = [...counts]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([expression, uniqueComponents]) => ({
+      expression,
+      uniqueComponents,
+      reviewClass: webLicenseReviewClass(expression),
+    }));
+  const reviewSummary = Object.fromEntries(
+    [
+      'standard-license-text-and-notice',
+      'reciprocal-source-terms-review',
+      'license-choice-review',
+      'attribution-review',
+    ].map((reviewClass) => [
+      reviewClass,
+      licenses
+        .filter((item) => item.reviewClass === reviewClass)
+        .reduce((total, item) => total + item.uniqueComponents, 0),
+    ]),
+  );
+  if (audit?.schema !== 'rockstaros-web-third-party-license-audit/1') {
+    fail(`${label}: schemaが不一致です`);
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(audit.evaluatedAt || '')) {
+    fail(`${label}: 評価日が不一致です`);
+  }
+  if (audit.scope !== 'PACKAGE_LOCK_INVENTORY_NOT_RUNTIME_BUNDLE_OR_LEGAL_CLEARANCE') {
+    fail(`${label}: scopeが不一致です`);
+  }
+  if (audit.packageLockSha256 !== sha256(readFileSync(resolve(root, 'package-lock.json')))) {
+    fail(`${label}: package-lock hashとreview分類が不一致です`);
+  }
+  if (
+    audit.packageEntries !== dependencies.length ||
+    audit.uniqueComponents !== components.size ||
+    audit.missingLicenseMetadata !== 0
+  ) {
+    fail(`${label}: component集計とreview分類が不一致です`);
+  }
+  if (JSON.stringify(audit.licenses) !== JSON.stringify(licenses)) {
+    fail(`${label}: license別review分類が不一致です`);
+  }
+  if (!exactRecord(audit.reviewSummary, reviewSummary)) {
+    fail(`${label}: review分類集計が不一致です`);
+  }
+  if (
+    audit.overallStatus !==
+      'NOT_CLEARED_PRODUCT_LICENSE_AND_DISTRIBUTION_SCOPE_REVIEW_PENDING' ||
+    typeof audit.boundary !== 'string' ||
+    !audit.boundary
+  ) {
+    fail(`${label}: 未clear境界が不一致です`);
+  }
+  const gate = readiness.targets
+    .find(({ id }) => id === 'web-pwa-public-preview')
+    ?.gates.find(({ id }) => id === 'dependency-license-inventory');
+  if (
+    gate?.status !== 'pass' ||
+    !gate.evidence?.includes('package-lock.json') ||
+    !gate.evidence?.includes('data/web-third-party-license-audit.json')
+  ) {
+    fail(`${label}: 公開台帳の根拠が不足しています`);
+  }
+  return {
+    packageEntries: dependencies.length,
+    uniqueComponents: components.size,
+    reviewRequired: reviewSummary['reciprocal-source-terms-review'] +
+      reviewSummary['license-choice-review'] +
+      reviewSummary['attribution-review'],
+  };
+}
+
 export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) {
   const label = 'Android物理端末監査';
   if (audit?.schema !== 'rockstaros-android-physical-release-audit/1') fail(label + ': schemaが違います');
@@ -1033,6 +1133,7 @@ export function validateReleaseReadiness({
   sitesAudit,
   sitesHosting,
   webSecurityPolicy,
+  webLicenseAudit,
 }) {
   if (readiness.schema !== 'rockstaros-release-readiness/1') fail('schemaが違います');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(readiness.evaluatedAt)) fail('評価日が必要です');
@@ -1153,8 +1254,15 @@ export function validateReleaseReadiness({
   }
   for (const id of requiredTargets) if (!targetIds.has(id)) fail(`${id}: 必須対象がありません`);
 
-  if (!androidAudit || !personalNumberAudit || !sitesAudit || !sitesHosting || !webSecurityPolicy) {
-    fail('Android/マイナンバー/Sites/Web security監査正本が必要です');
+  if (
+    !androidAudit ||
+    !personalNumberAudit ||
+    !sitesAudit ||
+    !sitesHosting ||
+    !webSecurityPolicy ||
+    !webLicenseAudit
+  ) {
+    fail('Android/マイナンバー/Sites/Web security/license監査正本が必要です');
   }
   const webSecurityResult = validateWebSecurityPolicy({ root, policy: webSecurityPolicy, readiness });
   const sitesResult = validateOwnerPrivateSitesAudit({
@@ -1169,6 +1277,12 @@ export function validateReleaseReadiness({
     audit: personalNumberAudit,
     readiness,
   });
+  const webLicenseResult = validateWebDependencyLicenseAudit({
+    root,
+    audit: webLicenseAudit,
+    lock,
+    readiness,
+  });
 
   const byId = (id) => readiness.targets.find((target) => target.id === id);
   const gate = (target, id) => byId(target)?.gates.find((item) => item.id === id);
@@ -1181,7 +1295,6 @@ export function validateReleaseReadiness({
   }
   const dependencies = packageEntries(lock);
   const missingLicense = dependencies.filter((entry) => !entry.license);
-  if (missingLicense.length) fail(`依存${missingLicense.length}件にlicense表記がありません`);
 
   return {
     targetCount: readiness.targets.length,
@@ -1193,6 +1306,7 @@ export function validateReleaseReadiness({
     personalNumber: personalNumberResult,
     sites: sitesResult,
     webSecurity: webSecurityResult,
+    webLicense: webLicenseResult,
   };
 }
 

@@ -1,0 +1,36 @@
+{
+  "schema": "rockstaros-web-third-party-license-audit/1",
+  "evaluatedAt": "2026-09-13",
+  "scope": "PACKAGE_LOCK_INVENTORY_NOT_RUNTIME_BUNDLE_OR_LEGAL_CLEARANCE",
+  "packageLockSha256": "b921f0a106cb84f6a1daf156aad8986910f9769c8833b8448b076f51ee9da526",
+  "packageEntries": 887,
+  "uniqueComponents": 854,
+  "missingLicenseMetadata": 0,
+  "licenses": [
+    { "expression": "(AFL-2.1 OR BSD-3-Clause)", "uniqueComponents": 1, "reviewClass": "license-choice-review" },
+    { "expression": "0BSD", "uniqueComponents": 1, "reviewClass": "standard-license-text-and-notice" },
+    { "expression": "Apache-2.0", "uniqueComponents": 39, "reviewClass": "standard-license-text-and-notice" },
+    { "expression": "Apache-2.0 AND LGPL-3.0-or-later", "uniqueComponents": 3, "reviewClass": "reciprocal-source-terms-review" },
+    { "expression": "Apache-2.0 AND LGPL-3.0-or-later AND MIT", "uniqueComponents": 1, "reviewClass": "reciprocal-source-terms-review" },
+    { "expression": "BlueOak-1.0.0", "uniqueComponents": 2, "reviewClass": "standard-license-text-and-notice" },
+    { "expression": "BSD-2-Clause", "uniqueComponents": 7, "reviewClass": "standard-license-text-and-notice" },
+    { "expression": "BSD-3-Clause", "uniqueComponents": 9, "reviewClass": "standard-license-text-and-notice" },
+    { "expression": "CC-BY-4.0", "uniqueComponents": 1, "reviewClass": "attribution-review" },
+    { "expression": "CC0-1.0", "uniqueComponents": 1, "reviewClass": "standard-license-text-and-notice" },
+    { "expression": "ISC", "uniqueComponents": 34, "reviewClass": "standard-license-text-and-notice" },
+    { "expression": "LGPL-3.0-or-later", "uniqueComponents": 10, "reviewClass": "reciprocal-source-terms-review" },
+    { "expression": "MIT", "uniqueComponents": 712, "reviewClass": "standard-license-text-and-notice" },
+    { "expression": "MIT AND ISC", "uniqueComponents": 1, "reviewClass": "standard-license-text-and-notice" },
+    { "expression": "MIT OR Apache-2.0", "uniqueComponents": 4, "reviewClass": "license-choice-review" },
+    { "expression": "MPL-2.0", "uniqueComponents": 27, "reviewClass": "reciprocal-source-terms-review" },
+    { "expression": "Python-2.0", "uniqueComponents": 1, "reviewClass": "standard-license-text-and-notice" }
+  ],
+  "reviewSummary": {
+    "standard-license-text-and-notice": 807,
+    "reciprocal-source-terms-review": 41,
+    "license-choice-review": 5,
+    "attribution-review": 1
+  },
+  "overallStatus": "NOT_CLEARED_PRODUCT_LICENSE_AND_DISTRIBUTION_SCOPE_REVIEW_PENDING",
+  "boundary": "The CycloneDX SBOM preserves component names and versions. This audit triages package-lock metadata only; it does not prove which packages are shipped in a browser bundle, satisfy license obligations, or authorize distribution."
+}

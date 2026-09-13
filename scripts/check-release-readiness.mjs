@@ -18,6 +18,7 @@ const personalNumberAudit = readJson(resolve(root, 'data/personal-number-release
 const sitesAudit = readJson(resolve(root, 'data/sites-owner-preview-audit.json'));
 const sitesHosting = readJson(resolve(root, '.openai/hosting.json'));
 const webSecurityPolicy = readJson(resolve(root, 'data/web-security-policy.json'));
+const webLicenseAudit = readJson(resolve(root, 'data/web-third-party-license-audit.json'));
 const result = validateReleaseReadiness({
   root,
   readiness,
@@ -28,6 +29,7 @@ const result = validateReleaseReadiness({
   sitesAudit,
   sitesHosting,
   webSecurityPolicy,
+  webLicenseAudit,
 });
 const qemuAudit = readJson(resolve(root, 'data/qemu-release-audit.json'));
 const qemuResult = validateQemuReleaseAudit({
@@ -72,7 +74,7 @@ if (historicalNativeSbomIndex !== -1) {
 }
 
 console.log(
-  `公開条件: ready ${result.readyTargets.length}/${result.targetCount}（${result.readyTargets.join(', ') || 'なし'}）、blocked ${result.blockedTargets.length}、npm依存 ${result.dependencyCount}件/license欠落0`,
+  `公開条件: ready ${result.readyTargets.length}/${result.targetCount}（${result.readyTargets.join(', ') || 'なし'}）、blocked ${result.blockedTargets.length}、npm依存 ${result.dependencyCount}件/license欠落0、unique ${result.webLicense.uniqueComponents}件/review ${result.webLicense.reviewRequired}件`,
 );
 console.log(
   `QEMU候補: ${qemuResult.candidate} / ${qemuResult.passed}/${qemuResult.required}要件合格 / ${qemuResult.blocked.length}要件未達`,

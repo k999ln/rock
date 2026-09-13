@@ -328,6 +328,23 @@
       ]
     },
     {
+      "id": "SYS10",
+      "title": "Web第三者依存のlock hash・unique component・要review license分類を公開gateへ固定",
+      "status": "done",
+      "dependsOn": [
+        "SYS03"
+      ],
+      "evidence": [
+        "package-lock.json",
+        "data/web-third-party-license-audit.json",
+        "data/release-readiness.json",
+        "scripts/release-readiness-lib.mjs",
+        "tests/release-readiness.test.mjs",
+        "docs/release-minimum-gates.md",
+        "docs/validation.md"
+      ]
+    },
+    {
       "id": "R01",
       "title": "4参照元の採用判断と事業方針の固定",
       "status": "done",
@@ -1193,7 +1210,8 @@
     "webSecurityPolicy": "PASS_SOURCE_AND_LOCAL_PRODUCTION_8_HEADERS_8_ROUTES_MANIFEST_AND_ICONS_SITES_RESPONSE_READBACK_PENDING",
     "pwaUpdateControl": "PASS_EXPLICIT_APPLY_OLD_CACHE_CLEANUP_API_AUTH_ORIGIN_EXCLUSIONS",
     "pwaInstallability": "PASS_FIXED_ID_SCOPE_192_512_AND_1024_MASKABLE_RUNTIME_MANIFEST_AND_CONTENT_TYPES",
-    "latestWebTests": 200,
+    "webThirdPartyLicenseAudit": "PASS_887_ENTRIES_854_UNIQUE_47_REVIEW_REQUIRED_NOT_LEGAL_CLEARANCE",
+    "latestWebTests": 202,
     "latestApiAssertions": 143,
     "signingBootstrapPr": 5,
     "signingBootstrapCommit": "a4411622031858d6d9684c599d857cadaf90bb94",

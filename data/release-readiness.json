@@ -41,7 +41,7 @@
       "gates": [
         { "id": "source-verification", "required": true, "status": "pass", "evidence": ["package.json", "docs/validation.md"] },
         { "id": "web-security-policy", "required": true, "status": "pass", "evidence": ["data/web-security-policy.json", "next.config.ts", "public/_headers", "scripts/check-web-security-response.mjs", "tests/web-security-policy.test.mjs", "docs/evidence/launch/web-security-local-20260913.json"] },
-        { "id": "dependency-license-inventory", "required": true, "status": "pass", "evidence": ["package-lock.json"] },
+        { "id": "dependency-license-inventory", "required": true, "status": "pass", "evidence": ["package-lock.json", "data/web-third-party-license-audit.json"] },
         { "id": "product-license", "required": true, "status": "blocked", "ownerAction": "自作部分の製品ライセンスを明示選択し、適用範囲と第三者権利を確認する" },
         { "id": "public-access-approval", "required": true, "status": "blocked", "ownerAction": "本人限定Sitesを一般公開へ変更するか、別の公開先を明示承認する" }
       ]

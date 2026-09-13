@@ -25,6 +25,7 @@ const personalNumberAudit = read('data/personal-number-release-audit.json');
 const sitesAudit = read('data/sites-owner-preview-audit.json');
 const sitesHosting = read('.openai/hosting.json');
 const webSecurityPolicy = read('data/web-security-policy.json');
+const webLicenseAudit = read('data/web-third-party-license-audit.json');
 const qemuAudit = read('data/qemu-release-audit.json');
 const qemuAcceptance = read('docs/evidence/rls01/final-b7-rc2/acceptance-result.json');
 const qemuInventory = read('docs/evidence/rls01/remaining-b7-rc2/inventory.json');
@@ -43,6 +44,7 @@ const validateMatrix = ({
   sites = sitesAudit,
   hosting = sitesHosting,
   webSecurity = webSecurityPolicy,
+  webLicense = webLicenseAudit,
 } = {}) =>
   validateReleaseReadiness({
     root,
@@ -54,6 +56,7 @@ const validateMatrix = ({
     sitesAudit: sites,
     sitesHosting: hosting,
     webSecurityPolicy: webSecurity,
+    webLicenseAudit: webLicense,
   });
 
 const validateQemu = (audit = qemuAudit) =>
@@ -75,6 +78,11 @@ void test('current release matrix passes while preserving real blockers', () => 
   assert.deepEqual(result.readyTargets, []);
   assert.equal(result.blockedTargets.length, 6);
   assert.equal(result.missingDependencyLicenses, 0);
+  assert.deepEqual(result.webLicense, {
+    packageEntries: 887,
+    uniqueComponents: 854,
+    reviewRequired: 47,
+  });
   assert.equal(result.sites.status, 'OUTDATED');
   assert.deepEqual(result.webSecurity, { status: 'PASS_SOURCE_POLICY', headers: 8 });
 });
@@ -193,6 +201,26 @@ void test('dependency inventory rejects a package without license metadata', () 
   assert.throws(
     () => validateMatrix({ dependencyLock: changedLock }),
     /license表記がありません/,
+  );
+});
+
+void test('dependency license review cannot hide reciprocal, choice, or attribution metadata', () => {
+  const changedAudit = structuredClone(webLicenseAudit);
+  changedAudit.licenses = changedAudit.licenses.filter(
+    ({ expression }) => expression !== 'MPL-2.0',
+  );
+  assert.throws(
+    () => validateMatrix({ webLicense: changedAudit }),
+    /review分類が不一致/,
+  );
+});
+
+void test('dependency license audit is pinned to the complete package-lock', () => {
+  const changedAudit = structuredClone(webLicenseAudit);
+  changedAudit.packageLockSha256 = '0'.repeat(64);
+  assert.throws(
+    () => validateMatrix({ webLicense: changedAudit }),
+    /review分類が不一致/,
   );
 });
 
