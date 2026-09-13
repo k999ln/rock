@@ -42,6 +42,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { deviceToken } from '@/lib/device';
+import { releaseProgress } from '@/lib/release-progress';
 import {
   collectDevicePreferences,
   decryptDeviceBackup,
@@ -221,6 +222,9 @@ export default function SystemMaintenance() {
   const readyReleaseCount = releaseReadiness.targets.filter(
     ({ declaredStatus }) => declaredStatus === 'ready',
   ).length;
+  const qemuRelease = releaseProgress(releaseReadiness, 'qemu-developer-preview');
+  const androidRelease = releaseProgress(releaseReadiness, 'android-physical-preview');
+  const personalNumberRelease = releaseProgress(releaseReadiness, 'personal-number-identity');
 
   async function checkForUpdate() {
     setMessage('更新を確認しています…');
@@ -464,7 +468,7 @@ export default function SystemMaintenance() {
             })}
           </div>
           <p className={styles.boundary}>
-            緑はその配布方法の最低条件を満たした状態です。QEMU rc2は6/10。Android実機は対象端末未選択で0/5。マイナンバーは取得無効の境界だけ1/7です。製品ライセンス、正式署名、端末固有試験、法務・安全管理、公開承認が揃うまで配布・有効化可能にはしません。
+            緑はその配布方法の最低条件を満たした状態です。QEMU rc2は{qemuRelease.text}。Android実機は対象端末未選択で{androidRelease.text}。マイナンバーは取得無効の境界だけ{personalNumberRelease.text}です。製品ライセンス、正式署名、端末固有試験、法務・安全管理、公開承認が揃うまで配布・有効化可能にはしません。
           </p>
         </details>
       </div>

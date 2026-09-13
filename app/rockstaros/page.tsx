@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import previewData from '../../data/rockstaros-preview.json';
+import releaseReadiness from '../../data/release-readiness.json';
 import { PreviewDownload } from '../../components/preview-download';
+import { releaseProgress } from '../../lib/release-progress';
 import styles from './preview.module.css';
 
 type PreviewMedia = {
@@ -23,6 +25,7 @@ type PreviewMedia = {
   acceptanceRecordUrl: string | null;
 };
 const preview: PreviewMedia = previewData;
+const qemuRelease = releaseProgress(releaseReadiness, 'qemu-developer-preview');
 
 export const metadata: Metadata = {
   title: 'RockstarOS 1.0 Developer Preview',
@@ -59,7 +62,7 @@ export default function RockstarPreview() {
           <a className={styles.primary} href="#start">
             試用できる範囲を確認 <span aria-hidden="true">↓</span>
           </a>
-          <span className={styles.status}>QEMU・合成環境で検証済み</span>
+          <span className={styles.status}>QEMU候補 {qemuRelease.text}・一般配布前</span>
         </div>
         <div className={styles.flow} aria-label="RockstarOSで行うこと">
           <div>
