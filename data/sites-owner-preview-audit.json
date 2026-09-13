@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-owner-private-sites-audit/1",
-  "observedAt": "2026-09-13T13:01:33Z",
+  "observedAt": "2026-09-13T13:18:39Z",
   "site": {
     "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
     "title": "RockstarOS",
@@ -26,8 +26,8 @@
   },
   "sync": {
     "status": "OUTDATED",
-    "comparedReviewHead": "fbfa4ed10a656fb8406b5260fc361c55ce0afaee",
-    "commitsBehind": 12,
+    "comparedReviewHead": "c746621afeed4c27b3426e6cceab1b425b2dc7d0",
+    "commitsBehind": 15,
     "authorization": "AWAITING_EXPLICIT_OWNER_APPROVAL",
     "nextAction": "最新版sourceを本人限定の同じSiteへ保存・配備し、version、deployment、source commit、archive、access policyを再読取りする"
   },

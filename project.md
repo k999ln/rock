@@ -2,7 +2,9 @@
 
 ## 2026-09-13 — Web第三者依存47件を追加license reviewへ固定
 
-`package-lock.json`の887 entryとCycloneDXの854 unique componentを同じlock SHAへ結合し、17種類のlicense expressionを全件分類した。MPL/LGPL系41件、OR選択式5件、CC-BY表示1件の計47件はPURL（component名・version）単位で追加review必須として固定した。lock上は本番到達可能な必須7件・optional 11件、開発専用の必須4件・optional 25件であり、一覧から1件消す・分類を隠す・本番到達性やoptionalityを変える・lock hashを差し替える操作を自動検査で拒否する。残る807件も各license本文・表示の対象であり「何もしなくてよい」とは扱わない。現在のbuild成果にはnpm componentへ戻せるmetafile/source mapがないため、この監査は依存候補の把握で、実browser bundleの同梱範囲、条件履行、製品ライセンス採用、法的clearanceを完了した証拠ではない。
+`package-lock.json`の887 entryとCycloneDXの854 unique componentを同じlock SHAへ結合し、17種類のlicense expressionを全件分類した。MPL/LGPL系41件、OR選択式5件、CC-BY表示1件の計47件はPURL（component名・version）単位で追加review必須として固定した。lock上は本番到達可能な必須7件・optional 11件、開発専用の必須4件・optional 25件であり、一覧から1件消す・分類を隠す・本番到達性やoptionalityを変える・lock hashを差し替える操作を自動検査で拒否する。残る807件も各license本文・表示の対象であり「何もしなくてよい」とは扱わない。このlock監査単独は依存候補の把握で、実browser bundleの同梱範囲、条件履行、製品ライセンス採用、法的clearanceを完了した証拠ではない。
+
+Viteへ非公開のbundle inventory pluginを追加し、生成chunkが報告したmoduleをpackage-lock pathへ照合した。ローカルproduction buildはclient・RSC・SSRの計120 unique npm component、未解決0を記録し、追加review 47 PURLの生成bundle内一致は0だった。結果は絶対pathを含めずignored `work/release/`へ0600で生成し、全体verifyがbuild直後に再検査する。これは同梱範囲の証拠を改善するが、build toolの条件、license/NOTICE/source提供、製品license選択、法的clearanceは未完のまま維持する。
 
 ## 2026-09-13 — iPhone/AndroidのPWA導入identityとiconを固定
 
@@ -430,7 +432,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-13 / 本人限定Web/PWAを4/5へ進め、8 HTTP防御headerを5 production経路で実測。全6配布対象は証拠不足を残してBLOCKED / 完了 51/74件
+最終更新: 2026-09-13 / 本人限定Web/PWAを4/5へ進め、8 HTTP防御headerを5 production経路で実測。全6配布対象は証拠不足を残してBLOCKED / 完了 52/75件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -457,6 +459,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SYS08 | PWA新版の自動即時切替を廃止し、本人確認後の適用・旧cache整理・再読込へ変更 | 完了 | [記録](public/sw.js) · [記録](components/system-maintenance.tsx) · [記録](tests/service-worker-update.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260913.json) · [記録](docs/validation.md) |
 | SYS09 | PWAの同一性・scope・iPhone/Android向けinstall iconを固定し、実HTTP manifestを検査 | 完了 | [記録](app/manifest.ts) · [記録](public/rock-icon-192.png) · [記録](public/rock-icon-512.png) · [記録](public/rock-icon-maskable.svg) · [記録](scripts/check-web-security-response.mjs) · [記録](tests/pwa-installability.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260913.json) · [記録](docs/validation.md) |
 | SYS10 | Web第三者依存のlock hash・47要review componentのPURL一覧を公開gateへ固定 | 完了 | [記録](package-lock.json) · [記録](data/web-third-party-license-audit.json) · [記録](data/release-readiness.json) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
+| SYS11 | Vite生成chunkのnpm componentをbuild時に記録しlicense監査へ照合 | 完了 | [記録](vite.config.ts) · [記録](scripts/web-bundle-inventory.mjs) · [記録](scripts/check-web-bundle-inventory.mjs) · [記録](tests/web-bundle-inventory.test.mjs) · [記録](package.json) · [記録](data/release-readiness.json) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |

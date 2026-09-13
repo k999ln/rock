@@ -345,6 +345,24 @@
       ]
     },
     {
+      "id": "SYS11",
+      "title": "Vite生成chunkのnpm componentをbuild時に記録しlicense監査へ照合",
+      "status": "done",
+      "dependsOn": [
+        "SYS10"
+      ],
+      "evidence": [
+        "vite.config.ts",
+        "scripts/web-bundle-inventory.mjs",
+        "scripts/check-web-bundle-inventory.mjs",
+        "tests/web-bundle-inventory.test.mjs",
+        "package.json",
+        "data/release-readiness.json",
+        "docs/release-minimum-gates.md",
+        "docs/validation.md"
+      ]
+    },
+    {
       "id": "R01",
       "title": "4参照元の採用判断と事業方針の固定",
       "status": "done",

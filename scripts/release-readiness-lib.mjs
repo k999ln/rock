@@ -520,7 +520,11 @@ export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness
   if (
     gate?.status !== 'pass' ||
     !gate.evidence?.includes('package-lock.json') ||
-    !gate.evidence?.includes('data/web-third-party-license-audit.json')
+    !gate.evidence?.includes('data/web-third-party-license-audit.json') ||
+    !gate.evidence?.includes('vite.config.ts') ||
+    !gate.evidence?.includes('scripts/web-bundle-inventory.mjs') ||
+    !gate.evidence?.includes('scripts/check-web-bundle-inventory.mjs') ||
+    !gate.evidence?.includes('tests/web-bundle-inventory.test.mjs')
   ) {
     fail(`${label}: 公開台帳の根拠が不足しています`);
   }
