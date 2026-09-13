@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-13",
-  "milestone": "RockstarOS Marketsを読取専用の市場分析アダプターとして動的自動化ファンドへ統合",
-  "nextAction": "実注文は無効のまま、最初の実収益Providerを一つ選び、契約済みsandboxで成功・取消・返金と確定実現損益を照合して、ファンドとツールを付けたEarning Receiptから利用者払出し指図まで通す。",
+  "milestone": "外部Polymarket botを固定commitのoffline backtest sandboxとしてMarketsへ統合",
+  "nextAction": "botの実注文は無効のまま、十分な期間のorderbook JSONLでbacktestを実行し、report検証UIを通す。実収益Providerは別途選定し、契約済みsandboxで約定・清算・手数料・取消・返金を照合する。",
   "tasks": [
     {
       "id": "FND01",
@@ -41,6 +41,20 @@
         "components/polymarket-workspace.tsx",
         "tests/markets-adapter.test.mjs",
         "docs/markets-fund-integration-20260913.md"
+      ]
+    },
+    {
+      "id": "MKT02",
+      "title": "外部Polymarket botを固定commit・clean treeのoffline backtest sandboxとして統合",
+      "status": "done",
+      "dependsOn": ["MKT01", "FND01"],
+      "evidence": [
+        "lib/polymarket-bot-adapter.ts",
+        "app/api/markets/bot/assess/route.ts",
+        "toolkits/polymarket-bot-sandbox/run-backtest.mjs",
+        "components/polymarket-workspace.tsx",
+        "tests/polymarket-bot-adapter.test.mjs",
+        "docs/polymarket-bot-sandbox-20260913.md"
       ]
     },
     {

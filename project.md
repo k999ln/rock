@@ -1,5 +1,11 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-13 — 外部Polymarket botをbacktest sandboxへ統合
+
+利用者指定の`MrFadiAi/Polymarket-bot`をcommit `3a04fc842bc3112a11b872263bb55e6712096f9a`で監査した。原botはdry-runでも秘密鍵を要求し、dashboardからLIVEへ即時切替でき、simulation PnLを共通PnLへ加えるため、注文runtimeは直接接続していない。
+
+固定commit・clean treeを確認し、秘密鍵関連環境変数を除いてoffline backtestだけを起動するwrapperを追加した。report検証APIとMarkets UIは改変source、LIVE設定、秘密情報、矛盾する数値を拒否し、positiveなsimulation PnLもファンド収益と8.88 USD回収原資を0のままにする。[監査・境界](docs/polymarket-bot-sandbox-20260913.md)。
+
 ## 2026-09-13 — RockstarOS Marketsを自動化ファンドへ安全に統合
 
 公開中のRockstarOS Marketsを、動的自動化ファンドが選べる読取専用の市場分析アダプターとして追加した。OS側は公開ライブ市場だけを取得し、fallback、サンプル値、モック残高、架空取引量、indicative quote、含み損益を収益へ入れない。取得不能時はサンプル表示へ切り替えず停止する。
@@ -394,13 +400,14 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-13 / RockstarOS Marketsを読取専用の市場分析アダプターとして動的自動化ファンドへ統合 / 完了 44/68件
+最終更新: 2026-09-13 / 外部Polymarket botを固定commitのoffline backtest sandboxとしてMarketsへ統合 / 完了 45/69件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
 | FND01 | 利用可能な自動化ツールから数を固定しないファンドを形成し、構成数・参加・版をD1へ保存 | 完了 | [記録](lib/automation-fund.ts) · [記録](lib/automation-fund-store.ts) · [記録](app/api/automation-funds/route.ts) · [記録](components/autonomous-fund-market.tsx) · [記録](drizzle/0008_wooden_avengers.sql) · [記録](tests/automation-fund.test.mjs) |
 | FND02 | ファンド・ツール別の検証済み収益を集計し、全ファンド合算の月最大8.88 USDと利用者帰属額を実Providerで精算 | 進行中 | [記録](services/sky-billing/migrations/0003_automation_funds.sql) · [記録](services/sky-billing/src/domain.ts) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing-worker.test.mjs) · [記録](docs/product-baseline.md) |
 | MKT01 | RockstarOS Marketsを自動化ファンドの読取専用市場分析アダプターとして統合 | 完了 | [記録](lib/markets-adapter.ts) · [記録](app/api/markets/analysis/route.ts) · [記録](components/polymarket-workspace.tsx) · [記録](tests/markets-adapter.test.mjs) · [記録](docs/markets-fund-integration-20260913.md) |
+| MKT02 | 外部Polymarket botを固定commit・clean treeのoffline backtest sandboxとして統合 | 完了 | [記録](lib/polymarket-bot-adapter.ts) · [記録](app/api/markets/bot/assess/route.ts) · [記録](toolkits/polymarket-bot-sandbox/run-backtest.mjs) · [記録](components/polymarket-workspace.tsx) · [記録](tests/polymarket-bot-adapter.test.mjs) · [記録](docs/polymarket-bot-sandbox-20260913.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -485,7 +492,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 実注文は無効のまま、最初の実収益Providerを一つ選び、契約済みsandboxで成功・取消・返金と確定実現損益を照合して、ファンドとツールを付けたEarning Receiptから利用者払出し指図まで通す。
+次の作業: botの実注文は無効のまま、十分な期間のorderbook JSONLでbacktestを実行し、report検証UIを通す。実収益Providerは別途選定し、契約済みsandboxで約定・清算・手数料・取消・返金を照合する。
 <!-- project-status:end -->
 
 ## 次段階の設計

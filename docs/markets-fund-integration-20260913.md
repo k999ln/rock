@@ -20,6 +20,7 @@ RockstarOS Marketsを、動的な自動化ファンドが選べる1つの市場�
 
 - `/api/markets/analysis`は公開ライブ市場だけを最大12件まで読み取り、取得不能・fallback・空データではサンプル値を返さない。
 - `/polymarket`は取得状態、確率、出来高、流動性を「分析」と明示し、利回り・確定収益ではないと表示する。
+- `MrFadiAi/Polymarket-bot`は固定commit・clean treeのoffline backtestだけをsandbox wrapperから利用し、reportをMarkets内で検証する。秘密鍵、LIVE切替、注文runtimeは接続しない。
 - Marketsをready catalogへ追加したため、新規ファンドの候補には自動的に入る。初期の検証済みgross/cost/receiptはすべて0である。
 - ファンド会計は既存のSky Billingを唯一の正本とし、Provider参照、Execution Receipt、重複防止、UTC月ごとの利用者合算上限888 cents、成果報酬0、共同留保0を維持する。
 - 旧80/10/10は`/fund/legacy`の履歴表示だけに残し、Marketsおよび新規ファンドへ適用しない。

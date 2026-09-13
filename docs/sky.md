@@ -32,7 +32,7 @@ flowchart LR
 
 | ツール | 実行場所 | 現在できること | 明示的な限界 |
 | --- | --- | --- | --- |
-| RockstarOS Markets | Webブラウザ / 公開市場API | Polymarketの公開ライブ確率・出来高・流動性を分析材料として表示 | 読取専用。サンプル値・取引量・含み損益を収益にせず、注文・Wallet移動は無効 |
+| RockstarOS Markets | Webブラウザ / 公開市場API / PC offline backtest | 公開ライブ確率・出来高・流動性を表示し、固定commitのPolymarket bot backtest reportを検証 | 市場は読取専用、botはbacktest専用。秘密鍵・LIVE切替・注文・Wallet移動は無効。simulation PnLを収益にしない |
 | メルカリ収益スターター | Webブラウザ / Shops Connector | 出品原稿、実費後の見込み利益、承認、出品・取引完了の進捗を管理 | 個人版は本人が公式画面で操作。Shopsの自動連携と検証済み売上は固定IP Connector・契約・Token接続前は無効 |
 | Instagram運用・受注型ブランド管理 | PC / MCP | 目標から広告・接客・受注・制作・改善を38操作で管理 | 初期値はmock。Autopilotは外部作用を直接実行せず、実Provider・実投稿・実請求は未接続 |
 | サブスク顧問 | PC / MCP | 契約、更新日、支払い失敗、通貨別月額をローカル台帳から確認 | 読み取り専用。解約、支払い、税務申告は自動実行しない |
@@ -43,7 +43,7 @@ flowchart LR
 | 法務受付 | Webブラウザ | 相談内容を整理し、公式情報と無料窓口を案内 | 法的助言・期限・受任を保証せず、自動連絡しない |
 | 特許出願アシスタント | Webブラウザ | 発明情報から調査候補と出願書類ドラフトを作る | 特許性・登録を保証せず、提出・支払を自動化しない |
 
-この10件は `lib/catalog.ts` で `ready` とされる。RockstarOS Marketsは公開ライブ市場の読取専用で、取得失敗時にサンプル値で補完しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。
+この10件は `lib/catalog.ts` で `ready` とされる。RockstarOS Marketsは公開ライブ市場の読取専用で、取得失敗時にサンプル値で補完しない。外部Polymarket botは固定commit・clean treeのoffline backtestだけを利用し、秘密鍵と注文runtimeは接続しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。
 
 ### Skyに表示する導入候補3件
 
