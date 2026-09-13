@@ -2,23 +2,39 @@
 
 import {
   Activity,
+  AlertCircle,
+  AppWindow,
   ArchiveRestore,
   ArrowLeft,
+  BellRing,
   CheckCircle2,
   CloudCog,
+  Database,
   Download,
+  FileDown,
   HardDrive,
   KeyRound,
   LoaderCircle,
   RefreshCw,
+  RotateCcw,
   ShieldAlert,
   Smartphone,
   Upload,
-  Wifi,
   XCircle,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import {
   Dialog,
   DialogContent,
@@ -30,8 +46,10 @@ import {
   collectDevicePreferences,
   decryptDeviceBackup,
   encryptDeviceBackup,
+  resetDevicePreferences,
   restoreDevicePreferences,
 } from '@/lib/system-backup';
+import releaseReadiness from '@/data/release-readiness.json';
 import styles from './system-maintenance.module.css';
 
 type CheckState = 'checking' | 'ready' | 'attention' | 'blocked';
@@ -43,11 +61,24 @@ type Check = {
 };
 type BackupMode = 'create' | 'restore';
 
+const releaseCopy: Record<string, { short: string; icon: React.ReactNode }> = {
+  'web-pwa-owner-preview': { short: '本人限定版は稼働可能', icon: <AppWindow /> },
+  'web-pwa-public-preview': { short: 'ライセンス選択と公開承認が必要', icon: <AppWindow /> },
+  'qemu-developer-preview': { short: 'rc2の基礎と部品表は合格。配布条件は未完了', icon: <HardDrive /> },
+  'android-physical-preview': { short: '対象機種未選択。端末固有の実測証拠が必要', icon: <Smartphone /> },
+  'iphone-ipad-client': { short: '置換OSではなくclient配布として審査', icon: <Smartphone /> },
+  'personal-number-identity': { short: '番号取得は無効。別の法務・安全管理審査が必要', icon: <ShieldAlert /> },
+};
+
 const initialChecks: Check[] = [
   { id: 'network', label: '通信', detail: '確認中', state: 'checking' },
+  { id: 'secure', label: '安全な接続', detail: '確認中', state: 'checking' },
   { id: 'storage', label: '端末内保存', detail: '確認中', state: 'checking' },
+  { id: 'persistent', label: '保存の保護', detail: '確認中', state: 'checking' },
   { id: 'crypto', label: '暗号化', detail: '確認中', state: 'checking' },
   { id: 'update', label: '更新機構', detail: '確認中', state: 'checking' },
+  { id: 'notification', label: '通知', detail: '確認中', state: 'checking' },
+  { id: 'appMode', label: 'アプリ表示', detail: '確認中', state: 'checking' },
   { id: 'api', label: 'RockstarOS API', detail: '確認中', state: 'checking' },
   { id: 'connector', label: 'PC Connector', detail: '確認中', state: 'checking' },
 ];
@@ -73,6 +104,13 @@ export default function SystemMaintenance() {
       state: navigator.onLine ? 'ready' : 'attention',
     });
 
+    next.push({
+      id: 'secure',
+      label: '安全な接続',
+      detail: globalThis.isSecureContext ? 'HTTPSで保護' : 'ローカル開発環境',
+      state: globalThis.isSecureContext || location.hostname === 'localhost' ? 'ready' : 'blocked',
+    });
+
     try {
       const probe = 'rockstaros.health.probe';
       localStorage.setItem(probe, 'ok');
@@ -84,6 +122,18 @@ export default function SystemMaintenance() {
       next.push({ id: 'storage', label: '端末内保存', detail: used, state: 'ready' });
     } catch {
       next.push({ id: 'storage', label: '端末内保存', detail: '利用できません', state: 'blocked' });
+    }
+
+    try {
+      const persisted = await navigator.storage?.persisted?.();
+      next.push({
+        id: 'persistent',
+        label: '保存の保護',
+        detail: persisted ? '自動削除から保護' : '必要なら保護を許可',
+        state: persisted ? 'ready' : 'attention',
+      });
+    } catch {
+      next.push({ id: 'persistent', label: '保存の保護', detail: 'ブラウザ管理', state: 'attention' });
     }
 
     next.push({
@@ -107,6 +157,31 @@ export default function SystemMaintenance() {
     } catch {
       next.push({ id: 'update', label: '更新機構', detail: 'ブラウザ更新のみ', state: 'attention' });
     }
+
+    const notificationPermission = 'Notification' in window ? Notification.permission : 'unsupported';
+    next.push({
+      id: 'notification',
+      label: '通知',
+      detail:
+        notificationPermission === 'granted'
+          ? '許可済み'
+          : notificationPermission === 'denied'
+            ? 'ブラウザ設定で拒否中'
+            : notificationPermission === 'default'
+              ? '必要なときに許可'
+              : 'この環境では非対応',
+      state: notificationPermission === 'granted' ? 'ready' : 'attention',
+    });
+
+    const installed =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (navigator as Navigator & { standalone?: boolean }).standalone === true;
+    next.push({
+      id: 'appMode',
+      label: 'アプリ表示',
+      detail: installed ? 'ホーム画面から起動' : 'ブラウザで稼働中',
+      state: installed ? 'ready' : 'attention',
+    });
 
     try {
       const response = await fetch('/api/jobs', { cache: 'no-store' });
@@ -139,6 +214,13 @@ export default function SystemMaintenance() {
     () => checks.filter(({ state }) => state === 'ready').length,
     [checks],
   );
+  const blockedCount = useMemo(
+    () => checks.filter(({ state }) => state === 'blocked').length,
+    [checks],
+  );
+  const readyReleaseCount = releaseReadiness.targets.filter(
+    ({ declaredStatus }) => declaredStatus === 'ready',
+  ).length;
 
   async function checkForUpdate() {
     setMessage('更新を確認しています…');
@@ -153,6 +235,70 @@ export default function SystemMaintenance() {
     } catch {
       setMessage('自動確認できませんでした。通信を確認して再読込してください。');
     }
+  }
+
+  async function enableNotifications() {
+    if (!('Notification' in window)) {
+      setMessage('この環境は通知に対応していません。');
+      return;
+    }
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      setMessage('通知は許可されませんでした。ブラウザのサイト設定から変更できます。');
+      await runDiagnostics();
+      return;
+    }
+    try {
+      const registration = await navigator.serviceWorker?.getRegistration();
+      await registration?.showNotification('RockstarOS', {
+        body: '通知を受け取れる状態です。',
+        tag: 'rockstaros-notification-test',
+      });
+      setMessage('通知を許可し、テスト通知を送りました。バックグラウンド配信はProvider接続後に有効になります。');
+    } catch {
+      setMessage('通知は許可済みです。テスト通知は表示できませんでした。');
+    }
+    await runDiagnostics();
+  }
+
+  async function protectStorage() {
+    try {
+      const persisted = await navigator.storage?.persist?.();
+      setMessage(
+        persisted
+          ? 'この端末のRockstarOS設定を自動削除から保護しました。'
+          : 'ブラウザが保存保護を許可しませんでした。設定は引き続き利用できます。',
+      );
+    } catch {
+      setMessage('この環境では保存保護を変更できません。');
+    }
+    await runDiagnostics();
+  }
+
+  function downloadDiagnostics() {
+    const report = {
+      product: 'RockstarOS',
+      version: '1.0',
+      channel: 'Developer Preview',
+      runtime: 'web_pwa',
+      generatedAt: new Date().toISOString(),
+      checks: checks.map(({ id, label, detail, state }) => ({ id, label, detail, state })),
+      privacy: 'No identity, token, wallet, personal number, or user content included.',
+    };
+    const url = URL.createObjectURL(
+      new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' }),
+    );
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `RockstarOS-diagnostics-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setMessage('個人情報を含まない診断レポートを保存しました。');
+  }
+
+  function resetSettings() {
+    resetDevicePreferences(localStorage);
+    setMessage('ホームの外観と並び順を初期状態に戻しました。アカウント、Wallet、履歴は削除していません。');
   }
 
   function openBackup(mode: BackupMode) {
@@ -224,8 +370,26 @@ export default function SystemMaintenance() {
           <span className={styles.overviewIcon}><Activity /></span>
           <div>
             <small>WEB / PWA</small>
-            <h1>{running ? '診断中' : `${readyCount} / ${checks.length} 準備済み`}</h1>
-            <p>この端末で実際に使える機能だけを確認します。</p>
+            <h1>{running ? '診断中' : blockedCount === 0 ? '稼働できます' : '確認が必要です'}</h1>
+            <p>{readyCount} / {checks.length} 項目が利用可能。この端末の実測結果です。</p>
+          </div>
+        </section>
+
+        <section className={styles.section}>
+          <h2>日常の運用</h2>
+          <div className={styles.actions}>
+            <button onClick={() => void enableNotifications()}>
+              <span className={styles.orange}><BellRing /></span>
+              <span><strong>通知を許可・テスト</strong><small>ジョブ完了を受け取る準備</small></span>
+            </button>
+            <button onClick={() => void protectStorage()}>
+              <span className={styles.teal}><Database /></span>
+              <span><strong>端末内データを保護</strong><small>ブラウザの自動削除を防ぐよう要求</small></span>
+            </button>
+            <button onClick={downloadDiagnostics}>
+              <span className={styles.slate}><FileDown /></span>
+              <span><strong>診断レポート</strong><small>個人情報なしでサポートへ共有</small></span>
+            </button>
           </div>
         </section>
 
@@ -253,23 +417,56 @@ export default function SystemMaintenance() {
               <span className={styles.purple}><CloudCog /></span>
               <span><strong>更新を確認</strong><small>Service Workerと公開版を照合</small></span>
             </button>
+            <AlertDialog>
+              <AlertDialogTrigger render={<button aria-label="ホーム設定を初期化" />}>
+                <span className={styles.red}><RotateCcw /></span>
+                <span><strong>ホーム設定を初期化</strong><small>外観と並び順だけを元に戻す</small></span>
+              </AlertDialogTrigger>
+              <AlertDialogContent className={styles.alertDialog}>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>ホーム設定を初期化しますか？</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    壁紙、色、アイコンサイズ、表示名、並び順を初期状態へ戻します。アカウント、Wallet、実行履歴は削除しません。
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className={styles.alertFooter}>
+                  <AlertDialogCancel className={styles.cancel}>キャンセル</AlertDialogCancel>
+                  <AlertDialogAction className={styles.danger} onClick={resetSettings}>初期化する</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </section>
 
         {message && <output className={styles.notice}>{message}</output>}
 
-        <section className={styles.section}>
-          <h2>端末OSの合格条件</h2>
+        <details className={styles.release}>
+          <summary>
+            <span>公開準備</span>
+            <span className={styles.releaseCount}>{readyReleaseCount} / {releaseReadiness.targets.length}</span>
+          </summary>
+          <p className={styles.releaseLead}>配布方法ごとに必要条件を判定しています。</p>
           <div className={styles.gates}>
-            <Gate icon={<HardDrive />} title="QEMU Developer Preview" state="内部受入済み" tone="ready" />
-            <Gate icon={<Smartphone />} title="物理端末" state="対象機種の確定待ち" tone="blocked" />
-            <Gate icon={<KeyRound />} title="正式署名・暗号鍵" state="所有者鍵の準備待ち" tone="blocked" />
-            <Gate icon={<ShieldAlert />} title="外部MCP・決済" state="Provider認証と審査待ち" tone="blocked" />
+            {releaseReadiness.targets.map((target) => {
+              const required = target.gates.filter(({ required }) => required);
+              const passed = required.filter(({ status }) => status === 'pass').length;
+              const copy = releaseCopy[target.id];
+              return (
+                <Gate
+                  key={target.id}
+                  icon={copy?.icon || <KeyRound />}
+                  title={target.label}
+                  state={`${passed}/${required.length}・${copy?.short || '条件を確認中'}`}
+                  progress={`${passed}/${required.length}`}
+                  tone={target.declaredStatus === 'ready' ? 'ready' : 'blocked'}
+                />
+              );
+            })}
           </div>
           <p className={styles.boundary}>
-            Webから物理端末のドライバや署名鍵を作った扱いにはしません。機種、鍵、Providerが揃うと、この診断に実測結果を接続します。
+            緑はその配布方法の最低条件を満たした状態です。QEMU rc2は6/10。Android実機は対象端末未選択で0/5。マイナンバーは取得無効の境界だけ1/7です。製品ライセンス、正式署名、端末固有試験、法務・安全管理、公開承認が揃うまで配布・有効化可能にはしません。
           </p>
-        </section>
+        </details>
       </div>
 
       <Dialog open={backupMode !== null} onOpenChange={(open) => !open && setBackupMode(null)}>
@@ -322,10 +519,10 @@ export default function SystemMaintenance() {
 function StatusIcon({ state }: { state: CheckState }) {
   if (state === 'checking') return <LoaderCircle className={styles.spin} />;
   if (state === 'ready') return <CheckCircle2 className={styles.readyIcon} />;
-  if (state === 'attention') return <Wifi className={styles.attentionIcon} />;
+  if (state === 'attention') return <AlertCircle className={styles.attentionIcon} />;
   return <XCircle className={styles.blockedIcon} />;
 }
 
-function Gate({ icon, title, state, tone }: { icon: React.ReactNode; title: string; state: string; tone: 'ready' | 'blocked' }) {
-  return <article><span className={styles[tone]}>{icon}</span><div><strong>{title}</strong><small>{state}</small></div></article>;
+function Gate({ icon, title, state, progress, tone }: { icon: React.ReactNode; title: string; state: string; progress: string; tone: 'ready' | 'blocked' }) {
+  return <article><span className={styles[tone]}>{icon}</span><div><strong>{title}</strong><small>{state}</small></div><b className={styles.gateProgress}>{progress}</b></article>;
 }

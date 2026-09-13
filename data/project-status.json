@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-13",
-  "milestone": "外部Polymarket botを固定commitのoffline backtest sandboxとしてMarketsへ統合",
-  "nextAction": "botの実注文は無効のまま、十分な期間のorderbook JSONLでbacktestを実行し、report検証UIを通す。実収益Providerは別途選定し、契約済みsandboxで約定・清算・手数料・取消・返金を照合する。",
+  "milestone": "本番側の公開gate・永続Walletと、動的自動化ファンド・Markets・固定commit bot sandboxを統合",
+  "nextAction": "本人限定Web/PWAへ統合版を反映する。botの実注文は無効のまま十分な期間のbacktestを行い、実収益Providerは契約済みsandboxで約定・清算・手数料・取消・返金を照合する。QEMU配布は所有者の製品licenseと正式鍵の保管先が決まるまでblockedを維持する。",
   "tasks": [
     {
       "id": "FND01",
@@ -248,6 +248,86 @@
         "lib/system-backup.ts",
         "tests/system-backup.test.mjs",
         "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "SYS02",
+      "title": "通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装",
+      "status": "done",
+      "dependsOn": ["SYS01"],
+      "evidence": [
+        "components/system-maintenance.tsx",
+        "components/system-maintenance.module.css",
+        "lib/system-backup.ts",
+        "tests/system-backup.test.mjs",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "SYS03",
+      "title": "公開方法別の最低条件を機械判定し、Web/npm SBOMと設定画面へ統合",
+      "status": "done",
+      "dependsOn": ["SYS02"],
+      "evidence": [
+        "data/release-readiness.json",
+        "scripts/check-release-readiness.mjs",
+        "scripts/release-readiness-lib.mjs",
+        "tests/release-readiness.test.mjs",
+        "docs/release-minimum-gates.md",
+        "components/system-maintenance.tsx"
+      ]
+    },
+    {
+      "id": "SYS04",
+      "title": "QEMU rc2を同一候補10要件へ固定し、rc2固有native SBOMを生成して旧inventoryの誤転用を拒否",
+      "status": "done",
+      "dependsOn": ["SYS03"],
+      "evidence": [
+        "data/qemu-release-audit.json",
+        "data/qemu-rc2-legal-info/manifest.csv",
+        "data/qemu-rc2-legal-info/host-manifest.csv",
+        "data/release-readiness.json",
+        "scripts/check-release-readiness.mjs",
+        "scripts/release-readiness-lib.mjs",
+        "tests/release-readiness.test.mjs",
+        "docs/qemu-release-completion-audit-20260912.md",
+        "components/system-maintenance.tsx"
+      ]
+    },
+    {
+      "id": "SYS05",
+      "title": "候補準備・法務承認・保護署名・本人署名の62拒否境界試験を全体verifyへ統合",
+      "status": "done",
+      "dependsOn": ["SYS04"],
+      "evidence": [
+        "scripts/check-release-signing.mjs",
+        "scripts/release_signing.py",
+        "scripts/release_signing_owner.py",
+        "scripts/prepare_release_candidate.py",
+        "scripts/verify_owner_legal_approval.py",
+        "tests/test_release_signing.py",
+        "tests/test_release_signing_owner.py",
+        "tests/test_prepare_release_candidate.py",
+        "tests/test_owner_legal_approval.py",
+        "docs/release-signing-operations.md"
+      ]
+    },
+    {
+      "id": "SYS06",
+      "title": "Android物理端末とマイナンバー連携を独立監査し、証拠なしの互換・GMS・販売・個人番号有効化を拒否",
+      "status": "done",
+      "dependsOn": [
+        "SYS03"
+      ],
+      "evidence": [
+        "data/android-physical-release-audit.json",
+        "data/personal-number-release-audit.json",
+        "data/release-readiness.json",
+        "scripts/check-release-readiness.mjs",
+        "scripts/release-readiness-lib.mjs",
+        "tests/release-readiness.test.mjs",
+        "docs/android-and-personal-number-gates-20260913.md",
+        "docs/release-minimum-gates.md"
       ]
     },
     {
@@ -766,7 +846,8 @@
       "evidence": [
         "docs/launch-readiness-20260910.md",
         "docs/owner-setup-20260911.md",
-        "docs/current-state-20260911.md"
+        "docs/current-state-20260911.md",
+        "docs/evidence/launch/sites-owner-private-20260913.json"
       ]
     },
     {
@@ -1108,6 +1189,9 @@
     "recordedWebTests": 93,
     "currentHeadValidation": "See exact HEAD checks of PR4; recorded snapshot is not a self-attestation of later commits",
     "unsignedCandidatePreparation": "RC2_REPRODUCIBLE_ALL8_GITHUB_DOWNLOADED_VERIFIED",
+    "qemuReleaseAudit": "RC2_EXACT_IDENTITY_6_OF_10_REQUIRED_GATES_PASS",
+    "qemuCurrentNativeSbom": "PASS_24_TARGET_37_HOST_COMPONENTS_BOUND_TO_EXACT_RC2_ARCHIVE_PRODUCT_LICENSE_SEPARATE",
+    "signingMechanics": "PASS_62_PUBLIC_FIXTURE_REGRESSIONS_IN_FULL_VERIFY_PRODUCTION_KEY_AND_OWNER_APPROVAL_NOT_EXECUTED",
     "signingBootstrapPr": 5,
     "signingBootstrapCommit": "a4411622031858d6d9684c599d857cadaf90bb94",
     "signingBootstrapApproval": "AWAITING_EXPLICIT_LIMITED_MAIN_APPROVAL",

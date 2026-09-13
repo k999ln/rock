@@ -1,0 +1,104 @@
+{
+  "schema": "rockstaros-release-readiness/1",
+  "evaluatedAt": "2026-09-13",
+  "policy": {
+    "statusRule": "A target is ready only when every required gate passes. Not-applicable gates need an explicit reason.",
+    "productLicenseIntent": "data/release-owner-intent-20260911.json",
+    "productionSigningIntent": "data/release-owner-intent-20260911.json",
+    "dependencyInventory": "package-lock.json",
+    "generatedSbom": "work/release/rockstaros-web.cdx.json",
+    "qemuAudit": "data/qemu-release-audit.json",
+    "androidPhysicalAudit": "data/android-physical-release-audit.json",
+    "personalNumberAudit": "data/personal-number-release-audit.json",
+    "generatedCurrentNativeSbom": "work/release/rockstaros-native-rc2.cdx.json",
+    "generatedHistoricalNativeSbom": "work/release/rockstaros-native-historical-9abf78a.cdx.json",
+    "generatedArtifactsCommitted": false
+  },
+  "targets": [
+    {
+      "id": "web-pwa-owner-preview",
+      "label": "Web / PWA 本人限定Preview",
+      "distribution": "owner_private",
+      "declaredStatus": "ready",
+      "gates": [
+        { "id": "source-verification", "required": true, "status": "pass", "evidence": ["package.json", "docs/validation.md"] },
+        { "id": "secure-delivery", "required": true, "status": "pass", "evidence": [".openai/hosting.json", "docs/evidence/launch/sites-owner-private-20260911.json", "docs/evidence/launch/sites-owner-private-20260913.json"] },
+        { "id": "operations-and-recovery", "required": true, "status": "pass", "evidence": ["components/system-maintenance.tsx", "tests/system-backup.test.mjs"] },
+        { "id": "product-license-for-redistribution", "required": false, "status": "not_applicable", "reason": "本人限定のサービス利用で、ソースまたはOS imageの一般再配布を行わないため" },
+        { "id": "production-image-signing", "required": false, "status": "not_applicable", "reason": "Web/PWAの本人限定配信でnative OS imageを配布しないため" }
+      ]
+    },
+    {
+      "id": "web-pwa-public-preview",
+      "label": "Web / PWA 一般公開Preview",
+      "distribution": "public_web",
+      "declaredStatus": "blocked",
+      "gates": [
+        { "id": "source-verification", "required": true, "status": "pass", "evidence": ["package.json", "docs/validation.md"] },
+        { "id": "dependency-license-inventory", "required": true, "status": "pass", "evidence": ["package-lock.json"] },
+        { "id": "product-license", "required": true, "status": "blocked", "ownerAction": "自作部分の製品ライセンスを明示選択し、適用範囲と第三者権利を確認する" },
+        { "id": "public-access-approval", "required": true, "status": "blocked", "ownerAction": "本人限定Sitesを一般公開へ変更するか、別の公開先を明示承認する" }
+      ]
+    },
+    {
+      "id": "qemu-developer-preview",
+      "label": "QEMU Developer Preview配布",
+      "distribution": "downloadable_os_image",
+      "declaredStatus": "blocked",
+      "candidateAudit": "data/qemu-release-audit.json",
+      "gates": [
+        { "id": "candidate-identity", "required": true, "status": "pass", "evidence": ["data/qemu-release-audit.json", "docs/evidence/rls01/final-b7-rc2/acceptance-result.json", "docs/evidence/rls01/remaining-b7-rc2/inventory.json"] },
+        { "id": "security-baseline", "required": true, "status": "pass", "evidence": ["docs/evidence/rls01/final-b7-rc2/acceptance-result.json", "docs/os-acceptance-b7d819c-20260911.md"] },
+        { "id": "update-and-rollback", "required": true, "status": "pass", "evidence": ["docs/evidence/rls01/remaining-b7-rc2/lifecycle.json", "docs/evidence/rls01/remaining-b7-rc2/d1-d3.json"] },
+        { "id": "recovery-and-backup", "required": true, "status": "pass", "evidence": ["docs/evidence/rls01/final-b7-rc2/acceptance-result.json", "docs/os-acceptance-b7d819c-20260911.md"] },
+        { "id": "diagnostics-and-acceptance", "required": true, "status": "pass", "evidence": ["docs/evidence/rls01/remaining-b7-rc2/d4.json", "docs/evidence/rls01/remaining-b7-rc2/d6.json", "docs/rc2-remaining-acceptance-20260911.md"] },
+        { "id": "current-native-component-sbom", "required": true, "status": "pass", "evidence": ["data/qemu-rc2-legal-info/manifest.csv", "data/qemu-rc2-legal-info/host-manifest.csv", "data/qemu-release-audit.json"] },
+        { "id": "product-license", "required": true, "status": "blocked", "ownerAction": "自作部分の製品ライセンスを明示選択する" },
+        { "id": "production-signing", "required": true, "status": "blocked", "ownerAction": "OWNER_MANUAL等の方式を確定し、所有者管理下で正式鍵の作成・保管・失効手順を実施する", "evidence": ["scripts/check-release-signing.mjs", "tests/test_release_signing.py", "tests/test_release_signing_owner.py", "docs/release-signing-operations.md"] },
+        { "id": "post-signing-same-candidate-acceptance", "required": true, "status": "blocked", "nextAction": "ライセンスと正式署名をcurrent native SBOMと同じ最終候補へ結合し、fresh導入・更新・復旧を再実行する" },
+        { "id": "public-distribution-approval", "required": true, "status": "blocked", "ownerAction": "全gate合格後にGitHub ReleaseをDraftから公開するか明示承認する" }
+      ]
+    },
+    {
+      "id": "android-physical-preview",
+      "label": "Android系物理端末Preview",
+      "distribution": "physical_device_os",
+      "declaredStatus": "blocked",
+      "candidateAudit": "data/android-physical-release-audit.json",
+      "gates": [
+        { "id": "exact-model-and-sku", "required": true, "status": "blocked", "ownerAction": "実際に使う機種名、型番、SKU、bootloader状態を確認する" },
+        { "id": "bsp-driver-boot-recovery", "required": true, "status": "blocked", "ownerAction": "対象機種のBSP、vendor driver、boot chain、復旧imageを取得して実機受入する" },
+        { "id": "android-cdd-cts", "required": true, "status": "blocked", "ownerAction": "Android互換を表示する場合は対象buildでCDDを満たしCTS等を実行する" },
+        { "id": "gms", "required": false, "status": "not_applicable", "reason": "Google Mobile Servicesを同梱しないDeveloper Previewを既定とし、必要時は別契約gateにする" },
+        { "id": "production-signing", "required": true, "status": "blocked", "ownerAction": "対象端末の更新・rollback・失効を含む正式署名運用を実施する" },
+        { "id": "regional-radio-and-sales", "required": true, "status": "blocked", "ownerAction": "販売地域、無線機能、販売形態を確定し、該当する認証と表示を専門家と確認する" }
+      ]
+    },
+    {
+      "id": "iphone-ipad-client",
+      "label": "iPhone / iPad",
+      "distribution": "client_only",
+      "declaredStatus": "blocked",
+      "gates": [
+        { "id": "replacement-os", "required": false, "status": "not_applicable", "reason": "一般利用者向けの置換OSではなくWeb/PWAまたは審査対象clientとして提供する" },
+        { "id": "client-distribution", "required": true, "status": "blocked", "ownerAction": "PWA一般公開またはiOS clientの配布方式、審査、privacy表示を確定する" }
+      ]
+    },
+    {
+      "id": "personal-number-identity",
+      "label": "マイナンバー連携",
+      "distribution": "regulated_identity_feature",
+      "declaredStatus": "blocked",
+      "candidateAudit": "data/personal-number-release-audit.json",
+      "gates": [
+        { "id": "disabled-until-approved", "required": true, "status": "pass", "evidence": ["docs/sky-identity-connection.md", "docs/product-baseline.md", "data/personal-number-release-audit.json"] },
+        { "id": "purpose-and-necessity", "required": true, "status": "blocked", "ownerAction": "番号法上許される具体的事務、必要性、法的根拠、本人への通知内容を専門家と確定する" },
+        { "id": "authorized-operator-and-provider", "required": true, "status": "blocked", "ownerAction": "取扱主体、担当者、本人確認provider、委託・再委託関係と責任を確定する" },
+        { "id": "data-flow-retention-and-deletion", "required": true, "status": "blocked", "nextAction": "取得から保存期限到来・削除・媒体廃棄までのdata flowと証跡を設計・審査する" },
+        { "id": "security-and-privacy-review", "required": true, "status": "blocked", "nextAction": "通常profileから分離し、組織的・人的・物理的・技術的安全管理措置を審査する" },
+        { "id": "incident-and-vendor-governance", "required": true, "status": "blocked", "nextAction": "漏えい報告・本人通知・再発防止と委託先監督を手順化する" },
+        { "id": "activation-approval", "required": true, "status": "blocked", "ownerAction": "全gateの独立確認後、対象環境・開始日・責任者を指定して有効化を明示承認する" }
+      ]
+    }
+  ]
+}

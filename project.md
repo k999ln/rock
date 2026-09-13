@@ -15,6 +15,31 @@
 ファンド会計は既存のD1 membershipとSky Billingを唯一の正本に保ち、Providerで確定した実現損益だけを将来のEarning Receipt候補にする。実注文、自動再投資、Wallet資金移動、公開範囲の変更は行っていない。旧80/10/10は`/fund/legacy`だけに隔離したまま維持する。[比較・安全境界](docs/markets-fund-integration-20260913.md)。
 
 `npm run verify`相当の全項目はWeb 174 tests、Marketsと動的ファンドの集中検証、型、lint、MCP package、Billing Worker dry-run、Fashion Brand Ops 15 tests、本番build、仕事API 143 assertionsまで合格した。ローカル待受を使う試験だけsandbox外で再実行した。検証は合成・sandbox境界内であり、外部市場の注文・実資金移動・公開設定変更は行っていない。
+## 2026-09-13 — Android実機とマイナンバーを証拠単位の別gateへ固定
+
+Android物理端末版を、正確な機種/SKU、同一SKUのBSP・boot・recovery、同一buildのCDD/CTS、production署名、販売地域の5必須gateへ分けた。Android互換、物理flash、販売可能という表示は対応gateなしに有効化できない。GMSはAOSP外の別ライセンスなので、既定のDeveloper PreviewはGMSなしを維持する。対象機種は未選択で、現在0/5合格である。
+
+マイナンバー連携は、無効化境界、目的/必要性、取扱主体/provider、data flowと保存/削除、安全管理、事故対応/委託先監督、最終有効化の7必須gateへ分けた。現在1/7合格で、番号・カード画像を取得せず、通常profileにも保存しない。両監査は公開台帳と機械照合し、gate欠落、状態ずれ、非公式根拠、承認前の取得を拒否する。[Android実機・マイナンバー監査](docs/android-and-personal-number-gates-20260913.md)を参照。
+
+## 2026-09-12 — QEMU rc2を同一候補の10要件へ固定
+
+QEMU `1.0.0-preview.20260911-rc2` のversion、source commit、1,003,224,286 byteのarchive SHA-256を、受入・434,523件inventory・Web表示の3系統で照合した。候補同一性、開発鍵と復旧guard、範囲付き更新・rollback、backup・中断復旧、反復boot・原本照合の5件を合格とし、rc2固有native SBOM、製品license、production署名、署名後の同一候補受入、一般公開承認の5件は未達を維持する。
+
+旧9abのBuildroot legal-infoからtarget 24、host build 37 componentのCycloneDX 1.6を生成する実装を追加した。これは変換方法の検証であり、metadataと自動検査で旧source・license未許諾を固定する。旧inventoryをrc2固有SBOMへ転用したり、QEMU auditと公開台帳のgate状態を食い違わせたりすると検査を拒否する。[QEMU配布完了監査](docs/qemu-release-completion-audit-20260912.md)を参照。
+
+## 2026-09-12 — 公開最低条件を機械判定へ変更
+
+公開状態を本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android物理端末、iPhone/iPad client、マイナンバー連携へ分離した。設定画面は機械可読の同じ台帳から完了数を表示し、現在は本人限定Web/PWAだけをreadyとする。
+
+公開検査は、必須gateと宣言状態の不一致、根拠file欠落、所有者選択とLICENSEのない製品license合格、正式鍵の実施記録がないproduction署名合格、npm依存のlicense metadata欠落、未審査のマイナンバー有効化を拒否する。Web/npmのCycloneDX 1.6 SBOMはignored領域へ生成し、native Buildroot inventoryとscopeを混ぜない。
+
+一般公開とQEMU配布の次のauthority gateは、自作部分の製品ライセンス選択と正式署名方式の確定である。agentはそれを代行せず、それ以外の実装・検証・GitHub/Sites反映を先に完了する。[最低公開条件](docs/release-minimum-gates.md)を参照。
+
+## 2026-09-12 — 最低限のOS運用と公開審査gateを設定へ追加
+
+設定の「システム」を日常運用の操作面へ拡張した。安全な接続、通知、永続保存、PWA表示を実測診断へ加え、本人操作による通知テスト、ブラウザへの保存保護要求、個人情報を含めない診断JSON、確認付きのホーム設定初期化を追加する。初期化は許可済みの外観・並び順だけを対象にし、アカウント、Wallet、実行履歴、未知のlocalStorage keyを削除しない。
+
+公開条件は折り畳み、Web/PWA、QEMU、Android CDD/CTS、Google Play/GMS、対象実機/BSP、production署名、OSS再配布、販売地域の無線規制、マイナンバー取扱いを別gateにした。RockstarOS全体へ単一審査があるとは扱わず、証拠がない項目は未実施のまま表示する。
 
 ## 2026-09-12 — OS診断・暗号化保全・更新確認を設定へ追加
 
@@ -402,7 +427,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-13 / 外部Polymarket botを固定commitのoffline backtest sandboxとしてMarketsへ統合 / 完了 45/69件
+最終更新: 2026-09-13 / 本番側の公開gate・永続Walletと、動的自動化ファンド・Markets・固定commit bot sandboxを統合 / 完了 50/74件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -424,6 +449,11 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY12 | ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](docs/sky-identity-connection.md) |
 | HOME01 | iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装 | 完了 | [記録](app/page.tsx) · [記録](app/sky/page.tsx) · [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](app/settings/page.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-settings.module.css) · [記録](docs/product-baseline.md) |
 | SYS01 | 端末診断・暗号化設定バックアップ・復元・Web更新確認を設定へ実装 | 完了 | [記録](app/settings/system/page.tsx) · [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
+| SYS02 | 通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装 | 完了 | [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
+| SYS03 | 公開方法別の最低条件を機械判定し、Web/npm SBOMと設定画面へ統合 | 完了 | [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/release-minimum-gates.md) · [記録](components/system-maintenance.tsx) |
+| SYS04 | QEMU rc2を同一候補10要件へ固定し、rc2固有native SBOMを生成して旧inventoryの誤転用を拒否 | 完了 | [記録](data/qemu-release-audit.json) · [記録](data/qemu-rc2-legal-info/manifest.csv) · [記録](data/qemu-rc2-legal-info/host-manifest.csv) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/qemu-release-completion-audit-20260912.md) · [記録](components/system-maintenance.tsx) |
+| SYS05 | 候補準備・法務承認・保護署名・本人署名の62拒否境界試験を全体verifyへ統合 | 完了 | [記録](scripts/check-release-signing.mjs) · [記録](scripts/release_signing.py) · [記録](scripts/release_signing_owner.py) · [記録](scripts/prepare_release_candidate.py) · [記録](scripts/verify_owner_legal_approval.py) · [記録](tests/test_release_signing.py) · [記録](tests/test_release_signing_owner.py) · [記録](tests/test_prepare_release_candidate.py) · [記録](tests/test_owner_legal_approval.py) · [記録](docs/release-signing-operations.md) |
+| SYS06 | Android物理端末とマイナンバー連携を独立監査し、証拠なしの互換・GMS・販売・個人番号有効化を拒否 | 完了 | [記録](data/android-physical-release-audit.json) · [記録](data/personal-number-release-audit.json) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/android-and-personal-number-gates-20260913.md) · [記録](docs/release-minimum-gates.md) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
@@ -462,7 +492,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | LCH01 | TLS／累積timeoutの原因と最終CIの照合 | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | LCH02 | 全同梱物inventory・対応source・製品LICENSEの明示決定 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) · [記録](docs/evidence/launch/progress-audit-20260912.json) |
 | LCH03 | production署名・保護環境・失効運用 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
-| LCH04 | Sites履歴のコード統合・新規本人限定サイト・Sky改善 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/owner-setup-20260911.md) · [記録](docs/current-state-20260911.md) |
+| LCH04 | Sites履歴のコード統合・新規本人限定サイト・Sky改善 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/owner-setup-20260911.md) · [記録](docs/current-state-20260911.md) · [記録](docs/evidence/launch/sites-owner-private-20260913.json) |
 | LCH05 | 制作中CMの完成待ち・内容照合・導入案内への接続 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
@@ -494,7 +524,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: botの実注文は無効のまま、十分な期間のorderbook JSONLでbacktestを実行し、report検証UIを通す。実収益Providerは別途選定し、契約済みsandboxで約定・清算・手数料・取消・返金を照合する。
+次の作業: 本人限定Web/PWAへ統合版を反映する。botの実注文は無効のまま十分な期間のbacktestを行い、実収益Providerは契約済みsandboxで約定・清算・手数料・取消・返金を照合する。QEMU配布は所有者の製品licenseと正式鍵の保管先が決まるまでblockedを維持する。
 <!-- project-status:end -->
 
 ## 次段階の設計

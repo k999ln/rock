@@ -1,5 +1,15 @@
 # 検証記録
 
+## QEMU rc2配布要件とnative SBOM境界の機械固定 / 2026-09-12
+
+- `scripts/check-release-signing.mjs` で、候補準備15件、owner legal approval 11件、保護署名29件、本人署名9件の計64公開fixture試験を `npm run verify` に統合。各suiteの試験数も固定し、試験の削除を成功扱いにしない。本人署名は未暗号化／ExFAT／別mountの保管先を鍵読取り前に拒否する。実production鍵・owner承認・隔離環境・実候補署名・署名後受入は未実施のまま分離した。
+- rc2のversion、source commit、archive名・size・SHA-256を、受入結果、434,523件inventory、公開表示データと照合する `data/qemu-release-audit.json` を追加。SHA-256一致を確認した1,003,224,286 byteのrc2 archiveから同梱legal bundleを抽出し、10必須要件のうち6件を範囲付きPASS、4件をBLOCKEDとした。
+- QEMU auditと全体公開台帳は同じgate ID・必須状態・statusを要求する。archive SHAの改変、要件数のずれ、未達のnext action欠落、license/production署名より先の最終受入合格を自動拒否する。
+- current rc2同梱のBuildroot `manifest.csv` 24 target packageと `host-manifest.csv` 37 build dependencyをrepositoryへ証拠保存。CSV SHA-256、component数、同梱legal bundle SHA-256 `ad6453…3d94`、配布archive SHA-256を自動照合し、CycloneDX 1.6へ変換する。componentごとのscope、source archive/site、license fileを保持し、自作3 componentのlicense未選択を消さない。
+- `npm run release:sbom` はWeb/npm 854 component、current rc2 native 61 component、旧native 61 componentを別のignored fileへ生成する。旧native inventoryをrc2のcurrent SBOMへ差し替える負例、current manifest hash改変、正確なarchive hashとscopeを含むrelease tests 12件を通した。
+- GitHubのrc2 Draft Releaseから1,003,224,286 byteのarchive本体を取得し、SHA-256 `5ce072…e95e`を照合後、legal bundleだけを展開してmanifestを保存した。Draft公開状態は変更していない。部品表完成は製品license clearanceではない。
+- `npm run verify` は終了コード0。公開台帳・QEMU audit・製品ベース・repository・端末対応、型、lint、Web 175 tests、Fashion Brand Ops 15 tests、MCP package、Billing Worker dry-run、production build、仕事API 143 assertionsが成功した。物理端末、実資金、一般公開、正式鍵生成は実施していない。
+
 ## 設計v1.1と実装の再照合・進捗補助の修正 / 2026-09-09
 
 - 16:51 UTCの3branch監査に加え、修正した `npm run prompt:context` を17:07 UTCにオンライン実行。main/native/reviewのSHAは監査入力と一致し、reviewのcheck-run 0は `NO_CHECKS / allSuccessful:false`。全branchとopen PRの再照合にも成功。これはメタデータ取得でありsourceレビュー済みを自動宣言しない。
@@ -165,3 +175,21 @@
 - `tests/system-backup.test.mjs`で、許可済みホーム設定だけの暗号化往復、平文非露出、無関係または将来追加される未許可localStorageの保持、誤パスフレーズ、改ざん、外部key混入の拒否に合格した。
 - 制限外で`npm run verify`を実行し、Web 157 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、製品ベース、MCP配布一致、Billing Worker dry-run、本番buildに合格した。通常sandboxではloopback待受がEPERMとなるため、MCP ConnectorとD1移行試験だけを含む全検証はローカル待受可能な環境で再実行した。
 - 物理端末のBSP/bootloader/recovery、正式署名鍵、外部MCP・販売・決済・払出しProviderは未接続であり、この検証の合格範囲へ含めない。
+
+# 2026-09-12 — 最低限のOS運用と公開審査gate
+
+- `/settings/system`を実ブラウザで確認し、安全な接続、通知、永続保存、PWA表示を含む10項目が実測値へ更新され、「稼働できます」と利用可能数が分離表示されることを確認した。
+- 通知テスト、保存保護、個人情報を除外する診断JSON、暗号化バックアップ、改ざん検知付き復元、Service Worker更新確認、確認付きホーム設定初期化を同じ画面へ配置した。初期化の確認Dialogを開閉し、アカウント、Wallet、実行履歴を削除しない説明を確認した。
+- 公開条件の折り畳みを開き、Web/PWA、QEMU、Android CDD/CTS・GMS、物理端末/BSP、production署名、OSS/法令、マイナンバーを別gateとして表示することを確認した。未実施項目を合格表示していない。
+- `tests/system-backup.test.mjs`で、許可済みホーム設定だけが初期化され、未知のRockstarOS keyと無関係なlocalStorage keyを保持することを確認した。
+- 制限外で`npm run verify`を実行し、Web 163 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、製品ベース、MCP配布一致、Billing Worker dry-run、本番buildに合格した。
+- この確認はWeb/PWA Developer Previewの受入であり、Android CDD/CTS、Google Play/GMS、実機flash、production署名、無線機器認証、特定個人情報の取扱審査を完了した証拠ではない。
+
+# 2026-09-12 — 配布方法別の最低条件・SBOM
+
+- `data/release-readiness.json`を追加し、本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android物理端末、iPhone/iPad client、マイナンバー連携の6対象を別判定にした。現状の算出結果はready 1、blocked 5。
+- `npm run release:check`で必須gate、根拠file、所有者license選択、top-level LICENSE、production鍵実施記録、マイナンバー無効化を検査した。未決条件をpassへ改変する否定試験5件に合格した。
+- `package-lock.json`の887 package entryを検査し、license metadata欠落0。`npm run release:sbom`でCycloneDX 1.6、854 unique componentを`work/release/rockstaros-web.cdx.json`へ生成し、bom-refが854件すべて一意であることを確認した。これはWeb/npm scopeでありnative Buildroot inventoryではない。
+- 設定の公開準備は同じ台帳を読み、本人限定Web/PWA 3/3、一般Web 2/4、QEMU 2/5、Android実機0/5、iPhone/iPad client 0/1、マイナンバー1/3を表示するよう変更した。過去QEMU候補を現在の配布可能状態として表示しない。
+- ローカル待受が許可された環境で`npm run verify`を実行し、Web 168 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、公開gate、製品baseline、MCP配布一致、Billing Worker dry-run、本番buildに合格した。`/settings/system`の実ブラウザ表示はconsole error 0、横切れなし、6対象の数値と台帳が一致した。
+- 製品ライセンスの明示選択、production鍵の作成・保管、一般公開承認、実機/SKUと外部審査は所有者または外部authorityが必要であり、今回完了扱いにしていない。

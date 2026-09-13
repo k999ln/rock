@@ -1,0 +1,43 @@
+{
+  "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+  "versionId": "appgprj_6aa444b6e6508191a19f16405d0be927~appgver_788b4e4d86d481918bda49bf8df73b63",
+  "versionNumber": 27,
+  "deploymentId": "appgdep_6aa60de76a7081918db6c06161ec698e",
+  "sourceCommit": "44526d91ebbd80b69b1cbe19087c6687b7d2fe08",
+  "status": "succeeded",
+  "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site",
+  "audience": "owner-only",
+  "accessReadback": {
+    "accessMode": "custom",
+    "currentUserRole": "owner",
+    "allowedUsers": 1,
+    "allowedGroups": 0,
+    "allowedEditors": 0,
+    "externalVisitors": 0
+  },
+  "archive": {
+    "format": "tar",
+    "sha256": "67866830ab759ce5023e38d31ec205235dd900279e67b8f3ebd9f6a0c9b1f1a9",
+    "bytes": 5949440,
+    "files": 266
+  },
+  "deployedAt": "2026-09-13T02:44:03.172240+00:00",
+  "releaseReadinessShown": {
+    "readyTargets": 1,
+    "totalTargets": 6,
+    "qemuRequiredGatesPassed": 6,
+    "qemuRequiredGatesTotal": 10,
+    "androidRequiredGatesPassed": 0,
+    "androidRequiredGatesTotal": 5,
+    "personalNumberRequiredGatesPassed": 1,
+    "personalNumberRequiredGatesTotal": 7,
+    "personalNumberCaptureEnabled": false
+  },
+  "authenticatedLiveQa": "PENDING_OWNER_SIGN_IN",
+  "claims": {
+    "publicAudience": false,
+    "physicalDeviceSupport": false,
+    "personalNumberCapture": false,
+    "generalReleaseApproved": false
+  }
+}

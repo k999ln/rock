@@ -1,10 +1,14 @@
 # Rock star OS — 確定した製品ベース
 
-2026-09-13追記（v1.27）: 利用者指定の`MrFadiAi/Polymarket-bot`をMarketsへ接続する。ただし監査したcommitではdry-runでも秘密鍵を要求し、画面からLIVEへ切替可能で、シミュレーションPnLも共通PnLへ入るため、原botの注文runtimeは直接起動しない。固定commit・clean treeのoffline backtestだけを秘密鍵なしで実行するsandbox adapterと、改変・LIVE・秘密情報・矛盾reportを拒否する検証API/UIをRQ31として追加する。backtest損益はファンド実収益にも8.88 USD回収原資にもならない。
+2026-09-13追記（v1.31）: 本番側で先行したRQ29〜RQ31の公開gateと番号衝突しないよう、自律型自動化ファンド、読取専用Markets、固定commitのPolymarket bot sandboxをRQ32〜RQ34として統合する。ファンド数は固定せず初期推奨5ツール、SkyはProvider確認済み純収益から利用者単位・UTC月単位で最大8.88 USDだけを回収し、承認済み実費と当月Sky利用料を除く残額は100%利用者に帰属する。Marketsは公開データの分析だけ、botは秘密鍵なしのoffline backtestだけを許可し、シミュレーションPnLを実収益へ算入しない。
 
-2026-09-13追記（v1.26）: RockstarOS Marketsを、自動化ファンドへ組み込める読取専用の市場分析アダプターとして追加する。公開ライブ市場の確率・出来高・流動性は判断材料に限定し、サンプル値、モック残高、架空取引量、含み損益、見積損益を実収益へ変換しない。実注文は既定で無効とし、将来有効化する場合も所在地・提供地域・年齢・KYC・Wallet署名・注文ごとの明示承認を必須にする。Providerで確定した実現損益だけをRQ20/RQ29のEarning Receipt候補にできる。RQ30を追加する。
+2026-09-13追記（v1.30）: Android物理端末を型番/SKU、BSP/boot/recovery、同一buildのCDD/CTS、production署名、販売地域の5必須gateへ固定する。現在0/5で、Android互換・GMS許諾・物理flash・販売可能を表示しない。マイナンバーは無効化、目的、主体/provider、data flowと保存/削除、安全管理、事故/委託先、最終有効化の7必須gateへ分ける。現在1/7で、番号・カード画像・通常profile項目を取得しない。
 
-2026-09-12追記（v1.25）: 利用者は、増え続ける自動化ツールを動的なファンドへ束ね、利用者が選んだファンド内で自律的に収益化を進める構想を明示。ファンド数は固定せず、1ファンドの初期推奨を5ツールとするが構成数も変更可能にする。メルカリは唯一のモデルではなく収益経路の一つ。Providerで確認できた売上から承認済み実費を引き、Skyは利用者単位・UTC月単位で最大8.88 USDだけを回収し、それ以外は全額利用者の受取可能額とする。成果報酬、共同留保、ファンド間または利用者間の資金配給はP0へ含めない。RQ29を追加する。
+2026-09-12追記（v1.29）: 利用者は、OS公開の最低条件を満たすまで作業を継続するよう明示。RQ31を維持する。QEMU rc2の1GB配布archiveをSHA-256照合後に取得し、同梱legal bundle、target 24＋host build 37 componentのmanifestを同じarchiveへ固定した。current native CycloneDXを生成し、10要件中6件の合格と4件の未達を機械判定する。さらに候補準備・法務承認・保護署名・本人署名の計62公開fixture回帰を全体verifyへ必須化するが、実鍵・owner承認・署名後受入の代用にはしない。
+
+2026-09-12追記（v1.26）: RQ30を追加する。公開状態を本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android物理端末、iPhone/iPad client、マイナンバー連携へ分け、必須gateから機械判定する。製品ライセンスの所有者選択とtop-level LICENSE、正式鍵の実施記録、同一候補の受入がない状態を合格にできない検査を追加し、Web/npm依存のCycloneDX SBOMはignored領域へ生成する。
+
+2026-09-12追記（v1.25）: 利用者は、OSを運用するための必要最低限の機能を設定へ入れることと、OS公開時の審査規定の有無を確認するよう明示。RQ29を追加する。端末実測診断に安全な接続、通知許可、永続保存、アプリ表示を加え、通知テスト、保存保護、個人情報を除外した診断レポート、確認付きのホーム設定初期化を実装する。日常運用と公開条件は分離し、Web/PWA、QEMU、Android CDD/CTS、GMS、実機/BSP、正式署名、OSS配布、販売地域の無線規制、マイナンバー取扱いを同じ「合格済み」にしない。
 
 2026-09-12追記（v1.24）: 利用者は、Skyの標準自動化ツールが利用者へ一定の収益機会を作り、その検証済み収益から8.88 USDを回収する具体的な入口として、メルカリ自動化をベースにする方針を明示。RQ28を追加する。個人メルカリでは出品原稿・実費後利益・進捗の支援に限定して本人が公式画面で操作し、公式APIのあるメルカリShopsは契約済みの日本国内固定IP Connectorから接続する。売上や利益を保証せず、自己申告・出品完了・支払いだけを検証済み収益にせず、Providerで取引完了と金額を照合してからRQ20の精算へ渡す。
 
@@ -38,7 +42,7 @@
 
 2026-09-09追記: 設計v1.1の実装承認を受領。公開・実機・MetaMask実資金は準備が整うことを条件に了承。現在の承認範囲は [承認記録](execution-approval-20260909.md)。以下の「承認待ち」は作成時の履歴であり、現在の実装を停止させない。RQ01〜RQ15と料金は変更しない。
 
-版: 1.26 / 更新日: 2026-09-13（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
+版: 1.31 / 更新日: 2026-09-13（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
 
 この文書は利用者がこの日に明示した製品要望を固定する。実装状況は [OS稼働・ゲーム連携監査](os-readiness-audit-20260909.md)（過去の追補・初回監査は履歴）、次の指示は [現在の再開指示](prompts/rock-current-next-20260911.md)、毎回の確認方法は [プロンプト作成規約](prompt-playbook.md) を参照する。決定と実装実績を同じものとして扱わない。
 
@@ -50,7 +54,7 @@ Rock star OSは、AI自動化ツールに特化した端末OS。標準の入口�
 
 利用者が示した目的は、自動化により時間や収入の余地を作り、より多くの人が創作・学習・ゲームや現実の新しい挑戦へ進めるようにすること。世界がより良くなるという志向は保持するが、自動化の利益・ゲーム通貨の値上がり・社会的効果を保証しない。取引回数や賭け金を製品成功の指標にせず、削減できた負担、実費後の確定収支、本人が選べる行動の増加で検証する。
 
-日常生活の汎用アシスタント、SNS、一般アプリの品揃え、エコシステムの規模を主目的にしない。従来の80/10/10分配ファンド試算は履歴として保持するが、新しい標準体験には戻さない。RQ29の自動化ファンドは、複数の自動化を収益化単位へ束ねる新しい中核制御層として扱う。
+日常生活の汎用アシスタント、SNS、一般アプリの品揃え、エコシステムの規模を主目的にしない。従来の80/10/10分配ファンド試算は履歴として保持するが、新しい標準体験には戻さない。RQ32の自動化ファンドは、複数の自動化を収益化単位へ束ねる新しい中核制御層として扱う。
 
 ## RQ02 ツール供給とOSの責任
 
@@ -262,7 +266,7 @@ Skyへ「メルカリ収益スターター」を標準搭載し、利用者が�
 
 メルカリShopsは公式GraphQL APIと新しい`order_transaction_*` webhook topicを使用する。ただしAPI利用契約、Personal API Access Token、指定User-Agent、日本国内の専用固定IPを持つConnector、Sandbox受入、取消・一部取消・返金・結果不明の照合が揃うまで外部作用と収益検証を有効にしない。Providerで取引完了と金額を照合し、Execution Receiptと一意に結べた売上だけをRQ20のEarning Receiptへ変換する。Sitesから固定IP要件を迂回して直接APIを呼ばない。詳細は[メルカリ収益ループ](mercari-revenue-loop.md)を正本とする。
 
-## RQ29 数を固定しない自律型自動化ファンド
+## RQ32 数を固定しない自律型自動化ファンド
 
 Skyへ追加される利用可能な自動化ツールを候補集合とし、用途、実行可能性、リスク、役割の重複を見ながらファンドを動的に形成する。ファンド総数には製品上の固定上限を置かない。1ファンドの初期推奨は5ツールとするが、構成数は利用者が変更でき、将来追加されたツールも候補へ自動的に入る。A、B、C、D等の名称や4ファンド構成を固定仕様にしない。
 
@@ -270,21 +274,42 @@ Skyへ追加される利用可能な自動化ツールを候補集合とし、�
 
 Sky利用料は全ファンド合算で利用者単位・UTC月単位の最大888 centsとし、ファンドごとに重複請求しない。成果報酬は0 basis points、共同留保は0で、承認済み実費と当月Sky利用料を引いた残額は100%利用者の受取可能額とする。現在のP0は自動化の編成、参加、実績タグ、精算指図までとし、利用者資金の共同運用、他利用者への再配給、投資商品の募集、収益保証は有効にしない。実回収・実払出しは販売、決済、払出しProvider、本人情報、規約、税務・返金条件、sandbox受入が揃うまでOFFを維持する。
 
-## RQ30 RockstarOS Marketsを読取専用の市場分析アダプターとして統合する
+## RQ33 RockstarOS Marketsを読取専用の市場分析アダプターとして統合する
 
 RockstarOS Marketsは、Polymarketの公開ライブ市場を読み取り、確率、出来高、流動性をSkyと自動化ファンドの判断材料として提示する。ファンド候補ツールへ動的に追加できるが、市場データの取得、表示、予測、indicative quote、サンプル値、モック残高、架空取引量、含み損益を収益や利回り実績へ変換しない。ライブ取得に失敗した場合はサンプル値で補完せず、取得停止として閉じる。
 
-Marketsの分析系統とRQ20/RQ29の会計系統を分離し、ファンド残高・配分・利用者帰属額の正本はProvider参照とExecution Receiptに結ばれたEarning Receiptだけにする。将来、取引Providerが注文完了、取消、清算、手数料、返金を照合し、実現損益を確定した場合に限り、その実現損益をEarning Receipt候補にできる。未確定損益と市場の総取引量は利用者収益ではない。
+Marketsの分析系統とRQ20/RQ32の会計系統を分離し、ファンド残高・配分・利用者帰属額の正本はProvider参照とExecution Receiptに結ばれたEarning Receiptだけにする。将来、取引Providerが注文完了、取消、清算、手数料、返金を照合し、実現損益を確定した場合に限り、その実現損益をEarning Receipt候補にできる。未確定損益と市場の総取引量は利用者収益ではない。
 
 RockstarOSからの注文実行、自動再投資、自動資金移動は既定で無効にする。将来の各注文には、利用者の所在地と提供地域、年齢、KYC、利用規約、規制、Wallet署名、注文内容と最大損失に結び付いた明示承認が必要であり、分析アダプターの接続を取引許可として扱わない。Legacyの80/10/10表示は`/fund/legacy`だけに残し、このアダプターへ適用しない。詳細は [Markets・自動化ファンド統合](markets-fund-integration-20260913.md) を参照する。
 
-## RQ31 外部Polymarket botを固定commitのbacktest sandboxとして接続する
+## RQ34 外部Polymarket botを固定commitのbacktest sandboxとして接続する
 
 `MrFadiAi/Polymarket-bot`はMIT Licenseの固定commit `3a04fc842bc3112a11b872263bb55e6712096f9a`を監査基準とする。原botはdry-runでも秘密鍵を要求し、dashboardからLIVEへ切り替えられ、simulation PnLを共通PnL表示へ加算するため、注文runtime、Wallet接続、approve、redeem、panic sell、秘密鍵入力、LIVE切替をRockstarOSへ直接接続しない。
 
 RockstarOSはclean treeとcommitを確認し、秘密鍵関連の環境変数を子processから除外して、offline JSONLに対するbacktest runnerだけを実行する。出力は`rockstaros-polymarket-bot-backtest/1`へ封入し、Markets画面の検証APIは固定出所、backtest mode、LIVE無効、収益不計上、数値整合、秘密情報不在を検査する。検証済みreportも合成結果であり、実収益、利回り実績、注文推奨、8.88 USD回収原資にしない。詳細は[Polymarket bot sandbox統合](polymarket-bot-sandbox-20260913.md)を参照する。
+## RQ29 最低限のOS運用と公開条件を設定へまとめる
 
-## 1.0への8原則の適用（RQ01〜RQ31を維持）
+設定の「システム」は、単なる説明画面ではなく、この端末でRockstarOSを維持する操作面とする。RQ27の診断・暗号化保全・更新に、安全な接続、通知許可、永続保存、PWA表示状態を追加し、通知の明示許可とテスト、保存保護要求、個人情報・token・Wallet・マイナンバー・利用者contentを含まない診断JSON、確認付きのホーム設定初期化を提供する。初期化は許可済みの外観と並び順だけを削除し、アカウント、Wallet、実行履歴、将来追加される未許可データを消さない。
+
+公開条件は日常操作から折り畳み、Web/PWA Developer Preview、QEMU内部受入、Android互換のCDD/CTS、Google Play/GMS契約、対象機種/BSP/復旧、production署名・更新鍵、SBOM/OSS再配布義務、販売地域と無線機器の適合、特定個人情報の取扱いを別gateで記録する。RockstarOS全体へ単一の審査があるとは表示せず、該当する配布方式の証拠がない項目は未実施のままにする。iPhone/iPadは置換OSの一般配布対象ではなく、Web/PWAまたは審査対象のclientアプリとして扱う。
+
+## RQ30 公開最低条件を機械判定し、完了まで追跡する
+
+公開形態をWeb/PWA本人限定Preview、Web/PWA一般公開Preview、QEMU Developer Preview配布、Android系物理端末Preview、iPhone/iPad client、マイナンバー連携に分離する。各形態は、必須gateがすべて証拠付きで合格した場合だけreadyとする。過去のQEMU候補の起動、Web画面の動作、source inventoryの存在を、正式署名または同一最終候補の導入・更新・復旧の代わりにしない。
+
+`data/release-readiness.json`を機械可読な正本とし、宣言状態とgate算出結果の不一致、根拠fileの欠落、未決定の製品ライセンス、未実施のproduction署名、license metadataのないnpm依存、未審査のマイナンバー有効化を自動検査で拒否する。Web/npmのCycloneDX SBOMは生成できるようにするが、generated artifactはGitへ入れず、native Buildrootのinventoryと別のscopeであることを明示する。
+
+所有者に代わる製品ライセンスの選択、production鍵の生成・保管、Sitesの一般公開、機種/SKUの確定、実機flash、外部審査・契約、マイナンバー取扱いの法務判断は自動完了しない。それ以外の実装・検証・証拠保存を先に完了し、必要な所有者行動を具体的に一つずつ提示する。[最低公開条件](release-minimum-gates.md)を運用正本とする。
+
+## RQ31 QEMU配布候補を同一byte列の証拠へ固定する
+
+QEMU Developer Previewは、候補のversion、native source commit、archive名・size・SHA-256を、導入・復旧受入、構成inventory、Webの公開表示へ同時に固定する。安全基礎、更新・rollback、backup・復旧、診断・反復bootは証拠が示す範囲だけ合格とし、D2全体、別host全損復旧、未観測の取消操作を広く合格扱いにしない。
+
+native SBOMはtarget runtime componentとhost build dependencyを区別したCycloneDX 1.6として生成する。現在のrc2は、配布archive、同梱legal bundle、target/host manifestのSHA-256とcomponent数を機械照合し、同じ候補へ結合する。自作componentのlicense未選択はそのまま表示し、部品一覧の完成を製品license clearanceとしない。旧9ab legal-infoから生成する61 componentのSBOMは変換方法の比較だけに限定し、metadataに旧sourceと「current rc2ではない・license clearanceではない」を固定する。
+
+QEMUの公開準備は10 gateを同じID・状態で `data/qemu-release-audit.json` と `data/release-readiness.json` に保持し、不一致を自動検査で拒否する。製品license、production鍵、署名後の同一候補受入、一般公開承認は所有者の明示決定前に合格にしない。[QEMU完了監査](qemu-release-completion-audit-20260912.md)を詳細正本とする。
+
+## 1.0への8原則の適用（RQ01〜RQ34を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -294,7 +319,7 @@ RockstarOSはclean treeとcommitを確認し、秘密鍵関連の環境変数を
 
 - 設計とnativeの統合後の実装は `codex/rockstaros-launch-candidate-20260910` にある。mainへの製品統合は未実施。複数owner/gameの合成契約・台帳分離、GX01/DX01のSDKと限定OS受入は記録済み。実ゲーム・実資金・Androidへの移植は別の未完了条件。[現在の状態](current-state-20260911.md)を参照し、過去の[設計照合](design-implementation-alignment-20260909.md)の未着手状態へ戻さない。
 - Rock端末を持たないプレイヤーの本番Wallet利用資格は未決。作者sandboxの参加条件と購入者のOS月額契約を混ぜず、ゲーム利用だけで未同意の月額を開始しない。
-- PolymarketはRQ18で基本アプリ枠、RQ30で公開ライブ市場の読取専用分析、RQ31で固定commitのoffline backtest sandboxとして採用した。ただしbotの注文runtime、清算・実資金移動は未承認。Sky/Chat/Walletを置換せず、提供地域・対象・許認可等が未決のまま実資金市場を開始しない。ゲーム資産売買は引き続き検討案。
+- PolymarketはRQ18で基本アプリ枠、RQ33で公開ライブ市場の読取専用分析、RQ34で固定commitのoffline backtest sandboxとして採用した。ただしbotの注文runtime、清算・実資金移動は未承認。Sky/Chat/Walletを置換せず、提供地域・対象・許認可等が未決のまま実資金市場を開始しない。ゲーム資産売買は引き続き検討案。
 - GTAのゲーム内経済は将来像の例。新作GTAの現実経済/外部Wallet連携を確定仕様とせず、特定ゲームの未発表機能へ依存しない。公式に許されたAPI/利用条件/資産権利が確認できたゲームへ接続できる共通基盤を設計し、未対応ゲームを対応済みと表示しない。
 - Linux/Buildroot/ARM64 QEMU版を維持し、最新指示でスマホ実機版を開発する。Pixel 10／GrapheneOSは以前の端末記録に基づく候補、今回の機種/SKUは未確認。以前のBlackBerry希望も型番未確認。Android P1・機種構成へのsource組込み・実機合格は別に判定する。
 - tob側の具体的な商品・提供組織・外部API契約・ライセンス・価格は商品ごとに確認する。7種類の仮想fixtureだけでは実商品の統合完了にならない。
@@ -305,9 +330,19 @@ RockstarOSはclean treeとcommitを確認し、秘密鍵関連の環境変数を
 
 ## 変更記録
 
-2026-09-13 v1.27: `MrFadiAi/Polymarket-bot`の固定commitを監査し、原botの秘密鍵必須dry-run・即時LIVE切替・simulation PnL混在を境界外にした。clean treeのoffline backtestだけを実行するwrapper、report検証API/UI、秘密情報・改変・LIVE・矛盾を拒否する契約を追加した。注文・Wallet・実収益計上は有効化していない。
+2026-09-13 v1.31: 本番側の公開gate・永続Walletへ、自動化ツール群を動的に編成するファンド、読取専用Markets、固定commitのPolymarket bot offline backtestを統合した。要件番号の衝突を解消してRQ32〜RQ34へ固定し、実注文・Wallet接続・シミュレーション損益の実収益計上は有効化していない。
 
-2026-09-12 v1.25: 自動化ツール群を動的に編成する自動化ファンドを中核へ追加。ファンド総数を固定せず、1ファンドは初期推奨5ツール・変更可能とした。検証済み純収益から全ファンド合算で月最大8.88 USDのみをSkyが回収し、成果報酬と共同留保を0、残額を100%利用者帰属とした。旧80/10/10試算は履歴画面へ分離し、共同運用・利用者間配給・収益保証は有効化しない。
+2026-09-12 v1.27: QEMU rc2を10要件へ分解し、候補identityと範囲付き受入5件を合格、native SBOM・製品license・production署名・署名後受入・公開承認5件を未達として機械判定した。旧9abのtarget 24＋host 37 componentをCycloneDXへ変換するが、rc2へ転用できない検査を追加した。
+
+2026-09-12 v1.28: rc2配布archiveと同梱legal bundleのSHA-256を照合し、target 24＋host build 37 componentのcurrent native CycloneDXを同じ候補へ結合。native SBOMを合格へ更新して6/10とし、製品license未許諾は独立gateへ保持した。manifest改ざんと旧9ab差替えを拒否する試験を追加した。
+
+2026-09-13 v1.30: Android物理端末5gateとマイナンバー7gateの機械可読監査を追加。対象端末・build・BSP・CTS・署名・地域・取扱主体の証拠がない現状をblockedに固定し、GMSなしと番号取得なしの境界を自動検査する。
+
+2026-09-12 v1.29: 署名機構の4 suite・計62公開fixture試験を単一commandへ集約し、通常の全体verifyへ必須化した。試験数減少も失敗させ、production鍵・owner承認・実署名・署名後受入は未達のまま分離した。
+
+2026-09-12 v1.26: 配布方法ごとの公開最低条件を機械判定する台帳と検査を追加。本人限定Web/PWAだけをreadyとし、一般公開、QEMU配布、物理端末、iPhone/iPad client、マイナンバーは証拠が揃うまでblockedを維持する。Web/npmのCycloneDX SBOM生成を追加した。
+
+2026-09-12 v1.25: 設定の「システム」を最低限の運用センターへ拡張。通知、永続保存、個人情報を除く診断共有、確認付きホーム設定初期化を追加し、日常の稼働状態とAndroid互換、GMS、実機、署名、OSS、無線規制、マイナンバーの公開gateを分離した。
 
 2026-09-12 v1.24: Skyの最初の具体的な収益経路としてメルカリ収益スターターを追加。個人版は規約に沿う出品支援、Shopsは公式API Connector、自動精算はProvider確認済み取引完了だけに限定した。自己申告、売上保証、個人アカウントの無人操作は採用しない。
 

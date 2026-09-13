@@ -207,6 +207,10 @@ export function restoreDevicePreferences(
   records: Record<string, string>,
 ) {
   const safe = sanitizeRecords(records);
-  for (const key of ALLOWED_PREFERENCE_KEYS) storage.removeItem(key);
+  resetDevicePreferences(storage);
   for (const [key, value] of Object.entries(safe)) storage.setItem(key, value);
+}
+
+export function resetDevicePreferences(storage: Storage) {
+  for (const key of ALLOWED_PREFERENCE_KEYS) storage.removeItem(key);
 }

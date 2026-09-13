@@ -11,10 +11,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ31/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ34/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ31/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ34/);
   const fixedFundCount = structuredClone(source);
   fixedFundCount.automationFunds.fundCountLimit = 4;
   assert.throws(() => validateBaseline(fixedFundCount), /ファンド数/);
@@ -50,7 +50,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.throws(() => validateBaseline(missingHome), /ホームと設定アプリ/);
   const missingMaintenance = structuredClone(source);
   delete missingMaintenance.systemMaintenance;
-  assert.throws(() => validateBaseline(missingMaintenance), /システム診断/);
+  assert.throws(() => validateBaseline(missingMaintenance), /OS運用/);
+  const fakeReleaseReview = structuredClone(source);
+  fakeReleaseReview.systemMaintenance.releaseReadiness.androidCompatibility = 'passed';
+  assert.throws(() => validateBaseline(fakeReleaseReview), /公開審査/);
   const live = structuredClone(source);
   live.auditInputs.isLiveStatus = true;
   assert.throws(() => validateBaseline(live), /snapshot/);
