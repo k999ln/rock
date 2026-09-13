@@ -57,6 +57,13 @@
       "when": 1789257314910,
       "tag": "0007_yielding_giant_man",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1789263030628,
+      "tag": "0008_wooden_avengers",
+      "breakpoints": true
     }
   ]
 }

@@ -386,10 +386,12 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / OS lifecycle、Sky MCP、メルカリ収益スターター、収益後精算Worker、ホーム・設定・端末保全UIを本人限定Developer Previewへ統合 / 完了 42/65件
+最終更新: 2026-09-12 / 数を固定しない自動化ファンド、収益タグ付き精算Worker、OS lifecycle、Sky MCP、ホーム・設定・端末保全UIを本人限定Developer Previewへ統合 / 完了 43/67件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
+| FND01 | 利用可能な自動化ツールから数を固定しないファンドを形成し、構成数・参加・版をD1へ保存 | 完了 | [記録](lib/automation-fund.ts) · [記録](lib/automation-fund-store.ts) · [記録](app/api/automation-funds/route.ts) · [記録](components/autonomous-fund-market.tsx) · [記録](drizzle/0008_wooden_avengers.sql) · [記録](tests/automation-fund.test.mjs) |
+| FND02 | ファンド・ツール別の検証済み収益を集計し、全ファンド合算の月最大8.88 USDと利用者帰属額を実Providerで精算 | 進行中 | [記録](services/sky-billing/migrations/0003_automation_funds.sql) · [記録](services/sky-billing/src/domain.ts) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing-worker.test.mjs) · [記録](docs/product-baseline.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -474,7 +476,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: メルカリShops契約と日本国内固定IP Connectorを用意し、Sandboxの注文完了・全取消・一部取消をProvider APIで照合してEarning Receiptへ接続する。
+次の作業: 最初の実収益Providerを一つ選び、契約済みsandboxで成功・取消・返金を照合して、ファンドとツールを付けたEarning Receiptから利用者払出し指図まで通す。
 <!-- project-status:end -->
 
 ## 次段階の設計

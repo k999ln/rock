@@ -8,7 +8,7 @@
 
 tob側の自動化ツールを商品として管理するSkyと、自動化で得たお金を管理するWalletに特化したOSを開発します。Skyは単なるツール一覧ではなく、**探す→権限・料金を確認→端末/PC/Cloudへ実行→停止→結果と記録を受け取る**までを一か所につなぎます。[Skyの図・優位性・現在の収録ツール](docs/sky.md)を参照してください。
 
-**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ27）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定です。Skyの8.88 USDは先払い月額ではなく、検証済み自動化収益からだけ回収する月間上限です。
+**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ29）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定です。Skyの8.88 USDは先払い月額ではなく、全自動化ファンドを合算した検証済み純収益からだけ回収する利用者単位の月間上限です。承認済み実費と当月Sky利用料を除く残額は100%利用者に帰属します。
 
 ホームの設定アプリには「システム診断と保全」があります。通信・保存・暗号化・更新・API・PC Connectorをその場で診断し、端末内のRockstarOS設定だけをパスフレーズ付き暗号化バックアップへ保存・復元できます。ログイン、PC接続token、Wallet残高、server receiptは含めません。これはWeb/PWAの保全機能であり、物理端末のBSP・bootloader・正式署名鍵・外部Provider接続の代わりではありません。
 
@@ -41,10 +41,12 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / OS lifecycle、Sky MCP、メルカリ収益スターター、収益後精算Worker、ホーム・設定・端末保全UIを本人限定Developer Previewへ統合 / 完了 42/65件
+最終更新: 2026-09-12 / 数を固定しない自動化ファンド、収益タグ付き精算Worker、OS lifecycle、Sky MCP、ホーム・設定・端末保全UIを本人限定Developer Previewへ統合 / 完了 43/67件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
+| FND01 | 利用可能な自動化ツールから数を固定しないファンドを形成し、構成数・参加・版をD1へ保存 | 完了 | [記録](lib/automation-fund.ts) · [記録](lib/automation-fund-store.ts) · [記録](app/api/automation-funds/route.ts) · [記録](components/autonomous-fund-market.tsx) · [記録](drizzle/0008_wooden_avengers.sql) · [記録](tests/automation-fund.test.mjs) |
+| FND02 | ファンド・ツール別の検証済み収益を集計し、全ファンド合算の月最大8.88 USDと利用者帰属額を実Providerで精算 | 進行中 | [記録](services/sky-billing/migrations/0003_automation_funds.sql) · [記録](services/sky-billing/src/domain.ts) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing-worker.test.mjs) · [記録](docs/product-baseline.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -129,7 +131,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: メルカリShops契約と日本国内固定IP Connectorを用意し、Sandboxの注文完了・全取消・一部取消をProvider APIで照合してEarning Receiptへ接続する。
+次の作業: 最初の実収益Providerを一つ選び、契約済みsandboxで成功・取消・返金を照合して、ファンドとツールを付けたEarning Receiptから利用者払出し指図まで通す。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
@@ -142,22 +144,22 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 
 ## 既存Web/PC版で現在できること
 
-- ジャンル・キーワードからファンドと自動化ツールを検索。
+- 利用可能な自動化ツールから、数を固定しない自動化ファンドを作成。初期推奨は5ツールで、構成数を変更可能。
 - Mr.由来のココナラ案件チェック、記事の無料版作成、出典整理をブラウザ内で実行。
 - Mr.由来の納品記録照合を含むPC用無料パックを配布。元コード4件をMIT・取得commit・ハッシュ付きで同梱。
 - 3件の外部OSS候補も引き続き掲載。
-- マイファンドの選択と配分計画。旧マイツール用の保存・導入プラン関数も保持。
+- 自動化ファンドの選択、構成ツール、役割、配分根拠、版をアカウントごとに保存。旧マイツール用の保存・導入プラン関数も保持。
 - Ethereum互換の注入型ウォレットでアドレス接続。キャンセル、アカウント変更、切断を処理。
 - 月$8.88相当の利用料と、電力・通信・API費用の試算。
-- ホームはSky。旧ファンドは `/fund` に保持し、参加・配分計画・試算条件をアカウントごとに保存。
+- ホームはSky。新しい自動化ファンドは `/fund`、従来の80/10/10分配試算は履歴確認用の `/fund/legacy` に分離。
 - 「仕事を進める」から記事販売準備・ココナラ納品準備を作成し、手順・試行履歴・最終確認をアカウント別に保存して再開。
-- 基本分配・ブースト・共同留保を、共通収益の範囲内で試算。入金・送金は未接続。
+- Provider確認済みの売上だけをファンド別に集計し、承認済み実費、全ファンド合算で月最大8.88 USD、利用者受取可能額を分離。成果報酬と共同留保は0。入金・送金Providerは未接続。
 - Sky MCP Connectorを一度起動すると、SkyのMCP画面から登録済みの自動化へワンタップ接続。現在の配布パックは基本4機能と受注型ブランド運営38機能を同じConnectorで検出します。
 - 自動化の追加は[`registry.json`](toolkits/sky-mcp-connector/registry.json)へstdioまたはStreamable HTTP定義を加えます。接続時にprotocol・capability・tool schemaをConnection Passport化し、実行は引数に結び付いた一回承認を必須にします。[導入・安全境界](docs/sky-mcp-connector.md)
 - Skyの「サブスク顧問」から、PC内のRockstar Ledgerへ読み取り専用で接続。通貨別の月額、更新日、支払い失敗、定期課金候補を確認し、同梱のstdio MCPでも照会できます。契約データはGitやサイトへ送らず、解約・支払い・税務申告は自動実行しません。[導入と境界](toolkits/rockstar-ledger/README.md)
 - GitHubとHugging Faceの公開メタデータを収集する管理用コマンド。
 
-ファンドの参加・配分・試算条件、単独ツールの実行メタデータ、仕事の進捗はSitesのD1に保存します。旧マイツール用のローカル保存関数も互換用に保持しています。接続アドレスは保存せず、サーバーへ送信しません。ウォレット接続はログイン認証・実名本人確認・送金認可ではありません。
+自動化ファンドの形成・参加・配分、単独ツールの実行メタデータ、仕事の進捗はSitesのD1に保存します。ファンド数に製品上の固定上限はありませんが、一覧APIは安全な応答上限を持ちます。旧ファンド試算と旧マイツール用ローカル保存関数は互換用に保持しています。接続アドレスは保存せず、サーバーへ送信しません。ウォレット接続はログイン認証・実名本人確認・送金認可ではありません。外部Providerが未接続のため、現時点の構成・配分は実利回りや収益保証を示しません。
 
 ## 仕事の進め方（現行Web版）
 

@@ -1,8 +1,35 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "OS lifecycle、Sky MCP、メルカリ収益スターター、収益後精算Worker、ホーム・設定・端末保全UIを本人限定Developer Previewへ統合",
-  "nextAction": "メルカリShops契約と日本国内固定IP Connectorを用意し、Sandboxの注文完了・全取消・一部取消をProvider APIで照合してEarning Receiptへ接続する。",
+  "milestone": "数を固定しない自動化ファンド、収益タグ付き精算Worker、OS lifecycle、Sky MCP、ホーム・設定・端末保全UIを本人限定Developer Previewへ統合",
+  "nextAction": "最初の実収益Providerを一つ選び、契約済みsandboxで成功・取消・返金を照合して、ファンドとツールを付けたEarning Receiptから利用者払出し指図まで通す。",
   "tasks": [
+    {
+      "id": "FND01",
+      "title": "利用可能な自動化ツールから数を固定しないファンドを形成し、構成数・参加・版をD1へ保存",
+      "status": "done",
+      "dependsOn": ["SKY01", "B01"],
+      "evidence": [
+        "lib/automation-fund.ts",
+        "lib/automation-fund-store.ts",
+        "app/api/automation-funds/route.ts",
+        "components/autonomous-fund-market.tsx",
+        "drizzle/0008_wooden_avengers.sql",
+        "tests/automation-fund.test.mjs"
+      ]
+    },
+    {
+      "id": "FND02",
+      "title": "ファンド・ツール別の検証済み収益を集計し、全ファンド合算の月最大8.88 USDと利用者帰属額を実Providerで精算",
+      "status": "in_progress",
+      "dependsOn": ["FND01", "B01"],
+      "evidence": [
+        "services/sky-billing/migrations/0003_automation_funds.sql",
+        "services/sky-billing/src/domain.ts",
+        "services/sky-billing/src/worker.ts",
+        "tests/billing-worker.test.mjs",
+        "docs/product-baseline.md"
+      ]
+    },
     {
       "id": "SKY01",
       "title": "旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化",

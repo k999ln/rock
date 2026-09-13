@@ -175,3 +175,42 @@ export const mercariRevenuePlans = sqliteTable(
     ),
   ],
 );
+
+export const automationFunds = sqliteTable(
+  'automation_funds',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    name: text('name').notNull(),
+    strategy: text('strategy').notNull(),
+    targetToolCount: integer('target_tool_count').notNull(),
+    payload: text('payload').notNull(),
+    status: text('status').notNull(),
+    revision: integer('revision').notNull().default(0),
+    idempotencyKey: text('idempotency_key').notNull(),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    index('idx_automation_funds_user_updated').on(
+      table.userId,
+      table.updatedAt,
+    ),
+    uniqueIndex('idx_automation_funds_user_idempotency').on(
+      table.userId,
+      table.idempotencyKey,
+    ),
+  ],
+);
+
+export const automationFundMemberships = sqliteTable(
+  'automation_fund_memberships',
+  {
+    userId: text('user_id').primaryKey(),
+    fundId: text('fund_id').notNull(),
+    revision: integer('revision').notNull().default(0),
+    joinedAt: text('joined_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [index('idx_automation_fund_memberships_fund').on(table.fundId)],
+);

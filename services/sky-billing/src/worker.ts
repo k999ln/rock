@@ -76,6 +76,7 @@ async function status(request: Request, env: Env) {
     .first();
   const receipts = await env.DB.prepare(
     `SELECT r.receipt_id AS receiptId, r.execution_receipt_id AS executionReceiptId,
+      r.fund_id AS fundId, r.automation_tool_id AS automationToolId,
       r.source_provider AS sourceProvider, r.gross_minor AS grossMinor,
       r.operating_cost_minor AS operatingCostMinor, r.sky_fee_minor AS skyFeeMinor,
       r.distributable_minor AS distributableMinor, r.occurred_at AS occurredAt,
@@ -86,6 +87,17 @@ async function status(request: Request, env: Env) {
      ORDER BY r.occurred_at DESC, r.receipt_id DESC LIMIT 20`,
   )
     .bind(token.sub, period)
+    .all();
+  const funds = await env.DB.prepare(
+    `SELECT fund_id AS fundId, gross_minor AS grossMinor,
+      operating_cost_minor AS operatingCostMinor, sky_fee_minor AS skyFeeMinor,
+      user_payable_minor AS userPayableMinor, receipt_count AS receiptCount,
+      updated_at AS updatedAt
+     FROM monthly_fund_earning_settlements
+     WHERE user_id=? AND period=? AND currency=?
+     ORDER BY updated_at DESC, fund_id`,
+  )
+    .bind(token.sub, period, SETTLEMENT_CURRENCY)
     .all();
   const current = settlement ?? {
     grossMinor: 0,
@@ -104,6 +116,10 @@ async function status(request: Request, env: Env) {
         upfrontCharge: false,
         debtCarry: false,
         tobFeeMinor: 0,
+        performanceCommissionBps: 0,
+        userOwnsRemainder: true,
+        fundCountLimit: null,
+        defaultFundToolCount: 5,
       },
       period,
       settlement: {
@@ -114,6 +130,7 @@ async function status(request: Request, env: Env) {
             Number((current as { skyFeeMinor?: number }).skyFeeMinor ?? 0),
         ),
       },
+      funds: funds.results,
       receipts: receipts.results,
     },
     200,
@@ -126,6 +143,8 @@ type StoredReceipt = {
   execution_receipt_id: string;
   user_id: string;
   beneficiary_role: string;
+  fund_id: string | null;
+  automation_tool_id: string | null;
   source_provider: string;
   provider_reference: string;
   payout_account_id: string;
@@ -143,6 +162,8 @@ function sameReceipt(stored: StoredReceipt, receipt: EarningReceipt) {
     stored.execution_receipt_id === receipt.executionReceiptId &&
     stored.user_id === receipt.userId &&
     stored.beneficiary_role === receipt.beneficiaryRole &&
+    stored.fund_id === (receipt.fundId ?? null) &&
+    stored.automation_tool_id === (receipt.automationToolId ?? null) &&
     stored.source_provider === receipt.sourceProvider &&
     stored.provider_reference === receipt.providerReference &&
     stored.payout_account_id === receipt.payoutAccountId &&
@@ -175,6 +196,7 @@ async function receiptResult(db: D1Database, receiptId: string) {
     .prepare(
       `SELECT r.receipt_id AS receiptId, r.execution_receipt_id AS executionReceiptId,
         r.user_id AS userId, r.beneficiary_role AS beneficiaryRole,
+        r.fund_id AS fundId, r.automation_tool_id AS automationToolId,
         r.period, r.currency, r.gross_minor AS grossMinor,
         r.operating_cost_minor AS operatingCostMinor,
         r.sky_fee_minor AS skyFeeMinor, r.distributable_minor AS distributableMinor,
@@ -205,17 +227,20 @@ async function ingest(request: Request, env: Env) {
   const period = periodForUnix(receipt.occurredAt);
   const inserted = await env.DB.prepare(
     `INSERT OR IGNORE INTO earning_receipts(
-      receipt_id,execution_receipt_id,user_id,beneficiary_role,source_provider,
+      receipt_id,execution_receipt_id,user_id,beneficiary_role,fund_id,
+      automation_tool_id,source_provider,
       provider_reference,payout_account_id,evidence_sha256,currency,gross_minor,
       operating_cost_minor,sky_fee_minor,distributable_minor,period,occurred_at,
       received_at,applied_at
-    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,0,0,?,?,?,NULL)`,
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,?,?,?,NULL)`,
   )
     .bind(
       receipt.receiptId,
       receipt.executionReceiptId,
       receipt.userId,
       receipt.beneficiaryRole,
+      receipt.fundId ?? null,
+      receipt.automationToolId ?? null,
       receipt.sourceProvider,
       receipt.providerReference,
       receipt.payoutAccountId,
@@ -268,6 +293,22 @@ async function ingest(request: Request, env: Env) {
         sky_fee_minor=monthly_earning_settlements.sky_fee_minor+excluded.sky_fee_minor,
         distributable_minor=monthly_earning_settlements.distributable_minor+excluded.distributable_minor,
         receipt_count=monthly_earning_settlements.receipt_count+1,
+        updated_at=excluded.updated_at`,
+    ).bind(now, receipt.receiptId),
+    env.DB.prepare(
+      `INSERT INTO monthly_fund_earning_settlements(
+        user_id,fund_id,period,currency,gross_minor,operating_cost_minor,
+        sky_fee_minor,user_payable_minor,receipt_count,updated_at
+      ) SELECT user_id,fund_id,period,currency,gross_minor,operating_cost_minor,
+          sky_fee_minor,distributable_minor,1,?
+        FROM earning_receipts
+        WHERE receipt_id=? AND applied_at IS NULL AND fund_id IS NOT NULL
+       ON CONFLICT(user_id,fund_id,period,currency) DO UPDATE SET
+        gross_minor=monthly_fund_earning_settlements.gross_minor+excluded.gross_minor,
+        operating_cost_minor=monthly_fund_earning_settlements.operating_cost_minor+excluded.operating_cost_minor,
+        sky_fee_minor=monthly_fund_earning_settlements.sky_fee_minor+excluded.sky_fee_minor,
+        user_payable_minor=monthly_fund_earning_settlements.user_payable_minor+excluded.user_payable_minor,
+        receipt_count=monthly_fund_earning_settlements.receipt_count+1,
         updated_at=excluded.updated_at`,
     ).bind(now, receipt.receiptId),
     env.DB.prepare(

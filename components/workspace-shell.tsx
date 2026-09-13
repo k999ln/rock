@@ -167,7 +167,7 @@ export default function WorkspaceShell({
             </div>
             <Link href="/fund" className="rock-legacy-link">
               <Layers3 size={16} />
-              保存済みのファンド・試算
+              自動化ファンド
               <ArrowUpRight size={13} />
             </Link>
           </SidebarFooter>
