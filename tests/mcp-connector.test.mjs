@@ -196,6 +196,28 @@ void test('tool execution requires an exact, single-use approval and blocks dire
     confirmed: true,
   });
   assert.equal(replay.status, 403);
+
+  const preparedBeforeStop = await (
+    await request('/servers/rock-star-mr/prepare', {
+      name: 'format_citations',
+      arguments: args,
+    })
+  ).json();
+  const stopped = await request('/servers/rock-star-mr/disconnect', {});
+  assert.deepEqual(await stopped.json(), {
+    id: 'rock-star-mr',
+    state: 'available',
+  });
+  const afterStop = await (await request('/servers', undefined, 'GET')).json();
+  assert.equal(afterStop.servers[0].state, 'available');
+  assert.equal(afterStop.servers[0].passport, null);
+  const staleApproval = await request('/servers/rock-star-mr/execute', {
+    name: 'format_citations',
+    arguments: args,
+    approvalToken: preparedBeforeStop.approvalToken,
+    confirmed: true,
+  });
+  assert.equal(staleApproval.status, 403);
 });
 
 void test('connector binds browser token to an allowlisted Origin', async (t) => {

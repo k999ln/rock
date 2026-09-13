@@ -153,6 +153,7 @@ export default function SkyMcpCenter({
     setConnectionMessage('');
     try {
       const passport = await connectMcp(server.id);
+      window.dispatchEvent(new Event('sky-mcp-servers'));
       setConnectionMessage(
         `${server.name}へ接続しました。${passport.tools.length}機能を確認済みです。`,
       );

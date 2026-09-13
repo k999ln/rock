@@ -130,12 +130,14 @@ await test('Sky connections are one-tap, idempotent and isolated per user', asyn
   const { a, b } = fixture();
   const first = await a.connectSky({ tool: 'coconala' });
   const replay = await a.connectSky({ tool: 'coconala' });
+  await a.connectSky({ tool: 'rockstar-legal-intake' });
+  await a.connectSky({ tool: 'rockstar-patent-assistant' });
   assert.equal(first.tool, 'coconala');
   assert.equal(first.scope, 'execute');
   assert.equal(replay.consentVersion, first.consentVersion);
   assert.deepEqual(
     (await a.listSkyConnections()).map(({ tool }) => tool),
-    ['coconala'],
+    ['coconala', 'rockstar-legal-intake', 'rockstar-patent-assistant'],
   );
   assert.deepEqual(await b.listSkyConnections(), []);
   await rejects(() => a.connectSky({ tool: 'shell' }), 400);

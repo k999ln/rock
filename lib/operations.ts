@@ -6,6 +6,14 @@ export const JOB_TOOLS = [
   'mr-delivery',
 ] as const;
 export type JobTool = (typeof JOB_TOOLS)[number];
+export const SKY_CONNECTION_TOOLS = [
+  ...JOB_TOOLS,
+  'fashion-brand-ops',
+  'rockstar-ledger',
+  'rockstar-legal-intake',
+  'rockstar-patent-assistant',
+] as const;
+export type SkyConnectionTool = (typeof SKY_CONNECTION_TOOLS)[number];
 export type JobState =
   | 'queued'
   | 'running'
@@ -47,7 +55,7 @@ export type BookRecord = {
   createdAt: number;
 };
 export type SkyConnection = {
-  tool: JobTool;
+  tool: SkyConnectionTool;
   scope: 'execute';
   consentVersion: string;
   connectedAt: number;
@@ -97,6 +105,11 @@ function toolName(value: unknown): JobTool {
   if (!JOB_TOOLS.includes(value as JobTool))
     throw new OperationError('対応していないツールです。');
   return value as JobTool;
+}
+function skyConnectionToolName(value: unknown): SkyConnectionTool {
+  if (!SKY_CONNECTION_TOOLS.includes(value as SkyConnectionTool))
+    throw new OperationError('対応していないSkyアプリです。');
+  return value as SkyConnectionTool;
 }
 const columns =
   'id, user_id AS userId, tool, transport, sample, status, input_bytes AS inputBytes, output_bytes AS outputBytes, duration_ms AS durationMs, error_code AS errorCode, device_id AS deviceId, created_at AS createdAt, started_at AS startedAt, finished_at AS finishedAt, deadline';
@@ -357,7 +370,7 @@ export function operations(
 
   async function connectSky(value: unknown) {
     const v = object(value, ['tool']),
-      tool = toolName(v.tool),
+      tool = skyConnectionToolName(v.tool),
       connectedAt = clock();
     await statement(
       `INSERT INTO sky_connections (user_id, tool, scope, consent_version, connected_at)
@@ -592,6 +605,31 @@ export function operations(
       serverTime: now,
     };
   }
+
+  async function wallet() {
+    const [records, totals] = await Promise.all([
+      statement(
+        `SELECT ${bookColumns}, EXISTS(SELECT 1 FROM book_records r WHERE r.reverses_id = book_records.id AND r.user_id = ?) AS reversed FROM book_records WHERE user_id = ? ORDER BY occurred_on DESC, created_at DESC, id DESC LIMIT 100`,
+        user,
+        user,
+      ).all<BookRecord & { reversed: number }>(),
+      statement(
+        "SELECT COALESCE(SUM(CASE WHEN kind = 'revenue' THEN amount ELSE 0 END),0) AS revenue, COALESCE(SUM(CASE WHEN kind = 'expense' THEN amount ELSE 0 END),0) AS expense FROM book_records WHERE user_id = ?",
+        user,
+      ).first<{ revenue: number; expense: number }>(),
+    ]);
+    const revenue = totals?.revenue ?? 0;
+    const expense = totals?.expense ?? 0;
+    return {
+      currency: 'JPY' as const,
+      balance: revenue - expense,
+      revenue,
+      expense,
+      records: records.results,
+      persistence: 'd1' as const,
+      transfers: 'not-connected' as const,
+    };
+  }
   return {
     createJob,
     changeJob,
@@ -605,6 +643,7 @@ export function operations(
     connectSky,
     device,
     book,
+    wallet,
     overview,
   };
 }

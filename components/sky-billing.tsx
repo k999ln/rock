@@ -2,11 +2,16 @@
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in is a top-level gateway route. */
 
 import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
 import {
-  CircleDollarSign,
+  ArrowDownLeft,
+  ArrowRight,
+  CircleCheck,
   LoaderCircle,
+  RefreshCw,
   ShieldCheck,
   TriangleAlert,
+  WalletCards,
 } from 'lucide-react';
 
 type BillingGateway = {
@@ -62,7 +67,7 @@ async function gateway(signal?: AbortSignal) {
   };
   if (!response.ok || !body.serviceOrigin || !body.token)
     throw new BillingError(
-      body.error ?? '収益精算を確認できませんでした。',
+      body.error ?? '収益を確認できませんでした。',
       response.status,
     );
   return body as BillingGateway;
@@ -80,7 +85,7 @@ async function settlementStatus(signal?: AbortSignal) {
   };
   if (!response.ok || !body.policy || !body.settlement)
     throw new BillingError(
-      body.error ?? '収益精算サービスと通信できませんでした。',
+      body.error ?? '収益サービスと通信できませんでした。',
       response.status,
     );
   return body as SettlementSnapshot;
@@ -93,6 +98,15 @@ function usd(value: number) {
   }).format(value / 100);
 }
 
+function receiptStatus(value: string | null) {
+  if (!value) return '確認済み';
+  const status = value.toLowerCase();
+  if (status.includes('paid') || status.includes('complete')) return '受取済み';
+  if (status.includes('fail') || status.includes('reject')) return '要確認';
+  if (status.includes('pending') || status.includes('hold')) return '処理中';
+  return '確認済み';
+}
+
 export function SkyBilling() {
   const [snapshot, setSnapshot] = useState<SettlementSnapshot | null>(null);
   const [message, setMessage] = useState('');
@@ -100,6 +114,7 @@ export function SkyBilling() {
   const [needsSignin, setNeedsSignin] = useState(false);
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
+    setBusy(true);
     try {
       setSnapshot(await settlementStatus(signal));
       setNeedsSignin(false);
@@ -109,9 +124,7 @@ export function SkyBilling() {
       setSnapshot(null);
       setNeedsSignin(error instanceof BillingError && error.status === 401);
       setMessage(
-        error instanceof Error
-          ? error.message
-          : '収益精算を確認できませんでした。',
+        error instanceof Error ? error.message : '収益を確認できませんでした。',
       );
     } finally {
       if (!signal?.aborted) setBusy(false);
@@ -128,95 +141,204 @@ export function SkyBilling() {
   }, [refresh]);
 
   const settlement = snapshot?.settlement;
-  const percent = settlement
-    ? Math.min(
-        100,
-        Math.round(
-          (settlement.skyFeeMinor / snapshot.policy.monthlyFeeCapMinor) * 100,
-        ),
-      )
-    : 0;
+  const amount = (value?: number) => (value === undefined ? '—' : usd(value));
+
+  if (needsSignin) {
+    return (
+      <div className="wallet-simple">
+        <section className="wallet-entry" aria-labelledby="wallet-entry-title">
+          <div className="wallet-entry-main">
+            <span className="wallet-entry-icon">
+              <WalletCards size={26} />
+            </span>
+            <p>RockstarOS Wallet</p>
+            <h1 id="wallet-entry-title">
+              自動化の売上を、
+              <br />
+              受け取れる金額まで。
+            </h1>
+            <span>売上、実費、受取予定をひとつの画面で確認できます。</span>
+            <a
+              className="wallet-entry-action"
+              href="/signin-with-chatgpt?return_to=/wallet"
+            >
+              サインインして開く
+              <ArrowRight size={18} />
+            </a>
+          </div>
+
+          <ol className="wallet-entry-flow" aria-label="Walletの流れ">
+            <li>
+              <span>1</span>
+              <div>
+                <strong>Skyで自動化を使う</strong>
+                <small>仕事と実行結果を記録</small>
+              </div>
+            </li>
+            <li>
+              <span>2</span>
+              <div>
+                <strong>売上を照合する</strong>
+                <small>入金確認済みの売上だけを反映</small>
+              </div>
+            </li>
+            <li>
+              <span>3</span>
+              <div>
+                <strong>受取額を確認する</strong>
+                <small>売上から実費と利用料を自動計算</small>
+              </div>
+            </li>
+          </ol>
+
+          <div className="wallet-entry-trust">
+            <ShieldCheck size={17} />
+            先払いなし。売上がない月の請求もありません。
+          </div>
+        </section>
+        <p className="wallet-simple-note">
+          Developer Preview · 現在は実際の入金・送金には接続していません。
+        </p>
+      </div>
+    );
+  }
+
+  if (busy && !snapshot) {
+    return (
+      <div className="wallet-simple">
+        <output className="wallet-loading">
+          <LoaderCircle className="sky-billing-spin" size={20} />
+          Walletを開いています
+        </output>
+      </div>
+    );
+  }
+
+  if (!snapshot) {
+    return (
+      <div className="wallet-simple">
+        <section className="wallet-error" role="alert">
+          <TriangleAlert size={22} />
+          <div>
+            <strong>Walletを開けませんでした</strong>
+            <p>{message}</p>
+          </div>
+          <button disabled={busy} onClick={() => void refresh()}>
+            再試行
+          </button>
+        </section>
+      </div>
+    );
+  }
 
   return (
-    <section className="sky-billing-panel" aria-labelledby="sky-billing-title">
-      <div className="sky-billing-heading">
-        <span>
-          <CircleDollarSign size={25} />
-        </span>
-        <div>
-          <p className="rock-eyebrow">EARN FIRST · SETTLE AFTER</p>
-          <h2 id="sky-billing-title">自動化収益からだけ精算</h2>
-          <p>
-            Providerで入金確認済みのEarning
-            Receiptだけを対象に、実費の後から最大$8.88を回収します。
-          </p>
+    <div className="wallet-simple">
+      <section className="wallet-simple-balance" aria-labelledby="wallet-total">
+        <div className="wallet-simple-title-row">
+          <div>
+            <span>今月の受取予定</span>
+            <strong id="wallet-total">
+              {amount(settlement?.distributableMinor)}
+            </strong>
+          </div>
+          <div className="wallet-simple-actions">
+            <a href="#wallet-records">売上・経費を記録</a>
+            <button disabled={busy} onClick={() => void refresh()}>
+              <RefreshCw className={busy ? 'sky-billing-spin' : ''} size={16} />
+              <span className="wallet-refresh-label">更新</span>
+            </button>
+          </div>
         </div>
-        <strong>
-          $8.88<small>monthly cap</small>
-        </strong>
-      </div>
+        <p>
+          {settlement?.receiptCount
+            ? `${settlement.receiptCount}件の確認済み売上を反映しています。`
+            : '確認済みの売上はまだありません。'}
+        </p>
 
-      {busy && !snapshot ? (
-        <output className="sky-billing-message">
-          <LoaderCircle className="sky-billing-spin" size={18} />
-          今月の確定収益を確認中
-        </output>
-      ) : settlement ? (
-        <div className="sky-settlement-body">
-          <div className="sky-settlement-progress">
-            <div>
-              <span>Sky回収済み</span>
-              <strong>{usd(settlement.skyFeeMinor)}</strong>
-              <small>
-                残り上限 {usd(settlement.remainingFeeCapMinor)} ·{' '}
-                {snapshot.period}
-              </small>
-            </div>
-            <progress max={100} value={percent} aria-label="今月の回収進捗" />
+        <dl className="wallet-simple-breakdown">
+          <div>
+            <dt>売上</dt>
+            <dd>{amount(settlement?.grossMinor)}</dd>
           </div>
-          <dl className="sky-settlement-metrics">
-            <div>
-              <dt>確定売上</dt>
-              <dd>{usd(settlement.grossMinor)}</dd>
-            </div>
-            <div>
-              <dt>実費</dt>
-              <dd>{usd(settlement.operatingCostMinor)}</dd>
-            </div>
-            <div>
-              <dt>利用者へ</dt>
-              <dd>{usd(settlement.distributableMinor)}</dd>
-            </div>
-            <div>
-              <dt>検証Receipt</dt>
-              <dd>{settlement.receiptCount}件</dd>
-            </div>
-          </dl>
-          <div className="sky-settlement-rule">
-            <ShieldCheck size={18} />
-            <p>
-              先払い・カード請求・未達分の借金・翌月繰越はありません。ToBのSky手数料は0です。
-            </p>
+          <div>
+            <dt>実費</dt>
+            <dd>{amount(settlement?.operatingCostMinor)}</dd>
           </div>
+          <div>
+            <dt>Sky利用料</dt>
+            <dd>{amount(settlement?.skyFeeMinor)}</dd>
+          </div>
+        </dl>
+
+        <div className="wallet-simple-policy">
+          <ShieldCheck size={17} />
+          <span>
+            Sky利用料は収益が出た月だけ、最大$8.88。先払いや未払い請求はありません。
+          </span>
         </div>
-      ) : null}
+      </section>
 
       {message && (
-        <output className="sky-billing-message">
-          {needsSignin ? (
-            <ShieldCheck size={18} />
+        <output className="wallet-simple-message">
+          {busy ? (
+            <LoaderCircle className="sky-billing-spin" size={18} />
           ) : (
             <TriangleAlert size={18} />
           )}
           <span>{message}</span>
-          {needsSignin && (
-            <a href="/signin-with-chatgpt?return_to=/wallet">サインイン</a>
-          )}
+          <button disabled={busy} onClick={() => void refresh()}>
+            再試行
+          </button>
         </output>
       )}
-      <p className="sky-billing-footnote">
-        ツールの実行成功だけでは売上にしません。外部Providerの入金参照と実行証明が一致した後にだけ台帳へ反映します。
+
+      <section
+        className="wallet-simple-history"
+        aria-labelledby="wallet-history"
+      >
+        <div className="wallet-simple-section-title">
+          <h2 id="wallet-history">入金履歴</h2>
+          <span>{snapshot?.period ?? '今月'}</span>
+        </div>
+
+        {snapshot?.receipts.length ? (
+          <div className="wallet-simple-receipts">
+            {snapshot.receipts.slice(0, 6).map((receipt) => (
+              <article key={receipt.receiptId}>
+                <span className="wallet-simple-receipt-icon">
+                  <ArrowDownLeft size={18} />
+                </span>
+                <div>
+                  <strong>{receipt.sourceProvider}</strong>
+                  <small>
+                    {receipt.receiptId.slice(0, 8)} ·{' '}
+                    {receiptStatus(receipt.payoutStatus)}
+                  </small>
+                </div>
+                <strong>+{usd(receipt.distributableMinor)}</strong>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="wallet-simple-empty">
+            <span>
+              <CircleCheck size={18} />
+            </span>
+            <div>
+              <strong>次は、Skyで自動化を選ぶ</strong>
+              <p>確認済みの売上が発生すると、ここに入金履歴が残ります。</p>
+            </div>
+            <Link href="/">
+              Skyを開く
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+        )}
+      </section>
+
+      <p className="wallet-simple-note">
+        Developer Preview · 現在は実際の入金・送金には接続していません。
       </p>
-    </section>
+    </div>
   );
 }
