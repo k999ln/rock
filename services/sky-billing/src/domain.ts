@@ -8,6 +8,8 @@ export type EarningReceipt = {
   executionReceiptId: string;
   userId: string;
   beneficiaryRole: BeneficiaryRole;
+  fundId?: string;
+  automationToolId?: string;
   sourceProvider: string;
   providerReference: string;
   payoutAccountId: string;
@@ -60,6 +62,19 @@ export function validateEarningReceipt(value: unknown): EarningReceipt {
     throw new Error('EARNING_RECEIPT_CURRENCY_INVALID');
   const occurredAt = amount(item.occurredAt, 'OCCURRED_AT');
   periodForUnix(occurredAt);
+  if (Boolean(item.fundId) !== Boolean(item.automationToolId))
+    throw new Error('EARNING_RECEIPT_FUND_TOOL_PAIR_INVALID');
+  const fund = item.fundId
+    ? text(item.fundId, 'FUND', /^[A-Za-z0-9][A-Za-z0-9._:-]*$/u, 80)
+    : undefined;
+  const automationTool = item.automationToolId
+    ? text(
+        item.automationToolId,
+        'AUTOMATION_TOOL',
+        /^[A-Za-z0-9][A-Za-z0-9._:-]*$/u,
+        80,
+      )
+    : undefined;
   return {
     receiptId: text(item.receiptId, 'ID', /^[A-Za-z0-9][A-Za-z0-9._:-]*$/u),
     executionReceiptId: text(
@@ -69,6 +84,9 @@ export function validateEarningReceipt(value: unknown): EarningReceipt {
     ),
     userId: text(item.userId, 'USER', /^\S+$/u),
     beneficiaryRole: item.beneficiaryRole,
+    ...(fund
+      ? { fundId: fund, automationToolId: automationTool as string }
+      : {}),
     sourceProvider: text(
       item.sourceProvider,
       'PROVIDER',

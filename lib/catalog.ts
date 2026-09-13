@@ -26,6 +26,32 @@ export type Automation = {
 };
 export const catalog: Automation[] = [
   {
+    id: 'rockstar-markets-analysis',
+    name: 'RockstarOS Markets',
+    category: '市場分析',
+    description:
+      '公開ライブ市場を読み取り、固定commitのPolymarket botをoffline backtestだけで検証します。',
+    source: 'https://rockstaros-markets.higgsfield.app',
+    launchPath: '/polymarket',
+    environment: 'ブラウザ内 / 公開市場データの読取専用',
+    cost: '市場データの閲覧にRockstarOS追加料金はありません。取引費用・損失・税務は外部市場の条件に従います。',
+    steps: [
+      '公開ライブ市場の取得状態を確認する',
+      '確率・出来高・流動性を分析材料として確認する',
+      '固定commit・clean treeのbotでoffline backtest reportを作る',
+      'Marketsでreportの出所・数値整合・標本数を検証する',
+      '推定値を利回りや確定収益として扱わない',
+      '取引する場合は地域・KYC・Wallet署名・明示承認を別に確認する',
+      'Providerが確定した実現損益だけをEarning Receiptへ渡す',
+    ],
+    note: '市場は読取専用、botはbacktest専用です。秘密鍵、LIVE切替、注文、Wallet操作を受け付けず、サンプル市場、simulation PnL、含み益、見積もり、取引量をファンド収益へ計上しません。',
+    color: 'blue',
+    license: 'RockstarOS code / external venue terms',
+    licenseUrl: 'https://polymarket.com/tos',
+    status: 'ready',
+    origin: 'rockstaros',
+  },
+  {
     id: 'mercari-revenue',
     name: 'メルカリ収益スターター',
     category: '販売・収益化',

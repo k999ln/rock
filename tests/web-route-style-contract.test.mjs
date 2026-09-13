@@ -18,6 +18,10 @@ const surfaces = {
     '.polymarket-empty-state',
     '.polymarket-boundaries',
     '.polymarket-settings-link',
+    '.markets-policy-strip',
+    '.markets-analysis-grid',
+    '.markets-bot-lab',
+    '.markets-actions',
   ],
 };
 

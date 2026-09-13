@@ -44,6 +44,7 @@ class TestD1 {
     for (const migration of [
       '0001_billing.sql',
       '0002_earnings_settlement.sql',
+      '0003_automation_funds.sql',
     ])
       this.database.exec(
         readFileSync(
@@ -129,6 +130,8 @@ void test('settlement Worker applies verified earnings once and never charges up
     executionReceiptId: 'exec_1',
     userId: 'alice',
     beneficiaryRole: 'toc',
+    fundId: 'fund:test-one',
+    automationToolId: 'tool:test-one',
     sourceProvider: 'stripe-connect',
     providerReference: 'pi_1',
     payoutAccountId: 'acct_alice',
@@ -217,12 +220,19 @@ void test('settlement Worker applies verified earnings once and never charges up
     assert.equal(status.response.status, 200);
     assert.equal(status.body.policy.upfrontCharge, false);
     assert.equal(status.body.policy.debtCarry, false);
+    assert.equal(status.body.policy.performanceCommissionBps, 0);
+    assert.equal(status.body.policy.userOwnsRemainder, true);
+    assert.equal(status.body.policy.fundCountLimit, null);
     assert.equal(status.body.settlement.grossMinor, 2000);
     assert.equal(status.body.settlement.operatingCostMinor, 200);
     assert.equal(status.body.settlement.skyFeeMinor, 888);
     assert.equal(status.body.settlement.distributableMinor, 912);
     assert.equal(status.body.settlement.remainingFeeCapMinor, 0);
     assert.equal(status.body.receipts.length, 3);
+    assert.equal(status.body.funds.length, 1);
+    assert.equal(status.body.funds[0].fundId, 'fund:test-one');
+    assert.equal(status.body.funds[0].grossMinor, 2000);
+    assert.equal(status.body.funds[0].userPayableMinor, 912);
     assert.equal(
       DB.database
         .prepare(
