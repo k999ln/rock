@@ -1,5 +1,5 @@
 {
-  "version": "1.23",
+  "version": "1.24",
   "decidedAt": "2026-09-12",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -11,7 +11,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ27 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ28 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -39,7 +39,25 @@
     "systemUtility": "settings",
     "preferencesStorage": "device_local",
     "customizable": ["wallpaper", "accent", "icon_size", "labels", "app_order"],
-    "settingsFunctions": ["appearance", "account_state", "pc_connector", "mcp_permissions", "web_update", "install_recovery_guidance"]
+    "settingsFunctions": ["appearance", "account_state", "pc_connector", "mcp_permissions", "web_update", "install_recovery_guidance", "system_diagnostics", "encrypted_device_backup", "device_restore", "service_worker_update_check"]
+  },
+  "systemMaintenance": {
+    "route": "/settings/system",
+    "runtime": "web_pwa_device_local",
+    "diagnostics": ["network", "device_storage", "web_crypto", "service_worker", "rockstar_api", "pc_connector"],
+    "backup": {
+      "format": "rockstaros-device-backup/1",
+      "cipher": "AES-GCM-256",
+      "kdf": "PBKDF2-SHA256",
+      "iterations": 310000,
+      "scope": "allowlisted_rockstaros_home_preferences_only",
+      "excludes": ["device_session_token", "account_session", "wallet_funds", "server_receipts"],
+      "tamperDetection": true
+    },
+    "updateCheck": "service_worker_registration_update",
+    "physicalDeviceStatus": "blocked_until_exact_model_bsp_bootloader_recovery",
+    "productionSigning": "blocked_until_owner_key_ceremony",
+    "externalProviders": "blocked_until_credentials_contracts_acceptance"
   },
   "chatInteraction": {
     "defaultRouting": "sky_auto",
@@ -84,7 +102,8 @@
     "RQ24",
     "RQ25",
     "RQ26",
-    "RQ27"
+    "RQ27",
+    "RQ28"
   ],
   "primaryCapabilities": [
     "sky-automation-control",

@@ -158,3 +158,10 @@
 - The final installable app front has a direct home screen, four ready fund presets, one preparation-only preview, activity history, and settings. No fabricated balances, yields, participant totals, or paid gacha. Real tool completion and sample runs have distinct labels.
 - PWA manifest, 192px/512px icons, and service worker endpoints return 200 locally. The app shell does not cache API responses or tool input.
 - Browser screenshots/click QA were not requested and were not performed. Loopback HTTP was verified at protocol level; a browser may still require the user's initial local-network permission. WebMCP list_funds/select_fund is feature-detected; the stdio/HTTP MCP transport is the verified execution integration.
+# 2026-09-12 — システム診断・暗号化端末設定バックアップ
+
+- `/settings/system`をローカル実ブラウザで開き、通信、端末内保存、Web Crypto、Service Worker、RockstarOS API、PC Connectorの6項目が実測状態へ更新されることを確認した。確認時は5/6準備済みで、未接続のPC Connectorだけを注意表示した。
+- 暗号化バックアップ画面を開き、パスフレーズ、除外対象、保存操作が画面内に収まることを確認した。
+- `tests/system-backup.test.mjs`で、許可済みホーム設定だけの暗号化往復、平文非露出、無関係または将来追加される未許可localStorageの保持、誤パスフレーズ、改ざん、外部key混入の拒否に合格した。
+- 制限外で`npm run verify`を実行し、Web 157 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、製品ベース、MCP配布一致、Billing Worker dry-run、本番buildに合格した。通常sandboxではloopback待受がEPERMとなるため、MCP ConnectorとD1移行試験だけを含む全検証はローカル待受可能な環境で再実行した。
+- 物理端末のBSP/bootloader/recovery、正式署名鍵、外部MCP・販売・決済・払出しProviderは未接続であり、この検証の合格範囲へ含めない。
