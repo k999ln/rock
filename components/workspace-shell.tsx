@@ -41,6 +41,7 @@ export default function WorkspaceShell({
   onConnect,
   running = false,
   showSidebar = true,
+  hideTopActions = false,
 }: {
   children: ReactNode;
   title: string;
@@ -48,6 +49,7 @@ export default function WorkspaceShell({
   onConnect?: () => void;
   running?: boolean;
   showSidebar?: boolean;
+  hideTopActions?: boolean;
 }) {
   const pathname = usePathname();
   const [installHelp, setInstallHelp] = useState(false);
@@ -185,31 +187,33 @@ export default function WorkspaceShell({
             <strong>{title}</strong>
             {!showSidebar && <em>DEVELOPER PREVIEW</em>}
           </div>
-          <div className="rock-topbar-actions">
-            {running && (
-              <output className="rock-executing">
-                処理中 · 完了まで画面を開いてください
-              </output>
-            )}
-            <span className="rock-web-label">WEB / PC</span>
-            {onConnect ? (
-              <button
-                className="rock-button rock-button-subtle"
-                disabled={running}
-                onClick={onConnect}
-              >
-                <Cable size={17} />
-                PCを接続
-              </button>
-            ) : (
-              <Link
-                className="rock-button rock-button-subtle"
-                href="/rockstaros/guide"
-              >
-                使い方を見る
-              </Link>
-            )}
-          </div>
+          {!hideTopActions && (
+            <div className="rock-topbar-actions">
+              {running && (
+                <output className="rock-executing">
+                  処理中 · 完了まで画面を開いてください
+                </output>
+              )}
+              <span className="rock-web-label">WEB / PC</span>
+              {onConnect ? (
+                <button
+                  className="rock-button rock-button-subtle"
+                  disabled={running}
+                  onClick={onConnect}
+                >
+                  <Cable size={17} />
+                  PCを接続
+                </button>
+              ) : (
+                <Link
+                  className="rock-button rock-button-subtle"
+                  href="/rockstaros/guide"
+                >
+                  使い方を見る
+                </Link>
+              )}
+            </div>
+          )}
         </header>
         <main
           id="workspace-main"
