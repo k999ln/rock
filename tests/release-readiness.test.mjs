@@ -215,6 +215,15 @@ void test('dependency license review cannot hide reciprocal, choice, or attribut
   );
 });
 
+void test('dependency license review cannot omit an exact review component', () => {
+  const changedAudit = structuredClone(webLicenseAudit);
+  changedAudit.reviewComponents = changedAudit.reviewComponents.slice(1);
+  assert.throws(
+    () => validateMatrix({ webLicense: changedAudit }),
+    /要review component一覧が不一致/,
+  );
+});
+
 void test('dependency license audit is pinned to the complete package-lock', () => {
   const changedAudit = structuredClone(webLicenseAudit);
   changedAudit.packageLockSha256 = '0'.repeat(64);

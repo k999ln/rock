@@ -329,7 +329,7 @@
     },
     {
       "id": "SYS10",
-      "title": "Web第三者依存のlock hash・unique component・要review license分類を公開gateへ固定",
+      "title": "Web第三者依存のlock hash・47要review componentのPURL一覧を公開gateへ固定",
       "status": "done",
       "dependsOn": [
         "SYS03"

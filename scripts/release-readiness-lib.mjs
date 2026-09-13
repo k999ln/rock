@@ -444,6 +444,14 @@ export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness
         .reduce((total, item) => total + item.uniqueComponents, 0),
     ]),
   );
+  const reviewComponents = [...components]
+    .map(([purl, license]) => ({
+      purl,
+      license,
+      reviewClass: webLicenseReviewClass(license),
+    }))
+    .filter(({ reviewClass }) => reviewClass !== 'standard-license-text-and-notice')
+    .sort((left, right) => left.purl.localeCompare(right.purl));
   if (audit?.schema !== 'rockstaros-web-third-party-license-audit/1') {
     fail(`${label}: schemaが不一致です`);
   }
@@ -468,6 +476,9 @@ export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness
   }
   if (!exactRecord(audit.reviewSummary, reviewSummary)) {
     fail(`${label}: review分類集計が不一致です`);
+  }
+  if (JSON.stringify(audit.reviewComponents) !== JSON.stringify(reviewComponents)) {
+    fail(`${label}: 要review component一覧が不一致です`);
   }
   if (
     audit.overallStatus !==
