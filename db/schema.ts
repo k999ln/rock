@@ -158,3 +158,20 @@ export const skyConnections = sqliteTable(
     ),
   ],
 );
+
+export const mercariRevenuePlans = sqliteTable(
+  'mercari_revenue_plans',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    payload: text('payload').notNull(),
+    revision: integer('revision').notNull().default(0),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    index('idx_mercari_revenue_user_updated').on(
+      table.userId,
+      table.updatedAt,
+    ),
+  ],
+);

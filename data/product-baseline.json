@@ -1,5 +1,5 @@
 {
-  "version": "1.22",
+  "version": "1.23",
   "decidedAt": "2026-09-12",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -11,7 +11,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ26 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ27 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -83,7 +83,8 @@
     "RQ23",
     "RQ24",
     "RQ25",
-    "RQ26"
+    "RQ26",
+    "RQ27"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -206,6 +207,19 @@
       "provider credentials installed outside Git",
       "sandbox and minimal live acceptance"
     ]
+  },
+  "mercariRevenueLoop": {
+    "requested": true,
+    "catalogTool": "mercari-revenue",
+    "surface": "/income/mercari",
+    "consumerMode": "assisted_draft_costing_manual_official_handoff",
+    "consumerCredentialsCollected": false,
+    "shopsMode": "official_graphql_via_japan_fixed_ip_connector",
+    "directSitesApiCall": false,
+    "manualSalesAreVerified": false,
+    "verifiedSettlementRequirement": "provider_verified_completed_transaction_bound_to_execution_receipt",
+    "salesOrProfitGuaranteed": false,
+    "architecture": "docs/mercari-revenue-loop.md"
   },
   "hardwarePolicy": "Develop one shared RockstarOS Core with model-specific Device Support Packages. Physical native OS, experimental Android GSI, client-only and unsupported are distinct delivery modes. Pixel candidates remain unconfirmed; BlackBerry requires exact-model unlock/vendor/recovery evidence; Apple mobile devices are client-only rather than OS-replacement targets. Linux QEMU and physical evidence remain distinct.",
   "deviceSupportPolicy": {

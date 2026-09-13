@@ -1,5 +1,11 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-12 — メルカリを最初の収益経路に追加
+
+Skyへ「メルカリ収益スターター」を追加し、本人が保有する商品について、状態・商品事実・販売価格・販売手数料・送料・原価・その他実費から出品原稿と見込み手取りを作り、承認、出品済み、取引完了報告まで本人別D1へ保存できるようにした。状態更新はrevisionで競合を拒否し、自己申告の取引完了は`awaiting_provider_verification`のまま保持して検証済み収益へ昇格させない。
+
+個人メルカリは認証情報を取得せず、出品・購入者対応・発送・出金を本人の公式操作へ残す。メルカリShopsは公式GraphQL APIの契約、Personal API Access Token、指定User-Agent、日本国内専用固定IPが必要なため、Cloudflare Sitesから直接接続しない。本番自動収益・8.88 USD回収は、固定IP Connector、Sandboxの注文・取消・一部取消受入、JPY/USD換算方針、Provider確認済み取引完了をEarning Receiptへ結ぶ実装が終わるまで無効。詳細は[メルカリ収益ループ](mercari-revenue-loop.md)。
+
 ## 2026-09-12 — Sky自動化収益からの最大8.88 USD精算
 
 先払いのToC月額課金は利用者意図と異なるため停止した。Wallet画面、認証済み短命token、独立Cloudflare Worker、署名済みEarning Receipt、D1月次精算・追記型台帳・払出し指図を実装した。Workerは自動化のExecution Receipt、Provider入金参照、証拠hashを一意に結び、直接実費を先に回収した残額からだけ、利用者ごと・UTC月ごとにSky利用料を最大888 USD centsまで記帳する。同じReceipt再送は冪等、異なる内容の再利用は拒否する。ToB分は0、売上0時の請求・債務化・翌月繰越・カード請求はない。

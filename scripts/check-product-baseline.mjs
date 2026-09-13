@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 26 },
+    { length: 27 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ26の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ27の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -95,7 +95,7 @@ export function validateBaseline(
   const skyInventory = resolve(root, data.sky?.inventory || '');
   requireValue(
     !relative(root, skyInventory).startsWith('..') &&
-      read(skyInventory).includes('Web / PCで現在使える6件'),
+      read(skyInventory).includes('Web / PCで現在使える9件'),
     'Skyの役割と収録ツールの正本が必要です',
   );
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');
@@ -145,6 +145,14 @@ export function validateBaseline(
       data.skyEarningsSettlement?.liveCollectionEnabled === false &&
       data.skyEarningsSettlement?.livePayoutEnabled === false,
     '先払い月額を使わず、収益連動精算と本番資金gateを維持してください',
+  );
+  requireValue(
+    data.mercariRevenueLoop?.catalogTool === 'mercari-revenue' &&
+      data.mercariRevenueLoop?.consumerCredentialsCollected === false &&
+      data.mercariRevenueLoop?.directSitesApiCall === false &&
+      data.mercariRevenueLoop?.manualSalesAreVerified === false &&
+      data.mercariRevenueLoop?.salesOrProfitGuaranteed === false,
+    'メルカリ個人版の手動境界とProvider検証前の精算禁止を維持してください',
   );
   requireValue(
     data.skyNetworkEconomy?.liveMcpConnectionEnabled === false &&
@@ -296,6 +304,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ26、ホーム・設定utility、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、外部実接続/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ27、メルカリ収益ループ、ホーム・設定utility、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、外部実接続/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

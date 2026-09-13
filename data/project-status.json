@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "OS Hub lifecycle、Sky MCP、Fashion MCP、収益後精算Worker、ホーム・設定UIを本人限定Developer Previewへ統合・公開",
-  "nextAction": "有償商品を1件選び、販売・決済・払出しProvider sandbox credentialと署名済み入金eventを接続して、返金・dispute・払出し失敗を含む事業受入を行う。",
+  "milestone": "OS lifecycle、Sky MCP、メルカリ収益スターター、収益後精算Worker、ホーム・設定UIを本人限定Developer Previewへ統合",
+  "nextAction": "メルカリShops契約と日本国内固定IP Connectorを用意し、Sandboxの注文完了・全取消・一部取消をProvider APIで照合してEarning Receiptへ接続する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -809,6 +809,19 @@
       "status": "in_progress",
       "dependsOn": ["BIL01"],
       "evidence": ["docs/sky-billing.md"]
+    },
+    {
+      "id": "BIL03",
+      "title": "メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加",
+      "status": "done",
+      "dependsOn": ["BIL01"],
+      "evidence": [
+        "docs/mercari-revenue-loop.md",
+        "lib/mercari-revenue.ts",
+        "app/api/revenue/mercari/route.ts",
+        "components/mercari-revenue-starter.tsx",
+        "tests/mercari-revenue.test.mjs"
+      ]
     }
   ],
   "phaseGates": [

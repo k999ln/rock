@@ -16,6 +16,7 @@ export type Automation = {
     | 'subscription-ledger'
     | 'legal-intake'
     | 'patent-assistant';
+  launchPath?: string;
   origin?: 'mr' | 'rockstaros';
   integration?: 'fashion-brand-ops';
   environment: string;
@@ -24,6 +25,30 @@ export type Automation = {
   note: string;
 };
 export const catalog: Automation[] = [
+  {
+    id: 'mercari-revenue',
+    name: 'メルカリ収益スターター',
+    category: '販売・収益化',
+    description:
+      '手元の在庫から、出品原稿・実費後の見込み利益・確認事項・取引完了までを一つの収益フローで管理します。',
+    source: 'https://api.mercari-shops.com/docs/index.html',
+    launchPath: '/income/mercari',
+    environment:
+      '個人メルカリはブラウザ内の出品支援 / Shops自動連携は日本国内の固定IPを持つConnectorが必要',
+    cost: 'Skyの出品準備は追加料金なし。販売手数料・送料・仕入原価は利用者が実額を入力し、売上から先に差し引いて計算します。',
+    steps: [
+      '自分が保有する商品と、状態・価格・実費を入力する',
+      'Skyが出品原稿と見込み手取りを作り、禁止物・誤表示・在庫を確認する',
+      '個人メルカリは本人が公式画面で出品する。Shopsは公式API Connector接続後に個別承認する',
+      '取引完了と入金をProviderで確認できた売上だけをWalletと8.88 USD精算へ渡す',
+    ],
+    note: '販売や利益は保証しません。個人アカウントの認証情報を預からず、無人出品・大量再出品・購入・メッセージ・発送・出金は行いません。自己申告の売上は検証済み収益として精算しません。',
+    color: 'orange',
+    license: 'service terms / RockstarOS code MIT',
+    licenseUrl: 'https://static.jp.mercari.com/tos',
+    status: 'ready',
+    origin: 'rockstaros',
+  },
   {"id":"fashion-brand-ops","name":"Instagram運用・受注型ブランド管理","category":"ブランド運営","description":"売上・数量・粗利目標からInstagram施策、DM接客、受注、決済、制作・発送、改善までを進める承認付きブランド経営MCPです。","source":"https://github.com/k999ln/rock/tree/main/toolkits/fashion-brand-ops","integration":"fashion-brand-ops","environment":"PC / Node.js 22.13以上 / SkyへMCP接続後。外部Providerは任意接続","cost":"初期状態はmockで外部費用なし。Higgsfield、Meta、Stripe等の外部料金は各契約に従い、実行前に確認します。","steps":["ブランド方針と商品を登録し、数量・売上・粗利・期限・広告上限を目標にする","Campaign Autopilotが市場、広告仮説、投稿ペース、次の操作を組み立てる","Sales Conciergeが顧客履歴と購入意向から返信案・見積りへの次の一手を作る","入金確認後、Production Cockpitで資材・原価・能力・納期・工程を管理する","投稿・広告・DM・請求の外部作用はSkyで内容を確認して個別承認する","広告・DM・売上・制作結果を経営画面と次回creativeへ反映する"],"note":"計画と下書きは自動化しますが、価格変更、外部生成、投稿・広告出稿、DM送信、請求、返金は署名付きの個別承認が必要です。paid/refundedは検証済み決済event以外から変更できません。","color":"green","license":"repository","licenseUrl":"https://github.com/k999ln/rock","status":"ready","origin":"rockstaros"},
   {"id": "coconala", "name": "ココナラ案件チェック", "category": "案件・納品支援", "description": "依頼文と提案文から、面談の必要性や役割の食い違いを確認。応募前の判断を助けます。", "source": "https://github.com/k999ln/Mr./blob/26a39d2c31ea5246cb78dbe42d86e333922db60c/skills/earn/gig/scripts/application_eligibility.py", "runner": "coconala", "environment": "ブラウザ内 / Rockへのサインインが必要", "cost": "外部APIは使いません。サイト読込以外の追加通信はありません。", "steps": ["依頼文と送信前の提案文を用意する", "契約形態と発注率を元ページで確認する", "案件チェックを実行し、理由を確認する", "元ページの条件・規約を本人が確認して判断する"], "note": "Mr.の単発・非同期案件向けルールを移植しました。ココナラの規約や受注可否を保証せず、自動応募・返信・入金確認は行いません。", "color": "green", "license": "MIT", "licenseUrl": "/toolkits/mr-LICENSE.txt", "status": "ready", "origin": "mr"},
   {"id": "mr-free-article", "name": "記事の無料版メーカー", "category": "記事制作", "description": "完全版の原稿から無料の紹介記事を作成。要点と出典を残し、noteへの案内を添えます。", "source": "https://github.com/k999ln/Mr./blob/26a39d2c31ea5246cb78dbe42d86e333922db60c/skills/writer-agent/scripts/_shared/make-free-version.py", "runner": "free-article", "environment": "ブラウザ内 / Rockへのサインインが必要", "cost": "外部AIや有料APIを使わず、端末内で文章を処理します。", "steps": ["自分が利用できる原稿を用意する", "無料にする範囲・まとめ・完全版のリンクを入力する", "作成結果と残したい有料部分を確認する", "必要な形式で保存し、本人が公開する"], "note": "まとめは入力した文章を使用します。記事の自動執筆・noteへの投稿・販売は行いません。", "color": "blue", "license": "MIT", "licenseUrl": "/toolkits/mr-LICENSE.txt", "status": "ready", "origin": "mr"},

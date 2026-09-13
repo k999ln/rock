@@ -11,10 +11,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ26/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ27/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ26/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ27/);
   const missingTemplate = structuredClone(source);
   delete missingTemplate.acceptanceTemplate;
   assert.throws(() => validateBaseline(missingTemplate), /acceptanceTemplate/);
@@ -30,6 +30,9 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const debt = structuredClone(source);
   debt.skyEarningsSettlement.debtCarryForward = true;
   assert.throws(() => validateBaseline(debt), /収益連動精算/);
+  const fakeMercariRevenue = structuredClone(source);
+  fakeMercariRevenue.mercariRevenueLoop.manualSalesAreVerified = true;
+  assert.throws(() => validateBaseline(fakeMercariRevenue), /メルカリ個人版/);
   const atmDependency = structuredClone(source);
   atmDependency.gameExchange.atmDependency = true;
   assert.throws(() => validateBaseline(atmDependency), /ATM必須/);

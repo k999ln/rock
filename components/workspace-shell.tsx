@@ -107,7 +107,9 @@ export default function WorkspaceShell({
                   href={href}
                   aria-current={
                     pathname === href ||
-                    (href === '/sky' && pathname.startsWith('/sky/')) ||
+                    (href === '/sky' &&
+                      (pathname.startsWith('/sky/') ||
+                        pathname.startsWith('/income/'))) ||
                     (href === '/work' && pathname === '/activity')
                       ? 'page'
                       : undefined

@@ -30,6 +30,7 @@ import {
   Send,
   ShieldCheck,
   Shirt,
+  ShoppingBag,
   WalletCards,
   X,
   Zap,
@@ -66,6 +67,7 @@ type FeedFilter = 'おすすめ' | '今使える' | '導入候補';
 
 const feedFilters: FeedFilter[] = ['おすすめ', '今使える', '導入候補'];
 const icons: Record<string, LucideIcon> = {
+  'mercari-revenue': ShoppingBag,
   'fashion-brand-ops': Shirt,
   coconala: BriefcaseBusiness,
   'mr-free-article': FilePenLine,
@@ -79,6 +81,11 @@ const providers: Record<
   string,
   { name: string; handle: string; initial: string }
 > = {
+  'mercari-revenue': {
+    name: 'Sky 販売収益化役',
+    handle: '@sky_income',
+    initial: '売',
+  },
   'fashion-brand-ops': {
     name: 'Sky ブランド運営役',
     handle: '@sky_brand',
@@ -260,7 +267,7 @@ export default function SkyWorkspace({
 
   function openConnectedTool(tool: Automation) {
     setSelected(null);
-    router.push(`/chat?tool=${encodeURIComponent(tool.id)}`);
+    router.push(tool.launchPath ?? `/chat?tool=${encodeURIComponent(tool.id)}`);
   }
 
   function primaryAction(tool: Automation) {
@@ -270,6 +277,10 @@ export default function SkyWorkspace({
     }
     if (tool.runner === 'delivery-local') {
       setDeviceOpen(true);
+      return;
+    }
+    if (tool.launchPath) {
+      openConnectedTool(tool);
       return;
     }
     if (connectedTools.includes(tool.id)) {
@@ -553,6 +564,8 @@ export default function SkyWorkspace({
                           )}
                         {tool.status === 'candidate'
                           ? '詳細'
+                          : tool.launchPath
+                            ? '使う'
                           : tool.runner === 'delivery-local'
                             ? 'PC接続'
                             : connectedTools.includes(tool.id)
@@ -685,7 +698,7 @@ export default function SkyWorkspace({
                         <span>次からはChatでアプリを選ぶだけです。</span>
                       </div>
                       <button onClick={() => openConnectedTool(selected)}>
-                        Chatで使う
+                        {selected.launchPath ? '収益フローを開く' : 'Chatで使う'}
                         <ArrowRight size={16} />
                       </button>
                     </div>
