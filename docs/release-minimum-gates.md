@@ -22,6 +22,7 @@
 - 所有者が具体的なライセンスを選択し、top-level `LICENSE` が存在しない限り、一般Web版とQEMU版の製品ライセンスを合格にできない。
 - 所有者記録に正式鍵の準備と署名運用の実施がない限り、QEMU版とAndroid物理端末版のproduction署名を合格にできない。
 - `package-lock.json` の887 package entryにlicense metadataがあることを確認する。
+- `npm run release:signing:check` で候補準備15件、owner legal approval 11件、保護署名29件、本人署名7件の計62公開fixture試験を実行する。試験数の減少も失敗させるが、実鍵・実承認の代用にはしない。
 - `npm run release:sbom` でCycloneDX 1.6のWeb/npm SBOM、現在のrc2 native SBOM、旧9ab native SBOMをignored `work/release/`へ分離生成する。Webは854 unique component、現在のrc2と旧9abはそれぞれtarget 24＋host build 37 component。rc2版は配布archiveと同梱legal bundleのSHA-256へ結合し、旧版は方法検証だけに限定する。
 - マイナンバー連携は法務・安全管理審査が終わるまで機能無効を必須とする。
 

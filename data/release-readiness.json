@@ -52,7 +52,7 @@
         { "id": "diagnostics-and-acceptance", "required": true, "status": "pass", "evidence": ["docs/evidence/rls01/remaining-b7-rc2/d4.json", "docs/evidence/rls01/remaining-b7-rc2/d6.json", "docs/rc2-remaining-acceptance-20260911.md"] },
         { "id": "current-native-component-sbom", "required": true, "status": "pass", "evidence": ["data/qemu-rc2-legal-info/manifest.csv", "data/qemu-rc2-legal-info/host-manifest.csv", "data/qemu-release-audit.json"] },
         { "id": "product-license", "required": true, "status": "blocked", "ownerAction": "自作部分の製品ライセンスを明示選択する" },
-        { "id": "production-signing", "required": true, "status": "blocked", "ownerAction": "OWNER_MANUAL等の方式を確定し、所有者管理下で正式鍵の作成・保管・失効手順を実施する" },
+        { "id": "production-signing", "required": true, "status": "blocked", "ownerAction": "OWNER_MANUAL等の方式を確定し、所有者管理下で正式鍵の作成・保管・失効手順を実施する", "evidence": ["scripts/check-release-signing.mjs", "tests/test_release_signing.py", "tests/test_release_signing_owner.py", "docs/release-signing-operations.md"] },
         { "id": "post-signing-same-candidate-acceptance", "required": true, "status": "blocked", "nextAction": "ライセンスと正式署名をcurrent native SBOMと同じ最終候補へ結合し、fresh導入・更新・復旧を再実行する" },
         { "id": "public-distribution-approval", "required": true, "status": "blocked", "ownerAction": "全gate合格後にGitHub ReleaseをDraftから公開するか明示承認する" }
       ]

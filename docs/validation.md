@@ -2,6 +2,7 @@
 
 ## QEMU rc2配布要件とnative SBOM境界の機械固定 / 2026-09-12
 
+- `scripts/check-release-signing.mjs` を追加し、候補準備15件、owner legal approval 11件、保護署名29件、本人署名7件の計62公開fixture試験を `npm run verify` に統合。各suiteの試験数も固定し、試験の削除を成功扱いにしない。実production鍵・owner承認・隔離環境・実候補署名・署名後受入は未実施のまま分離した。
 - rc2のversion、source commit、archive名・size・SHA-256を、受入結果、434,523件inventory、公開表示データと照合する `data/qemu-release-audit.json` を追加。SHA-256一致を確認した1,003,224,286 byteのrc2 archiveから同梱legal bundleを抽出し、10必須要件のうち6件を範囲付きPASS、4件をBLOCKEDとした。
 - QEMU auditと全体公開台帳は同じgate ID・必須状態・statusを要求する。archive SHAの改変、要件数のずれ、未達のnext action欠落、license/production署名より先の最終受入合格を自動拒否する。
 - current rc2同梱のBuildroot `manifest.csv` 24 target packageと `host-manifest.csv` 37 build dependencyをrepositoryへ証拠保存。CSV SHA-256、component数、同梱legal bundle SHA-256 `ad6453…3d94`、配布archive SHA-256を自動照合し、CycloneDX 1.6へ変換する。componentごとのscope、source archive/site、license fileを保持し、自作3 componentのlicense未選択を消さない。

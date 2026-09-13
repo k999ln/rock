@@ -1,6 +1,6 @@
 {
   "updatedAt": "2026-09-12",
-  "milestone": "QEMU rc2そのものからnative部品表を抽出し、同一archiveへ結合したCycloneDXと6/10公開gateを本人限定Developer Previewへ統合",
+  "milestone": "QEMU rc2固有SBOMと署名・法務62回帰試験を全体verifyへ統合し、6/10公開gateを本人限定Developer Previewへ反映",
   "nextAction": "所有者が製品licenseと正式鍵の保管先を明示した後、license・production署名を同一最終archiveへ結合しfresh導入・更新・復旧を再受入する。",
   "tasks": [
     {
@@ -238,6 +238,24 @@
         "tests/release-readiness.test.mjs",
         "docs/qemu-release-completion-audit-20260912.md",
         "components/system-maintenance.tsx"
+      ]
+    },
+    {
+      "id": "SYS05",
+      "title": "候補準備・法務承認・保護署名・本人署名の62拒否境界試験を全体verifyへ統合",
+      "status": "done",
+      "dependsOn": ["SYS04"],
+      "evidence": [
+        "scripts/check-release-signing.mjs",
+        "scripts/release_signing.py",
+        "scripts/release_signing_owner.py",
+        "scripts/prepare_release_candidate.py",
+        "scripts/verify_owner_legal_approval.py",
+        "tests/test_release_signing.py",
+        "tests/test_release_signing_owner.py",
+        "tests/test_prepare_release_candidate.py",
+        "tests/test_owner_legal_approval.py",
+        "docs/release-signing-operations.md"
       ]
     },
     {
@@ -1100,6 +1118,7 @@
     "unsignedCandidatePreparation": "RC2_REPRODUCIBLE_ALL8_GITHUB_DOWNLOADED_VERIFIED",
     "qemuReleaseAudit": "RC2_EXACT_IDENTITY_6_OF_10_REQUIRED_GATES_PASS",
     "qemuCurrentNativeSbom": "PASS_24_TARGET_37_HOST_COMPONENTS_BOUND_TO_EXACT_RC2_ARCHIVE_PRODUCT_LICENSE_SEPARATE",
+    "signingMechanics": "PASS_62_PUBLIC_FIXTURE_REGRESSIONS_IN_FULL_VERIFY_PRODUCTION_KEY_AND_OWNER_APPROVAL_NOT_EXECUTED",
     "signingBootstrapPr": 5,
     "signingBootstrapCommit": "a4411622031858d6d9684c599d857cadaf90bb94",
     "signingBootstrapApproval": "AWAITING_EXPLICIT_LIMITED_MAIN_APPROVAL",

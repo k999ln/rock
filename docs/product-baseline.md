@@ -1,6 +1,6 @@
 # Rock star OS — 確定した製品ベース
 
-2026-09-12追記（v1.28）: 利用者は、OS公開の最低条件を満たすまで作業を継続するよう明示。RQ31を維持する。QEMU rc2の1GB配布archiveをSHA-256照合後に取得し、同梱legal bundle、target 24＋host build 37 componentのmanifestを同じarchiveへ固定した。current native CycloneDXを生成し、10要件中6件の合格と4件の未達を機械判定する。部品一覧の完成は製品license clearanceではなく、旧9abのinventoryもrc2へ転用できない。
+2026-09-12追記（v1.29）: 利用者は、OS公開の最低条件を満たすまで作業を継続するよう明示。RQ31を維持する。QEMU rc2の1GB配布archiveをSHA-256照合後に取得し、同梱legal bundle、target 24＋host build 37 componentのmanifestを同じarchiveへ固定した。current native CycloneDXを生成し、10要件中6件の合格と4件の未達を機械判定する。さらに候補準備・法務承認・保護署名・本人署名の計62公開fixture回帰を全体verifyへ必須化するが、実鍵・owner承認・署名後受入の代用にはしない。
 
 2026-09-12追記（v1.26）: RQ30を追加する。公開状態を本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android物理端末、iPhone/iPad client、マイナンバー連携へ分け、必須gateから機械判定する。製品ライセンスの所有者選択とtop-level LICENSE、正式鍵の実施記録、同一候補の受入がない状態を合格にできない検査を追加し、Web/npm依存のCycloneDX SBOMはignored領域へ生成する。
 
@@ -308,6 +308,8 @@ QEMUの公開準備は10 gateを同じID・状態で `data/qemu-release-audit.js
 2026-09-12 v1.27: QEMU rc2を10要件へ分解し、候補identityと範囲付き受入5件を合格、native SBOM・製品license・production署名・署名後受入・公開承認5件を未達として機械判定した。旧9abのtarget 24＋host 37 componentをCycloneDXへ変換するが、rc2へ転用できない検査を追加した。
 
 2026-09-12 v1.28: rc2配布archiveと同梱legal bundleのSHA-256を照合し、target 24＋host build 37 componentのcurrent native CycloneDXを同じ候補へ結合。native SBOMを合格へ更新して6/10とし、製品license未許諾は独立gateへ保持した。manifest改ざんと旧9ab差替えを拒否する試験を追加した。
+
+2026-09-12 v1.29: 署名機構の4 suite・計62公開fixture試験を単一commandへ集約し、通常の全体verifyへ必須化した。試験数減少も失敗させ、production鍵・owner承認・実署名・署名後受入は未達のまま分離した。
 
 2026-09-12 v1.26: 配布方法ごとの公開最低条件を機械判定する台帳と検査を追加。本人限定Web/PWAだけをreadyとし、一般公開、QEMU配布、物理端末、iPhone/iPad client、マイナンバーは証拠が揃うまでblockedを維持する。Web/npmのCycloneDX SBOM生成を追加した。
 

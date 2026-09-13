@@ -1,5 +1,5 @@
 {
-  "version": "1.28",
+  "version": "1.29",
   "decidedAt": "2026-09-12",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -75,6 +75,11 @@
       "sbom": "web_current_rc2_and_historical_native_cyclonedx_1_6_generated_to_separate_ignored_files",
       "qemuCandidateStatus": "6_of_10_current_candidate_requirements_passed",
       "currentNativeInventory": "data/qemu-rc2-legal-info",
+      "signingMechanics": {
+        "automatedCheck": "npm run release:signing:check",
+        "publicFixtureTests": 62,
+        "status": "mechanics_verified_production_key_and_owner_approval_not_executed"
+      },
       "historicalNativeInventoryRule": "never_substitute_9ab_inventory_for_rc2"
     },
     "physicalDeviceStatus": "blocked_until_exact_model_bsp_bootloader_recovery",

@@ -161,6 +161,11 @@ export function validateBaseline(
         '6_of_10_current_candidate_requirements_passed' &&
       data.systemMaintenance?.releaseReadiness?.currentNativeInventory ===
         'data/qemu-rc2-legal-info' &&
+      data.systemMaintenance?.releaseReadiness?.signingMechanics?.automatedCheck ===
+        'npm run release:signing:check' &&
+      data.systemMaintenance?.releaseReadiness?.signingMechanics?.publicFixtureTests === 62 &&
+      data.systemMaintenance?.releaseReadiness?.signingMechanics?.status ===
+        'mechanics_verified_production_key_and_owner_approval_not_executed' &&
       data.systemMaintenance?.releaseReadiness?.historicalNativeInventoryRule ===
         'never_substitute_9ab_inventory_for_rc2' &&
       data.systemMaintenance?.physicalDeviceStatus ===
