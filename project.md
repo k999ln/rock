@@ -1,5 +1,19 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-13 — 接続済みMCPをChatのbotとして一元管理
+
+利用者の明示指示により、MCP接続後の処理管理をChatへ統合した。Skyは発見・接続・権限確認の入口として維持し、Chatは接続済みready商品と共通ConnectorのMCP serverをbot一覧へ自動反映する。botを選ぶと、方向・修正指示、Passportで取得した公開機能、JSON引数、実行前確認、結果、停止を同じスレッドで扱える。
+
+任意MCPの実行は既存の`prepare → 内容確認 → execute`を迂回しない。bot停止時はtransportとPassportをresetし、未使用の一回承認を失効する。実行中の割り込み機能をMCPが公開していない場合は次の実行への方向修正として明示し、外部作用を停止できたとは表示しない。[実装・安全境界・検証](docs/chat-mcp-control-room-20260913.md)。確定要望はRQ26として製品ベースv1.22へ追加した。
+
+## 2026-09-12 — GrokをモチーフにChat内の処理フローを改善
+
+後続のSky統合で欠落していたChat専用CSSを復旧し、デスクトップとスマートフォンで会話面、担当切替、入力欄が一画面に収まるようにした。入力は複数行に対応し、Enterで送信、Shift+Enterで改行、日本語IMEの変換確定では送信しない。送信後は最新メッセージへ自動スクロールする。
+
+最近の処理は完了・実行中・要確認・停止・受付済みを区別し、項目全体から保存済み履歴を開ける。会話内容は新たにブラウザ保存せず、Chatの返答は担当選択であって実jobの完了証拠ではない既存境界を維持する。[実装・安全境界・検証](docs/chat-usability-20260912.md)。
+
+さらに接続済み担当へ依頼すると、必要な入力、実行、結果、履歴保存の4段階と既存runnerを同じ会話内へ展開する。入力画面をSkyへ探しに戻る必要をなくし、既存の本人確認、実行制限、job receiptをそのまま通す。
+
 ## 2026-09-12 — Skyを「稼いだ後だけ最大8.88 USD精算」へ訂正
 
 利用者の明示訂正により、Stripe Checkoutの先払い月額を廃止した。Skyの自動化が生み、外部Providerで入金まで確認できた収益だけをExecution Receiptと結び、署名済みEarning Receiptとして独立Workerへ入れる。実費を先に回収し、ToCの残額から利用者ごと・UTC月ごとに最大888 USD centsをSkyへ、残りを利用者の払出し指図へ記帳する。ToB分のSky利用料は0。売上0時の請求、未達分の債務化・翌月繰越、カード定期請求は行わない。
@@ -374,7 +388,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / OS Hub lifecycle、Sky MCP、Fashion MCP、収益後精算Workerを本人限定Developer Previewへ統合・公開 / 完了 39/62件
+最終更新: 2026-09-13 / 接続済みMCPをChatのbotとして一元管理 / 完了 41/64件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -390,6 +404,8 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY10 | Skyをアプリ選択と接続へ絞り、Chatを依頼・状況・結果の受取画面として分離 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/workspace-shell.tsx) · [記録](app/chat/page.tsx) · [記録](app/polymarket/page.tsx) |
 | SKY11 | MCP掲載前診断とPC接続の互換性・初回導線を改善 | 完了 | [記録](lib/mcp-inspection.ts) · [記録](app/api/sky/mcp/inspect/route.ts) · [記録](lib/device.ts) · [記録](components/sky-publisher-form.tsx) · [記録](components/device-connection.tsx) · [記録](tests/mcp-inspection.test.mjs) · [記録](tests/device-lifecycle.test.mjs) |
 | SKY12 | ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](docs/sky-identity-connection.md) |
+| SKY13 | GrokをモチーフにChatの表示・入力を改善し、依頼から実行・結果までを会話内へ統合 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](lib/operations.ts) · [記録](tests/operations.test.mjs) · [記録](scripts/check-sky.mjs) · [記録](docs/chat-usability-20260912.md) |
+| SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](docs/chat-mcp-control-room-20260913.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |

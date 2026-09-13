@@ -9,6 +9,7 @@ const requireValue = (ok, message) => {
 };
 
 const catalogSource = read('lib/catalog.ts');
+const operationsSource = read('lib/operations.ts');
 const catalogBody = catalogSource.slice(
   catalogSource.indexOf('export const catalog'),
 );
@@ -65,6 +66,8 @@ requireValue(
 );
 const sky = read('docs/sky.md');
 const workspace = read('components/sky-workspace.tsx');
+const chat = read('components/sky-chat-workspace.tsx');
+const mcpBot = read('components/mcp-bot-runner.tsx');
 const workspaceCss = read('app/workspace.css');
 for (const marker of [
   'fashion-brand-ops',
@@ -135,6 +138,60 @@ for (const marker of [
   requireValue(
     workspaceCss.includes(marker),
     `Skyの画面・モバイルDialog CSSに「${marker}」がありません`,
+  );
+
+for (const marker of [
+  'role="log"',
+  'aria-pressed=',
+  'handleComposerKeyDown',
+  'messagesEndRef',
+  'maxLength={2000}',
+  '<MrToolRunner',
+  'sky-chat-workflow',
+  'listMcpConnections',
+  'sky-chat-bot-board',
+  '<McpBotRunner',
+])
+  requireValue(
+    chat.includes(marker),
+    `Chatの会話操作に「${marker}」がありません`,
+  );
+for (const marker of [
+  '.sky-chat-simple',
+  '.sky-chat-messages',
+  '.sky-chat-composer textarea',
+  '.sky-chat-receipt.is-attention',
+  '.sky-chat-workflow-steps',
+  '.sky-chat-bot-board',
+  '.mcp-bot-direction',
+  '.mcp-bot-result',
+  '@media (max-width: 420px)',
+])
+  requireValue(
+    workspaceCss.includes(marker),
+    `ChatのレスポンシブCSSに「${marker}」がありません`,
+  );
+for (const marker of [
+  'prepareMcpTool',
+  'executeApprovedMcpTool',
+  'disconnectMcp',
+  '方向・修正指示',
+  '実行中の処理への割り込みではありません',
+])
+  requireValue(
+    mcpBot.includes(marker),
+    `ChatのMCP bot管理に「${marker}」がありません`,
+  );
+for (const tool of [
+  'rockstar-ledger',
+  'rockstar-legal-intake',
+  'rockstar-patent-assistant',
+])
+  requireValue(
+    operationsSource
+      .slice(operationsSource.indexOf('SKY_CONNECTION_TOOLS'))
+      .includes(`'${tool}'`),
+    `Chatで使うready担当「${tool}」がSky接続許可リストにありません`,
   );
 
 console.log(

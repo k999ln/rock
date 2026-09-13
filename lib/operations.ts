@@ -6,6 +6,14 @@ export const JOB_TOOLS = [
   'mr-delivery',
 ] as const;
 export type JobTool = (typeof JOB_TOOLS)[number];
+export const SKY_CONNECTION_TOOLS = [
+  ...JOB_TOOLS,
+  'fashion-brand-ops',
+  'rockstar-ledger',
+  'rockstar-legal-intake',
+  'rockstar-patent-assistant',
+] as const;
+export type SkyConnectionTool = (typeof SKY_CONNECTION_TOOLS)[number];
 export type JobState =
   | 'queued'
   | 'running'
@@ -47,7 +55,7 @@ export type BookRecord = {
   createdAt: number;
 };
 export type SkyConnection = {
-  tool: JobTool;
+  tool: SkyConnectionTool;
   scope: 'execute';
   consentVersion: string;
   connectedAt: number;
@@ -97,6 +105,11 @@ function toolName(value: unknown): JobTool {
   if (!JOB_TOOLS.includes(value as JobTool))
     throw new OperationError('対応していないツールです。');
   return value as JobTool;
+}
+function skyConnectionToolName(value: unknown): SkyConnectionTool {
+  if (!SKY_CONNECTION_TOOLS.includes(value as SkyConnectionTool))
+    throw new OperationError('対応していないSkyアプリです。');
+  return value as SkyConnectionTool;
 }
 const columns =
   'id, user_id AS userId, tool, transport, sample, status, input_bytes AS inputBytes, output_bytes AS outputBytes, duration_ms AS durationMs, error_code AS errorCode, device_id AS deviceId, created_at AS createdAt, started_at AS startedAt, finished_at AS finishedAt, deadline';
@@ -357,7 +370,7 @@ export function operations(
 
   async function connectSky(value: unknown) {
     const v = object(value, ['tool']),
-      tool = toolName(v.tool),
+      tool = skyConnectionToolName(v.tool),
       connectedAt = clock();
     await statement(
       `INSERT INTO sky_connections (user_id, tool, scope, consent_version, connected_at)

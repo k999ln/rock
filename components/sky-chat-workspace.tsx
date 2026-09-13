@@ -1,21 +1,36 @@
 'use client';
 
-import { useEffect, useMemo, useState, type SyntheticEvent } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type SyntheticEvent,
+} from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import {
+  Ban,
+  Bot,
   CheckCircle2,
+  CircleAlert,
   Clock3,
   Grid2X2,
   History,
+  LoaderCircle,
   MessageCircle,
   Plus,
   Send,
   Sparkles,
 } from 'lucide-react';
 import { catalog, type Automation } from '@/lib/catalog';
+import { fashionMcpConnected } from '@/lib/fashion-mcp-client';
 import { routeSkyRequest, skyRoles, type SkyRole } from '@/lib/sky-routing';
 import WorkspaceShell from '@/components/workspace-shell';
+import { MrToolRunner } from '@/components/mr-tool-runner';
+import { FashionBrandOpsRunner } from '@/components/fashion-brand-ops-runner';
+import { McpBotRunner } from '@/components/mcp-bot-runner';
 import {
   ExecutionSignin,
   useExecutionAccess,
@@ -25,15 +40,30 @@ import {
   OperationRequestError,
 } from '@/lib/operations-client';
 import type { Job, SkyConnection } from '@/lib/operations';
+import { deviceToken } from '@/lib/device';
+import {
+  listMcpConnections,
+  type McpConnection,
+} from '@/lib/mcp-hub';
 
 type ChatEntry = {
   id: string;
   side: 'me' | 'sky';
   text: string;
   tool?: string;
+  suggestedTool?: string;
 };
 
+type ActiveRequest = {
+  id: string;
+  text: string;
+  toolId: string;
+};
+
+type WorkflowStatus = 'ready' | 'running' | 'completed' | 'failed';
+
 const AUTO_MODE = 'sky-auto';
+const MCP_PREFIX = 'mcp:';
 const readyApps = catalog.filter(
   (tool) => tool.status === 'ready' && tool.runner !== 'delivery-local',
 );
@@ -52,12 +82,26 @@ function markFor(tool: Automation) {
   return roleFor(tool).slice(0, 1);
 }
 
+function mcpMode(serverId: string) {
+  return `${MCP_PREFIX}${serverId}`;
+}
+
 function jobMessage(job: Job) {
   if (job.status === 'completed') return '完了';
-  if (job.status === 'failed') return '確認が必要';
+  if (job.status === 'failed' || job.status === 'interrupted')
+    return '確認が必要';
   if (job.status === 'cancelled') return '停止';
   if (job.status === 'running') return '処理中';
   return '受付済み';
+}
+
+function jobStateClass(job: Job) {
+  if (job.status === 'completed') return 'is-completed';
+  if (job.status === 'failed' || job.status === 'interrupted')
+    return 'is-attention';
+  if (job.status === 'cancelled') return 'is-cancelled';
+  if (job.status === 'running') return 'is-running';
+  return 'is-queued';
 }
 
 function responseFor(
@@ -66,7 +110,7 @@ function responseFor(
   connectedCount: number,
 ) {
   if (tool)
-    return `Skyが${roleFor(tool)}を選びました。必要な確認と次の操作を、このChatにまとめます。`;
+    return `${roleFor(tool)}で進めます。下の処理カードで必要な入力を確認し、そのまま実行できます。`;
   if (routedRole)
     return `${routedRole.label}はまだ接続されていません。Skyで接続すると、次からはここで頼めます。`;
   if (connectedCount === 0)
@@ -78,13 +122,24 @@ export default function SkyChatWorkspace() {
   const searchParams = useSearchParams();
   const preferredTool = searchParams.get('tool') ?? '';
   const [connectedTools, setConnectedTools] = useState<string[]>([]);
+  const [fashionConnected, setFashionConnected] = useState(false);
+  const [mcpServers, setMcpServers] = useState<McpConnection[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedToolId, setSelectedToolId] = useState(AUTO_MODE);
   const [draft, setDraft] = useState('');
   const [messages, setMessages] = useState<ChatEntry[]>([]);
+  const [activeRequest, setActiveRequest] = useState<ActiveRequest | null>(
+    null,
+  );
+  const [running, setRunning] = useState(false);
+  const [workflowStatus, setWorkflowStatus] =
+    useState<WorkflowStatus>('ready');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const composerRef = useRef<HTMLTextAreaElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const nextMessageIdRef = useRef(0);
 
   useEffect(() => {
     let active = true;
@@ -121,12 +176,81 @@ export default function SkyChatWorkspace() {
     };
   }, [preferredTool, setNeedsSignin]);
 
+  useEffect(() => {
+    const update = () => setFashionConnected(fashionMcpConnected());
+    update();
+    window.addEventListener('sky-fashion-mcp', update);
+    return () => window.removeEventListener('sky-fashion-mcp', update);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    const refresh = () => {
+      if (!deviceToken()) {
+        if (active) setMcpServers([]);
+        return;
+      }
+      void listMcpConnections()
+        .then((servers) => {
+          if (active) setMcpServers(servers);
+        })
+        .catch(() => {
+          if (active) setMcpServers([]);
+        });
+    };
+    refresh();
+    window.addEventListener('focus', refresh);
+    window.addEventListener('loop-device', refresh);
+    window.addEventListener('sky-mcp-servers', refresh);
+    return () => {
+      active = false;
+      window.removeEventListener('focus', refresh);
+      window.removeEventListener('loop-device', refresh);
+      window.removeEventListener('sky-mcp-servers', refresh);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (messages.length === 0) return;
+    const reduceMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    messagesEndRef.current?.scrollIntoView({
+      block: 'nearest',
+      behavior: reduceMotion ? 'auto' : 'smooth',
+    });
+  }, [messages]);
+
   const connectedApps = useMemo(
-    () => readyApps.filter((tool) => connectedTools.includes(tool.id)),
-    [connectedTools],
+    () =>
+      readyApps.filter(
+        (tool) =>
+          connectedTools.includes(tool.id) ||
+          (tool.integration === 'fashion-brand-ops' && fashionConnected),
+      ),
+    [connectedTools, fashionConnected],
+  );
+  const connectedMcpServers = useMemo(
+    () =>
+      mcpServers.filter(
+        (server) => server.state === 'connected' && server.passport,
+      ),
+    [mcpServers],
   );
   const selectedTool =
     connectedApps.find((tool) => tool.id === selectedToolId) ?? null;
+  const selectedMcpServer =
+    connectedMcpServers.find(
+      (server) => mcpMode(server.id) === selectedToolId,
+    ) ?? null;
+  const activeTool = activeRequest
+    ? (connectedApps.find((tool) => tool.id === activeRequest.toolId) ?? null)
+    : null;
+  const activeMcpServer = activeRequest
+    ? (connectedMcpServers.find(
+        (server) => mcpMode(server.id) === activeRequest.toolId,
+      ) ?? null)
+    : null;
   const visibleJobs = jobs
     .filter((job) =>
       selectedTool
@@ -140,9 +264,26 @@ export default function SkyChatWorkspace() {
     setError('');
   }
 
+  function directBot(toolId: string) {
+    chooseMode(toolId);
+    requestAnimationFrame(() => composerRef.current?.focus());
+  }
+
+  function refreshConnectedMcp() {
+    if (!deviceToken()) return setMcpServers([]);
+    void listMcpConnections()
+      .then(setMcpServers)
+      .catch(() => setMcpServers([]));
+  }
+
   function updateDraft(value: string) {
     setDraft(value);
     setError('');
+  }
+
+  function chooseQuickRequest(value: string) {
+    updateDraft(value);
+    requestAnimationFrame(() => composerRef.current?.focus());
   }
 
   function sendMessage(event: SyntheticEvent<HTMLFormElement>) {
@@ -150,37 +291,74 @@ export default function SkyChatWorkspace() {
     const text = draft.trim();
     if (!text) return;
 
-    const routedRole = selectedTool ? null : routeSkyRequest(text);
+    const onlyConnectedMcp =
+      !selectedTool &&
+      !selectedMcpServer &&
+      connectedApps.length === 0 &&
+      connectedMcpServers.length === 1
+        ? connectedMcpServers[0]
+        : null;
+    const targetMcp = selectedMcpServer ?? onlyConnectedMcp;
+    const routedRole = selectedTool || targetMcp ? null : routeSkyRequest(text);
     const routedTool = routedRole
       ? (connectedApps.find((item) => item.id === routedRole.toolId) ?? null)
       : null;
     const onlyConnectedTool =
-      connectedApps.length === 1 ? connectedApps[0] : null;
+      connectedApps.length === 1 && connectedMcpServers.length === 0
+        ? connectedApps[0]
+        : null;
     const tool = selectedTool ?? routedTool ?? onlyConnectedTool;
-    const messageIndex = messages.length;
-    const toolId = tool?.id;
+    const toolId = targetMcp ? mcpMode(targetMcp.id) : tool?.id;
+    const suggestedToolId = routedRole?.toolId;
+    const id = `chat-${nextMessageIdRef.current++}`;
 
     setDraft('');
     setError('');
     setMessages((current) => [
       ...current,
       {
-        id: `chat-${messageIndex}-me`,
+        id: `${id}-me`,
         side: 'me',
         text,
         tool: toolId,
       },
       {
-        id: `chat-${messageIndex}-sky`,
+        id: `${id}-sky`,
         side: 'sky',
-        text: responseFor(tool, routedRole, connectedApps.length),
+        text: targetMcp
+          ? `${targetMcp.name}への方向を受け取りました。下の管理カードで機能と引数を確認し、1回ごとに承認して実行できます。`
+          : responseFor(
+              tool,
+              routedRole,
+              connectedApps.length + connectedMcpServers.length,
+            ),
         tool: toolId,
+        suggestedTool: tool ? undefined : suggestedToolId,
       },
     ]);
+    if (toolId) {
+      setWorkflowStatus('ready');
+      setActiveRequest({ id, text, toolId });
+    }
+  }
+
+  function handleComposerKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (
+      event.key !== 'Enter' ||
+      event.shiftKey ||
+      event.nativeEvent.isComposing
+    )
+      return;
+    event.preventDefault();
+    event.currentTarget.form?.requestSubmit();
   }
 
   return (
-    <WorkspaceShell title="Chat" contentClassName="sky-chat-page">
+    <WorkspaceShell
+      title="Chat"
+      contentClassName="sky-chat-page"
+      running={running}
+    >
       <section className="sky-chat-simple" aria-label="Chatスレッド">
         <header className="sky-chat-commandbar">
           <div>
@@ -195,6 +373,8 @@ export default function SkyChatWorkspace() {
 
         <div className="sky-chat-mode-row" aria-label="依頼先を選ぶ">
           <button
+            type="button"
+            aria-pressed={selectedToolId === AUTO_MODE}
             className={selectedToolId === AUTO_MODE ? 'is-selected' : ''}
             onClick={() => chooseMode(AUTO_MODE)}
           >
@@ -208,6 +388,8 @@ export default function SkyChatWorkspace() {
           </button>
           {connectedApps.map((tool) => (
             <button
+              type="button"
+              aria-pressed={selectedToolId === tool.id}
               key={tool.id}
               className={selectedToolId === tool.id ? 'is-selected' : ''}
               onClick={() => chooseMode(tool.id)}
@@ -235,7 +417,12 @@ export default function SkyChatWorkspace() {
           <div className="sky-chat-centered">Chatを読み込んでいます…</div>
         ) : (
           <>
-            <div className="sky-chat-messages" aria-live="polite">
+            <div
+              className="sky-chat-messages"
+              role="log"
+              aria-live="polite"
+              aria-relevant="additions"
+            >
               <div className="sky-chat-day">今日</div>
               <div className="sky-chat-bubble is-sky sky-chat-welcome">
                 <span className="sky-chat-sky-mark">
@@ -243,20 +430,91 @@ export default function SkyChatWorkspace() {
                 </span>
                 <div>
                   <strong>
-                    {selectedTool ? roleFor(selectedTool) : 'Sky Auto'}
+                    {selectedTool
+                      ? roleFor(selectedTool)
+                      : selectedMcpServer
+                        ? selectedMcpServer.name
+                        : 'Sky Auto'}
                   </strong>
                   <p>
                     {selectedTool
                       ? `${selectedTool.name}に直接頼めます。`
+                      : selectedMcpServer
+                        ? `${selectedMcpServer.passport?.tools.length ?? 0}機能を持つMCP botへ指示できます。`
                       : 'やりたいことを、そのまま話してください。接続済みの役割からSkyが選びます。'}
                   </p>
+                  <small>
+                    {connectedApps.length + connectedMcpServers.length > 0
+                      ? `${connectedApps.length + connectedMcpServers.length}個のbotに接続済み`
+                      : 'まだ役割に接続されていません'}
+                  </small>
                 </div>
               </div>
+
+              {(connectedApps.length > 0 || connectedMcpServers.length > 0) && (
+                <section className="sky-chat-bot-board" aria-label="接続中のMCP bot">
+                  <header>
+                    <div>
+                      <small>BOT CONTROL</small>
+                      <h2>接続中のbot</h2>
+                    </div>
+                    <span>
+                      <i /> {connectedApps.length + connectedMcpServers.length} online
+                    </span>
+                  </header>
+                  <div className="sky-chat-bot-grid">
+                    {connectedApps.map((tool) => {
+                      const latest = jobs.find((job) => job.tool === tool.id);
+                      return (
+                        <button
+                          type="button"
+                          key={`bot-${tool.id}`}
+                          className={selectedToolId === tool.id ? 'is-selected' : ''}
+                          onClick={() => directBot(tool.id)}
+                        >
+                          <span className={`sky-chat-bot-mark rock-icon-${tool.color}`}>
+                            {markFor(tool)}
+                          </span>
+                          <span>
+                            <strong>{roleFor(tool)}</strong>
+                            <small>{latest ? jobMessage(latest) : '待機中'} · 指示する</small>
+                          </span>
+                          <i className={latest ? jobStateClass(latest) : 'is-online'} />
+                        </button>
+                      );
+                    })}
+                    {connectedMcpServers.map((server) => (
+                      <button
+                        type="button"
+                        key={`mcp-bot-${server.id}`}
+                        className={selectedToolId === mcpMode(server.id) ? 'is-selected' : ''}
+                        onClick={() => directBot(mcpMode(server.id))}
+                      >
+                        <span className="sky-chat-bot-mark is-mcp">
+                          <Bot size={17} />
+                        </span>
+                        <span>
+                          <strong>{server.name}</strong>
+                          <small>{server.passport?.tools.length ?? 0}機能 · 管理する</small>
+                        </span>
+                        <i className="is-online" />
+                      </button>
+                    ))}
+                  </div>
+                  <p>
+                    botを選んで方向を伝えます。停止・失敗・結果はこのスレッドで確認できます。
+                  </p>
+                </section>
+              )}
 
               {messages.length === 0 && !selectedTool && (
                 <div className="sky-chat-quick-requests" aria-label="依頼例">
                   {quickRequests.map((request) => (
-                    <button key={request} onClick={() => updateDraft(request)}>
+                    <button
+                      type="button"
+                      key={request}
+                      onClick={() => chooseQuickRequest(request)}
+                    >
                       {request}
                     </button>
                   ))}
@@ -280,10 +538,130 @@ export default function SkyChatWorkspace() {
                         <small>{roleFor(messageTool)}</small>
                       )}
                       <p>{message.text}</p>
+                      {message.side === 'sky' && message.suggestedTool && (
+                        <Link className="sky-chat-inline-action" href="/">
+                          Skyで接続する
+                        </Link>
+                      )}
                     </div>
                   </div>
                 );
               })}
+
+              {activeRequest && (activeTool || activeMcpServer) && (
+                <section
+                  className="sky-chat-workflow"
+                  aria-labelledby={`workflow-${activeRequest.id}`}
+                >
+                  <header>
+                    <span className="sky-chat-workflow-orb">
+                      <Sparkles size={18} />
+                    </span>
+                    <div>
+                      <small>ACTIVE TASK</small>
+                      <h2 id={`workflow-${activeRequest.id}`}>
+                        {activeTool ? roleFor(activeTool) : activeMcpServer?.name}
+                        が処理します
+                      </h2>
+                    </div>
+                    <span className={`is-${workflowStatus}`}>
+                      {workflowStatus === 'running'
+                        ? '処理中'
+                        : workflowStatus === 'completed'
+                          ? '結果あり'
+                          : workflowStatus === 'failed'
+                            ? '要確認'
+                            : '入力待ち'}
+                    </span>
+                  </header>
+                  <blockquote>{activeRequest.text}</blockquote>
+                  <ol className="sky-chat-workflow-steps" aria-label="処理の流れ">
+                    <li className="is-done">
+                      <CheckCircle2 size={16} />
+                      担当を選択
+                    </li>
+                    <li
+                      className={
+                        workflowStatus === 'ready' ? 'is-current' : 'is-done'
+                      }
+                    >
+                      <span>2</span>
+                      入力を確認
+                    </li>
+                    <li
+                      className={
+                        workflowStatus === 'running'
+                          ? 'is-current'
+                          : workflowStatus === 'completed'
+                            ? 'is-done'
+                            : workflowStatus === 'failed'
+                              ? 'is-attention'
+                              : ''
+                      }
+                    >
+                      <span>3</span>
+                      実行・結果
+                    </li>
+                    <li
+                      className={
+                        workflowStatus === 'completed' ? 'is-done' : ''
+                      }
+                    >
+                      <span>4</span>
+                      {activeMcpServer ? 'Chatで結果管理' : '履歴へ保存'}
+                    </li>
+                  </ol>
+                  <div className="sky-chat-workflow-body">
+                    {activeTool?.runner ? (
+                      <MrToolRunner
+                        key={activeRequest.id}
+                        tool={activeTool.runner}
+                        onRunningChange={(value) => {
+                          setRunning(value);
+                          setWorkflowStatus((current) =>
+                            value
+                              ? 'running'
+                              : current === 'running'
+                                ? 'ready'
+                                : current,
+                          );
+                        }}
+                        onRecord={(_tool, _transport, status) => {
+                          setWorkflowStatus(status);
+                          return Promise.resolve();
+                        }}
+                      />
+                    ) : activeTool?.integration === 'fashion-brand-ops' ? (
+                      <FashionBrandOpsRunner />
+                    ) : activeMcpServer ? (
+                      <McpBotRunner
+                        key={`${activeRequest.id}-${activeMcpServer.id}`}
+                        server={activeMcpServer}
+                        request={activeRequest.text}
+                        onRunningChange={setRunning}
+                        onStatusChange={setWorkflowStatus}
+                        onDisconnected={() => {
+                          setActiveRequest(null);
+                          setSelectedToolId(AUTO_MODE);
+                          refreshConnectedMcp();
+                          setMessages((current) => [
+                            ...current,
+                            {
+                              id: `chat-${nextMessageIdRef.current++}-sky`,
+                              side: 'sky',
+                              text: `${activeMcpServer.name}を停止しました。再接続するとbot一覧へ戻ります。`,
+                            },
+                          ]);
+                        }}
+                      />
+                    ) : (
+                      <p>
+                        この担当の実行画面は準備中です。接続状態と対応環境をSkyで確認してください。
+                      </p>
+                    )}
+                  </div>
+                </section>
+              )}
 
               {visibleJobs.length > 0 && (
                 <div className="sky-chat-recent">
@@ -298,9 +676,21 @@ export default function SkyChatWorkspace() {
                       (tool) => tool.id === job.tool,
                     );
                     return (
-                      <div className="sky-chat-receipt" key={job.id}>
+                      <Link
+                        className={`sky-chat-receipt ${jobStateClass(job)}`}
+                        href="/activity"
+                        key={job.id}
+                        aria-label={`${jobMessage(job)}、履歴を開く`}
+                      >
                         {job.status === 'completed' ? (
                           <CheckCircle2 size={17} />
+                        ) : job.status === 'failed' ||
+                          job.status === 'interrupted' ? (
+                          <CircleAlert size={17} />
+                        ) : job.status === 'cancelled' ? (
+                          <Ban size={17} />
+                        ) : job.status === 'running' ? (
+                          <LoaderCircle className="sky-chat-spin" size={17} />
                         ) : (
                           <Clock3 size={17} />
                         )}
@@ -311,25 +701,37 @@ export default function SkyChatWorkspace() {
                             {new Date(job.createdAt).toLocaleString('ja-JP')}
                           </span>
                         </div>
-                      </div>
+                      </Link>
                     );
                   })}
                 </div>
               )}
+              <div ref={messagesEndRef} aria-hidden="true" />
             </div>
 
             <form className="sky-chat-composer" onSubmit={sendMessage}>
               {error && <p role="alert">{error}</p>}
               <div className="sky-chat-composer-box">
                 <span className="sky-chat-composer-mode">
-                  {selectedTool ? roleFor(selectedTool) : 'Auto'}
+                  {selectedTool
+                    ? roleFor(selectedTool)
+                    : selectedMcpServer
+                      ? selectedMcpServer.name
+                      : 'Auto'}
                 </span>
-                <input
+                <textarea
+                  ref={composerRef}
                   value={draft}
                   onChange={(event) => updateDraft(event.target.value)}
+                  onKeyDown={handleComposerKeyDown}
+                  rows={1}
+                  maxLength={2000}
+                  aria-describedby="sky-chat-composer-help"
                   aria-label={
                     selectedTool
                       ? `${roleFor(selectedTool)}への依頼`
+                      : selectedMcpServer
+                        ? `${selectedMcpServer.name}への指示`
                       : 'Skyへの依頼'
                   }
                   placeholder="何をしてほしい？"
@@ -338,7 +740,10 @@ export default function SkyChatWorkspace() {
                   <Send size={18} />
                 </button>
               </div>
-              <small>使う役割は送信後に表示されます。</small>
+              <div className="sky-chat-composer-help" id="sky-chat-composer-help">
+                <small>Enterで送信 · Shift+Enterで改行</small>
+                <small>{draft.length}/2000</small>
+              </div>
             </form>
           </>
         )}

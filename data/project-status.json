@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-12",
-  "milestone": "OS Hub lifecycle、Sky MCP、Fashion MCP、収益後精算Workerを本人限定Developer Previewへ統合・公開",
+  "updatedAt": "2026-09-13",
+  "milestone": "接続済みMCPをChatのbotとして一元管理",
   "nextAction": "有償商品を1件選び、販売・決済・払出しProvider sandbox credentialと署名済み入金eventを接続して、返金・dispute・払出し失敗を含む事業受入を行う。",
   "tasks": [
     {
@@ -164,6 +164,40 @@
         "components/sky-chat-workspace.tsx",
         "app/workspace.css",
         "docs/sky-identity-connection.md"
+      ]
+    },
+    {
+      "id": "SKY13",
+      "title": "GrokをモチーフにChatの表示・入力を改善し、依頼から実行・結果までを会話内へ統合",
+      "status": "done",
+      "dependsOn": [
+        "SKY12"
+      ],
+      "evidence": [
+        "components/sky-chat-workspace.tsx",
+        "app/workspace.css",
+        "lib/operations.ts",
+        "tests/operations.test.mjs",
+        "scripts/check-sky.mjs",
+        "docs/chat-usability-20260912.md"
+      ]
+    },
+    {
+      "id": "SKY14",
+      "title": "接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理",
+      "status": "done",
+      "dependsOn": [
+        "SKY13"
+      ],
+      "evidence": [
+        "components/sky-chat-workspace.tsx",
+        "components/mcp-bot-runner.tsx",
+        "lib/mcp-hub.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "tests/mcp-connector.test.mjs",
+        "docs/chat-mcp-control-room-20260913.md",
+        "docs/product-baseline.md",
+        "data/product-baseline.json"
       ]
     },
     {
