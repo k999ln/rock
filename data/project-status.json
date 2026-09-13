@@ -595,7 +595,7 @@
     },
     {
       "id": "FB05",
-      "title": "改善版Skyの役割フィードへブランド運営役と38 MCP操作を統合",
+      "title": "改善版Skyの役割フィードへブランド運営役と40 MCP操作を統合",
       "status": "done",
       "dependsOn": ["FB01", "FB02", "FB03", "FB04"],
       "evidence": [
@@ -603,6 +603,19 @@
         "lib/sky-routing.ts",
         "tests/sky-routing.test.mjs",
         "docs/sky-assistant-and-memory.md"
+      ]
+    },
+    {
+      "id": "FB06",
+      "title": "Instagram画面の写真から未確認候補を作り、Meta確認後だけ運用対象へ進める",
+      "status": "done",
+      "dependsOn": ["FB01", "FB05"],
+      "evidence": [
+        "docs/instagram-photo-onboarding-20260912.md",
+        "toolkits/fashion-brand-ops/db/migrations/004_screenshot_account_intake.sql",
+        "toolkits/fashion-brand-ops/src/service.mjs",
+        "toolkits/fashion-brand-ops/test/service.test.mjs",
+        "components/fashion-brand-ops-runner.tsx"
       ]
     },
     {

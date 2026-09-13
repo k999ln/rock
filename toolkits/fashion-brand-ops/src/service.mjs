@@ -40,6 +40,19 @@ function entity(row) {
 
 function requiredRow(row, code) { if (!row) throw new Error(code); return entity(row); }
 function json(value) { return stableJson(value ?? {}); }
+function publicCandidate(row) {
+  const candidate = entity(row);
+  if (!candidate) return null;
+  const sourceDigests = Array.isArray(candidate.source_digests) ? candidate.source_digests : [];
+  delete candidate.source_digests;
+  return { ...candidate, screenshot_count: sourceDigests.length, screenshots_stored: false };
+}
+function screenshotCount(value, label) {
+  if (value === undefined || value === null) return undefined;
+  const count = Number(value);
+  if (!Number.isSafeInteger(count) || count < 0) throw new Error(`${label}_invalid`);
+  return count;
+}
 
 export class FashionBrandService {
   constructor({ store, providers, config, clock = Date }) {
@@ -322,6 +335,71 @@ export class FashionBrandService {
     return this.store.all("SELECT * FROM social_accounts WHERE brand_id = ? ORDER BY is_active DESC, username", brand.id).map(entity);
   }
 
+  intakeSocialAccountScreenshots(input) {
+    const brand = this.brandGet(input.brand_id);
+    assertSecretFree(input, "instagram_screenshot_intake");
+    if (!Array.isArray(input.screenshots) || input.screenshots.length < 1 || input.screenshots.length > 10) throw new Error("screenshots_invalid");
+    const accepted = [];
+    let created = 0;
+    let updated = 0;
+    for (const screenshot of input.screenshots) {
+      if (!screenshot || typeof screenshot !== "object" || Array.isArray(screenshot)) throw new Error("screenshot_invalid");
+      for (const key of Object.keys(screenshot)) if (!new Set(["source_sha256", "accounts"]).has(key)) throw new Error("screenshot_field_invalid");
+      const sourceDigest = String(screenshot.source_sha256 || "").trim().toLowerCase();
+      if (!/^[a-f0-9]{64}$/.test(sourceDigest)) throw new Error("source_sha256_invalid");
+      if (!Array.isArray(screenshot.accounts) || screenshot.accounts.length < 1 || screenshot.accounts.length > 20) throw new Error("screenshot_accounts_invalid");
+      for (const observation of screenshot.accounts) {
+        if (!observation || typeof observation !== "object" || Array.isArray(observation)) throw new Error("screenshot_account_invalid");
+        for (const key of Object.keys(observation)) if (!new Set(["username", "display_name", "posts", "followers", "following", "confidence"]).has(key)) throw new Error("screenshot_account_field_invalid");
+        const username = cleanText(observation.username, "username", 30).replace(/^@/, "").toLowerCase();
+        if (!/^[a-z0-9._]{1,30}$/.test(username)) throw new Error("username_invalid");
+        const displayName = observation.display_name === undefined ? null : cleanText(observation.display_name, "display_name", 160);
+        const confidence = observation.confidence === undefined ? null : Number(observation.confidence);
+        if (confidence !== null && (!Number.isFinite(confidence) || confidence < 0 || confidence > 1)) throw new Error("confidence_invalid");
+        const profile = Object.fromEntries(Object.entries({
+          posts: screenshotCount(observation.posts, "posts"),
+          followers: screenshotCount(observation.followers, "followers"),
+          following: screenshotCount(observation.following, "following"),
+          confidence,
+        }).filter(([, value]) => value !== undefined && value !== null));
+        const existing = this.store.get("SELECT * FROM social_account_candidates WHERE brand_id = ? AND username = ?", brand.id, username);
+        const sourceDigests = [...new Set([...(existing?.source_digests || []), sourceDigest])];
+        const mergedProfile = { ...(existing?.profile || {}), ...profile };
+        const candidateId = existing?.id || id("igc");
+        const verificationStatus = existing?.verification_status === "oauth_matched" ? "oauth_matched" : "needs_owner_confirmation";
+        const at = nowIso(this.clock);
+        this.store.run(
+          `INSERT INTO social_account_candidates(id, brand_id, username, display_name, profile_json, source_digests_json, verification_status, social_account_id, created_at, updated_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+           ON CONFLICT(brand_id, username) DO UPDATE SET display_name = COALESCE(excluded.display_name, social_account_candidates.display_name), profile_json = excluded.profile_json, source_digests_json = excluded.source_digests_json, verification_status = excluded.verification_status, updated_at = excluded.updated_at`,
+          candidateId, brand.id, username, displayName, json(mergedProfile), json(sourceDigests), verificationStatus, existing?.social_account_id || null, existing?.created_at || at, at,
+        );
+        if (existing) updated += 1;
+        else created += 1;
+        accepted.push(publicCandidate(this.store.get("SELECT * FROM social_account_candidates WHERE brand_id = ? AND username = ?", brand.id, username)));
+      }
+    }
+    return { brand_id: brand.id, created, updated, candidates: accepted, ready_for_automation: accepted.some((candidate) => candidate.verification_status === "oauth_matched"), next_step: "owner_confirmation_and_meta_oauth", screenshots_stored: false };
+  }
+
+  listSocialAccountCandidates(input = {}) {
+    const status = input.status ? String(input.status) : null;
+    if (status && !new Set(["needs_owner_confirmation", "oauth_matched", "dismissed"]).has(status)) throw new Error("candidate_status_invalid");
+    const clauses = [];
+    const params = [];
+    if (input.brand_id) {
+      const brand = this.brandGet(input.brand_id);
+      clauses.push("brand_id = ?");
+      params.push(brand.id);
+    }
+    if (status) {
+      clauses.push("verification_status = ?");
+      params.push(status);
+    }
+    const where = clauses.length ? ` WHERE ${clauses.join(" AND ")}` : "";
+    return this.store.all(`SELECT * FROM social_account_candidates${where} ORDER BY updated_at DESC, username`, ...params).map(publicCandidate);
+  }
+
   async discoverSocialAccounts(input) {
     const brand = this.brandGet(input.brand_id);
     const discovered = await this.providers.social.listAccounts();
@@ -351,7 +429,9 @@ export class FashionBrandService {
        ON CONFLICT(brand_id, provider, external_account_id) DO UPDATE SET username = excluded.username, credential_ref = excluded.credential_ref, connection_status = excluded.connection_status, metadata_json = excluded.metadata_json, updated_at = excluded.updated_at`,
       accountId, brand.id, provider, externalAccountId, username, credentialRef, connectionStatus, json(metadata), at, at,
     );
-    return entity(this.store.get("SELECT * FROM social_accounts WHERE brand_id = ? AND provider = ? AND external_account_id = ?", brand.id, provider, externalAccountId));
+    const account = entity(this.store.get("SELECT * FROM social_accounts WHERE brand_id = ? AND provider = ? AND external_account_id = ?", brand.id, provider, externalAccountId));
+    if (connectionStatus === "connected") this.store.run("UPDATE social_account_candidates SET verification_status = 'oauth_matched', social_account_id = ?, updated_at = ? WHERE brand_id = ? AND username = ?", account.id, at, brand.id, username.toLowerCase());
+    return account;
   }
 
   switchSocialAccount(input) {
@@ -744,7 +824,7 @@ export class FashionBrandService {
       const { status: providerStatus, ...providerReceipt } = receipt;
       const fullReceipt = {
         receipt_id: id("rcp"), run_id: runId, server_name: "io.rockstar-ibot/instagram-operations", version: "0.2.0",
-        package_digest: this.config.packageDigest || "ad89ea3df0027cdf671fbb91602fb8ea2b14a71f29d0b19db5ac8da822733954", capability_id: CAPABILITY_BY_ACTION[approval.action] || "unknown",
+        package_digest: this.config.packageDigest || "52f38bca0394daa0da1df77132f2fdce3540b8b119611f793dd5a61e9bd88ff6", capability_id: CAPABILITY_BY_ACTION[approval.action] || "unknown",
         grant_id: approval.id, action: approval.action, approval_id: approval.id, idempotency_key: idempotencyKey,
         input_sha256: approval.payload_digest, output_sha256: sha256(receipt), provider_status: providerStatus || "unknown", status: "completed", started_at: at, finished_at: doneAt, ...providerReceipt,
       };

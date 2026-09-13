@@ -99,7 +99,8 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | FB02 | 売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 | FB03 | DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 | FB04 | 入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理 | 完了 | [記録](toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
-| FB05 | 改善版Skyの役割フィードへブランド運営役と38 MCP操作を統合 | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
+| FB05 | 改善版Skyの役割フィードへブランド運営役と40 MCP操作を統合 | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
+| FB06 | Instagram画面の写真から未確認候補を作り、Meta確認後だけ運用対象へ進める | 完了 | [記録](docs/instagram-photo-onboarding-20260912.md) · [記録](toolkits/fashion-brand-ops/db/migrations/004_screenshot_account_intake.sql) · [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 | BIL01 | 先払い月額を停止し、検証済み自動化収益からだけ実費後に月最大888 centsを精算 | 完了 | [記録](docs/sky-billing.md) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing.test.mjs) · [記録](tests/billing-worker.test.mjs) · [記録](services/sky-billing/migrations/0002_earnings_settlement.sql) |
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) |
 
@@ -230,9 +231,9 @@ GitHubの `rock` は公開リポジトリです。Rock star独自コードの再
 
 RockstarOS SkyのTimelineと検索欄から「Instagram運用」で見つけられる商品を追加しました。実装は[`toolkits/fashion-brand-ops`](toolkits/fashion-brand-ops)、統合境界と検証範囲は[`docs/fashion-brand-ops-integration.md`](docs/fashion-brand-ops-integration.md)です。
 
-改善版Skyでは、上部の「ブランド運営役」または「Instagramの広告からDM受注まで進めて」のような依頼からこの商品を開けます。ダークな役割フィードで実行場所を確認し、商品画面から38 MCP操作、Campaign Autopilot、Sales Concierge、Production Cockpit、approval gateの状態へ進めます。Sky受付の範囲と未実装のMemoryは[`docs/sky-assistant-and-memory.md`](docs/sky-assistant-and-memory.md)に記録しています。
+改善版Skyでは、上部の「ブランド運営役」または「Instagramの広告からDM受注まで進めて」のような依頼からこの商品を開けます。ダークな役割フィードで実行場所を確認し、商品画面から40 MCP操作、Campaign Autopilot、Sales Concierge、Production Cockpit、approval gateの状態へ進めます。Sky受付の範囲と未実装のMemoryは[`docs/sky-assistant-and-memory.md`](docs/sky-assistant-and-memory.md)に記録しています。
 
-ブランド方針・商品design、市場判定、Instagram運用、DM、注文、決済、制作・発送、分析に加え、Campaign Autopilot、AI Sales Concierge、Production Cockpit、経営ダッシュボード、本番接続診断を38個のMCP toolとして公開します。目標を入れると投稿計画・下書き・承認要求までの内部作業を自動で進めます。既定は全Providerがmockです。価格変更、外部生成、投稿、広告、DM送信、請求、返金、通知は署名付き個別approvalがない限り実行されません。`paid`と`refunded`は検証済み決済event以外から変更できません。
+ブランド方針・商品design、市場判定、Instagram運用、DM、注文、決済、制作・発送、分析に加え、Campaign Autopilot、AI Sales Concierge、Production Cockpit、経営ダッシュボード、本番接続診断、Instagram画面候補取込を40個のMCP toolとして公開します。目標を入れると投稿計画・下書き・承認要求までの内部作業を自動で進めます。既定は全Providerがmockです。価格変更、外部生成、投稿、広告、DM送信、請求、返金、通知は署名付き個別approvalがない限り実行されません。`paid`と`refunded`は検証済み決済event以外から変更できません。
 
 ```sh
 npm run test:fashion-brand-ops

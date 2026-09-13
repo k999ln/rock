@@ -35,6 +35,8 @@ custom endpointは`FASHION_ALLOWED_HOSTS`のexact hostnameに一致しない限�
 
 スクリーンショットから読めた`insta_akume`、`iceiceice.mean`、`luckyluckylucky_f`は[`config/account-candidates.example.json`](config/account-candidates.example.json)に未確認候補としてのみ記録しています。Meta OAuth readbackで一致するまでconnected accountとしてimportしません。
 
+Skyの画像理解は、画像byteのSHA-256と画面に見えた公開プロフィール情報だけを`instagram.accounts.intake_screenshots`へ渡します。MCPはusername単位で候補をまとめ、画像本体やローカルpathを受け付けません。`instagram.accounts.candidates.list`で確認待ち候補を読み、Meta OAuth readbackと一致した候補だけを接続済みaccountへ関連付けます。
+
 ## Approval gate
 
 価格変更、creative provider実行、予約・公開・広告出稿、DM返信、決済link、Invoice送信、返金、通知送信は二段階です。
@@ -70,6 +72,7 @@ npm run approval:sign -- <approval-id> <actor-id>
 独立したInstagram運用 tools:
 
 - `instagram.accounts.list`, `instagram.accounts.discover`, `instagram.accounts.register`, `instagram.accounts.switch`
+- `instagram.accounts.intake_screenshots`, `instagram.accounts.candidates.list`
 - `instagram.content_plan.create`, `instagram.draft.create`
 - `instagram.schedule.prepare`, `instagram.publish.prepare`, `instagram.ad.prepare`
 - `instagram.calendar.list`, `instagram.insights.sync`
@@ -100,7 +103,7 @@ curl http://127.0.0.1:8787/health
 
 ## Skyからワンクリック接続
 
-配布版の`RockstarOS Sky接続.command`を初回に開いておけば、Skyの商品カードで「接続」を1回押すだけで、loopback session発行、MCP initialize、initialized通知、tools/listによる38操作の確認まで完了します。接続状態はそのタブのsession storageだけに保持し、解除時はlocal sessionも失効します。
+配布版の`RockstarOS Sky接続.command`を初回に開いておけば、Skyの商品カードで「接続」を1回押すだけで、loopback session発行、MCP initialize、initialized通知、tools/listによる40操作の確認まで完了します。接続状態はそのタブのsession storageだけに保持し、解除時はlocal sessionも失効します。
 
 ブラウザ接続は`FASHION_BROWSER_ORIGINS`のexact originと`127.0.0.1:8787`等のloopback Hostが両方一致する場合だけ許可します。CORSとPrivate Network Accessのpreflightに対応し、originごとに12時間以内のrandom session tokenを発行します。wildcard origin、URL内credential、cookie、永続tokenは使いません。
 
@@ -137,6 +140,6 @@ Webhook eventとeffect idempotency keyはuniqueです。Stripe署名はraw body�
 
 [`rockstaros-tool.json`](rockstaros-tool.json)が商品ID、MCP runtime、capability、Provider、approval policy、費用境界の正本です。[`sky-submission.json`](sky-submission.json)はSky掲載契約、Web Skyの`lib/catalog.ts`はready商品とTimeline表示を保持します。
 
-stdioではMCP clientがこのdirectoryの`.mcp.json`を読み、`initialize → tools/list → tools/call`で38個の操作をdiscover/callできます。`fashion.autopilot.run`は投稿計画・下書き・承認要求など内部作業だけを最大25件まで進め、投稿・DM送信・課金などの外部作用は実行しません。HTTP modeをloopback以外へbindする場合は、bearer tokenとtenant IDの両方を必須にします。RockstarOSのplatform署名鍵、Wallet送金権限、root、任意shellはこの商品へ渡しません。
+stdioではMCP clientがこのdirectoryの`.mcp.json`を読み、`initialize → tools/list → tools/call`で40個の操作をdiscover/callできます。`fashion.autopilot.run`は投稿計画・下書き・承認要求など内部作業だけを最大25件まで進め、投稿・DM送信・課金などの外部作用は実行しません。HTTP modeをloopback以外へbindする場合は、bearer tokenとtenant IDの両方を必須にします。RockstarOSのplatform署名鍵、Wallet送金権限、root、任意shellはこの商品へ渡しません。
 
 Skyの商品名は **Instagram運用・受注型ブランド管理** です。Timelineと検索欄で「Instagram運用」から直接見つけられます。account list/switch、content plan、draft/caption、approval、schedule/publish、insights sync、DM classificationを同じ商品内の独立MCP toolとして公開します。外部Providerのcredentialと実費契約は商品本体やRockstarOS月額から分離し、実アカウント接続、広告出稿、請求、返金は設定と個別承認が揃うまでfail closedです。

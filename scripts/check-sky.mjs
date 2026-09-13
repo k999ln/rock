@@ -79,7 +79,7 @@ for (const marker of ['PCなしで今すぐ使う', 'ワンクリックで接続
 
 const fashionClient = read('lib/fashion-mcp-client.ts');
 for (const marker of [
-  'FASHION_MCP_TOOL_COUNT = 38',
+  'FASHION_MCP_TOOL_COUNT = 40',
   "'initialize'",
   "'notifications/initialized'",
   "'tools/list'",

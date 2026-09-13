@@ -1,5 +1,5 @@
 export const FASHION_MCP_URL = 'http://127.0.0.1:8787';
-export const FASHION_MCP_TOOL_COUNT = 38;
+export const FASHION_MCP_TOOL_COUNT = 40;
 
 const TOKEN_KEY = 'sky.fashion-mcp.session';
 const PROTOCOL_KEY = 'sky.fashion-mcp.protocol';
@@ -7,6 +7,7 @@ const SUPPORTED_PROTOCOLS = new Set(['2025-11-25', '2025-06-18']);
 const REQUIRED_TOOLS = [
   'fashion.autopilot.run',
   'fashion.system.readiness',
+  'instagram.accounts.intake_screenshots',
   'instagram.accounts.discover',
   'instagram.content_plan.create',
   'instagram.draft.create',
@@ -19,6 +20,8 @@ const REQUIRED_TOOLS = [
 type McpResult = {
   protocolVersion?: string;
   tools?: { name?: string }[];
+  structuredContent?: unknown;
+  isError?: boolean;
 };
 
 let connectionGeneration = 0;
@@ -77,7 +80,7 @@ async function rpc(
 
 function validateTools(tools: McpResult['tools']) {
   if (!Array.isArray(tools) || tools.length !== FASHION_MCP_TOOL_COUNT)
-    throw new Error('38個の専用操作を確認できませんでした。');
+    throw new Error('40個の専用操作を確認できませんでした。');
   const names = new Set(tools.map((tool) => tool?.name));
   if (REQUIRED_TOOLS.some((name) => !names.has(name)))
     throw new Error('必要なInstagram運用操作を確認できませんでした。');
@@ -182,6 +185,22 @@ export async function verifyFashionMcp() {
     clearStoredConnection();
     throw error;
   }
+}
+
+export async function callFashionMcpTool<T>(
+  name: string,
+  args: Record<string, unknown> = {},
+) {
+  const token = stored(TOKEN_KEY);
+  if (!token) throw new Error('Fashion Brand Ops MCPは未接続です。');
+  const result = await rpc(token, 'tools/call', { name, arguments: args });
+  if (result.isError) {
+    const error = result.structuredContent as { error?: string } | undefined;
+    throw new Error(error?.error || '操作を完了できませんでした。');
+  }
+  if (result.structuredContent === undefined)
+    throw new Error('操作結果を確認できませんでした。');
+  return result.structuredContent as T;
 }
 
 export async function disconnectFashionMcp() {

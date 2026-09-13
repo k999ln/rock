@@ -11,7 +11,7 @@
   "license": "Repository terms",
   "pricing": "external_contract",
   "priceNote": "商品本体は料金未設定。Higgsfield、Meta、Stripe、通知先の料金は各外部契約に従い、実行前に表示・承認します。",
-  "dataUse": "ブランド、商品、顧客、注文、DM、決済照合情報をtenant別SQLiteに保存します。raw token、password、Cookieは保存しません。",
+  "dataUse": "ブランド、商品、顧客、注文、DM、決済照合情報と、利用者が送ったスクリーンショットから抽出した公開プロフィール情報・画像digestをtenant別SQLiteに保存します。画像本体、raw token、password、Cookieは保存しません。",
   "executionTargets": ["pc"],
   "permissions": [
     "read_user_input",

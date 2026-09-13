@@ -16,6 +16,7 @@ const token = 'FASHION-TEST-TOKEN-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 const required = [
   'fashion.autopilot.run',
   'fashion.system.readiness',
+  'instagram.accounts.intake_screenshots',
   'instagram.accounts.discover',
   'instagram.content_plan.create',
   'instagram.draft.create',
@@ -26,7 +27,7 @@ const required = [
 ];
 const tools = [
   ...required.map((name) => ({ name })),
-  ...Array.from({ length: 29 }, (_, index) => ({ name: 'fixture.' + index })),
+  ...Array.from({ length: 30 }, (_, index) => ({ name: 'fixture.' + index })),
 ];
 let sequence = 0;
 
@@ -67,6 +68,22 @@ async function harness(t, listedTools = tools) {
       return new Response(null, { status: 202 });
     if (body.method === 'tools/list')
       return Response.json({ result: { tools: listedTools } });
+    if (body.method === 'tools/call')
+      return Response.json({
+        result: {
+          structuredContent:
+            body.params.name === 'instagram.accounts.candidates.list'
+              ? [
+                  {
+                    id: 'igc1',
+                    username: 'candidate',
+                    verification_status: 'needs_owner_confirmation',
+                    screenshot_count: 1,
+                  },
+                ]
+              : {},
+        },
+      });
     if (body.method === 'ping') return Response.json({ result: {} });
     assert.fail('Unexpected request: ' + url);
   };
@@ -79,10 +96,10 @@ async function harness(t, listedTools = tools) {
   return { client, storage, requests };
 }
 
-await test('one click initializes MCP, confirms all 38 tools, and stores the tab session', async (t) => {
+await test('one click initializes MCP, confirms all 40 tools, and stores the tab session', async (t) => {
   const h = await harness(t);
   const result = await h.client.connectFashionMcp();
-  assert.equal(result.toolCount, 38);
+  assert.equal(result.toolCount, 40);
   assert.equal(h.client.fashionMcpConnected(), true);
   assert.equal(h.storage.get('sky.fashion-mcp.session'), token);
   assert.equal(h.storage.get('sky.fashion-mcp.protocol'), '2025-11-25');
@@ -90,15 +107,19 @@ await test('one click initializes MCP, confirms all 38 tools, and stores the tab
     h.requests.slice(0, 4).map(({ body }) => body.method || 'connect'),
     ['connect', 'initialize', 'notifications/initialized', 'tools/list'],
   );
-  assert.equal((await h.client.verifyFashionMcp()).toolCount, 38);
+  assert.equal((await h.client.verifyFashionMcp()).toolCount, 40);
+  const candidates = await h.client.callFashionMcpTool(
+    'instagram.accounts.candidates.list',
+  );
+  assert.equal(candidates[0].username, 'candidate');
   await h.client.disconnectFashionMcp();
   assert.equal(h.client.fashionMcpConnected(), false);
   assert.equal(h.storage.size, 0);
 });
 
 await test('an incomplete tool catalog never becomes connected', async (t) => {
-  const h = await harness(t, tools.slice(0, 37));
-  await assert.rejects(h.client.connectFashionMcp(), /38個/);
+  const h = await harness(t, tools.slice(0, 39));
+  await assert.rejects(h.client.connectFashionMcp(), /40個/);
   assert.equal(h.client.fashionMcpConnected(), false);
   assert.equal(h.storage.size, 0);
 });

@@ -1,6 +1,7 @@
 const object = (properties, required = []) => ({ type: "object", additionalProperties: false, properties, required });
 const str = (description) => ({ type: "string", description });
 const integer = (description, minimum = 0) => ({ type: "integer", minimum, description });
+const number = (description, minimum = 0, maximum = 1) => ({ type: "number", minimum, maximum, description });
 
 export const TOOL_DEFINITIONS = Object.freeze([
   { name: "fashion.brand.upsert", description: "Create or update brand policy, voice, regions, FAQ, and visual constraints.", inputSchema: object({ id: str("Optional brand ID"), name: str("Brand name"), policy: { type: "object" } }, ["name", "policy"]) },
@@ -28,6 +29,8 @@ export const TOOL_DEFINITIONS = Object.freeze([
   { name: "fashion.system.readiness", description: "Report live Instagram, creative, payment, notification, approval, and account readiness without returning secret values.", inputSchema: object({ brand_id: str("Optional brand ID") }) },
 
   { name: "instagram.accounts.list", description: "List stored Instagram account connections without credentials.", inputSchema: object({ brand_id: str("Brand ID") }, ["brand_id"]) },
+  { name: "instagram.accounts.intake_screenshots", description: "Persist account candidates extracted by Sky vision from user-supplied screenshots. Raw images and credentials are never accepted or stored.", inputSchema: object({ brand_id: str("Brand ID"), screenshots: { type: "array", minItems: 1, maxItems: 10, items: object({ source_sha256: str("SHA-256 of the screenshot bytes"), accounts: { type: "array", minItems: 1, maxItems: 20, items: object({ username: str("Visible Instagram username"), display_name: str("Optional visible display name"), posts: integer("Optional visible post count"), followers: integer("Optional visible follower count"), following: integer("Optional visible following count"), confidence: number("Vision confidence from 0 to 1") }, ["username"]) } }, ["source_sha256", "accounts"]) } }, ["brand_id", "screenshots"]) },
+  { name: "instagram.accounts.candidates.list", description: "List screenshot-derived Instagram candidates. A candidate is not connected until Meta OAuth readback matches it.", inputSchema: object({ brand_id: str("Optional Brand ID"), status: { enum: ["needs_owner_confirmation", "oauth_matched", "dismissed"] } }) },
   { name: "instagram.accounts.discover", description: "Read accounts available through the configured Meta OAuth provider; optionally import verified readback.", inputSchema: object({ brand_id: str("Brand ID"), import: { type: "boolean" } }, ["brand_id"]) },
   { name: "instagram.accounts.register", description: "Register OAuth readback metadata and a vault/env/broker credential reference. Tokens, passwords, and cookies are rejected.", inputSchema: object({ brand_id: str("Brand ID"), id: str("Optional connection ID"), provider: str("Provider"), external_account_id: str("Instagram professional account ID"), username: str("Username"), credential_ref: str("env://, vault://, or broker:// reference"), connection_status: str("Connection status"), metadata: { type: "object" } }, ["brand_id", "external_account_id", "username", "credential_ref"]) },
   { name: "instagram.accounts.switch", description: "Select one connected Instagram account for subsequent drafts and operations.", inputSchema: object({ brand_id: str("Brand ID"), account_id: str("Social account connection ID") }, ["brand_id", "account_id"]) },
@@ -71,6 +74,8 @@ export function createToolRouter(service) {
     "fashion.executive.dashboard": (args) => service.executiveDashboard(args),
     "fashion.system.readiness": (args) => service.readiness(args),
     "instagram.accounts.list": (args) => service.listSocialAccounts(args),
+    "instagram.accounts.intake_screenshots": (args) => service.intakeSocialAccountScreenshots(args),
+    "instagram.accounts.candidates.list": (args) => service.listSocialAccountCandidates(args),
     "instagram.accounts.discover": (args) => service.discoverSocialAccounts(args),
     "instagram.accounts.register": (args) => service.registerSocialAccount(args),
     "instagram.accounts.switch": (args) => service.switchSocialAccount(args),

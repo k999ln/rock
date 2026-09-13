@@ -1,5 +1,9 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-12 — Instagram写真オンボーディングを統合
+
+Instagramのプロフィール画面から公開表示と画像SHA-256だけを未確認候補へ取り込み、Meta OAuth readbackが一致した候補だけを運用対象にできる導線を統合した。画像本体、path、password、Cookie、raw OAuth tokenは運用DBへ保存しない。公開、広告、DM送信、請求、返金の個別承認も維持する。[安全境界と手順](docs/instagram-photo-onboarding-20260912.md)。
+
 ## 2026-09-12 — OSバックエンドのローンチ候補を統合・安全化
 
 最新launch-candidateの改善版Sky／Fashion専用ワンタップ接続と、汎用MCP Connector／検証済み収益後の精算核を専用branchへ統合した。現行本人限定SitesをFashion Connectorのexact Originへ追加し、Meta署名済みDMを別brandへ付け替えられない照合、IPv6 link-local／multicastの遠隔MCP遮断、両Connector ZIPの決定的整合検査を追加した。
