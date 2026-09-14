@@ -11,10 +11,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ35/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ36/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ35/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ36/);
   const missingTemplate = structuredClone(source);
   delete missingTemplate.acceptanceTemplate;
   assert.throws(() => validateBaseline(missingTemplate), /acceptanceTemplate/);
@@ -85,6 +85,15 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
     () => validateBaseline(liveRockCollection),
     /Rock Settlement Wallet/,
   );
+  const custodialReceiveRail = structuredClone(source);
+  custodialReceiveRail.productionReceiveRail.privateKeysStored = true;
+  assert.throws(() => validateBaseline(custodialReceiveRail), /本番受取レール/);
+  const automaticReceiveRail = structuredClone(source);
+  automaticReceiveRail.productionReceiveRail.automaticTransferEnabled = true;
+  assert.throws(() => validateBaseline(automaticReceiveRail), /本番受取レール/);
+  const fakeFirstTransfer = structuredClone(source);
+  fakeFirstTransfer.productionReceiveRail.firstLiveTransfer = 'verified';
+  assert.throws(() => validateBaseline(fakeFirstTransfer), /本番受取レール/);
   const fakeLocalMcp = structuredClone(source);
   fakeLocalMcp.skyNetworkEconomy.localMcpConnection.realSessionStateDisplayed = false;
   assert.throws(() => validateBaseline(fakeLocalMcp), /ローカルMCP/);

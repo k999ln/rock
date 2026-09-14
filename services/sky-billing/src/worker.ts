@@ -1,5 +1,19 @@
 import { verifyBillingToken } from '../../../lib/billing-token.ts';
 import {
+  BASE_MAINNET_CHAIN_ID,
+  BASE_MAINNET_RPC_URL,
+  BASE_USDC_ADDRESS,
+  createRockWalletConsentMessage,
+  normalizeBaseChainId,
+  normalizeTransactionHash,
+  normalizeWalletAddress,
+  ROCK_WALLET_CONSENT_VERSION,
+  ROCK_WALLET_PROVIDER_ID,
+  verifyBaseUsdcCollection,
+  verifyRockWalletConsent,
+  type BaseReceiptLog,
+} from '../../../lib/rock-wallet.ts';
+import {
   periodForUnix,
   SETTLEMENT_CURRENCY,
   SKY_MONTHLY_FEE_CAP_MINOR,
@@ -13,24 +27,27 @@ export interface Env {
   BILLING_SHARED_SECRET: string;
   SETTLEMENT_INGEST_SECRET: string;
   SKY_ORIGIN: string;
+  BASE_RPC_URL?: string;
 }
 
 function configuration(env: Env) {
   const sky = new URL(env.SKY_ORIGIN);
+  const baseRpc = new URL(env.BASE_RPC_URL ?? BASE_MAINNET_RPC_URL);
   if (
     sky.protocol !== 'https:' ||
+    baseRpc.protocol !== 'https:' ||
     env.BILLING_SHARED_SECRET.length < 32 ||
     env.SETTLEMENT_INGEST_SECRET.length < 32
   )
     throw new Error('SETTLEMENT_CONFIGURATION_INVALID');
-  return { skyOrigin: sky.origin };
+  return { skyOrigin: sky.origin, baseRpcUrl: baseRpc.toString() };
 }
 
 function cors(origin: string) {
   return {
     'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Headers': 'authorization,content-type',
-    'Access-Control-Allow-Methods': 'GET,OPTIONS',
+    'Access-Control-Allow-Methods': 'GET,POST,DELETE,OPTIONS',
     'Access-Control-Max-Age': '600',
     Vary: 'Origin',
   };
@@ -60,6 +77,429 @@ async function authorizeUser(request: Request, env: Env) {
     origin: skyOrigin,
     token: await verifyBillingToken(bearer(request), env.BILLING_SHARED_SECRET),
   };
+}
+
+async function userInput(request: Request, env: Env) {
+  const authorization = await authorizeUser(request, env);
+  const raw = await request.text();
+  if (new TextEncoder().encode(raw).length > 16_384)
+    throw new Error('ROCK_WALLET_INPUT_INVALID');
+  const value = JSON.parse(raw) as unknown;
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new Error('ROCK_WALLET_INPUT_INVALID');
+  return {
+    ...authorization,
+    input: value as Record<string, unknown>,
+  };
+}
+
+type RockWalletOperator = {
+  userId: string;
+  address: string;
+  chainId: number;
+  network: string;
+  assetSymbol: string;
+  assetContract: string;
+  status: 'active' | 'revoked';
+  verifiedAt: number;
+  updatedAt: number;
+};
+
+async function rockWalletOperator(db: D1Database) {
+  return db
+    .prepare(
+      `SELECT user_id AS userId,address,chain_id AS chainId,network,
+        asset_symbol AS assetSymbol,asset_contract AS assetContract,status,
+        verified_at AS verifiedAt,updated_at AS updatedAt
+       FROM rock_wallet_operators WHERE provider_id=?`,
+    )
+    .bind(ROCK_WALLET_PROVIDER_ID)
+    .first<RockWalletOperator>();
+}
+
+async function rockWalletStatus(request: Request, env: Env) {
+  const { origin, token } = await authorizeUser(request, env);
+  const operator = await rockWalletOperator(env.DB);
+  const isOperator = operator?.userId === token.sub;
+  const [collections, totals] = isOperator
+    ? await Promise.all([
+        env.DB.prepare(
+          `SELECT instruction_id AS instructionId,receipt_id AS receiptId,
+              amount_minor AS amountMinor,currency,network,chain_id AS chainId,
+              asset_symbol AS assetSymbol,asset_contract AS assetContract,
+              recipient_address AS recipientAddress,status,
+              transaction_hash AS transactionHash,block_number AS blockNumber,
+              last_error AS lastError,updated_at AS updatedAt,
+              verified_at AS verifiedAt
+             FROM rock_fee_collection_instructions
+             ORDER BY created_at DESC,instruction_id DESC LIMIT 20`,
+        ).all(),
+        env.DB.prepare(
+          `SELECT
+              COALESCE(SUM(CASE WHEN status='collected' THEN amount_minor ELSE 0 END),0) AS collectedMinor,
+              COALESCE(SUM(CASE WHEN status IN ('ready','confirming','unknown') THEN amount_minor ELSE 0 END),0) AS pendingMinor,
+              SUM(CASE WHEN status='collected' THEN 1 ELSE 0 END) AS collectedCount,
+              SUM(CASE WHEN status IN ('ready','confirming','unknown') THEN 1 ELSE 0 END) AS pendingCount
+             FROM rock_fee_collection_instructions`,
+        ).first(),
+      ])
+    : [{ results: [] }, null];
+  return response(
+    {
+      provider: {
+        providerId: ROCK_WALLET_PROVIDER_ID,
+        displayName: 'Rock Settlement Wallet',
+        mode: 'LIVE_RECEIVE',
+        custody: false,
+        network: 'base',
+        chainId: BASE_MAINNET_CHAIN_ID,
+        assetSymbol: 'USDC',
+        assetContract: BASE_USDC_ADDRESS,
+      },
+      account: operator
+        ? {
+            address: operator.address,
+            chainId: operator.chainId,
+            network: operator.network,
+            assetSymbol: operator.assetSymbol,
+            assetContract: operator.assetContract,
+            status: operator.status,
+            verifiedAt: operator.verifiedAt,
+            updatedAt: operator.updatedAt,
+          }
+        : null,
+      operator: isOperator,
+      canClaim: operator === null || isOperator,
+      totals: isOperator
+        ? (totals ?? {
+            collectedMinor: 0,
+            pendingMinor: 0,
+            collectedCount: 0,
+            pendingCount: 0,
+          })
+        : null,
+      collections: collections.results,
+    },
+    200,
+    origin,
+  );
+}
+
+async function createRockWalletChallenge(request: Request, env: Env) {
+  const { origin, token, input } = await userInput(request, env);
+  if (Object.keys(input).some((key) => !['address', 'chainId'].includes(key)))
+    throw new Error('ROCK_WALLET_INPUT_INVALID');
+  const current = await rockWalletOperator(env.DB);
+  if (current && current.userId !== token.sub)
+    throw new Error('ROCK_WALLET_OPERATOR_FORBIDDEN');
+  const address = normalizeWalletAddress(input.address);
+  const chainId = normalizeBaseChainId(input.chainId);
+  const now = Math.floor(Date.now() / 1000);
+  const expiresAt = now + 300;
+  const challengeId = crypto.randomUUID();
+  const nonce = crypto.randomUUID().replaceAll('-', '');
+  const message = createRockWalletConsentMessage({
+    origin,
+    address,
+    chainId,
+    nonce,
+    issuedAt: new Date(now * 1000).toISOString(),
+    expiresAt: new Date(expiresAt * 1000).toISOString(),
+  });
+  await env.DB.batch([
+    env.DB.prepare(
+      `DELETE FROM rock_wallet_challenges
+         WHERE user_id=? AND (consumed_at IS NOT NULL OR expires_at<?)`,
+    ).bind(token.sub, now),
+    env.DB.prepare(
+      `INSERT INTO rock_wallet_challenges(
+          challenge_id,user_id,address,chain_id,message,expires_at,created_at
+        ) VALUES(?,?,?,?,?,?,?)`,
+    ).bind(challengeId, token.sub, address, chainId, message, expiresAt, now),
+  ]);
+  return response(
+    { challengeId, address, chainId, message, expiresAt },
+    201,
+    origin,
+  );
+}
+
+type WalletChallenge = {
+  challengeId: string;
+  userId: string;
+  address: string;
+  chainId: number;
+  message: string;
+  expiresAt: number;
+  consumedAt: number | null;
+};
+
+async function verifyRockWallet(request: Request, env: Env) {
+  const { origin, token, input } = await userInput(request, env);
+  if (
+    Object.keys(input).some(
+      (key) => !['challengeId', 'address', 'signature'].includes(key),
+    ) ||
+    typeof input.challengeId !== 'string' ||
+    !/^[0-9a-f-]{36}$/iu.test(input.challengeId)
+  )
+    throw new Error('ROCK_WALLET_INPUT_INVALID');
+  const challenge = await env.DB.prepare(
+    `SELECT challenge_id AS challengeId,user_id AS userId,address,chain_id AS chainId,
+        message,expires_at AS expiresAt,consumed_at AS consumedAt
+       FROM rock_wallet_challenges WHERE challenge_id=? AND user_id=?`,
+  )
+    .bind(input.challengeId, token.sub)
+    .first<WalletChallenge>();
+  const now = Math.floor(Date.now() / 1000);
+  const address = normalizeWalletAddress(input.address);
+  if (
+    !challenge ||
+    challenge.consumedAt !== null ||
+    challenge.expiresAt <= now ||
+    challenge.address.toLowerCase() !== address.toLowerCase()
+  )
+    throw new Error('ROCK_WALLET_CHALLENGE_INVALID');
+  await verifyRockWalletConsent({
+    address,
+    message: challenge.message,
+    signature: input.signature,
+  });
+
+  const result = await env.DB.batch([
+    env.DB.prepare(
+      `UPDATE rock_wallet_challenges SET consumed_at=?
+         WHERE challenge_id=? AND user_id=? AND consumed_at IS NULL AND expires_at>?`,
+    ).bind(now, challenge.challengeId, token.sub, now),
+    env.DB.prepare(
+      `INSERT INTO rock_wallet_operators(
+          provider_id,user_id,address,chain_id,network,asset_symbol,
+          asset_contract,status,consent_version,verified_at,created_at,updated_at
+        ) SELECT ?,?,?,?,'base','USDC',?,'active',?,?,?,?
+          WHERE NOT EXISTS(
+            SELECT 1 FROM rock_wallet_operators WHERE provider_id=? AND user_id<>?
+          )
+        ON CONFLICT(provider_id) DO UPDATE SET
+          address=excluded.address,chain_id=excluded.chain_id,
+          asset_contract=excluded.asset_contract,status='active',
+          consent_version=excluded.consent_version,
+          verified_at=excluded.verified_at,updated_at=excluded.updated_at
+        WHERE rock_wallet_operators.user_id=excluded.user_id`,
+    ).bind(
+      ROCK_WALLET_PROVIDER_ID,
+      token.sub,
+      address,
+      challenge.chainId,
+      BASE_USDC_ADDRESS,
+      ROCK_WALLET_CONSENT_VERSION,
+      now,
+      now,
+      now,
+      ROCK_WALLET_PROVIDER_ID,
+      token.sub,
+    ),
+    env.DB.prepare(
+      `UPDATE rock_fee_collection_instructions
+         SET recipient_address=?,status='ready',updated_at=?
+         WHERE status='awaiting_wallet' AND amount_minor>0`,
+    ).bind(address, now),
+  ]);
+  if (
+    (result[0].meta.changes ?? 0) !== 1 ||
+    (result[1].meta.changes ?? 0) !== 1
+  )
+    throw new Error('ROCK_WALLET_OPERATOR_CONFLICT');
+  return response(
+    {
+      connected: true,
+      providerId: ROCK_WALLET_PROVIDER_ID,
+      address,
+      chainId: challenge.chainId,
+      network: 'base',
+      assetSymbol: 'USDC',
+      custody: false,
+      verifiedAt: now,
+    },
+    200,
+    origin,
+  );
+}
+
+async function revokeRockWallet(request: Request, env: Env) {
+  const { origin, token } = await authorizeUser(request, env);
+  const now = Math.floor(Date.now() / 1000);
+  const updated = await env.DB.prepare(
+    `UPDATE rock_wallet_operators SET status='revoked',updated_at=?
+       WHERE provider_id=? AND user_id=? AND status='active'`,
+  )
+    .bind(now, ROCK_WALLET_PROVIDER_ID, token.sub)
+    .run();
+  if ((updated.meta.changes ?? 0) !== 1)
+    throw new Error('ROCK_WALLET_OPERATOR_FORBIDDEN');
+  return response({ revoked: true }, 200, origin);
+}
+
+async function rpcRequest(env: Env, method: string, params: unknown[]) {
+  const response = await fetch(configuration(env).baseRpcUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+    signal: AbortSignal.timeout(8_000),
+  });
+  if (!response.ok) throw new Error('ROCK_WALLET_RPC_UNAVAILABLE');
+  const body = (await response.json()) as {
+    result?: unknown;
+    error?: unknown;
+  };
+  if (body.error) throw new Error('ROCK_WALLET_RPC_UNAVAILABLE');
+  return body.result;
+}
+
+async function reconcileRockCollection(request: Request, env: Env) {
+  const { origin, token, input } = await userInput(request, env);
+  if (
+    Object.keys(input).some(
+      (key) => !['instructionId', 'transactionHash'].includes(key),
+    ) ||
+    typeof input.instructionId !== 'string' ||
+    !/^rock-fee:[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/u.test(input.instructionId)
+  )
+    throw new Error('ROCK_WALLET_INPUT_INVALID');
+  const operator = await rockWalletOperator(env.DB);
+  if (
+    !operator ||
+    operator.userId !== token.sub ||
+    operator.status !== 'active'
+  )
+    throw new Error('ROCK_WALLET_OPERATOR_FORBIDDEN');
+  const transactionHash = normalizeTransactionHash(input.transactionHash);
+  const instruction = await env.DB.prepare(
+    `SELECT instruction_id AS instructionId,amount_minor AS amountMinor,
+        recipient_address AS recipientAddress,status,
+        transaction_hash AS transactionHash
+       FROM rock_fee_collection_instructions WHERE instruction_id=?`,
+  )
+    .bind(input.instructionId)
+    .first<{
+      instructionId: string;
+      amountMinor: number;
+      recipientAddress: string | null;
+      status: string;
+      transactionHash: string | null;
+    }>();
+  if (!instruction) throw new Error('ROCK_COLLECTION_NOT_FOUND');
+  if (instruction.status === 'collected') {
+    if (instruction.transactionHash === transactionHash)
+      return response({ instruction, replay: true }, 200, origin);
+    throw new Error('ROCK_COLLECTION_CONFLICT');
+  }
+  if (
+    !instruction.recipientAddress ||
+    instruction.amountMinor < 1 ||
+    (instruction.transactionHash &&
+      instruction.transactionHash !== transactionHash)
+  )
+    throw new Error('ROCK_COLLECTION_CONFLICT');
+
+  let receipt: unknown;
+  let finalized: unknown;
+  try {
+    const chainId = await rpcRequest(env, 'eth_chainId', []);
+    if (chainId !== '0x2105') throw new Error('ROCK_WALLET_RPC_CHAIN_INVALID');
+    [receipt, finalized] = await Promise.all([
+      rpcRequest(env, 'eth_getTransactionReceipt', [transactionHash]),
+      rpcRequest(env, 'eth_getBlockByNumber', ['finalized', false]),
+    ]);
+  } catch (error) {
+    const now = Math.floor(Date.now() / 1000);
+    await env.DB.prepare(
+      `UPDATE rock_fee_collection_instructions
+         SET status='unknown',transaction_hash=?,last_error=?,updated_at=?
+         WHERE instruction_id=? AND status<>'collected'`,
+    )
+      .bind(
+        transactionHash,
+        error instanceof Error ? error.message : 'ROCK_WALLET_RPC_UNAVAILABLE',
+        now,
+        instruction.instructionId,
+      )
+      .run();
+    throw error;
+  }
+  const now = Math.floor(Date.now() / 1000);
+  if (!receipt) {
+    await env.DB.prepare(
+      `UPDATE rock_fee_collection_instructions
+         SET status='confirming',transaction_hash=?,last_error=NULL,updated_at=?
+         WHERE instruction_id=? AND status<>'collected'`,
+    )
+      .bind(transactionHash, now, instruction.instructionId)
+      .run();
+    return response({ status: 'confirming', transactionHash }, 202, origin);
+  }
+  const proof = receipt as {
+    status: `0x${string}`;
+    blockNumber: `0x${string}`;
+    logs: BaseReceiptLog[];
+  };
+  const finalizedBlock = finalized as { number?: `0x${string}` } | null;
+  if (!finalizedBlock?.number) throw new Error('ROCK_WALLET_RPC_UNAVAILABLE');
+  try {
+    const verified = verifyBaseUsdcCollection({
+      recipient: instruction.recipientAddress,
+      amountMinor: instruction.amountMinor,
+      receiptStatus: proof.status,
+      receiptBlockNumber: BigInt(proof.blockNumber),
+      finalizedBlockNumber: BigInt(finalizedBlock.number),
+      logs: proof.logs,
+    });
+    const collected = verified.status === 'collected';
+    const updated = await env.DB.prepare(
+      `UPDATE rock_fee_collection_instructions
+         SET status=?,transaction_hash=?,block_number=?,last_error=NULL,
+           updated_at=?,verified_at=?
+         WHERE instruction_id=? AND status<>'collected'
+           AND (transaction_hash IS NULL OR transaction_hash=?)`,
+    )
+      .bind(
+        verified.status,
+        transactionHash,
+        Number(BigInt(proof.blockNumber)),
+        now,
+        collected ? now : null,
+        instruction.instructionId,
+        transactionHash,
+      )
+      .run();
+    if ((updated.meta.changes ?? 0) !== 1)
+      throw new Error('ROCK_COLLECTION_CONFLICT');
+    return response(
+      {
+        status: verified.status,
+        transactionHash,
+        blockNumber: Number(BigInt(proof.blockNumber)),
+        replay: false,
+      },
+      collected ? 200 : 202,
+      origin,
+    );
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      (error.message === 'ROCK_COLLECTION_TRANSFER_MISMATCH' ||
+        error.message === 'ROCK_COLLECTION_TRANSACTION_REVERTED')
+    ) {
+      await env.DB.prepare(
+        `UPDATE rock_fee_collection_instructions
+           SET status='ready',transaction_hash=NULL,block_number=NULL,
+             last_error=?,updated_at=?
+           WHERE instruction_id=? AND status<>'collected'`,
+      )
+        .bind(error.message, now, instruction.instructionId)
+        .run();
+    }
+    throw error;
+  }
 }
 
 async function status(request: Request, env: Env) {
@@ -360,6 +800,33 @@ async function ingest(request: Request, env: Env) {
         FROM earning_receipts WHERE receipt_id=? AND applied_at IS NULL`,
     ).bind(now, now, receipt.receiptId),
     env.DB.prepare(
+      `INSERT OR IGNORE INTO rock_fee_collection_instructions(
+        instruction_id,receipt_id,user_id,amount_minor,currency,network,chain_id,
+        asset_symbol,asset_contract,recipient_address,status,idempotency_key,
+        created_at,updated_at
+      ) SELECT 'rock-fee:'||receipt_id,receipt_id,user_id,sky_fee_minor,currency,
+          'base',?,'USDC',?,(
+            SELECT address FROM rock_wallet_operators
+            WHERE provider_id=? AND status='active'
+          ),CASE
+            WHEN sky_fee_minor=0 THEN 'not_required'
+            WHEN EXISTS(
+              SELECT 1 FROM rock_wallet_operators
+              WHERE provider_id=? AND status='active'
+            ) THEN 'ready'
+            ELSE 'awaiting_wallet'
+          END,'rock-fee:'||receipt_id,?,?
+        FROM earning_receipts WHERE receipt_id=? AND applied_at IS NULL`,
+    ).bind(
+      BASE_MAINNET_CHAIN_ID,
+      BASE_USDC_ADDRESS,
+      ROCK_WALLET_PROVIDER_ID,
+      ROCK_WALLET_PROVIDER_ID,
+      now,
+      now,
+      receipt.receiptId,
+    ),
+    env.DB.prepare(
       `UPDATE earning_receipts SET applied_at=?
        WHERE receipt_id=? AND applied_at IS NULL`,
     ).bind(now, receipt.receiptId),
@@ -523,37 +990,57 @@ function errorResponse(error: unknown, origin?: string) {
   const status =
     message === 'UNAUTHORIZED' || message.startsWith('TOKEN_')
       ? 401
-      : message === 'ORIGIN'
+      : message === 'ORIGIN' || message === 'ROCK_WALLET_OPERATOR_FORBIDDEN'
         ? 403
-        : message === 'EARNING_RECEIPT_CONFLICT' ||
-            message === 'PAYOUT_CLAIM_CONFLICT' ||
-            message === 'PAYOUT_RESULT_CONFLICT'
-          ? 409
-          : message.includes('SIGNATURE')
-            ? 401
-            : message.startsWith('EARNING_RECEIPT_') ||
-                message === 'PAYOUT_INPUT_INVALID' ||
-                message === 'SIGNED_INPUT_TOO_LARGE' ||
-                message === 'SETTLEMENT_PREVIOUS_FEE_INVALID' ||
-                error instanceof SyntaxError
-              ? 400
-              : message === 'SETTLEMENT_CONFIGURATION_INVALID'
-                ? 503
-                : 500;
+        : message === 'ROCK_COLLECTION_NOT_FOUND'
+          ? 404
+          : message === 'EARNING_RECEIPT_CONFLICT' ||
+              message === 'PAYOUT_CLAIM_CONFLICT' ||
+              message === 'PAYOUT_RESULT_CONFLICT' ||
+              message === 'ROCK_WALLET_OPERATOR_CONFLICT' ||
+              message === 'ROCK_WALLET_CHALLENGE_INVALID' ||
+              message === 'ROCK_COLLECTION_CONFLICT'
+            ? 409
+            : message === 'ROCK_WALLET_RPC_UNAVAILABLE' ||
+                message === 'ROCK_WALLET_RPC_CHAIN_INVALID'
+              ? 503
+              : message.includes('SIGNATURE')
+                ? 401
+                : message.startsWith('EARNING_RECEIPT_') ||
+                    message === 'PAYOUT_INPUT_INVALID' ||
+                    message === 'SIGNED_INPUT_TOO_LARGE' ||
+                    message.startsWith('ROCK_WALLET_') ||
+                    message.startsWith('ROCK_COLLECTION_') ||
+                    message === 'SETTLEMENT_PREVIOUS_FEE_INVALID' ||
+                    error instanceof SyntaxError
+                  ? 400
+                  : message === 'SETTLEMENT_CONFIGURATION_INVALID'
+                    ? 503
+                    : 500;
   return response(
     {
       error:
-        status === 401
-          ? '署名または認証を確認できません。'
-          : status === 403
-            ? 'Sky以外から利用者情報を参照できません。'
-            : status === 409
-              ? '同じ実行・入金参照に異なる内容のReceiptがあります。'
-              : status === 503
-                ? '収益精算サービスの設定が完了していません。'
-                : status === 400
-                  ? 'Earning Receiptの内容を確認できません。'
-                  : '収益精算を完了できませんでした。',
+        message === 'ROCK_COLLECTION_NOT_FOUND'
+          ? '回収指図が見つかりません。'
+          : message.startsWith('ROCK_') && status === 503
+            ? 'Baseの着金確認に接続できません。自動再実行せず、時間を置いて再照合してください。'
+            : message.startsWith('ROCK_') && status === 403
+              ? 'Rock受取Walletの管理者だけが操作できます。'
+              : message.startsWith('ROCK_') && status === 409
+                ? 'Walletまたは回収指図の状態が変わりました。表示を更新してください。'
+                : message.startsWith('ROCK_')
+                  ? 'Walletの署名、ネットワーク、アドレスまたは取引内容を確認してください。'
+                  : status === 401
+                    ? '署名または認証を確認できません。'
+                    : status === 403
+                      ? 'Sky以外から利用者情報を参照できません。'
+                      : status === 409
+                        ? '同じ実行・入金参照に異なる内容のReceiptがあります。'
+                        : status === 503
+                          ? '収益精算サービスの設定が完了していません。'
+                          : status === 400
+                            ? 'Earning Receiptの内容を確認できません。'
+                            : '収益精算を完了できませんでした。',
     },
     status,
     origin,
@@ -581,6 +1068,25 @@ export default {
         });
       if (request.method === 'GET' && url.pathname === '/v1/status')
         return await status(request, env);
+      if (request.method === 'GET' && url.pathname === '/v1/rock-wallet')
+        return await rockWalletStatus(request, env);
+      if (
+        request.method === 'POST' &&
+        url.pathname === '/v1/rock-wallet/challenge'
+      )
+        return await createRockWalletChallenge(request, env);
+      if (
+        request.method === 'POST' &&
+        url.pathname === '/v1/rock-wallet/verify'
+      )
+        return await verifyRockWallet(request, env);
+      if (
+        request.method === 'POST' &&
+        url.pathname === '/v1/rock-wallet/reconcile'
+      )
+        return await reconcileRockCollection(request, env);
+      if (request.method === 'DELETE' && url.pathname === '/v1/rock-wallet')
+        return await revokeRockWallet(request, env);
       if (request.method === 'POST' && url.pathname === '/v1/earnings')
         return await ingest(request, env);
       if (request.method === 'POST' && url.pathname === '/v1/payouts/claim')

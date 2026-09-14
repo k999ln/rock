@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 35 },
+    { length: 36 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ35の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ36の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -157,6 +157,31 @@ export function validateBaseline(
       data.firstPartySettlementProvider?.realFundsEnabled === false &&
       data.firstPartySettlementProvider?.usesCommonProviderAdapter === true,
     'Rock Settlement Walletは確定済み自社利用料のsandbox回収だけに限定してください',
+  );
+  requireValue(
+    data.productionReceiveRail?.status ===
+      'implemented_pending_deployment_and_owner_signature' &&
+      data.productionReceiveRail?.network === 'base' &&
+      data.productionReceiveRail?.chainId === 8453 &&
+      data.productionReceiveRail?.assetSymbol === 'USDC' &&
+      data.productionReceiveRail?.assetContract ===
+        '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' &&
+      data.productionReceiveRail?.assetDecimals === 6 &&
+      data.productionReceiveRail?.walletConnection === 'eip1193_injected' &&
+      data.productionReceiveRail?.privateKeysStored === false &&
+      data.productionReceiveRail?.userFundsCustodied === false &&
+      data.productionReceiveRail?.automaticTransferEnabled === false &&
+      data.productionReceiveRail?.collectionSource ===
+        'signed_earning_receipt_sky_service_fee_only' &&
+      data.productionReceiveRail?.monthlyFeeCapMinor === 888 &&
+      data.productionReceiveRail?.exactRecipientAndAmountRequired === true &&
+      data.productionReceiveRail?.finalizedBlockRequired === true &&
+      data.productionReceiveRail
+        ?.operatorClaimRequiresPrivateSiteOwnerAccess === true &&
+      data.productionReceiveRail?.ownerWalletRegistration ===
+        'pending_user_signature' &&
+      data.productionReceiveRail?.firstLiveTransfer === 'not_performed',
+    '本番受取レールはBase USDCの所有確認・限定回収・finalized照合とし、秘密鍵保管・自動送金・完了の先取りを禁止してください',
   );
   requireValue(
     data.chatInteraction?.connectedMcpPresentation ===
@@ -438,6 +463,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ35、Rock First-party Settlement Walletのsandbox回収、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、外部実接続/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ36、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

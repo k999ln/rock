@@ -1,5 +1,7 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-13追記（v1.36）: 利用者は、既存フロントへWallet backendを接続し、本番環境で実際に使えるところまで進めるよう明示。RQ36を追加する。最初の実受取レールはBase MainnetのUSDCとし、外部EIP-1193 WalletでRockの受取アドレスを所有署名する。RockstarOSは秘密鍵、seed phrase、包括的送金権限、利用者資産を保管しない。署名済みEarning Receiptから既存ルールで確定した `SKY_SERVICE_FEE` の回収指図だけを作り、Base上の公式USDC contract、exactな受取先・金額、finalized blockを照合して着金確定する。本番配備は実施対象だが、owner Walletの登録と最初の実transferは本人署名・本人確認が完了するまで実施済みにしない。本人限定Siteを一般公開する前にowner受取先を登録する。
+
 2026-09-13追記（v1.35）: 利用者は、外部Wallet会社待ちではRock自身の回収ができないため、最初は自社側のWalletで進める方針を明示。RQ35を追加する。最初のProviderを `org.rockstar.settlement-wallet` とし、署名検証済み収益から既存ルールで確定したRock利用料の受取・報告を担う。共通Provider Adapterを迂回せず、外部事業者の追加・差替え余地を維持する。初期capabilityは `collect_platform_fee` と `reporting` のsandboxだけで、利用者資産の包括保管、任意送金、交換、ファンド運用、LIVE回収は有効化しない。
 
 2026-09-13追記（v1.34）: 利用者は、Wallet会社とファンド会社の固有機能をRockstarOS自身が抱えず、外部事業者を交換可能なProviderとして接続する受け身設計を明示。RQ34を追加する。Rockはcapability discovery、本人同意、実行指図、状態・receipt・照合の共通契約を提供し、保管、運用、約定、払出し、税務判断は各Providerの契約・許認可・対象地域に従う。Provider固有機能は拡張manifestから提示し、未対応機能をOSが擬似実装しない。これによりWallet／ファンドの二次事業者がOSを再buildせず参入・差替えできる余地を残す。現在の外部Provider、実資金、LIVE運用は未接続のまま維持する。
@@ -334,7 +336,15 @@ Providerは `custody`、`receive`、`payout`、`exchange`、`fund_catalog`、`su
 
 RockのProviderもRQ34のversion付きmanifest、idempotentな指図、状態、receipt、照合、失効を必ず通り、内製専用の迂回路を作らない。最初はsandbox fixtureでcapabilityと月額上限を検証する。LIVE回収は、Rockの販売・受取主体、実口座または実Wallet、Provider契約、本人・受益者、表示・税務・会計、資格情報、sandbox受入、owner承認が揃うまで無効とする。詳細は [Rock First-party Settlement Wallet](rock-first-party-settlement-wallet-20260913.md) を参照する。
 
-## 1.0への8原則の適用（RQ01〜RQ35を維持）
+## RQ36 Base Mainnet USDCの本番受取レールを接続する
+
+RockstarOSのWallet画面から外部EIP-1193 Walletを接続し、Base Mainnetへ切り替え、5分で失効するorigin-bound messageへ署名してRockのUSDC受取先を登録できるようにする。署名はアドレスの所有確認だけであり、transfer、token approval、秘密鍵の開示を要求しない。最初のoperatorは本人限定Siteへ認証済みのownerだけがclaimし、登録後は別利用者が上書きできない。一般公開へ変更する場合は、その前にowner登録済みであることを必須gateにする。
+
+Billing Workerは、署名検証済みEarning Receiptへ配分済みの `SKY_SERVICE_FEE` ごとにidempotentな回収指図をD1へ作る。指図額は1件・月累計とも既存の最大888 USD centsを越えない。受取先未登録、着金待ち、finalized待ち、着金済み、結果不明を分離し、timeoutやRPC障害時に自動再送しない。同じtransaction hashを複数指図へ使用できず、Baseの公式USDC contractがemitした `Transfer` の受取先と6桁decimal換算額がexactに一致し、receipt成功かつfinalized blockに入った場合だけ着金済みとする。
+
+このレールはRockに帰属する利用料の受取に限定し、利用者資産のcustody、利用者へのpayout、任意入金、交換、運用、税務判定を追加しない。外部Wallet／ファンド会社はRQ34のProvider Adapterとして別途接続できる。実装と本番配備が合格しても、owner自身のWallet署名と最初の実transferが未実施なら、実Wallet登録・実着金の実績とは表示しない。詳細は [Rock Wallet本番受取レール](rock-wallet-production-rail-20260913.md) を参照する。
+
+## 1.0への8原則の適用（RQ01〜RQ36を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -354,6 +364,8 @@ RockのProviderもRQ34のversion付きmanifest、idempotentな指図、状態、
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-13 v1.36: 本番Wallet利用の明示指示をRQ36へ追加。Base Mainnet USDC、外部Walletの所有署名、D1回収指図、exact transferとfinalized blockの照合を採用する。秘密鍵・利用者資産・包括的送金権限は保管せず、owner署名と最初の実transferは未実施のまま先取りしない。
 
 2026-09-13 v1.35: 自社回収のため、Rock Settlement Walletを共通Provider契約の第1号としてRQ35へ追加。検証済み収益から確定したRock利用料の受取・報告だけをsandbox実装し、利用者資産の包括保管、任意送金、交換、ファンド運用、LIVE回収は追加していない。外部Providerも同じadapterで後から追加できる。
 

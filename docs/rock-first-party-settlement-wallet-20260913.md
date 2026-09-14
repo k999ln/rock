@@ -31,3 +31,9 @@ Provider manifestは`SANDBOX`、`userFundsCustodied: false`、`fundManagementEna
 外部Wallet会社とファンド会社は同じversion付きmanifest、本人同意、idempotency、状態、receipt、照合契約で追加する。RockのProviderを既定にしても排他的にはせず、利用者や地域に応じたProvider選択と差替えを残す。
 
 LIVE回収には、販売・決済・払出しProvider、Rockの受取主体と口座、契約・表示、対象地域、税務・会計、資格情報、sandbox受入、owner承認が必要である。この文書とfixtureは実資金開始の承認ではない。
+
+## 2026-09-13 本番受取レールの追加
+
+RQ36により、sandbox Provider契約を維持したまま、Rockに帰属する確定済み利用料の実受取レールをBase Mainnet / USDCで追加した。外部EIP-1193 Walletの所有署名で受取先を登録し、Earning Receiptから配分済みの `SKY_SERVICE_FEE` だけをD1回収指図へ変換する。Baseの公式USDC contract、exactな受取先・金額、成功receipt、finalized blockが一致した場合だけ着金済みにする。
+
+これは利用者資産のcustodyや任意送金の追加ではない。秘密鍵とseed phraseは保存せず、Wallet署名は所有確認だけでtransfer権限を与えない。実装・配備、owner Walletの登録、最初の実transferは別々に記録する。詳細は [Rock Wallet本番受取レール](rock-wallet-production-rail-20260913.md) を参照する。

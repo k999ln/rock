@@ -6,6 +6,7 @@
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
     "SKY_ORIGIN": "https://rockstaros-kaiya.noellesugar1.chatgpt.site",
+    "BASE_RPC_URL": "https://mainnet.base.org",
   },
   "d1_databases": [
     {

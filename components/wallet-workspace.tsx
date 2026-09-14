@@ -13,6 +13,7 @@ import {
   X,
 } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
+import RockSettlementWallet from '@/components/rock-settlement-wallet';
 
 type WalletRecord = {
   id: string;
@@ -158,6 +159,7 @@ export default function WalletWorkspace() {
   return (
     <WorkspaceShell title="Wallet" hideTopActions>
       <div className="wallet-app">
+        <RockSettlementWallet />
         {loading && !snapshot ? (
           <output className="wallet-loading">
             <LoaderCircle className="sky-billing-spin" size={20} />

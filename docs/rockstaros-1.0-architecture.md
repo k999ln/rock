@@ -54,6 +54,8 @@ Wallet会社とファンド会社の機能は交換可能な外部Provider Adapt
 
 最初のProviderは `org.rockstar.settlement-wallet` とし、署名検証済み収益から確定したRock利用料の回収指図と報告だけをsandboxで実装する。Rockの内製Providerも共通adapterを通り、利用者資産の包括保管、任意送金、交換、ファンド運用、LIVE transferは持たない。[First-party Settlement Wallet](rock-first-party-settlement-wallet-20260913.md)。
 
+Web版の最初の本番受取レールはBase Mainnet / USDCとする。本人限定Siteから外部EIP-1193 Walletを接続し、期限付き所有署名でRock受取先を固定する。Billing Workerは署名済みEarning Receiptの `SKY_SERVICE_FEE` だけを回収指図へ変換し、公式USDC contract、exactな受取先・金額、成功receipt、finalized blockをD1へ照合する。秘密鍵、利用者資産、自動送金は保持しない。owner署名と最初の実transferは別の本人操作gateである。[本番受取レール](rock-wallet-production-rail-20260913.md)。
+
 進化余地は、本番identity/passkey、暗号化、複数通貨、Provider sandbox照合、実売上、出金、返金・dispute、監査statement、custodyを持たない構成の受入である。
 
 ## 8. ATM
@@ -106,7 +108,7 @@ Wallet owner、端末、作者、game、playerを別IDにし、署名契約と�
 
 ## 16. Web・Android P1・スマホOS
 
-WebにはHub、仕事作成・実行・確認、手入力会計、Wallet address接続があり、新Sitesは本人限定で公開済み。Android P1は通常アプリとしての固定2工程・記事処理試作。別にPixel 10／GrapheneOS候補の機種構成へその2APKを組み込むsourceとbuild入口を追加した。OS全体のbuild、Hub／Wallet／GameのAndroid移植、正式署名、実機受入はこれからである。Webや標準エミュレーターの成功をスマホOSの合格にしない。
+WebにはSky、Chat、仕事作成・実行・確認、本人別手入力会計、Rock受取Walletの所有署名と着金照合があり、Sitesの公開範囲はowner限定を維持する。Android P1は通常アプリとしての固定2工程・記事処理試作。別にPixel 10／GrapheneOS候補の機種構成へその2APKを組み込むsourceとbuild入口を追加した。OS全体のbuild、Sky／Wallet／GameのAndroid移植、正式署名、実機受入はこれからである。Webや標準エミュレーターの成功をスマホOSの合格にしない。
 
 進化余地は、companion app、device enrollment、通知、遠隔確認、Web管理、正式AOSP device portである。
 

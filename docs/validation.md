@@ -212,3 +212,10 @@
 - PWA manifestへ固定`id`、root `scope`、`lang`、`dir`、related native appを優先しない指定を追加した。192/512 PNGを実寸検査し、Safariが推奨する1024角・全面不透明のmaskable SVGを別途追加した。source 2試験に加え、production HTTP上のmanifest値、3 iconの参照とContent-Typeを上記8経路で確認した。これはWeb appの導入条件でありApp Store native client審査の合格証拠ではない。
 - ローカル待受が許可された環境で`npm run verify`を実行し、Web 202 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、公開gate、製品baseline、MCP配布一致、Billing Worker dry-run、本番buildに合格した。`/settings/system`の実ブラウザ表示はconsole error 0、横切れなし、6対象の数値と台帳が一致した。
 - 製品ライセンスの明示選択、production鍵の作成・保管、一般公開承認、実機/SKUと外部審査は所有者または外部authorityが必要であり、今回完了扱いにしていない。
+# 2026-09-14 — Rock Wallet Base USDC本番受取レール
+
+- `/wallet`へ外部EIP-1193 Walletの接続、Base Mainnet切替、期限付き所有署名、受取先登録、解除、回収指図一覧、transaction hash照合を追加した。画面は秘密鍵非保管、署名が送金権限ではないこと、Rock利用料だけが対象であることを明示する。
+- Billing WorkerへD1 migration `0004_rock_settlement_wallet.sql`と5 endpointを追加し、署名済みEarning Receiptの `SKY_SERVICE_FEE` だけをidempotentな回収指図にした。Base公式USDC contract、exactなrecipient・amount、成功receipt、finalized blockが一致するまで着金済みにしない。
+- Wallet単体・Worker統合・製品baselineの8対象試験に合格した。全体 `npm run verify` は待受可能な環境で、Web 242 tests、公開署名境界64 tests、Fashion Brand Ops 16 tests、Worker/D1 API 143 assertions、型、lint、D1 migration互換、Billing Worker dry-run、本番build、74 Web asset参照missing 0に合格した。
+- `npm audit --omit=dev --json`は既知脆弱性0。viem追加後のlock監査は899 package entry、866 unique component、追加review 47件へ更新し、生成Web bundle内の追加review該当は0。法的clearanceや製品license選択の代用にはしない。
+- remote D1 migration、Worker/Site配備、owner Walletの本人署名、最初の実transferはこの時点では未実施であり、以下の配備記録で別に判定する。
