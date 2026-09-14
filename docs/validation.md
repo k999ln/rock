@@ -219,3 +219,5 @@
 - Wallet単体・Worker統合・製品baselineの8対象試験に合格した。全体 `npm run verify` は待受可能な環境で、Web 242 tests、公開署名境界64 tests、Fashion Brand Ops 16 tests、Worker/D1 API 143 assertions、型、lint、D1 migration互換、Billing Worker dry-run、本番build、74 Web asset参照missing 0に合格した。
 - `npm audit --omit=dev --json`は既知脆弱性0。viem追加後のlock監査は899 package entry、866 unique component、追加review 47件へ更新し、生成Web bundle内の追加review該当は0。法的clearanceや製品license選択の代用にはしない。
 - remote D1 migration、Worker/Site配備、owner Walletの本人署名、最初の実transferはこの時点では未実施であり、以下の配備記録で別に判定する。
+- remote D1へ `0003_automation_funds.sql` と `0004_rock_settlement_wallet.sql` を順に適用し、Billing Workerのproduction deployに成功した。Wallet UIを含む全検証済みtreeをSites側の既存mainへ通常mergeし、競合解消後のtreeが検証済みsourceと一致することを確認した。owner限定Siteのversion 35をproductionへ配備し、公開範囲を変更していない。
+- 残る本番gateは、owner自身の外部Walletによる所有署名と最初の実USDC transferの照合。代理署名やfixtureで完了扱いにしない。

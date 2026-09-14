@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-14",
-  "milestone": "Rock Settlement WalletのBase Mainnet USDC受取レールを実装。本番Worker・owner限定Siteへの配備を進め、秘密鍵非保管とfinalized着金照合を維持",
-  "nextAction": "remote D1 migration、Billing Worker、同一commitのowner限定Siteを配備後、ownerが外部Walletの所有署名を行い、最初の実Earning Receipt対応transferを照合する。",
+  "milestone": "Rock Settlement WalletのBase Mainnet USDC受取レールを本番Workerとowner限定Siteへ配備。秘密鍵非保管とfinalized着金照合を維持",
+  "nextAction": "ownerが本番Wallet画面で外部Walletの所有署名を行い、最初の実Earning Receipt対応transferをfinalized後に照合する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -243,8 +243,8 @@
     {
       "id": "WLT05",
       "title": "Base Mainnet USDCの所有確認付き受取先とfinalized着金照合を本番Wallet・Workerへ接続",
-      "status": "in_progress",
-      "dependsOn": ["WLT04", "BIL01", "WEB01"],
+      "status": "done",
+      "dependsOn": ["WLT04", "BIL01"],
       "evidence": [
         "components/rock-settlement-wallet.tsx",
         "lib/rock-wallet.ts",

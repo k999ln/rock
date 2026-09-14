@@ -71,8 +71,8 @@ D1 migration `0004_rock_settlement_wallet.sql` は、operator、one-time challen
 
 - [x] Walletフロント、challenge、署名検証、D1台帳、Base USDC照合を実装
 - [x] 改ざん・誤chain・誤受取先・誤金額・revert・未finalizedの否定試験
-- [ ] Workerのremote migrationとproduction deploy
-- [ ] 同一source commitをowner限定Siteへdeploy
+- [x] Workerのremote migrationとproduction deploy
+- [x] 同一source commitをowner限定Siteへdeploy
 - [ ] ownerが本番 `/wallet` で受取Walletを接続し、所有署名を承認
 - [ ] 最初の実Earning Receiptに対応するUSDC transferをfinalized後に照合
 

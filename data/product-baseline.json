@@ -467,7 +467,7 @@
     "implementation": "lib/financial-provider.ts"
   },
   "productionReceiveRail": {
-    "status": "implemented_pending_deployment_and_owner_signature",
+    "status": "deployed_owner_private_pending_signature",
     "network": "base",
     "chainId": 8453,
     "assetSymbol": "USDC",

@@ -160,7 +160,7 @@ export function validateBaseline(
   );
   requireValue(
     data.productionReceiveRail?.status ===
-      'implemented_pending_deployment_and_owner_signature' &&
+      'deployed_owner_private_pending_signature' &&
       data.productionReceiveRail?.network === 'base' &&
       data.productionReceiveRail?.chainId === 8453 &&
       data.productionReceiveRail?.assetSymbol === 'USDC' &&
