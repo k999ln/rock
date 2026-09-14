@@ -1,0 +1,109 @@
+{
+  "schema": "rockstaros-backend-launch-evidence/1",
+  "measuredAtUtc": "2026-09-12T23:30:38Z",
+  "status": "PASS_SCOPED_LOCAL_QEMU_DEVELOPER_PREVIEW",
+  "scope": "Local macOS arm64 host, private Lima VM, QEMU ARM64 Developer Preview, public development fixture key, synthetic data only",
+  "source": {
+    "commit": "9a8da90f64c8e6acedb17f163ee23a8ed17a35fc",
+    "archiveSha256": "9777fcba4fc395444f2a4ae056a71dc464de056049357d5325e21e4d9e83c89b",
+    "archiveCommitVerified": true,
+    "archiveFilesVerified": 1856,
+    "unchangedDuringNativeValidation": true
+  },
+  "nativeValidation": {
+    "status": "PASS",
+    "pythonExecutions": 1692,
+    "checks": 14,
+    "reportSha256": "a1ca619ac0a693fa150e4e7305ff301bb78f69ea63cda115788be8c4131707da"
+  },
+  "imageBuild": {
+    "status": "BUILD_COMPLETE_FROZEN",
+    "startedUtc": "2026-09-12T22:45:51Z",
+    "finishedUtc": "2026-09-12T23:15:22Z",
+    "freezeManifestSha256": "178667926fb1c194921dc54308a202028bee3547579698a21581b5824e108fe7",
+    "buildLogSha256": "767800cb4edd8d2f26d7db89b3be2f1cddf8bbd18fc97ad9b5e14051a27d083e",
+    "imageSha256": "0fb71b5b40ca44b719f02456d04dd8b3ecbb124d436745ca6868e7ab2587f4f4",
+    "rootfsSha256": "f87ac4f77b4925038480004fdbf397bd708a2518d8d2bd36324c655044450435",
+    "stage0Sha256": "007ede6da7d4dfd5d36fe19902b939bbaab6a0a202d86c7442ed314596e702ce",
+    "buildStartedEmpty": "NOT_VERIFIED",
+    "oldBuildOutputsReused": "NOT_VERIFIED",
+    "separateHostBitIdenticalRebuild": "NOT_RUN"
+  },
+  "candidate": {
+    "version": "1.0.0-preview.20260912-rc3-local",
+    "status": "LOCAL_ACCEPTANCE_PASSED_NOT_PUBLISHED",
+    "files": 714,
+    "archiveBytes": 66439889,
+    "archiveSha256": "2bbb9b1e102e1a0829dae384678951c7bf4cd0d11edd1e31652284c80996a630",
+    "manifestSha256": "6fbbbf1d3fb86b64931a59953ced80ed25d7ecf65be055ba213b2ae35bf9b6e2",
+    "keySha256": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+    "trust": "PUBLIC_RFC8032_DEVELOPMENT_ONLY",
+    "legalStatus": "NOT_CLEARED",
+    "gameAuthority": "NOT_CONFIGURED"
+  },
+  "acceptance": {
+    "manifestAndSignatureVerification": "PASS",
+    "freshInstall": "PASS",
+    "sourceCommitReadback": "PASS",
+    "qemuStart": "PASS",
+    "sessionQualifiedViewerConnection": "PASS",
+    "signedToolInstallEnableRun": "PASS",
+    "tool": "proposal-draft-concise v1.1.0",
+    "resultCompleted": true,
+    "externalSubmission": false,
+    "revenueVerified": false,
+    "normalUiShutdownBeforeBackup": "PASS",
+    "fullOwnedDeviceBackup": "PASS",
+    "backupFilesystemCheckExitCode": 0,
+    "restoreToNewDevice": "PASS",
+    "originalDevicePreserved": true,
+    "restoredDiskHashesMatchBackup": true,
+    "restoredDeviceStart": "PASS",
+    "installedToolRetained": true,
+    "completedHistoryRetained": true,
+    "completedResultRetained": true,
+    "normalUiShutdownAfterRestore": "PASS",
+    "finalQemuRunning": false,
+    "finalLimaState": "Stopped",
+    "viewerPortsReleased": true,
+    "ownedProcessesRemaining": 0
+  },
+  "backup": {
+    "status": "SAVED",
+    "createdUtc": "2026-09-12T23:25:40.236415+00:00",
+    "consistency": "owned OS stopped; complete A/B/data; signed slot/state validation; full copy SHA-256 equality",
+    "encrypted": false,
+    "productionBackup": "NOT_VERIFIED",
+    "backendIncluded": false,
+    "wallet": "SIMULATOR_ONLY",
+    "slotASha256": "f87ac4f77b4925038480004fdbf397bd708a2518d8d2bd36324c655044450435",
+    "slotBSha256": "3201548f7070f0ae5adf2c869b15df99b5f85ca51feda443c1597c130976619a",
+    "userdataSha256": "e8f22bb9122cef94d642c69fec0785e0e9b0b726d65bd2f36c20e4c12f132cb4"
+  },
+  "backendGates": {
+    "unitAndLifecycleTests": "PASS",
+    "healthBoundary": "PASS_LOOPBACK_HOST_RESTRICTED_NON_SENSITIVE",
+    "authenticationAndSessionRotation": "PASS",
+    "signedPackageInstallEnableRun": "PASS",
+    "sqliteIntegrityAndReceiptRestart": "PASS",
+    "sigtermGracefulExit": "PASS",
+    "interruptedJobAutomaticReplay": false,
+    "fullRepositoryVerify": "PASS"
+  },
+  "notAccepted": {
+    "generalPublicLaunch": "BLOCKED",
+    "productionSigningAndRevocation": "NOT_CONFIGURED",
+    "productLicenseAndThirdPartyClearance": "NOT_CLEARED",
+    "sameSourceOwnerPrivateSitesDeployment": "NOT_RUN",
+    "fullD0ThroughD6ForThisCandidate": "NOT_RUN",
+    "physicalDevice": "NOT_RUN",
+    "externalMcpOrProvider": "NOT_RUN",
+    "realFundsOrPayments": "NOT_RUN"
+  },
+  "recovery": {
+    "installationState": "Preserved in stopped private Lima VM",
+    "restart": "Run the candidate preview.py start command against the preserved installation directory",
+    "rollback": "Keep the prior candidate and backup immutable; restore only to a new device name; never overwrite the source device",
+    "evidenceRetention": "Large images and logs remain outside Git; hashes and scoped outcomes are recorded here"
+  }
+}

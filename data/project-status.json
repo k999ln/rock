@@ -1033,7 +1033,10 @@
       "title": "同一最終候補の再現配布・導入・復旧リハーサル",
       "status": "in_progress",
       "dependsOn": [],
-      "evidence": ["docs/launch-readiness-20260910.md"]
+      "evidence": [
+        "docs/launch-readiness-20260910.md",
+        "docs/evidence/launch/backend-rc3-local-20260912.json"
+      ]
     },
     {
       "id": "LCH08",
@@ -1042,6 +1045,7 @@
       "dependsOn": [],
       "evidence": [
         "docs/backend-launch-20260912.md",
+        "docs/evidence/launch/backend-rc3-local-20260912.json",
         "systems/rock-star-os/scripts/verify-backend-launch.py",
         "systems/rock-star-os/tests/test_hub.py",
         "systems/rock-star-os/tests/test_hub_server.py"
@@ -1414,7 +1418,12 @@
     "currentStateDocument": "docs/current-state-20260911.md",
     "latestProgressAudit": "docs/evidence/launch/progress-audit-20260912.json",
     "auditCandidateHead": "c182a5b9c8f5f4da59528a41980eb98750ebd234",
-    "auditCandidateChecks": "ALL_12_SUCCESS_SOURCE_PREPARATION_NOT_OS_BOOT"
+    "auditCandidateChecks": "ALL_12_SUCCESS_SOURCE_PREPARATION_NOT_OS_BOOT",
+    "historicalLocalCandidateVersion": "1.0.0-preview.20260912-rc3-local",
+    "historicalLocalCandidateCommit": "9a8da90f64c8e6acedb17f163ee23a8ed17a35fc",
+    "historicalLocalCandidateEvidence": "docs/evidence/launch/backend-rc3-local-20260912.json",
+    "historicalLocalCandidateAcceptance": "PASS_SCOPED_LOCAL_QEMU_DEVELOPER_PREVIEW_NOT_CURRENT_HEAD",
+    "historicalLocalCandidateDistribution": "LOCAL_ONLY_NOT_PUBLISHED_NOT_LEGALLY_CLEARED"
   },
   "physicalDevicePreview": {
     "status": "SOURCE_INTEGRATION_NOT_BUILT",
