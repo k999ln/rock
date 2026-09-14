@@ -431,6 +431,8 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 
 ## 進捗の更新方法
 
+2026-09-13、Wallet会社とファンド会社をRockstarOS内製機能へ取り込まず、交換可能な外部Providerとして接続する受け身設計を確定した。Rockはcapability discovery、本人同意、指図、状態、receipt、照合を共通化し、保管、運用、約定、払出し、KYC/AML、地域・税務判断は契約上のProviderへ残す。Provider固有機能はversion付きmanifestで追加し、OS再buildなしの参入・差替えを基本とする。これは実Provider契約、実接続、実資金の有効化ではない。[責任境界と受入順](docs/external-wallet-fund-provider-boundary-20260913.md)。
+
 2026-09-12、最小ローンチ対象をQEMU Developer Previewのローカルバックエンドへ限定して再監査した。Hubの安全終了、実行中worker回収、再起動時の自動再送禁止、情報を出さないヘルスチェックを実装し、22 unit testsと実processの起動→署名ツール実行→SIGTERM→SQLite整合→再起動→receipt復元に合格した。配布8資産、production署名、製品許諾、本人限定Sitesのログイン後確認は未完了のため、全体判定はBLOCKED_FOR_LAUNCHを維持する。[P0/P1/P2と証拠](docs/backend-launch-20260912.md)。
 
 1. 着手時に `data/project-status.json` の状態・更新日・次の作業を更新する。
@@ -441,7 +443,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-13 / Home導線を維持してWeb/nativeの汎用PAPER市場と自律型ファンドを統合し、Instagram写真候補をMeta確認前は外部実行できない導線へ固定。全体verifyとnative backend smokeに合格し、全6配布対象は証拠不足を残してBLOCKED / 完了 61/85件
+最終更新: 2026-09-13 / Wallet／ファンド会社を交換可能な外部Providerとして受ける境界をRQ34へ固定。Rockはcapability・同意・指図・receipt・照合を担い、保管・運用・約定・払出しはProviderへ残す。実接続・実資金は未有効 / 完了 62/86件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -461,6 +463,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](docs/chat-mcp-control-room-20260913.md) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |
 | WLT02 | 本人別の残高・売上・経費・取消履歴をD1へ保存するWallet専用APIと操作画面を実装 | 完了 | [記録](app/api/wallet/route.ts) · [記録](components/wallet-workspace.tsx) · [記録](lib/operations.ts) · [記録](tests/wallet-backend.test.mjs) |
+| WLT03 | Wallet／ファンド会社を交換可能な外部Providerとして受ける責任境界とadapter契約を固定 | 完了 | [記録](docs/external-wallet-fund-provider-boundary-20260913.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) · [記録](docs/validation.md) |
 | MKT01 | あらゆる型付き価値を扱うPAPER市場とexact approval・risk・receipt・position台帳を実装 | 完了 | [記録](app/market/page.tsx) · [記録](app/api/market/route.ts) · [記録](components/everything-market.tsx) · [記録](lib/everything-market.ts) · [記録](lib/everything-market-store.ts) · [記録](drizzle/0009_sad_giant_girl.sql) · [記録](tests/everything-market.test.mjs) · [記録](docs/everything-market-and-autonomous-fund-20260913.md) |
 | SPN01 | native Walletへsimulation/PAPER限定のValue/Spend台帳・exact approval・再照合を統合 | 完了 | [記録](systems/rock-star-os/src/blackberryrock/spend.py) · [記録](systems/rock-star-os/src/blackberryrock/wallet.py) · [記録](systems/rock-star-os/src/blackberryrock/hub_server.py) · [記録](systems/rock-star-os/tests/test_spend_runtime.py) · [記録](systems/rock-star-os/tests/test_hub_server.py) · [記録](docs/value-spend-runtime.md) |
 | FND01 | ツールの検証済み純収益・実費・receipt・失敗から構成と観測利回りを30秒ごとに再計算 | 完了 | [記録](lib/automation-fund.ts) · [記録](lib/automation-fund-store.ts) · [記録](app/api/automation-funds/route.ts) · [記録](components/autonomous-fund-market.tsx) · [記録](tests/automation-fund.test.mjs) · [記録](docs/everything-market-and-autonomous-fund-20260913.md) |
@@ -549,7 +552,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 統合branchのGitHub CIを確認し、所有者による製品license選択とOWNER_MANUAL本番鍵生成後にQEMU同一最終archiveの署名受入を行う。
+次の作業: 合成Wallet Providerと合成Fund Providerのversion付きmanifest、capability交渉、idempotent指図、timeout照合、失効を共通adapter fixtureで検証する。
 <!-- project-status:end -->
 
 ## 次段階の設計

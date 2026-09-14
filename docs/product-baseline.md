@@ -1,5 +1,7 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-13追記（v1.34）: 利用者は、Wallet会社とファンド会社の固有機能をRockstarOS自身が抱えず、外部事業者を交換可能なProviderとして接続する受け身設計を明示。RQ34を追加する。Rockはcapability discovery、本人同意、実行指図、状態・receipt・照合の共通契約を提供し、保管、運用、約定、払出し、税務判断は各Providerの契約・許認可・対象地域に従う。Provider固有機能は拡張manifestから提示し、未対応機能をOSが擬似実装しない。これによりWallet／ファンドの二次事業者がOSを再buildせず参入・差替えできる余地を残す。現在の外部Provider、実資金、LIVE運用は未接続のまま維持する。
+
 2026-09-13追記（v1.33）: 利用者は、Polymarketを掲載・再販売するのではなく、同種の見通しの良い市場UIを参考に、あらゆる価値を型付き取引対象として扱う独自市場と、複数自動化ツールの組合せを実績から更新する自律型ファンドを明示。RQ33を追加する。MarketはPAPER限定で、提案、risk判定、exact digestへの本人承認、予約、実行receipt、position、append-only eventをD1へ保存する。ファンドは本人の検証済み帳簿と実行receiptを30秒ごとに再集計し、構成・配分・観測利回りを更新するが、証拠がなければ利回りを表示せず、資金移動も行わない。Polymarket、外部市場、実Wallet、LIVE注文、清算は有効化しない。
 
 2026-09-13追記（v1.32）: 利用者は、RockstarOSの全画面からHomeへ直接戻れる仕様を明示。RQ26へ追加する。共通WorkspaceShellの上部に常設のHome導線を置き、設定、システム、自動化ファンド、旧試算、Developer Preview案内の独自レイアウトにもHome導線を持たせる。ブラウザの戻る操作やロゴの意味を知らないことを前提にせず、今後追加する非Home routeも同じ契約へ従う。
@@ -46,7 +48,7 @@
 
 2026-09-09追記: 設計v1.1の実装承認を受領。公開・実機・MetaMask実資金は準備が整うことを条件に了承。現在の承認範囲は [承認記録](execution-approval-20260909.md)。以下の「承認待ち」は作成時の履歴であり、現在の実装を停止させない。RQ01〜RQ15と料金は変更しない。
 
-版: 1.31 / 更新日: 2026-09-13（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
+版: 1.34 / 更新日: 2026-09-13（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
 
 この文書は利用者がこの日に明示した製品要望を固定する。実装状況は [OS稼働・ゲーム連携監査](os-readiness-audit-20260909.md)（過去の追補・初回監査は履歴）、次の指示は [現在の再開指示](prompts/rock-current-next-20260911.md)、毎回の確認方法は [プロンプト作成規約](prompt-playbook.md) を参照する。決定と実装実績を同じものとして扱わない。
 
@@ -312,7 +314,17 @@ native Developer Previewでも同じ安全境界を維持し、local SQLiteの�
 
 Polymarketは画面密度、検索、カテゴリ、カード、価格ticketのデザイン参考に限る。名称、コンテンツ、外部注文経路、CLOB、口座、資金、結果判定・清算を取り込まず、独自市場と既存の自動化ファンドを別機能として維持する。LIVE提供にはprovider、本人確認、保管・清算、対象国、契約、法務・規制、異議・取消、監視、owner承認の別gateが必要である。
 
-## 1.0への8原則の適用（RQ01〜RQ33を維持）
+## RQ34 外部Wallet／ファンドProviderを受け入れるOS境界
+
+RockstarOSはWallet会社またはファンド会社そのものにならず、各社の許認可、契約、保管方式、運用商品、対象地域、料金、本人確認とAPI能力を共通のProvider Adapterへ接続する。OSの責任は、Providerの同一性と接続状態を示し、利用可能なcapabilityを発見し、本人へ条件を提示し、exactな操作への同意を取得し、指図、状態取得、署名済みreceipt、取消・不明状態、照合を一貫して扱うところまでとする。
+
+Providerは `custody`、`receive`、`payout`、`exchange`、`fund_catalog`、`subscribe`、`redeem`、`reporting` など、自社が実際に提供できるcapabilityだけをversion付きmanifestで宣言する。RockstarOSは宣言されていない機能を補完・代行せず、未接続、sandbox、live eligible、停止、失効を区別する。Provider固有の追加画面や情報は権限・送信先・費用を明示した拡張として読み込み、任意shell、秘密鍵、Wallet台帳の直接書込み、包括的送金権限を渡さない。
+
+資金の保管、運用判断、注文執行、約定、基準価額、払出し、KYC/AML、地域制限、税務上の判定と法定帳票は、契約上その役割を負うProviderが正本を持つ。RockstarOSの内部Walletと自律型ファンドは、Provider receiptを参照する表示・指図・照合層として残し、Providerの記録を推測値や自己申告で上書きしない。これにより複数の二次事業者がOS再buildなしで参入・差替えでき、利用者は対応機能、費用、地域、保管主体を比較して選べる。
+
+最初の外付け受入は合成Providerとsandboxで、capability交渉、schema version、本人同意、idempotency、timeout後の照合、失効、exportを検証する。実資金またはLIVE運用は、対象Provider、本人・受益者、契約、許認可、対象国、custody、秘密情報、税務表示、sandbox受入、owner承認が揃うまで無効のままとする。詳細は [外部Wallet／ファンドProvider境界](external-wallet-fund-provider-boundary-20260913.md) を正本補助資料とする。
+
+## 1.0への8原則の適用（RQ01〜RQ34を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -332,6 +344,8 @@ Polymarketは画面密度、検索、カテゴリ、カード、価格ticketの�
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-13 v1.34: Wallet／ファンドをRockの内製金融機能ではなく、交換可能な外部Providerとして受け入れる方針をRQ34へ追加。OSはcapability、同意、指図、状態、receipt、照合の共通面を担い、保管・運用・約定・払出し・法定判断はProviderへ残す。二次事業者の参入余地を確保し、外部実接続と実資金は既存gateを維持する。
 
 2026-09-13 v1.31: Chatの接続bot管理、本人別永続Wallet、主要画面のstyle契約、配備asset closure、GitHubと本人限定Sitesの同一commit収束をRQ32へ追加。分散branchの無条件mergeではなく、現行の安全契約と検証を満たす完成版だけを採用する。
 

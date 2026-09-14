@@ -1,5 +1,13 @@
 # 検証記録
 
+## 外部Wallet／ファンドProvider受け身設計 / 2026-09-13
+
+- RQ34として、RockstarOSはcapability discovery、本人同意、指図、状態、receipt、照合だけを共通化し、保管、運用、約定、払出し、KYC/AML、地域・税務判断は外部Providerへ残す責任境界を固定した。
+- `npm run baseline:check`と`tests/product-baseline.test.mjs`に成功。Providerによる内部台帳直接書込み、任意shell、未接続ProviderのLIVE表示、Rockによる未対応機能の擬似実装を許可する変更を拒否する。
+- `npm run project:update`後の`npm run project:check`は62/86件で整合。`npm run build`、Web bundle 120 componentの照合、Web asset 69参照・missing 0、MCP配布package一致に成功した。
+- `npm run verify`はrelease、baseline、Sky、device、型、lintまで成功後、既存`tests/everything-market.test.mjs`がassertion成功後も終了しないため手動中断した。変更対象テストは単独で終了コード0。並行時に不安定だった既存client/device 2テストも単独24件で全成功した。したがって全体verify完走は未確認として残す。
+- この検証は設計・機械可読契約・build整合の確認であり、外部Provider選定、契約、sandbox接続、実資金、LIVEファンド運用を行っていない。
+
 ## QEMU rc2配布要件とnative SBOM境界の機械固定 / 2026-09-12
 
 - `scripts/check-release-signing.mjs` で、候補準備15件、owner legal approval 11件、保護署名29件、本人署名9件の計64公開fixture試験を `npm run verify` に統合。各suiteの試験数も固定し、試験の削除を成功扱いにしない。本人署名は未暗号化／ExFAT／別mountの保管先を鍵読取り前に拒否する。実production鍵・owner承認・隔離環境・実候補署名・署名後受入は未実施のまま分離した。

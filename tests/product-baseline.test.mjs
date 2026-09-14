@@ -11,10 +11,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ33/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ34/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ33/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ34/);
   const missingTemplate = structuredClone(source);
   delete missingTemplate.acceptanceTemplate;
   assert.throws(() => validateBaseline(missingTemplate), /acceptanceTemplate/);
@@ -66,6 +66,12 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const unauthorizedRuntime = structuredClone(source);
   unauthorizedRuntime.marketExploration.liveRuntimeAuthorized = true;
   assert.throws(() => validateBaseline(unauthorizedRuntime), /外部接続/);
+  const custodialRock = structuredClone(source);
+  custodialRock.externalFinancialProviderBoundary.providerDirectLedgerWrite = true;
+  assert.throws(() => validateBaseline(custodialRock), /外部Provider/);
+  const fakeLiveProvider = structuredClone(source);
+  fakeLiveProvider.externalFinancialProviderBoundary.liveProvidersConnected = true;
+  assert.throws(() => validateBaseline(fakeLiveProvider), /外部Provider/);
   const fakeLocalMcp = structuredClone(source);
   fakeLocalMcp.skyNetworkEconomy.localMcpConnection.realSessionStateDisplayed = false;
   assert.throws(() => validateBaseline(fakeLocalMcp), /ローカルMCP/);

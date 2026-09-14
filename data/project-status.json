@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-13",
-  "milestone": "Home導線を維持してWeb/nativeの汎用PAPER市場と自律型ファンドを統合し、Instagram写真候補をMeta確認前は外部実行できない導線へ固定。全体verifyとnative backend smokeに合格し、全6配布対象は証拠不足を残してBLOCKED",
-  "nextAction": "統合branchのGitHub CIを確認し、所有者による製品license選択とOWNER_MANUAL本番鍵生成後にQEMU同一最終archiveの署名受入を行う。",
+  "milestone": "Wallet／ファンド会社を交換可能な外部Providerとして受ける境界をRQ34へ固定。Rockはcapability・同意・指図・receipt・照合を担い、保管・運用・約定・払出しはProviderへ残す。実接続・実資金は未有効",
+  "nextAction": "合成Wallet Providerと合成Fund Providerのversion付きmanifest、capability交渉、idempotent指図、timeout照合、失効を共通adapter fixtureで検証する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -215,6 +215,20 @@
         "components/wallet-workspace.tsx",
         "lib/operations.ts",
         "tests/wallet-backend.test.mjs"
+      ]
+    },
+    {
+      "id": "WLT03",
+      "title": "Wallet／ファンド会社を交換可能な外部Providerとして受ける責任境界とadapter契約を固定",
+      "status": "done",
+      "dependsOn": ["WLT02", "FND01"],
+      "evidence": [
+        "docs/external-wallet-fund-provider-boundary-20260913.md",
+        "docs/product-baseline.md",
+        "data/product-baseline.json",
+        "scripts/check-product-baseline.mjs",
+        "tests/product-baseline.test.mjs",
+        "docs/validation.md"
       ]
     },
     {

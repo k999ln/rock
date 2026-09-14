@@ -50,7 +50,9 @@ ToolをOSへ直書きせず、署名manifestと有限recipeを持つ独立商品
 
 整数USD centsのSQLite台帳でAVAILABLE、hold、費用、請求、売上、settlement、receiptを管理する。本人確認済み購入者、同意、月888 cents、同一ownerの複数端末で1回の請求を扱う。GX00 runtimeはowner契約ごとに台帳を分離し、認証principalからだけ対象contractを選ぶ。
 
-進化余地は、本番identity/passkey、暗号化、複数通貨、provider照合、実売上、出金、返金・dispute、監査statement、custodyを持たない構成の確定である。
+Wallet会社とファンド会社の機能は交換可能な外部Provider Adapterで受ける。RockstarOSはcapability発見、本人同意、指図、状態、receipt、照合を共通化し、資金保管、運用、約定、払出し、KYC/AML、地域・税務判断を代行しない。Providerはversion付きmanifestで対応機能だけを宣言し、OSは未宣言機能を擬似実装しない。Providerの追加・差替えは通常OS再buildを必要とせず、二次事業者が参加できる境界を維持する。[外部Provider境界](external-wallet-fund-provider-boundary-20260913.md)。
+
+進化余地は、本番identity/passkey、暗号化、複数通貨、Provider sandbox照合、実売上、出金、返金・dispute、監査statement、custodyを持たない構成の受入である。
 
 ## 8. ATM
 
