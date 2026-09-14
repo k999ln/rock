@@ -1,5 +1,5 @@
 {
-  "version": "1.34",
+  "version": "1.35",
   "decidedAt": "2026-09-13",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -11,7 +11,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ34 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ35 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -154,7 +154,8 @@
     "RQ31",
     "RQ32",
     "RQ33",
-    "RQ34"
+    "RQ34",
+    "RQ35"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -397,6 +398,24 @@
     "realFundsEnabled": false,
     "firstAcceptance": "synthetic_provider_then_provider_sandbox",
     "architecture": "docs/external-wallet-fund-provider-boundary-20260913.md"
+  },
+  "firstPartySettlementProvider": {
+    "providerId": "org.rockstar.settlement-wallet",
+    "ownership": "rock_first_party",
+    "purpose": "collect_verified_allocated_sky_fee_only",
+    "mode": "SANDBOX",
+    "status": "contract_fixture_verified",
+    "capabilities": ["collect_platform_fee", "reporting"],
+    "monthlyFeeCapMinor": 888,
+    "currency": "usd",
+    "userFundsCustodied": false,
+    "fundManagementEnabled": false,
+    "arbitraryReceiveOrPayoutEnabled": false,
+    "liveCollectionEnabled": false,
+    "realFundsEnabled": false,
+    "usesCommonProviderAdapter": true,
+    "architecture": "docs/rock-first-party-settlement-wallet-20260913.md",
+    "implementation": "lib/financial-provider.ts"
   },
   "releaseExecution": {
     "startedAt": "2026-09-10T05:43:35Z",

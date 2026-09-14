@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 34 },
+    { length: 35 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ34の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ35の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -126,13 +126,37 @@ export function validateBaseline(
         'versioned_capability_manifest_and_provider_adapter' &&
       data.externalFinancialProviderBoundary?.unsupportedCapabilityEmulation ===
         false &&
-      data.externalFinancialProviderBoundary?.osRebuildRequiredForProviderAddition ===
+      data.externalFinancialProviderBoundary
+        ?.osRebuildRequiredForProviderAddition === false &&
+      data.externalFinancialProviderBoundary?.providerDirectLedgerWrite ===
         false &&
-      data.externalFinancialProviderBoundary?.providerDirectLedgerWrite === false &&
-      data.externalFinancialProviderBoundary?.providerArbitraryShell === false &&
-      data.externalFinancialProviderBoundary?.liveProvidersConnected === false &&
+      data.externalFinancialProviderBoundary?.providerArbitraryShell ===
+        false &&
+      data.externalFinancialProviderBoundary?.liveProvidersConnected ===
+        false &&
       data.externalFinancialProviderBoundary?.realFundsEnabled === false,
     'Wallet／ファンドは外部Providerの受け身設計とし、Rockが保管・運用主体を兼ねないでください',
+  );
+  requireValue(
+    data.firstPartySettlementProvider?.providerId ===
+      'org.rockstar.settlement-wallet' &&
+      data.firstPartySettlementProvider?.ownership === 'rock_first_party' &&
+      data.firstPartySettlementProvider?.purpose ===
+        'collect_verified_allocated_sky_fee_only' &&
+      data.firstPartySettlementProvider?.mode === 'SANDBOX' &&
+      data.firstPartySettlementProvider?.status ===
+        'contract_fixture_verified' &&
+      JSON.stringify(data.firstPartySettlementProvider?.capabilities) ===
+        JSON.stringify(['collect_platform_fee', 'reporting']) &&
+      data.firstPartySettlementProvider?.monthlyFeeCapMinor === 888 &&
+      data.firstPartySettlementProvider?.userFundsCustodied === false &&
+      data.firstPartySettlementProvider?.fundManagementEnabled === false &&
+      data.firstPartySettlementProvider?.arbitraryReceiveOrPayoutEnabled ===
+        false &&
+      data.firstPartySettlementProvider?.liveCollectionEnabled === false &&
+      data.firstPartySettlementProvider?.realFundsEnabled === false &&
+      data.firstPartySettlementProvider?.usesCommonProviderAdapter === true,
+    'Rock Settlement Walletは確定済み自社利用料のsandbox回収だけに限定してください',
   );
   requireValue(
     data.chatInteraction?.connectedMcpPresentation ===
@@ -181,7 +205,9 @@ export function validateBaseline(
       data.systemMaintenance?.backup?.scope ===
         'allowlisted_rockstaros_home_preferences_only' &&
       data.systemMaintenance?.backup?.tamperDetection === true &&
-      data.systemMaintenance?.backup?.excludes?.includes('device_session_token') &&
+      data.systemMaintenance?.backup?.excludes?.includes(
+        'device_session_token',
+      ) &&
       data.systemMaintenance?.operations?.notificationPermission ===
         'explicit_user_request_and_test_only' &&
       data.systemMaintenance?.operations?.diagnosticExport ===
@@ -214,12 +240,14 @@ export function validateBaseline(
         '6_of_10_current_candidate_requirements_passed' &&
       data.systemMaintenance?.releaseReadiness?.currentNativeInventory ===
         'data/qemu-rc2-legal-info' &&
-      data.systemMaintenance?.releaseReadiness?.signingMechanics?.automatedCheck ===
-        'npm run release:signing:check' &&
-      data.systemMaintenance?.releaseReadiness?.signingMechanics?.publicFixtureTests === 62 &&
+      data.systemMaintenance?.releaseReadiness?.signingMechanics
+        ?.automatedCheck === 'npm run release:signing:check' &&
+      data.systemMaintenance?.releaseReadiness?.signingMechanics
+        ?.publicFixtureTests === 62 &&
       data.systemMaintenance?.releaseReadiness?.signingMechanics?.status ===
         'mechanics_verified_production_key_and_owner_approval_not_executed' &&
-      data.systemMaintenance?.releaseReadiness?.historicalNativeInventoryRule ===
+      data.systemMaintenance?.releaseReadiness
+        ?.historicalNativeInventoryRule ===
         'never_substitute_9ab_inventory_for_rc2' &&
       data.systemMaintenance?.physicalDeviceStatus ===
         'blocked_until_exact_model_bsp_bootloader_recovery' &&
@@ -410,6 +438,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ34、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、外部実接続/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ35、Rock First-party Settlement Walletのsandbox回収、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、外部実接続/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

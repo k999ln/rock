@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-13",
-  "milestone": "Wallet／ファンド会社を交換可能な外部Providerとして受ける境界をRQ34へ固定。Rockはcapability・同意・指図・receipt・照合を担い、保管・運用・約定・払出しはProviderへ残す。実接続・実資金は未有効",
-  "nextAction": "合成Wallet Providerと合成Fund Providerのversion付きmanifest、capability交渉、idempotent指図、timeout照合、失効を共通adapter fixtureで検証する。",
+  "milestone": "Rock Settlement Walletを共通Financial Providerの第1号としてsandbox実装。検証済み収益から確定したRock利用料の回収指図・報告に限定し、外部Wallet／ファンドの参入余地と実資金OFFを維持",
+  "nextAction": "署名済みEarning ReceiptのSKY_SERVICE_FEE配分をRock Settlement Walletのsandbox指図へ結び、Worker台帳とのidempotency・timeout照合を統合試験する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -228,6 +228,21 @@
         "data/product-baseline.json",
         "scripts/check-product-baseline.mjs",
         "tests/product-baseline.test.mjs",
+        "docs/validation.md"
+      ]
+    },
+    {
+      "id": "WLT04",
+      "title": "Rock Settlement Walletを最初のProviderとして自社利用料のsandbox回収契約を実装",
+      "status": "done",
+      "dependsOn": ["WLT03", "BIL01"],
+      "evidence": [
+        "lib/financial-provider.ts",
+        "tests/financial-provider.test.mjs",
+        "docs/rock-first-party-settlement-wallet-20260913.md",
+        "docs/external-wallet-fund-provider-boundary-20260913.md",
+        "docs/product-baseline.md",
+        "data/product-baseline.json",
         "docs/validation.md"
       ]
     },

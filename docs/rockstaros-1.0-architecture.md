@@ -52,6 +52,8 @@ ToolをOSへ直書きせず、署名manifestと有限recipeを持つ独立商品
 
 Wallet会社とファンド会社の機能は交換可能な外部Provider Adapterで受ける。RockstarOSはcapability発見、本人同意、指図、状態、receipt、照合を共通化し、資金保管、運用、約定、払出し、KYC/AML、地域・税務判断を代行しない。Providerはversion付きmanifestで対応機能だけを宣言し、OSは未宣言機能を擬似実装しない。Providerの追加・差替えは通常OS再buildを必要とせず、二次事業者が参加できる境界を維持する。[外部Provider境界](external-wallet-fund-provider-boundary-20260913.md)。
 
+最初のProviderは `org.rockstar.settlement-wallet` とし、署名検証済み収益から確定したRock利用料の回収指図と報告だけをsandboxで実装する。Rockの内製Providerも共通adapterを通り、利用者資産の包括保管、任意送金、交換、ファンド運用、LIVE transferは持たない。[First-party Settlement Wallet](rock-first-party-settlement-wallet-20260913.md)。
+
 進化余地は、本番identity/passkey、暗号化、複数通貨、Provider sandbox照合、実売上、出金、返金・dispute、監査statement、custodyを持たない構成の受入である。
 
 ## 8. ATM

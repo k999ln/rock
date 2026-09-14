@@ -1,5 +1,12 @@
 # 検証記録
 
+## Rock First-party Settlement Wallet / 2026-09-13
+
+- `org.rockstar.settlement-wallet`を共通Financial Provider契約の第1号として追加。capabilityは`collect_platform_fee`と`reporting`、modeはSANDBOX、利用者資産保管・ファンド運用・LIVE回収はfalseへ固定した。
+- `prepareRockFeeCollection`は署名検証済み収益から既存Workerが配分するRock利用料を入力とし、receipt IDに結び付いた同一instruction/idempotency keyを生成する。収益0は`not_required`、月累計888 cents超過、LIVE、未知field、非USDを拒否する。
+- 新規4テストと製品baseline負例を含む`npm run verify`が終了コード0。Web 240 tests、Fashion Brand Ops 16 tests、release signing 64 tests、Worker/D1 API 143 assertions、project/repository/release/baseline/Sky/device、型、lint、MCP package、Billing Worker dry-run、本番build、Web bundle 120 component、asset 69参照・missing 0に成功した。
+- この合格は自社利用料のsandbox指図契約まで。実収益の入金、Rockの実口座・実Wallet、利用者への払出し、外部Wallet／ファンド接続、利用者資産の保管、LIVE transferは未実施。
+
 ## 外部Wallet／ファンドProvider受け身設計 / 2026-09-13
 
 - RQ34として、RockstarOSはcapability discovery、本人同意、指図、状態、receipt、照合だけを共通化し、保管、運用、約定、払出し、KYC/AML、地域・税務判断は外部Providerへ残す責任境界を固定した。

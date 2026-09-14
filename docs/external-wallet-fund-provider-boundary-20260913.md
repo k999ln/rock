@@ -2,9 +2,9 @@
 
 ## 決定
 
-RockstarOSはWallet会社やファンド会社の業務を内製せず、それらの事業者が持つ機能を安全に接続する受け側に徹する。Rockは金融商品の提供者、資金の保管者、運用者、約定・払出し主体を兼ねない。外部事業者は交換可能なProviderとして参加し、追加や差替えのたびにOS本体を再buildしない。
+RockstarOSはWallet会社やファンド会社の業務全体を内製せず、それらの事業者が持つ機能を安全に接続する受け側を基本とする。最初のProviderだけは自社回収のためRock Settlement Walletとするが、Rockに帰属する確定済み利用料の受取・報告に限定し、利用者資産の保管者、運用者、約定・払出し主体を兼ねない。外部事業者は交換可能なProviderとして参加し、追加や差替えのたびにOS本体を再buildしない。
 
-この境界は、二次事業者が独自のWallet、保管、交換、ファンド商品、運用、レポート機能をRockstarOS利用者へ提供できる余地を残すためのもの。Rockがすべてを作ることや、特定のDubai事業者への固定を意味しない。
+この境界は、二次事業者が独自のWallet、保管、交換、ファンド商品、運用、レポート機能をRockstarOS利用者へ提供できる余地を残すためのもの。Rock Settlement Walletを最初に置いても排他的にせず、Rockがすべてを作ることや、特定のDubai事業者への固定を意味しない。[最初の自社Provider](rock-first-party-settlement-wallet-20260913.md)。
 
 ## 責任分界
 
@@ -49,9 +49,10 @@ Provider receiptは外部取引の正本参照であり、RockstarOSの自己申
 
 現在のWeb Wallet、PAPER Market、native Value/Spend、自律型ファンドは内部台帳またはsimulation/PAPERであり、外部Wallet、外部ファンド、実資金、LIVE運用には接続していない。
 
-1. 合成Wallet Providerと合成Fund Providerでmanifest、capability、同意、idempotency、timeout、照合、失効を検証する。
-2. 候補Providerのsandboxへ同じ契約を接続し、Provider固有差分を拡張manifestへ閉じ込める。
-3. 法務・規制・運用gateを満たしたProviderだけを`live_eligible`へ進める。
-4. 実資金の最小受入後もProvider単位で停止・失効できるようにする。
+1. Rock Settlement Walletの合成fixtureで自社利用料の回収指図、月額上限、idempotency、LIVE拒否を検証する。
+2. 合成Wallet Providerと合成Fund Providerでmanifest、capability、同意、timeout、照合、失効を検証する。
+3. 候補Providerのsandboxへ同じ契約を接続し、Provider固有差分を拡張manifestへ閉じ込める。
+4. 法務・規制・運用gateを満たしたProviderだけを`live_eligible`へ進める。
+5. 実資金の最小受入後もProvider単位で停止・失効できるようにする。
 
 この文書の保存はProvider選定、契約、外部接続、課金、実入出金、ファンド申込、税務判断を実施したことを意味しない。
