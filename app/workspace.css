@@ -6827,6 +6827,90 @@
 .sky-manual-runner .mr-workbench {
   margin-top: 4px;
 }
+.sky-tool-dialog .fashion-photo-intake {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #2f3336;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #10151b, #07090c);
+}
+.sky-tool-dialog .fashion-photo-intake-heading {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 9px;
+  color: #1d9bf0;
+}
+.sky-tool-dialog .fashion-photo-intake-heading strong {
+  color: #f2f4f5;
+}
+.sky-tool-dialog .fashion-photo-intake-heading p,
+.sky-tool-dialog .fashion-photo-privacy {
+  margin: 3px 0 0;
+  color: #8b98a5;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.sky-tool-dialog .fashion-photo-intake > ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sky-tool-dialog .fashion-photo-intake > ol li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 9px;
+  background: #15191e;
+  font-size: 11px;
+}
+.sky-tool-dialog .fashion-photo-intake > ol span {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #07101d;
+  background: #1d9bf0;
+  font-weight: 800;
+}
+.sky-tool-dialog .fashion-photo-candidates {
+  display: grid;
+  gap: 8px;
+  padding-top: 11px;
+  border-top: 1px solid #2f3336;
+}
+.sky-tool-dialog .fashion-photo-candidates > div,
+.sky-tool-dialog .fashion-photo-candidates li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.sky-tool-dialog .fashion-photo-candidates button {
+  color: #1d9bf0;
+  font-size: 12px;
+}
+.sky-tool-dialog .fashion-photo-candidates ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sky-tool-dialog .fashion-photo-candidates li {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #050505;
+}
+.sky-tool-dialog .fashion-photo-candidates small {
+  color: #ffd27a;
+}
 
 @media (max-width: 767px) {
   .rock-main-column:has(.sky-main-feed) .rock-topbar {
@@ -6848,6 +6932,9 @@
   .sky-tool-dialog .rock-dialog-title {
     padding-right: 32px;
     font-size: 21px !important;
+  }
+  .sky-tool-dialog .fashion-photo-intake > ol {
+    grid-template-columns: 1fr;
   }
   .sky-tool-dialog .rock-tool-facts > div {
     grid-template-columns: 1fr;

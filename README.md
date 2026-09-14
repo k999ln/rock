@@ -45,7 +45,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-13 / 全画面のHome導線を維持したまま、Webとnativeへ汎用PAPER市場のValue/Spendフローを統合し、検証済み実績を再計算する自律型ファンドを接続。全6配布対象は証拠不足を残してBLOCKED / 完了 60/84件
+最終更新: 2026-09-13 / Home導線を維持してWeb/nativeの汎用PAPER市場と自律型ファンドを統合し、Instagram写真候補をMeta確認前は外部実行できない導線へ固定。全6配布対象は証拠不足を残してBLOCKED / 完了 61/85件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -129,7 +129,8 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | FB02 | 売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 | FB03 | DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 | FB04 | 入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理 | 完了 | [記録](toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
-| FB05 | 改善版Skyの役割フィードへブランド運営役と38 MCP操作を統合 | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
+| FB05 | 改善版Skyの役割フィードへブランド運営役と40 MCP操作を統合 | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
+| FB06 | Instagram画面の写真から未確認候補を作り、Meta確認後だけ運用対象へ進める | 完了 | [記録](docs/instagram-photo-onboarding-20260912.md) · [記録](toolkits/fashion-brand-ops/db/migrations/004_screenshot_account_intake.sql) · [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) · [記録](components/fashion-brand-ops-runner.tsx) |
 | BIL01 | 先払い月額を停止し、検証済み自動化収益からだけ実費後に月最大888 centsを精算 | 完了 | [記録](docs/sky-billing.md) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing.test.mjs) · [記録](tests/billing-worker.test.mjs) · [記録](services/sky-billing/migrations/0002_earnings_settlement.sql) · [記録](docs/evidence/launch/backend-owner-validation-20260912.json) |
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) |
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |

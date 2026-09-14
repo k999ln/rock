@@ -81,7 +81,7 @@ for (const marker of [
 
 const fashionClient = read('lib/fashion-mcp-client.ts');
 for (const marker of [
-  'FASHION_MCP_TOOL_COUNT = 38',
+  'FASHION_MCP_TOOL_COUNT = 40',
   "'initialize'",
   "'notifications/initialized'",
   "'tools/list'",
