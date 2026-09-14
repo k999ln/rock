@@ -362,6 +362,15 @@
     "realValueEnabled": false,
     "scope": "Rockstar Market is a generic typed-asset PAPER marketplace. Exact proposal digest, risk limits, explicit owner approval, reservation, immutable receipt, position and append-only events are enabled. External orders, settlement, real Wallet transfers and LIVE adapters remain disabled pending provider, identity, contract, custody and regulatory gates."
   },
+  "nativeValueSpendRuntime": {
+    "status": "simulation_and_paper_implemented",
+    "storage": "owner_local_sqlite_double_entry_ledger",
+    "approval": "exact_proposal_digest",
+    "unknownOutcome": "hold_and_explicit_reconciliation",
+    "externalOrdersEnabled": false,
+    "liveRuntimeEnabled": false,
+    "realFundsEnabled": false
+  },
   "autonomousFundRuntime": {
     "status": "observed_performance_recommender_implemented",
     "refreshIntervalSeconds": 30,

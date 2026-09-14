@@ -308,6 +308,8 @@ Home、Sky、Chat、Wallet、Market、設定は、画面componentだけでなく
 
 自動化ファンドの数と構成ツール数は固定しない。readyなツールについて、署名検証済みEarning Receiptの売上・実費と、本人所有のtool run receiptから、純収益、失敗数、観測return、推奨構成、配分を30秒ごとに再計算する。Walletの手入力帳簿は自己申告なので利回りの証拠に使わない。観測returnは実費を分母とする過去実績で、将来利回りではない。分母または検証receiptがなければ `null / 算定待ち` と表示し、合成値や市場PAPER結果を検証済み収益へ昇格させない。自律処理は構成提案までとし、外部取引、実Wallet移動、再投資、8.88 USDの先取りを行わない。
 
+native Developer Previewでも同じ安全境界を維持し、local SQLiteの複式台帳へsimulation/PAPERの予約・実行・再照合を記録する。exact proposal digestに対する本人承認を必須とし、送信結果が不明な場合はholdを維持して明示的なreconciliationを要求する。秘密値、外部注文、LIVE経路、実資金は実装・有効化しない。
+
 Polymarketは画面密度、検索、カテゴリ、カード、価格ticketのデザイン参考に限る。名称、コンテンツ、外部注文経路、CLOB、口座、資金、結果判定・清算を取り込まず、独自市場と既存の自動化ファンドを別機能として維持する。LIVE提供にはprovider、本人確認、保管・清算、対象国、契約、法務・規制、異議・取消、監視、owner承認の別gateが必要である。
 
 ## 1.0への8原則の適用（RQ01〜RQ33を維持）
