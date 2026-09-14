@@ -1,15 +1,13 @@
 {
-  "updatedAt": "2026-09-13",
-  "milestone": "汎用PAPER市場のValue/Spendフローと、検証済み実績を30秒ごとに再計算する自律型ファンドを本人限定Webへ統合",
-  "nextAction": "全体verify後に同一commitをGitHubと本人限定Sitesへ反映し、/marketと/fundの保存・再計算フローを実環境で確認する。",
+  "updatedAt": "2026-09-14",
+  "milestone": "Rock Settlement WalletのBase Mainnet USDC受取レールを実装。本番Worker・owner限定Siteへの配備を進め、秘密鍵非保管とfinalized着金照合を維持",
+  "nextAction": "remote D1 migration、Billing Worker、同一commitのowner限定Siteを配備後、ownerが外部Walletの所有署名を行い、最初の実Earning Receipt対応transferを照合する。",
   "tasks": [
     {
       "id": "SKY01",
       "title": "旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化",
       "status": "done",
-      "dependsOn": [
-        "B01"
-      ],
+      "dependsOn": ["B01"],
       "evidence": [
         "docs/sky.md",
         "components/sky-workspace.tsx",
@@ -20,9 +18,7 @@
       "id": "SKY02",
       "title": "ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装",
       "status": "done",
-      "dependsOn": [
-        "SKY01"
-      ],
+      "dependsOn": ["SKY01"],
       "evidence": [
         "app/sky/publish/page.tsx",
         "components/sky-publisher-form.tsx",
@@ -34,9 +30,7 @@
       "id": "SKY03",
       "title": "MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存",
       "status": "done",
-      "dependsOn": [
-        "SKY01"
-      ],
+      "dependsOn": ["SKY01"],
       "evidence": [
         "docs/sky-mcp-architecture.md",
         "systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md"
@@ -218,6 +212,57 @@
       ]
     },
     {
+      "id": "WLT03",
+      "title": "Wallet／ファンド会社を交換可能な外部Providerとして受ける責任境界とadapter契約を固定",
+      "status": "done",
+      "dependsOn": ["WLT02", "FND01"],
+      "evidence": [
+        "docs/external-wallet-fund-provider-boundary-20260913.md",
+        "docs/product-baseline.md",
+        "data/product-baseline.json",
+        "scripts/check-product-baseline.mjs",
+        "tests/product-baseline.test.mjs",
+        "docs/validation.md"
+      ]
+    },
+    {
+      "id": "WLT04",
+      "title": "Rock Settlement Walletを最初のProviderとして自社利用料のsandbox回収契約を実装",
+      "status": "done",
+      "dependsOn": ["WLT03", "BIL01"],
+      "evidence": [
+        "lib/financial-provider.ts",
+        "tests/financial-provider.test.mjs",
+        "docs/rock-first-party-settlement-wallet-20260913.md",
+        "docs/external-wallet-fund-provider-boundary-20260913.md",
+        "docs/product-baseline.md",
+        "data/product-baseline.json",
+        "docs/validation.md"
+      ]
+    },
+    {
+      "id": "WLT05",
+      "title": "Base Mainnet USDCの所有確認付き受取先とfinalized着金照合を本番Wallet・Workerへ接続",
+      "status": "in_progress",
+      "dependsOn": ["WLT04", "BIL01", "WEB01"],
+      "evidence": [
+        "components/rock-settlement-wallet.tsx",
+        "lib/rock-wallet.ts",
+        "services/sky-billing/src/worker.ts",
+        "services/sky-billing/migrations/0004_rock_settlement_wallet.sql",
+        "tests/rock-wallet.test.mjs",
+        "tests/billing-worker.test.mjs",
+        "docs/rock-wallet-production-rail-20260913.md"
+      ]
+    },
+    {
+      "id": "WLT06",
+      "title": "owner受取Walletを本人署名で登録し、最初の実USDC回収をEarning Receiptへ照合",
+      "status": "in_progress",
+      "dependsOn": ["WLT05", "BIL02"],
+      "evidence": ["docs/rock-wallet-production-rail-20260913.md"]
+    },
+    {
       "id": "MKT01",
       "title": "あらゆる型付き価値を扱うPAPER市場とexact approval・risk・receipt・position台帳を実装",
       "status": "done",
@@ -231,6 +276,20 @@
         "drizzle/0009_sad_giant_girl.sql",
         "tests/everything-market.test.mjs",
         "docs/everything-market-and-autonomous-fund-20260913.md"
+      ]
+    },
+    {
+      "id": "SPN01",
+      "title": "native Walletへsimulation/PAPER限定のValue/Spend台帳・exact approval・再照合を統合",
+      "status": "done",
+      "dependsOn": ["WLT02", "MKT01"],
+      "evidence": [
+        "systems/rock-star-os/src/blackberryrock/spend.py",
+        "systems/rock-star-os/src/blackberryrock/wallet.py",
+        "systems/rock-star-os/src/blackberryrock/hub_server.py",
+        "systems/rock-star-os/tests/test_spend_runtime.py",
+        "systems/rock-star-os/tests/test_hub_server.py",
+        "docs/value-spend-runtime.md"
       ]
     },
     {
@@ -273,6 +332,24 @@
         "app/settings/page.tsx",
         "components/system-settings.tsx",
         "components/system-settings.module.css",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "HOME02",
+      "title": "Home以外の全画面へ直接Homeへ戻る導線を常設し、共通・独自レイアウトの回帰を防止",
+      "status": "done",
+      "dependsOn": ["HOME01"],
+      "evidence": [
+        "components/workspace-shell.tsx",
+        "components/sky-chat-workspace.tsx",
+        "components/system-settings.tsx",
+        "components/system-maintenance.tsx",
+        "app/fund/page.tsx",
+        "app/fund/legacy/page.tsx",
+        "app/rockstaros/page.tsx",
+        "app/rockstaros/guide/page.tsx",
+        "tests/web-route-style-contract.test.mjs",
         "docs/product-baseline.md"
       ]
     },
@@ -356,9 +433,7 @@
       "id": "SYS06",
       "title": "Android物理端末とマイナンバー連携を独立監査し、証拠なしの互換・GMS・販売・個人番号有効化を拒否",
       "status": "done",
-      "dependsOn": [
-        "SYS03"
-      ],
+      "dependsOn": ["SYS03"],
       "evidence": [
         "data/android-physical-release-audit.json",
         "data/personal-number-release-audit.json",
@@ -374,9 +449,7 @@
       "id": "SYS07",
       "title": "Web/PWAのHTTP防御を正本化し、Worker・static asset両経路の実responseを検査",
       "status": "done",
-      "dependsOn": [
-        "SYS03"
-      ],
+      "dependsOn": ["SYS03"],
       "evidence": [
         "data/web-security-policy.json",
         "next.config.ts",
@@ -391,9 +464,7 @@
       "id": "SYS08",
       "title": "PWA新版の自動即時切替を廃止し、本人確認後の適用・旧cache整理・再読込へ変更",
       "status": "done",
-      "dependsOn": [
-        "SYS07"
-      ],
+      "dependsOn": ["SYS07"],
       "evidence": [
         "public/sw.js",
         "components/system-maintenance.tsx",
@@ -406,10 +477,7 @@
       "id": "SYS09",
       "title": "PWAの同一性・scope・iPhone/Android向けinstall iconを固定し、実HTTP manifestを検査",
       "status": "done",
-      "dependsOn": [
-        "SYS07",
-        "SYS08"
-      ],
+      "dependsOn": ["SYS07", "SYS08"],
       "evidence": [
         "app/manifest.ts",
         "public/rock-icon-192.png",
@@ -425,9 +493,7 @@
       "id": "SYS10",
       "title": "Web第三者依存のlock hash・47要review componentのPURL一覧を公開gateへ固定",
       "status": "done",
-      "dependsOn": [
-        "SYS03"
-      ],
+      "dependsOn": ["SYS03"],
       "evidence": [
         "package-lock.json",
         "data/web-third-party-license-audit.json",
@@ -442,9 +508,7 @@
       "id": "SYS11",
       "title": "Vite生成chunkのnpm componentをbuild時に記録しlicense監査へ照合",
       "status": "done",
-      "dependsOn": [
-        "SYS10"
-      ],
+      "dependsOn": ["SYS10"],
       "evidence": [
         "vite.config.ts",
         "scripts/web-bundle-inventory.mjs",
@@ -461,30 +525,21 @@
       "title": "4参照元の採用判断と事業方針の固定",
       "status": "done",
       "dependsOn": [],
-      "evidence": [
-        "docs/reference-repositories.md"
-      ]
+      "evidence": ["docs/reference-repositories.md"]
     },
     {
       "id": "R02",
       "title": "ggをGitHub rockへ紐付け、既存変更と履歴を保全",
       "status": "done",
       "dependsOn": [],
-      "evidence": [
-        "project.md"
-      ]
+      "evidence": ["project.md"]
     },
     {
       "id": "R03",
       "title": "仕事の作成・実行・確認・再開をAPIと画面で接続",
       "status": "done",
-      "dependsOn": [
-        "R01"
-      ],
-      "evidence": [
-        "tests/workflow.test.mjs",
-        "scripts/check-work-api.mjs"
-      ]
+      "dependsOn": ["R01"],
+      "evidence": ["tests/workflow.test.mjs", "scripts/check-work-api.mjs"]
     },
     {
       "id": "R04",
@@ -501,33 +556,21 @@
       "id": "R05",
       "title": "回帰検証・移行確認・GitHub保存",
       "status": "done",
-      "dependsOn": [
-        "R02",
-        "R03",
-        "R04"
-      ],
-      "evidence": [
-        "docs/validation.md"
-      ]
+      "dependsOn": ["R02", "R03", "R04"],
+      "evidence": ["docs/validation.md"]
     },
     {
       "id": "R06",
       "title": "ブラウザで仕事の一連の操作を確認",
       "status": "done",
-      "dependsOn": [
-        "R05"
-      ],
-      "evidence": [
-        "docs/validation.md"
-      ]
+      "dependsOn": ["R05"],
+      "evidence": ["docs/validation.md"]
     },
     {
       "id": "R07",
       "title": "本人限定のSitesへ公開・本番確認",
       "status": "done",
-      "dependsOn": [
-        "R06"
-      ],
+      "dependsOn": ["R06"],
       "evidence": [
         "docs/deployment-integration.md",
         "docs/release-followup-20260910.md",
@@ -539,9 +582,7 @@
       "id": "R08",
       "title": "検証結果・公開停止理由と再開設計の文書化",
       "status": "done",
-      "dependsOn": [
-        "R06"
-      ],
+      "dependsOn": ["R06"],
       "evidence": [
         "project.md",
         "docs/validation.md",
@@ -552,21 +593,14 @@
       "id": "OS01",
       "title": "既存設計の要件追跡と自動化OS開発設計",
       "status": "done",
-      "dependsOn": [
-        "R01",
-        "R03"
-      ],
-      "evidence": [
-        "docs/os-development-design.md"
-      ]
+      "dependsOn": ["R01", "R03"],
+      "evidence": ["docs/os-development-design.md"]
     },
     {
       "id": "DSP01",
       "title": "共通Core・機種別Device Support Package・4提供区分の設計と検査",
       "status": "done",
-      "dependsOn": [
-        "OS01"
-      ],
+      "dependsOn": ["OS01"],
       "evidence": [
         "docs/device-support-architecture.md",
         "data/device-support-matrix.json",
@@ -577,9 +611,7 @@
       "id": "OS02",
       "title": "【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認",
       "status": "in_progress",
-      "dependsOn": [
-        "OS01"
-      ],
+      "dependsOn": ["OS01"],
       "evidence": [
         "docs/os-development-design.md",
         "docs/phone-preview-20260911.md"
@@ -589,42 +621,28 @@
       "id": "OS03",
       "title": "【Android/AOSP別トラック】CuttlefishでOS起動と自律実行の最小縦断試作",
       "status": "planned",
-      "dependsOn": [
-        "OS02"
-      ],
-      "evidence": [
-        "docs/os-development-design.md"
-      ]
+      "dependsOn": ["OS02"],
+      "evidence": ["docs/os-development-design.md"]
     },
     {
       "id": "OS04",
       "title": "【Android/AOSP別トラック】Pixel実機で復旧・省電力・再起動・署名更新を検証",
       "status": "planned",
-      "dependsOn": [
-        "OS03"
-      ],
-      "evidence": [
-        "docs/os-development-design.md"
-      ]
+      "dependsOn": ["OS03"],
+      "evidence": ["docs/os-development-design.md"]
     },
     {
       "id": "OS05",
       "title": "【Android/AOSP別トラック】第三者SDK・審査・インストール・失効の閉鎖テスト",
       "status": "planned",
-      "dependsOn": [
-        "OS04"
-      ],
-      "evidence": [
-        "docs/os-development-design.md"
-      ]
+      "dependsOn": ["OS04"],
+      "evidence": ["docs/os-development-design.md"]
     },
     {
       "id": "OS06",
       "title": "OS共通実行コア・端末DB・Android統合の検証可能な試作",
       "status": "done",
-      "dependsOn": [
-        "OS01"
-      ],
+      "dependsOn": ["OS01"],
       "evidence": [
         "docs/os-prototype.md",
         "docs/validation.md",
@@ -635,9 +653,7 @@
       "id": "G01",
       "title": "GitHubリポジトリの役割・重複監査と正本境界の固定",
       "status": "done",
-      "dependsOn": [
-        "R02"
-      ],
+      "dependsOn": ["R02"],
       "evidence": [
         "docs/git-consolidation.md",
         "data/repository-map.json",
@@ -649,20 +665,14 @@
       "id": "G02",
       "title": "vvvvの稼働参照監査と安全なarchive判定",
       "status": "planned",
-      "dependsOn": [
-        "G01"
-      ],
-      "evidence": [
-        "docs/git-consolidation.md"
-      ]
+      "dependsOn": ["G01"],
+      "evidence": ["docs/git-consolidation.md"]
     },
     {
       "id": "B01",
       "title": "Sky＋Walletの製品ベース・branch監査・プロンプト規約を保存",
       "status": "done",
-      "dependsOn": [
-        "G01"
-      ],
+      "dependsOn": ["G01"],
       "evidence": [
         "docs/product-baseline.md",
         "docs/progress-audit-20260909.md",
@@ -675,10 +685,7 @@
       "id": "B04",
       "title": "main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合",
       "status": "done",
-      "dependsOn": [
-        "B01",
-        "D01"
-      ],
+      "dependsOn": ["B01", "D01"],
       "evidence": [
         "docs/design-implementation-alignment-20260909.md",
         "docs/prompts/os-operational-base-next.md",
@@ -689,9 +696,7 @@
       "id": "B02",
       "title": "既存商品のSky実利用と不便の改善・実行/料金/権利の条件拡張",
       "status": "in_progress",
-      "dependsOn": [
-        "B04"
-      ],
+      "dependsOn": ["B04"],
       "evidence": [
         "docs/prompts/hub-wallet-next.md",
         "docs/pc-citations-adapter.md",
@@ -712,9 +717,7 @@
       "id": "B03",
       "title": "実行費用・認証済み収益を既存Walletへ接続し縦断検証",
       "status": "in_progress",
-      "dependsOn": [
-        "B02"
-      ],
+      "dependsOn": ["B02"],
       "evidence": [
         "docs/prompts/hub-wallet-next.md",
         "docs/evidence/os-base/business-backup-acceptance-b8287bc.json"
@@ -724,9 +727,7 @@
       "id": "B05",
       "title": "Wallet連携基礎を使ったSky縦断再試験・PC比較と未実証の端末価値を記録",
       "status": "in_progress",
-      "dependsOn": [
-        "B02"
-      ],
+      "dependsOn": ["B02"],
       "evidence": [
         "docs/prompts/hub-wallet-next.md",
         "docs/hub-wallet-pc-comparison-20260909.md",
@@ -737,9 +738,7 @@
       "id": "D01",
       "title": "RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存",
       "status": "done",
-      "dependsOn": [
-        "B01"
-      ],
+      "dependsOn": ["B01"],
       "evidence": [
         "docs/product-baseline.md",
         "docs/os-readiness-audit-20260909.md",
@@ -752,9 +751,7 @@
       "id": "V01",
       "title": "旧9abf78a候補のQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す（現rc2へ転用しない）",
       "status": "done",
-      "dependsOn": [
-        "B04"
-      ],
+      "dependsOn": ["B04"],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/templates/os-acceptance-report.md",
@@ -776,9 +773,7 @@
       "id": "GX00",
       "title": "共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証",
       "status": "done",
-      "dependsOn": [
-        "B04"
-      ],
+      "dependsOn": ["B04"],
       "evidence": [
         "docs/design-implementation-alignment-20260909.md",
         "docs/prompts/os-operational-base-next.md",
@@ -804,9 +799,7 @@
       "id": "GX01",
       "title": "ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証",
       "status": "done",
-      "dependsOn": [
-        "GX00"
-      ],
+      "dependsOn": ["GX00"],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-contract-implementation-plan.md",
@@ -821,20 +814,14 @@
       "id": "GX02",
       "title": "指定された実ゲームの正式sandbox接続と交換条件を検証",
       "status": "planned",
-      "dependsOn": [
-        "GX01"
-      ],
-      "evidence": [
-        "docs/prompts/os-operational-base-next.md"
-      ]
+      "dependsOn": ["GX01"],
+      "evidence": ["docs/prompts/os-operational-base-next.md"]
     },
     {
       "id": "DX01",
       "title": "ゲーム作者向けAPI/SDK・sandbox・複数owner/game分離と導入体験を検証",
       "status": "done",
-      "dependsOn": [
-        "GX00"
-      ],
+      "dependsOn": ["GX00"],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
@@ -847,9 +834,7 @@
       "id": "N01",
       "title": "Linux native OS基準版の公開ソース統合・既存資産の回帰検証",
       "status": "done",
-      "dependsOn": [
-        "G01"
-      ],
+      "dependsOn": ["G01"],
       "evidence": [
         "docs/native-os-integration.md",
         "docs/native-os-validation.md"
@@ -859,20 +844,14 @@
       "id": "N02",
       "title": "起動応答確認と自動再読込WIPの検証・採用判断",
       "status": "in_progress",
-      "dependsOn": [
-        "N01"
-      ],
-      "evidence": [
-        "docs/native-os-integration.md"
-      ]
+      "dependsOn": ["N01"],
+      "evidence": ["docs/native-os-integration.md"]
     },
     {
       "id": "N03",
       "title": "実機候補1機種の型番/SKU・boot/BSP・更新/復旧の適合確認",
       "status": "in_progress",
-      "dependsOn": [
-        "OS01"
-      ],
+      "dependsOn": ["OS01"],
       "evidence": [
         "docs/native-os-integration.md",
         "docs/phone-preview-20260911.md",
@@ -884,32 +863,21 @@
       "id": "N04",
       "title": "BlackBerry実機だけでSky取得・実行・更新・復旧",
       "status": "planned",
-      "dependsOn": [
-        "N01",
-        "N03"
-      ],
-      "evidence": [
-        "docs/native-os-integration.md"
-      ]
+      "dependsOn": ["N01", "N03"],
+      "evidence": ["docs/native-os-integration.md"]
     },
     {
       "id": "N05",
       "title": "実USB・外部MCP/AI・金融provider・ToB精算と運営pilot",
       "status": "planned",
-      "dependsOn": [
-        "N01"
-      ],
-      "evidence": [
-        "docs/native-os-integration.md"
-      ]
+      "dependsOn": ["N01"],
+      "evidence": ["docs/native-os-integration.md"]
     },
     {
       "id": "RLS01",
       "title": "fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証",
       "status": "done",
-      "dependsOn": [
-        "V01"
-      ],
+      "dependsOn": ["V01"],
       "evidence": [
         "docs/release-installation-plan-20260909.md",
         "docs/rockstaros-1.0-architecture.md",
@@ -923,10 +891,7 @@
       "id": "RLS02",
       "title": "正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証",
       "status": "in_progress",
-      "dependsOn": [
-        "RLS01",
-        "N03"
-      ],
+      "dependsOn": ["RLS01", "N03"],
       "evidence": [
         "docs/release-installation-plan-20260909.md",
         "docs/phone-preview-20260911.md",
@@ -939,9 +904,7 @@
       "title": "TLS／累積timeoutの原因と最終CIの照合",
       "status": "in_progress",
       "dependsOn": [],
-      "evidence": [
-        "docs/launch-readiness-20260910.md"
-      ]
+      "evidence": ["docs/launch-readiness-20260910.md"]
     },
     {
       "id": "LCH02",
@@ -1001,7 +964,10 @@
       "title": "同一最終候補の再現配布・導入・復旧リハーサル",
       "status": "in_progress",
       "dependsOn": [],
-      "evidence": ["docs/launch-readiness-20260910.md"]
+      "evidence": [
+        "docs/launch-readiness-20260910.md",
+        "docs/evidence/launch/backend-rc3-local-20260912.json"
+      ]
     },
     {
       "id": "LCH08",
@@ -1010,6 +976,7 @@
       "dependsOn": [],
       "evidence": [
         "docs/backend-launch-20260912.md",
+        "docs/evidence/launch/backend-rc3-local-20260912.json",
         "systems/rock-star-os/scripts/verify-backend-launch.py",
         "systems/rock-star-os/tests/test_hub.py",
         "systems/rock-star-os/tests/test_hub_server.py"
@@ -1054,7 +1021,7 @@
     },
     {
       "id": "FB05",
-      "title": "改善版Skyの役割フィードへブランド運営役と38 MCP操作を統合",
+      "title": "改善版Skyの役割フィードへブランド運営役と40 MCP操作を統合",
       "status": "done",
       "dependsOn": ["FB01", "FB02", "FB03", "FB04"],
       "evidence": [
@@ -1062,6 +1029,19 @@
         "lib/sky-routing.ts",
         "tests/sky-routing.test.mjs",
         "docs/sky-assistant-and-memory.md"
+      ]
+    },
+    {
+      "id": "FB06",
+      "title": "Instagram画面の写真から未確認候補を作り、Meta確認後だけ運用対象へ進める",
+      "status": "done",
+      "dependsOn": ["FB01", "FB05"],
+      "evidence": [
+        "docs/instagram-photo-onboarding-20260912.md",
+        "toolkits/fashion-brand-ops/db/migrations/004_screenshot_account_intake.sql",
+        "toolkits/fashion-brand-ops/src/service.mjs",
+        "toolkits/fashion-brand-ops/test/service.test.mjs",
+        "components/fashion-brand-ops-runner.tsx"
       ]
     },
     {
@@ -1116,9 +1096,7 @@
       "task": "V01",
       "title": "旧b8287bc候補のOS起動・安全基礎（現rc2の全体合格ではない）",
       "status": "done",
-      "dependsOn": [
-        "B04-INTEGRATED"
-      ],
+      "dependsOn": ["B04-INTEGRATED"],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/os-base/freeze-b8287bc.json",
@@ -1132,9 +1110,7 @@
       "task": "B02",
       "title": "既存native商品1件をSkyで実処理・保存",
       "status": "done",
-      "dependsOn": [
-        "V01-BOOT"
-      ],
+      "dependsOn": ["V01-BOOT"],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/os-base/business-wallet-foundation-b8287bc.json",
@@ -1146,9 +1122,7 @@
       "task": "B03",
       "title": "単一ownerの合成Wallet・商品/費用/売上状態の基礎",
       "status": "done",
-      "dependsOn": [
-        "B02-NATIVE"
-      ],
+      "dependsOn": ["B02-NATIVE"],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/os-base/business-wallet-foundation-b8287bc.json",
@@ -1160,11 +1134,7 @@
       "task": "V01",
       "title": "旧9abf78a候補でD0〜D6縦断合格（現rc2へ転用しない）",
       "status": "done",
-      "dependsOn": [
-        "V01-BOOT",
-        "B02-NATIVE",
-        "B03-FIXTURE"
-      ],
+      "dependsOn": ["V01-BOOT", "B02-NATIVE", "B03-FIXTURE"],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/os-acceptance-9abf78a-20260910.md",
@@ -1177,34 +1147,23 @@
       "task": "B03",
       "title": "実provider/認証済み収益（別の権限・条件が必要）",
       "status": "planned",
-      "dependsOn": [
-        "B03-FIXTURE"
-      ],
-      "evidence": [
-        "docs/prompts/os-operational-base-next.md"
-      ]
+      "dependsOn": ["B03-FIXTURE"],
+      "evidence": ["docs/prompts/os-operational-base-next.md"]
     },
     {
       "id": "B05-COMPARE",
       "task": "B05",
       "title": "Wallet基礎後のPC比較/再試験。実機価値は別判定",
       "status": "planned",
-      "dependsOn": [
-        "B02-NATIVE",
-        "B03-FIXTURE"
-      ],
-      "evidence": [
-        "docs/prompts/os-operational-base-next.md"
-      ]
+      "dependsOn": ["B02-NATIVE", "B03-FIXTURE"],
+      "evidence": ["docs/prompts/os-operational-base-next.md"]
     },
     {
       "id": "GX00-ISOLATION",
       "task": "GX00",
       "title": "ADR・複数owner分離/本人接続・互換/復旧の合成検証",
       "status": "done",
-      "dependsOn": [
-        "B03-FIXTURE"
-      ],
+      "dependsOn": ["B03-FIXTURE"],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/gx00/integration.json",
@@ -1216,9 +1175,7 @@
       "task": "GX01",
       "title": "複数owner/gameの交換契約と両台帳fixture",
       "status": "done",
-      "dependsOn": [
-        "GX00-ISOLATION"
-      ],
+      "dependsOn": ["GX00-ISOLATION"],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-native-ui-20260910.md",
@@ -1234,10 +1191,7 @@
       "task": "GX01",
       "title": "OS上の交換操作と台帳変更後D4/D5再検証",
       "status": "done",
-      "dependsOn": [
-        "GX01-CONTRACT",
-        "V01-BOOT"
-      ],
+      "dependsOn": ["GX01-CONTRACT", "V01-BOOT"],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-native-ui-20260910.md",
@@ -1252,9 +1206,7 @@
       "task": "DX01",
       "title": "共通SDK・2作者/2game/2owner・fresh導入測定",
       "status": "done",
-      "dependsOn": [
-        "GX01-CONTRACT"
-      ],
+      "dependsOn": ["GX01-CONTRACT"],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
@@ -1268,9 +1220,7 @@
       "task": "RLS01",
       "title": "旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない）",
       "status": "done",
-      "dependsOn": [
-        "V01-ACCEPT"
-      ],
+      "dependsOn": ["V01-ACCEPT"],
       "evidence": [
         "docs/release-installation-plan-20260909.md",
         "docs/evidence/rls01/final-9abf78a/summary.json",
@@ -1282,9 +1232,7 @@
       "task": "RLS02",
       "title": "対象1機種でflash・初回起動・OTA rollback・純正復旧を完走",
       "status": "planned",
-      "dependsOn": [
-        "PREVIEW-INSTALL"
-      ],
+      "dependsOn": ["PREVIEW-INSTALL"],
       "evidence": [
         "docs/release-installation-plan-20260909.md",
         "docs/phone-preview-20260911.md"
@@ -1369,7 +1317,12 @@
     "currentStateDocument": "docs/current-state-20260911.md",
     "latestProgressAudit": "docs/evidence/launch/progress-audit-20260912.json",
     "auditCandidateHead": "c182a5b9c8f5f4da59528a41980eb98750ebd234",
-    "auditCandidateChecks": "ALL_12_SUCCESS_SOURCE_PREPARATION_NOT_OS_BOOT"
+    "auditCandidateChecks": "ALL_12_SUCCESS_SOURCE_PREPARATION_NOT_OS_BOOT",
+    "historicalLocalCandidateVersion": "1.0.0-preview.20260912-rc3-local",
+    "historicalLocalCandidateCommit": "9a8da90f64c8e6acedb17f163ee23a8ed17a35fc",
+    "historicalLocalCandidateEvidence": "docs/evidence/launch/backend-rc3-local-20260912.json",
+    "historicalLocalCandidateAcceptance": "PASS_SCOPED_LOCAL_QEMU_DEVELOPER_PREVIEW_NOT_CURRENT_HEAD",
+    "historicalLocalCandidateDistribution": "LOCAL_ONLY_NOT_PUBLISHED_NOT_LEGALLY_CLEARED"
   },
   "physicalDevicePreview": {
     "status": "SOURCE_INTEGRATION_NOT_BUILT",

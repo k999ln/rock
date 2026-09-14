@@ -8,7 +8,10 @@ import { loadConfig } from '../toolkits/fashion-brand-ops/src/config.mjs';
 import { TOOL_DEFINITIONS } from '../toolkits/fashion-brand-ops/src/tools.mjs';
 
 const root = new URL('../', import.meta.url);
-const manifestUrl = new URL('toolkits/fashion-brand-ops/rockstaros-tool.json', root);
+const manifestUrl = new URL(
+  'toolkits/fashion-brand-ops/rockstaros-tool.json',
+  root,
+);
 const manifestBytes = readFileSync(manifestUrl);
 const manifest = JSON.parse(manifestBytes);
 const skySubmission = JSON.parse(
@@ -45,6 +48,7 @@ void test('the Sky manifest binds the MCP runtime and every dangerous effect to 
   assert.equal(manifest.commercial.liveBilling, false);
   for (const capability of [
     'instagram.accounts',
+    'instagram.screenshot_intake',
     'instagram.content_plan',
     'instagram.draft',
     'instagram.schedule',
@@ -75,14 +79,22 @@ void test('the Sky manifest binds the MCP runtime and every dangerous effect to 
 });
 
 void test('MCP discovery exposes the complete fashion workflow and receipts bind the manifest digest', () => {
-  assert.equal(TOOL_DEFINITIONS.length, 38);
-  assert.ok(TOOL_DEFINITIONS.some((tool) => tool.name === 'fashion.payment.status.get'));
-  assert.ok(!TOOL_DEFINITIONS.some((tool) => tool.name === 'fashion.payment.event.process'));
+  assert.equal(TOOL_DEFINITIONS.length, 40);
+  assert.ok(
+    TOOL_DEFINITIONS.some((tool) => tool.name === 'fashion.payment.status.get'),
+  );
+  assert.ok(
+    !TOOL_DEFINITIONS.some(
+      (tool) => tool.name === 'fashion.payment.event.process',
+    ),
+  );
   for (const name of [
     'fashion.brand.upsert',
     'fashion.market.analyze',
     'fashion.creative.prepare',
     'instagram.accounts.list',
+    'instagram.accounts.intake_screenshots',
+    'instagram.accounts.candidates.list',
     'instagram.accounts.switch',
     'instagram.content_plan.create',
     'instagram.draft.create',
@@ -103,7 +115,10 @@ void test('MCP discovery exposes the complete fashion workflow and receipts bind
     'fashion.system.readiness',
     'approval.execute',
   ]) {
-    assert.ok(TOOL_DEFINITIONS.some((tool) => tool.name === name), name);
+    assert.ok(
+      TOOL_DEFINITIONS.some((tool) => tool.name === name),
+      name,
+    );
   }
   const digest = createHash('sha256').update(manifestBytes).digest('hex');
   assert.equal(loadConfig({}).packageDigest, digest);

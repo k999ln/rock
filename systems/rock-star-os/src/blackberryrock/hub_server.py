@@ -14,6 +14,7 @@ from urllib.parse import urlsplit
 
 from .hub import Hub
 from .packages import MAX_PACKAGE_BYTES, PUBLIC_TEST_KEY, TEST_PUBLISHER, PackageError, canonical, verify_package
+from .spend import ValueSpendRuntime
 from .wallet import Wallet
 
 WEB = Path(__file__).with_name('web')
@@ -30,6 +31,7 @@ class HubServer(ThreadingHTTPServer):
         self.session = secrets.token_urlsafe(32)
         self.hub = Hub(Path(state_dir) / 'hub.db', {TEST_PUBLISHER: PUBLIC_TEST_KEY})
         self.wallet = Wallet(Path(state_dir) / 'wallet-simulator.db')
+        self.spend = ValueSpendRuntime(self.wallet)
         self.registry = Path(registry)
         super().__init__(('127.0.0.1', port), HubHandler)
 
@@ -114,7 +116,8 @@ class HubHandler(BaseHTTPRequestHandler):
         if not self.authenticated():
             return self.send(401, {'error': 'open the local Hub to start a session'})
         if path == '/api/state':
-            return self.send(200, {'hub': self.server.hub.state(), 'wallet': self.server.wallet.snapshot()})
+            return self.send(200, {'hub': self.server.hub.state(), 'wallet': self.server.wallet.snapshot(),
+                                   'value_spend': self.server.spend.snapshot()})
         if path == '/api/catalog':
             packages, rejected = self.server.packages()
             return self.send(200, {'packages': [{k: v for k, v in p.items() if k != 'package'} for p in packages.values()], 'rejected': rejected})
@@ -144,7 +147,7 @@ class HubHandler(BaseHTTPRequestHandler):
             if not isinstance(b, dict):
                 raise ValueError('request must be an object')
             path = urlsplit(self.path).path
-            h, w = self.server.hub, self.server.wallet
+            h, w, spend = self.server.hub, self.server.wallet, self.server.spend
             if path == '/api/install':
                 result = h.install(b['package'])
             elif path == '/api/enable':
@@ -173,6 +176,8 @@ class HubHandler(BaseHTTPRequestHandler):
                 result = w.mark_unknown(b['id'])
             elif path == '/api/wallet/reconcile':
                 result = w.reconcile(b['id'], b['total_dispensed_minor'], b['key'])
+            elif path == '/api/hub-mcp':
+                result = spend.command(b)
             else:
                 return self.send(404, {'error': 'not found'})
             return self.send(200, {'result': result})

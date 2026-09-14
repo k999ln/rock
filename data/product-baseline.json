@@ -1,5 +1,5 @@
 {
-  "version": "1.32",
+  "version": "1.36",
   "decidedAt": "2026-09-13",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -11,7 +11,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ33 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ36 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -35,23 +35,56 @@
   "homeExperience": {
     "defaultRoute": "/",
     "skyRoute": "/sky",
+    "returnPolicy": "every_non_home_route_has_a_direct_home_affordance",
     "visualBasis": "iphone_inspired_app_launcher",
     "systemUtility": "settings",
     "preferencesStorage": "device_local",
     "customizable": ["wallpaper", "accent", "icon_size", "labels", "app_order"],
-    "settingsFunctions": ["appearance", "account_state", "pc_connector", "mcp_permissions", "web_update", "install_recovery_guidance", "system_diagnostics", "encrypted_device_backup", "device_restore", "service_worker_update_check", "notification_permission", "persistent_storage", "sanitized_diagnostic_export", "allowlisted_device_reset", "release_readiness"]
+    "settingsFunctions": [
+      "appearance",
+      "account_state",
+      "pc_connector",
+      "mcp_permissions",
+      "web_update",
+      "install_recovery_guidance",
+      "system_diagnostics",
+      "encrypted_device_backup",
+      "device_restore",
+      "service_worker_update_check",
+      "notification_permission",
+      "persistent_storage",
+      "sanitized_diagnostic_export",
+      "allowlisted_device_reset",
+      "release_readiness"
+    ]
   },
   "systemMaintenance": {
     "route": "/settings/system",
     "runtime": "web_pwa_device_local",
-    "diagnostics": ["network", "secure_context", "device_storage", "persistent_storage", "web_crypto", "service_worker", "notifications", "app_mode", "rockstar_api", "pc_connector"],
+    "diagnostics": [
+      "network",
+      "secure_context",
+      "device_storage",
+      "persistent_storage",
+      "web_crypto",
+      "service_worker",
+      "notifications",
+      "app_mode",
+      "rockstar_api",
+      "pc_connector"
+    ],
     "backup": {
       "format": "rockstaros-device-backup/1",
       "cipher": "AES-GCM-256",
       "kdf": "PBKDF2-SHA256",
       "iterations": 310000,
       "scope": "allowlisted_rockstaros_home_preferences_only",
-      "excludes": ["device_session_token", "account_session", "wallet_funds", "server_receipts"],
+      "excludes": [
+        "device_session_token",
+        "account_session",
+        "wallet_funds",
+        "server_receipts"
+      ],
       "tamperDetection": true
     },
     "updateCheck": "service_worker_registration_update",
@@ -105,7 +138,14 @@
   "webDeliveryIntegrity": {
     "canonicalSource": "current_feature_branch_until_owner_approved_main_merge",
     "sourceAndPrivateSiteCommitMustMatch": true,
-    "requiredStyledSurfaces": ["home", "sky", "chat", "wallet", "market", "settings"],
+    "requiredStyledSurfaces": [
+      "home",
+      "sky",
+      "chat",
+      "wallet",
+      "market",
+      "settings"
+    ],
     "routeStyleContract": "tests/web-route-style-contract.test.mjs",
     "assetClosureCheck": "npm run release:web-assets:check",
     "publicAccessAuthorized": false
@@ -152,7 +192,10 @@
     "RQ30",
     "RQ31",
     "RQ32",
-    "RQ33"
+    "RQ33",
+    "RQ34",
+    "RQ35",
+    "RQ36"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -361,6 +404,15 @@
     "realValueEnabled": false,
     "scope": "Rockstar Market is a generic typed-asset PAPER marketplace. Exact proposal digest, risk limits, explicit owner approval, reservation, immutable receipt, position and append-only events are enabled. External orders, settlement, real Wallet transfers and LIVE adapters remain disabled pending provider, identity, contract, custody and regulatory gates."
   },
+  "nativeValueSpendRuntime": {
+    "status": "simulation_and_paper_implemented",
+    "storage": "owner_local_sqlite_double_entry_ledger",
+    "approval": "exact_proposal_digest",
+    "unknownOutcome": "hold_and_explicit_reconciliation",
+    "externalOrdersEnabled": false,
+    "liveRuntimeEnabled": false,
+    "realFundsEnabled": false
+  },
   "autonomousFundRuntime": {
     "status": "observed_performance_recommender_implemented",
     "refreshIntervalSeconds": 30,
@@ -369,6 +421,72 @@
     "unverifiedYield": null,
     "automaticCapitalMovement": false,
     "realFundsEnabled": false
+  },
+  "externalFinancialProviderBoundary": {
+    "status": "approved_design_provider_adapters_not_connected",
+    "osRole": "capability_discovery_consent_instruction_status_receipt_reconciliation",
+    "providerRole": "custody_operations_execution_valuation_payout_kyc_aml_jurisdiction_tax_records",
+    "providerTypes": ["wallet", "fund"],
+    "capabilities": [
+      "custody",
+      "receive",
+      "payout",
+      "exchange",
+      "fund_catalog",
+      "subscribe",
+      "redeem",
+      "reporting"
+    ],
+    "integrationModel": "versioned_capability_manifest_and_provider_adapter",
+    "providerSpecificExtensionsAllowed": true,
+    "unsupportedCapabilityEmulation": false,
+    "osRebuildRequiredForProviderAddition": false,
+    "providerDirectLedgerWrite": false,
+    "providerArbitraryShell": false,
+    "liveProvidersConnected": false,
+    "realFundsEnabled": false,
+    "firstAcceptance": "synthetic_provider_then_provider_sandbox",
+    "architecture": "docs/external-wallet-fund-provider-boundary-20260913.md"
+  },
+  "firstPartySettlementProvider": {
+    "providerId": "org.rockstar.settlement-wallet",
+    "ownership": "rock_first_party",
+    "purpose": "collect_verified_allocated_sky_fee_only",
+    "mode": "SANDBOX",
+    "status": "contract_fixture_verified",
+    "capabilities": ["collect_platform_fee", "reporting"],
+    "monthlyFeeCapMinor": 888,
+    "currency": "usd",
+    "userFundsCustodied": false,
+    "fundManagementEnabled": false,
+    "arbitraryReceiveOrPayoutEnabled": false,
+    "liveCollectionEnabled": false,
+    "realFundsEnabled": false,
+    "usesCommonProviderAdapter": true,
+    "architecture": "docs/rock-first-party-settlement-wallet-20260913.md",
+    "implementation": "lib/financial-provider.ts"
+  },
+  "productionReceiveRail": {
+    "status": "implemented_pending_deployment_and_owner_signature",
+    "network": "base",
+    "chainId": 8453,
+    "assetSymbol": "USDC",
+    "assetContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "assetDecimals": 6,
+    "walletConnection": "eip1193_injected",
+    "ownershipProof": "origin_bound_expiring_personal_signature",
+    "privateKeysStored": false,
+    "userFundsCustodied": false,
+    "automaticTransferEnabled": false,
+    "collectionSource": "signed_earning_receipt_sky_service_fee_only",
+    "monthlyFeeCapMinor": 888,
+    "exactRecipientAndAmountRequired": true,
+    "finalizedBlockRequired": true,
+    "operatorClaimRequiresPrivateSiteOwnerAccess": true,
+    "ownerWalletRegistration": "pending_user_signature",
+    "firstLiveTransfer": "not_performed",
+    "architecture": "docs/rock-wallet-production-rail-20260913.md",
+    "implementation": "services/sky-billing/src/worker.ts"
   },
   "releaseExecution": {
     "startedAt": "2026-09-10T05:43:35Z",

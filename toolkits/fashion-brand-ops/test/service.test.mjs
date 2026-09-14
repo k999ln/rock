@@ -60,6 +60,42 @@ test("existing price changes are inert until an exact signed approval executes o
   assert.equal(completed.effect.receipt.capability_id, "brand.intake");
 });
 
+test("screenshot intake stores only deduplicated candidates until OAuth readback matches", (t) => {
+  const runtime = fixture();
+  t.after(() => runtime.store.close());
+  const { brand } = seed(runtime);
+  const first = runtime.service.intakeSocialAccountScreenshots({
+    brand_id: brand.id,
+    screenshots: [{ source_sha256: "a".repeat(64), accounts: [
+      { username: "@Insta_Akume", posts: 7, followers: 14, following: 1, confidence: 0.99 },
+      { username: "iceiceice.mean", confidence: 0.92 },
+    ] }],
+  });
+  assert.equal(first.created, 2);
+  assert.equal(first.ready_for_automation, false);
+  assert.equal(first.screenshots_stored, false);
+  assert.equal(runtime.service.listSocialAccounts({ brand_id: brand.id }).length, 0);
+
+  const replay = runtime.service.intakeSocialAccountScreenshots({
+    brand_id: brand.id,
+    screenshots: [{ source_sha256: "a".repeat(64), accounts: [{ username: "insta_akume", followers: 15 }] }],
+  });
+  assert.equal(replay.created, 0);
+  assert.equal(replay.updated, 1);
+  const candidates = runtime.service.listSocialAccountCandidates({ brand_id: brand.id });
+  assert.equal(candidates.length, 2);
+  assert.equal(candidates.find((item) => item.username === "insta_akume").profile.followers, 15);
+  assert.equal(candidates.find((item) => item.username === "insta_akume").screenshot_count, 1);
+  assert.equal(candidates[0].screenshots_stored, false);
+
+  const connected = runtime.service.registerSocialAccount({ brand_id: brand.id, external_account_id: "178414000001", username: "insta_akume", credential_ref: "env://META_ACCESS_TOKEN", connection_status: "connected" });
+  const matched = runtime.service.listSocialAccountCandidates({ brand_id: brand.id }).find((item) => item.username === "insta_akume");
+  assert.equal(matched.verification_status, "oauth_matched");
+  assert.equal(matched.social_account_id, connected.id);
+  assert.throws(() => runtime.service.intakeSocialAccountScreenshots({ brand_id: brand.id, screenshots: [{ source_sha256: "not-a-digest", accounts: [{ username: "safe_name" }] }] }), /source_sha256_invalid/);
+  assert.throws(() => runtime.service.intakeSocialAccountScreenshots({ brand_id: brand.id, screenshots: [{ source_sha256: "b".repeat(64), accounts: [{ username: "safe_name", access_token: "secret" }] }] }), /contains_secret/);
+});
+
 test("PULSE-style Instagram account, plan, draft, schedule, insights and DM tools share the approval gate", async (t) => {
   const runtime = fixture();
   t.after(() => runtime.store.close());

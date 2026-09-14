@@ -10,7 +10,10 @@ export default function LegacyFundPage() {
   return (
     <>
       <div className="legacy-return">
-        <Link href="/fund">← 自動化ファンドに戻る</Link>
+        <nav aria-label="戻る">
+          <Link href="/">⌂ ホーム</Link>
+          <Link href="/fund">← 自動化ファンドに戻る</Link>
+        </nav>
         <span>旧試算 · 実収益・送金には使用しません</span>
       </div>
       <FundMarket />

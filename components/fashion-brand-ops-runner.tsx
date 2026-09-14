@@ -6,17 +6,29 @@ import {
   Check,
   CheckCircle2,
   Download,
+  ImagePlus,
   RefreshCw,
   ShieldCheck,
   Unplug,
 } from 'lucide-react';
 import {
+  callFashionMcpTool,
   connectFashionMcp,
   disconnectFashionMcp,
   fashionMcpConnected,
   FASHION_MCP_URL,
   verifyFashionMcp,
 } from '@/lib/fashion-mcp-client';
+
+type AccountCandidate = {
+  id: string;
+  username: string;
+  verification_status:
+    | 'needs_owner_confirmation'
+    | 'oauth_matched'
+    | 'dismissed';
+  screenshot_count: number;
+};
 
 const capabilities = [
   '売上・数量・粗利・期限からCampaign Autopilotを作成',
@@ -29,6 +41,18 @@ export function FashionBrandOpsRunner() {
   const [connected, setConnected] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
+  const [candidates, setCandidates] = useState<AccountCandidate[]>([]);
+
+  async function refreshCandidates() {
+    try {
+      const result = await callFashionMcpTool<AccountCandidate[]>(
+        'instagram.accounts.candidates.list',
+      );
+      setCandidates(result);
+    } catch {
+      setCandidates([]);
+    }
+  }
 
   useEffect(() => {
     const update = () => setConnected(fashionMcpConnected());
@@ -36,9 +60,10 @@ export function FashionBrandOpsRunner() {
     window.addEventListener('sky-fashion-mcp', update);
     if (fashionMcpConnected()) {
       void verifyFashionMcp()
-        .then(({ toolCount }) =>
-          setMessage(`${toolCount}個の専用操作へ接続しています。`),
-        )
+        .then(({ toolCount }) => {
+          setMessage(`${toolCount}個の専用操作へ接続しています。`);
+          void refreshCandidates();
+        })
         .catch(() =>
           setMessage('接続が切れました。もう一度接続してください。'),
         );
@@ -49,6 +74,7 @@ export function FashionBrandOpsRunner() {
           setMessage(
             `${result.toolCount}個の専用操作を確認しました。Skyから実行できます。`,
           );
+          void refreshCandidates();
         })
         .catch((error) => {
           setConnected(fashionMcpConnected());
@@ -72,6 +98,7 @@ export function FashionBrandOpsRunner() {
       setMessage(
         `${result.toolCount}個の専用操作を確認しました。Skyから実行できます。`,
       );
+      void refreshCandidates();
     } catch (error) {
       setConnected(fashionMcpConnected());
       setMessage(
@@ -95,7 +122,7 @@ export function FashionBrandOpsRunner() {
           <strong>{connected ? 'MCP接続済み' : 'PCのMCPへ接続'}</strong>
           <p>
             {connected
-              ? 'Fashion Brand Opsの38操作を確認できました。'
+              ? 'Fashion Brand Opsの40操作を確認できました。'
               : '接続アプリが動いていれば、このボタン1回で準備が完了します。'}
           </p>
         </div>
@@ -139,6 +166,56 @@ export function FashionBrandOpsRunner() {
         {connected ? 'このタブはPCのMCPへ接続中' : 'MCP未接続'}
       </p>
       {message && <output className="fashion-ops-message">{message}</output>}
+      <section
+        className="fashion-photo-intake"
+        aria-labelledby="fashion-photo-intake-title"
+      >
+        <div className="fashion-photo-intake-heading">
+          <ImagePlus size={20} />
+          <div>
+            <strong id="fashion-photo-intake-title">
+              Instagramは写真から候補化
+            </strong>
+            <p>
+              このCodexタスクへプロフィール画面を送ると、公開表示だけを本人確認候補にします。
+            </p>
+          </div>
+        </div>
+        <ol>
+          <li>
+            <span>1</span>スクリーンショットを送る
+          </li>
+          <li>
+            <span>2</span>候補を本人確認
+          </li>
+          <li>
+            <span>3</span>初回だけMetaへ接続
+          </li>
+        </ol>
+        {candidates.length > 0 && (
+          <div className="fashion-photo-candidates">
+            <div>
+              <strong>写真から見つけた候補</strong>
+              <button onClick={() => void refreshCandidates()}>更新</button>
+            </div>
+            <ul>
+              {candidates.map((candidate) => (
+                <li key={candidate.id}>
+                  <span>@{candidate.username}</span>
+                  <small>
+                    {candidate.verification_status === 'oauth_matched'
+                      ? 'Meta確認済み'
+                      : '本人確認待ち'}
+                  </small>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <p className="fashion-photo-privacy">
+          画像本体・パスワード・Cookieは運用DBへ保存しません。Meta確認前の候補では投稿やDMを実行できません。
+        </p>
+      </section>
       <ul>
         {capabilities.map((capability) => (
           <li key={capability}>

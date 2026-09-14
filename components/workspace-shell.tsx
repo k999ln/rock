@@ -185,11 +185,10 @@ export default function WorkspaceShell({
               aria-label="メニューを開閉"
             />
           )}
-          {!showSidebar && (
-            <Link href="/" className="rock-home-link" aria-label="ホームへ戻る">
-              <House size={18} />
-            </Link>
-          )}
+          <Link href="/" className="rock-home-link" aria-label="ホームへ戻る">
+            <House size={17} />
+            <span>ホーム</span>
+          </Link>
           <div className="rock-breadcrumb">
             {showSidebar && (
               <>

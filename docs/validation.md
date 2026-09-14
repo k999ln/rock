@@ -1,5 +1,20 @@
 # 検証記録
 
+## Rock First-party Settlement Wallet / 2026-09-13
+
+- `org.rockstar.settlement-wallet`を共通Financial Provider契約の第1号として追加。capabilityは`collect_platform_fee`と`reporting`、modeはSANDBOX、利用者資産保管・ファンド運用・LIVE回収はfalseへ固定した。
+- `prepareRockFeeCollection`は署名検証済み収益から既存Workerが配分するRock利用料を入力とし、receipt IDに結び付いた同一instruction/idempotency keyを生成する。収益0は`not_required`、月累計888 cents超過、LIVE、未知field、非USDを拒否する。
+- 新規4テストと製品baseline負例を含む`npm run verify`が終了コード0。Web 240 tests、Fashion Brand Ops 16 tests、release signing 64 tests、Worker/D1 API 143 assertions、project/repository/release/baseline/Sky/device、型、lint、MCP package、Billing Worker dry-run、本番build、Web bundle 120 component、asset 69参照・missing 0に成功した。
+- この合格は自社利用料のsandbox指図契約まで。実収益の入金、Rockの実口座・実Wallet、利用者への払出し、外部Wallet／ファンド接続、利用者資産の保管、LIVE transferは未実施。
+
+## 外部Wallet／ファンドProvider受け身設計 / 2026-09-13
+
+- RQ34として、RockstarOSはcapability discovery、本人同意、指図、状態、receipt、照合だけを共通化し、保管、運用、約定、払出し、KYC/AML、地域・税務判断は外部Providerへ残す責任境界を固定した。
+- `npm run baseline:check`と`tests/product-baseline.test.mjs`に成功。Providerによる内部台帳直接書込み、任意shell、未接続ProviderのLIVE表示、Rockによる未対応機能の擬似実装を許可する変更を拒否する。
+- `npm run project:update`後の`npm run project:check`は62/86件で整合。`npm run build`、Web bundle 120 componentの照合、Web asset 69参照・missing 0、MCP配布package一致に成功した。
+- `npm run verify`はrelease、baseline、Sky、device、型、lintまで成功後、既存`tests/everything-market.test.mjs`がassertion成功後も終了しないため手動中断した。変更対象テストは単独で終了コード0。並行時に不安定だった既存client/device 2テストも単独24件で全成功した。したがって全体verify完走は未確認として残す。
+- この検証は設計・機械可読契約・build整合の確認であり、外部Provider選定、契約、sandbox接続、実資金、LIVEファンド運用を行っていない。
+
 ## QEMU rc2配布要件とnative SBOM境界の機械固定 / 2026-09-12
 
 - `scripts/check-release-signing.mjs` で、候補準備15件、owner legal approval 11件、保護署名29件、本人署名9件の計64公開fixture試験を `npm run verify` に統合。各suiteの試験数も固定し、試験の削除を成功扱いにしない。本人署名は未暗号化／ExFAT／別mountの保管先を鍵読取り前に拒否する。実production鍵・owner承認・隔離環境・実候補署名・署名後受入は未実施のまま分離した。
@@ -197,3 +212,10 @@
 - PWA manifestへ固定`id`、root `scope`、`lang`、`dir`、related native appを優先しない指定を追加した。192/512 PNGを実寸検査し、Safariが推奨する1024角・全面不透明のmaskable SVGを別途追加した。source 2試験に加え、production HTTP上のmanifest値、3 iconの参照とContent-Typeを上記8経路で確認した。これはWeb appの導入条件でありApp Store native client審査の合格証拠ではない。
 - ローカル待受が許可された環境で`npm run verify`を実行し、Web 202 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、公開gate、製品baseline、MCP配布一致、Billing Worker dry-run、本番buildに合格した。`/settings/system`の実ブラウザ表示はconsole error 0、横切れなし、6対象の数値と台帳が一致した。
 - 製品ライセンスの明示選択、production鍵の作成・保管、一般公開承認、実機/SKUと外部審査は所有者または外部authorityが必要であり、今回完了扱いにしていない。
+# 2026-09-14 — Rock Wallet Base USDC本番受取レール
+
+- `/wallet`へ外部EIP-1193 Walletの接続、Base Mainnet切替、期限付き所有署名、受取先登録、解除、回収指図一覧、transaction hash照合を追加した。画面は秘密鍵非保管、署名が送金権限ではないこと、Rock利用料だけが対象であることを明示する。
+- Billing WorkerへD1 migration `0004_rock_settlement_wallet.sql`と5 endpointを追加し、署名済みEarning Receiptの `SKY_SERVICE_FEE` だけをidempotentな回収指図にした。Base公式USDC contract、exactなrecipient・amount、成功receipt、finalized blockが一致するまで着金済みにしない。
+- Wallet単体・Worker統合・製品baselineの8対象試験に合格した。全体 `npm run verify` は待受可能な環境で、Web 242 tests、公開署名境界64 tests、Fashion Brand Ops 16 tests、Worker/D1 API 143 assertions、型、lint、D1 migration互換、Billing Worker dry-run、本番build、74 Web asset参照missing 0に合格した。
+- `npm audit --omit=dev --json`は既知脆弱性0。viem追加後のlock監査は899 package entry、866 unique component、追加review 47件へ更新し、生成Web bundle内の追加review該当は0。法的clearanceや製品license選択の代用にはしない。
+- remote D1 migration、Worker/Site配備、owner Walletの本人署名、最初の実transferはこの時点では未実施であり、以下の配備記録で別に判定する。

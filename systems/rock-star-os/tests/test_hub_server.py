@@ -235,6 +235,33 @@ class HubAPITest(unittest.TestCase):
         self.assertEqual(snapshot["ledger_balance_minor"], 0)
         self.assertTrue(snapshot["simulation_only"])
 
+    def test_unified_hub_mcp_value_spend_flow_is_simulation_only(self):
+        self.login()
+        sale = self.post("/api/wallet/sale", {"amount_minor": 5000, "key": "spend-fund"})
+        self.post("/api/wallet/settle", {"id": sale["id"], "key": "spend-fund-settle"})
+        request = {
+            "v": 1, "op": "spend.propose", "key": "spend-proposal",
+            "proposal": {
+                "owner_id": "local-owner", "adapter_id": "polymarket.dry-run", "mode": "SIMULATION",
+                "action": "trade.buy", "asset_id": "wallet.synthetic.usd", "amount_minor": 1000,
+                "estimated_fee_minor": 5, "estimated_gas_minor": 0, "market_id": "fixture-market",
+                "outcome": "YES", "limit_price_micros": 500000, "max_slippage_bps": 50,
+                "strategy_id": "manual", "expires_at": int(time.time()) + 120,
+            },
+        }
+        proposed = self.post("/api/hub-mcp", request)
+        self.assertEqual(proposed["status"], "PROPOSED")
+        proposal_id = proposed["proposal"]["proposal_id"]
+        self.post("/api/hub-mcp", {"v":1,"op":"spend.approve","key":"spend-approval",
+                  "proposal_id":proposal_id,"proposal_digest":proposed["proposal_digest"],
+                  "approval_type":"USER","approver":"local-owner","decision":True})
+        executed = self.post("/api/hub-mcp", {"v":1,"op":"spend.execute","key":"spend-execute","proposal_id":proposal_id})
+        self.assertEqual(executed["status"], "EXECUTED")
+        self.assertFalse(executed["receipt"]["financial_transaction"])
+        state = self.state()
+        self.assertEqual(state["value_spend"]["modes"], {"SIMULATION":True,"PAPER":True,"LIVE":False})
+        self.assertEqual(state["value_spend"]["spend_accounts"]["SPEND_COMMITTED"], 1000)
+
 
 class HubMainTest(unittest.TestCase):
     def test_sigterm_uses_graceful_close_path(self):

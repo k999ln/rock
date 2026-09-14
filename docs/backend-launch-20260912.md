@@ -6,7 +6,7 @@ Developer Previewに限定する。実機、実資金、外部provider、本番�
 
 ## 重複監査
 
-- Fashion Brand OpsのSky表示、38操作、ワンタップ接続は完成済みコミットだけを統合した。
+- Fashion Brand OpsのSky表示、40操作、ワンタップ接続は完成済みコミットだけを統合した。
 - Rockstar Ledgerは別branch/PRで進行中。個人SQLiteをこのbranchへコピーしない。
 - Value/Spend RuntimeはPR #11でSIMULATION/PAPERまで実装済みだが未統合。LIVEは無効のまま維持する。
 - OS Hub lifecycleの完成済みコミットだけを取り込み、共有worktreeの途中差分は使わない。
@@ -81,6 +81,19 @@ rock-hub --state .state/hub --registry systems/rock-star-os/examples/registry
 `npm run billing:migrate`、Worker反映は`npm run billing:deploy`を使う。secretはWranglerとSitesの
 secret storeだけへ置き、Gitへ保存しない。Sitesは直前のversion 12を残しているため、問題時はその保存版を
 再deployできる。D1のEarning Receipt台帳は追記型なので、障害時に削除や巻戻しを行わず取込を停止して照合する。
+
+## 過去候補rc3-localの限定受入記録
+
+2026-09-12にsource `9a8da90f64c8e6acedb17f163ee23a8ed17a35fc`から作成した
+`1.0.0-preview.20260912-rc3-local`は、合成データと公開開発鍵を使うローカルQEMU Developer Previewの
+範囲でfresh導入、署名toolのinstall/enable/run、画面内終了、非空backup/restore、復元後の履歴確認、
+最終停止まで合格した。archive SHA-256は
+`2bbb9b1e102e1a0829dae384678951c7bf4cd0d11edd1e31652284c80996a630`。
+
+これは当時の固定sourceに対する履歴証拠であり、現在の統合branchや今後の候補へ合格を転用しない。
+同一sourceのSites配備、full D0〜D6、production署名、製品license、実機、一般公開、実資金は未実施。
+詳細なscope、hash、未合格条件は
+`docs/evidence/launch/backend-rc3-local-20260912.json`を正本とする。
 
 ## 現在のローンチ判定
 

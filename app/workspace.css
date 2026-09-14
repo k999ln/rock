@@ -189,14 +189,25 @@
   display: none;
 }
 .rock-home-link {
-  width: 38px;
+  width: auto;
+  min-width: 38px;
   height: 38px;
-  display: grid;
-  place-items: center;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   flex: 0 0 auto;
-  border: 1px solid #34393b;
-  border-radius: 50%;
-  color: #e7e9ea;
+  border: 1px solid #d4dad6;
+  border-radius: 999px;
+  color: #343c37;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 750;
+}
+.rock-home-link:hover {
+  opacity: 1;
+  background: #f0f4ed;
 }
 .rock-breadcrumb {
   display: flex;
@@ -1278,6 +1289,14 @@
   color: #fff;
   font-size: 14px;
   padding: 16px 4.4%;
+}
+.legacy-return nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+.legacy-return nav a {
+  font-weight: 700;
 }
 .legacy-return > span {
   color: #becbb6;
@@ -3185,7 +3204,10 @@
 }
 .wallet-record-fields {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(160px, 0.8fr) minmax(160px, 0.8fr);
+  grid-template-columns: minmax(0, 1.25fr) minmax(160px, 0.8fr) minmax(
+      160px,
+      0.8fr
+    );
   gap: 14px;
   margin-top: 20px;
 }
@@ -3357,6 +3379,329 @@
   margin: 11px 2px 0;
   color: #818a85;
   font-size: 12px;
+}
+
+.rock-settlement-wallet {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 24px;
+  padding: 24px;
+  overflow: hidden;
+  border: 1px solid #24344d;
+  border-radius: 16px;
+  background:
+    radial-gradient(
+      circle at 92% 0%,
+      rgba(61, 128, 255, 0.28),
+      transparent 34%
+    ),
+    linear-gradient(145deg, #111a29 0%, #17243a 100%);
+  color: #f6f9ff;
+  box-shadow: 0 20px 45px rgba(20, 38, 67, 0.12);
+}
+
+.rock-settlement-wallet > header,
+.rock-settlement-heading,
+.rock-settlement-actions,
+.rock-settlement-section-title,
+.rock-settlement-wallet > footer {
+  display: flex;
+  align-items: center;
+}
+
+.rock-settlement-wallet > header {
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.rock-settlement-heading {
+  gap: 13px;
+}
+
+.rock-settlement-heading > span {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid rgba(132, 173, 255, 0.34);
+  border-radius: 12px;
+  background: rgba(57, 111, 216, 0.18);
+  color: #8db5ff;
+}
+
+.rock-settlement-heading p {
+  color: #8ea5c9;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.rock-settlement-heading h1 {
+  margin-top: 3px;
+  color: #fff;
+  font-size: 20px;
+  letter-spacing: -0.035em;
+}
+
+.rock-settlement-wallet > header > span {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border: 1px solid rgba(142, 165, 201, 0.28);
+  border-radius: 999px;
+  color: #aebed7;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.rock-settlement-wallet > header > span.is-live {
+  border-color: rgba(106, 226, 159, 0.42);
+  background: rgba(37, 153, 92, 0.14);
+  color: #83ecae;
+}
+
+.rock-settlement-connect,
+.rock-settlement-account {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px;
+  border: 1px solid rgba(151, 179, 221, 0.18);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.rock-settlement-connect strong,
+.rock-settlement-account strong {
+  font-size: 16px;
+}
+
+.rock-settlement-connect p {
+  max-width: 650px;
+  margin-top: 5px;
+  color: #b7c4d9;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.rock-settlement-connect > button,
+.rock-settlement-actions button,
+.rock-settlement-actions a,
+.rock-settlement-section-title button,
+.rock-settlement-collections form button {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.rock-settlement-connect > button,
+.rock-settlement-collections form button {
+  flex: 0 0 auto;
+  padding: 0 15px;
+  background: #f7faff;
+  color: #142038;
+}
+
+.rock-settlement-account > div:first-child {
+  display: grid;
+  gap: 5px;
+}
+
+.rock-settlement-account small {
+  color: #93a8c8;
+  font-size: 12px;
+}
+
+.rock-settlement-account > div:first-child > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #83dca9;
+  font-size: 12px;
+}
+
+.rock-settlement-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.rock-settlement-actions button,
+.rock-settlement-actions a {
+  min-height: 38px;
+  padding: 0 11px;
+  border: 1px solid rgba(162, 187, 225, 0.24);
+  background: rgba(255, 255, 255, 0.07);
+  color: #eaf1fd;
+}
+
+.rock-settlement-actions .is-quiet {
+  color: #aab8cf;
+}
+
+.rock-settlement-totals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.rock-settlement-totals > div {
+  display: grid;
+  gap: 4px;
+  padding: 14px 15px;
+  border: 1px solid rgba(150, 179, 222, 0.14);
+  border-radius: 10px;
+  background: rgba(5, 11, 22, 0.18);
+}
+
+.rock-settlement-totals dt {
+  color: #91a6c5;
+  font-size: 12px;
+}
+
+.rock-settlement-totals dd {
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.rock-settlement-collections {
+  display: grid;
+  gap: 10px;
+  padding-top: 3px;
+}
+
+.rock-settlement-section-title {
+  justify-content: space-between;
+}
+
+.rock-settlement-section-title strong {
+  font-size: 14px;
+}
+
+.rock-settlement-section-title button {
+  min-height: 32px;
+  padding: 0 9px;
+  background: transparent;
+  color: #aebed7;
+}
+
+.rock-settlement-collections article {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.8fr) minmax(260px, 1.2fr);
+  gap: 16px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid rgba(150, 179, 222, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.rock-settlement-collections article > div {
+  display: grid;
+  gap: 3px;
+}
+
+.rock-settlement-collections article span,
+.rock-settlement-collections article small {
+  overflow: hidden;
+  color: #96abc9;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rock-settlement-collections article > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  color: #9fc0ff;
+  font-size: 13px;
+}
+
+.rock-settlement-collections form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.rock-settlement-collections input {
+  min-width: 0;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid rgba(162, 187, 225, 0.28);
+  border-radius: 8px;
+  outline: none;
+  background: rgba(5, 12, 24, 0.38);
+  color: #f3f7ff;
+  font:
+    13px ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+}
+
+.rock-settlement-collections input:focus {
+  border-color: #82adff;
+  box-shadow: 0 0 0 3px rgba(88, 139, 237, 0.18);
+}
+
+.rock-settlement-message {
+  padding: 11px 13px;
+  border: 1px solid rgba(142, 180, 241, 0.25);
+  border-radius: 8px;
+  background: rgba(41, 91, 180, 0.13);
+  color: #d6e4fb;
+  font-size: 13px;
+}
+
+.rock-settlement-wallet > footer {
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #8fa4c3;
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .rock-settlement-wallet {
+    padding: 18px;
+    border-radius: 13px;
+  }
+
+  .rock-settlement-wallet > header,
+  .rock-settlement-connect,
+  .rock-settlement-account {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rock-settlement-heading h1 {
+    font-size: 18px;
+  }
+
+  .rock-settlement-connect > button,
+  .rock-settlement-actions,
+  .rock-settlement-actions button,
+  .rock-settlement-actions a {
+    width: 100%;
+  }
+
+  .rock-settlement-totals,
+  .rock-settlement-collections article {
+    grid-template-columns: 1fr;
+  }
+
+  .rock-settlement-collections form {
+    grid-template-columns: 1fr;
+  }
 }
 .wallet-simple {
   margin-bottom: 30px;
@@ -6808,6 +7153,90 @@
 .sky-manual-runner .mr-workbench {
   margin-top: 4px;
 }
+.sky-tool-dialog .fashion-photo-intake {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #2f3336;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #10151b, #07090c);
+}
+.sky-tool-dialog .fashion-photo-intake-heading {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 9px;
+  color: #1d9bf0;
+}
+.sky-tool-dialog .fashion-photo-intake-heading strong {
+  color: #f2f4f5;
+}
+.sky-tool-dialog .fashion-photo-intake-heading p,
+.sky-tool-dialog .fashion-photo-privacy {
+  margin: 3px 0 0;
+  color: #8b98a5;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.sky-tool-dialog .fashion-photo-intake > ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sky-tool-dialog .fashion-photo-intake > ol li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 9px;
+  background: #15191e;
+  font-size: 11px;
+}
+.sky-tool-dialog .fashion-photo-intake > ol span {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #07101d;
+  background: #1d9bf0;
+  font-weight: 800;
+}
+.sky-tool-dialog .fashion-photo-candidates {
+  display: grid;
+  gap: 8px;
+  padding-top: 11px;
+  border-top: 1px solid #2f3336;
+}
+.sky-tool-dialog .fashion-photo-candidates > div,
+.sky-tool-dialog .fashion-photo-candidates li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.sky-tool-dialog .fashion-photo-candidates button {
+  color: #1d9bf0;
+  font-size: 12px;
+}
+.sky-tool-dialog .fashion-photo-candidates ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sky-tool-dialog .fashion-photo-candidates li {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #050505;
+}
+.sky-tool-dialog .fashion-photo-candidates small {
+  color: #ffd27a;
+}
 
 @media (max-width: 767px) {
   .rock-main-column:has(.sky-main-feed) .rock-topbar {
@@ -6829,6 +7258,9 @@
   .sky-tool-dialog .rock-dialog-title {
     padding-right: 32px;
     font-size: 21px !important;
+  }
+  .sky-tool-dialog .fashion-photo-intake > ol {
+    grid-template-columns: 1fr;
   }
   .sky-tool-dialog .rock-tool-facts > div {
     grid-template-columns: 1fr;
@@ -7162,7 +7594,12 @@
   font-weight: 850;
   line-height: 1.05;
 }
-.sky-chat-commandbar > a {
+.sky-chat-commandbar > nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sky-chat-commandbar > nav a {
   min-height: 40px;
   display: flex;
   align-items: center;
@@ -7175,8 +7612,8 @@
   font-size: 14px;
   font-weight: 750;
 }
-.sky-chat-commandbar > a:hover,
-.sky-chat-commandbar > a:focus-visible {
+.sky-chat-commandbar > nav a:hover,
+.sky-chat-commandbar > nav a:focus-visible {
   border-color: #536471;
   background: #16181c;
 }
@@ -7534,7 +7971,7 @@
   .sky-chat-commandbar h1 {
     font-size: 21px;
   }
-  .sky-chat-commandbar > a {
+  .sky-chat-commandbar > nav a {
     min-height: 38px;
     padding: 0 12px;
   }
@@ -8016,7 +8453,11 @@
   border-radius: 0 0 11px 11px;
   color: #b8dcf6;
   background: #060708;
-  font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
+  font:
+    12px/1.55 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
 }
 .mcp-bot-approval {
   display: grid;
@@ -8091,7 +8532,11 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   color: #d6d9dc;
-  font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
+  font:
+    12px/1.55 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
 }
 
 @media (max-width: 600px) {
@@ -8118,7 +8563,11 @@
   min-height: 0;
   padding: clamp(22px, 4vw, 48px);
   background:
-    radial-gradient(circle at 82% 0%, rgba(214, 238, 173, 0.34), transparent 28rem),
+    radial-gradient(
+      circle at 82% 0%,
+      rgba(214, 238, 173, 0.34),
+      transparent 28rem
+    ),
     var(--rock-paper);
 }
 .polymarket-shell {
@@ -8266,7 +8715,11 @@
   color: #f4f6f3;
   text-align: center;
   background:
-    radial-gradient(circle at 50% 0%, rgba(214, 238, 173, 0.13), transparent 42%),
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(214, 238, 173, 0.13),
+      transparent 42%
+    ),
     #171c1a;
   box-shadow: 0 22px 70px rgba(24, 31, 27, 0.14);
 }
@@ -8345,7 +8798,11 @@
   outline: 0;
   color: var(--rock-ink);
   background: #f7f9f7;
-  font: 11px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
+  font:
+    11px/1.55 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
 }
 .markets-bot-lab textarea:focus {
   border-color: #77944c;
