@@ -441,7 +441,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-13 / Home導線を維持してWeb/nativeの汎用PAPER市場と自律型ファンドを統合し、Instagram写真候補をMeta確認前は外部実行できない導線へ固定。全6配布対象は証拠不足を残してBLOCKED / 完了 61/85件
+最終更新: 2026-09-13 / Home導線を維持してWeb/nativeの汎用PAPER市場と自律型ファンドを統合し、Instagram写真候補をMeta確認前は外部実行できない導線へ固定。全体verifyとnative backend smokeに合格し、全6配布対象は証拠不足を残してBLOCKED / 完了 61/85件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -549,7 +549,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 全体verifyとローカル保存・再計算フローを確認し、所有者による製品license選択とOWNER_MANUAL本番鍵生成後にQEMU同一最終archiveの署名受入を行う。
+次の作業: 統合branchのGitHub CIを確認し、所有者による製品license選択とOWNER_MANUAL本番鍵生成後にQEMU同一最終archiveの署名受入を行う。
 <!-- project-status:end -->
 
 ## 次段階の設計

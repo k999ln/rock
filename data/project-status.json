@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-13",
-  "milestone": "Home導線を維持してWeb/nativeの汎用PAPER市場と自律型ファンドを統合し、Instagram写真候補をMeta確認前は外部実行できない導線へ固定。全6配布対象は証拠不足を残してBLOCKED",
-  "nextAction": "全体verifyとローカル保存・再計算フローを確認し、所有者による製品license選択とOWNER_MANUAL本番鍵生成後にQEMU同一最終archiveの署名受入を行う。",
+  "milestone": "Home導線を維持してWeb/nativeの汎用PAPER市場と自律型ファンドを統合し、Instagram写真候補をMeta確認前は外部実行できない導線へ固定。全体verifyとnative backend smokeに合格し、全6配布対象は証拠不足を残してBLOCKED",
+  "nextAction": "統合branchのGitHub CIを確認し、所有者による製品license選択とOWNER_MANUAL本番鍵生成後にQEMU同一最終archiveの署名受入を行う。",
   "tasks": [
     {
       "id": "SKY01",
