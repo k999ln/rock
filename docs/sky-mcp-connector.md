@@ -4,7 +4,7 @@
 
 ## できること
 
-Sky固有の自動化コードと個別MCPを直接結ばず、すべてを同じ接続契約へ変換する。現在の配布registryには「Sky 基本自動化」4機能と「受注型ブランド運営」38機能があり、SkyのMCP画面からそれぞれをワンタップで初期化・検出できる。
+Sky固有の自動化コードと個別MCPを直接結ばず、すべてを同じ接続契約へ変換する。現在の配布registryには「Sky 基本自動化」4機能と「受注型ブランド運営」40機能があり、SkyのMCP画面からそれぞれをワンタップで初期化・検出できる。
 
 ```text
 Sky / n8n / Make / Zapier / 独自workflow
@@ -17,7 +17,7 @@ Sky / n8n / Make / Zapier / 独自workflow
        stdio MCP  Streamable HTTP  将来のOAuth adapter
 ```
 
-自動化ツール側が使う操作は`servers`、`connect`、`prepare`、`execute`の4段階に固定する。MCP serverごとの機能名や個数は`tools/list`から動的に取得するため、4機能・38機能などの固定実装を持たない。
+自動化ツール側が使う操作は`servers`、`connect`、`prepare`、`execute`の4段階に固定する。MCP serverごとの機能名や個数は`tools/list`から動的に取得するため、4機能・40機能などの固定実装を持たない。
 
 ## Connection Passport
 

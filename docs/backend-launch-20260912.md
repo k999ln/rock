@@ -6,7 +6,7 @@ Developer Previewに限定する。実機、実資金、外部provider、本番�
 
 ## 重複監査
 
-- Fashion Brand OpsのSky表示、38操作、ワンタップ接続は完成済みコミットだけを統合した。
+- Fashion Brand OpsのSky表示、40操作、ワンタップ接続は完成済みコミットだけを統合した。
 - Rockstar Ledgerは別branch/PRで進行中。個人SQLiteをこのbranchへコピーしない。
 - Value/Spend RuntimeはPR #11でSIMULATION/PAPERまで実装済みだが未統合。LIVEは無効のまま維持する。
 - OS Hub lifecycleの完成済みコミットだけを取り込み、共有worktreeの途中差分は使わない。

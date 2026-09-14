@@ -15,7 +15,7 @@
     {
       "id": "fashion-brand-ops",
       "name": "受注型ブランド運営",
-      "description": "Instagram・DM・決済・制作・発送を38機能で連携",
+      "description": "Instagram写真候補・DM・決済・制作・発送を40機能で連携",
       "transport": "stdio",
       "command": "node",
       "args": ["fashion-brand-ops/src/server.mjs"],
