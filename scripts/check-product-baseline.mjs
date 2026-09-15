@@ -274,9 +274,14 @@ export function validateBaseline(
     '本番受取レールはBase USDCの所有確認・限定回収・finalized照合とし、秘密鍵保管・自動送金・完了の先取りを禁止してください',
   );
   requireValue(
-    data.chatInteraction?.connectedMcpPresentation ===
+    data.baseApps?.find?.((app) => app.id === 'chat')?.displayName === 'Zema' &&
+      data.baseApps?.find?.((app) => app.id === 'chat')?.route === '/chat' &&
+      data.chatInteraction?.displayName === 'Zema' &&
+      data.chatInteraction?.legacyDisplayName === 'Chat' &&
+      data.chatInteraction?.compatibilityRoute === '/chat' &&
+      data.chatInteraction?.connectedMcpPresentation ===
       'one_bot_per_connected_server_or_ready_product' &&
-      data.chatInteraction?.controlSurface === 'chat_thread_and_work_center' &&
+      data.chatInteraction?.controlSurface === 'zema_thread_and_work_center' &&
       data.chatInteraction?.workManagement?.canonicalRoute ===
         '/chat?view=work' &&
       data.chatInteraction?.workManagement?.compatibilityRoutes?.includes(
@@ -305,7 +310,7 @@ export function validateBaseline(
       data.chatInteraction?.liveProgress?.unverifiedYieldAllowed === false &&
       data.chatInteraction?.genericExecutionContract ===
         'passport_tool_schema_then_prepare_confirm_execute',
-    'Chatの接続bot管理契約が必要です',
+    'Zemaの接続bot管理契約が必要です',
   );
   requireValue(
     data.webDeliveryIntegrity?.sourceAndPrivateSiteCommitMustMatch === true &&
@@ -637,6 +642,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ42、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ42、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

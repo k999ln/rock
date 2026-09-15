@@ -191,7 +191,7 @@ export default function SkyChatWorkspace() {
           setError(
             reason instanceof Error
               ? reason.message
-              : 'Chatを読み込めませんでした。',
+              : 'Zemaを読み込めませんでした。',
           );
       })
       .finally(() => {
@@ -483,17 +483,17 @@ export default function SkyChatWorkspace() {
 
   return (
     <WorkspaceShell
-      title="Chat"
+      title="Zema"
       contentClassName="sky-chat-page"
       running={running}
     >
-      <section className="sky-chat-simple" aria-label="Chatスレッド">
+      <section className="sky-chat-simple" aria-label="Zemaスレッド">
         <header className="sky-chat-commandbar">
           <div>
             <span>RockstarOS</span>
-            <h1>Chat</h1>
+            <h1>Zema</h1>
           </div>
-          <nav aria-label="Chatナビゲーション">
+          <nav aria-label="Zemaナビゲーション">
             <Link href="/" aria-label="ホームへ戻る">
               <House size={18} />
               <span>ホーム</span>
@@ -505,7 +505,7 @@ export default function SkyChatWorkspace() {
             <Link
               href="/chat"
               aria-current={!workView ? 'page' : undefined}
-              aria-label="Chatの会話を開く"
+              aria-label="Zemaの会話を開く"
             >
               <MessageCircle size={18} />
               <span>会話</span>
@@ -513,7 +513,7 @@ export default function SkyChatWorkspace() {
             <Link
               href="/chat?view=work"
               aria-current={workView ? 'page' : undefined}
-              aria-label="Chatで仕事を管理する"
+              aria-label="Zemaで仕事を管理する"
             >
               <ListChecks size={18} />
               <span>仕事</span>
@@ -568,8 +568,8 @@ export default function SkyChatWorkspace() {
           >
             <header>
               <div>
-                <small>CHAT WORK CONTROL</small>
-                <h2 id="chat-work-title">仕事をChatで管理</h2>
+                <small>ZEMA WORK CONTROL</small>
+                <h2 id="chat-work-title">仕事をZemaで管理</h2>
               </div>
               <p>
                 作成、手順の実行、確認、中止、結果の記録をここに集約します。
@@ -582,7 +582,7 @@ export default function SkyChatWorkspace() {
               <div className="sky-chat-job-heading">
                 <div>
                   <h3 id="chat-job-title">ツールの実行</h3>
-                  <p>受付、実行中、結果、停止をChat内で確認します。</p>
+                  <p>受付、実行中、結果、停止をZema内で確認します。</p>
                 </div>
                 <span>{jobs.length}件</span>
               </div>
@@ -643,7 +643,7 @@ export default function SkyChatWorkspace() {
             <ExecutionSignin />
           </div>
         ) : loading ? (
-          <div className="sky-chat-centered">Chatを読み込んでいます…</div>
+          <div className="sky-chat-centered">Zemaを読み込んでいます…</div>
         ) : (
           <>
             <div
@@ -879,7 +879,7 @@ export default function SkyChatWorkspace() {
                       }
                     >
                       <span>4</span>
-                      {activeMcpServer ? 'Chatで結果管理' : '履歴へ保存'}
+                      {activeMcpServer ? 'Zemaで結果管理' : '履歴へ保存'}
                     </li>
                   </ol>
                   <div className="sky-chat-workflow-body">

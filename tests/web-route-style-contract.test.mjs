@@ -147,7 +147,7 @@ void test('OS surfaces keep a smartphone viewport and safe-area contract', () =>
   assert.match(csvStyles, /@media \(max-width: 520px\)/);
 });
 
-void test('Chat owns work management while Sky keeps CSV as a catalog Tool', () => {
+void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () => {
   const sky = readFileSync(
     resolve(root, 'components/sky-workspace.tsx'),
     'utf8',
@@ -170,6 +170,8 @@ void test('Chat owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.match(chat, /href="\/chat\?view=work"/);
   assert.match(chat, /<Workbench embedded \/>/);
   assert.match(chat, /<ChatLiveProgress/);
+  assert.match(chat, /<h1>Zema<\/h1>/);
+  assert.doesNotMatch(chat, /<h1>Chat<\/h1>/);
   assert.match(chat, /setInterval\(refresh, hasActiveJob \? 3_000 : 15_000\)/);
   assert.match(chat, /setInterval\(refresh, 30_000\)/);
   const liveProgress = readFileSync(

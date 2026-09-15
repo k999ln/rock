@@ -460,7 +460,7 @@ export default function SkyWorkspace({
             <div className="sky-feed-header-actions">
               <Link
                 href="/chat"
-                aria-label="Chatを開く"
+                aria-label="Zemaを開く"
                 className="sky-header-action"
               >
                 <MessageCircle size={19} />
@@ -676,7 +676,7 @@ export default function SkyWorkspace({
               ) : (
                 <>
                   <DialogDescription className="rock-dialog-description">
-                    接続後はフォームを開かず、Chatから頼めます。
+                    接続後はフォームを開かず、Zemaから頼めます。
                   </DialogDescription>
 
                   <div className="sky-id-connection" aria-label="接続内容">
@@ -715,12 +715,12 @@ export default function SkyWorkspace({
                       <CheckCircle2 size={22} />
                       <div>
                         <strong>接続済み</strong>
-                        <span>次からはChatでアプリを選ぶだけです。</span>
+                        <span>次からはZemaでアプリを選ぶだけです。</span>
                       </div>
                       <button onClick={() => openConnectedTool(selected)}>
                         {selected.launchPath
                           ? '収益フローを開く'
-                          : 'Chatで使う'}
+                          : 'Zemaで使う'}
                         <ArrowRight size={16} />
                       </button>
                     </div>

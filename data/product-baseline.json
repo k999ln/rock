@@ -1,5 +1,5 @@
 {
-  "version": "1.48",
+  "version": "1.49",
   "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -21,10 +21,10 @@
   "sky": {
     "displayName": "Sky",
     "role": "automation_discovery_connection_and_catalog",
-    "definition": "Discover and connect Tool products, review their author/version/permissions/cost/execution target, and hand work control to Chat.",
+    "definition": "Discover and connect Tool products, review their author/version/permissions/cost/execution target, and hand work control to Zema.",
     "inventory": "docs/sky.md",
     "internalSurfaces": ["/csv"],
-    "navigationRule": "CSV remains a Sky Tool surface. Work creation, progress, approval, stop, results and history are managed inside Chat; /work and /activity are compatibility redirects.",
+    "navigationRule": "CSV remains a Sky Tool surface. Work creation, progress, approval, stop, results and history are managed inside Zema; /chat, /work and /activity remain compatibility routes.",
     "legacyInternalName": "hub",
     "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
   },
@@ -32,6 +32,9 @@
     { "id": "sky", "role": "discover_connect_and_manage_automation_apps" },
     {
       "id": "chat",
+      "displayName": "Zema",
+      "legacyDisplayName": "Chat",
+      "route": "/chat",
       "role": "request_create_approve_stop_status_results_and_work_history"
     },
     { "id": "wallet", "role": "automation_income_cost_and_funds" },
@@ -167,10 +170,13 @@
     "externalProviders": "blocked_until_credentials_contracts_acceptance"
   },
   "chatInteraction": {
+    "displayName": "Zema",
+    "legacyDisplayName": "Chat",
+    "compatibilityRoute": "/chat",
     "defaultRouting": "sky_auto",
     "manualAppSelection": "optional",
     "connectedMcpPresentation": "one_bot_per_connected_server_or_ready_product",
-    "controlSurface": "chat_thread_and_work_center",
+    "controlSurface": "zema_thread_and_work_center",
     "liveProgress": {
       "presentation": "grok_style_observable_activity_timeline",
       "sources": [

@@ -416,7 +416,7 @@ export default function AutonomousFundMarket() {
               実収益はProvider照合後にだけ計上
             </p>
             <Link href={`/chat?fund=${encodeURIComponent(active.id)}`}>
-              Chatで進捗を見る <ArrowRight size={15} />
+              Zemaで進捗を見る <ArrowRight size={15} />
             </Link>
           </article>
         )}

@@ -54,7 +54,7 @@ const apps: HomeApp[] = [
   },
   {
     id: 'chat',
-    name: 'Chat',
+    name: 'Zema',
     description: '頼む・確認する・受け取る',
     href: '/chat',
     Icon: MessageCircle,
@@ -254,9 +254,9 @@ export default function HomeScreen() {
           <span className={styles.widgetCopy}>
             <small>SKY AUTO</small>
             <strong>何をしてほしい？</strong>
-            <span>Chatに話すと、接続済みの役割を自動で選びます</span>
+            <span>Zemaに話すと、接続済みの役割を自動で選びます</span>
           </span>
-          <span className={styles.widgetAction}>Chatを開く</span>
+          <span className={styles.widgetAction}>Zemaを開く</span>
         </Link>
 
         <div className={styles.appGrid} aria-label="ホームアプリ">

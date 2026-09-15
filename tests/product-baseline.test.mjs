@@ -47,7 +47,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.throws(() => validateBaseline(unapprovedMarket), /PAPER runtime/);
   const missingBotControl = structuredClone(source);
   delete missingBotControl.chatInteraction.connectedMcpPresentation;
-  assert.throws(() => validateBaseline(missingBotControl), /接続bot管理/);
+  assert.throws(() => validateBaseline(missingBotControl), /Zema/);
+  const oldDisplayName = structuredClone(source);
+  oldDisplayName.chatInteraction.displayName = 'Chat';
+  assert.throws(() => validateBaseline(oldDisplayName), /Zema/);
   const fakeLiveProgress = structuredClone(source);
   fakeLiveProgress.chatInteraction.liveProgress.fabricatedProgressAllowed = true;
   assert.throws(() => validateBaseline(fakeLiveProgress), /接続bot管理/);

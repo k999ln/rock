@@ -503,7 +503,7 @@ export default function Workbench({
   return (
     <WorkspaceShell
       running={running}
-      title="Chat · 仕事"
+      title="Zema · 仕事"
       onConnect={() => setDeviceOpen(true)}
     >
       {content}

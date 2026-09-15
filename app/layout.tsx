@@ -6,7 +6,7 @@ import './work/work.css';
 export const metadata: Metadata = {
   title: 'RockstarOS',
   description:
-    'Sky、Chat、Wallet、Market、Fundを一つのホームから使うRockstarOS Developer Preview。',
+    'Sky、Zema、Wallet、Market、Fundを一つのホームから使うRockstarOS Developer Preview。',
   applicationName: 'RockstarOS',
   authors: [{ name: 'kaiya' }],
   appleWebApp: {
