@@ -13,7 +13,10 @@
       "title": "最新main・AGENTS・作業状態の確認",
       "status": "done",
       "dependsOn": [],
-      "evidence": ["docs/csv-business-v1.ja.md"]
+      "evidence": [
+        "docs/csv-business-v1.ja.md",
+        "docs/evidence/csv-production-deployment-20260915.ja.md"
+      ]
     },
     {
       "id": "CSV-R01",
@@ -44,7 +47,10 @@
       "title": "ROCKと既存Sitesの公開統合を解く",
       "status": "done",
       "dependsOn": ["CSV-R00"],
-      "evidence": ["docs/csv-business-v1.ja.md"]
+      "evidence": [
+        "docs/csv-business-v1.ja.md",
+        "docs/evidence/csv-production-deployment-20260915.ja.md"
+      ]
     },
     {
       "id": "CSV-B01",
@@ -294,18 +300,23 @@
     {
       "id": "CSV-P00",
       "title": "PRIVATE/PIXEL最新main・公開記録・現行運用を再確認",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [],
-      "reason": "最新mainの同期と必須検査を実行中。",
-      "evidence": ["docs/csv-business-v1.ja.md"]
+      "evidence": [
+        "docs/csv-business-v1.ja.md",
+        "docs/evidence/csv-production-deployment-20260915.ja.md"
+      ]
     },
     {
       "id": "CSV-P01",
       "title": "既存Basicの正しい販売先を整える",
       "status": "blocked",
       "dependsOn": ["CSV-P00"],
-      "reason": "P00のreadinessと本番差分確認が必要。",
-      "evidence": ["docs/csv-business-v1.ja.md"]
+      "reason": "apexは販売可能だが旧価格かつ/basicがなく、wwwは3,000円だがSecrets未設定で販売不能。正しい本番Secrets・D1・domain切替権限が必要。",
+      "evidence": [
+        "docs/csv-business-v1.ja.md",
+        "docs/evidence/csv-production-deployment-20260915.ja.md"
+      ]
     },
     {
       "id": "CSV-P02",
