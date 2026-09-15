@@ -203,8 +203,26 @@
     "instagram-fashion-brand-operations",
     "goal-driven-brand-operations",
     "sky-earnings-settlement",
-    "generic-mcp-connector"
+    "generic-mcp-connector",
+    "csv-paid-work-pilot"
   ],
+  "csvBusinessPilot": {
+    "productId": "rockstar-csv-cleanup",
+    "status": "p0_implementation_in_progress_external_validation_pending",
+    "contract": "docs/csv-business-v1.ja.md",
+    "security": "docs/csv-business-security.ja.md",
+    "taskManifest": "data/csv-business-tasks.json",
+    "buyerPriceMinor": 300000,
+    "buyerCurrency": "JPY",
+    "retentionDays": 7,
+    "monthlyFeePolicy": "csv-seller-fee/1",
+    "monthlyThresholdUsdMinor": 3000,
+    "monthlyFeeUsdMinor": 888,
+    "periodTimezone": "Asia/Tokyo",
+    "manualPaymentCountsAsVerifiedRevenue": false,
+    "liveBillingEnabled": false,
+    "externalMarketplaceAutomationEnabled": false
+  },
   "fashionBrandOperations": {
     "status": "autonomous_mock_verified",
     "productId": "org.rockstar.fashion-brand-ops",

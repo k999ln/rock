@@ -228,6 +228,7 @@ export default function Workbench() {
             <Link href="/work" aria-current="page">
               手順のある仕事
             </Link>
+            <Link href="/csv">CSV仕事</Link>
             <Link href="/activity">ツールの実行履歴</Link>
           </nav>
           <div className="work-title">

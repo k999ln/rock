@@ -169,10 +169,7 @@ export const mercariRevenuePlans = sqliteTable(
     updatedAt: text('updated_at').notNull(),
   },
   (table) => [
-    index('idx_mercari_revenue_user_updated').on(
-      table.userId,
-      table.updatedAt,
-    ),
+    index('idx_mercari_revenue_user_updated').on(table.userId, table.updatedAt),
   ],
 );
 
@@ -292,10 +289,7 @@ export const marketplaceReservations = sqliteTable(
     updatedAt: text('updated_at').notNull(),
   },
   (table) => [
-    index('idx_marketplace_reservation_user').on(
-      table.userId,
-      table.updatedAt,
-    ),
+    index('idx_marketplace_reservation_user').on(table.userId, table.updatedAt),
   ],
 );
 
@@ -350,6 +344,95 @@ export const marketplaceEvents = sqliteTable(
   },
   (table) => [
     index('idx_marketplace_events_user').on(table.userId, table.createdAt),
-    index('idx_marketplace_events_subject').on(table.subjectId, table.createdAt),
+    index('idx_marketplace_events_subject').on(
+      table.subjectId,
+      table.createdAt,
+    ),
+  ],
+);
+
+export const csvJobs = sqliteTable(
+  'csv_jobs',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    status: text('status').notNull(),
+    paymentStatus: text('payment_status').notNull(),
+    paymentMethod: text('payment_method'),
+    paymentReference: text('payment_reference'),
+    inputName: text('input_name').notNull(),
+    inputKey: text('input_key').notNull(),
+    inputBytes: integer('input_bytes').notNull(),
+    inputSha256: text('input_sha256').notNull(),
+    inputEncoding: text('input_encoding').notNull(),
+    specificationJson: text('specification_json').notNull(),
+    quoteMinor: integer('quote_minor').notNull(),
+    currency: text('currency').notNull(),
+    resultKey: text('result_key'),
+    safeResultKey: text('safe_result_key'),
+    reportJsonKey: text('report_json_key'),
+    reportHtmlKey: text('report_html_key'),
+    outputSha256: text('output_sha256'),
+    validationJson: text('validation_json'),
+    attempt: integer('attempt').notNull().default(0),
+    revision: integer('revision').notNull().default(0),
+    errorCode: text('error_code'),
+    expiresAt: integer('expires_at').notNull(),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+    acceptedAt: integer('accepted_at'),
+    completedAt: integer('completed_at'),
+  },
+  (table) => [
+    index('idx_csv_jobs_user_updated').on(table.userId, table.updatedAt),
+    index('idx_csv_jobs_status_updated').on(table.status, table.updatedAt),
+    uniqueIndex('idx_csv_jobs_input_key').on(table.inputKey),
+  ],
+);
+
+export const csvJobEvents = sqliteTable(
+  'csv_job_events',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    jobId: text('job_id').notNull(),
+    userId: text('user_id').notNull(),
+    event: text('event').notNull(),
+    detailJson: text('detail_json').notNull(),
+    createdAt: integer('created_at').notNull(),
+  },
+  (table) => [
+    index('idx_csv_events_job').on(table.jobId, table.id),
+    index('idx_csv_events_user').on(table.userId, table.id),
+  ],
+);
+
+export const csvBillingAccounts = sqliteTable('csv_billing_accounts', {
+  userId: text('user_id').primaryKey(),
+  billingAccountId: text('billing_account_id').notNull(),
+  contractId: text('contract_id').notNull(),
+  policyVersion: text('policy_version').notNull(),
+  status: text('status').notNull(),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+});
+
+export const csvMonthlyFees = sqliteTable(
+  'csv_monthly_fees',
+  {
+    id: text('id').primaryKey(),
+    billingAccountId: text('billing_account_id').notNull(),
+    monthJst: text('month_jst').notNull(),
+    verifiedNetUsdMinor: integer('verified_net_usd_minor').notNull(),
+    feeDueUsdMinor: integer('fee_due_usd_minor').notNull(),
+    status: text('status').notNull(),
+    providerEvidence: text('provider_evidence').notNull(),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_csv_fee_account_month').on(
+      table.billingAccountId,
+      table.monthJst,
+    ),
   ],
 );

@@ -89,13 +89,26 @@ export function validateBaseline(
     '目標駆動のブランド運営能力が必要です',
   );
   requireValue(
+    data.primaryCapabilities?.includes('csv-paid-work-pilot') &&
+      data.csvBusinessPilot?.productId === 'rockstar-csv-cleanup' &&
+      data.csvBusinessPilot?.buyerPriceMinor === 300000 &&
+      data.csvBusinessPilot?.retentionDays === 7 &&
+      data.csvBusinessPilot?.monthlyThresholdUsdMinor === 3000 &&
+      data.csvBusinessPilot?.monthlyFeeUsdMinor === 888 &&
+      data.csvBusinessPilot?.periodTimezone === 'Asia/Tokyo' &&
+      data.csvBusinessPilot?.manualPaymentCountsAsVerifiedRevenue === false &&
+      data.csvBusinessPilot?.liveBillingEnabled === false &&
+      data.csvBusinessPilot?.externalMarketplaceAutomationEnabled === false,
+    'CSV販売実証の価格・保管・月額境界・外部作用gateを維持してください',
+  );
+  requireValue(
     data.fashionBrandOperations?.externalEffectsExecutedByAutopilot === false,
     'Autopilotが外部作用を直接実行してはいけません',
   );
   const skyInventory = resolve(root, data.sky?.inventory || '');
   requireValue(
     !relative(root, skyInventory).startsWith('..') &&
-      read(skyInventory).includes('Web / PCで現在使える10件'),
+      read(skyInventory).includes('Web / PCで現在使える11件'),
     'Skyの役割と収録ツールの正本が必要です',
   );
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');

@@ -1,5 +1,7 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-15実装追記（RQ01〜RQ36不変）: 最初の販売実証をCSV整形に絞り、`rockstar-csv-cleanup`を追加する。市場補助型で、本人が外部市場の受注・連絡・入金を扱い、RockstarOSは私有ファイルの受付、決定的変換、独立検査、成果物、7日削除を担う。購入者試験価格は税込3,000円。CSV販売者向けの限定policyはJST月のProvider確認済み純入金30 USD相当以上の月だけ8.88 USD、未達月0、債務繰越なしとする。これは既存RQ20の「月最大888 cents、先払い・債務化なし」を狭める商品別条件であり、他商品の契約を変更しない。正本は [CSV仕事 v1](csv-business-v1.ja.md) とする。
+
 2026-09-13追記（v1.36）: 利用者は、既存フロントへWallet backendを接続し、本番環境で実際に使えるところまで進めるよう明示。RQ36を追加する。最初の実受取レールはBase MainnetのUSDCとし、外部EIP-1193 WalletでRockの受取アドレスを所有署名する。RockstarOSは秘密鍵、seed phrase、包括的送金権限、利用者資産を保管しない。署名済みEarning Receiptから既存ルールで確定した `SKY_SERVICE_FEE` の回収指図だけを作り、Base上の公式USDC contract、exactな受取先・金額、finalized blockを照合して着金確定する。本番配備は実施対象だが、owner Walletの登録と最初の実transferは本人署名・本人確認が完了するまで実施済みにしない。本人限定Siteを一般公開する前にowner受取先を登録する。
 
 2026-09-13追記（v1.35）: 利用者は、外部Wallet会社待ちではRock自身の回収ができないため、最初は自社側のWalletで進める方針を明示。RQ35を追加する。最初のProviderを `org.rockstar.settlement-wallet` とし、署名検証済み収益から既存ルールで確定したRock利用料の受取・報告を担う。共通Provider Adapterを迂回せず、外部事業者の追加・差替え余地を維持する。初期capabilityは `collect_platform_fee` と `reporting` のsandboxだけで、利用者資産の包括保管、任意送金、交換、ファンド運用、LIVE回収は有効化しない。
@@ -343,6 +345,12 @@ RockstarOSのWallet画面から外部EIP-1193 Walletを接続し、Base Mainnet�
 Billing Workerは、署名検証済みEarning Receiptへ配分済みの `SKY_SERVICE_FEE` ごとにidempotentな回収指図をD1へ作る。指図額は1件・月累計とも既存の最大888 USD centsを越えない。受取先未登録、着金待ち、finalized待ち、着金済み、結果不明を分離し、timeoutやRPC障害時に自動再送しない。同じtransaction hashを複数指図へ使用できず、Baseの公式USDC contractがemitした `Transfer` の受取先と6桁decimal換算額がexactに一致し、receipt成功かつfinalized blockに入った場合だけ着金済みとする。
 
 このレールはRockに帰属する利用料の受取に限定し、利用者資産のcustody、利用者へのpayout、任意入金、交換、運用、税務判定を追加しない。外部Wallet／ファンド会社はRQ34のProvider Adapterとして別途接続できる。実装と本番配備が合格しても、owner自身のWallet署名と最初の実transferが未実施なら、実Wallet登録・実着金の実績とは表示しない。詳細は [Rock Wallet本番受取レール](rock-wallet-production-rail-20260913.md) を参照する。
+
+### CSV販売実証の限定追加（RQ01〜RQ36は変更しない）
+
+`rockstar-csv-cleanup`は、1ファイル10 MiB・50,000行・100列までのUTF-8/BOM/CP932 CSVを、列名、列順、前後空白、重複、並び順、出力文字コードの明示指定だけで変換する。値を文字列として保ち、先頭0、長い数字、引用内改行、引用符を失わず、指定外の推測・補完・計算をしない。成果物はowner付き私有objectへ保存し、受付から7日または本人の即時削除で消す。buyerへの直接共有はbuyer認証と期限付き権限が実装されるまで有効化しない。
+
+CSV販売者向け`csv-seller-fee/1`は、billing account・contract・policy version単位、JST月、Provider確認済みの返金・市場手数料・税・取引実費控除後純入金を基準とする。30.00 USD未満は0、以上は8.88 USD、同月一回、未達債務・翌月繰越・手入力による課金なしとする。本番Provider未接続の間は判定とschemaだけを実装し、実請求・実回収を開始しない。既存RQ20の月最大888 cents、先払いなし、実費優先より利用者に不利な条件へ広げない。
 
 ## 1.0への8原則の適用（RQ01〜RQ36を維持）
 

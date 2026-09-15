@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-14",
-  "milestone": "Rock Settlement WalletのBase Mainnet USDC受取レールを本番Workerとowner限定Siteへ配備。秘密鍵非保管とfinalized着金照合を維持",
-  "nextAction": "ownerが本番Wallet画面で外部Walletの所有署名を行い、最初の実Earning Receipt対応transferをfinalized後に照合する。",
+  "milestone": "CSV整形を最初の販売仕事として、決定的変換・独立検査・私有成果物・スマホ受付・料金境界を既存Sites本番系統へ統合",
+  "nextAction": "CSVの独立queueを配置して実スマホ閉鎖後の完了を受入し、真正な第三者1件の販売・入金・納品をProvider証拠で検証する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -1076,6 +1076,19 @@
         "app/api/revenue/mercari/route.ts",
         "components/mercari-revenue-starter.tsx",
         "tests/mercari-revenue.test.mjs"
+      ]
+    },
+    {
+      "id": "CSV00",
+      "title": "CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "data/csv-business-tasks.json",
+        "docs/csv-business-v1.ja.md",
+        "lib/csv-transform.ts",
+        "lib/csv-job-store.ts",
+        "components/csv-business-workspace.tsx"
       ]
     }
   ],

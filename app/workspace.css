@@ -22,6 +22,16 @@
 .rock-workspace a:hover {
   opacity: 1;
 }
+.csv-terms {
+  width: min(780px, 100%);
+  margin: 0 auto;
+  padding: 48px 32px 80px;
+}
+.csv-terms h1 { font-size: clamp(32px, 6vw, 52px); line-height: 1.1; margin: 20px 0 34px; }
+.csv-terms h2 { font-size: 19px; margin: 32px 0 8px; }
+.csv-terms p { color: #59645e; }
+.csv-terms a { color: #405b20; text-decoration: underline; }
+@media (max-width: 640px) { .csv-terms { padding: 30px 19px 60px; } }
 .rock-workspace a:focus-visible,
 .rock-workspace button:focus-visible,
 .rock-workspace input:focus-visible {

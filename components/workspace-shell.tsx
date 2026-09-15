@@ -17,6 +17,7 @@ import {
   MessageCircle,
   Monitor,
   Star,
+  Table2,
   Wallet,
 } from 'lucide-react';
 import { monitorDevice } from '@/lib/device';
@@ -34,6 +35,7 @@ const navigation = [
   { href: '/sky', label: 'Sky', Icon: Grid2X2 },
   { href: '/chat', label: 'Chat', Icon: MessageCircle },
   { href: '/work', label: '仕事・履歴', Icon: ListChecks },
+  { href: '/csv', label: 'CSV仕事', Icon: Table2 },
   { href: '/wallet', label: 'Wallet', Icon: Wallet },
   { href: '/market', label: 'Market', Icon: Activity },
 ];

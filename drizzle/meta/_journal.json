@@ -71,6 +71,13 @@
       "when": 1789312353749,
       "tag": "0009_sad_giant_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1789460685350,
+      "tag": "0010_yielding_emma_frost",
+      "breakpoints": true
     }
   ]
 }
