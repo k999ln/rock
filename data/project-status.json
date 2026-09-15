@@ -1508,7 +1508,9 @@
     "status": "SOURCE_INTEGRATION_NOT_BUILT",
     "request": "スマホ本体にOSを書き込める版を作成して",
     "candidateDevice": "Pixel 10 / frankel",
+    "targetFamilyConfirmed": true,
     "targetConfirmed": false,
+    "deviceReadbackConfirmed": false,
     "buildEnvironment": "USER_HAS_NONE",
     "cloudProvisioned": false,
     "sourceLock": "os/physical/frankel-source-lock.json",
@@ -1532,7 +1534,7 @@
       "accountConfigured": false,
       "spendIncurredByThisWork": false
     },
-    "targetDiscussion": "Current consultation mentions Pixel 7 / panther; current source lock remains Pixel 10 / frankel until exact model and SKU are read-only confirmed",
+    "targetDiscussion": "Owner selected the existing Pixel 10 / frankel as the first physical target. Exact device readback and OEM unlocking remain required before build approval or flash; Pixel 7 / panther is deferred.",
     "recommendedBuildEnvironment": "DigitalOcean CPU-Optimized Regular 48 vCPU / 96 GiB / 600 GiB / Ubuntu 24.04 x86_64; Google Cloud is the alternative for detachable persistent storage",
     "latestRequest": "Develop the OS-owned common component API, versioning, app isolation, owner approval, Wallet ledger, encrypted migration/backup and signed update/rollback gates; native build and physical release proof remain separate gates",
     "localAi": {

@@ -125,9 +125,9 @@ npm run release:check
 
 現在のWeb/Skyローンチ候補、起動・設定・監視・復旧手順は[OSバックエンド・ローンチ手順](docs/backend-launch-20260912.md)を参照してください。
 
-多機種対応は、**共通RockstarOS Core＋機種／SKU別Device Support Package**で進めます。提供区分は完全なOS image、Android GSI実験版、既存OS上のclient、非対応を混同しません。Pixel候補は未確定、BlackBerryは機種別調査、iPhone／iPadはOS置換ではなくclientです。[多機種対応設計](docs/device-support-architecture.md)／[機械可読の対応台帳](data/device-support-matrix.json)。
+多機種対応は、**共通RockstarOS Core＋機種／SKU別Device Support Package**で進めます。提供区分は完全なOS image、Android GSI実験版、既存OS上のclient、非対応を混同しません。最初の物理対象は所有済みPixel 10／`frankel`に決定し、Pixel 7はその受入後まで保留します。BlackBerryは機種別調査、iPhone／iPadはOS置換ではなくclientです。[多機種対応設計](docs/device-support-architecture.md)／[機械可読の対応台帳](data/device-support-matrix.json)。
 
-スマホ実機版の開発を開始しました。現在はソース統合準備で、書込み可能なOSは未生成です。直近相談のPixel 7／`panther`と既存設定のPixel 10／`frankel`が不一致のため、実機確認前に対象を確定しません。lockの機種/SKU確認が完了するまでfull OS buildは停止し、build入口は64 GiB RAM／400 GiB空きとlock由来sourceの再検証を要求します。[2026-09-12の進捗再監査](docs/current-state-20260911.md#2026-09-12--github実装実機版ビルド環境の再監査)／[ビルド環境・実装・次の手順](docs/phone-preview-20260911.md)。
+スマホ実機版の開発を開始しました。最初の対象はPixel 10／`frankel`ですが、現在はソース統合準備で、書込み可能なOSは未生成です。所有端末のproductとOEM unlocking可否を読取り専用で確認するまでfull OS buildとflashは停止し、build入口は64 GiB RAM／400 GiB空きとlock由来sourceの再検証を要求します。[現在の開発状態](docs/current-state-20260911.md)／[ビルド環境・実装・次の手順](docs/phone-preview-20260911.md)。
 
 公開設定・本人限定サイトの状況は[今回の設定記録](docs/owner-setup-20260911.md)を参照。
 
@@ -149,7 +149,7 @@ SkyのWallet画面には、検証済み自動化収益の精算状況を追加�
 
 **このbranchにはLinux / Buildroot / ARM64 QEMU native OSの試作があります。** main/native/設計の3入力を統合した[PR #2](https://github.com/k999ln/rock/pull/2)を起点に開発しています。旧`b8287bc`の[限定受入D0〜D5](docs/os-acceptance-b8287bc-20260909.md)を保持し、run44は元planの5boot・61jobs・3641.769秒と正常停止を独立照合して回収しました。旧合格とは別に、Game統合9ab候補で[D0〜D6の限定受入](docs/os-acceptance-9abf78a-20260910.md)を完了しました。mainへの統合と実機対応は未実施です。
 
-開発入口: [native統合方針](docs/native-os-integration.md)、[nativeの使い方](systems/rock-star-os/README.md)、[過去のsource検証](docs/native-os-validation.md)、[現在のCHECKPOINT](CHECKPOINT.md)。以前のBlackBerry希望は型番未確認。現在のPixel 10／GrapheneOS候補も機種/SKUの確認待ちです。月888 cents固定・同契約の複数端末で1回を維持します。
+開発入口: [native統合方針](docs/native-os-integration.md)、[nativeの使い方](systems/rock-star-os/README.md)、[過去のsource検証](docs/native-os-validation.md)、[現在のCHECKPOINT](CHECKPOINT.md)。以前のBlackBerry希望は型番未確認。Pixel 10／`frankel`を最初の実機対象に選択済みで、端末readbackとOEM unlocking確認待ちです。月888 cents固定・同契約の複数端末で1回を維持します。
 
 旧Android/AOSPの入口は [OS開発設計書](docs/os-development-design.md)。現在の製品判断には製品ベースと対象branchの現行方針を使います。
 
