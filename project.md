@@ -1,5 +1,11 @@
 # avocadoOS — 事業・設計・進捗
 
+## 2026-09-15 — avocadoOS 1.0と将来の版更新規則を固定
+
+現在の共通製品版を`avocadoOS 1.0`、公開前表示を`avocadoOS 1.0 Developer Preview`に決定した。表示値は`data/product-identity.json`へ集約し、Web画面は同じ値を読むため、将来は一か所の版更新で表示を揃えられる。
+
+互換性を維持する改善は`1.5`のようなminor更新、Platform API・保存形式・署名trust rootなどの非互換変更はmigrationとrollback受入を伴う`2.0`のようなmajor更新とする。各Device Support Packageは対応Core版の範囲を宣言し、版番号だけで完成や公開可能とは扱わない。
+
 ## 2026-09-15 — 正式製品名をavocadoOSへ固定
 
 利用者向けの正式製品名を`avocadoOS`へ変更し、変更しにくい内部識別子は既存の`dev.rock`で固定した。現在のWeb画面、PWA metadata、Android表示ラベル、通知、診断出力はavocadoOSへ更新する。
@@ -480,7 +486,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-15 / OS Platform Core v1の登録・承認・Wallet・更新境界 / 完了 74/104件
+最終更新: 2026-09-15 / OS Platform Core v1の登録・承認・Wallet・更新境界 / 完了 75/105件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -504,6 +510,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB03 | Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](components/rock-studio.tsx) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
 | WEB04 | avocadoOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | BRD01 | 正式製品名をavocadoOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
+| VER01 | avocadoOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |
 | WLT02 | 本人別の残高・売上・経費・取消履歴をD1へ保存するWallet専用APIと操作画面を実装 | 完了 | [記録](app/api/wallet/route.ts) · [記録](components/wallet-workspace.tsx) · [記録](lib/operations.ts) · [記録](tests/wallet-backend.test.mjs) |
 | WLT03 | Wallet／ファンド会社を交換可能な外部Providerとして受ける責任境界とadapter契約を固定 | 完了 | [記録](docs/external-wallet-fund-provider-boundary-20260913.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) · [記録](docs/validation.md) |

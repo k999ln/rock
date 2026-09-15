@@ -22,6 +22,7 @@ import Link from 'next/link';
 import { useEffect, useState, type ReactNode } from 'react';
 import { DeviceConnection } from '@/components/device-connection';
 import WorkspaceShell from '@/components/workspace-shell';
+import { PRODUCT_PREVIEW_NAME } from '@/lib/product-identity';
 import {
   Dialog,
   DialogContent,
@@ -226,8 +227,8 @@ export default function SystemSettings() {
           </SettingsGroup>
 
           <p className={styles.boundary}>
-            avocadoOS 1.0 Developer
-            Preview。Web画面、QEMU版、物理端末版は別々に管理されています。設定画面だけで端末を書き換えたり、実資金を動かしたりしません。
+            {PRODUCT_PREVIEW_NAME}
+            。Web画面、QEMU版、物理端末版は別々に管理されています。設定画面だけで端末を書き換えたり、実資金を動かしたりしません。
           </p>
         </div>
 

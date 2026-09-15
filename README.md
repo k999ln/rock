@@ -1,11 +1,11 @@
 # avocadoOS — 自動化を接続・実行・管理するOS
 
-avocadoOSは、AI自動化ToolをSkyから接続し、利用者が確認した権限・実行先・費用上限で動かし、結果、費用、収益、復旧状態を一つのOSで管理する製品です。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ43、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。
+avocadoOSは、AI自動化ToolをSkyから接続し、利用者が確認した権限・実行先・費用上限で動かし、結果、費用、収益、復旧状態を一つのOSで管理する製品です。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ44、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`avocadoOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
 
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-15 / 104 task中74 done・21 in progress・9 planned
+更新日: 2026-09-15 / 105 task中75 done・21 in progress・9 planned
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                           |
@@ -175,11 +175,11 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 
 <details>
 <!-- project-details-summary:start -->
-<summary>104 taskと段階gateの詳細を開く</summary>
+<summary>105 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-15 / OS Platform Core v1の登録・承認・Wallet・更新境界 / 完了 74/104件
+最終更新: 2026-09-15 / OS Platform Core v1の登録・承認・Wallet・更新境界 / 完了 75/105件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -203,6 +203,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | WEB03 | Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](components/rock-studio.tsx) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
 | WEB04 | avocadoOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | BRD01 | 正式製品名をavocadoOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
+| VER01 | avocadoOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |
 | WLT02 | 本人別の残高・売上・経費・取消履歴をD1へ保存するWallet専用APIと操作画面を実装 | 完了 | [記録](app/api/wallet/route.ts) · [記録](components/wallet-workspace.tsx) · [記録](lib/operations.ts) · [記録](tests/wallet-backend.test.mjs) |
 | WLT03 | Wallet／ファンド会社を交換可能な外部Providerとして受ける責任境界とadapter契約を固定 | 完了 | [記録](docs/external-wallet-fund-provider-boundary-20260913.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) · [記録](docs/validation.md) |

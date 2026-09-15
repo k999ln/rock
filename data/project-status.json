@@ -279,6 +279,22 @@
       ]
     },
     {
+      "id": "VER01",
+      "title": "avocadoOS 1.0と将来の1.5／2.0版更新規則を一元管理",
+      "status": "done",
+      "dependsOn": ["BRD01"],
+      "evidence": [
+        "data/product-identity.json",
+        "lib/product-identity.ts",
+        "data/product-baseline.json",
+        "docs/product-baseline.md",
+        "components/workspace-shell.tsx",
+        "components/system-settings.tsx",
+        "app/rockstaros/guide/page.tsx",
+        "tests/product-baseline.test.mjs"
+      ]
+    },
+    {
       "id": "WLT01",
       "title": "Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装",
       "status": "done",

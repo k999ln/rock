@@ -1,0 +1,19 @@
+{
+  "schema": "rockstaros-product-identity/1",
+  "displayName": "avocadoOS",
+  "internalIdentifier": "dev.rock",
+  "version": "1.0",
+  "releaseStage": "developer_preview",
+  "releaseStageLabel": "Developer Preview",
+  "releaseName": "avocadoOS 1.0",
+  "previewName": "avocadoOS 1.0 Developer Preview",
+  "versioning": {
+    "format": "major.minor",
+    "minorExample": "1.5",
+    "majorExample": "2.0",
+    "minorRule": "backward_compatible_features_and_improvements",
+    "majorRule": "breaking_platform_or_storage_change_requires_migration_and_rollback_acceptance",
+    "deviceSupportRule": "each_device_support_package_declares_a_compatible_core_version_range",
+    "completionClaimFromVersionOnly": false
+  }
+}

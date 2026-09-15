@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-15追記（v1.52）: 現在の共通製品版を`avocadoOS 1.0`、公開前の段階表示を`avocadoOS 1.0 Developer Preview`で固定する。製品版は一つの正本から表示し、互換性を維持する機能改善は`1.5`のようなminor更新、Platform APIや保存形式の非互換変更はmigration・rollback受入を必須にして`2.0`のようなmajor更新とする。機種別Device Support Packageは対応Core版の範囲を宣言し、版番号だけで完成・公開可能とは扱わない。RQ44を追加する。
+
 2026-09-15追記（v1.51）: 利用者向けの正式製品名を`avocadoOS`へ変更する。変更しにくい内部識別子は既存の`dev.rock`で固定し、Android package／permission、署名境界、保存schema、`rockstaros-*`識別子、`@rockstaros` package scope、URL `/rockstaros`、既存artifact名を互換名として維持する。新しい画面、metadata、通知、診断出力の現在名は`avocadoOS`とする。`RockstarOS`は旧表示名として読み、過去の証拠と配布物は改変しない。RQ43を追加する。
 
 2026-09-15追記（v1.50）: Skyで選んだToolと自然文の依頼をZemaへ一回だけ引き継ぎ、Zemaで入力確認、実行、ライブ状態、結果、履歴を連続して扱う。依頼本文はURL、D1、server logへ新規保存せず、同一tabのsession storageへ最大2,000文字・10分だけ保持し、対象Toolが受け取ると削除する。jobの受付、開始、完了、失敗は同一画面ではbrowser eventで即時反映し、本人別D1 jobを3秒／15秒の再照合で補完する。専用画面を持つCSV、Mercari、Market等もZemaに担当カードを表示してから実行面へ進み、既存のreceiptと安全gateを迂回しない。
@@ -434,7 +436,15 @@ Wallet基本台帳はowner別の追記型とし、既存行の書換えではな
 
 過去の文書、hash、署名済みmanifest、配布archive、受入証拠に記録された`RockstarOS`は履歴として改変しない。名称変更は新しい署名鍵、production release、実機対応、OTA受入の完了を意味しない。
 
-## 1.0への8原則の適用（RQ01〜RQ43を維持）
+## RQ44 共通製品版を一元管理しminor・major更新を可能にする
+
+現在の共通製品版を **`1.0`**、公開前の段階を **`Developer Preview`** とし、利用者向け表示を **`avocadoOS 1.0 Developer Preview`** に固定する。現在版と段階表示は`data/product-identity.json`を正本とし、Web画面はその値を参照して、将来の更新時に複数画面を個別修正しない。
+
+版は`major.minor`形式とする。既存Platform API、保存データ、Tool、Provider、Device Support Packageとの互換性を維持する機能追加・改善は、`1.1`から`1.5`のようなminor更新にできる。非互換なPlatform API、権限モデル、保存schema、署名trust rootの変更は、migration、backup／restore、rollback、対応端末、Tool／Provider互換性を同一候補で合格させた場合だけ`2.0`のようなmajor更新にできる。
+
+各機種のDevice Support Packageは対応するavocadoOS Coreの版範囲を宣言する。版番号の変更だけでDeveloper Preview、実機対応、production署名、本番金融、一般公開のgateを合格扱いにしない。
+
+## 1.0への8原則の適用（RQ01〜RQ44を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 

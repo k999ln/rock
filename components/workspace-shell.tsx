@@ -4,6 +4,7 @@ import { useEffect, type ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, Cable, House } from 'lucide-react';
 import { monitorDevice } from '@/lib/device';
+import { PRODUCT_RELEASE_NAME } from '@/lib/product-identity';
 
 export default function WorkspaceShell({
   children,
@@ -101,7 +102,7 @@ export default function WorkspaceShell({
           {children}
         </main>
         <div className="rock-bottom-note">
-          <span>avocadoOS 1.0</span>
+          <span>{PRODUCT_RELEASE_NAME}</span>
           <Link
             href="/rockstaros/guide#limits"
             aria-disabled={running || undefined}

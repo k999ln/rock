@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-web-security-response-evidence/1",
-  "observedAt": "2026-09-15T23:02:53Z",
+  "observedAt": "2026-09-15T23:10:30Z",
   "scope": "LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT",
   "server": {
     "runtime": "wrangler-local",
@@ -29,7 +29,7 @@
       "/rock-icon-192.png",
       "/rock-icon-512.png",
       "/rock-icon-maskable.svg",
-      "/_next/static/chunks/index-nqmZ3eXr.js"
+      "/_next/static/chunks/index-BVjIgftS.js"
     ]
   },
   "boundary": {
