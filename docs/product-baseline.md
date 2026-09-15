@@ -1,5 +1,7 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-15追記（v1.50）: Skyで選んだToolと自然文の依頼をZemaへ一回だけ引き継ぎ、Zemaで入力確認、実行、ライブ状態、結果、履歴を連続して扱う。依頼本文はURL、D1、server logへ新規保存せず、同一tabのsession storageへ最大2,000文字・10分だけ保持し、対象Toolが受け取ると削除する。jobの受付、開始、完了、失敗は同一画面ではbrowser eventで即時反映し、本人別D1 jobを3秒／15秒の再照合で補完する。専用画面を持つCSV、Mercari、Market等もZemaに担当カードを表示してから実行面へ進み、既存のreceiptと安全gateを迂回しない。
+
 2026-09-15追記（v1.49）: 仕事の依頼、実行、進捗、確認、結果、履歴を扱う標準アプリの正式表示名を`Chat`から`Zema`へ変更する。既存データ、ブックマーク、外部連携を壊さないため、アプリID`chat`、URL`/chat`、内部の`chatInteraction`および`sky-chat-*`識別子は互換名として維持する。本書の過去記録にある`Chat`は、現在の`Zema`を指す旧表示名として読む。
 
 2026-09-15追記（v1.48）: SkyはToolと自動化ファンドを選ぶ場所、Chatは選択後の進捗を動的に確認する場所とする。ChatはGrok型のライブ活動表示として、受付、開始、実行、確認待ち、完了、保存と、ファンド内Toolの状態を自動更新する。ただしモデルの内部思考は公開せず、本人所有のjob記録、ファンド参加状態、検証済み受領記録だけを表示する。未確認の進捗・収益・利回りを生成しない。ファンド参加後は`/chat?fund={fundId}`、CSV Tool開始後は`/chat?tool=rockstar-csv-cleanup`へ引き継ぐ。
@@ -333,6 +335,8 @@ QEMUの公開準備は10 gateを同じID・状態で `data/qemu-release-audit.js
 main、現在の開発branch、機能branch、Sites公開履歴を比較し、完成度の高い実装を現在の製品ベースへ統合する。履歴が新しいだけ、画面だけ、説明だけを理由に採用せず、保存互換、approval、実行receipt、外部接続・実資金・公開gateを維持できる版を選ぶ。Skyは発見・接続、Zemaは接続後の操作、Walletは本人別の永続収支という責任を崩さない。
 
 Skyで接続が成立したMCP serverとready商品はZemaへbotとして自動表示し、同じスレッドで依頼、方向修正、公開機能と引数、1回承認、実行結果、失敗、停止を扱う。方向修正は、MCPがlive steeringを明示対応しない限り次の実行へ適用する。停止はsessionと未使用承認を失効させ、送信後timeoutや結果不明を自動再実行しない。Walletは本人別D1を正本とし、残高、売上、経費、取消を追記履歴として保持するが、手入力を検証済み収益へ昇格させない。
+
+SkyからZemaへの依頼引き継ぎは同一tabの一回券とし、Tool IDだけを互換URLへ含める。依頼本文はURLやserverへ載せず、10分以内に対象Toolが受け取った場合だけZemaの現在threadへ展開して削除する。実行状態は本人所有のjob recordを正本とし、browser eventは即時表示のためだけに使い、D1再照合なしで完了や収益を確定しない。
 
 Home、Sky、Zema、Wallet、Market、設定は、画面componentだけでなく必要なstylesheetがbuildへ含まれることを自動検査する。server/manifest/HTMLが参照する`_next/static` assetは公開archive内に全て存在しなければならない。GitHubの対象branchと本人限定Sitesへ同じsource commitを保存し、公開後に主要routeとassetの実responseを再確認する。一般公開、main merge、production鍵、実取引・送金、物理端末合格、マイナンバー有効化は、それぞれの既存gateなしにこの統合作業から許可へ変えない。
 

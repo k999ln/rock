@@ -280,8 +280,19 @@ export function validateBaseline(
       data.chatInteraction?.legacyDisplayName === 'Chat' &&
       data.chatInteraction?.compatibilityRoute === '/chat' &&
       data.chatInteraction?.connectedMcpPresentation ===
-      'one_bot_per_connected_server_or_ready_product' &&
+        'one_bot_per_connected_server_or_ready_product' &&
       data.chatInteraction?.controlSurface === 'zema_thread_and_work_center' &&
+      data.chatInteraction?.skyHandoff?.transport ===
+        'same_tab_session_storage' &&
+      data.chatInteraction?.skyHandoff?.selectedToolDeepLink ===
+        '/chat?tool={toolId}' &&
+      data.chatInteraction?.skyHandoff?.requestInUrl === false &&
+      data.chatInteraction?.skyHandoff?.serverPersistence === false &&
+      data.chatInteraction?.skyHandoff?.consumeOnce === true &&
+      data.chatInteraction?.skyHandoff?.ttlSeconds === 600 &&
+      data.chatInteraction?.skyHandoff?.maxRequestChars === 2000 &&
+      data.chatInteraction?.skyHandoff?.liveJobEvent ===
+        'rockstaros:sky-zema-job' &&
       data.chatInteraction?.workManagement?.canonicalRoute ===
         '/chat?view=work' &&
       data.chatInteraction?.workManagement?.compatibilityRoutes?.includes(

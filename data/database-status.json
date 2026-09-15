@@ -9,13 +9,13 @@
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
-    "total": 102,
-    "done": 72,
-    "in_progress": 21,
+    "total": 103,
+    "done": 73,
+    "in_progress": 20,
     "planned": 9,
-    "blocked": 0,
+    "blocked": 1,
     "milestone": "OS Platform Core v1の登録・承認・Wallet・更新境界",
-    "nextAction": "最短ローンチ経路としてWEB01を優先する。現在のWeb/PWA・D1差分を一つの検証済みcommitへ固定してGitHubへ保存し、ownerが本人限定Sitesへの最新版同期を明示承認した後、同じSHAを配備して認証後の主要導線・API・security header・migrationをreadbackする。一般公開、QEMU配布、Android実機、本番金融は別gateのまま維持する。"
+    "nextAction": "最短ローンチ経路はWEB01。GitHub mainは検証済みcommit 7cb7017へ固定済みだが、本人限定Sitesは接続中のアカウントが所有workspaceと一致せず、ブラウザがAccess Denied、Sites APIがproject_not_foundを返すため配備とD1 readbackを停止中。所有workspaceへ接続後、同じSHAを配備して主要導線・API・security header・migrationをreadbackする。待機中も一般公開、QEMU配布、Android実機、本番金融の別gateを混同せず進める。"
   },
   "webSchema": {
     "tableCount": 27,
@@ -163,11 +163,13 @@
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / owner-only Sites",
-        "deploymentStatus": "SOURCE_AHEAD",
+        "deploymentStatus": "OWNER_ACCESS_BLOCKED",
         "productionAppliedThrough": null,
         "productionReadbackAt": null,
-        "evidence": [],
-        "nextAction": "owner-scoped read-only accessでmigration、件数、孤立関係、backup状態を確認する"
+        "evidence": [
+          "docs/evidence/launch/sites-owner-auth-blocker-20260915.json"
+        ],
+        "nextAction": "本人限定Sitesの所有workspaceへ接続し、7cb7017を配備後にmigration、件数、孤立関係、backup状態をreadbackする"
       }
     },
     {

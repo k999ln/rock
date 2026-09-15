@@ -9,14 +9,14 @@
 - データ境界: 5、table: 69
 - source inventory: 5/5確認済み
 - current production readback: 0/5
-- 作業進捗: 102 task中 72 done、21 in progress、9 planned、0 blocked
+- 作業進捗: 103 task中 73 done、20 in progress、9 planned、1 blocked
 - 現在milestone: OS Platform Core v1の登録・承認・Wallet・更新境界
 
 ## 保存境界と配備状態
 
 | 境界 | 責任 | table | source | 配備状態 | 本番適用済み | current readback |
 | --- | --- | ---: | --- | --- | --- | --- |
-| Web D1 | Webサービス状態 | 27 | VERIFIED | SOURCE_AHEAD | 未確認 | 未確認 |
+| Web D1 | Webサービス状態 | 27 | VERIFIED | OWNER_ACCESS_BLOCKED | 未確認 | 未確認 |
 | Sky Billing D1 | 収益精算・請求・受取Wallet | 13 | VERIFIED | DOCUMENTED_NOT_READ_BACK | 0004_rock_settlement_wallet.sql | 未確認 |
 | OS Wallet / Spend SQLite | 端末内Wallet・支出承認・PAPER position | 17 | VERIFIED | QEMU_SCOPED | 未確認 | 未確認 |
 | Android Work Engine SQLite | Android work・artifact・run・event | 6 | VERIFIED | EMULATOR_SCOPED | 未確認 | 未確認 |
@@ -44,7 +44,7 @@
 
 `automation_fund_memberships`、`automation_funds`、`book_records`、`csv_billing_accounts`、`csv_job_events`、`csv_jobs`、`csv_monthly_fees`、`devices`、`fund_plans`、`job_events`、`jobs`、`marketplace_approvals`、`marketplace_assets`、`marketplace_events`、`marketplace_positions`、`marketplace_proposals`、`marketplace_receipts`、`marketplace_reservations`、`mercari_revenue_plans`、`sky_connections`、`sky_developer_tokens`、`sky_tool_events`、`sky_tool_packages`、`sky_tool_submissions`、`tool_controls`、`tool_runs`、`work_jobs`
 
-次の確認: owner-scoped read-only accessでmigration、件数、孤立関係、backup状態を確認する
+次の確認: 本人限定Sitesの所有workspaceへ接続し、7cb7017を配備後にmigration、件数、孤立関係、backup状態をreadbackする
 
 </details>
 
@@ -84,6 +84,6 @@
 
 ## 次の作業
 
-最短ローンチ経路としてWEB01を優先する。現在のWeb/PWA・D1差分を一つの検証済みcommitへ固定してGitHubへ保存し、ownerが本人限定Sitesへの最新版同期を明示承認した後、同じSHAを配備して認証後の主要導線・API・security header・migrationをreadbackする。一般公開、QEMU配布、Android実機、本番金融は別gateのまま維持する。
+最短ローンチ経路はWEB01。GitHub mainは検証済みcommit 7cb7017へ固定済みだが、本人限定Sitesは接続中のアカウントが所有workspaceと一致せず、ブラウザがAccess Denied、Sites APIがproject_not_foundを返すため配備とD1 readbackを停止中。所有workspaceへ接続後、同じSHAを配備して主要導線・API・security header・migrationをreadbackする。待機中も一般公開、QEMU配布、Android実機、本番金融の別gateを混同せず進める。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

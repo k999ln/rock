@@ -172,6 +172,11 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.match(chat, /<ChatLiveProgress/);
   assert.match(chat, /<h1>Zema<\/h1>/);
   assert.doesNotMatch(chat, /<h1>Chat<\/h1>/);
+  assert.match(chat, /consumeSkyZemaHandoff\(preferredTool\)/);
+  assert.match(chat, /SKY_ZEMA_JOB_EVENT/);
+  assert.match(chat, /className="sky-chat-launch-tool"/);
+  assert.match(sky, /queueSkyZemaHandoff\(tool\.id, request\)/);
+  assert.match(sky, /Zemaへ引き継ぐ/);
   assert.match(chat, /setInterval\(refresh, hasActiveJob \? 3_000 : 15_000\)/);
   assert.match(chat, /setInterval\(refresh, 30_000\)/);
   const liveProgress = readFileSync(

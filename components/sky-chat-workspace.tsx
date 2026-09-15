@@ -12,6 +12,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import {
+  ArrowRight,
   Ban,
   Bot,
   CheckCircle2,
@@ -52,6 +53,10 @@ import type {
 } from '@/lib/automation-fund';
 import ChatLiveProgress from '@/components/chat-live-progress';
 import type { CsvJob } from '@/components/chat-live-progress';
+import {
+  consumeSkyZemaHandoff,
+  SKY_ZEMA_JOB_EVENT,
+} from '@/lib/sky-zema-handoff';
 
 type ChatEntry = {
   id: string;
@@ -78,11 +83,11 @@ type FundSnapshot = {
 const AUTO_MODE = 'sky-auto';
 const MCP_PREFIX = 'mcp:';
 const Workbench = dynamic(() => import('@/components/workbench'), {
-  loading: () => <div className="sky-chat-centered">仕事を読み込んでいます…</div>,
+  loading: () => (
+    <div className="sky-chat-centered">仕事を読み込んでいます…</div>
+  ),
 });
-const readyApps = catalog.filter(
-  (tool) => tool.status === 'ready' && tool.runner !== 'delivery-local',
-);
+const readyApps = catalog.filter((tool) => tool.status === 'ready');
 const quickRequests = [
   '案件を見て',
   '記事を整えて',
@@ -175,11 +180,13 @@ export default function SkyChatWorkspace() {
     ])
       .then(([connections, recentJobs]) => {
         if (!active) return;
-        const ids = connections.map(({ tool }) => tool);
-        const preferred = connections.find(
-          ({ tool }) => tool === preferredTool,
-        )?.tool;
-        setConnectedTools(ids);
+        const ids = new Set<string>(connections.map(({ tool }) => tool));
+        const preferred = readyApps.find(
+          (tool) =>
+            tool.id === preferredTool &&
+            (ids.has(tool.id) || Boolean(tool.launchPath)),
+        )?.id;
+        setConnectedTools([...ids]);
         setJobs(recentJobs);
         setSelectedToolId(preferred ?? AUTO_MODE);
       })
@@ -201,6 +208,16 @@ export default function SkyChatWorkspace() {
       active = false;
     };
   }, [preferredTool, setNeedsSignin]);
+
+  useEffect(() => {
+    const updateJob = (event: Event) => {
+      const job = (event as CustomEvent<Job>).detail;
+      if (!job?.id) return;
+      setJobs((current) => [job, ...current.filter(({ id }) => id !== job.id)]);
+    };
+    window.addEventListener(SKY_ZEMA_JOB_EVENT, updateJob);
+    return () => window.removeEventListener(SKY_ZEMA_JOB_EVENT, updateJob);
+  }, []);
 
   useEffect(() => {
     if (workView || needsSignin) return;
@@ -236,10 +253,7 @@ export default function SkyChatWorkspace() {
         .catch(() => undefined);
     };
     refresh();
-    const timer = window.setInterval(
-      refresh,
-      hasActiveCsvJob ? 3_000 : 15_000,
-    );
+    const timer = window.setInterval(refresh, hasActiveCsvJob ? 3_000 : 15_000);
     window.addEventListener('focus', refresh);
     return () => {
       active = false;
@@ -330,6 +344,18 @@ export default function SkyChatWorkspace() {
       ),
     [connectedTools, fashionConnected],
   );
+  const preferredApp = useMemo(
+    () => readyApps.find((tool) => tool.id === preferredTool) ?? null,
+    [preferredTool],
+  );
+  const modeApps = useMemo(
+    () =>
+      preferredApp?.launchPath &&
+      !connectedApps.some((tool) => tool.id === preferredApp.id)
+        ? [preferredApp, ...connectedApps]
+        : connectedApps,
+    [connectedApps, preferredApp],
+  );
   const connectedMcpServers = useMemo(
     () =>
       mcpServers.filter(
@@ -338,13 +364,13 @@ export default function SkyChatWorkspace() {
     [mcpServers],
   );
   const selectedTool =
-    connectedApps.find((tool) => tool.id === selectedToolId) ?? null;
+    modeApps.find((tool) => tool.id === selectedToolId) ?? null;
   const selectedMcpServer =
     connectedMcpServers.find(
       (server) => mcpMode(server.id) === selectedToolId,
     ) ?? null;
   const activeTool = activeRequest
-    ? (connectedApps.find((tool) => tool.id === activeRequest.toolId) ?? null)
+    ? (modeApps.find((tool) => tool.id === activeRequest.toolId) ?? null)
     : null;
   const activeMcpServer = activeRequest
     ? (connectedMcpServers.find(
@@ -358,9 +384,7 @@ export default function SkyChatWorkspace() {
     fundSnapshot?.analytics.find((item) => item.fundId === activeFundId) ??
     null;
   const progressTool =
-    selectedTool ??
-    readyApps.find((tool) => tool.id === preferredTool) ??
-    null;
+    selectedTool ?? readyApps.find((tool) => tool.id === preferredTool) ?? null;
   const visibleJobs = jobs
     .filter((job) =>
       selectedTool
@@ -368,6 +392,32 @@ export default function SkyChatWorkspace() {
         : connectedTools.includes(job.tool),
     )
     .slice(0, 3);
+
+  useEffect(() => {
+    if (loading || workView || !preferredTool) return;
+    const frame = window.requestAnimationFrame(() => {
+      const handoff = consumeSkyZemaHandoff(preferredTool);
+      if (!handoff) return;
+      const tool = readyApps.find((item) => item.id === handoff.toolId);
+      if (!tool) return;
+      setSelectedToolId(tool.id);
+      if (!handoff.request) return;
+      const id = `handoff-${handoff.id}`;
+      setMessages((current) => [
+        ...current,
+        { id: `${id}-me`, side: 'me', text: handoff.request, tool: tool.id },
+        {
+          id: `${id}-sky`,
+          side: 'sky',
+          text: `${roleFor(tool)}へSkyから引き継ぎました。入力を確認して実行すると、状態と結果をこのスレッドで追跡します。`,
+          tool: tool.id,
+        },
+      ]);
+      setWorkflowStatus('ready');
+      setActiveRequest({ id, text: handoff.request, toolId: tool.id });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [loading, preferredTool, workView]);
 
   function chooseMode(toolId: string) {
     setSelectedToolId(toolId);
@@ -537,7 +587,7 @@ export default function SkyChatWorkspace() {
                 <small>内容から自動で選ぶ</small>
               </span>
             </button>
-            {connectedApps.map((tool) => (
+            {modeApps.map((tool) => (
               <button
                 type="button"
                 aria-pressed={selectedToolId === tool.id}
@@ -883,7 +933,19 @@ export default function SkyChatWorkspace() {
                     </li>
                   </ol>
                   <div className="sky-chat-workflow-body">
-                    {activeTool?.runner ? (
+                    {activeTool?.launchPath ? (
+                      <div className="sky-chat-launch-tool">
+                        <div>
+                          <strong>{activeTool.name}</strong>
+                          <p>
+                            専用画面で入力と実行条件を確認します。開始後の状態と結果はZemaへ戻って確認できます。
+                          </p>
+                        </div>
+                        <Link href={activeTool.launchPath}>
+                          Toolを開く <ArrowRight size={16} />
+                        </Link>
+                      </div>
+                    ) : activeTool?.runner ? (
                       <MrToolRunner
                         key={activeRequest.id}
                         tool={activeTool.runner}

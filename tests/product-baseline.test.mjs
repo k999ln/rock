@@ -51,6 +51,9 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const oldDisplayName = structuredClone(source);
   oldDisplayName.chatInteraction.displayName = 'Chat';
   assert.throws(() => validateBaseline(oldDisplayName), /Zema/);
+  const unsafeHandoff = structuredClone(source);
+  unsafeHandoff.chatInteraction.skyHandoff.requestInUrl = true;
+  assert.throws(() => validateBaseline(unsafeHandoff), /Zema/);
   const fakeLiveProgress = structuredClone(source);
   fakeLiveProgress.chatInteraction.liveProgress.fabricatedProgressAllowed = true;
   assert.throws(() => validateBaseline(fakeLiveProgress), /接続bot管理/);

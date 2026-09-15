@@ -19,7 +19,10 @@ const readyCount = (
 const candidateCount = (
   catalogBody.match(/["']?status["']?\s*:\s*['"]candidate['"]/g) || []
 ).length;
-requireValue(readyCount === 11, `Web/PC readyは11件です（実際: ${readyCount}）`);
+requireValue(
+  readyCount === 11,
+  `Web/PC readyは11件です（実際: ${readyCount}）`,
+);
 requireValue(
   candidateCount === 3,
   `導入候補は3件です（実際: ${candidateCount}）`,
@@ -67,6 +70,7 @@ requireValue(
 const sky = read('docs/sky.md');
 const workspace = read('components/sky-workspace.tsx');
 const chat = read('components/sky-chat-workspace.tsx');
+const skyZemaHandoff = read('lib/sky-zema-handoff.ts');
 const mcpBot = read('components/mcp-bot-runner.tsx');
 const workspaceCss = read('app/workspace.css');
 for (const marker of [
@@ -80,7 +84,11 @@ for (const marker of [
   );
 
 const fashionRunner = read('components/fashion-brand-ops-runner.tsx');
-for (const marker of ['Producerモード', 'プロデュース開始', 'ワンクリックで接続'])
+for (const marker of [
+  'Producerモード',
+  'プロデュース開始',
+  'ワンクリックで接続',
+])
   requireValue(
     fashionRunner.includes(marker),
     `Fashion Brand Opsの簡易版/MCP導線に「${marker}」がありません`,
@@ -157,11 +165,25 @@ for (const marker of [
   'sky-chat-workflow',
   'listMcpConnections',
   'sky-chat-bot-board',
+  'consumeSkyZemaHandoff',
+  'SKY_ZEMA_JOB_EVENT',
+  'sky-chat-launch-tool',
   '<McpBotRunner',
 ])
   requireValue(
     chat.includes(marker),
     `Zemaの会話操作に「${marker}」がありません`,
+  );
+
+for (const marker of [
+  'sessionStorage',
+  'SKY_ZEMA_HANDOFF_TTL_MS',
+  'removeItem(SKY_ZEMA_HANDOFF_KEY)',
+  'MAX_REQUEST_LENGTH',
+])
+  requireValue(
+    skyZemaHandoff.includes(marker),
+    `SkyからZemaへの一回引き継ぎに「${marker}」がありません`,
   );
 for (const marker of [
   '.sky-chat-simple',
