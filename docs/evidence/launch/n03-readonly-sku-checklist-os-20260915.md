@@ -28,14 +28,20 @@
 
 前提: 所有者がUSB debuggingを承認済み。OS/スマホは **書込みコマンドを打たない**。
 
+正規入口（`--serial` **必須**。所有者指定の1台だけ）:
+
 ```sh
-# 例（Rock root）。実装入口は launch 上の scripts/inspect-phone.py
-python3 scripts/inspect-phone.py
-# または ADB の必要最小プロパティのみ（serialを成果物へ出さない）
-adb devices -l
+# Rock root。stdout JSON schema: rock-phone-inspection/1
+# serial は成果物JSONに出ない。書込み・flash・unlock実行はしない。
+python3 scripts/inspect-phone.py --serial <所有者指定の1台>
 ```
 
-記録する項目（空値は適合にしない）:
+不足 / 逸脱（使わない）:
+
+- 裸の `python3 scripts/inspect-phone.py`（serial未指定）
+- 成果物としての `adb devices -l`（本人の接続確認専用。診断成果物に載せない）
+
+記録する項目（空値は適合にしない。inspect JSON + 必要なら端末表示/公式資料）:
 
 - [ ] 型番（marketing / hardware）
 - [ ] 機種コード（frankel / panther / その他）
@@ -44,7 +50,9 @@ adb devices -l
 - [ ] OEM unlocking 可否（端末表示 + 公式資料）
 - [ ] bootloader / recovery へ物理キーで戻れるか（手順確認のみ。実際のwipeはしない）
 
-成果物: serialなしの診断JSON/メモ。環境ラベルは **実機(read-only)**。
+成果物: `rock-phone-inspection/1` JSON（serial非出力）。環境ラベルは **実機(read-only)**。
+
+訂正: 2026-09-15、スマホ担当の指摘で §1 入口を `--serial` 必須へ更新。
 
 ## 2. 1機種固定ゲート
 
