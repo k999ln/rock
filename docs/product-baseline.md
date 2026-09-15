@@ -1,5 +1,7 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-15追記（v1.43）: 仕事・実行履歴とCSV仕事は独立したホームアプリではなく、収益Toolを収録するSky内の画面として扱う。ホームと共通メニューの独立入口を廃止し、Sky内から開く。既存の`/work`、`/activity`、`/csv`は保存済みリンクとデータの互換入口として維持し、Sky選択中として表示する。
+
 2026-09-15追記（v1.42）: OS本体へ、Tool／MCP／Providerの共通登録API、Platform API version契約、APK署名・UID・SELinux境界、本人確認付き一回承認、費用上限、停止・失効、追記型Wallet台帳、receipt重複防止、Android Keystore暗号化backup、schema migration、署名・互換性付き更新／rollback gateを追加する。source実装とAndroid/AOSP build、SELinux enforcing boot、production署名、OTA rollback実証は分離し、未実行のrelease gateを合格表示しない。RQ42を追加する。
 
 2026-09-15追記（v1.41）: Local Action AssistantをRockstarOSの物理Android版へ、オフラインのローカルLLM runtimeとして導入する。固定sourceとoverlay、署名限定Binder API、変更系toolの別確認、APK hash・permission・ABI検査を必須にする。source実装とAPK/native build・OS image・実機合格を分離し、未生成artifactを搭載済みと表示しない。RQ41を追加する。
@@ -66,7 +68,7 @@
 
 2026-09-09追記: 設計v1.1の実装承認を受領。公開・実機・MetaMask実資金は準備が整うことを条件に了承。現在の承認範囲は [承認記録](execution-approval-20260909.md)。以下の「承認待ち」は作成時の履歴であり、現在の実装を停止させない。RQ01〜RQ15と料金は変更しない。
 
-版: 1.39 / 更新日: 2026-09-15（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
+版: 1.43 / 更新日: 2026-09-15（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
 
 この文書は利用者がこの日に明示した製品要望を固定する。実装状況は [OS稼働・ゲーム連携監査](os-readiness-audit-20260909.md)（過去の追補・初回監査は履歴）、次の指示は [現在の再開指示](prompts/rock-current-next-20260911.md)、毎回の確認方法は [プロンプト作成規約](prompt-playbook.md) を参照する。決定と実装実績を同じものとして扱わない。
 
@@ -88,7 +90,7 @@ Rock star OSは、AI自動化ツールに特化した端末OS。標準の入口�
 
 ## RQ03 現在開発しているツールも商品
 
-既存・開発中ツールはSky内の独立した商品として扱う。既存原本・所有者・ライセンス・版を保持し、掲載、接続、許可、実行、更新、停止、削除を商品単位で管理する。通常の商品追加・更新にOS再buildを要求しない。
+既存・開発中ツールはSky内の独立した商品として扱う。仕事・実行履歴とCSV仕事もSky配下に置き、ホーム上の独立アプリにはしない。既存原本・所有者・ライセンス・版を保持し、掲載、接続、許可、実行、更新、停止、削除を商品単位で管理する。通常の商品追加・更新にOS再buildを要求しない。
 
 既存のMr.ユーティリティ、記事APK、native recipeの同名・類似機能を同じ商品実体と決めつけない。source/ref/hash、契約とfixtureを照合してから対応付ける。全商品がAI推論を行う、全商品が収益を生む、全商品が完成済み、と表示しない。
 

@@ -85,7 +85,7 @@ void test('primary apps share the RockstarOS black, paper and acid-green system'
   assert.doesNotMatch(sky, /showSidebar=\{false\}/);
 });
 
-void test('OS home exposes every primary workspace without fake device telemetry', () => {
+void test('OS home keeps Work and CSV inside Sky without fake device telemetry', () => {
   const home = readFileSync(
     resolve(root, 'components/home-screen.tsx'),
     'utf8',
@@ -94,21 +94,15 @@ void test('OS home exposes every primary workspace without fake device telemetry
     resolve(root, 'components/home-screen.module.css'),
     'utf8',
   );
-  for (const route of [
-    '/sky',
-    '/chat',
-    '/work',
-    '/csv',
-    '/wallet',
-    '/market',
-    '/settings',
-  ]) {
+  for (const route of ['/sky', '/chat', '/wallet', '/market', '/settings']) {
     assert.match(
       home,
       new RegExp(`href: '${route}'`),
       `${route} is missing from the OS home`,
     );
   }
+  assert.doesNotMatch(home, /href: '\/work'/);
+  assert.doesNotMatch(home, /href: '\/csv'/);
   assert.match(home, /WEB \/ LOCAL/);
   assert.doesNotMatch(home, /BatteryFull|\bWifi\b|\bSignal\b/);
   assert.match(home, /closeOnEscape/);
@@ -126,8 +120,21 @@ void test('workspace shell exposes nested route and running-state affordances', 
   );
   assert.match(shell, /function isCurrentRoute/);
   assert.match(shell, /pathname\.startsWith\(`\$\{href\}\/`\)/);
+  assert.match(shell, /pathname === '\/work'/);
+  assert.match(shell, /pathname === '\/csv'/);
+  assert.doesNotMatch(shell, /\{ href: '\/work', label:/);
+  assert.doesNotMatch(shell, /\{ href: '\/csv', label:/);
   assert.match(shell, /aria-disabled=\{running \|\| undefined\}/);
   assert.match(workspace, /data-running='true'/);
+});
+
+void test('Sky exposes its Work and CSV surfaces', () => {
+  const sky = readFileSync(
+    resolve(root, 'components/sky-workspace.tsx'),
+    'utf8',
+  );
+  assert.match(sky, /href="\/work"/);
+  assert.match(sky, /href="\/csv"/);
 });
 
 void test('every non-home route family keeps a direct home affordance', () => {

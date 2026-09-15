@@ -219,12 +219,12 @@ export default function Workbench() {
   return (
     <WorkspaceShell
       running={running}
-      title="仕事・履歴"
+      title="Sky · 仕事・履歴"
       onConnect={() => setDeviceOpen(true)}
     >
       <div className="work-shell">
         <div className="work-body">
-          <nav className="rock-view-nav" aria-label="仕事と履歴">
+          <nav className="rock-view-nav" aria-label="Skyの仕事と履歴">
             <Link href="/work" aria-current="page">
               手順のある仕事
             </Link>

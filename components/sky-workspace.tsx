@@ -21,6 +21,7 @@ import {
   FilePenLine,
   Lightbulb,
   Link2,
+  ListChecks,
   LoaderCircle,
   MessageCircle,
   Network,
@@ -31,6 +32,7 @@ import {
   ShieldCheck,
   Shirt,
   ShoppingBag,
+  Table2,
   WalletCards,
   X,
   Zap,
@@ -446,6 +448,22 @@ export default function SkyWorkspace({
             </Tabs>
             <div className="sky-feed-header-actions">
               <Link
+                href="/work"
+                aria-label="Skyの仕事・履歴を開く"
+                className="sky-header-action"
+              >
+                <ListChecks size={19} />
+                <span>仕事</span>
+              </Link>
+              <Link
+                href="/csv"
+                aria-label="SkyのCSV仕事を開く"
+                className="sky-header-action"
+              >
+                <Table2 size={19} />
+                <span>CSV</span>
+              </Link>
+              <Link
                 href="/chat"
                 aria-label="Chatを開く"
                 className="sky-header-action"
@@ -573,11 +591,11 @@ export default function SkyWorkspace({
                           ? '詳細'
                           : tool.launchPath
                             ? '使う'
-                          : tool.runner === 'delivery-local'
-                            ? 'PC接続'
-                            : connectedTools.includes(tool.id)
-                              ? '頼む'
-                              : '接続'}
+                            : tool.runner === 'delivery-local'
+                              ? 'PC接続'
+                              : connectedTools.includes(tool.id)
+                                ? '頼む'
+                                : '接続'}
                         <ArrowRight size={16} />
                       </button>
                     </div>
@@ -705,7 +723,9 @@ export default function SkyWorkspace({
                         <span>次からはChatでアプリを選ぶだけです。</span>
                       </div>
                       <button onClick={() => openConnectedTool(selected)}>
-                        {selected.launchPath ? '収益フローを開く' : 'Chatで使う'}
+                        {selected.launchPath
+                          ? '収益フローを開く'
+                          : 'Chatで使う'}
                         <ArrowRight size={16} />
                       </button>
                     </div>

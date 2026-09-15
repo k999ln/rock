@@ -226,7 +226,7 @@ export default function CsvBusinessWorkspace() {
     { type: 'text/csv' },
   );
   return (
-    <WorkspaceShell title="CSV仕事" hideTopActions>
+    <WorkspaceShell title="Sky · CSV仕事" hideTopActions>
       <div className={styles.page}>
         <header className={styles.hero}>
           <div>

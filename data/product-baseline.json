@@ -1,5 +1,5 @@
 {
-  "version": "1.42",
+  "version": "1.43",
   "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -23,6 +23,8 @@
     "role": "automation_selection_permission_dispatch_control_results",
     "definition": "Select a Tool, review its author/version/permissions/cost/execution target, consent, dispatch, stop and inspect results from one control surface.",
     "inventory": "docs/sky.md",
+    "internalSurfaces": ["/work", "/activity", "/csv"],
+    "navigationRule": "Work history and CSV remain compatible routes but are presented as Sky-owned surfaces, not standalone home apps.",
     "legacyInternalName": "hub",
     "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
   },
@@ -75,7 +77,7 @@
     "metadata": "monospace_uppercase",
     "primaryControl": "rounded_high_contrast",
     "studioPrimarySurface": "sdk_code_installation",
-    "homePrimaryApps": ["sky", "chat", "work", "csv", "wallet", "market", "settings"],
+    "homePrimaryApps": ["sky", "chat", "wallet", "market", "settings"],
     "functionalityAudit": [
       "home_app_reachability",
       "truthful_web_status",

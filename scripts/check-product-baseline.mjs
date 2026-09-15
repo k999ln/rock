@@ -306,8 +306,7 @@ export function validateBaseline(
   requireValue(
     data.launchPage?.route === '/rockstaros' &&
       data.launchPage?.primaryAction === 'install_os' &&
-      data.launchPage?.publicDownloadFallback ===
-        '/rockstaros/guide#install' &&
+      data.launchPage?.publicDownloadFallback === '/rockstaros/guide#install' &&
       data.launchPage?.studioUrl ===
         'https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio' &&
       launchPageSource.includes('OSをインストール') &&
@@ -317,26 +316,36 @@ export function validateBaseline(
   );
   const studioSource = read(resolve(root, 'components/rock-studio.tsx'));
   const homeSource = read(resolve(root, 'components/home-screen.tsx'));
+  const skySource = read(resolve(root, 'components/sky-workspace.tsx'));
   const shellSource = read(resolve(root, 'components/workspace-shell.tsx'));
   const workspaceStyles = read(resolve(root, 'app/workspace.css'));
   requireValue(
     data.visualSystem?.surfaces?.includes('/') &&
-    data.visualSystem?.surfaces?.includes('/rockstaros') &&
+      data.visualSystem?.surfaces?.includes('/rockstaros') &&
       data.visualSystem?.surfaces?.includes('/studio') &&
       data.visualSystem?.surfaces?.includes('workspace_shell') &&
       data.visualSystem?.accent === 'acid_green' &&
       data.visualSystem?.studioPrimarySurface === 'sdk_code_installation' &&
-      data.visualSystem?.homePrimaryApps?.includes('work') &&
-      data.visualSystem?.homePrimaryApps?.includes('csv') &&
+      !data.visualSystem?.homePrimaryApps?.includes('work') &&
+      !data.visualSystem?.homePrimaryApps?.includes('csv') &&
+      data.sky?.internalSurfaces?.includes('/work') &&
+      data.sky?.internalSurfaces?.includes('/activity') &&
+      data.sky?.internalSurfaces?.includes('/csv') &&
       data.visualSystem?.businessFunctionalityChanged === false &&
       data.visualSystem?.interactionFunctionalityImproved === true &&
       studioSource.includes('studio-code-first') &&
-      homeSource.includes("id: 'work'") &&
-      homeSource.includes("id: 'csv'") &&
+      !homeSource.includes("id: 'work'") &&
+      !homeSource.includes("id: 'csv'") &&
+      skySource.includes('href="/work"') &&
+      skySource.includes('href="/csv"') &&
       homeSource.includes('WEB / LOCAL') &&
       shellSource.includes('function isCurrentRoute') &&
+      shellSource.includes("pathname === '/work'") &&
+      shellSource.includes("pathname === '/csv'") &&
       shellSource.includes('aria-disabled={running || undefined}') &&
-      workspaceStyles.includes('RockstarOS / Studio — shared dark launch system') &&
+      workspaceStyles.includes(
+        'RockstarOS / Studio — shared dark launch system',
+      ) &&
       workspaceStyles.includes('RockstarOS 1.0 — unified OS chrome') &&
       workspaceStyles.includes('--studio-green: #c8ff2e'),
     'RockstarOS全体の共通visual systemとフロント機能性改善を維持してください',
