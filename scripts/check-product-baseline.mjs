@@ -339,9 +339,12 @@ export function validateBaseline(
       skySource.includes('href="/work"') &&
       skySource.includes('href="/csv"') &&
       homeSource.includes('WEB / LOCAL') &&
-      shellSource.includes('function isCurrentRoute') &&
-      shellSource.includes("pathname === '/work'") &&
-      shellSource.includes("pathname === '/csv'") &&
+      data.homeExperience?.workspaceNavigation ===
+        'sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation' &&
+      !shellSource.includes('Sidebar') &&
+      !shellSource.includes('rock-sidebar') &&
+      shellSource.includes('rock-main-column rock-main-column-full') &&
+      shellSource.includes('className="rock-home-link"') &&
       shellSource.includes('aria-disabled={running || undefined}') &&
       workspaceStyles.includes(
         'RockstarOS / Studio — shared dark launch system',

@@ -1,56 +1,9 @@
 'use client';
 
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import {
-  Activity,
-  ArrowUpRight,
-  Cable,
-  Download,
-  Settings2,
-  CircleHelp,
-  Grid2X2,
-  House,
-  Layers3,
-  MessageCircle,
-  Monitor,
-  Star,
-  Wallet,
-} from 'lucide-react';
+import { ArrowUpRight, Cable, House } from 'lucide-react';
 import { monitorDevice } from '@/lib/device';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
-
-const navigation = [
-  { href: '/', label: 'ホーム', Icon: House },
-  { href: '/sky', label: 'Sky', Icon: Grid2X2 },
-  { href: '/chat', label: 'Chat', Icon: MessageCircle },
-  { href: '/wallet', label: 'Wallet', Icon: Wallet },
-  { href: '/market', label: 'Market', Icon: Activity },
-];
-
-function isCurrentRoute(pathname: string, href: string) {
-  if (href === '/') return pathname === '/';
-  if (href === '/sky')
-    return (
-      pathname === href ||
-      pathname.startsWith('/sky/') ||
-      pathname.startsWith('/income/') ||
-      pathname === '/work' ||
-      pathname.startsWith('/work/') ||
-      pathname === '/activity' ||
-      pathname === '/csv' ||
-      pathname.startsWith('/csv/')
-    );
-  return pathname === href || pathname.startsWith(`${href}/`);
-}
 
 export default function WorkspaceShell({
   children,
@@ -58,7 +11,6 @@ export default function WorkspaceShell({
   contentClassName,
   onConnect,
   running = false,
-  showSidebar = true,
   hideTopActions = false,
 }: {
   children: ReactNode;
@@ -66,11 +18,8 @@ export default function WorkspaceShell({
   contentClassName?: string;
   onConnect?: () => void;
   running?: boolean;
-  showSidebar?: boolean;
   hideTopActions?: boolean;
 }) {
-  const pathname = usePathname();
-  const [installHelp, setInstallHelp] = useState(false);
   useEffect(() => {
     void navigator.serviceWorker?.register('/sw.js').catch(() => {});
     return monitorDevice();
@@ -84,7 +33,7 @@ export default function WorkspaceShell({
     return () => window.removeEventListener('beforeunload', leaving);
   }, [running]);
   return (
-    <SidebarProvider
+    <div
       onClickCapture={(event) => {
         if (
           running &&
@@ -96,120 +45,12 @@ export default function WorkspaceShell({
       className="rock-workspace"
       data-running={running ? 'true' : 'false'}
       aria-busy={running}
-      style={{ '--sidebar-width': '15.5rem' } as CSSProperties}
     >
       <a className="rock-skip" href="#workspace-main">
         メインコンテンツへ
       </a>
-      {showSidebar && (
-        <Sidebar className="rock-sidebar">
-          <SidebarHeader className="rock-sidebar-header">
-            <Link
-              href="/"
-              className="rock-logo"
-              aria-disabled={running || undefined}
-            >
-              <span className="rock-mark">
-                <Star size={22} fill="currentColor" strokeWidth={1.5} />
-              </span>
-              <span>
-                Rockstar<span className="rock-logo-os">OS</span>
-              </span>
-            </Link>
-            <span className="rock-version">
-              1.0 <span>DEVELOPER PREVIEW</span>
-            </span>
-          </SidebarHeader>
-          <SidebarContent className="rock-sidebar-content">
-            <p className="rock-nav-label">ワークスペース</p>
-            <nav aria-label="メインナビゲーション" className="rock-navigation">
-              {navigation.map(({ href, label, Icon }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  aria-current={
-                    isCurrentRoute(pathname, href) ? 'page' : undefined
-                  }
-                  aria-disabled={running || undefined}
-                >
-                  <Icon size={19} strokeWidth={1.7} />
-                  {label}
-                </Link>
-              ))}
-            </nav>
-            <nav aria-label="接続設定" className="rock-navigation">
-              <Link
-                href="/settings"
-                aria-current={
-                  isCurrentRoute(pathname, '/settings') ? 'page' : undefined
-                }
-                aria-disabled={running || undefined}
-              >
-                <Settings2 size={19} strokeWidth={1.7} />
-                接続・利用設定
-              </Link>
-            </nav>
-            <div className="rock-nav-divider" />
-            <p className="rock-nav-label">ROCKSTAROS 1.0</p>
-            <nav aria-label="OSの導入とサポート" className="rock-navigation">
-              <Link href="/rockstaros" aria-disabled={running || undefined}>
-                <Monitor size={19} strokeWidth={1.7} />
-                OSを知る
-                <ArrowUpRight size={14} className="rock-nav-arrow" />
-              </Link>
-              <Link
-                href="/rockstaros/guide"
-                aria-disabled={running || undefined}
-              >
-                <CircleHelp size={19} strokeWidth={1.7} />
-                導入・使い方
-              </Link>
-            </nav>
-          </SidebarContent>
-          <SidebarFooter className="rock-sidebar-footer">
-            <button
-              className="rock-install"
-              onClick={() => setInstallHelp(!installHelp)}
-              aria-expanded={installHelp}
-            >
-              <Download size={16} />
-              アプリとして追加
-            </button>
-            {installHelp && (
-              <p className="rock-install-help">
-                Chromeはアドレスバーのインストール、iPhoneはSafariの共有から「ホーム画面に追加」を選びます。これはWeb版です。OSの導入とは別です。
-              </p>
-            )}
-            <div className="rock-preview-note">
-              <span>現在は開発プレビュー</span>
-              <p>
-                実際の請求・送金は
-                <br />
-                開始していません。
-              </p>
-            </div>
-            <Link
-              href="/fund"
-              className="rock-legacy-link"
-              aria-disabled={running || undefined}
-            >
-              <Layers3 size={16} />
-              自動化ファンド
-              <ArrowUpRight size={13} />
-            </Link>
-          </SidebarFooter>
-        </Sidebar>
-      )}
-      <div
-        className={`rock-main-column ${showSidebar ? '' : 'rock-main-column-full'}`}
-      >
+      <div className="rock-main-column rock-main-column-full">
         <header className="rock-topbar">
-          {showSidebar && (
-            <SidebarTrigger
-              className="rock-menu-trigger"
-              aria-label="メニューを開閉"
-            />
-          )}
           <Link
             href="/"
             className="rock-home-link"
@@ -220,13 +61,8 @@ export default function WorkspaceShell({
             <span>ホーム</span>
           </Link>
           <div className="rock-breadcrumb">
-            {showSidebar && (
-              <>
-                ワークスペース <span>/</span>
-              </>
-            )}
             <strong>{title}</strong>
-            {!showSidebar && <em>DEVELOPER PREVIEW</em>}
+            <em>DEVELOPER PREVIEW</em>
           </div>
           {!hideTopActions && (
             <div className="rock-topbar-actions">
@@ -274,6 +110,6 @@ export default function WorkspaceShell({
           </Link>
         </div>
       </div>
-    </SidebarProvider>
+    </div>
   );
 }

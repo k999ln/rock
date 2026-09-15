@@ -82,7 +82,7 @@ void test('primary apps share the RockstarOS black, paper and acid-green system'
   assert.match(homeStyles, /\.sky,[\s\S]*\.settings \{[\s\S]*#c8ff2e/);
   assert.match(csvStyles, /\.primary \{[\s\S]*#c8ff2e/);
   assert.match(settingsStyles, /\.itemIcon \{[\s\S]*#c8ff2e/);
-  assert.doesNotMatch(sky, /showSidebar=\{false\}/);
+  assert.doesNotMatch(sky, /showSidebar/);
 });
 
 void test('OS home keeps Work and CSV inside Sky without fake device telemetry', () => {
@@ -113,17 +113,14 @@ void test('OS home keeps Work and CSV inside Sky without fake device telemetry',
   );
 });
 
-void test('workspace shell exposes nested route and running-state affordances', () => {
+void test('workspace shell stays sidebar-free and preserves running-state affordances', () => {
   const shell = readFileSync(
     resolve(root, 'components/workspace-shell.tsx'),
     'utf8',
   );
-  assert.match(shell, /function isCurrentRoute/);
-  assert.match(shell, /pathname\.startsWith\(`\$\{href\}\/`\)/);
-  assert.match(shell, /pathname === '\/work'/);
-  assert.match(shell, /pathname === '\/csv'/);
-  assert.doesNotMatch(shell, /\{ href: '\/work', label:/);
-  assert.doesNotMatch(shell, /\{ href: '\/csv', label:/);
+  assert.doesNotMatch(shell, /Sidebar|rock-sidebar|rock-navigation/);
+  assert.match(shell, /rock-main-column rock-main-column-full/);
+  assert.match(shell, /className="rock-home-link"/);
   assert.match(shell, /aria-disabled=\{running \|\| undefined\}/);
   assert.match(workspace, /data-running='true'/);
 });
