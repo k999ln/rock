@@ -10541,3 +10541,286 @@
   .rock-topbar .rock-button svg { display: none; }
   .rock-breadcrumb strong { max-width: 22vw; }
 }
+
+/* RockstarOS 1.0 — unified app surfaces */
+.rock-main.sky-main-feed.sky-main-feed,
+.rock-main.sky-chat-page.sky-chat-page,
+.rock-main.everything-market-page.everything-market-page {
+  color: #171c17;
+  background:
+    radial-gradient(circle at 100% 0, rgba(200, 255, 46, .08), transparent 24%),
+    #f1f3ee;
+}
+
+/* Sky and Chat share the same paper cards and acid-green actions. */
+.sky-main-feed .sky-feed-column,
+.sky-chat-page .sky-chat-simple {
+  border: 1px solid #d7ddd5;
+  border-radius: 18px;
+  color: #171c17;
+  background: #fff;
+  box-shadow: 0 18px 50px rgba(19, 25, 18, .06);
+  overflow: hidden;
+}
+.sky-main-feed .sky-feed-layout {
+  max-width: 820px;
+  padding-top: 28px;
+}
+.sky-main-feed .sky-feed-header,
+.sky-main-feed .sky-assistant,
+.sky-main-feed .sky-feed-search {
+  border-color: #e1e6df;
+  background: #fff;
+}
+.sky-main-feed .sky-feed-title-row h1,
+.sky-main-feed .sky-post-author strong,
+.sky-main-feed .sky-post-open strong,
+.sky-main-feed .sky-feed-empty strong {
+  color: #171c17;
+}
+.sky-main-feed .sky-feed-tabs > [data-slot='tabs-trigger'],
+.sky-main-feed .sky-post-author,
+.sky-main-feed .sky-post-description,
+.sky-main-feed .sky-post-state,
+.sky-main-feed .sky-feed-search,
+.sky-main-feed .sky-assistant-composer input::placeholder {
+  color: #6c756d !important;
+}
+.sky-main-feed .sky-feed-tabs > [data-slot='tabs-trigger'][data-active] {
+  color: #171c17 !important;
+}
+.sky-main-feed .sky-feed-tabs > [data-slot='tabs-trigger'][data-active]::after {
+  background: #9bc91f;
+}
+.sky-main-feed .sky-assistant-avatar,
+.sky-main-feed .sky-provider-avatar {
+  border-color: #c8ff2e;
+  color: #c8ff2e;
+  background: #10130f;
+  box-shadow: none;
+}
+.sky-main-feed .sky-assistant-composer input,
+.sky-main-feed .sky-feed-search input {
+  color: #171c17;
+}
+.sky-main-feed .sky-assistant-composer button,
+.sky-main-feed .sky-post-actions .sky-post-primary,
+.sky-main-feed .sky-feed-post.is-candidate .sky-post-primary,
+.sky-main-feed .sky-feed-post.is-connect .sky-post-primary {
+  border-radius: 999px;
+  color: #0a0d07;
+  background: #c8ff2e;
+  box-shadow: none;
+}
+.sky-main-feed .sky-assistant-composer button:not(:disabled):hover,
+.sky-main-feed .sky-post-actions .sky-post-primary:hover,
+.sky-main-feed .sky-feed-post.is-candidate .sky-post-primary:hover,
+.sky-main-feed .sky-feed-post.is-connect .sky-post-primary:hover {
+  color: #0a0d07;
+  background: #b9ef25;
+  box-shadow: none;
+}
+.sky-main-feed .sky-role-list button {
+  border-color: #d9dfd7;
+  color: #566056;
+  background: #f5f7f2;
+}
+.sky-main-feed .sky-route-reply,
+.sky-main-feed .sky-feed-post {
+  border-color: #e1e6df;
+  color: #171c17;
+  background: #fff;
+}
+.sky-main-feed .sky-feed-post:hover { background: #f7f9f5; }
+.sky-main-feed .sky-feed::before { background: #dce2da; }
+.sky-main-feed .sky-feed::after {
+  background: linear-gradient(180deg, transparent, #a6d624, transparent);
+}
+
+.sky-chat-page.sky-chat-page { padding: 28px 20px 48px; }
+.sky-chat-page .sky-chat-simple { max-width: 900px; margin: 0 auto; }
+.sky-chat-page .sky-chat-commandbar {
+  border-color: #292e27;
+  color: #f5f7f1;
+  background: #0a0c09;
+}
+.sky-chat-page .sky-chat-commandbar > div > span { color: #c8ff2e; }
+.sky-chat-page .sky-chat-commandbar h1 { color: #f5f7f1; }
+.sky-chat-page .sky-chat-commandbar > nav a {
+  border-color: #353b32;
+  color: #eef1e9;
+  background: #151914;
+}
+.sky-chat-page .sky-chat-mode-row,
+.sky-chat-page .sky-chat-messages,
+.sky-chat-page .sky-chat-composer {
+  background: #fff;
+}
+.sky-chat-page .sky-chat-mode-row { border-color: #e1e6df; }
+.sky-chat-page .sky-chat-mode-row > button,
+.sky-chat-page .sky-chat-add-compact {
+  border-color: #d9dfd7;
+  color: #4d574e;
+  background: #f5f7f2;
+}
+.sky-chat-page .sky-chat-mode-row > button.is-selected {
+  border-color: #a7d527;
+  color: #172009;
+  background: #efffc0;
+}
+.sky-chat-page .sky-chat-auto-mark,
+.sky-chat-page .sky-chat-sky-mark,
+.sky-chat-page .sky-chat-bot-mark {
+  color: #c8ff2e;
+  background: #10130f;
+}
+.sky-chat-page .sky-chat-bubble.is-sky,
+.sky-chat-page .sky-chat-welcome.sky-chat-welcome,
+.sky-chat-page .sky-chat-bot-board,
+.sky-chat-page .sky-chat-recent,
+.sky-chat-page .sky-chat-workflow {
+  border-color: #d9dfd7;
+  color: #171c17;
+  background: #f5f7f2;
+}
+.sky-chat-page .sky-chat-bubble.is-me {
+  color: #0a0d07;
+  background: #c8ff2e;
+}
+.sky-chat-page .sky-chat-composer-box {
+  border-color: #cfd6cd;
+  color: #171c17;
+  background: #fff;
+}
+.sky-chat-page .sky-chat-composer-box textarea { color: #171c17; }
+.sky-chat-page .sky-chat-composer button {
+  color: #0a0d07;
+  background: #c8ff2e;
+}
+
+/* Work and Wallet use one card geometry and one primary action. */
+.rock-workspace .work-create,
+.rock-workspace .work-list,
+.rock-workspace .work-detail,
+.wallet-signin,
+.wallet-totals > div,
+.wallet-record-form,
+.wallet-transactions {
+  border-color: #d7ddd5;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 14px 38px rgba(19, 25, 18, .045);
+}
+.rock-workspace .work-primary,
+.wallet-signin > a,
+.wallet-save,
+.wallet-balance-actions button:first-child {
+  border-color: #c8ff2e !important;
+  border-radius: 999px !important;
+  color: #0a0d07 !important;
+  background: #c8ff2e !important;
+}
+.rock-workspace .work-job.selected,
+.rock-workspace .work-review,
+.rock-workspace .work-detail-heading > span {
+  border-color: #cde58e;
+  color: #394713;
+  background: #efffc5;
+}
+.wallet-balance {
+  border: 1px solid #292e27;
+  border-radius: 18px;
+  background: #0a0c09;
+}
+.wallet-balance small svg { color: #c8ff2e; }
+.rock-settlement-wallet {
+  border-color: #292e27;
+  color: #f5f7f1;
+  background:
+    radial-gradient(circle at 92% 0, rgba(200, 255, 46, .13), transparent 34%),
+    #0a0c09;
+  box-shadow: 0 18px 44px rgba(19, 25, 18, .1);
+}
+.rock-settlement-heading > span {
+  border-color: rgba(200, 255, 46, .32);
+  color: #c8ff2e;
+  background: rgba(200, 255, 46, .08);
+}
+.rock-settlement-heading p,
+.rock-settlement-wallet > footer svg { color: #c8ff2e; }
+.rock-settlement-connect,
+.rock-settlement-account { border-color: #353b32; }
+.rock-settlement-connect > button,
+.rock-settlement-collections form button {
+  border-radius: 999px;
+  color: #0a0d07;
+  background: #c8ff2e;
+}
+
+/* Market drops the standalone blue brand in favor of the OS palette. */
+.everything-market-page .market-top,
+.everything-market-page .market-categories {
+  border-color: #d9dfd7;
+  background: rgba(255, 255, 255, .96);
+}
+.everything-market-page .market-brand > span,
+.everything-market-page .market-activity-head > b {
+  color: #c8ff2e;
+  background: #10130f;
+}
+.everything-market-page .market-search {
+  border-color: #d7ddd5;
+  color: #687169;
+  background: #f4f6f1;
+}
+.everything-market-page .market-categories button:hover,
+.everything-market-page .market-categories button.is-active {
+  color: #263012;
+  background: #efffc0;
+}
+.everything-market-page .market-hero {
+  background: linear-gradient(135deg, #f6f8f2 0%, #fff 55%, #f0f6df 100%);
+}
+.everything-market-page .market-hero > div:first-child > span,
+.everything-market-page .market-runtime-card > svg,
+.everything-market-page .market-ticket > span,
+.everything-market-page .market-ticket-steps .is-current {
+  color: #759b19;
+}
+.everything-market-page .market-runtime-card,
+.everything-market-page .market-card,
+.everything-market-page .market-activity,
+.everything-market-page .market-ticket {
+  border-color: #d7ddd5;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 14px 38px rgba(19, 25, 18, .05);
+}
+.everything-market-page .market-card-art,
+.everything-market-page .market-card-art.tone-1,
+.everything-market-page .market-card-art.tone-2,
+.everything-market-page .market-card-art.tone-3,
+.everything-market-page .market-card-art.tone-4 {
+  color: #c8ff2e;
+  background:
+    radial-gradient(circle at 75% 20%, rgba(200, 255, 46, .15), transparent 30%),
+    #10130f;
+}
+.everything-market-page .market-prices button,
+.everything-market-page .market-prices button:last-child,
+.everything-market-page .market-proposal > button,
+.everything-market-page .market-ticket-submit {
+  color: #0a0d07;
+  background: #c8ff2e;
+}
+.everything-market-page .market-side-switch button.is-active {
+  color: #263012;
+  box-shadow: 0 0 0 1px #c8ff2e;
+}
+
+@media (max-width: 767px) {
+  .sky-main-feed .sky-feed-layout { padding-top: 0; }
+  .sky-main-feed .sky-feed-column,
+  .sky-chat-page .sky-chat-simple { border-radius: 0; border-inline: 0; }
+  .sky-chat-page.sky-chat-page { padding: 0 0 40px; }
+}

@@ -355,7 +355,6 @@ export default function SkyWorkspace({
       title="Sky"
       contentClassName="sky-main-feed"
       onConnect={() => setDeviceOpen(true)}
-      showSidebar={false}
     >
       <div className="sky-feed-layout">
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">

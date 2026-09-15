@@ -25,13 +25,13 @@
 }
 .eyebrow {
   font-size: 12px !important;
-  color: #62764a !important;
+  color: #657913 !important;
   font-weight: 800;
   letter-spacing: 0.13em;
 }
 .price {
   min-width: 190px;
-  background: #202625;
+  background: #0a0c09;
   color: #fff;
   padding: 24px;
   border-radius: 20px;
@@ -46,7 +46,7 @@
   font-size: 13px;
 }
 .price small {
-  color: #cfe4ad;
+  color: #c8ff2e;
   margin-top: 8px;
 }
 .trust {
@@ -54,8 +54,8 @@
   flex-wrap: wrap;
   gap: 12px 28px;
   padding: 16px 20px;
-  background: #eef5e5;
-  border: 1px solid #d9e7c5;
+  background: #f4f7ed;
+  border: 1px solid #dce5c7;
   border-radius: 14px;
   margin-bottom: 28px;
   font-size: 13px;
@@ -74,7 +74,7 @@
 .card {
   background: #fff;
   border: 1px solid #dfe5e0;
-  border-radius: 18px;
+  border-radius: 16px;
   padding: 26px;
   box-shadow: 0 12px 36px rgba(31, 40, 35, 0.05);
 }
@@ -87,7 +87,7 @@
   width: 31px;
   height: 31px;
   border-radius: 50%;
-  background: #d6eead;
+  background: #c8ff2e;
   display: grid;
   place-items: center;
   font-weight: 900;
@@ -178,16 +178,16 @@
 .history button,
 .job button {
   border: 1px solid #cbd3cd;
-  border-radius: 9px;
+  border-radius: 999px;
   padding: 11px 15px;
   background: #fff;
   font-weight: 800;
   min-height: 44px;
 }
 .primary {
-  background: #202625 !important;
-  color: #fff !important;
-  border-color: #202625 !important;
+  background: #c8ff2e !important;
+  color: #0a0d07 !important;
+  border-color: #c8ff2e !important;
 }
 .primary:disabled,
 button:disabled {
@@ -302,10 +302,10 @@ button:disabled {
   display: flex;
   gap: 6px;
   align-items: center;
-  background: #d6eead;
-  color: #23301e;
+  background: #c8ff2e;
+  color: #0a0d07;
   padding: 10px 13px;
-  border-radius: 8px;
+  border-radius: 999px;
   font-size: 13px;
   font-weight: 800;
 }

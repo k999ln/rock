@@ -16,9 +16,10 @@ Home、共通workspace shell、Developer Preview紹介、Rock Studioを対象に
 | 処理中のリンクが無反応に見える | 誤操作防止なのか故障なのか判別しにくい | `aria-busy`、`aria-disabled`、視覚的disabled状態を同期した |
 | 狭い画面でHome appと共通headerが詰まる | label縮小と横overflowの原因になる | 3列mobile grid、13px以上のlabel、headerの省スペース規則を追加した |
 | OS本体、紹介、Studioのchromeが別ブランドに見える | 製品内を移動した感覚が弱い | 黒、acid green、丸い主操作、共通focus ringへ統一した |
+| Sky、Chat、仕事、CSV、Wallet、Market、設定が個別の配色・card・navigationを持つ | アプリを移動するたび別製品に見え、操作の優先順位も読み替えが必要 | 全主要アプリを黒い共通chrome、明るい作業面、白いcard、acid greenの主操作、同一sidebarへ統一した |
 
 ## 検証境界
 
-- source契約試験は主要7 route、偽の端末telemetry除去、dialog操作、nested route、処理中状態を固定する。
+- source契約試験は主要7 route、共通app paletteとshell、偽の端末telemetry除去、dialog操作、nested route、処理中状態を固定する。
 - TypeScript、product lint、production build、全体`npm run verify`で回帰を確認する。
 - 本監査はQEMU／Android実機の画素・touch・hardware受入ではない。Web／PWAフロントの改善として記録する。
