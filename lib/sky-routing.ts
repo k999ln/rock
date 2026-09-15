@@ -1,6 +1,7 @@
 export type SkyRole = {
   label: string;
   toolId:
+    | 'rockstar-csv-cleanup'
     | 'mercari-revenue'
     | 'fashion-brand-ops'
     | 'coconala'
@@ -13,6 +14,7 @@ export type SkyRole = {
 };
 
 export const skyRoles: readonly SkyRole[] = [
+  { label: 'CSV自動化役', toolId: 'rockstar-csv-cleanup' },
   { label: '販売収益化役', toolId: 'mercari-revenue' },
   { label: 'ブランド運営役', toolId: 'fashion-brand-ops' },
   { label: '案件判断役', toolId: 'coconala' },
@@ -27,21 +29,23 @@ export const skyRoles: readonly SkyRole[] = [
 export function routeSkyRequest(request: string): SkyRole | null {
   const value = request.trim().toLowerCase();
   if (!value) return null;
-  if (/メルカリ|出品|不用品|中古|販売収益|物販/.test(value))
+  if (/csv|表計算|列名|列順|重複行|文字コード/.test(value))
     return skyRoles[0];
+  if (/メルカリ|出品|不用品|中古|販売収益|物販/.test(value))
+    return skyRoles[1];
   if (
     /ブランド|ファッション|instagram|インスタ|広告|dm|受注|注文|決済|商品|制作|発送/.test(
       value,
     )
   )
-    return skyRoles[1];
-  if (/特許|発明|先行技術|請求項|明細書/.test(value)) return skyRoles[8];
-  if (/法律|弁護士|逮捕|裁判|移民|dv|法務/.test(value)) return skyRoles[7];
+    return skyRoles[2];
+  if (/特許|発明|先行技術|請求項|明細書/.test(value)) return skyRoles[9];
+  if (/法律|弁護士|逮捕|裁判|移民|dv|法務/.test(value)) return skyRoles[8];
   if (/サブスク|定期課金|更新日|支払い失敗|契約管理/.test(value))
-    return skyRoles[6];
-  if (/納品|成果物|レビュー/.test(value)) return skyRoles[5];
-  if (/案件|応募|ココナラ|提案/.test(value)) return skyRoles[2];
-  if (/出典|引用|url|リンク/.test(value)) return skyRoles[4];
-  if (/記事|無料版|note|原稿/.test(value)) return skyRoles[3];
+    return skyRoles[7];
+  if (/納品|成果物|レビュー/.test(value)) return skyRoles[6];
+  if (/案件|応募|ココナラ|提案/.test(value)) return skyRoles[3];
+  if (/出典|引用|url|リンク/.test(value)) return skyRoles[5];
+  if (/記事|無料版|note|原稿/.test(value)) return skyRoles[4];
   return null;
 }

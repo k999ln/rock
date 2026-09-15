@@ -149,6 +149,9 @@ export function validateBaseline(
   requireValue(
     data.primaryCapabilities?.includes('csv-paid-work-pilot') &&
       data.csvBusinessPilot?.productId === 'rockstar-csv-cleanup' &&
+      data.csvBusinessPilot?.productPlacement ===
+        'sky_automation_tool_catalog' &&
+      data.csvBusinessPilot?.skyRole === 'CSV自動化役' &&
       data.csvBusinessPilot?.buyerPriceMinor === 300000 &&
       data.csvBusinessPilot?.retentionDays === 7 &&
       data.csvBusinessPilot?.monthlyThresholdUsdMinor === 3000 &&

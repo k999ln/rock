@@ -160,8 +160,12 @@ void test('Chat owns work management while Sky keeps CSV as a catalog Tool', () 
     resolve(root, 'app/activity/page.tsx'),
     'utf8',
   );
+  const catalog = readFileSync(resolve(root, 'lib/catalog.ts'), 'utf8');
+  const routing = readFileSync(resolve(root, 'lib/sky-routing.ts'), 'utf8');
   assert.doesNotMatch(sky, /href="\/work"/);
   assert.doesNotMatch(sky, /href="\/csv"/);
+  assert.match(catalog, /id: 'rockstar-csv-cleanup'/);
+  assert.match(routing, /label: 'CSV自動化役'/);
   assert.match(chat, /href="\/chat\?view=work"/);
   assert.match(chat, /<Workbench embedded \/>/);
   assert.match(workRoute, /redirect\('\/chat\?view=work'\)/);

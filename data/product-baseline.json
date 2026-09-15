@@ -1,5 +1,5 @@
 {
-  "version": "1.46",
+  "version": "1.47",
   "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -318,6 +318,8 @@
   },
   "csvBusinessPilot": {
     "productId": "rockstar-csv-cleanup",
+    "productPlacement": "sky_automation_tool_catalog",
+    "skyRole": "CSV自動化役",
     "status": "p0_implementation_in_progress_external_validation_pending",
     "contract": "docs/csv-business-v1.ja.md",
     "security": "docs/csv-business-security.ja.md",

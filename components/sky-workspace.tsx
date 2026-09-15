@@ -31,6 +31,7 @@ import {
   ShieldCheck,
   Shirt,
   ShoppingBag,
+  Table2,
   WalletCards,
   X,
   Zap,
@@ -67,6 +68,7 @@ type FeedFilter = 'おすすめ' | '今使える' | '導入候補';
 
 const feedFilters: FeedFilter[] = ['おすすめ', '今使える', '導入候補'];
 const icons: Record<string, LucideIcon> = {
+  'rockstar-csv-cleanup': Table2,
   'mercari-revenue': ShoppingBag,
   'fashion-brand-ops': Shirt,
   coconala: BriefcaseBusiness,
@@ -81,6 +83,11 @@ const providers: Record<
   string,
   { name: string; handle: string; initial: string }
 > = {
+  'rockstar-csv-cleanup': {
+    name: 'Sky CSV自動化役',
+    handle: '@sky_csv',
+    initial: '表',
+  },
   'mercari-revenue': {
     name: 'Sky 販売収益化役',
     handle: '@sky_income',
@@ -163,6 +170,12 @@ function statusFor(tool: Automation, fashionConnected = false) {
       label: 'PC / MCP',
       detail: 'SkyからPC上の専用システムへ接続',
       className: 'is-connect',
+    };
+  if (tool.id === 'rockstar-csv-cleanup')
+    return {
+      label: '今使える',
+      detail: 'Skyの自動化Toolとして実行',
+      className: 'is-ready',
     };
   return {
     label: '今使える',
