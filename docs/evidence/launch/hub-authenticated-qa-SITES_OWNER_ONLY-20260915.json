@@ -1,0 +1,114 @@
+{
+  "schema": "rock-hub-authenticated-qa/1",
+  "recordedBy": "rockstar_bot｜画面",
+  "recordedAt": "2026-09-15T04:57:21Z",
+  "repository": "k999ln/rock",
+  "pullRequest": 4,
+  "branch": "codex/rockstaros-launch-candidate-20260910",
+  "branchHeadSha": "75839e377ffb312fabb096d3bb8d7f4781936fb3",
+  "procedurePath": "docs/evidence/launch/hub-authenticated-qa-procedure.md",
+  "environment": "SITES_OWNER_ONLY",
+  "siteAuthenticatedQa": "PARTIAL",
+  "launchClaimAllowed": false,
+  "deployedDoesNotMeanUsable": true,
+  "scopeNote": "Unauth boundary only. Not PASS for PR #4 HEAD. Redeploy of approved SHA + auth cases still required per Release gate.",
+  "sitesMeta": {
+    "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site",
+    "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+    "deployedSourceCommitPreferred": "25cf0fa2cae303475a9bf54280889a1192be455e",
+    "deployedSourceCommitSource": "data/sites-owner-preview-audit.json @ PR16 head (observedAt 2026-09-13T13:18:39Z) latestVersion.number=29",
+    "legacy20260911EvidenceSourceCommit": "a750908329d42bbfb78e07243f414b51d1534cf8",
+    "legacy20260913EvidenceSourceCommit": "44526d91ebbd80b69b1cbe19087c6687b7d2fe08",
+    "liveAdminReadThisRun": false,
+    "note": "Release reported live version unknown between a750908 and 25cf0fa; this run prefers latest repo audit 25cf0fa and records legacy evidence diffs. Screenshots do not reveal source commit."
+  },
+  "releaseGate": {
+    "redeployApprovedByRelease": false,
+    "ownerExplicitSyncApproval": "AWAITING",
+    "headPassRequires": "owner approval → owner-only redeploy of named SHA → re-read version/deployment/source → auth Hub QA required cases PASS"
+  },
+  "cases": {
+    "U1": {
+      "status": "BLOCKED",
+      "meaning": "Sites gateway blocks unauthenticated Hub UI; catalog not reachable without ChatGPT sign-in",
+      "observed": "All unauth hits show 'You're almost in' / 'Continue with ChatGPT' / 'This site uses ChatGPT to securely sign you in'",
+      "vsProcedure": "Procedure expected Hub catalog visible without sign-in for app routes; live Sites applies gateway before app shell",
+      "evidence": [
+        "01-U1-hub-home.png"
+      ]
+    },
+    "U2": {
+      "status": "PASS",
+      "meaning": "/work /activity /wallet /settings unauthenticated show sign-in gateway; no personal jobs/wallet records visible",
+      "observed": "Same ChatGPT continue wall on each path; no work list, activity, settings tools, or book figures",
+      "evidence": [
+        "02-U2-work.png",
+        "03-U2-activity.png",
+        "04-U2-wallet.png",
+        "05-U2-settings.png"
+      ]
+    },
+    "U3": {
+      "status": "BLOCKED",
+      "meaning": "Wallet boundary banner not observable without auth; gateway precedes /wallet app UI",
+      "observed": "Unauth /wallet is ChatGPT sign-in wall only",
+      "evidence": [
+        "06-U3-wallet-boundary.png",
+        "04-U2-wallet.png"
+      ]
+    },
+    "E1": {
+      "status": "NOT_RUN",
+      "reason": "requires owner ChatGPT sign-in"
+    },
+    "E2": {
+      "status": "NOT_RUN",
+      "reason": "requires owner ChatGPT sign-in"
+    },
+    "E3": {
+      "status": "NOT_RUN",
+      "reason": "requires owner ChatGPT sign-in"
+    },
+    "E4": {
+      "status": "NOT_RUN",
+      "reason": "requires owner ChatGPT sign-in"
+    },
+    "H1": {
+      "status": "NOT_RUN",
+      "reason": "requires owner ChatGPT sign-in"
+    },
+    "H2": {
+      "status": "NOT_RUN",
+      "reason": "requires owner ChatGPT sign-in"
+    },
+    "W1": {
+      "status": "NOT_RUN",
+      "reason": "requires owner ChatGPT sign-in"
+    },
+    "W2": {
+      "status": "NOT_RUN",
+      "reason": "requires owner ChatGPT sign-in"
+    },
+    "W3": {
+      "status": "NOT_RUN",
+      "reason": "requires owner ChatGPT sign-in"
+    },
+    "S1": {
+      "status": "NOT_RUN",
+      "reason": "requires owner ChatGPT sign-in"
+    },
+    "S2": {
+      "status": "NOT_RUN",
+      "reason": "requires owner ChatGPT sign-in"
+    }
+  },
+  "screenshotSha256": {
+    "01-U1-hub-home.png": "1739bf53e827da540045ebe74908bd4471a05d048e384167f0c7e4a2d30d595e",
+    "02-U2-work.png": "1739bf53e827da540045ebe74908bd4471a05d048e384167f0c7e4a2d30d595e",
+    "03-U2-activity.png": "88a1462ab25d72731067165f814b0fd96e9d9684fc396dfbad46834619834a5e",
+    "04-U2-wallet.png": "bd14719d7c71c3bf2c48e34b3e1bb3347c30b75b50e7f861baf3c7a5f40e89e5",
+    "05-U2-settings.png": "1739bf53e827da540045ebe74908bd4471a05d048e384167f0c7e4a2d30d595e",
+    "06-U3-wallet-boundary.png": "bd14719d7c71c3bf2c48e34b3e1bb3347c30b75b50e7f861baf3c7a5f40e89e5"
+  },
+  "evidenceDir": "docs/evidence/launch/hub-authenticated-qa-SITES_OWNER_ONLY-20260915/"
+}
