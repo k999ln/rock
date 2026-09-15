@@ -1126,7 +1126,11 @@
       "dependsOn": [],
       "evidence": [
         "docs/launch-readiness-20260910.md",
-        "docs/current-state-20260911.md"
+        "docs/current-state-20260911.md",
+        "data/version-boundaries.json",
+        "scripts/check-version-boundaries.mjs",
+        "tests/version-boundaries.test.mjs",
+        "docs/version-boundaries.md"
       ]
     },
     {
