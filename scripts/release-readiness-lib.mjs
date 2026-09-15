@@ -1201,6 +1201,21 @@ export function validateReleaseReadiness({
 }) {
   if (readiness.schema !== 'rockstaros-release-readiness/1') fail('schemaが違います');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(readiness.evaluatedAt)) fail('評価日が必要です');
+  const auditDates = [
+    androidAudit?.evaluatedAt,
+    personalNumberAudit?.evaluatedAt,
+    sitesAudit?.observedAt?.slice(0, 10),
+    sitesAudit?.access?.observedAt?.slice(0, 10),
+    webSecurityPolicy?.evaluatedAt,
+    webLicenseAudit?.evaluatedAt,
+  ].filter(Boolean);
+  if (
+    auditDates.some(
+      (date) => !/^\d{4}-\d{2}-\d{2}$/.test(date) || date > readiness.evaluatedAt,
+    )
+  ) {
+    fail('評価日が監査観測より古いか、監査日形式が不正です');
+  }
   if (!Array.isArray(readiness.targets) || readiness.targets.length < 5) fail('配布対象が不足しています');
 
   const targetIds = new Set();

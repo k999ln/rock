@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-release-readiness/1",
-  "evaluatedAt": "2026-09-13",
+  "evaluatedAt": "2026-09-15",
   "policy": {
     "statusRule": "A target is ready only when every required gate passes. Not-applicable gates need an explicit reason.",
     "productLicenseIntent": "data/release-owner-intent-20260911.json",

@@ -87,6 +87,12 @@ void test('current release matrix passes while preserving real blockers', () => 
   assert.deepEqual(result.webSecurity, { status: 'PASS_SOURCE_POLICY', headers: 8 });
 });
 
+void test('release evaluation cannot predate any incorporated audit observation', () => {
+  const stale = structuredClone(readiness);
+  stale.evaluatedAt = '2026-09-14';
+  assert.throws(() => validateMatrix({ matrix: stale }), /評価日が監査観測より古い/);
+});
+
 void test('Web security source policy is exact and current deployment must prove it independently', () => {
   assert.deepEqual(
     validateWebSecurityPolicy({ root, policy: webSecurityPolicy, readiness }),
