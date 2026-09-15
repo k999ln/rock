@@ -1,5 +1,11 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-15 — 最初の物理対象をPixel 10へ決定
+
+利用者は所有済みのPixel 10をRockstarOS最初の実機対象として選択した。既存の`frankel` source lock、product hook、build入口をそのまま使い、共通RockstarOS Coreを作り直さない。Pixel 7／`panther`はPixel 10の実機受入後まで保留する。2機種目以降は共通Coreの再開発ではなく、Device Support Package、vendor／firmware、partition／AVB、hardware、OTA／rollback、純正復旧の機種別移植と受入を行う。
+
+この選択は機種familyの確定であり、実機のproduct readback、現在OS、OEM unlocking可否はまだ確認していない。`targetFamilyConfirmed=true`、`targetConfirmed=false`を維持し、読取り専用診断が一致するまでクラウド課金、full build、unlock、データ消去、flashを開始しない。
+
 ## 2026-09-12 — メルカリを最初の収益経路に追加
 
 Skyへ「メルカリ収益スターター」を追加し、本人が保有する商品について、状態・商品事実・販売価格・販売手数料・送料・原価・その他実費から出品原稿と見込み手取りを作り、承認、出品済み、取引完了報告まで本人別D1へ保存できるようにした。状態更新はrevisionで競合を拒否し、自己申告の取引完了は`awaiting_provider_verification`のまま保持して検証済み収益へ昇格させない。

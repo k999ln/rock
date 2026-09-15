@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-device-support/1",
-  "updatedAt": "2026-09-12",
+  "updatedAt": "2026-09-15",
   "policy": {
     "architecture": "shared-core-plus-device-support-package",
     "deliveryModes": [
@@ -57,23 +57,23 @@
       "id": "pixel-7-panther",
       "family": "android-pixel",
       "deliveryMode": "native_os",
-      "status": "CANDIDATE_NOT_CONFIRMED",
+      "status": "DEFERRED_AFTER_PIXEL_10_SELECTION",
       "exactModelRequired": true,
       "confirmedSku": null,
       "physicalDevice": true,
       "flashReady": false,
-      "notes": "Consultation candidate only; no full build, flash, boot, OTA or recovery acceptance."
+      "notes": "Deferred until the Pixel 10 first target passes its physical acceptance. No full build, flash, boot, OTA or recovery acceptance."
     },
     {
       "id": "pixel-10-frankel",
       "family": "android-pixel",
       "deliveryMode": "native_os",
-      "status": "SOURCE_LOCK_CANDIDATE_NOT_CONFIRMED",
+      "status": "SELECTED_FIRST_PHYSICAL_TARGET_READBACK_PENDING",
       "exactModelRequired": true,
       "confirmedSku": null,
       "physicalDevice": true,
       "flashReady": false,
-      "notes": "Current source-lock candidate only; it is not selected hardware or a supported release."
+      "notes": "Selected by the owner as the first physical target. Existing frankel source lock is reused; exact device readback, OEM unlocking, full build, flash, boot, OTA and recovery acceptance remain pending."
     },
     {
       "id": "android-treble-generic",
