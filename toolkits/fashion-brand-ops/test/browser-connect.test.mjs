@@ -34,7 +34,7 @@ async function waitForHealth(url, child, stderr) {
   throw new Error('connector did not become ready: ' + stderr());
 }
 
-test('browser one-click session initializes, lists 41 tools, and revokes cleanly', async (t) => {
+test('browser one-click session initializes, lists 40 tools, and revokes cleanly', async (t) => {
   const port = await freePort();
   const temporary = await mkdtemp(
     path.join(os.tmpdir(), 'fashion-browser-mcp-'),
@@ -111,7 +111,7 @@ test('browser one-click session initializes, lists 41 tools, and revokes cleanly
   assert.equal(initialized.response.status, 200);
   assert.equal(initialized.message.result.protocolVersion, '2025-11-25');
   const listed = await rpc('tools/list');
-  assert.equal(listed.message.result.tools.length, 41);
+  assert.equal(listed.message.result.tools.length, 40);
   assert.ok(
     listed.message.result.tools.some(
       (tool) => tool.name === 'instagram.publish.prepare',

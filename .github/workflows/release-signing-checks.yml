@@ -1,8 +1,10 @@
 name: Release signing control tests
 on:
   push:
+    branches: [main]
     paths:
       - scripts/release_signing*.py
+      - scripts/check-release-signing.mjs
       - scripts/prepare_release_candidate.py
       - scripts/verify_owner_legal_approval.py
       - systems/rock-star-os/os/desktop/package_preview.py
@@ -16,9 +18,13 @@ on:
       - data/release-trust*.json
       - data/release-signing-policy*.json
       - data/release-signing-control-protection.json
+      - data/qemu-release-audit.json
+      - data/release-readiness.json
+      - package.json
   pull_request:
     paths:
       - scripts/release_signing*.py
+      - scripts/check-release-signing.mjs
       - scripts/prepare_release_candidate.py
       - scripts/verify_owner_legal_approval.py
       - systems/rock-star-os/os/desktop/package_preview.py
@@ -32,8 +38,14 @@ on:
       - data/release-trust*.json
       - data/release-signing-policy*.json
       - data/release-signing-control-protection.json
+      - data/qemu-release-audit.json
+      - data/release-readiness.json
+      - package.json
 permissions:
   contents: read
+concurrency:
+  group: release-signing-fixtures-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: true
 jobs:
   public-fixture-tests:
     runs-on: ubuntu-24.04

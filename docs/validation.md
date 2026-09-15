@@ -1,5 +1,30 @@
 # 検証記録
 
+## Rock First-party Settlement Wallet / 2026-09-13
+
+- `org.rockstar.settlement-wallet`を共通Financial Provider契約の第1号として追加。capabilityは`collect_platform_fee`と`reporting`、modeはSANDBOX、利用者資産保管・ファンド運用・LIVE回収はfalseへ固定した。
+- `prepareRockFeeCollection`は署名検証済み収益から既存Workerが配分するRock利用料を入力とし、receipt IDに結び付いた同一instruction/idempotency keyを生成する。収益0は`not_required`、月累計888 cents超過、LIVE、未知field、非USDを拒否する。
+- 新規4テストと製品baseline負例を含む`npm run verify`が終了コード0。Web 240 tests、Fashion Brand Ops 16 tests、release signing 64 tests、Worker/D1 API 143 assertions、project/repository/release/baseline/Sky/device、型、lint、MCP package、Billing Worker dry-run、本番build、Web bundle 120 component、asset 69参照・missing 0に成功した。
+- この合格は自社利用料のsandbox指図契約まで。実収益の入金、Rockの実口座・実Wallet、利用者への払出し、外部Wallet／ファンド接続、利用者資産の保管、LIVE transferは未実施。
+
+## 外部Wallet／ファンドProvider受け身設計 / 2026-09-13
+
+- RQ34として、RockstarOSはcapability discovery、本人同意、指図、状態、receipt、照合だけを共通化し、保管、運用、約定、払出し、KYC/AML、地域・税務判断は外部Providerへ残す責任境界を固定した。
+- `npm run baseline:check`と`tests/product-baseline.test.mjs`に成功。Providerによる内部台帳直接書込み、任意shell、未接続ProviderのLIVE表示、Rockによる未対応機能の擬似実装を許可する変更を拒否する。
+- `npm run project:update`後の`npm run project:check`は62/86件で整合。`npm run build`、Web bundle 120 componentの照合、Web asset 69参照・missing 0、MCP配布package一致に成功した。
+- `npm run verify`はrelease、baseline、Sky、device、型、lintまで成功後、既存`tests/everything-market.test.mjs`がassertion成功後も終了しないため手動中断した。変更対象テストは単独で終了コード0。並行時に不安定だった既存client/device 2テストも単独24件で全成功した。したがって全体verify完走は未確認として残す。
+- この検証は設計・機械可読契約・build整合の確認であり、外部Provider選定、契約、sandbox接続、実資金、LIVEファンド運用を行っていない。
+
+## QEMU rc2配布要件とnative SBOM境界の機械固定 / 2026-09-12
+
+- `scripts/check-release-signing.mjs` で、候補準備15件、owner legal approval 11件、保護署名29件、本人署名9件の計64公開fixture試験を `npm run verify` に統合。各suiteの試験数も固定し、試験の削除を成功扱いにしない。本人署名は未暗号化／ExFAT／別mountの保管先を鍵読取り前に拒否する。実production鍵・owner承認・隔離環境・実候補署名・署名後受入は未実施のまま分離した。
+- rc2のversion、source commit、archive名・size・SHA-256を、受入結果、434,523件inventory、公開表示データと照合する `data/qemu-release-audit.json` を追加。SHA-256一致を確認した1,003,224,286 byteのrc2 archiveから同梱legal bundleを抽出し、10必須要件のうち6件を範囲付きPASS、4件をBLOCKEDとした。
+- QEMU auditと全体公開台帳は同じgate ID・必須状態・statusを要求する。archive SHAの改変、要件数のずれ、未達のnext action欠落、license/production署名より先の最終受入合格を自動拒否する。
+- current rc2同梱のBuildroot `manifest.csv` 24 target packageと `host-manifest.csv` 37 build dependencyをrepositoryへ証拠保存。CSV SHA-256、component数、同梱legal bundle SHA-256 `ad6453…3d94`、配布archive SHA-256を自動照合し、CycloneDX 1.6へ変換する。componentごとのscope、source archive/site、license fileを保持し、自作3 componentのlicense未選択を消さない。
+- `npm run release:sbom` はWeb/npm 854 component、current rc2 native 61 component、旧native 61 componentを別のignored fileへ生成する。旧native inventoryをrc2のcurrent SBOMへ差し替える負例、current manifest hash改変、正確なarchive hashとscopeを含むrelease tests 12件を通した。
+- GitHubのrc2 Draft Releaseから1,003,224,286 byteのarchive本体を取得し、SHA-256 `5ce072…e95e`を照合後、legal bundleだけを展開してmanifestを保存した。Draft公開状態は変更していない。部品表完成は製品license clearanceではない。
+- `npm run verify` は終了コード0。公開台帳・QEMU audit・製品ベース・repository・端末対応、型、lint、Web 175 tests、Fashion Brand Ops 15 tests、MCP package、Billing Worker dry-run、production build、仕事API 143 assertionsが成功した。物理端末、実資金、一般公開、正式鍵生成は実施していない。
+
 ## 設計v1.1と実装の再照合・進捗補助の修正 / 2026-09-09
 
 - 16:51 UTCの3branch監査に加え、修正した `npm run prompt:context` を17:07 UTCにオンライン実行。main/native/reviewのSHAは監査入力と一致し、reviewのcheck-run 0は `NO_CHECKS / allSuccessful:false`。全branchとopen PRの再照合にも成功。これはメタデータ取得でありsourceレビュー済みを自動宣言しない。
@@ -158,3 +183,41 @@
 - The final installable app front has a direct home screen, four ready fund presets, one preparation-only preview, activity history, and settings. No fabricated balances, yields, participant totals, or paid gacha. Real tool completion and sample runs have distinct labels.
 - PWA manifest, 192px/512px icons, and service worker endpoints return 200 locally. The app shell does not cache API responses or tool input.
 - Browser screenshots/click QA were not requested and were not performed. Loopback HTTP was verified at protocol level; a browser may still require the user's initial local-network permission. WebMCP list_funds/select_fund is feature-detected; the stdio/HTTP MCP transport is the verified execution integration.
+# 2026-09-12 — システム診断・暗号化端末設定バックアップ
+
+- `/settings/system`をローカル実ブラウザで開き、通信、端末内保存、Web Crypto、Service Worker、RockstarOS API、PC Connectorの6項目が実測状態へ更新されることを確認した。確認時は5/6準備済みで、未接続のPC Connectorだけを注意表示した。
+- 暗号化バックアップ画面を開き、パスフレーズ、除外対象、保存操作が画面内に収まることを確認した。
+- `tests/system-backup.test.mjs`で、許可済みホーム設定だけの暗号化往復、平文非露出、無関係または将来追加される未許可localStorageの保持、誤パスフレーズ、改ざん、外部key混入の拒否に合格した。
+- 制限外で`npm run verify`を実行し、Web 157 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、製品ベース、MCP配布一致、Billing Worker dry-run、本番buildに合格した。通常sandboxではloopback待受がEPERMとなるため、MCP ConnectorとD1移行試験だけを含む全検証はローカル待受可能な環境で再実行した。
+- 物理端末のBSP/bootloader/recovery、正式署名鍵、外部MCP・販売・決済・払出しProviderは未接続であり、この検証の合格範囲へ含めない。
+
+# 2026-09-12 — 最低限のOS運用と公開審査gate
+
+- `/settings/system`を実ブラウザで確認し、安全な接続、通知、永続保存、PWA表示を含む10項目が実測値へ更新され、「稼働できます」と利用可能数が分離表示されることを確認した。
+- 通知テスト、保存保護、個人情報を除外する診断JSON、暗号化バックアップ、改ざん検知付き復元、Service Worker更新確認、確認付きホーム設定初期化を同じ画面へ配置した。初期化の確認Dialogを開閉し、アカウント、Wallet、実行履歴を削除しない説明を確認した。
+- 公開条件の折り畳みを開き、Web/PWA、QEMU、Android CDD/CTS・GMS、物理端末/BSP、production署名、OSS/法令、マイナンバーを別gateとして表示することを確認した。未実施項目を合格表示していない。
+- `tests/system-backup.test.mjs`で、許可済みホーム設定だけが初期化され、未知のRockstarOS keyと無関係なlocalStorage keyを保持することを確認した。
+- 制限外で`npm run verify`を実行し、Web 163 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、製品ベース、MCP配布一致、Billing Worker dry-run、本番buildに合格した。
+- この確認はWeb/PWA Developer Previewの受入であり、Android CDD/CTS、Google Play/GMS、実機flash、production署名、無線機器認証、特定個人情報の取扱審査を完了した証拠ではない。
+
+# 2026-09-12 — 配布方法別の最低条件・SBOM
+
+- `data/release-readiness.json`で、本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android物理端末、iPhone/iPad client、マイナンバー連携の6対象を別判定する。本人限定Sitesの安全なaccessと最新版同期も別gateにし、現状の算出結果はready 0、blocked 6。
+- `npm run release:check`で必須gate、根拠file、所有者license選択、top-level LICENSE、production鍵実施記録、マイナンバー無効化を検査した。未決条件をpassへ改変する否定試験5件に合格した。
+- `package-lock.json`の887 package entryを検査し、license metadata欠落0。`npm run release:sbom`でCycloneDX 1.6、854 unique componentを`work/release/rockstaros-web.cdx.json`へ生成し、bom-refが854件すべて一意であることを確認した。lock SHA、17 license expressionと件数を別監査へ固定し、MPL/LGPL系41件、選択式5件、CC-BY表示1件の計47件をPURL（component名・version）単位で追加review対象に固定した。lock上は本番到達可能な必須7件・optional 11件、開発専用の必須4件・optional 25件である。分類隠蔽、component省略、本番到達性/optionality改変、lock差替えを拒否する4否定試験に合格した。このlock監査単独はWeb/npm package-lock scopeであり、実bundle同梱、義務履行、法的clearance、native Buildroot inventoryの代用ではない。
+- Vite build pluginでclient 52 chunk／119 npm component、RSC 85 chunk／6 component、SSR 64 chunk／119 componentを記録し、環境間の重複を除くと120 componentだった。未解決node_modulesは0、package-lockの追加review 47 PURLとの生成bundle内一致は0。flat・scoped・nested lock path、review照合、未解決module、lock hash差替えの単体試験に合格した。出力はignored `work/release/`へ0600で置き、絶対module pathを公開しない。`npm run verify`はproduction build直後にこの検査を必須実行する。build tool自体の利用条件やlicense/NOTICE/source提供、製品license、法的clearanceは別gateのまま残す。
+- 設定の公開準備は値を同じ台帳から導出し、本人限定Web/PWA 4/5、一般Web 3/5、QEMU 6/10、Android実機0/5、iPhone/iPad client 0/1、マイナンバー1/7を表示する。本人限定Sitesは安全なaccessを維持しているが、稼働version 29のsourceが監査HEADより古いため最新版同期gateを未達にする。過去QEMU候補を現在の配布可能状態として表示しない。
+- `data/web-security-policy.json`、`next.config.ts`、static asset用`public/_headers`を同じ値へ結合し、全responseのCSP frame/object/form/base制限、COOP/CORP、no-referrer、HSTS、nosniff、DENY framing、camera/payment/USB等のbrowser capability無効化を3試験で固定した。最初の実測でWorkerが返す`/`とstatic assetの`/sw.js`にNext configのheaderが届かない差を検出し、両配信経路を分離して修正した。再build後、`npm run web:security:check -- http://127.0.0.1:8787`で`/`、`/sky`、Service Worker、manifest、3 install icon、実hash付きJSの8経路に8 universal headerと個別cache ruleが完全一致した。[ローカル実測](evidence/launch/web-security-local-20260913.json)。現在のSites v29はこのsourceより古いため、実Sites response headerの合格証拠にはせず、最新版配備後の本人認証済みreadbackを必須にした。
+- Service Workerのinstall時`skipWaiting`を削除し、新版は利用者が「更新を適用」を押すまで待機する。適用時だけ専用messageで切替え、`controllerchange`確認後に再読込する。旧`loop-app-*`と現`rockstaros-shell-*`の古いgenerationだけを削除し、他product cacheを残す。API、sign-in/out、foreign originをcache handlerが横取りしない3試験に合格した。更新後のworker SHAを上記ローカル実測へ再結合した。
+- PWA manifestへ固定`id`、root `scope`、`lang`、`dir`、related native appを優先しない指定を追加した。192/512 PNGを実寸検査し、Safariが推奨する1024角・全面不透明のmaskable SVGを別途追加した。source 2試験に加え、production HTTP上のmanifest値、3 iconの参照とContent-Typeを上記8経路で確認した。これはWeb appの導入条件でありApp Store native client審査の合格証拠ではない。
+- ローカル待受が許可された環境で`npm run verify`を実行し、Web 202 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、公開gate、製品baseline、MCP配布一致、Billing Worker dry-run、本番buildに合格した。`/settings/system`の実ブラウザ表示はconsole error 0、横切れなし、6対象の数値と台帳が一致した。
+- 製品ライセンスの明示選択、production鍵の作成・保管、一般公開承認、実機/SKUと外部審査は所有者または外部authorityが必要であり、今回完了扱いにしていない。
+# 2026-09-14 — Rock Wallet Base USDC本番受取レール
+
+- `/wallet`へ外部EIP-1193 Walletの接続、Base Mainnet切替、期限付き所有署名、受取先登録、解除、回収指図一覧、transaction hash照合を追加した。画面は秘密鍵非保管、署名が送金権限ではないこと、Rock利用料だけが対象であることを明示する。
+- Billing WorkerへD1 migration `0004_rock_settlement_wallet.sql`と5 endpointを追加し、署名済みEarning Receiptの `SKY_SERVICE_FEE` だけをidempotentな回収指図にした。Base公式USDC contract、exactなrecipient・amount、成功receipt、finalized blockが一致するまで着金済みにしない。
+- Wallet単体・Worker統合・製品baselineの8対象試験に合格した。全体 `npm run verify` は待受可能な環境で、Web 242 tests、公開署名境界64 tests、Fashion Brand Ops 16 tests、Worker/D1 API 143 assertions、型、lint、D1 migration互換、Billing Worker dry-run、本番build、74 Web asset参照missing 0に合格した。
+- `npm audit --omit=dev --json`は既知脆弱性0。viem追加後のlock監査は899 package entry、866 unique component、追加review 47件へ更新し、生成Web bundle内の追加review該当は0。法的clearanceや製品license選択の代用にはしない。
+- remote D1 migration、Worker/Site配備、owner Walletの本人署名、最初の実transferはこの時点では未実施であり、以下の配備記録で別に判定する。
+- remote D1へ `0003_automation_funds.sql` と `0004_rock_settlement_wallet.sql` を順に適用し、Billing Workerのproduction deployに成功した。Wallet UIを含む全検証済みtreeをSites側の既存mainへ通常mergeし、競合解消後のtreeが検証済みsourceと一致することを確認した。owner限定Siteのversion 35をproductionへ配備し、公開範囲を変更していない。
+- 残る本番gateは、owner自身の外部Walletによる所有署名と最初の実USDC transferの照合。代理署名やfixtureで完了扱いにしない。

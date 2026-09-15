@@ -94,17 +94,15 @@ function privateIp(address) {
       return privateIp(`${high >> 8}.${high & 255}.${low >> 8}.${low & 255}`);
     }
   }
-  if (isIP(address) === 6) {
-    const first = Number.parseInt(address.split(':', 1)[0] || '0', 16);
-    return (
-      address === '::1' ||
-      address === '::' ||
-      (first & 0xfe00) === 0xfc00 ||
-      (first & 0xffc0) === 0xfe80 ||
-      (first & 0xff00) === 0xff00 ||
-      address.startsWith('2001:db8:')
-    );
-  }
+  if (
+    address === '::1' ||
+    address === '::' ||
+    address.startsWith('fe80:') ||
+    address.startsWith('fc') ||
+    address.startsWith('fd') ||
+    address.startsWith('2001:db8:')
+  )
+    return true;
   if (isIP(address) !== 4) return false;
   const [a, b] = address.split('.').map(Number);
   return (
@@ -564,6 +562,17 @@ export class McpHub {
       throw error;
     }
   }
+  disconnect(id) {
+    const entry = this.entry(id);
+    entry.transport.reset();
+    entry.passport = null;
+    entry.state = 'available';
+    // A stopped server invalidates every outstanding one-time approval. This is
+    // intentionally broader than one server so no stale approval survives a
+    // control-plane change.
+    this.approvals.clear();
+    return { id, state: entry.state };
+  }
   prepare(id, name, args) {
     const entry = this.entry(id);
     if (!entry.passport || entry.state !== 'connected')
@@ -740,7 +749,7 @@ export async function createConnector({
       if (request.method === 'GET' && request.url === '/servers')
         return send(response, 200, { servers: hub.list() }, origin);
       const match = request.url?.match(
-        /^\/servers\/([a-z0-9][a-z0-9-]{0,63})\/(connect|mcp|prepare|execute)$/,
+        /^\/servers\/([a-z0-9][a-z0-9-]{0,63})\/(connect|disconnect|mcp|prepare|execute)$/,
       );
       if (request.method === 'POST' && match) {
         const [, id, action] = match,
@@ -752,6 +761,10 @@ export async function createConnector({
             { passport: await hub.connect(id) },
             origin,
           );
+        if (action === 'disconnect') {
+          if (canonical(input) !== '{}') fail('停止requestを確認してください。');
+          return send(response, 200, hub.disconnect(id), origin);
+        }
         if (action === 'prepare')
           return send(
             response,

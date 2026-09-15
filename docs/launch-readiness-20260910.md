@@ -73,7 +73,7 @@ Draft編集後のURL変化と新旧証拠の取り違えを避けるため、[ta
 
 ## LCH04 — SitesとUI: DEPLOYED_OWNER_ONLY / AUTHENTICATED_QA_PENDING
 
-元Site `appgprj_6a9b70d966fc8191a1ec30efce14582d` はNOT_FOUNDとして保持する。利用者の新規作成指示により、現在の `.openai/hosting.json` は別の `appgprj_6aa444b6e6508191a19f16405d0be927` に接続し、source `a750908329d42bbfb78e07243f414b51d1534cf8` を本人限定で公開済み。元DBの復元は未完了、新D1は空から開始した。[公開証拠](evidence/launch/sites-owner-private-20260911.json)。
+元Site `appgprj_6a9b70d966fc8191a1ec30efce14582d` はNOT_FOUNDとして保持する。利用者の新規作成指示により、現在の `.openai/hosting.json` は別の `appgprj_6aa444b6e6508191a19f16405d0be927` に接続した。2026-09-13の版27はsource `44526d91ebbd80b69b1cbe19087c6687b7d2fe08`を本人限定で公開し、所有者1名、group／editor／外部visitor 0をreadbackした。元DBの復元は未完了、新D1は空から開始した。[初回公開証拠](evidence/launch/sites-owner-private-20260911.json)／[版27の公開・access証拠](evidence/launch/sites-owner-private-20260913.json)。
 
 変更: Hubを `/`、手順型仕事を `/work`、実行履歴を `/activity`、手入力会計を `/wallet`、設定を `/settings` へ整理。旧ファンドは `/fund` に保持。左ナビ、最初の作業、用途検索、空/未認証/失敗状態、モバイルmenu、実行中の閉鎖/画面移動保護を実装した。サインイン前は入力を止める。PCのheartbeat/失効/再接続raceを修正し、検証したsessionだけで実行する。
 

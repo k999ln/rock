@@ -396,7 +396,9 @@ export default function FundMarket() {
             <kbd>/</kbd>
           </label>
           <div className="market-header-actions">
-            <Link href="/work" className="market-text-button">仕事を進める</Link>
+            <Link href="/work" className="market-text-button">
+              仕事を進める
+            </Link>
             <button
               className="market-text-button"
               onClick={() => openPanel('settings')}
@@ -408,7 +410,7 @@ export default function FundMarket() {
               onClick={() => openPanel('device')}
             >
               <Cable size={16} />
-              {connected ? 'PC接続中' : 'MCP接続'}
+              {connected ? 'PC接続中' : 'PC接続'}
             </button>
             <button
               className="market-primary"
@@ -654,7 +656,7 @@ export default function FundMarket() {
           <Loop size={17} />
           Rock star
         </span>
-        <button onClick={() => openPanel('device')}>MCP接続</button>
+        <button onClick={() => openPanel('device')}>PC接続</button>
         <button onClick={() => openPanel('settings')}>ファンドのしくみ</button>
         <span className="market-copyright">Automation, together.</span>
       </footer>
@@ -765,7 +767,7 @@ export default function FundMarket() {
                               ? 'PC · 接続済み'
                               : 'PC接続が必要'
                             : connected
-                              ? 'PC · MCPで実行'
+                              ? 'PCで実行'
                               : 'ブラウザですぐ実行'}
                         </small>
                       </span>
@@ -883,7 +885,7 @@ export default function FundMarket() {
             {panel === 'settings'
               ? 'ファンドの配分とブースト'
               : panel === 'device'
-                ? 'PC・MCP接続'
+                ? 'PC接続'
                 : 'ウォレット接続'}
           </DialogTitle>
           <DialogDescription className="sr-only">

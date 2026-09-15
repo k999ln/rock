@@ -43,7 +43,7 @@ ToB
 
 ## MCP標準との対応
 
-基準はMCP 2025-11-25とする。
+基準はMCP 2025-11-25とし、既存の2025-06-18／2025-03-26／2024-11-05接続は能力交渉の結果として扱う。版番号の完全一致やツール総数の固定ではなく、使う能力と必要なツール名を確認する。
 
 | 領域           | Skyでの扱い                                                                                                                                                                 |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -74,11 +74,15 @@ RockstarOSには既存native OS向けの固定fixtureとprivate device APIに加
 - ToB掲載フォームと`sky_tool_submissions`保存API。
 - ToC向けの状態付きSky Timeline。
 - 接続先URLから認証情報を排除し、遠隔MCPにnetwork権限を必須化。
+- 遠隔MCPの掲載前に`initialize`、セッション、`tools/list`の全ページを読み、ツールを実行せず接続結果を表示。認証必須の接続先はOAuth確認待ちとして審査へ残す。
+- 公開HTTPS以外、IP直指定、ローカル・内部ネットワーク名、巨大応答、過剰なツール一覧を掲載診断から拒否。
+- PC接続は対応MCP版を交渉して保持し、4件の必須ツールがあれば追加ツールを許容。ツール総数の増加だけでは接続を壊さない。
+- 現在の本人限定SiteをPCパックの許可Originへ追加し、公開中のSkyからloopback接続できる配布物へ更新。
 - Web/PCで使用可能4件、OSS候補3件、native内蔵6種類・9版を実数から検査。
 - 審査済みregistryからstdio / Streamable HTTPを扱うPC内Connector。
 - MCP 2025-11-25から2024-11-05までのversion確認、initialize、initialized通知、pagination付きtools/list。
 - server identity、capabilities、tool schema digest、接続時刻を持つConnection Passport。
-- 基本4機能とAIブランドProducer 41機能の同一Connector実接続。
+- 基本4機能とブランド運営38機能の同一Connector実接続。
 - server・tool・引数・tool digestへ結び付く5分有効の一回承認と、直接`tools/call`迂回の拒否。
 - Sky内の動的server一覧とワンタップ接続、macOS向け配布ZIP。
 

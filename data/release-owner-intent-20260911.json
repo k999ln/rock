@@ -13,7 +13,28 @@
     "interpretation": "No second reviewer supplied; owner-only path proposed",
     "proposedMode": "OWNER_MANUAL",
     "status": "PROPOSED_NOT_EXECUTED",
-    "keyProvisioned": false
+    "keyProvisioned": false,
+    "storageReadback": {
+      "observedAt": "2026-09-13",
+      "volumeName": "Extreme SSD",
+      "filesystem": "ExFAT",
+      "encrypted": false,
+      "status": "REJECTED_FOR_PRODUCTION_KEY_CUSTODY",
+      "nextAction": "暗号化APFS volumeまたは暗号化disk image内の本人専用0700 directoryを用意し、storage-checkを再実行する",
+      "evidence": "docs/owner-manual-signing.md"
+    },
+    "preparedStorage": {
+      "observedAt": "2026-09-13",
+      "pathClass": "OWNER_PRIVATE_FILEVAULT_APPLICATION_DATA",
+      "pathStoredInRepository": false,
+      "filesystem": "APFS",
+      "fileVault": true,
+      "directoryMode": "0700",
+      "status": "ENCRYPTED_OWNER_PRIVATE_STORAGE_READY",
+      "containsProductionKey": false,
+      "backupPrepared": false,
+      "nextAction": "OWNER_MANUALの明示採用後に、秘密をChat・Git・logへ出さないkey ceremonyと別の暗号化backupを実施する"
+    }
   },
   "sites": {
     "decision": "CREATE_NEW_SITE",

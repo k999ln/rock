@@ -87,7 +87,7 @@ export function JobHistory({
             <b>{name(job.tool)}</b>
             <small>
               {job.sample ? 'サンプル · ' : ''}
-              {job.transport === 'browser' ? 'この端末' : 'PC・MCP'} ·{' '}
+              {job.transport === 'browser' ? 'この端末' : 'PC接続'} ·{' '}
               {new Date(job.createdAt).toLocaleString('ja-JP')}
             </small>
             {job.status === 'interrupted' && (
@@ -286,7 +286,7 @@ export function OperationsPanel({
         </>
       )}
       {view !== 'settings' && (
-        <section>
+        <section id={view === 'wallet' ? 'wallet-records' : undefined}>
           <h2>売上・経費の記録</h2>
           <p>手入力・照合前の記録です。売上連携、入金、払出は未接続です。</p>
           <div className="ops-metrics">

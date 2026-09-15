@@ -2,17 +2,39 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'RockstarOS Sky',
+    id: '/',
+    name: 'RockstarOS',
     short_name: 'RockstarOS',
-    description: 'ツールを選び、実行して、結果と収支の記録を確認。',
+    description: 'Sky、Chat、Wallet、Market、Fundを一つのホームから開く。',
     start_url: '/',
+    scope: '/',
     display: 'standalone',
-    background_color: '#f7f9f7',
-    theme_color: '#171a1b',
+    lang: 'ja',
+    dir: 'ltr',
+    background_color: '#111827',
+    theme_color: '#111827',
     orientation: 'portrait-primary',
+    categories: ['productivity', 'utilities'],
+    prefer_related_applications: false,
     icons: [
-      { src: '/rock-icon-192.png', sizes: '192x192', type: 'image/png' },
-      { src: '/rock-icon-512.png', sizes: '512x512', type: 'image/png' },
+      {
+        src: '/rock-icon-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/rock-icon-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/rock-icon-maskable.svg',
+        sizes: 'any',
+        type: 'image/svg+xml',
+        purpose: 'maskable',
+      },
     ],
   };
 }

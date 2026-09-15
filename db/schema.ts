@@ -141,68 +141,215 @@ export const skyToolSubmissions = sqliteTable(
   ],
 );
 
-export const skyToolPackages = sqliteTable(
-  'sky_tool_packages',
+export const skyConnections = sqliteTable(
+  'sky_connections',
   {
-    packageKey: text('package_key').primaryKey(),
-    toolId: text('tool_id').notNull(),
-    version: text('version').notNull(),
     userId: text('user_id').notNull(),
-    manifest: text('manifest').notNull(),
-    manifestSha256: text('manifest_sha256').notNull(),
-    status: text('status').notNull().default('submitted'),
-    createdAt: integer('created_at').notNull(),
-    updatedAt: integer('updated_at').notNull(),
-    publishedAt: integer('published_at'),
+    tool: text('tool').notNull(),
+    scope: text('scope').notNull().default('execute'),
+    consentVersion: text('consent_version').notNull(),
+    connectedAt: integer('connected_at').notNull(),
   },
   (table) => [
-    uniqueIndex('idx_sky_tool_id_version').on(table.toolId, table.version),
-    index('idx_sky_tool_owner_created').on(table.userId, table.createdAt),
-    index('idx_sky_tool_registry_published').on(
-      table.status,
-      table.publishedAt,
+    uniqueIndex('idx_sky_connections_user_tool').on(table.userId, table.tool),
+    index('idx_sky_connections_user_connected').on(
+      table.userId,
+      table.connectedAt,
     ),
   ],
 );
 
-export const skyDeveloperTokens = sqliteTable(
-  'sky_developer_tokens',
+export const mercariRevenuePlans = sqliteTable(
+  'mercari_revenue_plans',
   {
     id: text('id').primaryKey(),
     userId: text('user_id').notNull(),
-    label: text('label').notNull(),
-    tokenSha256: text('token_sha256').notNull(),
-    createdAt: integer('created_at').notNull(),
-    lastUsedAt: integer('last_used_at'),
-    revokedAt: integer('revoked_at'),
+    payload: text('payload').notNull(),
+    revision: integer('revision').notNull().default(0),
+    updatedAt: text('updated_at').notNull(),
   },
   (table) => [
-    uniqueIndex('idx_sky_developer_token_hash').on(table.tokenSha256),
-    index('idx_sky_developer_token_owner').on(table.userId, table.createdAt),
+    index('idx_mercari_revenue_user_updated').on(
+      table.userId,
+      table.updatedAt,
+    ),
   ],
 );
 
-export const skyToolEvents = sqliteTable(
-  'sky_tool_events',
+export const automationFunds = sqliteTable(
+  'automation_funds',
   {
     id: text('id').primaryKey(),
-    packageKey: text('package_key').notNull(),
-    ownerUserId: text('owner_user_id').notNull(),
-    toolName: text('tool_name').notNull(),
-    installationId: text('installation_id').notNull(),
-    outcome: text('outcome').notNull(),
-    durationMs: integer('duration_ms').notNull(),
-    occurredAt: text('occurred_at').notNull(),
-    createdAt: integer('created_at').notNull(),
+    userId: text('user_id').notNull(),
+    name: text('name').notNull(),
+    strategy: text('strategy').notNull(),
+    targetToolCount: integer('target_tool_count').notNull(),
+    payload: text('payload').notNull(),
+    status: text('status').notNull(),
+    revision: integer('revision').notNull().default(0),
+    idempotencyKey: text('idempotency_key').notNull(),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
   },
   (table) => [
-    index('idx_sky_tool_events_owner_time').on(
-      table.ownerUserId,
-      table.occurredAt,
+    index('idx_automation_funds_user_updated').on(
+      table.userId,
+      table.updatedAt,
     ),
-    index('idx_sky_tool_events_package_time').on(
-      table.packageKey,
-      table.occurredAt,
+    uniqueIndex('idx_automation_funds_user_idempotency').on(
+      table.userId,
+      table.idempotencyKey,
     ),
+  ],
+);
+
+export const automationFundMemberships = sqliteTable(
+  'automation_fund_memberships',
+  {
+    userId: text('user_id').primaryKey(),
+    fundId: text('fund_id').notNull(),
+    revision: integer('revision').notNull().default(0),
+    joinedAt: text('joined_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [index('idx_automation_fund_memberships_fund').on(table.fundId)],
+);
+
+export const marketplaceAssets = sqliteTable(
+  'marketplace_assets',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    title: text('title').notNull(),
+    description: text('description').notNull(),
+    category: text('category').notNull(),
+    unit: text('unit').notNull(),
+    referencePriceMinor: integer('reference_price_minor').notNull(),
+    status: text('status').notNull(),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    index('idx_marketplace_assets_created').on(table.createdAt),
+    index('idx_marketplace_assets_user').on(table.userId, table.createdAt),
+  ],
+);
+
+export const marketplaceProposals = sqliteTable(
+  'marketplace_proposals',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    assetId: text('asset_id').notNull(),
+    side: text('side').notNull(),
+    priceMinor: integer('price_minor').notNull(),
+    quantity: integer('quantity').notNull(),
+    mode: text('mode').notNull(),
+    expiresAt: text('expires_at').notNull(),
+    notionalMinor: integer('notional_minor').notNull(),
+    requestJson: text('request_json').notNull(),
+    proposalDigest: text('proposal_digest').notNull(),
+    riskJson: text('risk_json').notNull(),
+    status: text('status').notNull(),
+    idempotencyKey: text('idempotency_key').notNull(),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_marketplace_proposal_idempotency').on(
+      table.userId,
+      table.idempotencyKey,
+    ),
+    uniqueIndex('idx_marketplace_proposal_digest').on(table.proposalDigest),
+    index('idx_marketplace_proposal_user').on(table.userId, table.updatedAt),
+  ],
+);
+
+export const marketplaceApprovals = sqliteTable(
+  'marketplace_approvals',
+  {
+    id: text('id').primaryKey(),
+    proposalId: text('proposal_id').notNull(),
+    userId: text('user_id').notNull(),
+    proposalDigest: text('proposal_digest').notNull(),
+    decision: text('decision').notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_marketplace_approval_proposal').on(table.proposalId),
+    index('idx_marketplace_approval_user').on(table.userId, table.createdAt),
+  ],
+);
+
+export const marketplaceReservations = sqliteTable(
+  'marketplace_reservations',
+  {
+    proposalId: text('proposal_id').primaryKey(),
+    userId: text('user_id').notNull(),
+    heldMinor: integer('held_minor').notNull(),
+    state: text('state').notNull(),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    index('idx_marketplace_reservation_user').on(
+      table.userId,
+      table.updatedAt,
+    ),
+  ],
+);
+
+export const marketplaceReceipts = sqliteTable(
+  'marketplace_receipts',
+  {
+    proposalId: text('proposal_id').primaryKey(),
+    receiptId: text('receipt_id').notNull(),
+    userId: text('user_id').notNull(),
+    executionKey: text('execution_key').notNull(),
+    receiptJson: text('receipt_json').notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_marketplace_receipt_id').on(table.receiptId),
+    uniqueIndex('idx_marketplace_execution_key').on(
+      table.userId,
+      table.executionKey,
+    ),
+  ],
+);
+
+export const marketplacePositions = sqliteTable(
+  'marketplace_positions',
+  {
+    id: text('id').primaryKey(),
+    proposalId: text('proposal_id').notNull(),
+    userId: text('user_id').notNull(),
+    assetId: text('asset_id').notNull(),
+    side: text('side').notNull(),
+    quantity: integer('quantity').notNull(),
+    entryPriceMinor: integer('entry_price_minor').notNull(),
+    notionalMinor: integer('notional_minor').notNull(),
+    status: text('status').notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_marketplace_position_proposal').on(table.proposalId),
+    index('idx_marketplace_position_user').on(table.userId, table.createdAt),
+  ],
+);
+
+export const marketplaceEvents = sqliteTable(
+  'marketplace_events',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    name: text('name').notNull(),
+    subjectId: text('subject_id').notNull(),
+    payload: text('payload').notNull(),
+    createdAt: text('created_at').notNull(),
+  },
+  (table) => [
+    index('idx_marketplace_events_user').on(table.userId, table.createdAt),
+    index('idx_marketplace_events_subject').on(table.subjectId, table.createdAt),
   ],
 );

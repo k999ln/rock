@@ -152,7 +152,7 @@ export function FundDashboard({
           <p>参加する。自動化を動かす。費用と分配を、みんなに見える形に。</p>
         </div>
         <button className="secondary-button" onClick={openConnection}>
-          <Zap size={16} /> PC・MCP接続 <ArrowUpRight size={16} />
+          <Zap size={16} /> PC接続 <ArrowUpRight size={16} />
         </button>
       </div>
       <section className="fund-hero">
@@ -366,9 +366,9 @@ export function FundDashboard({
                     <small>
                       {run.sample ? 'サンプル · ' : ''}
                       {run.transport === 'local-mcp'
-                        ? 'PC · MCP'
-                        : 'ブラウザ'}{' '}
-                      · {run.status === 'completed' ? '処理完了' : '処理失敗'} ·{' '}
+                        ? 'PC接続'
+                        : 'ブラウザ'} ·{' '}
+                      {run.status === 'completed' ? '処理完了' : '処理失敗'} ·{' '}
                       {(run.durationMs / 1000).toFixed(1)}秒
                     </small>
                     <time>
@@ -409,8 +409,8 @@ export function FundDashboard({
           <span className="outline-tag">すべて試算 / 入金・送金なし</span>
         </div>
         <p className="subnote">
-          運用費を先に回収し、月最大 $8.88
-          相当のRock star利用料をファンド全体で1回だけ控除。残りを基本分配・ブースト・共同留保へ分ける案です。
+          運用費を先に回収し、月最大 $8.88 相当のRock
+          star利用料をファンド全体で1回だけ控除。残りを基本分配・ブースト・共同留保へ分ける案です。
         </p>
         <div className="distribution-grid">
           <div className="panel scenario-panel">

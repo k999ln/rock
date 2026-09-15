@@ -1,5 +1,10 @@
-const CACHE = 'loop-app-v3';
-self.addEventListener('install', () => self.skipWaiting());
+const CACHE = 'rockstaros-shell-v4';
+const CACHE_PREFIXES = ['rockstaros-shell-', 'loop-app-'];
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'ROCKSTAROS_ACTIVATE_UPDATE') {
+    event.waitUntil(self.skipWaiting());
+  }
+});
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches
@@ -7,7 +12,11 @@ self.addEventListener('activate', (event) => {
       .then((keys) =>
         Promise.all(
           keys
-            .filter((key) => key.startsWith('loop-app-') && key !== CACHE)
+            .filter(
+              (key) =>
+                CACHE_PREFIXES.some((prefix) => key.startsWith(prefix)) &&
+                key !== CACHE,
+            )
             .map((key) => caches.delete(key)),
         ),
       )

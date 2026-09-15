@@ -938,7 +938,7 @@ export class FashionBrandService {
       const { status: providerStatus, ...providerReceipt } = receipt;
       const fullReceipt = {
         receipt_id: id("rcp"), run_id: runId, server_name: "io.rockstar-ibot/instagram-operations", version: "0.2.0",
-        package_digest: this.config.packageDigest || "f74ca4b50008b6a6161f8682ac8c9799327f4d1f5658c10a3cff0f762fa54919", capability_id: CAPABILITY_BY_ACTION[approval.action] || "unknown",
+        package_digest: this.config.packageDigest || "52f38bca0394daa0da1df77132f2fdce3540b8b119611f793dd5a61e9bd88ff6", capability_id: CAPABILITY_BY_ACTION[approval.action] || "unknown",
         grant_id: approval.id, action: approval.action, approval_id: approval.id, idempotency_key: idempotencyKey,
         input_sha256: approval.payload_digest, output_sha256: sha256(receipt), provider_status: providerStatus || "unknown", status: "completed", started_at: at, finished_at: doneAt, ...providerReceipt,
       };

@@ -6,10 +6,7 @@ import {
   Check,
   CheckCircle2,
   Download,
-  ImageIcon,
   ImagePlus,
-  ListChecks,
-  MessageCircle,
   RefreshCw,
   ShieldCheck,
   Sparkles,
@@ -39,6 +36,16 @@ type AccountCandidate = {
   screenshot_count: number;
 };
 
+type AccountCandidate = {
+  id: string;
+  username: string;
+  verification_status:
+    | 'needs_owner_confirmation'
+    | 'oauth_matched'
+    | 'dismissed';
+  screenshot_count: number;
+};
+
 const capabilities = [
   '売上・数量・粗利・期限からCampaign Autopilotを作成',
   '顧客履歴・購入意向・次の一手をSales Conciergeで管理',
@@ -50,11 +57,6 @@ export function FashionBrandOpsRunner() {
   const [connected, setConnected] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
-  const [brandDirection, setBrandDirection] = useState('');
-  const [productDesign, setProductDesign] = useState('');
-  const [region, setRegion] = useState('');
-  const [plan, setPlan] = useState<FashionQuickPlan | null>(null);
-  const [planError, setPlanError] = useState('');
   const [candidates, setCandidates] = useState<AccountCandidate[]>([]);
 
   async function refreshCandidates() {
@@ -81,6 +83,24 @@ export function FashionBrandOpsRunner() {
         .catch(() =>
           setMessage('接続が切れました。もう一度接続してください。'),
         );
+    } else {
+      void connectFashionMcp()
+        .then((result) => {
+          setConnected(true);
+          setMessage(
+            `${result.toolCount}個の専用操作を確認しました。Skyから実行できます。`,
+          );
+          void refreshCandidates();
+        })
+        .catch((error) => {
+          setConnected(fashionMcpConnected());
+          setMessage(
+            error instanceof Error
+              ? error.message
+              : 'Sky接続アプリを起動してから、もう一度お試しください。',
+          );
+        })
+        .finally(() => setBusy(false));
     }
     return () => window.removeEventListener('sky-fashion-mcp', update);
   }, []);
@@ -129,8 +149,12 @@ export function FashionBrandOpsRunner() {
       <div className="fashion-quick-intro">
         <Sparkles size={20} />
         <div>
-          <strong>Producerモード</strong>
-          <p>楽しい部分だけ決めると、AIが販売の裏方を組みます。</p>
+          <strong>{connected ? 'MCP接続済み' : 'PCのMCPへ接続'}</strong>
+          <p>
+            {connected
+              ? 'Fashion Brand Opsの40操作を確認できました。'
+              : '接続アプリが動いていれば、このボタン1回で準備が完了します。'}
+          </p>
         </div>
       </div>
       <div className="fashion-quick-form">
@@ -277,24 +301,75 @@ export function FashionBrandOpsRunner() {
                 ? '接続を再確認'
                 : 'ワンクリックで接続'}
           </button>
-          {connected && (
-            <button
-              className="secondary-button"
-              onClick={() => {
-                void disconnectFashionMcp().finally(() => {
-                  setConnected(false);
-                  setMessage('このタブのMCP接続を解除しました。');
-                });
-              }}
-            >
-              <Unplug size={15} />
-              解除
-            </button>
-          )}
+        )}
+      </div>
+      <p className="fashion-ops-connection-state" aria-live="polite">
+        <span className={connected ? 'status-dot' : 'offline-dot'} />
+        {connected ? 'このタブはPCのMCPへ接続中' : 'MCP未接続'}
+      </p>
+      {message && <output className="fashion-ops-message">{message}</output>}
+      <section
+        className="fashion-photo-intake"
+        aria-labelledby="fashion-photo-intake-title"
+      >
+        <div className="fashion-photo-intake-heading">
+          <ImagePlus size={20} />
+          <div>
+            <strong id="fashion-photo-intake-title">
+              Instagramは写真から候補化
+            </strong>
+            <p>
+              このCodexタスクへプロフィール画面を送ると、公開表示だけを本人確認候補にします。
+            </p>
+          </div>
         </div>
-        <p className="fashion-ops-connection-state" aria-live="polite">
-          <span className={connected ? 'status-dot' : 'offline-dot'} />
-          {connected ? 'このタブはPCのMCPへ接続中' : 'MCP未接続'}
+        <ol>
+          <li>
+            <span>1</span>スクリーンショットを送る
+          </li>
+          <li>
+            <span>2</span>候補を本人確認
+          </li>
+          <li>
+            <span>3</span>初回だけMetaへ接続
+          </li>
+        </ol>
+        {candidates.length > 0 && (
+          <div className="fashion-photo-candidates">
+            <div>
+              <strong>写真から見つけた候補</strong>
+              <button onClick={() => void refreshCandidates()}>更新</button>
+            </div>
+            <ul>
+              {candidates.map((candidate) => (
+                <li key={candidate.id}>
+                  <span>@{candidate.username}</span>
+                  <small>
+                    {candidate.verification_status === 'oauth_matched'
+                      ? 'Meta確認済み'
+                      : '本人確認待ち'}
+                  </small>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <p className="fashion-photo-privacy">
+          画像本体・パスワード・Cookieは運用DBへ保存しません。Meta確認前の候補では投稿やDMを実行できません。
+        </p>
+      </section>
+      <ul>
+        {capabilities.map((capability) => (
+          <li key={capability}>
+            <CheckCircle2 size={16} />
+            {capability}
+          </li>
+        ))}
+      </ul>
+      <div className="fashion-ops-approval">
+        <ShieldCheck size={19} />
+        <p>
+          計画と下書きは自動化できます。価格変更、画像・動画生成、投稿・広告出稿、DM送信、請求、返金は、内容を確認して承認するまで実行されません。
         </p>
         {message && <output className="fashion-ops-message">{message}</output>}
         <section

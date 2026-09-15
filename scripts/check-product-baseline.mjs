@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 27 },
+    { length: 36 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ27の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ36の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -95,7 +95,7 @@ export function validateBaseline(
   const skyInventory = resolve(root, data.sky?.inventory || '');
   requireValue(
     !relative(root, skyInventory).startsWith('..') &&
-      read(skyInventory).includes('Web / PCで現在使える6件'),
+      read(skyInventory).includes('Web / PCで現在使える10件'),
     'Skyの役割と収録ツールの正本が必要です',
   );
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');
@@ -104,9 +104,181 @@ export function validateBaseline(
     'ゲーム交換をATM必須にしないでください',
   );
   requireValue(
-    data.marketExploration?.runtimeAuthorized === false &&
+    data.marketExploration?.appShellAuthorized === true &&
+      data.marketExploration?.paperRuntimeAuthorized === true &&
+      data.marketExploration?.liveRuntimeAuthorized === false &&
       data.marketExploration?.realValueEnabled === false,
-    '市場案は検討のみで実装・実資金未承認です',
+    '汎用市場はPAPER runtimeのみ承認され、外部接続・実資金は無効です',
+  );
+  requireValue(
+    data.autonomousFundRuntime?.refreshIntervalSeconds === 30 &&
+      data.autonomousFundRuntime?.unverifiedYield === null &&
+      data.autonomousFundRuntime?.automaticCapitalMovement === false &&
+      data.autonomousFundRuntime?.realFundsEnabled === false,
+    '自律型ファンドは実績再計算と提案までに限定してください',
+  );
+  requireValue(
+    data.externalFinancialProviderBoundary?.status ===
+      'approved_design_provider_adapters_not_connected' &&
+      data.externalFinancialProviderBoundary?.osRole ===
+        'capability_discovery_consent_instruction_status_receipt_reconciliation' &&
+      data.externalFinancialProviderBoundary?.integrationModel ===
+        'versioned_capability_manifest_and_provider_adapter' &&
+      data.externalFinancialProviderBoundary?.unsupportedCapabilityEmulation ===
+        false &&
+      data.externalFinancialProviderBoundary
+        ?.osRebuildRequiredForProviderAddition === false &&
+      data.externalFinancialProviderBoundary?.providerDirectLedgerWrite ===
+        false &&
+      data.externalFinancialProviderBoundary?.providerArbitraryShell ===
+        false &&
+      data.externalFinancialProviderBoundary?.liveProvidersConnected ===
+        false &&
+      data.externalFinancialProviderBoundary?.realFundsEnabled === false,
+    'Wallet／ファンドは外部Providerの受け身設計とし、Rockが保管・運用主体を兼ねないでください',
+  );
+  requireValue(
+    data.firstPartySettlementProvider?.providerId ===
+      'org.rockstar.settlement-wallet' &&
+      data.firstPartySettlementProvider?.ownership === 'rock_first_party' &&
+      data.firstPartySettlementProvider?.purpose ===
+        'collect_verified_allocated_sky_fee_only' &&
+      data.firstPartySettlementProvider?.mode === 'SANDBOX' &&
+      data.firstPartySettlementProvider?.status ===
+        'contract_fixture_verified' &&
+      JSON.stringify(data.firstPartySettlementProvider?.capabilities) ===
+        JSON.stringify(['collect_platform_fee', 'reporting']) &&
+      data.firstPartySettlementProvider?.monthlyFeeCapMinor === 888 &&
+      data.firstPartySettlementProvider?.userFundsCustodied === false &&
+      data.firstPartySettlementProvider?.fundManagementEnabled === false &&
+      data.firstPartySettlementProvider?.arbitraryReceiveOrPayoutEnabled ===
+        false &&
+      data.firstPartySettlementProvider?.liveCollectionEnabled === false &&
+      data.firstPartySettlementProvider?.realFundsEnabled === false &&
+      data.firstPartySettlementProvider?.usesCommonProviderAdapter === true,
+    'Rock Settlement Walletは確定済み自社利用料のsandbox回収だけに限定してください',
+  );
+  requireValue(
+    data.productionReceiveRail?.status ===
+      'deployed_owner_private_pending_signature' &&
+      data.productionReceiveRail?.network === 'base' &&
+      data.productionReceiveRail?.chainId === 8453 &&
+      data.productionReceiveRail?.assetSymbol === 'USDC' &&
+      data.productionReceiveRail?.assetContract ===
+        '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' &&
+      data.productionReceiveRail?.assetDecimals === 6 &&
+      data.productionReceiveRail?.walletConnection === 'eip1193_injected' &&
+      data.productionReceiveRail?.privateKeysStored === false &&
+      data.productionReceiveRail?.userFundsCustodied === false &&
+      data.productionReceiveRail?.automaticTransferEnabled === false &&
+      data.productionReceiveRail?.collectionSource ===
+        'signed_earning_receipt_sky_service_fee_only' &&
+      data.productionReceiveRail?.monthlyFeeCapMinor === 888 &&
+      data.productionReceiveRail?.exactRecipientAndAmountRequired === true &&
+      data.productionReceiveRail?.finalizedBlockRequired === true &&
+      data.productionReceiveRail
+        ?.operatorClaimRequiresPrivateSiteOwnerAccess === true &&
+      data.productionReceiveRail?.ownerWalletRegistration ===
+        'pending_user_signature' &&
+      data.productionReceiveRail?.firstLiveTransfer === 'not_performed',
+    '本番受取レールはBase USDCの所有確認・限定回収・finalized照合とし、秘密鍵保管・自動送金・完了の先取りを禁止してください',
+  );
+  requireValue(
+    data.chatInteraction?.connectedMcpPresentation ===
+      'one_bot_per_connected_server_or_ready_product' &&
+      data.chatInteraction?.controlSurface === 'chat_thread' &&
+      data.chatInteraction?.genericExecutionContract ===
+        'passport_tool_schema_then_prepare_confirm_execute',
+    'Chatの接続bot管理契約が必要です',
+  );
+  requireValue(
+    data.webDeliveryIntegrity?.sourceAndPrivateSiteCommitMustMatch === true &&
+      data.webDeliveryIntegrity?.assetClosureCheck ===
+        'npm run release:web-assets:check' &&
+      data.webDeliveryIntegrity?.publicAccessAuthorized === false,
+    'Web画面と配備assetを同一commitへ固定してください',
+  );
+  requireValue(
+    data.homeExperience?.defaultRoute === '/' &&
+      data.homeExperience?.skyRoute === '/sky' &&
+      data.homeExperience?.systemUtility === 'settings' &&
+      data.homeExperience?.preferencesStorage === 'device_local' &&
+      data.homeExperience?.customizable?.includes('app_order') &&
+      data.homeExperience?.settingsFunctions?.includes('pc_connector') &&
+      data.homeExperience?.settingsFunctions?.includes(
+        'install_recovery_guidance',
+      ),
+    'ホームと設定アプリの入口・端末内設定・運用機能を維持してください',
+  );
+  requireValue(
+    data.homeExperience.returnPolicy ===
+      'every_non_home_route_has_a_direct_home_affordance',
+    'Home以外の全画面に直接Homeへ戻る契約が必要です',
+  );
+  requireValue(
+    data.systemMaintenance?.route === '/settings/system' &&
+      data.systemMaintenance?.runtime === 'web_pwa_device_local' &&
+      data.systemMaintenance?.diagnostics?.includes('rockstar_api') &&
+      data.systemMaintenance?.diagnostics?.includes('pc_connector') &&
+      data.systemMaintenance?.diagnostics?.includes('secure_context') &&
+      data.systemMaintenance?.diagnostics?.includes('notifications') &&
+      data.systemMaintenance?.diagnostics?.includes('persistent_storage') &&
+      data.systemMaintenance?.backup?.format === 'rockstaros-device-backup/1' &&
+      data.systemMaintenance?.backup?.cipher === 'AES-GCM-256' &&
+      data.systemMaintenance?.backup?.kdf === 'PBKDF2-SHA256' &&
+      data.systemMaintenance?.backup?.iterations === 310000 &&
+      data.systemMaintenance?.backup?.scope ===
+        'allowlisted_rockstaros_home_preferences_only' &&
+      data.systemMaintenance?.backup?.tamperDetection === true &&
+      data.systemMaintenance?.backup?.excludes?.includes(
+        'device_session_token',
+      ) &&
+      data.systemMaintenance?.operations?.notificationPermission ===
+        'explicit_user_request_and_test_only' &&
+      data.systemMaintenance?.operations?.diagnosticExport ===
+        'sanitized_no_identity_token_wallet_personal_number_or_content' &&
+      data.systemMaintenance?.operations?.deviceReset ===
+        'confirmed_allowlisted_home_preferences_only' &&
+      data.systemMaintenance?.releaseReadiness?.androidCompatibility ===
+        'cdd_cts_not_run' &&
+      data.systemMaintenance?.releaseReadiness?.googleMobileServices ===
+        'not_applied' &&
+      data.systemMaintenance?.releaseReadiness?.personalNumberHandling ===
+        'not_enabled_requires_separate_compliance_review' &&
+      data.systemMaintenance?.releaseReadiness?.manifest ===
+        'data/release-readiness.json' &&
+      data.systemMaintenance?.releaseReadiness?.qemuAudit ===
+        'data/qemu-release-audit.json' &&
+      data.systemMaintenance?.releaseReadiness?.androidAudit ===
+        'data/android-physical-release-audit.json' &&
+      data.systemMaintenance?.releaseReadiness?.androidAuditStatus ===
+        '0_of_5_required_gates_passed' &&
+      data.systemMaintenance?.releaseReadiness?.personalNumberAudit ===
+        'data/personal-number-release-audit.json' &&
+      data.systemMaintenance?.releaseReadiness?.personalNumberAuditStatus ===
+        '1_of_7_required_gates_passed_feature_disabled' &&
+      data.systemMaintenance?.releaseReadiness?.automatedCheck ===
+        'npm run release:check' &&
+      data.systemMaintenance?.releaseReadiness?.sbom ===
+        'web_current_rc2_and_historical_native_cyclonedx_1_6_generated_to_separate_ignored_files' &&
+      data.systemMaintenance?.releaseReadiness?.qemuCandidateStatus ===
+        '6_of_10_current_candidate_requirements_passed' &&
+      data.systemMaintenance?.releaseReadiness?.currentNativeInventory ===
+        'data/qemu-rc2-legal-info' &&
+      data.systemMaintenance?.releaseReadiness?.signingMechanics
+        ?.automatedCheck === 'npm run release:signing:check' &&
+      data.systemMaintenance?.releaseReadiness?.signingMechanics
+        ?.publicFixtureTests === 62 &&
+      data.systemMaintenance?.releaseReadiness?.signingMechanics?.status ===
+        'mechanics_verified_production_key_and_owner_approval_not_executed' &&
+      data.systemMaintenance?.releaseReadiness
+        ?.historicalNativeInventoryRule ===
+        'never_substitute_9ab_inventory_for_rc2' &&
+      data.systemMaintenance?.physicalDeviceStatus ===
+        'blocked_until_exact_model_bsp_bootloader_recovery' &&
+      data.systemMaintenance?.productionSigning ===
+        'blocked_until_owner_key_ceremony',
+    'OS運用・暗号化保全・公開審査gateを維持してください',
   );
   requireValue(
     data.skyNetworkEconomy?.tobSkyFeeMinor === 0,
@@ -132,6 +304,14 @@ export function validateBaseline(
       data.skyEarningsSettlement?.liveCollectionEnabled === false &&
       data.skyEarningsSettlement?.livePayoutEnabled === false,
     '先払い月額を使わず、収益連動精算と本番資金gateを維持してください',
+  );
+  requireValue(
+    data.mercariRevenueLoop?.catalogTool === 'mercari-revenue' &&
+      data.mercariRevenueLoop?.consumerCredentialsCollected === false &&
+      data.mercariRevenueLoop?.directSitesApiCall === false &&
+      data.mercariRevenueLoop?.manualSalesAreVerified === false &&
+      data.mercariRevenueLoop?.salesOrProfitGuaranteed === false,
+    'メルカリ個人版の手動境界とProvider検証前の精算禁止を維持してください',
   );
   requireValue(
     data.skyNetworkEconomy?.liveMcpConnectionEnabled === false &&
@@ -192,33 +372,6 @@ export function validateBaseline(
       data.skyNetworkEconomy?.multiMcpConnector?.skyUiConnected === true,
     '複数MCP Connectorの配布・Sky接続とremote/OAuth未受入の境界を維持してください',
   );
-  requireValue(
-    data.primaryCapabilities?.includes('sky-tool-developer-platform') &&
-      data.skyToolDeveloperPlatform?.status ===
-        'developer_preview_registered_and_declared_publication' &&
-      data.skyToolDeveloperPlatform?.packageSchema === 'sky-tool-package/1' &&
-      data.skyToolDeveloperPlatform?.frontend === 'chat_code_or_file_only' &&
-      data.skyToolDeveloperPlatform?.rawCodeUploaded === false &&
-      data.skyToolDeveloperPlatform?.automaticPackageGeneration === true &&
-      data.skyToolDeveloperPlatform?.mcpDiscoveryAndCallImplemented === true &&
-      data.skyToolDeveloperPlatform?.anonymousUsageFieldsOnly === true &&
-      data.skyToolDeveloperPlatform?.declaredPublicationInstallable === false &&
-      data.skyToolDeveloperPlatform?.verifiedPublicationImplemented === false &&
-      data.skyToolDeveloperPlatform?.productionSandboxImplemented === false,
-    'Sky Tool SDKの雛形・匿名利用集計と宣言公開/検証済み公開の境界を維持してください',
-  );
-  for (const field of ['studio', 'sdk', 'record']) {
-    const path = data.skyToolDeveloperPlatform?.[field];
-    requireValue(
-      typeof path === 'string' &&
-        !isAbsolute(path) &&
-        !relative(root, resolve(root, path)).startsWith('..') &&
-        existsSync(resolve(root, path)) &&
-        (statSync(resolve(root, path)).isDirectory() ||
-          read(resolve(root, path)).length > 100),
-      `skyToolDeveloperPlatform.${field}: repository内の実装または本文が必要です`,
-    );
-  }
   requireValue(
     data.releaseInstallation?.releaseName === 'RockstarOS 1.0',
     '1.0の発表名が必要です',
@@ -310,6 +463,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ27、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、Sky Tool SDK雛形、チャット型コード取込、宣言公開/検証済み公開の分離、MCP接続先3系統、tob利用料/売上手数料0、外部実接続/実送金OFF、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ36、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

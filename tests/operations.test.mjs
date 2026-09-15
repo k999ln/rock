@@ -126,6 +126,26 @@ await test('ownership is checked for every job, device, control and book operati
   assert.equal(view.book.revenue, 0);
   assert.equal(view.devices.length, 0);
 });
+await test('Sky connections are one-tap, idempotent and isolated per user', async () => {
+  const { a, b } = fixture();
+  const first = await a.connectSky({ tool: 'coconala' });
+  const replay = await a.connectSky({ tool: 'coconala' });
+  await a.connectSky({ tool: 'rockstar-legal-intake' });
+  await a.connectSky({ tool: 'rockstar-patent-assistant' });
+  assert.equal(first.tool, 'coconala');
+  assert.equal(first.scope, 'execute');
+  assert.equal(replay.consentVersion, first.consentVersion);
+  assert.deepEqual(
+    (await a.listSkyConnections()).map(({ tool }) => tool),
+    ['coconala', 'rockstar-legal-intake', 'rockstar-patent-assistant'],
+  );
+  assert.deepEqual(await b.listSkyConnections(), []);
+  await rejects(() => a.connectSky({ tool: 'shell' }), 400);
+  await rejects(
+    () => a.connectSky({ tool: 'coconala', personalNumber: 'hidden' }),
+    400,
+  );
+});
 await test('active slot, hourly limit and disabled tools are enforced before dispatch', async () => {
   const { a, advance } = fixture(),
     first = job();

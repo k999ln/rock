@@ -199,6 +199,31 @@ await test('one explicit reconnect uses a fresh identity and delayed disconnect 
   );
 });
 
+await test('PC connection accepts extra tools and keeps the negotiated protocol', async (t) => {
+  const h = await harness(t);
+  h.handle = ({ body }) =>
+    body.method === 'initialize'
+      ? json({ result: { protocolVersion: '2025-06-18' } })
+      : undefined;
+  await h.device.connectDevice();
+  assert.equal(h.device.deviceProtocol(), '2025-06-18');
+  await h.device.runDevice('format_citations', { text: 'synthetic' });
+  const called = h.requests.find(({ body }) => body.method === 'tools/call');
+  assert.equal(called.headers['mcp-protocol-version'], '2025-06-18');
+});
+
+await test('PC connection rejects an outdated pack missing a required tool', async (t) => {
+  const h = await harness(t);
+  h.handle = ({ body }) =>
+    body.method === 'tools/list'
+      ? json({ result: { tools: [{ name: 'coconala_check' }] } })
+      : undefined;
+  await assert.rejects(
+    h.device.connectDevice(),
+    /PC接続アプリを更新してください/,
+  );
+});
+
 await test('failed server connection registration removes credentials and cannot dispatch a local tool', async (t) => {
   const h = await harness(t);
   h.handle = ({ path }) =>

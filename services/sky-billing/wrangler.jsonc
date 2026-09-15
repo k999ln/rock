@@ -5,13 +5,14 @@
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
-    "SKY_ORIGIN": "https://replace-with-your-sky-origin.example",
+    "SKY_ORIGIN": "https://rockstaros-kaiya.noellesugar1.chatgpt.site",
+    "BASE_RPC_URL": "https://mainnet.base.org",
   },
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "rockstar-sky-billing",
-      "database_id": "00000000-0000-4000-8000-000000000000",
+      "database_id": "3c3d224d-0a4b-46c6-bcd2-ab610756a020",
       "migrations_dir": "migrations",
     },
   ],

@@ -1,0 +1,45 @@
+{
+  "schema": "rockstaros-owner-private-sites-audit/1",
+  "observedAt": "2026-09-13T13:18:39Z",
+  "site": {
+    "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+    "title": "RockstarOS",
+    "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site",
+    "status": "active",
+    "currentUserRole": "owner",
+    "accessMode": "custom",
+    "allowedUsers": 1,
+    "allowedGroups": 0,
+    "allowedEditors": 0,
+    "externalVisitors": 0
+  },
+  "latestVersion": {
+    "number": 29,
+    "id": "appgprj_6aa444b6e6508191a19f16405d0be927~appgver_fb20e303358c8191a332a668c8ebe74a",
+    "sourceCommit": "25cf0fa2cae303475a9bf54280889a1192be455e",
+    "archiveSha256": "2ab91083585babe883e7198047c6e4e5115511bd4f369add5fdee39b5ce620a5",
+    "archiveBytes": 5949440,
+    "archiveFiles": 266,
+    "deploymentId": "appgdep_6aa611eb2bcc8191b207378d5557e17f",
+    "deploymentStatus": "succeeded",
+    "deploymentUpdatedAt": "2026-09-13T03:05:34Z"
+  },
+  "sync": {
+    "status": "OUTDATED",
+    "comparedReviewHead": "c746621afeed4c27b3426e6cceab1b425b2dc7d0",
+    "commitsBehind": 15,
+    "authorization": "AWAITING_EXPLICIT_OWNER_APPROVAL",
+    "nextAction": "最新版sourceを本人限定の同じSiteへ保存・配備し、version、deployment、source commit、archive、access policyを再読取りする"
+  },
+  "deploymentSecurity": {
+    "status": "PENDING_CURRENT_DEPLOYMENT",
+    "observedHeaders": null,
+    "nextAction": "最新版を配備後、本人認証済みのHTML responseからdata/web-security-policy.jsonの全universal headerを実読取りする"
+  },
+  "claims": {
+    "ownerPrivateDeliveryVerified": true,
+    "latestApprovedSourceDeployed": false,
+    "publicAudience": false,
+    "generalReleaseApproved": false
+  }
+}

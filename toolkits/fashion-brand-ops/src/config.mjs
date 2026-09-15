@@ -63,6 +63,6 @@ export function loadConfig(env = process.env) {
     notificationWebhookToken: env.NOTIFICATION_WEBHOOK_TOKEN || '',
     packageDigest:
       env.ROCKSTAR_PACKAGE_DIGEST ||
-      'f74ca4b50008b6a6161f8682ac8c9799327f4d1f5658c10a3cff0f762fa54919',
+      '52f38bca0394daa0da1df77132f2fdce3540b8b119611f793dd5a61e9bd88ff6',
   });
 }

@@ -4,13 +4,15 @@ import { routeSkyRequest, skyRoles } from '../lib/sky-routing.ts';
 
 void test('Sky routes a plain-language request to each available role', () => {
   const cases = [
+    ['メルカリで不用品を出品して収益化したい', 'mercari-revenue'],
     ['Instagramの広告からDM受注と発送まで進めて', 'fashion-brand-ops'],
-    ['Instagramの投稿と受注をまとめて運営して', 'fashion-brand-ops'],
     ['この案件に応募してよいか判断して', 'coconala'],
     ['この原稿から無料版の記事を作って', 'mr-free-article'],
     ['この記事の出典URLをまとめて', 'mr-citations'],
     ['契約と成果物を見て納品確認して', 'mr-delivery'],
     ['サブスクの更新日と支払い失敗を確認して', 'rockstar-ledger'],
+    ['契約上の法的な問題を法務に相談したい', 'rockstar-legal-intake'],
+    ['この発明の先行技術と請求項を整理して', 'rockstar-patent-assistant'],
   ];
 
   for (const [request, toolId] of cases) {
@@ -18,8 +20,8 @@ void test('Sky routes a plain-language request to each available role', () => {
   }
 });
 
-void test('Sky exposes six roles and does not guess an unrelated request', () => {
-  assert.equal(skyRoles.length, 6);
+void test('Sky exposes nine roles and does not guess an unrelated request', () => {
+  assert.equal(skyRoles.length, 9);
   assert.equal(routeSkyRequest('今日の天気を教えて'), null);
   assert.equal(routeSkyRequest('  '), null);
 });

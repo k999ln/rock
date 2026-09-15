@@ -4,14 +4,17 @@ import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
+  Activity,
   ArrowUpRight,
   Cable,
   Download,
   Settings2,
   CircleHelp,
   Grid2X2,
+  House,
   Layers3,
   ListChecks,
+  MessageCircle,
   Monitor,
   Star,
   Wallet,
@@ -27,9 +30,12 @@ import {
 } from '@/components/ui/sidebar';
 
 const navigation = [
-  { href: '/', label: 'Sky', Icon: Grid2X2 },
+  { href: '/', label: 'ホーム', Icon: House },
+  { href: '/sky', label: 'Sky', Icon: Grid2X2 },
+  { href: '/chat', label: 'Chat', Icon: MessageCircle },
   { href: '/work', label: '仕事・履歴', Icon: ListChecks },
   { href: '/wallet', label: 'Wallet', Icon: Wallet },
+  { href: '/market', label: 'Market', Icon: Activity },
 ];
 
 export default function WorkspaceShell({
@@ -39,6 +45,7 @@ export default function WorkspaceShell({
   onConnect,
   running = false,
   showSidebar = true,
+  hideTopActions = false,
 }: {
   children: ReactNode;
   title: string;
@@ -46,6 +53,7 @@ export default function WorkspaceShell({
   onConnect?: () => void;
   running?: boolean;
   showSidebar?: boolean;
+  hideTopActions?: boolean;
 }) {
   const pathname = usePathname();
   const [installHelp, setInstallHelp] = useState(false);
@@ -101,6 +109,9 @@ export default function WorkspaceShell({
                   href={href}
                   aria-current={
                     pathname === href ||
+                    (href === '/sky' &&
+                      (pathname.startsWith('/sky/') ||
+                        pathname.startsWith('/income/'))) ||
                     (href === '/work' && pathname === '/activity')
                       ? 'page'
                       : undefined
@@ -158,7 +169,7 @@ export default function WorkspaceShell({
             </div>
             <Link href="/fund" className="rock-legacy-link">
               <Layers3 size={16} />
-              保存済みのファンド・試算
+              自動化ファンド
               <ArrowUpRight size={13} />
             </Link>
           </SidebarFooter>
@@ -174,6 +185,10 @@ export default function WorkspaceShell({
               aria-label="メニューを開閉"
             />
           )}
+          <Link href="/" className="rock-home-link" aria-label="ホームへ戻る">
+            <House size={17} />
+            <span>ホーム</span>
+          </Link>
           <div className="rock-breadcrumb">
             {showSidebar && (
               <>
@@ -183,31 +198,33 @@ export default function WorkspaceShell({
             <strong>{title}</strong>
             {!showSidebar && <em>DEVELOPER PREVIEW</em>}
           </div>
-          <div className="rock-topbar-actions">
-            {running && (
-              <output className="rock-executing">
-                処理中 · 完了まで画面を開いてください
-              </output>
-            )}
-            <span className="rock-web-label">WEB / PC</span>
-            {onConnect ? (
-              <button
-                className="rock-button rock-button-subtle"
-                disabled={running}
-                onClick={onConnect}
-              >
-                <Cable size={17} />
-                PCを接続
-              </button>
-            ) : (
-              <Link
-                className="rock-button rock-button-subtle"
-                href="/rockstaros/guide"
-              >
-                使い方を見る
-              </Link>
-            )}
-          </div>
+          {!hideTopActions && (
+            <div className="rock-topbar-actions">
+              {running && (
+                <output className="rock-executing">
+                  処理中 · 完了まで画面を開いてください
+                </output>
+              )}
+              <span className="rock-web-label">WEB / PC</span>
+              {onConnect ? (
+                <button
+                  className="rock-button rock-button-subtle"
+                  disabled={running}
+                  onClick={onConnect}
+                >
+                  <Cable size={17} />
+                  PCを接続
+                </button>
+              ) : (
+                <Link
+                  className="rock-button rock-button-subtle"
+                  href="/rockstaros/guide"
+                >
+                  使い方を見る
+                </Link>
+              )}
+            </div>
+          )}
         </header>
         <main
           id="workspace-main"

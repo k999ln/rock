@@ -8,6 +8,7 @@ from pathlib import Path
 from game_legacy_basis import LegacyGameBasis,A1,A2
 from game_exchange import exchange_ledger as ledger
 from game_exchange.current_restore import snapshot
+from blackberryrock.spend import ValueSpendRuntime
 
 class ExchangeMigration(unittest.TestCase):
     def test_existing_claimed_monthly_atm_hold_pending_revoked_auth_and_opaque_rows_survive(self):
@@ -15,6 +16,8 @@ class ExchangeMigration(unittest.TestCase):
             basis=LegacyGameBasis(Path(temp).resolve())
             try:
                 basis.create_legacy();basis.adopt();runtime=basis.runtimes['alice']
+                with runtime.admit_write(runtime.descriptor.writer_epoch):
+                    ValueSpendRuntime(runtime._service.wallet)
                 before={}
                 for name in ('wallet-simulator.db','entitlement.db'):
                     with closing(sqlite3.connect(basis.state/name)) as db:
@@ -38,6 +41,21 @@ class ExchangeMigration(unittest.TestCase):
                 self.assertFalse(basis.owner_transport(A1).exchange(basis.legacy_issue_request)['ok'])
                 basis.reconcile_existing_month();basis.assert_retained(self,claimed=False)
                 with closing(runtime._service.wallet._connect()) as db:self.assertTrue(ledger.installed(db))
+            finally:basis.close()
+
+    def test_value_spend_installs_after_game_accounts(self):
+        with tempfile.TemporaryDirectory(prefix='gx01-spend-after-game-') as temp:
+            basis=LegacyGameBasis(Path(temp).resolve())
+            try:
+                basis.create_legacy();basis.adopt();runtime=basis.runtimes['alice']
+                ledger.migrate(runtime,migration_id=str(uuid.uuid4()))
+                with runtime.admit_write(runtime.descriptor.writer_epoch):
+                    spend=ValueSpendRuntime(runtime._service.wallet)
+                state=spend.snapshot()
+                self.assertEqual(state['spend_accounts']['SPEND_HOLD'],0)
+                with closing(runtime._service.wallet._connect()) as db:
+                    self.assertTrue(ledger.installed(db))
+                    self.assertEqual(db.execute('SELECT version FROM value_spend_schema').fetchone()[0],1)
             finally:basis.close()
 
 if __name__=='__main__':unittest.main()

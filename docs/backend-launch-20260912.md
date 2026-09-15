@@ -1,75 +1,105 @@
-# OSバックエンド・ローンチ手順（2026-09-12）
+# OSバックエンド最小ローンチ監査 — 2026-09-12
 
-## ローンチ範囲
+対象はGitHub `k999ln/rock` の統合候補 `c7c284a2e43d807018f35c81ee95985d61fbacf0` を起点とする。
+最小製品を、本人限定Sites、独立した収益精算Worker、公開fixtureと合成Walletだけを使う
+Developer Previewに限定する。実機、実資金、外部provider、本番払出し、一般公開MCPはこの判定へ含めない。
 
-今回の利用可能範囲は、本人限定Sites上のWeb/Sky、D1へ保存する仕事・履歴・設定、ブラウザ内ツール、PC上のSky MCP Connector、Fashion Brand Opsのmock／ローカル運用、loopback上のnative Hubである。実Meta投稿、実広告、実DM送信、実請求・返金、実払出し、LIVE取引、スマホ実機OSは含めない。未設定の外部作用は成功を装わず停止する。
+## 重複監査
+
+- Fashion Brand OpsのSky表示、40操作、ワンタップ接続は完成済みコミットだけを統合した。
+- Rockstar Ledgerは別branch/PRで進行中。個人SQLiteをこのbranchへコピーしない。
+- Value/Spend RuntimeはPR #11でSIMULATION/PAPERまで実装済みだが未統合。LIVEは無効のまま維持する。
+- OS Hub lifecycleの完成済みコミットだけを取り込み、共有worktreeの途中差分は使わない。
+- GitHubの開始SHAではWeb、native source、Android、署名fixture、transport fixture、phone source準備の
+  6 workflowが成功済み。OS imageの新規build/bootや実機合格へ読み替えない。
 
 ## 優先順位
 
-- P0: Web起動、認証済みAPI、ユーザー分離、D1移行、仕事の作成から完了・再開、MCP接続・解除・承認、Fashionの受注フロー、native Hubの安全な起動・終了・再起動、精算核の安全停止、ログ、配布物、本人限定Sites反映、Git保存。
-- P1: Meta／Stripe／Higgsfield／通知Providerのsandbox接続、精算Worker用D1・secret・Provider入金照合、OAuthブラウザ認証。
-- P2: Sky Cloudの一般MCP、実払出し、LIVE取引、Android／QEMU／物理端末、一般公開。
+### P0 — 最小ローンチに必要
 
-## データフロー
+1. ローカルHubの起動、SIGTERMによる安全終了、同じ状態からの再起動。
+2. session/Host/Origin境界、署名packageのinstall→明示enable→実行→receipt保存。
+3. SQLiteの整合、再起動後のsession失効と完了receipt復元、不確実な実行の自動再送禁止。
+4. 利用者データを返さないloopbackヘルスチェック。
+5. Web本体とD1の認証・利用者分離・移行、Sky MCP、Fashion MCP、収益精算を同じtreeで全検証する。
+6. 収益精算Workerを専用D1・署名secret・本人限定Sites originへ接続し、合成Receiptで縦断確認する。
+7. 合格した同一treeをGitへ保存し、本人限定Sitesへ反映して旧versionへ戻せることを確認する。
 
-```text
-Sites認証 → Web API → D1（ユーザー別）
-Sky → localhost Connector → MCP initialize/tools/list
-    → exact approval → tools/call → receipt/reconciliation
-Fashion MCP → SQLite（tenant/brand/order/customer/effect）
-Provider署名Webhook → order/earning receipt → 追記型台帳
-native Hub → signed package → explicit enable → isolated run → durable receipt
-```
+1〜7をDeveloper Preview範囲で完了した。rc2配布資産、production署名、製品許諾は物理OS配布の別ゲート、
+有償商品と販売・決済・払出しProviderは事業ローンチの別ゲートとして未完了を維持する。
 
-管理APIはSitesが付与する認証済みuser IDを使い、更新時は同一Originを要求する。ローカルMCPはloopback Hostと許可Originを両方検査する。価格変更、投稿、広告、DM、請求、返金、通知は短期・一回限り・payload固定の承認を必要とする。結果不明の外部作用は自動再送しない。
+### P1 — 時間が残る場合
 
-## ローカル起動・終了・再起動
+- 完成済みのSky/Fashion、Rockstar Ledger、Value/SpendをそれぞれのCI結果と競合解消後に統合する。
+- Hubの運用ログを件数・状態だけで集約し、入力、session、秘密値を残さない。
+- owner-only SitesのWebとローカルHubを同じ利用者フローで再確認する。
 
-Node.js 22.13以上を使う。
+### P2 — ローンチ後または別承認
 
-```sh
-npm ci
-npm run build
-npm start
-```
+- Pixel/BlackBerryの実機OS build、flash、OTA、純正復旧。
+- 実USB、一般外部MCP/OAuth、金融provider、ATM、実決済・実送金。
+- Polymarket LIVE、外部市場注文、実残高、KYC/地域判定。
+- 一般公開とmain merge。
 
-`npm start`は配布済みD1 migrationをローカルDBへ適用してからproduction build相当を起動する。開発時は`npm run dev`を使う。終了は実行中のプロセスへ`Ctrl-C`を送り、再起動は同じ起動commandを再実行する。仕事、設定、台帳はD1／SQLiteへ保存されるため、プロセス再起動で処理を自動再実行しない。
+## 実装した安全策
 
-native Hubはeditable install済みの環境で次のように起動する。
+- `Hub.close()` が所有するrecipe workerを停止し、実行中/取消要求中の仕事をdurableな
+  `interrupted`へ確定する。同じ冪等keyは中断receiptを返し、自動再実行しない。
+- `HubServer.server_close()` が必ずHubの停止処理を通る。
+- SIGTERMを通常の終了経路へ接続し、サービス管理下の停止をexit 0で完了する。
+- `/api/health`は認証前に利用できるが、loopbackと正しいHostだけに限定し、利用者・仕事・残高を返さない。
+  両SQLiteを読めない場合は理由を漏らさず503にする。
+
+## 検証
+
+- 対象unit: `tests.test_hub` と `tests.test_hub_server`、22件PASS。
+- 実process: `npm run os:backend:launch`、PASS。
+- 実process検証は、起動、生存確認、未認証拒否、署名package導入/許可/実行、SIGTERM、
+  2つのSQLite integrity check、再起動、旧session拒否、receipt復元を一時データで完走した。
+- `npm run verify`: Web 122 tests、Fashion Brand Ops 15 tests、仕事API 143 assertions、型、lint、
+  3系統D1移行、MCP package、Billing Worker dry-run、production buildに合格。
+- 公開Billing Worker: `/health` 200。署名済み合成Receipt 888 centsを201で受け、Sky fee 888、
+  payout `not_required`、同一Receipt再送200、status 200、不正Origin 403を確認した。実入金・実送金ではない。
+- 実環境とロールバック情報は
+  [owner validation evidence](evidence/launch/backend-owner-validation-20260912.json) に保存する。
+
+## 起動・監視・復旧
+
+開発用Hubはnative packageをeditable installした環境で次のように起動する。
 
 ```sh
 rock-hub --state .state/hub --registry systems/rock-star-os/examples/registry
 ```
 
-生存確認は`GET http://127.0.0.1:8877/api/health`。停止はSIGTERMまたはCtrl-Cで、必ず所有workerを停止し、未完了jobを`interrupted`として永続化する。再起動時は同じ`--state`を指定する。旧sessionは失効し、結果不明のjobは同じ冪等keyで自動再実行されない。`npm run os:backend:launch`がこの一連を一時SQLiteで検証する。
+生存確認は `GET http://127.0.0.1:8877/api/health`。停止はSIGTERMまたはCtrl-C。再起動は同じ
+`--state`を指定する。状態directoryを削除しない。異常終了後も起動時に未完了jobは`interrupted`となり、
+利用者が入力を確認して新しいkeyで再試行する。配布版全体のbackup/restore/削除は
+`docs/preview-installation-ja.md`に従い、旧候補へ戻す場合も既存状態を先に保全する。
 
-PC接続は配布ZIPを展開して`Sky MCP接続.command`を起動する。Fashion専用接続は`RockstarOS Sky接続.command`を起動する。外部Providerを使わない初期状態ではmockを維持する。
+収益精算Workerの生存確認は
+`GET https://rockstar-sky-billing.mr-kirin999.workers.dev/health`。D1移行は
+`npm run billing:migrate`、Worker反映は`npm run billing:deploy`を使う。secretはWranglerとSitesの
+secret storeだけへ置き、Gitへ保存しない。Sitesは直前のversion 12を残しているため、問題時はその保存版を
+再deployできる。D1のEarning Receipt台帳は追記型なので、障害時に削除や巻戻しを行わず取込を停止して照合する。
 
-## 必要設定
+## 過去候補rc3-localの限定受入記録
 
-- Web/Sites: `DB` D1 binding。精算Workerを接続する場合のみ`BILLING_SERVICE_URL`と共有secret。
-- Sky MCP Connector: `registry.json`。遠隔tokenはRegistryへ書かず、許可した環境変数名から読む。
-- Fashion: `.env.example`を正本にし、ローカル外へbindする場合はbearer tokenとtenant IDを必須にする。
-- 精算Worker: `BILLING_SHARED_SECRET`と`SETTLEMENT_INGEST_SECRET`をsecret storeへ入れ、`SKY_ORIGIN`をexact HTTPS Originにする。
+2026-09-12にsource `9a8da90f64c8e6acedb17f163ee23a8ed17a35fc`から作成した
+`1.0.0-preview.20260912-rc3-local`は、合成データと公開開発鍵を使うローカルQEMU Developer Previewの
+範囲でfresh導入、署名toolのinstall/enable/run、画面内終了、非空backup/restore、復元後の履歴確認、
+最終停止まで合格した。archive SHA-256は
+`2bbb9b1e102e1a0829dae384678951c7bf4cd0d11edd1e31652284c80996a630`。
 
-実値、顧客データ、SQLite DB、鍵をGitへ保存しない。
+これは当時の固定sourceに対する履歴証拠であり、現在の統合branchや今後の候補へ合格を転用しない。
+同一sourceのSites配備、full D0〜D6、production署名、製品license、実機、一般公開、実資金は未実施。
+詳細なscope、hash、未合格条件は
+`docs/evidence/launch/backend-rc3-local-20260912.json`を正本とする。
 
-## 監視と安全な失敗
+## 現在のローンチ判定
 
-- Web: 認証なし401、別Origin 403、入力過大413、競合409／503を確認する。
-- native Hub: `/api/health`は利用者データを返さず、どちらかのSQLiteが読めなければ理由を漏らさず503にする。
-- MCP: 接続passport、tool digest、接続時刻、再接続状態を確認する。
-- Fashion: `/health`と`fashion.system.readiness`で不足設定だけを確認する。secret値は返さない。
-- 精算Worker: `/health`、署名・重複・競合・payout leaseを確認する。旧先払いAPIは410。
+**READY_FOR_OWNER_VALIDATION**。OS Hub、Web/D1、Sky MCP、Wallet精算Workerの最小バックエンドは、
+合成データと本人限定環境で起動・停止・再起動・保存・認証・失敗境界・反映を確認した。
 
-`npm run verify`が、型、lint、全Web test、D1履歴移行、MCP配布物、Fashion test、Worker dry-run、本番build、API assertionをまとめて検査する。`npm run os:backend:launch`はnative Hubの起動、未認証拒否、署名package導入・許可・実行、SIGTERM、SQLite integrity、再起動、session失効、receipt復元を検査する。
-
-## 復旧・ロールバック
-
-1. 新しい外部Provider設定を解除し、全Providerを`mock`へ戻す。
-2. Sitesで直前の保存済みversionを再deployする。D1 migrationは既存列・表を削除せず追加で扱うため、DBを逆移行しない。
-3. MCPはSkyから切断し、Connectorを終了する。結果不明の操作は再実行せずreceipt／Provider readbackで照合する。
-4. native Hubは停止し、状態directoryを保全してから直前の合格commitで再起動する。台帳やjob行を手で上書きしない。
-5. Gitは直前の合格commitから新しい復旧branchを作り、強制pushや履歴破棄をしない。
-
-精算・支払い・返金・顧客データの不整合がある場合は機能を停止したままにし、台帳を手で上書きしない。
+ただし**事業としての一般ローンチ／実収益回収は未許可**。有償商品1件、販売・決済・払出しProviderの
+sandbox credential、Provider署名済み入金event、返金・dispute・払出し失敗運用、所在地・主体・規約の確認が残る。
+物理OS配布もrc2資産、production署名、製品許諾、実機受入が揃うまで別途BLOCKEDのまま。

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import RockStudio from '@/components/rock-studio';
+import SkyWorkspace from '@/components/sky-workspace';
 
 export const metadata: Metadata = {
   title: 'Skyにツールを掲載',
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function SkyPublishPage() {
-  return <RockStudio />;
+  return <SkyWorkspace initialPublishOpen />;
 }

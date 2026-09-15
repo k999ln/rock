@@ -1,5 +1,11 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-12 — メルカリを最初の収益経路に追加
+
+Skyへ「メルカリ収益スターター」を追加し、本人が保有する商品について、状態・商品事実・販売価格・販売手数料・送料・原価・その他実費から出品原稿と見込み手取りを作り、承認、出品済み、取引完了報告まで本人別D1へ保存できるようにした。状態更新はrevisionで競合を拒否し、自己申告の取引完了は`awaiting_provider_verification`のまま保持して検証済み収益へ昇格させない。
+
+個人メルカリは認証情報を取得せず、出品・購入者対応・発送・出金を本人の公式操作へ残す。メルカリShopsは公式GraphQL APIの契約、Personal API Access Token、指定User-Agent、日本国内専用固定IPが必要なため、Cloudflare Sitesから直接接続しない。本番自動収益・8.88 USD回収は、固定IP Connector、Sandboxの注文・取消・一部取消受入、JPY/USD換算方針、Provider確認済み取引完了をEarning Receiptへ結ぶ実装が終わるまで無効。詳細は[メルカリ収益ループ](mercari-revenue-loop.md)。
+
 ## 2026-09-12 — Sky自動化収益からの最大8.88 USD精算
 
 先払いのToC月額課金は利用者意図と異なるため停止した。Wallet画面、認証済み短命token、独立Cloudflare Worker、署名済みEarning Receipt、D1月次精算・追記型台帳・払出し指図を実装した。Workerは自動化のExecution Receipt、Provider入金参照、証拠hashを一意に結び、直接実費を先に回収した残額からだけ、利用者ごと・UTC月ごとにSky利用料を最大888 USD centsまで記帳する。同じReceipt再送は冪等、異なる内容の再利用は拒否する。ToB分は0、売上0時の請求・債務化・翌月繰越・カード請求はない。
@@ -76,7 +82,7 @@ QEMUの凍結sourceは`b7d819cd291b653d165aa124f25a52b9898bfb2e`、版は`1.0.0-
 
 - 権利者公開名は**kaiya**。自作部分の改変・再配布を許可する意向を受領済み。具体的なMIT条文の採用は未回答。第三者由来の条件と配布物の許諾確認は別に残る。
 - 署名意思は受領済み。第二承認者は未指定で、本人だけの署名経路を実装・試験済み。本番鍵の生成・保管・実署名は未実施。保護GitHub署名経路と本人署名経路は選択肢であり、PR #5の登録や第二承認者を本人経路の共通必須条件にしない。
-- [新しいSite](https://rockstaros-kaiya.noellesugar1.chatgpt.site)は本人限定で公開済み。配信sourceは`a750908329d42bbfb78e07243f414b51d1534cf8`。元SiteのNOT_FOUNDと元DB未復元は別の履歴であり、新Siteも接続不能という意味にしない。今回のGit統合はSites再配信ではない。
+- [新しいSite](https://rockstaros-kaiya.noellesugar1.chatgpt.site)は本人限定で公開済み。2026-09-13の版27はsource `44526d91ebbd80b69b1cbe19087c6687b7d2fe08`を配信し、所有者1名、group／editor／外部visitor 0をreadbackした。元SiteのNOT_FOUNDと元DB未復元は別の履歴であり、新Siteも接続不能という意味にしない。所有者ログイン後の本番操作確認は未完了。
 - **CMは制作途中**。69秒候補を選定・完成・掲載済みにしない。90秒の技術デモとCMを区別する。
 
 [所有者回答](../data/release-owner-intent-20260911.json)／[本人限定公開の証拠](evidence/launch/sites-owner-private-20260911.json)／[MIT草案](license-proposal-20260911.md)／[本人署名経路](owner-manual-signing.md)。Mac配布用署名はAndroidのAVB／APK／APEX／OTA署名を代替しない。

@@ -3,6 +3,7 @@ import { createHmac } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
+import { privateKeyToAccount } from 'viem/accounts';
 import { createBillingToken } from '../lib/billing-token.ts';
 import billingWorker from '../services/sky-billing/src/worker.ts';
 
@@ -44,6 +45,8 @@ class TestD1 {
     for (const migration of [
       '0001_billing.sql',
       '0002_earnings_settlement.sql',
+      '0003_automation_funds.sql',
+      '0004_rock_settlement_wallet.sql',
     ])
       this.database.exec(
         readFileSync(
@@ -129,6 +132,8 @@ void test('settlement Worker applies verified earnings once and never charges up
     executionReceiptId: 'exec_1',
     userId: 'alice',
     beneficiaryRole: 'toc',
+    fundId: 'fund:test-one',
+    automationToolId: 'tool:test-one',
     sourceProvider: 'stripe-connect',
     providerReference: 'pi_1',
     payoutAccountId: 'acct_alice',
@@ -161,6 +166,64 @@ void test('settlement Worker applies verified earnings once and never charges up
     assert.equal(first.body.receipt.skyFeeMinor, 400);
     assert.equal(first.body.receipt.distributableMinor, 0);
     assert.equal(first.body.receipt.payoutStatus, 'not_required');
+    assert.equal(
+      DB.database
+        .prepare(
+          "SELECT status FROM rock_fee_collection_instructions WHERE receipt_id='earn_1'",
+        )
+        .get().status,
+      'awaiting_wallet',
+    );
+
+    const rockAccount = privateKeyToAccount(
+      '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+    );
+    const challenge = await request('/v1/rock-wallet/challenge', {
+      method: 'POST',
+      token: await token('alice'),
+      body: JSON.stringify({ address: rockAccount.address, chainId: 8453 }),
+    });
+    assert.equal(challenge.response.status, 201);
+    assert.match(challenge.body.message, /Rock Settlement Wallet/u);
+    const walletSignature = await rockAccount.signMessage({
+      message: challenge.body.message,
+    });
+    const connected = await request('/v1/rock-wallet/verify', {
+      method: 'POST',
+      token: await token('alice'),
+      body: JSON.stringify({
+        challengeId: challenge.body.challengeId,
+        address: rockAccount.address,
+        signature: walletSignature,
+      }),
+    });
+    assert.equal(connected.response.status, 200);
+    assert.equal(connected.body.address, rockAccount.address);
+    assert.equal(connected.body.custody, false);
+    assert.equal(
+      DB.database
+        .prepare(
+          "SELECT status FROM rock_fee_collection_instructions WHERE receipt_id='earn_1'",
+        )
+        .get().status,
+      'ready',
+    );
+    const challengeReplay = await request('/v1/rock-wallet/verify', {
+      method: 'POST',
+      token: await token('alice'),
+      body: JSON.stringify({
+        challengeId: challenge.body.challengeId,
+        address: rockAccount.address,
+        signature: walletSignature,
+      }),
+    });
+    assert.equal(challengeReplay.response.status, 409);
+    const operatorConflict = await request('/v1/rock-wallet/challenge', {
+      method: 'POST',
+      token: await token('mallory'),
+      body: JSON.stringify({ address: rockAccount.address, chainId: 8453 }),
+    });
+    assert.equal(operatorConflict.response.status, 403);
 
     const replay = await earning(base);
     assert.equal(replay.response.status, 200);
@@ -217,12 +280,38 @@ void test('settlement Worker applies verified earnings once and never charges up
     assert.equal(status.response.status, 200);
     assert.equal(status.body.policy.upfrontCharge, false);
     assert.equal(status.body.policy.debtCarry, false);
+    assert.equal(status.body.policy.performanceCommissionBps, 0);
+    assert.equal(status.body.policy.userOwnsRemainder, true);
+    assert.equal(status.body.policy.fundCountLimit, null);
     assert.equal(status.body.settlement.grossMinor, 2000);
     assert.equal(status.body.settlement.operatingCostMinor, 200);
     assert.equal(status.body.settlement.skyFeeMinor, 888);
     assert.equal(status.body.settlement.distributableMinor, 912);
     assert.equal(status.body.settlement.remainingFeeCapMinor, 0);
     assert.equal(status.body.receipts.length, 3);
+    assert.equal(status.body.funds.length, 1);
+    assert.deepEqual(status.body.tools, [
+      {
+        automationToolId: 'tool:test-one',
+        grossMinor: 2000,
+        operatingCostMinor: 200,
+        receiptCount: 3,
+      },
+    ]);
+    assert.equal(status.body.funds[0].fundId, 'fund:test-one');
+    assert.equal(status.body.funds[0].grossMinor, 2000);
+    assert.equal(status.body.funds[0].userPayableMinor, 912);
+    const rockWallet = await request('/v1/rock-wallet', {
+      token: await token('alice'),
+    });
+    assert.equal(rockWallet.response.status, 200);
+    assert.equal(rockWallet.body.operator, true);
+    assert.equal(rockWallet.body.account.address, rockAccount.address);
+    assert.equal(rockWallet.body.totals.pendingMinor, 888);
+    assert.equal(
+      rockWallet.body.collections.filter((item) => item.amountMinor > 0).length,
+      2,
+    );
     assert.equal(
       DB.database
         .prepare(

@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "67bf1764-6f19-4e55-8fa4-4902f0709b2e",
+  "id": "9dbcc78b-6513-476a-8510-10c0363e056a",
   "prevId": "884b074a-9842-4ae2-a4b0-e07a6307e4b8",
   "tables": {
     "book_records": {
@@ -372,16 +372,9 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "sky_developer_tokens": {
-      "name": "sky_developer_tokens",
+    "sky_connections": {
+      "name": "sky_connections",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
         "user_id": {
           "name": "user_id",
           "type": "text",
@@ -389,251 +382,50 @@
           "notNull": true,
           "autoincrement": false
         },
-        "label": {
-          "name": "label",
+        "tool": {
+          "name": "tool",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "token_sha256": {
-          "name": "token_sha256",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "last_used_at": {
-          "name": "last_used_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "revoked_at": {
-          "name": "revoked_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        }
-      },
-      "indexes": {
-        "idx_sky_developer_token_hash": {
-          "name": "idx_sky_developer_token_hash",
-          "columns": [
-            "token_sha256"
-          ],
-          "isUnique": true
-        },
-        "idx_sky_developer_token_owner": {
-          "name": "idx_sky_developer_token_owner",
-          "columns": [
-            "user_id",
-            "created_at"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "sky_tool_events": {
-      "name": "sky_tool_events",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "package_key": {
-          "name": "package_key",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "owner_user_id": {
-          "name": "owner_user_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "tool_name": {
-          "name": "tool_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "installation_id": {
-          "name": "installation_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "outcome": {
-          "name": "outcome",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "duration_ms": {
-          "name": "duration_ms",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "occurred_at": {
-          "name": "occurred_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {
-        "idx_sky_tool_events_owner_time": {
-          "name": "idx_sky_tool_events_owner_time",
-          "columns": [
-            "owner_user_id",
-            "occurred_at"
-          ],
-          "isUnique": false
-        },
-        "idx_sky_tool_events_package_time": {
-          "name": "idx_sky_tool_events_package_time",
-          "columns": [
-            "package_key",
-            "occurred_at"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "sky_tool_packages": {
-      "name": "sky_tool_packages",
-      "columns": {
-        "package_key": {
-          "name": "package_key",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "tool_id": {
-          "name": "tool_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "version": {
-          "name": "version",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "manifest": {
-          "name": "manifest",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "manifest_sha256": {
-          "name": "manifest_sha256",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "status": {
-          "name": "status",
+        "scope": {
+          "name": "scope",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'submitted'"
+          "default": "'execute'"
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "integer",
+        "consent_version": {
+          "name": "consent_version",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "updated_at": {
-          "name": "updated_at",
+        "connected_at": {
+          "name": "connected_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
-        },
-        "published_at": {
-          "name": "published_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
           "autoincrement": false
         }
       },
       "indexes": {
-        "idx_sky_tool_id_version": {
-          "name": "idx_sky_tool_id_version",
+        "idx_sky_connections_user_tool": {
+          "name": "idx_sky_connections_user_tool",
           "columns": [
-            "tool_id",
-            "version"
+            "user_id",
+            "tool"
           ],
           "isUnique": true
         },
-        "idx_sky_tool_owner_created": {
-          "name": "idx_sky_tool_owner_created",
+        "idx_sky_connections_user_connected": {
+          "name": "idx_sky_connections_user_connected",
           "columns": [
             "user_id",
-            "created_at"
-          ],
-          "isUnique": false
-        },
-        "idx_sky_tool_registry_published": {
-          "name": "idx_sky_tool_registry_published",
-          "columns": [
-            "status",
-            "published_at"
+            "connected_at"
           ],
           "isUnique": false
         }

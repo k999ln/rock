@@ -99,6 +99,13 @@ export async function connectMcp(serverId: string) {
   return data.passport;
 }
 
+export async function disconnectMcp(serverId: string) {
+  return connector<{ id: string; state: 'available' }>(
+    `/servers/${encodeURIComponent(serverId)}/disconnect`,
+    { method: 'POST', body: '{}' },
+  );
+}
+
 export async function prepareMcpTool(
   serverId: string,
   name: string,

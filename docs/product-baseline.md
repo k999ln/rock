@@ -1,8 +1,30 @@
 # Rock star OS — 確定した製品ベース
 
-2026-09-15追記（v1.23）: Rock Studioの開発者入力を、コード貼付またはソースファイル添付だけのチャット形式へ固定した。コード本文はブラウザ内だけで解析し、Sky SDK組込み例、Tool Package、安全契約、Fund分類を自動生成する。Registryへ送るのはPackageだけとし、登録失敗を成功表示しない。RQ27を追加する。
+2026-09-13追記（v1.36）: 利用者は、既存フロントへWallet backendを接続し、本番環境で実際に使えるところまで進めるよう明示。RQ36を追加する。最初の実受取レールはBase MainnetのUSDCとし、外部EIP-1193 WalletでRockの受取アドレスを所有署名する。RockstarOSは秘密鍵、seed phrase、包括的送金権限、利用者資産を保管しない。署名済みEarning Receiptから既存ルールで確定した `SKY_SERVICE_FEE` の回収指図だけを作り、Base上の公式USDC contract、exactな受取先・金額、finalized blockを照合して着金確定する。本番配備は実施対象だが、owner Walletの登録と最初の実transferは本人署名・本人確認が完了するまで実施済みにしない。本人限定Siteを一般公開する前にowner受取先を登録する。
 
-2026-09-15追記（v1.22）: 利用者は、Sky向けコードそのものを自動化Toolの標準雛形として周知し、開発者が「この機能は自動化できる」と気づいた既存処理へ組み合わせるだけでSky登録、利用導線、MCP利用へ進めるsystemを明示。RQ26を追加する。PCのRock Studioと組込みSDKは同じTool Package契約を生成し、用途・禁止場面、Schema、Adapter、権限、副作用、料金、成功確認、Fund互換情報、開発者IDを登録する。開発者宣言済みとSky検証済みを分け、前者を自動導入させない。匿名利用集計へ入力・出力・会話・秘密情報を含めない。
+2026-09-13追記（v1.35）: 利用者は、外部Wallet会社待ちではRock自身の回収ができないため、最初は自社側のWalletで進める方針を明示。RQ35を追加する。最初のProviderを `org.rockstar.settlement-wallet` とし、署名検証済み収益から既存ルールで確定したRock利用料の受取・報告を担う。共通Provider Adapterを迂回せず、外部事業者の追加・差替え余地を維持する。初期capabilityは `collect_platform_fee` と `reporting` のsandboxだけで、利用者資産の包括保管、任意送金、交換、ファンド運用、LIVE回収は有効化しない。
+
+2026-09-13追記（v1.34）: 利用者は、Wallet会社とファンド会社の固有機能をRockstarOS自身が抱えず、外部事業者を交換可能なProviderとして接続する受け身設計を明示。RQ34を追加する。Rockはcapability discovery、本人同意、実行指図、状態・receipt・照合の共通契約を提供し、保管、運用、約定、払出し、税務判断は各Providerの契約・許認可・対象地域に従う。Provider固有機能は拡張manifestから提示し、未対応機能をOSが擬似実装しない。これによりWallet／ファンドの二次事業者がOSを再buildせず参入・差替えできる余地を残す。現在の外部Provider、実資金、LIVE運用は未接続のまま維持する。
+
+2026-09-13追記（v1.33）: 利用者は、Polymarketを掲載・再販売するのではなく、同種の見通しの良い市場UIを参考に、あらゆる価値を型付き取引対象として扱う独自市場と、複数自動化ツールの組合せを実績から更新する自律型ファンドを明示。RQ33を追加する。MarketはPAPER限定で、提案、risk判定、exact digestへの本人承認、予約、実行receipt、position、append-only eventをD1へ保存する。ファンドは本人の検証済み帳簿と実行receiptを30秒ごとに再集計し、構成・配分・観測利回りを更新するが、証拠がなければ利回りを表示せず、資金移動も行わない。Polymarket、外部市場、実Wallet、LIVE注文、清算は有効化しない。
+
+2026-09-13追記（v1.32）: 利用者は、RockstarOSの全画面からHomeへ直接戻れる仕様を明示。RQ26へ追加する。共通WorkspaceShellの上部に常設のHome導線を置き、設定、システム、自動化ファンド、旧試算、Developer Preview案内の独自レイアウトにもHome導線を持たせる。ブラウザの戻る操作やロゴの意味を知らないことを前提にせず、今後追加する非Home routeも同じ契約へ従う。
+
+2026-09-13追記（v1.31）: 利用者は、個別branchや過去の公開版に散在した良い実装を、現行設計と安全条件へ矛盾しない形で正本へ統合し、崩れた画面を完成版へ上書き保存するよう明示。RQ32を追加する。Chatは接続済みready商品と任意MCPをbotとして扱い、方向修正、1回承認、実行、停止、結果を同じスレッドへ集約する。Walletは本人別の残高・売上・経費・取消履歴を永続化する。主要画面のCSS契約とbuild asset closureを全体verifyへ追加し、GitHubと本人限定Sitesを同一source commitへ固定する。一般公開、実資金、マイナンバー、production鍵のgateは変更しない。
+
+2026-09-13追記（v1.30）: Android物理端末を型番/SKU、BSP/boot/recovery、同一buildのCDD/CTS、production署名、販売地域の5必須gateへ固定する。現在0/5で、Android互換・GMS許諾・物理flash・販売可能を表示しない。マイナンバーは無効化、目的、主体/provider、data flowと保存/削除、安全管理、事故/委託先、最終有効化の7必須gateへ分ける。現在1/7で、番号・カード画像・通常profile項目を取得しない。
+
+2026-09-12追記（v1.29）: 利用者は、OS公開の最低条件を満たすまで作業を継続するよう明示。RQ31を維持する。QEMU rc2の1GB配布archiveをSHA-256照合後に取得し、同梱legal bundle、target 24＋host build 37 componentのmanifestを同じarchiveへ固定した。current native CycloneDXを生成し、10要件中6件の合格と4件の未達を機械判定する。さらに候補準備・法務承認・保護署名・本人署名の計62公開fixture回帰を全体verifyへ必須化するが、実鍵・owner承認・署名後受入の代用にはしない。
+
+2026-09-12追記（v1.26）: RQ30を追加する。公開状態を本人限定Web/PWA、一般公開Web/PWA、QEMU配布、Android物理端末、iPhone/iPad client、マイナンバー連携へ分け、必須gateから機械判定する。製品ライセンスの所有者選択とtop-level LICENSE、正式鍵の実施記録、同一候補の受入がない状態を合格にできない検査を追加し、Web/npm依存のCycloneDX SBOMはignored領域へ生成する。
+
+2026-09-12追記（v1.25）: 利用者は、OSを運用するための必要最低限の機能を設定へ入れることと、OS公開時の審査規定の有無を確認するよう明示。RQ29を追加する。端末実測診断に安全な接続、通知許可、永続保存、アプリ表示を加え、通知テスト、保存保護、個人情報を除外した診断レポート、確認付きのホーム設定初期化を実装する。日常運用と公開条件は分離し、Web/PWA、QEMU、Android CDD/CTS、GMS、実機/BSP、正式署名、OSS配布、販売地域の無線規制、マイナンバー取扱いを同じ「合格済み」にしない。
+
+2026-09-12追記（v1.24）: 利用者は、Skyの標準自動化ツールが利用者へ一定の収益機会を作り、その検証済み収益から8.88 USDを回収する具体的な入口として、メルカリ自動化をベースにする方針を明示。RQ28を追加する。個人メルカリでは出品原稿・実費後利益・進捗の支援に限定して本人が公式画面で操作し、公式APIのあるメルカリShopsは契約済みの日本国内固定IP Connectorから接続する。売上や利益を保証せず、自己申告・出品完了・支払いだけを検証済み収益にせず、Providerで取引完了と金額を照合してからRQ20の精算へ渡す。
+
+2026-09-12追記（v1.23）: 利用者は、RockstarOSの標準入口をiPhoneに着想を得たホーム画面とし、フロントの外観を利用者が変更できること、さらに設定アプリへOS稼働に必要な確認・操作をまとめることを明示。RQ26を維持し、RQ27として端末上で実行できる診断、暗号化バックアップ、改ざん検知付き復元、Web/PWA更新確認を追加する。物理端末のドライバ、bootloader解除、正式署名鍵、外部Provider資格情報は画面だけでは生成できないため、準備条件として明示する。
+
+2026-09-12追記（v1.22）: 利用者は、RockstarOSの標準入口をiPhoneに着想を得たホーム画面とし、フロントの外観を利用者が変更できること、さらに設定アプリへOS稼働に必要な確認・操作をまとめることを明示。RQ26を追加する。`/`はホーム、Sky本体は`/sky`とし、基本4アプリの責任境界は維持する。設定はOS標準utilityとして、外観、本人アカウント状態、PC Connector、MCP権限、Web更新、導入・復旧案内をまとめる。外観設定はこの端末内だけに保存し、OS権限や本人情報を変更した扱いにしない。
 
 2026-09-12追記（v1.21）: 利用者は、MCPごとの個別実装ではなく、Skyから多種類のMCPへワンタップ接続でき、n8n・Make・Zapier等を含む自動化ツールからも再利用できる共通systemを明示。RQ25を追加する。審査済みregistryからstdio / Streamable HTTPを起動・接続し、protocol交渉、機能取得、Connection Passport、引数に結び付いた一回承認、結果不明時の再送禁止を共通契約にする。UIから任意shellを登録せず、秘密情報はPC側の環境変数に残す。OAuth 2.1 browser flowと公開remote MCP相互運用は未受入として接続済みにしない。
 
@@ -20,7 +42,7 @@
 
 2026-09-12追記（v1.14）: 利用者がFashion Brand Opsをより自律的なブランド経営systemへ進める方針を明示。売上・数量・粗利・期限・広告上限から計画するCampaign Autopilot、会話履歴と購入意向から次の一手を作るAI Sales Concierge、署名検証済み入金後の原価・資材・能力・納期を扱うProduction CockpitをRQ19へ追加する。計画と下書きは自動化できるが、投稿、広告、DM、請求、返金等の外部作用は既存approval gateを迂回しない。
 
-2026-09-12追記（v1.13）: 利用者がInstagramを中心にした受注型ファッションブランド運営systemを、`k999ln/rock`のSkyへ追加するよう明示。Provider差替、MCP discover/call、受注DB、分析feedback、危険操作のapproval gateをRQ18へ追加し、Sky catalogとTimelineへ独立商品として統合する。実Provider・実投稿・実請求は接続済みと扱わない。
+2026-09-12追記（v1.13）: RockstarOS 1.0の基本アプリを **Sky / Chat / Wallet / Polymarket** の4つとして整理する。Skyは自動化アプリを探して接続するエコシステム、Chatは接続済みアプリへの依頼・確認・処理状況・結果の受取、Walletは収支と資金管理、Polymarketは他3アプリから権限と資金を分離した外部市場アプリとする。Polymarketのアプリ枠採用は実取引の開始許可ではなく、提供地域・年齢・本人確認・規制・外部契約を満たすまで市場取得、注文、入出金を無効にする。
 
 2026-09-12追記（v1.12）: 利用者向けの自動化ツール入口を **Sky** と命名し、画面・現行設計・案内をこの名称へ統一する。Skyは商品を並べるだけでなく、目的からの選択、作者・版・権限・料金・実行先の確認、本人同意、端末/PC/Cloudへの実行、停止、結果・実行記録までを一つの制御面にする。[Skyの役割と収録ツール](sky.md)を正本に追加した。保存済み履歴、SQLite table、JSON/APIの `hub` は互換性のため内部名として維持し、製品名として新規表示しない。
 
@@ -30,7 +52,7 @@
 
 2026-09-09追記: 設計v1.1の実装承認を受領。公開・実機・MetaMask実資金は準備が整うことを条件に了承。現在の承認範囲は [承認記録](execution-approval-20260909.md)。以下の「承認待ち」は作成時の履歴であり、現在の実装を停止させない。RQ01〜RQ15と料金は変更しない。
 
-版: 1.22 / 更新日: 2026-09-15（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
+版: 1.35 / 更新日: 2026-09-13（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
 
 この文書は利用者がこの日に明示した製品要望を固定する。実装状況は [OS稼働・ゲーム連携監査](os-readiness-audit-20260909.md)（過去の追補・初回監査は履歴）、次の指示は [現在の再開指示](prompts/rock-current-next-20260911.md)、毎回の確認方法は [プロンプト作成規約](prompt-playbook.md) を参照する。決定と実装実績を同じものとして扱わない。
 
@@ -174,13 +196,13 @@ CM発表に向け、利用者が再現可能な手順でRock star OSを導入・
 
 1.0以後は、保存データ、商品manifest、receipt、台帳、更新・復旧の互換性を明示しながら段階的に改善する。未完成のGame交換、実機、実USB、外部provider、実資金、実ATMは進行中または将来機能として表示し、合格した範囲だけをCMで実演する。各systemの現在地と進化方針は [1.0構成](rockstaros-1.0-architecture.md) を正本とする。
 
-## RQ18 Instagram運用・受注型ファッションブランド運営をSky商品にする
+## RQ18 基本アプリをSky / Chat / Wallet / Polymarketに分離する
 
-ブランド方針と商品designを入力し、target/market判定、差替可能な画像・動画Creative Provider、Instagram向け素材・caption・投稿/予約Social Provider、DM受信・分類・FAQ下書き・購入意向判定、注文情報回収、Payment Providerの決済link/Invoice、署名検証Webhookの入金確認、顧客/注文/制作/発送status、通知、広告/DM/売上feedbackまでを一つの商品として扱う。
+RockstarOSの基本アプリはSky、Chat、Wallet、Polymarketの4つ。Skyはアプリの発見・掲載・接続・権限確認に集中し、会話欄を置かない。接続後の依頼、追加確認、処理状況、完了通知、結果の受取はChatへ集約する。Walletは自動化の収支・費用・入出金を管理し、ChatやPolymarketへ包括的な送金権限を渡さない。
 
-RockstarOS Skyから`Instagram運用`で見つけられ、account list/switch、content plan、draft/caption、approval、schedule/publish、insights sync、DM classificationを独立MCP toolとしてdiscover/callできるようにする。外部サービスはProvider/Adapter境界へ置き、資格情報を商品DBへ直接保存しない。
+ChatはSky Autoを既定とし、利用者へ事前のアプリ選択を強制しない。依頼内容から接続済みの役割を選び、選択結果を会話に表示する。特定アプリへの直接指定は任意で残す。判別不能、対象アプリ未接続、入力不足では勝手に実行せず、必要な追加情報またはSkyでの接続を案内する。実際のjob状態だけをreceiptとして表示し、Chat上の受付メッセージを実行完了の証拠にしない。
 
-価格変更、外部creative生成、投稿/予約、広告出稿、DM送信、決済link/Invoice送信、返金、通知は個別approvalを必須にする。初期状態はmock Providerで、実アカウント・実投稿・実決済・実課金を開始しない。曖昧な外部結果は自動再送せず照合待ちにする。Web Sky掲載とMCP host試験は、QEMU/Android/実機OSへの組込みや本番provider接続の合格ではない。
+Polymarketは独自市場ではなく外部サービス用adapterとして別アプリに置く。アプリ枠と安全な未接続画面は実装対象とするが、実市場データ、注文、清算、Walletからの資金移動は別の接続審査と明示同意が必要。所在地・提供地域・年齢・本人確認・利用規約・規制・資金経路が確認できるまで無効とし、AIによる自動取引や自動再投資は行わない。
 
 ## RQ19 目標駆動のブランド経営エージェントへ拡張する
 
@@ -226,27 +248,103 @@ Skyの接続先は「このPC」「Sky Cloud」「提供者のMCP」の3系統�
 
 ## RQ25 MCP接続を自動化ツール共通のConnectorにする
 
-Skyと各MCPを個別に直結せず、審査済みregistryを読むPC内Connectorへ統一する。stdioとStreamable HTTPを共通のserver IDで扱い、MCP initialize、initialized通知、protocol/capability交渉、paginationを含むtools/list、tool schema digest、接続時刻をConnection Passportとして返す。機能数を固定せず、同じConnectorで4機能と41機能の異なるMCPを扱えることを実接続で検証する。
+Skyと各MCPを個別に直結せず、審査済みregistryを読むPC内Connectorへ統一する。stdioとStreamable HTTPを共通のserver IDで扱い、MCP initialize、initialized通知、protocol/capability交渉、paginationを含むtools/list、tool schema digest、接続時刻をConnection Passportとして返す。機能数を固定せず、同じConnectorで4機能と40機能の異なるMCPを扱えることを実接続で検証する。
 
 自動化ツールからの操作契約は`servers → connect → prepare → execute`に固定する。tool annotationsは未信頼とし、既定では全操作に内容と引数へ結び付いた一回限りの承認を要求する。承認後の引数変更、券の再利用、`tools/call`への直接迂回を拒否する。送信後timeoutは自動再実行せず`outcome_unknown`にする。UIから任意commandやsecretを登録させず、stdioはshellを介さず起動し、遠隔MCPはHTTPS・redirect拒否・private network拒否・PC環境変数の認証参照を守る。
 
 配布ZIPとSky内の動的MCP一覧・ワンタップ接続は実装済み。公開remote MCPとの相互運用、OAuth 2.1 browser flow、失効通知、Sky Cloud常駐は別の受入が必要であり、未検証の外部MCPを接続済みとは表示しない。
 
-## RQ26 Sky対応コードを自動化Toolの標準雛形にする
+## RQ26 ホーム画面と設定アプリをOSの標準入口にする
 
-開発者が既存処理へ数行のSky Tool SDKを組み込み、同じ定義からTool Packageの登録、MCP `tools/list` / `tools/call`、匿名利用集計へ進めるようにする。新規開発者には`create-sky-tool`で雛形を生成し、主に`handler`を自動化したい関数へ差し替える導線を用意する。PCのRock StudioではGitHub、OpenAPI、MCP、Rock Packageから下書きを作り、開発者が権利、料金、副作用、Schema、試験を確認して登録・公開する。
+RockstarOSを開いた最初の`/`は、iPhoneに着想を得たタッチ向けホーム画面とする。Sky、Chat、Wallet、Polymarketの基本4アプリはアイコンから直接開き、Sky本体は`/sky`へ分離する。設定は業務上の5つ目の基本アプリではなく、OSを整える標準utilityとしてホームへ置く。
 
-PackageはTool名と説明、LLM向け用途・禁止場面、入出力Schema、Adapter、権限、online/offline、実行先、副作用、料金と開発者受取人、timeout、再試行・idempotency、成功確認、テスト、Fund分類を一体で保持する。同じID・版を別内容で上書きせず、SHA-256で固定する。Fund分類は権限を増やさず、有料Toolの収益帰属とToBのSky手数料0を混同しない。
+Home以外の全画面には、現在の作業を保存契約どおり保持したまま`/`へ直接移動できる、見つけやすくキーボード・タッチで操作可能なHome導線を置く。共通WorkspaceShellを使わない独自画面も例外にしない。
 
-`submitted`、開発者の`published_declared`、Skyの`verified`を分離する。Developer Previewで実装する宣言公開を、Sandbox、作者署名、remote接続、失効運用まで合格した検証済み公開として扱わず、自動インストールを許可しない。外部変更・金融操作は実行ごとの承認を要求し、結果不明時に自動再試行しない。利用集計はPackage ID、Tool名、匿名Installation ID、結果、処理時間、実行時刻だけとし、入力、出力、会話、API key、Wallet情報を送信しない。設計と境界は[Sky Tool SDK / Rock Studio](sky-tool-sdk.md)を正本とする。
+利用者は壁紙、アクセント色、アイコンサイズ、アプリ名表示、アイコン順をフロントから変更できる。設定値は端末内localStorageへ保存し、本人アカウント、MCP権限、Wallet、実行receiptへ影響させない。設定アプリは、ホーム外観、PWA追加、ブラウザ接続、本人アカウント状態、PC Connector、MCPごとの権限・実行先、Web UI再読込、Developer Previewの導入・バックアップ・復旧案内を一か所へまとめる。
 
-## RQ27 Rock StudioはコードかファイルだけでTool化する
+Web版、QEMU Developer Preview、物理端末版を設定画面でも区別する。設定画面の表示だけで端末書換え、秘密情報登録、外部MCP接続、本番更新、実資金移動を完了扱いにしない。
 
-PCのRock Studioはチャット形式にし、開発者が行う必須操作を「コードを貼る」または「ソースファイルを1件添付して送る」だけにする。Tool名、用途、LLMが使う場面・禁止場面、入出力Schema、Adapter、権限、online/offline、実行先、副作用、料金、開発者受取人、timeout、再試行、成功確認、テスト、Fund分類はコードから自動生成する。GitHub URLや開発者IDなどを最初に埋める手入力フォームへ戻さない。
+## RQ27 OS保全機能を設定へ実装する
 
-コード解析とSHA-256計算はブラウザ内で行い、Registry APIには生成した`sky-tool-package/1`だけを送る。貼り付けたコード本文や添付ファイル本文は送信・保存しない。危険な外部変更・金融操作は推定結果に応じて実行ごとの確認と再試行禁止を設定し、生成したSky SDK組込みコードとPackageを結果画面で確認できるようにする。自動生成はSandbox検証や作者署名の代替ではなく、登録不能時に登録完了と表示しない。
+設定の「システム」から、通信、端末内保存、Web Crypto、Service Worker更新、RockstarOS API、PC Connectorの実状態を診断できるようにする。現形式で許可した端末内ホーム設定だけを、PBKDF2-SHA256（310,000回）で導出した鍵とAES-GCM-256で暗号化し、改ざんまたは誤ったパスフレーズを検知してから復元する。ログイン状態、PC接続token、Wallet残高、server上のreceipt、将来追加される未許可keyはこの端末設定バックアップへ含めない。
 
-## 1.0への8原則の適用（RQ01〜RQ27を維持）
+更新確認はService Workerへ問い合わせるWeb/PWA用の操作とし、native OS imageや実機firmwareを書き換えた扱いにしない。QEMU Developer Previewの内部受入、対象機種/BSP/bootloader/recovery、正式署名鍵の鍵管理、外部MCP・販売・決済・払出しProviderの資格情報を個別gateとして表示する。対象機種未決、鍵未作成、外部契約未完了をUIだけで解消済みにしない。
+
+## RQ28 メルカリを最初の収益経路にする
+
+Skyへ「メルカリ収益スターター」を標準搭載し、利用者が保有する在庫について、商品事実、状態、価格、販売手数料、送料、原価、その他実費から出品原稿と実費後の見込み利益を作る。出品前に在庫保有、説明の正確性、禁止出品物を本人が確認し、原稿を承認する。販売成立や利益額は保証せず、在庫のない商品、虚偽表示、検索上位目的の大量再出品、外部決済誘導を自動化しない。
+
+個人メルカリは公式の公開出品APIを前提にせず、Skyは認証情報を取得しない。出品、購入者対応、発送、取引完了、出金は本人が公式画面で行い、Skyはコピー可能な原稿、利益計算、状態記録、公式画面への引継ぎを提供する。手入力の取引完了は未照合として保存できるが、検証済み収益や8.88 USD精算には使わない。
+
+メルカリShopsは公式GraphQL APIと新しい`order_transaction_*` webhook topicを使用する。ただしAPI利用契約、Personal API Access Token、指定User-Agent、日本国内の専用固定IPを持つConnector、Sandbox受入、取消・一部取消・返金・結果不明の照合が揃うまで外部作用と収益検証を有効にしない。Providerで取引完了と金額を照合し、Execution Receiptと一意に結べた売上だけをRQ20のEarning Receiptへ変換する。Sitesから固定IP要件を迂回して直接APIを呼ばない。詳細は[メルカリ収益ループ](mercari-revenue-loop.md)を正本とする。
+
+## RQ29 最低限のOS運用と公開条件を設定へまとめる
+
+設定の「システム」は、単なる説明画面ではなく、この端末でRockstarOSを維持する操作面とする。RQ27の診断・暗号化保全・更新に、安全な接続、通知許可、永続保存、PWA表示状態を追加し、通知の明示許可とテスト、保存保護要求、個人情報・token・Wallet・マイナンバー・利用者contentを含まない診断JSON、確認付きのホーム設定初期化を提供する。初期化は許可済みの外観と並び順だけを削除し、アカウント、Wallet、実行履歴、将来追加される未許可データを消さない。
+
+公開条件は日常操作から折り畳み、Web/PWA Developer Preview、QEMU内部受入、Android互換のCDD/CTS、Google Play/GMS契約、対象機種/BSP/復旧、production署名・更新鍵、SBOM/OSS再配布義務、販売地域と無線機器の適合、特定個人情報の取扱いを別gateで記録する。RockstarOS全体へ単一の審査があるとは表示せず、該当する配布方式の証拠がない項目は未実施のままにする。iPhone/iPadは置換OSの一般配布対象ではなく、Web/PWAまたは審査対象のclientアプリとして扱う。
+
+## RQ30 公開最低条件を機械判定し、完了まで追跡する
+
+公開形態をWeb/PWA本人限定Preview、Web/PWA一般公開Preview、QEMU Developer Preview配布、Android系物理端末Preview、iPhone/iPad client、マイナンバー連携に分離する。各形態は、必須gateがすべて証拠付きで合格した場合だけreadyとする。過去のQEMU候補の起動、Web画面の動作、source inventoryの存在を、正式署名または同一最終候補の導入・更新・復旧の代わりにしない。
+
+`data/release-readiness.json`を機械可読な正本とし、宣言状態とgate算出結果の不一致、根拠fileの欠落、未決定の製品ライセンス、未実施のproduction署名、license metadataのないnpm依存、未審査のマイナンバー有効化を自動検査で拒否する。Web/npmのCycloneDX SBOMは生成できるようにするが、generated artifactはGitへ入れず、native Buildrootのinventoryと別のscopeであることを明示する。
+
+所有者に代わる製品ライセンスの選択、production鍵の生成・保管、Sitesの一般公開、機種/SKUの確定、実機flash、外部審査・契約、マイナンバー取扱いの法務判断は自動完了しない。それ以外の実装・検証・証拠保存を先に完了し、必要な所有者行動を具体的に一つずつ提示する。[最低公開条件](release-minimum-gates.md)を運用正本とする。
+
+## RQ31 QEMU配布候補を同一byte列の証拠へ固定する
+
+QEMU Developer Previewは、候補のversion、native source commit、archive名・size・SHA-256を、導入・復旧受入、構成inventory、Webの公開表示へ同時に固定する。安全基礎、更新・rollback、backup・復旧、診断・反復bootは証拠が示す範囲だけ合格とし、D2全体、別host全損復旧、未観測の取消操作を広く合格扱いにしない。
+
+native SBOMはtarget runtime componentとhost build dependencyを区別したCycloneDX 1.6として生成する。現在のrc2は、配布archive、同梱legal bundle、target/host manifestのSHA-256とcomponent数を機械照合し、同じ候補へ結合する。自作componentのlicense未選択はそのまま表示し、部品一覧の完成を製品license clearanceとしない。旧9ab legal-infoから生成する61 componentのSBOMは変換方法の比較だけに限定し、metadataに旧sourceと「current rc2ではない・license clearanceではない」を固定する。
+
+QEMUの公開準備は10 gateを同じID・状態で `data/qemu-release-audit.json` と `data/release-readiness.json` に保持し、不一致を自動検査で拒否する。製品license、production鍵、署名後の同一候補受入、一般公開承認は所有者の明示決定前に合格にしない。[QEMU完了監査](qemu-release-completion-audit-20260912.md)を詳細正本とする。
+
+## RQ32 完成版を正本と本人限定Webへ同一commitで収束する
+
+main、現在の開発branch、機能branch、Sites公開履歴を比較し、完成度の高い実装を現在の製品ベースへ統合する。履歴が新しいだけ、画面だけ、説明だけを理由に採用せず、保存互換、approval、実行receipt、外部接続・実資金・公開gateを維持できる版を選ぶ。Skyは発見・接続、Chatは接続後の操作、Walletは本人別の永続収支という責任を崩さない。
+
+Skyで接続が成立したMCP serverとready商品はChatへbotとして自動表示し、同じスレッドで依頼、方向修正、公開機能と引数、1回承認、実行結果、失敗、停止を扱う。方向修正は、MCPがlive steeringを明示対応しない限り次の実行へ適用する。停止はsessionと未使用承認を失効させ、送信後timeoutや結果不明を自動再実行しない。Walletは本人別D1を正本とし、残高、売上、経費、取消を追記履歴として保持するが、手入力を検証済み収益へ昇格させない。
+
+Home、Sky、Chat、Wallet、Market、設定は、画面componentだけでなく必要なstylesheetがbuildへ含まれることを自動検査する。server/manifest/HTMLが参照する`_next/static` assetは公開archive内に全て存在しなければならない。GitHubの対象branchと本人限定Sitesへ同じsource commitを保存し、公開後に主要routeとassetの実responseを再確認する。一般公開、main merge、production鍵、実取引・送金、物理端末合格、マイナンバー有効化は、それぞれの既存gateなしにこの統合作業から許可へ変えない。
+
+## RQ33 汎用PAPER市場と実績更新型の自律ファンド
+
+独自のRockstar MarketをMarketアプリとして提供し、自動化、デジタル成果物、サービス、商品、稼働枠を共通の型付きasset registryへ登録できるようにする。取引操作は `PAPER` だけを許可し、proposal ID、exact digest、24時間以内の期限、注文上限、総exposure上限を固定する。本人が同一digestを明示承認した後にのみ予約・実行し、simulation-onlyのimmutable receipt、position、`spend.* / trade.*` eventを本人別D1へ保存する。未知field、失効提案、二重実行、LIVE指定はfail closedとする。
+
+自動化ファンドの数と構成ツール数は固定しない。readyなツールについて、署名検証済みEarning Receiptの売上・実費と、本人所有のtool run receiptから、純収益、失敗数、観測return、推奨構成、配分を30秒ごとに再計算する。Walletの手入力帳簿は自己申告なので利回りの証拠に使わない。観測returnは実費を分母とする過去実績で、将来利回りではない。分母または検証receiptがなければ `null / 算定待ち` と表示し、合成値や市場PAPER結果を検証済み収益へ昇格させない。自律処理は構成提案までとし、外部取引、実Wallet移動、再投資、8.88 USDの先取りを行わない。
+
+native Developer Previewでも同じ安全境界を維持し、local SQLiteの複式台帳へsimulation/PAPERの予約・実行・再照合を記録する。exact proposal digestに対する本人承認を必須とし、送信結果が不明な場合はholdを維持して明示的なreconciliationを要求する。秘密値、外部注文、LIVE経路、実資金は実装・有効化しない。
+
+Polymarketは画面密度、検索、カテゴリ、カード、価格ticketのデザイン参考に限る。名称、コンテンツ、外部注文経路、CLOB、口座、資金、結果判定・清算を取り込まず、独自市場と既存の自動化ファンドを別機能として維持する。LIVE提供にはprovider、本人確認、保管・清算、対象国、契約、法務・規制、異議・取消、監視、owner承認の別gateが必要である。
+
+## RQ34 外部Wallet／ファンドProviderを受け入れるOS境界
+
+RockstarOSはWallet会社またはファンド会社そのものにならず、各社の許認可、契約、保管方式、運用商品、対象地域、料金、本人確認とAPI能力を共通のProvider Adapterへ接続する。OSの責任は、Providerの同一性と接続状態を示し、利用可能なcapabilityを発見し、本人へ条件を提示し、exactな操作への同意を取得し、指図、状態取得、署名済みreceipt、取消・不明状態、照合を一貫して扱うところまでとする。
+
+Providerは `custody`、`receive`、`payout`、`exchange`、`fund_catalog`、`subscribe`、`redeem`、`reporting` など、自社が実際に提供できるcapabilityだけをversion付きmanifestで宣言する。RockstarOSは宣言されていない機能を補完・代行せず、未接続、sandbox、live eligible、停止、失効を区別する。Provider固有の追加画面や情報は権限・送信先・費用を明示した拡張として読み込み、任意shell、秘密鍵、Wallet台帳の直接書込み、包括的送金権限を渡さない。
+
+資金の保管、運用判断、注文執行、約定、基準価額、払出し、KYC/AML、地域制限、税務上の判定と法定帳票は、契約上その役割を負うProviderが正本を持つ。RockstarOSの内部Walletと自律型ファンドは、Provider receiptを参照する表示・指図・照合層として残し、Providerの記録を推測値や自己申告で上書きしない。これにより複数の二次事業者がOS再buildなしで参入・差替えでき、利用者は対応機能、費用、地域、保管主体を比較して選べる。
+
+最初の外付け受入は合成Providerとsandboxで、capability交渉、schema version、本人同意、idempotency、timeout後の照合、失効、exportを検証する。実資金またはLIVE運用は、対象Provider、本人・受益者、契約、許認可、対象国、custody、秘密情報、税務表示、sandbox受入、owner承認が揃うまで無効のままとする。詳細は [外部Wallet／ファンドProvider境界](external-wallet-fund-provider-boundary-20260913.md) を正本補助資料とする。
+
+## RQ35 Rock First-party Settlement Walletを最初のProviderにする
+
+外部Wallet会社との契約を待たずにRockの回収経路を作れるよう、共通Financial Provider契約の最初の実装をRock自身の `org.rockstar.settlement-wallet` とする。対象は、外部Providerの署名済みEarning Receiptから既存の成果連動精算ルールで確定したRock利用料だけである。収益0なら回収0、実費を先に扱い、ToCはUTC月あたり最大888 USD cents、未達分の債務化・翌月繰越・カード先払いなし、ToB利用料0を維持する。
+
+最初のcapabilityは `collect_platform_fee` と `reporting` に限定する。Rock Settlement WalletはRockの債権と回収状態を記録するが、利用者の全資産を保管するWallet正本にはしない。`custody`、任意の `receive / payout`、`exchange`、`fund_catalog / subscribe / redeem / valuation` は宣言せず、秘密鍵や外部transferも持たない。利用者への払出し、外部Wallet保管、ファンド運用は別Providerへ分離する。
+
+RockのProviderもRQ34のversion付きmanifest、idempotentな指図、状態、receipt、照合、失効を必ず通り、内製専用の迂回路を作らない。最初はsandbox fixtureでcapabilityと月額上限を検証する。LIVE回収は、Rockの販売・受取主体、実口座または実Wallet、Provider契約、本人・受益者、表示・税務・会計、資格情報、sandbox受入、owner承認が揃うまで無効とする。詳細は [Rock First-party Settlement Wallet](rock-first-party-settlement-wallet-20260913.md) を参照する。
+
+## RQ36 Base Mainnet USDCの本番受取レールを接続する
+
+RockstarOSのWallet画面から外部EIP-1193 Walletを接続し、Base Mainnetへ切り替え、5分で失効するorigin-bound messageへ署名してRockのUSDC受取先を登録できるようにする。署名はアドレスの所有確認だけであり、transfer、token approval、秘密鍵の開示を要求しない。最初のoperatorは本人限定Siteへ認証済みのownerだけがclaimし、登録後は別利用者が上書きできない。一般公開へ変更する場合は、その前にowner登録済みであることを必須gateにする。
+
+Billing Workerは、署名検証済みEarning Receiptへ配分済みの `SKY_SERVICE_FEE` ごとにidempotentな回収指図をD1へ作る。指図額は1件・月累計とも既存の最大888 USD centsを越えない。受取先未登録、着金待ち、finalized待ち、着金済み、結果不明を分離し、timeoutやRPC障害時に自動再送しない。同じtransaction hashを複数指図へ使用できず、Baseの公式USDC contractがemitした `Transfer` の受取先と6桁decimal換算額がexactに一致し、receipt成功かつfinalized blockに入った場合だけ着金済みとする。
+
+このレールはRockに帰属する利用料の受取に限定し、利用者資産のcustody、利用者へのpayout、任意入金、交換、運用、税務判定を追加しない。外部Wallet／ファンド会社はRQ34のProvider Adapterとして別途接続できる。実装と本番配備が合格しても、owner自身のWallet署名と最初の実transferが未実施なら、実Wallet登録・実着金の実績とは表示しない。詳細は [Rock Wallet本番受取レール](rock-wallet-production-rail-20260913.md) を参照する。
+
+## 1.0への8原則の適用（RQ01〜RQ36を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -256,7 +354,7 @@ PCのRock Studioはチャット形式にし、開発者が行う必須操作を�
 
 - 設計とnativeの統合後の実装は `codex/rockstaros-launch-candidate-20260910` にある。mainへの製品統合は未実施。複数owner/gameの合成契約・台帳分離、GX01/DX01のSDKと限定OS受入は記録済み。実ゲーム・実資金・Androidへの移植は別の未完了条件。[現在の状態](current-state-20260911.md)を参照し、過去の[設計照合](design-implementation-alignment-20260909.md)の未着手状態へ戻さない。
 - Rock端末を持たないプレイヤーの本番Wallet利用資格は未決。作者sandboxの参加条件と購入者のOS月額契約を混ぜず、ゲーム利用だけで未同意の月額を開始しない。
-- 追加相談のPolymarket型予測市場・ゲーム資産売買は検討案。RQ01〜RQ15への確定機能追加や市場実装の許可ではない。Sky/Walletを置換せず、換金可能な通貨を非金銭ゲーム扱いにしない。提供地域・対象・許認可等は未決で、実資金市場を開始しない。
+- PolymarketはRQ18で基本アプリ枠として採用した。ただし外部市場の接続・注文・清算・実資金移動は未承認。Sky/Chat/Walletを置換せず、提供地域・対象・許認可等が未決のまま実資金市場を開始しない。ゲーム資産売買は引き続き検討案。
 - GTAのゲーム内経済は将来像の例。新作GTAの現実経済/外部Wallet連携を確定仕様とせず、特定ゲームの未発表機能へ依存しない。公式に許されたAPI/利用条件/資産権利が確認できたゲームへ接続できる共通基盤を設計し、未対応ゲームを対応済みと表示しない。
 - Linux/Buildroot/ARM64 QEMU版を維持し、最新指示でスマホ実機版を開発する。Pixel 10／GrapheneOSは以前の端末記録に基づく候補、今回の機種/SKUは未確認。以前のBlackBerry希望も型番未確認。Android P1・機種構成へのsource組込み・実機合格は別に判定する。
 - tob側の具体的な商品・提供組織・外部API契約・ライセンス・価格は商品ごとに確認する。7種類の仮想fixtureだけでは実商品の統合完了にならない。
@@ -267,9 +365,33 @@ PCのRock Studioはチャット形式にし、開発者が行う必須操作を�
 
 ## 変更記録
 
-2026-09-15 v1.23: 利用者の「フロントはチャット形式でコードかファイルを貼ったら、あとはSky側でコードを追加して登録する」「サイト作成」によりRQ27を追加。Rock Studioをコード貼付・単一ファイル添付だけの画面にし、端末内解析からSDK組込み例、Package、安全契約、Fund分類、所有者登録までを自動化する。コード本文はRegistryへ送らず、登録失敗を成功表示せず、検証済み公開との境界を維持する。
+2026-09-13 v1.36: 本番Wallet利用の明示指示をRQ36へ追加。Base Mainnet USDC、外部Walletの所有署名、D1回収指図、exact transferとfinalized blockの照合を採用する。秘密鍵・利用者資産・包括的送金権限は保管せず、owner署名と最初の実transferは未実施のまま先取りしない。
 
-2026-09-15 v1.22: 利用者の「Skyのコードを自動化ツールの雛形として周知し、自動化できる機能と組み合わせればすぐSkyで使え、導線も揃うようにする」によりRQ26を追加。PCのRock Studio、組込みSky Tool SDK、雛形CLI、共通Package、MCP公開、匿名利用集計を一つの開発者導線にする。宣言公開は検証済み・自動導入可能とは扱わず、外部作用の承認、秘密情報非送信、本番Sandbox・署名・remote受入の境界を維持する。
+2026-09-13 v1.35: 自社回収のため、Rock Settlement Walletを共通Provider契約の第1号としてRQ35へ追加。検証済み収益から確定したRock利用料の受取・報告だけをsandbox実装し、利用者資産の包括保管、任意送金、交換、ファンド運用、LIVE回収は追加していない。外部Providerも同じadapterで後から追加できる。
+
+2026-09-13 v1.34: Wallet／ファンドをRockの内製金融機能ではなく、交換可能な外部Providerとして受け入れる方針をRQ34へ追加。OSはcapability、同意、指図、状態、receipt、照合の共通面を担い、保管・運用・約定・払出し・法定判断はProviderへ残す。二次事業者の参入余地を確保し、外部実接続と実資金は既存gateを維持する。
+
+2026-09-13 v1.31: Chatの接続bot管理、本人別永続Wallet、主要画面のstyle契約、配備asset closure、GitHubと本人限定Sitesの同一commit収束をRQ32へ追加。分散branchの無条件mergeではなく、現行の安全契約と検証を満たす完成版だけを採用する。
+
+2026-09-12 v1.27: QEMU rc2を10要件へ分解し、候補identityと範囲付き受入5件を合格、native SBOM・製品license・production署名・署名後受入・公開承認5件を未達として機械判定した。旧9abのtarget 24＋host 37 componentをCycloneDXへ変換するが、rc2へ転用できない検査を追加した。
+
+2026-09-12 v1.28: rc2配布archiveと同梱legal bundleのSHA-256を照合し、target 24＋host build 37 componentのcurrent native CycloneDXを同じ候補へ結合。native SBOMを合格へ更新して6/10とし、製品license未許諾は独立gateへ保持した。manifest改ざんと旧9ab差替えを拒否する試験を追加した。
+
+2026-09-13 v1.30: Android物理端末5gateとマイナンバー7gateの機械可読監査を追加。対象端末・build・BSP・CTS・署名・地域・取扱主体の証拠がない現状をblockedに固定し、GMSなしと番号取得なしの境界を自動検査する。
+
+2026-09-12 v1.29: 署名機構の4 suite・計62公開fixture試験を単一commandへ集約し、通常の全体verifyへ必須化した。試験数減少も失敗させ、production鍵・owner承認・実署名・署名後受入は未達のまま分離した。
+
+2026-09-12 v1.26: 配布方法ごとの公開最低条件を機械判定する台帳と検査を追加。本人限定Web/PWAだけをreadyとし、一般公開、QEMU配布、物理端末、iPhone/iPad client、マイナンバーは証拠が揃うまでblockedを維持する。Web/npmのCycloneDX SBOM生成を追加した。
+
+2026-09-12 v1.25: 設定の「システム」を最低限の運用センターへ拡張。通知、永続保存、個人情報を除く診断共有、確認付きホーム設定初期化を追加し、日常の稼働状態とAndroid互換、GMS、実機、署名、OSS、無線規制、マイナンバーの公開gateを分離した。
+
+2026-09-12 v1.24: Skyの最初の具体的な収益経路としてメルカリ収益スターターを追加。個人版は規約に沿う出品支援、Shopsは公式API Connector、自動精算はProvider確認済み取引完了だけに限定した。自己申告、売上保証、個人アカウントの無人操作は採用しない。
+
+2026-09-12 v1.23: 設定へ実状態診断、PBKDF2/AES-GCM暗号化バックアップ、改ざん検知付き復元、Service Worker更新確認を追加した。物理端末、正式署名、外部Providerは必要条件が揃うまで未完了gateとして維持する。
+
+2026-09-12 v1.22: 標準入口をカスタマイズ可能なホーム画面へ変更し、Skyを`/sky`へ分離。基本4アプリに加え、外観・接続・権限・保存・更新・導入復旧の入口を持つ設定utilityを追加した。外観は端末内設定であり、OS権限や本人確認を変更しない。
+
+2026-09-12 v1.13: 利用者の明示確認により基本アプリをSky / Chat / Wallet / Polymarketへ固定。Sky内の依頼欄をChatへ分離し、Polymarketは安全な未接続app shellのみを採用した。実市場データ・注文・清算・資金移動は許可していない。
 
 2026-09-12 v1.12: 利用者の命名により自動化ツールの入口をSkyへ全面改称。Skyの固有価値を、選択、条件確認、許可、実行先の吸収、実行・停止、結果・記録の一体管理として明文化した。Web/PCの使用可能4件、導入候補3件、native OS内蔵6種類・9バージョンを区別して棚卸しした。既存データ/APIの内部 `hub` 識別子は互換維持のため変更しない。
 

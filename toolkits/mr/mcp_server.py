@@ -161,7 +161,8 @@ class Bridge(BaseHTTPRequestHandler):
         self.send_response(status)
         if self.allowed():
             self.send_header('Access-Control-Allow-Origin',self.headers['Origin']);self.send_header('Vary','Origin')
-            self.send_header('Access-Control-Allow-Headers','Content-Type, Authorization, MCP-Protocol-Version')
+            self.send_header('Access-Control-Allow-Headers','Content-Type, Authorization, MCP-Protocol-Version, Mcp-Session-Id')
+            self.send_header('Access-Control-Expose-Headers','Mcp-Session-Id')
             self.send_header('Access-Control-Allow-Methods','POST, OPTIONS')
             self.send_header('Access-Control-Allow-Private-Network','true')
         self.send_header('Cache-Control','no-store');self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(encoded)));self.end_headers();self.wfile.write(encoded)

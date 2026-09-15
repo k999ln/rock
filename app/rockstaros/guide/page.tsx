@@ -16,7 +16,7 @@ const releaseNotes = `${sourceRoot}/preview-release-notes.md`;
 
 export default function PreviewGuide() {
   return <main className={styles.page}>
-    <header className={styles.header}><Link href="/rockstaros" className={styles.brand}>RockstarOS<span>1.0</span></Link><Link href="/rockstaros">開発版の案内へ</Link></header>
+    <header className={styles.header}><Link href="/" className={styles.brand} aria-label="ホームへ戻る">RockstarOS<span>1.0</span></Link><Link href="/rockstaros">開発版の案内へ</Link></header>
     <article className={styles.guide}>
       <p className={styles.eyebrow}>DEVELOPER PREVIEW · はじめに</p>
       <h1>導入から、最初の成果。<br />そして、また続けるまで。</h1>

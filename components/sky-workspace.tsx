@@ -7,26 +7,38 @@ import {
   type CSSProperties,
   type SyntheticEvent,
 } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   ArrowRight,
   ArrowUpRight,
   BadgeCheck,
   BookOpenCheck,
   BriefcaseBusiness,
+  CheckCircle2,
+  EyeOff,
   FileCheck2,
   FilePenLine,
+  Lightbulb,
   Link2,
+  LoaderCircle,
+  MessageCircle,
   Network,
   PackagePlus,
+  Scale,
   Search,
   Send,
+  ShieldCheck,
   Shirt,
+  ShoppingBag,
+  WalletCards,
   X,
   Zap,
   type LucideIcon,
 } from 'lucide-react';
 import { catalog, type Automation } from '@/lib/catalog';
 import { deviceToken } from '@/lib/device';
+import { fashionMcpConnected } from '@/lib/fashion-mcp-client';
 import { routeSkyRequest, skyRoles } from '@/lib/sky-routing';
 import {
   Dialog,
@@ -41,22 +53,39 @@ import { FashionBrandOpsRunner } from '@/components/fashion-brand-ops-runner';
 import SkyMcpCenter from '@/components/sky-mcp-center';
 import SkyPublisherForm from '@/components/sky-publisher-form';
 import WorkspaceShell from '@/components/workspace-shell';
-import { fashionMcpConnected } from '@/lib/fashion-mcp-client';
+import {
+  ExecutionSignin,
+  useExecutionAccess,
+} from '@/components/execution-access';
+import {
+  operationRequest,
+  OperationRequestError,
+} from '@/lib/operations-client';
+import type { SkyConnection } from '@/lib/operations';
 
 type FeedFilter = 'おすすめ' | '今使える' | '導入候補';
 
 const feedFilters: FeedFilter[] = ['おすすめ', '今使える', '導入候補'];
 const icons: Record<string, LucideIcon> = {
+  'mercari-revenue': ShoppingBag,
   'fashion-brand-ops': Shirt,
   coconala: BriefcaseBusiness,
   'mr-free-article': FilePenLine,
   'mr-citations': BookOpenCheck,
   'mr-delivery': FileCheck2,
+  'rockstar-ledger': WalletCards,
+  'rockstar-legal-intake': Scale,
+  'rockstar-patent-assistant': Lightbulb,
 };
 const providers: Record<
   string,
   { name: string; handle: string; initial: string }
 > = {
+  'mercari-revenue': {
+    name: 'Sky 販売収益化役',
+    handle: '@sky_income',
+    initial: '売',
+  },
   'fashion-brand-ops': {
     name: 'Sky ブランド運営役',
     handle: '@sky_brand',
@@ -79,9 +108,19 @@ const providers: Record<
     initial: '納',
   },
   'rockstar-ledger': {
-    name: 'Sky 契約管理役',
-    handle: '@sky_subscription',
-    initial: '契',
+    name: 'Sky サブスク顧問',
+    handle: '@sky_subscriptions',
+    initial: '顧',
+  },
+  'rockstar-legal-intake': {
+    name: 'Sky 法務受付',
+    handle: '@sky_legal',
+    initial: '法',
+  },
+  'rockstar-patent-assistant': {
+    name: 'Sky 特許出願担当',
+    handle: '@sky_patent',
+    initial: '特',
   },
   'faster-whisper': { name: 'SYSTRAN', handle: '@systran', initial: 'S' },
   'transformers-js': {
@@ -115,11 +154,9 @@ function statusFor(tool: Automation, fashionConnected = false) {
     };
   if (tool.integration === 'fashion-brand-ops')
     return {
-      label: fashionConnected ? 'MCP接続済み' : '今使える',
-      detail: fashionConnected
-        ? 'Producerモード＋MCP 41操作'
-        : 'PCなしのブラウザ簡易版',
-      className: 'is-ready',
+      label: fashionConnected ? '接続済み' : '1クリック接続',
+      detail: fashionConnected ? '40操作を利用可能' : 'PCのMCPへ接続',
+      className: fashionConnected ? 'is-ready' : 'is-connect',
     };
   if (tool.runner === 'subscription-ledger')
     return {
@@ -152,15 +189,21 @@ export default function SkyWorkspace({
   const [selected, setSelected] = useState<Automation | null>(null);
   const [deviceOpen, setDeviceOpen] = useState(false);
   const [running, setRunning] = useState(false);
-  const [requestText, setRequestText] = useState('');
-  const [lastRequest, setLastRequest] = useState('');
-  const [routedTool, setRoutedTool] = useState<Automation | null>(null);
-  const [routeMessage, setRouteMessage] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [mcpOpen, setMcpOpen] = useState(initialMcpOpen);
   const [publishOpen, setPublishOpen] = useState(initialPublishOpen);
   const [connected, setConnected] = useState(false);
   const [fashionConnected, setFashionConnected] = useState(false);
+  const [requestText, setRequestText] = useState('');
+  const [lastRequest, setLastRequest] = useState('');
+  const [routedTool, setRoutedTool] = useState<Automation | null>(null);
+  const [routeMessage, setRouteMessage] = useState('');
+  const [connectedTools, setConnectedTools] = useState<string[]>([]);
+  const [connectionsLoading, setConnectionsLoading] = useState(true);
+  const [connectionBusy, setConnectionBusy] = useState(false);
+  const [connectionError, setConnectionError] = useState('');
+  const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const router = useRouter();
   const searchInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -180,6 +223,29 @@ export default function SkyWorkspace({
     window.addEventListener('sky-fashion-mcp', update);
     return () => window.removeEventListener('sky-fashion-mcp', update);
   }, []);
+
+  useEffect(() => {
+    let active = true;
+    void operationRequest<SkyConnection[]>('/api/sky/connections')
+      .then((connections) => {
+        if (active) setConnectedTools(connections.map(({ tool }) => tool));
+      })
+      .catch((error) => {
+        if (
+          active &&
+          error instanceof OperationRequestError &&
+          error.status === 401
+        )
+          setNeedsSignin(true);
+      })
+      .finally(() => {
+        if (active) setConnectionsLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [setNeedsSignin]);
+
   const visibleTools = catalog.filter((tool) => {
     const matchesFilter =
       filter === 'おすすめ' ||
@@ -199,12 +265,57 @@ export default function SkyWorkspace({
     );
   });
 
+  function openConnectedTool(tool: Automation) {
+    setSelected(null);
+    router.push(tool.launchPath ?? `/chat?tool=${encodeURIComponent(tool.id)}`);
+  }
+
   function primaryAction(tool: Automation) {
+    if (tool.status === 'candidate') {
+      setSelected(tool);
+      return;
+    }
     if (tool.runner === 'delivery-local') {
       setDeviceOpen(true);
       return;
     }
+    if (tool.launchPath) {
+      openConnectedTool(tool);
+      return;
+    }
+    if (connectedTools.includes(tool.id)) {
+      openConnectedTool(tool);
+      return;
+    }
+    setConnectionError('');
     setSelected(tool);
+  }
+
+  async function connectSelected() {
+    if (!selected?.runner || connectionBusy) return;
+    setConnectionBusy(true);
+    setConnectionError('');
+    try {
+      const connection = await operationRequest<SkyConnection>(
+        '/api/sky/connections',
+        'PUT',
+        { tool: selected.id },
+      );
+      setConnectedTools((current) =>
+        current.includes(connection.tool)
+          ? current
+          : [...current, connection.tool],
+      );
+    } catch (error) {
+      if (error instanceof OperationRequestError && error.status === 401)
+        setNeedsSignin(true);
+      else
+        setConnectionError(
+          error instanceof Error ? error.message : '接続できませんでした。',
+        );
+    } finally {
+      setConnectionBusy(false);
+    }
   }
 
   function chooseRole(tool: Automation, request = '') {
@@ -225,18 +336,17 @@ export default function SkyWorkspace({
     const request = requestText.trim();
     if (!request) return;
     const role = routeSkyRequest(request);
-    const tool = role
-      ? (catalog.find((item) => item.id === role.toolId) ?? null)
-      : null;
     setRequestText('');
     setLastRequest(request);
-    if (tool) chooseRole(tool, request);
-    else {
-      setRoutedTool(null);
-      setRouteMessage(
-        '近い役割を選んでください。選ぶと、その担当につながります。',
-      );
+    if (role) {
+      const tool = catalog.find((item) => item.id === role.toolId);
+      if (tool) chooseRole(tool, request);
+      return;
     }
+    setRoutedTool(null);
+    setRouteMessage(
+      '近い役割を選んでください。選ぶと、その担当につながります。',
+    );
   }
 
   return (
@@ -316,9 +426,10 @@ export default function SkyWorkspace({
           </section>
 
           <header className="sky-feed-header">
-            <h1 id="sky-feed-title" className="sr-only">
-              Sky
-            </h1>
+            <div className="sky-store-title">
+              <span>Sky</span>
+              <h1 id="sky-feed-title">アプリ</h1>
+            </div>
             <Tabs
               value={filter}
               onValueChange={(value) => setFilter(value as FeedFilter)}
@@ -335,6 +446,21 @@ export default function SkyWorkspace({
               </TabsList>
             </Tabs>
             <div className="sky-feed-header-actions">
+              <Link
+                href="/chat"
+                aria-label="Chatを開く"
+                className="sky-header-action"
+              >
+                <MessageCircle size={19} />
+              </Link>
+              <button
+                className="sky-header-action"
+                aria-label="MCP接続・管理"
+                onClick={() => setMcpOpen(true)}
+              >
+                <Network size={19} />
+                <span>MCP</span>
+              </button>
               <button
                 className="sky-header-action"
                 aria-label="MCP接続・管理"
@@ -440,14 +566,19 @@ export default function SkyWorkspace({
                         onClick={() => primaryAction(tool)}
                       >
                         {tool.status === 'ready' &&
-                          tool.runner !== 'delivery-local' && (
+                          tool.runner !== 'delivery-local' &&
+                          connectedTools.includes(tool.id) && (
                             <Zap size={16} fill="currentColor" />
                           )}
                         {tool.status === 'candidate'
                           ? '詳細'
+                          : tool.launchPath
+                            ? '使う'
                           : tool.runner === 'delivery-local'
                             ? 'PC接続'
-                            : '使う'}
+                            : connectedTools.includes(tool.id)
+                              ? '頼む'
+                              : '接続'}
                         <ArrowRight size={16} />
                       </button>
                     </div>
@@ -480,45 +611,145 @@ export default function SkyWorkspace({
           if (!open && !running) setSelected(null);
         }}
       >
-        <DialogContent className="rock-tool-dialog sky-tool-dialog">
+        <DialogContent
+          initialFocus={
+            selected?.runner === 'legal-intake' ||
+            selected?.runner === 'patent-assistant'
+              ? false
+              : undefined
+          }
+          className={`rock-tool-dialog sky-tool-dialog sky-connect-dialog ${
+            selected?.runner === 'legal-intake' ||
+            selected?.runner === 'patent-assistant'
+              ? 'sky-tool-dialog-wide'
+              : ''
+          }`}
+        >
           {selected && (
             <>
-              <p className="rock-eyebrow">
-                {selected.category} /{' '}
-                {selected.status === 'ready' ? 'TOOL' : '導入候補'}
-              </p>
-              <DialogTitle className="rock-dialog-title">
-                {selected.name}
-              </DialogTitle>
-              <DialogDescription className="rock-dialog-description">
-                {selected.description}
-              </DialogDescription>
-              <div className="rock-tool-facts">
+              <div className="sky-connect-title-row">
+                <span
+                  className={'rock-tool-icon rock-icon-' + selected.color}
+                  aria-hidden="true"
+                >
+                  {(() => {
+                    const Icon = icons[selected.id] ?? Link2;
+                    return <Icon size={22} strokeWidth={1.8} />;
+                  })()}
+                </span>
                 <div>
-                  <span>使う場所</span>
-                  <strong>{selected.environment}</strong>
-                </div>
-                <div>
-                  <span>費用・通信</span>
-                  <p>{selected.cost}</p>
+                  <p className="rock-eyebrow">{roleFor(selected)}</p>
+                  <DialogTitle className="rock-dialog-title">
+                    {selected.name}
+                  </DialogTitle>
                 </div>
               </div>
-              {running && (
-                <output className="rock-running-notice">
-                  実行中です。結果が表示されるまで、この画面を開いたままにしてください。
-                </output>
+
+              {selected.status === 'candidate' ? (
+                <>
+                  <DialogDescription className="rock-dialog-description">
+                    {selected.description}
+                  </DialogDescription>
+                  <div className="sky-candidate-state">
+                    まだSkyからは接続できません。導入確認中です。
+                  </div>
+                </>
+              ) : selected.integration === 'fashion-brand-ops' ? (
+                <>
+                  <DialogDescription className="rock-dialog-description">
+                    PCの接続アプリへ1クリックで接続し、40操作をSkyから利用できます。
+                  </DialogDescription>
+                  <FashionBrandOpsRunner />
+                </>
+              ) : (
+                <>
+                  <DialogDescription className="rock-dialog-description">
+                    接続後はフォームを開かず、Chatから頼めます。
+                  </DialogDescription>
+
+                  <div className="sky-id-connection" aria-label="接続内容">
+                    <div className="sky-id-node">
+                      <ShieldCheck size={20} />
+                      <span>
+                        <strong>Rock ID</strong>
+                        <small>サインイン中の本人</small>
+                      </span>
+                    </div>
+                    <ArrowRight size={17} aria-hidden="true" />
+                    <div className="sky-id-node">
+                      <span className="sky-mini-mark">S</span>
+                      <span>
+                        <strong>{roleFor(selected)}</strong>
+                        <small>利用許可だけを保存</small>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="sky-privacy-summary">
+                    <p>
+                      <CheckCircle2 size={17} />
+                      渡す：このツールを使う許可
+                    </p>
+                    <p>
+                      <EyeOff size={17} />
+                      渡さない：個人番号・住所・生年月日
+                    </p>
+                  </div>
+
+                  {needsSignin ? (
+                    <ExecutionSignin />
+                  ) : connectedTools.includes(selected.id) ? (
+                    <div className="sky-connect-complete">
+                      <CheckCircle2 size={22} />
+                      <div>
+                        <strong>接続済み</strong>
+                        <span>次からはChatでアプリを選ぶだけです。</span>
+                      </div>
+                      <button onClick={() => openConnectedTool(selected)}>
+                        {selected.launchPath ? '収益フローを開く' : 'Chatで使う'}
+                        <ArrowRight size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      className="sky-one-tap-connect"
+                      disabled={connectionBusy || connectionsLoading}
+                      onClick={() => void connectSelected()}
+                    >
+                      {connectionBusy || connectionsLoading ? (
+                        <LoaderCircle className="sky-spin" size={18} />
+                      ) : (
+                        <Link2 size={18} />
+                      )}
+                      {connectionsLoading
+                        ? '確認中…'
+                        : connectionBusy
+                          ? '接続中…'
+                          : '1タップでSkyに接続'}
+                    </button>
+                  )}
+
+                  {connectionError && (
+                    <p className="bench-error" role="alert">
+                      {connectionError}
+                    </p>
+                  )}
+                </>
               )}
-              {selected.integration === 'fashion-brand-ops' ? (
-                <FashionBrandOpsRunner />
-              ) : selected.runner ? (
-                <MrToolRunner
-                  key={selected.id}
-                  tool={selected.runner}
-                  onRunningChange={setRunning}
-                />
-              ) : null}
-              <details className="rock-tool-details">
-                <summary>利用条件・準備・提供元</summary>
+
+              <details className="rock-tool-details sky-tool-about">
+                <summary>このツールについて</summary>
+                <p>{selected.description}</p>
+                <div className="rock-tool-facts">
+                  <div>
+                    <span>使う場所</span>
+                    <strong>{selected.environment}</strong>
+                  </div>
+                  <div>
+                    <span>費用・通信</span>
+                    <p>{selected.cost}</p>
+                  </div>
+                </div>
                 <ol>
                   {selected.steps.map((step) => (
                     <li key={step}>{step}</li>
@@ -540,6 +771,24 @@ export default function SkyWorkspace({
                   </a>
                 </div>
               </details>
+
+              {selected.status === 'ready' &&
+                selected.runner &&
+                connectedTools.includes(selected.id) && (
+                  <details className="sky-manual-runner">
+                    <summary>手動入力で使う</summary>
+                    {running && (
+                      <output className="rock-running-notice">
+                        実行中です。結果が表示されるまで、この画面を開いたままにしてください。
+                      </output>
+                    )}
+                    <MrToolRunner
+                      key={selected.id}
+                      tool={selected.runner}
+                      onRunningChange={setRunning}
+                    />
+                  </details>
+                )}
             </>
           )}
         </DialogContent>

@@ -3,13 +3,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import {
-  ArrowRight,
-  Cable,
-  RefreshCw,
-  ShieldCheck,
-  Wallet,
-} from 'lucide-react';
+import { ArrowRight, Cable, RefreshCw } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
 import { JobHistory, OperationsPanel } from '@/components/operations-panel';
 import type { OperationsSnapshot } from '@/lib/operations';
@@ -137,37 +131,34 @@ export default function OperationsWorkspace({ view }: { view: View }) {
       running={running}
       title={titles[view]}
       onConnect={() => setDeviceOpen(true)}
+      hideTopActions={view === 'wallet'}
     >
-      <div className="rock-page-heading">
-        <div>
-          <p className="rock-eyebrow">
-            {view === 'wallet'
-              ? 'YOUR MONEY, CLEARLY'
-              : view === 'activity'
-                ? 'ACTIVITY'
-                : 'CONNECTIONS & CONTROLS'}
-          </p>
-          <h1>{view === 'wallet' ? '収支を、見失わない。' : titles[view]}</h1>
-          <p>
-            {view === 'wallet'
-              ? '売上と経費の記録を、ひとつの場所に。'
-              : view === 'activity'
+      {view !== 'wallet' && (
+        <div className="rock-page-heading">
+          <div>
+            <p className="rock-eyebrow">
+              {view === 'activity' ? 'ACTIVITY' : 'CONNECTIONS & CONTROLS'}
+            </p>
+            <h1>{titles[view]}</h1>
+            <p>
+              {view === 'activity'
                 ? 'いつ、どこで、何を実行したか確認できます。'
                 : 'PCの接続と、ツールごとの利用状態を管理。'}
-          </p>
+            </p>
+          </div>
+          <button
+            className="rock-button rock-button-subtle"
+            disabled={loading}
+            onClick={() => {
+              setLoading(true);
+              void refresh();
+            }}
+          >
+            <RefreshCw size={16} />
+            {loading ? '読み込み中' : '再読込'}
+          </button>
         </div>
-        <button
-          className="rock-button rock-button-subtle"
-          disabled={loading}
-          onClick={() => {
-            setLoading(true);
-            void refresh();
-          }}
-        >
-          <RefreshCw size={16} />
-          {loading ? '読み込み中' : '再読込'}
-        </button>
-      </div>
+      )}
       {view === 'activity' && (
         <nav className="rock-view-nav" aria-label="仕事と履歴">
           <Link href="/work">手順のある仕事</Link>
@@ -176,27 +167,8 @@ export default function OperationsWorkspace({ view }: { view: View }) {
           </Link>
         </nav>
       )}
-      {view === 'wallet' && (
-        <>
-          <section className="rock-wallet-boundary">
-            <span className="rock-wallet-symbol">
-              <Wallet size={30} strokeWidth={1.5} />
-            </span>
-            <div>
-              <h2>稼げた後だけ、Sky利用料を精算</h2>
-              <p>
-                自動化が生んだ実売上をProviderと照合し、実費の後から月最大$8.88だけを回収します。
-              </p>
-              <span>
-                <ShieldCheck size={15} />
-                先払い・未達請求・借金なし
-              </span>
-            </div>
-          </section>
-          <SkyBilling />
-        </>
-      )}
-      {error && (
+      {view === 'wallet' && <SkyBilling />}
+      {error && !(view === 'wallet' && needsSignin) && (
         <div className="rock-service-notice" role="alert">
           <strong>
             {needsSignin
@@ -216,7 +188,7 @@ export default function OperationsWorkspace({ view }: { view: View }) {
           )}
         </div>
       )}
-      {loading && !data && !error && (
+      {view !== 'wallet' && loading && !data && !error && (
         <output className="rock-loading">自分の記録を読み込んでいます…</output>
       )}
       {data &&
@@ -230,18 +202,6 @@ export default function OperationsWorkspace({ view }: { view: View }) {
         ) : (
           <OperationsPanel data={data} refresh={refresh} view={view} />
         ))}
-      {view === 'wallet' && (
-        <div className="rock-wallet-links">
-          <Link href="/fund">
-            保存済みのファンド・費用試算
-            <ArrowRight size={16} />
-          </Link>
-          <Link href="/rockstaros#game-title">
-            OSの合成Wallet・Gameを知る
-            <ArrowRight size={16} />
-          </Link>
-        </div>
-      )}
       {view === 'settings' && (
         <button
           className="rock-button rock-button-subtle"

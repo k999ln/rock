@@ -98,6 +98,14 @@ void test('earning receipt requires provider evidence and whole USD cents', () =
     occurredAt: 1_789_171_200,
   };
   assert.equal(validateEarningReceipt(receipt).receiptId, 'earn_1');
+  assert.deepEqual(
+    validateEarningReceipt({
+      ...receipt,
+      fundId: 'fund:creator-1',
+      automationToolId: 'org.rockstar.writer',
+    }).fundId,
+    'fund:creator-1',
+  );
   assert.equal(periodForUnix(receipt.occurredAt), '2026-09');
   assert.throws(() => validateEarningReceipt({ ...receipt, currency: 'jpy' }));
   assert.throws(() =>
@@ -105,5 +113,8 @@ void test('earning receipt requires provider evidence and whole USD cents', () =
   );
   assert.throws(() =>
     validateEarningReceipt({ ...receipt, grossAmountMinor: 10.5 }),
+  );
+  assert.throws(() =>
+    validateEarningReceipt({ ...receipt, fundId: 'fund:creator-1' }),
   );
 });

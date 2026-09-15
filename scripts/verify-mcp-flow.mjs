@@ -20,7 +20,7 @@ globalThis.fetch = (path, options = {}) => {
   const headers = new Headers(options.headers);
   headers.set(
     'Origin',
-    isLocal ? 'https://rock-star.kirin-999.chatgpt.site' : site,
+    isLocal ? 'https://rockstaros-kaiya.noellesugar1.chatgpt.site' : site,
   );
   if (!isLocal) headers.set('oai-authenticated-user-id', user);
   return nativeFetch(endpoint, { ...options, headers });

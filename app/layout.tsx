@@ -3,9 +3,9 @@ import './globals.css';
 import './app.css';
 import './workspace.css';
 export const metadata: Metadata = {
-  title: 'RockstarOS — Sky',
+  title: 'RockstarOS',
   description:
-    '自動化ツールを選び、権限・料金・実行先を確認し、実行・停止・結果まで管理する。RockstarOSのSkyとDeveloper Preview。',
+    'Sky、Chat、Wallet、Market、Fundを一つのホームから使うRockstarOS Developer Preview。',
   applicationName: 'RockstarOS',
   authors: [{ name: 'kaiya' }],
   appleWebApp: {

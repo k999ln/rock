@@ -1,0 +1,441 @@
+{
+  "schema": "rockstaros-web-third-party-license-audit/1",
+  "evaluatedAt": "2026-09-14",
+  "scope": "PACKAGE_LOCK_INVENTORY_NOT_RUNTIME_BUNDLE_OR_LEGAL_CLEARANCE",
+  "packageLockSha256": "d626e200d47c26954de68c51da7e05df6f6fdd14a90f832b9c086733db312dba",
+  "packageEntries": 899,
+  "uniqueComponents": 866,
+  "missingLicenseMetadata": 0,
+  "licenses": [
+    {
+      "expression": "(AFL-2.1 OR BSD-3-Clause)",
+      "uniqueComponents": 1,
+      "reviewClass": "license-choice-review"
+    },
+    {
+      "expression": "0BSD",
+      "uniqueComponents": 1,
+      "reviewClass": "standard-license-text-and-notice"
+    },
+    {
+      "expression": "Apache-2.0",
+      "uniqueComponents": 39,
+      "reviewClass": "standard-license-text-and-notice"
+    },
+    {
+      "expression": "Apache-2.0 AND LGPL-3.0-or-later",
+      "uniqueComponents": 3,
+      "reviewClass": "reciprocal-source-terms-review"
+    },
+    {
+      "expression": "Apache-2.0 AND LGPL-3.0-or-later AND MIT",
+      "uniqueComponents": 1,
+      "reviewClass": "reciprocal-source-terms-review"
+    },
+    {
+      "expression": "BlueOak-1.0.0",
+      "uniqueComponents": 2,
+      "reviewClass": "standard-license-text-and-notice"
+    },
+    {
+      "expression": "BSD-2-Clause",
+      "uniqueComponents": 7,
+      "reviewClass": "standard-license-text-and-notice"
+    },
+    {
+      "expression": "BSD-3-Clause",
+      "uniqueComponents": 9,
+      "reviewClass": "standard-license-text-and-notice"
+    },
+    {
+      "expression": "CC-BY-4.0",
+      "uniqueComponents": 1,
+      "reviewClass": "attribution-review"
+    },
+    {
+      "expression": "CC0-1.0",
+      "uniqueComponents": 1,
+      "reviewClass": "standard-license-text-and-notice"
+    },
+    {
+      "expression": "ISC",
+      "uniqueComponents": 34,
+      "reviewClass": "standard-license-text-and-notice"
+    },
+    {
+      "expression": "LGPL-3.0-or-later",
+      "uniqueComponents": 10,
+      "reviewClass": "reciprocal-source-terms-review"
+    },
+    {
+      "expression": "MIT",
+      "uniqueComponents": 724,
+      "reviewClass": "standard-license-text-and-notice"
+    },
+    {
+      "expression": "MIT AND ISC",
+      "uniqueComponents": 1,
+      "reviewClass": "standard-license-text-and-notice"
+    },
+    {
+      "expression": "MIT OR Apache-2.0",
+      "uniqueComponents": 4,
+      "reviewClass": "license-choice-review"
+    },
+    {
+      "expression": "MPL-2.0",
+      "uniqueComponents": 27,
+      "reviewClass": "reciprocal-source-terms-review"
+    },
+    {
+      "expression": "Python-2.0",
+      "uniqueComponents": 1,
+      "reviewClass": "standard-license-text-and-notice"
+    }
+  ],
+  "reviewSummary": {
+    "standard-license-text-and-notice": 819,
+    "reciprocal-source-terms-review": 41,
+    "license-choice-review": 5,
+    "attribution-review": 1
+  },
+  "reviewComponents": [
+    {
+      "purl": "pkg:npm/%40cloudflare%2Fkv-asset-handler@0.5.0",
+      "license": "MIT OR Apache-2.0",
+      "reviewClass": "license-choice-review",
+      "lockScope": "development-only",
+      "optional": false
+    },
+    {
+      "purl": "pkg:npm/%40cloudflare%2Funenv-preset@2.16.1",
+      "license": "MIT OR Apache-2.0",
+      "reviewClass": "license-choice-review",
+      "lockScope": "development-only",
+      "optional": false
+    },
+    {
+      "purl": "pkg:npm/%40cloudflare%2Fworkers-types@5.20260811.1",
+      "license": "MIT OR Apache-2.0",
+      "reviewClass": "license-choice-review",
+      "lockScope": "production-reachable",
+      "optional": false
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-darwin-arm64@1.3.3",
+      "license": "LGPL-3.0-or-later",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-darwin-x64@1.3.3",
+      "license": "LGPL-3.0-or-later",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-arm@1.3.3",
+      "license": "LGPL-3.0-or-later",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-arm64@1.3.3",
+      "license": "LGPL-3.0-or-later",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-ppc64@1.3.3",
+      "license": "LGPL-3.0-or-later",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-riscv64@1.3.3",
+      "license": "LGPL-3.0-or-later",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-s390x@1.3.3",
+      "license": "LGPL-3.0-or-later",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linux-x64@1.3.3",
+      "license": "LGPL-3.0-or-later",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linuxmusl-arm64@1.3.3",
+      "license": "LGPL-3.0-or-later",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-libvips-linuxmusl-x64@1.3.3",
+      "license": "LGPL-3.0-or-later",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-wasm32@0.35.4",
+      "license": "Apache-2.0 AND LGPL-3.0-or-later AND MIT",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-win32-arm64@0.35.4",
+      "license": "Apache-2.0 AND LGPL-3.0-or-later",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-win32-ia32@0.35.4",
+      "license": "Apache-2.0 AND LGPL-3.0-or-later",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40img%2Fsharp-win32-x64@0.35.4",
+      "license": "Apache-2.0 AND LGPL-3.0-or-later",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/%40resvg%2Fresvg-wasm@2.4.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": false
+    },
+    {
+      "purl": "pkg:npm/%40vercel%2Fog@0.8.6",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": false
+    },
+    {
+      "purl": "pkg:npm/caniuse-lite@1.0.30001810",
+      "license": "CC-BY-4.0",
+      "reviewClass": "attribution-review",
+      "lockScope": "production-reachable",
+      "optional": false
+    },
+    {
+      "purl": "pkg:npm/json-schema@0.4.0",
+      "license": "(AFL-2.1 OR BSD-3-Clause)",
+      "reviewClass": "license-choice-review",
+      "lockScope": "production-reachable",
+      "optional": false
+    },
+    {
+      "purl": "pkg:npm/lightningcss-android-arm64@1.31.1",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-android-arm64@1.33.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-darwin-arm64@1.31.1",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-darwin-arm64@1.33.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-darwin-x64@1.31.1",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-darwin-x64@1.33.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-freebsd-x64@1.31.1",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-freebsd-x64@1.33.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-linux-arm-gnueabihf@1.31.1",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-linux-arm-gnueabihf@1.33.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-linux-arm64-gnu@1.31.1",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-linux-arm64-gnu@1.33.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-linux-arm64-musl@1.31.1",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-linux-arm64-musl@1.33.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-linux-x64-gnu@1.31.1",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-linux-x64-gnu@1.33.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-linux-x64-musl@1.31.1",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-linux-x64-musl@1.33.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-win32-arm64-msvc@1.31.1",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-win32-arm64-msvc@1.33.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-win32-x64-msvc@1.31.1",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss-win32-x64-msvc@1.33.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": true
+    },
+    {
+      "purl": "pkg:npm/lightningcss@1.31.1",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "development-only",
+      "optional": false
+    },
+    {
+      "purl": "pkg:npm/lightningcss@1.33.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": false
+    },
+    {
+      "purl": "pkg:npm/satori@0.16.0",
+      "license": "MPL-2.0",
+      "reviewClass": "reciprocal-source-terms-review",
+      "lockScope": "production-reachable",
+      "optional": false
+    },
+    {
+      "purl": "pkg:npm/wrangler@4.122.0",
+      "license": "MIT OR Apache-2.0",
+      "reviewClass": "license-choice-review",
+      "lockScope": "development-only",
+      "optional": false
+    }
+  ],
+  "overallStatus": "NOT_CLEARED_PRODUCT_LICENSE_AND_DISTRIBUTION_SCOPE_REVIEW_PENDING",
+  "boundary": "The CycloneDX SBOM preserves component names and versions. This audit triages package-lock metadata only; it does not prove which packages are shipped in a browser bundle, satisfy license obligations, or authorize distribution.",
+  "reviewScopeSummary": {
+    "production-reachable-required": 7,
+    "production-reachable-optional": 11,
+    "development-only-required": 4,
+    "development-only-optional": 25
+  }
+}

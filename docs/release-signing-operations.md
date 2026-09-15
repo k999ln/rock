@@ -4,6 +4,8 @@
 
 Status: **AWAITING_SIGNING_SETUP**, not LCH03 PASS. These files prepare authentication of candidate bytes. They create no production key/environment, register no secret, publish no release and change no native runtime, image, packager or installer. Existing `preview.py` remains a separate compatibility/installation gate; inner OS keys remain public development fixtures even if an outer release is signed with a managed identity.
 
+2026-09-13: `npm run release:signing:check` で候補準備15件、owner legal approval 11件、保護署名29件、本人署名9件、合計64件の公開fixture回帰を一つにし、通常の `npm run verify` へ組み込んだ。試験数が減った場合も失敗する。本人署名入口は、署名前のmacOS volume readbackで暗号化APFSを確認できない保管先を鍵読取り前に拒否する。これは署名機構と拒否境界の回帰確認であり、production鍵、owner承認、隔離環境、実候補署名または署名後受入の実施証拠ではない。
+
 ## Current observed setup
 
 2026-09-10: `gh api repos/k999ln/rock/environments/rock-release-signing` returned HTTP404. No production identity or approval configuration was inferred. These example trust/policy files deliberately fail closed. GitHub Actions pins were resolved from official `actions/checkout`, `actions/upload-artifact`, `actions/download-artifact` v4 Git ref API responses at implementation time; see immutable refs in the workflow.

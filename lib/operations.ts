@@ -1,3 +1,5 @@
+import { defaultFund, distributeFund, validateFund } from './fund.ts';
+
 // No runtime binding here: the same store is exercised against SQLite in tests.
 export const JOB_TOOLS = [
   'coconala',
@@ -6,6 +8,14 @@ export const JOB_TOOLS = [
   'mr-delivery',
 ] as const;
 export type JobTool = (typeof JOB_TOOLS)[number];
+export const SKY_CONNECTION_TOOLS = [
+  ...JOB_TOOLS,
+  'fashion-brand-ops',
+  'rockstar-ledger',
+  'rockstar-legal-intake',
+  'rockstar-patent-assistant',
+] as const;
+export type SkyConnectionTool = (typeof SKY_CONNECTION_TOOLS)[number];
 export type JobState =
   | 'queued'
   | 'running'
@@ -46,6 +56,13 @@ export type BookRecord = {
   reversesId: string | null;
   createdAt: number;
 };
+export type SkyConnection = {
+  tool: SkyConnectionTool;
+  scope: 'execute';
+  consentVersion: string;
+  connectedAt: number;
+};
+const SKY_CONSENT_VERSION = '2026-09-12';
 export class OperationError extends Error {
   status: number;
   constructor(message: string, status = 400) {
@@ -90,6 +107,11 @@ function toolName(value: unknown): JobTool {
   if (!JOB_TOOLS.includes(value as JobTool))
     throw new OperationError('対応していないツールです。');
   return value as JobTool;
+}
+function skyConnectionToolName(value: unknown): SkyConnectionTool {
+  if (!SKY_CONNECTION_TOOLS.includes(value as SkyConnectionTool))
+    throw new OperationError('対応していないSkyアプリです。');
+  return value as SkyConnectionTool;
 }
 const columns =
   'id, user_id AS userId, tool, transport, sample, status, input_bytes AS inputBytes, output_bytes AS outputBytes, duration_ms AS durationMs, error_code AS errorCode, device_id AS deviceId, created_at AS createdAt, started_at AS startedAt, finished_at AS finishedAt, deadline';
@@ -338,6 +360,40 @@ export function operations(
     return { tool, enabled: v.enabled };
   }
 
+  async function listSkyConnections() {
+    return (
+      await statement(
+        `SELECT tool, scope, consent_version AS consentVersion, connected_at AS connectedAt
+         FROM sky_connections WHERE user_id = ? ORDER BY connected_at DESC, tool ASC`,
+        user,
+      ).all<SkyConnection>()
+    ).results;
+  }
+
+  async function connectSky(value: unknown) {
+    const v = object(value, ['tool']),
+      tool = skyConnectionToolName(v.tool),
+      connectedAt = clock();
+    await statement(
+      `INSERT INTO sky_connections (user_id, tool, scope, consent_version, connected_at)
+       VALUES (?, ?, 'execute', ?, ?)
+       ON CONFLICT(user_id, tool) DO UPDATE SET
+         scope = excluded.scope,
+         consent_version = excluded.consent_version,
+         connected_at = excluded.connected_at`,
+      user,
+      tool,
+      SKY_CONSENT_VERSION,
+      connectedAt,
+    ).run();
+    return {
+      tool,
+      scope: 'execute' as const,
+      consentVersion: SKY_CONSENT_VERSION,
+      connectedAt,
+    };
+  }
+
   async function device(value: unknown) {
     const v = object(value, ['id', 'name', 'action']),
       id = uuid(v.id),
@@ -551,6 +607,52 @@ export function operations(
       serverTime: now,
     };
   }
+
+  async function wallet() {
+    const [records, totals, fundRow] = await Promise.all([
+      statement(
+        `SELECT ${bookColumns}, EXISTS(SELECT 1 FROM book_records r WHERE r.reverses_id = book_records.id AND r.user_id = ?) AS reversed FROM book_records WHERE user_id = ? ORDER BY occurred_on DESC, created_at DESC, id DESC LIMIT 100`,
+        user,
+        user,
+      ).all<BookRecord & { reversed: number }>(),
+      statement(
+        "SELECT COALESCE(SUM(CASE WHEN kind = 'revenue' THEN amount ELSE 0 END),0) AS revenue, COALESCE(SUM(CASE WHEN kind = 'expense' THEN amount ELSE 0 END),0) AS expense FROM book_records WHERE user_id = ?",
+        user,
+      ).first<{ revenue: number; expense: number }>(),
+      statement(
+        'SELECT plan, updated_at AS updatedAt FROM fund_plans WHERE user_id = ?',
+        user,
+      ).first<{ plan: string; updatedAt: string }>(),
+    ]);
+    const revenue = totals?.revenue ?? 0;
+    const expense = totals?.expense ?? 0;
+    let fundPlan = defaultFund;
+    if (fundRow?.plan) {
+      try {
+        fundPlan = validateFund(JSON.parse(fundRow.plan) as unknown);
+      } catch {
+        fundPlan = defaultFund;
+      }
+    }
+    const fundProjection = distributeFund(fundPlan);
+    return {
+      currency: 'JPY' as const,
+      balance: revenue - expense,
+      revenue,
+      expense,
+      records: records.results,
+      persistence: 'd1' as const,
+      transfers: 'not-connected' as const,
+      fund: {
+        joined: fundPlan.joined,
+        status: 'simulation' as const,
+        commonRevenue: fundProjection.revenue,
+        distributable: fundProjection.distributable,
+        projectedShare: fundProjection.mine,
+        updatedAt: fundRow?.updatedAt ?? null,
+      },
+    };
+  }
   return {
     createJob,
     changeJob,
@@ -560,8 +662,11 @@ export function operations(
       return getJob(id);
     },
     control,
+    listSkyConnections,
+    connectSky,
     device,
     book,
+    wallet,
     overview,
   };
 }

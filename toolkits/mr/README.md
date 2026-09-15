@@ -1,6 +1,6 @@
 # Rock star PC接続とMCP
 
-初回にmacOSで `Rock star接続.command` を開き、サイトの「PC・MCP接続 → このPCを接続」を押してください。PC接続の出典整理にはmacOSでPython 3.13以上、LinuxでPython 3.10以上が必要です。管理者/rootではなく通常の利用者として起動してください。以降はツールの実行ボタンからPCが処理します。接続アプリを閉じると切断します。OSの自動起動は設定しません。
+初回にmacOSで `Rock star接続.command` を開き、サイトの「PC接続 → このPCを接続」を押してください。PC接続の出典整理にはmacOSでPython 3.13以上、LinuxでPython 3.10以上が必要です。管理者/rootではなく通常の利用者として起動してください。以降はツールの実行ボタンからPCが処理します。接続アプリを閉じると切断します。OSの自動起動は設定しません。
 
 Linuxはこのフォルダで `python3 mcp_server.py --http`。Windowsの出典整理MCP接続は未対応です。他の3ツールと直接CLIは従来のままです。MCPとしてCodexに登録する場合は次の設定を使い、パスを実際の展開先に変更します。
 

@@ -41,7 +41,7 @@ export async function handle(
   action: (store: ReturnType<typeof operations>) => Promise<unknown>,
 ) {
   try {
-    const user = requestUser(request);
+    const user = await requestUser(request);
     return json(await action(operations(database(), user)));
   } catch (error) {
     if (error instanceof OperationError)

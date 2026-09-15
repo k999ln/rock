@@ -2,7 +2,7 @@ import { database, requestUser, snapshot, apiError } from '@/lib/fund-store';
 import { validateFund } from '@/lib/fund';
 export async function GET(request: Request) {
   try {
-    return Response.json(await snapshot(requestUser(request)), {
+    return Response.json(await snapshot(await requestUser(request)), {
       headers: { 'Cache-Control': 'no-store' },
     });
   } catch (e) {
@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 }
 export async function PUT(request: Request) {
   try {
-    const user = requestUser(request);
+    const user = await requestUser(request);
     const raw = await request.text();
     if (raw.length > 10000) throw new Error('limit');
     const plan = validateFund(JSON.parse(raw));

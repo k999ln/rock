@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import previewData from '../data/rockstaros-preview.json';
+import releaseReadiness from '../data/release-readiness.json';
+import { releaseProgress } from '../lib/release-progress';
 import styles from '../app/rockstaros/preview.module.css';
 
 type DownloadConfiguration = {
@@ -12,6 +14,7 @@ type DownloadConfiguration = {
 };
 
 const download: DownloadConfiguration = previewData;
+const qemuRelease = releaseProgress(releaseReadiness, 'qemu-developer-preview');
 
 export function PreviewDownload() {
   return (
@@ -26,7 +29,8 @@ export function PreviewDownload() {
         <>
           <strong>最新候補を、公開前に確認しています。</strong>
           <p>
-            {download.reviewCandidate.version} は正式署名と配布準備を進めている候補です。
+            {download.reviewCandidate.version} は公開条件{qemuRelease.text}の候補です。
+            製品ライセンス、正式署名、署名後の同一候補受入、公開承認は未完了です。
             リポジトリを管理する方のGitHubアカウントで、配布候補の一覧からこの版を選んでください。
             一般向けの配布はまだ始めていません。
           </p>
