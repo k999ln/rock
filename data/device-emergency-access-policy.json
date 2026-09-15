@@ -1,0 +1,80 @@
+{
+  "schema": "dev.rock-device-emergency-access/1",
+  "product": "avocadoOS",
+  "status": "approved_design_not_implemented",
+  "purpose": "allow_a_single_authorized_operator_to_protect_and_recover_an_enrolled_device_during_an_incident",
+  "activation": {
+    "singleOperatorAllowed": true,
+    "userApprovalRequiredAtActivation": false,
+    "preEnrollmentRequired": true,
+    "hardwareBoundOperatorCredentialRequired": true,
+    "deviceAttestationRequired": true,
+    "signedCommandRequired": true,
+    "maximumSessionSeconds": 900,
+    "automaticExpiryRequired": true
+  },
+  "immediateCapabilities": [
+    "lock_device",
+    "enter_lost_mode",
+    "stop_sky_and_zema_execution",
+    "revoke_active_sessions",
+    "pause_ota_installation",
+    "quarantine_external_connections",
+    "collect_sanitized_diagnostics",
+    "open_limited_maintenance_session"
+  ],
+  "forbiddenCapabilities": [
+    "arbitrary_shell",
+    "root_shell",
+    "read_private_user_content",
+    "wallet_transfer_or_approval",
+    "extract_private_keys_or_credentials",
+    "activate_microphone_or_camera",
+    "install_unsigned_code",
+    "disable_verified_boot_or_selinux"
+  ],
+  "factoryReset": {
+    "singleOperatorMayRequest": true,
+    "minimumCancellationWindowSeconds": 1800,
+    "userVisibleWarningRequired": true,
+    "cancellableUntilDeviceAcknowledgement": true,
+    "offlineExecutionGuaranteed": false
+  },
+  "audit": {
+    "appendOnlyLocalAndRemoteRecordRequired": true,
+    "operatorIdentityRequired": true,
+    "reasonAndIncidentIdRequired": true,
+    "commandsAndResultsRecorded": true,
+    "userVisibleDuringSession": true,
+    "postIncidentNotificationRequired": true,
+    "operatorMayDeleteAuditRecord": false
+  },
+  "trustBoundary": {
+    "deviceEnforcesScopeExpiryAndSignature": true,
+    "managementServerAloneIsNotTrusted": true,
+    "operatorCredentialIsSeparateFromOtaAvbAndAppSigningKeys": true,
+    "llmMayActivateEmergencyAccess": false,
+    "toolOrMcpMayActivateEmergencyAccess": false
+  },
+  "implementation": {
+    "androidServiceImplemented": false,
+    "productionOperatorCredentialProvisioned": false,
+    "physicalDeviceVerified": false,
+    "penetrationTestCompleted": false,
+    "incidentRecoveryDrillCompleted": false
+  },
+  "threatClasses": [
+    "release_or_signing_key_compromise",
+    "build_and_supply_chain_compromise",
+    "ota_server_or_transport_impersonation",
+    "rollback_to_vulnerable_release",
+    "malicious_sky_tool_or_dependency",
+    "zema_or_llm_prompt_injection_and_tool_abuse",
+    "application_or_privilege_escalation",
+    "physical_usb_adb_or_bootloader_attack",
+    "account_backup_or_recovery_credential_theft",
+    "management_plane_or_operator_credential_compromise",
+    "unauthorized_wipe_or_denial_of_service",
+    "baseband_wifi_bluetooth_or_network_attack"
+  ]
+}

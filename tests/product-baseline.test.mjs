@@ -11,16 +11,26 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ44/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ45/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ44/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ45/);
   const fakeLocalAiBuild = structuredClone(source);
   fakeLocalAiBuild.localAiRuntime.apkBuilt = true;
   assert.throws(() => validateBaseline(fakeLocalAiBuild), /ローカルLLM/);
   const fakePlatformBuild = structuredClone(source);
   fakePlatformBuild.androidPlatformCore.aospImageBuilt = true;
   assert.throws(() => validateBaseline(fakePlatformBuild), /OS Platform Core/);
+  const noEmergencyOperator = structuredClone(source);
+  noEmergencyOperator.deviceEmergencyAccess.singleOperatorActivation = false;
+  assert.throws(() => validateBaseline(noEmergencyOperator), /緊急保護/);
+  const emergencyRootShell = structuredClone(source);
+  emergencyRootShell.deviceEmergencyAccess.rootShellAllowed = true;
+  assert.throws(() => validateBaseline(emergencyRootShell), /緊急保護/);
+  const fakeEmergencyImplementation = structuredClone(source);
+  fakeEmergencyImplementation.deviceEmergencyAccess.androidServiceImplemented =
+    true;
+  assert.throws(() => validateBaseline(fakeEmergencyImplementation), /緊急保護/);
   const missingTemplate = structuredClone(source);
   delete missingTemplate.acceptanceTemplate;
   assert.throws(() => validateBaseline(missingTemplate), /acceptanceTemplate/);

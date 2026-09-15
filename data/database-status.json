@@ -9,10 +9,10 @@
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
-    "total": 105,
-    "done": 75,
+    "total": 107,
+    "done": 76,
     "in_progress": 21,
-    "planned": 9,
+    "planned": 10,
     "blocked": 0,
     "milestone": "OS Platform Core v1の登録・承認・Wallet・更新境界",
     "nextAction": "最短ローンチ経路としてWEB01を優先する。現在のWeb/PWA・D1差分を一つの検証済みcommitへ固定してGitHubへ保存し、ownerが本人限定Sitesへの最新版同期を明示承認した後、同じSHAを配備して認証後の主要導線・API・security header・migrationをreadbackする。一般公開、QEMU配布、Android実機、本番金融は別gateのまま維持する。"

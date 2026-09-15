@@ -654,6 +654,29 @@
       ]
     },
     {
+      "id": "SYS12",
+      "title": "運営1名で開始できる緊急保護・限定保守accessの脅威モデルと端末側制御契約を固定",
+      "status": "done",
+      "dependsOn": ["SYS05"],
+      "evidence": [
+        "data/device-emergency-access-policy.json",
+        "docs/security-incident-response.md",
+        "docs/product-baseline.md",
+        "scripts/check-product-baseline.mjs",
+        "tests/product-baseline.test.mjs"
+      ]
+    },
+    {
+      "id": "SYS13",
+      "title": "緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験",
+      "status": "planned",
+      "dependsOn": ["SYS12", "OS11", "RLS02"],
+      "evidence": [
+        "data/device-emergency-access-policy.json",
+        "docs/security-incident-response.md"
+      ]
+    },
+    {
       "id": "R01",
       "title": "4参照元の採用判断と事業方針の固定",
       "status": "done",

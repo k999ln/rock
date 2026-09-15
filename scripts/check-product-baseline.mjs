@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 44 },
+    { length: 45 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ44の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ45の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -186,6 +186,70 @@ export function validateBaseline(
       `androidPlatformCore.${field}: repository内の証拠が必要です`,
     );
   }
+  requireValue(
+    data.primaryCapabilities?.includes(
+      'single-operator-emergency-device-protection',
+    ) &&
+      data.deviceEmergencyAccess?.status ===
+        'approved_design_not_implemented' &&
+      data.deviceEmergencyAccess?.singleOperatorActivation === true &&
+      data.deviceEmergencyAccess?.userApprovalRequiredAtActivation === false &&
+      data.deviceEmergencyAccess?.preEnrollmentRequired === true &&
+      data.deviceEmergencyAccess?.hardwareBoundOperatorCredentialRequired ===
+        true &&
+      data.deviceEmergencyAccess?.deviceSideEnforcement === true &&
+      data.deviceEmergencyAccess?.maximumSessionSeconds === 900 &&
+      data.deviceEmergencyAccess?.arbitraryShellAllowed === false &&
+      data.deviceEmergencyAccess?.rootShellAllowed === false &&
+      data.deviceEmergencyAccess?.privateUserContentAccessAllowed === false &&
+      data.deviceEmergencyAccess?.walletAccessAllowed === false &&
+      data.deviceEmergencyAccess?.keyExtractionAllowed === false &&
+      data.deviceEmergencyAccess?.microphoneOrCameraActivationAllowed ===
+        false &&
+      data.deviceEmergencyAccess?.llmActivationAllowed === false &&
+      data.deviceEmergencyAccess?.factoryResetCancellationWindowSeconds ===
+        1800 &&
+      data.deviceEmergencyAccess?.appendOnlyAuditRequired === true &&
+      data.deviceEmergencyAccess?.postIncidentUserNotificationRequired ===
+        true &&
+      data.deviceEmergencyAccess?.androidServiceImplemented === false &&
+      data.deviceEmergencyAccess?.productionCredentialProvisioned === false &&
+      data.deviceEmergencyAccess?.physicalDeviceVerified === false &&
+      data.deviceEmergencyAccess?.penetrationTestCompleted === false &&
+      data.deviceEmergencyAccess?.incidentRecoveryDrillCompleted === false,
+    '運営1名の緊急保護を端末側で限定し、常設root・私的内容・Wallet・鍵へのaccessを禁止してください',
+  );
+  for (const field of ['policy', 'record']) {
+    const path = data.deviceEmergencyAccess?.[field];
+    requireValue(
+      typeof path === 'string' && existsSync(resolve(root, path)),
+      `deviceEmergencyAccess.${field}: repository内の証拠が必要です`,
+    );
+  }
+  const emergencyPolicy = JSON.parse(
+    read(resolve(root, data.deviceEmergencyAccess.policy)),
+  );
+  requireValue(
+    emergencyPolicy.schema === 'dev.rock-device-emergency-access/1' &&
+      emergencyPolicy.status === 'approved_design_not_implemented' &&
+      emergencyPolicy.activation?.singleOperatorAllowed === true &&
+      emergencyPolicy.activation?.userApprovalRequiredAtActivation === false &&
+      emergencyPolicy.activation?.maximumSessionSeconds === 900 &&
+      emergencyPolicy.forbiddenCapabilities?.includes('arbitrary_shell') &&
+      emergencyPolicy.forbiddenCapabilities?.includes('root_shell') &&
+      emergencyPolicy.forbiddenCapabilities?.includes(
+        'read_private_user_content',
+      ) &&
+      emergencyPolicy.forbiddenCapabilities?.includes(
+        'wallet_transfer_or_approval',
+      ) &&
+      emergencyPolicy.trustBoundary?.deviceEnforcesScopeExpiryAndSignature ===
+        true &&
+      emergencyPolicy.trustBoundary?.llmMayActivateEmergencyAccess === false &&
+      emergencyPolicy.implementation?.androidServiceImplemented === false &&
+      emergencyPolicy.implementation?.physicalDeviceVerified === false,
+    '緊急access policyの単独初動・端末側強制・禁止権限・未実装境界を維持してください',
+  );
   requireValue(
     data.primaryCapabilities?.includes('csv-paid-work-pilot') &&
       data.csvBusinessPilot?.productId === 'rockstar-csv-cleanup' &&
@@ -693,6 +757,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ44、正式名avocadoOS／内部識別子dev.rock、avocadoOS 1.0とminor／major版管理、Android OS Platform Core、物理Android版ローカルLLM、avocadoOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ45、正式名avocadoOS／内部識別子dev.rock、avocadoOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、Android OS Platform Core、物理Android版ローカルLLM、avocadoOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

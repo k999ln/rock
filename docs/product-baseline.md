@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-15追記（v1.53）: 紛失・侵害・悪意あるTool等の緊急時は、事前登録された端末に対して認定運営担当者1名が本人のその場の承認なしで保護を開始できる。操作は端末ロック、紛失mode、Sky／Zema停止、session失効、OTA停止、通信隔離、sanitized診断、最大15分の限定保守sessionへ限定する。常設root／任意shell、私的内容閲覧、Wallet操作、秘密鍵取得、マイク／カメラ起動は禁止し、端末側の署名・scope・期限検査、hardware operator credential、追記監査、事後通知を必須にする。設計承認とAndroid service／実機受入を分離し、RQ45を追加する。
+
 2026-09-15追記（v1.52）: 現在の共通製品版を`avocadoOS 1.0`、公開前の段階表示を`avocadoOS 1.0 Developer Preview`で固定する。製品版は一つの正本から表示し、互換性を維持する機能改善は`1.5`のようなminor更新、Platform APIや保存形式の非互換変更はmigration・rollback受入を必須にして`2.0`のようなmajor更新とする。機種別Device Support Packageは対応Core版の範囲を宣言し、版番号だけで完成・公開可能とは扱わない。RQ44を追加する。
 
 2026-09-15追記（v1.51）: 利用者向けの正式製品名を`avocadoOS`へ変更する。変更しにくい内部識別子は既存の`dev.rock`で固定し、Android package／permission、署名境界、保存schema、`rockstaros-*`識別子、`@rockstaros` package scope、URL `/rockstaros`、既存artifact名を互換名として維持する。新しい画面、metadata、通知、診断出力の現在名は`avocadoOS`とする。`RockstarOS`は旧表示名として読み、過去の証拠と配布物は改変しない。RQ43を追加する。
@@ -444,7 +446,17 @@ Wallet基本台帳はowner別の追記型とし、既存行の書換えではな
 
 各機種のDevice Support Packageは対応するavocadoOS Coreの版範囲を宣言する。版番号の変更だけでDeveloper Preview、実機対応、production署名、本番金融、一般公開のgateを合格扱いにしない。
 
-## 1.0への8原則の適用（RQ01〜RQ44を維持）
+## RQ45 運営1名による緊急保護と限定保守アクセスを設ける
+
+紛失、盗難、侵害、悪意あるTool、偽更新等が疑われる緊急時は、事前登録された対象端末に対し、認定された運営担当者1名が本人のその場の承認を待たず保護を開始できる。操作は端末ロック、紛失mode、Sky／Zemaの実行停止、session失効、OTA停止、外部接続隔離、個人内容を除く診断、最大15分の限定保守sessionに絞る。
+
+運営serverだけを信用せず、端末側serviceがhardware-backed operator credentialによる署名、対象端末、nonce、scope、発行時刻、失効時刻を検証する。期限切れ、再送、別端末宛、未登録端末、許可外commandは拒否する。offline端末への即時実行は保証しない。
+
+緊急modeでも任意shell／root、写真・会話・原稿等の私的内容閲覧、Wallet送金・承認、秘密鍵・credential抽出、マイク／カメラ起動、未署名code導入、Verified Boot／SELinux無効化を許可しない。LLM、Sky Tool、MCP、外部Providerも緊急modeを開始できない。操作は端末側と運営側へ追記記録し、端末へ実行中表示、終了後に利用者へ通知する。初期化要求には最低30分の取消猶予を設ける。
+
+正本は[緊急アクセスとインシデント対応](security-incident-response.md)および`data/device-emergency-access-policy.json`とする。現在は設計承認段階であり、Android service、production operator credential、Pixel 10実機、侵入試験、復旧演習は未完了である。
+
+## 1.0への8原則の適用（RQ01〜RQ45を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
