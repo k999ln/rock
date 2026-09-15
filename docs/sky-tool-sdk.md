@@ -12,9 +12,9 @@ Sky Tool SDKそのものを自動化Toolの標準雛形として周知する。S
 
 ```mermaid
 flowchart LR
-  I[自動化できる既存関数] --> T[コード貼付またはファイル添付]
-  T --> D[端末内で用途・Schema・副作用・組込みコードを生成]
-  D --> R[PackageだけをSky所有者領域へ登録]
+  I[自動化できる既存関数] --> T[Sky SDKコードを追加]
+  T --> D[開発者キーを環境変数へ保存]
+  D --> R[起動時にPackageを生成・所有者登録]
   R --> P[開発者宣言済みとしてRegistry掲載]
   P --> V[Sky Sandbox・署名・接続検証]
   V --> A[検証済み・インストール可能]
@@ -23,7 +23,7 @@ flowchart LR
   U --> M[匿名利用集計を開発者へ返す]
 ```
 
-通常はPCの`/studio`を開き、コードを貼るかテキスト形式のソースファイルを1件添付して送る。名前、URL、Schema、権限を別フォームへ入力する必要はない。Rock Studioが入口関数と言語を推定し、Sky SDK組込みコードと`sky-tool-package/1`を生成して登録する。コード本文はブラウザ外へ送らない。
+通常はPCの`/studio`を開き、SDKの導入コマンドと組込みコードをコピーして既存ツールへ追加する。Rock Studioで一度だけ開発者キーを発行し、コードへ直書きせず`SKY_DEVELOPER_TOKEN`環境変数へ保存する。ツールを起動すると、SDKが同じ定義から`sky-tool-package/1`を生成し、所有者登録、宣言公開、MCP公開、匿名利用記録を行う。既存ツールのソース本文はSkyへ送らない。
 
 CLIから新規Toolを作る場合は、次のコマンドも利用できる。
 
@@ -45,9 +45,9 @@ node toolkits/sky-tool-sdk/bin/create-sky-tool.mjs init work/my-sky-tool \
 
 ## PCでの登録
 
-`/studio`は消費者向けSkyとは分けたチャット型の開発者画面である。貼り付けたコードまたは添付したソースファイルをブラウザ内で解析し、生成PackageだけをRegistry APIへ送る。コード本文やファイル本文は送信・保存しない。
+`/studio`は消費者向けSkyとは分けたSDK組込み用の開発者画面である。SDK配布物、コピー可能な組込みコード、開発者キー発行、登録後のSky確認を一画面にまとめる。ブラウザから既存ツールのコードやファイルを送らず、SDKが生成したPackageだけをRegistry APIへ送る。
 
-Rock Studioは次を自動生成する。
+Sky Tool SDKは同じTool定義から次を生成する。
 
 | 分類 | 生成する内容 |
 | --- | --- |

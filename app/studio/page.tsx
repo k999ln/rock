@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import RockStudio from '@/components/rock-studio';
 
 export const metadata: Metadata = {
-  title: 'Rock Studio — コードからSky Toolを作成',
+  title: 'Rock Studio — Skyコードをツールへ追加',
   description:
-    'コードを貼るかファイルを添付するだけで、Sky Tool Packageを生成してRegistryへ追加します。',
+    'Sky SDKコードを既存ツールへ追加し、自動登録、MCP公開、匿名利用記録を有効にします。',
 };
 
 export default function RockStudioPage() {

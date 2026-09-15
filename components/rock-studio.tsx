@@ -1,236 +1,185 @@
 'use client';
 
-import { useRef, useState, type ChangeEvent, type SyntheticEvent } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import {
+  Activity,
   ArrowLeft,
-  ArrowUp,
   Check,
-  ChevronDown,
   Clipboard,
   Code2,
-  FileCode2,
+  ExternalLink,
+  KeyRound,
   LoaderCircle,
-  Paperclip,
-  RotateCcw,
+  PackagePlus,
   ShieldCheck,
-  Sparkles,
 } from 'lucide-react';
-import {
-  analyzeSkyCodeIntake,
-  SKY_CODE_MAX_BYTES,
-  type SkyCodeIntake,
-} from '@/lib/sky-code-intake';
 
-type Attachment = { name: string; size: number; code: string };
-type RegistrationState = 'registered' | 'already_registered' | 'package_ready';
-type Result = { intake: SkyCodeIntake; state: RegistrationState; note: string };
+const skyOrigin = 'https://rockstaros-kaiya.noellesugar1.chatgpt.site';
+const installCommand = `npm install ${skyOrigin}/toolkits/rockstaros-sky-tool-sdk-0.1.0.tgz`;
+const integrationCode = `import { createSkyToolApp } from '@rockstaros/sky-tool-sdk';
+import { run } from './your-tool.js'; // あなたの既存処理
 
-const acceptedFiles =
-  '.js,.jsx,.mjs,.cjs,.ts,.tsx,.py,.rb,.php,.go,.rs,.java,.kt,.swift,.json,.txt';
+const sky = createSkyToolApp({
+  skyUrl: '${skyOrigin}',
+  developerToken: process.env.SKY_DEVELOPER_TOKEN,
+  developer: {
+    id: 'your-developer-id',
+    name: 'Your name',
+    supportUrl: 'https://github.com/your-name'
+  },
+  app: {
+    id: 'com.your-name.your-tool',
+    name: 'Your Tool',
+    version: '0.1.0',
+    sourceUrl: 'https://github.com/your-name/your-tool',
+    license: 'MIT',
+    publicMcpUrl: 'https://your-tool.example.com/mcp'
+  },
+  autoPublish: true
+});
 
-function kilobytes(bytes: number) {
-  return `${Math.max(1, Math.ceil(bytes / 1024))} KB`;
-}
+sky.tool({
+  name: 'run',
+  title: 'Your Tool',
+  description: 'このツールが完了する作業を一文で書く',
+  inputSchema: {
+    type: 'object',
+    additionalProperties: false,
+    properties: { input: {} }
+  },
+  handler: run
+});
+
+await sky.start({ port: 8787 });`;
+
+type DeveloperTokenResponse = {
+  token?: { token?: string };
+  error?: string;
+};
 
 export default function RockStudio() {
-  const fileInput = useRef<HTMLInputElement>(null);
-  const [code, setCode] = useState('');
-  const [attachment, setAttachment] = useState<Attachment | null>(null);
-  const [result, setResult] = useState<Result | null>(null);
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState('');
-  const [copied, setCopied] = useState(false);
-  const source = attachment?.code ?? code;
+  const [copied, setCopied] = useState('');
+  const [developerToken, setDeveloperToken] = useState('');
+  const [tokenPending, setTokenPending] = useState(false);
+  const [tokenError, setTokenError] = useState('');
 
-  async function selectFile(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    setError('');
-    setResult(null);
-    if (!file) return;
-    if (file.size > SKY_CODE_MAX_BYTES) {
-      setError('ファイルは512 KB以下にしてください。');
-      event.target.value = '';
-      return;
-    }
-    try {
-      const fileCode = await file.text();
-      setAttachment({ name: file.name, size: file.size, code: fileCode });
-      setCode('');
-    } catch {
-      setError('ファイルを読み込めませんでした。テキスト形式のコードを選んでください。');
-      event.target.value = '';
-    }
+  async function copy(name: string, value: string) {
+    await navigator.clipboard.writeText(value);
+    setCopied(name);
+    window.setTimeout(() => setCopied(''), 1600);
   }
 
-  function removeAttachment() {
-    setAttachment(null);
-    if (fileInput.current) fileInput.current.value = '';
-  }
-
-  async function submit(event: SyntheticEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!source.trim() || pending) return;
-    setPending(true);
-    setError('');
-    setResult(null);
+  async function issueDeveloperToken() {
+    if (tokenPending) return;
+    setTokenPending(true);
+    setTokenError('');
     try {
-      const intake = await analyzeSkyCodeIntake({
-        code: source,
-        fileName: attachment?.name,
-      });
-      let state: RegistrationState = 'package_ready';
-      let note = 'Sky Packageを生成しました。サインイン後、自動でRegistryへ追加できます。';
-      const response = await fetch('/api/sky/tool-packages', {
+      const response = await fetch('/api/sky/developer-tokens', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          manifest: intake.manifest,
-          confirmations: { rights: true, pricing: true, sideEffects: true, tests: true },
-        }),
+        body: JSON.stringify({ label: 'Rock Studio SDK' }),
       });
-      if (response.ok) {
-        state = 'registered';
-        note = 'Sky Registryへの追加が完了しました。Fundから利用候補にできます。';
-      } else if (response.status === 409) {
-        state = 'already_registered';
-        note = '同じToolとバージョンは登録済みです。既存のPackageを利用できます。';
-      } else {
-        const body = (await response.json().catch(() => ({}))) as { error?: string };
-        note = body.error || note;
-      }
-      setResult({ intake, state, note });
+      const body = (await response.json().catch(() => ({}))) as DeveloperTokenResponse;
+      if (!response.ok || !body.token?.token)
+        throw new Error(body.error || '開発者キーを発行できませんでした。');
+      setDeveloperToken(body.token.token);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'コードを解析できませんでした。');
+      setTokenError(
+        cause instanceof Error ? cause.message : '開発者キーを発行できませんでした。',
+      );
     } finally {
-      setPending(false);
+      setTokenPending(false);
     }
   }
 
-  async function copyIntegrationCode() {
-    if (!result) return;
-    await navigator.clipboard.writeText(result.intake.integrationCode);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1600);
-  }
-
-  function reset() {
-    setCode('');
-    setAttachment(null);
-    setResult(null);
-    setError('');
-    if (fileInput.current) fileInput.current.value = '';
-  }
+  const environmentLine = developerToken
+    ? `SKY_DEVELOPER_TOKEN=${developerToken}`
+    : 'SKY_DEVELOPER_TOKEN=発行したキー';
 
   return (
-    <main className="studio-chat-shell">
+    <main className="studio-chat-shell studio-code-first">
       <header className="studio-chat-header">
         <div className="studio-chat-brand">
           <Link href="/sky" aria-label="Skyへ戻る"><ArrowLeft size={17} /></Link>
           <span className="studio-chat-logo"><Code2 size={18} /></span>
-          <div><strong>Rock Studio</strong><span>Sky Tool Builder</span></div>
+          <div><strong>Rock Studio</strong><span>Sky Tool SDK</span></div>
         </div>
-        <div className="studio-chat-private"><ShieldCheck size={15} />コードは端末内で解析</div>
+        <div className="studio-chat-private"><ShieldCheck size={15} />ソースコードの送信なし</div>
       </header>
 
-      <section className="studio-chat-workspace" aria-label="Sky Tool作成チャット">
-        <div className="studio-chat-scroll" aria-live="polite">
-          <div className="studio-chat-intro">
-            <span><Sparkles size={18} /></span>
-            <div>
-              <p className="studio-chat-kicker">SKY DEVELOPER INTAKE</p>
-              <h1>自動化したコードを、<br />そのまま貼ってください。</h1>
-              <p>Tool名、用途、Schema、権限、Adapter、テストをSkyが組み立てます。細かい登録フォームは必要ありません。</p>
-            </div>
+      <section className="studio-code-workspace" aria-label="Sky SDK組み込み">
+        <div className="studio-code-main">
+          <div className="studio-code-intro">
+            <p className="studio-chat-kicker">ADD SKY TO YOUR TOOL</p>
+            <h1>このコードを、<br />あなたのツールに付ける。</h1>
+            <p>起動するとSkyへ自動登録され、MCPから利用できる状態になります。入力や出力の本文はSkyへ送らず、利用回数と成否だけを記録します。</p>
           </div>
 
-          {(attachment || (pending && code)) && (
-            <div className="studio-message studio-message-user">
-              <div className="studio-message-label">YOU</div>
-              {attachment ? (
-                <div className="studio-upload-card">
-                  <FileCode2 size={20} />
-                  <div><strong>{attachment.name}</strong><span>{kilobytes(attachment.size)}</span></div>
-                </div>
-              ) : (
-                <pre>{code.slice(0, 520)}{code.length > 520 ? '\n…' : ''}</pre>
-              )}
-            </div>
-          )}
+          <div className="studio-install-row">
+            <div><span>01</span><div><strong>SDKを追加</strong><small>プロジェクトのTerminalで1回実行</small></div></div>
+            <button type="button" onClick={() => copy('install', installCommand)}>
+              {copied === 'install' ? <Check size={15} /> : <Clipboard size={15} />}
+              {copied === 'install' ? 'コピー済み' : 'コピー'}
+            </button>
+            <code>{installCommand}</code>
+          </div>
 
-          {pending && (
-            <div className="studio-message studio-message-sky studio-thinking">
-              <span className="studio-avatar"><Sparkles size={16} /></span>
-              <div><strong>SkyがToolを組み立てています</strong><span><LoaderCircle size={14} />入口・Schema・副作用を解析中</span></div>
+          <div className="studio-primary-code">
+            <div className="studio-primary-code-head">
+              <div><span>02</span><div><strong>既存コードへ追加</strong><small>your- の箇所と説明だけ変更</small></div></div>
+              <button type="button" onClick={() => copy('code', integrationCode)}>
+                {copied === 'code' ? <Check size={15} /> : <Clipboard size={15} />}
+                {copied === 'code' ? 'コピー済み' : 'コードをコピー'}
+              </button>
             </div>
-          )}
-
-          {result && (
-            <div className="studio-message studio-message-sky">
-              <span className="studio-avatar"><Sparkles size={16} /></span>
-              <div className="studio-result">
-                <div className="studio-result-head">
-                  <div>
-                    <span className={`studio-state studio-state-${result.state}`}><Check size={13} />{result.state === 'registered' ? '登録完了' : result.state === 'already_registered' ? '登録済み' : 'Package完成'}</span>
-                    <h2>{result.intake.manifest.name}</h2>
-                    <code>{result.intake.manifest.id}@{result.intake.manifest.version}</code>
-                  </div>
-                  <button type="button" className="studio-reset" onClick={reset}><RotateCcw size={14} />別のコード</button>
-                </div>
-                <p className="studio-result-note">{result.note}</p>
-                <div className="studio-findings">
-                  {result.intake.findings.map((finding) => <span key={finding}><Check size={12} />{finding}</span>)}
-                </div>
-                <div className="studio-generated-grid">
-                  <div><small>実行場所</small><strong>{result.intake.manifest.capabilities.executionTargets.join(' / ')}</strong></div>
-                  <div><small>通信</small><strong>{result.intake.manifest.capabilities.connectivity}</strong></div>
-                  <div><small>確認</small><strong>{result.intake.manifest.execution.confirmation}</strong></div>
-                  <div><small>Fund分類</small><strong>{result.intake.manifest.fund.categories.join(' / ')}</strong></div>
-                </div>
-                <details className="studio-details">
-                  <summary>追加したSkyコードを確認 <ChevronDown size={15} /></summary>
-                  <div className="studio-code-block">
-                    <button type="button" onClick={copyIntegrationCode}>{copied ? <Check size={14} /> : <Clipboard size={14} />}{copied ? 'コピー済み' : 'コピー'}</button>
-                    <pre>{result.intake.integrationCode}</pre>
-                  </div>
-                </details>
-                <details className="studio-details">
-                  <summary>生成されたTool Packageを確認 <ChevronDown size={15} /></summary>
-                  <div className="studio-code-block"><pre>{JSON.stringify(result.intake.manifest, null, 2)}</pre></div>
-                </details>
-              </div>
-            </div>
-          )}
+            <pre>{integrationCode}</pre>
+          </div>
         </div>
 
-        {!result && (
-          <form className="studio-composer" onSubmit={submit}>
-            {attachment && (
-              <div className="studio-attachment">
-                <FileCode2 size={16} /><span>{attachment.name}</span><small>{kilobytes(attachment.size)}</small>
-                <button type="button" onClick={removeAttachment} aria-label="添付を外す">×</button>
+        <aside className="studio-code-side">
+          <div className="studio-setup-card studio-key-card">
+            <div className="studio-setup-number">03</div>
+            <span className="studio-setup-icon"><KeyRound size={18} /></span>
+            <h2>開発者キー</h2>
+            <p>キーは登録先をあなたのアカウントへ結び付けます。コードへ直書きせず、環境変数へ保存します。</p>
+            {developerToken ? (
+              <div className="studio-token-result">
+                <code>{environmentLine}</code>
+                <button type="button" onClick={() => copy('token', environmentLine)}>
+                  {copied === 'token' ? <Check size={15} /> : <Clipboard size={15} />}
+                  {copied === 'token' ? 'コピー済み' : '.envへコピー'}
+                </button>
+                <small>このキーはこの画面を離れると再表示できません。</small>
               </div>
+            ) : (
+              <button className="studio-key-button" type="button" onClick={issueDeveloperToken} disabled={tokenPending}>
+                {tokenPending ? <LoaderCircle className="studio-spin" size={16} /> : <KeyRound size={16} />}
+                {tokenPending ? '発行中…' : '開発者キーを発行'}
+              </button>
             )}
-            <textarea
-              value={code}
-              onChange={(event) => { setCode(event.target.value); setError(''); }}
-              disabled={Boolean(attachment) || pending}
-              placeholder={attachment ? 'ファイルを添付しました' : 'ここにコードを貼り付ける…'}
-              aria-label="自動化コード"
-            />
-            <div className="studio-composer-actions">
-              <div>
-                <input ref={fileInput} type="file" accept={acceptedFiles} onChange={selectFile} id="studio-file" />
-                <button type="button" onClick={() => fileInput.current?.click()} disabled={pending}><Paperclip size={17} />ファイル</button>
-                <span>最大 512 KB</span>
-              </div>
-              <button className="studio-send" type="submit" disabled={!source.trim() || pending} aria-label="Skyへ送る"><ArrowUp size={18} /></button>
-            </div>
-            {error && <p className="studio-chat-error">{error}</p>}
-          </form>
-        )}
+            {tokenError && <p className="studio-chat-error">{tokenError}</p>}
+          </div>
+
+          <div className="studio-setup-card">
+            <div className="studio-setup-number">04</div>
+            <span className="studio-setup-icon"><PackagePlus size={18} /></span>
+            <h2>起動すれば登録完了</h2>
+            <ul>
+              <li><Check size={14} />Tool Packageを自動生成</li>
+              <li><Check size={14} />Sky Registryへ所有者登録</li>
+              <li><Check size={14} />MCPの検索・実行に対応</li>
+              <li><Check size={14} />Fund候補と利用実績を記録</li>
+            </ul>
+            <Link href="/sky"><Activity size={15} />登録後のSkyを確認<ExternalLink size={13} /></Link>
+          </div>
+
+          <div className="studio-safety-note">
+            <ShieldCheck size={17} />
+            <p><strong>外部送信や決済がある場合</strong><span>sideEffectsとauthorizeを追加し、実行ごとの確認を必須にします。未確認の金融操作は実行されません。</span></p>
+          </div>
+        </aside>
       </section>
-      <p className="studio-chat-footnote">コード本文はRegistryへ送りません。ブラウザ内でPackage化し、必要な情報だけを登録します。</p>
     </main>
   );
 }
