@@ -1,5 +1,7 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-15追記（v1.37）: Rock Studioの開発者入力を、コード貼付またはソースファイル添付だけのチャット形式へ固定した。コード本文はブラウザ内だけで解析し、Sky SDK組込み例、Tool Package、安全契約、Fund分類を自動生成する。Registryへ送るのはPackageだけとし、登録失敗を成功表示しない。RQ37を追加する。
+
 2026-09-13追記（v1.36）: 利用者は、既存フロントへWallet backendを接続し、本番環境で実際に使えるところまで進めるよう明示。RQ36を追加する。最初の実受取レールはBase MainnetのUSDCとし、外部EIP-1193 WalletでRockの受取アドレスを所有署名する。RockstarOSは秘密鍵、seed phrase、包括的送金権限、利用者資産を保管しない。署名済みEarning Receiptから既存ルールで確定した `SKY_SERVICE_FEE` の回収指図だけを作り、Base上の公式USDC contract、exactな受取先・金額、finalized blockを照合して着金確定する。本番配備は実施対象だが、owner Walletの登録と最初の実transferは本人署名・本人確認が完了するまで実施済みにしない。本人限定Siteを一般公開する前にowner受取先を登録する。
 
 2026-09-13追記（v1.35）: 利用者は、外部Wallet会社待ちではRock自身の回収ができないため、最初は自社側のWalletで進める方針を明示。RQ35を追加する。最初のProviderを `org.rockstar.settlement-wallet` とし、署名検証済み収益から既存ルールで確定したRock利用料の受取・報告を担う。共通Provider Adapterを迂回せず、外部事業者の追加・差替え余地を維持する。初期capabilityは `collect_platform_fee` と `reporting` のsandboxだけで、利用者資産の包括保管、任意送金、交換、ファンド運用、LIVE回収は有効化しない。
@@ -344,7 +346,13 @@ Billing Workerは、署名検証済みEarning Receiptへ配分済みの `SKY_SER
 
 このレールはRockに帰属する利用料の受取に限定し、利用者資産のcustody、利用者へのpayout、任意入金、交換、運用、税務判定を追加しない。外部Wallet／ファンド会社はRQ34のProvider Adapterとして別途接続できる。実装と本番配備が合格しても、owner自身のWallet署名と最初の実transferが未実施なら、実Wallet登録・実着金の実績とは表示しない。詳細は [Rock Wallet本番受取レール](rock-wallet-production-rail-20260913.md) を参照する。
 
-## 1.0への8原則の適用（RQ01〜RQ36を維持）
+## RQ37 Rock StudioはコードかファイルだけでTool化する
+
+PCのRock Studioはチャット形式にし、開発者が行う必須操作を「コードを貼る」または「ソースファイルを1件添付して送る」だけにする。Tool名、用途、LLMが使う場面・禁止場面、入出力Schema、Adapter、権限、online/offline、実行先、副作用、料金、開発者受取人、timeout、再試行、成功確認、テスト、Fund分類はコードから自動生成する。GitHub URLや開発者IDなどを最初に埋める手入力フォームへ戻さない。
+
+コード解析とSHA-256計算はブラウザ内で行い、Registry APIには生成した`sky-tool-package/1`だけを送る。貼り付けたコード本文や添付ファイル本文は送信・保存しない。危険な外部変更・金融操作は推定結果に応じて実行ごとの確認と再試行禁止を設定し、生成したSky SDK組込みコードとPackageを結果画面で確認できるようにする。自動生成はSandbox検証や作者署名の代替ではなく、登録不能時に登録完了と表示しない。
+
+## 1.0への8原則の適用（RQ01〜RQ37を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -364,6 +372,8 @@ Billing Workerは、署名検証済みEarning Receiptへ配分済みの `SKY_SER
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-15 v1.37: 利用者の「フロントはチャット形式でコードかファイルを貼ったら、あとはSky側でコードを追加して登録する」「サイト作成」によりRQ37を追加。Rock Studioをコード貼付・単一ファイル添付だけの画面にし、端末内解析からSDK組込み例、Package、安全契約、Fund分類、所有者登録までを自動化する。コード本文はRegistryへ送らず、登録失敗を成功表示せず、検証済み公開との境界を維持する。
 
 2026-09-13 v1.36: 本番Wallet利用の明示指示をRQ36へ追加。Base Mainnet USDC、外部Walletの所有署名、D1回収指図、exact transferとfinalized blockの照合を採用する。秘密鍵・利用者資産・包括的送金権限は保管せず、owner署名と最初の実transferは未実施のまま先取りしない。
 

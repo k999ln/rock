@@ -46,7 +46,7 @@ function label(value: unknown) {
 
 export async function GET(request: Request) {
   try {
-    const userId = requestUser(request);
+    const userId = await requestUser(request);
     return json({ tokens: await skyDeveloperTokenStore(database()).list(userId) });
   } catch (error) {
     return failure(error);
@@ -55,7 +55,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const userId = requestUser(request);
+    const userId = await requestUser(request);
     const data = await input(request);
     const token = await skyDeveloperTokenStore(database()).create(
       userId,
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const userId = requestUser(request);
+    const userId = await requestUser(request);
     const data = await input(request);
     if (typeof data.id !== 'string' || !/^[0-9a-f-]{36}$/i.test(data.id))
       throw new SkySubmissionError('開発者キーIDを確認してください。');

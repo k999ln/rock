@@ -353,3 +353,60 @@ export const marketplaceEvents = sqliteTable(
     index('idx_marketplace_events_subject').on(table.subjectId, table.createdAt),
   ],
 );
+
+export const skyDeveloperTokens = sqliteTable(
+  'sky_developer_tokens',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    label: text('label').notNull(),
+    tokenSha256: text('token_sha256').notNull(),
+    createdAt: integer('created_at').notNull(),
+    lastUsedAt: integer('last_used_at'),
+    revokedAt: integer('revoked_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_developer_token_hash').on(table.tokenSha256),
+    index('idx_sky_developer_token_owner').on(table.userId, table.createdAt),
+  ],
+);
+
+export const skyToolPackages = sqliteTable(
+  'sky_tool_packages',
+  {
+    packageKey: text('package_key').primaryKey(),
+    toolId: text('tool_id').notNull(),
+    version: text('version').notNull(),
+    userId: text('user_id').notNull(),
+    manifest: text('manifest').notNull(),
+    manifestSha256: text('manifest_sha256').notNull(),
+    status: text('status').notNull().default('submitted'),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+    publishedAt: integer('published_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_tool_id_version').on(table.toolId, table.version),
+    index('idx_sky_tool_owner_created').on(table.userId, table.createdAt),
+    index('idx_sky_tool_registry_published').on(table.status, table.publishedAt),
+  ],
+);
+
+export const skyToolEvents = sqliteTable(
+  'sky_tool_events',
+  {
+    id: text('id').primaryKey(),
+    packageKey: text('package_key').notNull(),
+    ownerUserId: text('owner_user_id').notNull(),
+    toolName: text('tool_name').notNull(),
+    installationId: text('installation_id').notNull(),
+    outcome: text('outcome').notNull(),
+    durationMs: integer('duration_ms').notNull(),
+    occurredAt: text('occurred_at').notNull(),
+    createdAt: integer('created_at').notNull(),
+  },
+  (table) => [
+    index('idx_sky_tool_events_owner_time').on(table.ownerUserId, table.occurredAt),
+    index('idx_sky_tool_events_package_time').on(table.packageKey, table.occurredAt),
+  ],
+);

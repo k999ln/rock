@@ -88,7 +88,7 @@ for (const marker of ['Producerモード', 'プロデュース開始', 'ワン�
 
 const fashionClient = read('lib/fashion-mcp-client.ts');
 for (const marker of [
-  'FASHION_MCP_TOOL_COUNT = 40',
+  'FASHION_MCP_TOOL_COUNT = 41',
   "'initialize'",
   "'notifications/initialized'",
   "'tools/list'",

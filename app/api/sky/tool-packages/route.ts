@@ -33,7 +33,7 @@ export async function GET(request: Request) {
   try {
     return json({
       packages: await skyToolPackageStore(database()).listOwner(
-        requestUser(request),
+        await requestUser(request),
       ),
     });
   } catch (error) {

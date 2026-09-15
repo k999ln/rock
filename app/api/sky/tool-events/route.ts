@@ -34,7 +34,7 @@ async function body(request: Request) {
 export async function GET(request: Request) {
   try {
     return json({
-      usage: await skyToolEventStore(database()).summary(requestUser(request)),
+      usage: await skyToolEventStore(database()).summary(await requestUser(request)),
     });
   } catch (error) {
     return failure(error);
@@ -52,4 +52,3 @@ export async function POST(request: Request) {
     return failure(error);
   }
 }
-

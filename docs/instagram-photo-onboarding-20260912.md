@@ -25,4 +25,4 @@
 - username単位の重複防止と同一画像の冪等再取込
 - 候補を`social_accounts`へ自動登録しないこと
 - Meta接続済みreadbackとの一致でだけ`oauth_matched`へ進むこと
-- SkyのMCP接続が40操作を照合し、候補一覧を取得できること
+- SkyのMCP接続が41操作を照合し、候補一覧を取得できること

@@ -34,7 +34,7 @@ flowchart LR
 | --- | --- | --- | --- |
 | RockstarOS Markets | Webブラウザ / 公開市場API / PC offline backtest | 公開ライブ確率・出来高・流動性を表示し、固定commitのPolymarket bot backtest reportを検証 | 市場は読取専用、botはbacktest専用。秘密鍵・LIVE切替・注文・Wallet移動は無効。simulation PnLを収益にしない |
 | メルカリ収益スターター | Webブラウザ / Shops Connector | 出品原稿、実費後の見込み利益、承認、出品・取引完了の進捗を管理 | 個人版は本人が公式画面で操作。Shopsの自動連携と検証済み売上は固定IP Connector・契約・Token接続前は無効 |
-| Instagram運用・受注型ブランド管理 | PC / MCP | 写真の候補取込から広告・接客・受注・制作・改善を40操作で管理 | 初期値はmock。Meta確認前の候補とAutopilotは外部作用を直接実行せず、実Provider・実投稿・実請求は未接続 |
+| Instagram運用・受注型ブランド管理 | PC / MCP | 写真の候補取込から広告・接客・受注・制作・改善を41操作で管理 | 初期値はmock。Meta確認前の候補とAutopilotは外部作用を直接実行せず、実Provider・実投稿・実請求は未接続 |
 | サブスク顧問 | PC / MCP | 契約、更新日、支払い失敗、通貨別月額をローカル台帳から確認 | 読み取り専用。解約、支払い、税務申告は自動実行しない |
 | ココナラ案件チェック | Webブラウザ | 依頼文と提案文の条件の食い違いを確認 | 自動応募・返信・入金確認はしない |
 | 記事の無料版メーカー | Webブラウザ | 完全版原稿から無料紹介用の文章を作る | 自動執筆・投稿・販売はしない |

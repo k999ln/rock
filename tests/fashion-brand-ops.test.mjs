@@ -80,7 +80,7 @@ void test('the Sky manifest binds the MCP runtime and every dangerous effect to 
 });
 
 void test('MCP discovery exposes the complete fashion workflow and receipts bind the manifest digest', () => {
-  assert.equal(TOOL_DEFINITIONS.length, 40);
+  assert.equal(TOOL_DEFINITIONS.length, 41);
   assert.ok(
     TOOL_DEFINITIONS.some((tool) => tool.name === 'fashion.payment.status.get'),
   );

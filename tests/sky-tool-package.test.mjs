@@ -102,7 +102,7 @@ void test('owner registration is immutable and declared publication is visible b
   t.after(() => worker.dispose());
   const db = await worker.getD1Database('DB');
   const migration = readFileSync(
-    new URL('../drizzle/0006_sticky_beast.sql', import.meta.url),
+    new URL('../drizzle/0010_gray_fat_cobra.sql', import.meta.url),
     'utf8',
   );
   for (const statement of migration

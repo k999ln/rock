@@ -154,8 +154,8 @@ function statusFor(tool: Automation, fashionConnected = false) {
     };
   if (tool.integration === 'fashion-brand-ops')
     return {
-      label: fashionConnected ? '接続済み' : '1クリック接続',
-      detail: fashionConnected ? '40操作を利用可能' : 'PCのMCPへ接続',
+      label: fashionConnected ? '接続済み' : 'PCなしのブラウザ簡易版',
+      detail: fashionConnected ? '41操作を利用可能' : '必要ならPCのMCPへ接続',
       className: fashionConnected ? 'is-ready' : 'is-connect',
     };
   if (tool.runner === 'subscription-ledger')
@@ -657,7 +657,7 @@ export default function SkyWorkspace({
               ) : selected.integration === 'fashion-brand-ops' ? (
                 <>
                   <DialogDescription className="rock-dialog-description">
-                    PCの接続アプリへ1クリックで接続し、40操作をSkyから利用できます。
+                    PCの接続アプリへ1クリックで接続し、41操作をSkyから利用できます。
                   </DialogDescription>
                   <FashionBrandOpsRunner />
                 </>
