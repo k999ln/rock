@@ -135,6 +135,35 @@ void test('owner-private delivery stays safe while latest source sync remains bl
   );
 });
 
+void test('owner approval and owner-workspace access remain separate launch gates', () => {
+  assert.deepEqual(
+    validateOwnerPrivateSitesAudit({
+      audit: sitesAudit,
+      hosting: sitesHosting,
+      readiness,
+      webSecurityPolicy,
+    }),
+    {
+      status: 'OUTDATED',
+      version: 29,
+      sourceCommit: '25cf0fa2cae303475a9bf54280889a1192be455e',
+    },
+  );
+
+  const missingObservation = structuredClone(sitesAudit);
+  delete missingObservation.access.evidence;
+  assert.throws(
+    () =>
+      validateOwnerPrivateSitesAudit({
+        audit: missingObservation,
+        hosting: sitesHosting,
+        readiness,
+        webSecurityPolicy,
+      }),
+    /承認済みaccess blockerの観測証拠/,
+  );
+});
+
 void test('owner-private delivery rejects public or external access readback', () => {
   const changed = structuredClone(sitesAudit);
   changed.site.externalVisitors = 1;
