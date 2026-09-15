@@ -1,5 +1,5 @@
 {
-  "version": "1.37",
+  "version": "1.38",
   "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -11,7 +11,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ36 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ38 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -57,6 +57,15 @@
       "allowlisted_device_reset",
       "release_readiness"
     ]
+  },
+  "launchPage": {
+    "route": "/rockstaros",
+    "primaryAction": "install_os",
+    "publicDownloadFallback": "/rockstaros/guide#install",
+    "developerCode": "sky_tool_sdk_minimal_node_example",
+    "studioUrl": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio",
+    "visualDirection": "minimal_black_acid_green",
+    "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable"
   },
   "systemMaintenance": {
     "route": "/settings/system",
@@ -196,7 +205,8 @@
     "RQ34",
     "RQ35",
     "RQ36",
-    "RQ37"
+    "RQ37",
+    "RQ38"
   ],
   "primaryCapabilities": [
     "sky-automation-control",

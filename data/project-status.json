@@ -1,6 +1,6 @@
 {
   "updatedAt": "2026-09-15",
-  "milestone": "Rock Studioをコード貼付・ファイル添付だけのSky Tool作成チャットへ統合",
+  "milestone": "Developer Preview紹介ページをインストールとSky開発者コード中心へ簡素化",
   "nextAction": "ownerが本番Wallet画面で外部Walletの所有署名を行い、最初の実Earning Receipt対応transferをfinalized後に照合する。",
   "tasks": [
     {
@@ -206,6 +206,17 @@
         "tests/sky-code-intake.test.mjs",
         "tests/sky-studio-chat.test.mjs",
         "docs/sky-tool-sdk.md"
+      ]
+    },
+    {
+      "id": "WEB02",
+      "title": "Developer Preview紹介をOSインストールとSky開発者コード中心の一画面へ再設計",
+      "status": "done",
+      "dependsOn": ["SKY15", "RLS01"],
+      "evidence": [
+        "app/rockstaros/page.tsx",
+        "app/rockstaros/preview.module.css",
+        "docs/product-baseline.md"
       ]
     },
     {

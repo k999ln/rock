@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 37 },
+    { length: 38 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ37の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ38の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -229,6 +229,19 @@ export function validateBaseline(
     data.homeExperience.returnPolicy ===
       'every_non_home_route_has_a_direct_home_affordance',
     'Home以外の全画面に直接Homeへ戻る契約が必要です',
+  );
+  const launchPageSource = read(resolve(root, 'app/rockstaros/page.tsx'));
+  requireValue(
+    data.launchPage?.route === '/rockstaros' &&
+      data.launchPage?.primaryAction === 'install_os' &&
+      data.launchPage?.publicDownloadFallback ===
+        '/rockstaros/guide#install' &&
+      data.launchPage?.studioUrl ===
+        'https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio' &&
+      launchPageSource.includes('OSをインストール') &&
+      launchPageSource.includes(data.launchPage.studioUrl) &&
+      launchPageSource.includes('createSkyToolApp'),
+    'Developer Preview紹介のインストール・Sky開発者コード・Studio導線を維持してください',
   );
   requireValue(
     data.systemMaintenance?.route === '/settings/system' &&
@@ -478,6 +491,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ37、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、チャット型Sky Tool取込、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ38、インストール中心のDeveloper Preview紹介とSky開発者コード、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、チャット型Sky Tool取込、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }
