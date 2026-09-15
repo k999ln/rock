@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 38 },
+    { length: 39 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ38の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ39の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -242,6 +242,19 @@ export function validateBaseline(
       launchPageSource.includes(data.launchPage.studioUrl) &&
       launchPageSource.includes('createSkyToolApp'),
     'Developer Preview紹介のインストール・Sky開発者コード・Studio導線を維持してください',
+  );
+  const studioSource = read(resolve(root, 'components/rock-studio.tsx'));
+  const workspaceStyles = read(resolve(root, 'app/workspace.css'));
+  requireValue(
+    data.visualSystem?.surfaces?.includes('/rockstaros') &&
+      data.visualSystem?.surfaces?.includes('/studio') &&
+      data.visualSystem?.accent === 'acid_green' &&
+      data.visualSystem?.studioPrimarySurface === 'code_or_file_composer' &&
+      data.visualSystem?.functionalityChanged === false &&
+      studioSource.includes('ROCKSTAR<span>OS</span>') &&
+      workspaceStyles.includes('RockstarOS / Studio — shared dark launch system') &&
+      workspaceStyles.includes('--studio-green: #c8ff2e'),
+    'Developer Preview紹介とRock Studioの共通visual systemを維持してください',
   );
   requireValue(
     data.systemMaintenance?.route === '/settings/system' &&
@@ -491,6 +504,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ38、インストール中心のDeveloper Preview紹介とSky開発者コード、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、チャット型Sky Tool取込、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ39、Developer Preview紹介とRock Studioの共通visual system、インストール中心の紹介とSky開発者コード、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、チャット型Sky Tool取込、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

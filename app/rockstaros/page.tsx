@@ -82,7 +82,7 @@ export default function RockstarPreview() {
 
       <footer className={styles.landingFooter}>
         <span>© 2026 KAIYA</span>
-        <Link href="/">OPEN ROCKSTAROS</Link>
+        <span>ROCKSTAROS / DEVELOPER PREVIEW</span>
       </footer>
     </main>
   );

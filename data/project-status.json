@@ -1,6 +1,6 @@
 {
   "updatedAt": "2026-09-15",
-  "milestone": "Developer Preview紹介ページをインストールとSky開発者コード中心へ簡素化",
+  "milestone": "Developer Preview紹介とRock Studioのvisual systemを統一",
   "nextAction": "ownerが本番Wallet画面で外部Walletの所有署名を行い、最初の実Earning Receipt対応transferをfinalized後に照合する。",
   "tasks": [
     {
@@ -216,6 +216,18 @@
       "evidence": [
         "app/rockstaros/page.tsx",
         "app/rockstaros/preview.module.css",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "WEB03",
+      "title": "Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一",
+      "status": "done",
+      "dependsOn": ["WEB02", "SKY15"],
+      "evidence": [
+        "app/rockstaros/page.tsx",
+        "components/rock-studio.tsx",
+        "app/workspace.css",
         "docs/product-baseline.md"
       ]
     },

@@ -3,12 +3,10 @@
 import { useRef, useState, type ChangeEvent, type SyntheticEvent } from 'react';
 import Link from 'next/link';
 import {
-  ArrowLeft,
   ArrowUp,
   Check,
   ChevronDown,
   Clipboard,
-  Code2,
   FileCode2,
   LoaderCircle,
   Paperclip,
@@ -126,11 +124,15 @@ export default function RockStudio() {
     <main className="studio-chat-shell">
       <header className="studio-chat-header">
         <div className="studio-chat-brand">
-          <Link href="/sky" aria-label="Skyへ戻る"><ArrowLeft size={17} /></Link>
-          <span className="studio-chat-logo"><Code2 size={18} /></span>
-          <div><strong>Rock Studio</strong><span>Sky Tool Builder</span></div>
+          <Link href="/" className="studio-wordmark" aria-label="ホームへ戻る">
+            ROCKSTAR<span>OS</span>
+          </Link>
+          <span className="studio-product-name">/ STUDIO</span>
         </div>
-        <div className="studio-chat-private"><ShieldCheck size={15} />コードは端末内で解析</div>
+        <div className="studio-chat-nav">
+          <Link href="/rockstaros">INSTALL OS</Link>
+          <div className="studio-chat-private"><ShieldCheck size={15} />LOCAL ANALYSIS</div>
+        </div>
       </header>
 
       <section className="studio-chat-workspace" aria-label="Sky Tool作成チャット">
@@ -139,8 +141,8 @@ export default function RockStudio() {
             <span><Sparkles size={18} /></span>
             <div>
               <p className="studio-chat-kicker">SKY DEVELOPER INTAKE</p>
-              <h1>自動化したコードを、<br />そのまま貼ってください。</h1>
-              <p>Tool名、用途、Schema、権限、Adapter、テストをSkyが組み立てます。細かい登録フォームは必要ありません。</p>
+              <h1>Build for Sky.</h1>
+              <p>自動化コードを貼るだけ。Tool名、Schema、権限、Adapter、テストをSkyが組み立てます。</p>
             </div>
           </div>
 

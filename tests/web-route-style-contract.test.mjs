@@ -54,6 +54,7 @@ void test('every non-home route family keeps a direct home affordance', () => {
     ['legacy fund', 'app/fund/legacy/page.tsx', /<Link href="\/">⌂ ホーム<\/Link>/],
     ['developer preview', 'app/rockstaros/page.tsx', /<Link href="\/" className=\{styles\.brand\} aria-label="ホームへ戻る"/],
     ['preview guide', 'app/rockstaros/guide/page.tsx', /<Link href="\/" className=\{styles\.brand\} aria-label="ホームへ戻る"/],
+    ['rock studio', 'components/rock-studio.tsx', /<Link href="\/" className="studio-wordmark" aria-label="ホームへ戻る"/],
   ];
   for (const [name, path, pattern] of contracts) {
     const source = readFileSync(resolve(root, path), 'utf8');
