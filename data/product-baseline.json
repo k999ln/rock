@@ -1,5 +1,5 @@
 {
-  "version": "1.45",
+  "version": "1.46",
   "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -20,17 +20,20 @@
   "alignmentAudit": "docs/design-implementation-alignment-20260909.md",
   "sky": {
     "displayName": "Sky",
-    "role": "automation_selection_permission_dispatch_control_results",
-    "definition": "Select a Tool, review its author/version/permissions/cost/execution target, consent, dispatch, stop and inspect results from one control surface.",
+    "role": "automation_discovery_connection_and_catalog",
+    "definition": "Discover and connect Tool products, review their author/version/permissions/cost/execution target, and hand work control to Chat.",
     "inventory": "docs/sky.md",
-    "internalSurfaces": ["/work", "/activity", "/csv"],
-    "navigationRule": "Work history and CSV remain compatible routes but are presented as Sky-owned surfaces, not standalone home apps.",
+    "internalSurfaces": ["/csv"],
+    "navigationRule": "CSV remains a Sky Tool surface. Work creation, progress, approval, stop, results and history are managed inside Chat; /work and /activity are compatibility redirects.",
     "legacyInternalName": "hub",
     "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
   },
   "baseApps": [
     { "id": "sky", "role": "discover_connect_and_manage_automation_apps" },
-    { "id": "chat", "role": "request_clarify_status_and_result_inbox" },
+    {
+      "id": "chat",
+      "role": "request_create_approve_stop_status_results_and_work_history"
+    },
     { "id": "wallet", "role": "automation_income_cost_and_funds" },
     { "id": "market", "role": "generic_paper_market_and_value_spend_runtime" }
   ],
@@ -167,7 +170,21 @@
     "defaultRouting": "sky_auto",
     "manualAppSelection": "optional",
     "connectedMcpPresentation": "one_bot_per_connected_server_or_ready_product",
-    "controlSurface": "chat_thread",
+    "controlSurface": "chat_thread_and_work_center",
+    "workManagement": {
+      "canonicalRoute": "/chat?view=work",
+      "compatibilityRoutes": ["/work", "/activity"],
+      "actions": [
+        "create",
+        "run_steps",
+        "approve",
+        "stop",
+        "retry",
+        "inspect_results",
+        "inspect_history"
+      ],
+      "preserveExistingRecords": true
+    },
     "steeringPolicy": "apply_to_next_execution_unless_the_mcp_explicitly_supports_live_steering",
     "genericExecutionContract": "passport_tool_schema_then_prepare_confirm_execute",
     "stopPolicy": "disconnect_server_and_invalidate_outstanding_approvals",

@@ -9218,6 +9218,142 @@
   border-color: #536471;
   background: #16181c;
 }
+.sky-chat-commandbar > nav a[aria-current='page'] {
+  border-color: #c8ff2e;
+  color: #0a0d07;
+  background: #c8ff2e;
+}
+.sky-chat-work-center {
+  grid-row: 2 / -1;
+  min-width: 0;
+  min-height: 0;
+  padding: 22px;
+  overflow-y: auto;
+  color: #171c17;
+  background: #f7f9f5;
+}
+.sky-chat-work-center > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.9fr);
+  gap: 24px;
+  align-items: end;
+  margin-bottom: 18px;
+}
+.sky-chat-work-center > header small {
+  color: #71931d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.sky-chat-work-center > header h2 {
+  margin-top: 3px;
+  font-size: 26px;
+  letter-spacing: -0.035em;
+}
+.sky-chat-work-center > header p,
+.sky-chat-job-heading p,
+.sky-chat-work-empty {
+  color: #667064;
+}
+.sky-chat-job-center {
+  padding: 18px;
+  border: 1px solid #d7ddd5;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 14px 38px rgba(19, 25, 18, 0.045);
+}
+.sky-chat-job-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: start;
+}
+.sky-chat-job-heading h3 {
+  font-size: 18px;
+}
+.sky-chat-job-heading p {
+  margin-top: 3px;
+  font-size: 13px;
+}
+.sky-chat-job-heading > span {
+  flex: 0 0 auto;
+  padding: 4px 9px;
+  border-radius: 999px;
+  color: #3d4c18;
+  background: #efffc0;
+  font-size: 12px;
+  font-weight: 800;
+}
+.sky-chat-job-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+.sky-chat-job {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid #e0e5de;
+  border-radius: 12px;
+  background: #f8faf6;
+}
+.sky-chat-job > div {
+  min-width: 0;
+  display: grid;
+}
+.sky-chat-job strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+.sky-chat-job small {
+  color: #737c72;
+  font-size: 11px;
+}
+.sky-chat-job > span {
+  color: #65705f;
+  font-size: 12px;
+  font-weight: 800;
+}
+.sky-chat-job > button,
+.sky-chat-job > a {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border: 1px solid #d5dbd2;
+  border-radius: 999px;
+  color: #293320;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 750;
+}
+.sky-chat-job.is-running {
+  border-color: #bad56f;
+}
+.sky-chat-job.is-attention {
+  border-color: #e1aa8f;
+  background: #fff8f4;
+}
+.sky-chat-work-error {
+  margin-top: 12px;
+  color: #8b3324;
+}
+.sky-chat-work-empty {
+  margin-top: 14px;
+  font-size: 13px;
+}
+.sky-chat-work-center .work-shell.is-chat-managed {
+  margin-top: 18px;
+}
+.sky-chat-work-center .work-title {
+  margin-top: 0;
+}
 .sky-chat-mode-row {
   display: flex;
   gap: 8px;
@@ -9575,6 +9711,44 @@
   .sky-chat-commandbar > nav a {
     min-height: 38px;
     padding: 0 12px;
+  }
+  .sky-chat-commandbar > nav a span {
+    display: none;
+  }
+  .sky-chat-commandbar > nav {
+    gap: 5px;
+  }
+  .sky-chat-commandbar > nav a {
+    width: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    justify-content: center;
+    padding: 0;
+  }
+  .sky-chat-work-center {
+    padding: 16px 13px max(24px, env(safe-area-inset-bottom));
+  }
+  .sky-chat-work-center > header {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .sky-chat-work-center > header h2 {
+    font-size: 22px;
+  }
+  .sky-chat-job {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .sky-chat-job > button,
+  .sky-chat-job > a {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+  .sky-chat-work-center .work-title {
+    flex-direction: column;
+  }
+  .sky-chat-work-center .work-title button {
+    width: 100%;
+    justify-content: center;
   }
   .sky-chat-mode-row {
     padding: 8px 10px;

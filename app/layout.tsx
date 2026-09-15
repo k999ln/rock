@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import './app.css';
 import './workspace.css';
+import './work/work.css';
 export const metadata: Metadata = {
   title: 'RockstarOS',
   description:

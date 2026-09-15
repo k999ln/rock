@@ -273,7 +273,16 @@ export function validateBaseline(
   requireValue(
     data.chatInteraction?.connectedMcpPresentation ===
       'one_bot_per_connected_server_or_ready_product' &&
-      data.chatInteraction?.controlSurface === 'chat_thread' &&
+      data.chatInteraction?.controlSurface === 'chat_thread_and_work_center' &&
+      data.chatInteraction?.workManagement?.canonicalRoute ===
+        '/chat?view=work' &&
+      data.chatInteraction?.workManagement?.compatibilityRoutes?.includes(
+        '/work',
+      ) &&
+      data.chatInteraction?.workManagement?.compatibilityRoutes?.includes(
+        '/activity',
+      ) &&
+      data.chatInteraction?.workManagement?.preserveExistingRecords === true &&
       data.chatInteraction?.genericExecutionContract ===
         'passport_tool_schema_then_prepare_confirm_execute',
     'Chatの接続bot管理契約が必要です',
@@ -328,16 +337,16 @@ export function validateBaseline(
       data.visualSystem?.studioPrimarySurface === 'sdk_code_installation' &&
       !data.visualSystem?.homePrimaryApps?.includes('work') &&
       !data.visualSystem?.homePrimaryApps?.includes('csv') &&
-      data.sky?.internalSurfaces?.includes('/work') &&
-      data.sky?.internalSurfaces?.includes('/activity') &&
       data.sky?.internalSurfaces?.includes('/csv') &&
+      !data.sky?.internalSurfaces?.includes('/work') &&
+      !data.sky?.internalSurfaces?.includes('/activity') &&
       data.visualSystem?.businessFunctionalityChanged === false &&
       data.visualSystem?.interactionFunctionalityImproved === true &&
       studioSource.includes('studio-code-first') &&
       !homeSource.includes("id: 'work'") &&
       !homeSource.includes("id: 'csv'") &&
-      skySource.includes('href="/work"') &&
-      skySource.includes('href="/csv"') &&
+      !skySource.includes('href="/work"') &&
+      !skySource.includes('href="/csv"') &&
       homeSource.includes('WEB / LOCAL') &&
       data.homeExperience?.workspaceNavigation ===
         'sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation' &&

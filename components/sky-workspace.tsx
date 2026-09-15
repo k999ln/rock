@@ -21,7 +21,6 @@ import {
   FilePenLine,
   Lightbulb,
   Link2,
-  ListChecks,
   LoaderCircle,
   MessageCircle,
   Network,
@@ -32,7 +31,6 @@ import {
   ShieldCheck,
   Shirt,
   ShoppingBag,
-  Table2,
   WalletCards,
   X,
   Zap,
@@ -447,22 +445,6 @@ export default function SkyWorkspace({
               </TabsList>
             </Tabs>
             <div className="sky-feed-header-actions">
-              <Link
-                href="/work"
-                aria-label="Skyの仕事・履歴を開く"
-                className="sky-header-action"
-              >
-                <ListChecks size={19} />
-                <span>仕事</span>
-              </Link>
-              <Link
-                href="/csv"
-                aria-label="SkyのCSV仕事を開く"
-                className="sky-header-action"
-              >
-                <Table2 size={19} />
-                <span>CSV</span>
-              </Link>
               <Link
                 href="/chat"
                 aria-label="Chatを開く"

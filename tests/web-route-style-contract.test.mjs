@@ -146,13 +146,26 @@ void test('OS surfaces keep a smartphone viewport and safe-area contract', () =>
   assert.match(csvStyles, /@media \(max-width: 520px\)/);
 });
 
-void test('Sky exposes its Work and CSV surfaces', () => {
+void test('Chat owns work management while Sky keeps CSV as a catalog Tool', () => {
   const sky = readFileSync(
     resolve(root, 'components/sky-workspace.tsx'),
     'utf8',
   );
-  assert.match(sky, /href="\/work"/);
-  assert.match(sky, /href="\/csv"/);
+  const chat = readFileSync(
+    resolve(root, 'components/sky-chat-workspace.tsx'),
+    'utf8',
+  );
+  const workRoute = readFileSync(resolve(root, 'app/work/page.tsx'), 'utf8');
+  const activityRoute = readFileSync(
+    resolve(root, 'app/activity/page.tsx'),
+    'utf8',
+  );
+  assert.doesNotMatch(sky, /href="\/work"/);
+  assert.doesNotMatch(sky, /href="\/csv"/);
+  assert.match(chat, /href="\/chat\?view=work"/);
+  assert.match(chat, /<Workbench embedded \/>/);
+  assert.match(workRoute, /redirect\('\/chat\?view=work'\)/);
+  assert.match(activityRoute, /redirect\('\/chat\?view=work'\)/);
 });
 
 void test('every non-home route family keeps a direct home affordance', () => {
