@@ -7,7 +7,8 @@ await test('CSV seller fee is exactly USD 8.88 only from USD 30 verified net rev
     csvFeeDecision({
       monthJst: '2026-09',
       verifiedNetUsdMinor: 2999,
-      providerEvidence: 'provider:event:1',
+      evidenceSource: 'provider',
+      providerEvidence: 'a'.repeat(64),
     }),
     {
       policyVersion: 'csv-seller-fee/1',
@@ -22,7 +23,8 @@ await test('CSV seller fee is exactly USD 8.88 only from USD 30 verified net rev
     csvFeeDecision({
       monthJst: '2026-09',
       verifiedNetUsdMinor: 3000,
-      providerEvidence: 'provider:event:2',
+      evidenceSource: 'provider',
+      providerEvidence: 'b'.repeat(64),
     }).feeDueUsdMinor,
     888,
   );
@@ -30,7 +32,8 @@ await test('CSV seller fee is exactly USD 8.88 only from USD 30 verified net rev
     csvFeeDecision({
       monthJst: '2026-09',
       verifiedNetUsdMinor: 999999,
-      providerEvidence: 'provider:event:3',
+      evidenceSource: 'provider',
+      providerEvidence: 'c'.repeat(64),
     }).feeDueUsdMinor,
     888,
   );
@@ -42,6 +45,7 @@ await test('CSV seller fee rejects hand-entered decisions without provider evide
       csvFeeDecision({
         monthJst: '2026-09',
         verifiedNetUsdMinor: 3000,
+        evidenceSource: 'provider',
         providerEvidence: '',
       }),
     /PROVIDER_EVIDENCE/,
@@ -51,8 +55,19 @@ await test('CSV seller fee rejects hand-entered decisions without provider evide
       csvFeeDecision({
         monthJst: '2026-9',
         verifiedNetUsdMinor: 3000,
+        evidenceSource: 'provider',
         providerEvidence: 'x',
       }),
     /MONTH_JST/,
+  );
+  assert.throws(
+    () =>
+      csvFeeDecision({
+        monthJst: '2026-09',
+        verifiedNetUsdMinor: 3000,
+        evidenceSource: 'manual_verified',
+        providerEvidence: 'd'.repeat(64),
+      }),
+    /PROVIDER_EVIDENCE_REQUIRED/,
   );
 });

@@ -26,10 +26,15 @@ export const POST = async (request: Request) => {
     if (length > CSV_LIMITS.bytes + 64 * 1024)
       throw new CsvJobError(413, 'TOO_LARGE', 'CSVは10MB以下にしてください。');
     const form = await request.formData();
+    if (form.has('sample'))
+      throw new CsvJobError(
+        400,
+        'SAMPLE_ROUTE',
+        'ファイル付きサンプルは専用のサンプル操作を使ってください。',
+      );
     const file = form.get('file');
     const rawId = form.get('id');
     const id = typeof rawId === 'string' ? rawId : '';
-    const sample = form.get('sample') === 'true';
     const rawSpecification = form.get('specification');
     const specification =
       typeof rawSpecification === 'string' ? rawSpecification : '';
@@ -48,7 +53,7 @@ export const POST = async (request: Request) => {
       name: file.name,
       bytes: new Uint8Array(await file.arrayBuffer()),
       specification,
-      sample,
+      sample: false,
     });
     return Response.json(
       { job },

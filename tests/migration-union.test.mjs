@@ -69,6 +69,8 @@ await test('fresh and both historical D1 databases converge without losing recor
       await db.prepare(sql).run();
   };
   let expectedSchema;
+  const latestMigration = names.at(-1);
+  const previousMigrations = names.filter((name) => name !== latestMigration);
   for (const mode of ['filename', 'drizzle']) {
     for (const history of ['fresh', 'release', 'sites']) {
       await t.test(`${mode}: ${history}`, async () => {
@@ -128,6 +130,24 @@ await test('fresh and both historical D1 databases converge without losing recor
                 journal.find((e) => e.tag + '.sql' === name).when,
               )
               .run();
+          for (const name of previousMigrations) {
+            if (prior.includes(name)) continue;
+            await execute(name);
+            await db
+              .prepare(
+                'INSERT INTO __drizzle_migrations (hash, created_at) VALUES (?, ?)',
+              )
+              .bind(
+                hash(name),
+                journal.find((entry) => entry.tag + '.sql' === name).when,
+              )
+              .run();
+          }
+          await db
+            .prepare(
+              "INSERT INTO csv_monthly_fees VALUES ('legacy-fee','legacy-account','2026-08',3500,888,'paid','legacy-evidence',1,1)",
+            )
+            .run();
           await migrate(drizzle(db), { migrationsFolder: folder });
           await migrate(drizzle(db), { migrationsFolder: folder });
         } else {
@@ -141,6 +161,19 @@ await test('fresh and both historical D1 databases converge without losing recor
               .prepare('INSERT INTO d1_migrations (name) VALUES (?)')
               .bind(name)
               .run();
+          for (const name of previousMigrations) {
+            if (prior.includes(name)) continue;
+            await execute(name);
+            await db
+              .prepare('INSERT INTO d1_migrations (name) VALUES (?)')
+              .bind(name)
+              .run();
+          }
+          await db
+            .prepare(
+              "INSERT INTO csv_monthly_fees VALUES ('legacy-fee','legacy-account','2026-08',3500,888,'paid','legacy-evidence',1,1)",
+            )
+            .run();
           for (let pass = 0; pass < 2; pass++) {
             for (const name of names) {
               if (
@@ -168,7 +201,7 @@ await test('fresh and both historical D1 databases converge without losing recor
         // SQLite normalizes IF NOT EXISTS away in sqlite_master.
         expectedSchema ??= schema;
         assert.deepEqual(schema, expectedSchema);
-        assert.equal(schema.filter((item) => item.type === 'table').length, 27);
+        assert.equal(schema.filter((item) => item.type === 'table').length, 37);
         // D1 intentionally disallows PRAGMA integrity_check; compare all table/index
         // definitions and retained values instead of claiming that pragma ran.
         if (history !== 'fresh')
@@ -202,6 +235,16 @@ await test('fresh and both historical D1 databases converge without losing recor
             ).amount,
             888,
           );
+        assert.equal(
+          (
+            await db
+              .prepare(
+                "SELECT fee_due_usd_minor FROM csv_monthly_fees WHERE id = 'legacy-fee'",
+              )
+              .first()
+          ).fee_due_usd_minor,
+          888,
+        );
       });
     }
   }

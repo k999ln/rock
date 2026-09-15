@@ -360,6 +360,12 @@ export const csvJobs = sqliteTable(
     paymentStatus: text('payment_status').notNull(),
     paymentMethod: text('payment_method'),
     paymentReference: text('payment_reference'),
+    productVersion: text('product_version')
+      .notNull()
+      .default('catalog-csv-clean@0.1.0'),
+    sellerId: text('seller_id').notNull().default('platform-owner'),
+    channel: text('channel').notNull().default('direct'),
+    termsVersion: text('terms_version').notNull().default('csv-business-v1'),
     inputName: text('input_name').notNull(),
     inputKey: text('input_key').notNull(),
     inputBytes: integer('input_bytes').notNull(),
@@ -376,17 +382,201 @@ export const csvJobs = sqliteTable(
     validationJson: text('validation_json'),
     attempt: integer('attempt').notNull().default(0),
     revision: integer('revision').notNull().default(0),
+    availableAt: integer('available_at').notNull().default(0),
+    leaseId: text('lease_id'),
+    leaseExpiresAt: integer('lease_expires_at'),
+    deliveryRevision: integer('delivery_revision').notNull().default(0),
     errorCode: text('error_code'),
     expiresAt: integer('expires_at').notNull(),
     createdAt: integer('created_at').notNull(),
     updatedAt: integer('updated_at').notNull(),
     acceptedAt: integer('accepted_at'),
     completedAt: integer('completed_at'),
+    approvedAt: integer('approved_at'),
+    revisionRequestedAt: integer('revision_requested_at'),
+    revisionReason: text('revision_reason'),
+    canceledAt: integer('canceled_at'),
+    cancellationReason: text('cancellation_reason'),
+    filesPurgedAt: integer('files_purged_at'),
   },
   (table) => [
     index('idx_csv_jobs_user_updated').on(table.userId, table.updatedAt),
     index('idx_csv_jobs_status_updated').on(table.status, table.updatedAt),
+    index('idx_csv_jobs_queue').on(
+      table.status,
+      table.availableAt,
+      table.leaseExpiresAt,
+    ),
     uniqueIndex('idx_csv_jobs_input_key').on(table.inputKey),
+  ],
+);
+
+export const csvDeliveryRevisions = sqliteTable(
+  'csv_delivery_revisions',
+  {
+    id: text('id').primaryKey(),
+    jobId: text('job_id').notNull(),
+    userId: text('user_id').notNull(),
+    revisionNumber: integer('revision_number').notNull(),
+    specificationJson: text('specification_json').notNull(),
+    resultKey: text('result_key').notNull(),
+    safeResultKey: text('safe_result_key'),
+    reportJsonKey: text('report_json_key').notNull(),
+    reportHtmlKey: text('report_html_key').notNull(),
+    outputSha256: text('output_sha256').notNull(),
+    validationJson: text('validation_json').notNull(),
+    status: text('status').notNull(),
+    customerReason: text('customer_reason'),
+    deliveredAt: integer('delivered_at').notNull(),
+    resolvedAt: integer('resolved_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_csv_delivery_job_revision').on(
+      table.jobId,
+      table.revisionNumber,
+    ),
+    index('idx_csv_delivery_user_job').on(table.userId, table.jobId),
+  ],
+);
+
+export const csvDeliveryLinks = sqliteTable(
+  'csv_delivery_links',
+  {
+    id: text('id').primaryKey(),
+    jobId: text('job_id').notNull(),
+    userId: text('user_id').notNull(),
+    tokenHash: text('token_hash').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    createdAt: integer('created_at').notNull(),
+    revokedAt: integer('revoked_at'),
+    lastAccessedAt: integer('last_accessed_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_csv_delivery_link_token').on(table.tokenHash),
+    index('idx_csv_delivery_link_job').on(table.userId, table.jobId, table.createdAt),
+  ],
+);
+
+export const csvPaymentEvents = sqliteTable(
+  'csv_payment_events',
+  {
+    id: text('id').primaryKey(),
+    provider: text('provider').notNull(),
+    providerEventId: text('provider_event_id').notNull(),
+    relatedProviderEventId: text('related_provider_event_id'),
+    relatedEventType: text('related_event_type'),
+    jobId: text('job_id').notNull(),
+    userId: text('user_id').notNull(),
+    sellerId: text('seller_id').notNull(),
+    type: text('type').notNull(),
+    amountMinor: integer('amount_minor').notNull(),
+    currency: text('currency').notNull(),
+    occurredAt: integer('occurred_at').notNull(),
+    evidenceDigest: text('evidence_digest').notNull(),
+    source: text('source').notNull(),
+    createdAt: integer('created_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_csv_payment_provider_event').on(
+      table.provider,
+      table.providerEventId,
+    ),
+    index('idx_csv_payment_job').on(table.jobId, table.occurredAt),
+    index('idx_csv_payment_user').on(table.userId, table.occurredAt),
+    index('idx_csv_payment_seller').on(table.sellerId, table.occurredAt),
+  ],
+);
+
+export const csvOperatorSettings = sqliteTable('csv_operator_settings', {
+  id: text('id').primaryKey(),
+  acceptingNew: integer('accepting_new', { mode: 'boolean' })
+    .notNull()
+    .default(true),
+  pausedReason: text('paused_reason'),
+  revision: integer('revision').notNull().default(0),
+  updatedBy: text('updated_by').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+});
+
+export const csvOperatorEvents = sqliteTable(
+  'csv_operator_events',
+  {
+    id: text('id').primaryKey(),
+    actorHash: text('actor_hash').notNull(),
+    action: text('action').notNull(),
+    jobId: text('job_id'),
+    detailJson: text('detail_json').notNull(),
+    createdAt: integer('created_at').notNull(),
+    idempotencyKey: text('idempotency_key'),
+    requestDigest: text('request_digest'),
+  },
+  (table) => [
+    index('idx_csv_operator_events_created').on(table.createdAt),
+    index('idx_csv_operator_events_job').on(table.jobId, table.createdAt),
+    uniqueIndex('idx_csv_operator_events_idempotency').on(
+      table.actorHash,
+      table.idempotencyKey,
+    ),
+  ],
+);
+
+export const csvOperatorOutbox = sqliteTable(
+  'csv_operator_outbox',
+  {
+    id: text('id').primaryKey(),
+    actorHash: text('actor_hash').notNull(),
+    idempotencyKey: text('idempotency_key').notNull(),
+    action: text('action').notNull(),
+    payloadJson: text('payload_json').notNull(),
+    createdAt: integer('created_at').notNull(),
+    deliveredAt: integer('delivered_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_csv_operator_outbox_action').on(
+      table.actorHash,
+      table.idempotencyKey,
+    ),
+    index('idx_csv_operator_outbox_created').on(table.createdAt),
+  ],
+);
+
+export const csvIntakeControls = sqliteTable(
+  'csv_intake_controls',
+  {
+    scopeType: text('scope_type').notNull(),
+    scopeId: text('scope_id').notNull(),
+    acceptingNew: integer('accepting_new', { mode: 'boolean' })
+      .notNull()
+      .default(true),
+    pausedReason: text('paused_reason'),
+    revision: integer('revision').notNull().default(0),
+    updatedBy: text('updated_by').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_csv_intake_control_scope').on(table.scopeType, table.scopeId),
+  ],
+);
+
+export const csvJobCosts = sqliteTable(
+  'csv_job_costs',
+  {
+    id: text('id').primaryKey(),
+    jobId: text('job_id').notNull(),
+    userId: text('user_id').notNull(),
+    sellerId: text('seller_id').notNull(),
+    category: text('category').notNull(),
+    amountMinor: integer('amount_minor').notNull(),
+    currency: text('currency').notNull(),
+    evidenceDigest: text('evidence_digest').notNull(),
+    actorHash: text('actor_hash').notNull(),
+    idempotencyKey: text('idempotency_key').notNull(),
+    createdAt: integer('created_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_csv_job_cost_idempotency').on(table.actorHash, table.idempotencyKey),
+    index('idx_csv_job_cost_job').on(table.jobId, table.createdAt),
+    index('idx_csv_job_cost_user').on(table.userId, table.createdAt),
   ],
 );
 
@@ -412,10 +602,35 @@ export const csvBillingAccounts = sqliteTable('csv_billing_accounts', {
   contractId: text('contract_id').notNull(),
   policyVersion: text('policy_version').notNull(),
   status: text('status').notNull(),
+  cancelAtMonth: text('cancel_at_month'),
   createdAt: integer('created_at').notNull(),
   updatedAt: integer('updated_at').notNull(),
 });
 
+export const csvBillingAccountEvents = sqliteTable(
+  'csv_billing_account_events',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    billingAccountId: text('billing_account_id').notNull(),
+    action: text('action').notNull(),
+    requestDigest: text('request_digest').notNull(),
+    idempotencyKey: text('idempotency_key').notNull(),
+    detailJson: text('detail_json').notNull(),
+    createdAt: integer('created_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_csv_billing_event_idempotency').on(
+      table.billingAccountId,
+      table.idempotencyKey,
+    ),
+    index('idx_csv_billing_event_user').on(table.userId, table.createdAt),
+  ],
+);
+
+// Keep the original monthly fee table in the schema so additive migrations do
+// not drop historical reconciliation rows written before the richer decision
+// ledger was introduced.
 export const csvMonthlyFees = sqliteTable(
   'csv_monthly_fees',
   {
@@ -434,6 +649,33 @@ export const csvMonthlyFees = sqliteTable(
       table.billingAccountId,
       table.monthJst,
     ),
+  ],
+);
+
+export const csvMonthlyFeeDecisions = sqliteTable(
+  'csv_monthly_fee_decisions',
+  {
+    id: text('id').primaryKey(),
+    sellerId: text('seller_id').notNull().default('platform-owner'),
+    billingAccountId: text('billing_account_id').notNull(),
+    contractId: text('contract_id').notNull().default('csv-seller-fee/1'),
+    policyVersion: text('policy_version').notNull().default('csv-seller-fee/1'),
+    monthJst: text('month_jst').notNull(),
+    verifiedNetUsdMinor: integer('verified_net_usd_minor'),
+    feeDueUsdMinor: integer('fee_due_usd_minor'),
+    status: text('status').notNull(),
+    evidenceDigest: text('evidence_digest').notNull(),
+    reason: text('reason').notNull().default('reconciled'),
+    decisionJson: text('decision_json').notNull().default('{}'),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_csv_fee_decision_account_month').on(
+      table.billingAccountId,
+      table.monthJst,
+    ),
+    index('idx_csv_fee_month_status').on(table.monthJst, table.status),
   ],
 );
 

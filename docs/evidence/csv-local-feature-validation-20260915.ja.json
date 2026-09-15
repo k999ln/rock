@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "csv-local-feature-validation/2",
+  "observedAt": "2026-09-15T21:01:33+09:00",
+  "sourceCommit": null,
+  "workingTree": "uncommitted local changes; no push or deployment performed",
+  "syntheticOnly": true,
+  "environment": "local vinext production build + loopback Miniflare Worker/D1/R2 with ephemeral database and test-only secrets",
+  "checks": {
+    "csvUnit": {
+      "command": "node --experimental-strip-types --test tests/csv-*.test.mjs",
+      "passed": 19,
+      "failed": 0
+    },
+    "apiIntegration": {
+      "commands": ["npm run build", "npm run test:api"],
+      "assertions": 495,
+      "failed": 0
+    },
+    "migrationUnion": {
+      "command": "node --experimental-strip-types --test tests/migration-union.test.mjs",
+      "passed": 9,
+      "failed": 0,
+      "tableCount": 37,
+      "migrationRange": ["0012", "0013", "0014", "0015"],
+      "modes": ["filename:fresh", "filename:release", "filename:sites", "drizzle:fresh", "drizzle:release", "drizzle:sites"],
+      "preservesLegacyCsvMonthlyFees": true
+    },
+    "typecheck": { "command": "npm run typecheck", "passed": true },
+    "productLint": { "command": "npm run lint:product", "passed": true },
+    "productionBuild": { "command": "npm run build", "passed": true },
+    "taskManifest": { "command": "npm run csv:check", "passed": true },
+    "repositoryVerify": {
+      "command": "npm run verify",
+      "passed": false,
+      "failedStage": "npm test",
+      "reason": "Full npm test passed 273/276; one MR PC citations test and two MCP tests that invoke it fail at the existing platform guard because this host's macOS Python 3.11.2 does not expose os.waitid and the adapter requires a normal macOS/Linux process environment. CSV unit/API/migration checks, typecheck, product lint, build, csv:check, and diff-check pass independently."
+    }
+  },
+  "verifiedFlows": [
+    "buyer-supplied paid status is ignored; exact JPY 3,000 quote payment is required, and partial/wrong-currency buyer payment is blocked",
+    "buyer refund, dispute, and cancellation events block acceptance/delivery, including at the final D1 completion fence; payout adjustments remain separate",
+    "expired worker lease is reclaimed on authenticated poll and exactly one delivery revision/event is committed",
+    "buyer share URL is a fragment-delivered bearer capability (not identity-bound), rotates/revokes, and serves versioned artifacts with private no-store headers",
+    "buyer can request one in-scope correction, observe the request state, and explicitly approve the delivered revision",
+    "payment webhook HMAC, duplicate idempotency, conflicting duplicate rejection, reverse-order refund, late refund re-reconciliation, and manual_verified separation",
+    "signed refund relationship currency/job/type mismatches are rejected without ledger insertion in both arrival orders; corrected same-event retry, acceptance and monthly reconciliation remain usable",
+    "manual-payment idempotency keys cannot cross actions; rejected cross-action calls create neither a payment row nor partial audit/outbox state, and operator retry replay shape is stable",
+    "per-job JPY buyer payment and USD seller payout remain separate currency totals without guessed FX; unknown net/evidence is nullable and shown as review-needed",
+    "USD 30.00 eligibility and USD 8.88 monthly decision aggregate multiple sellers/providers under one billing account into one JST-month decision; later refunds can reverse the decision",
+    "operator allowlist, global/owner/seller new-intake pause/resume, next-month cancellation, existing-job continuity, own-account JSON export with cost/revision/link metadata but no bearer secret/hash, intervention/due-date/direct-cost dashboard, and D1-batched audit/outbox/idempotency",
+    "direct costs are recorded for review but are not yet deducted from monthly eligibility"
+  ],
+  "notProved": [
+    "independent durable Queue binding or guaranteed execution after a browser closes",
+    "physical iOS Safari or Android Chrome operation",
+    "real buyer, seller, sale, payment, provider account, payout, or refund",
+    "production webhook secret, production operator allowlist, or production D1/R2 migration",
+    "test-mode monthly invoice/card charge/refund adapter or live monthly fee collection",
+    "market approval for buyer-share delivery or production public availability"
+  ]
+}

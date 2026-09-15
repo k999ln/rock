@@ -14,6 +14,7 @@ export type CsvFeeDecision = {
 export function csvFeeDecision(input: {
   monthJst: string;
   verifiedNetUsdMinor: number;
+  evidenceSource: 'provider' | 'manual_verified';
   providerEvidence: string;
 }): CsvFeeDecision {
   if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(input.monthJst))
@@ -23,7 +24,10 @@ export function csvFeeDecision(input: {
     input.verifiedNetUsdMinor < 0
   )
     throw new Error('VERIFIED_NET');
-  if (!input.providerEvidence.trim()) throw new Error('PROVIDER_EVIDENCE');
+  if (input.evidenceSource !== 'provider')
+    throw new Error('PROVIDER_EVIDENCE_REQUIRED');
+  if (!/^[a-f0-9]{64}$/i.test(input.providerEvidence.trim()))
+    throw new Error('PROVIDER_EVIDENCE');
   const eligible = input.verifiedNetUsdMinor >= CSV_MONTHLY_THRESHOLD_USD_MINOR;
   return {
     policyVersion: CSV_FEE_POLICY_VERSION,

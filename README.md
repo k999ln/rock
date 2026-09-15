@@ -20,6 +20,12 @@ Home以外の全画面には、現在の操作を迷子にせず直接Homeへ戻
 
 SkyのWallet画面には、検証済み自動化収益の精算状況を追加しました。独立WorkerがExecution Receipt、Provider入金参照、証拠hashを持つ署名済みEarning Receiptだけを受け、実費の後から月最大888 USD centsを回収し、残額の払出し指図を作ります。売上0時の請求、未達分の債務化・翌月繰越、カード定期請求はありません。先払いCheckout APIは停止済みです。販売・決済・払出しProviderのsandbox接続と本番条件は未完了です。[実装とProvider接続手順](docs/sky-billing.md)。
 
+## CSV仕事 v1（開発中）
+
+`/csv` は税込3,000円のCSV整形受付・検査・結果画面、`/csv/terms` は取引・データ条件です。未払を顧客の自己申告で`paid`にする操作はなく、JPY 3,000の見積額・通貨と一致する運営者照合または署名済みProvider webhookの入金が処理条件です。返金・争議・取消も照合し、受付/納品を止めます。sellerは納品後に7日で失効するbuyer共有URLを発行・失効でき、顧客の修正1回と明示検収を記録できます。このURLはbearer capabilityで、受取人の本人確認ではありません。市場の公式納品経路・規約がある場合はそちらが優先です。
+
+`/csv/operations` は運営者hash allowlistで限定する全体・利用者・売主ごとの新規受付pause/resume、入金・返金確認、月額判定、介入・納期・直接費、運営JSON exportの画面です。`/csv` 利用者は自分のjob/billing情報を確認し、本人データをJSON exportでき、月額契約停止は翌JST月から有効です。停止は新規受付だけに適用し、既存jobは継続します。運営操作と監査/outbox/idempotency記録はD1 batchで保存します。JST月の$30.00閾値／$8.88判定は同じbilling accountのseller/providerを合算した台帳判定のみで、直接費は記録するだけでまだ控除しません。現在はカード登録・月額請求・請求返金を実行しません。`waitUntil`と期限付きlease、認証poll後の再開、二重完了防止を実装していますが独立Queue bindingはなく、スマホを閉じた後の処理継続を保証しません。ローカル統合・合成試験と本番販売・入金・顧客・実機のgateは分けています。[商品・実装・運用仕様](docs/csv-business-v1.ja.md)／[CSV作業台帳](data/csv-business-tasks.json)。
+
 [8原則に基づくRockstarOS 1.0設計](docs/rockstaros-1.0-strategy.md)を追加しました。現ベースを維持し、一つの商品で実行・成果・費用・復旧まで確認できる体験を検証します。初期対象の文章系個人事業主と既存引用整理は検証仮説。配布/実用の優先順位、試用指標、CM導線、責任分担を具体化し、未実証の需要や本番利用可能性は主張しません。
 
 **[設計v1.1](docs/os-sky-wallet-game-design.md)の実装は承認済みです。** [承認範囲](docs/execution-approval-20260909.md)に従い、専用branchでnativeと設計を統合しています。公開・実機・MetaMask実資金は条件付き了承を保持し、技術的な準備を検証します。達成演出は見送り、市場案は検討のみです。
@@ -47,7 +53,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-15 / Rock StudioのSky SDK導線を維持し、CSV整形の決定的変換・独立検査・私有成果物・料金境界を同じSites本番系統へ統合 / 完了 65/91件
+最終更新: 2026-09-15 / Rock StudioのSky SDK導線を維持し、CSVの厳密な購入照合・月次判定・運営/解約/データ出力をローカル合成試験まで実装（外部gateは別管理） / 完了 65/91件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -141,7 +147,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | BIL01 | 先払い月額を停止し、検証済み自動化収益からだけ実費後に月最大888 centsを精算 | 完了 | [記録](docs/sky-billing.md) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing.test.mjs) · [記録](tests/billing-worker.test.mjs) · [記録](services/sky-billing/migrations/0002_earnings_settlement.sql) · [記録](docs/evidence/launch/backend-owner-validation-20260912.json) |
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) |
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |
-| CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 | [記録](data/csv-business-tasks.json) · [記録](docs/csv-business-v1.ja.md) · [記録](lib/csv-transform.ts) · [記録](lib/csv-job-store.ts) · [記録](components/csv-business-workspace.tsx) |
+| CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 | [記録](data/csv-business-tasks.json) · [記録](docs/csv-business-v1.ja.md) · [記録](docs/csv-business-security.ja.md) · [記録](docs/evidence/csv-local-feature-validation-20260915.ja.json) · [記録](lib/csv-transform.ts) · [記録](lib/csv-job-store.ts) · [記録](lib/csv-money.ts) · [記録](lib/csv-operations-store.ts) · [記録](app/api/csv-account/route.ts) · [記録](app/api/csv-account/export/route.ts) · [記録](drizzle/0015_csv_billing_account_events.sql) · [記録](components/csv-business-workspace.tsx) · [記録](components/csv-delivery-workspace.tsx) · [記録](components/csv-operations-workspace.tsx) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -161,7 +167,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: CSVの独立queueを配置して実スマホ閉鎖後の完了を受入し、真正な第三者1件の販売・入金・納品をProvider証拠で検証する。
+次の作業: B05独立Queue配置と実スマホを閉じた後の完了、公式市場が許すbuyer納品経路、実顧客・Provider入金/返金、直接費を含む月額条件のtest請求とrefund/SCA、production operator allowlist/Secrets、外部公開は未実施。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

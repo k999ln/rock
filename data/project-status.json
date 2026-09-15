@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-15",
-  "milestone": "Rock StudioのSky SDK導線を維持し、CSV整形の決定的変換・独立検査・私有成果物・料金境界を同じSites本番系統へ統合",
-  "nextAction": "CSVの独立queueを配置して実スマホ閉鎖後の完了を受入し、真正な第三者1件の販売・入金・納品をProvider証拠で検証する。",
+  "milestone": "Rock StudioのSky SDK導線を維持し、CSVの厳密な購入照合・月次判定・運営/解約/データ出力をローカル合成試験まで実装（外部gateは別管理）",
+  "nextAction": "B05独立Queue配置と実スマホを閉じた後の完了、公式市場が許すbuyer納品経路、実顧客・Provider入金/返金、直接費を含む月額条件のtest請求とrefund/SCA、production operator allowlist/Secrets、外部公開は未実施。",
   "tasks": [
     {
       "id": "SKY01",
@@ -1104,9 +1104,18 @@
       "evidence": [
         "data/csv-business-tasks.json",
         "docs/csv-business-v1.ja.md",
+        "docs/csv-business-security.ja.md",
+        "docs/evidence/csv-local-feature-validation-20260915.ja.json",
         "lib/csv-transform.ts",
         "lib/csv-job-store.ts",
-        "components/csv-business-workspace.tsx"
+        "lib/csv-money.ts",
+        "lib/csv-operations-store.ts",
+        "app/api/csv-account/route.ts",
+        "app/api/csv-account/export/route.ts",
+        "drizzle/0015_csv_billing_account_events.sql",
+        "components/csv-business-workspace.tsx",
+        "components/csv-delivery-workspace.tsx",
+        "components/csv-operations-workspace.tsx"
       ]
     }
   ],

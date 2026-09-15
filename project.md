@@ -1,5 +1,11 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-15 — CSV buyer納品・決済台帳・運営操作をローカル統合
+
+CSV仕事へ、D1確定後の`waitUntil`登録、lease期限後の認証poll再開、attempt別成果物、二重完了防止を追加した。buyer用の期限・失効付きbearer capability URL（本人確認ではない）、納品revision、1回修正、明示検収を実装。顧客の自己申告だけでは入金済みにせず、JPY 3,000の厳密照合、署名時刻付きHMAC webhook、注文返金・争議/取消とpayout adjustmentの分離、Provider event冪等性、逆順返金、manual_verified分離を合成APIで検証した。署名済みrefundのcurrency/job/type不一致は挿入前に拒否し、不正なイベントIDをactive ledgerへ残さず、正しい同ID再送・注文accept・月次reconcileが続くことも回帰試験した。運営manual paymentは別操作で使用済みの(actor,idempotency key)を拒否し、payment/audit/outboxが部分保存されないことを確認。運営retryの初回/replay形状を一致させ、本人JSON exportには直接費・納品revision・共有リンク状態/期限を追加（bearer secretとtoken hashは除外）。月次判定は同じbilling accountの複数seller/providerを合算してJST月ごと一行へ保存し、$30閾値／$8.88を判定する。FX/根拠不明はnullの要確認とし、直接費は記録のみで判定未控除。運営者hash allowlist、全体/利用者/売主ごとの新規受付pause/resume、翌月解約、既存job継続、介入・納期・直接費dashboard、D1 batch監査/outbox/idempotencyも実装した。
+
+`npm run build`、`npm run typecheck`、`npm run lint:product`、CSV unit 19/19、loopback Miniflare API 495 assertions、fresh/release/sitesのmigration union 9/9、`npm run csv:check`（35作業、完了12・進行中5・外部gate18）は成功。migration 0012〜0015とfresh/release/sitesを通すD1 unionが既存37表と旧CSV月額行を保持することを検証した。全体`npm test`はNodeテスト276件中273件成功、`tests/mcp-connector.test.mjs`、`tests/mcp.test.mjs`、`tests/mr-pc-adapter.test.mjs`の3件が失敗。macOSホストPython 3.11.2には`os.waitid`がなく、PC citations toolのOS/process guardが動作を拒否するためで、CSVの対象検査は個別に合格している。全体`npm run verify`は同じ既存非CSV test gateで止まる。ここで確認したのはローカル合成状態だけである。独立Queue、実スマホ閉鎖後の処理、market上のbuyer共有許可、実buyer/売上/Provider入金・返金、請求test mode、production secrets・D1 migration・公開は未実施であり、月額請求は有効化していない。[ローカル検証証拠](docs/evidence/csv-local-feature-validation-20260915.ja.json)／[CSV作業台帳](data/csv-business-tasks.json)。
+
 ## 2026-09-13 — rc3-localの実測証拠を統合履歴へ保存
 
 別作業ツリーだけに残っていた`1.0.0-preview.20260912-rc3-local`の限定受入記録を正本へ統合した。
@@ -446,7 +452,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-15 / Rock StudioのSky SDK導線を維持し、CSV整形の決定的変換・独立検査・私有成果物・料金境界を同じSites本番系統へ統合 / 完了 65/91件
+最終更新: 2026-09-15 / Rock StudioのSky SDK導線を維持し、CSVの厳密な購入照合・月次判定・運営/解約/データ出力をローカル合成試験まで実装（外部gateは別管理） / 完了 65/91件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -540,7 +546,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | BIL01 | 先払い月額を停止し、検証済み自動化収益からだけ実費後に月最大888 centsを精算 | 完了 | [記録](docs/sky-billing.md) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing.test.mjs) · [記録](tests/billing-worker.test.mjs) · [記録](services/sky-billing/migrations/0002_earnings_settlement.sql) · [記録](docs/evidence/launch/backend-owner-validation-20260912.json) |
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) |
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |
-| CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 | [記録](data/csv-business-tasks.json) · [記録](docs/csv-business-v1.ja.md) · [記録](lib/csv-transform.ts) · [記録](lib/csv-job-store.ts) · [記録](components/csv-business-workspace.tsx) |
+| CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 | [記録](data/csv-business-tasks.json) · [記録](docs/csv-business-v1.ja.md) · [記録](docs/csv-business-security.ja.md) · [記録](docs/evidence/csv-local-feature-validation-20260915.ja.json) · [記録](lib/csv-transform.ts) · [記録](lib/csv-job-store.ts) · [記録](lib/csv-money.ts) · [記録](lib/csv-operations-store.ts) · [記録](app/api/csv-account/route.ts) · [記録](app/api/csv-account/export/route.ts) · [記録](drizzle/0015_csv_billing_account_events.sql) · [記録](components/csv-business-workspace.tsx) · [記録](components/csv-delivery-workspace.tsx) · [記録](components/csv-operations-workspace.tsx) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -560,7 +566,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: CSVの独立queueを配置して実スマホ閉鎖後の完了を受入し、真正な第三者1件の販売・入金・納品をProvider証拠で検証する。
+次の作業: B05独立Queue配置と実スマホを閉じた後の完了、公式市場が許すbuyer納品経路、実顧客・Provider入金/返金、直接費を含む月額条件のtest請求とrefund/SCA、production operator allowlist/Secrets、外部公開は未実施。
 <!-- project-status:end -->
 
 ## 次段階の設計
