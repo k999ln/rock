@@ -19,14 +19,14 @@
 - `planned`: 設計上必要だが、着手条件または実行環境が揃っていない。
 - `blocked`: 必須の本人判断、機種、鍵、契約、provider、公開許可などが不足している。
 
-現在の機械可読進捗は97 task中69 done、20 in progress、8 planned。件数は作業量や製品完成率を表さない。
+現在の機械可読進捗は99 task中69 done、21 in progress、9 planned。件数は作業量や製品完成率を表さない。
 
 ## 作業ストリーム
 
 | 区分                                                                   | 何を扱うか                                   | 現在の重点                                  |
 | ---------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------- |
 | [Responsibility Boundaries](00-responsibility-boundaries.md)           | Rock、外部Provider／ToB、本人の責任分界      | 誰の完了待ちかをtaskごとに明示              |
-| [Product / UX](01-product-ux.md)                                       | 製品要件、Home、Chat、Studio、画面設計       | RQ01〜RQ40との整合、実利用の不便削減        |
+| [Product / UX](01-product-ux.md)                                       | 製品要件、Home、Chat、Studio、画面設計       | RQ01〜RQ42との整合、実利用の不便削減        |
 | [Sky / MCP](02-sky-mcp.md)                                             | Tool登録、接続、権限、実行先、MCP Connector  | Sky Cloud／provider MCPの本接続とOAuth      |
 | [Wallet / Billing / Providers](03-wallet-billing-providers.md)         | 台帳、精算、USDC、外部Provider               | owner署名、実入金・実払出しの受入           |
 | [Security / Identity / Compliance](04-security-identity-compliance.md) | 認証、秘密、署名、SBOM、法務、マイナンバー   | production鍵、license、独立審査             |

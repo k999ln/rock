@@ -1,0 +1,4 @@
+# Fixed first-party package identities. New MCP/Provider packages require an explicit
+# build-time entry; runtime registration never grants an SELinux domain.
+user=_app name=dev.rock.automation domain=rockstar_platform_app type=rockstar_platform_data_file levelFrom=user
+user=_app name=dev.rock.tools.article domain=rock_tool_app type=rock_tool_data_file levelFrom=user

@@ -11,13 +11,16 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ41/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ42/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ41/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ42/);
   const fakeLocalAiBuild = structuredClone(source);
   fakeLocalAiBuild.localAiRuntime.apkBuilt = true;
   assert.throws(() => validateBaseline(fakeLocalAiBuild), /ローカルLLM/);
+  const fakePlatformBuild = structuredClone(source);
+  fakePlatformBuild.androidPlatformCore.aospImageBuilt = true;
+  assert.throws(() => validateBaseline(fakePlatformBuild), /OS Platform Core/);
   const missingTemplate = structuredClone(source);
   delete missingTemplate.acceptanceTemplate;
   assert.throws(() => validateBaseline(missingTemplate), /acceptanceTemplate/);

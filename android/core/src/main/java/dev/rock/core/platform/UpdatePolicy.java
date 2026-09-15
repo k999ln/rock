@@ -21,7 +21,8 @@ public final class UpdatePolicy {
     private static void requireSameIdentity(ComponentManifest a, ComponentManifest b) {
         if (a.kind != b.kind || !a.componentId.equals(b.componentId) ||
             !a.packageName.equals(b.packageName) || a.uid != b.uid ||
-            !a.securityDomain.equals(b.securityDomain)) {
+            !a.securityDomain.equals(b.securityDomain) ||
+            !a.permissions.equals(b.permissions)) {
             throw new SecurityException("COMPONENT_IDENTITY_CHANGED");
         }
     }

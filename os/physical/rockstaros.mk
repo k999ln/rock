@@ -10,8 +10,10 @@ endif
 include vendor/rockstaros-local-ai/product.mk
 
 PRODUCT_PACKAGES += RockAutomationPrototype RockArticleToolPrototype
+PRODUCT_PRIVATE_SEPOLICY_DIRS += external/rockstaros/android/sepolicy/private
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.rockstaros.stage=device-bringup \
+    ro.rockstaros.platform_api=1 \
     ro.rockstaros.local_ai.stage=source-pinned \
     ro.rockstaros.local_ai.bridge=source-ready \
     ro.rockstaros.local_ai.package=com.localactionassistant \

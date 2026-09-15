@@ -1,10 +1,10 @@
 # RockstarOS — 自動化を接続・実行・管理するOS
 
-RockstarOSは、AI自動化ToolをSkyから接続し、利用者が確認した権限・実行先・費用上限で動かし、結果、費用、収益、復旧状態を一つのOSで管理する製品です。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ40、進捗の正本は [data/project-status.json](data/project-status.json) です。
+RockstarOSは、AI自動化ToolをSkyから接続し、利用者が確認した権限・実行先・費用上限で動かし、結果、費用、収益、復旧状態を一つのOSで管理する製品です。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ42、進捗の正本は [data/project-status.json](data/project-status.json) です。
 
 ## 現在地
 
-更新日: 2026-09-15 / 97 task中69 done・20 in progress・8 planned
+更新日: 2026-09-15 / 99 task中69 done・21 in progress・9 planned
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                           |
 | --------------- | -------------------------------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------ |
@@ -129,7 +129,7 @@ npm run release:check
 
 tob側の自動化ツールを商品として管理するSkyと、自動化で得たお金を管理するWalletに特化したOSを開発します。Skyは単なるツール一覧ではなく、**探す→権限・料金を確認→端末/PC/Cloudへ実行→停止→結果と記録を受け取る**までを一か所につなぎます。[Skyの図・優位性・現在の収録ツール](docs/sky.md)を参照してください。
 
-**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ40）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定です。Skyの8.88 USDは先払い月額ではなく、検証済み自動化収益からだけ回収する月間上限です。
+**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ42）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定です。Skyの8.88 USDは先払い月額ではなく、検証済み自動化収益からだけ回収する月間上限です。
 
 Home以外の全画面には、現在の操作を迷子にせず直接Homeへ戻れる導線を常設しています。モバイルChatは共通ヘッダーを省くため、Chat上部に専用のHomeボタンを表示します。
 
@@ -170,10 +170,10 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 以下は `data/project-status.json` から生成します。日常作業では先に [作業ストリーム案内](docs/workstreams/README.md) を使用してください。
 
 <details>
-<summary>97 taskと段階gateの詳細を開く</summary>
+<summary>99 taskと段階gateの詳細を開く</summary>
 
 <!-- project-status:start -->
-最終更新: 2026-09-15 / Local Action Assistantの物理Android OS統合 / 完了 69/97件
+最終更新: 2026-09-15 / OS Platform Core v1の登録・承認・Wallet・更新境界 / 完了 70/100件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -236,8 +236,11 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | OS07 | Local Action Assistantの固定source・オフラインLLM契約・署名限定Binder client/server・APK staging gateを実装 | 完了 | [記録](docs/local-ai-os-integration-20260915.md) · [記録](contracts/local-ai-runtime.json) · [記録](os/physical/local-action-assistant-source-lock.json) · [記録](docs/evidence/local-ai-overlay-validation-20260915.json) |
 | OS08 | Local Action AssistantのKotlin・arm64 APKをnative buildし、artifact lockとSoong OS imageへ接続 | 進行中 | [記録](docs/local-ai-os-integration-20260915.md) · [記録](.github/workflows/local-ai-apk.yml) · [記録](scripts/build-local-ai-apk.sh) · [記録](scripts/stage-local-ai-apk.py) · [記録](os/physical/local-action-assistant-artifact-lock.json) |
 | OS09 | 確定した対象端末でGGUF import・機内モード推論・変更確認・30分連続温度試験を完走 | 未着手 | [記録](docs/local-ai-os-integration-20260915.md) |
+| OS10 | Tool／MCP／Provider共通API、本人承認、Wallet台帳、暗号化backup、署名更新gateのsourceを実装 | 進行中 | [記録](docs/platform-core.md) · [記録](docs/os-prototype.md) · [記録](contracts/platform-api.json) · [記録](android/core/src/main/java/dev/rock/core/platform/PlatformStore.java) · [記録](android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatformApi.aidl) · [記録](android/automation/src/main/java/dev/rock/automation/RockPlatformService.java) · [記録](android/sepolicy/private/rockstar_platform.te) |
+| OS11 | Platform CoreをAOSPでbuildしSELinux enforcing boot、production署名更新、OTA rollbackを実機検証 | 未着手 | [記録](docs/platform-core.md) |
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
+| G03 | Web DBの保存境界・互換migration・重複防止checkを整理 | 完了 | [記録](docs/data-storage-boundaries.md) · [記録](scripts/check-web-schema.mjs) · [記録](tests/migration-union.test.mjs) |
 | B01 | Sky＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
 | B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
 | B02 | 既存商品のSky実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/sky-role-agents-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) · [記録](tests/subscription-advisor.test.mjs) · [記録](docs/sky-legal-intake-20260912.md) · [記録](tests/legal-intake.test.mjs) · [記録](docs/sky-patent-assistant-20260912.md) · [記録](tests/patent-assistant.test.mjs) |
@@ -370,7 +373,7 @@ Vinext / React / Cloudflare Workers / Sites。Sitesのサイト設定は `.opena
 
 `os:backend:launch` は公開開発fixtureと一時SQLiteだけで、ローカルHubの起動、認証境界、署名ツール実行、SIGTERM、安全な再起動、receipt復元を確認します。実OS boot、実機、外部provider、実資金の検証ではありません。現在のP0/P1/P2と復旧手順は[OSバックエンド最小ローンチ監査](docs/backend-launch-20260912.md)を参照してください。
 
-DB変更時は `npm run db:generate -- --name=変更名` で移行を生成し、SQLを確認します。外付けSSDのmacOSメタデータを除外して生成するラッパーです。既存の移行SQLを書き換えず、追加入力として管理します。
+DB変更時は `npm run db:generate -- --name=変更名` で移行を生成し、SQLを確認します。外付けSSDのmacOSメタデータを除外して生成するラッパーです。既存の移行SQLを書き換えず、追加入力として管理します。`npm run schema:check` はtable名・migration番号・journal・最終schemaの不一致を軽量に検出します。保存先ごとの責任と、削除してはいけない互換migrationは[データ保存境界](docs/data-storage-boundaries.md)に整理しています。
 
 `origin` はGitHubの `k999ln/rock`、`sites` は既存サイトの配信用です。GitHubへのpushだけではサイトは更新されません。本番へ適用するDB移行もSites公開時に別途確認します。
 

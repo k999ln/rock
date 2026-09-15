@@ -1,6 +1,6 @@
 {
   "updatedAt": "2026-09-15",
-  "milestone": "Local Action Assistantの物理Android OS統合",
+  "milestone": "OS Platform Core v1の登録・承認・Wallet・更新境界",
   "nextAction": "Java 17・Android SDK/NDKを備えたLinux環境でoverlayのKotlinとarm64 APKをnative buildし、生成物のhash・permission・ABIをlockしてSoong OS imageへ組み込む。対象端末とSKUの確定、flash、実機推論は別gateとして実施する。",
   "tasks": [
     {
@@ -744,6 +744,28 @@
       ]
     },
     {
+      "id": "OS10",
+      "title": "Tool／MCP／Provider共通API、本人承認、Wallet台帳、暗号化backup、署名更新gateのsourceを実装",
+      "status": "in_progress",
+      "dependsOn": ["OS06"],
+      "evidence": [
+        "docs/platform-core.md",
+        "docs/os-prototype.md",
+        "contracts/platform-api.json",
+        "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+        "android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatformApi.aidl",
+        "android/automation/src/main/java/dev/rock/automation/RockPlatformService.java",
+        "android/sepolicy/private/rockstar_platform.te"
+      ]
+    },
+    {
+      "id": "OS11",
+      "title": "Platform CoreをAOSPでbuildしSELinux enforcing boot、production署名更新、OTA rollbackを実機検証",
+      "status": "planned",
+      "dependsOn": ["OS10", "OS04"],
+      "evidence": ["docs/platform-core.md"]
+    },
+    {
       "id": "G01",
       "title": "GitHubリポジトリの役割・重複監査と正本境界の固定",
       "status": "done",
@@ -761,6 +783,17 @@
       "status": "planned",
       "dependsOn": ["G01"],
       "evidence": ["docs/git-consolidation.md"]
+    },
+    {
+      "id": "G03",
+      "title": "Web DBの保存境界・互換migration・重複防止checkを整理",
+      "status": "done",
+      "dependsOn": ["G01"],
+      "evidence": [
+        "docs/data-storage-boundaries.md",
+        "scripts/check-web-schema.mjs",
+        "tests/migration-union.test.mjs"
+      ]
     },
     {
       "id": "B01",
@@ -1458,7 +1491,7 @@
     },
     "targetDiscussion": "Current consultation mentions Pixel 7 / panther; current source lock remains Pixel 10 / frankel until exact model and SKU are read-only confirmed",
     "recommendedBuildEnvironment": "DigitalOcean CPU-Optimized Regular 48 vCPU / 96 GiB / 600 GiB / Ubuntu 24.04 x86_64; Google Cloud is the alternative for detachable persistent storage",
-    "latestRequest": "Adopt Local Action Assistant as the physical Android OS local LLM runtime; source integration is authorized, while cloud spending, target selection and physical flash remain separate gates",
+    "latestRequest": "Develop the OS-owned common component API, versioning, app isolation, owner approval, Wallet ledger, encrypted migration/backup and signed update/rollback gates; native build and physical release proof remain separate gates",
     "localAi": {
       "status": "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT",
       "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
@@ -1483,6 +1516,17 @@
     "flashReadyTargets": 0,
     "firstPhysicalTarget": null,
     "cloudSpendApproved": false
+  },
+  "platformCore": {
+    "status": "SOURCE_IMPLEMENTED_NATIVE_BUILD_NOT_RUN",
+    "apiVersion": 1,
+    "contract": "contracts/platform-api.json",
+    "record": "docs/platform-core.md",
+    "androidBuilt": false,
+    "aospImageBuilt": false,
+    "selinuxEnforcingVerified": false,
+    "productionSigningVerified": false,
+    "otaRollbackVerified": false
   },
   "currentStateDocument": "docs/current-state-20260911.md"
 }

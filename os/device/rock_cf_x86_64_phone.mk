@@ -5,5 +5,6 @@ PRODUCT_BRAND := RockStar
 PRODUCT_MODEL := Rock star OS development prototype
 PRODUCT_MANUFACTURER := RockStar
 PRODUCT_PACKAGES += RockAutomationPrototype RockArticleToolPrototype
-# Preserve AOSP launcher, SELinux enforcing, power policy, AVB and normal UID isolation.
+PRODUCT_PRIVATE_SEPOLICY_DIRS += device/rock/android/sepolicy/private
+# Preserve AOSP launcher, SELinux enforcing, power policy, AVB and distinct app UIDs.
 # No privileged/root grants, GMS, payments, or physical-device flash targets.

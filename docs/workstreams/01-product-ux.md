@@ -6,7 +6,7 @@ RockstarOSを「自動化を選ぶSky、依頼を扱うChat、収支を扱うWal
 
 ## 現在地
 
-- RQ01〜RQ40を製品ベースへ固定済み。
+- RQ01〜RQ42を製品ベースへ固定済み。
 - Home、全画面からHomeへ戻る導線、Sky／Chat分離、Studio、Developer Preview紹介、共通visual systemを実装済み。
 - 仕事作成、処理履歴、CSV、Wallet、設定への主要導線がある。
 - 画面の存在は、本番provider、実機OS、一般公開の完了を意味しない。

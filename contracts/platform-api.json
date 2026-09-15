@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "apiVersion": 1,
+  "minSupportedApi": 1,
+  "maxSupportedApi": 1,
+  "componentKinds": ["TOOL", "MCP", "PROVIDER"],
+  "registrationTrust": "installed_apk_signer_and_uid_verified_by_os_broker",
+  "managementPermission": "dev.rock.permission.MANAGE_PLATFORM",
+  "approvalFlow": ["PROPOSED", "DEVICE_CREDENTIAL", "ISSUED", "CONSUMED"],
+  "approvalMaxLifetimeMs": 604800000,
+  "ledger": {
+    "model": "append_only_owner_scoped",
+    "idempotency": ["owner_request_key", "owner_provider_reference", "owner_reversed_receipt"],
+    "mutation": "compensating_reversal_only"
+  },
+  "storage": {
+    "schemaVersion": 2,
+    "migration": "transactional_fail_closed",
+    "backupFormat": "rockstar-platform-backup/1",
+    "encryption": "AES-256-GCM_ANDROID_KEYSTORE",
+    "scope": "android_user",
+    "maxPlaintextBytes": 4194304
+  },
+  "updates": {
+    "requires": ["same_component_identity", "same_signer", "platform_api_overlap", "stored_schema_compatibility"],
+    "rollback": "cached_older_version_only"
+  },
+  "isolation": {
+    "uid": "distinct_android_application_uid",
+    "selinux": "build_time_package_allowlist",
+    "runtimeRegistrationCanGrantDomain": false,
+    "crossComponentBinder": "denied_by_source_policy"
+  },
+  "implementationStatus": "SOURCE_IMPLEMENTED_NATIVE_AND_SEPOLICY_BUILD_NOT_RUN",
+  "releaseStatus": "NOT_PRODUCTION_READY"
+}

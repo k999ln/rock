@@ -1,5 +1,7 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-15追記（v1.42）: OS本体へ、Tool／MCP／Providerの共通登録API、Platform API version契約、APK署名・UID・SELinux境界、本人確認付き一回承認、費用上限、停止・失効、追記型Wallet台帳、receipt重複防止、Android Keystore暗号化backup、schema migration、署名・互換性付き更新／rollback gateを追加する。source実装とAndroid/AOSP build、SELinux enforcing boot、production署名、OTA rollback実証は分離し、未実行のrelease gateを合格表示しない。RQ42を追加する。
+
 2026-09-15追記（v1.41）: Local Action AssistantをRockstarOSの物理Android版へ、オフラインのローカルLLM runtimeとして導入する。固定sourceとoverlay、署名限定Binder API、変更系toolの別確認、APK hash・permission・ABI検査を必須にする。source実装とAPK/native build・OS image・実機合格を分離し、未生成artifactを搭載済みと表示しない。RQ41を追加する。
 
 2026-09-15追記（v1.40）: RockstarOS本体、Developer Preview紹介、Rock Studioを同じvisual systemへ広げ、主要導線、状態表示、キーボード・タッチ操作、mobile表示の機能性を監査して改善する。既存の業務機能、金融安全境界、CSV販売実証を維持する。RQ40を追加する。
@@ -394,7 +396,17 @@ Local Action Assistantを、RockstarOSの物理Android版で端末内推論を�
 
 2026-09-15時点ではclient/server source、AIDL契約、overlay、APK staging gateまで実装済み。Java／Android SDKがない現在のMacではKotlin・APK・Soongをbuildしておらず、署名APK、OS image、端末boot、機内モード推論、30分連続試験は未完了である。詳細は [Local Action AssistantのRockstarOS導入](local-ai-os-integration-20260915.md) を正本補助記録とする。
 
-## 1.0への8原則の適用（RQ01〜RQ41を維持）
+## RQ42 OS Platform Coreへ登録・承認・Wallet・更新の安全境界を入れる
+
+Tool／MCP／Providerを同じversioned Binder APIで登録する。OS brokerは入力された自己申告を信用せず、導入済みAPKからpackage version、application UID、署名証明書digestを取得して照合する。component種別ごとのcapability allowlistを適用し、runtime登録からSELinux domainを付与しない。第一者packageのdomain割当てはOS image build時の明示allowlistに限定する。
+
+費用や変更を伴う操作は、アプリが作れるのを提案までとする。非公開のOS画面が対象、操作、payload digest、費用上限、有効期限を表示し、端末credentialで本人確認した後だけ一回承認へ進める。承認はowner、component generation、action、payload、費用上限、有効期限へ固定し、停止、更新、失効で無効化する。承認消費とWallet receiptは同じSQLite transactionで記録する。
+
+Wallet基本台帳はowner別の追記型とし、既存行の書換えではなく相殺receiptで訂正する。owner＋request key、owner＋Provider reference、owner＋取消対象をuniqueにして重複を防ぐ。保存schemaはversionを持ち、対応外versionを初期化せずfail closedにする。backupはowner範囲のsnapshotをAES-256-GCMで暗号化し、Android Keystoreの非export keyを使う。
+
+更新は同じcomponent identity、同じ署名、Platform API互換、保存schema互換、新しいversionを必須にする。rollbackはcache済みの古い互換versionだけを許す。2026-09-15時点はcore、AIDL、Android broker／本人確認画面、source SELinux policy、契約とhost testを実装した段階で、Android/AOSP native build、SELinux enforcing boot、production key署名、OTA rollbackと実機受入は未実行である。詳細は [OS Platform Core v1](platform-core.md) を参照する。
+
+## 1.0への8原則の適用（RQ01〜RQ42を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -414,6 +426,8 @@ Local Action Assistantを、RockstarOSの物理Android版で端末内推論を�
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-15 v1.42: 利用者指定のOS共通登録、API version、UID／SELinux分離、本人承認・費用上限・停止・失効、Wallet台帳・receipt重複防止、暗号化backup・schema migration、署名更新・rollback・互換性検査をRQ42へ追加。source実装とnative／実機release gateを分離する。
 
 2026-09-15 v1.41: 利用者の「OSのシステムに入れる」「どんどん進めて」によりRQ41を追加。Local Action Assistantの固定source、オフラインLLM契約、署名限定Binder client/server source、Headless JS、別確認、APK staging gateを実装し、native build・署名・image・実機試験の未完了境界を維持する。
 

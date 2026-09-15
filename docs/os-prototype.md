@@ -26,6 +26,12 @@
 
 Javaを選んだ理由は、OS側とホストテストで業務コアを共通化し、Kotlin/Composeの依存を初回の接続検証へ持ち込まないため。Kotlin/Composeを用いるシェルの将来案は撤回しない。
 
+### Platform Core v1（OS10、native build未実行）
+
+既存の2 APK構成へ、Tool／MCP／Provider共通の`IPlatformApi`、導入済みAPKのUID・version・署名照合、component capability allowlist、端末credentialを使う二段階承認、費用上限、停止・永久失効、owner別追記型Wallet receipt、v1→v2 DB migration、Android Keystore AES-GCM backup、更新／rollback互換性gateを追加した。Cuttlefish／物理製品設定にはsource SELinux policy directoryも接続した。詳細契約と未実行境界は[Platform Core](platform-core.md)を正本とする。
+
+このsourceはAndroid Gradle、Soong、SELinux compilerでまだbuildしていない。したがってOS10は進行中、enforcing boot・production署名・OTA rollback・実機受入はOS11の未着手gateとし、既存のP1 CI成功を転用しない。
+
 ## 3. 業務とデータの詳細
 
 - 利用者が原稿、まとめ3〜5項目、無料範囲、価格表示、完全版の内容/URLを入力し、端末保存・自動実行へ明示同意する。外部への投稿・購入・送金は行わない。

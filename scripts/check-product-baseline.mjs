@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 41 },
+    { length: 42 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ41の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ42の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -112,6 +112,38 @@ export function validateBaseline(
     requireValue(
       typeof path === 'string' && existsSync(resolve(root, path)),
       `localAiRuntime.${field}: repository内の証拠が必要です`,
+    );
+  }
+  requireValue(
+    data.primaryCapabilities?.includes('os-platform-core') &&
+      data.androidPlatformCore?.status ===
+        'source_implemented_native_and_sepolicy_build_not_run' &&
+      data.androidPlatformCore?.apiVersion === 1 &&
+      JSON.stringify(data.androidPlatformCore?.componentKinds) ===
+        JSON.stringify(['TOOL', 'MCP', 'PROVIDER']) &&
+      data.androidPlatformCore?.identityVerification ===
+        'installed_apk_uid_version_and_signer' &&
+      data.androidPlatformCore?.runtimeSelinuxGrant === false &&
+      data.androidPlatformCore?.approval ===
+        'proposal_then_device_credential_then_single_use' &&
+      data.androidPlatformCore?.ledger ===
+        'append_only_owner_scoped_idempotent_receipts' &&
+      data.androidPlatformCore?.backup ===
+        'aes_256_gcm_android_keystore_owner_scoped' &&
+      data.androidPlatformCore?.schemaVersion === 2 &&
+      data.androidPlatformCore?.migration === 'transactional_fail_closed' &&
+      data.androidPlatformCore?.androidBuilt === false &&
+      data.androidPlatformCore?.aospImageBuilt === false &&
+      data.androidPlatformCore?.selinuxEnforcingVerified === false &&
+      data.androidPlatformCore?.productionSigningVerified === false &&
+      data.androidPlatformCore?.otaRollbackVerified === false,
+    'OS Platform Coreの署名・UID・承認・台帳・暗号化・未build境界を維持してください',
+  );
+  for (const field of ['contract', 'record']) {
+    const path = data.androidPlatformCore?.[field];
+    requireValue(
+      typeof path === 'string' && existsSync(resolve(root, path)),
+      `androidPlatformCore.${field}: repository内の証拠が必要です`,
     );
   }
   requireValue(
@@ -557,6 +589,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ41、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ42、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }
