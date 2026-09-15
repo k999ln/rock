@@ -1,5 +1,6 @@
 import type { Job, JobTool } from './operations';
 import { captureDeviceSession, verifyDevice } from './device';
+import { announceSkyZemaJob } from './sky-zema-handoff';
 export class OperationRequestError extends Error {
   status: number;
   constructor(message: string, status: number) {
@@ -64,9 +65,19 @@ export async function executeTracked<T extends { output: string }>(options: {
     };
     // Only a result report is retried. The task and start claim are never automatically repeated.
     try {
-      await operationRequest(`/api/jobs/${job!.id}`, 'PATCH', payload);
+      const saved = await operationRequest<Job>(
+        `/api/jobs/${job!.id}`,
+        'PATCH',
+        payload,
+      );
+      announceSkyZemaJob(saved);
     } catch {
-      await operationRequest(`/api/jobs/${job!.id}`, 'PATCH', payload);
+      const saved = await operationRequest<Job>(
+        `/api/jobs/${job!.id}`,
+        'PATCH',
+        payload,
+      );
+      announceSkyZemaJob(saved);
     }
   };
   try {
@@ -85,8 +96,12 @@ export async function executeTracked<T extends { output: string }>(options: {
       inputBytes: options.inputBytes,
       deviceId: session?.id ?? null,
     });
+    announceSkyZemaJob(job);
     // An ambiguous start response must not be turned into a second execution.
-    await operationRequest(`/api/jobs/${job.id}`, 'PATCH', { action: 'start' });
+    job = await operationRequest<Job>(`/api/jobs/${job.id}`, 'PATCH', {
+      action: 'start',
+    });
+    announceSkyZemaJob(job);
     started = performance.now();
     window.dispatchEvent(new Event('loop-fund-refresh'));
     await new Promise((resolve) => setTimeout(resolve, 0));

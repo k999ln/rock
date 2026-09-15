@@ -9953,6 +9953,40 @@
   background: #16181c;
   font-size: 13px;
 }
+.sky-chat-launch-tool {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #2f3338;
+  border-radius: 14px;
+  background: #16181c;
+}
+.sky-chat-launch-tool strong {
+  color: #f2f4f5;
+  font-size: 15px;
+}
+.sky-chat-launch-tool p {
+  margin-top: 5px;
+  color: #9ca5ab;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.sky-chat-launch-tool a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 15px;
+  border-radius: 999px;
+  background: #c8ff2e;
+  color: #111;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
 .sky-chat-workflow-body .mr-workbench,
 .sky-chat-workflow-body .fashion-ops-runner {
   margin: 0;
@@ -10264,6 +10298,12 @@
   }
   .sky-chat-workflow-body {
     padding: 9px;
+  }
+  .sky-chat-launch-tool {
+    grid-template-columns: 1fr;
+  }
+  .sky-chat-launch-tool a {
+    width: 100%;
   }
 }
 

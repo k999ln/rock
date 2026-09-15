@@ -211,6 +211,22 @@
       ]
     },
     {
+      "id": "SKY16",
+      "title": "SkyのTool選択と自然文依頼をZemaへ一回引き継ぎ、job状態を即時同期",
+      "status": "done",
+      "dependsOn": ["SKY14"],
+      "evidence": [
+        "lib/sky-zema-handoff.ts",
+        "lib/operations-client.ts",
+        "components/sky-workspace.tsx",
+        "components/sky-chat-workspace.tsx",
+        "components/chat-live-progress.tsx",
+        "tests/sky-zema-handoff.test.mjs",
+        "tests/web-route-style-contract.test.mjs",
+        "docs/sky.md"
+      ]
+    },
+    {
       "id": "WEB02",
       "title": "Developer Preview紹介をOSインストールとSky開発者コード中心の一画面へ再設計",
       "status": "done",
@@ -767,9 +783,7 @@
       "title": "確定した対象端末でGGUF import・機内モード推論・変更確認・30分連続温度試験を完走",
       "status": "planned",
       "dependsOn": ["OS08"],
-      "evidence": [
-        "docs/local-ai-os-integration-20260915.md"
-      ]
+      "evidence": ["docs/local-ai-os-integration-20260915.md"]
     },
     {
       "id": "OS10",

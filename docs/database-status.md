@@ -9,7 +9,7 @@
 - データ境界: 5、table: 69
 - source inventory: 5/5確認済み
 - current production readback: 0/5
-- 作業進捗: 102 task中 72 done、20 in progress、9 planned、1 blocked
+- 作業進捗: 103 task中 73 done、20 in progress、9 planned、1 blocked
 - 現在milestone: OS Platform Core v1の登録・承認・Wallet・更新境界
 
 ## 保存境界と配備状態
