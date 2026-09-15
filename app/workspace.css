@@ -10081,6 +10081,19 @@
   padding: 7px 13px 9px;
   list-style: none;
 }
+.sky-chat-live-tool-link {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 13px 12px;
+  border: 1px solid #d4dacd;
+  border-radius: 999px;
+  color: #394713;
+  background: #efffc0;
+  font-size: 11px;
+  font-weight: 800;
+}
 .sky-chat-live-task li {
   min-width: 0;
   display: grid;

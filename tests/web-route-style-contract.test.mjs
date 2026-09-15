@@ -178,6 +178,12 @@ void test('Chat owns work management while Sky keeps CSV as a catalog Tool', () 
   );
   assert.match(liveProgress, /内部思考や未確認の収益は表示しません/);
   assert.match(liveProgress, /analytics\?\.observedReturnBps == null/);
+  assert.match(liveProgress, /CSV自動化役の進捗/);
+  const csv = readFileSync(
+    resolve(root, 'components/csv-business-workspace.tsx'),
+    'utf8',
+  );
+  assert.match(csv, /router\.push\('\/chat\?tool=rockstar-csv-cleanup'\)/);
   assert.match(workRoute, /redirect\('\/chat\?view=work'\)/);
   assert.match(activityRoute, /redirect\('\/chat\?view=work'\)/);
 });

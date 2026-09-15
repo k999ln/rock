@@ -16,10 +16,23 @@ import type { Job } from '@/lib/operations';
 
 type Props = {
   jobs: Job[];
+  csvJobs: CsvJob[];
   selectedTool: { id: string; name: string } | null;
   fund: AutomationFundPlan | null;
   fundAnalytics: (AutomationFundAnalytics & { fundId: string }) | null;
   fundRefreshing: boolean;
+};
+
+export type CsvJob = {
+  id: string;
+  status: string;
+  inputName: string;
+  inputBytes: number;
+  errorCode: string | null;
+  createdAt: number;
+  updatedAt: number;
+  acceptedAt: number | null;
+  completedAt: number | null;
 };
 
 const toolNames = new Map(catalog.map((tool) => [tool.id, tool.name]));
@@ -138,6 +151,96 @@ function ToolProgress({ job, name }: { job: Job; name: string }) {
   );
 }
 
+function CsvProgress({ job }: { job: CsvJob }) {
+  const accepted = job.acceptedAt != null;
+  const processing = job.status === 'accepted' || job.status === 'processing';
+  const completed = job.status === 'completed';
+  const failed = job.status === 'quality_failed';
+  const label = completed
+    ? '検査合格・保存済み'
+    : failed
+      ? '検査結果の確認が必要'
+      : processing
+        ? '処理中'
+        : '開始確認待ち';
+  const steps: Array<{
+    label: string;
+    detail: string;
+    at: number | null;
+    state: 'done' | 'current' | 'attention' | 'waiting';
+  }> = [
+    {
+      label: 'CSVと条件を受け付けました',
+      detail: `${job.inputName} · ${(job.inputBytes / 1024).toFixed(1)} KB`,
+      at: job.createdAt,
+      state: 'done',
+    },
+    {
+      label: accepted ? '開始条件を確認しました' : '開始確認を待っています',
+      detail: accepted ? '受付内容に紐付け済み' : 'CSV Toolで確認できます',
+      at: job.acceptedAt,
+      state: accepted ? 'done' : 'current',
+    },
+    {
+      label: failed
+        ? '独立検査に合格しませんでした'
+        : completed
+          ? '変換と独立検査が完了'
+          : processing
+            ? '変換と独立検査を実行中'
+            : '変換と独立検査',
+      detail: failed
+        ? job.errorCode || 'CSV Toolから安全に再試行できます'
+        : processing
+          ? '状態を自動更新しています'
+          : completed
+            ? '検査済み成果物を生成'
+            : '開始後に実行します',
+      at: completed ? job.completedAt : processing || failed ? job.updatedAt : null,
+      state: failed
+        ? 'attention'
+        : completed
+          ? 'done'
+          : processing
+            ? 'current'
+            : 'waiting',
+    },
+    {
+      label: completed ? '成果物を履歴へ保存' : '成果物を保存',
+      detail: completed ? 'CSV Toolから取得できます' : '検査合格後に保存されます',
+      at: job.completedAt,
+      state: completed ? 'done' : 'waiting',
+    },
+  ];
+
+  return (
+    <section className="sky-chat-live-task" aria-label="CSV自動化役の進捗">
+      <header>
+        <div>
+          <small>SELECTED TOOL</small>
+          <h3>CSV整形・検査・納品</h3>
+        </div>
+        <span className={`is-${job.status}`}>{label}</span>
+      </header>
+      <ol>
+        {steps.map((step, index) => (
+          <li className={`is-${step.state}`} key={`${job.id}-${index}`}>
+            <span>{activityIcon(step.state)}</span>
+            <div>
+              <strong>{step.label}</strong>
+              <small>{step.detail}</small>
+            </div>
+            {step.at && <time>{time(step.at)}</time>}
+          </li>
+        ))}
+      </ol>
+      <Link className="sky-chat-live-tool-link" href="/csv">
+        CSV Toolを開く
+      </Link>
+    </section>
+  );
+}
+
 function FundProgress({
   fund,
   analytics,
@@ -198,6 +301,7 @@ function FundProgress({
 
 export default function ChatLiveProgress({
   jobs,
+  csvJobs,
   selectedTool,
   fund,
   fundAnalytics,
@@ -206,16 +310,24 @@ export default function ChatLiveProgress({
   const selectedJob = selectedTool
     ? jobs.find((job) => job.tool === selectedTool.id)
     : jobs.find((job) => job.status === 'running' || job.status === 'queued');
+  const selectedCsvJob =
+    selectedTool?.id === 'rockstar-csv-cleanup'
+      ? csvJobs[0]
+      : csvJobs.find(
+          (job) => job.status === 'accepted' || job.status === 'processing',
+        );
   const selectedJobName =
     selectedTool?.name ??
     (selectedJob ? toolNames.get(selectedJob.tool) : null) ??
     'Sky Tool';
 
-  if (!selectedJob && !fund) return null;
+  if (!selectedJob && !selectedCsvJob && !fund) return null;
   const busy =
     fundRefreshing ||
     selectedJob?.status === 'running' ||
-    selectedJob?.status === 'queued';
+    selectedJob?.status === 'queued' ||
+    selectedCsvJob?.status === 'accepted' ||
+    selectedCsvJob?.status === 'processing';
 
   return (
     <section
@@ -237,6 +349,7 @@ export default function ChatLiveProgress({
         <Link href="/chat?view=work">履歴と操作</Link>
       </header>
       {selectedJob && <ToolProgress job={selectedJob} name={selectedJobName} />}
+      {selectedCsvJob && <CsvProgress job={selectedCsvJob} />}
       {fund && (
         <FundProgress fund={fund} analytics={fundAnalytics} jobs={jobs} />
       )}

@@ -298,6 +298,8 @@ export function validateBaseline(
       data.chatInteraction?.liveProgress?.activeJobRefreshSeconds === 3 &&
       data.chatInteraction?.liveProgress?.idleJobRefreshSeconds === 15 &&
       data.chatInteraction?.liveProgress?.fundRefreshSeconds === 30 &&
+      data.chatInteraction?.liveProgress?.csvExecutionHandoff ===
+        '/chat?tool=rockstar-csv-cleanup' &&
       data.chatInteraction?.liveProgress?.chainOfThoughtExposed === false &&
       data.chatInteraction?.liveProgress?.fabricatedProgressAllowed === false &&
       data.chatInteraction?.liveProgress?.unverifiedYieldAllowed === false &&

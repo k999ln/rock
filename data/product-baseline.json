@@ -182,6 +182,7 @@
       "idleJobRefreshSeconds": 15,
       "fundRefreshSeconds": 30,
       "fundSelectionHandoff": "/chat?fund={fundId}",
+      "csvExecutionHandoff": "/chat?tool=rockstar-csv-cleanup",
       "chainOfThoughtExposed": false,
       "fabricatedProgressAllowed": false,
       "unverifiedYieldAllowed": false

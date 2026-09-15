@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Download,
   FileCheck2,
@@ -54,6 +55,7 @@ const columns = (value: string) =>
     .filter(Boolean);
 
 export default function CsvBusinessWorkspace() {
+  const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [rename, setRename] = useState('');
@@ -187,6 +189,7 @@ export default function CsvBusinessWorkspace() {
         updated,
         ...items.filter((item) => item.id !== updated.id),
       ]);
+      router.push('/chat?tool=rockstar-csv-cleanup');
     } catch (reason) {
       setError(
         reason instanceof Error

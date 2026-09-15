@@ -51,6 +51,7 @@ import type {
   AutomationFundPlan,
 } from '@/lib/automation-fund';
 import ChatLiveProgress from '@/components/chat-live-progress';
+import type { CsvJob } from '@/components/chat-live-progress';
 
 type ChatEntry = {
   id: string;
@@ -142,6 +143,7 @@ export default function SkyChatWorkspace() {
   const [fashionConnected, setFashionConnected] = useState(false);
   const [mcpServers, setMcpServers] = useState<McpConnection[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [csvJobs, setCsvJobs] = useState<CsvJob[]>([]);
   const [fundSnapshot, setFundSnapshot] = useState<FundSnapshot | null>(null);
   const [fundRefreshing, setFundRefreshing] = useState(false);
   const [selectedToolId, setSelectedToolId] = useState(AUTO_MODE);
@@ -160,6 +162,9 @@ export default function SkyChatWorkspace() {
   const nextMessageIdRef = useRef(0);
   const hasActiveJob = jobs.some(
     (job) => job.status === 'queued' || job.status === 'running',
+  );
+  const hasActiveCsvJob = csvJobs.some(
+    (job) => job.status === 'accepted' || job.status === 'processing',
   );
 
   useEffect(() => {
@@ -215,6 +220,33 @@ export default function SkyChatWorkspace() {
       window.removeEventListener('focus', refresh);
     };
   }, [hasActiveJob, needsSignin, workView]);
+
+  useEffect(() => {
+    if (workView || needsSignin) return;
+    let active = true;
+    const refresh = () => {
+      void fetch('/api/csv-jobs', { cache: 'no-store' })
+        .then(async (response) => {
+          if (!response.ok) throw new Error('csv refresh failed');
+          return (await response.json()) as { jobs: CsvJob[] };
+        })
+        .then((value) => {
+          if (active) setCsvJobs(value.jobs);
+        })
+        .catch(() => undefined);
+    };
+    refresh();
+    const timer = window.setInterval(
+      refresh,
+      hasActiveCsvJob ? 3_000 : 15_000,
+    );
+    window.addEventListener('focus', refresh);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      window.removeEventListener('focus', refresh);
+    };
+  }, [hasActiveCsvJob, needsSignin, workView]);
 
   useEffect(() => {
     if (workView || needsSignin) return;
@@ -324,6 +356,10 @@ export default function SkyChatWorkspace() {
     fundSnapshot?.funds.find((fund) => fund.id === activeFundId) ?? null;
   const activeFundAnalytics =
     fundSnapshot?.analytics.find((item) => item.fundId === activeFundId) ??
+    null;
+  const progressTool =
+    selectedTool ??
+    readyApps.find((tool) => tool.id === preferredTool) ??
     null;
   const visibleJobs = jobs
     .filter((job) =>
@@ -764,11 +800,12 @@ export default function SkyChatWorkspace() {
 
               <ChatLiveProgress
                 jobs={jobs}
+                csvJobs={csvJobs}
                 selectedTool={
-                  selectedTool
+                  progressTool
                     ? {
-                        id: selectedTool.id,
-                        name: selectedTool.name,
+                        id: progressTool.id,
+                        name: progressTool.name,
                       }
                     : null
                 }
