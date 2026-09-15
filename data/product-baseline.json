@@ -1,5 +1,5 @@
 {
-  "version": "1.49",
+  "version": "1.50",
   "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -177,6 +177,16 @@
     "manualAppSelection": "optional",
     "connectedMcpPresentation": "one_bot_per_connected_server_or_ready_product",
     "controlSurface": "zema_thread_and_work_center",
+    "skyHandoff": {
+      "transport": "same_tab_session_storage",
+      "selectedToolDeepLink": "/chat?tool={toolId}",
+      "requestInUrl": false,
+      "serverPersistence": false,
+      "consumeOnce": true,
+      "ttlSeconds": 600,
+      "maxRequestChars": 2000,
+      "liveJobEvent": "rockstaros:sky-zema-job"
+    },
     "liveProgress": {
       "presentation": "grok_style_observable_activity_timeline",
       "sources": [

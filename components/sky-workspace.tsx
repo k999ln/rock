@@ -63,6 +63,7 @@ import {
   OperationRequestError,
 } from '@/lib/operations-client';
 import type { SkyConnection } from '@/lib/operations';
+import { queueSkyZemaHandoff } from '@/lib/sky-zema-handoff';
 
 type FeedFilter = 'おすすめ' | '今使える' | '導入候補';
 
@@ -278,12 +279,17 @@ export default function SkyWorkspace({
     );
   });
 
-  function openConnectedTool(tool: Automation) {
+  function openConnectedTool(tool: Automation, request = '') {
     setSelected(null);
-    router.push(tool.launchPath ?? `/chat?tool=${encodeURIComponent(tool.id)}`);
+    try {
+      queueSkyZemaHandoff(tool.id, request);
+    } catch {
+      // The selected Tool still opens when private tab storage is unavailable.
+    }
+    router.push(`/chat?tool=${encodeURIComponent(tool.id)}`);
   }
 
-  function primaryAction(tool: Automation) {
+  function primaryAction(tool: Automation, request = '') {
     if (tool.status === 'candidate') {
       setSelected(tool);
       return;
@@ -293,11 +299,11 @@ export default function SkyWorkspace({
       return;
     }
     if (tool.launchPath) {
-      openConnectedTool(tool);
+      openConnectedTool(tool, request);
       return;
     }
     if (connectedTools.includes(tool.id)) {
-      openConnectedTool(tool);
+      openConnectedTool(tool, request);
       return;
     }
     setConnectionError('');
@@ -335,13 +341,13 @@ export default function SkyWorkspace({
     setLastRequest(request);
     setRoutedTool(tool);
     setRouteMessage(
-      `${roleFor(tool)}が進めます。内容を確認してツールを開いてください。`,
+      `${roleFor(tool)}が進めます。Zemaへ引き継いで、実行と進捗をまとめて管理できます。`,
     );
   }
 
   function openRole(tool: Automation, request = '') {
     chooseRole(tool, request);
-    primaryAction(tool);
+    primaryAction(tool, request);
   }
 
   function submitRequest(event: SyntheticEvent<HTMLFormElement>) {
@@ -394,6 +400,7 @@ export default function SkyWorkspace({
                   onChange={(event) => setRequestText(event.target.value)}
                   placeholder="何をしてほしい？"
                   aria-label="Skyへの依頼"
+                  maxLength={2000}
                 />
                 <button
                   disabled={!requestText.trim()}
@@ -425,10 +432,12 @@ export default function SkyWorkspace({
                     <p className="sky-route-answer">{routeMessage}</p>
                   </div>
                   {routedTool && (
-                    <button onClick={() => primaryAction(routedTool)}>
+                    <button
+                      onClick={() => primaryAction(routedTool, lastRequest)}
+                    >
                       {routedTool.runner === 'delivery-local'
                         ? 'PC接続へ'
-                        : 'ツールを開く'}
+                        : 'Zemaへ引き継ぐ'}
                       <ArrowRight size={15} />
                     </button>
                   )}
@@ -717,10 +726,10 @@ export default function SkyWorkspace({
                         <strong>接続済み</strong>
                         <span>次からはZemaでアプリを選ぶだけです。</span>
                       </div>
-                      <button onClick={() => openConnectedTool(selected)}>
-                        {selected.launchPath
-                          ? '収益フローを開く'
-                          : 'Zemaで使う'}
+                      <button
+                        onClick={() => openConnectedTool(selected, lastRequest)}
+                      >
+                        Zemaで使う
                         <ArrowRight size={16} />
                       </button>
                     </div>
