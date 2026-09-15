@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve, dirname, isAbsolute, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 40 },
+    { length: 41 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ40の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ41の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -88,6 +88,32 @@ export function validateBaseline(
     data.primaryCapabilities?.includes('goal-driven-brand-operations'),
     '目標駆動のブランド運営能力が必要です',
   );
+  requireValue(
+    data.primaryCapabilities?.includes('local-offline-ai-runtime') &&
+      data.localAiRuntime?.status ===
+        'client_and_server_source_implemented_native_not_built' &&
+      data.localAiRuntime?.sourceCommit ===
+        '99b1c40d76f719cbba9c72d9f481c1b2df245504' &&
+      data.localAiRuntime?.engine === 'llama.rn' &&
+      data.localAiRuntime?.engineVersion === '0.12.9' &&
+      data.localAiRuntime?.modelFormat === 'GGUF' &&
+      data.localAiRuntime?.modelBundled === false &&
+      data.localAiRuntime?.releaseNetwork === 'none' &&
+      data.localAiRuntime?.trustMode === 'fixed_package_same_signer' &&
+      data.localAiRuntime?.mutationConfirmation === 'required_separate_call' &&
+      data.localAiRuntime?.apkBuilt === false &&
+      data.localAiRuntime?.soongBuilt === false &&
+      data.localAiRuntime?.imageBuilt === false &&
+      data.localAiRuntime?.deviceInferenceVerified === false,
+    'ローカルLLMの固定source・オフライン・署名・別確認・未build境界を維持してください',
+  );
+  for (const field of ['sourceLock', 'artifactLock', 'contract', 'record']) {
+    const path = data.localAiRuntime?.[field];
+    requireValue(
+      typeof path === 'string' && existsSync(resolve(root, path)),
+      `localAiRuntime.${field}: repository内の証拠が必要です`,
+    );
+  }
   requireValue(
     data.primaryCapabilities?.includes('csv-paid-work-pilot') &&
       data.csvBusinessPilot?.productId === 'rockstar-csv-cleanup' &&
@@ -531,6 +557,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ40、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ41、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

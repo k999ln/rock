@@ -1,6 +1,7 @@
 # Rock star 開発の継続ルール
 
-- 最初に docs/product-baseline.md、data/product-baseline.json、README.md、project.md、data/project-status.json を読む。確定要望はRQ01〜RQ18。新しい明示指示がある場合だけ理由を記録して更新する。最新の実行プロンプトはdata/product-baseline.jsonのnextPrompt。現在の統合状態はdocs/current-state-20260911.md。
+- 最初に docs/product-baseline.md、data/product-baseline.json、README.md、project.md、data/project-status.json を読む。確定要望はRQ01〜RQ40。新しい明示指示がある場合だけ理由を記録して更新する。最新の実行プロンプトはdata/product-baseline.jsonのnextPrompt。現在の統合状態はdocs/current-state-20260911.md。
+- 正本5ファイルを確認した後、作業分野の入口として docs/workstreams/README.md と docs/workstreams/00-responsibility-boundaries.md を読む。Security、MCP、Wallet、Web、QEMU、Android、Game、事業pilot、Git運用のうち主担当を一つ決め、ROCK／EXTERNAL／JOINT／OWNERの責任、既存task ID、完了条件、検証コマンドを使う。新しい日付付き文書を入口として乱立させず、該当workstreamの関連資料へ追加する。
 - 設計v1.1の実装は承認済み。docs/execution-approval-20260909.mdとdata/execution-approval.jsonを読み、再承認で止めない。公開・実機導入・MetaMask実資金試験は準備が整うことを条件に了承されている。対象・機種適合・取引条件の未指定を補い、条件付き了承を実行済みとしない。
 - 「現段階の進捗からプロンプト作成」では docs/prompt-playbook.md に従い、npm run prompt:context または同等の読み取りでGitHubのmain・branch・PR・同一SHAのCIを確認する。対象コード/証拠を必ず読む。docs/progress-audit-20260909.mdは履歴snapshot。取得失敗を最新確認済みとしない。
 - 現在はmain/nativeだけでなく codex/os-game-design-review-20260909 の最新設計も必須入力。docs/design-implementation-alignment-20260909.md、statusのphaseGatesを読む。単一owner多端末を複数player基盤に、チェックなしをCI成功に、文書訂正をruntime修正に置き換えない。予測市場/ゲーム資産売買は検討のみ、実行許可ではない。

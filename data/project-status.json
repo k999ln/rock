@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-15",
-  "milestone": "RockstarOS全体のvisual system統一とフロント機能性監査・改善",
-  "nextAction": "主要OS画面の操作導線、状態表示、モバイル表示を検証し、修正後の同一sourceをSites本番へ配備する。",
+  "milestone": "Local Action Assistantの物理Android OS統合",
+  "nextAction": "Java 17・Android SDK/NDKを備えたLinux環境でoverlayのKotlinとarm64 APKをnative buildし、生成物のhash・permission・ABIをlockしてSoong OS imageへ組み込む。対象端末とSKUの確定、flash、実機推論は別gateとして実施する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -707,6 +707,40 @@
         "docs/os-prototype.md",
         "docs/validation.md",
         "android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java"
+      ]
+    },
+    {
+      "id": "OS07",
+      "title": "Local Action Assistantの固定source・オフラインLLM契約・署名限定Binder client/server・APK staging gateを実装",
+      "status": "done",
+      "dependsOn": ["OS01"],
+      "evidence": [
+        "docs/local-ai-os-integration-20260915.md",
+        "contracts/local-ai-runtime.json",
+        "os/physical/local-action-assistant-source-lock.json",
+        "docs/evidence/local-ai-overlay-validation-20260915.json"
+      ]
+    },
+    {
+      "id": "OS08",
+      "title": "Local Action AssistantのKotlin・arm64 APKをnative buildし、artifact lockとSoong OS imageへ接続",
+      "status": "in_progress",
+      "dependsOn": ["OS07"],
+      "evidence": [
+        "docs/local-ai-os-integration-20260915.md",
+        ".github/workflows/local-ai-apk.yml",
+        "scripts/build-local-ai-apk.sh",
+        "scripts/stage-local-ai-apk.py",
+        "os/physical/local-action-assistant-artifact-lock.json"
+      ]
+    },
+    {
+      "id": "OS09",
+      "title": "確定した対象端末でGGUF import・機内モード推論・変更確認・30分連続温度試験を完走",
+      "status": "planned",
+      "dependsOn": ["OS08"],
+      "evidence": [
+        "docs/local-ai-os-integration-20260915.md"
       ]
     },
     {
@@ -1424,7 +1458,21 @@
     },
     "targetDiscussion": "Current consultation mentions Pixel 7 / panther; current source lock remains Pixel 10 / frankel until exact model and SKU are read-only confirmed",
     "recommendedBuildEnvironment": "DigitalOcean CPU-Optimized Regular 48 vCPU / 96 GiB / 600 GiB / Ubuntu 24.04 x86_64; Google Cloud is the alternative for detachable persistent storage",
-    "latestRequest": "Adopt shared Core plus per-model Device Support Packages and separate native OS, experimental GSI, client-only and unsupported delivery modes; no cloud spending or physical flash authorization"
+    "latestRequest": "Adopt Local Action Assistant as the physical Android OS local LLM runtime; source integration is authorized, while cloud spending, target selection and physical flash remain separate gates",
+    "localAi": {
+      "status": "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT",
+      "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+      "engine": "llama.rn@0.12.9",
+      "modelFormat": "GGUF",
+      "modelBundled": false,
+      "releaseNetwork": "none",
+      "apkBuilt": false,
+      "soongBuilt": false,
+      "imageBuilt": false,
+      "deviceInferenceVerified": false,
+      "contract": "contracts/local-ai-runtime.json",
+      "record": "docs/local-ai-os-integration-20260915.md"
+    }
   },
   "deviceSupportArchitecture": {
     "status": "DESIGN_AND_VALIDATION_IMPLEMENTED",

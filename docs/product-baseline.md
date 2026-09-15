@@ -1,5 +1,7 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-15追記（v1.41）: Local Action AssistantをRockstarOSの物理Android版へ、オフラインのローカルLLM runtimeとして導入する。固定sourceとoverlay、署名限定Binder API、変更系toolの別確認、APK hash・permission・ABI検査を必須にする。source実装とAPK/native build・OS image・実機合格を分離し、未生成artifactを搭載済みと表示しない。RQ41を追加する。
+
 2026-09-15追記（v1.40）: RockstarOS本体、Developer Preview紹介、Rock Studioを同じvisual systemへ広げ、主要導線、状態表示、キーボード・タッチ操作、mobile表示の機能性を監査して改善する。既存の業務機能、金融安全境界、CSV販売実証を維持する。RQ40を追加する。
 
 2026-09-15追記（v1.39）: Developer Preview紹介とRock Studioを、一つのRockstarOS visual systemへ統一する。黒背景、黄緑アクセント、太い英字見出し、monospaceの補助表示、丸い主操作を共有し、Studioはコード入力を第一画面の主役にする。機能・安全境界・Home導線は維持する。RQ39を追加する。
@@ -384,7 +386,15 @@ Home、共通workspace shell、Developer Preview紹介、Rock Studioを、黒い
 
 端末内設定の保存失敗でHome全体を壊さず、編集dialogはEscape、外側click、明示的な閉じる操作に対応する。nested routeでもsidebarの現在地を正しく表示し、処理中に移動を止める場合は視覚・accessibilityの両方でdisabled状態を示す。mobileではheader、app grid、主要buttonを横にはみ出さず、通常ラベルを13px未満へ縮めない。金融・実行・CSVの業務契約、安全境界、保存先、公開状態はこの外観・操作改善で変更しない。
 
-## 1.0への8原則の適用（RQ01〜RQ40を維持）
+## RQ41 Local Action Assistantを物理Android OSのローカルLLMにする
+
+Local Action Assistantを、RockstarOSの物理Android版で端末内推論を担当する固定runtimeとして導入する。上流repository、完全なcommit、MIT license、`llama.rn`版、主要source hashをlockし、レビュー済みoverlayだけで署名限定Binder serviceとHeadless JS推論を追加する。OS側は固定package、同一署名、API version、明示componentを検証し、未知event、過大payload、timeout、複数tool callをfail closedにする。
+
+読み取りtoolは許可リスト内だけを実行し、メモ・リマインダー作成はproposalを端末内へ一時保存して、OSの別確認呼出しで本人が許可するまで実行しない。release APKは通信権限なし、arm64 native library、固定SHA-256とsizeを検査してからSoongへstageし、AOSPのrelease署名工程へ渡す。GGUFはsourceやAPKへ同梱せず、配布元、license、hash、端末RAM・速度・温度を確認後にimportする。
+
+2026-09-15時点ではclient/server source、AIDL契約、overlay、APK staging gateまで実装済み。Java／Android SDKがない現在のMacではKotlin・APK・Soongをbuildしておらず、署名APK、OS image、端末boot、機内モード推論、30分連続試験は未完了である。詳細は [Local Action AssistantのRockstarOS導入](local-ai-os-integration-20260915.md) を正本補助記録とする。
+
+## 1.0への8原則の適用（RQ01〜RQ41を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -404,6 +414,8 @@ Home、共通workspace shell、Developer Preview紹介、Rock Studioを、黒い
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-15 v1.41: 利用者の「OSのシステムに入れる」「どんどん進めて」によりRQ41を追加。Local Action Assistantの固定source、オフラインLLM契約、署名限定Binder client/server source、Headless JS、別確認、APK staging gateを実装し、native build・署名・image・実機試験の未完了境界を維持する。
 
 2026-09-15 v1.40: 利用者の「OSのデザインも統一し、フロントデザインの機能性の問題を洗い出して改善」によりRQ40を追加。OS本体へ共通visual systemを適用し、主要routeの操作性、状態表示、keyboard focus、mobile overflowを監査して修正する。既存機能と安全境界を保持した同一sourceをSites本番へ配備する。
 

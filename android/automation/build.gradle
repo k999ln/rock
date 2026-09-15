@@ -10,6 +10,7 @@ android {
 }
 dependencies {
     implementation project(':tool-sdk')
+    implementation project(':local-ai-api')
     androidTestImplementation 'androidx.test:runner:1.6.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
 }

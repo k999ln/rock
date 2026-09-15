@@ -1,0 +1,25 @@
+{
+  "schema": "rock-local-ai-source-validation/1",
+  "validatedAt": "2026-09-15",
+  "repository": "https://github.com/noellesugar99/local-action-assistant.git",
+  "commit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+  "command": "npm run verify",
+  "results": {
+    "typescript": "PASS",
+    "jestSuites": 4,
+    "jestTests": 10,
+    "jest": "PASS",
+    "eslint": "PASS",
+    "offlineManifestSourceCheck": "PASS",
+    "npmAuditVulnerabilities": 0
+  },
+  "notRun": [
+    "Android Gradle build",
+    "merged APK manifest inspection",
+    "AOSP Soong build",
+    "APK signing",
+    "OS image build",
+    "physical device inference"
+  ],
+  "hostLimit": "No Java runtime or Android SDK is installed on this macOS host."
+}

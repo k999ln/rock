@@ -1,0 +1,15 @@
+{
+  "schema": "rock-local-ai-apk/1",
+  "stage": "APK_NOT_BUILT",
+  "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+  "moduleName": "RockLocalActionAssistant",
+  "packageName": "com.localactionassistant",
+  "versionCode": 1,
+  "requiredAbis": ["arm64-v8a"],
+  "internetPermission": false,
+  "aospCertificate": "testkey",
+  "apkSha256": null,
+  "apkSizeBytes": null,
+  "imageIntegrated": false,
+  "notes": "Populate hash and size and change stage to APK_REVIEWED_NOT_IN_IMAGE only after reviewing a reproducible unsigned release APK. AOSP signs the imported module; production release key replacement remains a separate gate."
+}

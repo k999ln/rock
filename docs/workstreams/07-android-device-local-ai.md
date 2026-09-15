@@ -1,0 +1,45 @@
+# Android / Device / Local AI
+
+## 目的
+
+共通RockstarOS Coreを正確な機種／SKU向けDevice Support Packageへ組み込み、Android/AOSPのfull build、署名、flash、boot、OTA、rollback、純正復旧を実機で成立させる。端末内AIはこの実機基盤の上で最小権限にする。
+
+## 現在地
+
+- Android P1は2 APK、SQLite、Binder、JobScheduler、標準emulator CIまで到達。
+- Pixel 7/pantherとPixel 10/frankelは候補で、実機対象は未確定。物理端末gateは0/5。
+- GrapheneOS source lock、build準備script、Rock組込み設定はあるが、full Soong build、flash、実機bootは未実施。
+- Local Action Assistantはsource pin、hash検査、署名限定Binder client/server契約、overlay、APK staging gateまで実装済み。Kotlin／arm64 APKのnative build、OS imageへの搭載、GGUF、実機推論は未完了。
+
+主なtask: `DSP01`, `OS02`〜`OS08`, `N03`〜`N05`, `RLS02`。Local AIは`OS07`を完了、`OS08`を進行中として追跡する。
+
+## 次に進める順番
+
+1. 実端末から機種、型番、SKU、codename、OEM unlock、bootloader状態を読取り専用で確認する。
+2. 対象を一機種へ固定し、BSP、vendor、kernel、partition、AVB、stock recoveryをhash付きで固定する。
+3. Ubuntu 24.04 x86_64の十分なbuild環境でfull source取得、vendor生成、Soong buildを行う。
+4. Sky／Wallet／Game接続層をAndroidへ移植し、UID、SELinux、暗号化、電源制約を受け入れる。
+5. production署名、flash、boot、hardware、CTS/VTS、OTA/rollback、純正復旧を同じ端末・buildで検証する。
+6. Local AI service、署名済みAPK、GGUF、airplane mode、tool確認、熱・RAM・30分稼働を追加受入する。
+
+## 完了条件
+
+- exact model/SKUとbuild fingerprintが証拠に固定される。
+- QEMUやemulatorの成功を実機へ転用しない。
+- Local AIの変更系Toolは本人確認なしに実行しない。
+- debug署名、未審査weight、任意root/shellを製品へ含めない。
+
+## 関連資料
+
+- [Device support architecture](../device-support-architecture.md)
+- [Phone preview](../phone-preview-20260911.md)
+- [Android trial](../android-trial.md)
+- [Local AI integration](../local-ai-os-integration-20260915.md)
+- [Device matrix](../../data/device-support-matrix.json)
+- [Android release audit](../../data/android-physical-release-audit.json)
+
+## 検証
+
+- `npm run device-support:check`
+- `python3 -m unittest tests/test_prepare_phone_build.py tests/test_stage_local_ai_apk.py`
+- 対象端末のflash／boot／OTA／rollback／stock recovery受入

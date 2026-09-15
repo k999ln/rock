@@ -1,0 +1,25 @@
+{
+  "schema": "rock-local-ai-overlay-validation/1",
+  "validatedAt": "2026-09-15",
+  "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+  "overlaySha256": "2e8d7e14ce760c03901ba63e24930df1200ca3864674a3cb5cab9749d943960c",
+  "results": {
+    "cleanArchiveOverlayApply": "PASS",
+    "aidlClientServerByteParity": "PASS",
+    "mutationProposalTtl": "5_MINUTES_FAIL_CLOSED",
+    "typescript": "PASS",
+    "eslint": "PASS",
+    "jestSuites": 4,
+    "jestTests": 10,
+    "jest": "PASS"
+  },
+  "notRun": [
+    "Kotlin compilation",
+    "Android Gradle build",
+    "merged APK manifest inspection",
+    "Binder instrumentation test",
+    "AOSP Soong build",
+    "physical device inference"
+  ],
+  "hostLimit": "No Java runtime or Android SDK is installed on this macOS host."
+}
