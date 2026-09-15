@@ -18,7 +18,7 @@ typed asset registry
   -> position + append-only event
 ```
 
-proposalの注文条件・risk・idempotency keyは更新禁止、approval・receipt・eventはmigration triggerで更新・削除を拒否する。APIはSites gatewayの本人IDとsame-originを必須にし、未知field、失効、上限超過、digest不一致、未承認実行、LIVE modeを拒否する。PAPER opening balanceは1,000 USD、1注文上限は500 USD、総open exposureは1,000 USDで、これは換金・譲渡・外部注文できない検証値である。
+proposalの注文条件・risk・idempotency keyは更新禁止、approval・receipt・eventはmigration triggerで更新・削除を拒否する。追加のrelation guardは、approval・reservation・receipt・positionが同じownerとproposalへ結び付くこと、reservation金額とpositionのasset・side・数量・価格・notionalがproposalと一致することをDB側でも強制する。APIはSites gatewayの本人IDとsame-originを必須にし、未知field、失効、上限超過、digest不一致、未承認実行、LIVE modeを拒否する。PAPER opening balanceは1,000 USD、1注文上限は500 USD、総open exposureは1,000 USDで、これは換金・譲渡・外部注文できない検証値である。
 
 ## 自律型ファンド
 

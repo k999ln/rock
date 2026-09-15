@@ -4,7 +4,7 @@ RockstarOSには複数のSQLite/D1があり、同じような名前のtableで�
 
 | 境界                | 正本                                                                   | 主な用途                                        | 関係の強制                                                                     |
 | ------------------- | ---------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------ |
-| Web D1              | `db/schema.ts`、`drizzle/`                                             | Hub、仕事、Marketplace、CSV、Sky                | 現状は主にindex/unique制約。`user_id`や`proposal_id`の多くはアプリ側の論理関係 |
+| Web D1              | `db/schema.ts`、`drizzle/`                                             | Hub、仕事、Marketplace、CSV、Sky                | index/unique制約と、Marketplace所有者・proposal関係のtrigger                    |
 | OS Wallet/Spend     | `systems/rock-star-os/src/blackberryrock/wallet.py`、`spend.py`        | 追記型Wallet、支出承認、保留、receipt、position | SQLite `REFERENCES` と `PRAGMA foreign_keys=ON`                                |
 | Android Work Engine | `android/core/src/main/resources/schema.sql`                           | work、artifact、run、event                      | SQLite外部キー                                                                 |
 | Android Platform    | `android/core/src/main/java/dev/rock/core/platform/PlatformStore.java` | component、owner approval、OS側ledger、event    | 現在はtransactionとアプリ検証が中心。列間は論理関係                            |
@@ -24,3 +24,5 @@ RockstarOSには複数のSQLite/D1があり、同じような名前のtableで�
 4. `npm test -- --test-name-pattern='migration'` または `npm run verify` で、過去2履歴からのデータ保持を含む重い検証を行う。
 
 `schema:check` は、公開済み0002の2ファイルと0004の収束定義だけを明示的に許可する。新しい番号重複、非冪等な再定義、journal漏れ、`db/schema.ts` とmigration結果の差は失敗する。
+
+Marketplaceはtable再作成を避け、`0012_marketplace_relation_guards.sql` のtriggerで新規書込みを検査する。approvalは同じowner・digest・`PROPOSED` proposal、reservation/receipt/positionは同じownerの`EXECUTED` proposalだけを受け入れる。reservationの金額とpositionのasset・side・数量・価格・notionalもproposalと一致しなければならない。既存行の削除や書換えは行わない。

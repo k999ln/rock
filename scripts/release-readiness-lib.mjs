@@ -989,7 +989,7 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
   ) {
     fail(label + ': static asset用_headerがsecurity policy正本と不一致です');
   }
-  const localEvidencePath = 'docs/evidence/launch/web-security-local-20260913.json';
+  const localEvidencePath = 'docs/evidence/launch/web-security-local-20260915.json';
   const localEvidence = readJson(resolve(root, localEvidencePath));
   const localInputs = {
     'data/web-security-policy.json': sha256(readFileSync(resolve(root, 'data/web-security-policy.json'))),

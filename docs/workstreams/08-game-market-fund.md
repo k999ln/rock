@@ -8,10 +8,11 @@
 
 - 複数owner/player/game分離、ATMと独立したゲーム交換fixture、作者SDKとsandboxを実装・検証済み。
 - PAPER市場はproposal、risk、digest承認、receipt、position、append-only eventを実装済み。
+- Web/D1はapproval・reservation・receipt・positionのowner／proposal一致をrelation triggerで強制し、直接SQLでも孤立・別owner参照を拒否する。
 - ファンドは検証済みreceiptがある場合だけ構成・配分・観測利回りを再計算する。
 - 実ゲームsandbox、実市場注文、清算、実Wallet資金移動、自動再投資は未接続。
 
-主なtask: `GX00`, `GX01`, `GX02`, `DX01`, `MKT01`, `SPN01`, `FND01`。
+主なtask: `GX00`, `GX01`, `GX02`, `DX01`, `MKT01`, `MKT02`, `SPN01`, `FND01`。
 
 ## 次に進める順番
 

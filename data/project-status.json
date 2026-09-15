@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-15",
   "milestone": "OS Platform Core v1の登録・承認・Wallet・更新境界",
-  "nextAction": "Java 17・Android SDK/NDKを備えたLinux環境でoverlayのKotlinとarm64 APKをnative buildし、生成物のhash・permission・ABIをlockしてSoong OS imageへ組み込む。対象端末とSKUの確定、flash、実機推論は別gateとして実施する。",
+  "nextAction": "最短ローンチ経路としてWEB01を優先する。現在のWeb/PWA・D1差分を一つの検証済みcommitへ固定してGitHubへ保存し、ownerが本人限定Sitesへの最新版同期を明示承認した後、同じSHAを配備して認証後の主要導線・API・security header・migrationをreadbackする。一般公開、QEMU配布、Android実機、本番金融は別gateのまま維持する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -339,6 +339,32 @@
       ]
     },
     {
+      "id": "MKT02",
+      "title": "Web PAPER市場のapproval・reservation・receipt・position関係をD1で強制",
+      "status": "done",
+      "dependsOn": ["MKT01"],
+      "evidence": [
+        "drizzle/0012_marketplace_relation_guards.sql",
+        "tests/everything-market.test.mjs",
+        "scripts/check-web-schema.mjs",
+        "docs/everything-market-and-autonomous-fund-20260913.md",
+        "docs/data-storage-boundaries.md"
+      ]
+    },
+    {
+      "id": "DB01",
+      "title": "全データ境界・table・migration・本番readback状態を一つの監査レポートへ統合",
+      "status": "done",
+      "dependsOn": ["MKT02"],
+      "evidence": [
+        "scripts/database-status.mjs",
+        "data/database-deployments.json",
+        "data/database-status.json",
+        "docs/database-status.md",
+        "tests/database-status.test.mjs"
+      ]
+    },
+    {
       "id": "SPN01",
       "title": "native Walletへsimulation/PAPER限定のValue/Spend台帳・exact approval・再照合を統合",
       "status": "done",
@@ -516,7 +542,7 @@
         "public/_headers",
         "scripts/check-web-security-response.mjs",
         "tests/web-security-policy.test.mjs",
-        "docs/evidence/launch/web-security-local-20260913.json",
+        "docs/evidence/launch/web-security-local-20260915.json",
         "docs/validation.md"
       ]
     },
@@ -529,7 +555,7 @@
         "public/sw.js",
         "components/system-maintenance.tsx",
         "tests/service-worker-update.test.mjs",
-        "docs/evidence/launch/web-security-local-20260913.json",
+        "docs/evidence/launch/web-security-local-20260915.json",
         "docs/validation.md"
       ]
     },
@@ -545,7 +571,7 @@
         "public/rock-icon-maskable.svg",
         "scripts/check-web-security-response.mjs",
         "tests/pwa-installability.test.mjs",
-        "docs/evidence/launch/web-security-local-20260913.json",
+        "docs/evidence/launch/web-security-local-20260915.json",
         "docs/validation.md"
       ]
     },

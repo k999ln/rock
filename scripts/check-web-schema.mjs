@@ -98,6 +98,16 @@ for (const [table, entries] of declarations) {
   }
 }
 
+const requiredMarketplaceTriggers = [
+  'marketplace_approvals_relation_guard',
+  'marketplace_position_binding_frozen',
+  'marketplace_positions_no_delete',
+  'marketplace_positions_relation_guard',
+  'marketplace_receipts_relation_guard',
+  'marketplace_reservation_binding_frozen',
+  'marketplace_reservations_no_delete',
+  'marketplace_reservations_relation_guard',
+];
 const database = new DatabaseSync(':memory:');
 try {
   for (const file of sqlFiles) {
@@ -119,10 +129,38 @@ try {
     throw new Error(
       `web schema: canonical schemaとmigration結果が不一致です\nmissing: ${missing.join(', ') || '-'}\nextra: ${extra.join(', ') || '-'}`,
     );
+
+  const migratedTriggers = new Set(
+    database
+      .prepare(
+        "SELECT name FROM sqlite_master WHERE type='trigger' ORDER BY name",
+      )
+      .all()
+      .map(({ name }) => name),
+  );
+  const missingTriggers = requiredMarketplaceTriggers.filter(
+    (name) => !migratedTriggers.has(name),
+  );
+  if (missingTriggers.length)
+    throw new Error(
+      `web schema: Marketplace関係guardが不足しています: ${missingTriggers.join(', ')}`,
+    );
 } finally {
   database.close();
 }
 
-console.log(
-  `web schema: ${canonicalSet.size} tables、accidental duplicate 0、published convergence ${convergenceDeclarations} definitions、migration/journal一致`,
-);
+export const webSchemaStatus = Object.freeze({
+  tableCount: canonicalSet.size,
+  tables: [...canonicalSet].sort((left, right) => left.localeCompare(right)),
+  migrationCount: sqlFiles.length,
+  latestMigration: sqlFiles.at(-1),
+  accidentalDuplicateCount: 0,
+  publishedConvergenceDeclarations: convergenceDeclarations,
+  marketplaceRelationGuardCount: requiredMarketplaceTriggers.length,
+  migrationJournalMatches: true,
+});
+
+if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url))
+  console.log(
+    `web schema: ${webSchemaStatus.tableCount} tables、accidental duplicate ${webSchemaStatus.accidentalDuplicateCount}、published convergence ${webSchemaStatus.publishedConvergenceDeclarations} definitions、Marketplace relation guards ${webSchemaStatus.marketplaceRelationGuardCount}、migration/journal一致`,
+  );

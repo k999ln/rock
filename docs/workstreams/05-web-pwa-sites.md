@@ -9,17 +9,18 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 - 主要画面、PWA manifest、Service Worker、明示更新、security header、D1 APIを実装済み。
 - 本人限定Siteは存在するが、最新版sourceとの一致とログイン後の実操作確認が残る。
 - 一般公開は製品licenseと本人承認が未完了のためblocked。
-- 現在のローカルtreeはSites側変更とのmerge中で、正確な統合commitがまだない。
+- 現在のローカルtreeは全体検証に合格しているが未保存差分があり、Sitesへ結合する正確なcommit SHAはまだ固定していない。
+- 全ローンチ候補のうち本人限定Web/PWA Previewは必須gateが最新版source同期だけ残っており、最短ローンチ経路とする。
 
 主なtask: `WEB01`〜`WEB04`, `R03`〜`R08`, `LCH04`。
 
 ## 次に進める順番
 
-1. merge競合を機能単位で解消し、既存D1 schemaと画面を失わない。
+1. Web/PWA・D1・進捗の現在差分を、別作業を混入させず一つのcommitへ固定する。
 2. typecheck、route style、PWA、security、migration、production buildを実行する。
-3. build asset closureとsource commitを記録する。
-4. 本人限定Sitesへ同じcommitを配備し、認証後の主要導線とAPIをreadbackする。
-5. 一般公開はlicenseと公開承認を別に通す。
+3. GitHubへ同じcommitを保存し、build asset closureとsource SHAを記録する。
+4. ownerの最新版同期承認後、本人限定Sitesへ同じSHAを配備し、認証後の主要導線とAPIをreadbackする。
+5. 一般公開はlicenseと公開承認、QEMUはproduction署名、Androidは対象端末を別gateとして通す。
 
 ## 完了条件
 

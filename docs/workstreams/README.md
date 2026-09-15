@@ -19,7 +19,9 @@
 - `planned`: 設計上必要だが、着手条件または実行環境が揃っていない。
 - `blocked`: 必須の本人判断、機種、鍵、契約、provider、公開許可などが不足している。
 
-現在の機械可読進捗は99 task中69 done、21 in progress、9 planned。件数は作業量や製品完成率を表さない。
+<!-- project-overview:start -->
+現在の機械可読進捗は102 task中72 done、21 in progress、9 planned。件数は作業量や製品完成率を表さない。
+<!-- project-overview:end -->
 
 ## 作業ストリーム
 

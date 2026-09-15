@@ -73,4 +73,4 @@ RockstarOS自身が抱え込まない。
 - `acceptanceEvidence`: 合格を判断するcommand、receipt、readback、実機記録
 - `currentStage`: 上記5段階のどこか
 
-現在の `data/project-status.json` は既存task schemaを使用しているため、このmetadataの一括追加はschema、同期script、既存99 taskを同じ変更単位で更新できるときに行う。それまでは各workstream文書とtask本文で責任を明記する。
+現在の `data/project-status.json` は既存task schemaを使用しているため、このmetadataの一括追加はschema、同期script、全既存taskを同じ変更単位で更新できるときに行う。それまでは各workstream文書とtask本文で責任を明記する。
