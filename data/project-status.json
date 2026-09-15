@@ -1122,11 +1122,12 @@
     {
       "id": "LCH06",
       "title": "PR系列・正確なmain統合tree・版表示の整合",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [],
       "evidence": [
         "docs/launch-readiness-20260910.md",
         "docs/current-state-20260911.md",
+        "docs/workstreams/10-git-ci-operations.md",
         "data/version-boundaries.json",
         "scripts/check-version-boundaries.mjs",
         "tests/version-boundaries.test.mjs",
