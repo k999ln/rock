@@ -17,6 +17,7 @@ import {
   MessageCircle,
   Monitor,
   Star,
+  Table2,
   Wallet,
 } from 'lucide-react';
 import { monitorDevice } from '@/lib/device';
@@ -34,9 +35,18 @@ const navigation = [
   { href: '/sky', label: 'Sky', Icon: Grid2X2 },
   { href: '/chat', label: 'Chat', Icon: MessageCircle },
   { href: '/work', label: '仕事・履歴', Icon: ListChecks },
+  { href: '/csv', label: 'CSV仕事', Icon: Table2 },
   { href: '/wallet', label: 'Wallet', Icon: Wallet },
   { href: '/market', label: 'Market', Icon: Activity },
 ];
+
+function isCurrentRoute(pathname: string, href: string) {
+  if (href === '/') return pathname === '/';
+  if (href === '/sky')
+    return pathname === href || pathname.startsWith('/sky/') || pathname.startsWith('/income/');
+  if (href === '/work') return pathname === href || pathname === '/activity';
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export default function WorkspaceShell({
   children,
@@ -80,6 +90,8 @@ export default function WorkspaceShell({
           event.preventDefault();
       }}
       className="rock-workspace"
+      data-running={running ? 'true' : 'false'}
+      aria-busy={running}
       style={{ '--sidebar-width': '15.5rem' } as CSSProperties}
     >
       <a className="rock-skip" href="#workspace-main">
@@ -88,7 +100,7 @@ export default function WorkspaceShell({
       {showSidebar && (
         <Sidebar className="rock-sidebar">
           <SidebarHeader className="rock-sidebar-header">
-            <Link href="/" className="rock-logo">
+            <Link href="/" className="rock-logo" aria-disabled={running || undefined}>
               <span className="rock-mark">
                 <Star size={22} fill="currentColor" strokeWidth={1.5} />
               </span>
@@ -107,15 +119,8 @@ export default function WorkspaceShell({
                 <Link
                   key={href}
                   href={href}
-                  aria-current={
-                    pathname === href ||
-                    (href === '/sky' &&
-                      (pathname.startsWith('/sky/') ||
-                        pathname.startsWith('/income/'))) ||
-                    (href === '/work' && pathname === '/activity')
-                      ? 'page'
-                      : undefined
-                  }
+                  aria-current={isCurrentRoute(pathname, href) ? 'page' : undefined}
+                  aria-disabled={running || undefined}
                 >
                   <Icon size={19} strokeWidth={1.7} />
                   {label}
@@ -125,7 +130,8 @@ export default function WorkspaceShell({
             <nav aria-label="接続設定" className="rock-navigation">
               <Link
                 href="/settings"
-                aria-current={pathname === '/settings' ? 'page' : undefined}
+                aria-current={isCurrentRoute(pathname, '/settings') ? 'page' : undefined}
+                aria-disabled={running || undefined}
               >
                 <Settings2 size={19} strokeWidth={1.7} />
                 接続・利用設定
@@ -134,12 +140,12 @@ export default function WorkspaceShell({
             <div className="rock-nav-divider" />
             <p className="rock-nav-label">ROCKSTAROS 1.0</p>
             <nav aria-label="OSの導入とサポート" className="rock-navigation">
-              <Link href="/rockstaros">
+              <Link href="/rockstaros" aria-disabled={running || undefined}>
                 <Monitor size={19} strokeWidth={1.7} />
                 OSを知る
                 <ArrowUpRight size={14} className="rock-nav-arrow" />
               </Link>
-              <Link href="/rockstaros/guide">
+              <Link href="/rockstaros/guide" aria-disabled={running || undefined}>
                 <CircleHelp size={19} strokeWidth={1.7} />
                 導入・使い方
               </Link>
@@ -167,7 +173,7 @@ export default function WorkspaceShell({
                 開始していません。
               </p>
             </div>
-            <Link href="/fund" className="rock-legacy-link">
+            <Link href="/fund" className="rock-legacy-link" aria-disabled={running || undefined}>
               <Layers3 size={16} />
               自動化ファンド
               <ArrowUpRight size={13} />
@@ -185,7 +191,12 @@ export default function WorkspaceShell({
               aria-label="メニューを開閉"
             />
           )}
-          <Link href="/" className="rock-home-link" aria-label="ホームへ戻る">
+          <Link
+            href="/"
+            className="rock-home-link"
+            aria-label="ホームへ戻る"
+            aria-disabled={running || undefined}
+          >
             <House size={17} />
             <span>ホーム</span>
           </Link>
@@ -219,6 +230,7 @@ export default function WorkspaceShell({
                 <Link
                   className="rock-button rock-button-subtle"
                   href="/rockstaros/guide"
+                  aria-disabled={running || undefined}
                 >
                   使い方を見る
                 </Link>
@@ -235,7 +247,7 @@ export default function WorkspaceShell({
         </main>
         <div className="rock-bottom-note">
           <span>RockstarOS 1.0</span>
-          <Link href="/rockstaros/guide#limits">
+          <Link href="/rockstaros/guide#limits" aria-disabled={running || undefined}>
             対応環境と既知の制限 <ArrowUpRight size={13} />
           </Link>
         </div>

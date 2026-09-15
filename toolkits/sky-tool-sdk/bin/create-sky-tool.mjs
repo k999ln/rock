@@ -128,4 +128,3 @@ await Promise.all([
 
 console.log(`Created Sky Tool starter in ${target}`);
 console.log('Next: edit index.mjs, set SKY_URL and SKY_DEVELOPER_TOKEN, then npm start');
-

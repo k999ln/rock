@@ -1,19 +1,18 @@
 'use client';
 
 import {
-  BatteryFull,
   ChartNoAxesCombined,
   Check,
   ChevronLeft,
   ChevronRight,
   Cloud,
+  ListChecks,
   MessageCircle,
   RotateCcw,
   Settings2,
   ShieldCheck,
-  Signal,
+  Table2,
   WalletCards,
-  Wifi,
   X,
   type LucideIcon,
 } from 'lucide-react';
@@ -21,6 +20,7 @@ import Link from 'next/link';
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
   type CSSProperties,
 } from 'react';
@@ -63,6 +63,22 @@ const apps: HomeApp[] = [
     color: 'chat',
   },
   {
+    id: 'work',
+    name: '仕事',
+    description: '手順と成果を確認',
+    href: '/work',
+    Icon: ListChecks,
+    color: 'work',
+  },
+  {
+    id: 'csv',
+    name: 'CSV',
+    description: 'CSVを安全に整形',
+    href: '/csv',
+    Icon: Table2,
+    color: 'csv',
+  },
+  {
     id: 'wallet',
     name: 'Wallet',
     description: '収支と資金を管理',
@@ -92,7 +108,7 @@ const defaults: Preferences = {
   wallpaper: 'aurora',
   iconSize: 'medium',
   showLabels: true,
-  accent: '#b9ff66',
+  accent: '#c8ff2e',
   appOrder: appIds,
 };
 const wallpaperOptions: { id: Wallpaper; label: string }[] = [
@@ -139,6 +155,7 @@ export default function HomeScreen() {
   const [editing, setEditing] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [preferences, setPreferences] = useState(defaults);
+  const closeEditorButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const initialize = window.setTimeout(() => {
@@ -163,8 +180,22 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (!loaded) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+    } catch {
+      // Private browsing and locked-down devices can reject local writes.
+    }
   }, [loaded, preferences]);
+
+  useEffect(() => {
+    if (!editing) return;
+    closeEditorButton.current?.focus();
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setEditing(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [editing]);
 
   const orderedApps = useMemo(
     () =>
@@ -212,10 +243,9 @@ export default function HomeScreen() {
       <header className={styles.statusBar}>
         <strong>{time}</strong>
         <span className={styles.statusName}>RockstarOS</span>
-        <span className={styles.statusIcons} aria-label="端末状態">
-          <Signal size={15} fill="currentColor" />
-          <Wifi size={17} />
-          <BatteryFull size={21} />
+        <span className={styles.statusIcons} aria-label="Web版・端末内設定">
+          <ShieldCheck size={15} />
+          <span>WEB / LOCAL</span>
         </span>
       </header>
 
@@ -299,18 +329,29 @@ export default function HomeScreen() {
       </footer>
 
       {editing && (
-        <div className={styles.editorBackdrop} role="presentation">
+        <div
+          className={styles.editorBackdrop}
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setEditing(false);
+          }}
+        >
           <dialog
             open
             className={styles.editor}
             aria-labelledby="home-editor-title"
+            aria-modal="true"
           >
             <header>
               <div>
                 <small>この端末だけに保存</small>
                 <h2 id="home-editor-title">ホーム画面を編集</h2>
               </div>
-              <button onClick={() => setEditing(false)} aria-label="編集を閉じる">
+              <button
+                ref={closeEditorButton}
+                onClick={() => setEditing(false)}
+                aria-label="編集を閉じる"
+              >
                 <X size={20} />
               </button>
             </header>

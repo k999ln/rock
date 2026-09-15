@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-15",
-  "milestone": "Developer Preview紹介とRock Studioのvisual systemを統一",
-  "nextAction": "ownerが本番Wallet画面で外部Walletの所有署名を行い、最初の実Earning Receipt対応transferをfinalized後に照合する。",
+  "milestone": "RockstarOS全体のvisual system統一とフロント機能性監査・改善",
+  "nextAction": "主要OS画面の操作導線、状態表示、モバイル表示を検証し、修正後の同一sourceをSites本番へ配備する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -195,12 +195,12 @@
     },
     {
       "id": "SKY15",
-      "title": "コード貼付またはファイル添付だけで解析・Sky組込み・Package登録まで行うチャット型Studioを実装",
+      "title": "Sky SDKコードを既存ツールへ追加し、起動時にPackage登録・MCP公開・利用記録まで行うStudioを実装",
       "status": "done",
       "dependsOn": ["SKY14"],
       "evidence": [
         "components/rock-studio.tsx",
-        "lib/sky-code-intake.ts",
+        "toolkits/sky-tool-sdk/src/index.mjs",
         "app/studio/page.tsx",
         "app/sky/publish/page.tsx",
         "tests/sky-code-intake.test.mjs",
@@ -228,6 +228,22 @@
         "app/rockstaros/page.tsx",
         "components/rock-studio.tsx",
         "app/workspace.css",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "WEB04",
+      "title": "RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善",
+      "status": "done",
+      "dependsOn": ["WEB03", "SKY15"],
+      "evidence": [
+        "components/home-screen.tsx",
+        "components/home-screen.module.css",
+        "components/workspace-shell.tsx",
+        "app/workspace.css",
+        "tsconfig.json",
+        "tests/web-route-style-contract.test.mjs",
+        "docs/frontend-usability-audit-20260915.md",
         "docs/product-baseline.md"
       ]
     },
@@ -1117,6 +1133,19 @@
         "app/api/revenue/mercari/route.ts",
         "components/mercari-revenue-starter.tsx",
         "tests/mercari-revenue.test.mjs"
+      ]
+    },
+    {
+      "id": "CSV00",
+      "title": "CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "data/csv-business-tasks.json",
+        "docs/csv-business-v1.ja.md",
+        "lib/csv-transform.ts",
+        "lib/csv-job-store.ts",
+        "components/csv-business-workspace.tsx"
       ]
     }
   ],

@@ -44,9 +44,30 @@ void test('module-styled home and settings keep their stylesheet bindings', () =
   assert.match(settings, /from '\.\/system-settings\.module\.css'/);
 });
 
+void test('OS home exposes every primary workspace without fake device telemetry', () => {
+  const home = readFileSync(resolve(root, 'components/home-screen.tsx'), 'utf8');
+  const homeStyles = readFileSync(resolve(root, 'components/home-screen.module.css'), 'utf8');
+  for (const route of ['/sky', '/chat', '/work', '/csv', '/wallet', '/market', '/settings']) {
+    assert.match(home, new RegExp(`href: '${route}'`), `${route} is missing from the OS home`);
+  }
+  assert.match(home, /WEB \/ LOCAL/);
+  assert.doesNotMatch(home, /BatteryFull|\bWifi\b|\bSignal\b/);
+  assert.match(home, /closeOnEscape/);
+  assert.match(home, /localStorage\.setItem/);
+  assert.match(homeStyles, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
+});
+
+void test('workspace shell exposes nested route and running-state affordances', () => {
+  const shell = readFileSync(resolve(root, 'components/workspace-shell.tsx'), 'utf8');
+  assert.match(shell, /function isCurrentRoute/);
+  assert.match(shell, /pathname\.startsWith\(`\$\{href\}\/`\)/);
+  assert.match(shell, /aria-disabled=\{running \|\| undefined\}/);
+  assert.match(workspace, /data-running='true'/);
+});
+
 void test('every non-home route family keeps a direct home affordance', () => {
   const contracts = [
-    ['workspace shell', 'components/workspace-shell.tsx', /<Link href="\/" className="rock-home-link"/],
+    ['workspace shell', 'components/workspace-shell.tsx', /className="rock-home-link"[\s\S]{0,120}aria-label="ホームへ戻る"/],
     ['mobile chat command bar', 'components/sky-chat-workspace.tsx', /<Link href="\/" aria-label="ホームへ戻る"/],
     ['settings', 'components/system-settings.tsx', /<Link href="\/" aria-label="ホームへ戻る"/],
     ['system maintenance', 'components/system-maintenance.tsx', /<Link href="\/" aria-label="ホームへ戻る"/],

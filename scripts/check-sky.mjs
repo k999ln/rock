@@ -19,7 +19,7 @@ const readyCount = (
 const candidateCount = (
   catalogBody.match(/["']?status["']?\s*:\s*['"]candidate['"]/g) || []
 ).length;
-requireValue(readyCount === 10, `Web/PC readyは10件です（実際: ${readyCount}）`);
+requireValue(readyCount === 11, `Web/PC readyは11件です（実際: ${readyCount}）`);
 requireValue(
   candidateCount === 3,
   `導入候補は3件です（実際: ${candidateCount}）`,

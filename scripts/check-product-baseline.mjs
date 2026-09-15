@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 39 },
+    { length: 40 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ39の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ40の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -89,11 +89,25 @@ export function validateBaseline(
     '目標駆動のブランド運営能力が必要です',
   );
   requireValue(
+    data.primaryCapabilities?.includes('csv-paid-work-pilot') &&
+      data.csvBusinessPilot?.productId === 'rockstar-csv-cleanup' &&
+      data.csvBusinessPilot?.buyerPriceMinor === 300000 &&
+      data.csvBusinessPilot?.retentionDays === 7 &&
+      data.csvBusinessPilot?.monthlyThresholdUsdMinor === 3000 &&
+      data.csvBusinessPilot?.monthlyFeeUsdMinor === 888 &&
+      data.csvBusinessPilot?.periodTimezone === 'Asia/Tokyo' &&
+      data.csvBusinessPilot?.manualPaymentCountsAsVerifiedRevenue === false &&
+      data.csvBusinessPilot?.liveBillingEnabled === false &&
+      data.csvBusinessPilot?.externalMarketplaceAutomationEnabled === false,
+    'CSV販売実証の価格・保管・月額境界・外部作用gateを維持してください',
+  );
+  requireValue(
     data.primaryCapabilities?.includes('sky-tool-developer-platform') &&
       data.skyToolDeveloperPlatform?.status ===
         'developer_preview_registered_and_declared_publication' &&
       data.skyToolDeveloperPlatform?.packageSchema === 'sky-tool-package/1' &&
-      data.skyToolDeveloperPlatform?.frontend === 'chat_code_or_file_only' &&
+      data.skyToolDeveloperPlatform?.frontend ===
+        'copy_sdk_code_into_existing_tool' &&
       data.skyToolDeveloperPlatform?.rawCodeUploaded === false &&
       data.skyToolDeveloperPlatform?.automaticPackageGeneration === true &&
       data.skyToolDeveloperPlatform?.mcpDiscoveryAndCallImplemented === true &&
@@ -101,7 +115,7 @@ export function validateBaseline(
       data.skyToolDeveloperPlatform?.declaredPublicationInstallable === false &&
       data.skyToolDeveloperPlatform?.verifiedPublicationImplemented === false &&
       data.skyToolDeveloperPlatform?.productionSandboxImplemented === false,
-    'Sky Tool Studioのチャット取込と宣言公開/検証済み公開の境界を維持してください',
+    'Sky Tool StudioのSDKコード組込みと宣言公開/検証済み公開の境界を維持してください',
   );
   requireValue(
     data.fashionBrandOperations?.externalEffectsExecutedByAutopilot === false,
@@ -110,7 +124,7 @@ export function validateBaseline(
   const skyInventory = resolve(root, data.sky?.inventory || '');
   requireValue(
     !relative(root, skyInventory).startsWith('..') &&
-      read(skyInventory).includes('Web / PCで現在使える10件'),
+      read(skyInventory).includes('Web / PCで現在使える11件'),
     'Skyの役割と収録ツールの正本が必要です',
   );
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');
@@ -244,17 +258,30 @@ export function validateBaseline(
     'Developer Preview紹介のインストール・Sky開発者コード・Studio導線を維持してください',
   );
   const studioSource = read(resolve(root, 'components/rock-studio.tsx'));
+  const homeSource = read(resolve(root, 'components/home-screen.tsx'));
+  const shellSource = read(resolve(root, 'components/workspace-shell.tsx'));
   const workspaceStyles = read(resolve(root, 'app/workspace.css'));
   requireValue(
+    data.visualSystem?.surfaces?.includes('/') &&
     data.visualSystem?.surfaces?.includes('/rockstaros') &&
       data.visualSystem?.surfaces?.includes('/studio') &&
+      data.visualSystem?.surfaces?.includes('workspace_shell') &&
       data.visualSystem?.accent === 'acid_green' &&
-      data.visualSystem?.studioPrimarySurface === 'code_or_file_composer' &&
-      data.visualSystem?.functionalityChanged === false &&
-      studioSource.includes('ROCKSTAR<span>OS</span>') &&
+      data.visualSystem?.studioPrimarySurface === 'sdk_code_installation' &&
+      data.visualSystem?.homePrimaryApps?.includes('work') &&
+      data.visualSystem?.homePrimaryApps?.includes('csv') &&
+      data.visualSystem?.businessFunctionalityChanged === false &&
+      data.visualSystem?.interactionFunctionalityImproved === true &&
+      studioSource.includes('studio-code-first') &&
+      homeSource.includes("id: 'work'") &&
+      homeSource.includes("id: 'csv'") &&
+      homeSource.includes('WEB / LOCAL') &&
+      shellSource.includes('function isCurrentRoute') &&
+      shellSource.includes('aria-disabled={running || undefined}') &&
       workspaceStyles.includes('RockstarOS / Studio — shared dark launch system') &&
+      workspaceStyles.includes('RockstarOS 1.0 — unified OS chrome') &&
       workspaceStyles.includes('--studio-green: #c8ff2e'),
-    'Developer Preview紹介とRock Studioの共通visual systemを維持してください',
+    'RockstarOS全体の共通visual systemとフロント機能性改善を維持してください',
   );
   requireValue(
     data.systemMaintenance?.route === '/settings/system' &&
@@ -504,6 +531,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ39、Developer Preview紹介とRock Studioの共通visual system、インストール中心の紹介とSky開発者コード、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、チャット型Sky Tool取込、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ40、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

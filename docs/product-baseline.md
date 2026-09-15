@@ -1,10 +1,14 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-15追記（v1.40）: RockstarOS本体、Developer Preview紹介、Rock Studioを同じvisual systemへ広げ、主要導線、状態表示、キーボード・タッチ操作、mobile表示の機能性を監査して改善する。既存の業務機能、金融安全境界、CSV販売実証を維持する。RQ40を追加する。
+
 2026-09-15追記（v1.39）: Developer Preview紹介とRock Studioを、一つのRockstarOS visual systemへ統一する。黒背景、黄緑アクセント、太い英字見出し、monospaceの補助表示、丸い主操作を共有し、Studioはコード入力を第一画面の主役にする。機能・安全境界・Home導線は維持する。RQ39を追加する。
 
 2026-09-15追記（v1.38）: Developer Preview紹介ページを、OSインストールを主操作にした一画面へ簡素化する。Sky開発者には同じページで最小SDKコードを示し、本人限定Siteの`/studio`へ直接進めるようにする。配布前候補を導入可能と誤表示せず、現在の対応環境と公開前状態は短く明示する。RQ38を追加する。
 
-2026-09-15追記（v1.37）: Rock Studioの開発者入力を、コード貼付またはソースファイル添付だけのチャット形式へ固定した。コード本文はブラウザ内だけで解析し、Sky SDK組込み例、Tool Package、安全契約、Fund分類を自動生成する。Registryへ送るのはPackageだけとし、登録失敗を成功表示しない。RQ37を追加する。
+2026-09-15実装追記（RQ01〜RQ36不変）: 最初の販売実証をCSV整形に絞り、`rockstar-csv-cleanup`を追加する。市場補助型で、本人が外部市場の受注・連絡・入金を扱い、RockstarOSは私有ファイルの受付、決定的変換、独立検査、成果物、7日削除を担う。購入者試験価格は税込3,000円。CSV販売者向けの限定policyはJST月のProvider確認済み純入金30 USD相当以上の月だけ8.88 USD、未達月0、債務繰越なしとする。これは既存RQ20の「月最大888 cents、先払い・債務化なし」を狭める商品別条件であり、他商品の契約を変更しない。正本は [CSV仕事 v1](csv-business-v1.ja.md) とする。
+
+2026-09-15追記（v1.38）: Rock Studioの開発者入力を、Sky SDKコードを既存ツールへ追加する方式へ変更した。ソース本文をSkyへ渡さず、ツール起動時にPackage生成、所有者登録、宣言公開、MCP公開、匿名利用記録を行う。RQ37を更新する。
 
 2026-09-13追記（v1.36）: 利用者は、既存フロントへWallet backendを接続し、本番環境で実際に使えるところまで進めるよう明示。RQ36を追加する。最初の実受取レールはBase MainnetのUSDCとし、外部EIP-1193 WalletでRockの受取アドレスを所有署名する。RockstarOSは秘密鍵、seed phrase、包括的送金権限、利用者資産を保管しない。署名済みEarning Receiptから既存ルールで確定した `SKY_SERVICE_FEE` の回収指図だけを作り、Base上の公式USDC contract、exactな受取先・金額、finalized blockを照合して着金確定する。本番配備は実施対象だが、owner Walletの登録と最初の実transferは本人署名・本人確認が完了するまで実施済みにしない。本人限定Siteを一般公開する前にowner受取先を登録する。
 
@@ -350,11 +354,17 @@ Billing Workerは、署名検証済みEarning Receiptへ配分済みの `SKY_SER
 
 このレールはRockに帰属する利用料の受取に限定し、利用者資産のcustody、利用者へのpayout、任意入金、交換、運用、税務判定を追加しない。外部Wallet／ファンド会社はRQ34のProvider Adapterとして別途接続できる。実装と本番配備が合格しても、owner自身のWallet署名と最初の実transferが未実施なら、実Wallet登録・実着金の実績とは表示しない。詳細は [Rock Wallet本番受取レール](rock-wallet-production-rail-20260913.md) を参照する。
 
-## RQ37 Rock StudioはコードかファイルだけでTool化する
+### CSV販売実証の限定追加（RQ01〜RQ36は変更しない）
 
-PCのRock Studioはチャット形式にし、開発者が行う必須操作を「コードを貼る」または「ソースファイルを1件添付して送る」だけにする。Tool名、用途、LLMが使う場面・禁止場面、入出力Schema、Adapter、権限、online/offline、実行先、副作用、料金、開発者受取人、timeout、再試行、成功確認、テスト、Fund分類はコードから自動生成する。GitHub URLや開発者IDなどを最初に埋める手入力フォームへ戻さない。
+`rockstar-csv-cleanup`は、1ファイル10 MiB・50,000行・100列までのUTF-8/BOM/CP932 CSVを、列名、列順、前後空白、重複、並び順、出力文字コードの明示指定だけで変換する。値を文字列として保ち、先頭0、長い数字、引用内改行、引用符を失わず、指定外の推測・補完・計算をしない。成果物はowner付き私有objectへ保存し、受付から7日または本人の即時削除で消す。buyerへの直接共有はbuyer認証と期限付き権限が実装されるまで有効化しない。
 
-コード解析とSHA-256計算はブラウザ内で行い、Registry APIには生成した`sky-tool-package/1`だけを送る。貼り付けたコード本文や添付ファイル本文は送信・保存しない。危険な外部変更・金融操作は推定結果に応じて実行ごとの確認と再試行禁止を設定し、生成したSky SDK組込みコードとPackageを結果画面で確認できるようにする。自動生成はSandbox検証や作者署名の代替ではなく、登録不能時に登録完了と表示しない。
+CSV販売者向け`csv-seller-fee/1`は、billing account・contract・policy version単位、JST月、Provider確認済みの返金・市場手数料・税・取引実費控除後純入金を基準とする。30.00 USD未満は0、以上は8.88 USD、同月一回、未達債務・翌月繰越・手入力による課金なしとする。本番Provider未接続の間は判定とschemaだけを実装し、実請求・実回収を開始しない。既存RQ20の月最大888 cents、先払いなし、実費優先より利用者に不利な条件へ広げない。
+
+## RQ37 Rock StudioはSkyコードを既存ツールへ付けてTool化する
+
+PCのRock Studioは、配布されたSky SDKコードを開発者自身の既存ツールへ追加する画面にする。開発者キーを環境変数へ保存し、SDKと短い組込みコードを追加してツールを起動すれば、Tool Packageの生成、所有者登録、宣言公開、MCP公開、Fund候補化、匿名利用記録までを同じ定義から行う。Skyへソースコードやファイルを貼ることを必須にしない。
+
+Registry APIにはSDKが生成した`sky-tool-package/1`だけを送り、handlerの入力、出力、会話、APIキー、ソース本文は送信・保存しない。危険な外部変更・金融操作は`sideEffects`と`authorize` callbackを必須にして実行ごとの確認と再試行禁止を設定する。宣言公開はSandbox検証や作者署名の代替ではなく、登録不能時に登録完了と表示しない。
 
 ## RQ38 Developer Preview紹介ページをインストール中心へ簡素化する
 
@@ -364,11 +374,17 @@ PCのRock Studioはチャット形式にし、開発者が行う必須操作を�
 
 ## RQ39 紹介ページとRock Studioのvisual systemを統一する
 
-`/rockstaros`と`/studio`は、黒を基調に酸味のある黄緑を主アクセントとする同一のRockstarOS visual systemを使う。ワードマーク、太い英字見出し、monospaceの補助表示、細い境界線、丸い主操作を共有する。Studioは説明を短くし、コード貼付またはファイル添付のcomposerを第一画面の主役にする。desktopとmobileの双方で、入力、送信、結果確認、コードcopyが読みやすく操作できる状態を維持する。
+`/rockstaros`と`/studio`は、黒を基調に酸味のある黄緑を主アクセントとする同一のRockstarOS visual systemを使う。ワードマーク、太い英字見出し、monospaceの補助表示、細い境界線、丸い主操作を共有する。Studioは説明を短くし、SDK導入コマンド、組込みコード、開発者キー発行を第一画面の主役にする。desktopとmobileの双方で、コードcopy、キー発行、MCP導入確認が読みやすく操作できる状態を維持する。
 
-外観統一のためにStudioの端末内解析、コード本文非送信、Packageだけの登録、失敗時の表示、宣言公開と検証済み公開の区別を変更しない。紹介ページのインストール導線、StudioからHomeへ直接戻る導線、Skyや導入案内への経路も保持する。
+外観統一のためにStudioのソース本文非送信、Packageだけの登録、失敗時の表示、宣言公開と検証済み公開の区別を変更しない。紹介ページのインストール導線、StudioからSkyへ直接戻る導線、Skyや導入案内への経路も保持する。
 
-## 1.0への8原則の適用（RQ01〜RQ39を維持）
+## RQ40 RockstarOS全体のvisual systemとフロント機能性を改善する
+
+Home、共通workspace shell、Developer Preview紹介、Rock Studioを、黒いOS chrome、酸味のある黄緑、明瞭なfocus ring、丸い主要操作の同一visual systemへ統一する。作業内容を読む領域は可読性を優先して明るいsurfaceを維持し、装飾だけのために既存機能や状態を隠さない。HomeからSky、Chat、仕事、CSV、Wallet、Market、設定へ直接進めるようにし、Web版が取得できない通信・電池状態を実端末状態として表示しない。
+
+端末内設定の保存失敗でHome全体を壊さず、編集dialogはEscape、外側click、明示的な閉じる操作に対応する。nested routeでもsidebarの現在地を正しく表示し、処理中に移動を止める場合は視覚・accessibilityの両方でdisabled状態を示す。mobileではheader、app grid、主要buttonを横にはみ出さず、通常ラベルを13px未満へ縮めない。金融・実行・CSVの業務契約、安全境界、保存先、公開状態はこの外観・操作改善で変更しない。
+
+## 1.0への8原則の適用（RQ01〜RQ40を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -389,9 +405,13 @@ PCのRock Studioはチャット形式にし、開発者が行う必須操作を�
 
 ## 変更記録
 
+2026-09-15 v1.40: 利用者の「OSのデザインも統一し、フロントデザインの機能性の問題を洗い出して改善」によりRQ40を追加。OS本体へ共通visual systemを適用し、主要routeの操作性、状態表示、keyboard focus、mobile overflowを監査して修正する。既存機能と安全境界を保持した同一sourceをSites本番へ配備する。
+
 2026-09-15 v1.39: 利用者の「デザインを整えて統一して」によりRQ39を追加。Developer Preview紹介とRock Studioへ黒・黄緑・太い英字・monospace補助・丸い主操作を共通適用し、Studioは入力面を主役に整理する。既存のコード解析、Package登録、安全境界、Home導線は変更しない。
 
 2026-09-15 v1.38: 利用者の「紹介ページをもっとカッコよく、シンプルにし、OSをインストールするボタンとSky開発者コードを置く」と、指定された本人限定Siteの`/studio`に基づきRQ38を追加。`/rockstaros`をインストール中心の一画面へ整理し、Sky SDKの最小コードとStudio導線を統合する。公開前・対応環境の境界は短く保持する。
+
+2026-09-15 v1.38: 利用者の「やっぱコードがあってそれをつける方が楽」によりRQ37を更新。Rock StudioをSDKコードのコピー、開発者キー発行、既存ツールへの組込みに一本化し、起動時のPackage生成、登録、MCP公開、匿名利用記録をSDKへ移した。ソース本文はSkyへ送らず、検証済み公開との境界を維持する。
 
 2026-09-15 v1.37: 利用者の「フロントはチャット形式でコードかファイルを貼ったら、あとはSky側でコードを追加して登録する」「サイト作成」によりRQ37を追加。Rock Studioをコード貼付・単一ファイル添付だけの画面にし、端末内解析からSDK組込み例、Package、安全契約、Fund分類、所有者登録までを自動化する。コード本文はRegistryへ送らず、登録失敗を成功表示せず、検証済み公開との境界を維持する。
 

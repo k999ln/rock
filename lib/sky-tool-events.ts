@@ -68,7 +68,6 @@ export function parseSkyToolEvent(value: unknown): SkyToolEvent {
     occurredAt,
   };
 }
-
 export function skyToolEventStore(db: Database) {
   return {
     async record(userId: string, event: SkyToolEvent) {
@@ -121,4 +120,3 @@ export function skyToolEventStore(db: Database) {
     },
   };
 }
-

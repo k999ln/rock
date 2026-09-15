@@ -46,4 +46,3 @@ sky.tool({
 
 const runtime = await sky.start({ port: 8787 });
 console.log(`Sky MCP: http://${runtime.host}:${runtime.port}${runtime.path}`);
-

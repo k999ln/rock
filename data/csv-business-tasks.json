@@ -1,0 +1,346 @@
+{
+  "version": "csv-business-tasks/1",
+  "updatedAt": "2026-09-15",
+  "namespace": "CSV-",
+  "rules": {
+    "doneRequiresEvidence": true,
+    "externalPeopleAreNeverFabricated": true,
+    "manualPaymentIsNotProviderVerified": true
+  },
+  "tasks": [
+    {
+      "id": "CSV-R00",
+      "title": "最新main・AGENTS・作業状態の確認",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "docs/csv-business-v1.ja.md",
+        "docs/evidence/csv-production-deployment-20260915.ja.md"
+      ]
+    },
+    {
+      "id": "CSV-R01",
+      "title": "CSVの商品契約と合成入力を固定",
+      "status": "done",
+      "dependsOn": ["CSV-R00"],
+      "evidence": ["docs/csv-business-v1.ja.md", "tests/csv-transform.test.mjs"]
+    },
+    {
+      "id": "CSV-R02",
+      "title": "固定した売主・決済経路の接続可否を確認",
+      "status": "done",
+      "dependsOn": ["CSV-R00"],
+      "evidence": [
+        "docs/csv-business-market-evidence-20260915.ja.md",
+        "docs/csv-business-v1.ja.md"
+      ]
+    },
+    {
+      "id": "CSV-R03",
+      "title": "ホスト・認証・ストレージの接続設計",
+      "status": "done",
+      "dependsOn": ["CSV-R00"],
+      "evidence": ["docs/csv-business-security.ja.md", ".openai/hosting.json"]
+    },
+    {
+      "id": "CSV-R04",
+      "title": "ROCKと既存Sitesの公開統合を解く",
+      "status": "done",
+      "dependsOn": ["CSV-R00"],
+      "evidence": [
+        "docs/csv-business-v1.ja.md",
+        "docs/evidence/csv-production-deployment-20260915.ja.md"
+      ]
+    },
+    {
+      "id": "CSV-B01",
+      "title": "決定的なCSV変換器",
+      "status": "done",
+      "dependsOn": ["CSV-R01"],
+      "evidence": ["lib/csv-transform.ts", "tests/csv-transform.test.mjs"]
+    },
+    {
+      "id": "CSV-B02",
+      "title": "独立したCSV検査器",
+      "status": "done",
+      "dependsOn": ["CSV-R01"],
+      "evidence": ["lib/csv-transform.ts", "tests/csv-transform.test.mjs"]
+    },
+    {
+      "id": "CSV-B03",
+      "title": "ファイル受付と私有成果物保存",
+      "status": "done",
+      "dependsOn": ["CSV-R03"],
+      "evidence": [
+        "lib/csv-job-store.ts",
+        "app/api/csv-jobs/route.ts",
+        "drizzle/0011_overrated_skaar.sql"
+      ]
+    },
+    {
+      "id": "CSV-B04",
+      "title": "一般利用者認証と利用者間の分離",
+      "status": "done",
+      "dependsOn": ["CSV-R03"],
+      "evidence": [
+        "lib/request-auth.ts",
+        "lib/csv-job-store.ts",
+        "docs/csv-business-security.ja.md"
+      ]
+    },
+    {
+      "id": "CSV-B05",
+      "title": "永続実行キューと再開",
+      "status": "blocked",
+      "dependsOn": ["CSV-B01", "CSV-B02", "CSV-B03"],
+      "reason": "Sitesに独立Queue bindingがなく、実スマホを閉じた後の無人完了を未検証。永続状態、revision claim、保存入力からの再試行は実装済み。",
+      "evidence": ["lib/csv-job-store.ts", "docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-B06",
+      "title": "スマホ受付・条件・結果画面",
+      "status": "in_progress",
+      "dependsOn": ["CSV-B01", "CSV-B02", "CSV-B03"],
+      "reason": "実装済み。実iOS SafariとAndroid Chromeの端末証拠は未取得。",
+      "evidence": [
+        "app/csv/page.tsx",
+        "components/csv-business-workspace.tsx",
+        "components/csv-business-workspace.module.css"
+      ]
+    },
+    {
+      "id": "CSV-G00",
+      "title": "P0 試せる状態の確認",
+      "status": "blocked",
+      "dependsOn": ["CSV-B05", "CSV-B06"],
+      "reason": "B05の独立queueと実端末閉鎖後の証拠が必要。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-B07",
+      "title": "売主・見積もり・注文の記録",
+      "status": "done",
+      "dependsOn": ["CSV-R02", "CSV-B03", "CSV-B04"],
+      "evidence": [
+        "lib/csv-job-store.ts",
+        "components/csv-business-workspace.tsx"
+      ]
+    },
+    {
+      "id": "CSV-B08",
+      "title": "顧客納品・修正・検収",
+      "status": "blocked",
+      "dependsOn": ["CSV-B05", "CSV-B07"],
+      "reason": "v1はseller取得まで。buyer認証、期限付き共有、修正版と検収状態は未実装。",
+      "evidence": [
+        "app/api/csv-jobs/[id]/artifact/[kind]/route.ts",
+        "docs/csv-business-v1.ja.md"
+      ]
+    },
+    {
+      "id": "CSV-B09",
+      "title": "売上・入金・返金の台帳",
+      "status": "blocked",
+      "dependsOn": ["CSV-R02", "CSV-B07"],
+      "reason": "手動照合状態は保存するが、販売経路の署名済みProvider eventが未接続。",
+      "evidence": ["lib/csv-job-store.ts", "docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-B10",
+      "title": "月額8.88ドルの判定とテスト請求",
+      "status": "in_progress",
+      "dependsOn": ["CSV-B09"],
+      "reason": "閾値・固定額・JST月の純粋関数と月次一意schemaは実装。Provider eventとtest請求はB09待ち。",
+      "evidence": [
+        "lib/csv-fee-policy.ts",
+        "tests/csv-fee-policy.test.mjs",
+        "drizzle/0011_overrated_skaar.sql"
+      ]
+    },
+    {
+      "id": "CSV-B11",
+      "title": "運営・停止・解約・出力",
+      "status": "in_progress",
+      "dependsOn": ["CSV-B07", "CSV-B08", "CSV-B09"],
+      "reason": "失敗状態、再試行、成果物取得、即時削除は実装。運営者横断画面と新規受付停止は未実装。",
+      "evidence": [
+        "lib/csv-job-store.ts",
+        "components/csv-business-workspace.tsx"
+      ]
+    },
+    {
+      "id": "CSV-B12",
+      "title": "本人別の独立店舗と決済をつなぐ",
+      "status": "blocked",
+      "dependsOn": ["CSV-G02", "CSV-R02"],
+      "reason": "G02と本人別販売・決済Provider契約が必要。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-B13",
+      "title": "月次請求の本番経路を有効化",
+      "status": "blocked",
+      "dependsOn": ["CSV-B10", "CSV-G02"],
+      "reason": "真正なProvider売上、本人同意、請求資格情報、SCA・返金受入が必要。実請求は開始していない。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-M01",
+      "title": "見本と販売ページを商品と照合",
+      "status": "in_progress",
+      "dependsOn": ["CSV-R01", "CSV-G00"],
+      "reason": "販売ページは実装済み。G00の実ホスト・実スマホ受入後に公開版と確定する。",
+      "evidence": [
+        "components/csv-business-workspace.tsx",
+        "docs/csv-business-v1.ja.md"
+      ]
+    },
+    {
+      "id": "CSV-M02",
+      "title": "5人募集のページと開始案内",
+      "status": "in_progress",
+      "dependsOn": ["CSV-B04", "CSV-B11"],
+      "reason": "募集文と画面説明は作成。応募フォームと運営受入はB11待ち。",
+      "evidence": ["docs/csv-business-v1.ja.md", "app/csv/terms/page.tsx"]
+    },
+    {
+      "id": "CSV-M03",
+      "title": "許可された発注者向け販売を公開",
+      "status": "blocked",
+      "dependsOn": [
+        "CSV-M01",
+        "CSV-R02",
+        "CSV-R04",
+        "CSV-B07",
+        "CSV-B08",
+        "CSV-B09",
+        "CSV-B11"
+      ],
+      "reason": "市場の販売者アカウント、法定表示、buyer納品、Provider入金経路が未確定。",
+      "evidence": ["docs/csv-business-market-evidence-20260915.ja.md"]
+    },
+    {
+      "id": "CSV-M03B",
+      "title": "許可された5人募集を公開",
+      "status": "blocked",
+      "dependsOn": ["CSV-M02"],
+      "reason": "募集フォーム、問い合わせ先、対応可能人数の運営設定が未確定。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-G01",
+      "title": "P1 運営者一人の有料案件",
+      "status": "blocked",
+      "dependsOn": [
+        "CSV-G00",
+        "CSV-B07",
+        "CSV-B08",
+        "CSV-B09",
+        "CSV-B11",
+        "CSV-M01"
+      ],
+      "reason": "真正な第三者顧客、支払い、検収が必要。架空取引を作らない。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-G02",
+      "title": "P2 第三者5人への提供",
+      "status": "blocked",
+      "dependsOn": [
+        "CSV-G01",
+        "CSV-B04",
+        "CSV-B10",
+        "CSV-B11",
+        "CSV-M02",
+        "CSV-R04"
+      ],
+      "reason": "G01後に第三者5人の参加と別売主分離の実測が必要。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-G03",
+      "title": "P3 本人の事業の通常工程を自動化確認",
+      "status": "blocked",
+      "dependsOn": ["CSV-B12", "CSV-R02"],
+      "reason": "本人別の許可済み販売・決済Providerと真正な取引が必要。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-M04",
+      "title": "5人・10有料案件の結果をまとめる",
+      "status": "blocked",
+      "dependsOn": ["CSV-G02"],
+      "reason": "第三者5人と真正な有料案件10件の観測前。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-D01",
+      "title": "次の仕事または市場を選ぶ",
+      "status": "blocked",
+      "dependsOn": ["CSV-M04"],
+      "reason": "10件の実需データ前に画像・動画・ROCKの優先順位を決めない。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-K01",
+      "title": "同じCSVを専用端末で1件実行",
+      "status": "blocked",
+      "dependsOn": ["CSV-B01", "CSV-B02", "CSV-B05"],
+      "reason": "対象端末・build・独立queueが未確定。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-K02",
+      "title": "専用環境の継続・復旧を測る",
+      "status": "blocked",
+      "dependsOn": ["CSV-K01"],
+      "reason": "K01の対象端末とbuildが必要。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-P00",
+      "title": "PRIVATE/PIXEL最新main・公開記録・現行運用を再確認",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "docs/csv-business-v1.ja.md",
+        "docs/evidence/csv-production-deployment-20260915.ja.md"
+      ]
+    },
+    {
+      "id": "CSV-P01",
+      "title": "既存Basicの正しい販売先を整える",
+      "status": "blocked",
+      "dependsOn": ["CSV-P00"],
+      "reason": "apexは販売可能だが旧価格かつ/basicがなく、wwwは3,000円だがSecrets未設定で販売不能。正しい本番Secrets・D1・domain切替権限が必要。",
+      "evidence": [
+        "docs/csv-business-v1.ja.md",
+        "docs/evidence/csv-production-deployment-20260915.ja.md"
+      ]
+    },
+    {
+      "id": "CSV-P02",
+      "title": "既存素材で販売媒体の公開を完了",
+      "status": "blocked",
+      "dependsOn": ["CSV-P01"],
+      "reason": "販売媒体のログイン済み本人アカウント、投稿先、公開直前確認が必要。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-A01",
+      "title": "自社決済の出金前月額控除",
+      "status": "blocked",
+      "dependsOn": ["CSV-B10", "CSV-G02"],
+      "reason": "B10、G02、Connect等のProvider受入後に移行する。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    },
+    {
+      "id": "CSV-A02",
+      "title": "開発者向けパッケージ契約と配分",
+      "status": "blocked",
+      "dependsOn": ["CSV-M04"],
+      "reason": "実案件の原価・介入・再注文データ前。",
+      "evidence": ["docs/csv-business-v1.ja.md"]
+    }
+  ]
+}
