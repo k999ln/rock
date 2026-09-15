@@ -286,6 +286,21 @@ export function validateBaseline(
         '/activity',
       ) &&
       data.chatInteraction?.workManagement?.preserveExistingRecords === true &&
+      data.chatInteraction?.liveProgress?.presentation ===
+        'grok_style_observable_activity_timeline' &&
+      data.chatInteraction?.liveProgress?.sources?.includes('owned_jobs') &&
+      data.chatInteraction?.liveProgress?.sources?.includes(
+        'automation_fund_membership',
+      ) &&
+      data.chatInteraction?.liveProgress?.sources?.includes(
+        'verified_receipts',
+      ) &&
+      data.chatInteraction?.liveProgress?.activeJobRefreshSeconds === 3 &&
+      data.chatInteraction?.liveProgress?.idleJobRefreshSeconds === 15 &&
+      data.chatInteraction?.liveProgress?.fundRefreshSeconds === 30 &&
+      data.chatInteraction?.liveProgress?.chainOfThoughtExposed === false &&
+      data.chatInteraction?.liveProgress?.fabricatedProgressAllowed === false &&
+      data.chatInteraction?.liveProgress?.unverifiedYieldAllowed === false &&
       data.chatInteraction?.genericExecutionContract ===
         'passport_tool_schema_then_prepare_confirm_execute',
     'Chatの接続bot管理契約が必要です',

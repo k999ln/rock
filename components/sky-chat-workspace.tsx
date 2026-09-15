@@ -46,6 +46,11 @@ import {
 import type { Job, SkyConnection } from '@/lib/operations';
 import { deviceToken } from '@/lib/device';
 import { listMcpConnections, type McpConnection } from '@/lib/mcp-hub';
+import type {
+  AutomationFundAnalytics,
+  AutomationFundPlan,
+} from '@/lib/automation-fund';
+import ChatLiveProgress from '@/components/chat-live-progress';
 
 type ChatEntry = {
   id: string;
@@ -62,6 +67,12 @@ type ActiveRequest = {
 };
 
 type WorkflowStatus = 'ready' | 'running' | 'completed' | 'failed';
+
+type FundSnapshot = {
+  funds: AutomationFundPlan[];
+  membership: { fundId: string } | null;
+  analytics: Array<AutomationFundAnalytics & { fundId: string }>;
+};
 
 const AUTO_MODE = 'sky-auto';
 const MCP_PREFIX = 'mcp:';
@@ -125,11 +136,14 @@ function responseFor(
 export default function SkyChatWorkspace() {
   const searchParams = useSearchParams();
   const preferredTool = searchParams.get('tool') ?? '';
+  const preferredFund = searchParams.get('fund') ?? '';
   const workView = searchParams.get('view') === 'work';
   const [connectedTools, setConnectedTools] = useState<string[]>([]);
   const [fashionConnected, setFashionConnected] = useState(false);
   const [mcpServers, setMcpServers] = useState<McpConnection[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [fundSnapshot, setFundSnapshot] = useState<FundSnapshot | null>(null);
+  const [fundRefreshing, setFundRefreshing] = useState(false);
   const [selectedToolId, setSelectedToolId] = useState(AUTO_MODE);
   const [draft, setDraft] = useState('');
   const [messages, setMessages] = useState<ChatEntry[]>([]);
@@ -144,6 +158,9 @@ export default function SkyChatWorkspace() {
   const composerRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const nextMessageIdRef = useRef(0);
+  const hasActiveJob = jobs.some(
+    (job) => job.status === 'queued' || job.status === 'running',
+  );
 
   useEffect(() => {
     let active = true;
@@ -179,6 +196,53 @@ export default function SkyChatWorkspace() {
       active = false;
     };
   }, [preferredTool, setNeedsSignin]);
+
+  useEffect(() => {
+    if (workView || needsSignin) return;
+    let active = true;
+    const refresh = () => {
+      void operationRequest<Job[]>('/api/jobs')
+        .then((recentJobs) => {
+          if (active) setJobs(recentJobs);
+        })
+        .catch(() => undefined);
+    };
+    const timer = window.setInterval(refresh, hasActiveJob ? 3_000 : 15_000);
+    window.addEventListener('focus', refresh);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      window.removeEventListener('focus', refresh);
+    };
+  }, [hasActiveJob, needsSignin, workView]);
+
+  useEffect(() => {
+    if (workView || needsSignin) return;
+    let active = true;
+    const refresh = () => {
+      if (active) setFundRefreshing(true);
+      void fetch('/api/automation-funds', { cache: 'no-store' })
+        .then(async (response) => {
+          if (!response.ok) throw new Error('fund refresh failed');
+          return (await response.json()) as FundSnapshot;
+        })
+        .then((value) => {
+          if (active) setFundSnapshot(value);
+        })
+        .catch(() => undefined)
+        .finally(() => {
+          if (active) setFundRefreshing(false);
+        });
+    };
+    refresh();
+    const timer = window.setInterval(refresh, 30_000);
+    window.addEventListener('focus', refresh);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      window.removeEventListener('focus', refresh);
+    };
+  }, [needsSignin, preferredFund, workView]);
 
   useEffect(() => {
     const update = () => setFashionConnected(fashionMcpConnected());
@@ -255,6 +319,12 @@ export default function SkyChatWorkspace() {
         (server) => mcpMode(server.id) === activeRequest.toolId,
       ) ?? null)
     : null;
+  const activeFundId = preferredFund || fundSnapshot?.membership?.fundId || '';
+  const activeFund =
+    fundSnapshot?.funds.find((fund) => fund.id === activeFundId) ?? null;
+  const activeFundAnalytics =
+    fundSnapshot?.analytics.find((item) => item.fundId === activeFundId) ??
+    null;
   const visibleJobs = jobs
     .filter((job) =>
       selectedTool
@@ -691,6 +761,21 @@ export default function SkyChatWorkspace() {
                   </div>
                 );
               })}
+
+              <ChatLiveProgress
+                jobs={jobs}
+                selectedTool={
+                  selectedTool
+                    ? {
+                        id: selectedTool.id,
+                        name: selectedTool.name,
+                      }
+                    : null
+                }
+                fund={activeFund}
+                fundAnalytics={activeFundAnalytics}
+                fundRefreshing={fundRefreshing}
+              />
 
               {activeRequest && (activeTool || activeMcpServer) && (
                 <section

@@ -1,5 +1,5 @@
 {
-  "version": "1.47",
+  "version": "1.48",
   "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -171,6 +171,21 @@
     "manualAppSelection": "optional",
     "connectedMcpPresentation": "one_bot_per_connected_server_or_ready_product",
     "controlSurface": "chat_thread_and_work_center",
+    "liveProgress": {
+      "presentation": "grok_style_observable_activity_timeline",
+      "sources": [
+        "owned_jobs",
+        "automation_fund_membership",
+        "verified_receipts"
+      ],
+      "activeJobRefreshSeconds": 3,
+      "idleJobRefreshSeconds": 15,
+      "fundRefreshSeconds": 30,
+      "fundSelectionHandoff": "/chat?fund={fundId}",
+      "chainOfThoughtExposed": false,
+      "fabricatedProgressAllowed": false,
+      "unverifiedYieldAllowed": false
+    },
     "workManagement": {
       "canonicalRoute": "/chat?view=work",
       "compatibilityRoutes": ["/work", "/activity"],

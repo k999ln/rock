@@ -1,0 +1,248 @@
+import Link from 'next/link';
+import {
+  CheckCircle2,
+  CircleAlert,
+  Clock3,
+  Layers3,
+  LoaderCircle,
+  Radio,
+} from 'lucide-react';
+import { catalog } from '@/lib/catalog';
+import type {
+  AutomationFundAnalytics,
+  AutomationFundPlan,
+} from '@/lib/automation-fund';
+import type { Job } from '@/lib/operations';
+
+type Props = {
+  jobs: Job[];
+  selectedTool: { id: string; name: string } | null;
+  fund: AutomationFundPlan | null;
+  fundAnalytics: (AutomationFundAnalytics & { fundId: string }) | null;
+  fundRefreshing: boolean;
+};
+
+const toolNames = new Map(catalog.map((tool) => [tool.id, tool.name]));
+
+function time(value: number | string | null) {
+  if (value == null) return '';
+  return new Date(value).toLocaleTimeString('ja-JP', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function jobLabel(job: Job) {
+  if (job.status === 'completed') return '完了・保存済み';
+  if (job.status === 'failed' || job.status === 'interrupted')
+    return '確認が必要';
+  if (job.status === 'cancelled') return '停止済み';
+  if (job.status === 'running') return '実行中';
+  return '受付済み';
+}
+
+function activityIcon(state: 'done' | 'current' | 'attention' | 'waiting') {
+  if (state === 'done') return <CheckCircle2 size={17} />;
+  if (state === 'current')
+    return <LoaderCircle className="sky-chat-spin" size={17} />;
+  if (state === 'attention') return <CircleAlert size={17} />;
+  return <Clock3 size={17} />;
+}
+
+function ToolProgress({ job, name }: { job: Job; name: string }) {
+  const failed = job.status === 'failed' || job.status === 'interrupted';
+  const stopped = job.status === 'cancelled';
+  const finished = job.status === 'completed' || failed || stopped;
+  const steps: Array<{
+    label: string;
+    detail: string;
+    at: number | null;
+    state: 'done' | 'current' | 'attention' | 'waiting';
+  }> = [
+    {
+      label: '依頼を受け付けました',
+      detail: '実行記録を作成',
+      at: job.createdAt,
+      state: 'done',
+    },
+    {
+      label: job.startedAt ? 'Toolが処理を開始' : '開始を待っています',
+      detail: job.deviceId ? '接続端末で実行' : '実行先を確認中',
+      at: job.startedAt,
+      state: job.startedAt ? 'done' : finished ? 'waiting' : 'current',
+    },
+    {
+      label: failed
+        ? '処理を確認してください'
+        : stopped
+          ? '処理を停止しました'
+          : job.status === 'completed'
+            ? '処理が完了しました'
+            : job.status === 'running'
+              ? 'Toolが処理しています'
+              : '実行開始後に進捗を表示',
+      detail: failed
+        ? job.errorCode || '再実行前に状態確認が必要です'
+        : stopped
+          ? '新しい指示から再開できます'
+          : job.status === 'completed'
+            ? job.outputBytes == null
+              ? '結果を保存済み'
+              : `${job.outputBytes} bytesの結果`
+            : job.status === 'running'
+              ? '状態を自動更新しています'
+              : '開始待ちです',
+      at: job.finishedAt,
+      state:
+        failed || stopped
+          ? 'attention'
+          : finished
+            ? 'done'
+            : job.status === 'running'
+              ? 'current'
+              : 'waiting',
+    },
+    {
+      label: job.status === 'completed' ? '結果を履歴へ保存' : '結果を保存',
+      detail:
+        job.status === 'completed'
+          ? 'Chatの仕事管理から確認できます'
+          : '完了後に保存されます',
+      at: job.status === 'completed' ? job.finishedAt : null,
+      state: job.status === 'completed' ? 'done' : 'waiting',
+    },
+  ];
+
+  return (
+    <section className="sky-chat-live-task" aria-label={`${name}の進捗`}>
+      <header>
+        <div>
+          <small>SELECTED TOOL</small>
+          <h3>{name}</h3>
+        </div>
+        <span className={`is-${job.status}`}>{jobLabel(job)}</span>
+      </header>
+      <ol>
+        {steps.map((step, index) => (
+          <li className={`is-${step.state}`} key={`${job.id}-${index}`}>
+            <span>{activityIcon(step.state)}</span>
+            <div>
+              <strong>{step.label}</strong>
+              <small>{step.detail}</small>
+            </div>
+            {step.at && <time>{time(step.at)}</time>}
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function FundProgress({
+  fund,
+  analytics,
+  jobs,
+}: {
+  fund: AutomationFundPlan;
+  analytics: (AutomationFundAnalytics & { fundId: string }) | null;
+  jobs: Job[];
+}) {
+  return (
+    <section className="sky-chat-live-fund" aria-label={`${fund.name}の進捗`}>
+      <header>
+        <div>
+          <small>SELECTED FUND</small>
+          <h3>{fund.name}</h3>
+        </div>
+        <span>
+          <Layers3 size={14} /> {fund.tools.length} Tools
+        </span>
+      </header>
+      <div className="sky-chat-fund-tools">
+        {fund.tools.map((tool) => {
+          const latest = jobs.find((job) => job.tool === tool.toolId);
+          const live =
+            latest?.status === 'running' || latest?.status === 'queued';
+          return (
+            <div key={tool.toolId}>
+              <span className={live ? 'is-live' : ''} aria-hidden="true" />
+              <div>
+                <strong>{toolNames.get(tool.toolId) ?? tool.role}</strong>
+                <small>
+                  {latest
+                    ? jobLabel(latest)
+                    : tool.completedReceipts > 0
+                      ? `検証済み実績 ${tool.completedReceipts}件`
+                      : '実行待ち'}
+                </small>
+              </div>
+              <b>{(tool.allocationBps / 100).toFixed(0)}%</b>
+            </div>
+          );
+        })}
+      </div>
+      <footer>
+        <span>
+          検証済み実績 {analytics?.completedReceipts ?? 0}件 ·{' '}
+          {analytics?.observedReturnBps == null
+            ? '利回りは算定待ち'
+            : `観測利回り ${(analytics.observedReturnBps / 100).toFixed(2)}%`}
+        </span>
+        <time>
+          {analytics ? `${time(analytics.evaluatedAt)} 更新` : '実績を確認中'}
+        </time>
+      </footer>
+    </section>
+  );
+}
+
+export default function ChatLiveProgress({
+  jobs,
+  selectedTool,
+  fund,
+  fundAnalytics,
+  fundRefreshing,
+}: Props) {
+  const selectedJob = selectedTool
+    ? jobs.find((job) => job.tool === selectedTool.id)
+    : jobs.find((job) => job.status === 'running' || job.status === 'queued');
+  const selectedJobName =
+    selectedTool?.name ??
+    (selectedJob ? toolNames.get(selectedJob.tool) : null) ??
+    'Sky Tool';
+
+  if (!selectedJob && !fund) return null;
+  const busy =
+    fundRefreshing ||
+    selectedJob?.status === 'running' ||
+    selectedJob?.status === 'queued';
+
+  return (
+    <section
+      className="sky-chat-live-progress"
+      aria-labelledby="sky-chat-live-title"
+      aria-live="polite"
+      aria-busy={busy}
+    >
+      <header>
+        <div>
+          <span className={busy ? 'is-live' : ''}>
+            <Radio size={15} />
+          </span>
+          <div>
+            <small>LIVE ACTIVITY</small>
+            <h2 id="sky-chat-live-title">いま動いている内容</h2>
+          </div>
+        </div>
+        <Link href="/chat?view=work">履歴と操作</Link>
+      </header>
+      {selectedJob && <ToolProgress job={selectedJob} name={selectedJobName} />}
+      {fund && (
+        <FundProgress fund={fund} analytics={fundAnalytics} jobs={jobs} />
+      )}
+      <p className="sky-chat-live-note">
+        実行記録と検証済み受領記録だけを表示します。内部思考や未確認の収益は表示しません。
+      </p>
+    </section>
+  );
+}

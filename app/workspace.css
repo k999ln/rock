@@ -9965,7 +9965,266 @@
   color: #263329;
 }
 
+/* Chat live activity: observable execution events, never hidden model reasoning. */
+.sky-chat-live-progress {
+  width: min(100%, 680px);
+  align-self: center;
+  display: grid;
+  gap: 10px;
+  margin: 6px 0 10px;
+  padding: 14px;
+  border: 1px solid #d9dfd7;
+  border-radius: 20px;
+  color: #171c17;
+  background: #f5f7f2;
+  box-shadow: 0 18px 50px rgba(18, 24, 17, 0.08);
+}
+.sky-chat-live-progress > header,
+.sky-chat-live-progress > header > div,
+.sky-chat-live-task > header,
+.sky-chat-live-fund > header,
+.sky-chat-live-fund > header > span,
+.autofund-active > a {
+  display: flex;
+  align-items: center;
+}
+.sky-chat-live-progress > header {
+  justify-content: space-between;
+  gap: 14px;
+}
+.sky-chat-live-progress > header > div {
+  min-width: 0;
+  gap: 10px;
+}
+.sky-chat-live-progress > header > div > span {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  color: #c8ff2e;
+  background: #10130f;
+}
+.sky-chat-live-progress > header > div > span.is-live {
+  box-shadow: 0 0 0 5px rgba(200, 255, 46, 0.16);
+  animation: sky-chat-live-pulse 1.8s ease-in-out infinite;
+}
+.sky-chat-live-progress > header small,
+.sky-chat-live-task > header small,
+.sky-chat-live-fund > header small {
+  display: block;
+  color: #778071;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+}
+.sky-chat-live-progress > header h2 {
+  margin-top: 1px;
+  font-size: 16px;
+}
+.sky-chat-live-progress > header > a {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 11px;
+  border: 1px solid #cfd6cd;
+  border-radius: 999px;
+  color: #3d481f;
+  background: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+.sky-chat-live-task,
+.sky-chat-live-fund {
+  overflow: hidden;
+  border: 1px solid #dce2da;
+  border-radius: 15px;
+  background: #fff;
+}
+.sky-chat-live-task > header,
+.sky-chat-live-fund > header {
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 13px;
+  border-bottom: 1px solid #e5e9e3;
+}
+.sky-chat-live-task > header h3,
+.sky-chat-live-fund > header h3 {
+  margin-top: 2px;
+  font-size: 14px;
+}
+.sky-chat-live-task > header > span,
+.sky-chat-live-fund > header > span {
+  flex: 0 0 auto;
+  gap: 5px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: #677063;
+  background: #f0f3ee;
+  font-size: 10px;
+  font-weight: 800;
+}
+.sky-chat-live-task > header > span.is-running,
+.sky-chat-live-task > header > span.is-queued {
+  color: #486211;
+  background: #efffc0;
+}
+.sky-chat-live-task > header > span.is-failed,
+.sky-chat-live-task > header > span.is-interrupted {
+  color: #923b2e;
+  background: #fff0ec;
+}
+.sky-chat-live-task > ol {
+  display: grid;
+  margin: 0;
+  padding: 7px 13px 9px;
+  list-style: none;
+}
+.sky-chat-live-task li {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 25px minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: start;
+  padding: 8px 0;
+  color: #90978d;
+}
+.sky-chat-live-task li > span {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  color: #9ba297;
+}
+.sky-chat-live-task li:not(:last-child) > span::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 18px;
+  bottom: -18px;
+  width: 1px;
+  background: #dde2da;
+}
+.sky-chat-live-task li.is-done > span {
+  color: #668c12;
+}
+.sky-chat-live-task li.is-current > span {
+  color: #171c17;
+}
+.sky-chat-live-task li.is-attention > span {
+  color: #b64939;
+}
+.sky-chat-live-task li strong,
+.sky-chat-live-task li small {
+  display: block;
+}
+.sky-chat-live-task li strong {
+  color: #252b24;
+  font-size: 12px;
+}
+.sky-chat-live-task li small,
+.sky-chat-live-task li time {
+  margin-top: 2px;
+  color: #7c8479;
+  font-size: 10px;
+}
+.sky-chat-fund-tools {
+  display: grid;
+  padding: 5px 13px;
+}
+.sky-chat-fund-tools > div {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #edf0eb;
+}
+.sky-chat-fund-tools > div:last-child {
+  border-bottom: 0;
+}
+.sky-chat-fund-tools > div > span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #b2b8ae;
+}
+.sky-chat-fund-tools > div > span.is-live {
+  background: #94bd25;
+  box-shadow: 0 0 0 4px rgba(148, 189, 37, 0.15);
+}
+.sky-chat-fund-tools strong,
+.sky-chat-fund-tools small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sky-chat-fund-tools strong {
+  font-size: 12px;
+}
+.sky-chat-fund-tools small {
+  margin-top: 2px;
+  color: #7c8479;
+  font-size: 10px;
+}
+.sky-chat-fund-tools b {
+  color: #65764e;
+  font-size: 11px;
+}
+.sky-chat-live-fund > footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 13px;
+  border-top: 1px solid #e5e9e3;
+  color: #6f786b;
+  background: #f8faf6;
+  font-size: 10px;
+}
+.sky-chat-live-note {
+  color: #747d71;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.autofund-active > a {
+  min-height: 40px;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid rgba(200, 255, 46, 0.35);
+  border-radius: 999px;
+  color: #dfff79;
+  font-size: 12px;
+  font-weight: 800;
+}
+@keyframes sky-chat-live-pulse {
+  50% {
+    box-shadow: 0 0 0 9px rgba(200, 255, 46, 0.05);
+  }
+}
+
 @media (max-width: 600px) {
+  .sky-chat-live-progress {
+    padding: 11px;
+    border-radius: 16px;
+  }
+  .sky-chat-live-progress > header > a {
+    min-width: 44px;
+    padding-inline: 9px;
+  }
+  .sky-chat-live-task li {
+    grid-template-columns: 23px minmax(0, 1fr);
+  }
+  .sky-chat-live-task li time {
+    grid-column: 2;
+  }
+  .sky-chat-live-fund > footer {
+    flex-direction: column;
+    gap: 3px;
+  }
   .sky-chat-workflow {
     border-radius: 16px;
   }
@@ -9992,6 +10251,12 @@
   }
   .sky-chat-workflow-body {
     padding: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sky-chat-live-progress > header > div > span.is-live {
+    animation: none;
   }
 }
 

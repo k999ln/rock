@@ -48,6 +48,9 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const missingBotControl = structuredClone(source);
   delete missingBotControl.chatInteraction.connectedMcpPresentation;
   assert.throws(() => validateBaseline(missingBotControl), /接続bot管理/);
+  const fakeLiveProgress = structuredClone(source);
+  fakeLiveProgress.chatInteraction.liveProgress.fabricatedProgressAllowed = true;
+  assert.throws(() => validateBaseline(fakeLiveProgress), /接続bot管理/);
   const splitWebDelivery = structuredClone(source);
   splitWebDelivery.webDeliveryIntegrity.sourceAndPrivateSiteCommitMustMatch = false;
   assert.throws(() => validateBaseline(splitWebDelivery), /同一commit/);

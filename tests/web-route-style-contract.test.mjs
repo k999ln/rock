@@ -21,6 +21,7 @@ const surfaces = {
     '.sky-chat-simple',
     '.sky-chat-commandbar',
     '.sky-chat-bot-board',
+    '.sky-chat-live-progress',
     '.mcp-bot-runner',
   ],
   wallet: ['.wallet-app', '.wallet-balance', '.wallet-transactions'],
@@ -168,6 +169,15 @@ void test('Chat owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.match(routing, /label: 'CSV自動化役'/);
   assert.match(chat, /href="\/chat\?view=work"/);
   assert.match(chat, /<Workbench embedded \/>/);
+  assert.match(chat, /<ChatLiveProgress/);
+  assert.match(chat, /setInterval\(refresh, hasActiveJob \? 3_000 : 15_000\)/);
+  assert.match(chat, /setInterval\(refresh, 30_000\)/);
+  const liveProgress = readFileSync(
+    resolve(root, 'components/chat-live-progress.tsx'),
+    'utf8',
+  );
+  assert.match(liveProgress, /内部思考や未確認の収益は表示しません/);
+  assert.match(liveProgress, /analytics\?\.observedReturnBps == null/);
   assert.match(workRoute, /redirect\('\/chat\?view=work'\)/);
   assert.match(activityRoute, /redirect\('\/chat\?view=work'\)/);
 });
