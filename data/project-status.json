@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-12",
-  "milestone": "改善版Sky、Fashion MCPワンタップ接続、汎用MCP Connector、収益後精算核を一つのローンチ候補へ統合",
-  "nextAction": "統合候補の全検証と本人限定Sitesへの反映を完了し、認証済み主要フローとロールバック手順を確認する。",
+  "updatedAt": "2026-09-15",
+  "milestone": "Rock Studioをコード貼付・ファイル添付だけのSky Tool作成チャットへ統合",
+  "nextAction": "一般公開前にTool Sandbox、作者署名、審査操作、失効配信、公開remote MCP/OAuthの受入を実装する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -104,6 +104,39 @@
         "tests/fashion-mcp-client.test.mjs",
         "tests/sky-mcp-onboarding.test.mjs",
         "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "SKY08",
+      "title": "既存の自動化関数をSky商品へ変える組込みSDK・標準雛形・PC登録・宣言公開・匿名利用集計を実装",
+      "status": "done",
+      "dependsOn": ["SKY06"],
+      "evidence": [
+        "docs/sky-tool-sdk.md",
+        "toolkits/sky-tool-sdk/README.md",
+        "toolkits/sky-tool-sdk/src/index.mjs",
+        "toolkits/sky-tool-sdk/bin/create-sky-tool.mjs",
+        "app/studio/page.tsx",
+        "components/rock-studio.tsx",
+        "lib/sky-tool-package.ts",
+        "lib/sky-developer-auth.ts",
+        "lib/sky-tool-events.ts",
+        "drizzle/0006_sticky_beast.sql",
+        "tests/sky-tool-sdk.test.mjs",
+        "tests/sky-tool-package.test.mjs"
+      ]
+    },
+    {
+      "id": "SKY09",
+      "title": "コード貼付またはファイル添付だけで解析・Sky組込み・Package登録まで行うチャット型Studioを実装",
+      "status": "done",
+      "dependsOn": ["SKY08"],
+      "evidence": [
+        "components/rock-studio.tsx",
+        "lib/sky-code-intake.ts",
+        "app/workspace.css",
+        "tests/sky-code-intake.test.mjs",
+        "docs/sky-tool-sdk.md"
       ]
     },
     {

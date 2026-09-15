@@ -330,7 +330,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-12 / 改善版Sky、Fashion MCPワンタップ接続、汎用MCP Connector、収益後精算核を一つのローンチ候補へ統合 / 完了 35/59件
+最終更新: 2026-09-15 / Rock Studioをコード貼付・ファイル添付だけのSky Tool作成チャットへ統合 / 完了 37/61件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -341,6 +341,8 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY05 | Sky画面のsidebarを廃止し、MCP接続・管理とToB掲載をSky本体の操作面へ統合 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/sky-mcp-center.tsx) · [記録](components/sky-mcp-center.module.css) · [記録](components/sky-publisher-form.tsx) · [記録](components/workspace-shell.tsx) · [記録](app/sky/network/page.tsx) · [記録](app/sky/publish/page.tsx) |
 | SKY06 | Sky内MCPを実在するPC接続・既存4自動化・3ステップ導入画面へ統合 | 完了 | [記録](components/sky-mcp-center.tsx) · [記録](components/device-connection.tsx) · [記録](tests/sky-mcp-onboarding.test.mjs) · [記録](scripts/verify-mcp-flow.mjs) |
 | SKY07 | 登録済みMCPをこのPCへワンタップ接続し、Sky Cloud・提供者MCPの外部接続を追加する | 進行中 | [記録](components/sky-mcp-center.tsx) · [記録](components/sky-mcp-center.module.css) · [記録](components/fashion-brand-ops-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](lib/fashion-mcp-client.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](scripts/package-sky-mcp.py) · [記録](public/toolkits/sky-mcp-connector.zip) · [記録](public/toolkits/fashion-brand-ops-connector.zip) · [記録](docs/sky-mcp-connector.md) · [記録](tests/mcp-connector.test.mjs) · [記録](tests/fashion-mcp-client.test.mjs) · [記録](tests/sky-mcp-onboarding.test.mjs) · [記録](docs/product-baseline.md) |
+| SKY08 | 既存の自動化関数をSky商品へ変える組込みSDK・標準雛形・PC登録・宣言公開・匿名利用集計を実装 | 完了 | [記録](docs/sky-tool-sdk.md) · [記録](toolkits/sky-tool-sdk/README.md) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](toolkits/sky-tool-sdk/bin/create-sky-tool.mjs) · [記録](app/studio/page.tsx) · [記録](components/rock-studio.tsx) · [記録](lib/sky-tool-package.ts) · [記録](lib/sky-developer-auth.ts) · [記録](lib/sky-tool-events.ts) · [記録](drizzle/0006_sticky_beast.sql) · [記録](tests/sky-tool-sdk.test.mjs) · [記録](tests/sky-tool-package.test.mjs) |
+| SKY09 | コード貼付またはファイル添付だけで解析・Sky組込み・Package登録まで行うチャット型Studioを実装 | 完了 | [記録](components/rock-studio.tsx) · [記録](lib/sky-code-intake.ts) · [記録](app/workspace.css) · [記録](tests/sky-code-intake.test.mjs) · [記録](docs/sky-tool-sdk.md) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
@@ -412,7 +414,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 統合候補の全検証と本人限定Sitesへの反映を完了し、認証済み主要フローとロールバック手順を確認する。
+次の作業: 一般公開前にTool Sandbox、作者署名、審査操作、失効配信、公開remote MCP/OAuthの受入を実装する。
 <!-- project-status:end -->
 
 ## 次段階の設計

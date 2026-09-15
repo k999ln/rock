@@ -1,6 +1,6 @@
 # Sky — 自動化を選び、許可し、動かし、止め、結果を受け取る場所
 
-最終更新: 2026-09-12
+最終更新: 2026-09-15
 
 ## Skyとは
 
@@ -76,6 +76,12 @@ flowchart LR
 
 現在この価値はQEMUと開発用のWeb/PC経路で部分的に検証済み。実端末、実Cloud provider、実課金、一般公開を完了したという意味ではない。
 
+## 開発者が自動化を追加する場所
+
+開発者はPCの`/studio`またはSky Tool SDKを使う。SDKは自動化したい既存関数を`handler`へ接続する雛形であり、用途、禁止場面、入出力Schema、Adapter、権限、副作用、料金、timeout、成功確認、Fund互換情報を一つの定義からPackageとMCPへ変換する。これにより「Sky専用に全コードを書き直す」のではなく、「自動化できる処理へSkyの契約を被せる」導線にする。
+
+登録したToolは最初に所有者領域へ入り、開発者の宣言としてRegistryへ掲載できる。ただし、宣言公開とSky検証済み公開を分ける。現在のDeveloper PreviewではSandbox・作者署名・公開remote接続の検証は未実装なので、自動インストールは無効のままである。SDKの匿名利用集計はPackage ID、Tool名、結果、処理時間だけを扱い、入力・出力・会話・秘密情報を送らない。詳細は[Sky Tool SDK / Rock Studio](sky-tool-sdk.md)を正本とする。
+
 ## 正本と互換境界
 
 - 製品名・画面名: `Sky`
@@ -86,3 +92,4 @@ flowchart LR
 - native内蔵カタログ正本: `systems/rock-star-os/examples/registry/`
 - native package仕様: `systems/rock-star-os/docs/TOOL-SDK.md`
 - ToB掲載・ToC Timeline・MCP接続設計: `docs/sky-mcp-architecture.md`
+- 開発者SDK・PC登録・Package・公開状態: `docs/sky-tool-sdk.md`
