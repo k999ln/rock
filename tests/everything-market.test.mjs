@@ -101,14 +101,19 @@ void test('D1 runtime keeps exact approval, idempotency and owner isolation', as
   );
   t.after(() => worker.dispose());
   const db = await worker.getD1Database('DB');
-  const migration = readFileSync(
-    new URL('../drizzle/0009_sad_giant_girl.sql', import.meta.url),
-    'utf8',
-  );
-  for (const statement of migration
-    .split('--> statement-breakpoint')
-    .filter((value) => value.trim()))
-    await db.prepare(statement).run();
+  for (const name of [
+    '0009_sad_giant_girl.sql',
+    '0012_marketplace_relation_guards.sql',
+  ]) {
+    const migration = readFileSync(
+      new URL(`../drizzle/${name}`, import.meta.url),
+      'utf8',
+    );
+    for (const statement of migration
+      .split('--> statement-breakpoint')
+      .filter((value) => value.trim()))
+      await db.prepare(statement).run();
+  }
 
   const alice = everythingMarketStore(db, 'alice');
   const expiresAt = new Date(Date.now() + 60_000).toISOString();
@@ -130,15 +135,50 @@ void test('D1 runtime keeps exact approval, idempotency and owner isolation', as
     alice.propose({ ...input, quantity: 3 }, 'proposal:fixed-one'),
     /異なる提案/,
   );
-  await assert.rejects(
-    alice.approve(proposed.id, 'a'.repeat(64)),
-    /同一内容/,
-  );
+  await assert.rejects(alice.approve(proposed.id, 'a'.repeat(64)), /同一内容/);
   const approved = await alice.approve(proposed.id, proposed.digest);
   assert.equal(approved.status, 'APPROVED');
   const executed = await alice.execute(proposed.id, 'execute:fixed-one');
   assert.equal(executed.status, 'EXECUTED');
   assert.match(executed.receiptId, /^paper:/);
   assert.equal((await alice.snapshot()).paperBalanceMinor, 95_600);
-  assert.equal((await everythingMarketStore(db, 'bob').snapshot()).proposals.length, 0);
+  assert.equal(
+    (await everythingMarketStore(db, 'bob').snapshot()).proposals.length,
+    0,
+  );
+
+  await assert.rejects(
+    db
+      .prepare(
+        "INSERT INTO marketplace_approvals VALUES ('approval:forged',?,'bob',?,'APPROVED',?)",
+      )
+      .bind(proposed.id, proposed.digest, new Date().toISOString())
+      .run(),
+    /marketplace approval relation mismatch/,
+  );
+  await assert.rejects(
+    db
+      .prepare(
+        "INSERT INTO marketplace_receipts VALUES ('proposal:missing','paper:forged','alice','execute:forged','{}',?)",
+      )
+      .bind(new Date().toISOString())
+      .run(),
+    /marketplace receipt relation mismatch/,
+  );
+  await assert.rejects(
+    db
+      .prepare(
+        'UPDATE marketplace_reservations SET user_id=? WHERE proposal_id=?',
+      )
+      .bind('bob', proposed.id)
+      .run(),
+    /marketplace reservation binding immutable/,
+  );
+  await assert.rejects(
+    db
+      .prepare('DELETE FROM marketplace_positions WHERE proposal_id=?')
+      .bind(proposed.id)
+      .run(),
+    /marketplace position immutable/,
+  );
 });

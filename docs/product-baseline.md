@@ -1,5 +1,31 @@
 # Rock star OS — 確定した製品ベース
 
+2026-09-15追記（v1.49）: 仕事の依頼、実行、進捗、確認、結果、履歴を扱う標準アプリの正式表示名を`Chat`から`Zema`へ変更する。既存データ、ブックマーク、外部連携を壊さないため、アプリID`chat`、URL`/chat`、内部の`chatInteraction`および`sky-chat-*`識別子は互換名として維持する。本書の過去記録にある`Chat`は、現在の`Zema`を指す旧表示名として読む。
+
+2026-09-15追記（v1.48）: SkyはToolと自動化ファンドを選ぶ場所、Chatは選択後の進捗を動的に確認する場所とする。ChatはGrok型のライブ活動表示として、受付、開始、実行、確認待ち、完了、保存と、ファンド内Toolの状態を自動更新する。ただしモデルの内部思考は公開せず、本人所有のjob記録、ファンド参加状態、検証済み受領記録だけを表示する。未確認の進捗・収益・利回りを生成しない。ファンド参加後は`/chat?fund={fundId}`、CSV Tool開始後は`/chat?tool=rockstar-csv-cleanup`へ引き継ぐ。
+
+2026-09-15追記（v1.47）: CSV整形・検査・納品は「仕事管理機能」ではなく、Skyの自動化Tool商品として収録する。Skyの自動化ツール群に`CSV自動化役`として表示し、通常のToolと同じく目的から検索・選択できる。Chatは仕事の管理面であり、CSVの商品所属をChatへ変更しない。
+
+2026-09-15追記（v1.46）: 仕事の作成、指示、手順実行、確認、停止、再試行、結果、履歴をChatの仕事管理画面へ集約する。SkyはToolを探して接続する場、Chatは接続済みToolと仕事を動かして管理する場とする。既存の`/work`と`/activity`は`/chat?view=work`へ案内する互換入口とし、保存済みデータは削除・変換しない。CSVはSky内のToolとして維持する。
+
+2026-09-15追記（v1.45）: Webフロントはスマートフォン幅320〜767pxを正式なresponsive範囲として扱う。device-width、初期scale 1、notch／home indicatorのsafe area、主要操作44px以上、入力時のiOS自動拡大防止、画面全体の横はみ出し禁止を共通契約にする。ホーム、Sky、Chat、Wallet、Market、設定、仕事・履歴、CSVをこの契約に合わせる。
+
+2026-09-15追記（v1.44）: ワークスペースの常設サイドバーを廃止する。ホームへの復帰は上部の直接導線を維持し、Sky内の仕事・CSVなど画面固有の移動は必要な場所にだけ表示する。折りたたみ式サイドメニューも標準表示へ戻さない。
+
+2026-09-15追記（v1.43）: 仕事・実行履歴とCSV仕事は独立したホームアプリではなく、収益Toolを収録するSky内の画面として扱う。ホームと共通メニューの独立入口を廃止し、Sky内から開く。既存の`/work`、`/activity`、`/csv`は保存済みリンクとデータの互換入口として維持し、Sky選択中として表示する。
+
+2026-09-15追記（v1.42）: OS本体へ、Tool／MCP／Providerの共通登録API、Platform API version契約、APK署名・UID・SELinux境界、本人確認付き一回承認、費用上限、停止・失効、追記型Wallet台帳、receipt重複防止、Android Keystore暗号化backup、schema migration、署名・互換性付き更新／rollback gateを追加する。source実装とAndroid/AOSP build、SELinux enforcing boot、production署名、OTA rollback実証は分離し、未実行のrelease gateを合格表示しない。RQ42を追加する。
+
+2026-09-15追記（v1.41）: Local Action AssistantをRockstarOSの物理Android版へ、オフラインのローカルLLM runtimeとして導入する。固定sourceとoverlay、署名限定Binder API、変更系toolの別確認、APK hash・permission・ABI検査を必須にする。source実装とAPK/native build・OS image・実機合格を分離し、未生成artifactを搭載済みと表示しない。RQ41を追加する。
+
+2026-09-15追記（v1.40）: RockstarOS本体、Developer Preview紹介、Rock Studioを同じvisual systemへ広げ、主要導線、状態表示、キーボード・タッチ操作、mobile表示の機能性を監査して改善する。既存の業務機能、金融安全境界、CSV販売実証を維持する。RQ40を追加する。
+
+2026-09-15追記（v1.39）: Developer Preview紹介とRock Studioを、一つのRockstarOS visual systemへ統一する。黒背景、黄緑アクセント、太い英字見出し、monospaceの補助表示、丸い主操作を共有し、Studioはコード入力を第一画面の主役にする。機能・安全境界・Home導線は維持する。RQ39を追加する。
+
+2026-09-15追記（v1.38）: Developer Preview紹介ページを、OSインストールを主操作にした一画面へ簡素化する。Sky開発者には同じページで最小SDKコードを示し、本人限定Siteの`/studio`へ直接進めるようにする。配布前候補を導入可能と誤表示せず、現在の対応環境と公開前状態は短く明示する。RQ38を追加する。
+
+2026-09-15実装追記（RQ01〜RQ36不変）: 最初の販売実証をCSV整形に絞り、`rockstar-csv-cleanup`を追加する。市場補助型で、本人が外部市場の受注・連絡・入金を扱い、RockstarOSは私有ファイルの受付、決定的変換、独立検査、成果物、7日削除を担う。購入者試験価格は税込3,000円。CSV販売者向けの限定policyはJST月のProvider確認済み純入金30 USD相当以上の月だけ8.88 USD、未達月0、債務繰越なしとする。これは既存RQ20の「月最大888 cents、先払い・債務化なし」を狭める商品別条件であり、他商品の契約を変更しない。正本は [CSV仕事 v1](csv-business-v1.ja.md) とする。
+
 2026-09-15追記（v1.38）: Rock Studioの開発者入力を、Sky SDKコードを既存ツールへ追加する方式へ変更した。ソース本文をSkyへ渡さず、ツール起動時にPackage生成、所有者登録、宣言公開、MCP公開、匿名利用記録を行う。RQ37を更新する。
 
 2026-09-13追記（v1.36）: 利用者は、既存フロントへWallet backendを接続し、本番環境で実際に使えるところまで進めるよう明示。RQ36を追加する。最初の実受取レールはBase MainnetのUSDCとし、外部EIP-1193 WalletでRockの受取アドレスを所有署名する。RockstarOSは秘密鍵、seed phrase、包括的送金権限、利用者資産を保管しない。署名済みEarning Receiptから既存ルールで確定した `SKY_SERVICE_FEE` の回収指図だけを作り、Base上の公式USDC contract、exactな受取先・金額、finalized blockを照合して着金確定する。本番配備は実施対象だが、owner Walletの登録と最初の実transferは本人署名・本人確認が完了するまで実施済みにしない。本人限定Siteを一般公開する前にowner受取先を登録する。
@@ -54,7 +80,7 @@
 
 2026-09-09追記: 設計v1.1の実装承認を受領。公開・実機・MetaMask実資金は準備が整うことを条件に了承。現在の承認範囲は [承認記録](execution-approval-20260909.md)。以下の「承認待ち」は作成時の履歴であり、現在の実装を停止させない。RQ01〜RQ15と料金は変更しない。
 
-版: 1.35 / 更新日: 2026-09-13（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
+版: 1.49 / 更新日: 2026-09-15（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
 
 この文書は利用者がこの日に明示した製品要望を固定する。実装状況は [OS稼働・ゲーム連携監査](os-readiness-audit-20260909.md)（過去の追補・初回監査は履歴）、次の指示は [現在の再開指示](prompts/rock-current-next-20260911.md)、毎回の確認方法は [プロンプト作成規約](prompt-playbook.md) を参照する。決定と実装実績を同じものとして扱わない。
 
@@ -62,7 +88,7 @@
 
 ## RQ01 製品の中心
 
-Rock star OSは、AI自動化ツールに特化した端末OS。標準の入口は **SkyとWallet**。利用者はSkyで商品を選び、導入・接続・実行・停止・結果確認を行い、Walletで自動化によって得たお金と関連費用を管理する。
+Rock star OSは、AI自動化ツールに特化した端末OS。標準の入口は **Sky、Zema、Wallet**。利用者はSkyで商品を選び導入・接続し、Zemaで仕事の指示・実行・停止・確認・結果・履歴を管理し、Walletで自動化によって得たお金と関連費用を管理する。
 
 利用者が示した目的は、自動化により時間や収入の余地を作り、より多くの人が創作・学習・ゲームや現実の新しい挑戦へ進めるようにすること。世界がより良くなるという志向は保持するが、自動化の利益・ゲーム通貨の値上がり・社会的効果を保証しない。取引回数や賭け金を製品成功の指標にせず、削減できた負担、実費後の確定収支、本人が選べる行動の増加で検証する。
 
@@ -76,7 +102,7 @@ Rock star OSは、AI自動化ツールに特化した端末OS。標準の入口�
 
 ## RQ03 現在開発しているツールも商品
 
-既存・開発中ツールはSky内の独立した商品として扱う。既存原本・所有者・ライセンス・版を保持し、掲載、接続、許可、実行、更新、停止、削除を商品単位で管理する。通常の商品追加・更新にOS再buildを要求しない。
+既存・開発中ツールはSky内の独立した商品として扱う。CSV仕事はSky内のToolとして扱い、仕事の作成・実行・確認・停止・結果・履歴はZemaへ集約する。どちらもホーム上の独立アプリにはしない。既存原本・所有者・ライセンス・版を保持し、掲載、接続、許可、実行、更新、停止、削除を商品単位で管理する。通常の商品追加・更新にOS再buildを要求しない。
 
 既存のMr.ユーティリティ、記事APK、native recipeの同名・類似機能を同じ商品実体と決めつけない。source/ref/hash、契約とfixtureを照合してから対応付ける。全商品がAI推論を行う、全商品が収益を生む、全商品が完成済み、と表示しない。
 
@@ -198,11 +224,11 @@ CM発表に向け、利用者が再現可能な手順でRock star OSを導入・
 
 1.0以後は、保存データ、商品manifest、receipt、台帳、更新・復旧の互換性を明示しながら段階的に改善する。未完成のGame交換、実機、実USB、外部provider、実資金、実ATMは進行中または将来機能として表示し、合格した範囲だけをCMで実演する。各systemの現在地と進化方針は [1.0構成](rockstaros-1.0-architecture.md) を正本とする。
 
-## RQ18 基本アプリをSky / Chat / Wallet / Polymarketに分離する
+## RQ18 基本アプリをSky / Zema / Wallet / Polymarketに分離する
 
-RockstarOSの基本アプリはSky、Chat、Wallet、Polymarketの4つ。Skyはアプリの発見・掲載・接続・権限確認に集中し、会話欄を置かない。接続後の依頼、追加確認、処理状況、完了通知、結果の受取はChatへ集約する。Walletは自動化の収支・費用・入出金を管理し、ChatやPolymarketへ包括的な送金権限を渡さない。
+RockstarOSの基本アプリはSky、Zema、Wallet、Polymarketの4つ。Skyはアプリの発見・掲載・接続・権限確認に集中し、会話欄を置かない。接続後の依頼、追加確認、処理状況、完了通知、結果の受取はZemaへ集約する。Walletは自動化の収支・費用・入出金を管理し、ZemaやPolymarketへ包括的な送金権限を渡さない。
 
-ChatはSky Autoを既定とし、利用者へ事前のアプリ選択を強制しない。依頼内容から接続済みの役割を選び、選択結果を会話に表示する。特定アプリへの直接指定は任意で残す。判別不能、対象アプリ未接続、入力不足では勝手に実行せず、必要な追加情報またはSkyでの接続を案内する。実際のjob状態だけをreceiptとして表示し、Chat上の受付メッセージを実行完了の証拠にしない。
+ZemaはSky Autoを既定とし、利用者へ事前のアプリ選択を強制しない。依頼内容から接続済みの役割を選び、選択結果を会話に表示する。特定アプリへの直接指定は任意で残す。判別不能、対象アプリ未接続、入力不足では勝手に実行せず、必要な追加情報またはSkyでの接続を案内する。実際のjob状態だけをreceiptとして表示し、Zema上の受付メッセージを実行完了の証拠にしない。
 
 Polymarketは独自市場ではなく外部サービス用adapterとして別アプリに置く。アプリ枠と安全な未接続画面は実装対象とするが、実市場データ、注文、清算、Walletからの資金移動は別の接続審査と明示同意が必要。所在地・提供地域・年齢・本人確認・利用規約・規制・資金経路が確認できるまで無効とし、AIによる自動取引や自動再投資は行わない。
 
@@ -258,7 +284,7 @@ Skyと各MCPを個別に直結せず、審査済みregistryを読むPC内Connect
 
 ## RQ26 ホーム画面と設定アプリをOSの標準入口にする
 
-RockstarOSを開いた最初の`/`は、iPhoneに着想を得たタッチ向けホーム画面とする。Sky、Chat、Wallet、Polymarketの基本4アプリはアイコンから直接開き、Sky本体は`/sky`へ分離する。設定は業務上の5つ目の基本アプリではなく、OSを整える標準utilityとしてホームへ置く。
+RockstarOSを開いた最初の`/`は、iPhoneに着想を得たタッチ向けホーム画面とする。Sky、Zema、Wallet、Polymarketの基本4アプリはアイコンから直接開き、Sky本体は`/sky`へ分離する。設定は業務上の5つ目の基本アプリではなく、OSを整える標準utilityとしてホームへ置く。
 
 Home以外の全画面には、現在の作業を保存契約どおり保持したまま`/`へ直接移動できる、見つけやすくキーボード・タッチで操作可能なHome導線を置く。共通WorkspaceShellを使わない独自画面も例外にしない。
 
@@ -304,11 +330,11 @@ QEMUの公開準備は10 gateを同じID・状態で `data/qemu-release-audit.js
 
 ## RQ32 完成版を正本と本人限定Webへ同一commitで収束する
 
-main、現在の開発branch、機能branch、Sites公開履歴を比較し、完成度の高い実装を現在の製品ベースへ統合する。履歴が新しいだけ、画面だけ、説明だけを理由に採用せず、保存互換、approval、実行receipt、外部接続・実資金・公開gateを維持できる版を選ぶ。Skyは発見・接続、Chatは接続後の操作、Walletは本人別の永続収支という責任を崩さない。
+main、現在の開発branch、機能branch、Sites公開履歴を比較し、完成度の高い実装を現在の製品ベースへ統合する。履歴が新しいだけ、画面だけ、説明だけを理由に採用せず、保存互換、approval、実行receipt、外部接続・実資金・公開gateを維持できる版を選ぶ。Skyは発見・接続、Zemaは接続後の操作、Walletは本人別の永続収支という責任を崩さない。
 
-Skyで接続が成立したMCP serverとready商品はChatへbotとして自動表示し、同じスレッドで依頼、方向修正、公開機能と引数、1回承認、実行結果、失敗、停止を扱う。方向修正は、MCPがlive steeringを明示対応しない限り次の実行へ適用する。停止はsessionと未使用承認を失効させ、送信後timeoutや結果不明を自動再実行しない。Walletは本人別D1を正本とし、残高、売上、経費、取消を追記履歴として保持するが、手入力を検証済み収益へ昇格させない。
+Skyで接続が成立したMCP serverとready商品はZemaへbotとして自動表示し、同じスレッドで依頼、方向修正、公開機能と引数、1回承認、実行結果、失敗、停止を扱う。方向修正は、MCPがlive steeringを明示対応しない限り次の実行へ適用する。停止はsessionと未使用承認を失効させ、送信後timeoutや結果不明を自動再実行しない。Walletは本人別D1を正本とし、残高、売上、経費、取消を追記履歴として保持するが、手入力を検証済み収益へ昇格させない。
 
-Home、Sky、Chat、Wallet、Market、設定は、画面componentだけでなく必要なstylesheetがbuildへ含まれることを自動検査する。server/manifest/HTMLが参照する`_next/static` assetは公開archive内に全て存在しなければならない。GitHubの対象branchと本人限定Sitesへ同じsource commitを保存し、公開後に主要routeとassetの実responseを再確認する。一般公開、main merge、production鍵、実取引・送金、物理端末合格、マイナンバー有効化は、それぞれの既存gateなしにこの統合作業から許可へ変えない。
+Home、Sky、Zema、Wallet、Market、設定は、画面componentだけでなく必要なstylesheetがbuildへ含まれることを自動検査する。server/manifest/HTMLが参照する`_next/static` assetは公開archive内に全て存在しなければならない。GitHubの対象branchと本人限定Sitesへ同じsource commitを保存し、公開後に主要routeとassetの実responseを再確認する。一般公開、main merge、production鍵、実取引・送金、物理端末合格、マイナンバー有効化は、それぞれの既存gateなしにこの統合作業から許可へ変えない。
 
 ## RQ33 汎用PAPER市場と実績更新型の自律ファンド
 
@@ -346,13 +372,55 @@ Billing Workerは、署名検証済みEarning Receiptへ配分済みの `SKY_SER
 
 このレールはRockに帰属する利用料の受取に限定し、利用者資産のcustody、利用者へのpayout、任意入金、交換、運用、税務判定を追加しない。外部Wallet／ファンド会社はRQ34のProvider Adapterとして別途接続できる。実装と本番配備が合格しても、owner自身のWallet署名と最初の実transferが未実施なら、実Wallet登録・実着金の実績とは表示しない。詳細は [Rock Wallet本番受取レール](rock-wallet-production-rail-20260913.md) を参照する。
 
+### CSV販売実証の限定追加（RQ01〜RQ36は変更しない）
+
+`rockstar-csv-cleanup`は、1ファイル10 MiB・50,000行・100列までのUTF-8/BOM/CP932 CSVを、列名、列順、前後空白、重複、並び順、出力文字コードの明示指定だけで変換する。値を文字列として保ち、先頭0、長い数字、引用内改行、引用符を失わず、指定外の推測・補完・計算をしない。成果物はowner付き私有objectへ保存し、受付から7日または本人の即時削除で消す。buyerへの直接共有はbuyer認証と期限付き権限が実装されるまで有効化しない。
+
+CSV販売者向け`csv-seller-fee/1`は、billing account・contract・policy version単位、JST月、Provider確認済みの返金・市場手数料・税・取引実費控除後純入金を基準とする。30.00 USD未満は0、以上は8.88 USD、同月一回、未達債務・翌月繰越・手入力による課金なしとする。本番Provider未接続の間は判定とschemaだけを実装し、実請求・実回収を開始しない。既存RQ20の月最大888 cents、先払いなし、実費優先より利用者に不利な条件へ広げない。
+
 ## RQ37 Rock StudioはSkyコードを既存ツールへ付けてTool化する
 
 PCのRock Studioは、配布されたSky SDKコードを開発者自身の既存ツールへ追加する画面にする。開発者キーを環境変数へ保存し、SDKと短い組込みコードを追加してツールを起動すれば、Tool Packageの生成、所有者登録、宣言公開、MCP公開、Fund候補化、匿名利用記録までを同じ定義から行う。Skyへソースコードやファイルを貼ることを必須にしない。
 
 Registry APIにはSDKが生成した`sky-tool-package/1`だけを送り、handlerの入力、出力、会話、APIキー、ソース本文は送信・保存しない。危険な外部変更・金融操作は`sideEffects`と`authorize` callbackを必須にして実行ごとの確認と再試行禁止を設定する。宣言公開はSandbox検証や作者署名の代替ではなく、登録不能時に登録完了と表示しない。
 
-## 1.0への8原則の適用（RQ01〜RQ37を維持）
+## RQ38 Developer Preview紹介ページをインストール中心へ簡素化する
+
+`/rockstaros`は長い機能説明、動画、ゲーム紹介を並べるページではなく、RockstarOSを試したい利用者が最初の画面で「OSをインストール」へ進める簡潔な紹介ページにする。視覚は黒を基調にRockstarOSの酸味のある黄緑をアクセントとし、デスクトップとモバイルで同じ主操作を保つ。公開配布URLがない間は検証済み導入手順へ接続し、未署名候補を直接インストール可能とは表示しない。
+
+同じページにSky Tool SDKの最小Node.jsコード例を置き、`https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio`へ直接進める。Studioのコード貼付・ファイル添付、コード本文非送信、宣言公開と検証済み公開の境界はRQ37を維持する。紹介ページの簡素化でHome、Sky、Wallet、設定、導入・復旧ガイドの実機能や既存routeを削除しない。
+
+## RQ39 紹介ページとRock Studioのvisual systemを統一する
+
+`/rockstaros`と`/studio`は、黒を基調に酸味のある黄緑を主アクセントとする同一のRockstarOS visual systemを使う。ワードマーク、太い英字見出し、monospaceの補助表示、細い境界線、丸い主操作を共有する。Studioは説明を短くし、SDK導入コマンド、組込みコード、開発者キー発行を第一画面の主役にする。desktopとmobileの双方で、コードcopy、キー発行、MCP導入確認が読みやすく操作できる状態を維持する。
+
+外観統一のためにStudioのソース本文非送信、Packageだけの登録、失敗時の表示、宣言公開と検証済み公開の区別を変更しない。紹介ページのインストール導線、StudioからSkyへ直接戻る導線、Skyや導入案内への経路も保持する。
+
+## RQ40 RockstarOS全体のvisual systemとフロント機能性を改善する
+
+Home、共通workspace shell、Developer Preview紹介、Rock Studioを、黒いOS chrome、酸味のある黄緑、明瞭なfocus ring、丸い主要操作の同一visual systemへ統一する。作業内容を読む領域は可読性を優先して明るいsurfaceを維持し、装飾だけのために既存機能や状態を隠さない。HomeからSky、Zema、仕事、CSV、Wallet、Market、設定へ直接進めるようにし、Web版が取得できない通信・電池状態を実端末状態として表示しない。
+
+端末内設定の保存失敗でHome全体を壊さず、編集dialogはEscape、外側click、明示的な閉じる操作に対応する。nested routeでもsidebarの現在地を正しく表示し、処理中に移動を止める場合は視覚・accessibilityの両方でdisabled状態を示す。mobileではheader、app grid、主要buttonを横にはみ出さず、通常ラベルを13px未満へ縮めない。金融・実行・CSVの業務契約、安全境界、保存先、公開状態はこの外観・操作改善で変更しない。
+
+## RQ41 Local Action Assistantを物理Android OSのローカルLLMにする
+
+Local Action Assistantを、RockstarOSの物理Android版で端末内推論を担当する固定runtimeとして導入する。上流repository、完全なcommit、MIT license、`llama.rn`版、主要source hashをlockし、レビュー済みoverlayだけで署名限定Binder serviceとHeadless JS推論を追加する。OS側は固定package、同一署名、API version、明示componentを検証し、未知event、過大payload、timeout、複数tool callをfail closedにする。
+
+読み取りtoolは許可リスト内だけを実行し、メモ・リマインダー作成はproposalを端末内へ一時保存して、OSの別確認呼出しで本人が許可するまで実行しない。release APKは通信権限なし、arm64 native library、固定SHA-256とsizeを検査してからSoongへstageし、AOSPのrelease署名工程へ渡す。GGUFはsourceやAPKへ同梱せず、配布元、license、hash、端末RAM・速度・温度を確認後にimportする。
+
+2026-09-15時点ではclient/server source、AIDL契約、overlay、APK staging gateまで実装済み。Java／Android SDKがない現在のMacではKotlin・APK・Soongをbuildしておらず、署名APK、OS image、端末boot、機内モード推論、30分連続試験は未完了である。詳細は [Local Action AssistantのRockstarOS導入](local-ai-os-integration-20260915.md) を正本補助記録とする。
+
+## RQ42 OS Platform Coreへ登録・承認・Wallet・更新の安全境界を入れる
+
+Tool／MCP／Providerを同じversioned Binder APIで登録する。OS brokerは入力された自己申告を信用せず、導入済みAPKからpackage version、application UID、署名証明書digestを取得して照合する。component種別ごとのcapability allowlistを適用し、runtime登録からSELinux domainを付与しない。第一者packageのdomain割当てはOS image build時の明示allowlistに限定する。
+
+費用や変更を伴う操作は、アプリが作れるのを提案までとする。非公開のOS画面が対象、操作、payload digest、費用上限、有効期限を表示し、端末credentialで本人確認した後だけ一回承認へ進める。承認はowner、component generation、action、payload、費用上限、有効期限へ固定し、停止、更新、失効で無効化する。承認消費とWallet receiptは同じSQLite transactionで記録する。
+
+Wallet基本台帳はowner別の追記型とし、既存行の書換えではなく相殺receiptで訂正する。owner＋request key、owner＋Provider reference、owner＋取消対象をuniqueにして重複を防ぐ。保存schemaはversionを持ち、対応外versionを初期化せずfail closedにする。backupはowner範囲のsnapshotをAES-256-GCMで暗号化し、Android Keystoreの非export keyを使う。
+
+更新は同じcomponent identity、同じ署名、Platform API互換、保存schema互換、新しいversionを必須にする。rollbackはcache済みの古い互換versionだけを許す。2026-09-15時点はcore、AIDL、Android broker／本人確認画面、source SELinux policy、契約とhost testを実装した段階で、Android/AOSP native build、SELinux enforcing boot、production key署名、OTA rollbackと実機受入は未実行である。詳細は [OS Platform Core v1](platform-core.md) を参照する。
+
+## 1.0への8原則の適用（RQ01〜RQ42を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -372,6 +440,16 @@ Registry APIにはSDKが生成した`sky-tool-package/1`だけを送り、handle
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-15 v1.42: 利用者指定のOS共通登録、API version、UID／SELinux分離、本人承認・費用上限・停止・失効、Wallet台帳・receipt重複防止、暗号化backup・schema migration、署名更新・rollback・互換性検査をRQ42へ追加。source実装とnative／実機release gateを分離する。
+
+2026-09-15 v1.41: 利用者の「OSのシステムに入れる」「どんどん進めて」によりRQ41を追加。Local Action Assistantの固定source、オフラインLLM契約、署名限定Binder client/server source、Headless JS、別確認、APK staging gateを実装し、native build・署名・image・実機試験の未完了境界を維持する。
+
+2026-09-15 v1.40: 利用者の「OSのデザインも統一し、フロントデザインの機能性の問題を洗い出して改善」によりRQ40を追加。OS本体へ共通visual systemを適用し、主要routeの操作性、状態表示、keyboard focus、mobile overflowを監査して修正する。既存機能と安全境界を保持した同一sourceをSites本番へ配備する。
+
+2026-09-15 v1.39: 利用者の「デザインを整えて統一して」によりRQ39を追加。Developer Preview紹介とRock Studioへ黒・黄緑・太い英字・monospace補助・丸い主操作を共通適用し、Studioは入力面を主役に整理する。既存のコード解析、Package登録、安全境界、Home導線は変更しない。
+
+2026-09-15 v1.38: 利用者の「紹介ページをもっとカッコよく、シンプルにし、OSをインストールするボタンとSky開発者コードを置く」と、指定された本人限定Siteの`/studio`に基づきRQ38を追加。`/rockstaros`をインストール中心の一画面へ整理し、Sky SDKの最小コードとStudio導線を統合する。公開前・対応環境の境界は短く保持する。
 
 2026-09-15 v1.38: 利用者の「やっぱコードがあってそれをつける方が楽」によりRQ37を更新。Rock StudioをSDKコードのコピー、開発者キー発行、既存ツールへの組込みに一本化し、起動時のPackage生成、登録、MCP公開、匿名利用記録をSDKへ移した。ソース本文はSkyへ送らず、検証済み公開との境界を維持する。
 

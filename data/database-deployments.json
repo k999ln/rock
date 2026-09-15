@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "updatedAt": "2026-09-15",
+  "boundaries": {
+    "web-d1": {
+      "runtime": "Cloudflare D1 / owner-only Sites",
+      "deploymentStatus": "SOURCE_AHEAD",
+      "productionAppliedThrough": null,
+      "productionReadbackAt": null,
+      "evidence": [],
+      "nextAction": "owner-scoped read-only accessでmigration、件数、孤立関係、backup状態を確認する"
+    },
+    "sky-billing-d1": {
+      "runtime": "Cloudflare D1 / Sky Billing Worker",
+      "deploymentStatus": "DOCUMENTED_NOT_READ_BACK",
+      "productionAppliedThrough": "0004_rock_settlement_wallet.sql",
+      "productionReadbackAt": null,
+      "evidence": ["docs/validation.md"],
+      "nextAction": "current productionをreadbackし、0004適用と台帳件数を再確認する"
+    },
+    "os-wallet-spend-sqlite": {
+      "runtime": "RockstarOS device-local SQLite",
+      "deploymentStatus": "QEMU_SCOPED",
+      "productionAppliedThrough": null,
+      "productionReadbackAt": null,
+      "evidence": ["docs/value-spend-runtime.md"],
+      "nextAction": "同一QEMU候補と将来の実機で保存・再起動・復旧を別々に受入する"
+    },
+    "android-work-sqlite": {
+      "runtime": "Android Work Engine SQLite",
+      "deploymentStatus": "EMULATOR_SCOPED",
+      "productionAppliedThrough": null,
+      "productionReadbackAt": null,
+      "evidence": ["docs/os-prototype.md"],
+      "nextAction": "対象端末を確定後、full buildと実機保存・復旧を受入する"
+    },
+    "android-platform-sqlite": {
+      "runtime": "Android Platform Core SQLite",
+      "deploymentStatus": "SOURCE_ONLY",
+      "productionAppliedThrough": null,
+      "productionReadbackAt": null,
+      "evidence": ["docs/local-ai-os-integration-20260915.md"],
+      "nextAction": "Kotlin/APK native build後、Soong imageと実機でschema移行を受入する"
+    }
+  }
+}

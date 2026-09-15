@@ -1,5 +1,5 @@
 {
-  "version": "1.38",
+  "version": "1.49",
   "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -11,7 +11,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ36 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ42 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -20,15 +20,23 @@
   "alignmentAudit": "docs/design-implementation-alignment-20260909.md",
   "sky": {
     "displayName": "Sky",
-    "role": "automation_selection_permission_dispatch_control_results",
-    "definition": "Select a Tool, review its author/version/permissions/cost/execution target, consent, dispatch, stop and inspect results from one control surface.",
+    "role": "automation_discovery_connection_and_catalog",
+    "definition": "Discover and connect Tool products, review their author/version/permissions/cost/execution target, and hand work control to Zema.",
     "inventory": "docs/sky.md",
+    "internalSurfaces": ["/csv"],
+    "navigationRule": "CSV remains a Sky Tool surface. Work creation, progress, approval, stop, results and history are managed inside Zema; /chat, /work and /activity remain compatibility routes.",
     "legacyInternalName": "hub",
     "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
   },
   "baseApps": [
     { "id": "sky", "role": "discover_connect_and_manage_automation_apps" },
-    { "id": "chat", "role": "request_clarify_status_and_result_inbox" },
+    {
+      "id": "chat",
+      "displayName": "Zema",
+      "legacyDisplayName": "Chat",
+      "route": "/chat",
+      "role": "request_create_approve_stop_status_results_and_work_history"
+    },
     { "id": "wallet", "role": "automation_income_cost_and_funds" },
     { "id": "market", "role": "generic_paper_market_and_value_spend_runtime" }
   ],
@@ -36,6 +44,14 @@
     "defaultRoute": "/",
     "skyRoute": "/sky",
     "returnPolicy": "every_non_home_route_has_a_direct_home_affordance",
+    "workspaceNavigation": "sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation",
+    "smartphoneLayout": {
+      "supportedCssWidthPx": [320, 767],
+      "viewport": "device-width_initial-scale-1_viewport-fit-cover",
+      "safeAreas": true,
+      "minimumPrimaryTouchTargetPx": 44,
+      "pageHorizontalOverflow": "forbidden"
+    },
     "visualBasis": "iphone_inspired_app_launcher",
     "systemUtility": "settings",
     "preferencesStorage": "device_local",
@@ -57,6 +73,36 @@
       "allowlisted_device_reset",
       "release_readiness"
     ]
+  },
+  "launchPage": {
+    "route": "/rockstaros",
+    "primaryAction": "install_os",
+    "publicDownloadFallback": "/rockstaros/guide#install",
+    "developerCode": "sky_tool_sdk_minimal_node_example",
+    "studioUrl": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio",
+    "visualDirection": "minimal_black_acid_green",
+    "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable"
+  },
+  "visualSystem": {
+    "surfaces": ["/", "/rockstaros", "/studio", "workspace_shell"],
+    "background": "near_black",
+    "accent": "acid_green",
+    "headline": "heavy_display_latin",
+    "metadata": "monospace_uppercase",
+    "primaryControl": "rounded_high_contrast",
+    "studioPrimarySurface": "sdk_code_installation",
+    "homePrimaryApps": ["sky", "chat", "wallet", "market", "settings"],
+    "functionalityAudit": [
+      "home_app_reachability",
+      "truthful_web_status",
+      "safe_device_local_preferences",
+      "modal_escape_and_focus",
+      "nested_route_active_state",
+      "running_navigation_disabled_state",
+      "mobile_header_overflow"
+    ],
+    "businessFunctionalityChanged": false,
+    "interactionFunctionalityImproved": true
   },
   "systemMaintenance": {
     "route": "/settings/system",
@@ -124,10 +170,43 @@
     "externalProviders": "blocked_until_credentials_contracts_acceptance"
   },
   "chatInteraction": {
+    "displayName": "Zema",
+    "legacyDisplayName": "Chat",
+    "compatibilityRoute": "/chat",
     "defaultRouting": "sky_auto",
     "manualAppSelection": "optional",
     "connectedMcpPresentation": "one_bot_per_connected_server_or_ready_product",
-    "controlSurface": "chat_thread",
+    "controlSurface": "zema_thread_and_work_center",
+    "liveProgress": {
+      "presentation": "grok_style_observable_activity_timeline",
+      "sources": [
+        "owned_jobs",
+        "automation_fund_membership",
+        "verified_receipts"
+      ],
+      "activeJobRefreshSeconds": 3,
+      "idleJobRefreshSeconds": 15,
+      "fundRefreshSeconds": 30,
+      "fundSelectionHandoff": "/chat?fund={fundId}",
+      "csvExecutionHandoff": "/chat?tool=rockstar-csv-cleanup",
+      "chainOfThoughtExposed": false,
+      "fabricatedProgressAllowed": false,
+      "unverifiedYieldAllowed": false
+    },
+    "workManagement": {
+      "canonicalRoute": "/chat?view=work",
+      "compatibilityRoutes": ["/work", "/activity"],
+      "actions": [
+        "create",
+        "run_steps",
+        "approve",
+        "stop",
+        "retry",
+        "inspect_results",
+        "inspect_history"
+      ],
+      "preserveExistingRecords": true
+    },
     "steeringPolicy": "apply_to_next_execution_unless_the_mcp_explicitly_supports_live_steering",
     "genericExecutionContract": "passport_tool_schema_then_prepare_confirm_execute",
     "stopPolicy": "disconnect_server_and_invalidate_outstanding_approvals",
@@ -196,7 +275,12 @@
     "RQ34",
     "RQ35",
     "RQ36",
-    "RQ37"
+    "RQ37",
+    "RQ38",
+    "RQ39",
+    "RQ40",
+    "RQ41",
+    "RQ42"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -205,8 +289,74 @@
     "goal-driven-brand-operations",
     "sky-earnings-settlement",
     "generic-mcp-connector",
-    "sky-tool-developer-platform"
+    "csv-paid-work-pilot",
+    "sky-tool-developer-platform",
+    "local-offline-ai-runtime",
+    "os-platform-core"
   ],
+  "localAiRuntime": {
+    "requested": true,
+    "status": "client_and_server_source_implemented_native_not_built",
+    "repository": "https://github.com/noellesugar99/local-action-assistant.git",
+    "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+    "sourceLock": "os/physical/local-action-assistant-source-lock.json",
+    "artifactLock": "os/physical/local-action-assistant-artifact-lock.json",
+    "contract": "contracts/local-ai-runtime.json",
+    "record": "docs/local-ai-os-integration-20260915.md",
+    "engine": "llama.rn",
+    "engineVersion": "0.12.9",
+    "modelFormat": "GGUF",
+    "modelBundled": false,
+    "releaseNetwork": "none",
+    "trustMode": "fixed_package_same_signer",
+    "mutationConfirmation": "required_separate_call",
+    "apkBuilt": false,
+    "soongBuilt": false,
+    "imageBuilt": false,
+    "deviceInferenceVerified": false
+  },
+  "androidPlatformCore": {
+    "requested": true,
+    "status": "source_implemented_native_and_sepolicy_build_not_run",
+    "contract": "contracts/platform-api.json",
+    "record": "docs/platform-core.md",
+    "apiVersion": 1,
+    "componentKinds": ["TOOL", "MCP", "PROVIDER"],
+    "identityVerification": "installed_apk_uid_version_and_signer",
+    "runtimeSelinuxGrant": false,
+    "approval": "proposal_then_device_credential_then_single_use",
+    "costLimit": "exact_max_minor_units",
+    "ledger": "append_only_owner_scoped_idempotent_receipts",
+    "backup": "aes_256_gcm_android_keystore_owner_scoped",
+    "schemaVersion": 2,
+    "migration": "transactional_fail_closed",
+    "update": "same_identity_signer_api_and_data_schema",
+    "rollback": "cached_older_compatible_version",
+    "androidBuilt": false,
+    "aospImageBuilt": false,
+    "selinuxEnforcingVerified": false,
+    "productionSigningVerified": false,
+    "otaRollbackVerified": false
+  },
+  "csvBusinessPilot": {
+    "productId": "rockstar-csv-cleanup",
+    "productPlacement": "sky_automation_tool_catalog",
+    "skyRole": "CSV自動化役",
+    "status": "p0_implementation_in_progress_external_validation_pending",
+    "contract": "docs/csv-business-v1.ja.md",
+    "security": "docs/csv-business-security.ja.md",
+    "taskManifest": "data/csv-business-tasks.json",
+    "buyerPriceMinor": 300000,
+    "buyerCurrency": "JPY",
+    "retentionDays": 7,
+    "monthlyFeePolicy": "csv-seller-fee/1",
+    "monthlyThresholdUsdMinor": 3000,
+    "monthlyFeeUsdMinor": 888,
+    "periodTimezone": "Asia/Tokyo",
+    "manualPaymentCountsAsVerifiedRevenue": false,
+    "liveBillingEnabled": false,
+    "externalMarketplaceAutomationEnabled": false
+  },
   "skyToolDeveloperPlatform": {
     "requested": true,
     "status": "developer_preview_registered_and_declared_publication",

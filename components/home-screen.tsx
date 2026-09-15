@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  BatteryFull,
   ChartNoAxesCombined,
   Check,
   ChevronLeft,
@@ -11,9 +10,7 @@ import {
   RotateCcw,
   Settings2,
   ShieldCheck,
-  Signal,
   WalletCards,
-  Wifi,
   X,
   type LucideIcon,
 } from 'lucide-react';
@@ -21,6 +18,7 @@ import Link from 'next/link';
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
   type CSSProperties,
 } from 'react';
@@ -56,7 +54,7 @@ const apps: HomeApp[] = [
   },
   {
     id: 'chat',
-    name: 'Chat',
+    name: 'Zema',
     description: '頼む・確認する・受け取る',
     href: '/chat',
     Icon: MessageCircle,
@@ -92,7 +90,7 @@ const defaults: Preferences = {
   wallpaper: 'aurora',
   iconSize: 'medium',
   showLabels: true,
-  accent: '#b9ff66',
+  accent: '#c8ff2e',
   appOrder: appIds,
 };
 const wallpaperOptions: { id: Wallpaper; label: string }[] = [
@@ -139,6 +137,7 @@ export default function HomeScreen() {
   const [editing, setEditing] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [preferences, setPreferences] = useState(defaults);
+  const closeEditorButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const initialize = window.setTimeout(() => {
@@ -163,8 +162,22 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (!loaded) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+    } catch {
+      // Private browsing and locked-down devices can reject local writes.
+    }
   }, [loaded, preferences]);
+
+  useEffect(() => {
+    if (!editing) return;
+    closeEditorButton.current?.focus();
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setEditing(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [editing]);
 
   const orderedApps = useMemo(
     () =>
@@ -212,10 +225,9 @@ export default function HomeScreen() {
       <header className={styles.statusBar}>
         <strong>{time}</strong>
         <span className={styles.statusName}>RockstarOS</span>
-        <span className={styles.statusIcons} aria-label="端末状態">
-          <Signal size={15} fill="currentColor" />
-          <Wifi size={17} />
-          <BatteryFull size={21} />
+        <span className={styles.statusIcons} aria-label="Web版・端末内設定">
+          <ShieldCheck size={15} />
+          <span>WEB / LOCAL</span>
         </span>
       </header>
 
@@ -242,9 +254,9 @@ export default function HomeScreen() {
           <span className={styles.widgetCopy}>
             <small>SKY AUTO</small>
             <strong>何をしてほしい？</strong>
-            <span>Chatに話すと、接続済みの役割を自動で選びます</span>
+            <span>Zemaに話すと、接続済みの役割を自動で選びます</span>
           </span>
-          <span className={styles.widgetAction}>Chatを開く</span>
+          <span className={styles.widgetAction}>Zemaを開く</span>
         </Link>
 
         <div className={styles.appGrid} aria-label="ホームアプリ">
@@ -299,18 +311,29 @@ export default function HomeScreen() {
       </footer>
 
       {editing && (
-        <div className={styles.editorBackdrop} role="presentation">
+        <div
+          className={styles.editorBackdrop}
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setEditing(false);
+          }}
+        >
           <dialog
             open
             className={styles.editor}
             aria-labelledby="home-editor-title"
+            aria-modal="true"
           >
             <header>
               <div>
                 <small>この端末だけに保存</small>
                 <h2 id="home-editor-title">ホーム画面を編集</h2>
               </div>
-              <button onClick={() => setEditing(false)} aria-label="編集を閉じる">
+              <button
+                ref={closeEditorButton}
+                onClick={() => setEditing(false)}
+                aria-label="編集を閉じる"
+              >
                 <X size={20} />
               </button>
             </header>

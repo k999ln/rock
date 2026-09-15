@@ -1,4 +1,127 @@
-# Rock star OS — SkyとWallet
+# RockstarOS — 自動化を接続・実行・管理するOS
+
+RockstarOSは、AI自動化ToolをSkyから接続し、利用者が確認した権限・実行先・費用上限で動かし、結果、費用、収益、復旧状態を一つのOSで管理する製品です。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ42、進捗の正本は [data/project-status.json](data/project-status.json) です。
+
+## 現在地
+
+<!-- project-overview:start -->
+更新日: 2026-09-15 / 102 task中72 done・21 in progress・9 planned
+<!-- project-overview:end -->
+
+| 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                           |
+| --------------- | -------------------------------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------ |
+| Web / PWA       | Home、Sky、Chat、仕事、CSV、Wallet、Market、設定、Studio、D1 API                             | 実装あり・本人限定Siteの最新版同期待ち | 同一sourceの配備、認証後の実操作、一般公開gate                     |
+| Linux / QEMU    | OS起動、Platform API、専用UID、SQLite、保存、A/B更新、rollback、backup、Wallet／Game fixture | Developer Preview候補は10 gate中6合格  | 製品license、production署名、署名後の同一候補受入、公開承認        |
+| Android P1      | 2 APK、SQLite、Binder、JobScheduler、標準emulator CI                                         | 技術試作                               | Sky／Wallet／GameのAndroid移植、OS full build                      |
+| Android物理端末 | source lock、機種別package設計、build準備・診断script                                        | 5必須gate中0合格                       | 機種／SKU、BSP、full build、flash、boot、CTS、OTA、純正復旧        |
+| Local AI        | 上流source固定、Binder API、Tool確認契約、overlay、APK検査・stage入口                        | `SOURCE_PINNED_NOT_BUILT`              | Kotlin／APK native build、GGUF、OS搭載、SELinux・熱・RAM・実機推論 |
+| Wallet / 実資金 | 本人別台帳、Earning Receipt、月最大8.88 USD精算、Base USDC照合コード                         | sandbox／コード段階                    | owner署名、最初の実transfer、決済・払出しProvider受入              |
+
+結論として、**Web/PWAとQEMUの開発版は動く範囲がありますが、スマートフォンへ書き込んで日常利用できる完成OS、本番金融、一般公開版は未完成です。** QEMU、Android emulator、物理端末、本番環境の成功は相互に代用しません。
+
+## 現在仕様
+
+- **Home**: Sky、Chat、Work、CSV、Wallet、Market、Settingsへの標準入口。全非Home画面から直接戻れます。
+- **Sky**: Toolの発見、作者・版・権限・料金・実行先の確認、接続、開始、停止、結果確認を担当します。
+- **Chat**: 接続済みToolへの依頼、追加確認、方向修正、承認、処理状態、結果を一つの会話にまとめます。
+- **MCP**: stdio／Streamable HTTPをConnection Passportで管理します。現在の標準実接続は「このPC」で、Sky Cloudとprovider MCPは準備中です。
+- **Wallet**: 仕事、費用、検証済み収益、Rock利用料、払出しを別状態とreceiptで管理します。売上0なら請求0、未達分の債務化・翌月繰越はありません。
+- **Market / Fund**: 型付き価値の市場と実績更新型ファンドはPAPER限定です。LIVE注文、清算、自動再投資は無効です。
+- **OS運用**: 診断、暗号化された端末設定backup、明示的なPWA更新、A/B更新、rollback、復旧を提供します。
+- **Business Pilot**: CSV整形、メルカリ販売支援、Fashion Brand Opsを実装しています。外部市場の取引や売上を自動で実績化しません。
+
+## 設計方針
+
+1. Rock側は接続、権限、実行管理、停止、receipt、台帳、復旧を共通基盤として作ります。
+2. ToBは商品固有ロジック、価格、license、品質、保守を担当します。
+3. 決済、custody、KYC、税務、外部市場、OEM固有driverなどは交換可能な外部Providerへ分離します。
+4. 外部へ任せても、権限強制、状態表示、照合、失効、結果不明時の安全性はRock側に残します。
+5. 実装、fixture、sandbox、QEMU、emulator、物理端末、本番を別gateで判定します。
+6. 秘密鍵、seed phrase、包括送金権限、任意shell/rootを共通機能として保持しません。
+
+詳細は [責任分界](docs/workstreams/00-responsibility-boundaries.md)、[1.0構成](docs/rockstaros-1.0-architecture.md)、[1.0戦略](docs/rockstaros-1.0-strategy.md) を参照してください。
+
+## 作業の入口
+
+設計書は [作業ストリーム案内](docs/workstreams/README.md) から次の区分で確認できます。
+
+- Product / UX
+- Sky / MCP
+- Wallet / Billing / Providers
+- Security / Identity / Compliance
+- Web / PWA / Sites
+- Native / QEMU / Release
+- Android / Device / Local AI
+- Game / Market / Fund
+- Business Pilots
+- Git / CI / Operations
+
+各ストリームには、現在地、担当、外部依存、次の順番、完了条件、関連設計書、検証コマンドがあります。
+
+## 次に進める作業
+
+### 直近のrepository作業
+
+1. 最短ローンチ対象を `Web / PWA 本人限定Preview` に固定し、現在差分を機能単位で整理する。
+2. 対象試験、`npm run project:update`、`npm run verify`を完走し、設計・進捗・コードを同じcommitへ固定してGitHubへ保存する。
+3. ownerの最新版同期承認後、その同じSHAを本人限定Sitesへ配備し、認証後の主要導線、API、security header、D1 migrationをreadbackする。
+
+### OS完成へ向けた順番
+
+1. **QEMU配布**: 製品licenseとproduction署名方式を確定し、署名後の同一archiveで導入・更新・復旧を再受入する。
+2. **対象端末**: 実機の型番、SKU、codename、OEM unlock、bootloader状態を読取り専用で確認し、一機種へ固定する。
+3. **Android full build**: x86_64 Linux環境でsource取得、vendor生成、Soong build、target-files／OTA／factory imageを生成する。
+4. **製品移植**: Sky、Wallet、Game、Local AIをUID、SELinux、暗号化、電源制約を維持してAndroidへ統合する。
+5. **実機受入**: flash、boot、hardware、CTS/VTS、保存、再起動、OTA、rollback、純正復旧、熱・電池を同一端末で確認する。
+6. **外部接続**: MCP、Wallet、決済、払出し、事業pilotをsandboxから限定LIVEへ段階的に接続する。
+
+本人の判断が必要なのは、製品license、production鍵、対象機種／SKU、課金を伴うbuild環境、実transfer、一般公開です。それ以外の安全な実装・fixture・検査は外部待ちにせず進めます。
+
+## 開発と検証
+
+Node.js 22.13以上とnpmを使用します。
+
+```sh
+npm ci
+npx wrangler d1 migrations apply DB --local --config wrangler.local.jsonc
+npm run dev
+
+# 変更後
+npm run database:status
+npm run project:update
+npm run verify
+
+# OS固有
+npm run os:check
+npm run os:backend:launch
+npm run device-support:check
+npm run release:check
+```
+
+`npm run verify`は進捗同期、release gate、型、lint、単体試験、MCP package、精算Worker、Fashion Brand Ops、production build、asset closure、API検証を実行します。実機、外部Provider、本番データ、一般公開の受入は別途必要です。
+
+## 正本と主要設計書
+
+| 内容            | 正本                                                                                                                                                              |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 確定要望        | [docs/product-baseline.md](docs/product-baseline.md) / [data/product-baseline.json](data/product-baseline.json)                                                   |
+| 作業進捗        | [data/project-status.json](data/project-status.json) / [project.md](project.md)                                                                                   |
+| 現在状態        | [docs/current-state-20260911.md](docs/current-state-20260911.md)                                                                                                  |
+| 作業区分        | [docs/workstreams/README.md](docs/workstreams/README.md)                                                                                                          |
+| 責任分界        | [docs/workstreams/00-responsibility-boundaries.md](docs/workstreams/00-responsibility-boundaries.md)                                                              |
+| DB状態          | [docs/database-status.md](docs/database-status.md) / [data/database-status.json](data/database-status.json)                                                       |
+| OS構成          | [docs/rockstaros-1.0-architecture.md](docs/rockstaros-1.0-architecture.md)                                                                                        |
+| Native / QEMU   | [docs/native-os-integration.md](docs/native-os-integration.md) / [docs/qemu-release-completion-audit-20260912.md](docs/qemu-release-completion-audit-20260912.md) |
+| Android実機     | [docs/phone-preview-20260911.md](docs/phone-preview-20260911.md) / [data/android-physical-release-audit.json](data/android-physical-release-audit.json)           |
+| Local AI        | [docs/local-ai-os-integration-20260915.md](docs/local-ai-os-integration-20260915.md)                                                                              |
+| Sky / MCP       | [docs/sky.md](docs/sky.md) / [docs/sky-mcp-connector.md](docs/sky-mcp-connector.md)                                                                               |
+| Wallet / 精算   | [docs/sky-billing.md](docs/sky-billing.md) / [docs/rock-wallet-production-rail-20260913.md](docs/rock-wallet-production-rail-20260913.md)                         |
+| Security / 公開 | [docs/release-minimum-gates.md](docs/release-minimum-gates.md) / [data/release-readiness.json](data/release-readiness.json)                                       |
+
+正本リポジトリは [k999ln/rock](https://github.com/k999ln/rock) です。GitHub保存、Sites配備、release公開、実機書込み、本番資金操作は別々のイベントとして記録します。
+
+<details>
+<summary>背景・過去候補・機能別の詳しい説明</summary>
 
 現在のWeb/Skyローンチ候補、起動・設定・監視・復旧手順は[OSバックエンド・ローンチ手順](docs/backend-launch-20260912.md)を参照してください。
 
@@ -10,7 +133,7 @@
 
 tob側の自動化ツールを商品として管理するSkyと、自動化で得たお金を管理するWalletに特化したOSを開発します。Skyは単なるツール一覧ではなく、**探す→権限・料金を確認→端末/PC/Cloudへ実行→停止→結果と記録を受け取る**までを一か所につなぎます。[Skyの図・優位性・現在の収録ツール](docs/sky.md)を参照してください。
 
-**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ37）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定です。Skyの8.88 USDは先払い月額ではなく、検証済み自動化収益からだけ回収する月間上限です。
+**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ42）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定です。Skyの8.88 USDは先払い月額ではなく、検証済み自動化収益からだけ回収する月間上限です。
 
 Home以外の全画面には、現在の操作を迷子にせず直接Homeへ戻れる導線を常設しています。モバイルChatは共通ヘッダーを省くため、Chat上部に専用のHomeボタンを表示します。
 
@@ -38,16 +161,25 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 [前日の実装・検証・未達の記録](docs/implementation-checkpoint-20260909.md)を履歴として保持しています。現在のGX00は実TLSで複数owner/game分離の必須受入を通過し、GX01の署名quote・別購入承認・両台帳とnative UIを統合しました。SDK・Game profile・停止/復旧と実OSの限定受入は[最新記録](docs/release-followup-20260910.md)に保存済みで、本番ゲームや実資金には接続していません。
 
-Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-installation-ja.md)と[既知制限](docs/preview-release-notes.md)を作成しています。`npm run dev` のローカル `/rockstaros` と `/rockstaros/guide` で案内を確認できます。最終9ab候補の実画面と90.04秒の技術デモを案内に使用しています。ダウンロード一般公開は正式署名・許諾・最終配布受入と公開承認待ちです。
+Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の画面を「OSをインストール」導線へ簡素化しました。同じページにSky Tool SDKの最小コード例と本人限定Siteの`/studio`導線を置いています。[導入・初回実行・復旧ガイド](docs/preview-installation-ja.md)と[既知制限](docs/preview-release-notes.md)は`/rockstaros/guide`から確認できます。ダウンロード一般公開は正式署名・許諾・最終配布受入と公開承認待ちです。
 
 正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。旧ローカル作業名は `gg`。現在の実装再開先は `codex/rockstaros-launch-candidate-20260910` で、SSD上の旧checkoutを最新と仮定しません。製品は「Rock star / avocadomini」の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
 
 **CMの現在状態（2026-09-11）:** 最新の回答は制作途中です。完成・選定・内容照合・掲載が残ります。9月10日の完成済みという回答は過去の[履歴](docs/release-followup-20260910.md)として保持します。「追加1〜2日」はLICENSE／Sitesの待ちを除くQEMU版仕上げの条件付き概算で、確定公開日ではありません。[完了範囲・見積もり・残件の詳細](docs/release-followup-20260910.md)。
 
-## このbranchの作業進捗
+</details>
+
+## 全taskの作業進捗
+
+以下は `data/project-status.json` から生成します。日常作業では先に [作業ストリーム案内](docs/workstreams/README.md) を使用してください。
+
+<details>
+<!-- project-details-summary:start -->
+<summary>102 taskと段階gateの詳細を開く</summary>
+<!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-15 / Rock Studioを既存ツールへSky SDKコードを付ける導線へ統合 / 完了 65/90件
+最終更新: 2026-09-15 / OS Platform Core v1の登録・承認・Wallet・更新境界 / 完了 72/102件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -66,6 +198,9 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | SKY13 | GrokをモチーフにChatの表示・入力を改善し、依頼から実行・結果までを会話内へ統合 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](lib/operations.ts) · [記録](tests/operations.test.mjs) · [記録](docs/chat-usability-20260912.md) |
 | SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](docs/chat-mcp-control-room-20260913.md) |
 | SKY15 | Sky SDKコードを既存ツールへ追加し、起動時にPackage登録・MCP公開・利用記録まで行うStudioを実装 | 完了 | [記録](components/rock-studio.tsx) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](app/studio/page.tsx) · [記録](app/sky/publish/page.tsx) · [記録](tests/sky-code-intake.test.mjs) · [記録](tests/sky-studio-chat.test.mjs) · [記録](docs/sky-tool-sdk.md) |
+| WEB02 | Developer Preview紹介をOSインストールとSky開発者コード中心の一画面へ再設計 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) |
+| WEB03 | Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](components/rock-studio.tsx) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
+| WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |
 | WLT02 | 本人別の残高・売上・経費・取消履歴をD1へ保存するWallet専用APIと操作画面を実装 | 完了 | [記録](app/api/wallet/route.ts) · [記録](components/wallet-workspace.tsx) · [記録](lib/operations.ts) · [記録](tests/wallet-backend.test.mjs) |
 | WLT03 | Wallet／ファンド会社を交換可能な外部Providerとして受ける責任境界とadapter契約を固定 | 完了 | [記録](docs/external-wallet-fund-provider-boundary-20260913.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) · [記録](docs/validation.md) |
@@ -73,6 +208,8 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | WLT05 | Base Mainnet USDCの所有確認付き受取先とfinalized着金照合を本番Wallet・Workerへ接続 | 完了 | [記録](components/rock-settlement-wallet.tsx) · [記録](lib/rock-wallet.ts) · [記録](services/sky-billing/src/worker.ts) · [記録](services/sky-billing/migrations/0004_rock_settlement_wallet.sql) · [記録](tests/rock-wallet.test.mjs) · [記録](tests/billing-worker.test.mjs) · [記録](docs/rock-wallet-production-rail-20260913.md) |
 | WLT06 | owner受取Walletを本人署名で登録し、最初の実USDC回収をEarning Receiptへ照合 | 進行中 | [記録](docs/rock-wallet-production-rail-20260913.md) |
 | MKT01 | あらゆる型付き価値を扱うPAPER市場とexact approval・risk・receipt・position台帳を実装 | 完了 | [記録](app/market/page.tsx) · [記録](app/api/market/route.ts) · [記録](components/everything-market.tsx) · [記録](lib/everything-market.ts) · [記録](lib/everything-market-store.ts) · [記録](drizzle/0009_sad_giant_girl.sql) · [記録](tests/everything-market.test.mjs) · [記録](docs/everything-market-and-autonomous-fund-20260913.md) |
+| MKT02 | Web PAPER市場のapproval・reservation・receipt・position関係をD1で強制 | 完了 | [記録](drizzle/0012_marketplace_relation_guards.sql) · [記録](tests/everything-market.test.mjs) · [記録](scripts/check-web-schema.mjs) · [記録](docs/everything-market-and-autonomous-fund-20260913.md) · [記録](docs/data-storage-boundaries.md) |
+| DB01 | 全データ境界・table・migration・本番readback状態を一つの監査レポートへ統合 | 完了 | [記録](scripts/database-status.mjs) · [記録](data/database-deployments.json) · [記録](data/database-status.json) · [記録](docs/database-status.md) · [記録](tests/database-status.test.mjs) |
 | SPN01 | native Walletへsimulation/PAPER限定のValue/Spend台帳・exact approval・再照合を統合 | 完了 | [記録](systems/rock-star-os/src/blackberryrock/spend.py) · [記録](systems/rock-star-os/src/blackberryrock/wallet.py) · [記録](systems/rock-star-os/src/blackberryrock/hub_server.py) · [記録](systems/rock-star-os/tests/test_spend_runtime.py) · [記録](systems/rock-star-os/tests/test_hub_server.py) · [記録](docs/value-spend-runtime.md) |
 | FND01 | ツールの検証済み純収益・実費・receipt・失敗から構成と観測利回りを30秒ごとに再計算 | 完了 | [記録](lib/automation-fund.ts) · [記録](lib/automation-fund-store.ts) · [記録](app/api/automation-funds/route.ts) · [記録](components/autonomous-fund-market.tsx) · [記録](tests/automation-fund.test.mjs) · [記録](docs/everything-market-and-autonomous-fund-20260913.md) |
 | WEB01 | 主要画面のstyle契約と配備asset closureを検査し、GitHubと本人限定Sitesを同一commitへ固定 | 進行中 | [記録](tests/web-route-style-contract.test.mjs) · [記録](scripts/check-web-asset-closure.mjs) · [記録](tests/web-asset-closure.test.mjs) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
@@ -84,9 +221,9 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | SYS04 | QEMU rc2を同一候補10要件へ固定し、rc2固有native SBOMを生成して旧inventoryの誤転用を拒否 | 完了 | [記録](data/qemu-release-audit.json) · [記録](data/qemu-rc2-legal-info/manifest.csv) · [記録](data/qemu-rc2-legal-info/host-manifest.csv) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/qemu-release-completion-audit-20260912.md) · [記録](components/system-maintenance.tsx) |
 | SYS05 | 候補準備・法務承認・保護署名・本人署名の64拒否境界試験を全体verifyへ統合 | 完了 | [記録](scripts/check-release-signing.mjs) · [記録](scripts/release_signing.py) · [記録](scripts/release_signing_owner.py) · [記録](scripts/prepare_release_candidate.py) · [記録](scripts/verify_owner_legal_approval.py) · [記録](tests/test_release_signing.py) · [記録](tests/test_release_signing_owner.py) · [記録](tests/test_prepare_release_candidate.py) · [記録](tests/test_owner_legal_approval.py) · [記録](docs/release-signing-operations.md) |
 | SYS06 | Android物理端末とマイナンバー連携を独立監査し、証拠なしの互換・GMS・販売・個人番号有効化を拒否 | 完了 | [記録](data/android-physical-release-audit.json) · [記録](data/personal-number-release-audit.json) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/android-and-personal-number-gates-20260913.md) · [記録](docs/release-minimum-gates.md) |
-| SYS07 | Web/PWAのHTTP防御を正本化し、Worker・static asset両経路の実responseを検査 | 完了 | [記録](data/web-security-policy.json) · [記録](next.config.ts) · [記録](public/_headers) · [記録](scripts/check-web-security-response.mjs) · [記録](tests/web-security-policy.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260913.json) · [記録](docs/validation.md) |
-| SYS08 | PWA新版の自動即時切替を廃止し、本人確認後の適用・旧cache整理・再読込へ変更 | 完了 | [記録](public/sw.js) · [記録](components/system-maintenance.tsx) · [記録](tests/service-worker-update.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260913.json) · [記録](docs/validation.md) |
-| SYS09 | PWAの同一性・scope・iPhone/Android向けinstall iconを固定し、実HTTP manifestを検査 | 完了 | [記録](app/manifest.ts) · [記録](public/rock-icon-192.png) · [記録](public/rock-icon-512.png) · [記録](public/rock-icon-maskable.svg) · [記録](scripts/check-web-security-response.mjs) · [記録](tests/pwa-installability.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260913.json) · [記録](docs/validation.md) |
+| SYS07 | Web/PWAのHTTP防御を正本化し、Worker・static asset両経路の実responseを検査 | 完了 | [記録](data/web-security-policy.json) · [記録](next.config.ts) · [記録](public/_headers) · [記録](scripts/check-web-security-response.mjs) · [記録](tests/web-security-policy.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260915.json) · [記録](docs/validation.md) |
+| SYS08 | PWA新版の自動即時切替を廃止し、本人確認後の適用・旧cache整理・再読込へ変更 | 完了 | [記録](public/sw.js) · [記録](components/system-maintenance.tsx) · [記録](tests/service-worker-update.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260915.json) · [記録](docs/validation.md) |
+| SYS09 | PWAの同一性・scope・iPhone/Android向けinstall iconを固定し、実HTTP manifestを検査 | 完了 | [記録](app/manifest.ts) · [記録](public/rock-icon-192.png) · [記録](public/rock-icon-512.png) · [記録](public/rock-icon-maskable.svg) · [記録](scripts/check-web-security-response.mjs) · [記録](tests/pwa-installability.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260915.json) · [記録](docs/validation.md) |
 | SYS10 | Web第三者依存のlock hash・47要review componentのPURL一覧を公開gateへ固定 | 完了 | [記録](package-lock.json) · [記録](data/web-third-party-license-audit.json) · [記録](data/release-readiness.json) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
 | SYS11 | Vite生成chunkのnpm componentをbuild時に記録しlicense監査へ照合 | 完了 | [記録](vite.config.ts) · [記録](scripts/web-bundle-inventory.mjs) · [記録](scripts/check-web-bundle-inventory.mjs) · [記録](tests/web-bundle-inventory.test.mjs) · [記録](package.json) · [記録](data/release-readiness.json) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
@@ -104,8 +241,14 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | OS04 | 【Android/AOSP別トラック】Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 | [記録](docs/os-development-design.md) |
 | OS05 | 【Android/AOSP別トラック】第三者SDK・審査・インストール・失効の閉鎖テスト | 未着手 | [記録](docs/os-development-design.md) |
 | OS06 | OS共通実行コア・端末DB・Android統合の検証可能な試作 | 完了 | [記録](docs/os-prototype.md) · [記録](docs/validation.md) · [記録](android/automation/src/androidTest/java/dev/rock/automation/DeviceIntegrationTest.java) |
+| OS07 | Local Action Assistantの固定source・オフラインLLM契約・署名限定Binder client/server・APK staging gateを実装 | 完了 | [記録](docs/local-ai-os-integration-20260915.md) · [記録](contracts/local-ai-runtime.json) · [記録](os/physical/local-action-assistant-source-lock.json) · [記録](docs/evidence/local-ai-overlay-validation-20260915.json) |
+| OS08 | Local Action AssistantのKotlin・arm64 APKをnative buildし、artifact lockとSoong OS imageへ接続 | 進行中 | [記録](docs/local-ai-os-integration-20260915.md) · [記録](.github/workflows/local-ai-apk.yml) · [記録](scripts/build-local-ai-apk.sh) · [記録](scripts/stage-local-ai-apk.py) · [記録](os/physical/local-action-assistant-artifact-lock.json) |
+| OS09 | 確定した対象端末でGGUF import・機内モード推論・変更確認・30分連続温度試験を完走 | 未着手 | [記録](docs/local-ai-os-integration-20260915.md) |
+| OS10 | Tool／MCP／Provider共通API、本人承認、Wallet台帳、暗号化backup、署名更新gateのsourceを実装 | 進行中 | [記録](docs/platform-core.md) · [記録](docs/os-prototype.md) · [記録](contracts/platform-api.json) · [記録](android/core/src/main/java/dev/rock/core/platform/PlatformStore.java) · [記録](android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatformApi.aidl) · [記録](android/automation/src/main/java/dev/rock/automation/RockPlatformService.java) · [記録](android/sepolicy/private/rockstar_platform.te) |
+| OS11 | Platform CoreをAOSPでbuildしSELinux enforcing boot、production署名更新、OTA rollbackを実機検証 | 未着手 | [記録](docs/platform-core.md) |
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
+| G03 | Web DBの保存境界・互換migration・重複防止checkを整理 | 完了 | [記録](docs/data-storage-boundaries.md) · [記録](scripts/check-web-schema.mjs) · [記録](tests/migration-union.test.mjs) |
 | B01 | Sky＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
 | B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
 | B02 | 既存商品のSky実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/sky-role-agents-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) · [記録](tests/subscription-advisor.test.mjs) · [記録](docs/sky-legal-intake-20260912.md) · [記録](tests/legal-intake.test.mjs) · [記録](docs/sky-patent-assistant-20260912.md) · [記録](tests/patent-assistant.test.mjs) |
@@ -141,6 +284,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | BIL01 | 先払い月額を停止し、検証済み自動化収益からだけ実費後に月最大888 centsを精算 | 完了 | [記録](docs/sky-billing.md) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing.test.mjs) · [記録](tests/billing-worker.test.mjs) · [記録](services/sky-billing/migrations/0002_earnings_settlement.sql) · [記録](docs/evidence/launch/backend-owner-validation-20260912.json) |
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) |
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |
+| CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 | [記録](data/csv-business-tasks.json) · [記録](docs/csv-business-v1.ja.md) · [記録](lib/csv-transform.ts) · [記録](lib/csv-job-store.ts) · [記録](components/csv-business-workspace.tsx) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -160,8 +304,13 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: ownerが本番Wallet画面で外部Walletの所有署名を行い、最初の実Earning Receipt対応transferをfinalized後に照合する。
+次の作業: 最短ローンチ経路としてWEB01を優先する。現在のWeb/PWA・D1差分を一つの検証済みcommitへ固定してGitHubへ保存し、ownerが本人限定Sitesへの最新版同期を明示承認した後、同じSHAを配備して認証後の主要導線・API・security header・migrationをreadbackする。一般公開、QEMU配布、Android実機、本番金融は別gateのまま維持する。
 <!-- project-status:end -->
+
+</details>
+
+<details>
+<summary>Web／PC・商品別の詳細と過去の開発手順</summary>
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。
 
@@ -232,7 +381,7 @@ Vinext / React / Cloudflare Workers / Sites。Sitesのサイト設定は `.opena
 
 `os:backend:launch` は公開開発fixtureと一時SQLiteだけで、ローカルHubの起動、認証境界、署名ツール実行、SIGTERM、安全な再起動、receipt復元を確認します。実OS boot、実機、外部provider、実資金の検証ではありません。現在のP0/P1/P2と復旧手順は[OSバックエンド最小ローンチ監査](docs/backend-launch-20260912.md)を参照してください。
 
-DB変更時は `npm run db:generate -- --name=変更名` で移行を生成し、SQLを確認します。外付けSSDのmacOSメタデータを除外して生成するラッパーです。既存の移行SQLを書き換えず、追加入力として管理します。
+DB変更時は `npm run db:generate -- --name=変更名` で移行を生成し、SQLを確認します。外付けSSDのmacOSメタデータを除外して生成するラッパーです。既存の移行SQLを書き換えず、追加入力として管理します。`npm run schema:check` はtable名・migration番号・journal・最終schemaの不一致を軽量に検出します。保存先ごとの責任と、削除してはいけない互換migrationは[データ保存境界](docs/data-storage-boundaries.md)に整理しています。
 
 `origin` はGitHubの `k999ln/rock`、`sites` は既存サイトの配信用です。GitHubへのpushだけではサイトは更新されません。本番へ適用するDB移行もSites公開時に別途確認します。
 
@@ -296,3 +445,5 @@ PCパックは `public/toolkits/mr-toolkit.zip`。元コードのハッシュが
 詳しい今回の動作と会計モデルは `docs/fund-and-mcp.md` を参照。
 
 ローカル保存領域の初期化: `npx wrangler d1 migrations apply DB --local --config wrangler.local.jsonc`。プレビューの保存には `/signin-with-chatgpt?return_to=/` から標準のローカルサインインを使います。
+
+</details>

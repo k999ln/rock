@@ -5,6 +5,270 @@
   font-size: 1rem;
   line-height: 1.75;
 }
+
+/* Minimal RockstarOS launch page */
+.landing {
+  --ink: #f7f7f2;
+  --muted: #9a9b98;
+  --acid: #c8ff2e;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 18%, #293213 0, #12150d 15%, transparent 36%),
+    #080908;
+  color: var(--ink);
+  font-family: Arial, "Helvetica Neue", sans-serif;
+}
+
+.landingHeader {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: min(100% - 48px, 1420px);
+  margin: 0 auto;
+  padding: 28px 0;
+  border-bottom: 1px solid #ffffff20;
+}
+
+.landing .brand {
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: -0.045em;
+}
+
+.landing .brand span {
+  padding: 0;
+  border: 0;
+  color: var(--acid);
+  font-size: inherit;
+  letter-spacing: inherit;
+}
+
+.version,
+.kicker,
+.codeTopbar,
+.landingFooter {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.12em;
+}
+
+.version {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.installHero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 720px;
+  padding: 100px max(24px, calc((100vw - 1420px) / 2));
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.heroGlow {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  right: -8vw;
+  width: min(58vw, 820px);
+  aspect-ratio: 1;
+  border: 1px solid #c8ff2e33;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 8vw #c8ff2e08,
+    0 0 0 16vw #c8ff2e05;
+  transform: translateY(-50%);
+}
+
+.kicker {
+  margin: 0 0 26px;
+  color: var(--acid);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.installHero h1 {
+  max-width: 1100px;
+  margin: 0;
+  font-size: clamp(4rem, 10.4vw, 10rem);
+  font-weight: 900;
+  letter-spacing: -0.085em;
+  line-height: 0.82;
+}
+
+.heroJa {
+  margin: 40px 0 0;
+  color: #d4d5cf;
+  font-size: clamp(1rem, 1.7vw, 1.35rem);
+  letter-spacing: 0.02em;
+}
+
+.installButton {
+  display: inline-flex;
+  width: min(100%, 340px);
+  min-height: 64px;
+  margin-top: 48px;
+  padding: 0 24px;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--acid);
+  border-radius: 999px;
+  background: var(--acid);
+  color: #090b06;
+  font-size: 1rem;
+  font-weight: 800;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.installButton:hover {
+  background: transparent;
+  color: var(--acid);
+  transform: translateY(-2px);
+}
+
+.installNote {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.developer {
+  display: grid;
+  width: min(100% - 48px, 1420px);
+  margin: 0 auto;
+  padding: 130px 0;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+  gap: clamp(48px, 8vw, 140px);
+  border-top: 1px solid #ffffff20;
+  align-items: center;
+}
+
+.developerIntro h2 {
+  margin: 0;
+  font-size: clamp(2.7rem, 5vw, 5.4rem);
+  font-weight: 850;
+  letter-spacing: -0.065em;
+  line-height: 0.95;
+}
+
+.developerIntro > p:not(.kicker) {
+  max-width: 440px;
+  margin: 30px 0;
+  color: #b8bab4;
+  font-size: 1rem;
+  line-height: 1.9;
+}
+
+.studioLink {
+  display: inline-flex;
+  gap: 20px;
+  align-items: center;
+  color: var(--ink);
+  font-weight: 750;
+  text-decoration: underline;
+  text-decoration-color: var(--acid);
+  text-underline-offset: 8px;
+}
+
+.codeWindow {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #ffffff24;
+  border-radius: 18px;
+  background: #0d0f0d;
+  box-shadow: 0 32px 80px #00000070;
+}
+
+.codeTopbar {
+  display: flex;
+  padding: 15px 20px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ffffff1a;
+  color: #7d8078;
+  font-size: 0.68rem;
+}
+
+.codeWindow pre {
+  margin: 0;
+  padding: clamp(24px, 4vw, 48px);
+  overflow-x: auto;
+  color: #d9ddd2;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: clamp(0.78rem, 1.2vw, 0.95rem);
+  line-height: 1.8;
+}
+
+.landingFooter {
+  display: flex;
+  width: min(100% - 48px, 1420px);
+  margin: 0 auto;
+  padding: 30px 0;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #ffffff20;
+  color: #777a74;
+  font-size: 0.7rem;
+}
+
+.landingFooter a {
+  color: #b5b7b1;
+}
+
+.landing a:focus-visible {
+  outline: 3px solid var(--acid);
+  outline-offset: 5px;
+}
+
+@media (max-width: 760px) {
+  .landingHeader,
+  .developer,
+  .landingFooter {
+    width: min(100% - 36px, 1420px);
+  }
+
+  .version {
+    max-width: 140px;
+    text-align: right;
+  }
+
+  .installHero {
+    min-height: 650px;
+    padding: 80px 18px;
+  }
+
+  .installHero h1 {
+    font-size: clamp(3.7rem, 19vw, 6.2rem);
+    line-height: 0.86;
+  }
+
+  .heroGlow {
+    top: 24%;
+    right: -36vw;
+    width: 100vw;
+  }
+
+  .developer {
+    padding: 88px 0;
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .codeWindow {
+    margin-right: -18px;
+    border-radius: 14px 0 0 14px;
+  }
+
+  .landingFooter {
+    gap: 20px;
+  }
+}
 .header {
   max-width: 1320px;
   margin: auto;

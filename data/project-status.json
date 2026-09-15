@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-15",
-  "milestone": "Rock Studioを既存ツールへSky SDKコードを付ける導線へ統合",
-  "nextAction": "ownerが本番Wallet画面で外部Walletの所有署名を行い、最初の実Earning Receipt対応transferをfinalized後に照合する。",
+  "milestone": "OS Platform Core v1の登録・承認・Wallet・更新境界",
+  "nextAction": "最短ローンチ経路としてWEB01を優先する。現在のWeb/PWA・D1差分を一つの検証済みcommitへ固定してGitHubへ保存し、ownerが本人限定Sitesへの最新版同期を明示承認した後、同じSHAを配備して認証後の主要導線・API・security header・migrationをreadbackする。一般公開、QEMU配布、Android実機、本番金融は別gateのまま維持する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -209,6 +209,45 @@
       ]
     },
     {
+      "id": "WEB02",
+      "title": "Developer Preview紹介をOSインストールとSky開発者コード中心の一画面へ再設計",
+      "status": "done",
+      "dependsOn": ["SKY15", "RLS01"],
+      "evidence": [
+        "app/rockstaros/page.tsx",
+        "app/rockstaros/preview.module.css",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "WEB03",
+      "title": "Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一",
+      "status": "done",
+      "dependsOn": ["WEB02", "SKY15"],
+      "evidence": [
+        "app/rockstaros/page.tsx",
+        "components/rock-studio.tsx",
+        "app/workspace.css",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "WEB04",
+      "title": "RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善",
+      "status": "done",
+      "dependsOn": ["WEB03", "SKY15"],
+      "evidence": [
+        "components/home-screen.tsx",
+        "components/home-screen.module.css",
+        "components/workspace-shell.tsx",
+        "app/workspace.css",
+        "tsconfig.json",
+        "tests/web-route-style-contract.test.mjs",
+        "docs/frontend-usability-audit-20260915.md",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
       "id": "WLT01",
       "title": "Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装",
       "status": "done",
@@ -297,6 +336,32 @@
         "drizzle/0009_sad_giant_girl.sql",
         "tests/everything-market.test.mjs",
         "docs/everything-market-and-autonomous-fund-20260913.md"
+      ]
+    },
+    {
+      "id": "MKT02",
+      "title": "Web PAPER市場のapproval・reservation・receipt・position関係をD1で強制",
+      "status": "done",
+      "dependsOn": ["MKT01"],
+      "evidence": [
+        "drizzle/0012_marketplace_relation_guards.sql",
+        "tests/everything-market.test.mjs",
+        "scripts/check-web-schema.mjs",
+        "docs/everything-market-and-autonomous-fund-20260913.md",
+        "docs/data-storage-boundaries.md"
+      ]
+    },
+    {
+      "id": "DB01",
+      "title": "全データ境界・table・migration・本番readback状態を一つの監査レポートへ統合",
+      "status": "done",
+      "dependsOn": ["MKT02"],
+      "evidence": [
+        "scripts/database-status.mjs",
+        "data/database-deployments.json",
+        "data/database-status.json",
+        "docs/database-status.md",
+        "tests/database-status.test.mjs"
       ]
     },
     {
@@ -477,7 +542,7 @@
         "public/_headers",
         "scripts/check-web-security-response.mjs",
         "tests/web-security-policy.test.mjs",
-        "docs/evidence/launch/web-security-local-20260913.json",
+        "docs/evidence/launch/web-security-local-20260915.json",
         "docs/validation.md"
       ]
     },
@@ -490,7 +555,7 @@
         "public/sw.js",
         "components/system-maintenance.tsx",
         "tests/service-worker-update.test.mjs",
-        "docs/evidence/launch/web-security-local-20260913.json",
+        "docs/evidence/launch/web-security-local-20260915.json",
         "docs/validation.md"
       ]
     },
@@ -506,7 +571,7 @@
         "public/rock-icon-maskable.svg",
         "scripts/check-web-security-response.mjs",
         "tests/pwa-installability.test.mjs",
-        "docs/evidence/launch/web-security-local-20260913.json",
+        "docs/evidence/launch/web-security-local-20260915.json",
         "docs/validation.md"
       ]
     },
@@ -671,6 +736,62 @@
       ]
     },
     {
+      "id": "OS07",
+      "title": "Local Action Assistantの固定source・オフラインLLM契約・署名限定Binder client/server・APK staging gateを実装",
+      "status": "done",
+      "dependsOn": ["OS01"],
+      "evidence": [
+        "docs/local-ai-os-integration-20260915.md",
+        "contracts/local-ai-runtime.json",
+        "os/physical/local-action-assistant-source-lock.json",
+        "docs/evidence/local-ai-overlay-validation-20260915.json"
+      ]
+    },
+    {
+      "id": "OS08",
+      "title": "Local Action AssistantのKotlin・arm64 APKをnative buildし、artifact lockとSoong OS imageへ接続",
+      "status": "in_progress",
+      "dependsOn": ["OS07"],
+      "evidence": [
+        "docs/local-ai-os-integration-20260915.md",
+        ".github/workflows/local-ai-apk.yml",
+        "scripts/build-local-ai-apk.sh",
+        "scripts/stage-local-ai-apk.py",
+        "os/physical/local-action-assistant-artifact-lock.json"
+      ]
+    },
+    {
+      "id": "OS09",
+      "title": "確定した対象端末でGGUF import・機内モード推論・変更確認・30分連続温度試験を完走",
+      "status": "planned",
+      "dependsOn": ["OS08"],
+      "evidence": [
+        "docs/local-ai-os-integration-20260915.md"
+      ]
+    },
+    {
+      "id": "OS10",
+      "title": "Tool／MCP／Provider共通API、本人承認、Wallet台帳、暗号化backup、署名更新gateのsourceを実装",
+      "status": "in_progress",
+      "dependsOn": ["OS06"],
+      "evidence": [
+        "docs/platform-core.md",
+        "docs/os-prototype.md",
+        "contracts/platform-api.json",
+        "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+        "android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatformApi.aidl",
+        "android/automation/src/main/java/dev/rock/automation/RockPlatformService.java",
+        "android/sepolicy/private/rockstar_platform.te"
+      ]
+    },
+    {
+      "id": "OS11",
+      "title": "Platform CoreをAOSPでbuildしSELinux enforcing boot、production署名更新、OTA rollbackを実機検証",
+      "status": "planned",
+      "dependsOn": ["OS10", "OS04"],
+      "evidence": ["docs/platform-core.md"]
+    },
+    {
       "id": "G01",
       "title": "GitHubリポジトリの役割・重複監査と正本境界の固定",
       "status": "done",
@@ -688,6 +809,17 @@
       "status": "planned",
       "dependsOn": ["G01"],
       "evidence": ["docs/git-consolidation.md"]
+    },
+    {
+      "id": "G03",
+      "title": "Web DBの保存境界・互換migration・重複防止checkを整理",
+      "status": "done",
+      "dependsOn": ["G01"],
+      "evidence": [
+        "docs/data-storage-boundaries.md",
+        "scripts/check-web-schema.mjs",
+        "tests/migration-union.test.mjs"
+      ]
     },
     {
       "id": "B01",
@@ -1095,6 +1227,19 @@
         "components/mercari-revenue-starter.tsx",
         "tests/mercari-revenue.test.mjs"
       ]
+    },
+    {
+      "id": "CSV00",
+      "title": "CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "data/csv-business-tasks.json",
+        "docs/csv-business-v1.ja.md",
+        "lib/csv-transform.ts",
+        "lib/csv-job-store.ts",
+        "components/csv-business-workspace.tsx"
+      ]
     }
   ],
   "phaseGates": [
@@ -1372,7 +1517,21 @@
     },
     "targetDiscussion": "Current consultation mentions Pixel 7 / panther; current source lock remains Pixel 10 / frankel until exact model and SKU are read-only confirmed",
     "recommendedBuildEnvironment": "DigitalOcean CPU-Optimized Regular 48 vCPU / 96 GiB / 600 GiB / Ubuntu 24.04 x86_64; Google Cloud is the alternative for detachable persistent storage",
-    "latestRequest": "Adopt shared Core plus per-model Device Support Packages and separate native OS, experimental GSI, client-only and unsupported delivery modes; no cloud spending or physical flash authorization"
+    "latestRequest": "Develop the OS-owned common component API, versioning, app isolation, owner approval, Wallet ledger, encrypted migration/backup and signed update/rollback gates; native build and physical release proof remain separate gates",
+    "localAi": {
+      "status": "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT",
+      "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+      "engine": "llama.rn@0.12.9",
+      "modelFormat": "GGUF",
+      "modelBundled": false,
+      "releaseNetwork": "none",
+      "apkBuilt": false,
+      "soongBuilt": false,
+      "imageBuilt": false,
+      "deviceInferenceVerified": false,
+      "contract": "contracts/local-ai-runtime.json",
+      "record": "docs/local-ai-os-integration-20260915.md"
+    }
   },
   "deviceSupportArchitecture": {
     "status": "DESIGN_AND_VALIDATION_IMPLEMENTED",
@@ -1383,6 +1542,17 @@
     "flashReadyTargets": 0,
     "firstPhysicalTarget": null,
     "cloudSpendApproved": false
+  },
+  "platformCore": {
+    "status": "SOURCE_IMPLEMENTED_NATIVE_BUILD_NOT_RUN",
+    "apiVersion": 1,
+    "contract": "contracts/platform-api.json",
+    "record": "docs/platform-core.md",
+    "androidBuilt": false,
+    "aospImageBuilt": false,
+    "selinuxEnforcingVerified": false,
+    "productionSigningVerified": false,
+    "otaRollbackVerified": false
   },
   "currentStateDocument": "docs/current-state-20260911.md"
 }

@@ -4,10 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import {
   Activity,
-  ArrowLeft,
   Check,
   Clipboard,
-  Code2,
   ExternalLink,
   KeyRound,
   LoaderCircle,
@@ -101,11 +99,15 @@ export default function RockStudio() {
     <main className="studio-chat-shell studio-code-first">
       <header className="studio-chat-header">
         <div className="studio-chat-brand">
-          <Link href="/sky" aria-label="Skyへ戻る"><ArrowLeft size={17} /></Link>
-          <span className="studio-chat-logo"><Code2 size={18} /></span>
-          <div><strong>Rock Studio</strong><span>Sky Tool SDK</span></div>
+          <Link href="/" className="studio-wordmark" aria-label="ホームへ戻る">
+            ROCKSTAR<span>OS</span>
+          </Link>
+          <span className="studio-product-name">/ STUDIO</span>
         </div>
-        <div className="studio-chat-private"><ShieldCheck size={15} />ソースコードの送信なし</div>
+        <div className="studio-chat-nav">
+          <Link href="/sky">SKY</Link>
+          <div className="studio-chat-private"><ShieldCheck size={15} />ソースコードの送信なし</div>
+        </div>
       </header>
 
       <section className="studio-code-workspace" aria-label="Sky SDK組み込み">

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "routeId": "local-action-assistant",
+  "executionTarget": "local",
+  "apiVersion": 1,
+  "androidPackage": "com.localactionassistant",
+  "androidService": "com.localactionassistant.RockLocalAiService",
+  "androidPermission": "dev.rock.permission.USE_LOCAL_AI",
+  "trustedCallerPackage": "dev.rock.automation",
+  "trustMode": "fixed_package_same_signer",
+  "engine": "llama.rn",
+  "engineVersion": "0.12.9",
+  "modelFormat": "GGUF",
+  "modelBundled": false,
+  "releaseNetwork": "none",
+  "tools": [
+    "get_current_datetime",
+    "calculate",
+    "search_notes",
+    "list_reminders",
+    "create_note",
+    "create_reminder"
+  ],
+  "mutatingTools": [
+    "create_note",
+    "create_reminder"
+  ],
+  "mutationConfirmation": "required",
+  "events": [
+    "token",
+    "proposal",
+    "completed",
+    "failed"
+  ],
+  "maxPayloadBytes": 32768,
+  "timeoutSeconds": 90,
+  "sourceLock": "os/physical/local-action-assistant-source-lock.json",
+  "sourceValidation": "docs/evidence/local-ai-source-validation-20260915.json",
+  "overlayValidation": "docs/evidence/local-ai-overlay-validation-20260915.json",
+  "artifactLock": "os/physical/local-action-assistant-artifact-lock.json",
+  "aospModule": "RockLocalActionAssistant",
+  "aospStagingPath": "vendor/rockstaros-local-ai",
+  "aospSigning": "testkey_then_release_key_mapping",
+  "sourceStatus": "pinned_overlay_verified_not_native_built",
+  "osBridgeStatus": "client_and_server_source_implemented_native_not_built",
+  "signedApkStatus": "not_built",
+  "imageStatus": "not_built",
+  "deviceInferenceStatus": "not_run"
+}

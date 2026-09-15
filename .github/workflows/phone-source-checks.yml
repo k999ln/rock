@@ -1,9 +1,9 @@
 name: Phone source preparation (not OS boot)
 on:
   push:
-    paths: ['os/physical/**', 'scripts/*phone*.py', 'scripts/*phone*.sh', 'tests/test_*phone*.py', '.github/workflows/phone-source-checks.yml']
+    paths: ['os/physical/**', 'scripts/*phone*.py', 'scripts/*phone*.sh', 'scripts/*local-ai*.py', 'scripts/*local-ai*.sh', 'tests/test_*phone*.py', 'tests/test_*local_ai*.py', '.github/workflows/phone-source-checks.yml']
   pull_request:
-    paths: ['os/physical/**', 'scripts/*phone*.py', 'scripts/*phone*.sh', 'tests/test_*phone*.py', '.github/workflows/phone-source-checks.yml']
+    paths: ['os/physical/**', 'scripts/*phone*.py', 'scripts/*phone*.sh', 'scripts/*local-ai*.py', 'scripts/*local-ai*.sh', 'tests/test_*phone*.py', 'tests/test_*local_ai*.py', '.github/workflows/phone-source-checks.yml']
 permissions:
   contents: read
 jobs:
@@ -17,6 +17,7 @@ jobs:
       - name: Check compilation entry syntax
         run: |
           bash -n scripts/build-phone-bringup.sh
+          bash -n scripts/build-local-ai-apk.sh
           bash -n scripts/check-phone-project.sh
       - name: Exercise signed source preparation and read-only device transport
         run: python3 -m unittest discover -s tests -p 'test_*phone*.py' -v

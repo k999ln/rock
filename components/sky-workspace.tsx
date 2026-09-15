@@ -31,6 +31,7 @@ import {
   ShieldCheck,
   Shirt,
   ShoppingBag,
+  Table2,
   WalletCards,
   X,
   Zap,
@@ -67,6 +68,7 @@ type FeedFilter = 'おすすめ' | '今使える' | '導入候補';
 
 const feedFilters: FeedFilter[] = ['おすすめ', '今使える', '導入候補'];
 const icons: Record<string, LucideIcon> = {
+  'rockstar-csv-cleanup': Table2,
   'mercari-revenue': ShoppingBag,
   'fashion-brand-ops': Shirt,
   coconala: BriefcaseBusiness,
@@ -81,6 +83,11 @@ const providers: Record<
   string,
   { name: string; handle: string; initial: string }
 > = {
+  'rockstar-csv-cleanup': {
+    name: 'Sky CSV自動化役',
+    handle: '@sky_csv',
+    initial: '表',
+  },
   'mercari-revenue': {
     name: 'Sky 販売収益化役',
     handle: '@sky_income',
@@ -163,6 +170,12 @@ function statusFor(tool: Automation, fashionConnected = false) {
       label: 'PC / MCP',
       detail: 'SkyからPC上の専用システムへ接続',
       className: 'is-connect',
+    };
+  if (tool.id === 'rockstar-csv-cleanup')
+    return {
+      label: '今使える',
+      detail: 'Skyの自動化Toolとして実行',
+      className: 'is-ready',
     };
   return {
     label: '今使える',
@@ -355,7 +368,6 @@ export default function SkyWorkspace({
       title="Sky"
       contentClassName="sky-main-feed"
       onConnect={() => setDeviceOpen(true)}
-      showSidebar={false}
     >
       <div className="sky-feed-layout">
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
@@ -448,7 +460,7 @@ export default function SkyWorkspace({
             <div className="sky-feed-header-actions">
               <Link
                 href="/chat"
-                aria-label="Chatを開く"
+                aria-label="Zemaを開く"
                 className="sky-header-action"
               >
                 <MessageCircle size={19} />
@@ -574,11 +586,11 @@ export default function SkyWorkspace({
                           ? '詳細'
                           : tool.launchPath
                             ? '使う'
-                          : tool.runner === 'delivery-local'
-                            ? 'PC接続'
-                            : connectedTools.includes(tool.id)
-                              ? '頼む'
-                              : '接続'}
+                            : tool.runner === 'delivery-local'
+                              ? 'PC接続'
+                              : connectedTools.includes(tool.id)
+                                ? '頼む'
+                                : '接続'}
                         <ArrowRight size={16} />
                       </button>
                     </div>
@@ -664,7 +676,7 @@ export default function SkyWorkspace({
               ) : (
                 <>
                   <DialogDescription className="rock-dialog-description">
-                    接続後はフォームを開かず、Chatから頼めます。
+                    接続後はフォームを開かず、Zemaから頼めます。
                   </DialogDescription>
 
                   <div className="sky-id-connection" aria-label="接続内容">
@@ -703,10 +715,12 @@ export default function SkyWorkspace({
                       <CheckCircle2 size={22} />
                       <div>
                         <strong>接続済み</strong>
-                        <span>次からはChatでアプリを選ぶだけです。</span>
+                        <span>次からはZemaでアプリを選ぶだけです。</span>
                       </div>
                       <button onClick={() => openConnectedTool(selected)}>
-                        {selected.launchPath ? '収益フローを開く' : 'Chatで使う'}
+                        {selected.launchPath
+                          ? '収益フローを開く'
+                          : 'Zemaで使う'}
                         <ArrowRight size={16} />
                       </button>
                     </div>

@@ -38,6 +38,23 @@ class PhonePreparationTest(unittest.TestCase):
         self.tree = Path(self.temp.name).resolve()
         self.root = self.tree / "external/rockstaros"
         self.repository(self.root)
+        self.local_ai = self.tree / "external/local-action-assistant"
+        local_ai_files = {
+            "LICENSE": "MIT fixture license\n",
+            "package.json": json.dumps({"version": "0.0.1", "license": "MIT",
+                                         "dependencies": {"llama.rn": "0.12.9"}}),
+            "src/native/modelRuntime.ts": "export const runtime = 'llama.rn';\n",
+            "src/native/modelFiles.ts": "export const format = 'GGUF';\n",
+            "src/core/toolBroker.ts": "export const tools = [];\n",
+            "android/app/build.gradle": 'android { namespace "com.localactionassistant"; defaultConfig { applicationId "com.localactionassistant" } }\n',
+            "android/app/src/main/AndroidManifest.xml": '<manifest xmlns:android="http://schemas.android.com/apk/res/android"/>\n',
+            "android/app/src/release/AndroidManifest.xml": '<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"><uses-permission android:name="android.permission.INTERNET" tools:node="remove" /></manifest>\n',
+        }
+        for filename, content in local_ai_files.items():
+            path = self.local_ai / filename
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content)
+        local_ai_commit = self.repository(self.local_ai)
         self.manifest = self.tree / ".repo/manifests"
         self.manifest.mkdir(parents=True)
         (self.manifest / "default.xml").write_text('<manifest/>')
@@ -73,12 +90,40 @@ class PhonePreparationTest(unittest.TestCase):
             "knownSkus": ["FIXTURE-SKU"],
             "confirmedSku": None,
             "targetConfirmedByOwner": False}))
+        reviewed_names = [
+            "LICENSE", "package.json", "src/native/modelRuntime.ts", "src/native/modelFiles.ts",
+            "src/core/toolBroker.ts", "android/app/src/main/AndroidManifest.xml",
+            "android/app/src/release/AndroidManifest.xml",
+        ]
+        self.local_ai_lock = self.root / "local-ai-lock.json"
+        self.local_ai_lock.write_text(json.dumps({
+            "schema": "rock-local-ai-source/1",
+            "stage": "SOURCE_PINNED_NOT_BUILT",
+            "repository": "https://github.com/noellesugar99/local-action-assistant.git",
+            "manifestProject": "noellesugar99/local-action-assistant",
+            "checkoutPath": "external/local-action-assistant",
+            "commit": local_ai_commit,
+            "packageName": "com.localactionassistant",
+            "version": "0.0.1",
+            "sourceLicense": "MIT",
+            "runtime": {"engine": "llama.rn", "version": "0.12.9", "modelFormat": "GGUF",
+                        "modelBundled": False, "releaseNetworkPolicy": "deny"},
+            "reviewedFiles": {
+                name: hashlib.sha256((self.local_ai / name).read_bytes()).hexdigest()
+                for name in reviewed_names
+            },
+            "integration": {"routeId": "local-action-assistant", "target": "local",
+                            "osBridge": "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT",
+                            "signedApk": "NOT_BUILT",
+                            "productPackage": "STAGING_GENERATOR_DEFINED_NOT_BUILT"},
+        }))
         self.command(self.root, "git", "add", ".")
         self.command(self.root, "git", "commit", "-qm", "lock")
-        old_root, old_lock = phone.ROOT, phone.LOCK
-        phone.ROOT, phone.LOCK = self.root, self.lock
+        old_root, old_lock, old_local_ai_lock = phone.ROOT, phone.LOCK, phone.LOCAL_AI_LOCK
+        phone.ROOT, phone.LOCK, phone.LOCAL_AI_LOCK = self.root, self.lock, self.local_ai_lock
         self.addCleanup(setattr, phone, "ROOT", old_root)
         self.addCleanup(setattr, phone, "LOCK", old_lock)
+        self.addCleanup(setattr, phone, "LOCAL_AI_LOCK", old_local_ai_lock)
         self.local_manifest = self.tree / ".repo/local_manifests/rock-phone.xml"
         self.local_manifest.parent.mkdir()
         self.local_manifest.write_text(phone.render_manifest())
@@ -88,7 +133,36 @@ class PhonePreparationTest(unittest.TestCase):
         second = phone.prepare(self.tree, self.signers)
         self.assertEqual(first["hookSha256"], second["hookSha256"])
         self.assertEqual(self.hook.read_bytes(), self.original + phone.ADDITION)
+        self.assertEqual(second["localAssistant"]["stage"], "SOURCE_VERIFIED_NOT_BUILT")
+        self.assertEqual(second["localAssistant"]["engine"], "llama.rn")
+        self.assertEqual(second["localAssistant"]["releaseNetwork"], "none")
+        self.assertEqual(second["localAssistant"]["osBridge"],
+                         "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT")
         self.assertFalse(second["flashReady"])
+
+    def test_manifest_pins_reviewed_local_ai_source(self):
+        root = phone.manifest_structure(phone.render_manifest())
+        projects = [attributes for tag, attributes, _children in root[2] if tag == "project"]
+        self.assertIn({"name": "noellesugar99/local-action-assistant",
+                       "path": "external/local-action-assistant", "remote": "rock-phone",
+                       "revision": self.command(self.local_ai, "git", "rev-parse", "HEAD")}, projects)
+
+    def test_local_ai_revision_and_worktree_must_match_reviewed_source(self):
+        (self.local_ai / "unexpected.txt").write_text("changed\n")
+        with self.assertRaisesRegex(ValueError, "local changes"):
+            phone.prepare(self.tree, self.signers)
+
+    def test_local_ai_lock_rejects_an_enabled_bridge_without_implementation(self):
+        lock = json.loads(self.local_ai_lock.read_text())
+        lock["integration"]["osBridge"] = "READY"
+        with self.assertRaisesRegex(ValueError, "invalid local-AI"):
+            phone.local_ai_config(lock)
+
+    def test_local_ai_lock_requires_every_reviewed_file(self):
+        lock = json.loads(self.local_ai_lock.read_text())
+        del lock["reviewedFiles"]["src/core/toolBroker.ts"]
+        with self.assertRaisesRegex(ValueError, "invalid local-AI"):
+            phone.local_ai_config(lock)
 
     def test_full_build_config_rejects_unconfirmed_target(self):
         with self.assertRaisesRegex(ValueError, "owner-confirmed"):

@@ -1,12 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="dev.rock.automation" android:versionCode="1" android:versionName="0.1.0">
     <permission android:name="dev.rock.permission.RUN_TOOL" android:protectionLevel="signature" />
+    <permission android:name="dev.rock.permission.USE_LOCAL_AI" android:protectionLevel="signature" />
+    <permission android:name="dev.rock.permission.MANAGE_PLATFORM" android:protectionLevel="signature" />
     <uses-permission android:name="dev.rock.permission.RUN_TOOL" />
+    <uses-permission android:name="dev.rock.permission.USE_LOCAL_AI" />
+    <uses-permission android:name="dev.rock.permission.MANAGE_PLATFORM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <queries><package android:name="dev.rock.tools.article" /></queries>
+    <queries><package android:name="dev.rock.tools.article" /><package android:name="com.localactionassistant" /></queries>
     <application android:name=".RockApplication" android:label="Rock star · OS prototype" android:allowBackup="false" android:usesCleartextTraffic="false" android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
         </activity>
+        <activity android:name=".ApprovalActivity" android:exported="false" android:excludeFromRecents="true" />
+        <service android:name=".RockPlatformService" android:exported="true" android:permission="dev.rock.permission.MANAGE_PLATFORM" />
         <service android:name=".AutomationJobService" android:exported="true" android:permission="android.permission.BIND_JOB_SERVICE" />
         <receiver android:name=".BootReceiver" android:exported="false">
             <intent-filter><action android:name="android.intent.action.BOOT_COMPLETED" /><action android:name="android.intent.action.MY_PACKAGE_REPLACED" /></intent-filter>

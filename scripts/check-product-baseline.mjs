@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve, dirname, isAbsolute, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 37 },
+    { length: 42 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ37の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ42の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -89,6 +89,80 @@ export function validateBaseline(
     '目標駆動のブランド運営能力が必要です',
   );
   requireValue(
+    data.primaryCapabilities?.includes('local-offline-ai-runtime') &&
+      data.localAiRuntime?.status ===
+        'client_and_server_source_implemented_native_not_built' &&
+      data.localAiRuntime?.sourceCommit ===
+        '99b1c40d76f719cbba9c72d9f481c1b2df245504' &&
+      data.localAiRuntime?.engine === 'llama.rn' &&
+      data.localAiRuntime?.engineVersion === '0.12.9' &&
+      data.localAiRuntime?.modelFormat === 'GGUF' &&
+      data.localAiRuntime?.modelBundled === false &&
+      data.localAiRuntime?.releaseNetwork === 'none' &&
+      data.localAiRuntime?.trustMode === 'fixed_package_same_signer' &&
+      data.localAiRuntime?.mutationConfirmation === 'required_separate_call' &&
+      data.localAiRuntime?.apkBuilt === false &&
+      data.localAiRuntime?.soongBuilt === false &&
+      data.localAiRuntime?.imageBuilt === false &&
+      data.localAiRuntime?.deviceInferenceVerified === false,
+    'ローカルLLMの固定source・オフライン・署名・別確認・未build境界を維持してください',
+  );
+  for (const field of ['sourceLock', 'artifactLock', 'contract', 'record']) {
+    const path = data.localAiRuntime?.[field];
+    requireValue(
+      typeof path === 'string' && existsSync(resolve(root, path)),
+      `localAiRuntime.${field}: repository内の証拠が必要です`,
+    );
+  }
+  requireValue(
+    data.primaryCapabilities?.includes('os-platform-core') &&
+      data.androidPlatformCore?.status ===
+        'source_implemented_native_and_sepolicy_build_not_run' &&
+      data.androidPlatformCore?.apiVersion === 1 &&
+      JSON.stringify(data.androidPlatformCore?.componentKinds) ===
+        JSON.stringify(['TOOL', 'MCP', 'PROVIDER']) &&
+      data.androidPlatformCore?.identityVerification ===
+        'installed_apk_uid_version_and_signer' &&
+      data.androidPlatformCore?.runtimeSelinuxGrant === false &&
+      data.androidPlatformCore?.approval ===
+        'proposal_then_device_credential_then_single_use' &&
+      data.androidPlatformCore?.ledger ===
+        'append_only_owner_scoped_idempotent_receipts' &&
+      data.androidPlatformCore?.backup ===
+        'aes_256_gcm_android_keystore_owner_scoped' &&
+      data.androidPlatformCore?.schemaVersion === 2 &&
+      data.androidPlatformCore?.migration === 'transactional_fail_closed' &&
+      data.androidPlatformCore?.androidBuilt === false &&
+      data.androidPlatformCore?.aospImageBuilt === false &&
+      data.androidPlatformCore?.selinuxEnforcingVerified === false &&
+      data.androidPlatformCore?.productionSigningVerified === false &&
+      data.androidPlatformCore?.otaRollbackVerified === false,
+    'OS Platform Coreの署名・UID・承認・台帳・暗号化・未build境界を維持してください',
+  );
+  for (const field of ['contract', 'record']) {
+    const path = data.androidPlatformCore?.[field];
+    requireValue(
+      typeof path === 'string' && existsSync(resolve(root, path)),
+      `androidPlatformCore.${field}: repository内の証拠が必要です`,
+    );
+  }
+  requireValue(
+    data.primaryCapabilities?.includes('csv-paid-work-pilot') &&
+      data.csvBusinessPilot?.productId === 'rockstar-csv-cleanup' &&
+      data.csvBusinessPilot?.productPlacement ===
+        'sky_automation_tool_catalog' &&
+      data.csvBusinessPilot?.skyRole === 'CSV自動化役' &&
+      data.csvBusinessPilot?.buyerPriceMinor === 300000 &&
+      data.csvBusinessPilot?.retentionDays === 7 &&
+      data.csvBusinessPilot?.monthlyThresholdUsdMinor === 3000 &&
+      data.csvBusinessPilot?.monthlyFeeUsdMinor === 888 &&
+      data.csvBusinessPilot?.periodTimezone === 'Asia/Tokyo' &&
+      data.csvBusinessPilot?.manualPaymentCountsAsVerifiedRevenue === false &&
+      data.csvBusinessPilot?.liveBillingEnabled === false &&
+      data.csvBusinessPilot?.externalMarketplaceAutomationEnabled === false,
+    'CSV販売実証の価格・保管・月額境界・外部作用gateを維持してください',
+  );
+  requireValue(
     data.primaryCapabilities?.includes('sky-tool-developer-platform') &&
       data.skyToolDeveloperPlatform?.status ===
         'developer_preview_registered_and_declared_publication' &&
@@ -111,7 +185,7 @@ export function validateBaseline(
   const skyInventory = resolve(root, data.sky?.inventory || '');
   requireValue(
     !relative(root, skyInventory).startsWith('..') &&
-      read(skyInventory).includes('Web / PCで現在使える10件'),
+      read(skyInventory).includes('Web / PCで現在使える11件'),
     'Skyの役割と収録ツールの正本が必要です',
   );
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');
@@ -200,12 +274,43 @@ export function validateBaseline(
     '本番受取レールはBase USDCの所有確認・限定回収・finalized照合とし、秘密鍵保管・自動送金・完了の先取りを禁止してください',
   );
   requireValue(
-    data.chatInteraction?.connectedMcpPresentation ===
+    data.baseApps?.find?.((app) => app.id === 'chat')?.displayName === 'Zema' &&
+      data.baseApps?.find?.((app) => app.id === 'chat')?.route === '/chat' &&
+      data.chatInteraction?.displayName === 'Zema' &&
+      data.chatInteraction?.legacyDisplayName === 'Chat' &&
+      data.chatInteraction?.compatibilityRoute === '/chat' &&
+      data.chatInteraction?.connectedMcpPresentation ===
       'one_bot_per_connected_server_or_ready_product' &&
-      data.chatInteraction?.controlSurface === 'chat_thread' &&
+      data.chatInteraction?.controlSurface === 'zema_thread_and_work_center' &&
+      data.chatInteraction?.workManagement?.canonicalRoute ===
+        '/chat?view=work' &&
+      data.chatInteraction?.workManagement?.compatibilityRoutes?.includes(
+        '/work',
+      ) &&
+      data.chatInteraction?.workManagement?.compatibilityRoutes?.includes(
+        '/activity',
+      ) &&
+      data.chatInteraction?.workManagement?.preserveExistingRecords === true &&
+      data.chatInteraction?.liveProgress?.presentation ===
+        'grok_style_observable_activity_timeline' &&
+      data.chatInteraction?.liveProgress?.sources?.includes('owned_jobs') &&
+      data.chatInteraction?.liveProgress?.sources?.includes(
+        'automation_fund_membership',
+      ) &&
+      data.chatInteraction?.liveProgress?.sources?.includes(
+        'verified_receipts',
+      ) &&
+      data.chatInteraction?.liveProgress?.activeJobRefreshSeconds === 3 &&
+      data.chatInteraction?.liveProgress?.idleJobRefreshSeconds === 15 &&
+      data.chatInteraction?.liveProgress?.fundRefreshSeconds === 30 &&
+      data.chatInteraction?.liveProgress?.csvExecutionHandoff ===
+        '/chat?tool=rockstar-csv-cleanup' &&
+      data.chatInteraction?.liveProgress?.chainOfThoughtExposed === false &&
+      data.chatInteraction?.liveProgress?.fabricatedProgressAllowed === false &&
+      data.chatInteraction?.liveProgress?.unverifiedYieldAllowed === false &&
       data.chatInteraction?.genericExecutionContract ===
         'passport_tool_schema_then_prepare_confirm_execute',
-    'Chatの接続bot管理契約が必要です',
+    'Zemaの接続bot管理契約が必要です',
   );
   requireValue(
     data.webDeliveryIntegrity?.sourceAndPrivateSiteCommitMustMatch === true &&
@@ -230,6 +335,64 @@ export function validateBaseline(
     data.homeExperience.returnPolicy ===
       'every_non_home_route_has_a_direct_home_affordance',
     'Home以外の全画面に直接Homeへ戻る契約が必要です',
+  );
+  const launchPageSource = read(resolve(root, 'app/rockstaros/page.tsx'));
+  requireValue(
+    data.launchPage?.route === '/rockstaros' &&
+      data.launchPage?.primaryAction === 'install_os' &&
+      data.launchPage?.publicDownloadFallback === '/rockstaros/guide#install' &&
+      data.launchPage?.studioUrl ===
+        'https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio' &&
+      launchPageSource.includes('OSをインストール') &&
+      launchPageSource.includes(data.launchPage.studioUrl) &&
+      launchPageSource.includes('createSkyToolApp'),
+    'Developer Preview紹介のインストール・Sky開発者コード・Studio導線を維持してください',
+  );
+  const studioSource = read(resolve(root, 'components/rock-studio.tsx'));
+  const homeSource = read(resolve(root, 'components/home-screen.tsx'));
+  const skySource = read(resolve(root, 'components/sky-workspace.tsx'));
+  const shellSource = read(resolve(root, 'components/workspace-shell.tsx'));
+  const workspaceStyles = read(resolve(root, 'app/workspace.css'));
+  requireValue(
+    data.visualSystem?.surfaces?.includes('/') &&
+      data.visualSystem?.surfaces?.includes('/rockstaros') &&
+      data.visualSystem?.surfaces?.includes('/studio') &&
+      data.visualSystem?.surfaces?.includes('workspace_shell') &&
+      data.visualSystem?.accent === 'acid_green' &&
+      data.visualSystem?.studioPrimarySurface === 'sdk_code_installation' &&
+      !data.visualSystem?.homePrimaryApps?.includes('work') &&
+      !data.visualSystem?.homePrimaryApps?.includes('csv') &&
+      data.sky?.internalSurfaces?.includes('/csv') &&
+      !data.sky?.internalSurfaces?.includes('/work') &&
+      !data.sky?.internalSurfaces?.includes('/activity') &&
+      data.visualSystem?.businessFunctionalityChanged === false &&
+      data.visualSystem?.interactionFunctionalityImproved === true &&
+      studioSource.includes('studio-code-first') &&
+      !homeSource.includes("id: 'work'") &&
+      !homeSource.includes("id: 'csv'") &&
+      !skySource.includes('href="/work"') &&
+      !skySource.includes('href="/csv"') &&
+      homeSource.includes('WEB / LOCAL') &&
+      data.homeExperience?.workspaceNavigation ===
+        'sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation' &&
+      data.homeExperience?.smartphoneLayout?.supportedCssWidthPx?.[0] === 320 &&
+      data.homeExperience?.smartphoneLayout?.supportedCssWidthPx?.[1] === 767 &&
+      data.homeExperience?.smartphoneLayout?.safeAreas === true &&
+      data.homeExperience?.smartphoneLayout?.minimumPrimaryTouchTargetPx ===
+        44 &&
+      data.homeExperience?.smartphoneLayout?.pageHorizontalOverflow ===
+        'forbidden' &&
+      !shellSource.includes('Sidebar') &&
+      !shellSource.includes('rock-sidebar') &&
+      shellSource.includes('rock-main-column rock-main-column-full') &&
+      shellSource.includes('className="rock-home-link"') &&
+      shellSource.includes('aria-disabled={running || undefined}') &&
+      workspaceStyles.includes(
+        'RockstarOS / Studio — shared dark launch system',
+      ) &&
+      workspaceStyles.includes('RockstarOS 1.0 — unified OS chrome') &&
+      workspaceStyles.includes('--studio-green: #c8ff2e'),
+    'RockstarOS全体の共通visual systemとフロント機能性改善を維持してください',
   );
   requireValue(
     data.systemMaintenance?.route === '/settings/system' &&
@@ -479,6 +642,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ37、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ42、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

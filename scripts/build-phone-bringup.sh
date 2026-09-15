@@ -2,9 +2,11 @@
 # Compile only. No cloud creation, device access, key generation or flash.
 set -eo pipefail
 if [[ $# != 2 ]]; then
-  echo 'Usage: bash external/rockstaros/scripts/build-phone-bringup.sh <OS-tree> <GrapheneOS-allowed-signers>' >&2
+  echo 'Usage: ROCK_LOCAL_AI_APK=<reviewed.apk> ROCK_ANDROID_AAPT2=<aapt2> bash external/rockstaros/scripts/build-phone-bringup.sh <OS-tree> <GrapheneOS-allowed-signers>' >&2
   exit 2
 fi
+: "${ROCK_LOCAL_AI_APK:?Set ROCK_LOCAL_AI_APK to the lock-reviewed unsigned release APK}"
+: "${ROCK_ANDROID_AAPT2:?Set ROCK_ANDROID_AAPT2 to a trusted aapt2 binary}"
 rock_phone_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 rock_phone_tree="$(cd -- "$1" && pwd -P)"
 rock_phone_signers="$(realpath -- "$2")"
@@ -27,6 +29,7 @@ export OUT_DIR="$rock_phone_tree/out"
 mkdir -p "$OUT_DIR"
 python3 "$rock_phone_root/scripts/prepare-phone-build.py" host "$OUT_DIR"
 python3 "$rock_phone_root/scripts/prepare-phone-build.py" prepare "$rock_phone_tree" --allowed-signers "$rock_phone_signers"
+python3 "$rock_phone_root/scripts/stage-local-ai-apk.py" stage "$rock_phone_tree" "$ROCK_LOCAL_AI_APK" --aapt2 "$ROCK_ANDROID_AAPT2"
 rock_phone_hook_state="$(python3 "$rock_phone_root/scripts/prepare-phone-build.py" verify-hook "$rock_phone_tree")"
 IFS=$'\t' read -r rock_phone_hook_repo_path rock_phone_hook_sha256 <<< "$rock_phone_hook_state"
 if [[ -z "$rock_phone_hook_repo_path" || -z "$rock_phone_hook_sha256" ]]; then
@@ -39,6 +42,7 @@ export ROCK_PHONE_SOURCE_ROOT="$rock_phone_root"
 export ROCK_PHONE_HOOK_REPO_PATH="$rock_phone_hook_repo_path"
 export ROCK_PHONE_EXPECTED_HOOK_SHA256="$rock_phone_hook_sha256"
 repo forall -e -c 'bash "$ROCK_PHONE_SOURCE_ROOT/scripts/check-phone-project.sh"'
+python3 "$rock_phone_root/scripts/stage-local-ai-apk.py" verify "$rock_phone_tree"
 # Re-check exact bytes after repo-wide validation narrows the prepare→build
 # TOCTOU window; this remains read-only and fails before invoking Soong.
 python3 "$rock_phone_root/scripts/prepare-phone-build.py" verify-hook "$rock_phone_tree"

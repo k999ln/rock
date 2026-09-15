@@ -1,0 +1,43 @@
+{
+  "schema": "rock-local-ai-source/1",
+  "stage": "SOURCE_PINNED_NOT_BUILT",
+  "repository": "https://github.com/noellesugar99/local-action-assistant.git",
+  "manifestProject": "noellesugar99/local-action-assistant",
+  "checkoutPath": "external/local-action-assistant",
+  "commit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+  "packageName": "com.localactionassistant",
+  "version": "0.0.1",
+  "sourceLicense": "MIT",
+  "runtime": {
+    "engine": "llama.rn",
+    "version": "0.12.9",
+    "modelFormat": "GGUF",
+    "modelBundled": false,
+    "releaseNetworkPolicy": "deny"
+  },
+  "reviewedFiles": {
+    "LICENSE": "1c63ade94815257719ba12e062102ba7f89368eade58a38476ae92e1d55e08f6",
+    "package.json": "60249a2ebcee05705c02c70bc311be9caca77385b518e8369739436e532667ec",
+    "src/native/modelRuntime.ts": "48f84562d0057382ef726cbe06e759515bbed967ce42fc4aff5bb821838c4650",
+    "src/native/modelFiles.ts": "7349a6909ac55088253676bf27def7cc696fee0041444979b2e8b656e2f8a6de",
+    "src/core/toolBroker.ts": "7dcb64427bac398acafd1215724d07cbb0bde2410adfdf410a5ae90975f83b64",
+    "android/app/src/main/AndroidManifest.xml": "5c021e5b32da0efee5d57ec666a89dcc46bd5eed625b8246f0e64c9de697b46f",
+    "android/app/src/release/AndroidManifest.xml": "5ad95a28317e1198668bd3ef389871c2b1e711ddf6ca8005e68cac7079411a86"
+  },
+  "integration": {
+    "routeId": "local-action-assistant",
+    "target": "local",
+    "osBridge": "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT",
+    "signedApk": "NOT_BUILT",
+    "productPackage": "STAGING_GENERATOR_DEFINED_NOT_BUILT"
+  },
+  "overlay": {
+    "status": "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT",
+    "path": "os/physical/local-ai-overlay.patch",
+    "sha256": "2e8d7e14ce760c03901ba63e24930df1200ca3864674a3cb5cab9749d943960c"
+  },
+  "imageBuildVerified": false,
+  "imageBootVerified": false,
+  "deviceInferenceVerified": false,
+  "notes": "Pinned reviewed source for the RockstarOS local-AI integration. Source presence is not an installed system app, a signed APK, a model weight, an OS route bridge, or device inference evidence."
+}

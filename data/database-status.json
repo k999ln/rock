@@ -1,0 +1,316 @@
+{
+  "schema": 1,
+  "updatedAt": "2026-09-15",
+  "scope": "repository source, local schema convergence, and recorded deployment evidence",
+  "summary": {
+    "boundaryCount": 5,
+    "tableCount": 69,
+    "sourceVerifiedCount": 5,
+    "currentProductionReadbackCount": 0
+  },
+  "projectProgress": {
+    "total": 102,
+    "done": 72,
+    "in_progress": 21,
+    "planned": 9,
+    "blocked": 0,
+    "milestone": "OS Platform Core v1の登録・承認・Wallet・更新境界",
+    "nextAction": "最短ローンチ経路としてWEB01を優先する。現在のWeb/PWA・D1差分を一つの検証済みcommitへ固定してGitHubへ保存し、ownerが本人限定Sitesへの最新版同期を明示承認した後、同じSHAを配備して認証後の主要導線・API・security header・migrationをreadbackする。一般公開、QEMU配布、Android実機、本番金融は別gateのまま維持する。"
+  },
+  "webSchema": {
+    "tableCount": 27,
+    "tables": [
+      "automation_fund_memberships",
+      "automation_funds",
+      "book_records",
+      "csv_billing_accounts",
+      "csv_job_events",
+      "csv_jobs",
+      "csv_monthly_fees",
+      "devices",
+      "fund_plans",
+      "job_events",
+      "jobs",
+      "marketplace_approvals",
+      "marketplace_assets",
+      "marketplace_events",
+      "marketplace_positions",
+      "marketplace_proposals",
+      "marketplace_receipts",
+      "marketplace_reservations",
+      "mercari_revenue_plans",
+      "sky_connections",
+      "sky_developer_tokens",
+      "sky_tool_events",
+      "sky_tool_packages",
+      "sky_tool_submissions",
+      "tool_controls",
+      "tool_runs",
+      "work_jobs"
+    ],
+    "migrationCount": 13,
+    "latestMigration": "0012_marketplace_relation_guards.sql",
+    "accidentalDuplicateCount": 0,
+    "publishedConvergenceDeclarations": 6,
+    "marketplaceRelationGuardCount": 8,
+    "migrationJournalMatches": true,
+    "domains": [
+      {
+        "id": "core",
+        "label": "仕事・実行・端末・基本台帳",
+        "tables": [
+          "book_records",
+          "devices",
+          "fund_plans",
+          "job_events",
+          "jobs",
+          "tool_controls",
+          "tool_runs",
+          "work_jobs"
+        ],
+        "tableCount": 8
+      },
+      {
+        "id": "sky",
+        "label": "Sky接続・Tool管理",
+        "tables": [
+          "sky_connections",
+          "sky_developer_tokens",
+          "sky_tool_events",
+          "sky_tool_packages",
+          "sky_tool_submissions"
+        ],
+        "tableCount": 5
+      },
+      {
+        "id": "marketplace",
+        "label": "Marketplace",
+        "tables": [
+          "marketplace_approvals",
+          "marketplace_assets",
+          "marketplace_events",
+          "marketplace_positions",
+          "marketplace_proposals",
+          "marketplace_receipts",
+          "marketplace_reservations"
+        ],
+        "tableCount": 7
+      },
+      {
+        "id": "csv",
+        "label": "CSV業務",
+        "tables": [
+          "csv_billing_accounts",
+          "csv_job_events",
+          "csv_jobs",
+          "csv_monthly_fees"
+        ],
+        "tableCount": 4
+      },
+      {
+        "id": "business",
+        "label": "自動化ファンド・事業補助",
+        "tables": [
+          "automation_fund_memberships",
+          "automation_funds",
+          "mercari_revenue_plans"
+        ],
+        "tableCount": 3
+      }
+    ]
+  },
+  "boundaries": [
+    {
+      "id": "web-d1",
+      "label": "Web D1",
+      "engine": "Cloudflare D1",
+      "authority": "Webサービス状態",
+      "sources": [
+        "db/schema.ts",
+        "drizzle/"
+      ],
+      "tables": [
+        "automation_fund_memberships",
+        "automation_funds",
+        "book_records",
+        "csv_billing_accounts",
+        "csv_job_events",
+        "csv_jobs",
+        "csv_monthly_fees",
+        "devices",
+        "fund_plans",
+        "job_events",
+        "jobs",
+        "marketplace_approvals",
+        "marketplace_assets",
+        "marketplace_events",
+        "marketplace_positions",
+        "marketplace_proposals",
+        "marketplace_receipts",
+        "marketplace_reservations",
+        "mercari_revenue_plans",
+        "sky_connections",
+        "sky_developer_tokens",
+        "sky_tool_events",
+        "sky_tool_packages",
+        "sky_tool_submissions",
+        "tool_controls",
+        "tool_runs",
+        "work_jobs"
+      ],
+      "expectedAppliedThrough": "0012_marketplace_relation_guards.sql",
+      "tableCount": 27,
+      "sourceStatus": "VERIFIED",
+      "deployment": {
+        "runtime": "Cloudflare D1 / owner-only Sites",
+        "deploymentStatus": "SOURCE_AHEAD",
+        "productionAppliedThrough": null,
+        "productionReadbackAt": null,
+        "evidence": [],
+        "nextAction": "owner-scoped read-only accessでmigration、件数、孤立関係、backup状態を確認する"
+      }
+    },
+    {
+      "id": "sky-billing-d1",
+      "label": "Sky Billing D1",
+      "engine": "Cloudflare D1",
+      "authority": "収益精算・請求・受取Wallet",
+      "sources": [
+        "services/sky-billing/migrations/"
+      ],
+      "tables": [
+        "billing_checkout_locks",
+        "billing_customers",
+        "billing_events",
+        "billing_invoices",
+        "billing_subscriptions",
+        "earning_ledger_entries",
+        "earning_receipts",
+        "monthly_earning_settlements",
+        "monthly_fund_earning_settlements",
+        "payout_instructions",
+        "rock_fee_collection_instructions",
+        "rock_wallet_challenges",
+        "rock_wallet_operators"
+      ],
+      "expectedAppliedThrough": "0004_rock_settlement_wallet.sql",
+      "tableCount": 13,
+      "sourceStatus": "VERIFIED",
+      "deployment": {
+        "runtime": "Cloudflare D1 / Sky Billing Worker",
+        "deploymentStatus": "DOCUMENTED_NOT_READ_BACK",
+        "productionAppliedThrough": "0004_rock_settlement_wallet.sql",
+        "productionReadbackAt": null,
+        "evidence": [
+          "docs/validation.md"
+        ],
+        "nextAction": "current productionをreadbackし、0004適用と台帳件数を再確認する"
+      }
+    },
+    {
+      "id": "os-wallet-spend-sqlite",
+      "label": "OS Wallet / Spend SQLite",
+      "engine": "SQLite",
+      "authority": "端末内Wallet・支出承認・PAPER position",
+      "sources": [
+        "systems/rock-star-os/src/blackberryrock/wallet.py",
+        "systems/rock-star-os/src/blackberryrock/spend.py"
+      ],
+      "tables": [
+        "spend_approvals",
+        "spend_policy",
+        "spend_positions",
+        "spend_proposals",
+        "spend_receipts",
+        "spend_reservations",
+        "spend_strategies",
+        "value_assets",
+        "value_events",
+        "value_spend_schema",
+        "wallet_bills",
+        "wallet_consents",
+        "wallet_idempotency",
+        "wallet_journals",
+        "wallet_postings",
+        "wallet_sales",
+        "wallet_withdrawals"
+      ],
+      "transientMigrationTables": [
+        "wallet_postings_spend_v1"
+      ],
+      "expectedAppliedThrough": null,
+      "tableCount": 17,
+      "sourceStatus": "VERIFIED",
+      "deployment": {
+        "runtime": "RockstarOS device-local SQLite",
+        "deploymentStatus": "QEMU_SCOPED",
+        "productionAppliedThrough": null,
+        "productionReadbackAt": null,
+        "evidence": [
+          "docs/value-spend-runtime.md"
+        ],
+        "nextAction": "同一QEMU候補と将来の実機で保存・再起動・復旧を別々に受入する"
+      }
+    },
+    {
+      "id": "android-work-sqlite",
+      "label": "Android Work Engine SQLite",
+      "engine": "SQLite",
+      "authority": "Android work・artifact・run・event",
+      "sources": [
+        "android/core/src/main/resources/schema.sql"
+      ],
+      "tables": [
+        "artifacts",
+        "events",
+        "rock_meta",
+        "runs",
+        "settings",
+        "works"
+      ],
+      "expectedAppliedThrough": null,
+      "tableCount": 6,
+      "sourceStatus": "VERIFIED",
+      "deployment": {
+        "runtime": "Android Work Engine SQLite",
+        "deploymentStatus": "EMULATOR_SCOPED",
+        "productionAppliedThrough": null,
+        "productionReadbackAt": null,
+        "evidence": [
+          "docs/os-prototype.md"
+        ],
+        "nextAction": "対象端末を確定後、full buildと実機保存・復旧を受入する"
+      }
+    },
+    {
+      "id": "android-platform-sqlite",
+      "label": "Android Platform Core SQLite",
+      "engine": "SQLite",
+      "authority": "component登録・owner承認・OS側ledger",
+      "sources": [
+        "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java"
+      ],
+      "tables": [
+        "platform_approvals",
+        "platform_components",
+        "platform_events",
+        "platform_ledger",
+        "platform_meta",
+        "platform_registration_requests"
+      ],
+      "expectedAppliedThrough": null,
+      "tableCount": 6,
+      "sourceStatus": "VERIFIED",
+      "deployment": {
+        "runtime": "Android Platform Core SQLite",
+        "deploymentStatus": "SOURCE_ONLY",
+        "productionAppliedThrough": null,
+        "productionReadbackAt": null,
+        "evidence": [
+          "docs/local-ai-os-integration-20260915.md"
+        ],
+        "nextAction": "Kotlin/APK native build後、Soong imageと実機でschema移行を受入する"
+      }
+    }
+  ]
+}

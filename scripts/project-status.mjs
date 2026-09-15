@@ -1,7 +1,11 @@
 import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
-import { phaseGateEvidencePaths, renderPhaseGates, validatePhaseGates } from './project-phase-gates.mjs';
+import {
+  phaseGateEvidencePaths,
+  renderPhaseGates,
+  validatePhaseGates,
+} from './project-phase-gates.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const status = JSON.parse(
@@ -43,12 +47,26 @@ function visit(id, stack = new Set()) {
     visit(dep, next);
 }
 for (const id of ids) visit(id);
-const existingGateEvidence = new Set(phaseGateEvidencePaths(status.phaseGates)
-  .filter((file) => existsSync(resolve(root, file)) && statSync(resolve(root, file)).isFile()));
-const phaseGates = validatePhaseGates(status.tasks, status.phaseGates, existingGateEvidence);
+const existingGateEvidence = new Set(
+  phaseGateEvidencePaths(status.phaseGates).filter(
+    (file) =>
+      existsSync(resolve(root, file)) && statSync(resolve(root, file)).isFile(),
+  ),
+);
+const phaseGates = validatePhaseGates(
+  status.tasks,
+  status.phaseGates,
+  existingGateEvidence,
+);
 const cell = (value) =>
   String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
 const done = status.tasks.filter((task) => task.status === 'done').length;
+const planned = status.tasks.filter((task) => task.status === 'planned').length;
+const inProgress = status.tasks.filter(
+  (task) => task.status === 'in_progress',
+).length;
+const blocked = status.tasks.filter((task) => task.status === 'blocked').length;
+const overview = `${status.tasks.length} task中${done} done・${inProgress} in progress・${planned} planned${blocked ? `・${blocked} blocked` : ''}`;
 const block = [
   '<!-- project-status:start -->',
   `最終更新: ${status.updatedAt} / ${status.milestone} / 完了 ${done}/${status.tasks.length}件`,
@@ -65,13 +83,71 @@ const block = [
   '<!-- project-status:end -->',
 ].join('\n');
 let stale = false;
-for (const name of ['README.md', 'project.md']) {
+const replaceMarkedBlock = (source, marker, replacement, name) => {
+  const pattern = new RegExp(
+    `<!-- ${marker}:start -->[\\s\\S]*?<!-- ${marker}:end -->`,
+  );
+  if (!pattern.test(source))
+    throw new Error(`${name}: ${marker}欄がありません。`);
+  return source.replace(pattern, () => replacement);
+};
+const targets = [
+  {
+    name: 'README.md',
+    transform: (source) => {
+      let result = replaceMarkedBlock(
+        source,
+        'project-status',
+        block,
+        'README.md',
+      );
+      result = replaceMarkedBlock(
+        result,
+        'project-overview',
+        [
+          '<!-- project-overview:start -->',
+          `更新日: ${status.updatedAt} / ${overview}`,
+          '<!-- project-overview:end -->',
+        ].join('\n'),
+        'README.md',
+      );
+      return replaceMarkedBlock(
+        result,
+        'project-details-summary',
+        [
+          '<!-- project-details-summary:start -->',
+          `<summary>${status.tasks.length} taskと段階gateの詳細を開く</summary>`,
+          '<!-- project-details-summary:end -->',
+        ].join('\n'),
+        'README.md',
+      );
+    },
+  },
+  {
+    name: 'project.md',
+    transform: (source) =>
+      replaceMarkedBlock(source, 'project-status', block, 'project.md'),
+  },
+  {
+    name: 'docs/workstreams/README.md',
+    transform: (source) => {
+      return replaceMarkedBlock(
+        source,
+        'project-overview',
+        [
+          '<!-- project-overview:start -->',
+          `現在の機械可読進捗は${overview.replaceAll('・', '、')}。件数は作業量や製品完成率を表さない。`,
+          '<!-- project-overview:end -->',
+        ].join('\n'),
+        'docs/workstreams/README.md',
+      );
+    },
+  },
+];
+for (const { name, transform } of targets) {
   const file = resolve(root, name);
   const before = readFileSync(file, 'utf8');
-  const marker =
-    /<!-- project-status:start -->[\s\S]*?<!-- project-status:end -->/;
-  if (!marker.test(before)) throw new Error(`${name}: 進捗欄がありません。`);
-  const after = before.replace(marker, () => block);
+  const after = transform(before);
   if (before !== after) {
     if (process.argv.includes('--check')) {
       stale = true;

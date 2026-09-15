@@ -1,0 +1,399 @@
+diff --git a/android/app/src/main/AndroidManifest.xml b/android/app/src/main/AndroidManifest.xml
+index 7bac395e224241405a4b3327f5bfb2eb6d773346..a2d5a5a2f12d85515e8bc1257a216cec4e475427 100644
+--- a/android/app/src/main/AndroidManifest.xml
++++ b/android/app/src/main/AndroidManifest.xml
+@@ -1,5 +1,7 @@
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+ 
++    <uses-permission android:name="dev.rock.permission.USE_LOCAL_AI" />
++
+     <application
+       android:name=".MainApplication"
+       android:label="@string/app_name"
+@@ -21,5 +23,9 @@
+             <category android:name="android.intent.category.LAUNCHER" />
+         </intent-filter>
+       </activity>
++      <service
++        android:name=".RockLocalAiService"
++        android:exported="true"
++        android:permission="dev.rock.permission.USE_LOCAL_AI" />
+     </application>
+ </manifest>
+diff --git a/android/app/src/main/aidl/dev/rock/localai/ILocalAiCallback.aidl b/android/app/src/main/aidl/dev/rock/localai/ILocalAiCallback.aidl
+new file mode 100644
+index 0000000000000000000000000000000000000000..db6f93e960aad5298305ec7f51c0ea8f92282fbb
+--- /dev/null
++++ b/android/app/src/main/aidl/dev/rock/localai/ILocalAiCallback.aidl
+@@ -0,0 +1,6 @@
++package dev.rock.localai;
++
++// Events: token, proposal, completed or failed. Payloads are bounded UTF-8 text/JSON.
++oneway interface ILocalAiCallback {
++    void onEvent(String requestToken, String event, String payload) = 0;
++}
+diff --git a/android/app/src/main/aidl/dev/rock/localai/ILocalAiService.aidl b/android/app/src/main/aidl/dev/rock/localai/ILocalAiService.aidl
+new file mode 100644
+index 0000000000000000000000000000000000000000..e9ec2919f5fa214210e1b00228b61213cfae1422
+--- /dev/null
++++ b/android/app/src/main/aidl/dev/rock/localai/ILocalAiService.aidl
+@@ -0,0 +1,11 @@
++package dev.rock.localai;
++import dev.rock.localai.ILocalAiCallback;
++
++// Local-only v1 API. It accepts text, never file paths, model paths, URLs or credentials.
++interface ILocalAiService {
++    int getApiVersion() = 0;
++    String getStatus() = 1;
++    oneway void complete(String requestToken, String prompt, String contextJson, ILocalAiCallback callback) = 2;
++    oneway void confirm(String requestToken, String proposalId, boolean approved, ILocalAiCallback callback) = 3;
++    oneway void cancel(String requestToken) = 4;
++}
+diff --git a/android/app/src/main/java/com/localactionassistant/MainApplication.kt b/android/app/src/main/java/com/localactionassistant/MainApplication.kt
+index 2a619984587bc13bf8f6e2fbcaca0b6aa99bbc57..d19e9e7966de992b4d77ad001241581c5f5ea5ea 100644
+--- a/android/app/src/main/java/com/localactionassistant/MainApplication.kt
++++ b/android/app/src/main/java/com/localactionassistant/MainApplication.kt
+@@ -15,7 +15,7 @@ class MainApplication : Application(), ReactApplication {
+       packageList =
+         PackageList(this).packages.apply {
+           // Packages that cannot be autolinked yet can be added manually here, for example:
+-          // add(MyReactNativePackage())
++          add(RockLocalAiPackage())
+         },
+     )
+   }
+diff --git a/android/app/src/main/java/com/localactionassistant/RockLocalAiBridgeModule.kt b/android/app/src/main/java/com/localactionassistant/RockLocalAiBridgeModule.kt
+new file mode 100644
+index 0000000000000000000000000000000000000000..51a94f2cf572afab805104013fb09a9441dda5c0
+--- /dev/null
++++ b/android/app/src/main/java/com/localactionassistant/RockLocalAiBridgeModule.kt
+@@ -0,0 +1,21 @@
++package com.localactionassistant
++
++import com.facebook.react.bridge.ReactApplicationContext
++import com.facebook.react.bridge.ReactContextBaseJavaModule
++import com.facebook.react.bridge.ReactMethod
++
++class RockLocalAiBridgeModule(context: ReactApplicationContext) : ReactContextBaseJavaModule(context) {
++  override fun getName(): String = "RockLocalAiBridge"
++
++  @ReactMethod
++  fun emitEvent(requestToken: String, event: String, payload: String) {
++    RockLocalAiBroker.emit(requestToken, event, payload)
++  }
++
++  @ReactMethod
++  fun setStatus(state: String, modelLoaded: Boolean) {
++    if (state !in setOf("ready", "no_model", "loading", "busy", "error")) return
++    reactApplicationContext.getSharedPreferences("rock-local-ai", 0).edit()
++        .putString("state", state).putBoolean("modelLoaded", modelLoaded).apply()
++  }
++}
+diff --git a/android/app/src/main/java/com/localactionassistant/RockLocalAiBroker.kt b/android/app/src/main/java/com/localactionassistant/RockLocalAiBroker.kt
+new file mode 100644
+index 0000000000000000000000000000000000000000..57c63d712b87419be3c6d5d905e3752b0ddc0210
+--- /dev/null
++++ b/android/app/src/main/java/com/localactionassistant/RockLocalAiBroker.kt
+@@ -0,0 +1,38 @@
++package com.localactionassistant
++
++import dev.rock.localai.ILocalAiCallback
++import java.nio.charset.StandardCharsets
++import java.util.concurrent.ConcurrentHashMap
++
++object RockLocalAiBroker {
++  private data class Request(val callback: ILocalAiCallback, var bytes: Int = 0)
++  private val requests = ConcurrentHashMap<String, Request>()
++  private val events = setOf("token", "proposal", "completed", "failed")
++
++  fun register(token: String, callback: ILocalAiCallback): Boolean {
++    val registered = requests.putIfAbsent(token, Request(callback)) == null
++    if (registered) try { callback.asBinder().linkToDeath({ requests.remove(token) }, 0) }
++                    catch (_: Exception) { requests.remove(token); return false }
++    return registered
++  }
++
++  fun emit(token: String, event: String, payload: String) {
++    val request = requests[token] ?: return
++    if (event !in events) return fail(token, "INVALID_EVENT")
++    val size = payload.toByteArray(StandardCharsets.UTF_8).size
++    synchronized(request) {
++      if (size > 32768 || request.bytes + size > 32768) return fail(token, "INVALID_RESPONSE_SIZE")
++      request.bytes += size
++      try { request.callback.onEvent(token, event, payload) }
++      catch (_: Exception) { requests.remove(token) }
++      if (event != "token") requests.remove(token)
++    }
++  }
++
++  fun cancel(token: String) = fail(token, "CANCELLED")
++
++  private fun fail(token: String, code: String) {
++    val request = requests.remove(token) ?: return
++    try { request.callback.onEvent(token, "failed", code) } catch (_: Exception) { }
++  }
++}
+diff --git a/android/app/src/main/java/com/localactionassistant/RockLocalAiPackage.kt b/android/app/src/main/java/com/localactionassistant/RockLocalAiPackage.kt
+new file mode 100644
+index 0000000000000000000000000000000000000000..8aa862242bc9a6bdaa4adb2cd4d276cc9aa7e745
+--- /dev/null
++++ b/android/app/src/main/java/com/localactionassistant/RockLocalAiPackage.kt
+@@ -0,0 +1,12 @@
++package com.localactionassistant
++
++import com.facebook.react.ReactPackage
++import com.facebook.react.bridge.NativeModule
++import com.facebook.react.bridge.ReactApplicationContext
++import com.facebook.react.uimanager.ViewManager
++
++class RockLocalAiPackage : ReactPackage {
++  override fun createNativeModules(context: ReactApplicationContext): List<NativeModule> =
++      listOf(RockLocalAiBridgeModule(context))
++  override fun createViewManagers(context: ReactApplicationContext): List<ViewManager<*, *>> = emptyList()
++}
+diff --git a/android/app/src/main/java/com/localactionassistant/RockLocalAiService.kt b/android/app/src/main/java/com/localactionassistant/RockLocalAiService.kt
+new file mode 100644
+index 0000000000000000000000000000000000000000..c26df10c4bd7e60a6228eacd1d5391fe4fa81415
+--- /dev/null
++++ b/android/app/src/main/java/com/localactionassistant/RockLocalAiService.kt
+@@ -0,0 +1,74 @@
++package com.localactionassistant
++
++import android.content.Intent
++import android.content.pm.PackageManager
++import android.os.Binder
++import android.os.IBinder
++import android.os.Process
++import com.facebook.react.HeadlessJsTaskService
++import com.facebook.react.bridge.Arguments
++import com.facebook.react.bridge.UiThreadUtil
++import com.facebook.react.jstasks.HeadlessJsTaskConfig
++import dev.rock.localai.ILocalAiCallback
++import dev.rock.localai.ILocalAiService
++import org.json.JSONObject
++
++class RockLocalAiService : HeadlessJsTaskService() {
++  private fun authenticate() {
++    val caller = Binder.getCallingUid()
++    val expected = try { packageManager.getPackageUid("dev.rock.automation", 0) }
++                   catch (_: PackageManager.NameNotFoundException) { throw SecurityException("BROKER_NOT_INSTALLED") }
++    if (caller != expected || packageManager.checkSignatures(Process.myUid(), caller) != PackageManager.SIGNATURE_MATCH)
++      throw SecurityException("UNTRUSTED_BROKER")
++  }
++
++  private fun token(value: String?) {
++    if (value == null || !Regex("[a-f0-9-]{36}").matches(value))
++      throw IllegalArgumentException("INVALID_REQUEST_TOKEN")
++  }
++
++  private fun start(kind: String, requestToken: String, callback: ILocalAiCallback,
++                    prompt: String = "", contextJson: String = "", proposalId: String = "",
++                    approved: Boolean = false) {
++    token(requestToken)
++    if (!RockLocalAiBroker.register(requestToken, callback)) throw IllegalStateException("REQUEST_BUSY")
++    val data = Arguments.createMap().apply {
++      putString("kind", kind); putString("requestToken", requestToken); putString("prompt", prompt)
++      putString("contextJson", contextJson); putString("proposalId", proposalId); putBoolean("approved", approved)
++    }
++    UiThreadUtil.runOnUiThread {
++      try { startTask(HeadlessJsTaskConfig("RockLocalAi", data, 90_000, true)) }
++      catch (_: Exception) { RockLocalAiBroker.cancel(requestToken) }
++    }
++  }
++
++  private val binder = object : ILocalAiService.Stub() {
++    override fun getApiVersion(): Int { authenticate(); return 1 }
++    override fun getStatus(): String {
++      authenticate()
++      val preferences = getSharedPreferences("rock-local-ai", 0)
++      return JSONObject().put("state", preferences.getString("state", "error"))
++          .put("modelLoaded", preferences.getBoolean("modelLoaded", false))
++          .put("runtime", "llama.rn").put("apiVersion", 1).toString()
++    }
++    override fun complete(requestToken: String?, prompt: String?, contextJson: String?, callback: ILocalAiCallback?) {
++      authenticate(); token(requestToken)
++      if (callback == null || prompt.isNullOrBlank() || prompt.toByteArray().size > 32768
++          || contextJson == null || contextJson.toByteArray().size > 32768) throw IllegalArgumentException("INVALID_REQUEST")
++      start("complete", requestToken!!, callback, prompt, contextJson)
++    }
++    override fun confirm(requestToken: String?, proposalId: String?, approved: Boolean, callback: ILocalAiCallback?) {
++      authenticate(); token(requestToken)
++      if (callback == null || proposalId == null || !Regex("[A-Za-z0-9_-]{1,80}").matches(proposalId))
++        throw IllegalArgumentException("INVALID_CONFIRMATION")
++      start("confirm", requestToken!!, callback, proposalId = proposalId, approved = approved)
++    }
++    override fun cancel(requestToken: String?) {
++      authenticate(); token(requestToken); RockLocalAiBroker.cancel(requestToken!!)
++      val data = Arguments.createMap().apply { putString("kind", "cancel"); putString("requestToken", requestToken) }
++      UiThreadUtil.runOnUiThread { startTask(HeadlessJsTaskConfig("RockLocalAi", data, 10_000, true)) }
++    }
++  }
++
++  override fun onBind(intent: Intent): IBinder = binder
++}
+diff --git a/index.js b/index.js
+index 9b73932914001a9ccd3b23145c0ef4d61e62c150..45d46e04521ba51bcd01335bc7d41a98ddb544df 100644
+--- a/index.js
++++ b/index.js
+@@ -5,5 +5,7 @@
+ import { AppRegistry } from 'react-native';
+ import App from './App';
+ import { name as appName } from './app.json';
++import {registerOsBridge} from './src/native/osBridge';
+ 
+ AppRegistry.registerComponent(appName, () => App);
++registerOsBridge();
+diff --git a/src/native/osBridge.ts b/src/native/osBridge.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..9a2cf4f
+--- /dev/null
++++ b/src/native/osBridge.ts
+@@ -0,0 +1,148 @@
++import AsyncStorage from '@react-native-async-storage/async-storage';
++import {AppRegistry, NativeModules} from 'react-native';
++import {executeTool, parseNativeToolCall, proposalFor} from '../core/toolBroker';
++import {repository} from '../data/repository';
++import {modelRuntime} from './modelRuntime';
++import type {ChatMessage, PendingAction} from '../types';
++
++type BridgeData = {
++  kind?: unknown;
++  requestToken?: unknown;
++  prompt?: unknown;
++  contextJson?: unknown;
++  proposalId?: unknown;
++  approved?: unknown;
++};
++
++type NativeBridge = {
++  emitEvent(requestToken: string, event: string, payload: string): void;
++  setStatus(state: string, modelLoaded: boolean): void;
++};
++
++type StoredProposal = {
++  proposal: PendingAction;
++  expiresAt: number;
++};
++
++const bridge = NativeModules.RockLocalAiBridge as NativeBridge | undefined;
++const pendingPrefix = '@local-action/os-pending/';
++const maxText = 32768;
++const proposalTtlMs = 5 * 60 * 1000;
++
++function requiredText(value: unknown, name: string, max = maxText): string {
++  if (typeof value !== 'string' || !value.trim() || value.length > max) {
++    throw new Error(`INVALID_${name.toUpperCase()}`);
++  }
++  return value;
++}
++
++function emit(token: string, event: 'token' | 'proposal' | 'completed' | 'failed', payload: string): void {
++  if (!bridge) throw new Error('OS_BRIDGE_UNAVAILABLE');
++  bridge.emitEvent(token, event, payload.slice(0, maxText));
++}
++
++function parseContext(raw: unknown): ChatMessage[] {
++  if (raw === '' || raw == null) return [];
++  const text = requiredText(raw, 'context');
++  const value: unknown = JSON.parse(text);
++  if (!Array.isArray(value) || value.length > 12) throw new Error('INVALID_CONTEXT');
++  return value.map((item, index) => {
++    if (!item || typeof item !== 'object') throw new Error('INVALID_CONTEXT');
++    const candidate = item as {role?: unknown; content?: unknown};
++    if (candidate.role !== 'user' && candidate.role !== 'assistant') throw new Error('INVALID_CONTEXT');
++    return {
++      id: `os-context-${index}`,
++      role: candidate.role,
++      content: requiredText(candidate.content, 'context_content', 4000),
++      createdAt: new Date(0).toISOString(),
++    };
++  });
++}
++
++async function ensureModel(): Promise<void> {
++  const model = await repository.model();
++  if (!model) {
++    bridge?.setStatus('no_model', false);
++    throw new Error('NO_MODEL');
++  }
++  bridge?.setStatus('loading', false);
++  await modelRuntime.load(model.uri);
++  bridge?.setStatus('ready', true);
++}
++
++async function complete(data: BridgeData, token: string): Promise<void> {
++  await ensureModel();
++  bridge?.setStatus('busy', true);
++  const prompt = requiredText(data.prompt, 'prompt', 8000);
++  const messages = parseContext(data.contextJson);
++  messages.push({id: `os-${token}`, role: 'user', content: prompt, createdAt: new Date().toISOString()});
++  let streamed = false;
++  const result = await modelRuntime.complete(messages, chunk => {
++    streamed = true;
++    emit(token, 'token', chunk);
++  });
++  if (result.toolCalls.length > 1) throw new Error('MULTIPLE_TOOL_CALLS');
++  if (!result.toolCalls.length) {
++    emit(token, 'completed', streamed ? '' : (result.text || 'EMPTY_COMPLETION'));
++    return;
++  }
++  const call = parseNativeToolCall(result.toolCalls[0]);
++  const proposal = proposalFor(call);
++  if (!proposal) {
++    emit(token, 'completed', await executeTool(call));
++    return;
++  }
++  const stored: StoredProposal = {proposal, expiresAt: Date.now() + proposalTtlMs};
++  await AsyncStorage.setItem(`${pendingPrefix}${token}`, JSON.stringify(stored));
++  await repository.appendAudit('tool_proposed', `os:${call.name}`);
++  emit(token, 'proposal', JSON.stringify({proposalId: call.id, tool: call.name,
++                                          description: proposal.description}));
++}
++
++async function confirm(data: BridgeData, token: string): Promise<void> {
++  const proposalId = requiredText(data.proposalId, 'proposal_id', 80);
++  const raw = await AsyncStorage.getItem(`${pendingPrefix}${token}`);
++  if (!raw) throw new Error('PROPOSAL_NOT_FOUND');
++  const stored = JSON.parse(raw) as Partial<StoredProposal>;
++  if (!stored.proposal || typeof stored.expiresAt !== 'number') {
++    await AsyncStorage.removeItem(`${pendingPrefix}${token}`);
++    throw new Error('INVALID_PROPOSAL');
++  }
++  if (stored.expiresAt < Date.now()) {
++    await AsyncStorage.removeItem(`${pendingPrefix}${token}`);
++    throw new Error('PROPOSAL_EXPIRED');
++  }
++  const proposal = stored.proposal;
++  if (proposal.call.id !== proposalId) throw new Error('PROPOSAL_MISMATCH');
++  await AsyncStorage.removeItem(`${pendingPrefix}${token}`);
++  if (data.approved !== true) {
++    await repository.appendAudit('tool_denied', `os:${proposal.call.name}`);
++    emit(token, 'completed', '操作をキャンセルしました。');
++    return;
++  }
++  emit(token, 'completed', await executeTool(proposal.call));
++}
++
++async function runLocalAiTask(data: BridgeData): Promise<void> {
++  const token = requiredText(data.requestToken, 'request_token', 36);
++  try {
++    if (data.kind === 'complete') await complete(data, token);
++    else if (data.kind === 'confirm') await confirm(data, token);
++    else if (data.kind === 'cancel') {
++      await modelRuntime.stop();
++      await AsyncStorage.removeItem(`${pendingPrefix}${token}`);
++      emit(token, 'failed', 'CANCELLED');
++    } else throw new Error('INVALID_OPERATION');
++  } catch (error) {
++    const code = error instanceof Error && /^[A-Z0-9_]+$/.test(error.message)
++      ? error.message : 'LOCAL_AI_FAILED';
++    emit(token, 'failed', code);
++    bridge?.setStatus(modelRuntime.loaded ? 'ready' : 'error', modelRuntime.loaded);
++  } finally {
++    if (data.kind !== 'cancel') bridge?.setStatus(modelRuntime.loaded ? 'ready' : 'error', modelRuntime.loaded);
++  }
++}
++
++export function registerOsBridge(): void {
++  if (bridge) AppRegistry.registerHeadlessTask('RockLocalAi', () => runLocalAiTask);
++}

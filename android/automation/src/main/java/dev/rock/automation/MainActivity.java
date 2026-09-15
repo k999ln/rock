@@ -45,6 +45,7 @@ public final class MainActivity extends Activity {
         });
         button(form, "全停止（保存した仕事は残す）", () -> perform(() -> { engine().setPaused(true); Scheduler.stop(this); }));
         button(form, "自動実行を再開", () -> perform(() -> { engine().setPaused(false); Scheduler.schedule(this); }));
+        button(form, "ローカルAI接続を確認", this::checkLocalAi);
         button(form, "進捗を更新", () -> perform(() -> {}));
         message = label(form, "", 16);
         jobs = new LinearLayout(this); jobs.setOrientation(LinearLayout.VERTICAL); form.addView(jobs);
@@ -71,6 +72,15 @@ public final class MainActivity extends Activity {
             } catch (RuntimeException e) {
                 runOnUiThread(() -> { if (!isDestroyed()) message.setText("処理できませんでした。保存の同意、入力内容、工程の状態、ツールの導入、端末容量を確認してください。"); });
             }
+        });
+    }
+    private void checkLocalAi() {
+        worker.execute(() -> {
+            String status;
+            try { status = "ローカルAI: " + new LocalAiConnection(this).status(); }
+            catch (Exception error) { status = "ローカルAI: 未接続（アプリ、モデル、署名、APIを確認）"; }
+            String result = status;
+            runOnUiThread(() -> { if (!isDestroyed()) message.setText(result); });
         });
     }
     private void render(List<Map<String,String>> workItems, Map<String,List<Map<String,String>>> runItems) {
