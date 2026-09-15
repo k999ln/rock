@@ -1067,6 +1067,7 @@ export function validateOwnerPrivateSitesAudit({ audit, hosting, readiness, webS
   const site = audit.site || {};
   const version = audit.latestVersion || {};
   const sync = audit.sync || {};
+  const access = audit.access || {};
   const deploymentSecurity = audit.deploymentSecurity || {};
   const claims = audit.claims || {};
   if (
@@ -1138,17 +1139,39 @@ export function validateOwnerPrivateSitesAudit({ audit, hosting, readiness, webS
       fail(label + ': 最新配備のsecurity header実読取りがありません');
     }
   } else if (sync.status === 'OUTDATED') {
+    const approvedButBlocked = sync.authorization === 'OWNER_APPROVED_ACCESS_BLOCKED';
     if (
       current?.status !== 'blocked' ||
       claims.latestApprovedSourceDeployed !== false ||
       version.sourceCommit === sync.comparedReviewHead ||
       !Number.isInteger(sync.commitsBehind) ||
       sync.commitsBehind < 1 ||
-      sync.authorization !== 'AWAITING_EXPLICIT_OWNER_APPROVAL' ||
+      !['AWAITING_EXPLICIT_OWNER_APPROVAL', 'OWNER_APPROVED_ACCESS_BLOCKED'].includes(
+        sync.authorization,
+      ) ||
       typeof sync.nextAction !== 'string' ||
       !sync.nextAction
     ) {
       fail(label + ': 未同期状態または必要な所有者行動が一致しません');
+    }
+    if (
+      approvedButBlocked &&
+      (
+        !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(
+          sync.authorizationUpdatedAt || '',
+        ) ||
+        access.status !== 'OWNER_WORKSPACE_MISMATCH' ||
+        access.browser !== 'ACCESS_DENIED' ||
+        access.api !== 'PROJECT_NOT_FOUND' ||
+        access.dataMutationPerformed !== false ||
+        !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(access.observedAt || '') ||
+        !Array.isArray(access.evidence) ||
+        !access.evidence.includes(
+          'docs/evidence/launch/sites-owner-auth-blocker-20260915.json',
+        )
+      )
+    ) {
+      fail(label + ': 承認済みaccess blockerの観測証拠が不足しています');
     }
     if (
       deploymentSecurity.status !== 'PENDING_CURRENT_DEPLOYMENT' ||
