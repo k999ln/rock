@@ -16,6 +16,8 @@ export const metadata: Metadata = {
   icons: { icon: '/favicon.svg', apple: '/rock-icon-192.png' },
 };
 export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
   themeColor: '#171a1b',
   viewportFit: 'cover',
 };

@@ -1,5 +1,5 @@
 {
-  "version": "1.44",
+  "version": "1.45",
   "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -39,6 +39,13 @@
     "skyRoute": "/sky",
     "returnPolicy": "every_non_home_route_has_a_direct_home_affordance",
     "workspaceNavigation": "sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation",
+    "smartphoneLayout": {
+      "supportedCssWidthPx": [320, 767],
+      "viewport": "device-width_initial-scale-1_viewport-fit-cover",
+      "safeAreas": true,
+      "minimumPrimaryTouchTargetPx": 44,
+      "pageHorizontalOverflow": "forbidden"
+    },
     "visualBasis": "iphone_inspired_app_launcher",
     "systemUtility": "settings",
     "preferencesStorage": "device_local",

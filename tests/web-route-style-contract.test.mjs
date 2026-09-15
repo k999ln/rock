@@ -125,6 +125,27 @@ void test('workspace shell stays sidebar-free and preserves running-state afford
   assert.match(workspace, /data-running='true'/);
 });
 
+void test('OS surfaces keep a smartphone viewport and safe-area contract', () => {
+  const layout = readFileSync(resolve(root, 'app/layout.tsx'), 'utf8');
+  const homeStyles = readFileSync(
+    resolve(root, 'components/home-screen.module.css'),
+    'utf8',
+  );
+  const csvStyles = readFileSync(
+    resolve(root, 'components/csv-business-workspace.module.css'),
+    'utf8',
+  );
+  assert.match(layout, /width: 'device-width'/);
+  assert.match(layout, /initialScale: 1/);
+  assert.match(workspace, /Smartphone contract: 320-767px/);
+  assert.match(workspace, /overflow-x: clip/);
+  assert.match(workspace, /env\(safe-area-inset-top\)/);
+  assert.match(workspace, /min-height: 44px/);
+  assert.match(homeStyles, /@media \(max-width: 430px\)/);
+  assert.match(homeStyles, /env\(safe-area-inset-bottom\)/);
+  assert.match(csvStyles, /@media \(max-width: 520px\)/);
+});
+
 void test('Sky exposes its Work and CSV surfaces', () => {
   const sky = readFileSync(
     resolve(root, 'components/sky-workspace.tsx'),

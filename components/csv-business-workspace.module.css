@@ -377,3 +377,62 @@ button:disabled {
     align-items: flex-start;
   }
 }
+
+@media (max-width: 520px) {
+  .page {
+    padding: 20px 14px max(48px, calc(32px + env(safe-area-inset-bottom)));
+  }
+  .hero {
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    margin-bottom: 12px;
+    font-size: 32px;
+  }
+  .hero p {
+    font-size: 14px;
+  }
+  .price {
+    min-width: 0;
+    padding: 18px;
+    border-radius: 16px;
+  }
+  .trust {
+    display: grid;
+    gap: 10px;
+    padding: 14px 16px;
+  }
+  .card {
+    padding: 18px;
+    border-radius: 14px;
+  }
+  .step {
+    gap: 11px;
+  }
+  .step h2 {
+    font-size: 19px;
+  }
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .actions button {
+    width: 100%;
+  }
+  .historyTitle {
+    display: grid;
+    gap: 10px;
+  }
+  .historyTitle button {
+    width: 100%;
+    justify-content: center;
+  }
+  .job {
+    padding: 16px;
+  }
+  .error {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

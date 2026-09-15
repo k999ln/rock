@@ -341,6 +341,13 @@ export function validateBaseline(
       homeSource.includes('WEB / LOCAL') &&
       data.homeExperience?.workspaceNavigation ===
         'sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation' &&
+      data.homeExperience?.smartphoneLayout?.supportedCssWidthPx?.[0] === 320 &&
+      data.homeExperience?.smartphoneLayout?.supportedCssWidthPx?.[1] === 767 &&
+      data.homeExperience?.smartphoneLayout?.safeAreas === true &&
+      data.homeExperience?.smartphoneLayout?.minimumPrimaryTouchTargetPx ===
+        44 &&
+      data.homeExperience?.smartphoneLayout?.pageHorizontalOverflow ===
+        'forbidden' &&
       !shellSource.includes('Sidebar') &&
       !shellSource.includes('rock-sidebar') &&
       shellSource.includes('rock-main-column rock-main-column-full') &&
