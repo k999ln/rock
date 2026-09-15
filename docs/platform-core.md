@@ -14,6 +14,8 @@ An app can create only a `PROPOSED` operation. The non-exported OS confirmation 
 
 Approvals are owner-, component-, action-, payload-, cost-, expiry- and component-generation-bound. They are single use. Stop, update or revocation fences outstanding approvals. The ledger is append-only: corrections create a compensating reversal. Owner request keys, broker-attested provider references and reversal targets are unique to prevent duplicate entries. Provider-specific cryptographic receipt verification stays in the Provider adapter; the platform stores its digest and deduplicates it.
 
+The Android owner boundary is derived from the public Binder/process UID values using AOSP's per-user UID range. The broker and its non-exported confirmation activity therefore resolve the same Android user without depending on hidden `UserHandle` methods that are absent from the public SDK.
+
 ## Storage, backup and updates
 
 Schema creation and migration run transactionally. Schema v2 migrates v1 approval rows into the two-stage approval model and stops legacy unconfirmed grants, while an unknown newer version fails closed without reset. Backups are owner-scoped binary snapshots encrypted with AES-256-GCM under a non-exportable Android Keystore key; only an ID and ciphertext digest cross the callback. Application backup remains disabled.

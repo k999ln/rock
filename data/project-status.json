@@ -780,6 +780,7 @@
         "contracts/platform-api.json",
         "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
         "android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatformApi.aidl",
+        "android/automation/src/main/java/dev/rock/automation/AndroidOwner.java",
         "android/automation/src/main/java/dev/rock/automation/RockPlatformService.java",
         "android/sepolicy/private/rockstar_platform.te"
       ]
