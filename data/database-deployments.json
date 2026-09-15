@@ -4,11 +4,11 @@
   "boundaries": {
     "web-d1": {
       "runtime": "Cloudflare D1 / owner-only Sites",
-      "deploymentStatus": "SOURCE_AHEAD",
+      "deploymentStatus": "OWNER_ACCESS_BLOCKED",
       "productionAppliedThrough": null,
       "productionReadbackAt": null,
-      "evidence": [],
-      "nextAction": "owner-scoped read-only accessでmigration、件数、孤立関係、backup状態を確認する"
+      "evidence": ["docs/evidence/launch/sites-owner-auth-blocker-20260915.json"],
+      "nextAction": "本人限定Sitesの所有workspaceへ接続し、7cb7017を配備後にmigration、件数、孤立関係、backup状態をreadbackする"
     },
     "sky-billing-d1": {
       "runtime": "Cloudflare D1 / Sky Billing Worker",
