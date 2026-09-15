@@ -9,6 +9,12 @@ import {
 
 void test('database status inventories every boundary and keeps production readback explicit', () => {
   const report = buildDatabaseStatus();
+  const project = JSON.parse(
+    readFileSync(new URL('../data/project-status.json', import.meta.url), 'utf8'),
+  );
+  const taskStatus = Object.fromEntries(
+    project.tasks.map(({ id, status }) => [id, status]),
+  );
   assert.equal(report.summary.boundaryCount, 5);
   assert.equal(report.summary.tableCount, 69);
   assert.equal(report.summary.sourceVerifiedCount, 5);
@@ -16,6 +22,14 @@ void test('database status inventories every boundary and keeps production readb
   assert.equal(report.webSchema.tableCount, 27);
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
+  assert.equal(taskStatus.SKY07, 'in_progress');
+  assert.equal(taskStatus.WEB01, 'blocked');
+  assert.equal(report.projectProgress.blocked, 1);
+  assert.equal(
+    report.boundaries.find(({ id }) => id === 'web-d1').deployment
+      .deploymentStatus,
+    'OWNER_ACCESS_BLOCKED',
+  );
   assert.deepEqual(
     report.webSchema.domains.map(({ id, tableCount }) => [id, tableCount]),
     [
