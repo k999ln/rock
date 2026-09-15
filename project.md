@@ -1,5 +1,13 @@
 # Rock star — 事業・設計・進捗
 
+## 2026-09-15 — PR #1〜#23と旧branchをmainへ収束
+
+GitHub正本`k999ln/rock`のPR #1〜#23を現行mainの実装と再照合した。13件はmainへ統合済み、10件は同一または後継実装がmainにあり、旧文書・旧画面・競合branchをそのまま統合すると後退するため理由を記録して閉じた。open PRは0件である。
+
+統合済みPR branch、閉じたPR branch、PRを持たない旧作業branchと一時archive branchも確認し、GitHub remoteを`main`だけへ収束した。merge後のbranch自動削除を有効化し、以後は最新main起点の一task・一branch・一PRで進める。版表示は`data/version-boundaries.json`の製品、Web、native、QEMU、Android境界を維持し、配布候補だけをexact source commitへ固定する。
+
+最新mainの全体CIと署名検査は成功している。これはGitHub sourceの整合であり、本人限定Sitesのowner workspace access、本番D1 readback、一般公開、QEMU正式署名、Android実機、本番金融の完了ではない。別ローカル履歴のうち、mainへ既に統合されたPixel 10／Zema変更と、確定要望を増やす未採用の名称・緊急access変更はGitHub正本へ混ぜていない。
+
 ## 2026-09-15 — Pixel 10を最初の実機対象へ固定
 
 所有済みのPixel 10をRockstarOS最初の物理対象に選択した。既存の`frankel` source lockと端末hookを使い、共通RockstarOS Coreは機種ごとに作り直さない。Pixel 7／`panther`はPixel 10受入後まで保留し、2機種目以降はDevice Support Package、vendor／firmware、partition／AVB、hardware、OTA／rollback、純正復旧だけを機種別に移植・検証する。
@@ -474,7 +482,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-15 / OS Platform Core v1の登録・承認・Wallet・更新境界 / 完了 73/103件
+最終更新: 2026-09-15 / OS Platform Core v1の登録・承認・Wallet・更新境界 / 完了 74/103件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -568,7 +576,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | LCH03 | production署名・保護環境・失効運用 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH04 | Sites履歴のコード統合・新規本人限定サイト・Sky改善 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/owner-setup-20260911.md) · [記録](docs/current-state-20260911.md) · [記録](docs/evidence/launch/sites-owner-private-20260913.json) |
 | LCH05 | 制作中CMの完成待ち・内容照合・導入案内への接続 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
-| LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) · [記録](data/version-boundaries.json) · [記録](scripts/check-version-boundaries.mjs) · [記録](tests/version-boundaries.test.mjs) · [記録](docs/version-boundaries.md) |
+| LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 完了 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) · [記録](docs/workstreams/10-git-ci-operations.md) · [記録](data/version-boundaries.json) · [記録](scripts/check-version-boundaries.mjs) · [記録](tests/version-boundaries.test.mjs) · [記録](docs/version-boundaries.md) |
 | LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | LCH08 | ローカルOSバックエンドの安全終了・ヘルスチェック・再起動時のreceipt復元を検証 | 完了 | [記録](docs/backend-launch-20260912.md) · [記録](docs/evidence/launch/backend-rc3-local-20260912.json) · [記録](systems/rock-star-os/scripts/verify-backend-launch.py) · [記録](systems/rock-star-os/tests/test_hub.py) · [記録](systems/rock-star-os/tests/test_hub_server.py) |
 | FB01 | Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合 | 完了 | [記録](docs/fashion-brand-ops-integration.md) |
