@@ -8,7 +8,7 @@
       "productionAppliedThrough": null,
       "productionReadbackAt": null,
       "evidence": ["docs/evidence/launch/sites-owner-auth-blocker-20260915.json"],
-      "nextAction": "本人限定Sitesの所有workspaceへ接続し、7cb7017を配備後にmigration、件数、孤立関係、backup状態をreadbackする"
+      "nextAction": "本人限定Sitesの所有workspaceへ接続し、検証済みの最新mainを配備後にmigration、件数、孤立関係、backup状態をreadbackする"
     },
     "sky-billing-d1": {
       "runtime": "Cloudflare D1 / Sky Billing Worker",
