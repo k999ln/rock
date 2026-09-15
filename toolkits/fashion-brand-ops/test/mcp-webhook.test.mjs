@@ -2,10 +2,12 @@ import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import test from 'node:test';
 import { McpProtocol } from '../src/mcp.mjs';
+import { loadConfig } from '../src/config.mjs';
 import { createRuntime } from '../src/runtime.mjs';
 import { TOOL_DEFINITIONS } from '../src/tools.mjs';
 import {
   extractInstagramMessages,
+  resolveInstagramBrand,
   verifyMetaSignature,
   verifyStripeSignature,
 } from '../src/webhooks.mjs';
@@ -69,6 +71,14 @@ test('MCP initializes, discovers all required tools, and calls a tool', async (t
     },
   });
   assert.equal(called.result.structuredContent.id, 'brand1');
+});
+
+test('default browser origins include the current owner-only Sky site', () => {
+  assert.ok(
+    loadConfig({}).browserOrigins.includes(
+      'https://rockstaros-kaiya.noellesugar1.chatgpt.site',
+    ),
+  );
 });
 
 test('Stripe webhook signatures are timestamp-bound and tamper evident', () => {
@@ -139,5 +149,18 @@ test('Meta webhook signature rejects tampered DM payloads', () => {
   assert.throws(
     () => verifyMetaSignature(`${body}x`, `sha256=${signature}`, secret),
     /meta_signature_invalid/,
+  );
+});
+
+test('Instagram webhook cannot route a signed event to another brand', () => {
+  assert.equal(resolveInstagramBrand('', 'brand-a'), 'brand-a');
+  assert.equal(resolveInstagramBrand('brand-a', 'brand-a'), 'brand-a');
+  assert.throws(
+    () => resolveInstagramBrand('brand-b', 'brand-a'),
+    /instagram_webhook_brand_mismatch/,
+  );
+  assert.throws(
+    () => resolveInstagramBrand('brand-a', undefined),
+    /instagram_webhook_brand_unresolved/,
   );
 });

@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-09-14",
-  "milestone": "CSV整形を最初の販売仕事として、決定的変換・独立検査・私有成果物・スマホ受付・料金境界を既存Sites本番系統へ統合",
+  "updatedAt": "2026-09-15",
+  "milestone": "Rock StudioのSky SDK導線を維持し、CSV整形の決定的変換・独立検査・私有成果物・料金境界を同じSites本番系統へ統合",
   "nextAction": "CSVの独立queueを配置して実スマホ閉鎖後の完了を受入し、真正な第三者1件の販売・入金・納品をProvider証拠で検証する。",
   "tasks": [
     {
@@ -101,6 +101,12 @@
       "status": "done",
       "dependsOn": ["SKY05", "FB01"],
       "evidence": [
+        "app/sky/network/page.tsx",
+        "components/sky-network.tsx",
+        "components/sky-network.module.css",
+        "docs/sky-network-economy.md",
+        "scripts/check-product-baseline.mjs",
+        "tests/product-baseline.test.mjs",
         "components/sky-workspace.tsx",
         "components/fashion-brand-ops-runner.tsx",
         "app/workspace.css",
@@ -185,6 +191,21 @@
         "toolkits/sky-mcp-connector/server.mjs",
         "tests/mcp-connector.test.mjs",
         "docs/chat-mcp-control-room-20260913.md"
+      ]
+    },
+    {
+      "id": "SKY15",
+      "title": "Sky SDKコードを既存ツールへ追加し、起動時にPackage登録・MCP公開・利用記録まで行うStudioを実装",
+      "status": "done",
+      "dependsOn": ["SKY14"],
+      "evidence": [
+        "components/rock-studio.tsx",
+        "toolkits/sky-tool-sdk/src/index.mjs",
+        "app/studio/page.tsx",
+        "app/sky/publish/page.tsx",
+        "tests/sky-code-intake.test.mjs",
+        "tests/sky-studio-chat.test.mjs",
+        "docs/sky-tool-sdk.md"
       ]
     },
     {
@@ -964,10 +985,7 @@
       "title": "同一最終候補の再現配布・導入・復旧リハーサル",
       "status": "in_progress",
       "dependsOn": [],
-      "evidence": [
-        "docs/launch-readiness-20260910.md",
-        "docs/evidence/launch/backend-rc3-local-20260912.json"
-      ]
+      "evidence": ["docs/launch-readiness-20260910.md"]
     },
     {
       "id": "LCH08",

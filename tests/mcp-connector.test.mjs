@@ -133,7 +133,7 @@ void test('one connector negotiates the latest shared MCP protocol and arbitrary
     await request('/servers/fashion-brand-ops/connect', {})
   ).json();
   assert.equal(fashion.passport.protocolVersion, '2025-11-25');
-  assert.equal(fashion.passport.tools.length, 40);
+  assert.equal(fashion.passport.tools.length, 41);
   assert.notEqual(fashion.passport.toolDigest, mr.passport.toolDigest);
 
   const reconnected = await (

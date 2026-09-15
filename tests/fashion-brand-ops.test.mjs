@@ -47,6 +47,7 @@ void test('the Sky manifest binds the MCP runtime and every dangerous effect to 
   assert.equal(manifest.data.credentials, 'references_only');
   assert.equal(manifest.commercial.liveBilling, false);
   for (const capability of [
+    'producer.start',
     'instagram.accounts',
     'instagram.screenshot_intake',
     'instagram.content_plan',
@@ -79,7 +80,7 @@ void test('the Sky manifest binds the MCP runtime and every dangerous effect to 
 });
 
 void test('MCP discovery exposes the complete fashion workflow and receipts bind the manifest digest', () => {
-  assert.equal(TOOL_DEFINITIONS.length, 40);
+  assert.equal(TOOL_DEFINITIONS.length, 41);
   assert.ok(
     TOOL_DEFINITIONS.some((tool) => tool.name === 'fashion.payment.status.get'),
   );
@@ -89,6 +90,7 @@ void test('MCP discovery exposes the complete fashion workflow and receipts bind
     ),
   );
   for (const name of [
+    'fashion.producer.start',
     'fashion.brand.upsert',
     'fashion.market.analyze',
     'fashion.creative.prepare',

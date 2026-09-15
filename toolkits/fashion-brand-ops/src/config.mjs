@@ -23,7 +23,7 @@ export function loadConfig(env = process.env) {
     httpPort: Number(env.FASHION_HTTP_PORT || 8787),
     browserOrigins: (
       env.FASHION_BROWSER_ORIGINS ||
-      'https://rock-star.kirin-999.chatgpt.site,https://loop-automation-hub.kirin-999.chatgpt.site,https://instagram-ops-studio.kirin-999.chatgpt.site,http://127.0.0.1:3000,http://localhost:3000,http://127.0.0.1:3001,http://localhost:3001,http://127.0.0.1:3015,http://localhost:3015'
+      'https://rockstaros-kaiya.noellesugar1.chatgpt.site,https://rock-star.kirin-999.chatgpt.site,https://loop-automation-hub.kirin-999.chatgpt.site,https://instagram-ops-studio.kirin-999.chatgpt.site,http://127.0.0.1:3000,http://localhost:3000,http://127.0.0.1:3001,http://localhost:3001,http://127.0.0.1:3015,http://localhost:3015'
     )
       .split(',')
       .map((value) => value.trim())
@@ -63,6 +63,6 @@ export function loadConfig(env = process.env) {
     notificationWebhookToken: env.NOTIFICATION_WEBHOOK_TOKEN || '',
     packageDigest:
       env.ROCKSTAR_PACKAGE_DIGEST ||
-      '52f38bca0394daa0da1df77132f2fdce3540b8b119611f793dd5a61e9bd88ff6',
+      'f74ca4b50008b6a6161f8682ac8c9799327f4d1f5658c10a3cff0f762fa54919',
   });
 }

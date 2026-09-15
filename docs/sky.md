@@ -1,6 +1,6 @@
 # Sky — 自動化を選び、許可し、動かし、止め、結果を受け取る場所
 
-最終更新: 2026-09-12
+最終更新: 2026-09-15
 
 ## Skyとは
 
@@ -35,7 +35,7 @@ flowchart LR
 | CSV整形・検査・納品 | Sky Cloud / Webブラウザ | CSV 1ファイルの受付、指定変換、独立検査、私有成果物、7日取得期限を管理 | 外部市場の出品・連絡・入金・返金は本人操作。手入力入金はWallet収益にせず、buyer直接共有と独立queueは未接続 |
 | RockstarOS Markets | Webブラウザ / 公開市場API / PC offline backtest | 公開ライブ確率・出来高・流動性を表示し、固定commitのPolymarket bot backtest reportを検証 | 市場は読取専用、botはbacktest専用。秘密鍵・LIVE切替・注文・Wallet移動は無効。simulation PnLを収益にしない |
 | メルカリ収益スターター | Webブラウザ / Shops Connector | 出品原稿、実費後の見込み利益、承認、出品・取引完了の進捗を管理 | 個人版は本人が公式画面で操作。Shopsの自動連携と検証済み売上は固定IP Connector・契約・Token接続前は無効 |
-| Instagram運用・受注型ブランド管理 | PC / MCP | 写真の候補取込から広告・接客・受注・制作・改善を40操作で管理 | 初期値はmock。Meta確認前の候補とAutopilotは外部作用を直接実行せず、実Provider・実投稿・実請求は未接続 |
+| Instagram運用・受注型ブランド管理 | PC / MCP | 写真の候補取込から広告・接客・受注・制作・改善を41操作で管理 | 初期値はmock。Meta確認前の候補とAutopilotは外部作用を直接実行せず、実Provider・実投稿・実請求は未接続 |
 | サブスク顧問 | PC / MCP | 契約、更新日、支払い失敗、通貨別月額をローカル台帳から確認 | 読み取り専用。解約、支払い、税務申告は自動実行しない |
 | ココナラ案件チェック | Webブラウザ | 依頼文と提案文の条件の食い違いを確認 | 自動応募・返信・入金確認はしない |
 | 記事の無料版メーカー | Webブラウザ | 完全版原稿から無料紹介用の文章を作る | 自動執筆・投稿・販売はしない |
@@ -81,6 +81,12 @@ flowchart LR
 
 現在この価値はQEMUと開発用のWeb/PC経路で部分的に検証済み。実端末、実Cloud provider、実課金、一般公開を完了したという意味ではない。
 
+## 開発者が自動化を追加する場所
+
+開発者はPCの`/studio`またはSky Tool SDKを使う。SDKは自動化したい既存関数を`handler`へ接続する雛形であり、用途、禁止場面、入出力Schema、Adapter、権限、副作用、料金、timeout、成功確認、Fund互換情報を一つの定義からPackageとMCPへ変換する。これにより「Sky専用に全コードを書き直す」のではなく、「自動化できる処理へSkyの契約を被せる」導線にする。
+
+登録したToolは最初に所有者領域へ入り、開発者の宣言としてRegistryへ掲載できる。ただし、宣言公開とSky検証済み公開を分ける。現在のDeveloper PreviewではSandbox・作者署名・公開remote接続の検証は未実装なので、自動インストールは無効のままである。SDKの匿名利用集計はPackage ID、Tool名、結果、処理時間だけを扱い、入力・出力・会話・秘密情報を送らない。詳細は[Sky Tool SDK / Rock Studio](sky-tool-sdk.md)を正本とする。
+
 ## 正本と互換境界
 
 - 製品名・画面名: `Sky`
@@ -91,3 +97,4 @@ flowchart LR
 - native内蔵カタログ正本: `systems/rock-star-os/examples/registry/`
 - native package仕様: `systems/rock-star-os/docs/TOOL-SDK.md`
 - ToB掲載・ToC Timeline・MCP接続設計: `docs/sky-mcp-architecture.md`
+- 開発者SDK・PC登録・Package・公開状態: `docs/sky-tool-sdk.md`

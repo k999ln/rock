@@ -6,6 +6,7 @@ import { McpProtocol } from './mcp.mjs';
 import {
   extractInstagramMessages,
   normalizeStripeEvent,
+  resolveInstagramBrand,
   verifyMetaSignature,
   verifyStripeSignature,
 } from './webhooks.mjs';
@@ -198,8 +199,10 @@ async function handler(req, res) {
         "SELECT * FROM social_accounts WHERE external_account_id = ? AND connection_status = 'connected'",
         message.account_external_id,
       );
-      const brandId = configuredBrand || account?.brand_id;
-      if (!brandId) throw new Error('instagram_webhook_brand_unresolved');
+      const brandId = resolveInstagramBrand(
+        configuredBrand,
+        account?.brand_id,
+      );
       results.push(
         runtime.service.ingestDm({
           brand_id: brandId,

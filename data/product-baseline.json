@@ -1,6 +1,6 @@
 {
-  "version": "1.36",
-  "decidedAt": "2026-09-13",
+  "version": "1.38",
+  "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -195,7 +195,8 @@
     "RQ33",
     "RQ34",
     "RQ35",
-    "RQ36"
+    "RQ36",
+    "RQ37"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -204,7 +205,8 @@
     "goal-driven-brand-operations",
     "sky-earnings-settlement",
     "generic-mcp-connector",
-    "csv-paid-work-pilot"
+    "csv-paid-work-pilot",
+    "sky-tool-developer-platform"
   ],
   "csvBusinessPilot": {
     "productId": "rockstar-csv-cleanup",
@@ -222,6 +224,23 @@
     "manualPaymentCountsAsVerifiedRevenue": false,
     "liveBillingEnabled": false,
     "externalMarketplaceAutomationEnabled": false
+  },
+  "skyToolDeveloperPlatform": {
+    "requested": true,
+    "status": "developer_preview_registered_and_declared_publication",
+    "studio": "app/studio/page.tsx",
+    "sdk": "toolkits/sky-tool-sdk",
+    "scaffoldCommand": "create-sky-tool init",
+    "packageSchema": "sky-tool-package/1",
+    "frontend": "copy_sdk_code_into_existing_tool",
+    "rawCodeUploaded": false,
+    "automaticPackageGeneration": true,
+    "mcpDiscoveryAndCallImplemented": true,
+    "anonymousUsageFieldsOnly": true,
+    "declaredPublicationInstallable": false,
+    "verifiedPublicationImplemented": false,
+    "productionSandboxImplemented": false,
+    "record": "docs/sky-tool-sdk.md"
   },
   "fashionBrandOperations": {
     "status": "autonomous_mock_verified",

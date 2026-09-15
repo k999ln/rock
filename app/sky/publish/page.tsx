@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import SkyWorkspace from '@/components/sky-workspace';
+import RockStudio from '@/components/rock-studio';
 
 export const metadata: Metadata = {
-  title: 'Skyにツールを掲載',
+  title: 'Rock Studio — Skyコードをツールへ追加',
   description:
-    '自動化ツールの必要情報を入力し、Skyの接続・安全確認へ申請します。',
+    'Sky SDKコードを既存ツールへ追加し、自動登録、MCP公開、匿名利用記録を有効にします。',
 };
 
 export default function SkyPublishPage() {
-  return <SkyWorkspace initialPublishOpen />;
+  return <RockStudio />;
 }

@@ -103,7 +103,7 @@ curl http://127.0.0.1:8787/health
 
 ## Skyからワンクリック接続
 
-配布版の`RockstarOS Sky接続.command`を初回に開いておけば、Skyの商品カードで「接続」を1回押すだけで、loopback session発行、MCP initialize、initialized通知、tools/listによる40操作の確認まで完了します。接続状態はそのタブのsession storageだけに保持し、解除時はlocal sessionも失効します。
+配布版の`RockstarOS Sky接続.command`を初回に開いておけば、Skyの商品カードで「接続」を1回押すだけで、loopback session発行、MCP initialize、initialized通知、tools/listによる41操作の確認まで完了します。接続状態はそのタブのsession storageだけに保持し、解除時はlocal sessionも失効します。
 
 ブラウザ接続は`FASHION_BROWSER_ORIGINS`のexact originと`127.0.0.1:8787`等のloopback Hostが両方一致する場合だけ許可します。CORSとPrivate Network Accessのpreflightに対応し、originごとに12時間以内のrandom session tokenを発行します。wildcard origin、URL内credential、cookie、永続tokenは使いません。
 
@@ -140,6 +140,6 @@ Webhook eventとeffect idempotency keyはuniqueです。Stripe署名はraw body�
 
 [`rockstaros-tool.json`](rockstaros-tool.json)が商品ID、MCP runtime、capability、Provider、approval policy、費用境界の正本です。[`sky-submission.json`](sky-submission.json)はSky掲載契約、Web Skyの`lib/catalog.ts`はready商品とTimeline表示を保持します。
 
-stdioではMCP clientがこのdirectoryの`.mcp.json`を読み、`initialize → tools/list → tools/call`で40個の操作をdiscover/callできます。`fashion.autopilot.run`は投稿計画・下書き・承認要求など内部作業だけを最大25件まで進め、投稿・DM送信・課金などの外部作用は実行しません。HTTP modeをloopback以外へbindする場合は、bearer tokenとtenant IDの両方を必須にします。RockstarOSのplatform署名鍵、Wallet送金権限、root、任意shellはこの商品へ渡しません。
+stdioではMCP clientがこのdirectoryの`.mcp.json`を読み、`initialize → tools/list → tools/call`で41個の操作をdiscover/callできます。`fashion.autopilot.run`は投稿計画・下書き・承認要求など内部作業だけを最大25件まで進め、投稿・DM送信・課金などの外部作用は実行しません。HTTP modeをloopback以外へbindする場合は、bearer tokenとtenant IDの両方を必須にします。RockstarOSのplatform署名鍵、Wallet送金権限、root、任意shellはこの商品へ渡しません。
 
 Skyの商品名は **Instagram運用・受注型ブランド管理** です。Timelineと検索欄で「Instagram運用」から直接見つけられます。account list/switch、content plan、draft/caption、approval、schedule/publish、insights sync、DM classificationを同じ商品内の独立MCP toolとして公開します。外部Providerのcredentialと実費契約は商品本体やRockstarOS月額から分離し、実アカウント接続、広告出稿、請求、返金は設定と個別承認が揃うまでfail closedです。

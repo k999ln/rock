@@ -2,7 +2,13 @@
 
 import { useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle2, Send, ShieldCheck } from 'lucide-react';
+import {
+  ArrowLeft,
+  CheckCircle2,
+  MonitorUp,
+  Send,
+  ShieldCheck,
+} from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
 import type {
   SkyConnectionType,
@@ -168,6 +174,10 @@ export default function SkyPublisherForm({
       </div>
       <div className="sky-publish-layout">
         <form className="sky-publish-form" onSubmit={submit}>
+          <Link href="/studio" className="rock-button rock-button-subtle">
+            <MonitorUp size={17} />
+            PCのコード・GitHub・OpenAPIから登録する
+          </Link>
           <fieldset>
             <legend>
               <span>1</span>何を提供するか

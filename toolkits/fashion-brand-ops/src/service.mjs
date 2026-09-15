@@ -70,6 +70,120 @@ export class FashionBrandService {
     return requiredRow(this.store.get("SELECT * FROM products WHERE id = ?", safeId(productId, "product_id")), "product_not_found");
   }
 
+  startProducer(input) {
+    const runId = safeId(input.run_id, "producer_run_id");
+    const worldview = cleanText(input.worldview, "worldview", 1200);
+    const productDesign = cleanText(input.product_design, "product_design", 1200);
+    const region = input.region?.trim() ? cleanText(input.region, "region", 80) : "日本を起点にオンライン";
+    const currencyCode = currency(input.currency || (/海外|global|international|US/i.test(region) ? "USD" : "JPY"));
+    const hasPrice = input.price_minor !== undefined && input.price_minor !== null;
+    const priceMinor = hasPrice ? Number(input.price_minor) : 0;
+    if (!Number.isSafeInteger(priceMinor) || priceMinor < 0) throw new Error("price_minor_invalid");
+    const digestInput = {
+      worldview,
+      product_design: productDesign,
+      region,
+      currency: currencyCode,
+      price_minor: hasPrice ? priceMinor : null,
+      brand_name: input.brand_name || null,
+      product_name: input.product_name || null,
+    };
+    const inputHash = sha256(digestInput);
+    const existing = entity(this.store.get("SELECT * FROM producer_runs WHERE id = ?", runId));
+    if (existing) {
+      if (existing.input_hash !== inputHash) throw new Error("producer_run_id_conflict");
+      return { idempotent_replay: true, ...existing.result };
+    }
+
+    const suffix = sha256(runId).slice(0, 24);
+    const brandName = input.brand_name?.trim()
+      ? cleanText(input.brand_name, "brand_name", 160)
+      : `New Brand ${suffix.slice(0, 6)}`;
+    const productName = input.product_name?.trim()
+      ? cleanText(input.product_name, "product_name", 200)
+      : productDesign.slice(0, 72);
+    const brandId = `brd_pro_${suffix}`;
+    const productId = `prd_pro_${suffix}`;
+    let result;
+    this.store.transaction(() => {
+      const brand = this.upsertBrand({
+        id: brandId,
+        name: brandName,
+        policy: {
+          concept: worldview,
+          worldview,
+          regions: [region],
+          made_to_order: true,
+          prohibited: ["unverified claims", "visible third-party logos", "product specification changes"],
+        },
+      });
+      const productWrite = this.upsertProduct({
+        id: productId,
+        brand_id: brand.id,
+        name: productName,
+        design: {
+          brief: productDesign,
+          made_to_order: true,
+          price_status: hasPrice ? "confirmed" : "needs_decision",
+        },
+        price_minor: priceMinor,
+        currency: currencyCode,
+        status: "draft",
+      });
+      if (productWrite.approval_required) throw new Error("producer_product_write_unexpected_approval");
+      const product = productWrite.product;
+      const market = this.analyzeMarket({ brand_id: brand.id, product_id: product.id });
+      const contentPlan = this.createContentPlan({
+        brand_id: brand.id,
+        period_start: nowIso(this.clock),
+        days: 14,
+        posts_per_week: 3,
+        objective: "qualified_dm_and_made_to_order_sales",
+        pillars: ["product_proof", "worldview", "craft", "fit_confidence", "made_to_order", "faq"],
+      });
+      const draft = this.composeSocial({
+        brand_id: brand.id,
+        product_id: product.id,
+        content_plan_id: contentPlan.id,
+        title: "Producer launch draft",
+        format: "carousel",
+        language: "ja",
+        call_to_action: "サイズ・仕様・納期はDMでご相談ください",
+      });
+      const creative = this.prepareCreative({
+        brand_id: brand.id,
+        product_id: product.id,
+        media_type: "image",
+        format: "4:5",
+      });
+      const decisionsNeeded = [
+        ...(!hasPrice ? [{ key: "price", label: "販売価格", reason: "お金に関わるためAIが確定しません" }] : []),
+        { key: "launch_date", label: "公開日", reason: "公開タイミングは本人が決めます" },
+        { key: "order_capacity", label: "受注上限", reason: "制作能力を超えない数を本人が決めます" },
+      ];
+      result = {
+        run_id: runId,
+        mode: "producer",
+        brand,
+        product,
+        market,
+        content_plan: contentPlan,
+        first_draft: draft,
+        creative,
+        ai_completed: ["target_market", "positioning", "creative_brief", "14_day_content_plan", "instagram_caption", "dm_to_order_flow"],
+        decisions_needed: decisionsNeeded,
+        approval_queue: [{ approval_id: creative.approval.approval_id, action: "creative.generate", status: "pending" }],
+        external_effects_executed: false,
+      };
+      const at = nowIso(this.clock);
+      this.store.run(
+        "INSERT INTO producer_runs(id, input_hash, brand_id, product_id, result_json, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        runId, inputHash, brand.id, product.id, json(result), at, at,
+      );
+    });
+    return { idempotent_replay: false, ...result };
+  }
+
   orderGet(orderId) {
     return requiredRow(this.store.get("SELECT * FROM orders WHERE id = ?", safeId(orderId, "order_id")), "order_not_found");
   }
@@ -824,7 +938,7 @@ export class FashionBrandService {
       const { status: providerStatus, ...providerReceipt } = receipt;
       const fullReceipt = {
         receipt_id: id("rcp"), run_id: runId, server_name: "io.rockstar-ibot/instagram-operations", version: "0.2.0",
-        package_digest: this.config.packageDigest || "52f38bca0394daa0da1df77132f2fdce3540b8b119611f793dd5a61e9bd88ff6", capability_id: CAPABILITY_BY_ACTION[approval.action] || "unknown",
+        package_digest: this.config.packageDigest || "f74ca4b50008b6a6161f8682ac8c9799327f4d1f5658c10a3cff0f762fa54919", capability_id: CAPABILITY_BY_ACTION[approval.action] || "unknown",
         grant_id: approval.id, action: approval.action, approval_id: approval.id, idempotency_key: idempotencyKey,
         input_sha256: approval.payload_digest, output_sha256: sha256(receipt), provider_status: providerStatus || "unknown", status: "completed", started_at: at, finished_at: doneAt, ...providerReceipt,
       };
