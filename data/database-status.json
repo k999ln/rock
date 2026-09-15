@@ -4,21 +4,21 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 5,
-    "tableCount": 69,
+    "tableCount": 72,
     "sourceVerifiedCount": 5,
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
     "total": 107,
     "done": 76,
-    "in_progress": 21,
-    "planned": 10,
+    "in_progress": 22,
+    "planned": 9,
     "blocked": 0,
     "milestone": "OS Platform Core v1の登録・承認・Wallet・更新境界",
     "nextAction": "最短ローンチ経路としてWEB01を優先する。現在のWeb/PWA・D1差分を一つの検証済みcommitへ固定してGitHubへ保存し、ownerが本人限定Sitesへの最新版同期を明示承認した後、同じSHAを配備して認証後の主要導線・API・security header・migrationをreadbackする。一般公開、QEMU配布、Android実機、本番金融は別gateのまま維持する。"
   },
   "webSchema": {
-    "tableCount": 27,
+    "tableCount": 30,
     "tables": [
       "automation_fund_memberships",
       "automation_funds",
@@ -39,6 +39,9 @@
       "marketplace_receipts",
       "marketplace_reservations",
       "mercari_revenue_plans",
+      "operator_audit_events",
+      "operator_device_commands",
+      "operator_managed_devices",
       "sky_connections",
       "sky_developer_tokens",
       "sky_tool_events",
@@ -48,8 +51,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 13,
-    "latestMigration": "0012_marketplace_relation_guards.sql",
+    "migrationCount": 14,
+    "latestMigration": "0013_operator-device-control.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -116,6 +119,16 @@
           "mercari_revenue_plans"
         ],
         "tableCount": 3
+      },
+      {
+        "id": "operator",
+        "label": "運営端末管理・緊急命令監査",
+        "tables": [
+          "operator_audit_events",
+          "operator_device_commands",
+          "operator_managed_devices"
+        ],
+        "tableCount": 3
       }
     ]
   },
@@ -149,6 +162,9 @@
         "marketplace_receipts",
         "marketplace_reservations",
         "mercari_revenue_plans",
+        "operator_audit_events",
+        "operator_device_commands",
+        "operator_managed_devices",
         "sky_connections",
         "sky_developer_tokens",
         "sky_tool_events",
@@ -158,8 +174,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0012_marketplace_relation_guards.sql",
-      "tableCount": 27,
+      "expectedAppliedThrough": "0013_operator-device-control.sql",
+      "tableCount": 30,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / owner-only Sites",

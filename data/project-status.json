@@ -669,11 +669,17 @@
     {
       "id": "SYS13",
       "title": "緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": ["SYS12", "OS11", "RLS02"],
       "evidence": [
         "data/device-emergency-access-policy.json",
-        "docs/security-incident-response.md"
+        "docs/security-incident-response.md",
+        "app/operator/page.tsx",
+        "components/operator-console.tsx",
+        "app/api/operator/devices/route.ts",
+        "lib/operator-control.ts",
+        "drizzle/0013_operator-device-control.sql",
+        "tests/operator-control.test.mjs"
       ]
     },
     {

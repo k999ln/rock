@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-15追記（v1.54）: 運営専用の`/operator`管理画面、本人認証と固定operator IDを要求するAPI、登録端末一覧、緊急命令キュー、15分保守session、30分取消可能な初期化予約、追記監査をWeb/D1へ実装する。管理画面から未検証端末、許可外command、任意rootを実行できない。Android端末側serviceとhardware credentialは未実装のため、命令を実端末へ配信済みとは表示しない。RQ46を追加する。
+
 2026-09-15追記（v1.53）: 紛失・侵害・悪意あるTool等の緊急時は、事前登録された端末に対して認定運営担当者1名が本人のその場の承認なしで保護を開始できる。操作は端末ロック、紛失mode、Sky／Zema停止、session失効、OTA停止、通信隔離、sanitized診断、最大15分の限定保守sessionへ限定する。常設root／任意shell、私的内容閲覧、Wallet操作、秘密鍵取得、マイク／カメラ起動は禁止し、端末側の署名・scope・期限検査、hardware operator credential、追記監査、事後通知を必須にする。設計承認とAndroid service／実機受入を分離し、RQ45を追加する。
 
 2026-09-15追記（v1.52）: 現在の共通製品版を`avocadoOS 1.0`、公開前の段階表示を`avocadoOS 1.0 Developer Preview`で固定する。製品版は一つの正本から表示し、互換性を維持する機能改善は`1.5`のようなminor更新、Platform APIや保存形式の非互換変更はmigration・rollback受入を必須にして`2.0`のようなmajor更新とする。機種別Device Support Packageは対応Core版の範囲を宣言し、版番号だけで完成・公開可能とは扱わない。RQ44を追加する。
@@ -454,9 +456,17 @@ Wallet基本台帳はowner別の追記型とし、既存行の書換えではな
 
 緊急modeでも任意shell／root、写真・会話・原稿等の私的内容閲覧、Wallet送金・承認、秘密鍵・credential抽出、マイク／カメラ起動、未署名code導入、Verified Boot／SELinux無効化を許可しない。LLM、Sky Tool、MCP、外部Providerも緊急modeを開始できない。操作は端末側と運営側へ追記記録し、端末へ実行中表示、終了後に利用者へ通知する。初期化要求には最低30分の取消猶予を設ける。
 
-正本は[緊急アクセスとインシデント対応](security-incident-response.md)および`data/device-emergency-access-policy.json`とする。現在は設計承認段階であり、Android service、production operator credential、Pixel 10実機、侵入試験、復旧演習は未完了である。
+正本は[緊急アクセスとインシデント対応](security-incident-response.md)および`data/device-emergency-access-policy.json`とする。Web管理画面、本人認証、命令キュー、追記監査は実装済みである。Android service、production operator credential、Pixel 10実機、侵入試験、復旧演習は未完了であり、現段階では管理画面の命令を実端末へ配信・実行しない。
 
-## 1.0への8原則の適用（RQ01〜RQ45を維持）
+## RQ46 運営専用の端末管理画面と永続命令キューを実装する
+
+運営担当者は`/operator`から、登録端末のモデル、OS版、hardware identity確認、接続状態、最終接続、命令・監査履歴を確認する。操作時は事故IDと理由を必須にし、RQ45の許可済みcommandだけを選択できる。管理画面はスマートフォン幅でも横へはみ出さず、Homeへの直接導線を持つ。
+
+APIは通常の本人認証に加えて、環境へ事前設定された単一の`ROCK_OPERATOR_USER_ID`と一致する利用者だけを受け付ける。未設定、別利用者、別origin、未登録端末、未検証hardware identity、期限切れ、同じcommand IDの異内容、許可外commandを拒否する。命令と事故記録はWeb D1へ保存し、監査eventの更新・削除をdatabase triggerで拒否する。
+
+Web管理面と命令キューの実装は、端末への実到達を意味しない。Android system service、device enrollment、hardware-backed operator signature、端末側scope／nonce／期限検査が完成するまで`deviceAgent=not_implemented`とし、UIは命令を実端末へ送信済みと表示しない。
+
+## 1.0への8原則の適用（RQ01〜RQ46を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 

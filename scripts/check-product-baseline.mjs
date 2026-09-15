@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 45 },
+    { length: 46 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ45の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ46の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -191,7 +191,7 @@ export function validateBaseline(
       'single-operator-emergency-device-protection',
     ) &&
       data.deviceEmergencyAccess?.status ===
-        'approved_design_not_implemented' &&
+        'management_console_and_command_queue_implemented_android_agent_missing' &&
       data.deviceEmergencyAccess?.singleOperatorActivation === true &&
       data.deviceEmergencyAccess?.userApprovalRequiredAtActivation === false &&
       data.deviceEmergencyAccess?.preEnrollmentRequired === true &&
@@ -212,6 +212,14 @@ export function validateBaseline(
       data.deviceEmergencyAccess?.appendOnlyAuditRequired === true &&
       data.deviceEmergencyAccess?.postIncidentUserNotificationRequired ===
         true &&
+      data.deviceEmergencyAccess?.operatorConsoleRoute === '/operator' &&
+      data.deviceEmergencyAccess?.operatorApiRoute ===
+        '/api/operator/devices' &&
+      data.deviceEmergencyAccess?.operatorConsoleImplemented === true &&
+      data.deviceEmergencyAccess?.authenticatedOperatorApiImplemented ===
+        true &&
+      data.deviceEmergencyAccess?.persistentCommandQueueImplemented === true &&
+      data.deviceEmergencyAccess?.appendOnlyAuditImplemented === true &&
       data.deviceEmergencyAccess?.androidServiceImplemented === false &&
       data.deviceEmergencyAccess?.productionCredentialProvisioned === false &&
       data.deviceEmergencyAccess?.physicalDeviceVerified === false &&
@@ -231,7 +239,8 @@ export function validateBaseline(
   );
   requireValue(
     emergencyPolicy.schema === 'dev.rock-device-emergency-access/1' &&
-      emergencyPolicy.status === 'approved_design_not_implemented' &&
+    emergencyPolicy.status ===
+      'management_console_and_command_queue_implemented_android_agent_missing' &&
       emergencyPolicy.activation?.singleOperatorAllowed === true &&
       emergencyPolicy.activation?.userApprovalRequiredAtActivation === false &&
       emergencyPolicy.activation?.maximumSessionSeconds === 900 &&
@@ -246,6 +255,10 @@ export function validateBaseline(
       emergencyPolicy.trustBoundary?.deviceEnforcesScopeExpiryAndSignature ===
         true &&
       emergencyPolicy.trustBoundary?.llmMayActivateEmergencyAccess === false &&
+      emergencyPolicy.implementation?.operatorConsoleImplemented === true &&
+      emergencyPolicy.implementation?.persistentCommandQueueImplemented ===
+        true &&
+      emergencyPolicy.implementation?.appendOnlyAuditImplemented === true &&
       emergencyPolicy.implementation?.androidServiceImplemented === false &&
       emergencyPolicy.implementation?.physicalDeviceVerified === false,
     '緊急access policyの単独初動・端末側強制・禁止権限・未実装境界を維持してください',
@@ -757,6 +770,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ45、正式名avocadoOS／内部識別子dev.rock、avocadoOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、Android OS Platform Core、物理Android版ローカルLLM、avocadoOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ46、正式名avocadoOS／内部識別子dev.rock、avocadoOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、avocadoOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

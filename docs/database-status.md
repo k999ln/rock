@@ -6,17 +6,17 @@
 
 ## 全体
 
-- データ境界: 5、table: 69
+- データ境界: 5、table: 72
 - source inventory: 5/5確認済み
 - current production readback: 0/5
-- 作業進捗: 107 task中 76 done、21 in progress、10 planned、0 blocked
+- 作業進捗: 107 task中 76 done、22 in progress、9 planned、0 blocked
 - 現在milestone: OS Platform Core v1の登録・承認・Wallet・更新境界
 
 ## 保存境界と配備状態
 
 | 境界 | 責任 | table | source | 配備状態 | 本番適用済み | current readback |
 | --- | --- | ---: | --- | --- | --- | --- |
-| Web D1 | Webサービス状態 | 27 | VERIFIED | SOURCE_AHEAD | 未確認 | 未確認 |
+| Web D1 | Webサービス状態 | 30 | VERIFIED | SOURCE_AHEAD | 未確認 | 未確認 |
 | Sky Billing D1 | 収益精算・請求・受取Wallet | 13 | VERIFIED | DOCUMENTED_NOT_READ_BACK | 0004_rock_settlement_wallet.sql | 未確認 |
 | OS Wallet / Spend SQLite | 端末内Wallet・支出承認・PAPER position | 17 | VERIFIED | QEMU_SCOPED | 未確認 | 未確認 |
 | Android Work Engine SQLite | Android work・artifact・run・event | 6 | VERIFIED | EMULATOR_SCOPED | 未確認 | 未確認 |
@@ -24,8 +24,8 @@
 
 ## Web D1
 
-- expected latest migration: 0012_marketplace_relation_guards.sql
-- migration files: 13
+- expected latest migration: 0013_operator-device-control.sql
+- migration files: 14
 - accidental duplicate: 0
 - published convergence definitions: 6
 - Marketplace relation guards: 8
@@ -37,12 +37,13 @@
 | Marketplace | 7 | marketplace_approvals, marketplace_assets, marketplace_events, marketplace_positions, marketplace_proposals, marketplace_receipts, marketplace_reservations |
 | CSV業務 | 4 | csv_billing_accounts, csv_job_events, csv_jobs, csv_monthly_fees |
 | 自動化ファンド・事業補助 | 3 | automation_fund_memberships, automation_funds, mercari_revenue_plans |
+| 運営端末管理・緊急命令監査 | 3 | operator_audit_events, operator_device_commands, operator_managed_devices |
 
 ## 境界別の全table
 
-<details><summary>Web D1: 27 table</summary>
+<details><summary>Web D1: 30 table</summary>
 
-`automation_fund_memberships`、`automation_funds`、`book_records`、`csv_billing_accounts`、`csv_job_events`、`csv_jobs`、`csv_monthly_fees`、`devices`、`fund_plans`、`job_events`、`jobs`、`marketplace_approvals`、`marketplace_assets`、`marketplace_events`、`marketplace_positions`、`marketplace_proposals`、`marketplace_receipts`、`marketplace_reservations`、`mercari_revenue_plans`、`sky_connections`、`sky_developer_tokens`、`sky_tool_events`、`sky_tool_packages`、`sky_tool_submissions`、`tool_controls`、`tool_runs`、`work_jobs`
+`automation_fund_memberships`、`automation_funds`、`book_records`、`csv_billing_accounts`、`csv_job_events`、`csv_jobs`、`csv_monthly_fees`、`devices`、`fund_plans`、`job_events`、`jobs`、`marketplace_approvals`、`marketplace_assets`、`marketplace_events`、`marketplace_positions`、`marketplace_proposals`、`marketplace_receipts`、`marketplace_reservations`、`mercari_revenue_plans`、`operator_audit_events`、`operator_device_commands`、`operator_managed_devices`、`sky_connections`、`sky_developer_tokens`、`sky_tool_events`、`sky_tool_packages`、`sky_tool_submissions`、`tool_controls`、`tool_runs`、`work_jobs`
 
 次の確認: owner-scoped read-only accessでmigration、件数、孤立関係、backup状態を確認する
 

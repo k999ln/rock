@@ -50,6 +50,11 @@ function webDomains(tables) {
       matches: (name) =>
         name === 'mercari_revenue_plans' || name.startsWith('automation_'),
     },
+    {
+      id: 'operator',
+      label: '運営端末管理・緊急命令監査',
+      matches: (name) => name.startsWith('operator_'),
+    },
   ];
   const groups = definitions.map(({ id, label }) => ({
     id,

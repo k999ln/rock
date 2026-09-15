@@ -1,5 +1,13 @@
 # avocadoOS — 事業・設計・進捗
 
+## 2026-09-15 — 運営専用の端末管理画面と命令キューを実装
+
+`/operator`へ運営専用画面を追加し、登録端末一覧、online状態、hardware trust、事故ID・理由、9種類の緊急操作、命令状態、取消、監査件数をスマートフォン対応の画面で扱えるようにした。APIは通常の本人認証と同一originに加え、環境の`ROCK_OPERATOR_USER_ID`と一致する運営1名だけを許可する。
+
+Web D1へ端末、命令、監査の3tableを追加した。未検証端末、任意root、同じIDの異なる命令、許可外操作を拒否し、15分保守sessionと30分取消可能な初期化予約を固定した。監査eventの更新・削除はdatabase triggerで拒否する。
+
+管理画面と永続命令キューは実装済みだが、Android端末側service、device enrollment、hardware operator credential、端末側の署名・nonce・scope検査は未実装である。したがって管理画面は`deviceAgent=not_implemented`を表示し、命令を実端末へ送信済みとは表示しない。
+
 ## 2026-09-15 — 運営1名による緊急保護accessを設計へ固定
 
 紛失・侵害等の緊急時は、事前登録された端末に対して認定運営担当者1名が本人のその場の承認なしで保護を開始できる。ロック、紛失mode、Sky／Zema停止、session失効、OTA停止、通信隔離、sanitized診断、最大15分の限定保守sessionへ範囲を固定した。
@@ -545,7 +553,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SYS10 | Web第三者依存のlock hash・47要review componentのPURL一覧を公開gateへ固定 | 完了 | [記録](package-lock.json) · [記録](data/web-third-party-license-audit.json) · [記録](data/release-readiness.json) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
 | SYS11 | Vite生成chunkのnpm componentをbuild時に記録しlicense監査へ照合 | 完了 | [記録](vite.config.ts) · [記録](scripts/web-bundle-inventory.mjs) · [記録](scripts/check-web-bundle-inventory.mjs) · [記録](tests/web-bundle-inventory.test.mjs) · [記録](package.json) · [記録](data/release-readiness.json) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
 | SYS12 | 運営1名で開始できる緊急保護・限定保守accessの脅威モデルと端末側制御契約を固定 | 完了 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](docs/product-baseline.md) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) |
-| SYS13 | 緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験 | 未着手 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) |
+| SYS13 | 緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験 | 進行中 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](app/operator/page.tsx) · [記録](components/operator-console.tsx) · [記録](app/api/operator/devices/route.ts) · [記録](lib/operator-control.ts) · [記録](drizzle/0013_operator-device-control.sql) · [記録](tests/operator-control.test.mjs) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
