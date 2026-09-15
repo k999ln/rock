@@ -5,8 +5,8 @@ import previewData from '../../../data/rockstaros-preview.json';
 import styles from '../preview.module.css';
 
 export const metadata: Metadata = {
-  title: '導入・最初の成果・復旧 | RockstarOS 1.0',
-  description: 'Macの仮想端末でRockstarOSを導入し、Skyのサンプル実行、正常終了、再開、バックアップと復元を行う手順。',
+  title: '導入・最初の成果・復旧 | avocadoOS 1.0',
+  description: 'Macの仮想端末でavocadoOSを導入し、Skyのサンプル実行、正常終了、再開、バックアップと復元を行う手順。',
 };
 
 const sourceRoot = `https://github.com/k999ln/rock/blob/${previewData.guideSourceCommit}/docs`;
@@ -16,7 +16,7 @@ const releaseNotes = `${sourceRoot}/preview-release-notes.md`;
 
 export default function PreviewGuide() {
   return <main className={styles.page}>
-    <header className={styles.header}><Link href="/" className={styles.brand} aria-label="ホームへ戻る">RockstarOS<span>1.0</span></Link><Link href="/rockstaros">開発版の案内へ</Link></header>
+    <header className={styles.header}><Link href="/" className={styles.brand} aria-label="ホームへ戻る">avocadoOS<span>1.0</span></Link><Link href="/rockstaros">開発版の案内へ</Link></header>
     <article className={styles.guide}>
       <p className={styles.eyebrow}>DEVELOPER PREVIEW · はじめに</p>
       <h1>導入から、最初の成果。<br />そして、また続けるまで。</h1>
@@ -30,6 +30,6 @@ export default function PreviewGuide() {
       <section id="recovery"><h2>06 / 停止済みの状態を保存・復元する</h2><p>OSを正常終了してからbackupを実行し、新しい保存先へ出力します。稼働中のディスクやハッシュが違うファイルは受け付けません。</p><pre><code>{'python3 preview.py backup --directory "$ROCK_PREVIEW_ROOT" \\\n  --output "$HOME/Library/RockstarOS/backup-1"\npython3 preview.py restore --directory "$ROCK_PREVIEW_ROOT" --name recovered-1'}</code></pre><p>Game構成では、停止したOSの3つのディスクと独立したWallet・Game・接続台帳を一組で保存します。復元は同じ所有VMの新しい端末名へ行い、元の端末は再起動を拒否されます。保存後に状態が進んでいれば、古い状態へ巻き戻せません。</p><p>復元が中断したときは、diagnoseでRESTORE_PENDINGと復元名を確かめ、同じbackup・復元名でrestoreを再実行します。両方の完了を確認するまで起動できません。9abf78a版の配布候補の内部試験で、OSのコピー中の実中断、同じ要求での再開、元端末の起動拒否、復元先の保存成果と台帳を確認しました。</p><p>hostへ書き出したbackupは全構成要素の保全用コピーです。別VMへの再投入は未対応で、VM削除後に新規環境へ復元する入口はありません。backupは暗号化されていません。配布版に同梱された完全版ガイドを確認してください。</p></section>
       <section id="help"><h2>07 / つまずいたときと削除</h2><pre><code>{'python3 preview.py diagnose --directory "$ROCK_PREVIEW_ROOT"'}</code></pre><p>署名・ハッシュ不一致なら入手経路を照合します。ポートが使用中なら既存の表示を確認し、他のアプリを勝手に停止しません。保存状態が不完全なら初期化せず、正常終了とbackupの記録を確認します。</p><p>削除前には必要なbackupを別のhost保存先へ出し、すべての端末を正常終了します。remove --delete-dataは、この導入が所有するVM内のOS・保存データ・内部backupを削除します。削除範囲と残るhostファイルは完全版ガイドで確認してください。</p><div className={styles.guideLinks}><a href={sourceGuide}>完全版の導入・復旧ガイド ↗</a><a href={releaseNotes}>リリースノート・既知制限 ↗</a><a href={legalNotice}>利用・配布条件の確認事項 ↗</a></div></section>
     </article>
-    <footer className={styles.footer}><span>RockstarOS 1.0 Developer Preview</span><Link href="/rockstaros">開発版の案内へ戻る ↗</Link></footer>
+    <footer className={styles.footer}><span>avocadoOS 1.0 Developer Preview</span><Link href="/rockstaros">開発版の案内へ戻る ↗</Link></footer>
   </main>;
 }

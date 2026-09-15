@@ -62,7 +62,7 @@ void test('module-styled home and settings keep their stylesheet bindings', () =
   assert.match(settings, /<WorkspaceShell title="設定" hideTopActions>/);
 });
 
-void test('primary apps share the RockstarOS black, paper and acid-green system', () => {
+void test('primary apps share the avocadoOS black, paper and acid-green system', () => {
   const homeStyles = readFileSync(
     resolve(root, 'components/home-screen.module.css'),
     'utf8',
@@ -79,7 +79,7 @@ void test('primary apps share the RockstarOS black, paper and acid-green system'
     resolve(root, 'components/sky-workspace.tsx'),
     'utf8',
   );
-  assert.match(workspace, /RockstarOS 1\.0 — unified app surfaces/);
+  assert.match(workspace, /avocadoOS 1\.0 — unified app surfaces/);
   assert.match(homeStyles, /\.sky,[\s\S]*\.settings \{[\s\S]*#c8ff2e/);
   assert.match(csvStyles, /\.primary \{[\s\S]*#c8ff2e/);
   assert.match(settingsStyles, /\.itemIcon \{[\s\S]*#c8ff2e/);

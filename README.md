@@ -1,11 +1,11 @@
-# RockstarOS — 自動化を接続・実行・管理するOS
+# avocadoOS — 自動化を接続・実行・管理するOS
 
-RockstarOSは、AI自動化ToolをSkyから接続し、利用者が確認した権限・実行先・費用上限で動かし、結果、費用、収益、復旧状態を一つのOSで管理する製品です。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ42、進捗の正本は [data/project-status.json](data/project-status.json) です。
+avocadoOSは、AI自動化ToolをSkyから接続し、利用者が確認した権限・実行先・費用上限で動かし、結果、費用、収益、復旧状態を一つのOSで管理する製品です。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ43、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。
 
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-15 / 103 task中73 done・21 in progress・9 planned
+更新日: 2026-09-15 / 104 task中74 done・21 in progress・9 planned
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                           |
@@ -125,7 +125,7 @@ npm run release:check
 
 現在のWeb/Skyローンチ候補、起動・設定・監視・復旧手順は[OSバックエンド・ローンチ手順](docs/backend-launch-20260912.md)を参照してください。
 
-多機種対応は、**共通RockstarOS Core＋機種／SKU別Device Support Package**で進めます。提供区分は完全なOS image、Android GSI実験版、既存OS上のclient、非対応を混同しません。最初の物理対象は所有済みPixel 10／`frankel`に決定し、Pixel 7はその受入後まで保留します。BlackBerryは機種別調査、iPhone／iPadはOS置換ではなくclientです。[多機種対応設計](docs/device-support-architecture.md)／[機械可読の対応台帳](data/device-support-matrix.json)。
+多機種対応は、**共通avocadoOS Core＋機種／SKU別Device Support Package**で進めます。提供区分は完全なOS image、Android GSI実験版、既存OS上のclient、非対応を混同しません。最初の物理対象は所有済みPixel 10／`frankel`に決定し、Pixel 7はその受入後まで保留します。BlackBerryは機種別調査、iPhone／iPadはOS置換ではなくclientです。[多機種対応設計](docs/device-support-architecture.md)／[機械可読の対応台帳](data/device-support-matrix.json)。
 
 スマホ実機版の開発を開始しました。最初の対象はPixel 10／`frankel`ですが、現在はソース統合準備で、書込み可能なOSは未生成です。所有端末のproductとOEM unlocking可否を読取り専用で確認するまでfull OS buildとflashは停止し、build入口は64 GiB RAM／400 GiB空きとlock由来sourceの再検証を要求します。[現在の開発状態](docs/current-state-20260911.md)／[ビルド環境・実装・次の手順](docs/phone-preview-20260911.md)。
 
@@ -133,7 +133,7 @@ npm run release:check
 
 tob側の自動化ツールを商品として管理するSkyと、自動化で得たお金を管理するWalletに特化したOSを開発します。Skyは単なるツール一覧ではなく、**探す→権限・料金を確認→端末/PC/Cloudへ実行→停止→結果と記録を受け取る**までを一か所につなぎます。[Skyの図・優位性・現在の収録ツール](docs/sky.md)を参照してください。
 
-**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ42）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定です。Skyの8.88 USDは先払い月額ではなく、検証済み自動化収益からだけ回収する月間上限です。
+**製品の正本は [製品ベース](docs/product-baseline.md)（RQ01〜RQ43）です。** [現在の開発状態](docs/current-state-20260911.md)、[次の再開指示](docs/prompts/rock-current-next-20260911.md)、[プロンプト作成規約](docs/prompt-playbook.md)、[OS受入報告の雛形](docs/templates/os-acceptance-report.md)を入口にしてください。b7/rc2は限定受入済み、スマホ版はソース準備段階です。手数料0はATMの自社手数料、ゲーム料金は未定です。Skyの8.88 USDは先払い月額ではなく、検証済み自動化収益からだけ回収する月間上限です。
 
 Home以外の全画面には、現在の操作を迷子にせず直接Homeへ戻れる導線を常設しています。モバイルZemaは共通ヘッダーを省くため、Zema上部に専用のHomeボタンを表示します。
 
@@ -143,7 +143,7 @@ Home以外の全画面には、現在の操作を迷子にせず直接Homeへ戻
 
 SkyのWallet画面には、検証済み自動化収益の精算状況を追加しました。独立WorkerがExecution Receipt、Provider入金参照、証拠hashを持つ署名済みEarning Receiptだけを受け、実費の後から月最大888 USD centsを回収し、残額の払出し指図を作ります。売上0時の請求、未達分の債務化・翌月繰越、カード定期請求はありません。先払いCheckout APIは停止済みです。販売・決済・払出しProviderのsandbox接続と本番条件は未完了です。[実装とProvider接続手順](docs/sky-billing.md)。
 
-[8原則に基づくRockstarOS 1.0設計](docs/rockstaros-1.0-strategy.md)を追加しました。現ベースを維持し、一つの商品で実行・成果・費用・復旧まで確認できる体験を検証します。初期対象の文章系個人事業主と既存引用整理は検証仮説。配布/実用の優先順位、試用指標、CM導線、責任分担を具体化し、未実証の需要や本番利用可能性は主張しません。
+[8原則に基づくavocadoOS 1.0設計](docs/rockstaros-1.0-strategy.md)を追加しました。現ベースを維持し、一つの商品で実行・成果・費用・復旧まで確認できる体験を検証します。初期対象の文章系個人事業主と既存引用整理は検証仮説。配布/実用の優先順位、試用指標、CM導線、責任分担を具体化し、未実証の需要や本番利用可能性は主張しません。
 
 **[設計v1.1](docs/os-sky-wallet-game-design.md)の実装は承認済みです。** [承認範囲](docs/execution-approval-20260909.md)に従い、専用branchでnativeと設計を統合しています。公開・実機・MetaMask実資金は条件付き了承を保持し、技術的な準備を検証します。達成演出は見送り、市場案は検討のみです。
 
@@ -163,7 +163,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の画面を「OSをインストール」導線へ簡素化しました。同じページにSky Tool SDKの最小コード例と本人限定Siteの`/studio`導線を置いています。[導入・初回実行・復旧ガイド](docs/preview-installation-ja.md)と[既知制限](docs/preview-release-notes.md)は`/rockstaros/guide`から確認できます。ダウンロード一般公開は正式署名・許諾・最終配布受入と公開承認待ちです。
 
-正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。旧ローカル作業名は `gg`。現在の実装再開先は `codex/rockstaros-launch-candidate-20260910` で、SSD上の旧checkoutを最新と仮定しません。製品は「Rock star / avocadomini」の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
+正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。旧ローカル作業名は `gg`。現在の実装再開先は `codex/rockstaros-launch-candidate-20260910` で、SSD上の旧checkoutを最新と仮定しません。製品は`avocadoOS`の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
 
 **CMの現在状態（2026-09-11）:** 最新の回答は制作途中です。完成・選定・内容照合・掲載が残ります。9月10日の完成済みという回答は過去の[履歴](docs/release-followup-20260910.md)として保持します。「追加1〜2日」はLICENSE／Sitesの待ちを除くQEMU版仕上げの条件付き概算で、確定公開日ではありません。[完了範囲・見積もり・残件の詳細](docs/release-followup-20260910.md)。
 
@@ -175,11 +175,11 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 
 <details>
 <!-- project-details-summary:start -->
-<summary>103 taskと段階gateの詳細を開く</summary>
+<summary>104 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-15 / OS Platform Core v1の登録・承認・Wallet・更新境界 / 完了 73/103件
+最終更新: 2026-09-15 / OS Platform Core v1の登録・承認・Wallet・更新境界 / 完了 74/104件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -201,7 +201,8 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | SKY16 | SkyのTool選択と自然文依頼をZemaへ一回引き継ぎ、job状態を即時同期 | 完了 | [記録](lib/sky-zema-handoff.ts) · [記録](lib/operations-client.ts) · [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/chat-live-progress.tsx) · [記録](tests/sky-zema-handoff.test.mjs) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/sky.md) |
 | WEB02 | Developer Preview紹介をOSインストールとSky開発者コード中心の一画面へ再設計 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) |
 | WEB03 | Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](components/rock-studio.tsx) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
-| WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
+| WEB04 | avocadoOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
+| BRD01 | 正式製品名をavocadoOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |
 | WLT02 | 本人別の残高・売上・経費・取消履歴をD1へ保存するWallet専用APIと操作画面を実装 | 完了 | [記録](app/api/wallet/route.ts) · [記録](components/wallet-workspace.tsx) · [記録](lib/operations.ts) · [記録](tests/wallet-backend.test.mjs) |
 | WLT03 | Wallet／ファンド会社を交換可能な外部Providerとして受ける責任境界とadapter契約を固定 | 完了 | [記録](docs/external-wallet-fund-provider-boundary-20260913.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) · [記録](docs/validation.md) |
@@ -276,7 +277,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | LCH08 | ローカルOSバックエンドの安全終了・ヘルスチェック・再起動時のreceipt復元を検証 | 完了 | [記録](docs/backend-launch-20260912.md) · [記録](docs/evidence/launch/backend-rc3-local-20260912.json) · [記録](systems/rock-star-os/scripts/verify-backend-launch.py) · [記録](systems/rock-star-os/tests/test_hub.py) · [記録](systems/rock-star-os/tests/test_hub_server.py) |
-| FB01 | Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合 | 完了 | [記録](docs/fashion-brand-ops-integration.md) |
+| FB01 | Instagram運用・受注型ブランド管理をavocadoOS Hub商品とMCPへ統合 | 完了 | [記録](docs/fashion-brand-ops-integration.md) |
 | FB02 | 売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 | FB03 | DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 | FB04 | 入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理 | 完了 | [記録](toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
@@ -414,11 +415,11 @@ Product Hunt APIは商用利用条件の確認前のため未接続。サービ�
 
 ## 配布条件
 
-GitHubの `rock` は公開リポジトリです。Rock star独自コードの再利用ライセンスは未選定であり、ソースを閲覧できることとOSSとしての再利用許諾は別です。カタログで紹介するOSSは各公式ライセンスに従い、モデルの重みは個別に確認します。Mr.から取り込んだ4ファイルは `vendor/mr/LICENSE` のMIT条件で同梱しています。PCパックのRock starアダプターとサンプルも同じMIT条件で配布します。認証情報や過去の案件データは含めていません。
+GitHubの `rock` は公開リポジトリです。avocadoOS独自コードの再利用ライセンスは未選定であり、ソースを閲覧できることとOSSとしての再利用許諾は別です。カタログで紹介するOSSは各公式ライセンスに従い、モデルの重みは個別に確認します。Mr.から取り込んだ4ファイルは `vendor/mr/LICENSE` のMIT条件で同梱しています。PCパックのavocadoOSアダプターとサンプルも同じMIT条件で配布します。認証情報や過去の案件データは含めていません。
 
 ## Sky商品: Instagram運用・受注型ブランド管理
 
-RockstarOS SkyのTimelineと検索欄から「Instagram運用」で見つけられる商品を追加しました。実装は[`toolkits/fashion-brand-ops`](toolkits/fashion-brand-ops)、統合境界と検証範囲は[`docs/fashion-brand-ops-integration.md`](docs/fashion-brand-ops-integration.md)です。
+avocadoOS SkyのTimelineと検索欄から「Instagram運用」で見つけられる商品を追加しました。実装は[`toolkits/fashion-brand-ops`](toolkits/fashion-brand-ops)、統合境界と検証範囲は[`docs/fashion-brand-ops-integration.md`](docs/fashion-brand-ops-integration.md)です。
 
 改善版Skyでは、上部の「ブランド運営役」または「Instagramの広告からDM受注まで進めて」のような依頼からこの商品を開けます。ダークな役割フィードで実行場所を確認し、商品画面から38 MCP操作、Campaign Autopilot、Sales Concierge、Production Cockpit、approval gateの状態へ進めます。Sky受付の範囲と未実装のMemoryは[`docs/sky-assistant-and-memory.md`](docs/sky-assistant-and-memory.md)に記録しています。
 

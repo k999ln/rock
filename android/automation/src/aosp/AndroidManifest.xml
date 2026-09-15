@@ -7,7 +7,7 @@
     <uses-permission android:name="dev.rock.permission.MANAGE_PLATFORM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <queries><package android:name="dev.rock.tools.article" /><package android:name="com.localactionassistant" /></queries>
-    <application android:name=".RockApplication" android:label="Rock star · OS prototype" android:allowBackup="false" android:usesCleartextTraffic="false" android:theme="@android:style/Theme.Material.Light.NoActionBar">
+    <application android:name=".RockApplication" android:label="avocadoOS prototype" android:allowBackup="false" android:usesCleartextTraffic="false" android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
         </activity>

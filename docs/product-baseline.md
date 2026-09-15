@@ -1,4 +1,6 @@
-# Rock star OS — 確定した製品ベース
+# avocadoOS — 確定した製品ベース
+
+2026-09-15追記（v1.51）: 利用者向けの正式製品名を`avocadoOS`へ変更する。変更しにくい内部識別子は既存の`dev.rock`で固定し、Android package／permission、署名境界、保存schema、`rockstaros-*`識別子、`@rockstaros` package scope、URL `/rockstaros`、既存artifact名を互換名として維持する。新しい画面、metadata、通知、診断出力の現在名は`avocadoOS`とする。`RockstarOS`は旧表示名として読み、過去の証拠と配布物は改変しない。RQ43を追加する。
 
 2026-09-15追記（v1.50）: Skyで選んだToolと自然文の依頼をZemaへ一回だけ引き継ぎ、Zemaで入力確認、実行、ライブ状態、結果、履歴を連続して扱う。依頼本文はURL、D1、server logへ新規保存せず、同一tabのsession storageへ最大2,000文字・10分だけ保持し、対象Toolが受け取ると削除する。jobの受付、開始、完了、失敗は同一画面ではbrowser eventで即時反映し、本人別D1 jobを3秒／15秒の再照合で補完する。専用画面を持つCSV、Mercari、Market等もZemaに担当カードを表示してから実行面へ進み、既存のreceiptと安全gateを迂回しない。
 
@@ -424,7 +426,15 @@ Wallet基本台帳はowner別の追記型とし、既存行の書換えではな
 
 更新は同じcomponent identity、同じ署名、Platform API互換、保存schema互換、新しいversionを必須にする。rollbackはcache済みの古い互換versionだけを許す。2026-09-15時点はcore、AIDL、Android broker／本人確認画面、source SELinux policy、契約とhost testを実装した段階で、Android/AOSP native build、SELinux enforcing boot、production key署名、OTA rollbackと実機受入は未実行である。詳細は [OS Platform Core v1](platform-core.md) を参照する。
 
-## 1.0への8原則の適用（RQ01〜RQ42を維持）
+## RQ43 正式製品名をavocadoOS、内部識別子をdev.rockで固定する
+
+利用者向けの正式製品名と新規表示は **avocadoOS** とし、共通release名は **avocadoOS 1.0** とする。既存の`RockstarOS`は旧表示名であり、現在の画面、PWA manifest、metadata、Androidの表示ラベル、通知、診断出力では使わない。
+
+変更しにくい内部識別子は **`dev.rock`** で固定する。既存アプリ、署名、権限、保存済みデータ、外部連携、ブックマーク、配布証拠を壊さないため、Android package／permission、`org.rockstar` component ID、`rockstaros-*` schema／storage key、`@rockstaros` package scope、URL `/rockstaros`、既存artifact名は互換識別子として維持する。これらを新しい表示名へ一括renameしない。
+
+過去の文書、hash、署名済みmanifest、配布archive、受入証拠に記録された`RockstarOS`は履歴として改変しない。名称変更は新しい署名鍵、production release、実機対応、OTA受入の完了を意味しない。
+
+## 1.0への8原則の適用（RQ01〜RQ43を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 

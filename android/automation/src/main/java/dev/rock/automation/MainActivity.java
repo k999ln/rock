@@ -23,7 +23,7 @@ public final class MainActivity extends Activity {
         ScrollView scroll = new ScrollView(this); form = new LinearLayout(this); form.setOrientation(LinearLayout.VERTICAL);
         int padding = (int)(20 * getResources().getDisplayMetrics().density); form.setPadding(padding, padding, padding, padding);
         scroll.addView(form); setContentView(scroll);
-        label(form, "Rock star · 自律実行の試作", 24);
+        label(form, "avocadoOS · 自律実行の試作", 24);
         label(form, "端末内だけで出典整理→無料版を作成します。外部投稿・決済はしません。充電中にOSが実行時刻を決めます（正確な15分間隔ではありません）。", 16);
         markdown = field("原稿（Markdown）", "", true);
         summary = field("まとめ（- で始まる3〜5項目）", "", true);

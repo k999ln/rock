@@ -81,7 +81,7 @@ const initialChecks: Check[] = [
   { id: 'update', label: '更新機構', detail: '確認中', state: 'checking' },
   { id: 'notification', label: '通知', detail: '確認中', state: 'checking' },
   { id: 'appMode', label: 'アプリ表示', detail: '確認中', state: 'checking' },
-  { id: 'api', label: 'RockstarOS API', detail: '確認中', state: 'checking' },
+  { id: 'api', label: 'avocadoOS API', detail: '確認中', state: 'checking' },
   { id: 'connector', label: 'PC Connector', detail: '確認中', state: 'checking' },
 ];
 
@@ -190,12 +190,12 @@ export default function SystemMaintenance() {
       const response = await fetch('/api/jobs', { cache: 'no-store' });
       next.push({
         id: 'api',
-        label: 'RockstarOS API',
+        label: 'avocadoOS API',
         detail: response.status === 401 ? '稼働中・サインイン待ち' : response.ok ? '稼働中' : `応答 ${response.status}`,
         state: response.status === 401 || response.ok ? 'ready' : 'attention',
       });
     } catch {
-      next.push({ id: 'api', label: 'RockstarOS API', detail: '応答なし', state: 'blocked' });
+      next.push({ id: 'api', label: 'avocadoOS API', detail: '応答なし', state: 'blocked' });
     }
 
     next.push({
@@ -271,7 +271,7 @@ export default function SystemMaintenance() {
     if (!waitingUpdate) return;
     setMessage('新しい版へ切り替えています…');
     const timeout = window.setTimeout(() => {
-      setMessage('切り替えを確認できませんでした。すべてのRockstarOSタブを閉じて開き直してください。');
+      setMessage('切り替えを確認できませんでした。すべてのavocadoOSタブを閉じて開き直してください。');
     }, 8000);
     navigator.serviceWorker.addEventListener(
       'controllerchange',
@@ -297,7 +297,7 @@ export default function SystemMaintenance() {
     }
     try {
       const registration = await navigator.serviceWorker?.getRegistration();
-      await registration?.showNotification('RockstarOS', {
+      await registration?.showNotification('avocadoOS', {
         body: '通知を受け取れる状態です。',
         tag: 'rockstaros-notification-test',
       });
@@ -313,7 +313,7 @@ export default function SystemMaintenance() {
       const persisted = await navigator.storage?.persist?.();
       setMessage(
         persisted
-          ? 'この端末のRockstarOS設定を自動削除から保護しました。'
+          ? 'この端末のavocadoOS設定を自動削除から保護しました。'
           : 'ブラウザが保存保護を許可しませんでした。設定は引き続き利用できます。',
       );
     } catch {
@@ -324,7 +324,7 @@ export default function SystemMaintenance() {
 
   function downloadDiagnostics() {
     const report = {
-      product: 'RockstarOS',
+      product: 'avocadoOS',
       version: '1.0',
       channel: 'Developer Preview',
       runtime: 'web_pwa',
@@ -337,7 +337,7 @@ export default function SystemMaintenance() {
     );
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = `RockstarOS-diagnostics-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.download = `avocadoOS-diagnostics-${new Date().toISOString().slice(0, 10)}.json`;
     anchor.click();
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     setMessage('個人情報を含まない診断レポートを保存しました。');
@@ -368,7 +368,7 @@ export default function SystemMaintenance() {
       );
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = `RockstarOS-${new Date().toISOString().slice(0, 10)}.rockstarbackup`;
+      anchor.download = `avocadoOS-${new Date().toISOString().slice(0, 10)}.rockstarbackup`;
       anchor.click();
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);
       setBackupMode(null);
@@ -530,7 +530,7 @@ export default function SystemMaintenance() {
           <DialogTitle>{backupMode === 'create' ? '暗号化バックアップ' : '端末設定を復元'}</DialogTitle>
           <DialogDescription>
             {backupMode === 'create'
-              ? 'パスフレーズからAES-GCM鍵を作り、RockstarOSの端末設定だけを暗号化します。'
+              ? 'パスフレーズからAES-GCM鍵を作り、avocadoOSの端末設定だけを暗号化します。'
               : 'バックアップと作成時のパスフレーズを指定します。'}
           </DialogDescription>
           {backupMode === 'restore' && (

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import FundMarket from '@/components/fund-market';
 
 export const metadata: Metadata = {
-  title: '以前の共同分配試算 — RockstarOS',
+  title: '以前の共同分配試算 — avocadoOS',
 };
 
 export default function LegacyFundPage() {

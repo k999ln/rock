@@ -249,7 +249,7 @@
     },
     {
       "id": "WEB04",
-      "title": "RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善",
+      "title": "avocadoOS全体のvisual systemを統一し、主要フロントの機能性を改善",
       "status": "done",
       "dependsOn": ["WEB03", "SKY15"],
       "evidence": [
@@ -261,6 +261,21 @@
         "tests/web-route-style-contract.test.mjs",
         "docs/frontend-usability-audit-20260915.md",
         "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "BRD01",
+      "title": "正式製品名をavocadoOS、内部識別子をdev.rockで固定",
+      "status": "done",
+      "dependsOn": ["WEB04"],
+      "evidence": [
+        "data/product-baseline.json",
+        "docs/product-baseline.md",
+        "app/layout.tsx",
+        "app/manifest.ts",
+        "components/home-screen.tsx",
+        "android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java",
+        "tests/product-baseline.test.mjs"
       ]
     },
     {
@@ -1148,7 +1163,7 @@
     },
     {
       "id": "FB01",
-      "title": "Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合",
+      "title": "Instagram運用・受注型ブランド管理をavocadoOS Hub商品とMCPへ統合",
       "status": "done",
       "dependsOn": [],
       "evidence": ["docs/fashion-brand-ops-integration.md"]

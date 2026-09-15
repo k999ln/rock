@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 42 },
+    { length: 43 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ42の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ43の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -50,6 +50,16 @@ export function validateBaseline(
       `${id}: 正本の見出しが一意ではありません`,
     );
   }
+  requireValue(
+    data.productIdentity?.displayName === 'avocadoOS' &&
+      data.productIdentity?.releaseName === 'avocadoOS 1.0' &&
+      data.productIdentity?.internalNamespace === 'dev.rock' &&
+      data.productIdentity?.legacyDisplayName === 'RockstarOS' &&
+      data.productIdentity?.legacySchemaPrefix === 'rockstaros' &&
+      data.productIdentity?.internalIdentifiersRenamed === false &&
+      data.productIdentity?.historicalEvidenceRewritten === false,
+    '正式名avocadoOSと内部識別子dev.rockの互換境界を維持してください',
+  );
   requireValue(
     data.auditInputs?.isLiveStatus === false,
     '監査snapshotを最新状態にしないでください',
@@ -399,11 +409,11 @@ export function validateBaseline(
       shellSource.includes('className="rock-home-link"') &&
       shellSource.includes('aria-disabled={running || undefined}') &&
       workspaceStyles.includes(
-        'RockstarOS / Studio — shared dark launch system',
+        'avocadoOS / Studio — shared dark launch system',
       ) &&
-      workspaceStyles.includes('RockstarOS 1.0 — unified OS chrome') &&
+      workspaceStyles.includes('avocadoOS 1.0 — unified OS chrome') &&
       workspaceStyles.includes('--studio-green: #c8ff2e'),
-    'RockstarOS全体の共通visual systemとフロント機能性改善を維持してください',
+    'avocadoOS全体の共通visual systemとフロント機能性改善を維持してください',
   );
   requireValue(
     data.systemMaintenance?.route === '/settings/system' &&
@@ -563,7 +573,7 @@ export function validateBaseline(
     '複数MCP Connectorの配布・Sky接続とremote/OAuth未受入の境界を維持してください',
   );
   requireValue(
-    data.releaseInstallation?.releaseName === 'RockstarOS 1.0',
+    data.releaseInstallation?.releaseName === 'avocadoOS 1.0',
     '1.0の発表名が必要です',
   );
   for (const field of ['architecture', 'plan']) {
@@ -653,6 +663,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ42、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ43、正式名avocadoOS／内部識別子dev.rock、Android OS Platform Core、物理Android版ローカルLLM、avocadoOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

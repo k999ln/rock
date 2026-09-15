@@ -31,7 +31,7 @@ import javax.crypto.SecretKey;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/** Signature-permission OS broker for the versioned RockstarOS Platform API. */
+/** Signature-permission OS broker for the versioned avocadoOS Platform API. */
 public final class RockPlatformService extends Service {
     static final String EXTRA_APPROVAL_ID = "approvalId";
     private static final String KEY_ALIAS = "rockstar-platform-backup-v1";

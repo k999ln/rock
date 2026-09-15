@@ -151,7 +151,7 @@ export function SkyBilling() {
             <span className="wallet-entry-icon">
               <WalletCards size={26} />
             </span>
-            <p>RockstarOS Wallet</p>
+            <p>avocadoOS Wallet</p>
             <h1 id="wallet-entry-title">
               自動化の売上を、
               <br />

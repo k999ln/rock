@@ -22,8 +22,8 @@ sky.tool({
 await sky.start({ port: 8787 });`;
 
 export const metadata: Metadata = {
-  title: 'RockstarOS — Install the future of work',
-  description: 'RockstarOSをインストールし、Skyで自動化ツールを開発する。',
+  title: 'avocadoOS — Install the future of work',
+  description: 'avocadoOSをインストールし、Skyで自動化ツールを開発する。',
 };
 
 export default function RockstarPreview() {
@@ -31,7 +31,7 @@ export default function RockstarPreview() {
     <main className={styles.landing}>
       <header className={styles.landingHeader}>
         <Link href="/" className={styles.brand} aria-label="ホームへ戻る">
-          ROCKSTAR<span>OS</span>
+          avocado<span>OS</span>
         </Link>
         <span className={styles.version}>1.0 / DEVELOPER PREVIEW</span>
       </header>
@@ -82,7 +82,7 @@ export default function RockstarPreview() {
 
       <footer className={styles.landingFooter}>
         <span>© 2026 KAIYA</span>
-        <span>ROCKSTAROS / DEVELOPER PREVIEW</span>
+        <span>avocadoOS / DEVELOPER PREVIEW</span>
       </footer>
     </main>
   );

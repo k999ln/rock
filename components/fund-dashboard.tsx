@@ -160,7 +160,7 @@ export function FundDashboard({
           <span className="dark-label">
             <Layers3 size={14} /> AUTOMATION FUND
           </span>
-          <h2>Rock star ファンド</h2>
+          <h2>avocadoOS ファンド</h2>
           <p>
             ココナラ案件支援と記事制作から始める、
             <br />
@@ -482,7 +482,7 @@ export function FundDashboard({
                   </div>
                   <span>−</span>
                   <div>
-                    <span>Rock star利用料</span>
+                    <span>avocadoOS利用料</span>
                     <strong>{yen(calculation.fee)}</strong>
                   </div>
                 </div>
@@ -519,7 +519,7 @@ export function FundDashboard({
                 {calculation.unrecovered > 0 && (
                   <p className="notice">
                     運用費の未回収分 {yen(calculation.unrecovered)}
-                    。分配・Rock star利用料は0円です。
+                    。分配・avocadoOS利用料は0円です。
                   </p>
                 )}
                 <p className="subnote">

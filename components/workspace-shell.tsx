@@ -101,7 +101,7 @@ export default function WorkspaceShell({
           {children}
         </main>
         <div className="rock-bottom-note">
-          <span>RockstarOS 1.0</span>
+          <span>avocadoOS 1.0</span>
           <Link
             href="/rockstaros/guide#limits"
             aria-disabled={running || undefined}

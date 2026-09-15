@@ -30,7 +30,7 @@ public final class ApprovalActivity extends Activity {
         content.setOrientation(LinearLayout.VERTICAL);
         int pad = Math.round(24 * getResources().getDisplayMetrics().density);
         content.setPadding(pad, pad, pad, pad);
-        TextView title = new TextView(this); title.setText("RockstarOS の承認"); title.setTextSize(24);
+        TextView title = new TextView(this); title.setText("avocadoOS の承認"); title.setTextSize(24);
         TextView details = new TextView(this);
         details.setText("対象: " + proposal.get("component_id") + "\n操作: " + proposal.get("action") +
             "\n費用上限: " + proposal.get("max_cost_minor") + " (minor units)\n内容の指紋: " + proposal.get("payload_digest") +
@@ -47,7 +47,7 @@ public final class ApprovalActivity extends Activity {
     private void authenticate(View ignored) {
         KeyguardManager keyguard = getSystemService(KeyguardManager.class);
         if (keyguard == null || !keyguard.isDeviceSecure()) return;
-        Intent challenge = keyguard.createConfirmDeviceCredentialIntent("RockstarOS", "この操作を承認します");
+        Intent challenge = keyguard.createConfirmDeviceCredentialIntent("avocadoOS", "この操作を承認します");
         if (challenge != null) startActivityForResult(challenge, CONFIRM_DEVICE);
     }
 

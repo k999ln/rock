@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import AutonomousFundMarket from '@/components/autonomous-fund-market';
 
-export const metadata: Metadata = { title: '自動化ファンド — RockstarOS' };
+export const metadata: Metadata = { title: '自動化ファンド — avocadoOS' };
 export default function FundPage() {
   return (
     <>

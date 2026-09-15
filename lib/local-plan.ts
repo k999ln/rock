@@ -14,5 +14,5 @@ export function parsePlan(value:unknown):LocalPlan {
 }
 export function buildPlanMarkdown(id:string,checks:number[]) {
   const t=catalog.find(x=>x.id===id); if(!t) throw new Error('ツールが見つかりません。');
-  return `# ${t.name} — Rock star 導入プラン\n\n${t.description}\n\n公式ソース: ${t.source}\nライセンス: ${t.license} (${t.licenseUrl})\n実行環境: ${t.environment}\n\n## 準備\n${t.steps.map((s,i)=>`- [${checks.includes(i)?'x':' '}] ${s}`).join('\n')}\n\n## 費用・注意\n${t.cost}\n${t.note}\n\nこの文書は導入プランです。自動実行、収益保証、送金を行いません。\n`;
+  return `# ${t.name} — avocadoOS 導入プラン\n\n${t.description}\n\n公式ソース: ${t.source}\nライセンス: ${t.license} (${t.licenseUrl})\n実行環境: ${t.environment}\n\n## 準備\n${t.steps.map((s,i)=>`- [${checks.includes(i)?'x':' '}] ${s}`).join('\n')}\n\n## 費用・注意\n${t.cost}\n${t.note}\n\nこの文書は導入プランです。自動実行、収益保証、送金を行いません。\n`;
 }

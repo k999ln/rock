@@ -1,5 +1,5 @@
 {
-  "version": "1.50",
+  "version": "1.51",
   "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -8,10 +8,23 @@
   "nextPrompt": "docs/prompts/rock-current-next-20260911.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/os-sky-wallet-game-design.md",
+  "productIdentity": {
+    "displayName": "avocadoOS",
+    "releaseName": "avocadoOS 1.0",
+    "internalNamespace": "dev.rock",
+    "legacyDisplayName": "RockstarOS",
+    "legacySchemaPrefix": "rockstaros",
+    "androidNamespace": "dev.rock",
+    "legacyComponentNamespace": "org.rockstar",
+    "legacyPackageScope": "@rockstaros",
+    "legacyRoutePrefix": "/rockstaros",
+    "internalIdentifiersRenamed": false,
+    "historicalEvidenceRewritten": false
+  },
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ42 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ43 and the current avocadoOS 1.0 technical base",
     "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
     "representativeProductCandidate": "org.rockstar.citation-organizer",
     "marketValidation": "not_run",
@@ -290,7 +303,8 @@
     "RQ39",
     "RQ40",
     "RQ41",
-    "RQ42"
+    "RQ42",
+    "RQ43"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -511,7 +525,7 @@
     "salesOrProfitGuaranteed": false,
     "architecture": "docs/mercari-revenue-loop.md"
   },
-  "hardwarePolicy": "Develop one shared RockstarOS Core with model-specific Device Support Packages. Physical native OS, experimental Android GSI, client-only and unsupported are distinct delivery modes. Pixel candidates remain unconfirmed; BlackBerry requires exact-model unlock/vendor/recovery evidence; Apple mobile devices are client-only rather than OS-replacement targets. Linux QEMU and physical evidence remain distinct.",
+  "hardwarePolicy": "Develop one shared avocadoOS Core with model-specific Device Support Packages. Physical native OS, experimental Android GSI, client-only and unsupported are distinct delivery modes. Pixel candidates remain unconfirmed; BlackBerry requires exact-model unlock/vendor/recovery evidence; Apple mobile devices are client-only rather than OS-replacement targets. Linux QEMU and physical evidence remain distinct.",
   "deviceSupportPolicy": {
     "status": "approved_design_implemented_not_physical_support",
     "architecture": "docs/device-support-architecture.md",
@@ -530,13 +544,13 @@
   "firstOperationalTarget": "Fresh-host QEMU Developer Preview with reproducible install, launch, shutdown, reopen, backup and removal; synthetic data only",
   "releaseInstallation": {
     "requested": true,
-    "releaseName": "RockstarOS 1.0",
+    "releaseName": "avocadoOS 1.0",
     "architecture": "docs/rockstaros-1.0-architecture.md",
     "plan": "docs/release-installation-plan-20260909.md",
     "developerPreview": "internal_acceptance_scoped_publication_blocked",
     "physicalDevicePreview": "source_integration_started_exact_target_and_build_environment_pending",
     "productionReady": false,
-    "cmRule": "Present the current implementation as the RockstarOS 1.0 base and advertise only the highest installation and validation stage that has passed its recorded gate",
+    "cmRule": "Present the current implementation as the avocadoOS 1.0 base and advertise only the highest installation and validation stage that has passed its recorded gate",
     "followup": "docs/current-state-20260911.md",
     "cmProduction": {
       "status": "in_production_per_latest_user_report",

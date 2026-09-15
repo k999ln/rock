@@ -211,7 +211,7 @@ export default function HomeScreen() {
         day: 'numeric',
         weekday: 'short',
       }).format(now)
-    : 'RockstarOS';
+    : 'avocadoOS';
 
   return (
     <main
@@ -224,14 +224,14 @@ export default function HomeScreen() {
       <div className={styles.noise} aria-hidden="true" />
       <header className={styles.statusBar}>
         <strong>{time}</strong>
-        <span className={styles.statusName}>RockstarOS</span>
+        <span className={styles.statusName}>avocadoOS</span>
         <span className={styles.statusIcons} aria-label="Web版・端末内設定">
           <ShieldCheck size={15} />
           <span>WEB / LOCAL</span>
         </span>
       </header>
 
-      <section className={styles.desktop} aria-label="RockstarOSホーム">
+      <section className={styles.desktop} aria-label="avocadoOSホーム">
         <div className={styles.homeHeading}>
           <div>
             <p>{date}</p>

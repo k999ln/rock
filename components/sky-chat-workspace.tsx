@@ -540,7 +540,7 @@ export default function SkyChatWorkspace() {
       <section className="sky-chat-simple" aria-label="Zemaスレッド">
         <header className="sky-chat-commandbar">
           <div>
-            <span>RockstarOS</span>
+            <span>avocadoOS</span>
             <h1>Zema</h1>
           </div>
           <nav aria-label="Zemaナビゲーション">

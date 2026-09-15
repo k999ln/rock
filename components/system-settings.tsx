@@ -94,7 +94,7 @@ export default function SystemSettings() {
               <ShieldCheck size={27} />
             </span>
             <div>
-              <small>ROCKSTAROS</small>
+              <small>avocadoOS</small>
               <h1>この端末を整える</h1>
               <p>接続・権限・保存・更新の状態を、ここで確認できます。</p>
             </div>
@@ -226,7 +226,7 @@ export default function SystemSettings() {
           </SettingsGroup>
 
           <p className={styles.boundary}>
-            RockstarOS 1.0 Developer
+            avocadoOS 1.0 Developer
             Preview。Web画面、QEMU版、物理端末版は別々に管理されています。設定画面だけで端末を書き換えたり、実資金を動かしたりしません。
           </p>
         </div>
