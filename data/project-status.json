@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-15",
   "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-  "nextAction": "最上位目的から逆算し、3のOS full buildより先にTool完了から署名済みEarning Receiptを生成してWalletへ一度だけ転記するbridgeを実装・縦断再試験する。その後、選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験、正確なSKU readback、source／artifact freezeを完了する。",
+  "nextAction": "Tool完了→Provider署名→Wallet一度だけ反映のROCK_READY fixtureは合格した。次に選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験と正確なSKU readbackを行い、並行して最初の販売・決済Provider sandboxをbridgeへ接続する。両方の受入とsource／artifact freeze後にOS full build可否を再判定する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -957,7 +957,11 @@
       "evidence": [
         "docs/prompts/hub-wallet-next.md",
         "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
-        "docs/evidence/android-pre-full-build-tests-20260915.json"
+        "docs/evidence/android-pre-full-build-tests-20260915.json",
+        "app/api/earnings/receipts/route.ts",
+        "lib/earning-bridge.ts",
+        "tests/earning-bridge.test.mjs",
+        "docs/evidence/tool-earning-wallet-bridge-20260915.json"
       ]
     },
     {
@@ -1373,7 +1377,8 @@
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/os-base/business-wallet-foundation-b8287bc.json",
-        "docs/evidence/os-base/business-backup-acceptance-b8287bc.json"
+        "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
+        "docs/evidence/tool-earning-wallet-bridge-20260915.json"
       ]
     },
     {

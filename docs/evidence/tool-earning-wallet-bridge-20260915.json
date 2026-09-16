@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "recordedAt": "2026-09-15",
+  "stage": "ROCK_READY",
+  "scope": "Tool completion to provider-signed Earning Receipt to Sky Billing Wallet fixture",
+  "result": "PASS",
+  "implemented": {
+    "providerIngress": "POST /api/earnings/receipts",
+    "providerSignatureHeader": "Avocado-Provider-Signature",
+    "executionChecks": [
+      "job exists",
+      "job is completed",
+      "job is not a sample",
+      "receipt user matches job owner",
+      "receipt tool matches job tool when fund-linked",
+      "receipt timestamp is not before job completion"
+    ],
+    "keySeparation": [
+      "EARNING_PROVIDER_SECRET",
+      "SETTLEMENT_INGEST_SECRET",
+      "PAYOUT_ADAPTER_SECRET"
+    ],
+    "walletIdempotency": [
+      "receipt_id unique",
+      "execution_receipt_id unique",
+      "source_provider plus provider_reference unique"
+    ]
+  },
+  "verification": {
+    "focusedCommand": "node --experimental-strip-types --test tests/earning-bridge.test.mjs tests/billing-worker.test.mjs tests/billing.test.mjs",
+    "focusedTests": {
+      "passed": 7,
+      "failed": 0
+    },
+    "typecheck": "PASS",
+    "billingWorkerDryRunBundle": "PASS",
+    "fullRepositoryVerify": "PASS"
+  },
+  "rejectionsVerified": [
+    "missing or invalid provider signature",
+    "unregistered source provider",
+    "unfinished execution",
+    "sample execution",
+    "wrong user",
+    "wrong automation tool",
+    "earning-ingest key used for payout",
+    "payout key used for earning ingestion",
+    "different receipt for an already-accounted execution"
+  ],
+  "notProven": [
+    "real sale or income",
+    "real payment provider sandbox",
+    "refund or chargeback flow",
+    "real payout",
+    "production deployment",
+    "physical Pixel execution"
+  ]
+}

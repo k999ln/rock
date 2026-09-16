@@ -26,6 +26,7 @@ export interface Env {
   DB: D1Database;
   BILLING_SHARED_SECRET: string;
   SETTLEMENT_INGEST_SECRET: string;
+  PAYOUT_ADAPTER_SECRET: string;
   SKY_ORIGIN: string;
   BASE_RPC_URL?: string;
 }
@@ -36,8 +37,9 @@ function configuration(env: Env) {
   if (
     sky.protocol !== 'https:' ||
     baseRpc.protocol !== 'https:' ||
-    env.BILLING_SHARED_SECRET.length < 32 ||
-    env.SETTLEMENT_INGEST_SECRET.length < 32
+    (env.BILLING_SHARED_SECRET ?? '').length < 32 ||
+    (env.SETTLEMENT_INGEST_SECRET ?? '').length < 32 ||
+    (env.PAYOUT_ADAPTER_SECRET ?? '').length < 32
   )
     throw new Error('SETTLEMENT_CONFIGURATION_INVALID');
   return { skyOrigin: sky.origin, baseRpcUrl: baseRpc.toString() };
@@ -848,7 +850,7 @@ async function signedInput(request: Request, env: Env) {
   await verifyReceiptSignature(
     raw,
     request.headers.get('sky-receipt-signature'),
-    env.SETTLEMENT_INGEST_SECRET,
+    env.PAYOUT_ADAPTER_SECRET,
   );
   const value = JSON.parse(raw) as unknown;
   if (!value || typeof value !== 'object' || Array.isArray(value))

@@ -10,14 +10,15 @@
 - 検証済み収益から実費を先に引き、月最大8.88 USDだけを回収する精算核を実装済み。
 - Rock First-party Settlement Walletのsandbox契約を実装済み。
 - Base Mainnet USDCの受取先所有署名、公式contract、exact金額、finalized block照合コードはある。
+- Provider署名を検証し、完了済み・非サンプルのTool実行と利用者・Tool・時刻を照合してからEarning ReceiptをWalletへ一度だけ渡すbridgeは、fixture縦断試験まで合格済み。
 - owner Walletの本登録、最初の実transfer、払出しProviderの実受入は未完了。
 
 主なtask: `WLT01`〜`WLT06`, `BIL01`, `BIL02`, `B03`。
 
 ## 次に進める順番
 
-1. owner受取先を本人署名で登録し、環境・chain・contract・addressを固定する。
-2. test条件でEarning Receipt、Provider入金、返金、重複、finalityを縦断する。
+1. 最初の販売・決済Providerを一つ選び、sandbox署名を現在のbridgeへ接続する。
+2. Provider sandbox条件で入金、返金、順序逆転、重複、結果不明を縦断する。
 3. 販売、決済、払出しProviderの責任、KYC、税、chargeback、最低払出額を確定する。
 4. 最初の本人確認済み実transferをexact receiptへ結び、照合証拠を残す。
 5. LIVE有効化は秘密鍵非保管と本人最終確認を維持して別gateで行う。
@@ -40,4 +41,4 @@
 ## 検証
 
 - `npm run billing:check`
-- `node --experimental-strip-types --test tests/settlement.test.mjs tests/wallet-backend.test.mjs tests/financial-provider.test.mjs tests/rock-wallet.test.mjs`
+- `node --experimental-strip-types --test tests/earning-bridge.test.mjs tests/billing-worker.test.mjs tests/settlement.test.mjs tests/wallet-backend.test.mjs tests/financial-provider.test.mjs tests/rock-wallet.test.mjs`

@@ -81,9 +81,14 @@ class TestD1 {
 const origin = 'https://sky.example';
 const sharedSecret = 'test-billing-shared-secret-that-is-long-enough';
 const ingestSecret = 'test-receipt-ingest-secret-that-is-long-enough';
+const payoutSecret = 'test-payout-adapter-secret-that-is-long-enough';
 
-function signature(raw, timestamp = Math.floor(Date.now() / 1000)) {
-  return `t=${timestamp},v1=${createHmac('sha256', ingestSecret)
+function signature(
+  raw,
+  timestamp = Math.floor(Date.now() / 1000),
+  secret = ingestSecret,
+) {
+  return `t=${timestamp},v1=${createHmac('sha256', secret)
     .update(`${timestamp}.${raw}`)
     .digest('hex')}`;
 }
@@ -94,6 +99,7 @@ void test('settlement Worker applies verified earnings once and never charges up
     DB,
     BILLING_SHARED_SECRET: sharedSecret,
     SETTLEMENT_INGEST_SECRET: ingestSecret,
+    PAYOUT_ADAPTER_SECRET: payoutSecret,
     SKY_ORIGIN: origin,
   };
   const request = async (path, options = {}) => {
@@ -322,11 +328,18 @@ void test('settlement Worker applies verified earnings once and never charges up
     );
 
     const claimBody = JSON.stringify({ adapterId: 'stripe-connect' });
-    const claim = await request('/v1/payouts/claim', {
+    const wrongPayoutKey = await request('/v1/payouts/claim', {
       method: 'POST',
       origin: false,
       body: claimBody,
       signature: signature(claimBody),
+    });
+    assert.equal(wrongPayoutKey.response.status, 401);
+    const claim = await request('/v1/payouts/claim', {
+      method: 'POST',
+      origin: false,
+      body: claimBody,
+      signature: signature(claimBody, undefined, payoutSecret),
     });
     assert.equal(claim.response.status, 200);
     assert.equal(claim.body.instruction.status, 'processing');
@@ -342,7 +355,7 @@ void test('settlement Worker applies verified earnings once and never charges up
       method: 'POST',
       origin: false,
       body: resultBody,
-      signature: signature(resultBody),
+      signature: signature(resultBody, undefined, payoutSecret),
     });
     assert.equal(paid.body.instruction.status, 'paid');
     assert.equal(
@@ -353,7 +366,7 @@ void test('settlement Worker applies verified earnings once and never charges up
       method: 'POST',
       origin: false,
       body: resultBody,
-      signature: signature(resultBody),
+      signature: signature(resultBody, undefined, payoutSecret),
     });
     assert.equal(paidReplay.body.replay, true);
 
@@ -367,6 +380,13 @@ void test('settlement Worker applies verified earnings once and never charges up
       signature: signature(`${raw}changed`),
     });
     assert.equal(forged.response.status, 401);
+    const payoutKeyCannotCreateEarnings = await request('/v1/earnings', {
+      method: 'POST',
+      origin: false,
+      body: raw,
+      signature: signature(raw, undefined, payoutSecret),
+    });
+    assert.equal(payoutKeyCannotCreateEarnings.response.status, 401);
   } finally {
     DB.close();
   }

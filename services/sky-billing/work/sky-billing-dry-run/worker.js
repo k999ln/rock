@@ -5857,7 +5857,7 @@ function verifyBaseUsdcCollection(input) {
 }
 __name(verifyBaseUsdcCollection, "verifyBaseUsdcCollection");
 
-// src/domain.ts
+// ../../lib/earning-receipt.ts
 var SKY_MONTHLY_FEE_CAP_MINOR = 888;
 var SETTLEMENT_CURRENCY = "usd";
 function text(value, name, pattern, maximum = 256) {
@@ -5941,7 +5941,7 @@ function validateEarningReceipt(value) {
 }
 __name(validateEarningReceipt, "validateEarningReceipt");
 
-// src/receipt-signature.ts
+// ../../lib/receipt-signature.ts
 var encoder4 = new TextEncoder();
 function bytesFromHex(value) {
   if (!/^[0-9a-f]{64}$/iu.test(value))
@@ -5960,26 +5960,30 @@ function secureEqual(left, right) {
   return difference === 0;
 }
 __name(secureEqual, "secureEqual");
-async function verifyReceiptSignature(rawBody, signatureHeader, secret, nowSeconds = Math.floor(Date.now() / 1e3), toleranceSeconds = 300) {
-  if (!signatureHeader || secret.length < 32)
-    throw new Error("RECEIPT_SIGNATURE_INVALID");
-  const fields = signatureHeader.split(",").map((field) => field.split("="));
-  const timestampValue = fields.find(([key2]) => key2 === "t")?.[1];
-  const candidates = fields.filter(([key2]) => key2 === "v1").map(([, value]) => value);
-  const timestamp = Number(timestampValue);
-  if (!Number.isInteger(timestamp) || Math.abs(nowSeconds - timestamp) > toleranceSeconds || candidates.length === 0)
-    throw new Error("RECEIPT_SIGNATURE_INVALID");
-  const key = await crypto.subtle.importKey(
+async function signingKey(secret) {
+  if (secret.length < 32) throw new Error("RECEIPT_SIGNATURE_INVALID");
+  return crypto.subtle.importKey(
     "raw",
     encoder4.encode(secret),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"]
   );
+}
+__name(signingKey, "signingKey");
+async function verifyReceiptSignature(rawBody, signatureHeader, secret, nowSeconds = Math.floor(Date.now() / 1e3), toleranceSeconds = 300) {
+  if (!signatureHeader || secret.length < 32)
+    throw new Error("RECEIPT_SIGNATURE_INVALID");
+  const fields = signatureHeader.split(",").map((field) => field.split("="));
+  const timestampValue = fields.find(([key]) => key === "t")?.[1];
+  const candidates = fields.filter(([key]) => key === "v1").map(([, value]) => value);
+  const timestamp = Number(timestampValue);
+  if (!Number.isInteger(timestamp) || Math.abs(nowSeconds - timestamp) > toleranceSeconds || candidates.length === 0)
+    throw new Error("RECEIPT_SIGNATURE_INVALID");
   const expected = new Uint8Array(
     await crypto.subtle.sign(
       "HMAC",
-      key,
+      await signingKey(secret),
       encoder4.encode(`${timestamp}.${rawBody}`)
     )
   );
@@ -5998,7 +6002,7 @@ __name(verifyReceiptSignature, "verifyReceiptSignature");
 function configuration(env) {
   const sky = new URL(env.SKY_ORIGIN);
   const baseRpc = new URL(env.BASE_RPC_URL ?? BASE_MAINNET_RPC_URL);
-  if (sky.protocol !== "https:" || baseRpc.protocol !== "https:" || env.BILLING_SHARED_SECRET.length < 32 || env.SETTLEMENT_INGEST_SECRET.length < 32)
+  if (sky.protocol !== "https:" || baseRpc.protocol !== "https:" || (env.BILLING_SHARED_SECRET ?? "").length < 32 || (env.SETTLEMENT_INGEST_SECRET ?? "").length < 32 || (env.PAYOUT_ADAPTER_SECRET ?? "").length < 32)
     throw new Error("SETTLEMENT_CONFIGURATION_INVALID");
   return { skyOrigin: sky.origin, baseRpcUrl: baseRpc.toString() };
 }
@@ -6668,7 +6672,7 @@ async function signedInput(request, env) {
   await verifyReceiptSignature(
     raw,
     request.headers.get("sky-receipt-signature"),
-    env.SETTLEMENT_INGEST_SECRET
+    env.PAYOUT_ADAPTER_SECRET
   );
   const value = JSON.parse(raw);
   if (!value || typeof value !== "object" || Array.isArray(value))

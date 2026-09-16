@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-最上位目的から逆算し、3のOS full buildより先にTool完了から署名済みEarning Receiptを生成してWalletへ一度だけ転記するbridgeを実装・縦断再試験する。その後、選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験、正確なSKU readback、source／artifact freezeを完了する。
+Tool完了→Provider署名→Wallet一度だけ反映のROCK_READY fixtureは合格した。次に選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験と正確なSKU readbackを行い、並行して最初の販売・決済Provider sandboxをbridgeへ接続する。両方の受入とsource／artifact freeze後にOS full build可否を再判定する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。
