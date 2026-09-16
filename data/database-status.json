@@ -15,7 +15,7 @@
     "planned": 8,
     "blocked": 1,
     "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-    "nextAction": "Pixel 10を再接続してnative Skyの実再起動復旧を確認する。続いてproduction WebAuthn credential、Agent product overlay、StrongBox attestation、Device Ownerを登録し、許可操作と禁止操作を実機検証する。純正復旧artifact、vendor inventory、production署名、物理backup wipe復元を揃え、全preflight合格後だけ最初のfull buildへ進む。"
+    "nextAction": "実機のnative Sky再起動復旧と非破壊backup exportは合格済み。次はproduction WebAuthn credential、Agent product overlay、StrongBox attestation、Device Ownerを登録し、許可操作と禁止操作を実機検証する。純正復旧artifact、vendor inventory、production署名、物理backup wipe復元を揃え、全preflight合格後だけ最初のfull buildへ進む。"
   },
   "webSchema": {
     "tableCount": 27,

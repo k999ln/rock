@@ -33,7 +33,7 @@
     ]
   },
   "test2SkyZemaToolWallet": {
-    "status": "PASS_ROCK_OWNED_PHYSICAL_CORRELATED_PROVIDER_SANDBOX_PENDING",
+    "status": "PASS_ROCK_OWNED_PHYSICAL_REBOOT_RECOVERY_PROVIDER_SANDBOX_PENDING",
     "skyToZemaSingleUseHandoff": "PASS",
     "zemaJobLifecycleAndProgress": "PASS",
     "androidToolBinderSQLiteReviewFlow": "PASS",
@@ -41,6 +41,7 @@
     "automaticToolWalletReceiptBridge": "PASS",
     "rockOwnedEndToEndReceiptFixture": "PASS",
     "physicalPixelCorrelatedSplitBoundary": "PASS_6_OF_6_PHYSICAL_AND_7_OF_7_HOST",
+    "nativeSkyZemaToolRebootRecovery": "PASS_BOOT_COUNT_24_TO_25_SELECTED_TOOL_RESULT_HISTORY_REVIEW",
     "focusedHostTests": "PASS_7_OF_7",
     "evidence": "docs/evidence/tool-earning-wallet-bridge-20260915.json",
     "physicalEvidence": "docs/evidence/pixel-tool-wallet-correlation-20260916.json",
@@ -61,16 +62,22 @@
       "failed": 0
     },
     "latestPhysicalPixel": {
-      "tests": 6,
-      "passed": 6,
+      "tests": 23,
+      "passed": 23,
       "failed": 0
+    },
+    "latestPhysicalBreakdown": {
+      "brokerToolLocalAiWallet": "11_of_11",
+      "shellSkyZemaBackup": "5_of_5",
+      "operatorAgentRestrictedCommands": "5_of_5",
+      "physicalRebootPhases": "2_of_2"
     },
     "testSigner": "debug-only shared signer; not a release credential"
   },
   "androidBuildAndLint": {
     "status": "PASS",
-    "gradleTasks": 190,
-    "scope": "Platform Core, Tool SDK, automation APK and article Tool APK; standalone Gradle only, not Soong or an OS image"
+    "gradleTasks": 279,
+    "scope": "Platform Core, Tool SDK, Broker, Shell, article Tool and Operator Agent APKs; standalone Gradle only, not Soong or an OS image"
   },
   "focusedHostTests": {
     "tests": 20,
@@ -85,10 +92,20 @@
   },
   "repositoryRegression": {
     "status": "PASS",
-    "webUnitTests": 287,
+    "webUnitTests": 312,
     "fashionBrandOpsTests": 19,
     "workerD1Assertions": 143,
     "productionWebBuild": "PASS"
+  },
+  "physicalPreFullBuildAcceptance": {
+    "status": "PASS_TEST_SIGNED_APKS_NO_FLASH",
+    "rebootPersistence": "PASS",
+    "hardwareBackedRecoverySecret": true,
+    "hardwareBackedDeviceWrap": true,
+    "fileDescriptorStorageSyncConfirmed": true,
+    "operatorAgent": "PASS_5_OF_5_FAIL_CLOSED_WITHOUT_DEVICE_OWNER",
+    "physicalWipeAndRestore": "NOT_RUN",
+    "evidence": "docs/evidence/android-pixel-10-prefull-physical-20260916.json"
   },
   "defectsFoundAndFixed": [
     "overlay application could silently target an unrelated parent Git repository",
@@ -99,9 +116,10 @@
     "the standalone APK build script misresolved a relative output path after changing directories"
   ],
   "remainingBeforePaidFullBuild": [
-    "external provider sandbox acceptance or an explicit pre-build scope that excludes external value transfer",
     "source, artifact and signing-plan freeze",
-    "GL066 BSP, vendor, partition, boot and stock-recovery source freeze"
+    "GL066 factory/full-OTA artifacts and vendor inventory",
+    "production Operator credential, StrongBox attestation overlay and Device Owner provisioning plan",
+    "physical Keystore-loss wipe and owner-phrase restore drill"
   ],
   "decision": "DO_NOT_START_PAID_FULL_OS_BUILD_REMAINING_FREEZE_GATES"
 }

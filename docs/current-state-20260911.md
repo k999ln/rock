@@ -1,5 +1,11 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-16 — Pixel 10のフルビルド前実機受入を23/23で完走
+
+OSを書き換えていない所有Pixel 10で、Broker／Tool／Local AI／Wallet 11件、権限を絞ったShell 5件、試験署名Operator Agent 5件、実再起動のseed／recover 2段階を実行し、計23件が合格した。Skyで選んだToolと途中の仕事は再起動後に同一状態から復旧し、中断工程をattempt 2として完了、結果・review・履歴まで確認した。backup v2は実ファイルへexportされ、書込み同期完了とdevice wrap／recovery secret双方のhardware-backed Keystoreを確認した。[秘密と端末serialを含まない証拠](evidence/android-pixel-10-prefull-physical-20260916.json)。
+
+これは純正OS上の試験署名APKと非破壊再起動の合格である。data／Keystore消去後の24単語復元、production Operator credential、StrongBox attestation登録、Device Owner実行、Soong full build、SELinux enforcing boot、flash、OTA／rollbackは未実施で、初回flash gateは0/4のまま維持する。
+
 ## 2026-09-16 — Android Shellと特権Platform Brokerを別APKへ分離
 
 Androidのlauncher／UI入口を`dev.rock.shell`へ移し、SQLite、Engine、JobScheduler、Keystore、本人確認Activityを`dev.rock.automation`のheadless Platform Brokerだけに残した。ShellはINTERNET権限と広い`MANAGE_PLATFORM`権限を持たず、専用の`USE_SHELL_API`署名権限で固定package、同一signer、version、Binder API版を双方から検証する。Brokerは呼出UIDが`dev.rock.shell`だけに対応する場合しか各操作を受けない。進捗snapshotは入力／成果物本文を含めず最大25件に制限し、本文取得は本人が選んだ仕事だけに分離した。

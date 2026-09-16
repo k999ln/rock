@@ -50,7 +50,7 @@
     {
       "id": "keystore-loss-backup-restore",
       "selection": "dual-wrapped-random-data-key-with-device-keystore-and-owner-recovery-phrase",
-      "status": "source_ui_import_rebinding_emulator_pass_physical_wipe_drill_pending",
+      "status": "source_ui_import_rebinding_emulator_and_physical_export_reboot_pass_wipe_drill_pending",
       "authority": "data/android-backup-recovery-policy.json"
     },
     {

@@ -258,7 +258,7 @@ export function validateAndroidFirstFlashGate({
     backupRecoveryPolicy?.product !== 'avocadoOS' ||
     backupRecoveryPolicy?.target !== 'Google Pixel 10 / frankel / GL066' ||
     backupRecoveryPolicy?.status !==
-      'source_ui_transactional_import_and_rebinding_emulator_pass_physical_wipe_pending' ||
+      'source_ui_transactional_import_and_rebinding_emulator_and_physical_export_reboot_pass_wipe_pending' ||
     backupRecoveryPolicy?.decision !==
       'DUAL_WRAPPED_RANDOM_DATA_KEY_WITH_DEVICE_KEYSTORE_AND_OWNER_RECOVERY_PHRASE' ||
     backupRecoveryPolicy?.envelope?.format !== 'avocadoos-recoverable-backup/2' ||
@@ -312,11 +312,17 @@ export function validateAndroidFirstFlashGate({
     backupRecoveryPolicy?.implementation?.coreDualWrappedEnvelope !==
       'implemented_host_37_tests_passed' ||
     backupRecoveryPolicy?.implementation?.ownerPhraseCodecAndConfirmationUi !==
-      'implemented_shell_api_v4_emulator_pass' ||
+      'implemented_shell_api_v4_emulator_and_physical_pixel_pass' ||
     backupRecoveryPolicy?.implementation?.platformImportAndTransactionalRestore !==
       'implemented_android_sqlite_emulator_pass' ||
     backupRecoveryPolicy?.implementation?.newDeviceKeystoreRebinding !==
       'implemented_android_keystore_emulator_pass' ||
+    backupRecoveryPolicy?.implementation?.physicalBackupExport !==
+      'pass_pixel_10_hardware_backed_dual_keystore_and_fsync' ||
+    backupRecoveryPolicy?.implementation?.physicalRebootPersistence !==
+      'pass_sky_zema_selected_tool_result_and_history' ||
+    backupRecoveryPolicy?.implementation?.physicalPreFullBuildEvidence !==
+      'docs/evidence/android-pixel-10-prefull-physical-20260916.json' ||
     backupRecoveryPolicy?.implementation?.physicalWipeAndRestoreDrill !== 'pending' ||
     backupRecoveryPolicy?.gate?.policyApprovalIsPassEvidence !== false ||
     backupRecoveryPolicy?.gate?.hostCryptoTestIsPhysicalRestoreEvidence !== false ||

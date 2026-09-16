@@ -1,6 +1,6 @@
 # avocadoOS 緊急アクセスとインシデント対応
 
-状態: **分離Operator Dock、hardware署名付き命令、署名付き端末channel、制限付きAndroid Agentのsource／emulator検証済み、production配備・登録・実機検証未完了**。この文書と`data/device-emergency-access-policy.json`は、緊急時に運営1名が本人のその場の操作を待たず保護を開始できる契約を固定する。source検証はproduction端末へ到達済みという意味ではない。
+状態: **分離Operator Dock、hardware署名付き命令、署名付き端末channel、制限付きAndroid Agentのsource／emulatorと試験署名Pixel検証済み、production配備・登録・Device Owner実行は未完了**。この文書と`data/device-emergency-access-policy.json`は、緊急時に運営1名が本人のその場の操作を待たず保護を開始できる契約を固定する。試験署名APKの実機検証はproduction端末へ到達済みという意味ではない。
 
 ## 目的
 
@@ -61,7 +61,7 @@ Dock内の`/api/devices`は最大100端末・100命令・100監査eventのsnapsh
 
 利用者Web D1とは別のOperator Dock専用D1へ`operator_managed_devices`、署名材料を含む`operator_device_commands`、使用済みcredential counter、`operator_audit_events`を保存する。監査tableはupdate/delete triggerで追記専用にする。公開鍵とcredential IDはsecretではないが、production値は配備環境で固定し、private keyはhardware credential外へ出さない。
 
-管理面と端末側は別状態で表示する。現在の端末側表示は`source_emulator_verified_production_enrollment_pending`であり、production credential、端末StrongBox identity／attestation、Device Owner provisioning、専用hostnameとD1が揃うまでは`ready`にしない。UIも「開発検証済み・本番登録待ち」と表示し、実端末へ配信済みとは表示しない。
+管理面と端末側は別状態で表示する。現在の端末側表示は`source_emulator_and_test_signed_physical_verified_production_enrollment_pending`であり、production credential、端末StrongBox identity／attestation、Device Owner provisioning、専用hostnameとD1が揃うまでは`ready`にしない。UIも「開発検証済み・本番登録待ち」と表示し、実端末へ本番配信済みとは表示しない。
 
 Agentはlauncherを持たない別UID／別SELinux domainで、Platform Broker、Sky、Zema、Local AI、Tool、WalletまたはbackupへのBinder edgeを持たない。DockへのPOSTは端末Keystore P-256鍵でcanonical requestを署名し、Dockは登録済み端末公開鍵、時刻、nonce、body digestを確認する。端末は保存されたWebAuthn assertionを独立再検証し、対象端末、credential、RP ID、origin、UP／UV flag、P-256署名、payload、発行時刻、開始時刻、失効時刻、単調増加counterを確認してからackする。端末側SQLiteはcommand replayを拒否し、Android Keystore HMAC chainとupdate／delete拒否triggerで監査を追記する。
 
@@ -69,7 +69,7 @@ Agentはlauncherを持たない別UID／別SELinux domainで、Platform Broker�
 
 ## 実装・受入gate
 
-Dock／Agent sourceとAndroid 15 emulatorの5試験は合格したが、以下が揃うまで`dock_and_android_agent_source_emulator_verified_production_enrollment_physical_pending`を維持し、運営がproduction端末へアクセス可能とは表示しない。
+Dock／Agent source、Android 15 emulatorの5試験、試験署名APKを入れたPixel 10の5試験は合格した。実機では署名命令、replay／counter拒否、端末identity署名と、Device Ownerでないfactory resetのfail-closedを確認した。[秘密とserialを含まない実機証拠](evidence/android-pixel-10-prefull-physical-20260916.json)。ただし以下が揃うまで`dock_and_android_agent_source_emulator_test_signed_physical_verified_production_enrollment_pending`を維持し、運営がproduction端末へアクセス可能とは表示しない。
 
 1. production operator WebAuthn credentialをOTA、AVB、Agent APK署名鍵と分けたhardwareへ作り、公開trust anchorだけをreview済みproduct overlayへ入れる。
 2. Pixel 10でAgentをDevice Ownerにし、StrongBox device identityとattestationを専用D1へ登録する。

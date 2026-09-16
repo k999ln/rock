@@ -25,13 +25,15 @@ OS full buildを先に試して後からappやLLMの不具合を直す順序に�
 7. SkyでToolを選ぶ→Zemaで依頼・承認・進捗・結果を見る→Walletのreceiptへ反映する流れを、実機clientで可能な範囲まで通す。
 8. 合格したcommit、manifest、APK／model hash、Platform API、DB schema、署名・更新・復旧計画をfreezeする。
 
-2026-09-15の追加検証では、Core／Tool SDK／Automation／記事ToolのAndroid build・unit test・lint、Local Action Assistantのunsigned arm64 release APK build、Android 15 arm64 Pixel 10 device-profile emulatorでの5 instrumentation testまで合格した。ここでは別APKの署名検査、Binder、Android SQLite、Tool 2工程、review必須、Headless JS、GGUF未導入時の`NO_MODEL` fail-closedを確認した。物理Pixelではなく、device credential承認、再起動復元、最終SELinux domainは未確認なのでemulator gate全体は部分合格に留める。
+2026-09-15の追加検証では、Core／Tool SDK／Automation／記事ToolのAndroid build・unit test・lint、Local Action Assistantのunsigned arm64 release APK build、Android 15 arm64 Pixel 10 device-profile emulatorでの5 instrumentation testまで合格した。ここでは別APKの署名検査、Binder、Android SQLite、Tool 2工程、review必須、Headless JS、GGUF未導入時の`NO_MODEL` fail-closedを確認した。
+
+2026-09-16にはOSを書き換えていない所有Pixel 10で、Broker／Tool／Local AI／Wallet 11件、権限を絞ったShell 5件、試験署名Operator Agent 5件、実再起動のseed／recover 2段階の計23件が合格した。Skyで選んだTool、途中の仕事、結果、review、履歴を再起動後に回収し、v2 backupはhardware-backedな2経路の鍵で実ファイルへ同期完了した。これは純正OS上の試験署名APK受入であり、Keystore消去後の24単語復元、production credential／StrongBox attestation、Device Owner実行、SELinux enforcingの最終domain、Soong image、flash／bootの合格ではない。[実機証拠](evidence/android-pixel-10-prefull-physical-20260916.json)。
 
 Sky→Zemaの一回限りhandoff、Zemaのjob進捗、Tool実行、Wallet／収益精算の単体試験に加え、Tool完了をProvider署名Earning ReceiptとしてWalletへ一度だけ転記するbridgeを実装した。2026-09-16には同じ合成実行IDと証拠hashでPixelのTool／端末Wallet区間6/6と署名済みBilling Wallet区間7/7を相関し、`skyZemaToolWalletPath`は`rock_ready_physical_correlated_split_boundary_provider_sandbox_pending`。これはRock所有fixtureの二区間で、配備済み外部Provider一本通し、実売上、返金／chargeback、実払出しは未実証である。
 
 所有Pixel 10の端末readbackと単体APKによるGGUF機内モード推論、再起動、33分22秒の温度試験は完了した。外部Providerは初回OS full buildへ焼き込まず、更新可能なアプリ／サーバー側へ分離する。Provider sandboxは実収益を表示するavocadoOS 1.0公開前の必須gateとして残し、未合格中はlive収益表示を禁止する。GL066は署名source tagとpartition／AVB構成まで固定済みだが、Google純正factory／full OTAの実ファイルSHA、vendor生成inventory、production署名／復旧計画が残る。このgateは**進行中**で、full build開始条件をまだ満たしていない。
 
-初回flashについては、さらに[4項目の専用gate](android-first-flash-gate-20260916.md)を正本化した。正式署名鍵のidentityと紛失・rotation・失効、rollback index運用、Google純正factory image／full OTAの実byte SHA-256、Keystore喪失後も復元できるbackupの4/4が必要である。現在は0/4で、特に既存Android backupは非exportable Keystore鍵を失うと復元できないため未合格。full buildの成功だけでは初回flashを許可しない。
+初回flashについては、さらに[4項目の専用gate](android-first-flash-gate-20260916.md)を正本化した。正式署名鍵のidentityと紛失・rotation・失効、rollback index運用、Google純正factory image／full OTAの実byte SHA-256、Keystore喪失後も復元できるbackupの4/4が必要である。現在は0/4。backup v2の非破壊export／再起動までは実機合格したが、dataとKeystoreを消去した後に24単語だけで復元する破壊試験が残るため、backup gateも未合格である。full buildの成功だけでは初回flashを許可しない。
 
 Sky、Zema、Wallet、Tool、LLMは原則として更新可能なAPK境界に置く。これらだけの修正なら単体APKを再buildして純正Android上で再試験する。framework、SELinux、privapp/product設定、boot/vendor/partition/AVBを変更した場合はOS imageの再buildが必要になる。
 

@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-16",
   "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-  "nextAction": "Pixel 10を再接続してnative Skyの実再起動復旧を確認する。続いてproduction WebAuthn credential、Agent product overlay、StrongBox attestation、Device Ownerを登録し、許可操作と禁止操作を実機検証する。純正復旧artifact、vendor inventory、production署名、物理backup wipe復元を揃え、全preflight合格後だけ最初のfull buildへ進む。",
+  "nextAction": "実機のnative Sky再起動復旧と非破壊backup exportは合格済み。次はproduction WebAuthn credential、Agent product overlay、StrongBox attestation、Device Ownerを登録し、許可操作と禁止操作を実機検証する。純正復旧artifact、vendor inventory、production署名、物理backup wipe復元を揃え、全preflight合格後だけ最初のfull buildへ進む。",
   "tasks": [
     {
       "id": "SKY01",
@@ -690,7 +690,8 @@
         "tests/operator-access-auth.test.mjs",
         "tests/operator-dock-isolation.test.mjs",
         "android/operator-agent/src/androidTest/java/dev/rock/operator/agent/OperatorAgentIntegrationTest.java",
-        "docs/evidence/android-operator-agent-emulator-20260916.json"
+        "docs/evidence/android-operator-agent-emulator-20260916.json",
+        "docs/evidence/android-pixel-10-prefull-physical-20260916.json"
       ]
     },
     {
@@ -871,7 +872,8 @@
       "evidence": [
         "docs/local-ai-os-integration-20260915.md",
         "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
-        "docs/evidence/android-local-ai-plan-v2-20260916.json"
+        "docs/evidence/android-local-ai-plan-v2-20260916.json",
+        "docs/evidence/android-pixel-10-prefull-physical-20260916.json"
       ]
     },
     {
@@ -901,6 +903,7 @@
         "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java",
         "docs/evidence/android-zema-selected-tool-20260916.json",
         "docs/evidence/android-local-ai-plan-v2-20260916.json",
+        "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
         "android/sepolicy/private/rockstar_platform.te"
       ]
     },
@@ -1706,7 +1709,7 @@
       "accountConfigured": false,
       "spendIncurredByThisWork": false
     },
-    "targetDiscussion": "Read-only ADB confirmed the owner-selected first physical target as Japan-market Pixel 10 / frankel / GL066 on 2026-09-16. It is locked with an alternate verified-boot root. The signed 2026091000 source tag and Dynamic Partition / Virtual A/B / AVB layout are frozen. Exact Google factory/full-OTA artifacts, vendor inventory, production signing, build, unlock, flash and restore remain unapproved or incomplete.",
+    "targetDiscussion": "Read-only ADB confirmed the owner-selected first physical target as Japan-market Pixel 10 / frankel / GL066 on 2026-09-16. It is locked with an alternate verified-boot root. The signed 2026091000 source tag and Dynamic Partition / Virtual A/B / AVB layout are frozen. Test-signed apps passed the 23-check pre-full-build physical suite including non-destructive reboot recovery and hardware-backed file export. Exact Google factory/full-OTA artifacts, vendor inventory, production signing, destructive wipe restore, build, unlock and flash remain unapproved or incomplete.",
     "recommendedBuildEnvironment": "DigitalOcean CPU-Optimized Regular 48 vCPU / 96 GiB / 600 GiB / Ubuntu 24.04 x86_64; Google Cloud is the alternative for detachable persistent storage",
     "latestRequest": "Keep the external Provider in the app/server gate, freeze the common Pixel 10 GL066 OS inputs in order, and do not start full build or flash before recovery, vendor and signing inputs pass",
     "externalProviderBoundary": {
@@ -1746,7 +1749,7 @@
     "cloudSpendApproved": false
   },
   "platformCore": {
-    "status": "SHELL_API_V4_BACKUP_V2_EMULATOR_PASS_PHYSICAL_REBOOT_AND_WIPE_PENDING_AOSP_NOT_RUN",
+    "status": "SHELL_API_V4_BACKUP_V2_EMULATOR_AND_PHYSICAL_REBOOT_EXPORT_PASS_WIPE_PENDING_AOSP_NOT_RUN",
     "apiVersion": 1,
     "contract": "contracts/platform-api.json",
     "record": "docs/platform-core.md",
@@ -1763,9 +1766,12 @@
     "shellHasInternetPermission": false,
     "shellHasPlatformManagementPermission": false,
     "shellUsesDedicatedPermission": "dev.rock.permission.USE_SHELL_API",
-    "shellBrokerPhysicalDeviceRetestPassed": false,
+    "shellBrokerPhysicalDeviceRetestPassed": true,
+    "physicalPreFullBuildChecks": "PASS_23_OF_23_TEST_SIGNED_APPS_NO_FLASH",
+    "physicalPreFullBuildEvidence": "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
     "operatorAgentImplemented": true,
     "operatorAgentAndroidEmulatorTests": "PASS_5_OF_5_ANDROID_15",
+    "operatorAgentTestSignedPhysicalTests": "PASS_5_OF_5_PIXEL_10_ANDROID_17",
     "operatorAgentDeviceOwnerExecutionVerified": false,
     "operatorAgentProductionEnrollmentVerified": false,
     "androidBuilt": true,
@@ -1778,6 +1784,10 @@
     "recoverableBackupHostUnitTests": "PASS_37_JAVA11_TESTS",
     "recoverableBackupAndroidCiPassed": false,
     "recoverableBackupAndroidEmulatorPassed": true,
+    "recoverableBackupPhysicalFileExportPassed": true,
+    "recoverableBackupPhysicalHardwareBacked": true,
+    "recoverableBackupPhysicalStorageSyncConfirmed": true,
+    "nativeSkyPhysicalRebootRecoveryPassed": true,
     "recoverableBackupOwnerPhraseUiImplemented": true,
     "recoverableBackupTransactionalImportImplemented": true,
     "recoverableBackupNewKeystoreRebindingImplemented": true,

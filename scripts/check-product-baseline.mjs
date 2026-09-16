@@ -237,7 +237,7 @@ export function validateBaseline(
   requireValue(
       data.primaryCapabilities?.includes('os-platform-core') &&
       data.androidPlatformCore?.status ===
-        'native_sky_api_v4_backup_v2_emulator_pass_physical_reboot_and_wipe_pending_aosp_not_run' &&
+        'native_sky_api_v4_backup_v2_emulator_and_physical_reboot_export_pass_wipe_pending_aosp_not_run' &&
       data.androidPlatformCore?.apiVersion === 1 &&
       JSON.stringify(data.androidPlatformCore?.componentKinds) ===
         JSON.stringify(['TOOL', 'MCP', 'PROVIDER']) &&
@@ -262,7 +262,7 @@ export function validateBaseline(
         'broker_sqlite_schema_v2' &&
       data.androidPlatformCore?.nativeSkySelectionTokenRequired === true &&
       data.androidPlatformCore?.nativeSkySelectionEmulatorVerified === true &&
-      data.androidPlatformCore?.nativeSkySelectionPhysicalRebootVerified === false &&
+      data.androidPlatformCore?.nativeSkySelectionPhysicalRebootVerified === true &&
       data.androidPlatformCore?.recoverableBackupOwnerPhraseUi === true &&
       data.androidPlatformCore?.recoverableBackupTransactionalImport === true &&
       data.androidPlatformCore?.recoverableBackupNewKeystoreRebinding === true &&
@@ -272,6 +272,10 @@ export function validateBaseline(
       data.androidPlatformCore?.recoverableBackupEmulatorBrokerChecks ===
         '11_pass_2_physical_skipped' &&
       data.androidPlatformCore?.recoverableBackupEmulatorShellChecks === '5_pass' &&
+      data.androidPlatformCore?.recoverableBackupPhysicalExportVerified === true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalHardwareBacked === true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalFileSyncConfirmed === true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalRebootVerified === true &&
       data.androidPlatformCore?.recoverableBackupPhysicalWipeVerified === false &&
       data.androidPlatformCore?.zemaSelectedToolPlanGateImplemented === true &&
       data.androidPlatformCore?.zemaEmulatorNoModelFailClosed === true &&
@@ -284,6 +288,7 @@ export function validateBaseline(
     'record',
     'zemaSelectedToolEvidence',
     'recoverableBackupEvidence',
+    'physicalPreFullBuildEvidence',
   ]) {
     const path = data.androidPlatformCore?.[field];
     requireValue(
@@ -322,12 +327,12 @@ export function validateBaseline(
       data.androidPreFullBuildGate?.checks?.stockPixelOfflineAiAndThermal ===
         'passed_offline_reboot_thermal' &&
       data.androidPreFullBuildGate?.checks?.skyZemaToolWalletPath ===
-        'native_sky_persistent_selection_emulator_pass_physical_reboot_wallet_provider_pending' &&
+        'native_sky_zema_selected_tool_result_history_physical_reboot_pass_wallet_provider_pending' &&
       data.androidPreFullBuildGate?.checks
         ?.sourceArtifactAndSigningPlanFreeze ===
         'partial_source_tag_and_device_layout_frozen_recovery_vendor_and_signing_pending' &&
       data.androidPreFullBuildGate?.checks?.operatorAgent ===
-        'source_emulator_pass_production_credential_attestation_device_owner_physical_pending' &&
+        'source_emulator_and_test_signed_physical_5_of_5_pass_production_credential_attestation_device_owner_pending' &&
       data.androidPreFullBuildGate?.checks
         ?.externalProviderForFirstOsFullBuild ===
         'excluded_app_and_server_gate' &&
@@ -344,6 +349,7 @@ export function validateBaseline(
     'physicalToolWalletEvidence',
     'zemaSelectedToolEvidence',
     'operatorAgentEvidence',
+    'physicalPreFullBuildEvidence',
     'dspSourceAndLayoutEvidence',
     'androidWorkflow',
     'localAiWorkflow',
@@ -402,6 +408,8 @@ export function validateBaseline(
       data.deviceEmergencyAccess?.deviceIndependentCommandVerificationImplemented === true &&
       data.deviceEmergencyAccess?.androidServiceImplemented === true &&
       data.deviceEmergencyAccess?.androidEmulatorTestsPassed === true &&
+      data.deviceEmergencyAccess?.testSignedPhysicalPixelChecksPassed === true &&
+      data.deviceEmergencyAccess?.testSignedPhysicalPixelCheckCount === 5 &&
       data.deviceEmergencyAccess?.androidDeviceOwnerExecutionVerified === false &&
       data.deviceEmergencyAccess?.hardwareDeviceAttestationVerified === false &&
       data.deviceEmergencyAccess?.remoteProviderSessionRevocationImplemented === false &&
@@ -412,7 +420,7 @@ export function validateBaseline(
       data.deviceEmergencyAccess?.incidentRecoveryDrillCompleted === false,
     '運営1名の緊急保護を端末側で限定し、常設root・私的内容・Wallet・鍵へのaccessを禁止してください',
   );
-  for (const field of ['policy', 'record']) {
+  for (const field of ['policy', 'record', 'testSignedPhysicalPixelEvidence']) {
     const path = data.deviceEmergencyAccess?.[field];
     requireValue(
       typeof path === 'string' && existsSync(resolve(root, path)),
@@ -459,6 +467,10 @@ export function validateBaseline(
       emergencyPolicy.implementation?.deviceIndependentCommandVerificationImplemented === true &&
       emergencyPolicy.implementation?.androidServiceImplemented === true &&
       emergencyPolicy.implementation?.androidEmulatorTestsPassed === true &&
+      emergencyPolicy.implementation?.testSignedPhysicalPixelChecksPassed === true &&
+      emergencyPolicy.implementation?.testSignedPhysicalPixelCheckCount === 5 &&
+      emergencyPolicy.implementation?.testSignedPhysicalPixelEvidence ===
+        'docs/evidence/android-pixel-10-prefull-physical-20260916.json' &&
       emergencyPolicy.implementation?.androidDeviceOwnerExecutionVerified === false &&
       emergencyPolicy.implementation?.hardwareDeviceAttestationVerified === false &&
       emergencyPolicy.implementation?.remoteProviderSessionRevocationImplemented === false &&

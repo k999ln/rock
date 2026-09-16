@@ -5,6 +5,7 @@ import android.os.ParcelFileDescriptor;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.UUID;
 import org.json.JSONArray;
@@ -144,23 +145,39 @@ public final class ShellBrokerIntegrationTest {
             setup.getString("setupToken"), confirmations.toString()));
         assertEquals(configured.toString(), "configured", configured.getString("status"));
         assertFalse(configured.getBoolean("walletSeed"));
+        boolean recoverySecretHardwareBacked =
+            configured.getBoolean("recoverySecretHardwareBacked");
 
-        ParcelFileDescriptor[] pipe = ParcelFileDescriptor.createPipe();
-        JSONObject exported = new JSONObject(broker.createRecoverableBackup(
-            "shell-backup:" + UUID.randomUUID(), pipe[1]));
-        pipe[1].close();
+        File destination = new File(context.getCacheDir(),
+            "backup-" + UUID.randomUUID() + ".arb");
+        JSONObject exported;
+        try (ParcelFileDescriptor output = ParcelFileDescriptor.open(destination,
+                 ParcelFileDescriptor.MODE_CREATE | ParcelFileDescriptor.MODE_TRUNCATE |
+                 ParcelFileDescriptor.MODE_WRITE_ONLY)) {
+            exported = new JSONObject(broker.createRecoverableBackup(
+                "shell-backup:" + UUID.randomUUID(), output));
+        }
         byte[] envelope;
-        try (ParcelFileDescriptor read = pipe[0];
-             FileInputStream input = new FileInputStream(read.getFileDescriptor());
+        try (FileInputStream input = new FileInputStream(destination);
              ByteArrayOutputStream bytes = new ByteArrayOutputStream()) {
             input.transferTo(bytes); envelope = bytes.toByteArray();
+        } finally {
+            assertTrue(destination.delete() || !destination.exists());
         }
         assertEquals(exported.toString(), "exported", exported.getString("status"));
         assertEquals(envelope.length, exported.getInt("bytes"));
         assertTrue(envelope.length > 256);
         assertTrue(exported.getString("sha256").matches("[a-f0-9]{64}"));
-        assertTrue(exported.has("storageSyncConfirmed"));
+        assertTrue(exported.getBoolean("storageSyncConfirmed"));
+        boolean deviceWrapHardwareBacked = exported.getBoolean("hardwareBacked");
+        boolean storageSyncConfirmed = exported.getBoolean("storageSyncConfirmed");
+        assertTrue(recoverySecretHardwareBacked);
+        assertTrue(deviceWrapHardwareBacked);
         assertEquals("avocadoos-recoverable-backup/2",
             new JSONObject(broker.recoveryStatus()).getString("format"));
+        System.out.println("AVOCADO_BACKUP_V2=EXPORTED");
+        System.out.println("RECOVERY_SECRET_HARDWARE_BACKED=" + recoverySecretHardwareBacked);
+        System.out.println("DEVICE_WRAP_HARDWARE_BACKED=" + deviceWrapHardwareBacked);
+        System.out.println("BACKUP_STORAGE_SYNC_CONFIRMED=" + storageSyncConfirmed);
     }
 }

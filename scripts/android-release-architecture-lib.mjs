@@ -209,13 +209,19 @@ export function validateAndroidReleaseArchitecture({
   if (
     backup.envelope?.format !== platform.storage?.recoverableBackupFormat ||
     backup.implementation?.ownerPhraseCodecAndConfirmationUi !==
-      'implemented_shell_api_v4_emulator_pass' ||
+      'implemented_shell_api_v4_emulator_and_physical_pixel_pass' ||
     backup.implementation?.platformImportAndTransactionalRestore !==
       'implemented_android_sqlite_emulator_pass' ||
     backup.implementation?.newDeviceKeystoreRebinding !==
       'implemented_android_keystore_emulator_pass' ||
+    backup.implementation?.physicalBackupExport !==
+      'pass_pixel_10_hardware_backed_dual_keystore_and_fsync' ||
+    backup.implementation?.physicalRebootPersistence !==
+      'pass_sky_zema_selected_tool_result_and_history' ||
+    backup.implementation?.physicalPreFullBuildEvidence !==
+      'docs/evidence/android-pixel-10-prefull-physical-20260916.json' ||
     backup.implementation?.physicalWipeAndRestoreDrill !== 'pending'
-  ) fail('backup v2のsource/emulator合格と物理未完了境界が一致しません');
+  ) fail('backup v2のsource/emulator、非破壊実機合格、wipe未完了境界が一致しません');
   if (
     firstFlash.policy?.backupRecoveryPolicy !== 'data/android-backup-recovery-policy.json' ||
     firstFlash.passed !== false
