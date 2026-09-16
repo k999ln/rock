@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-16",
   "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-  "nextAction": "Operator Agentの公開trust overlay stagerとchallenge別StrongBox鍵は合格済み。次はownerがrepo外でproduction WebAuthn credentialの公開値と単一端末用challengeを用意し、stagerで固定した後、StrongBox attestationとDevice Ownerを登録して許可／禁止操作を実機検証する。並行して純正復旧artifact、vendor inventory、production署名、物理backup wipe復元を揃え、全preflight合格後だけ最初のfull buildへ進む。",
+  "nextAction": "復旧2ファイル・vendor inventory・署名手順の検査器は合格済み。次はowner本人がGoogleのfactory／full OTA利用条件を確認し、同意する場合だけ同一frankel buildの2ファイルをrepo外へ取得する。その後、実byte hashを固定し、十分なLinux環境でfull source取得とadevtool vendor生成を行う。HSM／本番Operator登録／物理backup wipe復元は別gateのまま、全preflight合格後だけ最初のfull buildへ進む。",
   "tasks": [
     {
       "id": "SKY01",
@@ -1154,7 +1154,10 @@
         "docs/phone-preview-20260911.md",
         "docs/current-state-20260911.md",
         "docs/evidence/launch/progress-audit-20260912.json",
-        "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json"
+        "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json",
+        "scripts/freeze-phone-build-inputs.py",
+        "tests/test_freeze_phone_build_inputs.py",
+        "docs/evidence/android-prefull-input-freeze-20260916.json"
       ]
     },
     {
@@ -1205,7 +1208,10 @@
         "data/android-stock-recovery-policy.json",
         "docs/android-backup-recovery.md",
         "data/android-backup-recovery-policy.json",
-        "docs/evidence/launch/progress-audit-20260912.json"
+        "docs/evidence/launch/progress-audit-20260912.json",
+        "scripts/freeze-phone-build-inputs.py",
+        "tests/test_freeze_phone_build_inputs.py",
+        "docs/evidence/android-prefull-input-freeze-20260916.json"
       ]
     },
     {
@@ -1565,8 +1571,10 @@
         "tests/product-baseline.test.mjs",
         "tests/test_prepare_phone_build.py",
         "tests/test_stage_local_ai_apk.py",
+        "tests/test_freeze_phone_build_inputs.py",
         "docs/evidence/android-pre-full-build-tests-20260915.json",
-        "docs/evidence/android-local-ai-plan-v2-20260916.json"
+        "docs/evidence/android-local-ai-plan-v2-20260916.json",
+        "docs/evidence/android-prefull-input-freeze-20260916.json"
       ]
     },
     {
@@ -1589,7 +1597,9 @@
         "docs/android-production-architecture.md",
         "data/android-release-architecture-policy.json",
         "docs/release-installation-plan-20260909.md",
-        "docs/phone-preview-20260911.md"
+        "docs/phone-preview-20260911.md",
+        "scripts/freeze-phone-build-inputs.py",
+        "docs/evidence/android-prefull-input-freeze-20260916.json"
       ]
     }
   ],

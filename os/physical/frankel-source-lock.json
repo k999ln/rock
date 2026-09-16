@@ -63,10 +63,15 @@
   },
   "vendor": {
     "generationCommand": "adevtool generate-all -d frankel",
+    "inventoryTool": "scripts/freeze-phone-build-inputs.py vendor",
+    "inventoryVerificationImplemented": true,
     "generatedAndInventoried": false,
     "redistributionApproved": false
   },
   "recovery": {
+    "artifactVerificationTool": "scripts/freeze-phone-build-inputs.py recovery",
+    "matchingPairVerificationImplemented": true,
+    "ownerTermsMustBeDetachedAndExternal": true,
     "factoryImageStatus": "PENDING_OWNER_TERMS_DOWNLOAD_AND_SHA256",
     "fullOtaStatus": "PENDING_OWNER_TERMS_DOWNLOAD_AND_SHA256",
     "factoryImageSha256": null,
@@ -76,6 +81,12 @@
     "bothSlotsBootableViaMatchingFullOtaBeforeRiskyFlash": true,
     "factoryRestoreTested": false,
     "bootloaderRelockTested": false
+  },
+  "signingPlan": {
+    "freezeTool": "scripts/freeze-phone-build-inputs.py signing-plan",
+    "procedureHashFreezeImplemented": true,
+    "hsmProvisioned": false,
+    "signingBridgesVerified": false
   },
   "firstFlashGate": {
     "schema": "avocadoos-android-first-flash-gate/1",

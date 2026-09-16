@@ -37,6 +37,15 @@
     "allAlgorithmsAndSigningPathsVerified": false,
     "signedArtifactIndependentVerificationCompleted": false
   },
+  "planFreeze": {
+    "tool": "scripts/freeze-phone-build-inputs.py signing-plan",
+    "policyAndProcedureHashingImplemented": true,
+    "containsPrivateKeysOrHsmCredentials": false,
+    "hsmProvisioned": false,
+    "signingBridgesVerified": false,
+    "exactKeyInventoryPendingTargetFiles": true,
+    "evidence": "docs/evidence/android-prefull-input-freeze-20260916.json"
+  },
   "rotationAndRevocation": {
     "policyVersion": "1.0",
     "status": "approved_not_drilled",

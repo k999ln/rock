@@ -249,6 +249,24 @@ assert.ok(operatorOverlayStager.includes('production Operator identity must requ
 assert.ok(operatorOverlayStager.includes('factory reset must stay disabled'));
 assert.ok(read('scripts/build-phone-bringup.sh').includes('ROCK_OPERATOR_AGENT_CONFIG'));
 assert.ok(read('scripts/build-phone-bringup.sh').includes('stage-operator-agent-overlay.py" verify'));
+const phoneInputFreezer = read('scripts/freeze-phone-build-inputs.py');
+assert.ok(phoneInputFreezer.includes('avocadoos-google-stock-recovery-artifacts/1'));
+assert.ok(phoneInputFreezer.includes('factory image and full OTA build IDs do not match'));
+assert.ok(phoneInputFreezer.includes('Google artifact URL must be the exact official download URL'));
+assert.ok(phoneInputFreezer.includes('local recovery bytes differ from the Google official selection record'));
+assert.ok(phoneInputFreezer.includes('generated vendor tree changed after inventory freeze'));
+assert.ok(phoneInputFreezer.includes('avocadoos-android-signing-plan-freeze/1'));
+assert.ok(phoneInputFreezer.includes('productionSigningReady'));
+const phoneBuild = read('scripts/build-phone-bringup.sh');
+for (const value of [
+  'ROCK_GOOGLE_FACTORY_IMAGE',
+  'ROCK_GOOGLE_FULL_OTA',
+  'ROCK_GOOGLE_TERMS_RECORD',
+  'freeze-phone-build-inputs.py" recovery',
+  'freeze-phone-build-inputs.py" vendor',
+  'freeze-phone-build-inputs.py" verify-vendor',
+  'freeze-phone-build-inputs.py" signing-plan',
+]) assert.ok(phoneBuild.includes(value));
 const operatorOverlayable = read('android/operator-agent/src/main/res/values/overlayable.xml');
 assert.ok(operatorOverlayable.includes('<overlayable name="OperatorAgentConfig">'));
 assert.ok(operatorOverlayable.includes('<policy type="product">'));

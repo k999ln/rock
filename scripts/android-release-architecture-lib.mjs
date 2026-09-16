@@ -36,6 +36,7 @@ export function validateAndroidReleaseArchitecture({
   operatorDatabase,
   operatorOverlayable,
   operatorOverlayStager,
+  phoneInputFreezer,
   phoneBuild,
   androidBp,
   physicalProduct,
@@ -318,6 +319,22 @@ export function validateAndroidReleaseArchitecture({
     'stage-operator-agent-overlay.py" verify',
     'operator-agent-overlay.json',
   ], 'phone build入口へOperator overlayのstage／再検証が接続されていません');
+  includesAll(phoneInputFreezer, [
+    'avocadoos-google-stock-recovery-artifacts/1',
+    'factory image and full OTA build IDs do not match',
+    'generated vendor tree changed after inventory freeze',
+    'avocadoos-android-signing-plan-freeze/1',
+    'productionSigningReady',
+  ], '純正復旧、vendor inventory、署名手順のfreeze検査が不足しています');
+  includesAll(phoneBuild, [
+    'ROCK_GOOGLE_FACTORY_IMAGE',
+    'ROCK_GOOGLE_FULL_OTA',
+    'ROCK_GOOGLE_TERMS_RECORD',
+    'freeze-phone-build-inputs.py" recovery',
+    'freeze-phone-build-inputs.py" vendor',
+    'freeze-phone-build-inputs.py" verify-vendor',
+    'freeze-phone-build-inputs.py" signing-plan',
+  ], 'phone build入口へ復旧／vendor／署名計画freezeが接続されていません');
   includesAll(operatorExecutor, [
     'isDeviceOwnerApp',
     'setPackagesSuspended',

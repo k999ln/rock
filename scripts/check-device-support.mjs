@@ -190,10 +190,17 @@ requireValue(
 requireValue(
   sourceLock.vendor?.generationCommand ===
       'adevtool generate-all -d frankel' &&
+    sourceLock.vendor?.inventoryTool ===
+      'scripts/freeze-phone-build-inputs.py vendor' &&
+    sourceLock.vendor?.inventoryVerificationImplemented === true &&
     sourceLock.vendor?.generatedAndInventoried === false &&
     sourceLock.vendor?.redistributionApproved === false &&
     sourceLock.recovery?.factoryImageStatus ===
       'PENDING_OWNER_TERMS_DOWNLOAD_AND_SHA256' &&
+    sourceLock.recovery?.artifactVerificationTool ===
+      'scripts/freeze-phone-build-inputs.py recovery' &&
+    sourceLock.recovery?.matchingPairVerificationImplemented === true &&
+    sourceLock.recovery?.ownerTermsMustBeDetachedAndExternal === true &&
     sourceLock.recovery?.fullOtaStatus ===
       'PENDING_OWNER_TERMS_DOWNLOAD_AND_SHA256' &&
     sourceLock.recovery?.factoryImageSha256 === null &&
@@ -205,6 +212,14 @@ requireValue(
     sourceLock.recovery?.factoryRestoreTested === false &&
     sourceLock.recovery?.bootloaderRelockTested === false,
   'vendor／純正復旧artifactの未完了gateまたはanti-rollback境界が違います',
+);
+requireValue(
+  sourceLock.signingPlan?.freezeTool ===
+      'scripts/freeze-phone-build-inputs.py signing-plan' &&
+    sourceLock.signingPlan?.procedureHashFreezeImplemented === true &&
+    sourceLock.signingPlan?.hsmProvisioned === false &&
+    sourceLock.signingPlan?.signingBridgesVerified === false,
+  '正式署名手順のfreezeとHSM未完了境界が違います',
 );
 requireValue(
   sourceLock.externalProviderBoundary?.includedInFirstOsFullBuild === false &&

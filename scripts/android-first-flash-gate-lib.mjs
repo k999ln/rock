@@ -145,6 +145,13 @@ export function validateAndroidFirstFlashGate({
     signingCustody?.keySeparation?.exactKeyInventoryDerivedFromFinalTargetFiles !== true ||
     signingCustody?.keySeparation?.operatorDeviceAccessCredentialSeparated !== true ||
     signingCustody?.androidIntegration?.vendorAndModelSelected !== true ||
+    signingCustody?.planFreeze?.tool !==
+      'scripts/freeze-phone-build-inputs.py signing-plan' ||
+    signingCustody?.planFreeze?.policyAndProcedureHashingImplemented !== true ||
+    signingCustody?.planFreeze?.containsPrivateKeysOrHsmCredentials !== false ||
+    signingCustody?.planFreeze?.hsmProvisioned !== false ||
+    signingCustody?.planFreeze?.signingBridgesVerified !== false ||
+    signingCustody?.planFreeze?.exactKeyInventoryPendingTargetFiles !== true ||
     signingCustody?.rotationAndRevocation?.policyVersion !== '1.0' ||
     signingCustody?.rotationAndRevocation?.status !== 'approved_not_drilled' ||
     signingCustody?.rotationAndRevocation?.avb?.schedule !==
@@ -246,6 +253,14 @@ export function validateAndroidFirstFlashGate({
     stockRecoveryPolicy?.custody?.offlineArtifactCopiesRequired !== true ||
     stockRecoveryPolicy?.custody?.repositoryStoresFileNameBytesSha256AndBuildOnly !== true ||
     stockRecoveryPolicy?.ownerTerms?.ownerAcceptanceRecorded !== false ||
+    stockRecoveryPolicy?.implementation?.artifactPairVerifier !==
+      'scripts/freeze-phone-build-inputs.py recovery' ||
+    stockRecoveryPolicy?.implementation?.actualByteHashingImplemented !== true ||
+    stockRecoveryPolicy?.implementation?.sameBuildZipInspectionImplemented !== true ||
+    stockRecoveryPolicy?.implementation?.detachedOwnerTermsValidationImplemented !== true ||
+    stockRecoveryPolicy?.implementation?.officialPublishedIdentityValidationImplemented !== true ||
+    stockRecoveryPolicy?.implementation?.downloadOrTermsAcceptancePerformed !== false ||
+    stockRecoveryPolicy?.implementation?.actualArtifactsVerified !== false ||
     stockRecoveryPolicy?.artifacts?.buildId !== null ||
     stockRecoveryPolicy?.artifacts?.factoryImage?.fileName !== null ||
     stockRecoveryPolicy?.artifacts?.fullOta?.fileName !== null ||

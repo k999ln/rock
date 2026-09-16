@@ -1,7 +1,7 @@
 # avocadoOS Android正式署名鍵の保管方針
 
 決定日: 2026-09-16
-状態: **構成・機種・4鍵系統決定済み／調達・全署名経路の実測は未完了**
+状態: **構成・機種・4鍵系統・手順hash固定済み／調達・全署名経路の実測は未完了**
 
 機械可読の正本は`data/android-signing-custody-policy.json`。秘密鍵、HSM認証情報、wrap key、復元要素はGitへ保存しない。
 
@@ -66,3 +66,7 @@ AVB、OTA、APK、APEXの全てを1本の鍵にまとめない。最低でも次
 - Pixel 10で署名済みOS／OTA未検証
 
 したがって`production-signing-key-lifecycle`は引き続きblockedであり、初回unlock／flashは禁止する。
+
+## build入力への手順固定
+
+`scripts/freeze-phone-build-inputs.py signing-plan`は、このpolicyと本文の実byte SHA-256、4つの役割class、秘密鍵export禁止をbuild証拠へ保存する。秘密鍵、HSM認証情報、仮のfingerprintは生成・読取りしない。出力は`hsmProvisioned=false`、`signingBridgesVerified=false`、`productionSigningReady=false`を明示し、手順を固定したことと正式署名可能であることを分ける。最終target-files生成後にAPK／APEXを含む正確なkey inventoryを追加するまで、この状態をproduction署名完了へ昇格させない。

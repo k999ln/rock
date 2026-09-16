@@ -2,12 +2,15 @@
 # Compile only. No cloud creation, device access, key generation or flash.
 set -eo pipefail
 if [[ $# != 2 ]]; then
-  echo 'Usage: ROCK_LOCAL_AI_APK=<reviewed.apk> ROCK_ANDROID_AAPT2=<aapt2> ROCK_OPERATOR_AGENT_CONFIG=<external-public.json> bash external/rockstaros/scripts/build-phone-bringup.sh <OS-tree> <GrapheneOS-allowed-signers>' >&2
+  echo 'Usage: ROCK_LOCAL_AI_APK=<reviewed.apk> ROCK_ANDROID_AAPT2=<aapt2> ROCK_OPERATOR_AGENT_CONFIG=<external-public.json> ROCK_GOOGLE_FACTORY_IMAGE=<factory.zip> ROCK_GOOGLE_FULL_OTA=<ota.zip> ROCK_GOOGLE_TERMS_RECORD=<external.json> bash external/rockstaros/scripts/build-phone-bringup.sh <OS-tree> <GrapheneOS-allowed-signers>' >&2
   exit 2
 fi
 : "${ROCK_LOCAL_AI_APK:?Set ROCK_LOCAL_AI_APK to the lock-reviewed unsigned release APK}"
 : "${ROCK_ANDROID_AAPT2:?Set ROCK_ANDROID_AAPT2 to a trusted aapt2 binary}"
 : "${ROCK_OPERATOR_AGENT_CONFIG:?Set ROCK_OPERATOR_AGENT_CONFIG to the reviewed external public trust input}"
+: "${ROCK_GOOGLE_FACTORY_IMAGE:?Set ROCK_GOOGLE_FACTORY_IMAGE to the owner-downloaded Pixel 10 factory ZIP}"
+: "${ROCK_GOOGLE_FULL_OTA:?Set ROCK_GOOGLE_FULL_OTA to the matching owner-downloaded Pixel 10 full OTA ZIP}"
+: "${ROCK_GOOGLE_TERMS_RECORD:?Set ROCK_GOOGLE_TERMS_RECORD to the owner-provided detached download-only terms record}"
 rock_phone_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 rock_phone_tree="$(cd -- "$1" && pwd -P)"
 rock_phone_signers="$(realpath -- "$2")"
@@ -28,10 +31,18 @@ fi
 unset OUT_DIR_COMMON_BASE
 export OUT_DIR="$rock_phone_tree/out"
 mkdir -p "$OUT_DIR"
+mkdir -p "$OUT_DIR/rockstaros-evidence"
 python3 "$rock_phone_root/scripts/prepare-phone-build.py" host "$OUT_DIR"
+python3 "$rock_phone_root/scripts/freeze-phone-build-inputs.py" recovery \
+  "$ROCK_GOOGLE_FACTORY_IMAGE" "$ROCK_GOOGLE_FULL_OTA" "$ROCK_GOOGLE_TERMS_RECORD" \
+  --output "$OUT_DIR/rockstaros-evidence/google-stock-recovery.json"
+python3 "$rock_phone_root/scripts/freeze-phone-build-inputs.py" signing-plan \
+  --output "$OUT_DIR/rockstaros-evidence/production-signing-plan.json"
 python3 "$rock_phone_root/scripts/prepare-phone-build.py" prepare "$rock_phone_tree" --allowed-signers "$rock_phone_signers"
 python3 "$rock_phone_root/scripts/stage-local-ai-apk.py" stage "$rock_phone_tree" "$ROCK_LOCAL_AI_APK" --aapt2 "$ROCK_ANDROID_AAPT2"
 python3 "$rock_phone_root/scripts/stage-operator-agent-overlay.py" stage "$rock_phone_tree" "$ROCK_OPERATOR_AGENT_CONFIG"
+python3 "$rock_phone_root/scripts/freeze-phone-build-inputs.py" vendor "$rock_phone_tree" \
+  --output "$OUT_DIR/rockstaros-evidence/vendor-inventory.json"
 rock_phone_hook_state="$(python3 "$rock_phone_root/scripts/prepare-phone-build.py" verify-hook "$rock_phone_tree")"
 IFS=$'\t' read -r rock_phone_hook_repo_path rock_phone_hook_sha256 <<< "$rock_phone_hook_state"
 if [[ -z "$rock_phone_hook_repo_path" || -z "$rock_phone_hook_sha256" ]]; then
@@ -46,13 +57,14 @@ export ROCK_PHONE_EXPECTED_HOOK_SHA256="$rock_phone_hook_sha256"
 repo forall -e -c 'bash "$ROCK_PHONE_SOURCE_ROOT/scripts/check-phone-project.sh"'
 python3 "$rock_phone_root/scripts/stage-local-ai-apk.py" verify "$rock_phone_tree"
 python3 "$rock_phone_root/scripts/stage-operator-agent-overlay.py" verify "$rock_phone_tree"
+python3 "$rock_phone_root/scripts/freeze-phone-build-inputs.py" verify-vendor "$rock_phone_tree" \
+  "$OUT_DIR/rockstaros-evidence/vendor-inventory.json" >/dev/null
 # Re-check exact bytes after repo-wide validation narrows the prepare→build
 # TOCTOU window; this remains read-only and fails before invoking Soong.
 python3 "$rock_phone_root/scripts/prepare-phone-build.py" verify-hook "$rock_phone_tree"
 source build/envsetup.sh
 lunch "$rock_phone_lunch"
 # Preserve the actual pinned source map beside the output for this build.
-mkdir -p "$OUT_DIR/rockstaros-evidence"
 repo manifest -r -o "$OUT_DIR/rockstaros-evidence/source-manifest.xml"
 git -C external/rockstaros rev-parse HEAD > "$OUT_DIR/rockstaros-evidence/rock-commit.txt"
 git -C vendor/adevtool diff -- "${rock_phone_hook#vendor/adevtool/}" > "$OUT_DIR/rockstaros-evidence/device-integration.patch"

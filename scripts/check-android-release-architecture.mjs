@@ -33,6 +33,7 @@ const result = validateAndroidReleaseArchitecture({
   operatorDatabase: read('android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorAgentDatabase.java'),
   operatorOverlayable: read('android/operator-agent/src/main/res/values/overlayable.xml'),
   operatorOverlayStager: read('scripts/stage-operator-agent-overlay.py'),
+  phoneInputFreezer: read('scripts/freeze-phone-build-inputs.py'),
   phoneBuild: read('scripts/build-phone-bringup.sh'),
   androidBp: read('android/Android.bp'),
   physicalProduct: read('os/physical/rockstaros.mk'),

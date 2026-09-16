@@ -333,6 +333,8 @@ export function validateBaseline(
         'partial_source_tag_and_device_layout_frozen_recovery_vendor_and_signing_pending' &&
       data.androidPreFullBuildGate?.checks?.operatorAgent ===
         'source_emulator_test_signed_physical_and_public_overlay_stager_pass_production_credential_attestation_device_owner_pending' &&
+      data.androidPreFullBuildGate?.checks?.recoveryVendorSigningInputFreeze ===
+        'validators_implemented_9_of_9_synthetic_actual_google_artifacts_vendor_tree_and_hsm_pending' &&
       data.androidPreFullBuildGate?.checks
         ?.externalProviderForFirstOsFullBuild ===
         'excluded_app_and_server_gate' &&
@@ -351,6 +353,7 @@ export function validateBaseline(
     'operatorAgentEvidence',
     'physicalPreFullBuildEvidence',
     'dspSourceAndLayoutEvidence',
+    'inputFreezeEvidence',
     'androidWorkflow',
     'localAiWorkflow',
   ]) {

@@ -38,6 +38,16 @@
     "fullOtaPage": "https://developers.google.com/android/ota",
     "ownerAcceptanceRecorded": false
   },
+  "implementation": {
+    "artifactPairVerifier": "scripts/freeze-phone-build-inputs.py recovery",
+    "actualByteHashingImplemented": true,
+    "sameBuildZipInspectionImplemented": true,
+    "detachedOwnerTermsValidationImplemented": true,
+    "officialPublishedIdentityValidationImplemented": true,
+    "downloadOrTermsAcceptancePerformed": false,
+    "actualArtifactsVerified": false,
+    "evidence": "docs/evidence/android-prefull-input-freeze-20260916.json"
+  },
   "artifacts": {
     "buildId": null,
     "factoryImage": {

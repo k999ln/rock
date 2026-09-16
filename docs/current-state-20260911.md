@@ -1,5 +1,11 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-16 — 復旧・vendor・署名手順のfull build入力検査を実装
+
+Pixel 10 GL066のGoogle factory imageとfull OTAについて、所有者のdownload-only同意記録、Google公式URL／掲載SHA-256、実byte hash、ZIP安全性、frankel／A/B、同一build IDを検査する入口を追加した。固定adevtool commitから生成されたvendor treeは全fileのbyte数／SHA-256と内部symlinkをinventory化し、build直前に再照合する。正式署名はpolicyと手順のhashを同じbuild証拠へ保存するが、HSMや秘密鍵が存在するとは扱わない。合成fixture 9/9に合格し、full build入口へ接続した。[証拠](evidence/android-prefull-input-freeze-20260916.json)。
+
+Google公式ページはfactory imageがdataを消去し、通常はfull OTAの方が安全でunlock／wipe不要であること、Pixel 10の2026年5月以降はanti-rollbackにより古いAndroid 16 bootloaderへ戻せず、matching full OTAで両slotをboot可能にする必要があることを示している。ダウンロード継続は利用条件への同意になるため、この作業では代理同意・取得を行っていない。実Google 2ファイル、実vendor tree、HSM／署名bridgeは未完了で、初回flash gateは0/4のまま。
+
 ## 2026-09-16 — Operator本番公開設定のbuild前検査を実装
 
 単一のPixel 10 GL066 previewを対象に、repo外の公開trust入力からOperator Agent用の静的product RROを生成・再検証する入口を追加した。正確なHTTPS origin、P-256 WebAuthn公開鍵、32-byte端末attestation challenge、StrongBox必須、factory reset無効を機械検査し、秘密field、symlink、余分なfile、stage後改変を拒否する。端末StrongBox鍵のaliasもchallengeへ結び、古いchallengeのidentityを本番へ流用しない。Python 9/9、Android build／lint、Android 15 emulator 6/6に合格した。[証拠](evidence/android-operator-overlay-stager-20260916.json)。

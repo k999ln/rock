@@ -1,7 +1,7 @@
 # avocadoOS Google純正復旧セット
 
 決定日: 2026-09-16
-状態: **選定規則決定済み／本人の利用条件同意・実ファイル取得・SHA-256固定は未完了**
+状態: **選定規則と実byte検査器は実装済み／本人の利用条件同意・実ファイル取得・SHA-256固定は未完了**
 
 正本は`data/android-stock-recovery-policy.json`。対象は所有済みGoogle Pixel 10 / `frankel` / GL066。
 
@@ -32,3 +32,19 @@ Google公式配布物の利用条件は所有者本人が確認・同意する�
 2026-09-16にUSB接続した端末から、Pixel 10 / `frankel`、slot A、Android 17、2026-09-01 security patch、bootloader `deepspace-17.2-15372054`、Verified Boot `yellow`をread-onlyで確認した。これは復旧ファイルを取得した証拠ではない。
 
 利用条件への同意後、同一buildの2ファイルを取得し、byte数とSHA-256を固定するまで`google-stock-recovery-artifacts`はblockedのままにする。
+
+## 固定した検査入口
+
+`scripts/freeze-phone-build-inputs.py recovery`はrepo外のfactory ZIP、full OTA ZIP、所有者のdetached同意記録を受け取る。実byteをSHA-256計算し、unsafe／重複／暗号化ZIP entry、frankel以外、非A/B OTA、build ID不一致、公式flash scriptと内包imageの不一致を拒否する。出力へ外部pathや個人identityは保存しない。
+
+同意記録は[未同意template](templates/google-recovery-terms-record.example.json)をrepo外へcopyし、所有者本人が両ページを読んだ場合だけ`acceptedByOwner=true`とUTC日時を記録する。これはdownloadだけの記録で、`flashOrWipeAuthorized`は必ずfalseのままにする。実行例:
+
+```sh
+python3 scripts/freeze-phone-build-inputs.py recovery \
+  /external/recovery/frankel-factory.zip \
+  /external/recovery/frankel-ota.zip \
+  /external/recovery/google-terms.json \
+  --output /external/recovery/google-stock-recovery.json
+```
+
+検査器はGoogle公式download URLと掲載SHA-256も所有者記録へ固定し、手元の実byteと一致することを確認する。合成試験は9/9合格したが、Google実配布物は未提供なのでartifact gateは合格していない。

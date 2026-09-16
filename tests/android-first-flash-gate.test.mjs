@@ -177,6 +177,20 @@ void test('signing custody rejects raw export and treating diagnostics as recove
     }),
     /custody architecture changed/,
   );
+
+  const falseHsmClaim = custody();
+  falseHsmClaim.planFreeze.hsmProvisioned = true;
+  assert.throws(
+    () => validateGate({
+      root,
+      gate,
+      sourceLock,
+      signingCustody: falseHsmClaim,
+      rollbackPolicy: rollback(),
+      stockRecoveryPolicy: stockRecovery(),
+    }),
+    /custody architecture changed/,
+  );
 });
 
 void test('rollback policy rejects trial-slot commit and downgrade recovery exceptions', () => {
@@ -240,6 +254,20 @@ void test('stock recovery policy rejects beta selection and download-as-flash ap
       signingCustody: custody(),
       rollbackPolicy: rollback(),
       stockRecoveryPolicy: implicitFlash,
+    }),
+    /Google stock recovery policy changed/,
+  );
+
+  const falseArtifactClaim = stockRecovery();
+  falseArtifactClaim.implementation.actualArtifactsVerified = true;
+  assert.throws(
+    () => validateGate({
+      root,
+      gate,
+      sourceLock,
+      signingCustody: custody(),
+      rollbackPolicy: rollback(),
+      stockRecoveryPolicy: falseArtifactClaim,
     }),
     /Google stock recovery policy changed/,
   );

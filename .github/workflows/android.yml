@@ -2,9 +2,9 @@ name: Rock star Android prototype
 on:
   push:
     branches: [main]
-    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', 'scripts/package-android-trial.py', 'scripts/stage-operator-agent-overlay.py', 'tests/test_stage_operator_agent_overlay.py', 'docs/android-trial.md', '.github/workflows/android.yml', 'lib/mr-tools.ts']
+    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', 'scripts/package-android-trial.py', 'scripts/stage-operator-agent-overlay.py', 'scripts/freeze-phone-build-inputs.py', 'tests/test_stage_operator_agent_overlay.py', 'tests/test_freeze_phone_build_inputs.py', 'docs/android-trial.md', '.github/workflows/android.yml', 'lib/mr-tools.ts']
   pull_request:
-    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', 'scripts/package-android-trial.py', 'scripts/stage-operator-agent-overlay.py', 'tests/test_stage_operator_agent_overlay.py', 'docs/android-trial.md', '.github/workflows/android.yml', 'lib/mr-tools.ts']
+    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', 'scripts/package-android-trial.py', 'scripts/stage-operator-agent-overlay.py', 'scripts/freeze-phone-build-inputs.py', 'tests/test_stage_operator_agent_overlay.py', 'tests/test_freeze_phone_build_inputs.py', 'docs/android-trial.md', '.github/workflows/android.yml', 'lib/mr-tools.ts']
 permissions:
   contents: read
 concurrency:
@@ -36,6 +36,7 @@ jobs:
         run: |
           node scripts/check-os-contracts.mjs
           python3 -m unittest tests.test_stage_operator_agent_overlay -v
+          python3 -m unittest tests.test_freeze_phone_build_inputs -v
       - name: Permit KVM in the ephemeral test runner
         run: |
           test -c /dev/kvm
