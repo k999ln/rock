@@ -1,0 +1,268 @@
+{
+  "schema": "avocadoos-system-composition-audit/1",
+  "updatedAt": "2026-09-16",
+  "objective": "利用者が自分専用のAI自動化チームを所有し、通信断でも仕事を進め、接続時に検証済み成果・収益・Walletへ安全につなぎ、実測に基づいてTool群とファンドを改善できること",
+  "verdict": {
+    "designAligned": true,
+    "bestCurrentCombinationForDeclaredV1Objective": true,
+    "allComponentsImplemented": false,
+    "allRequiredConnectionsVerified": false,
+    "productionReady": false,
+    "summary": "選択した責任分離と実装順は目的に整合する。一方、Web、Android単体APK、fixture、sandbox、物理端末の証拠が混在し、Pixel上の一つの製品経路としては未結合・未受入である。"
+  },
+  "selectionPrinciples": [
+    "OSや端末開発そのものではなく、offline AI teamから検証済み成果と収益へ至る利用者価値を優先する",
+    "共通Coreと機種別Device Support Packageを分離し、最初の物理対象だけをPixel 10 GL066 frankelへ固定する",
+    "SkyはToolの発見と接続、Zemaは依頼・承認・進捗・結果・履歴を担当する",
+    "Android UI Shell、権限を持つPlatform Broker、Local AI、Tool、Provider、Operator Agentを別UIDと別署名境界にする",
+    "LLMとToolはOS imageから交換可能にし、権限・receipt・停止・復旧の契約だけをOSへ固定する",
+    "Tool完了、Provider確認済み収益、Wallet反映、ファンド実績を別状態にし、推定収益を残高へ入れない",
+    "運営管理画面は利用者OSへ入れず、端末側の限定Agentと外部Operator Dockを組み合わせる",
+    "ゲームは同じ権限・receipt・Wallet基盤の派生先とし、1.0の中核loopを妨げない"
+  ],
+  "fixedCombination": [
+    {
+      "id": "identity",
+      "choice": "avocadoOS 1.x with immutable internal namespace dev.rock",
+      "fit": "ALIGNED",
+      "state": "SOURCE_INTEGRATED",
+      "evidence": ["data/product-identity.json", "docs/product-baseline.md"]
+    },
+    {
+      "id": "device_architecture",
+      "choice": "shared avocadoOS Core plus per-SKU Device Support Package; Pixel 10 GL066 frankel first",
+      "fit": "ALIGNED",
+      "state": "TARGET_SELECTED_BUILD_NOT_RUN",
+      "evidence": [
+        "data/device-support-matrix.json",
+        "docs/device-support-architecture.md"
+      ]
+    },
+    {
+      "id": "user_experience",
+      "choice": "Home entry; Sky discovers and connects Tools; Zema manages all work; CSV is a Sky Tool",
+      "fit": "ALIGNED",
+      "state": "WEB_INTEGRATED_ANDROID_UI_PARTIAL",
+      "evidence": [
+        "docs/sky.md",
+        "docs/chat-mcp-control-room-20260913.md",
+        "tests/sky-zema-handoff.test.mjs"
+      ]
+    },
+    {
+      "id": "android_security_boundary",
+      "choice": "least-privilege dev.rock.shell plus headless dev.rock.automation Broker with signer, package, UID and version checks",
+      "fit": "ALIGNED",
+      "state": "STANDALONE_BUILD_AND_EMULATOR_VERIFIED_AOSP_NOT_RUN",
+      "evidence": [
+        "docs/android-production-architecture.md",
+        "data/android-release-architecture-policy.json",
+        "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java"
+      ]
+    },
+    {
+      "id": "local_ai",
+      "choice": "replaceable offline GGUF Local Action Assistant behind a signed Binder contract",
+      "fit": "ALIGNED",
+      "state": "PHYSICAL_STANDALONE_APK_VERIFIED_NOT_IN_OS_IMAGE",
+      "evidence": [
+        "contracts/local-ai-runtime.json",
+        "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json"
+      ]
+    },
+    {
+      "id": "tool_runtime",
+      "choice": "signed, versioned, permission-scoped Tool packages executed through Platform Broker",
+      "fit": "ALIGNED",
+      "state": "FIXED_TOOL_FLOW_VERIFIED_GENERAL_ZEMA_ORCHESTRATION_NOT_CONNECTED",
+      "evidence": [
+        "contracts/platform-api.json",
+        "docs/platform-core.md",
+        "android/automation/src/main/java/dev/rock/automation/RockPlatformService.java"
+      ]
+    },
+    {
+      "id": "verified_economics",
+      "choice": "Tool result then provider-signed Earning Receipt then idempotent Wallet posting",
+      "fit": "ALIGNED",
+      "state": "ROCK_OWNED_FIXTURE_CORRELATED_PROVIDER_SANDBOX_PENDING",
+      "evidence": [
+        "docs/evidence/tool-earning-wallet-bridge-20260915.json",
+        "docs/evidence/pixel-tool-wallet-correlation-20260916.json"
+      ]
+    },
+    {
+      "id": "wallet_and_fund",
+      "choice": "replaceable non-custodial Provider adapters; Wallet reconciliation; fund decisions from verified net results only",
+      "fit": "ALIGNED",
+      "state": "WALLET_CODE_AND_SANDBOX_FUND_PAPER_ONLY",
+      "evidence": [
+        "docs/external-wallet-fund-provider-boundary-20260913.md",
+        "docs/everything-market-and-autonomous-fund-20260913.md"
+      ]
+    },
+    {
+      "id": "operator_access",
+      "choice": "external Operator Dock plus restricted auditable device Agent; no hidden general shell",
+      "fit": "ALIGNED",
+      "state": "DOCK_SOURCE_VERIFIED_DEVICE_AGENT_AND_PHYSICAL_TEST_PENDING",
+      "evidence": [
+        "data/device-emergency-access-policy.json",
+        "docs/security-incident-response.md",
+        "tests/operator-dock-isolation.test.mjs"
+      ]
+    },
+    {
+      "id": "update_restore",
+      "choice": "production signing separation, Virtual A/B, rollback index, verified stock recovery and encrypted owner-scoped backup",
+      "fit": "ALIGNED",
+      "state": "POLICY_AND_SOURCE_PARTIAL_PHYSICAL_ACCEPTANCE_PENDING",
+      "evidence": [
+        "data/android-signing-custody-policy.json",
+        "data/android-first-flash-gate.json",
+        "data/android-backup-recovery-policy.json"
+      ]
+    },
+    {
+      "id": "game_extension",
+      "choice": "optional adapter using the same owner, permission, receipt and Wallet contracts after the core loop",
+      "fit": "ALIGNED",
+      "state": "LINUX_FIXTURE_AND_SDK_ONLY_REAL_GAME_PENDING",
+      "evidence": [
+        "docs/rc2-remaining-acceptance-20260911.md",
+        "docs/gx01-reference-sdk-sandbox-20260910.md"
+      ]
+    }
+  ],
+  "endToEndFlows": [
+    {
+      "id": "offline_ai_team",
+      "requiredForV1": true,
+      "path": [
+        "Sky",
+        "Zema",
+        "Android Shell",
+        "Platform Broker",
+        "Local AI",
+        "Tool",
+        "result and history"
+      ],
+      "state": "PARTIAL_NOT_SINGLE_DEVICE_VERIFIED",
+      "blockingGaps": [
+        "final native Sky and Zema UI",
+        "persistent native handoff instead of browser sessionStorage",
+        "Broker to Local AI to general Tool orchestration",
+        "reboot and failure recovery of the whole path"
+      ]
+    },
+    {
+      "id": "verified_income_wallet",
+      "requiredForV1": true,
+      "path": [
+        "Tool result",
+        "external earning provider",
+        "signed Earning Receipt",
+        "Wallet reconciliation",
+        "fee and payout instruction"
+      ],
+      "state": "FIXTURE_VERIFIED_EXTERNAL_PROVIDER_PENDING",
+      "blockingGaps": [
+        "one deployed provider sandbox",
+        "refund, chargeback and unknown-result handling",
+        "owner signature and first controlled transfer"
+      ]
+    },
+    {
+      "id": "autonomous_fund",
+      "requiredForV1": false,
+      "path": [
+        "verified Tool histories",
+        "net outcome calculation",
+        "allocation proposal",
+        "user approval",
+        "repeated measurement"
+      ],
+      "state": "PAPER_ANALYTICS_ONLY",
+      "blockingGaps": [
+        "multiple production-like Tool histories",
+        "native Zema control",
+        "regulated provider and regional acceptance before live assets"
+      ]
+    },
+    {
+      "id": "safe_device_lifecycle",
+      "requiredForV1": true,
+      "path": [
+        "signed build",
+        "first flash",
+        "backup",
+        "OTA",
+        "rollback",
+        "stock recovery",
+        "owner rebind"
+      ],
+      "state": "POLICY_PARTIAL_SOURCE_NOT_PHYSICAL_VERIFIED",
+      "blockingGaps": [
+        "Google factory image and full OTA SHA-256 freeze",
+        "production key ceremony",
+        "v2 restore and owner rebind runtime",
+        "full build, enforcing boot, OTA rollback and stock recovery"
+      ]
+    },
+    {
+      "id": "emergency_support",
+      "requiredForV1": true,
+      "path": [
+        "Operator Dock",
+        "signed scoped command",
+        "device Agent policy",
+        "user-visible state",
+        "append-only audit"
+      ],
+      "state": "SERVER_SIDE_ONLY",
+      "blockingGaps": [
+        "Android Operator Agent",
+        "hardware credential",
+        "Pixel intrusion and recovery exercise"
+      ]
+    },
+    {
+      "id": "game",
+      "requiredForV1": false,
+      "path": [
+        "official game adapter",
+        "user authorization",
+        "receipt",
+        "Wallet reconciliation"
+      ],
+      "state": "OPTIONAL_FIXTURE_ONLY",
+      "blockingGaps": [
+        "named game and official sandbox",
+        "asset, direction, region and provider terms"
+      ]
+    }
+  ],
+  "activeContradictions": [],
+  "correctedGovernanceDrift": [
+    "BlackBerry-first task wording was retired; unsupported or client-only remains until exact evidence exists",
+    "QEMU remains an independent release target and is not the priority path or evidence for the selected Pixel 10 OS",
+    "Android release readiness is reported as one of six required gates, not one of five"
+  ],
+  "priorityOrder": [
+    "Join native Sky and Zema to Broker, Local AI and a general Tool on the stock Pixel, including reboot and failure recovery",
+    "Finish backup v2 restore, owner rebind and anti-clone behavior before first flash",
+    "Complete recovery artifact hashes, vendor inventory and production signing inputs",
+    "Implement the restricted Android Operator Agent and exercise the full audited support path",
+    "Run the first AOSP full build only after every pre-full-build gate passes",
+    "Flash Pixel 10 and verify SELinux enforcing, CTS/VTS, OTA rollback, stock recovery, battery and thermal behavior",
+    "Connect one external earning-provider sandbox through signed receipt and Wallet reconciliation",
+    "Promote multi-Tool fund control only after repeated verified economics; keep game as a later optional adapter"
+  ],
+  "authoritativeEvidence": [
+    "docs/product-north-star-20260915.md",
+    "data/product-baseline.json",
+    "data/project-status.json",
+    "data/release-readiness.json",
+    "data/android-release-architecture-policy.json"
+  ]
+}

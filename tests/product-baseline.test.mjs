@@ -22,22 +22,33 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   incomeGuarantee.northStar.monthlyIncomeTargetNature = 'guaranteed_income';
   assert.throws(() => validateBaseline(incomeGuarantee), /AI自動化チーム/);
   const blanketCollection = structuredClone(source);
-  blanketCollection.northStar.dataCollection.categorySpecificConsentRequired =
-    false;
+  blanketCollection.northStar.dataCollection.categorySpecificConsentRequired = false;
   assert.throws(() => validateBaseline(blanketCollection), /AI自動化チーム/);
   const lostLocalAiBuildEvidence = structuredClone(source);
   lostLocalAiBuildEvidence.localAiRuntime.apkBuilt = false;
-  assert.throws(() => validateBaseline(lostLocalAiBuildEvidence), /ローカルLLM/);
+  assert.throws(
+    () => validateBaseline(lostLocalAiBuildEvidence),
+    /ローカルLLM/,
+  );
   const fakePlatformBuild = structuredClone(source);
   fakePlatformBuild.androidPlatformCore.aospImageBuilt = true;
   assert.throws(() => validateBaseline(fakePlatformBuild), /OS Platform Core/);
+  const fakeCompositionCompletion = structuredClone(source);
+  fakeCompositionCompletion.systemComposition.productionReady = true;
+  assert.throws(
+    () => validateBaseline(fakeCompositionCompletion),
+    /全体構成監査/,
+  );
   const prematurePaidFullBuild = structuredClone(source);
   prematurePaidFullBuild.androidPreFullBuildGate.paidFullBuildAllowed = true;
   assert.throws(() => validateBaseline(prematurePaidFullBuild), /full build前/);
   const skippedAndroidPreflight = structuredClone(source);
   skippedAndroidPreflight.androidPreFullBuildGate.checks.androidEmulatorIntegration =
     'passed';
-  assert.throws(() => validateBaseline(skippedAndroidPreflight), /full build前/);
+  assert.throws(
+    () => validateBaseline(skippedAndroidPreflight),
+    /full build前/,
+  );
   const fakeProviderAcceptance = structuredClone(source);
   fakeProviderAcceptance.androidPreFullBuildGate.checks.skyZemaToolWalletPath =
     'provider_sandbox_passed';
@@ -49,9 +60,11 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   emergencyRootShell.deviceEmergencyAccess.rootShellAllowed = true;
   assert.throws(() => validateBaseline(emergencyRootShell), /緊急保護/);
   const fakeEmergencyImplementation = structuredClone(source);
-  fakeEmergencyImplementation.deviceEmergencyAccess.androidServiceImplemented =
-    true;
-  assert.throws(() => validateBaseline(fakeEmergencyImplementation), /緊急保護/);
+  fakeEmergencyImplementation.deviceEmergencyAccess.androidServiceImplemented = true;
+  assert.throws(
+    () => validateBaseline(fakeEmergencyImplementation),
+    /緊急保護/,
+  );
   const missingOperatorConsole = structuredClone(source);
   missingOperatorConsole.deviceEmergencyAccess.operatorConsoleImplemented = false;
   assert.throws(() => validateBaseline(missingOperatorConsole), /緊急保護/);

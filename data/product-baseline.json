@@ -1,5 +1,5 @@
 {
-  "version": "1.62",
+  "version": "1.63",
   "decidedAt": "2026-09-16",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -42,6 +42,14 @@
     "representativeProductCandidate": "one existing Tool capable of completing the offline-to-signed-earning-to-Wallet acceptance loop",
     "marketValidation": "not_run",
     "runtimeChangedByThisDesign": false
+  },
+  "systemComposition": {
+    "document": "docs/system-composition.md",
+    "audit": "data/system-composition-audit.json",
+    "automatedCheck": "npm run system:composition:check",
+    "designAligned": true,
+    "allRequiredConnectionsVerified": false,
+    "productionReady": false
   },
   "northStar": {
     "document": "docs/product-north-star-20260915.md",
@@ -218,7 +226,7 @@
       "manifest": "data/release-readiness.json",
       "qemuAudit": "data/qemu-release-audit.json",
       "androidAudit": "data/android-physical-release-audit.json",
-      "androidAuditStatus": "1_of_5_required_gates_passed",
+      "androidAuditStatus": "1_of_6_required_gates_passed",
       "personalNumberAudit": "data/personal-number-release-audit.json",
       "personalNumberAuditStatus": "1_of_7_required_gates_passed_feature_disabled",
       "automatedCheck": "npm run release:check",
@@ -401,7 +409,7 @@
   },
   "androidPlatformCore": {
     "requested": true,
-    "status": "standalone_android_build_passed_emulator_partial_aosp_not_run",
+    "status": "shell_broker_split_build_lint_emulator_pass_aosp_not_run",
     "contract": "contracts/platform-api.json",
     "record": "docs/platform-core.md",
     "apiVersion": 1,
@@ -439,7 +447,7 @@
       "exactTargetReadback": "passed_pixel_10_gl066",
       "sourceContractAndHostTests": "passed",
       "standaloneAndroidBuildAndLint": "passed",
-      "androidEmulatorIntegration": "partial_binder_sqlite_tool_and_local_ai_passed",
+      "androidEmulatorIntegration": "shell_broker_1_of_1_and_broker_tool_sqlite_4_of_4_passed_local_ai_separate",
       "standaloneLocalAiApk": "passed",
       "stockPixelOfflineAiAndThermal": "passed_offline_reboot_thermal",
       "skyZemaToolWalletPath": "rock_ready_physical_correlated_split_boundary_provider_sandbox_pending",

@@ -9,7 +9,7 @@
 - データ境界: 6、table: 72
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 107 task中 76 done、23 in progress、8 planned、0 blocked
+- 作業進捗: 108 task中 77 done、23 in progress、8 planned、0 blocked
 - 現在milestone: AI自動化チームの最小収益loopとAndroid事前試験
 
 ## 保存境界と配備状態
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Keystore喪失backupはbackupごとのAES-256-GCM DEKをhardware-backed Keystore鍵と所有者の256-bit／24単語recovery secretで二重wrapするv2へ固定し、core envelopeと負系試験sourceを実装した。次は24単語codec／確認UI、transactional import、新Keystore再bindingを実装してAndroid CIを通す。Pixel全消去復元、署名HSM実運用、rollback実機、Google純正2ファイル取得は残るため初回flash gateは0/4、unlock／flashは禁止を維持する。
+最優先はstock Pixel上でnative Sky／ZemaをBroker、Local AI、汎用Toolへ一本で接続し、再起動・失敗復旧まで確認する。並行してbackup v2の24単語確認UI、transactional import、新Keystore再bindingを完成させる。純正復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進み、初回flash gate合格まではunlock／flashを禁止する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

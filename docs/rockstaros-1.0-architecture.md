@@ -1,12 +1,12 @@
 # RockstarOS 1.0 — ベース構成と進化方針
 
-RockstarOS 1.0は、現在の検証済み範囲を最初の製品ベースとして発表し、互換性を保ちながら改善するための名称である。最初の配布段階はQEMU Developer Preview。1.0という製品版番号を、実機対応・本番金融・一般公開の合格証明に使わない。
+avocadoOS 1.0は、現在の検証済み範囲を最初の製品ベースとして発表し、互換性を保ちながら改善するための名称である。現在のスマホOS開発主軸はPixel 10／GL066／`frankel`で、QEMU Developer Previewは独立した配布候補として維持する。1.0という製品版番号を、実機対応・本番金融・一般公開の合格証明に使わない。
 
 利用者の8原則に基づく対象仮説、代表商品、system間の利用体験、開発優先順位、販売と検証は [製品・事業・開発設計](rockstaros-1.0-strategy.md) を参照する。本書は技術基盤を維持し、新しい設計を実装済みと扱わない。
 
 ## 全体構造
 
-2026-09-11更新: 本文のnative構成はLinux/QEMU版のもの。スマホ版はPixel 10／GrapheneOSを候補にsource統合を開始し、機種構成・Android接続層へ移植する。端末OS build／起動は未実施で、Linux版の受入を流用しない。[現在の区分](current-state-20260911.md)／[スマホ版](phone-preview-20260911.md)。
+2026-09-16更新: 本文のnative構成はLinux/QEMU版のもの。スマホ版は所有Pixel 10／GL066／`frankel`を最初の物理対象へ確定し、機種構成・Android接続層へ移植する。端末OS build／起動は未実施で、Linux版の受入を流用しない。[全体構成監査](system-composition.md)／[現在の区分](current-state-20260911.md)／[スマホ版](phone-preview-20260911.md)。
 
 到達設計では利用者はnative UIからHub、Wallet、Game、端末操作を行う。Game交換/SDKは開発要求であり、現imageで利用できる機能とは分ける。UIはlocal Platform APIだけを信頼し、Platformが認証、権限、実行、保存、外部接続を仲介する。OS本体は読取専用、利用者データは別diskへ保存する。更新・復旧はA/B slotとbackupで扱う。
 
@@ -108,7 +108,7 @@ Wallet owner、端末、作者、game、playerを別IDにし、署名契約と�
 
 ## 16. Web・Android P1・スマホOS
 
-WebにはSky、Chat、仕事作成・実行・確認、本人別手入力会計、Rock受取Walletの所有署名と着金照合があり、Sitesの公開範囲はowner限定を維持する。Android P1は通常アプリとしての固定2工程・記事処理試作で、現在はBroker／Shell／Toolの3 APKへ分離した。Pixel 10／GrapheneOS候補の機種構成へ3 APKを組み込むsourceとbuild入口も追加した。OS全体のbuild、Sky／Wallet／GameのAndroid移植、正式署名、実機受入はこれからである。Webや標準エミュレーターの成功をスマホOSの合格にしない。
+WebにはSky、Zema、仕事作成・実行・確認、本人別手入力会計、Rock受取Walletの所有署名と着金照合があり、Sitesの公開範囲はowner限定を維持する。Android P1は通常アプリとしての固定2工程・記事処理試作で、現在はBroker／Shell／Toolの3 APKへ分離した。選定済みPixel 10／GL066／`frankel`の機種構成へ3 APKを組み込むsourceとbuild入口も追加した。OS全体のbuild、Sky／Wallet／GameのAndroid移植、正式署名、実機受入はこれからである。Webや標準エミュレーターの成功をスマホOSの合格にしない。
 
 進化余地は、companion app、device enrollment、通知、遠隔確認、Web管理、正式AOSP device portである。
 

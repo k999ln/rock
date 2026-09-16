@@ -94,6 +94,32 @@ export function validateBaseline(
     data.auditInputs?.isLiveStatus === false,
     '監査snapshotを最新状態にしないでください',
   );
+  const compositionDocument = data.systemComposition?.document;
+  const compositionAuditPath = data.systemComposition?.audit;
+  requireValue(
+    typeof compositionDocument === 'string' &&
+      !isAbsolute(compositionDocument) &&
+      existsSync(resolve(root, compositionDocument)) &&
+      typeof compositionAuditPath === 'string' &&
+      !isAbsolute(compositionAuditPath) &&
+      existsSync(resolve(root, compositionAuditPath)) &&
+      data.systemComposition?.automatedCheck ===
+        'npm run system:composition:check' &&
+      data.systemComposition?.designAligned === true &&
+      data.systemComposition?.allRequiredConnectionsVerified === false &&
+      data.systemComposition?.productionReady === false,
+    '全体構成監査と未統合・未production境界を維持してください',
+  );
+  const compositionAudit = JSON.parse(
+    read(resolve(root, compositionAuditPath)),
+  );
+  requireValue(
+    compositionAudit.schema === 'avocadoos-system-composition-audit/1' &&
+      compositionAudit.verdict?.designAligned === true &&
+      compositionAudit.verdict?.allRequiredConnectionsVerified === false &&
+      compositionAudit.verdict?.productionReady === false,
+    '全体構成監査の設計適合と未完了判定が不正です',
+  );
   const northStarPath = data.northStar?.document;
   requireValue(
     typeof northStarPath === 'string' &&
@@ -210,7 +236,7 @@ export function validateBaseline(
   requireValue(
     data.primaryCapabilities?.includes('os-platform-core') &&
       data.androidPlatformCore?.status ===
-        'standalone_android_build_passed_emulator_partial_aosp_not_run' &&
+        'shell_broker_split_build_lint_emulator_pass_aosp_not_run' &&
       data.androidPlatformCore?.apiVersion === 1 &&
       JSON.stringify(data.androidPlatformCore?.componentKinds) ===
         JSON.stringify(['TOOL', 'MCP', 'PROVIDER']) &&
@@ -265,7 +291,7 @@ export function validateBaseline(
       data.androidPreFullBuildGate?.checks?.standaloneAndroidBuildAndLint ===
         'passed' &&
       data.androidPreFullBuildGate?.checks?.androidEmulatorIntegration ===
-        'partial_binder_sqlite_tool_and_local_ai_passed' &&
+        'shell_broker_1_of_1_and_broker_tool_sqlite_4_of_4_passed_local_ai_separate' &&
       data.androidPreFullBuildGate?.checks?.standaloneLocalAiApk === 'passed' &&
       data.androidPreFullBuildGate?.checks?.stockPixelOfflineAiAndThermal ===
         'passed_offline_reboot_thermal' &&
@@ -687,7 +713,7 @@ export function validateBaseline(
       data.systemMaintenance?.releaseReadiness?.androidAudit ===
         'data/android-physical-release-audit.json' &&
       data.systemMaintenance?.releaseReadiness?.androidAuditStatus ===
-        '1_of_5_required_gates_passed' &&
+        '1_of_6_required_gates_passed' &&
       data.systemMaintenance?.releaseReadiness?.personalNumberAudit ===
         'data/personal-number-release-audit.json' &&
       data.systemMaintenance?.releaseReadiness?.personalNumberAuditStatus ===

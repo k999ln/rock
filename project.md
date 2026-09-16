@@ -1,5 +1,11 @@
 # avocadoOS — 事業・設計・進捗
 
+## 2026-09-16 — 全体の最適構成と実際の接続状態を一つの監査へ固定
+
+製品目的からOS、Pixel、Sky、Zema、Shell、Broker、Local AI、Tool、検証済み収益、Wallet、Fund、Operator、更新・復旧、Gameまでを再点検した。選択している責任分離と順序は1.0目的に整合するが、全層が一つのPixel上で接続・受入済みではない。Web、単体APK、emulator、fixture、sandbox、物理端末の成功を混ぜず、11層の選択状態と6本のend-to-end flowを[`data/system-composition-audit.json`](data/system-composition-audit.json)へ固定し、説明を[`docs/system-composition.md`](docs/system-composition.md)へ追加した。
+
+旧BlackBerry-first taskはPixel 10受入後の二機種目再評価へ変更し、QEMU-firstをスマホOSの優先順位として扱わない。Androidの公開受入表示も実際の6 gate中1合格へ揃えた。最優先はstock Pixel上の`Sky → Zema → Shell → Broker → Local AI → 汎用Tool → 結果・履歴`、次にbackup v2、純正復旧・署名入力、端末側Operator Agentであり、これらの事前gate後だけfull buildへ進む。`npm run system:composition:check`と通常の`npm run verify`で、必須層・flow・証拠の欠落とproduction過大表示を拒否する。
+
 ## 2026-09-16 — Android 1.0の7決定と権限分離を一つの構成へ固定
 
 Pixel 10／frankel／GL066向けの製品構成を、機種/SKU、BSP/vendor/partition、boot/recovery、OTA/rollback、SELinux enforcing分離、Keystore喪失backup、CDD/CTS/CTS Verifier/VTS受入の7決定へ統合した。正本は`data/android-release-architecture-policy.json`、説明は`docs/android-production-architecture.md`、自動検査は`npm run android:architecture:check`。
@@ -538,7 +544,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-16 / AI自動化チームの最小収益loopとAndroid事前試験 / 完了 76/107件
+最終更新: 2026-09-16 / AI自動化チームの最小収益loopとAndroid事前試験 / 完了 77/108件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -590,6 +596,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SYS11 | Vite生成chunkのnpm componentをbuild時に記録しlicense監査へ照合 | 完了 | [記録](vite.config.ts) · [記録](scripts/web-bundle-inventory.mjs) · [記録](scripts/check-web-bundle-inventory.mjs) · [記録](tests/web-bundle-inventory.test.mjs) · [記録](package.json) · [記録](data/release-readiness.json) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
 | SYS12 | 運営1名で開始できる緊急保護・限定保守accessの脅威モデルと端末側制御契約を固定 | 完了 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](docs/product-baseline.md) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) |
 | SYS13 | 緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験 | 進行中 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](services/operator-dock/public/index.html) · [記録](services/operator-dock/src/worker.ts) · [記録](services/operator-dock/src/access-auth.ts) · [記録](services/operator-dock/src/operator-control.ts) · [記録](services/operator-dock/migrations/0001_operator_device_control.sql) · [記録](tests/operator-control.test.mjs) · [記録](tests/operator-access-auth.test.mjs) · [記録](tests/operator-dock-isolation.test.mjs) |
+| SYS14 | 製品目的から全層の選択・接続・実証状態を一つの構成監査へ固定 | 完了 | [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](scripts/check-system-composition.mjs) · [記録](tests/system-composition.test.mjs) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
@@ -627,7 +634,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | N01 | Linux native OS基準版の公開ソース統合・既存資産の回帰検証 | 完了 | [記録](docs/native-os-integration.md) · [記録](docs/native-os-validation.md) |
 | N02 | 起動応答確認と自動再読込WIPの検証・採用判断 | 進行中 | [記録](docs/native-os-integration.md) |
 | N03 | 実機候補1機種の型番/SKU・boot/BSP・更新/復旧の適合確認 | 進行中 | [記録](docs/native-os-integration.md) · [記録](docs/phone-preview-20260911.md) · [記録](docs/current-state-20260911.md) · [記録](docs/evidence/launch/progress-audit-20260912.json) · [記録](docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json) |
-| N04 | BlackBerry実機だけでSky取得・実行・更新・復旧 | 未着手 | [記録](docs/native-os-integration.md) |
+| N04 | Pixel 10受入後だけ二機種目のDevice Support Package候補を再評価 | 未着手 | [記録](docs/device-support-architecture.md) · [記録](data/device-support-matrix.json) |
 | N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
 | RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 完了 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/rockstaros-1.0-architecture.md) · [記録](docs/rockstaros-1.0-strategy.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) · [記録](docs/release-followup-20260910.md) |
 | RLS02 | 正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証 | 進行中 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](docs/current-state-20260911.md) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/evidence/launch/progress-audit-20260912.json) |
@@ -669,7 +676,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Keystore喪失backupはbackupごとのAES-256-GCM DEKをhardware-backed Keystore鍵と所有者の256-bit／24単語recovery secretで二重wrapするv2へ固定し、core envelopeと負系試験sourceを実装した。次は24単語codec／確認UI、transactional import、新Keystore再bindingを実装してAndroid CIを通す。Pixel全消去復元、署名HSM実運用、rollback実機、Google純正2ファイル取得は残るため初回flash gateは0/4、unlock／flashは禁止を維持する。
+次の作業: 最優先はstock Pixel上でnative Sky／ZemaをBroker、Local AI、汎用Toolへ一本で接続し、再起動・失敗復旧まで確認する。並行してbackup v2の24単語確認UI、transactional import、新Keystore再bindingを完成させる。純正復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進み、初回flash gate合格まではunlock／flashを禁止する。
 <!-- project-status:end -->
 
 ## 次段階の設計

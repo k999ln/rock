@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-16全体構成追記（v1.63）: RQ47の製品目的に対して、OS、Sky、Zema、Android Shell／Broker、Local AI、Tool、検証済み収益、Wallet／Fund、Operator、更新・復旧、Gameの選択と接続状態を全体構成監査へ固定した。現在の選択は整合するが、全component実装、全必須経路の統合、production準備はいずれも未完了とする。旧BlackBerry-firstの現行task表現とQEMU-firstのスマホ優先順位を退役し、Pixel 10 GL066上のoffline AI team loopをfull build前の最優先とする。[全体構成監査](system-composition.md)。
+
 2026-09-16端末基盤追記（v1.62）: 外部Providerは初回OS full buildへ焼き込まず、更新可能なアプリ／サーバー側へ分離する。ただし外部Provider sandbox、返金／chargeback、払出し、再照合はavocadoOS 1.0で実収益を表示・公開する前の必須gateとし、未合格中はlive収益を表示しない。Pixel 10 GL066はGrapheneOS `2026091000`のmanifest tag署名、manifest／adevtool／laguna-muzel 6.6入力と、読取り専用ADBによるDynamic Partition／Virtual A/B／AVB 1.4構成まで固定した。Google純正factory image／full OTAの利用条件確認、実ファイル取得とSHA-256、vendor生成inventory、production署名／復旧計画が未完了なので、有料full build、unlock、flashはまだ開始しない。[source／layout監査](evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json)／[source lock](../os/physical/frankel-source-lock.json)。
 
 2026-09-16結合試験追記（v1.61）: 同じ合成実行IDと証拠hashをPixel 10 GL066のTool／端末Wallet区間と、Provider署名／Sky bridge／Billing Wallet区間へ渡した。物理instrumentation 6/6、署名精算7/7、Sky→Zema job回帰19/19に合格し、端末側はTool二段実行、review、Provider登録、Wallet一度だけ記録、重複拒否まで確認した。これはRock所有fixtureによる相関済み二区間であり、端末から外部Providerまでの配備済み一本通し、実売上、sandbox、実払出しではない。外部Provider受入とGL066のBSP／vendor／partition／boot／純正復旧、source／artifact／production署名計画のfreezeが残るため、有料full buildはまだ開始しない。[相関試験証拠](evidence/pixel-tool-wallet-correlation-20260916.json)／[事前試験](evidence/android-pre-full-build-tests-20260915.json)。
@@ -502,7 +504,7 @@ Walletは収益・費用・receipt・払出し状態に加え、合法的な税�
 - Rock端末を持たないプレイヤーの本番Wallet利用資格は未決。作者sandboxの参加条件と購入者のOS月額契約を混ぜず、ゲーム利用だけで未同意の月額を開始しない。
 - PolymarketはRQ18で基本アプリ枠として採用した。ただし外部市場の接続・注文・清算・実資金移動は未承認。Sky/Chat/Walletを置換せず、提供地域・対象・許認可等が未決のまま実資金市場を開始しない。ゲーム資産売買は引き続き検討案。
 - GTAのゲーム内経済は将来像の例。新作GTAの現実経済/外部Wallet連携を確定仕様とせず、特定ゲームの未発表機能へ依存しない。公式に許されたAPI/利用条件/資産権利が確認できたゲームへ接続できる共通基盤を設計し、未対応ゲームを対応済みと表示しない。
-- Linux/Buildroot/ARM64 QEMU版を維持し、最新指示でスマホ実機版を開発する。Pixel 10／GrapheneOSは以前の端末記録に基づく候補、今回の機種/SKUは未確認。以前のBlackBerry希望も型番未確認。Android P1・機種構成へのsource組込み・実機合格は別に判定する。
+- Linux/Buildroot/ARM64 QEMU版を独立候補として維持し、スマホ実機版はPixel 10／GL066／`frankel`を最初の物理対象へ確定して開発する。BlackBerry-firstは現行計画から退役し、正確な対応証拠がない端末をOS対応と表示しない。Android P1・機種構成へのsource組込み・実機合格は別に判定する。
 - tob側の具体的な商品・提供組織・外部API契約・ライセンス・価格は商品ごとに確認する。7種類の仮想fixtureだけでは実商品の統合完了にならない。
 - 金融provider、資金保管方式、通貨/チェーン、販売/精算主体、返金・出金条件の実接続を確定する。利用者の所在地や事業国を作業フォルダから推測しない。
 - ゲーム名/repository・提供者の権限と公式接続、交換方向、対象資産と原資、交換条件・利用規約・提供地域の確認は未了。実交換を自動開始しない。
@@ -516,6 +518,8 @@ Walletは収益・費用・receipt・払出し状態に加え、合法的な税�
 2026-09-16 v1.59: 所有Pixel 10の読取り専用ADB確認で日本向け`GL066`／`frankel`を最初の物理対象へ確定し、Android物理端末の機種／SKU gateを1/5合格にした。端末serialは保存せず、full build、flash、boot、BSP／復旧、CTS、production署名、販売準備は未合格のまま維持する。
 
 2026-09-15 v1.58: Tool完了とProvider確認済み収益を分離したまま、Provider署名、job照合、鍵分離、Billing D1への一度だけ反映をROCK_READY fixtureで縦断合格した。実Provider sandbox、実収益、払出し、所有Pixel上のAI実行は未完了のまま維持する。
+
+2026-09-16 v1.63: 全11層の選択と6本のend-to-end flowを一つの構成監査へ固定。設計選択は適合、全component実装・全必須経路統合・productionは未完了と判定し、Pixel上のnative offline AI team loopをfull build前の最優先へ揃えた。
 
 2026-09-15 v1.57: AI自動化チームの効率化を最上位目的に固定し、offline-first実行、検証済み収益、Wallet、ファンド改善、税務準備、ゲーム、専用端末へ逆算するRQ47を追加。Pixelは最初のreference hardware、月50万円規模は長期の実測目標で収益保証ではなく、改善データ収集はcategory別同意と削除可能性を必須にした。
 

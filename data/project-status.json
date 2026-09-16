@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-16",
   "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-  "nextAction": "Keystore喪失backupはbackupごとのAES-256-GCM DEKをhardware-backed Keystore鍵と所有者の256-bit／24単語recovery secretで二重wrapするv2へ固定し、core envelopeと負系試験sourceを実装した。次は24単語codec／確認UI、transactional import、新Keystore再bindingを実装してAndroid CIを通す。Pixel全消去復元、署名HSM実運用、rollback実機、Google純正2ファイル取得は残るため初回flash gateは0/4、unlock／flashは禁止を維持する。",
+  "nextAction": "最優先はstock Pixel上でnative Sky／ZemaをBroker、Local AI、汎用Toolへ一本で接続し、再起動・失敗復旧まで確認する。並行してbackup v2の24単語確認UI、transactional import、新Keystore再bindingを完成させる。純正復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進み、初回flash gate合格まではunlock／flashを禁止する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -685,6 +685,18 @@
       ]
     },
     {
+      "id": "SYS14",
+      "title": "製品目的から全層の選択・接続・実証状態を一つの構成監査へ固定",
+      "status": "done",
+      "dependsOn": ["R01"],
+      "evidence": [
+        "docs/system-composition.md",
+        "data/system-composition-audit.json",
+        "scripts/check-system-composition.mjs",
+        "tests/system-composition.test.mjs"
+      ]
+    },
+    {
       "id": "R01",
       "title": "4参照元の採用判断と事業方針の固定",
       "status": "done",
@@ -1124,10 +1136,13 @@
     },
     {
       "id": "N04",
-      "title": "BlackBerry実機だけでSky取得・実行・更新・復旧",
+      "title": "Pixel 10受入後だけ二機種目のDevice Support Package候補を再評価",
       "status": "planned",
       "dependsOn": ["N01", "N03"],
-      "evidence": ["docs/native-os-integration.md"]
+      "evidence": [
+        "docs/device-support-architecture.md",
+        "data/device-support-matrix.json"
+      ]
     },
     {
       "id": "N05",

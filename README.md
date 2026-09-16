@@ -1,11 +1,11 @@
 # avocadoOS — 自動化を接続・実行・管理するOS
 
-avocadoOSは、利用者が自分専用のAI自動化チームを所有し、通信断でも端末内LLMとToolが仕事を進め、接続時に成果・検証済み収益・Walletを安全に同期できる基盤です。OS、Pixel、Wallet、ファンド、ゲームは、便利さと持続可能な収益機会を増やす目的のための層として扱います。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ47、逆算した優先順位は[製品目的](docs/product-north-star-20260915.md)、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`avocadoOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
+avocadoOSは、利用者が自分専用のAI自動化チームを所有し、通信断でも端末内LLMとToolが仕事を進め、接続時に成果・検証済み収益・Walletを安全に同期できる基盤です。OS、Pixel、Wallet、ファンド、ゲームは、便利さと持続可能な収益機会を増やす目的のための層として扱います。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ47、逆算した優先順位は[製品目的](docs/product-north-star-20260915.md)、全層の組合せと未接続点は[全体構成監査](docs/system-composition.md)、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`avocadoOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
 
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-16 / 107 task中76 done・23 in progress・8 planned
+更新日: 2026-09-16 / 108 task中77 done・23 in progress・8 planned
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                           |
@@ -44,7 +44,7 @@ avocadoOSは、利用者が自分専用のAI自動化チームを所有し、通
 5. 実装、fixture、sandbox、QEMU、emulator、物理端末、本番を別gateで判定します。
 6. 秘密鍵、seed phrase、包括送金権限、任意shell/rootを共通機能として保持しません。
 
-詳細は [責任分界](docs/workstreams/00-responsibility-boundaries.md)、[1.0構成](docs/rockstaros-1.0-architecture.md)、[1.0戦略](docs/rockstaros-1.0-strategy.md) を参照してください。
+詳細は [責任分界](docs/workstreams/00-responsibility-boundaries.md)、[全体構成監査](docs/system-composition.md)、[1.0構成](docs/rockstaros-1.0-architecture.md)、[1.0戦略](docs/rockstaros-1.0-strategy.md) を参照してください。
 
 ## 作業の入口
 
@@ -73,12 +73,13 @@ avocadoOSは、利用者が自分専用のAI自動化チームを所有し、通
 
 ### OS完成へ向けた順番
 
-1. **QEMU配布**: 製品licenseとproduction署名方式を確定し、署名後の同一archiveで導入・更新・復旧を再受入する。
-2. **対象端末**: 実機の型番、SKU、codename、OEM unlock、bootloader状態を読取り専用で確認し、一機種へ固定する。
-3. **full build前試験**: 単体APK build／lint、emulator結合、Local AI APK、純正Pixel上のoffline推論・温度、Sky→Zema→Tool→Walletを完走してsourceとartifactをfreezeする。
-4. **Android full build**: 事前gate合格後だけx86_64 Linux環境を契約し、source取得、vendor生成、Soong build、target-files／OTA／factory imageを生成する。
-5. **実機受入**: 最後にflash、boot、hardware、CTS/VTS、保存、再起動、OTA、rollback、純正復旧、熱・電池を同一端末で確認する。build環境は初回boot確認まで保持する。
-6. **外部接続**: MCP、Wallet、決済、払出し、事業pilotをsandboxから限定LIVEへ段階的に接続する。
+1. **端末内価値loop**: stock Pixel上でnative Sky／ZemaをBroker、Local AI、汎用Toolへ接続し、結果・履歴・再起動・失敗復旧まで一本で確認する。
+2. **flash前の保全**: backup v2復元、owner再結合、clone拒否、純正復旧artifact、vendor inventory、production署名入力を完成させる。
+3. **緊急保護**: OS外Operator Dockから制限付きAndroid Agentへ至る署名命令、端末側制限、利用者表示、追記監査を実機訓練する。
+4. **Android full build**: 全事前gate合格後だけx86_64 Linux環境を契約し、source取得、vendor生成、Soong build、target-files／OTA／factory imageを生成する。
+5. **実機受入**: 最後にflash、boot、SELinux enforcing、hardware、CTS/VTS、保存、再起動、OTA、rollback、純正復旧、熱・電池を同一端末で確認する。build環境は初回boot確認まで保持する。
+6. **収益と拡張**: 外部Provider sandboxをEarning ReceiptからWalletまで通し、反復実績後にFundを進める。QEMU配布とGameは独立gateとし、Pixel上の中核loopを止めない。
+7. **外部接続**: MCP、Wallet、決済、払出し、事業pilotをsandboxから限定LIVEへ段階的に接続する。
 
 Sky、Zema、Wallet、Tool、LLMだけの修正は単体APKで反復し、framework、SELinux、privapp/product設定、boot/vendor/partition/AVBの変更時だけOS imageを再buildします。[full build前の必須gate](docs/phone-preview-20260911.md#有料full-buildへ進む前の必須gate)を全て通すまで、有料サーバー契約とfull buildは開始しません。
 
@@ -182,11 +183,11 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 
 <details>
 <!-- project-details-summary:start -->
-<summary>107 taskと段階gateの詳細を開く</summary>
+<summary>108 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-16 / AI自動化チームの最小収益loopとAndroid事前試験 / 完了 76/107件
+最終更新: 2026-09-16 / AI自動化チームの最小収益loopとAndroid事前試験 / 完了 77/108件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -238,6 +239,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | SYS11 | Vite生成chunkのnpm componentをbuild時に記録しlicense監査へ照合 | 完了 | [記録](vite.config.ts) · [記録](scripts/web-bundle-inventory.mjs) · [記録](scripts/check-web-bundle-inventory.mjs) · [記録](tests/web-bundle-inventory.test.mjs) · [記録](package.json) · [記録](data/release-readiness.json) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
 | SYS12 | 運営1名で開始できる緊急保護・限定保守accessの脅威モデルと端末側制御契約を固定 | 完了 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](docs/product-baseline.md) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) |
 | SYS13 | 緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験 | 進行中 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](services/operator-dock/public/index.html) · [記録](services/operator-dock/src/worker.ts) · [記録](services/operator-dock/src/access-auth.ts) · [記録](services/operator-dock/src/operator-control.ts) · [記録](services/operator-dock/migrations/0001_operator_device_control.sql) · [記録](tests/operator-control.test.mjs) · [記録](tests/operator-access-auth.test.mjs) · [記録](tests/operator-dock-isolation.test.mjs) |
+| SYS14 | 製品目的から全層の選択・接続・実証状態を一つの構成監査へ固定 | 完了 | [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](scripts/check-system-composition.mjs) · [記録](tests/system-composition.test.mjs) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
@@ -275,7 +277,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | N01 | Linux native OS基準版の公開ソース統合・既存資産の回帰検証 | 完了 | [記録](docs/native-os-integration.md) · [記録](docs/native-os-validation.md) |
 | N02 | 起動応答確認と自動再読込WIPの検証・採用判断 | 進行中 | [記録](docs/native-os-integration.md) |
 | N03 | 実機候補1機種の型番/SKU・boot/BSP・更新/復旧の適合確認 | 進行中 | [記録](docs/native-os-integration.md) · [記録](docs/phone-preview-20260911.md) · [記録](docs/current-state-20260911.md) · [記録](docs/evidence/launch/progress-audit-20260912.json) · [記録](docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json) |
-| N04 | BlackBerry実機だけでSky取得・実行・更新・復旧 | 未着手 | [記録](docs/native-os-integration.md) |
+| N04 | Pixel 10受入後だけ二機種目のDevice Support Package候補を再評価 | 未着手 | [記録](docs/device-support-architecture.md) · [記録](data/device-support-matrix.json) |
 | N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
 | RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 完了 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/rockstaros-1.0-architecture.md) · [記録](docs/rockstaros-1.0-strategy.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) · [記録](docs/release-followup-20260910.md) |
 | RLS02 | 正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証 | 進行中 | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](docs/current-state-20260911.md) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/evidence/launch/progress-audit-20260912.json) |
@@ -317,7 +319,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: Keystore喪失backupはbackupごとのAES-256-GCM DEKをhardware-backed Keystore鍵と所有者の256-bit／24単語recovery secretで二重wrapするv2へ固定し、core envelopeと負系試験sourceを実装した。次は24単語codec／確認UI、transactional import、新Keystore再bindingを実装してAndroid CIを通す。Pixel全消去復元、署名HSM実運用、rollback実機、Google純正2ファイル取得は残るため初回flash gateは0/4、unlock／flashは禁止を維持する。
+次の作業: 最優先はstock Pixel上でnative Sky／ZemaをBroker、Local AI、汎用Toolへ一本で接続し、再起動・失敗復旧まで確認する。並行してbackup v2の24単語確認UI、transactional import、新Keystore再bindingを完成させる。純正復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進み、初回flash gate合格まではunlock／flashを禁止する。
 <!-- project-status:end -->
 
 </details>
@@ -408,7 +410,7 @@ Product Hunt APIは商用利用条件の確認前のため未接続。サービ�
 
 ## 次に進める作業
 
-現在は[スマホ版とローンチ候補の再開指示](docs/prompts/rock-current-next-20260911.md)に従います。機種/SKU、Linux環境、クラウド費用の回答待ちを記録し、スマホ版移植とQEMU配布の残件を分けて進めます。
+現行の順序は[全体構成監査](docs/system-composition.md)に従います。最初の機種はPixel 10／GL066／`frankel`へ確定済みで、stock Pixel上のnative AI team loopとflash前gateを先に進めます。QEMU配布は独立した候補として残し、スマホOSの合格へ流用しません。
 
 ### 以前の実装順（2026-09-09の履歴）
 
