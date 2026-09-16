@@ -258,7 +258,7 @@ export function validateAndroidFirstFlashGate({
     backupRecoveryPolicy?.product !== 'avocadoOS' ||
     backupRecoveryPolicy?.target !== 'Google Pixel 10 / frankel / GL066' ||
     backupRecoveryPolicy?.status !==
-      'design_approved_core_envelope_implemented_ui_import_and_device_drill_pending' ||
+      'source_ui_transactional_import_and_rebinding_emulator_pass_physical_wipe_pending' ||
     backupRecoveryPolicy?.decision !==
       'DUAL_WRAPPED_RANDOM_DATA_KEY_WITH_DEVICE_KEYSTORE_AND_OWNER_RECOVERY_PHRASE' ||
     backupRecoveryPolicy?.envelope?.format !== 'avocadoos-recoverable-backup/2' ||
@@ -301,14 +301,22 @@ export function validateAndroidFirstFlashGate({
     backupRecoveryPolicy?.restore?.tamperingRejected !== true ||
     backupRecoveryPolicy?.restore?.unsupportedFormatRejected !== true ||
     backupRecoveryPolicy?.restore?.restoreMayActivateOldApprovalsOrSessions !== false ||
+    backupRecoveryPolicy?.restore?.emptyTargetRequired !== true ||
+    backupRecoveryPolicy?.restore?.restoredAutomationStartsPaused !== true ||
+    backupRecoveryPolicy?.restore?.restoredSkySelectionTokenRotated !== true ||
+    backupRecoveryPolicy?.restore?.restoredActiveApprovalsStopped !== true ||
+    backupRecoveryPolicy?.restore?.installedComponentAuthorityRestored !== false ||
     backupRecoveryPolicy?.migration?.legacyReadWithOriginalDeviceKeyRetained !== true ||
     backupRecoveryPolicy?.migration?.newLegacyBackupsAllowedAfterV2Activation !== false ||
     backupRecoveryPolicy?.migration?.legacyBackupCanSurviveKeystoreLoss !== false ||
     backupRecoveryPolicy?.implementation?.coreDualWrappedEnvelope !==
-      'implemented_host_34_tests_passed' ||
-    backupRecoveryPolicy?.implementation?.ownerPhraseCodecAndConfirmationUi !== 'pending' ||
-    backupRecoveryPolicy?.implementation?.platformImportAndTransactionalRestore !== 'pending' ||
-    backupRecoveryPolicy?.implementation?.newDeviceKeystoreRebinding !== 'pending' ||
+      'implemented_host_37_tests_passed' ||
+    backupRecoveryPolicy?.implementation?.ownerPhraseCodecAndConfirmationUi !==
+      'implemented_shell_api_v4_emulator_pass' ||
+    backupRecoveryPolicy?.implementation?.platformImportAndTransactionalRestore !==
+      'implemented_android_sqlite_emulator_pass' ||
+    backupRecoveryPolicy?.implementation?.newDeviceKeystoreRebinding !==
+      'implemented_android_keystore_emulator_pass' ||
     backupRecoveryPolicy?.implementation?.physicalWipeAndRestoreDrill !== 'pending' ||
     backupRecoveryPolicy?.gate?.policyApprovalIsPassEvidence !== false ||
     backupRecoveryPolicy?.gate?.hostCryptoTestIsPhysicalRestoreEvidence !== false ||

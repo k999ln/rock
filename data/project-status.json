@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-16",
   "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-  "nextAction": "Pixelを再接続し、実行中のnative Sky選択仕事をseedした後に端末を実再起動して、lease回収、2 Tool、結果、7履歴eventまでrecover phaseで確認する。次にbackup v2、復旧artifact、vendor inventory、production署名、Operator Agentの事前gateを進める。",
+  "nextAction": "Pixelを再接続し、native Sky選択仕事の実再起動復旧を確認する。backup v2のsource・UI・transactional import・新Keystore再bindingはemulator合格済みのため、Pixel全消去は所有者と復旧artifactを揃えた管理試験として別途実施する。並行して復旧artifact、vendor inventory、production署名、Operator Agentの事前gateを進める。",
   "tasks": [
     {
       "id": "SKY01",
@@ -1737,7 +1737,7 @@
     "cloudSpendApproved": false
   },
   "platformCore": {
-    "status": "SHELL_BROKER_SPLIT_BUILD_LINT_EMULATOR_PASS_AOSP_NOT_RUN",
+    "status": "SHELL_API_V4_BACKUP_V2_EMULATOR_PASS_PHYSICAL_REBOOT_AND_WIPE_PENDING_AOSP_NOT_RUN",
     "apiVersion": 1,
     "contract": "contracts/platform-api.json",
     "record": "docs/platform-core.md",
@@ -1748,9 +1748,9 @@
     "runtimeAligned": false,
     "shellBrokerSplitImplemented": true,
     "shellBrokerGradleBuildAndLint": "PASS_253_ACTIONABLE_TASKS",
-    "shellBrokerHostCoreTests": "PASS_34_TESTS",
-    "shellBrokerEmulatorBinderTest": "PASS_1_OF_1_ANDROID_15",
-    "brokerToolSqliteEmulatorTests": "PASS_4_OF_4_ANDROID_15_LOCAL_AI_CLASS_EXCLUDED_REQUIRES_SEPARATE_SIGNED_APK",
+    "shellBrokerHostCoreTests": "PASS_37_TESTS",
+    "shellBrokerEmulatorBinderTest": "PASS_5_OF_5_ANDROID_15",
+    "brokerToolSqliteEmulatorTests": "PASS_11_NON_SKIPPED_OF_13_ANDROID_15_TWO_PHYSICAL_REBOOT_PHASES_SKIPPED",
     "shellHasInternetPermission": false,
     "shellHasPlatformManagementPermission": false,
     "shellUsesDedicatedPermission": "dev.rock.permission.USE_SHELL_API",
@@ -1763,10 +1763,13 @@
     "otaRollbackVerified": false,
     "recoverableBackupFormat": "avocadoos-recoverable-backup/2",
     "recoverableBackupCoreImplemented": true,
-    "recoverableBackupHostUnitTests": "PASS_34_JAVA11_TESTS",
+    "recoverableBackupHostUnitTests": "PASS_37_JAVA11_TESTS",
     "recoverableBackupAndroidCiPassed": false,
-    "recoverableBackupOwnerPhraseUiImplemented": false,
-    "recoverableBackupTransactionalImportImplemented": false,
+    "recoverableBackupAndroidEmulatorPassed": true,
+    "recoverableBackupOwnerPhraseUiImplemented": true,
+    "recoverableBackupTransactionalImportImplemented": true,
+    "recoverableBackupNewKeystoreRebindingImplemented": true,
+    "recoverableBackupInstalledComponentAuthorityRestored": false,
     "recoverableBackupPhysicalKeystoreLossRestoreVerified": false
   },
   "currentStateDocument": "docs/current-state-20260911.md"

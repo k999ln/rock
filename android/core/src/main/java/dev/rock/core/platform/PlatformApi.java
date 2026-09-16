@@ -7,6 +7,7 @@ public final class PlatformApi {
     public static final int MAX_SUPPORTED = 1;
     public static final String BACKUP_FORMAT = "rockstar-platform-backup/1";
     public static final String RECOVERABLE_BACKUP_FORMAT = "avocadoos-recoverable-backup/2";
+    public static final String RECOVERABLE_STATE_FORMAT = "avocadoos-platform-state/2";
 
     private PlatformApi() {}
 

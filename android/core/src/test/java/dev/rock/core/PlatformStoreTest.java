@@ -4,6 +4,7 @@ import dev.rock.core.platform.ComponentManifest;
 import dev.rock.core.platform.EncryptedBackup;
 import dev.rock.core.platform.PlatformApi;
 import dev.rock.core.platform.PlatformStore;
+import dev.rock.core.platform.RecoveryPhrase;
 import dev.rock.core.platform.UpdatePolicy;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -282,6 +283,64 @@ public final class PlatformStoreTest {
             EncryptedBackup.openWithRecoverySecret(first, recoverySecret, "owner:alice"));
         assertArrayEquals(body,
             EncryptedBackup.openWithRecoverySecret(second, recoverySecret, "owner:alice"));
+    }
+
+    @Test public void recoveryPhraseRoundTripsWithAnAvocadoSpecificChecksum() {
+        byte[] secret = new byte[EncryptedBackup.RECOVERY_SECRET_BYTES];
+        for (int index = 0; index < secret.length; index++) secret[index] = (byte) index;
+        String phrase = RecoveryPhrase.encode(secret);
+        assertEquals(RecoveryPhrase.WORD_COUNT, phrase.split(" ").length);
+        assertArrayEquals(secret, RecoveryPhrase.decode(phrase));
+        assertEquals(phrase.split(" ")[7], RecoveryPhrase.wordAt(phrase, 7));
+        String[] words = phrase.split(" ");
+        words[23] = words[23].equals("balan") ? "balen" : "balan";
+        assertThrows(SecurityException.class,
+            () -> RecoveryPhrase.decode(String.join(" ", words)));
+        assertThrows(IllegalArgumentException.class,
+            () -> RecoveryPhrase.decode("abandon ".repeat(24).trim()));
+    }
+
+    @Test public void recoverableStateRestoresAtomicallyPausedAndWithoutOldAuthority() throws Exception {
+        Engine engine = new Engine(db);
+        Engine.SkySelection selected = engine.selectSkyTool(Engine.RECIPE);
+        String workId = engine.submit("backup-work", "{\"article\":\"owner data\"}", false, true);
+        Engine.Ticket first = engine.claim("source-boot", 1, true);
+        assertTrue(engine.finish(first, "passed", "first output", "source-boot", 2));
+        Engine.Ticket second = engine.claim("source-boot", 3, true);
+        assertTrue(engine.finish(second, "passed", "final output", "source-boot", 4));
+        assertEquals("review", engine.work(workId).get("state"));
+
+        ComponentManifest tool = tool(1, 1, 1);
+        install("register:backup-tool", tool);
+        String approval = store.proposeApproval("owner:alice", "approve:backup",
+            tool.componentId, "clean.write", PAYLOAD, 100, 10_000, 10);
+        store.confirmApproval("owner:alice", approval, 11);
+        byte[] plaintext = store.exportRecoverableState("owner:alice");
+
+        JdbcDatabase restoredDb = new JdbcDatabase(temp.newFile("restored.db").getPath());
+        try {
+            Engine restoredEngine = new Engine(restoredDb);
+            PlatformStore restoredStore = new PlatformStore(restoredDb);
+            PlatformStore.RestoreSummary summary = restoredStore.restoreRecoverableState(
+                plaintext, "owner:alice", 100);
+            assertEquals(1, summary.works);
+            assertEquals(0, summary.ledgerEntries);
+            assertEquals(1, summary.stoppedApprovals);
+            assertTrue(restoredEngine.paused());
+            assertEquals("review", restoredEngine.work(workId).get("state"));
+            assertEquals("final output", restoredEngine.result(workId));
+            assertNotEquals(selected.token, restoredEngine.skySelection().token);
+            assertEquals(selected.revision + 1, restoredEngine.skySelection().revision);
+            assertEquals("STOPPED", restoredStore.approval("owner:alice", approval).get("state"));
+            assertTrue(restoredStore.components().isEmpty());
+
+            assertThrows(IllegalStateException.class,
+                () -> restoredStore.restoreRecoverableState(plaintext, "owner:alice", 101));
+            assertEquals(1, restoredEngine.list().size());
+            assertEquals("final output", restoredEngine.result(workId));
+        } finally {
+            restoredDb.close();
+        }
     }
 
     @Test public void backupIsOwnerScopedVersionedAndEncryptedBeforeStorage() throws Exception {

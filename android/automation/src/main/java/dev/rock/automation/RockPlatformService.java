@@ -6,11 +6,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.IBinder;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
 import dev.rock.core.Engine;
 import dev.rock.core.platform.ComponentManifest;
-import dev.rock.core.platform.EncryptedBackup;
 import dev.rock.core.platform.PlatformApi;
 import dev.rock.core.platform.PlatformStore;
 import dev.rock.sdk.IPlatformApi;
@@ -18,22 +15,17 @@ import dev.rock.sdk.IPlatformCallback;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.security.KeyStore;
 import java.security.MessageDigest;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 /** Signature-permission OS broker for the versioned avocadoOS Platform API. */
 public final class RockPlatformService extends Service {
     static final String EXTRA_APPROVAL_ID = "approvalId";
-    private static final String KEY_ALIAS = "rockstar-platform-backup-v1";
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
 
     private final IPlatformApi.Stub binder = new IPlatformApi.Stub() {
@@ -164,10 +156,10 @@ public final class RockPlatformService extends Service {
     }
 
     private Result createBackup(String owner, String requestId) throws Exception {
-        byte[] encrypted = EncryptedBackup.seal(platform().exportBackup(owner), backupKey(), new SecureRandom());
+        byte[] encrypted = new RecoverableBackupManager(this).createBytes(owner);
         File directory = new File(getNoBackupFilesDir(), "platform-backups");
         if (!directory.isDirectory() && !directory.mkdirs()) throw new IllegalStateException("BACKUP_DIRECTORY");
-        String id = Engine.digest(owner + ":" + requestId).substring(0, 32) + ".rkb";
+        String id = Engine.digest(owner + ":" + requestId).substring(0, 32) + ".arb";
         File target = new File(directory, id);
         File pending = new File(directory, id + ".pending");
         if (target.isFile()) {
@@ -180,19 +172,6 @@ public final class RockPlatformService extends Service {
         }
         if (!pending.renameTo(target)) throw new IllegalStateException("BACKUP_COMMIT_FAILED");
         return new Result(id, hex(MessageDigest.getInstance("SHA-256").digest(encrypted)));
-    }
-
-    private static SecretKey backupKey() throws Exception {
-        KeyStore store = KeyStore.getInstance("AndroidKeyStore");
-        store.load(null);
-        if (store.containsAlias(KEY_ALIAS)) return (SecretKey) store.getKey(KEY_ALIAS, null);
-        KeyGenerator generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
-        generator.init(new KeyGenParameterSpec.Builder(KEY_ALIAS,
-            KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-            .setKeySize(256).build());
-        return generator.generateKey();
     }
 
     private static String hex(byte[] bytes) {

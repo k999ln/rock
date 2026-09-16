@@ -237,7 +237,7 @@ export function validateBaseline(
   requireValue(
       data.primaryCapabilities?.includes('os-platform-core') &&
       data.androidPlatformCore?.status ===
-        'native_sky_persistent_selection_api_v3_emulator_pass_physical_reboot_pending_aosp_not_run' &&
+        'native_sky_api_v4_backup_v2_emulator_pass_physical_reboot_and_wipe_pending_aosp_not_run' &&
       data.androidPlatformCore?.apiVersion === 1 &&
       JSON.stringify(data.androidPlatformCore?.componentKinds) ===
         JSON.stringify(['TOOL', 'MCP', 'PROVIDER']) &&
@@ -249,7 +249,7 @@ export function validateBaseline(
       data.androidPlatformCore?.ledger ===
         'append_only_owner_scoped_idempotent_receipts' &&
       data.androidPlatformCore?.backup ===
-        'aes_256_gcm_android_keystore_owner_scoped' &&
+        'dual_wrapped_v2_owner_phrase_and_android_keystore_allowlisted' &&
       data.androidPlatformCore?.schemaVersion === 2 &&
       data.androidPlatformCore?.migration === 'transactional_fail_closed' &&
       data.androidPlatformCore?.androidBuilt === true &&
@@ -257,19 +257,34 @@ export function validateBaseline(
       data.androidPlatformCore?.selinuxEnforcingVerified === false &&
       data.androidPlatformCore?.productionSigningVerified === false &&
       data.androidPlatformCore?.otaRollbackVerified === false &&
-      data.androidPlatformCore?.shellApiVersion === 3 &&
+      data.androidPlatformCore?.shellApiVersion === 4 &&
       data.androidPlatformCore?.nativeSkySelectionStore ===
         'broker_sqlite_schema_v2' &&
       data.androidPlatformCore?.nativeSkySelectionTokenRequired === true &&
       data.androidPlatformCore?.nativeSkySelectionEmulatorVerified === true &&
       data.androidPlatformCore?.nativeSkySelectionPhysicalRebootVerified === false &&
+      data.androidPlatformCore?.recoverableBackupOwnerPhraseUi === true &&
+      data.androidPlatformCore?.recoverableBackupTransactionalImport === true &&
+      data.androidPlatformCore?.recoverableBackupNewKeystoreRebinding === true &&
+      data.androidPlatformCore?.recoverableBackupEmptyTargetRequired === true &&
+      data.androidPlatformCore?.recoverableBackupRestoresPaused === true &&
+      data.androidPlatformCore?.recoverableBackupRestoresComponentAuthority === false &&
+      data.androidPlatformCore?.recoverableBackupEmulatorBrokerChecks ===
+        '11_pass_2_physical_skipped' &&
+      data.androidPlatformCore?.recoverableBackupEmulatorShellChecks === '5_pass' &&
+      data.androidPlatformCore?.recoverableBackupPhysicalWipeVerified === false &&
       data.androidPlatformCore?.zemaSelectedToolPlanGateImplemented === true &&
       data.androidPlatformCore?.zemaEmulatorNoModelFailClosed === true &&
       data.androidPlatformCore?.zemaPhysicalStrictPlanAccepted === true &&
       data.androidPlatformCore?.zemaPhysicalSelectedToolResultHistoryVerified === true,
     'OS Platform Coreの署名・UID・承認・台帳・暗号化・standalone build済／AOSP未build境界を維持してください',
   );
-  for (const field of ['contract', 'record', 'zemaSelectedToolEvidence']) {
+  for (const field of [
+    'contract',
+    'record',
+    'zemaSelectedToolEvidence',
+    'recoverableBackupEvidence',
+  ]) {
     const path = data.androidPlatformCore?.[field];
     requireValue(
       typeof path === 'string' && existsSync(resolve(root, path)),

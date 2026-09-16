@@ -2,7 +2,7 @@
   "schema": "avocadoos-android-backup-recovery-policy/1",
   "product": "avocadoOS",
   "target": "Google Pixel 10 / frankel / GL066",
-  "status": "design_approved_core_envelope_implemented_ui_import_and_device_drill_pending",
+  "status": "source_ui_transactional_import_and_rebinding_emulator_pass_physical_wipe_pending",
   "decision": "DUAL_WRAPPED_RANDOM_DATA_KEY_WITH_DEVICE_KEYSTORE_AND_OWNER_RECOVERY_PHRASE",
   "envelope": {
     "format": "avocadoos-recoverable-backup/2",
@@ -81,7 +81,12 @@
     "tamperingRejected": true,
     "unsupportedFormatRejected": true,
     "restoreMayActivateOldApprovalsOrSessions": false,
-    "externalConnectionsRequireReauthorization": true
+    "externalConnectionsRequireReauthorization": true,
+    "emptyTargetRequired": true,
+    "restoredAutomationStartsPaused": true,
+    "restoredSkySelectionTokenRotated": true,
+    "restoredActiveApprovalsStopped": true,
+    "installedComponentAuthorityRestored": false
   },
   "migration": {
     "legacyFormat": "rockstar-platform-backup/1",
@@ -91,10 +96,10 @@
     "migrationAction": "while_original_device_key_exists_restore_legacy_then_export_v2"
   },
   "implementation": {
-    "coreDualWrappedEnvelope": "implemented_host_34_tests_passed",
-    "ownerPhraseCodecAndConfirmationUi": "pending",
-    "platformImportAndTransactionalRestore": "pending",
-    "newDeviceKeystoreRebinding": "pending",
+    "coreDualWrappedEnvelope": "implemented_host_37_tests_passed",
+    "ownerPhraseCodecAndConfirmationUi": "implemented_shell_api_v4_emulator_pass",
+    "platformImportAndTransactionalRestore": "implemented_android_sqlite_emulator_pass",
+    "newDeviceKeystoreRebinding": "implemented_android_keystore_emulator_pass",
     "physicalWipeAndRestoreDrill": "pending"
   },
   "gate": {

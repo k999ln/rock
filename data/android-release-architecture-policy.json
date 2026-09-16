@@ -50,7 +50,7 @@
     {
       "id": "keystore-loss-backup-restore",
       "selection": "dual-wrapped-random-data-key-with-device-keystore-and-owner-recovery-phrase",
-      "status": "core_envelope_implemented_runtime_import_rebinding_and_wipe_drill_pending",
+      "status": "source_ui_import_rebinding_emulator_pass_physical_wipe_drill_pending",
       "authority": "data/android-backup-recovery-policy.json"
     },
     {
@@ -197,7 +197,7 @@
     "fullBuildVerified": false,
     "physicalAcceptancePassed": false,
     "blockers": [
-      "activate-recoverable-backup-v2-through-binder-ui-import-and-rebinding",
+      "complete-physical-keystore-loss-wipe-restore-drill",
       "implement-and-isolate-operator-agent",
       "integrate-local-ai-domain-into-final-image",
       "build-user-image-and-prove-selinux-enforcing-isolation",

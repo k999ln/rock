@@ -259,7 +259,7 @@
   ],
   "priorityOrder": [
     "Reconnect the stock Pixel and run the two-phase native Sky in-flight reboot recovery acceptance",
-    "Finish backup v2 restore, owner rebind and anti-clone behavior before first flash",
+    "Run the physical Pixel Keystore-loss wipe-and-restore drill for the implemented backup v2 path before first flash",
     "Complete recovery artifact hashes, vendor inventory and production signing inputs",
     "Implement the restricted Android Operator Agent and exercise the full audited support path",
     "Run the first AOSP full build only after every pre-full-build gate passes",

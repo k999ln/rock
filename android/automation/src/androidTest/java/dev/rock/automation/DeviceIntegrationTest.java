@@ -11,12 +11,16 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import dev.rock.core.Engine;
 import dev.rock.core.ArticleTools;
+import dev.rock.core.platform.PlatformStore;
+import dev.rock.core.platform.RecoveryPhrase;
 import dev.rock.sdk.ArticlePayload;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 import java.io.File;
+import java.security.KeyStore;
+import java.util.Arrays;
 import java.util.UUID;
 
 /** Runs in an ephemeral Android emulator against real Binder and Android SQLite, no UI/accounts. */
@@ -81,6 +85,63 @@ public class DeviceIntegrationTest {
             assertThrows(SecurityException.class,
                 () -> restored.requireSkySelection(UUID.randomUUID().toString()));
         } finally { target.deleteDatabase(name); }
+    }
+
+    @Test public void recoverySecretUsesAndroidKeystoreAndPhraseChecksum() throws Exception {
+        Context target = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        String suffix = UUID.randomUUID().toString();
+        String alias = "avocadoos-test-recovery-" + suffix;
+        String fileName = "test-recovery-" + suffix + ".secret";
+        File secretFile = new File(new File(target.getNoBackupFilesDir(), "recovery"), fileName);
+        byte[] secret = new byte[32]; new java.security.SecureRandom().nextBytes(secret);
+        try {
+            RecoverySecretStore store = new RecoverySecretStore(target, alias, fileName);
+            store.bind(secret, "android-user:0");
+            assertTrue(store.isConfigured());
+            assertArrayEquals(secret, store.load("android-user:0"));
+            assertThrows(SecurityException.class, () -> store.load("android-user:1"));
+            String phrase = RecoveryPhrase.encode(secret);
+            assertArrayEquals(secret, RecoveryPhrase.decode(phrase));
+        } finally {
+            Arrays.fill(secret, (byte) 0);
+            secretFile.delete();
+            KeyStore keys = KeyStore.getInstance("AndroidKeyStore"); keys.load(null);
+            if (keys.containsAlias(alias)) keys.deleteEntry(alias);
+        }
+    }
+
+    @Test public void recoverableStateRestoresTransactionallyOnAndroidSqlite() throws Exception {
+        Context target = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        String sourceName = "backup-source-" + UUID.randomUUID() + ".db";
+        String restoredName = "backup-restored-" + UUID.randomUUID() + ".db";
+        Context sourceContext = new ContextWrapper(target) {
+            @Override public File getDatabasePath(String ignored) { return target.getDatabasePath(sourceName); }
+        };
+        Context restoredContext = new ContextWrapper(target) {
+            @Override public File getDatabasePath(String ignored) { return target.getDatabasePath(restoredName); }
+        };
+        byte[] snapshot;
+        String oldToken;
+        try {
+            try (AndroidDatabase source = new AndroidDatabase(sourceContext)) {
+                Engine engine = new Engine(source); oldToken = engine.selectSkyTool(Engine.RECIPE).token;
+                engine.submit("android-backup", "{\"owner\":\"fixture\"}", false, true);
+                snapshot = new PlatformStore(source).exportRecoverableState("android-user:0");
+            }
+            try (AndroidDatabase restored = new AndroidDatabase(restoredContext)) {
+                Engine engine = new Engine(restored); PlatformStore platform = new PlatformStore(restored);
+                PlatformStore.RestoreSummary result = platform.restoreRecoverableState(
+                    snapshot, "android-user:0", System.currentTimeMillis());
+                assertEquals(1, result.works); assertTrue(engine.paused());
+                assertNotEquals(oldToken, engine.skySelection().token);
+                assertEquals(2, engine.skySelection().revision);
+                assertThrows(IllegalStateException.class, () ->
+                    platform.restoreRecoverableState(snapshot, "android-user:0", System.currentTimeMillis()));
+                assertEquals(1, engine.list().size());
+            }
+        } finally {
+            target.deleteDatabase(sourceName); target.deleteDatabase(restoredName);
+        }
     }
 
     @Test public void realBinderPipelinePersistsAndRequiresReview() throws Exception {

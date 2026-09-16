@@ -80,7 +80,7 @@
     {
       "id": "keystore-loss-backup-restore",
       "status": "blocked",
-      "blocker": "dual-wrapped v2 core formatと所有者24単語方式は決定・実装しましたが、24単語codec／確認UI、transactional import、新端末Keystore再binding、Pixel全消去後の実復元試験が未完了です。",
+      "blocker": "dual-wrapped v2、所有者24単語codec／確認UI、transactional import、新Keystore再bindingはAndroid 15 emulatorで合格しました。ただし、Pixel 10のdataとKeystoreを実際に消去した後の復元・再起動証拠が未完了です。",
       "formatVersion": "avocadoos-recoverable-backup/2",
       "keystoreLossRecoverySupported": false,
       "recoveryMechanism": "256-bit owner recovery secret presented as a checksum-protected 24-word phrase; HKDF-SHA-256 recovery wrapping plus Android Keystore device wrapping",

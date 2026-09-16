@@ -68,7 +68,7 @@ Google利用条件を本人が確認した後、`frankel`に対応するfactory 
 
 方式は `avocadoos-recoverable-backup/2` に固定した。backupごとに新しい256-bit DEKでpayloadをAES-256-GCM暗号化し、同じDEKをhardware-backed Keystore鍵と、所有者だけの256-bit recovery secretの2経路でwrapする。recovery secretはchecksum付き24単語で提示し、HKDF-SHA-256、backupごとの256-bit salt、format／owner domain separationを使う。短いpasswordだけの復元、運営の万能復号鍵、server escrowは禁止する。詳細は`docs/android-backup-recovery.md`を正本とする。
 
-coreのdual-wrapped envelopeは実装済みだが、24単語codec／確認UI、transactional import、新端末Keystore再binding、Pixel全消去後の実復元は未完了である。生のWallet秘密鍵やseed phraseをbackupへ含めない。復元要素そのものを運営サーバーやGitへ保存しない。
+dual-wrapped envelope、avocadoOS専用24単語codec、4単語確認UI、Shell API v4 export／import、transactional restore、新端末Keystore再bindingは実装し、Android 15 emulatorで合格した。復元は空のowner領域だけへ行い、自動化を停止状態にし、Sky tokenをrotateし、古いactive承認を停止し、導入componentのauthorityを復元しない。生のWallet秘密鍵やseed phraseをbackupへ含めず、復元要素そのものを運営サーバーやGitへ保存しない。残る未完了はPixel全消去後の物理復元と再起動確認である。
 
 合格条件:
 
@@ -80,12 +80,12 @@ coreのdual-wrapped envelopeは実装済みだが、24単語codec／確認UI、t
 
 ## 現在の判定
 
-4項目すべて未合格。1番は保管アーキテクチャ、YubiHSM 2、4鍵系統、更新・失効ルールまで決定済みで、機材調達・署名bridge・予備切替・旧新鍵移行試験が未完了。2番は運用規則だけ決定済みで、正確なlocation/valueと実機試験が未完了。3番は純正復旧セットの選定規則だけ決定済みで、利用条件同意・実ファイル・hashが未完了。4番は方式固定とcore envelope実装まで進んだが、利用者UI、実data import、新Keystore再binding、物理端末の全損復元試験が必要。
+4項目すべて未合格。1番は保管アーキテクチャ、YubiHSM 2、4鍵系統、更新・失効ルールまで決定済みで、機材調達・署名bridge・予備切替・旧新鍵移行試験が未完了。2番は運用規則だけ決定済みで、正確なlocation/valueと実機試験が未完了。3番は純正復旧セットの選定規則だけ決定済みで、利用条件同意・実ファイル・hashが未完了。4番はsource、利用者UI、実data import、新Keystore再binding、emulator受入まで進み、物理端末の全損復元試験だけがgateとして残る。
 
 実施順:
 
 1. YubiHSM 2を調達し、全署名経路と予備切替を実測して、公開fingerprintと紛失・rotation手順を作る。
 2. 決定済みrollback規則に従い、full buildのtarget-filesから正確なlocation/valueを固定してA/B実機試験を行う。
 3. Google純正2ファイルを取得しSHA-256を固定する。
-4. 24単語UI、transactional import、新Keystore再bindingを実装し、決定済みdual-wrapped formatでwipe後の復元試験を通す。
+4. 決定済みdual-wrapped formatを物理Pixelでexportし、wipe後の復元、再binding、再起動試験を通す。
 5. 4/4のhashed evidenceが揃った時だけ正本の `passed` をtrueにする。

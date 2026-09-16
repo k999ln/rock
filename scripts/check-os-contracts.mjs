@@ -12,14 +12,24 @@ assert.equal(platform.ledger.mutation, 'compensating_reversal_only');
 assert.equal(platform.storage.encryption, 'AES-256-GCM_ANDROID_KEYSTORE');
 assert.equal(platform.storage.backupFormat, 'rockstar-platform-backup/1');
 assert.equal(platform.storage.recoverableBackupFormat, 'avocadoos-recoverable-backup/2');
+assert.equal(platform.storage.recoverableBackupStateFormat, 'avocadoos-platform-state/2');
 assert.equal(
   platform.storage.recoverableBackupEncryption,
   'AES-256-GCM_FRESH_DEK_DUAL_WRAPPED_BY_ANDROID_KEYSTORE_AND_HKDF_SHA256_OWNER_RECOVERY',
 );
 assert.equal(
   platform.storage.recoverableBackupStatus,
-  'CORE_IMPLEMENTED_OWNER_PHRASE_UI_IMPORT_AND_REBINDING_PENDING',
+  'SHELL_API_V4_UI_TRANSACTIONAL_IMPORT_AND_NEW_KEYSTORE_BINDING_EMULATOR_PASS_PHYSICAL_WIPE_PENDING',
 );
+assert.deepEqual(platform.storage.recoverableBackupRestoreSafety, {
+  emptyTargetRequired: true,
+  restoredAutomationPaused: true,
+  restoredSkySelectionTokenRotated: true,
+  restoredApprovalsStopped: true,
+  installedComponentAuthorityRestored: false,
+  operatorUniversalRecoveryKey: false,
+  walletSeed: false,
+});
 assert.equal(platform.storage.schemaVersion, 2);
 assert.equal(platform.isolation.runtimeRegistrationCanGrantDomain, false);
 assert.equal(platform.isolation.shellBinderPermission, 'dev.rock.permission.USE_SHELL_API');
@@ -29,7 +39,7 @@ assert.equal(platform.isolation.targetLayout, 'dev.rock.shell_ui_separate_from_d
 assert.equal(platform.isolation.targetPolicy, 'data/android-release-architecture-policy.json');
 assert.equal(platform.isolation.targetStateImplemented, true);
 assert.deepEqual(platform.nativeSkyHandoff, {
-  shellApiVersion: 3,
+  shellApiVersion: 4,
   selectionStore: 'broker_sqlite',
   selectionSchemaVersion: 2,
   selectionTokenRequiredByZema: true,
@@ -42,6 +52,8 @@ const platformAidl = read('android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatform
 const platformStore = read('android/core/src/main/java/dev/rock/core/platform/PlatformStore.java');
 const platformService = read('android/automation/src/main/java/dev/rock/automation/RockPlatformService.java');
 const encryptedBackup = read('android/core/src/main/java/dev/rock/core/platform/EncryptedBackup.java');
+const recoveryPhrase = read('android/core/src/main/java/dev/rock/core/platform/RecoveryPhrase.java');
+const recoverableManager = read('android/automation/src/main/java/dev/rock/automation/RecoverableBackupManager.java');
 assert.ok(platformAidl.includes('const int API_VERSION = 1'));
 for (const call of ['registerComponent', 'requestApproval', 'stopComponent', 'revokeComponent', 'recordLedgerReceipt', 'recordProviderReceipt', 'createEncryptedBackup']) assert.ok(platformAidl.includes(`${call}(`));
 assert.ok(platformStore.includes("'PROPOSED','ISSUED','CONSUMED','STOPPED','REVOKED','EXPIRED'"));
@@ -49,9 +61,14 @@ assert.ok(platformStore.includes('ALTER TABLE platform_approvals RENAME TO platf
 assert.ok(platformStore.includes('UNIQUE(owner,provider_ref)'));
 assert.ok(platformStore.includes('UNIQUE(owner,reverses_receipt)'));
 assert.ok(platformService.includes('PackageManager.GET_SIGNING_CERTIFICATES'));
-assert.ok(platformService.includes('AndroidKeyStore'));
+assert.ok(platformService.includes('RecoverableBackupManager'));
 assert.ok(encryptedBackup.includes('PlatformApi.RECOVERABLE_BACKUP_FORMAT'));
 assert.ok(encryptedBackup.includes('openWithRecoverySecret'));
+assert.ok(recoveryPhrase.includes('backup-recovery-phrase'));
+assert.ok(recoveryPhrase.includes('does not use the BIP-39 word list'));
+assert.ok(recoverableManager.includes('AndroidKeyStore'));
+assert.ok(platformStore.includes('restoreRecoverableState'));
+assert.ok(platformStore.includes('RESTORE_TARGET_NOT_EMPTY'));
 assert.ok(read('android/automation/src/main/AndroidManifest.xml').includes(platform.managementPermission));
 assert.ok(!read('android/automation/src/main/AndroidManifest.xml').includes('.MainActivity'));
 assert.ok(read('android/shell/src/main/AndroidManifest.xml').includes('.MainActivity'));
@@ -99,8 +116,8 @@ assert.ok(read('os/device/AndroidProducts.mk').includes(`${lock.product}-${lock.
 assert.ok(read('android/Android.bp').includes('RockAutomationPrototype'));
 assert.ok(read('android/Android.bp').includes('name: "RockShell"'));
 const shellApi = read('android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl');
-assert.ok(shellApi.includes('const int API_VERSION = 3'));
-for (const call of ['snapshot', 'submit', 'setPaused', 'result', 'complete', 'retry', 'cancel', 'localAiStatus', 'submitZema', 'skySelection', 'selectSkyTool']) assert.ok(shellApi.includes(`${call}(`));
+assert.ok(shellApi.includes('const int API_VERSION = 4'));
+for (const call of ['snapshot', 'submit', 'setPaused', 'result', 'complete', 'retry', 'cancel', 'localAiStatus', 'submitZema', 'skySelection', 'selectSkyTool', 'recoveryStatus', 'beginRecoverySetup', 'confirmRecoverySetup', 'createRecoverableBackup', 'restoreRecoverableBackup']) assert.ok(shellApi.includes(`${call}(`));
 const shellService = read('android/automation/src/main/java/dev/rock/automation/RockShellService.java');
 assert.ok(shellService.includes('SHELL_PACKAGE = "dev.rock.shell"'));
 assert.ok(shellService.includes('getPackagesForUid(uid)'));

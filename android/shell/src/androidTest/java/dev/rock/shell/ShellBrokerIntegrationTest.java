@@ -1,9 +1,13 @@
 package dev.rock.shell;
 
 import android.content.pm.PackageManager;
+import android.os.ParcelFileDescriptor;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.util.UUID;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,12 +41,16 @@ public final class ShellBrokerIntegrationTest {
             packages.checkSignatures(context.getPackageName(), ShellConnection.BROKER_PACKAGE));
 
         ShellConnection broker = new ShellConnection(context);
-        assertEquals(3, ShellConnection.API_VERSION);
+        assertEquals(4, ShellConnection.API_VERSION);
         JSONObject before = new JSONObject(broker.snapshot());
         assertEquals(1, before.getInt("apiVersion"));
         assertTrue(before.has("totalWorkCount"));
         assertTrue(before.has("truncated"));
         assertTrue(selectedArticleTool(broker).matches("[0-9a-f-]{36}"));
+        JSONObject recovery = new JSONObject(broker.recoveryStatus());
+        assertEquals("ok", recovery.getString("status"));
+        assertEquals("avocadoos-recoverable-backup/2", recovery.getString("format"));
+        assertFalse(recovery.getBoolean("walletSeed"));
         String input = new JSONObject()
             .put("markdown", "# Test\n\nSource ([A](https://example.test/source))\n\nDetails")
             .put("summary", "- one\n- two\n- three")
@@ -117,5 +125,42 @@ public final class ShellBrokerIntegrationTest {
         assertEquals("SKY_SELECTION_REQUIRED", response.getString("code"));
         assertTrue(response.isNull("workId"));
         assertEquals(before, new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
+    }
+
+    @Test public void recoverySetupConfirmsSelectedWordsAndExportsV2WithoutNetwork() throws Exception {
+        android.content.Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        ShellConnection broker = new ShellConnection(context);
+        JSONObject setup = new JSONObject(broker.beginRecoverySetup());
+        assertEquals("confirmation_required", setup.getString("status"));
+        assertFalse(setup.getBoolean("walletSeed"));
+        String[] phrase = setup.getString("phrase").split(" ");
+        assertEquals(24, phrase.length);
+        JSONArray numbers = setup.getJSONArray("confirmWordNumbers");
+        JSONArray confirmations = new JSONArray();
+        for (int index = 0; index < numbers.length(); index++) {
+            confirmations.put(phrase[numbers.getInt(index) - 1]);
+        }
+        JSONObject configured = new JSONObject(broker.confirmRecoverySetup(
+            setup.getString("setupToken"), confirmations.toString()));
+        assertEquals(configured.toString(), "configured", configured.getString("status"));
+        assertFalse(configured.getBoolean("walletSeed"));
+
+        ParcelFileDescriptor[] pipe = ParcelFileDescriptor.createPipe();
+        JSONObject exported = new JSONObject(broker.createRecoverableBackup(
+            "shell-backup:" + UUID.randomUUID(), pipe[1]));
+        pipe[1].close();
+        byte[] envelope;
+        try (ParcelFileDescriptor read = pipe[0];
+             FileInputStream input = new FileInputStream(read.getFileDescriptor());
+             ByteArrayOutputStream bytes = new ByteArrayOutputStream()) {
+            input.transferTo(bytes); envelope = bytes.toByteArray();
+        }
+        assertEquals(exported.toString(), "exported", exported.getString("status"));
+        assertEquals(envelope.length, exported.getInt("bytes"));
+        assertTrue(envelope.length > 256);
+        assertTrue(exported.getString("sha256").matches("[a-f0-9]{64}"));
+        assertTrue(exported.has("storageSyncConfirmed"));
+        assertEquals("avocadoos-recoverable-backup/2",
+            new JSONObject(broker.recoveryStatus()).getString("format"));
     }
 }

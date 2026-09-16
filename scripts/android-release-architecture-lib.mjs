@@ -142,7 +142,7 @@ export function validateAndroidReleaseArchitecture({
     completion.physicalAcceptancePassed !== false
   ) fail('未実装を完了扱いにできません');
   includesAll(completion.blockers || [], [
-    'activate-recoverable-backup-v2-through-binder-ui-import-and-rebinding',
+    'complete-physical-keystore-loss-wipe-restore-drill',
     'implement-and-isolate-operator-agent',
     'integrate-local-ai-domain-into-final-image',
     'build-user-image-and-prove-selinux-enforcing-isolation',
@@ -186,14 +186,27 @@ export function validateAndroidReleaseArchitecture({
     'ArticlePayload.parse(inputJson)',
     'Engine.bounded(result)',
   ], 'Shell Broker APIのexact package/signer/schema/bounds検査が不足しています');
-  if (!platformService.includes('EncryptedBackup.seal(')) {
-    fail('現在のBinder backup routeをlegacy v1として追跡できません');
-  }
+  includesAll(platformService, [
+    'new RecoverableBackupManager(this).createBytes(owner)',
+    '".arb"',
+  ], 'Platform serviceのbackup v2経路が不足しています');
+  includesAll(shellService, [
+    'beginRecoverySetup()',
+    'confirmRecoverySetup(',
+    'createRecoverableBackup(',
+    'restoreRecoverableBackup(',
+    'RecoveryPhrase.encode(',
+  ], 'Shell API v4のowner recovery経路が不足しています');
   if (
     backup.envelope?.format !== platform.storage?.recoverableBackupFormat ||
-    backup.implementation?.ownerPhraseCodecAndConfirmationUi !== 'pending' ||
-    backup.implementation?.platformImportAndTransactionalRestore !== 'pending'
-  ) fail('backup v2の設計と未実装境界が一致しません');
+    backup.implementation?.ownerPhraseCodecAndConfirmationUi !==
+      'implemented_shell_api_v4_emulator_pass' ||
+    backup.implementation?.platformImportAndTransactionalRestore !==
+      'implemented_android_sqlite_emulator_pass' ||
+    backup.implementation?.newDeviceKeystoreRebinding !==
+      'implemented_android_keystore_emulator_pass' ||
+    backup.implementation?.physicalWipeAndRestoreDrill !== 'pending'
+  ) fail('backup v2のsource/emulator合格と物理未完了境界が一致しません');
   if (
     firstFlash.policy?.backupRecoveryPolicy !== 'data/android-backup-recovery-policy.json' ||
     firstFlash.passed !== false

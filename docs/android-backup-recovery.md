@@ -43,11 +43,15 @@ allowlist方式とし、SkyのTool構成・選択、Zemaのworkflow／job状態�
 
 ## 現在の実装境界と合格条件
 
-coreにはdual-wrapped v2 envelope、owner binding、legacy読取、wrong key／wrong owner／header・payload改ざん／末尾byte拒否を実装し、Java 11でCore全34 unit testsを通した。ただし、24単語codecと確認UI、PlatformStoreへのtransactional import、新端末Keystoreへの再binding、物理Pixelのwipe復元は未完了である。現行`RockPlatformService`のbackup作成もv2 onboardingへまだ切り替えていない。
+dual-wrapped v2 envelope、owner binding、legacy読取、wrong key／wrong owner／header・payload改ざん／末尾byte拒否に加え、avocadoOS専用24単語codec、指定4単語の確認UI、Shell API v4のexport／import、allowlist方式のtransactional restore、新端末Keystoreへの再bindingまで実装した。Java 11 Coreは37/37、Android 15 emulatorはBroker 11件（物理再起動専用2件を条件skip）とShell 5/5に合格した。[秘密を含まないemulator証拠](evidence/android-backup-v2-emulator-20260916.json)を保存している。
+
+復元先は対象ownerの仕事・選択・承認・台帳が空でなければ拒否する。復元後は自動化を必ず一時停止し、Sky selection tokenを新規生成し、実行中leaseを破棄し、`PROPOSED`／`ISSUED`承認を`STOPPED`へ変換する。導入済みcomponentの権限、session、operator credential、provider secretは復元しない。これによりbackup単体を別端末の実行権限cloneとして使えない。
+
+未完了なのは、物理Pixel 10のdataとKeystoreを実際に消去し、24単語だけで復元、新Keystoreで再export、再起動後も停止状態とdataを確認する試験である。emulator合格やsource実装をこの物理gateの代用にはしない。
 
 したがって初回flash gateは未合格のまま。合格には同じrelease候補で次をすべて実測する。
 
-1. 24単語を生成・確認し、v2 backupを端末外へexportする。
+1. 物理端末で24単語を生成・確認し、v2 backupを端末外へexportする。
 2. 元dataとKeystoreを消去した新規profileを作る。
 3. 24単語だけで復号し、allowlist dataをtransactionalに復元する。
 4. wrong phrase、別owner、改ざん、unsupported formatを拒否する。

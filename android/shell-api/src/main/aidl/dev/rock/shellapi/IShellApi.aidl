@@ -1,8 +1,10 @@
 package dev.rock.shellapi;
 
+import android.os.ParcelFileDescriptor;
+
 /** Private UI-to-broker API. Payload content never crosses this API except explicit owner input/output. */
 interface IShellApi {
-    const int API_VERSION = 3;
+    const int API_VERSION = 4;
 
     int getApiVersion() = 0;
     String snapshot() = 1;
@@ -16,4 +18,9 @@ interface IShellApi {
     String submitZema(String requestId, String selectionToken, String prompt, String contextJson, boolean consent) = 9;
     String skySelection() = 10;
     String selectSkyTool(String toolId) = 11;
+    String recoveryStatus() = 12;
+    String beginRecoverySetup() = 13;
+    String confirmRecoverySetup(String setupToken, String confirmationsJson) = 14;
+    String createRecoverableBackup(String requestId, in ParcelFileDescriptor destination) = 15;
+    String restoreRecoverableBackup(in ParcelFileDescriptor source, String recoveryPhrase) = 16;
 }

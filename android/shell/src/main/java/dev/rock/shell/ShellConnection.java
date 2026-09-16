@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
+import android.os.ParcelFileDescriptor;
 import dev.rock.shellapi.IShellApi;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 final class ShellConnection {
     static final String BROKER_PACKAGE = "dev.rock.automation";
     static final String BROKER_SERVICE = BROKER_PACKAGE + ".RockShellService";
-    static final int API_VERSION = 3;
+    static final int API_VERSION = 4;
     private final Context context;
 
     ShellConnection(Context context) { this.context = context; }
@@ -36,6 +37,17 @@ final class ShellConnection {
     String skySelection() throws Exception { return withService(IShellApi::skySelection); }
     String selectSkyTool(String toolId) throws Exception {
         return withService(api -> api.selectSkyTool(toolId));
+    }
+    String recoveryStatus() throws Exception { return withService(IShellApi::recoveryStatus); }
+    String beginRecoverySetup() throws Exception { return withService(IShellApi::beginRecoverySetup); }
+    String confirmRecoverySetup(String setupToken, String confirmationsJson) throws Exception {
+        return withService(api -> api.confirmRecoverySetup(setupToken, confirmationsJson));
+    }
+    String createRecoverableBackup(String requestId, ParcelFileDescriptor destination) throws Exception {
+        return withService(api -> api.createRecoverableBackup(requestId, destination));
+    }
+    String restoreRecoverableBackup(ParcelFileDescriptor source, String phrase) throws Exception {
+        return withService(api -> api.restoreRecoverableBackup(source, phrase));
     }
 
     private <T> T withService(Call<T> call) throws Exception {

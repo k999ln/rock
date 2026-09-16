@@ -1,5 +1,11 @@
 # avocadoOS — 事業・設計・進捗
 
+## 2026-09-16 — backup v2をShell API v4へ接続（物理wipe復元待ち）
+
+所有者専用の256-bit recovery secretをchecksum付き24単語へ変換し、指定4単語の確認後だけ有効化するUIを追加した。Shell API v4から`avocadoos-recoverable-backup/2`を端末外へexportし、空のowner領域へ24単語でtransactionalにimportして新しいAndroid Keystore鍵へ結び直す。復元後は自動化を停止し、Sky tokenをrotateし、実行中leaseとactive承認を無効化し、導入component authorityとsecretを復元しない。
+
+Java 11 Core 37/37、Android 15 emulatorのBroker 11 non-skipped testとShell 5/5、Android source build／lint 207 taskは合格した。Pixel 10の実data／Keystore消去、復元、再export、再起動は未実施なので、初回flash gateは0/4のまま維持する。[設計と物理gate](docs/android-backup-recovery.md)／[emulator証拠](docs/evidence/android-backup-v2-emulator-20260916.json)。
+
 ## 2026-09-16 — native Sky選択をBrokerへ永続化（物理再起動受入待ち）
 
 Shell API v3へ`selectSkyTool`と`skySelection`を追加し、Skyで選んだ`article-preparation@1`をBroker SQLite schema v2へ保存するようにした。Zemaは保存済みselection tokenの一致をLocal AI計画の前後で確認し、不一致・未選択は仕事0件で拒否する。既存schema v1はtransaction内でv2へ移行し、未知の新しいschemaはresetせず停止する。
@@ -30,13 +36,13 @@ Pixel 10／frankel／GL066向けの製品構成を、機種/SKU、BSP/vendor/par
 
 既存の`dev.rock.automation`は信頼identityを変えずheadless Platform Brokerとして残し、最終Home／Sky／Zemaを載せるAndroid launcher／UI入口を`dev.rock.shell`へ分離した。Shellは通信権限、Platform DB、Keystore、Engineと広いPlatform管理権限を持たず、専用BinderだけでBrokerへ接続する。現UIはP1操作画面で、最終native UI完成とは扱わない。Local AI、Tool、MCP、Provider、Operator Agentは別UID／別SELinux domainに固定し、runtime登録からdomainを得ること、Local AIからTool/Walletへ直接接続すること、Operator Agentから製品data planeへBinder接続することを拒否する。Operator Dockは利用者OSとlauncherへ含めない。
 
-Shell／Brokerのsource分離、3 APKのAndroid Gradle build／lint、Android 15 emulatorのBinder統合試験は完了した。ただし全体実装は未完了で、backup Binder経路はlegacy v1、Operator Agentは未実装、Local AIの最終image/domain、SELinux enforcing user build、CTS/VTSは未実証である。公開監査はSELinux gateを独立追加し、Android実機を1/6合格へ変更した。欠落していたVTS、VTS HAL、VTS kernelの識別子とhash証拠を必須化した。
+Shell／Brokerのsource分離、3 APKのAndroid Gradle build／lint、Android 15 emulatorのBinder統合試験は完了した。backup Binder経路は後続のShell API v4でv2へ更新済みである。ただし全体実装は未完了で、物理wipe復元、Operator Agent、Local AIの最終image/domain、SELinux enforcing user build、CTS/VTSは未実証である。公開監査はSELinux gateを独立追加し、Android実機を1/6合格へ変更した。欠落していたVTS、VTS HAL、VTS kernelの識別子とhash証拠を必須化した。
 
 ## 2026-09-16 — 初回flash前に固定する4項目をfail-closed化
 
 Pixel 10／frankel／GL066へ最初に書き込む前の必須条件を、(1) 正式Android署名鍵のidentityと紛失・更新・失効手順、(2) AVB rollback indexのlocation／値／単調増加・downgrade拒否運用、(3) Google純正factory imageと対応full OTAの実ファイル名・byte数・SHA-256、(4) 端末dataとAndroid Keystoreを同時に失っても復元できるbackupの4項目へ固定した。正本は`data/android-first-flash-gate.json`、説明は`docs/android-first-flash-gate-20260916.md`。
 
-現在は0/4合格で、`flashReady=false`を維持する。秘密鍵とrecovery secretそのものはGitへ保存せず、公開fingerprint、手順、artifact identity、hashed試験証拠だけを保存する。4番は`avocadoos-recoverable-backup/2`に固定し、backupごとのDEKをhardware-backed Keystore鍵と所有者だけの256-bit recovery secretで二重wrapするcoreを実装した。recovery secretはchecksum付き24単語で提示し、運営万能鍵やserver escrowは作らない。24単語UI、transactional import、新Keystore再binding、wipe後の実機復元試験は未完了である。full build成功だけで初回flashを許可しない。
+現在は0/4合格で、`flashReady=false`を維持する。秘密鍵とrecovery secretそのものはGitへ保存せず、公開fingerprint、手順、artifact identity、hashed試験証拠だけを保存する。4番は`avocadoos-recoverable-backup/2`に固定し、backupごとのDEKをhardware-backed Keystore鍵と所有者だけの256-bit recovery secretで二重wrapする。24単語UI、transactional import、新Keystore再bindingはAndroid 15 emulatorで合格し、残る物理gateはPixel wipe後の実復元と再起動である。運営万能鍵やserver escrowは作らず、full build成功だけで初回flashを許可しない。
 
 ## 2026-09-15 — AI自動化チームの効率化を最上位目的へ固定
 

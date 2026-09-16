@@ -29,7 +29,7 @@ The Operator Dock stays outside the user OS in its separate Worker and database.
 - Split verification: 3 APKのAndroid Gradle build／lint、ホストcore 34 test、Android 15 emulator上のShell→Broker 1 testとBroker／Tool／SQLite 4 testは合格。別APKを要するLocal AI testはこの組から除外し、既存の独立試験証拠を転用しない。これはSoong full build、SELinux domain適用、production署名またはPixel実機受入の証拠ではない。
 - Local AI: standalone physical inference passed, but its final OS image/domain has not been built and accepted.
 - Operator: Dock/API/queue/audit exist separately; the Android agent does not.
-- Backup: v2 cryptographic core exists, but the active Binder backup route still creates the legacy v1 envelope.
+- Backup: the active Shell/Broker route uses v2, owner 24-word confirmation, allowlisted transactional import and fresh-device Keystore rebinding. Android 15 emulator acceptance passed; the destructive physical Pixel wipe/restore drill remains blocked.
 - Final image and physical acceptance: not complete. Production signing, first-flash gates, enforcing proof, CTS/VTS, OTA/rollback and stock recovery remain blocked.
 
 The machine-readable authority is [`data/android-release-architecture-policy.json`](../data/android-release-architecture-policy.json). `npm run android:architecture:check` rejects a false completion claim, a weakened isolation boundary or a missing VTS/SELinux release gate.

@@ -5,11 +5,21 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.ParcelFileDescriptor;
 import dev.rock.core.Engine;
+import dev.rock.core.platform.EncryptedBackup;
+import dev.rock.core.platform.PlatformApi;
+import dev.rock.core.platform.PlatformStore;
+import dev.rock.core.platform.RecoveryPhrase;
 import dev.rock.sdk.ArticlePayload;
 import dev.rock.shellapi.IShellApi;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,10 +28,14 @@ import org.json.JSONObject;
 public final class RockShellService extends Service {
     static final String SHELL_PACKAGE = "dev.rock.shell";
     private static final int MAX_SNAPSHOT_WORKS = 25;
+    private static final long RECOVERY_SETUP_MS = 10 * 60 * 1000L;
     private final Object zemaLock = new Object();
+    private static final Object recoveryLock = new Object();
+    /** Survives short bind/unbind cycles but never survives a Broker process restart. */
+    private static PendingRecoverySetup pendingRecovery;
 
     private final IShellApi.Stub binder = new IShellApi.Stub() {
-        @Override public int getApiVersion() { enforceShellCaller(); return 3; }
+        @Override public int getApiVersion() { enforceShellCaller(); return 4; }
         @Override public String snapshot() throws android.os.RemoteException {
             enforceShellCaller();
             try { return snapshotJson(); }
@@ -78,10 +92,62 @@ public final class RockShellService extends Service {
         @Override public String selectSkyTool(String toolId) {
             enforceShellCaller(); return skySelectionResponse(engine().selectSkyTool(toolId));
         }
+        @Override public String recoveryStatus() {
+            enforceShellCaller(); return recoveryStatusResponse();
+        }
+        @Override public String beginRecoverySetup() {
+            enforceShellCaller(); return beginRecoverySetupResponse();
+        }
+        @Override public String confirmRecoverySetup(String setupToken, String confirmationsJson) {
+            enforceShellCaller(); return confirmRecoverySetupResponse(setupToken, confirmationsJson);
+        }
+        @Override public String createRecoverableBackup(String requestId,
+                ParcelFileDescriptor destination) {
+            enforceShellCaller();
+            synchronized (recoveryLock) {
+                try {
+                    RecoverableBackupManager.ExportResult result = backupManager().exportTo(
+                        requestId, AndroidOwner.current(RockShellService.this), destination);
+                    JSONObject response = new JSONObject();
+                    response.put("status", "exported"); response.put("requestId", result.requestId);
+                    response.put("bytes", result.bytes); response.put("sha256", result.sha256);
+                    response.put("hardwareBacked", result.hardwareBacked);
+                    response.put("storageSyncConfirmed", result.storageSyncConfirmed);
+                    return boundedJson(response);
+                } catch (Exception failure) {
+                    android.util.Log.e("avocadoOS.Backup", "Export failed: "
+                        + failure.getClass().getSimpleName());
+                    return recoveryFailure("BACKUP_EXPORT_FAILED");
+                }
+            }
+        }
+        @Override public String restoreRecoverableBackup(ParcelFileDescriptor source,
+                String recoveryPhrase) {
+            enforceShellCaller();
+            synchronized (recoveryLock) {
+                try {
+                    PlatformStore.RestoreSummary result = backupManager().restoreFrom(source,
+                        recoveryPhrase, AndroidOwner.current(RockShellService.this));
+                    JSONObject response = new JSONObject(); response.put("status", "restored");
+                    response.put("works", result.works);
+                    response.put("ledgerEntries", result.ledgerEntries);
+                    response.put("stoppedApprovals", result.stoppedApprovals);
+                    response.put("paused", true);
+                    return boundedJson(response);
+                } catch (SecurityException denied) {
+                    return recoveryFailure("RECOVERY_PHRASE_OR_OWNER_REJECTED");
+                } catch (Exception failure) {
+                    android.util.Log.e("avocadoOS.Backup", "Restore failed: "
+                        + failure.getClass().getSimpleName());
+                    return recoveryFailure("BACKUP_RESTORE_FAILED");
+                }
+            }
+        }
     };
 
     @Override public IBinder onBind(Intent intent) { return binder; }
     private Engine engine() { return ((RockApplication) getApplication()).engine(); }
+    private RecoverableBackupManager backupManager() { return new RecoverableBackupManager(this); }
 
     private void enforceShellCaller() {
         int uid = Binder.getCallingUid();
@@ -153,6 +219,130 @@ public final class RockShellService extends Service {
             String result = response.toString(); Engine.bounded(result); return result;
         } catch (JSONException invalid) {
             throw new IllegalStateException("SKY_SELECTION_JSON", invalid);
+        }
+    }
+
+    private String recoveryStatusResponse() {
+        synchronized (recoveryLock) {
+            try {
+                RecoverableBackupManager manager = backupManager();
+                JSONObject response = new JSONObject(); response.put("status", "ok");
+                response.put("configured", manager.recoverySecrets().isConfigured());
+                response.put("recoverySecretHardwareBacked",
+                    manager.recoverySecrets().isHardwareBacked());
+                response.put("deviceWrapHardwareBacked", manager.deviceKeyHardwareBacked());
+                response.put("format", PlatformApi.RECOVERABLE_BACKUP_FORMAT);
+                response.put("walletSeed", false);
+                return boundedJson(response);
+            } catch (Exception failure) { return recoveryFailure("RECOVERY_STATUS_FAILED"); }
+        }
+    }
+
+    private String beginRecoverySetupResponse() {
+        synchronized (recoveryLock) {
+            clearPendingRecovery();
+            try {
+                SecureRandom random = new SecureRandom();
+                byte[] secret = EncryptedBackup.generateRecoverySecret(random);
+                String phrase = RecoveryPhrase.encode(secret);
+                Set<Integer> chosen = new LinkedHashSet<>();
+                while (chosen.size() < 4) chosen.add(random.nextInt(RecoveryPhrase.WORD_COUNT));
+                int[] challenge = chosen.stream().mapToInt(Integer::intValue).sorted().toArray();
+                String token = UUID.randomUUID().toString();
+                pendingRecovery = new PendingRecoverySetup(token, secret, challenge,
+                    android.os.SystemClock.elapsedRealtime() + RECOVERY_SETUP_MS);
+                new android.os.Handler(getMainLooper()).postDelayed(() -> {
+                    synchronized (recoveryLock) {
+                        if (pendingRecovery != null &&
+                            MessageDigestSafe.equals(token, pendingRecovery.token)) {
+                            clearPendingRecovery();
+                        }
+                    }
+                }, RECOVERY_SETUP_MS);
+                JSONArray requested = new JSONArray();
+                for (int index : challenge) requested.put(index + 1);
+                JSONObject response = new JSONObject(); response.put("status", "confirmation_required");
+                response.put("setupToken", token); response.put("phrase", phrase);
+                response.put("confirmWordNumbers", requested); response.put("walletSeed", false);
+                response.put("expiresInSeconds", RECOVERY_SETUP_MS / 1000);
+                return boundedJson(response);
+            } catch (Exception failure) {
+                clearPendingRecovery();
+                return recoveryFailure("RECOVERY_SETUP_FAILED");
+            }
+        }
+    }
+
+    private String confirmRecoverySetupResponse(String token, String confirmationsJson) {
+        synchronized (recoveryLock) {
+            try {
+                if (pendingRecovery == null || token == null ||
+                    !MessageDigestSafe.equals(token, pendingRecovery.token) ||
+                    android.os.SystemClock.elapsedRealtime() >= pendingRecovery.expiresAtElapsed) {
+                    clearPendingRecovery();
+                    return recoveryFailure("RECOVERY_SETUP_EXPIRED");
+                }
+                JSONArray confirmations = new JSONArray(confirmationsJson);
+                if (confirmations.length() != pendingRecovery.challenge.length) {
+                    return recoveryFailure("RECOVERY_CONFIRMATION_MISMATCH");
+                }
+                String phrase = RecoveryPhrase.encode(pendingRecovery.secret);
+                for (int index = 0; index < pendingRecovery.challenge.length; index++) {
+                    String expected = RecoveryPhrase.wordAt(phrase, pendingRecovery.challenge[index]);
+                    String actual = confirmations.optString(index, "").trim().toLowerCase(java.util.Locale.ROOT);
+                    if (!MessageDigestSafe.equals(expected, actual)) {
+                        return recoveryFailure("RECOVERY_CONFIRMATION_MISMATCH");
+                    }
+                }
+                RecoverableBackupManager manager = backupManager();
+                manager.recoverySecrets().bind(pendingRecovery.secret,
+                    AndroidOwner.current(RockShellService.this));
+                boolean hardware = manager.recoverySecrets().isHardwareBacked();
+                clearPendingRecovery();
+                JSONObject response = new JSONObject(); response.put("status", "configured");
+                response.put("recoverySecretHardwareBacked", hardware);
+                response.put("walletSeed", false);
+                return boundedJson(response);
+            } catch (Exception failure) {
+                return recoveryFailure("RECOVERY_SETUP_FAILED");
+            }
+        }
+    }
+
+    private void clearPendingRecovery() {
+        if (pendingRecovery != null) {
+            Arrays.fill(pendingRecovery.secret, (byte) 0);
+            pendingRecovery = null;
+        }
+    }
+
+    private static String recoveryFailure(String code) {
+        try {
+            JSONObject response = new JSONObject(); response.put("status", "blocked");
+            response.put("code", code); return boundedJson(response);
+        } catch (JSONException impossible) { throw new IllegalStateException(impossible); }
+    }
+
+    private static String boundedJson(JSONObject value) {
+        String result = value.toString(); Engine.bounded(result); return result;
+    }
+
+    private static final class PendingRecoverySetup {
+        final String token; final byte[] secret; final int[] challenge;
+        final long expiresAtElapsed;
+        PendingRecoverySetup(String token, byte[] secret, int[] challenge, long expiresAtElapsed) {
+            this.token = token; this.secret = secret; this.challenge = challenge;
+            this.expiresAtElapsed = expiresAtElapsed;
+        }
+    }
+
+    /** Avoids data-dependent early exit for setup token and recovery word comparisons. */
+    private static final class MessageDigestSafe {
+        static boolean equals(String left, String right) {
+            if (left == null || right == null) return false;
+            return java.security.MessageDigest.isEqual(
+                left.getBytes(java.nio.charset.StandardCharsets.UTF_8),
+                right.getBytes(java.nio.charset.StandardCharsets.UTF_8));
         }
     }
 }

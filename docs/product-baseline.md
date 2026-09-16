@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-16 backup v2実装追記（v1.66）: 所有者専用256-bit recovery secretをavocadoOS専用checksum付き24単語で提示し、指定4単語の再入力後だけ有効化する。Shell API v4からdual-wrapped v2 backupをexportし、空のowner領域へtransactional importした後、新しいAndroid Keystore鍵へ再bindingする。復元後は自動化を停止し、Sky tokenをrotateし、active承認と実行中leaseを無効化し、導入component authority、Wallet秘密鍵、session、operator credential、provider secretを復元しない。Core 37/37、Android 15 emulatorのBroker 11 non-skipped／Shell 5/5、source build／lint 207 taskは合格。Pixel 10の物理wipe／復元／再起動は未実施なので初回flash gateは未合格のまま維持する。[証拠](evidence/android-backup-v2-emulator-20260916.json)。
+
 2026-09-16 native Sky永続handoff追記（v1.65）: Shell API v3へ`selectSkyTool`と`skySelection`を追加し、Skyで選んだ`article-preparation@1`をShellの一時状態ではなくBroker SQLite schema v2へ保存する。Zemaは保存済みselection tokenが一致する場合だけLocal AI計画を開始し、不一致は仕事0件で拒否する。schema v1→v2 migration、DB再open、Android 15 emulatorのBroker 9/9・Shell 4/4、全Android 378 taskは合格した。Pixelを実際に再起動して実行中leaseを復旧する二段階試験は端末再接続待ちで、まだ合格扱いにしない。
 
 2026-09-16計画専用AI結合追記（v1.64）: Local AI Binder API v2へ`article-preparation@1/input-v1`の計画専用callを追加し、JSON Schema constrained decoding、Tool call禁止、Broker側のclosed field／選択Tool／実行可能性の再検証を固定した。Android 15 emulatorはBroker 8/8・Shell 3/3でモデルなし0件停止、所有Pixel 10 GL066は同じ試験数でZema plan、`citations@1`、`free-article@1`、結果、5履歴event、本人確認待ちまで合格した。native Skyの永続handoff、全経路の再起動／失敗復旧、AOSP image、production署名は未完了である。[実機証拠](evidence/android-local-ai-plan-v2-20260916.json)。

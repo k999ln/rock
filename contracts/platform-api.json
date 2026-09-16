@@ -20,7 +20,17 @@
     "encryption": "AES-256-GCM_ANDROID_KEYSTORE",
     "recoverableBackupFormat": "avocadoos-recoverable-backup/2",
     "recoverableBackupEncryption": "AES-256-GCM_FRESH_DEK_DUAL_WRAPPED_BY_ANDROID_KEYSTORE_AND_HKDF_SHA256_OWNER_RECOVERY",
-    "recoverableBackupStatus": "CORE_IMPLEMENTED_OWNER_PHRASE_UI_IMPORT_AND_REBINDING_PENDING",
+    "recoverableBackupStateFormat": "avocadoos-platform-state/2",
+    "recoverableBackupStatus": "SHELL_API_V4_UI_TRANSACTIONAL_IMPORT_AND_NEW_KEYSTORE_BINDING_EMULATOR_PASS_PHYSICAL_WIPE_PENDING",
+    "recoverableBackupRestoreSafety": {
+      "emptyTargetRequired": true,
+      "restoredAutomationPaused": true,
+      "restoredSkySelectionTokenRotated": true,
+      "restoredApprovalsStopped": true,
+      "installedComponentAuthorityRestored": false,
+      "operatorUniversalRecoveryKey": false,
+      "walletSeed": false
+    },
     "scope": "android_user",
     "maxPlaintextBytes": 4194304
   },
@@ -41,7 +51,7 @@
     "targetStateImplemented": true
   },
   "nativeSkyHandoff": {
-    "shellApiVersion": 3,
+    "shellApiVersion": 4,
     "selectionStore": "broker_sqlite",
     "selectionSchemaVersion": 2,
     "selectionTokenRequiredByZema": true,
@@ -49,6 +59,6 @@
     "browserSessionStorageUsed": false,
     "v1ToolAllowlist": ["article-preparation@1"]
   },
-  "implementationStatus": "SOURCE_PARTIAL_UI_BROKER_SPLIT_IMPLEMENTED_OPERATOR_AGENT_BACKUP_V2_RUNTIME_AND_SEPOLICY_BUILD_PENDING",
+  "implementationStatus": "SOURCE_PARTIAL_UI_BROKER_SPLIT_AND_BACKUP_V2_EMULATOR_IMPLEMENTED_OPERATOR_AGENT_AND_SEPOLICY_BUILD_PENDING",
   "releaseStatus": "NOT_PRODUCTION_READY"
 }
