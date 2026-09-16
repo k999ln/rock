@@ -1,15 +1,17 @@
 {
   "schema": "rock-local-ai-apk/1",
-  "stage": "APK_NOT_BUILT",
+  "stage": "APK_REVIEWED_NOT_IN_IMAGE",
   "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
   "moduleName": "RockLocalActionAssistant",
   "packageName": "com.localactionassistant",
   "versionCode": 1,
   "requiredAbis": ["arm64-v8a"],
   "internetPermission": false,
+  "wakeLockPermission": true,
+  "binderPermission": "dev.rock.permission.USE_LOCAL_AI",
   "aospCertificate": "testkey",
-  "apkSha256": null,
-  "apkSizeBytes": null,
+  "apkSha256": "2a0441565f6cca5676bc7a113f74e66e734c5e966aaf3835a62ae9b79d4756e9",
+  "apkSizeBytes": 26390540,
   "imageIntegrated": false,
-  "notes": "Populate hash and size and change stage to APK_REVIEWED_NOT_IN_IMAGE only after reviewing a reproducible unsigned release APK. AOSP signs the imported module; production release key replacement remains a separate gate."
+  "notes": "Reproducible unsigned arm64 release APK built from the pinned source and overlay on 2026-09-15. Package, version, ABI, Binder service, USE_LOCAL_AI, WAKE_LOCK and absence of INTERNET were inspected. A debug-key copy passed Android 15 arm64 emulator Binder and no-GGUF fail-closed tests. This is not production signing, model inference, OS-image integration or physical-Pixel evidence."
 }

@@ -6,7 +6,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.IBinder;
-import android.os.UserHandle;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import dev.rock.core.Engine;
@@ -112,8 +111,8 @@ public final class RockPlatformService extends Service {
 
     private PlatformStore platform() { return ((RockApplication) getApplication()).platform(); }
     private static long now() { return System.currentTimeMillis(); }
-    private static String owner() {
-        return "android-user:" + UserHandle.getUserHandleForUid(android.os.Binder.getCallingUid()).getIdentifier();
+    private String owner() {
+        return AndroidOwner.forUid(this, android.os.Binder.getCallingUid());
     }
 
     private void run(String requestId, IPlatformCallback callback, Operation operation) {

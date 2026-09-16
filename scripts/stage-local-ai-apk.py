@@ -36,6 +36,8 @@ def artifact_config(lock, source_lock):
             or lock.get("versionCode") != 1
             or lock.get("requiredAbis") != ["arm64-v8a"]
             or lock.get("internetPermission") is not False
+            or lock.get("wakeLockPermission") is not True
+            or lock.get("binderPermission") != "dev.rock.permission.USE_LOCAL_AI"
             or lock.get("aospCertificate") != "testkey"
             or lock.get("imageIntegrated") is not False):
         raise ValueError("invalid local-AI APK lock")
@@ -88,9 +90,17 @@ def inspect_apk(apk, aapt2):
     if re.search(r"^uses-permission(?:-[^:]+)?: name='android\.permission\.INTERNET'", output,
                  re.MULTILINE):
         raise ValueError("release APK must not request INTERNET permission")
+    if re.search(r"^uses-permission(?:-[^:]+)?: name='android\.permission\.WAKE_LOCK'", output,
+                 re.MULTILINE) is None:
+        raise ValueError("release APK must request WAKE_LOCK for Headless JS")
+    if re.search(r"^uses-permission(?:-[^:]+)?: name='dev\.rock\.permission\.USE_LOCAL_AI'", output,
+                 re.MULTILINE) is None:
+        raise ValueError("release APK must request the signed Binder permission")
     return {"packageName": package.group(1), "versionCode": 1,
             "sha256": sha256(apk), "sizeBytes": apk.stat().st_size,
-            "requiredAbis": ["arm64-v8a"], "internetPermission": False}
+            "requiredAbis": ["arm64-v8a"], "internetPermission": False,
+            "wakeLockPermission": True,
+            "binderPermission": "dev.rock.permission.USE_LOCAL_AI"}
 
 
 def generated_files(metadata):

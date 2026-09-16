@@ -15,9 +15,9 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
   assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ46/);
-  const fakeLocalAiBuild = structuredClone(source);
-  fakeLocalAiBuild.localAiRuntime.apkBuilt = true;
-  assert.throws(() => validateBaseline(fakeLocalAiBuild), /ローカルLLM/);
+  const lostLocalAiBuildEvidence = structuredClone(source);
+  lostLocalAiBuildEvidence.localAiRuntime.apkBuilt = false;
+  assert.throws(() => validateBaseline(lostLocalAiBuildEvidence), /ローカルLLM/);
   const fakePlatformBuild = structuredClone(source);
   fakePlatformBuild.androidPlatformCore.aospImageBuilt = true;
   assert.throws(() => validateBaseline(fakePlatformBuild), /OS Platform Core/);

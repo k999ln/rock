@@ -1,6 +1,6 @@
 {
   "schema": "rock-local-ai-source/1",
-  "stage": "SOURCE_PINNED_NOT_BUILT",
+  "stage": "SOURCE_PINNED_APK_REVIEWED_NOT_IN_IMAGE",
   "repository": "https://github.com/noellesugar99/local-action-assistant.git",
   "manifestProject": "noellesugar99/local-action-assistant",
   "checkoutPath": "external/local-action-assistant",
@@ -27,17 +27,17 @@
   "integration": {
     "routeId": "local-action-assistant",
     "target": "local",
-    "osBridge": "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT",
-    "signedApk": "NOT_BUILT",
-    "productPackage": "STAGING_GENERATOR_DEFINED_NOT_BUILT"
+    "osBridge": "CLIENT_AND_SERVER_NATIVE_COMPILED_EMULATOR_BOUND",
+    "signedApk": "UNSIGNED_RELEASE_APK_REVIEWED",
+    "productPackage": "STAGING_READY_NOT_IMAGE_INTEGRATED"
   },
   "overlay": {
-    "status": "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT",
+    "status": "SERVER_NATIVE_COMPILED_EMULATOR_BOUND",
     "path": "os/physical/local-ai-overlay.patch",
-    "sha256": "2e8d7e14ce760c03901ba63e24930df1200ca3864674a3cb5cab9749d943960c"
+    "sha256": "09adef7811abc082a30ffa9117d8cf9c3947c8fe42e92923e87ec4c28ceb3444"
   },
   "imageBuildVerified": false,
   "imageBootVerified": false,
   "deviceInferenceVerified": false,
-  "notes": "Pinned reviewed source for the RockstarOS local-AI integration. Source presence is not an installed system app, a signed APK, a model weight, an OS route bridge, or device inference evidence."
+  "notes": "Pinned reviewed source plus an independently locked unsigned arm64 release APK. The APK passed emulator Binder and no-model fail-closed checks with a test signature; it is not an OS-image integration, production-signed APK, bundled model, or physical-device inference result."
 }

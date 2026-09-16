@@ -1,0 +1,68 @@
+{
+  "schema": "avocadoos-android-pre-full-build-tests/1",
+  "testedAt": "2026-09-15",
+  "fullOsBuildStarted": false,
+  "test1LocalAi": {
+    "status": "PARTIAL_GGUF_AND_PHYSICAL_PIXEL_PENDING",
+    "unsignedArm64ReleaseApk": "PASS",
+    "apkSha256": "2a0441565f6cca5676bc7a113f74e66e734c5e966aaf3835a62ae9b79d4756e9",
+    "apkSizeBytes": 26390540,
+    "internetPermission": false,
+    "wakeLockPermission": true,
+    "binderServicePresent": true,
+    "emulatorInstallLaunch": "PASS",
+    "signedBinderConnection": "PASS",
+    "headlessJsNoModelFailClosed": "PASS_NO_MODEL",
+    "ggufModelSelected": false,
+    "ggufInference": "NOT_RUN",
+    "airplaneModeInference": "NOT_RUN",
+    "physicalPixel": "NOT_CONNECTED",
+    "thermalThirtyMinutes": "NOT_RUN"
+  },
+  "test2SkyZemaToolWallet": {
+    "status": "FAIL_MISSING_AUTOMATIC_TOOL_WALLET_RECEIPT_BRIDGE",
+    "skyToZemaSingleUseHandoff": "PASS",
+    "zemaJobLifecycleAndProgress": "PASS",
+    "androidToolBinderSQLiteReviewFlow": "PASS",
+    "walletAndVerifiedEarningsSubsystems": "PASS_IN_ISOLATION",
+    "productionEndToEndReceiptFlow": "FAIL_NOT_CONNECTED",
+    "finding": "A completed Zema Tool job does not automatically create a Wallet receipt. The Web Wallet currently uses manual book records, while verified earning receipts enter through the separate Sky Billing provider endpoint."
+  },
+  "androidInstrumentation": {
+    "environment": "Android 15 API 35 arm64 Pixel 10 device-profile emulator",
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "testSigner": "debug-only shared signer; not a release credential"
+  },
+  "androidBuildAndLint": {
+    "status": "PASS",
+    "gradleTasks": 172,
+    "scope": "Platform Core, Tool SDK, automation APK and article Tool APK; standalone Gradle only, not Soong or an OS image"
+  },
+  "focusedHostTests": {
+    "tests": 20,
+    "passed": 20,
+    "failed": 0,
+    "coverage": [
+      "Sky-Zema handoff",
+      "job lifecycle and ownership",
+      "workflow ordering and review",
+      "verified earnings settlement and Wallet connection"
+    ]
+  },
+  "repositoryRegression": {
+    "status": "PASS",
+    "webUnitTests": 285,
+    "fashionBrandOpsTests": 19,
+    "workerD1Assertions": 143,
+    "productionWebBuild": "PASS"
+  },
+  "defectsFoundAndFixed": [
+    "overlay application could silently target an unrelated parent Git repository",
+    "AIDL generation was disabled in the upstream Android app",
+    "public Android SDK builds used hidden UserHandle methods",
+    "the release manifest removed WAKE_LOCK required by Headless JS"
+  ],
+  "decision": "DO_NOT_START_FULL_OS_BUILD"
+}

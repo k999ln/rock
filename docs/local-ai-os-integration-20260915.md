@@ -1,6 +1,6 @@
 # Local Action AssistantのRockstarOS導入
 
-2026-09-15時点の導入段階は`SOURCE_PINNED_NOT_BUILT`。`local-action-assistant`をRockstarOSのローカルLLM実装候補として固定し、GrapheneOSのRepo manifestへ追加できるようにした。これは端末OSへの搭載完了を意味しない。
+2026-09-15時点の導入段階は`SOURCE_PINNED_APK_REVIEWED_NOT_IN_IMAGE`。`local-action-assistant`をavocadoOSのローカルLLM実装として固定し、arm64 release APKのnative buildとAndroid 15 arm64 emulator上のBinder結合まで確認した。これはGGUF推論、物理Pixel、正式署名、OS image搭載の完了を意味しない。
 
 ## 今回接続した範囲
 
@@ -11,19 +11,20 @@
 - `contracts/local-ai-runtime.json`と`android/local-ai-api`でroute ID、Binder API v1、6 tool、stream event、変更系toolの確認必須条件を機械可読にした。
 - `RockAutomationPrototype`へ固定package・同一署名・version 1を要求する呼出しclientと接続診断を追加した。応答は32 KiB、90秒で打ち切り、未知eventを拒否する。
 - 固定commit上で`npm run verify`を実行し、TypeScript、Jest 4 suite／10 test、ESLint、offline manifest source検査を合格した。結果は`docs/evidence/local-ai-source-validation-20260915.json`へ記録した。
-- `scripts/stage-local-ai-apk.py`はAPKのlock、ZIP安全性、package/version、arm64 native library、`INTERNET`権限なしを検査し、`vendor/rockstaros-local-ai`へSoong moduleを生成する。現在のartifact lockは`APK_NOT_BUILT`なので、未知APKはstageできない。
+- `scripts/stage-local-ai-apk.py`はAPKのlock、ZIP安全性、package/version、arm64 native library、`INTERNET`権限なし、`WAKE_LOCK`、署名限定Binder権限を検査し、`vendor/rockstaros-local-ai`へSoong moduleを生成する。artifact lockにはレビュー済みunsigned APKのSHA-256 `2a0441565f6cca5676bc7a113f74e66e734c5e966aaf3835a62ae9b79d4756e9`と26,390,540 bytesを固定した。
 - 物理OS build入口はレビュー済みAPKと`aapt2`を必須入力にし、repo全体のrevision検査後にもstaged APKを再照合する。product makefileもstageがなければbuildを拒否する。
 - 固定SHAの`local-ai-overlay.patch`に、署名Binder service、React Native native module、Headless JS推論、stream、cancel、proposalの一時保存と別確認を実装した。`prepare-local-ai-runtime.py`はcleanな固定commitから使い捨てbuild treeを生成し、overlay hashと適用可否を確認する。
-- 生成したclean overlay treeでclient/server AIDLのbyte一致、TypeScript、ESLint、Jest 10件を合格した。Kotlin／APKのnative buildは未実施。
+- 生成したclean overlay treeでclient/server AIDLのbyte一致、TypeScript、ESLint、Jest 10件に加え、Kotlin／AIDL／llama.rn CPU-only arm64 native compileとrelease APK buildを合格した。APKは`arm64-v8a`のみ、`INTERNET`なし、`WAKE_LOCK`、署名保護Binder serviceを含む。
 - `.github/workflows/local-ai-apk.yml`はUbuntu、Java、Android SDK 36、NDK 27.1で固定sourceとoverlayからunsigned arm64 APKをbuildし、package/version、通信権限、ABIを検査した7日間の候補artifactを出力する。workflowの存在はbuild成功証拠ではなく、artifact lockを自動更新しない。
-- product propertyは`source-pinned`とだけ表示する。アプリを`PRODUCT_PACKAGES`へ追加していないため、現在のimageにLLMは入らない。
+- Android 15 API 35のPixel 10 device-profile emulatorへtest鍵で署名したcopyを導入し、同一署名検査、Binder接続、Headless JS起動、GGUF未導入時の`NO_MODEL` fail-closedを含む5 instrumentation testを合格した。test鍵copyは配布artifactではない。
+- 初回検証で、親Git配下ではoverlayが黙ってskipされる問題、AIDL生成無効、public Android SDKで使えない`UserHandle` API、release manifestによる`WAKE_LOCK`削除を検出して修正した。親Git配下とpermission退行の再発防止testも追加した。
+- product propertyはまだ`source-pinned`とだけ表示する。アプリを`PRODUCT_PACKAGES`へ追加していないため、現在のimageにLLMは入らない。
 
 ## OS内で呼び出せるようにする残作業
 
-1. Java 17とAndroid SDK/NDKがあるLinux環境で`build-local-ai-apk.sh`を実行し、今回のKotlin serviceを含むunsigned arm64 release APKをnative compileする。
-2. 生成APKを別経路で検査してartifact lockへSHA-256とsizeを固定する。debug鍵は採用しない。
-3. staging済みAPKはSoongで`testkey`署名対象とし、production target-filesでは正式release keyへ置換する。鍵生成・release署名は別gateとする。
-4. GGUFはライセンス、SHA-256、RAM/温度/速度を端末で確認してからimportする。source repositoryにはweightを同梱しない。
-5. airplane mode推論、tool confirmation、SELinux、更新、rollback、30分連続稼働を実機で受け入れる。
+1. レビュー済みAPKをSoong stagingし、OS image内で同一内容が署名・搭載されることを照合する。production target-filesでは正式release keyへ置換し、test鍵を採用しない。
+2. GGUFはライセンス、SHA-256、RAM/温度/速度を確認して選定・lockし、物理Pixelへimportする。source repositoryにはweightを同梱しない。
+3. 物理Pixelでairplane mode推論、tool confirmation、保存／再起動、RAM、30分温度を受け入れる。
+4. 最終imageでSELinux enforcing、更新、rollback、復旧を受け入れる。
 
-対象Pixelの機種/SKUが未確定で、x86_64 Linux build環境、正式署名鍵、GGUFも未用意のため、全OS build・flash・実機推論は未実施のまま維持する。
+対象Pixelの正確なSKU、正式署名鍵、GGUFが未確定で、物理端末も今回のADBへ接続されていないため、全OS build・flash・実機推論は未実施のまま維持する。

@@ -25,7 +25,11 @@ OS full buildを先に試して後からappやLLMの不具合を直す順序に�
 7. SkyでToolを選ぶ→Zemaで依頼・承認・進捗・結果を見る→Walletのreceiptへ反映する流れを、実機clientで可能な範囲まで通す。
 8. 合格したcommit、manifest、APK／model hash、Platform API、DB schema、署名・更新・復旧計画をfreezeする。
 
-2026-09-15時点では、source／契約整合、Web全体、Platform Core JVM、Java↔TypeScript同等性、ローカルbackend結合は合格した。Android SDKを使うAPK build／lint／emulator、Local Action Assistant APK、純正Pixel 10上のoffline推論・温度、実機client縦断、端末readbackと最終freezeは未実行なので、このgateは**進行中**でありfull build開始条件を満たしていない。
+2026-09-15の追加検証では、Core／Tool SDK／Automation／記事ToolのAndroid build・unit test・lint、Local Action Assistantのunsigned arm64 release APK build、Android 15 arm64 Pixel 10 device-profile emulatorでの5 instrumentation testまで合格した。ここでは別APKの署名検査、Binder、Android SQLite、Tool 2工程、review必須、Headless JS、GGUF未導入時の`NO_MODEL` fail-closedを確認した。物理Pixelではなく、device credential承認、再起動復元、最終SELinux domainは未確認なのでemulator gate全体は部分合格に留める。
+
+Sky→Zemaの一回限りhandoff、Zemaのjob進捗、Tool実行、Wallet／収益精算の各単体テスト20件は合格した。ただし現在のproduction経路ではTool完了jobがWallet receiptを自動生成せず、Web Walletは手動book record、Sky Billingは別のprovider receipt入口になっている。このため「Skyで選ぶ→Zemaで追う→Tool成果→Wallet receipt」の1本の縦断は不合格で、`skyZemaToolWalletPath`を`failed_missing_automatic_tool_wallet_receipt_bridge`として固定した。
+
+純正Pixel 10上のGGUF推論・機内モード・温度、端末readback、実機client縦断、正式署名と最終freezeは未実行である。このgateは**進行中**で、full build開始条件を満たしていない。
 
 Sky、Zema、Wallet、Tool、LLMは原則として更新可能なAPK境界に置く。これらだけの修正なら単体APKを再buildして純正Android上で再試験する。framework、SELinux、privapp/product設定、boot/vendor/partition/AVBを変更した場合はOS imageの再buildが必要になる。
 

@@ -1,6 +1,6 @@
 # avocadoOS — 確定した製品ベース
 
-2026-09-15追記（v1.56）: 有料Linux環境でのAndroid OS full buildと実機flash／bootは最後に行う。契約前に、正確なPixel 10型番／SKUのreadback、source・契約・Coreのhost試験、Android単体APKのcompile／lint／unit test、emulator上のBinder／SQLite結合、Local Action Assistant APK生成とhash固定、純正OSのPixel 10上での機内モード推論・Tool確認・保存／再起動・30分温度試験、Sky→Zema→Tool→Wallet経路、source／artifact／署名・更新計画のfreezeを完了する。これらが全て合格するまで有料full buildを開始しない。Sky、Zema、Wallet、Tool、LLMのapp-only修正は単体APK更新で反復できる境界を維持し、framework、SELinux、privapp/product設定、boot/vendor/partition/AVB変更だけをOS image再build対象とする。初回build環境はfactory／OTA／target-filesを保存し、最初の実機bootと修正要否の確認まで保持する。
+2026-09-15検証追記（v1.56）: 有料Linux環境でのAndroid OS full buildと実機flash／bootは最後に行う。Android単体build／lint、emulator上のBinder／SQLite、Local Action Assistant arm64 APK生成・hash固定・署名限定Binder・GGUFなしの安全な拒否は合格した。純正OSの所有Pixel 10上でのGGUF機内モード推論・保存／再起動・30分温度試験は未実行のため試験1は部分合格。Sky→Zema、job、Android Tool、Wallet／認証済み収益の個別試験は合格したが、Tool完了を署名済みEarning ReceiptとしてWalletへ自動転記する経路が未実装のため試験2は不合格である。正確なSKU readbackと最終freezeを含め、全て合格するまで有料full buildを開始しない。Sky、Zema、Wallet、Tool、LLMのapp-only修正は単体APK更新で反復できる境界を維持し、framework、SELinux、privapp/product設定、boot/vendor/partition/AVB変更だけをOS image再build対象とする。初回build環境はfactory／OTA／target-filesを保存し、最初の実機bootと修正要否の確認まで保持する。[事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)を判定正本とする。
 
 2026-09-15追記（v1.55）: RQ46の「運営専用」を利用者向けavocadoOS内の隠しrouteではなく、配備先、認証、asset、API、D1を分けた **avocadoOS Operator Dock** として訂正する。利用者向けWeb/PWA・OSホームには管理画面、管理API、入口を含めない。Dockの全requestは静的assetを含めCloudflare Accessの署名JWTをissuer、専用audience、有効期限、単一operator subjectまで検証してから処理する。端末側service未実装の境界は維持する。
 
@@ -424,7 +424,7 @@ Local Action Assistantを、RockstarOSの物理Android版で端末内推論を�
 
 読み取りtoolは許可リスト内だけを実行し、メモ・リマインダー作成はproposalを端末内へ一時保存して、OSの別確認呼出しで本人が許可するまで実行しない。release APKは通信権限なし、arm64 native library、固定SHA-256とsizeを検査してからSoongへstageし、AOSPのrelease署名工程へ渡す。GGUFはsourceやAPKへ同梱せず、配布元、license、hash、端末RAM・速度・温度を確認後にimportする。
 
-2026-09-15時点ではclient/server source、AIDL契約、overlay、APK staging gateまで実装済み。Java／Android SDKがない現在のMacではKotlin・APK・Soongをbuildしておらず、署名APK、OS image、端末boot、機内モード推論、30分連続試験は未完了である。詳細は [Local Action AssistantのRockstarOS導入](local-ai-os-integration-20260915.md) を正本補助記録とする。
+2026-09-15時点ではclient/server source、AIDL契約、overlay、APK staging gateに加え、固定sourceからのarm64 release APK build、artifact hash固定、Android 15 arm64 emulator上の署名Binder接続とGGUFなしの`NO_MODEL`拒否まで完了した。使用した署名は試験専用で、Soong／OS image、production署名、所有Pixel 10、GGUF機内モード推論、保存／再起動、30分連続試験は未完了である。詳細は [Local Action AssistantのRockstarOS導入](local-ai-os-integration-20260915.md) と[事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)を正本補助記録とする。
 
 ## RQ42 OS Platform Coreへ登録・承認・Wallet・更新の安全境界を入れる
 

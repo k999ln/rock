@@ -1,5 +1,13 @@
 # 検証記録
 
+## Android full build前の試験1・2 / 2026-09-15
+
+- 試験1は部分合格。固定sourceからarm64 Local Action Assistant APKを生成し、SHA-256 `2a0441565f6cca5676bc7a113f74e66e734c5e966aaf3835a62ae9b79d4756e9`、通信権限なし、WAKE_LOCK、署名限定Binder権限を確認した。Android 15 arm64 Pixel 10端末profile emulatorで、Binder接続とGGUFなしの`NO_MODEL`拒否を含むinstrumentation 5/5が合格した。純正OSの所有Pixel 10、実GGUF、機内モード、保存／再起動、30分温度試験は未実行。
+- 試験2は不合格。Sky→Zema、job lifecycle、Android Tool Binder／SQLite／本人確認、Wallet／認証済み収益subsystemの対象20 host testとAndroid試験は合格したが、Tool完了から署名済みEarning Receiptを自動生成してWalletへ一度だけ転記する経路が未実装だった。
+- source準備が無関係な親Git repositoryを参照してoverlayを適用済みと誤判定する問題、AIDL生成無効、public SDKで使えないUserHandle API、release manifestによるWAKE_LOCK削除を修正した。
+- Android build／lint 172 task、対象host test 20/20、repository全体のWeb 285 test、Fashion Brand Ops 19 test、Worker／D1 143 assertion、本番Web buildを含む`npm run verify`が合格した。
+- 判定は`DO_NOT_START_FULL_OS_BUILD`。詳細な機械可読結果は [Android事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)。
+
 ## Rock First-party Settlement Wallet / 2026-09-13
 
 - `org.rockstar.settlement-wallet`を共通Financial Provider契約の第1号として追加。capabilityは`collect_platform_fee`と`reporting`、modeはSANDBOX、利用者資産保管・ファンド運用・LIVE回収はfalseへ固定した。

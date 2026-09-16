@@ -38,10 +38,16 @@ class LocalAiApkStagingTest(unittest.TestCase):
         self.addCleanup(setattr, stager, "SOURCE_LOCK", old_source)
         self.addCleanup(setattr, stager, "ARTIFACT_LOCK", old_artifact)
 
-    def write_aapt2(self, internet, permission_kind="uses-permission"):
-        permission = f"{permission_kind}: name='android.permission.INTERNET'\n" if internet else ""
+    def write_aapt2(self, internet, permission_kind="uses-permission", wake_lock=True,
+                    binder_permission=True):
+        permissions = [
+            f"{permission_kind}: name='android.permission.INTERNET'\n" if internet else "",
+            "uses-permission: name='android.permission.WAKE_LOCK'\n" if wake_lock else "",
+            "uses-permission: name='dev.rock.permission.USE_LOCAL_AI'\n"
+            if binder_permission else "",
+        ]
         self.aapt2.write_text("#!/bin/sh\nprintf \"package: name='com.localactionassistant' versionCode='1' versionName='1.0'\\n"
-                              + permission + "\"\n")
+                              + "".join(permissions) + "\"\n")
         self.aapt2.chmod(0o755)
 
     def write_lock(self, stage):
@@ -51,6 +57,8 @@ class LocalAiApkStagingTest(unittest.TestCase):
             "sourceCommit": "1" * 40, "moduleName": "RockLocalActionAssistant",
             "packageName": "com.localactionassistant", "versionCode": 1,
             "requiredAbis": ["arm64-v8a"], "internetPermission": False,
+            "wakeLockPermission": True,
+            "binderPermission": "dev.rock.permission.USE_LOCAL_AI",
             "aospCertificate": "testkey",
             "apkSha256": digest if stage != "APK_NOT_BUILT" else None,
             "apkSizeBytes": self.apk.stat().st_size if stage != "APK_NOT_BUILT" else None,
@@ -80,6 +88,16 @@ class LocalAiApkStagingTest(unittest.TestCase):
     def test_version_scoped_internet_permission_is_rejected(self):
         self.write_aapt2(True, "uses-permission-sdk-23")
         with self.assertRaisesRegex(ValueError, "must not request INTERNET"):
+            stager.stage_apk(self.tree, self.apk, self.aapt2)
+
+    def test_missing_wake_lock_permission_is_rejected(self):
+        self.write_aapt2(False, wake_lock=False)
+        with self.assertRaisesRegex(ValueError, "must request WAKE_LOCK"):
+            stager.stage_apk(self.tree, self.apk, self.aapt2)
+
+    def test_missing_signed_binder_permission_is_rejected(self):
+        self.write_aapt2(False, binder_permission=False)
+        with self.assertRaisesRegex(ValueError, "signed Binder permission"):
             stager.stage_apk(self.tree, self.apk, self.aapt2)
 
     def test_extra_native_abi_is_rejected(self):

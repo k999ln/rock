@@ -57,9 +57,17 @@ def local_ai_config(lock):
             or not isinstance(integration, dict)
             or integration.get("routeId") != "local-action-assistant"
             or integration.get("target") != "local"
-            or integration.get("osBridge") != "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT"
-            or integration.get("signedApk") != "NOT_BUILT"
-            or integration.get("productPackage") != "STAGING_GENERATOR_DEFINED_NOT_BUILT"
+            or integration.get("osBridge") not in {
+                "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT",
+                "CLIENT_AND_SERVER_NATIVE_COMPILED_EMULATOR_BOUND",
+            }
+            or integration.get("signedApk") not in {
+                "NOT_BUILT", "UNSIGNED_RELEASE_APK_REVIEWED",
+            }
+            or integration.get("productPackage") not in {
+                "STAGING_GENERATOR_DEFINED_NOT_BUILT",
+                "STAGING_READY_NOT_IMAGE_INTEGRATED",
+            }
             or not isinstance(reviewed, dict) or set(reviewed) != LOCAL_AI_REVIEWED_FILES
             or any(not isinstance(name, str) or name.startswith("/") or ".." in Path(name).parts
                    or not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None
@@ -68,7 +76,8 @@ def local_ai_config(lock):
     return {"commit": commit, "checkoutPath": checkout,
             "manifestProject": lock["manifestProject"], "packageName": lock["packageName"],
             "engine": runtime["engine"], "engineVersion": runtime["version"],
-            "reviewedFiles": dict(reviewed)}
+            "reviewedFiles": dict(reviewed),
+            "osBridge": integration["osBridge"]}
 
 
 def verify_local_ai_source(tree):
@@ -104,7 +113,7 @@ def verify_local_ai_source(tree):
             "checkoutPath": config["checkoutPath"], "packageName": config["packageName"],
             "engine": config["engine"], "engineVersion": config["engineVersion"],
             "modelBundled": False, "releaseNetwork": "none",
-            "osBridge": "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT"}
+            "osBridge": config["osBridge"]}
 
 
 def source_config(lock, *, require_target_confirmation=False):

@@ -129,9 +129,9 @@ export function validateBaseline(
     '目標駆動のブランド運営能力が必要です',
   );
   requireValue(
-    data.primaryCapabilities?.includes('local-offline-ai-runtime') &&
+      data.primaryCapabilities?.includes('local-offline-ai-runtime') &&
       data.localAiRuntime?.status ===
-        'client_and_server_source_implemented_native_not_built' &&
+        'unsigned_arm64_apk_built_emulator_binder_verified' &&
       data.localAiRuntime?.sourceCommit ===
         '99b1c40d76f719cbba9c72d9f481c1b2df245504' &&
       data.localAiRuntime?.engine === 'llama.rn' &&
@@ -141,11 +141,11 @@ export function validateBaseline(
       data.localAiRuntime?.releaseNetwork === 'none' &&
       data.localAiRuntime?.trustMode === 'fixed_package_same_signer' &&
       data.localAiRuntime?.mutationConfirmation === 'required_separate_call' &&
-      data.localAiRuntime?.apkBuilt === false &&
+      data.localAiRuntime?.apkBuilt === true &&
       data.localAiRuntime?.soongBuilt === false &&
       data.localAiRuntime?.imageBuilt === false &&
       data.localAiRuntime?.deviceInferenceVerified === false,
-    'ローカルLLMの固定source・オフライン・署名・別確認・未build境界を維持してください',
+    'ローカルLLMの固定source・オフライン・署名・別確認・APK build済／実機未検証境界を維持してください',
   );
   for (const field of ['sourceLock', 'artifactLock', 'contract', 'record']) {
     const path = data.localAiRuntime?.[field];
@@ -155,9 +155,9 @@ export function validateBaseline(
     );
   }
   requireValue(
-    data.primaryCapabilities?.includes('os-platform-core') &&
+      data.primaryCapabilities?.includes('os-platform-core') &&
       data.androidPlatformCore?.status ===
-        'source_implemented_native_and_sepolicy_build_not_run' &&
+        'standalone_android_build_passed_emulator_partial_aosp_not_run' &&
       data.androidPlatformCore?.apiVersion === 1 &&
       JSON.stringify(data.androidPlatformCore?.componentKinds) ===
         JSON.stringify(['TOOL', 'MCP', 'PROVIDER']) &&
@@ -172,12 +172,12 @@ export function validateBaseline(
         'aes_256_gcm_android_keystore_owner_scoped' &&
       data.androidPlatformCore?.schemaVersion === 2 &&
       data.androidPlatformCore?.migration === 'transactional_fail_closed' &&
-      data.androidPlatformCore?.androidBuilt === false &&
+      data.androidPlatformCore?.androidBuilt === true &&
       data.androidPlatformCore?.aospImageBuilt === false &&
       data.androidPlatformCore?.selinuxEnforcingVerified === false &&
       data.androidPlatformCore?.productionSigningVerified === false &&
       data.androidPlatformCore?.otaRollbackVerified === false,
-    'OS Platform Coreの署名・UID・承認・台帳・暗号化・未build境界を維持してください',
+    'OS Platform Coreの署名・UID・承認・台帳・暗号化・standalone build済／AOSP未build境界を維持してください',
   );
   for (const field of ['contract', 'record']) {
     const path = data.androidPlatformCore?.[field];
@@ -209,20 +209,25 @@ export function validateBaseline(
       data.androidPreFullBuildGate?.checks?.sourceContractAndHostTests ===
         'passed' &&
       data.androidPreFullBuildGate?.checks?.standaloneAndroidBuildAndLint ===
-        'pending' &&
+        'passed' &&
       data.androidPreFullBuildGate?.checks?.androidEmulatorIntegration ===
-        'pending' &&
+        'partial_binder_sqlite_tool_and_local_ai_passed' &&
       data.androidPreFullBuildGate?.checks?.standaloneLocalAiApk ===
-        'pending' &&
+        'passed' &&
       data.androidPreFullBuildGate?.checks?.stockPixelOfflineAiAndThermal ===
         'pending' &&
       data.androidPreFullBuildGate?.checks?.skyZemaToolWalletPath ===
-        'pending' &&
+        'failed_missing_automatic_tool_wallet_receipt_bridge' &&
       data.androidPreFullBuildGate?.checks
         ?.sourceArtifactAndSigningPlanFreeze === 'pending',
     '有料full build前の単体APK・emulator・純正Pixel受入gateを維持してください',
   );
-  for (const field of ['record', 'androidWorkflow', 'localAiWorkflow']) {
+  for (const field of [
+    'record',
+    'evidence',
+    'androidWorkflow',
+    'localAiWorkflow',
+  ]) {
     const path = data.androidPreFullBuildGate?.[field];
     requireValue(
       typeof path === 'string' && existsSync(resolve(root, path)),

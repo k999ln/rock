@@ -1,11 +1,27 @@
+diff --git a/android/app/build.gradle b/android/app/build.gradle
+index 51d2c8236223a960d39451d1ea62748d4fed339f..9720ab07a6522d31c88c5316a8b314dd1d018601 100644
+--- a/android/app/build.gradle
++++ b/android/app/build.gradle
+@@ -77,6 +77,10 @@ android {
+     buildToolsVersion rootProject.ext.buildToolsVersion
+     compileSdk rootProject.ext.compileSdkVersion
+
++    buildFeatures {
++        aidl true
++    }
++
+     namespace "com.localactionassistant"
+     defaultConfig {
+         applicationId "com.localactionassistant"
 diff --git a/android/app/src/main/AndroidManifest.xml b/android/app/src/main/AndroidManifest.xml
 index 7bac395e224241405a4b3327f5bfb2eb6d773346..a2d5a5a2f12d85515e8bc1257a216cec4e475427 100644
 --- a/android/app/src/main/AndroidManifest.xml
 +++ b/android/app/src/main/AndroidManifest.xml
-@@ -1,5 +1,7 @@
+@@ -1,5 +1,8 @@
  <manifest xmlns:android="http://schemas.android.com/apk/res/android">
  
 +    <uses-permission android:name="dev.rock.permission.USE_LOCAL_AI" />
++    <uses-permission android:name="android.permission.WAKE_LOCK" />
 +
      <application
        android:name=".MainApplication"
@@ -20,6 +36,18 @@ index 7bac395e224241405a4b3327f5bfb2eb6d773346..a2d5a5a2f12d85515e8bc1257a216cec
 +        android:permission="dev.rock.permission.USE_LOCAL_AI" />
      </application>
  </manifest>
+diff --git a/android/app/src/release/AndroidManifest.xml b/android/app/src/release/AndroidManifest.xml
+index e9f39eeedd59b248d72fc8e9acd5c28862b38715..fbc5d3533c7e320bc985ba029b538ee79520a14a 100644
+--- a/android/app/src/release/AndroidManifest.xml
++++ b/android/app/src/release/AndroidManifest.xml
+@@ -4,7 +4,6 @@
+          but its generic library manifest declares downloader permissions.
+          Remove all of them from the release application. -->
+     <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
+-    <uses-permission android:name="android.permission.WAKE_LOCK" tools:node="remove" />
+     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
+     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" tools:node="remove" />
+     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove" />
 diff --git a/android/app/src/main/aidl/dev/rock/localai/ILocalAiCallback.aidl b/android/app/src/main/aidl/dev/rock/localai/ILocalAiCallback.aidl
 new file mode 100644
 index 0000000000000000000000000000000000000000..db6f93e960aad5298305ec7f51c0ea8f92282fbb

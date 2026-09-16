@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-15",
-  "milestone": "OS Platform Core v1の登録・承認・Wallet・更新境界",
-  "nextAction": "最短ローンチ経路としてWEB01を優先する。現在のWeb/PWA・D1差分を一つの検証済みcommitへ固定してGitHubへ保存し、ownerが本人限定Sitesへの最新版同期を明示承認した後、同じSHAを配備して認証後の主要導線・API・security header・migrationをreadbackする。一般公開、QEMU配布、Android実機、本番金融は別gateのまま維持する。",
+  "milestone": "Android事前試験1・2とfull build判断",
+  "nextAction": "3のOS full buildへ進む前に、選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験を行い、Tool完了から署名済みEarning Receiptを自動生成してWalletへ一度だけ転記するbridgeを実装・縦断再試験する。正確なSKU readbackとsource／artifact freezeも完了する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -835,7 +835,8 @@
         ".github/workflows/local-ai-apk.yml",
         "scripts/build-local-ai-apk.sh",
         "scripts/stage-local-ai-apk.py",
-        "os/physical/local-action-assistant-artifact-lock.json"
+        "os/physical/local-action-assistant-artifact-lock.json",
+        "docs/evidence/android-pre-full-build-tests-20260915.json"
       ]
     },
     {
@@ -954,7 +955,8 @@
       "dependsOn": ["B02"],
       "evidence": [
         "docs/prompts/hub-wallet-next.md",
-        "docs/evidence/os-base/business-backup-acceptance-b8287bc.json"
+        "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
+        "docs/evidence/android-pre-full-build-tests-20260915.json"
       ]
     },
     {
@@ -1484,7 +1486,8 @@
         ".github/workflows/local-ai-apk.yml",
         "tests/product-baseline.test.mjs",
         "tests/test_prepare_phone_build.py",
-        "tests/test_stage_local_ai_apk.py"
+        "tests/test_stage_local_ai_apk.py",
+        "docs/evidence/android-pre-full-build-tests-20260915.json"
       ]
     },
     {
@@ -1585,7 +1588,7 @@
     "historicalLocalCandidateDistribution": "LOCAL_ONLY_NOT_PUBLISHED_NOT_LEGALLY_CLEARED"
   },
   "physicalDevicePreview": {
-    "status": "SOURCE_INTEGRATION_NOT_BUILT",
+    "status": "STANDALONE_APKS_BUILT_EMULATOR_PARTIAL_FULL_OS_NOT_BUILT",
     "request": "スマホ本体にOSを書き込める版を作成して",
     "candidateDevice": "Pixel 10 / frankel",
     "targetFamilyConfirmed": true,
@@ -1616,20 +1619,24 @@
     },
     "targetDiscussion": "Owner selected the existing Pixel 10 / frankel as the first physical target. Exact device readback and OEM unlocking remain required before build approval or flash; Pixel 7 / panther is deferred.",
     "recommendedBuildEnvironment": "DigitalOcean CPU-Optimized Regular 48 vCPU / 96 GiB / 600 GiB / Ubuntu 24.04 x86_64; Google Cloud is the alternative for detachable persistent storage",
-    "latestRequest": "Develop the OS-owned common component API, versioning, app isolation, owner approval, Wallet ledger, encrypted migration/backup and signed update/rollback gates; native build and physical release proof remain separate gates",
+    "latestRequest": "Run pre-full-build tests 1 and 2 first; proceed to full OS build only after both pass",
     "localAi": {
-      "status": "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT",
+      "status": "UNSIGNED_ARM64_APK_BUILT_EMULATOR_BINDER_VERIFIED",
       "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
       "engine": "llama.rn@0.12.9",
       "modelFormat": "GGUF",
       "modelBundled": false,
       "releaseNetwork": "none",
-      "apkBuilt": false,
+      "apkBuilt": true,
       "soongBuilt": false,
       "imageBuilt": false,
       "deviceInferenceVerified": false,
+      "apkSha256": "2a0441565f6cca5676bc7a113f74e66e734c5e966aaf3835a62ae9b79d4756e9",
+      "apkSizeBytes": 26390540,
+      "emulatorVerification": "5_OF_5_ANDROID_INSTRUMENTATION_TESTS_PASS_WITH_DEBUG_ONLY_SHARED_SIGNER",
       "contract": "contracts/local-ai-runtime.json",
-      "record": "docs/local-ai-os-integration-20260915.md"
+      "record": "docs/local-ai-os-integration-20260915.md",
+      "evidence": "docs/evidence/android-pre-full-build-tests-20260915.json"
     }
   },
   "deviceSupportArchitecture": {
@@ -1643,11 +1650,11 @@
     "cloudSpendApproved": false
   },
   "platformCore": {
-    "status": "SOURCE_IMPLEMENTED_NATIVE_BUILD_NOT_RUN",
+    "status": "STANDALONE_ANDROID_BUILD_PASSED_EMULATOR_PARTIAL_AOSP_NOT_RUN",
     "apiVersion": 1,
     "contract": "contracts/platform-api.json",
     "record": "docs/platform-core.md",
-    "androidBuilt": false,
+    "androidBuilt": true,
     "aospImageBuilt": false,
     "selinuxEnforcingVerified": false,
     "productionSigningVerified": false,

@@ -41,9 +41,9 @@
   "aospModule": "RockLocalActionAssistant",
   "aospStagingPath": "vendor/rockstaros-local-ai",
   "aospSigning": "testkey_then_release_key_mapping",
-  "sourceStatus": "pinned_overlay_verified_not_native_built",
-  "osBridgeStatus": "client_and_server_source_implemented_native_not_built",
-  "signedApkStatus": "not_built",
+  "sourceStatus": "pinned_overlay_native_apk_built",
+  "osBridgeStatus": "client_and_server_compiled_emulator_binder_verified",
+  "signedApkStatus": "unsigned_release_reviewed_test_signed_emulator_only",
   "imageStatus": "not_built",
   "deviceInferenceStatus": "not_run"
 }

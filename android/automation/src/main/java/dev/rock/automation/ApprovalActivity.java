@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.UserHandle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -21,7 +20,7 @@ public final class ApprovalActivity extends Activity {
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
         approvalId = getIntent().getStringExtra(RockPlatformService.EXTRA_APPROVAL_ID);
-        owner = "android-user:" + UserHandle.myUserId();
+        owner = AndroidOwner.current(this);
         Map<String,String> proposal;
         try { proposal = platform().approval(owner, approvalId); }
         catch (RuntimeException invalid) { finish(); return; }

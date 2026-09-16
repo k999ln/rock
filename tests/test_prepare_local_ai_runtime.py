@@ -61,6 +61,14 @@ index df967b9..6310cd2 100644
         self.assertEqual((output / "source.txt").read_text(), "integrated\n")
         self.assertEqual(evidence["sourceCommit"], json.loads(self.lock.read_text())["commit"])
         self.assertEqual(json.loads((output / "rockstaros-overlay.json").read_text()), evidence)
+        self.assertFalse((output / ".git").exists())
+
+    def test_overlay_is_applied_when_os_tree_is_below_an_unrelated_git_repo(self):
+        self.command(self.base, "git", "init", "-q")
+        output = self.tree / "out/nested-runtime"
+        runtime.prepare(self.tree, output)
+        self.assertEqual((output / "source.txt").read_text(), "integrated\n")
+        self.assertFalse((output / ".git").exists())
 
     def test_existing_output_is_never_overwritten(self):
         output = self.tree / "out/runtime"

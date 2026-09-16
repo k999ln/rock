@@ -66,7 +66,10 @@ def config():
     lock = json.loads(SOURCE_LOCK.read_text())
     overlay = lock.get("overlay")
     if (lock.get("commit") is None or not isinstance(overlay, dict)
-            or overlay.get("status") != "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT"
+            or overlay.get("status") not in {
+                "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT",
+                "SERVER_NATIVE_COMPILED_EMULATOR_BOUND",
+            }
             or overlay.get("path") != "os/physical/local-ai-overlay.patch"
             or not isinstance(overlay.get("sha256"), str)):
         raise ValueError("invalid local-AI overlay lock")
@@ -96,13 +99,19 @@ def prepare(os_tree, output):
     temporary = Path(tempfile.mkdtemp(prefix=".rock-local-ai-source-", dir=output.parent))
     try:
         safe_archive(source, lock["commit"], temporary)
+        # Anchor git-apply to the extracted tree. Without a local repository,
+        # Git can discover an unrelated parent checkout and silently skip every
+        # patch path when the OS tree itself lives below another repository.
+        subprocess.check_call(["git", "init", "-q"], cwd=temporary,
+                              stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=30)
         subprocess.check_call(["git", "apply", "--check", str(patch)], cwd=temporary,
                               stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=30)
         subprocess.check_call(["git", "apply", str(patch)], cwd=temporary,
                               stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=30)
+        shutil.rmtree(temporary / ".git")
         evidence = {"schema": "rock-local-ai-overlay/1", "sourceCommit": lock["commit"],
                     "overlaySha256": sha256(patch),
-                    "status": "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT"}
+                    "status": lock["overlay"]["status"]}
         (temporary / "rockstaros-overlay.json").write_text(json.dumps(evidence, indent=2) + "\n")
         os.replace(temporary, output)
     finally:
