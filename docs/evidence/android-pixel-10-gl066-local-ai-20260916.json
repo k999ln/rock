@@ -26,8 +26,10 @@
   },
   "artifacts": {
     "localAiApk": {
-      "sha256": "432f122fe9eb4250ced20c3f779711be928b023e3c3e9097154cae37ebe21c62",
+      "sha256": "f36fe4b807fb9a4f6e09d3f69fd33e4da0408389763759c12348da88e545465b",
       "bytes": 26437275,
+      "unsignedSha256": "d65039dc766a4b881c537bceba93a9be8834eabe881af5b5b15035aa6ec944b9",
+      "overlaySha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
       "internetPermission": false,
       "wakeLockPermission": true,
       "abi": "arm64-v8a"
@@ -95,6 +97,28 @@
     "secondExpectedToken": "REBOOT_OK",
     "secondObservedToken": "REBOOT_OK"
   },
+  "responsePresentationRetest": {
+    "result": "PASS",
+    "recordedAt": "2026-09-16T08:03:46Z",
+    "updatedApkInstalledWithDataPreserved": true,
+    "airplaneMode": true,
+    "wifiDisabled": true,
+    "releaseApkHasInternetPermission": false,
+    "expectedToken": "CLEAN_OK",
+    "observedToken": "CLEAN_OK",
+    "rawThinkOpeningTagObserved": false,
+    "rawThinkClosingTagObserved": false,
+    "savedConversationAndModelMetadataPreserved": true,
+    "modelStats": {
+      "decodeTokensPerSecond": 22.4,
+      "prefillTokensPerSecond": 72.1,
+      "generatedTokens": 5,
+      "elapsedSeconds": 11.2
+    },
+    "androidThermalStatus": 0,
+    "batteryTemperatureC": 28.4,
+    "coverage": "Physical UI final-response path plus split-token sanitizer unit tests; fresh emulator Binder suite passed 5/5 for the same updated APK."
+  },
   "thermalSoak": {
     "result": "PASS",
     "startedAt": "2026-09-16T04:46:18Z",
@@ -131,7 +155,7 @@
     "stayAwakeWhilePluggedIn": false
   },
   "observations": [
-    "The current chat UI displays raw empty <think> tags returned by Qwen; inference correctness passed, but response presentation should strip those tags before a product release.",
+    "The updated response path strips complete, orphan, unclosed, case-insensitive and token-boundary-split <think> markers before UI persistence or OS-client streaming. Pixel 10 offline retest displayed CLEAN_OK without raw reasoning tags.",
     "This acceptance covers standalone test-signed APKs on the owner's existing OS. It does not prove Soong image integration, production signing, SELinux enforcing behavior, OTA, rollback, flash, boot or recovery."
   ],
   "result": "PASS_STANDALONE_PHYSICAL_LOCAL_AI"

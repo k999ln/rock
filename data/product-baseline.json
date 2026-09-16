@@ -379,7 +379,7 @@
   ],
   "localAiRuntime": {
     "requested": true,
-    "status": "standalone_physical_pixel_offline_ai_reboot_and_thermal_verified_test_signing",
+    "status": "standalone_physical_pixel_offline_ai_reboot_thermal_and_response_sanitizer_verified_test_signing",
     "repository": "https://github.com/noellesugar99/local-action-assistant.git",
     "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
     "sourceLock": "os/physical/local-action-assistant-source-lock.json",

@@ -13,5 +13,5 @@
   "apkSha256": "d65039dc766a4b881c537bceba93a9be8834eabe881af5b5b15035aa6ec944b9",
   "apkSizeBytes": 26392828,
   "imageIntegrated": false,
-  "notes": "Reproducible unsigned arm64 release APK built from the pinned source and response-sanitizing overlay on 2026-09-16. Package, version, ABI, Binder service, USE_LOCAL_AI, WAKE_LOCK and absence of INTERNET were inspected. A same-test-key copy passed all 5 Android 15 arm64 emulator Binder, Headless JS, no-GGUF fail-closed, Platform and Tool integration tests. This is not production signing, OS-image integration, flash or boot evidence."
+  "notes": "Reproducible unsigned arm64 release APK built from the pinned source and response-sanitizing overlay on 2026-09-16. Package, version, ABI, Binder service, USE_LOCAL_AI, WAKE_LOCK and absence of INTERNET were inspected. A same-test-key copy passed all 5 Android 15 arm64 emulator Binder, Headless JS, no-GGUF fail-closed, Platform and Tool integration tests plus Pixel 10 GL066 offline CLEAN_OK presentation without raw think tags. This is not production signing, OS-image integration, flash or boot evidence."
 }

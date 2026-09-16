@@ -15,6 +15,7 @@
 - 物理OS build入口はレビュー済みAPKと`aapt2`を必須入力にし、repo全体のrevision検査後にもstaged APKを再照合する。product makefileもstageがなければbuildを拒否する。
 - 固定SHAの`local-ai-overlay.patch`に、署名Binder service、React Native native module、Headless JS推論、stream、cancel、proposalの一時保存と別確認を実装した。`prepare-local-ai-runtime.py`はcleanな固定commitから使い捨てbuild treeを生成し、overlay hashと適用可否を確認する。
 - 生成したclean overlay treeでclient/server AIDLのbyte一致、TypeScript、ESLint、Jest 15件に加え、Kotlin／AIDL／llama.rn CPU-only arm64 native compileとrelease APK buildを合格した。完全・孤立・未閉鎖・大小文字違い・token境界分割の`<think>`をUIとOS連携の手前で除去する。APKは`arm64-v8a`のみ、`INTERNET`なし、`WAKE_LOCK`、署名保護Binder serviceを含む。
+- 同じ更新APKをPixel 10 GL066へデータを保ったまま上書きし、機内モード・Wi-Fi停止中に`CLEAN_OK`を生成した。画面XMLに生の`<think>`／`</think>`はなく、22.4 tok/s、11.2秒、thermal status 0、28.4℃だった。終了後は機内モード、Wi-Fi、mobile data、Simeji、画面点灯維持を元へ戻した。
 - `.github/workflows/local-ai-apk.yml`はUbuntu、Java、Android SDK 36、NDK 27.1で固定sourceとoverlayからunsigned arm64 APKをbuildし、package/version、通信権限、ABIを検査した7日間の候補artifactを出力する。workflowの存在はbuild成功証拠ではなく、artifact lockを自動更新しない。
 - Android 15 API 35のPixel 10 device-profile emulatorへtest鍵で署名したcopyを導入し、同一署名検査、Binder接続、Headless JS起動、GGUF未導入時の`NO_MODEL` fail-closedを含む5 instrumentation testを合格した。test鍵copyは配布artifactではない。
 - 所有Pixel 10 GL066／Android 17へ同じ試験署名の4 APKを導入し、物理端末でも5 instrumentation testを合格した。Qwen3-0.6B Q8_0 GGUFを公式SHA-256とApache-2.0表示でimportし、機内モードかつWi-Fi停止中の推論、端末再起動後の会話／model metadata保持と手動reload、33分22秒・15推論の熱試験を合格した。最大電池温度34.4℃、thermal status 0、process restart 0。[実機証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)。

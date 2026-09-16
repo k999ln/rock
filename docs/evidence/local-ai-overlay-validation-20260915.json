@@ -19,6 +19,7 @@
     "mergedApkManifestInspection": "PASS",
     "binderInstrumentation": "PASS",
     "noGgufFailClosed": "NO_MODEL",
+    "physicalPixelResponsePresentation": "PASS_CLEAN_OK_NO_RAW_THINK_TAGS",
     "unsignedApkSha256": "d65039dc766a4b881c537bceba93a9be8834eabe881af5b5b15035aa6ec944b9",
     "unsignedApkSizeBytes": 26392828,
     "abi": "arm64-v8a",
@@ -27,10 +28,9 @@
   },
   "notRun": [
     "AOSP Soong build",
-    "physical device inference",
-    "GGUF model inference",
-    "airplane mode and thermal endurance"
+    "production signing",
+    "OS-image flash and boot"
   ],
-  "testEnvironment": "macOS arm64 host; Android 15 API 35 arm64 Pixel 10 device-profile emulator; test-only shared debug signer",
-  "boundary": "The fresh emulator run proves the updated APK installs and passes 5/5 signer, Binder, Headless JS no-model fail-closed, Platform, Tool and Android SQLite integration tests. TypeScript tests prove complete, orphan, unclosed and cross-token reasoning tags are filtered. It does not yet prove the updated presentation on the physical Pixel, production signing, SELinux in the final image or OS-image boot."
+  "testEnvironment": "macOS arm64 host; Android 15 API 35 arm64 Pixel 10 device-profile emulator; Pixel 10 GL066 / Android 17; test-only shared debug signer",
+  "boundary": "The fresh emulator run proves the updated APK installs and passes 5/5 signer, Binder, Headless JS no-model fail-closed, Platform, Tool and Android SQLite integration tests. TypeScript tests prove complete, orphan, unclosed and cross-token reasoning tags are filtered. The Pixel 10 offline UI retest proves CLEAN_OK without raw reasoning tags. It does not prove production signing, SELinux in the final image, OS-image integration, flash or boot."
 }

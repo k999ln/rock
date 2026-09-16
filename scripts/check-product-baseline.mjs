@@ -176,7 +176,7 @@ export function validateBaseline(
   requireValue(
       data.primaryCapabilities?.includes('local-offline-ai-runtime') &&
       data.localAiRuntime?.status ===
-        'standalone_physical_pixel_offline_ai_reboot_and_thermal_verified_test_signing' &&
+        'standalone_physical_pixel_offline_ai_reboot_thermal_and_response_sanitizer_verified_test_signing' &&
       data.localAiRuntime?.sourceCommit ===
         '99b1c40d76f719cbba9c72d9f481c1b2df245504' &&
       data.localAiRuntime?.engine === 'llama.rn' &&

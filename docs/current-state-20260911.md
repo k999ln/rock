@@ -2,7 +2,7 @@
 
 ## 2026-09-16 — Pixel 10上の端末内LLM事前試験を完走
 
-OSを書き換えていない所有Pixel 10 GL066へ、試験専用同一署名のLocal Action Assistant、Automation、instrumentation、記事Toolを導入した。物理端末のBinder／SQLite／review／署名固定／Tool登録は5/5合格。公式Qwen3-0.6B Q8_0 GGUF（639,446,688 bytes、SHA-256 `9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031`、Apache-2.0）を手動importし、通信権限なしAPKかつ機内モード・Wi-Fi停止中に`OFFLINE_OK`を生成した。
+OSを書き換えていない所有Pixel 10 GL066へ、試験専用同一署名のLocal Action Assistant、Automation、instrumentation、記事Toolを導入した。物理端末のBinder／SQLite／review／署名固定／Tool登録は5/5合格。公式Qwen3-0.6B Q8_0 GGUF（639,446,688 bytes、SHA-256 `9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031`、Apache-2.0）を手動importし、通信権限なしAPKかつ機内モード・Wi-Fi停止中に`OFFLINE_OK`を生成した。応答清掃版では`CLEAN_OK`を22.4 tok/s・11.2秒で生成し、生の`<think>`タグが画面へ出ないことも確認した。
 
 端末再起動後も会話とmodel metadataが残り、modelを手動再loadして通信なしで`REBOOT_OK`を生成した。続いて33分22秒、15回の推論、46点の計測を完走。電池温度32.5〜34.4℃、Android thermal statusは全て0、同一processが継続し、PSSは1,111,168〜1,132,715 KiBだった。試験後は機内モード、Wi-Fi、mobile data、既定キーボード、常時点灯を元へ戻した。[実機証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)。これは単体APKの合格であり、production署名、Soong image、SELinux、flash、boot、OTA、rollback、復旧の合格ではない。
 

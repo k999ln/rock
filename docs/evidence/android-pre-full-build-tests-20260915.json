@@ -5,9 +5,9 @@
   "test1LocalAi": {
     "status": "PASS_STANDALONE_PHYSICAL_PIXEL",
     "unsignedArm64ReleaseApk": "PASS",
-    "apkSha256": "2a0441565f6cca5676bc7a113f74e66e734c5e966aaf3835a62ae9b79d4756e9",
-    "apkSizeBytes": 26390540,
-    "physicalTestSignedApkSha256": "432f122fe9eb4250ced20c3f779711be928b023e3c3e9097154cae37ebe21c62",
+    "apkSha256": "d65039dc766a4b881c537bceba93a9be8834eabe881af5b5b15035aa6ec944b9",
+    "apkSizeBytes": 26392828,
+    "physicalTestSignedApkSha256": "f36fe4b807fb9a4f6e09d3f69fd33e4da0408389763759c12348da88e545465b",
     "physicalTestSigningCertificateSha256": "610499604b3469ae2f6c158b8482bbd6b0fb6e324862fb67e92731fe8a241f57",
     "internetPermission": false,
     "wakeLockPermission": true,
@@ -20,6 +20,7 @@
     "ggufModelSha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
     "ggufInference": "PASS",
     "airplaneModeInference": "PASS",
+    "responseReasoningPresentation": "PASS_CLEAN_OK_NO_RAW_THINK_TAGS",
     "rebootPersistenceAndReload": "PASS",
     "physicalPixel": "PASS_PIXEL_10_GL066_FRANKEL",
     "thermalThirtyMinutes": "PASS_2002_SECONDS_15_INFERENCES_MAX_34_4C_NO_THERMAL_WARNING",
@@ -84,7 +85,9 @@
     "overlay application could silently target an unrelated parent Git repository",
     "AIDL generation was disabled in the upstream Android app",
     "public Android SDK builds used hidden UserHandle methods",
-    "the release manifest removed WAKE_LOCK required by Headless JS"
+    "the release manifest removed WAKE_LOCK required by Headless JS",
+    "raw Qwen think markers reached saved chat and OS streaming output",
+    "the standalone APK build script misresolved a relative output path after changing directories"
   ],
   "remainingBeforePaidFullBuild": [
     "external provider sandbox acceptance or an explicit pre-build scope that excludes external value transfer",

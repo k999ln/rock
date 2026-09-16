@@ -43,7 +43,7 @@
   "aospSigning": "testkey_then_release_key_mapping",
   "sourceStatus": "pinned_overlay_native_apk_built",
   "osBridgeStatus": "client_and_server_compiled_emulator_binder_verified",
-  "signedApkStatus": "unsigned_release_reviewed_test_signed_emulator_only",
+  "signedApkStatus": "unsigned_release_reviewed_test_signed_emulator_and_physical_pixel",
   "imageStatus": "not_built",
-  "deviceInferenceStatus": "not_run"
+  "deviceInferenceStatus": "standalone_physical_pixel_pass_not_os_image"
 }

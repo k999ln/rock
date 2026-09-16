@@ -1630,7 +1630,7 @@
     "recommendedBuildEnvironment": "DigitalOcean CPU-Optimized Regular 48 vCPU / 96 GiB / 600 GiB / Ubuntu 24.04 x86_64; Google Cloud is the alternative for detachable persistent storage",
     "latestRequest": "Run pre-full-build tests 1 and 2 first; proceed to full OS build only after both pass",
     "localAi": {
-      "status": "PHYSICAL_PIXEL_OFFLINE_AI_REBOOT_AND_THERMAL_PASS_TEST_SIGNING",
+      "status": "PHYSICAL_PIXEL_OFFLINE_AI_REBOOT_THERMAL_AND_RESPONSE_SANITIZER_PASS_TEST_SIGNING",
       "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
       "engine": "llama.rn@0.12.9",
       "modelFormat": "GGUF",
@@ -1640,10 +1640,10 @@
       "soongBuilt": false,
       "imageBuilt": false,
       "deviceInferenceVerified": true,
-      "apkSha256": "432f122fe9eb4250ced20c3f779711be928b023e3c3e9097154cae37ebe21c62",
+      "apkSha256": "f36fe4b807fb9a4f6e09d3f69fd33e4da0408389763759c12348da88e545465b",
       "apkSizeBytes": 26437275,
       "emulatorVerification": "5_OF_5_ANDROID_INSTRUMENTATION_TESTS_PASS_WITH_DEBUG_ONLY_SHARED_SIGNER",
-      "physicalVerification": "PIXEL_10_GL066_ANDROID_17_5_OF_5_INSTRUMENTATION_OFFLINE_REBOOT_AND_2002_SECOND_THERMAL_PASS",
+      "physicalVerification": "PIXEL_10_GL066_ANDROID_17_5_OF_5_INSTRUMENTATION_OFFLINE_REBOOT_2002_SECOND_THERMAL_AND_CLEAN_OK_NO_RAW_THINK_TAG_PASS",
       "contract": "contracts/local-ai-runtime.json",
       "record": "docs/local-ai-os-integration-20260915.md",
       "evidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json"

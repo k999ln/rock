@@ -8,7 +8,7 @@
 
 ## Android full build前の試験1・2 / 2026-09-16更新
 
-- 試験1の単体APK／物理端末範囲は合格。固定sourceのarm64 APK、通信権限なし、WAKE_LOCK、署名限定Binder、emulatorに加え、Pixel 10 GL066／Android 17でinstrumentation 5/5を通した。Qwen3-0.6B Q8_0（SHA-256 `9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031`）をimportし、機内モード・Wi-Fi停止中の`OFFLINE_OK`、再起動後の`REBOOT_OK`、33分22秒・15推論を確認。46 sampleで32.5〜34.4℃、thermal statusは全て0、process restart 0、PSS 1,111,168〜1,132,715 KiBだった。
+- 試験1の単体APK／物理端末範囲は合格。固定sourceのarm64 APK、通信権限なし、WAKE_LOCK、署名限定Binder、emulatorに加え、Pixel 10 GL066／Android 17でinstrumentation 5/5を通した。Qwen3-0.6B Q8_0（SHA-256 `9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031`）をimportし、機内モード・Wi-Fi停止中の`OFFLINE_OK`、再起動後の`REBOOT_OK`、33分22秒・15推論を確認。46 sampleで32.5〜34.4℃、thermal statusは全て0、process restart 0、PSS 1,111,168〜1,132,715 KiBだった。応答清掃版APKでも機内モード・Wi-Fi停止中の`CLEAN_OK`を22.4 tok/s・11.2秒で生成し、生の`<think>`タグが画面へ出ないことを実機で再確認した。
 - 試験2のRock所有fixture範囲は合格。Sky→Zema、job lifecycle、Android Tool Binder／SQLite／review、Tool完了→Provider署名Earning Receipt→Walletの一回限り転記を実装し、bridge対象7/7を合格した。実売上、外部決済Provider sandbox、返金／chargeback、実払出し、production配備、物理Pixel上のWallet Provider縦断は未実証。
 - source準備が無関係な親Git repositoryを参照してoverlayを適用済みと誤判定する問題、AIDL生成無効、public SDKで使えないUserHandle API、release manifestによるWAKE_LOCK削除を修正した。
 - Android build／lint 172 task、対象host test 20/20を維持し、2026-09-16のrepository全体再検証ではWeb 287 test、Fashion Brand Ops 19 test、Worker／D1 143 assertion、本番Web buildを含む`npm run verify`が終了コード0で合格した。

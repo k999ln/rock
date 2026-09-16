@@ -38,6 +38,6 @@
   },
   "imageBuildVerified": false,
   "imageBootVerified": false,
-  "deviceInferenceVerified": false,
-  "notes": "Pinned reviewed source plus an independently locked unsigned arm64 release APK. The APK passed emulator Binder and no-model fail-closed checks with a test signature; it is not an OS-image integration, production-signed APK, bundled model, or physical-device inference result."
+  "deviceInferenceVerified": true,
+  "notes": "Pinned reviewed source plus a hash-locked response-sanitizing overlay and independently locked unsigned arm64 release APK. A same-test-key copy passed fresh emulator Binder tests 5/5 and Pixel 10 GL066 offline CLEAN_OK presentation without raw think tags. This is not an OS-image integration, production-signed APK, bundled model, flash or boot result."
 }
