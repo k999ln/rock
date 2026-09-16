@@ -6,7 +6,7 @@
 
 ## 全体
 
-- データ境界: 6、table: 73
+- データ境界: 6、table: 75
 - source inventory: 6/6確認済み
 - current production readback: 0/6
 - 作業進捗: 108 task中 77 done、23 in progress、8 planned、0 blocked
@@ -18,7 +18,7 @@
 | --- | --- | ---: | --- | --- | --- | --- |
 | Web D1 | Webサービス状態 | 27 | VERIFIED | SOURCE_AHEAD | 未確認 | 未確認 |
 | Sky Billing D1 | 収益精算・請求・受取Wallet | 13 | VERIFIED | DOCUMENTED_NOT_READ_BACK | 0004_rock_settlement_wallet.sql | 未確認 |
-| Operator Dock D1 | 運営専用の端末登録・緊急命令・監査 | 3 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
+| Operator Dock D1 | 運営専用の端末登録・緊急命令・監査 | 5 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
 | OS Wallet / Spend SQLite | 端末内Wallet・支出承認・PAPER position | 17 | VERIFIED | QEMU_SCOPED | 未確認 | 未確認 |
 | Android Work Engine SQLite | Android work・artifact・run・event | 7 | VERIFIED | EMULATOR_SCOPED | 未確認 | 未確認 |
 | Android Platform Core SQLite | component登録・owner承認・OS側ledger | 6 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
@@ -57,11 +57,11 @@
 
 </details>
 
-<details><summary>Operator Dock D1: 3 table</summary>
+<details><summary>Operator Dock D1: 5 table</summary>
 
-`operator_audit_events`、`operator_device_commands`、`operator_managed_devices`
+`operator_audit_events`、`operator_device_commands`、`operator_device_request_nonces`、`operator_managed_devices`、`operator_webauthn_assertions`
 
-次の確認: ownerが専用hostname、Cloudflare Access application、D1を作成後、0001適用と認証済みreadbackを行う
+次の確認: ownerが専用hostname、Cloudflare Access application、D1を作成後、0001・0002適用、production credential設定、端末attestation登録と認証済みreadbackを行う
 
 </details>
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Pixelを再接続し、実行中のnative Sky選択仕事をseedした後に端末を実再起動して、lease回収、2 Tool、結果、7履歴eventまでrecover phaseで確認する。次にbackup v2、復旧artifact、vendor inventory、production署名、Operator Agentの事前gateを進める。
+Pixel 10を再接続してnative Skyの実再起動復旧を確認する。続いてproduction WebAuthn credential、Agent product overlay、StrongBox attestation、Device Ownerを登録し、許可操作と禁止操作を実機検証する。純正復旧artifact、vendor inventory、production署名、物理backup wipe復元を揃え、全preflight合格後だけ最初のfull buildへ進む。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

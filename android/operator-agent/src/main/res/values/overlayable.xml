@@ -1,0 +1,15 @@
+<resources>
+    <overlayable name="AvocadoOperatorAgentConfig">
+        <policy type="product">
+            <item type="string" name="operator_dock_origin" />
+            <item type="string" name="operator_credential_id" />
+            <item type="string" name="operator_public_key_spki" />
+            <item type="string" name="operator_rp_id" />
+            <item type="string" name="operator_webauthn_origin" />
+            <item type="string" name="operator_quarantine_packages" />
+            <item type="string" name="operator_device_attestation_challenge" />
+            <item type="bool" name="operator_factory_reset_enabled" />
+            <item type="bool" name="operator_hardware_identity_required" />
+        </policy>
+    </overlayable>
+</resources>

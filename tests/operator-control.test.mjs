@@ -80,10 +80,11 @@ function fixture() {
   const deviceId = crypto.randomUUID();
   sqlite.prepare(`INSERT INTO operator_managed_devices(
     id,owner_user_id,display_name,platform,model,os_version,status,
-    trust_state,channel_state,key_fingerprint,last_seen_at,created_at,updated_at
-  ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(
+    trust_state,channel_state,key_fingerprint,last_seen_at,created_at,updated_at,
+    attestation_record_sha256
+  ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(
     deviceId,'owner-1','Pixel 10','android','Pixel 10','avocadoOS 1.0',
-    'active','verified','connected','sha256:device-key',now,now,now,
+    'active','verified','connected','sha256:device-key',now,now,now,'sha256:attestation',
   );
   return {
     sqlite,
@@ -189,6 +190,11 @@ void test('management server alone cannot issue or alter a device command', asyn
   const replayedCounter = await signedIssue(control, request(deviceId), 9);
   await assert.rejects(
     () => control.issue(replayedCounter.value),
+    /counter/,
+  );
+  const lowerUnusedCounter = await signedIssue(control, request(deviceId), 8);
+  await assert.rejects(
+    () => control.issue(lowerUnusedCounter.value),
     /counter/,
   );
 });

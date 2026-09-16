@@ -60,9 +60,15 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   emergencyRootShell.deviceEmergencyAccess.rootShellAllowed = true;
   assert.throws(() => validateBaseline(emergencyRootShell), /緊急保護/);
   const fakeEmergencyImplementation = structuredClone(source);
-  fakeEmergencyImplementation.deviceEmergencyAccess.androidServiceImplemented = true;
+  fakeEmergencyImplementation.deviceEmergencyAccess.androidServiceImplemented = false;
   assert.throws(
     () => validateBaseline(fakeEmergencyImplementation),
+    /緊急保護/,
+  );
+  const fakePhysicalOperatorAcceptance = structuredClone(source);
+  fakePhysicalOperatorAcceptance.deviceEmergencyAccess.androidDeviceOwnerExecutionVerified = true;
+  assert.throws(
+    () => validateBaseline(fakePhysicalOperatorAcceptance),
     /緊急保護/,
   );
   const missingOperatorConsole = structuredClone(source);

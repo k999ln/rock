@@ -24,7 +24,7 @@
       "productionAppliedThrough": null,
       "productionReadbackAt": null,
       "evidence": ["services/operator-dock/README.md"],
-      "nextAction": "ownerが専用hostname、Cloudflare Access application、D1を作成後、0001適用と認証済みreadbackを行う"
+      "nextAction": "ownerが専用hostname、Cloudflare Access application、D1を作成後、0001・0002適用、production credential設定、端末attestation登録と認証済みreadbackを行う"
     },
     "os-wallet-spend-sqlite": {
       "runtime": "RockstarOS device-local SQLite",

@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">avocadoOS Emergency Protection</string>
+    <!-- Public trust anchors. Production values are supplied by a reviewed product overlay. -->
+    <string name="operator_dock_origin"></string>
+    <string name="operator_credential_id"></string>
+    <string name="operator_public_key_spki"></string>
+    <string name="operator_rp_id"></string>
+    <string name="operator_webauthn_origin"></string>
+    <string name="operator_quarantine_packages"></string>
+    <string name="operator_device_attestation_challenge"></string>
+    <bool name="operator_factory_reset_enabled">false</bool>
+    <bool name="operator_hardware_identity_required">true</bool>
+</resources>

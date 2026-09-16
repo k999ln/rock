@@ -23,6 +23,15 @@ const fixture = () => ({
   shellSource: read('android/shell/src/main/java/dev/rock/shell/MainActivity.java'),
   shellService: read('android/automation/src/main/java/dev/rock/automation/RockShellService.java'),
   platformService: read('android/automation/src/main/java/dev/rock/automation/RockPlatformService.java'),
+  operatorManifest: read('android/operator-agent/src/main/AndroidManifest.xml'),
+  operatorVerifier: read('android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandVerifier.java'),
+  operatorClient: read('android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorDockClient.java'),
+  operatorIdentity: read('android/operator-agent/src/main/java/dev/rock/operator/agent/DeviceIdentity.java'),
+  operatorExecutor: read('android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandExecutor.java'),
+  operatorJob: read('android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorAgentJobService.java'),
+  operatorDatabase: read('android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorAgentDatabase.java'),
+  androidBp: read('android/Android.bp'),
+  physicalProduct: read('os/physical/rockstaros.mk'),
 });
 
 void test('selected Android production architecture is internally consistent and truthful', () => {

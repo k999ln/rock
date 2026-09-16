@@ -7,6 +7,11 @@ const actions = [
   ['quarantine_external_connections', '通信を隔離', '外部接続を制限'],
   ['collect_sanitized_diagnostics', '診断を取得', '私的内容を除く'],
   ['open_limited_maintenance_session', '15分保守接続', '許可済み操作だけ'],
+  ['resume_sky_and_zema_execution', 'Sky / Zemaを再開', '停止した実行環境を戻す'],
+  ['resume_ota_installation', 'OTAを再開', '更新方針を通常へ戻す'],
+  ['release_external_quarantine', '通信隔離を解除', '許可済み接続を戻す'],
+  ['close_limited_maintenance_session', '保守接続を終了', '保守表示を直ちに閉じる'],
+  ['exit_lost_mode', '紛失モードを解除', '本人の端末解除は別途必要'],
   ['request_factory_reset', '初期化を予約', '30分の取消猶予'],
 ];
 
@@ -211,7 +216,11 @@ function render() {
   const selected = snapshot?.devices.find((device) => device.id === selectedId);
   elements['control-plane'].textContent = snapshot ? '利用可能' : '確認中';
   elements['device-agent'].textContent =
-    snapshot?.deviceAgent === 'ready' ? '接続可能' : '未実装・配信停止中';
+    snapshot?.deviceAgent === 'ready'
+      ? '接続可能'
+      : snapshot?.deviceAgent === 'source_emulator_verified_production_enrollment_pending'
+        ? '開発検証済み・本番登録待ち'
+        : '配信停止中';
   elements['agent-dot'].className =
     snapshot?.deviceAgent === 'ready' ? 'metric-dot ready' : 'metric-dot waiting';
   elements['audit-count'].textContent = `${snapshot?.audit.length || 0}件`;
@@ -264,7 +273,7 @@ async function issue(action) {
     showMessage(
       snapshot?.deviceAgent === 'ready'
         ? '端末へ命令を送信しました。'
-        : '命令を保存しました。Android端末サービスの接続後に配信されます。',
+        : '命令を保存しました。本番端末の登録・認証完了後に配信されます。',
     );
     snapshot = await api();
   } catch (error) {

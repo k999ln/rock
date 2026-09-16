@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-16",
   "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-  "nextAction": "Pixelを再接続し、native Sky選択仕事の実再起動復旧を確認する。backup v2のsource・UI・transactional import・新Keystore再bindingはemulator合格済みのため、Pixel全消去は所有者と復旧artifactを揃えた管理試験として別途実施する。並行して復旧artifact、vendor inventory、production署名、Operator Agentの事前gateを進める。",
+  "nextAction": "Pixel 10を再接続してnative Skyの実再起動復旧を確認する。続いてproduction WebAuthn credential、Agent product overlay、StrongBox attestation、Device Ownerを登録し、許可操作と禁止操作を実機検証する。純正復旧artifact、vendor inventory、production署名、物理backup wipe復元を揃え、全preflight合格後だけ最初のfull buildへ進む。",
   "tasks": [
     {
       "id": "SKY01",
@@ -678,10 +678,17 @@
         "services/operator-dock/src/worker.ts",
         "services/operator-dock/src/access-auth.ts",
         "services/operator-dock/src/operator-control.ts",
+        "services/operator-dock/src/device-channel.ts",
         "services/operator-dock/migrations/0001_operator_device_control.sql",
+        "services/operator-dock/migrations/0002_signed_device_channel.sql",
+        "android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandVerifier.java",
+        "android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorAgentJobService.java",
         "tests/operator-control.test.mjs",
+        "tests/operator-device-channel.test.mjs",
         "tests/operator-access-auth.test.mjs",
-        "tests/operator-dock-isolation.test.mjs"
+        "tests/operator-dock-isolation.test.mjs",
+        "android/operator-agent/src/androidTest/java/dev/rock/operator/agent/OperatorAgentIntegrationTest.java",
+        "docs/evidence/android-operator-agent-emulator-20260916.json"
       ]
     },
     {
@@ -1755,7 +1762,10 @@
     "shellHasPlatformManagementPermission": false,
     "shellUsesDedicatedPermission": "dev.rock.permission.USE_SHELL_API",
     "shellBrokerPhysicalDeviceRetestPassed": false,
-    "operatorAgentImplemented": false,
+    "operatorAgentImplemented": true,
+    "operatorAgentAndroidEmulatorTests": "PASS_5_OF_5_ANDROID_15",
+    "operatorAgentDeviceOwnerExecutionVerified": false,
+    "operatorAgentProductionEnrollmentVerified": false,
     "androidBuilt": true,
     "aospImageBuilt": false,
     "selinuxEnforcingVerified": false,

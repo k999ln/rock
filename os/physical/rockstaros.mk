@@ -6,10 +6,14 @@ endif
 ifeq ($(wildcard vendor/rockstaros-local-ai/product.mk),)
   $(error Stage the reviewed Local Action Assistant APK before the physical OS build)
 endif
+ifeq ($(wildcard vendor/avocado-operator-agent/product.mk),)
+  $(error Stage the reviewed production Operator Agent trust-anchor overlay before the physical OS build)
+endif
 
 include vendor/rockstaros-local-ai/product.mk
+include vendor/avocado-operator-agent/product.mk
 
-PRODUCT_PACKAGES += RockAutomationPrototype RockShell RockArticleToolPrototype
+PRODUCT_PACKAGES += RockAutomationPrototype RockShell RockArticleToolPrototype RockOperatorAgent
 PRODUCT_PRIVATE_SEPOLICY_DIRS += external/rockstaros/android/sepolicy/private
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.rockstaros.stage=device-bringup \

@@ -26,6 +26,15 @@ export function validateAndroidReleaseArchitecture({
   shellSource,
   shellService,
   platformService,
+  operatorManifest,
+  operatorVerifier,
+  operatorClient,
+  operatorIdentity,
+  operatorExecutor,
+  operatorJob,
+  operatorDatabase,
+  androidBp,
+  physicalProduct,
 }) {
   if (policy?.schema !== 'avocadoos-android-release-architecture/1') fail('schemaが違います');
   if (
@@ -143,7 +152,7 @@ export function validateAndroidReleaseArchitecture({
   ) fail('未実装を完了扱いにできません');
   includesAll(completion.blockers || [], [
     'complete-physical-keystore-loss-wipe-restore-drill',
-    'implement-and-isolate-operator-agent',
+    'provision-and-physically-verify-operator-agent',
     'integrate-local-ai-domain-into-final-image',
     'build-user-image-and-prove-selinux-enforcing-isolation',
     'run-cdd-cts-cts-verifier-vts-hal-and-kernel-on-the-same-final-build',
@@ -219,10 +228,77 @@ export function validateAndroidReleaseArchitecture({
   ) fail('Local AIのpackage、Broker、offline、image状態が一致しません');
   if (
     emergency.implementation?.includedInUserOs !== false ||
-    emergency.implementation?.androidServiceImplemented !== false ||
+    emergency.implementation?.androidServiceImplemented !== true ||
+    emergency.implementation?.deviceSignedChannelImplemented !== true ||
+    emergency.implementation?.deviceIndependentCommandVerificationImplemented !== true ||
+    emergency.implementation?.androidEmulatorTestsPassed !== true ||
+    emergency.implementation?.androidDeviceOwnerExecutionVerified !== false ||
+    emergency.implementation?.productionOperatorCredentialProvisioned !== false ||
     emergency.forbiddenCapabilities?.includes('root_shell') !== true ||
     emergency.forbiddenCapabilities?.includes('read_private_user_content') !== true
-  ) fail('Operator Dock/Agentの分離または未実装境界が違います');
+  ) fail('Operator Dock/Agentのsource合格とproduction未完了境界が違います');
+
+  if (
+    policy.components?.operatorAgent?.currentState !==
+      'source_and_android_emulator_verifier_store_keystore_pass_product_device_owner_attestation_pending' ||
+    policy.components?.operatorDock?.currentState !==
+      'console_signed_queue_and_device_channel_source_verified_production_deployment_pending'
+  ) fail('Operator Agent/Dockのsource、emulator、production境界が違います');
+  includesAll(operatorManifest, [
+    'android.permission.INTERNET',
+    'android.permission.ACCESS_NETWORK_STATE',
+    'android.permission.BIND_DEVICE_ADMIN',
+    '.OperatorAgentJobService',
+    'android:allowBackup="false"',
+  ], 'Operator Agent manifestのDPC、network、backup境界が不足しています');
+  if (operatorManifest.includes('android.intent.category.LAUNCHER'))
+    fail('Operator Agentを利用者launcherへ表示できません');
+  includesAll(operatorVerifier, [
+    'Command targets another device',
+    'User presence and verification required',
+    'SHA256withECDSA',
+  ], '端末側WebAuthn、対象端末、counter検証が不足しています');
+  includesAll(operatorClient, [
+    'setInstanceFollowRedirects(false)',
+    'Operator Dock requires HTTPS',
+    'X-Avocado-Device-Signature',
+    'avocadoOS-device-request/1',
+  ], '署名付き端末channelのHTTPS、redirect、request固定が不足しています');
+  includesAll(operatorIdentity, [
+    'setIsStrongBoxBacked(true)',
+    'setAttestationChallenge',
+    'SECURITY_LEVEL_STRONGBOX',
+    'getCertificateChain',
+  ], 'StrongBox端末identityとattestation chainが不足しています');
+  includesAll(operatorExecutor, [
+    'isDeviceOwnerApp',
+    'setPackagesSuspended',
+    'setSystemUpdatePolicy',
+    'FACTORY_RESET_RELEASE_GATE_DISABLED',
+    'REMOTE_SESSION_REVOCATION_PENDING',
+  ], 'Device Owner操作のallowlistまたは未実装fail-closed境界が不足しています');
+  if (operatorExecutor.includes('Runtime.getRuntime') || operatorExecutor.includes('ProcessBuilder'))
+    fail('Operator Agentへ任意shell実行経路を追加できません');
+  includesAll(operatorDatabase, [
+    'AndroidKeyStore',
+    'HmacSHA256',
+    "RAISE(ABORT,'append only')",
+    'operator_counters',
+    'WebAuthn sign counter did not increase',
+  ], '端末側replay拒否または追記監査が不足しています');
+  includesAll(operatorJob, [
+    'verifier.verify(command, identity.deviceId())',
+    'client.acknowledge(command.id)',
+    'database.markResult',
+    'database.markReported',
+  ], '端末側verify→ack→execute→result順序が不足しています');
+  includesAll(androidBp, ['name: "RockOperatorAgent"', 'operator-agent/src/main/java/**/*.java'],
+    'Operator AgentのSoong moduleが不足しています');
+  includesAll(physicalProduct, [
+    'RockOperatorAgent',
+    'vendor/avocado-operator-agent/product.mk',
+    'production Operator Agent trust-anchor overlay',
+  ], '物理product packageまたはproduction trust-anchor gateが不足しています');
 
   includesAll(seapp, [
     'name=dev.rock.automation domain=rockstar_platform_app',

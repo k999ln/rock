@@ -1,7 +1,7 @@
 {
   "schema": "dev.rock-device-emergency-access/1",
   "product": "avocadoOS",
-  "status": "isolated_operator_dock_hardware_signed_command_queue_implemented_android_agent_missing",
+  "status": "dock_and_android_agent_source_emulator_verified_production_enrollment_physical_pending",
   "purpose": "allow_a_single_authorized_operator_to_protect_and_recover_an_enrolled_device_during_an_incident",
   "activation": {
     "singleOperatorAllowed": true,
@@ -22,6 +22,13 @@
     "quarantine_external_connections",
     "collect_sanitized_diagnostics",
     "open_limited_maintenance_session"
+  ],
+  "recoveryCapabilities": [
+    "resume_sky_and_zema_execution",
+    "resume_ota_installation",
+    "release_external_quarantine",
+    "close_limited_maintenance_session",
+    "exit_lost_mode"
   ],
   "forbiddenCapabilities": [
     "arbitrary_shell",
@@ -58,7 +65,7 @@
   },
   "diagnosticPlugin": {
     "purpose": "incident_diagnostics_for_a_pre_enrolled_bootable_device",
-    "currentStatus": "no_production_phone_diagnostic_plugin_or_android_agent_verified",
+    "currentStatus": "restricted_android_agent_source_emulator_verified_production_device_pending",
     "preEnrollmentRequired": true,
     "deviceMustBeBootable": true,
     "connectivityRequiredForRemoteUse": true,
@@ -84,8 +91,19 @@
     "operatorCommandWebAuthnSignatureRequired": true,
     "operatorUserVerificationRequired": true,
     "managementServerAloneCanIssueDeviceCommand": false,
+    "deviceSignedChannelImplemented": true,
     "deviceIndependentCommandVerificationDesigned": true,
-    "androidServiceImplemented": false,
+    "deviceIndependentCommandVerificationImplemented": true,
+    "deviceRequestReplayProtectionImplemented": true,
+    "deviceLocalHmacChainedAuditImplemented": true,
+    "androidServiceImplemented": true,
+    "androidSoongProductIntegrationDeclared": true,
+    "androidGradleBuildAndLintPassed": true,
+    "androidEmulatorTestsPassed": true,
+    "androidDeviceOwnerExecutionVerified": false,
+    "hardwareDeviceAttestationVerified": false,
+    "remoteProviderSessionRevocationImplemented": false,
+    "factoryResetReleaseGateEnabled": false,
     "productionOperatorCredentialProvisioned": false,
     "physicalDeviceVerified": false,
     "penetrationTestCompleted": false,

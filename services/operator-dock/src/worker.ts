@@ -1,5 +1,6 @@
 import { AccessAuthError, authorizeOperator } from './access-auth.ts';
 import { operatorControl } from './operator-control.ts';
+import { handleDeviceChannel } from './device-channel.ts';
 import { OperatorError } from './validation.ts';
 
 type Env = {
@@ -75,6 +76,15 @@ function denied(request: Request, error: AccessAuthError) {
 
 const worker = {
   async fetch(request: Request, env: Env) {
+    const initialUrl = new URL(request.url);
+    if (initialUrl.pathname.startsWith('/api/device/v1/')) {
+      try { return json(await handleDeviceChannel(request, env.DB)); }
+      catch (error) {
+        if (error instanceof OperatorError)
+          return json({ error: error.message }, error.status);
+        return json({ error: '端末channelを処理できませんでした。' }, 503);
+      }
+    }
     let operatorSub: string;
     try {
       ({ operatorSub } = await authorizeOperator(request, env));

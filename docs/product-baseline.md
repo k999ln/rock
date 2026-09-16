@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-16 Operator Agent実装追記（v1.67）: OS外のOperator Dockに署名付きdevice poll／ack／resultを追加し、登録済みP-256端末鍵、±120秒timestamp、nonce、body digestを検証する。launcher非表示・別UIDの`dev.rock.operator.agent`はWebAuthn commandを対象端末、RP／origin、UP／UV、署名、期限、scope、単調増加counterまで独立検証し、verify→永続化→ack→Device Owner allowlist実行→local result永続化→remote resultの順で処理する。端末監査はAndroid Keystore HMAC chainで、任意shell・私的内容・Wallet・鍵への経路は作らない。Node 14 test、Worker dry-run、Android build／lint、Android 15 emulator 5/5は合格。production credential、StrongBox attestation、Device Owner実行、remote session失効、Pixel 10実機は未完了で、factory reset gateは無効のままとする。[証拠](evidence/android-operator-agent-emulator-20260916.json)。
+
 2026-09-16 backup v2実装追記（v1.66）: 所有者専用256-bit recovery secretをavocadoOS専用checksum付き24単語で提示し、指定4単語の再入力後だけ有効化する。Shell API v4からdual-wrapped v2 backupをexportし、空のowner領域へtransactional importした後、新しいAndroid Keystore鍵へ再bindingする。復元後は自動化を停止し、Sky tokenをrotateし、active承認と実行中leaseを無効化し、導入component authority、Wallet秘密鍵、session、operator credential、provider secretを復元しない。Core 37/37、Android 15 emulatorのBroker 11 non-skipped／Shell 5/5、source build／lint 207 taskは合格。Pixel 10の物理wipe／復元／再起動は未実施なので初回flash gateは未合格のまま維持する。[証拠](evidence/android-backup-v2-emulator-20260916.json)。
 
 2026-09-16 native Sky永続handoff追記（v1.65）: Shell API v3へ`selectSkyTool`と`skySelection`を追加し、Skyで選んだ`article-preparation@1`をShellの一時状態ではなくBroker SQLite schema v2へ保存する。Zemaは保存済みselection tokenが一致する場合だけLocal AI計画を開始し、不一致は仕事0件で拒否する。schema v1→v2 migration、DB再open、Android 15 emulatorのBroker 9/9・Shell 4/4、全Android 378 taskは合格した。Pixelを実際に再起動して実行中leaseを復旧する二段階試験は端末再接続待ちで、まだ合格扱いにしない。
@@ -480,7 +482,7 @@ Wallet基本台帳はowner別の追記型とし、既存行の書換えではな
 
 緊急modeでも任意shell／root、写真・会話・原稿等の私的内容閲覧、Wallet送金・承認、秘密鍵・credential抽出、マイク／カメラ起動、未署名code導入、Verified Boot／SELinux無効化を許可しない。LLM、Sky Tool、MCP、外部Providerも緊急modeを開始できない。操作は端末側と運営側へ追記記録し、端末へ実行中表示、終了後に利用者へ通知する。初期化要求には最低30分の取消猶予を設ける。
 
-正本は[緊急アクセスとインシデント対応](security-incident-response.md)および`data/device-emergency-access-policy.json`とする。分離された運営Dock、Access JWT検証、WebAuthn hardware credentialで各命令を固定する署名、credential counter再利用拒否、専用命令キュー、追記監査はsource実装済みである。Android service、production operator credential、Pixel 10実機、侵入試験、復旧演習は未完了であり、現段階では管理画面の命令を実端末へ配信・実行しない。
+正本は[緊急アクセスとインシデント対応](security-incident-response.md)および`data/device-emergency-access-policy.json`とする。分離された運営Dock、Access JWT検証、WebAuthn hardware credentialで各命令を固定する署名、単調増加counter、専用命令キュー、署名付き端末channel、端末側独立検証、replay store、追記監査はsource実装済みである。production operator credential、StrongBox attestation登録、Device Owner実行、remote Provider session失効、Pixel 10実機、侵入試験、復旧演習は未完了であり、現段階では管理画面の命令をproduction端末へ配信・実行しない。
 
 ## RQ46 運営専用の端末管理画面と永続命令キューを実装する
 
@@ -488,7 +490,7 @@ Wallet基本台帳はowner別の追記型とし、既存行の書換えではな
 
 Dockの全requestは静的HTML、CSS、JavaScriptを含めて専用Workerを先に通す。WorkerはCloudflare Accessの`Cf-Access-Jwt-Assertion`を公開JWKで検証し、issuer、専用application audience、有効期限、事前登録された単一operator subjectが一致する場合だけassetとAPIを返す。命令時はさらに登録済みP-256 WebAuthn credentialのID、RP ID、origin、challenge、利用者確認flag、署名、増加counterを検査し、端末が再検証できるassertionを保存する。未設定、別利用者、別audience、別origin、未登録端末、未検証hardware identity、期限切れ、同じcommand IDの異内容、署名counter再利用、許可外commandを拒否する。命令と事故記録は利用者Web D1ではなくOperator Dock専用D1へ保存し、監査eventの更新・削除をdatabase triggerで拒否する。
 
-Operator Dockと命令キューの実装は、配備済みまたは端末への実到達を意味しない。専用hostname、Cloudflare Access application、operator subject、専用D1、production WebAuthn公開情報はowner設定待ちである。Android system service、device enrollment、端末側WebAuthn／scope／nonce／期限検査が完成するまで`deviceAgent=not_implemented`とし、UIは命令を実端末へ送信済みと表示しない。
+Operator Dock、命令キュー、device channel、Android Agentのsource実装は、配備済みまたは端末への実到達を意味しない。専用hostname、Cloudflare Access application、operator subject、専用D1、production WebAuthn公開情報、StrongBox端末登録はowner設定待ちである。現在は`deviceAgent=source_emulator_verified_production_enrollment_pending`とし、production credential、Device Owner provisioning、attestation、実機受入が完了するまでUIは命令をproduction端末へ送信済みと表示しない。
 
 ## RQ47 AI自動化チームの効率化から収益・Wallet・ファンド・ゲームへ逆算する
 

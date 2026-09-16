@@ -17,6 +17,11 @@ export const EMERGENCY_ACTIONS = [
   'quarantine_external_connections',
   'collect_sanitized_diagnostics',
   'open_limited_maintenance_session',
+  'resume_sky_and_zema_execution',
+  'resume_ota_installation',
+  'release_external_quarantine',
+  'close_limited_maintenance_session',
+  'exit_lost_mode',
   'request_factory_reset',
 ] as const;
 
@@ -133,7 +138,7 @@ export function operatorControl(
     ]);
     return {
       controlPlane: 'ready',
-      deviceAgent: 'not_implemented',
+      deviceAgent: 'source_emulator_verified_production_enrollment_pending',
       operatorAccess: true,
       devices: devices.results.map((device) => ({
         ...device,
@@ -172,7 +177,8 @@ export function operatorControl(
 
   async function verifiedDevice(deviceId: string) {
     const device = await statement(
-      `SELECT id,status,trust_state AS trustState,key_fingerprint AS keyFingerprint
+      `SELECT id,status,trust_state AS trustState,key_fingerprint AS keyFingerprint,
+        attestation_record_sha256 AS attestationRecordSha256
        FROM operator_managed_devices WHERE id=?`,
       deviceId,
     ).first<{
@@ -180,9 +186,11 @@ export function operatorControl(
       status: string;
       trustState: string;
       keyFingerprint: string | null;
+      attestationRecordSha256: string | null;
     }>();
     if (!device) throw new OperatorError('登録端末が見つかりません。', 404);
-    if (device.status !== 'active' || device.trustState !== 'verified' || !device.keyFingerprint)
+    if (device.status !== 'active' || device.trustState !== 'verified' ||
+        !device.keyFingerprint || !device.attestationRecordSha256)
       throw new OperatorError('端末のhardware identity確認が完了していません。', 409);
     return device;
   }
@@ -232,11 +240,15 @@ export function operatorControl(
     const assertionInput = exactObject(input.assertion, [
       'credentialId', 'authenticatorData', 'clientDataJSON', 'signature',
     ]);
+    for (const key of ['credentialId', 'authenticatorData', 'clientDataJSON', 'signature'] as const) {
+      if (typeof assertionInput[key] !== 'string')
+        throw new OperatorError('運営credential assertionを確認できません。');
+    }
     const assertion: OperatorAssertion = {
-      credentialId: String(assertionInput.credentialId ?? ''),
-      authenticatorData: String(assertionInput.authenticatorData ?? ''),
-      clientDataJSON: String(assertionInput.clientDataJSON ?? ''),
-      signature: String(assertionInput.signature ?? ''),
+      credentialId: assertionInput.credentialId as string,
+      authenticatorData: assertionInput.authenticatorData as string,
+      clientDataJSON: assertionInput.clientDataJSON as string,
+      signature: assertionInput.signature as string,
     };
     const signed: SignedCommandFields = {
       id, deviceId, incidentId: requestedIncidentId, action: requestedAction,
@@ -263,8 +275,13 @@ export function operatorControl(
       ? statement(`SELECT ? AS credential_id`, assertion.credentialId)
       : statement(
           `INSERT OR IGNORE INTO operator_webauthn_assertions(
-            credential_id,sign_count,command_id,used_at) VALUES(?,?,?,?)`,
+            credential_id,sign_count,command_id,used_at)
+           SELECT ?,?,?,? WHERE ?>COALESCE((
+             SELECT MAX(sign_count) FROM operator_webauthn_assertions
+             WHERE credential_id=?
+           ),0)`,
           assertion.credentialId, verified.signCount, id, now,
+          verified.signCount, assertion.credentialId,
         );
     const counterCondition = verified.signCount === 0
       ? ''

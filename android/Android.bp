@@ -77,3 +77,18 @@ android_app {
     product_specific: true,
     optimize: { enabled: false },
 }
+
+// Restricted, non-launcher emergency Agent. Production replaces testkey with
+// its dedicated release certificate and supplies public trust anchors via RRO.
+android_app {
+    name: "RockOperatorAgent",
+    manifest: "operator-agent/src/aosp/AndroidManifest.xml",
+    srcs: ["operator-agent/src/main/java/**/*.java"],
+    resource_dirs: ["operator-agent/src/main/res"],
+    sdk_version: "current",
+    min_sdk_version: "35",
+    target_sdk_version: "35",
+    certificate: "testkey",
+    product_specific: true,
+    optimize: { enabled: false },
+}

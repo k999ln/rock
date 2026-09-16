@@ -27,7 +27,7 @@ export type SignedCommandFields = {
 
 const encoder = new TextEncoder();
 
-function decode(value: string, label: string, maximum = 4096) {
+export function decodeBase64Url(value: string, label: string, maximum = 4096) {
   if (typeof value !== 'string' || !/^[A-Za-z0-9_-]+$/u.test(value))
     throw new OperatorError(`${label}の形式を確認してください。`);
   const padding = '='.repeat((4 - (value.length % 4)) % 4);
@@ -95,7 +95,7 @@ function derInteger(bytes: Uint8Array) {
   return result;
 }
 
-function webauthnDerToRaw(der: Uint8Array) {
+export function ecdsaDerToRaw(der: Uint8Array) {
   let offset = 0;
   const read = () => der[offset++];
   if (read() !== 0x30) throw new OperatorError('運営credential署名を確認できません。');
@@ -126,9 +126,9 @@ export async function verifyOperatorAssertion(
     throw new OperatorError('運営hardware credentialが設定されていません。', 503);
   if (assertion.credentialId !== config.credentialId)
     throw new OperatorError('運営hardware credentialが一致しません。', 403);
-  const authenticatorData = decode(assertion.authenticatorData, 'authenticator data', 1024);
-  const clientDataBytes = decode(assertion.clientDataJSON, 'client data', 4096);
-  const signatureDer = decode(assertion.signature, 'credential署名', 256);
+  const authenticatorData = decodeBase64Url(assertion.authenticatorData, 'authenticator data', 1024);
+  const clientDataBytes = decodeBase64Url(assertion.clientDataJSON, 'client data', 4096);
+  const signatureDer = decodeBase64Url(assertion.signature, 'credential署名', 256);
   if (authenticatorData.byteLength < 37)
     throw new OperatorError('authenticator dataを確認できません。');
   const rpIdHash = new Uint8Array(await crypto.subtle.digest('SHA-256', encoder.encode(config.rpId)));
@@ -149,12 +149,12 @@ export async function verifyOperatorAssertion(
   const signed = new Uint8Array(authenticatorData.byteLength + clientHash.byteLength);
   signed.set(authenticatorData); signed.set(clientHash, authenticatorData.byteLength);
   const publicKey = await crypto.subtle.importKey(
-    'spki', decode(config.publicKeySpki, '運営公開鍵', 1024),
+    'spki', decodeBase64Url(config.publicKeySpki, '運営公開鍵', 1024),
     { name: 'ECDSA', namedCurve: 'P-256' }, false, ['verify'],
   );
   const verified = await crypto.subtle.verify(
     { name: 'ECDSA', hash: 'SHA-256' }, publicKey,
-    webauthnDerToRaw(signatureDer), signed,
+    ecdsaDerToRaw(signatureDer), signed,
   );
   if (!verified) throw new OperatorError('緊急命令の署名を確認できません。', 403);
   const view = new DataView(authenticatorData.buffer, authenticatorData.byteOffset, authenticatorData.byteLength);

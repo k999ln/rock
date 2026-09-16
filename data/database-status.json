@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 73,
+    "tableCount": 75,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -15,7 +15,7 @@
     "planned": 8,
     "blocked": 0,
     "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-    "nextAction": "Pixelを再接続し、実行中のnative Sky選択仕事をseedした後に端末を実再起動して、lease回収、2 Tool、結果、7履歴eventまでrecover phaseで確認する。次にbackup v2、復旧artifact、vendor inventory、production署名、Operator Agentの事前gateを進める。"
+    "nextAction": "Pixel 10を再接続してnative Skyの実再起動復旧を確認する。続いてproduction WebAuthn credential、Agent product overlay、StrongBox attestation、Device Ownerを登録し、許可操作と禁止操作を実機検証する。純正復旧artifact、vendor inventory、production署名、物理backup wipe復元を揃え、全preflight合格後だけ最初のfull buildへ進む。"
   },
   "webSchema": {
     "tableCount": 27,
@@ -218,10 +218,12 @@
       "tables": [
         "operator_audit_events",
         "operator_device_commands",
-        "operator_managed_devices"
+        "operator_device_request_nonces",
+        "operator_managed_devices",
+        "operator_webauthn_assertions"
       ],
-      "expectedAppliedThrough": "0001_operator_device_control.sql",
-      "tableCount": 3,
+      "expectedAppliedThrough": "0002_signed_device_channel.sql",
+      "tableCount": 5,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / isolated Operator Dock Worker",
@@ -231,7 +233,7 @@
         "evidence": [
           "services/operator-dock/README.md"
         ],
-        "nextAction": "ownerが専用hostname、Cloudflare Access application、D1を作成後、0001適用と認証済みreadbackを行う"
+        "nextAction": "ownerが専用hostname、Cloudflare Access application、D1を作成後、0001・0002適用、production credential設定、端末attestation登録と認証済みreadbackを行う"
       }
     },
     {

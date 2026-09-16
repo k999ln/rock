@@ -115,11 +115,14 @@
       "id": "operator_access",
       "choice": "external Operator Dock plus restricted auditable device Agent; no hidden general shell",
       "fit": "ALIGNED",
-      "state": "DOCK_SOURCE_VERIFIED_DEVICE_AGENT_AND_PHYSICAL_TEST_PENDING",
+      "state": "DOCK_AND_DEVICE_AGENT_SOURCE_EMULATOR_VERIFIED_PRODUCTION_ENROLLMENT_AND_PHYSICAL_TEST_PENDING",
       "evidence": [
         "data/device-emergency-access-policy.json",
         "docs/security-incident-response.md",
-        "tests/operator-dock-isolation.test.mjs"
+        "tests/operator-dock-isolation.test.mjs",
+        "tests/operator-device-channel.test.mjs",
+        "android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandVerifier.java",
+        "android/operator-agent/src/androidTest/java/dev/rock/operator/agent/OperatorAgentIntegrationTest.java"
       ]
     },
     {
@@ -261,7 +264,7 @@
     "Reconnect the stock Pixel and run the two-phase native Sky in-flight reboot recovery acceptance",
     "Run the physical Pixel Keystore-loss wipe-and-restore drill for the implemented backup v2 path before first flash",
     "Complete recovery artifact hashes, vendor inventory and production signing inputs",
-    "Implement the restricted Android Operator Agent and exercise the full audited support path",
+    "Provision the restricted Android Operator Agent and exercise the full audited support path on Pixel 10",
     "Run the first AOSP full build only after every pre-full-build gate passes",
     "Flash Pixel 10 and verify SELinux enforcing, CTS/VTS, OTA rollback, stock recovery, battery and thermal behavior",
     "Connect one external earning-provider sandbox through signed receipt and Wallet reconciliation",

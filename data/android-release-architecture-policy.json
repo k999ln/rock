@@ -124,14 +124,14 @@
       "internet": "authenticated_operator_channel_only",
       "owns": ["device_enrollment", "append_only_device_command_audit"],
       "mustNotOwn": ["private_user_content", "wallet_keys", "owner_recovery_phrase", "release_signing_keys"],
-      "currentState": "not_implemented"
+      "currentState": "source_and_android_emulator_verifier_store_keystore_pass_product_device_owner_attestation_pending"
     },
     "operatorDock": {
       "purpose": "operator-only remote incident console",
       "deployment": "separate_cloudflare_worker_and_d1",
       "includedInUserOs": false,
       "visibleInUserLauncher": false,
-      "currentState": "console_api_queue_and_audit_implemented_device_agent_missing"
+      "currentState": "console_signed_queue_and_device_channel_source_verified_production_deployment_pending"
     }
   },
   "allowedBinderEdges": [
@@ -198,7 +198,7 @@
     "physicalAcceptancePassed": false,
     "blockers": [
       "complete-physical-keystore-loss-wipe-restore-drill",
-      "implement-and-isolate-operator-agent",
+      "provision-and-physically-verify-operator-agent",
       "integrate-local-ai-domain-into-final-image",
       "build-user-image-and-prove-selinux-enforcing-isolation",
       "run-cdd-cts-cts-verifier-vts-hal-and-kernel-on-the-same-final-build",

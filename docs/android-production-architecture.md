@@ -10,7 +10,7 @@ The user-facing Home, Sky and Zema shell becomes `dev.rock.shell`. The existing 
 
 Local AI (`com.localactionassistant`), each Tool, each MCP connector, each Provider adapter and the emergency Operator Agent use distinct Android UIDs and SELinux domains. Runtime registration cannot grant a domain. New packages enter a domain only through an exact build-time allowlist. UI and Local AI have no direct network path; external traffic goes through an explicitly approved MCP or Provider. All cross-component file access is denied and approved calls pass through the broker.
 
-The Operator Dock stays outside the user OS in its separate Worker and database. A future pre-enrolled `dev.rock.operator.agent` accepts only signed, expiring, allowlisted incident commands. It does not expose arbitrary/root shell, private user content, Wallet authority, recovery phrases or release-signing keys, and it is not shown in the user launcher.
+The Operator Dock stays outside the user OS in its separate Worker and database. The pre-enrolled `dev.rock.operator.agent` source accepts only signed, expiring, allowlisted incident commands. It has its own UID/domain, no product-data Binder edge and no launcher entry. It does not expose arbitrary/root shell, private user content, Wallet authority, recovery phrases or release-signing keys. Public trust anchors come from a reviewed product overlay; operator and device private keys never enter the build.
 
 ## Seven release decisions
 
@@ -19,16 +19,16 @@ The Operator Dock stays outside the user OS in its separate Worker and database.
 3. Boot/recovery: production Verified Boot with a matching Google factory image and full OTA pair; exact downloaded bytes and recovery drill are pending.
 4. OTA/rollback: signed Virtual A/B full OTA; avocado-managed rollback values use a fixed release epoch and are committed only after a successful slot. No recovery downgrade exception.
 5. SELinux: user build, enforcing, no permissive domain, upstream `neverallow` unchanged, separate UID/domain, explicit Binder graph and negative isolation tests.
-6. Backup: the v2 payload key is dual wrapped by the device Keystore and an owner-held 24-word recovery secret. Wallet keys, credentials, signing keys and operator credentials are excluded. The core envelope exists; phrase UI, import, rebinding and wipe/restore drill are pending.
+6. Backup: the v2 payload key is dual wrapped by the device Keystore and an owner-held 24-word recovery secret. Wallet keys, credentials, signing keys and operator credentials are excluded. Phrase confirmation, export, transactional import and new-device Keystore rebinding pass on the Android 15 emulator; the physical wipe/restore drill is pending.
 7. Acceptance: the exact same final device and build fingerprint must pass Android 17 CDD review, CTS, applicable CTS Verifier, VTS, VTS HAL, VTS kernel and the SELinux negative tests. The AOSP-without-GMS product does not claim GMS and does not substitute GTS for these gates.
 
 ## Truthful current state
 
 - Specification: aligned and machine checked.
 - Source: partial. 最終Home／Sky／Zemaを載せるAndroid launcher／UI入口は`dev.rock.shell`、database／scheduler／Keystore／Engineは`dev.rock.automation`へ分離済み。Shellは通信権限と広いPlatform管理権限を持たず、Shell専用の署名権限、固定package、同一signer、固定API版を検証するBinderだけでBrokerへ接続する。Brokerも呼出UIDを毎回`dev.rock.shell`へ固定する。現UIはP1操作画面で、最終Home／Sky／Zema native UIの完成を意味しない。
-- Split verification: 3 APKのAndroid Gradle build／lint、ホストcore 34 test、Android 15 emulator上のShell→Broker 1 testとBroker／Tool／SQLite 4 testは合格。別APKを要するLocal AI testはこの組から除外し、既存の独立試験証拠を転用しない。これはSoong full build、SELinux domain適用、production署名またはPixel実機受入の証拠ではない。
+- Split verification: Shell／Broker／Tool／Operator AgentのAndroid Gradle build／lint、ホストcore 37 test、Android 15 emulator上のBroker 11 non-skipped／Shell 5／Operator Agent 5 testは合格。別APKを要するLocal AI testは独立証拠として扱う。これはSoong full build、SELinux domain適用、production署名またはPixel実機受入の証拠ではない。
 - Local AI: standalone physical inference passed, but its final OS image/domain has not been built and accepted.
-- Operator: Dock/API/queue/audit exist separately; the Android agent does not.
+- Operator: Dock、WebAuthn署名命令、署名付きdevice poll／ack／result、Agentの独立検証、Keystore identity、replay store、HMAC追記監査、Device Owner allowlist executorはsource実装済みで、Android 15 emulator 5/5に合格した。production WebAuthn credential、StrongBox attestation enrollment、Device Owner実行、remote Provider session失効、Pixel 10／SELinux実機試験は未完了。factory reset release gateは無効のままである。
 - Backup: the active Shell/Broker route uses v2, owner 24-word confirmation, allowlisted transactional import and fresh-device Keystore rebinding. Android 15 emulator acceptance passed; the destructive physical Pixel wipe/restore drill remains blocked.
 - Final image and physical acceptance: not complete. Production signing, first-flash gates, enforcing proof, CTS/VTS, OTA/rollback and stock recovery remain blocked.
 

@@ -28,6 +28,7 @@ app_domain(rock_tool_app)
 app_domain(rock_mcp_app)
 app_domain(rock_provider_app)
 app_domain(rock_operator_agent)
+net_domain(rock_operator_agent)
 
 binder_call(rock_shell_app, rockstar_platform_app)
 binder_call(rockstar_platform_app, rock_shell_app)

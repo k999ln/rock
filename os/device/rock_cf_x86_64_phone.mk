@@ -4,7 +4,7 @@ PRODUCT_NAME := rock_cf_x86_64_phone
 PRODUCT_BRAND := RockStar
 PRODUCT_MODEL := Rock star OS development prototype
 PRODUCT_MANUFACTURER := RockStar
-PRODUCT_PACKAGES += RockAutomationPrototype RockArticleToolPrototype
+PRODUCT_PACKAGES += RockAutomationPrototype RockArticleToolPrototype RockOperatorAgent
 PRODUCT_PRIVATE_SEPOLICY_DIRS += device/rock/android/sepolicy/private
 # Preserve AOSP launcher, SELinux enforcing, power policy, AVB and distinct app UIDs.
 # No privileged/root grants, GMS, payments, or physical-device flash targets.

@@ -326,6 +326,8 @@ export function validateBaseline(
       data.androidPreFullBuildGate?.checks
         ?.sourceArtifactAndSigningPlanFreeze ===
         'partial_source_tag_and_device_layout_frozen_recovery_vendor_and_signing_pending' &&
+      data.androidPreFullBuildGate?.checks?.operatorAgent ===
+        'source_emulator_pass_production_credential_attestation_device_owner_physical_pending' &&
       data.androidPreFullBuildGate?.checks
         ?.externalProviderForFirstOsFullBuild ===
         'excluded_app_and_server_gate' &&
@@ -341,6 +343,7 @@ export function validateBaseline(
     'earningsBridgeEvidence',
     'physicalToolWalletEvidence',
     'zemaSelectedToolEvidence',
+    'operatorAgentEvidence',
     'dspSourceAndLayoutEvidence',
     'androidWorkflow',
     'localAiWorkflow',
@@ -356,7 +359,7 @@ export function validateBaseline(
       'single-operator-emergency-device-protection',
     ) &&
       data.deviceEmergencyAccess?.status ===
-        'isolated_operator_dock_hardware_signed_command_queue_implemented_android_agent_missing' &&
+        'dock_and_android_agent_source_emulator_verified_production_enrollment_physical_pending' &&
       data.deviceEmergencyAccess?.singleOperatorActivation === true &&
       data.deviceEmergencyAccess?.userApprovalRequiredAtActivation === false &&
       data.deviceEmergencyAccess?.preEnrollmentRequired === true &&
@@ -395,7 +398,14 @@ export function validateBaseline(
       data.deviceEmergencyAccess?.appendOnlyAuditImplemented === true &&
       data.deviceEmergencyAccess?.operatorCommandWebAuthnSignatureRequired === true &&
       data.deviceEmergencyAccess?.managementServerAloneCanIssueDeviceCommand === false &&
-      data.deviceEmergencyAccess?.androidServiceImplemented === false &&
+      data.deviceEmergencyAccess?.deviceSignedChannelImplemented === true &&
+      data.deviceEmergencyAccess?.deviceIndependentCommandVerificationImplemented === true &&
+      data.deviceEmergencyAccess?.androidServiceImplemented === true &&
+      data.deviceEmergencyAccess?.androidEmulatorTestsPassed === true &&
+      data.deviceEmergencyAccess?.androidDeviceOwnerExecutionVerified === false &&
+      data.deviceEmergencyAccess?.hardwareDeviceAttestationVerified === false &&
+      data.deviceEmergencyAccess?.remoteProviderSessionRevocationImplemented === false &&
+      data.deviceEmergencyAccess?.factoryResetReleaseGateEnabled === false &&
       data.deviceEmergencyAccess?.productionCredentialProvisioned === false &&
       data.deviceEmergencyAccess?.physicalDeviceVerified === false &&
       data.deviceEmergencyAccess?.penetrationTestCompleted === false &&
@@ -415,7 +425,7 @@ export function validateBaseline(
   requireValue(
     emergencyPolicy.schema === 'dev.rock-device-emergency-access/1' &&
       emergencyPolicy.status ===
-        'isolated_operator_dock_hardware_signed_command_queue_implemented_android_agent_missing' &&
+        'dock_and_android_agent_source_emulator_verified_production_enrollment_physical_pending' &&
       emergencyPolicy.activation?.singleOperatorAllowed === true &&
       emergencyPolicy.activation?.userApprovalRequiredAtActivation === false &&
       emergencyPolicy.activation?.maximumSessionSeconds === 900 &&
@@ -445,7 +455,14 @@ export function validateBaseline(
       emergencyPolicy.implementation?.operatorCommandWebAuthnSignatureRequired === true &&
       emergencyPolicy.implementation?.operatorUserVerificationRequired === true &&
       emergencyPolicy.implementation?.managementServerAloneCanIssueDeviceCommand === false &&
-      emergencyPolicy.implementation?.androidServiceImplemented === false &&
+      emergencyPolicy.implementation?.deviceSignedChannelImplemented === true &&
+      emergencyPolicy.implementation?.deviceIndependentCommandVerificationImplemented === true &&
+      emergencyPolicy.implementation?.androidServiceImplemented === true &&
+      emergencyPolicy.implementation?.androidEmulatorTestsPassed === true &&
+      emergencyPolicy.implementation?.androidDeviceOwnerExecutionVerified === false &&
+      emergencyPolicy.implementation?.hardwareDeviceAttestationVerified === false &&
+      emergencyPolicy.implementation?.remoteProviderSessionRevocationImplemented === false &&
+      emergencyPolicy.implementation?.factoryResetReleaseGateEnabled === false &&
       emergencyPolicy.implementation?.physicalDeviceVerified === false,
     '緊急access policyの単独初動・端末側強制・禁止権限・未実装境界を維持してください',
   );

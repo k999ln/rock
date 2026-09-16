@@ -1,6 +1,6 @@
 # avocadoOS 緊急アクセスとインシデント対応
 
-状態: **分離Operator Dock・hardware署名付き専用命令キューsource実装済み／専用配備・Android端末service・実機検証未完了**。この文書と`data/device-emergency-access-policy.json`は、緊急時に運営1名が本人の端末操作を待たず保護を開始できる契約を固定する。現在の管理画面sourceだけでproduction端末へ到達済みという意味ではない。
+状態: **分離Operator Dock、hardware署名付き命令、署名付き端末channel、制限付きAndroid Agentのsource／emulator検証済み、production配備・登録・実機検証未完了**。この文書と`data/device-emergency-access-policy.json`は、緊急時に運営1名が本人のその場の操作を待たず保護を開始できる契約を固定する。source検証はproduction端末へ到達済みという意味ではない。
 
 ## 目的
 
@@ -29,7 +29,7 @@
 
 - 端末のロックと紛失モード
 - Sky／Zemaの新規実行停止と未使用承認の失効
-- account／connector sessionの失効
+- local実行の停止（外部account／connector session失効はproduction adapter待ち）
 - OTA適用の一時停止
 - 外部接続の隔離
 - 個人内容を除外した診断の取得
@@ -37,7 +37,7 @@
 
 運営serverの判断だけでは実行しない。端末側serviceが許可済みcommand、署名、nonce、対象端末、発行時刻、失効時刻を検証し、再送と期限切れを拒否する。端末がofflineなら命令を即時実行できず、再接続後に有効期限内の命令だけを評価する。
 
-端末確認プラグインを採用する場合も、この限定保守sessionの一つとして扱う。事前登録済みで、端末が起動し、遠隔利用時は通信でき、端末側が許可scopeを検証できる場合だけ使う。現時点ではproduction利用できるスマホ診断プラグインまたはAndroid agentは未選定・未検証であり、「何かあれば必ず覗ける」状態ではない。
+端末確認機能は、汎用の画面閲覧プラグインではなく`dev.rock.operator.agent`のsanitized診断として実装した。OS版、security patch、battery状態、空き容量、Device Owner状態、固定packageのversionだけを最大2 KiBで返し、写真、会話、原稿、通知本文、画面、位置、camera／microphoneは取得しない。事前登録済みで、端末が起動し通信でき、端末側が許可scopeを検証できる場合だけ使えるため、「何かあれば必ず覗ける」仕組みではない。
 
 プラグインは事故の診断補助であり、release署名鍵の復旧やboot不能端末の復旧には使わない。署名鍵は別場所の予備HSM、boot不能はUSB経由の純正full OTA／factory imageで復旧する。
 
@@ -61,17 +61,22 @@ Dock内の`/api/devices`は最大100端末・100命令・100監査eventのsnapsh
 
 利用者Web D1とは別のOperator Dock専用D1へ`operator_managed_devices`、署名材料を含む`operator_device_commands`、使用済みcredential counter、`operator_audit_events`を保存する。監査tableはupdate/delete triggerで追記専用にする。公開鍵とcredential IDはsecretではないが、production値は配備環境で固定し、private keyはhardware credential外へ出さない。
 
-管理面は`controlPlane=ready`、端末側は`deviceAgent=not_implemented`として別表示する。Android serviceとproduction credentialがない間は命令を実端末へ配信せず、UIも「保存済み・端末service接続待ち」と表示する。
+管理面と端末側は別状態で表示する。現在の端末側表示は`source_emulator_verified_production_enrollment_pending`であり、production credential、端末StrongBox identity／attestation、Device Owner provisioning、専用hostnameとD1が揃うまでは`ready`にしない。UIも「開発検証済み・本番登録待ち」と表示し、実端末へ配信済みとは表示しない。
+
+Agentはlauncherを持たない別UID／別SELinux domainで、Platform Broker、Sky、Zema、Local AI、Tool、WalletまたはbackupへのBinder edgeを持たない。DockへのPOSTは端末Keystore P-256鍵でcanonical requestを署名し、Dockは登録済み端末公開鍵、時刻、nonce、body digestを確認する。端末は保存されたWebAuthn assertionを独立再検証し、対象端末、credential、RP ID、origin、UP／UV flag、P-256署名、payload、発行時刻、開始時刻、失効時刻、単調増加counterを確認してからackする。端末側SQLiteはcommand replayを拒否し、Android Keystore HMAC chainとupdate／delete拒否triggerで監査を追記する。
+
+停止操作には署名された解除操作を対で用意する。Sky／Zema package suspension、OTA延期、外部connector package隔離、15分保守表示、紛失modeは、それぞれ再開／解除／終了できる。外部Provider側session失効はまだ実装しておらず、該当commandはlocal実行を停止したうえで`REMOTE_SESSION_REVOCATION_PENDING`としてfail closedにする。factory resetは30分前の端末通知記録があり、Device Ownerで、release gateが有効な場合だけ実行可能だが、実機取消演習が終わるまでgateは`false`である。
 
 ## 実装・受入gate
 
-分離管理面とhardware署名付き命令キューはsource実装済みだが、以下が揃うまで`isolated_operator_dock_hardware_signed_command_queue_implemented_android_agent_missing`を維持し、運営が実端末へアクセス可能とは表示しない。
+Dock／Agent sourceとAndroid 15 emulatorの5試験は合格したが、以下が揃うまで`dock_and_android_agent_source_emulator_verified_production_enrollment_physical_pending`を維持し、運営がproduction端末へアクセス可能とは表示しない。
 
-1. Android system service、署名command schema、replay拒否、15分session終了を実装する。
-2. production operator credentialをOTA、AVB、アプリ署名鍵と分けてhardwareへ格納する。
-3. SELinux enforcingで許可操作と禁止操作を検査する。
-4. 管理server侵害、資格情報盗難、古いcommand、別端末宛、通信切断、監査改ざんを閉鎖試験する。
-5. Pixel 10実機でロック、隔離、診断、session終了、取消、A/B復旧を演習する。
-6. 独立security reviewとincident recovery drillを完了する。
+1. production operator WebAuthn credentialをOTA、AVB、Agent APK署名鍵と分けたhardwareへ作り、公開trust anchorだけをreview済みproduct overlayへ入れる。
+2. Pixel 10でAgentをDevice Ownerにし、StrongBox device identityとattestationを専用D1へ登録する。
+3. 外部Providerのsession失効adapterを実装するか、1.0のcapabilityから明示除外する。
+4. SELinux enforcingで許可操作、別app data、Binder、network、任意shellのnegative testを行う。
+5. 管理server侵害、資格情報盗難、counter巻戻し、古いcommand、別端末宛、通信切断、監査改ざんを閉鎖試験する。
+6. Pixel 10実機でロック、停止／再開、隔離／解除、診断、15分終了、初期化取消、A/B復旧を演習する。
+7. 独立security reviewとincident recovery drillを完了する。
 
 秘密値、private key、実端末ID、operator identityはGitへ保存しない。Gitには公開contract、公開鍵fingerprint、失効状態、試験証拠だけを保存する。

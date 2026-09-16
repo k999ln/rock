@@ -33,7 +33,7 @@
 
 ## 1.0の未接続点
 
-最重要の不足は、実行中の`native Sky → Zema → Broker → Local AI → 選択Tool`を所有Pixelの実再起動で中断し、同じ選択・仕事・履歴から安全に再開できることを二段階試験で確定すること。source、DB migration、emulatorの再open／不正token拒否までは合格した。続いてbackup v2の復元・本人再結合、production署名と純正復旧入力、端末側Operator Agentが残る。
+最重要の不足は、実行中の`native Sky → Zema → Broker → Local AI → 選択Tool`を所有Pixelの実再起動で中断し、同じ選択・仕事・履歴から安全に再開できることを二段階試験で確定すること。source、DB migration、emulatorの再open／不正token拒否までは合格した。backup v2とOperator Agentはsource／emulatorまで合格したため、次は物理wipe復元、production WebAuthn／StrongBox登録、Device Owner／SELinux実機試験、production署名と純正復旧入力が残る。
 
 収益については、`Tool結果 → 外部Provider → 署名済みEarning Receipt → Wallet照合`のうちRock所有fixtureまでは通っている。外部Provider sandbox、返金・chargeback・結果不明、owner署名と最初の管理されたtransferは未完了である。ファンドはこの実績が複数回たまるまでPAPERのままにし、ゲームは1.0中核loopを止めない。
 
