@@ -8,17 +8,17 @@
 - `scripts/prepare-phone-build.py manifest`がRock本体とLocal Action Assistantの2 repositoryを完全なcommitでGrapheneOSのlocal manifestへ出力する。
 - `prepare`はLocal Action Assistantのrevision、clean worktree、主要ファイルhash、package/runtime版、release variantの`INTERNET` permission除去、GGUF未同梱を検査する。
 - source同期後は`python3 external/rockstaros/scripts/prepare-phone-build.py verify-local-ai <OS-tree>`だけでも同じ読取り専用検査を実行できる。
-- `contracts/local-ai-runtime.json`と`android/local-ai-api`でroute ID、Binder API v1、6 tool、stream event、変更系toolの確認必須条件を機械可読にした。
+- `contracts/local-ai-runtime.json`と`android/local-ai-api`でroute ID、Binder API v2、通常会話、6 tool、stream event、変更系toolの確認必須条件に加え、`article-preparation@1/input-v1`計画専用callを機械可読にした。計画callはJSON Schema constrained decodingを使い、Local AIからのTool callを許可しない。
 - `RockAutomationPrototype`へ固定package・同一署名・version 1を要求する呼出しclientと接続診断を追加した。応答は32 KiB、90秒で打ち切り、未知eventを拒否する。
 - 固定commit上で`npm run verify`を実行し、TypeScript、Jest 4 suite／10 test、ESLint、offline manifest source検査を合格した。結果は`docs/evidence/local-ai-source-validation-20260915.json`へ記録した。
-- `scripts/stage-local-ai-apk.py`はAPKのlock、ZIP安全性、package/version、arm64 native library、`INTERNET`権限なし、`WAKE_LOCK`、署名限定Binder権限を検査し、`vendor/rockstaros-local-ai`へSoong moduleを生成する。artifact lockには応答清掃を含むレビュー済みunsigned APKのSHA-256 `d65039dc766a4b881c537bceba93a9be8834eabe881af5b5b15035aa6ec944b9`と26,392,828 bytesを固定した。
+- `scripts/stage-local-ai-apk.py`はAPKのlock、ZIP安全性、package/version、arm64 native library、`INTERNET`権限なし、`WAKE_LOCK`、署名限定Binder権限を検査し、`vendor/rockstaros-local-ai`へSoong moduleを生成する。artifact lockにはplan v2を含むレビュー済みunsigned APKのSHA-256 `b748cd207fb65c43eacaea172b5d80d313a7e5ab3e976f4aaa8b5de161491f4c`と26,395,708 bytesを固定した。
 - 物理OS build入口はレビュー済みAPKと`aapt2`を必須入力にし、repo全体のrevision検査後にもstaged APKを再照合する。product makefileもstageがなければbuildを拒否する。
-- 固定SHAの`local-ai-overlay.patch`に、署名Binder service、React Native native module、Headless JS推論、stream、cancel、proposalの一時保存と別確認を実装した。`prepare-local-ai-runtime.py`はcleanな固定commitから使い捨てbuild treeを生成し、overlay hashと適用可否を確認する。
-- 生成したclean overlay treeでclient/server AIDLのbyte一致、TypeScript、ESLint、Jest 15件に加え、Kotlin／AIDL／llama.rn CPU-only arm64 native compileとrelease APK buildを合格した。完全・孤立・未閉鎖・大小文字違い・token境界分割の`<think>`をUIとOS連携の手前で除去する。APKは`arm64-v8a`のみ、`INTERNET`なし、`WAKE_LOCK`、署名保護Binder serviceを含む。
+- 固定SHAの`local-ai-overlay.patch`に署名Binder service、React Native native module、Headless JS推論、stream、cancel、proposalの一時保存と別確認を実装した。追加の`local-ai-plan-v2.patch`に計画専用API、closed JSON Schema、Tool call拒否、決定的sampling、既知chat-template制御prefixだけの除去を実装した。`prepare-local-ai-runtime.py`はcleanな固定commitから使い捨てbuild treeを生成し、baseと全extensionのhashを順に検証して適用する。
+- 生成したclean overlay treeでTypeScript、ESLint、Jest 18件に加え、Kotlin／AIDL／llama.rn CPU-only arm64 native compileとrelease APK buildを合格した。説明文や未知wrapperはBrokerで引き続き拒否し、closed field、Tool固定、2 transformの実行可能性を再検証してから仕事を作る。APKは`arm64-v8a`のみ、`INTERNET`なし、`WAKE_LOCK`、署名保護Binder serviceを含む。
 - 同じ更新APKをPixel 10 GL066へデータを保ったまま上書きし、機内モード・Wi-Fi停止中に`CLEAN_OK`を生成した。画面XMLに生の`<think>`／`</think>`はなく、22.4 tok/s、11.2秒、thermal status 0、28.4℃だった。終了後は機内モード、Wi-Fi、mobile data、Simeji、画面点灯維持を元へ戻した。
 - `.github/workflows/local-ai-apk.yml`はUbuntu、Java、Android SDK 36、NDK 27.1で固定sourceとoverlayからunsigned arm64 APKをbuildし、package/version、通信権限、ABIを検査した7日間の候補artifactを出力する。workflowの存在はbuild成功証拠ではなく、artifact lockを自動更新しない。
-- Android 15 API 35のPixel 10 device-profile emulatorへtest鍵で署名したcopyを導入し、同一署名検査、Binder接続、Headless JS起動、GGUF未導入時の`NO_MODEL` fail-closedを含む5 instrumentation testを合格した。test鍵copyは配布artifactではない。
-- 所有Pixel 10 GL066／Android 17へ同じ試験署名の4 APKを導入し、物理端末でも5 instrumentation testを合格した。Qwen3-0.6B Q8_0 GGUFを公式SHA-256とApache-2.0表示でimportし、機内モードかつWi-Fi停止中の推論、端末再起動後の会話／model metadata保持と手動reload、33分22秒・15推論の熱試験を合格した。最大電池温度34.4℃、thermal status 0、process restart 0。[実機証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)。
+- Android 15 API 35のPixel 10 device-profile emulatorへtest鍵で署名したcopyを導入し、Broker 8/8、Shell 3/3を合格した。GGUF未導入時はZema仕事を作らず停止した。test鍵copyは配布artifactではない。
+- 所有Pixel 10 GL066／Android 17へ同じ試験署名の4 APKを導入し、Broker 8/8、Shell 3/3を合格した。plan-only出力を厳格検証し、`citations@1`→`free-article@1`、結果、5履歴event、本人確認待ちまで完走した。[plan v2実機証拠](evidence/android-local-ai-plan-v2-20260916.json)。従来のQwen3-0.6B Q8_0機内モード、再起動後のmodel保持、33分22秒・15推論の熱試験も維持する。[推論・熱証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)。
 - 初回検証で、親Git配下ではoverlayが黙ってskipされる問題、AIDL生成無効、public Android SDKで使えない`UserHandle` API、release manifestによる`WAKE_LOCK`削除を検出して修正した。親Git配下とpermission退行の再発防止testも追加した。
 - product propertyはまだ`source-pinned`とだけ表示する。アプリを`PRODUCT_PACKAGES`へ追加していないため、現在のimageにLLMは入らない。
 

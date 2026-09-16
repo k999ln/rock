@@ -1,5 +1,5 @@
 {
-  "version": "1.63",
+  "version": "1.64",
   "decidedAt": "2026-09-16",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -387,7 +387,7 @@
   ],
   "localAiRuntime": {
     "requested": true,
-    "status": "standalone_physical_pixel_offline_ai_reboot_thermal_and_response_sanitizer_verified_test_signing",
+    "status": "physical_pixel_offline_ai_plan_v2_selected_tool_result_history_verified_test_signing",
     "repository": "https://github.com/noellesugar99/local-action-assistant.git",
     "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
     "sourceLock": "os/physical/local-action-assistant-source-lock.json",
@@ -405,11 +405,12 @@
     "soongBuilt": false,
     "imageBuilt": false,
     "deviceInferenceVerified": true,
-    "physicalEvidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json"
+    "physicalEvidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
+    "planV2Evidence": "docs/evidence/android-local-ai-plan-v2-20260916.json"
   },
   "androidPlatformCore": {
     "requested": true,
-    "status": "shell_broker_zema_plan_gate_emulator_and_physical_fail_closed_aosp_not_run",
+    "status": "shell_broker_local_ai_plan_v2_selected_tool_physical_result_history_pass_aosp_not_run",
     "contract": "contracts/platform-api.json",
     "record": "docs/platform-core.md",
     "apiVersion": 1,
@@ -432,8 +433,9 @@
     "shellApiVersion": 2,
     "zemaSelectedToolPlanGateImplemented": true,
     "zemaEmulatorNoModelFailClosed": true,
-    "zemaPhysicalStrictPlanAccepted": false,
-    "zemaSelectedToolEvidence": "docs/evidence/android-zema-selected-tool-20260916.json"
+    "zemaPhysicalStrictPlanAccepted": true,
+    "zemaPhysicalSelectedToolResultHistoryVerified": true,
+    "zemaSelectedToolEvidence": "docs/evidence/android-local-ai-plan-v2-20260916.json"
   },
   "androidPreFullBuildGate": {
     "status": "in_progress",
@@ -452,10 +454,10 @@
       "exactTargetReadback": "passed_pixel_10_gl066",
       "sourceContractAndHostTests": "passed",
       "standaloneAndroidBuildAndLint": "passed",
-      "androidEmulatorIntegration": "shell_zema_3_of_3_and_broker_tool_sqlite_6_of_6_passed_no_model_fail_closed",
+      "androidEmulatorIntegration": "shell_zema_3_of_3_and_broker_tool_sqlite_8_of_8_passed_no_model_fail_closed",
       "standaloneLocalAiApk": "passed",
       "stockPixelOfflineAiAndThermal": "passed_offline_reboot_thermal",
-      "skyZemaToolWalletPath": "native_zema_source_connected_physical_strict_plan_pending_wallet_correlated_provider_sandbox_pending",
+      "skyZemaToolWalletPath": "native_zema_physical_selected_tool_result_history_pass_native_sky_reboot_wallet_provider_pending",
       "sourceArtifactAndSigningPlanFreeze": "partial_source_tag_and_device_layout_frozen_recovery_vendor_and_signing_pending",
       "externalProviderForFirstOsFullBuild": "excluded_app_and_server_gate",
       "externalProviderRequiredBeforePublicEarningLaunch": true,
@@ -465,7 +467,7 @@
     "evidence": "docs/evidence/android-pre-full-build-tests-20260915.json",
     "earningsBridgeEvidence": "docs/evidence/tool-earning-wallet-bridge-20260915.json",
     "physicalToolWalletEvidence": "docs/evidence/pixel-tool-wallet-correlation-20260916.json",
-    "zemaSelectedToolEvidence": "docs/evidence/android-zema-selected-tool-20260916.json",
+    "zemaSelectedToolEvidence": "docs/evidence/android-local-ai-plan-v2-20260916.json",
     "dspSourceAndLayoutEvidence": "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json",
     "androidWorkflow": ".github/workflows/android.yml",
     "localAiWorkflow": ".github/workflows/local-ai-apk.yml"

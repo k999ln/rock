@@ -60,6 +60,7 @@ def local_ai_config(lock):
             or integration.get("osBridge") not in {
                 "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT",
                 "CLIENT_AND_SERVER_NATIVE_COMPILED_EMULATOR_BOUND",
+                "PLAN_V2_NATIVE_COMPILED_EMULATOR_AND_PHYSICAL_BOUND",
             }
             or integration.get("signedApk") not in {
                 "NOT_BUILT", "UNSIGNED_RELEASE_APK_REVIEWED",

@@ -32,6 +32,15 @@ index df967b9..6310cd2 100644
 -base
 +integrated
 """)
+        extension = self.root / "os/physical/local-ai-plan-v2.patch"
+        extension.write_text("""diff --git a/source.txt b/source.txt
+index 6310cd2..f0d9eb6 100644
+--- a/source.txt
++++ b/source.txt
+@@ -1 +1 @@
+-integrated
++planned
+""")
         self.tree = self.base / "phone"
         source = self.tree / "external/local-action-assistant"
         source.mkdir(parents=True)
@@ -47,7 +56,12 @@ index df967b9..6310cd2 100644
             "commit": commit, "checkoutPath": "external/local-action-assistant",
             "overlay": {"status": "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT",
                         "path": "os/physical/local-ai-overlay.patch",
-                        "sha256": hashlib.sha256(overlay.read_bytes()).hexdigest()},
+                        "sha256": hashlib.sha256(overlay.read_bytes()).hexdigest(),
+                        "extensions": [{
+                            "path": "os/physical/local-ai-plan-v2.patch",
+                            "sha256": hashlib.sha256(extension.read_bytes()).hexdigest(),
+                            "purpose": "plan-only contract",
+                        }]},
         }))
         (self.tree / "out").mkdir()
         self.old_root, self.old_lock = runtime.ROOT, runtime.SOURCE_LOCK
@@ -58,8 +72,9 @@ index df967b9..6310cd2 100644
     def test_clean_pinned_source_gets_overlay_in_new_output(self):
         output = self.tree / "out/runtime"
         evidence = runtime.prepare(self.tree, output)
-        self.assertEqual((output / "source.txt").read_text(), "integrated\n")
+        self.assertEqual((output / "source.txt").read_text(), "planned\n")
         self.assertEqual(evidence["sourceCommit"], json.loads(self.lock.read_text())["commit"])
+        self.assertEqual(len(evidence["extensionSha256"]), 1)
         self.assertEqual(json.loads((output / "rockstaros-overlay.json").read_text()), evidence)
         self.assertFalse((output / ".git").exists())
 
@@ -67,7 +82,7 @@ index df967b9..6310cd2 100644
         self.command(self.base, "git", "init", "-q")
         output = self.tree / "out/nested-runtime"
         runtime.prepare(self.tree, output)
-        self.assertEqual((output / "source.txt").read_text(), "integrated\n")
+        self.assertEqual((output / "source.txt").read_text(), "planned\n")
         self.assertFalse((output / ".git").exists())
 
     def test_existing_output_is_never_overwritten(self):
@@ -87,6 +102,12 @@ index df967b9..6310cd2 100644
     def test_output_cannot_escape_os_out(self):
         with self.assertRaisesRegex(ValueError, "below the OS tree out"):
             runtime.prepare(self.tree, self.root / "runtime")
+
+    def test_tampered_extension_is_rejected(self):
+        extension = self.root / "os/physical/local-ai-plan-v2.patch"
+        extension.write_text(extension.read_text() + "\n")
+        with self.assertRaisesRegex(ValueError, "differs from the source lock"):
+            runtime.prepare(self.tree, self.tree / "out/runtime")
 
 
 if __name__ == "__main__":

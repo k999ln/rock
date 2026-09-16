@@ -22,7 +22,12 @@ void test('whole-system composition audit records the first value path before fu
       with: { type: 'json' },
     })
   ).default;
-  assert.equal(audit.priorityOrder[0].includes('Sky and Zema'), true);
+  assert.equal(
+    audit.priorityOrder[0].includes(
+      'native Sky persistence to the verified Zema selected-Tool path',
+    ),
+    true,
+  );
   assert.equal(audit.priorityOrder[4].includes('full build'), true);
   assert.equal(audit.verdict.productionReady, false);
 });

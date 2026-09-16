@@ -99,7 +99,7 @@ assert.ok(shellService.includes('checkSignatures(getPackageName(), SHELL_PACKAGE
 assert.ok(shellService.includes('new ZemaOrchestrator'));
 const zemaPlan = read('android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java');
 assert.ok(zemaPlan.includes('ZEMA_TOOL_SUBSTITUTION'));
-assert.ok(zemaPlan.includes('ArticlePayload.parse(canonical)'));
+assert.ok(zemaPlan.includes('ArticlePayload.validateExecutable(canonical)'));
 const shellMain = read('android/shell/src/main/java/dev/rock/shell/MainActivity.java');
 assert.ok(shellMain.includes('new ShellConnection(this)'));
 assert.ok(!/dev\.rock\.core|AndroidDatabase|RockApplication/.test(shellMain));
@@ -111,7 +111,7 @@ const localAiArtifact = JSON.parse(read(localAi.artifactLock));
 assert.equal(localAi.schemaVersion, 1);
 assert.equal(localAi.routeId, 'local-action-assistant');
 assert.equal(localAi.executionTarget, 'local');
-assert.equal(localAi.apiVersion, 1);
+assert.equal(localAi.apiVersion, 2);
 assert.equal(localAi.androidPackage, 'com.localactionassistant');
 assert.equal(localAi.androidService, 'com.localactionassistant.RockLocalAiService');
 assert.equal(localAi.androidPermission, 'dev.rock.permission.USE_LOCAL_AI');
@@ -125,17 +125,25 @@ assert.equal(localAi.releaseNetwork, 'none');
 assert.deepEqual(localAi.tools, ['get_current_datetime', 'calculate', 'search_notes', 'list_reminders', 'create_note', 'create_reminder']);
 assert.deepEqual(localAi.mutatingTools, ['create_note', 'create_reminder']);
 assert.equal(localAi.mutationConfirmation, 'required');
+assert.deepEqual(localAi.planOnly, {
+  schemaId: 'article-preparation@1/input-v1',
+  toolId: 'article-preparation@1',
+  responseFormat: 'json_schema',
+  toolCallsAllowed: false,
+  unknownFieldsAllowed: false,
+  brokerExecutablePreflight: true,
+});
 assert.deepEqual(localAi.events, ['token', 'proposal', 'completed', 'failed']);
 assert.equal(localAi.maxPayloadBytes, 32768);
 assert.equal(localAi.timeoutSeconds, 90);
 assert.equal(localAi.aospModule, 'RockLocalActionAssistant');
 assert.equal(localAi.aospStagingPath, 'vendor/rockstaros-local-ai');
 assert.equal(localAi.aospSigning, 'testkey_then_release_key_mapping');
-assert.equal(localAi.sourceStatus, 'pinned_overlay_native_apk_built');
-assert.equal(localAi.osBridgeStatus, 'client_and_server_compiled_emulator_binder_verified');
-assert.equal(localAi.signedApkStatus, 'unsigned_release_reviewed_test_signed_emulator_and_physical_pixel');
+assert.equal(localAi.sourceStatus, 'pinned_overlay_extensions_native_apk_built');
+assert.equal(localAi.osBridgeStatus, 'plan_v2_emulator_and_physical_pixel_verified');
+assert.equal(localAi.signedApkStatus, 'unsigned_release_plan_v2_reviewed_test_signed_emulator_and_physical_pixel');
 assert.equal(localAi.imageStatus, 'not_built');
-assert.equal(localAi.deviceInferenceStatus, 'standalone_physical_pixel_pass_not_os_image');
+assert.equal(localAi.deviceInferenceStatus, 'physical_pixel_plan_tool_result_history_pass_not_os_image');
 assert.equal(localAiLock.commit, '99b1c40d76f719cbba9c72d9f481c1b2df245504');
 assert.equal(localAiLock.packageName, localAi.androidPackage);
 assert.equal(localAiLock.runtime.engine, localAi.engine);
@@ -143,7 +151,12 @@ assert.equal(localAiLock.runtime.version, localAi.engineVersion);
 assert.equal(localAiLock.runtime.modelBundled, localAi.modelBundled);
 assert.equal(localAiLock.sourceLicense, 'MIT');
 assert.equal(createHash('sha256').update(readFileSync(new URL(`../${localAiLock.overlay.path}`, import.meta.url))).digest('hex'), localAiLock.overlay.sha256);
-assert.equal(localAiLock.integration.osBridge, 'CLIENT_AND_SERVER_NATIVE_COMPILED_EMULATOR_BOUND');
+assert.equal(localAiLock.overlay.extensions.length, 1);
+for (const extension of localAiLock.overlay.extensions) {
+  assert.match(extension.path, /^os\/physical\/.+\.patch$/);
+  assert.equal(createHash('sha256').update(readFileSync(new URL(`../${extension.path}`, import.meta.url))).digest('hex'), extension.sha256);
+}
+assert.equal(localAiLock.integration.osBridge, 'PLAN_V2_NATIVE_COMPILED_EMULATOR_AND_PHYSICAL_BOUND');
 assert.equal(localAiLock.integration.signedApk, 'UNSIGNED_RELEASE_APK_REVIEWED');
 assert.equal(localAiLock.integration.productPackage, 'STAGING_READY_NOT_IMAGE_INTEGRATED');
 assert.equal(localAiLock.imageBuildVerified, false);
@@ -185,11 +198,13 @@ assert.ok(localAiService.includes('int getApiVersion()'));
 assert.ok(localAiService.includes('void complete('));
 assert.ok(localAiService.includes('void confirm('));
 assert.ok(localAiService.includes('void cancel('));
+assert.ok(localAiService.includes('void completePlan('));
 assert.ok(localAiClient.includes(`PACKAGE = "${localAi.androidPackage}"`));
 assert.ok(localAiClient.includes(`SERVICE = PACKAGE + ".RockLocalAiService"`));
 assert.ok(localAiClient.includes('checkSignatures'));
 assert.ok(localAiClient.includes('Engine.MAX_BYTES'));
 assert.ok(localAiClient.includes('private synchronized <T> T withService'));
+assert.ok(localAiClient.includes('remote.completePlan('));
 assert.ok(read('android/automation/src/main/AndroidManifest.xml').includes(localAi.androidPermission));
 assert.ok(read('android/Android.bp').includes('name: "rock-local-ai-api"'));
 assert.ok(read('scripts/stage-local-ai-apk.py').includes('android_app_import'));
@@ -206,6 +221,11 @@ assert.ok(localAiOverlay.includes('class RockLocalAiService : HeadlessJsTaskServ
 assert.ok(localAiOverlay.includes('AppRegistry.registerHeadlessTask'));
 assert.ok(localAiOverlay.includes('PROPOSAL_MISMATCH'));
 assert.ok(localAiOverlay.includes('PROPOSAL_EXPIRED'));
+const localAiPlanOverlay = read('os/physical/local-ai-plan-v2.patch');
+assert.ok(localAiPlanOverlay.includes("response_format: responseFormat"));
+assert.ok(localAiPlanOverlay.includes("result.tool_calls"));
+assert.ok(localAiPlanOverlay.includes("article-preparation@1/input-v1"));
+assert.ok(localAiPlanOverlay.includes("strictPlanText"));
 assert.ok(read('os/physical/rockstaros.mk').includes('vendor/rockstaros-local-ai/product.mk'));
 for (const moduleName of ['automation', 'shell', 'article-tool', 'tool-sdk']) {
   const aosp = read(`android/${moduleName}/src/aosp/AndroidManifest.xml`);

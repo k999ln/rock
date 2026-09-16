@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-最優先はstock PixelのLocal AIへ計画専用出力契約を追加し、厳格plan gateを緩めず最初の選択Toolを成功完走して結果・履歴・再起動復旧まで確認する。次にnative Skyの選択をこの経路へ永続handoffする。並行してbackup v2を完成させ、復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進む。
+次はnative Skyの選択を検証済みZema→Local AI→選択Tool経路へ永続handoffし、実機再起動と失敗復旧でも結果・履歴が保たれることを確認する。並行してbackup v2を完成させ、復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進む。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

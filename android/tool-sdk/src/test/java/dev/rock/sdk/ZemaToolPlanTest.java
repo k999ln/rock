@@ -6,8 +6,8 @@ import static org.junit.Assert.*;
 
 public final class ZemaToolPlanTest {
     private static JSONObject article() throws Exception {
-        return new JSONObject().put("markdown", "# 原稿\n本文")
-            .put("afterChars", 40).put("summary", "- 一\n- 二\n- 三")
+        return new JSONObject().put("markdown", "# 原稿\n本文です。\n\n続きです。")
+            .put("afterChars", 4).put("summary", "- 一\n- 二\n- 三")
             .put("price", 500).put("paidContents", "詳細")
             .put("noteUrl", "https://note.com/example/n/article");
     }
@@ -19,9 +19,10 @@ public final class ZemaToolPlanTest {
     @Test public void acceptsOnlyTheOwnerSelectedToolAndClosedInput() throws Exception {
         String input = ZemaToolPlan.verifiedInput(ZemaToolPlan.ARTICLE_TOOL,
             plan(ZemaToolPlan.ARTICLE_TOOL));
-        assertEquals("# 原稿\n本文", new JSONObject(input).getString("markdown"));
+        assertEquals("# 原稿\n本文です。\n\n続きです。", new JSONObject(input).getString("markdown"));
         assertTrue(ZemaToolPlan.planningPrompt(ZemaToolPlan.ARTICLE_TOOL, "記事を準備して")
             .contains("未信頼の利用者依頼"));
+        assertEquals("article-preparation@1/input-v1", ZemaToolPlan.ARTICLE_PLAN_SCHEMA);
     }
 
     @Test public void rejectsToolSubstitutionWrappersAndUnknownFields() throws Exception {
@@ -44,5 +45,9 @@ public final class ZemaToolPlanTest {
             ZemaToolPlan.verifiedInput(ZemaToolPlan.ARTICLE_TOOL, output));
         assertThrows(IllegalArgumentException.class, () ->
             ZemaToolPlan.planningPrompt(ZemaToolPlan.ARTICLE_TOOL, " "));
+        JSONObject notExecutable = article().put("markdown", "原稿");
+        assertThrows(IllegalArgumentException.class, () -> ZemaToolPlan.verifiedInput(
+            ZemaToolPlan.ARTICLE_TOOL, new JSONObject().put("toolId", ZemaToolPlan.ARTICLE_TOOL)
+                .put("input", notExecutable).toString()));
     }
 }

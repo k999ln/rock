@@ -20,8 +20,9 @@ final class ZemaOrchestrator {
         String existing = engine.existingWorkId(requestId);
         if (existing != null) return existing;
         String planningPrompt = ZemaToolPlan.planningPrompt(toolId, prompt);
-        LocalAiConnection.Result result = new LocalAiConnection(context).complete(
-            UUID.randomUUID().toString(), planningPrompt, contextJson);
+        LocalAiConnection.Result result = new LocalAiConnection(context).plan(
+            UUID.randomUUID().toString(), ZemaToolPlan.ARTICLE_PLAN_SCHEMA,
+            planningPrompt, contextJson);
         if (!"completed".equals(result.event)) {
             if ("proposal".equals(result.event))
                 throw new SecurityException("LOCAL_AI_MAY_NOT_EXECUTE_SELECTED_TOOL");

@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-16",
   "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-  "nextAction": "最優先はstock PixelのLocal AIへ計画専用出力契約を追加し、厳格plan gateを緩めず最初の選択Toolを成功完走して結果・履歴・再起動復旧まで確認する。次にnative Skyの選択をこの経路へ永続handoffする。並行してbackup v2を完成させ、復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進む。",
+  "nextAction": "次はnative Skyの選択を検証済みZema→Local AI→選択Tool経路へ永続handoffし、実機再起動と失敗復旧でも結果・履歴が保たれることを確認する。並行してbackup v2を完成させ、復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進む。",
   "tasks": [
     {
       "id": "SKY01",
@@ -850,7 +850,8 @@
         "scripts/build-local-ai-apk.sh",
         "scripts/stage-local-ai-apk.py",
         "os/physical/local-action-assistant-artifact-lock.json",
-        "docs/evidence/android-pre-full-build-tests-20260915.json"
+        "docs/evidence/android-pre-full-build-tests-20260915.json",
+        "docs/evidence/android-local-ai-plan-v2-20260916.json"
       ]
     },
     {
@@ -860,7 +861,8 @@
       "dependsOn": ["OS08"],
       "evidence": [
         "docs/local-ai-os-integration-20260915.md",
-        "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json"
+        "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
+        "docs/evidence/android-local-ai-plan-v2-20260916.json"
       ]
     },
     {
@@ -889,6 +891,7 @@
         "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
         "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java",
         "docs/evidence/android-zema-selected-tool-20260916.json",
+        "docs/evidence/android-local-ai-plan-v2-20260916.json",
         "android/sepolicy/private/rockstar_platform.te"
       ]
     },
@@ -1545,7 +1548,8 @@
         "tests/product-baseline.test.mjs",
         "tests/test_prepare_phone_build.py",
         "tests/test_stage_local_ai_apk.py",
-        "docs/evidence/android-pre-full-build-tests-20260915.json"
+        "docs/evidence/android-pre-full-build-tests-20260915.json",
+        "docs/evidence/android-local-ai-plan-v2-20260916.json"
       ]
     },
     {

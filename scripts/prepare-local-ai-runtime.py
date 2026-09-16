@@ -73,14 +73,31 @@ def config():
             or overlay.get("path") != "os/physical/local-ai-overlay.patch"
             or not isinstance(overlay.get("sha256"), str)):
         raise ValueError("invalid local-AI overlay lock")
-    patch = ROOT / overlay["path"]
-    if sha256(patch) != overlay["sha256"]:
-        raise ValueError("local-AI overlay differs from the source lock")
-    return lock, patch
+    patch_records = [{"path": overlay["path"], "sha256": overlay["sha256"]}]
+    extensions = overlay.get("extensions", [])
+    if not isinstance(extensions, list):
+        raise ValueError("invalid local-AI overlay extensions")
+    for extension in extensions:
+        if (not isinstance(extension, dict)
+                or not isinstance(extension.get("path"), str)
+                or not isinstance(extension.get("sha256"), str)
+                or Path(extension["path"]).is_absolute()
+                or ".." in Path(extension["path"]).parts
+                or not extension["path"].startswith("os/physical/")
+                or not extension["path"].endswith(".patch")):
+            raise ValueError("invalid local-AI overlay extension")
+        patch_records.append({"path": extension["path"], "sha256": extension["sha256"]})
+    patches = []
+    for record in patch_records:
+        patch = ROOT / record["path"]
+        if not patch.is_file() or sha256(patch) != record["sha256"]:
+            raise ValueError("local-AI overlay differs from the source lock")
+        patches.append(patch)
+    return lock, patches
 
 
 def prepare(os_tree, output):
-    lock, patch = config()
+    lock, patches = config()
     os_tree = os_tree.resolve(strict=True)
     source = os_tree / lock["checkoutPath"]
     if source.is_symlink() or not source.resolve(strict=True).is_relative_to(os_tree):
@@ -104,13 +121,15 @@ def prepare(os_tree, output):
         # patch path when the OS tree itself lives below another repository.
         subprocess.check_call(["git", "init", "-q"], cwd=temporary,
                               stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=30)
-        subprocess.check_call(["git", "apply", "--check", str(patch)], cwd=temporary,
-                              stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=30)
-        subprocess.check_call(["git", "apply", str(patch)], cwd=temporary,
-                              stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=30)
+        for patch in patches:
+            subprocess.check_call(["git", "apply", "--check", str(patch)], cwd=temporary,
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=30)
+            subprocess.check_call(["git", "apply", str(patch)], cwd=temporary,
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=30)
         shutil.rmtree(temporary / ".git")
         evidence = {"schema": "rock-local-ai-overlay/1", "sourceCommit": lock["commit"],
-                    "overlaySha256": sha256(patch),
+                    "overlaySha256": sha256(patches[0]),
+                    "extensionSha256": [sha256(patch) for patch in patches[1:]],
                     "status": lock["overlay"]["status"]}
         (temporary / "rockstaros-overlay.json").write_text(json.dumps(evidence, indent=2) + "\n")
         os.replace(temporary, output)

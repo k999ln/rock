@@ -1,6 +1,7 @@
 package dev.rock.sdk;
 
 import dev.rock.core.Engine;
+import dev.rock.core.ArticleTools;
 import org.json.JSONObject;
 import java.util.Set;
 
@@ -32,5 +33,17 @@ public final class ArticlePayload {
             for (String key : KEYS) if (!key.equals("markdown") && !before.get(key).equals(after.get(key)))
                 throw new IllegalArgumentException("TOOL_CHANGED_SETTINGS");
         } catch (org.json.JSONException e) { throw new IllegalArgumentException("INVALID_JSON"); }
+    }
+
+    /** Proves that both selected pure transforms can accept the planned input before it is queued. */
+    public static void validateExecutable(String input) {
+        JSONObject j = parse(input);
+        try {
+            String cited = ArticleTools.citations(j.getString("markdown"));
+            ArticleTools.freeArticle(cited, j.getInt("afterChars"), j.getString("summary"),
+                j.getInt("price"), j.getString("paidContents"), j.getString("noteUrl"));
+        } catch (org.json.JSONException invalid) {
+            throw new IllegalArgumentException("INVALID_JSON", invalid);
+        }
     }
 }

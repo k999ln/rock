@@ -10,8 +10,8 @@
   "wakeLockPermission": true,
   "binderPermission": "dev.rock.permission.USE_LOCAL_AI",
   "aospCertificate": "testkey",
-  "apkSha256": "d65039dc766a4b881c537bceba93a9be8834eabe881af5b5b15035aa6ec944b9",
-  "apkSizeBytes": 26392828,
+  "apkSha256": "b748cd207fb65c43eacaea172b5d80d313a7e5ab3e976f4aaa8b5de161491f4c",
+  "apkSizeBytes": 26395708,
   "imageIntegrated": false,
-  "notes": "Reproducible unsigned arm64 release APK built from the pinned source and response-sanitizing overlay on 2026-09-16. Package, version, ABI, Binder service, USE_LOCAL_AI, WAKE_LOCK and absence of INTERNET were inspected. A same-test-key copy passed all 5 Android 15 arm64 emulator Binder, Headless JS, no-GGUF fail-closed, Platform and Tool integration tests plus Pixel 10 GL066 offline CLEAN_OK presentation without raw think tags. This is not production signing, OS-image integration, flash or boot evidence."
+  "notes": "Reproducible unsigned arm64 release APK built from the pinned source, response-sanitizing base overlay and plan-v2 extension on 2026-09-16. Package, version, ABI, Binder service, USE_LOCAL_AI, WAKE_LOCK and absence of INTERNET were inspected. A same-test-key copy passed 8 Broker tests and 3 Shell tests on Android 15 emulator, plus the same counts on Pixel 10 GL066 including plan-only JSON Schema, selected Tool execution, result and history. This is not production signing, OS-image integration, flash or boot evidence."
 }

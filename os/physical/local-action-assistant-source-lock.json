@@ -27,17 +27,24 @@
   "integration": {
     "routeId": "local-action-assistant",
     "target": "local",
-    "osBridge": "CLIENT_AND_SERVER_NATIVE_COMPILED_EMULATOR_BOUND",
+    "osBridge": "PLAN_V2_NATIVE_COMPILED_EMULATOR_AND_PHYSICAL_BOUND",
     "signedApk": "UNSIGNED_RELEASE_APK_REVIEWED",
     "productPackage": "STAGING_READY_NOT_IMAGE_INTEGRATED"
   },
   "overlay": {
     "status": "SERVER_NATIVE_COMPILED_EMULATOR_BOUND",
     "path": "os/physical/local-ai-overlay.patch",
-    "sha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743"
+    "sha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
+    "extensions": [
+      {
+        "path": "os/physical/local-ai-plan-v2.patch",
+        "sha256": "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
+        "purpose": "local_ai_api_v2_plan_only_json_schema"
+      }
+    ]
   },
   "imageBuildVerified": false,
   "imageBootVerified": false,
   "deviceInferenceVerified": true,
-  "notes": "Pinned reviewed source plus a hash-locked response-sanitizing overlay and independently locked unsigned arm64 release APK. A same-test-key copy passed fresh emulator Binder tests 5/5 and Pixel 10 GL066 offline CLEAN_OK presentation without raw think tags. This is not an OS-image integration, production-signed APK, bundled model, flash or boot result."
+  "notes": "Pinned reviewed source plus hash-locked base and plan-v2 overlays. API v2 adds a JSON-Schema-constrained plan-only route with Tool calls disabled; the Broker still performs closed-field, selected-Tool and executable-input checks before creating work. Same-test-key copies passed Android 15 emulator fail-closed tests and Pixel 10 GL066 plan, selected Tool, result and history tests. This is not an OS-image integration, production-signed APK, bundled model, flash or boot result."
 }

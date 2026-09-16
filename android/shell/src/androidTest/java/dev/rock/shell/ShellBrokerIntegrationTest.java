@@ -50,30 +50,31 @@ public final class ShellBrokerIntegrationTest {
     @Test public void zemaCommitsOneVerifiedPlanOrNoWorkAtAll() throws Exception {
         android.content.Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         ShellConnection broker = new ShellConnection(context);
+        String localAiState = broker.localAiStatus();
         int before = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
         JSONObject response = new JSONObject(broker.submitZema(UUID.randomUUID().toString(),
             "article-preparation@1",
-            "Markdown原稿は『# 安全な自動化\\n出典 https://example.test/source 』。"
-                + "要約は3項目、無料範囲40文字、価格500円、有料部分は詳しい手順、"
-                + "URLは https://note.com/example/n/safe_automation として準備して。",
+            "検証用の記事原稿と要約を準備して。無料部分の後に詳しい本文も残してください。",
             "[]", true));
         assertEquals(3, response.length());
         assertTrue(response.has("status"));
         assertTrue(response.has("code"));
         assertTrue(response.has("workId"));
         JSONObject after = new JSONObject(broker.snapshot());
-        if ("queued".equals(response.getString("status"))) {
+        if ("ready".equals(localAiState)) {
+            assertEquals("queued", response.getString("status"));
             String workId = response.getString("workId");
             assertEquals(before + 1, after.getInt("totalWorkCount"));
             assertTrue(after.toString().contains(workId));
             System.out.println("ZEMA_RESULT=QUEUED");
             broker.cancel(workId);
         } else {
+            assertTrue(java.util.Set.of("no_model", "loading", "busy", "error")
+                .contains(localAiState));
             assertEquals("blocked", response.getString("status"));
             assertTrue(response.isNull("workId"));
             String code = response.getString("code");
-            assertTrue(code.equals("LOCAL_AI_UNAVAILABLE") || code.equals("INVALID_PLAN")
-                || code.equals("DENIED"));
+            assertEquals("LOCAL_AI_UNAVAILABLE", code);
             assertEquals(before, after.getInt("totalWorkCount"));
             System.out.println("ZEMA_RESULT=BLOCKED_WITHOUT_PARTIAL_WORK:" + code);
         }

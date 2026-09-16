@@ -204,7 +204,7 @@ export function validateBaseline(
   requireValue(
     data.primaryCapabilities?.includes('local-offline-ai-runtime') &&
       data.localAiRuntime?.status ===
-        'standalone_physical_pixel_offline_ai_reboot_thermal_and_response_sanitizer_verified_test_signing' &&
+        'physical_pixel_offline_ai_plan_v2_selected_tool_result_history_verified_test_signing' &&
       data.localAiRuntime?.sourceCommit ===
         '99b1c40d76f719cbba9c72d9f481c1b2df245504' &&
       data.localAiRuntime?.engine === 'llama.rn' &&
@@ -226,6 +226,7 @@ export function validateBaseline(
     'contract',
     'record',
     'physicalEvidence',
+    'planV2Evidence',
   ]) {
     const path = data.localAiRuntime?.[field];
     requireValue(
@@ -236,7 +237,7 @@ export function validateBaseline(
   requireValue(
     data.primaryCapabilities?.includes('os-platform-core') &&
       data.androidPlatformCore?.status ===
-        'shell_broker_zema_plan_gate_emulator_and_physical_fail_closed_aosp_not_run' &&
+        'shell_broker_local_ai_plan_v2_selected_tool_physical_result_history_pass_aosp_not_run' &&
       data.androidPlatformCore?.apiVersion === 1 &&
       JSON.stringify(data.androidPlatformCore?.componentKinds) ===
         JSON.stringify(['TOOL', 'MCP', 'PROVIDER']) &&
@@ -259,7 +260,8 @@ export function validateBaseline(
       data.androidPlatformCore?.shellApiVersion === 2 &&
       data.androidPlatformCore?.zemaSelectedToolPlanGateImplemented === true &&
       data.androidPlatformCore?.zemaEmulatorNoModelFailClosed === true &&
-      data.androidPlatformCore?.zemaPhysicalStrictPlanAccepted === false,
+      data.androidPlatformCore?.zemaPhysicalStrictPlanAccepted === true &&
+      data.androidPlatformCore?.zemaPhysicalSelectedToolResultHistoryVerified === true,
     'OS Platform Coreの署名・UID・承認・台帳・暗号化・standalone build済／AOSP未build境界を維持してください',
   );
   for (const field of ['contract', 'record', 'zemaSelectedToolEvidence']) {
@@ -295,12 +297,12 @@ export function validateBaseline(
       data.androidPreFullBuildGate?.checks?.standaloneAndroidBuildAndLint ===
         'passed' &&
       data.androidPreFullBuildGate?.checks?.androidEmulatorIntegration ===
-        'shell_zema_3_of_3_and_broker_tool_sqlite_6_of_6_passed_no_model_fail_closed' &&
+        'shell_zema_3_of_3_and_broker_tool_sqlite_8_of_8_passed_no_model_fail_closed' &&
       data.androidPreFullBuildGate?.checks?.standaloneLocalAiApk === 'passed' &&
       data.androidPreFullBuildGate?.checks?.stockPixelOfflineAiAndThermal ===
         'passed_offline_reboot_thermal' &&
       data.androidPreFullBuildGate?.checks?.skyZemaToolWalletPath ===
-        'native_zema_source_connected_physical_strict_plan_pending_wallet_correlated_provider_sandbox_pending' &&
+        'native_zema_physical_selected_tool_result_history_pass_native_sky_reboot_wallet_provider_pending' &&
       data.androidPreFullBuildGate?.checks
         ?.sourceArtifactAndSigningPlanFreeze ===
         'partial_source_tag_and_device_layout_frozen_recovery_vendor_and_signing_pending' &&

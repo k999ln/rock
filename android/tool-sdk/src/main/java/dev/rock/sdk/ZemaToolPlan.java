@@ -8,6 +8,7 @@ import org.json.JSONObject;
 /** Converts untrusted LLM text into one closed, owner-selected Tool plan. */
 public final class ZemaToolPlan {
     public static final String ARTICLE_TOOL = "article-preparation@1";
+    public static final String ARTICLE_PLAN_SCHEMA = "article-preparation@1/input-v1";
     private static final Set<String> ROOT_KEYS = Set.of("toolId", "input");
     private ZemaToolPlan() {}
 
@@ -20,7 +21,7 @@ public final class ZemaToolPlan {
             + "利用者がSkyで選んだToolの入力JSONだけを作ってください。\n"
             + "返答は説明やMarkdown fenceを含めず、次の形のJSON object一つだけです。\n"
             + "{\"toolId\":\"article-preparation@1\",\"input\":{"
-            + "\"markdown\":\"原稿\",\"afterChars\":40,"
+            + "\"markdown\":\"# 原稿\\n導入です。ここまで無料です。\\n\\n詳しい手順です。最後の確認です。\",\"afterChars\":8,"
             + "\"summary\":\"- 要点1\\n- 要点2\\n- 要点3\","
             + "\"price\":500,\"paidContents\":\"有料部分\","
             + "\"noteUrl\":\"https://note.com/example/n/example\"}}\n"
@@ -45,7 +46,7 @@ public final class ZemaToolPlan {
             Object input = root.get("input");
             if (!(input instanceof JSONObject)) throw new IllegalArgumentException("INVALID_ZEMA_TOOL_INPUT");
             String canonical = ((JSONObject) input).toString();
-            ArticlePayload.parse(canonical);
+            ArticlePayload.validateExecutable(canonical);
             return canonical;
         } catch (org.json.JSONException invalid) {
             throw new IllegalArgumentException("INVALID_ZEMA_PLAN_JSON", invalid);

@@ -14,7 +14,7 @@
 - Tool完了、検証済み収益、Wallet反映、ファンド実績を別状態で管理
 - 運営管理画面はOS外、ゲームは中核loop後の派生
 
-ただし、**全体が一つの製品として稼働済みという意味ではない**。native ZemaからShell／Broker／Local AI／最初の選択Toolまでのsource接続と、Pixelで不正planを0件のまま止める試験までは通った。Pixelのモデル出力が厳格planを通り、Tool完了・結果・履歴・再起動復旧まで一本で完走する受入は未完了である。本番準備完了、収益や利回り、実機OS完成は主張しない。
+ただし、**全体が一つの製品として稼働済みという意味ではない**。native ZemaからShell／Broker／Local AI API v2／最初の選択Toolまで接続し、Pixelで厳格plan、2段階Tool実行、結果、履歴、本人確認待ちまで完走した。モデルなしemulatorでは仕事0件のまま停止した。一方、native Skyの永続handoff、全経路の再起動／失敗復旧、Wallet・外部Provider、AOSP imageは未完了である。本番準備完了、収益や利回り、実機OS完成は主張しない。
 
 ## 組合せの判定
 
@@ -22,9 +22,9 @@
 | --- | --- | --- | --- |
 | 製品体験 | Skyで選びZemaで全仕事を扱う。CSVはSky Tool | 適合 | Web統合、native Zema入口と最初のTool接続を実装。native Skyは未完成 |
 | 端末 | 共通Core＋SKU別DSP、Pixel 10 GL066が最初 | 適合 | 対象確定、full build／flash未実施 |
-| 権限 | ShellとBrokerを分離し最小権限化 | 適合 | 単体build・emulator・stock Pixelのfail-closed Binder試験合格、AOSP enforcing未実施 |
-| LLM | offlineで交換可能なGGUF runtime | 適合 | Pixel単体APK合格、OS image未搭載 |
-| Tool | 署名・版・権限・receipt付きpackage | 適合 | 最初の選択ToolへZema plan gate接続済み。Pixelの厳格plan合格と汎用registryは未完了 |
+| 権限 | ShellとBrokerを分離し最小権限化 | 適合 | 単体build・emulator・stock Pixelの成功／fail-closed Binder試験合格、AOSP enforcing未実施 |
+| LLM | offlineで交換可能なGGUF runtime | 適合 | Pixel単体APKとplan-only API v2合格、OS image未搭載 |
+| Tool | 署名・版・権限・receipt付きpackage | 適合 | 最初の選択ToolはPixelでplan→2 Tool→結果・履歴まで合格。汎用registryは未完成 |
 | 収益 | Provider署名後だけWalletへ反映 | 適合 | Rock所有fixture合格、外部sandbox未接続 |
 | Wallet／Fund | Provider交換可能、検証済み実績だけ利用 | 適合 | Walletはcode／sandbox、FundはPAPER |
 | 緊急保護 | OS外Dock＋制限付き端末Agent | 適合 | Dock側実装、Agent／実機訓練未完了 |
@@ -33,13 +33,13 @@
 
 ## 1.0の未接続点
 
-最重要の不足は、PixelのLocal AIを計画専用出力へ合わせ、`native Sky → Zema → Android Shell → Broker → 選択Tool → 結果・履歴`を成功させて再起動・失敗復旧まで通すこと。現在はZemaからLocal AIまで到達し、不正planを仕事0件のまま止めるところまで実測済みである。次に、backup v2の復元・本人再結合、production署名と純正復旧入力、端末側Operator Agentが残る。
+最重要の不足は、検証済みの`Zema → Android Shell → Broker → Local AI → 選択Tool → 結果・履歴`へnative Skyの選択を永続handoffし、実機再起動・中断・失敗復旧でも同じ仕事を安全に再開できるようにすること。続いてbackup v2の復元・本人再結合、production署名と純正復旧入力、端末側Operator Agentが残る。
 
 収益については、`Tool結果 → 外部Provider → 署名済みEarning Receipt → Wallet照合`のうちRock所有fixtureまでは通っている。外部Provider sandbox、返金・chargeback・結果不明、owner署名と最初の管理されたtransferは未完了である。ファンドはこの実績が複数回たまるまでPAPERのままにし、ゲームは1.0中核loopを止めない。
 
 ## 進める順番
 
-1. stock PixelのLocal AIを計画専用契約へ合わせ、native Sky／Zemaから最初の選択Toolを成功完走し、結果・履歴・再起動復旧を確認する。
+1. native Skyの選択を検証済みZema経路へ永続handoffし、stock Pixelで再起動・中断・失敗復旧を確認する。
 2. backup v2復元、owner再結合、clone拒否を完了する。
 3. 純正復旧artifact、vendor inventory、production署名入力を固定する。
 4. 制限付きOperator Agentと監査経路を実機訓練する。

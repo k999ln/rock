@@ -22,7 +22,7 @@ import org.json.JSONObject;
 final class LocalAiConnection {
     static final String PACKAGE = "com.localactionassistant";
     static final String SERVICE = PACKAGE + ".RockLocalAiService";
-    static final int API_VERSION = 1;
+    static final int API_VERSION = 2;
     private static final Set<String> TERMINAL_EVENTS = Set.of("proposal", "completed", "failed");
     private final Context context;
     private volatile ILocalAiService service;
@@ -59,6 +59,15 @@ final class LocalAiConnection {
         validToken(requestToken); Engine.bounded(prompt); Engine.bounded(contextJson);
         return exchange(requestToken, (remote, callback) ->
             remote.complete(requestToken, prompt, contextJson, callback));
+    }
+
+    Result plan(String requestToken, String schemaId, String prompt, String contextJson) throws Exception {
+        validToken(requestToken);
+        if (!dev.rock.sdk.ZemaToolPlan.ARTICLE_PLAN_SCHEMA.equals(schemaId))
+            throw new IllegalArgumentException("UNSUPPORTED_PLAN_SCHEMA");
+        Engine.bounded(prompt); Engine.bounded(contextJson);
+        return exchange(requestToken, (remote, callback) ->
+            remote.completePlan(requestToken, schemaId, prompt, contextJson, callback));
     }
 
     Result confirm(String requestToken, String proposalId, boolean approved) throws Exception {

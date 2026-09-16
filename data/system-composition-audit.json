@@ -8,7 +8,7 @@
     "allComponentsImplemented": false,
     "allRequiredConnectionsVerified": false,
     "productionReady": false,
-    "summary": "選択した責任分離と実装順は目的に整合する。native ZemaからBroker、Local AI、選択Toolまでのsource経路とfail-closed実機試験は追加したが、Pixelのモデル出力が厳格planを通って仕事を完了する受入は未達である。"
+    "summary": "選択した責任分離と実装順は目的に整合する。native ZemaからBroker、Local AI API v2、選択Tool、結果、履歴までPixelで成功し、モデルなし環境のfail-closedも通した。native Skyの永続handoffと全経路の再起動・失敗復旧は未達である。"
   },
   "selectionPrinciples": [
     "OSや端末開発そのものではなく、offline AI teamから検証済み成果と収益へ至る利用者価値を優先する",
@@ -42,47 +42,51 @@
       "id": "user_experience",
       "choice": "Home entry; Sky discovers and connects Tools; Zema manages all work; CSV is a Sky Tool",
       "fit": "ALIGNED",
-      "state": "WEB_INTEGRATED_ANDROID_ZEMA_SOURCE_CONNECTED_RUNTIME_PLAN_ACCEPTANCE_PENDING",
+      "state": "WEB_INTEGRATED_ANDROID_ZEMA_PHYSICAL_TOOL_RESULT_HISTORY_PASS_NATIVE_SKY_PENDING",
       "evidence": [
         "docs/sky.md",
         "docs/chat-mcp-control-room-20260913.md",
         "tests/sky-zema-handoff.test.mjs",
-        "docs/evidence/android-zema-selected-tool-20260916.json"
+        "docs/evidence/android-zema-selected-tool-20260916.json",
+        "docs/evidence/android-local-ai-plan-v2-20260916.json"
       ]
     },
     {
       "id": "android_security_boundary",
       "choice": "least-privilege dev.rock.shell plus headless dev.rock.automation Broker with signer, package, UID and version checks",
       "fit": "ALIGNED",
-      "state": "STANDALONE_BUILD_EMULATOR_AND_PHYSICAL_BINDER_FAIL_CLOSED_VERIFIED_AOSP_NOT_RUN",
+      "state": "STANDALONE_BUILD_EMULATOR_FAIL_CLOSED_AND_PHYSICAL_SUCCESS_VERIFIED_AOSP_NOT_RUN",
       "evidence": [
         "docs/android-production-architecture.md",
         "data/android-release-architecture-policy.json",
         "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java",
-        "docs/evidence/android-zema-selected-tool-20260916.json"
+        "docs/evidence/android-zema-selected-tool-20260916.json",
+        "docs/evidence/android-local-ai-plan-v2-20260916.json"
       ]
     },
     {
       "id": "local_ai",
       "choice": "replaceable offline GGUF Local Action Assistant behind a signed Binder contract",
       "fit": "ALIGNED",
-      "state": "PHYSICAL_STANDALONE_APK_VERIFIED_NOT_IN_OS_IMAGE",
+      "state": "PHYSICAL_PLAN_V2_SELECTED_TOOL_VERIFIED_NOT_IN_OS_IMAGE",
       "evidence": [
         "contracts/local-ai-runtime.json",
-        "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json"
+        "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
+        "docs/evidence/android-local-ai-plan-v2-20260916.json"
       ]
     },
     {
       "id": "tool_runtime",
       "choice": "signed, versioned, permission-scoped Tool packages executed through Platform Broker",
       "fit": "ALIGNED",
-      "state": "FIRST_SELECTED_TOOL_ZEMA_PLAN_GATE_SOURCE_CONNECTED_PHYSICAL_PLAN_ACCEPTANCE_PENDING",
+      "state": "FIRST_SELECTED_TOOL_PHYSICAL_PLAN_RESULT_HISTORY_VERIFIED_GENERAL_REGISTRY_PENDING",
       "evidence": [
         "contracts/platform-api.json",
         "docs/platform-core.md",
         "android/automation/src/main/java/dev/rock/automation/RockPlatformService.java",
         "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
-        "docs/evidence/android-zema-selected-tool-20260916.json"
+        "docs/evidence/android-zema-selected-tool-20260916.json",
+        "docs/evidence/android-local-ai-plan-v2-20260916.json"
       ]
     },
     {
@@ -151,11 +155,10 @@
         "Tool",
         "result and history"
       ],
-      "state": "SOURCE_CONNECTED_PHYSICAL_FAIL_CLOSED_SUCCESSFUL_PLAN_AND_COMPLETION_PENDING",
+      "state": "ZEMA_PHYSICAL_PLAN_TOOL_RESULT_HISTORY_PASS_NATIVE_SKY_AND_RECOVERY_PENDING",
       "blockingGaps": [
         "final native Sky UI and selected-Tool handoff",
         "persistent native handoff instead of browser sessionStorage",
-        "Local AI plan-only output accepted by the strict Broker plan gate on Pixel",
         "general Tool registry beyond the first article-preparation Tool",
         "reboot and failure recovery of the whole path"
       ]
@@ -254,7 +257,7 @@
     "Android release readiness is reported as one of six required gates, not one of five"
   ],
   "priorityOrder": [
-    "Make native Sky and Zema complete one strict selected-Tool plan on the stock Pixel, then verify result, history, reboot and failure recovery",
+    "Connect native Sky persistence to the verified Zema selected-Tool path, then verify whole-flow reboot and failure recovery on the stock Pixel",
     "Finish backup v2 restore, owner rebind and anti-clone behavior before first flash",
     "Complete recovery artifact hashes, vendor inventory and production signing inputs",
     "Implement the restricted Android Operator Agent and exercise the full audited support path",

@@ -6,12 +6,12 @@
 
 ## 現在地
 
-- Android P1はBroker／Shell／Toolの3 APK、SQLite、Binder、JobScheduler、標準emulator CIに加え、旧2 APK構成では所有Pixel 10で5/5 instrumentationまで到達。新しいShell→Broker分離はAndroid 15 emulatorで1/1合格し、Pixel実機では未再受入。
+- Android P1はBroker／Shell／Toolの3 APK、SQLite、Binder、JobSchedulerを実装。Local AI API v2を加えた同一test signer構成で、Android 15 emulatorはBroker 8/8・Shell 3/3、所有Pixel 10もBroker 8/8・Shell 3/3を合格した。PixelではZema planから2段階Tool、結果、履歴、本人確認待ちまで完走した。
 - 最初の実機対象は読取り専用ADBで日本向けPixel 10／frankel／GL066へ確定。Pixel 7／pantherは保留。物理端末gateは機種／SKUのみ合格の1/6。SELinux enforcing分離とCDD／CTS／CTS Verifier／VTSを独立した未達gateにした。
 - GrapheneOS `2026091000` tag署名、manifest／adevtool／laguna-muzel 6.6、実機のDynamic Partition／Virtual A/B／AVB 1.4を固定済み。Google純正factory／full OTAの実ファイルSHA、vendor inventory、production署名／復旧計画、full Soong build、flash、実機bootは未実施。
 - 外部Providerは初回OS full buildから分離し、アプリ／サーバー側へ置く。実収益を表示する1.0公開前にはProvider sandboxを必須とし、未合格中はlive収益表示をしない。
-- Local Action Assistantはsource pin、hash検査、署名限定Binder client/server契約、overlay、arm64 APK build、Qwen GGUFの機内モード推論、再起動復元、33分22秒の実機熱試験まで合格。OS image搭載、production署名、SELinux／OTA／復旧は未完了。
-- Platform Core v1はTool／MCP／Provider共通AIDL、APK署名・UID照合、本人確認付き承認、Wallet台帳、schema v1→v2 migration、Keystore暗号化backup、更新／rollback gate、source SELinux policyまで実装中。`dev.rock.automation`をheadless Brokerとして残し、Home／Sky／Zemaを`dev.rock.shell`へ分離するsource、Android Gradle build／lint、emulator Binder統合試験は完了。AOSP full build、SELinux enforcing boot、production署名、Pixel実機での新3 APK再受入は未実施。
+- Local Action Assistantはsource pin、base＋plan-v2 overlay hash検査、署名限定Binder API v2、JSON Schema計画専用経路、arm64 APK build、Qwen GGUFの機内モード推論、再起動復元、33分22秒の実機熱試験まで合格。最初の選択Toolとの実機接続も合格した。OS image搭載、production署名、SELinux／OTA／全経路の再起動復旧は未完了。
+- Platform Core v1はTool／MCP／Provider共通AIDL、APK署名・UID照合、本人確認付き承認、Wallet台帳、schema v1→v2 migration、Keystore暗号化backup、更新／rollback gate、source SELinux policyまで実装中。`dev.rock.automation`をheadless Brokerとして残し、Home／Sky／Zemaを`dev.rock.shell`へ分離するsource、Android Gradle build／lint、emulatorとPixelのBinder統合試験は完了。AOSP full build、SELinux enforcing boot、production署名は未実施。
 
 主なtask: `DSP01`, `OS02`〜`OS11`, `N03`〜`N05`, `RLS02`。Local AIは`OS07`〜`OS09`、Platform Coreは`OS10`〜`OS11`で追跡する。
 
@@ -48,5 +48,5 @@
 - `npm run device-support:check`
 - `python3 -m unittest tests/test_prepare_phone_build.py tests/test_stage_local_ai_apk.py`
 - `gradle -p android :core:test :shell-api:assembleDebug :automation:assembleDebug :shell:assembleDebug :article-tool:assembleDebug :automation:lintDebug :shell:lintDebug :article-tool:lintDebug --no-daemon`
-- 同一debug signerのBroker／Toolを導入した使い捨てAndroid 15 emulatorでShell 1 testを実行し、Broker側4 testは`LocalAiServiceIntegrationTest`を除外して実行する。Local AI 2 testは別途同一試験署名APKがある受入環境だけで実行する。
+- 同一debug signerのLocal AI／Broker／Tool／Shellを導入したAndroid 15 emulatorとstock Pixelで、Broker 8 testとShell 3 testを実行する。emulatorはモデルなしで0件停止、Pixelは計画受入、2 Tool、結果、履歴まで確認する。[証拠](../evidence/android-local-ai-plan-v2-20260916.json)
 - 対象端末のflash／boot／OTA／rollback／stock recovery受入

@@ -22,6 +22,42 @@ import java.util.UUID;
 /** Runs in an ephemeral Android emulator against real Binder and Android SQLite, no UI/accounts. */
 @RunWith(AndroidJUnit4.class)
 public class DeviceIntegrationTest {
+    @Test public void zemaPlanRunsTheSelectedLocalToolToReview() throws Exception {
+        Context target = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        String name = "zema-integration-" + UUID.randomUUID() + ".db";
+        Context isolatedDatabase = new ContextWrapper(target) {
+            @Override public File getDatabasePath(String ignored) { return target.getDatabasePath(name); }
+        };
+        try (AndroidDatabase db = new AndroidDatabase(isolatedDatabase)) {
+            Engine engine = new Engine(db);
+            String state = new LocalAiConnection(target).status();
+            if (!"ready".equals(state)) {
+                assertTrue(java.util.Set.of("no_model", "loading", "busy", "error").contains(state));
+                assertThrows(IllegalStateException.class, () ->
+                    new ZemaOrchestrator(target, engine).submit("zema-no-model", "article-preparation@1",
+                        "検証用の記事原稿と要約を準備して", "[]", true));
+                assertTrue(engine.list().isEmpty());
+                return;
+            }
+            assertEquals("ready", state);
+            String id = new ZemaOrchestrator(target, engine).submit(
+                "zema-" + UUID.randomUUID(), "article-preparation@1",
+                "検証用の記事原稿と要約を準備して", "[]", true);
+            for (int step = 0; step < 2; step++) {
+                Engine.Ticket ticket = engine.claim("zema-test-boot", SystemClock.elapsedRealtime(), true);
+                assertNotNull(ticket);
+                assertEquals(step, ticket.step);
+                ToolConnection.Result result = new ToolConnection(target).execute(ticket);
+                assertEquals("passed", result.outcome);
+                assertTrue(engine.finish(ticket, result.outcome, result.output,
+                    "zema-test-boot", SystemClock.elapsedRealtime()));
+            }
+            assertEquals("review", engine.work(id).get("state"));
+            assertTrue(!engine.result(id).trim().isEmpty());
+            assertEquals(5, engine.events(id).size());
+        } finally { target.deleteDatabase(name); }
+    }
+
     @Test public void realBinderPipelinePersistsAndRequiresReview() throws Exception {
         Context target = InstrumentationRegistry.getInstrumentation().getTargetContext();
         String name = "integration-" + UUID.randomUUID() + ".db";
