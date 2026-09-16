@@ -87,6 +87,12 @@ void test('current release matrix passes while preserving real blockers', () => 
   assert.deepEqual(result.webSecurity, { status: 'PASS_SOURCE_POLICY', headers: 8 });
 });
 
+void test('release evaluation cannot predate any incorporated audit observation', () => {
+  const stale = structuredClone(readiness);
+  stale.evaluatedAt = '2026-09-14';
+  assert.throws(() => validateMatrix({ matrix: stale }), /評価日が監査観測より古い/);
+});
+
 void test('Web security source policy is exact and current deployment must prove it independently', () => {
   assert.deepEqual(
     validateWebSecurityPolicy({ root, policy: webSecurityPolicy, readiness }),
@@ -132,6 +138,35 @@ void test('owner-private delivery stays safe while latest source sync remains bl
   assert.throws(
     () => validateOwnerPrivateSitesAudit({ audit: sitesAudit, hosting: sitesHosting, readiness: changed, webSecurityPolicy }),
     /未同期状態または必要な所有者行動/,
+  );
+});
+
+void test('owner approval and owner-workspace access remain separate launch gates', () => {
+  assert.deepEqual(
+    validateOwnerPrivateSitesAudit({
+      audit: sitesAudit,
+      hosting: sitesHosting,
+      readiness,
+      webSecurityPolicy,
+    }),
+    {
+      status: 'OUTDATED',
+      version: 29,
+      sourceCommit: '25cf0fa2cae303475a9bf54280889a1192be455e',
+    },
+  );
+
+  const missingObservation = structuredClone(sitesAudit);
+  delete missingObservation.access.evidence;
+  assert.throws(
+    () =>
+      validateOwnerPrivateSitesAudit({
+        audit: missingObservation,
+        hosting: sitesHosting,
+        readiness,
+        webSecurityPolicy,
+      }),
+    /承認済みaccess blockerの観測証拠/,
   );
 });
 

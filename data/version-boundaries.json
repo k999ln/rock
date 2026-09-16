@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "updatedAt": "2026-09-16",
+  "product": {
+    "name": "avocadoOS",
+    "displayVersion": "1.0 Developer Preview",
+    "releaseState": "developer_preview_not_public"
+  },
+  "boundaries": {
+    "webPackage": {
+      "version": "0.1.0",
+      "source": "package.json",
+      "meaning": "Web application package version; not an OS distribution version"
+    },
+    "nativeFoundation": {
+      "version": "0.3.0",
+      "sources": [
+        "systems/rock-star-os/pyproject.toml",
+        "systems/rock-star-os/src/blackberryrock/__init__.py"
+      ],
+      "meaning": "Python development foundation and compatibility profile version"
+    },
+    "qemuDistributionCandidate": {
+      "version": "1.0.0-preview.20260911-rc2",
+      "sourceCommit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+      "sources": [
+        "data/qemu-release-audit.json",
+        "data/rockstaros-preview.json",
+        "data/project-status.json"
+      ],
+      "releaseState": "draft_not_public",
+      "meaning": "Frozen QEMU/macOS distribution candidate; not the current web main"
+    },
+    "androidPrototype": {
+      "versionName": "0.1.0",
+      "versionCode": 1,
+      "sources": [
+        "android/automation/build.gradle",
+        "android/automation/src/aosp/AndroidManifest.xml",
+        "android/shell/build.gradle",
+        "android/shell/src/aosp/AndroidManifest.xml",
+        "android/article-tool/build.gradle",
+        "android/article-tool/src/aosp/AndroidManifest.xml",
+        "android/operator-agent/build.gradle",
+        "android/operator-agent/src/aosp/AndroidManifest.xml"
+      ],
+      "releaseState": "source_and_emulator_only",
+      "meaning": "Android prototype APK identity; not a physical-device release"
+    }
+  },
+  "commitPolicy": {
+    "releaseCandidateRequiresExactCommit": true,
+    "currentMainResolvedAtBuildOrDeployment": true,
+    "repositoryDoesNotSelfRecordItsFutureMergeCommit": true
+  }
+}

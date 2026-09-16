@@ -11,9 +11,9 @@
   "projectProgress": {
     "total": 108,
     "done": 77,
-    "in_progress": 23,
+    "in_progress": 22,
     "planned": 8,
-    "blocked": 0,
+    "blocked": 1,
     "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
     "nextAction": "Pixel 10を再接続してnative Skyの実再起動復旧を確認する。続いてproduction WebAuthn credential、Agent product overlay、StrongBox attestation、Device Ownerを登録し、許可操作と禁止操作を実機検証する。純正復旧artifact、vendor inventory、production署名、物理backup wipe復元を揃え、全preflight合格後だけ最初のfull buildへ進む。"
   },
@@ -163,11 +163,13 @@
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / owner-only Sites",
-        "deploymentStatus": "SOURCE_AHEAD",
+        "deploymentStatus": "OWNER_ACCESS_BLOCKED",
         "productionAppliedThrough": null,
         "productionReadbackAt": null,
-        "evidence": [],
-        "nextAction": "owner-scoped read-only accessでmigration、件数、孤立関係、backup状態を確認する"
+        "evidence": [
+          "docs/evidence/launch/sites-owner-auth-blocker-20260915.json"
+        ],
+        "nextAction": "本人限定Sitesの所有workspaceへ接続し、検証済みの最新mainを配備後にmigration、件数、孤立関係、backup状態をreadbackする"
       }
     },
     {

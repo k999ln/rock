@@ -442,14 +442,16 @@
     {
       "id": "WEB01",
       "title": "主要画面のstyle契約と配備asset closureを検査し、GitHubと本人限定Sitesを同一commitへ固定",
-      "status": "in_progress",
+      "status": "blocked",
+      "reason": "GitHub mainは全体検証済み。本人限定Sitesは現在の接続アカウントでAccess Denied／project_not_foundとなり、所有workspaceの接続なしでは同一SHA配備とD1本番readbackを実行できない。",
       "dependsOn": ["SKY14", "WLT02", "HOME01"],
       "evidence": [
         "tests/web-route-style-contract.test.mjs",
         "scripts/check-web-asset-closure.mjs",
         "tests/web-asset-closure.test.mjs",
         "app/workspace.css",
-        "docs/product-baseline.md"
+        "docs/product-baseline.md",
+        "docs/evidence/launch/sites-owner-auth-blocker-20260915.json"
       ]
     },
     {

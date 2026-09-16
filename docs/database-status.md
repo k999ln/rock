@@ -9,14 +9,14 @@
 - データ境界: 6、table: 75
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 108 task中 77 done、23 in progress、8 planned、0 blocked
+- 作業進捗: 108 task中 77 done、22 in progress、8 planned、1 blocked
 - 現在milestone: AI自動化チームの最小収益loopとAndroid事前試験
 
 ## 保存境界と配備状態
 
 | 境界 | 責任 | table | source | 配備状態 | 本番適用済み | current readback |
 | --- | --- | ---: | --- | --- | --- | --- |
-| Web D1 | Webサービス状態 | 27 | VERIFIED | SOURCE_AHEAD | 未確認 | 未確認 |
+| Web D1 | Webサービス状態 | 27 | VERIFIED | OWNER_ACCESS_BLOCKED | 未確認 | 未確認 |
 | Sky Billing D1 | 収益精算・請求・受取Wallet | 13 | VERIFIED | DOCUMENTED_NOT_READ_BACK | 0004_rock_settlement_wallet.sql | 未確認 |
 | Operator Dock D1 | 運営専用の端末登録・緊急命令・監査 | 5 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
 | OS Wallet / Spend SQLite | 端末内Wallet・支出承認・PAPER position | 17 | VERIFIED | QEMU_SCOPED | 未確認 | 未確認 |
@@ -45,7 +45,7 @@
 
 `automation_fund_memberships`、`automation_funds`、`book_records`、`csv_billing_accounts`、`csv_job_events`、`csv_jobs`、`csv_monthly_fees`、`devices`、`fund_plans`、`job_events`、`jobs`、`marketplace_approvals`、`marketplace_assets`、`marketplace_events`、`marketplace_positions`、`marketplace_proposals`、`marketplace_receipts`、`marketplace_reservations`、`mercari_revenue_plans`、`sky_connections`、`sky_developer_tokens`、`sky_tool_events`、`sky_tool_packages`、`sky_tool_submissions`、`tool_controls`、`tool_runs`、`work_jobs`
 
-次の確認: owner-scoped read-only accessでmigration、件数、孤立関係、backup状態を確認する
+次の確認: 本人限定Sitesの所有workspaceへ接続し、検証済みの最新mainを配備後にmigration、件数、孤立関係、backup状態をreadbackする
 
 </details>
 
