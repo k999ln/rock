@@ -187,6 +187,49 @@ export function validateBaseline(
     );
   }
   requireValue(
+    data.androidPreFullBuildGate?.status === 'in_progress' &&
+      data.androidPreFullBuildGate?.paidFullBuildAllowed === false &&
+      data.androidPreFullBuildGate?.fullOsBuildRunsAfterPreflight === true &&
+      data.androidPreFullBuildGate?.physicalFlashAndBootRunAfterFullBuild ===
+        true &&
+      data.androidPreFullBuildGate
+        ?.preserveBuildEnvironmentUntilFirstPhysicalBoot === true &&
+      data.androidPreFullBuildGate?.appOnlyFixesPreferStandaloneApkRebuild ===
+        true &&
+      JSON.stringify(
+        data.androidPreFullBuildGate?.systemImageRebuildRequiredFor,
+      ) ===
+        JSON.stringify([
+          'platform_framework',
+          'sepolicy',
+          'privapp_product_configuration',
+          'boot_vendor_partition_or_avb',
+        ]) &&
+      data.androidPreFullBuildGate?.checks?.exactTargetReadback === 'pending' &&
+      data.androidPreFullBuildGate?.checks?.sourceContractAndHostTests ===
+        'passed' &&
+      data.androidPreFullBuildGate?.checks?.standaloneAndroidBuildAndLint ===
+        'pending' &&
+      data.androidPreFullBuildGate?.checks?.androidEmulatorIntegration ===
+        'pending' &&
+      data.androidPreFullBuildGate?.checks?.standaloneLocalAiApk ===
+        'pending' &&
+      data.androidPreFullBuildGate?.checks?.stockPixelOfflineAiAndThermal ===
+        'pending' &&
+      data.androidPreFullBuildGate?.checks?.skyZemaToolWalletPath ===
+        'pending' &&
+      data.androidPreFullBuildGate?.checks
+        ?.sourceArtifactAndSigningPlanFreeze === 'pending',
+    '有料full build前の単体APK・emulator・純正Pixel受入gateを維持してください',
+  );
+  for (const field of ['record', 'androidWorkflow', 'localAiWorkflow']) {
+    const path = data.androidPreFullBuildGate?.[field];
+    requireValue(
+      typeof path === 'string' && existsSync(resolve(root, path)),
+      `androidPreFullBuildGate.${field}: repository内の証拠が必要です`,
+    );
+  }
+  requireValue(
     data.primaryCapabilities?.includes(
       'single-operator-emergency-device-protection',
     ) &&

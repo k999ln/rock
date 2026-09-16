@@ -71,10 +71,12 @@ avocadoOSは、AI自動化ToolをSkyから接続し、利用者が確認した�
 
 1. **QEMU配布**: 製品licenseとproduction署名方式を確定し、署名後の同一archiveで導入・更新・復旧を再受入する。
 2. **対象端末**: 実機の型番、SKU、codename、OEM unlock、bootloader状態を読取り専用で確認し、一機種へ固定する。
-3. **Android full build**: x86_64 Linux環境でsource取得、vendor生成、Soong build、target-files／OTA／factory imageを生成する。
-4. **製品移植**: Sky、Wallet、Game、Local AIをUID、SELinux、暗号化、電源制約を維持してAndroidへ統合する。
-5. **実機受入**: flash、boot、hardware、CTS/VTS、保存、再起動、OTA、rollback、純正復旧、熱・電池を同一端末で確認する。
+3. **full build前試験**: 単体APK build／lint、emulator結合、Local AI APK、純正Pixel上のoffline推論・温度、Sky→Zema→Tool→Walletを完走してsourceとartifactをfreezeする。
+4. **Android full build**: 事前gate合格後だけx86_64 Linux環境を契約し、source取得、vendor生成、Soong build、target-files／OTA／factory imageを生成する。
+5. **実機受入**: 最後にflash、boot、hardware、CTS/VTS、保存、再起動、OTA、rollback、純正復旧、熱・電池を同一端末で確認する。build環境は初回boot確認まで保持する。
 6. **外部接続**: MCP、Wallet、決済、払出し、事業pilotをsandboxから限定LIVEへ段階的に接続する。
+
+Sky、Zema、Wallet、Tool、LLMだけの修正は単体APKで反復し、framework、SELinux、privapp/product設定、boot/vendor/partition/AVBの変更時だけOS imageを再buildします。[full build前の必須gate](docs/phone-preview-20260911.md#有料full-buildへ進む前の必須gate)を全て通すまで、有料サーバー契約とfull buildは開始しません。
 
 本人の判断が必要なのは、製品license、production鍵、対象機種／SKU、課金を伴うbuild環境、実transfer、一般公開です。それ以外の安全な実装・fixture・検査は外部待ちにせず進めます。
 
@@ -251,7 +253,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | OS08 | Local Action AssistantのKotlin・arm64 APKをnative buildし、artifact lockとSoong OS imageへ接続 | 進行中 | [記録](docs/local-ai-os-integration-20260915.md) · [記録](.github/workflows/local-ai-apk.yml) · [記録](scripts/build-local-ai-apk.sh) · [記録](scripts/stage-local-ai-apk.py) · [記録](os/physical/local-action-assistant-artifact-lock.json) |
 | OS09 | 確定した対象端末でGGUF import・機内モード推論・変更確認・30分連続温度試験を完走 | 未着手 | [記録](docs/local-ai-os-integration-20260915.md) |
 | OS10 | Tool／MCP／Provider共通API、本人承認、Wallet台帳、暗号化backup、署名更新gateのsourceを実装 | 進行中 | [記録](docs/platform-core.md) · [記録](docs/os-prototype.md) · [記録](contracts/platform-api.json) · [記録](android/core/src/main/java/dev/rock/core/platform/PlatformStore.java) · [記録](android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatformApi.aidl) · [記録](android/automation/src/main/java/dev/rock/automation/RockPlatformService.java) · [記録](android/sepolicy/private/rockstar_platform.te) |
-| OS11 | Platform CoreをAOSPでbuildしSELinux enforcing boot、production署名更新、OTA rollbackを実機検証 | 未着手 | [記録](docs/platform-core.md) |
+| OS11 | Platform CoreをAOSPでbuildしSELinux enforcing boot、production署名更新、OTA rollbackを実機検証 | 未着手 | [記録](docs/platform-core.md) · [記録](docs/phone-preview-20260911.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) |
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 | G03 | Web DBの保存境界・互換migration・重複防止checkを整理 | 完了 | [記録](docs/data-storage-boundaries.md) · [記録](scripts/check-web-schema.mjs) · [記録](tests/migration-union.test.mjs) |
@@ -308,7 +310,8 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-native-ui-20260910.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](docs/game-wallet-release-checkpoint-20260910.md) · [記録](docs/evidence/hub-final-9abf78a/final-c01-completed-stages.json) · [記録](docs/evidence/gx01/final-9abf78a-20260910.json) |
 | DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 合格 | GX01-CONTRACT | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](docs/evidence/rls01/sdk-final-9abf78a/README.md) · [記録](docs/evidence/rls01/sdk-final-9abf78a/summary.json) · [記録](docs/evidence/gx01/final-9abf78a-20260910.json) |
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
-| DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
+| ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) |
+| DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
 次の作業: 最短ローンチ経路としてWEB01を優先する。現在のWeb/PWA・D1差分を一つの検証済みcommitへ固定してGitHubへ保存し、ownerが本人限定Sitesへの最新版同期を明示承認した後、同じSHAを配備して認証後の主要導線・API・security header・migrationをreadbackする。一般公開、QEMU配布、Android実機、本番金融は別gateのまま維持する。
 <!-- project-status:end -->

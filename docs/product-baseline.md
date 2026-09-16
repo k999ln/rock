@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-15追記（v1.56）: 有料Linux環境でのAndroid OS full buildと実機flash／bootは最後に行う。契約前に、正確なPixel 10型番／SKUのreadback、source・契約・Coreのhost試験、Android単体APKのcompile／lint／unit test、emulator上のBinder／SQLite結合、Local Action Assistant APK生成とhash固定、純正OSのPixel 10上での機内モード推論・Tool確認・保存／再起動・30分温度試験、Sky→Zema→Tool→Wallet経路、source／artifact／署名・更新計画のfreezeを完了する。これらが全て合格するまで有料full buildを開始しない。Sky、Zema、Wallet、Tool、LLMのapp-only修正は単体APK更新で反復できる境界を維持し、framework、SELinux、privapp/product設定、boot/vendor/partition/AVB変更だけをOS image再build対象とする。初回build環境はfactory／OTA／target-filesを保存し、最初の実機bootと修正要否の確認まで保持する。
+
 2026-09-15追記（v1.55）: RQ46の「運営専用」を利用者向けavocadoOS内の隠しrouteではなく、配備先、認証、asset、API、D1を分けた **avocadoOS Operator Dock** として訂正する。利用者向けWeb/PWA・OSホームには管理画面、管理API、入口を含めない。Dockの全requestは静的assetを含めCloudflare Accessの署名JWTをissuer、専用audience、有効期限、単一operator subjectまで検証してから処理する。端末側service未実装の境界は維持する。
 
 2026-09-15記録（v1.54、v1.55で廃止）: 当初は利用者向けWeb内の`/operator`管理画面として実装したが、運営側Dockという要件に反するためv1.55で削除・分離した。ここに記したrouteとWeb D1構成は現行仕様ではない。
@@ -488,6 +490,8 @@ Operator Dockと命令キューの実装は、配備済みまたは端末への�
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-15 v1.56: 有料full buildと実機flash／bootを最後に固定し、正確な端末readback、Android単体APK、emulator、純正Pixel上のoffline AI／温度、Sky→Zema→Tool→Wallet、source／artifact freezeを事前必須gateにした。app-only修正とOS image再build対象を分離し、初回build環境を最初の実機boot確認まで保持する。
 
 2026-09-15 v1.42: 利用者指定のOS共通登録、API version、UID／SELinux分離、本人承認・費用上限・停止・失効、Wallet台帳・receipt重複防止、暗号化backup・schema migration、署名更新・rollback・互換性検査をRQ42へ追加。source実装とnative／実機release gateを分離する。
 

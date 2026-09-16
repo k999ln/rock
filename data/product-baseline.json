@@ -1,5 +1,5 @@
 {
-  "version": "1.55",
+  "version": "1.56",
   "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -378,6 +378,33 @@
     "selinuxEnforcingVerified": false,
     "productionSigningVerified": false,
     "otaRollbackVerified": false
+  },
+  "androidPreFullBuildGate": {
+    "status": "in_progress",
+    "paidFullBuildAllowed": false,
+    "fullOsBuildRunsAfterPreflight": true,
+    "physicalFlashAndBootRunAfterFullBuild": true,
+    "preserveBuildEnvironmentUntilFirstPhysicalBoot": true,
+    "appOnlyFixesPreferStandaloneApkRebuild": true,
+    "systemImageRebuildRequiredFor": [
+      "platform_framework",
+      "sepolicy",
+      "privapp_product_configuration",
+      "boot_vendor_partition_or_avb"
+    ],
+    "checks": {
+      "exactTargetReadback": "pending",
+      "sourceContractAndHostTests": "passed",
+      "standaloneAndroidBuildAndLint": "pending",
+      "androidEmulatorIntegration": "pending",
+      "standaloneLocalAiApk": "pending",
+      "stockPixelOfflineAiAndThermal": "pending",
+      "skyZemaToolWalletPath": "pending",
+      "sourceArtifactAndSigningPlanFreeze": "pending"
+    },
+    "record": "docs/phone-preview-20260911.md",
+    "androidWorkflow": ".github/workflows/android.yml",
+    "localAiWorkflow": ".github/workflows/local-ai-apk.yml"
   },
   "deviceEmergencyAccess": {
     "requested": true,

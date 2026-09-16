@@ -864,8 +864,13 @@
       "id": "OS11",
       "title": "Platform CoreをAOSPでbuildしSELinux enforcing boot、production署名更新、OTA rollbackを実機検証",
       "status": "planned",
-      "dependsOn": ["OS10", "OS04"],
-      "evidence": ["docs/platform-core.md"]
+      "dependsOn": ["OS10", "OS04", "OS08", "OS09"],
+      "evidence": [
+        "docs/platform-core.md",
+        "docs/phone-preview-20260911.md",
+        ".github/workflows/android.yml",
+        ".github/workflows/local-ai-apk.yml"
+      ]
     },
     {
       "id": "G01",
@@ -1467,11 +1472,27 @@
       ]
     },
     {
+      "id": "ANDROID-PREFULL",
+      "task": "OS11",
+      "title": "有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze",
+      "status": "planned",
+      "dependsOn": ["PREVIEW-INSTALL"],
+      "evidence": [
+        "docs/phone-preview-20260911.md",
+        "docs/product-baseline.md",
+        ".github/workflows/android.yml",
+        ".github/workflows/local-ai-apk.yml",
+        "tests/product-baseline.test.mjs",
+        "tests/test_prepare_phone_build.py",
+        "tests/test_stage_local_ai_apk.py"
+      ]
+    },
+    {
       "id": "DEVICE-INSTALL",
       "task": "RLS02",
       "title": "対象1機種でflash・初回起動・OTA rollback・純正復旧を完走",
       "status": "planned",
-      "dependsOn": ["PREVIEW-INSTALL"],
+      "dependsOn": ["PREVIEW-INSTALL", "ANDROID-PREFULL"],
       "evidence": [
         "docs/release-installation-plan-20260909.md",
         "docs/phone-preview-20260911.md"

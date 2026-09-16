@@ -21,6 +21,13 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const fakePlatformBuild = structuredClone(source);
   fakePlatformBuild.androidPlatformCore.aospImageBuilt = true;
   assert.throws(() => validateBaseline(fakePlatformBuild), /OS Platform Core/);
+  const prematurePaidFullBuild = structuredClone(source);
+  prematurePaidFullBuild.androidPreFullBuildGate.paidFullBuildAllowed = true;
+  assert.throws(() => validateBaseline(prematurePaidFullBuild), /full build前/);
+  const skippedAndroidPreflight = structuredClone(source);
+  skippedAndroidPreflight.androidPreFullBuildGate.checks.androidEmulatorIntegration =
+    'passed';
+  assert.throws(() => validateBaseline(skippedAndroidPreflight), /full build前/);
   const noEmergencyOperator = structuredClone(source);
   noEmergencyOperator.deviceEmergencyAccess.singleOperatorActivation = false;
   assert.throws(() => validateBaseline(noEmergencyOperator), /緊急保護/);

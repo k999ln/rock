@@ -12,6 +12,25 @@
 
 **現在はソース統合の準備段階。書込み可能なOSイメージはまだ生成していない。** 既存QEMU版はそのまま保持する。アプリ単体やWebサイトを実機OSの完成物にしない。
 
+## 有料full buildへ進む前の必須gate
+
+OS full buildを先に試して後からappやLLMの不具合を直す順序にはしない。次を上から完了し、同じsourceとartifactをfreezeできるまで、クラウドbuild環境を契約せずfull buildを開始しない。
+
+1. 所有するPixel 10から型番、地域SKU、codename、OEM unlocking可否、bootloader状態を読取り専用で確認する。
+2. product baseline、source lock、Platform Core、backup／migration、更新／rollback契約のhost試験を完走する。
+3. Core、Tool SDK、Automation、記事Toolを単体Android buildし、unit testとlintを通す。
+4. Android emulatorでBinder、SQLite、承認、再起動、重複防止、失敗時復旧を結合試験する。
+5. Local Action Assistantをarm64 APKとして生成し、package、version、permission、署名、SHA-256をartifact lockへ固定する。
+6. OSを書き換える前の純正Pixel 10へ単体APKを入れ、GGUF読込み、機内モード推論、変更操作の別確認、保存／再起動、RAM、30分温度を確認する。
+7. SkyでToolを選ぶ→Zemaで依頼・承認・進捗・結果を見る→Walletのreceiptへ反映する流れを、実機clientで可能な範囲まで通す。
+8. 合格したcommit、manifest、APK／model hash、Platform API、DB schema、署名・更新・復旧計画をfreezeする。
+
+2026-09-15時点では、source／契約整合、Web全体、Platform Core JVM、Java↔TypeScript同等性、ローカルbackend結合は合格した。Android SDKを使うAPK build／lint／emulator、Local Action Assistant APK、純正Pixel 10上のoffline推論・温度、実機client縦断、端末readbackと最終freezeは未実行なので、このgateは**進行中**でありfull build開始条件を満たしていない。
+
+Sky、Zema、Wallet、Tool、LLMは原則として更新可能なAPK境界に置く。これらだけの修正なら単体APKを再buildして純正Android上で再試験する。framework、SELinux、privapp/product設定、boot/vendor/partition/AVBを変更した場合はOS imageの再buildが必要になる。
+
+事前gate合格後に初回full buildを一度行い、同じ作業環境でtarget-files、factory image、OTAを生成する。サーバーや永続volumeは成果物hashを退避しただけで直ちに破棄せず、最初の実機flash／bootと修正要否を確認するまで保持する。full build自体でしか見つからないSoong、SELinux、device統合不具合は残り得るため、1回で必ず完了するとは表示しない。
+
 ## 実装した入口
 
 - `os/physical/frankel-source-lock.json`：Pixel 10／frankelの候補版、manifest、adevtool、端末hook、kernel参照を固定。対象確認・OS build・boot・flashは未完了のまま。
@@ -40,9 +59,9 @@
 
 有料環境はまだ契約・作成していない。利用者のアカウントと予算枠が決まったら、専用環境1台でsource取得→build→成果物保存まで進める。電源OFFだけでは課金が続くため、終了時は必要な成果物の保存・hash読戻し後に、この用途のサーバーを削除して課金終了を確認する。自動削除や費用上限の制御はまだ実装していない。[課金の扱い](https://docs.digitalocean.com/products/droplets/details/pricing/)。
 
-## 準備済みLinuxでの実行順
+## 事前gate合格後の準備済みLinuxでの実行順
 
-以下は未実行の全OS手順。初回対象がPixel 10と確定し、専用環境を用意してから実施する。
+以下は未実行の全OS手順。上の事前gateが全て合格し、初回対象がPixel 10の正確なSKUまで確定してから専用環境を用意して実施する。
 
 1. 上流build手順に従い依存物を入れ、空のOS作業ディレクトリで`repo init -u https://github.com/GrapheneOS/platform_manifest.git -b refs/tags/2026090700`を実行する。
 2. 公式の`https://grapheneos.org/allowed_signers`をその環境の専用公開鍵ファイルへ取得し、manifestのタグ署名と固定commitを検証する。ユーザー全体のGit設定は変更しない。
