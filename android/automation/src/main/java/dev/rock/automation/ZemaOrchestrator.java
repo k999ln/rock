@@ -14,9 +14,10 @@ final class ZemaOrchestrator {
         this.engine = engine;
     }
 
-    String submit(String requestId, String toolId, String prompt, String contextJson,
+    String submit(String requestId, String selectionToken, String prompt, String contextJson,
                   boolean consent) throws Exception {
         if (!consent) throw new SecurityException("LOCAL_ARTIFACT_CONSENT_REQUIRED");
+        String toolId = engine.requireSkySelection(selectionToken);
         String existing = engine.existingWorkId(requestId);
         if (existing != null) return existing;
         String planningPrompt = ZemaToolPlan.planningPrompt(toolId, prompt);
@@ -29,6 +30,8 @@ final class ZemaOrchestrator {
             throw new IllegalStateException("LOCAL_AI_PLAN_FAILED");
         }
         String input = ZemaToolPlan.verifiedInput(toolId, result.payload);
+        if (!toolId.equals(engine.requireSkySelection(selectionToken)))
+            throw new SecurityException("SKY_SELECTION_MISMATCH");
         return engine.submit(requestId, input, false, true);
     }
 }

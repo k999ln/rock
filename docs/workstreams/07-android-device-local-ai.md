@@ -6,7 +6,7 @@
 
 ## 現在地
 
-- Android P1はBroker／Shell／Toolの3 APK、SQLite、Binder、JobSchedulerを実装。Local AI API v2を加えた同一test signer構成で、Android 15 emulatorはBroker 8/8・Shell 3/3、所有Pixel 10もBroker 8/8・Shell 3/3を合格した。PixelではZema planから2段階Tool、結果、履歴、本人確認待ちまで完走した。
+- Android P1はBroker／Shell／Toolの3 APK、SQLite、Binder、JobSchedulerを実装。Shell API v3でnative Sky選択をBroker SQLite schema v2へ保存し、Zemaをselection tokenへ固定した。Android 15 emulatorはBroker 9/9・Shell 4/4を合格。従来の所有Pixel 10はplanから2段階Tool、結果、履歴、本人確認待ちまで完走済みだが、新しい物理再起動試験は端末再接続待ちである。
 - 最初の実機対象は読取り専用ADBで日本向けPixel 10／frankel／GL066へ確定。Pixel 7／pantherは保留。物理端末gateは機種／SKUのみ合格の1/6。SELinux enforcing分離とCDD／CTS／CTS Verifier／VTSを独立した未達gateにした。
 - GrapheneOS `2026091000` tag署名、manifest／adevtool／laguna-muzel 6.6、実機のDynamic Partition／Virtual A/B／AVB 1.4を固定済み。Google純正factory／full OTAの実ファイルSHA、vendor inventory、production署名／復旧計画、full Soong build、flash、実機bootは未実施。
 - 外部Providerは初回OS full buildから分離し、アプリ／サーバー側へ置く。実収益を表示する1.0公開前にはProvider sandboxを必須とし、未合格中はlive収益表示をしない。
@@ -48,5 +48,5 @@
 - `npm run device-support:check`
 - `python3 -m unittest tests/test_prepare_phone_build.py tests/test_stage_local_ai_apk.py`
 - `gradle -p android :core:test :shell-api:assembleDebug :automation:assembleDebug :shell:assembleDebug :article-tool:assembleDebug :automation:lintDebug :shell:lintDebug :article-tool:lintDebug --no-daemon`
-- 同一debug signerのLocal AI／Broker／Tool／Shellを導入したAndroid 15 emulatorとstock Pixelで、Broker 8 testとShell 3 testを実行する。emulatorはモデルなしで0件停止、Pixelは計画受入、2 Tool、結果、履歴まで確認する。[証拠](../evidence/android-local-ai-plan-v2-20260916.json)
+- 同一debug signerのLocal AI／Broker／Tool／Shellを導入したAndroid 15 emulatorでBroker 9 testとShell 4 testを実行し、モデルなし0件停止、schema migration、選択復元、不正token拒否を確認する。stock Pixelはseed後に実再起動し、別processのrecover phaseでlease回収、2 Tool、結果、7履歴eventまで確認する。従来のplan受入は[証拠](../evidence/android-local-ai-plan-v2-20260916.json)。
 - 対象端末のflash／boot／OTA／rollback／stock recovery受入

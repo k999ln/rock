@@ -28,6 +28,15 @@ assert.equal(platform.isolation.currentLayout, 'dev.rock.shell_ui_separate_from_
 assert.equal(platform.isolation.targetLayout, 'dev.rock.shell_ui_separate_from_dev.rock.automation_headless_broker');
 assert.equal(platform.isolation.targetPolicy, 'data/android-release-architecture-policy.json');
 assert.equal(platform.isolation.targetStateImplemented, true);
+assert.deepEqual(platform.nativeSkyHandoff, {
+  shellApiVersion: 3,
+  selectionStore: 'broker_sqlite',
+  selectionSchemaVersion: 2,
+  selectionTokenRequiredByZema: true,
+  selectionSurvivesUiAndDeviceRestart: true,
+  browserSessionStorageUsed: false,
+  v1ToolAllowlist: ['article-preparation@1'],
+});
 assert.equal(platform.releaseStatus, 'NOT_PRODUCTION_READY');
 const platformAidl = read('android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatformApi.aidl');
 const platformStore = read('android/core/src/main/java/dev/rock/core/platform/PlatformStore.java');
@@ -90,18 +99,25 @@ assert.ok(read('os/device/AndroidProducts.mk').includes(`${lock.product}-${lock.
 assert.ok(read('android/Android.bp').includes('RockAutomationPrototype'));
 assert.ok(read('android/Android.bp').includes('name: "RockShell"'));
 const shellApi = read('android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl');
-assert.ok(shellApi.includes('const int API_VERSION = 2'));
-for (const call of ['snapshot', 'submit', 'setPaused', 'result', 'complete', 'retry', 'cancel', 'localAiStatus', 'submitZema']) assert.ok(shellApi.includes(`${call}(`));
+assert.ok(shellApi.includes('const int API_VERSION = 3'));
+for (const call of ['snapshot', 'submit', 'setPaused', 'result', 'complete', 'retry', 'cancel', 'localAiStatus', 'submitZema', 'skySelection', 'selectSkyTool']) assert.ok(shellApi.includes(`${call}(`));
 const shellService = read('android/automation/src/main/java/dev/rock/automation/RockShellService.java');
 assert.ok(shellService.includes('SHELL_PACKAGE = "dev.rock.shell"'));
 assert.ok(shellService.includes('getPackagesForUid(uid)'));
 assert.ok(shellService.includes('checkSignatures(getPackageName(), SHELL_PACKAGE)'));
 assert.ok(shellService.includes('new ZemaOrchestrator'));
+assert.ok(shellService.includes('engine().selectSkyTool(toolId)'));
+const engine = read('android/core/src/main/java/dev/rock/core/Engine.java');
+assert.ok(engine.includes('SCHEMA_VERSION = 2'));
+assert.ok(engine.includes('CREATE TABLE sky_selection'));
+assert.ok(engine.includes('requireSkySelection'));
 const zemaPlan = read('android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java');
 assert.ok(zemaPlan.includes('ZEMA_TOOL_SUBSTITUTION'));
 assert.ok(zemaPlan.includes('ArticlePayload.validateExecutable(canonical)'));
 const shellMain = read('android/shell/src/main/java/dev/rock/shell/MainActivity.java');
 assert.ok(shellMain.includes('new ShellConnection(this)'));
+assert.ok(shellMain.includes('connection.selectSkyTool(ARTICLE_TOOL)'));
+assert.ok(shellMain.includes('selectionToken'));
 assert.ok(!/dev\.rock\.core|AndroidDatabase|RockApplication/.test(shellMain));
 const localAi = JSON.parse(read('contracts/local-ai-runtime.json'));
 const localAiLock = JSON.parse(read(localAi.sourceLock));

@@ -24,7 +24,7 @@ void test('whole-system composition audit records the first value path before fu
   ).default;
   assert.equal(
     audit.priorityOrder[0].includes(
-      'native Sky persistence to the verified Zema selected-Tool path',
+      'two-phase native Sky in-flight reboot recovery acceptance',
     ),
     true,
   );

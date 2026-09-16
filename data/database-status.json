@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 72,
+    "tableCount": 73,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -15,7 +15,7 @@
     "planned": 8,
     "blocked": 0,
     "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-    "nextAction": "次はnative Skyの選択を検証済みZema→Local AI→選択Tool経路へ永続handoffし、実機再起動と失敗復旧でも結果・履歴が保たれることを確認する。並行してbackup v2を完成させ、復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進む。"
+    "nextAction": "Pixelを再接続し、実行中のnative Sky選択仕事をseedした後に端末を実再起動して、lease回収、2 Tool、結果、7履歴eventまでrecover phaseで確認する。次にbackup v2、復旧artifact、vendor inventory、production署名、Operator Agentの事前gateを進める。"
   },
   "webSchema": {
     "tableCount": 27,
@@ -293,10 +293,11 @@
         "rock_meta",
         "runs",
         "settings",
+        "sky_selection",
         "works"
       ],
       "expectedAppliedThrough": null,
-      "tableCount": 6,
+      "tableCount": 7,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Android Work Engine SQLite",

@@ -12,6 +12,17 @@ import static org.junit.Assert.*;
 /** Verifies the unprivileged shell reaches state only through the exact signed Broker. */
 @RunWith(AndroidJUnit4.class)
 public final class ShellBrokerIntegrationTest {
+    private static String selectedArticleTool(ShellConnection broker) throws Exception {
+        JSONObject selected = new JSONObject(broker.selectSkyTool("article-preparation@1"));
+        assertEquals("selected", selected.getString("status"));
+        assertEquals("article-preparation@1", selected.getString("toolId"));
+        assertEquals(1, selected.getInt("revision"));
+        String token = selected.getString("selectionToken");
+        JSONObject restored = new JSONObject(broker.skySelection());
+        assertEquals(token, restored.getString("selectionToken"));
+        return token;
+    }
+
     @Test public void separateShellUsesSignedBrokerWithoutInternetOrLocalDatabase() throws Exception {
         android.content.Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         PackageManager packages = context.getPackageManager();
@@ -26,11 +37,12 @@ public final class ShellBrokerIntegrationTest {
             packages.checkSignatures(context.getPackageName(), ShellConnection.BROKER_PACKAGE));
 
         ShellConnection broker = new ShellConnection(context);
-        assertEquals(2, ShellConnection.API_VERSION);
+        assertEquals(3, ShellConnection.API_VERSION);
         JSONObject before = new JSONObject(broker.snapshot());
         assertEquals(1, before.getInt("apiVersion"));
         assertTrue(before.has("totalWorkCount"));
         assertTrue(before.has("truncated"));
+        assertTrue(selectedArticleTool(broker).matches("[0-9a-f-]{36}"));
         String input = new JSONObject()
             .put("markdown", "# Test\n\nSource ([A](https://example.test/source))\n\nDetails")
             .put("summary", "- one\n- two\n- three")
@@ -50,10 +62,11 @@ public final class ShellBrokerIntegrationTest {
     @Test public void zemaCommitsOneVerifiedPlanOrNoWorkAtAll() throws Exception {
         android.content.Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         ShellConnection broker = new ShellConnection(context);
+        String selectionToken = selectedArticleTool(broker);
         String localAiState = broker.localAiStatus();
         int before = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
         JSONObject response = new JSONObject(broker.submitZema(UUID.randomUUID().toString(),
-            "article-preparation@1",
+            selectionToken,
             "検証用の記事原稿と要約を準備して。無料部分の後に詳しい本文も残してください。",
             "[]", true));
         assertEquals(3, response.length());
@@ -83,11 +96,25 @@ public final class ShellBrokerIntegrationTest {
     @Test public void zemaRequiresConsentBeforeCallingLocalAiOrCreatingWork() throws Exception {
         android.content.Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         ShellConnection broker = new ShellConnection(context);
+        String selectionToken = selectedArticleTool(broker);
         int before = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
         JSONObject response = new JSONObject(broker.submitZema(UUID.randomUUID().toString(),
-            "article-preparation@1", "This must not reach Local AI.", "[]", false));
+            selectionToken, "This must not reach Local AI.", "[]", false));
         assertEquals("blocked", response.getString("status"));
         assertEquals("DENIED", response.getString("code"));
+        assertTrue(response.isNull("workId"));
+        assertEquals(before, new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
+    }
+
+    @Test public void zemaRejectsAnUnpersistedSkySelectionWithoutCreatingWork() throws Exception {
+        android.content.Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        ShellConnection broker = new ShellConnection(context);
+        selectedArticleTool(broker);
+        int before = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
+        JSONObject response = new JSONObject(broker.submitZema(UUID.randomUUID().toString(),
+            UUID.randomUUID().toString(), "This must not reach Local AI.", "[]", true));
+        assertEquals("blocked", response.getString("status"));
+        assertEquals("SKY_SELECTION_REQUIRED", response.getString("code"));
         assertTrue(response.isNull("workId"));
         assertEquals(before, new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
     }

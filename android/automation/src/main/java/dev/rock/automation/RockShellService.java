@@ -21,7 +21,7 @@ public final class RockShellService extends Service {
     private final Object zemaLock = new Object();
 
     private final IShellApi.Stub binder = new IShellApi.Stub() {
-        @Override public int getApiVersion() { enforceShellCaller(); return 2; }
+        @Override public int getApiVersion() { enforceShellCaller(); return 3; }
         @Override public String snapshot() throws android.os.RemoteException {
             enforceShellCaller();
             try { return snapshotJson(); }
@@ -44,13 +44,13 @@ public final class RockShellService extends Service {
             try { return new LocalAiConnection(RockShellService.this).status(); }
             catch (Exception error) { throw new android.os.RemoteException("LOCAL_AI_UNAVAILABLE"); }
         }
-        @Override public String submitZema(String requestId, String toolId, String prompt,
+        @Override public String submitZema(String requestId, String selectionToken, String prompt,
                 String contextJson, boolean consent) {
             enforceShellCaller();
             try {
                 synchronized (zemaLock) {
                     String id = new ZemaOrchestrator(RockShellService.this, engine())
-                        .submit(requestId, toolId, prompt, contextJson, consent);
+                        .submit(requestId, selectionToken, prompt, contextJson, consent);
                     Scheduler.schedule(RockShellService.this);
                     return zemaResponse("queued", null, id);
                 }
@@ -58,6 +58,9 @@ public final class RockShellService extends Service {
                 String reason = denied.getMessage();
                 String code;
                 if ("LOCAL_ARTIFACT_CONSENT_REQUIRED".equals(reason)) code = "DENIED";
+                else if ("SKY_SELECTION_REQUIRED".equals(reason)
+                        || "SKY_SELECTION_MISMATCH".equals(reason))
+                    code = "SKY_SELECTION_REQUIRED";
                 else if ("ZEMA_TOOL_SUBSTITUTION".equals(reason)
                         || "LOCAL_AI_MAY_NOT_EXECUTE_SELECTED_TOOL".equals(reason))
                     code = "INVALID_PLAN";
@@ -68,6 +71,12 @@ public final class RockShellService extends Service {
             } catch (Exception failed) {
                 return zemaResponse("blocked", "LOCAL_AI_UNAVAILABLE", null);
             }
+        }
+        @Override public String skySelection() {
+            enforceShellCaller(); return skySelectionResponse(engine().skySelection());
+        }
+        @Override public String selectSkyTool(String toolId) {
+            enforceShellCaller(); return skySelectionResponse(engine().selectSkyTool(toolId));
         }
     };
 
@@ -131,6 +140,19 @@ public final class RockShellService extends Service {
             return result;
         } catch (JSONException invalid) {
             throw new IllegalStateException("ZEMA_RESPONSE_JSON", invalid);
+        }
+    }
+
+    private static String skySelectionResponse(Engine.SkySelection selection) {
+        try {
+            JSONObject response = new JSONObject();
+            response.put("status", selection == null ? "none" : "selected");
+            response.put("selectionToken", selection == null ? JSONObject.NULL : selection.token);
+            response.put("toolId", selection == null ? JSONObject.NULL : selection.toolId);
+            response.put("revision", selection == null ? JSONObject.NULL : selection.revision);
+            String result = response.toString(); Engine.bounded(result); return result;
+        } catch (JSONException invalid) {
+            throw new IllegalStateException("SKY_SELECTION_JSON", invalid);
         }
     }
 }

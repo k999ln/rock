@@ -9,6 +9,7 @@ import java.util.UUID;
 
 /** Prototype: one Android user/database, two pinned local transforms, no external effects. */
 public final class Engine {
+    public static final int SCHEMA_VERSION = 2;
     public static final int MAX_BYTES = 32 * 1024;
     public static final int MAX_WORKS = 100;
     public static final long LEASE_MS = 60_000;
@@ -28,6 +29,16 @@ public final class Engine {
         }
     }
 
+    /** Broker-owned durable record of the Tool explicitly selected in native Sky. */
+    public static final class SkySelection {
+        public final String token, toolId;
+        public final int revision;
+        SkySelection(Map<String,String> row) {
+            token = row.get("selection_token"); toolId = row.get("tool_id");
+            revision = Integer.parseInt(row.get("revision"));
+        }
+    }
+
     public Engine(Database db) {
         this.db = db;
         db.execute("PRAGMA foreign_keys=ON");
@@ -40,10 +51,52 @@ public final class Engine {
                 } catch (java.io.IOException e) { throw new IllegalStateException("SCHEMA_READ_FAILED", e); }
             }
             List<Map<String,String>> versions = db.query("SELECT version FROM rock_meta");
-            if (versions.size() != 1 || !"1".equals(versions.get(0).get("version")))
+            if (versions.size() != 1) throw new IllegalStateException("UNSUPPORTED_DATABASE_VERSION");
+            int version = Integer.parseInt(versions.get(0).get("version"));
+            if (version == 1) {
+                db.execute("ALTER TABLE rock_meta RENAME TO rock_meta_v1");
+                db.execute("CREATE TABLE rock_meta(version INTEGER NOT NULL CHECK(version>=1))");
+                db.execute("INSERT INTO rock_meta VALUES(?)", SCHEMA_VERSION);
+                db.execute("DROP TABLE rock_meta_v1");
+                db.execute("CREATE TABLE sky_selection(id INTEGER PRIMARY KEY CHECK(id=1),selection_token TEXT NOT NULL UNIQUE,tool_id TEXT NOT NULL CHECK(tool_id='article-preparation@1'),revision INTEGER NOT NULL CHECK(revision>=1))");
+                version = SCHEMA_VERSION;
+            }
+            if (version != SCHEMA_VERSION)
                 throw new IllegalStateException("UNSUPPORTED_DATABASE_VERSION");
             return null;
         });
+    }
+
+    /** Re-selecting the same v1 Tool is stable, so UI recreation cannot mint a different handoff. */
+    public SkySelection selectSkyTool(String toolId) {
+        if (!RECIPE.equals(toolId)) throw new SecurityException("SKY_TOOL_NOT_ALLOWED");
+        return db.transaction(() -> {
+            List<Map<String,String>> rows = db.query("SELECT selection_token,tool_id,revision FROM sky_selection WHERE id=1");
+            if (rows.isEmpty()) {
+                db.execute("INSERT INTO sky_selection(id,selection_token,tool_id,revision) VALUES(1,?,?,1)",
+                    UUID.randomUUID().toString(), toolId);
+                rows = db.query("SELECT selection_token,tool_id,revision FROM sky_selection WHERE id=1");
+            }
+            if (rows.size() != 1 || !toolId.equals(rows.get(0).get("tool_id")))
+                throw new IllegalStateException("SKY_SELECTION_CORRUPT");
+            return new SkySelection(rows.get(0));
+        });
+    }
+
+    public SkySelection skySelection() {
+        List<Map<String,String>> rows = db.query("SELECT selection_token,tool_id,revision FROM sky_selection WHERE id=1");
+        if (rows.size() > 1) throw new IllegalStateException("SKY_SELECTION_CORRUPT");
+        return rows.isEmpty() ? null : new SkySelection(rows.get(0));
+    }
+
+    /** Returns the exact selected Tool only when the caller presents the persisted selection token. */
+    public String requireSkySelection(String selectionToken) {
+        if (selectionToken == null || !selectionToken.matches("[0-9a-f-]{36}"))
+            throw new SecurityException("SKY_SELECTION_REQUIRED");
+        SkySelection selected = skySelection();
+        if (selected == null || !selectionToken.equals(selected.token))
+            throw new SecurityException("SKY_SELECTION_MISMATCH");
+        return selected.toolId;
     }
 
     public static String digest(String value) {

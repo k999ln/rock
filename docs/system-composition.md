@@ -14,13 +14,13 @@
 - Tool完了、検証済み収益、Wallet反映、ファンド実績を別状態で管理
 - 運営管理画面はOS外、ゲームは中核loop後の派生
 
-ただし、**全体が一つの製品として稼働済みという意味ではない**。native ZemaからShell／Broker／Local AI API v2／最初の選択Toolまで接続し、Pixelで厳格plan、2段階Tool実行、結果、履歴、本人確認待ちまで完走した。モデルなしemulatorでは仕事0件のまま停止した。一方、native Skyの永続handoff、全経路の再起動／失敗復旧、Wallet・外部Provider、AOSP imageは未完了である。本番準備完了、収益や利回り、実機OS完成は主張しない。
+ただし、**全体が一つの製品として稼働済みという意味ではない**。native Skyの選択をBroker SQLiteへ永続化し、保存済みtokenだけをZema／Local AI API v2／最初の選択Toolへ渡すsourceとemulator試験は合格した。従来のPixelでは厳格plan、2段階Tool実行、結果、履歴、本人確認待ちまで完走済みである。一方、新経路の物理再起動／失敗復旧、Wallet・外部Provider、AOSP imageは未完了である。本番準備完了、収益や利回り、実機OS完成は主張しない。
 
 ## 組合せの判定
 
 | 層 | 選択 | 設計適合 | 実際の到達点 |
 | --- | --- | --- | --- |
-| 製品体験 | Skyで選びZemaで全仕事を扱う。CSVはSky Tool | 適合 | Web統合、native Zema入口と最初のTool接続を実装。native Skyは未完成 |
+| 製品体験 | Skyで選びZemaで全仕事を扱う。CSVはSky Tool | 適合 | native Sky選択のBroker永続化とZema token結合はemulator合格。物理再起動受入待ち |
 | 端末 | 共通Core＋SKU別DSP、Pixel 10 GL066が最初 | 適合 | 対象確定、full build／flash未実施 |
 | 権限 | ShellとBrokerを分離し最小権限化 | 適合 | 単体build・emulator・stock Pixelの成功／fail-closed Binder試験合格、AOSP enforcing未実施 |
 | LLM | offlineで交換可能なGGUF runtime | 適合 | Pixel単体APKとplan-only API v2合格、OS image未搭載 |
@@ -33,13 +33,13 @@
 
 ## 1.0の未接続点
 
-最重要の不足は、検証済みの`Zema → Android Shell → Broker → Local AI → 選択Tool → 結果・履歴`へnative Skyの選択を永続handoffし、実機再起動・中断・失敗復旧でも同じ仕事を安全に再開できるようにすること。続いてbackup v2の復元・本人再結合、production署名と純正復旧入力、端末側Operator Agentが残る。
+最重要の不足は、実行中の`native Sky → Zema → Broker → Local AI → 選択Tool`を所有Pixelの実再起動で中断し、同じ選択・仕事・履歴から安全に再開できることを二段階試験で確定すること。source、DB migration、emulatorの再open／不正token拒否までは合格した。続いてbackup v2の復元・本人再結合、production署名と純正復旧入力、端末側Operator Agentが残る。
 
 収益については、`Tool結果 → 外部Provider → 署名済みEarning Receipt → Wallet照合`のうちRock所有fixtureまでは通っている。外部Provider sandbox、返金・chargeback・結果不明、owner署名と最初の管理されたtransferは未完了である。ファンドはこの実績が複数回たまるまでPAPERのままにし、ゲームは1.0中核loopを止めない。
 
 ## 進める順番
 
-1. native Skyの選択を検証済みZema経路へ永続handoffし、stock Pixelで再起動・中断・失敗復旧を確認する。
+1. 接続を戻したstock Pixelで、実行中のnative Sky選択仕事を実再起動し、lease回収・再開・結果・履歴を確認する。
 2. backup v2復元、owner再結合、clone拒否を完了する。
 3. 純正復旧artifact、vendor inventory、production署名入力を固定する。
 4. 制限付きOperator Agentと監査経路を実機訓練する。

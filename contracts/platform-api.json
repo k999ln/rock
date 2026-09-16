@@ -40,6 +40,15 @@
     "targetPolicy": "data/android-release-architecture-policy.json",
     "targetStateImplemented": true
   },
+  "nativeSkyHandoff": {
+    "shellApiVersion": 3,
+    "selectionStore": "broker_sqlite",
+    "selectionSchemaVersion": 2,
+    "selectionTokenRequiredByZema": true,
+    "selectionSurvivesUiAndDeviceRestart": true,
+    "browserSessionStorageUsed": false,
+    "v1ToolAllowlist": ["article-preparation@1"]
+  },
   "implementationStatus": "SOURCE_PARTIAL_UI_BROKER_SPLIT_IMPLEMENTED_OPERATOR_AGENT_BACKUP_V2_RUNTIME_AND_SEPOLICY_BUILD_PENDING",
   "releaseStatus": "NOT_PRODUCTION_READY"
 }

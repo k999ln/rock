@@ -12,7 +12,7 @@ avocadoOSは、利用者が自分専用のAI自動化チームを所有し、通
 | --------------- | -------------------------------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------ |
 | Web / PWA       | Home、Sky、Zema、仕事、CSV、Wallet、Market、設定、Studio、D1 API                             | 実装あり・本人限定Siteの最新版同期待ち | 同一sourceの配備、認証後の実操作、一般公開gate                     |
 | Linux / QEMU    | OS起動、Platform API、専用UID、SQLite、保存、A/B更新、rollback、backup、Wallet／Game fixture | Developer Preview候補は10 gate中6合格  | 製品license、production署名、署名後の同一候補受入、公開承認        |
-| Android P1      | Broker／Shell／Tool、Local AI plan v2、Pixelで最初のTool結果・履歴                           | 技術試作                               | native Sky／Wallet／Game、再起動復旧、OS full build                |
+| Android P1      | Broker／Shell／Tool、Local AI plan v2、native Sky選択のBroker永続化                          | 技術試作                               | Pixel再起動受入、Wallet／Game、OS full build                        |
 | Android物理端末 | Pixel 10 GL066固定、署名source／partition構成、初回flash方針、7項目のproduction構成           | 6必須gate中1合格                       | BSP、full build、SELinux、CTS/VTS、OTA、純正復旧                  |
 | Local AI        | 固定source、API v2、Qwen機内モード、plan→2 Tool→結果・履歴、33分実機熱試験                   | 単体実機合格・OS image未搭載           | 全経路再起動、専用SELinux domain、production署名、同一build再受入  |
 | Wallet / 実資金 | 本人別台帳、Earning Receipt、月最大8.88 USD精算、Base USDC照合コード                         | sandbox／コード段階                    | owner署名、最初の実transfer、決済・払出しProvider受入              |
@@ -33,7 +33,7 @@ avocadoOSは、利用者が自分専用のAI自動化チームを所有し、通
 - **Android rollback防止**: avocadoOS管理indexは署名前に固定した正式releaseのUTC Unix秒を使い、Google管理値は変更しません。A/Bのtrial slotでは端末indexを進めず、起動成功後だけ確定します。正確なlocation/value、失敗fallback、古い署名済みimage拒否はfull buildとPixel 10実機試験待ちです。
 - **Pixel 10純正復旧**: firmware freeze時点のGoogle公式最新安定版を選び、factory imageとfull OTAを同一buildで揃えます。full OTAは非wipe復旧と両slot boot可能化、factory imageはwipeを伴う最終復旧に限定します。利用条件同意、実ファイル取得、byte数・SHA-256固定は未完了です。
 - **Business Pilot**: CSV整形、メルカリ販売支援、Fashion Brand Opsを実装しています。外部市場の取引や売上を自動で実績化しません。
-- **Android production構成**: `dev.rock.automation`をheadless Platform Brokerとして維持し、最終Home／Sky／Zemaを載せるAndroid UI入口を、通信・DB・Keystore・広い管理権限を持たない`dev.rock.shell`へ分離しました。Local AI plan-only API v2はJSON Schemaで出力を制約し、Brokerが選択Toolと実行可能入力を再検証します。emulatorではモデルなし0件停止、stock PixelではZema→2 Tool→結果・履歴・本人確認待ちまで合格しました。native Skyの永続handoff、全経路再起動、Soong image、SELinux enforcingは未完了です。Local AI、Tool、MCP、Provider、Operator Agentは別UID／別SELinux domain、Operator Dockは利用者OS外です。[Platform Core](docs/platform-core.md)／[実測証拠](docs/evidence/android-local-ai-plan-v2-20260916.json)。
+- **Android production構成**: `dev.rock.automation`をheadless Platform Brokerとして維持し、最終Home／Sky／Zemaを載せるAndroid UI入口を、通信・DB・Keystore・広い管理権限を持たない`dev.rock.shell`へ分離しました。Shell API v3はnative Sky選択をBroker SQLite schema v2へ保存し、保存済みtokenだけをZemaへ渡します。Local AI plan-only API v2はJSON Schemaで出力を制約し、Brokerが選択Toolと実行可能入力を再検証します。emulatorではschema移行・選択復元・不正token拒否・モデルなし0件停止まで合格しました。従来のstock Pixel経路はZema→2 Tool→結果・履歴まで合格済みですが、新しい物理再起動受入は端末再接続待ちです。Soong image、SELinux enforcingも未完了です。[Platform Core](docs/platform-core.md)／[従来の実測証拠](docs/evidence/android-local-ai-plan-v2-20260916.json)。
 
 ## 設計方針
 
@@ -73,7 +73,7 @@ avocadoOSは、利用者が自分専用のAI自動化チームを所有し、通
 
 ### OS完成へ向けた順番
 
-1. **端末内価値loop**: native Skyの選択を検証済みZema経路へ永続handoffし、stock Pixelで全経路の再起動・中断・失敗復旧を確認する。
+1. **端末内価値loop**: 接続を戻したstock Pixelで、実行中のnative Sky選択仕事を実再起動し、lease回収・再開・結果・履歴を確認する。
 2. **flash前の保全**: backup v2復元、owner再結合、clone拒否、純正復旧artifact、vendor inventory、production署名入力を完成させる。
 3. **緊急保護**: OS外Operator Dockから制限付きAndroid Agentへ至る署名命令、端末側制限、利用者表示、追記監査を実機訓練する。
 4. **Android full build**: 全事前gate合格後だけx86_64 Linux環境を契約し、source取得、vendor生成、Soong build、target-files／OTA／factory imageを生成する。
@@ -319,7 +319,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 次はnative Skyの選択を検証済みZema→Local AI→選択Tool経路へ永続handoffし、実機再起動と失敗復旧でも結果・履歴が保たれることを確認する。並行してbackup v2を完成させ、復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進む。
+次の作業: Pixelを再接続し、実行中のnative Sky選択仕事をseedした後に端末を実再起動して、lease回収、2 Tool、結果、7履歴eventまでrecover phaseで確認する。次にbackup v2、復旧artifact、vendor inventory、production署名、Operator Agentの事前gateを進める。
 <!-- project-status:end -->
 
 </details>

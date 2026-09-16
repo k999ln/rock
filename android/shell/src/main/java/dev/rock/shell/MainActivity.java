@@ -20,17 +20,25 @@ public final class MainActivity extends Activity {
     private static final String ARTICLE_TOOL = "article-preparation@1";
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
     private LinearLayout form, jobs;
-    private TextView message;
+    private TextView message, skyStatus;
     private EditText zemaPrompt, markdown, summary, paid, url, cutoff, price;
     private CheckBox zemaConsent, consent, sample;
+    private volatile String skySelectionToken;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         ScrollView scroll = new ScrollView(this); form = new LinearLayout(this); form.setOrientation(LinearLayout.VERTICAL);
         int padding = (int)(20 * getResources().getDisplayMetrics().density); form.setPadding(padding, padding, padding, padding);
         scroll.addView(form); setContentView(scroll);
-        label(form, "avocadoOS · Zema", 24);
-        label(form, "Skyで選択中: 出典整理→無料記事。Zemaが端末内AIで入力を組み立て、Brokerが選択済みToolだけを実行します。外部投稿・決済はしません。", 16);
+        label(form, "avocadoOS · Sky → Zema", 24);
+        label(form, "Sky", 22);
+        label(form, "Toolの選択は端末内Brokerへ保存され、アプリや端末の再起動後も同じ選択を確認できます。", 16);
+        skyStatus = label(form, "Skyの選択を確認中…", 16);
+        button(form, "出典整理→無料記事を選択", () -> perform(connection -> {
+            connection.selectSkyTool(ARTICLE_TOOL); return null;
+        }));
+        label(form, "Zema", 22);
+        label(form, "Zemaが端末内AIで入力を組み立て、Skyで選択済みのToolだけを実行します。外部投稿・決済はしません。", 16);
         zemaPrompt = field("Zemaへの依頼", "", true);
         zemaConsent = new CheckBox(this); zemaConsent.setText("依頼を端末内AIで計画し、選択済みToolの仕事として保存することを許可する"); form.addView(zemaConsent);
         message = label(form, "", 16);
@@ -79,10 +87,12 @@ public final class MainActivity extends Activity {
                 ShellConnection connection = new ShellConnection(this);
                 action.run(connection);
                 JSONObject snapshot = new JSONObject(connection.snapshot());
+                JSONObject selection = new JSONObject(connection.skySelection());
                 boolean paused = snapshot.getBoolean("paused");
                 JSONArray workItems = snapshot.getJSONArray("works");
                 runOnUiThread(() -> {
                     if (!isDestroyed()) {
+                        applySkySelection(selection);
                         message.setText(paused ? "全停止中" : "予約済みの仕事は充電中に実行します。原稿・成果物はBroker側だけに保存します。");
                         render(workItems);
                     }
@@ -105,14 +115,16 @@ public final class MainActivity extends Activity {
 
     private void submitZema() {
         String prompt = zemaPrompt.getText().toString();
+        String selectionToken = skySelectionToken;
         boolean allowed = zemaConsent.isChecked();
         if (prompt.trim().isEmpty()) { message.setText("Zemaへの依頼を入力してください。"); return; }
+        if (selectionToken == null) { message.setText("先にSkyで使用するToolを選択してください。"); return; }
         message.setText("Zemaが端末内で計画しています…");
         worker.execute(() -> {
             try {
                 ShellConnection connection = new ShellConnection(this);
                 JSONObject response = new JSONObject(connection.submitZema(
-                    UUID.randomUUID().toString(), ARTICLE_TOOL, prompt, "[]", allowed));
+                    UUID.randomUUID().toString(), selectionToken, prompt, "[]", allowed));
                 JSONObject snapshot = new JSONObject(connection.snapshot());
                 JSONArray workItems = snapshot.getJSONArray("works");
                 String status = response.getString("status");
@@ -137,8 +149,20 @@ public final class MainActivity extends Activity {
 
     private static String zemaBlockedMessage(String code) {
         if ("DENIED".equals(code)) return "開始していません。保存への同意を確認してください。";
+        if ("SKY_SELECTION_REQUIRED".equals(code)) return "開始していません。SkyのTool選択を更新してください。";
         if ("INVALID_PLAN".equals(code)) return "開始していません。端末内AIの計画が安全確認を通りませんでした。";
         return "開始していません。Local AIのアプリ、モデル、署名、APIを確認してください。";
+    }
+
+    private void applySkySelection(JSONObject selection) {
+        if ("selected".equals(selection.optString("status"))
+                && ARTICLE_TOOL.equals(selection.optString("toolId"))) {
+            skySelectionToken = selection.optString("selectionToken", null);
+            skyStatus.setText("選択済み: 出典整理→無料記事 · revision " + selection.optInt("revision"));
+        } else {
+            skySelectionToken = null;
+            skyStatus.setText("未選択です。使用するToolを選んでください。");
+        }
     }
 
     private void render(JSONArray workItems) {

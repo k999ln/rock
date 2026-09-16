@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-16 native Sky永続handoff追記（v1.65）: Shell API v3へ`selectSkyTool`と`skySelection`を追加し、Skyで選んだ`article-preparation@1`をShellの一時状態ではなくBroker SQLite schema v2へ保存する。Zemaは保存済みselection tokenが一致する場合だけLocal AI計画を開始し、不一致は仕事0件で拒否する。schema v1→v2 migration、DB再open、Android 15 emulatorのBroker 9/9・Shell 4/4、全Android 378 taskは合格した。Pixelを実際に再起動して実行中leaseを復旧する二段階試験は端末再接続待ちで、まだ合格扱いにしない。
+
 2026-09-16計画専用AI結合追記（v1.64）: Local AI Binder API v2へ`article-preparation@1/input-v1`の計画専用callを追加し、JSON Schema constrained decoding、Tool call禁止、Broker側のclosed field／選択Tool／実行可能性の再検証を固定した。Android 15 emulatorはBroker 8/8・Shell 3/3でモデルなし0件停止、所有Pixel 10 GL066は同じ試験数でZema plan、`citations@1`、`free-article@1`、結果、5履歴event、本人確認待ちまで合格した。native Skyの永続handoff、全経路の再起動／失敗復旧、AOSP image、production署名は未完了である。[実機証拠](evidence/android-local-ai-plan-v2-20260916.json)。
 
 2026-09-16全体構成追記（v1.63）: RQ47の製品目的に対して、OS、Sky、Zema、Android Shell／Broker、Local AI、Tool、検証済み収益、Wallet／Fund、Operator、更新・復旧、Gameの選択と接続状態を全体構成監査へ固定した。現在の選択は整合するが、全component実装、全必須経路の統合、production準備はいずれも未完了とする。旧BlackBerry-firstの現行task表現とQEMU-firstのスマホ優先順位を退役し、Pixel 10 GL066上のoffline AI team loopをfull build前の最優先とする。[全体構成監査](system-composition.md)。
@@ -440,7 +442,7 @@ Local Action Assistantを、RockstarOSの物理Android版で端末内推論を�
 
 読み取りtoolは許可リスト内だけを実行し、メモ・リマインダー作成はproposalを端末内へ一時保存して、OSの別確認呼出しで本人が許可するまで実行しない。release APKは通信権限なし、arm64 native library、固定SHA-256とsizeを検査してからSoongへstageし、AOSPのrelease署名工程へ渡す。GGUFはsourceやAPKへ同梱せず、配布元、license、hash、端末RAM・速度・温度を確認後にimportする。
 
-client/server source、AIDL API v2契約、base＋plan overlay、APK staging gate、固定sourceからのarm64 release APK build、artifact hash固定、emulatorの署名Binder接続とモデルなし0件停止に加え、2026-09-16に所有Pixel 10 GL066上で物理端末instrumentation、Qwen GGUF機内モード推論、保存／再起動、33分22秒連続試験、Zema計画から最初の2段階Tool、結果、履歴まで完了した。使用した署名は試験専用で、native Skyの永続handoff、全経路の再起動復旧、Soong／OS image、production署名、SELinux enforcing、OTA／rollback／復旧は未完了である。詳細は [Local Action AssistantのavocadoOS導入](local-ai-os-integration-20260915.md)、[plan v2実機証拠](evidence/android-local-ai-plan-v2-20260916.json)、[物理端末推論証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)を正本補助記録とする。
+client/server source、AIDL API v2契約、base＋plan overlay、APK staging gate、固定sourceからのarm64 release APK build、artifact hash固定、emulatorの署名Binder接続とモデルなし0件停止に加え、2026-09-16に所有Pixel 10 GL066上で物理端末instrumentation、Qwen GGUF機内モード推論、保存／再起動、33分22秒連続試験、Zema計画から最初の2段階Tool、結果、履歴まで完了した。Shell API v3ではnative Skyの選択をBroker SQLiteへ永続化し、不正selection tokenを0件拒否するemulator受入まで合格した。使用した署名は試験専用で、新しいSky経路の物理再起動復旧、Soong／OS image、production署名、SELinux enforcing、OTA／rollback／復旧は未完了である。詳細は [Local Action AssistantのavocadoOS導入](local-ai-os-integration-20260915.md)、[plan v2実機証拠](evidence/android-local-ai-plan-v2-20260916.json)、[物理端末推論証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)を正本補助記録とする。
 
 ## RQ42 OS Platform Coreへ登録・承認・Wallet・更新の安全境界を入れる
 
@@ -514,6 +516,8 @@ Walletは収益・費用・receipt・払出し状態に加え、合法的な税�
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-16 v1.65: native Sky選択をBroker SQLite schema v2へ永続化し、Shell API v3のselection tokenが一致する場合だけZema計画を開始するよう固定した。host 35件、Android全378 task、emulatorのBroker 9/9・Shell 4/4は合格。新経路のPixel実再起動受入は端末再接続待ちで未合格を維持する。
 
 2026-09-16 v1.62: 外部Providerを初回OS full buildから分離し、アプリ／サーバー側の公開前必須gateへ固定した。Pixel 10 GL066の署名検証済み`2026091000` source tag、adevtool、laguna／muzel 6.6、Dynamic Partition／Virtual A/B／AVB構成を固定したが、Google純正factory／full OTAの実ファイルSHA、vendor inventory、production署名／復旧計画が残るためfull build入力gateは未合格とした。
 

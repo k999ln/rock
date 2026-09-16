@@ -235,9 +235,9 @@ export function validateBaseline(
     );
   }
   requireValue(
-    data.primaryCapabilities?.includes('os-platform-core') &&
+      data.primaryCapabilities?.includes('os-platform-core') &&
       data.androidPlatformCore?.status ===
-        'shell_broker_local_ai_plan_v2_selected_tool_physical_result_history_pass_aosp_not_run' &&
+        'native_sky_persistent_selection_api_v3_emulator_pass_physical_reboot_pending_aosp_not_run' &&
       data.androidPlatformCore?.apiVersion === 1 &&
       JSON.stringify(data.androidPlatformCore?.componentKinds) ===
         JSON.stringify(['TOOL', 'MCP', 'PROVIDER']) &&
@@ -257,7 +257,12 @@ export function validateBaseline(
       data.androidPlatformCore?.selinuxEnforcingVerified === false &&
       data.androidPlatformCore?.productionSigningVerified === false &&
       data.androidPlatformCore?.otaRollbackVerified === false &&
-      data.androidPlatformCore?.shellApiVersion === 2 &&
+      data.androidPlatformCore?.shellApiVersion === 3 &&
+      data.androidPlatformCore?.nativeSkySelectionStore ===
+        'broker_sqlite_schema_v2' &&
+      data.androidPlatformCore?.nativeSkySelectionTokenRequired === true &&
+      data.androidPlatformCore?.nativeSkySelectionEmulatorVerified === true &&
+      data.androidPlatformCore?.nativeSkySelectionPhysicalRebootVerified === false &&
       data.androidPlatformCore?.zemaSelectedToolPlanGateImplemented === true &&
       data.androidPlatformCore?.zemaEmulatorNoModelFailClosed === true &&
       data.androidPlatformCore?.zemaPhysicalStrictPlanAccepted === true &&
@@ -297,12 +302,12 @@ export function validateBaseline(
       data.androidPreFullBuildGate?.checks?.standaloneAndroidBuildAndLint ===
         'passed' &&
       data.androidPreFullBuildGate?.checks?.androidEmulatorIntegration ===
-        'shell_zema_3_of_3_and_broker_tool_sqlite_8_of_8_passed_no_model_fail_closed' &&
+        'shell_sky_zema_4_of_4_and_broker_tool_sqlite_9_of_9_passed_no_model_fail_closed_reboot_phases_skipped' &&
       data.androidPreFullBuildGate?.checks?.standaloneLocalAiApk === 'passed' &&
       data.androidPreFullBuildGate?.checks?.stockPixelOfflineAiAndThermal ===
         'passed_offline_reboot_thermal' &&
       data.androidPreFullBuildGate?.checks?.skyZemaToolWalletPath ===
-        'native_zema_physical_selected_tool_result_history_pass_native_sky_reboot_wallet_provider_pending' &&
+        'native_sky_persistent_selection_emulator_pass_physical_reboot_wallet_provider_pending' &&
       data.androidPreFullBuildGate?.checks
         ?.sourceArtifactAndSigningPlanFreeze ===
         'partial_source_tag_and_device_layout_frozen_recovery_vendor_and_signing_pending' &&

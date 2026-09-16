@@ -17,7 +17,7 @@
 - 生成したclean overlay treeでTypeScript、ESLint、Jest 18件に加え、Kotlin／AIDL／llama.rn CPU-only arm64 native compileとrelease APK buildを合格した。説明文や未知wrapperはBrokerで引き続き拒否し、closed field、Tool固定、2 transformの実行可能性を再検証してから仕事を作る。APKは`arm64-v8a`のみ、`INTERNET`なし、`WAKE_LOCK`、署名保護Binder serviceを含む。
 - 同じ更新APKをPixel 10 GL066へデータを保ったまま上書きし、機内モード・Wi-Fi停止中に`CLEAN_OK`を生成した。画面XMLに生の`<think>`／`</think>`はなく、22.4 tok/s、11.2秒、thermal status 0、28.4℃だった。終了後は機内モード、Wi-Fi、mobile data、Simeji、画面点灯維持を元へ戻した。
 - `.github/workflows/local-ai-apk.yml`はUbuntu、Java、Android SDK 36、NDK 27.1で固定sourceとoverlayからunsigned arm64 APKをbuildし、package/version、通信権限、ABIを検査した7日間の候補artifactを出力する。workflowの存在はbuild成功証拠ではなく、artifact lockを自動更新しない。
-- Android 15 API 35のPixel 10 device-profile emulatorへtest鍵で署名したcopyを導入し、Broker 8/8、Shell 3/3を合格した。GGUF未導入時はZema仕事を作らず停止した。test鍵copyは配布artifactではない。
+- Android 15 API 35のPixel 10 device-profile emulatorへtest鍵で署名したcopyを導入した。Shell API v3更新後はBroker 9/9、Shell 4/4を合格し、GGUF未導入時の0件停止、native Sky選択のschema v1→v2移行、DB再open復元、不正selection token拒否を確認した。test鍵copyは配布artifactではない。
 - 所有Pixel 10 GL066／Android 17へ同じ試験署名の4 APKを導入し、Broker 8/8、Shell 3/3を合格した。plan-only出力を厳格検証し、`citations@1`→`free-article@1`、結果、5履歴event、本人確認待ちまで完走した。[plan v2実機証拠](evidence/android-local-ai-plan-v2-20260916.json)。従来のQwen3-0.6B Q8_0機内モード、再起動後のmodel保持、33分22秒・15推論の熱試験も維持する。[推論・熱証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)。
 - 初回検証で、親Git配下ではoverlayが黙ってskipされる問題、AIDL生成無効、public Android SDKで使えない`UserHandle` API、release manifestによる`WAKE_LOCK`削除を検出して修正した。親Git配下とpermission退行の再発防止testも追加した。
 - product propertyはまだ`source-pinned`とだけ表示する。アプリを`PRODUCT_PACKAGES`へ追加していないため、現在のimageにLLMは入らない。

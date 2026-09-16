@@ -8,7 +8,7 @@
     "allComponentsImplemented": false,
     "allRequiredConnectionsVerified": false,
     "productionReady": false,
-    "summary": "選択した責任分離と実装順は目的に整合する。native ZemaからBroker、Local AI API v2、選択Tool、結果、履歴までPixelで成功し、モデルなし環境のfail-closedも通した。native Skyの永続handoffと全経路の再起動・失敗復旧は未達である。"
+    "summary": "選択した責任分離と実装順は目的に整合する。native Sky選択のBroker永続化、selection token付きZema、Local AI API v2、選択Toolのsourceとemulator受入まで成功した。新経路の物理再起動・失敗復旧は端末再接続待ちである。"
   },
   "selectionPrinciples": [
     "OSや端末開発そのものではなく、offline AI teamから検証済み成果と収益へ至る利用者価値を優先する",
@@ -42,11 +42,13 @@
       "id": "user_experience",
       "choice": "Home entry; Sky discovers and connects Tools; Zema manages all work; CSV is a Sky Tool",
       "fit": "ALIGNED",
-      "state": "WEB_INTEGRATED_ANDROID_ZEMA_PHYSICAL_TOOL_RESULT_HISTORY_PASS_NATIVE_SKY_PENDING",
+      "state": "NATIVE_SKY_PERSISTENT_SELECTION_EMULATOR_PASS_PHYSICAL_REBOOT_PENDING",
       "evidence": [
         "docs/sky.md",
         "docs/chat-mcp-control-room-20260913.md",
         "tests/sky-zema-handoff.test.mjs",
+        "android/core/src/main/java/dev/rock/core/Engine.java",
+        "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java",
         "docs/evidence/android-zema-selected-tool-20260916.json",
         "docs/evidence/android-local-ai-plan-v2-20260916.json"
       ]
@@ -155,12 +157,11 @@
         "Tool",
         "result and history"
       ],
-      "state": "ZEMA_PHYSICAL_PLAN_TOOL_RESULT_HISTORY_PASS_NATIVE_SKY_AND_RECOVERY_PENDING",
+      "state": "NATIVE_SKY_PERSISTENCE_EMULATOR_PASS_PHYSICAL_REBOOT_RECOVERY_PENDING",
       "blockingGaps": [
-        "final native Sky UI and selected-Tool handoff",
-        "persistent native handoff instead of browser sessionStorage",
+        "two-phase physical reboot acceptance of the persisted native Sky selection and in-flight lease",
         "general Tool registry beyond the first article-preparation Tool",
-        "reboot and failure recovery of the whole path"
+        "failure recovery beyond reboot interruption"
       ]
     },
     {
@@ -257,7 +258,7 @@
     "Android release readiness is reported as one of six required gates, not one of five"
   ],
   "priorityOrder": [
-    "Connect native Sky persistence to the verified Zema selected-Tool path, then verify whole-flow reboot and failure recovery on the stock Pixel",
+    "Reconnect the stock Pixel and run the two-phase native Sky in-flight reboot recovery acceptance",
     "Finish backup v2 restore, owner rebind and anti-clone behavior before first flash",
     "Complete recovery artifact hashes, vendor inventory and production signing inputs",
     "Implement the restricted Android Operator Agent and exercise the full audited support path",

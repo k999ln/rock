@@ -3,6 +3,7 @@ package dev.rock.core;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import static org.junit.Assert.*;
+import java.util.UUID;
 import java.util.concurrent.*;
 
 public class EngineTest {
@@ -26,6 +27,18 @@ public class EngineTest {
         assertThrows(IllegalArgumentException.class, () -> engine.complete(id, " "));
         engine.complete(id, "本文・出典を確認"); assertEquals("completed", engine.work(id).get("state"));
         assertNull(claim(100));
+    }
+    @Test public void nativeSkySelectionPersistsAndFencesZemaHandoff() {
+        Engine.SkySelection selected = engine.selectSkyTool(Engine.RECIPE);
+        assertEquals(Engine.RECIPE, selected.toolId); assertEquals(1, selected.revision);
+        assertEquals(selected.token, engine.selectSkyTool(Engine.RECIPE).token);
+        assertEquals(Engine.RECIPE, engine.requireSkySelection(selected.token));
+        assertThrows(SecurityException.class, () -> engine.requireSkySelection(null));
+        assertThrows(SecurityException.class, () -> engine.requireSkySelection(UUID.randomUUID().toString()));
+        assertThrows(SecurityException.class, () -> engine.selectSkyTool("other-tool@1"));
+        db.close(); db = new JdbcDatabase(file); engine = new Engine(db);
+        assertEquals(selected.token, engine.skySelection().token);
+        assertEquals(Engine.RECIPE, engine.requireSkySelection(selected.token));
     }
     @Test public void submitIsIdempotentButConflictingPayloadIsRejected() {
         assertNull(engine.existingWorkId("request-1"));
@@ -102,10 +115,16 @@ public class EngineTest {
         assertThrows(IllegalStateException.class, () -> claim(1));
         assertTrue(db.query("SELECT 1 FROM runs WHERE state='running'").isEmpty());
     }
-    @Test public void unknownSchemaIsNotSilentlyReset() {
-        db.execute("DROP TABLE rock_meta"); db.execute("CREATE TABLE rock_meta(version INTEGER)"); db.execute("INSERT INTO rock_meta VALUES(2)");
-        assertThrows(IllegalStateException.class, () -> new Engine(db));
+    @Test public void versionOneMigratesSkySelectionAndUnknownSchemaIsNotSilentlyReset() {
+        db.execute("DROP TABLE sky_selection"); db.execute("DROP TABLE rock_meta");
+        db.execute("CREATE TABLE rock_meta(version INTEGER NOT NULL CHECK(version=1))");
+        db.execute("INSERT INTO rock_meta VALUES(1)");
+        engine = new Engine(db);
         assertEquals("2", db.query("SELECT version FROM rock_meta").get(0).get("version"));
+        assertNull(engine.skySelection());
+        db.execute("UPDATE rock_meta SET version=3");
+        assertThrows(IllegalStateException.class, () -> new Engine(db));
+        assertEquals("3", db.query("SELECT version FROM rock_meta").get(0).get("version"));
     }
     @Test public void concurrentConnectionsCannotClaimTheSameWork() throws Exception {
         submit(); ExecutorService threads = Executors.newFixedThreadPool(2);
