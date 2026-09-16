@@ -1,5 +1,5 @@
 {
-  "version": "1.57",
+  "version": "1.58",
   "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -441,11 +441,12 @@
       "androidEmulatorIntegration": "partial_binder_sqlite_tool_and_local_ai_passed",
       "standaloneLocalAiApk": "passed",
       "stockPixelOfflineAiAndThermal": "pending",
-      "skyZemaToolWalletPath": "failed_missing_automatic_tool_wallet_receipt_bridge",
+      "skyZemaToolWalletPath": "rock_ready_fixture_passed_provider_sandbox_pending",
       "sourceArtifactAndSigningPlanFreeze": "pending"
     },
     "record": "docs/phone-preview-20260911.md",
     "evidence": "docs/evidence/android-pre-full-build-tests-20260915.json",
+    "earningsBridgeEvidence": "docs/evidence/tool-earning-wallet-bridge-20260915.json",
     "androidWorkflow": ".github/workflows/android.yml",
     "localAiWorkflow": ".github/workflows/local-ai-apk.yml"
   },

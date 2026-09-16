@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-15検証追記（v1.58）: v1.56で不合格だった試験2のうち、Tool完了→Provider署名付きEarning Receipt→Wallet一度だけ反映をROCK_READY fixtureで実装・合格した。Provider署名、完了済み・非サンプルjob、本人、Tool、時刻をSky bridgeで照合し、収益Provider鍵、Billing転送鍵、払出し鍵を分離する。同一Receipt再送は冪等、同じ実行への異なるReceiptは拒否する。実販売・決済Provider sandbox、返金、chargeback、実払出しは未接続であり、試験2全体や1.0の合格、実収益実績にはしない。試験1の所有Pixel 10、実GGUF、機内モード、保存／再起動、30分温度、正確なSKU readbackも未実行のため、有料full buildは引き続き開始しない。[bridge受入証拠](evidence/tool-earning-wallet-bridge-20260915.json)。
+
 2026-09-15追記（v1.57）: 最上位目的を、利用者が自分専用のAI自動化チームを所有し、その効率を継続改善して、便利さと検証可能な収益機会を増やし、利用者全体の豊かさへつなげることに固定する。OS、Pixel、Wallet、ファンド、ゲームはこの目的のための層であり、OSやスマートフォン開発自体を目的にしない。Pixelは最初のreference hardware、カメラ品質は1.0完成条件外、専用端末は価値実証後の配布形態とする。月50万円規模は長期の実測到達指標であり、収益・利回り・達成時期の保証ではない。offline-first実行、Tool→署名済みEarning Receipt→Wallet、ファンド改善、合法的な税務準備、同意可能な改善データ収集、ゲーム派生の順に逆算する。RQ47と[製品目的から逆算した開発軸](product-north-star-20260915.md)を追加する。
 
 2026-09-15検証追記（v1.56）: 有料Linux環境でのAndroid OS full buildと実機flash／bootは最後に行う。Android単体build／lint、emulator上のBinder／SQLite、Local Action Assistant arm64 APK生成・hash固定・署名限定Binder・GGUFなしの安全な拒否は合格した。純正OSの所有Pixel 10上でのGGUF機内モード推論・保存／再起動・30分温度試験は未実行のため試験1は部分合格。Sky→Zema、job、Android Tool、Wallet／認証済み収益の個別試験は合格したが、Tool完了を署名済みEarning ReceiptとしてWalletへ自動転記する経路が未実装のため試験2は不合格である。正確なSKU readbackと最終freezeを含め、全て合格するまで有料full buildを開始しない。Sky、Zema、Wallet、Tool、LLMのapp-only修正は単体APK更新で反復できる境界を維持し、framework、SELinux、privapp/product設定、boot/vendor/partition/AVB変更だけをOS image再build対象とする。初回build環境はfactory／OTA／target-filesを保存し、最初の実機bootと修正要否の確認まで保持する。[事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)を判定正本とする。
@@ -500,6 +502,8 @@ Walletは収益・費用・receipt・払出し状態に加え、合法的な税�
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-15 v1.58: Tool完了とProvider確認済み収益を分離したまま、Provider署名、job照合、鍵分離、Billing D1への一度だけ反映をROCK_READY fixtureで縦断合格した。実Provider sandbox、実収益、払出し、所有Pixel実機は未完了のまま維持する。
 
 2026-09-15 v1.57: AI自動化チームの効率化を最上位目的に固定し、offline-first実行、検証済み収益、Wallet、ファンド改善、税務準備、ゲーム、専用端末へ逆算するRQ47を追加。Pixelは最初のreference hardware、月50万円規模は長期の実測目標で収益保証ではなく、改善データ収集はcategory別同意と削除可能性を必須にした。
 

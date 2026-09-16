@@ -38,6 +38,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   skippedAndroidPreflight.androidPreFullBuildGate.checks.androidEmulatorIntegration =
     'passed';
   assert.throws(() => validateBaseline(skippedAndroidPreflight), /full build前/);
+  const fakeProviderAcceptance = structuredClone(source);
+  fakeProviderAcceptance.androidPreFullBuildGate.checks.skyZemaToolWalletPath =
+    'provider_sandbox_passed';
+  assert.throws(() => validateBaseline(fakeProviderAcceptance), /full build前/);
   const noEmergencyOperator = structuredClone(source);
   noEmergencyOperator.deviceEmergencyAccess.singleOperatorActivation = false;
   assert.throws(() => validateBaseline(noEmergencyOperator), /緊急保護/);

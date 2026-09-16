@@ -262,7 +262,7 @@ export function validateBaseline(
       data.androidPreFullBuildGate?.checks?.stockPixelOfflineAiAndThermal ===
         'pending' &&
       data.androidPreFullBuildGate?.checks?.skyZemaToolWalletPath ===
-        'failed_missing_automatic_tool_wallet_receipt_bridge' &&
+        'rock_ready_fixture_passed_provider_sandbox_pending' &&
       data.androidPreFullBuildGate?.checks
         ?.sourceArtifactAndSigningPlanFreeze === 'pending',
     '有料full build前の単体APK・emulator・純正Pixel受入gateを維持してください',
@@ -270,6 +270,7 @@ export function validateBaseline(
   for (const field of [
     'record',
     'evidence',
+    'earningsBridgeEvidence',
     'androidWorkflow',
     'localAiWorkflow',
   ]) {
