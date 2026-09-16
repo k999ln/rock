@@ -33,11 +33,13 @@
     "selinux": "build_time_package_allowlist",
     "runtimeRegistrationCanGrantDomain": false,
     "crossComponentBinder": "deny_except_explicit_broker_edges",
-    "currentLayout": "dev.rock.automation_contains_ui_and_platform_broker",
+    "shellBinderPermission": "dev.rock.permission.USE_SHELL_API",
+    "shellMayRequestManagementPermission": false,
+    "currentLayout": "dev.rock.shell_ui_separate_from_dev.rock.automation_broker",
     "targetLayout": "dev.rock.shell_ui_separate_from_dev.rock.automation_headless_broker",
     "targetPolicy": "data/android-release-architecture-policy.json",
-    "targetStateImplemented": false
+    "targetStateImplemented": true
   },
-  "implementationStatus": "SOURCE_PARTIAL_UI_BROKER_SPLIT_OPERATOR_AGENT_BACKUP_V2_RUNTIME_AND_SEPOLICY_BUILD_PENDING",
+  "implementationStatus": "SOURCE_PARTIAL_UI_BROKER_SPLIT_IMPLEMENTED_OPERATOR_AGENT_BACKUP_V2_RUNTIME_AND_SEPOLICY_BUILD_PENDING",
   "releaseStatus": "NOT_PRODUCTION_READY"
 }

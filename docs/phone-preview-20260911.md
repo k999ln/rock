@@ -87,7 +87,7 @@ Pixel 10の安定版`2026091000`を固定した。manifest tag objectは`6c939d1
 
 改変版はRockstarOSという別OSとして表示し、GrapheneOSの公式製品を名乗らない。[商標方針](https://grapheneos.org/faq#trademark)。Googleのfactory／vendor／firmwareは個別の利用・再配布条件を確認する。取得可能という理由で独自配布の許諾済みにしない。[Google配布条件](https://developers.google.com/android/images)。
 
-今の2APKは公開testkey設定。既存のMac配布用Ed25519署名をAndroidのAVB／APK／APEX／OTA署名に転用できない。端末の信頼鍵、継続更新、失効・復旧、独自更新先の設計が必要。[Android署名](https://source.android.com/docs/core/ota/sign_builds)／[AVB](https://source.android.com/docs/security/features/verifiedboot/avb)。
+現在のBroker／Shell／Tool 3 APKは公開testkey設定。既存のMac配布用Ed25519署名をAndroidのAVB／APK／APEX／OTA署名に転用できない。端末の信頼鍵、継続更新、失効・復旧、独自更新先の設計が必要。[Android署名](https://source.android.com/docs/core/ota/sign_builds)／[AVB](https://source.android.com/docs/security/features/verifiedboot/avb)。
 
 最終合格は対象実機での起動、画面／入力／通信／充電／省電力／熱、Hub／Walletの利用、保存・再起動、更新失敗・純正状態への復旧を含む。実機書込み前には現在のOSとデータを失う範囲を具体的に確認する。ソース設定・署名fixture・エミュレーター成功だけでこの合格を付けない。
 

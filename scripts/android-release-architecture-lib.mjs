@@ -22,6 +22,9 @@ export function validateAndroidReleaseArchitecture({
   sepolicy,
   seapp,
   automationManifest,
+  shellManifest,
+  shellSource,
+  shellService,
   platformService,
 }) {
   if (policy?.schema !== 'avocadoos-android-release-architecture/1') fail('schemaが違います');
@@ -69,10 +72,16 @@ export function validateAndroidReleaseArchitecture({
   }
   if (
     policy.components?.shell?.internet !== 'none_direct_use_mcp_or_provider_through_broker' ||
+    policy.components?.shell?.binderPermission !== 'dev.rock.permission.USE_SHELL_API' ||
+    policy.components?.shell?.platformManagementPermission !== false ||
     policy.components?.platformBroker?.internet !== 'none' ||
     policy.components?.localAi?.internet !== 'none' ||
     policy.components?.firstPartyTool?.internet !== 'none'
   ) fail('UI、Broker、Local AI、Toolの直接network禁止が崩れています');
+  if (
+    policy.components?.shell?.currentState !== 'implemented_as_separate_unprivileged_apk_broker_only_access' ||
+    policy.components?.platformBroker?.currentState !== 'implemented_as_separate_broker_apk_with_non_exported_trusted_approval_activity'
+  ) fail('Shell/Broker分離の実装状態が違います');
   if (
     policy.components?.operatorDock?.deployment !== 'separate_cloudflare_worker_and_d1' ||
     policy.components?.operatorDock?.includedInUserOs !== false ||
@@ -133,7 +142,6 @@ export function validateAndroidReleaseArchitecture({
     completion.physicalAcceptancePassed !== false
   ) fail('未実装を完了扱いにできません');
   includesAll(completion.blockers || [], [
-    'split-shell-from-platform-broker',
     'activate-recoverable-backup-v2-through-binder-ui-import-and-rebinding',
     'implement-and-isolate-operator-agent',
     'integrate-local-ai-domain-into-final-image',
@@ -143,15 +151,41 @@ export function validateAndroidReleaseArchitecture({
   ], '実装blockerが不足しています');
 
   if (
-    platform.isolation?.currentLayout !== 'dev.rock.automation_contains_ui_and_platform_broker' ||
+    platform.isolation?.currentLayout !== 'dev.rock.shell_ui_separate_from_dev.rock.automation_broker' ||
     platform.isolation?.targetLayout !== 'dev.rock.shell_ui_separate_from_dev.rock.automation_headless_broker' ||
     platform.isolation?.targetPolicy !== 'data/android-release-architecture-policy.json' ||
-    platform.isolation?.targetStateImplemented !== false ||
+    platform.isolation?.targetStateImplemented !== true ||
+    platform.isolation?.shellBinderPermission !== 'dev.rock.permission.USE_SHELL_API' ||
+    platform.isolation?.shellMayRequestManagementPermission !== false ||
     platform.isolation?.runtimeRegistrationCanGrantDomain !== false
   ) fail('Platform APIの現在地と分離先がpolicyと一致しません');
-  if (!automationManifest.includes('<activity android:name=".MainActivity"')) {
-    fail('現在地をcombined APKとして記録しているのにMainActivityが見つかりません');
-  }
+  if (automationManifest.includes('<activity android:name=".MainActivity"'))
+    fail('Platform Broker APKへlauncher MainActivityを戻せません');
+  includesAll(automationManifest, [
+    '<permission android:name="dev.rock.permission.USE_SHELL_API" android:protectionLevel="signature" />',
+    '<service android:name=".RockShellService" android:exported="true" android:permission="dev.rock.permission.USE_SHELL_API" />',
+    '<service android:name=".RockPlatformService" android:exported="true" android:permission="dev.rock.permission.MANAGE_PLATFORM" />',
+  ], 'BrokerのShell専用permissionまたはPlatform管理permissionが違います');
+  if (
+    !shellManifest.includes('<activity android:name=".MainActivity"') ||
+    !shellManifest.includes('dev.rock.permission.USE_SHELL_API') ||
+    shellManifest.includes('dev.rock.permission.MANAGE_PLATFORM') ||
+    shellManifest.includes('android.permission.INTERNET')
+  ) fail('Shell APKのlauncher、Broker permission、offline境界が違います');
+  if (
+    shellSource.includes('dev.rock.core') ||
+    shellSource.includes('AndroidDatabase') ||
+    shellSource.includes('RockApplication') ||
+    !shellSource.includes('ShellConnection')
+  ) fail('Shell UIがBrokerを迂回してCoreまたはdatabaseへ直接接続しています');
+  includesAll(shellService, [
+    'SHELL_PACKAGE = "dev.rock.shell"',
+    'MAX_SNAPSHOT_WORKS = 25',
+    'getPackagesForUid(uid)',
+    'checkSignatures(getPackageName(), SHELL_PACKAGE)',
+    'ArticlePayload.parse(inputJson)',
+    'Engine.bounded(result)',
+  ], 'Shell Broker APIのexact package/signer/schema/bounds検査が不足しています');
   if (!platformService.includes('EncryptedBackup.seal(')) {
     fail('現在のBinder backup routeをlegacy v1として追跡できません');
   }

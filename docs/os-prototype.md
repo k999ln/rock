@@ -21,16 +21,16 @@
 | Tool API | AIDL v1、32 KiB文字列、callbackのUID/token検証、固定署名/版の確認 | FD転送、公開SDK、別作者の鍵登録は未実装 |
 | 自社Tool | 出典整理/無料版作成を別APKへ移植 | 同一APK内の2操作。ココナラ2ツールはまだPC/Webのみ |
 | Android実行接続 | persisted JobScheduler、BOOT_COMPLETED、充電/熱条件、停止時の実行取消 | 標準Androidの制約内。独自OS特権schedulerではない |
-| 操作 | ネイティブ診断画面で入力・保存・停止/再開・状態表示・成果物・最終確認 | OSのホーム置換、通知Inbox、ファイル取込/書出しは未実装 |
+| 操作 | 別APKの`dev.rock.shell`から専用Binderで入力・停止/再開・状態・成果物・最終確認を操作。永続dataはBrokerだけが保持 | OSのホーム置換、通知Inbox、ファイル取込/書出しは未実装 |
 | OSへの組込 | Soong `Android.bp` とCuttlefish製品設定、AOSP参照固定 | 設定を作った段階。Soong全体のbuild/起動はまだ未検証 |
 
 Javaを選んだ理由は、OS側とホストテストで業務コアを共通化し、Kotlin/Composeの依存を初回の接続検証へ持ち込まないため。Kotlin/Composeを用いるシェルの将来案は撤回しない。
 
 ### Platform Core v1（OS10、native build未実行）
 
-既存の2 APK構成へ、Tool／MCP／Provider共通の`IPlatformApi`、導入済みAPKのUID・version・署名照合、component capability allowlist、端末credentialを使う二段階承認、費用上限、停止・永久失効、owner別追記型Wallet receipt、v1→v2 DB migration、Android Keystore AES-GCM backup、更新／rollback互換性gateを追加した。Cuttlefish／物理製品設定にはsource SELinux policy directoryも接続した。詳細契約と未実行境界は[Platform Core](platform-core.md)を正本とする。
+Broker／Shell／Toolの3 APK構成へ、Tool／MCP／Provider共通の`IPlatformApi`、導入済みAPKのUID・version・署名照合、component capability allowlist、端末credentialを使う二段階承認、費用上限、停止・永久失効、owner別追記型Wallet receipt、v1→v2 DB migration、Android Keystore AES-GCM backup、更新／rollback互換性gateを追加した。Home／Sky／ZemaのShellは通信権限、Platform DB、Keystore、Engine、広い管理権限を持たず、専用Binderだけを使う。Cuttlefish／物理製品設定にはsource SELinux policy directoryも接続した。詳細契約と未実行境界は[Platform Core](platform-core.md)を正本とする。
 
-このsourceはAndroid Gradle、Soong、SELinux compilerでまだbuildしていない。したがってOS10は進行中、enforcing boot・production署名・OTA rollback・実機受入はOS11の未着手gateとし、既存のP1 CI成功を転用しない。
+このsourceはAndroid Gradle build／lintとAndroid 15 emulatorのShell→Broker Binder統合試験に合格した。Soong full buildとSELinux compiler、enforcing bootは未実行である。したがってOS10は進行中、production署名・OTA rollback・Pixel実機受入はOS11の未着手gateとし、Gradle／emulator成功をOS imageの合格へ転用しない。
 
 ## 3. 業務とデータの詳細
 
@@ -82,7 +82,7 @@ npm run verify
 
 macOS/外付けExFATではAppleDouble補助ファイルがGradleの生成物削除と衝突した。生成物だけをローカルAPFS等へ移す場合は `-ProckBuildRoot=/絶対パス/生成物専用ディレクトリ` を付け、`node --experimental-strip-types scripts/check-os-parity.mjs /同じディレクトリ/core/classes/java/main` を使う。ソース/履歴は移動しない。
 
-GitHubの `.github/workflows/android.yml` は共通コアテスト、2APKのbuild/lint、言語間照合に加え、使い捨てのAndroid35エミュレーターで実Binder/SQLiteの接続試験を行う。標準Google APIsイメージであり、自前Rock OS/Cuttlefishの起動ではない。実機は操作しない。レポートを7日保存し、全試験成功時だけ署名とhashを照合した2APKを[Pixel 10向けのP1アプリ試験](android-trial.md)の成果物として7日保存する。APKのストア公開や正式OS配布ではない。
+GitHubの `.github/workflows/android.yml` は共通コアテスト、Broker／Shell／Toolの3 APKのbuild/lint、言語間照合に加え、使い捨てのAndroid35エミュレーターで実Binder/SQLiteの接続試験を行う。標準Google APIsイメージであり、自前Rock OS/Cuttlefishの起動ではない。実機は操作しない。レポートを7日保存し、全試験成功時だけ署名とhashを照合した3 APKを[Pixel 10向けのP1アプリ試験](android-trial.md)の成果物として7日保存する。APKのストア公開や正式OS配布ではない。
 
 2026-09-05、commit `47043ad` の[Android CI](https://github.com/k999ln/rock/actions/runs/33982932964)でコア16・SDK4・端末接続2テスト、2APKのbuild/lint、Java↔TypeScriptの36項目照合が成功した。端末試験では実Tool APKのBinder呼出、Android SQLiteを閉じて開き直した後の次工程、成果物の保存、二重結果の拒否、本人確認を検証。もう1件は充電必須・永続周期ジョブの登録と権限設定を確認した。実際の周期発火・画面OFF・OS再起動・不正署名/UIDの拒否はまだ検証していない。
 
@@ -110,7 +110,7 @@ Linux環境を確保した後の手順:
 4. まずSoongで `RockAutomationPrototype` と `RockArticleToolPrototype` をbuildし、その後OSイメージをbuildする。
 5. Cuttlefishで起動し、上のAndroid試験とOS起動の証拠を採取する。失敗時はソース/製品設定を修正する。
 
-この経路は**未実行の手順**。製品makefileの存在やAPKのcompile成功だけでOS build/boot成功とはしない。P1はAOSPのホームを残し、2APKを組み込む段階で、独自OSシェル/特権サービス/独自OTAは次段階。
+この経路は**未実行の手順**。製品makefileの存在やAPKのcompile成功だけでOS build/boot成功とはしない。P1はBroker／Shell／Toolの3 APKと特権境界のsourceを組み込む段階で、AOSPの最終Home置換、SELinux enforcing実証、独自OTAは次段階。
 
 Gradleはpackage/versionをbuild設定から補うが、Soongではその設定を読まない。そのため `src/aosp/AndroidManifest.xml` にpackageとversionを明示し、それ以外が `src/main` と一致することを `os:check` で検査する。APKで通った設定が自動でOSビルドへ引き継がれるとは仮定しない。
 

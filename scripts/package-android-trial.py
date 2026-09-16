@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect the two verified P1 debug APKs after the emulator job succeeds."""
+"""Collect the three verified P1 debug APKs after the emulator job succeeds."""
 import argparse
 import hashlib
 import json
@@ -23,8 +23,14 @@ def main():
     commit = run('git', '-C', str(root), 'rev-parse', 'HEAD').strip()
     if not re.fullmatch(r'[0-9a-f]{40}', commit):
         raise ValueError('Exact checked-out commit required')
+    if run('git', '-C', str(root), 'status', '--porcelain', '--untracked-files=all').strip():
+        raise ValueError('Refusing to label APKs with HEAD while tracked or untracked source changes exist')
     records = []
-    for module, package in (('automation', 'dev.rock.automation'), ('article-tool', 'dev.rock.tools.article')):
+    for module, package in (
+        ('automation', 'dev.rock.automation'),
+        ('shell', 'dev.rock.shell'),
+        ('article-tool', 'dev.rock.tools.article'),
+    ):
         apk = root / 'android' / module / 'build/outputs/apk/debug' / (module + '-debug.apk')
         signature = run(str(sdk / 'apksigner'), 'verify', '--verbose', '--print-certs', str(apk))
         signers = re.findall(r'^Signer #[0-9]+ certificate SHA-256 digest: ([0-9a-fA-F]{64})$', signature, re.M)
@@ -37,8 +43,8 @@ def main():
         records.append({'file': apk.name, 'package': package, 'sha256': hashlib.sha256(apk.read_bytes()).hexdigest(),
                         'signer_sha256': signers[0].lower(), 'min_sdk': 35, 'target_sdk': 35,
                         'debuggable': True, 'source': apk, 'signature_report': signature})
-    if records[0]['signer_sha256'] != records[1]['signer_sha256']:
-        raise ValueError('Broker and Tool must have the same signing certificate')
+    if len({record['signer_sha256'] for record in records}) != 1:
+        raise ValueError('Broker, Shell and Tool must have the same signing certificate')
     args.output.mkdir(parents=True, exist_ok=False)
     for record in records:
         shutil.copyfile(record.pop('source'), args.output / record['file'])

@@ -4,4 +4,4 @@ dependencyResolutionManagement {
     repositories { google(); mavenCentral() }
 }
 rootProject.name = 'RockStarOS'
-include ':core', ':tool-sdk', ':local-ai-api', ':automation', ':article-tool'
+include ':core', ':tool-sdk', ':local-ai-api', ':shell-api', ':automation', ':shell', ':article-tool'

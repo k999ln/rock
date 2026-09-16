@@ -29,11 +29,34 @@ android_library {
     java_version: "11",
 }
 
+android_library {
+    name: "rock-shell-api",
+    manifest: "shell-api/src/aosp/AndroidManifest.xml",
+    srcs: ["shell-api/src/main/aidl/**/*.aidl"],
+    aidl: { local_include_dirs: ["shell-api/src/main/aidl"] },
+    sdk_version: "current",
+    min_sdk_version: "35",
+    java_version: "11",
+}
+
 android_app {
     name: "RockAutomationPrototype",
     manifest: "automation/src/aosp/AndroidManifest.xml",
     srcs: ["automation/src/main/java/**/*.java"],
-    static_libs: ["rock-tool-sdk", "rock-local-ai-api"],
+    static_libs: ["rock-tool-sdk", "rock-local-ai-api", "rock-shell-api"],
+    sdk_version: "current",
+    min_sdk_version: "35",
+    target_sdk_version: "35",
+    certificate: "testkey",
+    product_specific: true,
+    optimize: { enabled: false },
+}
+
+android_app {
+    name: "RockShell",
+    manifest: "shell/src/aosp/AndroidManifest.xml",
+    srcs: ["shell/src/main/java/**/*.java"],
+    static_libs: ["rock-shell-api"],
     sdk_version: "current",
     min_sdk_version: "35",
     target_sdk_version: "35",

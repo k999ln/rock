@@ -1,16 +1,14 @@
 plugins { id 'com.android.application' }
 android {
-    namespace 'dev.rock.automation'
+    namespace 'dev.rock.shell'
     compileSdk 35
     defaultConfig {
-        applicationId 'dev.rock.automation'; minSdk 35; targetSdk 35; versionCode 1; versionName '0.1.0'
+        applicationId 'dev.rock.shell'; minSdk 35; targetSdk 35; versionCode 1; versionName '0.1.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     compileOptions { sourceCompatibility JavaVersion.VERSION_11; targetCompatibility JavaVersion.VERSION_11 }
 }
 dependencies {
-    implementation project(':tool-sdk')
-    implementation project(':local-ai-api')
     implementation project(':shell-api')
     androidTestImplementation 'androidx.test:runner:1.6.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'

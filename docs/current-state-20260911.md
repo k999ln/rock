@@ -1,5 +1,11 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-16 — Android Shellと特権Platform Brokerを別APKへ分離
+
+Androidのlauncher／UI入口を`dev.rock.shell`へ移し、SQLite、Engine、JobScheduler、Keystore、本人確認Activityを`dev.rock.automation`のheadless Platform Brokerだけに残した。ShellはINTERNET権限と広い`MANAGE_PLATFORM`権限を持たず、専用の`USE_SHELL_API`署名権限で固定package、同一signer、version、Binder API版を双方から検証する。Brokerは呼出UIDが`dev.rock.shell`だけに対応する場合しか各操作を受けない。進捗snapshotは入力／成果物本文を含めず最大25件に制限し、本文取得は本人が選んだ仕事だけに分離した。
+
+Broker／Shell／Toolの3 APK、AIDL、coreをAndroid Gradleでbuild／lintし、host core 34 testが合格した。使い捨てAndroid 15 emulatorでは、ShellがINTERNETと`MANAGE_PLATFORM`を持たないこと、同じ試験署名のBrokerへ接続し、仕事を登録・一覧・取消できることを1/1、既存Broker／Tool／SQLiteを4/4 instrumentationで確認した。Local AIの2 testは同一試験署名APKを別途必要とするためこの組では除外し、既存の独立5 test／Pixel実機証拠と混同しない。これは最終Home／Sky／Zemaのnative UI完成、Soong full build、SELinux domain適用、production署名、Pixel実機の再受入、OS flash／bootの合格ではない。
+
 ## 2026-09-16 — Pixel 10上の端末内LLM事前試験を完走
 
 OSを書き換えていない所有Pixel 10 GL066へ、試験専用同一署名のLocal Action Assistant、Automation、instrumentation、記事Toolを導入した。物理端末のBinder／SQLite／review／署名固定／Tool登録は5/5合格。公式Qwen3-0.6B Q8_0 GGUF（639,446,688 bytes、SHA-256 `9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031`、Apache-2.0）を手動importし、通信権限なしAPKかつ機内モード・Wi-Fi停止中に`OFFLINE_OK`を生成した。応答清掃版では`CLEAN_OK`を22.4 tok/s・11.2秒で生成し、生の`<think>`タグが画面へ出ないことも確認した。
@@ -44,7 +50,7 @@ Skyへ「メルカリ収益スターター」を追加し、本人が保有す�
 | ------------ | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | Web / Sites  | Sky中心の画面、仕事・履歴・Wallet・設定、本人限定の新Site                                       | 所有者ログイン後の本番操作確認、一般公開                                                                                     |
 | Linux / QEMU | `1.0.0-preview.20260911-rc2`の内部導入、起動、保存、再起動、同一VMの中断復旧、D4/D6等の限定受入 | 正式署名、license clearance、取消の実停止、RSS再確認、別host／VM全損復旧、保存データあり端末の削除                           |
-| Android P1   | 通常権限の2APK、SQLite／Binder／JobScheduler、emulator CI、Pixel 10上の5/5 instrumentationと端末内LLM事前受入 | Sky／Wallet／GameのAndroid実機縦断、production署名、実機OS統合                                                               |
+| Android P1   | Broker／Shell／Toolの3 APK sourceとemulator分離試験。分離前2 APKはPixel 10上の5/5 instrumentationと端末内LLM事前受入済み | 新3 APKのPixel再受入、Sky／Wallet／GameのAndroid実機縦断、production署名、実機OS統合 |
 | スマホOS     | 上流版と候補機種のsource lock、product makefile、準備／build／診断script                        | 全source取得、vendor生成、Soongフルbuild、target-files／OTA／factory image、正式Android署名、flash、実機boot／更新／純正復旧 |
 | Wallet／Game | 合成台帳、複数owner/gameのfixture、作者SDK、ATM自社手数料0の契約                                | 実provider、KYC／提供地域／資金保管／通貨／返金／出金／照合、指定実ゲームの正式sandbox                                       |
 | Release      | PR #4の現HEAD CI成功、本人限定Site、CM制作途中                                                  | license、第三者許諾、production鍵、実署名、公開受入、main統合                                                                |
@@ -68,7 +74,7 @@ source lockと実機readbackはPixel 10の`frankel`、日本向けSKU `GL066`、
 3. 決定済み: 外部Providerは初回OS full buildから分離し、アプリ／サーバー側の1.0公開前gateとする。GL066の署名source tagとpartition／AVBは固定済み。次にGoogle純正factory／full OTAの実ファイルSHA、vendor inventory、production署名／復旧計画をfreezeする。
 4. 上記の事前gate合格後にクラウド事業者、アカウント、上限予算、成果物保存先、時間上限と削除手順を確定する。
 5. Ubuntu 24.04 x86_64で全source取得、`adevtool generate-all`、Soongフルbuildを行い、同一source・出力hash・失敗ログを保存する。
-6. Android P1の2APK同梱とは別に、Sky／Wallet／Gameの接続層をAndroidへ移植し、既存のowner／同意／台帳／取消／復旧契約と照合する。
+6. Android P1のBroker／Shell／Tool 3 APK同梱とは別に、Sky／Wallet／Gameの接続層をAndroidへ移植し、既存のowner／同意／台帳／取消／復旧契約と照合する。
 7. 開発鍵で対象実機の初回bootと基本hardwareを確認した後、AVB／APK／APEX／OTAのproduction鍵、独自更新先、失効、rollback、純正復旧を整える。
 8. CTS／VTS／SELinux、保存・再起動・省電力・熱・通信、OTA失敗／rollbackを対象実機で受け入れる。
 9. license、第三者許諾、本人限定Site QA、CM、最終署名配布、PR整理を完了してから一般公開とmain mergeを別途判断する。
@@ -88,13 +94,13 @@ RQ01〜RQ17、Sky＋Walletを中心とする製品、自作ゲーム交換／作
 | 対象                     | 現在確認できること                                                                                            | 残ること                                                                   |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | Linux / Buildroot / QEMU | b7/rc2の内部導入、起動、保存、再起動、同じVMでの中断復旧と追加受入を限定確認                                  | 正式署名後の最終配布受入、キャンセルの実停止、メモリ増加の確認等           |
-| Android P1               | 通常権限の2APK、SQLite／Binder／JobScheduler、標準emulator CI、Pixel 10上の5/5 instrumentation              | Sky／Wallet／Gameの物理端末縦断とOS統合                                   |
+| Android P1               | Broker／Shell／Toolの3 APK sourceとemulator分離試験。分離前2 APKはPixel 10上の5/5 instrumentation済み | 新3 APKのPixel再受入、Sky／Wallet／Gameの物理端末縦断とOS統合 |
 | Pixel候補のOS            | GL066 readback、source／build入口、単体APKのoffline LLM・再起動・33分22秒熱試験                            | 全source取得、Soong／OS build、正式Android署名、起動・更新・復旧の実機受入 |
 | Web / Sites              | Sky改修、履歴のコード統合、新しい本人限定Siteの公開                                                           | ログイン後の本番Sky操作確認、一般公開                                      |
 
 QEMUの凍結sourceは`b7d819cd291b653d165aa124f25a52b9898bfb2e`、版は`1.0.0-preview.20260911-rc2`。今回の統合で既存image・配布bytesは変更していない。QEMUの合格をスマホへ移さず、スマホ用の書込み可能imageはまだ存在しない。[rc2受入](os-acceptance-b7d819c-20260911.md)／[追加受入と未観測条件](rc2-remaining-acceptance-20260911.md)／[スマホ版の実装](phone-preview-20260911.md)。
 
-スマホ版は既存Android P1を機種構成へ組み込む段階から始める。LinuxのSky／Wallet／Game契約を維持しながら接続層を移植する必要があり、2APKの同梱だけで製品移植完了にはしない。旧Cuttlefish用`os/source-lock.json`、新しい`os/physical/frankel-source-lock.json`、Linux QEMUのimageは別の入力である。
+スマホ版は既存Android P1のBroker／Shell／Tool 3 APKを機種構成へ組み込む段階から始める。LinuxのSky／Wallet／Game契約を維持しながら接続層を移植する必要があり、3 APKの同梱だけで製品移植完了にはしない。旧Cuttlefish用`os/source-lock.json`、新しい`os/physical/frankel-source-lock.json`、Linux QEMUのimageは別の入力である。
 
 ## 所有者の回答と公開設定
 

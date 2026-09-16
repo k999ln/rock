@@ -65,10 +65,12 @@
       "purpose": "Home, Sky and Zema user interface only",
       "package": "dev.rock.shell",
       "selinuxDomain": "rock_shell_app",
+      "binderPermission": "dev.rock.permission.USE_SHELL_API",
+      "platformManagementPermission": false,
       "internet": "none_direct_use_mcp_or_provider_through_broker",
       "owns": [],
       "mustNotOwn": ["platform_database", "wallet_keys", "backup_keys", "operator_commands"],
-      "currentState": "not_split_main_activity_still_in_dev_rock_automation"
+      "currentState": "implemented_as_separate_unprivileged_apk_broker_only_access"
     },
     "platformBroker": {
       "purpose": "approval, scheduling, component registry, Wallet ledger and backup broker",
@@ -77,7 +79,7 @@
       "internet": "none",
       "owns": ["platform_database", "approval_state", "wallet_ledger", "device_backup_binding"],
       "mustNotOwn": ["release_signing_private_keys", "owner_recovery_phrase", "operator_credentials"],
-      "currentState": "implemented_but_same_apk_as_shell"
+      "currentState": "implemented_as_separate_broker_apk_with_non_exported_trusted_approval_activity"
     },
     "localAi": {
       "purpose": "offline LLM inference and proposal generation",
@@ -195,7 +197,6 @@
     "fullBuildVerified": false,
     "physicalAcceptancePassed": false,
     "blockers": [
-      "split-shell-from-platform-broker",
       "activate-recoverable-backup-v2-through-binder-ui-import-and-rebinding",
       "implement-and-isolate-operator-agent",
       "integrate-local-ai-domain-into-final-image",

@@ -25,7 +25,8 @@ The Operator Dock stays outside the user OS in its separate Worker and database.
 ## Truthful current state
 
 - Specification: aligned and machine checked.
-- Source: partial. Platform Broker, shell UI and scheduling still share one APK/domain; the final split is not implemented.
+- Source: partial. 最終Home／Sky／Zemaを載せるAndroid launcher／UI入口は`dev.rock.shell`、database／scheduler／Keystore／Engineは`dev.rock.automation`へ分離済み。Shellは通信権限と広いPlatform管理権限を持たず、Shell専用の署名権限、固定package、同一signer、固定API版を検証するBinderだけでBrokerへ接続する。Brokerも呼出UIDを毎回`dev.rock.shell`へ固定する。現UIはP1操作画面で、最終Home／Sky／Zema native UIの完成を意味しない。
+- Split verification: 3 APKのAndroid Gradle build／lint、ホストcore 34 test、Android 15 emulator上のShell→Broker 1 testとBroker／Tool／SQLite 4 testは合格。別APKを要するLocal AI testはこの組から除外し、既存の独立試験証拠を転用しない。これはSoong full build、SELinux domain適用、production署名またはPixel実機受入の証拠ではない。
 - Local AI: standalone physical inference passed, but its final OS image/domain has not been built and accepted.
 - Operator: Dock/API/queue/audit exist separately; the Android agent does not.
 - Backup: v2 cryptographic core exists, but the active Binder backup route still creates the legacy v1 envelope.

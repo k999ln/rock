@@ -9,7 +9,7 @@ endif
 
 include vendor/rockstaros-local-ai/product.mk
 
-PRODUCT_PACKAGES += RockAutomationPrototype RockArticleToolPrototype
+PRODUCT_PACKAGES += RockAutomationPrototype RockShell RockArticleToolPrototype
 PRODUCT_PRIVATE_SEPOLICY_DIRS += external/rockstaros/android/sepolicy/private
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.rockstaros.stage=device-bringup \

@@ -29,7 +29,7 @@ jobs:
         with:
           gradle-version: '8.11.1'
       - name: Compile Android packages and test shared SQLite core
-        run: gradle -p android :core:test :tool-sdk:testDebugUnitTest :automation:assembleDebug :article-tool:assembleDebug :automation:lintDebug :article-tool:lintDebug --no-daemon
+        run: gradle -p android :core:test :tool-sdk:testDebugUnitTest :shell-api:assembleDebug :automation:assembleDebug :shell:assembleDebug :article-tool:assembleDebug :automation:lintDebug :shell:lintDebug :article-tool:lintDebug --no-daemon
       - name: Compare Java tools with existing business behavior
         run: node --experimental-strip-types scripts/check-os-parity.mjs
       - name: Check source and contract consistency (not OS boot)
@@ -48,8 +48,15 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
           script: |
             adb install -r android/article-tool/build/outputs/apk/debug/article-tool-debug.apk
-            gradle -p android :automation:connectedDebugAndroidTest --no-daemon
-      - name: Verify and collect the successful Android P1 trial pair
+            adb install -r android/automation/build/outputs/apk/debug/automation-debug.apk
+            gradle -p android :shell:connectedDebugAndroidTest --no-daemon
+            # Local-AI instrumentation needs its separately built, same-test-signed APK.
+            # This workflow keeps the Broker/SQLite/Tool suite deterministic; Local AI
+            # has its own pinned-source workflow and separately recorded device run.
+            gradle -p android :automation:connectedDebugAndroidTest \
+              -Pandroid.testInstrumentationRunnerArguments.notClass=dev.rock.automation.LocalAiServiceIntegrationTest \
+              --no-daemon
+      - name: Verify and collect the successful Android P1 trial set
         env:
           ROCK_REQUESTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python3 scripts/package-android-trial.py --output work/android-p1-trial
@@ -68,6 +75,8 @@ jobs:
             android/tool-sdk/build/test-results/testDebugUnitTest/
             android/automation/build/reports/
             android/automation/build/outputs/androidTest-results/
+            android/shell/build/reports/
+            android/shell/build/outputs/androidTest-results/
             android/article-tool/build/reports/
           retention-days: 7
       # Only successful P1 debug trial artifacts; no release keys, OS deployment or device flashing.

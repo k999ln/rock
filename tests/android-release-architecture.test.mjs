@@ -19,6 +19,9 @@ const fixture = () => ({
   sepolicy: read('android/sepolicy/private/rockstar_platform.te'),
   seapp: read('android/sepolicy/private/seapp_contexts'),
   automationManifest: read('android/automation/src/main/AndroidManifest.xml'),
+  shellManifest: read('android/shell/src/main/AndroidManifest.xml'),
+  shellSource: read('android/shell/src/main/java/dev/rock/shell/MainActivity.java'),
+  shellService: read('android/automation/src/main/java/dev/rock/automation/RockShellService.java'),
   platformService: read('android/automation/src/main/java/dev/rock/automation/RockPlatformService.java'),
 });
 
@@ -61,4 +64,19 @@ void test('SELinux package mapping cannot be granted only by runtime registratio
   const input = fixture();
   input.platform.isolation.runtimeRegistrationCanGrantDomain = true;
   assert.throws(() => validateAndroidReleaseArchitecture(input), /Platform APIの現在地/);
+});
+
+void test('Shell cannot regain the broad Platform management permission', () => {
+  const input = fixture();
+  input.shellManifest = input.shellManifest.replace(
+    'dev.rock.permission.USE_SHELL_API',
+    'dev.rock.permission.MANAGE_PLATFORM',
+  );
+  assert.throws(() => validateAndroidReleaseArchitecture(input), /Shell APKのlauncher/);
+});
+
+void test('Shell implementation cannot open the Broker database directly', () => {
+  const input = fixture();
+  input.shellSource += '\nAndroidDatabase.open();\n';
+  assert.throws(() => validateAndroidReleaseArchitecture(input), /Brokerを迂回/);
 });

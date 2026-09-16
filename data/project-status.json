@@ -870,6 +870,10 @@
         "tests/android-release-architecture.test.mjs",
         "android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatformApi.aidl",
         "android/automation/src/main/java/dev/rock/automation/RockPlatformService.java",
+        "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
+        "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
+        "android/shell/src/main/java/dev/rock/shell/ShellConnection.java",
+        "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java",
         "android/sepolicy/private/rockstar_platform.te"
       ]
     },
@@ -1711,7 +1715,7 @@
     "cloudSpendApproved": false
   },
   "platformCore": {
-    "status": "PRODUCTION_ARCHITECTURE_SELECTED_SOURCE_PARTIAL_AOSP_NOT_RUN",
+    "status": "SHELL_BROKER_SPLIT_BUILD_LINT_EMULATOR_PASS_AOSP_NOT_RUN",
     "apiVersion": 1,
     "contract": "contracts/platform-api.json",
     "record": "docs/platform-core.md",
@@ -1720,7 +1724,15 @@
     "specificationAligned": true,
     "sourceAligned": false,
     "runtimeAligned": false,
-    "shellBrokerSplitImplemented": false,
+    "shellBrokerSplitImplemented": true,
+    "shellBrokerGradleBuildAndLint": "PASS_253_ACTIONABLE_TASKS",
+    "shellBrokerHostCoreTests": "PASS_34_TESTS",
+    "shellBrokerEmulatorBinderTest": "PASS_1_OF_1_ANDROID_15",
+    "brokerToolSqliteEmulatorTests": "PASS_4_OF_4_ANDROID_15_LOCAL_AI_CLASS_EXCLUDED_REQUIRES_SEPARATE_SIGNED_APK",
+    "shellHasInternetPermission": false,
+    "shellHasPlatformManagementPermission": false,
+    "shellUsesDedicatedPermission": "dev.rock.permission.USE_SHELL_API",
+    "shellBrokerPhysicalDeviceRetestPassed": false,
     "operatorAgentImplemented": false,
     "androidBuilt": true,
     "aospImageBuilt": false,

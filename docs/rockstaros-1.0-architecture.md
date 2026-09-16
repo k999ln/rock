@@ -108,7 +108,7 @@ Wallet owner、端末、作者、game、playerを別IDにし、署名契約と�
 
 ## 16. Web・Android P1・スマホOS
 
-WebにはSky、Chat、仕事作成・実行・確認、本人別手入力会計、Rock受取Walletの所有署名と着金照合があり、Sitesの公開範囲はowner限定を維持する。Android P1は通常アプリとしての固定2工程・記事処理試作。別にPixel 10／GrapheneOS候補の機種構成へその2APKを組み込むsourceとbuild入口を追加した。OS全体のbuild、Sky／Wallet／GameのAndroid移植、正式署名、実機受入はこれからである。Webや標準エミュレーターの成功をスマホOSの合格にしない。
+WebにはSky、Chat、仕事作成・実行・確認、本人別手入力会計、Rock受取Walletの所有署名と着金照合があり、Sitesの公開範囲はowner限定を維持する。Android P1は通常アプリとしての固定2工程・記事処理試作で、現在はBroker／Shell／Toolの3 APKへ分離した。Pixel 10／GrapheneOS候補の機種構成へ3 APKを組み込むsourceとbuild入口も追加した。OS全体のbuild、Sky／Wallet／GameのAndroid移植、正式署名、実機受入はこれからである。Webや標準エミュレーターの成功をスマホOSの合格にしない。
 
 進化余地は、companion app、device enrollment、通知、遠隔確認、Web管理、正式AOSP device portである。
 

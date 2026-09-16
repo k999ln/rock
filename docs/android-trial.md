@@ -1,20 +1,20 @@
 # Rock Android P1 — Pixel 10でのアプリ試験
 
-Pixel 10にはGrapheneOSが入っているとの利用者回答を記録した。OSを入れ替えず、既存のAndroid P1を通常アプリとして試すための配布物を用意する。**この2APKはLinux native OS、Hub＋Wallet、ゲーム交換、MetaMask送受金を搭載しない。** できるのは合成原稿の保存、出典整理、無料版作成、結果の確認という既存P1の試験である。
+Pixel 10にはGrapheneOSが入っているとの利用者回答を記録した。OSを入れ替えず、既存のAndroid P1を通常アプリとして試すための配布物を用意する。**この3 APK（Broker／Shell／Tool）はLinux native OS、Hub＋Wallet、ゲーム交換、MetaMask送受金を搭載しない。** できるのは合成原稿の保存、出典整理、無料版作成、結果の確認という既存P1の試験である。
 
-GitHubのAndroid検証がすべて成功した場合だけ、同じ実行で作成した2APKを `android-p1-trial-<run ID>` に保存する。実際のソースcommit、APKのSHA-256、2APKの一致した署名証明書をmanifestへ記録する。検証が失敗したrunのAPKは試験配布物として保存しない。GitHub Actionsの成果物保存であり、アプリストア公開や正式リリースではない。
+GitHubのAndroid検証がすべて成功した場合だけ、同じ実行で作成した3 APKを `android-p1-trial-<run ID>` に保存する。実際のソースcommit、APKのSHA-256、3 APKの一致した試験署名証明書をmanifestへ記録する。検証が失敗したrunのAPKは試験配布物として保存しない。GitHub Actionsの成果物保存であり、アプリストア公開や正式リリースではない。
 
 ## 導入前
 
 - 端末の現在のOS版とAndroid APIを記録する。APKの最低条件はAPI35（Android15）で、Pixel 10実機での成立はまだNOT_RUN。
-- 2APKを同じAndroidユーザー／プロファイルへ導入する。Toolは単独のホーム画面アイコンを持たない。
-- `automation-debug.apk` と `article-tool-debug.apk` は必ず同じ成果物の組を使う。別のCI実行では開発署名が変わり、既存アプリへ上書きできない場合がある。
+- 3 APKを同じAndroidユーザー／プロファイルへ導入する。ホーム画面に出すのはShellだけで、BrokerとToolは単独のlauncher iconを持たない。
+- `automation-debug.apk`、`shell-debug.apk`、`article-tool-debug.apk`は必ず同じ成果物の組を使う。別のCI実行では開発署名が変わり、既存アプリへ上書きできない場合がある。
 - 同じpackageがすでに入っていて署名が違う場合は停止する。既存データを消すアンインストールを自動実行しない。
 
 ## 最初の試験
 
-1. 同じ成果物内の `article-tool-debug.apk`、続いて `automation-debug.apk` を端末へ導入する。端末が求めるアプリ導入の確認は利用者が行う。
-2. Rockの試作アプリを開き、個人情報のない短い合成原稿と条件を入力し、保存・実行への同意を確認する。
+1. 同じ成果物内の`article-tool-debug.apk`、`automation-debug.apk`、`shell-debug.apk`を導入する。端末が求めるアプリ導入の確認は利用者が行う。
+2. avocadoOS Shellを開き、個人情報のない短い合成原稿と条件を入力し、保存・実行への同意を確認する。ShellにINTERNET権限と`MANAGE_PLATFORM`権限がなく、専用BinderでBrokerへ接続することを確認する。
 3. 充電中に2工程を実行し、確認待ちになった結果を表示する。元の入力と出典整理・無料版の結果を照合する。
 4. 全停止／再開、再起動後の結果保持を確認し、OS版・期待値・実際の結果を記録する。
 

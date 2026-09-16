@@ -19,6 +19,9 @@ const result = validateAndroidReleaseArchitecture({
   sepolicy: read('android/sepolicy/private/rockstar_platform.te'),
   seapp: read('android/sepolicy/private/seapp_contexts'),
   automationManifest: read('android/automation/src/main/AndroidManifest.xml'),
+  shellManifest: read('android/shell/src/main/AndroidManifest.xml'),
+  shellSource: read('android/shell/src/main/java/dev/rock/shell/MainActivity.java'),
+  shellService: read('android/automation/src/main/java/dev/rock/automation/RockShellService.java'),
   platformService: read('android/automation/src/main/java/dev/rock/automation/RockPlatformService.java'),
 });
 
