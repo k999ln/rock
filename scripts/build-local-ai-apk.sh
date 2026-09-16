@@ -13,6 +13,7 @@ if ! command -v java >/dev/null || [[ -z "${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}
   exit 2
 fi
 python3 "$rock_local_ai_root/scripts/prepare-local-ai-runtime.py" "$rock_local_ai_tree" "$rock_local_ai_output"
+rock_local_ai_output="$(cd -- "$rock_local_ai_output" && pwd -P)"
 cd -- "$rock_local_ai_output"
 npm ci
 npm run prepare:native

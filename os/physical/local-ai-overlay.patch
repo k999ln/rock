@@ -1,11 +1,53 @@
+diff --git a/App.tsx b/App.tsx
+index 03d48544677dfad9d5b47eecca100da61aac41a3..ed312d01c4e59af6a5bc6a1c8da1ec17af5fe3ee 100644
+--- a/App.tsx
++++ b/App.tsx
+@@ -9,6 +9,7 @@ import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+ import {executeTool, parseNativeToolCall, proposalFor} from './src/core/toolBroker';
+ import {repository} from './src/data/repository';
+ import {deleteModelFile, importGguf} from './src/native/modelFiles';
++import {visibleAssistantText} from './src/native/modelOutput';
+ import {modelRuntime} from './src/native/modelRuntime';
+ import type {AuditEvent, ChatMessage, ModelRecord, Note, PendingAction, Reminder, RuntimeStats} from './src/types';
+ import {createId} from './src/utils/id';
+@@ -41,7 +42,19 @@ function AssistantApp() {
+   }, []);
+ 
+   useEffect(() => {
+-    void Promise.all([repository.messages(), repository.model()]).then(([savedMessages, savedModel]) => { setMessages(savedMessages); setModel(savedModel); });
++    void Promise.all([repository.messages(), repository.model()]).then(([savedMessages, savedModel]) => {
++      let changed = false;
++      const cleanedMessages = savedMessages.map(message => {
++        if (message.role !== 'assistant') return message;
++        const content = visibleAssistantText(message.content);
++        if (content === message.content) return message;
++        changed = true;
++        return {...message, content};
++      });
++      setMessages(cleanedMessages);
++      if (changed) void repository.saveMessages(cleanedMessages);
++      setModel(savedModel);
++    });
+     void refreshData();
+   }, [refreshData]);
+   useEffect(() => { const timer = setInterval(() => void refreshData(), 15_000); return () => clearInterval(timer); }, [refreshData]);
+@@ -50,7 +63,7 @@ function AssistantApp() {
+   const appendMessage = useCallback((message: ChatMessage) => setMessages(current => {
+     const next = [...current, message].slice(-100); void repository.saveMessages(next); return next;
+   }), []);
+-  const say = useCallback((content: string) => appendMessage({id: createId('assistant'), role: 'assistant', content, createdAt: new Date().toISOString()}), [appendMessage]);
++  const say = useCallback((content: string) => appendMessage({id: createId('assistant'), role: 'assistant', content: visibleAssistantText(content), createdAt: new Date().toISOString()}), [appendMessage]);
+ 
+   const handleImport = useCallback(async () => {
+     if (model) { Alert.alert('既存モデルがあります', '先に既存モデルを削除してください。'); return; }
 diff --git a/android/app/build.gradle b/android/app/build.gradle
-index 51d2c8236223a960d39451d1ea62748d4fed339f..9720ab07a6522d31c88c5316a8b314dd1d018601 100644
+index 234ca42dbde1e90367407afc325e3cc339bf6abe..f55cdefb0bcd6bcdf77248639c581abfd8553fb8 100644
 --- a/android/app/build.gradle
 +++ b/android/app/build.gradle
 @@ -77,6 +77,10 @@ android {
      buildToolsVersion rootProject.ext.buildToolsVersion
      compileSdk rootProject.ext.compileSdkVersion
-
+ 
 +    buildFeatures {
 +        aidl true
 +    }
@@ -17,11 +59,10 @@ diff --git a/android/app/src/main/AndroidManifest.xml b/android/app/src/main/And
 index 7bac395e224241405a4b3327f5bfb2eb6d773346..a2d5a5a2f12d85515e8bc1257a216cec4e475427 100644
 --- a/android/app/src/main/AndroidManifest.xml
 +++ b/android/app/src/main/AndroidManifest.xml
-@@ -1,5 +1,8 @@
+@@ -1,5 +1,7 @@
  <manifest xmlns:android="http://schemas.android.com/apk/res/android">
  
 +    <uses-permission android:name="dev.rock.permission.USE_LOCAL_AI" />
-+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 +
      <application
        android:name=".MainApplication"
@@ -36,18 +77,6 @@ index 7bac395e224241405a4b3327f5bfb2eb6d773346..a2d5a5a2f12d85515e8bc1257a216cec
 +        android:permission="dev.rock.permission.USE_LOCAL_AI" />
      </application>
  </manifest>
-diff --git a/android/app/src/release/AndroidManifest.xml b/android/app/src/release/AndroidManifest.xml
-index e9f39eeedd59b248d72fc8e9acd5c28862b38715..fbc5d3533c7e320bc985ba029b538ee79520a14a 100644
---- a/android/app/src/release/AndroidManifest.xml
-+++ b/android/app/src/release/AndroidManifest.xml
-@@ -4,7 +4,6 @@
-          but its generic library manifest declares downloader permissions.
-          Remove all of them from the release application. -->
-     <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
--    <uses-permission android:name="android.permission.WAKE_LOCK" tools:node="remove" />
-     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
-     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" tools:node="remove" />
-     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove" />
 diff --git a/android/app/src/main/aidl/dev/rock/localai/ILocalAiCallback.aidl b/android/app/src/main/aidl/dev/rock/localai/ILocalAiCallback.aidl
 new file mode 100644
 index 0000000000000000000000000000000000000000..db6f93e960aad5298305ec7f51c0ea8f92282fbb
@@ -259,6 +288,18 @@ index 0000000000000000000000000000000000000000..c26df10c4bd7e60a6228eacd1d5391fe
 +
 +  override fun onBind(intent: Intent): IBinder = binder
 +}
+diff --git a/android/app/src/release/AndroidManifest.xml b/android/app/src/release/AndroidManifest.xml
+index e9f39eeedd59b248d72fc8e9acd5c28862b38715..e49fc21dc68abbac369d5060e8d6e88d71ed62c6 100644
+--- a/android/app/src/release/AndroidManifest.xml
++++ b/android/app/src/release/AndroidManifest.xml
+@@ -4,7 +4,6 @@
+          but its generic library manifest declares downloader permissions.
+          Remove all of them from the release application. -->
+     <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
+-    <uses-permission android:name="android.permission.WAKE_LOCK" tools:node="remove" />
+     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
+     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" tools:node="remove" />
+     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove" />
 diff --git a/index.js b/index.js
 index 9b73932914001a9ccd3b23145c0ef4d61e62c150..45d46e04521ba51bcd01335bc7d41a98ddb544df 100644
 --- a/index.js
@@ -271,17 +312,200 @@ index 9b73932914001a9ccd3b23145c0ef4d61e62c150..45d46e04521ba51bcd01335bc7d41a98
  
  AppRegistry.registerComponent(appName, () => App);
 +registerOsBridge();
+diff --git a/scripts/check-offline-manifests.mjs b/scripts/check-offline-manifests.mjs
+index aeb859f4cbb8ef2c1ec854d41b7fe58b3f6a7d3d..ead17426101372a479dfe81887130263ae7f7a34 100644
+--- a/scripts/check-offline-manifests.mjs
++++ b/scripts/check-offline-manifests.mjs
+@@ -5,7 +5,6 @@ import {fileURLToPath} from 'node:url';
+ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+ const restricted = [
+   'android.permission.INTERNET',
+-  'android.permission.WAKE_LOCK',
+   'android.permission.ACCESS_NETWORK_STATE',
+   'android.permission.ACCESS_WIFI_STATE',
+   'android.permission.WRITE_EXTERNAL_STORAGE',
+diff --git a/src/native/__tests__/modelOutput.test.ts b/src/native/__tests__/modelOutput.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..da2040593d21e96821892681de5c49cb1a5054bb
+--- /dev/null
++++ b/src/native/__tests__/modelOutput.test.ts
+@@ -0,0 +1,39 @@
++import {createVisibleTokenStream, visibleAssistantText} from '../modelOutput';
++
++describe('visibleAssistantText', () => {
++  test('removes complete, orphan and unclosed reasoning markers', () => {
++    expect(visibleAssistantText('<think>secret\nwork</think>\n\nOFFLINE_OK')).toBe('OFFLINE_OK');
++    expect(visibleAssistantText('</think> answer')).toBe('answer');
++    expect(visibleAssistantText('safe <think>unfinished')).toBe('safe');
++  });
++
++  test('removes multiple case-insensitive reasoning blocks', () => {
++    expect(visibleAssistantText('<THINK>a</THINK> one <think>b</think> two')).toBe('one  two');
++  });
++});
++
++describe('createVisibleTokenStream', () => {
++  test('filters reasoning when tags are split across token boundaries', () => {
++    const output: string[] = [];
++    const stream = createVisibleTokenStream(token => output.push(token));
++    for (const token of ['<th', 'ink>', 'private', '</thi', 'nk>\n\n', 'CLEAN', '_OK']) stream.push(token);
++    expect(stream.finish()).toBe(true);
++    expect(output.join('')).toBe('CLEAN_OK');
++  });
++
++  test('fails closed for an unclosed reasoning block', () => {
++    const output: string[] = [];
++    const stream = createVisibleTokenStream(token => output.push(token));
++    for (const token of ['visible ', '<think>', 'private', ' chain']) stream.push(token);
++    expect(stream.finish()).toBe(true);
++    expect(output.join('')).toBe('visible ');
++  });
++
++  test('strips orphan closing tags without delaying ordinary text', () => {
++    const output: string[] = [];
++    const stream = createVisibleTokenStream(token => output.push(token));
++    for (const token of ['A', '</th', 'ink>', 'B']) stream.push(token);
++    expect(stream.finish()).toBe(true);
++    expect(output.join('')).toBe('AB');
++  });
++});
+diff --git a/src/native/modelOutput.ts b/src/native/modelOutput.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..701f9df8ae2cdb2510ae21ba94617edf74a30e91
+--- /dev/null
++++ b/src/native/modelOutput.ts
+@@ -0,0 +1,98 @@
++const openTag = '<think>';
++const closeTag = '</think>';
++
++function earliestTag(text: string): {index: number; tag: string} | null {
++  const lower = text.toLowerCase();
++  const candidates = [openTag, closeTag]
++    .map(tag => ({index: lower.indexOf(tag), tag}))
++    .filter(candidate => candidate.index >= 0)
++    .sort((left, right) => left.index - right.index);
++  return candidates[0] ?? null;
++}
++
++function trailingTagPrefixLength(text: string, tags: string[]): number {
++  const lower = text.toLowerCase();
++  const longest = Math.min(lower.length, Math.max(...tags.map(tag => tag.length - 1)));
++  for (let size = longest; size > 0; size -= 1) {
++    const suffix = lower.slice(-size);
++    if (tags.some(tag => tag.startsWith(suffix))) return size;
++  }
++  return 0;
++}
++
++/** Remove model-internal reasoning markers before text reaches UI or OS clients. */
++export function visibleAssistantText(value: string): string {
++  return value
++    .replace(/<think>[\s\S]*?<\/think>/gi, '')
++    .replace(/<think>[\s\S]*$/gi, '')
++    .replace(/<\/?think>/gi, '')
++    .trim();
++}
++
++/**
++ * Filter reasoning tags across arbitrary token boundaries without buffering the
++ * whole visible answer. An unclosed reasoning block fails closed at finish.
++ */
++export function createVisibleTokenStream(emit: (text: string) => void): {
++  push(chunk: string): void;
++  finish(): boolean;
++} {
++  let pending = '';
++  let hidden = false;
++  let emitted = false;
++
++  const emitVisible = (text: string) => {
++    const visible = emitted ? text : text.replace(/^\s+/, '');
++    if (!visible) return;
++    emitted = true;
++    emit(visible);
++  };
++
++  const drain = (final: boolean) => {
++    while (pending) {
++      if (hidden) {
++        const closeIndex = pending.toLowerCase().indexOf(closeTag);
++        if (closeIndex >= 0) {
++          pending = pending.slice(closeIndex + closeTag.length);
++          hidden = false;
++          continue;
++        }
++        if (final) {
++          pending = '';
++          return;
++        }
++        pending = pending.slice(-trailingTagPrefixLength(pending, [closeTag]));
++        return;
++      }
++
++      const next = earliestTag(pending);
++      if (next) {
++        emitVisible(pending.slice(0, next.index));
++        pending = pending.slice(next.index + next.tag.length);
++        hidden = next.tag === openTag;
++        continue;
++      }
++      if (final) {
++        emitVisible(pending);
++        pending = '';
++        return;
++      }
++      const held = trailingTagPrefixLength(pending, [openTag, closeTag]);
++      emitVisible(held ? pending.slice(0, -held) : pending);
++      pending = held ? pending.slice(-held) : '';
++      return;
++    }
++  };
++
++  return {
++    push(chunk: string) {
++      if (!chunk) return;
++      pending += chunk;
++      drain(false);
++    },
++    finish() {
++      drain(true);
++      return emitted;
++    },
++  };
++}
+diff --git a/src/native/modelRuntime.ts b/src/native/modelRuntime.ts
+index d5e1a6be27cb48190427398b96a3f23972134e43..99d77d41567413c5a6611724673c09271a514e43 100644
+--- a/src/native/modelRuntime.ts
++++ b/src/native/modelRuntime.ts
+@@ -2,6 +2,7 @@ import {Platform} from 'react-native';
+ import {initLlama, type LlamaContext} from 'llama.rn';
+ import {toolDefinitions} from '../core/toolBroker';
+ import type {ChatMessage, RuntimeStats} from '../types';
++import {visibleAssistantText} from './modelOutput';
+ 
+ const systemPrompt = `あなたは端末内だけで動く日本語優先のアシスタントです。
+ 許可済みツール以外の操作はできません。メモやリマインダーの作成は、アプリが必ず利用者へ確認します。
+@@ -78,7 +79,7 @@ class ModelRuntime {
+     );
+     const timings = result.timings as Record<string, unknown> | undefined;
+     return {
+-      text: result.text?.trim() ?? '',
++      text: visibleAssistantText(result.text ?? ''),
+       toolCalls: Array.isArray(result.tool_calls) ? result.tool_calls : [],
+       stats: {
+         predictedTokens: numberOrNull(timings?.predicted_n),
 diff --git a/src/native/osBridge.ts b/src/native/osBridge.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..9a2cf4f
+index 0000000000000000000000000000000000000000..44852081d78adacfe4d4970305f5f8c4c464c2f3
 --- /dev/null
 +++ b/src/native/osBridge.ts
-@@ -0,0 +1,148 @@
+@@ -0,0 +1,147 @@
 +import AsyncStorage from '@react-native-async-storage/async-storage';
 +import {AppRegistry, NativeModules} from 'react-native';
 +import {executeTool, parseNativeToolCall, proposalFor} from '../core/toolBroker';
 +import {repository} from '../data/repository';
 +import {modelRuntime} from './modelRuntime';
++import {createVisibleTokenStream} from './modelOutput';
 +import type {ChatMessage, PendingAction} from '../types';
 +
 +type BridgeData = {
@@ -355,11 +579,9 @@ index 0000000000000000000000000000000000000000..9a2cf4f
 +  const prompt = requiredText(data.prompt, 'prompt', 8000);
 +  const messages = parseContext(data.contextJson);
 +  messages.push({id: `os-${token}`, role: 'user', content: prompt, createdAt: new Date().toISOString()});
-+  let streamed = false;
-+  const result = await modelRuntime.complete(messages, chunk => {
-+    streamed = true;
-+    emit(token, 'token', chunk);
-+  });
++  const stream = createVisibleTokenStream(chunk => emit(token, 'token', chunk));
++  const result = await modelRuntime.complete(messages, chunk => stream.push(chunk));
++  const streamed = stream.finish();
 +  if (result.toolCalls.length > 1) throw new Error('MULTIPLE_TOOL_CALLS');
 +  if (!result.toolCalls.length) {
 +    emit(token, 'completed', streamed ? '' : (result.text || 'EMPTY_COMPLETION'));

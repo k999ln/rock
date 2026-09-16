@@ -121,7 +121,7 @@ assert.equal(localAiOverlayValidation.results.cleanArchiveOverlayApply, 'PASS');
 assert.equal(localAiOverlayValidation.results.aidlClientServerByteParity, 'PASS');
 assert.equal(localAiOverlayValidation.results.mutationProposalTtl, '5_MINUTES_FAIL_CLOSED');
 assert.equal(localAiOverlayValidation.results.typescript, 'PASS');
-assert.equal(localAiOverlayValidation.results.jestTests, 10);
+assert.equal(localAiOverlayValidation.results.jestTests, 15);
 assert.equal(localAiOverlayValidation.results.kotlinCompilation, 'PASS');
 assert.equal(localAiOverlayValidation.results.androidGradleBuild, 'PASS');
 assert.equal(localAiOverlayValidation.results.mergedApkManifestInspection, 'PASS');

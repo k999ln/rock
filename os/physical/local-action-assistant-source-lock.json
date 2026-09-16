@@ -34,7 +34,7 @@
   "overlay": {
     "status": "SERVER_NATIVE_COMPILED_EMULATOR_BOUND",
     "path": "os/physical/local-ai-overlay.patch",
-    "sha256": "09adef7811abc082a30ffa9117d8cf9c3947c8fe42e92923e87ec4c28ceb3444"
+    "sha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743"
   },
   "imageBuildVerified": false,
   "imageBootVerified": false,
