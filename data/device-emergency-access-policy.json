@@ -1,7 +1,7 @@
 {
   "schema": "dev.rock-device-emergency-access/1",
   "product": "avocadoOS",
-  "status": "isolated_operator_dock_and_command_queue_implemented_android_agent_missing",
+  "status": "isolated_operator_dock_hardware_signed_command_queue_implemented_android_agent_missing",
   "purpose": "allow_a_single_authorized_operator_to_protect_and_recover_an_enrolled_device_during_an_incident",
   "activation": {
     "singleOperatorAllowed": true,
@@ -81,6 +81,10 @@
     "authenticatedOperatorApiImplemented": true,
     "persistentCommandQueueImplemented": true,
     "appendOnlyAuditImplemented": true,
+    "operatorCommandWebAuthnSignatureRequired": true,
+    "operatorUserVerificationRequired": true,
+    "managementServerAloneCanIssueDeviceCommand": false,
+    "deviceIndependentCommandVerificationDesigned": true,
     "androidServiceImplemented": false,
     "productionOperatorCredentialProvisioned": false,
     "physicalDeviceVerified": false,

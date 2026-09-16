@@ -9,7 +9,8 @@
 1. Operator Dock専用のhostnameとCloudflare Access applicationを作成する。
 2. Access policyを運営本人だけに限定し、MFAを必須にする。
 3. 専用D1を作成し、`wrangler.jsonc`のplaceholder IDを実IDへ置き換える。
-4. `CF_ACCESS_TEAM_DOMAIN`、`CF_ACCESS_AUD`、`ROCK_OPERATOR_SUB`を秘密ではないruntime設定として登録する。
-5. `0001_operator_device_control.sql`を専用D1へ適用し、同じ配備のreadbackを保存する。
+4. `CF_ACCESS_TEAM_DOMAIN`、`CF_ACCESS_AUD`、`ROCK_OPERATOR_SUB`をruntime設定として登録する。
+5. 運営本人のP-256 WebAuthn hardware credentialを作成し、base64urlのcredential ID／SPKI公開鍵、RP ID、正確なHTTPS originを`OPERATOR_WEBAUTHN_*`へ登録する。private keyは登録しない。
+6. D1 migrationを専用D1へ適用し、同じ配備のreadbackを保存する。
 
-これらが未設定なら画面assetを返さず、APIも認証失敗にします。現在はsourceとlocal testの段階で、運営Dockを公開・配備済みとは扱いません。
+Access設定がなければ画面assetを返さず、WebAuthn設定がなければ命令準備・発行をfail closedにします。命令は端末、事故ID、action、理由、発行・開始・失効時刻を長さ付きcanonical bytesへ固定し、利用者確認済みWebAuthn assertionを保存します。同じcredential counterの別命令への再利用は拒否します。現在はsourceとlocal testの段階で、運営Dockを公開・配備済みとは扱いません。

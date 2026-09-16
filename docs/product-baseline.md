@@ -480,15 +480,15 @@ Wallet基本台帳はowner別の追記型とし、既存行の書換えではな
 
 緊急modeでも任意shell／root、写真・会話・原稿等の私的内容閲覧、Wallet送金・承認、秘密鍵・credential抽出、マイク／カメラ起動、未署名code導入、Verified Boot／SELinux無効化を許可しない。LLM、Sky Tool、MCP、外部Providerも緊急modeを開始できない。操作は端末側と運営側へ追記記録し、端末へ実行中表示、終了後に利用者へ通知する。初期化要求には最低30分の取消猶予を設ける。
 
-正本は[緊急アクセスとインシデント対応](security-incident-response.md)および`data/device-emergency-access-policy.json`とする。分離された運営Dock、Access JWT検証、専用命令キュー、追記監査はsource実装済みである。Android service、production operator credential、Pixel 10実機、侵入試験、復旧演習は未完了であり、現段階では管理画面の命令を実端末へ配信・実行しない。
+正本は[緊急アクセスとインシデント対応](security-incident-response.md)および`data/device-emergency-access-policy.json`とする。分離された運営Dock、Access JWT検証、WebAuthn hardware credentialで各命令を固定する署名、credential counter再利用拒否、専用命令キュー、追記監査はsource実装済みである。Android service、production operator credential、Pixel 10実機、侵入試験、復旧演習は未完了であり、現段階では管理画面の命令を実端末へ配信・実行しない。
 
 ## RQ46 運営専用の端末管理画面と永続命令キューを実装する
 
 運営担当者は利用者向けavocadoOSとは別配備の **avocadoOS Operator Dock** から、登録端末のモデル、OS版、hardware identity確認、接続状態、最終接続、命令・監査履歴を確認する。操作時は事故IDと理由を必須にし、RQ45の許可済みcommandだけを選択できる。Dockは運営PCとスマートフォン幅へ対応するが、利用者向けOSのHome、アプリ一覧、route、API、PWA assetへ入口や管理画面を含めない。
 
-Dockの全requestは静的HTML、CSS、JavaScriptを含めて専用Workerを先に通す。WorkerはCloudflare Accessの`Cf-Access-Jwt-Assertion`を公開JWKで検証し、issuer、専用application audience、有効期限、事前登録された単一operator subjectが一致する場合だけassetとAPIを返す。未設定、別利用者、別audience、別origin、未登録端末、未検証hardware identity、期限切れ、同じcommand IDの異内容、許可外commandを拒否する。命令と事故記録は利用者Web D1ではなくOperator Dock専用D1へ保存し、監査eventの更新・削除をdatabase triggerで拒否する。
+Dockの全requestは静的HTML、CSS、JavaScriptを含めて専用Workerを先に通す。WorkerはCloudflare Accessの`Cf-Access-Jwt-Assertion`を公開JWKで検証し、issuer、専用application audience、有効期限、事前登録された単一operator subjectが一致する場合だけassetとAPIを返す。命令時はさらに登録済みP-256 WebAuthn credentialのID、RP ID、origin、challenge、利用者確認flag、署名、増加counterを検査し、端末が再検証できるassertionを保存する。未設定、別利用者、別audience、別origin、未登録端末、未検証hardware identity、期限切れ、同じcommand IDの異内容、署名counter再利用、許可外commandを拒否する。命令と事故記録は利用者Web D1ではなくOperator Dock専用D1へ保存し、監査eventの更新・削除をdatabase triggerで拒否する。
 
-Operator Dockと命令キューの実装は、配備済みまたは端末への実到達を意味しない。専用hostname、Cloudflare Access application、operator subject、専用D1はowner設定待ちである。Android system service、device enrollment、hardware-backed operator signature、端末側scope／nonce／期限検査が完成するまで`deviceAgent=not_implemented`とし、UIは命令を実端末へ送信済みと表示しない。
+Operator Dockと命令キューの実装は、配備済みまたは端末への実到達を意味しない。専用hostname、Cloudflare Access application、operator subject、専用D1、production WebAuthn公開情報はowner設定待ちである。Android system service、device enrollment、端末側WebAuthn／scope／nonce／期限検査が完成するまで`deviceAgent=not_implemented`とし、UIは命令を実端末へ送信済みと表示しない。
 
 ## RQ47 AI自動化チームの効率化から収益・Wallet・ファンド・ゲームへ逆算する
 

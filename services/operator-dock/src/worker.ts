@@ -8,6 +8,10 @@ type Env = {
   CF_ACCESS_TEAM_DOMAIN?: string;
   CF_ACCESS_AUD?: string;
   ROCK_OPERATOR_SUB?: string;
+  OPERATOR_WEBAUTHN_CREDENTIAL_ID?: string;
+  OPERATOR_WEBAUTHN_PUBLIC_KEY_SPKI?: string;
+  OPERATOR_WEBAUTHN_RP_ID?: string;
+  OPERATOR_WEBAUTHN_ORIGIN?: string;
 };
 
 const securityHeaders = {
@@ -90,17 +94,23 @@ const worker = {
           env.DB,
           operatorSub,
           env.ROCK_OPERATOR_SUB?.trim() ?? '',
+          Date.now,
+          {
+            credentialId: env.OPERATOR_WEBAUTHN_CREDENTIAL_ID?.trim() ?? '',
+            publicKeySpki: env.OPERATOR_WEBAUTHN_PUBLIC_KEY_SPKI?.trim() ?? '',
+            rpId: env.OPERATOR_WEBAUTHN_RP_ID?.trim() ?? '',
+            origin: env.OPERATOR_WEBAUTHN_ORIGIN?.trim() ?? '',
+          },
         );
         if (request.method === 'GET') return json(await control.overview());
         if (request.method === 'POST') {
           const input = await body(request);
-          if (
-            input &&
-            typeof input === 'object' &&
-            !Array.isArray(input) &&
-            (input as { operation?: unknown }).operation === 'cancel'
-          )
+          const operation = input && typeof input === 'object' && !Array.isArray(input)
+            ? (input as { operation?: unknown }).operation : undefined;
+          if (operation === 'cancel')
             return json(await control.cancel(input));
+          if (operation === 'prepare')
+            return json(await control.prepare(input));
           return json(await control.issue(input));
         }
         return json({ error: '許可されていないHTTP methodです。' }, 405);

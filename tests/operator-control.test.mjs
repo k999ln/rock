@@ -2,8 +2,49 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, readdirSync } from 'node:fs';
+import { createHash, generateKeyPairSync, sign as signBytes } from 'node:crypto';
 import { operatorControl } from '../services/operator-dock/src/operator-control.ts';
 import { OperatorError } from '../services/operator-dock/src/validation.ts';
+
+const { publicKey, privateKey } = generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+const encoded = (value) => Buffer.from(value).toString('base64url');
+const credential = {
+  credentialId: encoded(Buffer.from('operator-hardware-credential-1')),
+  publicKeySpki: encoded(publicKey.export({ type: 'spki', format: 'der' })),
+  rpId: 'operator.test',
+  origin: 'https://operator.test',
+};
+
+function assertion(challenge, signCount = 1) {
+  const clientDataJSON = Buffer.from(JSON.stringify({
+    type: 'webauthn.get', challenge, origin: credential.origin, crossOrigin: false,
+  }));
+  const authenticatorData = Buffer.alloc(37);
+  createHash('sha256').update(credential.rpId).digest().copy(authenticatorData, 0);
+  authenticatorData[32] = 0x05;
+  authenticatorData.writeUInt32BE(signCount, 33);
+  const signed = Buffer.concat([
+    authenticatorData,
+    createHash('sha256').update(clientDataJSON).digest(),
+  ]);
+  return {
+    credentialId: credential.credentialId,
+    authenticatorData: encoded(authenticatorData),
+    clientDataJSON: encoded(clientDataJSON),
+    signature: encoded(signBytes('sha256', signed, privateKey)),
+  };
+}
+
+async function signedIssue(control, input, signCount = 1) {
+  const prepared = await control.prepare({ ...input, operation: 'prepare' });
+  return {
+    value: {
+      operation: 'issue', ...prepared.draft,
+      assertion: assertion(prepared.publicKeyRequest.challenge, signCount),
+    },
+    prepared,
+  };
+}
 
 function fixture() {
   const sqlite = new DatabaseSync(':memory:');
@@ -47,13 +88,13 @@ function fixture() {
   return {
     sqlite,
     deviceId,
-    control: operatorControl(db, 'operator-1', 'operator-1', () => now),
+    control: operatorControl(db, 'operator-1', 'operator-1', () => now, credential),
     advance(ms) { now += ms; },
   };
 }
 
 const request = (deviceId, changes = {}) => ({
-  operation: 'issue',
+  operation: 'prepare',
   id: crypto.randomUUID(),
   deviceId,
   incidentId: 'INC-2026-001',
@@ -78,31 +119,32 @@ void test('only the configured operator can open the management plane', () => {
 void test('verified devices accept only allowlisted bounded emergency commands', async () => {
   const { control, deviceId, sqlite } = fixture();
   const input = request(deviceId);
-  const first = await control.issue(input);
-  const replay = await control.issue(input);
+  const signed = await signedIssue(control, input);
+  const first = await control.issue(signed.value);
+  const replay = await control.issue(signed.value);
   assert.equal(first.command.status, 'queued');
   assert.equal(replay.replay, true);
   assert.equal((await control.overview()).devices[0].online, true);
   assert.equal(sqlite.prepare('SELECT COUNT(*) AS n FROM operator_audit_events').get().n, 1);
   await assert.rejects(
-    () => control.issue(request(deviceId, { action: 'root_shell' })),
+    () => control.prepare(request(deviceId, { action: 'root_shell' })),
     /許可されていない/,
   );
   await assert.rejects(
-    () => control.issue({ ...input, action: 'enter_lost_mode' }),
+    () => control.issue({ ...signed.value, action: 'enter_lost_mode' }),
     (error) => error instanceof OperatorError && error.status === 409,
   );
 });
 
 void test('maintenance expires in fifteen minutes and reset has a cancellation window', async () => {
   const { control, deviceId } = fixture();
-  const maintenance = await control.issue(
-    request(deviceId, { action: 'open_limited_maintenance_session' }),
-  );
+  const maintenanceInput = await signedIssue(control,
+    request(deviceId, { action: 'open_limited_maintenance_session' }), 2);
+  const maintenance = await control.issue(maintenanceInput.value);
   assert.equal(maintenance.command.expiresAt - maintenance.command.issuedAt, 15 * 60_000);
-  const reset = await control.issue(
-    request(deviceId, { action: 'request_factory_reset' }),
-  );
+  const resetInput = await signedIssue(control,
+    request(deviceId, { action: 'request_factory_reset' }), 3);
+  const reset = await control.issue(resetInput.value);
   assert.equal(reset.command.status, 'scheduled');
   assert.equal(reset.command.notBefore - reset.command.issuedAt, 30 * 60_000);
   const cancelled = await control.cancel({
@@ -117,13 +159,36 @@ void test('unverified devices and mutable audit history fail closed', async () =
   const { control, deviceId, sqlite } = fixture();
   sqlite.prepare("UPDATE operator_managed_devices SET trust_state='pending'").run();
   await assert.rejects(
-    () => control.issue(request(deviceId)),
+    () => control.prepare(request(deviceId)),
     (error) => error instanceof OperatorError && error.status === 409,
   );
   sqlite.prepare("UPDATE operator_managed_devices SET trust_state='verified'").run();
-  await control.issue(request(deviceId));
+  const signed = await signedIssue(control, request(deviceId), 4);
+  await control.issue(signed.value);
   assert.throws(
     () => sqlite.prepare('DELETE FROM operator_audit_events').run(),
     /immutable/,
+  );
+});
+
+void test('management server alone cannot issue or alter a device command', async () => {
+  const { control, deviceId } = fixture();
+  const signed = await signedIssue(control, request(deviceId), 9);
+  await assert.rejects(
+    () => control.issue({ ...signed.value, assertion: {
+      ...signed.value.assertion,
+      signature: encoded(Buffer.alloc(64, 7)),
+    } }),
+    /署名/,
+  );
+  await assert.rejects(
+    () => control.issue({ ...signed.value, expiresAt: signed.value.expiresAt + 1 }),
+    /有効時間/,
+  );
+  await control.issue(signed.value);
+  const replayedCounter = await signedIssue(control, request(deviceId), 9);
+  await assert.rejects(
+    () => control.issue(replayedCounter.value),
+    /counter/,
   );
 });

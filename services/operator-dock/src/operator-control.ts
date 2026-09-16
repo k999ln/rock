@@ -1,4 +1,12 @@
 import { exactObject, OperatorError, uuid } from './validation.ts';
+import {
+  commandChallenge,
+  encodeBase64Url,
+  type OperatorAssertion,
+  type OperatorCredentialConfig,
+  type SignedCommandFields,
+  verifyOperatorAssertion,
+} from './operator-webauthn.ts';
 
 export const EMERGENCY_ACTIONS = [
   'lock_device',
@@ -85,6 +93,7 @@ export function operatorControl(
   authenticatedOperatorSub: string,
   configuredOperatorSub: string,
   clock: () => number = Date.now,
+  operatorCredential?: OperatorCredentialConfig,
 ) {
   if (!configuredOperatorSub)
     throw new OperatorError('運営管理者の設定が完了していません。', 503);
@@ -139,7 +148,7 @@ export function operatorControl(
     };
   }
 
-  async function issue(value: unknown) {
+  function commandInput(value: unknown, operation: 'prepare' | 'issue') {
     const input = exactObject(value, [
       'operation',
       'id',
@@ -147,28 +156,21 @@ export function operatorControl(
       'incidentId',
       'action',
       'reason',
+      ...(operation === 'issue'
+        ? ['issuedAt', 'notBefore', 'expiresAt', 'assertion']
+        : []),
     ]);
-    if (input.operation !== 'issue')
+    if (input.operation !== operation)
       throw new OperatorError('操作形式を確認してください。');
     const id = uuid(input.id);
     const deviceId = uuid(input.deviceId);
     const requestedAction = action(input.action);
     const requestedIncidentId = incidentId(input.incidentId);
     const reason = boundedText(input.reason, '理由', 5, 240);
-    const existing = await getCommand(id);
-    if (existing) {
-      if (
-        existing.deviceId !== deviceId ||
-        existing.incidentId !== requestedIncidentId ||
-        existing.action !== requestedAction ||
-        existing.reason !== reason
-      )
-        throw new OperatorError(
-          '同じ操作IDで異なる緊急命令は作成できません。',
-          409,
-        );
-      return { command: existing, replay: true };
-    }
+    return { input, id, deviceId, requestedAction, requestedIncidentId, reason };
+  }
+
+  async function verifiedDevice(deviceId: string) {
     const device = await statement(
       `SELECT id,status,trust_state AS trustState,key_fingerprint AS keyFingerprint
        FROM operator_managed_devices WHERE id=?`,
@@ -180,35 +182,121 @@ export function operatorControl(
       keyFingerprint: string | null;
     }>();
     if (!device) throw new OperatorError('登録端末が見つかりません。', 404);
-    if (
-      device.status !== 'active' ||
-      device.trustState !== 'verified' ||
-      !device.keyFingerprint
-    )
-      throw new OperatorError(
-        '端末のhardware identity確認が完了していません。',
-        409,
-      );
+    if (device.status !== 'active' || device.trustState !== 'verified' || !device.keyFingerprint)
+      throw new OperatorError('端末のhardware identity確認が完了していません。', 409);
+    return device;
+  }
+
+  async function prepare(value: unknown) {
+    if (!operatorCredential)
+      throw new OperatorError('運営hardware credentialが設定されていません。', 503);
+    const { id, deviceId, requestedAction, requestedIncidentId, reason } =
+      commandInput(value, 'prepare');
+    await verifiedDevice(deviceId);
+    const issuedAt = clock();
+    const reset = requestedAction === 'request_factory_reset';
+    const draft: SignedCommandFields = {
+      id, deviceId, incidentId: requestedIncidentId, action: requestedAction, reason,
+      issuedAt,
+      notBefore: reset ? issuedAt + 30 * 60_000 : issuedAt,
+      expiresAt: reset ? issuedAt + 60 * 60_000 : issuedAt + 15 * 60_000,
+    };
+    return {
+      draft,
+      publicKeyRequest: {
+        challenge: encodeBase64Url(await commandChallenge(draft)),
+        credentialId: operatorCredential.credentialId,
+        rpId: operatorCredential.rpId,
+        timeout: 60_000,
+        userVerification: 'required',
+      },
+    };
+  }
+
+  async function issue(value: unknown) {
+    if (!operatorCredential)
+      throw new OperatorError('運営hardware credentialが設定されていません。', 503);
+    const { input, id, deviceId, requestedAction, requestedIncidentId, reason } =
+      commandInput(value, 'issue');
+    const issuedAt = Number(input.issuedAt);
+    const notBefore = Number(input.notBefore);
+    const expiresAt = Number(input.expiresAt);
+    if (![issuedAt, notBefore, expiresAt].every(Number.isSafeInteger))
+      throw new OperatorError('命令時刻を確認できません。');
     const now = clock();
-    const isReset = requestedAction === 'request_factory_reset';
-    const notBefore = isReset ? now + 30 * 60_000 : now;
-    const expiresAt = isReset ? now + 60 * 60_000 : now + 15 * 60_000;
+    const reset = requestedAction === 'request_factory_reset';
+    if (issuedAt < now - 2 * 60_000 || issuedAt > now + 30_000 ||
+        notBefore !== (reset ? issuedAt + 30 * 60_000 : issuedAt) ||
+        expiresAt !== (reset ? issuedAt + 60 * 60_000 : issuedAt + 15 * 60_000))
+      throw new OperatorError('命令の有効時間を確認できません。', 409);
+    const assertionInput = exactObject(input.assertion, [
+      'credentialId', 'authenticatorData', 'clientDataJSON', 'signature',
+    ]);
+    const assertion: OperatorAssertion = {
+      credentialId: String(assertionInput.credentialId ?? ''),
+      authenticatorData: String(assertionInput.authenticatorData ?? ''),
+      clientDataJSON: String(assertionInput.clientDataJSON ?? ''),
+      signature: String(assertionInput.signature ?? ''),
+    };
+    const signed: SignedCommandFields = {
+      id, deviceId, incidentId: requestedIncidentId, action: requestedAction,
+      reason, issuedAt, notBefore, expiresAt,
+    };
+    const existing = await getCommand(id);
+    if (existing) {
+      if (
+        existing.deviceId !== deviceId ||
+        existing.incidentId !== requestedIncidentId ||
+        existing.action !== requestedAction ||
+        existing.reason !== reason || existing.issuedAt !== issuedAt ||
+        existing.notBefore !== notBefore || existing.expiresAt !== expiresAt
+      )
+        throw new OperatorError(
+          '同じ操作IDで異なる緊急命令は作成できません。',
+          409,
+        );
+      return { command: existing, replay: true };
+    }
+    await verifiedDevice(deviceId);
+    const verified = await verifyOperatorAssertion(signed, assertion, operatorCredential);
+    const authState = verified.signCount === 0
+      ? statement(`SELECT ? AS credential_id`, assertion.credentialId)
+      : statement(
+          `INSERT OR IGNORE INTO operator_webauthn_assertions(
+            credential_id,sign_count,command_id,used_at) VALUES(?,?,?,?)`,
+          assertion.credentialId, verified.signCount, id, now,
+        );
+    const counterCondition = verified.signCount === 0
+      ? ''
+      : ` AND EXISTS(SELECT 1 FROM operator_webauthn_assertions
+          WHERE credential_id=? AND sign_count=? AND command_id=?)`;
     const inserted = await db.batch([
+      authState,
       statement(
         `INSERT OR IGNORE INTO operator_device_commands(
           id,device_id,operator_user_id,incident_id,action,reason,status,
-          issued_at,not_before,expires_at
-        ) VALUES(?,?,?,?,?,?,?,?,?,?) RETURNING id`,
+          issued_at,not_before,expires_at,operator_credential_id,
+          authenticator_data,client_data_json,operator_signature,signed_payload_sha256
+        ) SELECT ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+          WHERE 1=1${counterCondition} RETURNING id`,
         id,
         deviceId,
         authenticatedOperatorSub,
         requestedIncidentId,
         requestedAction,
         reason,
-        isReset ? 'scheduled' : 'queued',
-        now,
+        reset ? 'scheduled' : 'queued',
+        issuedAt,
         notBefore,
         expiresAt,
+        assertion.credentialId,
+        assertion.authenticatorData,
+        assertion.clientDataJSON,
+        assertion.signature,
+        verified.payloadSha256,
+        ...(verified.signCount === 0
+          ? []
+          : [assertion.credentialId, verified.signCount, id]),
       ),
       statement(
         `INSERT OR IGNORE INTO operator_audit_events(
@@ -230,10 +318,10 @@ export function operatorControl(
         reason,
       ),
     ]);
-    if (!inserted[0].results.length) {
+    if (!inserted[1].results.length) {
       const collision = await getCommand(id);
-      if (collision) return issue(value);
-      throw new OperatorError('緊急命令を保存できませんでした。', 409);
+      if (collision) return { command: collision, replay: true };
+      throw new OperatorError('credential counterまたは緊急命令を保存できませんでした。', 409);
     }
     return { command: (await getCommand(id))!, replay: false };
   }
@@ -280,5 +368,5 @@ export function operatorControl(
     return { command: (await getCommand(id))!, replay: false };
   }
 
-  return { overview, issue, cancel };
+  return { overview, prepare, issue, cancel };
 }

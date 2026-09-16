@@ -1,3 +1,7 @@
 CF_ACCESS_TEAM_DOMAIN=https://your-team.cloudflareaccess.com
 CF_ACCESS_AUD=replace-with-operator-dock-audience
 ROCK_OPERATOR_SUB=replace-with-the-single-operator-subject
+OPERATOR_WEBAUTHN_CREDENTIAL_ID=replace-with-base64url-credential-id
+OPERATOR_WEBAUTHN_PUBLIC_KEY_SPKI=replace-with-base64url-p256-spki
+OPERATOR_WEBAUTHN_RP_ID=operator.example.com
+OPERATOR_WEBAUTHN_ORIGIN=https://operator.example.com

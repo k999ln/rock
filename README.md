@@ -28,7 +28,7 @@ avocadoOSは、利用者が自分専用のAI自動化チームを所有し、通
 - **Wallet**: 仕事、費用、検証済み収益、Rock利用料、払出しを別状態とreceiptで管理します。売上0なら請求0、未達分の債務化・翌月繰越はありません。
 - **Market / Fund**: 型付き価値の市場と実績更新型ファンドはPAPER限定です。LIVE注文、清算、自動再投資は無効です。
 - **OS運用**: 診断、暗号化された端末設定backup、明示的なPWA更新、A/B更新、rollback、復旧を提供します。
-- **緊急保護**: 利用者向けOSとは別配備の`avocadoOS Operator Dock`に、登録端末、緊急操作、命令・監査履歴を実装しました。利用者向けHome、route、API、PWA assetには管理画面を含めません。DockはCloudflare Access JWTを署名・専用audience・単一運営者まで検証し、専用D1を使います。Android端末serviceと実機試験は未完了で、現在は命令を端末へ配信しません。
+- **緊急保護**: 利用者向けOSとは別配備の`avocadoOS Operator Dock`に、登録端末、緊急操作、命令・監査履歴を実装しました。利用者向けHome、route、API、PWA assetには管理画面を含めません。DockはCloudflare Access JWTに加え、端末が独立検証できるWebAuthn hardware credential署名を各命令へ必須化し、管理serverだけでは命令を発行できません。Android端末serviceと実機試験は未完了で、現在は命令を端末へ配信しません。
 - **Android正式署名**: 専用オフライン署名PC、YubiHSM 2本番1台、別場所の予備1台、別端末での独立検証に固定し、鍵をAVB／OTA／system application／APEX system componentの4系統へ分離しました。長期鍵と通常application鍵24か月目安、最低1 releaseの旧新鍵移行、漏洩鍵の即時停止・再使用禁止も固定済みです。生の秘密鍵はHSM外へ出さず、端末診断プラグインを署名鍵やboot不能の復旧手段には使いません。機材調達、全署名接続、予備切替、旧新鍵移行、Pixel 10実測は未完了です。
 - **Android rollback防止**: avocadoOS管理indexは署名前に固定した正式releaseのUTC Unix秒を使い、Google管理値は変更しません。A/Bのtrial slotでは端末indexを進めず、起動成功後だけ確定します。正確なlocation/value、失敗fallback、古い署名済みimage拒否はfull buildとPixel 10実機試験待ちです。
 - **Pixel 10純正復旧**: firmware freeze時点のGoogle公式最新安定版を選び、factory imageとfull OTAを同一buildで揃えます。full OTAは非wipe復旧と両slot boot可能化、factory imageはwipeを伴う最終復旧に限定します。利用条件同意、実ファイル取得、byte数・SHA-256固定は未完了です。

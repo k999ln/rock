@@ -73,6 +73,45 @@ async function api(options = {}) {
   return data;
 }
 
+function base64UrlBytes(value) {
+  const padding = '='.repeat((4 - (value.length % 4)) % 4);
+  const binary = atob(value.replaceAll('-', '+').replaceAll('_', '/') + padding);
+  return Uint8Array.from(binary, (character) => character.charCodeAt(0));
+}
+
+function base64Url(value) {
+  const bytes = new Uint8Array(value);
+  let binary = '';
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/u, '');
+}
+
+async function signPreparedCommand(request) {
+  if (!window.PublicKeyCredential || !navigator.credentials)
+    throw new Error('hardware credentialに対応したブラウザが必要です。');
+  const credential = await navigator.credentials.get({
+    publicKey: {
+      challenge: base64UrlBytes(request.challenge),
+      allowCredentials: [{
+        id: base64UrlBytes(request.credentialId),
+        type: 'public-key',
+      }],
+      rpId: request.rpId,
+      timeout: request.timeout,
+      userVerification: request.userVerification,
+    },
+  });
+  if (!(credential instanceof PublicKeyCredential) ||
+      !(credential.response instanceof AuthenticatorAssertionResponse))
+    throw new Error('hardware credentialで命令を確認できませんでした。');
+  return {
+    credentialId: base64Url(credential.rawId),
+    authenticatorData: base64Url(credential.response.authenticatorData),
+    clientDataJSON: base64Url(credential.response.clientDataJSON),
+    signature: base64Url(credential.response.signature),
+  };
+}
+
 function buttonText(button, title, note) {
   const titleNode = document.createElement('strong');
   const noteNode = document.createElement('small');
@@ -204,17 +243,23 @@ async function issue(action) {
   clearNotices();
   render();
   try {
-    await api({
+    const prepared = await api({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        operation: 'issue',
+        operation: 'prepare',
         id: crypto.randomUUID(),
         deviceId: selectedId,
         incidentId: elements['incident-id'].value,
         action,
         reason: elements.reason.value,
       }),
+    });
+    const assertion = await signPreparedCommand(prepared.publicKeyRequest);
+    await api({
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ operation: 'issue', ...prepared.draft, assertion }),
     });
     showMessage(
       snapshot?.deviceAgent === 'ready'

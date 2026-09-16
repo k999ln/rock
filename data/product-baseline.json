@@ -488,7 +488,7 @@
   },
   "deviceEmergencyAccess": {
     "requested": true,
-    "status": "isolated_operator_dock_and_command_queue_implemented_android_agent_missing",
+    "status": "isolated_operator_dock_hardware_signed_command_queue_implemented_android_agent_missing",
     "policy": "data/device-emergency-access-policy.json",
     "record": "docs/security-incident-response.md",
     "singleOperatorActivation": true,
@@ -518,6 +518,8 @@
     "authenticatedOperatorApiImplemented": true,
     "persistentCommandQueueImplemented": true,
     "appendOnlyAuditImplemented": true,
+    "operatorCommandWebAuthnSignatureRequired": true,
+    "managementServerAloneCanIssueDeviceCommand": false,
     "androidServiceImplemented": false,
     "productionCredentialProvisioned": false,
     "physicalDeviceVerified": false,

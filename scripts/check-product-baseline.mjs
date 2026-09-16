@@ -356,7 +356,7 @@ export function validateBaseline(
       'single-operator-emergency-device-protection',
     ) &&
       data.deviceEmergencyAccess?.status ===
-        'isolated_operator_dock_and_command_queue_implemented_android_agent_missing' &&
+        'isolated_operator_dock_hardware_signed_command_queue_implemented_android_agent_missing' &&
       data.deviceEmergencyAccess?.singleOperatorActivation === true &&
       data.deviceEmergencyAccess?.userApprovalRequiredAtActivation === false &&
       data.deviceEmergencyAccess?.preEnrollmentRequired === true &&
@@ -393,6 +393,8 @@ export function validateBaseline(
         true &&
       data.deviceEmergencyAccess?.persistentCommandQueueImplemented === true &&
       data.deviceEmergencyAccess?.appendOnlyAuditImplemented === true &&
+      data.deviceEmergencyAccess?.operatorCommandWebAuthnSignatureRequired === true &&
+      data.deviceEmergencyAccess?.managementServerAloneCanIssueDeviceCommand === false &&
       data.deviceEmergencyAccess?.androidServiceImplemented === false &&
       data.deviceEmergencyAccess?.productionCredentialProvisioned === false &&
       data.deviceEmergencyAccess?.physicalDeviceVerified === false &&
@@ -413,7 +415,7 @@ export function validateBaseline(
   requireValue(
     emergencyPolicy.schema === 'dev.rock-device-emergency-access/1' &&
       emergencyPolicy.status ===
-        'isolated_operator_dock_and_command_queue_implemented_android_agent_missing' &&
+        'isolated_operator_dock_hardware_signed_command_queue_implemented_android_agent_missing' &&
       emergencyPolicy.activation?.singleOperatorAllowed === true &&
       emergencyPolicy.activation?.userApprovalRequiredAtActivation === false &&
       emergencyPolicy.activation?.maximumSessionSeconds === 900 &&
@@ -440,6 +442,9 @@ export function validateBaseline(
       emergencyPolicy.implementation?.persistentCommandQueueImplemented ===
         true &&
       emergencyPolicy.implementation?.appendOnlyAuditImplemented === true &&
+      emergencyPolicy.implementation?.operatorCommandWebAuthnSignatureRequired === true &&
+      emergencyPolicy.implementation?.operatorUserVerificationRequired === true &&
+      emergencyPolicy.implementation?.managementServerAloneCanIssueDeviceCommand === false &&
       emergencyPolicy.implementation?.androidServiceImplemented === false &&
       emergencyPolicy.implementation?.physicalDeviceVerified === false,
     '緊急access policyの単独初動・端末側強制・禁止権限・未実装境界を維持してください',

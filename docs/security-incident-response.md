@@ -1,6 +1,6 @@
 # avocadoOS 緊急アクセスとインシデント対応
 
-状態: **分離Operator Dock・専用命令キューsource実装済み／専用配備・Android端末service・実機検証未完了**。この文書と`data/device-emergency-access-policy.json`は、緊急時に運営1名が本人の端末操作を待たず保護を開始できる契約を固定する。現在の管理画面sourceだけでproduction端末へ到達済みという意味ではない。
+状態: **分離Operator Dock・hardware署名付き専用命令キューsource実装済み／専用配備・Android端末service・実機検証未完了**。この文書と`data/device-emergency-access-policy.json`は、緊急時に運営1名が本人の端末操作を待たず保護を開始できる契約を固定する。現在の管理画面sourceだけでproduction端末へ到達済みという意味ではない。
 
 ## 目的
 
@@ -57,13 +57,15 @@
 
 Dock Workerはassetを含む全requestでCloudflare Accessの署名JWTを検証する。`CF_ACCESS_TEAM_DOMAIN`、Dock専用`CF_ACCESS_AUD`、単一`ROCK_OPERATOR_SUB`の全てが必要で、issuer、audience、期限、subject、RS256署名のいずれかが不一致ならfail closedにする。ヘッダーがあるだけでは信用しない。
 
-Dock内の`/api/devices`は最大100端末・100命令・100監査eventのsnapshotと、許可済みcommandの発行・未受領commandの取消を扱う。利用者Web D1とは別のOperator Dock専用D1へ`operator_managed_devices`、`operator_device_commands`、`operator_audit_events`を保存する。監査tableはupdate/delete triggerで追記専用にする。
+Dock内の`/api/devices`は最大100端末・100命令・100監査eventのsnapshotと、許可済みcommandの発行・未受領commandの取消を扱う。発行は2段階で、serverが正確な端末、action、理由、有効時間をcanonical commandへ固定し、運営の登録済みWebAuthn hardware credentialが利用者確認付きでそのdigestへ署名する。credential ID、RP ID、origin、challenge、UP／UV flag、P-256署名、増加counterをWorkerが検証し、同じassertionの別命令への再利用を拒否する。管理serverだけでは端末が受理できる署名を作れない。
+
+利用者Web D1とは別のOperator Dock専用D1へ`operator_managed_devices`、署名材料を含む`operator_device_commands`、使用済みcredential counter、`operator_audit_events`を保存する。監査tableはupdate/delete triggerで追記専用にする。公開鍵とcredential IDはsecretではないが、production値は配備環境で固定し、private keyはhardware credential外へ出さない。
 
 管理面は`controlPlane=ready`、端末側は`deviceAgent=not_implemented`として別表示する。Android serviceとproduction credentialがない間は命令を実端末へ配信せず、UIも「保存済み・端末service接続待ち」と表示する。
 
 ## 実装・受入gate
 
-分離管理面と命令キューはsource実装済みだが、以下が揃うまで`isolated_operator_dock_and_command_queue_implemented_android_agent_missing`を維持し、運営が実端末へアクセス可能とは表示しない。
+分離管理面とhardware署名付き命令キューはsource実装済みだが、以下が揃うまで`isolated_operator_dock_hardware_signed_command_queue_implemented_android_agent_missing`を維持し、運営が実端末へアクセス可能とは表示しない。
 
 1. Android system service、署名command schema、replay拒否、15分session終了を実装する。
 2. production operator credentialをOTA、AVB、アプリ署名鍵と分けてhardwareへ格納する。

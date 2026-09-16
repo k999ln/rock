@@ -6,6 +6,12 @@
 
 Java 11 Core 37/37、Android 15 emulatorのBroker 11 non-skipped testとShell 5/5、Android source build／lint 207 taskは合格した。Pixel 10の実data／Keystore消去、復元、再export、再起動は未実施なので、初回flash gateは0/4のまま維持する。[設計と物理gate](docs/android-backup-recovery.md)／[emulator証拠](docs/evidence/android-backup-v2-emulator-20260916.json)。
 
+## 2026-09-16 — Operator命令をhardware credential署名へ固定
+
+Cloudflare Accessへログインした管理serverだけで端末命令を作れる構成をやめ、命令ごとに運営本人のP-256 WebAuthn hardware credentialによる利用者確認付き署名を必須にした。端末、事故ID、action、理由、発行・開始・失効時刻をcanonical bytesへ固定し、credential ID、RP ID、origin、challenge、UP／UV flag、署名、増加counterをDock Workerで検証する。同じcounterの別命令への再利用は拒否し、assertionは端末側の独立検証用に専用D1へ保存する。
+
+Dockのlocal暗号試験とdry-run buildは合格したが、Android Agent、production credential登録、専用配備、実機訓練はまだ未完了である。この段階では実端末へ命令可能とは表示しない。[正本](docs/security-incident-response.md)。
+
 ## 2026-09-16 — native Sky選択をBrokerへ永続化（物理再起動受入待ち）
 
 Shell API v3へ`selectSkyTool`と`skySelection`を追加し、Skyで選んだ`article-preparation@1`をBroker SQLite schema v2へ保存するようにした。Zemaは保存済みselection tokenの一致をLocal AI計画の前後で確認し、不一致・未選択は仕事0件で拒否する。既存schema v1はtransaction内でv2へ移行し、未知の新しいschemaはresetせず停止する。
