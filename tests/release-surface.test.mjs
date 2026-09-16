@@ -10,7 +10,7 @@ const readiness = JSON.parse(readFileSync(resolve(root, 'data/release-readiness.
 void test('public release counts come from the audited distribution matrix', () => {
   assert.equal(releaseProgress(readiness, 'web-pwa-owner-preview').text, '4/5');
   assert.equal(releaseProgress(readiness, 'qemu-developer-preview').text, '6/10');
-  assert.equal(releaseProgress(readiness, 'android-physical-preview').text, '0/5');
+  assert.equal(releaseProgress(readiness, 'android-physical-preview').text, '1/5');
   assert.equal(releaseProgress(readiness, 'personal-number-identity').text, '1/7');
 });
 

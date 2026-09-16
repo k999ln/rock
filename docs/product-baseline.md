@@ -1,5 +1,9 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-16実機試験追記（v1.60）: 所有Pixel 10 GL066の既存OS上へ試験専用同一署名のLocal Action Assistant、Automation、instrumentation、記事Toolを導入し、物理端末instrumentation 5/5、Qwen3-0.6B Q8_0の機内モード推論、再起動後の会話／model metadata保持と手動reload、33分22秒・15推論の熱試験を合格した。最大電池温度34.4℃、Android thermal status 0、process restart 0。Sky→Zema→Tool→WalletはRock所有fixtureの自動receipt bridgeまで合格したが、外部Provider sandbox、実売上／実払出し、物理Pixel上のWallet Provider縦断は未実証。GL066のBSP／vendor／partition／boot／純正復旧とsource／artifact／署名計画のfreezeが残るため、有料full buildはまだ開始しない。[実機証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)／[事前試験](evidence/android-pre-full-build-tests-20260915.json)。
+
+2026-09-16実機追記（v1.59）: 所有端末を読取り専用ADBで確認し、最初の物理対象を日本向けGoogle Pixel 10、型番／SKU `GL066`、codename `frankel`へ確定した。現在はGrapheneOS `2026091000`／Android 17で、bootloaderはlocked、別Verified Boot鍵のyellow状態。端末識別番号は保存しない。これによりAndroid物理端末の「正確な機種／SKU」gateだけを1/5合格とする。avocadoOSのfull build、flash、boot、BSP／復旧、CTS、production署名、販売準備は未合格で、有料full buildは開始しない。[端末inventory](evidence/android-pixel-10-gl066-device-inventory-20260916.json)／[boot状態](evidence/android-pixel-10-gl066-boot-state-20260916.json)。
+
 2026-09-15検証追記（v1.58）: v1.56で不合格だった試験2のうち、Tool完了→Provider署名付きEarning Receipt→Wallet一度だけ反映をROCK_READY fixtureで実装・合格した。Provider署名、完了済み・非サンプルjob、本人、Tool、時刻をSky bridgeで照合し、収益Provider鍵、Billing転送鍵、払出し鍵を分離する。同一Receipt再送は冪等、同じ実行への異なるReceiptは拒否する。実販売・決済Provider sandbox、返金、chargeback、実払出しは未接続であり、試験2全体や1.0の合格、実収益実績にはしない。試験1の所有Pixel 10、実GGUF、機内モード、保存／再起動、30分温度、正確なSKU readbackも未実行のため、有料full buildは引き続き開始しない。[bridge受入証拠](evidence/tool-earning-wallet-bridge-20260915.json)。
 
 2026-09-15追記（v1.57）: 最上位目的を、利用者が自分専用のAI自動化チームを所有し、その効率を継続改善して、便利さと検証可能な収益機会を増やし、利用者全体の豊かさへつなげることに固定する。OS、Pixel、Wallet、ファンド、ゲームはこの目的のための層であり、OSやスマートフォン開発自体を目的にしない。Pixelは最初のreference hardware、カメラ品質は1.0完成条件外、専用端末は価値実証後の配布形態とする。月50万円規模は長期の実測到達指標であり、収益・利回り・達成時期の保証ではない。offline-first実行、Tool→署名済みEarning Receipt→Wallet、ファンド改善、合法的な税務準備、同意可能な改善データ収集、ゲーム派生の順に逆算する。RQ47と[製品目的から逆算した開発軸](product-north-star-20260915.md)を追加する。
@@ -428,7 +432,7 @@ Local Action Assistantを、RockstarOSの物理Android版で端末内推論を�
 
 読み取りtoolは許可リスト内だけを実行し、メモ・リマインダー作成はproposalを端末内へ一時保存して、OSの別確認呼出しで本人が許可するまで実行しない。release APKは通信権限なし、arm64 native library、固定SHA-256とsizeを検査してからSoongへstageし、AOSPのrelease署名工程へ渡す。GGUFはsourceやAPKへ同梱せず、配布元、license、hash、端末RAM・速度・温度を確認後にimportする。
 
-2026-09-15時点ではclient/server source、AIDL契約、overlay、APK staging gateに加え、固定sourceからのarm64 release APK build、artifact hash固定、Android 15 arm64 emulator上の署名Binder接続とGGUFなしの`NO_MODEL`拒否まで完了した。使用した署名は試験専用で、Soong／OS image、production署名、所有Pixel 10、GGUF機内モード推論、保存／再起動、30分連続試験は未完了である。詳細は [Local Action AssistantのRockstarOS導入](local-ai-os-integration-20260915.md) と[事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)を正本補助記録とする。
+client/server source、AIDL契約、overlay、APK staging gate、固定sourceからのarm64 release APK build、artifact hash固定、emulatorの署名Binder接続と`NO_MODEL`拒否に加え、2026-09-16に所有Pixel 10 GL066上で物理端末instrumentation、Qwen GGUF機内モード推論、保存／再起動、33分22秒連続試験を完了した。使用した署名は試験専用で、Soong／OS image、production署名、SELinux enforcing、OTA／rollback／復旧は未完了である。詳細は [Local Action AssistantのRockstarOS導入](local-ai-os-integration-20260915.md)、[事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)、[物理端末証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)を正本補助記録とする。
 
 ## RQ42 OS Platform Coreへ登録・承認・Wallet・更新の安全境界を入れる
 
@@ -503,11 +507,15 @@ Walletは収益・費用・receipt・払出し状態に加え、合法的な税�
 
 ## 変更記録
 
-2026-09-15 v1.58: Tool完了とProvider確認済み収益を分離したまま、Provider署名、job照合、鍵分離、Billing D1への一度だけ反映をROCK_READY fixtureで縦断合格した。実Provider sandbox、実収益、払出し、所有Pixel実機は未完了のまま維持する。
+2026-09-16 v1.59: 所有Pixel 10の読取り専用ADB確認で日本向け`GL066`／`frankel`を最初の物理対象へ確定し、Android物理端末の機種／SKU gateを1/5合格にした。端末serialは保存せず、full build、flash、boot、BSP／復旧、CTS、production署名、販売準備は未合格のまま維持する。
+
+2026-09-15 v1.58: Tool完了とProvider確認済み収益を分離したまま、Provider署名、job照合、鍵分離、Billing D1への一度だけ反映をROCK_READY fixtureで縦断合格した。実Provider sandbox、実収益、払出し、所有Pixel上のAI実行は未完了のまま維持する。
 
 2026-09-15 v1.57: AI自動化チームの効率化を最上位目的に固定し、offline-first実行、検証済み収益、Wallet、ファンド改善、税務準備、ゲーム、専用端末へ逆算するRQ47を追加。Pixelは最初のreference hardware、月50万円規模は長期の実測目標で収益保証ではなく、改善データ収集はcategory別同意と削除可能性を必須にした。
 
 2026-09-15 v1.56: 有料full buildと実機flash／bootを最後に固定し、正確な端末readback、Android単体APK、emulator、純正Pixel上のoffline AI／温度、Sky→Zema→Tool→Wallet、source／artifact freezeを事前必須gateにした。app-only修正とOS image再build対象を分離し、初回build環境を最初の実機boot確認まで保持する。
+
+2026-09-16 v1.60: Pixel 10 GL066上の単体APK offline AI、再起動復元、33分22秒の熱試験を合格。Rock所有fixtureのTool→署名Earning Receipt→Wallet bridgeも合格済みとして同期した。外部Provider sandbox、物理PixelのWallet Provider縦断、BSP／復旧入力、source／artifact／署名計画freezeは未完了のため有料full buildを許可しない。
 
 2026-09-15 v1.42: 利用者指定のOS共通登録、API version、UID／SELinux分離、本人承認・費用上限・停止・失効、Wallet台帳・receipt重複防止、暗号化backup・schema migration、署名更新・rollback・互換性検査をRQ42へ追加。source実装とnative／実機release gateを分離する。
 

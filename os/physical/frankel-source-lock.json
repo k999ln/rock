@@ -3,9 +3,9 @@
   "stage": "SOURCE_INTEGRATION_NOT_BUILT",
   "device": "frankel",
   "model": "Google Pixel 10",
-  "targetConfirmedByOwner": false,
+  "targetConfirmedByOwner": true,
   "knownSkus": ["GLBW0", "GL066", "GK2MP"],
-  "confirmedSku": null,
+  "confirmedSku": "GL066",
   "manifestUrl": "https://github.com/GrapheneOS/platform_manifest.git",
   "manifestTag": "2026090700",
   "manifestCommit": "726237f979e7a36cc644f0a784f62ee27fee419b",
@@ -19,5 +19,5 @@
   "imageBuildVerified": false,
   "imageBootVerified": false,
   "flashReady": false,
-  "notes": "Candidate bring-up source only. Re-check the release and device before any build or installation. Neither GrapheneOS support nor the existing QEMU acceptance proves RockstarOS hardware support."
+  "notes": "The owner-selected physical target was read back on 2026-09-16 as Google Pixel 10 / frankel / GL066. This unlocks target-specific preparation only. Re-check the release before build or installation. Neither GrapheneOS support nor the existing QEMU acceptance proves avocadoOS hardware support."
 }

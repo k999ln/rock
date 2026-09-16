@@ -6,13 +6,13 @@
 - Pixelは最初のreference hardware、カメラ品質は1.0完成条件外、月50万円規模は長期の検証済み到達指標で収益保証ではない。同意のない包括データ収集、私的本文・鍵・credentialの既定収集、法域未確認の自動税務判断をbaseline検査が拒否する。
 - `npm run baseline:check`と製品baseline負例testに成功。これは設計優先順位の保存であり、収益loop、税務Provider、実ゲーム、専用端末を実装・実証した記録ではない。
 
-## Android full build前の試験1・2 / 2026-09-15
+## Android full build前の試験1・2 / 2026-09-16更新
 
-- 試験1は部分合格。固定sourceからarm64 Local Action Assistant APKを生成し、SHA-256 `2a0441565f6cca5676bc7a113f74e66e734c5e966aaf3835a62ae9b79d4756e9`、通信権限なし、WAKE_LOCK、署名限定Binder権限を確認した。Android 15 arm64 Pixel 10端末profile emulatorで、Binder接続とGGUFなしの`NO_MODEL`拒否を含むinstrumentation 5/5が合格した。純正OSの所有Pixel 10、実GGUF、機内モード、保存／再起動、30分温度試験は未実行。
-- 試験2は不合格。Sky→Zema、job lifecycle、Android Tool Binder／SQLite／本人確認、Wallet／認証済み収益subsystemの対象20 host testとAndroid試験は合格したが、Tool完了から署名済みEarning Receiptを自動生成してWalletへ一度だけ転記する経路が未実装だった。
+- 試験1の単体APK／物理端末範囲は合格。固定sourceのarm64 APK、通信権限なし、WAKE_LOCK、署名限定Binder、emulatorに加え、Pixel 10 GL066／Android 17でinstrumentation 5/5を通した。Qwen3-0.6B Q8_0（SHA-256 `9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031`）をimportし、機内モード・Wi-Fi停止中の`OFFLINE_OK`、再起動後の`REBOOT_OK`、33分22秒・15推論を確認。46 sampleで32.5〜34.4℃、thermal statusは全て0、process restart 0、PSS 1,111,168〜1,132,715 KiBだった。
+- 試験2のRock所有fixture範囲は合格。Sky→Zema、job lifecycle、Android Tool Binder／SQLite／review、Tool完了→Provider署名Earning Receipt→Walletの一回限り転記を実装し、bridge対象7/7を合格した。実売上、外部決済Provider sandbox、返金／chargeback、実払出し、production配備、物理Pixel上のWallet Provider縦断は未実証。
 - source準備が無関係な親Git repositoryを参照してoverlayを適用済みと誤判定する問題、AIDL生成無効、public SDKで使えないUserHandle API、release manifestによるWAKE_LOCK削除を修正した。
-- Android build／lint 172 task、対象host test 20/20、repository全体のWeb 285 test、Fashion Brand Ops 19 test、Worker／D1 143 assertion、本番Web buildを含む`npm run verify`が合格した。
-- 判定は`DO_NOT_START_FULL_OS_BUILD`。詳細な機械可読結果は [Android事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)。
+- Android build／lint 172 task、対象host test 20/20を維持し、2026-09-16のrepository全体再検証ではWeb 287 test、Fashion Brand Ops 19 test、Worker／D1 143 assertion、本番Web buildを含む`npm run verify`が終了コード0で合格した。
+- 判定は`DO_NOT_START_PAID_FULL_OS_BUILD_REMAINING_FREEZE_GATES`。外部Provider sandboxの事前build範囲、GL066のBSP／vendor／partition／boot／純正復旧入力、source／artifact／署名計画のfreezeが残る。詳細は[Android事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)と[物理端末AI証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)。
 
 ## Rock First-party Settlement Wallet / 2026-09-13
 
@@ -220,7 +220,7 @@
 - `npm run release:check`で必須gate、根拠file、所有者license選択、top-level LICENSE、production鍵実施記録、マイナンバー無効化を検査した。未決条件をpassへ改変する否定試験5件に合格した。
 - `package-lock.json`の887 package entryを検査し、license metadata欠落0。`npm run release:sbom`でCycloneDX 1.6、854 unique componentを`work/release/rockstaros-web.cdx.json`へ生成し、bom-refが854件すべて一意であることを確認した。lock SHA、17 license expressionと件数を別監査へ固定し、MPL/LGPL系41件、選択式5件、CC-BY表示1件の計47件をPURL（component名・version）単位で追加review対象に固定した。lock上は本番到達可能な必須7件・optional 11件、開発専用の必須4件・optional 25件である。分類隠蔽、component省略、本番到達性/optionality改変、lock差替えを拒否する4否定試験に合格した。このlock監査単独はWeb/npm package-lock scopeであり、実bundle同梱、義務履行、法的clearance、native Buildroot inventoryの代用ではない。
 - Vite build pluginでclient 52 chunk／119 npm component、RSC 85 chunk／6 component、SSR 64 chunk／119 componentを記録し、環境間の重複を除くと120 componentだった。未解決node_modulesは0、package-lockの追加review 47 PURLとの生成bundle内一致は0。flat・scoped・nested lock path、review照合、未解決module、lock hash差替えの単体試験に合格した。出力はignored `work/release/`へ0600で置き、絶対module pathを公開しない。`npm run verify`はproduction build直後にこの検査を必須実行する。build tool自体の利用条件やlicense/NOTICE/source提供、製品license、法的clearanceは別gateのまま残す。
-- 設定の公開準備は値を同じ台帳から導出し、本人限定Web/PWA 4/5、一般Web 3/5、QEMU 6/10、Android実機0/5、iPhone/iPad client 0/1、マイナンバー1/7を表示する。本人限定Sitesは安全なaccessを維持しているが、稼働version 29のsourceが監査HEADより古いため最新版同期gateを未達にする。過去QEMU候補を現在の配布可能状態として表示しない。
+- 設定の公開準備は値を同じ台帳から導出し、本人限定Web/PWA 4/5、一般Web 3/5、QEMU 6/10、Android実機1/5、iPhone/iPad client 0/1、マイナンバー1/7を表示する。Android実機はPixel 10 GL066の機種／SKU gateだけが合格で、BSP／復旧、CDD／CTS、署名、販売地域は未達。本人限定Sitesは安全なaccessを維持しているが、稼働version 29のsourceが監査HEADより古いため最新版同期gateを未達にする。過去QEMU候補を現在の配布可能状態として表示しない。
 - `data/web-security-policy.json`、`next.config.ts`、static asset用`public/_headers`を同じ値へ結合し、全responseのCSP frame/object/form/base制限、COOP/CORP、no-referrer、HSTS、nosniff、DENY framing、camera/payment/USB等のbrowser capability無効化を3試験で固定した。最初の実測でWorkerが返す`/`とstatic assetの`/sw.js`にNext configのheaderが届かない差を検出し、両配信経路を分離して修正した。再build後、`npm run web:security:check -- http://127.0.0.1:8787`で`/`、`/sky`、Service Worker、manifest、3 install icon、実hash付きJSの8経路に8 universal headerと個別cache ruleが完全一致した。[ローカル実測](evidence/launch/web-security-local-20260913.json)。現在のSites v29はこのsourceより古いため、実Sites response headerの合格証拠にはせず、最新版配備後の本人認証済みreadbackを必須にした。
 - 2026-09-15のWeb画面・manifest更新後、古い実測のinput hash不一致をrelease gateが検出した。現在sourceからproduction buildを再生成し、ローカルWranglerの`/`、`/sky`、Service Worker、manifest、3 install icon、実hash付きJSの8経路で8 universal headerと個別cache ruleを再確認した。[現在sourceのローカル実測](evidence/launch/web-security-local-20260915.json)。本人限定Sitesへの配備・認証後readbackは未実施のまま分離する。
 - Service Workerのinstall時`skipWaiting`を削除し、新版は利用者が「更新を適用」を押すまで待機する。適用時だけ専用messageで切替え、`controllerchange`確認後に再読込する。旧`loop-app-*`と現`rockstaros-shell-*`の古いgenerationだけを削除し、他product cacheを残す。API、sign-in/out、foreign originをcache handlerが横取りしない3試験に合格した。更新後のworker SHAを上記ローカル実測へ再結合した。

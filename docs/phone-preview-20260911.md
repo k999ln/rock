@@ -4,11 +4,11 @@
 
 実装方式は[共通Core＋機種別Device Support Package](device-support-architecture.md)。端末ごとにboot chain、kernel、vendor、firmware、partition、AVB／OTA／復旧が異なるため、一つのimageをBlackBerry、Pixel、iPhoneへ共通に書き込む方式にはしない。Android GSIは互換性調査用で、電話・カメラ・暗号化・更新・復旧が通るまで完全対応とは表示しない。iPhone／iPadはOS置換対象ではなく、App Store等で動くclient側を設計対象とする。現在の機械可読状態は[対応台帳](../data/device-support-matrix.json)を正本とする。
 
-2026-09-12再監査: 直近相談ではPixel 7が対象として挙がったが、この文書と現在のsource lockはPixel 10／`frankel`用。Pixel 7なら`panther`へ固定し直す必要があるため、実機の型番／SKUを読取り専用で確認するまで全OS buildを開始しない。32 vCPU／64GiB／400GiBはAOSPの400GB空き要件に対する余裕が小さい。初回の安全側候補をDigitalOcean 48 vCPU／96GiB／600GiB、1.50 USD/時、計画枠20〜30 USD（未承認）とし、Google Cloud 16〜32 vCPU／64〜128GB／600GB〜1TBを反復build向け代替とする。GPUは不要。契約・課金・端末操作は未実施。[全体の再監査](current-state-20260911.md#2026-09-12--github実装実機版ビルド環境の再監査)。
+2026-09-16実機確認: 読取り専用ADBで所有端末をPixel 10／`frankel`／日本向けSKU `GL066`へ確定した。現在はGrapheneOS `2026091000`／Android 17、bootloader locked、alternate verified-boot rootのyellow状態。端末serialは保存していない。これは対象固定だけの合格で、avocadoOSのbuild、flash、boot、復旧合格ではない。初回full buildは下記の事前gate完了まで開始しない。初回の安全側候補はDigitalOcean 48 vCPU／96GiB／600GiB、計画枠20〜30 USD（未承認）。GPUは不要。
 
 ソース準備はlaunch-candidateへ統合済み。[現在の全体状態](current-state-20260911.md)と[再開指示](prompts/rock-current-next-20260911.md)を優先する。前回のクラウド初回サーバー代税別10 USD案は未承認で、今回のGit統合指示は支払い承認ではない。
 
-2026-09-11の利用者指示「スマホ本体にOSを書き込める版を作成して」を受領し、実機版の開発を開始した。利用できるLinux PC／サーバーはないとの回答を受領。以前のPixel 10／GrapheneOSを候補にソース統合を準備したが、今回の対象機種・地域SKUの再確認は未回答。BlackBerry優先という以前の方針を、Pixel対応完了へ読み替えない。
+2026-09-11の利用者指示「スマホ本体にOSを書き込める版を作成して」を受領し、実機版の開発を開始した。利用できるLinux PC／サーバーはないとの回答を受領。対象機種・地域SKUは後続の実機readbackでPixel 10／GL066へ確定した。BlackBerry優先という以前の方針を、Pixel対応完了へ読み替えない。
 
 **現在はソース統合の準備段階。書込み可能なOSイメージはまだ生成していない。** 既存QEMU版はそのまま保持する。アプリ単体やWebサイトを実機OSの完成物にしない。
 
@@ -27,9 +27,9 @@ OS full buildを先に試して後からappやLLMの不具合を直す順序に�
 
 2026-09-15の追加検証では、Core／Tool SDK／Automation／記事ToolのAndroid build・unit test・lint、Local Action Assistantのunsigned arm64 release APK build、Android 15 arm64 Pixel 10 device-profile emulatorでの5 instrumentation testまで合格した。ここでは別APKの署名検査、Binder、Android SQLite、Tool 2工程、review必須、Headless JS、GGUF未導入時の`NO_MODEL` fail-closedを確認した。物理Pixelではなく、device credential承認、再起動復元、最終SELinux domainは未確認なのでemulator gate全体は部分合格に留める。
 
-Sky→Zemaの一回限りhandoff、Zemaのjob進捗、Tool実行、Wallet／収益精算の各単体テスト20件は合格した。ただし現在のproduction経路ではTool完了jobがWallet receiptを自動生成せず、Web Walletは手動book record、Sky Billingは別のprovider receipt入口になっている。このため「Skyで選ぶ→Zemaで追う→Tool成果→Wallet receipt」の1本の縦断は不合格で、`skyZemaToolWalletPath`を`failed_missing_automatic_tool_wallet_receipt_bridge`として固定した。
+Sky→Zemaの一回限りhandoff、Zemaのjob進捗、Tool実行、Wallet／収益精算の単体試験に加え、Tool完了をProvider署名Earning ReceiptとしてWalletへ一度だけ転記するbridgeを実装した。Rock所有fixtureの縦断は7/7合格し、`skyZemaToolWalletPath`は`rock_ready_fixture_passed_provider_sandbox_pending`。実売上、外部決済Provider sandbox、返金／chargeback、実払出し、物理Pixel上のWallet Provider縦断は未実証である。
 
-純正Pixel 10上のGGUF推論・機内モード・温度、端末readback、実機client縦断、正式署名と最終freezeは未実行である。このgateは**進行中**で、full build開始条件を満たしていない。
+所有Pixel 10の端末readbackと単体APKによるGGUF機内モード推論、再起動、33分22秒の温度試験は完了した。残るのは物理Pixel上のSky→Zema→Tool→Wallet Provider縦断、外部Provider sandboxの扱い確定、GL066向けBSP／復旧入力とsource／artifact／署名計画の最終freeze。このgateは**進行中**で、full build開始条件をまだ満たしていない。
 
 Sky、Zema、Wallet、Tool、LLMは原則として更新可能なAPK境界に置く。これらだけの修正なら単体APKを再buildして純正Android上で再試験する。framework、SELinux、privapp/product設定、boot/vendor/partition/AVBを変更した場合はOS imageの再buildが必要になる。
 
@@ -37,7 +37,7 @@ Sky、Zema、Wallet、Tool、LLMは原則として更新可能なAPK境界に置
 
 ## 実装した入口
 
-- `os/physical/frankel-source-lock.json`：Pixel 10／frankelの候補版、manifest、adevtool、端末hook、kernel参照を固定。対象確認・OS build・boot・flashは未完了のまま。
+- `os/physical/frankel-source-lock.json`：Pixel 10／frankel／GL066、manifest、adevtool、端末hook、kernel参照を固定。対象確認は完了し、OS build・boot・flashは未完了のまま。
 - `os/physical/rockstaros.mk`：既存のRock自動化／記事Toolを端末OSのproductへ組み込む。UID・SELinux・AVB・端末ドライバーは上流を維持。公式GrapheneOSの更新サービスを使う`OFFICIAL_BUILD=true`を拒否。
 - `scripts/prepare-phone-build.py`：容量診断、cleanなRock commit固定のRepo manifest出力、上流署名タグ・adevtool参照・端末hookの一致検証、1か所だけの再実行可能なsource変更。既存のローカル変更を上書きしない。
 - `scripts/build-phone-bringup.sh`：lockのdevice／SKU確認が完了した準備済みLinux環境で、lock由来の`userdebug` lunch／build targetを実行する入口。未確認lockはフルbuildを拒否し、source一覧とRock commit、端末hook差分を保存する。クラウド作成・正式署名・端末操作は含まない。
@@ -74,7 +74,7 @@ Sky、Zema、Wallet、Tool、LLMは原則として更新可能なAPK境界に置
 5. lockへ所有者が正確な機種と既知SKUを確認済みとして記録してから、OS作業ディレクトリで`bash external/rockstaros/scripts/build-phone-bringup.sh "$PWD" /absolute/path/to/grapheneos_allowed_signers`を実行する。入口はRAM 64 GiB以上・空き400 GiB以上を検査し、prepare後とrepo全体検査後にlock指定hookのバイト列を再検証する。初回Soong/OS buildの実エラーを解消し、成功した同一sourceと出力hashを記録する。対象機種の`userdebug`出力は開発試験用。
 6. Hub／Wallet／Gameの移植、Rock独自の表示、Android正式署名、OTA・復旧を整える。機種・SKU・現在build・backupを確認して、書込み手順を別途確定する。
 
-端末の読み取り診断は、adb導入済み・USB接続承認済みの環境で`python3 scripts/inspect-phone.py --serial <本人が選んだ端末ID>`。実行出力を公開Gitへ自動保存しない。今回この診断を実機には実行していない。
+端末の読み取り診断は、adb導入済み・USB接続承認済みの環境で`python3 scripts/inspect-phone.py --serial <本人が選んだ端末ID>`。2026-09-16に実行し、端末serialを除いた必要最小限の結果だけを[端末inventory](evidence/android-pixel-10-gl066-device-inventory-20260916.json)と[boot状態](evidence/android-pixel-10-gl066-boot-state-20260916.json)へ保存した。
 
 ## 配布・署名・実機受入
 

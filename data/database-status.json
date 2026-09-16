@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-09-15",
+  "updatedAt": "2026-09-16",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
@@ -11,11 +11,11 @@
   "projectProgress": {
     "total": 107,
     "done": 76,
-    "in_progress": 22,
-    "planned": 9,
+    "in_progress": 23,
+    "planned": 8,
     "blocked": 0,
     "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-    "nextAction": "Tool完了→Provider署名→Wallet一度だけ反映のROCK_READY fixtureは合格した。次に選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験と正確なSKU readbackを行い、並行して最初の販売・決済Provider sandboxをbridgeへ接続する。両方の受入とsource／artifact freeze後にOS full build可否を再判定する。"
+    "nextAction": "Pixel 10 GL066のreadback、物理instrumentation、GGUF機内モード推論、再起動、33分22秒熱試験とROCK_READY収益bridgeは合格した。次に物理Pixel上のSky→Zema→Tool→Wallet Provider縦断と外部Provider sandboxの事前build範囲を確定し、GL066のBSP／vendor／partition／boot／純正復旧入力、source／artifact／署名計画をfreezeしてからOS full build可否を再判定する。"
   },
   "webSchema": {
     "tableCount": 27,

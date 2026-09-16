@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-device-support/1",
-  "updatedAt": "2026-09-15",
+  "updatedAt": "2026-09-16",
   "policy": {
     "architecture": "shared-core-plus-device-support-package",
     "deliveryModes": [
@@ -68,12 +68,12 @@
       "id": "pixel-10-frankel",
       "family": "android-pixel",
       "deliveryMode": "native_os",
-      "status": "SELECTED_FIRST_PHYSICAL_TARGET_READBACK_PENDING",
+      "status": "SELECTED_FIRST_PHYSICAL_TARGET_READBACK_CONFIRMED",
       "exactModelRequired": true,
-      "confirmedSku": null,
+      "confirmedSku": "GL066",
       "physicalDevice": true,
       "flashReady": false,
-      "notes": "Selected by the owner as the first physical target. Existing frankel source lock is reused; exact device readback, OEM unlocking, full build, flash, boot, OTA and recovery acceptance remain pending."
+      "notes": "Owner-selected first physical target. Read-only ADB confirmed Pixel 10 / frankel / Japan-market GL066 on 2026-09-16. Standalone test-signed APK instrumentation, offline GGUF inference, reboot persistence and a 33-minute thermal run passed on the existing OS. Full build, avocadoOS flash, boot, OTA and recovery acceptance remain pending."
     },
     {
       "id": "android-treble-generic",

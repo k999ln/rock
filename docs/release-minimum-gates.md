@@ -9,7 +9,7 @@
 | Web / PWA 本人限定Preview | BLOCKED | 4/5 | 本人1名限定とsource上のHTTP防御は確認済み。最新版を同じSiteへ同期し、version・deployment・source・archive・access・実response headerを再読取りする |
 | Web / PWA 一般公開Preview | BLOCKED | 3/5 | 製品ライセンスの所有者選択、公開範囲の明示承認 |
 | QEMU Developer Preview配布 | BLOCKED | 6/10 | 製品ライセンス、正式署名、署名後の同一候補受入、公開承認 |
-| Android系物理端末Preview | BLOCKED | 0/5 | 正確な機種/SKU、BSP/driver/boot/recovery、CDD/CTS、署名、販売地域の確認 |
+| Android系物理端末Preview | BLOCKED | 1/5 | Pixel 10 GL066は確定。次はBSP/driver/boot/recovery、CDD/CTS、署名、販売地域の確認 |
 | iPhone / iPad | BLOCKED | 0/1 | 置換OSではなくPWAまたはiOS clientとして配布方式と審査を確定 |
 | マイナンバー連携 | BLOCKED | 1/7 | 現在は番号・カード画像を取得しない。目的、主体/provider、data flow、保存/削除、安全管理、事故/委託先、最終有効化を別審査 |
 
@@ -47,7 +47,7 @@ QEMU Developer Previewを次の工程へ進めるには、所有者本人から�
 
 この回答が必要な理由は、製品ライセンスが第三者の権利範囲と商用・再許諾条件を変え、本番鍵生成が長期の失効・rotation責任を発生させ、Sites同期がrepository sourceを外部ホスティングへ送る操作だからである。回答後も一般公開、main merge、Android実機対応、マイナンバー有効化を自動承認しない。
 
-Android実機版は上記とは別に、実物から読み取った `機種名 / 型番 / SKU / 販売地域 / 現在OS / OEM unlocking可否 / bootloader状態` が必要。現在USBで確認できたのは外部SSDだけで端末0台のため、候補名だけで対象確定やflashを行わない。
+Android実機版は上記とは別に、実物から読み取った `機種名 / 型番 / SKU / 販売地域 / 現在OS / OEM unlocking可否 / bootloader状態` が必要。このreadbackは2026-09-16にPixel 10／GL066／frankelで完了した。単体APKのoffline AI試験も合格したが、BSP／boot／recovery、CDD／CTS、production署名、販売地域の4必須gateとavocadoOSのflash／bootは未合格である。
 
 ### 製品ライセンス
 

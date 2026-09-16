@@ -1,10 +1,20 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-16 — Pixel 10上の端末内LLM事前試験を完走
+
+OSを書き換えていない所有Pixel 10 GL066へ、試験専用同一署名のLocal Action Assistant、Automation、instrumentation、記事Toolを導入した。物理端末のBinder／SQLite／review／署名固定／Tool登録は5/5合格。公式Qwen3-0.6B Q8_0 GGUF（639,446,688 bytes、SHA-256 `9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031`、Apache-2.0）を手動importし、通信権限なしAPKかつ機内モード・Wi-Fi停止中に`OFFLINE_OK`を生成した。
+
+端末再起動後も会話とmodel metadataが残り、modelを手動再loadして通信なしで`REBOOT_OK`を生成した。続いて33分22秒、15回の推論、46点の計測を完走。電池温度32.5〜34.4℃、Android thermal statusは全て0、同一processが継続し、PSSは1,111,168〜1,132,715 KiBだった。試験後は機内モード、Wi-Fi、mobile data、既定キーボード、常時点灯を元へ戻した。[実機証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)。これは単体APKの合格であり、production署名、Soong image、SELinux、flash、boot、OTA、rollback、復旧の合格ではない。
+
+## 2026-09-16 — Pixel 10 GL066の実機readback完了
+
+USB承認済みの所有端末を読取り専用ADBで確認し、最初の物理対象を日本向けGoogle Pixel 10、型番／SKU `GL066`、codename `frankel`へ確定した。現在はGrapheneOS `2026091000`／Android 17、bootloader locked、alternate verified-boot rootのyellow状態。端末serialは保存していない。Android物理端末の機種／SKU gateだけを1/5合格とし、BSP／復旧、CDD／CTS、production署名、販売地域、avocadoOSのflash／bootは未合格のまま。単体APK＋GGUF実機試験は上記のとおり後続で完了した。
+
 ## 2026-09-15 — 最初の物理対象をPixel 10へ決定
 
 利用者は所有済みのPixel 10をRockstarOS最初の実機対象として選択した。既存の`frankel` source lock、product hook、build入口をそのまま使い、共通RockstarOS Coreを作り直さない。Pixel 7／`panther`はPixel 10の実機受入後まで保留する。2機種目以降は共通Coreの再開発ではなく、Device Support Package、vendor／firmware、partition／AVB、hardware、OTA／rollback、純正復旧の機種別移植と受入を行う。
 
-この選択は機種familyの確定であり、実機のproduct readback、現在OS、OEM unlocking可否はまだ確認していない。`targetFamilyConfirmed=true`、`targetConfirmed=false`を維持し、読取り専用診断が一致するまでクラウド課金、full build、unlock、データ消去、flashを開始しない。
+この時点では機種familyだけの確定だったが、2026-09-16のreadbackで`targetConfirmed=true`へ更新した。クラウド課金、full build、unlock、データ消去、flashは引き続き開始しない。
 
 ## 2026-09-12 — メルカリを最初の収益経路に追加
 
@@ -22,7 +32,7 @@ Skyへ「メルカリ収益スターター」を追加し、本人が保有す�
 
 多機種対応を「共通RockstarOS Core＋機種／SKU別Device Support Package」として固定した。一つのimageを無条件に全端末へ書き込むとは扱わず、`native_os`、`gsi_experimental`、`client_only`、`unsupported`の4区分を機械可読台帳で管理する。完全OSを名乗るにはbootloader unlock、kernel／vendor／firmware、partition／AVB、boot／OTA／rollback／stock復旧の機種別証拠が必要。[設計](device-support-architecture.md)／[対応台帳](../data/device-support-matrix.json)。
 
-最初の物理端末はまだ0台で、Pixel 7／`panther`とPixel 10／`frankel`はいずれも候補。BlackBerry Android機は正確な型番と解除経路が判明するまでclient-only、旧BlackBerry OS機は非対応。Apple署名boot chainを置換するiPhone／iPad版は対象外で、既存iOS／iPadOS上のclientとして扱う。この決定はクラウド課金、実機書込み、production鍵、一般公開を許可しない。
+最初の物理端末は2026-09-16にPixel 10／`frankel`／`GL066`へ確定した。Pixel 7／`panther`は保留。BlackBerry Android機は正確な型番と解除経路が判明するまでclient-only、旧BlackBerry OS機は非対応。Apple署名boot chainを置換するiPhone／iPad版は対象外で、既存iOS／iPadOS上のclientとして扱う。この決定はクラウド課金、実機書込み、production鍵、一般公開を許可しない。
 
 ## 2026-09-12 — GitHub・実装・実機版・ビルド環境の再監査
 
@@ -34,14 +44,14 @@ Skyへ「メルカリ収益スターター」を追加し、本人が保有す�
 | ------------ | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | Web / Sites  | Sky中心の画面、仕事・履歴・Wallet・設定、本人限定の新Site                                       | 所有者ログイン後の本番操作確認、一般公開                                                                                     |
 | Linux / QEMU | `1.0.0-preview.20260911-rc2`の内部導入、起動、保存、再起動、同一VMの中断復旧、D4/D6等の限定受入 | 正式署名、license clearance、取消の実停止、RSS再確認、別host／VM全損復旧、保存データあり端末の削除                           |
-| Android P1   | 通常権限の2APK、SQLite／Binder／JobScheduler、emulator CI                                       | Sky／Wallet／GameのAndroid移植、実機OS統合                                                                                   |
+| Android P1   | 通常権限の2APK、SQLite／Binder／JobScheduler、emulator CI、Pixel 10上の5/5 instrumentationと端末内LLM事前受入 | Sky／Wallet／GameのAndroid実機縦断、production署名、実機OS統合                                                               |
 | スマホOS     | 上流版と候補機種のsource lock、product makefile、準備／build／診断script                        | 全source取得、vendor生成、Soongフルbuild、target-files／OTA／factory image、正式Android署名、flash、実機boot／更新／純正復旧 |
 | Wallet／Game | 合成台帳、複数owner/gameのfixture、作者SDK、ATM自社手数料0の契約                                | 実provider、KYC／提供地域／資金保管／通貨／返金／出金／照合、指定実ゲームの正式sandbox                                       |
 | Release      | PR #4の現HEAD CI成功、本人限定Site、CM制作途中                                                  | license、第三者許諾、production鍵、実署名、公開受入、main統合                                                                |
 
-### スマホ対象の不一致
+### スマホ対象の確定
 
-現在のsource lockはPixel 10の`frankel`、build targetは`frankel-cur-userdebug`。一方、直近の相談ではPixel 7が対象として挙がっている。Pixel 7ならGrapheneOSの機種名は`panther`であり、`frankel`向け設定・vendor生成・kernel／device hook・出力をそのまま使用できない。実際に使う端末の型番、地域SKU、現在OS、OEM unlocking可否を`inspect-phone.py`等の読取り専用診断で確認するまで、`targetConfirmed=false`とし、クラウドの全OS buildや端末書込みを開始しない。
+source lockと実機readbackはPixel 10の`frankel`、日本向けSKU `GL066`、build target `frankel-cur-userdebug`で一致した。Pixel 7なら`panther`向けの別Device Support Packageが必要なため、Pixel 10受入後まで保留する。対象一致はfull build開始条件の一部に過ぎず、GGUF実機試験、BSP／復旧固定、正式署名などの残りgateを飛ばさない。
 
 ### ビルド環境の再評価
 
@@ -53,13 +63,15 @@ Skyへ「メルカリ収益スターター」を追加し、本人が保有す�
 
 ### 次に進める順番
 
-1. 実際に使うPixelの型番／SKUを読取り専用で確認し、Pixel 7なら`panther`、Pixel 10なら`frankel`へsource lockとbuild入口を一つに固定する。
-2. クラウド事業者、アカウント、上限予算、成果物保存先、時間上限と削除手順を確定する。
-3. Ubuntu 24.04 x86_64で全source取得、`adevtool generate-all`、Soongフルbuildを行い、同一source・出力hash・失敗ログを保存する。
-4. Android P1の2APK同梱とは別に、Sky／Wallet／Gameの接続層をAndroidへ移植し、既存のowner／同意／台帳／取消／復旧契約と照合する。
-5. 開発鍵で対象実機の初回bootと基本hardwareを確認した後、AVB／APK／APEX／OTAのproduction鍵、独自更新先、失効、rollback、純正復旧を整える。
-6. CTS／VTS／SELinux、保存・再起動・省電力・熱・通信、OTA失敗／rollbackを対象実機で受け入れる。
-7. license、第三者許諾、本人限定Site QA、CM、最終署名配布、PR整理を完了してから一般公開とmain mergeを別途判断する。
+1. 完了: Pixel 10／GL066／`frankel`を読取り専用で確認し、source lockとbuild入口を固定した。
+2. 完了: 単体APKとGGUFを所有Pixelへ導入し、機内モード推論、保存／再起動、33分22秒の温度／RAMを受け入れた。
+3. Sky→Zema→Tool→Walletの外部Provider sandbox範囲、GL066のBSP／vendor／partition／boot／純正復旧入力、source／artifact／署名計画をfreezeする。
+4. 上記の事前gate合格後にクラウド事業者、アカウント、上限予算、成果物保存先、時間上限と削除手順を確定する。
+5. Ubuntu 24.04 x86_64で全source取得、`adevtool generate-all`、Soongフルbuildを行い、同一source・出力hash・失敗ログを保存する。
+6. Android P1の2APK同梱とは別に、Sky／Wallet／Gameの接続層をAndroidへ移植し、既存のowner／同意／台帳／取消／復旧契約と照合する。
+7. 開発鍵で対象実機の初回bootと基本hardwareを確認した後、AVB／APK／APEX／OTAのproduction鍵、独自更新先、失効、rollback、純正復旧を整える。
+8. CTS／VTS／SELinux、保存・再起動・省電力・熱・通信、OTA失敗／rollbackを対象実機で受け入れる。
+9. license、第三者許諾、本人限定Site QA、CM、最終署名配布、PR整理を完了してから一般公開とmain mergeを別途判断する。
 
 したがって、現在不足しているのはクラウドサーバーだけではない。スマホ版は「ビルド入口まで」であり、フルbuild、Androidへの製品移植、production署名／更新、実機受入、実provider／公開条件が残る。QEMU Developer Previewの内部到達は保持するが、スマホへ書き込める完成OSや本番金融対応として表示しない。
 
@@ -69,15 +81,15 @@ Skyへ「メルカリ収益スターター」を追加し、本人が保有す�
 
 RQ01〜RQ17、Sky＋Walletを中心とする製品、自作ゲーム交換／作者SDK、tobの商品供給、PC／cloud／self-hostの実行先を保持する。既存の月888 USD cents／同一契約の複数端末重複防止、RockのATM手数料0、未定のゲーム料金を変更しない。実行成功を実売上へ変換しない。
 
-スマホ本体へ書き込めるOSを作るという最新指示を実機版の開発方針へ追加した。現在のPixel 10／GrapheneOS候補は以前の端末記録に基づく。今回の対象機種・SKUは未確認で、BlackBerryの型番も未確認。全機種対応・既存OSとの共存・データ無消去の入替えを約束しない。
+スマホ本体へ書き込めるOSを作るという最新指示を実機版の開発方針へ追加した。現在の対象機種・SKUはPixel 10／GL066／frankelへ確認済み。BlackBerryの型番は未確認。全機種対応・既存OSとの共存・データ無消去の入替えを約束しない。
 
 ## 実装と検証の区分
 
 | 対象                     | 現在確認できること                                                                                            | 残ること                                                                   |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | Linux / Buildroot / QEMU | b7/rc2の内部導入、起動、保存、再起動、同じVMでの中断復旧と追加受入を限定確認                                  | 正式署名後の最終配布受入、キャンセルの実停止、メモリ増加の確認等           |
-| Android P1               | 通常権限の2APK、SQLite／Binder／JobScheduler、標準エミュレーターCI                                            | 実機確認、Sky／Wallet／Gameの移植                                          |
-| Pixel候補のOS            | GrapheneOS安定版の署名タグ確認、機種構成へのRock組込み設定、source検査、Linux build入口、読取り専用診断を実装 | 全source取得、Soong／OS build、正式Android署名、起動・更新・復旧の実機受入 |
+| Android P1               | 通常権限の2APK、SQLite／Binder／JobScheduler、標準emulator CI、Pixel 10上の5/5 instrumentation              | Sky／Wallet／Gameの物理端末縦断とOS統合                                   |
+| Pixel候補のOS            | GL066 readback、source／build入口、単体APKのoffline LLM・再起動・33分22秒熱試験                            | 全source取得、Soong／OS build、正式Android署名、起動・更新・復旧の実機受入 |
 | Web / Sites              | Sky改修、履歴のコード統合、新しい本人限定Siteの公開                                                           | ログイン後の本番Sky操作確認、一般公開                                      |
 
 QEMUの凍結sourceは`b7d819cd291b653d165aa124f25a52b9898bfb2e`、版は`1.0.0-preview.20260911-rc2`。今回の統合で既存image・配布bytesは変更していない。QEMUの合格をスマホへ移さず、スマホ用の書込み可能imageはまだ存在しない。[rc2受入](os-acceptance-b7d819c-20260911.md)／[追加受入と未観測条件](rc2-remaining-acceptance-20260911.md)／[スマホ版の実装](phone-preview-20260911.md)。

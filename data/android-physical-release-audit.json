@@ -1,23 +1,23 @@
 {
   "schema": "rockstaros-android-physical-release-audit/1",
-  "evaluatedAt": "2026-09-13",
+  "evaluatedAt": "2026-09-16",
   "declaredStatus": "blocked",
   "candidate": {
-    "selectionStatus": "not_selected",
+    "selectionStatus": "selected",
     "device": {
-      "manufacturer": null,
-      "commercialModel": null,
-      "modelNumber": null,
-      "sku": null,
-      "region": null,
-      "codename": null,
-      "bootloaderUnlockable": null,
-      "observedBootloaderState": null
+      "manufacturer": "Google",
+      "commercialModel": "Pixel 10",
+      "modelNumber": "GL066",
+      "sku": "GL066",
+      "region": "JP",
+      "codename": "frankel",
+      "bootloaderUnlockable": true,
+      "observedBootloaderState": "locked with alternate verified-boot root (yellow)"
     },
     "build": {
-      "androidRelease": null,
-      "apiLevel": null,
-      "buildFingerprint": null,
+      "androidRelease": "17",
+      "apiLevel": "37",
+      "buildFingerprint": "google/frankel/frankel:17/CP2A.260805.005/2026091000:user/release-keys",
       "sourceCommit": null,
       "imageSha256": null
     }
@@ -29,7 +29,26 @@
     "saleReady": false,
     "physicalFlashVerified": false
   },
-  "deviceEvidence": [],
+  "deviceEvidence": [
+    {
+      "role": "read-only-device-inventory",
+      "path": "docs/evidence/android-pixel-10-gl066-device-inventory-20260916.json",
+      "sha256": "7d36a09e67a0422d194aa6491640254ce33b8f2aea78c201debe00b736aa1672"
+    },
+    {
+      "role": "bootloader-state-observation",
+      "path": "docs/evidence/android-pixel-10-gl066-boot-state-20260916.json",
+      "sha256": "15c418a5d36d86efa53f11ffe97e44b63179b2a429b6c3d84e0d0fb41462cbe3"
+    }
+  ],
+  "preFullBuildEvidence": [
+    {
+      "role": "standalone-physical-local-ai-acceptance",
+      "path": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
+      "sha256": "9838441116ecdfbd3735ef04f389941bd152fa9b44ba39606199d65ddc8944bf",
+      "scope": "Existing-OS, test-signed standalone APK acceptance only; not an avocadoOS image, flash, boot, compatibility or production-signing result."
+    }
+  ],
   "gms": {
     "policy": "aosp_without_gms",
     "licenseStatus": "not_requested",
@@ -66,8 +85,11 @@
     {
       "id": "exact-model-and-sku",
       "required": true,
-      "status": "blocked",
-      "ownerAction": "実際の端末でメーカー、製品名、型番、SKU、地域、codename、OEM unlock可否、bootloader状態を読み取る",
+      "status": "pass",
+      "evidence": [
+        "docs/evidence/android-pixel-10-gl066-device-inventory-20260916.json",
+        "docs/evidence/android-pixel-10-gl066-boot-state-20260916.json"
+      ],
       "requiredEvidence": ["read-only-device-inventory", "bootloader-state-observation"]
     },
     {

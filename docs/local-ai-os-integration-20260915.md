@@ -1,6 +1,6 @@
 # Local Action AssistantのRockstarOS導入
 
-2026-09-15時点の導入段階は`SOURCE_PINNED_APK_REVIEWED_NOT_IN_IMAGE`。`local-action-assistant`をavocadoOSのローカルLLM実装として固定し、arm64 release APKのnative buildとAndroid 15 arm64 emulator上のBinder結合まで確認した。これはGGUF推論、物理Pixel、正式署名、OS image搭載の完了を意味しない。
+導入段階は`PHYSICAL_STANDALONE_ACCEPTED_NOT_IN_IMAGE`。`local-action-assistant`をavocadoOSのローカルLLM実装として固定し、arm64 release APKのnative build、Android emulatorのBinder結合、所有Pixel 10 GL066上のGGUFオフライン推論・再起動復元・33分22秒の熱試験まで確認した。これは正式署名、Soong／OS image搭載、SELinux、OTA、rollback、復旧の完了を意味しない。
 
 ## 今回接続した範囲
 
@@ -17,14 +17,15 @@
 - 生成したclean overlay treeでclient/server AIDLのbyte一致、TypeScript、ESLint、Jest 10件に加え、Kotlin／AIDL／llama.rn CPU-only arm64 native compileとrelease APK buildを合格した。APKは`arm64-v8a`のみ、`INTERNET`なし、`WAKE_LOCK`、署名保護Binder serviceを含む。
 - `.github/workflows/local-ai-apk.yml`はUbuntu、Java、Android SDK 36、NDK 27.1で固定sourceとoverlayからunsigned arm64 APKをbuildし、package/version、通信権限、ABIを検査した7日間の候補artifactを出力する。workflowの存在はbuild成功証拠ではなく、artifact lockを自動更新しない。
 - Android 15 API 35のPixel 10 device-profile emulatorへtest鍵で署名したcopyを導入し、同一署名検査、Binder接続、Headless JS起動、GGUF未導入時の`NO_MODEL` fail-closedを含む5 instrumentation testを合格した。test鍵copyは配布artifactではない。
+- 所有Pixel 10 GL066／Android 17へ同じ試験署名の4 APKを導入し、物理端末でも5 instrumentation testを合格した。Qwen3-0.6B Q8_0 GGUFを公式SHA-256とApache-2.0表示でimportし、機内モードかつWi-Fi停止中の推論、端末再起動後の会話／model metadata保持と手動reload、33分22秒・15推論の熱試験を合格した。最大電池温度34.4℃、thermal status 0、process restart 0。[実機証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)。
 - 初回検証で、親Git配下ではoverlayが黙ってskipされる問題、AIDL生成無効、public Android SDKで使えない`UserHandle` API、release manifestによる`WAKE_LOCK`削除を検出して修正した。親Git配下とpermission退行の再発防止testも追加した。
 - product propertyはまだ`source-pinned`とだけ表示する。アプリを`PRODUCT_PACKAGES`へ追加していないため、現在のimageにLLMは入らない。
 
 ## OS内で呼び出せるようにする残作業
 
 1. レビュー済みAPKをSoong stagingし、OS image内で同一内容が署名・搭載されることを照合する。production target-filesでは正式release keyへ置換し、test鍵を採用しない。
-2. GGUFはライセンス、SHA-256、RAM/温度/速度を確認して選定・lockし、物理Pixelへimportする。source repositoryにはweightを同梱しない。
-3. 物理Pixelでairplane mode推論、tool confirmation、保存／再起動、RAM、30分温度を受け入れる。
+2. 完了: Qwen3-0.6B Q8_0 GGUFのライセンス、SHA-256、RAM／温度／速度を確認し、物理Pixelへimportした。weightはsource repositoryへ同梱しない。
+3. 完了: 物理Pixelでairplane mode推論、Binder／Tool結合、保存／再起動、RAM、30分超の温度を受け入れた。
 4. 最終imageでSELinux enforcing、更新、rollback、復旧を受け入れる。
 
-対象Pixelの正確なSKU、正式署名鍵、GGUFが未確定で、物理端末も今回のADBへ接続されていないため、全OS build・flash・実機推論は未実施のまま維持する。
+対象PixelはPixel 10／frankel／GL066へ確定し、単体APKでの実機推論は合格した。使用した鍵は試験専用で、model weightの製品同梱方式も未決定。正式署名鍵、全OS build、flash、SELinux enforcing、OTA／rollback、純正復旧は未実施である。

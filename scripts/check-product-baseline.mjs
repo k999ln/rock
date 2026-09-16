@@ -176,7 +176,7 @@ export function validateBaseline(
   requireValue(
       data.primaryCapabilities?.includes('local-offline-ai-runtime') &&
       data.localAiRuntime?.status ===
-        'unsigned_arm64_apk_built_emulator_binder_verified' &&
+        'standalone_physical_pixel_offline_ai_reboot_and_thermal_verified_test_signing' &&
       data.localAiRuntime?.sourceCommit ===
         '99b1c40d76f719cbba9c72d9f481c1b2df245504' &&
       data.localAiRuntime?.engine === 'llama.rn' &&
@@ -189,10 +189,16 @@ export function validateBaseline(
       data.localAiRuntime?.apkBuilt === true &&
       data.localAiRuntime?.soongBuilt === false &&
       data.localAiRuntime?.imageBuilt === false &&
-      data.localAiRuntime?.deviceInferenceVerified === false,
-    'ローカルLLMの固定source・オフライン・署名・別確認・APK build済／実機未検証境界を維持してください',
+      data.localAiRuntime?.deviceInferenceVerified === true,
+    'ローカルLLMの固定source・オフライン・署名・別確認・単体APK実機合格／OS image未検証境界を維持してください',
   );
-  for (const field of ['sourceLock', 'artifactLock', 'contract', 'record']) {
+  for (const field of [
+    'sourceLock',
+    'artifactLock',
+    'contract',
+    'record',
+    'physicalEvidence',
+  ]) {
     const path = data.localAiRuntime?.[field];
     requireValue(
       typeof path === 'string' && existsSync(resolve(root, path)),
@@ -250,7 +256,8 @@ export function validateBaseline(
           'privapp_product_configuration',
           'boot_vendor_partition_or_avb',
         ]) &&
-      data.androidPreFullBuildGate?.checks?.exactTargetReadback === 'pending' &&
+      data.androidPreFullBuildGate?.checks?.exactTargetReadback ===
+        'passed_pixel_10_gl066' &&
       data.androidPreFullBuildGate?.checks?.sourceContractAndHostTests ===
         'passed' &&
       data.androidPreFullBuildGate?.checks?.standaloneAndroidBuildAndLint ===
@@ -260,7 +267,7 @@ export function validateBaseline(
       data.androidPreFullBuildGate?.checks?.standaloneLocalAiApk ===
         'passed' &&
       data.androidPreFullBuildGate?.checks?.stockPixelOfflineAiAndThermal ===
-        'pending' &&
+        'passed_offline_reboot_thermal' &&
       data.androidPreFullBuildGate?.checks?.skyZemaToolWalletPath ===
         'rock_ready_fixture_passed_provider_sandbox_pending' &&
       data.androidPreFullBuildGate?.checks
@@ -807,8 +814,8 @@ export function validateBaseline(
   }
   const devicePolicy = data.deviceSupportPolicy;
   requireValue(
-    devicePolicy?.status === 'approved_design_implemented_not_physical_support',
-    '多機種対応は設計済み・実機未対応として記録してください',
+    devicePolicy?.status === 'first_target_identified_not_physical_support',
+    '最初の実機対象を確定し、物理対応未完了として記録してください',
   );
   requireValue(
     JSON.stringify(devicePolicy?.deliveryModes) ===
@@ -837,8 +844,15 @@ export function validateBaseline(
     '多機種対応台帳の検査commandが必要です',
   );
   requireValue(
-    devicePolicy.firstPhysicalTarget === null,
-    '最初の物理端末は未確定です',
+    JSON.stringify(devicePolicy.firstPhysicalTarget) === JSON.stringify({
+      manufacturer: 'Google',
+      model: 'Pixel 10',
+      sku: 'GL066',
+      region: 'JP',
+      codename: 'frankel',
+      readbackEvidence: 'docs/evidence/android-pixel-10-gl066-device-inventory-20260916.json',
+    }),
+    '最初の物理端末readbackが確定値と一致しません',
   );
   requireValue(
     devicePolicy.cloudSpendApproved === false,

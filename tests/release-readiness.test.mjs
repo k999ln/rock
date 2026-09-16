@@ -248,10 +248,9 @@ void test('dependency license audit is pinned to the complete package-lock', () 
 
 void test('Android and personal-number audits preserve exact real blockers', () => {
   const result = validateMatrix();
-  assert.equal(result.android.passed, 0);
+  assert.equal(result.android.passed, 1);
   assert.equal(result.android.required, 5);
   assert.deepEqual(result.android.blocked, [
-    'exact-model-and-sku',
     'bsp-driver-boot-recovery',
     'android-cdd-cts',
     'production-signing',
@@ -301,9 +300,11 @@ void test('Android gate list and public matrix cannot drift apart', () => {
   );
 
   const changedMatrix = structuredClone(readiness);
-  changedMatrix.targets
+  const changedGate = changedMatrix.targets
     .find(({ id }) => id === 'android-physical-preview')
-    .gates.find(({ id }) => id === 'exact-model-and-sku').status = 'pass';
+    .gates.find(({ id }) => id === 'exact-model-and-sku');
+  changedGate.status = 'blocked';
+  changedGate.ownerAction = 'Fixture mismatch';
   assert.throws(
     () => validateMatrix({ matrix: changedMatrix }),
     /公開台帳と監査が不一致/,
@@ -326,6 +327,7 @@ void test('Android gate PASS requires hashed role evidence from the selected dev
   const requirement = changed.requirements.find(({ id }) => id === 'exact-model-and-sku');
   requirement.status = 'pass';
   requirement.evidence = ['docs/android-and-personal-number-gates-20260913.md'];
+  changed.deviceEvidence = [];
   const matrix = structuredClone(readiness);
   matrix.targets
     .find(({ id }) => id === 'android-physical-preview')
@@ -347,7 +349,7 @@ void test('Android build gates cannot pass before exact device and BSP gates', (
     .gates.find(({ id }) => id === 'android-cdd-cts').status = 'pass';
   assert.throws(
     () => validateAndroidPhysicalReleaseAudit({ root, audit: changed, readiness: matrix }),
-    /型番\/SKU gateより先/,
+    /BSP\/boot\/recovery gateより先/,
   );
 });
 

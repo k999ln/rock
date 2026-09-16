@@ -77,12 +77,12 @@ requireValue(
 );
 const pixel10 = byId('pixel-10-frankel');
 requireValue(
-  pixel10?.confirmedSku === null,
-  'pixel-10-frankel: 実機readback前です',
+  pixel10?.confirmedSku === 'GL066',
+  'pixel-10-frankel: 実機readbackで確定したSKUが必要です',
 );
 requireValue(
-  pixel10?.status === 'SELECTED_FIRST_PHYSICAL_TARGET_READBACK_PENDING',
-  'pixel-10-frankel: 最初の実機対象として選択されている必要があります',
+  pixel10?.status === 'SELECTED_FIRST_PHYSICAL_TARGET_READBACK_CONFIRMED',
+  'pixel-10-frankel: 最初の実機対象のreadback確定状態が必要です',
 );
 
 console.log(

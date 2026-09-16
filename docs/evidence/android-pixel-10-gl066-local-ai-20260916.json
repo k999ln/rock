@@ -1,0 +1,138 @@
+{
+  "schema": "avocadoos-pixel-local-ai-physical-acceptance/1",
+  "testedAt": "2026-09-16",
+  "deviceSerialStored": false,
+  "target": {
+    "manufacturer": "Google",
+    "commercialModel": "Pixel 10",
+    "modelNumber": "GL066",
+    "sku": "GL066",
+    "region": "JP",
+    "codename": "frankel",
+    "installedOs": "GrapheneOS 2026091000",
+    "androidRelease": "17",
+    "apiLevel": 37,
+    "primaryAbi": "arm64-v8a"
+  },
+  "testOnlySigning": {
+    "productionCredential": false,
+    "certificateSha256": "610499604b3469ae2f6c158b8482bbd6b0fb6e324862fb67e92731fe8a241f57",
+    "sameSignerUsedFor": [
+      "Local Action Assistant test APK",
+      "dev.rock.automation debug APK",
+      "dev.rock.automation.test instrumentation APK",
+      "dev.rock.tools.article debug APK"
+    ]
+  },
+  "artifacts": {
+    "localAiApk": {
+      "sha256": "432f122fe9eb4250ced20c3f779711be928b023e3c3e9097154cae37ebe21c62",
+      "bytes": 26437275,
+      "internetPermission": false,
+      "wakeLockPermission": true,
+      "abi": "arm64-v8a"
+    },
+    "automationApk": {
+      "sha256": "848fab4d6d8d7a3f3aa164d74013c6dd6a7246697bed2b2cbaaa733a956e806a",
+      "bytes": 170034
+    },
+    "automationInstrumentationApk": {
+      "sha256": "e5609cfa445bf409fb5cb61d97838a8767d53ccb2517da86dcd1a89da7c90cef",
+      "bytes": 4468217
+    },
+    "articleToolApk": {
+      "sha256": "2f82979b3852ae8374bbc7fdd427f1d440833f462f94e430177c848e868b4d21",
+      "bytes": 101724
+    },
+    "model": {
+      "file": "Qwen3-0.6B-Q8_0.gguf",
+      "format": "GGUF",
+      "quantization": "Q8_0",
+      "bytes": 639446688,
+      "sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+      "source": "https://huggingface.co/Qwen/Qwen3-0.6B-GGUF/blob/main/Qwen3-0.6B-Q8_0.gguf",
+      "license": "Apache-2.0",
+      "bundledInRepository": false
+    }
+  },
+  "androidInstrumentation": {
+    "result": "PASS",
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "checks": [
+      "real Binder pipeline persists and requires review",
+      "scheduler and permission configuration matches the contract",
+      "pinned same-signer local-AI service connects",
+      "missing-model inference fails closed before model import",
+      "installed Tool registers through the versioned Platform Binder"
+    ]
+  },
+  "offlineInference": {
+    "result": "PASS",
+    "airplaneMode": true,
+    "wifiDisabled": true,
+    "releaseApkHasInternetPermission": false,
+    "firstExpectedToken": "OFFLINE_OK",
+    "firstObservedToken": "OFFLINE_OK",
+    "firstRun": {
+      "decodeTokensPerSecond": 24.2,
+      "prefillTokensPerSecond": 72.4,
+      "generatedTokens": 6,
+      "elapsedSeconds": 9.0,
+      "processPssKiBApprox": 1097549,
+      "batteryTemperatureC": 35.9
+    }
+  },
+  "rebootPersistence": {
+    "result": "PASS",
+    "conversationPersisted": true,
+    "modelMetadataPersisted": true,
+    "modelAutoloadAfterReboot": false,
+    "modelAutoloadPolicy": "manual reload to avoid unrequested battery and memory use",
+    "manualReloadSucceeded": true,
+    "airplaneModePersistedAcrossReboot": true,
+    "secondExpectedToken": "REBOOT_OK",
+    "secondObservedToken": "REBOOT_OK"
+  },
+  "thermalSoak": {
+    "result": "PASS",
+    "startedAt": "2026-09-16T04:46:18Z",
+    "completedAt": "2026-09-16T05:19:40Z",
+    "durationSeconds": 2002,
+    "successfulInferenceRuns": 15,
+    "samples": 46,
+    "batteryTemperatureC": {
+      "minimum": 32.5,
+      "maximum": 34.4,
+      "final": 34.0
+    },
+    "androidThermalStatusObserved": [0],
+    "processIdCount": 1,
+    "processRestartObserved": false,
+    "processExitRecorded": false,
+    "pssKiB": {
+      "minimum": 1111168,
+      "maximum": 1132715,
+      "final": 1129761
+    },
+    "rssKiB": {
+      "minimum": 1292464,
+      "maximum": 1314288,
+      "final": 1311464
+    }
+  },
+  "deviceStateRestoration": {
+    "result": "PASS",
+    "airplaneMode": false,
+    "wifiEnabled": true,
+    "mobileDataPreferenceEnabled": true,
+    "defaultInputMethod": "com.adamrocker.android.input.simeji/.OpenWnnSimeji",
+    "stayAwakeWhilePluggedIn": false
+  },
+  "observations": [
+    "The current chat UI displays raw empty <think> tags returned by Qwen; inference correctness passed, but response presentation should strip those tags before a product release.",
+    "This acceptance covers standalone test-signed APKs on the owner's existing OS. It does not prove Soong image integration, production signing, SELinux enforcing behavior, OTA, rollback, flash, boot or recovery."
+  ],
+  "result": "PASS_STANDALONE_PHYSICAL_LOCAL_AI"
+}

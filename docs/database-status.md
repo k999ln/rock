@@ -2,14 +2,14 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-09-15
+更新日: 2026-09-16
 
 ## 全体
 
 - データ境界: 6、table: 72
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 107 task中 76 done、22 in progress、9 planned、0 blocked
+- 作業進捗: 107 task中 76 done、23 in progress、8 planned、0 blocked
 - 現在milestone: AI自動化チームの最小収益loopとAndroid事前試験
 
 ## 保存境界と配備状態
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Tool完了→Provider署名→Wallet一度だけ反映のROCK_READY fixtureは合格した。次に選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験と正確なSKU readbackを行い、並行して最初の販売・決済Provider sandboxをbridgeへ接続する。両方の受入とsource／artifact freeze後にOS full build可否を再判定する。
+Pixel 10 GL066のreadback、物理instrumentation、GGUF機内モード推論、再起動、33分22秒熱試験とROCK_READY収益bridgeは合格した。次に物理Pixel上のSky→Zema→Tool→Wallet Provider縦断と外部Provider sandboxの事前build範囲を確定し、GL066のBSP／vendor／partition／boot／純正復旧入力、source／artifact／署名計画をfreezeしてからOS full build可否を再判定する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

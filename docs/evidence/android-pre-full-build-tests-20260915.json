@@ -1,35 +1,57 @@
 {
-  "schema": "avocadoos-android-pre-full-build-tests/1",
-  "testedAt": "2026-09-15",
+  "schema": "avocadoos-android-pre-full-build-tests/2",
+  "testedAt": "2026-09-16",
   "fullOsBuildStarted": false,
   "test1LocalAi": {
-    "status": "PARTIAL_GGUF_AND_PHYSICAL_PIXEL_PENDING",
+    "status": "PASS_STANDALONE_PHYSICAL_PIXEL",
     "unsignedArm64ReleaseApk": "PASS",
     "apkSha256": "2a0441565f6cca5676bc7a113f74e66e734c5e966aaf3835a62ae9b79d4756e9",
     "apkSizeBytes": 26390540,
+    "physicalTestSignedApkSha256": "432f122fe9eb4250ced20c3f779711be928b023e3c3e9097154cae37ebe21c62",
+    "physicalTestSigningCertificateSha256": "610499604b3469ae2f6c158b8482bbd6b0fb6e324862fb67e92731fe8a241f57",
     "internetPermission": false,
     "wakeLockPermission": true,
     "binderServicePresent": true,
     "emulatorInstallLaunch": "PASS",
     "signedBinderConnection": "PASS",
     "headlessJsNoModelFailClosed": "PASS_NO_MODEL",
-    "ggufModelSelected": false,
-    "ggufInference": "NOT_RUN",
-    "airplaneModeInference": "NOT_RUN",
-    "physicalPixel": "NOT_CONNECTED",
-    "thermalThirtyMinutes": "NOT_RUN"
+    "physicalAndroidInstrumentation": "PASS_5_OF_5",
+    "ggufModelSelected": true,
+    "ggufModelSha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+    "ggufInference": "PASS",
+    "airplaneModeInference": "PASS",
+    "rebootPersistenceAndReload": "PASS",
+    "physicalPixel": "PASS_PIXEL_10_GL066_FRANKEL",
+    "thermalThirtyMinutes": "PASS_2002_SECONDS_15_INFERENCES_MAX_34_4C_NO_THERMAL_WARNING",
+    "evidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
+    "notProven": [
+      "production signing",
+      "Soong OS image integration",
+      "SELinux enforcing behavior",
+      "flash, boot, OTA, rollback or recovery"
+    ]
   },
   "test2SkyZemaToolWallet": {
-    "status": "FAIL_MISSING_AUTOMATIC_TOOL_WALLET_RECEIPT_BRIDGE",
+    "status": "PASS_ROCK_READY_PROVIDER_SANDBOX_PENDING",
     "skyToZemaSingleUseHandoff": "PASS",
     "zemaJobLifecycleAndProgress": "PASS",
     "androidToolBinderSQLiteReviewFlow": "PASS",
-    "walletAndVerifiedEarningsSubsystems": "PASS_IN_ISOLATION",
-    "productionEndToEndReceiptFlow": "FAIL_NOT_CONNECTED",
-    "finding": "A completed Zema Tool job does not automatically create a Wallet receipt. The Web Wallet currently uses manual book records, while verified earning receipts enter through the separate Sky Billing provider endpoint."
+    "walletAndVerifiedEarningsSubsystems": "PASS",
+    "automaticToolWalletReceiptBridge": "PASS",
+    "rockOwnedEndToEndReceiptFixture": "PASS",
+    "focusedHostTests": "PASS_7_OF_7",
+    "evidence": "docs/evidence/tool-earning-wallet-bridge-20260915.json",
+    "notProven": [
+      "real sale or income",
+      "external payment provider sandbox",
+      "refund or chargeback flow",
+      "real payout",
+      "production deployment",
+      "physical Pixel end-to-end Wallet provider execution"
+    ]
   },
   "androidInstrumentation": {
-    "environment": "Android 15 API 35 arm64 Pixel 10 device-profile emulator",
+    "environment": "Android 15 API 35 arm64 Pixel 10 device-profile emulator plus physical Pixel 10 GL066 / Android 17",
     "tests": 5,
     "passed": 5,
     "failed": 0,
@@ -53,7 +75,7 @@
   },
   "repositoryRegression": {
     "status": "PASS",
-    "webUnitTests": 285,
+    "webUnitTests": 287,
     "fashionBrandOpsTests": 19,
     "workerD1Assertions": 143,
     "productionWebBuild": "PASS"
@@ -64,5 +86,10 @@
     "public Android SDK builds used hidden UserHandle methods",
     "the release manifest removed WAKE_LOCK required by Headless JS"
   ],
-  "decision": "DO_NOT_START_FULL_OS_BUILD"
+  "remainingBeforePaidFullBuild": [
+    "external provider sandbox acceptance or an explicit pre-build scope that excludes external value transfer",
+    "source, artifact and signing-plan freeze",
+    "GL066 BSP, vendor, partition, boot and stock-recovery source freeze"
+  ],
+  "decision": "DO_NOT_START_PAID_FULL_OS_BUILD_REMAINING_FREEZE_GATES"
 }
