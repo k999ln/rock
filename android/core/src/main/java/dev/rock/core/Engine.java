@@ -92,6 +92,15 @@ public final class Engine {
         });
     }
 
+    /** Returns an existing idempotent request without reading or exposing its payload. */
+    public String existingWorkId(String requestKey) {
+        if (requestKey == null || !requestKey.matches("[A-Za-z0-9_-]{1,80}"))
+            throw new IllegalArgumentException("INVALID_REQUEST_KEY");
+        List<Map<String,String>> rows = db.query("SELECT id FROM works WHERE request_key=?", requestKey);
+        if (rows.size() > 1) throw new IllegalStateException("DUPLICATE_REQUEST_KEY");
+        return rows.isEmpty() ? null : rows.get(0).get("id");
+    }
+
     /** elapsedMs is monotonic uptime. bootId must change on reboot, not on app restart. */
     public Ticket claim(String bootId, long elapsedMs, boolean charging) {
         if (bootId == null || bootId.isEmpty() || elapsedMs < 0 || elapsedMs > Long.MAX_VALUE - LEASE_MS)

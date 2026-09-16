@@ -15,7 +15,7 @@
     "planned": 8,
     "blocked": 0,
     "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-    "nextAction": "最優先はstock Pixel上でnative Sky／ZemaをBroker、Local AI、汎用Toolへ一本で接続し、再起動・失敗復旧まで確認する。並行してbackup v2の24単語確認UI、transactional import、新Keystore再bindingを完成させる。純正復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進み、初回flash gate合格まではunlock／flashを禁止する。"
+    "nextAction": "最優先はstock PixelのLocal AIへ計画専用出力契約を追加し、厳格plan gateを緩めず最初の選択Toolを成功完走して結果・履歴・再起動復旧まで確認する。次にnative Skyの選択をこの経路へ永続handoffする。並行してbackup v2を完成させ、復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進む。"
   },
   "webSchema": {
     "tableCount": 27,

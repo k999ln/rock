@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-16",
   "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-  "nextAction": "最優先はstock Pixel上でnative Sky／ZemaをBroker、Local AI、汎用Toolへ一本で接続し、再起動・失敗復旧まで確認する。並行してbackup v2の24単語確認UI、transactional import、新Keystore再bindingを完成させる。純正復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進み、初回flash gate合格まではunlock／flashを禁止する。",
+  "nextAction": "最優先はstock PixelのLocal AIへ計画専用出力契約を追加し、厳格plan gateを緩めず最初の選択Toolを成功完走して結果・履歴・再起動復旧まで確認する。次にnative Skyの選択をこの経路へ永続handoffする。並行してbackup v2を完成させ、復旧artifact、vendor inventory、production署名、Operator Agentの事前gate後だけfull buildへ進む。",
   "tasks": [
     {
       "id": "SKY01",
@@ -865,7 +865,7 @@
     },
     {
       "id": "OS10",
-      "title": "Tool／MCP／Provider共通API、本人承認、Wallet台帳、暗号化backup、署名更新gateのsourceを実装",
+      "title": "Tool／MCP／Provider共通APIとnative Zema選択Tool経路、本人承認、Wallet台帳、暗号化backup、署名更新gateを実装",
       "status": "in_progress",
       "dependsOn": ["OS06"],
       "evidence": [
@@ -886,6 +886,9 @@
         "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
         "android/shell/src/main/java/dev/rock/shell/ShellConnection.java",
         "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java",
+        "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
+        "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java",
+        "docs/evidence/android-zema-selected-tool-20260916.json",
         "android/sepolicy/private/rockstar_platform.te"
       ]
     },

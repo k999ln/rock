@@ -28,9 +28,12 @@ public class EngineTest {
         assertNull(claim(100));
     }
     @Test public void submitIsIdempotentButConflictingPayloadIsRejected() {
-        String id = submit(); assertEquals(id, submit()); assertEquals(1, engine.list().size());
+        assertNull(engine.existingWorkId("request-1"));
+        String id = submit(); assertEquals(id, engine.existingWorkId("request-1"));
+        assertEquals(id, submit()); assertEquals(1, engine.list().size());
         assertThrows(IllegalStateException.class, () -> engine.submit("request-1", "別の原稿", false, true));
         assertThrows(IllegalStateException.class, () -> engine.submit("request-1", "原稿🔒", true, true));
+        assertThrows(IllegalArgumentException.class, () -> engine.existingWorkId("../request"));
     }
     @Test public void duplicateResultDoesNotAdvanceTwice() {
         String id = submit(); Engine.Ticket t = claim(1);

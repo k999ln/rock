@@ -17,19 +17,26 @@ import org.json.JSONObject;
 
 /** Unprivileged avocadoOS shell. Persistent work and execution remain in the Platform Broker. */
 public final class MainActivity extends Activity {
+    private static final String ARTICLE_TOOL = "article-preparation@1";
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
     private LinearLayout form, jobs;
     private TextView message;
-    private EditText markdown, summary, paid, url, cutoff, price;
-    private CheckBox consent, sample;
+    private EditText zemaPrompt, markdown, summary, paid, url, cutoff, price;
+    private CheckBox zemaConsent, consent, sample;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         ScrollView scroll = new ScrollView(this); form = new LinearLayout(this); form.setOrientation(LinearLayout.VERTICAL);
         int padding = (int)(20 * getResources().getDisplayMetrics().density); form.setPadding(padding, padding, padding, padding);
         scroll.addView(form); setContentView(scroll);
-        label(form, "avocadoOS · 自律実行の試作", 24);
-        label(form, "画面と特権Brokerは別APKです。端末内で出典整理→無料版を作成し、外部投稿・決済はしません。", 16);
+        label(form, "avocadoOS · Zema", 24);
+        label(form, "Skyで選択中: 出典整理→無料記事。Zemaが端末内AIで入力を組み立て、Brokerが選択済みToolだけを実行します。外部投稿・決済はしません。", 16);
+        zemaPrompt = field("Zemaへの依頼", "", true);
+        zemaConsent = new CheckBox(this); zemaConsent.setText("依頼を端末内AIで計画し、選択済みToolの仕事として保存することを許可する"); form.addView(zemaConsent);
+        message = label(form, "", 16);
+        button(form, "Zemaに依頼して仕事を開始", this::submitZema);
+        button(form, "ローカルAI接続を確認", this::checkLocalAi);
+        label(form, "手動入力（開発用）", 22);
         markdown = field("原稿（Markdown）", "", true);
         summary = field("まとめ（- で始まる3〜5項目）", "", true);
         cutoff = field("無料範囲の文字数", "40", false);
@@ -49,9 +56,7 @@ public final class MainActivity extends Activity {
         });
         button(form, "全停止（保存した仕事は残す）", () -> perform(connection -> { connection.setPaused(true); return null; }));
         button(form, "自動実行を再開", () -> perform(connection -> { connection.setPaused(false); return null; }));
-        button(form, "ローカルAI接続を確認", this::checkLocalAi);
         button(form, "進捗を更新", () -> perform(connection -> null));
-        message = label(form, "", 16);
         jobs = new LinearLayout(this); jobs.setOrientation(LinearLayout.VERTICAL); form.addView(jobs);
         perform(connection -> null);
     }
@@ -96,6 +101,44 @@ public final class MainActivity extends Activity {
             String result = status;
             runOnUiThread(() -> { if (!isDestroyed()) message.setText(result); });
         });
+    }
+
+    private void submitZema() {
+        String prompt = zemaPrompt.getText().toString();
+        boolean allowed = zemaConsent.isChecked();
+        if (prompt.trim().isEmpty()) { message.setText("Zemaへの依頼を入力してください。"); return; }
+        message.setText("Zemaが端末内で計画しています…");
+        worker.execute(() -> {
+            try {
+                ShellConnection connection = new ShellConnection(this);
+                JSONObject response = new JSONObject(connection.submitZema(
+                    UUID.randomUUID().toString(), ARTICLE_TOOL, prompt, "[]", allowed));
+                JSONObject snapshot = new JSONObject(connection.snapshot());
+                JSONArray workItems = snapshot.getJSONArray("works");
+                String status = response.getString("status");
+                String workId = response.isNull("workId") ? null : response.getString("workId");
+                String code = response.isNull("code") ? null : response.getString("code");
+                runOnUiThread(() -> {
+                    if (!isDestroyed()) {
+                        if ("queued".equals(status) && workId != null) {
+                            message.setText("Zemaが仕事を保存しました: " + workId.substring(0, 8));
+                        } else {
+                            message.setText(zemaBlockedMessage(code));
+                        }
+                        render(workItems);
+                    }
+                });
+            } catch (Exception error) {
+                runOnUiThread(() -> { if (!isDestroyed())
+                    message.setText("Zemaを開始できません。Local AIのモデル、署名、同意、依頼内容を確認してください。"); });
+            }
+        });
+    }
+
+    private static String zemaBlockedMessage(String code) {
+        if ("DENIED".equals(code)) return "開始していません。保存への同意を確認してください。";
+        if ("INVALID_PLAN".equals(code)) return "開始していません。端末内AIの計画が安全確認を通りませんでした。";
+        return "開始していません。Local AIのアプリ、モデル、署名、APIを確認してください。";
     }
 
     private void render(JSONArray workItems) {

@@ -236,7 +236,7 @@ export function validateBaseline(
   requireValue(
     data.primaryCapabilities?.includes('os-platform-core') &&
       data.androidPlatformCore?.status ===
-        'shell_broker_split_build_lint_emulator_pass_aosp_not_run' &&
+        'shell_broker_zema_plan_gate_emulator_and_physical_fail_closed_aosp_not_run' &&
       data.androidPlatformCore?.apiVersion === 1 &&
       JSON.stringify(data.androidPlatformCore?.componentKinds) ===
         JSON.stringify(['TOOL', 'MCP', 'PROVIDER']) &&
@@ -255,10 +255,14 @@ export function validateBaseline(
       data.androidPlatformCore?.aospImageBuilt === false &&
       data.androidPlatformCore?.selinuxEnforcingVerified === false &&
       data.androidPlatformCore?.productionSigningVerified === false &&
-      data.androidPlatformCore?.otaRollbackVerified === false,
+      data.androidPlatformCore?.otaRollbackVerified === false &&
+      data.androidPlatformCore?.shellApiVersion === 2 &&
+      data.androidPlatformCore?.zemaSelectedToolPlanGateImplemented === true &&
+      data.androidPlatformCore?.zemaEmulatorNoModelFailClosed === true &&
+      data.androidPlatformCore?.zemaPhysicalStrictPlanAccepted === false,
     'OS Platform Coreの署名・UID・承認・台帳・暗号化・standalone build済／AOSP未build境界を維持してください',
   );
-  for (const field of ['contract', 'record']) {
+  for (const field of ['contract', 'record', 'zemaSelectedToolEvidence']) {
     const path = data.androidPlatformCore?.[field];
     requireValue(
       typeof path === 'string' && existsSync(resolve(root, path)),
@@ -291,12 +295,12 @@ export function validateBaseline(
       data.androidPreFullBuildGate?.checks?.standaloneAndroidBuildAndLint ===
         'passed' &&
       data.androidPreFullBuildGate?.checks?.androidEmulatorIntegration ===
-        'shell_broker_1_of_1_and_broker_tool_sqlite_4_of_4_passed_local_ai_separate' &&
+        'shell_zema_3_of_3_and_broker_tool_sqlite_6_of_6_passed_no_model_fail_closed' &&
       data.androidPreFullBuildGate?.checks?.standaloneLocalAiApk === 'passed' &&
       data.androidPreFullBuildGate?.checks?.stockPixelOfflineAiAndThermal ===
         'passed_offline_reboot_thermal' &&
       data.androidPreFullBuildGate?.checks?.skyZemaToolWalletPath ===
-        'rock_ready_physical_correlated_split_boundary_provider_sandbox_pending' &&
+        'native_zema_source_connected_physical_strict_plan_pending_wallet_correlated_provider_sandbox_pending' &&
       data.androidPreFullBuildGate?.checks
         ?.sourceArtifactAndSigningPlanFreeze ===
         'partial_source_tag_and_device_layout_frozen_recovery_vendor_and_signing_pending' &&
@@ -314,6 +318,7 @@ export function validateBaseline(
     'evidence',
     'earningsBridgeEvidence',
     'physicalToolWalletEvidence',
+    'zemaSelectedToolEvidence',
     'dspSourceAndLayoutEvidence',
     'androidWorkflow',
     'localAiWorkflow',

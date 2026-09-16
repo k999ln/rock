@@ -90,12 +90,16 @@ assert.ok(read('os/device/AndroidProducts.mk').includes(`${lock.product}-${lock.
 assert.ok(read('android/Android.bp').includes('RockAutomationPrototype'));
 assert.ok(read('android/Android.bp').includes('name: "RockShell"'));
 const shellApi = read('android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl');
-assert.ok(shellApi.includes('const int API_VERSION = 1'));
-for (const call of ['snapshot', 'submit', 'setPaused', 'result', 'complete', 'retry', 'cancel', 'localAiStatus']) assert.ok(shellApi.includes(`${call}(`));
+assert.ok(shellApi.includes('const int API_VERSION = 2'));
+for (const call of ['snapshot', 'submit', 'setPaused', 'result', 'complete', 'retry', 'cancel', 'localAiStatus', 'submitZema']) assert.ok(shellApi.includes(`${call}(`));
 const shellService = read('android/automation/src/main/java/dev/rock/automation/RockShellService.java');
 assert.ok(shellService.includes('SHELL_PACKAGE = "dev.rock.shell"'));
 assert.ok(shellService.includes('getPackagesForUid(uid)'));
 assert.ok(shellService.includes('checkSignatures(getPackageName(), SHELL_PACKAGE)'));
+assert.ok(shellService.includes('new ZemaOrchestrator'));
+const zemaPlan = read('android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java');
+assert.ok(zemaPlan.includes('ZEMA_TOOL_SUBSTITUTION'));
+assert.ok(zemaPlan.includes('ArticlePayload.parse(canonical)'));
 const shellMain = read('android/shell/src/main/java/dev/rock/shell/MainActivity.java');
 assert.ok(shellMain.includes('new ShellConnection(this)'));
 assert.ok(!/dev\.rock\.core|AndroidDatabase|RockApplication/.test(shellMain));

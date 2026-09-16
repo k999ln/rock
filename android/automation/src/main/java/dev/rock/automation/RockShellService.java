@@ -18,9 +18,10 @@ import org.json.JSONObject;
 public final class RockShellService extends Service {
     static final String SHELL_PACKAGE = "dev.rock.shell";
     private static final int MAX_SNAPSHOT_WORKS = 25;
+    private final Object zemaLock = new Object();
 
     private final IShellApi.Stub binder = new IShellApi.Stub() {
-        @Override public int getApiVersion() { enforceShellCaller(); return 1; }
+        @Override public int getApiVersion() { enforceShellCaller(); return 2; }
         @Override public String snapshot() throws android.os.RemoteException {
             enforceShellCaller();
             try { return snapshotJson(); }
@@ -42,6 +43,31 @@ public final class RockShellService extends Service {
             enforceShellCaller();
             try { return new LocalAiConnection(RockShellService.this).status(); }
             catch (Exception error) { throw new android.os.RemoteException("LOCAL_AI_UNAVAILABLE"); }
+        }
+        @Override public String submitZema(String requestId, String toolId, String prompt,
+                String contextJson, boolean consent) {
+            enforceShellCaller();
+            try {
+                synchronized (zemaLock) {
+                    String id = new ZemaOrchestrator(RockShellService.this, engine())
+                        .submit(requestId, toolId, prompt, contextJson, consent);
+                    Scheduler.schedule(RockShellService.this);
+                    return zemaResponse("queued", null, id);
+                }
+            } catch (SecurityException denied) {
+                String reason = denied.getMessage();
+                String code;
+                if ("LOCAL_ARTIFACT_CONSENT_REQUIRED".equals(reason)) code = "DENIED";
+                else if ("ZEMA_TOOL_SUBSTITUTION".equals(reason)
+                        || "LOCAL_AI_MAY_NOT_EXECUTE_SELECTED_TOOL".equals(reason))
+                    code = "INVALID_PLAN";
+                else code = "LOCAL_AI_UNAVAILABLE";
+                return zemaResponse("blocked", code, null);
+            } catch (IllegalArgumentException invalid) {
+                return zemaResponse("blocked", "INVALID_PLAN", null);
+            } catch (Exception failed) {
+                return zemaResponse("blocked", "LOCAL_AI_UNAVAILABLE", null);
+            }
         }
     };
 
@@ -92,5 +118,19 @@ public final class RockShellService extends Service {
 
     private static void validWorkId(String value) {
         if (value == null || !value.matches("[0-9a-f-]{36}")) throw new IllegalArgumentException("INVALID_WORK_ID");
+    }
+
+    private static String zemaResponse(String status, String code, String workId) {
+        try {
+            JSONObject response = new JSONObject();
+            response.put("status", status);
+            response.put("code", code == null ? JSONObject.NULL : code);
+            response.put("workId", workId == null ? JSONObject.NULL : workId);
+            String result = response.toString();
+            Engine.bounded(result);
+            return result;
+        } catch (JSONException invalid) {
+            throw new IllegalStateException("ZEMA_RESPONSE_JSON", invalid);
+        }
     }
 }

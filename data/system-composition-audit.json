@@ -8,7 +8,7 @@
     "allComponentsImplemented": false,
     "allRequiredConnectionsVerified": false,
     "productionReady": false,
-    "summary": "選択した責任分離と実装順は目的に整合する。一方、Web、Android単体APK、fixture、sandbox、物理端末の証拠が混在し、Pixel上の一つの製品経路としては未結合・未受入である。"
+    "summary": "選択した責任分離と実装順は目的に整合する。native ZemaからBroker、Local AI、選択Toolまでのsource経路とfail-closed実機試験は追加したが、Pixelのモデル出力が厳格planを通って仕事を完了する受入は未達である。"
   },
   "selectionPrinciples": [
     "OSや端末開発そのものではなく、offline AI teamから検証済み成果と収益へ至る利用者価値を優先する",
@@ -42,22 +42,24 @@
       "id": "user_experience",
       "choice": "Home entry; Sky discovers and connects Tools; Zema manages all work; CSV is a Sky Tool",
       "fit": "ALIGNED",
-      "state": "WEB_INTEGRATED_ANDROID_UI_PARTIAL",
+      "state": "WEB_INTEGRATED_ANDROID_ZEMA_SOURCE_CONNECTED_RUNTIME_PLAN_ACCEPTANCE_PENDING",
       "evidence": [
         "docs/sky.md",
         "docs/chat-mcp-control-room-20260913.md",
-        "tests/sky-zema-handoff.test.mjs"
+        "tests/sky-zema-handoff.test.mjs",
+        "docs/evidence/android-zema-selected-tool-20260916.json"
       ]
     },
     {
       "id": "android_security_boundary",
       "choice": "least-privilege dev.rock.shell plus headless dev.rock.automation Broker with signer, package, UID and version checks",
       "fit": "ALIGNED",
-      "state": "STANDALONE_BUILD_AND_EMULATOR_VERIFIED_AOSP_NOT_RUN",
+      "state": "STANDALONE_BUILD_EMULATOR_AND_PHYSICAL_BINDER_FAIL_CLOSED_VERIFIED_AOSP_NOT_RUN",
       "evidence": [
         "docs/android-production-architecture.md",
         "data/android-release-architecture-policy.json",
-        "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java"
+        "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java",
+        "docs/evidence/android-zema-selected-tool-20260916.json"
       ]
     },
     {
@@ -74,11 +76,13 @@
       "id": "tool_runtime",
       "choice": "signed, versioned, permission-scoped Tool packages executed through Platform Broker",
       "fit": "ALIGNED",
-      "state": "FIXED_TOOL_FLOW_VERIFIED_GENERAL_ZEMA_ORCHESTRATION_NOT_CONNECTED",
+      "state": "FIRST_SELECTED_TOOL_ZEMA_PLAN_GATE_SOURCE_CONNECTED_PHYSICAL_PLAN_ACCEPTANCE_PENDING",
       "evidence": [
         "contracts/platform-api.json",
         "docs/platform-core.md",
-        "android/automation/src/main/java/dev/rock/automation/RockPlatformService.java"
+        "android/automation/src/main/java/dev/rock/automation/RockPlatformService.java",
+        "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
+        "docs/evidence/android-zema-selected-tool-20260916.json"
       ]
     },
     {
@@ -147,11 +151,12 @@
         "Tool",
         "result and history"
       ],
-      "state": "PARTIAL_NOT_SINGLE_DEVICE_VERIFIED",
+      "state": "SOURCE_CONNECTED_PHYSICAL_FAIL_CLOSED_SUCCESSFUL_PLAN_AND_COMPLETION_PENDING",
       "blockingGaps": [
-        "final native Sky and Zema UI",
+        "final native Sky UI and selected-Tool handoff",
         "persistent native handoff instead of browser sessionStorage",
-        "Broker to Local AI to general Tool orchestration",
+        "Local AI plan-only output accepted by the strict Broker plan gate on Pixel",
+        "general Tool registry beyond the first article-preparation Tool",
         "reboot and failure recovery of the whole path"
       ]
     },
@@ -249,7 +254,7 @@
     "Android release readiness is reported as one of six required gates, not one of five"
   ],
   "priorityOrder": [
-    "Join native Sky and Zema to Broker, Local AI and a general Tool on the stock Pixel, including reboot and failure recovery",
+    "Make native Sky and Zema complete one strict selected-Tool plan on the stock Pixel, then verify result, history, reboot and failure recovery",
     "Finish backup v2 restore, owner rebind and anti-clone behavior before first flash",
     "Complete recovery artifact hashes, vendor inventory and production signing inputs",
     "Implement the restricted Android Operator Agent and exercise the full audited support path",

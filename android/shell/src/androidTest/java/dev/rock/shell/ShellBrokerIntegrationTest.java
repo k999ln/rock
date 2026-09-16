@@ -26,6 +26,7 @@ public final class ShellBrokerIntegrationTest {
             packages.checkSignatures(context.getPackageName(), ShellConnection.BROKER_PACKAGE));
 
         ShellConnection broker = new ShellConnection(context);
+        assertEquals(2, ShellConnection.API_VERSION);
         JSONObject before = new JSONObject(broker.snapshot());
         assertEquals(1, before.getInt("apiVersion"));
         assertTrue(before.has("totalWorkCount"));
@@ -44,5 +45,49 @@ public final class ShellBrokerIntegrationTest {
         } finally {
             broker.cancel(workId);
         }
+    }
+
+    @Test public void zemaCommitsOneVerifiedPlanOrNoWorkAtAll() throws Exception {
+        android.content.Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        ShellConnection broker = new ShellConnection(context);
+        int before = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
+        JSONObject response = new JSONObject(broker.submitZema(UUID.randomUUID().toString(),
+            "article-preparation@1",
+            "Markdown原稿は『# 安全な自動化\\n出典 https://example.test/source 』。"
+                + "要約は3項目、無料範囲40文字、価格500円、有料部分は詳しい手順、"
+                + "URLは https://note.com/example/n/safe_automation として準備して。",
+            "[]", true));
+        assertEquals(3, response.length());
+        assertTrue(response.has("status"));
+        assertTrue(response.has("code"));
+        assertTrue(response.has("workId"));
+        JSONObject after = new JSONObject(broker.snapshot());
+        if ("queued".equals(response.getString("status"))) {
+            String workId = response.getString("workId");
+            assertEquals(before + 1, after.getInt("totalWorkCount"));
+            assertTrue(after.toString().contains(workId));
+            System.out.println("ZEMA_RESULT=QUEUED");
+            broker.cancel(workId);
+        } else {
+            assertEquals("blocked", response.getString("status"));
+            assertTrue(response.isNull("workId"));
+            String code = response.getString("code");
+            assertTrue(code.equals("LOCAL_AI_UNAVAILABLE") || code.equals("INVALID_PLAN")
+                || code.equals("DENIED"));
+            assertEquals(before, after.getInt("totalWorkCount"));
+            System.out.println("ZEMA_RESULT=BLOCKED_WITHOUT_PARTIAL_WORK:" + code);
+        }
+    }
+
+    @Test public void zemaRequiresConsentBeforeCallingLocalAiOrCreatingWork() throws Exception {
+        android.content.Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        ShellConnection broker = new ShellConnection(context);
+        int before = new JSONObject(broker.snapshot()).getInt("totalWorkCount");
+        JSONObject response = new JSONObject(broker.submitZema(UUID.randomUUID().toString(),
+            "article-preparation@1", "This must not reach Local AI.", "[]", false));
+        assertEquals("blocked", response.getString("status"));
+        assertEquals("DENIED", response.getString("code"));
+        assertTrue(response.isNull("workId"));
+        assertEquals(before, new JSONObject(broker.snapshot()).getInt("totalWorkCount"));
     }
 }

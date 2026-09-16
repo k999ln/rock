@@ -2,7 +2,7 @@ package dev.rock.shellapi;
 
 /** Private UI-to-broker API. Payload content never crosses this API except explicit owner input/output. */
 interface IShellApi {
-    const int API_VERSION = 1;
+    const int API_VERSION = 2;
 
     int getApiVersion() = 0;
     String snapshot() = 1;
@@ -13,4 +13,5 @@ interface IShellApi {
     void retry(String workId) = 6;
     void cancel(String workId) = 7;
     String localAiStatus() = 8;
+    String submitZema(String requestId, String toolId, String prompt, String contextJson, boolean consent) = 9;
 }
