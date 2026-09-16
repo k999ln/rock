@@ -31,6 +31,8 @@ Sky→Zemaの一回限りhandoff、Zemaのjob進捗、Tool実行、Wallet／収�
 
 所有Pixel 10の端末readbackと単体APKによるGGUF機内モード推論、再起動、33分22秒の温度試験は完了した。外部Providerは初回OS full buildへ焼き込まず、更新可能なアプリ／サーバー側へ分離する。Provider sandboxは実収益を表示するavocadoOS 1.0公開前の必須gateとして残し、未合格中はlive収益表示を禁止する。GL066は署名source tagとpartition／AVB構成まで固定済みだが、Google純正factory／full OTAの実ファイルSHA、vendor生成inventory、production署名／復旧計画が残る。このgateは**進行中**で、full build開始条件をまだ満たしていない。
 
+初回flashについては、さらに[4項目の専用gate](android-first-flash-gate-20260916.md)を正本化した。正式署名鍵のidentityと紛失・rotation・失効、rollback index運用、Google純正factory image／full OTAの実byte SHA-256、Keystore喪失後も復元できるbackupの4/4が必要である。現在は0/4で、特に既存Android backupは非exportable Keystore鍵を失うと復元できないため未合格。full buildの成功だけでは初回flashを許可しない。
+
 Sky、Zema、Wallet、Tool、LLMは原則として更新可能なAPK境界に置く。これらだけの修正なら単体APKを再buildして純正Android上で再試験する。framework、SELinux、privapp/product設定、boot/vendor/partition/AVBを変更した場合はOS imageの再buildが必要になる。
 
 事前gate合格後に初回full buildを一度行い、同じ作業環境でtarget-files、factory image、OTAを生成する。サーバーや永続volumeは成果物hashを退避しただけで直ちに破棄せず、最初の実機flash／bootと修正要否を確認するまで保持する。full build自体でしか見つからないSoong、SELinux、device統合不具合は残り得るため、1回で必ず完了するとは表示しない。
@@ -38,6 +40,7 @@ Sky、Zema、Wallet、Tool、LLMは原則として更新可能なAPK境界に置
 ## 実装した入口
 
 - `os/physical/frankel-source-lock.json`：Pixel 10／frankel／GL066、manifest、adevtool、端末hook、kernel参照を固定。対象確認は完了し、OS build・boot・flashは未完了のまま。
+- `data/android-first-flash-gate.json`：初回flash前に固定する署名鍵life-cycle、rollback index、Google純正復旧2ファイル、Keystore喪失backupの4項目を機械可読化。秘密鍵とrecovery secretは保存せず、現在は0/4合格でfail closed。
 - `os/physical/rockstaros.mk`：既存のRock自動化／記事Toolを端末OSのproductへ組み込む。UID・SELinux・AVB・端末ドライバーは上流を維持。公式GrapheneOSの更新サービスを使う`OFFICIAL_BUILD=true`を拒否。
 - `scripts/prepare-phone-build.py`：容量診断、cleanなRock commit固定のRepo manifest出力、上流署名タグ・adevtool参照・端末hookの一致検証、1か所だけの再実行可能なsource変更。既存のローカル変更を上書きしない。
 - `scripts/build-phone-bringup.sh`：lockのdevice／SKU確認が完了した準備済みLinux環境で、lock由来の`userdebug` lunch／build targetを実行する入口。未確認lockはフルbuildを拒否し、source一覧とRock commit、端末hook差分を保存する。クラウド作成・正式署名・端末操作は含まない。
@@ -76,7 +79,7 @@ Pixel 10の安定版`2026091000`を固定した。manifest tag objectは`6c939d1
 3. cleanなRock checkoutから`python3 scripts/prepare-phone-build.py manifest`でXMLを生成し、OS作業ディレクトリの`.repo/local_manifests/rock-phone.xml`へ保存する。Rockは`external/rockstaros`へ取得され、既存Cuttlefish専用設定と混ぜない。
 4. `repo sync -c -j8`を完了する。公式手順の`source build/envsetup.sh`、`yarn --cwd vendor/adevtool/ install`、`adevtool generate-all -d <lockのdevice>`を実施し、vendor取得・照合結果を保存する。
 5. Google factory／full OTAのhash、vendor inventory、production署名／復旧計画を揃え、`fullBuildInputGatePassed=true`へ進められる根拠をレビューしてから、OS作業ディレクトリで`bash external/rockstaros/scripts/build-phone-bringup.sh "$PWD" /absolute/path/to/grapheneos_allowed_signers`を実行する。現在の入口はこのgateがfalseならbuild前に拒否する。入口はRAM 64 GiB以上・空き400 GiB以上を検査し、prepare後とrepo全体検査後にlock指定hookのバイト列を再検証する。初回Soong/OS buildの実エラーを解消し、成功した同一sourceと出力hashを記録する。対象機種の`userdebug`出力は開発試験用で、productionは`user`を別に受け入れる。
-6. Hub／Wallet／Gameの移植、Rock独自の表示、Android正式署名、OTA・復旧を整える。機種・SKU・現在build・backupを確認して、書込み手順を別途確定する。
+6. Hub／Wallet／Gameの移植、Rock独自の表示、Android正式署名、OTA・復旧を整える。初回flash gate 4/4、機種・SKU・現在build・backupを確認して、書込み手順を別途確定する。
 
 端末の読み取り診断は、adb導入済み・USB接続承認済みの環境で`python3 scripts/inspect-phone.py --serial <本人が選んだ端末ID>`。2026-09-16に実行し、端末serialを除いた必要最小限の結果だけを[端末inventory](evidence/android-pixel-10-gl066-device-inventory-20260916.json)と[boot状態](evidence/android-pixel-10-gl066-boot-state-20260916.json)へ保存した。
 

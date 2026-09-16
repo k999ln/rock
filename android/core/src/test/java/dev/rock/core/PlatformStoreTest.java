@@ -7,6 +7,7 @@ import dev.rock.core.platform.PlatformStore;
 import dev.rock.core.platform.UpdatePolicy;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import javax.crypto.KeyGenerator;
@@ -215,6 +216,72 @@ public final class PlatformStoreTest {
         envelope[envelope.length - 1] ^= 1;
         assertThrows(SecurityException.class, () -> EncryptedBackup.open(envelope, key));
         assertThrows(IllegalArgumentException.class, () -> EncryptedBackup.open(new byte[8], key));
+    }
+
+    @Test public void recoverableBackupWorksWithEitherDeviceOrOwnerSecret() throws Exception {
+        KeyGenerator generator = KeyGenerator.getInstance("AES");
+        generator.init(256);
+        SecretKey originalDevice = generator.generateKey();
+        SecretKey replacementDevice = generator.generateKey();
+        byte[] recoverySecret = EncryptedBackup.generateRecoverySecret(new SecureRandom());
+        byte[] body = "owner-scoped state after total device loss".getBytes(StandardCharsets.UTF_8);
+        byte[] envelope = EncryptedBackup.sealRecoverable(body, originalDevice,
+            recoverySecret, "owner:alice", 1_789_523_200_000L, new SecureRandom());
+
+        assertArrayEquals(body,
+            EncryptedBackup.openWithDeviceKey(envelope, originalDevice, "owner:alice"));
+        assertArrayEquals(body,
+            EncryptedBackup.openWithRecoverySecret(envelope, recoverySecret, "owner:alice"));
+        assertThrows(SecurityException.class,
+            () -> EncryptedBackup.openWithDeviceKey(envelope, replacementDevice, "owner:alice"));
+    }
+
+    @Test public void recoverableBackupRejectsWrongOwnerSecretAndTampering() throws Exception {
+        KeyGenerator generator = KeyGenerator.getInstance("AES");
+        generator.init(256);
+        SecretKey device = generator.generateKey();
+        byte[] recoverySecret = EncryptedBackup.generateRecoverySecret(new SecureRandom());
+        byte[] wrongSecret = EncryptedBackup.generateRecoverySecret(new SecureRandom());
+        byte[] envelope = EncryptedBackup.sealRecoverable(
+            "sensitive state".getBytes(StandardCharsets.UTF_8), device, recoverySecret,
+            "owner:alice", 1_789_523_200_000L, new SecureRandom());
+
+        assertThrows(SecurityException.class,
+            () -> EncryptedBackup.openWithRecoverySecret(envelope, wrongSecret, "owner:alice"));
+        assertThrows(SecurityException.class,
+            () -> EncryptedBackup.openWithRecoverySecret(envelope, recoverySecret, "owner:bob"));
+        byte[] tampered = envelope.clone();
+        tampered[tampered.length - 1] ^= 1;
+        assertThrows(SecurityException.class,
+            () -> EncryptedBackup.openWithRecoverySecret(tampered, recoverySecret, "owner:alice"));
+        byte[] tamperedHeader = envelope.clone();
+        int saltLastByte = 2 + EncryptedBackup.RECOVERABLE_FORMAT.length() +
+            Integer.BYTES + Long.BYTES + 32 + 31;
+        tamperedHeader[saltLastByte] ^= 1;
+        assertThrows(SecurityException.class,
+            () -> EncryptedBackup.openWithRecoverySecret(
+                tamperedHeader, recoverySecret, "owner:alice"));
+        byte[] trailingByte = Arrays.copyOf(envelope, envelope.length + 1);
+        assertThrows(IllegalArgumentException.class,
+            () -> EncryptedBackup.openWithRecoverySecret(
+                trailingByte, recoverySecret, "owner:alice"));
+    }
+
+    @Test public void recoverableBackupUsesFreshEnvelopeKeysAndNonces() throws Exception {
+        KeyGenerator generator = KeyGenerator.getInstance("AES");
+        generator.init(256);
+        SecretKey device = generator.generateKey();
+        byte[] recoverySecret = EncryptedBackup.generateRecoverySecret(new SecureRandom());
+        byte[] body = "same state".getBytes(StandardCharsets.UTF_8);
+        byte[] first = EncryptedBackup.sealRecoverable(body, device, recoverySecret,
+            "owner:alice", 1_789_523_200_000L, new SecureRandom());
+        byte[] second = EncryptedBackup.sealRecoverable(body, device, recoverySecret,
+            "owner:alice", 1_789_523_200_000L, new SecureRandom());
+        assertFalse(Arrays.equals(first, second));
+        assertArrayEquals(body,
+            EncryptedBackup.openWithRecoverySecret(first, recoverySecret, "owner:alice"));
+        assertArrayEquals(body,
+            EncryptedBackup.openWithRecoverySecret(second, recoverySecret, "owner:alice"));
     }
 
     @Test public void backupIsOwnerScopedVersionedAndEncryptedBeforeStorage() throws Exception {

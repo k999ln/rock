@@ -249,10 +249,11 @@ void test('dependency license audit is pinned to the complete package-lock', () 
 void test('Android and personal-number audits preserve exact real blockers', () => {
   const result = validateMatrix();
   assert.equal(result.android.passed, 1);
-  assert.equal(result.android.required, 5);
+  assert.equal(result.android.required, 6);
   assert.deepEqual(result.android.blocked, [
     'bsp-driver-boot-recovery',
-    'android-cdd-cts',
+    'selinux-enforcing-isolation',
+    'android-cdd-cts-vts',
     'production-signing',
     'regional-radio-and-sales',
   ]);
@@ -273,7 +274,7 @@ void test('Android compatibility and physical flash claims require their exact g
   changedCompatibility.claims.androidCompatible = true;
   assert.throws(
     () => validateAndroidPhysicalReleaseAudit({ root, audit: changedCompatibility, readiness }),
-    /CDD\/CTS合格なし/,
+    /CDD\/CTS\/VTS合格なし/,
   );
 
   const changedFlash = structuredClone(androidAudit);
@@ -340,13 +341,13 @@ void test('Android gate PASS requires hashed role evidence from the selected dev
 
 void test('Android build gates cannot pass before exact device and BSP gates', () => {
   const changed = structuredClone(androidAudit);
-  const requirement = changed.requirements.find(({ id }) => id === 'android-cdd-cts');
+  const requirement = changed.requirements.find(({ id }) => id === 'android-cdd-cts-vts');
   requirement.status = 'pass';
   requirement.evidence = ['docs/android-and-personal-number-gates-20260913.md'];
   const matrix = structuredClone(readiness);
   matrix.targets
     .find(({ id }) => id === 'android-physical-preview')
-    .gates.find(({ id }) => id === 'android-cdd-cts').status = 'pass';
+    .gates.find(({ id }) => id === 'android-cdd-cts-vts').status = 'pass';
   assert.throws(
     () => validateAndroidPhysicalReleaseAudit({ root, audit: changed, readiness: matrix }),
     /BSP\/boot\/recovery gateより先/,

@@ -99,7 +99,12 @@ class PhonePreparationTest(unittest.TestCase):
             "knownSkus": ["FIXTURE-SKU"],
             "confirmedSku": None,
             "targetConfirmedByOwner": False,
-            "fullBuildInputGatePassed": False}))
+            "fullBuildInputGatePassed": False,
+            "firstFlashGate": {
+                "schema": "avocadoos-android-first-flash-gate/1",
+                "path": "data/android-first-flash-gate.json",
+                "passed": False,
+            }}))
         reviewed_names = [
             "LICENSE", "package.json", "src/native/modelRuntime.ts", "src/native/modelFiles.ts",
             "src/core/toolBroker.ts", "android/app/src/main/AndroidManifest.xml",
@@ -149,6 +154,7 @@ class PhonePreparationTest(unittest.TestCase):
         self.assertEqual(second["localAssistant"]["osBridge"],
                          "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT")
         self.assertFalse(second["flashReady"])
+        self.assertFalse(second["firstFlashGatePassed"])
 
     def test_manifest_pins_reviewed_local_ai_source(self):
         root = phone.manifest_structure(phone.render_manifest())
@@ -219,6 +225,23 @@ class PhonePreparationTest(unittest.TestCase):
         self.assertEqual(config["kernel_path"], "device/google/laguna-kernels/6.6")
         self.assertEqual(config["buildTargets"], ["target-files-package", "otatools-package"])
         self.assertTrue(config["targetConfirmedByOwner"])
+        self.assertFalse(config["firstFlashGatePassed"])
+
+    def test_lock_rejects_missing_or_malformed_first_flash_gate(self):
+        for first_flash_gate in (None, {}, {
+                "schema": "avocadoos-android-first-flash-gate/1",
+                "path": "data/android-first-flash-gate.json",
+                "passed": "false",
+        }):
+            with self.subTest(first_flash_gate=first_flash_gate):
+                lock = json.loads(self.lock.read_text())
+                if first_flash_gate is None:
+                    del lock["firstFlashGate"]
+                else:
+                    lock["firstFlashGate"] = first_flash_gate
+                phone.LOCK.write_text(json.dumps(lock))
+                with self.assertRaisesRegex(ValueError, "invalid lock-derived"):
+                    phone.build_config(require_target_confirmation=False)
 
     def test_lock_rejects_device_hook_and_lunch_drift(self):
         for change in ({"device": "../panther"},

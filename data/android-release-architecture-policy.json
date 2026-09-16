@@ -1,0 +1,208 @@
+{
+  "schema": "avocadoos-android-release-architecture/1",
+  "decidedAt": "2026-09-16",
+  "product": {
+    "displayName": "avocadoOS",
+    "internalNamespace": "dev.rock",
+    "internalNamespaceMutable": false,
+    "publicVersionIndependentFromPackageIdentity": true,
+    "allowedPublicVersionExamples": ["1.0", "1.5", "2.0"]
+  },
+  "status": "architecture_selected_source_partial_runtime_and_physical_acceptance_blocked",
+  "target": {
+    "firstDevice": "Google Pixel 10",
+    "codename": "frankel",
+    "sku": "GL066",
+    "architecture": "shared_os_core_plus_exact_device_support_package",
+    "additionalDevices": "one_device_support_package_and_full_acceptance_run_per_exact_model_or_sku"
+  },
+  "releaseDecisions": [
+    {
+      "id": "exact-device-and-sku",
+      "selection": "pixel-10-frankel-gl066",
+      "status": "selected_and_read_only_verified",
+      "authority": "data/android-physical-release-audit.json"
+    },
+    {
+      "id": "bsp-vendor-and-partitions",
+      "selection": "grapheneos-signed-source-plus-adevtool-vendor-and-observed-dynamic-partition-virtual-ab-avb-layout",
+      "status": "source_and_layout_fixed_vendor_inventory_pending",
+      "authority": "os/physical/frankel-source-lock.json"
+    },
+    {
+      "id": "bootloader-recovery-and-stock-restore",
+      "selection": "verified-boot-locked-production-state-with-matching-google-factory-and-full-ota-recovery",
+      "status": "policy_selected_exact_artifacts_and_drill_pending",
+      "authority": "data/android-stock-recovery-policy.json"
+    },
+    {
+      "id": "ota-and-rollback",
+      "selection": "virtual-ab-signed-full-ota-with-monotonic-release-epoch-index-committed-only-after-successful-slot",
+      "status": "policy_selected_full_build_and_device_drill_pending",
+      "authority": "data/android-rollback-index-policy.json"
+    },
+    {
+      "id": "selinux-enforcing-isolation",
+      "selection": "separate-uid-and-domain-default-deny-build-time-exact-package-allowlist",
+      "status": "target_policy_selected_source_partial_enforcing_proof_pending",
+      "authority": "android/sepolicy/private/rockstar_platform.te"
+    },
+    {
+      "id": "keystore-loss-backup-restore",
+      "selection": "dual-wrapped-random-data-key-with-device-keystore-and-owner-recovery-phrase",
+      "status": "core_envelope_implemented_runtime_import_rebinding_and_wipe_drill_pending",
+      "authority": "data/android-backup-recovery-policy.json"
+    },
+    {
+      "id": "device-acceptance",
+      "selection": "same-final-build-cdd-cts-cts-verifier-vts-vts-hal-vts-kernel-and-negative-isolation-tests",
+      "status": "criteria_selected_execution_pending",
+      "authority": "data/android-physical-release-audit.json"
+    }
+  ],
+  "components": {
+    "shell": {
+      "purpose": "Home, Sky and Zema user interface only",
+      "package": "dev.rock.shell",
+      "selinuxDomain": "rock_shell_app",
+      "internet": "none_direct_use_mcp_or_provider_through_broker",
+      "owns": [],
+      "mustNotOwn": ["platform_database", "wallet_keys", "backup_keys", "operator_commands"],
+      "currentState": "not_split_main_activity_still_in_dev_rock_automation"
+    },
+    "platformBroker": {
+      "purpose": "approval, scheduling, component registry, Wallet ledger and backup broker",
+      "package": "dev.rock.automation",
+      "selinuxDomain": "rockstar_platform_app",
+      "internet": "none",
+      "owns": ["platform_database", "approval_state", "wallet_ledger", "device_backup_binding"],
+      "mustNotOwn": ["release_signing_private_keys", "owner_recovery_phrase", "operator_credentials"],
+      "currentState": "implemented_but_same_apk_as_shell"
+    },
+    "localAi": {
+      "purpose": "offline LLM inference and proposal generation",
+      "package": "com.localactionassistant",
+      "selinuxDomain": "rock_local_ai_app",
+      "internet": "none",
+      "owns": ["local_model_files", "non_authoritative_conversation_state"],
+      "mustNotOwn": ["wallet_keys", "platform_database", "operator_commands", "release_signing_keys"],
+      "currentState": "standalone_physical_test_pass_source_domain_declared_os_image_pending"
+    },
+    "firstPartyTool": {
+      "purpose": "one narrowly scoped automation tool",
+      "package": "dev.rock.tools.article",
+      "selinuxDomain": "rock_tool_app",
+      "internet": "none",
+      "owns": ["tool_private_work_state"],
+      "mustNotOwn": ["wallet_keys", "platform_database", "operator_commands"],
+      "currentState": "prototype_implemented_source_domain_declared"
+    },
+    "mcp": {
+      "purpose": "explicit external connector",
+      "package": "exact_package_required_per_connector",
+      "selinuxDomain": "rock_mcp_app",
+      "internet": "only_explicit_destination_and_capability_allowlist",
+      "owns": ["connector_non_secret_state"],
+      "mustNotOwn": ["wallet_keys", "platform_database", "operator_commands"],
+      "currentState": "contract_domain_only_no_android_package_accepted"
+    },
+    "provider": {
+      "purpose": "financial or earning provider adapter with verifiable receipts",
+      "package": "exact_package_required_per_provider",
+      "selinuxDomain": "rock_provider_app",
+      "internet": "only_explicit_provider_destination_and_capability_allowlist",
+      "owns": ["provider_adapter_state"],
+      "mustNotOwn": ["wallet_private_keys", "platform_database", "operator_commands"],
+      "currentState": "contract_domain_only_no_production_provider_accepted"
+    },
+    "operatorAgent": {
+      "purpose": "pre-enrolled emergency command enforcement on the device",
+      "package": "dev.rock.operator.agent",
+      "selinuxDomain": "rock_operator_agent",
+      "internet": "authenticated_operator_channel_only",
+      "owns": ["device_enrollment", "append_only_device_command_audit"],
+      "mustNotOwn": ["private_user_content", "wallet_keys", "owner_recovery_phrase", "release_signing_keys"],
+      "currentState": "not_implemented"
+    },
+    "operatorDock": {
+      "purpose": "operator-only remote incident console",
+      "deployment": "separate_cloudflare_worker_and_d1",
+      "includedInUserOs": false,
+      "visibleInUserLauncher": false,
+      "currentState": "console_api_queue_and_audit_implemented_device_agent_missing"
+    }
+  },
+  "allowedBinderEdges": [
+    "rock_shell_app->rockstar_platform_app",
+    "rockstar_platform_app->rock_shell_app",
+    "rockstar_platform_app->rock_local_ai_app",
+    "rock_local_ai_app->rockstar_platform_app",
+    "rockstar_platform_app->rock_tool_app",
+    "rock_tool_app->rockstar_platform_app",
+    "rockstar_platform_app->rock_mcp_app",
+    "rock_mcp_app->rockstar_platform_app",
+    "rockstar_platform_app->rock_provider_app",
+    "rock_provider_app->rockstar_platform_app"
+  ],
+  "forbidden": [
+    "runtime-registration-grants-selinux-domain",
+    "direct-cross-component-data-file-access",
+    "tool-to-mcp-or-provider-binder",
+    "local-ai-direct-tool-mcp-provider-or-wallet-access",
+    "operator-agent-platform-database-or-private-content-access",
+    "arbitrary-shell-or-root-shell",
+    "universal-operator-backup-recovery-key",
+    "operator-access-to-release-signing-keys",
+    "operator-dock-in-user-os-or-launcher"
+  ],
+  "acceptance": {
+    "samePhysicalDeviceAndBuildFingerprintRequired": true,
+    "selinux": {
+      "buildUserVariant": true,
+      "getenforce": "Enforcing",
+      "permissiveDomainsAllowed": false,
+      "upstreamNeverallowMayBeWeakened": false,
+      "acceptedFlowsNeedZeroUnexpectedAvcDenials": true,
+      "negativeCrossDomainTestsRequired": true
+    },
+    "compatibility": {
+      "androidRelease": "17",
+      "cddExactVersionRequired": true,
+      "ctsRequired": true,
+      "ctsVerifierApplicableTestsRequired": true,
+      "vtsRequired": true,
+      "vtsHalRequired": true,
+      "vtsKernelRequired": true,
+      "manualSuppressionOfApplicableFailuresAllowed": false,
+      "gmsOrGtsRequiredForAospWithoutGms": false
+    }
+  },
+  "linkedPolicies": {
+    "firstFlash": "data/android-first-flash-gate.json",
+    "signingCustody": "data/android-signing-custody-policy.json",
+    "rollbackIndex": "data/android-rollback-index-policy.json",
+    "stockRecovery": "data/android-stock-recovery-policy.json",
+    "backupRecovery": "data/android-backup-recovery-policy.json",
+    "operatorAccess": "data/device-emergency-access-policy.json",
+    "localAi": "contracts/local-ai-runtime.json",
+    "platformApi": "contracts/platform-api.json",
+    "physicalAcceptance": "data/android-physical-release-audit.json"
+  },
+  "completion": {
+    "specificationAligned": true,
+    "sourceAligned": false,
+    "runtimeAligned": false,
+    "fullBuildVerified": false,
+    "physicalAcceptancePassed": false,
+    "blockers": [
+      "split-shell-from-platform-broker",
+      "activate-recoverable-backup-v2-through-binder-ui-import-and-rebinding",
+      "implement-and-isolate-operator-agent",
+      "integrate-local-ai-domain-into-final-image",
+      "build-user-image-and-prove-selinux-enforcing-isolation",
+      "run-cdd-cts-cts-verifier-vts-hal-and-kernel-on-the-same-final-build",
+      "complete-first-flash-gate-four-of-four"
+    ]
+  },
+  "authoritativeDocument": "docs/android-production-architecture.md"
+}

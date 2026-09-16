@@ -77,6 +77,11 @@
     "factoryRestoreTested": false,
     "bootloaderRelockTested": false
   },
+  "firstFlashGate": {
+    "schema": "avocadoos-android-first-flash-gate/1",
+    "path": "data/android-first-flash-gate.json",
+    "passed": false
+  },
   "externalProviderBoundary": {
     "includedInFirstOsFullBuild": false,
     "implementation": "APP_AND_SERVER",

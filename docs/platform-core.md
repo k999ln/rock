@@ -8,6 +8,8 @@ This layer is the OS-owned boundary for Tool, MCP and Provider components. It is
 
 Runtime registration never grants an SELinux label. First-party package-to-domain mappings are a build-time allowlist. Android assigns a distinct application UID; the registry additionally rejects UID or package rebinding across component identities.
 
+The selected production layout keeps `dev.rock.automation` as the headless broker and moves Home, Sky and Zema into `dev.rock.shell`. Local AI, Tool, MCP, Provider and the on-device Operator Agent each have their own domain. The current prototype still has `MainActivity` and the broker in `dev.rock.automation`, so the source is only partially aligned. The exact target graph and truthful completion fields are fixed in [Android production architecture](android-production-architecture.md).
+
 ## Approval and money
 
 An app can create only a `PROPOSED` operation. The non-exported OS confirmation activity displays component, action, payload digest, cost ceiling and expiry, then requires the device credential. Only that trusted UI can move the proposal to `ISSUED`. Execution consumes that exact approval and writes its Wallet receipt in one SQLite transaction.
@@ -16,10 +18,10 @@ Approvals are owner-, component-, action-, payload-, cost-, expiry- and componen
 
 ## Storage, backup and updates
 
-Schema creation and migration run transactionally. Schema v2 migrates v1 approval rows into the two-stage approval model and stops legacy unconfirmed grants, while an unknown newer version fails closed without reset. Backups are owner-scoped binary snapshots encrypted with AES-256-GCM under a non-exportable Android Keystore key; only an ID and ciphertext digest cross the callback. Application backup remains disabled.
+Schema creation and migration run transactionally. Schema v2 migrates v1 approval rows into the two-stage approval model and stops legacy unconfirmed grants, while an unknown newer version fails closed without reset. Legacy backups are owner-scoped binary snapshots encrypted with AES-256-GCM under a non-exportable Android Keystore key. The new `avocadoos-recoverable-backup/2` core uses a fresh AES-256-GCM data key for every backup and wraps it through both the device Keystore and an independent 256-bit owner recovery secret derived from a checksum-protected 24-word phrase. Header, owner binding, salt, nonce and length fields are authenticated; wrong device key, phrase, owner or modified ciphertext are rejected. The current Binder service still creates legacy envelopes until the 24-word confirmation UI, transactional import and new-device Keystore rebinding are implemented. Application backup remains disabled. The complete boundary is [Android backup recovery](android-backup-recovery.md).
 
 Updates require the same identity and signer, a newer version, API compatibility and readable stored schema. Rollback accepts only a cached older version that can read the current data schema. Activation increments a component generation so old grants cannot survive an update.
 
 ## Verification boundary
 
-Host unit tests cover registry isolation, approval scope and lifecycle, cost caps, ledger idempotency and reversals, update/rollback checks, schema failure, and authenticated encryption. CI is configured to compile Android/AIDL and execute device tests. The current source is not evidence of a successful AOSP image build, SELinux enforcing boot, production signing, OTA rollback, or physical-device acceptance; those remain release gates.
+Host unit tests cover registry isolation, approval scope and lifecycle, cost caps, ledger idempotency and reversals, update/rollback checks, schema failure, legacy authenticated encryption, and both v2 unwrap routes with negative owner/key/tamper cases. CI is configured to compile Android/AIDL and execute device tests. The current source is not evidence of a successful AOSP image build, Keystore-loss data import, SELinux enforcing boot, production signing, OTA rollback, or physical-device acceptance; those remain release gates.

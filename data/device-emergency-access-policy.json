@@ -56,6 +56,21 @@
     "llmMayActivateEmergencyAccess": false,
     "toolOrMcpMayActivateEmergencyAccess": false
   },
+  "diagnosticPlugin": {
+    "purpose": "incident_diagnostics_for_a_pre_enrolled_bootable_device",
+    "currentStatus": "no_production_phone_diagnostic_plugin_or_android_agent_verified",
+    "preEnrollmentRequired": true,
+    "deviceMustBeBootable": true,
+    "connectivityRequiredForRemoteUse": true,
+    "mayReadPrivateUserContent": false,
+    "mayProvideArbitraryOrRootShell": false,
+    "mayExtractSigningOrWalletKeys": false,
+    "mayBypassVerifiedBootOrSelinux": false,
+    "mayRecoverLostReleaseSigningKeys": false,
+    "mayRecoverBrickedOrOfflineDevice": false,
+    "separateUsbStockRecoveryRequired": true,
+    "separateHsmSigningRecoveryRequired": true
+  },
   "implementation": {
     "operatorDeployment": "separate_cloudflare_worker",
     "operatorDatabase": "separate_operator_dock_d1",

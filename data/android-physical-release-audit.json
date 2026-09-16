@@ -2,6 +2,7 @@
   "schema": "rockstaros-android-physical-release-audit/1",
   "evaluatedAt": "2026-09-16",
   "declaredStatus": "blocked",
+  "architecturePolicy": "data/android-release-architecture-policy.json",
   "candidate": {
     "selectionStatus": "selected",
     "device": {
@@ -27,7 +28,8 @@
     "gmsIncluded": false,
     "gmsLicensed": false,
     "saleReady": false,
-    "physicalFlashVerified": false
+    "physicalFlashVerified": false,
+    "selinuxIsolationVerified": false
   },
   "deviceEvidence": [
     {
@@ -64,10 +66,24 @@
   "compatibility": {
     "cddVersion": null,
     "ctsRevision": null,
+    "vtsRevision": null,
     "cddDocumentSha256": null,
     "ctsPackageSha256": null,
     "ctsResultSha256": null,
     "ctsVerifierResultSha256": null,
+    "vtsPackageSha256": null,
+    "vtsResultSha256": null,
+    "vtsHalResultSha256": null,
+    "vtsKernelResultSha256": null,
+    "evidence": []
+  },
+  "isolation": {
+    "policy": "data/android-release-architecture-policy.json",
+    "buildVariant": null,
+    "getenforce": null,
+    "permissiveDomains": [],
+    "upstreamNeverallowUnmodified": null,
+    "unexpectedAcceptedFlowAvcDenials": null,
     "evidence": []
   },
   "signing": {
@@ -76,6 +92,18 @@
     "rollbackPolicyEvidence": null,
     "rotationAndRevocationEvidence": null,
     "evidence": []
+  },
+  "firstFlashGate": {
+    "status": "blocked",
+    "policy": "data/android-first-flash-gate.json",
+    "passed": 0,
+    "required": 4,
+    "items": [
+      "production-signing-key-lifecycle",
+      "rollback-index-operations",
+      "google-stock-recovery-artifacts",
+      "keystore-loss-backup-restore"
+    ]
   },
   "regionalDistribution": {
     "salesModel": null,
@@ -106,11 +134,18 @@
       "requiredEvidence": ["bsp", "vendor-drivers", "boot-chain", "recovery"]
     },
     {
-      "id": "android-cdd-cts",
+      "id": "selinux-enforcing-isolation",
       "required": true,
       "status": "blocked",
-      "nextAction": "最終候補のAndroid版に対応するCDDを特定し、同じ物理端末・同じbuild fingerprintでCTSと適用対象のCTS Verifierを完走する",
-      "requiredEvidence": ["cdd-version", "cts-revision", "cts-result", "cts-verifier-result"]
+      "nextAction": "分離後の最終user buildを同じGL066で起動し、Enforcing、permissive domainなし、upstream neverallow維持、許可flowのAVC監査と禁止flowのnegative testを完走する",
+      "requiredEvidence": ["sepolicy-build", "upstream-neverallow", "enforcing-readback", "domain-map", "negative-isolation-tests", "avc-audit"]
+    },
+    {
+      "id": "android-cdd-cts-vts",
+      "required": true,
+      "status": "blocked",
+      "nextAction": "最終候補のAndroid版に対応するCDDを特定し、同じ物理端末・同じbuild fingerprintでCTS、適用対象のCTS Verifier、VTS、VTS HAL、VTS kernelを完走する",
+      "requiredEvidence": ["cdd-version", "cts-revision", "cts-result", "cts-verifier-result", "vts-revision", "vts-result", "vts-hal-result", "vts-kernel-result"]
     },
     {
       "id": "gms",
@@ -143,6 +178,16 @@
       "id": "android-cdd",
       "url": "https://source.android.com/docs/compatibility/cdd",
       "scope": "CDD is version-specific and tests alone are not comprehensive"
+    },
+    {
+      "id": "android-vts",
+      "url": "https://source.android.com/docs/core/tests/vts/systems",
+      "scope": "VTS covers Android kernel and HAL testing, including VTS, VTS HAL and VTS kernel plans"
+    },
+    {
+      "id": "android-selinux",
+      "url": "https://source.android.com/docs/security/features/selinux/customize",
+      "scope": "SELinux policy uses default denial, least privilege, component isolation and compatibility-enforced neverallow rules"
     },
     {
       "id": "gms",

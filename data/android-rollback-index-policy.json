@@ -1,0 +1,49 @@
+{
+  "schema": "avocadoos-avb-rollback-index-policy/1",
+  "decidedAt": "2026-09-16",
+  "product": "avocadoOS",
+  "target": "Google Pixel 10 / frankel / GL066",
+  "status": "policy_approved_exact_locations_values_and_device_test_pending",
+  "valuePolicy": {
+    "avocadoManagedSource": "signed_release_manifest.releaseEpochUtcSeconds",
+    "fixedBeforeSigning": true,
+    "integerUnixSecondsUtc": true,
+    "strictlyGreaterThanPreviousProductionRelease": true,
+    "sameValueMayBeUsedAcrossAvocadoManagedLocationsInOneRelease": true,
+    "marketingVersionCoupled": false,
+    "wallClockReadDuringBuildAllowed": false
+  },
+  "googleControlledPolicy": {
+    "preserveExactUpstreamValues": true,
+    "synthesizeReplacementValues": false,
+    "flashOlderAndroid16BootloaderAllowed": false,
+    "factoryOrFullOtaMayBypassRollback": false
+  },
+  "locations": {
+    "deriveFromFinalTargetFilesAndSignedAvbMetadata": true,
+    "guessBeforeFullBuildAllowed": false,
+    "approvedMap": {}
+  },
+  "abCommit": {
+    "advanceStoredIndexOnlyFromSlotMarkedSuccessful": true,
+    "advanceFromUnsuccessfulTrialSlot": false,
+    "failedUpdateMayReturnToPreviouslyBootableSlot": true,
+    "failedUpdateMayDecreaseStoredIndex": false,
+    "commitReadbackRequired": true
+  },
+  "downgradeAndRecovery": {
+    "signedOlderIndexAccepted": false,
+    "recoveryExceptionAllowed": false,
+    "lowerIndexForDataRescueAllowed": false,
+    "matchingCurrentFullOtaOrFactoryImageRequired": true
+  },
+  "requiredEvidence": [
+    "target-files-location-and-value-inventory",
+    "signed-avb-metadata-readback",
+    "successful-slot-index-commit",
+    "failed-trial-slot-fallback-without-index-advance",
+    "older-signed-image-rejection",
+    "current-stock-recovery-without-downgrade"
+  ],
+  "authoritativeDocument": "docs/android-rollback-index-policy.md"
+}

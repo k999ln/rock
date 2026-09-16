@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-16",
   "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-  "nextAction": "外部Providerは初回OS full buildから分離し、アプリ／サーバー側で公開前必須gateにする方針を確定した。Pixel 10 GL066は署名検証済みGrapheneOS 2026091000 source tagとfrankel／laguna／muzel 6.6入力、実機のDynamic Partition／Virtual A/B／AVB構成まで固定済み。次は本人がGoogle利用条件を確認したうえで、frankel用factory imageと対応full OTAを取得してSHA-256を固定し、vendor生成inventoryとproduction署名／復旧計画を揃える。そこまで合格するまで有料full build、unlock、flashは開始しない。",
+  "nextAction": "Keystore喪失backupはbackupごとのAES-256-GCM DEKをhardware-backed Keystore鍵と所有者の256-bit／24単語recovery secretで二重wrapするv2へ固定し、core envelopeと負系試験sourceを実装した。次は24単語codec／確認UI、transactional import、新Keystore再bindingを実装してAndroid CIを通す。Pixel全消去復元、署名HSM実運用、rollback実機、Google純正2ファイル取得は残るため初回flash gateは0/4、unlock／flashは禁止を維持する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -861,6 +861,13 @@
         "docs/os-prototype.md",
         "contracts/platform-api.json",
         "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+        "android/core/src/main/java/dev/rock/core/platform/EncryptedBackup.java",
+        "docs/android-backup-recovery.md",
+        "data/android-backup-recovery-policy.json",
+        "docs/android-production-architecture.md",
+        "data/android-release-architecture-policy.json",
+        "scripts/check-android-release-architecture.mjs",
+        "tests/android-release-architecture.test.mjs",
         "android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatformApi.aidl",
         "android/automation/src/main/java/dev/rock/automation/RockPlatformService.java",
         "android/sepolicy/private/rockstar_platform.te"
@@ -875,7 +882,11 @@
         "docs/platform-core.md",
         "docs/phone-preview-20260911.md",
         ".github/workflows/android.yml",
-        ".github/workflows/local-ai-apk.yml"
+        ".github/workflows/local-ai-apk.yml",
+        "docs/android-backup-recovery.md",
+        "data/android-backup-recovery-policy.json",
+        "docs/android-production-architecture.md",
+        "data/android-release-architecture-policy.json"
       ]
     },
     {
@@ -1144,6 +1155,14 @@
         "docs/release-installation-plan-20260909.md",
         "docs/phone-preview-20260911.md",
         "docs/current-state-20260911.md",
+        "docs/android-production-signing-custody.md",
+        "data/android-signing-custody-policy.json",
+        "docs/android-rollback-index-policy.md",
+        "data/android-rollback-index-policy.json",
+        "docs/android-google-stock-recovery.md",
+        "data/android-stock-recovery-policy.json",
+        "docs/android-backup-recovery.md",
+        "data/android-backup-recovery-policy.json",
         "docs/evidence/launch/progress-audit-20260912.json"
       ]
     },
@@ -1172,7 +1191,11 @@
       "dependsOn": [],
       "evidence": [
         "docs/launch-readiness-20260910.md",
-        "docs/current-state-20260911.md"
+        "docs/current-state-20260911.md",
+        "docs/android-production-signing-custody.md",
+        "data/android-signing-custody-policy.json",
+        "docs/android-first-flash-gate-20260916.md",
+        "data/android-first-flash-gate.json"
       ]
     },
     {
@@ -1506,10 +1529,22 @@
     {
       "id": "DEVICE-INSTALL",
       "task": "RLS02",
-      "title": "対象1機種でflash・初回起動・OTA rollback・純正復旧を完走",
+      "title": "初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走",
       "status": "planned",
       "dependsOn": ["PREVIEW-INSTALL", "ANDROID-PREFULL"],
       "evidence": [
+        "docs/android-first-flash-gate-20260916.md",
+        "data/android-first-flash-gate.json",
+        "docs/android-production-signing-custody.md",
+        "data/android-signing-custody-policy.json",
+        "docs/android-rollback-index-policy.md",
+        "data/android-rollback-index-policy.json",
+        "docs/android-google-stock-recovery.md",
+        "data/android-stock-recovery-policy.json",
+        "docs/android-backup-recovery.md",
+        "data/android-backup-recovery-policy.json",
+        "docs/android-production-architecture.md",
+        "data/android-release-architecture-policy.json",
         "docs/release-installation-plan-20260909.md",
         "docs/phone-preview-20260911.md"
       ]
@@ -1525,7 +1560,7 @@
     "sitesSourceCommit": "25cf0fa2cae303475a9bf54280889a1192be455e",
     "siteAccess": "DEPLOYED_CUSTOM_ONE_OWNER_ZERO_EXTERNAL_LATEST_SYNC_PENDING",
     "license": "MIT_PROPOSED_AWAITING_OWNER_SELECTION",
-    "signing": "OWNER_MANUAL_PREPARED_MODE_AND_KEY_CUSTODY_PENDING",
+    "signing": "ANDROID_OFFLINE_DUAL_HSM_ARCHITECTURE_APPROVED_OUTER_RELEASE_CUSTODY_AND_ALL_E2E_SIGNING_PENDING",
     "campaign": "IN_PRODUCTION_NOT_SELECTED",
     "nativeHistoricalTlsCause": "UNDETERMINED",
     "candidateBranch": "codex/rockstaros-launch-candidate-20260910",
@@ -1676,15 +1711,29 @@
     "cloudSpendApproved": false
   },
   "platformCore": {
-    "status": "STANDALONE_ANDROID_BUILD_PASSED_EMULATOR_PARTIAL_AOSP_NOT_RUN",
+    "status": "PRODUCTION_ARCHITECTURE_SELECTED_SOURCE_PARTIAL_AOSP_NOT_RUN",
     "apiVersion": 1,
     "contract": "contracts/platform-api.json",
     "record": "docs/platform-core.md",
+    "productionArchitecturePolicy": "data/android-release-architecture-policy.json",
+    "productionArchitectureRecord": "docs/android-production-architecture.md",
+    "specificationAligned": true,
+    "sourceAligned": false,
+    "runtimeAligned": false,
+    "shellBrokerSplitImplemented": false,
+    "operatorAgentImplemented": false,
     "androidBuilt": true,
     "aospImageBuilt": false,
     "selinuxEnforcingVerified": false,
     "productionSigningVerified": false,
-    "otaRollbackVerified": false
+    "otaRollbackVerified": false,
+    "recoverableBackupFormat": "avocadoos-recoverable-backup/2",
+    "recoverableBackupCoreImplemented": true,
+    "recoverableBackupHostUnitTests": "PASS_34_JAVA11_TESTS",
+    "recoverableBackupAndroidCiPassed": false,
+    "recoverableBackupOwnerPhraseUiImplemented": false,
+    "recoverableBackupTransactionalImportImplemented": false,
+    "recoverableBackupPhysicalKeystoreLossRestoreVerified": false
   },
   "currentStateDocument": "docs/current-state-20260911.md"
 }

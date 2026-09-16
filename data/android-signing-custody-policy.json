@@ -1,0 +1,95 @@
+{
+  "schema": "avocadoos-android-signing-custody/1",
+  "decidedAt": "2026-09-16",
+  "product": "avocadoOS",
+  "status": "architecture_approved_provisioning_and_end_to_end_signing_pending",
+  "architecture": {
+    "signingHost": "dedicated_offline_workstation",
+    "primarySigner": "local_physical_hsm",
+    "standbySigner": "sealed_secondary_physical_hsm_in_separate_location",
+    "hsmVendor": "Yubico",
+    "hsmModel": "YubiHSM 2",
+    "hsmQuantity": 2,
+    "independentVerificationHostRequired": true,
+    "rawPrivateKeyExportAllowed": false,
+    "wrappedBackupOnly": true,
+    "onlinePrivateKeyUseAllowed": false,
+    "cloudKmsAsSoleSigningRootAllowed": false,
+    "twoPersonApprovalRequired": false,
+    "singleAuthorizedOperatorRecoveryAllowed": true
+  },
+  "keySeparation": {
+    "oneKeyForAllRolesAllowed": false,
+    "requiredRoleClasses": [
+      "avb",
+      "ota",
+      "system-applications",
+      "apex-system-components"
+    ],
+    "exactKeyInventoryDerivedFromFinalTargetFiles": true,
+    "operatorDeviceAccessCredentialSeparated": true
+  },
+  "androidIntegration": {
+    "avbExternalSigningHelperRequired": true,
+    "otaPayloadExternalSignerRequired": true,
+    "apkAndApexHsmBridgeRequired": true,
+    "vendorAndModelSelected": true,
+    "allAlgorithmsAndSigningPathsVerified": false,
+    "signedArtifactIndependentVerificationCompleted": false
+  },
+  "rotationAndRevocation": {
+    "policyVersion": "1.0",
+    "status": "approved_not_drilled",
+    "avb": {
+      "schedule": "long_lived_event_driven",
+      "rotateOn": [
+        "confirmed_or_suspected_compromise",
+        "cryptographic_algorithm_migration",
+        "verified_platform_trust_migration"
+      ],
+      "calendarRotationRequired": false
+    },
+    "ota": {
+      "schedule": "event_driven_with_staged_overlap",
+      "calendarRotationRequired": false
+    },
+    "systemApplications": {
+      "platformIdentitySchedule": "long_lived_event_driven",
+      "ordinaryApplicationKeyTargetMonths": 24,
+      "proofOfRotationRequiredWhenSupported": true,
+      "signaturePermissionAndSharedIdentityRegressionRequired": true
+    },
+    "apex": {
+      "schedule": "long_lived_event_driven",
+      "payloadAndContainerMigratedTogether": true
+    },
+    "stagedMigration": {
+      "oldAndNewTrustIntroducedBeforeNewOnlySigning": true,
+      "minimumTransitionReleases": 1,
+      "newKeyAcceptanceAndRecoveryVerifiedBeforeOldKeyRetirement": true,
+      "strandUnupdatedDevicesAllowed": false,
+      "roleSpecificAndroidSupportMustBeProven": true
+    },
+    "incidentResponse": {
+      "stopAffectedSigningImmediately": true,
+      "publishCompromisedFingerprintAndAffectedReleases": true,
+      "compromisedKeyMaySignAgain": false,
+      "replacementUsesFreshKeyMaterial": true,
+      "preserveIncidentEvidence": true
+    }
+  },
+  "recovery": {
+    "primaryAndStandbyStoredTogetherAllowed": false,
+    "standbyActivationDrillRequired": true,
+    "lostPrimaryRecoveryDrillRequired": true,
+    "lostAllHsmRecoveryClaimed": false,
+    "publicTestKeyFallbackAllowed": false
+  },
+  "separateIncidentChannel": {
+    "operatorDiagnosticPluginIsSigningRecovery": false,
+    "operatorDiagnosticPluginMayRecoverBrickedDevice": false,
+    "operatorDiagnosticPluginMayExtractSigningKeys": false,
+    "policy": "data/device-emergency-access-policy.json"
+  },
+  "authoritativeDocument": "docs/android-production-signing-custody.md"
+}

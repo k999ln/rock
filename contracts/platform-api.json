@@ -18,6 +18,9 @@
     "migration": "transactional_fail_closed",
     "backupFormat": "rockstar-platform-backup/1",
     "encryption": "AES-256-GCM_ANDROID_KEYSTORE",
+    "recoverableBackupFormat": "avocadoos-recoverable-backup/2",
+    "recoverableBackupEncryption": "AES-256-GCM_FRESH_DEK_DUAL_WRAPPED_BY_ANDROID_KEYSTORE_AND_HKDF_SHA256_OWNER_RECOVERY",
+    "recoverableBackupStatus": "CORE_IMPLEMENTED_OWNER_PHRASE_UI_IMPORT_AND_REBINDING_PENDING",
     "scope": "android_user",
     "maxPlaintextBytes": 4194304
   },
@@ -29,8 +32,12 @@
     "uid": "distinct_android_application_uid",
     "selinux": "build_time_package_allowlist",
     "runtimeRegistrationCanGrantDomain": false,
-    "crossComponentBinder": "denied_by_source_policy"
+    "crossComponentBinder": "deny_except_explicit_broker_edges",
+    "currentLayout": "dev.rock.automation_contains_ui_and_platform_broker",
+    "targetLayout": "dev.rock.shell_ui_separate_from_dev.rock.automation_headless_broker",
+    "targetPolicy": "data/android-release-architecture-policy.json",
+    "targetStateImplemented": false
   },
-  "implementationStatus": "SOURCE_IMPLEMENTED_NATIVE_AND_SEPOLICY_BUILD_NOT_RUN",
+  "implementationStatus": "SOURCE_PARTIAL_UI_BROKER_SPLIT_OPERATOR_AGENT_BACKUP_V2_RUNTIME_AND_SEPOLICY_BUILD_PENDING",
   "releaseStatus": "NOT_PRODUCTION_READY"
 }

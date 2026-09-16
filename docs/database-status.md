@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-外部Providerは初回OS full buildから分離し、アプリ／サーバー側で公開前必須gateにする方針を確定した。Pixel 10 GL066は署名検証済みGrapheneOS 2026091000 source tagとfrankel／laguna／muzel 6.6入力、実機のDynamic Partition／Virtual A/B／AVB構成まで固定済み。次は本人がGoogle利用条件を確認したうえで、frankel用factory imageと対応full OTAを取得してSHA-256を固定し、vendor生成inventoryとproduction署名／復旧計画を揃える。そこまで合格するまで有料full build、unlock、flashは開始しない。
+Keystore喪失backupはbackupごとのAES-256-GCM DEKをhardware-backed Keystore鍵と所有者の256-bit／24単語recovery secretで二重wrapするv2へ固定し、core envelopeと負系試験sourceを実装した。次は24単語codec／確認UI、transactional import、新Keystore再bindingを実装してAndroid CIを通す。Pixel全消去復元、署名HSM実運用、rollback実機、Google純正2ファイル取得は残るため初回flash gateは0/4、unlock／flashは禁止を維持する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

@@ -1,0 +1,55 @@
+{
+  "schema": "avocadoos-google-stock-recovery-policy/1",
+  "decidedAt": "2026-09-16",
+  "product": "avocadoOS",
+  "target": {
+    "manufacturer": "Google",
+    "model": "Pixel 10",
+    "codename": "frankel",
+    "sku": "GL066"
+  },
+  "status": "design_approved_owner_terms_and_exact_artifacts_pending",
+  "selection": {
+    "channel": "latest_stable_at_avocadoos_firmware_freeze",
+    "factoryAndFullOtaSameBuildRequired": true,
+    "previewOrBetaAllowed": false,
+    "olderAndroid16BuildAllowed": false,
+    "refreshWithEveryFirmwareBaselineChange": true
+  },
+  "uses": {
+    "fullOta": "non_wipe_recovery_and_both_slot_bootability",
+    "factoryImage": "last_resort_wipe_recovery",
+    "factoryImageMayBeUsedWithoutExplicitWipeAcknowledgement": false,
+    "downloadAloneAuthorizesFlash": false
+  },
+  "antiRollback": {
+    "may2026Pixel10BootloaderIncreaseApplies": true,
+    "bothSlotsMadeBootableWithMatchingFullOtaBeforeRiskyFlash": true,
+    "downgradeForRecoveryAllowed": false
+  },
+  "custody": {
+    "artifactBytesStoredInGit": false,
+    "offlineArtifactCopiesRequired": true,
+    "repositoryStoresFileNameBytesSha256AndBuildOnly": true,
+    "hashComputedFromDownloadedBytes": true
+  },
+  "ownerTerms": {
+    "factoryPage": "https://developers.google.com/android/images",
+    "fullOtaPage": "https://developers.google.com/android/ota",
+    "ownerAcceptanceRecorded": false
+  },
+  "artifacts": {
+    "buildId": null,
+    "factoryImage": {
+      "fileName": null,
+      "bytes": null,
+      "sha256": null
+    },
+    "fullOta": {
+      "fileName": null,
+      "bytes": null,
+      "sha256": null
+    }
+  },
+  "authoritativeDocument": "docs/android-google-stock-recovery.md"
+}

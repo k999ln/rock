@@ -1,0 +1,97 @@
+{
+  "schema": "avocadoos-android-first-flash-gate/1",
+  "evaluatedAt": "2026-09-16",
+  "target": {
+    "product": "avocadoOS",
+    "manufacturer": "Google",
+    "model": "Pixel 10",
+    "codename": "frankel",
+    "sku": "GL066"
+  },
+  "policy": {
+    "decision": "ALL_FOUR_GATES_MUST_PASS_BEFORE_FIRST_FLASH",
+    "privateKeysStoredInRepository": false,
+    "recoverySecretsStoredInRepository": false,
+    "signingCustodyDecision": "OFFLINE_WORKSTATION_WITH_PRIMARY_AND_SEPARATE_STANDBY_PHYSICAL_HSM",
+    "signingCustodyPolicy": "data/android-signing-custody-policy.json",
+    "rollbackIndexDecision": "SIGNED_RELEASE_UTC_EPOCH_MONOTONIC_AND_COMMIT_AFTER_SUCCESSFUL_SLOT",
+    "rollbackIndexPolicy": "data/android-rollback-index-policy.json",
+    "stockRecoveryDecision": "LATEST_STABLE_MATCHING_FACTORY_AND_FULL_OTA_PAIR_AT_FIRMWARE_FREEZE",
+    "stockRecoveryPolicy": "data/android-stock-recovery-policy.json",
+    "backupRecoveryDecision": "DUAL_WRAPPED_RANDOM_DATA_KEY_WITH_DEVICE_KEYSTORE_AND_OWNER_RECOVERY_PHRASE",
+    "backupRecoveryPolicy": "data/android-backup-recovery-policy.json",
+    "authoritativeDocument": "docs/android-first-flash-gate-20260916.md"
+  },
+  "gates": [
+    {
+      "id": "production-signing-key-lifecycle",
+      "status": "blocked",
+      "blocker": "オフライン署名PC＋YubiHSM 2本番1台＋別場所の予備1台、4鍵系統、更新・失効ルールまで決定しましたが、機材調達、正式鍵の生成、全署名bridge、予備切替、旧新鍵移行と失効の実運用試験は未完了です。",
+      "keySetId": null,
+      "avbPublicKeySha256": null,
+      "otaPublicKeySha256": null,
+      "custodyProcedure": "docs/android-production-signing-custody.md",
+      "lossRotationAndRevocationProcedure": "docs/android-production-signing-custody.md",
+      "requiredEvidence": [
+        "avb-key-fingerprint",
+        "ota-key-fingerprint",
+        "key-custody-and-loss-drill",
+        "rotation-and-revocation-drill"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "rollback-index-operations",
+      "status": "blocked",
+      "blocker": "UTC Unix秒による単調増加、Google値の維持、A/B成功後だけのindex確定、downgrade例外禁止は決定済みですが、対象full buildの正確なlocation／初期値と実機の成功・失敗・拒否試験が未完了です。",
+      "policyVersion": "avocadoos-avb-rollback-index-policy/1",
+      "indexLocations": {},
+      "increaseRule": "avocado-managed locations use a pre-signing fixed UTC Unix release epoch strictly greater than the prior production release; Google-controlled values are preserved",
+      "downgradeRule": "reject every image below the stored index even when correctly signed",
+      "recoveryExceptionRule": "no downgrade exception; use only a matching current full OTA or factory image",
+      "requiredEvidence": [
+        "rollback-index-policy",
+        "device-index-readback",
+        "upgrade-and-rejected-downgrade-test"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "google-stock-recovery-artifacts",
+      "status": "blocked",
+      "blocker": "firmware freeze時点の最新安定版で同一buildのfactory imageとfull OTAを選ぶ規則は決定済みですが、所有者のGoogle利用条件同意、frankel用実ファイル取得、byte数、SHA-256固定が未完了です。",
+      "factoryImage": {
+        "fileName": null,
+        "bytes": null,
+        "sha256": null
+      },
+      "fullOta": {
+        "fileName": null,
+        "bytes": null,
+        "sha256": null
+      },
+      "requiredEvidence": [
+        "google-terms-and-download-record",
+        "factory-image-identity",
+        "full-ota-identity"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "keystore-loss-backup-restore",
+      "status": "blocked",
+      "blocker": "dual-wrapped v2 core formatと所有者24単語方式は決定・実装しましたが、24単語codec／確認UI、transactional import、新端末Keystore再binding、Pixel全消去後の実復元試験が未完了です。",
+      "formatVersion": "avocadoos-recoverable-backup/2",
+      "keystoreLossRecoverySupported": false,
+      "recoveryMechanism": "256-bit owner recovery secret presented as a checksum-protected 24-word phrase; HKDF-SHA-256 recovery wrapping plus Android Keystore device wrapping",
+      "restoreDrillResult": null,
+      "requiredEvidence": [
+        "backup-format-and-key-wrapping",
+        "keystore-loss-restore-drill",
+        "recovery-secret-custody"
+      ],
+      "evidence": []
+    }
+  ],
+  "passed": false
+}

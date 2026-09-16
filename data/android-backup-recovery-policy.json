@@ -1,0 +1,106 @@
+{
+  "schema": "avocadoos-android-backup-recovery-policy/1",
+  "product": "avocadoOS",
+  "target": "Google Pixel 10 / frankel / GL066",
+  "status": "design_approved_core_envelope_implemented_ui_import_and_device_drill_pending",
+  "decision": "DUAL_WRAPPED_RANDOM_DATA_KEY_WITH_DEVICE_KEYSTORE_AND_OWNER_RECOVERY_PHRASE",
+  "envelope": {
+    "format": "avocadoos-recoverable-backup/2",
+    "maximumPlaintextBytes": 4194304,
+    "contentCipher": "AES-256-GCM",
+    "dataKey": "fresh_256_bit_random_per_backup",
+    "authenticationTagBits": 128,
+    "nonceBytes": 12,
+    "nonceReuseAllowed": false,
+    "saltBytes": 32,
+    "authenticatedHeaderFields": [
+      "format",
+      "version",
+      "createdAtEpochMillis",
+      "ownerSha256",
+      "recoveryKdfSalt",
+      "allNonces",
+      "allCiphertextLengths"
+    ],
+    "ownerBinding": "SHA-256 of the canonical owner identity",
+    "trailingBytesAllowed": false
+  },
+  "wrapping": {
+    "deviceRoute": {
+      "key": "non_exportable_hardware_backed_android_keystore_aes_256",
+      "cipher": "AES-256-GCM",
+      "purpose": "same_device_daily_restore"
+    },
+    "ownerRoute": {
+      "entropyBits": 256,
+      "presentation": "24_word_checksum_protected_owner_recovery_phrase",
+      "phraseIsWalletSeed": false,
+      "kdf": "HKDF-SHA-256",
+      "kdfSalt": "fresh_256_bit_random_per_backup",
+      "kdfInfo": "format_and_owner_domain_separation",
+      "passwordOnlyRecoveryAllowed": false,
+      "purpose": "wipe_or_replacement_device_restore"
+    },
+    "sameDataKeyWrappedByBothRoutes": true,
+    "operatorUniversalRecoveryKeyAllowed": false,
+    "serverEscrowOfOwnerRecoverySecretAllowed": false
+  },
+  "recoverySecretCustody": {
+    "generatedLocally": true,
+    "networkRequired": false,
+    "storedInGit": false,
+    "storedByOperator": false,
+    "ownerOfflineCopies": 2,
+    "copiesStoredInSeparatePlaces": true,
+    "storedTogetherWithBackupFileAllowed": false,
+    "confirmationBeforeActivation": "owner_reenters_randomly_selected_words",
+    "lostPhraseWhileDeviceWorks": "generate_a_new_phrase_then_reexport_all_current_backups",
+    "deviceAndPhraseBothLost": "cryptographic_recovery_is_impossible_by_design"
+  },
+  "backupScope": {
+    "allowlistOnly": true,
+    "included": [
+      "Sky tool configuration and catalog selection",
+      "Zema workflow definitions, job state, progress and results",
+      "local avocadoOS settings",
+      "non-secret receipts and replay indexes needed for continuity"
+    ],
+    "excluded": [
+      "Wallet private keys and seed phrases",
+      "login passwords, session cookies and refresh tokens",
+      "operator credentials and emergency-access credentials",
+      "AVB, OTA, APK, APEX and HSM signing secrets",
+      "provider secrets that must be reauthorized after restore"
+    ]
+  },
+  "restore": {
+    "sameDevice": "unwrap_with_android_keystore_then_authenticate_owner_and_payload",
+    "replacementDevice": "decode_owner_phrase_unwrap_payload_then_create_fresh_device_keystore_binding",
+    "wrongPhraseRejected": true,
+    "wrongOwnerRejected": true,
+    "tamperingRejected": true,
+    "unsupportedFormatRejected": true,
+    "restoreMayActivateOldApprovalsOrSessions": false,
+    "externalConnectionsRequireReauthorization": true
+  },
+  "migration": {
+    "legacyFormat": "rockstar-platform-backup/1",
+    "legacyReadWithOriginalDeviceKeyRetained": true,
+    "newLegacyBackupsAllowedAfterV2Activation": false,
+    "legacyBackupCanSurviveKeystoreLoss": false,
+    "migrationAction": "while_original_device_key_exists_restore_legacy_then_export_v2"
+  },
+  "implementation": {
+    "coreDualWrappedEnvelope": "implemented_host_34_tests_passed",
+    "ownerPhraseCodecAndConfirmationUi": "pending",
+    "platformImportAndTransactionalRestore": "pending",
+    "newDeviceKeystoreRebinding": "pending",
+    "physicalWipeAndRestoreDrill": "pending"
+  },
+  "gate": {
+    "policyApprovalIsPassEvidence": false,
+    "hostCryptoTestIsPhysicalRestoreEvidence": false,
+    "passRequiresPhysicalKeystoreLossRestore": true
+  },
+  "authoritativeDocument": "docs/android-backup-recovery.md"
+}

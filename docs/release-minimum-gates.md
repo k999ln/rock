@@ -9,7 +9,7 @@
 | Web / PWA 本人限定Preview | BLOCKED | 4/5 | 本人1名限定とsource上のHTTP防御は確認済み。最新版を同じSiteへ同期し、version・deployment・source・archive・access・実response headerを再読取りする |
 | Web / PWA 一般公開Preview | BLOCKED | 3/5 | 製品ライセンスの所有者選択、公開範囲の明示承認 |
 | QEMU Developer Preview配布 | BLOCKED | 6/10 | 製品ライセンス、正式署名、署名後の同一候補受入、公開承認 |
-| Android系物理端末Preview | BLOCKED | 1/5 | Pixel 10 GL066は確定。次はBSP/driver/boot/recovery、CDD/CTS、署名、販売地域の確認 |
+| Android系物理端末Preview | BLOCKED | 1/6 | Pixel 10 GL066は確定。次はBSP/driver/boot/recovery、SELinux enforcing分離、CDD/CTS/CTS Verifier/VTS、署名、販売地域の確認 |
 | iPhone / iPad | BLOCKED | 0/1 | 置換OSではなくPWAまたはiOS clientとして配布方式と審査を確定 |
 | マイナンバー連携 | BLOCKED | 1/7 | 現在は番号・カード画像を取得しない。目的、主体/provider、data flow、保存/削除、安全管理、事故/委託先、最終有効化を別審査 |
 
@@ -31,9 +31,9 @@
 - `npm run release:signing:check` で候補準備15件、owner legal approval 11件、保護署名29件、本人署名9件の計64公開fixture試験を実行する。試験数の減少も失敗させるが、実鍵・実承認の代用にはしない。本人署名は未暗号化／ExFAT／別mountの保管先を鍵読取り前に拒否する。
 - `npm run release:sbom` でCycloneDX 1.6のWeb/npm SBOM、現在のrc2 native SBOM、旧9ab native SBOMをignored `work/release/`へ分離生成する。Webは854 unique component、現在のrc2と旧9abはそれぞれtarget 24＋host build 37 component。rc2版は配布archiveと同梱legal bundleのSHA-256へ結合し、旧版は方法検証だけに限定する。
 - QEMUの署名後受入を`docs/templates/qemu-post-signing-acceptance.json`へ固定し、同一archiveの署名前後hash、production署名pin、license/NOTICE/SBOM、fresh環境、認証・導入・更新・rollback・backup・restore・中断復旧・診断・正常終了・削除の10項目と各原本hashが揃わない合格宣言を拒否する。
-- Android物理端末は[端末固有監査](android-and-personal-number-gates-20260913.md)で、正確な型番/SKU、BSP/boot/recovery、同一buildのCDD/CTS、production署名、販売地域の5必須gateを固定する。GMSなしAOSP Previewを既定とし、GMS許諾をAndroid互換から推定しない。
+- Android物理端末は[端末固有監査](android-and-personal-number-gates-20260913.md)で、正確な型番/SKU、BSP/boot/recovery、SELinux enforcing分離、同一buildのCDD/CTS/CTS Verifier/VTS、production署名、販売地域の6必須gateを固定する。GMSなしAOSP Previewを既定とし、GMS許諾をAndroid互換から推定しない。
 - マイナンバー連携は同じ監査で7必須gateへ分解し、最終有効化まで番号・カード画像・通常profile項目を無効にする。目的や安全対策だけでなく、取扱主体/provider、保存・削除、事故対応・委託先監督、最終承認の証拠を要求する。
-- Androidとマイナンバーの合格証拠は、gateごとに定義した全roleの別ファイル、repository内path、実byteのSHA-256を要求する。型番/SKU→BSP/boot/recovery→CDD/CTS・production署名、および目的/主体→data flow・安全管理→事故/委託先→有効化の依存順序を飛ばしたPASSを拒否する。
+- Androidとマイナンバーの合格証拠は、gateごとに定義した全roleの別ファイル、repository内path、実byteのSHA-256を要求する。型番/SKU→BSP/boot/recovery→SELinux enforcing分離→CDD/CTS/VTS、およびBSP/boot/recovery→production署名の依存順序を飛ばしたPASSを拒否する。マイナンバーは目的/主体→data flow・安全管理→事故/委託先→有効化の順序を維持する。
 
 QEMUは[候補単位の完了監査](qemu-release-completion-audit-20260912.md)で、rc2の版、source commit、archive SHA-256を受入とinventoryへ結合する。旧9abのlegal-infoをrc2固有SBOMとして転用した場合、または公開台帳とQEMU監査の状態がずれた場合は検査を失敗させる。
 
@@ -47,7 +47,7 @@ QEMU Developer Previewを次の工程へ進めるには、所有者本人から�
 
 この回答が必要な理由は、製品ライセンスが第三者の権利範囲と商用・再許諾条件を変え、本番鍵生成が長期の失効・rotation責任を発生させ、Sites同期がrepository sourceを外部ホスティングへ送る操作だからである。回答後も一般公開、main merge、Android実機対応、マイナンバー有効化を自動承認しない。
 
-Android実機版は上記とは別に、実物から読み取った `機種名 / 型番 / SKU / 販売地域 / 現在OS / OEM unlocking可否 / bootloader状態` が必要。このreadbackは2026-09-16にPixel 10／GL066／frankelで完了した。単体APKのoffline AI試験も合格したが、BSP／boot／recovery、CDD／CTS、production署名、販売地域の4必須gateとavocadoOSのflash／bootは未合格である。
+Android実機版は上記とは別に、実物から読み取った `機種名 / 型番 / SKU / 販売地域 / 現在OS / OEM unlocking可否 / bootloader状態` が必要。このreadbackは2026-09-16にPixel 10／GL066／frankelで完了した。単体APKのoffline AI試験も合格したが、BSP／boot／recovery、SELinux enforcing分離、CDD／CTS／CTS Verifier／VTS、production署名、販売地域の5必須gateとavocadoOSのflash／bootは未合格である。
 
 ### 製品ライセンス
 

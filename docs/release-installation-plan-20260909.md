@@ -30,6 +30,8 @@
 
 - bootloader解除・再ロック方針、vendor firmware、driver、partition、rollback indexを固定する。
 - 書込み前backup、署名image検証、flash、初回起動、通常更新、失敗rollback、純正状態への復旧を実機で確認する。
+
+2026-09-16追記: 初回flashは[専用4項目gate](android-first-flash-gate-20260916.md)の4/4合格後に限定する。正式署名鍵life-cycle、rollback index運用、Google純正factory image／full OTAの実ファイルSHA-256、dataとKeystoreを同時に失った後のbackup復元が一つでも未合格なら、build成功の有無にかかわらず書き込まない。
 - 画面、入力、Wi-Fi、電源、充電、suspend、熱、保存、Hub/Walletを試験する。
 - 本番鍵、OTA、脆弱性対応、失効、サポート期間、利用規約を確定する。
 

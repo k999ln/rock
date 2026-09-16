@@ -11,12 +11,26 @@ assert.deepEqual(platform.approvalFlow, ['PROPOSED', 'DEVICE_CREDENTIAL', 'ISSUE
 assert.equal(platform.ledger.mutation, 'compensating_reversal_only');
 assert.equal(platform.storage.encryption, 'AES-256-GCM_ANDROID_KEYSTORE');
 assert.equal(platform.storage.backupFormat, 'rockstar-platform-backup/1');
+assert.equal(platform.storage.recoverableBackupFormat, 'avocadoos-recoverable-backup/2');
+assert.equal(
+  platform.storage.recoverableBackupEncryption,
+  'AES-256-GCM_FRESH_DEK_DUAL_WRAPPED_BY_ANDROID_KEYSTORE_AND_HKDF_SHA256_OWNER_RECOVERY',
+);
+assert.equal(
+  platform.storage.recoverableBackupStatus,
+  'CORE_IMPLEMENTED_OWNER_PHRASE_UI_IMPORT_AND_REBINDING_PENDING',
+);
 assert.equal(platform.storage.schemaVersion, 2);
 assert.equal(platform.isolation.runtimeRegistrationCanGrantDomain, false);
+assert.equal(platform.isolation.currentLayout, 'dev.rock.automation_contains_ui_and_platform_broker');
+assert.equal(platform.isolation.targetLayout, 'dev.rock.shell_ui_separate_from_dev.rock.automation_headless_broker');
+assert.equal(platform.isolation.targetPolicy, 'data/android-release-architecture-policy.json');
+assert.equal(platform.isolation.targetStateImplemented, false);
 assert.equal(platform.releaseStatus, 'NOT_PRODUCTION_READY');
 const platformAidl = read('android/tool-sdk/src/main/aidl/dev/rock/sdk/IPlatformApi.aidl');
 const platformStore = read('android/core/src/main/java/dev/rock/core/platform/PlatformStore.java');
 const platformService = read('android/automation/src/main/java/dev/rock/automation/RockPlatformService.java');
+const encryptedBackup = read('android/core/src/main/java/dev/rock/core/platform/EncryptedBackup.java');
 assert.ok(platformAidl.includes('const int API_VERSION = 1'));
 for (const call of ['registerComponent', 'requestApproval', 'stopComponent', 'revokeComponent', 'recordLedgerReceipt', 'recordProviderReceipt', 'createEncryptedBackup']) assert.ok(platformAidl.includes(`${call}(`));
 assert.ok(platformStore.includes("'PROPOSED','ISSUED','CONSUMED','STOPPED','REVOKED','EXPIRED'"));
@@ -25,6 +39,8 @@ assert.ok(platformStore.includes('UNIQUE(owner,provider_ref)'));
 assert.ok(platformStore.includes('UNIQUE(owner,reverses_receipt)'));
 assert.ok(platformService.includes('PackageManager.GET_SIGNING_CERTIFICATES'));
 assert.ok(platformService.includes('AndroidKeyStore'));
+assert.ok(encryptedBackup.includes('PlatformApi.RECOVERABLE_BACKUP_FORMAT'));
+assert.ok(encryptedBackup.includes('openWithRecoverySecret'));
 assert.ok(read('android/automation/src/main/AndroidManifest.xml').includes(platform.managementPermission));
 assert.ok(!read('android/automation/src/main/AndroidManifest.xml').includes('sharedUserId'));
 assert.ok(!read('android/article-tool/src/main/AndroidManifest.xml').includes('sharedUserId'));
@@ -32,7 +48,10 @@ assert.ok(read('os/device/rock_cf_x86_64_phone.mk').includes('PRODUCT_PRIVATE_SE
 assert.ok(read('os/physical/rockstaros.mk').includes('PRODUCT_PRIVATE_SEPOLICY_DIRS'));
 const seapp = read('android/sepolicy/private/seapp_contexts');
 assert.ok(seapp.includes('name=dev.rock.automation'));
+assert.ok(seapp.includes('name=dev.rock.shell domain=rock_shell_app'));
+assert.ok(seapp.includes('name=com.localactionassistant domain=rock_local_ai_app'));
 assert.ok(seapp.includes('name=dev.rock.tools.article'));
+assert.ok(seapp.includes('name=dev.rock.operator.agent domain=rock_operator_agent'));
 assert.ok(!seapp.includes('seinfo=rockstar_tool'));
 const contract = JSON.parse(read('contracts/article-tool.json'));
 assert.deepEqual(Object.keys(contract).sort(), ['schemaVersion', 'packageId', 'versionCode', 'toolApi', 'minAndroidApi', 'service', 'operations', 'effects', 'capabilities', 'network', 'maxPayloadBytes', 'trustMode', 'thirdPartyInstallEnabled'].sort());

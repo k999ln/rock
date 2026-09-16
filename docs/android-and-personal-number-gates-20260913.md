@@ -4,20 +4,23 @@
 
 ## Android物理端末版
 
-現在は **1/5必須gate合格、BLOCKED**。2026-09-16の読取り専用ADB確認で、最初の対象を日本向けPixel 10、型番／SKU `GL066`、codename `frankel`へ確定した。現在のGrapheneOSはbootloader locked、alternate verified-boot rootのyellow状態。端末serialは保存していない。署名検証済み`2026091000` source tagとDynamic Partition／Virtual A/B／AVB構成は固定したが、Google純正factory／full OTAの実ファイルSHA、vendor inventory、build、flash、純正復旧が未完了なのでBSP／復旧gateはまだ合格にしない。Android互換、production署名、販売準備の証拠もまだない。
+現在は **1/6必須gate合格、BLOCKED**。2026-09-16の読取り専用ADB確認で、最初の対象を日本向けPixel 10、型番／SKU `GL066`、codename `frankel`へ確定した。現在のGrapheneOSはbootloader locked、alternate verified-boot rootのyellow状態。端末serialは保存していない。署名検証済み`2026091000` source tagとDynamic Partition／Virtual A/B／AVB構成は固定したが、Google純正factory／full OTAの実ファイルSHA、vendor inventory、build、flash、純正復旧が未完了なのでBSP／復旧gateはまだ合格にしない。SELinux enforcing分離、Android互換、production署名、販売準備の証拠もまだない。
 
 1. 実端末からメーカー、製品名、型番、SKU、地域、codename、OEM unlock可否、bootloader状態を読み取る。
 2. 同一SKUのBSP、vendor driver、boot chain、partition/AVB、factory recoveryをhash付きで固定し、flashと純正復旧を実測する。
-3. 最終候補のAndroid版と同じ物理端末・build fingerprintで、対応CDD、CTS、適用対象のCTS Verifierを完走する。CTSだけでCDDの全ハード要件を証明したとは扱わない。
-4. production鍵、AVB/OTA、rollback index、rotation、失効、復旧を同じ候補で実証する。
-5. 配布形態と国を確定し、radio変更の有無を含め、無線・通信端末・表示・消費者向け条件を製品単位で専門家確認する。
+3. 最終`user` buildでSELinux `Enforcing`、permissive domainなし、upstream `neverallow`維持、package/domain map、許可flowのAVC監査、禁止flowのnegative testを完走する。
+4. 最終候補のAndroid版と同じ物理端末・build fingerprintで、対応CDD、CTS、適用対象のCTS Verifier、VTS、VTS HAL、VTS kernelを完走する。CTSだけでCDDの全ハード要件やHAL/kernel適合を証明したとは扱わない。
+5. production鍵、AVB/OTA、rollback index、rotation、失効、復旧を同じ候補で実証する。
+6. 配布形態と国を確定し、radio変更の有無を含め、無線・通信端末・表示・消費者向け条件を製品単位で専門家確認する。
 
-Android公式は、Android互換端末にはCDDへの準拠とCTS合格の両方が必要で、Android版ごとにCDD/CTSが異なるとしている。GMSはAOSPに含まれずGoogleとの別ライセンスであるため、既定のDeveloper PreviewはGMSなしとし、将来のGMS同梱をAndroid互換の自動結果にしない。
+Android公式は、Android互換端末にはCDDへの準拠とCTS合格の両方が必要で、Android版ごとにCDD/CTSが異なるとしている。さらにVTSでkernelとHALを検査し、SELinuxはdefault deny、最小権限、component分離とcompatibility testで強制される`neverallow`を維持する。GMSはAOSPに含まれずGoogleとの別ライセンスであるため、既定のDeveloper PreviewはGMSなしとし、将来のGMS同梱をAndroid互換の自動結果にしない。
 
-機械監査は各gateの説明だけでなく、役割別の別ファイルと実byteから再計算したSHA-256を要求する。端末inventoryとbootloader観測、4種のBSP/boot/recovery資料、CDD/CTS/CTS Verifierの4資料、production署名の4資料、地域・radio・販売形態の4資料を混同できない。BSP・CDD/CTS・署名・地域gateは型番/SKUより先に、CDD/CTSと署名はBSP/boot/recoveryより先に合格へ変更できない。BSP資料は全て同じSKUへ結合する。
+機械監査は各gateの説明だけでなく、役割別の別ファイルと実byteから再計算したSHA-256を要求する。端末inventoryとbootloader観測、4種のBSP/boot/recovery資料、6種のSELinux資料、CDD/CTS/CTS Verifier/VTSの8資料、production署名の4資料、地域・radio・販売形態の4資料を混同できない。BSP・SELinux・CDD/CTS/VTS・署名・地域gateは型番/SKUより先に、SELinux・CDD/CTS/VTSと署名はBSP/boot/recoveryより先に合格へ変更できない。CDD/CTS/VTSはSELinux enforcing分離より先に合格にできない。BSP資料は全て同じSKUへ結合する。
 
 - [Android Compatibility overview](https://source.android.com/docs/compatibility/overview)
 - [Android Compatibility Definition Document](https://source.android.com/docs/compatibility/cdd)
+- [Vendor Test Suite systems](https://source.android.com/docs/core/tests/vts/systems)
+- [SELinux policy customization](https://source.android.com/docs/security/features/selinux/customize)
 - [Google Mobile Services](https://www.android.com/gms/)
 - [Verified Boot device state](https://source.android.com/docs/security/features/verifiedboot/device-state)
 - [電波法（e-Gov）](https://laws.e-gov.go.jp/law/325AC0000000131)

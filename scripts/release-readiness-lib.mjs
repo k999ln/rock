@@ -544,7 +544,8 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
   const expected = new Map([
     ['exact-model-and-sku', true],
     ['bsp-driver-boot-recovery', true],
-    ['android-cdd-cts', true],
+    ['selinux-enforcing-isolation', true],
+    ['android-cdd-cts-vts', true],
     ['gms', false],
     ['production-signing', true],
     ['regional-radio-and-sales', true],
@@ -579,7 +580,8 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
   const androidEvidenceRoles = {
     'exact-model-and-sku': ['read-only-device-inventory', 'bootloader-state-observation'],
     'bsp-driver-boot-recovery': ['bsp', 'vendor-drivers', 'boot-chain', 'recovery'],
-    'android-cdd-cts': ['cdd-version', 'cts-revision', 'cts-result', 'cts-verifier-result'],
+    'selinux-enforcing-isolation': ['sepolicy-build', 'upstream-neverallow', 'enforcing-readback', 'domain-map', 'negative-isolation-tests', 'avc-audit'],
+    'android-cdd-cts-vts': ['cdd-version', 'cts-revision', 'cts-result', 'cts-verifier-result', 'vts-revision', 'vts-result', 'vts-hal-result', 'vts-kernel-result'],
     'production-signing': ['key-identity', 'avb-and-ota-verification', 'rollback-policy', 'rotation-and-revocation'],
     'regional-radio-and-sales': ['distribution-model', 'target-regions', 'radio-impact-determination', 'regional-compliance-review'],
   };
@@ -588,15 +590,21 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
       fail(label + '/' + id + ': 必須証拠role定義が不一致です');
     }
   }
-  for (const id of ['bsp-driver-boot-recovery', 'android-cdd-cts', 'production-signing', 'regional-radio-and-sales']) {
+  for (const id of ['bsp-driver-boot-recovery', 'selinux-enforcing-isolation', 'android-cdd-cts-vts', 'production-signing', 'regional-radio-and-sales']) {
     if (requirement(id).status === 'pass' && requirement('exact-model-and-sku').status !== 'pass') {
       fail(label + '/' + id + ': 型番/SKU gateより先に合格にできません');
     }
   }
-  for (const id of ['android-cdd-cts', 'production-signing']) {
+  for (const id of ['selinux-enforcing-isolation', 'android-cdd-cts-vts', 'production-signing']) {
     if (requirement(id).status === 'pass' && requirement('bsp-driver-boot-recovery').status !== 'pass') {
       fail(label + '/' + id + ': BSP/boot/recovery gateより先に合格にできません');
     }
+  }
+  if (
+    requirement('android-cdd-cts-vts').status === 'pass' &&
+    requirement('selinux-enforcing-isolation').status !== 'pass'
+  ) {
+    fail(label + '/android-cdd-cts-vts: SELinux enforcing分離gateより先に合格にできません');
   }
   const deviceValues = Object.values(audit.candidate?.device || {});
   const buildValues = Object.values(audit.candidate?.build || {});
@@ -639,14 +647,21 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
     'gmsLicensed',
     'saleReady',
     'physicalFlashVerified',
+    'selinuxIsolationVerified',
   ]) {
     if (typeof claims[key] !== 'boolean') fail(label + ': claimの真偽値がありません: ' + key);
   }
-  if (claims.androidCompatible && requirement('android-cdd-cts').status !== 'pass') {
-    fail(label + ': CDD/CTS合格なしにAndroid互換を表示できません');
+  if (claims.androidCompatible && requirement('android-cdd-cts-vts').status !== 'pass') {
+    fail(label + ': CDD/CTS/VTS合格なしにAndroid互換を表示できません');
   }
-  if (requirement('android-cdd-cts').status === 'pass' && !claims.androidCompatible) {
-    fail(label + ': CDD/CTS合格後の互換表示状態が一致しません');
+  if (requirement('android-cdd-cts-vts').status === 'pass' && !claims.androidCompatible) {
+    fail(label + ': CDD/CTS/VTS合格後の互換表示状態が一致しません');
+  }
+  if (claims.selinuxIsolationVerified && requirement('selinux-enforcing-isolation').status !== 'pass') {
+    fail(label + ': SELinux分離gate合格なしに実証済みと表示できません');
+  }
+  if (requirement('selinux-enforcing-isolation').status === 'pass' && !claims.selinuxIsolationVerified) {
+    fail(label + ': SELinux分離gate合格後のclaimが一致しません');
   }
   if (claims.physicalFlashVerified && requirement('bsp-driver-boot-recovery').status !== 'pass') {
     fail(label + ': BSP/復旧合格なしに物理flash済みと表示できません');
@@ -685,7 +700,27 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
       audit.artifacts.some(({ sku }) => sku !== audit.candidate.device.sku)
     ) fail(label + ': BSP/boot/recoveryが同じSKUへ結合されていません');
   }
-  if (requirement('android-cdd-cts').status === 'pass') {
+  if (requirement('selinux-enforcing-isolation').status === 'pass') {
+    const isolation = audit.isolation || {};
+    if (
+      isolation.policy !== 'data/android-release-architecture-policy.json' ||
+      isolation.buildVariant !== 'user' ||
+      isolation.getenforce !== 'Enforcing' ||
+      !Array.isArray(isolation.permissiveDomains) ||
+      isolation.permissiveDomains.length !== 0 ||
+      isolation.upstreamNeverallowUnmodified !== true ||
+      isolation.unexpectedAcceptedFlowAvcDenials !== 0
+    ) {
+      fail(label + ': final user buildのSELinux enforcing分離条件が不足しています');
+    }
+    validateExactHashedEvidenceRoles(
+      root,
+      isolation.evidence,
+      label + '/selinux-enforcing-isolation',
+      androidEvidenceRoles['selinux-enforcing-isolation'],
+    );
+  }
+  if (requirement('android-cdd-cts-vts').status === 'pass') {
     const build = audit.candidate.build || {};
     const compatibility = audit.compatibility || {};
     if (
@@ -696,18 +731,27 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
       !sha256Pattern.test(build.imageSha256 || '') ||
       !compatibility.cddVersion ||
       !compatibility.ctsRevision ||
+      !compatibility.vtsRevision ||
       !sha256Pattern.test(compatibility.cddDocumentSha256 || '') ||
       !sha256Pattern.test(compatibility.ctsPackageSha256 || '') ||
       !sha256Pattern.test(compatibility.ctsResultSha256 || '') ||
-      !sha256Pattern.test(compatibility.ctsVerifierResultSha256 || '')
+      !sha256Pattern.test(compatibility.ctsVerifierResultSha256 || '') ||
+      !sha256Pattern.test(compatibility.vtsPackageSha256 || '') ||
+      !sha256Pattern.test(compatibility.vtsResultSha256 || '') ||
+      !sha256Pattern.test(compatibility.vtsHalResultSha256 || '') ||
+      !sha256Pattern.test(compatibility.vtsKernelResultSha256 || '')
     ) {
-      fail(label + ': 同一buildのCDD/CTS/CTS Verifier識別子が不足しています');
+      fail(label + ': 同一buildのCDD/CTS/CTS Verifier/VTS識別子が不足しています');
     }
-    validateHashedEvidence(root, compatibility.evidence, label + '/android-cdd-cts', {
+    validateHashedEvidence(root, compatibility.evidence, label + '/android-cdd-cts-vts', {
       'cdd-version': compatibility.cddDocumentSha256,
       'cts-revision': compatibility.ctsPackageSha256,
       'cts-result': compatibility.ctsResultSha256,
       'cts-verifier-result': compatibility.ctsVerifierResultSha256,
+      'vts-revision': compatibility.vtsPackageSha256,
+      'vts-result': compatibility.vtsResultSha256,
+      'vts-hal-result': compatibility.vtsHalResultSha256,
+      'vts-kernel-result': compatibility.vtsKernelResultSha256,
     });
   }
   if (requirement('production-signing').status === 'pass') {
@@ -1232,7 +1276,8 @@ export function validateReleaseReadiness({
       gates: new Map([
         ['exact-model-and-sku', true],
         ['bsp-driver-boot-recovery', true],
-        ['android-cdd-cts', true],
+        ['selinux-enforcing-isolation', true],
+        ['android-cdd-cts-vts', true],
         ['gms', false],
         ['production-signing', true],
         ['regional-radio-and-sales', true],

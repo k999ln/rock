@@ -37,6 +37,10 @@
 
 運営serverの判断だけでは実行しない。端末側serviceが許可済みcommand、署名、nonce、対象端末、発行時刻、失効時刻を検証し、再送と期限切れを拒否する。端末がofflineなら命令を即時実行できず、再接続後に有効期限内の命令だけを評価する。
 
+端末確認プラグインを採用する場合も、この限定保守sessionの一つとして扱う。事前登録済みで、端末が起動し、遠隔利用時は通信でき、端末側が許可scopeを検証できる場合だけ使う。現時点ではproduction利用できるスマホ診断プラグインまたはAndroid agentは未選定・未検証であり、「何かあれば必ず覗ける」状態ではない。
+
+プラグインは事故の診断補助であり、release署名鍵の復旧やboot不能端末の復旧には使わない。署名鍵は別場所の予備HSM、boot不能はUSB経由の純正full OTA／factory imageで復旧する。
+
 ## 運営にも渡さない権限
 
 緊急modeは、任意shell／root shell、利用者の写真・会話・原稿等の閲覧、Wallet送金や承認、秘密鍵・session secretの抽出、マイク／カメラ起動、未署名codeの導入、Verified Boot／SELinuxの無効化を許可しない。LLM、Sky Tool、MCP、外部Providerから緊急modeを開始することも許可しない。

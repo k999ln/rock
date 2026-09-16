@@ -9,6 +9,8 @@
     "generatedSbom": "work/release/rockstaros-web.cdx.json",
     "qemuAudit": "data/qemu-release-audit.json",
     "androidPhysicalAudit": "data/android-physical-release-audit.json",
+    "androidReleaseArchitecture": "data/android-release-architecture-policy.json",
+    "androidFirstFlashGate": "data/android-first-flash-gate.json",
     "personalNumberAudit": "data/personal-number-release-audit.json",
     "ownerPrivateSitesAudit": "data/sites-owner-preview-audit.json",
     "ownerPrivateSitesHosting": ".openai/hosting.json",
@@ -73,10 +75,11 @@
       "candidateAudit": "data/android-physical-release-audit.json",
       "gates": [
         { "id": "exact-model-and-sku", "required": true, "status": "pass", "evidence": ["docs/evidence/android-pixel-10-gl066-device-inventory-20260916.json", "docs/evidence/android-pixel-10-gl066-boot-state-20260916.json"] },
-        { "id": "bsp-driver-boot-recovery", "required": true, "status": "blocked", "ownerAction": "本人がGoogle利用条件を確認後、frankel用factory imageとfull OTAを取得・SHA固定し、vendor inventory、build、flash、両slot起動、純正復旧、relockを同じGL066で受け入れる" },
-        { "id": "android-cdd-cts", "required": true, "status": "blocked", "ownerAction": "Android互換を表示する場合は対象buildでCDDを満たしCTS等を実行する" },
+        { "id": "bsp-driver-boot-recovery", "required": true, "status": "blocked", "ownerAction": "本人がGoogle利用条件を確認後、frankel用factory imageとfull OTAの実ファイル名・byte数・SHA-256を固定し、初回flash gate 4/4、vendor inventory、build、両slot起動、純正復旧、relockを同じGL066で受け入れる" },
+        { "id": "selinux-enforcing-isolation", "required": true, "status": "blocked", "ownerAction": "UI／Broker／Local AI／Tool／Operator Agentを分離した最終user buildでSELinux Enforcing、neverallow、domain map、許可flowのAVC監査と禁止flowのnegative testを実証する" },
+        { "id": "android-cdd-cts-vts", "required": true, "status": "blocked", "ownerAction": "同じ最終GL066／build fingerprintでAndroid 17 CDD、CTS、適用対象のCTS Verifier、VTS、VTS HAL、VTS kernelを完走する" },
         { "id": "gms", "required": false, "status": "not_applicable", "reason": "Google Mobile Servicesを同梱しないDeveloper Previewを既定とし、必要時は別契約gateにする" },
-        { "id": "production-signing", "required": true, "status": "blocked", "ownerAction": "対象端末の更新・rollback・失効を含む正式署名運用を実施する" },
+        { "id": "production-signing", "required": true, "status": "blocked", "ownerAction": "正式Android署名鍵のidentity／紛失・rotation・失効、rollback index運用、Keystore喪失後backup復元を初回flash gateで実証する" },
         { "id": "regional-radio-and-sales", "required": true, "status": "blocked", "ownerAction": "販売地域、無線機能、販売形態を確定し、該当する認証と表示を専門家と確認する" }
       ]
     },

@@ -7,11 +7,11 @@
 ## 現在地
 
 - Android P1は2 APK、SQLite、Binder、JobScheduler、標準emulator CIに加え、所有Pixel 10で5/5 instrumentationまで到達。
-- 最初の実機対象は読取り専用ADBで日本向けPixel 10／frankel／GL066へ確定。Pixel 7／pantherは保留。物理端末gateは機種／SKUのみ合格の1/5。
+- 最初の実機対象は読取り専用ADBで日本向けPixel 10／frankel／GL066へ確定。Pixel 7／pantherは保留。物理端末gateは機種／SKUのみ合格の1/6。SELinux enforcing分離とCDD／CTS／CTS Verifier／VTSを独立した未達gateにした。
 - GrapheneOS `2026091000` tag署名、manifest／adevtool／laguna-muzel 6.6、実機のDynamic Partition／Virtual A/B／AVB 1.4を固定済み。Google純正factory／full OTAの実ファイルSHA、vendor inventory、production署名／復旧計画、full Soong build、flash、実機bootは未実施。
 - 外部Providerは初回OS full buildから分離し、アプリ／サーバー側へ置く。実収益を表示する1.0公開前にはProvider sandboxを必須とし、未合格中はlive収益表示をしない。
 - Local Action Assistantはsource pin、hash検査、署名限定Binder client/server契約、overlay、arm64 APK build、Qwen GGUFの機内モード推論、再起動復元、33分22秒の実機熱試験まで合格。OS image搭載、production署名、SELinux／OTA／復旧は未完了。
-- Platform Core v1はTool／MCP／Provider共通AIDL、APK署名・UID照合、本人確認付き承認、Wallet台帳、schema v1→v2 migration、Keystore暗号化backup、更新／rollback gate、source SELinux policyまで実装中。Android/AOSP buildとenforcing bootは未実施。
+- Platform Core v1はTool／MCP／Provider共通AIDL、APK署名・UID照合、本人確認付き承認、Wallet台帳、schema v1→v2 migration、Keystore暗号化backup、更新／rollback gate、source SELinux policyまで実装中。最終構成は`dev.rock.automation`をheadless Brokerとして残し、Home／Sky／Zemaを`dev.rock.shell`へ分離する。現sourceはまだ同一APKで、Android/AOSP buildとenforcing bootも未実施。
 
 主なtask: `DSP01`, `OS02`〜`OS11`, `N03`〜`N05`, `RLS02`。Local AIは`OS07`〜`OS09`、Platform Coreは`OS10`〜`OS11`で追跡する。
 
@@ -38,6 +38,8 @@
 - [Android trial](../android-trial.md)
 - [Local AI integration](../local-ai-os-integration-20260915.md)
 - [Platform Core](../platform-core.md)
+- [Android backup recovery](../android-backup-recovery.md)
+- [Android production architecture](../android-production-architecture.md)
 - [Device matrix](../../data/device-support-matrix.json)
 - [Android release audit](../../data/android-physical-release-audit.json)
 

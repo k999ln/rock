@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateAndroidFirstFlashGate } from './android-first-flash-gate-lib.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const matrix = JSON.parse(
@@ -17,6 +18,21 @@ const sourceAuditBytes = readFileSync(sourceAuditPath);
 const sourceAudit = JSON.parse(sourceAuditBytes);
 const androidAudit = JSON.parse(
   readFileSync(resolve(root, 'data/android-physical-release-audit.json'), 'utf8'),
+);
+const firstFlashGate = JSON.parse(
+  readFileSync(resolve(root, 'data/android-first-flash-gate.json'), 'utf8'),
+);
+const signingCustody = JSON.parse(
+  readFileSync(resolve(root, 'data/android-signing-custody-policy.json'), 'utf8'),
+);
+const rollbackPolicy = JSON.parse(
+  readFileSync(resolve(root, 'data/android-rollback-index-policy.json'), 'utf8'),
+);
+const stockRecoveryPolicy = JSON.parse(
+  readFileSync(resolve(root, 'data/android-stock-recovery-policy.json'), 'utf8'),
+);
+const backupRecoveryPolicy = JSON.parse(
+  readFileSync(resolve(root, 'data/android-backup-recovery-policy.json'), 'utf8'),
 );
 
 const requireValue = (condition, message) => {
@@ -199,6 +215,31 @@ requireValue(
       ?.liveEarningsClaimsAllowedBeforeAcceptance === false,
   '外部Providerを初回OS buildから分離し公開前gateにする決定が必要です',
 );
+const firstFlashResult = validateAndroidFirstFlashGate({
+  root,
+  gate: firstFlashGate,
+  sourceLock,
+  signingCustody,
+  rollbackPolicy,
+  stockRecoveryPolicy,
+  backupRecoveryPolicy,
+});
+requireValue(
+  firstFlashResult.passed === false &&
+    firstFlashResult.passedCount === 0 &&
+    firstFlashResult.blocked.length === 4,
+  '初回flash前の4項目は実証完了まで閉じた状態が必要です',
+);
+requireValue(
+  androidAudit.firstFlashGate?.status === 'blocked' &&
+    androidAudit.firstFlashGate?.policy ===
+      'data/android-first-flash-gate.json' &&
+    androidAudit.firstFlashGate?.passed === firstFlashResult.passedCount &&
+    androidAudit.firstFlashGate?.required === 4 &&
+    JSON.stringify(androidAudit.firstFlashGate?.items) ===
+      JSON.stringify(firstFlashResult.blocked),
+  'Android物理監査と初回flash gateが一致しません',
+);
 requireValue(
   sourceAudit.schema === 'avocadoos-android-dsp-source-audit/1' &&
     sourceAudit.result === 'PASS_WITH_RECOVERY_ARTIFACT_GATE_BLOCKED' &&
@@ -228,5 +269,5 @@ requireValue(
 );
 
 console.log(
-  `端末対応: ${matrix.targets.length}対象、GL066の署名source tag＋layout固定、純正復旧artifact待ち、実機flash 0件を確認`,
+  `端末対応: ${matrix.targets.length}対象、GL066の署名source tag＋layout固定、初回flash gate ${firstFlashResult.passedCount}/4、実機flash 0件を確認`,
 );

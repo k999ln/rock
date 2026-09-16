@@ -131,6 +131,7 @@ def source_config(lock, *, require_target_confirmation=False):
     targets = lock.get("buildTargets")
     known_skus = lock.get("knownSkus")
     confirmed_sku = lock.get("confirmedSku")
+    first_flash_gate = lock.get("firstFlashGate")
     sha40 = re.compile(r"[0-9a-f]{40}")
     sha64 = re.compile(r"[0-9a-f]{64}")
     if (lock.get("schema") != "rock-phone-source/2"
@@ -160,7 +161,11 @@ def source_config(lock, *, require_target_confirmation=False):
                    for target in targets)
             or not isinstance(known_skus, list) or not known_skus
             or any(not isinstance(sku, str) or re.fullmatch(r"[A-Za-z0-9_-]+", sku) is None
-                   for sku in known_skus)):
+                   for sku in known_skus)
+            or not isinstance(first_flash_gate, dict)
+            or first_flash_gate.get("schema") != "avocadoos-android-first-flash-gate/1"
+            or first_flash_gate.get("path") != "data/android-first-flash-gate.json"
+            or not isinstance(first_flash_gate.get("passed"), bool)):
         raise ValueError("invalid lock-derived phone build inputs")
     if require_target_confirmation and (lock.get("targetConfirmedByOwner") is not True
                                         or not isinstance(confirmed_sku, str)
@@ -178,6 +183,7 @@ def source_config(lock, *, require_target_confirmation=False):
             "buildTargets": list(targets),
             "targetConfirmedByOwner": lock.get("targetConfirmedByOwner") is True,
             "fullBuildInputGatePassed": lock.get("fullBuildInputGatePassed") is True,
+            "firstFlashGatePassed": first_flash_gate["passed"],
             "confirmedSku": confirmed_sku if confirmed_sku in known_skus else None}
 
 
@@ -347,10 +353,12 @@ def prepare(tree, allowed_signers):
             "manifestCommit": lock["manifestCommit"], "adevtoolCommit": lock["adevtoolCommit"],
             "hookSha256": hashlib.sha256(after).hexdigest(), "lunch": config["lunch"],
             "targetConfirmedByOwner": config["targetConfirmedByOwner"],
+            "firstFlashGatePassed": config["firstFlashGatePassed"],
             "flashReady": False,
             "remaining": ["full repo manifest -r and source review", "local-AI OS bridge and Soong packaging",
                           "signed local-AI APK and imported GGUF model", "Soong and OS image build",
                           "Hub / Wallet / Game port", "Android release signing and independent update service",
+                          "first-flash signing / rollback-index / stock-recovery / Keystore-loss backup gate",
                           "exact device acceptance and recovery"]}
 
 

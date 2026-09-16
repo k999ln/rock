@@ -8,7 +8,7 @@ OSを書き換えていない所有Pixel 10 GL066へ、試験専用同一署名�
 
 ## 2026-09-16 — Pixel 10 GL066の実機readback完了
 
-USB承認済みの所有端末を読取り専用ADBで確認し、最初の物理対象を日本向けGoogle Pixel 10、型番／SKU `GL066`、codename `frankel`へ確定した。現在はGrapheneOS `2026091000`／Android 17、bootloader locked、alternate verified-boot rootのyellow状態。端末serialは保存していない。Android物理端末の機種／SKU gateだけを1/5合格とし、BSP／復旧、CDD／CTS、production署名、販売地域、avocadoOSのflash／bootは未合格のまま。単体APK＋GGUF実機試験は上記のとおり後続で完了した。
+USB承認済みの所有端末を読取り専用ADBで確認し、最初の物理対象を日本向けGoogle Pixel 10、型番／SKU `GL066`、codename `frankel`へ確定した。現在はGrapheneOS `2026091000`／Android 17、bootloader locked、alternate verified-boot rootのyellow状態。端末serialは保存していない。Android物理端末の機種／SKU gateだけを1/6合格とし、BSP／復旧、SELinux enforcing分離、CDD／CTS／CTS Verifier／VTS、production署名、販売地域、avocadoOSのflash／bootは未合格のまま。単体APK＋GGUF実機試験は上記のとおり後続で完了した。
 
 ## 2026-09-15 — 最初の物理対象をPixel 10へ決定
 
