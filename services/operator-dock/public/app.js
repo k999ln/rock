@@ -218,7 +218,7 @@ function render() {
   elements['device-agent'].textContent =
     snapshot?.deviceAgent === 'ready'
       ? '接続可能'
-      : snapshot?.deviceAgent === 'source_emulator_verified_production_enrollment_pending'
+      : snapshot?.deviceAgent === 'source_emulator_test_signed_physical_overlay_stager_verified_production_enrollment_pending'
         ? '開発検証済み・本番登録待ち'
         : '配信停止中';
   elements['agent-dot'].className =

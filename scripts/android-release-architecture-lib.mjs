@@ -29,10 +29,14 @@ export function validateAndroidReleaseArchitecture({
   operatorManifest,
   operatorVerifier,
   operatorClient,
+  operatorConfig,
   operatorIdentity,
   operatorExecutor,
   operatorJob,
   operatorDatabase,
+  operatorOverlayable,
+  operatorOverlayStager,
+  phoneBuild,
   androidBp,
   physicalProduct,
 }) {
@@ -238,6 +242,14 @@ export function validateAndroidReleaseArchitecture({
     emergency.implementation?.deviceSignedChannelImplemented !== true ||
     emergency.implementation?.deviceIndependentCommandVerificationImplemented !== true ||
     emergency.implementation?.androidEmulatorTestsPassed !== true ||
+    emergency.implementation?.productionPublicOverlayStagerImplemented !== true ||
+    emergency.implementation?.productionDeviceIdentityChallengeBoundAliasImplemented !== true ||
+    emergency.implementation?.productionPublicOverlayInputStoredInRepository !== false ||
+    emergency.implementation?.productionPublicOverlayActualValuesStaged !== false ||
+    emergency.implementation?.productionPublicOverlayStrongBoxRequired !== true ||
+    emergency.implementation?.productionPublicOverlayFactoryResetForcedOff !== true ||
+    emergency.implementation?.singleDeviceAttestationChallengeValidationImplemented !== true ||
+    emergency.implementation?.multiDeviceDynamicEnrollmentImplemented !== false ||
     emergency.implementation?.androidDeviceOwnerExecutionVerified !== false ||
     emergency.implementation?.productionOperatorCredentialProvisioned !== false ||
     emergency.forbiddenCapabilities?.includes('root_shell') !== true ||
@@ -246,7 +258,7 @@ export function validateAndroidReleaseArchitecture({
 
   if (
     policy.components?.operatorAgent?.currentState !==
-      'source_and_android_emulator_verifier_store_keystore_pass_product_device_owner_attestation_pending' ||
+      'source_emulator_test_signed_physical_and_public_overlay_stager_pass_production_credential_device_owner_attestation_pending' ||
     policy.components?.operatorDock?.currentState !==
       'console_signed_queue_and_device_channel_source_verified_production_deployment_pending'
   ) fail('Operator Agent/Dockのsource、emulator、production境界が違います');
@@ -275,7 +287,37 @@ export function validateAndroidReleaseArchitecture({
     'setAttestationChallenge',
     'SECURITY_LEVEL_STRONGBOX',
     'getCertificateChain',
+    'Non-zero attestation challenge required',
+    'return ALIAS_PREFIX + "_" + suffix',
   ], 'StrongBox端末identityとattestation chainが不足しています');
+  includesAll(operatorConfig, [
+    'dockOrigin.equals(webAuthnOrigin)',
+    'rpId.equals(dock.getHost())',
+    'challenge.length != 32',
+    'Product packages cannot be quarantined',
+  ], 'Operator Agent自身のorigin／challenge／隔離対象の再検証が不足しています');
+  includesAll(operatorOverlayable, [
+    '<overlayable name="OperatorAgentConfig">',
+    '<policy type="product">',
+    'name="operator_public_key_spki"',
+    'name="operator_device_attestation_challenge"',
+    'name="operator_factory_reset_enabled"',
+  ], 'Operator Agentのproduct RRO許可範囲が不足しています');
+  includesAll(operatorOverlayStager, [
+    'pixel-10-frankel-gl066-single-device-preview',
+    'operatorPublicKeySpki must use P-256',
+    'production Operator identity must require StrongBox',
+    'factory reset must stay disabled',
+    'Production Operator input must stay outside the Rock repository',
+    'runtime_resource_overlay',
+    'android:targetName="OperatorAgentConfig"',
+  ], 'production Operator公開値のstaging検査が不足しています');
+  includesAll(phoneBuild, [
+    'ROCK_OPERATOR_AGENT_CONFIG',
+    'stage-operator-agent-overlay.py" stage',
+    'stage-operator-agent-overlay.py" verify',
+    'operator-agent-overlay.json',
+  ], 'phone build入口へOperator overlayのstage／再検証が接続されていません');
   includesAll(operatorExecutor, [
     'isDeviceOwnerApp',
     'setPackagesSuspended',

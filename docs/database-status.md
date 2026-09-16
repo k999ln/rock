@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-実機のnative Sky再起動復旧と非破壊backup exportは合格済み。次はproduction WebAuthn credential、Agent product overlay、StrongBox attestation、Device Ownerを登録し、許可操作と禁止操作を実機検証する。純正復旧artifact、vendor inventory、production署名、物理backup wipe復元を揃え、全preflight合格後だけ最初のfull buildへ進む。
+Operator Agentの公開trust overlay stagerとchallenge別StrongBox鍵は合格済み。次はownerがrepo外でproduction WebAuthn credentialの公開値と単一端末用challengeを用意し、stagerで固定した後、StrongBox attestationとDevice Ownerを登録して許可／禁止操作を実機検証する。並行して純正復旧artifact、vendor inventory、production署名、物理backup wipe復元を揃え、全preflight合格後だけ最初のfull buildへ進む。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

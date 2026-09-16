@@ -18,4 +18,4 @@ Access設定がなければ画面assetを返さず、WebAuthn設定がなけれ�
 
 Agent専用`/api/device/v1/poll|ack|result`はCloudflare Access cookieではなく、登録済み端末P-256鍵によるrequest署名を検証します。method、exact path、device ID、±120秒timestamp、24-byte nonce、body digestを署名対象にし、nonce再送、query、redirect前提、8 KiB超requestを拒否します。初期化予約は取消猶予中から端末へ配って警告を出しますが、`notBefore`まではackできません。ackとresultは同一内容だけ冪等に再送できます。sanitized診断は固定field・型と2 KiBに制限します。
 
-現在はsource、Node test、Worker dry-run、Android emulatorの段階で、運営Dockを公開・配備済みとは扱いません。production credential、D1、hostname、端末attestation登録、Pixel 10実機受入が揃うまでAgent状態は`ready`になりません。
+現在はsource、Node test、Worker dry-run、Android emulator 6/6、試験署名Pixel 10受入5/5まで完了しています。production公開trust入力の検査・RRO生成も実装済みですが、実値はまだstageしていません。production credential、D1、hostname、StrongBox attestation登録、Device Ownerでの許可操作受入が揃うまでAgent状態は`ready`になりません。静的attestation challengeは最初の単一端末preview限定で、複数端末配布にはruntimeの一回限りchallenge enrollmentが別途必要です。

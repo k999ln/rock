@@ -1,0 +1,45 @@
+{
+  "schema": "dev.rock-android-operator-overlay-stager-evidence/1",
+  "recordedAt": "2026-09-16",
+  "scope": "pixel-10-frankel-gl066-single-device-preview",
+  "result": "PASS_WITH_PRODUCTION_ENROLLMENT_PENDING",
+  "implementation": {
+    "externalPublicInputRequired": true,
+    "inputStoredInRepository": false,
+    "exactHttpsDockAndWebAuthnOriginRequired": true,
+    "p256WebAuthnPublicKeyRequired": true,
+    "strongBoxRequired": true,
+    "factoryResetForcedOff": true,
+    "attestationChallengeBytes": 32,
+    "deviceIdentityAliasBoundToChallenge": true,
+    "multiDeviceDynamicEnrollmentImplemented": false
+  },
+  "verification": {
+    "pythonOverlayTests": "PASS_9_OF_9",
+    "androidAssembleDebug": "PASS",
+    "androidAssembleDebugAndroidTest": "PASS",
+    "androidLintDebug": "PASS",
+    "androidEmulatorTests": "PASS_6_OF_6_ANDROID_15"
+  },
+  "productionState": {
+    "actualWebAuthnCredentialProvisioned": false,
+    "actualPublicOverlayStaged": false,
+    "strongBoxAttestationVerified": false,
+    "deviceOwnerExecutionVerified": false,
+    "operatorDockDeployed": false,
+    "containsPrivateKeyAccessTokenDeviceSerialOrRecoveryPhrase": false
+  },
+  "sources": [
+    "scripts/stage-operator-agent-overlay.py",
+    "tests/test_stage_operator_agent_overlay.py",
+    "android/operator-agent/src/main/res/values/overlayable.xml",
+    "android/operator-agent/src/main/java/dev/rock/operator/agent/DeviceIdentity.java",
+    "android/operator-agent/src/androidTest/java/dev/rock/operator/agent/OperatorAgentIntegrationTest.java",
+    "scripts/build-phone-bringup.sh"
+  ],
+  "boundaries": [
+    "This is public trust input validation and build staging, not production enrollment.",
+    "The static challenge scope is limited to the first single-device Pixel 10 preview.",
+    "A multi-device release requires a runtime one-time server challenge path."
+  ]
+}

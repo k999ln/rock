@@ -138,7 +138,7 @@ export function operatorControl(
     ]);
     return {
       controlPlane: 'ready',
-      deviceAgent: 'source_emulator_verified_production_enrollment_pending',
+      deviceAgent: 'source_emulator_test_signed_physical_overlay_stager_verified_production_enrollment_pending',
       operatorAccess: true,
       devices: devices.results.map((device) => ({
         ...device,

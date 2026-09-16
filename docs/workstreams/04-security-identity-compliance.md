@@ -10,7 +10,7 @@
 - QEMU候補のSBOM、Android物理端末gate、マイナンバーgate、署名拒否境界を機械可読化済み。
 - マイナンバーは1/7 gateで無効。番号・カード画像を取得しない。
 - QEMUと物理端末のproduction鍵、製品license、地域別販売条件は未完了。
-- 運営1名で開始できる緊急保護policy、利用者OSと分離したOperator Dock、Access JWT／WebAuthn検証、専用D1命令キュー、署名付き端末channel、launcher非表示のAndroid Agent、端末側独立検証、Keystore identity、HMAC追記監査はsource実装済み。Android 15 emulator 5/5は合格。専用配備、production credential、StrongBox attestation／Device Owner登録、remote Provider session失効、Pixel 10実機受入、侵入試験は未完了。
+- 運営1名で開始できる緊急保護policy、利用者OSと分離したOperator Dock、Access JWT／WebAuthn検証、専用D1命令キュー、署名付き端末channel、launcher非表示のAndroid Agent、端末側独立検証、Keystore identity、HMAC追記監査はsource実装済み。Android 15 emulator 6/6と試験署名Pixel 10の5/5は合格した。本番公開trust入力をrepo外から検査してproduct RROへstageする入口、StrongBox必須、factory reset無効、challengeごとの別端末鍵も固定済み。専用配備、production credential、実StrongBox attestation／Device Owner登録、remote Provider session失効、管理側侵害試験は未完了。
 - npm依存には追加review対象があり、inventory完成を法的clearanceと扱わない。
 
 主なtask: `SYS01`〜`SYS13`, `LCH02`, `LCH03`, `OS05`。
@@ -22,7 +22,7 @@
 3. 同じ候補を正式署名後に再受入し、開発鍵の証拠を転用しない。
 4. 外部OAuth／Providerごとにscope、audience、失効、監査証跡を受け入れる。
 5. マイナンバーや地域規制は専門家確認と本人有効化までdisabledを維持する。
-6. `SYS13`で端末側の緊急access serviceを実装し、管理側侵害を含む閉鎖試験とPixel 10実機演習を行う。
+6. `SYS13`で本番WebAuthn公開値を外部入力としてstageし、StrongBox attestationとDevice Ownerを登録して、管理側侵害を含む閉鎖試験とproduction条件のPixel 10実機演習を行う。
 
 ## 完了条件
 

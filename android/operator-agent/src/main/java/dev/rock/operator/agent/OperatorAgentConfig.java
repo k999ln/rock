@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 final class OperatorAgentConfig {
@@ -64,6 +65,8 @@ final class OperatorAgentConfig {
                 String value = item.trim();
                 if (!value.matches("[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z0-9_]+)+"))
                     throw new IllegalStateException("Invalid quarantine package allowlist");
+                if (value.startsWith("dev.rock.") || value.equals("com.localactionassistant"))
+                    throw new IllegalStateException("Product packages cannot be quarantined");
                 if (!quarantine.contains(value)) quarantine.add(value);
             }
         }
@@ -82,15 +85,37 @@ final class OperatorAgentConfig {
     boolean isConfigured() {
         if (dockOrigin.isEmpty() || credentialId.isEmpty() || operatorPublicKeySpki.isEmpty()
                 || rpId.isEmpty() || webAuthnOrigin.isEmpty()) return false;
-        if (hardwareIdentityRequired && deviceAttestationChallenge.isEmpty()) return false;
+        if (hardwareIdentityRequired) {
+            try {
+                byte[] challenge = OperatorCommandVerifier.decode(deviceAttestationChallenge, 32);
+                if (challenge.length != 32) return false;
+                int combined = 0;
+                for (byte value : challenge) combined |= value;
+                if (combined == 0) return false;
+            } catch (SecurityException exception) {
+                return false;
+            }
+        }
         try {
-            URI uri = URI.create(dockOrigin);
-            return "https".equals(uri.getScheme()) && uri.getRawUserInfo() == null
-                    && uri.getHost() != null && uri.getRawQuery() == null
-                    && uri.getRawFragment() == null
-                    && (uri.getRawPath() == null || uri.getRawPath().isEmpty());
+            URI dock = URI.create(dockOrigin);
+            URI webAuthn = URI.create(webAuthnOrigin);
+            return isExactHttpsOrigin(dock, dockOrigin)
+                    && isExactHttpsOrigin(webAuthn, webAuthnOrigin)
+                    && dockOrigin.equals(webAuthnOrigin)
+                    && rpId.equals(dock.getHost());
         } catch (IllegalArgumentException exception) {
             return false;
         }
+    }
+
+    private static boolean isExactHttpsOrigin(URI uri, String source) {
+        if (!"https".equals(uri.getScheme()) || uri.getRawUserInfo() != null
+                || uri.getHost() == null
+                || !uri.getHost().equals(uri.getHost().toLowerCase(Locale.ROOT))
+                || uri.getRawQuery() != null || uri.getRawFragment() != null
+                || (uri.getRawPath() != null && !uri.getRawPath().isEmpty())
+                || (uri.getPort() != -1 && uri.getPort() != 443)) return false;
+        String canonical = "https://" + uri.getHost() + (uri.getPort() == 443 ? ":443" : "");
+        return canonical.equals(source);
     }
 }

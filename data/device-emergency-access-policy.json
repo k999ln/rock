@@ -1,7 +1,7 @@
 {
   "schema": "dev.rock-device-emergency-access/1",
   "product": "avocadoOS",
-  "status": "dock_and_android_agent_source_emulator_verified_production_enrollment_physical_pending",
+  "status": "dock_agent_source_emulator_test_signed_physical_and_overlay_stager_verified_production_enrollment_pending",
   "purpose": "allow_a_single_authorized_operator_to_protect_and_recover_an_enrolled_device_during_an_incident",
   "activation": {
     "singleOperatorAllowed": true,
@@ -65,7 +65,7 @@
   },
   "diagnosticPlugin": {
     "purpose": "incident_diagnostics_for_a_pre_enrolled_bootable_device",
-    "currentStatus": "restricted_android_agent_source_emulator_verified_production_device_pending",
+    "currentStatus": "restricted_android_agent_source_emulator_test_signed_physical_overlay_stager_verified_production_enrollment_pending",
     "preEnrollmentRequired": true,
     "deviceMustBeBootable": true,
     "connectivityRequiredForRemoteUse": true,
@@ -103,6 +103,15 @@
     "testSignedPhysicalPixelChecksPassed": true,
     "testSignedPhysicalPixelCheckCount": 5,
     "testSignedPhysicalPixelEvidence": "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+    "productionPublicOverlayStagerImplemented": true,
+    "productionPublicOverlayStagerEvidence": "docs/evidence/android-operator-overlay-stager-20260916.json",
+    "productionPublicOverlayInputStoredInRepository": false,
+    "productionPublicOverlayActualValuesStaged": false,
+    "productionPublicOverlayStrongBoxRequired": true,
+    "productionPublicOverlayFactoryResetForcedOff": true,
+    "singleDeviceAttestationChallengeValidationImplemented": true,
+    "productionDeviceIdentityChallengeBoundAliasImplemented": true,
+    "multiDeviceDynamicEnrollmentImplemented": false,
     "androidDeviceOwnerExecutionVerified": false,
     "hardwareDeviceAttestationVerified": false,
     "remoteProviderSessionRevocationImplemented": false,

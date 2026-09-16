@@ -1,5 +1,11 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-16 — Operator本番公開設定のbuild前検査を実装
+
+単一のPixel 10 GL066 previewを対象に、repo外の公開trust入力からOperator Agent用の静的product RROを生成・再検証する入口を追加した。正確なHTTPS origin、P-256 WebAuthn公開鍵、32-byte端末attestation challenge、StrongBox必須、factory reset無効を機械検査し、秘密field、symlink、余分なfile、stage後改変を拒否する。端末StrongBox鍵のaliasもchallengeへ結び、古いchallengeのidentityを本番へ流用しない。Python 9/9、Android build／lint、Android 15 emulator 6/6に合格した。[証拠](evidence/android-operator-overlay-stager-20260916.json)。
+
+実際の本番WebAuthn公開値は未投入で、StrongBox attestation、Device Owner、Dock配備も未完了。静的challengeは最初の単一端末preview限定であり、複数端末版にはruntimeの一回限りenrollmentを追加する。フルOS build、flash、wipeはこの作業では行っていない。
+
 ## 2026-09-16 — Pixel 10のフルビルド前実機受入を23/23で完走
 
 OSを書き換えていない所有Pixel 10で、Broker／Tool／Local AI／Wallet 11件、権限を絞ったShell 5件、試験署名Operator Agent 5件、実再起動のseed／recover 2段階を実行し、計23件が合格した。Skyで選んだToolと途中の仕事は再起動後に同一状態から復旧し、中断工程をattempt 2として完了、結果・review・履歴まで確認した。backup v2は実ファイルへexportされ、書込み同期完了とdevice wrap／recovery secret双方のhardware-backed Keystoreを確認した。[秘密と端末serialを含まない証拠](evidence/android-pixel-10-prefull-physical-20260916.json)。

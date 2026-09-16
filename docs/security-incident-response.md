@@ -1,6 +1,6 @@
 # avocadoOS 緊急アクセスとインシデント対応
 
-状態: **分離Operator Dock、hardware署名付き命令、署名付き端末channel、制限付きAndroid Agentのsource／emulatorと試験署名Pixel検証済み、production配備・登録・Device Owner実行は未完了**。この文書と`data/device-emergency-access-policy.json`は、緊急時に運営1名が本人のその場の操作を待たず保護を開始できる契約を固定する。試験署名APKの実機検証はproduction端末へ到達済みという意味ではない。
+状態: **分離Operator Dock、hardware署名付き命令、署名付き端末channel、制限付きAndroid Agentのsource／emulatorと試験署名Pixel、本番公開設定stagerを検証済み、production配備・登録・Device Owner実行は未完了**。この文書と`data/device-emergency-access-policy.json`は、緊急時に運営1名が本人のその場の操作を待たず保護を開始できる契約を固定する。試験署名APKや公開設定stagerの検証はproduction端末へ到達済みという意味ではない。
 
 ## 目的
 
@@ -69,9 +69,9 @@ Agentはlauncherを持たない別UID／別SELinux domainで、Platform Broker�
 
 ## 実装・受入gate
 
-Dock／Agent source、Android 15 emulatorの5試験、試験署名APKを入れたPixel 10の5試験は合格した。実機では署名命令、replay／counter拒否、端末identity署名と、Device Ownerでないfactory resetのfail-closedを確認した。[秘密とserialを含まない実機証拠](evidence/android-pixel-10-prefull-physical-20260916.json)。ただし以下が揃うまで`dock_and_android_agent_source_emulator_test_signed_physical_verified_production_enrollment_pending`を維持し、運営がproduction端末へアクセス可能とは表示しない。
+Dock／Agent source、Android 15 emulatorの6試験、試験署名APKを入れたPixel 10の5試験は合格した。実機では署名命令、replay／counter拒否、端末identity署名と、Device Ownerでないfactory resetのfail-closedを確認した。[秘密とserialを含まない実機証拠](evidence/android-pixel-10-prefull-physical-20260916.json)。さらにrepo外の公開入力だけから静的product RROを作り、P-256、origin／RP、32-byte challenge、StrongBox必須、factory reset無効、symlink／改変拒否を9試験で確認した。StrongBox identityのaliasはchallengeへ結び、古いchallengeの鍵を再利用しない。[stager証拠](evidence/android-operator-overlay-stager-20260916.json)。ただし以下が揃うまで`dock_agent_source_emulator_test_signed_physical_and_overlay_stager_verified_production_enrollment_pending`を維持し、運営がproduction端末へアクセス可能とは表示しない。
 
-1. production operator WebAuthn credentialをOTA、AVB、Agent APK署名鍵と分けたhardwareへ作り、公開trust anchorだけをreview済みproduct overlayへ入れる。
+1. production operator WebAuthn credentialをOTA、AVB、Agent APK署名鍵と分けたhardwareへ作り、公開trust anchorだけをrepo外入力からreview済みproduct overlayへstageする。
 2. Pixel 10でAgentをDevice Ownerにし、StrongBox device identityとattestationを専用D1へ登録する。
 3. 外部Providerのsession失効adapterを実装するか、1.0のcapabilityから明示除外する。
 4. SELinux enforcingで許可操作、別app data、Binder、network、任意shellのnegative testを行う。
@@ -80,3 +80,5 @@ Dock／Agent source、Android 15 emulatorの5試験、試験署名APKを入れ�
 7. 独立security reviewとincident recovery drillを完了する。
 
 秘密値、private key、実端末ID、operator identityはGitへ保存しない。Gitには公開contract、公開鍵fingerprint、失効状態、試験証拠だけを保存する。
+
+最初の静的overlayは`pixel-10-frankel-gl066-single-device-preview`専用で、fresh challengeをその一台・buildだけに使う。同じimageを複数端末へ配らない。二台目以降はDockが一回限りchallengeをruntimeで発行し、attestation検証後に登録するdynamic enrollmentを実装・受入してから扱う。

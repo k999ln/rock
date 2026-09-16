@@ -242,6 +242,16 @@ assert.ok(read('android/automation/src/main/AndroidManifest.xml').includes(local
 assert.ok(read('android/Android.bp').includes('name: "rock-local-ai-api"'));
 assert.ok(read('scripts/stage-local-ai-apk.py').includes('android_app_import'));
 assert.ok(read('scripts/build-phone-bringup.sh').includes('stage-local-ai-apk.py'));
+const operatorOverlayStager = read('scripts/stage-operator-agent-overlay.py');
+assert.ok(operatorOverlayStager.includes('runtime_resource_overlay'));
+assert.ok(operatorOverlayStager.includes('Production Operator input must stay outside the Rock repository'));
+assert.ok(operatorOverlayStager.includes('production Operator identity must require StrongBox'));
+assert.ok(operatorOverlayStager.includes('factory reset must stay disabled'));
+assert.ok(read('scripts/build-phone-bringup.sh').includes('ROCK_OPERATOR_AGENT_CONFIG'));
+assert.ok(read('scripts/build-phone-bringup.sh').includes('stage-operator-agent-overlay.py" verify'));
+const operatorOverlayable = read('android/operator-agent/src/main/res/values/overlayable.xml');
+assert.ok(operatorOverlayable.includes('<overlayable name="OperatorAgentConfig">'));
+assert.ok(operatorOverlayable.includes('<policy type="product">'));
 assert.ok(read('scripts/build-local-ai-apk.sh').includes('prepare-local-ai-runtime.py'));
 assert.ok(read('scripts/build-local-ai-apk.sh').includes('app-release-unsigned.apk'));
 const localAiWorkflow = read('.github/workflows/local-ai-apk.yml');

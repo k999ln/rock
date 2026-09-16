@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-16",
   "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-  "nextAction": "実機のnative Sky再起動復旧と非破壊backup exportは合格済み。次はproduction WebAuthn credential、Agent product overlay、StrongBox attestation、Device Ownerを登録し、許可操作と禁止操作を実機検証する。純正復旧artifact、vendor inventory、production署名、物理backup wipe復元を揃え、全preflight合格後だけ最初のfull buildへ進む。",
+  "nextAction": "Operator Agentの公開trust overlay stagerとchallenge別StrongBox鍵は合格済み。次はownerがrepo外でproduction WebAuthn credentialの公開値と単一端末用challengeを用意し、stagerで固定した後、StrongBox attestationとDevice Ownerを登録して許可／禁止操作を実機検証する。並行して純正復旧artifact、vendor inventory、production署名、物理backup wipe復元を揃え、全preflight合格後だけ最初のfull buildへ進む。",
   "tasks": [
     {
       "id": "SKY01",
@@ -690,8 +690,13 @@
         "tests/operator-access-auth.test.mjs",
         "tests/operator-dock-isolation.test.mjs",
         "android/operator-agent/src/androidTest/java/dev/rock/operator/agent/OperatorAgentIntegrationTest.java",
+        "android/operator-agent/src/main/res/values/overlayable.xml",
+        "scripts/stage-operator-agent-overlay.py",
+        "tests/test_stage_operator_agent_overlay.py",
+        "os/physical/operator-agent-overlay/README.md",
         "docs/evidence/android-operator-agent-emulator-20260916.json",
-        "docs/evidence/android-pixel-10-prefull-physical-20260916.json"
+        "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+        "docs/evidence/android-operator-overlay-stager-20260916.json"
       ]
     },
     {
@@ -1770,8 +1775,11 @@
     "physicalPreFullBuildChecks": "PASS_23_OF_23_TEST_SIGNED_APPS_NO_FLASH",
     "physicalPreFullBuildEvidence": "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
     "operatorAgentImplemented": true,
-    "operatorAgentAndroidEmulatorTests": "PASS_5_OF_5_ANDROID_15",
+    "operatorAgentAndroidEmulatorTests": "PASS_6_OF_6_ANDROID_15",
     "operatorAgentTestSignedPhysicalTests": "PASS_5_OF_5_PIXEL_10_ANDROID_17",
+    "operatorAgentProductionPublicOverlayStager": "PASS_9_OF_9_NO_ACTUAL_PRODUCTION_VALUES_STAGED",
+    "operatorAgentDeviceIdentityAliasBoundToAttestationChallenge": true,
+    "operatorAgentMultiDeviceDynamicEnrollmentImplemented": false,
     "operatorAgentDeviceOwnerExecutionVerified": false,
     "operatorAgentProductionEnrollmentVerified": false,
     "androidBuilt": true,

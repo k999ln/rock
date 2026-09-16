@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <overlayable name="AvocadoOperatorAgentConfig">
+    <overlayable name="OperatorAgentConfig">
         <policy type="product">
             <item type="string" name="operator_dock_origin" />
             <item type="string" name="operator_credential_id" />

@@ -124,7 +124,7 @@
       "internet": "authenticated_operator_channel_only",
       "owns": ["device_enrollment", "append_only_device_command_audit"],
       "mustNotOwn": ["private_user_content", "wallet_keys", "owner_recovery_phrase", "release_signing_keys"],
-      "currentState": "source_and_android_emulator_verifier_store_keystore_pass_product_device_owner_attestation_pending"
+      "currentState": "source_emulator_test_signed_physical_and_public_overlay_stager_pass_production_credential_device_owner_attestation_pending"
     },
     "operatorDock": {
       "purpose": "operator-only remote incident console",

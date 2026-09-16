@@ -102,6 +102,34 @@ public final class OperatorAgentIntegrationTest {
         assertTrue(verifier.verify(first.sign(message)));
     }
 
+    @Test public void productionIdentityAliasIsBoundToExactAttestationChallenge() throws Exception {
+        byte[] original = new byte[32];
+        original[0] = 1;
+        String first = OperatorCommandVerifier.encode(original);
+        byte[] changed = original.clone();
+        changed[31] = 1;
+        String second = OperatorCommandVerifier.encode(changed);
+        assertFalse(DeviceIdentity.aliasFor(true, first)
+                .equals(DeviceIdentity.aliasFor(true, second)));
+        assertEquals(DeviceIdentity.aliasFor(false, ""),
+                DeviceIdentity.aliasFor(false, second));
+        assertThrows(SecurityException.class,
+                () -> DeviceIdentity.aliasFor(true,
+                        OperatorCommandVerifier.encode(new byte[31])));
+        assertThrows(SecurityException.class,
+                () -> DeviceIdentity.aliasFor(true,
+                        OperatorCommandVerifier.encode(new byte[32])));
+        OperatorAgentConfig production = new OperatorAgentConfig(
+                origin, credentialId, OperatorCommandVerifier.encode(operator.getPublic().getEncoded()),
+                rpId, origin, List.of("com.example.connector"), false, true, first);
+        assertTrue(production.isConfigured());
+        OperatorAgentConfig zeroChallenge = new OperatorAgentConfig(
+                origin, credentialId, OperatorCommandVerifier.encode(operator.getPublic().getEncoded()),
+                rpId, origin, List.of(), false, true,
+                OperatorCommandVerifier.encode(new byte[32]));
+        assertFalse(zeroChallenge.isConfigured());
+    }
+
     @Test public void factoryResetFailsClosedWithoutDeviceOwner() throws Exception {
         SignedOperatorCommand reset = signed("request_factory_reset", now,
                 now + 1_800_000L, now + 3_600_000L, 11);

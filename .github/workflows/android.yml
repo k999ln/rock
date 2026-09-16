@@ -2,9 +2,9 @@ name: Rock star Android prototype
 on:
   push:
     branches: [main]
-    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', 'scripts/package-android-trial.py', 'docs/android-trial.md', '.github/workflows/android.yml', 'lib/mr-tools.ts']
+    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', 'scripts/package-android-trial.py', 'scripts/stage-operator-agent-overlay.py', 'tests/test_stage_operator_agent_overlay.py', 'docs/android-trial.md', '.github/workflows/android.yml', 'lib/mr-tools.ts']
   pull_request:
-    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', 'scripts/package-android-trial.py', 'docs/android-trial.md', '.github/workflows/android.yml', 'lib/mr-tools.ts']
+    paths: ['android/**', 'contracts/**', 'os/**', 'scripts/check-os-*.mjs', 'scripts/package-android-trial.py', 'scripts/stage-operator-agent-overlay.py', 'tests/test_stage_operator_agent_overlay.py', 'docs/android-trial.md', '.github/workflows/android.yml', 'lib/mr-tools.ts']
 permissions:
   contents: read
 concurrency:
@@ -29,11 +29,13 @@ jobs:
         with:
           gradle-version: '8.11.1'
       - name: Compile Android packages and test shared SQLite core
-        run: gradle -p android :core:test :tool-sdk:testDebugUnitTest :shell-api:assembleDebug :automation:assembleDebug :shell:assembleDebug :article-tool:assembleDebug :automation:lintDebug :shell:lintDebug :article-tool:lintDebug --no-daemon
+        run: gradle -p android :core:test :tool-sdk:testDebugUnitTest :shell-api:assembleDebug :automation:assembleDebug :shell:assembleDebug :article-tool:assembleDebug :operator-agent:assembleDebug :automation:lintDebug :shell:lintDebug :article-tool:lintDebug :operator-agent:lintDebug --no-daemon
       - name: Compare Java tools with existing business behavior
         run: node --experimental-strip-types scripts/check-os-parity.mjs
       - name: Check source and contract consistency (not OS boot)
-        run: node scripts/check-os-contracts.mjs
+        run: |
+          node scripts/check-os-contracts.mjs
+          python3 -m unittest tests.test_stage_operator_agent_overlay -v
       - name: Permit KVM in the ephemeral test runner
         run: |
           test -c /dev/kvm
@@ -56,6 +58,7 @@ jobs:
             gradle -p android :automation:connectedDebugAndroidTest \
               -Pandroid.testInstrumentationRunnerArguments.notClass=dev.rock.automation.LocalAiServiceIntegrationTest \
               --no-daemon
+            gradle -p android :operator-agent:connectedDebugAndroidTest --no-daemon
       - name: Verify and collect the successful Android P1 trial set
         env:
           ROCK_REQUESTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -78,5 +81,7 @@ jobs:
             android/shell/build/reports/
             android/shell/build/outputs/androidTest-results/
             android/article-tool/build/reports/
+            android/operator-agent/build/reports/
+            android/operator-agent/build/outputs/androidTest-results/
           retention-days: 7
       # Only successful P1 debug trial artifacts; no release keys, OS deployment or device flashing.
