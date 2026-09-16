@@ -131,7 +131,23 @@ def source_config(lock, *, require_target_confirmation=False):
     targets = lock.get("buildTargets")
     known_skus = lock.get("knownSkus")
     confirmed_sku = lock.get("confirmedSku")
-    if (not isinstance(device, str) or not device or re.fullmatch(r"[a-z0-9_]+", device) is None
+    sha40 = re.compile(r"[0-9a-f]{40}")
+    sha64 = re.compile(r"[0-9a-f]{64}")
+    if (lock.get("schema") != "rock-phone-source/2"
+            or lock.get("stage") not in {
+                "SOURCE_TAG_AND_DEVICE_LAYOUT_FROZEN_RECOVERY_ARTIFACTS_PENDING",
+                "FULL_BUILD_INPUTS_FROZEN",
+            }
+            or lock.get("manifestUrl") != "https://github.com/GrapheneOS/platform_manifest.git"
+            or not isinstance(lock.get("manifestTag"), str) or not lock["manifestTag"]
+            or sha40.fullmatch(lock.get("manifestTagObject", "")) is None
+            or sha40.fullmatch(lock.get("manifestCommit", "")) is None
+            or sha64.fullmatch(lock.get("manifestDefaultXmlSha256", "")) is None
+            or sha64.fullmatch(lock.get("allowedSignersSha256", "")) is None
+            or sha40.fullmatch(lock.get("adevtoolCommit", "")) is None
+            or sha64.fullmatch(lock.get("hookSha256", "")) is None
+            or sha40.fullmatch(kernel.get("prebuiltCommit", "") if isinstance(kernel, dict) else "") is None
+            or not isinstance(device, str) or not device or re.fullmatch(r"[a-z0-9_]+", device) is None
             or not isinstance(lunch, str) or lunch != f"{device}-cur-userdebug"
             or not isinstance(hook, str)
             or hook != f"vendor/adevtool/config/mk/google_devices/device/{device}/device.mk"
@@ -150,6 +166,10 @@ def source_config(lock, *, require_target_confirmation=False):
                                         or not isinstance(confirmed_sku, str)
                                         or confirmed_sku not in known_skus):
         raise ValueError("exact phone model/SKU must be owner-confirmed before full OS build")
+    if require_target_confirmation and lock.get("fullBuildInputGatePassed") is not True:
+        raise ValueError(
+            "full OS build input gate must include hashed recovery artifacts, vendor inventory and signing plan"
+        )
     return {"device": device, "lunch": lunch, "hook": hook,
             "hook_repo_path": hook.removeprefix("vendor/adevtool/"),
             "kernel_path": f"device/google/{platform_name}-kernels/{kernel_version}",
@@ -157,6 +177,7 @@ def source_config(lock, *, require_target_confirmation=False):
                          f"vendor/google_devices/{device}/BoardConfig.mk"],
             "buildTargets": list(targets),
             "targetConfirmedByOwner": lock.get("targetConfirmedByOwner") is True,
+            "fullBuildInputGatePassed": lock.get("fullBuildInputGatePassed") is True,
             "confirmedSku": confirmed_sku if confirmed_sku in known_skus else None}
 
 
@@ -269,12 +290,23 @@ def prepare(tree, allowed_signers):
         raise ValueError("Wrong upstream manifest commit.")
     # Repo may use a one-include wrapper or a link to default.xml.
     selected = manifest_structure((tree / ".repo/manifest.xml").read_bytes())
-    signed_default = git(manifest, "show", "HEAD:default.xml")
+    signed_default_bytes = subprocess.check_output(
+        ["git", "-C", str(manifest), "show", "HEAD:default.xml"],
+        stderr=subprocess.PIPE,
+        timeout=30,
+    )
+    signed_default = signed_default_bytes.decode()
     if selected not in [manifest_structure('<manifest><include name="default.xml" /></manifest>'),
                         manifest_structure(signed_default)]:
         raise ValueError("Repo must select the signed default.xml manifest.")
     if git(manifest, "rev-parse", f"refs/tags/{lock['manifestTag']}^{{commit}}") != lock["manifestCommit"]:
         raise ValueError("Upstream tag does not resolve to the pinned manifest.")
+    if git(manifest, "rev-parse", f"refs/tags/{lock['manifestTag']}") != lock["manifestTagObject"]:
+        raise ValueError("Upstream tag object does not match the pinned source lock.")
+    if hashlib.sha256(signed_default_bytes).hexdigest() != lock["manifestDefaultXmlSha256"]:
+        raise ValueError("Pinned manifest default.xml digest does not match the verified commit.")
+    if hashlib.sha256(allowed_signers.resolve(strict=True).read_bytes()).hexdigest() != lock["allowedSignersSha256"]:
+        raise ValueError("GrapheneOS allowed-signers trust file differs from the audited bytes.")
     git(manifest, "-c", f"gpg.ssh.allowedSignersFile={allowed_signers.resolve(strict=True)}",
         "verify-tag", lock["manifestTag"])
     adevtool = tree / "vendor/adevtool"

@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Pixel 10 GL066上のTool／端末Walletと署名済みBilling Walletを同一合成実行IDで相関し、物理6/6・署名精算7/7・Sky→Zema回帰19/19に合格した。次に外部Provider sandboxをfull build前必須にするか、初回buildを非価値移転Developer Previewへ限定するかを確定し、GL066のBSP／vendor／partition／boot／純正復旧入力、source／artifact／production署名計画をfreezeしてOS full build可否を再判定する。
+外部Providerは初回OS full buildから分離し、アプリ／サーバー側で公開前必須gateにする方針を確定した。Pixel 10 GL066は署名検証済みGrapheneOS 2026091000 source tagとfrankel／laguna／muzel 6.6入力、実機のDynamic Partition／Virtual A/B／AVB構成まで固定済み。次は本人がGoogle利用条件を確認したうえで、frankel用factory imageと対応full OTAを取得してSHA-256を固定し、vendor生成inventoryとproduction署名／復旧計画を揃える。そこまで合格するまで有料full build、unlock、flashは開始しない。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

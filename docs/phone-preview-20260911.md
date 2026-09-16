@@ -29,7 +29,7 @@ OS full buildを先に試して後からappやLLMの不具合を直す順序に�
 
 Sky→Zemaの一回限りhandoff、Zemaのjob進捗、Tool実行、Wallet／収益精算の単体試験に加え、Tool完了をProvider署名Earning ReceiptとしてWalletへ一度だけ転記するbridgeを実装した。2026-09-16には同じ合成実行IDと証拠hashでPixelのTool／端末Wallet区間6/6と署名済みBilling Wallet区間7/7を相関し、`skyZemaToolWalletPath`は`rock_ready_physical_correlated_split_boundary_provider_sandbox_pending`。これはRock所有fixtureの二区間で、配備済み外部Provider一本通し、実売上、返金／chargeback、実払出しは未実証である。
 
-所有Pixel 10の端末readbackと単体APKによるGGUF機内モード推論、再起動、33分22秒の温度試験は完了した。残るのは物理Pixel上のSky→Zema→Tool→Wallet Provider縦断、外部Provider sandboxの扱い確定、GL066向けBSP／復旧入力とsource／artifact／署名計画の最終freeze。このgateは**進行中**で、full build開始条件をまだ満たしていない。
+所有Pixel 10の端末readbackと単体APKによるGGUF機内モード推論、再起動、33分22秒の温度試験は完了した。外部Providerは初回OS full buildへ焼き込まず、更新可能なアプリ／サーバー側へ分離する。Provider sandboxは実収益を表示するavocadoOS 1.0公開前の必須gateとして残し、未合格中はlive収益表示を禁止する。GL066は署名source tagとpartition／AVB構成まで固定済みだが、Google純正factory／full OTAの実ファイルSHA、vendor生成inventory、production署名／復旧計画が残る。このgateは**進行中**で、full build開始条件をまだ満たしていない。
 
 Sky、Zema、Wallet、Tool、LLMは原則として更新可能なAPK境界に置く。これらだけの修正なら単体APKを再buildして純正Android上で再試験する。framework、SELinux、privapp/product設定、boot/vendor/partition/AVBを変更した場合はOS imageの再buildが必要になる。
 
@@ -45,11 +45,15 @@ Sky、Zema、Wallet、Tool、LLMは原則として更新可能なAPK境界に置
 
 この最初の組込みは、既存Android P1の2工程が入った**端末起動のための試作**。Linux nativeのHub・Wallet・Gameは未移植。最終的には商品導入／同意／実行／取消、本人認証・台帳・費用／入金、保存・復旧をAndroidの接続層へ移植し、既存の業務契約と照合する。QEMUのframebuffer、Unix socket、固定UIDをそのままAndroidへ持ち込まない。
 
-## 確認した上流
+## 確認した上流と端末layout
 
-調査時の安定版`2026090700`のmanifest commitは`726237f979e7a36cc644f0a784f62ee27fee419b`。公式公開鍵でタグ署名を検証済み。AOSP基底は`android-17.0.0_r1`。1108 projectの全取得やbuildは未実行。[公式リリース](https://grapheneos.org/releases#frankel)／[公式build手順](https://grapheneos.org/build)。
+Pixel 10の安定版`2026091000`を固定した。manifest tag objectは`6c939d124f3ea8dd545c1e4045f26359f501d80e`、manifest commitは`ac9f2fdf0badebea2f6ac6c3e93b125aba02116a`。公式`allowed_signers`の固定byteで、`contact@grapheneos.org`／`SHA256:AhgHif0mei+9aNyKLfMZBh2yptHdw/aN7Tlh/j2eFwM`のtag署名を検証した。AOSP基底は`android-17.0.0_r1`。全project取得やbuildは未実行。[公式リリース](https://grapheneos.org/releases#frankel)／[公式build手順](https://grapheneos.org/build)。
 
-固定adevtoolは`144f004cc484d7e7234cdd167cee48e5f240288f`。生成された大きなproduct makefileを直接編集せず、[端末別の小さいhook](https://github.com/GrapheneOS/adevtool/blob/144f004cc484d7e7234cdd167cee48e5f240288f/config/mk/google_devices/device/frankel/device.mk)へRock共通productのinheritを追加する。実機kernelはlaguna／muzel／6.6。QEMUのvirt向けimageは使用しない。
+固定adevtoolは`117ef1de94510854f3fc25154c8246819e56f049`。生成された大きなproduct makefileを直接編集せず、[端末別の小さいhook](https://github.com/GrapheneOS/adevtool/blob/117ef1de94510854f3fc25154c8246819e56f049/config/mk/google_devices/device/frankel/device.mk)へRock共通productのinheritを追加する。実機kernel prebuiltは`e10186c8b757f4658dc38973a37c0034b05fc0b6`のlaguna／muzel／6.6で、muzel treeは`1c1a65e54c92adb11979a73fcc9acea9cc8183b1`。QEMUのvirt向けimageは使用しない。
+
+実機は書込みなしでDynamic Partition、Virtual A/B、A/B update、AVB 1.4、locked vbmetaを確認した。`boot`、`dtbo`、`init_boot`、`vbmeta`、`vbmeta_system`、`vbmeta_vendor`、`vendor_boot`、`vendor_kernel_boot`はA/B、`super`、`metadata`、`userdata`も存在する。端末serialは保存していない。[source／layout監査](evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json)。
+
+純正復旧はGoogleのfrankel用factory imageと対応full OTAを両方必要入力にする。factory imageはdata消去を伴い、full OTAは通常unlock／wipeなしで復元できる。Pixel 10は2026年5月bootloaderのanti-rollback対象なので、古いAndroid 16 bootloaderをflashせず、危険な書込み前に対応full OTAで両slotを起動可能にする。利用条件の本人確認と実ファイル取得／SHA-256が未完了のため、復旧artifactはまだfreeze済みと表示しない。[Google factory image](https://developers.google.com/android/images)／[Google full OTA](https://developers.google.com/android/ota)。
 
 再開時は上流の更新・セキュリティ修正を再確認し、必要ならlockを更新して改めて検証する。`prepare`単独はmanifest・adevtool・kernel・hookの確認。local manifestはこのRock project1件の追加だけを許可し、上流projectのoverrideを拒否する。build入口はさらに`repo forall`で全取得projectの固定commitと作業木を確認し、指定hook以外の変更・未追跡ファイルを拒否する。実出力は専用`out`へ固定し、その容量を調べる。全projectの確認処理自体は、まだ実際の1108project上で実行していない。準備確認を再現buildの成功と表示しない。
 
@@ -67,11 +71,11 @@ Sky、Zema、Wallet、Tool、LLMは原則として更新可能なAPK境界に置
 
 以下は未実行の全OS手順。上の事前gateが全て合格し、初回対象がPixel 10の正確なSKUまで確定してから専用環境を用意して実施する。
 
-1. 上流build手順に従い依存物を入れ、空のOS作業ディレクトリで`repo init -u https://github.com/GrapheneOS/platform_manifest.git -b refs/tags/2026090700`を実行する。
+1. 上流build手順に従い依存物を入れ、空のOS作業ディレクトリで`repo init -u https://github.com/GrapheneOS/platform_manifest.git -b refs/tags/2026091000`を実行する。
 2. 公式の`https://grapheneos.org/allowed_signers`をその環境の専用公開鍵ファイルへ取得し、manifestのタグ署名と固定commitを検証する。ユーザー全体のGit設定は変更しない。
 3. cleanなRock checkoutから`python3 scripts/prepare-phone-build.py manifest`でXMLを生成し、OS作業ディレクトリの`.repo/local_manifests/rock-phone.xml`へ保存する。Rockは`external/rockstaros`へ取得され、既存Cuttlefish専用設定と混ぜない。
 4. `repo sync -c -j8`を完了する。公式手順の`source build/envsetup.sh`、`yarn --cwd vendor/adevtool/ install`、`adevtool generate-all -d <lockのdevice>`を実施し、vendor取得・照合結果を保存する。
-5. lockへ所有者が正確な機種と既知SKUを確認済みとして記録してから、OS作業ディレクトリで`bash external/rockstaros/scripts/build-phone-bringup.sh "$PWD" /absolute/path/to/grapheneos_allowed_signers`を実行する。入口はRAM 64 GiB以上・空き400 GiB以上を検査し、prepare後とrepo全体検査後にlock指定hookのバイト列を再検証する。初回Soong/OS buildの実エラーを解消し、成功した同一sourceと出力hashを記録する。対象機種の`userdebug`出力は開発試験用。
+5. Google factory／full OTAのhash、vendor inventory、production署名／復旧計画を揃え、`fullBuildInputGatePassed=true`へ進められる根拠をレビューしてから、OS作業ディレクトリで`bash external/rockstaros/scripts/build-phone-bringup.sh "$PWD" /absolute/path/to/grapheneos_allowed_signers`を実行する。現在の入口はこのgateがfalseならbuild前に拒否する。入口はRAM 64 GiB以上・空き400 GiB以上を検査し、prepare後とrepo全体検査後にlock指定hookのバイト列を再検証する。初回Soong/OS buildの実エラーを解消し、成功した同一sourceと出力hashを記録する。対象機種の`userdebug`出力は開発試験用で、productionは`user`を別に受け入れる。
 6. Hub／Wallet／Gameの移植、Rock独自の表示、Android正式署名、OTA・復旧を整える。機種・SKU・現在build・backupを確認して、書込み手順を別途確定する。
 
 端末の読み取り診断は、adb導入済み・USB接続承認済みの環境で`python3 scripts/inspect-phone.py --serial <本人が選んだ端末ID>`。2026-09-16に実行し、端末serialを除いた必要最小限の結果だけを[端末inventory](evidence/android-pixel-10-gl066-device-inventory-20260916.json)と[boot状態](evidence/android-pixel-10-gl066-boot-state-20260916.json)へ保存した。

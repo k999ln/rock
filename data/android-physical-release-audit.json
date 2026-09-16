@@ -47,6 +47,12 @@
       "path": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
       "sha256": "c48538a6e253c9a8d7d9fd6234afdbfc907946d34ac5208a788cb24564d4cc5b",
       "scope": "Existing-OS, test-signed standalone APK acceptance only; not an avocadoOS image, flash, boot, compatibility or production-signing result."
+    },
+    {
+      "role": "dsp-source-and-device-layout",
+      "path": "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json",
+      "sha256": "d8febda758b76e3cb12da88e8dc7a905b15ae78f91b6b04fbad14224b3e8fc2a",
+      "scope": "Signed source tag and read-only Dynamic Partition / Virtual A/B / AVB layout only. Exact Google recovery files, vendor inventory, build, flash, boot and restore remain blocked."
     }
   ],
   "gms": {
@@ -96,7 +102,7 @@
       "id": "bsp-driver-boot-recovery",
       "required": true,
       "status": "blocked",
-      "nextAction": "同じSKU向けのBSP、vendor driver、boot chain、partition/AVB設定、factory recoveryをhash付きで固定し、flashと純正復旧を実測する",
+      "nextAction": "署名検証済み2026091000 sourceと実機partition/AVB読取りは固定済み。Google利用条件を本人が確認後、frankel用factory imageと対応full OTAを取得してSHA-256を固定し、vendor生成inventory、production署名／復旧計画を揃えてからbuild、flash、両slot起動、純正復旧、relockを実測する",
       "requiredEvidence": ["bsp", "vendor-drivers", "boot-chain", "recovery"]
     },
     {

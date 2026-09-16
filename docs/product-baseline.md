@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-16端末基盤追記（v1.62）: 外部Providerは初回OS full buildへ焼き込まず、更新可能なアプリ／サーバー側へ分離する。ただし外部Provider sandbox、返金／chargeback、払出し、再照合はavocadoOS 1.0で実収益を表示・公開する前の必須gateとし、未合格中はlive収益を表示しない。Pixel 10 GL066はGrapheneOS `2026091000`のmanifest tag署名、manifest／adevtool／laguna-muzel 6.6入力と、読取り専用ADBによるDynamic Partition／Virtual A/B／AVB 1.4構成まで固定した。Google純正factory image／full OTAの利用条件確認、実ファイル取得とSHA-256、vendor生成inventory、production署名／復旧計画が未完了なので、有料full build、unlock、flashはまだ開始しない。[source／layout監査](evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json)／[source lock](../os/physical/frankel-source-lock.json)。
+
 2026-09-16結合試験追記（v1.61）: 同じ合成実行IDと証拠hashをPixel 10 GL066のTool／端末Wallet区間と、Provider署名／Sky bridge／Billing Wallet区間へ渡した。物理instrumentation 6/6、署名精算7/7、Sky→Zema job回帰19/19に合格し、端末側はTool二段実行、review、Provider登録、Wallet一度だけ記録、重複拒否まで確認した。これはRock所有fixtureによる相関済み二区間であり、端末から外部Providerまでの配備済み一本通し、実売上、sandbox、実払出しではない。外部Provider受入とGL066のBSP／vendor／partition／boot／純正復旧、source／artifact／production署名計画のfreezeが残るため、有料full buildはまだ開始しない。[相関試験証拠](evidence/pixel-tool-wallet-correlation-20260916.json)／[事前試験](evidence/android-pre-full-build-tests-20260915.json)。
 
 2026-09-16実機試験追記（v1.60）: 所有Pixel 10 GL066の既存OS上へ試験専用同一署名のLocal Action Assistant、Automation、instrumentation、記事Toolを導入し、物理端末instrumentation 5/5、Qwen3-0.6B Q8_0の機内モード推論、再起動後の会話／model metadata保持と手動reload、33分22秒・15推論の熱試験を合格した。最大電池温度34.4℃、Android thermal status 0、process restart 0。Sky→Zema→Tool→WalletはRock所有fixtureの自動receipt bridgeまで合格したが、この時点では物理Pixel上のWallet Provider縦断は未実証だった。GL066のBSP／vendor／partition／boot／純正復旧とsource／artifact／署名計画のfreezeが残るため、有料full buildはまだ開始しない。[実機証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)／[事前試験](evidence/android-pre-full-build-tests-20260915.json)。
@@ -104,7 +106,7 @@
 
 2026-09-09追記: 設計v1.1の実装承認を受領。公開・実機・MetaMask実資金は準備が整うことを条件に了承。現在の承認範囲は [承認記録](execution-approval-20260909.md)。以下の「承認待ち」は作成時の履歴であり、現在の実装を停止させない。RQ01〜RQ15と料金は変更しない。
 
-版: 1.49 / 更新日: 2026-09-15（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
+版: 1.62 / 更新日: 2026-09-16（確定要望の初回決定日: 2026-09-09） / 正本: `k999ln/rock`。
 
 この文書は利用者がこの日に明示した製品要望を固定する。実装状況は [OS稼働・ゲーム連携監査](os-readiness-audit-20260909.md)（過去の追補・初回監査は履歴）、次の指示は [現在の再開指示](prompts/rock-current-next-20260911.md)、毎回の確認方法は [プロンプト作成規約](prompt-playbook.md) を参照する。決定と実装実績を同じものとして扱わない。
 
@@ -508,6 +510,8 @@ Walletは収益・費用・receipt・払出し状態に加え、合法的な税�
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-16 v1.62: 外部Providerを初回OS full buildから分離し、アプリ／サーバー側の公開前必須gateへ固定した。Pixel 10 GL066の署名検証済み`2026091000` source tag、adevtool、laguna／muzel 6.6、Dynamic Partition／Virtual A/B／AVB構成を固定したが、Google純正factory／full OTAの実ファイルSHA、vendor inventory、production署名／復旧計画が残るためfull build入力gateは未合格とした。
 
 2026-09-16 v1.59: 所有Pixel 10の読取り専用ADB確認で日本向け`GL066`／`frankel`を最初の物理対象へ確定し、Android物理端末の機種／SKU gateを1/5合格にした。端末serialは保存せず、full build、flash、boot、BSP／復旧、CTS、production署名、販売準備は未合格のまま維持する。
 

@@ -8,7 +8,8 @@
 
 - Android P1は2 APK、SQLite、Binder、JobScheduler、標準emulator CIに加え、所有Pixel 10で5/5 instrumentationまで到達。
 - 最初の実機対象は読取り専用ADBで日本向けPixel 10／frankel／GL066へ確定。Pixel 7／pantherは保留。物理端末gateは機種／SKUのみ合格の1/5。
-- GrapheneOS source lock、build準備script、Rock組込み設定はあるが、full Soong build、flash、実機bootは未実施。
+- GrapheneOS `2026091000` tag署名、manifest／adevtool／laguna-muzel 6.6、実機のDynamic Partition／Virtual A/B／AVB 1.4を固定済み。Google純正factory／full OTAの実ファイルSHA、vendor inventory、production署名／復旧計画、full Soong build、flash、実機bootは未実施。
+- 外部Providerは初回OS full buildから分離し、アプリ／サーバー側へ置く。実収益を表示する1.0公開前にはProvider sandboxを必須とし、未合格中はlive収益表示をしない。
 - Local Action Assistantはsource pin、hash検査、署名限定Binder client/server契約、overlay、arm64 APK build、Qwen GGUFの機内モード推論、再起動復元、33分22秒の実機熱試験まで合格。OS image搭載、production署名、SELinux／OTA／復旧は未完了。
 - Platform Core v1はTool／MCP／Provider共通AIDL、APK署名・UID照合、本人確認付き承認、Wallet台帳、schema v1→v2 migration、Keystore暗号化backup、更新／rollback gate、source SELinux policyまで実装中。Android/AOSP buildとenforcing bootは未実施。
 
@@ -17,7 +18,7 @@
 ## 次に進める順番
 
 1. 完了: 実端末からPixel 10、GL066、frankel、locked／yellow boot状態を読取り専用で確認した。
-2. 対象GL066向けBSP、vendor、kernel、partition、AVB、stock recoveryをhash付きで固定する。
+2. 進行中: source、kernel、partition、AVBは固定済み。本人がGoogle利用条件を確認後、frankel用factory imageと対応full OTAを取得してSHA-256を固定し、vendor生成inventoryとproduction署名／復旧計画を揃える。
 3. Ubuntu 24.04 x86_64の十分なbuild環境でfull source取得、vendor生成、Soong buildを行う。
 4. Sky／Wallet／Game接続層をAndroidへ移植し、UID、SELinux、暗号化、電源制約を受け入れる。
 5. production署名、flash、boot、hardware、CTS/VTS、OTA/rollback、純正復旧を同じ端末・buildで検証する。

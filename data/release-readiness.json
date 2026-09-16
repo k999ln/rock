@@ -73,7 +73,7 @@
       "candidateAudit": "data/android-physical-release-audit.json",
       "gates": [
         { "id": "exact-model-and-sku", "required": true, "status": "pass", "evidence": ["docs/evidence/android-pixel-10-gl066-device-inventory-20260916.json", "docs/evidence/android-pixel-10-gl066-boot-state-20260916.json"] },
-        { "id": "bsp-driver-boot-recovery", "required": true, "status": "blocked", "ownerAction": "対象機種のBSP、vendor driver、boot chain、復旧imageを取得して実機受入する" },
+        { "id": "bsp-driver-boot-recovery", "required": true, "status": "blocked", "ownerAction": "本人がGoogle利用条件を確認後、frankel用factory imageとfull OTAを取得・SHA固定し、vendor inventory、build、flash、両slot起動、純正復旧、relockを同じGL066で受け入れる" },
         { "id": "android-cdd-cts", "required": true, "status": "blocked", "ownerAction": "Android互換を表示する場合は対象buildでCDDを満たしCTS等を実行する" },
         { "id": "gms", "required": false, "status": "not_applicable", "reason": "Google Mobile Servicesを同梱しないDeveloper Previewを既定とし、必要時は別契約gateにする" },
         { "id": "production-signing", "required": true, "status": "blocked", "ownerAction": "対象端末の更新・rollback・失効を含む正式署名運用を実施する" },

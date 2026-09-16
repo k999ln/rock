@@ -1,5 +1,5 @@
 {
-  "version": "1.61",
+  "version": "1.62",
   "decidedAt": "2026-09-16",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -210,7 +210,7 @@
     "releaseReadiness": {
       "androidCompatibility": "cdd_cts_not_run",
       "googleMobileServices": "not_applied",
-      "physicalDevice": "blocked_until_exact_model_bsp_bootloader_recovery",
+      "physicalDevice": "blocked_until_recovery_artifacts_vendor_inventory_build_flash_boot",
       "productionSigning": "blocked_until_owner_key_ceremony",
       "openSourceCompliance": "audit_required_before_distribution",
       "radioCertification": "market_and_hardware_scope_required",
@@ -218,7 +218,7 @@
       "manifest": "data/release-readiness.json",
       "qemuAudit": "data/qemu-release-audit.json",
       "androidAudit": "data/android-physical-release-audit.json",
-      "androidAuditStatus": "0_of_5_required_gates_passed",
+      "androidAuditStatus": "1_of_5_required_gates_passed",
       "personalNumberAudit": "data/personal-number-release-audit.json",
       "personalNumberAuditStatus": "1_of_7_required_gates_passed_feature_disabled",
       "automatedCheck": "npm run release:check",
@@ -232,9 +232,9 @@
       },
       "historicalNativeInventoryRule": "never_substitute_9ab_inventory_for_rc2"
     },
-    "physicalDeviceStatus": "blocked_until_exact_model_bsp_bootloader_recovery",
+    "physicalDeviceStatus": "blocked_until_recovery_artifacts_vendor_inventory_build_flash_boot",
     "productionSigning": "blocked_until_owner_key_ceremony",
-    "externalProviders": "blocked_until_credentials_contracts_acceptance"
+    "externalProviders": "excluded_from_first_os_full_build_required_before_public_earning_launch"
   },
   "chatInteraction": {
     "displayName": "Zema",
@@ -443,12 +443,16 @@
       "standaloneLocalAiApk": "passed",
       "stockPixelOfflineAiAndThermal": "passed_offline_reboot_thermal",
       "skyZemaToolWalletPath": "rock_ready_physical_correlated_split_boundary_provider_sandbox_pending",
-      "sourceArtifactAndSigningPlanFreeze": "pending"
+      "sourceArtifactAndSigningPlanFreeze": "partial_source_tag_and_device_layout_frozen_recovery_vendor_and_signing_pending",
+      "externalProviderForFirstOsFullBuild": "excluded_app_and_server_gate",
+      "externalProviderRequiredBeforePublicEarningLaunch": true,
+      "liveEarningsClaimsBeforeProviderAcceptance": false
     },
     "record": "docs/phone-preview-20260911.md",
     "evidence": "docs/evidence/android-pre-full-build-tests-20260915.json",
     "earningsBridgeEvidence": "docs/evidence/tool-earning-wallet-bridge-20260915.json",
     "physicalToolWalletEvidence": "docs/evidence/pixel-tool-wallet-correlation-20260916.json",
+    "dspSourceAndLayoutEvidence": "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json",
     "androidWorkflow": ".github/workflows/android.yml",
     "localAiWorkflow": ".github/workflows/local-ai-apk.yml"
   },
@@ -655,7 +659,7 @@
   },
   "hardwarePolicy": "Develop one shared avocadoOS Core with model-specific Device Support Packages. Physical native OS, experimental Android GSI, client-only and unsupported are distinct delivery modes. The first physical target is the owner-selected Japan-market Pixel 10 GL066 / frankel; this identity does not establish image, flash, boot or release readiness. BlackBerry requires exact-model unlock/vendor/recovery evidence; Apple mobile devices are client-only rather than OS-replacement targets. Linux QEMU and physical evidence remain distinct.",
   "deviceSupportPolicy": {
-    "status": "first_target_identified_not_physical_support",
+    "status": "source_tag_and_device_layout_frozen_not_physical_support",
     "architecture": "docs/device-support-architecture.md",
     "matrix": "data/device-support-matrix.json",
     "validation": "npm run device-support:check",
@@ -671,8 +675,16 @@
       "sku": "GL066",
       "region": "JP",
       "codename": "frankel",
-      "readbackEvidence": "docs/evidence/android-pixel-10-gl066-device-inventory-20260916.json"
+      "readbackEvidence": "docs/evidence/android-pixel-10-gl066-device-inventory-20260916.json",
+      "sourceLock": "os/physical/frankel-source-lock.json",
+      "dspSourceAndLayoutEvidence": "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json"
     },
+    "sourceTag": "2026091000",
+    "sourceTagSignatureVerified": true,
+    "deviceLayoutReadOnlyVerified": true,
+    "recoveryArtifactsHashed": false,
+    "fullBuildInputGatePassed": false,
+    "externalProviderBoundary": "app_server_gate_excluded_from_first_os_full_build_required_before_public_earning_launch",
     "cloudSpendApproved": false,
     "physicalFlashAuthorized": false
   },
@@ -683,7 +695,7 @@
     "architecture": "docs/rockstaros-1.0-architecture.md",
     "plan": "docs/release-installation-plan-20260909.md",
     "developerPreview": "internal_acceptance_scoped_publication_blocked",
-    "physicalDevicePreview": "exact_target_confirmed_pre_full_build_device_tests_in_progress",
+    "physicalDevicePreview": "source_tag_and_device_layout_frozen_recovery_artifacts_pending",
     "productionReady": false,
     "cmRule": "Present the current implementation as the avocadoOS 1.0 base and advertise only the highest installation and validation stage that has passed its recorded gate",
     "followup": "docs/current-state-20260911.md",

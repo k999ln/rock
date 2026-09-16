@@ -12,7 +12,7 @@
 - 試験2のRock所有fixture範囲は合格。同じ合成実行IDと証拠hashをPixelのTool／端末Wallet区間と、Provider署名／Sky bridge／Billing Wallet区間へ渡し、物理6/6、署名精算7/7、Sky→Zema job回帰19/19を合格した。端末側ではBinder Tool二段実行、SQLite再open、review、Provider登録、Wallet一度だけ記録、重複拒否を確認した。二つの相関済み試験区間であり、実売上、外部決済Provider sandbox、返金／chargeback、実払出し、production配備、端末から外部Providerまでの一本通しは未実証。
 - source準備が無関係な親Git repositoryを参照してoverlayを適用済みと誤判定する問題、AIDL生成無効、public SDKで使えないUserHandle API、release manifestによるWAKE_LOCK削除を修正した。
 - Android build／lint 190 task、Android Core 31/31、相関対象host 7/7、Sky→Zema job回帰19/19を維持し、2026-09-16のrepository全体再検証ではWeb 287 test、Fashion Brand Ops 19 test、Worker／D1 143 assertion、本番Web buildを含む`npm run verify`が終了コード0で合格した。
-- 判定は`DO_NOT_START_PAID_FULL_OS_BUILD_REMAINING_FREEZE_GATES`。外部Provider sandboxをfull build前必須にするか非価値移転Developer Previewへ分離するかの決定、GL066のBSP／vendor／partition／boot／純正復旧入力、source／artifact／production署名計画のfreezeが残る。詳細は[Android事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)、[Tool／Wallet相関試験](evidence/pixel-tool-wallet-correlation-20260916.json)、[物理端末AI証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)。
+- 判定は`DO_NOT_START_PAID_FULL_OS_BUILD_RECOVERY_VENDOR_SIGNING_GATES`。外部Providerは初回OS full buildから分離し、アプリ／サーバー側の公開前必須gateへ固定した。GL066の署名検証済み`2026091000` source tag、laguna／muzel 6.6、Dynamic Partition／Virtual A/B／AVBは固定済み。Google純正factory／full OTAの利用条件確認、実ファイルSHA、vendor inventory、production署名／復旧計画が残る。詳細は[Source／layout監査](evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json)、[Android事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)、[Tool／Wallet相関試験](evidence/pixel-tool-wallet-correlation-20260916.json)、[物理端末AI証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)。
 
 ## Rock First-party Settlement Wallet / 2026-09-13
 

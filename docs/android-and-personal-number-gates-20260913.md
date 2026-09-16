@@ -4,7 +4,7 @@
 
 ## Android物理端末版
 
-現在は **1/5必須gate合格、BLOCKED**。2026-09-16の読取り専用ADB確認で、最初の対象を日本向けPixel 10、型番／SKU `GL066`、codename `frankel`へ確定した。現在のGrapheneOSはbootloader locked、alternate verified-boot rootのyellow状態。端末serialは保存していない。物理flash、Android互換、production署名、販売準備の証拠はまだない。
+現在は **1/5必須gate合格、BLOCKED**。2026-09-16の読取り専用ADB確認で、最初の対象を日本向けPixel 10、型番／SKU `GL066`、codename `frankel`へ確定した。現在のGrapheneOSはbootloader locked、alternate verified-boot rootのyellow状態。端末serialは保存していない。署名検証済み`2026091000` source tagとDynamic Partition／Virtual A/B／AVB構成は固定したが、Google純正factory／full OTAの実ファイルSHA、vendor inventory、build、flash、純正復旧が未完了なのでBSP／復旧gateはまだ合格にしない。Android互換、production署名、販売準備の証拠もまだない。
 
 1. 実端末からメーカー、製品名、型番、SKU、地域、codename、OEM unlock可否、bootloader状態を読み取る。
 2. 同一SKUのBSP、vendor driver、boot chain、partition/AVB、factory recoveryをhash付きで固定し、flashと純正復旧を実測する。

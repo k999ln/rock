@@ -272,7 +272,15 @@ export function validateBaseline(
       data.androidPreFullBuildGate?.checks?.skyZemaToolWalletPath ===
         'rock_ready_physical_correlated_split_boundary_provider_sandbox_pending' &&
       data.androidPreFullBuildGate?.checks
-        ?.sourceArtifactAndSigningPlanFreeze === 'pending',
+        ?.sourceArtifactAndSigningPlanFreeze ===
+        'partial_source_tag_and_device_layout_frozen_recovery_vendor_and_signing_pending' &&
+      data.androidPreFullBuildGate?.checks
+        ?.externalProviderForFirstOsFullBuild ===
+        'excluded_app_and_server_gate' &&
+      data.androidPreFullBuildGate?.checks
+        ?.externalProviderRequiredBeforePublicEarningLaunch === true &&
+      data.androidPreFullBuildGate?.checks
+        ?.liveEarningsClaimsBeforeProviderAcceptance === false,
     '有料full build前の単体APK・emulator・純正Pixel受入gateを維持してください',
   );
   for (const field of [
@@ -280,6 +288,7 @@ export function validateBaseline(
     'evidence',
     'earningsBridgeEvidence',
     'physicalToolWalletEvidence',
+    'dspSourceAndLayoutEvidence',
     'androidWorkflow',
     'localAiWorkflow',
   ]) {
@@ -678,7 +687,7 @@ export function validateBaseline(
       data.systemMaintenance?.releaseReadiness?.androidAudit ===
         'data/android-physical-release-audit.json' &&
       data.systemMaintenance?.releaseReadiness?.androidAuditStatus ===
-        '0_of_5_required_gates_passed' &&
+        '1_of_5_required_gates_passed' &&
       data.systemMaintenance?.releaseReadiness?.personalNumberAudit ===
         'data/personal-number-release-audit.json' &&
       data.systemMaintenance?.releaseReadiness?.personalNumberAuditStatus ===
@@ -701,9 +710,11 @@ export function validateBaseline(
         ?.historicalNativeInventoryRule ===
         'never_substitute_9ab_inventory_for_rc2' &&
       data.systemMaintenance?.physicalDeviceStatus ===
-        'blocked_until_exact_model_bsp_bootloader_recovery' &&
+        'blocked_until_recovery_artifacts_vendor_inventory_build_flash_boot' &&
       data.systemMaintenance?.productionSigning ===
-        'blocked_until_owner_key_ceremony',
+        'blocked_until_owner_key_ceremony' &&
+      data.systemMaintenance?.externalProviders ===
+        'excluded_from_first_os_full_build_required_before_public_earning_launch',
     'OS運用・暗号化保全・公開審査gateを維持してください',
   );
   requireValue(
@@ -816,7 +827,8 @@ export function validateBaseline(
   }
   const devicePolicy = data.deviceSupportPolicy;
   requireValue(
-    devicePolicy?.status === 'first_target_identified_not_physical_support',
+    devicePolicy?.status ===
+      'source_tag_and_device_layout_frozen_not_physical_support',
     '最初の実機対象を確定し、物理対応未完了として記録してください',
   );
   requireValue(
@@ -855,9 +867,33 @@ export function validateBaseline(
         codename: 'frankel',
         readbackEvidence:
           'docs/evidence/android-pixel-10-gl066-device-inventory-20260916.json',
+        sourceLock: 'os/physical/frankel-source-lock.json',
+        dspSourceAndLayoutEvidence:
+          'docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json',
       }),
     '最初の物理端末readbackが確定値と一致しません',
   );
+  requireValue(
+    devicePolicy.sourceTag === '2026091000' &&
+      devicePolicy.sourceTagSignatureVerified === true &&
+      devicePolicy.deviceLayoutReadOnlyVerified === true &&
+      devicePolicy.recoveryArtifactsHashed === false &&
+      devicePolicy.fullBuildInputGatePassed === false &&
+      devicePolicy.externalProviderBoundary ===
+        'app_server_gate_excluded_from_first_os_full_build_required_before_public_earning_launch',
+    'GL066のsource／layout固定と残る復旧artifact gateを維持してください',
+  );
+  for (const field of [
+    'readbackEvidence',
+    'sourceLock',
+    'dspSourceAndLayoutEvidence',
+  ]) {
+    const path = devicePolicy.firstPhysicalTarget[field];
+    requireValue(
+      typeof path === 'string' && existsSync(resolve(root, path)),
+      `deviceSupportPolicy.firstPhysicalTarget.${field}: repository内の証拠が必要です`,
+    );
+  }
   requireValue(
     devicePolicy.cloudSpendApproved === false,
     'クラウド課金は未承認です',

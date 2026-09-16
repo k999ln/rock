@@ -1,23 +1,95 @@
 {
-  "schema": "rock-phone-source/1",
-  "stage": "SOURCE_INTEGRATION_NOT_BUILT",
+  "schema": "rock-phone-source/2",
+  "stage": "SOURCE_TAG_AND_DEVICE_LAYOUT_FROZEN_RECOVERY_ARTIFACTS_PENDING",
   "device": "frankel",
   "model": "Google Pixel 10",
   "targetConfirmedByOwner": true,
+  "fullBuildInputGatePassed": false,
   "knownSkus": ["GLBW0", "GL066", "GK2MP"],
   "confirmedSku": "GL066",
   "manifestUrl": "https://github.com/GrapheneOS/platform_manifest.git",
-  "manifestTag": "2026090700",
-  "manifestCommit": "726237f979e7a36cc644f0a784f62ee27fee419b",
-  "adevtoolCommit": "144f004cc484d7e7234cdd167cee48e5f240288f",
+  "manifestTag": "2026091000",
+  "manifestTagObject": "6c939d124f3ea8dd545c1e4045f26359f501d80e",
+  "manifestCommit": "ac9f2fdf0badebea2f6ac6c3e93b125aba02116a",
+  "manifestDefaultXmlSha256": "f5969292b4b68b5718e158d344e7e99b044814738889fef70311de1210d21f7f",
+  "allowedSignersSha256": "344f59c6f058699e63fea68e35953b341c14e3bf1fbc1256f6baa84aa2aca1d0",
+  "verifiedSigner": {
+    "identity": "contact@grapheneos.org",
+    "keyFingerprint": "SHA256:AhgHif0mei+9aNyKLfMZBh2yptHdw/aN7Tlh/j2eFwM"
+  },
+  "adevtoolCommit": "117ef1de94510854f3fc25154c8246819e56f049",
   "hook": "vendor/adevtool/config/mk/google_devices/device/frankel/device.mk",
   "hookSha256": "3a24ad3ad1f68ca806b181f192d4cd8468c8a57316b2152b953939966c766a2d",
   "rockCheckoutPath": "external/rockstaros",
   "lunch": "frankel-cur-userdebug",
   "buildTargets": ["target-files-package", "otatools-package"],
-  "kernel": {"platform": "laguna", "codename": "muzel", "version": "6.6", "prebuiltCommit": "9535f8a628468a5143c867551773459a8bbe3e7e"},
+  "kernel": {
+    "platform": "laguna",
+    "codename": "muzel",
+    "version": "6.6",
+    "prebuiltCommit": "e10186c8b757f4658dc38973a37c0034b05fc0b6",
+    "artifactTree": "1c1a65e54c92adb11979a73fcc9acea9cc8183b1",
+    "genericGkiPrebuiltCommit": "350899556b7cae26d5981c7055759428aef7598d",
+    "sourceRepository": "https://gitlab.com/grapheneos/kernel_pixel_6.6.git"
+  },
+  "deviceLayout": {
+    "evidence": "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json",
+    "dynamicPartitions": true,
+    "virtualAb": true,
+    "abUpdate": true,
+    "avbVersion": "1.4",
+    "vbmetaDeviceState": "locked",
+    "requiredNamedPartitions": [
+      "boot_a",
+      "boot_b",
+      "dtbo_a",
+      "dtbo_b",
+      "init_boot_a",
+      "init_boot_b",
+      "metadata",
+      "super",
+      "userdata",
+      "vbmeta_a",
+      "vbmeta_b",
+      "vbmeta_system_a",
+      "vbmeta_system_b",
+      "vbmeta_vendor_a",
+      "vbmeta_vendor_b",
+      "vendor_boot_a",
+      "vendor_boot_b",
+      "vendor_kernel_boot_a",
+      "vendor_kernel_boot_b"
+    ]
+  },
+  "vendor": {
+    "generationCommand": "adevtool generate-all -d frankel",
+    "generatedAndInventoried": false,
+    "redistributionApproved": false
+  },
+  "recovery": {
+    "factoryImageStatus": "PENDING_OWNER_TERMS_DOWNLOAD_AND_SHA256",
+    "fullOtaStatus": "PENDING_OWNER_TERMS_DOWNLOAD_AND_SHA256",
+    "factoryImageSha256": null,
+    "fullOtaSha256": null,
+    "may2026BootloaderAntiRollbackApplies": true,
+    "olderAndroid16BootloaderFlashForbidden": true,
+    "bothSlotsBootableViaMatchingFullOtaBeforeRiskyFlash": true,
+    "factoryRestoreTested": false,
+    "bootloaderRelockTested": false
+  },
+  "externalProviderBoundary": {
+    "includedInFirstOsFullBuild": false,
+    "implementation": "APP_AND_SERVER",
+    "requiredBeforePublicEarningLaunch": true,
+    "liveEarningsClaimsAllowedBeforeAcceptance": false
+  },
   "imageBuildVerified": false,
   "imageBootVerified": false,
   "flashReady": false,
-  "notes": "The owner-selected physical target was read back on 2026-09-16 as Google Pixel 10 / frankel / GL066. This unlocks target-specific preparation only. Re-check the release before build or installation. Neither GrapheneOS support nor the existing QEMU acceptance proves avocadoOS hardware support."
+  "buildBlockers": [
+    "exact Google factory image and full OTA files with SHA-256",
+    "generated vendor-file inventory and redistribution review",
+    "production signing and recovery plan"
+  ],
+  "notes": "The owner-selected physical target was read back on 2026-09-16 as Google Pixel 10 / frankel / GL066. The signed 2026091000 source tag and read-only device layout are frozen, but exact Google factory/full-OTA bytes, generated vendor inventory, production signing, OS build, flash, boot and restore remain blocked. Neither GrapheneOS support nor the existing QEMU acceptance proves avocadoOS hardware support."
 }

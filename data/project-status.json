@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-16",
   "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-  "nextAction": "Pixel 10 GL066上のTool／端末Walletと署名済みBilling Walletを同一合成実行IDで相関し、物理6/6・署名精算7/7・Sky→Zema回帰19/19に合格した。次に外部Provider sandboxをfull build前必須にするか、初回buildを非価値移転Developer Previewへ限定するかを確定し、GL066のBSP／vendor／partition／boot／純正復旧入力、source／artifact／production署名計画をfreezeしてOS full build可否を再判定する。",
+  "nextAction": "外部Providerは初回OS full buildから分離し、アプリ／サーバー側で公開前必須gateにする方針を確定した。Pixel 10 GL066は署名検証済みGrapheneOS 2026091000 source tagとfrankel／laguna／muzel 6.6入力、実機のDynamic Partition／Virtual A/B／AVB構成まで固定済み。次は本人がGoogle利用条件を確認したうえで、frankel用factory imageと対応full OTAを取得してSHA-256を固定し、vendor生成inventoryとproduction署名／復旧計画を揃える。そこまで合格するまで有料full build、unlock、flashは開始しない。",
   "tasks": [
     {
       "id": "SKY01",
@@ -778,7 +778,9 @@
       "dependsOn": ["OS01"],
       "evidence": [
         "docs/os-development-design.md",
-        "docs/phone-preview-20260911.md"
+        "docs/phone-preview-20260911.md",
+        "os/physical/frankel-source-lock.json",
+        "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json"
       ]
     },
     {
@@ -1101,7 +1103,8 @@
         "docs/native-os-integration.md",
         "docs/phone-preview-20260911.md",
         "docs/current-state-20260911.md",
-        "docs/evidence/launch/progress-audit-20260912.json"
+        "docs/evidence/launch/progress-audit-20260912.json",
+        "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json"
       ]
     },
     {
@@ -1598,7 +1601,7 @@
     "historicalLocalCandidateDistribution": "LOCAL_ONLY_NOT_PUBLISHED_NOT_LEGALLY_CLEARED"
   },
   "physicalDevicePreview": {
-    "status": "PIXEL_10_GL066_STANDALONE_OFFLINE_AI_ACCEPTED_FULL_OS_NOT_BUILT",
+    "status": "PIXEL_10_GL066_SOURCE_TAG_AND_DEVICE_LAYOUT_FROZEN_RECOVERY_ARTIFACTS_PENDING",
     "request": "スマホ本体にOSを書き込める版を作成して",
     "candidateDevice": "Pixel 10 / frankel",
     "targetFamilyConfirmed": true,
@@ -1607,6 +1610,12 @@
     "buildEnvironment": "USER_HAS_NONE",
     "cloudProvisioned": false,
     "sourceLock": "os/physical/frankel-source-lock.json",
+    "dspSourceAudit": "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json",
+    "sourceTag": "2026091000",
+    "sourceTagSignatureVerified": true,
+    "deviceLayoutReadOnlyVerified": true,
+    "recoveryArtifactsHashed": false,
+    "fullBuildInputGatePassed": false,
     "record": "docs/phone-preview-20260911.md",
     "fullOsBuild": "NOT_RUN",
     "physicalBoot": "NOT_RUN",
@@ -1627,9 +1636,15 @@
       "accountConfigured": false,
       "spendIncurredByThisWork": false
     },
-    "targetDiscussion": "Read-only ADB confirmed the owner-selected first physical target as Japan-market Pixel 10 / frankel / GL066 on 2026-09-16. It is locked with an alternate verified-boot root. Pixel 7 / panther is deferred. This identity confirmation does not approve cloud spend, full build, unlock or flash.",
+    "targetDiscussion": "Read-only ADB confirmed the owner-selected first physical target as Japan-market Pixel 10 / frankel / GL066 on 2026-09-16. It is locked with an alternate verified-boot root. The signed 2026091000 source tag and Dynamic Partition / Virtual A/B / AVB layout are frozen. Exact Google factory/full-OTA artifacts, vendor inventory, production signing, build, unlock, flash and restore remain unapproved or incomplete.",
     "recommendedBuildEnvironment": "DigitalOcean CPU-Optimized Regular 48 vCPU / 96 GiB / 600 GiB / Ubuntu 24.04 x86_64; Google Cloud is the alternative for detachable persistent storage",
-    "latestRequest": "Run pre-full-build tests 1 and 2 first; proceed to full OS build only after both pass",
+    "latestRequest": "Keep the external Provider in the app/server gate, freeze the common Pixel 10 GL066 OS inputs in order, and do not start full build or flash before recovery, vendor and signing inputs pass",
+    "externalProviderBoundary": {
+      "includedInFirstOsFullBuild": false,
+      "implementation": "APP_AND_SERVER",
+      "requiredBeforePublicEarningLaunch": true,
+      "liveEarningsClaimsAllowedBeforeAcceptance": false
+    },
     "localAi": {
       "status": "PHYSICAL_PIXEL_OFFLINE_AI_REBOOT_THERMAL_AND_RESPONSE_SANITIZER_PASS_TEST_SIGNING",
       "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",

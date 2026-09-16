@@ -65,7 +65,7 @@ source lockと実機readbackはPixel 10の`frankel`、日本向けSKU `GL066`、
 
 1. 完了: Pixel 10／GL066／`frankel`を読取り専用で確認し、source lockとbuild入口を固定した。
 2. 完了: 単体APKとGGUFを所有Pixelへ導入し、機内モード推論、保存／再起動、33分22秒の温度／RAMを受け入れた。
-3. Sky→Zema→Tool→Walletの外部Provider sandbox範囲、GL066のBSP／vendor／partition／boot／純正復旧入力、source／artifact／署名計画をfreezeする。
+3. 決定済み: 外部Providerは初回OS full buildから分離し、アプリ／サーバー側の1.0公開前gateとする。GL066の署名source tagとpartition／AVBは固定済み。次にGoogle純正factory／full OTAの実ファイルSHA、vendor inventory、production署名／復旧計画をfreezeする。
 4. 上記の事前gate合格後にクラウド事業者、アカウント、上限予算、成果物保存先、時間上限と削除手順を確定する。
 5. Ubuntu 24.04 x86_64で全source取得、`adevtool generate-all`、Soongフルbuildを行い、同一source・出力hash・失敗ログを保存する。
 6. Android P1の2APK同梱とは別に、Sky／Wallet／Gameの接続層をAndroidへ移植し、既存のowner／同意／台帳／取消／復旧契約と照合する。

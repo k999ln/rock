@@ -79,8 +79,17 @@ class PhonePreparationTest(unittest.TestCase):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text("# fixture input\n")
         self.lock = self.root / "lock.json"
-        self.lock.write_text(json.dumps({"rockCheckoutPath": "external/rockstaros",
+        self.lock.write_text(json.dumps({"schema": "rock-phone-source/2",
+            "stage": "SOURCE_TAG_AND_DEVICE_LAYOUT_FROZEN_RECOVERY_ARTIFACTS_PENDING",
+            "rockCheckoutPath": "external/rockstaros",
+            "manifestUrl": "https://github.com/GrapheneOS/platform_manifest.git",
             "manifestCommit": manifest_commit, "manifestTag": "fixture-stable",
+            "manifestTagObject": self.command(
+                self.manifest, "git", "rev-parse", "refs/tags/fixture-stable"),
+            "manifestDefaultXmlSha256": hashlib.sha256(
+                (self.manifest / "default.xml").read_bytes()
+            ).hexdigest(),
+            "allowedSignersSha256": hashlib.sha256(self.signers.read_bytes()).hexdigest(),
             "adevtoolCommit": adevtool_commit,
             "hook": "vendor/adevtool/config/mk/google_devices/device/frankel/device.mk",
             "kernel": {"prebuiltCommit": kernel_commit, "platform": "laguna", "version": "6.6"},
@@ -89,7 +98,8 @@ class PhonePreparationTest(unittest.TestCase):
             "buildTargets": ["target-files-package", "otatools-package"],
             "knownSkus": ["FIXTURE-SKU"],
             "confirmedSku": None,
-            "targetConfirmedByOwner": False}))
+            "targetConfirmedByOwner": False,
+            "fullBuildInputGatePassed": False}))
         reviewed_names = [
             "LICENSE", "package.json", "src/native/modelRuntime.ts", "src/native/modelFiles.ts",
             "src/core/toolBroker.ts", "android/app/src/main/AndroidManifest.xml",
@@ -168,6 +178,14 @@ class PhonePreparationTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "owner-confirmed"):
             phone.build_config()
 
+    def test_full_build_config_rejects_unfrozen_recovery_and_signing_inputs(self):
+        lock = json.loads(self.lock.read_text())
+        lock["targetConfirmedByOwner"] = True
+        lock["confirmedSku"] = "FIXTURE-SKU"
+        phone.LOCK.write_text(json.dumps(lock))
+        with self.assertRaisesRegex(ValueError, "full OS build input gate"):
+            phone.build_config()
+
     def test_host_report_enforces_minimum_memory_and_disk(self):
         class Usage:
             def __init__(self, free):
@@ -192,6 +210,7 @@ class PhonePreparationTest(unittest.TestCase):
         lock = json.loads(self.lock.read_text())
         lock["targetConfirmedByOwner"] = True
         lock["confirmedSku"] = "FIXTURE-SKU"
+        lock["fullBuildInputGatePassed"] = True
         phone.LOCK.write_text(json.dumps(lock))
         config = phone.build_config()
         self.assertEqual(config["device"], "frankel")
@@ -221,6 +240,7 @@ class PhonePreparationTest(unittest.TestCase):
         lock = json.loads(self.lock.read_text())
         lock["targetConfirmedByOwner"] = True
         lock["confirmedSku"] = "FIXTURE-SKU"
+        lock["fullBuildInputGatePassed"] = True
         phone.LOCK.write_text(json.dumps(lock))
         self.command(self.root, "git", "add", "lock.json")
         self.command(self.root, "git", "commit", "-qm", "confirm fixture lock change")
@@ -239,9 +259,9 @@ class PhonePreparationTest(unittest.TestCase):
             phone.prepare(self.tree, self.signers)
         self.assertEqual(self.hook.read_bytes(), changed)
 
-    def test_untrusted_upstream_tag_cannot_modify_device_source(self):
+    def test_changed_allowed_signers_cannot_modify_device_source(self):
         self.signers.write_text("")
-        with self.assertRaises(subprocess.CalledProcessError):
+        with self.assertRaisesRegex(ValueError, "allowed-signers trust file"):
             phone.prepare(self.tree, self.signers)
         self.assertEqual(self.hook.read_bytes(), self.original)
 

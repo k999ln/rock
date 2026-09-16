@@ -18,7 +18,7 @@
     "rawExecutionIdStored": false
   },
   "physicalLeg": {
-    "environment": "stock Pixel 10 GL066 with test-signed standalone avocadoOS components",
+    "environment": "existing locked GrapheneOS-based Pixel 10 GL066 with test-signed standalone avocadoOS components",
     "instrumentation": "PASS_6_OF_6",
     "checks": [
       "Sky/Zema-correlated request key accepted by the local work engine",
