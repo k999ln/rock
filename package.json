@@ -10,7 +10,7 @@
     "build": "vinext build",
     "start": "CI=1 wrangler d1 migrations apply site-creator-d1 --local --config dist/server/wrangler.json && wrangler dev --config dist/server/wrangler.json",
     "lint": "oxlint",
-    "lint:product": "oxlint app lib db components/*.tsx services/sky-billing/src scripts/*.mjs tests/*.mjs",
+    "lint:product": "oxlint app lib db components/*.tsx services/sky-billing/src services/operator-dock/src services/operator-dock/public/app.js scripts/*.mjs tests/*.mjs",
     "format": "oxfmt",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "test:api": "node scripts/check-work-api.mjs",
@@ -30,7 +30,7 @@
     "sky:check": "node scripts/check-sky.mjs",
     "prompt:context": "node scripts/prompt-context.mjs",
     "db:generate": "node scripts/generate-migration.mjs",
-    "verify": "npm run project:check && npm run repository:check && npm run schema:check && npm run database:check && npm run release:check && npm run release:signing:check && npm run baseline:check && npm run csv:check && npm run sky:check && npm run device-support:check && npm run typecheck && npm run lint:product && npm test && npm run mcp:package:check && npm run billing:check && npm run test:fashion-brand-ops && npm run build && npm run release:web-bundle:check && npm run release:web-assets:check && npm run test:api",
+    "verify": "npm run project:check && npm run repository:check && npm run schema:check && npm run database:check && npm run release:check && npm run release:signing:check && npm run baseline:check && npm run csv:check && npm run sky:check && npm run device-support:check && npm run typecheck && npm run lint:product && npm test && npm run mcp:package:check && npm run billing:check && npm run operator-dock:check && npm run test:fashion-brand-ops && npm run build && npm run release:web-bundle:check && npm run release:web-assets:check && npm run test:api",
     "discover": "node scripts/discover.mjs",
     "os:check": "node scripts/check-os-contracts.mjs",
     "os:backend:launch": "python3 systems/rock-star-os/scripts/verify-backend-launch.py",
@@ -45,7 +45,10 @@
     "release:sbom": "node scripts/check-release-readiness.mjs --sbom work/release/rockstaros-web.cdx.json --native-sbom work/release/rockstaros-native-rc2.cdx.json --historical-native-sbom work/release/rockstaros-native-historical-9abf78a.cdx.json",
     "billing:deploy": "wrangler deploy --config services/sky-billing/wrangler.jsonc",
     "billing:check": "WRANGLER_WRITE_LOGS=false WRANGLER_LOG_PATH=work/wrangler-logs wrangler deploy --dry-run --config services/sky-billing/wrangler.jsonc --outdir work/sky-billing-dry-run",
-    "billing:migrate": "wrangler d1 migrations apply rockstar-sky-billing --remote --config services/sky-billing/wrangler.jsonc"
+    "billing:migrate": "wrangler d1 migrations apply rockstar-sky-billing --remote --config services/sky-billing/wrangler.jsonc",
+    "operator-dock:dev": "wrangler dev --config services/operator-dock/wrangler.jsonc",
+    "operator-dock:check": "WRANGLER_WRITE_LOGS=false WRANGLER_LOG_PATH=work/wrangler-logs wrangler deploy --dry-run --config services/operator-dock/wrangler.jsonc --outdir work/operator-dock-dry-run",
+    "operator-dock:migrate:local": "wrangler d1 migrations apply avocado-operator-dock --local --config services/operator-dock/wrangler.jsonc"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

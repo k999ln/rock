@@ -191,7 +191,7 @@ export function validateBaseline(
       'single-operator-emergency-device-protection',
     ) &&
       data.deviceEmergencyAccess?.status ===
-        'management_console_and_command_queue_implemented_android_agent_missing' &&
+        'isolated_operator_dock_and_command_queue_implemented_android_agent_missing' &&
       data.deviceEmergencyAccess?.singleOperatorActivation === true &&
       data.deviceEmergencyAccess?.userApprovalRequiredAtActivation === false &&
       data.deviceEmergencyAccess?.preEnrollmentRequired === true &&
@@ -212,9 +212,17 @@ export function validateBaseline(
       data.deviceEmergencyAccess?.appendOnlyAuditRequired === true &&
       data.deviceEmergencyAccess?.postIncidentUserNotificationRequired ===
         true &&
-      data.deviceEmergencyAccess?.operatorConsoleRoute === '/operator' &&
+      data.deviceEmergencyAccess?.operatorConsoleRoute === 'operator-dock:/' &&
       data.deviceEmergencyAccess?.operatorApiRoute ===
-        '/api/operator/devices' &&
+        'operator-dock:/api/devices' &&
+      data.deviceEmergencyAccess?.operatorDeployment ===
+        'separate_cloudflare_worker' &&
+      data.deviceEmergencyAccess?.operatorDatabase ===
+        'separate_operator_dock_d1' &&
+      data.deviceEmergencyAccess?.includedInUserOs === false &&
+      data.deviceEmergencyAccess?.cloudflareAccessJwtRequired === true &&
+      data.deviceEmergencyAccess?.operatorAssetAuthenticationRequired ===
+        true &&
       data.deviceEmergencyAccess?.operatorConsoleImplemented === true &&
       data.deviceEmergencyAccess?.authenticatedOperatorApiImplemented ===
         true &&
@@ -240,7 +248,7 @@ export function validateBaseline(
   requireValue(
     emergencyPolicy.schema === 'dev.rock-device-emergency-access/1' &&
     emergencyPolicy.status ===
-      'management_console_and_command_queue_implemented_android_agent_missing' &&
+      'isolated_operator_dock_and_command_queue_implemented_android_agent_missing' &&
       emergencyPolicy.activation?.singleOperatorAllowed === true &&
       emergencyPolicy.activation?.userApprovalRequiredAtActivation === false &&
       emergencyPolicy.activation?.maximumSessionSeconds === 900 &&
@@ -255,6 +263,14 @@ export function validateBaseline(
       emergencyPolicy.trustBoundary?.deviceEnforcesScopeExpiryAndSignature ===
         true &&
       emergencyPolicy.trustBoundary?.llmMayActivateEmergencyAccess === false &&
+      emergencyPolicy.implementation?.operatorDeployment ===
+        'separate_cloudflare_worker' &&
+      emergencyPolicy.implementation?.operatorDatabase ===
+        'separate_operator_dock_d1' &&
+      emergencyPolicy.implementation?.includedInUserOs === false &&
+      emergencyPolicy.implementation?.cloudflareAccessJwtRequired === true &&
+      emergencyPolicy.implementation?.operatorAssetAuthenticationRequired ===
+        true &&
       emergencyPolicy.implementation?.operatorConsoleImplemented === true &&
       emergencyPolicy.implementation?.persistentCommandQueueImplemented ===
         true &&

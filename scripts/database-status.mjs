@@ -50,11 +50,6 @@ function webDomains(tables) {
       matches: (name) =>
         name === 'mercari_revenue_plans' || name.startsWith('automation_'),
     },
-    {
-      id: 'operator',
-      label: '運営端末管理・緊急命令監査',
-      matches: (name) => name.startsWith('operator_'),
-    },
   ];
   const groups = definitions.map(({ id, label }) => ({
     id,
@@ -93,6 +88,12 @@ export function buildDatabaseStatus() {
     .filter((name) => name.endsWith('.sql'))
     .sort()
     .map((name) => `services/sky-billing/migrations/${name}`);
+  const operatorDockMigrations = readdirSync(
+    resolve(root, 'services/operator-dock/migrations'),
+  )
+    .filter((name) => name.endsWith('.sql'))
+    .sort()
+    .map((name) => `services/operator-dock/migrations/${name}`);
   const osWalletSpendSources = [
     'systems/rock-star-os/src/blackberryrock/wallet.py',
     'systems/rock-star-os/src/blackberryrock/spend.py',
@@ -120,6 +121,16 @@ export function buildDatabaseStatus() {
       tables: collectTables(billingMigrations),
       expectedAppliedThrough:
         billingMigrations.at(-1)?.split('/').at(-1) ?? null,
+    },
+    {
+      id: 'operator-dock-d1',
+      label: 'Operator Dock D1',
+      engine: 'Cloudflare D1',
+      authority: '運営専用の端末登録・緊急命令・監査',
+      sources: ['services/operator-dock/migrations/'],
+      tables: collectTables(operatorDockMigrations),
+      expectedAppliedThrough:
+        operatorDockMigrations.at(-1)?.split('/').at(-1) ?? null,
     },
     {
       id: 'os-wallet-spend-sqlite',

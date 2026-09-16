@@ -3,9 +3,9 @@
   "updatedAt": "2026-09-15",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
-    "boundaryCount": 5,
+    "boundaryCount": 6,
     "tableCount": 72,
-    "sourceVerifiedCount": 5,
+    "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
@@ -18,7 +18,7 @@
     "nextAction": "最短ローンチ経路としてWEB01を優先する。現在のWeb/PWA・D1差分を一つの検証済みcommitへ固定してGitHubへ保存し、ownerが本人限定Sitesへの最新版同期を明示承認した後、同じSHAを配備して認証後の主要導線・API・security header・migrationをreadbackする。一般公開、QEMU配布、Android実機、本番金融は別gateのまま維持する。"
   },
   "webSchema": {
-    "tableCount": 30,
+    "tableCount": 27,
     "tables": [
       "automation_fund_memberships",
       "automation_funds",
@@ -39,9 +39,6 @@
       "marketplace_receipts",
       "marketplace_reservations",
       "mercari_revenue_plans",
-      "operator_audit_events",
-      "operator_device_commands",
-      "operator_managed_devices",
       "sky_connections",
       "sky_developer_tokens",
       "sky_tool_events",
@@ -51,8 +48,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 14,
-    "latestMigration": "0013_operator-device-control.sql",
+    "migrationCount": 13,
+    "latestMigration": "0012_marketplace_relation_guards.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -119,16 +116,6 @@
           "mercari_revenue_plans"
         ],
         "tableCount": 3
-      },
-      {
-        "id": "operator",
-        "label": "運営端末管理・緊急命令監査",
-        "tables": [
-          "operator_audit_events",
-          "operator_device_commands",
-          "operator_managed_devices"
-        ],
-        "tableCount": 3
       }
     ]
   },
@@ -162,9 +149,6 @@
         "marketplace_receipts",
         "marketplace_reservations",
         "mercari_revenue_plans",
-        "operator_audit_events",
-        "operator_device_commands",
-        "operator_managed_devices",
         "sky_connections",
         "sky_developer_tokens",
         "sky_tool_events",
@@ -174,8 +158,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0013_operator-device-control.sql",
-      "tableCount": 30,
+      "expectedAppliedThrough": "0012_marketplace_relation_guards.sql",
+      "tableCount": 27,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / owner-only Sites",
@@ -221,6 +205,33 @@
           "docs/validation.md"
         ],
         "nextAction": "current productionをreadbackし、0004適用と台帳件数を再確認する"
+      }
+    },
+    {
+      "id": "operator-dock-d1",
+      "label": "Operator Dock D1",
+      "engine": "Cloudflare D1",
+      "authority": "運営専用の端末登録・緊急命令・監査",
+      "sources": [
+        "services/operator-dock/migrations/"
+      ],
+      "tables": [
+        "operator_audit_events",
+        "operator_device_commands",
+        "operator_managed_devices"
+      ],
+      "expectedAppliedThrough": "0001_operator_device_control.sql",
+      "tableCount": 3,
+      "sourceStatus": "VERIFIED",
+      "deployment": {
+        "runtime": "Cloudflare D1 / isolated Operator Dock Worker",
+        "deploymentStatus": "SOURCE_ONLY",
+        "productionAppliedThrough": null,
+        "productionReadbackAt": null,
+        "evidence": [
+          "services/operator-dock/README.md"
+        ],
+        "nextAction": "ownerが専用hostname、Cloudflare Access application、D1を作成後、0001適用と認証済みreadbackを行う"
       }
     },
     {

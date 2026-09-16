@@ -1,7 +1,7 @@
 {
   "schema": "dev.rock-device-emergency-access/1",
   "product": "avocadoOS",
-  "status": "management_console_and_command_queue_implemented_android_agent_missing",
+  "status": "isolated_operator_dock_and_command_queue_implemented_android_agent_missing",
   "purpose": "allow_a_single_authorized_operator_to_protect_and_recover_an_enrolled_device_during_an_incident",
   "activation": {
     "singleOperatorAllowed": true,
@@ -57,6 +57,11 @@
     "toolOrMcpMayActivateEmergencyAccess": false
   },
   "implementation": {
+    "operatorDeployment": "separate_cloudflare_worker",
+    "operatorDatabase": "separate_operator_dock_d1",
+    "includedInUserOs": false,
+    "cloudflareAccessJwtRequired": true,
+    "operatorAssetAuthenticationRequired": true,
     "operatorConsoleImplemented": true,
     "authenticatedOperatorApiImplemented": true,
     "persistentCommandQueueImplemented": true,

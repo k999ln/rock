@@ -242,11 +242,6 @@ void test('every non-home route family keeps a direct home affordance', () => {
       'components/rock-studio.tsx',
       /<Link href="\/" className="studio-wordmark" aria-label="ホームへ戻る"/,
     ],
-    [
-      'operator console',
-      'components/operator-console.tsx',
-      /<Link href="\/" className=\{styles\.home\} aria-label="ホームへ戻る"/,
-    ],
   ];
   for (const [name, path, pattern] of contracts) {
     const source = readFileSync(resolve(root, path), 'utf8');

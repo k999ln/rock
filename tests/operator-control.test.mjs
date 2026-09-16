@@ -2,15 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, readdirSync } from 'node:fs';
-import { operatorControl } from '../lib/operator-control.ts';
-import { OperationError } from '../lib/operations.ts';
+import { operatorControl } from '../services/operator-dock/src/operator-control.ts';
+import { OperatorError } from '../services/operator-dock/src/validation.ts';
 
 function fixture() {
   const sqlite = new DatabaseSync(':memory:');
-  for (const name of readdirSync(new URL('../drizzle', import.meta.url))
+  for (const name of readdirSync(new URL('../services/operator-dock/migrations', import.meta.url))
     .filter((entry) => entry.endsWith('.sql'))
     .sort())
-    sqlite.exec(readFileSync(new URL('../drizzle/' + name, import.meta.url), 'utf8'));
+    sqlite.exec(readFileSync(new URL('../services/operator-dock/migrations/' + name, import.meta.url), 'utf8'));
   let now = Date.parse('2026-09-15T18:00:00Z');
   const db = {
     prepare(sql) {
@@ -67,11 +67,11 @@ void test('only the configured operator can open the management plane', () => {
   assert.ok(control);
   assert.throws(
     () => operatorControl({}, 'attacker', 'operator-1'),
-    (error) => error instanceof OperationError && error.status === 403,
+    (error) => error instanceof OperatorError && error.status === 403,
   );
   assert.throws(
     () => operatorControl({}, 'operator-1', ''),
-    (error) => error instanceof OperationError && error.status === 503,
+    (error) => error instanceof OperatorError && error.status === 503,
   );
 });
 
@@ -90,7 +90,7 @@ void test('verified devices accept only allowlisted bounded emergency commands',
   );
   await assert.rejects(
     () => control.issue({ ...input, action: 'enter_lost_mode' }),
-    (error) => error instanceof OperationError && error.status === 409,
+    (error) => error instanceof OperatorError && error.status === 409,
   );
 });
 
@@ -118,7 +118,7 @@ void test('unverified devices and mutable audit history fail closed', async () =
   sqlite.prepare("UPDATE operator_managed_devices SET trust_state='pending'").run();
   await assert.rejects(
     () => control.issue(request(deviceId)),
-    (error) => error instanceof OperationError && error.status === 409,
+    (error) => error instanceof OperatorError && error.status === 409,
   );
   sqlite.prepare("UPDATE operator_managed_devices SET trust_state='verified'").run();
   await control.issue(request(deviceId));

@@ -18,6 +18,14 @@
       "evidence": ["docs/validation.md"],
       "nextAction": "current productionをreadbackし、0004適用と台帳件数を再確認する"
     },
+    "operator-dock-d1": {
+      "runtime": "Cloudflare D1 / isolated Operator Dock Worker",
+      "deploymentStatus": "SOURCE_ONLY",
+      "productionAppliedThrough": null,
+      "productionReadbackAt": null,
+      "evidence": ["services/operator-dock/README.md"],
+      "nextAction": "ownerが専用hostname、Cloudflare Access application、D1を作成後、0001適用と認証済みreadbackを行う"
+    },
     "os-wallet-spend-sqlite": {
       "runtime": "RockstarOS device-local SQLite",
       "deploymentStatus": "QEMU_SCOPED",

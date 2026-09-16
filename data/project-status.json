@@ -674,12 +674,14 @@
       "evidence": [
         "data/device-emergency-access-policy.json",
         "docs/security-incident-response.md",
-        "app/operator/page.tsx",
-        "components/operator-console.tsx",
-        "app/api/operator/devices/route.ts",
-        "lib/operator-control.ts",
-        "drizzle/0013_operator-device-control.sql",
-        "tests/operator-control.test.mjs"
+        "services/operator-dock/public/index.html",
+        "services/operator-dock/src/worker.ts",
+        "services/operator-dock/src/access-auth.ts",
+        "services/operator-dock/src/operator-control.ts",
+        "services/operator-dock/migrations/0001_operator_device_control.sql",
+        "tests/operator-control.test.mjs",
+        "tests/operator-access-auth.test.mjs",
+        "tests/operator-dock-isolation.test.mjs"
       ]
     },
     {

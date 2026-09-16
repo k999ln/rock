@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Operator Dock — avocadoOS</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#dock-main">管理画面へ移動</a>
+    <header class="topbar">
+      <div class="brand" aria-label="avocadoOS Operator Dock">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span>avocadoOS</span>
+        <strong>OPERATOR DOCK</strong>
+      </div>
+      <div class="operator-status">
+        <span class="secure-dot" aria-hidden="true"></span>
+        Access verified
+      </div>
+      <button id="refresh" class="refresh" type="button">更新</button>
+    </header>
+
+    <main id="dock-main" class="shell" tabindex="-1">
+      <section class="hero">
+        <div>
+          <span class="eyebrow">FLEET PROTECTION</span>
+          <h1>端末管制</h1>
+          <p>登録端末の状態、緊急保護、限定保守、監査記録を運営環境だけで扱います。</p>
+        </div>
+        <div class="guardrail">
+          <span aria-hidden="true">◆</span>
+          <div>
+            <strong>運営1名で初動可能</strong>
+            <small>私的内容・Wallet・秘密鍵・任意rootは操作できません</small>
+          </div>
+        </div>
+      </section>
+
+      <section id="error" class="notice error" role="alert" hidden>
+        <strong>管理機能を読み込めません</strong>
+        <span id="error-text"></span>
+      </section>
+      <output id="message" class="notice success" aria-live="polite" hidden></output>
+
+      <section class="metrics" aria-label="管理状態">
+        <article>
+          <span class="metric-dot ready" aria-hidden="true"></span>
+          <div><strong>管理基盤</strong><small id="control-plane">確認中</small></div>
+        </article>
+        <article>
+          <span id="agent-dot" class="metric-dot waiting" aria-hidden="true"></span>
+          <div><strong>Android端末サービス</strong><small id="device-agent">確認中</small></div>
+        </article>
+        <article>
+          <span class="metric-icon" aria-hidden="true">◎</span>
+          <div><strong>監査イベント</strong><small id="audit-count">0件</small></div>
+        </article>
+      </section>
+
+      <div class="workspace">
+        <section class="panel devices" aria-labelledby="devices-heading">
+          <header class="panel-heading">
+            <div><span>DEVICES</span><h2 id="devices-heading">登録端末</h2></div>
+            <b id="device-count">0</b>
+          </header>
+          <div id="device-list" class="device-list"></div>
+          <div id="device-empty" class="empty">
+            <span aria-hidden="true">▣</span>
+            <strong>登録端末はありません</strong>
+            <p>Android端末サービスとhardware identityの登録後に表示されます。</p>
+          </div>
+        </section>
+
+        <section class="panel control" aria-labelledby="control-heading">
+          <header class="panel-heading">
+            <div><span>EMERGENCY CONTROL</span><h2 id="control-heading">緊急操作</h2></div>
+          </header>
+          <div id="selected-device" class="selected-device">端末を選択してください</div>
+          <div class="form-grid">
+            <label>
+              事故ID
+              <input id="incident-id" autocomplete="off" maxlength="80" placeholder="INC-2026-001" />
+            </label>
+            <label>
+              対応理由
+              <input id="reason" autocomplete="off" maxlength="240" placeholder="紛失の申告を受けたため" />
+            </label>
+          </div>
+          <div id="action-grid" class="action-grid"></div>
+          <p class="boundary">命令キューとAndroid端末サービスは別です。端末側serviceが完成するまで実命令は配信しません。</p>
+        </section>
+      </div>
+
+      <section class="panel history" aria-labelledby="history-heading">
+        <header class="panel-heading">
+          <div><span>COMMAND LOG</span><h2 id="history-heading">命令履歴</h2></div>
+        </header>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>操作</th><th>事故ID</th><th>状態</th><th>発行時刻</th><th>取消</th></tr></thead>
+            <tbody id="command-list"></tbody>
+          </table>
+        </div>
+        <p id="history-empty" class="history-empty">選択端末の命令履歴はありません。</p>
+      </section>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

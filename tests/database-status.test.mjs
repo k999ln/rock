@@ -9,11 +9,11 @@ import {
 
 void test('database status inventories every boundary and keeps production readback explicit', () => {
   const report = buildDatabaseStatus();
-  assert.equal(report.summary.boundaryCount, 5);
+  assert.equal(report.summary.boundaryCount, 6);
   assert.equal(report.summary.tableCount, 72);
-  assert.equal(report.summary.sourceVerifiedCount, 5);
+  assert.equal(report.summary.sourceVerifiedCount, 6);
   assert.equal(report.summary.currentProductionReadbackCount, 0);
-  assert.equal(report.webSchema.tableCount, 30);
+  assert.equal(report.webSchema.tableCount, 27);
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
   assert.deepEqual(
@@ -24,7 +24,6 @@ void test('database status inventories every boundary and keeps production readb
       ['marketplace', 7],
       ['csv', 4],
       ['business', 3],
-      ['operator', 3],
     ],
   );
   assert.equal(

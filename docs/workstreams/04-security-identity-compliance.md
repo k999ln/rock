@@ -10,7 +10,7 @@
 - QEMU候補のSBOM、Android物理端末gate、マイナンバーgate、署名拒否境界を機械可読化済み。
 - マイナンバーは1/7 gateで無効。番号・カード画像を取得しない。
 - QEMUと物理端末のproduction鍵、製品license、地域別販売条件は未完了。
-- 運営1名で開始できる緊急保護・限定保守accessのpolicy、運営Web管理面、D1命令キュー、追記監査は実装済み。Android service、production credential、実機受入、侵入試験は未完了。
+- 運営1名で開始できる緊急保護・限定保守accessのpolicy、利用者OSと分離したOperator Dock、Access JWT検証、専用D1命令キュー、追記監査はsource実装済み。専用配備、Android service、production credential、実機受入、侵入試験は未完了。
 - npm依存には追加review対象があり、inventory完成を法的clearanceと扱わない。
 
 主なtask: `SYS01`〜`SYS13`, `LCH02`, `LCH03`, `OS05`。

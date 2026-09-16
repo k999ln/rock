@@ -34,6 +34,9 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const missingOperatorConsole = structuredClone(source);
   missingOperatorConsole.deviceEmergencyAccess.operatorConsoleImplemented = false;
   assert.throws(() => validateBaseline(missingOperatorConsole), /緊急保護/);
+  const consoleInsideUserOs = structuredClone(source);
+  consoleInsideUserOs.deviceEmergencyAccess.includedInUserOs = true;
+  assert.throws(() => validateBaseline(consoleInsideUserOs), /緊急保護/);
   const missingTemplate = structuredClone(source);
   delete missingTemplate.acceptanceTemplate;
   assert.throws(() => validateBaseline(missingTemplate), /acceptanceTemplate/);

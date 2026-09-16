@@ -1,6 +1,6 @@
 # avocadoOS 緊急アクセスとインシデント対応
 
-状態: **運営Web管理面・命令キュー実装済み／Android端末service・実機検証未完了**。この文書と`data/device-emergency-access-policy.json`は、緊急時に運営1名が本人の端末操作を待たず保護を開始できる契約を固定する。現在の管理画面だけでproduction端末へ到達済みという意味ではない。
+状態: **分離Operator Dock・専用命令キューsource実装済み／専用配備・Android端末service・実機検証未完了**。この文書と`data/device-emergency-access-policy.json`は、緊急時に運営1名が本人の端末操作を待たず保護を開始できる契約を固定する。現在の管理画面sourceだけでproduction端末へ到達済みという意味ではない。
 
 ## 目的
 
@@ -47,17 +47,19 @@
 
 開始時から終了まで運営ID、incident ID、理由、端末、command、結果、時刻を端末側と運営側の追記記録へ残す。保守中は端末に表示し、終了後は利用者へ実行内容を通知する。担当者自身は記録を削除できない。監査記録に利用者本文、認証情報、Wallet秘密を保存しない。
 
-## 運営管理画面
+## 運営専用Operator Dock
 
-`/operator`は登録端末、online／offline、hardware trust、緊急操作、命令状態、監査件数を表示する。利用には通常の本人認証に加えて環境の`ROCK_OPERATOR_USER_ID`との一致が必要で、値がない環境はfail closedにする。事故IDと5文字以上の理由がなければcommandを発行できない。
+管理面は利用者向けavocadoOSのrouteではなく、`services/operator-dock/`から別hostnameへ配備する。利用者向けOS Home、アプリ一覧、Web/PWA asset、API bundleへ管理画面や入口を含めない。Dockは登録端末、online／offline、hardware trust、緊急操作、命令状態、監査件数を表示し、事故IDと5文字以上の理由がなければcommandを発行できない。
 
-`/api/operator/devices`は最大100端末・100命令・100監査eventのsnapshotと、許可済みcommandの発行・未受領commandの取消を扱う。Web D1の`operator_managed_devices`、`operator_device_commands`、`operator_audit_events`へ保存する。監査tableはupdate/delete triggerで追記専用にする。
+Dock Workerはassetを含む全requestでCloudflare Accessの署名JWTを検証する。`CF_ACCESS_TEAM_DOMAIN`、Dock専用`CF_ACCESS_AUD`、単一`ROCK_OPERATOR_SUB`の全てが必要で、issuer、audience、期限、subject、RS256署名のいずれかが不一致ならfail closedにする。ヘッダーがあるだけでは信用しない。
+
+Dock内の`/api/devices`は最大100端末・100命令・100監査eventのsnapshotと、許可済みcommandの発行・未受領commandの取消を扱う。利用者Web D1とは別のOperator Dock専用D1へ`operator_managed_devices`、`operator_device_commands`、`operator_audit_events`を保存する。監査tableはupdate/delete triggerで追記専用にする。
 
 管理面は`controlPlane=ready`、端末側は`deviceAgent=not_implemented`として別表示する。Android serviceとproduction credentialがない間は命令を実端末へ配信せず、UIも「保存済み・端末service接続待ち」と表示する。
 
 ## 実装・受入gate
 
-管理面と命令キューは実装済みだが、以下が揃うまで`management_console_and_command_queue_implemented_android_agent_missing`を維持し、運営が実端末へアクセス可能とは表示しない。
+分離管理面と命令キューはsource実装済みだが、以下が揃うまで`isolated_operator_dock_and_command_queue_implemented_android_agent_missing`を維持し、運営が実端末へアクセス可能とは表示しない。
 
 1. Android system service、署名command schema、replay拒否、15分session終了を実装する。
 2. production operator credentialをOTA、AVB、アプリ署名鍵と分けてhardwareへ格納する。

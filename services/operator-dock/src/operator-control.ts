@@ -1,4 +1,4 @@
-import { OperationError, object, uuid } from './operations.ts';
+import { exactObject, OperatorError, uuid } from './validation.ts';
 
 export const EMERGENCY_ACTIONS = [
   'lock_device',
@@ -53,43 +53,43 @@ const commandColumns = `id,device_id AS deviceId,incident_id AS incidentId,
   expires_at AS expiresAt,acknowledged_at AS acknowledgedAt,
   completed_at AS completedAt,result_code AS resultCode`;
 
-function text(
+function boundedText(
   value: unknown,
   label: string,
   minimum: number,
   maximum: number,
 ) {
   if (typeof value !== 'string')
-    throw new OperationError(`${label}を入力してください。`);
+    throw new OperatorError(`${label}を入力してください。`);
   const normalized = value.trim();
   if (normalized.length < minimum || normalized.length > maximum)
-    throw new OperationError(`${label}の長さを確認してください。`);
+    throw new OperatorError(`${label}の長さを確認してください。`);
   return normalized;
 }
 
 function incidentId(value: unknown) {
-  const normalized = text(value, '事故ID', 3, 80);
+  const normalized = boundedText(value, '事故ID', 3, 80);
   if (!/^[A-Za-z0-9][A-Za-z0-9._:-]*$/u.test(normalized))
-    throw new OperationError('事故IDの形式を確認してください。');
+    throw new OperatorError('事故IDの形式を確認してください。');
   return normalized;
 }
 
 function action(value: unknown): EmergencyAction {
   if (!EMERGENCY_ACTIONS.includes(value as EmergencyAction))
-    throw new OperationError('許可されていない緊急操作です。');
+    throw new OperatorError('許可されていない緊急操作です。');
   return value as EmergencyAction;
 }
 
 export function operatorControl(
   db: D1Database,
-  authenticatedUserId: string,
-  configuredOperatorUserId: string,
+  authenticatedOperatorSub: string,
+  configuredOperatorSub: string,
   clock: () => number = Date.now,
 ) {
-  if (!configuredOperatorUserId)
-    throw new OperationError('運営管理者の設定が完了していません。', 503);
-  if (authenticatedUserId !== configuredOperatorUserId)
-    throw new OperationError('運営管理者だけが利用できます。', 403);
+  if (!configuredOperatorSub)
+    throw new OperatorError('運営管理者の設定が完了していません。', 503);
+  if (authenticatedOperatorSub !== configuredOperatorSub)
+    throw new OperatorError('運営管理者だけが利用できます。', 403);
 
   const statement = (sql: string, ...args: (string | number | null)[]) =>
     db.prepare(sql).bind(...args);
@@ -99,7 +99,7 @@ export function operatorControl(
       `SELECT ${commandColumns} FROM operator_device_commands
        WHERE id=? AND operator_user_id=?`,
       id,
-      authenticatedUserId,
+      authenticatedOperatorSub,
     ).first<OperatorDeviceCommand>();
   }
 
@@ -113,7 +113,7 @@ export function operatorControl(
       statement(
         `SELECT ${commandColumns} FROM operator_device_commands
          WHERE operator_user_id=? ORDER BY issued_at DESC,id DESC LIMIT 100`,
-        authenticatedUserId,
+        authenticatedOperatorSub,
       ).all<OperatorDeviceCommand>(),
       statement(
         `SELECT id,device_id AS deviceId,command_id AS commandId,
@@ -140,7 +140,7 @@ export function operatorControl(
   }
 
   async function issue(value: unknown) {
-    const input = object(value, [
+    const input = exactObject(value, [
       'operation',
       'id',
       'deviceId',
@@ -149,12 +149,12 @@ export function operatorControl(
       'reason',
     ]);
     if (input.operation !== 'issue')
-      throw new OperationError('操作形式を確認してください。');
+      throw new OperatorError('操作形式を確認してください。');
     const id = uuid(input.id);
     const deviceId = uuid(input.deviceId);
     const requestedAction = action(input.action);
     const requestedIncidentId = incidentId(input.incidentId);
-    const reason = text(input.reason, '理由', 5, 240);
+    const reason = boundedText(input.reason, '理由', 5, 240);
     const existing = await getCommand(id);
     if (existing) {
       if (
@@ -163,7 +163,7 @@ export function operatorControl(
         existing.action !== requestedAction ||
         existing.reason !== reason
       )
-        throw new OperationError(
+        throw new OperatorError(
           '同じ操作IDで異なる緊急命令は作成できません。',
           409,
         );
@@ -179,13 +179,13 @@ export function operatorControl(
       trustState: string;
       keyFingerprint: string | null;
     }>();
-    if (!device) throw new OperationError('登録端末が見つかりません。', 404);
+    if (!device) throw new OperatorError('登録端末が見つかりません。', 404);
     if (
       device.status !== 'active' ||
       device.trustState !== 'verified' ||
       !device.keyFingerprint
     )
-      throw new OperationError(
+      throw new OperatorError(
         '端末のhardware identity確認が完了していません。',
         409,
       );
@@ -201,7 +201,7 @@ export function operatorControl(
         ) VALUES(?,?,?,?,?,?,?,?,?,?) RETURNING id`,
         id,
         deviceId,
-        authenticatedUserId,
+        authenticatedOperatorSub,
         requestedIncidentId,
         requestedAction,
         reason,
@@ -223,7 +223,7 @@ export function operatorControl(
         JSON.stringify({ action: requestedAction, expiresAt, notBefore }),
         now,
         id,
-        authenticatedUserId,
+        authenticatedOperatorSub,
         deviceId,
         requestedIncidentId,
         requestedAction,
@@ -233,21 +233,21 @@ export function operatorControl(
     if (!inserted[0].results.length) {
       const collision = await getCommand(id);
       if (collision) return issue(value);
-      throw new OperationError('緊急命令を保存できませんでした。', 409);
+      throw new OperatorError('緊急命令を保存できませんでした。', 409);
     }
     return { command: (await getCommand(id))!, replay: false };
   }
 
   async function cancel(value: unknown) {
-    const input = object(value, ['operation', 'id', 'incidentId']);
+    const input = exactObject(value, ['operation', 'id', 'incidentId']);
     if (input.operation !== 'cancel')
-      throw new OperationError('操作形式を確認してください。');
+      throw new OperatorError('操作形式を確認してください。');
     const id = uuid(input.id);
     const requestedIncidentId = incidentId(input.incidentId);
     const before = await getCommand(id);
-    if (!before) throw new OperationError('緊急命令が見つかりません。', 404);
+    if (!before) throw new OperatorError('緊急命令が見つかりません。', 404);
     if (before.incidentId !== requestedIncidentId)
-      throw new OperationError('事故IDが一致しません。', 409);
+      throw new OperatorError('事故IDが一致しません。', 409);
     if (before.status === 'cancelled') return { command: before, replay: true };
     const now = clock();
     const result = await db.batch([
@@ -257,7 +257,7 @@ export function operatorControl(
            AND status IN ('queued','scheduled')
            AND acknowledged_at IS NULL RETURNING id`,
         id,
-        authenticatedUserId,
+        authenticatedOperatorSub,
       ),
       statement(
         `INSERT OR IGNORE INTO operator_audit_events(
@@ -269,11 +269,11 @@ export function operatorControl(
         `${id}:cancelled`,
         now,
         id,
-        authenticatedUserId,
+        authenticatedOperatorSub,
       ),
     ]);
     if (!result[0].results.length)
-      throw new OperationError(
+      throw new OperatorError(
         '端末が受領済みの命令は取り消せません。履歴を更新してください。',
         409,
       );

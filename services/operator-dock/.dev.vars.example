@@ -1,0 +1,3 @@
+CF_ACCESS_TEAM_DOMAIN=https://your-team.cloudflareaccess.com
+CF_ACCESS_AUD=replace-with-operator-dock-audience
+ROCK_OPERATOR_SUB=replace-with-the-single-operator-subject
