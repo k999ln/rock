@@ -1,0 +1,76 @@
+{
+  "schema": "avocadoos-pixel-tool-wallet-correlation/1",
+  "recordedAt": "2026-09-16",
+  "stage": "ROCK_OWNED_PHYSICAL_CORRELATED_SPLIT_BOUNDARY",
+  "result": "PASS",
+  "device": {
+    "model": "Pixel 10",
+    "sku": "GL066",
+    "product": "frankel",
+    "android": "17",
+    "serialStored": false,
+    "productionImageFlashed": false
+  },
+  "correlation": {
+    "executionIdSha256": "00b283cbf6c91164bf1d5416ca4163b10ad99f66457b3075fd3030081198ae22",
+    "providerEvidenceSha256": "9ba2225ad7e440c282f19722cbe0c115ea0c0ca4469ed9630905e45b7473522b",
+    "sameSyntheticExecutionIdUsedByPhysicalAndHostLegs": true,
+    "rawExecutionIdStored": false
+  },
+  "physicalLeg": {
+    "environment": "stock Pixel 10 GL066 with test-signed standalone avocadoOS components",
+    "instrumentation": "PASS_6_OF_6",
+    "checks": [
+      "Sky/Zema-correlated request key accepted by the local work engine",
+      "two article Tool steps executed through the installed signed Binder Tool",
+      "SQLite state survived a database reopen and required explicit review before completion",
+      "installed synthetic Provider registered through versioned Binder identity checks",
+      "positive synthetic Provider receipt recorded in the owner-scoped device Wallet ledger",
+      "same receipt replay returned the original receipt id",
+      "same provider reference under a different request was rejected as CONFLICT",
+      "local AI Binder accepted the installed GGUF state instead of assuming NO_MODEL"
+    ],
+    "testSignerCertificateSha256": "610499604b3469ae2f6c158b8482bbd6b0fb6e324862fb67e92731fe8a241f57",
+    "testSignerOnly": true
+  },
+  "hostSettlementLeg": {
+    "focusedTests": "PASS_7_OF_7",
+    "checks": [
+      "same correlated execution id created as a completed non-sample owned job",
+      "exact raw provider body authenticated with EARNING_PROVIDER_SECRET",
+      "user, Tool, completion time and source Provider matched before forwarding",
+      "Billing D1 stored one receipt and four ledger entries",
+      "exact replay stayed idempotent",
+      "a different receipt for the same execution was rejected"
+    ]
+  },
+  "supportingRegression": {
+    "skyZemaJobWorkflowTests": "PASS_19_OF_19",
+    "androidCoreUnitTests": "PASS_31_OF_31",
+    "androidStandaloneBuildAndLint": "PASS_190_TASKS"
+  },
+  "deviceCleanup": {
+    "airplaneMode": false,
+    "wifi": true,
+    "mobileDataSetting": true,
+    "stayAwakeWhilePluggedIn": false,
+    "automationAppForceStopped": true,
+    "localAiAppForceStopped": true,
+    "batteryTemperatureC": 29.1,
+    "testPackageOnlyReinstalled": true,
+    "targetAppDataCleared": false,
+    "syntheticProviderFixtureRowsRemoved": true
+  },
+  "boundary": {
+    "meaning": "The same synthetic execution and evidence digest passed the physical device leg and the signed settlement leg. They are two correlated test legs, not a deployed device-to-provider network transaction.",
+    "notProven": [
+      "one deployed physical Pixel to external Provider to production Wallet transaction",
+      "real sale or income",
+      "external payment Provider sandbox",
+      "refund or chargeback flow",
+      "real payout",
+      "production deployment",
+      "production signing, SELinux enforcing, Soong image, OTA, rollback or recovery"
+    ]
+  }
+}

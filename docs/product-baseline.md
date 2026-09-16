@@ -1,6 +1,8 @@
 # avocadoOS — 確定した製品ベース
 
-2026-09-16実機試験追記（v1.60）: 所有Pixel 10 GL066の既存OS上へ試験専用同一署名のLocal Action Assistant、Automation、instrumentation、記事Toolを導入し、物理端末instrumentation 5/5、Qwen3-0.6B Q8_0の機内モード推論、再起動後の会話／model metadata保持と手動reload、33分22秒・15推論の熱試験を合格した。最大電池温度34.4℃、Android thermal status 0、process restart 0。Sky→Zema→Tool→WalletはRock所有fixtureの自動receipt bridgeまで合格したが、外部Provider sandbox、実売上／実払出し、物理Pixel上のWallet Provider縦断は未実証。GL066のBSP／vendor／partition／boot／純正復旧とsource／artifact／署名計画のfreezeが残るため、有料full buildはまだ開始しない。[実機証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)／[事前試験](evidence/android-pre-full-build-tests-20260915.json)。
+2026-09-16結合試験追記（v1.61）: 同じ合成実行IDと証拠hashをPixel 10 GL066のTool／端末Wallet区間と、Provider署名／Sky bridge／Billing Wallet区間へ渡した。物理instrumentation 6/6、署名精算7/7、Sky→Zema job回帰19/19に合格し、端末側はTool二段実行、review、Provider登録、Wallet一度だけ記録、重複拒否まで確認した。これはRock所有fixtureによる相関済み二区間であり、端末から外部Providerまでの配備済み一本通し、実売上、sandbox、実払出しではない。外部Provider受入とGL066のBSP／vendor／partition／boot／純正復旧、source／artifact／production署名計画のfreezeが残るため、有料full buildはまだ開始しない。[相関試験証拠](evidence/pixel-tool-wallet-correlation-20260916.json)／[事前試験](evidence/android-pre-full-build-tests-20260915.json)。
+
+2026-09-16実機試験追記（v1.60）: 所有Pixel 10 GL066の既存OS上へ試験専用同一署名のLocal Action Assistant、Automation、instrumentation、記事Toolを導入し、物理端末instrumentation 5/5、Qwen3-0.6B Q8_0の機内モード推論、再起動後の会話／model metadata保持と手動reload、33分22秒・15推論の熱試験を合格した。最大電池温度34.4℃、Android thermal status 0、process restart 0。Sky→Zema→Tool→WalletはRock所有fixtureの自動receipt bridgeまで合格したが、この時点では物理Pixel上のWallet Provider縦断は未実証だった。GL066のBSP／vendor／partition／boot／純正復旧とsource／artifact／署名計画のfreezeが残るため、有料full buildはまだ開始しない。[実機証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)／[事前試験](evidence/android-pre-full-build-tests-20260915.json)。
 
 2026-09-16実機追記（v1.59）: 所有端末を読取り専用ADBで確認し、最初の物理対象を日本向けGoogle Pixel 10、型番／SKU `GL066`、codename `frankel`へ確定した。現在はGrapheneOS `2026091000`／Android 17で、bootloaderはlocked、別Verified Boot鍵のyellow状態。端末識別番号は保存しない。これによりAndroid物理端末の「正確な機種／SKU」gateだけを1/5合格とする。avocadoOSのfull build、flash、boot、BSP／復旧、CTS、production署名、販売準備は未合格で、有料full buildは開始しない。[端末inventory](evidence/android-pixel-10-gl066-device-inventory-20260916.json)／[boot状態](evidence/android-pixel-10-gl066-boot-state-20260916.json)。
 
@@ -516,6 +518,8 @@ Walletは収益・費用・receipt・払出し状態に加え、合法的な税�
 2026-09-15 v1.56: 有料full buildと実機flash／bootを最後に固定し、正確な端末readback、Android単体APK、emulator、純正Pixel上のoffline AI／温度、Sky→Zema→Tool→Wallet、source／artifact freezeを事前必須gateにした。app-only修正とOS image再build対象を分離し、初回build環境を最初の実機boot確認まで保持する。
 
 2026-09-16 v1.60: Pixel 10 GL066上の単体APK offline AI、再起動復元、33分22秒の熱試験を合格。Rock所有fixtureのTool→署名Earning Receipt→Wallet bridgeも合格済みとして同期した。外部Provider sandbox、物理PixelのWallet Provider縦断、BSP／復旧入力、source／artifact／署名計画freezeは未完了のため有料full buildを許可しない。
+
+2026-09-16 v1.61: 同一の合成実行IDと証拠hashでPixelのTool／端末Walletと署名済みBilling Walletを相関し、物理6/6・署名精算7/7・Sky→Zema回帰19/19を合格した。配備済み外部Provider一本通しや実収益ではない境界を維持し、Provider sandboxとOS build入力のfreezeが終わるまで有料full buildを許可しない。
 
 2026-09-15 v1.42: 利用者指定のOS共通登録、API version、UID／SELinux分離、本人承認・費用上限・停止・失効、Wallet台帳・receipt重複防止、暗号化backup・schema migration、署名更新・rollback・互換性検査をRQ42へ追加。source実装とnative／実機release gateを分離する。
 

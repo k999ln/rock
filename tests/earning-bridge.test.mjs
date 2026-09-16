@@ -111,7 +111,8 @@ function receipt(executionReceiptId, occurredAt, changes = {}) {
     sourceProvider: 'provider-fixture',
     providerReference: `pay_${crypto.randomUUID()}`,
     payoutAccountId: 'acct_alice',
-    evidenceSha256: 'a'.repeat(64),
+    evidenceSha256:
+      process.env.ROCK_TEST_PROVIDER_RECEIPT_DIGEST ?? 'a'.repeat(64),
     currency: 'usd',
     grossAmountMinor: 1500,
     operatingCostMinor: 100,
@@ -137,7 +138,13 @@ void test('completed real Tool -> provider receipt -> Wallet is exact and idempo
   const billing = new TestD1(billingMigrations);
   const now = Date.now();
   const store = operations(web, 'alice', () => now);
-  const jobId = crypto.randomUUID();
+  const jobId =
+    process.env.ROCK_TEST_EXECUTION_RECEIPT_ID ?? crypto.randomUUID();
+  assert.match(jobId, /^[0-9a-f-]{36}$/);
+  assert.match(
+    process.env.ROCK_TEST_PROVIDER_RECEIPT_DIGEST ?? 'a'.repeat(64),
+    /^[0-9a-f]{64}$/,
+  );
   await store.createJob({
     id: jobId,
     tool: 'mr-citations',

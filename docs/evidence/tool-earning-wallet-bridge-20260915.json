@@ -1,7 +1,8 @@
 {
   "schema": 1,
   "recordedAt": "2026-09-15",
-  "stage": "ROCK_READY",
+  "updatedAt": "2026-09-16",
+  "stage": "ROCK_READY_PHYSICAL_CORRELATED_SPLIT_BOUNDARY",
   "scope": "Tool completion to provider-signed Earning Receipt to Sky Billing Wallet fixture",
   "result": "PASS",
   "implemented": {
@@ -34,7 +35,12 @@
     },
     "typecheck": "PASS",
     "billingWorkerDryRunBundle": "PASS",
-    "fullRepositoryVerify": "PASS"
+    "fullRepositoryVerify": "PASS",
+    "physicalCorrelation": {
+      "status": "PASS_6_OF_6_PHYSICAL_AND_7_OF_7_HOST_WITH_SAME_SYNTHETIC_EXECUTION",
+      "evidence": "docs/evidence/pixel-tool-wallet-correlation-20260916.json",
+      "singleNetworkedEndToEnd": false
+    }
   },
   "rejectionsVerified": [
     "missing or invalid provider signature",
@@ -53,6 +59,6 @@
     "refund or chargeback flow",
     "real payout",
     "production deployment",
-    "physical Pixel execution"
+    "one deployed physical Pixel to external Provider to production Wallet transaction"
   ]
 }

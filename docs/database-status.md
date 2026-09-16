@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Pixel 10 GL066のreadback、物理instrumentation、GGUF機内モード推論、再起動、33分22秒熱試験とROCK_READY収益bridgeは合格した。次に物理Pixel上のSky→Zema→Tool→Wallet Provider縦断と外部Provider sandboxの事前build範囲を確定し、GL066のBSP／vendor／partition／boot／純正復旧入力、source／artifact／署名計画をfreezeしてからOS full build可否を再判定する。
+Pixel 10 GL066上のTool／端末Walletと署名済みBilling Walletを同一合成実行IDで相関し、物理6/6・署名精算7/7・Sky→Zema回帰19/19に合格した。次に外部Provider sandboxをfull build前必須にするか、初回buildを非価値移転Developer Previewへ限定するかを確定し、GL066のBSP／vendor／partition／boot／純正復旧入力、source／artifact／production署名計画をfreezeしてOS full build可否を再判定する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

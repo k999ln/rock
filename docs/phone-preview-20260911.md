@@ -27,7 +27,7 @@ OS full buildを先に試して後からappやLLMの不具合を直す順序に�
 
 2026-09-15の追加検証では、Core／Tool SDK／Automation／記事ToolのAndroid build・unit test・lint、Local Action Assistantのunsigned arm64 release APK build、Android 15 arm64 Pixel 10 device-profile emulatorでの5 instrumentation testまで合格した。ここでは別APKの署名検査、Binder、Android SQLite、Tool 2工程、review必須、Headless JS、GGUF未導入時の`NO_MODEL` fail-closedを確認した。物理Pixelではなく、device credential承認、再起動復元、最終SELinux domainは未確認なのでemulator gate全体は部分合格に留める。
 
-Sky→Zemaの一回限りhandoff、Zemaのjob進捗、Tool実行、Wallet／収益精算の単体試験に加え、Tool完了をProvider署名Earning ReceiptとしてWalletへ一度だけ転記するbridgeを実装した。Rock所有fixtureの縦断は7/7合格し、`skyZemaToolWalletPath`は`rock_ready_fixture_passed_provider_sandbox_pending`。実売上、外部決済Provider sandbox、返金／chargeback、実払出し、物理Pixel上のWallet Provider縦断は未実証である。
+Sky→Zemaの一回限りhandoff、Zemaのjob進捗、Tool実行、Wallet／収益精算の単体試験に加え、Tool完了をProvider署名Earning ReceiptとしてWalletへ一度だけ転記するbridgeを実装した。2026-09-16には同じ合成実行IDと証拠hashでPixelのTool／端末Wallet区間6/6と署名済みBilling Wallet区間7/7を相関し、`skyZemaToolWalletPath`は`rock_ready_physical_correlated_split_boundary_provider_sandbox_pending`。これはRock所有fixtureの二区間で、配備済み外部Provider一本通し、実売上、返金／chargeback、実払出しは未実証である。
 
 所有Pixel 10の端末readbackと単体APKによるGGUF機内モード推論、再起動、33分22秒の温度試験は完了した。残るのは物理Pixel上のSky→Zema→Tool→Wallet Provider縦断、外部Provider sandboxの扱い確定、GL066向けBSP／復旧入力とsource／artifact／署名計画の最終freeze。このgateは**進行中**で、full build開始条件をまだ満たしていない。
 

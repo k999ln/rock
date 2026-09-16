@@ -5,6 +5,7 @@ import android.app.job.JobScheduler;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.SystemClock;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -36,11 +37,16 @@ public class DeviceIntegrationTest {
         // Direct Android-runtime check with synthetic input; no raw production errors in IPC.
         String expectedCitations = ArticleTools.citations(new JSONObject(payload).getString("markdown"));
         assertTrue(expectedCitations.contains("## 出典"));
+        Bundle arguments = InstrumentationRegistry.getArguments();
+        String executionReceiptId = arguments.getString("executionReceiptId");
+        if (executionReceiptId == null || !executionReceiptId.matches("[A-Za-z0-9_-]{1,80}")) {
+            executionReceiptId = "integration-" + UUID.randomUUID();
+        }
         String id;
         try {
             try (AndroidDatabase db = new AndroidDatabase(isolatedDatabase)) {
                 Engine engine = new Engine(db);
-                id = engine.submit("integration", payload, false, true);
+                id = engine.submit(executionReceiptId, payload, false, true);
                 Engine.Ticket first = engine.claim("synthetic-boot", SystemClock.elapsedRealtime(), true);
                 assertNotNull(first);
                 ToolConnection.Result formatted = new ToolConnection(target).execute(first);

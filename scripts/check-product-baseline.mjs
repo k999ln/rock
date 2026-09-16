@@ -124,10 +124,12 @@ export function validateBaseline(
       data.northStar?.gameRole ===
         'optional_downstream_extension_not_core_launch_dependency' &&
       data.northStar?.dataCollection?.enabled === true &&
-      data.northStar?.dataCollection?.categorySpecificConsentRequired === true &&
+      data.northStar?.dataCollection?.categorySpecificConsentRequired ===
+        true &&
       data.northStar?.dataCollection
         ?.purposeRetentionRecipientDeletionAndWithdrawalRequired === true &&
-      data.northStar?.dataCollection?.deviceLocalAggregationPreferred === true &&
+      data.northStar?.dataCollection?.deviceLocalAggregationPreferred ===
+        true &&
       data.northStar?.dataCollection?.defaultExcluded?.includes(
         'raw_job_content',
       ) &&
@@ -174,7 +176,7 @@ export function validateBaseline(
     '目標駆動のブランド運営能力が必要です',
   );
   requireValue(
-      data.primaryCapabilities?.includes('local-offline-ai-runtime') &&
+    data.primaryCapabilities?.includes('local-offline-ai-runtime') &&
       data.localAiRuntime?.status ===
         'standalone_physical_pixel_offline_ai_reboot_thermal_and_response_sanitizer_verified_test_signing' &&
       data.localAiRuntime?.sourceCommit ===
@@ -206,7 +208,7 @@ export function validateBaseline(
     );
   }
   requireValue(
-      data.primaryCapabilities?.includes('os-platform-core') &&
+    data.primaryCapabilities?.includes('os-platform-core') &&
       data.androidPlatformCore?.status ===
         'standalone_android_build_passed_emulator_partial_aosp_not_run' &&
       data.androidPlatformCore?.apiVersion === 1 &&
@@ -264,12 +266,11 @@ export function validateBaseline(
         'passed' &&
       data.androidPreFullBuildGate?.checks?.androidEmulatorIntegration ===
         'partial_binder_sqlite_tool_and_local_ai_passed' &&
-      data.androidPreFullBuildGate?.checks?.standaloneLocalAiApk ===
-        'passed' &&
+      data.androidPreFullBuildGate?.checks?.standaloneLocalAiApk === 'passed' &&
       data.androidPreFullBuildGate?.checks?.stockPixelOfflineAiAndThermal ===
         'passed_offline_reboot_thermal' &&
       data.androidPreFullBuildGate?.checks?.skyZemaToolWalletPath ===
-        'rock_ready_fixture_passed_provider_sandbox_pending' &&
+        'rock_ready_physical_correlated_split_boundary_provider_sandbox_pending' &&
       data.androidPreFullBuildGate?.checks
         ?.sourceArtifactAndSigningPlanFreeze === 'pending',
     '有料full build前の単体APK・emulator・純正Pixel受入gateを維持してください',
@@ -278,6 +279,7 @@ export function validateBaseline(
     'record',
     'evidence',
     'earningsBridgeEvidence',
+    'physicalToolWalletEvidence',
     'androidWorkflow',
     'localAiWorkflow',
   ]) {
@@ -348,8 +350,8 @@ export function validateBaseline(
   );
   requireValue(
     emergencyPolicy.schema === 'dev.rock-device-emergency-access/1' &&
-    emergencyPolicy.status ===
-      'isolated_operator_dock_and_command_queue_implemented_android_agent_missing' &&
+      emergencyPolicy.status ===
+        'isolated_operator_dock_and_command_queue_implemented_android_agent_missing' &&
       emergencyPolicy.activation?.singleOperatorAllowed === true &&
       emergencyPolicy.activation?.userApprovalRequiredAtActivation === false &&
       emergencyPolicy.activation?.maximumSessionSeconds === 900 &&
@@ -844,14 +846,16 @@ export function validateBaseline(
     '多機種対応台帳の検査commandが必要です',
   );
   requireValue(
-    JSON.stringify(devicePolicy.firstPhysicalTarget) === JSON.stringify({
-      manufacturer: 'Google',
-      model: 'Pixel 10',
-      sku: 'GL066',
-      region: 'JP',
-      codename: 'frankel',
-      readbackEvidence: 'docs/evidence/android-pixel-10-gl066-device-inventory-20260916.json',
-    }),
+    JSON.stringify(devicePolicy.firstPhysicalTarget) ===
+      JSON.stringify({
+        manufacturer: 'Google',
+        model: 'Pixel 10',
+        sku: 'GL066',
+        region: 'JP',
+        codename: 'frankel',
+        readbackEvidence:
+          'docs/evidence/android-pixel-10-gl066-device-inventory-20260916.json',
+      }),
     '最初の物理端末readbackが確定値と一致しません',
   );
   requireValue(

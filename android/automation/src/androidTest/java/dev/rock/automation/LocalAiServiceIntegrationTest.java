@@ -19,11 +19,20 @@ public final class LocalAiServiceIntegrationTest {
         assertTrue(Set.of("ready", "no_model", "loading", "busy", "error").contains(state));
     }
 
-    @Test public void headlessRuntimeFailsClosedWhenNoGgufIsInstalled() throws Exception {
+    @Test public void runtimeMatchesInstalledModelState() throws Exception {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        LocalAiConnection.Result result = new LocalAiConnection(context).complete(
+        LocalAiConnection connection = new LocalAiConnection(context);
+        String state = connection.status();
+        LocalAiConnection.Result result = connection.complete(
             UUID.randomUUID().toString(), "端末内モデルの接続を確認", "[]");
-        assertEquals("failed", result.event);
-        assertEquals("NO_MODEL", result.payload);
+        if ("no_model".equals(state)) {
+            assertEquals("failed", result.event);
+            assertEquals("NO_MODEL", result.payload);
+        } else if ("ready".equals(state)) {
+            assertEquals("completed", result.event);
+            assertTrue(!result.payload.trim().isEmpty());
+        } else {
+            assertEquals("failed", result.event);
+        }
     }
 }

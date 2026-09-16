@@ -15,7 +15,7 @@
     "emulatorInstallLaunch": "PASS",
     "signedBinderConnection": "PASS",
     "headlessJsNoModelFailClosed": "PASS_NO_MODEL",
-    "physicalAndroidInstrumentation": "PASS_5_OF_5",
+    "physicalAndroidInstrumentation": "PASS_6_OF_6",
     "ggufModelSelected": true,
     "ggufModelSha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
     "ggufInference": "PASS",
@@ -33,34 +33,43 @@
     ]
   },
   "test2SkyZemaToolWallet": {
-    "status": "PASS_ROCK_READY_PROVIDER_SANDBOX_PENDING",
+    "status": "PASS_ROCK_OWNED_PHYSICAL_CORRELATED_PROVIDER_SANDBOX_PENDING",
     "skyToZemaSingleUseHandoff": "PASS",
     "zemaJobLifecycleAndProgress": "PASS",
     "androidToolBinderSQLiteReviewFlow": "PASS",
     "walletAndVerifiedEarningsSubsystems": "PASS",
     "automaticToolWalletReceiptBridge": "PASS",
     "rockOwnedEndToEndReceiptFixture": "PASS",
+    "physicalPixelCorrelatedSplitBoundary": "PASS_6_OF_6_PHYSICAL_AND_7_OF_7_HOST",
     "focusedHostTests": "PASS_7_OF_7",
     "evidence": "docs/evidence/tool-earning-wallet-bridge-20260915.json",
+    "physicalEvidence": "docs/evidence/pixel-tool-wallet-correlation-20260916.json",
     "notProven": [
       "real sale or income",
       "external payment provider sandbox",
       "refund or chargeback flow",
       "real payout",
       "production deployment",
-      "physical Pixel end-to-end Wallet provider execution"
+      "one deployed physical Pixel to external Provider to production Wallet transaction"
     ]
   },
   "androidInstrumentation": {
     "environment": "Android 15 API 35 arm64 Pixel 10 device-profile emulator plus physical Pixel 10 GL066 / Android 17",
-    "tests": 5,
-    "passed": 5,
-    "failed": 0,
+    "priorFreshEmulator": {
+      "tests": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "latestPhysicalPixel": {
+      "tests": 6,
+      "passed": 6,
+      "failed": 0
+    },
     "testSigner": "debug-only shared signer; not a release credential"
   },
   "androidBuildAndLint": {
     "status": "PASS",
-    "gradleTasks": 172,
+    "gradleTasks": 190,
     "scope": "Platform Core, Tool SDK, automation APK and article Tool APK; standalone Gradle only, not Soong or an OS image"
   },
   "focusedHostTests": {

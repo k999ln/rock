@@ -59,7 +59,7 @@ avocadoOSの目的は、**一人ひとりが自分専用のAI自動化チーム�
 7. Earning ReceiptをWalletへ一度だけ転記し、費用を差し引いた検証済み運用収支を表示する。
 8. 失敗、取消、重複、更新、rollback、純正OS復旧を再現できる。
 
-6〜7の **Tool完了→署名済みEarning Receipt→Wallet自動照合** は、2026-09-15にROCK_READYのfixture縦断まで実装した。Provider署名、完了済み・非サンプルjob、利用者、Tool、時刻を照合し、同じ実行をWalletへ二重計上しない。実販売・決済Providerのsandbox接続、返金、chargeback、払出しは未接続であり、fixture合格を実収益実績や1.0完成とは扱わない。
+6〜7の **Tool完了→署名済みEarning Receipt→Wallet自動照合** は、2026-09-15にROCK_READYのfixture縦断まで実装し、2026-09-16に同一の合成実行IDと証拠hashでPixelのTool／端末Wallet区間と署名精算区間を相関した。Provider署名、完了済み・非サンプルjob、利用者、Tool、時刻を照合し、同じ実行をWalletへ二重計上しない。実販売・決済Providerのsandbox接続、返金、chargeback、払出しは未接続であり、相関済みfixture合格を実収益実績や1.0完成とは扱わない。
 
 ## 6. ファンドの自律改善
 
