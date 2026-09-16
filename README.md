@@ -1,6 +1,6 @@
 # avocadoOS — 自動化を接続・実行・管理するOS
 
-avocadoOSは、AI自動化ToolをSkyから接続し、利用者が確認した権限・実行先・費用上限で動かし、結果、費用、収益、復旧状態を一つのOSで管理する製品です。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ46、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`avocadoOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
+avocadoOSは、利用者が自分専用のAI自動化チームを所有し、通信断でも端末内LLMとToolが仕事を進め、接続時に成果・検証済み収益・Walletを安全に同期できる基盤です。OS、Pixel、Wallet、ファンド、ゲームは、便利さと持続可能な収益機会を増やす目的のための層として扱います。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ47、逆算した優先順位は[製品目的](docs/product-north-star-20260915.md)、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`avocadoOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
 
 ## 現在地
 
@@ -182,7 +182,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-15 / Android事前試験1・2とfull build判断 / 完了 76/107件
+最終更新: 2026-09-15 / AI自動化チームの最小収益loopとAndroid事前試験 / 完了 76/107件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -257,7 +257,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 | G03 | Web DBの保存境界・互換migration・重複防止checkを整理 | 完了 | [記録](docs/data-storage-boundaries.md) · [記録](scripts/check-web-schema.mjs) · [記録](tests/migration-union.test.mjs) |
-| B01 | Sky＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
+| B01 | Sky＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/product-north-star-20260915.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
 | B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
 | B02 | 既存商品のSky実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/sky-role-agents-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) · [記録](tests/subscription-advisor.test.mjs) · [記録](docs/sky-legal-intake-20260912.md) · [記録](tests/legal-intake.test.mjs) · [記録](docs/sky-patent-assistant-20260912.md) · [記録](tests/patent-assistant.test.mjs) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) |
@@ -313,7 +313,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 3のOS full buildへ進む前に、選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験を行い、Tool完了から署名済みEarning Receiptを自動生成してWalletへ一度だけ転記するbridgeを実装・縦断再試験する。正確なSKU readbackとsource／artifact freezeも完了する。
+次の作業: 最上位目的から逆算し、3のOS full buildより先にTool完了から署名済みEarning Receiptを生成してWalletへ一度だけ転記するbridgeを実装・縦断再試験する。その後、選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験、正確なSKU readback、source／artifact freezeを完了する。
 <!-- project-status:end -->
 
 </details>

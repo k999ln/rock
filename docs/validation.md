@@ -1,5 +1,11 @@
 # 検証記録
 
+## 製品目的から逆算した開発軸 / 2026-09-15
+
+- RQ47として、AI自動化チームの効率化を最上位目的にし、端末内LLM、Tool、署名済み収益、Wallet、ファンド改善、税務準備、ゲーム、専用端末の順序を機械可読baselineへ固定した。
+- Pixelは最初のreference hardware、カメラ品質は1.0完成条件外、月50万円規模は長期の検証済み到達指標で収益保証ではない。同意のない包括データ収集、私的本文・鍵・credentialの既定収集、法域未確認の自動税務判断をbaseline検査が拒否する。
+- `npm run baseline:check`と製品baseline負例testに成功。これは設計優先順位の保存であり、収益loop、税務Provider、実ゲーム、専用端末を実装・実証した記録ではない。
+
 ## Android full build前の試験1・2 / 2026-09-15
 
 - 試験1は部分合格。固定sourceからarm64 Local Action Assistant APKを生成し、SHA-256 `2a0441565f6cca5676bc7a113f74e66e734c5e966aaf3835a62ae9b79d4756e9`、通信権限なし、WAKE_LOCK、署名限定Binder権限を確認した。Android 15 arm64 Pixel 10端末profile emulatorで、Binder接続とGGUFなしの`NO_MODEL`拒否を含むinstrumentation 5/5が合格した。純正OSの所有Pixel 10、実GGUF、機内モード、保存／再起動、30分温度試験は未実行。

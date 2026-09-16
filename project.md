@@ -1,5 +1,11 @@
 # avocadoOS — 事業・設計・進捗
 
+## 2026-09-15 — AI自動化チームの効率化を最上位目的へ固定
+
+avocadoOSの目的はスマートフォンやOSを作ること自体ではなく、利用者が自分専用のAI自動化チームを所有し、その効率を改善することで、便利さと検証可能な収益機会を増やし、利用者全体の豊かさへつなげること。Pixelは最初のreference hardwareで、カメラ品質を1.0完成条件にせず、将来の専用端末は価値実証後の配布形態とする。
+
+端末内LLMとToolをoffline-firstで動かし、接続時に外部案件、納品、署名済み収益、Walletを重複なく同期する。一つのTool経済loopを先に完走し、次に複数Toolファンドの一押し実行と実測改善へ進む。月50万円規模は長期の検証済み到達指標であって収益保証ではない。Walletの税務機能は記録、分類候補、集計、export、専門家確認までとし、データ収集はcategory別同意、目的、保存期間、削除・撤回を必須にする。ゲームは同じ権限・receipt・Wallet基盤の派生先とし、1.0の中核loopを止めない。詳細は[製品目的から逆算した開発軸](docs/product-north-star-20260915.md)とRQ47を参照。
+
 ## 2026-09-15 — 有料OS full buildを事前試験の後へ固定
 
 利用者の指示により、Android OS full buildと実機flash／bootを最終工程に変更した。事前試験1では、固定sourceからLocal Action Assistantのarm64 release APKを生成し、SHA-256、ABI、通信権限なし、WAKE_LOCK、署名限定Binder権限を確認した。Android 15 arm64のPixel 10端末profile emulatorでは、同一の試験署名を使ったBinder接続とGGUF未導入時の`NO_MODEL`拒否を含む5/5 instrumentation testが合格した。ただしこれは純正OSの所有Pixel 10ではなく、GGUF推論、機内モード、保存／再起動、30分温度試験は未実行なので試験1は部分合格である。
@@ -518,7 +524,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-15 / Android事前試験1・2とfull build判断 / 完了 76/107件
+最終更新: 2026-09-15 / AI自動化チームの最小収益loopとAndroid事前試験 / 完了 76/107件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -593,7 +599,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | G01 | GitHubリポジトリの役割・重複監査と正本境界の固定 | 完了 | [記録](docs/git-consolidation.md) · [記録](data/repository-map.json) · [記録](scripts/check-repository-map.mjs) · [記録](docs/validation.md) |
 | G02 | vvvvの稼働参照監査と安全なarchive判定 | 未着手 | [記録](docs/git-consolidation.md) |
 | G03 | Web DBの保存境界・互換migration・重複防止checkを整理 | 完了 | [記録](docs/data-storage-boundaries.md) · [記録](scripts/check-web-schema.mjs) · [記録](tests/migration-union.test.mjs) |
-| B01 | Sky＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
+| B01 | Sky＋Walletの製品ベース・branch監査・プロンプト規約を保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/product-north-star-20260915.md) · [記録](docs/progress-audit-20260909.md) · [記録](docs/prompt-playbook.md) · [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/validation.md) |
 | B04 | main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/os-operational-validation-20260909.md) |
 | B02 | 既存商品のSky実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/sky-role-agents-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) · [記録](tests/subscription-advisor.test.mjs) · [記録](docs/sky-legal-intake-20260912.md) · [記録](tests/legal-intake.test.mjs) · [記録](docs/sky-patent-assistant-20260912.md) · [記録](tests/patent-assistant.test.mjs) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) |
@@ -649,7 +655,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: 3のOS full buildへ進む前に、選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験を行い、Tool完了から署名済みEarning Receiptを自動生成してWalletへ一度だけ転記するbridgeを実装・縦断再試験する。正確なSKU readbackとsource／artifact freezeも完了する。
+次の作業: 最上位目的から逆算し、3のOS full buildより先にTool完了から署名済みEarning Receiptを生成してWalletへ一度だけ転記するbridgeを実装・縦断再試験する。その後、選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験、正確なSKU readback、source／artifact freezeを完了する。
 <!-- project-status:end -->
 
 ## 次段階の設計

@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-15追記（v1.57）: 最上位目的を、利用者が自分専用のAI自動化チームを所有し、その効率を継続改善して、便利さと検証可能な収益機会を増やし、利用者全体の豊かさへつなげることに固定する。OS、Pixel、Wallet、ファンド、ゲームはこの目的のための層であり、OSやスマートフォン開発自体を目的にしない。Pixelは最初のreference hardware、カメラ品質は1.0完成条件外、専用端末は価値実証後の配布形態とする。月50万円規模は長期の実測到達指標であり、収益・利回り・達成時期の保証ではない。offline-first実行、Tool→署名済みEarning Receipt→Wallet、ファンド改善、合法的な税務準備、同意可能な改善データ収集、ゲーム派生の順に逆算する。RQ47と[製品目的から逆算した開発軸](product-north-star-20260915.md)を追加する。
+
 2026-09-15検証追記（v1.56）: 有料Linux環境でのAndroid OS full buildと実機flash／bootは最後に行う。Android単体build／lint、emulator上のBinder／SQLite、Local Action Assistant arm64 APK生成・hash固定・署名限定Binder・GGUFなしの安全な拒否は合格した。純正OSの所有Pixel 10上でのGGUF機内モード推論・保存／再起動・30分温度試験は未実行のため試験1は部分合格。Sky→Zema、job、Android Tool、Wallet／認証済み収益の個別試験は合格したが、Tool完了を署名済みEarning ReceiptとしてWalletへ自動転記する経路が未実装のため試験2は不合格である。正確なSKU readbackと最終freezeを含め、全て合格するまで有料full buildを開始しない。Sky、Zema、Wallet、Tool、LLMのapp-only修正は単体APK更新で反復できる境界を維持し、framework、SELinux、privapp/product設定、boot/vendor/partition/AVB変更だけをOS image再build対象とする。初回build環境はfactory／OTA／target-filesを保存し、最初の実機bootと修正要否の確認まで保持する。[事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)を判定正本とする。
 
 2026-09-15追記（v1.55）: RQ46の「運営専用」を利用者向けavocadoOS内の隠しrouteではなく、配備先、認証、asset、API、D1を分けた **avocadoOS Operator Dock** として訂正する。利用者向けWeb/PWA・OSホームには管理画面、管理API、入口を含めない。Dockの全requestは静的assetを含めCloudflare Accessの署名JWTをissuer、専用audience、有効期限、単一operator subjectまで検証してから処理する。端末側service未実装の境界は維持する。
@@ -470,7 +472,15 @@ Dockの全requestは静的HTML、CSS、JavaScriptを含めて専用Workerを先�
 
 Operator Dockと命令キューの実装は、配備済みまたは端末への実到達を意味しない。専用hostname、Cloudflare Access application、operator subject、専用D1はowner設定待ちである。Android system service、device enrollment、hardware-backed operator signature、端末側scope／nonce／期限検査が完成するまで`deviceAgent=not_implemented`とし、UIは命令を実端末へ送信済みと表示しない。
 
-## 1.0への8原則の適用（RQ01〜RQ46を維持）
+## RQ47 AI自動化チームの効率化から収益・Wallet・ファンド・ゲームへ逆算する
+
+avocadoOSの最上位目的は、利用者が自分専用のAI自動化チームを所有し、その効率を改善することで、仕事と生活を便利にし、検証可能な収益機会を増やし、利用者全体の豊かさへつなげることである。OS、Pixel、Wallet、ファンド、ゲーム、将来の専用端末は目的ではなく、この目的を実現・配布・拡張する層として扱う。スマートフォン市場の一般機能やカメラ品質でiPhoneと競うことを1.0の完成条件にしない。
+
+端末内LLMは通信がない間も仕事分解、Tool実行、再試行、確認待ち、成果保存を続け、接続時だけ外部案件取得、外部作用、納品、署名済み収益、Wallet照合を重複なく同期する。最初に一つのToolでこの経済loopを完走し、次に複数Toolファンドを一押しで開始・管理・改善できるようにする。月50万円規模はProvider確認済み収益と全実行費用を持つ長期の到達指標であり、未検証値、PAPER結果、単発売上、将来利回り、全利用者の収入保証として表示しない。
+
+Walletは収益・費用・receipt・払出し状態に加え、合法的な税務準備の記録、分類候補、期間集計、export、専門家確認を支援する。脱税、架空経費、法域未確認の自動申告を行わない。改善データはcategoryごとに目的、送信先、保存期間、第三者提供、削除、同意撤回を示し、仕事本文、私的会話、写真、秘密鍵、seed phrase、認証情報、正確な位置を既定収集しない。ゲームは公式に許可された接続先へ同じ権限・receipt・Wallet基盤を派生させ、1.0の中核収益loopを止める依存にしない。詳細は [製品目的から逆算した開発軸](product-north-star-20260915.md)を正本補助資料とする。
+
+## 1.0への8原則の適用（RQ01〜RQ47を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -490,6 +500,8 @@ Operator Dockと命令キューの実装は、配備済みまたは端末への�
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-15 v1.57: AI自動化チームの効率化を最上位目的に固定し、offline-first実行、検証済み収益、Wallet、ファンド改善、税務準備、ゲーム、専用端末へ逆算するRQ47を追加。Pixelは最初のreference hardware、月50万円規模は長期の実測目標で収益保証ではなく、改善データ収集はcategory別同意と削除可能性を必須にした。
 
 2026-09-15 v1.56: 有料full buildと実機flash／bootを最後に固定し、正確な端末readback、Android単体APK、emulator、純正Pixel上のoffline AI／温度、Sky→Zema→Tool→Wallet、source／artifact freezeを事前必須gateにした。app-only修正とOS image再build対象を分離し、初回build環境を最初の実機boot確認まで保持する。
 

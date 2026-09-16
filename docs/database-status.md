@@ -10,7 +10,7 @@
 - source inventory: 6/6確認済み
 - current production readback: 0/6
 - 作業進捗: 107 task中 76 done、22 in progress、9 planned、0 blocked
-- 現在milestone: Android事前試験1・2とfull build判断
+- 現在milestone: AI自動化チームの最小収益loopとAndroid事前試験
 
 ## 保存境界と配備状態
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-3のOS full buildへ進む前に、選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験を行い、Tool完了から署名済みEarning Receiptを自動生成してWalletへ一度だけ転記するbridgeを実装・縦断再試験する。正確なSKU readbackとsource／artifact freezeも完了する。
+最上位目的から逆算し、3のOS full buildより先にTool完了から署名済みEarning Receiptを生成してWalletへ一度だけ転記するbridgeを実装・縦断再試験する。その後、選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験、正確なSKU readback、source／artifact freezeを完了する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

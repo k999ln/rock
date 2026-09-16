@@ -1,5 +1,5 @@
 {
-  "version": "1.56",
+  "version": "1.57",
   "decidedAt": "2026-09-15",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -37,11 +37,52 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided eight Zero-to-One principles; preserve RQ01-RQ46 and the current avocadoOS 1.0 technical base",
-    "initialAudienceHypothesis": "Independent writers and creators with repeated citation-organization and result-tracking work",
-    "representativeProductCandidate": "org.rockstar.citation-organizer",
+    "basis": "User-provided product purpose and eight Zero-to-One principles; preserve RQ01-RQ47 and the current avocadoOS 1.0 technical base",
+    "initialAudienceHypothesis": "not_fixed; earlier independent-writer hypothesis remains historical until the verified economic loop selects a repeatable problem",
+    "representativeProductCandidate": "one existing Tool capable of completing the offline-to-signed-earning-to-Wallet acceptance loop",
     "marketValidation": "not_run",
     "runtimeChangedByThisDesign": false
+  },
+  "northStar": {
+    "document": "docs/product-north-star-20260915.md",
+    "purpose": "increase convenience and broadly shared prosperity by continuously improving a user-owned AI automation team and connecting verified outcomes to sustainable income opportunities",
+    "osIsMeansNotGoal": true,
+    "pixelRole": "first_reference_hardware",
+    "cameraQualityIsLaunchCriterion": false,
+    "dedicatedDeviceBeforePixelValueProof": false,
+    "offlineFirst": "local_reasoning_execution_queue_and_resume_then_exactly_once_sync_when_connectivity_returns",
+    "valueSequence": [
+      "offline_local_ai",
+      "reliable_tool_execution",
+      "verified_earning_receipt",
+      "wallet_reconciliation",
+      "autonomous_fund_improvement",
+      "tax_preparation_support",
+      "authorized_game_extensions",
+      "preconfigured_dedicated_device"
+    ],
+    "monthlyIncomeTargetJpy": 500000,
+    "monthlyIncomeTargetNature": "long_term_verified_outcome_target_not_income_or_yield_guarantee",
+    "verifiedOperatingSurplus": "provider_confirmed_income_minus_execution_provider_platform_and_refund_costs_before_jurisdiction_specific_tax",
+    "taxSupport": "record_classify_summarize_export_and_professional_review_not_autonomous_tax_advice_or_evasion",
+    "gameRole": "optional_downstream_extension_not_core_launch_dependency",
+    "dataCollection": {
+      "enabled": true,
+      "categorySpecificConsentRequired": true,
+      "purposeRetentionRecipientDeletionAndWithdrawalRequired": true,
+      "deviceLocalAggregationPreferred": true,
+      "defaultExcluded": [
+        "raw_job_content",
+        "raw_artifacts",
+        "private_conversations",
+        "photos",
+        "contacts",
+        "private_keys",
+        "seed_phrases",
+        "credentials",
+        "precise_location"
+      ]
+    }
   },
   "alignmentAudit": "docs/design-implementation-alignment-20260909.md",
   "sky": {
@@ -320,7 +361,8 @@
     "RQ43",
     "RQ44",
     "RQ45",
-    "RQ46"
+    "RQ46",
+    "RQ47"
   ],
   "primaryCapabilities": [
     "sky-automation-control",

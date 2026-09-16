@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-09-15",
-  "milestone": "Android事前試験1・2とfull build判断",
-  "nextAction": "3のOS full buildへ進む前に、選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験を行い、Tool完了から署名済みEarning Receiptを自動生成してWalletへ一度だけ転記するbridgeを実装・縦断再試験する。正確なSKU readbackとsource／artifact freezeも完了する。",
+  "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
+  "nextAction": "最上位目的から逆算し、3のOS full buildより先にTool完了から署名済みEarning Receiptを生成してWalletへ一度だけ転記するbridgeを実装・縦断再試験する。その後、選定GGUFを入れた所有Pixel 10で機内モード推論・保存／再起動・30分温度試験、正確なSKU readback、source／artifact freezeを完了する。",
   "tasks": [
     {
       "id": "SKY01",
@@ -910,6 +910,7 @@
       "dependsOn": ["G01"],
       "evidence": [
         "docs/product-baseline.md",
+        "docs/product-north-star-20260915.md",
         "docs/progress-audit-20260909.md",
         "docs/prompt-playbook.md",
         "docs/prompts/hub-wallet-next.md",

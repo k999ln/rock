@@ -11,10 +11,20 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ46/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ47/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ46/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ47/);
+  const phoneBecomesTheGoal = structuredClone(source);
+  phoneBecomesTheGoal.northStar.osIsMeansNotGoal = false;
+  assert.throws(() => validateBaseline(phoneBecomesTheGoal), /AI自動化チーム/);
+  const incomeGuarantee = structuredClone(source);
+  incomeGuarantee.northStar.monthlyIncomeTargetNature = 'guaranteed_income';
+  assert.throws(() => validateBaseline(incomeGuarantee), /AI自動化チーム/);
+  const blanketCollection = structuredClone(source);
+  blanketCollection.northStar.dataCollection.categorySpecificConsentRequired =
+    false;
+  assert.throws(() => validateBaseline(blanketCollection), /AI自動化チーム/);
   const lostLocalAiBuildEvidence = structuredClone(source);
   lostLocalAiBuildEvidence.localAiRuntime.apkBuilt = false;
   assert.throws(() => validateBaseline(lostLocalAiBuildEvidence), /ローカルLLM/);

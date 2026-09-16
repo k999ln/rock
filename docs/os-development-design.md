@@ -2,6 +2,8 @@
 
 現行要望は [製品ベース](product-baseline.md)、現在の実装再開先は [CHECKPOINT](../CHECKPOINT.md)。Android/AOSPとLinux nativeの実績を分けます。
 
+2026-09-15現行優先: [製品目的から逆算した開発軸](product-north-star-20260915.md)とRQ47を最優先にする。OSやスマートフォン開発自体は目的ではなく、端末内LLM→Tool実行→署名済み収益→Wallet→ファンド改善を成立させる基盤である。所有Pixel 10を最初のreference hardwareとし、カメラ品質や一般スマートフォン機能を1.0完成条件にしない。下記のBlackBerry、Pixel 8a／9、引用整理等は当時の候補・履歴で、現行優先を上書きしない。
+
 改訂日: 2026-09-09。現行方針は [native OS統合記録](native-os-integration.md)。BlackBerryを初期製品端末の優先候補とし、Linux/Buildroot/QEMUの起動済み試作を `systems/rock-star-os/` へ追加した。最終実機方式と型番は未定。Walletの新OS契約は月888 cents固定、既存Webの上限料金は試算として保持する。
 
 以下は**2026-09-05版0.1のAndroid/AOSPトラックの設計と履歴**。AOSP/Pixel主軸という当時の選択は現在の唯一の方式ではない。「未実装」「未検証」はこのトラックに限定する。Linuxで得た証拠をAndroidや実機に移し替えない。将来要件は引き続き参照し、矛盾する優先順位・端末・料金は上記の現行方針を優先する。

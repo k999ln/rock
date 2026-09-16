@@ -1,5 +1,7 @@
 # RockstarOS 1.0 — 8原則を適用した製品・事業・開発設計
 
+2026-09-15現行優先: 最上位目的は[製品目的から逆算した開発軸](product-north-star-20260915.md)とRQ47を優先する。本書の初期audience、引用整理、BlackBerry等は当時の検証仮説・履歴であり、現在の目的やPixel 10 reference hardwareを上書きしない。現在は端末内LLM→Tool実行→署名済み収益→Wallet→ファンド改善を中核経路とする。
+
 状態: 設計。利用者が提示した8原則と「現段階を1.0のベースにし、継続改善する」を適用する。既存の[確定要望RQ01〜RQ17](product-baseline.md)、[system構成](rockstaros-1.0-architecture.md)、[実装承認範囲](execution-approval-20260909.md)を維持する。新しい市場・価格・所有権・実資金取引を確定した文書ではない。
 
 ## 1. 製品の核と決定の区分
