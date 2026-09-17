@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-16",
-  "milestone": "AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続",
-  "nextAction": "Astra設計とSol監査を反映し、AI02から1.0向けモデルmanifestと仕事への版固定を実装する。AI03の限定記憶、AI04の外部作用禁止／照合契約、AI05のapp／OS能力宣言を既存Brokerへ段階導入し、AI06の非金融Game／IP fixtureで共通性を確認する。full build準備ではGoogle復旧実ファイル・vendor inventory・HSM／署名bridge・本番Operator登録・物理data／Keystore全損復元が残る。Game開発は収益Provider／Fundの完成待ちにしない。",
+  "updatedAt": "2026-09-17",
+  "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
+  "nextAction": "Scalewayの課金確認後、Ubuntu 24.04 / 32 dedicated vCPU / 64 GB RAM / 600 GBで固定sourceをsyncし、Operator Agentを明示除外したbringup modeでtarget-files-packageとotatools-packageをbuildする。RELEASE_FLASH gate、production signing、実機flashは未合格のまま維持する。",
   "tasks": [
     {
       "id": "AI01",
@@ -1741,8 +1741,17 @@
     "targetFamilyConfirmed": true,
     "targetConfirmed": true,
     "deviceReadbackConfirmed": true,
-    "buildEnvironment": "USER_HAS_NONE",
+    "buildEnvironment": "SCALEWAY_DRAFT_AWAITING_EXPLICIT_COST_CONFIRMATION",
     "cloudProvisioned": false,
+    "compileBringupGate": {
+      "implemented": true,
+      "mode": "bringup",
+      "operatorAgent": "EXPLICITLY_EXCLUDED_UNLESS_PUBLIC_CONFIG_IS_SUPPLIED",
+      "testSigningOnly": true,
+      "releaseFlashAllowed": false,
+      "releaseGateStillFailClosed": true,
+      "verification": "18 Python tests, shell syntax, OS contract check and Android architecture tests passed"
+    },
     "sourceLock": "os/physical/frankel-source-lock.json",
     "dspSourceAudit": "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json",
     "sourceTag": "2026091000",
@@ -1766,13 +1775,29 @@
         "maximum": 30
       },
       "approvedBudget": null,
-      "status": "PROPOSED_NOT_APPROVED",
-      "accountConfigured": false,
+      "status": "SCALEWAY_CONFIGURATION_READY_AWAITING_EXPLICIT_CONFIRMATION",
+      "accountConfigured": true,
       "spendIncurredByThisWork": false
     },
+    "scalewayDraft": {
+      "zone": "fr-par-1",
+      "instanceType": "COMPUTE3-X32C-64G",
+      "vcpus": 32,
+      "vcpuType": "dedicated",
+      "memoryGiB": 64,
+      "image": "Ubuntu 24.04 Noble Numbat",
+      "blockStorage5kGiB": 600,
+      "instanceHourlyEurExcludingTax": 0.9363,
+      "storageHourlyEurExcludingTax": 0.078,
+      "ipv4HourlyEurExcludingTax": 0.005,
+      "totalHourlyEurExcludingTax": 1.0193,
+      "eightHourEstimateEurExcludingTax": 8.1544,
+      "twentyFourHourEstimateEurExcludingTax": 24.4632,
+      "created": false
+    },
     "targetDiscussion": "Read-only ADB confirmed the owner-selected first physical target as Japan-market Pixel 10 / frankel / GL066 on 2026-09-16. It is locked with an alternate verified-boot root. The signed 2026091000 source tag and Dynamic Partition / Virtual A/B / AVB layout are frozen. Test-signed apps passed the 23-check pre-full-build physical suite including non-destructive reboot recovery and hardware-backed file export. Exact Google factory/full-OTA artifacts, vendor inventory, production signing, destructive wipe restore, build, unlock and flash remain unapproved or incomplete.",
-    "recommendedBuildEnvironment": "DigitalOcean CPU-Optimized Regular 48 vCPU / 96 GiB / 600 GiB / Ubuntu 24.04 x86_64; Google Cloud is the alternative for detachable persistent storage",
-    "latestRequest": "Keep the external Provider in the app/server gate, freeze the common Pixel 10 GL066 OS inputs in order, and do not start full build or flash before recovery, vendor and signing inputs pass",
+    "recommendedBuildEnvironment": "Scaleway COMPUTE3-X32C-64G / 32 dedicated vCPU / 64 GiB / 600 GiB Block Storage 5K / Ubuntu 24.04 x86_64 in fr-par-1",
+    "latestRequest": "Use the current Git main as source of truth, split COMPILE_BRINGUP from RELEASE_FLASH, and run the Pixel 10 GL066 compile-only Developer Preview full build without flashing or production signing",
     "externalProviderBoundary": {
       "includedInFirstOsFullBuild": false,
       "implementation": "APP_AND_SERVER",

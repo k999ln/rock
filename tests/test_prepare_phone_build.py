@@ -192,6 +192,29 @@ class PhonePreparationTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "full OS build input gate"):
             phone.build_config()
 
+    def test_compile_bringup_accepts_confirmed_target_without_release_inputs(self):
+        lock = json.loads(self.lock.read_text())
+        lock["targetConfirmedByOwner"] = True
+        lock["confirmedSku"] = "FIXTURE-SKU"
+        phone.LOCK.write_text(json.dumps(lock))
+        config = phone.build_config(mode="bringup")
+        self.assertTrue(config["compileBringupGatePassed"])
+        self.assertFalse(config["fullBuildInputGatePassed"])
+        self.assertFalse(config["releaseFlashGatePassed"])
+
+    def test_release_gate_stays_fail_closed_after_bringup_gate_passes(self):
+        lock = json.loads(self.lock.read_text())
+        lock["targetConfirmedByOwner"] = True
+        lock["confirmedSku"] = "FIXTURE-SKU"
+        phone.LOCK.write_text(json.dumps(lock))
+        with self.assertRaisesRegex(ValueError, "full OS build input gate"):
+            phone.build_config(mode="release")
+
+        lock["fullBuildInputGatePassed"] = True
+        phone.LOCK.write_text(json.dumps(lock))
+        with self.assertRaisesRegex(ValueError, "RELEASE_FLASH gate"):
+            phone.build_config(mode="release")
+
     def test_host_report_enforces_minimum_memory_and_disk(self):
         class Usage:
             def __init__(self, free):
@@ -217,6 +240,7 @@ class PhonePreparationTest(unittest.TestCase):
         lock["targetConfirmedByOwner"] = True
         lock["confirmedSku"] = "FIXTURE-SKU"
         lock["fullBuildInputGatePassed"] = True
+        lock["firstFlashGate"]["passed"] = True
         phone.LOCK.write_text(json.dumps(lock))
         config = phone.build_config()
         self.assertEqual(config["device"], "frankel")
@@ -225,7 +249,7 @@ class PhonePreparationTest(unittest.TestCase):
         self.assertEqual(config["kernel_path"], "device/google/laguna-kernels/6.6")
         self.assertEqual(config["buildTargets"], ["target-files-package", "otatools-package"])
         self.assertTrue(config["targetConfirmedByOwner"])
-        self.assertFalse(config["firstFlashGatePassed"])
+        self.assertTrue(config["firstFlashGatePassed"])
 
     def test_lock_rejects_missing_or_malformed_first_flash_gate(self):
         for first_flash_gate in (None, {}, {
@@ -264,6 +288,7 @@ class PhonePreparationTest(unittest.TestCase):
         lock["targetConfirmedByOwner"] = True
         lock["confirmedSku"] = "FIXTURE-SKU"
         lock["fullBuildInputGatePassed"] = True
+        lock["firstFlashGate"]["passed"] = True
         phone.LOCK.write_text(json.dumps(lock))
         self.command(self.root, "git", "add", "lock.json")
         self.command(self.root, "git", "commit", "-qm", "confirm fixture lock change")

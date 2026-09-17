@@ -258,6 +258,9 @@ assert.ok(phoneInputFreezer.includes('generated vendor tree changed after invent
 assert.ok(phoneInputFreezer.includes('avocadoos-android-signing-plan-freeze/1'));
 assert.ok(phoneInputFreezer.includes('productionSigningReady'));
 const phoneBuild = read('scripts/build-phone-bringup.sh');
+assert.ok(phoneBuild.includes('--mode bringup|release'));
+assert.ok(phoneBuild.includes('ROCK_OPERATOR_AGENT_MODE=excluded'));
+assert.ok(phoneBuild.includes('releaseFlashAllowed'));
 for (const value of [
   'ROCK_GOOGLE_FACTORY_IMAGE',
   'ROCK_GOOGLE_FULL_OTA',
@@ -267,6 +270,9 @@ for (const value of [
   'freeze-phone-build-inputs.py" verify-vendor',
   'freeze-phone-build-inputs.py" signing-plan',
 ]) assert.ok(phoneBuild.includes(value));
+const physicalProduct = read('os/physical/rockstaros.mk');
+assert.ok(physicalProduct.includes('ifeq ($(ROCK_OPERATOR_AGENT_MODE),excluded)'));
+assert.ok(physicalProduct.includes('ro.rockstaros.release_flash_allowed=false'));
 const operatorOverlayable = read('android/operator-agent/src/main/res/values/overlayable.xml');
 assert.ok(operatorOverlayable.includes('<overlayable name="OperatorAgentConfig">'));
 assert.ok(operatorOverlayable.includes('<policy type="product">'));
