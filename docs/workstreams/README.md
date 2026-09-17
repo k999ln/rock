@@ -28,7 +28,7 @@
 | 区分                                                                   | 何を扱うか                                   | 現在の重点                                  |
 | ---------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------- |
 | [Responsibility Boundaries](00-responsibility-boundaries.md)           | Rock、外部Provider／ToB、本人の責任分界      | 誰の完了待ちかをtaskごとに明示              |
-| [Product / UX](01-product-ux.md)                                       | 製品要件、Home、Zema、Studio、画面設計       | RQ01〜RQ47と全体構成監査、実利用の不便削減  |
+| [Product / UX](01-product-ux.md)                                       | 製品要件、Home、Zema、Studio、画面設計       | RQ01〜RQ48と全体構成監査、実利用の不便削減  |
 | [Sky / MCP](02-sky-mcp.md)                                             | Tool登録、接続、権限、実行先、MCP Connector  | Sky Cloud／provider MCPの本接続とOAuth      |
 | [Wallet / Billing / Providers](03-wallet-billing-providers.md)         | 台帳、精算、USDC、外部Provider               | owner署名、実入金・実払出しの受入           |
 | [Security / Identity / Compliance](04-security-identity-compliance.md) | 認証、秘密、署名、SBOM、法務、マイナンバー   | production鍵、license、独立審査             |

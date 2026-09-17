@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 47 },
+    { length: 48 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ47の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ48の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -125,7 +125,32 @@ export function validateBaseline(
     typeof northStarPath === 'string' &&
       !isAbsolute(northStarPath) &&
       existsSync(resolve(root, northStarPath)) &&
-      data.northStar?.osIsMeansNotGoal === true &&
+      data.northStar?.productCore ===
+        'ai_native_operating_system_with_replaceable_high_performance_local_llm_and_offline_agent_runtime' &&
+      data.northStar?.osIsProductCore === true &&
+      data.northStar?.osIsUltimateSocialPurpose === false &&
+      JSON.stringify(data.northStar?.productHierarchy?.core) ===
+        JSON.stringify([
+          'ai_native_operating_system',
+          'replaceable_high_performance_local_llm',
+          'offline_agent_runtime',
+          'permission_memory_job_receipt_update_and_recovery_contracts',
+        ]) &&
+      data.northStar?.productHierarchy?.firstPartySystems?.includes(
+        'sky_tool_and_fund_connection',
+      ) &&
+      data.northStar?.productHierarchy?.firstPartySystems?.includes(
+        'zema_ai_team_control',
+      ) &&
+      data.northStar?.productHierarchy?.firstPartySystems?.includes(
+        'social_utility_automation',
+      ) &&
+      data.northStar?.productHierarchy?.interestExtensions?.includes(
+        'authorized_game_integrations',
+      ) &&
+      data.northStar?.developmentRule ===
+        'use_real_sky_zema_social_utility_and_game_workflows_to_improve_the_shared_os_core_without_baking_each_product_into_the_os_image' &&
+      data.northStar?.applicationReleaseIndependence === true &&
       data.northStar?.pixelRole === 'first_reference_hardware' &&
       data.northStar?.cameraQualityIsLaunchCriterion === false &&
       data.northStar?.dedicatedDeviceBeforePixelValueProof === false &&
@@ -133,7 +158,11 @@ export function validateBaseline(
         'local_reasoning_execution_queue_and_resume_then_exactly_once_sync_when_connectivity_returns' &&
       JSON.stringify(data.northStar?.valueSequence) ===
         JSON.stringify([
-          'offline_local_ai',
+          'ai_native_os_core',
+          'replaceable_offline_local_ai',
+          'offline_agent_runtime',
+          'sky_and_zema_first_party_systems',
+          'social_utility_and_interest_applications',
           'reliable_tool_execution',
           'verified_earning_receipt',
           'wallet_reconciliation',
@@ -148,7 +177,7 @@ export function validateBaseline(
       data.northStar?.taxSupport ===
         'record_classify_summarize_export_and_professional_review_not_autonomous_tax_advice_or_evasion' &&
       data.northStar?.gameRole ===
-        'optional_downstream_extension_not_core_launch_dependency' &&
+        'priority_interest_application_workstream_not_core_launch_dependency' &&
       data.northStar?.dataCollection?.enabled === true &&
       data.northStar?.dataCollection?.categorySpecificConsentRequired ===
         true &&
@@ -165,7 +194,7 @@ export function validateBaseline(
       data.northStar?.dataCollection?.defaultExcluded?.includes(
         'precise_location',
       ),
-    'AI自動化チームから収益・Wallet・ファンド・ゲームへ逆算する製品目的を維持してください',
+    'AIネイティブOS CoreからSky・Zema・便利機能・ゲームへ接続する製品階層を維持してください',
   );
   for (const field of ['main', 'nativeHead', 'designHead']) {
     requireValue(
@@ -1049,6 +1078,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ47、AI自動化チームから収益・Wallet・ファンド・ゲームへ逆算する目的、正式名avocadoOS／内部識別子dev.rock、avocadoOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、avocadoOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ48、AIネイティブOS CoreからSky・Zema・便利機能・ゲームへ接続する製品階層、正式名avocadoOS／内部識別子dev.rock、avocadoOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、avocadoOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

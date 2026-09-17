@@ -6,13 +6,15 @@
 
 現在選んでいる組合せは、1.0の目的に対する現時点の最適解として整合している。
 
+製品の中心は、交換可能な高性能ローカルLLMとoffline agent runtimeを持つ **AIネイティブOS Core** である。SkyとZemaはそのCoreを最初に実用化する第一者system、仕事・生活を便利にする自動化は継続的な製品開発系統、ゲーム・IP／動画・VRは関心に基づく優先的な応用系統とする。個別systemをOS imageへ密結合せず、共通の権限、仕事、Tool、receipt、更新・復旧契約で接続する。
+
 - 共通Core＋機種別Device Support Package
 - 最初の物理対象はPixel 10／GL066／`frankel`
 - SkyはTool発見・接続、Zemaは仕事管理
 - Android Shell、Platform Broker、Local AI、Tool、Provider、Operator Agentを権限分離
 - LLMとToolは交換可能、権限・receipt・停止・復旧契約はOSに固定
 - Tool完了、検証済み収益、Wallet反映、ファンド実績を別状態で管理
-- 運営管理画面はOS外、ゲームは中核loop後の派生
+- 運営管理画面はOS外、ゲームは関心に基づく優先的な応用系統。ただし1.0のCore実証を止める必須依存にはしない
 
 ただし、**全体が一つの製品として稼働済みという意味ではない**。native Skyの選択をBroker SQLiteへ永続化し、保存済みtokenだけをZema／Local AI API v2／最初の選択Toolへ渡すsourceとemulator試験は合格した。従来のPixelでは厳格plan、2段階Tool実行、結果、履歴、本人確認待ちまで完走済みである。一方、新経路の物理再起動／失敗復旧、Wallet・外部Provider、AOSP imageは未完了である。本番準備完了、収益や利回り、実機OS完成は主張しない。
 

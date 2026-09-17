@@ -1,6 +1,6 @@
 # avocadoOS — 自動化を接続・実行・管理するOS
 
-avocadoOSは、利用者が自分専用のAI自動化チームを所有し、通信断でも端末内LLMとToolが仕事を進め、接続時に成果・検証済み収益・Walletを安全に同期できる基盤です。OS、Pixel、Wallet、ファンド、ゲームは、便利さと持続可能な収益機会を増やす目的のための層として扱います。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ47、逆算した優先順位は[製品目的](docs/product-north-star-20260915.md)、全層の組合せと未接続点は[全体構成監査](docs/system-composition.md)、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`avocadoOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
+avocadoOSは、交換可能な高性能ローカルLLMとoffline agent runtimeを持つAIネイティブOSです。SkyとZemaを最初の第一者systemとし、仕事・生活を便利にする自動化、Wallet／ファンド、ゲーム、IP／動画、VRを共通Coreへ接続して発展させます。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ48、逆算した優先順位は[製品目的](docs/product-north-star-20260915.md)、全層の組合せと未接続点は[全体構成監査](docs/system-composition.md)、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`avocadoOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
 
 ## 現在地
 

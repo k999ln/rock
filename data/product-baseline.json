@@ -1,5 +1,5 @@
 {
-  "version": "1.69",
+  "version": "1.70",
   "decidedAt": "2026-09-16",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -37,7 +37,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided product purpose and eight Zero-to-One principles; preserve RQ01-RQ47 and the current avocadoOS 1.0 technical base",
+    "basis": "User-provided product purpose and eight Zero-to-One principles; preserve RQ01-RQ48 and the current avocadoOS 1.0 technical base",
     "initialAudienceHypothesis": "not_fixed; earlier independent-writer hypothesis remains historical until the verified economic loop selects a repeatable problem",
     "representativeProductCandidate": "one existing Tool capable of completing the offline-to-signed-earning-to-Wallet acceptance loop",
     "marketValidation": "not_run",
@@ -54,13 +54,44 @@
   "northStar": {
     "document": "docs/product-north-star-20260915.md",
     "purpose": "increase convenience and broadly shared prosperity by continuously improving a user-owned AI automation team and connecting verified outcomes to sustainable income opportunities",
-    "osIsMeansNotGoal": true,
+    "productCore": "ai_native_operating_system_with_replaceable_high_performance_local_llm_and_offline_agent_runtime",
+    "osIsProductCore": true,
+    "osIsUltimateSocialPurpose": false,
+    "productHierarchy": {
+      "core": [
+        "ai_native_operating_system",
+        "replaceable_high_performance_local_llm",
+        "offline_agent_runtime",
+        "permission_memory_job_receipt_update_and_recovery_contracts"
+      ],
+      "firstPartySystems": [
+        "sky_tool_and_fund_connection",
+        "zema_ai_team_control",
+        "social_utility_automation"
+      ],
+      "interestExtensions": [
+        "authorized_game_integrations",
+        "ip_and_video_operations",
+        "vr_device_profiles"
+      ],
+      "supportingSystems": [
+        "verified_economics",
+        "wallet_reconciliation",
+        "provider_adapters"
+      ]
+    },
+    "developmentRule": "use_real_sky_zema_social_utility_and_game_workflows_to_improve_the_shared_os_core_without_baking_each_product_into_the_os_image",
+    "applicationReleaseIndependence": true,
     "pixelRole": "first_reference_hardware",
     "cameraQualityIsLaunchCriterion": false,
     "dedicatedDeviceBeforePixelValueProof": false,
     "offlineFirst": "local_reasoning_execution_queue_and_resume_then_exactly_once_sync_when_connectivity_returns",
     "valueSequence": [
-      "offline_local_ai",
+      "ai_native_os_core",
+      "replaceable_offline_local_ai",
+      "offline_agent_runtime",
+      "sky_and_zema_first_party_systems",
+      "social_utility_and_interest_applications",
       "reliable_tool_execution",
       "verified_earning_receipt",
       "wallet_reconciliation",
@@ -73,7 +104,7 @@
     "monthlyIncomeTargetNature": "long_term_verified_outcome_target_not_income_or_yield_guarantee",
     "verifiedOperatingSurplus": "provider_confirmed_income_minus_execution_provider_platform_and_refund_costs_before_jurisdiction_specific_tax",
     "taxSupport": "record_classify_summarize_export_and_professional_review_not_autonomous_tax_advice_or_evasion",
-    "gameRole": "optional_downstream_extension_not_core_launch_dependency",
+    "gameRole": "priority_interest_application_workstream_not_core_launch_dependency",
     "dataCollection": {
       "enabled": true,
       "categorySpecificConsentRequired": true,
@@ -370,7 +401,8 @@
     "RQ44",
     "RQ45",
     "RQ46",
-    "RQ47"
+    "RQ47",
+    "RQ48"
   ],
   "primaryCapabilities": [
     "sky-automation-control",

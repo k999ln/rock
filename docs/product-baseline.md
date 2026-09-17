@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-16全体方針追記（v1.70）: 製品中核を、高性能で交換可能なローカルLLMとoffline agent runtimeを持つAIネイティブOSへ明確化した。Sky／Zemaを最初の第一者system、仕事・生活を便利にする自動化を継続開発系統、ゲーム・IP／動画・VRを関心に基づく優先的な応用系統とする。個別systemはOS imageへ密結合せず、共通の権限・記憶・仕事・Tool・receipt・更新・復旧契約で接続して独立改善できるようにする。RQ48を追加する。
+
 2026-09-16 full build入力freeze追記（v1.69）: Pixel 10 GL066のGoogle factory image／full OTAについて、repo外のowner同意記録、公式download URL／掲載SHA-256、実byte SHA-256、ZIP安全性、frankel、A/B、同一build IDを検査する。固定adevtool revisionから生成した`vendor/google_devices`全file／内部symlinkを決定的inventoryへし、build直前に再検証する。正式署名は承認済みpolicyと手順のhashだけをfreezeし、HSM調達、秘密鍵、署名bridge、target-files由来の正確な鍵inventoryは未完了のまま保持する。合成fixture 9/9は合格し、build入口へ三検査を接続した。Google利用条件への代理同意、実ファイル取得、全source／vendor生成、HSM、full build、flashは行っていない。[証拠](evidence/android-prefull-input-freeze-20260916.json)。
 
 2026-09-16 Operator公開設定stager追記（v1.68）: Pixel 10 GL066の単一端末preview用に、Operator Dockの正確なHTTPS origin、WebAuthn P-256公開情報、外部connector隔離対象、32-byte端末attestation challengeだけをrepo外JSONから静的product RROへ生成する。未知field、secret混入、symlink、改変、非P-256、origin／RP不一致、製品package隔離、StrongBox無効、factory reset有効をbuild前に拒否する。StrongBox鍵aliasはchallengeのSHA-256へ結び、以前のchallengeで作った端末identityを再利用しない。Python 9/9、Android build／lint、Android 15 emulator 6/6は合格。本番WebAuthn値、実RRO、StrongBox attestation、Device Owner、Dock配備は未実施で、複数端末版にはruntimeの一回限りchallenge enrollmentを別途実装する。[証拠](evidence/android-operator-overlay-stager-20260916.json)。
@@ -500,13 +502,21 @@ Operator Dock、命令キュー、device channel、Android Agentのsource実装�
 
 ## RQ47 AI自動化チームの効率化から収益・Wallet・ファンド・ゲームへ逆算する
 
-avocadoOSの最上位目的は、利用者が自分専用のAI自動化チームを所有し、その効率を改善することで、仕事と生活を便利にし、検証可能な収益機会を増やし、利用者全体の豊かさへつなげることである。OS、Pixel、Wallet、ファンド、ゲーム、将来の専用端末は目的ではなく、この目的を実現・配布・拡張する層として扱う。スマートフォン市場の一般機能やカメラ品質でiPhoneと競うことを1.0の完成条件にしない。
+avocadoOSの最上位の社会的目的は、利用者が自分専用のAI自動化チームを所有し、その効率を改善することで、仕事と生活を便利にし、検証可能な収益機会を増やし、利用者全体の豊かさへつなげることである。AIネイティブOSはそのための製品中核、Pixelは最初のreference hardware、Wallet、ファンド、ゲーム、将来の専用端末は実現・配布・拡張する接続層として扱う。スマートフォン市場の一般機能やカメラ品質でiPhoneと競うことを1.0の完成条件にしない。
 
 端末内LLMは通信がない間も仕事分解、Tool実行、再試行、確認待ち、成果保存を続け、接続時だけ外部案件取得、外部作用、納品、署名済み収益、Wallet照合を重複なく同期する。最初に一つのToolでこの経済loopを完走し、次に複数Toolファンドを一押しで開始・管理・改善できるようにする。月50万円規模はProvider確認済み収益と全実行費用を持つ長期の到達指標であり、未検証値、PAPER結果、単発売上、将来利回り、全利用者の収入保証として表示しない。
 
 Walletは収益・費用・receipt・払出し状態に加え、合法的な税務準備の記録、分類候補、期間集計、export、専門家確認を支援する。脱税、架空経費、法域未確認の自動申告を行わない。改善データはcategoryごとに目的、送信先、保存期間、第三者提供、削除、同意撤回を示し、仕事本文、私的会話、写真、秘密鍵、seed phrase、認証情報、正確な位置を既定収集しない。ゲームは公式に許可された接続先へ同じ権限・receipt・Wallet基盤を派生させ、1.0の中核収益loopを止める依存にしない。詳細は [製品目的から逆算した開発軸](product-north-star-20260915.md)を正本補助資料とする。
 
-## 1.0への8原則の適用（RQ01〜RQ47を維持）
+## RQ48 AIネイティブOSを中核にSky・便利機能・ゲームを接続して発展させる
+
+avocadoOSの製品中核は、高性能で交換可能なローカルLLM、offline agent runtime、権限、記憶、仕事、停止・再開、Tool、receipt、更新、rollback、復旧を共通化したAIネイティブOSである。社会的目的はこのCoreを所有する利用者の仕事と生活を便利にし、成果と検証可能な収益機会を広げ、より豊かにすることである。「OSが製品中核であること」と「OSを作る作業自体を社会的目的にしないこと」を両立させる。
+
+SkyはTool・ファンド・接続先を選ぶ第一者system、ZemaはAIチームへの依頼、役割、進捗、承認、停止、結果、履歴を管理する第一者systemとし、最初の実用経路としてCoreを継続検証する。仕事や生活を便利にするsystemを優先して追加し、ゲーム、IP／動画生成、VRは利用者の関心に基づく優先的な応用開発系統として関連付ける。特定のTool、ゲーム、生成Provider、金融ProviderをOS imageへ直書きせず、署名、version、capability、本人同意、費用、停止、receiptを持つadapterとして独立更新できるようにする。
+
+Pixel 10は最初のreference hardwareであり、Googleサービス、カメラ、一般向けブラウザ、ATM、特定ゲームはCoreの起動条件にしない。1.0では所有Pixel上でOS、交換可能な端末内LLM、agent、Sky、Zema、一つの実用Toolのoffline実行・再開・安全な接続を証明する。Wallet、ファンド、ゲーム等の進捗を過大表示せず、各systemは個別gateに合格した範囲だけ利用可能とする。
+
+## 1.0への8原則の適用（RQ01〜RQ48を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -526,6 +536,8 @@ Walletは収益・費用・receipt・払出し状態に加え、合法的な税�
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-16 v1.70: 高性能で交換可能なローカルLLMを持つAIネイティブOSを製品中核へ明確化。Sky／Zemaを最初の第一者system、社会に役立つ便利機能を継続開発系統、ゲーム・IP／動画・VRを関心に基づく優先的な応用系統とし、すべてを独立更新可能な共通契約でCoreへ接続するRQ48を追加した。
 
 2026-09-16 v1.65: native Sky選択をBroker SQLite schema v2へ永続化し、Shell API v3のselection tokenが一致する場合だけZema計画を開始するよう固定した。host 35件、Android全378 task、emulatorのBroker 9/9・Shell 4/4は合格。新経路のPixel実再起動受入は端末再接続待ちで未合格を維持する。
 

@@ -1,7 +1,7 @@
 {
   "schema": "avocadoos-system-composition-audit/1",
   "updatedAt": "2026-09-16",
-  "objective": "利用者が自分専用のAI自動化チームを所有し、通信断でも仕事を進め、接続時に検証済み成果・収益・Walletへ安全につなぎ、実測に基づいてTool群とファンドを改善できること",
+  "objective": "交換可能な高性能ローカルLLMとoffline agent runtimeを持つAIネイティブOSを中核に、利用者が自分専用のAI自動化チームを所有し、Sky、Zema、社会に役立つ自動化、興味のあるゲーム等へ安全に接続できること",
   "verdict": {
     "designAligned": true,
     "bestCurrentCombinationForDeclaredV1Objective": true,
@@ -11,14 +11,14 @@
     "summary": "選択した責任分離と実装順は目的に整合する。native Sky選択のBroker永続化、selection token付きZema、Local AI API v2、選択Toolのsourceとemulator受入まで成功した。新経路の物理再起動・失敗復旧は端末再接続待ちである。"
   },
   "selectionPrinciples": [
-    "OSや端末開発そのものではなく、offline AI teamから検証済み成果と収益へ至る利用者価値を優先する",
+    "AIネイティブOSを製品中核とし、OS開発の作業量ではなく、offline AI teamがSky、Zema、社会に役立つsystem、ゲーム等で生む利用者価値を優先する",
     "共通Coreと機種別Device Support Packageを分離し、最初の物理対象だけをPixel 10 GL066 frankelへ固定する",
     "SkyはToolの発見と接続、Zemaは依頼・承認・進捗・結果・履歴を担当する",
     "Android UI Shell、権限を持つPlatform Broker、Local AI、Tool、Provider、Operator Agentを別UIDと別署名境界にする",
     "LLMとToolはOS imageから交換可能にし、権限・receipt・停止・復旧の契約だけをOSへ固定する",
     "Tool完了、Provider確認済み収益、Wallet反映、ファンド実績を別状態にし、推定収益を残高へ入れない",
     "運営管理画面は利用者OSへ入れず、端末側の限定Agentと外部Operator Dockを組み合わせる",
-    "ゲームは同じ権限・receipt・Wallet基盤の派生先とし、1.0の中核loopを妨げない"
+    "ゲームは関心に基づく優先的な応用系統として同じ権限・receipt・Wallet基盤へ接続し、1.0のCore実証を妨げない"
   ],
   "fixedCombination": [
     {
