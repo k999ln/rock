@@ -261,6 +261,9 @@ const phoneBuild = read('scripts/build-phone-bringup.sh');
 assert.ok(phoneBuild.includes('--mode bringup|release'));
 assert.ok(phoneBuild.includes('ROCK_OPERATOR_AGENT_MODE=excluded'));
 assert.ok(phoneBuild.includes('releaseFlashAllowed'));
+assert.ok(phoneBuild.includes('cd -- "$rock_phone_tree"'));
+assert.ok(phoneBuild.includes('export OUT_DIR=out'));
+assert.ok(!phoneBuild.includes('export OUT_DIR="$rock_phone_tree/out"'));
 for (const value of [
   'ROCK_GOOGLE_FACTORY_IMAGE',
   'ROCK_GOOGLE_FULL_OTA',

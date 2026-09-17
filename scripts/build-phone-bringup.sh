@@ -38,7 +38,11 @@ if [[ -L $rock_phone_tree/out ]]; then
   exit 2
 fi
 unset OUT_DIR_COMMON_BASE
-export OUT_DIR="$rock_phone_tree/out"
+cd -- "$rock_phone_tree"
+# Keep OUT_DIR relative to the source root. Siso's config repository resolver
+# treats an absolute --config_repo_dir as a repository label and fails to load
+# its generated main.star with the pinned Android 17 toolchain.
+export OUT_DIR=out
 mkdir -p "$OUT_DIR/rockstaros-evidence"
 python3 "$rock_phone_root/scripts/prepare-phone-build.py" host "$OUT_DIR"
 
