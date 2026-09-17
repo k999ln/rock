@@ -1,4 +1,6 @@
-# RockstarOS 1.0 — ベース構成と進化方針
+# avocadoOS 1.0 — ベース構成と進化方針
+
+2026-09-16現行設計: RQ48に基づく中核は交換可能な端末内LLM＋offline agentを持つAIネイティブOS。層別責任、model/runtime更新、記憶、仕事、外部作用の照合、Sky app/OS能力交渉、Zema共通契約、便利機能とGame/IPの縦断、Core/応用別受入は [AIネイティブOS共通設計](ai-native-os-architecture.md) を正本とする。本書のLinux/QEMU資産一覧は再利用対象であり、スマホ版の全機能実装済みを意味しない。
 
 avocadoOS 1.0は、現在の検証済み範囲を最初の製品ベースとして発表し、互換性を保ちながら改善するための名称である。現在のスマホOS開発主軸はPixel 10／GL066／`frankel`で、QEMU Developer Previewは独立した配布候補として維持する。1.0という製品版番号を、実機対応・本番金融・一般公開の合格証明に使わない。
 
@@ -8,7 +10,7 @@ avocadoOS 1.0は、現在の検証済み範囲を最初の製品ベースとし�
 
 2026-09-16更新: 本文のnative構成はLinux/QEMU版のもの。スマホ版は所有Pixel 10／GL066／`frankel`を最初の物理対象へ確定し、機種構成・Android接続層へ移植する。端末OS build／起動は未実施で、Linux版の受入を流用しない。[全体構成監査](system-composition.md)／[現在の区分](current-state-20260911.md)／[スマホ版](phone-preview-20260911.md)。
 
-到達設計では利用者はnative UIからHub、Wallet、Game、端末操作を行う。Game交換/SDKは開発要求であり、現imageで利用できる機能とは分ける。UIはlocal Platform APIだけを信頼し、Platformが認証、権限、実行、保存、外部接続を仲介する。OS本体は読取専用、利用者データは別diskへ保存する。更新・復旧はA/B slotとbackupで扱う。
+以下はLinux/QEMU資産の構造である。利用者はnative UIからHub、Wallet、Game、端末操作を行い、Platformが認証、権限、実行、保存、外部接続を仲介する。OS本体は読取専用、利用者データは別diskへ保存し、A/B slotとbackupで復旧する。Androidの現行到達設計は共通設計のCore→Sky/Zema→応用の責任分離に従う。Game契約のhost実装と、個々の配布imageに搭載された範囲を混同しない。
 
 ## 1. Boot・OS image
 
@@ -48,7 +50,7 @@ ToolをOSへ直書きせず、署名manifestと有限recipeを持つ独立商品
 
 ## 7. Wallet・本人資格
 
-整数USD centsのSQLite台帳でAVAILABLE、hold、費用、請求、売上、settlement、receiptを管理する。本人確認済み購入者、同意、月888 cents、同一ownerの複数端末で1回の請求を扱う。GX00 runtimeはowner契約ごとに台帳を分離し、認証principalからだけ対象contractを選ぶ。
+Linux/QEMU資産は整数USD centsのSQLite台帳でAVAILABLE、hold、費用、請求、売上、settlement、receiptを管理する。本人確認と同一ownerの複数端末重複防止を持つ。月888 cents固定の試作契約は履歴であり、現行RQ20は検証済み収益の実費後残額から月最大888 cents、先払い・未達債務化なしとする。GX00 runtimeはowner契約ごとに台帳を分離し、認証principalからだけ対象contractを選ぶ。
 
 Wallet会社とファンド会社の機能は交換可能な外部Provider Adapterで受ける。RockstarOSはcapability発見、本人同意、指図、状態、receipt、照合を共通化し、資金保管、運用、約定、払出し、KYC/AML、地域・税務判断を代行しない。Providerはversion付きmanifestで対応機能だけを宣言し、OSは未宣言機能を擬似実装しない。Providerの追加・差替えは通常OS再buildを必要とせず、二次事業者が参加できる境界を維持する。[外部Provider境界](external-wallet-fund-provider-boundary-20260913.md)。
 
@@ -72,9 +74,9 @@ Web版の最初の本番受取レールはBase Mainnet / USDCとする。本人�
 
 ## 10. AI Routes
 
-local、cloud、PCを別の処理先として扱い、許可、送信データ、予算、実行結果を分離する。現在はpolicyと合成accounting fixtureが中心で、実AI modelの品質や料金を検証していない。
+local、cloud、PCを別の処理先として扱い、許可、送信データ、予算、実行結果を分離する。Linux/QEMUのAI routeはpolicy/合成accounting fixtureの受入範囲。Androidは固定Local AI API v2と実GGUFによる機内モードplanをPixel単体APKで確認済みだが、汎用runtime交換、model比較benchmark、OS image受入は未完了である。
 
-進化余地は、実model adapter、品質・費用・遅延測定、privacy routing、budget上限、fallback、offline model、利用者ごとの選択説明である。
+次はmodel/runtime manifest、旧jobのprofile固定、互換切替とrollback、品質・遅延・電池・熱予算を受け入れる。外部fallbackは独立した本人同意を通す。詳細は共通設計第2節を参照する。
 
 ## 11. Update・起動復旧
 
@@ -108,10 +110,10 @@ Wallet owner、端末、作者、game、playerを別IDにし、署名契約と�
 
 ## 16. Web・Android P1・スマホOS
 
-WebにはSky、Zema、仕事作成・実行・確認、本人別手入力会計、Rock受取Walletの所有署名と着金照合があり、Sitesの公開範囲はowner限定を維持する。Android P1は通常アプリとしての固定2工程・記事処理試作で、現在はBroker／Shell／Toolの3 APKへ分離した。選定済みPixel 10／GL066／`frankel`の機種構成へ3 APKを組み込むsourceとbuild入口も追加した。OS全体のbuild、Sky／Wallet／GameのAndroid移植、正式署名、実機受入はこれからである。Webや標準エミュレーターの成功をスマホOSの合格にしない。
+WebにはSky、Zema、仕事作成・実行・確認、本人別手入力会計、Rock受取Walletの所有署名と着金照合があり、Sitesの公開範囲はowner限定を維持する。AndroidはBroker／Shell／Toolに分離し、Local AIとOperator Agentも別APKにする。GL066向けsource/build入口、native Sky selection、Zema計画、固定2工程、合成Wallet、実再起動、backup非破壊exportは[既存OS上の試験署名APKで受入済み](evidence/android-pixel-10-prefull-physical-20260916.json)。一般Tool registry、多端末Sky、GameのAndroid接続、外部Provider、OS全体build/正式署名/flash/OTA/鍵喪失復旧は未完了。WebやAPKの成功をスマホOSの合格にしない。
 
 進化余地は、companion app、device enrollment、通知、遠隔確認、Web管理、正式AOSP device portである。
 
 ## 1.0で発表する範囲
 
-1.0はHub、署名Tool、local実行、合成Wallet、native UI、A/B更新・復旧、backup、開発用remote接続、合成Game交換／SDKを持つOSベースとして扱う。実ゲーム接続、スマホ実機、実資金、実ATM、一般cloud/USBは未検証の範囲を明示する。最初の配布ラベルはDeveloper Previewとし、合格した機能だけを実演する。
+1.0 Coreは端末内LLM、offline agent、権限・仕事・成果・停止・保存・復旧を持つOS基盤として受入する。Sky/Zemaを最初の利用経路とし、便利Tool、Game/IP、実収益/Wallet、Fundは独立した応用受入に分ける。Gameの制作・試遊をFund完成まで一律延期しない。Linux/QEMUの署名Tool・合成Wallet・Game SDK等は既存資産として維持するが、GL066 OS搭載済みと表示しない。最初の配布ラベルはDeveloper Previewとし、同一環境で合格した機能だけを実演する。

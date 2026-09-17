@@ -16,18 +16,25 @@ void test('whole-system composition audit passes and preserves honest boundaries
   assert.match(result.stdout, /統合未完了/);
 });
 
-void test('whole-system composition audit records the first value path before full build', async () => {
+void test('whole-system composition audit retains the completed reboot evidence and separate release gates', async () => {
   const audit = (
     await import('../data/system-composition-audit.json', {
       with: { type: 'json' },
     })
   ).default;
-  assert.equal(
-    audit.priorityOrder[0].includes(
-      'two-phase native Sky in-flight reboot recovery acceptance',
-    ),
-    true,
+  const offline = audit.endToEndFlows.find(
+    (flow) => flow.id === 'offline_ai_team',
   );
+  assert.equal(
+    offline.state,
+    'FIRST_PURE_TOOL_PHYSICAL_REBOOT_VERIFIED_GENERAL_AGENT_RUNTIME_PENDING',
+  );
+  assert.equal(offline.requiredForV1, true);
+  const income = audit.endToEndFlows.find(
+    (flow) => flow.id === 'verified_income_wallet',
+  );
+  assert.equal(income.requiredForV1, false);
+  assert.equal(income.requiredForEarningsRelease, true);
   assert.equal(audit.priorityOrder[4].includes('full build'), true);
   assert.equal(audit.verdict.productionReady, false);
 });

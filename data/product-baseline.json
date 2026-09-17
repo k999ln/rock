@@ -1,5 +1,5 @@
 {
-  "version": "1.70",
+  "version": "1.71",
   "decidedAt": "2026-09-16",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -53,6 +53,11 @@
   },
   "northStar": {
     "document": "docs/product-north-star-20260915.md",
+    "architectureDocument": "docs/ai-native-os-architecture.md",
+    "architectureStatus": "design_specification_not_runtime_completion",
+    "designModel": "gpt-6-astra",
+    "auditModel": "gpt-5.6-sol",
+    "auditDocument": "docs/ai-native-os-design-audit.md",
     "purpose": "increase convenience and broadly shared prosperity by continuously improving a user-owned AI automation team and connecting verified outcomes to sustainable income opportunities",
     "productCore": "ai_native_operating_system_with_replaceable_high_performance_local_llm_and_offline_agent_runtime",
     "osIsProductCore": true,
@@ -85,7 +90,7 @@
     "pixelRole": "first_reference_hardware",
     "cameraQualityIsLaunchCriterion": false,
     "dedicatedDeviceBeforePixelValueProof": false,
-    "offlineFirst": "local_reasoning_execution_queue_and_resume_then_exactly_once_sync_when_connectivity_returns",
+    "offlineFirst": "local_reasoning_pure_execution_and_persistent_resume_with_reconciled_external_effects_on_reconnect",
     "valueSequence": [
       "ai_native_os_core",
       "replaceable_offline_local_ai",

@@ -1,20 +1,20 @@
 # avocadoOS — 自動化を接続・実行・管理するOS
 
-avocadoOSは、交換可能な高性能ローカルLLMとoffline agent runtimeを持つAIネイティブOSです。SkyとZemaを最初の第一者systemとし、仕事・生活を便利にする自動化、Wallet／ファンド、ゲーム、IP／動画、VRを共通Coreへ接続して発展させます。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ48、逆算した優先順位は[製品目的](docs/product-north-star-20260915.md)、全層の組合せと未接続点は[全体構成監査](docs/system-composition.md)、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`avocadoOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
+avocadoOSは、交換可能な高性能ローカルLLMとoffline agent runtimeを中核にするAIネイティブOSとして開発しています。SkyとZemaを最初の第一者systemとし、仕事・生活を便利にする自動化、Wallet／ファンド、ゲーム、IP／動画、VRを共通Coreへ接続して発展させます。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ48、具体的な契約と実装順は[AIネイティブOS詳細設計](docs/ai-native-os-architecture.md)、独立監査は[Sol設計監査](docs/ai-native-os-design-audit.md)、全層の組合せと未接続点は[全体構成監査](docs/system-composition.md)、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`avocadoOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
 
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-16 / 108 task中77 done・22 in progress・8 planned・1 blocked
+更新日: 2026-09-16 / 114 task中78 done・22 in progress・13 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                           |
 | --------------- | -------------------------------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------ |
 | Web / PWA       | Home、Sky、Zema、仕事、CSV、Wallet、Market、設定、Studio、D1 API                             | 実装あり・本人限定Siteの最新版同期待ち | 同一sourceの配備、認証後の実操作、一般公開gate                     |
 | Linux / QEMU    | OS起動、Platform API、専用UID、SQLite、保存、A/B更新、rollback、backup、Wallet／Game fixture | Developer Preview候補は10 gate中6合格  | 製品license、production署名、署名後の同一候補受入、公開承認        |
-| Android P1      | Broker／Shell／Tool、Local AI plan v2、native Sky永続化、backup v2復元                     | emulator受入済み技術試作               | Pixel再起動・wipe復元、Wallet／Game、OS full build                  |
+| Android P1      | Broker／Shell／Tool、Local AI plan v2、native Sky永続化、emulator backup v2復元            | 試験署名Pixel非破壊23/23受入済み        | 物理wipe復元、汎用Core、OS full build                              |
 | Android物理端末 | Pixel 10 GL066固定、署名source／partition構成、初回flash方針、7項目のproduction構成           | 6必須gate中1合格                       | BSP、full build、SELinux、CTS/VTS、OTA、純正復旧                  |
-| Local AI        | 固定source、API v2、Qwen機内モード、plan→2 Tool→結果・履歴、33分実機熱試験                   | 単体実機合格・OS image未搭載           | 全経路再起動、専用SELinux domain、production署名、同一build再受入  |
+| Local AI        | 固定runtime、API v2、Qwen機内モード、2工程Tool・再起動、33分実機熱試験                    | 単体実機合格・OS image未搭載           | model交換・共通記憶、専用SELinux、production署名、同一build再受入 |
 | Wallet / 実資金 | 本人別台帳、Earning Receipt、月最大8.88 USD精算、Base USDC照合コード                         | sandbox／コード段階                    | owner署名、最初の実transfer、決済・払出しProvider受入              |
 
 結論として、**Web/PWAとQEMUの開発版は動く範囲がありますが、スマートフォンへ書き込んで日常利用できる完成OS、本番金融、一般公開版は未完成です。** QEMU、Android emulator、物理端末、本番環境の成功は相互に代用しません。
@@ -28,12 +28,12 @@ avocadoOSは、交換可能な高性能ローカルLLMとoffline agent runtime�
 - **Wallet**: 仕事、費用、検証済み収益、Rock利用料、払出しを別状態とreceiptで管理します。売上0なら請求0、未達分の債務化・翌月繰越はありません。
 - **Market / Fund**: 型付き価値の市場と実績更新型ファンドはPAPER限定です。LIVE注文、清算、自動再投資は無効です。
 - **OS運用**: 診断、暗号化された端末設定backup、明示的なPWA更新、A/B更新、rollback、復旧を提供します。
-- **緊急保護**: 利用者向けOSとは別配備の`avocadoOS Operator Dock`と、launcher非表示・別UIDの`dev.rock.operator.agent`を実装しました。DockはCloudflare Access JWTと利用者確認済みWebAuthn署名を必須化し、Agentは対象端末、RP／origin、署名、期限、scope、単調増加counterを独立検証してからackします。端末requestもKeystore P-256鍵で署名し、端末監査はAndroid Keystore HMAC chainで追記します。管理serverだけでは有効命令を作れず、任意shell、私的内容、Wallet、鍵への経路はありません。source build／lintとAndroid 15 emulator 5/5は合格しましたが、production credential、StrongBox attestation、Device Owner実行、Pixel 10実機と侵入／復旧演習は未完了なので実端末配信は有効化していません。
+- **緊急保護**: 利用者向けOSとは別配備の`avocadoOS Operator Dock`と、launcher非表示・別UIDの`dev.rock.operator.agent`を実装しました。DockはCloudflare Access JWTと利用者確認済みWebAuthn署名を必須化し、Agentは対象端末、RP／origin、署名、期限、scope、単調増加counterを独立検証してからackします。端末requestもKeystore P-256鍵で署名し、端末監査はAndroid Keystore HMAC chainで追記します。管理serverだけでは有効命令を作れず、任意shell、私的内容、Wallet、鍵への経路はありません。source build／lint、Android 15 emulator、試験署名Pixelの命令検証5/5は合格。production credential、StrongBox attestation、Device Owner実行、本番の侵入／復旧演習は未完了です。
 - **Android正式署名**: 専用オフライン署名PC、YubiHSM 2本番1台、別場所の予備1台、別端末での独立検証に固定し、鍵をAVB／OTA／system application／APEX system componentの4系統へ分離しました。長期鍵と通常application鍵24か月目安、最低1 releaseの旧新鍵移行、漏洩鍵の即時停止・再使用禁止も固定済みです。生の秘密鍵はHSM外へ出さず、端末診断プラグインを署名鍵やboot不能の復旧手段には使いません。機材調達、全署名接続、予備切替、旧新鍵移行、Pixel 10実測は未完了です。
 - **Android rollback防止**: avocadoOS管理indexは署名前に固定した正式releaseのUTC Unix秒を使い、Google管理値は変更しません。A/Bのtrial slotでは端末indexを進めず、起動成功後だけ確定します。正確なlocation/value、失敗fallback、古い署名済みimage拒否はfull buildとPixel 10実機試験待ちです。
 - **Pixel 10純正復旧**: firmware freeze時点のGoogle公式最新安定版を選び、factory imageとfull OTAを同一buildで揃えます。full OTAは非wipe復旧と両slot boot可能化、factory imageはwipeを伴う最終復旧に限定します。利用条件同意、実ファイル取得、byte数・SHA-256固定は未完了です。
 - **Business Pilot**: CSV整形、メルカリ販売支援、Fashion Brand Opsを実装しています。外部市場の取引や売上を自動で実績化しません。
-- **Android production構成**: `dev.rock.automation`をheadless Platform Brokerとして維持し、最終Home／Sky／Zemaを載せるAndroid UI入口を、通信・DB・Keystore・広い管理権限を持たない`dev.rock.shell`へ分離しました。Shell API v4はnative Sky選択をBroker SQLite schema v2へ保存し、所有者24単語backup v2のexport／transactional import／新Keystore再bindingもBrokerだけで処理します。復元後は停止、token rotate、active承認停止、component authority除外を強制します。Local AI plan-only API v2はJSON Schemaで出力を制約し、Brokerが選択Toolと実行可能入力を再検証します。emulatorではBroker 11 non-skipped／Shell 5 testが合格しました。従来のstock Pixel経路はZema→2 Tool→結果・履歴まで合格済みですが、新しい物理再起動とwipe復元受入は端末再接続待ちです。Soong image、SELinux enforcingも未完了です。[Platform Core](docs/platform-core.md)／[backup証拠](docs/evidence/android-backup-v2-emulator-20260916.json)／[従来の実測証拠](docs/evidence/android-local-ai-plan-v2-20260916.json)。
+- **Android production構成**: `dev.rock.automation`をheadless Platform Brokerとして維持し、最終Home／Sky／Zemaを載せるAndroid UI入口を、通信・DB・Keystore・広い管理権限を持たない`dev.rock.shell`へ分離しました。Shell API v4はnative Sky選択をBroker SQLite schema v2へ保存し、所有者24単語backup v2のexport／transactional import／新Keystore再bindingもBrokerだけで処理します。復元後は停止、token rotate、active承認停止、component authority除外を強制します。Local AI plan-only API v2はJSON Schemaで出力を制約し、Brokerが選択Toolと実行可能入力を再検証します。emulatorではBroker 11 non-skipped／Shell 5 test、所有Pixelは実再起動を含む23項目が合格しました。物理data／Keystore全損復元、Soong image、SELinux enforcingは未完了です。[Platform Core](docs/platform-core.md)／[backup証拠](docs/evidence/android-backup-v2-emulator-20260916.json)／[物理23項目の証拠](docs/evidence/android-pixel-10-prefull-physical-20260916.json)。
 
 ## 設計方針
 
@@ -183,14 +183,20 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 
 <details>
 <!-- project-details-summary:start -->
-<summary>108 taskと段階gateの詳細を開く</summary>
+<summary>114 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-16 / AI自動化チームの最小収益loopとAndroid事前試験 / 完了 77/108件
+最終更新: 2026-09-16 / AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続 / 完了 78/114件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
+| AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
+| AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -319,7 +325,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: 復旧2ファイル・vendor inventory・署名手順の検査器は合格済み。次はowner本人がGoogleのfactory／full OTA利用条件を確認し、同意する場合だけ同一frankel buildの2ファイルをrepo外へ取得する。その後、実byte hashを固定し、十分なLinux環境でfull source取得とadevtool vendor生成を行う。HSM／本番Operator登録／物理backup wipe復元は別gateのまま、全preflight合格後だけ最初のfull buildへ進む。
+次の作業: Astra設計とSol監査を反映し、AI02から1.0向けモデルmanifestと仕事への版固定を実装する。AI03の限定記憶、AI04の外部作用禁止／照合契約、AI05のapp／OS能力宣言を既存Brokerへ段階導入し、AI06の非金融Game／IP fixtureで共通性を確認する。full build準備ではGoogle復旧実ファイル・vendor inventory・HSM／署名bridge・本番Operator登録・物理data／Keystore全損復元が残る。Game開発は収益Provider／Fundの完成待ちにしない。
 <!-- project-status:end -->
 
 </details>

@@ -1,5 +1,9 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+## 2026-09-16 — RQ48に沿ったAIネイティブOS詳細設計
+
+製品の中心は高性能・交換可能なローカルLLMとoffline agentを持つavocadoOS。現行設計入口は[AIネイティブOS詳細設計](ai-native-os-architecture.md)、監査は[Sol設計監査](ai-native-os-design-audit.md)、次の実装は進捗JSONのAI02〜AI06。Sky／Zemaを第一者systemとし、便利機能と非金融Game／IPを同じCoreへ接続する。Game開発をFund収益の完成待ちにしない。設計担当はAstra、監査担当はSol。下記の日付付き履歴は当時の状態であり、最新正本と証拠を優先する。
+
 ## 2026-09-16 — 復旧・vendor・署名手順のfull build入力検査を実装
 
 Pixel 10 GL066のGoogle factory imageとfull OTAについて、所有者のdownload-only同意記録、Google公式URL／掲載SHA-256、実byte hash、ZIP安全性、frankel／A/B、同一build IDを検査する入口を追加した。固定adevtool commitから生成されたvendor treeは全fileのbyte数／SHA-256と内部symlinkをinventory化し、build直前に再照合する。正式署名はpolicyと手順のhashを同じbuild証拠へ保存するが、HSMや秘密鍵が存在するとは扱わない。合成fixture 9/9に合格し、full build入口へ接続した。[証拠](evidence/android-prefull-input-freeze-20260916.json)。

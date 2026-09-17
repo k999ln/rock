@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-16詳細設計追記（v1.71）: RQ48を[AIネイティブOS詳細設計](ai-native-os-architecture.md)へ具体化する。Astraが設計、Solが[独立監査](ai-native-os-design-audit.md)を担当。モデル・記憶・仕事・外部作用・端末能力の契約と、1.0 Core／便利機能／Game・IP／収益の独立受入を定義する。現在の固定runtimeと純粋な2工程Toolの実機受入から、汎用モデル交換・共有記憶・外部作用・多端末の完成は推測しない。詳細設計の保存はruntime実装や製品公開の完了ではない。
+
 2026-09-16全体方針追記（v1.70）: 製品中核を、高性能で交換可能なローカルLLMとoffline agent runtimeを持つAIネイティブOSへ明確化した。Sky／Zemaを最初の第一者system、仕事・生活を便利にする自動化を継続開発系統、ゲーム・IP／動画・VRを関心に基づく優先的な応用系統とする。個別systemはOS imageへ密結合せず、共通の権限・記憶・仕事・Tool・receipt・更新・復旧契約で接続して独立改善できるようにする。RQ48を追加する。
 
 2026-09-16 full build入力freeze追記（v1.69）: Pixel 10 GL066のGoogle factory image／full OTAについて、repo外のowner同意記録、公式download URL／掲載SHA-256、実byte SHA-256、ZIP安全性、frankel、A/B、同一build IDを検査する。固定adevtool revisionから生成した`vendor/google_devices`全file／内部symlinkを決定的inventoryへし、build直前に再検証する。正式署名は承認済みpolicyと手順のhashだけをfreezeし、HSM調達、秘密鍵、署名bridge、target-files由来の正確な鍵inventoryは未完了のまま保持する。合成fixture 9/9は合格し、build入口へ三検査を接続した。Google利用条件への代理同意、実ファイル取得、全source／vendor生成、HSM、full build、flashは行っていない。[証拠](evidence/android-prefull-input-freeze-20260916.json)。
@@ -510,6 +512,8 @@ Walletは収益・費用・receipt・払出し状態に加え、合法的な税�
 
 ## RQ48 AIネイティブOSを中核にSky・便利機能・ゲームを接続して発展させる
 
+共通Core、Sky appとOSの能力差、Zema仕事契約、モデル・記憶更新、通信断時の外部作用照合、便利機能とGame／IPの実装順は[AIネイティブOS詳細設計](ai-native-os-architecture.md)を正本とする。[Sol設計監査](ai-native-os-design-audit.md)で設計上の解消と実装・受入待ちを分ける。
+
 avocadoOSの製品中核は、高性能で交換可能なローカルLLM、offline agent runtime、権限、記憶、仕事、停止・再開、Tool、receipt、更新、rollback、復旧を共通化したAIネイティブOSである。社会的目的はこのCoreを所有する利用者の仕事と生活を便利にし、成果と検証可能な収益機会を広げ、より豊かにすることである。「OSが製品中核であること」と「OSを作る作業自体を社会的目的にしないこと」を両立させる。
 
 SkyはTool・ファンド・接続先を選ぶ第一者system、ZemaはAIチームへの依頼、役割、進捗、承認、停止、結果、履歴を管理する第一者systemとし、最初の実用経路としてCoreを継続検証する。仕事や生活を便利にするsystemを優先して追加し、ゲーム、IP／動画生成、VRは利用者の関心に基づく優先的な応用開発系統として関連付ける。特定のTool、ゲーム、生成Provider、金融ProviderをOS imageへ直書きせず、署名、version、capability、本人同意、費用、停止、receiptを持つadapterとして独立更新できるようにする。
@@ -536,6 +540,8 @@ Pixel 10は最初のreference hardwareであり、Googleサービス、カメラ
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-09-16 v1.71: Astra設計・Sol監査によりRQ48の共通Core契約と各応用の独立受入を具体化。現行入口のHub＋Wallet中心、BlackBerry-first、GameのFund完成待ちを同期し、Pixel非破壊23/23受入を現在の構成状態へ反映する。新しい汎用機能は設計段階として追跡する。
 
 2026-09-16 v1.70: 高性能で交換可能なローカルLLMを持つAIネイティブOSを製品中核へ明確化。Sky／Zemaを最初の第一者system、社会に役立つ便利機能を継続開発系統、ゲーム・IP／動画・VRを関心に基づく優先的な応用系統とし、すべてを独立更新可能な共通契約でCoreへ接続するRQ48を追加した。
 

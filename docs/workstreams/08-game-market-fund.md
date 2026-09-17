@@ -2,7 +2,7 @@
 
 ## 目的
 
-ゲーム作者向けAPI/SDK、Walletとゲーム通貨の交換、型付き価値のPAPER市場、自動化実績から更新するファンドを、安全な台帳とexact approvalの上で提供する。
+AIネイティブOSの共通仕事・記憶・権限契約を、Game／IP制作、ゲーム作者向けAPI/SDK、ゲームとの連携へ広げる。非金融の制作・ゲーム体験はファンド収益の完成と独立して進める。Walletとゲーム通貨の交換、PAPER市場、ファンドはそれぞれの台帳と承認・照合契約を使う。
 
 ## 現在地
 
@@ -12,14 +12,14 @@
 - ファンドは検証済みreceiptがある場合だけ構成・配分・観測利回りを再計算する。
 - 実ゲームsandbox、実市場注文、清算、実Wallet資金移動、自動再投資は未接続。
 
-主なtask: `GX00`, `GX01`, `GX02`, `DX01`, `MKT01`, `MKT02`, `SPN01`, `FND01`。
+主なtask: 非金融Game／IP縦断の`AI06`、`GX00`, `GX01`, `GX02`, `DX01`, `MKT01`, `MKT02`, `SPN01`, `FND01`。
 
 ## 次に進める順番
 
-1. 接続対象の実ゲーム、交換方向、通貨、rate、取消条件を明示選択する。
-2. 正式sandboxで残高、予約、確定、取消、再送、二重使用拒否を検証する。
-3. 作者SDKのfresh導入時間、成功率、復旧時間を第三者環境で測る。
-4. 市場とファンドはPAPERを維持し、Provider、地域、KYC、清算が揃うまでLIVEを有効化しない。
+1. 共通Core契約を使うGame／IPの非金融fixtureを作り、Zemaの進捗・成果・プロジェクト分離・中断再開を確認する。
+2. 外部ゲームを接続する段階で、対象と公式API／sandboxを確定し、作者SDKの導入時間、成功率、復旧時間を測る。
+3. 金融交換を追加する段階で交換方向、通貨、rate、取消条件を明示し、正式sandboxで残高、予約、確定、取消、再送、二重使用拒否を検証する。
+4. 市場とファンドはPAPERを維持し、Provider、地域、KYC、清算が揃うまでLIVEを有効化しない。これを非金融Game／IP開発の依存にしない。
 
 ## 完了条件
 
@@ -30,6 +30,7 @@
 
 ## 関連資料
 
+- [AIネイティブOS詳細設計・Game／IP縦断案](../ai-native-os-architecture.md)
 - [OS/Sky/Wallet/Game design](../os-sky-wallet-game-design.md)
 - [Game API draft](../game-api-contract-draft.md)
 - [GX01 plan](../gx01-contract-implementation-plan.md)

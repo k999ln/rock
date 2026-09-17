@@ -1,5 +1,15 @@
 # avocadoOS — 事業・設計・進捗
 
+## 2026-09-16 — AIネイティブOSの詳細設計をAstra、監査をSolで進化
+
+製品中核を高性能・交換可能な端末内LLMとoffline agentを持つOSへ固定したRQ48を、[共通Coreの詳細設計](docs/ai-native-os-architecture.md)へ具体化する。Sky app／OSの能力差、モデル・記憶・仕事の契約、外部作用の結果照合、Game／IPの独立開発を設計し、[Solの独立監査](docs/ai-native-os-design-audit.md)を反映する。AI01は設計、AI02〜AI06は未着手の実装単位として追跡し、既存固定runtime／2工程Toolの合格を汎用agentの完成へ換算しない。
+
+Solの最終判定は設計条件付き合格、未解決の重大な設計指摘なし。モデル比較・性能予算等の未確定値と新契約の実装・物理受入を後続taskに残す。今回のAI01完了はこの設計と監査の完了を表す。
+
+検証: 正本・構成の関連3 test、文書リンク38件、`git diff --check`、`npm run verify`が合格。全体検証はNode 312件、Tool 19件、API 143項目、署名fixture 64件、型・lint・Web buildを含む。最初のsandbox実行はlocalhostのlistenがEPERMで拒否されたため停止し、通常権限で全体検証を完走した。今回runtime機能・OS image・実機受入の追加は行っていない。
+
+構成監査と現在入口に残っていた古い優先順位・端末未確定・再起動待ちの記述を同期した。Pixel試験署名APKの非破壊23/23は既存証拠、全OS build、正式署名、物理全損復元、外部Providerは未完了という区別を維持する。
+
 ## 2026-09-16 — 制限付きOperator Agentを端末側へ実装
 
 Operator Dockへ登録端末鍵で署名する`poll／ack／result` channelを追加し、launcherを持たない別UIDの`dev.rock.operator.agent`を物理product packageへ接続した。Agentは保存されたWebAuthn assertionを端末ID、RP／origin、UP／UV、P-256署名、期限、scope、単調増加counterまで独立検証し、永続化後だけackする。端末requestはKeystore P-256鍵、local監査はAndroid Keystore HMAC chainで保護する。任意shell、私的内容、Wallet、backup、製品data planeへのBinder経路は追加していない。
@@ -580,10 +590,16 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-16 / AI自動化チームの最小収益loopとAndroid事前試験 / 完了 77/108件
+最終更新: 2026-09-16 / AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続 / 完了 78/114件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
+| AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
+| AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -712,7 +728,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: 復旧2ファイル・vendor inventory・署名手順の検査器は合格済み。次はowner本人がGoogleのfactory／full OTA利用条件を確認し、同意する場合だけ同一frankel buildの2ファイルをrepo外へ取得する。その後、実byte hashを固定し、十分なLinux環境でfull source取得とadevtool vendor生成を行う。HSM／本番Operator登録／物理backup wipe復元は別gateのまま、全preflight合格後だけ最初のfull buildへ進む。
+次の作業: Astra設計とSol監査を反映し、AI02から1.0向けモデルmanifestと仕事への版固定を実装する。AI03の限定記憶、AI04の外部作用禁止／照合契約、AI05のapp／OS能力宣言を既存Brokerへ段階導入し、AI06の非金融Game／IP fixtureで共通性を確認する。full build準備ではGoogle復旧実ファイル・vendor inventory・HSM／署名bridge・本番Operator登録・物理data／Keystore全損復元が残る。Game開発は収益Provider／Fundの完成待ちにしない。
 <!-- project-status:end -->
 
 ## 次段階の設計

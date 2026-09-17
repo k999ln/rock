@@ -1,8 +1,54 @@
 {
   "updatedAt": "2026-09-16",
-  "milestone": "AI自動化チームの最小収益loopとAndroid事前試験",
-  "nextAction": "復旧2ファイル・vendor inventory・署名手順の検査器は合格済み。次はowner本人がGoogleのfactory／full OTA利用条件を確認し、同意する場合だけ同一frankel buildの2ファイルをrepo外へ取得する。その後、実byte hashを固定し、十分なLinux環境でfull source取得とadevtool vendor生成を行う。HSM／本番Operator登録／物理backup wipe復元は別gateのまま、全preflight合格後だけ最初のfull buildへ進む。",
+  "milestone": "AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続",
+  "nextAction": "Astra設計とSol監査を反映し、AI02から1.0向けモデルmanifestと仕事への版固定を実装する。AI03の限定記憶、AI04の外部作用禁止／照合契約、AI05のapp／OS能力宣言を既存Brokerへ段階導入し、AI06の非金融Game／IP fixtureで共通性を確認する。full build準備ではGoogle復旧実ファイル・vendor inventory・HSM／署名bridge・本番Operator登録・物理data／Keystore全損復元が残る。Game開発は収益Provider／Fundの完成待ちにしない。",
   "tasks": [
+    {
+      "id": "AI01",
+      "title": "RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない）",
+      "status": "done",
+      "dependsOn": ["B01", "SYS14"],
+      "evidence": [
+        "docs/product-baseline.md",
+        "docs/ai-native-os-architecture.md",
+        "docs/ai-native-os-design-audit.md"
+      ]
+    },
+    {
+      "id": "AI02",
+      "title": "モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入",
+      "status": "planned",
+      "dependsOn": ["AI01", "OS10"],
+      "evidence": ["docs/ai-native-os-architecture.md"]
+    },
+    {
+      "id": "AI03",
+      "title": "モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入",
+      "status": "planned",
+      "dependsOn": ["AI01", "OS10"],
+      "evidence": ["docs/ai-native-os-architecture.md"]
+    },
+    {
+      "id": "AI04",
+      "title": "1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装",
+      "status": "planned",
+      "dependsOn": ["AI01", "OS10"],
+      "evidence": ["docs/ai-native-os-architecture.md"]
+    },
+    {
+      "id": "AI05",
+      "title": "Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入",
+      "status": "planned",
+      "dependsOn": ["AI01", "OS10"],
+      "evidence": ["docs/ai-native-os-architecture.md"]
+    },
+    {
+      "id": "AI06",
+      "title": "非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存）",
+      "status": "planned",
+      "dependsOn": ["AI01", "AI03", "AI05"],
+      "evidence": ["docs/ai-native-os-architecture.md"]
+    },
     {
       "id": "SKY01",
       "title": "旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化",

@@ -2,7 +2,7 @@
 
 ## 目的
 
-avocadoOSを「自動化を選ぶSky、依頼を扱うZema、収支を扱うWallet、OS設定」という一つの体験に保ち、機能数ではなく利用者の不便削減で判断する。
+AIネイティブOSの上で、SkyでToolを選び、ZemaでAIチームへ依頼し、仕事・生活・Game／IPの成果へつなぐ一つの体験を作る。各端末で実際に使える能力を表示し、利用者の不便削減で判断する。
 
 ## 現在地
 
@@ -12,7 +12,7 @@ avocadoOSを「自動化を選ぶSky、依頼を扱うZema、収支を扱うWall
 - 仕事作成、処理履歴、CSV、Wallet、設定への主要導線がある。
 - 画面の存在は、本番provider、実機OS、一般公開の完了を意味しない。
 
-主なtask: `R01`, `B01`, `B02`, `B05`, `HOME01`, `HOME02`, `SKY01`, `SKY10`〜`SKY15`, `WEB02`〜`WEB04`。
+主なtask: 設計の`AI01`とapp／OS能力の`AI05`、`R01`, `B01`, `B02`, `B05`, `HOME01`, `HOME02`, `SKY01`, `SKY10`〜`SKY15`, `WEB02`〜`WEB04`。
 
 ## 次に進める順番
 
@@ -29,6 +29,8 @@ avocadoOSを「自動化を選ぶSky、依頼を扱うZema、収支を扱うWall
 
 ## 関連資料
 
+- [AIネイティブOS詳細設計](../ai-native-os-architecture.md)
+- [Sol設計監査](../ai-native-os-design-audit.md)
 - [製品ベース](../product-baseline.md)
 - [全体構成監査](../system-composition.md)
 - [1.0戦略](../rockstaros-1.0-strategy.md)

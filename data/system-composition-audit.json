@@ -1,6 +1,9 @@
 {
   "schema": "avocadoos-system-composition-audit/1",
   "updatedAt": "2026-09-16",
+  "releaseScope": "requiredForV1_means_os_core_1_0_not_every_application_release",
+  "architectureDocument": "docs/ai-native-os-architecture.md",
+  "designAuditDocument": "docs/ai-native-os-design-audit.md",
   "objective": "交換可能な高性能ローカルLLMとoffline agent runtimeを持つAIネイティブOSを中核に、利用者が自分専用のAI自動化チームを所有し、Sky、Zema、社会に役立つ自動化、興味のあるゲーム等へ安全に接続できること",
   "verdict": {
     "designAligned": true,
@@ -8,7 +11,7 @@
     "allComponentsImplemented": false,
     "allRequiredConnectionsVerified": false,
     "productionReady": false,
-    "summary": "選択した責任分離と実装順は目的に整合する。native Sky選択のBroker永続化、selection token付きZema、Local AI API v2、選択Toolのsourceとemulator受入まで成功した。新経路の物理再起動・失敗復旧は端末再接続待ちである。"
+    "summary": "AIネイティブOS Coreを製品中核にする設計選択。試験署名の固定Local AIと最初の2工程Toolは所有Pixelの非破壊再起動を含む23/23受入済み。モデル交換、共通記憶、汎用外部作用、多端末調停は新設計の実装待ちである。AOSP image、全損復元、本番Operator、実Providerは未完了。設計適合は実装完了や比較上の最適性を実証しない。"
   },
   "selectionPrinciples": [
     "AIネイティブOSを製品中核とし、OS開発の作業量ではなく、offline AI teamがSky、Zema、社会に役立つsystem、ゲーム等で生む利用者価値を優先する",
@@ -42,7 +45,7 @@
       "id": "user_experience",
       "choice": "Home entry; Sky discovers and connects Tools; Zema manages all work; CSV is a Sky Tool",
       "fit": "ALIGNED",
-      "state": "NATIVE_SKY_PERSISTENT_SELECTION_EMULATOR_PASS_PHYSICAL_REBOOT_PENDING",
+      "state": "FIRST_SELECTED_TOOL_PHYSICAL_REBOOT_VERIFIED_TEST_SIGNED_APKS",
       "evidence": [
         "docs/sky.md",
         "docs/chat-mcp-control-room-20260913.md",
@@ -50,7 +53,8 @@
         "android/core/src/main/java/dev/rock/core/Engine.java",
         "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java",
         "docs/evidence/android-zema-selected-tool-20260916.json",
-        "docs/evidence/android-local-ai-plan-v2-20260916.json"
+        "docs/evidence/android-local-ai-plan-v2-20260916.json",
+        "docs/evidence/android-pixel-10-prefull-physical-20260916.json"
       ]
     },
     {
@@ -68,27 +72,30 @@
     },
     {
       "id": "local_ai",
-      "choice": "replaceable offline GGUF Local Action Assistant behind a signed Binder contract",
+      "choice": "target replaceable offline model/runtime behind a Broker contract; current implementation pins one Local Action Assistant package, API and signer",
       "fit": "ALIGNED",
-      "state": "PHYSICAL_PLAN_V2_SELECTED_TOOL_VERIFIED_NOT_IN_OS_IMAGE",
+      "state": "PINNED_SINGLE_RUNTIME_PHYSICAL_PLAN_V2_VERIFIED_REPLACEMENT_DESIGNED_NOT_IMPLEMENTED",
       "evidence": [
         "contracts/local-ai-runtime.json",
         "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
-        "docs/evidence/android-local-ai-plan-v2-20260916.json"
+        "docs/evidence/android-local-ai-plan-v2-20260916.json",
+        "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java",
+        "docs/ai-native-os-architecture.md"
       ]
     },
     {
       "id": "tool_runtime",
       "choice": "signed, versioned, permission-scoped Tool packages executed through Platform Broker",
       "fit": "ALIGNED",
-      "state": "FIRST_SELECTED_TOOL_PHYSICAL_PLAN_RESULT_HISTORY_VERIFIED_GENERAL_REGISTRY_PENDING",
+      "state": "FIRST_PURE_TWO_STEP_TOOL_PHYSICAL_REBOOT_VERIFIED_GENERAL_EFFECT_RUNTIME_PENDING",
       "evidence": [
         "contracts/platform-api.json",
         "docs/platform-core.md",
         "android/automation/src/main/java/dev/rock/automation/RockPlatformService.java",
         "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
         "docs/evidence/android-zema-selected-tool-20260916.json",
-        "docs/evidence/android-local-ai-plan-v2-20260916.json"
+        "docs/evidence/android-local-ai-plan-v2-20260916.json",
+        "docs/evidence/android-pixel-10-prefull-physical-20260916.json"
       ]
     },
     {
@@ -115,30 +122,35 @@
       "id": "operator_access",
       "choice": "external Operator Dock plus restricted auditable device Agent; no hidden general shell",
       "fit": "ALIGNED",
-      "state": "DOCK_AND_DEVICE_AGENT_SOURCE_EMULATOR_VERIFIED_PRODUCTION_ENROLLMENT_AND_PHYSICAL_TEST_PENDING",
+      "state": "DOCK_AND_AGENT_SOURCE_TEST_SIGNED_PIXEL_CHECKS_PASS_PRODUCTION_ENROLLMENT_AND_DEVICE_OWNER_PENDING",
       "evidence": [
         "data/device-emergency-access-policy.json",
         "docs/security-incident-response.md",
         "tests/operator-dock-isolation.test.mjs",
         "tests/operator-device-channel.test.mjs",
         "android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandVerifier.java",
-        "android/operator-agent/src/androidTest/java/dev/rock/operator/agent/OperatorAgentIntegrationTest.java"
+        "android/operator-agent/src/androidTest/java/dev/rock/operator/agent/OperatorAgentIntegrationTest.java",
+        "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+        "docs/evidence/android-operator-overlay-stager-20260916.json"
       ]
     },
     {
       "id": "update_restore",
       "choice": "production signing separation, Virtual A/B, rollback index, verified stock recovery and encrypted owner-scoped backup",
       "fit": "ALIGNED",
-      "state": "POLICY_AND_SOURCE_PARTIAL_PHYSICAL_ACCEPTANCE_PENDING",
+      "state": "BACKUP_V2_EMULATOR_RESTORE_AND_PIXEL_EXPORT_PASS_PHYSICAL_LOSS_AND_OS_LIFECYCLE_PENDING",
       "evidence": [
         "data/android-signing-custody-policy.json",
         "data/android-first-flash-gate.json",
-        "data/android-backup-recovery-policy.json"
+        "data/android-backup-recovery-policy.json",
+        "docs/evidence/android-backup-v2-emulator-20260916.json",
+        "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+        "docs/evidence/android-prefull-input-freeze-20260916.json"
       ]
     },
     {
       "id": "game_extension",
-      "choice": "optional adapter using the same owner, permission, receipt and Wallet contracts after the core loop",
+      "choice": "independent Game/IP workstream using Core jobs, permissions and receipts; Wallet contracts only for financial effects; no Fund-completion dependency",
       "fit": "ALIGNED",
       "state": "LINUX_FIXTURE_AND_SDK_ONLY_REAL_GAME_PENDING",
       "evidence": [
@@ -160,16 +172,22 @@
         "Tool",
         "result and history"
       ],
-      "state": "NATIVE_SKY_PERSISTENCE_EMULATOR_PASS_PHYSICAL_REBOOT_RECOVERY_PENDING",
+      "state": "FIRST_PURE_TOOL_PHYSICAL_REBOOT_VERIFIED_GENERAL_AGENT_RUNTIME_PENDING",
       "blockingGaps": [
-        "two-phase physical reboot acceptance of the persisted native Sky selection and in-flight lease",
+        "Core 1.0 same-runtime two-model profile binding, compatible replacement and failed-update recovery",
+        "Core 1.0 minimal work/artifact/settings memory provenance and restoration",
+        "Core 1.0 pure-effect enforcement and local capability declaration"
+      ],
+      "extensionGaps": [
+        "replacement across distinct runtime implementations and general long-term memory",
         "general Tool registry beyond the first article-preparation Tool",
-        "failure recovery beyond reboot interruption"
+        "external-effect reconciliation and cross-device job transfer"
       ]
     },
     {
       "id": "verified_income_wallet",
-      "requiredForV1": true,
+      "requiredForV1": false,
+      "requiredForEarningsRelease": true,
       "path": [
         "Tool result",
         "external earning provider",
@@ -213,11 +231,11 @@
         "stock recovery",
         "owner rebind"
       ],
-      "state": "POLICY_PARTIAL_SOURCE_NOT_PHYSICAL_VERIFIED",
+      "state": "BACKUP_V2_EMULATOR_RESTORE_PIXEL_EXPORT_VERIFIED_OS_LIFECYCLE_PENDING",
       "blockingGaps": [
         "Google factory image and full OTA SHA-256 freeze",
         "production key ceremony",
-        "v2 restore and owner rebind runtime",
+        "physical data/Keystore-loss v2 restore and owner rebind acceptance",
         "full build, enforcing boot, OTA rollback and stock recovery"
       ]
     },
@@ -231,26 +249,28 @@
         "user-visible state",
         "append-only audit"
       ],
-      "state": "SERVER_SIDE_ONLY",
+      "state": "AGENT_TEST_SIGNED_PIXEL_COMMAND_CHECKS_PASS_PRODUCTION_PATH_PENDING",
       "blockingGaps": [
-        "Android Operator Agent",
-        "hardware credential",
-        "Pixel intrusion and recovery exercise"
+        "production WebAuthn credential and StrongBox attestation enrollment",
+        "Device Owner allowlisted execution and remote Provider revocation",
+        "production end-to-end Pixel intrusion and recovery exercise"
       ]
     },
     {
       "id": "game",
       "requiredForV1": false,
       "path": [
-        "official game adapter",
+        "local Game/IP Tool or official game adapter",
         "user authorization",
-        "receipt",
-        "Wallet reconciliation"
+        "scoped Core job",
+        "game artifact or receipt",
+        "Zema result"
       ],
       "state": "OPTIONAL_FIXTURE_ONLY",
       "blockingGaps": [
-        "named game and official sandbox",
-        "asset, direction, region and provider terms"
+        "non-financial Game/IP adapter and isolated project-memory acceptance",
+        "named game and official sandbox for external integration",
+        "separate Wallet, asset, direction, region and provider acceptance only for financial exchange"
       ]
     }
   ],
@@ -258,20 +278,24 @@
   "correctedGovernanceDrift": [
     "BlackBerry-first task wording was retired; unsupported or client-only remains until exact evidence exists",
     "QEMU remains an independent release target and is not the priority path or evidence for the selected Pixel 10 OS",
-    "Android release readiness is reported as one of six required gates, not one of five"
+    "Android release readiness is reported as one of six required gates, not one of five",
+    "RQ48 places the AI-native OS at the product core; Game/IP work does not depend on completed Fund earnings",
+    "Pixel 23/23 test-signed APK acceptance replaces obsolete physical-reboot-pending and server-only Agent labels"
   ],
   "priorityOrder": [
-    "Reconnect the stock Pixel and run the two-phase native Sky in-flight reboot recovery acceptance",
+    "Implement Core 1.0 model profiles, minimal memory, pure-effect enforcement and local capabilities on the completed two-phase native Sky in-flight reboot recovery acceptance; keep general runtime expansion and non-financial Game/IP work independent",
     "Run the physical Pixel Keystore-loss wipe-and-restore drill for the implemented backup v2 path before first flash",
     "Complete recovery artifact hashes, vendor inventory and production signing inputs",
     "Provision the restricted Android Operator Agent and exercise the full audited support path on Pixel 10",
     "Run the first AOSP full build only after every pre-full-build gate passes",
     "Flash Pixel 10 and verify SELinux enforcing, CTS/VTS, OTA rollback, stock recovery, battery and thermal behavior",
     "Connect one external earning-provider sandbox through signed receipt and Wallet reconciliation",
-    "Promote multi-Tool fund control only after repeated verified economics; keep game as a later optional adapter"
+    "Promote multi-Tool fund control only after repeated verified economics; Game/IP uses its independent Core-contract track without waiting for Fund completion"
   ],
   "authoritativeEvidence": [
     "docs/product-north-star-20260915.md",
+    "docs/ai-native-os-architecture.md",
+    "docs/ai-native-os-design-audit.md",
     "data/product-baseline.json",
     "data/project-status.json",
     "data/release-readiness.json",

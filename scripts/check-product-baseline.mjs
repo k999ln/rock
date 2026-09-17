@@ -121,6 +121,16 @@ export function validateBaseline(
     '全体構成監査の設計適合と未完了判定が不正です',
   );
   const northStarPath = data.northStar?.document;
+  for (const key of ['architectureDocument', 'auditDocument']) {
+    const path = data.northStar?.[key];
+    requireValue(
+      typeof path === 'string' &&
+        !isAbsolute(path) &&
+        !relative(root, resolve(root, path)).startsWith('..') &&
+        existsSync(resolve(root, path)),
+      `AIネイティブOS Core: ${key}の正本が必要です`,
+    );
+  }
   requireValue(
     typeof northStarPath === 'string' &&
       !isAbsolute(northStarPath) &&
@@ -155,7 +165,7 @@ export function validateBaseline(
       data.northStar?.cameraQualityIsLaunchCriterion === false &&
       data.northStar?.dedicatedDeviceBeforePixelValueProof === false &&
       data.northStar?.offlineFirst ===
-        'local_reasoning_execution_queue_and_resume_then_exactly_once_sync_when_connectivity_returns' &&
+        'local_reasoning_pure_execution_and_persistent_resume_with_reconciled_external_effects_on_reconnect' &&
       JSON.stringify(data.northStar?.valueSequence) ===
         JSON.stringify([
           'ai_native_os_core',

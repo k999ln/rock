@@ -9,8 +9,8 @@
 - データ境界: 6、table: 75
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 108 task中 77 done、22 in progress、8 planned、1 blocked
-- 現在milestone: AI自動化チームの最小収益loopとAndroid事前試験
+- 作業進捗: 114 task中 78 done、22 in progress、13 planned、1 blocked
+- 現在milestone: AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続
 
 ## 保存境界と配備状態
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-復旧2ファイル・vendor inventory・署名手順の検査器は合格済み。次はowner本人がGoogleのfactory／full OTA利用条件を確認し、同意する場合だけ同一frankel buildの2ファイルをrepo外へ取得する。その後、実byte hashを固定し、十分なLinux環境でfull source取得とadevtool vendor生成を行う。HSM／本番Operator登録／物理backup wipe復元は別gateのまま、全preflight合格後だけ最初のfull buildへ進む。
+Astra設計とSol監査を反映し、AI02から1.0向けモデルmanifestと仕事への版固定を実装する。AI03の限定記憶、AI04の外部作用禁止／照合契約、AI05のapp／OS能力宣言を既存Brokerへ段階導入し、AI06の非金融Game／IP fixtureで共通性を確認する。full build準備ではGoogle復旧実ファイル・vendor inventory・HSM／署名bridge・本番Operator登録・物理data／Keystore全損復元が残る。Game開発は収益Provider／Fundの完成待ちにしない。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。
