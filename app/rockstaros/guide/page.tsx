@@ -12,7 +12,7 @@ import styles from '../preview.module.css';
 
 export const metadata: Metadata = {
   title: `導入・最初の成果・復旧 | ${PRODUCT_RELEASE_NAME}`,
-  description: 'Macの仮想端末でavocadoOSを導入し、Skyのサンプル実行、正常終了、再開、バックアップと復元を行う手順。',
+  description: 'Macの仮想端末でRockstarOSを導入し、Skyのサンプル実行、正常終了、再開、バックアップと復元を行う手順。',
 };
 
 const sourceRoot = `https://github.com/k999ln/rock/blob/${previewData.guideSourceCommit}/docs`;

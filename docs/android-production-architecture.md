@@ -1,4 +1,4 @@
-# avocadoOS Android 1.0 production architecture
+# RockstarOS Android 1.0 production architecture
 
 This is the authoritative overview for how the Android OS pieces are combined. It records the selected end state and separately records what exists today. A selected design is never treated as implementation or physical-device proof.
 
@@ -17,7 +17,7 @@ The Operator Dock stays outside the user OS in its separate Worker and database.
 1. Device: Pixel 10 / `frankel` / `GL066`; read-only identity evidence is fixed.
 2. BSP/vendor/partitions: signed GrapheneOS source baseline, `adevtool` vendor generation, and the observed Dynamic Partitions, Virtual A/B and AVB layout; final vendor inventory is still pending.
 3. Boot/recovery: production Verified Boot with a matching Google factory image and full OTA pair; exact downloaded bytes and recovery drill are pending.
-4. OTA/rollback: signed Virtual A/B full OTA; avocado-managed rollback values use a fixed release epoch and are committed only after a successful slot. No recovery downgrade exception.
+4. OTA/rollback: signed Virtual A/B full OTA; RockstarOS-managed rollback values use a fixed release epoch and are committed only after a successful slot. No recovery downgrade exception.
 5. SELinux: user build, enforcing, no permissive domain, upstream `neverallow` unchanged, separate UID/domain, explicit Binder graph and negative isolation tests.
 6. Backup: the v2 payload key is dual wrapped by the device Keystore and an owner-held 24-word recovery secret. Wallet keys, credentials, signing keys and operator credentials are excluded. Phrase confirmation, export, transactional import and new-device Keystore rebinding pass on the Android 15 emulator; the physical wipe/restore drill is pending.
 7. Acceptance: the exact same final device and build fingerprint must pass Android 17 CDD review, CTS, applicable CTS Verifier, VTS, VTS HAL, VTS kernel and the SELinux negative tests. The AOSP-without-GMS product does not claim GMS and does not substitute GTS for these gates.

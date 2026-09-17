@@ -26,14 +26,14 @@
   "fixedCombination": [
     {
       "id": "identity",
-      "choice": "avocadoOS 1.x with immutable internal namespace dev.rock",
+      "choice": "RockstarOS 1.x with immutable internal namespace dev.rock",
       "fit": "ALIGNED",
       "state": "SOURCE_INTEGRATED",
       "evidence": ["data/product-identity.json", "docs/product-baseline.md"]
     },
     {
       "id": "device_architecture",
-      "choice": "shared avocadoOS Core plus per-SKU Device Support Package; Pixel 10 GL066 frankel first",
+      "choice": "shared RockstarOS Core plus per-SKU Device Support Package; Pixel 10 GL066 frankel first",
       "fit": "ALIGNED",
       "state": "TARGET_SELECTED_BUILD_NOT_RUN",
       "evidence": [

@@ -95,7 +95,7 @@ export default function SystemSettings() {
               <ShieldCheck size={27} />
             </span>
             <div>
-              <small>avocadoOS</small>
+              <small>RockstarOS</small>
               <h1>この端末を整える</h1>
               <p>接続・権限・保存・更新の状態を、ここで確認できます。</p>
             </div>

@@ -1,4 +1,4 @@
-# avocadoOS 全体構成監査
+# RockstarOS 全体構成監査
 
 この文書は、各機能が存在するかだけでなく、製品目的に合う選択になっているか、相互に接続済みか、同じ環境で受入済みかを分けて判定する。機械可読の正本は [`data/system-composition-audit.json`](../data/system-composition-audit.json) とする。
 

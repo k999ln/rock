@@ -1,6 +1,6 @@
-# avocadoOS — AIネイティブOSの共通設計
+# RockstarOS — AIネイティブOSの共通設計
 
-状態: RQ48を実装へ落とす到達設計。2026-09-16、基準source `678e9c9`。**本文の新しい契約・状態名・数値目標は提案であり、現行APIや受入済み機能の宣言ではない。** 実装済みの範囲は第8節のsourceと証拠で区別する。製品目的は[north star](product-north-star-20260915.md)、現在の判定は[全体構成](system-composition.md)、作業入口は[Android / Device / Local AI](workstreams/07-android-device-local-ai.md)。
+状態: RQ48を実装へ落とす到達設計。2026-09-16、基準source `678e9c9`。**本文の新しい契約・状態名・数値目標は提案であり、現行APIや受入済み機能の宣言ではない。** 実装済みの範囲は第8節のsourceと証拠で区別する。製品目的は[north star](product-north-star-20260915.md)、現在の判定は[全体構成](system-composition.md)、作業入口は[Android / Device / Local AI](workstreams/07-android-device-local-ai.md)。RQ49の物質・配合・工程探索は、このCoreの権限、仕事、Tool、receiptを再利用する独立systemとして[Material Invention Core設計](material-invention-core.md)へ分離する。
 
 ## 1. 固定する中核と依存方向
 
@@ -67,7 +67,7 @@ Sky appはスマホ/Web/PC等の選択・接続UI、OS側Sky serviceはBrokerに
 
 初期の実行端末は本人が一台指定する。仕事ごとに一つのauthority deviceとwriter epochを固定し、appの画面切替や通信断で別端末へ自動移送しない。将来のhandoffは旧端末を停止・fenceし、最後のstate/hashとuncertain作用を照合し、新端末のcapabilityと承認を再検査してからepochを増やす。旧端末の停止を証明できないoffline時はhandoffを止める。別端末で独立した仕事は作れるが、同じ仕事や金銭操作の二重writerは許可しない。遠隔接続、複数selection、writer移送はいずれも未実装である。
 
-| 能力・保証 | 通常のSky app / Web / 既存OS上APK | avocadoOS側で追加受入が必要な保証 |
+| 能力・保証 | 通常のSky app / Web / 既存OS上APK | RockstarOS側で追加受入が必要な保証 |
 | --- | --- | --- |
 | 選択・依頼・表示 | app権限内のUI、認証済みAPI、cache。接続先不在は操作不可 | Broker identity、永続selection、ローカル実行の権限強制 |
 | offline実行・記憶 | 導入済みadapterとapp sandboxの範囲。OSによりbackground制約あり | boot後の復旧、全体quota/熱管理、service寿命と停止の実機受入 |
@@ -114,7 +114,7 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 | Game/作者 | `systems/rock-star-os/os/wallet_backend/runtime_contracts.py`、[GX01](gx01-contract-implementation-plan.md)、[SDK契約](game-api-contract-draft.md) | Linux fixture/SDKの限定受入。正式ゲーム・Android port・本書のstory Toolは未実装 |
 | backup/運用 | `RecoverableBackupManager`、`PlatformStore`、`android/operator-agent/` | backup v2と制限付きOperatorのsource/試験あり。物理wipe復元、production credential、StrongBox登録、Device Owner、最終SELinuxは未受入 |
 
-`...`は上表のJava package配下の省略表記であり、新しいファイルを示さない。[実機23項目](evidence/android-pixel-10-prefull-physical-20260916.json)は既存OS上の試験署名APK、実再起動、backup非破壊exportの証拠。avocadoOS full build、flash、production鍵、OTA/純正復旧や外部売上の合格ではない。
+`...`は上表のJava package配下の省略表記であり、新しいファイルを示さない。[実機23項目](evidence/android-pixel-10-prefull-physical-20260916.json)は既存OS上の試験署名APK、実再起動、backup非破壊exportの証拠。RockstarOS full build、flash、production鍵、OTA/純正復旧や外部売上の合格ではない。
 
 ## 9. Core 1.0と応用の独立受入
 

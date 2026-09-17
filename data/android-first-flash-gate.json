@@ -2,7 +2,7 @@
   "schema": "avocadoos-android-first-flash-gate/1",
   "evaluatedAt": "2026-09-16",
   "target": {
-    "product": "avocadoOS",
+    "product": "RockstarOS",
     "manufacturer": "Google",
     "model": "Pixel 10",
     "codename": "frankel",

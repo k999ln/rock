@@ -6,7 +6,7 @@ AIネイティブOSの上で、SkyでToolを選び、ZemaでAIチームへ依頼
 
 ## 現在地
 
-- RQ01〜RQ48を製品ベースへ固定済み。
+- RQ01〜RQ49を製品ベースへ固定済み。RQ49のMaterial Invention Coreは設計済み、runtime未実装。
 - Home、全画面からHomeへ戻る導線、Sky／Zema分離、Studio、Developer Preview紹介、共通visual systemを実装済み。
 - 全11層と6本のend-to-end flowを構成監査へ固定した。設計選択は適合、全体統合とproductionは未完了。
 - 仕事作成、処理履歴、CSV、Wallet、設定への主要導線がある。

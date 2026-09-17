@@ -86,7 +86,7 @@ const funds: Fund[] = [
   },
   {
     id: 'loop',
-    name: 'よくばり avocadoOS',
+    name: 'よくばり RockstarOS',
     english: 'ALL-IN ROCK STAR',
     emoji: '🪄',
     color: '#ffc7dc',
@@ -382,7 +382,7 @@ export default function FundMarket() {
         <div className="market-header-inner">
           <Link href="/" className="market-logo">
             <Loop size={32} strokeWidth={2.8} />
-            <span>avocadoOS</span>
+            <span>RockstarOS</span>
           </Link>
           <label className="market-search">
             <Search size={18} />
@@ -654,7 +654,7 @@ export default function FundMarket() {
       <footer className="market-footer">
         <span>
           <Loop size={17} />
-          avocadoOS
+          RockstarOS
         </span>
         <button onClick={() => openPanel('device')}>PC接続</button>
         <button onClick={() => openPanel('settings')}>ファンドのしくみ</button>

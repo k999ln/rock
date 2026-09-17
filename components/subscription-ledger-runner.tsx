@@ -161,7 +161,7 @@ export function SubscriptionLedgerRunner({
       <section className="ledger-sky-connect" aria-live="polite">
         <AlertTriangle size={25} />
         <div>
-          <h3>avocadoOS Ledgerを起動してください</h3>
+          <h3>RockstarOS Ledgerを起動してください</h3>
           <p>{error || 'PC内のローカル台帳へ接続できません。'}</p>
           <code>python3 scripts/run_local.py</code>
           <button onClick={() => void connect()}>

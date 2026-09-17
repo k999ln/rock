@@ -1,6 +1,6 @@
 {
-  "version": "1.71",
-  "decidedAt": "2026-09-16",
+  "version": "1.72",
+  "decidedAt": "2026-09-17",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -10,13 +10,13 @@
   "designReview": "docs/os-sky-wallet-game-design.md",
   "productIdentity": {
     "authority": "data/product-identity.json",
-    "displayName": "avocadoOS",
-    "releaseName": "avocadoOS 1.0",
+    "displayName": "RockstarOS",
+    "releaseName": "RockstarOS 1.0",
     "version": "1.0",
     "releaseStage": "developer_preview",
-    "previewName": "avocadoOS 1.0 Developer Preview",
+    "previewName": "RockstarOS 1.0 Developer Preview",
     "internalNamespace": "dev.rock",
-    "legacyDisplayName": "RockstarOS",
+    "legacyDisplayName": "avocadoOS",
     "legacySchemaPrefix": "rockstaros",
     "androidNamespace": "dev.rock",
     "legacyComponentNamespace": "org.rockstar",
@@ -37,7 +37,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided product purpose and eight Zero-to-One principles; preserve RQ01-RQ48 and the current avocadoOS 1.0 technical base",
+    "basis": "User-provided product purpose and eight Zero-to-One principles; preserve RQ01-RQ49 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "not_fixed; earlier independent-writer hypothesis remains historical until the verified economic loop selects a repeatable problem",
     "representativeProductCandidate": "one existing Tool capable of completing the offline-to-signed-earning-to-Wallet acceptance loop",
     "marketValidation": "not_run",
@@ -127,6 +127,36 @@
         "precise_location"
       ]
     }
+  },
+  "materialInvention": {
+    "requested": true,
+    "status": "design_approved_runtime_not_implemented",
+    "architecture": "docs/material-invention-core.md",
+    "role": "combine_materials_and_process_conditions_into_traceable_invention_candidates",
+    "coreEntities": [
+      "material_record",
+      "composition_candidate",
+      "process_recipe",
+      "safety_assessment",
+      "simulation_result",
+      "experiment_receipt",
+      "invention_candidate"
+    ],
+    "workflow": [
+      "define_goal",
+      "select_materials",
+      "generate_composition_and_process_candidates",
+      "screen_hazards_and_constraints",
+      "simulate_or_compare_evidence",
+      "obtain_human_approval",
+      "run_authorized_external_experiment",
+      "ingest_signed_measurements",
+      "rank_and_version_candidates"
+    ],
+    "autonomousPhysicalExperimentAllowed": false,
+    "hazardousSynthesisWithoutQualifiedReviewAllowed": false,
+    "simulationIsExperimentalProof": false,
+    "externalLabIsReplaceableProvider": true
   },
   "alignmentAudit": "docs/design-implementation-alignment-20260909.md",
   "sky": {
@@ -407,7 +437,8 @@
     "RQ45",
     "RQ46",
     "RQ47",
-    "RQ48"
+    "RQ48",
+    "RQ49"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -420,7 +451,8 @@
     "sky-tool-developer-platform",
     "local-offline-ai-runtime",
     "os-platform-core",
-    "single-operator-emergency-device-protection"
+    "single-operator-emergency-device-protection",
+    "material-invention-candidate-engine"
   ],
   "localAiRuntime": {
     "requested": true,
@@ -755,7 +787,7 @@
     "salesOrProfitGuaranteed": false,
     "architecture": "docs/mercari-revenue-loop.md"
   },
-  "hardwarePolicy": "Develop one shared avocadoOS Core with model-specific Device Support Packages. Physical native OS, experimental Android GSI, client-only and unsupported are distinct delivery modes. The first physical target is the owner-selected Japan-market Pixel 10 GL066 / frankel; this identity does not establish image, flash, boot or release readiness. BlackBerry requires exact-model unlock/vendor/recovery evidence; Apple mobile devices are client-only rather than OS-replacement targets. Linux QEMU and physical evidence remain distinct.",
+  "hardwarePolicy": "Develop one shared RockstarOS Core with model-specific Device Support Packages. Physical native OS, experimental Android GSI, client-only and unsupported are distinct delivery modes. The first physical target is the owner-selected Japan-market Pixel 10 GL066 / frankel; this identity does not establish image, flash, boot or release readiness. BlackBerry requires exact-model unlock/vendor/recovery evidence; Apple mobile devices are client-only rather than OS-replacement targets. Linux QEMU and physical evidence remain distinct.",
   "deviceSupportPolicy": {
     "status": "source_tag_and_device_layout_frozen_not_physical_support",
     "architecture": "docs/device-support-architecture.md",
@@ -789,13 +821,13 @@
   "firstOperationalTarget": "Fresh-host QEMU Developer Preview with reproducible install, launch, shutdown, reopen, backup and removal; synthetic data only",
   "releaseInstallation": {
     "requested": true,
-    "releaseName": "avocadoOS 1.0",
+    "releaseName": "RockstarOS 1.0",
     "architecture": "docs/rockstaros-1.0-architecture.md",
     "plan": "docs/release-installation-plan-20260909.md",
     "developerPreview": "internal_acceptance_scoped_publication_blocked",
     "physicalDevicePreview": "source_tag_and_device_layout_frozen_recovery_artifacts_pending",
     "productionReady": false,
-    "cmRule": "Present the current implementation as the avocadoOS 1.0 base and advertise only the highest installation and validation stage that has passed its recorded gate",
+    "cmRule": "Present the current implementation as the RockstarOS 1.0 base and advertise only the highest installation and validation stage that has passed its recorded gate",
     "followup": "docs/current-state-20260911.md",
     "cmProduction": {
       "status": "in_production_per_latest_user_report",

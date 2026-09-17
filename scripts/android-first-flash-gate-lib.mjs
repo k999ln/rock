@@ -92,7 +92,7 @@ export function validateAndroidFirstFlashGate({
   if (gate?.schema !== 'avocadoos-android-first-flash-gate/1') fail('schema mismatch');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(gate.evaluatedAt || '')) fail('evaluatedAt is required');
   if (
-    gate.target?.product !== 'avocadoOS' ||
+    gate.target?.product !== 'RockstarOS' ||
     gate.target?.manufacturer !== 'Google' ||
     gate.target?.model !== 'Pixel 10' ||
     gate.target?.codename !== 'frankel' ||
@@ -122,7 +122,7 @@ export function validateAndroidFirstFlashGate({
   }
   if (
     signingCustody?.schema !== 'avocadoos-android-signing-custody/1' ||
-    signingCustody?.product !== 'avocadoOS' ||
+    signingCustody?.product !== 'RockstarOS' ||
     signingCustody?.status !==
       'architecture_approved_provisioning_and_end_to_end_signing_pending' ||
     signingCustody?.architecture?.signingHost !== 'dedicated_offline_workstation' ||
@@ -192,7 +192,7 @@ export function validateAndroidFirstFlashGate({
   }
   if (
     rollbackPolicy?.schema !== 'avocadoos-avb-rollback-index-policy/1' ||
-    rollbackPolicy?.product !== 'avocadoOS' ||
+    rollbackPolicy?.product !== 'RockstarOS' ||
     rollbackPolicy?.target !== 'Google Pixel 10 / frankel / GL066' ||
     rollbackPolicy?.status !==
       'policy_approved_exact_locations_values_and_device_test_pending' ||
@@ -226,7 +226,7 @@ export function validateAndroidFirstFlashGate({
   }
   if (
     stockRecoveryPolicy?.schema !== 'avocadoos-google-stock-recovery-policy/1' ||
-    stockRecoveryPolicy?.product !== 'avocadoOS' ||
+    stockRecoveryPolicy?.product !== 'RockstarOS' ||
     stockRecoveryPolicy?.target?.manufacturer !== 'Google' ||
     stockRecoveryPolicy?.target?.model !== 'Pixel 10' ||
     stockRecoveryPolicy?.target?.codename !== 'frankel' ||
@@ -270,7 +270,7 @@ export function validateAndroidFirstFlashGate({
   }
   if (
     backupRecoveryPolicy?.schema !== 'avocadoos-android-backup-recovery-policy/1' ||
-    backupRecoveryPolicy?.product !== 'avocadoOS' ||
+    backupRecoveryPolicy?.product !== 'RockstarOS' ||
     backupRecoveryPolicy?.target !== 'Google Pixel 10 / frankel / GL066' ||
     backupRecoveryPolicy?.status !==
       'source_ui_transactional_import_and_rebinding_emulator_and_physical_export_reboot_pass_wipe_pending' ||

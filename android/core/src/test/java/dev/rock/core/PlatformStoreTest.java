@@ -285,7 +285,7 @@ public final class PlatformStoreTest {
             EncryptedBackup.openWithRecoverySecret(second, recoverySecret, "owner:alice"));
     }
 
-    @Test public void recoveryPhraseRoundTripsWithAnAvocadoSpecificChecksum() {
+    @Test public void recoveryPhraseRoundTripsWithARockstarSpecificChecksum() {
         byte[] secret = new byte[EncryptedBackup.RECOVERY_SECRET_BYTES];
         for (int index = 0; index < secret.length; index++) secret[index] = (byte) index;
         String phrase = RecoveryPhrase.encode(secret);

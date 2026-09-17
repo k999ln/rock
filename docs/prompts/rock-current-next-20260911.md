@@ -1,4 +1,4 @@
-# avocadoOS — AIネイティブOS開発の再開指示
+# RockstarOS — AIネイティブOS開発の再開指示
 
 2026-09-16更新の現在入口。`AGENTS.md`、`data/project-status.json`、`docs/product-baseline.md`、`docs/ai-native-os-architecture.md`、`docs/ai-native-os-design-audit.md`を読んで、未完了作業を進める。製品中核は高性能で交換可能なローカルLLMとoffline agentを持つOS。Sky／Zema、便利機能、Game／IP／動画／VRはこの共通Coreへ接続する。設計はAstra、監査はSolという利用者指定を保持する。
 
@@ -18,7 +18,7 @@
 
 ## 維持する製品契約と証拠
 
-RQ01〜RQ48、`docs/rockstaros-1.0-strategy.md`の8原則、AIネイティブOS Core、Sky／Zema、ToBの商品供給、Game交換／作者SDKを維持する。検証済み収益から月最大888 USD cents／同一契約の複数端末重複防止、Rock ATM手数料0、未定のゲーム料金と実資金条件は変更しない。Core受入は応用の個別公開gateを廃止しない。
+RQ01〜RQ49、`docs/rockstaros-1.0-strategy.md`の8原則、AIネイティブOS Core、Sky／Zema、Material Invention Core、ToBの商品供給、Game交換／作者SDKを維持する。検証済み収益から月最大888 USD cents／同一契約の複数端末重複防止、Rock ATM手数料0、未定のゲーム料金と実資金条件は変更しない。Core受入は応用の個別公開gateを廃止しない。
 
 b7/rc2の凍結配布と限定受入を保管する。旧9ab、b7/rc2、最新ソース、標準Androidエミュレーター、スマホ実機、本番金融を分けて報告する。既存imageへ新ソースの合格を付け替えない。
 

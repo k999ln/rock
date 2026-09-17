@@ -1,7 +1,7 @@
 {
   "schema": "avocadoos-avb-rollback-index-policy/1",
   "decidedAt": "2026-09-16",
-  "product": "avocadoOS",
+  "product": "RockstarOS",
   "target": "Google Pixel 10 / frankel / GL066",
   "status": "policy_approved_exact_locations_values_and_device_test_pending",
   "valuePolicy": {

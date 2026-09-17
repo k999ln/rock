@@ -1,4 +1,4 @@
-# avocadoOS AVB rollback index運用
+# RockstarOS AVB rollback index運用
 
 決定日: 2026-09-16
 状態: **運用規則決定済み／正確なlocation・初期値・実機試験は未完了**
@@ -7,11 +7,11 @@
 
 ## 採番
 
-avocadoOSが管理するrollback indexは、署名対象のrelease manifestへ事前固定したUTC Unix秒`releaseEpochUtcSeconds`を使う。build時の現在時刻を読み取って勝手に採番せず、署名前にreviewした値だけを使う。同一release内のavocadoOS管理locationは同じ値を使用できるが、直前のproduction releaseより必ず大きくする。
+RockstarOSが管理するrollback indexは、署名対象のrelease manifestへ事前固定したUTC Unix秒`releaseEpochUtcSeconds`を使う。build時の現在時刻を読み取って勝手に採番せず、署名前にreviewした値だけを使う。同一release内のRockstarOS管理locationは同じ値を使用できるが、直前のproduction releaseより必ず大きくする。
 
 `1.0`、`1.5`、`2.0`などの商品versionとは連動させない。version名を戻したりbranchを作り直してもrollback indexは戻さない。
 
-Googleが管理するbootloader、radio、vendor firmware等のrollback値は、対象の純正source／binaryが持つ値をそのまま維持する。avocadoOS側で代替値を作らず、Android 16の古いbootloaderを復旧用として書き込まない。
+Googleが管理するbootloader、radio、vendor firmware等のrollback値は、対象の純正source／binaryが持つ値をそのまま維持する。RockstarOS側で代替値を作らず、Android 16の古いbootloaderを復旧用として書き込まない。
 
 ## location
 

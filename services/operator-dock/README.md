@@ -1,6 +1,6 @@
-# avocadoOS Operator Dock
+# RockstarOS Operator Dock
 
-端末利用者向けavocadoOSとは別に配備する、運営専用の端末管理面です。利用者向けWeb/PWA、OSホーム、端末内アプリへこの画面やAPIを含めません。
+端末利用者向けRockstarOSとは別に配備する、運営専用の端末管理面です。利用者向けWeb/PWA、OSホーム、端末内アプリへこの画面やAPIを含めません。
 
 全requestは静的assetを含めてWorkerを先に通し、Cloudflare Accessの`Cf-Access-Jwt-Assertion`を署名、issuer、application audience、有効期限、単一operator subjectまで検証します。Accessのpolicyだけに依存せず、Worker内でもfail closedにします。
 

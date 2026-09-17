@@ -92,4 +92,4 @@ if [[ $ROCK_OPERATOR_AGENT_MODE == configured ]]; then
 fi
 ROCK_PHONE_BUILD_MODE="$rock_phone_mode" python3 -c 'import json,os,pathlib; pathlib.Path(os.environ["OUT_DIR"],"rockstaros-evidence","build-manifest.json").write_text(json.dumps({"schema":"avocadoos-developer-preview-build/1","mode":os.environ["ROCK_PHONE_BUILD_MODE"],"signing":"test/development","operatorAgent":os.environ["ROCK_OPERATOR_AGENT_MODE"],"releaseFlashAllowed":False,"productionSigned":False,"hardwareFlashPerformed":False},indent=2)+"\n")'
 m "${rock_phone_build_targets[@]}"
-echo "avocadoOS Developer Preview $rock_phone_mode build finished. Test/development signing only; release flash is not allowed."
+echo "RockstarOS Developer Preview $rock_phone_mode build finished. Test/development signing only; release flash is not allowed."

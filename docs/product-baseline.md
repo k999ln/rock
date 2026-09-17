@@ -1,4 +1,6 @@
-# avocadoOS — 確定した製品ベース
+# RockstarOS — 確定した製品ベース
+
+2026-09-17名称・発明Core追記（v1.72）: 利用者向け正式製品名を **RockstarOS** へ戻し、`RockstarOS 1.0 Developer Preview`を現在表示とする。AvocadoOSは2026-09-15〜16の旧表示名として履歴・署名済み証拠・既存データ内だけに残し、暗号domain、保存schema、artifact hashを表示名変更だけで破壊しない。同時に、物質、配合比、工程条件、安全性、シミュレーション、実験receiptを版管理し、新しい材料・用途の候補を作るMaterial Invention CoreをRQ49として追加する。OSは危険な物理実験を無人実行せず、安全審査、本人承認、資格を持つ外部ラボ、測定証拠を独立gateにする。[詳細設計](material-invention-core.md)。
 
 2026-09-16詳細設計追記（v1.71）: RQ48を[AIネイティブOS詳細設計](ai-native-os-architecture.md)へ具体化する。Astraが設計、Solが[独立監査](ai-native-os-design-audit.md)を担当。モデル・記憶・仕事・外部作用・端末能力の契約と、1.0 Core／便利機能／Game・IP／収益の独立受入を定義する。現在の固定runtimeと純粋な2工程Toolの実機受入から、汎用モデル交換・共有記憶・外部作用・多端末の完成は推測しない。詳細設計の保存はruntime実装や製品公開の完了ではない。
 
@@ -10,7 +12,7 @@
 
 2026-09-16 Operator Agent実装追記（v1.67）: OS外のOperator Dockに署名付きdevice poll／ack／resultを追加し、登録済みP-256端末鍵、±120秒timestamp、nonce、body digestを検証する。launcher非表示・別UIDの`dev.rock.operator.agent`はWebAuthn commandを対象端末、RP／origin、UP／UV、署名、期限、scope、単調増加counterまで独立検証し、verify→永続化→ack→Device Owner allowlist実行→local result永続化→remote resultの順で処理する。端末監査はAndroid Keystore HMAC chainで、任意shell・私的内容・Wallet・鍵への経路は作らない。Node 14 test、Worker dry-run、Android build／lint、Android 15 emulator 5/5は合格。production credential、StrongBox attestation、Device Owner実行、remote session失効、Pixel 10実機は未完了で、factory reset gateは無効のままとする。[証拠](evidence/android-operator-agent-emulator-20260916.json)。
 
-2026-09-16 backup v2実装追記（v1.66）: 所有者専用256-bit recovery secretをavocadoOS専用checksum付き24単語で提示し、指定4単語の再入力後だけ有効化する。Shell API v4からdual-wrapped v2 backupをexportし、空のowner領域へtransactional importした後、新しいAndroid Keystore鍵へ再bindingする。復元後は自動化を停止し、Sky tokenをrotateし、active承認と実行中leaseを無効化し、導入component authority、Wallet秘密鍵、session、operator credential、provider secretを復元しない。Core 37/37、Android 15 emulatorのBroker 11 non-skipped／Shell 5/5、source build／lint 207 taskは合格。Pixel 10の物理wipe／復元／再起動は未実施なので初回flash gateは未合格のまま維持する。[証拠](evidence/android-backup-v2-emulator-20260916.json)。
+2026-09-16 backup v2実装追記（v1.66）: 所有者専用256-bit recovery secretをRockstarOS専用checksum付き24単語で提示し、指定4単語の再入力後だけ有効化する。Shell API v4からdual-wrapped v2 backupをexportし、空のowner領域へtransactional importした後、新しいAndroid Keystore鍵へ再bindingする。復元後は自動化を停止し、Sky tokenをrotateし、active承認と実行中leaseを無効化し、導入component authority、Wallet秘密鍵、session、operator credential、provider secretを復元しない。Core 37/37、Android 15 emulatorのBroker 11 non-skipped／Shell 5/5、source build／lint 207 taskは合格。Pixel 10の物理wipe／復元／再起動は未実施なので初回flash gateは未合格のまま維持する。[証拠](evidence/android-backup-v2-emulator-20260916.json)。
 
 2026-09-16 native Sky永続handoff追記（v1.65）: Shell API v3へ`selectSkyTool`と`skySelection`を追加し、Skyで選んだ`article-preparation@1`をShellの一時状態ではなくBroker SQLite schema v2へ保存する。Zemaは保存済みselection tokenが一致する場合だけLocal AI計画を開始し、不一致は仕事0件で拒否する。schema v1→v2 migration、DB再open、Android 15 emulatorのBroker 9/9・Shell 4/4、全Android 378 taskは合格した。Pixelを実際に再起動して実行中leaseを復旧する二段階試験は端末再接続待ちで、まだ合格扱いにしない。
 
@@ -18,13 +20,13 @@
 
 2026-09-16全体構成追記（v1.63）: RQ47の製品目的に対して、OS、Sky、Zema、Android Shell／Broker、Local AI、Tool、検証済み収益、Wallet／Fund、Operator、更新・復旧、Gameの選択と接続状態を全体構成監査へ固定した。現在の選択は整合するが、全component実装、全必須経路の統合、production準備はいずれも未完了とする。旧BlackBerry-firstの現行task表現とQEMU-firstのスマホ優先順位を退役し、Pixel 10 GL066上のoffline AI team loopをfull build前の最優先とする。[全体構成監査](system-composition.md)。
 
-2026-09-16端末基盤追記（v1.62）: 外部Providerは初回OS full buildへ焼き込まず、更新可能なアプリ／サーバー側へ分離する。ただし外部Provider sandbox、返金／chargeback、払出し、再照合はavocadoOS 1.0で実収益を表示・公開する前の必須gateとし、未合格中はlive収益を表示しない。Pixel 10 GL066はGrapheneOS `2026091000`のmanifest tag署名、manifest／adevtool／laguna-muzel 6.6入力と、読取り専用ADBによるDynamic Partition／Virtual A/B／AVB 1.4構成まで固定した。Google純正factory image／full OTAの利用条件確認、実ファイル取得とSHA-256、vendor生成inventory、production署名／復旧計画が未完了なので、有料full build、unlock、flashはまだ開始しない。[source／layout監査](evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json)／[source lock](../os/physical/frankel-source-lock.json)。
+2026-09-16端末基盤追記（v1.62）: 外部Providerは初回OS full buildへ焼き込まず、更新可能なアプリ／サーバー側へ分離する。ただし外部Provider sandbox、返金／chargeback、払出し、再照合はRockstarOS 1.0で実収益を表示・公開する前の必須gateとし、未合格中はlive収益を表示しない。Pixel 10 GL066はGrapheneOS `2026091000`のmanifest tag署名、manifest／adevtool／laguna-muzel 6.6入力と、読取り専用ADBによるDynamic Partition／Virtual A/B／AVB 1.4構成まで固定した。Google純正factory image／full OTAの利用条件確認、実ファイル取得とSHA-256、vendor生成inventory、production署名／復旧計画が未完了なので、有料full build、unlock、flashはまだ開始しない。[source／layout監査](evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json)／[source lock](../os/physical/frankel-source-lock.json)。
 
 2026-09-16結合試験追記（v1.61）: 同じ合成実行IDと証拠hashをPixel 10 GL066のTool／端末Wallet区間と、Provider署名／Sky bridge／Billing Wallet区間へ渡した。物理instrumentation 6/6、署名精算7/7、Sky→Zema job回帰19/19に合格し、端末側はTool二段実行、review、Provider登録、Wallet一度だけ記録、重複拒否まで確認した。これはRock所有fixtureによる相関済み二区間であり、端末から外部Providerまでの配備済み一本通し、実売上、sandbox、実払出しではない。外部Provider受入とGL066のBSP／vendor／partition／boot／純正復旧、source／artifact／production署名計画のfreezeが残るため、有料full buildはまだ開始しない。[相関試験証拠](evidence/pixel-tool-wallet-correlation-20260916.json)／[事前試験](evidence/android-pre-full-build-tests-20260915.json)。
 
 2026-09-16実機試験追記（v1.60）: 所有Pixel 10 GL066の既存OS上へ試験専用同一署名のLocal Action Assistant、Automation、instrumentation、記事Toolを導入し、物理端末instrumentation 5/5、Qwen3-0.6B Q8_0の機内モード推論、再起動後の会話／model metadata保持と手動reload、33分22秒・15推論の熱試験を合格した。最大電池温度34.4℃、Android thermal status 0、process restart 0。Sky→Zema→Tool→WalletはRock所有fixtureの自動receipt bridgeまで合格したが、この時点では物理Pixel上のWallet Provider縦断は未実証だった。GL066のBSP／vendor／partition／boot／純正復旧とsource／artifact／署名計画のfreezeが残るため、有料full buildはまだ開始しない。[実機証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)／[事前試験](evidence/android-pre-full-build-tests-20260915.json)。
 
-2026-09-16実機追記（v1.59）: 所有端末を読取り専用ADBで確認し、最初の物理対象を日本向けGoogle Pixel 10、型番／SKU `GL066`、codename `frankel`へ確定した。現在はGrapheneOS `2026091000`／Android 17で、bootloaderはlocked、別Verified Boot鍵のyellow状態。端末識別番号は保存しない。これによりAndroid物理端末の「正確な機種／SKU」gateだけを1/5合格とする。avocadoOSのfull build、flash、boot、BSP／復旧、CTS、production署名、販売準備は未合格で、有料full buildは開始しない。[端末inventory](evidence/android-pixel-10-gl066-device-inventory-20260916.json)／[boot状態](evidence/android-pixel-10-gl066-boot-state-20260916.json)。
+2026-09-16実機追記（v1.59）: 所有端末を読取り専用ADBで確認し、最初の物理対象を日本向けGoogle Pixel 10、型番／SKU `GL066`、codename `frankel`へ確定した。現在はGrapheneOS `2026091000`／Android 17で、bootloaderはlocked、別Verified Boot鍵のyellow状態。端末識別番号は保存しない。これによりAndroid物理端末の「正確な機種／SKU」gateだけを1/5合格とする。RockstarOSのfull build、flash、boot、BSP／復旧、CTS、production署名、販売準備は未合格で、有料full buildは開始しない。[端末inventory](evidence/android-pixel-10-gl066-device-inventory-20260916.json)／[boot状態](evidence/android-pixel-10-gl066-boot-state-20260916.json)。
 
 2026-09-15検証追記（v1.58）: v1.56で不合格だった試験2のうち、Tool完了→Provider署名付きEarning Receipt→Wallet一度だけ反映をROCK_READY fixtureで実装・合格した。Provider署名、完了済み・非サンプルjob、本人、Tool、時刻をSky bridgeで照合し、収益Provider鍵、Billing転送鍵、払出し鍵を分離する。同一Receipt再送は冪等、同じ実行への異なるReceiptは拒否する。実販売・決済Provider sandbox、返金、chargeback、実払出しは未接続であり、試験2全体や1.0の合格、実収益実績にはしない。試験1の所有Pixel 10、実GGUF、機内モード、保存／再起動、30分温度、正確なSKU readbackも未実行のため、有料full buildは引き続き開始しない。[bridge受入証拠](evidence/tool-earning-wallet-bridge-20260915.json)。
 
@@ -32,15 +34,15 @@
 
 2026-09-15検証追記（v1.56）: 有料Linux環境でのAndroid OS full buildと実機flash／bootは最後に行う。Android単体build／lint、emulator上のBinder／SQLite、Local Action Assistant arm64 APK生成・hash固定・署名限定Binder・GGUFなしの安全な拒否は合格した。純正OSの所有Pixel 10上でのGGUF機内モード推論・保存／再起動・30分温度試験は未実行のため試験1は部分合格。Sky→Zema、job、Android Tool、Wallet／認証済み収益の個別試験は合格したが、Tool完了を署名済みEarning ReceiptとしてWalletへ自動転記する経路が未実装のため試験2は不合格である。正確なSKU readbackと最終freezeを含め、全て合格するまで有料full buildを開始しない。Sky、Zema、Wallet、Tool、LLMのapp-only修正は単体APK更新で反復できる境界を維持し、framework、SELinux、privapp/product設定、boot/vendor/partition/AVB変更だけをOS image再build対象とする。初回build環境はfactory／OTA／target-filesを保存し、最初の実機bootと修正要否の確認まで保持する。[事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)を判定正本とする。
 
-2026-09-15追記（v1.55）: RQ46の「運営専用」を利用者向けavocadoOS内の隠しrouteではなく、配備先、認証、asset、API、D1を分けた **avocadoOS Operator Dock** として訂正する。利用者向けWeb/PWA・OSホームには管理画面、管理API、入口を含めない。Dockの全requestは静的assetを含めCloudflare Accessの署名JWTをissuer、専用audience、有効期限、単一operator subjectまで検証してから処理する。端末側service未実装の境界は維持する。
+2026-09-15追記（v1.55）: RQ46の「運営専用」を利用者向けRockstarOS内の隠しrouteではなく、配備先、認証、asset、API、D1を分けた **RockstarOS Operator Dock** として訂正する。利用者向けWeb/PWA・OSホームには管理画面、管理API、入口を含めない。Dockの全requestは静的assetを含めCloudflare Accessの署名JWTをissuer、専用audience、有効期限、単一operator subjectまで検証してから処理する。端末側service未実装の境界は維持する。
 
 2026-09-15記録（v1.54、v1.55で廃止）: 当初は利用者向けWeb内の`/operator`管理画面として実装したが、運営側Dockという要件に反するためv1.55で削除・分離した。ここに記したrouteとWeb D1構成は現行仕様ではない。
 
 2026-09-15追記（v1.53）: 紛失・侵害・悪意あるTool等の緊急時は、事前登録された端末に対して認定運営担当者1名が本人のその場の承認なしで保護を開始できる。操作は端末ロック、紛失mode、Sky／Zema停止、session失効、OTA停止、通信隔離、sanitized診断、最大15分の限定保守sessionへ限定する。常設root／任意shell、私的内容閲覧、Wallet操作、秘密鍵取得、マイク／カメラ起動は禁止し、端末側の署名・scope・期限検査、hardware operator credential、追記監査、事後通知を必須にする。設計承認とAndroid service／実機受入を分離し、RQ45を追加する。
 
-2026-09-15追記（v1.52）: 現在の共通製品版を`avocadoOS 1.0`、公開前の段階表示を`avocadoOS 1.0 Developer Preview`で固定する。製品版は一つの正本から表示し、互換性を維持する機能改善は`1.5`のようなminor更新、Platform APIや保存形式の非互換変更はmigration・rollback受入を必須にして`2.0`のようなmajor更新とする。機種別Device Support Packageは対応Core版の範囲を宣言し、版番号だけで完成・公開可能とは扱わない。RQ44を追加する。
+2026-09-15追記（v1.52）: 現在の共通製品版を`RockstarOS 1.0`、公開前の段階表示を`RockstarOS 1.0 Developer Preview`で固定する。製品版は一つの正本から表示し、互換性を維持する機能改善は`1.5`のようなminor更新、Platform APIや保存形式の非互換変更はmigration・rollback受入を必須にして`2.0`のようなmajor更新とする。機種別Device Support Packageは対応Core版の範囲を宣言し、版番号だけで完成・公開可能とは扱わない。RQ44を追加する。
 
-2026-09-15追記（v1.51）: 利用者向けの正式製品名を`avocadoOS`へ変更する。変更しにくい内部識別子は既存の`dev.rock`で固定し、Android package／permission、署名境界、保存schema、`rockstaros-*`識別子、`@rockstaros` package scope、URL `/rockstaros`、既存artifact名を互換名として維持する。新しい画面、metadata、通知、診断出力の現在名は`avocadoOS`とする。`RockstarOS`は旧表示名として読み、過去の証拠と配布物は改変しない。RQ43を追加する。
+2026-09-15履歴（v1.51、v1.72で表示名を復元）: 利用者向けの正式製品名を当時`avocadoOS`へ変更した。内部識別子`dev.rock`、Android package／permission、署名境界、保存schema、`rockstaros-*`識別子、`@rockstaros` package scope、URL `/rockstaros`、既存artifact名は互換名として維持した。2026-09-17のv1.72以降、現在表示は再び`RockstarOS`とするが、この期間の署名済み証拠と配布物は改変しない。
 
 2026-09-15追記（v1.50）: Skyで選んだToolと自然文の依頼をZemaへ一回だけ引き継ぎ、Zemaで入力確認、実行、ライブ状態、結果、履歴を連続して扱う。依頼本文はURL、D1、server logへ新規保存せず、同一tabのsession storageへ最大2,000文字・10分だけ保持し、対象Toolが受け取ると削除する。jobの受付、開始、完了、失敗は同一画面ではbrowser eventで即時反映し、本人別D1 jobを3秒／15秒の再照合で補完する。専用画面を持つCSV、Mercari、Market等もZemaに担当カードを表示してから実行面へ進み、既存のreceiptと安全gateを迂回しない。
 
@@ -456,7 +458,7 @@ Local Action Assistantを、RockstarOSの物理Android版で端末内推論を�
 
 読み取りtoolは許可リスト内だけを実行し、メモ・リマインダー作成はproposalを端末内へ一時保存して、OSの別確認呼出しで本人が許可するまで実行しない。release APKは通信権限なし、arm64 native library、固定SHA-256とsizeを検査してからSoongへstageし、AOSPのrelease署名工程へ渡す。GGUFはsourceやAPKへ同梱せず、配布元、license、hash、端末RAM・速度・温度を確認後にimportする。
 
-client/server source、AIDL API v2契約、base＋plan overlay、APK staging gate、固定sourceからのarm64 release APK build、artifact hash固定、emulatorの署名Binder接続とモデルなし0件停止に加え、2026-09-16に所有Pixel 10 GL066上で物理端末instrumentation、Qwen GGUF機内モード推論、保存／再起動、33分22秒連続試験、Zema計画から最初の2段階Tool、結果、履歴まで完了した。Shell API v3ではnative Skyの選択をBroker SQLiteへ永続化し、不正selection tokenを0件拒否するemulator受入まで合格した。使用した署名は試験専用で、新しいSky経路の物理再起動復旧、Soong／OS image、production署名、SELinux enforcing、OTA／rollback／復旧は未完了である。詳細は [Local Action AssistantのavocadoOS導入](local-ai-os-integration-20260915.md)、[plan v2実機証拠](evidence/android-local-ai-plan-v2-20260916.json)、[物理端末推論証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)を正本補助記録とする。
+client/server source、AIDL API v2契約、base＋plan overlay、APK staging gate、固定sourceからのarm64 release APK build、artifact hash固定、emulatorの署名Binder接続とモデルなし0件停止に加え、2026-09-16に所有Pixel 10 GL066上で物理端末instrumentation、Qwen GGUF機内モード推論、保存／再起動、33分22秒連続試験、Zema計画から最初の2段階Tool、結果、履歴まで完了した。Shell API v3ではnative Skyの選択をBroker SQLiteへ永続化し、不正selection tokenを0件拒否するemulator受入まで合格した。使用した署名は試験専用で、新しいSky経路の物理再起動復旧、Soong／OS image、production署名、SELinux enforcing、OTA／rollback／復旧は未完了である。詳細は [Local Action AssistantのRockstarOS導入](local-ai-os-integration-20260915.md)、[plan v2実機証拠](evidence/android-local-ai-plan-v2-20260916.json)、[物理端末推論証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)を正本補助記録とする。
 
 ## RQ42 OS Platform Coreへ登録・承認・Wallet・更新の安全境界を入れる
 
@@ -468,21 +470,21 @@ Wallet基本台帳はowner別の追記型とし、既存行の書換えではな
 
 更新は同じcomponent identity、同じ署名、Platform API互換、保存schema互換、新しいversionを必須にする。rollbackはcache済みの古い互換versionだけを許す。2026-09-15時点はcore、AIDL、Android broker／本人確認画面、source SELinux policy、契約とhost testを実装した段階で、Android/AOSP native build、SELinux enforcing boot、production key署名、OTA rollbackと実機受入は未実行である。詳細は [OS Platform Core v1](platform-core.md) を参照する。
 
-## RQ43 正式製品名をavocadoOS、内部識別子をdev.rockで固定する
+## RQ43 正式製品名をRockstarOSへ戻し、内部識別子をdev.rockで固定する
 
-利用者向けの正式製品名と新規表示は **avocadoOS** とし、共通release名は **avocadoOS 1.0** とする。既存の`RockstarOS`は旧表示名であり、現在の画面、PWA manifest、metadata、Androidの表示ラベル、通知、診断出力では使わない。
+利用者向けの正式製品名と新規表示は **RockstarOS** とし、共通release名は **RockstarOS 1.0** とする。`avocadoOS`は2026-09-15〜16に使われた旧表示名であり、新しい画面、PWA manifest、metadata、Android表示ラベル、通知、診断出力には使わない。
 
 変更しにくい内部識別子は **`dev.rock`** で固定する。既存アプリ、署名、権限、保存済みデータ、外部連携、ブックマーク、配布証拠を壊さないため、Android package／permission、`org.rockstar` component ID、`rockstaros-*` schema／storage key、`@rockstaros` package scope、URL `/rockstaros`、既存artifact名は互換識別子として維持する。これらを新しい表示名へ一括renameしない。
 
-過去の文書、hash、署名済みmanifest、配布archive、受入証拠に記録された`RockstarOS`は履歴として改変しない。名称変更は新しい署名鍵、production release、実機対応、OTA受入の完了を意味しない。
+過去の文書、hash、署名済みmanifest、配布archive、受入証拠に記録された`avocadoOS`と、既存バックアップの暗号domain／format識別子は互換性のため改変しない。名称復元は新しい署名鍵、production release、実機対応、OTA受入の完了を意味しない。
 
 ## RQ44 共通製品版を一元管理しminor・major更新を可能にする
 
-現在の共通製品版を **`1.0`**、公開前の段階を **`Developer Preview`** とし、利用者向け表示を **`avocadoOS 1.0 Developer Preview`** に固定する。現在版と段階表示は`data/product-identity.json`を正本とし、Web画面はその値を参照して、将来の更新時に複数画面を個別修正しない。
+現在の共通製品版を **`1.0`**、公開前の段階を **`Developer Preview`** とし、利用者向け表示を **`RockstarOS 1.0 Developer Preview`** に固定する。現在版と段階表示は`data/product-identity.json`を正本とし、Web画面はその値を参照して、将来の更新時に複数画面を個別修正しない。
 
 版は`major.minor`形式とする。既存Platform API、保存データ、Tool、Provider、Device Support Packageとの互換性を維持する機能追加・改善は、`1.1`から`1.5`のようなminor更新にできる。非互換なPlatform API、権限モデル、保存schema、署名trust rootの変更は、migration、backup／restore、rollback、対応端末、Tool／Provider互換性を同一候補で合格させた場合だけ`2.0`のようなmajor更新にできる。
 
-各機種のDevice Support Packageは対応するavocadoOS Coreの版範囲を宣言する。版番号の変更だけでDeveloper Preview、実機対応、production署名、本番金融、一般公開のgateを合格扱いにしない。
+各機種のDevice Support Packageは対応するRockstarOS Coreの版範囲を宣言する。版番号の変更だけでDeveloper Preview、実機対応、production署名、本番金融、一般公開のgateを合格扱いにしない。
 
 ## RQ45 運営1名による緊急保護と限定保守アクセスを設ける
 
@@ -496,7 +498,7 @@ Wallet基本台帳はowner別の追記型とし、既存行の書換えではな
 
 ## RQ46 運営専用の端末管理画面と永続命令キューを実装する
 
-運営担当者は利用者向けavocadoOSとは別配備の **avocadoOS Operator Dock** から、登録端末のモデル、OS版、hardware identity確認、接続状態、最終接続、命令・監査履歴を確認する。操作時は事故IDと理由を必須にし、RQ45の許可済みcommandだけを選択できる。Dockは運営PCとスマートフォン幅へ対応するが、利用者向けOSのHome、アプリ一覧、route、API、PWA assetへ入口や管理画面を含めない。
+運営担当者は利用者向けRockstarOSとは別配備の **RockstarOS Operator Dock** から、登録端末のモデル、OS版、hardware identity確認、接続状態、最終接続、命令・監査履歴を確認する。操作時は事故IDと理由を必須にし、RQ45の許可済みcommandだけを選択できる。Dockは運営PCとスマートフォン幅へ対応するが、利用者向けOSのHome、アプリ一覧、route、API、PWA assetへ入口や管理画面を含めない。
 
 Dockの全requestは静的HTML、CSS、JavaScriptを含めて専用Workerを先に通す。WorkerはCloudflare Accessの`Cf-Access-Jwt-Assertion`を公開JWKで検証し、issuer、専用application audience、有効期限、事前登録された単一operator subjectが一致する場合だけassetとAPIを返す。命令時はさらに登録済みP-256 WebAuthn credentialのID、RP ID、origin、challenge、利用者確認flag、署名、増加counterを検査し、端末が再検証できるassertionを保存する。未設定、別利用者、別audience、別origin、未登録端末、未検証hardware identity、期限切れ、同じcommand IDの異内容、署名counter再利用、許可外commandを拒否する。命令と事故記録は利用者Web D1ではなくOperator Dock専用D1へ保存し、監査eventの更新・削除をdatabase triggerで拒否する。
 
@@ -504,7 +506,7 @@ Operator Dock、命令キュー、device channel、Android Agentのsource実装�
 
 ## RQ47 AI自動化チームの効率化から収益・Wallet・ファンド・ゲームへ逆算する
 
-avocadoOSの最上位の社会的目的は、利用者が自分専用のAI自動化チームを所有し、その効率を改善することで、仕事と生活を便利にし、検証可能な収益機会を増やし、利用者全体の豊かさへつなげることである。AIネイティブOSはそのための製品中核、Pixelは最初のreference hardware、Wallet、ファンド、ゲーム、将来の専用端末は実現・配布・拡張する接続層として扱う。スマートフォン市場の一般機能やカメラ品質でiPhoneと競うことを1.0の完成条件にしない。
+RockstarOSの最上位の社会的目的は、利用者が自分専用のAI自動化チームを所有し、その効率を改善することで、仕事と生活を便利にし、検証可能な収益機会を増やし、利用者全体の豊かさへつなげることである。AIネイティブOSはそのための製品中核、Pixelは最初のreference hardware、Wallet、ファンド、ゲーム、将来の専用端末は実現・配布・拡張する接続層として扱う。スマートフォン市場の一般機能やカメラ品質でiPhoneと競うことを1.0の完成条件にしない。
 
 端末内LLMは通信がない間も仕事分解、Tool実行、再試行、確認待ち、成果保存を続け、接続時だけ外部案件取得、外部作用、納品、署名済み収益、Wallet照合を重複なく同期する。最初に一つのToolでこの経済loopを完走し、次に複数Toolファンドを一押しで開始・管理・改善できるようにする。月50万円規模はProvider確認済み収益と全実行費用を持つ長期の到達指標であり、未検証値、PAPER結果、単発売上、将来利回り、全利用者の収入保証として表示しない。
 
@@ -514,13 +516,21 @@ Walletは収益・費用・receipt・払出し状態に加え、合法的な税�
 
 共通Core、Sky appとOSの能力差、Zema仕事契約、モデル・記憶更新、通信断時の外部作用照合、便利機能とGame／IPの実装順は[AIネイティブOS詳細設計](ai-native-os-architecture.md)を正本とする。[Sol設計監査](ai-native-os-design-audit.md)で設計上の解消と実装・受入待ちを分ける。
 
-avocadoOSの製品中核は、高性能で交換可能なローカルLLM、offline agent runtime、権限、記憶、仕事、停止・再開、Tool、receipt、更新、rollback、復旧を共通化したAIネイティブOSである。社会的目的はこのCoreを所有する利用者の仕事と生活を便利にし、成果と検証可能な収益機会を広げ、より豊かにすることである。「OSが製品中核であること」と「OSを作る作業自体を社会的目的にしないこと」を両立させる。
+RockstarOSの製品中核は、高性能で交換可能なローカルLLM、offline agent runtime、権限、記憶、仕事、停止・再開、Tool、receipt、更新、rollback、復旧を共通化したAIネイティブOSである。社会的目的はこのCoreを所有する利用者の仕事と生活を便利にし、成果と検証可能な収益機会を広げ、より豊かにすることである。「OSが製品中核であること」と「OSを作る作業自体を社会的目的にしないこと」を両立させる。
 
 SkyはTool・ファンド・接続先を選ぶ第一者system、ZemaはAIチームへの依頼、役割、進捗、承認、停止、結果、履歴を管理する第一者systemとし、最初の実用経路としてCoreを継続検証する。仕事や生活を便利にするsystemを優先して追加し、ゲーム、IP／動画生成、VRは利用者の関心に基づく優先的な応用開発系統として関連付ける。特定のTool、ゲーム、生成Provider、金融ProviderをOS imageへ直書きせず、署名、version、capability、本人同意、費用、停止、receiptを持つadapterとして独立更新できるようにする。
 
 Pixel 10は最初のreference hardwareであり、Googleサービス、カメラ、一般向けブラウザ、ATM、特定ゲームはCoreの起動条件にしない。1.0では所有Pixel上でOS、交換可能な端末内LLM、agent、Sky、Zema、一つの実用Toolのoffline実行・再開・安全な接続を証明する。Wallet、ファンド、ゲーム等の進捗を過大表示せず、各systemは個別gateに合格した範囲だけ利用可能とする。
 
-## 1.0への8原則の適用（RQ01〜RQ48を維持）
+## RQ49 物質同士を組み合わせて発明候補を作るMaterial Invention Coreを設ける
+
+RockstarOSは、物質、配合比、混合順序、温度、圧力、雰囲気、加工、保持時間などを型付きデータとして組み合わせ、目的特性に対する新しい材料・用途・工程の候補を作れるようにする。候補は、入力物質の由来、単位、不確かさ、根拠、生成モデル、版、作成者を保持し、単なるAI文章を実証済み発明として表示しない。
+
+標準の流れは、目的定義 → 物質選択 → 配合・工程候補生成 → 危険性・法規・設備制約のscreening → simulation／既知データとの比較 → 本人承認 → 資格・設備を持つ外部ラボでの実験 → 署名付き測定receiptの取込み → 候補の順位付け・版更新とする。SDS、反応性、毒性、可燃性、圧力、温度、廃棄、輸送、規制情報が不足する候補は物理実行へ進めない。
+
+OS Coreは材料記録、候補graph、権限、provenance、approval、receipt、再現性、rollbackを共通化する。化学計算、物性予測、データベース、ロボット、測定器、外部ラボは交換可能なTool／ProviderとしてSkyから接続し、Zemaで計画・確認・停止・結果を管理する。危険な合成の無人実行、simulation結果だけでの安全・性能断定、専門家確認の代替、秘密の実験条件や知的財産の無断共有は行わない。詳細は [Material Invention Core設計](material-invention-core.md) を参照する。
+
+## 1.0への8原則の適用（RQ01〜RQ49を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 

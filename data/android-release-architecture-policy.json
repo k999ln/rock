@@ -2,7 +2,7 @@
   "schema": "avocadoos-android-release-architecture/1",
   "decidedAt": "2026-09-16",
   "product": {
-    "displayName": "avocadoOS",
+    "displayName": "RockstarOS",
     "internalNamespace": "dev.rock",
     "internalNamespaceMutable": false,
     "publicVersionIndependentFromPackageIdentity": true,

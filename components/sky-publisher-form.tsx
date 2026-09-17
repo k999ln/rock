@@ -19,7 +19,7 @@ import type {
 import type { McpInspection } from '@/lib/mcp-inspection';
 
 const targets: { value: SkyExecutionTarget; label: string }[] = [
-  { value: 'device_local', label: 'avocadoOS端末内' },
+  { value: 'device_local', label: 'RockstarOS端末内' },
   { value: 'pc', label: '利用者のPC' },
   { value: 'cloud', label: '提供者Cloud' },
 ];

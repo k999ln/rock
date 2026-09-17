@@ -47,7 +47,7 @@ QEMU Developer Previewを次の工程へ進めるには、所有者本人から�
 
 この回答が必要な理由は、製品ライセンスが第三者の権利範囲と商用・再許諾条件を変え、本番鍵生成が長期の失効・rotation責任を発生させ、Sites同期がrepository sourceを外部ホスティングへ送る操作だからである。回答後も一般公開、main merge、Android実機対応、マイナンバー有効化を自動承認しない。
 
-Android実機版は上記とは別に、実物から読み取った `機種名 / 型番 / SKU / 販売地域 / 現在OS / OEM unlocking可否 / bootloader状態` が必要。このreadbackは2026-09-16にPixel 10／GL066／frankelで完了した。単体APKのoffline AI試験も合格したが、BSP／boot／recovery、SELinux enforcing分離、CDD／CTS／CTS Verifier／VTS、production署名、販売地域の5必須gateとavocadoOSのflash／bootは未合格である。
+Android実機版は上記とは別に、実物から読み取った `機種名 / 型番 / SKU / 販売地域 / 現在OS / OEM unlocking可否 / bootloader状態` が必要。このreadbackは2026-09-16にPixel 10／GL066／frankelで完了した。単体APKのoffline AI試験も合格したが、BSP／boot／recovery、SELinux enforcing分離、CDD／CTS／CTS Verifier／VTS、production署名、販売地域の5必須gateとRockstarOSのflash／bootは未合格である。
 
 ### 製品ライセンス
 

@@ -1,7 +1,7 @@
 {
   "schema": "avocadoos-android-signing-custody/1",
   "decidedAt": "2026-09-16",
-  "product": "avocadoOS",
+  "product": "RockstarOS",
   "status": "architecture_approved_provisioning_and_end_to_end_signing_pending",
   "architecture": {
     "signingHost": "dedicated_offline_workstation",

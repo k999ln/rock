@@ -43,7 +43,7 @@ export function validateAndroidReleaseArchitecture({
 }) {
   if (policy?.schema !== 'avocadoos-android-release-architecture/1') fail('schemaが違います');
   if (
-    policy.product?.displayName !== 'avocadoOS' ||
+    policy.product?.displayName !== 'RockstarOS' ||
     policy.product?.internalNamespace !== 'dev.rock' ||
     policy.product?.internalNamespaceMutable !== false ||
     policy.product?.publicVersionIndependentFromPackageIdentity !== true

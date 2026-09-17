@@ -11,10 +11,16 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ48/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ49/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ48/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ49/);
+  const unsafeMaterialExecution = structuredClone(source);
+  unsafeMaterialExecution.materialInvention.autonomousPhysicalExperimentAllowed = true;
+  assert.throws(
+    () => validateBaseline(unsafeMaterialExecution),
+    /Material Invention Core/,
+  );
   const osLosesCoreRole = structuredClone(source);
   osLosesCoreRole.northStar.osIsProductCore = false;
   assert.throws(() => validateBaseline(osLosesCoreRole), /AIネイティブOS Core/);

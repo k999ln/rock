@@ -48,7 +48,7 @@
       "role": "standalone-physical-local-ai-acceptance",
       "path": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
       "sha256": "c48538a6e253c9a8d7d9fd6234afdbfc907946d34ac5208a788cb24564d4cc5b",
-      "scope": "Existing-OS, test-signed standalone APK acceptance only; not an avocadoOS image, flash, boot, compatibility or production-signing result."
+      "scope": "Existing-OS, test-signed standalone APK acceptance only; not an RockstarOS image, flash, boot, compatibility or production-signing result."
     },
     {
       "role": "dsp-source-and-device-layout",

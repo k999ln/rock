@@ -50,6 +50,24 @@
       "evidence": ["docs/ai-native-os-architecture.md"]
     },
     {
+      "id": "MAT01",
+      "title": "RQ49 Material Invention Coreのentity・発明loop・安全境界を設計へ固定",
+      "status": "done",
+      "dependsOn": ["AI01"],
+      "evidence": [
+        "docs/product-baseline.md",
+        "data/product-baseline.json",
+        "docs/material-invention-core.md"
+      ]
+    },
+    {
+      "id": "MAT02",
+      "title": "二物質・複数比率・工程条件のsandbox候補graphとfail-closed安全検査を実装",
+      "status": "planned",
+      "dependsOn": ["MAT01", "AI02", "AI03"],
+      "evidence": ["docs/material-invention-core.md"]
+    },
+    {
       "id": "SKY01",
       "title": "旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化",
       "status": "done",
@@ -295,7 +313,7 @@
     },
     {
       "id": "WEB04",
-      "title": "avocadoOS全体のvisual systemを統一し、主要フロントの機能性を改善",
+      "title": "RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善",
       "status": "done",
       "dependsOn": ["WEB03", "SKY15"],
       "evidence": [
@@ -311,7 +329,7 @@
     },
     {
       "id": "BRD01",
-      "title": "正式製品名をavocadoOS、内部識別子をdev.rockで固定",
+      "title": "正式製品名をRockstarOS、内部識別子をdev.rockで固定",
       "status": "done",
       "dependsOn": ["WEB04"],
       "evidence": [
@@ -326,7 +344,7 @@
     },
     {
       "id": "VER01",
-      "title": "avocadoOS 1.0と将来の1.5／2.0版更新規則を一元管理",
+      "title": "RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理",
       "status": "done",
       "dependsOn": ["BRD01"],
       "evidence": [
@@ -637,7 +655,7 @@
         "public/_headers",
         "scripts/check-web-security-response.mjs",
         "tests/web-security-policy.test.mjs",
-        "docs/evidence/launch/web-security-local-20260915.json",
+        "docs/evidence/launch/web-security-local-20260917.json",
         "docs/validation.md"
       ]
     },
@@ -650,7 +668,7 @@
         "public/sw.js",
         "components/system-maintenance.tsx",
         "tests/service-worker-update.test.mjs",
-        "docs/evidence/launch/web-security-local-20260915.json",
+        "docs/evidence/launch/web-security-local-20260917.json",
         "docs/validation.md"
       ]
     },
@@ -666,7 +684,7 @@
         "public/rock-icon-maskable.svg",
         "scripts/check-web-security-response.mjs",
         "tests/pwa-installability.test.mjs",
-        "docs/evidence/launch/web-security-local-20260915.json",
+        "docs/evidence/launch/web-security-local-20260917.json",
         "docs/validation.md"
       ]
     },
@@ -1346,7 +1364,7 @@
     },
     {
       "id": "FB01",
-      "title": "Instagram運用・受注型ブランド管理をavocadoOS Hub商品とMCPへ統合",
+      "title": "Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合",
       "status": "done",
       "dependsOn": [],
       "evidence": ["docs/fashion-brand-ops-integration.md"]
