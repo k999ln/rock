@@ -107,6 +107,18 @@ export function validateBaseline(
       data.materialInvention?.runtime === 'lib/material-invention.ts' &&
       data.materialInvention?.tests ===
         'tests/material-invention.test.mjs' &&
+      data.materialInvention?.primaryExperience ===
+        'avocado_mini_spatial_invention' &&
+      data.materialInvention?.referenceDevice === 'avocadoMini' &&
+      data.materialInvention?.role ===
+        'use_avocado_mini_spatial_interaction_to_combine_material_digital_twins_process_conditions_simulation_and_patent_ai_into_traceable_invention_candidates' &&
+      data.materialInvention?.coreEntities?.includes(
+        'spatial_interaction_event',
+      ) &&
+      data.materialInvention?.coreEntities?.includes(
+        'invention_event_ledger',
+      ) &&
+      data.materialInvention?.coreEntities?.includes('patent_ai_packet') &&
       data.materialInvention?.autonomousPhysicalExperimentAllowed === false &&
       data.materialInvention
         ?.hazardousSynthesisWithoutQualifiedReviewAllowed === false &&
@@ -120,6 +132,91 @@ export function validateBaseline(
         data.materialInvention.tests,
       ].every((path) => existsSync(resolve(root, path))),
     'Material Invention Coreの安全境界、契約、sandbox実装を維持してください',
+  );
+  const spatial = data.materialInvention?.spatialDevelopment;
+  requireValue(
+    spatial?.requested === true &&
+      spatial?.status === 'design_approved_runtime_not_implemented' &&
+      spatial?.productName === 'Spatial Invention Studio' &&
+      spatial?.relationshipToMaterialCore ===
+        'primary_product_experience_not_optional_extension' &&
+      spatial?.referenceDevice === 'avocadoMini' &&
+      spatial?.operatingSystem === 'RockstarOS' &&
+      spatial?.fourDirectionalSensorRig === true &&
+      spatial?.materialDigitalTwinManipulation === true &&
+      spatial?.incrementalRecalculationPlanned === true &&
+      spatial?.patentAiIntegrationPlanned === true &&
+      spatial?.physicalExecutionAllowed === false &&
+      spatial?.gestureIsPhysicalApproval === false &&
+      spatial?.automaticPatentFilingAllowed === false &&
+      [
+        spatial.architecture,
+        spatial.deviceArchitecture,
+        spatial.policy,
+        spatial.sceneContract,
+        spatial.interactionContract,
+      ].every(
+        (path) =>
+          typeof path === 'string' &&
+          !isAbsolute(path) &&
+          !relative(root, resolve(root, path)).startsWith('..') &&
+          existsSync(resolve(root, path)),
+      ),
+    'Spatial Invention StudioとavocadoMiniの安全な設計境界を維持してください',
+  );
+  const spatialPolicy = JSON.parse(read(resolve(root, spatial.policy)));
+  const spatialSceneContract = JSON.parse(
+    read(resolve(root, spatial.sceneContract)),
+  );
+  const spatialInteractionContract = JSON.parse(
+    read(resolve(root, spatial.interactionContract)),
+  );
+  requireValue(
+    spatialPolicy.schema === 'rockstaros-material-invention-xr-policy/1' &&
+      spatialPolicy.status === 'design_approved_runtime_not_implemented' &&
+      spatialPolicy.relationshipToMaterialCore ===
+        'primary_product_experience_not_optional_extension' &&
+      spatialPolicy.referenceDevice?.displayName === 'avocadoMini' &&
+      spatialPolicy.referenceDevice?.operatingSystem === 'RockstarOS' &&
+      JSON.stringify(spatialPolicy.referenceDevice?.viewpoints) ===
+        JSON.stringify(['north', 'east', 'south', 'west']) &&
+      spatialPolicy.referenceDevice?.physicalMatterManipulatedByCameras ===
+        false &&
+      spatialPolicy.safety?.physicalExecutionAllowed === false &&
+      spatialPolicy.safety?.equipmentControlAllowed === false &&
+      spatialPolicy.safety?.physicalExperimentFinalApprovalAllowed === false &&
+      spatialPolicy.safety?.gestureIsPhysicalApproval !== true &&
+      spatialPolicy.patentAi?.patentabilityDeterminationAllowed === false &&
+      spatialPolicy.patentAi?.inventorshipDeterminationAllowed === false &&
+      spatialPolicy.patentAi?.automaticFilingAllowed === false &&
+      spatialPolicy.accessibility?.twoDimensionalFallbackRequired === true,
+    'avocadoMiniの四方向sensor、XR、Patent AI安全policyを維持してください',
+  );
+  requireValue(
+    spatialSceneContract.$id ===
+      'https://rockstaros.dev/contracts/material-invention-xr-scene-v1.json' &&
+      spatialSceneContract['x-rockstaros-boundary']?.derivedViewOnly === true &&
+      spatialSceneContract['x-rockstaros-boundary']
+        ?.devicePoseIsSafetyEvidence === false &&
+      spatialSceneContract.properties?.capabilities?.properties
+        ?.physicalExecutionAllowed?.const === false &&
+      spatialSceneContract.properties?.capabilities?.properties
+        ?.equipmentControlAllowed?.const === false &&
+      spatialInteractionContract.$id ===
+        'https://rockstaros.dev/contracts/avocado-mini-spatial-interaction-v1.json' &&
+      spatialInteractionContract['x-rockstaros-boundary']?.operatingSystem ===
+        'RockstarOS' &&
+      spatialInteractionContract['x-rockstaros-boundary']?.deviceConcept ===
+        'avocadoMini' &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.fourDirectionalViewpointsRequired === true &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.gestureIsPhysicalApproval === false &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.physicalExecutionAllowed === false &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.patentabilityDeterminationAllowed === false,
+    'XR sceneとavocadoMini interaction契約の権限境界を維持してください',
   );
   const compositionDocument = data.systemComposition?.document;
   const compositionAuditPath = data.systemComposition?.audit;

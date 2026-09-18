@@ -1,5 +1,13 @@
 # 検証記録
 
+## Spatial Invention Studio／avocadoMini設計 / 2026-09-18
+
+- 利用者の確認を反映し、avocadoMiniをMaterial Invention Coreと並ぶ別機能ではなく、その中身を人が操作する標準製品体験へ統合した。機械可読baselineとpolicyは`primary_product_experience_not_optional_extension`を要求し、任意addonへ戻す変更を拒否する。
+- RockstarOSを搭載する`avocadoMini`を、north／east／south／westの四方向sensorでhand poseを取得し、物質digital twinのconnect／separate操作から候補branchとsimulation再計算を作るreference device conceptとして設計した。OSの正式名はRockstarOSのままで、旧表示名avocadoOSへ戻していない。
+- XR scene manifestとspatial interaction eventのJSON Schema、安全・privacy・accessibilityの機械可読policyを追加した。gestureは`HYPOTHESIS_ONLY`、物理実行・装置制御・Core DB直接書込み・物理実験最終承認はfalseへ固定した。
+- 既存Sky Patent AIへ人、AI、simulation、文献、実測を分離したevent provenanceを渡すbridgeを設計した。特許性、法的発明者、権利帰属、自動出願の決定は許可しない。既存特許Toolは現在もMaterial Core未接続で、設計完成をruntime完成として扱わない。
+- 製品baseline検査は、XRからの物理実行許可、搭載OSのavocadoOS化、自動特許出願を拒否する負例を持つ。四方向rig、hand tracking、XR表示、再計算、Patent AI bridge、headset／AR実機の受入は未実施。
+
 ## Material Invention sandbox Core / 2026-09-17
 
 - RQ49の最初のruntimeとして、二物質・複数比率・版付き工程を再現可能な候補graphへ変換する純粋sandboxを実装した。JSON Schema、危険物を含まない合成fixture、canonical SHA-256候補ID、provenanceを同じ契約へ固定した。

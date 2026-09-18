@@ -21,6 +21,28 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
     () => validateBaseline(unsafeMaterialExecution),
     /Material Invention Core/,
   );
+  const unsafeSpatialExecution = structuredClone(source);
+  unsafeSpatialExecution.materialInvention.spatialDevelopment.physicalExecutionAllowed = true;
+  assert.throws(
+    () => validateBaseline(unsafeSpatialExecution),
+    /Spatial Invention Studio/,
+  );
+  const renamedSpatialOs = structuredClone(source);
+  renamedSpatialOs.materialInvention.spatialDevelopment.operatingSystem = 'avocadoOS';
+  assert.throws(() => validateBaseline(renamedSpatialOs), /Spatial Invention Studio/);
+  const automaticPatentFiling = structuredClone(source);
+  automaticPatentFiling.materialInvention.spatialDevelopment.automaticPatentFilingAllowed = true;
+  assert.throws(
+    () => validateBaseline(automaticPatentFiling),
+    /Spatial Invention Studio/,
+  );
+  const detachedSpatialExperience = structuredClone(source);
+  detachedSpatialExperience.materialInvention.spatialDevelopment.relationshipToMaterialCore =
+    'optional_extension';
+  assert.throws(
+    () => validateBaseline(detachedSpatialExperience),
+    /Spatial Invention Studio/,
+  );
   const osLosesCoreRole = structuredClone(source);
   osLosesCoreRole.northStar.osIsProductCore = false;
   assert.throws(() => validateBaseline(osLosesCoreRole), /AIネイティブOS Core/);

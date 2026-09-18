@@ -2,14 +2,14 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-09-17
+更新日: 2026-09-18
 
 ## 全体
 
 - データ境界: 6、table: 75
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 117 task中 80 done、22 in progress、14 planned、1 blocked
+- 作業進捗: 120 task中 81 done、22 in progress、16 planned、1 blocked
 - 現在milestone: Pixel 10 compile-only Developer Previewの初回full build準備
 
 ## 保存境界と配備状態

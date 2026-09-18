@@ -1,5 +1,9 @@
 # RockstarOS — 確定した製品ベース
 
+2026-09-18 Material Invention標準体験の統合（v1.75）: `avocadoMini Spatial Invention Studio`を別のVR／AR拡張ではなく、RQ49 Material Invention Coreそのものを人が扱う標準製品体験へ固定した。Coreが物質・候補・安全・証拠の正本、avocadoMiniが四方向sensorとhand interaction、Simulation Orchestratorが再計算、Invention Event LedgerとPatent AIが発明化支援を担当する。headsetがなくても2D fallbackで同じloopを利用できる。
+
+2026-09-18 Spatial Invention／avocadoMini設計（v1.74）: RQ48のVR応用とRQ49を接続し、四方向sensor／cameraで手を追跡して物質digital twinを接続・分離し、候補graphとsimulationを再計算する`Spatial Invention Studio`とRockstarOS reference device concept `avocadoMini`を設計した。操作履歴を既存Patent AIの発明開示・先行技術差分へ引き継ぐが、cameraによる物理物質操作、gestureでの物理実験承認、特許性・発明者の自動決定、自動出願は行わない。[XR設計](material-invention-xr.md)／[端末設計](avocado-mini-spatial-invention.md)。
+
 2026-09-17発明sandbox Core実装（v1.73）: RQ49の最初の実装として、二物質・複数比率・工程条件から再現可能な候補graphを作る装置非接続sandboxを追加した。SDS不足、危険性不明、禁止物質、単位不一致、許可外設備、温度・圧力上限超過をfail closedにし、全出力の物理実行許可をfalseへ固定する。化学simulation、外部ラボ、実験設備、Zemaの仕事／限定記憶との接続は未実装。[契約と実装](material-invention-core.md)。
 
 2026-09-17名称・発明Core追記（v1.72）: 利用者向け正式製品名を **RockstarOS** へ戻し、`RockstarOS 1.0 Developer Preview`を現在表示とする。AvocadoOSは2026-09-15〜16の旧表示名として履歴・署名済み証拠・既存データ内だけに残し、暗号domain、保存schema、artifact hashを表示名変更だけで破壊しない。同時に、物質、配合比、工程条件、安全性、シミュレーション、実験receiptを版管理し、新しい材料・用途の候補を作るMaterial Invention CoreをRQ49として追加する。OSは危険な物理実験を無人実行せず、安全審査、本人承認、資格を持つ外部ラボ、測定証拠を独立gateにする。[詳細設計](material-invention-core.md)。
@@ -531,6 +535,10 @@ RockstarOSは、物質、配合比、混合順序、温度、圧力、雰囲気�
 標準の流れは、目的定義 → 物質選択 → 配合・工程候補生成 → 危険性・法規・設備制約のscreening → simulation／既知データとの比較 → 本人承認 → 資格・設備を持つ外部ラボでの実験 → 署名付き測定receiptの取込み → 候補の順位付け・版更新とする。SDS、反応性、毒性、可燃性、圧力、温度、廃棄、輸送、規制情報が不足する候補は物理実行へ進めない。
 
 OS Coreは材料記録、候補graph、権限、provenance、approval、receipt、再現性、rollbackを共通化する。化学計算、物性予測、データベース、ロボット、測定器、外部ラボは交換可能なTool／ProviderとしてSkyから接続し、Zemaで計画・確認・停止・結果を管理する。危険な合成の無人実行、simulation結果だけでの安全・性能断定、専門家確認の代替、秘密の実験条件や知的財産の無断共有は行わない。詳細は [Material Invention Core設計](material-invention-core.md) を参照する。
+
+VR／ARでは同じ候補graphを派生sceneへ投影し、候補、物質lot、工程、安全状態、証拠種別とのbindingを維持する。RockstarOSを搭載する端末concept`avocadoMini`はnorth／east／south／westの四方向sensorで手の動きを捉え、中央のInvention Volumeにある物質digital twinを触る、接続する、離す操作から新しい仮説branchを作る。操作ごとに安全制約を先に検査し、対応simulationを差分再計算して、結果と失敗を版管理する。
+
+avocadoMiniの操作履歴は、人の直接操作、AI提案、simulation、文献、実験receiptを分けたまま既存Sky Patent AIへ渡し、発明開示、先行技術候補、構成要件差分、専門家向けpacketを作る。gestureは物理実験・外部共有・出願の最終承認に使わず、cameraは物理物質や装置を直接制御しない。Patent AIは特許性、登録、侵害回避、法的発明者、権利帰属を確定せず、電子署名、料金支払、出願を自動実行しない。詳細は[Spatial Invention Studio](material-invention-xr.md)と[avocadoMini端末設計](avocado-mini-spatial-invention.md)を正本とする。
 
 ## 1.0への8原則の適用（RQ01〜RQ49を維持）
 

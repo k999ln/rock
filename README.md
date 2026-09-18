@@ -1,11 +1,11 @@
 # RockstarOS — 自動化を接続・実行・管理するOS
 
-RockstarOSは、交換可能な高性能ローカルLLMとoffline agent runtimeを中核にするAIネイティブOSとして開発しています。SkyとZemaを最初の第一者systemとし、仕事・生活を便利にする自動化、Wallet／ファンド、ゲーム、IP／動画、VRに加え、物質・配合・工程条件から検証可能な発明候補を作るMaterial Invention Coreを共通基盤へ接続します。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ49、具体的な契約と実装順は[AIネイティブOS詳細設計](docs/ai-native-os-architecture.md)、物質発明は[Material Invention Core設計](docs/material-invention-core.md)、独立監査は[Sol設計監査](docs/ai-native-os-design-audit.md)、全層の組合せと未接続点は[全体構成監査](docs/system-composition.md)、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`RockstarOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
+RockstarOSは、交換可能な高性能ローカルLLMとoffline agent runtimeを中核にするAIネイティブOSとして開発しています。SkyとZemaを最初の第一者systemとし、仕事・生活を便利にする自動化、Wallet／ファンド、ゲーム、IP／動画に加え、物質・配合・工程条件から検証可能な発明候補を作るMaterial Invention Coreを共通基盤へ接続します。その標準製品体験が、四方向sensorとhand interactionで物質digital twinを操作し、再計算とPatent AI支援へつなぐRockstarOS端末`avocadoMini`です。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ49、具体的な契約と実装順は[AIネイティブOS詳細設計](docs/ai-native-os-architecture.md)、物質発明は[Material Invention Core設計](docs/material-invention-core.md)、独立監査は[Sol設計監査](docs/ai-native-os-design-audit.md)、全層の組合せと未接続点は[全体構成監査](docs/system-composition.md)、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`RockstarOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
 
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-17 / 117 task中80 done・22 in progress・14 planned・1 blocked
+更新日: 2026-09-18 / 120 task中81 done・22 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                           |
@@ -27,6 +27,7 @@ RockstarOSは、交換可能な高性能ローカルLLMとoffline agent runtime�
 - **MCP**: stdio／Streamable HTTPをConnection Passportで管理します。現在の標準実接続は「このPC」で、Sky Cloudとprovider MCPは準備中です。
 - **Wallet**: 仕事、費用、検証済み収益、Rock利用料、払出しを別状態とreceiptで管理します。売上0なら請求0、未達分の債務化・翌月繰越はありません。
 - **Market / Fund**: 型付き価値の市場と実績更新型ファンドはPAPER限定です。LIVE注文、清算、自動再投資は無効です。
+- **Material Invention / avocadoMini**: Material Invention Coreの標準体験。四方向sensorで手を追跡し、物質digital twinの接続・分離から候補再計算とPatent AI引継ぎを行うRockstarOS端末を設計済み。XR runtimeと実機は未実装です。
 - **OS運用**: 診断、暗号化された端末設定backup、明示的なPWA更新、A/B更新、rollback、復旧を提供します。
 - **緊急保護**: 利用者向けOSとは別配備の`RockstarOS Operator Dock`と、launcher非表示・別UIDの`dev.rock.operator.agent`を実装しました。DockはCloudflare Access JWTと利用者確認済みWebAuthn署名を必須化し、Agentは対象端末、RP／origin、署名、期限、scope、単調増加counterを独立検証してからackします。端末requestもKeystore P-256鍵で署名し、端末監査はAndroid Keystore HMAC chainで追記します。管理serverだけでは有効命令を作れず、任意shell、私的内容、Wallet、鍵への経路はありません。source build／lint、Android 15 emulator、試験署名Pixelの命令検証5/5は合格。production credential、StrongBox attestation、Device Owner実行、本番の侵入／復旧演習は未完了です。
 - **Android正式署名**: 専用オフライン署名PC、YubiHSM 2本番1台、別場所の予備1台、別端末での独立検証に固定し、鍵をAVB／OTA／system application／APEX system componentの4系統へ分離しました。長期鍵と通常application鍵24か月目安、最低1 releaseの旧新鍵移行、漏洩鍵の即時停止・再使用禁止も固定済みです。生の秘密鍵はHSM外へ出さず、端末診断プラグインを署名鍵やboot不能の復旧手段には使いません。機材調達、全署名接続、予備切替、旧新鍵移行、Pixel 10実測は未完了です。
@@ -183,11 +184,11 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 
 <details>
 <!-- project-details-summary:start -->
-<summary>117 taskと段階gateの詳細を開く</summary>
+<summary>120 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-17 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 80/117件
+最終更新: 2026-09-18 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 81/120件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -200,6 +201,9 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | MAT01 | RQ49 Material Invention Coreのentity・発明loop・安全境界を設計へ固定 | 完了 | [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/material-invention-core.md) |
 | MAT02 | 二物質・複数比率・工程条件のsandbox候補graphとfail-closed安全検査を実装 | 完了 | [記録](contracts/material-invention.json) · [記録](contracts/material-invention-fixture.json) · [記録](lib/material-invention.ts) · [記録](tests/material-invention.test.mjs) · [記録](docs/material-invention-core.md) · [記録](docs/validation.md) |
 | MAT03 | Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入 | 未着手 | [記録](docs/material-invention-core.md) |
+| MAT04 | Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent AI設計を固定 | 完了 | [記録](docs/material-invention-xr.md) · [記録](docs/avocado-mini-spatial-invention.md) · [記録](data/material-invention-xr-policy.json) · [記録](contracts/material-invention-xr.json) · [記録](contracts/avocado-mini-spatial-interaction.json) |
+| MAT05 | Core graphから決定的XR sceneを生成し、四方向pose fixtureのconnect／separate／stale拒否を実装 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
+| MAT06 | avocadoMini四方向tabletop prototypeとMaterial Core→Patent AI provenance bridgeを独立受入 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |

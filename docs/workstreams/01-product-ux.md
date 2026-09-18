@@ -7,6 +7,7 @@ AIネイティブOSの上で、SkyでToolを選び、ZemaでAIチームへ依頼
 ## 現在地
 
 - RQ01〜RQ49を製品ベースへ固定済み。RQ49のMaterial Invention Coreは装置非接続sandboxを実装済み。Zema、simulation、外部ラボ、実験設備とのruntime接続は未実装。
+- RQ49 Material Invention Coreの標準製品体験としてSpatial Invention Studio、四方向sensor端末`avocadoMini`、手によるdigital twin操作、差分再計算、Patent AI provenance bridgeを設計済み。別の任意XR addonではない。XR runtime、sensor rig、実機は未実装。
 - Home、全画面からHomeへ戻る導線、Sky／Zema分離、Studio、Developer Preview紹介、共通visual systemを実装済み。
 - 全11層と6本のend-to-end flowを構成監査へ固定した。設計選択は適合、全体統合とproductionは未完了。
 - 仕事作成、処理履歴、CSV、Wallet、設定への主要導線がある。
