@@ -13,6 +13,8 @@
 
 機械可読の被覆台帳は[`data/design-document-index.json`](../data/design-document-index.json)。`npm run design:check`は、利用可能・候補の全Toolが台帳と詳細設計に存在すること、正本へのlinkが存在すること、未決定を完成表示していないことを検査する。
 
+次のAI統合作業の利用者原文は[Jev／TypeSafe + Local Qwen引き継ぎ](prompts/jev-typesafe-local-qwen-handoff-20260918.md)へ保存した。これは正式な実装入力であり、DecisionProvider、Router／Harness、公式資料照合、mobile runtime選定、Provider接続が完成したことを意味しない。
+
 ## 設計の全体地図
 
 ```text

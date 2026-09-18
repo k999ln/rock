@@ -63,6 +63,17 @@
       "evidence": ["docs/ai-native-os-architecture.md"]
     },
     {
+      "id": "AI07",
+      "title": "Jev／TypeSafe・Local Qwen・Cloud LLM・deterministic codeをDecisionProviderとRouter／Harnessへ統合",
+      "status": "planned",
+      "dependsOn": ["AI01", "AI02", "SKY18"],
+      "evidence": [
+        "docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md",
+        "docs/jev-ecosystem-integration-design.md",
+        "docs/ai-native-os-architecture.md"
+      ]
+    },
+    {
       "id": "MAT01",
       "title": "RQ49 Material Invention Coreのentity・発明loop・安全境界を設計へ固定",
       "status": "done",
