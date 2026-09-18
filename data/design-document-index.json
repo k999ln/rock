@@ -1,0 +1,186 @@
+{
+  "schema": "rockstaros-design-document-index/1",
+  "version": "1.0",
+  "updatedAt": "2026-09-18",
+  "authority": "docs/rockstaros-design-portal.md",
+  "primaryBooks": [
+    "docs/rockstaros-complete-design.md",
+    "docs/sky-tools-complete-design.md",
+    "docs/rockstaros-avocado-mini-complete-design.md",
+    "docs/product-baseline.md"
+  ],
+  "completionMeaning": "current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete",
+  "requiredDesignFields": [
+    "purpose_and_user",
+    "end_to_end_experience",
+    "responsibilities_and_forbidden_authority",
+    "inputs_outputs_ids_versions_and_limits",
+    "state_and_failure_transitions",
+    "storage_retention_deletion_and_backup",
+    "offline_retry_duplicate_and_uncertain_result",
+    "update_compatibility_rollback_and_recovery",
+    "safety_privacy_security_and_external_approval",
+    "acceptance_environment_and_evidence",
+    "open_decisions_owner_and_decision_test"
+  ],
+  "systemDomains": [
+    {
+      "id": "product_requirements",
+      "coverage": "DETAILED_WITH_OPEN_DECISIONS",
+      "documents": ["docs/product-baseline.md", "data/product-baseline.json"]
+    },
+    {
+      "id": "whole_os",
+      "coverage": "DETAILED_WITH_OPEN_DECISIONS",
+      "documents": [
+        "docs/rockstaros-complete-design.md",
+        "docs/ai-native-os-architecture.md",
+        "docs/rockstaros-1.0-architecture.md"
+      ]
+    },
+    {
+      "id": "platform_core_and_jobs",
+      "coverage": "DETAILED_WITH_OPEN_IMPLEMENTATION_GAPS",
+      "documents": ["docs/platform-core.md", "contracts/platform-api.json"]
+    },
+    {
+      "id": "web_pc",
+      "coverage": "DETAILED_IMPLEMENTED_PARTIAL_PRODUCTION",
+      "documents": ["docs/architecture.md", "docs/backend-design.md"]
+    },
+    {
+      "id": "linux_qemu",
+      "coverage": "DETAILED_DEVELOPER_PREVIEW",
+      "documents": [
+        "docs/native-os-integration.md",
+        "docs/native-os-validation.md",
+        "data/qemu-release-audit.json"
+      ]
+    },
+    {
+      "id": "android_pixel",
+      "coverage": "DETAILED_BUILD_AND_PHYSICAL_ACCEPTANCE_PENDING",
+      "documents": [
+        "docs/android-production-architecture.md",
+        "docs/phone-preview-20260911.md",
+        "docs/device-support-architecture.md",
+        "data/android-release-architecture-policy.json"
+      ]
+    },
+    {
+      "id": "local_ai_and_memory",
+      "coverage": "DETAILED_GENERAL_RUNTIME_AND_MEMORY_PENDING",
+      "documents": [
+        "docs/ai-native-os-architecture.md",
+        "docs/local-ai-os-integration-20260915.md",
+        "contracts/local-ai-runtime.json"
+      ]
+    },
+    {
+      "id": "sky_zema_and_tools",
+      "coverage": "DETAILED_WITH_PLATFORM_GAPS",
+      "documents": [
+        "docs/sky-tools-complete-design.md",
+        "docs/sky.md",
+        "docs/chat-mcp-control-room-20260913.md",
+        "docs/sky-tool-sdk.md"
+      ]
+    },
+    {
+      "id": "mcp_and_providers",
+      "coverage": "DETAILED_REAL_PROVIDER_GAPS",
+      "documents": [
+        "docs/sky-mcp-connector.md",
+        "docs/sky-mcp-architecture.md",
+        "docs/external-wallet-fund-provider-boundary-20260913.md"
+      ]
+    },
+    {
+      "id": "data_backup_and_recovery",
+      "coverage": "DETAILED_PHYSICAL_LOSS_ACCEPTANCE_PENDING",
+      "documents": [
+        "docs/data-storage-boundaries.md",
+        "docs/android-backup-recovery.md",
+        "data/android-backup-recovery-policy.json"
+      ]
+    },
+    {
+      "id": "wallet_market_and_fund",
+      "coverage": "DETAILED_LIVE_PROVIDER_PENDING",
+      "documents": [
+        "docs/external-wallet-fund-provider-boundary-20260913.md",
+        "docs/everything-market-and-autonomous-fund-20260913.md",
+        "docs/rock-wallet-production-rail-20260913.md"
+      ]
+    },
+    {
+      "id": "security_operator_release",
+      "coverage": "DETAILED_PRODUCTION_ENROLLMENT_PENDING",
+      "documents": [
+        "docs/security-incident-response.md",
+        "docs/release-minimum-gates.md",
+        "data/device-emergency-access-policy.json",
+        "data/release-readiness.json"
+      ]
+    },
+    {
+      "id": "game_ip",
+      "coverage": "DETAILED_REAL_GAME_PENDING",
+      "documents": [
+        "docs/game-api-contract-draft.md",
+        "docs/gx01-contract-implementation-plan.md",
+        "docs/gx01-reference-sdk-sandbox-20260910.md"
+      ]
+    },
+    {
+      "id": "material_invention_avocado_mini",
+      "coverage": "DETAILED_HARDWARE_XR_PROVIDER_AND_RESEARCH_PENDING",
+      "documents": [
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "docs/material-invention-core.md",
+        "docs/material-invention-xr.md",
+        "docs/avocado-mini-spatial-invention.md"
+      ]
+    },
+    {
+      "id": "verification_and_operations",
+      "coverage": "DETAILED_PRODUCTION_READBACK_PENDING",
+      "documents": [
+        "docs/validation.md",
+        "docs/database-status.md",
+        "data/project-status.json"
+      ]
+    }
+  ],
+  "catalogTools": [
+    { "id": "rockstar-csv-cleanup", "catalogStatus": "ready" },
+    { "id": "rockstar-markets-analysis", "catalogStatus": "ready" },
+    { "id": "mercari-revenue", "catalogStatus": "ready" },
+    { "id": "fashion-brand-ops", "catalogStatus": "ready" },
+    { "id": "coconala", "catalogStatus": "ready" },
+    { "id": "mr-free-article", "catalogStatus": "ready" },
+    { "id": "mr-citations", "catalogStatus": "ready" },
+    { "id": "mr-delivery", "catalogStatus": "ready" },
+    { "id": "rockstar-ledger", "catalogStatus": "ready" },
+    { "id": "rockstar-legal-intake", "catalogStatus": "ready" },
+    { "id": "rockstar-patent-assistant", "catalogStatus": "ready" },
+    { "id": "faster-whisper", "catalogStatus": "candidate" },
+    { "id": "transformers-js", "catalogStatus": "candidate" },
+    { "id": "playwright", "catalogStatus": "candidate" }
+  ],
+  "nativeToolFamilies": [
+    "shared_checklist",
+    "citation_cleanup",
+    "proposal_draft",
+    "text_cleanup",
+    "list_deduplication",
+    "sha256"
+  ],
+  "rules": {
+    "allCatalogToolsMustBeDocumented": true,
+    "allReferencedDocumentsMustExist": true,
+    "unknownsMayNotBeReportedAsImplemented": true,
+    "environmentSpecificAcceptanceRequired": true,
+    "newSystemOrToolRequiresIndexUpdate": true
+  }
+}

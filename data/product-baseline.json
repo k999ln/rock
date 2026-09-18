@@ -1,5 +1,5 @@
 {
-  "version": "1.77",
+  "version": "1.78",
   "decidedAt": "2026-09-18",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -50,6 +50,16 @@
     "designAligned": true,
     "allRequiredConnectionsVerified": false,
     "productionReady": false
+  },
+  "designDocumentation": {
+    "portal": "docs/rockstaros-design-portal.md",
+    "operatingSystem": "docs/rockstaros-complete-design.md",
+    "tools": "docs/sky-tools-complete-design.md",
+    "materialInvention": "docs/rockstaros-avocado-mini-complete-design.md",
+    "index": "data/design-document-index.json",
+    "automatedCheck": "npm run design:check",
+    "coverageStatus": "current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete",
+    "allImplementationsComplete": false
   },
   "northStar": {
     "document": "docs/product-north-star-20260915.md",

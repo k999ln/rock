@@ -1,11 +1,11 @@
 # RockstarOS — 自動化を接続・実行・管理するOS
 
-RockstarOSは、交換可能な高性能ローカルLLMとoffline agent runtimeを中核にするAIネイティブOSとして開発しています。SkyとZemaを最初の第一者systemとし、仕事・生活を便利にする自動化、Wallet／ファンド、ゲーム、IP／動画に加え、物質・配合・工程条件から検証可能な発明候補を作るMaterial Invention Coreを共通基盤へ接続します。その標準製品体験が、四方向sensorとhand interactionで物質digital twinを操作し、再計算とPatent AI支援へつなぐRockstarOS端末`avocadoMini`です。初めて共有する相手には[RockstarOS × avocadoMini 空間発明システム完成設計書](docs/rockstaros-avocado-mini-complete-design.md)を渡してください。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ49、具体的な契約と実装順は[AIネイティブOS詳細設計](docs/ai-native-os-architecture.md)、物質発明Coreの詳細は[Material Invention Core設計](docs/material-invention-core.md)、担当作業の入口は[Material Invention / avocadoMini workstream](docs/workstreams/11-material-invention-avocado-mini.md)、独立監査は[Sol設計監査](docs/ai-native-os-design-audit.md)、全層の組合せと未接続点は[全体構成監査](docs/system-composition.md)、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`RockstarOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
+RockstarOSは、交換可能な高性能ローカルLLMとoffline agent runtimeを中核にするAIネイティブOSとして開発しています。SkyとZemaを最初の第一者systemとし、仕事・生活を便利にする自動化、Wallet／ファンド、ゲーム、IP／動画に加え、物質・配合・工程条件から検証可能な発明候補を作るMaterial Invention Coreを共通基盤へ接続します。その標準製品体験が、四方向sensorとhand interactionで物質digital twinを操作し、再計算とPatent AI支援へつなぐRockstarOS端末`avocadoMini`です。OSから全Tool、avocadoMiniまでの設計は[RockstarOS全設計ポータル](docs/rockstaros-design-portal.md)を唯一の入口にします。そこから[OS全体詳細設計](docs/rockstaros-complete-design.md)、[Sky／Zema／全Tool詳細設計](docs/sky-tools-complete-design.md)、[空間発明システム設計](docs/rockstaros-avocado-mini-complete-design.md)へ進めます。製品要望の正本は[製品ベース](docs/product-baseline.md)のRQ01〜RQ49、全層の未接続点は[全体構成監査](docs/system-composition.md)、進捗の正本は[data/project-status.json](data/project-status.json)です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`RockstarOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
 
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-18 / 121 task中82 done・22 in progress・16 planned・1 blocked
+更新日: 2026-09-18 / 122 task中83 done・22 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                           |
@@ -113,6 +113,9 @@ npm run release:check
 
 | 内容            | 正本                                                                                                                                                              |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 全設計の入口    | [docs/rockstaros-design-portal.md](docs/rockstaros-design-portal.md) / [data/design-document-index.json](data/design-document-index.json)                         |
+| OS全体詳細      | [docs/rockstaros-complete-design.md](docs/rockstaros-complete-design.md)                                                                                          |
+| 全Tool詳細      | [docs/sky-tools-complete-design.md](docs/sky-tools-complete-design.md)                                                                                            |
 | 確定要望        | [docs/product-baseline.md](docs/product-baseline.md) / [data/product-baseline.json](data/product-baseline.json)                                                   |
 | 作業進捗        | [data/project-status.json](data/project-status.json) / [project.md](project.md)                                                                                   |
 | 現在状態        | [docs/current-state-20260911.md](docs/current-state-20260911.md)                                                                                                  |
@@ -184,14 +187,15 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 
 <details>
 <!-- project-details-summary:start -->
-<summary>121 taskと段階gateの詳細を開く</summary>
+<summary>122 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-18 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 82/121件
+最終更新: 2026-09-18 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 83/122件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
+| DOC01 | RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化 | 完了 | [記録](docs/rockstaros-design-portal.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
 | AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |

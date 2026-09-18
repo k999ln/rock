@@ -15,6 +15,19 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
   assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ49/);
+  const missingWholeDesign = structuredClone(source);
+  missingWholeDesign.designDocumentation.tools = null;
+  assert.throws(
+    () => validateBaseline(missingWholeDesign),
+    /OS・全Tool・Material Invention/,
+  );
+  const falseImplementationCompletion = structuredClone(source);
+  falseImplementationCompletion.designDocumentation.allImplementationsComplete =
+    true;
+  assert.throws(
+    () => validateBaseline(falseImplementationCompletion),
+    /OS・全Tool・Material Invention/,
+  );
   const unsafeMaterialExecution = structuredClone(source);
   unsafeMaterialExecution.materialInvention.autonomousPhysicalExperimentAllowed = true;
   assert.throws(

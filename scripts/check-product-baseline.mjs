@@ -95,6 +95,28 @@ export function validateBaseline(
     data.auditInputs?.isLiveStatus === false,
     '監査snapshotを最新状態にしないでください',
   );
+  const designDocumentation = data.designDocumentation;
+  requireValue(
+    designDocumentation?.portal === 'docs/rockstaros-design-portal.md' &&
+      designDocumentation?.operatingSystem ===
+        'docs/rockstaros-complete-design.md' &&
+      designDocumentation?.tools === 'docs/sky-tools-complete-design.md' &&
+      designDocumentation?.materialInvention ===
+        'docs/rockstaros-avocado-mini-complete-design.md' &&
+      designDocumentation?.index === 'data/design-document-index.json' &&
+      designDocumentation?.automatedCheck === 'npm run design:check' &&
+      designDocumentation?.coverageStatus ===
+        'current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete' &&
+      designDocumentation?.allImplementationsComplete === false &&
+      [
+        designDocumentation.portal,
+        designDocumentation.operatingSystem,
+        designDocumentation.tools,
+        designDocumentation.materialInvention,
+        designDocumentation.index,
+      ].every((path) => existsSync(resolve(root, path))),
+    'OS・全Tool・Material Inventionの設計入口と未完成境界を維持してください',
+  );
   requireValue(
     data.materialInvention?.requested === true &&
       data.materialInvention?.status ===
