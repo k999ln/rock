@@ -52,18 +52,27 @@ Zema内で実行したjobは、受付、開始、完了、失敗をbrowser event
 
 この11件は `lib/catalog.ts` で `ready` とされる。CSV仕事はSky Cloudで受付・変換・検査・私有保存を行うが、販売・決済・buyer共有は別gateである。RockstarOS Marketsは公開ライブ市場の読取専用で、取得失敗時にサンプル値で補完しない。外部Polymarket botは固定commit・clean treeのoffline backtestだけを利用し、秘密鍵と注文runtimeは接続しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。
 
-### Skyに表示する導入候補4件
+### Skyに表示する導入候補13件
 
-| 候補            | 目的                                         | 現在の状態                                                                          |
-| --------------- | -------------------------------------------- | ----------------------------------------------------------------------------------- |
-| faster-whisper  | 音声の文字起こし                             | 候補。Skyからの自動導入・実行は未接続                                               |
-| Transformers.js | ブラウザ内AI                                 | 候補。モデル選定・配布・実行は未接続                                                |
-| Playwright      | 許可されたWeb操作とテスト                    | 候補。第三者サイトの無人操作は未許可                                                |
-| Jev Ultrafast   | 構造化された候補から一手を選ぶブラウザ操作AI | 候補。専用profile・許可site・直前承認・独立検証を設計済み。source取得と実行は未実施 |
+| 候補                    | 目的                                         | 現在の状態                                                                          |
+| ----------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------- |
+| faster-whisper          | 音声の文字起こし                             | 候補。Skyからの自動導入・実行は未接続                                               |
+| Transformers.js         | ブラウザ内AI                                 | 候補。モデル選定・配布・実行は未接続                                                |
+| Playwright              | 許可されたWeb操作とテスト                    | 候補。第三者サイトの無人操作は未許可                                                |
+| Jev Ultrafast           | 構造化された候補から一手を選ぶブラウザ操作AI | 候補。専用profile・許可site・直前承認・独立検証を設計済み。source取得と実行は未実施 |
+| OpenJev                 | 公開modelによるlocal typed decision          | 候補。GPU／model／license／calibration未受入                                        |
+| Jevlike                 | 小型option-scoring modelの研究               | 候補。AI Lab限定。業務判断へ未接続                                                  |
+| Jev Trader              | order bookの売買判断研究                     | 候補。固定replayとPAPER限定。LIVE・秘密鍵は禁止                                     |
+| Awesome Jev by TypeSafe | Jev patternのcommunity資料集                 | reference-only。実行Toolではない                                                    |
+| TypeSafe Computer Use   | OCRとJevによるMac画面操作                    | 候補。隔離accountのobserve試験前                                                    |
+| Jev Review              | Git差分／codebase review                     | 候補。自動修正・commit・push・mergeは禁止                                           |
+| Jev Router              | Codex／Claude Codeのmodel routing            | 候補。既存session・権限・認証を維持する設計のみ                                     |
+| Jev Browser             | 既存browser toolの連続操作loop               | 候補。専用profileとowned siteの試験前                                               |
+| Mobile Jev              | Mobilerun経由のAndroid操作                   | 候補。wipe可能な隔離試験端末だけ。個人端末は禁止                                    |
 
 候補は「使えるツール数」に含めない。
 
-Jev Ultrafastの権限、保存、停止、外部作用、受入条件は[Jev Ultrafast統合設計](jev-ultrafast-integration-design.md)を正本とする。
+Jev ecosystem 10件の役割、権限、保存、停止、外部作用、受入条件は[Jev ecosystem全体詳細設計](jev-ecosystem-integration-design.md)を正本とし、Jev Ultrafast固有契約は[Jev Ultrafast統合設計](jev-ultrafast-integration-design.md)で補う。
 
 ### native OS開発版に内蔵する6種類・9バージョン
 

@@ -370,6 +370,21 @@
       ]
     },
     {
+      "id": "SKY18",
+      "title": "Jev ecosystem 10 repositoryを判断・browser・PC・mobile・review・routing・PAPER市場・referenceへ分離して候補登録",
+      "status": "done",
+      "dependsOn": ["SKY17", "DOC01", "MKT01"],
+      "evidence": [
+        "lib/catalog.ts",
+        "docs/jev-ecosystem-integration-design.md",
+        "docs/jev-ultrafast-integration-design.md",
+        "docs/sky-tools-complete-design.md",
+        "data/design-document-index.json",
+        "scripts/check-design-document-index.mjs",
+        "scripts/check-sky.mjs"
+      ]
+    },
+    {
       "id": "WEB02",
       "title": "Developer Preview紹介をOSインストールとSky開発者コード中心の一画面へ再設計",
       "status": "done",

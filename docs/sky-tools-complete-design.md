@@ -1,7 +1,7 @@
 # Sky／Zema／全Tool詳細設計
 
 版: 1.0 / 2026-09-18
-対象: Skyにある11件のready Tool、4件の導入候補、native開発Tool、Tool追加基盤。
+対象: Skyにある11件のready Tool、13件の導入候補、native開発Tool、Tool追加基盤。
 
 この文書は、Tool名の一覧ではなく、各Toolについて「誰が何を入力し、どこで動き、何を保存し、どこから外部作用になり、何をもって完了とするか」を同じ形で説明する。カタログの機械可読正本は`lib/catalog.ts`。この文書とカタログの欠落は`npm run design:check`で検出する。
 
@@ -91,6 +91,15 @@ catalogued → selected → connected → ready → running → review → compl
 | `transformers-js`           | ブラウザAI候補                    | candidate | browser                | 未接続                                    |
 | `playwright`                | 許可Web操作候補                   | candidate | PC / Cloud             | 未許可                                    |
 | `jev-ultrafast`             | 選択型browser agent候補           | candidate | 本人PC                 | 未接続・未実行                            |
+| `openjev`                   | local typed-decision候補          | candidate | GPU PC                 | 未導入                                    |
+| `jevlike`                   | 判断model研究候補                 | candidate | AI Lab                 | 研究限定                                  |
+| `jev-trader`                | 市場判断研究候補                  | candidate | PAPER sandbox          | LIVE禁止                                  |
+| `awesome-jev-by-typesafe`   | Jev開発reference                  | candidate | 文書                   | 実行しない                                |
+| `typesafe-computer-use`     | Mac画面操作候補                   | candidate | 隔離macOS              | observeから開始                           |
+| `jev-review`                | code review候補                   | candidate | 本人PC                 | 自動変更禁止                              |
+| `jev-router`                | model routing候補                 | candidate | 本人PC                 | routing-only                              |
+| `jev-browser`               | 連続browser操作候補               | candidate | 本人PC                 | 未接続・未実行                            |
+| `mobile-jev`                | Android操作候補                   | candidate | 隔離試験端末           | 個人端末禁止                              |
 
 ## 5. CSV整形・検査・納品
 
@@ -247,7 +256,7 @@ catalogued → selected → connected → ready → running → review → compl
 
 正本: [Patent assistant](sky-patent-assistant-20260912.md)、`lib/patent-assistant.ts`、`lib/patent-ai.ts`。
 
-## 16. 導入候補4件
+## 16. 導入候補13件
 
 ### faster-whisper
 
@@ -264,6 +273,44 @@ browser内分類・要約等の候補。library licenseと個別model licenseを
 ### Jev Ultrafast
 
 構造化したWeb操作候補からAIが一手を選ぶbrowser agent候補。RockstarOSでは専用Chrome profile、一仕事一tab、origin allowlist、`observe`／`prepare`／`act`の三段階、有限operation、秘密入力拒否、external-write直前の一回承認、完了の独立検証を必須にする。upstream sourceとMIT license、Python 3.12以上、Browser Harness、外部APIを確認済みだが、source取得、依存導入、API key接続、MCP adapter、Chrome操作は未実施。詳細は[Jev Ultrafast統合設計](jev-ultrafast-integration-design.md)。
+
+### OpenJev
+
+公開4B model等を使い、文章を生成せずruntime-defined optionの確率を読むlocal decision候補。Python 3.10以上、CUDA、GPU、model downloadが必要。model revision、prompt hash、calibrationを固定し、結果から外部作用を直接実行しない。
+
+### Jevlike
+
+変化する選択肢を採点する小型modelの学習・評価候補。dataset／checkpoint provenance、train／validation分離、model card、誤選択を検証するAI Lab用途とし、game demoを一般的な判断能力の証明にしない。
+
+### Jev Trader
+
+order bookから売買方向を選ぶ市場研究候補。RockstarOSでは`PRIVATE_KEY`を渡さず、固定replayとPAPERだけに限定する。実注文、実資金、LIVE、収益実績への計上を禁止する。
+
+### Awesome Jev by TypeSafe
+
+communityによるuse case、pattern、prompt、starter codeの資料集。実行ToolではなくDesign Libraryのreference-onlyとして登録し、紹介先のlicense、価格、model、外部作用を個別に確認する。
+
+### TypeSafe Computer Use
+
+OCR等でMac画面を読み、Jevが次のactionを選ぶPC操作候補。専用macOS account、許可app、observe mode、emergency stopを必須とし、Terminal、system設定、credential、決済、無承認送信を拒否する。
+
+### Jev Review
+
+Git差分または指定codebaseを段階的にreviewする候補。scopeとcommitを固定し、秘密fileを除外する。report作成までで、自動修正、commit、push、merge、issue投稿は行わない。
+
+### Jev Router
+
+Codex／Claude Codeの新しいturnをmodelへ振り分ける候補。既存CLIのsession、permission、authenticationを維持し、routingを権限拡大やprompt改変に使わない。
+
+### Jev Browser
+
+既存browser toolの観測・操作・検証loopでJevが要素を選ぶ候補。installerを自動実行せず、専用profileとowned siteのread-only試験から始め、各stepをBrowser Brokerで検査する。
+
+### Mobile Jev
+
+Mobilerun経由のAndroid操作候補。Rock所有のwipe可能な試験端末と許可appだけを使い、個人端末、SIM、連絡先、写真、password、決済、予約確定、権限変更を拒否する。
+
+10件のJev ecosystem全体の役割分離、共通schema、Tool別権限、受入順は[Jev ecosystem全体詳細設計](jev-ecosystem-integration-design.md)を正本とする。
 
 候補はready Tool数、対応機能、収益機会へ数えない。
 
@@ -316,6 +363,6 @@ Material Invention／avocadoMiniは、Core、sensor、XR、Safety、Simulation�
 - external-write outboxとProvider照会の全Tool共通実装。
 - 多端末selectionと一つの仕事のauthority移送。
 - 本番料金、返金、dispute、receiptのProvider横断契約。
-- candidate 4件の採否と具体的Tool schema。Jevは統合schemaを設計済みだがruntime未実装。
+- candidate 13件の採否と具体的Tool schema。Jev ecosystem 10件は統合schemaを設計済みだがruntime未実装。
 
 これらを未決定のまま「全Tool platform完成」と表示しない。

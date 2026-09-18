@@ -82,6 +82,7 @@
       "documents": [
         "docs/sky-tools-complete-design.md",
         "docs/jev-ultrafast-integration-design.md",
+        "docs/jev-ecosystem-integration-design.md",
         "docs/sky.md",
         "docs/chat-mcp-control-room-20260913.md",
         "docs/sky-tool-sdk.md"
@@ -168,7 +169,16 @@
     { "id": "faster-whisper", "catalogStatus": "candidate" },
     { "id": "transformers-js", "catalogStatus": "candidate" },
     { "id": "playwright", "catalogStatus": "candidate" },
-    { "id": "jev-ultrafast", "catalogStatus": "candidate" }
+    { "id": "jev-ultrafast", "catalogStatus": "candidate" },
+    { "id": "openjev", "catalogStatus": "candidate" },
+    { "id": "jevlike", "catalogStatus": "candidate" },
+    { "id": "jev-trader", "catalogStatus": "candidate" },
+    { "id": "awesome-jev-by-typesafe", "catalogStatus": "candidate" },
+    { "id": "typesafe-computer-use", "catalogStatus": "candidate" },
+    { "id": "jev-review", "catalogStatus": "candidate" },
+    { "id": "jev-router", "catalogStatus": "candidate" },
+    { "id": "jev-browser", "catalogStatus": "candidate" },
+    { "id": "mobile-jev", "catalogStatus": "candidate" }
   ],
   "nativeToolFamilies": [
     "shared_checklist",

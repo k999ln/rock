@@ -48,6 +48,15 @@ const indexPairs = index.catalogTools
   .map(({ id, catalogStatus }) => `${id}:${catalogStatus}`)
   .sort();
 fail(
+  new Set(catalog.map(({ id }) => id)).size === catalog.length,
+  'Sky catalogのTool IDを重複させないでください',
+);
+fail(
+  new Set(index.catalogTools.map(({ id }) => id)).size ===
+    index.catalogTools.length,
+  '設計台帳のTool IDを重複させないでください',
+);
+fail(
   JSON.stringify(indexPairs) === JSON.stringify(catalogPairs),
   'Sky catalogの全ready／candidate Toolを設計台帳へ同期してください',
 );
@@ -56,8 +65,8 @@ fail(
   'ready Tool 11件を保持してください',
 );
 fail(
-  catalog.filter(({ status }) => status === 'candidate').length === 4,
-  'candidate Tool 4件を保持してください',
+  catalog.filter(({ status }) => status === 'candidate').length === 13,
+  'candidate Tool 13件を保持してください',
 );
 const toolsBook = readFileSync(
   resolve(root, 'docs/sky-tools-complete-design.md'),
@@ -65,6 +74,24 @@ const toolsBook = readFileSync(
 );
 for (const { id } of index.catalogTools) {
   fail(toolsBook.includes(id), `${id}: 全Tool詳細設計に記載がありません`);
+}
+const jevBook = readFileSync(
+  resolve(root, 'docs/jev-ecosystem-integration-design.md'),
+  'utf8',
+);
+for (const id of [
+  'jev-ultrafast',
+  'openjev',
+  'jevlike',
+  'jev-trader',
+  'awesome-jev-by-typesafe',
+  'typesafe-computer-use',
+  'jev-review',
+  'jev-router',
+  'jev-browser',
+  'mobile-jev',
+]) {
+  fail(jevBook.includes(id), `${id}: Jev ecosystem詳細設計に記載がありません`);
 }
 fail(
   index.nativeToolFamilies?.length === 6,

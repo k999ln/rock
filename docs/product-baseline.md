@@ -1,5 +1,7 @@
 # RockstarOS — 確定した製品ベース
 
+2026-09-18 Jev ecosystem 10件の統合（v1.80）: 利用者指定URLの重複を除き、Jev Ultrafast、OpenJev、Jevlike、Jev Trader、Awesome Jev by TypeSafe、TypeSafe Computer Use、Jev Review、Jev Router、Jev Browser、Mobile Jevを役割別にSkyへ登録した。Skyは現在ready 11、candidate 13、合計24 Tool。判断model、browser、Mac、Android、review、routing、市場、referenceを別権限にし、TraderはPAPER限定、Mobileは隔離試験端末限定とする。[Jev ecosystem全体詳細設計](jev-ecosystem-integration-design.md)。source取得、依存導入、API／model／外部service接続、実行は未実施であり、ready数へ含めない。
+
 2026-09-18 Jev Ultrafast候補の追加（v1.79）: `browser-use/jev-ultrafast`をSkyの4件目の導入候補へ追加した。AIが構造化された操作候補から一手を選ぶ方式を、専用Chrome profile、許可origin、`observe`／`prepare`／`act`、秘密入力拒否、外部作用直前の別承認、独立した完了検証へ収める。[詳細設計](jev-ultrafast-integration-design.md)は追加済みだが、source取得、依存導入、API key接続、browser操作は未実施であり、ready数には含めない。
 
 2026-09-18 OS／全Tool詳細設計の正本化（v1.78）: avocadoMiniだけでなく、RockstarOS Core、Web／PC、Linux／QEMU、Android／Pixel、Local AI、仕事、権限、保存、更新・復旧、Wallet、運用と、当時のSkyの11 ready Tool、3 candidate Tool、native 6 Tool familyを同じ設計体系へ統合した。[全設計ポータル](rockstaros-design-portal.md)から[OS全体詳細設計](rockstaros-complete-design.md)、[全Tool詳細設計](sky-tools-complete-design.md)、[Material Invention詳細](rockstaros-avocado-mini-complete-design.md)へ進む。`npm run design:check`はcatalog Toolや正本の欠落を拒否する。これは現在scopeの説明被覆であり、未決定値や未実装の完成を意味しない。

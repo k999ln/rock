@@ -1,15 +1,21 @@
 # 検証記録
 
+## Jev ecosystem 10 repositoryの候補登録 / 2026-09-18
+
+- 利用者指定URLを重複除去し、Jev Ultrafast、OpenJev、Jevlike、Jev Trader、Awesome Jev by TypeSafe、TypeSafe Computer Use、Jev Review、Jev Router、Jev Browser、Mobile Jevの10件として整理した。各公開READMEとMIT表示を確認した。
+- decision model、browser、Mac操作、Android操作、code review、model routing、市場研究、referenceを別Tool IDと権限へ分離した。Jev TraderはPAPER限定、Mobile Jevはwipe可能な隔離端末限定、computer-useは専用accountのobserveから開始し、秘密鍵・決済・予約・投稿・merge等を自動許可しない。
+- Sky catalogは24 Tool（ready 11、candidate 13）を追跡する。10件のJev source取得、依存導入、API key、model download、実行、外部service契約は未実施であり、利用可能とは扱わない。
+
 ## Jev Ultrafast候補の設計・catalog登録 / 2026-09-18
 
 - 公開repositoryのREADME、MIT license、Python／依存条件、有限operation、構造化DOM、target／鮮度／完了検証、既知の非対応範囲を確認し、Skyの`candidate`として追加した。
 - 専用Chrome profile、一仕事一tab、origin allowlist、三段階mode、秘密入力拒否、外部作用直前の別承認、結果不明時の再実行禁止、完了の独立検証、保持・削除・rollback、10項目の採用gateを詳細設計へ固定した。
-- catalogと設計台帳はSky 15 Tool（ready 11、candidate 4）を追跡する。source取得、依存導入、API接続、browser操作、runtime受入は未実施であり、利用可能とは扱わない。
+- 当時のcatalogと設計台帳はSky 15 Tool（ready 11、candidate 4）を追跡した。その後Jev ecosystem 9件を追加し、現在は24 Tool（ready 11、candidate 13）。source取得、依存導入、API接続、browser操作、runtime受入は未実施であり、利用可能とは扱わない。
 
 ## RockstarOS OS／全Tool設計被覆 / 2026-09-18
 
 - 全設計ポータル、OS全体詳細、Sky／Zema／全Tool詳細を追加し、設計の11必須項目と環境別の受入境界を固定した。
-- 機械可読台帳は15 system domain、Sky catalog 15 Tool、native 6 Tool familyを追跡する。catalogのID／状態と台帳の完全一致、全参照fileの存在、全Tool IDの詳細設計記載、無条件`COMPLETE`表示の禁止を自動検査する。
+- 機械可読台帳は15 system domain、Sky catalog 24 Tool、native 6 Tool familyを追跡する。catalogのID／状態と台帳の完全一致、全参照fileの存在、全Tool IDの詳細設計記載、無条件`COMPLETE`表示の禁止を自動検査する。
 - 設計被覆は現在scopeの説明が辿れることを意味する。未実装、未選定、外部Provider未接続、実機未受入を実装完成へ変更しない。
 
 ## 見て分かる空間発明設計 v2.0 / 2026-09-18
