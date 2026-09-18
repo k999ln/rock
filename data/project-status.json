@@ -357,6 +357,19 @@
       ]
     },
     {
+      "id": "SKY17",
+      "title": "Jev Ultrafastを権限制御されたbrowser agent候補としてSky catalogと全Tool設計へ追加",
+      "status": "done",
+      "dependsOn": ["SKY16", "DOC01"],
+      "evidence": [
+        "lib/catalog.ts",
+        "docs/jev-ultrafast-integration-design.md",
+        "docs/sky-tools-complete-design.md",
+        "data/design-document-index.json",
+        "scripts/check-design-document-index.mjs"
+      ]
+    },
+    {
       "id": "WEB02",
       "title": "Developer Preview紹介をOSインストールとSky開発者コード中心の一画面へ再設計",
       "status": "done",

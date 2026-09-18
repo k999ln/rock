@@ -1,9 +1,15 @@
 # 検証記録
 
+## Jev Ultrafast候補の設計・catalog登録 / 2026-09-18
+
+- 公開repositoryのREADME、MIT license、Python／依存条件、有限operation、構造化DOM、target／鮮度／完了検証、既知の非対応範囲を確認し、Skyの`candidate`として追加した。
+- 専用Chrome profile、一仕事一tab、origin allowlist、三段階mode、秘密入力拒否、外部作用直前の別承認、結果不明時の再実行禁止、完了の独立検証、保持・削除・rollback、10項目の採用gateを詳細設計へ固定した。
+- catalogと設計台帳はSky 15 Tool（ready 11、candidate 4）を追跡する。source取得、依存導入、API接続、browser操作、runtime受入は未実施であり、利用可能とは扱わない。
+
 ## RockstarOS OS／全Tool設計被覆 / 2026-09-18
 
 - 全設計ポータル、OS全体詳細、Sky／Zema／全Tool詳細を追加し、設計の11必須項目と環境別の受入境界を固定した。
-- 機械可読台帳は15 system domain、Sky catalog 14 Tool、native 6 Tool familyを追跡する。catalogのID／状態と台帳の完全一致、全参照fileの存在、全Tool IDの詳細設計記載、無条件`COMPLETE`表示の禁止を自動検査する。
+- 機械可読台帳は15 system domain、Sky catalog 15 Tool、native 6 Tool familyを追跡する。catalogのID／状態と台帳の完全一致、全参照fileの存在、全Tool IDの詳細設計記載、無条件`COMPLETE`表示の禁止を自動検査する。
 - 設計被覆は現在scopeの説明が辿れることを意味する。未実装、未選定、外部Provider未接続、実機未受入を実装完成へ変更しない。
 
 ## 見て分かる空間発明設計 v2.0 / 2026-09-18
@@ -231,6 +237,7 @@
 - The final installable app front has a direct home screen, four ready fund presets, one preparation-only preview, activity history, and settings. No fabricated balances, yields, participant totals, or paid gacha. Real tool completion and sample runs have distinct labels.
 - PWA manifest, 192px/512px icons, and service worker endpoints return 200 locally. The app shell does not cache API responses or tool input.
 - Browser screenshots/click QA were not requested and were not performed. Loopback HTTP was verified at protocol level; a browser may still require the user's initial local-network permission. WebMCP list_funds/select_fund is feature-detected; the stdio/HTTP MCP transport is the verified execution integration.
+
 # 2026-09-12 — システム診断・暗号化端末設定バックアップ
 
 - `/settings/system`をローカル実ブラウザで開き、通信、端末内保存、Web Crypto、Service Worker、RockstarOS API、PC Connectorの6項目が実測状態へ更新されることを確認した。確認時は5/6準備済みで、未接続のPC Connectorだけを注意表示した。
@@ -262,6 +269,7 @@
 - PWA manifestへ固定`id`、root `scope`、`lang`、`dir`、related native appを優先しない指定を追加した。192/512 PNGを実寸検査し、Safariが推奨する1024角・全面不透明のmaskable SVGを別途追加した。source 2試験に加え、production HTTP上のmanifest値、3 iconの参照とContent-Typeを上記8経路で確認した。これはWeb appの導入条件でありApp Store native client審査の合格証拠ではない。
 - ローカル待受が許可された環境で`npm run verify`を実行し、Web 202 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、公開gate、製品baseline、MCP配布一致、Billing Worker dry-run、本番buildに合格した。`/settings/system`の実ブラウザ表示はconsole error 0、横切れなし、6対象の数値と台帳が一致した。
 - 製品ライセンスの明示選択、production鍵の作成・保管、一般公開承認、実機/SKUと外部審査は所有者または外部authorityが必要であり、今回完了扱いにしていない。
+
 # 2026-09-14 — Rock Wallet Base USDC本番受取レール
 
 - `/wallet`へ外部EIP-1193 Walletの接続、Base Mainnet切替、期限付き所有署名、受取先登録、解除、回収指図一覧、transaction hash照合を追加した。画面は秘密鍵非保管、署名が送金権限ではないこと、Rock利用料だけが対象であることを明示する。

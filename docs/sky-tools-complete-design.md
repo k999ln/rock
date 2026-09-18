@@ -1,7 +1,7 @@
 # Sky／Zema／全Tool詳細設計
 
 版: 1.0 / 2026-09-18
-対象: Skyにある11件のready Tool、3件の導入候補、native開発Tool、Tool追加基盤。
+対象: Skyにある11件のready Tool、4件の導入候補、native開発Tool、Tool追加基盤。
 
 この文書は、Tool名の一覧ではなく、各Toolについて「誰が何を入力し、どこで動き、何を保存し、どこから外部作用になり、何をもって完了とするか」を同じ形で説明する。カタログの機械可読正本は`lib/catalog.ts`。この文書とカタログの欠落は`npm run design:check`で検出する。
 
@@ -22,20 +22,20 @@ Skyはapp storeだけではなく、発見から接続、実行場所、停止�
 
 ### Toolが必ず宣言するもの
 
-| 区分 | 必須内容 |
-| --- | --- |
-| identity | Tool ID、版、作者、署名、license、support先 |
-| purpose | 解く問題、対象利用者、禁止場面 |
-| data | 入力・出力schema、最大size、秘密区分 |
-| runtime | device／PC／Cloud／Provider、必要資源、timeout |
-| authority | 必要権限、許可通信先、filesystem範囲 |
-| effect | local-pure／remote-read／external-write |
-| money | Tool料金、外部実費、費用上限、返金条件 |
-| lifecycle | install、update、disable、revoke、rollback、uninstall |
-| failure | stop、retry、重複、通信断、結果不明、照会 |
-| evidence | artifact、receipt、成功条件、review条件 |
-| privacy | 保存先、保持期間、削除、telemetry、外部送信 |
-| compatibility | Core/API、入力schema、出力schemaの対応範囲 |
+| 区分          | 必須内容                                              |
+| ------------- | ----------------------------------------------------- |
+| identity      | Tool ID、版、作者、署名、license、support先           |
+| purpose       | 解く問題、対象利用者、禁止場面                        |
+| data          | 入力・出力schema、最大size、秘密区分                  |
+| runtime       | device／PC／Cloud／Provider、必要資源、timeout        |
+| authority     | 必要権限、許可通信先、filesystem範囲                  |
+| effect        | local-pure／remote-read／external-write               |
+| money         | Tool料金、外部実費、費用上限、返金条件                |
+| lifecycle     | install、update、disable、revoke、rollback、uninstall |
+| failure       | stop、retry、重複、通信断、結果不明、照会             |
+| evidence      | artifact、receipt、成功条件、review条件               |
+| privacy       | 保存先、保持期間、削除、telemetry、外部送信           |
+| compatibility | Core/API、入力schema、出力schemaの対応範囲            |
 
 ### 共通状態
 
@@ -64,32 +64,33 @@ catalogued → selected → connected → ready → running → review → compl
 
 ## 3. 実行場所
 
-| 場所 | 接続方法 | 保存 | 主な停止条件 |
-| --- | --- | --- | --- |
-| Web browser | 認証済み画面とAPI | D1の状態、入力本文は原則client | tab終了、API取消、期限 |
-| 本人PC | Connection Passport＋MCP | PC local、Skyは状態とreceipt | heartbeat stale、process終了、本人停止 |
-| Sky Cloud | owner認証、配備版 | private object／D1 | timeout、quota、本人停止 |
-| Android／native device | Broker＋署名Tool | owner別DB／artifact領域 | token失効、quota、電池・熱、本人停止 |
-| Provider | adapter、OAuth等 | Provider正本＋Rock receipt | scope失効、費用上限、結果不明 |
+| 場所                   | 接続方法                 | 保存                           | 主な停止条件                           |
+| ---------------------- | ------------------------ | ------------------------------ | -------------------------------------- |
+| Web browser            | 認証済み画面とAPI        | D1の状態、入力本文は原則client | tab終了、API取消、期限                 |
+| 本人PC                 | Connection Passport＋MCP | PC local、Skyは状態とreceipt   | heartbeat stale、process終了、本人停止 |
+| Sky Cloud              | owner認証、配備版        | private object／D1             | timeout、quota、本人停止               |
+| Android／native device | Broker＋署名Tool         | owner別DB／artifact領域        | token失効、quota、電池・熱、本人停止   |
+| Provider               | adapter、OAuth等         | Provider正本＋Rock receipt     | scope失効、費用上限、結果不明          |
 
 ## 4. Tool一覧
 
-| ID | 表示名 | 状態 | 実行場所 | effect |
-| --- | --- | --- | --- | --- |
-| `rockstar-csv-cleanup` | CSV整形・検査・納品 | ready | Sky Cloud / Web | local-pure相当。販売・共有は別作用 |
-| `rockstar-markets-analysis` | RockstarOS Market Scanner | ready | Web / offline backtest | remote-read＋PAPER記録 |
-| `mercari-revenue` | メルカリ収益スターター | ready | Web / 将来Connector | draftはpure、出品等はexternal-write |
-| `fashion-brand-ops` | Instagram運用・受注型ブランド管理 | ready | PC MCP | read／draft／external-writeを操作別に分離 |
-| `coconala` | ココナラ案件チェック | ready | Web | local-pure |
-| `mr-free-article` | 記事の無料版メーカー | ready | Web | local-pure |
-| `mr-citations` | 出典整理ツール | ready | Web / PC | local-pure |
-| `mr-delivery` | 納品記録の照合 | ready | PC | local-pure |
-| `rockstar-ledger` | サブスク顧問 | ready | PC MCP | local read-only |
-| `rockstar-legal-intake` | 法務受付 | ready | Web / 任意AI | local整理＋同意後remote-read |
-| `rockstar-patent-assistant` | 特許出願アシスタント | ready | Web / 任意AI | local draft＋同意後remote-read |
-| `faster-whisper` | 文字起こし候補 | candidate | PC | 未接続 |
-| `transformers-js` | ブラウザAI候補 | candidate | browser | 未接続 |
-| `playwright` | 許可Web操作候補 | candidate | PC / Cloud | 未許可 |
+| ID                          | 表示名                            | 状態      | 実行場所               | effect                                    |
+| --------------------------- | --------------------------------- | --------- | ---------------------- | ----------------------------------------- |
+| `rockstar-csv-cleanup`      | CSV整形・検査・納品               | ready     | Sky Cloud / Web        | local-pure相当。販売・共有は別作用        |
+| `rockstar-markets-analysis` | RockstarOS Market Scanner         | ready     | Web / offline backtest | remote-read＋PAPER記録                    |
+| `mercari-revenue`           | メルカリ収益スターター            | ready     | Web / 将来Connector    | draftはpure、出品等はexternal-write       |
+| `fashion-brand-ops`         | Instagram運用・受注型ブランド管理 | ready     | PC MCP                 | read／draft／external-writeを操作別に分離 |
+| `coconala`                  | ココナラ案件チェック              | ready     | Web                    | local-pure                                |
+| `mr-free-article`           | 記事の無料版メーカー              | ready     | Web                    | local-pure                                |
+| `mr-citations`              | 出典整理ツール                    | ready     | Web / PC               | local-pure                                |
+| `mr-delivery`               | 納品記録の照合                    | ready     | PC                     | local-pure                                |
+| `rockstar-ledger`           | サブスク顧問                      | ready     | PC MCP                 | local read-only                           |
+| `rockstar-legal-intake`     | 法務受付                          | ready     | Web / 任意AI           | local整理＋同意後remote-read              |
+| `rockstar-patent-assistant` | 特許出願アシスタント              | ready     | Web / 任意AI           | local draft＋同意後remote-read            |
+| `faster-whisper`            | 文字起こし候補                    | candidate | PC                     | 未接続                                    |
+| `transformers-js`           | ブラウザAI候補                    | candidate | browser                | 未接続                                    |
+| `playwright`                | 許可Web操作候補                   | candidate | PC / Cloud             | 未許可                                    |
+| `jev-ultrafast`             | 選択型browser agent候補           | candidate | 本人PC                 | 未接続・未実行                            |
 
 ## 5. CSV整形・検査・納品
 
@@ -246,7 +247,7 @@ catalogued → selected → connected → ready → running → review → compl
 
 正本: [Patent assistant](sky-patent-assistant-20260912.md)、`lib/patent-assistant.ts`、`lib/patent-ai.ts`。
 
-## 16. 導入候補3件
+## 16. 導入候補4件
 
 ### faster-whisper
 
@@ -260,20 +261,24 @@ browser内分類・要約等の候補。library licenseと個別model licenseを
 
 許可されたWebテスト・操作の候補。origin allowlist、credential保管、操作schema、screenshot、download、外部送信、CAPTCHA／MFA、利用規約、external-write承認、結果不明を設計するまで第三者siteの無人操作を許可しない。
 
+### Jev Ultrafast
+
+構造化したWeb操作候補からAIが一手を選ぶbrowser agent候補。RockstarOSでは専用Chrome profile、一仕事一tab、origin allowlist、`observe`／`prepare`／`act`の三段階、有限operation、秘密入力拒否、external-write直前の一回承認、完了の独立検証を必須にする。upstream sourceとMIT license、Python 3.12以上、Browser Harness、外部APIを確認済みだが、source取得、依存導入、API key接続、MCP adapter、Chrome操作は未実施。詳細は[Jev Ultrafast統合設計](jev-ultrafast-integration-design.md)。
+
 候補はready Tool数、対応機能、収益機会へ数えない。
 
 ## 17. native開発Tool
 
 Linux／QEMU imageには次の6 family・9 versionがある。
 
-| family | version | 入出力 | 権限 |
-| --- | --- | --- | --- |
-| 共有用チェックリスト | 1.0.0 / 2.0.0 | text→Markdown checklist | `text.input` / `text.output` |
-| 引用整理 | 1.0.0 | text→整理済みtext | 同上 |
-| 提案下書き | 1.0.0 / 1.1.0 | 募集条件→draft | 同上 |
-| 文章を整える | 1.0.0 / 2.0.0 | text→空白整理text | 同上 |
-| リストの重複を整理 | 1.0.0 | lines→unique sorted lines | 同上 |
-| SHA-256 | 1.0.0 | text→hashとbyte数 | 同上 |
+| family               | version       | 入出力                    | 権限                         |
+| -------------------- | ------------- | ------------------------- | ---------------------------- |
+| 共有用チェックリスト | 1.0.0 / 2.0.0 | text→Markdown checklist   | `text.input` / `text.output` |
+| 引用整理             | 1.0.0         | text→整理済みtext         | 同上                         |
+| 提案下書き           | 1.0.0 / 1.1.0 | 募集条件→draft            | 同上                         |
+| 文章を整える         | 1.0.0 / 2.0.0 | text→空白整理text         | 同上                         |
+| リストの重複を整理   | 1.0.0         | lines→unique sorted lines | 同上                         |
+| SHA-256              | 1.0.0         | text→hashとbyte数         | 同上                         |
 
 すべて端末内の有限処理、価格0、公開RFC test鍵の開発package。本番作者identity、商用安全性、Android移植を証明しない。
 
@@ -311,6 +316,6 @@ Material Invention／avocadoMiniは、Core、sensor、XR、Safety、Simulation�
 - external-write outboxとProvider照会の全Tool共通実装。
 - 多端末selectionと一つの仕事のauthority移送。
 - 本番料金、返金、dispute、receiptのProvider横断契約。
-- candidate 3件の採否と具体的Tool schema。
+- candidate 4件の採否と具体的Tool schema。Jevは統合schemaを設計済みだがruntime未実装。
 
 これらを未決定のまま「全Tool platform完成」と表示しない。

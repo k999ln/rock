@@ -9,7 +9,7 @@
 1. [RockstarOS全体詳細設計](rockstaros-complete-design.md) — OS全体がどう動くか。
 2. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — Toolをどう追加し、11件をどう使い、どこで止めるか。
 3. [avocadoMini空間発明システム](rockstaros-avocado-mini-complete-design.md) — 物質発明を手で扱う体験と技術。
-4. [製品ベース](product-baseline.md) — 利用者が確定したRQ01〜RQ49。
+4. [製品ベース](product-baseline.md) — 利用者が確定したRQ01〜RQ49と、その後のTool追加判断。
 
 機械可読の被覆台帳は[`data/design-document-index.json`](../data/design-document-index.json)。`npm run design:check`は、利用可能・候補の全Toolが台帳と詳細設計に存在すること、正本へのlinkが存在すること、未決定を完成表示していないことを検査する。
 
@@ -41,33 +41,33 @@ RockstarOS Platform Core
 
 ## 実装環境を混ぜない
 
-| 環境 | 役割 | 現在の到達点 | 完成と呼ばないもの |
-| --- | --- | --- | --- |
-| Web / PC | 現在の製品画面、D1 API、PC Tool、MCP接続 | 11 ready Toolと主要画面がある | スマホOS、native sandbox、本番Provider |
-| Linux / QEMU | native OS契約、署名Tool、更新・復旧、Wallet／Game fixture | Developer Preview候補の限定受入 | Pixel対応、一般配布、本番鍵 |
-| Android APK | Broker、Shell、固定Tool、Local AI、backup、Operatorの事前検証 | emulatorと所有Pixelの試験署名APKで限定合格 | RockstarOS image、SELinux最終形、正式署名 |
-| Pixel 10 OS image | 最初の物理RockstarOS対象 | sourceとbuild gateを設計・準備 | full build、flash、CTS/VTS、OTA、純正復旧 |
-| avocadoMini | Material Inventionの標準操作端末 | 統合設計とsandbox Core | XR runtime、四方向実機、新材料、特許、量産 |
+| 環境              | 役割                                                          | 現在の到達点                               | 完成と呼ばないもの                         |
+| ----------------- | ------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------ |
+| Web / PC          | 現在の製品画面、D1 API、PC Tool、MCP接続                      | 11 ready Toolと主要画面がある              | スマホOS、native sandbox、本番Provider     |
+| Linux / QEMU      | native OS契約、署名Tool、更新・復旧、Wallet／Game fixture     | Developer Preview候補の限定受入            | Pixel対応、一般配布、本番鍵                |
+| Android APK       | Broker、Shell、固定Tool、Local AI、backup、Operatorの事前検証 | emulatorと所有Pixelの試験署名APKで限定合格 | RockstarOS image、SELinux最終形、正式署名  |
+| Pixel 10 OS image | 最初の物理RockstarOS対象                                      | sourceとbuild gateを設計・準備             | full build、flash、CTS/VTS、OTA、純正復旧  |
+| avocadoMini       | Material Inventionの標準操作端末                              | 統合設計とsandbox Core                     | XR runtime、四方向実機、新材料、特許、量産 |
 
 ## 詳細設計の正本
 
-| 領域 | 説明の入口 | 契約・機械可読正本 |
-| --- | --- | --- |
-| 製品目的・要求 | [製品ベース](product-baseline.md) | [`data/product-baseline.json`](../data/product-baseline.json) |
-| 全体構成 | [全体詳細設計](rockstaros-complete-design.md) | [`data/system-composition-audit.json`](../data/system-composition-audit.json) |
-| AIネイティブCore | [AIネイティブOS共通設計](ai-native-os-architecture.md) | [`contracts/local-ai-runtime.json`](../contracts/local-ai-runtime.json) |
-| Android / Pixel | [Android production architecture](android-production-architecture.md) | [`data/android-release-architecture-policy.json`](../data/android-release-architecture-policy.json) |
-| Linux / QEMU | [native OS統合](native-os-integration.md) | [`data/qemu-release-audit.json`](../data/qemu-release-audit.json) |
-| Platform API | [Platform Core](platform-core.md) | [`contracts/platform-api.json`](../contracts/platform-api.json) |
-| Sky / Zema / Tool | [全Tool詳細設計](sky-tools-complete-design.md) | `lib/catalog.ts`とTool Package契約 |
-| MCP | [MCP Connector](sky-mcp-connector.md) | `toolkits/sky-mcp-connector/registry.schema.json` |
-| 保存・DB | [保存境界](data-storage-boundaries.md) | `db/schema.ts`と各migration |
-| Wallet / Provider | [外部Provider境界](external-wallet-fund-provider-boundary-20260913.md) | Earning Receipt、Financial Provider実装 |
-| Security / Operator | [インシデント対応](security-incident-response.md) | [`data/device-emergency-access-policy.json`](../data/device-emergency-access-policy.json) |
-| Update / Backup / Recovery | [backup・復旧](android-backup-recovery.md) | 各Android release policy JSON |
-| Game / IP | [Game API](game-api-contract-draft.md) | GX00／GX01契約とSDK |
-| Material Invention | [見て分かる完成設計](rockstaros-avocado-mini-complete-design.md) | 3つのMaterial JSON SchemaとXR policy |
-| 検証・release | [release minimum gates](release-minimum-gates.md) | [`data/release-readiness.json`](../data/release-readiness.json) |
+| 領域                       | 説明の入口                                                                                         | 契約・機械可読正本                                                                                  |
+| -------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| 製品目的・要求             | [製品ベース](product-baseline.md)                                                                  | [`data/product-baseline.json`](../data/product-baseline.json)                                       |
+| 全体構成                   | [全体詳細設計](rockstaros-complete-design.md)                                                      | [`data/system-composition-audit.json`](../data/system-composition-audit.json)                       |
+| AIネイティブCore           | [AIネイティブOS共通設計](ai-native-os-architecture.md)                                             | [`contracts/local-ai-runtime.json`](../contracts/local-ai-runtime.json)                             |
+| Android / Pixel            | [Android production architecture](android-production-architecture.md)                              | [`data/android-release-architecture-policy.json`](../data/android-release-architecture-policy.json) |
+| Linux / QEMU               | [native OS統合](native-os-integration.md)                                                          | [`data/qemu-release-audit.json`](../data/qemu-release-audit.json)                                   |
+| Platform API               | [Platform Core](platform-core.md)                                                                  | [`contracts/platform-api.json`](../contracts/platform-api.json)                                     |
+| Sky / Zema / Tool          | [全Tool詳細設計](sky-tools-complete-design.md)・[Jev統合設計](jev-ultrafast-integration-design.md) | `lib/catalog.ts`とTool Package契約                                                                  |
+| MCP                        | [MCP Connector](sky-mcp-connector.md)                                                              | `toolkits/sky-mcp-connector/registry.schema.json`                                                   |
+| 保存・DB                   | [保存境界](data-storage-boundaries.md)                                                             | `db/schema.ts`と各migration                                                                         |
+| Wallet / Provider          | [外部Provider境界](external-wallet-fund-provider-boundary-20260913.md)                             | Earning Receipt、Financial Provider実装                                                             |
+| Security / Operator        | [インシデント対応](security-incident-response.md)                                                  | [`data/device-emergency-access-policy.json`](../data/device-emergency-access-policy.json)           |
+| Update / Backup / Recovery | [backup・復旧](android-backup-recovery.md)                                                         | 各Android release policy JSON                                                                       |
+| Game / IP                  | [Game API](game-api-contract-draft.md)                                                             | GX00／GX01契約とSDK                                                                                 |
+| Material Invention         | [見て分かる完成設計](rockstaros-avocado-mini-complete-design.md)                                   | 3つのMaterial JSON SchemaとXR policy                                                                |
+| 検証・release              | [release minimum gates](release-minimum-gates.md)                                                  | [`data/release-readiness.json`](../data/release-readiness.json)                                     |
 
 ## 「詳細設計済み」の意味
 

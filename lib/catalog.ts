@@ -359,4 +359,28 @@ export const catalog: Automation[] = [
     ],
     note: 'ココナラ等の第三者サイトの無人操作を許諾するものではありません。',
   },
+  {
+    id: 'jev-ultrafast',
+    name: 'Jev Ultrafast',
+    category: 'ブラウザ操作AI',
+    description:
+      'Web画面の操作候補を番号付きで整理し、AIが許可された一手を選ぶ高速ブラウザエージェント。',
+    source: 'https://github.com/browser-use/jev-ultrafast',
+    license: 'MIT',
+    licenseUrl:
+      'https://github.com/browser-use/jev-ultrafast/blob/main/LICENSE',
+    color: 'green',
+    status: 'candidate',
+    environment:
+      '本人PC / Python 3.12以上・uv・Chrome remote debugging・Browser Harness・TypeSafe API・text model API',
+    cost: '本体はMIT。選択したTypeSafe APIとtext model APIの利用料、通信量、本人PCの電力が別に発生する場合があります。',
+    steps: [
+      'source版・依存関係・MIT表示を固定し、offline testを通す',
+      '普段使いと分離した専用Chrome profileと、操作してよいsiteだけを設定する',
+      '閲覧だけの試験から始め、click・入力・送信を別の権限として確認する',
+      '送信・投稿・予約・購入等は実行直前に内容を表示し、本人が一回だけ許可する',
+      'Jevの完了申告とは別に、RockstarOSが結果を読み直してreceiptを保存する',
+    ],
+    note: '導入候補であり、まだ自動導入・実行できません。既存Chrome profile、password・OTP・決済情報、任意site、任意JavaScript、無人の投稿・予約・購入は許可しません。',
+  },
 ];

@@ -20,7 +20,10 @@ fail(
     'current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete',
   '設計記載と実装完成を分離してください',
 );
-fail(index.requiredDesignFields?.length === 11, '詳細設計の11必須項目を保持してください');
+fail(
+  index.requiredDesignFields?.length === 11,
+  '詳細設計の11必須項目を保持してください',
+);
 fail(index.systemDomains?.length >= 15, 'OS全領域の設計入口が不足しています');
 
 const referenced = new Set(index.primaryBooks);
@@ -34,7 +37,10 @@ for (const domain of index.systemDomains) {
   for (const document of domain.documents) referenced.add(document);
 }
 for (const document of referenced) {
-  fail(existsSync(resolve(root, document)), `設計書が存在しません: ${document}`);
+  fail(
+    existsSync(resolve(root, document)),
+    `設計書が存在しません: ${document}`,
+  );
 }
 
 const catalogPairs = catalog.map(({ id, status }) => `${id}:${status}`).sort();
@@ -45,6 +51,14 @@ fail(
   JSON.stringify(indexPairs) === JSON.stringify(catalogPairs),
   'Sky catalogの全ready／candidate Toolを設計台帳へ同期してください',
 );
+fail(
+  catalog.filter(({ status }) => status === 'ready').length === 11,
+  'ready Tool 11件を保持してください',
+);
+fail(
+  catalog.filter(({ status }) => status === 'candidate').length === 4,
+  'candidate Tool 4件を保持してください',
+);
 const toolsBook = readFileSync(
   resolve(root, 'docs/sky-tools-complete-design.md'),
   'utf8',
@@ -52,7 +66,10 @@ const toolsBook = readFileSync(
 for (const { id } of index.catalogTools) {
   fail(toolsBook.includes(id), `${id}: 全Tool詳細設計に記載がありません`);
 }
-fail(index.nativeToolFamilies?.length === 6, 'native Tool 6 familyを保持してください');
+fail(
+  index.nativeToolFamilies?.length === 6,
+  'native Tool 6 familyを保持してください',
+);
 
 console.log(
   `全設計台帳: ${index.systemDomains.length}領域 / catalog ${index.catalogTools.length} Tool / native ${index.nativeToolFamilies.length} family`,
