@@ -63,8 +63,22 @@
     {
       "id": "MAT02",
       "title": "二物質・複数比率・工程条件のsandbox候補graphとfail-closed安全検査を実装",
+      "status": "done",
+      "dependsOn": ["MAT01"],
+      "evidence": [
+        "contracts/material-invention.json",
+        "contracts/material-invention-fixture.json",
+        "lib/material-invention.ts",
+        "tests/material-invention.test.mjs",
+        "docs/material-invention-core.md",
+        "docs/validation.md"
+      ]
+    },
+    {
+      "id": "MAT03",
+      "title": "Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入",
       "status": "planned",
-      "dependsOn": ["MAT01", "AI02", "AI03"],
+      "dependsOn": ["MAT02", "AI02", "AI03"],
       "evidence": ["docs/material-invention-core.md"]
     },
     {

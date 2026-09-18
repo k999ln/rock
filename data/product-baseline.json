@@ -1,5 +1,5 @@
 {
-  "version": "1.72",
+  "version": "1.73",
   "decidedAt": "2026-09-17",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -130,8 +130,12 @@
   },
   "materialInvention": {
     "requested": true,
-    "status": "design_approved_runtime_not_implemented",
+    "status": "sandbox_core_implemented_physical_runtime_not_connected",
     "architecture": "docs/material-invention-core.md",
+    "contract": "contracts/material-invention.json",
+    "fixture": "contracts/material-invention-fixture.json",
+    "runtime": "lib/material-invention.ts",
+    "tests": "tests/material-invention.test.mjs",
     "role": "combine_materials_and_process_conditions_into_traceable_invention_candidates",
     "coreEntities": [
       "material_record",

@@ -1,5 +1,7 @@
 # RockstarOS — 確定した製品ベース
 
+2026-09-17発明sandbox Core実装（v1.73）: RQ49の最初の実装として、二物質・複数比率・工程条件から再現可能な候補graphを作る装置非接続sandboxを追加した。SDS不足、危険性不明、禁止物質、単位不一致、許可外設備、温度・圧力上限超過をfail closedにし、全出力の物理実行許可をfalseへ固定する。化学simulation、外部ラボ、実験設備、Zemaの仕事／限定記憶との接続は未実装。[契約と実装](material-invention-core.md)。
+
 2026-09-17名称・発明Core追記（v1.72）: 利用者向け正式製品名を **RockstarOS** へ戻し、`RockstarOS 1.0 Developer Preview`を現在表示とする。AvocadoOSは2026-09-15〜16の旧表示名として履歴・署名済み証拠・既存データ内だけに残し、暗号domain、保存schema、artifact hashを表示名変更だけで破壊しない。同時に、物質、配合比、工程条件、安全性、シミュレーション、実験receiptを版管理し、新しい材料・用途の候補を作るMaterial Invention CoreをRQ49として追加する。OSは危険な物理実験を無人実行せず、安全審査、本人承認、資格を持つ外部ラボ、測定証拠を独立gateにする。[詳細設計](material-invention-core.md)。
 
 2026-09-16詳細設計追記（v1.71）: RQ48を[AIネイティブOS詳細設計](ai-native-os-architecture.md)へ具体化する。Astraが設計、Solが[独立監査](ai-native-os-design-audit.md)を担当。モデル・記憶・仕事・外部作用・端末能力の契約と、1.0 Core／便利機能／Game・IP／収益の独立受入を定義する。現在の固定runtimeと純粋な2工程Toolの実機受入から、汎用モデル交換・共有記憶・外部作用・多端末の完成は推測しない。詳細設計の保存はruntime実装や製品公開の完了ではない。

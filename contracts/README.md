@@ -27,3 +27,9 @@ Gradleのdebug鍵とAOSPの公開testkeyは検証専用。作者認証や商用�
 `ArticleTools.java` は既存 `lib/mr-tools.ts` の出典整理/無料版作成をJavaへ移植したもの。元の固定参照は `k999ln/Mr.` commit `26a39d2c31ea5246cb78dbe42d86e333922db60c`、Copyright (c) Anicca contributors、[MIT](../vendor/mr/LICENSE)。原本やそのhashは変更しない。
 
 `article-fixtures.json` は合成データのみ。Javaと既存TypeScriptを比較し、日本語、CRLF、重複出典、コード保持、絵文字、異常入力と2工程の接続を検査する。この集合の一致を確認するもので、全入力の形式的同値証明ではない。既存Pythonとの比較は従来のMr.テストを継続する。
+
+## Material Invention sandbox契約
+
+`material-invention.json` はRockstarOS Coreで二物質・複数比率・工程条件から候補graphを作る入力JSON Schema v1、`material-invention-fixture.json` は危険物を含まない合成fixtureである。実装は `lib/material-invention.ts` にあり、未知field、重複ID、単位不一致、SDS不足、危険性不明、禁止物質、許可外設備、温度・圧力上限超過をfail closedで扱う。
+
+この契約の出力は常に`SANDBOX_ONLY`で、`physicalExecutionAllowed`は常にfalse。候補IDは物質lot、比率、工程版を含むcanonical inputのSHA-256へ固定する。simulation、文献、supplier情報は実験証明へ昇格せず、署名検証済みと記録された実験receiptとraw data hashだけを別状態として扱う。装置制御、化学simulation、外部ラボ接続、安全性・性能・特許性・量産性の認定はこの契約に含まれない。

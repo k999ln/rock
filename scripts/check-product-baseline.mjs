@@ -97,16 +97,29 @@ export function validateBaseline(
   requireValue(
     data.materialInvention?.requested === true &&
       data.materialInvention?.status ===
-        'design_approved_runtime_not_implemented' &&
+        'sandbox_core_implemented_physical_runtime_not_connected' &&
       data.materialInvention?.architecture ===
         'docs/material-invention-core.md' &&
+      data.materialInvention?.contract ===
+        'contracts/material-invention.json' &&
+      data.materialInvention?.fixture ===
+        'contracts/material-invention-fixture.json' &&
+      data.materialInvention?.runtime === 'lib/material-invention.ts' &&
+      data.materialInvention?.tests ===
+        'tests/material-invention.test.mjs' &&
       data.materialInvention?.autonomousPhysicalExperimentAllowed === false &&
       data.materialInvention
         ?.hazardousSynthesisWithoutQualifiedReviewAllowed === false &&
       data.materialInvention?.simulationIsExperimentalProof === false &&
       data.materialInvention?.externalLabIsReplaceableProvider === true &&
-      existsSync(resolve(root, data.materialInvention.architecture)),
-    'Material Invention Coreの安全境界と設計書を維持してください',
+      [
+        data.materialInvention.architecture,
+        data.materialInvention.contract,
+        data.materialInvention.fixture,
+        data.materialInvention.runtime,
+        data.materialInvention.tests,
+      ].every((path) => existsSync(resolve(root, path))),
+    'Material Invention Coreの安全境界、契約、sandbox実装を維持してください',
   );
   const compositionDocument = data.systemComposition?.document;
   const compositionAuditPath = data.systemComposition?.audit;

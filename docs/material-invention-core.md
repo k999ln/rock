@@ -1,6 +1,6 @@
 # RockstarOS Material Invention Core — 物質の組合せから発明候補を作る共通設計
 
-状態: RQ49の設計承認。runtime、化学simulation、外部データベース、実験設備との接続は未実装。本文は候補生成と検証の契約であり、安全性、性能、特許性、量産性の実証ではない。
+状態: RQ49の設計と装置非接続sandbox Coreを実装済み。化学simulation、外部データベース、Zemaの仕事／限定記憶、外部ラボ、実験設備との接続は未実装。本文と実装は候補生成と検証の契約であり、安全性、性能、特許性、量産性の実証ではない。
 
 ## 目的
 
@@ -50,10 +50,21 @@ Material Invention Coreは、物質と物質だけでなく、配合比、混合
 
 ## 最初の実装単位
 
-1. `MaterialRecord`、`CompositionCandidate`、`ProcessRecipe`、`SafetyAssessment`のJSON Schemaとfixtureを実装する。
-2. 物理装置へ接続しないsandboxで、二物質・複数比率・工程条件から候補graphを作る。
-3. 危険性情報不足、単位不整合、禁止物質、設備外条件をfail closedで拒否する。
-4. simulation結果と合成測定receiptを別sourceとして取り込み、候補順位と不確かさを再計算する。
-5. 第三者ラボ接続は契約、資格、設備、データ保持、事故責任、知財境界を確認した後に独立受入する。
+1. `MaterialRecord`、`CompositionCandidate`、`ProcessRecipe`、`SafetyAssessment`のJSON Schemaとfixtureを実装する。**完了**
+2. 物理装置へ接続しないsandboxで、二物質・複数比率・工程条件から候補graphを作る。**完了**
+3. 危険性情報不足、単位不整合、禁止物質、設備外条件をfail closedで拒否する。**完了**
+4. simulation結果と署名検証済み測定receiptを別sourceとして取り込み、候補順位と不確かさを再計算する。**証拠区分のみ実装、取り込みと順位計算は未実装**
+5. 第三者ラボ接続は契約、資格、設備、データ保持、事故責任、知財境界を確認した後に独立受入する。**未実装**
 
 初期合格はsandbox上の候補生成、危険gate、provenance、再現、失敗記録までとする。実物の新材料、安全性、性能、特許性、量産性は外部試験を通るまで未確認と表示する。
+
+## 実装済みのsandbox Core
+
+- 入力契約: [`contracts/material-invention.json`](../contracts/material-invention.json)
+- 危険物を含まない合成fixture: [`contracts/material-invention-fixture.json`](../contracts/material-invention-fixture.json)
+- 純粋runtime: [`lib/material-invention.ts`](../lib/material-invention.ts)
+- 自動試験: [`tests/material-invention.test.mjs`](../tests/material-invention.test.mjs)
+
+runtimeは2〜16物質から二物質pairを作り、指定された複数比率と版付き工程を候補graphへ変換する。候補IDとrequest digestはcanonical JSONのSHA-256で、物質lot、配合比、工程版の変更を別候補として固定する。未知field、重複ID、矛盾する危険分類、工程順の欠落は入力拒否、SDS不足、危険性不明、禁止物質／危険分類、配合単位不一致、許可外設備、温度・圧力上限超過は候補を`BLOCKED`にする。既知の危険分類は`REVIEW_REQUIRED`にするが、どの状態でも`physicalExecutionAllowed`はfalseのままである。
+
+simulationは`SIMULATED`、文献・supplier情報は`SCREENED`として実測と分離する。実験扱いへ進めるのは、外部境界で署名検証済みとされたreceiptと有効なraw data SHA-256が揃った場合だけである。現在のCore自身は署名検証、装置操作、物理実験を行わない。

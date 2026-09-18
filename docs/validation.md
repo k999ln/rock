@@ -1,5 +1,13 @@
 # 検証記録
 
+## Material Invention sandbox Core / 2026-09-17
+
+- RQ49の最初のruntimeとして、二物質・複数比率・版付き工程を再現可能な候補graphへ変換する純粋sandboxを実装した。JSON Schema、危険物を含まない合成fixture、canonical SHA-256候補ID、provenanceを同じ契約へ固定した。
+- 新規9テストで、候補の決定性、lot／比率／工程版へのID結合、SDS不足、危険性不明、禁止物質・危険分類、単位不一致、設備・温度・圧力上限、資格者審査、未知field／重複ID／矛盾分類／工程順／比率の拒否、simulationと実験証拠の分離を確認した。製品baseline負例を合わせた対象10テスト、型検査、製品lint、format、差分検査に成功した。
+- project、repository、version、schema、database、release、baseline、system composition、Sky、Androidの既存検査、Worker 2件のdry-run、MCP package、Fashion Brand Ops 19件、本番Web build、Web bundle 118 component、asset 77参照、仕事API 143 assertionsも成功した。Fashion Brand Opsと仕事APIのlocalhost試験はsandboxの`EPERM`後に通常のローカル権限で再実行した。
+- `npm run verify`はNode test開始後、既存`tests/everything-market.test.mjs`のMiniflare handleが終了しない既知挙動で完走しなかった。新規対象テストは単独で終了コード0、後続検査は上記のとおり個別合格しており、全体verify完走とは表示しない。
+- この合格は装置非接続の候補生成と安全gateまで。実物質、化学simulation、SDS内容の真偽、署名検証、Zema接続、外部ラボ、装置操作、安全性・性能・特許性・量産性は未実証である。`physicalExecutionAllowed`は全候補でfalseのまま固定した。
+
 ## 製品目的から逆算した開発軸 / 2026-09-15
 
 - RQ47として、AI自動化チームの効率化を最上位目的にし、端末内LLM、Tool、署名済み収益、Wallet、ファンド改善、税務準備、ゲーム、専用端末の順序を機械可読baselineへ固定した。
