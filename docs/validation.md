@@ -1,5 +1,11 @@
 # 検証記録
 
+## 見て分かる空間発明設計 v2.0 / 2026-09-18
+
+- 初見の人が製品を想像できるよう、正本の入口を「デジタル発明台」という一文、四方向配置図、物質A・Bを使う8場面の利用例、画面wireframeへ変更した。
+- できる／できない、デジタル仮説・計算・実物実験の三境界、予測と実測の表示を前半へ置き、難しい用語と機械可読契約は後半へ分離した。
+- 実装は2D理解prototype、決定的Core接続、一台cameraから四方向、simulation／Patent AI、外部labの5段階に分け、各役割へ最初の成果物と合格条件を割り当てた。
+
 ## avocadoMini共有用完成設計と全体構成 / 2026-09-18
 
 - [共有用完成設計書](rockstaros-avocado-mini-complete-design.md)へ、5分説明、全体構造、利用体験、四方向sensor、Core data、再計算、Patent AI、privacy、accessibility、安全境界、現在地、実装順、役割別参加入口、受入条件、用語集を統合した。[専用workstream](workstreams/11-material-invention-avocado-mini.md)からMAT05／MAT06へ直接参加できる。

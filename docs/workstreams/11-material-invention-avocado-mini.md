@@ -62,14 +62,11 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 
 ## 担当を選ぶ
 
-- Product／UX: 完成設計書15章のProduct／UX
-- XR／3D: 完成設計書15章のXR／3D
-- Computer Vision／Sensor: 完成設計書15章のComputer Vision／Sensor
-- Material／Simulation: 完成設計書15章のMaterial／Simulation
-- AI／Agent: 完成設計書15章のAI／Agent
-- Patent／Legal: 完成設計書15章のPatent／Legal
-- Security／Privacy: 完成設計書15章のSecurity／Privacy
-- QA／Safety: 完成設計書15章のQA／Safety
+- 全担当: 完成設計書Aで、まず同じ製品像を持つ
+- Product／UX・Visual: 完成設計書Bと19章
+- XR／3D・Computer Vision／Sensor: 完成設計書6〜9章、14章、19章
+- Core／Material／Simulation・AI／Agent: 完成設計書10〜16章、19章
+- Patent／Legal・Security／Privacy・QA／Safety: 完成設計書15章、19章、21章、24章
 
 ## 完了条件
 
@@ -102,4 +99,3 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - `node --experimental-strip-types --test tests/material-invention.test.mjs tests/product-baseline.test.mjs tests/patent-assistant.test.mjs`
 - `npm run typecheck`
 - `npm run lint:product`
-

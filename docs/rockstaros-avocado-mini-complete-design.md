@@ -1,620 +1,656 @@
-# RockstarOS × avocadoMini — 空間発明システム完成設計書
+# RockstarOS × avocadoMini — 見て分かる空間発明システム設計書
 
-版: 1.0 / 2026-09-18  
-状態: **実装へ進めるための統合設計完成版**。製品・実機・特許・新材料が完成したという意味ではない。  
-対象: 初めて説明を受ける人、利用者、デザイナー、材料研究者、AI／XR／hardware／OS開発者、知財担当、検証担当、協力会社。
+版: 2.0 / 2026-09-18
+状態: 実装チームが同じ製品を作るための正本
+注意: 設計が完成した段階。端末、新材料、特許、量産が完成したという意味ではない。
 
-この文書は、誰かが途中から参加しても「何を作るのか」「なぜ作るのか」「どこまでできているか」「自分は何を担当できるか」が分かる共有用の正本である。難しい言葉が必要な場所では、最初に普段の言葉で意味を説明する。
+---
 
-## 0. 5分で分かる説明
+# A. まず製品を理解する
 
-### 一言でいうと
+## 1. これは何？
 
-**avocadoMiniは、四方向のセンサーで手の動きを読み取り、目の前に見える物質のデジタル模型を手で組み合わせながら、新しい材料・使い方・作り方の候補を探すRockstarOS端末である。**
+**avocadoMiniは、まだ存在しない材料を、手で考えるための「デジタル発明台」である。**
 
-組み合わせるたびにコンピューターが条件を確認し、計算可能な範囲を再計算する。考えた過程と結果は消さずに残し、Patent AIが発明の説明、似た技術との違い、専門家へ渡す資料の準備を助ける。
+机の中央に、物質のデジタル模型が浮かぶ。利用者は模型を手で持ち、近付け、組み合わせ、離し、割合や作り方を変える。
 
-### 利用者がすること
+RockstarOSは操作のたびに、次の四つを行う。
 
-1. 「軽くしたい」「熱に強くしたい」など、目標を決める。
-2. 使いたい物質をデジタル模型として空間へ出す。
-3. 手で二つを近付け、くっつける、離す、割合や作り方を変える。
-4. RockstarOSが危険情報、単位、禁止条件、設備条件を先に確認する。
-5. 接続された計算modelが、変えた部分を再計算する。
-6. 結果、予測の誤差、根拠の種類、分からない点を見比べる。
-7. 有望な案はPatent AIで整理し、必要なら専門家や外部ラボへ渡す。
+1. 何を変えたか記録する。
+2. 危険情報や条件不足を確認する。
+3. 変更した部分だけ計算し直す。
+4. 有望な案をPatent AIへ渡せる形に整理する。
 
-### ここでいう「物質に触る」とは
+最初に扱うのは実物ではない。コンピューターの中にある物質の模型である。実物を混ぜたり装置を動かしたりするのは、別の承認を通過した外部ラボだけである。
 
-最初に触るのは**デジタルツイン**である。デジタルツインとは、物質の名前、由来、lot、割合、状態、危険情報、計算結果を結び付けたコンピューター上の模型をいう。カメラが現実の物質を変化させるわけではない。
+![avocadoMini空間発明システムの全体像](assets/avocado-mini-overview.svg)
 
-実物を混ぜる、熱する、加圧する、装置を動かす工程は別である。資格、安全設備、本人の確認、停止条件を満たす外部ラボや装置だけが担当する。avocadoMiniの手操作だけでは実物実験を開始できない。
+## 2. 目の前にあるもの
 
-### 何が新しく面白いのか
+上から見ると、基本形はこうなる。
 
-- 表や文章だけでなく、候補を空間に並べて考えられる。
-- 「くっつける」「離す」という自然な手の動きを、消えない発明履歴にできる。
-- 人の発想、AIの提案、simulation、文献、実験結果を混ぜずに一つの流れで比較できる。
-- 失敗した案も次の発想に使える。
-- 発見した候補を、そのままPatent AIの発明整理へつなげられる。
-- headsetがなくても、同じ内容を普通の画面で使える。
+```text
+                         北センサー
+                              ↓
+                 ┌────────────────────┐
+                 │                    │
+西センサー  →    │   発明する空間      │    ←  東センサー
+                 │  Invention Volume  │
+                 │                    │
+                 └────────────────────┘
+                              ↑
+                         南センサー
 
-## 1. 名前と役割
-
-| 名前 | 普段の言葉での意味 | 役割 |
-| --- | --- | --- |
-| **RockstarOS** | 全体を安全につなぐ基本ソフト | 利用者、権限、仕事、AI、Tool、履歴、更新、復旧を管理する |
-| **Material Invention Core** | 発明候補の記録・計算・安全確認の中心 | 物質、組合せ、工程、安全、根拠、版を正しく保存する |
-| **Spatial Invention Studio** | 空間の中で発明候補を操作する画面 | VR、AR、普通の2D画面で同じ候補を見て操作する |
-| **avocadoMini** | 四方向センサーを持つ発明端末 | 手の動きを読み、Spatial Invention Studioを動かす |
-| **Zema** | 作業をまとめる案内役 | 目標、確認事項、計算待ち、結果、次の作業を一つの仕事として管理する |
-| **Sky** | 必要な道具を探して接続する場所 | 材料DB、simulation、Patent AI、ラボ等を選び接続する |
-| **Patent AI** | 発明内容を整理する補助AI | 発明開示、先行技術候補、違いの表、専門家向け資料を準備する |
-
-`avocadoMini`は端末名であり、OS名ではない。搭載OSの正式名はRockstarOSである。Material Invention CoreとavocadoMiniは別々の製品ではなく、Coreが中身の正本、avocadoMiniが人の標準操作面という関係である。
-
-## 2. 作る理由
-
-材料や製造方法を考える仕事では、次の情報が分かれやすい。
-
-- 何を目指していたか
-- どの物質を、どのlotで、どの割合にしたか
-- どんな順番、温度、圧力、時間、設備を想定したか
-- AIが提案したのか、人が考えたのか
-- 文献値、supplier申告、simulation、実測のどれか
-- 何が失敗し、なぜ次の案へ変えたか
-- いつ、誰が、どの範囲を外部へ共有したか
-
-これらが別の表、会話、動画、紙、AI chatに散らばると、再現、比較、安全確認、知財整理が難しくなる。本システムは、発想を自由にしながら、判断の根拠と変更履歴を失わないことを目的にする。
-
-## 3. 製品全体の構造
-
-```mermaid
-flowchart LR
-  U[利用者の目的] --> Z[Zemaの仕事]
-  K[SkyでToolを接続] --> Z
-  N[North sensor] --> F[端末内Sensor Fusion]
-  E[East sensor] --> F
-  S[South sensor] --> F
-  W[West sensor] --> F
-  F --> H[Hand Interaction]
-  H --> C[Material Invention Core]
-  Z --> C
-  C --> G[Safety / Constraint Gate]
-  G --> Q[Simulation Orchestrator]
-  Q --> C
-  C --> R[VR / AR / 2D表示]
-  C --> L[Invention Event Ledger]
-  L --> P[Patent AI]
-  P --> D[発明開示 / 先行技術比較 / 専門家資料]
-  C --> A[承認された外部ラボ]
-  A --> X[署名付き測定結果]
-  X --> C
+                    利用者はここへ手を入れる
 ```
 
-### 大事な依存方向
+四方向から見る理由は、片方の手や物質模型がもう片方を隠しても、別方向のセンサーで補えるからである。
 
-四方向センサーやAIが勝手に答えを確定するのではない。中心には常にMaterial Invention CoreとSafety Gateがある。
+利用者が見る方法は三つある。
 
-- センサーは「手がどう動いた可能性が高いか」を伝える。
-- Hand Interactionは「利用者が何をしようとしたか」を提案する。
-- Coreは「その提案を新しい仮説として保存できるか」を決める。
-- Safety Gateは「分からない危険や禁止条件がないか」を確認する。
-- simulationは予測を返すが、実験成功や安全を確定しない。
-- Patent AIは資料を準備するが、特許性や発明者を確定しない。
-- 実物実験は、別の承認と設備を持つ外部境界だけが行う。
-
-## 4. 利用体験
-
-### 4.1 Projectを作る
-
-利用者は最初に次を決める。
-
-- 何を改善したいか
-- 想定する使い方
-- 使ってはいけない物質や危険分類
-- 温度、圧力、費用、設備の上限
-- 外部へ送ってよい情報
-- 成功をどう測るか
-
-入力が足りない場合、Zemaは勝手に埋めず、確認待ちとして止める。
-
-### 4.2 物質を空間へ出す
-
-MaterialRecordをデジタルツインとして表示する。MaterialRecordは、物質の名札と履歴を合わせた記録である。
-
-- 物質IDと名前
-- 組成と状態
-- 純度、由来、lot
-- 単位と不確かさ
-- SDS（安全データシート）参照
-- 危険分類と規制参照
-
-見た目が同じでもlotや純度が違えば別の入力として扱う。
-
-### 4.3 手で操作する
-
-| 手の動き | 画面上の意味 | 保存される内容 |
+| 方法 | 見え方 | 主な利用場面 |
 | --- | --- | --- |
-| つまんで持つ | 選ぶ | まだ候補は変えない |
-| 二つを近付ける | 接続のpreview | まだ候補は変えない |
-| 一定時間合わせて確定 | 組合せを提案 | 新しい仮説branchを作る |
-| 引き離して確定 | 関係を外した案を作る | 元を消さず別branchにする |
-| 手首を回す | 向きや工程条件を試す | 確定前はpreview |
-| 両手を広げる／縮める | 表示倍率または配合比を動かす | modeを明示し、実寸と比率を混同しない |
-| 手のひらを向けて停止 | 保留操作を取消す | 候補変更なし |
-| undo／redo | 前後の案へ移動 | 履歴を消さず新しい操作として残す |
+| AR | 現実の机に模型が重なって見える | avocadoMiniの標準体験 |
+| VR | 発明空間へ入り、模型を大きく広げて見る | 複雑な候補や共同検討 |
+| 2D | 普通の画面でドラッグして操作する | headsetなし、片手操作、確認作業 |
 
-「くっつける」には、混合、積層、界面、接触工程など複数の意味がある。Coreは意味を確認し、単に近付けただけで化学結合と記録しない。
+AR、VR、2Dは別製品ではない。同じprojectと同じ候補を、違う見方で操作する。
 
-### 4.4 安全確認
+## 3. 一つの利用例
 
-次のどれかがあれば、物理実行へ進めない。
+ここでは「軽くて熱に強い部品材料を考える」を例にする。説明用なので、物質は仮名のAとBを使う。
+
+### 場面1 — 目的を決める
+
+```text
+┌─────────────────────────────────────┐
+│ 新しい発明project                    │
+│                                     │
+│ 目標    軽くて熱に強い材料           │
+│ 禁止    登録した禁止物質を使わない   │
+│ 上限    温度・圧力・費用を設定       │
+│ 成功    重さ、耐熱予測、再現性で比較 │
+│                                     │
+│              [発明空間を開く]        │
+└─────────────────────────────────────┘
+```
+
+分からない項目をAIが勝手に埋めることはない。必要な条件がなければ、Zemaが質問して止まる。
+
+### 場面2 — 物質を置く
+
+```text
+┌─────────────────────────────────────────────┐
+│  A                                      B  │
+│ [物質A]                               [物質B]│
+│ lot A-03                              lot B-11│
+│ 安全情報あり                          安全情報あり│
+│                                             │
+│              ＋ 新しい物質                  │
+└─────────────────────────────────────────────┘
+```
+
+同じ名前でもlot、純度、由来が違えば別の入力として扱う。
+
+### 場面3 — 手で近付ける
+
+二つを近付けただけでは、まだ保存しない。半透明のpreviewを出す。
+
+```text
+     手で移動
+ A  ─────────→  B
+
+ [接続の候補]
+ 意味: 混合 / 積層 / 表面接触  ← どれかを選ぶ
+ 割合: A 60% / B 40%
+ 状態: まだ未確定
+```
+
+「くっつける」が何を意味するかを確認する。画面上で重なっただけで、化学結合したことにはしない。
+
+### 場面4 — 安全確認
+
+確定前にRockstarOSが確認する。
+
+```text
+安全確認
+├─ SDSはあるか                         OK
+├─ 危険性が不明ではないか             OK
+├─ 禁止条件に触れていないか           OK
+├─ 割合と単位が比較できるか           OK
+├─ 想定温度・圧力が上限内か           OK
+└─ 必要な資格や設備が決まっているか   未設定
+
+結果: デジタル候補として保存できる
+      実物実験には進めない
+```
+
+危険情報が足りない場合は赤い`BLOCKED`になる。警告を消して先へ進む機能は作らない。
+
+### 場面5 — 新しい案として保存する
+
+確定すると、元の案を消さずに枝分かれする。
+
+```text
+候補 01  Aだけ
+   ├─ 候補 02  A 60% + B 40%  ← 今の案
+   ├─ 候補 03  A 40% + B 60%
+   └─ 候補 04  AとBを積層
+```
+
+失敗した案も消さない。「何を試して駄目だったか」が次の発明材料になるからである。
+
+### 場面6 — 変更部分を再計算する
+
+```text
+変更: Bの割合 40% → 45%
+
+再計算するもの
+├─ 重さの予測
+├─ 耐熱性の予測
+└─ 接触面の予測
+
+再計算しないもの
+└─ 変更と関係のない候補・測定結果
+```
+
+結果には必ず出所を表示する。
+
+| 表示 | 意味 |
+| --- | --- |
+| 人が入力 | 利用者が直接決めた |
+| AI提案 | AIが候補を出した |
+| 文献 | 既存資料に書かれている |
+| 予測 | simulationが計算した |
+| 実測 | 承認された実験で測った |
+
+`予測`を`実測`のように見せてはいけない。
+
+### 場面7 — 案を比べる
+
+```text
+┌─────────┬─────────┬─────────┐
+│ 候補02   │ 候補03   │ 候補04   │
+├─────────┼─────────┼─────────┤
+│ 軽さ  A  │ 軽さ  B  │ 軽さ  B  │
+│ 耐熱  B  │ 耐熱  A  │ 耐熱  A  │
+│ 安全  黄 │ 安全  緑 │ 安全  黄 │
+│ 根拠 予測│ 根拠 予測│ 根拠 文献│
+└─────────┴─────────┴─────────┘
+```
+
+数値だけで自動決定しない。不確かさ、安全、費用、再現性を並べ、人が次の案を選ぶ。
+
+### 場面8 — Patent AIへ渡す
+
+Patent AIは次を一つの下書きにまとめる。
+
+- 解決したい問題
+- 選んだ構成と工程
+- 人が考えた部分
+- AIが提案した部分
+- 文献、予測、実測の区別
+- 既存技術と違う可能性がある部分
+- 公開、共同作業、demoの履歴
+- 専門家に確認してほしい点
+
+Patent AIは特許性、法的発明者、権利帰属を決めない。自動出願、電子署名、料金支払もしない。
+
+## 4. できること／できないこと
+
+### できること
+
+- 物質のデジタル模型を手で接続・分離する
+- 割合、並び、工程条件を変えて別案を作る
+- 危険情報や条件不足を先に見つける
+- 変更した部分をsimulationへ渡す
+- 人、AI、文献、予測、実測を分けて残す
+- 失敗を含む発明過程を版管理する
+- Patent AIや外部ラボへ渡す資料を準備する
+- headsetがなくても2D画面で同じ仕事を行う
+
+### できないこと
+
+- cameraだけで現実の物質を変化させる
+- 手のgestureだけで実験装置を動かす
+- 危険情報が不明な案を安全と判定する
+- simulation結果を実験成功として扱う
+- AIだけで特許性や発明者を確定する
+- 本人確認なしに秘密情報を外部へ送る
+- 設計段階の端末を完成品として販売する
+
+## 5. 三つの世界を混ぜない
+
+```text
+① 考える世界                 ② 計算・整理する世界
+avocadoMini / AR / VR / 2D  →  Safety / Simulation / Patent AI
+       │                              │
+       │ 仮説                         │ 予測・下書き
+       └──────────┬───────────────────┘
+                  │ 人による別承認
+                  ↓
+③ 現実で確かめる世界
+資格を持つ人 / 適切な設備 / 外部ラボ / 署名付き測定結果
+```
+
+この境界が製品の最重要原則である。①と②がどれだけ滑らかでも、③を自動的に許可しない。
+
+---
+
+# B. 操作と画面を設計する
+
+## 6. 手の操作
+
+| 動作 | その場の反応 | 確定後に起きること |
+| --- | --- | --- |
+| つまむ | 対象が光る | まだ変更しない |
+| 持って動かす | 半透明で追従する | まだ変更しない |
+| 二つを近付ける | 接続previewを出す | まだ変更しない |
+| 一定時間合わせる | 意味と条件を確認する | 新しい候補branchを作る |
+| 引き離す | 分離previewを出す | 分離した新branchを作る |
+| 手首を回す | 向きや工程をpreviewする | 確認後に新branchを作る |
+| 手のひらを向けて止める | 保留中の操作を止める | 候補は変えない |
+| undo / redo | 前後の案を表示する | 履歴は削除しない |
+
+手が隠れた、別人の手が入った、暗い、反射が強い、範囲外、センサーが欠けた場合は確定しない。画面には「なぜ確定しなかったか」を普通の言葉で表示する。
+
+## 7. 画面の構成
+
+```text
+┌────────────────────────────────────────────────────────┐
+│ Project名     保存済み     Offline     camera作動中      │
+├────────────┬───────────────────────────┬───────────────┤
+│ 物質一覧    │                           │ 今の候補       │
+│            │      発明する空間          │ A 60 / B 40   │
+│ A          │                           │ 安全: 要確認   │
+│ B          │        A  ↔  B            │ 根拠: 予測     │
+│ C          │                           │               │
+│            │                           │ [比較する]     │
+│ +追加      │                           │ [AIへ相談]     │
+├────────────┴───────────────────────────┴───────────────┤
+│ 履歴: 01 目的設定 → 02 A追加 → 03 B追加 → 04 接続       │
+└────────────────────────────────────────────────────────┘
+```
+
+常に見える情報:
+
+- 今どのprojectと候補を操作しているか
+- 保存済みかpreviewか
+- 安全状態
+- 情報が人・AI・予測・実測のどれか
+- cameraや外部接続が動いているか
+- 戻る、止める、2Dへ切り替える方法
+
+## 8. 状態と色
+
+色だけに頼らず、文字と形も一緒に使う。
+
+| 状態 | 表示 | 意味 |
+| --- | --- | --- |
+| PREVIEW | 点線＋「未確定」 | 手を離しても保存されない |
+| READY | 青＋「確定できます」 | 必須情報が揃っている |
+| NEEDS_INFO | 黄＋「情報が必要」 | 質問へ答えるまで計算しない |
+| BLOCKED | 赤＋停止記号 | 安全上または契約上進めない |
+| CALCULATING | 動く輪＋「計算中」 | 操作は続けられる |
+| PREDICTED | 紫＋「予測」 | 実測ではない |
+| MEASURED | 緑＋「実測」 | receiptの範囲だけ確認済み |
+| STALE | 灰＋「古い結果」 | 入力が変わったので使えない |
+
+## 9. 誰も置いていかない操作
+
+- 座ったまま使える
+- 片手で使える
+- hand、controller、touch、mouse、keyboardを選べる
+- 音声内容には字幕を付ける
+- 色だけで状態を伝えない
+- 動きを減らすmodeを持つ
+- 文字倍率と高contrastを選べる
+- XRが使えなくても2Dで主要作業を完了できる
+- 専門用語にはその場で短い説明を出す
+
+---
+
+# C. 製品の中身を設計する
+
+## 10. 全体のつながり
+
+```text
+利用者
+  ↓ 目的と手の操作
+avocadoMini
+  ├─ 四方向sensor
+  ├─ 手の位置をまとめるSensor Fusion
+  └─ AR / VR / 2D画面
+  ↓ 「こう変えたい」という提案だけ
+Material Invention Core
+  ├─ 物質とlot
+  ├─ 候補とbranch
+  ├─ 工程条件
+  ├─ 安全状態
+  └─ 根拠と履歴
+  ├────────→ Safety Gate
+  ├────────→ Simulation Provider
+  ├────────→ Patent AI
+  └────────→ 承認された外部ラボ
+
+RockstarOS
+  └─ 利用者、権限、仕事、停止、保存、費用、receiptを全体で管理
+```
+
+## 11. 各部品の責任
+
+| 部品 | 一言でいう役割 | やってはいけないこと |
+| --- | --- | --- |
+| RockstarOS | 全体の交通整理と安全管理 | UIやAIの申告だけで権限を与える |
+| avocadoMini | 手の動きを操作候補にする | 実験装置を直接動かす |
+| Material Invention Core | 発明候補の正しい記録を持つ | 予測を実測へ書き換える |
+| Zema | 目的、質問、進捗、結果を一つの仕事にする | 足りない条件を勝手に決める |
+| Sky | 材料DB、計算、Patent AI、ラボを接続する | 未確認Providerを安全と表示する |
+| Simulation | 性能を予測する | 成功や安全を保証する |
+| Patent AI | 発明説明と比較資料を下書きする | 特許性・発明者・権利を確定する |
+| 外部ラボ | 承認された実物試験を行う | 承認外の工程や量へ変更する |
+
+## 12. Coreが保存する記録
+
+| 記録 | 普通の言葉 | 最低限必要な内容 |
+| --- | --- | --- |
+| MaterialRecord | 物質の名札と履歴 | 名前、組成、状態、純度、由来、lot、安全情報 |
+| CompositionCandidate | 組み合わせ案 | 物質、割合、関係、元候補、版 |
+| ProcessRecipe | 作り方案 | 順番、温度、圧力、時間、設備 |
+| SafetyAssessment | 安全確認表 | 不明点、blocker、資格、廃棄、規制 |
+| SimulationResult | 計算予測 | model版、入力、予測、誤差、適用範囲 |
+| ExperimentReceipt | 実験の受領証 | 実施者、設備、校正、測定、署名 |
+| SpatialSceneManifest | 空間表示の設計図 | 候補との結び付き、座標、安全表示 |
+| SpatialInteractionEvent | 手操作の記録 | sensor、校正、動作、自信度、対象、提案 |
+| InventionEventLedger | 発明過程の時系列 | 人／AI、変更、結果、失敗、共有範囲 |
+| PatentAiPacket | 知財整理用の束 | 対象履歴、構成、効果、引用、公開状況 |
+
+## 13. 一回の操作が処理される順番
+
+```text
+1. 手を認識
+   ↓ 認識できない → 理由を表示して終了
+2. previewを表示
+   ↓ 利用者が取消 → 保存せず終了
+3. project・候補・sceneの版を照合
+   ↓ 古い／別project → VIEW_ONLY
+4. 「混合・積層・接触」等の意味を確認
+5. 新しい候補branchを一時作成
+6. 単位・禁止条件・安全情報を検査
+   ↓ BLOCKED → 記録だけ残し計算・実験へ進めない
+7. 操作eventと候補を保存
+8. 影響する計算だけ依頼
+9. 結果をPREDICTEDとして保存
+10. 比較画面とPatent AI用履歴を更新
+```
+
+同じ操作を二重に受け取っても、候補を二重作成しない。通信が切れて結果が分からない場合は、成功・失敗を推測せず`UNKNOWN`で止めて照合する。
+
+## 14. センサー設計
+
+四台の具体的なcamera方式やメーカーはまだ決めない。RGB、depth、IR等をprototypeで比較する。
+
+処理の順番:
+
+1. sensor本体とfirmwareを識別する。
+2. 各cameraの特性と四台の位置関係を校正する。
+3. frameの時刻を合わせる。
+4. 端末内で手のjointを推定する。
+5. 四方向の結果を一つにまとめる。
+6. confidenceが不足していれば確定しない。
+7. gesture候補をCoreへ送る。raw映像は送らない。
+
+prototypeの仮目標:
+
+- 操作範囲: 一辺0.45〜0.8 mの机上
+- 手を動かしてから表示反応まで: p95 100 ms以下を目標
+- commit confidence: 0.85から試験し、誤操作測定後に決め直す
+- 四方向の時刻差: 1 display frame以内を目標
+- 一台が見失っても、誤確定より停止を選ぶ
+
+privacy:
+
+- raw camera映像は既定保存しない
+- room mesh、eye、hand、voice、身体寸法、正確な位置も既定保存しない
+- camera作動中は物理LED等で知らせる
+- 物理shutterまたは同等の停止手段を持つ
+- 外部送信は対象、目的、送信先、保存期間を表示して別同意を取る
+
+## 15. 安全と権限
+
+次の場合はfail closed、つまり分からないまま進めない。
 
 - SDSがない
 - 危険性が不明
-- 禁止物質・禁止危険分類に該当する
-- 配合の単位が一致しない
-- 温度、圧力、設備が許可範囲を超える
-- 廃棄、輸送、規制情報が分からない
-- sceneやmarkerが古い、別project、改変されている
+- 禁止物質または禁止危険分類
+- 割合の単位が一致しない
+- 温度、圧力、設備が許可範囲外
+- 廃棄、輸送、規制条件が不明
+- scene、marker、project、候補の版が一致しない
+- sensor校正切れ、時刻ずれ、低confidence
 
-危険な候補を空間上で比較することはできるが、`BLOCKED`警告を隠せない。ARの矢印、距離、境界線は案内表示であり、施設の安全距離や設備校正の証明ではない。
-
-### 4.5 再計算する
-
-操作を確定すると、変更された物質、関係、工程parameterと、その影響先を調べる。すべてを毎回計算し直すのではなく、必要な範囲を選ぶ。
-
-1. 操作eventと元sceneが一致するか確認する。
-2. graph変更を一時的に適用する。
-3. schema、単位、禁止条件、安全情報を確認する。
-4. 対応できるsimulation modelを探す。
-5. model、版、入力、費用、実行先、外部送信範囲を固定する。
-6. 計算中、失敗、取消、結果不明をそれぞれ記録する。
-7. 結果を`PREDICTED`として表示し、実測と区別する。
-
-simulationとは、現実の振る舞いを計算で予測する仕組みである。予測には適用できる範囲と誤差がある。滑らかな3D表示を、実測済みの事実として見せない。
-
-### 4.6 Patent AIへ渡す
-
-利用者が選んだ候補と履歴の範囲だけをPatent AIへ渡す。
-
-- 解決したい課題
-- 使った構成
-- 人が行った操作
-- AIが提案した内容
-- simulationの予測
-- 文献やsupplier情報
-- 実験済みなら測定receipt
-- 失敗例と代替案
-- 既存技術との違いの候補
-- 公開、demo、Git、動画、共同roomの履歴
-
-Patent AIが作るものは**draft（下書き）**である。新規性、進歩性、特許性、侵害回避、法的発明者、権利帰属、期限を保証しない。弁理士・知財担当等の専門家が最終確認する。電子署名、料金支払、出願は自動実行しない。
-
-## 5. 四方向センサー端末 avocadoMini
-
-### 5.1 基本形
-
-中央のInvention Volumeをnorth、east、south、westの四方向から見る。複数方向を使う理由は、手や物体が重なって一台のcameraから見えなくなる問題を減らすためである。
-
-RGB、depth、IR等の具体的なsensor構成はまだ選定していない。最初から特定メーカーへ固定せず、prototypeで精度、遅延、privacy、価格、driver、供給性を比較する。
-
-### 5.2 センサーから操作まで
-
-1. 各sensorのidentityとfirmware hashを確認する。
-2. cameraの内部特性と四台の位置関係を校正する。
-3. frameの時刻を合わせる。
-4. 端末内で手のjointとconfidenceを推定する。
-5. gesture候補を作る。
-6. previewを表示する。
-7. confidenceと利用者の確定gestureが揃った場合だけCoreへ提案する。
-
-confidenceは「推定への自信の数値」である。高い数値でも真実の保証ではない。手が隠れた、別人の手が入った、暗い、反射が強い、volume外の場合は確定しない。
-
-### 5.3 初期性能目標
-
-次はprototype比較のための仮目標で、実測済み仕様ではない。
-
-- 机上の一辺0.45〜0.8 mを候補範囲とする。
-- 手を動かしてから表示が反応するまでp95 100 ms以下を目指す。
-- commit confidence 0.85を初期候補にし、誤操作試験後に決め直す。
-- 四方向の時刻ずれを1 display frame以内へ抑えることを目指す。
-- simulation待ちでも手操作と安全表示を止めない。
-
-### 5.4 cameraとprivacy
-
-- raw camera frameは既定保存しない。
-- room mesh、eye tracking、hand tracking、voice、身体寸法、正確な位置も既定保存しない。
-- camera動作中はLED等の物理表示を使う。
-- 物理shutterまたは同等のcamera停止手段をhardware要件にする。
-- 外部送信は、対象、目的、送信先、保存期間を示して別に同意を得る。
-- 研究のためraw dataが必要な場合は、通常modeと分ける。
-
-## 6. Coreが保存するもの
-
-| 記録 | 平易な説明 | 主な内容 |
-| --- | --- | --- |
-| MaterialRecord | 物質の名札と履歴 | 組成、状態、純度、由来、lot、安全情報 |
-| CompositionCandidate | 組合せ案 | 物質、割合、許容差、版、生成理由 |
-| ProcessRecipe | 作り方の案 | 順序、温度、圧力、雰囲気、時間、設備 |
-| SafetyAssessment | 安全確認表 | blocker、資格者確認、PPE、廃棄、法規 |
-| SimulationResult | 計算予測 | model、版、入力hash、予測、誤差、適用範囲 |
-| ExperimentReceipt | 実験の受領証 | 実施者、設備、校正、測定、raw data hash、署名 |
-| SpatialSceneManifest | 空間表示の設計図 | Coreとのbinding、座標、表示仮定、安全overlay |
-| SpatialInteractionEvent | 手操作の提案記録 | 四方向rig、校正、gesture、confidence、対象、変更案 |
-| InventionEventLedger | 発明過程の時系列 | 人／AIの区別、変更、結果、失敗、共有範囲 |
-| PatentAiPacket | 知財整理の下書き材料 | event範囲、構成、効果、引用、公開状況 |
-
-hashとは、内容から作る短い照合値である。内容が変わればhashも変わるので、別のデータへすり替わっていないかを確認できる。ただしhashやtimestampだけで、法的な発明日や発明者を自動証明できるわけではない。
-
-## 7. 人、AI、計算、実験を混ぜない
-
-表示と記録では次を必ず区別する。
-
-| source | 意味 | 実験証明になるか |
-| --- | --- | --- |
-| Human operation | 人が直接操作・入力した | ならない |
-| AI suggestion | AIが候補を提案した | ならない |
-| Literature | 文献に書かれている | その候補の実測にはならない |
-| Supplier statement | supplierが申告した | そのlotの独立実測とは限らない |
-| Simulation | modelが予測した | ならない |
-| Experiment receipt | 承認された実験の署名付き結果 | 検証範囲だけ実験証拠になる |
-
-Patent AI packetにもこの区別を残す。誰の発想か、何をAIが補助したかを後から確認できるようにする。
-
-## 8. RockstarOSの中での位置
-
-Material Invention／avocadoMiniは、RockstarOS Coreの仕事、権限、Tool、記憶、停止、receipt、backup／restoreを使う主要systemである。OS imageへ特定のsimulation会社、材料DB、Patent AI、labを直書きしない。Skyから交換可能なProviderとして接続する。
-
-| RockstarOS component | Material Inventionでの担当 |
-| --- | --- |
-| Platform Core / Broker | owner、project、権限、仕事、版、receipt、停止を強制する |
-| Local AI | 秘密条件を端末内で整理し、候補と確認質問を作る |
-| Agent runtime | 安全検査、計算依頼、結果取込みを有限stepで進める |
-| Sky | 材料DB、simulation、Patent AI、lab、rendererを探して接続する |
-| Zema | 目標、進捗、確認、停止、結果、次の反復を管理する |
-| Wallet | 計算、試料、lab、測定、廃棄の費用上限とreceiptを照合する |
-| Backup / Restore | projectと履歴を暗号化保存し、復元後の権限を再確認する |
-
-Material Inventionが未完成でもRockstarOSのbootや他のToolは動けるようにする。一方で、Material Inventionの標準製品体験としてはavocadoMini、XR／2D Studio、simulation、Patent AIへの道筋を一体で設計する。
-
-## 9. Offline、共同作業、2D fallback
-
-### Offline
-
-通信がなくても次は使える。
-
-- 保存済み物質・候補・工程の閲覧
-- 四方向hand interaction
-- Coreのschema・単位・安全検査
-- local modelで可能な計算
-- annotationと履歴の保存
-
-外部simulation、特許検索、lab予約等は完了と見せず、`WAITING_FOR_PROVIDER`として止める。再接続後に同じrequestと結果を照合する。
-
-### 共同作業
-
-roleはviewer、annotator、facilitatorに分ける。共同roomの司会者であっても、owner、qualified reviewer、実験承認者、法的発明者へ自動昇格しない。
-
-共有時はproject、候補、layer、相手、目的、期限を選ぶ。秘密配合を含むpublic linkを既定生成しない。
-
-### 2D fallback
-
-headsetを持たない人や、酔いや身体条件でXRを使いにくい人を置いていかない。同じ候補graph、工程timeline、安全状態、根拠、annotation、Patent AI引継ぎを普通の画面、マウス、キーボード、touchで操作できるようにする。
-
-## 10. Accessibility
-
-accessibilityとは、身体や感覚、環境の違いがあっても利用できるようにする設計である。
-
-- 座ったまま使えるmode
-- 片手mode
-- controller、hand、touch、keyboardの選択
-- 音声への字幕
-- 色だけに頼らない状態表示
-- 動きを減らすmode
-- 文字倍率と高contrast
-- 安全警告を視覚、文字、必要に応じ音／hapticで重ねて伝える
-- 2Dで同じ作業を完了できること
-
-## 11. Securityと安全境界
-
-### XR／AIが持ってはいけない権限
+XR、AI、cameraが持たない権限:
 
 - Core DBへの直接書込み
 - Walletの直接操作
-- 任意shell／root
+- 任意shellやroot
 - 実験装置の包括制御
 - 物理実験の最終承認
-- Patent出願、電子署名、料金支払
 - 外部共有の包括承認
+- Patent出願、電子署名、料金支払
 
-### 物理実験へ進む条件
+物理実験へ進むには、候補、量、工程、設備、実施者、停止条件、費用、廃棄、法規、承認内容を固定し、gestureとは別の信頼済み画面で本人確認する。
 
-物理実験は、候補、量、工程、設備、実施者、停止条件、費用上限、廃棄、法規、承認digestを固定する。avocadoMiniのgestureとは別の信頼済み画面で本人確認する。危険な候補には資格を持つreviewerと適切な施設が必要である。
+## 16. Offline、共有、復旧
 
-### 入力を信用しすぎない
+通信なしで行えること:
 
-scene内の文字、material名、QR／marker、remote annotation、取得文献はdataであって命令ではない。そこに「権限を広げて」「秘密を送って」と書かれていても実行しない。
+- 保存済み物質・候補・工程を見る
+- 手または2Dで操作する
+- schema、単位、安全条件を検査する
+- 端末内modelで可能な計算をする
+- annotationと履歴を保存する
 
-## 12. 開発契約
+外部simulation、特許検索、ラボ予約は`WAITING_FOR_PROVIDER`で止める。再接続後、同じrequestか、結果が改変されていないかを照合する。
 
-開発者が自由に実装してよい部分と、変えてはいけない境界を分ける。
+共同作業ではviewer、annotator、facilitatorを分ける。司会者をowner、実験承認者、法的発明者へ自動昇格させない。共有するproject、候補、相手、目的、期限を選び、秘密配合を含む公開linkを既定生成しない。
 
-### 正本契約
+---
 
-- Material sandbox入力: [`contracts/material-invention.json`](../contracts/material-invention.json)
-- XR scene: [`contracts/material-invention-xr.json`](../contracts/material-invention-xr.json)
-- avocadoMini hand event: [`contracts/avocado-mini-spatial-interaction.json`](../contracts/avocado-mini-spatial-interaction.json)
-- XR安全policy: [`data/material-invention-xr-policy.json`](../data/material-invention-xr-policy.json)
+# D. 作る人が合流する
 
-### 変えてはいけない初期境界
+## 17. 現在どこまである？
 
-- `physicalExecutionAllowed`はfalse
-- `equipmentControlAllowed`はfalse
+| 項目 | 現在地 | 次の証拠 |
+| --- | --- | --- |
+| 製品の全体設計 | この文書で統合済み | 利用者5人が説明後に操作を言い直せる |
+| 二物質sandbox Core | 実装済み、9 test | Zemaとsimulation fixtureへ接続 |
+| XR scene契約 | 設計済み | 同じCore入力から同じsceneを生成 |
+| hand event契約 | 設計済み | 合成poseで接続・分離を再現 |
+| 四方向sensor | 設計のみ | tabletop prototypeで誤操作を測る |
+| AR／VR表示 | 未実装 | view-only prototype |
+| 2D fallback | 設計のみ | 同じ主要作業を2Dで完了 |
+| simulation接続 | 未実装 | 署名またはhash付き合成receipt |
+| Patent AI接続 | 未実装 | sourceを混ぜないpacket |
+| 外部ラボ | 未接続 | 資格・設備・安全・契約を独立受入 |
+| 新材料・特許・量産 | 未実証 | 実験と専門家判断が必要 |
+
+## 18. 実装の順番
+
+### Phase 1 — 画面だけで理解できる試作品
+
+- 2Dで物質AとBを表示する
+- dragで接続previewを出す
+- 混合／積層／接触を選ぶ
+- 安全状態と根拠を表示する
+- branchを作って比較する
+
+合格: 初見の利用者が説明なしで「これは実物操作ではなく仮説作成」と理解できる。
+
+### Phase 2 — Coreと決定的につなぐ（MAT05）
+
+- Core graphから毎回同じscene digestを作る
+- lot、工程版、安全状態をsceneへ結び付ける
+- 合成poseでconnect、separate、undoを作る
+- stale、別project、改変、low confidenceを拒否する
+
+合格: 同じ入力は同じ出力になり、古いsceneから新しい候補を変更できない。
+
+### Phase 3 — 一台cameraから四方向へ（MAT06-A）
+
+- 最初に一台で誤操作を測る
+- 次に四方向rig、校正、時刻同期を作る
+- 遮蔽、別人、暗さ、反射、手袋、範囲外を試す
+- privacy indicatorと物理停止を受け入れる
+
+合格: 速さより、誤確定せず理由を説明して止まれる。
+
+### Phase 4 — 計算とPatent AI（MAT06-B）
+
+- 変更graphから必要な計算だけ選ぶ
+- model、版、入力、費用、送信範囲を固定する
+- stale、cancel、unknown resultを扱う
+- 選択したevent範囲からPatent AI packetを作る
+
+合格: 人、AI、文献、予測、実測を混ぜず、別lotや別modelの結果を流用しない。
+
+### Phase 5 — 外部ラボ
+
+非危険な合成fixtureから始める。契約、資格、設備、校正、事故責任、data保持、知財、廃棄、法規を確認し、物理実験を別gateで受け入れる。
+
+## 19. 役割別の最初の仕事
+
+| 参加する人 | 最初に作るもの | 最初の合格条件 |
+| --- | --- | --- |
+| Product / UX | 場面1〜8のclickable 2D prototype | 5人中5人が「予測と実測」を区別できる |
+| Visual / UI | PREVIEW、BLOCKED、PREDICTED、MEASURED表示 | 色なしでも状態が分かる |
+| XR / 3D | 物質2個と安全overlayのview-only scene | Core IDと表示対象が一致する |
+| Sensor / CV | 合成four-view pose fixture | sensor欠落・低confidenceを拒否する |
+| Core / Backend | graph→scene pure projection | 同じ入力から同じdigest |
+| Material / Simulation | model manifestと合成receipt | 適用範囲と誤差を必ず表示する |
+| AI / Agent | Zemaの質問と差分計算依頼 | 不足条件を勝手に埋めない |
+| Patent / Legal | PatentAiPacket review | 発明者・特許性を断定しない |
+| Security / Privacy | camera data flowとthreat model | raw映像が既定保存・送信されない |
+| QA / Safety | 正常・異常・停止test matrix | unknown、stale、blockedを成功にしない |
+
+## 20. 初参加者の最初の1時間
+
+1. この文書のAだけを読む。
+2. 場面1〜8を、自分の言葉で説明する。
+3. [作業ストリーム](workstreams/11-material-invention-avocado-mini.md)を開く。
+4. 上の役割表から一つ選ぶ。
+5. [現在地](#17-現在どこまである)で未実装を確認する。
+6. [安全と権限](#15-安全と権限)を読む。
+7. MAT05またはMAT06の小さな成果物を一つ選ぶ。
+8. 実装、fixture、simulation、実機、実材料のどこまでを合格させるか先に書く。
+
+## 21. 製品全体の合格条件
+
+### 説明の合格
+
+- 初見の人が「デジタル発明台」と説明できる
+- avocadoMiniとRockstarOSの違いを説明できる
+- デジタル操作、simulation、実物実験の境界を説明できる
+- 設計完成と製品完成を混同しない
+
+### Softwareの合格
+
+- 同じ入力と版から同じ候補・scene digestを作る
+- project、owner、lot、工程、modelの取り違えがない
+- 二重eventを二重反映しない
+- stale、unknown、blockedを成功にしない
+- 2Dでも主要作業を完了できる
+
+### Hardware／XRの合格
+
+- 校正切れ、sensor欠落、時刻ずれ、遮蔽を検出する
+- 誤確定率、取消率、遅延を実測する
+- raw映像が既定保存されない
+- cameraが装置を直接制御しない
+- privacy表示と物理停止が働く
+
+### Research／Patentの合格
+
+- 予測と実測を分ける
+- 実験条件と測定receiptを再現できる
+- 人とAIの寄与を追跡できる
+- Patent AI出力を専門家がreviewできる
+- 未検証の安全性、特許性、量産性を断定しない
+
+## 22. 決まっていること／決まっていないこと
+
+### 決まっている
+
+- OS名はRockstarOS
+- 端末concept名はavocadoMini
+- Material Invention Coreが記録の正本
+- avocadoMiniはCoreの標準操作体験
+- 四方向sensorと2D fallbackを持つ
+- 操作は仮説branchを作り、元を破壊しない
+- simulationは実測ではない
+- gestureは物理実験や出願の承認ではない
+- Patent AIは補助で、法律判断を確定しない
+
+### prototypeで決める
+
+- sensorの種類、解像度、配置、高さ、メーカー
+- AR表示方式とheadset候補
+- 手追跡modelとconfidence閾値
+- 実際の遅延、誤操作、疲労、酔いの合格値
+- 最初のsimulation分野とProvider
+- 最初の対象材料、外部ラボ、法域
+- 端末価格、販売方法、量産構成
+
+---
+
+# E. 用語と詳細仕様
+
+## 23. 最小用語集
+
+| 言葉 | この設計での意味 |
+| --- | --- |
+| デジタルツイン | 物質の名前、lot、状態、安全、結果を結び付けたコンピューター上の模型 |
+| Core | 正しい記録と規則を持つ中心部分 |
+| branch | 元を消さずに作る別案 |
+| scene | AR、VR、2Dへ表示する一場面 |
+| gesture | 手の形や動きから推定した操作候補 |
+| confidence | センサー推定の確からしさ。真実の保証ではない |
+| simulation | 現実の振る舞いを計算で予測する仕組み |
+| provenance | 情報を誰が、何から、どの版で作ったかという出所 |
+| receipt | 実行内容と結果を後から照合する記録 |
+| stale | 元データが変わり、古くてそのまま使えない状態 |
+| fail closed | 分からない場合、安全側に止めること |
+| Patent AI | 発明説明や先行技術比較を助けるAI。法律判断者ではない |
+
+## 24. 変更してはいけない初期境界
+
+- `physicalExecutionAllowed = false`
+- `equipmentControlAllowed = false`
 - gestureは`HYPOTHESIS_ONLY`
 - simulationは実験証明ではない
 - Patent AIは特許性・発明者・自動出願を確定しない
 - raw cameraとbiometric streamは既定保存・送信しない
-- blocked safety overlayを非表示にしない
+- blocked safety overlayを隠さない
 - sceneが古い、不一致、追跡不能なら`VIEW_ONLY`へ落とす
 
-### 変更方法
+## 25. 機械可読契約と詳細設計
 
-1. 変更したい利用者価値と問題を書く。
-2. 影響するentity、権限、安全、privacy、互換性を示す。
-3. schemaは既存版を破壊せず、新版または互換fieldとして提案する。
-4. 正常例だけでなく、改変、不一致、欠落、重複、通信断を試験する。
-5. 設計、contract、fixture、test、進捗を同じ変更に含める。
-6. 実装、emulator、headset、実機、外部Provider、本番を別々に合格判定する。
-
-## 13. 現在地
-
-| 項目 | 状態 | 実際にあるもの |
-| --- | --- | --- |
-| RQ49と安全設計 | 完了 | 製品ベース、Core設計 |
-| 二物質sandbox Core | 実装済み | 型、候補graph、安全gate、9 test |
-| XR scene契約 | 設計済み | JSON Schema、安全policy |
-| avocadoMini interaction契約 | 設計済み | 四方向rig、gesture、privacy境界 |
-| 統合完成設計書 | 完了 | 本書と全体構成への同期 |
-| 決定的Spatial Projection | 未実装 | 次のMAT05 |
-| 四方向hand tracking rig | 未実装・hardware未選定 | 次のMAT06前半 |
-| simulation Provider接続 | 未実装 | MAT03／MAT06 |
-| Core→Patent AI bridge | 未実装 | MAT06後半 |
-| headset／AR実機 | 未実証 | prototype後に独立受入 |
-| 外部lab／物理実験 | 未接続 | 資格・設備・契約確認後 |
-| 新材料、安全、特許、量産 | 未実証 | 外部試験と専門家確認が必要 |
-
-「設計完成」は、関係者が同じ目的・境界・契約・実装順で作業を始められる状態を指す。「製品完成」「研究成功」「特許取得」とは違う。
-
-## 14. 実装順と作業package
-
-### MAT05 — CoreからXR sceneを作る
-
-成果物:
-
-- Core graphから同じscene digestを作るpure projection
-- 2D JSON inspector
-- material、candidate、process、evidenceのbinding
-- safety overlay
-- stale scene判定
-- 合成pose streamによるconnect／separate／undo
-
-合格:
-
-- 同じ入力から同じ出力
-- lot、工程版、安全状態の変更で旧sceneを拒否
-- 曖昧gestureを保存しない
-- 物理実行capabilityが存在しない
-
-### MAT06-A — 四方向tabletop prototype
-
-成果物:
-
-- four-view rig fixture
-- calibration receipt
-- local Sensor Fusion
-- hand／gesture confidence
-- camera privacy indicator
-- 2D表示とview-only XR
-
-合格:
-
-- 遮蔽、別人、低照度、反射、手袋、volume外を測る
-- sensor欠落、時刻ずれ、校正切れをfail closedにする
-- raw frameが既定保存されない
-
-### MAT06-B — Simulation／Patent AI bridge
-
-成果物:
-
-- changed graph dependency calculation
-- simulation manifest／receipt
-- stale／cancel／unknown result処理
-- event rangeからprivate invention disclosure draft
-- 人、AI、simulation、文献、実測sourceの分離
-
-合格:
-
-- 別lot、別工程、別model結果を流用しない
-- Patent AIが特許性・発明者・出願済みを断定しない
-- 外部送信前に内容、送信先、費用を確認する
-
-### 後続 — 外部lab
-
-契約、資格、設備、校正、事故責任、data保持、知財、廃棄、法規を確認する。最初は非危険な合成fixtureで接続を試す。
-
-## 15. 担当別の参加入口
-
-### Product／UX
-
-最初に読む: 本書0〜4、9、10、13。  
-担当: 初回案内、gestureの分かりやすさ、2D fallback、警告、比較画面、利用者test。  
-最初のtask例: 合成fixtureで「物質を選ぶ→接続preview→確定→結果を見る」のwireframeを作る。
-
-### XR／3D
-
-最初に読む: 本書3〜5、9〜12とXR scene contract。  
-担当: scene projection、座標、LOD、interaction、headset／2D renderer。  
-最初のtask例: 物質2個、比率3案、安全overlayのview-only sceneを表示する。
-
-### Computer Vision／Sensor
-
-Computer Visionは、camera画像から手や物体の位置を推定する技術である。  
-最初に読む: 本書5、11、14とinteraction contract。  
-担当: 校正、同期、hand tracking、confidence、遮蔽、privacy。  
-最初のtask例: raw cameraなしの合成pose streamでgesture eventを生成する。
-
-### Material／Simulation
-
-最初に読む: 本書2、4、6、7、11、14とCore設計。  
-担当: 物質data、単位、model適用範囲、誤差、simulation receipt、安全review。  
-最初のtask例: 非危険fixture用のsimulation manifestと予測結果schemaをレビューする。
-
-### AI／Agent
-
-最初に読む: 本書3、4、7、8、11、12。  
-担当: 確認質問、候補説明、有限workflow、offline、外部作用照合。  
-最初のtask例: relation typeが不明なconnect操作を勝手に確定せず質問へ変える。
-
-### Patent／Legal
-
-最初に読む: 本書4.6、7、11、14と既存Patent Assistant設計。  
-担当: 発明開示項目、先行技術比較、公開状況、専門家handoff、source区分。  
-最初のtask例: 人／AI／simulation／実測を混ぜないpacket fixtureをレビューする。
-
-### Security／Privacy
-
-最初に読む: 本書5.4、9、11、12。  
-担当: camera indicator、暗号化、owner／project分離、権限、外部送信、threat test。  
-最初のtask例: 別project marker、改変scene、古い校正、prompt injectionを拒否するtestを作る。
-
-### QA／Safety
-
-最初に読む: 本書4.4、7、10、11、13、14。  
-担当: 合否条件、異常系、accessibility、emulator／実機区分、証拠。  
-最初のtask例: `BLOCKED`がVR／AR／2Dすべてで消えないことを検証する。
-
-## 16. 新しく参加する人の最初の1時間
-
-1. 本書の0〜4と13を読む。
-2. [`docs/workstreams/11-material-invention-avocado-mini.md`](workstreams/11-material-invention-avocado-mini.md)を開く。
-3. `data/project-status.json`でMAT05／MAT06と依存taskを見る。
-4. `contracts/material-invention*.json`と`contracts/avocado-mini-spatial-interaction.json`を見る。
-5. `contracts/material-invention-fixture.json`だけを使って対象を確認する。
-6. `npm run baseline:check`と対象testを実行する。
-7. 自分の担当、変更対象、非対象、合格条件を作業メモに書く。
-8. 小さなfixture／wireframe／testから始める。
-
-秘密情報、実物の危険物、実験装置、実アカウント、実課金を最初の開発入力にしない。
-
-## 17. 全体の合格条件
-
-### 設計合格
-
-- 本書から目的、役割、境界、作業順、現在地が説明できる。
-- Core、XR、hardware、simulation、Patent AIの正本と依存方向が一意である。
-- 難しい用語が本文または用語集で説明されている。
-- 各担当に最初の作業と合格条件がある。
-
-### Software合格
-
-- 同じ入力と版から同じ候補／scene digestを作れる。
-- owner、project、material lot、process version、model versionを混同しない。
-- unknown、stale、unbound、blockedを成功として扱わない。
-- offline停止・再開と外部結果不明を照合できる。
-- 2D fallbackで同じ主要作業を完了できる。
-
-### Hardware／XR合格
-
-- 四方向identity、校正、同期、欠落を検査できる。
-- gesture誤commit率、遅延、遮蔽条件を実測する。
-- camera停止状態が利用者に分かる。
-- tracking喪失時に`VIEW_ONLY`へ落ちる。
-- accessibility受入を行う。
-
-### Research／Patent合格
-
-- simulationと実測を分ける。
-- 署名付き測定receiptとraw data hashを照合する。
-- 失敗を削除しない。
-- Patent AI outputにsourceと引用を残す。
-- 材料性能、特許性、量産性は外部確認なしに合格表示しない。
-
-## 18. 決まっていること／まだ決まっていないこと
-
-### 決まっている
-
-- OS名はRockstarOS、端末名はavocadoMini。
-- Material Invention Coreの標準体験はSpatial Invention Studio。
-- 四方向はnorth／east／south／west。
-- 操作対象は最初にdigital twin。
-- connect／separateは仮説branchを作る。
-- 安全検査をsimulationより先に行う。
-- Patent AIは支援であり、自動判定・自動出願ではない。
-- 2D fallbackを必須にする。
-- 物理実験と装置制御は独立gateにする。
-
-### まだ決まっていない
-
-- camera／depth／IR等のsensor構成とメーカー
-- headset／AR glasses／stereo displayの最初の対象
-- simulation model／Provider
-- 材料database／supplier契約
-- 外部lab
-- prototype筐体、価格、量産方法
-- 対象市場と最初の専門分野
-- 特許出願する具体的発明と法域
-
-未決定事項は、未実装や曖昧さではなく、比較・契約・専門家判断が必要な選択として追跡する。
-
-## 19. 用語集
-
-| 用語 | 意味 |
-| --- | --- |
-| Core | 変わりにくい共通の中心部分 |
-| Digital twin | 現実の対象と情報を結び付けたデジタル模型 |
-| Graph | 物質や候補を点、関係を線として表すデータ |
-| Branch | 元を残したまま作る別案 |
-| Entity | MaterialRecord等、名前と型を持つ記録単位 |
-| Schema | データに必要な項目と型を決めたルール |
-| Contract | component同士が守る入出力と権限の約束 |
-| Digest／hash | 内容が変わっていないか照合する値 |
-| Provenance | どこから、誰が、何を根拠に作ったかという来歴 |
-| Simulation | 現実の振る舞いを計算で予測すること |
-| Model | 予測や推論に使う計算方法と学習済みdata |
-| Provider | 外部機能を契約に沿って提供する接続先 |
-| Adapter | 異なるProviderやdeviceを共通契約へ合わせる部品 |
-| Receipt | 実行内容と結果を結び付ける受領記録 |
-| Fixture | 安全な試験用の合成data |
-| Fail closed | 分からない時に進めず、安全側で止めること |
-| Stale | 元dataより古くなり、そのまま使えない状態 |
-| View only | 見ることだけでき、変更や承認はできない状態 |
-| XR | VRとARをまとめた呼び方 |
-| VR | 仮想空間内で見る・操作する方式 |
-| AR | 現実の映像や視界へ情報を重ねる方式 |
-| Sensor Fusion | 複数sensorの情報を合わせて一つの推定にすること |
-| Confidence | 推定がどれだけ確からしいかを示す値。真実の保証ではない |
-| SDS | 物質の危険性や取扱い情報をまとめた安全データシート |
-| Patent AI | 特許関連情報を整理する補助AI。弁理士や法的判断の代替ではない |
-| Prior art | その発明より前に公開された関連技術 |
-| LOD | 表示負荷に合わせて3Dの細かさを変える仕組み |
-| p95 | 測定値の95%がこの値以下に収まる境界 |
-
-## 20. 正本と詳細資料
-
-この文書が、全体像と参加入口の正本である。詳細は役割ごとに次を参照する。
-
-- 製品要件: [product-baseline.md](product-baseline.md)
-- RockstarOS全体: [system-composition.md](system-composition.md)
-- AIネイティブOS: [ai-native-os-architecture.md](ai-native-os-architecture.md)
-- Material Invention Core: [material-invention-core.md](material-invention-core.md)
-- VR／AR: [material-invention-xr.md](material-invention-xr.md)
-- avocadoMini hardware／interaction: [avocado-mini-spatial-invention.md](avocado-mini-spatial-invention.md)
-- Patent AI: [sky-patent-assistant-20260912.md](sky-patent-assistant-20260912.md)
+- 製品要望: [product-baseline.md](product-baseline.md)
+- Material Invention Core詳細: [material-invention-core.md](material-invention-core.md)
+- VR／AR共通詳細: [material-invention-xr.md](material-invention-xr.md)
+- avocadoMini端末詳細: [avocado-mini-spatial-invention.md](avocado-mini-spatial-invention.md)
 - 作業入口: [workstreams/11-material-invention-avocado-mini.md](workstreams/11-material-invention-avocado-mini.md)
-- 機械可読進捗: [`data/project-status.json`](../data/project-status.json)
-- 検証記録: [validation.md](validation.md)
+- Material sandbox契約: [`contracts/material-invention.json`](../contracts/material-invention.json)
+- XR scene契約: [`contracts/material-invention-xr.json`](../contracts/material-invention-xr.json)
+- hand event契約: [`contracts/avocado-mini-spatial-interaction.json`](../contracts/avocado-mini-spatial-interaction.json)
+- XR安全policy: [`data/material-invention-xr-policy.json`](../data/material-invention-xr-policy.json)
 
-詳細文書の内容が本書と矛盾した場合は、製品要件、安全境界、機械可読contractを確認し、矛盾を残したまま実装しない。
+## 26. この文書の使い方
 
+- 初めて知る人: Aだけ読む
+- 画面を作る人: AとBを読む
+- 技術を作る人: B、C、Dを読む
+- 安全・知財担当: 4、5、15、21、24を読む
+- project責任者: 全章と作業ストリームを読む
+
+新しい仕様を追加するときは、「利用者のどの場面が変わるか」を先にAへ反映し、その後に画面、Core、契約、test、進捗を更新する。難しい仕様だけが増え、利用者の体験を説明できなくなる変更は受け入れない。

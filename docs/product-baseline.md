@@ -1,5 +1,7 @@
 # RockstarOS — 確定した製品ベース
 
+2026-09-18 見て分かる設計への再構成（v1.77）: 共有用完成設計を、抽象的な部品説明から「目の前に何があり、手をどう動かし、画面がどう変わるか」が先に分かる構成へ全面改訂した。四方向配置図、8場面の利用例、画面wireframe、できる／できない、三つの世界の境界、処理順、実装phase、役割別の最初の仕事を追加し、専門仕様を後半へ分離した。
+
 2026-09-18 共有用統合設計の正本化（v1.76）: RQ49の目的、avocadoMini四方向sensor、VR／AR／2D操作、安全境界、再計算、発明履歴、Patent AI、役割別の参加入口、実装順、受入条件を[共有用完成設計書](rockstaros-avocado-mini-complete-design.md)へ統合した。「設計完成」は実装、実機、材料性能、特許性、量産の完成を意味しない。担当作業の入口は[Material Invention / avocadoMini workstream](workstreams/11-material-invention-avocado-mini.md)とする。
 
 2026-09-18 Material Invention標準体験の統合（v1.75）: `avocadoMini Spatial Invention Studio`を別のVR／AR拡張ではなく、RQ49 Material Invention Coreそのものを人が扱う標準製品体験へ固定した。Coreが物質・候補・安全・証拠の正本、avocadoMiniが四方向sensorとhand interaction、Simulation Orchestratorが再計算、Invention Event LedgerとPatent AIが発明化支援を担当する。headsetがなくても2D fallbackで同じloopを利用できる。
