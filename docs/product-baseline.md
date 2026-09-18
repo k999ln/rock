@@ -1,5 +1,7 @@
 # RockstarOS — 確定した製品ベース
 
+2026-09-18 Decision Fabric詳細設計（v1.81）: Jev／TypeSafe、Local Qwen、Cloud LLM、Codex、RAG、Market、Wallet、MCPを、deterministic codeが制御する一つの判断基盤へ統合する[完成設計書](jev-local-qwen-decision-fabric-design.md)を追加した。TypeSafe公式のChoice／Score／Noulとconfidenceの性質を照合し、Jevは小さな意味判断、Local Qwenは秘密・offline、Cloud LLMは明示同意済みの複雑推論、Policy Engineは唯一の実行権限判定者とする。共通contractと安全policyは追加したが、DecisionProvider、Router／Harness、TypeSafe／Cloud／RAG接続は未実装である。
+
 2026-09-18 Jev ecosystem 10件の統合（v1.80）: 利用者指定URLの重複を除き、Jev Ultrafast、OpenJev、Jevlike、Jev Trader、Awesome Jev by TypeSafe、TypeSafe Computer Use、Jev Review、Jev Router、Jev Browser、Mobile Jevを役割別にSkyへ登録した。Skyは現在ready 11、candidate 13、合計24 Tool。判断model、browser、Mac、Android、review、routing、市場、referenceを別権限にし、TraderはPAPER限定、Mobileは隔離試験端末限定とする。[Jev ecosystem全体詳細設計](jev-ecosystem-integration-design.md)。source取得、依存導入、API／model／外部service接続、実行は未実施であり、ready数へ含めない。
 
 2026-09-18 Jev Ultrafast候補の追加（v1.79）: `browser-use/jev-ultrafast`をSkyの4件目の導入候補へ追加した。AIが構造化された操作候補から一手を選ぶ方式を、専用Chrome profile、許可origin、`observe`／`prepare`／`act`、秘密入力拒否、外部作用直前の別承認、独立した完了検証へ収める。[詳細設計](jev-ultrafast-integration-design.md)は追加済みだが、source取得、依存導入、API key接続、browser操作は未実施であり、ready数には含めない。

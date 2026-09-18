@@ -93,6 +93,64 @@ for (const id of [
 ]) {
   fail(jevBook.includes(id), `${id}: Jev ecosystem詳細設計に記載がありません`);
 }
+const decisionBook = readFileSync(
+  resolve(root, 'docs/jev-local-qwen-decision-fabric-design.md'),
+  'utf8',
+);
+for (const term of [
+  'DecisionProvider',
+  'Decision Router',
+  'Local Qwen',
+  'TypeSafeJevProvider',
+  'Codex統合',
+  'RAG / Knowledge Engine',
+  'Market Intelligence',
+  'Wallet / MCP / Hub',
+  'Result Verifier',
+  'MVP実装順',
+]) {
+  fail(
+    decisionBook.includes(term),
+    `${term}: Decision Fabric詳細設計に記載がありません`,
+  );
+}
+const decisionPolicy = JSON.parse(
+  readFileSync(resolve(root, 'data/decision-fabric-policy.json'), 'utf8'),
+);
+fail(
+  decisionPolicy.status === 'DESIGN_APPROVED_IMPLEMENTATION_PENDING',
+  'Decision Fabric設計をruntime完成と表示しないでください',
+);
+for (const [key, value] of Object.entries({
+  confidenceIsAuthority: false,
+  providerMayGrantCapability: false,
+  providerMayReadSecrets: false,
+  providerMayCallToolsDirectly: false,
+  providerMayWriteWalletLedger: false,
+  providerMayExecuteLiveMarketOrder: false,
+  providerMayControlPhysicalEquipment: false,
+  cloudFallbackWithoutConsent: false,
+  externalWriteAutomaticRetryAfterUnknownResult: false,
+  resultSelfReportCountsAsVerified: false,
+  chainOfThoughtStored: false,
+})) {
+  fail(
+    decisionPolicy.hardInvariants?.[key] === value,
+    `Decision Fabric安全不変条件が不正です: ${key}`,
+  );
+}
+fail(
+  decisionPolicy.marketMode === 'PAPER_ONLY',
+  'MarketをPAPER限定にしてください',
+);
+fail(
+  decisionPolicy.walletAiRole === 'ADVISORY_ONLY',
+  'Wallet AIを助言限定にしてください',
+);
+fail(
+  decisionPolicy.physicalExecutionAllowed === false,
+  'AIの物理実行を許可しないでください',
+);
 fail(
   index.nativeToolFamilies?.length === 6,
   'native Tool 6 familyを保持してください',

@@ -1,5 +1,12 @@
 # 検証記録
 
+## Jev／Local Qwen Decision Fabric全体詳細設計 / 2026-09-18
+
+- TypeSafe公式のIntroduction、Quick start、Primitives、Confidence、Use Case Mapを照合し、JevをChoice／Score／Noulによるatomic semantic decisionとして位置付けた。複雑判断は小問へ分け、コードで合成し、confidenceを権限にしない。
+- 既存のPixel 10 GL066上の`llama.rn 0.12.9`＋Qwen3-0.6B Q8_0実機証拠と、未実装のTypeSafe、Cloud、RAG、汎用Routerを分離した。llama.cppをMVP、ExecuTorchとMNNを同一fixtureで比較する次期候補とした。
+- DecisionProvider JSON Schemaと機械可読policyへ、providerの権限制限、秘密送信禁止、無断Cloud fallback禁止、confidence-only authorization禁止、Market PAPER、Wallet advisory、物理実行禁止、最大provider数／attemptを固定した。
+- 設計完成はruntime完成ではない。AI07はplannedのまま維持し、AI08を設計完了として分離した。
+
 ## Jev ecosystem 10 repositoryの候補登録 / 2026-09-18
 
 - 利用者指定URLを重複除去し、Jev Ultrafast、OpenJev、Jevlike、Jev Trader、Awesome Jev by TypeSafe、TypeSafe Computer Use、Jev Review、Jev Router、Jev Browser、Mobile Jevの10件として整理した。各公開READMEとMIT表示を確認した。

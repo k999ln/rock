@@ -1,5 +1,5 @@
 {
-  "version": "1.80",
+  "version": "1.81",
   "decidedAt": "2026-09-18",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -523,6 +523,20 @@
     "deviceInferenceVerified": true,
     "physicalEvidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
     "planV2Evidence": "docs/evidence/android-local-ai-plan-v2-20260916.json"
+  },
+  "decisionFabric": {
+    "requested": true,
+    "status": "design_approved_runtime_not_implemented",
+    "architecture": "docs/jev-local-qwen-decision-fabric-design.md",
+    "contract": "contracts/decision-provider.json",
+    "policy": "data/decision-fabric-policy.json",
+    "controlOwner": "deterministic_policy_engine",
+    "providerRoles": ["typesafe_jev", "local_qwen", "cloud_llm"],
+    "confidenceGrantsAuthority": false,
+    "cloudFallbackWithoutConsent": false,
+    "walletAiRole": "advisory_only",
+    "marketMode": "paper_only",
+    "physicalExecutionAllowed": false
   },
   "androidPlatformCore": {
     "requested": true,

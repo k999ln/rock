@@ -7,6 +7,7 @@
     "docs/rockstaros-complete-design.md",
     "docs/sky-tools-complete-design.md",
     "docs/rockstaros-avocado-mini-complete-design.md",
+    "docs/jev-local-qwen-decision-fabric-design.md",
     "docs/product-baseline.md"
   ],
   "completionMeaning": "current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete",
@@ -72,8 +73,11 @@
       "coverage": "DETAILED_GENERAL_RUNTIME_AND_MEMORY_PENDING",
       "documents": [
         "docs/ai-native-os-architecture.md",
+        "docs/jev-local-qwen-decision-fabric-design.md",
         "docs/local-ai-os-integration-20260915.md",
-        "contracts/local-ai-runtime.json"
+        "contracts/local-ai-runtime.json",
+        "contracts/decision-provider.json",
+        "data/decision-fabric-policy.json"
       ]
     },
     {
@@ -81,6 +85,7 @@
       "coverage": "DETAILED_WITH_PLATFORM_GAPS",
       "documents": [
         "docs/sky-tools-complete-design.md",
+        "docs/jev-local-qwen-decision-fabric-design.md",
         "docs/jev-ultrafast-integration-design.md",
         "docs/jev-ecosystem-integration-design.md",
         "docs/sky.md",

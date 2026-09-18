@@ -63,12 +63,26 @@
       "evidence": ["docs/ai-native-os-architecture.md"]
     },
     {
+      "id": "AI08",
+      "title": "Jev／TypeSafe・Local Qwen・Cloud LLMをcode主導で統合するDecision Fabric全体詳細設計と機械可読安全契約を固定",
+      "status": "done",
+      "dependsOn": ["AI01", "SKY18"],
+      "evidence": [
+        "docs/jev-local-qwen-decision-fabric-design.md",
+        "contracts/decision-provider.json",
+        "data/decision-fabric-policy.json"
+      ]
+    },
+    {
       "id": "AI07",
       "title": "Jev／TypeSafe・Local Qwen・Cloud LLM・deterministic codeをDecisionProviderとRouter／Harnessへ統合",
       "status": "planned",
-      "dependsOn": ["AI01", "AI02", "SKY18"],
+      "dependsOn": ["AI02", "AI08"],
       "evidence": [
         "docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md",
+        "docs/jev-local-qwen-decision-fabric-design.md",
+        "contracts/decision-provider.json",
+        "data/decision-fabric-policy.json",
         "docs/jev-ecosystem-integration-design.md",
         "docs/ai-native-os-architecture.md"
       ]
