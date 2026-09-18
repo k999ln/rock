@@ -15,9 +15,9 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - `MAT01`: Core entity、発明loop、安全境界の設計完了。
 - `MAT02`: 二物質・複数比率のsandbox Coreと9 testを実装済み。
 - `MAT03`: Zema、限定記憶、simulation、外部lab接続は未着手。
-- `MAT04`: avocadoMini、XR、四方向sensor、hand interaction、Patent AI統合設計は完了。
+- `MAT04`: avocadoMini、XR、四方向sensor、hand interaction、Patent AI統合設計に加え、Bench／ビリヤード台規模Full-scaleの寸法budgetとconcept画像まで完了。
 - `MAT05`: 決定的scene projectionと合成pose interactionは未着手。
-- `MAT06`: 四方向実機prototype、simulation／Patent AI bridgeは未着手。
+- `MAT06`: 四方向Bench／Full-scale実機prototype、simulation／Patent AI bridgeは未着手。
 
 ## 作業範囲
 
@@ -56,7 +56,7 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 2. 合成pose streamでconnect／separate／undoをeventへ変換する。
 3. stale、別project、改変、low confidence、sensor欠落を拒否する。
 4. view-only 2D／XRでMatter Space、Process Tunnel、安全overlayを表示する。
-5. `MAT06`: 一台cameraで誤操作を測り、その後four-view tabletop rigへ進む。
+5. `MAT06`: 一台cameraで誤操作を測り、その後four-view Bench rig、最後にビリヤード台規模Full-scale rigへ進む。
 6. 合成simulation receiptとPatent AI packet fixtureを接続する。
 7. 実Provider、実headset、実labはそれぞれ独立して受け入れる。
 

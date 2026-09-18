@@ -1,5 +1,11 @@
 # 検証記録
 
+## avocadoMini Full-scale設計・concept画像 / 2026-09-18
+
+- 利用者の「ビリヤード台規模」という明示指示を、本体約3.0 m × 1.7 m × 高さ0.9 m、有効操作領域約2.4 m × 1.2 m × 高さ1.3 mの初期budgetへ変換した。二枚のconcept画像は設計資料であり、実機、裸眼3D、触覚、追跡精度の証拠ではない。
+- `npm run baseline:check`、`npm run design:check`、`npm run system:composition:check`は合格した。`tests/material-invention.test.mjs`、`tests/product-baseline.test.mjs`、`tests/patent-assistant.test.mjs`の17 testも合格した。
+- `npm run verify`はdatabase statusの旧集計を検出したため`npm run database:status`で126 taskの現在値へ同期し、再実行した。再実行はrelease検査、baseline、design、system構成、型検査、lintまで合格したが、全`npm test`が観測時間内に終了せず手動中断したため、全体verify完了とは扱わない。
+
 ## Jev／Local Qwen Decision Fabric全体詳細設計 / 2026-09-18
 
 - TypeSafe公式のIntroduction、Quick start、Primitives、Confidence、Use Case Mapを照合し、JevをChoice／Score／Noulによるatomic semantic decisionとして位置付けた。複雑判断は小問へ分け、コードで合成し、confidenceを権限にしない。

@@ -388,7 +388,9 @@ RockstarOS
 
 ## 14. センサー設計
 
-四台の具体的なcamera方式やメーカーはまだ決めない。RGB、depth、IR等をprototypeで比較する。
+四方向podの具体的なcamera方式やメーカーはまだ決めない。Full-scaleではcamera四台だけに固定せず、各podへ2〜3の光学viewpointをまとめた全体8〜12視点を初期候補とし、RGB、depth、IR等をprototypeで比較する。
+
+現在の外観とscaleの共通資料は、[初期四方向concept](assets/rockstaros-spatial-table-v1.png)と[ビリヤード台規模concept](assets/rockstaros-spatial-table-full-scale-v2.png)である。画像は完成証拠ではなく、配置、人物scale、操作範囲、下部演算rack、保守性を検討するための設計資料とする。
 
 処理の順番:
 
@@ -402,7 +404,9 @@ RockstarOS
 
 prototypeの仮目標:
 
-- 操作範囲: 一辺0.45〜0.8 mの机上
+- Bench操作範囲: 一辺0.45〜0.8 mの机上
+- Full-scale外形budget: 約3.0 m × 1.7 m × 高さ0.9 m
+- Full-scale操作範囲budget: 約2.4 m × 1.2 m × 高さ1.3 m
 - 手を動かしてから表示反応まで: p95 100 ms以下を目標
 - commit confidence: 0.85から試験し、誤操作測定後に決め直す
 - 四方向の時刻差: 1 display frame以内を目標
@@ -467,7 +471,7 @@ XR、AI、cameraが持たない権限:
 | 二物質sandbox Core | 実装済み、9 test | Zemaとsimulation fixtureへ接続 |
 | XR scene契約 | 設計済み | 同じCore入力から同じsceneを生成 |
 | hand event契約 | 設計済み | 合成poseで接続・分離を再現 |
-| 四方向sensor | 設計のみ | tabletop prototypeで誤操作を測る |
+| 四方向sensor | Bench／Full-scale設計とconcept画像まで | tabletop prototypeで誤操作を測り、その後Full-scale端部と遮蔽を測る |
 | AR／VR表示 | 未実装 | view-only prototype |
 | 2D fallback | 設計のみ | 同じ主要作業を2Dで完了 |
 | simulation接続 | 未実装 | 署名またはhash付き合成receipt |
@@ -496,12 +500,13 @@ XR、AI、cameraが持たない権限:
 
 合格: 同じ入力は同じ出力になり、古いsceneから新しい候補を変更できない。
 
-### Phase 3 — 一台cameraから四方向へ（MAT06-A）
+### Phase 3 — 一台cameraから四方向Bench、Full-scaleへ（MAT06-A）
 
 - 最初に一台で誤操作を測る
-- 次に四方向rig、校正、時刻同期を作る
+- 次に四方向Bench rig、校正、時刻同期を作る
 - 遮蔽、別人、暗さ、反射、手袋、範囲外を試す
 - privacy indicatorと物理停止を受け入れる
+- Bench合格後にFull-scaleへ拡張し、中央だけでなく四辺、角、高さ上限、二人同時操作の誤commit率を測る
 
 合格: 速さより、誤確定せず理由を説明して止まれる。
 

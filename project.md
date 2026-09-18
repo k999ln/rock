@@ -1,5 +1,11 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-18 — avocadoMiniをビリヤード台規模のFull-scale発明台へ拡張
+
+利用者の明示指示により、四方向sensorを使う空間発明端末の最終製品目標を、ビリヤード台ほどの幅へ具体化した。[端末・interaction設計](docs/avocado-mini-spatial-invention.md)へ、本体約3.0 m × 1.7 m × 高さ0.9 m、有効操作領域約2.4 m × 1.2 m × 高さ1.3 mの初期budget、1〜2人操作、各方向2〜3光学viewpoint、表示と触覚の段階、安全境界を追加した。
+
+[初期四方向concept](docs/assets/rockstaros-spatial-table-v1.png)と[Full-scale concept](docs/assets/rockstaros-spatial-table-full-scale-v2.png)をGit管理へ追加した。画像は設計意図とscaleの資料で、実機完成、裸眼3D、空間全域の追跡精度、硬い反力を証明しない。MAT04の設計証拠へ画像を加え、MAT06をBench合格後にFull-scaleへ進む実機prototype taskとして更新した。Jev／TypeSafe＋Local Qwen引き継ぎ原文は既存の`docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md`にすでに保存済みであり、重複文書は追加していない。
+
 ## 2026-09-18 — Jev ecosystem 10件を役割分離してSkyへ追加
 
 利用者指定URLの重複を除く10 repositoryを確認し、既存Jev UltrafastにOpenJev、Jevlike、Jev Trader、Awesome Jev by TypeSafe、TypeSafe Computer Use、Jev Review、Jev Router、Jev Browser、Mobile Jevを加えた。Skyはready 11件を維持し、candidate 13件、合計24 Toolとなった。
@@ -656,9 +662,9 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | MAT01 | RQ49 Material Invention Coreのentity・発明loop・安全境界を設計へ固定 | 完了 | [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/material-invention-core.md) |
 | MAT02 | 二物質・複数比率・工程条件のsandbox候補graphとfail-closed安全検査を実装 | 完了 | [記録](contracts/material-invention.json) · [記録](contracts/material-invention-fixture.json) · [記録](lib/material-invention.ts) · [記録](tests/material-invention.test.mjs) · [記録](docs/material-invention-core.md) · [記録](docs/validation.md) |
 | MAT03 | Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入 | 未着手 | [記録](docs/material-invention-core.md) |
-| MAT04 | Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent AI設計を固定 | 完了 | [記録](docs/material-invention-xr.md) · [記録](docs/avocado-mini-spatial-invention.md) · [記録](data/material-invention-xr-policy.json) · [記録](contracts/material-invention-xr.json) · [記録](contracts/avocado-mini-spatial-interaction.json) |
+| MAT04 | Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent AI設計を固定 | 完了 | [記録](docs/material-invention-xr.md) · [記録](docs/avocado-mini-spatial-invention.md) · [記録](docs/assets/rockstaros-spatial-table-v1.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](data/material-invention-xr-policy.json) · [記録](contracts/material-invention-xr.json) · [記録](contracts/avocado-mini-spatial-interaction.json) |
 | MAT05 | Core graphから決定的XR sceneを生成し、四方向pose fixtureのconnect／separate／stale拒否を実装 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
-| MAT06 | avocadoMini四方向tabletop prototypeとMaterial Core→Patent AI provenance bridgeを独立受入 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
+| MAT06 | avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT07 | 誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化 | 完了 | [記録](docs/rockstaros-avocado-mini-complete-design.md) · [記録](docs/workstreams/11-material-invention-avocado-mini.md) · [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/rockstaros-1.0-architecture.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |

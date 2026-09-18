@@ -127,6 +127,8 @@
       "evidence": [
         "docs/material-invention-xr.md",
         "docs/avocado-mini-spatial-invention.md",
+        "docs/assets/rockstaros-spatial-table-v1.png",
+        "docs/assets/rockstaros-spatial-table-full-scale-v2.png",
         "data/material-invention-xr-policy.json",
         "contracts/material-invention-xr.json",
         "contracts/avocado-mini-spatial-interaction.json"
@@ -141,7 +143,7 @@
     },
     {
       "id": "MAT06",
-      "title": "avocadoMini四方向tabletop prototypeとMaterial Core→Patent AI provenance bridgeを独立受入",
+      "title": "avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入",
       "status": "planned",
       "dependsOn": ["MAT03", "MAT05"],
       "evidence": ["docs/avocado-mini-spatial-invention.md"]

@@ -1,10 +1,10 @@
 # avocadoMini — 四方向センサーで物質候補を操作するRockstarOS発明端末
 
-状態: 製品・hardware・interaction設計。`avocadoMini`はRockstarOSを搭載する空間発明端末の名称であり、OSの正式名をavocadoOSへ戻すものではない。筐体、sensor、camera、hand tracking、XR表示、simulation接続、Patent AI連携、実機prototypeは未実装・未選定。
+状態: 製品・hardware・interaction設計。2026-09-18に机上検証機とビリヤード台規模のFull-scale機を分け、概念画像と寸法budgetを追加した。`avocadoMini`はRockstarOSを搭載する空間発明端末の名称であり、OSの正式名をavocadoOSへ戻すものではない。筐体、sensor、camera、hand tracking、XR表示、simulation接続、Patent AI連携、実機prototypeは未実装・未選定。
 
 ## 製品定義
 
-avocadoMiniは、机上または小型boothの四方向にsensor／cameraを配置し、その中央を`Invention Volume`として使うRockstarOS端末である。これはMaterial Invention Coreの中身を人が直接扱う標準製品体験で、別の後付けXR機能ではない。利用者は手の動きで物質の**デジタルツイン**を選び、近付け、接続し、離し、工程条件を変える。各操作をMaterial Invention Coreの候補graphへ安全な仮説として反映し、制約検査と交換可能なsimulationを再実行する。得られた発明過程を既存のSky Patent AIへ渡し、発明開示、先行技術候補、差分整理、専門家向けpacketの作成を支援する。
+avocadoMiniは、四方向にsensor／cameraを配置し、その中央を`Invention Volume`として使うRockstarOS端末である。検証は小型Bench機から始めるが、製品目標はビリヤード台ほどの幅を持つFull-scale機とし、利用者が台上の広い空間へ両手を入れて物質の**デジタルツイン**を選び、近付け、接続し、離し、工程条件を変えられるようにする。これはMaterial Invention Coreの中身を人が直接扱う標準製品体験で、別の後付けXR機能ではない。各操作をMaterial Invention Coreの候補graphへ安全な仮説として反映し、制約検査と交換可能なsimulationを再実行する。得られた発明過程を既存のSky Patent AIへ渡し、発明開示、先行技術候補、差分整理、専門家向けpacketの作成を支援する。
 
 四方向cameraが物理物質を直接変化させるわけではない。初期版は仮想候補だけを操作し、robot、dispenser、heater、pressure vessel等のactuatorを持たない。将来の物理設備は別Provider、別資格、別承認、別停止系として独立受入する。
 
@@ -21,13 +21,34 @@ avocadoMiniは、机上または小型boothの四方向にsensor／cameraを配�
 
 ## Hardware構成
 
+### 二つの筐体段階
+
+| 段階 | 外形／操作領域の初期budget | 目的 |
+| --- | --- | --- |
+| Bench prototype | 一辺0.45〜0.8 mの操作領域 | 追跡、誤commit、安全停止、scene bindingを低コストで測る |
+| Full-scale concept | 本体約3.0 m × 1.7 m × 高さ0.9 m、操作領域約2.4 m × 1.2 m × 高さ1.3 m | 1〜2人が広い空間で候補を比較・接続・分離する製品目標 |
+
+Full-scaleの数値は利用者が指定した「ビリヤード台規模」を設計budgetへ変換したもので、製造図、公差、荷重、熱、EMC、光学安全、法規適合を確定した値ではない。Bench prototypeの合格後に、人間工学、camera baseline、display方式、触覚方式、保守空間を含めて固定する。
+
+#### 概念画像
+
+初期の四方向構成:
+
+![四方向AR sensorとMaterial Invention Volume](assets/rockstaros-spatial-table-v1.png)
+
+ビリヤード台規模のFull-scale構成:
+
+![ビリヤード台規模のRockstarOS Spatial Invention Table](assets/rockstaros-spatial-table-full-scale-v2.png)
+
+画像は製品意図、人物とのscale、配置、serviceabilityを共有するためのconcept renderであり、実機完成、裸眼立体表示、追跡精度、触覚性能を実証する証拠ではない。
+
 ### 四方向Sensor Ring
 
-`north`、`east`、`south`、`west`の四viewpointをInvention Volumeへ向ける。各podの具体的なRGB、depth、IR、event sensor構成はprototype比較で選び、設計段階では固定しない。
+`north`、`east`、`south`、`west`の四方向podをInvention Volumeへ向ける。Full-scaleでは「四方向」をcamera四台だけとは解釈せず、各podへ2〜3の光学viewpointをまとめ、全体8〜12視点を初期候補にする。podの具体的なRGB、depth、IR、event sensor構成はprototype比較で選び、設計段階では固定しない。
 
 | component | 責任 | fail-closed条件 |
 | --- | --- | --- |
-| 4 sensor pods | 手、marker、物体の複数視点取得 | 2方向未満、遮蔽過多、device identity不一致 |
+| 4 sensor pods | 各方向2〜3視点を候補とし、手、marker、物体を全体8〜12視点で取得 | 2方向未満、遮蔽過多、device identity不一致 |
 | calibration target | intrinsics／extrinsics、volume原点、scaleの校正 | calibration digest不一致、期限超過、移動検知 |
 | local sensor hub | frame同期、timestamp、端末内前処理 | clock drift、欠落frame、順序逆転 |
 | hand tracking engine | 左右hand、joint、confidence、gesture候補 | confidence不足、hand identity曖昧、volume外 |
@@ -41,13 +62,22 @@ avocadoMiniは、机上または小型boothの四方向にsensor／cameraを配�
 
 以下はprototypeを比較するための初期目標であり、実測済み仕様ではない。
 
-- interaction volume: 一辺0.45〜0.8 mの机上領域を候補にし、筐体評価後に固定する。
+- Bench interaction volume: 一辺0.45〜0.8 mの机上領域を候補にする。
+- Full-scale interaction volume: 約2.4 m × 1.2 m × 高さ1.3 mを初期budgetとし、全域の誤commit率、遮蔽、端部精度を実測して縮小または分割する。
 - end-to-end visual response: p95 100 ms以下を目標。simulation完了を待たずgesture previewを返し、予測値は非同期更新する。
 - committed gesture confidence: 0.85以上を初期候補とし、誤操作試験後に固定する。閾値未満はpreviewのみ。
 - camera synchronization: 1 display frame以内を目標にし、ずれをcalibration receiptへ記録する。
 - offline: hand操作、候補branch、Core安全検査、local annotationを継続し、外部simulation／検索は`WAITING_FOR_PROVIDER`にする。
 
 数値を満たしても医療、危険作業、設備安全の認定には使わない。
+
+### 表示と触覚の現実的な段階
+
+- 最初の実装はAR headsetまたは2D大型monitorで共有座標を確認する。これを裸眼3D表示完成とは呼ばない。
+- 透明screen、多方向投影、視点追跡、light-fieldは別display adapterとして比較する。3 m級の自由空間へ全方向から同じ像を見せる方式は研究項目として扱う。
+- 手首bandまたは指輪型hapticは接触、選択、警告を返す補助入力とする。
+- 超音波arrayは限定されたinteraction zoneの触感候補であり、硬い物体の反力を保証しない。
+- 強い反力が必要ならforce-feedback glove、cable機構、robotic interfaceを別の危険なactuator Providerとして扱い、sensor／LLMから直接駆動しない。
 
 ## Software構成
 

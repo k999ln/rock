@@ -1,5 +1,7 @@
 # RockstarOS — 確定した製品ベース
 
+2026-09-18 avocadoMini Full-scale設計追記（v1.82）: 利用者の明示指示により、最終製品目標をビリヤード台規模へ具体化した。本体約3.0 m × 1.7 m × 高さ0.9 m、有効操作領域約2.4 m × 1.2 m × 高さ1.3 mを初期budgetとし、四方向podへ複数の光学viewpointをまとめる。小型Benchで誤commitと安全停止を受け入れた後にFull-scaleへ進む。二枚のconcept画像は人物scale、配置、演算rack、serviceabilityを共有する設計資料であり、実機、裸眼3D、触覚、追跡精度の完成証拠ではない。[端末設計](avocado-mini-spatial-invention.md)。
+
 2026-09-18 Decision Fabric詳細設計（v1.81）: Jev／TypeSafe、Local Qwen、Cloud LLM、Codex、RAG、Market、Wallet、MCPを、deterministic codeが制御する一つの判断基盤へ統合する[完成設計書](jev-local-qwen-decision-fabric-design.md)を追加した。TypeSafe公式のChoice／Score／Noulとconfidenceの性質を照合し、Jevは小さな意味判断、Local Qwenは秘密・offline、Cloud LLMは明示同意済みの複雑推論、Policy Engineは唯一の実行権限判定者とする。共通contractと安全policyは追加したが、DecisionProvider、Router／Harness、TypeSafe／Cloud／RAG接続は未実装である。
 
 2026-09-18 Jev ecosystem 10件の統合（v1.80）: 利用者指定URLの重複を除き、Jev Ultrafast、OpenJev、Jevlike、Jev Trader、Awesome Jev by TypeSafe、TypeSafe Computer Use、Jev Review、Jev Router、Jev Browser、Mobile Jevを役割別にSkyへ登録した。Skyは現在ready 11、candidate 13、合計24 Tool。判断model、browser、Mac、Android、review、routing、市場、referenceを別権限にし、TraderはPAPER限定、Mobileは隔離試験端末限定とする。[Jev ecosystem全体詳細設計](jev-ecosystem-integration-design.md)。source取得、依存導入、API／model／外部service接続、実行は未実施であり、ready数へ含めない。
@@ -549,6 +551,8 @@ RockstarOSは、物質、配合比、混合順序、温度、圧力、雰囲気�
 OS Coreは材料記録、候補graph、権限、provenance、approval、receipt、再現性、rollbackを共通化する。化学計算、物性予測、データベース、ロボット、測定器、外部ラボは交換可能なTool／ProviderとしてSkyから接続し、Zemaで計画・確認・停止・結果を管理する。危険な合成の無人実行、simulation結果だけでの安全・性能断定、専門家確認の代替、秘密の実験条件や知的財産の無断共有は行わない。詳細は [Material Invention Core設計](material-invention-core.md) を参照する。
 
 VR／ARでは同じ候補graphを派生sceneへ投影し、候補、物質lot、工程、安全状態、証拠種別とのbindingを維持する。RockstarOSを搭載する端末concept`avocadoMini`はnorth／east／south／westの四方向sensorで手の動きを捉え、中央のInvention Volumeにある物質digital twinを触る、接続する、離す操作から新しい仮説branchを作る。操作ごとに安全制約を先に検査し、対応simulationを差分再計算して、結果と失敗を版管理する。
+
+製品目標はビリヤード台規模とし、本体約3.0 m × 1.7 m、有効操作領域約2.4 m × 1.2 m × 高さ1.3 mを初期budgetにする。四方向はcamera四台だけを意味せず、各pod内に複数viewpointを持たせて遮蔽と端部精度を評価する。小型Bench prototypeで追跡、安全停止、誤commitを検証してからFull-scaleへ進み、AR headset／2Dを先に受け入れ、裸眼3Dと強い力覚は独立した研究・安全gateにする。
 
 avocadoMiniの操作履歴は、人の直接操作、AI提案、simulation、文献、実験receiptを分けたまま既存Sky Patent AIへ渡し、発明開示、先行技術候補、構成要件差分、専門家向けpacketを作る。gestureは物理実験・外部共有・出願の最終承認に使わず、cameraは物理物質や装置を直接制御しない。Patent AIは特許性、登録、侵害回避、法的発明者、権利帰属を確定せず、電子署名、料金支払、出願を自動実行しない。詳細は[Spatial Invention Studio](material-invention-xr.md)と[avocadoMini端末設計](avocado-mini-spatial-invention.md)を正本とする。
 
