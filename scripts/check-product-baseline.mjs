@@ -55,7 +55,8 @@ export function validateBaseline(
       data.productIdentity?.releaseName === 'RockstarOS 1.0' &&
       data.productIdentity?.version === '1.0' &&
       data.productIdentity?.releaseStage === 'developer_preview' &&
-      data.productIdentity?.previewName === 'RockstarOS 1.0 Developer Preview' &&
+      data.productIdentity?.previewName ===
+        'RockstarOS 1.0 Developer Preview' &&
       data.productIdentity?.internalNamespace === 'dev.rock' &&
       data.productIdentity?.legacyDisplayName === 'avocadoOS' &&
       data.productIdentity?.legacySchemaPrefix === 'rockstaros' &&
@@ -98,6 +99,12 @@ export function validateBaseline(
     data.materialInvention?.requested === true &&
       data.materialInvention?.status ===
         'sandbox_core_implemented_physical_runtime_not_connected' &&
+      data.materialInvention?.masterDesign ===
+        'docs/rockstaros-avocado-mini-complete-design.md' &&
+      data.materialInvention?.workstream ===
+        'docs/workstreams/11-material-invention-avocado-mini.md' &&
+      data.materialInvention?.designStatus ===
+        'integrated_complete_for_implementation_not_product_completion' &&
       data.materialInvention?.architecture ===
         'docs/material-invention-core.md' &&
       data.materialInvention?.contract ===
@@ -105,8 +112,7 @@ export function validateBaseline(
       data.materialInvention?.fixture ===
         'contracts/material-invention-fixture.json' &&
       data.materialInvention?.runtime === 'lib/material-invention.ts' &&
-      data.materialInvention?.tests ===
-        'tests/material-invention.test.mjs' &&
+      data.materialInvention?.tests === 'tests/material-invention.test.mjs' &&
       data.materialInvention?.primaryExperience ===
         'avocado_mini_spatial_invention' &&
       data.materialInvention?.referenceDevice === 'avocadoMini' &&
@@ -126,6 +132,8 @@ export function validateBaseline(
       data.materialInvention?.externalLabIsReplaceableProvider === true &&
       [
         data.materialInvention.architecture,
+        data.materialInvention.masterDesign,
+        data.materialInvention.workstream,
         data.materialInvention.contract,
         data.materialInvention.fixture,
         data.materialInvention.runtime,
@@ -398,7 +406,7 @@ export function validateBaseline(
     );
   }
   requireValue(
-      data.primaryCapabilities?.includes('os-platform-core') &&
+    data.primaryCapabilities?.includes('os-platform-core') &&
       data.androidPlatformCore?.status ===
         'native_sky_api_v4_backup_v2_emulator_and_physical_reboot_export_pass_wipe_pending_aosp_not_run' &&
       data.androidPlatformCore?.apiVersion === 1 &&
@@ -425,25 +433,35 @@ export function validateBaseline(
         'broker_sqlite_schema_v2' &&
       data.androidPlatformCore?.nativeSkySelectionTokenRequired === true &&
       data.androidPlatformCore?.nativeSkySelectionEmulatorVerified === true &&
-      data.androidPlatformCore?.nativeSkySelectionPhysicalRebootVerified === true &&
+      data.androidPlatformCore?.nativeSkySelectionPhysicalRebootVerified ===
+        true &&
       data.androidPlatformCore?.recoverableBackupOwnerPhraseUi === true &&
       data.androidPlatformCore?.recoverableBackupTransactionalImport === true &&
-      data.androidPlatformCore?.recoverableBackupNewKeystoreRebinding === true &&
+      data.androidPlatformCore?.recoverableBackupNewKeystoreRebinding ===
+        true &&
       data.androidPlatformCore?.recoverableBackupEmptyTargetRequired === true &&
       data.androidPlatformCore?.recoverableBackupRestoresPaused === true &&
-      data.androidPlatformCore?.recoverableBackupRestoresComponentAuthority === false &&
+      data.androidPlatformCore?.recoverableBackupRestoresComponentAuthority ===
+        false &&
       data.androidPlatformCore?.recoverableBackupEmulatorBrokerChecks ===
         '11_pass_2_physical_skipped' &&
-      data.androidPlatformCore?.recoverableBackupEmulatorShellChecks === '5_pass' &&
-      data.androidPlatformCore?.recoverableBackupPhysicalExportVerified === true &&
-      data.androidPlatformCore?.recoverableBackupPhysicalHardwareBacked === true &&
-      data.androidPlatformCore?.recoverableBackupPhysicalFileSyncConfirmed === true &&
-      data.androidPlatformCore?.recoverableBackupPhysicalRebootVerified === true &&
-      data.androidPlatformCore?.recoverableBackupPhysicalWipeVerified === false &&
+      data.androidPlatformCore?.recoverableBackupEmulatorShellChecks ===
+        '5_pass' &&
+      data.androidPlatformCore?.recoverableBackupPhysicalExportVerified ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalHardwareBacked ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalFileSyncConfirmed ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalRebootVerified ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalWipeVerified ===
+        false &&
       data.androidPlatformCore?.zemaSelectedToolPlanGateImplemented === true &&
       data.androidPlatformCore?.zemaEmulatorNoModelFailClosed === true &&
       data.androidPlatformCore?.zemaPhysicalStrictPlanAccepted === true &&
-      data.androidPlatformCore?.zemaPhysicalSelectedToolResultHistoryVerified === true,
+      data.androidPlatformCore
+        ?.zemaPhysicalSelectedToolResultHistoryVerified === true,
     'OS Platform Coreの署名・UID・承認・台帳・暗号化・standalone build済／AOSP未build境界を維持してください',
   );
   for (const field of [
@@ -568,27 +586,41 @@ export function validateBaseline(
         true &&
       data.deviceEmergencyAccess?.persistentCommandQueueImplemented === true &&
       data.deviceEmergencyAccess?.appendOnlyAuditImplemented === true &&
-      data.deviceEmergencyAccess?.operatorCommandWebAuthnSignatureRequired === true &&
-      data.deviceEmergencyAccess?.managementServerAloneCanIssueDeviceCommand === false &&
+      data.deviceEmergencyAccess?.operatorCommandWebAuthnSignatureRequired ===
+        true &&
+      data.deviceEmergencyAccess?.managementServerAloneCanIssueDeviceCommand ===
+        false &&
       data.deviceEmergencyAccess?.deviceSignedChannelImplemented === true &&
-      data.deviceEmergencyAccess?.deviceIndependentCommandVerificationImplemented === true &&
+      data.deviceEmergencyAccess
+        ?.deviceIndependentCommandVerificationImplemented === true &&
       data.deviceEmergencyAccess?.androidServiceImplemented === true &&
       data.deviceEmergencyAccess?.androidEmulatorTestsPassed === true &&
-      data.deviceEmergencyAccess?.testSignedPhysicalPixelChecksPassed === true &&
+      data.deviceEmergencyAccess?.testSignedPhysicalPixelChecksPassed ===
+        true &&
       data.deviceEmergencyAccess?.testSignedPhysicalPixelCheckCount === 5 &&
-      data.deviceEmergencyAccess?.productionPublicOverlayStagerImplemented === true &&
+      data.deviceEmergencyAccess?.productionPublicOverlayStagerImplemented ===
+        true &&
       data.deviceEmergencyAccess?.productionPublicOverlayStagerEvidence ===
         'docs/evidence/android-operator-overlay-stager-20260916.json' &&
-      data.deviceEmergencyAccess?.productionPublicOverlayInputStoredInRepository === false &&
-      data.deviceEmergencyAccess?.productionPublicOverlayActualValuesStaged === false &&
-      data.deviceEmergencyAccess?.productionPublicOverlayStrongBoxRequired === true &&
-      data.deviceEmergencyAccess?.productionPublicOverlayFactoryResetForcedOff === true &&
-      data.deviceEmergencyAccess?.singleDeviceAttestationChallengeValidationImplemented === true &&
-      data.deviceEmergencyAccess?.productionDeviceIdentityChallengeBoundAliasImplemented === true &&
-      data.deviceEmergencyAccess?.multiDeviceDynamicEnrollmentImplemented === false &&
-      data.deviceEmergencyAccess?.androidDeviceOwnerExecutionVerified === false &&
+      data.deviceEmergencyAccess
+        ?.productionPublicOverlayInputStoredInRepository === false &&
+      data.deviceEmergencyAccess?.productionPublicOverlayActualValuesStaged ===
+        false &&
+      data.deviceEmergencyAccess?.productionPublicOverlayStrongBoxRequired ===
+        true &&
+      data.deviceEmergencyAccess
+        ?.productionPublicOverlayFactoryResetForcedOff === true &&
+      data.deviceEmergencyAccess
+        ?.singleDeviceAttestationChallengeValidationImplemented === true &&
+      data.deviceEmergencyAccess
+        ?.productionDeviceIdentityChallengeBoundAliasImplemented === true &&
+      data.deviceEmergencyAccess?.multiDeviceDynamicEnrollmentImplemented ===
+        false &&
+      data.deviceEmergencyAccess?.androidDeviceOwnerExecutionVerified ===
+        false &&
       data.deviceEmergencyAccess?.hardwareDeviceAttestationVerified === false &&
-      data.deviceEmergencyAccess?.remoteProviderSessionRevocationImplemented === false &&
+      data.deviceEmergencyAccess?.remoteProviderSessionRevocationImplemented ===
+        false &&
       data.deviceEmergencyAccess?.factoryResetReleaseGateEnabled === false &&
       data.deviceEmergencyAccess?.productionCredentialProvisioned === false &&
       data.deviceEmergencyAccess?.physicalDeviceVerified === false &&
@@ -612,7 +644,7 @@ export function validateBaseline(
     read(resolve(root, data.deviceEmergencyAccess.policy)),
   );
   requireValue(
-      emergencyPolicy.schema === 'dev.rock-device-emergency-access/1' &&
+    emergencyPolicy.schema === 'dev.rock-device-emergency-access/1' &&
       emergencyPolicy.status ===
         'dock_agent_source_emulator_test_signed_physical_and_overlay_stager_verified_production_enrollment_pending' &&
       emergencyPolicy.activation?.singleOperatorAllowed === true &&
@@ -641,31 +673,48 @@ export function validateBaseline(
       emergencyPolicy.implementation?.persistentCommandQueueImplemented ===
         true &&
       emergencyPolicy.implementation?.appendOnlyAuditImplemented === true &&
-      emergencyPolicy.implementation?.operatorCommandWebAuthnSignatureRequired === true &&
-      emergencyPolicy.implementation?.operatorUserVerificationRequired === true &&
-      emergencyPolicy.implementation?.managementServerAloneCanIssueDeviceCommand === false &&
+      emergencyPolicy.implementation
+        ?.operatorCommandWebAuthnSignatureRequired === true &&
+      emergencyPolicy.implementation?.operatorUserVerificationRequired ===
+        true &&
+      emergencyPolicy.implementation
+        ?.managementServerAloneCanIssueDeviceCommand === false &&
       emergencyPolicy.implementation?.deviceSignedChannelImplemented === true &&
-      emergencyPolicy.implementation?.deviceIndependentCommandVerificationImplemented === true &&
+      emergencyPolicy.implementation
+        ?.deviceIndependentCommandVerificationImplemented === true &&
       emergencyPolicy.implementation?.androidServiceImplemented === true &&
       emergencyPolicy.implementation?.androidEmulatorTestsPassed === true &&
-      emergencyPolicy.implementation?.testSignedPhysicalPixelChecksPassed === true &&
+      emergencyPolicy.implementation?.testSignedPhysicalPixelChecksPassed ===
+        true &&
       emergencyPolicy.implementation?.testSignedPhysicalPixelCheckCount === 5 &&
       emergencyPolicy.implementation?.testSignedPhysicalPixelEvidence ===
         'docs/evidence/android-pixel-10-prefull-physical-20260916.json' &&
-      emergencyPolicy.implementation?.productionPublicOverlayStagerImplemented === true &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayStagerImplemented === true &&
       emergencyPolicy.implementation?.productionPublicOverlayStagerEvidence ===
         'docs/evidence/android-operator-overlay-stager-20260916.json' &&
-      emergencyPolicy.implementation?.productionPublicOverlayInputStoredInRepository === false &&
-      emergencyPolicy.implementation?.productionPublicOverlayActualValuesStaged === false &&
-      emergencyPolicy.implementation?.productionPublicOverlayStrongBoxRequired === true &&
-      emergencyPolicy.implementation?.productionPublicOverlayFactoryResetForcedOff === true &&
-      emergencyPolicy.implementation?.singleDeviceAttestationChallengeValidationImplemented === true &&
-      emergencyPolicy.implementation?.productionDeviceIdentityChallengeBoundAliasImplemented === true &&
-      emergencyPolicy.implementation?.multiDeviceDynamicEnrollmentImplemented === false &&
-      emergencyPolicy.implementation?.androidDeviceOwnerExecutionVerified === false &&
-      emergencyPolicy.implementation?.hardwareDeviceAttestationVerified === false &&
-      emergencyPolicy.implementation?.remoteProviderSessionRevocationImplemented === false &&
-      emergencyPolicy.implementation?.factoryResetReleaseGateEnabled === false &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayInputStoredInRepository === false &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayActualValuesStaged === false &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayStrongBoxRequired === true &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayFactoryResetForcedOff === true &&
+      emergencyPolicy.implementation
+        ?.singleDeviceAttestationChallengeValidationImplemented === true &&
+      emergencyPolicy.implementation
+        ?.productionDeviceIdentityChallengeBoundAliasImplemented === true &&
+      emergencyPolicy.implementation
+        ?.multiDeviceDynamicEnrollmentImplemented === false &&
+      emergencyPolicy.implementation?.androidDeviceOwnerExecutionVerified ===
+        false &&
+      emergencyPolicy.implementation?.hardwareDeviceAttestationVerified ===
+        false &&
+      emergencyPolicy.implementation
+        ?.remoteProviderSessionRevocationImplemented === false &&
+      emergencyPolicy.implementation?.factoryResetReleaseGateEnabled ===
+        false &&
       emergencyPolicy.implementation?.physicalDeviceVerified === false,
     '緊急access policyの単独初動・端末側強制・禁止権限・未実装境界を維持してください',
   );

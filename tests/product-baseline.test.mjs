@@ -21,6 +21,12 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
     () => validateBaseline(unsafeMaterialExecution),
     /Material Invention Core/,
   );
+  const falseProductCompletion = structuredClone(source);
+  falseProductCompletion.materialInvention.designStatus = 'product_complete';
+  assert.throws(
+    () => validateBaseline(falseProductCompletion),
+    /Material Invention Core/,
+  );
   const unsafeSpatialExecution = structuredClone(source);
   unsafeSpatialExecution.materialInvention.spatialDevelopment.physicalExecutionAllowed = true;
   assert.throws(
@@ -28,8 +34,12 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
     /Spatial Invention Studio/,
   );
   const renamedSpatialOs = structuredClone(source);
-  renamedSpatialOs.materialInvention.spatialDevelopment.operatingSystem = 'avocadoOS';
-  assert.throws(() => validateBaseline(renamedSpatialOs), /Spatial Invention Studio/);
+  renamedSpatialOs.materialInvention.spatialDevelopment.operatingSystem =
+    'avocadoOS';
+  assert.throws(
+    () => validateBaseline(renamedSpatialOs),
+    /Spatial Invention Studio/,
+  );
   const automaticPatentFiling = structuredClone(source);
   automaticPatentFiling.materialInvention.spatialDevelopment.automaticPatentFilingAllowed = true;
   assert.throws(
@@ -48,13 +58,19 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.throws(() => validateBaseline(osLosesCoreRole), /AIネイティブOS Core/);
   const gameBakedIntoCore = structuredClone(source);
   gameBakedIntoCore.northStar.applicationReleaseIndependence = false;
-  assert.throws(() => validateBaseline(gameBakedIntoCore), /AIネイティブOS Core/);
+  assert.throws(
+    () => validateBaseline(gameBakedIntoCore),
+    /AIネイティブOS Core/,
+  );
   const incomeGuarantee = structuredClone(source);
   incomeGuarantee.northStar.monthlyIncomeTargetNature = 'guaranteed_income';
   assert.throws(() => validateBaseline(incomeGuarantee), /AIネイティブOS Core/);
   const blanketCollection = structuredClone(source);
   blanketCollection.northStar.dataCollection.categorySpecificConsentRequired = false;
-  assert.throws(() => validateBaseline(blanketCollection), /AIネイティブOS Core/);
+  assert.throws(
+    () => validateBaseline(blanketCollection),
+    /AIネイティブOS Core/,
+  );
   const lostLocalAiBuildEvidence = structuredClone(source);
   lostLocalAiBuildEvidence.localAiRuntime.apkBuilt = false;
   assert.throws(

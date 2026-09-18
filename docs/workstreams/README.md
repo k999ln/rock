@@ -1,6 +1,6 @@
 # RockstarOS 設計・作業ストリーム案内
 
-更新日: 2026-09-15
+更新日: 2026-09-18
 
 このディレクトリは、既存の設計書を移動せず、作業分野ごとの入口を提供する。確定要望の正本は [製品ベース](../product-baseline.md)、進捗の正本は [data/project-status.json](../../data/project-status.json) であり、ここでは内容を置き換えない。
 
@@ -20,7 +20,7 @@
 - `blocked`: 必須の本人判断、機種、鍵、契約、provider、公開許可などが不足している。
 
 <!-- project-overview:start -->
-現在の機械可読進捗は120 task中81 done、22 in progress、16 planned、1 blocked。件数は作業量や製品完成率を表さない。
+現在の機械可読進捗は121 task中82 done、22 in progress、16 planned、1 blocked。件数は作業量や製品完成率を表さない。
 <!-- project-overview:end -->
 
 ## 作業ストリーム
@@ -38,6 +38,7 @@
 | [Game / Market / Fund](08-game-market-fund.md)                         | ゲーム交換、作者SDK、PAPER市場、自律ファンド | 実ゲームsandboxとprovider境界               |
 | [Business Pilots](09-business-pilots.md)                               | CSV、メルカリ、Fashion Brand Ops             | 第三者の真正な有料取引と継続利用            |
 | [Git / CI / Operations](10-git-ci-operations.md)                       | branch、PR、CI、進捗同期、証拠               | 現在のmerge競合解消とmain統合               |
+| [Material Invention / avocadoMini](11-material-invention-avocado-mini.md) | 物質digital twin、空間操作、安全、再計算、Patent AI | 合成scene／pose実装と四方向prototype       |
 
 ## 分類ルール
 

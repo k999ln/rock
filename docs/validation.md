@@ -1,5 +1,11 @@
 # 検証記録
 
+## avocadoMini共有用完成設計と全体構成 / 2026-09-18
+
+- [共有用完成設計書](rockstaros-avocado-mini-complete-design.md)へ、5分説明、全体構造、利用体験、四方向sensor、Core data、再計算、Patent AI、privacy、accessibility、安全境界、現在地、実装順、役割別参加入口、受入条件、用語集を統合した。[専用workstream](workstreams/11-material-invention-avocado-mini.md)からMAT05／MAT06へ直接参加できる。
+- 製品baseline v1.76は統合設計を正本として要求し、設計完成を製品完成へ変える改変を負例で拒否する。全体構成監査はMaterial Invention／avocadoMiniを含む12層・7経路を要求する。
+- sandbox Core、XR／interaction契約、設計書は存在するが、XR runtime、四方向sensor実機、simulation／Patent AI Provider、外部lab、実材料性能、特許性、量産は未完成という境界を維持する。
+
 ## Spatial Invention Studio／avocadoMini設計 / 2026-09-18
 
 - 利用者の確認を反映し、avocadoMiniをMaterial Invention Coreと並ぶ別機能ではなく、その中身を人が操作する標準製品体験へ統合した。機械可読baselineとpolicyは`primary_product_experience_not_optional_extension`を要求し、任意addonへ戻す変更を拒否する。

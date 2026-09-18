@@ -1,5 +1,7 @@
 # RockstarOS — 確定した製品ベース
 
+2026-09-18 共有用統合設計の正本化（v1.76）: RQ49の目的、avocadoMini四方向sensor、VR／AR／2D操作、安全境界、再計算、発明履歴、Patent AI、役割別の参加入口、実装順、受入条件を[共有用完成設計書](rockstaros-avocado-mini-complete-design.md)へ統合した。「設計完成」は実装、実機、材料性能、特許性、量産の完成を意味しない。担当作業の入口は[Material Invention / avocadoMini workstream](workstreams/11-material-invention-avocado-mini.md)とする。
+
 2026-09-18 Material Invention標準体験の統合（v1.75）: `avocadoMini Spatial Invention Studio`を別のVR／AR拡張ではなく、RQ49 Material Invention Coreそのものを人が扱う標準製品体験へ固定した。Coreが物質・候補・安全・証拠の正本、avocadoMiniが四方向sensorとhand interaction、Simulation Orchestratorが再計算、Invention Event LedgerとPatent AIが発明化支援を担当する。headsetがなくても2D fallbackで同じloopを利用できる。
 
 2026-09-18 Spatial Invention／avocadoMini設計（v1.74）: RQ48のVR応用とRQ49を接続し、四方向sensor／cameraで手を追跡して物質digital twinを接続・分離し、候補graphとsimulationを再計算する`Spatial Invention Studio`とRockstarOS reference device concept `avocadoMini`を設計した。操作履歴を既存Patent AIの発明開示・先行技術差分へ引き継ぐが、cameraによる物理物質操作、gestureでの物理実験承認、特許性・発明者の自動決定、自動出願は行わない。[XR設計](material-invention-xr.md)／[端末設計](avocado-mini-spatial-invention.md)。
@@ -573,7 +575,7 @@ avocadoMiniの操作履歴は、人の直接操作、AI提案、simulation、文
 
 2026-09-15 v1.58: Tool完了とProvider確認済み収益を分離したまま、Provider署名、job照合、鍵分離、Billing D1への一度だけ反映をROCK_READY fixtureで縦断合格した。実Provider sandbox、実収益、払出し、所有Pixel上のAI実行は未完了のまま維持する。
 
-2026-09-16 v1.63: 全11層の選択と6本のend-to-end flowを一つの構成監査へ固定。設計選択は適合、全component実装・全必須経路統合・productionは未完了と判定し、Pixel上のnative offline AI team loopをfull build前の最優先へ揃えた。
+2026-09-16 v1.63: 当時の全11層の選択と6本のend-to-end flowを一つの構成監査へ固定。2026-09-18 v1.76でMaterial Invention／avocadoMiniを加え、12層・7経路へ更新した。設計選択は適合、全component実装・全必須経路統合・productionは未完了と判定する。
 
 2026-09-16 v1.64: Local AI plan-only API v2とBrokerの二重検証を追加し、emulatorの0件停止、PixelのZema→2 Tool→結果・履歴を合格。native Sky永続handoffと全経路の再起動／失敗復旧は未完了として維持する。
 

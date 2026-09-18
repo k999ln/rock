@@ -1,5 +1,5 @@
 {
-  "version": "1.75",
+  "version": "1.76",
   "decidedAt": "2026-09-18",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -131,6 +131,9 @@
   "materialInvention": {
     "requested": true,
     "status": "sandbox_core_implemented_physical_runtime_not_connected",
+    "masterDesign": "docs/rockstaros-avocado-mini-complete-design.md",
+    "workstream": "docs/workstreams/11-material-invention-avocado-mini.md",
+    "designStatus": "integrated_complete_for_implementation_not_product_completion",
     "architecture": "docs/material-invention-core.md",
     "contract": "contracts/material-invention.json",
     "fixture": "contracts/material-invention-fixture.json",

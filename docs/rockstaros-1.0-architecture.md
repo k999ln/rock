@@ -1,6 +1,6 @@
 # RockstarOS 1.0 — ベース構成と進化方針
 
-2026-09-16現行設計: RQ48に基づく中核は交換可能な端末内LLM＋offline agentを持つAIネイティブOS。層別責任、model/runtime更新、記憶、仕事、外部作用の照合、Sky app/OS能力交渉、Zema共通契約、便利機能とGame/IPの縦断、Core/応用別受入は [AIネイティブOS共通設計](ai-native-os-architecture.md) を正本とする。本書のLinux/QEMU資産一覧は再利用対象であり、スマホ版の全機能実装済みを意味しない。
+2026-09-18現行設計: RQ48に基づく中核は交換可能な端末内LLM＋offline agentを持つAIネイティブOS。層別責任、model/runtime更新、記憶、仕事、外部作用の照合、Sky app/OS能力交渉、Zema共通契約、便利機能、Material Invention／avocadoMini、Game/IPの縦断、Core/応用別受入は [AIネイティブOS共通設計](ai-native-os-architecture.md) を正本とする。空間発明systemの共有用正本は[完成設計書](rockstaros-avocado-mini-complete-design.md)。本書のLinux/QEMU資産一覧は再利用対象であり、スマホ版の全機能実装済みを意味しない。
 
 RockstarOS 1.0は、現在の検証済み範囲を最初の製品ベースとして発表し、互換性を保ちながら改善するための名称である。現在のスマホOS開発主軸はPixel 10／GL066／`frankel`で、QEMU Developer Previewは独立した配布候補として維持する。1.0という製品版番号を、実機対応・本番金融・一般公開の合格証明に使わない。
 
@@ -114,6 +114,14 @@ WebにはSky、Zema、仕事作成・実行・確認、本人別手入力会計�
 
 進化余地は、companion app、device enrollment、通知、遠隔確認、Web管理、正式AOSP device portである。
 
+## 17. Material Invention／avocadoMini
+
+avocadoMiniは、RockstarOS上で物質digital twinを手で接続・分離し、新しい材料・用途・工程の候補を考える標準製品体験である。north／east／south／westの四方向sensorで中央の操作空間を捉え、Material Invention Coreが候補graph、安全制約、工程、根拠、版を管理する。VR／AR headsetがなくても同じ仕事を2D画面で完了できる。
+
+現在は、二物質・複数比率・工程条件から再現可能な候補を作る装置非接続sandbox Coreと、XR、四方向sensor、Patent AIまでの統合設計がある。決定的なscene projection、合成pose、四方向sensor実機、simulation Provider、Patent AI bridge、外部ラボは未実装または未受入である。cameraやgestureは実物を動かさず、物理実験、外部共有、出願を承認しない。simulationは実測、Patent AIは法律判断の代わりにならない。
+
+全体像、用語、利用体験、安全境界、役割別の参加入口、実装順、合格条件は[共有用完成設計書](rockstaros-avocado-mini-complete-design.md)、担当作業は[Material Invention / avocadoMini workstream](workstreams/11-material-invention-avocado-mini.md)を参照する。
+
 ## 1.0で発表する範囲
 
-1.0 Coreは端末内LLM、offline agent、権限・仕事・成果・停止・保存・復旧を持つOS基盤として受入する。Sky/Zemaを最初の利用経路とし、便利Tool、Game/IP、実収益/Wallet、Fundは独立した応用受入に分ける。Gameの制作・試遊をFund完成まで一律延期しない。Linux/QEMUの署名Tool・合成Wallet・Game SDK等は既存資産として維持するが、GL066 OS搭載済みと表示しない。最初の配布ラベルはDeveloper Previewとし、同一環境で合格した機能だけを実演する。
+1.0 Coreは端末内LLM、offline agent、権限・仕事・成果・停止・保存・復旧を持つOS基盤として受入する。Sky/Zemaを最初の利用経路とし、便利Tool、Material Invention／avocadoMini、Game/IP、実収益/Wallet、Fundは独立した応用受入に分ける。Material InventionやGameの開発をFund完成まで一律延期しない一方、それらの未完成をCore bootの失敗にもしない。Linux/QEMUの署名Tool・合成Wallet・Game SDK等は既存資産として維持するが、GL066 OS搭載済みと表示しない。最初の配布ラベルはDeveloper Previewとし、同一環境で合格した機能だけを実演する。

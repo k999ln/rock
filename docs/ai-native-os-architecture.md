@@ -1,6 +1,6 @@
 # RockstarOS — AIネイティブOSの共通設計
 
-状態: RQ48を実装へ落とす到達設計。2026-09-16、基準source `678e9c9`。**本文の新しい契約・状態名・数値目標は提案であり、現行APIや受入済み機能の宣言ではない。** 実装済みの範囲は第8節のsourceと証拠で区別する。製品目的は[north star](product-north-star-20260915.md)、現在の判定は[全体構成](system-composition.md)、作業入口は[Android / Device / Local AI](workstreams/07-android-device-local-ai.md)。RQ49の物質・配合・工程探索は、このCoreの権限、仕事、Tool、receiptを再利用する独立systemとして[Material Invention Core設計](material-invention-core.md)へ分離する。
+状態: RQ48を実装へ落とす到達設計。2026-09-18更新。**本文の新しい契約・状態名・数値目標は提案であり、現行APIや受入済み機能の宣言ではない。** 実装済みの範囲は第8節のsourceと証拠で区別する。製品目的は[north star](product-north-star-20260915.md)、現在の判定は[全体構成](system-composition.md)、作業入口は[Android / Device / Local AI](workstreams/07-android-device-local-ai.md)。RQ49の物質・配合・工程探索とavocadoMiniは、このCoreの権限、仕事、Tool、receiptを再利用する主要systemであり、全体像は[空間発明システム完成設計書](rockstaros-avocado-mini-complete-design.md)、Core詳細は[Material Invention Core設計](material-invention-core.md)を正本とする。
 
 ## 1. 固定する中核と依存方向
 
@@ -15,6 +15,7 @@
 | Tool / MCP / Provider | 個別業務・ゲーム・生成・外部照合 | 宣言された入力/出力とscopeだけ。独立署名・版・UID/隔離・quota。OS bootの必須依存にしない |
 | Sky app / OS接続層 | Tool/自動化Fund発見、導入・接続・実行端末選択 | appは複数端末の操作面、OS側はcapability検査と選択保存。appにBroker管理権限を渡さない |
 | Zema / 応用UI | 依頼、役割、進捗、承認案内、停止、成果 | 正本snapshotとeventだけを表示。Game/IP/動画/VRも同じ仕事・artifact契約を使う |
+| Material Invention / avocadoMini | 物質・工程・安全・証拠の版管理、四方向sensor操作、VR／AR／2D表示、差分再計算、Patent AI引継ぎ | 共通Coreの仕事・権限・Tool・receiptを使う。camera、gesture、simulation、Patent AIへ装置直接権限や最終判断権限を渡さない |
 | Wallet / 収益Provider | 確認済み収益・費用・資産の照合 | 完了receiptとは別のEarning Receipt。金融接続不在でもCoreと非金融Tool/Gameは動く |
 
 OSが保証する契約と更新可能な実装を分ける。Sky、Zema、LLM runtime、Tool、外部Providerのapp-only更新では原則OS imageを再buildしない。framework、SELinux、privapp/product構成、boot/vendor/AVBの変更はOS側の受入をやり直す。Operator Dockは別配備、端末Agentは既存の限定scopeに従い、agentの記憶やWalletへの裏口にしない。
@@ -86,7 +87,7 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 
 移植時は[Web workflow](../lib/workflow.ts)のrevision競合・command冪等性・sample不合格・review必須をfixtureの共通期待値にする。Androidはowner別DBとBinder境界を持つが、汎用job revision/command集合がWebと完全一致する実装はまだない。将来のschema migrationは旧データを保持し、未知版をresetせず拒否し、rollback readerの互換性を検査する。
 
-## 7. 同じCoreで二つの縦断を作る
+## 7. 同じCoreで複数の縦断を作る
 
 | 共通段階 | 便利機能: 原稿の整理・記事準備 | Game/IP: 本人所有の短編テキスト冒険を制作・試遊する案 |
 | --- | --- | --- |
@@ -102,6 +103,8 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 
 ゲーム点数・進行度はgame側の非金融data、Provider確認済み販売収益はEarning Receipt、交換可能な資産はWallet/Providerの別台帳で管理する。点数→実資金の暗黙換算や動画再生数→収益の推定記帳は禁止。交換を追加するときだけGX01のquote/予約/両台帳/照合、方向・rate・手数料・本人承認を独立受入する。Game/IPの制作と試遊はWallet/Fundの完成を待たない。
 
+Material Invention／avocadoMiniは第三の縦断である。Zemaで目標と制約を仕事にし、Skyで材料DB、simulation、Patent AI、外部ラボを選び、四方向sensorまたは2D操作からCoreへ版付き仮説を渡す。Safety Gateの後だけsimulationを実行し、人、AI、文献、予測、実測を分離したInvention Event Ledgerを成果とする。gestureは物理実験、外部共有、出願の承認にならない。詳細と役割別入口は[共有用完成設計書](rockstaros-avocado-mini-complete-design.md)に従う。
+
 ## 8. 既存実装との対応と不足
 
 | 契約 | 再利用する現物 | 現在地と次の実装 |
@@ -112,6 +115,7 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 | Sky/Zema | `android/shell-api/.../IShellApi.aidl` v4、`lib/sky-zema-handoff.ts`、`lib/workflow.ts` | native selection schema v2、Webの短命handoff/本人別jobが存在。app横断同期・一般Tool選択は未実装 |
 | 収益/Wallet | `lib/earning-bridge.ts`、`lib/earning-receipt.ts`、既存Billing Worker、PlatformStore | Rock所有fixtureでToolと署名収益の相関・冪等照合。外部sandbox/返金/chargeback/払出し未受入 |
 | Game/作者 | `systems/rock-star-os/os/wallet_backend/runtime_contracts.py`、[GX01](gx01-contract-implementation-plan.md)、[SDK契約](game-api-contract-draft.md) | Linux fixture/SDKの限定受入。正式ゲーム・Android port・本書のstory Toolは未実装 |
+| Material Invention／avocadoMini | `lib/material-invention.ts`、`contracts/material-invention*.json`、`contracts/avocado-mini-spatial-interaction.json` | 装置非接続sandbox Coreと統合設計は完成。決定的scene、合成pose、四方向sensor実機、simulation／Patent AI bridgeは未実装 |
 | backup/運用 | `RecoverableBackupManager`、`PlatformStore`、`android/operator-agent/` | backup v2と制限付きOperatorのsource/試験あり。物理wipe復元、production credential、StrongBox登録、Device Owner、最終SELinuxは未受入 |
 
 `...`は上表のJava package配下の省略表記であり、新しいファイルを示さない。[実機23項目](evidence/android-pixel-10-prefull-physical-20260916.json)は既存OS上の試験署名APK、実再起動、backup非破壊exportの証拠。RockstarOS full build、flash、production鍵、OTA/純正復旧や外部売上の合格ではない。
@@ -128,6 +132,7 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 | Sky複数端末 | capability非互換・古いcache拒否、端末選択、競合revision、再接続、二重writer拒否・移送 | 初期一台Coreを待たせずadapter/fixtureを開発。受入前は対応表示しない |
 | 便利Tool | 上の原稿縦断を同一入力/品質で比較し、確認時間と失敗復旧を測定 | 売上なしでも便益を合格にできる |
 | Game/IP | 上の制作→試遊→save復旧とowner分離を実証 | Core/APIを共有して並行開発。金融交換、動画、VRはそれぞれ別受入 |
+| Material Invention／avocadoMini | 合成graph→決定的scene→合成pose操作→安全gate→差分simulation receipt→Patent AI packetを受入。実機は四方向校正、誤操作、privacy、accessibilityを別受入 | Core/APIを共有して並行開発。simulation、実材料、外部ラボ、特許性、量産は互いを代替しない |
 | 実収益/Wallet | 外部sandboxで成果→署名receipt→Wallet、重複、返金/chargeback、結果不明、払出しを照合。LIVEは対象条件に従う | Core合格で代替不可。未合格ならlive収益表示・収益利用の公開は不可 |
 | Fund改善 | 複数Toolの役割/順序/予算/停止、反復した確認済み費用/収益、旧構成との比較 | 実績不足はPAPER。非金融の構成試験は並行可能、利回り保証なし |
 

@@ -109,6 +109,20 @@
       "evidence": ["docs/avocado-mini-spatial-invention.md"]
     },
     {
+      "id": "MAT07",
+      "title": "誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化",
+      "status": "done",
+      "dependsOn": ["MAT04"],
+      "evidence": [
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "docs/workstreams/11-material-invention-avocado-mini.md",
+        "docs/system-composition.md",
+        "data/system-composition-audit.json",
+        "docs/ai-native-os-architecture.md",
+        "docs/rockstaros-1.0-architecture.md"
+      ]
+    },
+    {
       "id": "SKY01",
       "title": "旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化",
       "status": "done",
