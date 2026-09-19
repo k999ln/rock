@@ -24,7 +24,7 @@ RockstarOSは、交換可能な高性能ローカルLLMとoffline agent runtime�
 - **Home**: Sky、Zema、Wallet、Market、Settingsへの標準入口。仕事はZema、CSVはSky内のToolとして開きます。
 - **Sky**: Toolの発見、作者・版・権限・料金・実行先の確認と接続を担当し、選んだToolと依頼をZemaへ安全に引き継ぎます。
 - **Zema**: 接続済みToolへの依頼、追加確認、方向修正、承認、処理状態、結果、仕事履歴を一つの会話にまとめます。
-- **Decision Fabric（host fixture）**: [`lib/decision/index.ts`](lib/decision/index.ts)の`DecisionHarness`は、決定的な`CODE`経路、固定質問の型付き判断、入力と回答の検査、送信先・時間と事前見積りに基づく費用ゲート、内容を保存しないreceiptを提供します。`MockDecisionProvider`は`allowMock: true`を明示した試験だけで使用します。`TypeSafeJevProvider`は公開データ専用のserver側read-only adapterで、実APIキー、Android Local Qwen接続、本番routeは未受入です。検証は`node --experimental-strip-types --test tests/decision-provider.test.mjs tests/decision-integration.test.mjs`。
+- **Decision Fabric（host実装・公開fixture live smoke確認済み）**: [`lib/decision/index.ts`](lib/decision/index.ts)の`DecisionHarness`は、決定的な`CODE`経路、固定質問の型付き判断、入力と回答の検査、送信先・時間と事前見積りに基づく費用ゲート、内容を保存しないreceiptを提供します。`MockDecisionProvider`は`allowMock: true`を明示した試験だけで使用します。`TypeSafeJevProvider`は公開データ専用のserver側read-only adapterです。2026-09-20に利用者が承認した既存TypeSafe APIキーで公開合成fixtureを1件だけ実接続し、`green`、model `jev-1.13.0`、input 367／output 31 tokensを確認しました。Android Local Qwen接続、Cloud LLM、OS image統合、実機試験、domain別calibration、実際の課金額、継続的なキー登録・secret store運用は未検証です。検証は`node --experimental-strip-types --test tests/decision-provider.test.mjs tests/decision-integration.test.mjs`。
 - **MCP**: stdio／Streamable HTTPをConnection Passportで管理します。現在の標準実接続は「このPC」で、Sky Cloudとprovider MCPは準備中です。
 - **Wallet**: 仕事、費用、検証済み収益、Rock利用料、払出しを別状態とreceiptで管理します。売上0なら請求0、未達分の債務化・翌月繰越はありません。
 - **Market / Fund**: 型付き価値の市場と実績更新型ファンドはPAPER限定です。LIVE注文、清算、自動再投資は無効です。

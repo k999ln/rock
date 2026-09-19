@@ -1,10 +1,12 @@
 # RockstarOS — 事業・設計・進捗
 
-## 2026-09-20 — Jev Decision Fabricのhost側実装に着手
+## 2026-09-20 — Jev Decision Fabricのhost実装と最初のlive smokeを確認
 
-GitHubの`main`にはJev実行コードがなく、`codex/pixel10-compile-bringup-20260917`にはAI08の設計・契約・安全policyとSky catalog候補がある。既存設計を基点にAI07のPhase 0として`lib/decision/`へ型、入力・回答検査、決定的Router、bounded Harness、hard Policy、fixture専用Mock、内容を含まないDecision Receipt、server側TypeSafe read-only adapterを追加した。TypeSafe公式HTTP APIとモデル制限を再確認し、adapterは公開データだけを許す。質問文も秘密情報を検査し、stateは検証済みの内容へ固定する。外部送信には正の費用予算と事前見積りを要求するが、TypeSafe応答から実費は確認できず、厳密な課金上限は保証しない。`tests/decision-provider.test.mjs`と`tests/decision-integration.test.mjs`のhost fixture 16件、`npm run typecheck`は合格した。現環境に`TYPESAFE_API_KEY`はなく、Jevへの実リクエスト、Android BinderのLocal Qwen adapter、Cloud LLM、OS image統合、実機試験は未実施。domain別200件のcalibrationと実provider受入が残るため、AI07は`in_progress`のままとする。
+AI07のPhase 0として`lib/decision/`へ型、入力・回答検査、決定的Router、bounded Harness、hard Policy、fixture専用Mock、内容を含まないDecision Receipt、server側TypeSafe read-only adapterを追加した。TypeSafe公式HTTP APIとモデル制限を再確認し、adapterは公開データだけを許す。質問文も秘密情報を検査し、stateは検証済みの内容へ固定する。外部送信には正の費用予算と事前見積りを要求するが、TypeSafe応答から実費は確認できず、厳密な課金上限は保証しない。
 
-検証: `PATH=/opt/homebrew/bin:$PATH npm run verify`が合格。既定のPython 3.11はこの端末で`os.waitid`を持たず、既存PC Citations試験が実行条件不足で止まったため、`os.waitid`のある端末内Python 3.14をPATH先頭にして再実行した。新規のhost fixture 16件、型、lint、Web buildを含む全体gateは合格した。次は所有fixtureのdomain別calibration、TypeSafe APIキーをsecret storeへ設定したshadow実接続、既存Android BinderのLocal Qwen Provider化、Pixelでのoffline再受入を順に進める。
+2026-09-20、利用者が承認した既存TypeSafe APIキーを使い、`TypeSafeJevProvider`から公開合成fixtureを1件だけread-only送信した。結果は`green`、modelは`jev-1.13.0`、usageはinput 367 tokens／output 31 tokensだった。これはhost adapterと一回の公開データ実接続を確認する証拠であり、Android BinderのLocal Qwen adapter、Cloud LLM、OS image統合、Pixel実機試験、domain別200件のcalibration、実際の課金額、継続的なキー登録・secret store・rotation・失効運用は未検証である。AI07は`in_progress`のままとする。
+
+検証: `PATH=/opt/homebrew/bin:$PATH npm run verify`が合格。既定のPython 3.11はこの端末で`os.waitid`を持たず、既存PC Citations試験が実行条件不足で止まったため、`os.waitid`のある端末内Python 3.14をPATH先頭にして再実行した。host fixture 16件、型、lint、Web buildを含む全体gateと、今回のlive smoke結果を確認した。次はキーの継続運用受入、所有fixtureのdomain別calibration、既存Android BinderのLocal Qwen Provider化、Pixelでのoffline再受入を順に進める。
 
 ## 2026-09-18 — avocadoMiniをビリヤード台規模のFull-scale発明台へ拡張
 
