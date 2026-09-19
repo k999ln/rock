@@ -2,7 +2,7 @@
 
 版: 1.0 / 2026-09-18  
 対象: Jev / TypeSafe、Local Qwen、Cloud LLM、Codex、RAG、Market、Wallet、MCP、Sky / Zema  
-状態: **設計確定・実装未完**。既存のPixel 10向けLocal AI実装を土台にするが、本書のDecisionProvider、Router、Harness、TypeSafe接続、RAG、Cloud fallbackはまだ実装済みではない。
+状態: **設計確定・host側Phase 0の限定実装**。既存のPixel 10向けLocal AI実装を土台にする。`lib/decision/`のProvider契約、Mock、Router、Harness、Policy、TypeSafeのserver側read-only adapterは固定fixtureで試験済み。Android Brokerへの統合、実APIキーでのTypeSafe接続、Local Qwen共通Provider、RAG、Cloud fallback、実機受入は未完了。
 
 ## 0. この設計を一文でいうと
 
@@ -62,6 +62,10 @@ JevもQwenもCloud LLMも、送金、購入、削除、公開、merge、装置�
 | verification、routing、retrieval、guardrailが想定用途    | Harnessの判断・検証部品として使い、OS権限判定者にはしない                   |
 
 参照: [TypeSafe Introduction](https://docs.typesafe.ai/introduction)、[Quick start](https://docs.typesafe.ai/introduction/quickstart)、[Primitives](https://docs.typesafe.ai/primitives)、[Confidence](https://docs.typesafe.ai/confidence)、[Use Case Map](https://docs.typesafe.ai/concepts/use-case-map)。性能、費用、精度に関するTypeSafe側の数値はvendor claimとして扱い、RockstarOSの合格値にはしない。
+
+2026-09-20再確認: [公式HTTP API](https://docs.typesafe.ai/api)は`POST /v1/systemone`のhosted APIを公開し、`state`・`model`・`questions`を受け取る。`Choice`／`Score`／`Noul`はそれぞれ`choice`／`score`／`noul`として返る。OS共通契約の`boolean_probability`は`Noul`へ変換する必要がある。現行の[モデル一覧](https://docs.typesafe.ai/models)では`jev-1.13.0`と移動可能な`jev-latest` alias、テキスト入力のみ、英語で最も高い精度、日本語を含むCJKは個別評価が必要と明記される。thresholdを調整する場合はaliasを固定版へ置き換えて再評価する。[既知の限界](https://docs.typesafe.ai/model-jaggedness/jev-1.13)は数値計算、日時比較、長い無関係なstate、敵対的入力、多段推論、文章生成を挙げる。ローカルJevのweightやモバイルruntimeはこのAPI資料から確認できない。
+
+host側TypeSafe adapterは外部送信前に正の費用予算と呼出し単位の見積りを要求する。公式APIの応答はtoken使用量を返すが確定した請求額は返さないため、見積りを`usage.costMicros`へ実費として記録しない。この段階では実費の厳密な上限を保証できず、実接続と課金の受入は未実施とする。
 
 ### Jevが行わないこと
 
@@ -615,16 +619,16 @@ backupはpolicy、provider profile、仕事状態、receipt参照を含め、API
 | ---------------------------------------- | ---------------------------------- | ---------------- |
 | `contracts/decision-provider.json`       | provider中立schema                 | 本設計と同時追加 |
 | `data/decision-fabric-policy.json`       | routing、安全不変条件、段階        | 本設計と同時追加 |
-| `lib/decision/types.ts`                  | 型                                 | 未実装           |
-| `lib/decision/router.ts`                 | deterministic routing              | 未実装           |
-| `lib/decision/harness.ts`                | provider実行・合成・retry          | 未実装           |
-| `lib/decision/policy.ts`                 | hard authorization                 | 未実装           |
-| `lib/decision/providers/mock.ts`         | fixture provider                   | 未実装           |
+| `lib/decision/types.ts`                  | 型                                 | host側実装・型検査済み |
+| `lib/decision/router.ts`                 | deterministic routing              | host側実装・fixture試験済み |
+| `lib/decision/harness.ts`                | provider実行・合成・retry          | host側実装・fixture試験済み |
+| `lib/decision/policy.ts`                 | hard authorization                 | host側実装・fixture試験済み。OS Broker権限へ未統合 |
+| `lib/decision/providers/mock.ts`         | fixture provider                   | fixture専用で実装・試験済み |
 | `lib/decision/providers/local-qwen.ts`   | Binder / local adapter             | 未実装           |
-| `lib/decision/providers/typesafe-jev.ts` | TypeSafe API adapter               | 未実装           |
+| `lib/decision/providers/typesafe-jev.ts` | TypeSafe API adapter               | server側read-only実装・mock fetch試験済み。実API未接続 |
 | `lib/decision/providers/cloud.ts`        | cloud adapter                      | 未実装           |
 | `lib/decision/verifier.ts`               | independent verification           | 未実装           |
-| `tests/decision-*.test.mjs`              | safety / routing / failure fixture | 未実装           |
+| `tests/decision-*.test.mjs`              | safety / routing / failure fixture | 16 host fixture試験済み。domain別200件calibrationは未実施 |
 
 ## 25. 受入条件
 

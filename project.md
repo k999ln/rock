@@ -1,5 +1,11 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-20 — Jev Decision Fabricのhost側実装に着手
+
+GitHubの`main`にはJev実行コードがなく、`codex/pixel10-compile-bringup-20260917`にはAI08の設計・契約・安全policyとSky catalog候補がある。既存設計を基点にAI07のPhase 0として`lib/decision/`へ型、入力・回答検査、決定的Router、bounded Harness、hard Policy、fixture専用Mock、内容を含まないDecision Receipt、server側TypeSafe read-only adapterを追加した。TypeSafe公式HTTP APIとモデル制限を再確認し、adapterは公開データだけを許す。質問文も秘密情報を検査し、stateは検証済みの内容へ固定する。外部送信には正の費用予算と事前見積りを要求するが、TypeSafe応答から実費は確認できず、厳密な課金上限は保証しない。`tests/decision-provider.test.mjs`と`tests/decision-integration.test.mjs`のhost fixture 16件、`npm run typecheck`は合格した。現環境に`TYPESAFE_API_KEY`はなく、Jevへの実リクエスト、Android BinderのLocal Qwen adapter、Cloud LLM、OS image統合、実機試験は未実施。domain別200件のcalibrationと実provider受入が残るため、AI07は`in_progress`のままとする。
+
+検証: `PATH=/opt/homebrew/bin:$PATH npm run verify`が合格。既定のPython 3.11はこの端末で`os.waitid`を持たず、既存PC Citations試験が実行条件不足で止まったため、`os.waitid`のある端末内Python 3.14をPATH先頭にして再実行した。新規のhost fixture 16件、型、lint、Web buildを含む全体gateは合格した。次は所有fixtureのdomain別calibration、TypeSafe APIキーをsecret storeへ設定したshadow実接続、既存Android BinderのLocal Qwen Provider化、Pixelでのoffline再受入を順に進める。
+
 ## 2026-09-18 — avocadoMiniをビリヤード台規模のFull-scale発明台へ拡張
 
 利用者の明示指示により、四方向sensorを使う空間発明端末の最終製品目標を、ビリヤード台ほどの幅へ具体化した。[端末・interaction設計](docs/avocado-mini-spatial-invention.md)へ、本体約3.0 m × 1.7 m × 高さ0.9 m、有効操作領域約2.4 m × 1.2 m × 高さ1.3 mの初期budget、1〜2人操作、各方向2〜3光学viewpoint、表示と触覚の段階、安全境界を追加した。
@@ -646,7 +652,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-18 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 86/126件
+最終更新: 2026-09-20 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 86/126件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -658,7 +664,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI08 | Jev／TypeSafe・Local Qwen・Cloud LLMをcode主導で統合するDecision Fabric全体詳細設計と機械可読安全契約を固定 | 完了 | [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) |
-| AI07 | Jev／TypeSafe・Local Qwen・Cloud LLM・deterministic codeをDecisionProviderとRouter／Harnessへ統合 | 未着手 | [記録](docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md) · [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) · [記録](docs/jev-ecosystem-integration-design.md) · [記録](docs/ai-native-os-architecture.md) |
+| AI07 | Jev／TypeSafe・Local Qwen・Cloud LLM・deterministic codeをDecisionProviderとRouter／Harnessへ統合 | 進行中 | [記録](docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md) · [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) · [記録](lib/decision/index.ts) · [記録](lib/decision/providers/mock.ts) · [記録](lib/decision/providers/typesafe-jev.ts) · [記録](tests/decision-provider.test.mjs) · [記録](tests/decision-integration.test.mjs) · [記録](docs/jev-ecosystem-integration-design.md) · [記録](docs/ai-native-os-architecture.md) |
 | MAT01 | RQ49 Material Invention Coreのentity・発明loop・安全境界を設計へ固定 | 完了 | [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/material-invention-core.md) |
 | MAT02 | 二物質・複数比率・工程条件のsandbox候補graphとfail-closed安全検査を実装 | 完了 | [記録](contracts/material-invention.json) · [記録](contracts/material-invention-fixture.json) · [記録](lib/material-invention.ts) · [記録](tests/material-invention.test.mjs) · [記録](docs/material-invention-core.md) · [記録](docs/validation.md) |
 | MAT03 | Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入 | 未着手 | [記録](docs/material-invention-core.md) |
