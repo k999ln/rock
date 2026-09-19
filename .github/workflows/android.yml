@@ -33,12 +33,11 @@ jobs:
       - name: Compile Android packages and test shared SQLite core
         run: gradle -p android :core:test :tool-sdk:testDebugUnitTest :shell-api:assembleDebug :automation:assembleDebug :shell:assembleDebug :article-tool:assembleDebug :operator-agent:assembleDebug :jev-preview:assembleDebug :jev-preview:assembleRelease :jev-preview:testDebugUnitTest :article-tool:lintDebug :operator-agent:lintDebug :automation:lintDebug :shell:lintDebug :jev-preview:lintDebug :jev-preview:lintRelease --no-daemon
       - name: Upload Jev Pixel preview debug APK
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: jev-pixel-preview-debug-${{ github.run_id }}
           path: android/jev-preview/build/outputs/apk/debug/jev-preview-debug.apk
-          if-no-files-found: ignore
+          if-no-files-found: error
           retention-days: 7
       - name: Compare Java tools with existing business behavior
         run: node --experimental-strip-types scripts/check-os-parity.mjs
