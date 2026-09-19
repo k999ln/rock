@@ -19,7 +19,7 @@ public final class PixelJevPreviewProtocolTest {
 
     @Test public void acceptsSafeErrorStateWithoutProviderDetails() throws Exception {
         PixelJevPreviewDebug.PreviewResult result = PixelJevPreviewDebug.parse(
-            "{\"status\":\"timeout\",\"answer\":\","
+            "{\"status\":\"timeout\",\"answer\":\"\","
                 + "\"token\":{\"input\":0,\"output\":0},\"model\":\"\"}");
         assertEquals("timeout", result.status);
         assertEquals("", result.answer);
