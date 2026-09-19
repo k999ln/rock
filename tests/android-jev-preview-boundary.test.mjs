@@ -17,7 +17,7 @@ void test('Jev network access exists only in the standalone debug preview varian
   assert.equal(previewManifest.includes('networkSecurityConfig'), false);
   assert.equal(previewManifest.includes('android.intent.action.MAIN'), false);
   assert.equal(previewManifest.includes('android.intent.category.LAUNCHER'), false);
-  assert.match(previewManifest, /android:name="\.MainActivity" android:exported="false"/u);
+  assert.match(previewManifest, /android:name="\.MainActivity"\s*\/>/u);
   assert.match(shellManifest, /android:usesCleartextTraffic="false"/u);
   assert.match(shellAospManifest, /android:usesCleartextTraffic="false"/u);
   assert.match(previewManifest, /android:usesCleartextTraffic="false"/u);
