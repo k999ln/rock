@@ -48,7 +48,7 @@ public final class PixelJevPreviewDebug {
             status.setText("Jev physical preview: relayへ接続中…");
             message.setText("Jev previewは固定公開fixtureだけを送信します。");
             worker.execute(() -> {
-                final String resultText;
+                String resultText;
                 try {
                     resultText = format(request());
                 } catch (PreviewException error) {
@@ -56,8 +56,9 @@ public final class PixelJevPreviewDebug {
                 } finally {
                     worker.shutdown();
                 }
+                final String displayResult = resultText;
                 activity.runOnUiThread(() -> {
-                    if (!activity.isDestroyed()) status.setText(resultText);
+                    if (!activity.isDestroyed()) status.setText(displayResult);
                 });
             });
         });
@@ -161,13 +162,13 @@ public final class PixelJevPreviewDebug {
     }
 
     private static String requiredString(JSONObject object, String key) throws PreviewException {
-        Object value = object.get(key);
+        Object value = object.opt(key);
         if (!(value instanceof String)) throw new PreviewException("RELAY_INVALID_RESPONSE");
         return (String) value;
     }
 
     private static int nonNegativeInt(JSONObject object, String key) throws PreviewException {
-        Object value = object.get(key);
+        Object value = object.opt(key);
         if (!(value instanceof Number)) throw new PreviewException("RELAY_INVALID_RESPONSE");
         double numeric = ((Number) value).doubleValue();
         if (!Double.isFinite(numeric) || numeric < 0 || numeric > Integer.MAX_VALUE || numeric != Math.rint(numeric))
