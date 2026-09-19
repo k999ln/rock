@@ -88,6 +88,15 @@
         "lib/decision/providers/typesafe-jev.ts",
         "tests/decision-provider.test.mjs",
         "tests/decision-integration.test.mjs",
+        "scripts/jev-pixel-relay.mjs",
+        "tests/jev-pixel-relay.test.mjs",
+        "tests/android-jev-preview-boundary.test.mjs",
+        "android/jev-preview/src/main/AndroidManifest.xml",
+        "android/jev-preview/src/debug/AndroidManifest.xml",
+        "android/jev-preview/src/debug/res/xml/pixel_jev_preview_network_security.xml",
+        "android/jev-preview/src/debug/java/dev/rock/jevpreview/PixelJevPreviewDebug.java",
+        "android/jev-preview/src/test/java/dev/rock/jevpreview/PixelJevPreviewProtocolTest.java",
+        "docs/workstreams/07-android-device-local-ai.md",
         "docs/jev-ecosystem-integration-design.md",
         "docs/ai-native-os-architecture.md"
       ]

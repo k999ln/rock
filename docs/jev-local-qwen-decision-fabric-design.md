@@ -2,7 +2,7 @@
 
 版: 1.0 / 2026-09-18  
 対象: Jev / TypeSafe、Local Qwen、Cloud LLM、Codex、RAG、Market、Wallet、MCP、Sky / Zema  
-状態: **設計確定・host側Phase 0の限定実装**。既存のPixel 10向けLocal AI実装を土台にする。`lib/decision/`のProvider契約、Mock、Router、Harness、Policy、TypeSafeのserver側read-only adapterは固定fixtureで試験済み。Android Brokerへの統合、実APIキーでのTypeSafe接続、Local Qwen共通Provider、RAG、Cloud fallback、実機受入は未完了。
+状態: **設計確定・host側Phase 0とdebug-only Pixel relay previewの限定実装**。既存のPixel 10向けLocal AI実装を土台にする。`lib/decision/`のProvider契約、Mock、Router、Harness、Policy、TypeSafeのserver側read-only adapterは固定fixtureで試験済みで、独立した`android/jev-preview`へ固定公開fixtureをMac loopback relayへ読むdebug専用clientを追加した。Android Broker／Shellへの統合、実APIキーでのPixel接続受入、Local Qwen共通Provider、RAG、Cloud fallback、物理実機受入は未完了。
 
 ## 0. この設計を一文でいうと
 
@@ -587,6 +587,7 @@ backupはpolicy、provider profile、仕事状態、receipt参照を含め、API
 - API adapter、secret管理、atomic question registry、response validationを実装。
 - intent/risk/RAG rerank/result verificationをshadow modeで評価。
 - domain別thresholdを固定する。
+- standalone debug-only Pixel clientから固定public choice fixtureを一度だけrelayへ送り、端末にsecretやTool作用を持たせずに接続境界を確認する。これは実機受入やAndroid Binder Providerの完了条件ではない。
 
 合格: vendor数値ではなくowned fixtureで基準を満たし、TypeSafe停止時に安全に縮退する。
 
@@ -625,7 +626,9 @@ backupはpolicy、provider profile、仕事状態、receipt参照を含め、API
 | `lib/decision/policy.ts`                 | hard authorization                 | host側実装・fixture試験済み。OS Broker権限へ未統合 |
 | `lib/decision/providers/mock.ts`         | fixture provider                   | fixture専用で実装・試験済み |
 | `lib/decision/providers/local-qwen.ts`   | Binder / local adapter             | 未実装           |
-| `lib/decision/providers/typesafe-jev.ts` | TypeSafe API adapter               | server側read-only実装・mock fetch試験済み。実API未接続 |
+| `lib/decision/providers/typesafe-jev.ts` | TypeSafe API adapter               | server側read-only実装・mock fetch／公開fixture host live smoke済み。Pixel／実機接続未受入 |
+| `scripts/jev-pixel-relay.mjs`            | Mac loopbackの一回限定relay             | 固定fixture・cost／timeout gate・protocol test済み。実機未実行 |
+| `android/jev-preview/`                   | Pixel向けstandalone debug-only preview app | 固定body・loopback cleartext・response検査を実装。物理端末未検証 |
 | `lib/decision/providers/cloud.ts`        | cloud adapter                      | 未実装           |
 | `lib/decision/verifier.ts`               | independent verification           | 未実装           |
 | `tests/decision-*.test.mjs`              | safety / routing / failure fixture | 16 host fixture試験済み。domain別200件calibrationは未実施 |
