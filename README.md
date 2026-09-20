@@ -10,6 +10,19 @@ RockstarOSと交換可能なLLM、Sky・Zemaなどのアプリは、製品を動
 
 製品と事業の関係は[製品・サービス・システム関係図](docs/rockstaros-product-system-map.md)にまとめています。OSから全Tool、avocadoMiniまでの設計入口は[RockstarOS全設計ポータル](docs/rockstaros-design-portal.md)です。field単位の契約は[OS全体詳細設計](docs/rockstaros-complete-design.md)、[Sky／Zema／全Tool詳細設計](docs/sky-tools-complete-design.md)、[空間発明システム設計](docs/rockstaros-avocado-mini-complete-design.md)を参照してください。製品要望の正本は[製品ベース](docs/product-baseline.md)のRQ01〜RQ49、進捗の正本は[data/project-status.json](data/project-status.json)です。現在版は`RockstarOS 1.0 Developer Preview`です。
 
+## アクセス先
+
+既存のWeb版は本人限定です。同じChatGPTアカウントでのログインが必要です。GitHubの`main`更新はサイトへ自動反映されないため、以下の配信先は最新版の表示を保証しません。
+
+| 入口 | リンク |
+| --- | --- |
+| 製品・サービス紹介 | [RockstarOS / avocadoMini](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) |
+| OSの導入案内 | [Developer Previewガイド](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) |
+| ホーム | [RockstarOS Home](https://rockstaros-kaiya.noellesugar1.chatgpt.site/) |
+| アプリ | [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) · [Zema](https://rockstaros-kaiya.noellesugar1.chatgpt.site/chat) · [Wallet](https://rockstaros-kaiya.noellesugar1.chatgpt.site/wallet) · [Market](https://rockstaros-kaiya.noellesugar1.chatgpt.site/market) · [Material Invention Studio](https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio) |
+
+OSの実機向け完成版やavocadoMiniの実機はまだ配布していません。上のOSガイドはDeveloper Previewの案内です。
+
 ## 会社と事業
 
 ### パーパス
@@ -157,7 +170,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-19 / 129 task中87 done・25 in progress・16 planned・1 blocked
+更新日: 2026-09-19 / 130 task中87 done・26 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -339,11 +352,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>129 taskと段階gateの詳細を開く</summary>
+<summary>130 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 87/129件
+最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 87/130件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -387,6 +400,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
 | WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
+| WEB06 | GitHubと製品紹介からHome・OS案内・主要アプリへ進む入口を整え、本人限定Siteの最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

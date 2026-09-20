@@ -1,5 +1,11 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-19 — サービス・OS・ホーム・アプリへの入口を明示
+
+利用者が直接開けるよう、GitHub READMEに本人限定Siteの製品紹介、OS Developer Previewガイド、Home、Sky、Zema、Wallet、Market、Material Invention Studioのリンクを追加し、製品紹介ページにも主要アプリへの導線を追加した。既存Siteはサインイン画面まで確認したが、現在のSites接続から配信projectを取得できないため、GitHub mainと配信版の一致は未確認。ログイン後の実操作も未確認。WEB06は入口のsource整備後も配信・実操作確認まで進行中とする。
+
+`project:check`、`baseline:check`、型、lint、route style 12件、production buildは合格。`verify`はNode全体試験中に出力が止まったため中断し、全体合格とは扱わない。GitHub側の同一commit CIで追加確認する。
+
 ## 2026-09-19 — 無料配布とOS従量課金の理念を記録
 
 利用者の新しい方針は「無料で配布し、OSは従量課金制」。配布時の価格とOS利用時の料金を分ける。avocadoMini本体が無料配布の対象か、利用量の計量単位、単価・上限、外部実費の負担は未確定として確認待ちにする。現在のSky収益連動・月最大888 cents精算は別の実装条件であり、新しいOS従量課金が動作・請求済みとは表示しない。
@@ -670,7 +676,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 87/129件
+最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 87/130件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -714,6 +720,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
 | WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
+| WEB06 | GitHubと製品紹介からHome・OS案内・主要アプリへ進む入口を整え、本人限定Siteの最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

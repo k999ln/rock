@@ -9,11 +9,12 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 - `/rockstaros`はavocadoMiniの製品構想を先に紹介し、OS Developer PreviewとSky開発者入口へ続く。Home `/` はOSの作業画面として維持する。
 - 主要画面、PWA manifest、Service Worker、明示更新、security header、D1 APIを実装済み。
 - 本人限定Siteは存在するが、最新版sourceとの一致とログイン後の実操作確認が残る。
+- GitHub READMEから製品紹介、OSガイド、Home、主要アプリへ直接進めるリンクを記載した。製品紹介ページ内にもHomeと主要アプリの入口を用意した。現在のSites接続では既存配信projectを取得できず、最新版配備と認証後の導線は未確認。
 - 一般公開は製品licenseと本人承認が未完了のためblocked。
-- 現在のローカルtreeは全体検証に合格しているが未保存差分があり、Sitesへ結合する正確なcommit SHAはまだ固定していない。
+- GitHub sourceとSites配信版の同一commit確認が残る。sourceの検証結果を配信版の合格へ流用しない。
 - 全ローンチ候補のうち本人限定Web/PWA Previewは必須gateが最新版source同期だけ残っており、最短ローンチ経路とする。
 
-主なtask: `WEB01`〜`WEB04`, `R03`〜`R08`, `LCH04`。
+主なtask: `WEB01`〜`WEB06`, `R03`〜`R08`, `LCH04`。
 
 ## 次に進める順番
 

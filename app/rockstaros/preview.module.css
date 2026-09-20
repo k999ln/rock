@@ -138,6 +138,41 @@
   font-size: 0.8rem;
 }
 
+.access {
+  width: min(100% - 48px, 1420px);
+  margin: 0 auto;
+  padding: 48px 0;
+  border-top: 1px solid #ffffff20;
+}
+
+.access h2 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+}
+
+.access p {
+  color: #b8bab4;
+}
+
+.accessLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.accessLinks a {
+  padding: 10px 16px;
+  border: 1px solid #ffffff38;
+  border-radius: 999px;
+  color: var(--ink);
+}
+
+.accessLinks a:hover {
+  border-color: var(--acid);
+  color: var(--acid);
+}
+
 .product,
 .platform {
   display: grid;
@@ -310,6 +345,7 @@
 
 @media (max-width: 760px) {
   .landingHeader,
+  .access,
   .product,
   .platform,
   .developer,

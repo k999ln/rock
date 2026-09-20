@@ -632,6 +632,20 @@
       ]
     },
     {
+      "id": "WEB06",
+      "title": "GitHubと製品紹介からHome・OS案内・主要アプリへ進む入口を整え、本人限定Siteの最新版同期を確認する",
+      "status": "in_progress",
+      "dependsOn": [
+        "WEB05"
+      ],
+      "evidence": [
+        "README.md",
+        "app/rockstaros/page.tsx",
+        "app/rockstaros/preview.module.css",
+        "docs/workstreams/05-web-pwa-sites.md"
+      ]
+    },
+    {
       "id": "BIZ01",
       "title": "無料配布の対象とOS従量課金の計量単位・単価・上限を確定する",
       "status": "in_progress",

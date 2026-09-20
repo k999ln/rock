@@ -56,6 +56,19 @@ export default function RockstarPreview() {
         </p>
       </section>
 
+      <nav className={styles.access} aria-label="サービスとアプリへの入口">
+        <h2>RockstarOSを開く</h2>
+        <p>ホームからアプリへ進むか、使いたい画面を直接開けます。</p>
+        <div className={styles.accessLinks}>
+          <Link href="/">ホーム</Link>
+          <Link href="/sky">Sky</Link>
+          <Link href="/chat">Zema</Link>
+          <Link href="/wallet">Wallet</Link>
+          <Link href="/market">Market</Link>
+          <Link href="/studio">Material Invention Studio</Link>
+        </div>
+      </nav>
+
       <section className={styles.product} id="avocado-mini" aria-labelledby="product-title">
         <div className={styles.productCopy}>
           <p className={styles.kicker}>01 / HARDWARE CONCEPT</p>
