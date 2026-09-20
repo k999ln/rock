@@ -10,6 +10,9 @@ const chapter = document.querySelector('#chapter');
 const progressBar = document.querySelector('#progress');
 const pricePanel = document.querySelector('#price-panel');
 const crowdfundingLink = document.querySelector('#crowdfunding-link');
+const gallery = document.querySelector('#highlight-gallery');
+const galleryPrev = document.querySelector('#gallery-prev');
+const galleryNext = document.querySelector('#gallery-next');
 const beats = [...document.querySelectorAll('.feature-beat')];
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const beatStarts = [0, 0.13, 0.32, 0.51, 0.70];
@@ -17,11 +20,11 @@ const priceStart = 0.91;
 
 function makeModel() {
   const model = new THREE.Group();
-  const silver = new THREE.MeshStandardMaterial({ color: 0xf0f5f6, metalness: 0.36, roughness: 0.23 });
-  const brushed = new THREE.MeshStandardMaterial({ color: 0xbecdd3, metalness: 0.42, roughness: 0.28 });
-  const underside = new THREE.MeshStandardMaterial({ color: 0x40525d, metalness: 0.38, roughness: 0.33 });
-  const sensor = new THREE.MeshPhysicalMaterial({ color: 0x07121b, metalness: 0.15, roughness: 0.08, clearcoat: 1 });
-  const cyan = new THREE.MeshStandardMaterial({ color: 0x75efff, emissive: 0x1bc6eb, emissiveIntensity: 1.6 });
+  const silver = new THREE.MeshStandardMaterial({ color: 0xd7dce0, metalness: 0.78, roughness: 0.25 });
+  const brushed = new THREE.MeshStandardMaterial({ color: 0xaeb8c0, metalness: 0.75, roughness: 0.34 });
+  const underside = new THREE.MeshStandardMaterial({ color: 0x171b1e, metalness: 0.35, roughness: 0.5 });
+  const collar = new THREE.MeshStandardMaterial({ color: 0x15191d, metalness: 0.22, roughness: 0.23 });
+  const sensor = new THREE.MeshPhysicalMaterial({ color: 0x080d14, metalness: 0.2, roughness: 0.08, clearcoat: 1 });
   const cylinder = (top, bottom, height, y, material) => {
     const mesh = new THREE.Mesh(new THREE.CylinderGeometry(top, bottom, height, 64), material);
     mesh.position.y = y;
@@ -30,33 +33,47 @@ function makeModel() {
     model.add(mesh);
   };
 
-  cylinder(0.54, 0.54, 0.1, -2.9, underside);
-  cylinder(0.55, 0.55, 0.14, -2.81, silver);
-  cylinder(0.46, 0.54, 0.09, -2.69, brushed);
-  cylinder(0.115, 0.115, 2.72, -1.27, silver);
-  cylinder(0.102, 0.102, 2.17, 0.55, brushed);
-  cylinder(0.086, 0.086, 1.77, 1.99, silver);
-  cylinder(0.12, 0.12, 0.045, -0.16, underside);
-  cylinder(0.107, 0.107, 0.04, 1.45, underside);
-  cylinder(0.091, 0.091, 0.035, 2.86, brushed);
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.014, 8, 64), cyan);
-  ring.rotation.x = Math.PI / 2;
-  ring.position.y = -2.595;
-  model.add(ring);
-  for (const [y, radius] of [[-1.82, 0.115], [0.55, 0.102], [2.32, 0.086]]) {
-    const window = new THREE.Mesh(new THREE.CapsuleGeometry(0.045, 0.31, 6, 16), sensor);
-    window.position.set(0, y, radius + 0.006);
-    model.add(window);
-    const light = new THREE.Mesh(new THREE.CapsuleGeometry(0.012, 0.07, 4, 12), cyan);
-    light.position.set(0, y + 0.11, radius + 0.044);
-    model.add(light);
+  // Proportions follow ME-001/ME-101/ME-301: 220 mm base, 520 mm foot envelope,
+  // 52/45/38 mm tubes and a three-camera head. This is one tower at free height.
+  cylinder(0.55, 0.55, 0.12, -2.9, underside);
+  cylinder(0.55, 0.55, 0.18, -2.75, silver);
+  cylinder(0.49, 0.55, 0.10, -2.62, brushed);
+  for (let index = 0; index < 3; index += 1) {
+    const foot = new THREE.Mesh(new THREE.BoxGeometry(1.02, 0.07, 0.12), brushed);
+    foot.position.set(0.77, -2.93, 0);
+    const pivot = new THREE.Group();
+    pivot.rotation.y = index * Math.PI * 2 / 3;
+    pivot.add(foot);
+    model.add(pivot);
   }
-  const button = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.008, 32), cyan);
-  button.position.set(0, -2.58, 0.35);
-  model.add(button);
-  model.scale.set(0.7, 1, 0.7);
+  cylinder(0.26, 0.26, 3.10, -1.03, silver);
+  cylinder(0.225, 0.225, 2.65, 0.83, brushed);
+  cylinder(0.19, 0.19, 1.88, 1.99, silver);
+  cylinder(0.27, 0.27, 0.37, 2.87, collar);
+  cylinder(0.28, 0.28, 0.10, 3.10, silver);
+  for (const theta of [-0.6, 0, 0.6]) {
+    const aperture = new THREE.Mesh(new THREE.SphereGeometry(0.055, 20, 16), sensor);
+    aperture.position.set(Math.sin(theta) * 0.275, 2.89, Math.cos(theta) * 0.275);
+    model.add(aperture);
+  }
   return model;
 }
+
+function updateGalleryControls() {
+  if (!gallery) return;
+  galleryPrev.disabled = gallery.scrollLeft < 8;
+  galleryNext.disabled = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 8;
+}
+
+for (const [button, direction] of [[galleryPrev, -1], [galleryNext, 1]]) {
+  button?.addEventListener('click', () => {
+    const card = gallery.querySelector('.highlight-card');
+    gallery.scrollBy({ left: direction * ((card?.getBoundingClientRect().width || 600) + 24), behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+  });
+}
+gallery?.addEventListener('scroll', updateGalleryControls, { passive: true });
+window.addEventListener('resize', updateGalleryControls);
+updateGalleryControls();
 
 function showFallback() {
   canvas.hidden = true;
@@ -113,7 +130,7 @@ if (renderer) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(37, 1, 0.1, 100);
-  camera.position.set(2.4, 1.5, 9.6);
+  camera.position.set(2.4, 1.5, 11.5);
   camera.lookAt(0, 0, 0);
   scene.add(new THREE.AmbientLight(0xdff5ff, 2.4));
   const key = new THREE.DirectionalLight(0xffffff, 3.4);
@@ -140,7 +157,7 @@ if (renderer) {
     const width = Math.max(1, stage.clientWidth);
     const height = Math.max(1, stage.clientHeight);
     camera.aspect = width / height;
-    camera.position.set(width < 650 ? 2.5 : 2.4, width < 650 ? 1.2 : 1.5, width < 650 ? 11.3 : 9.6);
+    camera.position.set(width < 650 ? 2.5 : 2.4, width < 650 ? 1.2 : 1.5, width < 650 ? 13.5 : 11.5);
     camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);

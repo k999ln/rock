@@ -57,7 +57,7 @@ for (const path of [
   'systems/rock-star-os/src/blackberryrock/web/app.js',
 ]) {
   requireValue(
-    !/Automation Hub|自動化Hub|YOUR AUTOMATION HUB|\bHub\b/.test(read(path)),
+    !/Automation Hub|自動化Hub|YOUR AUTOMATION HUB|\bHub\b/.test(read(path).replace(/Edge Hub/g, '')),
     `${path}に旧製品名Hubが残っています`,
   );
 }

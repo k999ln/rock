@@ -1,10 +1,10 @@
-# avocadoMini — 伸縮式センサータワーの製品構想
+# avocadoMini — 4本のMotion TowerとEdge Hubの製品構想
 
 **商品ページとOS操作画面は別ドメインに分けます。** `rockstaros-kaiya.noellesugar1.chatgpt.site`をavocadoMiniの一般公開商品サイトにし、`/rockstaros`からも商品を見られるようにします。OS操作画面だけを新しい別Siteへ移します。商品サイトのsourceは[`sites/avocado-mini`](sites/avocado-mini/)です。現在は[別ドメインのプレビュー](https://avocado-mini.kirin-999.chatgpt.site/)を公開済みで、旧URLは所有アカウント未接続のため旧OS画面のままです。
 
-**考える時間を、つくる時間に。** **avocadoMini**の表に出す製品デザインは、銀色の細い伸縮式センサータワーです。構想画像では収納時850 mmから伸長時1,800 mm、直径160 mmのベース、長押し操作を示しています。複数のタワーを組み合わせた空間発明体験と、高性能LLM搭載を目指すRockstarOSは製品の発展構想です。**希望参考価格は41万円**。販売価格・仕様・発売日は未確定で、実機試作前です。
+**考える時間を、つくる時間に。** **avocadoMini**は銀色の伸縮式Motion Tower **4本**と **Edge Hub 1台**で作業空間を捉えるキット構想です。利用者提供の**Motion Tower P0.2設計書**では、収納時850 mm、自立時最大1,200 mm、ドック固定を検出した場合のみ最大1,800 mm、ベース径220 mm、展開脚の外径520 mmを設計値とします。ARは外部端末へ表示し、LLMは案内と説明だけを担当します。**41万円（税込）は4本＋Edge Hubのキット目標価格**です。1本の価格や販売価格ではありません。実機試作、量産、販売は未開始です。
 
-製品ホームは、タワーをスクロールで一周見た後に参考価格を示し、設計画像、利用場面、OS導入案内へ進む構成です。
+製品ホームは、4本のキット、見どころ、タワー1本の全周回転、キット目標価格、利用場面、OS導入案内へ進む構成です。
 
 [🏠 avocadoMini製品ホーム](https://avocado-mini.kirin-999.chatgpt.site/) · [💿 OS導入ガイド](https://avocado-mini.kirin-999.chatgpt.site/guide/) · [🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🤝 クラファン企画](https://avocado-mini.kirin-999.chatgpt.site/crowdfunding/)
 
@@ -12,9 +12,9 @@
 
 ## 構想ギャラリー
 
-![avocadoMiniの外観構想。伸縮式センサータワーの収納・伸長状態、操作ボタンと内部構造](public/rockstaros/avocado-mini-tower-concept.png)
+![avocadoMiniのP0.2キット構想。4本の伸縮式Motion TowerとEdge Hub](sites/avocado-mini/public/images/avocado-mini-kit.png)
 
-*外観の構想参考画像。単体タワーの見せ方を示すもので、実機写真や検証済み仕様ではありません。寸法、伸縮機構、センサー性能、安全性は試作と実測で確かめます。*
+*P0.2設計書に基づく構想レンダリング。実機写真や検証済み仕様ではありません。寸法、伸縮機構、センサー性能、安全性は試作と実測で確かめます。以前の単体タワー構想画像は旧案です。*
 
 ## 手で考え、発明の候補を比べる
 
@@ -28,7 +28,7 @@
 
 **現在は詳細設計段階です。** 実機試作、量産、販売はまだ行っていません。[ハードウェア詳細設計](docs/avocado-mini-hardware-design.md)と[空間発明システム設計](docs/rockstaros-avocado-mini-complete-design.md)に、構成と受入条件を記録しています。
 
-**製品のねらい:** 高性能LLMを組み込むRockstarOSが、使う人の意図に合うAI Toolの発見、仕事の進行、発明候補の比較を支える。現在の実機検証は固定モデルのDeveloper Preview段階で、製品版の高性能LLM搭載は未完成です。41万円はavocadoMiniハードウェアの希望参考価格で、OSの従量料金や購入申込額ではありません。
+**製品のねらい:** 高性能LLMを組み込むRockstarOSが、使う人の意図に合うAI Toolの発見、仕事の進行、発明候補の比較を支える。現在の実機検証は固定モデルのDeveloper Preview段階で、製品版の高性能LLM搭載は未完成です。41万円は4本のMotion TowerとEdge Hubを含むキット目標価格で、OSの従量料金や購入申込額ではありません。
 
 ## クラウドファンディング
 
@@ -52,7 +52,7 @@ RockstarOSは、avocadoMiniの操作、権限、保存、復旧をつなぐ技�
 
 ![avocadoMiniの設計構想。四方向のセンサーに囲まれた作業面で発明の候補が動くアニメーション](docs/assets/cover-avocado-mini.gif)
 
-表に出す外観は[銀色の伸縮式センサータワー](public/rockstaros/avocado-mini-tower-concept.png)です。四方向センサーと作業面による発明体験は、このタワーを組み合わせる将来のシステム構想として設計しています。**希望参考価格41万円**。画像はコンセプトであり、追跡精度、表示方式、安全性、量産性を実証した実機写真ではありません。小型Bench試作から検証し、その後にFull-scaleへ進む計画です。価格と仕様は試作・原価検証後に決定します。
+表に出す外観は[4本の伸縮式Motion TowerとEdge Hub](sites/avocado-mini/public/images/avocado-mini-kit.png)です。四方向センサーと作業面による発明体験をキットとして設計しています。**キット目標価格（税込）41万円**。画像はコンセプトであり、追跡精度、表示方式、安全性、量産性を実証した実機写真ではありません。P0.2設計から試作と検証へ進み、価格と仕様を実測・原価検証後に決定します。
 
 ### RockstarOS — 製品を動かす共通の土台
 
@@ -445,7 +445,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | WEB03 | Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](components/rock-studio.tsx) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
 | WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
-| WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
+| WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](sites/avocado-mini/public/images/avocado-mini-kit.png) · [記録](sites/avocado-mini/public/images/avocado-mini-head-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-base-p0.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |

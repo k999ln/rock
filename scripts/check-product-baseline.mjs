@@ -968,7 +968,12 @@ export function validateBaseline(
       turntableSource.includes('turn * Math.PI * 2') &&
       turntableSource.includes('className={styles.designDetails}') &&
       turntableSource.includes('className={styles.osSection}') &&
-      turntableSource.includes('/rockstaros/avocado-mini-tower-concept.png') &&
+      turntableSource.includes('/rockstaros/avocado-mini-kit-p0.png') &&
+      data.marketPositioning?.motionTowerP0Engineering?.kitTowerCount === 4 &&
+      data.marketPositioning?.motionTowerP0Engineering?.kitEdgeHubCount === 1 &&
+      data.marketPositioning?.motionTowerP0Engineering?.freeStandingMaxHeightMm === 1200 &&
+      data.marketPositioning?.motionTowerP0Engineering?.dockedMaxHeightMm === 1800 &&
+      data.marketPositioning?.motionTowerP0Engineering?.llmCanAuthorizeMotionRecordingOrSafetyBypass === false &&
       turntableSource.includes('¥410,000') &&
       turntableSource.includes('購入する') &&
       turntableSource.includes('/rockstaros/guide#install'),

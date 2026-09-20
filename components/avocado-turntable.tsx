@@ -8,11 +8,11 @@ import styles from './avocado-turntable.module.css';
 
 function makeModel() {
   const model = new THREE.Group();
-  const silver = new THREE.MeshStandardMaterial({ color: 0xf0f5f6, metalness: 0.36, roughness: 0.23 });
-  const brushed = new THREE.MeshStandardMaterial({ color: 0xbecdd3, metalness: 0.42, roughness: 0.28 });
-  const underside = new THREE.MeshStandardMaterial({ color: 0x40525d, metalness: 0.38, roughness: 0.33 });
-  const sensor = new THREE.MeshPhysicalMaterial({ color: 0x07121b, metalness: 0.15, roughness: 0.08, clearcoat: 1 });
-  const cyan = new THREE.MeshStandardMaterial({ color: 0x75efff, emissive: 0x1bc6eb, emissiveIntensity: 1.6 });
+  const silver = new THREE.MeshStandardMaterial({ color: 0xd7dce0, metalness: 0.78, roughness: 0.25 });
+  const brushed = new THREE.MeshStandardMaterial({ color: 0xaeb8c0, metalness: 0.75, roughness: 0.34 });
+  const underside = new THREE.MeshStandardMaterial({ color: 0x171b1e, metalness: 0.35, roughness: 0.5 });
+  const collar = new THREE.MeshStandardMaterial({ color: 0x15191d, metalness: 0.22, roughness: 0.23 });
+  const sensor = new THREE.MeshPhysicalMaterial({ color: 0x080d14, metalness: 0.2, roughness: 0.08, clearcoat: 1 });
   const cylinder = (top: number, bottom: number, height: number, y: number, material: THREE.Material) => {
     const mesh = new THREE.Mesh(new THREE.CylinderGeometry(top, bottom, height, 64), material);
     mesh.position.y = y;
@@ -22,35 +22,28 @@ function makeModel() {
     return mesh;
   };
 
-  // The supplied full-scale concept is a single telescopic sensor tower, not a worktable.
-  cylinder(0.54, 0.54, 0.1, -2.9, underside);
-  cylinder(0.55, 0.55, 0.14, -2.81, silver);
-  cylinder(0.46, 0.54, 0.09, -2.69, brushed);
-  cylinder(0.115, 0.115, 2.72, -1.27, silver);
-  cylinder(0.102, 0.102, 2.17, 0.55, brushed);
-  cylinder(0.086, 0.086, 1.77, 1.99, silver);
-  cylinder(0.12, 0.12, 0.045, -0.16, underside);
-  cylinder(0.107, 0.107, 0.04, 1.45, underside);
-  cylinder(0.091, 0.091, 0.035, 2.86, brushed);
-
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.014, 8, 64), cyan);
-  ring.rotation.x = Math.PI / 2;
-  ring.position.y = -2.595;
-  model.add(ring);
-
-  for (const [y, radius] of [[-1.82, 0.115], [0.55, 0.102], [2.32, 0.086]]) {
-    const window = new THREE.Mesh(new THREE.CapsuleGeometry(0.045, 0.31, 6, 16), sensor);
-    window.position.set(0, y, radius + 0.006);
-    model.add(window);
-    const light = new THREE.Mesh(new THREE.CapsuleGeometry(0.012, 0.07, 4, 12), cyan);
-    light.position.set(0, y + 0.11, radius + 0.044);
-    model.add(light);
+  // One free-standing tower from the four-tower kit, using P0.2 proportions.
+  cylinder(0.55, 0.55, 0.12, -2.9, underside);
+  cylinder(0.55, 0.55, 0.18, -2.75, silver);
+  cylinder(0.49, 0.55, 0.10, -2.62, brushed);
+  for (let index = 0; index < 3; index += 1) {
+    const foot = new THREE.Mesh(new THREE.BoxGeometry(1.02, 0.07, 0.12), brushed);
+    foot.position.set(0.77, -2.93, 0);
+    const pivot = new THREE.Group();
+    pivot.rotation.y = index * Math.PI * 2 / 3;
+    pivot.add(foot);
+    model.add(pivot);
   }
-
-  const button = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.008, 32), cyan);
-  button.position.set(0, -2.58, 0.35);
-  model.add(button);
-  model.scale.set(0.7, 1, 0.7);
+  cylinder(0.26, 0.26, 3.10, -1.03, silver);
+  cylinder(0.225, 0.225, 2.65, 0.83, brushed);
+  cylinder(0.19, 0.19, 1.88, 1.99, silver);
+  cylinder(0.27, 0.27, 0.37, 2.87, collar);
+  cylinder(0.28, 0.28, 0.10, 3.10, silver);
+  for (const theta of [-0.6, 0, 0.6]) {
+    const aperture = new THREE.Mesh(new THREE.SphereGeometry(0.055, 20, 16), sensor);
+    aperture.position.set(Math.sin(theta) * 0.275, 2.89, Math.cos(theta) * 0.275);
+    model.add(aperture);
+  }
   return model;
 }
 
@@ -100,7 +93,7 @@ export function AvocadoTurntable() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(37, 1, 0.1, 100);
-    camera.position.set(3.1, 1.8, 11);
+    camera.position.set(3.1, 1.8, 12);
     camera.lookAt(0, 0, 0);
     scene.add(new THREE.AmbientLight(0xdff5ff, 2.4));
     const key = new THREE.DirectionalLight(0xffffff, 3.4);
@@ -130,7 +123,7 @@ export function AvocadoTurntable() {
       const width = Math.max(1, viewport.clientWidth);
       const height = Math.max(1, viewport.clientHeight);
       camera.aspect = width / height;
-      camera.position.set(3.1, width < 650 ? 1.5 : 1.8, width < 650 ? 12.1 : 10.5);
+      camera.position.set(3.1, width < 650 ? 1.5 : 1.8, width < 650 ? 13.5 : 12);
       camera.lookAt(0, 0, 0);
       camera.updateProjectionMatrix();
       renderer.setSize(width, height, false);
@@ -191,11 +184,11 @@ export function AvocadoTurntable() {
           <p className={styles.eyebrow}>AVOCADOMINI / FULL SCALE CONCEPT</p>
           <h1 id="avocado-mini-title">avocadoMini</h1>
           <p className={styles.heroLine}>空間を変える。<br />作業が、変わる。</p>
-          <p className={styles.heroDescription}>伸縮式センサータワーを、スクロールで一周。<br />高性能LLM搭載のRockstarOSが、作業をスムーズにする構想です。</p>
+          <p className={styles.heroDescription}>4本のMotion Towerと1台のEdge Hubからなるキット。<br />まずは1本をスクロールで一周し、その形を見てください。</p>
         </div>
         <div className={styles.viewport} ref={viewportRef}>
           <canvas ref={canvasRef} aria-hidden="true" className={fallback ? styles.hiddenCanvas : undefined} />
-          {fallback && <Image className={styles.fallback} src="/rockstaros/avocado-mini-tower-concept.png" alt="avocadoMiniの伸縮式センサータワーの構想画像" width={1672} height={941} priority />}
+          {fallback && <Image className={styles.fallback} src="/rockstaros/avocado-mini-kit-p0.png" alt="4本のMotion TowerとEdge HubからなるavocadoMiniキットの構想画像" width={1672} height={941} priority />}
         </div>
         <div className={styles.bottomBar}>
           <div className={styles.angle}><span>DESIGN VIEW</span><strong ref={angleRef}>0°</strong></div>
@@ -205,38 +198,38 @@ export function AvocadoTurntable() {
         <div className={`${styles.pricePanel} ${priceVisible ? styles.priceVisible : ''}`} aria-hidden={!priceVisible}>
           <p className={styles.priceLabel}>一周した、その先へ。</p>
           <h2>avocadoMini</h2>
-          <p className={styles.price}><span>希望参考価格</span><strong>¥410,000</strong></p>
+          <p className={styles.price}><span>4本＋Edge Hubのキット目標価格（税込）</span><strong>¥410,000</strong></p>
           <button type="button" disabled aria-label="購入する。現在は販売前です">購入する <span>準備中</span></button>
           <Link href="/rockstaros/crowdfunding" tabIndex={priceVisible ? 0 : -1}>クラファン企画を見る ↗</Link>
-          <small>設計中の参考価格です。購入・予約・決済はまだ受け付けていません。</small>
+          <small>P0.2設計中のキット目標です。購入・予約・決済はまだ受け付けていません。</small>
         </div>
       </div>
     </section>
     <section className={styles.designDetails} aria-labelledby="design-details-title">
       <div>
         <p className={styles.eyebrow}>AVOCADOMINI / DESIGN STUDY</p>
-        <h2 id="design-details-title">一本に、機能を収める。</h2>
-        <p>使うときに伸ばし、使い終えたら収める。avocadoMiniは、細い三段のセンサータワーと小さなベースを持つ製品構想です。</p>
+        <h2 id="design-details-title">4本で、空間を捉える。</h2>
+        <p>avocadoMiniは4本の伸縮式Motion TowerとEdge Hubのキット構想。各タワーに3基のカメラと独立した安全制御を備えるP0.2設計です。</p>
         <div className={styles.specs} aria-label="製品構想の主な寸法">
-          <p><strong>850 → 1,800 <span>mm</span></strong><small>収納時 → 伸長時</small></p>
-          <p><strong>Ø160 <span>mm</span></strong><small>ベースの構想寸法</small></p>
-          <p><strong>3 <span>段</span></strong><small>伸縮するセンサータワー</small></p>
+          <p><strong>4 <span>本</span></strong><small>Motion Tower＋Edge Hub</small></p>
+          <p><strong>850 → 1,200 <span>mm</span></strong><small>収納時 → 自立時上限</small></p>
+          <p><strong>1,800 <span>mm</span></strong><small>ドックまたは床ラッチの検出時のみ</small></p>
         </div>
-        <p className={styles.controlNote}>操作構想：ベースのボタンを長押しして、自動で伸長・収納。</p>
+        <p className={styles.controlNote}>P0.2のベース径は220 mm、展開脚の外径は520 mm。量産仕様ではありません。</p>
       </div>
       <figure className={styles.conceptImage}>
-        <Image src="/rockstaros/avocado-mini-tower-concept.png" alt="avocadoMiniの伸縮式センサータワー、ボタン、内部構造を示す構想参考画像" width={1672} height={941} loading="lazy" />
-        <figcaption>構想参考画像。回転表示は設計イメージで、製造図や実機映像ではありません。</figcaption>
+        <Image src="/rockstaros/avocado-mini-kit-p0.png" alt="4本のMotion TowerとEdge Hubの構想レンダリング" width={1672} height={941} loading="lazy" />
+        <figcaption>P0.2設計に基づく構想レンダリング。実機写真や量産仕様ではありません。</figcaption>
       </figure>
     </section>
     <section className={styles.experience} aria-labelledby="experience-title">
       <p className={styles.eyebrow}>02 / THE EXPERIENCE</p>
       <h2 id="experience-title">使う場所に、<br />知性が立ち上がる。</h2>
-      <p>必要なときだけ伸びるタワーと、作業を支えるRockstarOS。製品とOSを一つの体験として設計しています。</p>
+      <p>4本が作業領域を囲み、Edge Hubがデータを束ねる。AR表示は外部のメガネ、タブレット、PCなどへ届ける設計です。</p>
       <div className={styles.experienceGrid}>
-        <div><span>01</span><strong>触れて、伸ばす。</strong><p>ベースのボタンを長押し。850mmの収納状態から、最大1,800mmへ伸長する操作構想です。</p></div>
-        <div><span>02</span><strong>作業に集中する。</strong><p>高性能LLMとSkyのツールが、調べる、整理する、進めるための流れを支えます。</p></div>
-        <div><span>03</span><strong>終われば、収める。</strong><p>使わないときはタワーを縮め、空間を取り戻します。</p></div>
+        <div><span>01</span><strong>4本を配置する。</strong><p>起動時の前方180度走査で、各タワーの位置と床面を校正する設計です。</p></div>
+        <div><span>02</span><strong>作業を支える。</strong><p>LLMは案内と説明を担当し、動作、録画、安全解除の許可は行いません。</p></div>
+        <div><span>03</span><strong>安全に収める。</strong><p>脚、傾き、ドックの状態を確認し、条件が外れたときは安全制御が動作を止めます。</p></div>
       </div>
       <small>このセクションは製品構想です。実機性能や一般向け提供を確約するものではありません。</small>
     </section>
