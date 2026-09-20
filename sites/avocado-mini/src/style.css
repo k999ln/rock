@@ -198,7 +198,7 @@ body{overflow-x:hidden}
 .sensor-closeup span{display:flex;justify-content:space-between;align-items:center;margin:11px 6px 0;font-size:9px;font-weight:700;letter-spacing:.11em;color:#d9f3ff;white-space:nowrap}
 .sensor-closeup i{width:6px;height:6px;border-radius:50%;background:#4ad6ff;box-shadow:0 0 12px #53dfff}
 .activation-section{position:relative;min-height:100svh;background:#050b11;color:#f5f9fc;isolation:isolate;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:100px 24px}
-.activation-image{position:absolute;z-index:-1;inset:0;background:url('/images/motion-tower-four-point-dual-sensor-concept.png') center / cover no-repeat;animation:activation-breathe 8s ease-in-out infinite alternate}
+.activation-image{position:absolute;z-index:-1;inset:0;background:url('/images/motion-tower-satin-four-point.png') center / cover no-repeat;animation:activation-breathe 8s ease-in-out infinite alternate}
 .activation-section:after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,#03090e44,#03090e88 28%,#03090eb0 50%,#03090e88 72%,#03090e44)}
 .activation-copy{width:min(470px,100%);padding:35px 38px;border:1px solid #d4ebf12b;border-radius:24px;background:#071018b5;backdrop-filter:blur(18px);box-shadow:0 25px 85px #0007}
 .activation-copy .eyebrow{color:#7cddff}
@@ -209,5 +209,31 @@ body{overflow-x:hidden}
 .activation-copy .fine{color:#a9c2cd!important;margin:20px 0 0}
 @keyframes activation-breathe{from{transform:scale(1);filter:brightness(.8)}to{transform:scale(1.035);filter:brightness(1.1)}}
 @media(max-width:800px){.motion-product{top:61%;width:min(80vw,560px);height:73svh}.sensor-closeup{right:46px;bottom:75px;width:170px}.sensor-closeup img{height:105px}.sensor-closeup span{font-size:7px}.activation-section{align-items:flex-end;padding:45vh 22px 45px}.activation-image{background-position:center top;background-size:auto 68%;background-color:#050b11;animation:none}.activation-section:after{background:linear-gradient(to bottom,transparent 0%,#050b11aa 37%,#050b11 70%)}.activation-copy{padding:26px 24px;width:min(520px,100%)}}
-@media(max-width:520px){.motion-product{top:65%;width:100vw;height:64svh}.camera-flare{width:120px}.camera-flare-lower{width:145px}.sensor-closeup{display:none}.activation-copy h2{font-size:40px}.activation-copy li{font-size:13px}}
+@media(max-width:520px){.motion-product{top:70%;width:100vw;height:54svh}.camera-flare{width:120px}.camera-flare-lower{width:145px}.sensor-closeup{display:none}.activation-copy h2{font-size:40px}.activation-copy li{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.activation-image{animation:none}.motion-product,.turn-frame{will-change:auto}}
+
+/* Refined product tour: keep the product bright and every chapter legible. */
+.story-sticky{background:radial-gradient(ellipse 54% 76% at 63% 53%,#203743 0%,#111e27 46%,var(--story-bg,#08090b) 100%)}
+.story-word{display:none}
+.story-orbit{border-color:#93d9f51c}
+.story-orbit:before,.story-orbit:after{border-color:#93d9f512}
+.motion-product{height:min(78svh,800px)}
+.turn-frame{filter:brightness(calc(.86 + var(--camera-on) * .14)) contrast(1.08) drop-shadow(0 25px 50px #000b)}
+.camera-flare-lower{top:67%}
+.feature-beat[data-beat="sensor"] h2{font-size:clamp(48px,5vw,70px);margin-bottom:16px}
+.feature-beat[data-beat="sensor"] .feature-description{font-size:15px;color:#e2f2f7;line-height:1.65}
+.sensor-capabilities{margin-top:24px;display:grid;gap:13px}
+.sensor-capabilities>div{position:relative;padding:10px 0 0 17px;border-top:1px solid #8ad7f052}
+.sensor-capabilities>div:before{content:"";position:absolute;left:0;top:11px;width:4px;height:32px;border-radius:4px;background:#49caff;box-shadow:0 0 18px #49caff80}
+.sensor-capabilities span{display:block;font-size:10px;letter-spacing:.15em;font-weight:700;color:#8bdef5}
+.sensor-capabilities strong{display:block;margin:5px 0 3px;font-size:17px;letter-spacing:-.03em;color:#fff}
+.sensor-capabilities p{margin:0;color:#c5d8e1;font-size:12px;line-height:1.55}
+.feature-beat[data-beat="sensor"] .feature-meta{margin-top:18px}
+.sensor-closeup{right:clamp(38px,5vw,90px);top:22%;bottom:auto;width:clamp(240px,27vw,380px);padding:8px 8px 14px;border-color:#8ce4ff55;border-radius:21px;background:#08131ce8;box-shadow:0 30px 90px #000b;transition:opacity .18s ease}
+.sensor-closeup img{height:auto;aspect-ratio:3/2;object-fit:cover;object-position:center;border-radius:14px}
+.sensor-closeup>div{display:flex;justify-content:space-between;gap:8px;margin:12px 9px 0}
+.sensor-closeup>div span{display:flex;align-items:center;gap:6px;margin:0;font-size:9px;letter-spacing:.1em;color:#d9f4ff}
+.sensor-closeup>div i{display:inline-block;flex:none;width:6px;height:6px;border-radius:50%;background:#53dfff;box-shadow:0 0 12px #53dfff}
+@media(max-width:1050px){.sensor-closeup{right:30px;width:230px;top:25%}.sensor-closeup>div span{font-size:7px}}
+@media(max-width:800px){.motion-product{height:70svh}.sensor-closeup{display:none}.feature-beat[data-beat="sensor"] h2{font-size:clamp(40px,7vw,58px)}.sensor-capabilities{margin-top:16px;gap:8px}.sensor-capabilities>div{padding-top:7px}.sensor-capabilities>div:before{top:8px;height:27px}.sensor-capabilities strong{font-size:15px}.sensor-capabilities p{font-size:12px}}
+@media(max-width:520px){.motion-product{height:54svh}.feature-beat[data-beat="sensor"] h2{font-size:36px;margin-bottom:9px}.feature-beat[data-beat="sensor"] .feature-description{font-size:12px}.sensor-capabilities{margin-top:11px;gap:6px}.sensor-capabilities>div{padding:6px 0 0 12px}.sensor-capabilities>div:before{top:7px;width:3px;height:22px}.sensor-capabilities span{font-size:8px}.sensor-capabilities strong{font-size:13px;margin:2px 0}.sensor-capabilities p{font-size:10px;line-height:1.35}.feature-beat[data-beat="sensor"] .feature-meta{display:none}}

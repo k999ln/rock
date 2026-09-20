@@ -23,7 +23,7 @@ const storyWords = ['FORM', 'SENSE', 'REACH', 'STABLE', 'FLOW', 'MINI'];
 const storyColors = ['#08090b', '#101821', '#182532', '#101a22', '#141f26', '#08090b'];
 const motionKeys = [
   { at: 0, x: 19, y: 1, scale: 0.96, tilt: -4, yaw: 0 },
-  { at: 0.18, x: 20, y: 0, scale: 1.03, tilt: 5, yaw: 48 },
+  { at: 0.18, x: 8, y: 0, scale: 1.02, tilt: 3, yaw: 48 },
   { at: 0.36, x: -20, y: 1, scale: 1.01, tilt: -5, yaw: 124 },
   { at: 0.54, x: 20, y: 0, scale: 1.04, tilt: 5, yaw: 203 },
   { at: 0.72, x: -19, y: 1, scale: 1.01, tilt: -4, yaw: 290 },
@@ -83,11 +83,11 @@ function updateStory(progress) {
   storyWord.textContent = storyWords[active];
   storyRail.forEach((dot, index) => dot.classList.toggle('is-active', index === active));
   beats.forEach((beat, index) => {
-    const opacity = priceVisible ? 0 : clamp((0.5 - Math.abs(phase - index)) / 0.16, 0, 1);
-    beat.style.opacity = opacity;
-    beat.style.transform = `translateY(calc(${window.innerWidth < 800 ? '0px' : '-50%'} + ${(index - phase) * 35}px))`;
-    beat.classList.toggle('is-active', opacity > 0.02);
-    beat.setAttribute('aria-hidden', String(opacity < 0.5));
+    const visible = !priceVisible && index === active;
+    beat.style.opacity = visible ? '1' : '0';
+    beat.style.transform = `translateY(${window.innerWidth < 800 ? '0' : '-50%'})`;
+    beat.classList.toggle('is-active', visible);
+    beat.setAttribute('aria-hidden', String(!visible));
   });
   chapter.textContent = priceVisible ? 'COMPLETE / 04' : active === 0 ? 'INTRO / 04' : `${String(active).padStart(2, '0')} / 04`;
   pricePanel.classList.toggle('visible', priceVisible);
@@ -115,7 +115,7 @@ function updateProgress() {
   product.style.setProperty('--camera-on', cameraOn.toFixed(3));
   product.style.setProperty('--scan-opacity', reducedMotion.matches ? 0 : scanVisible.toFixed(3));
   product.style.setProperty('--scan-angle', `${mix(-80, 80, scan)}deg`);
-  sensorCloseup.style.opacity = clamp(1 - Math.abs(progress - 0.23) / 0.105, 0, 1).toFixed(3);
+  sensorCloseup.style.opacity = progress >= 0.09 && progress < 0.27 ? '1' : '0';
 
   progressBar.style.width = `${Math.round(motion.yaw / 360 * 100)}%`;
   angle.textContent = reducedMotion.matches ? '静止表示' : `${Math.round(motion.yaw)}°`;

@@ -26,6 +26,7 @@ function webDomains(tables) {
     'tool_controls',
     'book_records',
     'work_jobs',
+    'remote_ai_rate_limits',
   ]);
   const definitions = [
     {
