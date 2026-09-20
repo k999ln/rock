@@ -39,6 +39,7 @@
 .specs strong { display: block; font-size: clamp(17px, 2vw, 26px); letter-spacing: -.05em; white-space: nowrap; }
 .specs strong span { font-size: .55em; letter-spacing: 0; }
 .specs small { margin-top: 5px; font-size: 10px; }
+.osSection .controlNote { margin-top: 18px; color: #617983; font-size: 13px; }
 .conceptImage { margin: 0; }
 .conceptImage img { display: block; width: 100%; height: auto; box-shadow: 0 32px 80px #162c3130; }
 .conceptImage figcaption { padding-top: 12px; color: #586a6d; font-size: 11px; line-height: 1.5; }

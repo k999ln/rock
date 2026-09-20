@@ -223,6 +223,7 @@ export function AvocadoTurntable() {
           <p><strong>Ø160 <span>mm</span></strong><small>ベースの構想寸法</small></p>
           <p><strong>3 <span>段</span></strong><small>伸縮するセンサータワー</small></p>
         </div>
+        <p className={styles.controlNote}>操作構想：ベースのボタンを長押しして、自動で伸長・収納。</p>
       </div>
       <figure className={styles.conceptImage}>
         <Image src="/rockstaros/avocado-mini-tower-concept.png" alt="avocadoMiniの伸縮式センサータワー、ボタン、内部構造を示す構想参考画像" width={1672} height={941} loading="lazy" />
