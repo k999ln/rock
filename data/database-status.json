@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 77,
+    "tableCount": 79,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "Scalewayの課金確認後、Ubuntu 24.04 / 32 dedicated vCPU / 64 GB RAM / 600 GBで固定sourceをsyncし、Operator Agentを明示除外したbringup modeでtarget-files-packageとotatools-packageをbuildする。RELEASE_FLASH gate、production signing、実機flashは未合格のまま維持する。 AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。SKY19の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。"
   },
   "webSchema": {
-    "tableCount": 29,
+    "tableCount": 31,
     "tables": [
       "automation_fund_memberships",
       "automation_funds",
@@ -39,9 +39,11 @@
       "marketplace_receipts",
       "marketplace_reservations",
       "mercari_revenue_plans",
+      "remote_ai_rate_limits",
       "sky_activation_codes",
       "sky_connections",
       "sky_developer_tokens",
+      "sky_provider_connections",
       "sky_tool_events",
       "sky_tool_grants",
       "sky_tool_packages",
@@ -50,8 +52,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 14,
-    "latestMigration": "0014_sparkling_chimera.sql",
+    "migrationCount": 16,
+    "latestMigration": "0015_oval_the_twelve.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -66,11 +68,12 @@
           "fund_plans",
           "job_events",
           "jobs",
+          "remote_ai_rate_limits",
           "tool_controls",
           "tool_runs",
           "work_jobs"
         ],
-        "tableCount": 8
+        "tableCount": 9
       },
       {
         "id": "sky",
@@ -79,12 +82,13 @@
           "sky_activation_codes",
           "sky_connections",
           "sky_developer_tokens",
+          "sky_provider_connections",
           "sky_tool_events",
           "sky_tool_grants",
           "sky_tool_packages",
           "sky_tool_submissions"
         ],
-        "tableCount": 7
+        "tableCount": 8
       },
       {
         "id": "marketplace",
@@ -153,9 +157,11 @@
         "marketplace_receipts",
         "marketplace_reservations",
         "mercari_revenue_plans",
+        "remote_ai_rate_limits",
         "sky_activation_codes",
         "sky_connections",
         "sky_developer_tokens",
+        "sky_provider_connections",
         "sky_tool_events",
         "sky_tool_grants",
         "sky_tool_packages",
@@ -164,8 +170,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0014_sparkling_chimera.sql",
-      "tableCount": 29,
+      "expectedAppliedThrough": "0015_oval_the_twelve.sql",
+      "tableCount": 31,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

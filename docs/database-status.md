@@ -6,7 +6,7 @@
 
 ## 全体
 
-- データ境界: 6、table: 77
+- データ境界: 6、table: 79
 - source inventory: 6/6確認済み
 - current production readback: 0/6
 - 作業進捗: 136 task中 91 done、28 in progress、16 planned、1 blocked
@@ -16,7 +16,7 @@
 
 | 境界 | 責任 | table | source | 配備状態 | 本番適用済み | current readback |
 | --- | --- | ---: | --- | --- | --- | --- |
-| Web D1 | Webサービス状態 | 29 | VERIFIED | OWNER_ACCESS_BLOCKED | 未確認 | 未確認 |
+| Web D1 | Webサービス状態 | 31 | VERIFIED | OWNER_ACCESS_BLOCKED | 未確認 | 未確認 |
 | Sky Billing D1 | 収益精算・請求・受取Wallet | 13 | VERIFIED | DOCUMENTED_NOT_READ_BACK | 0004_rock_settlement_wallet.sql | 未確認 |
 | Operator Dock D1 | 運営専用の端末登録・緊急命令・監査 | 5 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
 | OS Wallet / Spend SQLite | 端末内Wallet・支出承認・PAPER position | 17 | VERIFIED | QEMU_SCOPED | 未確認 | 未確認 |
@@ -25,25 +25,25 @@
 
 ## Web D1
 
-- expected latest migration: 0014_sparkling_chimera.sql
-- migration files: 14
+- expected latest migration: 0015_oval_the_twelve.sql
+- migration files: 16
 - accidental duplicate: 0
 - published convergence definitions: 6
 - Marketplace relation guards: 8
 
 | 分野 | table | 内訳 |
 | --- | ---: | --- |
-| 仕事・実行・端末・基本台帳 | 8 | book_records, devices, fund_plans, job_events, jobs, tool_controls, tool_runs, work_jobs |
-| Sky接続・Tool管理 | 7 | sky_activation_codes, sky_connections, sky_developer_tokens, sky_tool_events, sky_tool_grants, sky_tool_packages, sky_tool_submissions |
+| 仕事・実行・端末・基本台帳 | 9 | book_records, devices, fund_plans, job_events, jobs, remote_ai_rate_limits, tool_controls, tool_runs, work_jobs |
+| Sky接続・Tool管理 | 8 | sky_activation_codes, sky_connections, sky_developer_tokens, sky_provider_connections, sky_tool_events, sky_tool_grants, sky_tool_packages, sky_tool_submissions |
 | Marketplace | 7 | marketplace_approvals, marketplace_assets, marketplace_events, marketplace_positions, marketplace_proposals, marketplace_receipts, marketplace_reservations |
 | CSV業務 | 4 | csv_billing_accounts, csv_job_events, csv_jobs, csv_monthly_fees |
 | 自動化ファンド・事業補助 | 3 | automation_fund_memberships, automation_funds, mercari_revenue_plans |
 
 ## 境界別の全table
 
-<details><summary>Web D1: 29 table</summary>
+<details><summary>Web D1: 31 table</summary>
 
-`automation_fund_memberships`、`automation_funds`、`book_records`、`csv_billing_accounts`、`csv_job_events`、`csv_jobs`、`csv_monthly_fees`、`devices`、`fund_plans`、`job_events`、`jobs`、`marketplace_approvals`、`marketplace_assets`、`marketplace_events`、`marketplace_positions`、`marketplace_proposals`、`marketplace_receipts`、`marketplace_reservations`、`mercari_revenue_plans`、`sky_activation_codes`、`sky_connections`、`sky_developer_tokens`、`sky_tool_events`、`sky_tool_grants`、`sky_tool_packages`、`sky_tool_submissions`、`tool_controls`、`tool_runs`、`work_jobs`
+`automation_fund_memberships`、`automation_funds`、`book_records`、`csv_billing_accounts`、`csv_job_events`、`csv_jobs`、`csv_monthly_fees`、`devices`、`fund_plans`、`job_events`、`jobs`、`marketplace_approvals`、`marketplace_assets`、`marketplace_events`、`marketplace_positions`、`marketplace_proposals`、`marketplace_receipts`、`marketplace_reservations`、`mercari_revenue_plans`、`remote_ai_rate_limits`、`sky_activation_codes`、`sky_connections`、`sky_developer_tokens`、`sky_provider_connections`、`sky_tool_events`、`sky_tool_grants`、`sky_tool_packages`、`sky_tool_submissions`、`tool_controls`、`tool_runs`、`work_jobs`
 
 次の確認: 既存Sitesの所有workspaceへ接続し、検証済み最新mainを同じSiteへ配備。公開設定変更後に匿名health、本人別API、migration、件数、孤立関係、backup状態をreadbackする
 
