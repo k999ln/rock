@@ -493,3 +493,51 @@ export const skyToolEvents = sqliteTable(
     index('idx_sky_tool_events_package_time').on(table.packageKey, table.occurredAt),
   ],
 );
+
+export const skyActivationCodes = sqliteTable(
+  'sky_activation_codes',
+  {
+    id: text('id').primaryKey(),
+    packageKey: text('package_key').notNull(),
+    userId: text('user_id').notNull(),
+    label: text('label').notNull(),
+    codeSha256: text('code_sha256').notNull(),
+    maxUses: integer('max_uses').notNull(),
+    usedCount: integer('used_count').notNull().default(0),
+    status: text('status').notNull().default('active'),
+    createdAt: integer('created_at').notNull(),
+    expiresAt: integer('expires_at'),
+    revokedAt: integer('revoked_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_activation_code_hash').on(table.codeSha256),
+    index('idx_sky_activation_owner_created').on(table.userId, table.createdAt),
+    index('idx_sky_activation_package_status').on(table.packageKey, table.status),
+  ],
+);
+
+export const skyToolGrants = sqliteTable(
+  'sky_tool_grants',
+  {
+    id: text('id').primaryKey(),
+    packageKey: text('package_key').notNull(),
+    activationCodeId: text('activation_code_id').notNull(),
+    telegramUserId: text('telegram_user_id').notNull(),
+    telegramChatId: text('telegram_chat_id').notNull(),
+    botUsername: text('bot_username'),
+    status: text('status').notNull().default('active'),
+    grantedAt: integer('granted_at').notNull(),
+    expiresAt: integer('expires_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_grant_package_telegram').on(
+      table.packageKey,
+      table.telegramUserId,
+    ),
+    index('idx_sky_grant_telegram_status').on(
+      table.telegramUserId,
+      table.status,
+    ),
+    index('idx_sky_grant_code').on(table.activationCodeId),
+  ],
+);

@@ -52,6 +52,7 @@ import { MrToolRunner } from '@/components/mr-tool-runner';
 import { DeviceConnection } from '@/components/device-connection';
 import { FashionBrandOpsRunner } from '@/components/fashion-brand-ops-runner';
 import SkyMcpCenter from '@/components/sky-mcp-center';
+import SkyActivationPanel from '@/components/sky-activation-panel';
 import SkyPublisherForm from '@/components/sky-publisher-form';
 import WorkspaceShell from '@/components/workspace-shell';
 import {
@@ -383,6 +384,7 @@ export default function SkyWorkspace({
             onOpenChange={setMcpOpen}
             onOpenDevice={() => setDeviceOpen(true)}
           />
+          <SkyActivationPanel />
           <section
             className="sky-assistant"
             aria-labelledby="sky-assistant-title"
