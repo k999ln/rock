@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="dev.rock.jev.provider"
+    android:versionCode="1"
+    android:versionName="0.1.0">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- No launcher, exported service, shared UID, Tool, Shell, or Local AI permission. -->
+    <!-- The app stays disabled until a reviewed secret provisioning path exists. -->
+    <application
+        android:allowBackup="false"
+        android:enabled="false"
+        android:label="RockstarOS Jev Provider"
+        android:usesCleartextTraffic="false" />
+</manifest>

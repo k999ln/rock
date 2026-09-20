@@ -28,10 +28,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.11.1'
-      - name: Test fixed Jev relay and Android debug network boundary
-        run: node --experimental-strip-types --test tests/jev-pixel-relay.test.mjs tests/android-jev-preview-boundary.test.mjs
+      - name: Test fixed Jev relay and Android network boundaries
+        run: node --experimental-strip-types --test tests/jev-pixel-relay.test.mjs tests/android-jev-preview-boundary.test.mjs tests/android-jev-provider-boundary.test.mjs
       - name: Compile Android packages and test shared SQLite core
-        run: gradle -p android :core:test :tool-sdk:testDebugUnitTest :shell-api:assembleDebug :automation:assembleDebug :shell:assembleDebug :article-tool:assembleDebug :operator-agent:assembleDebug :jev-preview:assembleDebug :jev-preview:assembleRelease :jev-preview:testDebugUnitTest :article-tool:lintDebug :operator-agent:lintDebug :automation:lintDebug :shell:lintDebug :jev-preview:lintDebug :jev-preview:lintRelease --no-daemon
+        run: gradle -p android :core:test :tool-sdk:testDebugUnitTest :shell-api:assembleDebug :automation:assembleDebug :shell:assembleDebug :article-tool:assembleDebug :operator-agent:assembleDebug :jev-preview:assembleDebug :jev-preview:assembleRelease :jev-preview:testDebugUnitTest :article-tool:lintDebug :operator-agent:lintDebug :automation:lintDebug :shell:lintDebug :jev-preview:lintDebug :jev-preview:lintRelease :jev-provider:assembleDebug :jev-provider:testDebugUnitTest :jev-provider:lintDebug --no-daemon
       - name: Upload Jev Pixel preview debug APK
         uses: actions/upload-artifact@v4
         with:

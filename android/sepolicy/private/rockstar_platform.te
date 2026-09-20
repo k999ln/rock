@@ -17,6 +17,9 @@ type rock_mcp_data_file, file_type, data_file_type, app_data_file_type;
 type rock_provider_app, domain;
 type rock_provider_app_exec, exec_type, file_type, system_file_type;
 type rock_provider_data_file, file_type, data_file_type, app_data_file_type;
+type rock_jev_provider_app, domain;
+type rock_jev_provider_app_exec, exec_type, file_type, system_file_type;
+type rock_jev_provider_data_file, file_type, data_file_type, app_data_file_type;
 type rock_operator_agent, domain;
 type rock_operator_agent_exec, exec_type, file_type, system_file_type;
 type rock_operator_agent_data_file, file_type, data_file_type, app_data_file_type;
@@ -27,7 +30,9 @@ app_domain(rock_local_ai_app)
 app_domain(rock_tool_app)
 app_domain(rock_mcp_app)
 app_domain(rock_provider_app)
+app_domain(rock_jev_provider_app)
 app_domain(rock_operator_agent)
+net_domain(rock_jev_provider_app)
 net_domain(rock_operator_agent)
 
 binder_call(rock_shell_app, rockstar_platform_app)
@@ -42,22 +47,24 @@ binder_call(rock_mcp_app, rockstar_platform_app)
 binder_call(rock_provider_app, rockstar_platform_app)
 
 # Only the OS broker may manage the platform database and Keystore-backed backup envelope.
-neverallow { rock_shell_app rock_local_ai_app rock_tool_app rock_mcp_app rock_provider_app rock_operator_agent } rockstar_platform_app:process ptrace;
+neverallow { rock_shell_app rock_local_ai_app rock_tool_app rock_mcp_app rock_provider_app rock_jev_provider_app rock_operator_agent } rockstar_platform_app:process ptrace;
 neverallow rock_tool_app { rock_mcp_app rock_provider_app }:binder call;
 neverallow rock_mcp_app { rock_tool_app rock_provider_app }:binder call;
 neverallow rock_provider_app { rock_tool_app rock_mcp_app }:binder call;
-neverallow rock_shell_app { rockstar_platform_data_file rock_local_ai_data_file rock_tool_data_file rock_mcp_data_file rock_provider_data_file rock_operator_agent_data_file }:file { create write append unlink rename relabelfrom relabelto };
-neverallow rock_local_ai_app { rockstar_platform_data_file rock_shell_data_file rock_tool_data_file rock_mcp_data_file rock_provider_data_file rock_operator_agent_data_file }:file { create write append unlink rename relabelfrom relabelto };
-neverallow rock_tool_app { rockstar_platform_data_file rock_shell_data_file rock_local_ai_data_file rock_mcp_data_file rock_provider_data_file rock_operator_agent_data_file }:file { create write append unlink rename relabelfrom relabelto };
-neverallow rock_mcp_app { rockstar_platform_data_file rock_shell_data_file rock_local_ai_data_file rock_tool_data_file rock_provider_data_file rock_operator_agent_data_file }:file { create write append unlink rename relabelfrom relabelto };
-neverallow rock_provider_app { rockstar_platform_data_file rock_shell_data_file rock_local_ai_data_file rock_tool_data_file rock_mcp_data_file rock_operator_agent_data_file }:file { create write append unlink rename relabelfrom relabelto };
-neverallow rock_operator_agent { rockstar_platform_data_file rock_shell_data_file rock_local_ai_data_file rock_tool_data_file rock_mcp_data_file rock_provider_data_file }:file { create read write append unlink rename relabelfrom relabelto };
+neverallow rock_shell_app { rockstar_platform_data_file rock_local_ai_data_file rock_tool_data_file rock_mcp_data_file rock_provider_data_file rock_jev_provider_data_file rock_operator_agent_data_file }:file { create write append unlink rename relabelfrom relabelto };
+neverallow rock_local_ai_app { rockstar_platform_data_file rock_shell_data_file rock_tool_data_file rock_mcp_data_file rock_provider_data_file rock_jev_provider_data_file rock_operator_agent_data_file }:file { create write append unlink rename relabelfrom relabelto };
+neverallow rock_tool_app { rockstar_platform_data_file rock_shell_data_file rock_local_ai_data_file rock_mcp_data_file rock_provider_data_file rock_jev_provider_data_file rock_operator_agent_data_file }:file { create write append unlink rename relabelfrom relabelto };
+neverallow rock_mcp_app { rockstar_platform_data_file rock_shell_data_file rock_local_ai_data_file rock_tool_data_file rock_provider_data_file rock_jev_provider_data_file rock_operator_agent_data_file }:file { create write append unlink rename relabelfrom relabelto };
+neverallow rock_provider_app { rockstar_platform_data_file rock_shell_data_file rock_local_ai_data_file rock_tool_data_file rock_mcp_data_file rock_jev_provider_data_file rock_operator_agent_data_file }:file { create write append unlink rename relabelfrom relabelto };
+neverallow rock_jev_provider_app { rockstar_platform_data_file rock_shell_data_file rock_local_ai_data_file rock_tool_data_file rock_mcp_data_file rock_provider_data_file rock_operator_agent_data_file }:file { create write append unlink rename relabelfrom relabelto };
+neverallow rock_operator_agent { rockstar_platform_data_file rock_shell_data_file rock_local_ai_data_file rock_tool_data_file rock_mcp_data_file rock_provider_data_file rock_jev_provider_data_file }:file { create read write append unlink rename relabelfrom relabelto };
 
 # Local AI can propose work only through the broker. The operator agent is a separate
 # incident channel and has no Binder edge to the product data plane.
-neverallow rock_local_ai_app { rock_tool_app rock_mcp_app rock_provider_app rock_operator_agent }:binder call;
+neverallow rock_local_ai_app { rock_tool_app rock_mcp_app rock_provider_app rock_jev_provider_app rock_operator_agent }:binder call;
 neverallow rock_operator_agent { rockstar_platform_app rock_shell_app rock_local_ai_app rock_tool_app rock_mcp_app rock_provider_app }:binder call;
+neverallow rock_jev_provider_app { rockstar_platform_app rock_shell_app rock_local_ai_app rock_tool_app rock_mcp_app rock_provider_app rock_operator_agent }:binder call;
 
 # External execution is broker-mediated. Raw block devices, kernel interfaces and arbitrary app data stay denied.
-neverallow { rockstar_platform_app rock_shell_app rock_local_ai_app rock_tool_app rock_mcp_app rock_provider_app rock_operator_agent } block_device:blk_file *;
-neverallow { rock_shell_app rock_local_ai_app rock_tool_app rock_mcp_app rock_provider_app rock_operator_agent } kernel:security *;
+neverallow { rockstar_platform_app rock_shell_app rock_local_ai_app rock_tool_app rock_mcp_app rock_provider_app rock_jev_provider_app rock_operator_agent } block_device:blk_file *;
+neverallow { rock_shell_app rock_local_ai_app rock_tool_app rock_mcp_app rock_provider_app rock_jev_provider_app rock_operator_agent } kernel:security *;
