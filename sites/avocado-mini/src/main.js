@@ -15,8 +15,39 @@ const galleryPrev = document.querySelector('#gallery-prev');
 const galleryNext = document.querySelector('#gallery-next');
 const beats = [...document.querySelectorAll('.feature-beat')];
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const beatStarts = [0, 0.13, 0.32, 0.51, 0.70];
+const storyWord = document.querySelector('#story-word');
+const storySticky = document.querySelector('.story-sticky');
+const storyRail = [...document.querySelectorAll('.story-rail span')];
 const priceStart = 0.91;
+const storyWords = ['FORM', 'SENSE', 'REACH', 'STABLE', 'FLOW', 'MINI'];
+const storyColors = ['#08090b', '#101821', '#182532', '#101a22', '#141f26', '#08090b'];
+// A single tower follows a choreographed path across the viewport while completing one turn.
+const motionKeys = [
+  { at: 0, x: 19, y: 1, scale: 0.96, tilt: -9, yaw: 0 },
+  { at: 0.18, x: 20, y: -2, scale: 1.14, tilt: 9, yaw: 48 },
+  { at: 0.36, x: -20, y: 1, scale: 1.04, tilt: -13, yaw: 124 },
+  { at: 0.54, x: 20, y: -2, scale: 1.16, tilt: 10, yaw: 203 },
+  { at: 0.72, x: -19, y: 1, scale: 1.02, tilt: -8, yaw: 290 },
+  { at: priceStart, x: -22, y: 0, scale: 0.96, tilt: 0, yaw: 360 },
+];
+
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+const smooth = (value) => value * value * (3 - 2 * value);
+const mix = (start, end, amount) => start + (end - start) * amount;
+const mixColor = (start, end, amount) => `#${[1, 3, 5].map((offset) => {
+  const first = parseInt(start.slice(offset, offset + 2), 16);
+  const second = parseInt(end.slice(offset, offset + 2), 16);
+  return Math.round(mix(first, second, amount)).toString(16).padStart(2, '0');
+}).join('')}`;
+
+function motionAt(progress) {
+  const nextIndex = motionKeys.findIndex((key) => key.at > progress);
+  const index = nextIndex < 0 ? motionKeys.length - 2 : Math.max(0, nextIndex - 1);
+  const first = motionKeys[index];
+  const next = motionKeys[index + 1];
+  const amount = smooth(clamp((progress - first.at) / (next.at - first.at), 0, 1));
+  return Object.fromEntries(['x', 'y', 'scale', 'tilt', 'yaw'].map((key) => [key, mix(first[key], next[key], amount)]));
+}
 
 function makeModel() {
   const model = new THREE.Group();
@@ -83,16 +114,20 @@ function showFallback() {
 
 function updateStory(progress) {
   const visible = progress >= priceStart;
-  let active = -1;
-  if (!visible) {
-    for (let index = 0; index < beatStarts.length; index += 1) {
-      if (progress >= beatStarts[index]) active = index;
-    }
-  }
+  const phase = clamp(progress / 0.18, 0, 4);
+  const active = visible ? 5 : Math.min(4, Math.round(phase));
+  const first = Math.floor(phase);
+  const blend = smooth(phase - first);
+  storySticky.style.setProperty('--story-bg', visible ? storyColors[5] : mixColor(storyColors[first], storyColors[Math.min(5, first + 1)], blend));
+  storyWord.textContent = storyWords[active];
+  storyRail.forEach((dot, index) => dot.classList.toggle('is-active', index === active));
   beats.forEach((beat, index) => {
-    const selected = index === active;
-    beat.classList.toggle('is-active', selected);
-    beat.setAttribute('aria-hidden', String(!selected));
+    // Let the previous heading disappear before the next one enters.
+    const opacity = visible ? 0 : clamp((0.5 - Math.abs(phase - index)) / 0.16, 0, 1);
+    beat.style.opacity = opacity;
+    beat.style.transform = `translateY(calc(${window.innerWidth < 800 ? '0px' : '-50%'} + ${(index - phase) * 35}px))`;
+    beat.classList.toggle('is-active', opacity > 0.02);
+    beat.setAttribute('aria-hidden', String(opacity < 0.5));
   });
   chapter.textContent = visible ? 'COMPLETE / 04' : active === 0 ? 'INTRO / 04' : `${String(active).padStart(2, '0')} / 04`;
   pricePanel.classList.toggle('visible', visible);
@@ -102,11 +137,22 @@ function updateStory(progress) {
 
 function updateProgress(model, renderer, scene, camera) {
   const distance = Math.max(1, story.offsetHeight - window.innerHeight);
-  const progress = Math.min(1, Math.max(0, -story.getBoundingClientRect().top / distance));
-  const turn = Math.min(1, Math.max(0, (progress - 0.04) / (priceStart - 0.04)));
+  const progress = clamp(-story.getBoundingClientRect().top / distance, 0, 1);
+  const motion = motionAt(Math.min(progress, priceStart));
+  const turn = motion.yaw / 360;
   progressBar.style.width = `${Math.round(turn * 100)}%`;
   if (model && renderer && scene && camera) {
-    model.rotation.y = reducedMotion.matches ? 0 : turn * Math.PI * 2;
+    const mobile = window.innerWidth < 800;
+    const visibleHeight = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * camera.position.length();
+    const visibleWidth = visibleHeight * camera.aspect;
+    model.position.set(
+      reducedMotion.matches ? 0 : motion.x * visibleWidth / 100 * (mobile ? 0.48 : 1),
+      mobile ? -1.55 : reducedMotion.matches ? 0 : motion.y * visibleHeight / 100,
+      0,
+    );
+    model.scale.setScalar(mobile ? motion.scale * 0.83 : motion.scale * 0.84);
+    model.rotation.z = reducedMotion.matches ? 0 : THREE.MathUtils.degToRad(motion.tilt * (mobile ? 0.38 : 1));
+    model.rotation.y = reducedMotion.matches ? 0 : THREE.MathUtils.degToRad(motion.yaw);
     angle.textContent = reducedMotion.matches ? '静止表示' : `${Math.round(turn * 360)}°`;
     renderer.render(scene, camera);
   } else {
@@ -157,7 +203,7 @@ if (renderer) {
     const width = Math.max(1, stage.clientWidth);
     const height = Math.max(1, stage.clientHeight);
     camera.aspect = width / height;
-    camera.position.set(width < 650 ? 2.5 : 2.4, width < 650 ? 1.2 : 1.5, width < 650 ? 13.5 : 11.5);
+    camera.position.set(width < 650 ? 2.5 : 2.4, width < 650 ? 1.2 : 1.5, width < 650 ? 15.5 : 11.5);
     camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);

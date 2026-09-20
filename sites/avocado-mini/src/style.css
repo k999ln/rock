@@ -139,3 +139,47 @@ body{overflow-x:hidden}
 @media(max-width:800px){.global-nav{gap:22px}.global-nav a:nth-last-child(1){display:none}.hero-word{display:none}.film-hero-device{inset:14% 0 24%;width:100%;height:62%;object-fit:contain;object-position:center;mask-image:none}.hero-bottom{bottom:90px}.hero-bottom h1{font-size:clamp(46px,9vw,75px)}.hero-bottom p{font-size:17px}.statement-bottom{align-items:flex-start;flex-direction:column}.statement-bottom>div{align-items:flex-start}.highlight-card{flex-basis:82vw;height:520px}.macro-image{background-image:linear-gradient(90deg,#070b10de,#070b10a9 53%,#070b1040),url('/images/avocado-mini-base-p0.png')}}
 @media(max-width:520px){.global-nav{gap:17px}.global-nav a:nth-child(3),.global-nav a:nth-child(4){display:none}.site-header{height:50px}.site-header nav{gap:12px}.site-header nav a:nth-child(3),.site-header nav a:nth-child(4){display:none}.film-hero{min-height:680px}.hero-word{top:28%;font-size:65vw}.film-hero-device{inset:17% 0 27%;width:100%;height:56%;object-fit:contain;object-position:center}.hero-bottom{left:22px;right:22px;bottom:90px;align-items:start;flex-direction:column;gap:12px}.hero-bottom h1{font-size:58px}.hero-bottom p{text-align:left;font-size:18px}.film-disclaimer{left:22px;right:22px;bottom:18px;font-size:10px}.hero-statement{min-height:70svh;padding:100px 24px 80px}.hero-statement h2{font-size:18vw;margin:24px 0 55px}.statement-bottom p{font-size:16px}.statement-bottom span{font-size:12px}.highlights{padding:90px 0 70px}.highlights-head{padding:0 24px;margin-bottom:30px}.highlights h2{font-size:44px}.gallery-controls button{height:38px;width:38px}.highlight-gallery{padding:0 24px 20px;gap:14px;scroll-padding-inline:24px}.highlight-card{flex-basis:82vw;min-height:0;height:530px}.highlight-card img{object-position:center}.highlight-card>div{top:29px;left:25px;right:25px}.highlight-card h3{font-size:36px}.highlight-card p{font-size:13px}.design-intro{min-height:75svh;padding:90px 20px}.design-intro h2{font-size:16vw}.design-intro>p:last-child{font-size:16px}.macro-image{background-position:65% center}.details figure img{min-height:290px;object-fit:cover}}
 @media(prefers-reduced-motion:reduce){.highlight-card img{transition:none}}
+
+/* Choreographed 360° Motion Tower tour. Everything before #product stays as designed. */
+.story{height:650svh;background:#08090b}
+.story-sticky{background:radial-gradient(ellipse at 50% 48%,color-mix(in srgb,var(--story-bg,#08090b) 70%,#406174) 0%,var(--story-bg,#08090b) 70%)}
+.story-sticky:before{z-index:0;opacity:.22}
+.story-word{position:absolute;z-index:0;left:50%;top:48%;transform:translate(-50%,-50%);font-size:clamp(130px,28vw,490px);font-weight:700;letter-spacing:-.13em;line-height:1;white-space:nowrap;color:#eef9ff;opacity:.045;pointer-events:none;user-select:none}
+.story-orbit{position:absolute;z-index:0;left:50%;top:51%;width:min(64vw,720px);aspect-ratio:1;transform:translate(-50%,-50%);border:1px solid #b5dce529;border-radius:50%;pointer-events:none}
+.story-orbit:before,.story-orbit:after{content:"";position:absolute;inset:12%;border:1px solid #b5dce523;border-radius:50%}
+.story-orbit:after{inset:27%;border-color:#b5dce519}
+.story-rail{position:absolute;z-index:4;right:clamp(20px,3.5vw,58px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:13px}
+.story-rail span{width:7px;height:7px;border:1px solid #b9d9e4;border-radius:50%;opacity:.5;transition:background .25s,transform .25s,opacity .25s}
+.story-rail span.is-active{background:#b9d9e4;opacity:1;transform:scale(1.4)}
+.stage{inset:0;z-index:1;pointer-events:none}
+.feature-beats{z-index:2}
+.feature-beat{width:min(480px,37vw);will-change:opacity,transform}
+.feature-beat.is-active{transition:none}
+.feature-beat h2{font-size:clamp(48px,5.4vw,84px)}
+.feature-beat .feature-description{max-width:410px}
+.price-panel{z-index:5}
+@media(max-width:800px){
+  .story{height:650svh}
+  .story-word{font-size:37vw;top:54%;opacity:.035}
+  .story-orbit{width:95vw;top:63%}
+  .story-rail{right:20px;top:63%;gap:11px}
+  .feature-beat,.feature-beat[data-beat="telescope"],.feature-beat[data-beat="os"]{top:115px;left:26px;right:48px;width:auto;max-width:640px}
+  .feature-beat h2,.feature-beat[data-beat="intro"] h2{font-size:clamp(38px,7vw,60px)}
+  .feature-headline{font-size:clamp(21px,4vw,28px)}
+  .feature-beat .feature-description{font-size:clamp(12px,1.8vw,15px);line-height:1.55;max-width:570px}
+  .feature-meta{display:none}
+  .stage{inset:0}
+  .price-panel{left:24px;right:50px;top:115px;bottom:auto;width:auto;transform:translateY(16px)}
+  .price-panel.visible{transform:translateY(0)}
+}
+@media(max-width:520px){
+  .feature-beat,.feature-beat[data-beat="telescope"],.feature-beat[data-beat="os"]{top:120px;left:22px;right:32px}
+  .feature-beat .eyebrow{margin-bottom:11px}
+  .feature-beat h2,.feature-beat[data-beat="intro"] h2{font-size:clamp(33px,9vw,42px);margin-bottom:11px}
+  .feature-headline{font-size:21px;margin-bottom:9px}
+  .feature-beat .feature-description{font-size:12px;line-height:1.5;max-width:330px}
+  .story-rail{right:15px}
+  .story-foot{left:22px;right:22px;bottom:18px}
+  .price-panel{left:22px;right:22px;top:115px;bottom:auto;padding:22px}
+}
+@media(prefers-reduced-motion:reduce){.story-rail span{transition:none}}
