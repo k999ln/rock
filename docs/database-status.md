@@ -9,7 +9,7 @@
 - データ境界: 6、table: 75
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 131 task中 88 done、26 in progress、16 planned、1 blocked
+- 作業進捗: 133 task中 89 done、27 in progress、16 planned、1 blocked
 - 現在milestone: Pixel 10 compile-only Developer Previewの初回full build準備
 
 ## 保存境界と配備状態

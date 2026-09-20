@@ -10,6 +10,8 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 - 製品紹介は利用者の「やってみたい」から入り、Sky／Zema／Studioで得られる役割と体験を明示する。料金方針は販売文句の先頭に置かない。
 - GitHub READMEの冒頭にはSky／Zema／Studioと設計中のavocadoMiniを示すアニメーションGIFを表示する。
 - 製品体系の各説明にも、avocadoMini、RockstarOS、Sky、Zema、Studioの短いループGIFを配置する。README上の表現であり、既存Siteの公開設定や配信版は変わらない。
+- GitHubの冒頭はavocadoMiniの外観・利用場面の構想画像から始め、製品別GIFとクラファン企画案へ続ける。構想画像は実機写真として扱わない。クラファンの募集ページは未開設で、企画案から決済はできない。
+- ScrewはRock側の案内名としてNoelleのPRIVATE/PIXEL公開導入ページへリンクする。Noelleの非公開・再配布禁止の実装やGrapheneOSイメージは取り込まない。公開ページへの到達だけ確認済みで、実機導入は未試験。
 - 主要画面、PWA manifest、Service Worker、明示更新、security header、D1 APIを実装済み。
 - 既存Siteは現在も本人限定。利用者は同じURLでの一般公開を明示したが、対象Sites所有アカウントが現在の接続から見つからず、公開設定と最新版sourceの反映、ログイン後の実操作確認が残る。
 - 一般公開後は製品紹介と公開カタログを匿名で見せ、本人別の仕事、Wallet、開発者操作はChatGPTサインインを要する。匿名の`/api/health`でWorkerと主要D1 tableの応答を確認し、本人別APIの受入は別に行う。
@@ -18,7 +20,7 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 - GitHub sourceとSites配信版の同一commit確認が残る。sourceの検証結果を配信版の合格へ流用しない。
 - 全ローンチ候補のうち本人限定Web/PWA Previewは必須gateが最新版source同期だけ残っており、最短ローンチ経路とする。
 
-主なtask: `WEB01`〜`WEB06`, `R03`〜`R08`, `LCH04`。
+主なtask: `WEB01`〜`WEB09`, `R03`〜`R08`, `LCH04`。
 
 ## 次に進める順番
 

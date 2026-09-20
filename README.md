@@ -1,16 +1,98 @@
-# RockstarOS — あなたの「やってみたい」を、形にする
+# avocadoMini — 発明を手で考えるハードウェア構想
+
+物質や工程のアイデアを、作業面で手を動かしながら選び、組み合わせ、比べる。**avocadoMini**は、その体験を形にするRockstarOS搭載の空間発明端末です。四方向のセンサーで操作領域を捉え、発明の候補を安全に検討できる製品を目指しています。
+
+[🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🔩 Screw](#screw--grapheneos導入の入口) · [🔧 開発状況](#現在地) · [🤝 クラファン企画](docs/avocado-mini-crowdfunding.md) · [📱 アプリ](#アクセス先)
+
+## 構想ギャラリー
+
+![avocadoMiniの外観構想。銀色の細いフレームと四方向センサーを備えた作業台](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png)
+
+*外観の構想参考画像。設計比較用の描写であり、実機写真ではありません。寸法、センサー性能、表示方式は試作と実測で確かめます。*
+
+## 手で考え、発明の候補を比べる
+
+- **選ぶ:** 物質のデジタル模型と条件を作業面で扱う。
+- **組み合わせる:** 元の候補を残しながら、新しい仮説を分岐させる。
+- **比べる:** 安全制約を確認し、simulationや実験記録の違いを見て次の一手を決める。
+
+![avocadoMiniを使って二人が発明の候補を操作する利用場面の構想参考画像](docs/assets/rockstaros-spatial-table-full-scale-v2.png)
+
+*利用場面の構想参考画像。空中表示、手の追跡、触覚、物理実験の完成を示すものではありません。最初は小型Benchと2D／AR表示から検証します。*
+
+**現在は詳細設計段階です。** 実機試作、量産、販売はまだ行っていません。[ハードウェア詳細設計](docs/avocado-mini-hardware-design.md)と[空間発明システム設計](docs/rockstaros-avocado-mini-complete-design.md)に、構成と受入条件を記録しています。
+
+## クラウドファンディング
+
+まず[avocadoMiniのクラファン企画ページ案](docs/avocado-mini-crowdfunding.md)で、実現したい体験、資金で進める検証、現在の開発段階を見られます。支援金を受け付ける募集ページの公開URLはまだ確認できていません。募集サービス、目標額、返礼、提供条件が決まり次第、この場所と冒頭に募集ページへの直接リンクを設置します。現在は募集・決済・先行予約を行っていません。
+
+## 動くジャケット
+
+RockstarOSは、avocadoMiniの操作、権限、保存、復旧をつなぐ技術基盤です。**Material Invention Studio**で発明の候補を試し、**Sky**で目的に合うAI Toolを探し、**Zema**で依頼から成果まで進めます。[製品別の動くジャケット](#製品体系)も下で見られます。
 
 ![Skyで役割を探し、Zemaで進め、Studioで発明の候補を試すRockstarOSの紹介アニメーション。avocadoMiniは設計中。](docs/assets/rockstaros-intro.gif)
 
-やりたいことから始めて、自分に役立つAIの役割を見つける。仕事や創作なら**Sky**でToolを選び、**Zema**で依頼して、途中の確認から成果まで一緒に進めます。新しい材料や製品のアイデアなら、**Material Invention Studio**で候補を組み合わせ、違いを比べられます。
+**いま試せる入口:** Web版の[ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/)からSky、Zema、Studioへ進む構成です。ただし、現在の配信先は本人限定で、一般公開への変更は未反映です。avocadoMiniの実機とスマートフォン向け完成OSはまだ提供していません。
 
-その体験を手で扱える製品にする構想が、空間発明端末 **avocadoMini** です。物質のデジタル模型を手で選び、つなぎ、発明の候補を考えるために設計しています。現在は詳細設計段階で、実機試作・量産・販売はまだ行っていません。
+交換可能なLLMは製品を支える設計ですが、現在の実機検証は固定Qwen / llama.rn profileの試験署名Pixel APK段階です。複数モデルの交換やOS image搭載は未完了です。開発用のPixel 10は検証端末で、自社製ハードウェアとして販売する製品ではありません。[LLM・評価モデル設計](docs/llm-evaluation-architecture.md)と[能力表](data/llm-capabilities.json)に現在地を記録しています。
 
-**いま試せる入口:** 現在は本人限定Web版の[ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/)からSky、Zema、Studioへ進めます。一般公開への変更を進めていますが、公開設定の反映は未完了です。実際に使える機能と準備中の機能は画面で区別します。avocadoMini実機とスマートフォン向け完成OSは、まだ提供していません。
+製品と事業の関係は[製品・サービス・システム関係図](docs/rockstaros-product-system-map.md)、OSから全Toolまでの入口は[RockstarOS全設計ポータル](docs/rockstaros-design-portal.md)にまとめています。製品要望の正本は[製品ベース](docs/product-baseline.md)のRQ01〜RQ49、進捗の正本は[data/project-status.json](data/project-status.json)です。現在版は`RockstarOS 1.0 Developer Preview`です。
 
-RockstarOSと交換可能なLLMは、その体験を支える技術基盤です。現在の実機検証は固定Qwen / llama.rn profileの試験署名Pixel APK段階で、複数モデルの交換やOS image搭載は未完了です。詳しくは[LLM・評価モデル設計](docs/llm-evaluation-architecture.md)と[能力表](data/llm-capabilities.json)に記録しています。開発用のPixel 10は検証端末で、自社製ハードウェアとして販売中の製品ではありません。
+## 製品体系
 
-製品と事業の関係は[製品・サービス・システム関係図](docs/rockstaros-product-system-map.md)にまとめています。OSから全Tool、avocadoMiniまでの設計入口は[RockstarOS全設計ポータル](docs/rockstaros-design-portal.md)です。field単位の契約は[OS全体詳細設計](docs/rockstaros-complete-design.md)、[Sky／Zema／全Tool詳細設計](docs/sky-tools-complete-design.md)、[空間発明システム設計](docs/rockstaros-avocado-mini-complete-design.md)を参照してください。製品要望の正本は[製品ベース](docs/product-baseline.md)のRQ01〜RQ49、進捗の正本は[data/project-status.json](data/project-status.json)です。現在版は`RockstarOS 1.0 Developer Preview`です。
+### avocadoMini — 空間発明のためのハードウェア構想
+
+![avocadoMiniの設計構想。四方向のセンサーに囲まれた作業面で発明の候補が動くアニメーション](docs/assets/cover-avocado-mini.gif)
+
+四方向のセンサーと作業面を想定し、物質のデジタル模型を手で選び、組み合わせ、候補を比べる専用端末を設計しています。[外観と構成の設計図](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png)を公開しています。画像はコンセプトであり、追跡精度、表示方式、安全性、量産性を実証した実機写真ではありません。小型Bench試作から検証し、その後にFull-scaleへ進む計画です。
+
+### RockstarOS — 製品を動かす共通の土台
+
+![RockstarOSの構成要素が中心につながり巡るアニメーション](docs/assets/cover-rockstaros.gif)
+
+LLM、Agent、仕事、Tool、権限、承認、保存、更新、復旧を一つの契約でつなぐOSです。LLMは交換可能にし、LLM自身に権限付与やWallet台帳書込みをさせません。
+
+### Screw — GrapheneOS導入の入口
+
+![ScrewからNoelleのGrapheneOS導入ページへ進む様子を表すアニメーション](docs/assets/cover-screw.gif)
+
+**Screw**は、Noelleが作った[PRIVATE/PIXELのGrapheneOS導入ページ](https://privatepixel.uk/grapheneos-install)へRockから進むための名前です。[Screwの案内](docs/screw.md)で導入手順と提供元を確認できます。導入システムはNoelle側の独立したサービスであり、RockstarOSの機能やRock製のインストーラーとして提供するものではありません。
+
+### Home — ブランドの入口
+
+利用者が最初にRockstarOSの世界へ入る画面です。Sky、Zema、Wallet、Market、Settings、Material Inventionへの入口を持ち、今日やりたいことがすぐ見つかる構成にします。Homeは各機能の正本を持たず、Platform Coreへ安全に導きます。
+
+### Sky — 自分に合うAI仲間を見つける場所
+
+![SkyでAIの役割やToolを探す様子を表したアニメーション](docs/assets/cover-sky.gif)
+
+仕事や創作を一緒に進めるAI Toolを見つける場所です。Toolの個性、作者、できること、料金、実行先を自然に知り、気に入ったToolをZemaへ迎え入れます。MCP接続、Connection Passport、Toolの停止・失効は体験を守る裏側でSkyに集約します。
+
+### Zema — AIと一緒に進む場所
+
+![ZemaでAIと会話しながら進める様子を表したアニメーション](docs/assets/cover-zema.gif)
+
+やりたいことを伝え、AIの提案を見て、必要なときだけ方向を決めながら進む場所です。依頼、計画、実行、停止、再開、成果確認を一つの流れにし、AIに任せる部分と自分で決める部分を自然に分けます。
+
+### Wallet / Market — 挑戦を続けるための場所
+
+Walletは費用、確定収益、払出し、未確定状態を分けて表示し、安心して次の挑戦へ進めるようにします。Market / Fundは現在PAPER限定で、LIVE注文・清算・自動再投資は有効にしません。
+
+### Material Invention Studio — 発明案を扱うアプリ
+
+![Material Invention Studioで物質の候補を組み合わせる様子を表したアニメーション](docs/assets/cover-material-studio.gif)
+
+物質のデジタル模型を接続・分離し、候補branch、制約、安全状態、simulation結果、発明過程を記録します。MR表示は物理実験を実行せず、Patent AIは特許性・発明者・出願を自動確定しません。
+
+### Hardware — OSを使う端末
+
+| Hardware | 役割 | 現在地 |
+| --- | --- | --- |
+| Pixel 10 / `frankel` | RockstarOSのreference hardware。Android Broker、Shell、Local AI、backup、Toolを実機検証する | source / APK / pre-full gate。full build、flash、CTS/VTS、OTA、純正復旧は未完了 |
+| Linux / QEMU | native OS契約、更新、rollback、Wallet / Game fixtureを検証する | Developer Preview候補 |
+| avocadoMini | 四方向sensorでMR / AR / VR / 2DのMaterial Inventionを操作する専用端末 | 設計 / Bench試作前。XR runtime、実機、物理設備は未接続 |
+
+avocadoMiniはRockstarOSそのものではなく、RockstarOSを搭載してMaterial Invention Studioを操作する専用デバイスです。
 
 ## アクセス先
 
@@ -20,6 +102,7 @@ RockstarOSと交換可能なLLMは、その体験を支える技術基盤です�
 | --- | --- |
 | 製品・サービス紹介 | [RockstarOS / avocadoMini](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) |
 | OSの導入案内 | [Developer Previewガイド](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) |
+| Screw / GrapheneOS導入 | [Noelleの公開導入ページ](https://privatepixel.uk/grapheneos-install) · [Rock内の案内](docs/screw.md) |
 | ホーム | [RockstarOS Home](https://rockstaros-kaiya.noellesugar1.chatgpt.site/) |
 | アプリ | [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) · [Zema](https://rockstaros-kaiya.noellesugar1.chatgpt.site/chat) · [Wallet](https://rockstaros-kaiya.noellesugar1.chatgpt.site/wallet) · [Market](https://rockstaros-kaiya.noellesugar1.chatgpt.site/market) · [Material Invention Studio](https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio) |
 
@@ -93,56 +176,6 @@ flowchart TB
 
 この図の詳しい境界、`Mr.` 由来Toolの取り込み、MR（Mixed Reality）経路、実行シーケンスは[関係図の正本補助設計](docs/rockstaros-product-system-map.md)を参照してください。
 
-## 製品体系
-
-### avocadoMini — 空間発明のためのハードウェア構想
-
-![avocadoMiniの設計構想。四方向のセンサーに囲まれた作業面で発明の候補が動くアニメーション](docs/assets/cover-avocado-mini.gif)
-
-四方向のセンサーと作業面を想定し、物質のデジタル模型を手で選び、組み合わせ、候補を比べる専用端末を設計しています。[外観と構成の設計図](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png)を公開しています。画像はコンセプトであり、追跡精度、表示方式、安全性、量産性を実証した実機写真ではありません。小型Bench試作から検証し、その後にFull-scaleへ進む計画です。
-
-### RockstarOS — 製品を動かす共通の土台
-
-![RockstarOSの構成要素が中心につながり巡るアニメーション](docs/assets/cover-rockstaros.gif)
-
-LLM、Agent、仕事、Tool、権限、承認、保存、更新、復旧を一つの契約でつなぐOSです。LLMは交換可能にし、LLM自身に権限付与やWallet台帳書込みをさせません。
-
-### Home — ブランドの入口
-
-利用者が最初にRockstarOSの世界へ入る画面です。Sky、Zema、Wallet、Market、Settings、Material Inventionへの入口を持ち、今日やりたいことがすぐ見つかる構成にします。Homeは各機能の正本を持たず、Platform Coreへ安全に導きます。
-
-### Sky — 自分に合うAI仲間を見つける場所
-
-![SkyでAIの役割やToolを探す様子を表したアニメーション](docs/assets/cover-sky.gif)
-
-仕事や創作を一緒に進めるAI Toolを見つける場所です。Toolの個性、作者、できること、料金、実行先を自然に知り、気に入ったToolをZemaへ迎え入れます。MCP接続、Connection Passport、Toolの停止・失効は体験を守る裏側でSkyに集約します。
-
-### Zema — AIと一緒に進む場所
-
-![ZemaでAIと会話しながら進める様子を表したアニメーション](docs/assets/cover-zema.gif)
-
-やりたいことを伝え、AIの提案を見て、必要なときだけ方向を決めながら進む場所です。依頼、計画、実行、停止、再開、成果確認を一つの流れにし、AIに任せる部分と自分で決める部分を自然に分けます。
-
-### Wallet / Market — 挑戦を続けるための場所
-
-Walletは費用、確定収益、払出し、未確定状態を分けて表示し、安心して次の挑戦へ進めるようにします。Market / Fundは現在PAPER限定で、LIVE注文・清算・自動再投資は有効にしません。
-
-### Material Invention Studio — 発明案を扱うアプリ
-
-![Material Invention Studioで物質の候補を組み合わせる様子を表したアニメーション](docs/assets/cover-material-studio.gif)
-
-物質のデジタル模型を接続・分離し、候補branch、制約、安全状態、simulation結果、発明過程を記録します。MR表示は物理実験を実行せず、Patent AIは特許性・発明者・出願を自動確定しません。
-
-### Hardware — OSを使う端末
-
-| Hardware | 役割 | 現在地 |
-| --- | --- | --- |
-| Pixel 10 / `frankel` | RockstarOSのreference hardware。Android Broker、Shell、Local AI、backup、Toolを実機検証する | source / APK / pre-full gate。full build、flash、CTS/VTS、OTA、純正復旧は未完了 |
-| Linux / QEMU | native OS契約、更新、rollback、Wallet / Game fixtureを検証する | Developer Preview候補 |
-| avocadoMini | 四方向sensorでMR / AR / VR / 2DのMaterial Inventionを操作する専用端末 | 設計 / Bench試作前。XR runtime、実機、物理設備は未接続 |
-
-avocadoMiniはRockstarOSそのものではなく、RockstarOSを搭載してMaterial Invention Studioを操作する専用デバイスです。
-
 ## 現在開発・統合しているTool
 
 Skyのカタログ上のready 11件とcandidate 13件を、同じTool契約で管理しています。readyはカタログ上の実装・接続状態であり、本番Provider接続や実収益を意味しません。
@@ -182,7 +215,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-19 / 131 task中88 done・26 in progress・16 planned・1 blocked
+更新日: 2026-09-19 / 133 task中89 done・27 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -364,11 +397,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>131 taskと段階gateの詳細を開く</summary>
+<summary>133 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 88/131件
+最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 89/133件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -411,9 +444,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | WEB03 | Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](components/rock-studio.tsx) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
 | WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
-| WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
+| WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
+| WEB08 | NoelleのGrapheneOS導入ページをScrewとしてGitHubから案内する | 完了 | [記録](README.md) · [記録](docs/screw.md) · [記録](docs/assets/cover-screw.gif) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

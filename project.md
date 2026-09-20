@@ -1,5 +1,17 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-19 — Screw導線とクラファン企画案を追加
+
+Noelleの非公開リポジトリ`PRIVATE/PIXEL`がGrapheneOS導入システムの出所であると確認した。ライセンスが再配布を禁止しているためソースやインストーラーは複製せず、Rockの案内名「Screw」、独自GIF、案内文書を追加した。Noelleの公開導入ページとガイドはHTTP 200を確認した。実機での導入は未試験。
+
+avocadoMiniのクラウドファンディング企画案を作成し、README冒頭から到達できるようにした。日本の起案者要件を満たす場合はCAMPFIREのAll-or-Nothingで小型Bench試作・検証を対象にする案を提示。Kickstarterのハードウェア募集は稼働する試作機が必要なため現段階では選ばない。募集主体、受取先、予算、返礼、募集ページは未定。支援金の受け付けは開始していない。Rockリポジトリ自体はprivateであり、外部支援者には現在のGitHub文書を公開できない。WEB09は実募集リンク設置まで進行中のままとする。
+
+検証は`project:check`、`baseline:check`、`git diff --check`、追加文書を含むローカルリンク存在確認とScrew GIFの420×420／24フレーム／loopを確認した。`npm run verify`は`typecheck`と`lint:product`まで通過したが、既存の全Nodeテストが途中で進まなくなり中断したため、全体PASSとは記録しない。次はGitHubの`main`へ反映し、同一commitのCIと表示を確認する。
+
+## 2026-09-19 — GitHub READMEの先頭をavocadoMini製品紹介へ修正
+
+利用者の指摘により、GitHubの冒頭がSky／Zemaのアニメーションから始まり、主役に決めたハードウェア製品と構想参考画像が見えない問題を修正した。avocadoMiniの目的、外観設計画像、手で候補を比べる体験、利用場面の参考画像、開発段階を先に配置し、RockstarOSとアプリの説明をその後へ移した。製品別GIFも会社説明より前へ移し、構想画像・動くジャケット・開発状況・クラファン・アプリへの案内を冒頭へ加えた。画像は実機写真でも完成機能の証拠でもないと明記する。クラファンの募集URLはリポジトリと公開検索から確認できず、企画案を作成して導線にした。実募集リンクは募集開始後に設置する。
+
 ## 2026-09-19 — 製品別の動くジャケットをGitHub全体へ追加
 
 READMEの製品体系に、avocadoMini、RockstarOS、Sky、Zema、Material Invention Studioそれぞれの正方形GIFを配置した。落ち着いたループと製品別の色・図形で役割を伝える。avocadoMiniには「設計中」を表示し、画面で示す機能の完成やSite一般公開を主張しない。5枚とも420×420、24フレーム、無限ループのGIFであり、異なるフレームがあることを確認した。`project:check`、`baseline:check`、`git diff --check`は合格。`verify`は既存のNode全体試験で出力が止まり中断したため、全体合格とは扱わない。次はGitHubの`main`へ反映し、各GIFの読込みと同一commitのCIを確認する。
@@ -692,7 +704,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 88/131件
+最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 89/133件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -735,9 +747,11 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB03 | Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](components/rock-studio.tsx) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
 | WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
-| WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
+| WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
+| WEB08 | NoelleのGrapheneOS導入ページをScrewとしてGitHubから案内する | 完了 | [記録](README.md) · [記録](docs/screw.md) · [記録](docs/assets/cover-screw.gif) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |
