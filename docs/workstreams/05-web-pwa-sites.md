@@ -4,6 +4,8 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
+- avocadoMiniの一周後の白い価格カードと大きな無効ボタンを廃止。黒いスタジオ画面に製品名、キット目標価格、購入受付前、製品化企画への導線を並べ、3Dタワーを横または下に残した。1280px・794px・390pxで試写し、静的build、baseline、project検査を通した。製品Site v22（source `ddd1b353f61ad9cf25a90eb6b3e9fe5bd44d1c3b`）を公開。GitHub mainは既存PRの統合待ち。
+
 - avocadoMiniの回転区間を、前・横・後ろの画像切替から連続した3Dモデルへ変更。スクロール角度に合わせて上下の青いセンサー、三段伸縮、3本の脚、4本とEdge Hubを順に見せる。WebGLが使えない環境では旧画像へ切り替える。1280pxと390pxで各章と一周後の価格を試写し、静的build・baseline・project検査を通した。製品Site v21（source `816c09802a2088e4d29af487d6c1c3f5c3714df7`）を公開。GitHub mainは既存PRの統合待ち。
 
 ## 現在地
