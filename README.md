@@ -212,7 +212,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-19 / 132 task中88 done・27 in progress・16 planned・1 blocked
+更新日: 2026-09-19 / 133 task中89 done・27 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -394,11 +394,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>132 taskと段階gateの詳細を開く</summary>
+<summary>133 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 88/132件
+最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 89/133件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -445,6 +445,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB10 | 製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](docs/product-baseline.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

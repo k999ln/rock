@@ -686,6 +686,23 @@
       ]
     },
     {
+      "id": "WEB10",
+      "title": "製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加",
+      "status": "done",
+      "dependsOn": [
+        "WEB05",
+        "WEB07"
+      ],
+      "evidence": [
+        "app/rockstaros/page.tsx",
+        "app/rockstaros/preview.module.css",
+        "data/product-baseline.json",
+        "scripts/check-product-baseline.mjs",
+        "docs/product-baseline.md",
+        "docs/workstreams/05-web-pwa-sites.md"
+      ]
+    },
+    {
       "id": "BIZ01",
       "title": "無料配布の対象とOS従量課金の計量単位・単価・上限を確定する",
       "status": "in_progress",

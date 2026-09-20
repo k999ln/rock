@@ -1,5 +1,7 @@
 # RockstarOS — 確定した製品ベース
 
+2026-09-19 製品・OS導入ホームの利用領域: `/rockstaros`にSky、Zema／Work、Material Invention、Wallet、Market、CSV、開発者、OS導入の8領域を追加し、それぞれ現状の制限と既存画面への入口を示す。Sky開発者の入口はMaterial Invention Studioの旧配信URLではなく、同じアプリ内の`/sky/publish`とする。既存Siteの一般公開と最新版配備は未完了。
+
 2026-09-19 製品の三つの入口とavocadoMiniの訴求（v1.87）: 利用者は、製品紹介とOS導入サイトを兼ねるホームページ、作業するアプリ、OS本体を最上位の三つの入口として指定した。Sky、ZemaなどはアプリとOSの内側にあるサービスとする。現行ルートは製品・導入ホーム`/rockstaros`、WebアプリHome`/`、Developer Preview導入案内`/rockstaros/guide`であり、完成OSの一般配布は未実施。クラウドファンディング企画案は`/rockstaros/crowdfunding`に表示するが、支援募集と決済は未開始。avocadoMiniは「考える時間を、つくる時間に」を製品メッセージとし、希望参考価格41万円のハードウェア構想として示す。高性能LLMを搭載するRockstarOSで仕事と発明の作業をスムーズにすることが目標。41万円は確定販売価格、予約金額、OS従量料金ではない。高性能LLMの製品搭載・性能、製造原価、発売日は未検証・未確定。
 
 2026-09-19 Web公開とバックエンド方針（v1.86）: 利用者は既存の `rockstaros-kaiya.noellesugar1.chatgpt.site` を本人限定から一般公開へ変更するよう明示した。公開ページと公開カタログは匿名閲覧を認め、仕事・Wallet・開発者操作など本人別データはChatGPTサインイン後だけ処理する。バックエンドはWorkerとD1の稼働および主要schemaを匿名のread-only healthで確認し、実操作は本人別のAPI受入を要する。一般公開の意思は確認済みだが、対象Sites所有アカウントが現在の接続から見つからず、配備・公開設定変更・本番DB readbackは未実施。自作部分の製品license条件も未確定で、Webの公開意思をOS imageやソースの再配布許諾へ拡張しない。

@@ -1,5 +1,11 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-19 — 製品・OS導入ホームに利用領域の入口を追加
+
+利用者の指摘で、`/rockstaros`はavocadoMiniとOSの説明に偏り、アプリやOSの中の各サービスで何ができるかを十分に案内できていないと確認した。Sky、Zema／Work、Material Invention、Wallet、Market、CSV、開発者、OS導入の8領域を、役割・現在の制限・既存画面へのリンク付きで追加した。開発者ボタンがMaterial Studioの旧配信URLへ向いていた誤りも、ローカルの`/sky/publish`へ修正した。製品・導入ホームを入口にし、各機能の実装状態は変えない。Sites所有アカウントには現在も接続できず、公開URLのアクセス拒否と最新版未配備は残る。
+
+型、製品lint、Web build、製品ベース、進捗整合は合格。ローカル`/rockstaros`と8つのリンク先すべてHTTP 200で、製品ページの見出し・領域カード・リンク先をブラウザ表示で確認した。`npm run verify`は既存の全Nodeテストで出力が止まり中断したため、ローカル全体PASSとは扱わない。GitHub mainの同一commit CIを確認する。既存Siteへの配備と本番DB読戻しは別途必要。
+
 ## 2026-09-19 — 三つの製品入口とavocadoMiniの参考価格を明示
 
 利用者は、製品紹介とOS導入を兼ねるホームページ、アプリ、OS本体を最上位の入口とし、Skyなどをアプリ／OS内のサービスと位置付けた。製品ページとGitHub READMEの案内順、製品関係図、ベースラインへ反映した。既存ルートは製品・導入ホーム`/rockstaros`、WebアプリHome`/`、OS Developer Preview導入案内`/rockstaros/guide`。配信先の一般公開と最新版配備は未実施。
@@ -710,7 +716,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 88/132件
+最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 89/133件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -757,6 +763,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB10 | 製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](docs/product-baseline.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

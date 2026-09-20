@@ -339,7 +339,7 @@
     "secondaryAction": "developer_preview_install_guide",
     "publicDownloadFallback": "/rockstaros/guide#install",
     "developerCode": "sky_tool_sdk_minimal_node_example",
-    "studioUrl": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio",
+    "studioUrl": "/sky/publish",
     "visualDirection": "minimal_black_acid_green",
     "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable"
   },

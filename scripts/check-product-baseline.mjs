@@ -952,7 +952,7 @@ export function validateBaseline(
       data.launchPage?.secondaryAction === 'developer_preview_install_guide' &&
       data.launchPage?.publicDownloadFallback === '/rockstaros/guide#install' &&
       data.launchPage?.studioUrl ===
-        'https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio' &&
+        '/sky/publish' &&
       launchPageSource.includes('avocadoMiniを見る') &&
       launchPageSource.includes('実機試作・販売はまだ行っていません') &&
       launchPageSource.includes('OS Developer Preview') &&

@@ -394,6 +394,97 @@
   text-transform: uppercase;
 }
 
+.experience {
+  width: min(100% - 48px, 1420px);
+  margin: 0 auto;
+  padding: 110px 0 120px;
+  border-top: 1px solid #ffffff20;
+  scroll-margin-top: 24px;
+}
+
+.experienceIntro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.52fr);
+  align-items: end;
+  gap: 24px 60px;
+  margin-bottom: 44px;
+}
+
+.experienceIntro .kicker {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+}
+
+.experienceIntro h2 {
+  max-width: 800px;
+  margin: 0;
+  font-size: clamp(2.7rem, 5.4vw, 5.8rem);
+  letter-spacing: -0.065em;
+  line-height: 1.02;
+}
+
+.experienceIntro > p:last-child {
+  margin: 0;
+  color: #b8bab4;
+  line-height: 1.8;
+}
+
+.experienceGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.experienceCard {
+  display: flex;
+  min-height: 310px;
+  padding: 26px;
+  flex-direction: column;
+  border: 1px solid #ffffff25;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #1b1e18, #10120f);
+  color: var(--ink);
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+
+.experienceCard:hover {
+  border-color: var(--acid);
+  transform: translateY(-3px);
+}
+
+.experienceNumber {
+  color: var(--acid);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.experienceCard h3 {
+  margin: 36px 0 14px;
+  font-size: clamp(1.35rem, 1.9vw, 1.8rem);
+  letter-spacing: -0.045em;
+  line-height: 1.25;
+}
+
+.experienceCard p {
+  margin: 0 0 26px;
+  color: #b8bab4;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.experienceAction {
+  display: flex;
+  margin-top: auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--acid);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
 .platform {
   grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
 }
@@ -501,6 +592,7 @@
   .landingHeader,
   .access,
   .product,
+  .experience,
   .platform,
   .developer,
   .landingFooter {
@@ -541,6 +633,27 @@
     gap: 44px;
   }
 
+  .experience {
+    padding: 88px 0;
+  }
+
+  .experienceIntro {
+    grid-template-columns: 1fr;
+  }
+
+  .experienceIntro .kicker {
+    grid-column: auto;
+  }
+
+  .experienceGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .experienceCard {
+    min-height: 280px;
+    padding: 20px;
+  }
+
   .codeWindow {
     margin-right: -18px;
     border-radius: 14px 0 0 14px;
@@ -548,6 +661,20 @@
 
   .landingFooter {
     gap: 20px;
+  }
+}
+
+@media (max-width: 520px) {
+  .experienceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .experienceCard {
+    min-height: 240px;
+  }
+
+  .experienceCard h3 {
+    margin-top: 24px;
   }
 }
 .header {
