@@ -947,6 +947,7 @@ export function validateBaseline(
     data.launchPage?.route === '/rockstaros' &&
       data.marketPositioning?.customerFacingFocus === 'hardware_products' &&
       data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
+      data.marketPositioning?.leadHardwareForm === 'motorized_telescopic_sensor_tower_concept' &&
       data.marketPositioning?.avocadoMiniStage ===
         'design_only_no_physical_prototype_or_sales' &&
       data.launchPage?.primaryAction === 'view_avocado_mini' &&
@@ -961,6 +962,7 @@ export function validateBaseline(
       launchPageSource.includes('createSkyToolApp') &&
       launchPageSource.includes('<AvocadoTurntable />') &&
       turntableSource.includes('turn * Math.PI * 2') &&
+      turntableSource.includes('/rockstaros/avocado-mini-tower-concept.png') &&
       turntableSource.includes('¥410,000') &&
       turntableSource.includes('購入する') &&
       turntableSource.includes('/rockstaros/guide#install'),
@@ -977,6 +979,7 @@ export function validateBaseline(
       data.visualSystem?.surfaces?.includes('/studio') &&
       data.visualSystem?.surfaces?.includes('workspace_shell') &&
       data.visualSystem?.accent === 'acid_green' &&
+      data.visualSystem?.productHomeAppearance === 'light_scroll_product_showcase' &&
       data.visualSystem?.studioPrimarySurface === 'sdk_code_installation' &&
       !data.visualSystem?.homePrimaryApps?.includes('work') &&
       !data.visualSystem?.homePrimaryApps?.includes('csv') &&

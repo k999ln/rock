@@ -8,69 +8,49 @@ import styles from './avocado-turntable.module.css';
 
 function makeModel() {
   const model = new THREE.Group();
-  const silver = new THREE.MeshStandardMaterial({ color: 0xb9c7cc, metalness: 0.82, roughness: 0.23 });
-  const edgeSilver = new THREE.MeshStandardMaterial({ color: 0x7f929d, metalness: 0.75, roughness: 0.3 });
-  const dark = new THREE.MeshStandardMaterial({ color: 0x101d25, metalness: 0.48, roughness: 0.32 });
-  const glass = new THREE.MeshPhysicalMaterial({ color: 0x183e53, metalness: 0.18, roughness: 0.16, transparent: true, opacity: 0.91, clearcoat: 0.8 });
-  const cyan = new THREE.MeshStandardMaterial({ color: 0x5be4ff, emissive: 0x159fc2, emissiveIntensity: 1.4, metalness: 0.25, roughness: 0.2 });
-  const lens = new THREE.MeshPhysicalMaterial({ color: 0x020a12, metalness: 0.25, roughness: 0.08, clearcoat: 1 });
-
-  const box = (width: number, height: number, depth: number, material: THREE.Material, x: number, y: number, z: number) => {
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), material);
-    mesh.position.set(x, y, z);
+  const silver = new THREE.MeshStandardMaterial({ color: 0xf0f5f6, metalness: 0.36, roughness: 0.23 });
+  const brushed = new THREE.MeshStandardMaterial({ color: 0xbecdd3, metalness: 0.42, roughness: 0.28 });
+  const underside = new THREE.MeshStandardMaterial({ color: 0x40525d, metalness: 0.38, roughness: 0.33 });
+  const sensor = new THREE.MeshPhysicalMaterial({ color: 0x07121b, metalness: 0.15, roughness: 0.08, clearcoat: 1 });
+  const cyan = new THREE.MeshStandardMaterial({ color: 0x75efff, emissive: 0x1bc6eb, emissiveIntensity: 1.6 });
+  const cylinder = (top: number, bottom: number, height: number, y: number, material: THREE.Material) => {
+    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(top, bottom, height, 64), material);
+    mesh.position.y = y;
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     model.add(mesh);
     return mesh;
   };
-  const cylinder = (radius: number, length: number, material: THREE.Material, x: number, y: number, z: number, horizontal = false) => {
-    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, length, 20), material);
-    mesh.position.set(x, y, z);
-    if (horizontal) mesh.rotation.z = Math.PI / 2;
-    mesh.castShadow = true;
-    model.add(mesh);
-    return mesh;
-  };
 
-  // Preliminary full-scale concept: work surface, four sensor viewpoints, and the compute core.
-  box(5.25, 0.14, 2.68, dark, 0, 0, 0);
-  box(5.06, 0.035, 2.48, glass, 0, 0.09, 0);
-  for (let i = -5; i <= 5; i++) {
-    box(0.006, 0.004, 2.46, cyan, i * 0.45, 0.111, 0);
-  }
-  for (let i = -2; i <= 2; i++) {
-    box(5.04, 0.004, 0.006, cyan, 0, 0.112, i * 0.48);
-  }
-  box(5.34, 0.06, 0.09, silver, 0, -0.02, 1.36);
-  box(5.34, 0.06, 0.09, silver, 0, -0.02, -1.36);
-  box(0.09, 0.06, 2.74, silver, 2.67, -0.02, 0);
-  box(0.09, 0.06, 2.74, silver, -2.67, -0.02, 0);
+  // The supplied full-scale concept is a single telescopic sensor tower, not a worktable.
+  cylinder(0.54, 0.54, 0.1, -2.9, underside);
+  cylinder(0.55, 0.55, 0.14, -2.81, silver);
+  cylinder(0.46, 0.54, 0.09, -2.69, brushed);
+  cylinder(0.115, 0.115, 2.72, -1.27, silver);
+  cylinder(0.102, 0.102, 2.17, 0.55, brushed);
+  cylinder(0.086, 0.086, 1.77, 1.99, silver);
+  cylinder(0.12, 0.12, 0.045, -0.16, underside);
+  cylinder(0.107, 0.107, 0.04, 1.45, underside);
+  cylinder(0.091, 0.091, 0.035, 2.86, brushed);
 
-  for (const x of [-2.58, 2.58]) {
-    for (const z of [-1.28, 1.28]) {
-      cylinder(0.08, 0.92, silver, x, -0.53, z);
-      cylinder(0.15, 0.08, edgeSilver, x, -1.02, z);
-      cylinder(0.064, 1.36, silver, x, 0.75, z);
-      cylinder(0.085, 0.11, edgeSilver, x, 1.46, z);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.014, 8, 64), cyan);
+  ring.rotation.x = Math.PI / 2;
+  ring.position.y = -2.595;
+  model.add(ring);
 
-      const pod = cylinder(0.14, 0.76, silver, x, 1.56, z, true);
-      pod.rotation.y = z > 0 ? -0.12 : 0.12;
-      const inward = z > 0 ? -1 : 1;
-      box(0.56, 0.16, 0.035, dark, x, 1.56, z + inward * 0.13);
-      for (const offset of [-0.17, 0, 0.17]) {
-        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.046, 12, 8), lens);
-        eye.position.set(x + offset, 1.56, z + inward * 0.16);
-        model.add(eye);
-      }
-      box(0.025, 0.12, 0.036, cyan, x + 0.27, 1.56, z + inward * 0.151);
-    }
+  for (const [y, radius] of [[-1.82, 0.115], [0.55, 0.102], [2.32, 0.086]]) {
+    const window = new THREE.Mesh(new THREE.CapsuleGeometry(0.045, 0.31, 6, 16), sensor);
+    window.position.set(0, y, radius + 0.006);
+    model.add(window);
+    const light = new THREE.Mesh(new THREE.CapsuleGeometry(0.012, 0.07, 4, 12), cyan);
+    light.position.set(0, y + 0.11, radius + 0.044);
+    model.add(light);
   }
 
-  cylinder(0.25, 2.9, silver, 0, -0.6, 1.16, true);
-  cylinder(0.28, 0.1, edgeSilver, -1.47, -0.6, 1.16, true);
-  cylinder(0.28, 0.1, edgeSilver, 1.47, -0.6, 1.16, true);
-  box(4.65, 0.045, 0.045, edgeSilver, 0, -0.77, -1.25);
-  box(4.65, 0.045, 0.045, edgeSilver, 0, -0.77, 1.25);
+  const button = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.008, 32), cyan);
+  button.position.set(0, -2.58, 0.35);
+  model.add(button);
+  model.scale.set(0.7, 1, 0.7);
   return model;
 }
 
@@ -120,11 +100,11 @@ export function AvocadoTurntable() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(37, 1, 0.1, 100);
-    camera.position.set(7.7, 4.7, 9.4);
-    camera.lookAt(0, 0.18, 0);
+    camera.position.set(3.1, 1.8, 11);
+    camera.lookAt(0, 0, 0);
     scene.add(new THREE.AmbientLight(0xdff5ff, 2.4));
     const key = new THREE.DirectionalLight(0xffffff, 3.4);
-    key.position.set(-3, 9, 7);
+    key.position.set(-3, 7, 6);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
     key.shadow.camera.left = -7;
@@ -138,9 +118,9 @@ export function AvocadoTurntable() {
 
     const model = makeModel();
     scene.add(model);
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.ShadowMaterial({ opacity: 0.24 }));
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.ShadowMaterial({ opacity: 0.1 }));
     floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -1.08;
+    floor.position.y = -2.97;
     floor.receiveShadow = true;
     scene.add(floor);
 
@@ -150,8 +130,8 @@ export function AvocadoTurntable() {
       const width = Math.max(1, viewport.clientWidth);
       const height = Math.max(1, viewport.clientHeight);
       camera.aspect = width / height;
-      camera.position.set(7.7, width < 650 ? 5.8 : 4.7, width < 650 ? 12.9 : 9.4);
-      camera.lookAt(0, 0.18, 0);
+      camera.position.set(3.1, width < 650 ? 1.5 : 1.8, width < 650 ? 12.1 : 10.5);
+      camera.lookAt(0, 0, 0);
       camera.updateProjectionMatrix();
       renderer.setSize(width, height, false);
       renderer.render(scene, camera);
@@ -161,7 +141,7 @@ export function AvocadoTurntable() {
       const distance = Math.max(1, section.offsetHeight - window.innerHeight);
       const progress = Math.min(1, Math.max(0, -section.getBoundingClientRect().top / distance));
       const turn = Math.min(1, progress / 0.72);
-      model.rotation.y = 0.5 + (reducedMotion.matches ? 0 : turn * Math.PI * 2);
+      model.rotation.y = reducedMotion.matches ? 0 : turn * Math.PI * 2;
       if (progressRef.current) progressRef.current.style.width = `${Math.round(turn * 100)}%`;
       if (angleRef.current) angleRef.current.textContent = reducedMotion.matches ? '静止表示' : `${Math.round(turn * 360)}°`;
       setPriceVisible((current) => current === (turn >= 1) ? current : turn >= 1);
@@ -205,16 +185,16 @@ export function AvocadoTurntable() {
   }, []);
 
   return <>
-    <section className={styles.story} ref={sectionRef} aria-labelledby="avocado-mini-title">
+    <section className={styles.story} id="design" ref={sectionRef} aria-labelledby="avocado-mini-title">
       <div className={styles.sticky}>
         <div className={styles.heading}>
-          <p className={styles.eyebrow}>AVOCADOMINI / PRODUCT CONCEPT</p>
-          <h1 id="avocado-mini-title">発明を、手で考える。</h1>
-          <p>四方向のセンサーで作業面を捉える、RockstarOS搭載を目指す空間発明端末。</p>
+          <p className={styles.eyebrow}>AVOCADOMINI / FULL SCALE CONCEPT</p>
+          <h1 id="avocado-mini-title">avocadoMini</h1>
+          <p>伸びる。見つめる。ひらめく。<br />伸縮式センサータワーの全周を、スクロールで。</p>
         </div>
         <div className={styles.viewport} ref={viewportRef}>
           <canvas ref={canvasRef} aria-hidden="true" className={fallback ? styles.hiddenCanvas : undefined} />
-          {fallback && <Image className={styles.fallback} src="/rockstaros/avocado-mini-concept.png" alt="avocadoMiniの四方向センサーと作業面の構想画像" width={1680} height={940} priority />}
+          {fallback && <Image className={styles.fallback} src="/rockstaros/avocado-mini-tower-concept.png" alt="avocadoMiniの伸縮式センサータワーの構想画像" width={1672} height={941} priority />}
         </div>
         <div className={styles.bottomBar}>
           <div className={styles.angle}><span>DESIGN VIEW</span><strong ref={angleRef}>0°</strong></div>
@@ -238,9 +218,14 @@ export function AvocadoTurntable() {
         <p>高性能LLMの搭載を目指すRockstarOSで、作業をスムーズに。Skyで道具を選び、Zemaで仕事を進める。Developer Previewで、導入できる環境と現在の配布状況を確認できます。</p>
         <Link className={styles.osButton} href="/rockstaros/guide#install">OSを入れる <span aria-hidden="true">↗</span></Link>
         <small>現在の実機検証は固定モデルのDeveloper Previewです。正式署名済みの一般向けインストーラーは未公開です。</small>
+        <div className={styles.specs} aria-label="製品構想の主な寸法">
+          <p><strong>850 → 1,800 <span>mm</span></strong><small>収納時 → 伸長時</small></p>
+          <p><strong>Ø160 <span>mm</span></strong><small>ベースの構想寸法</small></p>
+          <p><strong>3 <span>段</span></strong><small>伸縮するセンサータワー</small></p>
+        </div>
       </div>
       <figure className={styles.conceptImage}>
-        <Image src="/rockstaros/avocado-mini-concept.png" alt="avocadoMiniの四方向センサー、作業面、演算ユニットを示す構想参考画像" width={1680} height={940} loading="lazy" />
+        <Image src="/rockstaros/avocado-mini-tower-concept.png" alt="avocadoMiniの伸縮式センサータワー、ボタン、内部構造を示す構想参考画像" width={1672} height={941} loading="lazy" />
         <figcaption>構想参考画像。回転表示は設計イメージで、製造図や実機映像ではありません。</figcaption>
       </figure>
     </section>

@@ -1,32 +1,32 @@
-.story { position: relative; height: 390svh; background: radial-gradient(ellipse at 50% 30%, #123a42 0%, #07131b 48%, #02080d 100%); color: #f5faf9; }
+.story { position: relative; height: 390svh; background: radial-gradient(ellipse at 50% 40%, #ffffff 0%, #f3f8fa 58%, #e7f0f3 100%); color: #162c3a; }
 .sticky { position: sticky; top: 0; height: 100svh; min-height: 630px; overflow: hidden; isolation: isolate; }
-.sticky::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, transparent 49.9%, #ffffff09 50%, transparent 50.1%), linear-gradient(0deg, transparent 49.9%, #ffffff08 50%, transparent 50.1%); background-size: 96px 96px; mask-image: linear-gradient(to bottom, transparent, black 20%, black 75%, transparent); }
+.sticky::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, transparent 49.9%, #4766780b 50%, transparent 50.1%), linear-gradient(0deg, transparent 49.9%, #4766780b 50%, transparent 50.1%); background-size: 96px 96px; mask-image: linear-gradient(to bottom, transparent, black 20%, black 75%, transparent); }
 .heading { position: absolute; top: clamp(76px, 13vh, 130px); left: clamp(24px, 6vw, 100px); z-index: 2; max-width: 650px; }
-.eyebrow { color: #83e8f4; font-size: 11px; letter-spacing: .22em; font-weight: 750; }
-.heading h1 { font-size: clamp(38px, 5.2vw, 78px); line-height: 1.08; letter-spacing: -.06em; margin: 16px 0; font-weight: 700; }
-.heading > p:last-child { font-size: clamp(14px, 1.3vw, 17px); line-height: 1.7; color: #bdced1; max-width: 560px; }
+.eyebrow { color: #357a90; font-size: 11px; letter-spacing: .22em; font-weight: 750; }
+.heading h1 { font-size: clamp(48px, 6.5vw, 100px); line-height: 1.02; letter-spacing: -.07em; margin: 16px 0; font-weight: 760; }
+.heading > p:last-child { font-size: clamp(14px, 1.3vw, 17px); line-height: 1.7; color: #526975; max-width: 560px; }
 .viewport { position: absolute; inset: 12% 0 6%; z-index: 1; }
 .viewport canvas { display: block; width: 100%; height: 100%; }
 .viewport canvas.hiddenCanvas { display: none; }
 .fallback { object-fit: contain; width: min(90%, 1200px); height: 100%; position: absolute; left: 50%; transform: translateX(-50%); }
 .bottomBar { position: absolute; left: clamp(24px, 6vw, 100px); right: clamp(24px, 6vw, 100px); bottom: clamp(24px, 5vh, 55px); z-index: 3; display: grid; grid-template-columns: auto minmax(80px, 1fr) auto; gap: 24px; align-items: center; }
 .angle { display: flex; gap: 14px; align-items: baseline; white-space: nowrap; }
-.angle span, .bottomBar p { color: #aac0c2; font-size: 11px; letter-spacing: .13em; }
-.angle strong { color: white; font-size: 20px; font-variant-numeric: tabular-nums; }
-.progressTrack { height: 1px; background: #ffffff40; }
-.progressTrack div { height: 3px; background: #8ff5ff; box-shadow: 0 0 15px #8ff5ff; transition: width .1s linear; }
-.pricePanel { position: absolute; z-index: 4; top: 50%; right: clamp(24px, 8vw, 136px); width: min(390px, 42vw); padding: 30px; transform: translate(24px, -44%); opacity: 0; pointer-events: none; transition: opacity .55s ease, transform .55s ease; background: #071219ea; border: 1px solid #b1edf95c; box-shadow: 0 20px 90px #0009; backdrop-filter: blur(20px); }
+.angle span, .bottomBar p { color: #66808a; font-size: 11px; letter-spacing: .13em; }
+.angle strong { color: #102735; font-size: 20px; font-variant-numeric: tabular-nums; }
+.progressTrack { height: 1px; background: #163d4a35; }
+.progressTrack div { height: 3px; background: #35a9c6; box-shadow: 0 0 15px #6dd8ee; transition: width .1s linear; }
+.pricePanel { position: absolute; z-index: 4; top: 50%; right: clamp(24px, 8vw, 136px); width: min(390px, 42vw); padding: 30px; transform: translate(24px, -44%); opacity: 0; pointer-events: none; transition: opacity .55s ease, transform .55s ease; background: #ffffffec; border: 1px solid #b5ccd5; box-shadow: 0 20px 90px #52718135; backdrop-filter: blur(20px); }
 .priceVisible { opacity: 1; transform: translate(0, -50%); pointer-events: auto; }
-.priceLabel { color: #9beaf2; font-size: 11px; letter-spacing: .15em; }
+.priceLabel { color: #357a90; font-size: 11px; letter-spacing: .15em; }
 .pricePanel h2 { font-size: clamp(31px, 3vw, 46px); letter-spacing: -.05em; margin: 12px 0 28px; }
 .price { display: flex; flex-direction: column; gap: 5px; margin-bottom: 22px; }
-.price span { font-size: 12px; color: #b4c9ca; }
+.price span { font-size: 12px; color: #5f7882; }
 .price strong { font-size: clamp(30px, 3.6vw, 50px); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 .pricePanel button, .pricePanel > a { width: 100%; display: block; padding: 16px; text-align: center; font-size: 15px; font-weight: 700; text-decoration: none; }
-.pricePanel button { color: #04141a; background: #b8f6d0; border: 0; cursor: not-allowed; opacity: .72; }
+.pricePanel button { color: white; background: #102c39; border: 0; cursor: not-allowed; opacity: .76; }
 .pricePanel button span { font-size: 11px; margin-left: 8px; }
-.pricePanel > a { color: #a5ebf4; }
-.pricePanel small, .osSection small { display: block; color: #a7bdc1; font-size: 11px; line-height: 1.6; }
+.pricePanel > a { color: #176d86; }
+.pricePanel small, .osSection small { display: block; color: #667c84; font-size: 11px; line-height: 1.6; }
 .osSection { display: grid; grid-template-columns: minmax(320px, .85fr) minmax(400px, 1.15fr); gap: clamp(30px, 5vw, 100px); align-items: center; min-height: 100svh; padding: 110px clamp(24px, 6vw, 100px); background: #e8f0ed; color: #0b1a20; }
 .osSection .eyebrow { color: #207887; }
 .osSection h2 { font-size: clamp(42px, 5vw, 76px); line-height: 1.12; letter-spacing: -.06em; margin: 20px 0; }
@@ -34,8 +34,14 @@
 .osButton { display: inline-flex; align-items: center; justify-content: space-between; gap: 75px; margin: 32px 0 15px; padding: 19px 23px; min-width: 290px; background: #071b20; color: white; font-weight: 750; text-decoration: none; transition: background .2s, transform .2s; }
 .osButton:hover { background: #156473; transform: translateY(-3px); }
 .osSection small { color: #5b6c70; max-width: 420px; }
+.specs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 55px; padding-top: 24px; border-top: 1px solid #b4c8ce; }
+.specs p { margin: 0; }
+.specs strong { display: block; font-size: clamp(17px, 2vw, 26px); letter-spacing: -.05em; white-space: nowrap; }
+.specs strong span { font-size: .55em; letter-spacing: 0; }
+.specs small { margin-top: 5px; font-size: 10px; }
 .conceptImage { margin: 0; }
 .conceptImage img { display: block; width: 100%; height: auto; box-shadow: 0 32px 80px #162c3130; }
 .conceptImage figcaption { padding-top: 12px; color: #586a6d; font-size: 11px; line-height: 1.5; }
-@media (max-width: 750px) { .story { height: 330svh; } .sticky { min-height: 550px; } .heading { top: 86px; right: 20px; } .heading h1 { font-size: clamp(38px, 9vw, 56px); } .heading > p:last-child { max-width: 330px; } .viewport { inset: 22% -24% 19%; } .bottomBar { grid-template-columns: auto 1fr; gap: 8px 16px; bottom: 24px; } .bottomBar p { grid-column: 1 / -1; margin: 0; } .pricePanel { width: auto; left: 20px; right: 20px; top: auto; bottom: 88px; padding: 22px; transform: translateY(18px); } .priceVisible { transform: translateY(0); } .pricePanel h2 { margin-bottom: 14px; } .price { margin-bottom: 14px; } .osSection { grid-template-columns: 1fr; padding: 85px 24px; gap: 55px; } }
+@media (max-width: 750px) { .story { height: 330svh; } .sticky { min-height: 550px; } .heading { top: 86px; right: 20px; } .heading h1 { font-size: clamp(42px, 9vw, 56px); } .heading > p:last-child { max-width: 260px; } .viewport { inset: 18% 0 8%; } .bottomBar { grid-template-columns: auto 1fr; gap: 8px 16px; bottom: 24px; } .bottomBar p { grid-column: 1 / -1; margin: 0; } .pricePanel { width: auto; left: 20px; right: 20px; top: auto; bottom: 88px; padding: 22px; transform: translateY(18px); } .priceVisible { transform: translateY(0); } .pricePanel h2 { margin-bottom: 14px; } .price { margin-bottom: 14px; } .osSection { grid-template-columns: 1fr; padding: 85px 24px; gap: 55px; } .specs { gap: 8px; } .specs strong { font-size: 17px; } }
+@media (min-width: 501px) and (max-width: 750px) { .pricePanel { width: 280px; right: auto; } }
 @media (prefers-reduced-motion: reduce) { .pricePanel, .progressTrack div, .osButton { transition: none; } }

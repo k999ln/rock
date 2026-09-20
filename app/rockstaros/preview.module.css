@@ -866,6 +866,63 @@
     display: none;
   }
 }
+
+/* Product story styling stays scoped to the avocadoMini home. */
+.productLanding {
+  --ink: #152a35;
+  --muted: #637781;
+  --acid: #2183a1;
+  background: #f7fafb;
+  color: var(--ink);
+}
+
+.productLanding .landingHeader {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  width: 100%;
+  height: 64px;
+  margin: 0;
+  padding: 0 clamp(24px, 6vw, 100px);
+  border-bottom: 1px solid #cbdbe0;
+  background: #f9fcfce8;
+  backdrop-filter: blur(16px);
+}
+
+.productLanding .brand { color: #142d3b; }
+.productLanding .brand span { color: #2084a4; }
+.productNav { display: flex; align-items: center; gap: clamp(14px, 2.5vw, 36px); }
+.productNav a { color: #314b58; font-size: 13px; font-weight: 650; text-decoration: none; }
+.productNav a:hover { color: #0780a3; }
+
+.productLanding .access,
+.productLanding .experience,
+.productLanding .developer,
+.productLanding .landingFooter { border-color: #cfdee2; }
+.productLanding .access { padding-top: 110px; padding-bottom: 110px; }
+.productLanding .access h2 { font-size: clamp(2.7rem, 5vw, 5rem); letter-spacing: -.06em; }
+.productLanding .access p,
+.productLanding .experienceIntro > p:last-child,
+.productLanding .developerIntro > p:not(.kicker) { color: #5c737d; }
+.productLanding .accessCards a { border: 1px solid #cfdee2; border-radius: 12px; background: #fff; color: #152a35; box-shadow: 0 18px 35px #53748712; }
+.productLanding .accessCards a span { color: #60747e; }
+.productLanding .experienceCard { border: 1px solid #cfdee2; border-radius: 12px; background: #fff; color: #152a35; box-shadow: 0 18px 35px #53748712; }
+.productLanding .experienceCard p { color: #60747e; }
+.productLanding .experienceNumber,
+.productLanding .experienceAction,
+.productLanding .kicker { color: #197b9a; }
+.productLanding .studioLink { color: #176f8a; }
+.productLanding .landingFooter { color: #687b83; }
+
+@media (max-width: 760px) {
+  .productLanding .landingHeader { width: 100%; padding: 0 20px; }
+  .productLanding .access { padding: 85px 0; }
+}
+@media (max-width: 480px) {
+  .productNav { gap: 12px; }
+  .productNav a { font-size: 11px; }
+  .productNav a:last-child { display: none; }
+}
 @media (max-width: 380px) {
   .flow {
     grid-template-columns: 1fr;

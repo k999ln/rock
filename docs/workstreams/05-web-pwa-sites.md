@@ -6,6 +6,7 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 
 ## 現在地
 
+- 利用者提供の伸縮式センサータワーの構想図を主画像とし、同形状の3D設計モデルをスクロールで一周させる。Appleの製品紹介を参考にした淡い製品ページとし、価格、OS導入、サービスの順で見せる。寸法と画像は設計構想で、実機検証値ではない。
 - `/rockstaros`冒頭はavocadoMini構想モデルをスクロールで一周表示し、完了後に希望参考価格41万円と購入準備中の表示、次の画面にOS導入案内ボタンを置く。実機映像や販売開始を示す表示ではない。
 - `/rockstaros`はavocadoMiniの製品構想を先に紹介し、OS Developer PreviewとSky開発者入口へ続く。Home `/` はOSの作業画面として維持する。
 - `/rockstaros`を製品紹介とOS導入を兼ねるホームページ、`/`をWebアプリのHome、OS本体を別の配布対象として案内する。Sky、Zema、StudioなどはアプリとOS内のサービスとして表示する。希望参考価格41万円と高性能LLM搭載目標は、確定販売価格や現行実装の完成表示と区別する。
@@ -22,7 +23,7 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 - GitHub sourceとSites配信版の同一commit確認が残る。sourceの検証結果を配信版の合格へ流用しない。
 - 全ローンチ候補のうち本人限定Web/PWA Previewは必須gateが最新版source同期だけ残っており、最短ローンチ経路とする。
 
-主なtask: `WEB01`〜`WEB07`, `WEB09`〜`WEB11`, `R03`〜`R08`, `LCH04`。
+主なtask: `WEB01`〜`WEB07`, `WEB09`〜`WEB12`, `R03`〜`R08`, `LCH04`。
 
 ## 次に進める順番
 

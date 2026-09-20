@@ -1,6 +1,6 @@
-# avocadoMini — 発明を手で考えるハードウェア構想
+# avocadoMini — 伸縮式センサータワーの製品構想
 
-**考える時間を、つくる時間に。** 物質や工程のアイデアを、作業面で手を動かしながら選び、組み合わせ、比べる。**avocadoMini**は、高性能LLMを搭載するRockstarOSを目指す空間発明端末です。四方向のセンサーで操作領域を捉え、発明と日々の作業をスムーズに進める製品を構想しています。**希望参考価格は41万円**。販売価格・仕様・発売日は未確定で、実機試作前です。
+**考える時間を、つくる時間に。** **avocadoMini**の表に出す製品デザインは、銀色の細い伸縮式センサータワーです。構想画像では収納時850 mmから伸長時1,800 mm、直径160 mmのベース、長押し操作を示しています。複数のタワーを組み合わせた空間発明体験と、高性能LLM搭載を目指すRockstarOSは製品の発展構想です。**希望参考価格は41万円**。販売価格・仕様・発売日は未確定で、実機試作前です。
 
 [🏠 製品・導入ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) · [📱 アプリ](https://rockstaros-kaiya.noellesugar1.chatgpt.site/) · [💿 OS導入](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) · [🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🤝 クラファン企画](docs/avocado-mini-crowdfunding.md)
 
@@ -8,9 +8,9 @@
 
 ## 構想ギャラリー
 
-![avocadoMiniの外観構想。銀色の細いフレームと四方向センサーを備えた作業台](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png)
+![avocadoMiniの外観構想。伸縮式センサータワーの収納・伸長状態、操作ボタンと内部構造](public/rockstaros/avocado-mini-tower-concept.png)
 
-*外観の構想参考画像。設計比較用の描写であり、実機写真ではありません。寸法、センサー性能、表示方式は試作と実測で確かめます。*
+*外観の構想参考画像。単体タワーの見せ方を示すもので、実機写真や検証済み仕様ではありません。寸法、伸縮機構、センサー性能、安全性は試作と実測で確かめます。*
 
 ## 手で考え、発明の候補を比べる
 
@@ -48,7 +48,7 @@ RockstarOSは、avocadoMiniの操作、権限、保存、復旧をつなぐ技�
 
 ![avocadoMiniの設計構想。四方向のセンサーに囲まれた作業面で発明の候補が動くアニメーション](docs/assets/cover-avocado-mini.gif)
 
-四方向のセンサーと作業面を想定し、物質のデジタル模型を手で選び、組み合わせ、候補を比べる専用端末を設計しています。**希望参考価格41万円**。[外観と構成の設計図](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png)を公開しています。画像はコンセプトであり、追跡精度、表示方式、安全性、量産性を実証した実機写真ではありません。小型Bench試作から検証し、その後にFull-scaleへ進む計画です。価格と仕様は試作・原価検証後に決定します。
+表に出す外観は[銀色の伸縮式センサータワー](public/rockstaros/avocado-mini-tower-concept.png)です。四方向センサーと作業面による発明体験は、このタワーを組み合わせる将来のシステム構想として設計しています。**希望参考価格41万円**。画像はコンセプトであり、追跡精度、表示方式、安全性、量産性を実証した実機写真ではありません。小型Bench試作から検証し、その後にFull-scaleへ進む計画です。価格と仕様は試作・原価検証後に決定します。
 
 ### RockstarOS — 製品を動かす共通の土台
 
@@ -212,7 +212,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-19 / 134 task中90 done・27 in progress・16 planned・1 blocked
+更新日: 2026-09-19 / 135 task中91 done・27 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -394,11 +394,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>134 taskと段階gateの詳細を開く</summary>
+<summary>135 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 90/134件
+最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/135件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -447,6 +447,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB10 | 製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](docs/product-baseline.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB11 | 製品構想モデルをスクロールで一周見せ、参考価格・購入準備中・OS導入へつなぐ | 完了 | [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](docs/product-baseline.md) |
+| WEB12 | 利用者提供の伸縮式センサータワーを製品サイトとGitHubの主役にする | 完了 | [記録](public/rockstaros/avocado-mini-tower-concept.png) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](README.md) · [記録](docs/avocado-mini-hardware-design.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

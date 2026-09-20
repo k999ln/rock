@@ -88,19 +88,23 @@ sky.tool({
 await sky.start({ port: 8787 });`;
 
 export const metadata: Metadata = {
-  title: 'avocadoMini / RockstarOS — 考える時間を、つくる時間に',
+  title: 'avocadoMini — 伸縮式センサータワー / RockstarOS',
   description:
-    'avocadoMiniは希望参考価格41万円のハードウェア構想。高性能LLMを搭載するRockstarOSを目指し、仕事と発明の作業をスムーズにします。現在は設計段階です。',
+    'avocadoMiniは伸縮式センサータワーのハードウェア構想。デザインを360°から見て、希望参考価格41万円とRockstarOS導入案内を確認できます。現在は設計段階です。',
 };
 
 export default function RockstarPreview() {
   return (
-    <main className={styles.landing}>
+    <main className={`${styles.landing} ${styles.productLanding}`}>
       <header className={styles.landingHeader}>
         <Link href="/" className={styles.brand} aria-label="ホームへ戻る">
           Rockstar<span>OS</span>
         </Link>
-        <span className={styles.version}>HARDWARE / SOFTWARE / AI</span>
+        <nav className={styles.productNav} aria-label="製品ページ内のメニュー">
+          <a href="#design">デザイン</a>
+          <a href="#os-install-title">OS</a>
+          <a href="#experience-areas">できること</a>
+        </nav>
       </header>
 
       <AvocadoTurntable />

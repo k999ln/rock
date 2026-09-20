@@ -46,6 +46,7 @@
   "marketPositioning": {
     "customerFacingFocus": "hardware_products",
     "leadHardwareConcept": "avocadoMini",
+    "leadHardwareForm": "motorized_telescopic_sensor_tower_concept",
     "brandLine": "考える時間を、つくる時間に。",
     "avocadoMiniDesiredReferencePriceJpy": 410000,
     "referencePriceStatus": "aspirational_hardware_reference_not_sale_or_preorder_price",
@@ -340,7 +341,7 @@
     "publicDownloadFallback": "/rockstaros/guide#install",
     "developerCode": "sky_tool_sdk_minimal_node_example",
     "studioUrl": "/sky/publish",
-    "visualDirection": "minimal_black_acid_green",
+    "visualDirection": "light_product_showcase_with_scroll_tower",
     "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable"
   },
   "visualSystem": {
@@ -351,6 +352,7 @@
       "workspace_shell"
     ],
     "background": "near_black",
+    "productHomeAppearance": "light_scroll_product_showcase",
     "accent": "acid_green",
     "headline": "heavy_display_latin",
     "metadata": "monospace_uppercase",

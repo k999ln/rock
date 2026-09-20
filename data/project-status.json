@@ -718,6 +718,22 @@
       ]
     },
     {
+      "id": "WEB12",
+      "title": "利用者提供の伸縮式センサータワーを製品サイトとGitHubの主役にする",
+      "status": "done",
+      "dependsOn": [
+        "WEB11"
+      ],
+      "evidence": [
+        "public/rockstaros/avocado-mini-tower-concept.png",
+        "components/avocado-turntable.tsx",
+        "components/avocado-turntable.module.css",
+        "app/rockstaros/page.tsx",
+        "README.md",
+        "docs/avocado-mini-hardware-design.md"
+      ]
+    },
+    {
       "id": "BIZ01",
       "title": "無料配布の対象とOS従量課金の計量単位・単価・上限を確定する",
       "status": "in_progress",
