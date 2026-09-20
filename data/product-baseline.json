@@ -1,5 +1,5 @@
 {
-  "version": "1.72",
+  "version": "1.82",
   "decidedAt": "2026-09-19",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -10,13 +10,13 @@
   "designReview": "docs/os-sky-wallet-game-design.md",
   "productIdentity": {
     "authority": "data/product-identity.json",
-    "displayName": "avocadoOS",
-    "releaseName": "avocadoOS 1.0",
+    "displayName": "RockstarOS",
+    "releaseName": "RockstarOS 1.0",
     "version": "1.0",
     "releaseStage": "developer_preview",
-    "previewName": "avocadoOS 1.0 Developer Preview",
+    "previewName": "RockstarOS 1.0 Developer Preview",
     "internalNamespace": "dev.rock",
-    "legacyDisplayName": "RockstarOS",
+    "legacyDisplayName": "avocadoOS",
     "legacySchemaPrefix": "rockstaros",
     "androidNamespace": "dev.rock",
     "legacyComponentNamespace": "org.rockstar",
@@ -34,29 +34,10 @@
       "completionClaimFromVersionOnly": false
     }
   },
-  "llmArchitecture": {
-    "authority": "docs/llm-evaluation-architecture.md",
-    "capabilityMatrix": "data/llm-capabilities.json",
-    "localPlanner": "Qwen3-0.6B Q8_0 on llama.rn 0.12.9; fixed test-signed device APK profile; plan-only and untrusted",
-    "executionAuthority": "Platform Broker validates identity, capability, approval and plan; Engine executes deterministic tools",
-    "skyOpenAiConnections": [
-      "rockstar-legal-intake",
-      "rockstar-patent-assistant"
-    ],
-    "skyOpenAiScope": "Two optional Sky tool internals, not an OS-wide cloud LLM or automatic local fallback",
-    "jev": {
-      "model": "typesafe-ai/jev",
-      "role": "remote_evaluator",
-      "surface": "explicit Sky tool",
-      "authority": "advisory_only",
-      "status": "designed_not_implemented",
-      "task": "AI07"
-    }
-  },
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided product purpose and eight Zero-to-One principles; preserve RQ01-RQ48 and the current avocadoOS 1.0 technical base",
+    "basis": "User-provided product purpose and eight Zero-to-One principles; preserve RQ01-RQ49 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "not_fixed; earlier independent-writer hypothesis remains historical until the verified economic loop selects a repeatable problem",
     "representativeProductCandidate": "one existing Tool capable of completing the offline-to-signed-earning-to-Wallet acceptance loop",
     "marketValidation": "not_run",
@@ -69,6 +50,16 @@
     "designAligned": true,
     "allRequiredConnectionsVerified": false,
     "productionReady": false
+  },
+  "designDocumentation": {
+    "portal": "docs/rockstaros-design-portal.md",
+    "operatingSystem": "docs/rockstaros-complete-design.md",
+    "tools": "docs/sky-tools-complete-design.md",
+    "materialInvention": "docs/rockstaros-avocado-mini-complete-design.md",
+    "index": "data/design-document-index.json",
+    "automatedCheck": "npm run design:check",
+    "coverageStatus": "current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete",
+    "allImplementationsComplete": false
   },
   "northStar": {
     "document": "docs/product-north-star-20260915.md",
@@ -147,19 +138,91 @@
       ]
     }
   },
+  "materialInvention": {
+    "requested": true,
+    "status": "sandbox_core_implemented_physical_runtime_not_connected",
+    "masterDesign": "docs/rockstaros-avocado-mini-complete-design.md",
+    "workstream": "docs/workstreams/11-material-invention-avocado-mini.md",
+    "designStatus": "integrated_complete_for_implementation_not_product_completion",
+    "architecture": "docs/material-invention-core.md",
+    "contract": "contracts/material-invention.json",
+    "fixture": "contracts/material-invention-fixture.json",
+    "runtime": "lib/material-invention.ts",
+    "tests": "tests/material-invention.test.mjs",
+    "role": "use_avocado_mini_spatial_interaction_to_combine_material_digital_twins_process_conditions_simulation_and_patent_ai_into_traceable_invention_candidates",
+    "primaryExperience": "avocado_mini_spatial_invention",
+    "referenceDevice": "avocadoMini",
+    "coreEntities": [
+      "material_record",
+      "composition_candidate",
+      "process_recipe",
+      "safety_assessment",
+      "simulation_result",
+      "experiment_receipt",
+      "invention_candidate",
+      "spatial_scene_manifest",
+      "spatial_interaction_event",
+      "invention_event_ledger",
+      "patent_ai_packet"
+    ],
+    "workflow": [
+      "define_goal",
+      "load_material_digital_twins_into_avocado_mini",
+      "capture_four_direction_hand_interaction",
+      "connect_separate_or_adjust_material_candidates",
+      "create_versioned_hypothesis_branch",
+      "screen_hazards_and_constraints",
+      "incrementally_simulate_or_compare_evidence",
+      "record_human_ai_simulation_and_experiment_provenance",
+      "prepare_private_patent_ai_disclosure_and_prior_art_comparison",
+      "obtain_human_approval",
+      "run_authorized_external_experiment",
+      "ingest_signed_measurements",
+      "rank_and_version_candidates"
+    ],
+    "autonomousPhysicalExperimentAllowed": false,
+    "hazardousSynthesisWithoutQualifiedReviewAllowed": false,
+    "simulationIsExperimentalProof": false,
+    "externalLabIsReplaceableProvider": true,
+    "spatialDevelopment": {
+      "requested": true,
+      "status": "design_approved_runtime_not_implemented",
+      "productName": "Spatial Invention Studio",
+      "relationshipToMaterialCore": "primary_product_experience_not_optional_extension",
+      "referenceDevice": "avocadoMini",
+      "operatingSystem": "RockstarOS",
+      "architecture": "docs/material-invention-xr.md",
+      "deviceArchitecture": "docs/avocado-mini-spatial-invention.md",
+      "policy": "data/material-invention-xr-policy.json",
+      "sceneContract": "contracts/material-invention-xr.json",
+      "interactionContract": "contracts/avocado-mini-spatial-interaction.json",
+      "fourDirectionalSensorRig": true,
+      "materialDigitalTwinManipulation": true,
+      "incrementalRecalculationPlanned": true,
+      "patentAiIntegrationPlanned": true,
+      "physicalExecutionAllowed": false,
+      "gestureIsPhysicalApproval": false,
+      "automaticPatentFilingAllowed": false
+    }
+  },
   "alignmentAudit": "docs/design-implementation-alignment-20260909.md",
   "sky": {
     "displayName": "Sky",
     "role": "automation_discovery_connection_and_catalog",
     "definition": "Discover and connect Tool products, review their author/version/permissions/cost/execution target, and hand work control to Zema.",
     "inventory": "docs/sky.md",
-    "internalSurfaces": ["/csv"],
+    "internalSurfaces": [
+      "/csv"
+    ],
     "navigationRule": "CSV remains a Sky Tool surface. Work creation, progress, approval, stop, results and history are managed inside Zema; /chat, /work and /activity remain compatibility routes.",
     "legacyInternalName": "hub",
     "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
   },
   "baseApps": [
-    { "id": "sky", "role": "discover_connect_and_manage_automation_apps" },
+    {
+      "id": "sky",
+      "role": "discover_connect_and_manage_automation_apps"
+    },
     {
       "id": "chat",
       "displayName": "Zema",
@@ -167,8 +230,14 @@
       "route": "/chat",
       "role": "request_create_approve_stop_status_results_and_work_history"
     },
-    { "id": "wallet", "role": "automation_income_cost_and_funds" },
-    { "id": "market", "role": "generic_paper_market_and_value_spend_runtime" }
+    {
+      "id": "wallet",
+      "role": "automation_income_cost_and_funds"
+    },
+    {
+      "id": "market",
+      "role": "generic_paper_market_and_value_spend_runtime"
+    }
   ],
   "homeExperience": {
     "defaultRoute": "/",
@@ -176,7 +245,10 @@
     "returnPolicy": "every_non_home_route_has_a_direct_home_affordance",
     "workspaceNavigation": "sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation",
     "smartphoneLayout": {
-      "supportedCssWidthPx": [320, 767],
+      "supportedCssWidthPx": [
+        320,
+        767
+      ],
       "viewport": "device-width_initial-scale-1_viewport-fit-cover",
       "safeAreas": true,
       "minimumPrimaryTouchTargetPx": 44,
@@ -185,7 +257,13 @@
     "visualBasis": "iphone_inspired_app_launcher",
     "systemUtility": "settings",
     "preferencesStorage": "device_local",
-    "customizable": ["wallpaper", "accent", "icon_size", "labels", "app_order"],
+    "customizable": [
+      "wallpaper",
+      "accent",
+      "icon_size",
+      "labels",
+      "app_order"
+    ],
     "settingsFunctions": [
       "appearance",
       "account_state",
@@ -214,14 +292,25 @@
     "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable"
   },
   "visualSystem": {
-    "surfaces": ["/", "/rockstaros", "/studio", "workspace_shell"],
+    "surfaces": [
+      "/",
+      "/rockstaros",
+      "/studio",
+      "workspace_shell"
+    ],
     "background": "near_black",
     "accent": "acid_green",
     "headline": "heavy_display_latin",
     "metadata": "monospace_uppercase",
     "primaryControl": "rounded_high_contrast",
     "studioPrimarySurface": "sdk_code_installation",
-    "homePrimaryApps": ["sky", "chat", "wallet", "market", "settings"],
+    "homePrimaryApps": [
+      "sky",
+      "chat",
+      "wallet",
+      "market",
+      "settings"
+    ],
     "functionalityAudit": [
       "home_app_reachability",
       "truthful_web_status",
@@ -335,7 +424,10 @@
     },
     "workManagement": {
       "canonicalRoute": "/chat?view=work",
-      "compatibilityRoutes": ["/work", "/activity"],
+      "compatibilityRoutes": [
+        "/work",
+        "/activity"
+      ],
       "actions": [
         "create",
         "run_steps",
@@ -426,7 +518,8 @@
     "RQ45",
     "RQ46",
     "RQ47",
-    "RQ48"
+    "RQ48",
+    "RQ49"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -439,7 +532,8 @@
     "sky-tool-developer-platform",
     "local-offline-ai-runtime",
     "os-platform-core",
-    "single-operator-emergency-device-protection"
+    "single-operator-emergency-device-protection",
+    "material-invention-candidate-engine"
   ],
   "localAiRuntime": {
     "requested": true,
@@ -464,13 +558,35 @@
     "physicalEvidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
     "planV2Evidence": "docs/evidence/android-local-ai-plan-v2-20260916.json"
   },
+  "decisionFabric": {
+    "requested": true,
+    "status": "design_approved_runtime_not_implemented",
+    "architecture": "docs/jev-local-qwen-decision-fabric-design.md",
+    "contract": "contracts/decision-provider.json",
+    "policy": "data/decision-fabric-policy.json",
+    "controlOwner": "deterministic_policy_engine",
+    "providerRoles": [
+      "typesafe_jev",
+      "local_qwen",
+      "cloud_llm"
+    ],
+    "confidenceGrantsAuthority": false,
+    "cloudFallbackWithoutConsent": false,
+    "walletAiRole": "advisory_only",
+    "marketMode": "paper_only",
+    "physicalExecutionAllowed": false
+  },
   "androidPlatformCore": {
     "requested": true,
     "status": "native_sky_api_v4_backup_v2_emulator_and_physical_reboot_export_pass_wipe_pending_aosp_not_run",
     "contract": "contracts/platform-api.json",
     "record": "docs/platform-core.md",
     "apiVersion": 1,
-    "componentKinds": ["TOOL", "MCP", "PROVIDER"],
+    "componentKinds": [
+      "TOOL",
+      "MCP",
+      "PROVIDER"
+    ],
     "identityVerification": "installed_apk_uid_version_and_signer",
     "runtimeSelinuxGrant": false,
     "approval": "proposal_then_device_credential_then_single_use",
@@ -675,17 +791,6 @@
     "nativePullRequestStateAtAudit": "OPEN",
     "isLiveStatus": false
   },
-  "commercialPolicyRevision": {
-    "requestedAt": "2026-09-17",
-    "status": "terms_pending_not_implemented",
-    "requestedModel": "Percentage success fee on verified profit attributable to Sky automation, not a fixed usage fee; Wallet is the payment interface even when external sales are paid to the user's own bank account.",
-    "developerRewardSource": "A portion of actually collected success fees; no separate developer-reward surcharge on users.",
-    "successFeeBps": null,
-    "legacyMonthlyCapDecision": "pending",
-    "profitDefinition": "pending",
-    "collectionMethod": "pending",
-    "runtimePolicy": "commercialPolicy and skyNetworkEconomy below describe the existing implementation, not acceptance of the new percentage model. No live billing, automatic bank debit or developer payout is enabled by this request. Publication does not specify an open-source license."
-  },
   "freshContextRequired": [
     "main",
     "branches",
@@ -785,7 +890,7 @@
     "salesOrProfitGuaranteed": false,
     "architecture": "docs/mercari-revenue-loop.md"
   },
-  "hardwarePolicy": "Develop one shared avocadoOS Core with model-specific Device Support Packages. Physical native OS, experimental Android GSI, client-only and unsupported are distinct delivery modes. The first physical target is the owner-selected Japan-market Pixel 10 GL066 / frankel; this identity does not establish image, flash, boot or release readiness. BlackBerry requires exact-model unlock/vendor/recovery evidence; Apple mobile devices are client-only rather than OS-replacement targets. Linux QEMU and physical evidence remain distinct.",
+  "hardwarePolicy": "Develop one shared RockstarOS Core with model-specific Device Support Packages. Physical native OS, experimental Android GSI, client-only and unsupported are distinct delivery modes. The first physical target is the owner-selected Japan-market Pixel 10 GL066 / frankel; this identity does not establish image, flash, boot or release readiness. BlackBerry requires exact-model unlock/vendor/recovery evidence; Apple mobile devices are client-only rather than OS-replacement targets. Linux QEMU and physical evidence remain distinct.",
   "deviceSupportPolicy": {
     "status": "source_tag_and_device_layout_frozen_not_physical_support",
     "architecture": "docs/device-support-architecture.md",
@@ -819,13 +924,13 @@
   "firstOperationalTarget": "Fresh-host QEMU Developer Preview with reproducible install, launch, shutdown, reopen, backup and removal; synthetic data only",
   "releaseInstallation": {
     "requested": true,
-    "releaseName": "avocadoOS 1.0",
+    "releaseName": "RockstarOS 1.0",
     "architecture": "docs/rockstaros-1.0-architecture.md",
     "plan": "docs/release-installation-plan-20260909.md",
     "developerPreview": "internal_acceptance_scoped_publication_blocked",
     "physicalDevicePreview": "source_tag_and_device_layout_frozen_recovery_artifacts_pending",
     "productionReady": false,
-    "cmRule": "Present the current implementation as the avocadoOS 1.0 base and advertise only the highest installation and validation stage that has passed its recorded gate",
+    "cmRule": "Present the current implementation as the RockstarOS 1.0 base and advertise only the highest installation and validation stage that has passed its recorded gate",
     "followup": "docs/current-state-20260911.md",
     "cmProduction": {
       "status": "in_production_per_latest_user_report",
@@ -884,7 +989,10 @@
   "autonomousFundRuntime": {
     "status": "observed_performance_recommender_implemented",
     "refreshIntervalSeconds": 30,
-    "sources": ["signed_billing_earning_receipts", "owned_tool_run_receipts"],
+    "sources": [
+      "signed_billing_earning_receipts",
+      "owned_tool_run_receipts"
+    ],
     "composition": "recomputed_from_ready_tools_strategy_affinity_verified_net_receipts_and_failures",
     "unverifiedYield": null,
     "automaticCapitalMovement": false,
@@ -894,7 +1002,10 @@
     "status": "approved_design_provider_adapters_not_connected",
     "osRole": "capability_discovery_consent_instruction_status_receipt_reconciliation",
     "providerRole": "custody_operations_execution_valuation_payout_kyc_aml_jurisdiction_tax_records",
-    "providerTypes": ["wallet", "fund"],
+    "providerTypes": [
+      "wallet",
+      "fund"
+    ],
     "capabilities": [
       "custody",
       "receive",
@@ -922,7 +1033,10 @@
     "purpose": "collect_verified_allocated_sky_fee_only",
     "mode": "SANDBOX",
     "status": "contract_fixture_verified",
-    "capabilities": ["collect_platform_fee", "reporting"],
+    "capabilities": [
+      "collect_platform_fee",
+      "reporting"
+    ],
     "monthlyFeeCapMinor": 888,
     "currency": "usd",
     "userFundsCustodied": false,
@@ -966,5 +1080,35 @@
     "followup": "docs/release-followup-20260910.md"
   },
   "latestProgressAudit": "docs/evidence/launch/progress-audit-20260912.json",
-  "currentStateDocument": "docs/current-state-20260911.md"
+  "currentStateDocument": "docs/current-state-20260911.md",
+  "llmArchitecture": {
+    "authority": "docs/llm-evaluation-architecture.md",
+    "capabilityMatrix": "data/llm-capabilities.json",
+    "localPlanner": "Qwen3-0.6B Q8_0 on llama.rn 0.12.9; fixed test-signed device APK profile; plan-only and untrusted",
+    "executionAuthority": "Platform Broker validates identity, capability, approval and plan; Engine executes deterministic tools",
+    "skyOpenAiConnections": [
+      "rockstar-legal-intake",
+      "rockstar-patent-assistant"
+    ],
+    "skyOpenAiScope": "Two optional Sky tool internals, not an OS-wide cloud LLM or automatic local fallback",
+    "jev": {
+      "model": "typesafe-ai/jev",
+      "role": "remote_evaluator",
+      "surface": "explicit Sky tool",
+      "authority": "advisory_only",
+      "status": "designed_not_implemented",
+      "task": "AI07"
+    }
+  },
+  "commercialPolicyRevision": {
+    "requestedAt": "2026-09-17",
+    "status": "terms_pending_not_implemented",
+    "requestedModel": "Percentage success fee on verified profit attributable to Sky automation, not a fixed usage fee; Wallet is the payment interface even when external sales are paid to the user's own bank account.",
+    "developerRewardSource": "A portion of actually collected success fees; no separate developer-reward surcharge on users.",
+    "successFeeBps": null,
+    "legacyMonthlyCapDecision": "pending",
+    "profitDefinition": "pending",
+    "collectionMethod": "pending",
+    "runtimePolicy": "commercialPolicy and skyNetworkEconomy below describe the existing implementation, not acceptance of the new percentage model. No live billing, automatic bank debit or developer payout is enabled by this request. Publication does not specify an open-source license."
+  }
 }

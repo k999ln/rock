@@ -35,6 +35,7 @@ const requiredCombination = [
   'android_security_boundary',
   'local_ai',
   'tool_runtime',
+  'material_invention_avocado_mini',
   'verified_economics',
   'wallet_and_fund',
   'operator_access',
@@ -66,6 +67,7 @@ const requiredFlows = [
   'autonomous_fund',
   'safe_device_lifecycle',
   'emergency_support',
+  'material_invention',
   'game',
 ];
 fail(

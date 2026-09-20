@@ -1,7 +1,7 @@
 {
   "schema": "avocadoos-google-stock-recovery-policy/1",
   "decidedAt": "2026-09-16",
-  "product": "avocadoOS",
+  "product": "RockstarOS",
   "target": {
     "manufacturer": "Google",
     "model": "Pixel 10",

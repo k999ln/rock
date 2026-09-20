@@ -1,4 +1,4 @@
-# avocadoOS Google純正復旧セット
+# RockstarOS Google純正復旧セット
 
 決定日: 2026-09-16
 状態: **選定規則と実byte検査器は実装済み／本人の利用条件同意・実ファイル取得・SHA-256固定は未完了**
@@ -7,7 +7,7 @@
 
 ## 固定した設計
 
-- avocadoOSのfirmware baselineをfreezeする時点で、Google公式の最新安定版を選ぶ。
+- RockstarOSのfirmware baselineをfreezeする時点で、Google公式の最新安定版を選ぶ。
 - factory imageとfull OTAは必ず同一buildで揃える。
 - preview／betaや古いAndroid 16 buildを復旧基準にしない。
 - full OTAは、原則としてdataを消さない復旧と両slotのboot可能化に使う。

@@ -13,10 +13,10 @@ function pngSize(path) {
   return [bytes.readUInt32BE(16), bytes.readUInt32BE(20)];
 }
 
-void test('PWA identity uses avocadoOS while navigation stays on the compatibility root scope', () => {
+void test('PWA identity uses RockstarOS while navigation stays on the compatibility root scope', () => {
   const value = manifest();
-  assert.equal(value.name, 'avocadoOS');
-  assert.equal(value.short_name, 'avocadoOS');
+  assert.equal(value.name, 'RockstarOS');
+  assert.equal(value.short_name, 'RockstarOS');
   assert.equal(value.id, '/');
   assert.equal(value.start_url, '/');
   assert.equal(value.scope, '/');

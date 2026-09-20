@@ -1,4 +1,4 @@
-# avocadoOS 緊急アクセスとインシデント対応
+# RockstarOS 緊急アクセスとインシデント対応
 
 状態: **分離Operator Dock、hardware署名付き命令、署名付き端末channel、制限付きAndroid Agentのsource／emulatorと試験署名Pixel、本番公開設定stagerを検証済み、production配備・登録・Device Owner実行は未完了**。この文書と`data/device-emergency-access-policy.json`は、緊急時に運営1名が本人のその場の操作を待たず保護を開始できる契約を固定する。試験署名APKや公開設定stagerの検証はproduction端末へ到達済みという意味ではない。
 
@@ -8,7 +8,7 @@
 
 ## 想定する攻撃
 
-| 攻撃面 | 起こり得ること | avocadoOS側の主な防御・初動 |
+| 攻撃面 | 起こり得ること | RockstarOS側の主な防御・初動 |
 | --- | --- | --- |
 | release／署名鍵 | 偽OTAや改変アプリを正規版に見せる | 役割別鍵、失効、配布停止、現在trustの再取得、影響releaseの隔離 |
 | build／供給網 | build worker、依存、Sky Toolへ悪性処理を混入 | 固定source/hash、再現性照合、Tool隔離、署名と権限の別判定 |
@@ -53,7 +53,7 @@
 
 ## 運営専用Operator Dock
 
-管理面は利用者向けavocadoOSのrouteではなく、`services/operator-dock/`から別hostnameへ配備する。利用者向けOS Home、アプリ一覧、Web/PWA asset、API bundleへ管理画面や入口を含めない。Dockは登録端末、online／offline、hardware trust、緊急操作、命令状態、監査件数を表示し、事故IDと5文字以上の理由がなければcommandを発行できない。
+管理面は利用者向けRockstarOSのrouteではなく、`services/operator-dock/`から別hostnameへ配備する。利用者向けOS Home、アプリ一覧、Web/PWA asset、API bundleへ管理画面や入口を含めない。Dockは登録端末、online／offline、hardware trust、緊急操作、命令状態、監査件数を表示し、事故IDと5文字以上の理由がなければcommandを発行できない。
 
 Dock Workerはassetを含む全requestでCloudflare Accessの署名JWTを検証する。`CF_ACCESS_TEAM_DOMAIN`、Dock専用`CF_ACCESS_AUD`、単一`ROCK_OPERATOR_SUB`の全てが必要で、issuer、audience、期限、subject、RS256署名のいずれかが不一致ならfail closedにする。ヘッダーがあるだけでは信用しない。
 

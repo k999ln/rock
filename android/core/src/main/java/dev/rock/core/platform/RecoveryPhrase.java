@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 /**
- * avocadoOS-only 24-word encoding for a 256-bit backup recovery secret.
+ * RockstarOS-only 24-word encoding for a 256-bit backup recovery secret.
  *
  * <p>This deliberately does not use the BIP-39 word list or checksum. It must never be treated as
  * a cryptocurrency wallet seed. Thirty-two fixed prefixes and sixty-four fixed suffixes form a

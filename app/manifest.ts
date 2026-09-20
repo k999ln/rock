@@ -3,8 +3,8 @@ import type { MetadataRoute } from 'next';
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: '/',
-    name: 'avocadoOS',
-    short_name: 'avocadoOS',
+    name: 'RockstarOS',
+    short_name: 'RockstarOS',
     description: 'Sky、Zema、Wallet、Market、Fundを一つのホームから開く。',
     start_url: '/',
     scope: '/',

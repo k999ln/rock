@@ -24,8 +24,8 @@ requireValue(
   `Web/PC readyは11件です（実際: ${readyCount}）`,
 );
 requireValue(
-  candidateCount === 3,
-  `導入候補は3件です（実際: ${candidateCount}）`,
+  candidateCount === 13,
+  `導入候補は13件です（実際: ${candidateCount}）`,
 );
 
 const registry = resolve(root, 'systems/rock-star-os/examples/registry');

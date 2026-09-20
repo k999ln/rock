@@ -1,6 +1,6 @@
 {
   "schema": "avocadoos-android-backup-recovery-policy/1",
-  "product": "avocadoOS",
+  "product": "RockstarOS",
   "target": "Google Pixel 10 / frankel / GL066",
   "status": "source_ui_transactional_import_and_rebinding_emulator_and_physical_export_reboot_pass_wipe_pending",
   "decision": "DUAL_WRAPPED_RANDOM_DATA_KEY_WITH_DEVICE_KEYSTORE_AND_OWNER_RECOVERY_PHRASE",
@@ -62,7 +62,7 @@
     "included": [
       "Sky tool configuration and catalog selection",
       "Zema workflow definitions, job state, progress and results",
-      "local avocadoOS settings",
+      "local RockstarOS settings",
       "non-secret receipts and replay indexes needed for continuity"
     ],
     "excluded": [

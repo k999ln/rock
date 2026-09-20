@@ -40,7 +40,7 @@ function fixture() {
     channel_state,key_fingerprint,last_seen_at,created_at,updated_at,device_public_key_spki,
     attestation_record_sha256
   ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(
-    deviceId, 'owner-1', 'Pixel 10', 'android', 'Pixel 10', 'avocadoOS 1.0',
+    deviceId, 'owner-1', 'Pixel 10', 'android', 'Pixel 10', 'RockstarOS 1.0',
     'active', 'verified', 'offline', 'sha256:device-key', null, now, now,
     encoded(keys.publicKey.export({ type: 'spki', format: 'der' })), 'sha256:attestation',
   );

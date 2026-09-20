@@ -1575,7 +1575,7 @@
     justify-self: start;
   }
 }
-/* avocadoOS / Studio — shared dark launch system */
+/* RockstarOS / Studio — shared dark launch system */
 .studio-chat-shell {
   --studio-ink: #f7f7f2;
   --studio-muted: #92958d;
@@ -11061,7 +11061,7 @@
   }
 }
 
-/* avocadoOS 1.0 — unified OS chrome and functional interaction states */
+/* RockstarOS 1.0 — unified OS chrome and functional interaction states */
 .rock-workspace {
   --sidebar: #080a08;
   --sidebar-foreground: #f3f5ee;
@@ -11368,7 +11368,7 @@
   }
 }
 
-/* avocadoOS 1.0 — unified app surfaces */
+/* RockstarOS 1.0 — unified app surfaces */
 .rock-main.sky-main-feed.sky-main-feed,
 .rock-main.sky-chat-page.sky-chat-page,
 .rock-main.everything-market-page.everything-market-page {

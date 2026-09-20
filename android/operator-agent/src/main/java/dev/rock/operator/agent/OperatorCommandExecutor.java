@@ -83,7 +83,7 @@ final class OperatorCommandExecutor {
                 if (!notifications.available()) return result("failed", "USER_NOTIFICATION_REQUIRED", now);
                 state.edit().putBoolean("lostMode", true).apply();
                 notifications.incident("Lost mode active",
-                        "avocadoOS emergency protection is active. Contact support to recover this device.");
+                        "RockstarOS emergency protection is active. Contact support to recover this device.");
                 policy.lockNow();
                 return result("completed", "LOST_MODE_ACTIVE", now);
             case "exit_lost_mode":

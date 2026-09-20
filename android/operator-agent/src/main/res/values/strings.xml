@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">avocadoOS Emergency Protection</string>
+    <string name="app_name">RockstarOS Emergency Protection</string>
     <!-- Public trust anchors. Production values are supplied by a reviewed product overlay. -->
     <string name="operator_dock_origin"></string>
     <string name="operator_credential_id"></string>

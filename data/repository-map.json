@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "updatedAt": "2026-09-09",
   "product": {
-    "canonicalName": "Rock star / avocadomini",
-    "publicBrand": "avocadomini",
+    "canonicalName": "RockstarOS",
+    "publicBrand": "RockstarOS",
     "internalRuntimeName": "Rockstar_ibot",
     "productRepository": "k999ln/rock"
   },

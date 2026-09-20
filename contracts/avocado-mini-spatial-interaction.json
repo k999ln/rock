@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rockstaros.dev/contracts/avocado-mini-spatial-interaction-v1.json",
+  "title": "avocadoMini Spatial Interaction Event v1",
+  "description": "A hand interaction proposal for a RockstarOS Material Invention Core hypothesis. It cannot authorize physical execution.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "eventId",
+    "projectId",
+    "sessionId",
+    "sceneDigest",
+    "candidateId",
+    "sensorRig",
+    "tracking",
+    "gesture",
+    "targetBindingIds",
+    "proposedOperation",
+    "capturedAt",
+    "privacy"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "eventId": { "$ref": "#/$defs/id" },
+    "projectId": { "$ref": "#/$defs/id" },
+    "sessionId": { "$ref": "#/$defs/id" },
+    "sceneDigest": { "$ref": "#/$defs/sha256" },
+    "candidateId": { "$ref": "#/$defs/id" },
+    "sensorRig": { "$ref": "#/$defs/sensorRig" },
+    "tracking": { "$ref": "#/$defs/tracking" },
+    "gesture": { "$ref": "#/$defs/gesture" },
+    "targetBindingIds": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "proposedOperation": { "$ref": "#/$defs/operation" },
+    "capturedAt": { "type": "string", "format": "date-time" },
+    "privacy": { "$ref": "#/$defs/privacy" }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 160,
+      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+    },
+    "shortText": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "sensorRig": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rigId",
+        "sensorSetDigest",
+        "calibrationDigest",
+        "viewpoints",
+        "clockSyncStatus"
+      ],
+      "properties": {
+        "rigId": { "$ref": "#/$defs/id" },
+        "sensorSetDigest": { "$ref": "#/$defs/sha256" },
+        "calibrationDigest": { "$ref": "#/$defs/sha256" },
+        "viewpoints": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": { "enum": ["north", "east", "south", "west"] }
+        },
+        "clockSyncStatus": { "enum": ["SYNCHRONIZED", "DEGRADED", "UNUSABLE"] }
+      }
+    },
+    "tracking": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "modelId",
+        "modelVersion",
+        "hand",
+        "confidence",
+        "poseFrameId",
+        "trackingEvidenceDigest",
+        "insideInteractionVolume"
+      ],
+      "properties": {
+        "modelId": { "$ref": "#/$defs/id" },
+        "modelVersion": { "$ref": "#/$defs/shortText" },
+        "hand": { "enum": ["left", "right", "both"] },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "poseFrameId": { "$ref": "#/$defs/id" },
+        "trackingEvidenceDigest": { "$ref": "#/$defs/sha256" },
+        "insideInteractionVolume": { "type": "boolean" }
+      }
+    },
+    "gesture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "phase"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "select",
+            "connect",
+            "separate",
+            "rotate",
+            "scale_or_ratio",
+            "scrub_process",
+            "annotate",
+            "stop",
+            "undo",
+            "redo"
+          ]
+        },
+        "phase": { "enum": ["BEGIN", "UPDATE", "COMMIT", "CANCEL"] }
+      }
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "relationType",
+        "parameterPatch",
+        "mutationScope",
+        "physicalExecutionAllowed"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "VIEW_ONLY",
+            "PROPOSE_COMBINATION",
+            "BRANCH_CANDIDATE",
+            "REMOVE_RELATION",
+            "UPDATE_PARAMETER",
+            "CREATE_ANNOTATION",
+            "UNDO",
+            "REDO",
+            "CANCEL_PENDING"
+          ]
+        },
+        "relationType": {
+          "oneOf": [
+            {
+              "enum": [
+                "mixture",
+                "interface",
+                "layer",
+                "contact_process",
+                "unknown_requires_confirmation"
+              ]
+            },
+            { "type": "null" }
+          ]
+        },
+        "parameterPatch": {
+          "type": "object",
+          "maxProperties": 32,
+          "additionalProperties": {
+            "oneOf": [
+              { "type": "string", "maxLength": 500 },
+              { "type": "number" },
+              { "type": "boolean" },
+              { "type": "null" }
+            ]
+          }
+        },
+        "mutationScope": { "const": "HYPOTHESIS_ONLY" },
+        "physicalExecutionAllowed": { "const": false }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rawFramesPersisted",
+        "roomMeshPersisted",
+        "biometricStreamExported",
+        "externalTransferApproved"
+      ],
+      "properties": {
+        "rawFramesPersisted": { "const": false },
+        "roomMeshPersisted": { "const": false },
+        "biometricStreamExported": { "const": false },
+        "externalTransferApproved": { "type": "boolean" }
+      }
+    }
+  },
+  "x-rockstaros-boundary": {
+    "operatingSystem": "RockstarOS",
+    "deviceConcept": "avocadoMini",
+    "fourDirectionalViewpointsRequired": true,
+    "gestureIsPhysicalApproval": false,
+    "physicalExecutionAllowed": false,
+    "patentabilityDeterminationAllowed": false
+  }
+}

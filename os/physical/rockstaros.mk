@@ -6,14 +6,21 @@ endif
 ifeq ($(wildcard vendor/rockstaros-local-ai/product.mk),)
   $(error Stage the reviewed Local Action Assistant APK before the physical OS build)
 endif
-ifeq ($(wildcard vendor/avocado-operator-agent/product.mk),)
-  $(error Stage the reviewed production Operator Agent trust-anchor overlay before the physical OS build)
+include vendor/rockstaros-local-ai/product.mk
+
+ifeq ($(ROCK_OPERATOR_AGENT_MODE),excluded)
+  ROCK_OPERATOR_AGENT_PACKAGES :=
+  ROCK_OPERATOR_AGENT_STAGE := excluded
+else
+  ifeq ($(wildcard vendor/avocado-operator-agent/product.mk),)
+    $(error Stage the reviewed production Operator Agent trust-anchor overlay before a release build)
+  endif
+  include vendor/avocado-operator-agent/product.mk
+  ROCK_OPERATOR_AGENT_PACKAGES := RockOperatorAgent
+  ROCK_OPERATOR_AGENT_STAGE := configured
 endif
 
-include vendor/rockstaros-local-ai/product.mk
-include vendor/avocado-operator-agent/product.mk
-
-PRODUCT_PACKAGES += RockAutomationPrototype RockShell RockArticleToolPrototype RockOperatorAgent
+PRODUCT_PACKAGES += RockAutomationPrototype RockShell RockArticleToolPrototype $(ROCK_OPERATOR_AGENT_PACKAGES)
 PRODUCT_PRIVATE_SEPOLICY_DIRS += external/rockstaros/android/sepolicy/private
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.rockstaros.stage=device-bringup \
@@ -21,4 +28,6 @@ PRODUCT_PRODUCT_PROPERTIES += \
     ro.rockstaros.local_ai.stage=source-pinned \
     ro.rockstaros.local_ai.bridge=source-ready \
     ro.rockstaros.local_ai.package=com.localactionassistant \
+    ro.rockstaros.operator_agent.stage=$(ROCK_OPERATOR_AGENT_STAGE) \
+    ro.rockstaros.release_flash_allowed=false \
     ro.rockstaros.financial_ready=false

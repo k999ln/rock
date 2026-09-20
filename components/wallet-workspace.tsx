@@ -174,7 +174,7 @@ export default function WalletWorkspace() {
               <WalletCards size={28} />
             </span>
             <div>
-              <p>avocadoOS Wallet</p>
+              <p>RockstarOS Wallet</p>
               <h1 id="wallet-signin-title">自分のWalletを開く</h1>
               <p>残高と入出金記録は、あなたのアカウントだけに保存されます。</p>
             </div>

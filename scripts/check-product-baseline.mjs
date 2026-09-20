@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 48 },
+    { length: 49 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ48の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ49の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -51,13 +51,14 @@ export function validateBaseline(
     );
   }
   requireValue(
-    data.productIdentity?.displayName === 'avocadoOS' &&
-      data.productIdentity?.releaseName === 'avocadoOS 1.0' &&
+    data.productIdentity?.displayName === 'RockstarOS' &&
+      data.productIdentity?.releaseName === 'RockstarOS 1.0' &&
       data.productIdentity?.version === '1.0' &&
       data.productIdentity?.releaseStage === 'developer_preview' &&
-      data.productIdentity?.previewName === 'avocadoOS 1.0 Developer Preview' &&
+      data.productIdentity?.previewName ===
+        'RockstarOS 1.0 Developer Preview' &&
       data.productIdentity?.internalNamespace === 'dev.rock' &&
-      data.productIdentity?.legacyDisplayName === 'RockstarOS' &&
+      data.productIdentity?.legacyDisplayName === 'avocadoOS' &&
       data.productIdentity?.legacySchemaPrefix === 'rockstaros' &&
       data.productIdentity?.internalIdentifiersRenamed === false &&
       data.productIdentity?.historicalEvidenceRewritten === false &&
@@ -68,7 +69,7 @@ export function validateBaseline(
         ?.majorUpdatesRequireMigrationAndRollbackAcceptance === true &&
       data.productIdentity?.versioning?.completionClaimFromVersionOnly ===
         false,
-    '正式名avocadoOSと内部識別子dev.rockの互換境界を維持してください',
+    '正式名RockstarOSと内部識別子dev.rockの互換境界を維持してください',
   );
   const identityPath = data.productIdentity?.authority;
   requireValue(
@@ -78,21 +79,174 @@ export function validateBaseline(
   const identity = JSON.parse(read(resolve(root, identityPath)));
   requireValue(
     identity.schema === 'rockstaros-product-identity/1' &&
-      identity.displayName === 'avocadoOS' &&
+      identity.displayName === 'RockstarOS' &&
       identity.internalIdentifier === 'dev.rock' &&
       identity.version === '1.0' &&
       identity.releaseStage === 'developer_preview' &&
-      identity.releaseName === 'avocadoOS 1.0' &&
-      identity.previewName === 'avocadoOS 1.0 Developer Preview' &&
+      identity.releaseName === 'RockstarOS 1.0' &&
+      identity.previewName === 'RockstarOS 1.0 Developer Preview' &&
       identity.versioning?.format === 'major.minor' &&
       identity.versioning?.minorExample === '1.5' &&
       identity.versioning?.majorExample === '2.0' &&
       identity.versioning?.completionClaimFromVersionOnly === false,
-    'avocadoOS 1.0と将来のminor／major更新規則を維持してください',
+    'RockstarOS 1.0と将来のminor／major更新規則を維持してください',
   );
   requireValue(
     data.auditInputs?.isLiveStatus === false,
     '監査snapshotを最新状態にしないでください',
+  );
+  const designDocumentation = data.designDocumentation;
+  requireValue(
+    designDocumentation?.portal === 'docs/rockstaros-design-portal.md' &&
+      designDocumentation?.operatingSystem ===
+        'docs/rockstaros-complete-design.md' &&
+      designDocumentation?.tools === 'docs/sky-tools-complete-design.md' &&
+      designDocumentation?.materialInvention ===
+        'docs/rockstaros-avocado-mini-complete-design.md' &&
+      designDocumentation?.index === 'data/design-document-index.json' &&
+      designDocumentation?.automatedCheck === 'npm run design:check' &&
+      designDocumentation?.coverageStatus ===
+        'current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete' &&
+      designDocumentation?.allImplementationsComplete === false &&
+      [
+        designDocumentation.portal,
+        designDocumentation.operatingSystem,
+        designDocumentation.tools,
+        designDocumentation.materialInvention,
+        designDocumentation.index,
+      ].every((path) => existsSync(resolve(root, path))),
+    'OS・全Tool・Material Inventionの設計入口と未完成境界を維持してください',
+  );
+  requireValue(
+    data.materialInvention?.requested === true &&
+      data.materialInvention?.status ===
+        'sandbox_core_implemented_physical_runtime_not_connected' &&
+      data.materialInvention?.masterDesign ===
+        'docs/rockstaros-avocado-mini-complete-design.md' &&
+      data.materialInvention?.workstream ===
+        'docs/workstreams/11-material-invention-avocado-mini.md' &&
+      data.materialInvention?.designStatus ===
+        'integrated_complete_for_implementation_not_product_completion' &&
+      data.materialInvention?.architecture ===
+        'docs/material-invention-core.md' &&
+      data.materialInvention?.contract ===
+        'contracts/material-invention.json' &&
+      data.materialInvention?.fixture ===
+        'contracts/material-invention-fixture.json' &&
+      data.materialInvention?.runtime === 'lib/material-invention.ts' &&
+      data.materialInvention?.tests === 'tests/material-invention.test.mjs' &&
+      data.materialInvention?.primaryExperience ===
+        'avocado_mini_spatial_invention' &&
+      data.materialInvention?.referenceDevice === 'avocadoMini' &&
+      data.materialInvention?.role ===
+        'use_avocado_mini_spatial_interaction_to_combine_material_digital_twins_process_conditions_simulation_and_patent_ai_into_traceable_invention_candidates' &&
+      data.materialInvention?.coreEntities?.includes(
+        'spatial_interaction_event',
+      ) &&
+      data.materialInvention?.coreEntities?.includes(
+        'invention_event_ledger',
+      ) &&
+      data.materialInvention?.coreEntities?.includes('patent_ai_packet') &&
+      data.materialInvention?.autonomousPhysicalExperimentAllowed === false &&
+      data.materialInvention
+        ?.hazardousSynthesisWithoutQualifiedReviewAllowed === false &&
+      data.materialInvention?.simulationIsExperimentalProof === false &&
+      data.materialInvention?.externalLabIsReplaceableProvider === true &&
+      [
+        data.materialInvention.architecture,
+        data.materialInvention.masterDesign,
+        data.materialInvention.workstream,
+        data.materialInvention.contract,
+        data.materialInvention.fixture,
+        data.materialInvention.runtime,
+        data.materialInvention.tests,
+      ].every((path) => existsSync(resolve(root, path))),
+    'Material Invention Coreの安全境界、契約、sandbox実装を維持してください',
+  );
+  const spatial = data.materialInvention?.spatialDevelopment;
+  requireValue(
+    spatial?.requested === true &&
+      spatial?.status === 'design_approved_runtime_not_implemented' &&
+      spatial?.productName === 'Spatial Invention Studio' &&
+      spatial?.relationshipToMaterialCore ===
+        'primary_product_experience_not_optional_extension' &&
+      spatial?.referenceDevice === 'avocadoMini' &&
+      spatial?.operatingSystem === 'RockstarOS' &&
+      spatial?.fourDirectionalSensorRig === true &&
+      spatial?.materialDigitalTwinManipulation === true &&
+      spatial?.incrementalRecalculationPlanned === true &&
+      spatial?.patentAiIntegrationPlanned === true &&
+      spatial?.physicalExecutionAllowed === false &&
+      spatial?.gestureIsPhysicalApproval === false &&
+      spatial?.automaticPatentFilingAllowed === false &&
+      [
+        spatial.architecture,
+        spatial.deviceArchitecture,
+        spatial.policy,
+        spatial.sceneContract,
+        spatial.interactionContract,
+      ].every(
+        (path) =>
+          typeof path === 'string' &&
+          !isAbsolute(path) &&
+          !relative(root, resolve(root, path)).startsWith('..') &&
+          existsSync(resolve(root, path)),
+      ),
+    'Spatial Invention StudioとavocadoMiniの安全な設計境界を維持してください',
+  );
+  const spatialPolicy = JSON.parse(read(resolve(root, spatial.policy)));
+  const spatialSceneContract = JSON.parse(
+    read(resolve(root, spatial.sceneContract)),
+  );
+  const spatialInteractionContract = JSON.parse(
+    read(resolve(root, spatial.interactionContract)),
+  );
+  requireValue(
+    spatialPolicy.schema === 'rockstaros-material-invention-xr-policy/1' &&
+      spatialPolicy.status === 'design_approved_runtime_not_implemented' &&
+      spatialPolicy.relationshipToMaterialCore ===
+        'primary_product_experience_not_optional_extension' &&
+      spatialPolicy.referenceDevice?.displayName === 'avocadoMini' &&
+      spatialPolicy.referenceDevice?.operatingSystem === 'RockstarOS' &&
+      JSON.stringify(spatialPolicy.referenceDevice?.viewpoints) ===
+        JSON.stringify(['north', 'east', 'south', 'west']) &&
+      spatialPolicy.referenceDevice?.physicalMatterManipulatedByCameras ===
+        false &&
+      spatialPolicy.safety?.physicalExecutionAllowed === false &&
+      spatialPolicy.safety?.equipmentControlAllowed === false &&
+      spatialPolicy.safety?.physicalExperimentFinalApprovalAllowed === false &&
+      spatialPolicy.safety?.gestureIsPhysicalApproval !== true &&
+      spatialPolicy.patentAi?.patentabilityDeterminationAllowed === false &&
+      spatialPolicy.patentAi?.inventorshipDeterminationAllowed === false &&
+      spatialPolicy.patentAi?.automaticFilingAllowed === false &&
+      spatialPolicy.accessibility?.twoDimensionalFallbackRequired === true,
+    'avocadoMiniの四方向sensor、XR、Patent AI安全policyを維持してください',
+  );
+  requireValue(
+    spatialSceneContract.$id ===
+      'https://rockstaros.dev/contracts/material-invention-xr-scene-v1.json' &&
+      spatialSceneContract['x-rockstaros-boundary']?.derivedViewOnly === true &&
+      spatialSceneContract['x-rockstaros-boundary']
+        ?.devicePoseIsSafetyEvidence === false &&
+      spatialSceneContract.properties?.capabilities?.properties
+        ?.physicalExecutionAllowed?.const === false &&
+      spatialSceneContract.properties?.capabilities?.properties
+        ?.equipmentControlAllowed?.const === false &&
+      spatialInteractionContract.$id ===
+        'https://rockstaros.dev/contracts/avocado-mini-spatial-interaction-v1.json' &&
+      spatialInteractionContract['x-rockstaros-boundary']?.operatingSystem ===
+        'RockstarOS' &&
+      spatialInteractionContract['x-rockstaros-boundary']?.deviceConcept ===
+        'avocadoMini' &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.fourDirectionalViewpointsRequired === true &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.gestureIsPhysicalApproval === false &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.physicalExecutionAllowed === false &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.patentabilityDeterminationAllowed === false,
+    'XR sceneとavocadoMini interaction契約の権限境界を維持してください',
   );
   const compositionDocument = data.systemComposition?.document;
   const compositionAuditPath = data.systemComposition?.audit;
@@ -274,7 +428,7 @@ export function validateBaseline(
     );
   }
   requireValue(
-      data.primaryCapabilities?.includes('os-platform-core') &&
+    data.primaryCapabilities?.includes('os-platform-core') &&
       data.androidPlatformCore?.status ===
         'native_sky_api_v4_backup_v2_emulator_and_physical_reboot_export_pass_wipe_pending_aosp_not_run' &&
       data.androidPlatformCore?.apiVersion === 1 &&
@@ -301,25 +455,35 @@ export function validateBaseline(
         'broker_sqlite_schema_v2' &&
       data.androidPlatformCore?.nativeSkySelectionTokenRequired === true &&
       data.androidPlatformCore?.nativeSkySelectionEmulatorVerified === true &&
-      data.androidPlatformCore?.nativeSkySelectionPhysicalRebootVerified === true &&
+      data.androidPlatformCore?.nativeSkySelectionPhysicalRebootVerified ===
+        true &&
       data.androidPlatformCore?.recoverableBackupOwnerPhraseUi === true &&
       data.androidPlatformCore?.recoverableBackupTransactionalImport === true &&
-      data.androidPlatformCore?.recoverableBackupNewKeystoreRebinding === true &&
+      data.androidPlatformCore?.recoverableBackupNewKeystoreRebinding ===
+        true &&
       data.androidPlatformCore?.recoverableBackupEmptyTargetRequired === true &&
       data.androidPlatformCore?.recoverableBackupRestoresPaused === true &&
-      data.androidPlatformCore?.recoverableBackupRestoresComponentAuthority === false &&
+      data.androidPlatformCore?.recoverableBackupRestoresComponentAuthority ===
+        false &&
       data.androidPlatformCore?.recoverableBackupEmulatorBrokerChecks ===
         '11_pass_2_physical_skipped' &&
-      data.androidPlatformCore?.recoverableBackupEmulatorShellChecks === '5_pass' &&
-      data.androidPlatformCore?.recoverableBackupPhysicalExportVerified === true &&
-      data.androidPlatformCore?.recoverableBackupPhysicalHardwareBacked === true &&
-      data.androidPlatformCore?.recoverableBackupPhysicalFileSyncConfirmed === true &&
-      data.androidPlatformCore?.recoverableBackupPhysicalRebootVerified === true &&
-      data.androidPlatformCore?.recoverableBackupPhysicalWipeVerified === false &&
+      data.androidPlatformCore?.recoverableBackupEmulatorShellChecks ===
+        '5_pass' &&
+      data.androidPlatformCore?.recoverableBackupPhysicalExportVerified ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalHardwareBacked ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalFileSyncConfirmed ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalRebootVerified ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalWipeVerified ===
+        false &&
       data.androidPlatformCore?.zemaSelectedToolPlanGateImplemented === true &&
       data.androidPlatformCore?.zemaEmulatorNoModelFailClosed === true &&
       data.androidPlatformCore?.zemaPhysicalStrictPlanAccepted === true &&
-      data.androidPlatformCore?.zemaPhysicalSelectedToolResultHistoryVerified === true,
+      data.androidPlatformCore
+        ?.zemaPhysicalSelectedToolResultHistoryVerified === true,
     'OS Platform Coreの署名・UID・承認・台帳・暗号化・standalone build済／AOSP未build境界を維持してください',
   );
   for (const field of [
@@ -444,27 +608,41 @@ export function validateBaseline(
         true &&
       data.deviceEmergencyAccess?.persistentCommandQueueImplemented === true &&
       data.deviceEmergencyAccess?.appendOnlyAuditImplemented === true &&
-      data.deviceEmergencyAccess?.operatorCommandWebAuthnSignatureRequired === true &&
-      data.deviceEmergencyAccess?.managementServerAloneCanIssueDeviceCommand === false &&
+      data.deviceEmergencyAccess?.operatorCommandWebAuthnSignatureRequired ===
+        true &&
+      data.deviceEmergencyAccess?.managementServerAloneCanIssueDeviceCommand ===
+        false &&
       data.deviceEmergencyAccess?.deviceSignedChannelImplemented === true &&
-      data.deviceEmergencyAccess?.deviceIndependentCommandVerificationImplemented === true &&
+      data.deviceEmergencyAccess
+        ?.deviceIndependentCommandVerificationImplemented === true &&
       data.deviceEmergencyAccess?.androidServiceImplemented === true &&
       data.deviceEmergencyAccess?.androidEmulatorTestsPassed === true &&
-      data.deviceEmergencyAccess?.testSignedPhysicalPixelChecksPassed === true &&
+      data.deviceEmergencyAccess?.testSignedPhysicalPixelChecksPassed ===
+        true &&
       data.deviceEmergencyAccess?.testSignedPhysicalPixelCheckCount === 5 &&
-      data.deviceEmergencyAccess?.productionPublicOverlayStagerImplemented === true &&
+      data.deviceEmergencyAccess?.productionPublicOverlayStagerImplemented ===
+        true &&
       data.deviceEmergencyAccess?.productionPublicOverlayStagerEvidence ===
         'docs/evidence/android-operator-overlay-stager-20260916.json' &&
-      data.deviceEmergencyAccess?.productionPublicOverlayInputStoredInRepository === false &&
-      data.deviceEmergencyAccess?.productionPublicOverlayActualValuesStaged === false &&
-      data.deviceEmergencyAccess?.productionPublicOverlayStrongBoxRequired === true &&
-      data.deviceEmergencyAccess?.productionPublicOverlayFactoryResetForcedOff === true &&
-      data.deviceEmergencyAccess?.singleDeviceAttestationChallengeValidationImplemented === true &&
-      data.deviceEmergencyAccess?.productionDeviceIdentityChallengeBoundAliasImplemented === true &&
-      data.deviceEmergencyAccess?.multiDeviceDynamicEnrollmentImplemented === false &&
-      data.deviceEmergencyAccess?.androidDeviceOwnerExecutionVerified === false &&
+      data.deviceEmergencyAccess
+        ?.productionPublicOverlayInputStoredInRepository === false &&
+      data.deviceEmergencyAccess?.productionPublicOverlayActualValuesStaged ===
+        false &&
+      data.deviceEmergencyAccess?.productionPublicOverlayStrongBoxRequired ===
+        true &&
+      data.deviceEmergencyAccess
+        ?.productionPublicOverlayFactoryResetForcedOff === true &&
+      data.deviceEmergencyAccess
+        ?.singleDeviceAttestationChallengeValidationImplemented === true &&
+      data.deviceEmergencyAccess
+        ?.productionDeviceIdentityChallengeBoundAliasImplemented === true &&
+      data.deviceEmergencyAccess?.multiDeviceDynamicEnrollmentImplemented ===
+        false &&
+      data.deviceEmergencyAccess?.androidDeviceOwnerExecutionVerified ===
+        false &&
       data.deviceEmergencyAccess?.hardwareDeviceAttestationVerified === false &&
-      data.deviceEmergencyAccess?.remoteProviderSessionRevocationImplemented === false &&
+      data.deviceEmergencyAccess?.remoteProviderSessionRevocationImplemented ===
+        false &&
       data.deviceEmergencyAccess?.factoryResetReleaseGateEnabled === false &&
       data.deviceEmergencyAccess?.productionCredentialProvisioned === false &&
       data.deviceEmergencyAccess?.physicalDeviceVerified === false &&
@@ -488,7 +666,7 @@ export function validateBaseline(
     read(resolve(root, data.deviceEmergencyAccess.policy)),
   );
   requireValue(
-      emergencyPolicy.schema === 'dev.rock-device-emergency-access/1' &&
+    emergencyPolicy.schema === 'dev.rock-device-emergency-access/1' &&
       emergencyPolicy.status ===
         'dock_agent_source_emulator_test_signed_physical_and_overlay_stager_verified_production_enrollment_pending' &&
       emergencyPolicy.activation?.singleOperatorAllowed === true &&
@@ -517,31 +695,48 @@ export function validateBaseline(
       emergencyPolicy.implementation?.persistentCommandQueueImplemented ===
         true &&
       emergencyPolicy.implementation?.appendOnlyAuditImplemented === true &&
-      emergencyPolicy.implementation?.operatorCommandWebAuthnSignatureRequired === true &&
-      emergencyPolicy.implementation?.operatorUserVerificationRequired === true &&
-      emergencyPolicy.implementation?.managementServerAloneCanIssueDeviceCommand === false &&
+      emergencyPolicy.implementation
+        ?.operatorCommandWebAuthnSignatureRequired === true &&
+      emergencyPolicy.implementation?.operatorUserVerificationRequired ===
+        true &&
+      emergencyPolicy.implementation
+        ?.managementServerAloneCanIssueDeviceCommand === false &&
       emergencyPolicy.implementation?.deviceSignedChannelImplemented === true &&
-      emergencyPolicy.implementation?.deviceIndependentCommandVerificationImplemented === true &&
+      emergencyPolicy.implementation
+        ?.deviceIndependentCommandVerificationImplemented === true &&
       emergencyPolicy.implementation?.androidServiceImplemented === true &&
       emergencyPolicy.implementation?.androidEmulatorTestsPassed === true &&
-      emergencyPolicy.implementation?.testSignedPhysicalPixelChecksPassed === true &&
+      emergencyPolicy.implementation?.testSignedPhysicalPixelChecksPassed ===
+        true &&
       emergencyPolicy.implementation?.testSignedPhysicalPixelCheckCount === 5 &&
       emergencyPolicy.implementation?.testSignedPhysicalPixelEvidence ===
         'docs/evidence/android-pixel-10-prefull-physical-20260916.json' &&
-      emergencyPolicy.implementation?.productionPublicOverlayStagerImplemented === true &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayStagerImplemented === true &&
       emergencyPolicy.implementation?.productionPublicOverlayStagerEvidence ===
         'docs/evidence/android-operator-overlay-stager-20260916.json' &&
-      emergencyPolicy.implementation?.productionPublicOverlayInputStoredInRepository === false &&
-      emergencyPolicy.implementation?.productionPublicOverlayActualValuesStaged === false &&
-      emergencyPolicy.implementation?.productionPublicOverlayStrongBoxRequired === true &&
-      emergencyPolicy.implementation?.productionPublicOverlayFactoryResetForcedOff === true &&
-      emergencyPolicy.implementation?.singleDeviceAttestationChallengeValidationImplemented === true &&
-      emergencyPolicy.implementation?.productionDeviceIdentityChallengeBoundAliasImplemented === true &&
-      emergencyPolicy.implementation?.multiDeviceDynamicEnrollmentImplemented === false &&
-      emergencyPolicy.implementation?.androidDeviceOwnerExecutionVerified === false &&
-      emergencyPolicy.implementation?.hardwareDeviceAttestationVerified === false &&
-      emergencyPolicy.implementation?.remoteProviderSessionRevocationImplemented === false &&
-      emergencyPolicy.implementation?.factoryResetReleaseGateEnabled === false &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayInputStoredInRepository === false &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayActualValuesStaged === false &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayStrongBoxRequired === true &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayFactoryResetForcedOff === true &&
+      emergencyPolicy.implementation
+        ?.singleDeviceAttestationChallengeValidationImplemented === true &&
+      emergencyPolicy.implementation
+        ?.productionDeviceIdentityChallengeBoundAliasImplemented === true &&
+      emergencyPolicy.implementation
+        ?.multiDeviceDynamicEnrollmentImplemented === false &&
+      emergencyPolicy.implementation?.androidDeviceOwnerExecutionVerified ===
+        false &&
+      emergencyPolicy.implementation?.hardwareDeviceAttestationVerified ===
+        false &&
+      emergencyPolicy.implementation
+        ?.remoteProviderSessionRevocationImplemented === false &&
+      emergencyPolicy.implementation?.factoryResetReleaseGateEnabled ===
+        false &&
       emergencyPolicy.implementation?.physicalDeviceVerified === false,
     '緊急access policyの単独初動・端末側強制・禁止権限・未実装境界を維持してください',
   );
@@ -798,11 +993,11 @@ export function validateBaseline(
       shellSource.includes('className="rock-home-link"') &&
       shellSource.includes('aria-disabled={running || undefined}') &&
       workspaceStyles.includes(
-        'avocadoOS / Studio — shared dark launch system',
+        'RockstarOS / Studio — shared dark launch system',
       ) &&
-      workspaceStyles.includes('avocadoOS 1.0 — unified OS chrome') &&
+      workspaceStyles.includes('RockstarOS 1.0 — unified OS chrome') &&
       workspaceStyles.includes('--studio-green: #c8ff2e'),
-    'avocadoOS全体の共通visual systemとフロント機能性改善を維持してください',
+    'RockstarOS全体の共通visual systemとフロント機能性改善を維持してください',
   );
   requireValue(
     data.systemMaintenance?.route === '/settings/system' &&
@@ -964,7 +1159,7 @@ export function validateBaseline(
     '複数MCP Connectorの配布・Sky接続とremote/OAuth未受入の境界を維持してください',
   );
   requireValue(
-    data.releaseInstallation?.releaseName === 'avocadoOS 1.0',
+    data.releaseInstallation?.releaseName === 'RockstarOS 1.0',
     '1.0の発表名が必要です',
   );
   for (const field of ['architecture', 'plan']) {
@@ -1088,6 +1283,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ48、AIネイティブOS CoreからSky・Zema・便利機能・ゲームへ接続する製品階層、正式名avocadoOS／内部識別子dev.rock、avocadoOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、avocadoOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ49、AIネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Coreへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

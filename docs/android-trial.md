@@ -14,7 +14,7 @@ GitHubのAndroid検証がすべて成功した場合だけ、同じ実行で作�
 ## 最初の試験
 
 1. 同じ成果物内の`article-tool-debug.apk`、`automation-debug.apk`、`shell-debug.apk`を導入する。端末が求めるアプリ導入の確認は利用者が行う。
-2. avocadoOS Shellを開き、個人情報のない短い合成原稿と条件を入力し、保存・実行への同意を確認する。ShellにINTERNET権限と`MANAGE_PLATFORM`権限がなく、専用BinderでBrokerへ接続することを確認する。
+2. RockstarOS Shellを開き、個人情報のない短い合成原稿と条件を入力し、保存・実行への同意を確認する。ShellにINTERNET権限と`MANAGE_PLATFORM`権限がなく、専用BinderでBrokerへ接続することを確認する。
 3. 充電中に2工程を実行し、確認待ちになった結果を表示する。元の入力と出典整理・無料版の結果を照合する。
 4. 全停止／再開、再起動後の結果保持を確認し、OS版・期待値・実際の結果を記録する。
 

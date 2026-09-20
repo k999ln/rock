@@ -1,6 +1,6 @@
 {
   "schema": "dev.rock-device-emergency-access/1",
-  "product": "avocadoOS",
+  "product": "RockstarOS",
   "status": "dock_agent_source_emulator_test_signed_physical_and_overlay_stager_verified_production_enrollment_pending",
   "purpose": "allow_a_single_authorized_operator_to_protect_and_recover_an_enrolled_device_during_an_incident",
   "activation": {
