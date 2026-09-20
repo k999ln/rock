@@ -246,9 +246,10 @@ body{overflow-x:hidden}
 .sensor-gaze-upper{top:var(--gaze-upper-y,25%);width:min(76vw,1050px);aspect-ratio:1}
 .sensor-gaze-lower{top:var(--gaze-lower-y,70%);width:min(42vw,560px);aspect-ratio:1;opacity:.68}
 .feature-beats{z-index:4}
+.feature-beat[data-beat="sensor"]{text-shadow:0 2px 18px #071521b8}
 .story-rail,.story-foot{z-index:5}
 .price-panel{z-index:6}
-@media(max-width:800px){.sensor-gaze{background:radial-gradient(ellipse 120vw 55vh at var(--gaze-x,55%) var(--gaze-upper-y,40%),#dcfaff91 0%,#83dcff66 25%,transparent 75%)}.sensor-gaze-upper{width:110vw}.sensor-gaze-lower{width:75vw}}
+@media(max-width:800px){.sensor-gaze{background:radial-gradient(ellipse 120vw 55vh at var(--gaze-x,55%) var(--gaze-upper-y,40%),#dcfaff91 0%,#83dcff66 25%,transparent 75%)}.sensor-gaze-upper{width:110vw}.sensor-gaze-lower{width:75vw}.feature-beat[data-beat="sensor"] .feature-description{max-width:350px}}
 @media(prefers-reduced-motion:reduce){.sensor-gaze{display:none}}
 
 /* One clear OS installation destination after the product and price. */
