@@ -1,6 +1,144 @@
-# RockstarOS — 自動化を接続・実行・管理するOS
+# RockstarOS — AIと人の可能性をひらくOS
 
-RockstarOSは、交換可能な高性能ローカルLLMとoffline agent runtimeを中核にするAIネイティブOSとして開発しています。SkyとZemaを最初の第一者systemとし、仕事・生活を便利にする自動化、Wallet／ファンド、ゲーム、IP／動画に加え、物質・配合・工程条件から検証可能な発明候補を作るMaterial Invention Coreを共通基盤へ接続します。その標準製品体験が、四方向sensorとhand interactionで物質digital twinを操作し、再計算とPatent AI支援へつなぐRockstarOS端末`avocadoMini`です。OSから全Tool、avocadoMiniまでの設計は[RockstarOS全設計ポータル](docs/rockstaros-design-portal.md)を唯一の入口にします。そこから[OS全体詳細設計](docs/rockstaros-complete-design.md)、[Sky／Zema／全Tool詳細設計](docs/sky-tools-complete-design.md)、[空間発明システム設計](docs/rockstaros-avocado-mini-complete-design.md)へ進めます。製品要望の正本は[製品ベース](docs/product-baseline.md)のRQ01〜RQ49、全層の未接続点は[全体構成監査](docs/system-composition.md)、進捗の正本は[data/project-status.json](data/project-status.json)です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`RockstarOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
+RockstarOSは、**AIをスタイリッシュでスムーズに使えるOS、アプリ、ハードウェアをつくる会社**です。交換可能な既存LLMと、将来の自社LLMを同じ製品基盤で使えるようにします。まず搭載できるモデルで利用体験を動かし、自社LLMが用意できた時点で追加します。
+
+製品と事業の関係は[製品・サービス・システム関係図](docs/rockstaros-product-system-map.md)にまとめています。OSから全Tool、avocadoMiniまでの設計入口は[RockstarOS全設計ポータル](docs/rockstaros-design-portal.md)です。field単位の契約は[OS全体詳細設計](docs/rockstaros-complete-design.md)、[Sky／Zema／全Tool詳細設計](docs/sky-tools-complete-design.md)、[空間発明システム設計](docs/rockstaros-avocado-mini-complete-design.md)を参照してください。製品要望の正本は[製品ベース](docs/product-baseline.md)のRQ01〜RQ49、進捗の正本は[data/project-status.json](data/project-status.json)です。現在版は`RockstarOS 1.0 Developer Preview`です。
+
+## 会社と事業
+
+### パーパス
+
+**AIの力を、誰もが自然に使える形にする。** 人が主役のまま、仕事、創作、発明へ進める製品をつくります。
+
+### ブランドの約束
+
+**AIを使うことが、もっと自然に、もっと自分らしく、もっとかっこよくなる。**
+
+RockstarOSが届けたいのは、AIと一緒に新しいことを始めたくなる体験です。利用者が最初の一歩を軽く踏み出し、自分のやり方で使い続け、成果を次の挑戦へつなげられるブランドを目指します。設定、権限、状態、復旧の機能は、その体験を支える裏側として働きます。
+
+共鳴してほしいのは、AIを使って自分の時間を取り戻したい人、つくることを続けたい人、まだ名前のないアイデアを試したい人です。内部の権限、状態、収益、復旧の仕組みは、その体験を安心して続けるための裏側として働きます。
+
+ブランドが届いたかは、機能数ではなく、初めて触った人がすぐに一歩進めるか、もう一度使いたくなるか、自分の作品や仕事を誰かに見せたくなるかで確かめます。
+
+### 何に共鳴してもらう会社か
+
+RockstarOSは、利用者が自分に合うLLMとAI Toolを選び、AIと一緒に仕事や創作を進められる製品基盤です。事業は次の四層で構成します。
+
+| 層 | 提供するもの | 主な利用者 |
+| --- | --- | --- |
+| OS | RockstarOS、LLM切替、Agent、権限、保存、復旧 | AIを日常で使う人、開発者 |
+| App | Home、Sky、Zema、Wallet、Market、Material Invention Studio | 個人、クリエイター、事業者、研究者 |
+| Hardware | Pixel 10を最初のreference端末、avocadoMiniを空間発明端末 | 開発者、発明・研究チーム |
+| Service | Tool配布、モデル更新、同期・復旧、収益照合、SDK・サポート | 利用者、Tool開発者、ToB |
+
+### 価値と収益の考え方
+
+- 利用者の価値は、減った手間、完了した仕事、再利用できる成果、本人が選べる行動の増加で測る。
+- Toolの完了と売上を混同せず、Providerが確認した入金だけをWalletの収益にする。
+- 現行のSky利用料は、確認済み自動化収益から直接実費を差し引いた残額に対する月最大8.88 USD。収益0なら利用料0。ToBの登録・接続・掲載・Sky売上手数料は0円方針。
+- 月50万円規模の検証済み運用収益は長期の到達仮説であり、現時点の実績や利用者への収入保証ではない。
+
+### 全体の関係
+
+```mermaid
+flowchart TB
+  USER[利用者]
+  OS[RockstarOS\nOS]
+  CORE[Platform Core / Broker\n権限・仕事・receipt・保存]
+  HOME[Home]
+  SKY[Sky\nAI仲間を見つける]
+  ZEMA[Zema\nAIと一緒に進む]
+  WALLET[Wallet\n費用・確認済み収益]
+  MODEL[LLM\n既存モデル / 自社LLM]
+  TOOLS[AI Tool / MCP / Provider]
+  MR[avocadoMini\nMR / AR / VR / 2D]
+  MATERIAL[Material Invention Core]
+  USER --> OS
+  OS --> HOME
+  OS --> CORE
+  HOME --> SKY & ZEMA & WALLET
+  SKY --> TOOLS
+  ZEMA --> MODEL
+  MODEL --> CORE
+  TOOLS --> CORE
+  CORE --> WALLET
+  MR --> MATERIAL
+  MATERIAL --> CORE
+```
+
+この図の詳しい境界、`Mr.` 由来Toolの取り込み、MR（Mixed Reality）経路、実行シーケンスは[関係図の正本補助設計](docs/rockstaros-product-system-map.md)を参照してください。
+
+## 製品体系
+
+### RockstarOS — AIを使う共通の土台
+
+LLM、Agent、仕事、Tool、権限、承認、保存、更新、復旧を一つの契約でつなぐOSです。LLMは交換可能にし、LLM自身に権限付与やWallet台帳書込みをさせません。
+
+### Home — ブランドの入口
+
+利用者が最初にRockstarOSの世界へ入る画面です。Sky、Zema、Wallet、Market、Settings、Material Inventionへの入口を持ち、今日やりたいことがすぐ見つかる構成にします。Homeは各機能の正本を持たず、Platform Coreへ安全に導きます。
+
+### Sky — 自分に合うAI仲間を見つける場所
+
+仕事や創作を一緒に進めるAI Toolを見つける場所です。Toolの個性、作者、できること、料金、実行先を自然に知り、気に入ったToolをZemaへ迎え入れます。MCP接続、Connection Passport、Toolの停止・失効は体験を守る裏側でSkyに集約します。
+
+### Zema — AIと一緒に進む場所
+
+やりたいことを伝え、AIの提案を見て、必要なときだけ方向を決めながら進む場所です。依頼、計画、実行、停止、再開、成果確認を一つの流れにし、AIに任せる部分と自分で決める部分を自然に分けます。
+
+### Wallet / Market — 挑戦を続けるための場所
+
+Walletは費用、確定収益、払出し、未確定状態を分けて表示し、安心して次の挑戦へ進めるようにします。Market / Fundは現在PAPER限定で、LIVE注文・清算・自動再投資は有効にしません。
+
+### Material Invention Studio — 発明案を扱うアプリ
+
+物質のデジタル模型を接続・分離し、候補branch、制約、安全状態、simulation結果、発明過程を記録します。MR表示は物理実験を実行せず、Patent AIは特許性・発明者・出願を自動確定しません。
+
+### Hardware — OSを使う端末
+
+| Hardware | 役割 | 現在地 |
+| --- | --- | --- |
+| Pixel 10 / `frankel` | RockstarOSのreference hardware。Android Broker、Shell、Local AI、backup、Toolを実機検証する | source / APK / pre-full gate。full build、flash、CTS/VTS、OTA、純正復旧は未完了 |
+| Linux / QEMU | native OS契約、更新、rollback、Wallet / Game fixtureを検証する | Developer Preview候補 |
+| avocadoMini | 四方向sensorでMR / AR / VR / 2DのMaterial Inventionを操作する専用端末 | 設計 / Bench試作前。XR runtime、実機、物理設備は未接続 |
+
+avocadoMiniはRockstarOSそのものではなく、RockstarOSを搭載してMaterial Invention Studioを操作する専用デバイスです。
+
+## 現在開発・統合しているTool
+
+Skyのカタログ上のready 11件とcandidate 13件を、同じTool契約で管理しています。readyはカタログ上の実装・接続状態であり、本番Provider接続や実収益を意味しません。
+
+### Ready Tool（11件）
+
+| ID | 役割 | 実行場所 |
+| --- | --- | --- |
+| `rockstar-csv-cleanup` | CSV整形・検査・納品 | Sky Cloud / Web |
+| `rockstar-markets-analysis` | Market分析・PAPER記録 | Web / offline backtest |
+| `mercari-revenue` | メルカリ販売支援 | Web / 将来Connector |
+| `fashion-brand-ops` | Instagram運用・受注型ブランド管理 | PC MCP |
+| `coconala` | ココナラ案件チェック | Web |
+| `mr-free-article` | 記事の無料版作成 | Web |
+| `mr-citations` | 出典整理 | Web / PC |
+| `mr-delivery` | 納品記録の照合 | PC |
+| `rockstar-ledger` | サブスク顧問・台帳確認 | PC MCP |
+| `rockstar-legal-intake` | 法務受付・整理 | Web / 任意AI |
+| `rockstar-patent-assistant` | 特許資料の下書き支援 | Web / 任意AI |
+
+### 導入・研究中のTool（13件）
+
+`faster-whisper`（文字起こし）、`transformers-js`（ブラウザAI）、`playwright`（許可Web操作）、`jev-ultrafast`（選択型browser agent）、`openjev`（typed decision）、`jevlike`（判断model研究）、`jev-trader`（PAPER市場判断）、`awesome-jev-by-typesafe`（Jev reference）、`typesafe-computer-use`（Mac画面操作）、`jev-review`（code review）、`jev-router`（model routing）、`jev-browser`（browser操作）、`mobile-jev`（Android操作）です。candidate Toolは未接続・研究中を含み、LIVE実行や個人端末での無制限操作を許可しません。
+
+### RockstarOS側で開発している共通システム
+
+- **LLM Runtime / Decision Fabric**: 既存LLM、自社LLM、Local Qwen、Cloud LLMを交換可能に接続する。
+- **Agent Runtime**: planを検証し、有限step、停止、再開、retry、結果不明を管理する。
+- **Platform Core / Broker**: owner、component、capability、approval、work、receipt、保存を管理する。
+- **Sky MCP Connector**: 本人PC、Sky Cloud、Provider MCPをConnection Passportで接続する。
+- **Wallet / Settlement**: Provider receipt、実費、Sky fee、払出し指図を照合する。
+- **Material Invention Core**: 物質候補、危険情報、simulation、発明イベントを保存する。
+- **Operator / Recovery**: 緊急保護、backup、更新、rollback、復旧を安全境界内で行う。
+
+Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設計](docs/sky-tools-complete-design.md)、製品間の関係は[製品・サービス・システム関係図](docs/rockstaros-product-system-map.md)を正本として更新します。
 
 ## 現在地
 
@@ -208,7 +346,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | MAT01 | RQ49 Material Invention Coreのentity・発明loop・安全境界を設計へ固定 | 完了 | [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/material-invention-core.md) |
 | MAT02 | 二物質・複数比率・工程条件のsandbox候補graphとfail-closed安全検査を実装 | 完了 | [記録](contracts/material-invention.json) · [記録](contracts/material-invention-fixture.json) · [記録](lib/material-invention.ts) · [記録](tests/material-invention.test.mjs) · [記録](docs/material-invention-core.md) · [記録](docs/validation.md) |
 | MAT03 | Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入 | 未着手 | [記録](docs/material-invention-core.md) |
-| MAT04 | Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent AI設計を固定 | 完了 | [記録](docs/material-invention-xr.md) · [記録](docs/avocado-mini-spatial-invention.md) · [記録](docs/assets/rockstaros-spatial-table-v1.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](data/material-invention-xr-policy.json) · [記録](contracts/material-invention-xr.json) · [記録](contracts/avocado-mini-spatial-interaction.json) |
+| MAT04 | Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent AI設計を固定 | 完了 | [記録](docs/material-invention-xr.md) · [記録](docs/avocado-mini-spatial-invention.md) · [記録](docs/avocado-mini-hardware-design.md) · [記録](docs/assets/rockstaros-spatial-table-v1.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](docs/assets/avocado-mini-hardware-00-overview.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-exploded.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-exploded.png) · [記録](docs/assets/avocado-mini-hardware-03-power-control-haptic.png) · [記録](docs/assets/avocado-mini-hardware-00-overview-v2.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-exploded-v2.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-exploded-v2.png) · [記録](docs/assets/avocado-mini-hardware-03-power-control-haptic-v2.png) · [記録](docs/assets/avocado-mini-hardware-00-overview-v3-silver-tube.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-v3-silver-tube.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-v3-silver-tube.png) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-v4-thin-tube.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-v4-thin-tube.png) · [記録](data/material-invention-xr-policy.json) · [記録](contracts/material-invention-xr.json) · [記録](contracts/avocado-mini-spatial-interaction.json) |
 | MAT05 | Core graphから決定的XR sceneを生成し、四方向pose fixtureのconnect／separate／stale拒否を実装 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT06 | avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT07 | 誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化 | 完了 | [記録](docs/rockstaros-avocado-mini-complete-design.md) · [記録](docs/workstreams/11-material-invention-avocado-mini.md) · [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/rockstaros-1.0-architecture.md) |

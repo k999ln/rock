@@ -15,7 +15,7 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - `MAT01`: Core entity、発明loop、安全境界の設計完了。
 - `MAT02`: 二物質・複数比率のsandbox Coreと9 testを実装済み。
 - `MAT03`: Zema、限定記憶、simulation、外部lab接続は未着手。
-- `MAT04`: avocadoMini、XR、四方向sensor、hand interaction、Patent AI統合設計に加え、Bench／ビリヤード台規模Full-scaleの寸法budgetとconcept画像まで完了。
+- `MAT04`: avocadoMini、XR、四方向sensor、hand interaction、Patent AI統合設計に加え、Bench／ビリヤード台規模Full-scaleの寸法budget、concept画像、機構・光学・電気・演算・安全・校正・HVTのhardware詳細設計まで完了。
 - `MAT05`: 決定的scene projectionと合成pose interactionは未着手。
 - `MAT06`: 四方向Bench／Full-scale実機prototype、simulation／Patent AI bridgeは未着手。
 
@@ -85,6 +85,7 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - [Material Invention Core](../material-invention-core.md)
 - [Spatial Invention Studio](../material-invention-xr.md)
 - [avocadoMini端末設計](../avocado-mini-spatial-invention.md)
+- [avocadoMiniハードウェア詳細設計](../avocado-mini-hardware-design.md)
 - [Patent AI](../sky-patent-assistant-20260912.md)
 - [製品ベース](../product-baseline.md)
 - [全体構成](../system-composition.md)

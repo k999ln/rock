@@ -4,6 +4,7 @@
   "updatedAt": "2026-09-21",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
+    "docs/rockstaros-product-system-map.md",
     "docs/rockstaros-complete-design.md",
     "docs/sky-tools-complete-design.md",
     "docs/rockstaros-avocado-mini-complete-design.md",
@@ -38,6 +39,11 @@
         "docs/ai-native-os-architecture.md",
         "docs/rockstaros-1.0-architecture.md"
       ]
+    },
+    {
+      "id": "product_service_system_relations",
+      "coverage": "DETAILED_WITH_OPEN_DECISIONS",
+      "documents": ["docs/rockstaros-product-system-map.md"]
     },
     {
       "id": "platform_core_and_jobs",
@@ -146,7 +152,8 @@
         "docs/rockstaros-avocado-mini-complete-design.md",
         "docs/material-invention-core.md",
         "docs/material-invention-xr.md",
-        "docs/avocado-mini-spatial-invention.md"
+        "docs/avocado-mini-spatial-invention.md",
+        "docs/avocado-mini-hardware-design.md"
       ]
     },
     {
