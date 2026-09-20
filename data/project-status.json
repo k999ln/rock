@@ -749,7 +749,10 @@
         "components/avocado-turntable.tsx",
         "components/avocado-turntable.module.css",
         "README.md",
-        "docs/workstreams/05-web-pwa-sites.md"
+        "docs/workstreams/05-web-pwa-sites.md",
+        "sites/avocado-mini/src/style.css",
+        "sites/avocado-mini/src/main.js",
+        "project.md"
       ]
     },
     {

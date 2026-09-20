@@ -190,7 +190,8 @@ export function AvocadoTurntable() {
         <div className={styles.heading}>
           <p className={styles.eyebrow}>AVOCADOMINI / FULL SCALE CONCEPT</p>
           <h1 id="avocado-mini-title">avocadoMini</h1>
-          <p>伸びる。見つめる。ひらめく。<br />伸縮式センサータワーの全周を、スクロールで。</p>
+          <p className={styles.heroLine}>空間を変える。<br />作業が、変わる。</p>
+          <p className={styles.heroDescription}>伸縮式センサータワーを、スクロールで一周。<br />高性能LLM搭載のRockstarOSが、作業をスムーズにする構想です。</p>
         </div>
         <div className={styles.viewport} ref={viewportRef}>
           <canvas ref={canvasRef} aria-hidden="true" className={fallback ? styles.hiddenCanvas : undefined} />
@@ -227,6 +228,17 @@ export function AvocadoTurntable() {
         <Image src="/rockstaros/avocado-mini-tower-concept.png" alt="avocadoMiniの伸縮式センサータワー、ボタン、内部構造を示す構想参考画像" width={1672} height={941} loading="lazy" />
         <figcaption>構想参考画像。回転表示は設計イメージで、製造図や実機映像ではありません。</figcaption>
       </figure>
+    </section>
+    <section className={styles.experience} aria-labelledby="experience-title">
+      <p className={styles.eyebrow}>02 / THE EXPERIENCE</p>
+      <h2 id="experience-title">使う場所に、<br />知性が立ち上がる。</h2>
+      <p>必要なときだけ伸びるタワーと、作業を支えるRockstarOS。製品とOSを一つの体験として設計しています。</p>
+      <div className={styles.experienceGrid}>
+        <div><span>01</span><strong>触れて、伸ばす。</strong><p>ベースのボタンを長押し。850mmの収納状態から、最大1,800mmへ伸長する操作構想です。</p></div>
+        <div><span>02</span><strong>作業に集中する。</strong><p>高性能LLMとSkyのツールが、調べる、整理する、進めるための流れを支えます。</p></div>
+        <div><span>03</span><strong>終われば、収める。</strong><p>使わないときはタワーを縮め、空間を取り戻します。</p></div>
+      </div>
+      <small>このセクションは製品構想です。実機性能や一般向け提供を確約するものではありません。</small>
     </section>
     <section className={styles.osSection} aria-labelledby="os-install-title">
       <div>
