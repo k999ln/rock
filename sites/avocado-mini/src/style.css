@@ -183,3 +183,31 @@ body{overflow-x:hidden}
   .price-panel{left:22px;right:22px;top:115px;bottom:auto;padding:22px}
 }
 @media(prefers-reduced-motion:reduce){.story-rail span{transition:none}}
+
+/* Product concept imagery: front, side and rear frames share one scroll-driven stage. */
+.motion-product{position:absolute;left:50%;top:55%;width:min(48vw,600px);height:min(72svh,760px);transform:translate(-50%,-50%);transform-origin:50% 75%;will-change:transform;--camera-on:0;--scan-opacity:0;--scan-angle:-80deg}
+.turn-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;filter:brightness(calc(.69 + var(--camera-on) * .31)) drop-shadow(0 20px 38px #000b);will-change:opacity}
+.turn-frame[data-view="front"]{opacity:1}
+.turn-frame-mirror{transform:scaleX(-1)}
+.camera-sweep{position:absolute;z-index:0;left:50%;top:9%;width:150%;height:76%;transform:translateX(-50%) rotate(var(--scan-angle));transform-origin:50% 5%;opacity:var(--scan-opacity);background:conic-gradient(from 153deg at 50% 0%,transparent 0deg,#39b9ff07 9deg,#4bc7ff35 24deg,#a5eaff75 25deg,#4bc7ff35 26deg,#39b9ff07 43deg,transparent 52deg);filter:blur(5px);mix-blend-mode:screen;pointer-events:none}
+.camera-flare{position:absolute;z-index:2;left:50%;width:160px;height:100px;transform:translate(-50%,-50%);border-radius:50%;opacity:var(--camera-on);background:radial-gradient(ellipse,#dcfaffc4 0%,#35c8ff91 12%,#0ea6ff40 36%,transparent 70%);filter:blur(6px);mix-blend-mode:screen;pointer-events:none}
+.camera-flare-upper{top:10%}
+.camera-flare-lower{top:73%;width:200px;height:110px;opacity:calc(var(--camera-on) * .75)}
+.sensor-closeup{position:absolute;z-index:3;right:clamp(48px,8vw,135px);bottom:clamp(76px,11vh,130px);width:clamp(170px,19vw,285px);padding:10px 10px 14px;border:1px solid #9ce4ff39;border-radius:18px;background:#09141cdd;box-shadow:0 18px 70px #0009;backdrop-filter:blur(18px);pointer-events:none;opacity:0}
+.sensor-closeup img{display:block;width:100%;height:150px;object-fit:cover;object-position:50% 21%;border-radius:11px;background:#10171d}
+.sensor-closeup span{display:flex;justify-content:space-between;align-items:center;margin:11px 6px 0;font-size:9px;font-weight:700;letter-spacing:.11em;color:#d9f3ff;white-space:nowrap}
+.sensor-closeup i{width:6px;height:6px;border-radius:50%;background:#4ad6ff;box-shadow:0 0 12px #53dfff}
+.activation-section{position:relative;min-height:100svh;background:#050b11;color:#f5f9fc;isolation:isolate;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:100px 24px}
+.activation-image{position:absolute;z-index:-1;inset:0;background:url('/images/motion-tower-four-point-dual-sensor-concept.png') center / cover no-repeat;animation:activation-breathe 8s ease-in-out infinite alternate}
+.activation-section:after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,#03090e44,#03090e88 28%,#03090eb0 50%,#03090e88 72%,#03090e44)}
+.activation-copy{width:min(470px,100%);padding:35px 38px;border:1px solid #d4ebf12b;border-radius:24px;background:#071018b5;backdrop-filter:blur(18px);box-shadow:0 25px 85px #0007}
+.activation-copy .eyebrow{color:#7cddff}
+.activation-copy h2{font-size:clamp(42px,4vw,65px);line-height:1.13;letter-spacing:-.075em;margin:14px 0 28px}
+.activation-copy ol{list-style:none;margin:0;padding:0}
+.activation-copy li{border-top:1px solid #b5d5e731;padding:15px 0;color:#e2edf2;font-size:14px;line-height:1.5}
+.activation-copy li span{display:block;margin-bottom:5px;font-size:10px;letter-spacing:.16em;font-weight:700;color:#77d9f7}
+.activation-copy .fine{color:#a9c2cd!important;margin:20px 0 0}
+@keyframes activation-breathe{from{transform:scale(1);filter:brightness(.8)}to{transform:scale(1.035);filter:brightness(1.1)}}
+@media(max-width:800px){.motion-product{top:61%;width:min(80vw,560px);height:73svh}.sensor-closeup{right:46px;bottom:75px;width:170px}.sensor-closeup img{height:105px}.sensor-closeup span{font-size:7px}.activation-section{align-items:flex-end;padding:45vh 22px 45px}.activation-image{background-position:center top;background-size:auto 68%;background-color:#050b11;animation:none}.activation-section:after{background:linear-gradient(to bottom,transparent 0%,#050b11aa 37%,#050b11 70%)}.activation-copy{padding:26px 24px;width:min(520px,100%)}}
+@media(max-width:520px){.motion-product{top:65%;width:100vw;height:64svh}.camera-flare{width:120px}.camera-flare-lower{width:145px}.sensor-closeup{display:none}.activation-copy h2{font-size:40px}.activation-copy li{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.activation-image{animation:none}.motion-product,.turn-frame{will-change:auto}}
