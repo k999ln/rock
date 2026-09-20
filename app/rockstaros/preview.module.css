@@ -281,6 +281,87 @@
   line-height: 1.5 !important;
 }
 
+.productPrice {
+  display: flex;
+  margin: 28px 0 0;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+
+.productPrice strong {
+  color: var(--acid);
+  font-size: clamp(2rem, 3.4vw, 3rem);
+  line-height: 1;
+}
+
+.productPrice span {
+  color: #b8bab4;
+  font-size: 0.86rem;
+}
+
+.campaignReturn {
+  display: inline-flex;
+  margin-top: 24px;
+  color: var(--acid);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.campaignIntro,
+.campaignSteps {
+  width: min(100% - 48px, 1120px);
+  margin: 0 auto;
+  padding: 90px 0;
+}
+
+.campaignIntro h1 {
+  margin: 0 0 28px;
+  font-size: clamp(3rem, 8vw, 7rem);
+  line-height: 1.04;
+  letter-spacing: -0.065em;
+}
+
+.campaignIntro > p:not(.kicker),
+.campaignSteps > p:not(.kicker) {
+  max-width: 720px;
+  color: #d4d5cf;
+  line-height: 1.8;
+}
+
+.campaignPrice {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+
+.campaignPrice strong {
+  color: var(--acid);
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.campaignNotice {
+  padding: 18px 22px;
+  border: 1px solid #c8ff2e77;
+  border-radius: 12px;
+}
+
+.campaignSteps {
+  border-top: 1px solid #ffffff20;
+}
+
+.campaignSteps h2 {
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  letter-spacing: -0.045em;
+}
+
+.campaignSteps li {
+  padding: 8px 0;
+  line-height: 1.8;
+}
+
 .productCopy .productStatus {
   margin-top: 30px;
   padding-left: 16px;

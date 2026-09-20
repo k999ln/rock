@@ -1,5 +1,5 @@
 {
-  "version": "1.86",
+  "version": "1.87",
   "decidedAt": "2026-09-19",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -46,6 +46,26 @@
   "marketPositioning": {
     "customerFacingFocus": "hardware_products",
     "leadHardwareConcept": "avocadoMini",
+    "brandLine": "考える時間を、つくる時間に。",
+    "avocadoMiniDesiredReferencePriceJpy": 410000,
+    "referencePriceStatus": "aspirational_hardware_reference_not_sale_or_preorder_price",
+    "highPerformanceLlmOs": "product_goal_not_current_production_capability",
+    "customerEntrySurfaces": [
+      {
+        "kind": "product_and_install_homepage",
+        "route": "/rockstaros",
+        "crowdfundingProposalRoute": "/rockstaros/crowdfunding"
+      },
+      {
+        "kind": "web_application_with_sky_and_other_services",
+        "route": "/"
+      },
+      {
+        "kind": "operating_system_distribution",
+        "guideRoute": "/rockstaros/guide",
+        "stage": "developer_preview_no_general_smartphone_os_distribution"
+      }
+    ],
     "customerFacingPromise": "start_from_the_persons_goal_find_useful_ai_roles_and_help_turn_ideas_into_results",
     "messageOrder": [
       "what_the_person_wants_to_do",

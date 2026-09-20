@@ -694,6 +694,7 @@
       "evidence": [
         "README.md",
         "docs/avocado-mini-crowdfunding.md",
+        "app/rockstaros/crowdfunding/page.tsx",
         "docs/workstreams/05-web-pwa-sites.md"
       ]
     },

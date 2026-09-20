@@ -6,6 +6,16 @@
 
 対外的な製品紹介ではavocadoMiniを主役にし、RockstarOSとLLMを製品を動かす技術基盤として示す。avocadoMiniは設計段階で、実機試作と販売は未実施である。
 
+利用者への入口は、製品紹介とOS導入を兼ねるホームページ、Webアプリ、OS本体の三つ。SkyなどはアプリとOSの中で使うサービスであり、独立した最上位製品入口として並べない。
+
+| 入口 | 現在のURL・状態 | 内側にあるもの |
+| --- | --- | --- |
+| 製品・導入ホームページ | `/rockstaros`。avocadoMiniとRockstarOSの紹介、OS導入案内への導線 | 製品構想、対応環境、導入情報 |
+| Webアプリ | `/`。本人限定Siteで作業画面を提供中、一般公開と最新版同期は未反映 | App Home、Sky、Zema、Wallet、Studioなど |
+| OS本体 | `/rockstaros/guide`でDeveloper Previewの導入条件を案内。完成スマートフォンOSは未配布 | App Homeと同じ役割のサービスをOS契約で接続する計画 |
+
+avocadoMiniは「考える時間を、つくる時間に」を製品メッセージとし、希望参考価格41万円のハードウェア構想。高性能LLMを搭載するRockstarOSは製品目標で、現行の実機検証は固定モデルのDeveloper Preview段階である。41万円は確定販売価格でもOS従量料金でもない。
+
 この文書を読めば、次の三つを混同しない。
 
 - RockstarOSは、AIを使うためのOSと共通基盤。

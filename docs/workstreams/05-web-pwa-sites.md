@@ -7,10 +7,11 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 ## 現在地
 
 - `/rockstaros`はavocadoMiniの製品構想を先に紹介し、OS Developer PreviewとSky開発者入口へ続く。Home `/` はOSの作業画面として維持する。
+- `/rockstaros`を製品紹介とOS導入を兼ねるホームページ、`/`をWebアプリのHome、OS本体を別の配布対象として案内する。Sky、Zema、StudioなどはアプリとOS内のサービスとして表示する。希望参考価格41万円と高性能LLM搭載目標は、確定販売価格や現行実装の完成表示と区別する。
 - 製品紹介は利用者の「やってみたい」から入り、Sky／Zema／Studioで得られる役割と体験を明示する。料金方針は販売文句の先頭に置かない。
 - GitHub READMEの冒頭にはSky／Zema／Studioと設計中のavocadoMiniを示すアニメーションGIFを表示する。
 - 製品体系の各説明にも、avocadoMini、RockstarOS、Sky、Zema、Studioの短いループGIFを配置する。README上の表現であり、既存Siteの公開設定や配信版は変わらない。
-- GitHubの冒頭はavocadoMiniの外観・利用場面の構想画像から始め、製品別GIFとクラファン企画案へ続ける。構想画像は実機写真として扱わない。クラファンの募集ページは未開設で、企画案から決済はできない。
+- GitHubの冒頭はavocadoMiniの外観・利用場面の構想画像から始め、製品別GIFとクラファン企画案へ続ける。製品サイトには`/rockstaros/crowdfunding`の企画ページを用意したが、既存Siteへの配備は未確認。構想画像は実機写真として扱わず、募集ページは未開設で企画案から決済はできない。
 - Screwは独立した`k999ln/screw`リポジトリで案内し、RockのREADMEからそこへリンクする。NoelleのPRIVATE/PIXEL公開導入ページへ進めるが、非公開・再配布禁止の実装やGrapheneOSイメージは取り込まない。公開ページへの到達だけ確認済みで、実機導入は未試験。
 - 主要画面、PWA manifest、Service Worker、明示更新、security header、D1 APIを実装済み。
 - 既存Siteは現在も本人限定。利用者は同じURLでの一般公開を明示したが、対象Sites所有アカウントが現在の接続から見つからず、公開設定と最新版sourceの反映、ログイン後の実操作確認が残る。

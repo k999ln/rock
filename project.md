@@ -1,5 +1,13 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-19 — 三つの製品入口とavocadoMiniの参考価格を明示
+
+利用者は、製品紹介とOS導入を兼ねるホームページ、アプリ、OS本体を最上位の入口とし、Skyなどをアプリ／OS内のサービスと位置付けた。製品ページとGitHub READMEの案内順、製品関係図、ベースラインへ反映した。既存ルートは製品・導入ホーム`/rockstaros`、WebアプリHome`/`、OS Developer Preview導入案内`/rockstaros/guide`。配信先の一般公開と最新版配備は未実施。
+
+avocadoMiniの製品メッセージを「考える時間を、つくる時間に」とし、希望参考価格41万円を表示。高性能LLM搭載RockstarOSによるスムーズな作業は製品目標として記載し、現行の固定モデル実機Previewと区別した。41万円はハードウェアの目安で、確定販売価格、予約金額、OS従量料金ではない。原価、実機性能、販売条件は試作後に検証する。製品サイトに`/rockstaros/crowdfunding`の募集前企画ページを追加し、製品ページから進めるようにした。支援募集・決済の機能はない。
+
+`project:check`、`baseline:check`、`design:check`、型、製品lint、Web build、両ページのローカルHTTP 200と画面表示は合格。`npm run verify`は既存の全Nodeテストで進まなくなり中断したため全体PASSとは扱わない。Sites一覧では配信先`rockstaros-kaiya.noellesugar1.chatgpt.site`のprojectが現在の接続アカウントに見つからず、既存URLの最新版配備と公開変更は未実施。次にGitHub main反映と同一SHAのCIを確認する。
+
 ## 2026-09-19 — Screw導線とクラファン企画案を追加
 
 Noelleの非公開リポジトリ`PRIVATE/PIXEL`がGrapheneOS導入システムの出所であると確認した。ライセンスが再配布を禁止しているためソースやインストーラーは複製せず、`k999ln/screw`を独立リポジトリとして作成した。Rockには独自GIFと別リポジトリへのリンクを置いた。Noelleの公開導入ページとガイドはHTTP 200を確認した。実機での導入は未試験。
@@ -751,7 +759,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | WEB08 | NoelleのGrapheneOS導入案内をScrew独立リポジトリで示し、Rockからつなぐ | 完了 | [記録](README.md) · [記録](docs/assets/cover-screw.gif) · [記録](docs/workstreams/05-web-pwa-sites.md) |
-| WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

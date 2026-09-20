@@ -23,9 +23,9 @@ sky.tool({
 await sky.start({ port: 8787 });`;
 
 export const metadata: Metadata = {
-  title: 'RockstarOS — あなたの「やってみたい」を、形にする',
+  title: 'avocadoMini / RockstarOS — 考える時間を、つくる時間に',
   description:
-    'Skyで役立つAIを見つけ、Zemaで一緒に進める。avocadoMiniは発明のアイデアを手で考えるためのハードウェア構想です。',
+    'avocadoMiniは希望参考価格41万円のハードウェア構想。高性能LLMを搭載するRockstarOSを目指し、仕事と発明の作業をスムーズにします。現在は設計段階です。',
 };
 
 export default function RockstarPreview() {
@@ -46,7 +46,7 @@ export default function RockstarPreview() {
           <br />
           In your hands.
         </h1>
-        <p className={styles.heroJa}>あなたの「やってみたい」に、役立つAIと道具を。発明のアイデアを手で考えるavocadoMiniから始めます。</p>
+        <p className={styles.heroJa}>考える時間を、つくる時間に。avocadoMiniと高性能LLM搭載を目指すRockstarOSで、仕事と発明の作業をスムーズに。</p>
         <a className={styles.installButton} href="#avocado-mini">
           <span>avocadoMiniを見る</span>
           <span aria-hidden="true">↗</span>
@@ -56,16 +56,17 @@ export default function RockstarPreview() {
         </p>
       </section>
 
-      <nav className={styles.access} aria-label="サービスとアプリへの入口">
-        <h2>あなたのやりたいことから、役割を見つける。</h2>
-        <p>AIに何を任せ、どこを自分で決めるか。使い方に合わせて選べます。</p>
+      <nav className={styles.access} aria-label="製品ホーム、アプリ、OS本体への入口">
+        <h2>入口は、ホームページ・アプリ・OS本体。</h2>
+        <p>このページで製品を知り、OSの導入方法を確認できます。アプリやOSの中で、Skyなどのサービスを使います。</p>
         <div className={styles.accessCards}>
-          <Link href="/sky"><strong>合うAIを探す</strong><span>SkyでToolの役割を見比べる。</span></Link>
-          <Link href="/chat"><strong>一緒に進める</strong><span>Zemaで頼み、途中を確認し、結果を受け取る。</span></Link>
-          <Link href="/studio"><strong>アイデアを試す</strong><span>Studioで発明候補を組み合わせ、比べる。</span></Link>
+          <a href="#avocado-mini"><strong>ホームページ</strong><span>製品紹介とOS導入の入口。avocadoMiniとRockstarOSの現在地を見る。</span></a>
+          <Link href="/"><strong>アプリを開く</strong><span>Web版の作業画面。Sky、Zema、Studioなどをここから使う。</span></Link>
+          <Link href="/rockstaros/guide"><strong>OS本体・導入案内</strong><span>Developer Previewの対応環境、導入手順、配布状況を確認する。</span></Link>
         </div>
+        <p>アプリ内のサービス</p>
         <div className={styles.accessLinks}>
-          <Link href="/">ホーム</Link>
+          <Link href="/rockstaros/crowdfunding">avocadoMiniクラファン企画</Link>
           <Link href="/sky">Sky</Link>
           <Link href="/chat">Zema</Link>
           <Link href="/wallet">Wallet</Link>
@@ -78,13 +79,15 @@ export default function RockstarPreview() {
         <div className={styles.productCopy}>
           <p className={styles.kicker}>01 / HARDWARE CONCEPT</p>
           <h2 id="product-title">avocadoMini</h2>
-          <p className={styles.productLead}>頭の中の発明を、手で選び、比べ、前に進める。</p>
+          <p className={styles.productLead}>考える時間を、つくる時間に。</p>
           <p>
             四方向のセンサーで手の動きを捉え、物質のデジタル模型を組み合わせて候補を比べる構想です。
-            Material Invention StudioとRockstarOSが、操作、記録、AIによる検討を支える設計です。
+            高性能LLMを搭載するRockstarOSを目指し、Material Invention Studioでの操作、候補の整理、記録をスムーズにつなぎます。
           </p>
+          <p className={styles.productPrice}><strong>41万円</strong><span>希望参考価格 · 販売価格未確定</span></p>
+          <Link href="/rockstaros/crowdfunding" className={styles.campaignReturn}>クラファン企画を見る ↗</Link>
           <p className={styles.productStatus}>
-            設計中。画像はコンセプトで、追跡精度・表示方式・安全性を実証した実機写真ではありません。
+            設計中。実機と高性能LLMの製品搭載は未完成です。画像はコンセプトで、追跡精度・表示方式・安全性を実証した実機写真ではありません。
           </p>
         </div>
         <figure className={styles.productVisual}>
@@ -105,7 +108,7 @@ export default function RockstarPreview() {
           <h2 id="platform-title">あなたが選んだAIと、進めるための土台。</h2>
           <p>
             RockstarOSは、選んだToolへの依頼、確認、成果の記録をつなぐために開発しています。
-            交換可能なLLM、SkyとZemaは、その体験を支える中核です。
+            高性能な交換可能LLMの搭載は製品目標で、現在の実機検証は固定モデルのDeveloper Preview段階です。SkyとZemaはアプリとOS内で使うサービスです。
             Pixel 10は開発用の検証端末で、自社製ハードウェア製品ではありません。
           </p>
         </div>
