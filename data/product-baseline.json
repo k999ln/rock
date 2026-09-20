@@ -1,5 +1,5 @@
 {
-  "version": "1.83",
+  "version": "1.84",
   "decidedAt": "2026-09-19",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -55,6 +55,16 @@
     "avocadoMiniStage": "design_only_no_physical_prototype_or_sales",
     "pixel10Role": "development_reference_device_not_own_hardware_product",
     "taxTreatmentClaim": "none"
+  },
+  "distributionPricingIntent": {
+    "principle": "free_distribution_with_metered_os_use",
+    "freeDistributionScope": "pending_owner_confirmation",
+    "osMeteringUnit": "undecided",
+    "osUnitPrice": "undecided",
+    "osPriceCap": "undecided",
+    "externalCostResponsibility": "undecided",
+    "currentSkyEarningsSettlementIsOsMeteredBilling": false,
+    "liveOsMeteredBillingEnabled": false
   },
   "systemComposition": {
     "document": "docs/system-composition.md",

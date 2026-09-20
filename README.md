@@ -6,6 +6,8 @@ RockstarOSと交換可能なLLM、Sky・Zemaなどのアプリは、製品を動
 
 現在の実機検証は固定Qwen / llama.rn profileの試験署名Pixel APK段階です。複数モデルの交換やOS image搭載は未完了です。端末内LLM、Sky内OpenAI接続、Jevの役割と実装状態は[LLM・評価モデル設計](docs/llm-evaluation-architecture.md)と[能力表](data/llm-capabilities.json)に記録しています。
 
+**配布と料金の理念:** 無料で配布し、OSは使った分に応じて料金を受け取る方針です。無料配布の対象、利用量の測り方、単価・上限は確定前で、現時点でこの方式の請求は行っていません。既存のSkyの収益連動精算は別の実装条件として区別します。
+
 製品と事業の関係は[製品・サービス・システム関係図](docs/rockstaros-product-system-map.md)にまとめています。OSから全Tool、avocadoMiniまでの設計入口は[RockstarOS全設計ポータル](docs/rockstaros-design-portal.md)です。field単位の契約は[OS全体詳細設計](docs/rockstaros-complete-design.md)、[Sky／Zema／全Tool詳細設計](docs/sky-tools-complete-design.md)、[空間発明システム設計](docs/rockstaros-avocado-mini-complete-design.md)を参照してください。製品要望の正本は[製品ベース](docs/product-baseline.md)のRQ01〜RQ49、進捗の正本は[data/project-status.json](data/project-status.json)です。現在版は`RockstarOS 1.0 Developer Preview`です。
 
 ## 会社と事業
@@ -37,9 +39,10 @@ RockstarOSが届けたいのは、AIと一緒に新しいことを始めたく�
 
 ### 価値と収益の考え方
 
+- 無料配布とOSの従量課金を基本方針とする。無料配布の対象、OSの計量単位、単価・上限を決めるまでは具体的な無料提供範囲や請求額を表示しない。
 - 利用者の価値は、減った手間、完了した仕事、再利用できる成果、本人が選べる行動の増加で測る。
 - Toolの完了と売上を混同せず、Providerが確認した入金だけをWalletの収益にする。
-- 現行のSky利用料は、確認済み自動化収益から直接実費を差し引いた残額に対する月最大8.88 USD。収益0なら利用料0。ToBの登録・接続・掲載・Sky売上手数料は0円方針。
+- 現行実装のSky精算は、確認済み自動化収益から直接実費を差し引いた残額に対する月最大8.88 USD。収益0なら利用料0。これは新しいOS従量課金の計算方式ではありません。ToBの登録・接続・掲載・Sky売上手数料は0円方針。
 - Sky内のToolチーム向け利益連動成功報酬、Wallet決済、開発者還元は[設計中](docs/sky-network-economy.md)です。料率と月上限は未確定で、現行の請求や自動払出しには適用していません。
 - 月50万円規模の検証済み運用収益は長期の到達仮説であり、現時点の実績や利用者への収入保証ではない。
 
@@ -154,7 +157,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-19 / 128 task中87 done・24 in progress・16 planned・1 blocked
+更新日: 2026-09-19 / 129 task中87 done・25 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -336,11 +339,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>128 taskと段階gateの詳細を開く</summary>
+<summary>129 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 87/128件
+最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 87/129件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -384,6 +387,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
 | WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
+| BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |
 | WLT02 | 本人別の残高・売上・経費・取消履歴をD1へ保存するWallet専用APIと操作画面を実装 | 完了 | [記録](app/api/wallet/route.ts) · [記録](components/wallet-workspace.tsx) · [記録](lib/operations.ts) · [記録](tests/wallet-backend.test.mjs) |

@@ -632,6 +632,20 @@
       ]
     },
     {
+      "id": "BIZ01",
+      "title": "無料配布の対象とOS従量課金の計量単位・単価・上限を確定する",
+      "status": "in_progress",
+      "dependsOn": [
+        "BRD01"
+      ],
+      "evidence": [
+        "README.md",
+        "docs/product-baseline.md",
+        "data/product-baseline.json",
+        "docs/sky-billing.md"
+      ]
+    },
+    {
       "id": "VER01",
       "title": "RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理",
       "status": "done",
