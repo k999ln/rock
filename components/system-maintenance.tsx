@@ -65,7 +65,7 @@ type BackupMode = 'create' | 'restore';
 
 const releaseCopy: Record<string, { short: string; icon: React.ReactNode }> = {
   'web-pwa-owner-preview': { short: '本人限定で稼働中。最新版の同期待ち', icon: <AppWindow /> },
-  'web-pwa-public-preview': { short: 'ライセンス選択と公開承認が必要', icon: <AppWindow /> },
+  'web-pwa-public-preview': { short: '一般公開の意思を確認済み。配信先の接続とライセンス条件が残る', icon: <AppWindow /> },
   'qemu-developer-preview': { short: 'rc2の基礎と部品表は合格。配布条件は未完了', icon: <HardDrive /> },
   'android-physical-preview': { short: '対象機種未選択。端末固有の実測証拠が必要', icon: <Smartphone /> },
   'iphone-ipad-client': { short: '置換OSではなくclient配布として審査', icon: <Smartphone /> },
@@ -187,12 +187,12 @@ export default function SystemMaintenance() {
     });
 
     try {
-      const response = await fetch('/api/jobs', { cache: 'no-store' });
+      const response = await fetch('/api/health', { cache: 'no-store' });
       next.push({
         id: 'api',
         label: 'RockstarOS API',
-        detail: response.status === 401 ? '稼働中・サインイン待ち' : response.ok ? '稼働中' : `応答 ${response.status}`,
-        state: response.status === 401 || response.ok ? 'ready' : 'attention',
+        detail: response.ok ? 'APIとデータ保存が稼働中' : `応答 ${response.status}`,
+        state: response.ok ? 'ready' : 'attention',
       });
     } catch {
       next.push({ id: 'api', label: 'RockstarOS API', detail: '応答なし', state: 'blocked' });

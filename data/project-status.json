@@ -633,7 +633,7 @@
     },
     {
       "id": "WEB06",
-      "title": "GitHubと製品紹介からHome・OS案内・主要アプリへ進む入口を整え、本人限定Siteの最新版同期を確認する",
+      "title": "GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する",
       "status": "in_progress",
       "dependsOn": [
         "WEB05"
@@ -642,6 +642,8 @@
         "README.md",
         "app/rockstaros/page.tsx",
         "app/rockstaros/preview.module.css",
+        "app/api/health/route.ts",
+        "scripts/check-work-api.mjs",
         "docs/workstreams/05-web-pwa-sites.md"
       ]
     },
@@ -869,9 +871,9 @@
     },
     {
       "id": "WEB01",
-      "title": "主要画面のstyle契約と配備asset closureを検査し、GitHubと本人限定Sitesを同一commitへ固定",
+      "title": "主要画面のstyle契約と配備asset closureを検査し、GitHubと既存Sitesを同一commitへ固定",
       "status": "blocked",
-      "reason": "GitHub mainは全体検証済み。本人限定Sitesは現在の接続アカウントでAccess Denied／project_not_foundとなり、所有workspaceの接続なしでは同一SHA配備とD1本番readbackを実行できない。",
+      "reason": "一般公開の意思は確認済み。既存Sitesは現在の接続アカウントでAccess Denied／project_not_foundとなり、所有workspaceの接続なしでは公開設定変更、同一SHA配備とD1本番readbackを実行できない。",
       "dependsOn": [
         "SKY14",
         "WLT02",

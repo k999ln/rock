@@ -162,14 +162,14 @@
       "tableCount": 27,
       "sourceStatus": "VERIFIED",
       "deployment": {
-        "runtime": "Cloudflare D1 / owner-only Sites",
+        "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",
         "deploymentStatus": "OWNER_ACCESS_BLOCKED",
         "productionAppliedThrough": null,
         "productionReadbackAt": null,
         "evidence": [
           "docs/evidence/launch/sites-owner-auth-blocker-20260915.json"
         ],
-        "nextAction": "本人限定Sitesの所有workspaceへ接続し、検証済みの最新mainを配備後にmigration、件数、孤立関係、backup状態をreadbackする"
+        "nextAction": "既存Sitesの所有workspaceへ接続し、検証済み最新mainを同じSiteへ配備。公開設定変更後に匿名health、本人別API、migration、件数、孤立関係、backup状態をreadbackする"
       }
     },
     {

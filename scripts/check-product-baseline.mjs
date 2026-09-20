@@ -921,7 +921,7 @@ export function validateBaseline(
     data.webDeliveryIntegrity?.sourceAndPrivateSiteCommitMustMatch === true &&
       data.webDeliveryIntegrity?.assetClosureCheck ===
         'npm run release:web-assets:check' &&
-      data.webDeliveryIntegrity?.publicAccessAuthorized === false,
+      data.webDeliveryIntegrity?.publicAccessAuthorized === true,
     'Web画面と配備assetを同一commitへ固定してください',
   );
   requireValue(

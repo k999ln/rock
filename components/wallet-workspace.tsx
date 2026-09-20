@@ -178,7 +178,7 @@ export default function WalletWorkspace() {
               <h1 id="wallet-signin-title">自分のWalletを開く</h1>
               <p>残高と入出金記録は、あなたのアカウントだけに保存されます。</p>
             </div>
-            <a href="/signin-with-chatgpt?return_to=/wallet">サインイン</a>
+            <a href="/signin-with-chatgpt?return_to=/wallet" target="_top">サインイン</a>
           </section>
         ) : snapshot ? (
           <>

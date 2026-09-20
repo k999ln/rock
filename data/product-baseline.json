@@ -1,5 +1,5 @@
 {
-  "version": "1.85",
+  "version": "1.86",
   "decidedAt": "2026-09-19",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -479,7 +479,7 @@
     "chatReceiptIsCompletionEvidence": false
   },
   "webDeliveryIntegrity": {
-    "canonicalSource": "current_feature_branch_until_owner_approved_main_merge",
+    "canonicalSource": "github_main_with_site_release_pinned_to_same_sha",
     "sourceAndPrivateSiteCommitMustMatch": true,
     "requiredStyledSurfaces": [
       "home",
@@ -491,7 +491,7 @@
     ],
     "routeStyleContract": "tests/web-route-style-contract.test.mjs",
     "assetClosureCheck": "npm run release:web-assets:check",
-    "publicAccessAuthorized": false
+    "publicAccessAuthorized": true
   },
   "executionApproval": {
     "status": "approved_for_implementation",

@@ -1,4 +1,5 @@
 'use client';
+/* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
@@ -260,9 +261,9 @@ export default function CsvBusinessWorkspace() {
           <div className={styles.error} role="alert">
             {error}
             {!ready && (
-              <Link href="/signin-with-chatgpt?return_to=/csv" target="_top">
+              <a href="/signin-with-chatgpt?return_to=/csv" target="_top">
                 サインイン
-              </Link>
+              </a>
             )}
           </div>
         )}

@@ -161,6 +161,7 @@ export function SkyBilling() {
             <a
               className="wallet-entry-action"
               href="/signin-with-chatgpt?return_to=/wallet"
+              target="_top"
             >
               サインインして開く
               <ArrowRight size={18} />

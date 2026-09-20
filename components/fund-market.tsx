@@ -1,4 +1,5 @@
 'use client';
+/* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
 import {
   useCallback,
   useEffect,
@@ -491,13 +492,9 @@ export default function FundMarket() {
               <button onClick={() => void refresh()}>再読み込み</button>
             )}
             {error.startsWith('サインイン') && (
-              <button
-                onClick={() =>
-                  window.location.assign('/signin-with-chatgpt?return_to=/')
-                }
-              >
+              <a className="market-primary" href="/signin-with-chatgpt?return_to=/" target="_top">
                 サインイン
-              </button>
+              </a>
             )}
           </output>
         )}
