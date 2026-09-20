@@ -459,11 +459,13 @@
       ],
       "evidence": [
         "components/sky-chat-workspace.tsx",
+        "components/mr-tool-runner.tsx",
         "app/workspace.css",
         "lib/operations.ts",
         "tests/operations.test.mjs",
         "docs/chat-usability-20260912.md",
-        "docs/workstreams/01-product-ux.md"
+        "docs/workstreams/01-product-ux.md",
+        "README.md"
       ]
     },
     {

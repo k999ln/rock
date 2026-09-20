@@ -11864,7 +11864,7 @@
    overlaps the composer or the selected Bot conversation. */
 .sky-chat-page .zema-grok-shell {
   display: grid;
-  grid-template-columns: clamp(220px, 24vw, 260px) minmax(0, 1fr);
+  grid-template-columns: 30% minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
 }
@@ -11885,7 +11885,8 @@
   min-width: 0;
   padding-inline: clamp(18px, 3vw, 40px);
 }
-.sky-chat-page .zema-grok-shell:not(.is-sidebar-collapsed) .zema-sidebar-toggle {
+.sky-chat-page .zema-sidebar-close,
+.sky-chat-page .zema-sidebar-toggle {
   display: none;
 }
 .sky-chat-page .sky-chat-messages,
@@ -12001,24 +12002,15 @@
 }
 .sky-chat-page .zema-composer-tip { margin-left: auto; }
 .sky-chat-page .zema-composer-count { white-space: nowrap; }
-.sky-chat-page .zema-grok-shell.is-sidebar-collapsed {
-  grid-template-columns: minmax(0, 1fr);
-}
-.sky-chat-page .zema-grok-shell.is-sidebar-collapsed .zema-sidebar {
-  display: none;
-}
-.sky-chat-page .zema-grok-shell.is-sidebar-collapsed .sky-chat-commandbar,
-.sky-chat-page .zema-grok-shell.is-sidebar-collapsed .sky-chat-messages,
-.sky-chat-page .zema-grok-shell.is-sidebar-collapsed .sky-chat-work-center,
-.sky-chat-page .zema-grok-shell.is-sidebar-collapsed .sky-chat-composer {
-  grid-column: 1;
-}
-
 @media (max-width: 767px) {
   .sky-chat-page .zema-grok-shell {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+  }
+  .sky-chat-page .zema-sidebar-close,
+  .sky-chat-page .zema-grok-shell.is-sidebar-collapsed .zema-sidebar-toggle {
+    display: grid;
   }
   .sky-chat-page .zema-sidebar {
     position: absolute;
@@ -12026,6 +12018,7 @@
     z-index: 20;
     width: min(84vw, 300px);
   }
+  .sky-chat-page .zema-sidebar-scrim { display: block; }
   .sky-chat-page .zema-grok-shell.is-sidebar-collapsed .zema-sidebar {
     display: none;
   }
@@ -12049,6 +12042,221 @@
   .sky-chat-page .sky-chat-composer {
     padding-left: 18px;
   }
+}
+
+/* Zema conversation: one clear product name, one active Bot, and readable work. */
+.sky-chat-page .zema-sidebar {
+  border-color: #252a2e;
+  background: #111315;
+}
+.sky-chat-page .zema-sidebar-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.sky-chat-page .zema-sidebar-identity strong {
+  color: #f2f4f5;
+  font-size: 16px;
+  font-weight: 760;
+  letter-spacing: -.025em;
+}
+.sky-chat-page .zema-sidebar-brand,
+.sky-chat-page .zema-room-mark {
+  display: grid;
+  flex: 0 0 auto;
+  width: 31px;
+  height: 31px;
+  place-items: center;
+  border-radius: 10px;
+  color: #11150b;
+  background: #c8ff2e;
+  font-size: 16px;
+  font-weight: 900;
+}
+.sky-chat-page .zema-bot-mark {
+  flex-basis: 30px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #343d32;
+  border-radius: 10px;
+  color: #c8ff2e;
+  background: #1b2118;
+}
+.sky-chat-page .zema-bot-copy strong {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  white-space: normal;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.sky-chat-page .zema-bot-copy small { margin-top: 3px; font-size: 11px; }
+.sky-chat-page .zema-bot-list button.is-current {
+  border-color: #4e6534;
+  background: #202820;
+}
+.sky-chat-page .sky-chat-commandbar {
+  min-height: 72px;
+  border-color: #252a2e;
+  background: #0b0d0e;
+}
+.sky-chat-page .zema-room-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.sky-chat-page .zema-room-heading > div {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  min-width: 0;
+}
+.sky-chat-page .zema-room-heading h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 760;
+  letter-spacing: -.025em;
+}
+.sky-chat-page .zema-room-heading > div > span {
+  color: #7f898d;
+  font-size: 12px;
+}
+.sky-chat-page .zema-active-bot,
+.sky-chat-page .zema-auto-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  max-width: min(58%, 300px);
+  padding: 8px 12px;
+  border: 1px solid #343b3f;
+  border-radius: 12px;
+  color: #d4d9db;
+  background: #191d1f;
+}
+.sky-chat-page .zema-active-bot-dot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c8ff2e;
+  box-shadow: 0 0 0 3px rgba(200, 255, 46, .11);
+}
+.sky-chat-page .zema-active-bot > div { min-width: 0; }
+.sky-chat-page .zema-active-bot small,
+.sky-chat-page .zema-active-bot strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sky-chat-page .zema-active-bot small { color: #899197; font-size: 10px; }
+.sky-chat-page .zema-active-bot strong { color: #f1f3f3; font-size: 12px; font-weight: 700; }
+.sky-chat-page .zema-auto-label { font-size: 11px; }
+.sky-chat-page .sky-chat-messages { gap: 16px; background: #090b0c; }
+.sky-chat-page .sky-chat-bubble {
+  max-width: min(88%, 720px);
+  gap: 10px;
+  line-height: 1.7;
+}
+.sky-chat-page .sky-chat-bubble.is-sky {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.sky-chat-page .zema-message-avatar {
+  display: grid;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 10px;
+  color: #c8ff2e;
+  background: #1b2118;
+  font-size: 14px;
+  font-weight: 850;
+}
+.sky-chat-page .sky-chat-bubble.is-sky small {
+  margin-bottom: 4px;
+  color: #aab2b6;
+  font-size: 12px;
+}
+.sky-chat-page .sky-chat-bubble.is-sky p { color: #e2e6e7; }
+.sky-chat-page .sky-chat-bubble.is-me {
+  max-width: min(82%, 610px);
+  padding: 11px 15px;
+  border-radius: 17px 17px 5px 17px;
+  color: #f2f4f5;
+  background: #282d31;
+}
+.sky-chat-page .zema-message-text { margin: 0; white-space: pre-wrap; }
+.sky-chat-page .sky-chat-workflow {
+  width: min(100%, 680px);
+  border-color: #30373b;
+  border-radius: 18px;
+  background: #111516;
+  box-shadow: none;
+}
+.sky-chat-page .sky-chat-workflow > header {
+  background: #171c1a;
+  border-color: #30373b;
+}
+.sky-chat-page .sky-chat-workflow-orb { color: #11150b; background: #c8ff2e; }
+.sky-chat-page .sky-chat-workflow > header small { color: #aab4b3; letter-spacing: 0; font-size: 11px; }
+.sky-chat-page .sky-chat-workflow > header h2 { font-size: 15px; }
+.sky-chat-page .sky-chat-local-llm-note {
+  margin: 0;
+  padding: 12px 16px;
+  color: #aab4b3;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.sky-chat-page .zema-workflow-details { border-top: 1px solid #30373b; }
+.sky-chat-page .zema-workflow-details > summary {
+  padding: 10px 16px;
+  color: #b5c0c0;
+  cursor: pointer;
+  font-size: 12px;
+}
+.sky-chat-page .zema-workflow-details .sky-chat-workflow-steps { border-top: 1px solid #30373b; }
+.sky-chat-page .sky-chat-workflow-body { padding: 14px; border-top: 1px solid #30373b; }
+.sky-chat-page .sky-chat-workflow-body .mr-workbench {
+  padding: 18px;
+  border: 1px solid #30373b;
+  border-radius: 14px;
+  color: #e3e8e8;
+  background: #171b1d;
+}
+.sky-chat-page .sky-chat-workflow-body .mr-workbench h3,
+.sky-chat-page .sky-chat-workflow-body .mr-workbench .bench-field > span { color: #f0f2f2; }
+.sky-chat-page .sky-chat-workflow-body .mr-workbench .bench-helper,
+.sky-chat-page .sky-chat-workflow-body .mr-workbench .subnote,
+.sky-chat-page .sky-chat-workflow-body .mr-workbench .review-result p { color: #a9b3b5; }
+.sky-chat-page .sky-chat-workflow-body .mr-workbench textarea,
+.sky-chat-page .sky-chat-workflow-body .mr-workbench input,
+.sky-chat-page .sky-chat-workflow-body .mr-workbench [data-slot=select-trigger] {
+  border-color: #3b4549;
+  color: #eff2f2;
+  background: #101416;
+}
+.sky-chat-page .sky-chat-workflow-body .mr-workbench .bench-output,
+.sky-chat-page .sky-chat-workflow-body .mr-workbench pre {
+  border-color: #3b4549;
+  color: #e7ebeb;
+  background: #101416;
+}
+.sky-chat-page .sky-chat-workflow-body .mr-workbench .output-actions button { color: #c8ff2e; background: #252d24; }
+.sky-chat-page .sky-chat-workflow-body .mr-workbench .bench-run { color: #11150b; background: #c8ff2e; }
+
+@media (max-width: 767px) {
+  .sky-chat-page .zema-room-heading > div > span { display: none; }
+  .sky-chat-page .zema-active-bot { max-width: 48%; }
+  .sky-chat-page .sky-chat-bubble { max-width: 94%; }
+  .sky-chat-page .sky-chat-workflow-body .mr-workbench { padding: 14px; }
 }
 
 /* Work and Wallet use one card geometry and one primary action. */
