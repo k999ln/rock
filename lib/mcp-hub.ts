@@ -28,7 +28,7 @@ export type McpConnection = {
   id: string;
   name: string;
   description: string;
-  transport: 'stdio' | 'streamable_http';
+  transport: 'stdio' | 'streamable_http' | 'local_http';
   state: McpConnectionState;
   toolCount: number | null;
   passport: McpConnectionPassport | null;

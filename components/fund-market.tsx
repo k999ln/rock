@@ -853,7 +853,9 @@ export default function FundMarket() {
               <div className="dialog-kicker">{active.name} / AUTOMATION</div>
               <DialogTitle className="dialog-title">{tool.name}</DialogTitle>
               <DialogDescription>{tool.description}</DialogDescription>
-              {tool.runner && <MrToolRunner key={tool.id} tool={tool.runner} />}
+              {tool.runner && tool.runner !== 'candidate-local' && (
+                <MrToolRunner key={tool.id} tool={tool.runner} />
+              )}
               <a
                 className="text-link"
                 href={tool.source}

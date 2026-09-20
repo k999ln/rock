@@ -7,7 +7,6 @@ import {
   type CSSProperties,
   type SyntheticEvent,
 } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   ArrowRight,
@@ -22,7 +21,6 @@ import {
   Lightbulb,
   Link2,
   LoaderCircle,
-  MessageCircle,
   Network,
   PackagePlus,
   Scale,
@@ -30,6 +28,7 @@ import {
   Send,
   ShieldCheck,
   Shirt,
+  Sparkles,
   ShoppingBag,
   Table2,
   WalletCards,
@@ -40,6 +39,11 @@ import {
 import { catalog, type Automation } from '@/lib/catalog';
 import { deviceToken } from '@/lib/device';
 import { fashionMcpConnected } from '@/lib/fashion-mcp-client';
+import {
+  connectMcp,
+  listMcpConnections,
+  type McpConnection,
+} from '@/lib/mcp-hub';
 import { routeSkyRequest, skyRoles } from '@/lib/sky-routing';
 import {
   Dialog,
@@ -53,6 +57,7 @@ import { DeviceConnection } from '@/components/device-connection';
 import { FashionBrandOpsRunner } from '@/components/fashion-brand-ops-runner';
 import SkyMcpCenter from '@/components/sky-mcp-center';
 import SkyActivationPanel from '@/components/sky-activation-panel';
+import SkyConnectionCenter from '@/components/sky-connection-center';
 import SkyPublisherForm from '@/components/sky-publisher-form';
 import WorkspaceShell from '@/components/workspace-shell';
 import {
@@ -64,7 +69,9 @@ import {
   OperationRequestError,
 } from '@/lib/operations-client';
 import type { SkyConnection } from '@/lib/operations';
+import { providerDefinition, requiredSkyProviders } from '@/lib/sky-connections';
 import { queueSkyZemaHandoff } from '@/lib/sky-zema-handoff';
+import { skyToolLabelFor } from '@/lib/sky-tool-labels';
 
 type FeedFilter = 'おすすめ' | '今使える' | '導入候補';
 
@@ -80,6 +87,7 @@ const icons: Record<string, LucideIcon> = {
   'rockstar-ledger': WalletCards,
   'rockstar-legal-intake': Scale,
   'rockstar-patent-assistant': Lightbulb,
+  'jev-evaluation': Sparkles,
 };
 const providers: Record<
   string,
@@ -99,6 +107,11 @@ const providers: Record<
     name: 'Sky ブランド運営役',
     handle: '@sky_brand',
     initial: '服',
+  },
+  'rockstar-ip-studio': {
+    name: 'Sky IP Studio',
+    handle: '@sky_ip',
+    initial: 'IP',
   },
   coconala: { name: 'Sky 案件判断役', handle: '@sky_case', initial: '案' },
   'mr-free-article': {
@@ -127,9 +140,14 @@ const providers: Record<
     initial: '法',
   },
   'rockstar-patent-assistant': {
-    name: 'Sky 特許出願担当',
+    name: 'Sky 特許アシスタント',
     handle: '@sky_patent',
     initial: '特',
+  },
+  'jev-evaluation': {
+    name: 'Sky Jev品質評価',
+    handle: '@sky_jev',
+    initial: '評',
   },
   'faster-whisper': { name: 'SYSTRAN', handle: '@systran', initial: 'S' },
   'transformers-js': {
@@ -141,18 +159,39 @@ const providers: Record<
 };
 function providerFor(tool: Automation) {
   return (
-    providers[tool.id] ?? {
+    providers[tool.id] ??
+    skyToolLabelFor(tool.id) ?? {
       name: 'Sky ツール案内',
       handle: '@sky_tools',
       initial: 'M',
     }
   );
 }
-function statusFor(tool: Automation, fashionConnected = false) {
+function statusFor(
+  tool: Automation,
+  fashionConnected = false,
+  connectedTools: string[] = [],
+) {
+  if (
+    tool.status === 'candidate' &&
+    tool.runner === 'candidate-local' &&
+    connectedTools.includes(tool.id)
+  )
+    return {
+      label: 'ローカル確認器あり',
+      detail: '下書き・接続確認のみ／外部サービス未接続',
+      className: 'is-connect',
+    };
+  if (tool.status === 'candidate' && connectedTools.includes(tool.id))
+    return {
+      label: 'Sky登録済み',
+      detail: '専用画面で接続状態と実行器を確認',
+      className: 'is-connect',
+    };
   if (tool.status === 'candidate')
     return {
       label: '導入候補',
-      detail: 'Skyからの実行は未対応',
+      detail: 'Skyへ登録して実行器を接続できます',
       className: 'is-candidate',
     };
   if (tool.runner === 'delivery-local')
@@ -188,7 +227,9 @@ function statusFor(tool: Automation, fashionConnected = false) {
 
 function roleFor(tool: Automation) {
   return (
-    skyRoles.find((role) => role.toolId === tool.id)?.label ?? 'ツール案内役'
+    skyRoles.find((role) => role.toolId === tool.id)?.label ??
+    skyToolLabelFor(tool.id)?.role ??
+    'ツール案内役'
   );
 }
 
@@ -206,6 +247,7 @@ export default function SkyWorkspace({
   const [running, setRunning] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mcpOpen, setMcpOpen] = useState(initialMcpOpen);
+  const [connectionCenterOpen, setConnectionCenterOpen] = useState(false);
   const [publishOpen, setPublishOpen] = useState(initialPublishOpen);
   const [connected, setConnected] = useState(false);
   const [fashionConnected, setFashionConnected] = useState(false);
@@ -217,6 +259,9 @@ export default function SkyWorkspace({
   const [connectionsLoading, setConnectionsLoading] = useState(true);
   const [connectionBusy, setConnectionBusy] = useState(false);
   const [connectionError, setConnectionError] = useState('');
+  const [localServers, setLocalServers] = useState<McpConnection[]>([]);
+  const [localBusy, setLocalBusy] = useState('');
+  const [localError, setLocalError] = useState<{ id: string; message: string } | null>(null);
   const { needsSignin, setNeedsSignin } = useExecutionAccess();
   const router = useRouter();
   const searchInput = useRef<HTMLInputElement>(null);
@@ -238,6 +283,34 @@ export default function SkyWorkspace({
     window.addEventListener('sky-fashion-mcp', update);
     return () => window.removeEventListener('sky-fashion-mcp', update);
   }, []);
+
+  useEffect(() => {
+    if (!connected) return;
+    let active = true;
+    const refresh = () => {
+      if (document.visibilityState === 'hidden') return;
+      void listMcpConnections()
+        .then((servers) => {
+          if (active)
+            setLocalServers(
+              servers.filter((server) => server.transport === 'local_http'),
+            );
+        })
+        .catch(() => {
+          if (active) setLocalServers([]);
+        });
+    };
+    refresh();
+    const interval = window.setInterval(refresh, 5_000);
+    window.addEventListener('sky-mcp-servers', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+      window.removeEventListener('sky-mcp-servers', refresh);
+      document.removeEventListener('visibilitychange', refresh);
+    };
+  }, [connected]);
 
   useEffect(() => {
     let active = true;
@@ -279,18 +352,61 @@ export default function SkyWorkspace({
       matchesFilter && text.toLowerCase().includes(query.trim().toLowerCase())
     );
   });
+  const visibleLocalServers = !connected || filter === '導入候補'
+    ? []
+    : localServers.filter((server) =>
+        `${server.name} ${server.description}`
+          .toLowerCase()
+          .includes(query.trim().toLowerCase()),
+      );
+
+  async function connectLocalServer(server: McpConnection) {
+    if (server.state === 'connected') {
+      setMcpOpen(true);
+      return;
+    }
+    if (localBusy) return;
+    setLocalBusy(server.id);
+    setLocalError(null);
+    try {
+      await connectMcp(server.id);
+      const servers = await listMcpConnections();
+      setLocalServers(servers.filter((item) => item.transport === 'local_http'));
+      window.dispatchEvent(new Event('sky-mcp-servers'));
+      setMcpOpen(true);
+    } catch (error) {
+      setLocalError({
+        id: server.id,
+        message: error instanceof Error ? error.message : '接続できませんでした。',
+      });
+    } finally {
+      setLocalBusy('');
+    }
+  }
 
   function openConnectedTool(tool: Automation, request = '') {
     setSelected(null);
     try {
       queueSkyZemaHandoff(tool.id, request);
     } catch {
-      // The selected Tool still opens when private tab storage is unavailable.
+      // The selected tool still opens when private tab storage is unavailable.
     }
-    router.push(`/chat?tool=${encodeURIComponent(tool.id)}`);
+    if (tool.launchPath) {
+      if (/^https?:\/\//.test(tool.launchPath)) {
+        window.location.assign(tool.launchPath);
+      } else {
+        router.push(tool.launchPath);
+      }
+      return;
+    }
+    router.push(`/sky/tools/${encodeURIComponent(tool.id)}`);
   }
 
   function primaryAction(tool: Automation, request = '') {
+    if (tool.status === 'candidate' && connectedTools.includes(tool.id)) {
+      openConnectedTool(tool, request);
+      return;
+    }
     if (tool.status === 'candidate') {
       setSelected(tool);
       return;
@@ -312,7 +428,7 @@ export default function SkyWorkspace({
   }
 
   async function connectSelected() {
-    if (!selected?.runner || connectionBusy) return;
+    if (!selected || connectionBusy) return;
     setConnectionBusy(true);
     setConnectionError('');
     try {
@@ -342,7 +458,7 @@ export default function SkyWorkspace({
     setLastRequest(request);
     setRoutedTool(tool);
     setRouteMessage(
-      `${roleFor(tool)}が進めます。Zemaへ引き継いで、実行と進捗をまとめて管理できます。`,
+      `${roleFor(tool)}が進めます。専用画面を開いて、入力・実行・結果確認を行えます。`,
     );
   }
 
@@ -360,7 +476,11 @@ export default function SkyWorkspace({
     setLastRequest(request);
     if (role) {
       const tool = catalog.find((item) => item.id === role.toolId);
-      if (tool) chooseRole(tool, request);
+      if (tool) {
+        chooseRole(tool, request);
+        if (connectedTools.includes(tool.id) || Boolean(tool.launchPath))
+          primaryAction(tool, request);
+      }
       return;
     }
     setRoutedTool(null);
@@ -385,6 +505,17 @@ export default function SkyWorkspace({
             onOpenDevice={() => setDeviceOpen(true)}
           />
           <SkyActivationPanel />
+          <button
+            className="sky-connection-quick-open"
+            onClick={() => setConnectionCenterOpen(true)}
+          >
+            <Link2 size={17} />
+            <span>
+              <strong>サービス接続を登録</strong>
+              <small>Instagram、YouTube、Higgsfield、Make、ゲーム導入先を一度だけ設定</small>
+            </span>
+            <ArrowRight size={16} />
+          </button>
           <section
             className="sky-assistant"
             aria-labelledby="sky-assistant-title"
@@ -418,7 +549,7 @@ export default function SkyWorkspace({
                   return (
                     <button
                       key={role.toolId}
-                      onClick={() => openRole(tool, role.label)}
+                      onClick={() => openRole(tool, lastRequest || role.label)}
                     >
                       {role.label}
                     </button>
@@ -439,7 +570,7 @@ export default function SkyWorkspace({
                     >
                       {routedTool.runner === 'delivery-local'
                         ? 'PC接続へ'
-                        : 'Zemaへ引き継ぐ'}
+                        : '専用画面へ'}
                       <ArrowRight size={15} />
                     </button>
                   )}
@@ -469,20 +600,13 @@ export default function SkyWorkspace({
               </TabsList>
             </Tabs>
             <div className="sky-feed-header-actions">
-              <Link
-                href="/chat"
-                aria-label="Zemaを開く"
-                className="sky-header-action"
-              >
-                <MessageCircle size={19} />
-              </Link>
               <button
                 className="sky-header-action"
-                aria-label="MCP接続・管理"
-                onClick={() => setMcpOpen(true)}
+                aria-label="サービス接続を管理"
+                onClick={() => setConnectionCenterOpen(true)}
               >
-                <Network size={19} />
-                <span>MCP</span>
+                <Link2 size={19} />
+                <span>接続</span>
               </button>
               <button
                 className="sky-header-action"
@@ -535,15 +659,72 @@ export default function SkyWorkspace({
           )}
 
           <div className="sky-feed" aria-live="polite">
+            {visibleLocalServers.map((server, index) => (
+              <article
+                className="sky-feed-post"
+                key={`local-${server.id}`}
+                style={{ '--sky-index': index } as CSSProperties}
+              >
+                <div className="sky-timeline-node" aria-hidden="true">
+                  <span className="sky-provider-avatar rock-icon-blue">PC</span>
+                </div>
+                <div className="sky-post-body">
+                  <div className="sky-post-meta-row">
+                    <div className="sky-post-author">
+                      <strong>このPCのツール</strong>
+                      <span>@sky_local</span>
+                    </div>
+                    <span className="sky-post-state">
+                      <i aria-hidden="true" />
+                      {server.state === 'connected' ? '接続済み' : '起動中'}
+                    </span>
+                  </div>
+                  <div className="sky-post-open">
+                    <span className="rock-tool-icon rock-icon-blue">
+                      <Network size={22} strokeWidth={1.7} />
+                    </span>
+                    <span>
+                      <small>Sky SDK</small>
+                      <strong>{server.name}</strong>
+                    </span>
+                  </div>
+                  <p className="sky-post-description">{server.description}</p>
+                  <p className="sky-post-place">
+                    {server.state === 'connected'
+                      ? `${server.passport?.tools.length ?? 0}機能を確認済み`
+                      : 'このPCで実行。接続時に機能と権限を確認します。'}
+                  </p>
+                  <div className="sky-post-actions">
+                    <button
+                      className="sky-post-primary"
+                      disabled={Boolean(localBusy)}
+                      onClick={() => void connectLocalServer(server)}
+                    >
+                      {localBusy === server.id
+                        ? '確認中…'
+                        : server.state === 'connected'
+                          ? '機能を見る'
+                          : '接続'}
+                      <ArrowRight size={16} />
+                    </button>
+                  </div>
+                  {localError?.id === server.id && (
+                    <p className="bench-error" role="alert">
+                      {localError.message}
+                    </p>
+                  )}
+                </div>
+              </article>
+            ))}
             {visibleTools.map((tool, index) => {
               const Icon = icons[tool.id] ?? Link2;
               const provider = providerFor(tool);
-              const status = statusFor(tool, fashionConnected);
+              const status = statusFor(tool, fashionConnected, connectedTools);
               return (
                 <article
                   className={'sky-feed-post ' + status.className}
                   key={tool.id}
-                  style={{ '--sky-index': index } as CSSProperties}
+                  style={{ '--sky-index': index + visibleLocalServers.length } as CSSProperties}
                 >
                   <div className="sky-timeline-node" aria-hidden="true">
                     <span
@@ -594,7 +775,11 @@ export default function SkyWorkspace({
                             <Zap size={16} fill="currentColor" />
                           )}
                         {tool.status === 'candidate'
-                          ? '詳細'
+                          ? connectedTools.includes(tool.id)
+                            ? tool.runner === 'candidate-local'
+                              ? '使う'
+                              : '専用画面へ'
+                            : 'Sky登録'
                           : tool.launchPath
                             ? '使う'
                             : tool.runner === 'delivery-local'
@@ -609,7 +794,7 @@ export default function SkyWorkspace({
                 </article>
               );
             })}
-            {visibleTools.length === 0 && (
+            {visibleTools.length + visibleLocalServers.length === 0 && (
               <div className="sky-feed-empty">
                 <Search size={25} />
                 <strong>見つかりませんでした</strong>
@@ -637,13 +822,15 @@ export default function SkyWorkspace({
         <DialogContent
           initialFocus={
             selected?.runner === 'legal-intake' ||
-            selected?.runner === 'patent-assistant'
+            selected?.runner === 'patent-assistant' ||
+            selected?.runner === 'jev-evaluation'
               ? false
               : undefined
           }
           className={`rock-tool-dialog sky-tool-dialog sky-connect-dialog ${
             selected?.runner === 'legal-intake' ||
-            selected?.runner === 'patent-assistant'
+            selected?.runner === 'patent-assistant' ||
+            selected?.runner === 'jev-evaluation'
               ? 'sky-tool-dialog-wide'
               : ''
           }`}
@@ -673,9 +860,73 @@ export default function SkyWorkspace({
                   <DialogDescription className="rock-dialog-description">
                     {selected.description}
                   </DialogDescription>
+                  {requiredSkyProviders(selected.id).length > 0 && (
+                    <div className="sky-candidate-state">
+                      <strong>先に一度だけ接続するもの</strong>
+                      <span>
+                        {requiredSkyProviders(selected.id)
+                          .map((provider) => providerDefinition(provider).name)
+                          .join('・')}
+                      </span>
+                      <button
+                        className="sky-candidate-link"
+                        onClick={() => {
+                          setSelected(null);
+                          setConnectionCenterOpen(true);
+                        }}
+                      >
+                        接続情報を管理
+                        <ArrowRight size={15} />
+                      </button>
+                    </div>
+                  )}
                   <div className="sky-candidate-state">
-                    まだSkyからは接続できません。導入確認中です。
+                    Skyへ登録すると、このツールの専用画面を開けます。ローカル確認器対応の候補は、外部サービスに接続せず下書き・接続確認を試せます。
                   </div>
+                  {needsSignin ? (
+                    <ExecutionSignin />
+                  ) : connectedTools.includes(selected.id) ? (
+                    <div className="sky-connect-complete">
+                      <CheckCircle2 size={22} />
+                      <div>
+                        <strong>Sky登録済み</strong>
+                        <span>
+                          {selected.runner === 'candidate-local'
+                            ? 'Skyの共通ジョブ受付と、外部接続なしのローカル確認器が利用できます。'
+                            : selected.id === 'rockstar-ip-studio'
+                            ? '接続済みのIP StudioをSkyから開けます。'
+                            : '専用画面で実行器の接続と状態を確認できます。'}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => openConnectedTool(selected, lastRequest)}
+                      >
+                        {selected.runner === 'candidate-local'
+                          ? '専用画面で実行'
+                          : selected.id === 'rockstar-ip-studio'
+                          ? 'IP Studioを開く'
+                          : '専用画面で確認'}
+                        <ArrowRight size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      className="sky-one-tap-connect"
+                      disabled={connectionBusy || connectionsLoading}
+                      onClick={() => void connectSelected()}
+                    >
+                      {connectionBusy || connectionsLoading ? (
+                        <LoaderCircle className="sky-spin" size={18} />
+                      ) : (
+                        <Link2 size={18} />
+                      )}
+                      {connectionsLoading
+                        ? '確認中…'
+                        : connectionBusy
+                          ? '登録中…'
+                          : '1タップでSkyに登録'}
+                    </button>
+                  )}
                 </>
               ) : selected.integration === 'fashion-brand-ops' ? (
                 <>
@@ -687,7 +938,7 @@ export default function SkyWorkspace({
               ) : (
                 <>
                   <DialogDescription className="rock-dialog-description">
-                    接続後はフォームを開かず、Zemaから頼めます。
+                    接続後は専用画面から頼めます。
                   </DialogDescription>
 
                   <div className="sky-id-connection" aria-label="接続内容">
@@ -726,12 +977,12 @@ export default function SkyWorkspace({
                       <CheckCircle2 size={22} />
                       <div>
                         <strong>接続済み</strong>
-                        <span>次からはZemaでアプリを選ぶだけです。</span>
+                          <span>次からはSkyでアプリを選ぶだけです。</span>
                       </div>
                       <button
                         onClick={() => openConnectedTool(selected, lastRequest)}
                       >
-                        Zemaで使う
+                        専用画面で使う
                         <ArrowRight size={16} />
                       </button>
                     </div>
@@ -799,6 +1050,7 @@ export default function SkyWorkspace({
 
               {selected.status === 'ready' &&
                 selected.runner &&
+                selected.runner !== 'candidate-local' &&
                 connectedTools.includes(selected.id) && (
                   <details className="sky-manual-runner">
                     <summary>手動入力で使う</summary>
@@ -838,6 +1090,11 @@ export default function SkyWorkspace({
           <SkyPublisherForm embedded />
         </DialogContent>
       </Dialog>
+
+      <SkyConnectionCenter
+        open={connectionCenterOpen}
+        onOpenChange={setConnectionCenterOpen}
+      />
     </WorkspaceShell>
   );
 }

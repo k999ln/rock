@@ -1,6 +1,6 @@
 {
   "name": "@rockstaros/sky-tool-sdk",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Register a Tool in Sky, expose it over MCP and report privacy-bounded usage.",
   "type": "module",
   "exports": "./src/index.mjs",

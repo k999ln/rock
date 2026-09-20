@@ -1,24 +1,24 @@
 {
   "schema": 1,
-  "updatedAt": "2026-09-19",
+  "updatedAt": "2026-09-20",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 75,
+    "tableCount": 78,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
-    "total": 116,
+    "total": 117,
     "done": 78,
-    "in_progress": 24,
+    "in_progress": 25,
     "planned": 13,
     "blocked": 1,
     "milestone": "AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続",
-    "nextAction": "AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。SKY17の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。"
+    "nextAction": "SKY20は旧Mr. Hub 11候補とJev周辺7候補の実行器、本人接続、料金・結果照合を一件ずつ受け入れ、通るまでreadyにしない。PC内SDK Appのカード表示・接続・停止はローカルSkyで確認済み。AI07はJevのprovider sandboxで正常系・429・5xx・不正response・budget縮退を受入し、AI_GATEWAY_API_KEY、Terms/Privacy、料金上限を確認する。JevはSkyのcatalog／同意UI／closed rubric／Evaluation Receiptまで実装済みだが、本番provider接続は未完了。法務受付・特許アシスタントはSkyの別Toolとして維持し、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。"
   },
   "webSchema": {
-    "tableCount": 27,
+    "tableCount": 30,
     "tables": [
       "automation_fund_memberships",
       "automation_funds",
@@ -39,17 +39,20 @@
       "marketplace_receipts",
       "marketplace_reservations",
       "mercari_revenue_plans",
+      "sky_activation_codes",
       "sky_connections",
       "sky_developer_tokens",
+      "sky_provider_connections",
       "sky_tool_events",
+      "sky_tool_grants",
       "sky_tool_packages",
       "sky_tool_submissions",
       "tool_controls",
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 13,
-    "latestMigration": "0012_marketplace_relation_guards.sql",
+    "migrationCount": 15,
+    "latestMigration": "0014_sparkling_chimera.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -74,13 +77,16 @@
         "id": "sky",
         "label": "Sky接続・Tool管理",
         "tables": [
+          "sky_activation_codes",
           "sky_connections",
           "sky_developer_tokens",
+          "sky_provider_connections",
           "sky_tool_events",
+          "sky_tool_grants",
           "sky_tool_packages",
           "sky_tool_submissions"
         ],
-        "tableCount": 5
+        "tableCount": 8
       },
       {
         "id": "marketplace",
@@ -149,17 +155,20 @@
         "marketplace_receipts",
         "marketplace_reservations",
         "mercari_revenue_plans",
+        "sky_activation_codes",
         "sky_connections",
         "sky_developer_tokens",
+        "sky_provider_connections",
         "sky_tool_events",
+        "sky_tool_grants",
         "sky_tool_packages",
         "sky_tool_submissions",
         "tool_controls",
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0012_marketplace_relation_guards.sql",
-      "tableCount": 27,
+      "expectedAppliedThrough": "0014_sparkling_chimera.sql",
+      "tableCount": 30,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / owner-only Sites",

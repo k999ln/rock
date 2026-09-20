@@ -15,10 +15,12 @@ import { deviceToken, runDevice, type RunRecorder } from '@/lib/device';
 export function DeliveryRunner({
   onRecord,
   onRunningChange,
+  onOutcome,
   executionDisabled = false,
 }: {
   onRecord?: RunRecorder;
   onRunningChange?: (running: boolean) => void;
+  onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   executionDisabled?: boolean;
 }) {
   const { needsSignin, setNeedsSignin } = useExecutionAccess();
@@ -90,10 +92,16 @@ export function DeliveryRunner({
           sample,
           result.status === 'PASS' ? 'passed' : 'needs_review',
         );
+      onOutcome?.({
+        ok: result.status === 'PASS',
+        text: result.output,
+      });
     } catch (e) {
       if (e instanceof OperationRequestError && e.status === 401)
         setNeedsSignin(true);
-      setError(e instanceof Error ? e.message : '入力を確認してください。');
+      const message = e instanceof Error ? e.message : '入力を確認してください。';
+      setError(message);
+      onOutcome?.({ ok: false, text: message });
       if (executed && !completed && onRecord)
         try {
           await onRecord(

@@ -1,6 +1,43 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { createSkyToolApp } from '../toolkits/sky-tool-sdk/src/index.mjs';
+
+void test('local SDK Tool starts without cloud credentials and protects direct calls', async (t) => {
+  const localToolDirectory = await mkdtemp(join(tmpdir(), 'sky-sdk-local-'));
+  t.after(() => rm(localToolDirectory, { recursive: true, force: true }));
+  const app = createSkyToolApp({
+    developer: {
+      id: 'example-developer',
+      name: 'Example Developer',
+      supportUrl: 'https://example.com/support',
+    },
+    app: {
+      id: 'com.example.local',
+      name: 'Example Local',
+      version: '1.0.0',
+      sourceUrl: 'https://github.com/example/local',
+      license: 'MIT',
+    },
+    localToolDirectory,
+  });
+  addCountTool(app);
+  const runtime = await app.start();
+  t.after(() => runtime.close());
+  assert.match(runtime.localId, /^sdk-/);
+  assert.deepEqual(runtime.registration, []);
+  const response = await rpc(runtime, 1, 'tools/list');
+  assert.equal(response.error, 'unauthorized');
+  assert.throws(
+    () => createSkyToolApp({
+      developer: { id: 'example-developer', name: 'Example Developer', supportUrl: 'https://example.com/support' },
+      app: { id: 'com.example.public', name: 'Example Public', version: '1.0.0', sourceUrl: 'https://github.com/example/public', license: 'MIT', publicMcpUrl: 'https://tools.example.com/mcp' },
+    }),
+    /公開登録にはSky URLと開発者キー/,
+  );
+});
 
 function sdk(overrides = {}) {
   const calls = [];
@@ -54,6 +91,7 @@ function sdk(overrides = {}) {
     autoPublish: true,
     fetch: mockFetch,
     logger: { warn() {} },
+    localDiscovery: false,
     ...overrides,
   });
   return { app, calls };

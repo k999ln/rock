@@ -1,6 +1,6 @@
 # avocadoOS — 確定した製品ベース
 
-2026-09-19 LLM分類訂正（v1.72）: 現行の端末内Qwen / llama.rnは固定profileの非信頼plannerであり、Tool実行・再試行・成果保存・権限判定の主体ではない。WebのOpenAI接続はSkyの法務受付・特許アシスタント2 Tool内部だけ。Jev (`typesafe-ai/jev`) はSkyから明示利用するremote evaluatorとして追加設計し、local modelや汎用generatorに数えず、結果を権限・承認・成功へ昇格させない。正本は[LLM・評価モデル設計](llm-evaluation-architecture.md)と`data/llm-capabilities.json`。Jev runtime、credential、同意UI、provider受入はAI07として未完了。
+2026-09-20 LLM実装追記（v1.73）: 現行の端末内Qwen / llama.rnは固定profileの非信頼plannerであり、Tool実行・再試行・成果保存・権限判定の主体ではない。WebのOpenAI接続はSkyの法務受付・特許アシスタント2 Tool内部だけ。Jev (`typesafe-ai/jev`) はSkyから明示利用するremote evaluatorとしてserver-side route、同意UI、closed rubric、Evaluation Receiptまで実装し、local modelや汎用generatorに数えず、結果を権限・承認・成功へ昇格させない。正本は[LLM・評価モデル設計](llm-evaluation-architecture.md)と`data/llm-capabilities.json`。AI_GATEWAY_API_KEY、provider条件、料金、sandbox／本番受入はAI07の未完了gate。
 
 2026-09-17料金方針の訂正（条件確認中・未実装）: 所有者はシステムを公開し、Sky経由で利益が出た分に対する割合の成功報酬でマネタイズする意向を明示した。Walletはその支払いを円滑にする入口で、外部サービスから本人銀行口座への入金を自動的に徴収する権限ではない。開発者還元は実回収済み成功報酬の一部からとし、別途の還元負担を追加しない。率、対象利益の定義、従来の月888 cents上限との関係、回収方法は未確定。以下の月上限等は現行実装の説明であり、新料金の承認・実装済みを意味しない。正本JSONの`commercialPolicyRevision`と[Sky経済設計](sky-network-economy.md)に区別を記録する。
 

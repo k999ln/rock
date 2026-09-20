@@ -18,10 +18,10 @@
 - 端末内Qwen / llama.rnは固定profileの非信頼planner。Broker / Engineが実行・再試行・保存を担う。
 - OpenAI接続はSkyの法務受付と特許アシスタントの2 Tool内部だけ。catalogの`ready`はcredential接続済みや本番合格ではない。
 - JevはSkyから明示利用するremote evaluatorとして設計し、local plannerや汎用generatorに数えない。結果は`advisory-only`。
-- 現行`ai@7.0.99`に`experimental_evaluate` exportはなく、Jev runtimeは未実装。公式API互換、privacy、料金、失敗縮退をAI07で受け入れる。
+- 現行`ai@7.0.107`は`experimental_evaluate`をexportし、Jev runtimeはSkyのserver-side route・同意UI・closed rubric・receiptまで実装済み。provider条件、API key、privacy、料金、sandbox／本番受入をAI07の残gateとする。
 - `AGENTS.md`、README、prompt playbookの削除済みbranch参照、Sky role 6→10、RockstarOS→avocadoOSのcurrent表記を同期対象とした。
 
-この追補は設計・正本訂正の合格であり、Jev provider接続、API key設定、route、UI、catalog `ready`、production利用の完了判定ではない。
+この追補は設計・正本訂正に加え、Jev route／UI／catalog接続の実装を反映する。Jev provider接続、API key設定、sandbox／production利用の完了判定ではない。
 
 ## 監査対象
 

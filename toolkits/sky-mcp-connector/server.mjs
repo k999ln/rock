@@ -7,11 +7,12 @@ import {
   timingSafeEqual,
 } from 'node:crypto';
 import { lookup } from 'node:dns/promises';
-import { readFile } from 'node:fs/promises';
-import { createServer } from 'node:http';
+import { lstat, readFile, readdir } from 'node:fs/promises';
+import { createServer, request as httpRequest } from 'node:http';
 import { request as httpsRequest } from 'node:https';
 import { isIP } from 'node:net';
-import { dirname, isAbsolute, resolve } from 'node:path';
+import { homedir } from 'node:os';
+import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -188,6 +189,79 @@ async function postHttps(resolved, headers, payload, timeoutMs) {
         Object.assign(new Error('MCP timeout'), { code: 'outcome_unknown' }),
       ),
     );
+    request.on('error', reject);
+    request.end(payload);
+  });
+}
+
+function validateLocalDescriptor(raw, file) {
+  if (!raw || raw.schema !== 'sky-local-tool/1' || raw.transport !== 'local_http')
+    fail('PC Toolの登録定義を確認してください。');
+  const id = cleanText(raw.id, 'PC Tool ID', 64);
+  if (!/^sdk-[a-f0-9]{24}$/.test(id) || file !== `${id}.json`)
+    fail('PC Tool IDを確認してください。');
+  let url;
+  try { url = new URL(raw.url); } catch { fail('PC Tool URLを確認してください。'); }
+  if (
+    url.protocol !== 'http:' || url.hostname !== '127.0.0.1' ||
+    !url.port || url.username || url.password || url.search || url.hash ||
+    !/^\/[a-zA-Z0-9/_-]{1,100}$/.test(url.pathname)
+  ) fail('PC Toolは127.0.0.1のHTTPだけ登録できます。');
+  if (typeof raw.secret !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(raw.secret))
+    fail('PC Toolの接続キーを確認してください。');
+  if (!Number.isSafeInteger(raw.pid) || raw.pid < 1)
+    fail('PC ToolのプロセスIDを確認してください。');
+  return {
+    id,
+    name: cleanText(raw.name, '名称', 80),
+    description: cleanText(raw.description, '説明', 300),
+    required: false,
+    transport: 'local_http',
+    url: url.toString(),
+    secret: raw.secret,
+    pid: raw.pid,
+  };
+}
+
+async function discoverLocalTools(directory) {
+  let folder;
+  try { folder = await lstat(directory); } catch (error) {
+    if (error.code === 'ENOENT') return [];
+    throw error;
+  }
+  if (!folder.isDirectory() || (folder.mode & 0o077)) return [];
+  const files = (await readdir(directory)).filter((file) => /^sdk-[a-f0-9]{24}\.json$/.test(file)).slice(0, 100);
+  const specs = [];
+  for (const file of files) {
+    try {
+      const path = join(directory, file);
+      const info = await lstat(path);
+      if (!info.isFile() || (info.mode & 0o077) || info.size > 4_096) continue;
+      const spec = validateLocalDescriptor(JSON.parse(await readFile(path, 'utf8')), file);
+      process.kill(spec.pid, 0);
+      specs.push(spec);
+    } catch { /* A damaged descriptor cannot become a connection. */ }
+  }
+  return specs;
+}
+
+async function postLocal(spec, headers, payload, timeoutMs) {
+  return await new Promise((resolvePromise, reject) => {
+    const request = httpRequest(spec.url, { method: 'POST', headers }, (response) => {
+      const chunks = [];
+      let size = 0;
+      response.on('data', (chunk) => {
+        size += chunk.length;
+        if (size > MAX_BODY) request.destroy(new Error('MCP response too large'));
+        else chunks.push(chunk);
+      });
+      response.on('end', () => resolvePromise({
+        status: response.statusCode ?? 502,
+        headers: response.headers,
+        text: Buffer.concat(chunks).toString('utf8'),
+      }));
+    });
+    request.setTimeout(timeoutMs, () => request.destroy(new Error('MCP timeout')));
     request.on('error', reject);
     request.end(payload);
   });
@@ -378,7 +452,8 @@ class HttpTransport {
     this.sessionId = null;
   }
   async request(message, timeoutMs = REQUEST_TIMEOUT_MS) {
-    const remote = await validateRemoteUrl(this.spec.url);
+    const local = this.spec.transport === 'local_http';
+    const remote = local ? null : await validateRemoteUrl(this.spec.url);
     const headers = {
       'Content-Type': 'application/json',
       Accept: 'application/json, text/event-stream',
@@ -387,12 +462,17 @@ class HttpTransport {
     if (this.sessionId) headers['Mcp-Session-Id'] = this.sessionId;
     if (this.spec.authEnv && process.env[this.spec.authEnv])
       headers.Authorization = `Bearer ${process.env[this.spec.authEnv]}`;
-    const response = await postHttps(
+    if (local) headers['x-sky-local-secret'] = this.spec.secret;
+    const response = await (local ? postLocal(this.spec,
+      headers,
+      JSON.stringify(message),
+      timeoutMs,
+    ) : postHttps(
       remote,
       headers,
       JSON.stringify(message),
       timeoutMs,
-    );
+    ));
     if (response.status >= 300 && response.status < 400)
       fail('遠隔MCPのredirectは許可されていません。', 502, 'redirect_denied');
     if (response.status === 401 || response.status === 403)
@@ -446,6 +526,29 @@ export class McpHub {
     this.approvals = new Map();
     this.approvalSecret = randomBytes(32);
     this.nextId = 1;
+    this.localIds = new Set();
+  }
+  syncLocal(specs) {
+    const next = new Set(specs.map((spec) => spec.id));
+    for (const id of this.localIds) {
+      if (!next.has(id)) {
+        this.entries.delete(id);
+        this.approvals.clear();
+      }
+    }
+    for (const spec of specs) {
+      const current = this.entries.get(spec.id);
+      if (current && current.spec.transport !== 'local_http') continue;
+      if (current && current.spec.url === spec.url && current.spec.secret === spec.secret) continue;
+      this.entries.set(spec.id, {
+        spec,
+        transport: new HttpTransport(spec),
+        passport: null,
+        state: 'available',
+      });
+      this.approvals.clear();
+    }
+    this.localIds = next;
   }
   list() {
     return [...this.entries.values()].map(({ spec, passport, state }) => ({
@@ -705,6 +808,7 @@ function send(response, status, data, origin) {
 export async function createConnector({
   registryPath = resolve(here, 'registry.json'),
   port = DEFAULT_PORT,
+  localToolDirectory = process.env.SKY_LOCAL_TOOL_DIR ?? join(homedir(), '.sky', 'mcp-tools'),
 } = {}) {
   const specs = validateRegistry(
     JSON.parse(await readFile(registryPath, 'utf8')),
@@ -746,6 +850,7 @@ export async function createConnector({
         !timingSafeEqual(Buffer.from(authorization), Buffer.from(expected))
       )
         return send(response, 401, { error: 'Unauthorized' }, origin);
+      hub.syncLocal(await discoverLocalTools(localToolDirectory));
       if (request.method === 'GET' && request.url === '/servers')
         return send(response, 200, { servers: hub.list() }, origin);
       const match = request.url?.match(

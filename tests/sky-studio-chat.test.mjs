@@ -7,9 +7,9 @@ const studio = readFileSync(new URL('../components/rock-studio.tsx', import.meta
 void test('Rock Studio exposes copy-first SDK integration for an existing tool', () => {
   assert.match(studio, /このコードを、/);
   assert.match(studio, /createSkyToolApp/);
-  assert.match(studio, /rockstaros-sky-tool-sdk-0\.1\.0\.tgz/);
+  assert.match(studio, /rockstaros-sky-tool-sdk-0\.1\.2\.tgz/);
   assert.match(studio, /\/api\/sky\/developer-tokens/);
-  assert.match(studio, /autoPublish: true/);
+  assert.match(studio, /開発者キー（公開時のみ）/);
   assert.doesNotMatch(studio, /type="file"/);
 });
 

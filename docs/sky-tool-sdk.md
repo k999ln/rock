@@ -2,6 +2,8 @@
 
 最終更新: 2026-09-15
 
+2026-09-20更新: SDK 0.1.2ではPC内ToolがRockstarOSのSky一覧へ自動で現れ、カードからHubへ接続できる。`publicMcpUrl`を省くとSky URL・開発者キーなしでローカル専用起動できる。公開URLを設定した場合だけSky RegistryへのPackage登録と利用記録を試す。PCでの接続成功はnative OS、公開審査やCloud配備の合格を意味しない。
+
 ## 目的
 
 開発者が「この処理は自動化できる」と気づいた時、既存コードの作り直しではなく、Skyの雛形へ関数を接続するだけでLLMが安全に選べるToolへ変換する。Stripeの決済SDKのように、Sky Tool SDKをコードへ組み込むことで登録、MCP公開、匿名利用集計までを同じ定義から行う。
@@ -23,7 +25,7 @@ flowchart LR
   U --> M[匿名利用集計を開発者へ返す]
 ```
 
-通常はPCの`/studio`を開き、SDKの導入コマンドと組込みコードをコピーして既存ツールへ追加する。Rock Studioで一度だけ開発者キーを発行し、コードへ直書きせず`SKY_DEVELOPER_TOKEN`環境変数へ保存する。ツールを起動すると、SDKが同じ定義から`sky-tool-package/1`を生成し、所有者登録、宣言公開、MCP公開、匿名利用記録を行う。既存ツールのソース本文はSkyへ送らない。
+通常はPCの`/studio`を開き、SDKの導入コマンドと組込みコードをコピーして既存ツールへ追加する。ツールを起動すると、PC内のSky Connectorが検出し、RockstarOSのSky一覧から接続できる。公開する場合にRock Studioで開発者キーを発行し、コードへ直書きせず`SKY_DEVELOPER_TOKEN`環境変数へ保存する。実際に稼働する公開HTTPS MCP URLを設定した場合は、同じ定義から`sky-tool-package/1`を生成して所有者登録、宣言公開、匿名利用記録を行う。既存ツールのソース本文はSkyへ送らない。
 
 CLIから新規Toolを作る場合は、次のコマンドも利用できる。
 
@@ -44,6 +46,8 @@ node toolkits/sky-tool-sdk/bin/create-sky-tool.mjs init work/my-sky-tool \
 - Sky登録用の不変なPackageとSHA-256
 
 ## PCでの登録
+
+SDKを起動すると、所有者だけが読めるPC内の接続定義が作られ、Sky MCP Connectorが接続一覧へ反映する。PC内ToolはループバックURLと一時キーだけで接続し、任意のshell実行や外部URLへの迂回は受け付けない。接続時に`initialize`と`tools/list`を検査し、実行時はConnectorの一回承認を使う。旧Mr. Automation Hubにある11件の独立した自動化候補はSkyの「導入候補」に掲載した。実行器や本人アカウントが未接続の候補は接続済みとして表示しない。
 
 `/studio`は消費者向けSkyとは分けたSDK組込み用の開発者画面である。SDK配布物、コピー可能な組込みコード、開発者キー発行、登録後のSky確認を一画面にまとめる。ブラウザから既存ツールのコードやファイルを送らず、SDKが生成したPackageだけをRegistry APIへ送る。
 
@@ -80,8 +84,16 @@ Sky Tool SDKは同じTool定義から次を生成する。
 | `GET /api/sky/tool-registry` | 公開 | 公開Packageと導入可否を取得 |
 | `POST /api/sky/tool-events` | 開発者キー | 匿名利用イベントを記録 |
 | `GET /api/sky/tool-events` | ブラウザ本人 | 自分のToolの集計だけを表示 |
+| `POST /api/sky/access-codes` | 開発者キーまたはブラウザ本人 | Telegram用の期限・回数付きコードを発行 |
+| `GET /api/sky/access-codes` | 開発者キーまたはブラウザ本人 | 発行済みコードの状態を確認（平文は再表示しない） |
+| `DELETE /api/sky/access-codes` | 開発者キーまたはブラウザ本人 | コードを失効 |
+| `POST /api/sky/telegram/redeem` | 内部Bridge secret | Telegram利用者へPackage Grantを付与 |
+| `GET /api/sky/telegram/tools` | 内部Bridge secret | Telegram利用者の有効化済みTool一覧 |
+| `POST /api/sky/telegram/build` | 内部Bridge secret | Telegram貼り付けコードを解析し、Manifestと一回用コードを作成（ソース本文は保存しない） |
 
 開発者キーはSHA-256だけをD1へ保存し、失効できる。利用イベントはPackage ID、Tool名、匿名Installation ID、結果区分、処理時間、実行時刻だけを受け付ける。入力、出力、会話、APIキー、Wallet残高は送信・保存しない。
+
+発行コードも平文では保存しない。使用時にコードをハッシュ照合し、`sky_tool_grants`へTelegram利用者・チャット・Packageを記録する。Grantの付与はToolの公開状態を再確認し、期限切れ・失効・使用回数超過を拒否する。Telegram BridgeはBotとSky間の共有secretで保護し、ソースコード、開発者キー、APIキーをTelegramへ渡さない。
 
 ## MCPと実行安全
 

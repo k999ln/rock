@@ -95,9 +95,11 @@ const fieldHelp: Array<{
 
 export function PatentAssistantRunner({
   onRunningChange,
+  onOutcome,
   executionDisabled = false,
 }: {
   onRunningChange?: (running: boolean) => void;
+  onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   executionDisabled?: boolean;
 }) {
   const [input, setInput] = useState<PatentIntakeInput>(emptyInput);
@@ -152,7 +154,10 @@ export function PatentAssistantRunner({
         ? '入力内容を保存せず、公式特許情報から候補を調べています。'
         : '端末内で予備評価と書類ドラフトを作成しました。',
     );
-    if (!researchConsent) return;
+    if (!researchConsent) {
+      onOutcome?.({ ok: true, text: '端末内で予備評価と書類ドラフトを作成しました。出願・提出はしていません。内容はこのカードで確認してください。' });
+      return;
+    }
 
     setRunning(true);
     onRunningChange?.(true);
@@ -168,6 +173,7 @@ export function PatentAssistantRunner({
       if (!response.ok)
         throw new Error(payload.error || '先行技術調査を利用できません。');
       setResearch(payload);
+      onOutcome?.({ ok: true, text: '先行技術候補と出典を取得しました。原文とドラフトをこのカードで確認してください。' });
       setNotice(
         '先行技術候補と出典を追加しました。原文を確認してから書類を利用してください。',
       );
@@ -177,7 +183,10 @@ export function PatentAssistantRunner({
           ? caught.message
           : '先行技術調査を利用できません。',
       );
-      setNotice('検索式と書類ドラフトは保存できます。');
+      setNotice(
+        'オンライン調査は利用できないため、端末内の検索式と書類ドラフトへ切り替えました。',
+      );
+      onOutcome?.({ ok: false, text: 'オンライン調査は利用できませんでした。端末内の検索式とドラフトをこのカードで確認してください。' });
     } finally {
       setRunning(false);
       onRunningChange?.(false);

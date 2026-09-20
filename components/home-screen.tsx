@@ -55,7 +55,7 @@ const apps: HomeApp[] = [
   {
     id: 'chat',
     name: 'Zema',
-    description: '頼む・確認する・受け取る',
+    description: 'ツールを選ぶ・頼む・結果を確認',
     href: '/chat',
     Icon: MessageCircle,
     color: 'chat',
@@ -247,16 +247,16 @@ export default function HomeScreen() {
           </button>
         </div>
 
-        <Link href="/chat" className={styles.skyWidget}>
+        <Link href="/sky" className={styles.skyWidget}>
           <span className={styles.widgetMark} aria-hidden="true">
             <ShieldCheck size={22} />
           </span>
           <span className={styles.widgetCopy}>
             <small>SKY AUTO</small>
-            <strong>何をしてほしい？</strong>
-            <span>Zemaに話すと、接続済みの役割を自動で選びます</span>
+            <strong>どのアプリを使う？</strong>
+            <span>Skyからツールを選び、専用画面で入力・実行できます</span>
           </span>
-          <span className={styles.widgetAction}>Zemaを開く</span>
+          <span className={styles.widgetAction}>Skyを開く</span>
         </Link>
 
         <div className={styles.appGrid} aria-label="ホームアプリ">

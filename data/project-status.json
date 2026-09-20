@@ -1,8 +1,15 @@
 {
-  "updatedAt": "2026-09-19",
+  "updatedAt": "2026-09-20",
   "milestone": "AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続",
-  "nextAction": "AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。SKY17の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。",
+  "nextAction": "SKY20は旧Mr. Hub 11候補とJev周辺7候補の実行器、本人接続、料金・結果照合を一件ずつ受け入れ、通るまでreadyにしない。PC内SDK Appのカード表示・接続・停止はローカルSkyで確認済み。AI07はJevのprovider sandboxで正常系・429・5xx・不正response・budget縮退を受入し、AI_GATEWAY_API_KEY、Terms/Privacy、料金上限を確認する。JevはSkyのcatalog／同意UI／closed rubric／Evaluation Receiptまで実装済みだが、本番provider接続は未完了。法務受付・特許アシスタントはSkyの別Toolとして維持し、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。",
   "tasks": [
+    {
+      "id": "SKY20",
+      "title": "ローカルSkyへSDK Appの自動検出・Hub接続を追加し、旧Mr. Hub 11件とJev周辺自動化7件を候補表示",
+      "status": "in_progress",
+      "dependsOn": ["SKY15"],
+      "evidence": ["components/sky-workspace.tsx", "toolkits/sky-tool-sdk/src/index.mjs", "toolkits/sky-mcp-connector/server.mjs", "docs/sky-mr-automation-candidates.md"]
+    },
     {
       "id": "SKY17",
       "title": "SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装）",
@@ -64,7 +71,11 @@
       "evidence": [
         "docs/llm-evaluation-architecture.md",
         "data/llm-capabilities.json",
-        "scripts/check-llm-architecture.mjs"
+        "scripts/check-llm-architecture.mjs",
+        "lib/jev-evaluation.ts",
+        "app/api/jev-evaluation/route.ts",
+        "components/jev-evaluation-runner.tsx",
+        "tests/jev-evaluation.test.mjs"
       ]
     },
     {
@@ -252,8 +263,10 @@
         "components/sky-chat-workspace.tsx",
         "components/mcp-bot-runner.tsx",
         "lib/mcp-hub.ts",
+        "lib/mcp-tool-result.ts",
         "toolkits/sky-mcp-connector/server.mjs",
         "tests/mcp-connector.test.mjs",
+        "tests/mcp-tool-result.test.mjs",
         "docs/chat-mcp-control-room-20260913.md"
       ]
     },
@@ -279,11 +292,13 @@
       "dependsOn": ["SKY14"],
       "evidence": [
         "lib/sky-zema-handoff.ts",
+        "lib/zema-chat-session.ts",
         "lib/operations-client.ts",
         "components/sky-workspace.tsx",
         "components/sky-chat-workspace.tsx",
         "components/chat-live-progress.tsx",
         "tests/sky-zema-handoff.test.mjs",
+        "tests/zema-chat-session.test.mjs",
         "tests/web-route-style-contract.test.mjs",
         "docs/sky.md"
       ]

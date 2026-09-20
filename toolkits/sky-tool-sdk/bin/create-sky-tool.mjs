@@ -45,14 +45,12 @@ const packageJson = {
   private: true,
   type: 'module',
   scripts: { start: 'node index.mjs' },
-  dependencies: { '@rockstaros/sky-tool-sdk': '^0.1.0' },
+  dependencies: { '@rockstaros/sky-tool-sdk': '^0.1.2' },
 };
 
 const index = `import { createSkyToolApp } from '@rockstaros/sky-tool-sdk';
 
 const sky = createSkyToolApp({
-  skyUrl: process.env.SKY_URL,
-  developerToken: process.env.SKY_DEVELOPER_TOKEN,
   developer: {
     id: '${developer}',
     name: '${developer}',
@@ -64,7 +62,8 @@ const sky = createSkyToolApp({
     version: '0.1.0',
     sourceUrl: 'https://github.com/example/${name}',
     license: 'MIT',
-    publicMcpUrl: 'https://tools.example.com/mcp'
+    // 公開登録する場合だけ、実際に稼働するHTTPS MCP URLを指定します。
+    // publicMcpUrl: 'https://tools.example.com/mcp'
   },
   registration: 'best_effort',
   autoPublish: false

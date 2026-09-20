@@ -15,6 +15,7 @@ export type SkyZemaHandoff = {
   source: 'sky';
   toolId: string;
   request: string;
+  executionProvider: 'local-model';
   createdAt: number;
 };
 
@@ -30,6 +31,7 @@ function validHandoff(value: unknown): value is SkyZemaHandoff {
     TOOL_ID.test(handoff.toolId) &&
     typeof handoff.request === 'string' &&
     handoff.request.length <= MAX_REQUEST_LENGTH &&
+    (handoff.executionProvider === undefined || handoff.executionProvider === 'local-model') &&
     typeof handoff.createdAt === 'number' &&
     Number.isFinite(handoff.createdAt)
   );
@@ -49,6 +51,7 @@ export function queueSkyZemaHandoff(
     source: 'sky',
     toolId,
     request: request.trim().slice(0, MAX_REQUEST_LENGTH),
+    executionProvider: 'local-model',
     createdAt: now,
   };
   storage.setItem(SKY_ZEMA_HANDOFF_KEY, JSON.stringify(handoff));

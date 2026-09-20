@@ -10,20 +10,15 @@ import {
 } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   ArrowRight,
-  Ban,
-  Bot,
   CheckCircle2,
-  CircleAlert,
-  Clock3,
   Grid2X2,
-  History,
   House,
   ListChecks,
-  LoaderCircle,
   MessageCircle,
+  PanelLeft,
   Plus,
   RotateCcw,
   Send,
@@ -32,8 +27,19 @@ import {
 import { catalog, type Automation } from '@/lib/catalog';
 import { fashionMcpConnected } from '@/lib/fashion-mcp-client';
 import { routeSkyRequest, skyRoles, type SkyRole } from '@/lib/sky-routing';
+import {
+  adaptersForCapability,
+  type SkyProviderCapability,
+} from '@/lib/sky-connections';
+import {
+  isTextModelProvider,
+  localModelPresets,
+  textModelProviderDefinition,
+  textModelProviders,
+} from '@/lib/llm-providers';
 import WorkspaceShell from '@/components/workspace-shell';
 import { MrToolRunner } from '@/components/mr-tool-runner';
+import { SkyCandidateRunner } from '@/components/sky-candidate-runner';
 import { FashionBrandOpsRunner } from '@/components/fashion-brand-ops-runner';
 import { McpBotRunner } from '@/components/mcp-bot-runner';
 import {
@@ -44,7 +50,12 @@ import {
   operationRequest,
   OperationRequestError,
 } from '@/lib/operations-client';
-import type { Job, SkyConnection } from '@/lib/operations';
+import type {
+  Job,
+  JobTool,
+  SkyConnection,
+  SkyProviderConnection,
+} from '@/lib/operations';
 import { deviceToken } from '@/lib/device';
 import { listMcpConnections, type McpConnection } from '@/lib/mcp-hub';
 import type {
@@ -57,6 +68,12 @@ import {
   consumeSkyZemaHandoff,
   SKY_ZEMA_JOB_EVENT,
 } from '@/lib/sky-zema-handoff';
+import {
+  readZemaChatSessions,
+  saveZemaChatSession,
+  type ZemaChatSession,
+} from '@/lib/zema-chat-session';
+import { skyToolLabelFor } from '@/lib/sky-tool-labels';
 
 type ChatEntry = {
   id: string;
@@ -70,6 +87,7 @@ type ActiveRequest = {
   id: string;
   text: string;
   toolId: string;
+  executionProvider: 'local-model';
 };
 
 type WorkflowStatus = 'ready' | 'running' | 'completed' | 'failed';
@@ -82,12 +100,12 @@ type FundSnapshot = {
 
 const AUTO_MODE = 'sky-auto';
 const MCP_PREFIX = 'mcp:';
+function currentTimestamp() { return Date.now(); }
 const Workbench = dynamic(() => import('@/components/workbench'), {
   loading: () => (
     <div className="sky-chat-centered">仕事を読み込んでいます…</div>
   ),
 });
-const readyApps = catalog.filter((tool) => tool.status === 'ready');
 const quickRequests = [
   '案件を見て',
   '記事を整えて',
@@ -95,8 +113,35 @@ const quickRequests = [
   '特許を調べて',
 ];
 
+const providerRoutingDefaults: Record<string, string> = {
+  imageGeneration: 'higgsfield',
+  videoGeneration: 'higgsfield',
+  textGeneration: 'local-model',
+  textGenerationModel: 'Qwen3-0.6B-Q8_0-GGUF',
+  workflow: 'make',
+  socialPublish: 'make',
+  gameDelivery: 'roblox',
+};
+
+const providerRoutingFields: Array<{
+  id: string;
+  label: string;
+  capability: SkyProviderCapability;
+}> = [
+  { id: 'imageGeneration', label: '画像', capability: 'image_generation' },
+  { id: 'videoGeneration', label: '動画', capability: 'video_generation' },
+  { id: 'textGeneration', label: '文章・LLM', capability: 'text_generation' },
+  { id: 'workflow', label: 'ワークフロー', capability: 'workflow' },
+  { id: 'socialPublish', label: 'SNS公開', capability: 'social_publish' },
+  { id: 'gameDelivery', label: 'ゲーム導入', capability: 'game_delivery' },
+];
+
 function roleFor(tool: Automation) {
-  return skyRoles.find((role) => role.toolId === tool.id)?.label ?? 'Skyアプリ';
+  return (
+    skyRoles.find((role) => role.toolId === tool.id)?.label ??
+    skyToolLabelFor(tool.id)?.role ??
+    'Skyアプリ'
+  );
 }
 
 function markFor(tool: Automation) {
@@ -128,23 +173,31 @@ function jobStateClass(job: Job) {
 function responseFor(
   tool: Automation | null,
   routedRole: SkyRole | null,
-  connectedCount: number,
 ) {
+  if (tool?.status === 'candidate' && tool.runner !== 'candidate-local')
+    return `${roleFor(tool)}はSkyに登録済みですが、実行器の接続待ちです。下のカードから接続方法を確認できます。`;
+  if (tool?.status === 'candidate' && tool.runner === 'candidate-local')
+    return `${roleFor(tool)}でローカル確認・下書きを進めます。外部サービス、端末、送信先には接続しません。`;
   if (tool)
-    return `${roleFor(tool)}で進めます。下の処理カードで必要な入力を確認し、そのまま実行できます。`;
+    return `${roleFor(tool)}で進めます。下の処理カードで必要な入力を確認できます。`;
   if (routedRole)
     return `${routedRole.label}はまだ接続されていません。Skyで接続すると、次からはここで頼めます。`;
-  if (connectedCount === 0)
-    return '使えるアプリがまだありません。Skyでひとつ接続すれば、次からはここに話すだけです。';
-  return '目的をもう少しだけ教えてください。「案件」「記事」「出典」「法律」「特許」のように一言足すと、自動で選べます。';
+  return '担当を選べませんでした。Skyで接続状態を確認してください。';
 }
 
 export default function SkyChatWorkspace() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const preferredTool = searchParams.get('tool') ?? '';
+  const requestedThreadId = searchParams.get('thread') ?? '';
   const preferredFund = searchParams.get('fund') ?? '';
   const workView = searchParams.get('view') === 'work';
   const [connectedTools, setConnectedTools] = useState<string[]>([]);
+  const [providerRouting, setProviderRouting] = useState<Record<string, string>>(
+    providerRoutingDefaults,
+  );
+  const providerRoutingRef = useRef(providerRoutingDefaults);
+  const providerSaveTimerRef = useRef<number | null>(null);
   const [fashionConnected, setFashionConnected] = useState(false);
   const [mcpServers, setMcpServers] = useState<McpConnection[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -157,14 +210,27 @@ export default function SkyChatWorkspace() {
   const [activeRequest, setActiveRequest] = useState<ActiveRequest | null>(
     null,
   );
+  const [requestStartedAt, setRequestStartedAt] = useState(0);
   const [running, setRunning] = useState(false);
   const [workflowStatus, setWorkflowStatus] = useState<WorkflowStatus>('ready');
+  const [threadId, setThreadId] = useState('');
+  const [threadCreatedAt, setThreadCreatedAt] = useState(0);
+  const [sessionReady, setSessionReady] = useState(false);
+  const [recentThreads, setRecentThreads] = useState<ZemaChatSession[]>([]);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [historyQuery, setHistoryQuery] = useState('');
+  const [outcome, setOutcome] = useState<{ ok: boolean; text: string } | null>(null);
+  const [chatLoading, setChatLoading] = useState(false);
+  const [remoteConsent, setRemoteConsent] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { needsSignin, setNeedsSignin } = useExecutionAccess();
   const composerRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const nextMessageIdRef = useRef(0);
+  const lastProgressRef = useRef('');
+  const chatAbortRef = useRef<AbortController | null>(null);
+  const activeChatThreadRef = useRef('');
   const hasActiveJob = jobs.some(
     (job) => job.status === 'queued' || job.status === 'running',
   );
@@ -177,17 +243,22 @@ export default function SkyChatWorkspace() {
     void Promise.all([
       operationRequest<SkyConnection[]>('/api/sky/connections'),
       operationRequest<Job[]>('/api/jobs'),
+      operationRequest<SkyProviderConnection[]>('/api/sky/provider-connections'),
     ])
-      .then(([connections, recentJobs]) => {
+      .then(([connections, recentJobs, providerConnections]) => {
         if (!active) return;
         const ids = new Set<string>(connections.map(({ tool }) => tool));
-        const preferred = readyApps.find(
+        const preferred = catalog.find(
           (tool) =>
             tool.id === preferredTool &&
             (ids.has(tool.id) || Boolean(tool.launchPath)),
         )?.id;
         setConnectedTools([...ids]);
         setJobs(recentJobs);
+        const routing = providerConnections.find((item) => item.provider === 'routing');
+        const nextRouting = { ...providerRoutingDefaults, ...routing?.config };
+        providerRoutingRef.current = nextRouting;
+        setProviderRouting(nextRouting);
         setSelectedToolId(preferred ?? AUTO_MODE);
       })
       .catch((reason) => {
@@ -335,9 +406,17 @@ export default function SkyChatWorkspace() {
     });
   }, [messages]);
 
+  useEffect(() => {
+    if (chatAbortRef.current && activeChatThreadRef.current !== requestedThreadId) {
+      chatAbortRef.current.abort();
+      chatAbortRef.current = null;
+      setChatLoading(false);
+    }
+  }, [requestedThreadId]);
+
   const connectedApps = useMemo(
     () =>
-      readyApps.filter(
+      catalog.filter(
         (tool) =>
           connectedTools.includes(tool.id) ||
           (tool.integration === 'fashion-brand-ops' && fashionConnected),
@@ -345,7 +424,7 @@ export default function SkyChatWorkspace() {
     [connectedTools, fashionConnected],
   );
   const preferredApp = useMemo(
-    () => readyApps.find((tool) => tool.id === preferredTool) ?? null,
+    () => catalog.find((tool) => tool.id === preferredTool) ?? null,
     [preferredTool],
   );
   const modeApps = useMemo(
@@ -369,6 +448,11 @@ export default function SkyChatWorkspace() {
     connectedMcpServers.find(
       (server) => mcpMode(server.id) === selectedToolId,
     ) ?? null;
+  const textProvider = isTextModelProvider(providerRouting.textGeneration)
+    ? providerRouting.textGeneration
+    : 'local-model';
+  const textProviderDefinition = textModelProviderDefinition(textProvider);
+  const remoteTextProvider = textProviderDefinition.locality === 'remote' || textProvider === 'openai-compatible';
   const activeTool = activeRequest
     ? (modeApps.find((tool) => tool.id === activeRequest.toolId) ?? null)
     : null;
@@ -384,49 +468,153 @@ export default function SkyChatWorkspace() {
     fundSnapshot?.analytics.find((item) => item.fundId === activeFundId) ??
     null;
   const progressTool =
-    selectedTool ?? readyApps.find((tool) => tool.id === preferredTool) ?? null;
-  const visibleJobs = jobs
-    .filter((job) =>
-      selectedTool
-        ? job.tool === selectedTool.id
-        : connectedTools.includes(job.tool),
-    )
-    .slice(0, 3);
-
+    selectedTool ?? catalog.find((tool) => tool.id === preferredTool) ?? null;
+  const relevantJobs = activeRequest && requestStartedAt
+    ? jobs.filter((job) => job.tool === activeRequest.toolId && job.createdAt >= requestStartedAt - 1_000)
+    : [];
+  const visibleThreads = recentThreads.filter((session) => {
+    const firstRequest = session.messages.find((message) => message.side === 'me')?.text ?? '';
+    const query = historyQuery.trim().toLocaleLowerCase('ja-JP');
+    return !query || firstRequest.toLocaleLowerCase('ja-JP').includes(query);
+  });
+  const visibleBotApps = modeApps.filter((tool) => {
+    const query = historyQuery.trim().toLocaleLowerCase('ja-JP');
+    return !query || `${roleFor(tool)} ${tool.name}`.toLocaleLowerCase('ja-JP').includes(query);
+  });
   useEffect(() => {
-    if (loading || workView || !preferredTool) return;
+    if (loading || workView) return;
     const frame = window.requestAnimationFrame(() => {
-      const handoff = consumeSkyZemaHandoff(preferredTool);
-      if (!handoff) return;
-      const tool = readyApps.find((item) => item.id === handoff.toolId);
-      if (!tool) return;
-      setSelectedToolId(tool.id);
-      if (!handoff.request) return;
-      const id = `handoff-${handoff.id}`;
-      setMessages((current) => [
-        ...current,
-        { id: `${id}-me`, side: 'me', text: handoff.request, tool: tool.id },
-        {
-          id: `${id}-sky`,
+    let sessions: ZemaChatSession[] = [];
+    try { sessions = readZemaChatSessions(); } catch { /* Private storage may be unavailable. */ }
+    setRecentThreads(sessions);
+    setSessionReady(false);
+    setThreadId('');
+    setThreadCreatedAt(0);
+    setMessages([]);
+    setActiveRequest(null);
+    setRequestStartedAt(0);
+    setWorkflowStatus('ready');
+    setOutcome(null);
+    lastProgressRef.current = '';
+    const saved = sessions.find((item) => item.id === requestedThreadId && item.toolId === preferredTool);
+    if (saved) {
+      setThreadId(saved.id);
+      setThreadCreatedAt(saved.createdAt);
+      setSelectedToolId(saved.toolId);
+      setMessages(saved.messages);
+      setActiveRequest(saved.activeRequest
+        ? { ...saved.activeRequest, executionProvider: saved.activeRequest.executionProvider ?? 'local-model' }
+        : null);
+      setRequestStartedAt(saved.createdAt);
+      if (saved.workflowStatus === 'running') {
+        setWorkflowStatus('failed');
+        setMessages((current) => [...current, {
+          id: `resume-${saved.id}`,
           side: 'sky',
-          text: `${roleFor(tool)}へSkyから引き継ぎました。入力を確認して実行すると、状態と結果をこのスレッドで追跡します。`,
-          tool: tool.id,
-        },
-      ]);
-      setWorkflowStatus('ready');
-      setActiveRequest({ id, text: handoff.request, toolId: tool.id });
+          text: '画面を開き直しました。直前の実行結果はここでは確認できません。履歴を確認してから再実行してください。',
+          tool: saved.toolId,
+        }]);
+      } else setWorkflowStatus(saved.workflowStatus);
+      setOutcome(saved.outcome);
+      setSessionReady(true);
+      return;
+    }
+    if (!preferredTool || !requestedThreadId) return;
+    let handoff;
+    try { handoff = consumeSkyZemaHandoff(preferredTool); } catch { return; }
+    if (!handoff || handoff.id !== requestedThreadId) return;
+    const tool = catalog.find((item) => item.id === handoff.toolId);
+    if (!tool) return;
+    const id = `handoff-${handoff.id}`;
+    setSelectedToolId(tool.id);
+    setThreadId(handoff.id);
+    setThreadCreatedAt(handoff.createdAt);
+    setMessages([
+      ...(handoff.request ? [{ id: `${id}-me`, side: 'me' as const, text: handoff.request, tool: tool.id }] : []),
+      { id: `${id}-sky`, side: 'sky', text: handoff.request
+        ? `${roleFor(tool)}へSkyから引き継ぎました。入力を確認し、必要な承認を得てから実行します。進捗と結果はこのチャットに表示します。`
+        : `${roleFor(tool)}を開きました。下の入力欄に依頼を送ってください。`, tool: tool.id },
+    ]);
+    setActiveRequest(handoff.request ? {
+      id,
+      text: handoff.request,
+      toolId: tool.id,
+      executionProvider: handoff.executionProvider ?? 'local-model',
+    } : null);
+    setRequestStartedAt(handoff.createdAt);
+    setSessionReady(true);
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [loading, preferredTool, workView]);
+  }, [loading, preferredTool, requestedThreadId, workView]);
+
+  useEffect(() => {
+    if (!sessionReady || !threadId || threadId !== requestedThreadId || !threadCreatedAt) return;
+    try {
+      const sessions = saveZemaChatSession({
+        version: 1, id: threadId, toolId: preferredTool, createdAt: threadCreatedAt,
+        messages, activeRequest, workflowStatus, outcome,
+      });
+      const frame = window.requestAnimationFrame(() => setRecentThreads(sessions));
+      return () => window.cancelAnimationFrame(frame);
+    } catch { /* Keep the current conversation usable without tab storage. */ }
+  }, [sessionReady, threadId, requestedThreadId, threadCreatedAt, preferredTool, messages, activeRequest, workflowStatus, outcome]);
+
+  useEffect(() => () => {
+    if (providerSaveTimerRef.current !== null)
+      window.clearTimeout(providerSaveTimerRef.current);
+  }, []);
+
+  function recordWorkflowStatus(status: WorkflowStatus, toolId: string) {
+    setWorkflowStatus(status);
+    if (status === 'ready') return;
+    const key = `${activeRequest?.id ?? ''}:${status}`;
+    if (lastProgressRef.current === key) return;
+    lastProgressRef.current = key;
+    const text = status === 'running' ? '実行を開始しました。結果を待っています。'
+      : status === 'completed' ? '実行が完了しました。結果を確認できます。'
+      : '実行を完了できませんでした。内容を確認してください。';
+    setMessages((current) => [...current, {
+      id: `progress-${crypto.randomUUID()}`, side: 'sky', text, tool: toolId,
+    }]);
+  }
+
+  function recordOutcome(next: { ok: boolean; text: string }, toolId: string) {
+    setOutcome(next);
+    setMessages((current) => [...current, {
+      id: `result-${crypto.randomUUID()}`,
+      side: 'sky',
+      text: next.ok ? `結果：${next.text}` : `確認が必要：${next.text}`,
+      tool: toolId,
+    }]);
+  }
 
   function chooseMode(toolId: string) {
     setSelectedToolId(toolId);
     setError('');
   }
 
-  function directBot(toolId: string) {
-    chooseMode(toolId);
-    requestAnimationFrame(() => composerRef.current?.focus());
+  function changeProviderRoute(field: string, value: string) {
+    const next = { ...providerRoutingRef.current, [field]: value };
+    if (field === 'textGeneration' && isTextModelProvider(value))
+      next.textGenerationModel = textModelProviderDefinition(value).defaultModel;
+    providerRoutingRef.current = next;
+    setProviderRouting(next);
+    setError('');
+    if (providerSaveTimerRef.current !== null)
+      window.clearTimeout(providerSaveTimerRef.current);
+    providerSaveTimerRef.current = window.setTimeout(() => {
+      void operationRequest('/api/sky/provider-connections', 'PUT', {
+        provider: 'routing',
+        status: 'ready',
+        config: next,
+      }).catch((reason) => {
+        setError(
+          reason instanceof Error
+            ? reason.message
+            : 'Provider設定を保存できませんでした。',
+        );
+      });
+    }, 250);
   }
 
   function refreshConnectedMcp() {
@@ -469,38 +657,36 @@ export default function SkyChatWorkspace() {
     const text = draft.trim();
     if (!text) return;
 
-    const onlyConnectedMcp =
-      !selectedTool &&
-      !selectedMcpServer &&
-      connectedApps.length === 0 &&
-      connectedMcpServers.length === 1
-        ? connectedMcpServers[0]
-        : null;
-    const targetMcp = selectedMcpServer ?? onlyConnectedMcp;
+    if (chatLoading) return;
+    const targetMcp = selectedMcpServer;
     const routedRole = selectedTool || targetMcp ? null : routeSkyRequest(text);
     const routedTool = routedRole
       ? (connectedApps.find((item) => item.id === routedRole.toolId) ?? null)
       : null;
-    const onlyConnectedTool =
-      connectedApps.length === 1 && connectedMcpServers.length === 0
-        ? connectedApps[0]
-        : null;
-    const tool = selectedTool ?? routedTool ?? onlyConnectedTool;
+    const tool = selectedTool ?? routedTool;
     const toolId = targetMcp ? mcpMode(targetMcp.id) : tool?.id;
     const suggestedToolId = routedRole?.toolId;
     const id = `chat-${nextMessageIdRef.current++}`;
+    const nextThreadId = threadId || crypto.randomUUID();
 
+    const conversational = !toolId && !routedRole;
+    if (conversational && remoteTextProvider && !remoteConsent) {
+      setError(`${textProviderDefinition.name}へ会話を送るには、下の送信許可を確認してください。`);
+      return;
+    }
     setDraft('');
     setError('');
-    setMessages((current) => [
-      ...current,
+    setOutcome(null);
+    lastProgressRef.current = '';
+    const nextMessages: ChatEntry[] = [
+      ...messages,
       {
         id: `${id}-me`,
         side: 'me',
         text,
         tool: toolId,
       },
-      {
+      ...(!conversational ? [{
         id: `${id}-sky`,
         side: 'sky',
         text: targetMcp
@@ -508,15 +694,86 @@ export default function SkyChatWorkspace() {
           : responseFor(
               tool,
               routedRole,
-              connectedApps.length + connectedMcpServers.length,
             ),
         tool: toolId,
         suggestedTool: tool ? undefined : suggestedToolId,
-      },
-    ]);
+      } as ChatEntry] : []),
+    ];
+    const nextRequest = toolId
+      ? { id, text, toolId, executionProvider: 'local-model' as const }
+      : null;
+    setMessages(nextMessages);
+    if (conversational) {
+      const controller = new AbortController();
+      chatAbortRef.current?.abort();
+      chatAbortRef.current = controller;
+      activeChatThreadRef.current = nextThreadId;
+      setChatLoading(true);
+      const conversation = [...messages, { id: `${id}-me`, side: 'me' as const, text }]
+        .slice(-12)
+        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Zema'}: ${message.text}`)
+        .join('\n\n');
+      void fetch('/api/llm/text', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          provider: textProvider,
+          model: providerRouting.textGenerationModel || undefined,
+          system: 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。',
+          prompt: conversation.slice(-20_000),
+          consent: remoteTextProvider && remoteConsent,
+        }),
+        signal: controller.signal,
+      }).then(async (response) => {
+        const result = await response.json() as { text?: string; code?: string };
+        if (!response.ok || !result.text) throw new Error(result.code || 'TEXT_GENERATION_FAILED');
+        return result.text;
+      }).then((answer) => {
+        if (controller.signal.aborted) return;
+        setMessages((current) => [...current, { id: `${id}-sky`, side: 'sky', text: answer }]);
+      }).catch((reason) => {
+        if (controller.signal.aborted) return;
+        const code = reason instanceof Error ? reason.message : '';
+        const detail = code === 'LOCAL_LLM_BRIDGE_REQUIRED'
+          ? '端末内モデルはWeb版につながっていません。Skyの接続管理でOllamaなどを設定してください。'
+          : code === 'REMOTE_LLM_DISABLED'
+            ? '外部モデルはサーバー側で無効です。Skyの接続管理とサーバー設定を確認してください。'
+            : code === 'MISSING_PROVIDER_CREDENTIAL' || code === 'MISSING_PROVIDER_ENDPOINT'
+              ? '文章モデルの接続設定が不足しています。Skyの接続管理を確認してください。'
+              : '文章モデルから返答を受け取れませんでした。接続状態を確認して再送してください。';
+        setMessages((current) => [...current, { id: `${id}-sky`, side: 'sky', text: detail }]);
+      }).finally(() => {
+        if (chatAbortRef.current === controller) {
+          chatAbortRef.current = null;
+          setChatLoading(false);
+        }
+        setRemoteConsent(false);
+      });
+    }
     if (toolId) {
       setWorkflowStatus('ready');
-      setActiveRequest({ id, text, toolId });
+      setActiveRequest(nextRequest);
+      setRequestStartedAt(currentTimestamp());
+    }
+    if (!threadId) {
+      const createdAt = currentTimestamp();
+      const sessionToolId = toolId ?? AUTO_MODE;
+      try {
+        setRecentThreads(saveZemaChatSession({
+          version: 1,
+          id: nextThreadId,
+          toolId: sessionToolId,
+          createdAt,
+          messages: nextMessages,
+          activeRequest: nextRequest,
+          workflowStatus: 'ready',
+          outcome: null,
+        }));
+        setThreadId(nextThreadId);
+        setThreadCreatedAt(createdAt);
+        setSessionReady(true);
+        router.replace(`/chat?tool=${encodeURIComponent(sessionToolId)}&thread=${encodeURIComponent(nextThreadId)}`, { scroll: false });
+      } catch { /* Keep the conversation available in this tab if storage is blocked. */ }
     }
   }
 
@@ -537,8 +794,71 @@ export default function SkyChatWorkspace() {
       contentClassName="sky-chat-page"
       running={running}
     >
-      <section className="sky-chat-simple" aria-label="Zemaスレッド">
+      <section
+        className={`sky-chat-simple zema-grok-shell${sidebarOpen ? '' : ' is-sidebar-collapsed'}${!workView && messages.length === 0 ? ' is-empty' : ''}`}
+        aria-label="Zemaスレッド"
+      >
+        <aside className="zema-sidebar" aria-label="Zema Botと会話">
+          <div className="zema-sidebar-top">
+            <span className="zema-sidebar-brand" aria-hidden="true">Z</span>
+            <button type="button" className="zema-sidebar-close" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)}><PanelLeft size={18} /></button>
+          </div>
+          <Link className="zema-new-chat" href="/chat" onClick={() => setSidebarOpen(false)}><Plus size={17} /> <span>新しい会話</span></Link>
+          <label className="zema-history-search"><span className="sr-only">会話を検索</span><input value={historyQuery} onChange={(event) => setHistoryQuery(event.target.value)} placeholder="会話を検索" /></label>
+          <div className="zema-sidebar-section-title">BOT / THREADS</div>
+          <div className="zema-bot-list">
+            {visibleBotApps.map((tool) => {
+              const latest = jobs.find((job) => job.tool === tool.id);
+              return (
+                <button
+                  type="button"
+                  key={`sidebar-bot-${tool.id}`}
+                  className={selectedToolId === tool.id ? 'is-current' : ''}
+                  onClick={() => {
+                    chooseMode(tool.id);
+                    setSidebarOpen(false);
+                  }}
+                >
+                  <span className={`zema-bot-mark rock-icon-${tool.color}`}>{markFor(tool)}</span>
+                  <span className="zema-bot-copy">
+                    <strong>{roleFor(tool)}</strong>
+                    <small>{latest ? jobMessage(latest) : tool.name}</small>
+                  </span>
+                  <i className={latest ? jobStateClass(latest) : 'is-online'} />
+                </button>
+              );
+            })}
+            {connectedMcpServers.map((server) => (
+              <button
+                type="button"
+                key={`sidebar-mcp-${server.id}`}
+                className={selectedToolId === mcpMode(server.id) ? 'is-current' : ''}
+                onClick={() => {
+                  chooseMode(mcpMode(server.id));
+                  setSidebarOpen(false);
+                }}
+              >
+                <span className="zema-bot-mark is-mcp">M</span>
+                <span className="zema-bot-copy">
+                  <strong>{server.name}</strong>
+                  <small>{server.passport?.tools.length ?? 0}機能 · MCP</small>
+                </span>
+                <i className="is-online" />
+              </button>
+            ))}
+          </div>
+          <div className="zema-sidebar-section-title">最近の会話</div>
+          <div className="zema-history-list">
+            {visibleThreads.length === 0 ? <p className="zema-history-empty">会話はまだありません</p> : visibleThreads.map((session) => {
+              const title = session.messages.find((message) => message.side === 'me')?.text || '新しい会話';
+              return <Link key={session.id} className={session.id === threadId ? 'is-current' : ''} href={`/chat?tool=${encodeURIComponent(session.toolId)}&thread=${encodeURIComponent(session.id)}`} onClick={() => setSidebarOpen(false)}><MessageCircle size={15} /><span>{title}</span></Link>;
+            })}
+          </div>
+          <div className="zema-sidebar-bottom"><Link href="/sky"><Grid2X2 size={16} /><span>Skyでツールを追加</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link></div>
+        </aside>
+        {sidebarOpen && <button type="button" className="zema-sidebar-scrim" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)} />}
         <header className="sky-chat-commandbar">
+          <button type="button" className="zema-sidebar-toggle" aria-label="会話履歴を開く" onClick={() => setSidebarOpen(true)}><PanelLeft size={20} /></button>
           <div>
             <span>avocadoOS</span>
             <h1>Zema</h1>
@@ -570,46 +890,6 @@ export default function SkyChatWorkspace() {
             </Link>
           </nav>
         </header>
-
-        {!workView && (
-          <div className="sky-chat-mode-row" aria-label="依頼先を選ぶ">
-            <button
-              type="button"
-              aria-pressed={selectedToolId === AUTO_MODE}
-              className={selectedToolId === AUTO_MODE ? 'is-selected' : ''}
-              onClick={() => chooseMode(AUTO_MODE)}
-            >
-              <span className="sky-chat-auto-mark">
-                <Sparkles size={16} />
-              </span>
-              <span>
-                <strong>Sky Auto</strong>
-                <small>内容から自動で選ぶ</small>
-              </span>
-            </button>
-            {modeApps.map((tool) => (
-              <button
-                type="button"
-                aria-pressed={selectedToolId === tool.id}
-                key={tool.id}
-                className={selectedToolId === tool.id ? 'is-selected' : ''}
-                onClick={() => chooseMode(tool.id)}
-              >
-                <span className={`sky-chat-app-mark rock-icon-${tool.color}`}>
-                  {markFor(tool)}
-                </span>
-                <span>
-                  <strong>{roleFor(tool)}</strong>
-                  <small>{tool.name}</small>
-                </span>
-              </button>
-            ))}
-            <Link href="/sky" className="sky-chat-add-compact">
-              <Plus size={17} />
-              <span>追加</span>
-            </Link>
-          </div>
-        )}
 
         {workView ? (
           <section
@@ -648,7 +928,7 @@ export default function SkyChatWorkspace() {
               ) : (
                 <div className="sky-chat-job-list">
                   {jobs.map((job) => {
-                    const jobTool = readyApps.find(
+                    const jobTool = catalog.find(
                       (tool) => tool.id === job.tool,
                     );
                     return (
@@ -702,123 +982,27 @@ export default function SkyChatWorkspace() {
               aria-live="polite"
               aria-relevant="additions"
             >
-              <div className="sky-chat-day">今日</div>
-              <div className="sky-chat-bubble is-sky sky-chat-welcome">
-                <span className="sky-chat-sky-mark">
-                  <Sparkles size={16} />
-                </span>
-                <div>
-                  <strong>
-                    {selectedTool
-                      ? roleFor(selectedTool)
-                      : selectedMcpServer
-                        ? selectedMcpServer.name
-                        : 'Sky Auto'}
-                  </strong>
+              {messages.length > 0 && <div className="sky-chat-day">今日</div>}
+              {messages.length === 0 && (
+                <section className="zema-empty" aria-labelledby="zema-empty-title">
+                  <span className="zema-empty-mark" aria-hidden="true">Z</span>
+                  <h2 id="zema-empty-title">今日は何を進めますか？</h2>
                   <p>
                     {selectedTool
-                      ? `${selectedTool.name}に直接頼めます。`
+                      ? `${roleFor(selectedTool)}に依頼できます。`
                       : selectedMcpServer
-                        ? `${selectedMcpServer.passport?.tools.length ?? 0}機能を持つMCP botへ指示できます。`
-                        : 'やりたいことを、そのまま話してください。接続済みの役割からSkyが選びます。'}
+                        ? `${selectedMcpServer.name}に依頼できます。`
+                        : 'やりたいことをそのまま入力してください。Zemaが接続済みの道具を選びます。'}
                   </p>
-                  <small>
-                    {connectedApps.length + connectedMcpServers.length > 0
-                      ? `${connectedApps.length + connectedMcpServers.length}個のbotに接続済み`
-                      : 'まだ役割に接続されていません'}
-                  </small>
-                </div>
-              </div>
-
-              {(connectedApps.length > 0 || connectedMcpServers.length > 0) && (
-                <section
-                  className="sky-chat-bot-board"
-                  aria-label="接続中のMCP bot"
-                >
-                  <header>
-                    <div>
-                      <small>BOT CONTROL</small>
-                      <h2>接続中のbot</h2>
-                    </div>
-                    <span>
-                      <i /> {connectedApps.length + connectedMcpServers.length}{' '}
-                      online
-                    </span>
-                  </header>
-                  <div className="sky-chat-bot-grid">
-                    {connectedApps.map((tool) => {
-                      const latest = jobs.find((job) => job.tool === tool.id);
-                      return (
-                        <button
-                          type="button"
-                          key={`bot-${tool.id}`}
-                          className={
-                            selectedToolId === tool.id ? 'is-selected' : ''
-                          }
-                          onClick={() => directBot(tool.id)}
-                        >
-                          <span
-                            className={`sky-chat-bot-mark rock-icon-${tool.color}`}
-                          >
-                            {markFor(tool)}
-                          </span>
-                          <span>
-                            <strong>{roleFor(tool)}</strong>
-                            <small>
-                              {latest ? jobMessage(latest) : '待機中'} ·
-                              指示する
-                            </small>
-                          </span>
-                          <i
-                            className={
-                              latest ? jobStateClass(latest) : 'is-online'
-                            }
-                          />
-                        </button>
-                      );
-                    })}
-                    {connectedMcpServers.map((server) => (
-                      <button
-                        type="button"
-                        key={`mcp-bot-${server.id}`}
-                        className={
-                          selectedToolId === mcpMode(server.id)
-                            ? 'is-selected'
-                            : ''
-                        }
-                        onClick={() => directBot(mcpMode(server.id))}
-                      >
-                        <span className="sky-chat-bot-mark is-mcp">
-                          <Bot size={17} />
-                        </span>
-                        <span>
-                          <strong>{server.name}</strong>
-                          <small>
-                            {server.passport?.tools.length ?? 0}機能 · 管理する
-                          </small>
-                        </span>
-                        <i className="is-online" />
+                  <div className="zema-starters" aria-label="依頼例">
+                    {quickRequests.map((request) => (
+                      <button type="button" key={request} onClick={() => chooseQuickRequest(request)}>
+                        <Sparkles size={15} aria-hidden="true" />
+                        {request}
                       </button>
                     ))}
                   </div>
-                  <p>
-                    botを選んで方向を伝えます。停止・失敗・結果はこのスレッドで確認できます。
-                  </p>
                 </section>
-              )}
-
-              {messages.length === 0 && !selectedTool && (
-                <div className="sky-chat-quick-requests" aria-label="依頼例">
-                  {quickRequests.map((request) => (
-                    <button
-                      type="button"
-                      key={request}
-                      onClick={() => chooseQuickRequest(request)}
-                    >
-                      {request}
-                    </button>
-                  ))}
-                </div>
               )}
 
               {messages.map((message) => {
@@ -830,16 +1014,12 @@ export default function SkyChatWorkspace() {
                     className={`sky-chat-bubble is-${message.side}`}
                     key={message.id}
                   >
-                    {message.side === 'sky' && (
-                      <MessageCircle size={16} aria-hidden="true" />
-                    )}
+                    {message.side === 'sky' && <span className="zema-message-avatar" aria-hidden="true">Z</span>}
                     <div>
-                      {message.side === 'sky' && messageTool && (
-                        <small>{roleFor(messageTool)}</small>
-                      )}
-                      <p>{message.text}</p>
+                      {message.side === 'sky' && <small>Zema{messageTool ? ` · ${roleFor(messageTool)}` : ''}</small>}
+                      <p className="zema-message-text">{message.text}</p>
                       {message.side === 'sky' && message.suggestedTool && (
-                        <Link className="sky-chat-inline-action" href="/">
+                        <Link className="sky-chat-inline-action" href="/sky">
                           Skyで接続する
                         </Link>
                       )}
@@ -848,8 +1028,8 @@ export default function SkyChatWorkspace() {
                 );
               })}
 
-              <ChatLiveProgress
-                jobs={jobs}
+              {activeRequest && relevantJobs.length > 0 && <details className="zema-activity"><summary>実行の詳細を見る</summary><ChatLiveProgress
+                jobs={relevantJobs}
                 csvJobs={csvJobs}
                 selectedTool={
                   progressTool
@@ -862,7 +1042,7 @@ export default function SkyChatWorkspace() {
                 fund={activeFund}
                 fundAnalytics={activeFundAnalytics}
                 fundRefreshing={fundRefreshing}
-              />
+              /></details>}
 
               {activeRequest && (activeTool || activeMcpServer) && (
                 <section
@@ -874,16 +1054,22 @@ export default function SkyChatWorkspace() {
                       <Sparkles size={18} />
                     </span>
                     <div>
-                      <small>ACTIVE TASK</small>
+                      <small>
+                        SKY TOOL / ACTIVE TASK
+                      </small>
                       <h2 id={`workflow-${activeRequest.id}`}>
                         {activeTool
                           ? roleFor(activeTool)
                           : activeMcpServer?.name}
-                        が処理します
+                        {activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local'
+                          ? 'は実行器の接続待ちです'
+                          : 'が処理します'}
                       </h2>
                     </div>
                     <span className={`is-${workflowStatus}`}>
-                      {workflowStatus === 'running'
+                      {activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local'
+                        ? '実行器待ち'
+                        : workflowStatus === 'running'
                         ? '処理中'
                         : workflowStatus === 'completed'
                           ? '結果あり'
@@ -893,7 +1079,49 @@ export default function SkyChatWorkspace() {
                     </span>
                   </header>
                   <blockquote>{activeRequest.text}</blockquote>
-                  <ol
+                  <p className="sky-chat-local-llm-note">
+                    {activeTool?.runner === 'candidate-local'
+                      ? 'この候補は外部サービスに接続しないローカル確認・下書きアダプターです。実際のサービス接続は別途実行器を追加してください。'
+                      : 'Skyから受け取った依頼は、まずOS内のローカルLLMが進行します。外部Providerは必要な生成・投稿だけに使います。'}
+                  </p>
+                  {activeTool && (
+                    <details className="sky-chat-provider-routing">
+                      <summary>Zema会話のProviderを変更</summary>
+                      <p>この設定はZemaの会話・案内に適用されます。候補ツールのローカル確認・下書き処理は外部Providerを呼びません。</p>
+                      <div className="sky-chat-provider-grid">
+                        {providerRoutingFields.map((field) => (
+                          <label key={field.id}>
+                            <span>{field.label}</span>
+                            <select
+                              value={providerRouting[field.id] ?? ''}
+                              onChange={(event) => changeProviderRoute(field.id, event.target.value)}
+                            >
+                              {adaptersForCapability(field.capability).map((adapter) => (
+                                <option key={adapter.id} value={adapter.id}>
+                                  {adapter.name}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                        ))}
+                      </div>
+                      <label className="sky-chat-provider-model">
+                        <span>文章・LLMのモデルID</span>
+                        <input
+                          value={providerRouting.textGenerationModel ?? ''}
+                          list="zema-local-model-presets"
+                          placeholder="例: qwen3:8b"
+                          onChange={(event) => changeProviderRoute('textGenerationModel', event.target.value)}
+                        />
+                        <datalist id="zema-local-model-presets">
+                          {localModelPresets.map((model) => (
+                            <option key={model.value} value={model.value}>{model.label}</option>
+                          ))}
+                        </datalist>
+                      </label>
+                    </details>
+                  )}
+                  {!(activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local') && <ol
                     className="sky-chat-workflow-steps"
                     aria-label="処理の流れ"
                   >
@@ -929,11 +1157,23 @@ export default function SkyChatWorkspace() {
                       }
                     >
                       <span>4</span>
-                      {activeMcpServer ? 'Zemaで結果管理' : '履歴へ保存'}
+                      {activeMcpServer ? 'この画面で結果確認' : '履歴へ保存'}
                     </li>
-                  </ol>
+                  </ol>}
                   <div className="sky-chat-workflow-body">
-                    {activeTool?.launchPath ? (
+                    {activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local' ? (
+                      <div className="sky-chat-launch-tool">
+                        <div>
+                          <strong>{activeTool.name}</strong>
+                          <p>
+                            Sky登録済みです。実行器をこのPCのSky SDKへ接続すると、同じ入力をZemaから実行できます。
+                          </p>
+                        </div>
+                        <Link href="/studio">
+                          コードを接続 <ArrowRight size={16} />
+                        </Link>
+                      </div>
+                    ) : activeTool?.launchPath ? (
                       <div className="sky-chat-launch-tool">
                         <div>
                           <strong>{activeTool.name}</strong>
@@ -945,34 +1185,47 @@ export default function SkyChatWorkspace() {
                           Toolを開く <ArrowRight size={16} />
                         </Link>
                       </div>
+                    ) : activeTool?.runner === 'candidate-local' ? (
+                      <SkyCandidateRunner
+                        key={activeRequest.id}
+                        tool={activeTool.id as JobTool}
+                        name={activeTool.name}
+                        onOutcome={(next) => recordOutcome(next, activeTool.id)}
+                        onRunningChange={(value) => {
+                          setRunning(value);
+                          if (value) recordWorkflowStatus('running', activeTool.id);
+                        }}
+                        onFailure={() => recordWorkflowStatus('failed', activeTool.id)}
+                        onRecord={(_tool, _transport, status) => {
+                          recordWorkflowStatus(status, activeTool.id);
+                          return Promise.resolve();
+                        }}
+                      />
                     ) : activeTool?.runner ? (
                       <MrToolRunner
                         key={activeRequest.id}
                         tool={activeTool.runner}
+                        onOutcome={(next) => recordOutcome(next, activeTool.id)}
                         onRunningChange={(value) => {
                           setRunning(value);
-                          setWorkflowStatus((current) =>
-                            value
-                              ? 'running'
-                              : current === 'running'
-                                ? 'ready'
-                                : current,
-                          );
+                          if (value) recordWorkflowStatus('running', activeTool.id);
                         }}
+                        onFailure={() => recordWorkflowStatus('failed', activeTool.id)}
                         onRecord={(_tool, _transport, status) => {
-                          setWorkflowStatus(status);
+                          recordWorkflowStatus(status, activeTool.id);
                           return Promise.resolve();
                         }}
                       />
                     ) : activeTool?.integration === 'fashion-brand-ops' ? (
-                      <FashionBrandOpsRunner />
+                      <FashionBrandOpsRunner onOutcome={(next) => recordOutcome(next, activeTool.id)} />
                     ) : activeMcpServer ? (
                       <McpBotRunner
                         key={`${activeRequest.id}-${activeMcpServer.id}`}
                         server={activeMcpServer}
                         request={activeRequest.text}
                         onRunningChange={setRunning}
-                        onStatusChange={setWorkflowStatus}
+                        onStatusChange={(status) => recordWorkflowStatus(status, activeRequest.toolId)}
+                        onOutcome={(next) => recordOutcome(next, activeRequest.toolId)}
                         onDisconnected={() => {
                           setActiveRequest(null);
                           setSelectedToolId(AUTO_MODE);
@@ -996,62 +1249,12 @@ export default function SkyChatWorkspace() {
                 </section>
               )}
 
-              {visibleJobs.length > 0 && (
-                <div className="sky-chat-recent">
-                  <div className="sky-chat-recent-title">
-                    <span>最近の処理</span>
-                    <Link href="/chat?view=work">
-                      <History size={14} /> すべて見る
-                    </Link>
-                  </div>
-                  {visibleJobs.map((job) => {
-                    const jobTool = readyApps.find(
-                      (tool) => tool.id === job.tool,
-                    );
-                    return (
-                      <Link
-                        className={`sky-chat-receipt ${jobStateClass(job)}`}
-                        href="/chat?view=work"
-                        key={job.id}
-                        aria-label={`${jobMessage(job)}、履歴を開く`}
-                      >
-                        {job.status === 'completed' ? (
-                          <CheckCircle2 size={17} />
-                        ) : job.status === 'failed' ||
-                          job.status === 'interrupted' ? (
-                          <CircleAlert size={17} />
-                        ) : job.status === 'cancelled' ? (
-                          <Ban size={17} />
-                        ) : job.status === 'running' ? (
-                          <LoaderCircle className="sky-chat-spin" size={17} />
-                        ) : (
-                          <Clock3 size={17} />
-                        )}
-                        <div>
-                          <strong>{jobMessage(job)}</strong>
-                          <span>
-                            {jobTool ? roleFor(jobTool) : 'Sky'} ·{' '}
-                            {new Date(job.createdAt).toLocaleString('ja-JP')}
-                          </span>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
               <div ref={messagesEndRef} aria-hidden="true" />
             </div>
 
             <form className="sky-chat-composer" onSubmit={sendMessage}>
               {error && <p role="alert">{error}</p>}
               <div className="sky-chat-composer-box">
-                <span className="sky-chat-composer-mode">
-                  {selectedTool
-                    ? roleFor(selectedTool)
-                    : selectedMcpServer
-                      ? selectedMcpServer.name
-                      : 'Auto'}
-                </span>
                 <textarea
                   ref={composerRef}
                   value={draft}
@@ -1065,20 +1268,59 @@ export default function SkyChatWorkspace() {
                       ? `${roleFor(selectedTool)}への依頼`
                       : selectedMcpServer
                         ? `${selectedMcpServer.name}への指示`
-                        : 'Skyへの依頼'
+                        : 'Zemaへの依頼'
                   }
-                  placeholder="何をしてほしい？"
+                  placeholder="Zemaに依頼する…"
                 />
-                <button disabled={!draft.trim()} aria-label="送信">
+                <button disabled={!draft.trim() || chatLoading} aria-label="送信">
                   <Send size={18} />
                 </button>
               </div>
-              <div
-                className="sky-chat-composer-help"
-                id="sky-chat-composer-help"
-              >
-                <small>Enterで送信 · Shift+Enterで改行</small>
-                <small>{draft.length}/2000</small>
+              {chatLoading && <output className="zema-thinking">Zemaが返答を考えています…</output>}
+              {remoteTextProvider && selectedToolId === AUTO_MODE && (
+                <label className="zema-remote-consent">
+                  <input type="checkbox" checked={remoteConsent} onChange={(event) => setRemoteConsent(event.target.checked)} />
+                  <span>会話を{textProviderDefinition.name}へ送ることを今回だけ許可する</span>
+                </label>
+              )}
+              <details className="zema-model-settings">
+                <summary>会話モデル: {textProviderDefinition.name}</summary>
+                <div>
+                  <label>接続先
+                    <select value={textProvider} onChange={(event) => changeProviderRoute('textGeneration', event.target.value)}>
+                      {textModelProviders.map((provider) => <option key={provider.id} value={provider.id}>{provider.name}</option>)}
+                    </select>
+                  </label>
+                  <label>モデルID
+                    <input value={providerRouting.textGenerationModel ?? ''} onChange={(event) => changeProviderRoute('textGenerationModel', event.target.value)} list="zema-chat-model-presets" />
+                    <datalist id="zema-chat-model-presets">{localModelPresets.map((model) => <option key={model.value} value={model.value}>{model.label}</option>)}</datalist>
+                  </label>
+                </div>
+                <p>{textProviderDefinition.detail}</p>
+              </details>
+              <div className="zema-composer-toolbar" id="sky-chat-composer-help">
+                <label className="zema-tool-picker">
+                  <Sparkles size={15} aria-hidden="true" />
+                  <span className="sr-only">担当を選ぶ</span>
+                  <select
+                    aria-label="担当を選ぶ"
+                    value={selectedToolId}
+                    onChange={(event) => chooseMode(event.target.value)}
+                  >
+                    <option value={AUTO_MODE}>自動で選ぶ</option>
+                    {modeApps.length > 0 && <optgroup label="Sky Tool">
+                      {modeApps.map((tool) => <option key={tool.id} value={tool.id}>{roleFor(tool)} · {tool.name}</option>)}
+                    </optgroup>}
+                    {connectedMcpServers.length > 0 && <optgroup label="このPCのMCP">
+                      {connectedMcpServers.map((server) => <option key={server.id} value={mcpMode(server.id)}>{server.name}</option>)}
+                    </optgroup>}
+                  </select>
+                </label>
+                <Link href="/sky" className="zema-add-tool" aria-label="Skyでツールを追加">
+                  <Plus size={15} /> <span>ツールを追加</span>
+                </Link>
+                <span className="zema-composer-tip">Enterで送信 · Shift+Enterで改行</span>
+                <span className="zema-composer-count">{draft.length}/2000</span>
               </div>
             </form>
           </>

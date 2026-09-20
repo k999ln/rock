@@ -14,13 +14,11 @@ import {
 } from 'lucide-react';
 
 const skyOrigin = 'https://rockstaros-kaiya.noellesugar1.chatgpt.site';
-const installCommand = `npm install ${skyOrigin}/toolkits/rockstaros-sky-tool-sdk-0.1.0.tgz`;
+const installCommand = `npm install ${skyOrigin}/toolkits/rockstaros-sky-tool-sdk-0.1.2.tgz`;
 const integrationCode = `import { createSkyToolApp } from '@rockstaros/sky-tool-sdk';
 import { run } from './your-tool.js'; // あなたの既存処理
 
 const sky = createSkyToolApp({
-  skyUrl: '${skyOrigin}',
-  developerToken: process.env.SKY_DEVELOPER_TOKEN,
   developer: {
     id: 'your-developer-id',
     name: 'Your name',
@@ -32,9 +30,9 @@ const sky = createSkyToolApp({
     version: '0.1.0',
     sourceUrl: 'https://github.com/your-name/your-tool',
     license: 'MIT',
-    publicMcpUrl: 'https://your-tool.example.com/mcp'
-  },
-  autoPublish: true
+    // 公開登録する場合だけ、実際に稼働するHTTPS URLを追加:
+    // publicMcpUrl: 'https://your-tool.example.com/mcp'
+  }
 });
 
 sky.tool({
@@ -115,7 +113,7 @@ export default function RockStudio() {
           <div className="studio-code-intro">
             <p className="studio-chat-kicker">ADD SKY TO YOUR TOOL</p>
             <h1>このコードを、<br />あなたのツールに付ける。</h1>
-            <p>起動するとSkyへ自動登録され、MCPから利用できる状態になります。入力や出力の本文はSkyへ送らず、利用回数と成否だけを記録します。</p>
+            <p>起動すると、このPCのSky一覧へ自動で追加されます。公開登録する場合だけ、公開MCP URLと開発者キーを設定します。PC内で使う間は入力・出力や利用記録をSky Cloudへ送りません。</p>
           </div>
 
           <div className="studio-install-row">
@@ -143,8 +141,8 @@ export default function RockStudio() {
           <div className="studio-setup-card studio-key-card">
             <div className="studio-setup-number">03</div>
             <span className="studio-setup-icon"><KeyRound size={18} /></span>
-            <h2>開発者キー</h2>
-            <p>キーは登録先をあなたのアカウントへ結び付けます。コードへ直書きせず、環境変数へ保存します。</p>
+            <h2>開発者キー（公開時のみ）</h2>
+            <p>PC内だけで試す場合は不要です。公開時はコードにSky URL、公開MCP URL、環境変数のキーを追加します。</p>
             {developerToken ? (
               <div className="studio-token-result">
                 <code>{environmentLine}</code>
@@ -166,14 +164,14 @@ export default function RockStudio() {
           <div className="studio-setup-card">
             <div className="studio-setup-number">04</div>
             <span className="studio-setup-icon"><PackagePlus size={18} /></span>
-            <h2>起動すれば登録完了</h2>
+            <h2>起動すればOSのSky一覧に追加</h2>
             <ul>
-              <li><Check size={14} />Tool Packageを自動生成</li>
-              <li><Check size={14} />Sky Registryへ所有者登録</li>
-              <li><Check size={14} />MCPの検索・実行に対応</li>
-              <li><Check size={14} />Fund候補と利用実績を記録</li>
+              <li><Check size={14} />PC内Connectorが自動検出</li>
+              <li><Check size={14} />Skyの一覧から接続して実行</li>
+              <li><Check size={14} />公開URL設定時はPackageを登録</li>
+              <li><Check size={14} />公開登録時に匿名の利用実績を記録</li>
             </ul>
-            <Link href="/sky"><Activity size={15} />登録後のSkyを確認<ExternalLink size={13} /></Link>
+            <Link href="/sky"><Activity size={15} />Skyの一覧を確認<ExternalLink size={13} /></Link>
           </div>
 
           <div className="studio-safety-note">

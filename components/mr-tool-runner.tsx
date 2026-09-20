@@ -31,6 +31,7 @@ import { DeliveryRunner } from '@/components/delivery-runner';
 import { SubscriptionLedgerRunner } from '@/components/subscription-ledger-runner';
 import { LegalIntakeRunner } from '@/components/legal-intake-runner';
 import { PatentAssistantRunner } from '@/components/patent-assistant-runner';
+import { JevEvaluationRunner } from '@/components/jev-evaluation-runner';
 import {
   executeTracked,
   processedBytes,
@@ -44,18 +45,23 @@ export type MrRunner =
   | 'delivery-local'
   | 'subscription-ledger'
   | 'legal-intake'
-  | 'patent-assistant';
+  | 'patent-assistant'
+  | 'jev-evaluation';
 const demoArticle =
   '# 仕事を小さく自動化する\n\n繰り返している作業を書き出します。毎回同じ手順をひとつ選びます。まずは短い入力で試して、結果を自分で確かめましょう。\n\n## 実践手順\n\nここからは完全版の具体的な手順です。作業を分解して、入力と完成条件を決めます。記録を残すと、次に改善する場所が見つかります。\n\n## 出典\n\n- [Python公式](https://docs.python.org/3/)';
 export function MrToolRunner({
   tool,
   onRecord,
   onRunningChange,
+  onOutcome,
+  onFailure,
   executionDisabled = false,
 }: {
   tool: MrRunner;
   onRecord?: RunRecorder;
   onRunningChange?: (running: boolean) => void;
+  onOutcome?: (outcome: { ok: boolean; text: string }) => void;
+  onFailure?: () => void;
   executionDisabled?: boolean;
 }) {
   const [text, setText] = useState(''),
@@ -240,6 +246,7 @@ export function MrToolRunner({
           sampleInput,
           tracked.result.outcome,
         );
+      onOutcome?.({ ok: true, text: tracked.result.output });
     } catch (e) {
       if (executed && !completed && onRecord) {
         try {
@@ -257,7 +264,10 @@ export function MrToolRunner({
       }
       if (e instanceof OperationRequestError && e.status === 401)
         setNeedsSignin(true);
-      setError(e instanceof Error ? e.message : '入力を確認してください。');
+      const message = e instanceof Error ? e.message : '入力を確認してください。';
+      setError(message);
+      onFailure?.();
+      onOutcome?.({ ok: false, text: message });
     } finally {
       setRunning(false);
       onRunningChange?.(false);
@@ -288,6 +298,7 @@ export function MrToolRunner({
       <DeliveryRunner
         onRecord={onRecord}
         onRunningChange={onRunningChange}
+        onOutcome={onOutcome}
         executionDisabled={executionDisabled}
       />
     );
@@ -295,6 +306,7 @@ export function MrToolRunner({
     return (
       <SubscriptionLedgerRunner
         onRunningChange={onRunningChange}
+        onOutcome={onOutcome}
         executionDisabled={executionDisabled}
       />
     );
@@ -302,6 +314,7 @@ export function MrToolRunner({
     return (
       <LegalIntakeRunner
         onRunningChange={onRunningChange}
+        onOutcome={onOutcome}
         executionDisabled={executionDisabled}
       />
     );
@@ -309,6 +322,15 @@ export function MrToolRunner({
     return (
       <PatentAssistantRunner
         onRunningChange={onRunningChange}
+        onOutcome={onOutcome}
+        executionDisabled={executionDisabled}
+      />
+    );
+  if (tool === 'jev-evaluation')
+    return (
+      <JevEvaluationRunner
+        onRunningChange={onRunningChange}
+        onOutcome={onOutcome}
         executionDisabled={executionDisabled}
       />
     );

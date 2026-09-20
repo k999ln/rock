@@ -1,17 +1,13 @@
 'use client';
 
 import {
-  BriefcaseBusiness,
   Cable,
   Check,
   Cloud,
-  FileCheck2,
-  FilePenLine,
   Globe2,
   Laptop2,
   Network,
   PlugZap,
-  Quote,
   ShieldCheck,
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -69,33 +65,6 @@ const connectionTargets = [
   Icon: typeof Laptop2;
 }[];
 
-const mcpTools = [
-  {
-    name: '案件チェック',
-    id: 'coconala_check',
-    detail: '依頼と提案の条件差を確認',
-    Icon: BriefcaseBusiness,
-  },
-  {
-    name: '出典整理',
-    id: 'format_citations',
-    detail: 'Markdownの出典を整理',
-    Icon: Quote,
-  },
-  {
-    name: '無料版記事',
-    id: 'make_free_article',
-    detail: '原稿から無料公開版を作成',
-    Icon: FilePenLine,
-  },
-  {
-    name: '納品照合',
-    id: 'verify_delivery',
-    detail: '契約・成果物・記録を照合',
-    Icon: FileCheck2,
-  },
-] as const;
-
 export default function SkyMcpCenter({
   open,
   connected,
@@ -125,7 +94,7 @@ export default function SkyMcpCenter({
     () =>
       servers.filter((server) =>
         target === 'device'
-          ? server.transport === 'stdio'
+          ? server.transport === 'stdio' || server.transport === 'local_http'
           : target === 'provider'
             ? server.transport === 'streamable_http'
             : false,
@@ -143,10 +112,32 @@ export default function SkyMcpCenter({
   }, [connected]);
 
   useEffect(() => {
-    if (!open) return;
-    const timeout = window.setTimeout(() => void refreshServers(), 0);
-    return () => window.clearTimeout(timeout);
-  }, [open, refreshServers]);
+    let active = true;
+    const refresh = () => {
+      if (!connected) {
+        setServers([]);
+        return;
+      }
+      if (document.visibilityState === 'hidden') return;
+      void listMcpConnections()
+        .then((next) => {
+          if (active) setServers(next);
+        })
+        .catch(() => {
+          if (active) setServers([]);
+        });
+    };
+    refresh();
+    const interval = window.setInterval(refresh, 5_000);
+    window.addEventListener('sky-mcp-servers', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+      window.removeEventListener('sky-mcp-servers', refresh);
+      document.removeEventListener('visibilitychange', refresh);
+    };
+  }, [connected]);
 
   async function connectServer(server: McpConnection) {
     setBusyServer(server.id);
@@ -181,7 +172,7 @@ export default function SkyMcpCenter({
         <div className={styles.railCopy}>
           <div>
             <strong>MCP</strong>
-            <span>{toolCount || 4}機能</span>
+            <span>{toolCount}機能</span>
           </div>
           <p>
             {connected
@@ -246,7 +237,7 @@ export default function SkyMcpCenter({
               tabIndex={view === 'tools' ? 0 : -1}
               onClick={() => setView('tools')}
             >
-              使える機能 <span>{toolCount || 4}</span>
+              使える機能 <span>{toolCount}</span>
             </button>
           </div>
 
@@ -339,7 +330,7 @@ export default function SkyMcpCenter({
                     {visibleServers.map((server) => (
                       <article key={server.id}>
                         <span className={styles.serverIcon} aria-hidden="true">
-                          {server.transport === 'stdio' ? (
+                          {server.transport === 'stdio' || server.transport === 'local_http' ? (
                             <Laptop2 size={18} />
                           ) : (
                             <Globe2 size={18} />
@@ -349,7 +340,7 @@ export default function SkyMcpCenter({
                           <strong>{server.name}</strong>
                           <p>{server.description}</p>
                           <small>
-                            {server.transport === 'stdio'
+                            {server.transport === 'stdio' || server.transport === 'local_http'
                               ? 'このPC内'
                               : 'Streamable HTTP'}
                             {server.toolCount !== null
@@ -421,7 +412,7 @@ export default function SkyMcpCenter({
               </button>
 
               <p className={styles.boundaryNote}>
-                登録済みのstdio MCPとStreamable HTTP
+                SDKで起動したPC内Tool、登録済みのstdio MCPとStreamable HTTP
                 MCPに対応します。秘密情報はSkyへ渡さず、OAuthが必要な接続先は権限確認と接続証跡が揃うまで実行できません。
               </p>
             </div>
@@ -433,20 +424,16 @@ export default function SkyMcpCenter({
               aria-labelledby="sky-mcp-tools-tab"
             >
               <div className={styles.toolList}>
-                {(servers.length
-                  ? servers.flatMap((server) =>
-                      (server.passport?.tools ?? []).map((tool) => ({
-                        name: tool.title || tool.name,
-                        id: `${server.id}/${tool.name}`,
-                        detail: tool.description || `${server.name}の機能`,
-                        Icon: PlugZap,
-                      })),
-                    )
-                  : mcpTools
-                ).map(({ name, id, detail, Icon }) => (
+                {servers.flatMap((server) =>
+                  (server.passport?.tools ?? []).map((tool) => ({
+                    name: tool.title || tool.name,
+                    id: `${server.id}/${tool.name}`,
+                    detail: tool.description || `${server.name}の機能`,
+                  })),
+                ).map(({ name, id, detail }) => (
                   <article key={id}>
                     <span className={styles.toolIcon} aria-hidden="true">
-                      <Icon size={18} />
+                      <PlugZap size={18} />
                     </span>
                     <div>
                       <strong>{name}</strong>
@@ -455,6 +442,11 @@ export default function SkyMcpCenter({
                     <code>{id}</code>
                   </article>
                 ))}
+                {toolCount === 0 && (
+                  <p className={styles.serverEmpty}>
+                    MCPに接続すると、確認できた機能がここに表示されます。
+                  </p>
+                )}
               </div>
               <div className={styles.toolFooter}>
                 <p>

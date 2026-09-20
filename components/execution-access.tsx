@@ -25,7 +25,7 @@ export function ExecutionSignin() {
     <div className="rock-service-notice">
       <strong>サインインしてから、入力を始めてください。</strong>
       <p>
-        自分の実行履歴を保存できるようになります。入力した本文はサイトに保存しません。
+        自分の実行履歴を保存できるようになります。入力と結果はこのブラウザの一時セッションに最大10分保存され、サーバーには本文を保存しません。
       </p>
       <a
         className="rock-button rock-button-dark"

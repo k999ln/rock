@@ -1,19 +1,56 @@
 import { defaultFund, distributeFund, validateFund } from './fund.ts';
+import {
+  isSensitiveConnectionKey,
+  isSkyProvider,
+  providerDefinition,
+  type SkyProvider,
+  type SkyProviderStatus,
+} from './sky-connections.ts';
 
 // No runtime binding here: the same store is exercised against SQLite in tests.
-export const JOB_TOOLS = [
+const CORE_JOB_TOOLS = [
   'coconala',
   'mr-free-article',
   'mr-citations',
   'mr-delivery',
 ] as const;
+const SKY_CANDIDATE_TOOLS = [
+  'rockstar-ip-studio',
+  'faster-whisper',
+  'transformers-js',
+  'playwright',
+  'jev-ultrafast',
+  'jev-trader',
+  'typesafe-computer-use',
+  'jev-review',
+  'jev-router',
+  'jev-browser',
+  'mobile-jev',
+  'coconala-proposal-draft',
+  'gig-workflow',
+  'coconala-inbox',
+  'youtube-script-writer',
+  'seo-blueprint',
+  'landing-page-sprint',
+  'sales-objection-reply-builder',
+  'user-interview-synthesizer',
+  'calendar-coordination',
+  'telegram-notifications',
+  'producthunt-discovery',
+] as const;
+export const JOB_TOOLS = [...CORE_JOB_TOOLS, ...SKY_CANDIDATE_TOOLS] as const;
 export type JobTool = (typeof JOB_TOOLS)[number];
 export const SKY_CONNECTION_TOOLS = [
   ...JOB_TOOLS,
+  'rockstar-csv-cleanup',
+  'rockstar-markets-analysis',
+  'mercari-revenue',
   'fashion-brand-ops',
+  'rockstar-ip-studio',
   'rockstar-ledger',
   'rockstar-legal-intake',
   'rockstar-patent-assistant',
+  'jev-evaluation',
 ] as const;
 export type SkyConnectionTool = (typeof SKY_CONNECTION_TOOLS)[number];
 export type JobState =
@@ -61,6 +98,14 @@ export type SkyConnection = {
   scope: 'execute';
   consentVersion: string;
   connectedAt: number;
+};
+export type SkyProviderConnection = {
+  provider: SkyProvider;
+  status: SkyProviderStatus;
+  config: Record<string, string>;
+  secretRef: string | null;
+  connectedAt: number | null;
+  updatedAt: number;
 };
 const SKY_CONSENT_VERSION = '2026-09-12';
 export class OperationError extends Error {
@@ -394,6 +439,105 @@ export function operations(
     };
   }
 
+  async function listSkyProviderConnections() {
+    const rows = (
+      await statement(
+        `SELECT provider, status, config, secret_ref AS secretRef,
+          connected_at AS connectedAt, updated_at AS updatedAt
+         FROM sky_provider_connections WHERE user_id = ?
+         ORDER BY updated_at DESC, provider ASC`,
+        user,
+      ).all<{
+        provider: string;
+        status: SkyProviderStatus;
+        config: string;
+        secretRef: string | null;
+        connectedAt: number | null;
+        updatedAt: number;
+      }>()
+    ).results;
+    return rows.map((row) => {
+      let config: Record<string, string> = {};
+      try {
+        const parsed = JSON.parse(row.config) as unknown;
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed))
+          config = Object.fromEntries(
+            Object.entries(parsed).filter(
+              ([key, value]) =>
+                typeof value === 'string' && !isSensitiveConnectionKey(key),
+            ),
+          );
+      } catch {
+        config = {};
+      }
+      return { ...row, provider: row.provider as SkyProvider, config };
+    });
+  }
+
+  async function saveSkyProviderConnection(value: unknown) {
+    const v = object(value, ['provider', 'status', 'config']),
+      provider = v.provider;
+    if (!isSkyProvider(provider))
+      throw new OperationError('対応していない接続先です。');
+    if (
+      v.status !== 'setup_required' &&
+      v.status !== 'ready' &&
+      v.status !== 'reauth_required'
+    )
+      throw new OperationError('接続状態が不正です。');
+    if (!v.config || typeof v.config !== 'object' || Array.isArray(v.config))
+      throw new OperationError('接続情報の形式を確認してください。');
+    const config: Record<string, string> = {};
+    for (const [key, raw] of Object.entries(v.config as Record<string, unknown>)) {
+      if (
+        !/^[a-zA-Z][a-zA-Z0-9_]{0,39}$/.test(key) ||
+        isSensitiveConnectionKey(key)
+      )
+        throw new OperationError(
+          '秘密情報はSkyの設定欄へ保存できません。公式接続を使ってください。',
+        );
+      if (typeof raw !== 'string' || raw.length > 500)
+        throw new OperationError('接続情報を確認してください。');
+      config[key] = raw.trim();
+    }
+    if (provider === 'routing') {
+      for (const field of providerDefinition(provider).fields) {
+        if (!config[field.id] && field.placeholder) config[field.id] = field.placeholder;
+      }
+    }
+    const status = v.status as SkyProviderStatus;
+    if (
+      status === 'ready' &&
+      providerDefinition(provider).fields.some((field) => !config[field.id])
+    )
+      throw new OperationError('必要な接続情報を入力してください。');
+    const now = clock();
+    await statement(
+      `INSERT INTO sky_provider_connections
+        (user_id, provider, status, config, secret_ref, connected_at, updated_at)
+       VALUES (?, ?, ?, ?, NULL, ?, ?)
+       ON CONFLICT(user_id, provider) DO UPDATE SET
+         status = excluded.status,
+         config = excluded.config,
+         connected_at = excluded.connected_at,
+         updated_at = excluded.updated_at`,
+      user,
+      provider,
+      status,
+      JSON.stringify(config),
+      status === 'ready' ? now : null,
+      now,
+    ).run();
+    return {
+      provider,
+      status,
+      config,
+      secretRef: null,
+      connectedAt: status === 'ready' ? now : null,
+      updatedAt: now,
+    } satisfies SkyProviderConnection;
+  }
+
   async function device(value: unknown) {
     const v = object(value, ['id', 'name', 'action']),
       id = uuid(v.id),
@@ -664,6 +808,8 @@ export function operations(
     control,
     listSkyConnections,
     connectSky,
+    listSkyProviderConnections,
+    saveSkyProviderConnection,
     device,
     book,
     wallet,

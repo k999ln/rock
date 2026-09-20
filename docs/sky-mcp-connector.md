@@ -2,6 +2,8 @@
 
 最終更新: 2026-09-12
 
+2026-09-20更新: Sky Tool SDKで起動したPC内Toolを`~/.sky/mcp-tools`から自動検出する。接続定義は所有者専用権限、`127.0.0.1`のHTTP URL、一時キーだけを許可する。ConnectorはPC Toolを`local_http`として一覧に加え、同じPassportと一回承認を適用する。SDK停止後は一覧から外す。外部向け`streamable_http`のHTTPS/private network拒否規則は維持する。
+
 ## できること
 
 Sky固有の自動化コードと個別MCPを直接結ばず、すべてを同じ接続契約へ変換する。現在の配布registryには「Sky 基本自動化」4機能と「受注型ブランド運営」40機能があり、SkyのMCP画面からそれぞれをワンタップで初期化・検出できる。

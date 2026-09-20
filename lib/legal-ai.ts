@@ -1,9 +1,11 @@
 import type {
   LegalIntakeInput,
+  LegalAssessment,
   LegalIssueId,
   LegalLocation,
   LegalMatterStage,
 } from './legal-intake';
+import { getSelfHelpResources, legalIssueCategories } from './legal-intake.ts';
 
 export const LEGAL_AI_MODEL = 'gpt-5.4-nano';
 
@@ -37,6 +39,7 @@ export type LegalAiResult = {
   answer: string;
   citations: LegalAiCitation[];
   searchedAt: string;
+  mode: 'local-registry' | 'remote-search';
 };
 
 const issueIds = new Set<LegalIssueId>([
@@ -209,5 +212,47 @@ export function parseLegalAiResponse(
   }
   const answer = answerParts.join('\n\n').trim();
   if (!answer || citations.size === 0) throw new Error('UNCITED_RESPONSE');
-  return { answer, citations: [...citations.values()], searchedAt };
+  return {
+    answer,
+    citations: [...citations.values()],
+    searchedAt,
+    mode: 'remote-search',
+  };
+}
+
+/**
+ * Offline-first guidance. This intentionally does not infer law or search the
+ * network; it combines the user's validated intake with the reviewed local
+ * directory and official-entry registry.
+ */
+export function buildLocalLegalResult(
+  input: LegalIntakeInput,
+  assessment: LegalAssessment,
+): LegalAiResult {
+  const category = legalIssueCategories.find((item) => item.id === input.issueType);
+  const resources = getSelfHelpResources(input.issueType, input.location);
+  const nextActions = assessment.nextActions.slice(0, 3);
+  const answer = [
+    'これは端末内のローカルガイドです。通信せず、法的助言・期限計算・勝敗予測は行いません。',
+    '',
+    `相談分野: ${category?.label ?? input.issueType}`,
+    `地域: ${input.location}`,
+    `緊急度: ${assessment.headline}`,
+    '',
+    '次にすること:',
+    ...nextActions.map((action) => `- ${action}`),
+    '',
+    resources.length > 0
+      ? '端末内に登録済みの公式入口を下に表示します。最新内容と期限は本人または弁護士が原文で確認してください。'
+      : '公式入口の登録がない地域です。地域の裁判所・行政機関・弁護士へ直接確認してください。',
+  ].join('\n');
+  return {
+    answer,
+    citations: resources.map((resource) => ({
+      title: resource.label,
+      url: resource.url,
+    })),
+    searchedAt: new Date().toISOString(),
+    mode: 'local-registry',
+  };
 }

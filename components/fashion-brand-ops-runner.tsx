@@ -46,7 +46,9 @@ const capabilities = [
   '広告・DM・売上・制作を経営ダッシュボードで確認',
 ];
 
-export function FashionBrandOpsRunner() {
+export function FashionBrandOpsRunner({ onOutcome }: {
+  onOutcome?: (outcome: { ok: boolean; text: string }) => void;
+} = {}) {
   const [connected, setConnected] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
@@ -88,14 +90,14 @@ export function FashionBrandOpsRunner() {
   function createQuickPlan() {
     setPlanError('');
     try {
-      setPlan(
-        buildFashionQuickPlan({ brandDirection, productDesign, region }),
-      );
+      const next = buildFashionQuickPlan({ brandDirection, productDesign, region });
+      setPlan(next);
+      onOutcome?.({ ok: true, text: `ブランド運営の下書きを作成しました。${next.campaignTitle}。投稿・広告・DM・決済は実行していません。詳細はこのカードで確認してください。` });
     } catch (error) {
       setPlan(null);
-      setPlanError(
-        error instanceof Error ? error.message : '入力を確認してください。',
-      );
+      const message = error instanceof Error ? error.message : '入力を確認してください。';
+      setPlanError(message);
+      onOutcome?.({ ok: false, text: message });
     }
   }
 
@@ -108,14 +110,15 @@ export function FashionBrandOpsRunner() {
       setMessage(
         `${result.toolCount}個の専用操作を確認しました。Skyから実行できます。`,
       );
+      onOutcome?.({ ok: true, text: `PCのブランド運営MCPに接続しました。${result.toolCount}機能を確認しました。個別操作の成功は各実行結果で確認してください。` });
       void refreshCandidates();
     } catch (error) {
       setConnected(fashionMcpConnected());
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : 'Sky接続アプリを起動してから、もう一度お試しください。',
-      );
+      const message = error instanceof Error
+        ? error.message
+        : 'Sky接続アプリを起動してから、もう一度お試しください。';
+      setMessage(message);
+      onOutcome?.({ ok: false, text: message });
     } finally {
       setBusy(false);
     }

@@ -4,17 +4,16 @@ import {
   parseLegalAiResponse,
   validateLegalAiInput,
 } from '@/lib/legal-ai';
+import {
+  authorizeRemoteAiRequest,
+  RemoteAiGuardError,
+} from '@/lib/remote-ai-guard';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
 export async function POST(request: Request) {
   try {
-    const origin = request.headers.get('origin');
-    if (origin && origin !== new URL(request.url).origin)
-      return Response.json(
-        { error: 'このサイトから操作してください。' },
-        { status: 403, headers: noStoreHeaders },
-      );
+    await authorizeRemoteAiRequest(request, 'legal-guidance');
     const raw = await request.text();
     if (raw.length > 4_000) throw new Error('INVALID_INPUT');
     const input = validateLegalAiInput(JSON.parse(raw));
@@ -29,7 +28,17 @@ export async function POST(request: Request) {
     const runtimeEnv = env as unknown as {
       OPENAI_API_KEY?: string;
       OPENAI_LEGAL_MODEL?: string;
+      SKY_REMOTE_LLM_ENABLED?: string;
     };
+    if (runtimeEnv.SKY_REMOTE_LLM_ENABLED !== 'true')
+      return Response.json(
+        {
+          error:
+            'オンライン検索は停止中です。標準の端末内ガイドを利用してください。',
+          code: 'remote_disabled',
+        },
+        { status: 503, headers: noStoreHeaders },
+      );
     if (!runtimeEnv.OPENAI_API_KEY)
       return Response.json(
         {
@@ -66,6 +75,19 @@ export async function POST(request: Request) {
       headers: noStoreHeaders,
     });
   } catch (error) {
+    if (error instanceof RemoteAiGuardError)
+      return Response.json(
+        {
+          error:
+            error.code === 'RATE_LIMITED'
+              ? '利用上限に達しました。1分後に再試行してください。'
+              : error.code === 'ORIGIN'
+                ? 'このサイトから操作してください。'
+                : 'サインインしてください。',
+          code: error.code,
+        },
+        { status: error.status, headers: noStoreHeaders },
+      );
     console.error(
       'legal guidance failed',
       error instanceof Error ? error.message : 'unknown',

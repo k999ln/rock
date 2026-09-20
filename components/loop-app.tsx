@@ -693,7 +693,7 @@ export default function LoopApp() {
             <>
               <DialogTitle>{tool.name}</DialogTitle>
               <DialogDescription>{tool.description}</DialogDescription>
-              {tool.runner ? (
+              {tool.runner && tool.runner !== 'candidate-local' ? (
                 <MrToolRunner key={tool.id} tool={tool.runner} />
               ) : null}
             </>

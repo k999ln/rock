@@ -1,5 +1,8 @@
-import { createHash, randomUUID } from 'node:crypto';
+import { createHash, randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
+import { lstat, mkdir, readFile, rename, unlink, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 
 const PROTOCOL_VERSIONS = [
   '2025-11-25',
@@ -274,9 +277,20 @@ function validateConfig(value) {
     /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/,
     64,
   );
+  const publicMcpUrl = value.app?.publicMcpUrl
+    ? httpsUrl(value.app.publicMcpUrl, '公開MCP URL')
+    : null;
+  if (publicMcpUrl && (!value.skyUrl || !value.developerToken))
+    fail('公開登録にはSky URLと開発者キーが必要です。');
+  if (!publicMcpUrl && value.registration === 'required')
+    fail('必須の公開登録には公開MCP URLが必要です。');
   return {
-    skyUrl: httpsUrl(value.skyUrl, 'Sky URL').replace(/\/$/, ''),
-    developerToken: text(value.developerToken, '開発者キー', 20, 200),
+    skyUrl: value.skyUrl
+      ? httpsUrl(value.skyUrl, 'Sky URL').replace(/\/$/, '')
+      : null,
+    developerToken: value.developerToken
+      ? text(value.developerToken, '開発者キー', 20, 200)
+      : null,
     developer: {
       id: developerId,
       name: text(value.developer.name, '開発者名', 2, 80),
@@ -288,7 +302,7 @@ function validateConfig(value) {
       version,
       sourceUrl: httpsUrl(value.app.sourceUrl, 'ソースURL'),
       license: text(value.app.license, 'ライセンス', 2, 100),
-      publicMcpUrl: httpsUrl(value.app.publicMcpUrl, '公開MCP URL'),
+      publicMcpUrl,
     },
     autoPublish: value.autoPublish === true,
     registration: ['required', 'best_effort', false].includes(value.registration)
@@ -297,6 +311,9 @@ function validateConfig(value) {
     authorize: value.authorize,
     fetch: value.fetch ?? globalThis.fetch,
     logger: value.logger ?? console,
+    localDiscovery: value.localDiscovery !== false,
+    localToolDirectory: value.localToolDirectory ?? process.env.SKY_LOCAL_TOOL_DIR ??
+      join(homedir(), '.sky', 'mcp-tools'),
   };
 }
 
@@ -374,6 +391,8 @@ function packageFor(config, tool) {
 }
 
 async function skyRequest(config, path, init) {
+  if (!config.skyUrl || !config.developerToken)
+    fail('Skyへの公開登録にはSky URLと開発者キーが必要です。');
   const response = await config.fetch(`${config.skyUrl}${path}`, {
     ...init,
     headers: {
@@ -415,6 +434,8 @@ export function createSkyToolApp(rawConfig) {
     },
 
     manifests() {
+      if (!config.app.publicMcpUrl)
+        fail('Skyへの公開登録にはapp.publicMcpUrlが必要です。');
       return [...tools.values()].map((tool) => packageFor(config, tool));
     },
 
@@ -472,7 +493,7 @@ export function createSkyToolApp(rawConfig) {
     async start(options = {}) {
       if (!tools.size) fail('公開するToolがありません。');
       let registration = [];
-      if (config.registration) {
+      if (config.registration && config.app.publicMcpUrl) {
         try {
           registration = await api.register();
         } catch (error) {
@@ -481,8 +502,15 @@ export function createSkyToolApp(rawConfig) {
         }
       }
       const host = options.host ?? '127.0.0.1';
+      if (config.localDiscovery && host !== '127.0.0.1')
+        fail('PC内の自動検出は127.0.0.1でのみ利用できます。');
       const port = options.port ?? 0;
       const mcpPath = options.path ?? '/mcp';
+      if (!/^\/[a-zA-Z0-9/_-]{1,100}$/.test(mcpPath))
+        fail('MCP pathを確認してください。');
+      const localSecret = config.localDiscovery
+        ? randomBytes(32).toString('base64url')
+        : null;
       const server = createServer(async (req, res) => {
         if (req.method === 'GET' && req.url === '/health')
           return json(res, 200, {
@@ -493,6 +521,14 @@ export function createSkyToolApp(rawConfig) {
           });
         if (req.method !== 'POST' || req.url !== mcpPath)
           return json(res, 404, { error: 'not_found' });
+        if (localSecret) {
+          const supplied = req.headers['x-sky-local-secret'];
+          if (
+            typeof supplied !== 'string' ||
+            supplied.length !== localSecret.length ||
+            !timingSafeEqual(Buffer.from(supplied), Buffer.from(localSecret))
+          ) return json(res, 401, { error: 'unauthorized' });
+        }
         let message;
         try {
           message = await readJson(req);
@@ -596,12 +632,13 @@ export function createSkyToolApp(rawConfig) {
               durationMs: Math.max(0, Math.round(performance.now() - started)),
               occurredAt: new Date().toISOString(),
             };
-            void skyRequest(config, '/api/sky/tool-events', {
-              method: 'POST',
-              body: JSON.stringify(event),
-            }).catch((error) =>
-              config.logger.warn?.(`Sky usage event deferred: ${error.message}`),
-            );
+            if (config.app.publicMcpUrl)
+              void skyRequest(config, '/api/sky/tool-events', {
+                method: 'POST',
+                body: JSON.stringify(event),
+              }).catch((error) =>
+                config.logger.warn?.(`Sky usage event deferred: ${error.message}`),
+              );
           }
         } catch (error) {
           const code = error.code === 'invalid_arguments' ? -32602 : -32000;
@@ -617,15 +654,50 @@ export function createSkyToolApp(rawConfig) {
         server.listen(port, host, resolve);
       });
       const address = server.address();
+      let localFile = null;
+      let localId = null;
+      if (localSecret) {
+        localId = `sdk-${createHash('sha256').update(config.app.id).digest('hex').slice(0, 24)}`;
+        const descriptor = {
+          schema: 'sky-local-tool/1',
+          id: localId,
+          name: config.app.name,
+          description: `${config.developer.name} · ${tools.size}機能 · ${config.app.version}`,
+          transport: 'local_http',
+          url: `http://127.0.0.1:${address.port}${mcpPath}`,
+          secret: localSecret,
+          pid: process.pid,
+        };
+        try {
+          await mkdir(config.localToolDirectory, { recursive: true, mode: 0o700 });
+          const directory = await lstat(config.localToolDirectory);
+          if (!directory.isDirectory() || (directory.mode & 0o077))
+            fail('PC Toolの保存場所は所有者専用のディレクトリにしてください。');
+          localFile = join(config.localToolDirectory, `${localId}.json`);
+          const temporary = `${localFile}.${randomUUID()}.tmp`;
+          await writeFile(temporary, JSON.stringify(descriptor), { mode: 0o600 });
+          await rename(temporary, localFile);
+        } catch (error) {
+          await new Promise((resolve) => server.close(resolve));
+          throw error;
+        }
+      }
       return {
         server,
         host,
         port: typeof address === 'object' && address ? address.port : port,
         path: mcpPath,
         registration,
-        close: () => new Promise((resolve, reject) =>
-          server.close((error) => (error ? reject(error) : resolve())),
-        ),
+        localId,
+        close: async () => {
+          await new Promise((resolve, reject) =>
+            server.close((error) => (error ? reject(error) : resolve())),
+          );
+          if (localFile) {
+            const saved = JSON.parse(await readFile(localFile, 'utf8').catch(() => '{}'));
+            if (saved.secret === localSecret) await unlink(localFile);
+          }
+        },
       };
     },
   };

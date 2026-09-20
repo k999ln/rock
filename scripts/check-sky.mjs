@@ -1,6 +1,8 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { catalog } from '../lib/catalog.ts';
+import { JOB_TOOLS } from '../lib/operations.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -10,27 +12,41 @@ const requireValue = (ok, message) => {
 
 const catalogSource = read('lib/catalog.ts');
 const operationsSource = read('lib/operations.ts');
-const catalogBody = catalogSource.slice(
-  catalogSource.indexOf('export const catalog'),
-);
-const readyCount = (
-  catalogBody.match(/["']?status["']?\s*:\s*['"]ready['"]/g) || []
-).length;
-const candidateCount = (
-  catalogBody.match(/["']?status["']?\s*:\s*['"]candidate['"]/g) || []
-).length;
+const readyCount = catalog.filter(({ status }) => status === 'ready').length;
+const candidateCount = catalog.filter(({ status }) => status === 'candidate').length;
 requireValue(
-  readyCount === 11,
-  `Web/PC readyは11件です（実際: ${readyCount}）`,
+  readyCount === 12,
+  `Web/PC readyは12件です（実際: ${readyCount}）`,
 );
 requireValue(
-  candidateCount === 3,
-  `導入候補は3件です（実際: ${candidateCount}）`,
+  candidateCount === 22,
+  `導入候補は22件です（実際: ${candidateCount}）`,
 );
+const jobTools = new Set(JOB_TOOLS);
+for (const tool of catalog.filter(({ status }) => status === 'candidate'))
+  requireValue(jobTools.has(tool.id), `導入候補がジョブ受付にありません: ${tool.id}`);
+for (const marker of [
+  "id: 'rockstar-legal-intake'",
+  "name: '法務受付'",
+  "runner: 'legal-intake'",
+  "id: 'rockstar-patent-assistant'",
+  "name: '特許アシスタント'",
+  "runner: 'patent-assistant'",
+])
+  requireValue(
+    catalogSource.includes(marker),
+    `Sky catalogに法務受付・特許アシスタントの登録がありません: ${marker}`,
+  );
 
 const registry = resolve(root, 'systems/rock-star-os/examples/registry');
 const packages = readdirSync(registry).filter((name) =>
   name.endsWith('.rock.json'),
+);
+const connectionSource = operationsSource.slice(
+  Math.min(
+    operationsSource.indexOf('SKY_CANDIDATE_TOOLS'),
+    operationsSource.indexOf('SKY_CONNECTION_TOOLS'),
+  ),
 );
 const identities = packages.map((name) => {
   const value = JSON.parse(readFileSync(resolve(registry, name), 'utf8'));
@@ -157,14 +173,15 @@ for (const marker of [
 
 for (const marker of [
   'role="log"',
-  'aria-pressed=',
+  'aria-label="担当を選ぶ"',
   'handleComposerKeyDown',
   'messagesEndRef',
   'maxLength={2000}',
   '<MrToolRunner',
   'sky-chat-workflow',
   'listMcpConnections',
-  'sky-chat-bot-board',
+  'zema-sidebar',
+  'zema-model-settings',
   'consumeSkyZemaHandoff',
   'SKY_ZEMA_JOB_EVENT',
   'sky-chat-launch-tool',
@@ -191,7 +208,7 @@ for (const marker of [
   '.sky-chat-composer textarea',
   '.sky-chat-receipt.is-attention',
   '.sky-chat-workflow-steps',
-  '.sky-chat-bot-board',
+  '.zema-sidebar',
   '.mcp-bot-direction',
   '.mcp-bot-result',
   '@media (max-width: 420px)',
@@ -212,14 +229,19 @@ for (const marker of [
     `ZemaのMCP bot管理に「${marker}」がありません`,
   );
 for (const tool of [
+  'rockstar-csv-cleanup',
+  'rockstar-markets-analysis',
+  'mercari-revenue',
   'rockstar-ledger',
   'rockstar-legal-intake',
   'rockstar-patent-assistant',
+  'jev-evaluation',
+  ...catalog
+    .filter(({ status }) => status === 'candidate')
+    .map(({ id }) => id),
 ])
   requireValue(
-    operationsSource
-      .slice(operationsSource.indexOf('SKY_CONNECTION_TOOLS'))
-      .includes(`'${tool}'`),
+    connectionSource.includes(`'${tool}'`),
     `Zemaで使うready担当「${tool}」がSky接続許可リストにありません`,
   );
 

@@ -227,7 +227,7 @@ export default function OperationsWorkspace({ view }: { view: View }) {
               実行中です。結果が表示されるまで、この画面を開いたままにしてください。
             </output>
           )}
-          {selected?.runner && (
+          {selected?.runner && selected.runner !== 'candidate-local' && (
             <MrToolRunner
               key={selected.id}
               tool={selected.runner}

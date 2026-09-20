@@ -1,6 +1,6 @@
 'use client';
 
-import { type ComponentProps, useCallback, useEffect, useState } from 'react';
+import { type ComponentProps, useCallback, useEffect, useRef, useState } from 'react';
 import {
   AlertTriangle,
   ArrowUpRight,
@@ -76,11 +76,17 @@ function isLedgerState(value: unknown): value is LedgerState {
 
 export function SubscriptionLedgerRunner({
   onRunningChange,
+  onOutcome,
   executionDisabled = false,
 }: {
   onRunningChange?: (running: boolean) => void;
+  onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   executionDisabled?: boolean;
 }) {
+  const callbacksRef = useRef({ onRunningChange, onOutcome });
+  useEffect(() => {
+    callbacksRef.current = { onRunningChange, onOutcome };
+  }, [onRunningChange, onOutcome]);
   const [state, setState] = useState<LedgerState | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -98,7 +104,7 @@ export function SubscriptionLedgerRunner({
     async (signal?: AbortSignal) => {
       setLoading(true);
       setError('');
-      onRunningChange?.(true);
+      callbacksRef.current.onRunningChange?.(true);
       try {
         const requestSignal = signal
           ? AbortSignal.any([signal, AbortSignal.timeout(5000)])
@@ -122,21 +128,25 @@ export function SubscriptionLedgerRunner({
         if (!isLedgerState(next))
           throw new Error('ローカル台帳の応答形式を確認してください。');
         setState(next);
+        callbacksRef.current.onOutcome?.({
+          ok: true,
+          text: `PC内台帳に接続しました。契約・候補${next.summary.counts.total}件、要対応${next.summary.counts.action_required}件です。詳細はこのカードで確認できます。`,
+        });
       } catch (cause) {
         if (cause instanceof DOMException && cause.name === 'AbortError')
           return;
         setState(null);
-        setError(
-          cause instanceof Error
-            ? cause.message
-            : 'ローカル台帳へ接続できませんでした。',
-        );
+        const message = cause instanceof Error
+          ? cause.message
+          : 'ローカル台帳へ接続できませんでした。';
+        setError(message);
+        callbacksRef.current.onOutcome?.({ ok: false, text: message });
       } finally {
         setLoading(false);
-        onRunningChange?.(false);
+        callbacksRef.current.onRunningChange?.(false);
       }
     },
-    [onRunningChange],
+    [],
   );
 
   useEffect(() => {

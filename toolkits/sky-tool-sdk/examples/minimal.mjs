@@ -1,8 +1,6 @@
 import { createSkyToolApp } from '../src/index.mjs';
 
 const sky = createSkyToolApp({
-  skyUrl: process.env.SKY_URL,
-  developerToken: process.env.SKY_DEVELOPER_TOKEN,
   developer: {
     id: 'example-developer',
     name: 'Example Developer',
@@ -14,7 +12,8 @@ const sky = createSkyToolApp({
     version: '0.1.0',
     sourceUrl: 'https://github.com/example/text-tools',
     license: 'MIT',
-    publicMcpUrl: 'https://tools.example.com/mcp',
+    // 公開登録する場合だけ、実際に稼働するHTTPS MCP URLを指定します。
+    // publicMcpUrl: 'https://tools.example.com/mcp',
   },
   autoPublish: false,
   registration: 'best_effort',

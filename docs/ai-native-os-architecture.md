@@ -41,7 +41,7 @@ WebのOpenAI接続はSkyの法務受付と特許出願アシスタントの2 Too
 
 Jev (`typesafe-ai/jev`) はVercel AI Gateway経由のTypeSafe AI remote evaluatorとして扱う。端末内model profileや文章生成modelには含めず、本人がSkyから明示利用する評価Toolに限定する。typed evaluation結果は助言・品質証拠であり、Brokerの権限判定、本人承認、Tool成功、仕事完了、Earning Receiptを置き換えない。Jevの未接続や低評価で既存local-pure jobを自動失敗・再実行しない。
 
-現行 `ai@7.0.99` は `experimental_evaluate` を実行時exportしない。SDK更新または公式HTTP Evaluation APIを、Node/Cloudflare互換、privacy、timeout、費用、invalid responseのfixtureで受け入れるまではJevを実装済みや`ready`としない。詳細は[LLM・評価モデル設計](llm-evaluation-architecture.md)に従う。
+現行 `ai@7.0.107` は `experimental_evaluate` を実行時exportし、Skyのserver-side評価routeから利用する。Cloudflare互換、privacy、timeout、費用、invalid responseのfixtureとprovider sandbox／本番受入は残りのgateであり、詳細は[LLM・評価モデル設計](llm-evaluation-architecture.md)に従う。
 
 ## 3. Agentの記憶、仕事、再起動
 

@@ -24,8 +24,6 @@ SDKがパッケージ配布された後の入口は`npx create-sky-tool init my-
 import { createSkyToolApp } from '@rockstaros/sky-tool-sdk';
 
 const sky = createSkyToolApp({
-  skyUrl: process.env.SKY_URL,
-  developerToken: process.env.SKY_DEVELOPER_TOKEN,
   developer: {
     id: 'example-developer',
     name: 'Example Developer',
@@ -37,7 +35,8 @@ const sky = createSkyToolApp({
     version: '0.1.0',
     sourceUrl: 'https://github.com/example/text-tools',
     license: 'MIT',
-    publicMcpUrl: 'https://tools.example.com/mcp'
+    // 公開登録する場合だけ、実際に稼働するHTTPS MCP URLを指定します。
+    // publicMcpUrl: 'https://tools.example.com/mcp'
   }
 });
 
@@ -61,9 +60,11 @@ await sky.start({ port: 8787 });
 
 ## 登録と公開の境界
 
-`start()`は既定でSky登録を試し、通信できない場合もローカルMCPは起動します。登録を必須にする場合は`registration: 'required'`、無効にする場合は`registration: false`を指定します。`autoPublish: true`はRegistryへ「開発者宣言済み」として掲載しますが、Sandbox実行、作者署名、接続、金融操作の検証を代替しません。状態が`published_declared`のToolはSkyから自動インストールできません。
+`start()`でMCPをPC内で起動すると、SDKは`~/.sky/mcp-tools`へ権限を制限した接続定義を置きます。PC Connectorが動いていれば、RockstarOSのSky一覧にこのAppが自動で現れ、そのカードから接続できます。MCP管理画面でも機能を確認でき、実行時は内容ごとの承認を通します。停止時は接続定義を取り除きます。保存場所を変える場合はSDKとConnectorの両方に同じ`SKY_LOCAL_TOOL_DIR`を設定します。
 
-開発者キーはRock Studioで発行し、`SKY_DEVELOPER_TOKEN`環境変数へ保存します。GitやTool Packageへ含めません。キーはSky側へSHA-256のみ保存され、再表示されません。
+`app.publicMcpUrl`がない場合はPC内だけで利用し、Sky URLと開発者キーは不要です。公開登録と匿名利用記録は行いません。公開する場合だけ、実際に稼働するHTTPS URL、`skyUrl`、`developerToken`を指定してください。その場合`start()`は既定でSky登録を試し、通信できない場合もローカルMCPは起動します。登録を必須にする場合は`registration: 'required'`、無効にする場合は`registration: false`を指定します。`autoPublish: true`はRegistryへ「開発者宣言済み」として掲載しますが、Sandbox実行、作者署名、接続、金融操作の検証を代替しません。状態が`published_declared`のToolはSkyから自動インストールできません。
+
+公開用の開発者キーはRock Studioで発行し、`SKY_DEVELOPER_TOKEN`環境変数へ保存します。GitやTool Packageへ含めません。キーはSky側へSHA-256のみ保存され、再表示されません。
 
 ## 利用情報
 

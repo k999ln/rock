@@ -1,5 +1,33 @@
 # avocadoOS — 事業・設計・進捗
 
+## 2026-09-20 — Zemaの会話画面を整理
+
+Zemaの会話を主役にした暗色画面へ変更し、狭い画面では履歴を必要なときだけ開く。依頼例、会話履歴検索、新規会話、担当Tool選択、文章モデル設定を入力欄の近くにまとめた。自由文は接続済み文章モデルのAPIへ直近の会話とともに送り、応答待ち・接続失敗を会話内に表示する。外部モデルには依頼ごとの送信許可を要求する。ツール依頼は従来の確認と承認を維持し、別件の実行履歴を現在の依頼に混ぜない。ローカルWeb環境の既定QwenはBinder接続前のため、現状では自由文の生成応答は利用できない。Ollamaまたは許可済み外部providerの設定が必要。
+
+## 2026-09-20 — SkyからZemaの仕事チャットへ直接移り、結果を復元
+
+Skyの自然文依頼または役割選択から、依頼ごとのZemaチャットを開く。Zemaで直接botへ話しかけたときも別チャットを作る。依頼本文をURLへ含めず一回の引継ぎで渡し、会話、実行開始、完了・失敗、ローカルToolとMCPの成果本文を同じタブで最大10分だけ保存する。最近のチャットから切替可能にし、再読込中に実行状態が不明となった場合は自動再送せず確認を促す。実行には従来の入力確認と本人承認を維持する。
+
+ローカルSky画面から文章依頼をZemaへ一回送信し、別チャット生成、依頼文の一致、サンプル記事Toolの実行開始・成果本文・完了、再読込後の復元、チャット間の切替を実画面で確認した。ZemaからPCのSky基本MCP botへ直接依頼しても専用チャットができ、公開URLの出典整理を一回承認して実行し、成果本文と完了表示が再読込後も復元された。`tests/zema-chat-session.test.mjs`は固定10分の期限、再読込相当の復元、不正・過大状態の拒否を検査する。`npm run verify`はローカルサーバーを使える環境でNode 333試験、ブランド19試験、仕事API 143項目、Web buildまで合格。長期の本人別履歴、外部MCPの結果不明時照合、全候補Toolの実行器受入は後続作業。
+
+## 2026-09-20 — Sky／Zemaの実行結果を反復検証
+
+利用者指定のローカル画面でPC Connectorの45機能認識、Zemaの出典整理の正常入力・空入力、納品照合の合成サンプルを試した。空入力ではMCPが`isError: true`を返すのにZemaが成功表示していたため、エラーとして「要確認」に反映し、正常時は通信形式ではなく成果本文を表示するよう修正した。再読込後もConnectorの45機能は認識されたが、MCP botの実行結果は画面内の一時状態であり、履歴として保存されない。Zemaの候補登録件数と実行可能件数が混同されないようにした。IP Studioの「Zemaへ」が別のローカル画面を開いていた導線も修正し、候補の依頼は実行器待ちと明示した。Connector結合15試験、結果表示3試験、全体検証（Node 326試験・ブランド19試験・仕事API 143項目・Web build）に合格。追加されたSky用2表の期待件数も実schemaに同期した。次はMCP結果の本人別履歴と再読込後の復元を設計・実装し、45機能のうち外部サービスを使う操作は資格情報とsandboxごとに個別受入する。
+
+## 2026-09-20 — ローカルのSky画面へSDK Appと自動化候補を追加
+
+利用者が指定した`http://localhost:3001/sky`を動かす作業フォルダへ、Sky Tool SDK 0.1.2、PC内Appの自動検出、Sky一覧からMCP接続するカード、実機能数に基づくPassport表示を統合した。旧Mr. Hub由来11件と自動化可能性のあるJev周辺7件は導入候補として追加し、Jev品質評価など既存の作業中変更は保持した。型検査、Sky catalog検査（ready 12件・候補21件）、SDK／Connector対象16試験、全体検証を通した。ローカルSky画面でPC接続、SDK Appのカード出現、接続後の1機能表示、停止後のカード消失を確認した。Connector再起動後の機能数は定期更新して古い表示を消す。候補の実行器、native OS導入、本番公開は未受入。次は候補ごとに実行器、本人接続、料金・結果照合を受け入れる。
+
+## 2026-09-20 — JevをSky Toolとして実装
+
+Jev (`typesafe-ai/jev`) をSkyの任意remote evaluatorとして実装した。AI SDKを`7.0.107`へ更新し、server-sideの`/api/jev-evaluation`、closed rubric、明示同意UI、`advisory-only`のEvaluation Receipt、状態／rubric hash、provider失敗時の縮退を追加した。法務受付と特許出願アシスタントは既存どおりSkyの別Toolであり、Jevへ自動的に本文を送らない。
+
+Sky catalogは12件、routingは11役へ更新した。`AI_GATEWAY_API_KEY`、provider Terms / Privacy、料金上限、sandbox／本番受入は未完了の外部・設定gateとして維持する。型検査、Jev／Sky routing tests、Sky check、LLM architecture check、baseline checkは合格。次はprovider sandboxで正常系・429・5xx・不正response・budget縮退を受入する。
+
+## 2026-09-20 — Local Action AssistantをDecision Layerへ接続
+
+`noellesugar99/local-action-assistant`はRock側で既にsource／APK hashを固定したLocal Qwen runtimeであり、今回 `lib/decision-layer.ts` に `DecisionProvider`、`RuleDecisionProvider`、`MockDecisionProvider`、`LocalQwenDecisionProvider`、`TypeSafeJevProvider`、`DecisionRouter`を追加した。CODE → local-only → remote-allowedの順で判断境界を持ち、Local runtime未接続時のcloud自動fallbackを拒否する。上流の`llama.rn 0.12.9`、GGUF、6-tool Broker、書込前確認、network deny境界は維持し、OS image／production APK統合済みとは扱わない。
+
 ## 2026-09-19 — LLM境界を訂正しJev評価モデルをAI07へ追加
 
 現行コードと設計を再監査し、端末内Qwen / llama.rnを非信頼planner、Brokerを唯一の権限判定者、EngineをTool実行者として固定した。WebのOpenAI接続はSkyの法務受付と特許アシスタント2 Tool内部に限定し、OS全体のcloud LLMやlocal fallbackとは扱わない。Jev (`typesafe-ai/jev`) はSkyから明示利用するremote evaluatorとし、結果は助言・品質証拠に限定する。
@@ -602,10 +630,11 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続 / 完了 78/116件
+最終更新: 2026-09-20 / AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続 / 完了 78/117件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
+| SKY20 | ローカルSkyへSDK Appの自動検出・Hub接続を追加し、旧Mr. Hub 11件とJev周辺自動化7件を候補表示 | 進行中 | [記録](components/sky-workspace.tsx) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](docs/sky-mr-automation-candidates.md) |
 | SKY17 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
 | AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
@@ -613,7 +642,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
-| AI07 | JevをSkyの明示的remote evaluatorとして接続し、SDK/API互換・同意・rubric・receipt・privacy・料金縮退を受入 | 進行中 | [記録](docs/llm-evaluation-architecture.md) · [記録](data/llm-capabilities.json) · [記録](scripts/check-llm-architecture.mjs) |
+| AI07 | JevをSkyの明示的remote evaluatorとして接続し、SDK/API互換・同意・rubric・receipt・privacy・料金縮退を受入 | 進行中 | [記録](docs/llm-evaluation-architecture.md) · [記録](data/llm-capabilities.json) · [記録](scripts/check-llm-architecture.mjs) · [記録](lib/jev-evaluation.ts) · [記録](app/api/jev-evaluation/route.ts) · [記録](components/jev-evaluation-runner.tsx) · [記録](tests/jev-evaluation.test.mjs) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -627,9 +656,9 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY11 | MCP掲載前診断とPC接続の互換性・初回導線を改善 | 完了 | [記録](lib/mcp-inspection.ts) · [記録](app/api/sky/mcp/inspect/route.ts) · [記録](lib/device.ts) · [記録](components/sky-publisher-form.tsx) · [記録](components/device-connection.tsx) · [記録](tests/mcp-inspection.test.mjs) · [記録](tests/device-lifecycle.test.mjs) |
 | SKY12 | ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](docs/sky-identity-connection.md) |
 | SKY13 | GrokをモチーフにChatの表示・入力を改善し、依頼から実行・結果までを会話内へ統合 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](lib/operations.ts) · [記録](tests/operations.test.mjs) · [記録](docs/chat-usability-20260912.md) |
-| SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](docs/chat-mcp-control-room-20260913.md) |
+| SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](lib/mcp-tool-result.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](tests/mcp-tool-result.test.mjs) · [記録](docs/chat-mcp-control-room-20260913.md) |
 | SKY15 | Sky SDKコードを既存ツールへ追加し、起動時にPackage登録・MCP公開・利用記録まで行うStudioを実装 | 完了 | [記録](components/rock-studio.tsx) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](app/studio/page.tsx) · [記録](app/sky/publish/page.tsx) · [記録](tests/sky-code-intake.test.mjs) · [記録](tests/sky-studio-chat.test.mjs) · [記録](docs/sky-tool-sdk.md) |
-| SKY16 | SkyのTool選択と自然文依頼をZemaへ一回引き継ぎ、job状態を即時同期 | 完了 | [記録](lib/sky-zema-handoff.ts) · [記録](lib/operations-client.ts) · [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/chat-live-progress.tsx) · [記録](tests/sky-zema-handoff.test.mjs) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/sky.md) |
+| SKY16 | SkyのTool選択と自然文依頼をZemaへ一回引き継ぎ、job状態を即時同期 | 完了 | [記録](lib/sky-zema-handoff.ts) · [記録](lib/zema-chat-session.ts) · [記録](lib/operations-client.ts) · [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/chat-live-progress.tsx) · [記録](tests/sky-zema-handoff.test.mjs) · [記録](tests/zema-chat-session.test.mjs) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/sky.md) |
 | WEB02 | Developer Preview紹介をOSインストールとSky開発者コード中心の一画面へ再設計 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) |
 | WEB03 | Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](components/rock-studio.tsx) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
 | WEB04 | avocadoOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
@@ -742,7 +771,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。SKY17の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。
+次の作業: SKY20は旧Mr. Hub 11候補とJev周辺7候補の実行器、本人接続、料金・結果照合を一件ずつ受け入れ、通るまでreadyにしない。PC内SDK Appのカード表示・接続・停止はローカルSkyで確認済み。AI07はJevのprovider sandboxで正常系・429・5xx・不正response・budget縮退を受入し、AI_GATEWAY_API_KEY、Terms/Privacy、料金上限を確認する。JevはSkyのcatalog／同意UI／closed rubric／Evaluation Receiptまで実装済みだが、本番provider接続は未完了。法務受付・特許アシスタントはSkyの別Toolとして維持し、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。
 <!-- project-status:end -->
 
 ## 次段階の設計

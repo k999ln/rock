@@ -49,7 +49,7 @@
       "role": "remote_evaluator",
       "surface": "explicit Sky tool",
       "authority": "advisory_only",
-      "status": "designed_not_implemented",
+      "status": "implemented_configuration_required",
       "task": "AI07"
     }
   },

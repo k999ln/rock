@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { resolve } from 'node:path';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { createSkyToolApp } from '../toolkits/sky-tool-sdk/src/index.mjs';
 import {
   createConnector,
   validateRemoteUrl,
@@ -9,8 +12,11 @@ import {
 
 const registryPath = resolve('toolkits/sky-mcp-connector/registry.json');
 
-async function harness(t) {
-  const connector = await createConnector({ registryPath, port: 0 });
+async function harness(t, options = {}) {
+  const localToolDirectory = options.localToolDirectory ?? await mkdtemp(join(tmpdir(), 'sky-connector-test-'));
+  if (!options.localToolDirectory)
+    t.after(() => rm(localToolDirectory, { recursive: true, force: true }));
+  const connector = await createConnector({ registryPath, port: 0, ...options, localToolDirectory });
   t.after(() => new Promise((done) => connector.server.close(done)));
   const base = `http://127.0.0.1:${connector.port}`;
   const origin = 'http://localhost:3000';
@@ -38,6 +44,45 @@ async function harness(t) {
     });
   return { request };
 }
+
+void test('SDK tools appear in the PC hub and execute only after one-time approval', async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), 'sky-local-tools-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const sky = createSkyToolApp({
+    skyUrl: 'https://sky.example',
+    developerToken: `sky_dev_${'a'.repeat(43)}`,
+    developer: { id: 'test-developer', name: 'Test Developer', supportUrl: 'https://example.com/support' },
+    app: { id: 'com.example.local', name: 'Local Counter', version: '1.0.0', sourceUrl: 'https://example.com/source', license: 'MIT' },
+    localToolDirectory: directory,
+  });
+  sky.tool({
+    name: 'count',
+    description: '入力された文章に含まれるUnicode文字数を返します。',
+    inputSchema: { type: 'object', required: ['text'], properties: { text: { type: 'string' } } },
+    outputSchema: { type: 'object', required: ['characters'], properties: { characters: { type: 'integer' } } },
+    handler: async ({ text }) => ({ characters: [...text].length }),
+  });
+  const runtime = await sky.start();
+  let runtimeClosed = false;
+  t.after(() => runtimeClosed ? undefined : runtime.close());
+  const { request } = await harness(t, { localToolDirectory: directory });
+  const before = await (await request('/servers', undefined, 'GET')).json();
+  assert.equal(before.servers.at(-1).id, runtime.localId);
+  assert.equal(before.servers.at(-1).state, 'available');
+  const descriptor = JSON.parse(await readFile(join(directory, `${runtime.localId}.json`), 'utf8'));
+  const direct = await fetch(descriptor.url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) });
+  assert.equal(direct.status, 401);
+  const connected = await (await request(`/servers/${runtime.localId}/connect`, {})).json();
+  assert.equal(connected.passport.tools[0].name, 'count');
+  const args = { text: 'Sky' };
+  const prepared = await (await request(`/servers/${runtime.localId}/prepare`, { name: 'count', arguments: args })).json();
+  const executed = await (await request(`/servers/${runtime.localId}/execute`, { name: 'count', arguments: args, approvalToken: prepared.approvalToken, confirmed: true })).json();
+  assert.equal(executed.result.structuredContent.characters, 3);
+  await runtime.close();
+  runtimeClosed = true;
+  const after = await (await request('/servers', undefined, 'GET')).json();
+  assert.equal(after.servers.some((server) => server.id === runtime.localId), false);
+});
 
 void test('registry is declarative, bounded and rejects duplicate server identities', () => {
   assert.throws(

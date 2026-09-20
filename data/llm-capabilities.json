@@ -42,12 +42,12 @@
       "id": "sky-openai-legal",
       "surface": "sky_tool",
       "tool": "rockstar-legal-intake",
-      "role": "cloud_generator",
+      "role": "optional_cloud_generator",
       "provider": "OpenAI",
       "model": "OPENAI_LEGAL_MODEL or gpt-5.4-nano",
       "runtime": "server-side OpenAI Responses API fetch",
       "status": "implemented_configuration_required",
-      "network": "required_with_explicit_tool_use",
+      "network": "optional_after_explicit_consent",
       "authority": "advisory_only",
       "automaticFallback": false,
       "evidence": [
@@ -56,7 +56,8 @@
         "docs/sky-legal-intake-20260912.md"
       ],
       "limitations": [
-        "returns 503 when OPENAI_API_KEY is absent",
+        "standard Sky path uses the local official-entry registry without a network call",
+        "returns 503 when OPENAI_API_KEY is absent and online research was explicitly selected",
         "general information only; not legal advice",
         "store:false is not proof of Zero Data Retention"
       ]
@@ -65,12 +66,12 @@
       "id": "sky-openai-patent",
       "surface": "sky_tool",
       "tool": "rockstar-patent-assistant",
-      "role": "cloud_generator",
+      "role": "optional_cloud_generator",
       "provider": "OpenAI",
       "model": "OPENAI_PATENT_MODEL or gpt-5.4-nano",
       "runtime": "server-side OpenAI Responses API fetch",
       "status": "implemented_configuration_required",
-      "network": "required_after_explicit_consent",
+      "network": "optional_after_explicit_consent",
       "authority": "advisory_only",
       "automaticFallback": false,
       "evidence": [
@@ -79,7 +80,8 @@
         "docs/sky-patent-assistant-20260912.md"
       ],
       "limitations": [
-        "returns 503 when OPENAI_API_KEY is absent",
+        "standard Sky path creates the filing draft and search plan locally without a network call",
+        "returns 503 when OPENAI_API_KEY is absent and online research was explicitly selected",
         "does not guarantee patentability, registration or non-infringement",
         "no filing, signature or fee payment"
       ]
@@ -92,7 +94,7 @@
       "provider": "TypeSafe AI via Vercel AI Gateway",
       "model": "typesafe-ai/jev",
       "runtime": "AI Gateway Evaluation API",
-      "status": "designed_not_implemented",
+      "status": "implemented_configuration_required",
       "network": "required_after_explicit_consent",
       "authority": "advisory_only",
       "automaticFallback": false,
@@ -102,9 +104,8 @@
         "https://vercel.com/docs/ai-gateway/getting-started/evaluation"
       ],
       "limitations": [
-        "not registered in the Sky catalog",
-        "AI_GATEWAY_API_KEY is not configured by this design change",
-        "installed ai@7.0.99 does not export experimental_evaluate",
+        "AI_GATEWAY_API_KEY must be configured server-side",
+        "provider sandbox and production acceptance remain external gates",
         "provider table does not currently assert ZDR or No Training",
         "promotional pricing is stated to end on 2026-09-25"
       ]
@@ -131,12 +132,27 @@
       ]
     }
   ],
+  "textModelRegistry": {
+    "implementation": "lib/llm-providers.ts",
+    "route": "app/api/llm/text/route.ts",
+    "providers": [
+      "local-model",
+      "ollama",
+      "openai",
+      "anthropic",
+      "google",
+      "openai-compatible"
+    ],
+    "defaultProvider": "local-model",
+    "credentialPolicy": "server_environment_only",
+    "remoteGate": "SKY_REMOTE_LLM_ENABLED=true plus request consent",
+    "automaticFallback": false
+  },
   "sdk": {
     "package": "ai",
-    "declaredVersion": "^7.0.99",
-    "installedVersion": "7.0.99",
-    "experimentalEvaluateExportPresent": false,
-    "decision": "Do not claim Jev runtime support until a tested AI SDK version or the official HTTP Evaluation API is pinned."
+    "declaredVersion": "^7.0.107",
+    "installedVersion": "7.0.107",
+    "experimentalEvaluateExportPresent": true,
+    "decision": "Sky route and consent-gated runner use AI SDK experimental_evaluate; AI_GATEWAY_API_KEY, provider terms, budget and live acceptance remain configuration gates."
   }
 }
-

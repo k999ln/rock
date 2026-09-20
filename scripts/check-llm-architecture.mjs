@@ -14,7 +14,10 @@ requireValue(matrix.product.displayName === 'avocadoOS', 'display name drift');
 requireValue(matrix.product.internalId === 'dev.rock', 'internal ID drift');
 
 const ids = new Set(matrix.capabilities.map((entry) => entry.id));
-requireValue(ids.size === matrix.capabilities.length, 'duplicate capability id');
+requireValue(
+  ids.size === matrix.capabilities.length,
+  'duplicate capability id',
+);
 for (const id of [
   'native-local-planner',
   'sky-openai-legal',
@@ -32,7 +35,10 @@ for (const entry of matrix.capabilities) {
   for (const evidence of entry.evidence.filter(
     (value) => !value.startsWith('https://'),
   ))
-    requireValue(existsSync(resolve(root, evidence)), `${entry.id}: missing ${evidence}`);
+    requireValue(
+      existsSync(resolve(root, evidence)),
+      `${entry.id}: missing ${evidence}`,
+    );
 }
 
 const local = matrix.capabilities.find(
@@ -40,27 +46,44 @@ const local = matrix.capabilities.find(
 );
 requireValue(local.role === 'local_planner', 'local model role drift');
 requireValue(local.authority === 'plan_only', 'local LLM gained authority');
-requireValue(local.network === 'prohibited', 'local LLM network boundary drift');
-requireValue(local.automaticFallback === false, 'local fallback must be explicit');
+requireValue(
+  local.network === 'prohibited',
+  'local LLM network boundary drift',
+);
+requireValue(
+  local.automaticFallback === false,
+  'local fallback must be explicit',
+);
 
 const openAiConnections = matrix.capabilities.filter(
   (entry) => entry.provider === 'OpenAI',
 );
-requireValue(openAiConnections.length === 2, 'OpenAI connection count must be 2');
+requireValue(
+  openAiConnections.length === 2,
+  'OpenAI connection count must be 2',
+);
 requireValue(
   openAiConnections.every((entry) => entry.surface === 'sky_tool'),
   'OpenAI connections must remain scoped to Sky tools',
 );
 
-const jev = matrix.capabilities.find((entry) => entry.id === 'sky-jev-evaluator');
+const jev = matrix.capabilities.find(
+  (entry) => entry.id === 'sky-jev-evaluator',
+);
 requireValue(jev.model === 'typesafe-ai/jev', 'Jev model slug drift');
 requireValue(jev.role === 'remote_evaluator', 'Jev must remain an evaluator');
-requireValue(jev.surface === 'sky_tool', 'Jev must remain an explicit Sky tool');
 requireValue(
-  jev.status === 'designed_not_implemented',
-  'Jev must not be marked implemented before runtime acceptance',
+  jev.surface === 'sky_tool',
+  'Jev must remain an explicit Sky tool',
 );
-requireValue(jev.authority === 'advisory_only', 'Jev gained execution authority');
+requireValue(
+  jev.status === 'implemented_configuration_required',
+  'Jev must be marked implemented_configuration_required after the Sky route and runner exist',
+);
+requireValue(
+  jev.authority === 'advisory_only',
+  'Jev gained execution authority',
+);
 requireValue(jev.automaticFallback === false, 'Jev fallback must be explicit');
 
 const ai = await import('ai');
@@ -69,14 +92,29 @@ requireValue(
   evaluateExportPresent === matrix.sdk.experimentalEvaluateExportPresent,
   'installed AI SDK export and capability matrix disagree',
 );
+for (const marker of [
+  'app/api/jev-evaluation/route.ts',
+  'components/jev-evaluation-runner.tsx',
+  'lib/jev-evaluation.ts',
+  'lib/decision-layer.ts',
+  'tests/decision-layer.test.mjs',
+])
+  requireValue(
+    existsSync(resolve(root, marker)),
+    `Jev implementation missing ${marker}`,
+  );
 
 const routing = read('lib/sky-routing.ts');
 const roleCount = (
-  routing.slice(routing.indexOf('export const skyRoles')).match(/toolId:/g) || []
+  routing.slice(routing.indexOf('export const skyRoles')).match(/toolId:/g) ||
+  []
 ).length;
-requireValue(roleCount === 10, `Sky routing roles must be 10, found ${roleCount}`);
 requireValue(
-  read('docs/sky-assistant-and-memory.md').includes('現在は次の10役'),
+  roleCount === 12,
+  `Sky routing roles must be 12, found ${roleCount}`,
+);
+requireValue(
+  read('docs/sky-assistant-and-memory.md').includes('現在は次の12役'),
   'Sky assistant document role count is stale',
 );
 
@@ -87,9 +125,31 @@ for (const marker of [
   'typesafe-ai/jev',
   'advisory-only',
   'AI_GATEWAY_API_KEY',
-  'designed_not_implemented',
+  'implemented_configuration_required',
+  'DecisionProvider',
+  'local-action-assistant-binder-v2',
 ])
   requireValue(architecture.includes(marker), `architecture missing ${marker}`);
+
+const providerRegistry = read('lib/llm-providers.ts');
+for (const provider of [
+  "'local-model'",
+  "'ollama'",
+  "'openai'",
+  "'anthropic'",
+  "'google'",
+  "'openai-compatible'",
+])
+  requireValue(
+    providerRegistry.includes(provider),
+    `text model provider missing ${provider}`,
+  );
+for (const marker of [
+  'lib/llm-providers.ts',
+  'app/api/llm/text/route.ts',
+  'tests/llm-providers.test.mjs',
+])
+  requireValue(existsSync(resolve(root, marker)), `text model registry missing ${marker}`);
 
 for (const path of ['AGENTS.md', 'README.md', 'docs/prompt-playbook.md'])
   requireValue(
@@ -104,6 +164,5 @@ requireValue(
 );
 
 console.log(
-  `LLM設計: ${matrix.capabilities.length}能力、OpenAI ${openAiConnections.length}接続、Jev=${jev.status}、AI SDK evaluate export=${evaluateExportPresent}`,
+  `LLM設計: ${matrix.capabilities.length}能力、文章モデルadapter 6種、OpenAI ${openAiConnections.length}接続、Jev=${jev.status}、AI SDK evaluate export=${evaluateExportPresent}`,
 );
-

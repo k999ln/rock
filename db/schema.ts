@@ -159,6 +159,46 @@ export const skyConnections = sqliteTable(
   ],
 );
 
+export const skyProviderConnections = sqliteTable(
+  'sky_provider_connections',
+  {
+    userId: text('user_id').notNull(),
+    provider: text('provider').notNull(),
+    status: text('status').notNull().default('setup_required'),
+    config: text('config').notNull().default('{}'),
+    secretRef: text('secret_ref'),
+    connectedAt: integer('connected_at'),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_provider_connections_user_provider').on(
+      table.userId,
+      table.provider,
+    ),
+    index('idx_sky_provider_connections_user_updated').on(
+      table.userId,
+      table.updatedAt,
+    ),
+  ],
+);
+
+export const remoteAiRateLimits = sqliteTable(
+  'remote_ai_rate_limits',
+  {
+    userId: text('user_id').notNull(),
+    route: text('route').notNull(),
+    windowStartedAt: integer('window_started_at').notNull(),
+    requestCount: integer('request_count').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_remote_ai_rate_limits_user_route').on(
+      table.userId,
+      table.route,
+    ),
+    index('idx_remote_ai_rate_limits_window').on(table.windowStartedAt),
+  ],
+);
+
 export const mercariRevenuePlans = sqliteTable(
   'mercari_revenue_plans',
   {

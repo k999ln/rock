@@ -41,7 +41,10 @@ import {
   type LegalMatterStage,
   type LawyerDirectoryEntry,
 } from '@/lib/legal-intake';
-import type { LegalAiResult } from '@/lib/legal-ai';
+import {
+  buildLocalLegalResult,
+  type LegalAiResult,
+} from '@/lib/legal-ai';
 
 const locationLabels: Record<LegalLocation, string> = {
   nyc: 'ニューヨーク市',
@@ -148,13 +151,16 @@ function LawyerCard({
 
 export function LegalIntakeRunner({
   onRunningChange,
+  onOutcome,
   executionDisabled = false,
 }: {
   onRunningChange?: (running: boolean) => void;
+  onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   executionDisabled?: boolean;
 }) {
   const [input, setInput] = useState<LegalIntakeInput>(emptyInput);
   const [understood, setUnderstood] = useState(false);
+  const [remoteResearch, setRemoteResearch] = useState(false);
   const [assessment, setAssessment] = useState<LegalAssessment | null>(null);
   const [notice, setNotice] = useState('まず安全と期限を確認します。');
   const [copied, setCopied] = useState(false);
@@ -212,6 +218,14 @@ export function LegalIntakeRunner({
           : '一般情報を確認するための次の手順を整理しました。',
     );
     if (next.urgency === 'emergency') {
+      onOutcome?.({ ok: false, text: '緊急性が高い可能性があります。案内と連絡先をこのカードで確認してください。' });
+      onRunningChange?.(false);
+      return;
+    }
+    if (!remoteResearch) {
+      setAiResult(buildLocalLegalResult(input, next));
+      setNotice('端末内のローカルガイドと公的窓口を準備しました。通信は行っていません。');
+      onOutcome?.({ ok: true, text: '端末内の法務ガイドと公的窓口を準備しました。内容はこのカードで確認してください。' });
       onRunningChange?.(false);
       return;
     }
@@ -228,17 +242,19 @@ export function LegalIntakeRunner({
       if (!response.ok)
         throw new Error(payload.error || '法令AIを利用できません。');
       setAiResult(payload);
+      onOutcome?.({ ok: true, text: '公式情報の一次回答を取得しました。出典と引継ぎ内容をこのカードで確認してください。' });
       setNotice(
         next.lawyerRequired
           ? '公式情報の一次回答と弁護士への引継ぎを用意しました。'
           : '公式情報の一次回答と無料・公的な次の行動を用意しました。',
       );
-    } catch (error) {
-      setAiError(
-        error instanceof Error
-          ? error.message
-          : '法令AIを利用できません。公的案内から確認してください。',
+    } catch {
+      setAiResult(buildLocalLegalResult(input, next));
+      setAiError('');
+      setNotice(
+        'オンライン検索は利用できないため、端末内のローカルガイドへ切り替えました。',
       );
+      onOutcome?.({ ok: false, text: 'オンライン検索は利用できませんでした。端末内ガイドをこのカードで確認してください。' });
     } finally {
       setAiLoading(false);
       onRunningChange?.(false);
@@ -326,7 +342,7 @@ export function LegalIntakeRunner({
                       </span>
                       {aiLoading ? (
                         <p className="legal-agent-thinking">
-                          政府・裁判所の公式情報を確認しています…
+                          政府・裁判所の公式情報をオンライン確認しています…
                         </p>
                       ) : aiResult ? (
                         <MessageResponse>{aiResult.answer}</MessageResponse>
@@ -364,7 +380,7 @@ export function LegalIntakeRunner({
       <div className="legal-runner-privacy" hidden={step !== 1}>
         <ShieldAlert size={18} />
         <p>
-          法令AIを使うと入力は回答作成のためOpenAIへ送られ、APIの応答保存機能はオフにします。OpenAI側の保持は契約設定に従います。社会保障番号、口座・カード番号、パスワード、移民の受領番号、診療記録の全文は入力しないでください。
+          標準は端末内処理です。相談本文は通信せず、登録済みの公的窓口と引継ぎ要約を使って整理します。最新の公式情報をオンライン検索する場合だけ、下の任意チェックを有効にしてください。社会保障番号、口座・カード番号、パスワード、移民の受領番号、診療記録の全文は入力しないでください。
         </p>
       </div>
 
@@ -567,7 +583,17 @@ export function LegalIntakeRunner({
               onChange={(event) => setUnderstood(event.target.checked)}
             />
             <span>
-              一般情報であること、入力が回答作成のためOpenAIへ送られることを理解しました。
+              一般情報であること、端末内のローカルガイドであることを理解しました。
+            </span>
+          </label>
+          <label className="legal-runner-consent">
+            <input
+              type="checkbox"
+              checked={remoteResearch}
+              onChange={(event) => setRemoteResearch(event.target.checked)}
+            />
+            <span>
+              通信を許可して、公式情報のオンライン検索を追加する（任意・OpenAIへ送信）
             </span>
           </label>
           <div className="legal-runner-form-actions">
@@ -616,9 +642,15 @@ export function LegalIntakeRunner({
           {assessment.urgency !== 'emergency' && aiResult && (
             <div className="legal-runner-ai-sources legal-runner-source-panel">
               <div>
-                <strong>根拠にした公式情報</strong>
+                <strong>
+                  {aiResult.mode === 'local-registry'
+                    ? '端末内に登録済みの公式入口'
+                    : 'オンライン検索で確認した公式情報'}
+                </strong>
                 <small>
-                  {new Date(aiResult.searchedAt).toLocaleString('ja-JP')} 確認
+                  {aiResult.mode === 'local-registry'
+                    ? '通信なしで作成'
+                    : `${new Date(aiResult.searchedAt).toLocaleString('ja-JP')} 確認`}
                 </small>
               </div>
               {aiResult.citations.map((citation) => (

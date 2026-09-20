@@ -19,6 +19,7 @@ import {
   type McpConnection,
   type McpToolPassport,
 } from '@/lib/mcp-hub';
+import { describeMcpToolResult } from '@/lib/mcp-tool-result';
 
 type RunState = 'ready' | 'approval' | 'running' | 'completed' | 'failed';
 type ParentRunState = 'ready' | 'running' | 'completed' | 'failed';
@@ -83,22 +84,19 @@ function argsFor(tool: McpToolPassport | undefined, request: string) {
   return JSON.stringify(args, null, 2);
 }
 
-function prettyResult(value: unknown) {
-  if (typeof value === 'string') return value;
-  return JSON.stringify(value, null, 2);
-}
-
 export function McpBotRunner({
   server,
   request,
   onRunningChange,
   onStatusChange,
+  onOutcome,
   onDisconnected,
 }: {
   server: McpConnection;
   request: string;
   onRunningChange?: (running: boolean) => void;
   onStatusChange?: (status: ParentRunState) => void;
+  onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   onDisconnected?: () => void;
 }) {
   const tools = useMemo(
@@ -185,17 +183,25 @@ export function McpBotRunner({
         parseArgs(),
         approval.approvalToken,
       );
-      setResult(prettyResult(value));
+      const outcome = describeMcpToolResult(value);
       setApproval(null);
-      setState('completed');
-      onStatusChange?.('completed');
+      onOutcome?.(outcome);
+      if (outcome.ok) {
+        setResult(outcome.text);
+        setState('completed');
+        onStatusChange?.('completed');
+      } else {
+        setError(outcome.text);
+        setState('failed');
+        onStatusChange?.('failed');
+      }
     } catch (reason) {
       setApproval(null);
       setState('failed');
       onStatusChange?.('failed');
-      setError(
-        reason instanceof Error ? reason.message : 'MCPを実行できませんでした。',
-      );
+      const message = reason instanceof Error ? reason.message : 'MCPを実行できませんでした。';
+      setError(message);
+      onOutcome?.({ ok: false, text: message });
     } finally {
       onRunningChange?.(false);
     }
