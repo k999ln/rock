@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-09-20",
+  "updatedAt": "2026-09-21",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
@@ -15,7 +15,7 @@
     "planned": 16,
     "blocked": 1,
     "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
-    "nextAction": "Scalewayの課金確認後、Ubuntu 24.04 / 32 dedicated vCPU / 64 GB RAM / 600 GBで固定sourceをsyncし、Operator Agentを明示除外したbringup modeでtarget-files-packageとotatools-packageをbuildする。RELEASE_FLASH gate、production signing、実機flashは未合格のまま維持する。"
+    "nextAction": "Jevは安全なruntime key provisioningが決まるまでdisabled／初回product除外を維持する。友人がAndroid SDK／Gradle環境でoptional providerのunit test・lint・Soong source buildを実行し、別途Pixel／OS full build／flashのgateは未合格のまま維持する。"
   },
   "webSchema": {
     "tableCount": 27,
