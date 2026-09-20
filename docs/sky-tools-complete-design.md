@@ -1,7 +1,7 @@
 # Sky／Zema／全Tool詳細設計
 
 版: 1.0 / 2026-09-18
-対象: Skyにある11件のready Tool、13件の導入候補、native開発Tool、Tool追加基盤。
+対象: Skyにある12件のready Tool、22件の導入候補、native開発Tool、Tool追加基盤。
 
 この文書は、Tool名の一覧ではなく、各Toolについて「誰が何を入力し、どこで動き、何を保存し、どこから外部作用になり、何をもって完了とするか」を同じ形で説明する。カタログの機械可読正本は`lib/catalog.ts`。この文書とカタログの欠落は`npm run design:check`で検出する。
 
@@ -243,6 +243,10 @@ catalogued → selected → connected → ready → running → review → compl
 
 正本: [Sky legal intake](sky-legal-intake-20260912.md)、`lib/legal-intake.ts`、`lib/legal-ai.ts`。
 
+## 15.5 Jev品質評価
+
+`jev-evaluation` は、本人が送信対象・送信先・料金・保持条件を確認した後に、最小化した入力を評価するremote evaluatorである。評価Receiptはreview signalとして保存し、権限付与、Tool成功、仕事完了、専門家判断の代替にはしない。
+
 ## 15. 特許出願アシスタント
 
 - 目的: 発明情報、先行技術候補、差分、明細書、請求項、要約のdraftを準備する。
@@ -256,7 +260,11 @@ catalogued → selected → connected → ready → running → review → compl
 
 正本: [Patent assistant](sky-patent-assistant-20260912.md)、`lib/patent-assistant.ts`、`lib/patent-ai.ts`。
 
-## 16. 導入候補13件
+## 16. 導入候補22件
+
+### 追加された候補
+
+`rockstar-ip-studio` はSNS・ゲーム運用の候補。`coconala-proposal-draft`、`gig-workflow`、`coconala-inbox`、`youtube-script-writer`、`seo-blueprint`、`landing-page-sprint`、`sales-objection-reply-builder`、`user-interview-synthesizer`、`calendar-coordination`、`telegram-notifications`、`producthunt-discovery` は旧Mr. Automation由来の候補である。いずれもSkyのcatalogには登録済みだが、本人接続、権限、保存、外部作用、結果確認をToolごとに受入するまで、実行済み・接続済みとは表示しない。
 
 ### faster-whisper
 

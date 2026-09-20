@@ -8,7 +8,7 @@
 
 1. [製品・サービス・システム関係図](rockstaros-product-system-map.md) — 製品、サービス、内部システム、`Mr.`、MR、収益の関係を一枚で確認する。
 2. [RockstarOS全体詳細設計](rockstaros-complete-design.md) — OS全体がどう動くか。
-3. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — Toolをどう追加し、11件をどう使い、どこで止めるか。
+3. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — Toolをどう追加し、12件をどう使い、どこで止めるか。
 4. [avocadoMini空間発明システム](rockstaros-avocado-mini-complete-design.md) — 物質発明を手で扱う体験と技術。
 5. [製品ベース](product-baseline.md) — 利用者が確定したRQ01〜RQ49と、その後のTool追加判断。
 6. [Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md) — code、Jev、Local Qwen、Cloud LLM、Codex、RAG、Market、Walletを一つの安全境界へ統合する設計。
@@ -51,7 +51,7 @@ RockstarOS Platform Core
 
 | 環境              | 役割                                                          | 現在の到達点                               | 完成と呼ばないもの                         |
 | ----------------- | ------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------ |
-| Web / PC          | 現在の製品画面、D1 API、PC Tool、MCP接続                      | 11 ready Toolと主要画面がある              | スマホOS、native sandbox、本番Provider     |
+| Web / PC          | 現在の製品画面、D1 API、PC Tool、MCP接続                      | 12 ready Toolと主要画面がある              | スマホOS、native sandbox、本番Provider     |
 | Linux / QEMU      | native OS契約、署名Tool、更新・復旧、Wallet／Game fixture     | Developer Preview候補の限定受入            | Pixel対応、一般配布、本番鍵                |
 | Android APK       | Broker、Shell、固定Tool、Local AI、backup、Operatorの事前検証 | emulatorと所有Pixelの試験署名APKで限定合格 | RockstarOS image、SELinux最終形、正式署名  |
 | Pixel 10 OS image | 最初の物理RockstarOS対象                                      | sourceとbuild gateを設計・準備             | full build、flash、CTS/VTS、OTA、純正復旧  |

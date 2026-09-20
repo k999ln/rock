@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
 import SkyChatWorkspace from '@/components/sky-chat-workspace';
 
 export const metadata: Metadata = {
@@ -13,7 +12,5 @@ export default async function ChatPage({
 }) {
   const params = await searchParams;
   if (params.view === 'work') return <SkyChatWorkspace />;
-  if (params.tool && !params.thread)
-    redirect(`/sky/tools/${encodeURIComponent(params.tool)}`);
   return <SkyChatWorkspace />;
 }

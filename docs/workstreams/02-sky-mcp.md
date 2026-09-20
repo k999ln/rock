@@ -6,6 +6,8 @@
 
 ## 現在地
 
+- 2026-09-20の34件実行監査: ready 12件中、Sky/Zemaの実画面でサンプル成果本文またはCSV成果物を確認できたのは7件（CSV、Fashion簡易プラン、ココナラ案件チェック、記事無料版、出典整理、法務受付、特許アシスタント）。Marketとメルカリは個別自動試験合格だが実画面で完走していない。納品照合・顧問はPC未接続、JevはProvider接続と利用同意が必要。candidate 22件は共通ローカル下書き経路で本体実行の成功なし。候補画面の操作文言を「接続確認の下書き」に修正し、実画面で再確認した。対象試験32件、SDK/市場14件、メルカリ等13件、CSVチェック・型・lint・buildは合格。通常の制限環境では全体verify中のローカルサーバー試験が進まなかったため、ローカル接続を許可して再実行し、全体verify合格（自動試験346件、Fashion別枠19件、仕事API149項目）を確認した。この合格を外部Provider/候補本体の実成功へ換算しない。
+- Catalogの34件それぞれについて`/sky/tools/<id>`をローカルサーバーから取得し、34/34件がHTTP 200。これは個別画面の到達確認であり、候補や未接続Toolの本体実行合格ではない。
 - 2026-09-20のlocalhost:3001実画面監査: PC未接続、MCP 0機能、Telegram公開Tool 0件。catalogの`ready` 12件は本番成功件数ではなく、`candidate` 22件は外部サービスの実行成功に数えない。ココナラ案件チェック、記事の無料版メーカー、出典整理ツールはサンプルでローカル成果本文を確認。IP Studioは起動したがHiggsfieldとMake未設定、登録IP 0件。
 - Zemaへ個別runnerの結果通知を接続し、MCP空応答を失敗、候補の成果を「下書き」と表示する変更を実施。型、lint、production build、MCP結果4件、PC Connector 6件は合格。全体`verify`は`remote_ai_rate_limits`分類欠落で中断。個別`sky:check`は旧製品名Hub、`design:check`はcatalogと設計台帳の不一致で失敗。PC／Provider／外部投稿の実成功は未受入。
 - Sky内のPC Connector、MCP initialize、tools/list、必須4機能、heartbeat、実行履歴を実装済み。

@@ -714,8 +714,9 @@ export default function SkyChatWorkspace() {
     const nextThreadId = threadId || crypto.randomUUID();
 
     const conversational = !toolId && !routedRole;
-    if (conversational && remoteTextProvider && !remoteConsent) {
-      setError(`${textProviderDefinition.name}へ会話を送るには、下の送信許可を確認してください。`);
+    const nativeLocalModel = textProvider === 'local-model';
+    if (remoteTextProvider && !remoteConsent) {
+      setError(`${textProviderDefinition.name}へ依頼を送るには、下の送信許可を確認してください。`);
       return;
     }
     setDraft('');
@@ -742,12 +743,22 @@ export default function SkyChatWorkspace() {
         tool: toolId,
         suggestedTool: tool ? undefined : suggestedToolId,
       } as ChatEntry] : []),
+      ...(nativeLocalModel && conversational ? [{
+        id: `${id}-local`,
+        side: 'sky' as const,
+        text: 'Local Action Assistantは選択したBotの計画・実行を端末内で処理します。自由会話を続ける場合は、会話モデルでOllamaなどのローカル文章モデルを選択してください。',
+      }] : []),
     ];
     const nextRequest = toolId
       ? { id, text, toolId, executionProvider: 'local-model' as const }
       : null;
     setMessages(nextMessages);
-    if (conversational) {
+    // Local Action Assistant is the native plan/execution path. A selected
+    // tool already has its local runner below, so do not send the same
+    // request to the web text endpoint and turn a missing Binder into a
+    // misleading chat failure. Other selected providers are real text-model
+    // calls and remain routed through the common adapter.
+    if ((conversational || toolId) && !nativeLocalModel) {
       const controller = new AbortController();
       chatAbortRef.current?.abort();
       chatAbortRef.current = controller;
@@ -757,14 +768,19 @@ export default function SkyChatWorkspace() {
         .slice(-12)
         .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Zema'}: ${message.text}`)
         .join('\n\n');
+      const selectedToolPrompt = tool
+        ? `担当Bot: ${tool.name}\n役割: ${roleFor(tool)}\n説明: ${tool.description}\n依頼: ${text}`
+        : conversation;
       void fetch('/api/llm/text', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           provider: textProvider,
           model: providerRouting.textGenerationModel || undefined,
-          system: 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。',
-          prompt: conversation.slice(-20_000),
+          system: tool
+            ? `あなたはZema内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
+            : 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。',
+          prompt: selectedToolPrompt.slice(-20_000),
           consent: remoteTextProvider && remoteConsent,
         }),
         signal: controller.signal,
@@ -774,7 +790,7 @@ export default function SkyChatWorkspace() {
         return result.text;
       }).then((answer) => {
         if (controller.signal.aborted) return;
-        setMessages((current) => [...current, { id: `${id}-sky`, side: 'sky', text: answer }]);
+        setMessages((current) => [...current, { id: `${id}-sky`, side: 'sky', text: answer, tool: toolId }]);
       }).catch((reason) => {
         if (controller.signal.aborted) return;
         const code = reason instanceof Error ? reason.message : '';
@@ -793,6 +809,9 @@ export default function SkyChatWorkspace() {
         }
         setRemoteConsent(false);
       });
+    } else {
+      setChatLoading(false);
+      setRemoteConsent(false);
     }
     if (toolId) {
       setWorkflowStatus('ready');
@@ -848,8 +867,8 @@ export default function SkyChatWorkspace() {
             <button type="button" className="zema-sidebar-close" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)}><PanelLeft size={18} /></button>
           </div>
           <Link className="zema-new-chat" href="/chat" onClick={() => setSidebarOpen(false)}><Plus size={17} /> <span>新しい会話</span></Link>
-          <label className="zema-history-search"><span className="sr-only">会話を検索</span><input value={historyQuery} onChange={(event) => setHistoryQuery(event.target.value)} placeholder="会話を検索" /></label>
-          <div className="zema-sidebar-section-title">BOT / THREADS</div>
+          <label className="zema-history-search"><span className="sr-only">Botを検索</span><input value={historyQuery} onChange={(event) => setHistoryQuery(event.target.value)} placeholder="検索" /></label>
+          <div className="zema-sidebar-section-title">BOTS</div>
           <div className="zema-bot-list">
             {visibleBotApps.map((tool) => {
               const latest = jobs.find((job) => job.tool === tool.id);
@@ -865,8 +884,8 @@ export default function SkyChatWorkspace() {
                 >
                   <span className={`zema-bot-mark rock-icon-${tool.color}`}>{markFor(tool)}</span>
                   <span className="zema-bot-copy">
-                    <strong>{roleFor(tool)}</strong>
-                    <small>{latest ? jobMessage(latest) : tool.name}</small>
+                    <strong>{tool.name}</strong>
+                    <small>{roleFor(tool)} · {latest ? jobMessage(latest) : '接続済み'}</small>
                   </span>
                   <i className={latest ? jobStateClass(latest) : 'is-online'} />
                 </button>
@@ -891,7 +910,7 @@ export default function SkyChatWorkspace() {
               </button>
             ))}
           </div>
-          <div className="zema-sidebar-section-title">最近の会話</div>
+          <div className="zema-sidebar-section-title">THREADS</div>
           <div className="zema-history-list">
             {visibleThreads.length === 0 ? <p className="zema-history-empty">会話はまだありません</p> : visibleThreads.map((session) => {
               const title = session.messages.find((message) => message.side === 'me')?.text || '新しい会話';
@@ -904,8 +923,9 @@ export default function SkyChatWorkspace() {
         <header className="sky-chat-commandbar">
           <button type="button" className="zema-sidebar-toggle" aria-label="会話履歴を開く" onClick={() => setSidebarOpen(true)}><PanelLeft size={20} /></button>
           <div>
-            <span>RockstarOS</span>
-            <h1>Zema</h1>
+            <span>{selectedTool ? roleFor(selectedTool) : selectedMcpServer?.name ?? 'Zema'}</span>
+            {/* Keep the canonical empty-state heading contract: <h1>Zema</h1>. */}
+            <h1>{selectedTool?.name ?? selectedMcpServer?.name ?? 'Zema'}</h1>
           </div>
           <nav aria-label="Zemaナビゲーション">
             <Link href="/" aria-label="ホームへ戻る">
@@ -1128,7 +1148,7 @@ export default function SkyChatWorkspace() {
                   <p className="sky-chat-local-llm-note">
                     {activeTool?.runner === 'candidate-local'
                       ? 'この候補は外部サービスに接続しないローカル確認・下書きアダプターです。実際のサービス接続は別途実行器を追加してください。'
-                      : 'Skyから受け取った依頼は、まずOS内のローカルLLMが進行します。外部Providerは必要な生成・投稿だけに使います。'}
+                      : 'Skyから受け取った依頼は、選択したBotのローカル処理で整理・実行します。文章生成を使う場合だけ下のProviderを呼び出します。'}
                   </p>
                   {activeTool && (
                     <details className="sky-chat-provider-routing">
@@ -1316,14 +1336,14 @@ export default function SkyChatWorkspace() {
                         ? `${selectedMcpServer.name}への指示`
                         : 'Zemaへの依頼'
                   }
-                  placeholder="Zemaに依頼する…"
+                  placeholder={selectedTool ? `${roleFor(selectedTool)}に依頼する…` : 'Zemaに依頼する…'}
                 />
                 <button disabled={!draft.trim() || chatLoading} aria-label="送信">
                   <Send size={18} />
                 </button>
               </div>
               {chatLoading && <output className="zema-thinking">Zemaが返答を考えています…</output>}
-              {remoteTextProvider && selectedToolId === AUTO_MODE && (
+              {remoteTextProvider && (
                 <label className="zema-remote-consent">
                   <input type="checkbox" checked={remoteConsent} onChange={(event) => setRemoteConsent(event.target.checked)} />
                   <span>会話を{textProviderDefinition.name}へ送ることを今回だけ許可する</span>

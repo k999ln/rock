@@ -179,9 +179,9 @@ flowchart TB
 
 ## 現在開発・統合しているTool
 
-Skyのカタログ上のready 11件とcandidate 13件を、同じTool契約で管理しています。readyはカタログ上の実装・接続状態であり、本番Provider接続や実収益を意味しません。
+Skyのカタログ上のready 12件とcandidate 22件を、同じTool契約で管理しています。readyはカタログ上の実装・接続状態であり、本番Provider接続や実収益を意味しません。
 
-### Ready Tool（11件）
+### Ready Tool（12件）
 
 | ID | 役割 | 実行場所 |
 | --- | --- | --- |
@@ -194,10 +194,11 @@ Skyのカタログ上のready 11件とcandidate 13件を、同じTool契約で�
 | `mr-citations` | 出典整理 | Web / PC |
 | `mr-delivery` | 納品記録の照合 | PC |
 | `rockstar-ledger` | サブスク顧問・台帳確認 | PC MCP |
+| `jev-evaluation` | Jev品質評価 | Sky Cloud / 明示同意 |
 | `rockstar-legal-intake` | 法務受付・整理 | Web / 任意AI |
 | `rockstar-patent-assistant` | 特許資料の下書き支援 | Web / 任意AI |
 
-### 導入・研究中のTool（13件）
+### 導入・研究中のTool（22件）
 
 `faster-whisper`（文字起こし）、`transformers-js`（ブラウザAI）、`playwright`（許可Web操作）、`jev-ultrafast`（選択型browser agent）、`openjev`（typed decision）、`jevlike`（判断model研究）、`jev-trader`（PAPER市場判断）、`awesome-jev-by-typesafe`（Jev reference）、`typesafe-computer-use`（Mac画面操作）、`jev-review`（code review）、`jev-router`（model routing）、`jev-browser`（browser操作）、`mobile-jev`（Android操作）です。candidate Toolは未接続・研究中を含み、LIVE実行や個人端末での無制限操作を許可しません。
 
@@ -562,7 +563,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: Scalewayの課金確認後、Ubuntu 24.04 / 32 dedicated vCPU / 64 GB RAM / 600 GBで固定sourceをsyncし、Operator Agentを明示除外したbringup modeでtarget-files-packageとotatools-packageをbuildする。RELEASE_FLASH gate、production signing、実機flashは未合格のまま維持する。 AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。Sky ToolはPC/Provider実接続で成果本文・失敗・Zema通知をToolごとに受入し、candidateの下書きを本番成功へ算入しない。SKY19の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。
+次の作業: Scalewayの課金確認後、Ubuntu 24.04 / 32 dedicated vCPU / 64 GB RAM / 600 GBで固定sourceをsyncし、Operator Agentを明示除外したbringup modeでtarget-files-packageとotatools-packageをbuildする。RELEASE_FLASH gate、production signing、実機flashは未合格のまま維持する。 AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。Sky ToolはPC/Provider実接続で成果本文・失敗・Zema通知をToolごとに受入し、candidateの下書きを本番成功へ算入しない。2026-09-20の34件監査ではローカル成果7件、実画面未完走2件、PC/Provider未接続3件、候補本体未実行22件を確認した。次は未完走・未接続の実成果と失敗表示を個別受入する。SKY19の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。
 <!-- project-status:end -->
 
 </details>

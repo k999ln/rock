@@ -6,7 +6,7 @@ import styles from './preview.module.css';
 export const metadata: Metadata = {
   title: 'avocadoMini — 製品紹介',
   description:
-    'avocadoMiniは4本のMotion TowerとEdge Hubからなるキット構想。デザインを一周見て、税込41万円のキット目標価格を確認できます。RockstarOSの導入案内は別ページです。',
+    'avocadoMiniは4本のMotion TowerとEdge Coreからなるキット構想。デザインを一周見て、税込41万円のキット目標価格を確認できます。RockstarOSの導入案内は別ページです。',
 };
 
 export default function AvocadoMiniProductHome() {

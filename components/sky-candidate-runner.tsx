@@ -194,19 +194,19 @@ export function SkyCandidateRunner({
           />
         </label>
         <button className="black-button bench-run" disabled={running} onClick={() => void run()}>
-          <Play size={16} /> {running ? '実行中…' : '実行する'}
+          <Play size={16} /> {running ? '下書き作成中…' : '接続確認の下書きを作る'}
         </button>
         {error && <p className="bench-error" role="alert">{error}</p>}
       </fieldset>
       {output && (
         <div className="bench-output" aria-live="polite">
           <div className="bench-heading">
-            <h3>実行結果</h3>
+            <h3>接続確認の下書き</h3>
             <div className="output-actions">
-              <button onClick={() => void copy()} aria-label="結果をコピー">
+              <button onClick={() => void copy()} aria-label="下書きをコピー">
                 {copied ? <Check size={17} /> : <Copy size={17} />}
               </button>
-              <button onClick={download} aria-label="結果をMarkdownで保存">
+              <button onClick={download} aria-label="下書きをMarkdownで保存">
                 <Download size={17} />
               </button>
             </div>
