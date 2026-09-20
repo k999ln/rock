@@ -38,6 +38,28 @@ function cameraWindow(parent, radius, centerY, height, count) {
   }
 }
 
+function p02CameraHead(parent) {
+  // P0.2 ME-101: three apertures share one horizontal row, hidden by a lifting privacy cap at rest.
+  disk(parent, 0.17, 0.17, 0.2, 5.04, brightSilver);
+  mesh(parent, new THREE.CylinderGeometry(0.177, 0.177, 0.09, 48, 1, true, -0.58, 1.16), glass, 0, 5.04);
+  for (const angle of [-0.36, 0, 0.36]) {
+    const x = Math.sin(angle) * 0.18;
+    const z = Math.cos(angle) * 0.18;
+    const bezel = mesh(parent, new THREE.SphereGeometry(0.026, 20, 12), underside, x, 5.04, z);
+    bezel.scale.z = 0.42;
+    bezel.rotation.y = angle;
+    const eye = mesh(parent, new THREE.SphereGeometry(0.014, 16, 10), lens, x + Math.sin(angle) * 0.011, 5.04, z + Math.cos(angle) * 0.011);
+    eye.scale.z = 0.5;
+    eye.rotation.y = angle;
+  }
+  const cap = new THREE.Group();
+  parent.add(cap);
+  disk(cap, 0.2, 0.2, 0.095, 5.04, brightSilver);
+  disk(cap, 0.2, 0.2, 0.035, 5.105, silver);
+  ring(cap, 0.187, 0.004, 5.129);
+  return cap;
+}
+
 function tower() {
   const root = new THREE.Group();
   disk(root, 0.54, 0.56, 0.13, 0.12, underside);
@@ -57,10 +79,8 @@ function tower() {
 
   const upper = new THREE.Group();
   root.add(upper);
-  disk(upper, 0.119, 0.123, 1.26, 4.64, silver);
-  disk(upper, 0.129, 0.129, 0.075, 5.295, brightSilver);
-  ring(upper, 0.125, 0.007, 5.338);
-  cameraWindow(upper, 0.123, 4.9, 0.48, 3);
+  disk(upper, 0.119, 0.123, 1.05, 4.5, silver);
+  const privacyCap = p02CameraHead(upper);
 
   const legs = [];
   for (let index = 0; index < 3; index += 1) {
@@ -78,10 +98,10 @@ function tower() {
   root.add(scan);
   const points = [];
   for (const target of [[-1.05, 3.65, 2.4], [1.05, 3.65, 2.4], [-0.8, 5.25, 2.4], [0.8, 5.25, 2.4]]) {
-    points.push(0, 4.9, 0.16, ...target);
+    points.push(0, 5.04, 0.18, ...target);
   }
   scan.add(new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(points, 3)), scanMaterial));
-  return { root, middle, upper, legs, scanMaterial };
+  return { root, middle, upper, privacyCap, legs, scanMaterial };
 }
 
 function softShadow(scene) {
@@ -178,12 +198,14 @@ export function createTowerScene(host) {
     const kitAmount = smooth((progress - 0.61) / 0.09) * (1 - smooth((progress - 0.84) / 0.07));
     const baseDetail = smooth((progress - 0.43) / 0.09) * (1 - smooth((progress - 0.64) / 0.06));
     const sensing = reducedMotion ? 0 : smooth((progress - 0.07) / 0.06) * (1 - smooth((progress - 0.27) / 0.08));
+    const capLift = 0.14 * smooth((progress - 0.05) / 0.06);
 
     const units = [hero, ...satellites];
     for (const unit of units) {
       unit.root.rotation.y = THREE.MathUtils.degToRad(unit === hero ? yaw : yaw * (1 - kitAmount) + 360 * kitAmount);
       unit.middle.position.y = -(1 - extension) * 0.9;
       unit.upper.position.y = -(1 - extension) * 1.65;
+      unit.privacyCap.position.y = capLift;
       unit.legs.forEach((leg) => { leg.scale.x = Math.max(0.001, legAmount); });
       unit.scanMaterial.opacity = unit === hero ? sensing * 0.32 : 0;
     }
