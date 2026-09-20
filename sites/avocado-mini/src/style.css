@@ -58,3 +58,22 @@
 .macro-copy>span{display:block;margin-top:70px;font-size:11px;color:#a9bac3}
 @media(max-width:800px){.film-hero-image{background-position:64% center;background-image:linear-gradient(90deg,#070b10df 0%,#070b10a0 45%,#070b1040 100%),url('/images/avocado-mini-hero.png')}.film-hero-copy{left:28px;right:28px;top:42%;transform:translateY(-50%)}.film-hero h1{font-size:clamp(54px,10vw,86px)}.story-copy{top:90px}.stage{inset:18% -6% 4%}.macro-image{background-position:62% center;background-image:linear-gradient(90deg,#070b10e8 0%,#070b10b5 55%,#070b1050 100%),url('/images/avocado-mini-detail.png')}.macro-copy{margin:0 28px;max-width:440px}}
 @media(max-width:520px){.site-header{height:54px}.site-header .brand{font-size:17px}.site-header nav{gap:13px}.site-header nav a{font-size:10px}.header-cta{font-size:10px;padding:7px 10px}.film-hero{min-height:670px}.film-hero-image{background-position:68% center}.film-hero-copy{top:36%}.film-hero h1{font-size:clamp(48px,12vw,67px)}.film-hero-copy>p:not(.eyebrow){font-size:16px;max-width:270px}.film-disclaimer{left:28px;right:28px;bottom:16px}.story{min-height:2100px}.story-copy{left:22px;right:22px;top:82px}.story-copy h2{font-size:42px}.story-copy .hero-line{font-size:20px}.story-copy>p.hero-description{font-size:11px;max-width:240px}.stage{inset:28% -19% 6%}.price-panel{bottom:70px}.macro-section{min-height:760px}.macro-image{background-position:65% center}.macro-copy{align-self:flex-start;margin:0 24px;padding:90px 0}.macro-copy h2{font-size:48px}.macro-copy>p:not(.eyebrow){font-size:15px;max-width:280px}}
+
+/* The product stays in one full-height frame as each scroll chapter appears. */
+.story{height:600svh;min-height:0}
+.story-sticky{height:100svh;min-height:0}
+.feature-beats{position:absolute;inset:0;z-index:2;pointer-events:none}
+.feature-beat{position:absolute;left:clamp(24px,6vw,100px);top:50%;width:min(440px,36vw);opacity:0;visibility:hidden;transform:translateY(calc(-50% + 26px));transition:none}
+.feature-beat.is-active{opacity:1;visibility:visible;transform:translateY(-50%);transition:opacity .45s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+.feature-beat[data-beat="telescope"],.feature-beat[data-beat="os"]{left:auto;right:clamp(24px,6vw,100px)}
+.feature-beat .eyebrow{color:#8bdef5;margin:0 0 22px}
+.feature-beat h2{font-size:clamp(49px,5vw,78px);line-height:1.12;letter-spacing:-.075em;margin:0 0 24px;color:#f6fbfd}
+.feature-beat[data-beat="intro"] h2{font-size:clamp(55px,6vw,91px);margin-bottom:14px}
+.feature-headline{font-size:clamp(24px,2.5vw,38px);line-height:1.3;letter-spacing:-.06em;font-weight:700;margin:0 0 18px}
+.feature-beat .feature-description{font-size:clamp(14px,1.3vw,18px);line-height:1.8;color:#d1e0e7;max-width:420px;margin:0}
+.feature-meta{display:block;border-top:1px solid #a3ccda70;padding-top:14px;margin-top:32px;font-size:11px;letter-spacing:.12em;color:#a9deec}
+.story-foot #chapter{color:#8bdef5}
+.story-foot>div:first-child{min-width:105px}
+@media(max-width:800px){.feature-beat{top:clamp(100px,18vh,165px);left:28px;right:28px;width:auto;max-width:560px;transform:translateY(24px)}.feature-beat.is-active{transform:translateY(0)}.feature-beat[data-beat="telescope"],.feature-beat[data-beat="os"]{left:28px;right:28px}.feature-beat h2{font-size:clamp(43px,7vw,62px)}.feature-beat[data-beat="intro"] h2{font-size:clamp(48px,8vw,68px)}.feature-headline{font-size:clamp(23px,4vw,30px)}.feature-beat .feature-description{font-size:15px;max-width:500px}.stage{inset:31% -12% 5%}}
+@media(max-width:520px){.feature-beat{top:82px;left:22px;right:22px}.feature-beat[data-beat="telescope"],.feature-beat[data-beat="os"]{left:22px;right:22px}.feature-beat .eyebrow{font-size:10px;margin-bottom:14px}.feature-beat h2,.feature-beat[data-beat="intro"] h2{font-size:39px;margin-bottom:13px}.feature-headline{font-size:23px;margin-bottom:11px}.feature-beat .feature-description{font-size:13px;line-height:1.65;max-width:330px}.feature-meta{margin-top:14px;padding-top:9px;font-size:10px}.stage{inset:38% -19% 4%}.story-foot{bottom:20px}.story-foot>div:first-child{min-width:90px}.story-foot #chapter{font-size:9px}.price-panel{bottom:72px}}
+@media(prefers-reduced-motion:reduce){.feature-beat{transition:none}}

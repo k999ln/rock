@@ -6,6 +6,7 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 
 ## 現在地
 
+- avocadoMiniの製品ツアーは全画面固定の6画面スクロールで一周し、回転角に合わせてセンサー、伸縮、ベース操作、OS連携の構想を順に説明する。価格は最後の360度到達後に表示する。デスクトップと390px幅のブラウザで確認済み。
 - 公開avocadoMini Siteの視覚表現を更新。構想図を基準に生成した独自の製品全景・ベース接写を全画面で見せ、360度回転と価格表示へつなぐ。画像は実機写真ではないと表示し、販売未開始を維持する。デスクトップとモバイル幅で確認済み。GitHub main `8c9d11b`のCI成功、独立Site v5の配備成功と公開画面のreadbackを確認した。
 - 最新の指定: `rockstaros-kaiya.noellesugar1.chatgpt.site`を一般公開avocadoMini商品サイトにし、`/rockstaros`は商品ページの入口。OS操作画面だけを管理者限定の新しい別Siteへ移す。商品sourceは`sites/avocado-mini`。同sourceの別ドメインプレビューは公開済み。旧URLの転用・旧OSの公開停止・新OS Siteの移行は未実施で、旧Site所有アカウントが現在のSites接続から見つからない。
 - avocadoMiniの公開製品Siteと旧`/rockstaros` sourceの製品ストーリーを、暗い製品ヒーロー、360度回転、参考価格、設計画像、3場面の体験、OS導入案内へ更新。旧Siteの配備・管理者限定化は所有アカウント接続待ち。新製品Siteのみ実公開を確認する。

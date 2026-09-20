@@ -6,10 +6,14 @@ const stage = document.querySelector('#stage');
 const canvas = document.querySelector('#product-canvas');
 const fallback = document.querySelector('#stage-fallback');
 const angle = document.querySelector('#angle');
+const chapter = document.querySelector('#chapter');
 const progressBar = document.querySelector('#progress');
 const pricePanel = document.querySelector('#price-panel');
 const crowdfundingLink = document.querySelector('#crowdfunding-link');
+const beats = [...document.querySelectorAll('.feature-beat')];
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const beatStarts = [0, 0.13, 0.32, 0.51, 0.70];
+const priceStart = 0.91;
 
 function makeModel() {
   const model = new THREE.Group();
@@ -60,8 +64,20 @@ function showFallback() {
   updateProgress();
 }
 
-function updatePrice(turn) {
-  const visible = turn >= 1;
+function updateStory(progress) {
+  const visible = progress >= priceStart;
+  let active = -1;
+  if (!visible) {
+    for (let index = 0; index < beatStarts.length; index += 1) {
+      if (progress >= beatStarts[index]) active = index;
+    }
+  }
+  beats.forEach((beat, index) => {
+    const selected = index === active;
+    beat.classList.toggle('is-active', selected);
+    beat.setAttribute('aria-hidden', String(!selected));
+  });
+  chapter.textContent = visible ? 'COMPLETE / 04' : active === 0 ? 'INTRO / 04' : `${String(active).padStart(2, '0')} / 04`;
   pricePanel.classList.toggle('visible', visible);
   pricePanel.setAttribute('aria-hidden', String(!visible));
   crowdfundingLink.tabIndex = visible ? 0 : -1;
@@ -70,7 +86,7 @@ function updatePrice(turn) {
 function updateProgress(model, renderer, scene, camera) {
   const distance = Math.max(1, story.offsetHeight - window.innerHeight);
   const progress = Math.min(1, Math.max(0, -story.getBoundingClientRect().top / distance));
-  const turn = Math.min(1, progress / 0.72);
+  const turn = Math.min(1, Math.max(0, (progress - 0.04) / (priceStart - 0.04)));
   progressBar.style.width = `${Math.round(turn * 100)}%`;
   if (model && renderer && scene && camera) {
     model.rotation.y = reducedMotion.matches ? 0 : turn * Math.PI * 2;
@@ -79,7 +95,7 @@ function updateProgress(model, renderer, scene, camera) {
   } else {
     angle.textContent = '構想画像';
   }
-  updatePrice(turn);
+  updateStory(progress);
 }
 
 let renderer;
