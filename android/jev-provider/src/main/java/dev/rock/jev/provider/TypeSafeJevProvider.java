@@ -320,7 +320,9 @@ public final class TypeSafeJevProvider {
         if (request == null) return AdvisoryResult.abstain(requestId, "REQUEST_INVALID");
         try {
             String payload = request.payload();
-            if (estimatedCostMicros < 1 || estimatedCostMicros > request.maxCostMicros)
+            if (estimatedCostMicros == 0)
+                return AdvisoryResult.abstain(requestId, "PROVIDER_DISABLED");
+            if (estimatedCostMicros < 0 || estimatedCostMicros > request.maxCostMicros)
                 return AdvisoryResult.abstain(requestId, "MAX_COST_EXCEEDED");
             char[] key = readKey();
             if (key == null) return AdvisoryResult.abstain(requestId, "PROVIDER_DISABLED");
