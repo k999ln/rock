@@ -4,6 +4,8 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
+- 利用者が再提示したMotion Tower P0.2のPDF・Wordを最新版として照合。3Dツアーの上部3眼を横一列に変更し、待機時にレンズを覆う物理キャップを起動時に開く演出へ修正した。下部センサーは追加構想と明記し、異常時の安全動作とPoE有線給電の説明を設計書に合わせた。図面は公開リポジトリへ複製しない。静的buildとデスクトップ／390px幅の表示を確認し、製品Site v23（source `89949d99fc70474ee73687c4c1618bada13aa7ae`）を公開。GitHub mainは既存PRの統合待ち。
+
 - avocadoMiniの一周後の白い価格カードと大きな無効ボタンを廃止。黒いスタジオ画面に製品名、キット目標価格、購入受付前、製品化企画への導線を並べ、3Dタワーを横または下に残した。1280px・794px・390pxで試写し、静的build、baseline、project検査を通した。製品Site v22（source `ddd1b353f61ad9cf25a90eb6b3e9fe5bd44d1c3b`）を公開。GitHub mainは既存PRの統合待ち。
 
 - avocadoMiniの回転区間を、前・横・後ろの画像切替から連続した3Dモデルへ変更。スクロール角度に合わせて上下の青いセンサー、三段伸縮、3本の脚、4本とEdge Hubを順に見せる。WebGLが使えない環境では旧画像へ切り替える。1280pxと390pxで各章と一周後の価格を試写し、静的build・baseline・project検査を通した。製品Site v21（source `816c09802a2088e4d29af487d6c1c3f5c3714df7`）を公開。GitHub mainは既存PRの統合待ち。

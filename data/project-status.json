@@ -621,7 +621,7 @@
     },
     {
       "id": "WEB05",
-      "title": "avocadoMiniの製品紹介と回転ツアーを黒い製品写真のデザインへ統一",
+      "title": "avocadoMiniの製品紹介と回転ツアーをP0.2設計書と黒い製品写真のデザインへ統一",
       "status": "done",
       "dependsOn": [
         "MAT04",
