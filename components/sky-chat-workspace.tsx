@@ -259,7 +259,10 @@ export default function SkyChatWorkspace() {
         const nextRouting = { ...providerRoutingDefaults, ...routing?.config };
         providerRoutingRef.current = nextRouting;
         setProviderRouting(nextRouting);
-        setSelectedToolId(preferred ?? AUTO_MODE);
+        const initialTool = preferred ?? [...ids]
+          .map((id) => catalog.find((tool) => tool.id === id))
+          .find((tool) => tool)?.id ?? AUTO_MODE;
+        setSelectedToolId(initialTool);
       })
       .catch((reason) => {
         if (!active) return;
@@ -548,6 +551,23 @@ export default function SkyChatWorkspace() {
   }, [loading, preferredTool, requestedThreadId, workView]);
 
   useEffect(() => {
+    if (loading || workView || preferredTool || requestedThreadId || messages.length > 0)
+      return;
+    const firstTool = modeApps[0];
+    if (!firstTool) return;
+    const frame = window.requestAnimationFrame(() => {
+      setSelectedToolId((current) => current === AUTO_MODE ? firstTool.id : current);
+      setMessages([{
+        id: `welcome-${firstTool.id}`,
+        side: 'sky',
+        text: `${firstTool.name}のBotです。Skyから連携された機能を担当します。依頼内容を入力すると、${textProviderDefinition.name}で確認してから実行画面へ進みます。`,
+        tool: firstTool.id,
+      }]);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [loading, modeApps, preferredTool, requestedThreadId, workView, messages.length, textProviderDefinition.name]);
+
+  useEffect(() => {
     if (!sessionReady || !threadId || threadId !== requestedThreadId || !threadCreatedAt) return;
     try {
       const sessions = saveZemaChatSession({
@@ -599,6 +619,22 @@ export default function SkyChatWorkspace() {
   function chooseMode(toolId: string) {
     setSelectedToolId(toolId);
     setError('');
+    if (toolId === selectedToolId) return;
+    const tool = modeApps.find((item) => item.id === toolId);
+    if (!tool) {
+      setMessages([]);
+      setActiveRequest(null);
+      return;
+    }
+    setMessages([{
+      id: `welcome-${tool.id}-${currentTimestamp()}`,
+      side: 'sky',
+      text: `${tool.name}のBotです。${roleFor(tool)}として、Skyから連携された機能を実行します。依頼を入力してください。`,
+      tool: tool.id,
+    }]);
+    setActiveRequest(null);
+    setOutcome(null);
+    setWorkflowStatus('ready');
   }
 
   function changeProviderRoute(field: string, value: string) {

@@ -190,7 +190,7 @@ export default function CsvBusinessWorkspace() {
         updated,
         ...items.filter((item) => item.id !== updated.id),
       ]);
-      router.push('/csv');
+      router.push('/chat?tool=rockstar-csv-cleanup');
     } catch (reason) {
       setError(
         reason instanceof Error

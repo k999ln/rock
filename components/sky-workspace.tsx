@@ -386,8 +386,9 @@ export default function SkyWorkspace({
 
   function openConnectedTool(tool: Automation, request = '') {
     setSelected(null);
+    let threadId = crypto.randomUUID();
     try {
-      queueSkyZemaHandoff(tool.id, request);
+      threadId = queueSkyZemaHandoff(tool.id, request).id;
     } catch {
       // The selected tool still opens when private tab storage is unavailable.
     }
@@ -399,7 +400,7 @@ export default function SkyWorkspace({
       }
       return;
     }
-    router.push(`/sky/tools/${encodeURIComponent(tool.id)}`);
+    router.push(`/chat?tool=${encodeURIComponent(tool.id)}&thread=${encodeURIComponent(threadId)}`);
   }
 
   function primaryAction(tool: Automation, request = '') {
@@ -437,11 +438,14 @@ export default function SkyWorkspace({
         'PUT',
         { tool: selected.id },
       );
+      const connectedTool = selected;
       setConnectedTools((current) =>
         current.includes(connection.tool)
           ? current
           : [...current, connection.tool],
       );
+      // A successful Sky connection immediately creates/opens the matching Zema Bot.
+      openConnectedTool(connectedTool, lastRequest);
     } catch (error) {
       if (error instanceof OperationRequestError && error.status === 401)
         setNeedsSignin(true);
@@ -882,6 +886,7 @@ export default function SkyWorkspace({
                   )}
                   <div className="sky-candidate-state">
                     Skyへ登録すると、このツールの専用画面を開けます。ローカル確認器対応の候補は、外部サービスに接続せず下書き・接続確認を試せます。
+                    <span>依頼はZemaへ引き継ぐ</span>
                   </div>
                   {needsSignin ? (
                     <ExecutionSignin />

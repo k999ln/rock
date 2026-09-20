@@ -1632,8 +1632,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "remote_ai_rate_limits": {
-      "name": "remote_ai_rate_limits",
+    "sky_remote_ai_rate_limits": {
+      "name": "sky_remote_ai_rate_limits",
       "columns": {
         "user_id": {
           "name": "user_id",

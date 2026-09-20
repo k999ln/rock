@@ -183,7 +183,7 @@ export const skyProviderConnections = sqliteTable(
 );
 
 export const remoteAiRateLimits = sqliteTable(
-  'remote_ai_rate_limits',
+  'sky_remote_ai_rate_limits',
   {
     userId: text('user_id').notNull(),
     route: text('route').notNull(),

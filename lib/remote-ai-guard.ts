@@ -37,14 +37,14 @@ export async function authorizeRemoteAiRequest(
   const windowStartedAt = Math.floor(Date.now() / WINDOW_MS) * WINDOW_MS;
   await db
     .prepare(
-      `INSERT INTO remote_ai_rate_limits
+      `INSERT INTO sky_remote_ai_rate_limits
          (user_id, route, window_started_at, request_count)
        VALUES (?, ?, ?, 1)
        ON CONFLICT(user_id, route) DO UPDATE SET
          window_started_at = excluded.window_started_at,
          request_count = CASE
-           WHEN remote_ai_rate_limits.window_started_at = excluded.window_started_at
-             THEN remote_ai_rate_limits.request_count + 1
+           WHEN sky_remote_ai_rate_limits.window_started_at = excluded.window_started_at
+             THEN sky_remote_ai_rate_limits.request_count + 1
            ELSE 1
          END`,
     )
@@ -53,7 +53,7 @@ export async function authorizeRemoteAiRequest(
   const row = await db
     .prepare(
       `SELECT request_count AS requestCount
-       FROM remote_ai_rate_limits WHERE user_id = ? AND route = ?`,
+       FROM sky_remote_ai_rate_limits WHERE user_id = ? AND route = ?`,
     )
     .bind(userId, route)
     .first<{ requestCount: number }>();
