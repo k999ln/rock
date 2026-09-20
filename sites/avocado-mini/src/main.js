@@ -97,7 +97,7 @@ if (renderer) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(37, 1, 0.1, 100);
-  camera.position.set(3.1, 1.8, 10.5);
+  camera.position.set(2.4, 1.5, 9.6);
   camera.lookAt(0, 0, 0);
   scene.add(new THREE.AmbientLight(0xdff5ff, 2.4));
   const key = new THREE.DirectionalLight(0xffffff, 3.4);
@@ -124,7 +124,7 @@ if (renderer) {
     const width = Math.max(1, stage.clientWidth);
     const height = Math.max(1, stage.clientHeight);
     camera.aspect = width / height;
-    camera.position.set(3.1, width < 650 ? 1.5 : 1.8, width < 650 ? 12.1 : 10.5);
+    camera.position.set(width < 650 ? 2.5 : 2.4, width < 650 ? 1.2 : 1.5, width < 650 ? 11.3 : 9.6);
     camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);

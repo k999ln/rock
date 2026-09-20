@@ -25,3 +25,36 @@
 .experience-grid p{font-size:14px;line-height:1.8;color:#58717c;max-width:320px}
 @media(max-width:800px){.story-copy{top:95px}.story-copy h1{font-size:clamp(42px,10vw,70px)}.story-copy .hero-line{font-size:clamp(20px,5vw,31px)}.story-copy>p.hero-description{max-width:300px}.experience-grid{grid-template-columns:1fr;gap:30px}.experience-grid span{margin-bottom:12px}.experience-grid p{max-width:550px}}
 @media(max-width:520px){.story-copy{left:22px;right:22px}.story-copy h1{font-size:clamp(37px,10vw,50px)}.story-copy .hero-line{font-size:22px}.story-copy>p.hero-description{font-size:11px;max-width:250px}.stage{inset:30% -13% 7%}}
+
+/* Cinematic product presentation */
+.site-header{position:fixed;height:58px;background:#080d13d9;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-bottom:1px solid #ffffff26}
+.site-header .brand{font-size:20px}
+.header-cta{background:#e7faff;color:#122431;text-decoration:none;border-radius:999px;padding:8px 16px;font-size:11px;font-weight:700;white-space:nowrap}
+.header-cta:hover{background:#fff}
+.film-hero{height:100svh;min-height:670px;position:relative;background:#070b10;overflow:hidden;color:#fff;isolation:isolate}
+.film-hero-image{position:absolute;inset:0;background-image:linear-gradient(90deg,#070b10d9 0%,#070b1080 34%,transparent 62%),url('/images/avocado-mini-hero.png');background-size:cover;background-position:center center;transform:scale(1.02)}
+.film-hero-copy{position:absolute;z-index:1;left:clamp(28px,7vw,125px);top:50%;transform:translateY(-46%);max-width:680px}
+.film-hero .eyebrow{color:#9de6fa}
+.film-hero h1{font-size:clamp(60px,7.7vw,128px);line-height:1.07;letter-spacing:-.085em;margin:26px 0 24px;font-weight:700}
+.film-hero-copy>p:not(.eyebrow){font-size:clamp(17px,1.6vw,25px);color:#d6e3e9;line-height:1.6;margin:0 0 34px}
+.film-hero-copy>a{display:inline-flex;align-items:center;justify-content:space-between;gap:38px;border:1px solid #b5cbd380;border-radius:99px;padding:14px 20px;color:#fff;text-decoration:none;font-size:14px;font-weight:700;backdrop-filter:blur(10px)}
+.film-hero-copy>a:hover{background:#ffffff20}
+.film-disclaimer{position:absolute;z-index:1;left:clamp(28px,7vw,125px);bottom:22px;font-size:11px;color:#aabdc6}
+.story{height:350svh;min-height:2300px;background:radial-gradient(ellipse at 50% 55%,#183448 0%,#09141e 45%,#03070b 85%)}
+.story-sticky{min-height:0}
+.story-copy{top:clamp(100px,13vh,140px);max-width:520px}
+.story-copy h2{font-size:clamp(50px,6vw,86px);line-height:1;letter-spacing:-.08em;margin:12px 0 14px}
+.story-copy .hero-line{font-size:clamp(23px,2.4vw,36px)}
+.story-copy>p.hero-description{font-size:14px;margin-top:18px}
+.stage{inset:8% 0 7%}
+.story-foot{bottom:24px}
+.price-panel{background:#f6fafa;border:1px solid #ffffffab;box-shadow:0 30px 120px #0008}
+.macro-section{position:relative;min-height:100svh;background:#070b10;color:#fff;overflow:hidden;display:flex;align-items:center}
+.macro-image{position:absolute;inset:0;background-image:linear-gradient(90deg,#070b10da 0%,#070b1099 33%,transparent 67%),url('/images/avocado-mini-detail.png');background-position:center;background-size:cover}
+.macro-copy{position:relative;z-index:1;margin-left:clamp(28px,7vw,120px);padding:110px 0;max-width:570px}
+.macro-copy .eyebrow{color:#87def6}
+.macro-copy h2{font-size:clamp(50px,5.6vw,85px);line-height:1.15;letter-spacing:-.075em;margin:22px 0 26px}
+.macro-copy>p:not(.eyebrow){font-size:clamp(16px,1.4vw,21px);line-height:1.8;color:#d5e2e7;max-width:460px}
+.macro-copy>span{display:block;margin-top:70px;font-size:11px;color:#a9bac3}
+@media(max-width:800px){.film-hero-image{background-position:64% center;background-image:linear-gradient(90deg,#070b10df 0%,#070b10a0 45%,#070b1040 100%),url('/images/avocado-mini-hero.png')}.film-hero-copy{left:28px;right:28px;top:42%;transform:translateY(-50%)}.film-hero h1{font-size:clamp(54px,10vw,86px)}.story-copy{top:90px}.stage{inset:18% -6% 4%}.macro-image{background-position:62% center;background-image:linear-gradient(90deg,#070b10e8 0%,#070b10b5 55%,#070b1050 100%),url('/images/avocado-mini-detail.png')}.macro-copy{margin:0 28px;max-width:440px}}
+@media(max-width:520px){.site-header{height:54px}.site-header .brand{font-size:17px}.site-header nav{gap:13px}.site-header nav a{font-size:10px}.header-cta{font-size:10px;padding:7px 10px}.film-hero{min-height:670px}.film-hero-image{background-position:68% center}.film-hero-copy{top:36%}.film-hero h1{font-size:clamp(48px,12vw,67px)}.film-hero-copy>p:not(.eyebrow){font-size:16px;max-width:270px}.film-disclaimer{left:28px;right:28px;bottom:16px}.story{min-height:2100px}.story-copy{left:22px;right:22px;top:82px}.story-copy h2{font-size:42px}.story-copy .hero-line{font-size:20px}.story-copy>p.hero-description{font-size:11px;max-width:240px}.stage{inset:28% -19% 6%}.price-panel{bottom:70px}.macro-section{min-height:760px}.macro-image{background-position:65% center}.macro-copy{align-self:flex-start;margin:0 24px;padding:90px 0}.macro-copy h2{font-size:48px}.macro-copy>p:not(.eyebrow){font-size:15px;max-width:280px}}
