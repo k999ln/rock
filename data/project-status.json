@@ -616,7 +616,7 @@
     },
     {
       "id": "WEB05",
-      "title": "avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新",
+      "title": "avocadoMiniの事業紹介とセンサー演出付き製品ページを更新",
       "status": "done",
       "dependsOn": [
         "MAT04",
