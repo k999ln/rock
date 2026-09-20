@@ -672,14 +672,13 @@
     },
     {
       "id": "WEB08",
-      "title": "NoelleのGrapheneOS導入ページをScrewとしてGitHubから案内する",
+      "title": "NoelleのGrapheneOS導入案内をScrew独立リポジトリで示し、Rockからつなぐ",
       "status": "done",
       "dependsOn": [
         "WEB05"
       ],
       "evidence": [
         "README.md",
-        "docs/screw.md",
         "docs/assets/cover-screw.gif",
         "docs/workstreams/05-web-pwa-sites.md"
       ]

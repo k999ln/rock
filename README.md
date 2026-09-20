@@ -2,7 +2,7 @@
 
 物質や工程のアイデアを、作業面で手を動かしながら選び、組み合わせ、比べる。**avocadoMini**は、その体験を形にするRockstarOS搭載の空間発明端末です。四方向のセンサーで操作領域を捉え、発明の候補を安全に検討できる製品を目指しています。
 
-[🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🔩 Screw](#screw--grapheneos導入の入口) · [🔧 開発状況](#現在地) · [🤝 クラファン企画](docs/avocado-mini-crowdfunding.md) · [📱 アプリ](#アクセス先)
+[🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🔩 Screw](https://github.com/k999ln/screw) · [🔧 開発状況](#現在地) · [🤝 クラファン企画](docs/avocado-mini-crowdfunding.md) · [📱 アプリ](#アクセス先)
 
 ## 構想ギャラリー
 
@@ -56,7 +56,7 @@ LLM、Agent、仕事、Tool、権限、承認、保存、更新、復旧を一�
 
 ![ScrewからNoelleのGrapheneOS導入ページへ進む様子を表すアニメーション](docs/assets/cover-screw.gif)
 
-**Screw**は、Noelleが作った[PRIVATE/PIXELのGrapheneOS導入ページ](https://privatepixel.uk/grapheneos-install)へRockから進むための名前です。[Screwの案内](docs/screw.md)で導入手順と提供元を確認できます。導入システムはNoelle側の独立したサービスであり、RockstarOSの機能やRock製のインストーラーとして提供するものではありません。
+**Screw**は、Noelleが作った[PRIVATE/PIXELのGrapheneOS導入ページ](https://privatepixel.uk/grapheneos-install)へ進むための[独立した案内リポジトリ](https://github.com/k999ln/screw)です。導入システムはNoelle側のサービスであり、RockstarOSの機能やRock製のインストーラーとして提供するものではありません。
 
 ### Home — ブランドの入口
 
@@ -102,7 +102,7 @@ avocadoMiniはRockstarOSそのものではなく、RockstarOSを搭載してMate
 | --- | --- |
 | 製品・サービス紹介 | [RockstarOS / avocadoMini](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) |
 | OSの導入案内 | [Developer Previewガイド](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) |
-| Screw / GrapheneOS導入 | [Noelleの公開導入ページ](https://privatepixel.uk/grapheneos-install) · [Rock内の案内](docs/screw.md) |
+| Screw / GrapheneOS導入 | [Screwリポジトリ](https://github.com/k999ln/screw) · [Noelleの公開導入ページ](https://privatepixel.uk/grapheneos-install) |
 | ホーム | [RockstarOS Home](https://rockstaros-kaiya.noellesugar1.chatgpt.site/) |
 | アプリ | [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) · [Zema](https://rockstaros-kaiya.noellesugar1.chatgpt.site/chat) · [Wallet](https://rockstaros-kaiya.noellesugar1.chatgpt.site/wallet) · [Market](https://rockstaros-kaiya.noellesugar1.chatgpt.site/market) · [Material Invention Studio](https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio) |
 
@@ -447,7 +447,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
-| WEB08 | NoelleのGrapheneOS導入ページをScrewとしてGitHubから案内する | 完了 | [記録](README.md) · [記録](docs/screw.md) · [記録](docs/assets/cover-screw.gif) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB08 | NoelleのGrapheneOS導入案内をScrew独立リポジトリで示し、Rockからつなぐ | 完了 | [記録](README.md) · [記録](docs/assets/cover-screw.gif) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |

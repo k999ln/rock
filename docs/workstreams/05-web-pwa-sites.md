@@ -11,7 +11,7 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 - GitHub READMEの冒頭にはSky／Zema／Studioと設計中のavocadoMiniを示すアニメーションGIFを表示する。
 - 製品体系の各説明にも、avocadoMini、RockstarOS、Sky、Zema、Studioの短いループGIFを配置する。README上の表現であり、既存Siteの公開設定や配信版は変わらない。
 - GitHubの冒頭はavocadoMiniの外観・利用場面の構想画像から始め、製品別GIFとクラファン企画案へ続ける。構想画像は実機写真として扱わない。クラファンの募集ページは未開設で、企画案から決済はできない。
-- ScrewはRock側の案内名としてNoelleのPRIVATE/PIXEL公開導入ページへリンクする。Noelleの非公開・再配布禁止の実装やGrapheneOSイメージは取り込まない。公開ページへの到達だけ確認済みで、実機導入は未試験。
+- Screwは独立した`k999ln/screw`リポジトリで案内し、RockのREADMEからそこへリンクする。NoelleのPRIVATE/PIXEL公開導入ページへ進めるが、非公開・再配布禁止の実装やGrapheneOSイメージは取り込まない。公開ページへの到達だけ確認済みで、実機導入は未試験。
 - 主要画面、PWA manifest、Service Worker、明示更新、security header、D1 APIを実装済み。
 - 既存Siteは現在も本人限定。利用者は同じURLでの一般公開を明示したが、対象Sites所有アカウントが現在の接続から見つからず、公開設定と最新版sourceの反映、ログイン後の実操作確認が残る。
 - 一般公開後は製品紹介と公開カタログを匿名で見せ、本人別の仕事、Wallet、開発者操作はChatGPTサインインを要する。匿名の`/api/health`でWorkerと主要D1 tableの応答を確認し、本人別APIの受入は別に行う。

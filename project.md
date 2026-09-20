@@ -2,7 +2,7 @@
 
 ## 2026-09-19 — Screw導線とクラファン企画案を追加
 
-Noelleの非公開リポジトリ`PRIVATE/PIXEL`がGrapheneOS導入システムの出所であると確認した。ライセンスが再配布を禁止しているためソースやインストーラーは複製せず、Rockの案内名「Screw」、独自GIF、案内文書を追加した。Noelleの公開導入ページとガイドはHTTP 200を確認した。実機での導入は未試験。
+Noelleの非公開リポジトリ`PRIVATE/PIXEL`がGrapheneOS導入システムの出所であると確認した。ライセンスが再配布を禁止しているためソースやインストーラーは複製せず、`k999ln/screw`を独立リポジトリとして作成した。Rockには独自GIFと別リポジトリへのリンクを置いた。Noelleの公開導入ページとガイドはHTTP 200を確認した。実機での導入は未試験。
 
 avocadoMiniのクラウドファンディング企画案を作成し、README冒頭から到達できるようにした。日本の起案者要件を満たす場合はCAMPFIREのAll-or-Nothingで小型Bench試作・検証を対象にする案を提示。Kickstarterのハードウェア募集は稼働する試作機が必要なため現段階では選ばない。募集主体、受取先、予算、返礼、募集ページは未定。支援金の受け付けは開始していない。Rockリポジトリ自体はprivateであり、外部支援者には現在のGitHub文書を公開できない。WEB09は実募集リンク設置まで進行中のままとする。
 
@@ -750,7 +750,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
-| WEB08 | NoelleのGrapheneOS導入ページをScrewとしてGitHubから案内する | 完了 | [記録](README.md) · [記録](docs/screw.md) · [記録](docs/assets/cover-screw.gif) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB08 | NoelleのGrapheneOS導入案内をScrew独立リポジトリで示し、Rockからつなぐ | 完了 | [記録](README.md) · [記録](docs/assets/cover-screw.gif) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
