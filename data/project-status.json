@@ -1,8 +1,15 @@
 {
-  "updatedAt": "2026-09-16",
+  "updatedAt": "2026-09-17",
   "milestone": "AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続",
-  "nextAction": "Astra設計とSol監査を反映し、AI02から1.0向けモデルmanifestと仕事への版固定を実装する。AI03の限定記憶、AI04の外部作用禁止／照合契約、AI05のapp／OS能力宣言を既存Brokerへ段階導入し、AI06の非金融Game／IP fixtureで共通性を確認する。full build準備ではGoogle復旧実ファイル・vendor inventory・HSM／署名bridge・本番Operator登録・物理data／Keystore全損復元が残る。Game開発は収益Provider／Fundの完成待ちにしない。",
+  "nextAction": "最新依頼SKY17は、公開するSkyの利益連動成功報酬とWallet決済・開発者還元の条件確認中。率、利益定義、既存月888 cents上限との関係、銀行入金照合・回収方法を確定してから実装し、旧利用料原資の案で先行実装しない。OS系統はAstra設計とSol監査に従いAI02のモデルmanifest・仕事への版固定、AI03の限定記憶、AI04の外部作用禁止／照合、AI05の能力宣言、AI06の非金融Game／IP fixtureを独立して進める。full build入力・署名・物理全損復元の未完了gateを維持する。",
   "tasks": [
+    {
+      "id": "SKY17",
+      "title": "SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装）",
+      "status": "in_progress",
+      "dependsOn": ["SKY16"],
+      "evidence": ["docs/sky-network-economy.md", "docs/sky-billing.md"]
+    },
     {
       "id": "AI01",
       "title": "RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない）",

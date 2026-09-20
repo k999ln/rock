@@ -656,6 +656,17 @@
     "nativePullRequestStateAtAudit": "OPEN",
     "isLiveStatus": false
   },
+  "commercialPolicyRevision": {
+    "requestedAt": "2026-09-17",
+    "status": "terms_pending_not_implemented",
+    "requestedModel": "Percentage success fee on verified profit attributable to Sky automation, not a fixed usage fee; Wallet is the payment interface even when external sales are paid to the user's own bank account.",
+    "developerRewardSource": "A portion of actually collected success fees; no separate developer-reward surcharge on users.",
+    "successFeeBps": null,
+    "legacyMonthlyCapDecision": "pending",
+    "profitDefinition": "pending",
+    "collectionMethod": "pending",
+    "runtimePolicy": "commercialPolicy and skyNetworkEconomy below describe the existing implementation, not acceptance of the new percentage model. No live billing, automatic bank debit or developer payout is enabled by this request. Publication does not specify an open-source license."
+  },
   "freshContextRequired": [
     "main",
     "branches",
