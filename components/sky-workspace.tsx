@@ -171,6 +171,7 @@ function statusFor(
   tool: Automation,
   fashionConnected = false,
   connectedTools: string[] = [],
+  pcConnected = false,
 ) {
   if (
     tool.status === 'candidate' &&
@@ -178,9 +179,9 @@ function statusFor(
     connectedTools.includes(tool.id)
   )
     return {
-      label: 'ローカル確認器あり',
-      detail: '下書き・接続確認のみ／外部サービス未接続',
-      className: 'is-connect',
+      label: '導入候補・下書きのみ',
+      detail: '本体は未接続／下書きと接続条件だけ確認できます',
+      className: 'is-candidate',
     };
   if (tool.status === 'candidate' && connectedTools.includes(tool.id))
     return {
@@ -196,9 +197,9 @@ function statusFor(
     };
   if (tool.runner === 'delivery-local')
     return {
-      label: 'PC接続後',
-      detail: '利用者のPCで実行',
-      className: 'is-connect',
+      label: pcConnected ? 'PC接続中' : 'PC接続後',
+      detail: pcConnected ? 'このPCで納品記録を照合' : '利用者のPCで実行',
+      className: pcConnected ? 'is-ready' : 'is-connect',
     };
   if (tool.integration === 'fashion-brand-ops')
     return {
@@ -210,6 +211,12 @@ function statusFor(
     return {
       label: 'PC / MCP',
       detail: 'SkyからPC上の専用システムへ接続',
+      className: 'is-connect',
+    };
+  if (tool.runner === 'jev-evaluation')
+    return {
+      label: '外部AI接続が必要',
+      detail: '利用同意とProvider設定後に評価',
       className: 'is-connect',
     };
   if (tool.id === 'rockstar-csv-cleanup')
@@ -231,6 +238,22 @@ function roleFor(tool: Automation) {
     skyToolLabelFor(tool.id)?.role ??
     'ツール案内役'
   );
+}
+
+function actionLabel(
+  tool: Automation,
+  connectedTools: string[],
+  pcConnected: boolean,
+) {
+  if (tool.status === 'candidate') {
+    if (!connectedTools.includes(tool.id)) return '登録して次へ';
+    return tool.runner === 'candidate-local' ? '下書きを試す' : '接続状態を見る';
+  }
+  if (tool.runner === 'delivery-local')
+    return pcConnected ? '納品確認を開く' : 'PCを接続';
+  if (tool.launchPath) return '今すぐ使う';
+  if (connectedTools.includes(tool.id)) return 'Zemaで依頼';
+  return '接続して使う';
 }
 
 export default function SkyWorkspace({
@@ -392,14 +415,6 @@ export default function SkyWorkspace({
     } catch {
       // The selected tool still opens when private tab storage is unavailable.
     }
-    if (tool.launchPath) {
-      if (/^https?:\/\//.test(tool.launchPath)) {
-        window.location.assign(tool.launchPath);
-      } else {
-        router.push(tool.launchPath);
-      }
-      return;
-    }
     router.push(`/chat?tool=${encodeURIComponent(tool.id)}&thread=${encodeURIComponent(threadId)}`);
   }
 
@@ -413,10 +428,11 @@ export default function SkyWorkspace({
       return;
     }
     if (tool.runner === 'delivery-local') {
-      setDeviceOpen(true);
+      if (connected) openConnectedTool(tool, request);
+      else setDeviceOpen(true);
       return;
     }
-    if (tool.launchPath) {
+    if (tool.launchPath || connectedTools.includes(tool.id)) {
       openConnectedTool(tool, request);
       return;
     }
@@ -583,6 +599,17 @@ export default function SkyWorkspace({
             </div>
           </section>
 
+          <section className="sky-usage-path" aria-label="Skyから使う流れ">
+            <p className="sky-usage-path-title">Skyから使う流れ</p>
+            <div className="sky-usage-path-steps">
+              <div><b>1</b><span><strong>目的を入力</strong><small>「CSVを整えて」など</small></span></div>
+              <ArrowRight size={15} aria-hidden="true" />
+              <div><b>2</b><span><strong>担当を確認</strong><small>権限・接続・料金を見る</small></span></div>
+              <ArrowRight size={15} aria-hidden="true" />
+              <div><b>3</b><span><strong>Zemaで進める</strong><small>依頼・実行・結果を管理</small></span></div>
+            </div>
+          </section>
+
           <header className="sky-feed-header">
             <div className="sky-store-title">
               <span>Sky</span>
@@ -723,7 +750,7 @@ export default function SkyWorkspace({
             {visibleTools.map((tool, index) => {
               const Icon = icons[tool.id] ?? Link2;
               const provider = providerFor(tool);
-              const status = statusFor(tool, fashionConnected, connectedTools);
+              const status = statusFor(tool, fashionConnected, connectedTools, connected);
               return (
                 <article
                   className={'sky-feed-post ' + status.className}
@@ -778,19 +805,7 @@ export default function SkyWorkspace({
                           connectedTools.includes(tool.id) && (
                             <Zap size={16} fill="currentColor" />
                           )}
-                        {tool.status === 'candidate'
-                          ? connectedTools.includes(tool.id)
-                            ? tool.runner === 'candidate-local'
-                              ? '使う'
-                              : '専用画面へ'
-                            : 'Sky登録'
-                          : tool.launchPath
-                            ? '使う'
-                            : tool.runner === 'delivery-local'
-                              ? 'PC接続'
-                              : connectedTools.includes(tool.id)
-                                ? '頼む'
-                                : '接続'}
+                        {actionLabel(tool, connectedTools, connected)}
                         <ArrowRight size={16} />
                       </button>
                     </div>
@@ -907,7 +922,7 @@ export default function SkyWorkspace({
                         onClick={() => openConnectedTool(selected, lastRequest)}
                       >
                         {selected.runner === 'candidate-local'
-                          ? '専用画面で実行'
+                          ? '下書き画面を開く'
                           : selected.id === 'rockstar-ip-studio'
                           ? 'IP Studioを開く'
                           : '専用画面で確認'}

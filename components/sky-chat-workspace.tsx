@@ -36,6 +36,7 @@ import {
   localModelPresets,
   textModelProviderDefinition,
   textModelProviders,
+  type TextModelProviderId,
 } from '@/lib/llm-providers';
 import WorkspaceShell from '@/components/workspace-shell';
 import { MrToolRunner } from '@/components/mr-tool-runner';
@@ -88,6 +89,8 @@ type ActiveRequest = {
   text: string;
   toolId: string;
   executionProvider: 'local-model';
+  plannerProvider: TextModelProviderId;
+  plannerModel: string;
 };
 
 type WorkflowStatus = 'ready' | 'running' | 'completed' | 'failed';
@@ -118,6 +121,7 @@ const providerRoutingDefaults: Record<string, string> = {
   videoGeneration: 'higgsfield',
   textGeneration: 'local-model',
   textGenerationModel: 'Qwen3-0.6B-Q8_0-GGUF',
+  localLlmBaseUrl: 'http://127.0.0.1:4317/v1',
   workflow: 'make',
   socialPublish: 'make',
   gameDelivery: 'roblox',
@@ -168,6 +172,19 @@ function jobStateClass(job: Job) {
   if (job.status === 'cancelled') return 'is-cancelled';
   if (job.status === 'running') return 'is-running';
   return 'is-queued';
+}
+
+function botStateLabel(tool: Automation, latest: Job | undefined) {
+  if (tool.status === 'candidate') {
+    if (latest?.status === 'failed' || latest?.status === 'interrupted')
+      return '下書き要確認・本体未接続';
+    if (latest?.status === 'running') return '下書き作成中・本体未接続';
+    if (latest?.status === 'completed') return '下書き完了・本体未接続';
+    return '本体未接続';
+  }
+  if (tool.runner === 'jev-evaluation' && !latest)
+    return '外部AIの接続確認が必要';
+  return latest ? jobMessage(latest) : 'Sky登録済み';
 }
 
 function responseFor(
@@ -248,11 +265,7 @@ export default function SkyChatWorkspace() {
       .then(([connections, recentJobs, providerConnections]) => {
         if (!active) return;
         const ids = new Set<string>(connections.map(({ tool }) => tool));
-        const preferred = catalog.find(
-          (tool) =>
-            tool.id === preferredTool &&
-            (ids.has(tool.id) || Boolean(tool.launchPath)),
-        )?.id;
+        const preferred = catalog.find((tool) => tool.id === preferredTool)?.id;
         setConnectedTools([...ids]);
         setJobs(recentJobs);
         const routing = providerConnections.find((item) => item.provider === 'routing');
@@ -432,7 +445,7 @@ export default function SkyChatWorkspace() {
   );
   const modeApps = useMemo(
     () =>
-      preferredApp?.launchPath &&
+      preferredApp &&
       !connectedApps.some((tool) => tool.id === preferredApp.id)
         ? [preferredApp, ...connectedApps]
         : connectedApps,
@@ -455,7 +468,7 @@ export default function SkyChatWorkspace() {
     ? providerRouting.textGeneration
     : 'local-model';
   const textProviderDefinition = textModelProviderDefinition(textProvider);
-  const remoteTextProvider = textProviderDefinition.locality === 'remote' || textProvider === 'openai-compatible';
+  const remoteTextProvider = textProviderDefinition.locality === 'remote';
   const activeTool = activeRequest
     ? (modeApps.find((tool) => tool.id === activeRequest.toolId) ?? null)
     : null;
@@ -506,7 +519,13 @@ export default function SkyChatWorkspace() {
       setSelectedToolId(saved.toolId);
       setMessages(saved.messages);
       setActiveRequest(saved.activeRequest
-        ? { ...saved.activeRequest, executionProvider: saved.activeRequest.executionProvider ?? 'local-model' }
+        ? {
+            ...saved.activeRequest,
+            executionProvider: saved.activeRequest.executionProvider ?? 'local-model',
+            plannerProvider: saved.activeRequest.plannerProvider ?? 'local-model',
+            plannerModel: saved.activeRequest.plannerModel ??
+              textModelProviderDefinition(saved.activeRequest.plannerProvider ?? 'local-model').defaultModel,
+          }
         : null);
       setRequestStartedAt(saved.createdAt);
       if (saved.workflowStatus === 'running') {
@@ -543,6 +562,8 @@ export default function SkyChatWorkspace() {
       text: handoff.request,
       toolId: tool.id,
       executionProvider: handoff.executionProvider ?? 'local-model',
+      plannerProvider: 'local-model',
+      plannerModel: textModelProviderDefinition('local-model').defaultModel,
     } : null);
     setRequestStartedAt(handoff.createdAt);
     setSessionReady(true);
@@ -714,7 +735,6 @@ export default function SkyChatWorkspace() {
     const nextThreadId = threadId || crypto.randomUUID();
 
     const conversational = !toolId && !routedRole;
-    const nativeLocalModel = textProvider === 'local-model';
     if (remoteTextProvider && !remoteConsent) {
       setError(`${textProviderDefinition.name}へ依頼を送るには、下の送信許可を確認してください。`);
       return;
@@ -743,22 +763,20 @@ export default function SkyChatWorkspace() {
         tool: toolId,
         suggestedTool: tool ? undefined : suggestedToolId,
       } as ChatEntry] : []),
-      ...(nativeLocalModel && conversational ? [{
-        id: `${id}-local`,
-        side: 'sky' as const,
-        text: 'Local Action Assistantは選択したBotの計画・実行を端末内で処理します。自由会話を続ける場合は、会話モデルでOllamaなどのローカル文章モデルを選択してください。',
-      }] : []),
     ];
     const nextRequest = toolId
-      ? { id, text, toolId, executionProvider: 'local-model' as const }
+      ? {
+          id,
+          text,
+          toolId,
+          executionProvider: 'local-model' as const,
+          plannerProvider: textProvider,
+          plannerModel:
+            providerRouting.textGenerationModel || textProviderDefinition.defaultModel,
+        }
       : null;
     setMessages(nextMessages);
-    // Local Action Assistant is the native plan/execution path. A selected
-    // tool already has its local runner below, so do not send the same
-    // request to the web text endpoint and turn a missing Binder into a
-    // misleading chat failure. Other selected providers are real text-model
-    // calls and remain routed through the common adapter.
-    if ((conversational || toolId) && !nativeLocalModel) {
+    if (conversational || toolId) {
       const controller = new AbortController();
       chatAbortRef.current?.abort();
       chatAbortRef.current = controller;
@@ -777,6 +795,9 @@ export default function SkyChatWorkspace() {
         body: JSON.stringify({
           provider: textProvider,
           model: providerRouting.textGenerationModel || undefined,
+          baseUrl: textProvider === 'local-model'
+            ? providerRouting.localLlmBaseUrl || undefined
+            : undefined,
           system: tool
             ? `あなたはZema内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
             : 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。',
@@ -795,13 +816,13 @@ export default function SkyChatWorkspace() {
         if (controller.signal.aborted) return;
         const code = reason instanceof Error ? reason.message : '';
         const detail = code === 'LOCAL_LLM_BRIDGE_REQUIRED'
-          ? '端末内モデルはWeb版につながっていません。Skyの接続管理でOllamaなどを設定してください。'
+          ? 'Local Action Assistantの接続が未接続です。Ollama・LM Studio・llama.cppなどのローカルブリッジを起動して接続してください。Cloudへはフォールバックしません。'
           : code === 'REMOTE_LLM_DISABLED'
             ? '外部モデルはサーバー側で無効です。Skyの接続管理とサーバー設定を確認してください。'
             : code === 'MISSING_PROVIDER_CREDENTIAL' || code === 'MISSING_PROVIDER_ENDPOINT'
               ? '文章モデルの接続設定が不足しています。Skyの接続管理を確認してください。'
               : '文章モデルから返答を受け取れませんでした。接続状態を確認して再送してください。';
-        setMessages((current) => [...current, { id: `${id}-sky`, side: 'sky', text: detail }]);
+        setMessages((current) => [...current, { id: `${id}-sky`, side: 'sky', text: detail, tool: toolId }]);
       }).finally(() => {
         if (chatAbortRef.current === controller) {
           chatAbortRef.current = null;
@@ -885,7 +906,7 @@ export default function SkyChatWorkspace() {
                   <span className={`zema-bot-mark rock-icon-${tool.color}`}>{markFor(tool)}</span>
                   <span className="zema-bot-copy">
                     <strong>{tool.name}</strong>
-                    <small>{roleFor(tool)} · {latest ? jobMessage(latest) : '接続済み'}</small>
+                    <small>{roleFor(tool)} · {botStateLabel(tool, latest)}</small>
                   </span>
                   <i className={latest ? jobStateClass(latest) : 'is-online'} />
                 </button>
@@ -917,7 +938,7 @@ export default function SkyChatWorkspace() {
               return <Link key={session.id} className={session.id === threadId ? 'is-current' : ''} href={`/chat?tool=${encodeURIComponent(session.toolId)}&thread=${encodeURIComponent(session.id)}`} onClick={() => setSidebarOpen(false)}><MessageCircle size={15} /><span>{title}</span></Link>;
             })}
           </div>
-          <div className="zema-sidebar-bottom"><Link href="/sky"><Grid2X2 size={16} /><span>Skyでツールを追加</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link></div>
+          <div className="zema-sidebar-bottom"><Link href="/sky"><Grid2X2 size={16} /><span>Skyでツールを追加</span></Link><Link href="/chat?view=work"><ListChecks size={16} /><span>仕事</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link></div>
         </aside>
         {sidebarOpen && <button type="button" className="zema-sidebar-scrim" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)} />}
         <header className="sky-chat-commandbar">
@@ -1148,7 +1169,7 @@ export default function SkyChatWorkspace() {
                   <p className="sky-chat-local-llm-note">
                     {activeTool?.runner === 'candidate-local'
                       ? 'この候補は外部サービスに接続しないローカル確認・下書きアダプターです。実際のサービス接続は別途実行器を追加してください。'
-                      : 'Skyから受け取った依頼は、選択したBotのローカル処理で整理・実行します。文章生成を使う場合だけ下のProviderを呼び出します。'}
+                      : `Skyから受け取った依頼は、${textModelProviderDefinition(activeRequest.plannerProvider ?? 'local-model').name}（${activeRequest.plannerModel}）で整理し、Tool実行は確認後に進めます。`}
                   </p>
                   {activeTool && (
                     <details className="sky-chat-provider-routing">

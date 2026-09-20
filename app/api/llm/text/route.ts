@@ -45,6 +45,11 @@ export async function POST(request: Request) {
       (typeof value.model !== 'string' || value.model.length > 120)
     )
       throw new LlmProviderError('INVALID_MODEL', 400);
+    if (
+      value.baseUrl !== undefined &&
+      (typeof value.baseUrl !== 'string' || value.baseUrl.length > 240)
+    )
+      throw new LlmProviderError('INVALID_ENDPOINT', 400);
 
     const runtimeEnv = env as unknown as {
       SKY_REMOTE_LLM_ENABLED?: string;
@@ -54,8 +59,17 @@ export async function POST(request: Request) {
       GOOGLE_GENERATIVE_AI_API_KEY?: string;
       SKY_LLM_COMPATIBLE_API_KEY?: string;
       SKY_OLLAMA_BASE_URL?: string;
+      SKY_LOCAL_LLM_BASE_URL?: string;
+      SKY_LOCAL_LLM_API_KEY?: string;
     };
     const definition = textModelProviderDefinition(provider);
+    const requestedBaseUrl = typeof value.baseUrl === 'string'
+      ? value.baseUrl.trim()
+      : '';
+    if (requestedBaseUrl &&
+      (provider !== 'local-model' || !isLoopbackEndpoint(requestedBaseUrl) ||
+        !/^https?:$/i.test(new URL(requestedBaseUrl).protocol)))
+      throw new LlmProviderError('LOCAL_ENDPOINT_REQUIRED', 400);
     const remote =
       definition.locality === 'remote' ||
       (provider === 'openai-compatible' &&
@@ -65,6 +79,9 @@ export async function POST(request: Request) {
     if (remote && runtimeEnv.SKY_REMOTE_LLM_ENABLED !== 'true')
       throw new LlmProviderError('REMOTE_LLM_DISABLED', 503);
 
+    const requestEnv = requestedBaseUrl
+      ? { ...runtimeEnv, SKY_LOCAL_LLM_BASE_URL: requestedBaseUrl }
+      : runtimeEnv;
     const result = await generateText(
       {
         provider,
@@ -76,7 +93,7 @@ export async function POST(request: Request) {
             ? value.maxOutputTokens
             : undefined,
       },
-      runtimeEnv,
+      requestEnv,
     );
     return Response.json(result, { headers: noStoreHeaders });
   } catch (error) {

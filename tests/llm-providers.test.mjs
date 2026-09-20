@@ -80,3 +80,21 @@ void test('local Qwen remains fail-closed until the native bridge is supplied', 
     (error) => error instanceof LlmProviderError && error.code === 'LOCAL_LLM_BRIDGE_REQUIRED',
   );
 });
+
+void test('local Qwen uses an explicitly configured loopback OpenAI-compatible bridge', async () => {
+  let seen;
+  const result = await generateText(
+    { provider: 'local-model', model: 'qwen-local', prompt: 'hello' },
+    {
+      SKY_LOCAL_LLM_BASE_URL: 'http://127.0.0.1:4317/v1',
+      SKY_LOCAL_LLM_API_KEY: 'local-only',
+    },
+    async (url, init) => {
+      seen = { url, init };
+      return response({ choices: [{ message: { content: 'local ok' } }] });
+    },
+  );
+  assert.equal(result.text, 'local ok');
+  assert.equal(seen.url, 'http://127.0.0.1:4317/v1/chat/completions');
+  assert.equal(seen.init.headers.Authorization, 'Bearer local-only');
+});

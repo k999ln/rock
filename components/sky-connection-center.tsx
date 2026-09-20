@@ -24,6 +24,7 @@ const routingDefaults: Record<string, string> = {
   videoGeneration: 'higgsfield',
   textGeneration: 'local-model',
   textGenerationModel: 'Qwen3-0.6B-Q8_0-GGUF',
+  localLlmBaseUrl: 'http://127.0.0.1:4317/v1',
   workflow: 'make',
   socialPublish: 'make',
   gameDelivery: 'roblox',

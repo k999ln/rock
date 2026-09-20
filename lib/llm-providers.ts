@@ -212,6 +212,8 @@ export type LlmRuntimeEnv = {
   SKY_LLM_COMPATIBLE_API_KEY?: string;
   SKY_LLM_COMPATIBLE_BASE_URL?: string;
   SKY_OLLAMA_BASE_URL?: string;
+  SKY_LOCAL_LLM_BASE_URL?: string;
+  SKY_LOCAL_LLM_API_KEY?: string;
 };
 
 export class LlmProviderError extends Error {
@@ -309,8 +311,33 @@ export async function generateText(
   const maxOutputTokens = limitFor(request);
   const messages = messagesFor(request);
 
-  if (request.provider === 'local-model')
-    throw new LlmProviderError('LOCAL_LLM_BRIDGE_REQUIRED', 503);
+  if (request.provider === 'local-model') {
+    const base = runtimeEnv.SKY_LOCAL_LLM_BASE_URL?.trim();
+    if (!base) throw new LlmProviderError('LOCAL_LLM_BRIDGE_REQUIRED', 503);
+    const normalized = base.replace(/\/+$/, '');
+    const endpoint = normalized.endsWith('/chat/completions')
+      ? normalized
+      : `${normalized.replace(/\/v1$/, '')}/v1/chat/completions`;
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (runtimeEnv.SKY_LOCAL_LLM_API_KEY)
+      headers.Authorization = `Bearer ${runtimeEnv.SKY_LOCAL_LLM_API_KEY}`;
+    const response = await fetchImpl(endpoint, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        model,
+        messages,
+        max_tokens: maxOutputTokens,
+        stream: false,
+      }),
+      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
+    });
+    return {
+      provider: request.provider,
+      model,
+      text: textFromChatResponse(await jsonResponse(response)),
+    };
+  }
 
   if (request.provider === 'ollama') {
     const base = (runtimeEnv.SKY_OLLAMA_BASE_URL || 'http://127.0.0.1:11434').replace(

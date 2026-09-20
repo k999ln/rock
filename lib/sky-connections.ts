@@ -164,6 +164,11 @@ export const skyProviderDefinitions: SkyProviderDefinition[] = [
         suggestions: localModelPresets.map((model) => ({ ...model })),
       },
       {
+        id: 'localLlmBaseUrl',
+        label: 'Local LLMブリッジURL',
+        placeholder: 'http://127.0.0.1:4317/v1（空欄ならサーバー設定）',
+      },
+      {
         id: 'workflow',
         label: 'ワークフロー',
         placeholder: 'make',

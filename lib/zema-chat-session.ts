@@ -1,3 +1,5 @@
+import { isTextModelProvider, type TextModelProviderId } from './llm-providers.ts';
+
 export const ZEMA_CHAT_SESSION_KEY = 'rockstaros.zema-chat-sessions.v1';
 export const ZEMA_CHAT_SESSION_TTL_MS = 10 * 60 * 1000;
 
@@ -29,6 +31,8 @@ export type ZemaChatSession = {
     text: string;
     toolId: string;
     executionProvider?: 'local-model';
+    plannerProvider?: TextModelProviderId;
+    plannerModel?: string;
   } | null;
   workflowStatus: 'ready' | 'running' | 'completed' | 'failed';
   outcome: { ok: boolean; text: string } | null;
@@ -77,7 +81,10 @@ function validSession(value: unknown, now: number): value is ZemaChatSession {
         request.text.length <= 2_000 &&
         typeof request.toolId === 'string' &&
         TOOL_ID.test(request.toolId) &&
-        (request.executionProvider === undefined || request.executionProvider === 'local-model'))) &&
+        (request.executionProvider === undefined || request.executionProvider === 'local-model') &&
+        (request.plannerProvider === undefined || isTextModelProvider(request.plannerProvider)) &&
+        (request.plannerModel === undefined ||
+          (typeof request.plannerModel === 'string' && request.plannerModel.length <= 120)))) &&
     (session.workflowStatus === 'ready' ||
       session.workflowStatus === 'running' ||
       session.workflowStatus === 'completed' ||

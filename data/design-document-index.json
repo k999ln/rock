@@ -180,7 +180,6 @@
     { "id": "jev-evaluation", "catalogStatus": "ready" },
     { "id": "rockstar-legal-intake", "catalogStatus": "ready" },
     { "id": "rockstar-patent-assistant", "catalogStatus": "ready" },
-    { "id": "rockstar-ip-studio", "catalogStatus": "candidate" },
     { "id": "faster-whisper", "catalogStatus": "candidate" },
     { "id": "transformers-js", "catalogStatus": "candidate" },
     { "id": "playwright", "catalogStatus": "candidate" },
