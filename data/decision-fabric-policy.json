@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros-decision-fabric-policy/1",
   "version": "1.0.0-design",
-  "updatedAt": "2026-09-18",
+  "updatedAt": "2026-09-20",
   "status": "DESIGN_APPROVED_IMPLEMENTATION_PENDING",
   "authority": "docs/jev-local-qwen-decision-fabric-design.md",
   "contract": "contracts/decision-provider.json",
@@ -23,13 +23,13 @@
     "BLOCK"
   ],
   "providers": [
-    { "id": "mock", "status": "planned", "productionAllowed": false },
+    { "id": "mock", "status": "fixture_implemented_host_tests_passed", "productionAllowed": false },
     {
       "id": "local_qwen",
       "status": "existing_runtime_adapter_planned",
       "productionAllowed": false
     },
-    { "id": "typesafe_jev", "status": "planned", "productionAllowed": false },
+    { "id": "typesafe_jev", "status": "server_read_only_adapter_mock_fetch_passed_api_key_unset", "productionAllowed": false },
     { "id": "cloud_llm", "status": "planned", "productionAllowed": false },
     { "id": "openjev", "status": "candidate", "productionAllowed": false }
   ],

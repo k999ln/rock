@@ -2,14 +2,14 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-09-18
+更新日: 2026-09-21
 
 ## 全体
 
 - データ境界: 6、table: 75
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 126 task中 86 done、22 in progress、17 planned、1 blocked
+- 作業進捗: 126 task中 86 done、23 in progress、16 planned、1 blocked
 - 現在milestone: Pixel 10 compile-only Developer Previewの初回full build準備
 
 ## 保存境界と配備状態
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Scalewayの課金確認後、Ubuntu 24.04 / 32 dedicated vCPU / 64 GB RAM / 600 GBで固定sourceをsyncし、Operator Agentを明示除外したbringup modeでtarget-files-packageとotatools-packageをbuildする。RELEASE_FLASH gate、production signing、実機flashは未合格のまま維持する。
+Jevは安全なruntime key provisioningが決まるまでdisabled／初回product除外を維持する。友人がAndroid SDK／Gradle環境でoptional providerのunit test・lint・Soong source buildを実行し、別途Pixel／OS full build／flashのgateは未合格のまま維持する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

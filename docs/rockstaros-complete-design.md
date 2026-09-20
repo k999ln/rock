@@ -63,6 +63,7 @@ Buildroot、read-only rootfs、書込みdata disk、専用UID、local IPC、署�
 | Tool | 宣言した個別処理 | 他Tool、他owner、OS内部への横断アクセス |
 | MCP Connector | 本人PCのMCPを認証付きで接続 | 任意host・任意commandの暗黙実行 |
 | Provider Adapter | 外部serviceのcapabilityとreceiptを共通化 | 未宣言機能の擬似実装 |
+| Optional Android Jev Provider | public-only typed TypeSafe advisoryをboundedに取得 | Tool authority、Broker／Shell／Local AI権限、keyの保存・発行 |
 | Wallet | 収益、費用、hold、取消、精算の照合 | seed保管、包括送金、推定収益の残高化 |
 | Operator Agent | 端末状態、限定命令、監査 | 任意shell、私的内容、Wallet、backup鍵 |
 
@@ -380,10 +381,11 @@ APIは領域別に分ける。
 | Local AI package | API v2で閉じたplanを返す | 固定runtime／model |
 | `dev.rock.tools.article` | citationsとfree-article固定2工程 | P1専用。同署名、INTERNETなし |
 | `dev.rock.operator.agent` | 限定緊急命令の端末側検証 | 本番credential／Device Owner未受入 |
+| `dev.rock.jev.provider` | TypeSafe `state`／`model`／`questions`のpublic-only advisory source | manifest disabled、product既定除外、key provisioning・Gradle／Soong／実機未受入 |
 | `shell-api` | ShellからBrokerへの署名限定AIDL | API v4のnative Sky selection |
 | `tool-sdk` | BrokerからToolへのP1 AIDLと型 | 第三者公開SDKではない |
 
-最終OS imageではpackage、privapp許可、SELinux domain、signer、UID、version、permissionを同じbuild artifactで検査する。単体APKの成功だけでproduct imageへの搭載を主張しない。
+最終OS imageではpackage、privapp許可、SELinux domain、signer、UID、version、permissionを同じbuild artifactで検査する。Jev providerは`ROCK_JEV_PROVIDER_MODE=optional`を明示した場合だけ候補へ入り、application disabledと専用`rock_jev_provider_app` domainを維持する。単体APKの成功だけでproduct imageへの搭載を主張しない。
 
 ## 29. Linux／QEMU service配置
 
