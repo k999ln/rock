@@ -741,6 +741,9 @@
         "WEB12"
       ],
       "evidence": [
+        "sites/avocado-mini/index.html",
+        "sites/avocado-mini/guide/index.html",
+        "sites/avocado-mini/crowdfunding/index.html",
         "app/rockstaros/page.tsx",
         "app/rockstaros/guide/page.tsx",
         "components/avocado-turntable.tsx",

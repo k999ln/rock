@@ -335,6 +335,14 @@
     ]
   },
   "launchPage": {
+    "domainSeparation": {
+      "productSite": "separate_public_domain",
+      "productSiteSource": "sites/avocado-mini",
+      "productSiteRoutes": ["/", "/guide/", "/crowdfunding/"],
+      "osSite": "rockstaros-kaiya.noellesugar1.chatgpt.site",
+      "osWebAudience": "owner_only",
+      "osSiteAccessStatus": "pending_owner_account_connection"
+    },
     "route": "/rockstaros",
     "role": "public_avocado_mini_product_home",
     "osHomeRoute": "/",
