@@ -6,7 +6,7 @@
 
 現在選んでいる組合せは1.0の目的に整合する設計候補である。最適性や全経路の実装完了は未実証。詳細な層別責任、model/記憶/仕事/能力交渉、Coreと応用の受入は[AIネイティブOS共通設計](ai-native-os-architecture.md)を参照する。
 
-製品の中心は、交換可能な高性能ローカルLLMとoffline agent runtimeを持つ **AIネイティブOS Core** である。SkyとZemaはそのCoreを最初に実用化する第一者system、仕事・生活を便利にする自動化は継続的な製品開発系統、ゲーム・IP／動画・VRは関心に基づく優先的な応用系統とする。個別systemをOS imageへ密結合せず、共通の権限、仕事、Tool、receipt、更新・復旧契約で接続する。
+製品の中心は、交換可能な高性能ローカルLLMとoffline agent runtimeを持つ **AIネイティブOS Core** を到達目標とする。現行は固定Qwen / llama.rn profileの試験署名Pixel APK実証であり、交換可能な複数profileやOS image搭載ではない。SkyとZemaはそのCoreを最初に実用化する第一者system、仕事・生活を便利にする自動化は継続的な製品開発系統、ゲーム・IP／動画・VRは関心に基づく優先的な応用系統とする。個別systemをOS imageへ密結合せず、共通の権限、仕事、Tool、receipt、更新・復旧契約で接続する。LLM、OpenAI、Jevの現在地は[LLM・評価モデル設計](llm-evaluation-architecture.md)と[`data/llm-capabilities.json`](../data/llm-capabilities.json)を正本にする。
 
 - 共通Core＋機種別Device Support Package
 - 最初の物理対象はPixel 10／GL066／`frankel`
@@ -26,6 +26,7 @@
 | 端末 | 共通Core＋SKU別DSP、Pixel 10 GL066が最初 | 適合 | 対象確定、full build／flash未実施 |
 | 権限 | ShellとBrokerを分離し最小権限化 | 適合 | 単体build・emulator・stock Pixelの成功／fail-closed Binder試験合格、AOSP enforcing未実施 |
 | LLM | offlineで交換可能なmodel/runtimeを目指す | 適合 | 固定runtimeのPixel APKとplan-only API v2合格。汎用交換と比較性能評価は未実装、OS image未搭載 |
+| remote evaluator | Skyから任意・明示同意でJevを利用し、結果を助言に限定 | 適合 | 設計と能力表のみ。route、SDK/API互換、credential、provider sandbox、privacy/料金受入は未実装 |
 | Tool | 署名・版・権限・receipt付きpackage | 適合 | 最初の選択ToolはPixelでplan→2 Tool→結果・履歴まで合格。汎用registryは未完成 |
 | 収益 | Provider署名後だけWalletへ反映 | 適合 | Rock所有fixture合格、外部sandbox未接続 |
 | Wallet／Fund | Provider交換可能、検証済み実績だけ利用 | 適合 | Walletはcode／sandbox、FundはPAPER |

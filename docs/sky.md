@@ -1,6 +1,6 @@
 # Sky — 自動化を選び、許可し、動かし、止め、結果を受け取る場所
 
-最終更新: 2026-09-15
+最終更新: 2026-09-19
 
 ## Skyとは
 
@@ -50,7 +50,9 @@ Zema内で実行したjobは、受付、開始、完了、失敗をbrowser event
 | 法務受付 | Webブラウザ | 相談内容を整理し、公式情報と無料窓口を案内 | 法的助言・期限・受任を保証せず、自動連絡しない |
 | 特許出願アシスタント | Webブラウザ | 発明情報から調査候補と出願書類ドラフトを作る | 特許性・登録を保証せず、提出・支払を自動化しない |
 
-この11件は `lib/catalog.ts` で `ready` とされる。CSV仕事はSky Cloudで受付・変換・検査・私有保存を行うが、販売・決済・buyer共有は別gateである。RockstarOS Marketsは公開ライブ市場の読取専用で、取得失敗時にサンプル値で補完しない。外部Polymarket botは固定commit・clean treeのoffline backtestだけを利用し、秘密鍵と注文runtimeは接続しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。
+この11件は `lib/catalog.ts` で `ready` とされる。ここでの`ready`はSkyの商品UIと安全な縮退経路が利用可能というcatalog状態であり、外部credential設定済み、provider接続確認済み、実機OS合格、本番合格を意味しない。法務受付と特許出願アシスタントはOpenAI未設定時に503を返し、決定論的な案内・draft部分だけを継続する。CSV仕事はSky Cloudで受付・変換・検査・私有保存を行うが、販売・決済・buyer共有は別gateである。RockstarOS Marketsは互換商品名として残る公開ライブ市場の読取専用Toolで、取得失敗時にサンプル値で補完しない。外部Polymarket botは固定commit・clean treeのoffline backtestだけを利用し、秘密鍵と注文runtimeは接続しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。
+
+Jevは[LLM・評価モデル設計](llm-evaluation-architecture.md)でSkyの任意remote evaluatorとして設計したが、route、同意UI、rubric、receipt、credential、provider受入が未実装のため、この11件と`ready`件数には含めない。
 
 ### Skyに表示する導入候補3件
 
@@ -96,7 +98,9 @@ Zema内で実行したjobは、受付、開始、完了、失敗をbrowser event
 ## 正本と互換境界
 
 - 製品名・画面名: `Sky`
-- OS全体: `RockstarOS`
+- OS全体の現行表示名: `avocadoOS`
+- OS内部識別子: `dev.rock`
+- 互換商品名・path・package prefix: `RockstarOS` / `rockstaros-*` / `/rockstaros`
 - 金融記録: `Wallet`
 - 内部互換名: `hub` / `Hub`
 - Webカタログ正本: `lib/catalog.ts`

@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-09-19",
+  "product": {
+    "displayName": "avocadoOS",
+    "internalId": "dev.rock",
+    "releaseStage": "Developer Preview"
+  },
+  "statusVocabulary": [
+    "designed_not_implemented",
+    "implemented_configuration_required",
+    "device_apk_verified",
+    "production_verified"
+  ],
+  "capabilities": [
+    {
+      "id": "native-local-planner",
+      "surface": "platform_core",
+      "tool": null,
+      "role": "local_planner",
+      "provider": "local",
+      "model": "Qwen3-0.6B-Q8_0-GGUF",
+      "runtime": "llama.rn@0.12.9 / Local Action Assistant API v2",
+      "status": "device_apk_verified",
+      "network": "prohibited",
+      "authority": "plan_only",
+      "automaticFallback": false,
+      "evidence": [
+        "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
+        "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+        "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java",
+        "android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java"
+      ],
+      "limitations": [
+        "test-signed standalone APK on an existing OS",
+        "single fixed model/runtime profile",
+        "model metadata persists but post-reboot autoload is not verified",
+        "not integrated into an avocadoOS production image"
+      ]
+    },
+    {
+      "id": "sky-openai-legal",
+      "surface": "sky_tool",
+      "tool": "rockstar-legal-intake",
+      "role": "cloud_generator",
+      "provider": "OpenAI",
+      "model": "OPENAI_LEGAL_MODEL or gpt-5.4-nano",
+      "runtime": "server-side OpenAI Responses API fetch",
+      "status": "implemented_configuration_required",
+      "network": "required_with_explicit_tool_use",
+      "authority": "advisory_only",
+      "automaticFallback": false,
+      "evidence": [
+        "app/api/legal-guidance/route.ts",
+        "lib/legal-ai.ts",
+        "docs/sky-legal-intake-20260912.md"
+      ],
+      "limitations": [
+        "returns 503 when OPENAI_API_KEY is absent",
+        "general information only; not legal advice",
+        "store:false is not proof of Zero Data Retention"
+      ]
+    },
+    {
+      "id": "sky-openai-patent",
+      "surface": "sky_tool",
+      "tool": "rockstar-patent-assistant",
+      "role": "cloud_generator",
+      "provider": "OpenAI",
+      "model": "OPENAI_PATENT_MODEL or gpt-5.4-nano",
+      "runtime": "server-side OpenAI Responses API fetch",
+      "status": "implemented_configuration_required",
+      "network": "required_after_explicit_consent",
+      "authority": "advisory_only",
+      "automaticFallback": false,
+      "evidence": [
+        "app/api/patent-research/route.ts",
+        "lib/patent-ai.ts",
+        "docs/sky-patent-assistant-20260912.md"
+      ],
+      "limitations": [
+        "returns 503 when OPENAI_API_KEY is absent",
+        "does not guarantee patentability, registration or non-infringement",
+        "no filing, signature or fee payment"
+      ]
+    },
+    {
+      "id": "sky-jev-evaluator",
+      "surface": "sky_tool",
+      "tool": "jev-evaluation",
+      "role": "remote_evaluator",
+      "provider": "TypeSafe AI via Vercel AI Gateway",
+      "model": "typesafe-ai/jev",
+      "runtime": "AI Gateway Evaluation API",
+      "status": "designed_not_implemented",
+      "network": "required_after_explicit_consent",
+      "authority": "advisory_only",
+      "automaticFallback": false,
+      "evidence": [
+        "docs/llm-evaluation-architecture.md",
+        "https://vercel.com/ai-gateway/models/jev",
+        "https://vercel.com/docs/ai-gateway/getting-started/evaluation"
+      ],
+      "limitations": [
+        "not registered in the Sky catalog",
+        "AI_GATEWAY_API_KEY is not configured by this design change",
+        "installed ai@7.0.99 does not export experimental_evaluate",
+        "provider table does not currently assert ZDR or No Training",
+        "promotional pricing is stated to end on 2026-09-25"
+      ]
+    },
+    {
+      "id": "canonical-long-term-memory",
+      "surface": "platform_core",
+      "tool": null,
+      "role": "memory",
+      "provider": "local",
+      "model": null,
+      "runtime": "not selected",
+      "status": "designed_not_implemented",
+      "network": "not_applicable",
+      "authority": "broker_scoped_data_only",
+      "automaticFallback": false,
+      "evidence": [
+        "docs/ai-native-os-architecture.md",
+        "docs/sky-assistant-and-memory.md"
+      ],
+      "limitations": [
+        "current persistence is job, history and settings oriented",
+        "canonical memory schema, consent, retention and deletion are not implemented"
+      ]
+    }
+  ],
+  "sdk": {
+    "package": "ai",
+    "declaredVersion": "^7.0.99",
+    "installedVersion": "7.0.99",
+    "experimentalEvaluateExportPresent": false,
+    "decision": "Do not claim Jev runtime support until a tested AI SDK version or the official HTTP Evaluation API is pinned."
+  }
+}
+

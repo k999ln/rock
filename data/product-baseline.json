@@ -1,6 +1,6 @@
 {
-  "version": "1.71",
-  "decidedAt": "2026-09-16",
+  "version": "1.72",
+  "decidedAt": "2026-09-19",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -32,6 +32,25 @@
       "majorUpdatesRequireMigrationAndRollbackAcceptance": true,
       "devicePackagesDeclareCompatibleCoreRange": true,
       "completionClaimFromVersionOnly": false
+    }
+  },
+  "llmArchitecture": {
+    "authority": "docs/llm-evaluation-architecture.md",
+    "capabilityMatrix": "data/llm-capabilities.json",
+    "localPlanner": "Qwen3-0.6B Q8_0 on llama.rn 0.12.9; fixed test-signed device APK profile; plan-only and untrusted",
+    "executionAuthority": "Platform Broker validates identity, capability, approval and plan; Engine executes deterministic tools",
+    "skyOpenAiConnections": [
+      "rockstar-legal-intake",
+      "rockstar-patent-assistant"
+    ],
+    "skyOpenAiScope": "Two optional Sky tool internals, not an OS-wide cloud LLM or automatic local fallback",
+    "jev": {
+      "model": "typesafe-ai/jev",
+      "role": "remote_evaluator",
+      "surface": "explicit Sky tool",
+      "authority": "advisory_only",
+      "status": "designed_not_implemented",
+      "task": "AI07"
     }
   },
   "strategy": {

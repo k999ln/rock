@@ -1,5 +1,11 @@
 # avocadoOS — 事業・設計・進捗
 
+## 2026-09-19 — LLM境界を訂正しJev評価モデルをAI07へ追加
+
+現行コードと設計を再監査し、端末内Qwen / llama.rnを非信頼planner、Brokerを唯一の権限判定者、EngineをTool実行者として固定した。WebのOpenAI接続はSkyの法務受付と特許アシスタント2 Tool内部に限定し、OS全体のcloud LLMやlocal fallbackとは扱わない。Jev (`typesafe-ai/jev`) はSkyから明示利用するremote evaluatorとし、結果は助言・品質証拠に限定する。
+
+[LLM・評価モデル設計](docs/llm-evaluation-architecture.md)と[data/llm-capabilities.json](data/llm-capabilities.json)を追加し、削除済みbranch参照、Sky role 6→10、RockstarOSのcurrent表示、LLMがToolを実行するように読めるRQ47文言を訂正した。現行`ai@7.0.99`は`experimental_evaluate`をexportしないため、Jev接続はAI07の進行中作業であり未実装。SDK/API互換、明示同意、privacy、料金上限、receipt、provider失敗縮退を通すまでSky catalogの`ready`には加えない。
+
 ## 2026-09-17 — Sky統合・開発者還元の設計と成功報酬方針の訂正
 
 Sky自体をToolチームの編成・参加・実績の入口とし、回収分から開発者へ還元する設計に着手した。Astraの設計とSolの信頼境界レビュー後、所有者から「利用料ではなく、利益が出たものの%請求」「本人銀行口座への外部売上入金」「Walletで円滑に支払う」「公開しつつマネタイズ」と訂正があった。固定利用料原資を前提にした実装は行わず、実回収済み成功報酬を還元原資とする方向へ設計を訂正する。
@@ -596,7 +602,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-17 / AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続 / 完了 78/115件
+最終更新: 2026-09-19 / AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続 / 完了 78/116件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -607,6 +613,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI07 | JevをSkyの明示的remote evaluatorとして接続し、SDK/API互換・同意・rubric・receipt・privacy・料金縮退を受入 | 進行中 | [記録](docs/llm-evaluation-architecture.md) · [記録](data/llm-capabilities.json) · [記録](scripts/check-llm-architecture.mjs) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -735,7 +742,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: 最新依頼SKY17は、公開するSkyの利益連動成功報酬とWallet決済・開発者還元の条件確認中。率、利益定義、既存月888 cents上限との関係、銀行入金照合・回収方法を確定してから実装し、旧利用料原資の案で先行実装しない。OS系統はAstra設計とSol監査に従いAI02のモデルmanifest・仕事への版固定、AI03の限定記憶、AI04の外部作用禁止／照合、AI05の能力宣言、AI06の非金融Game／IP fixtureを独立して進める。full build入力・署名・物理全損復元の未完了gateを維持する。
+次の作業: AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。SKY17の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。
 <!-- project-status:end -->
 
 ## 次段階の設計

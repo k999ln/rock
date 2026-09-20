@@ -2,14 +2,14 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-09-16
+更新日: 2026-09-19
 
 ## 全体
 
 - データ境界: 6、table: 75
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 114 task中 78 done、22 in progress、13 planned、1 blocked
+- 作業進捗: 116 task中 78 done、24 in progress、13 planned、1 blocked
 - 現在milestone: AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続
 
 ## 保存境界と配備状態
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Astra設計とSol監査を反映し、AI02から1.0向けモデルmanifestと仕事への版固定を実装する。AI03の限定記憶、AI04の外部作用禁止／照合契約、AI05のapp／OS能力宣言を既存Brokerへ段階導入し、AI06の非金融Game／IP fixtureで共通性を確認する。full build準備ではGoogle復旧実ファイル・vendor inventory・HSM／署名bridge・本番Operator登録・物理data／Keystore全損復元が残る。Game開発は収益Provider／Fundの完成待ちにしない。
+AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。SKY17の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

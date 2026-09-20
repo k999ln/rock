@@ -16,7 +16,7 @@
 
 remote内容は読み取り後に作業checkoutへfetchし、refを40桁SHAに固定する。利用者のdirty checkoutを切り替えず、必要なら分離checkout/worktreeを作る。対象コードがmainにない場合は存在するbranchを出発点にする。別branchにあるから新規作成する、という判断をしない。
 
-現在はmain/nativeに加え `codex/os-game-design-review-20260909` の最新設計も必須入力。mainに新設計があると仮定せず、PRのない設計branchも同一SHAのchecksを取得し、チェックなしを成功にしない。取得中のbranch追加/更新/削除も再照合する。`auditInputs.designHead` は改訂前入力の履歴であり、未来の最新SHAの固定指定ではない。
+現在はGitHub `main` と、実在する対象作業branchの最新SHAを入力にする。`data/product-baseline.json` の `auditInputs.designBranch` / `designHead` は2026-09-09監査時の履歴であり、現在branchの指定ではない。branch一覧を再照合し、削除済みbranchを必須入力にせず、チェックなしを成功にしない。
 
 ## 2. 進捗の記録方式
 

@@ -1,23 +1,27 @@
 # Sky Assistant / Sky Memory設計
 
-最終更新: 2026-09-12
+最終更新: 2026-09-19
 
 ## 利用者に見せる一つの入口
 
-Skyはアプリ一覧ではなく、仕事を受け付ける窓口にする。利用者は「Instagramの広告からDM受注まで進めて」のように依頼し、Skyが実行可能な役へ振り分ける。現在は次の6役を固定規則で選び、知らない依頼を勝手に実行しない。
+Skyはアプリ一覧ではなく、仕事を受け付ける窓口にする。利用者は「Instagramの広告からDM受注まで進めて」のように依頼し、Skyが実行可能な役へ振り分ける。現在は次の10役を `lib/sky-routing.ts` の固定規則で選び、知らない依頼を勝手に実行しない。
 
 ```text
 利用者の依頼
     │
     ▼
-Sky受付 ── 判断できない ──> 6役から本人が選択
+Sky受付 ── 判断できない ──> 10役から本人が選択
     │
+    ├─ CSV自動化役 ──> CSV整形・検査・納品（Sky Cloud）
+    ├─ 販売収益化役 ──> メルカリ収益スターター（ブラウザ）
     ├─ ブランド運営役 ──> Fashion Brand Ops（PC / MCP、38操作）
     ├─ 案件判断役 ──> ココナラ案件チェック（ブラウザ）
     ├─ 記事編集役 ──> 記事の無料版メーカー（ブラウザ）
     ├─ 出典整理役 ──> 出典整理ツール（ブラウザ）
     ├─ 納品確認役 ──> 納品記録の照合（接続したPC）
-    └─ 契約管理役 ──> Rockstar Ledger（接続したPC）
+    ├─ 契約管理役 ──> Rockstar Ledger（接続したPC）
+    ├─ 法務受付 ──> 公式案内・任意のOpenAI接続（ブラウザ）
+    └─ 特許出願担当 ──> draft・明示同意後のOpenAI接続（ブラウザ）
 ```
 
 現在の受付はLLMエージェントではなく、説明可能なキーワード振り分けである。ただしブランド運営役の内部では、目標からCampaign Autopilot、Sales Concierge、Production Cockpitを組み立てる。自由会話型の複数役plannerは未実装であり、LLMを追加する場合も、実行権限・送信先・料金の確定は決定的なPolicy Brokerとapproval gateへ残す。
@@ -59,11 +63,11 @@ Sky Memory
 
 ## 実装順
 
-1. 今回: X型Timeline、Sky受付、6役への決定的な振り分け、送信または役ボタンから既存の実行画面を開く接続。ブランド運営役は38 MCP操作とapproval gateへ接続する。
+1. 現在: X型Timeline、Sky受付、10役への決定的な振り分け、送信または役ボタンから既存の実行画面を開く接続。ブランド運営役は41 MCP操作とapproval gateへ接続する。
 2. 次: `sky_profiles`と`sky_context_grants`、プロフィール編集、roleごとの共有確認、削除・export。
 3. 次: OAuth接続保管庫、MCP preflight、tool capabilityとContext Envelopeの照合。
 4. 次: 会話履歴から複数役を組み立てるplanner。ただし外部送信・購入・公開・納品は本人確認を維持。
 
 ## 完了と呼ばない範囲
 
-Sky Memoryの永続保存、Sky Cloud・提供者OAuth、自由会話型planner、複数役の自動連鎖はまだ実装していない。現在の画面で動くのは6役への入口、既存ブラウザツール、PC上のSky MCP ConnectorとFashion Brand Opsへの接続までである。Fashion Brand Opsの実Provider接続・実投稿・実請求には別途credentialと個別承認が必要になる。
+Sky Memoryの永続保存、Sky Cloud・提供者OAuth、自由会話型planner、複数役の自動連鎖はまだ実装していない。現在の画面で動くのは10役への決定的な入口、既存ブラウザツール、PC上のSky MCP ConnectorとFashion Brand Opsへの接続までである。job、履歴、設定の保存をcanonical Sky Memory実装済みと扱わない。Fashion Brand Opsの実Provider接続・実投稿・実請求には別途credentialと個別承認が必要になる。

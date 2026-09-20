@@ -1,11 +1,11 @@
 # avocadoOS — 自動化を接続・実行・管理するOS
 
-avocadoOSは、交換可能な高性能ローカルLLMとoffline agent runtimeを中核にするAIネイティブOSとして開発しています。SkyとZemaを最初の第一者systemとし、仕事・生活を便利にする自動化、Wallet／ファンド、ゲーム、IP／動画、VRを共通Coreへ接続して発展させます。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ48、具体的な契約と実装順は[AIネイティブOS詳細設計](docs/ai-native-os-architecture.md)、独立監査は[Sol設計監査](docs/ai-native-os-design-audit.md)、全層の組合せと未接続点は[全体構成監査](docs/system-composition.md)、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`avocadoOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
+avocadoOSは、交換可能な高性能ローカルLLMとoffline agent runtimeを中核にするAIネイティブOSを目標に開発しています。現行は固定Qwen / llama.rn profileの試験署名Pixel APK実証で、複数model交換やOS image搭載は未完了です。SkyとZemaを最初の第一者systemとし、仕事・生活を便利にする自動化、Wallet／ファンド、ゲーム、IP／動画、VRを共通Coreへ接続して発展させます。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ48、LLMとJevの現在地は[LLM・評価モデル設計](docs/llm-evaluation-architecture.md)と[能力表](data/llm-capabilities.json)、具体的なCore契約と実装順は[AIネイティブOS詳細設計](docs/ai-native-os-architecture.md)、独立監査は[Sol設計監査](docs/ai-native-os-design-audit.md)、全層の組合せと未接続点は[全体構成監査](docs/system-composition.md)、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`avocadoOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
 
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-17 / 115 task中78 done・23 in progress・13 planned・1 blocked
+更新日: 2026-09-19 / 116 task中78 done・24 in progress・13 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                           |
@@ -171,7 +171,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の画面を「OSをインストール」導線へ簡素化しました。同じページにSky Tool SDKの最小コード例と本人限定Siteの`/studio`導線を置いています。[導入・初回実行・復旧ガイド](docs/preview-installation-ja.md)と[既知制限](docs/preview-release-notes.md)は`/rockstaros/guide`から確認できます。ダウンロード一般公開は正式署名・許諾・最終配布受入と公開承認待ちです。
 
-正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。旧ローカル作業名は `gg`。現在の実装再開先は `codex/rockstaros-launch-candidate-20260910` で、SSD上の旧checkoutを最新と仮定しません。製品は`avocadoOS`の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
+正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。旧ローカル作業名は `gg`。現在はGitHub `main` と実在する対象作業branchの最新SHAを再開基準とし、削除済みの旧branchやSSD上の旧checkoutを最新と仮定しません。製品は`avocadoOS`の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
 
 **CMの現在状態（2026-09-11）:** 最新の回答は制作途中です。完成・選定・内容照合・掲載が残ります。9月10日の完成済みという回答は過去の[履歴](docs/release-followup-20260910.md)として保持します。「追加1〜2日」はLICENSE／Sitesの待ちを除くQEMU版仕上げの条件付き概算で、確定公開日ではありません。[完了範囲・見積もり・残件の詳細](docs/release-followup-20260910.md)。
 
@@ -183,11 +183,11 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 
 <details>
 <!-- project-details-summary:start -->
-<summary>115 taskと段階gateの詳細を開く</summary>
+<summary>116 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-17 / AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続 / 完了 78/115件
+最終更新: 2026-09-19 / AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続 / 完了 78/116件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -198,6 +198,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI07 | JevをSkyの明示的remote evaluatorとして接続し、SDK/API互換・同意・rubric・receipt・privacy・料金縮退を受入 | 進行中 | [記録](docs/llm-evaluation-architecture.md) · [記録](data/llm-capabilities.json) · [記録](scripts/check-llm-architecture.mjs) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -326,7 +327,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: 最新依頼SKY17は、公開するSkyの利益連動成功報酬とWallet決済・開発者還元の条件確認中。率、利益定義、既存月888 cents上限との関係、銀行入金照合・回収方法を確定してから実装し、旧利用料原資の案で先行実装しない。OS系統はAstra設計とSol監査に従いAI02のモデルmanifest・仕事への版固定、AI03の限定記憶、AI04の外部作用禁止／照合、AI05の能力宣言、AI06の非金融Game／IP fixtureを独立して進める。full build入力・署名・物理全損復元の未完了gateを維持する。
+次の作業: AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。SKY17の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。
 <!-- project-status:end -->
 
 </details>

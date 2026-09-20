@@ -1,6 +1,6 @@
 # avocadoOS — AIネイティブOSの共通設計
 
-状態: RQ48を実装へ落とす到達設計。2026-09-16、基準source `678e9c9`。**本文の新しい契約・状態名・数値目標は提案であり、現行APIや受入済み機能の宣言ではない。** 実装済みの範囲は第8節のsourceと証拠で区別する。製品目的は[north star](product-north-star-20260915.md)、現在の判定は[全体構成](system-composition.md)、作業入口は[Android / Device / Local AI](workstreams/07-android-device-local-ai.md)。
+状態: RQ48を実装へ落とす到達設計。2026-09-16、基準source `678e9c9`。2026-09-19にlocal planner、Sky内OpenAI接続2件、Jev remote evaluatorの境界を追記した。**本文の新しい契約・状態名・数値目標は提案であり、現行APIや受入済み機能の宣言ではない。** 実装済みの範囲は第8節のsourceと証拠で区別する。製品目的は[north star](product-north-star-20260915.md)、LLMの現在地は[LLM・評価モデル設計](llm-evaluation-architecture.md)と[`data/llm-capabilities.json`](../data/llm-capabilities.json)、現在の判定は[全体構成](system-composition.md)、作業入口は[Android / Device / Local AI](workstreams/07-android-device-local-ai.md)。
 
 ## 1. 固定する中核と依存方向
 
@@ -34,6 +34,14 @@ model更新は `download → hash/license/互換検査 → 隔離試験 → 待�
 runtime側は別の `RuntimeManifest` にpackage/signer/版/API範囲/対応ModelProfile形式/plan schemaを宣言し、Brokerが実APK identityと照合してregistryへ登録する設計とする。現行 `contracts/local-ai-runtime.json` と `LocalAiConnection` は固定package・versionCode・API・同署名検査であり、任意runtimeへの交換を実装済みとはしない。1.0ではこの一つのadapterと互換model二構成の差替え/失敗rollback/旧job pinを最低受入とし、別runtime二実装間の差替えは拡張受入に分ける。署名境界を変えるruntime導入は通常のmodel変更で迂回できない。
 
 profile activation/rollbackのauthorityはBrokerの管理transactionだけが持つ。最小download資格のstagerが非active領域へ置き、Brokerが承認されたmanifestの署名、全hash、容量、互換性を再検査してからactive generation pointerをatomicに切り替える。runtimeの自己更新でこの経路を迂回できない。staging/検証/切替/healthのjournalを残し、起動時は最後に確定したpointerからresumeまたは検査済み旧profileへrollbackする。旧jobのpinがあるprofileは削除しない。旧profile失効時はそのjobを停止し、新profileでの明示的replanを新revisionとして扱う。
+
+### 2.1 cloud generatorとremote evaluatorをlocal modelから分ける
+
+WebのOpenAI接続はSkyの法務受付と特許出願アシスタントの2 Tool内部だけにあり、OS全体のcloud LLM層ではない。Local AIが利用できない時にOpenAIへ自動送信せず、OpenAI停止時にLocal AIへ同じ依頼を自動fallbackしない。Tool、provider、model role、実行場所、接続状態を別々に記録する。
+
+Jev (`typesafe-ai/jev`) はVercel AI Gateway経由のTypeSafe AI remote evaluatorとして扱う。端末内model profileや文章生成modelには含めず、本人がSkyから明示利用する評価Toolに限定する。typed evaluation結果は助言・品質証拠であり、Brokerの権限判定、本人承認、Tool成功、仕事完了、Earning Receiptを置き換えない。Jevの未接続や低評価で既存local-pure jobを自動失敗・再実行しない。
+
+現行 `ai@7.0.99` は `experimental_evaluate` を実行時exportしない。SDK更新または公式HTTP Evaluation APIを、Node/Cloudflare互換、privacy、timeout、費用、invalid responseのfixtureで受け入れるまではJevを実装済みや`ready`としない。詳細は[LLM・評価モデル設計](llm-evaluation-architecture.md)に従う。
 
 ## 3. Agentの記憶、仕事、再起動
 
@@ -135,6 +143,6 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 
 段階3（JOINT/OWNER、DSP01/RLS02）は既存full build入力と[初回flash gate](android-first-flash-gate-20260916.md)を満たした同一OS候補でCore物理受入を行う。インフラ契約、鍵管理、wipe/flashは本設計更新では実行しない。段階4は応用ごとの受入を独立に進め、実収益ProviderはJOINT/OWNER、Tool/Game adapterはROCKを主担当にする。実名の運用責任者や外部契約が必要なgateは公開前に確定する。
 
-実装単位は進捗JSONの `AI01`（本設計と独立監査）、`AI02`（model/runtime互換）、`AI03`（限定記憶とprojection）、`AI04`（effect分類と不明結果照合）、`AI05`（Sky能力交渉・単一実行端末）、`AI06`（非金融Game/IP fixture）に対応する。AI02〜06は計画で、既存OS07〜OS11/DSP01/RLS02の受入を置き換えない。AI04のexternal-writeは現行pure Engineに実証された脆弱性ではなく、外部変更を一般化する前の設計blockerである。
+実装単位は進捗JSONの `AI01`（本設計と独立監査）、`AI02`（model/runtime互換）、`AI03`（限定記憶とprojection）、`AI04`（effect分類と不明結果照合）、`AI05`（Sky能力交渉・単一実行端末）、`AI06`（非金融Game/IP fixture）、`AI07`（Jev remote evaluatorのSDK/API互換、Sky同意、rubric、receipt）に対応する。AI02〜07は未完了で、既存OS07〜OS11/DSP01/RLS02の受入を置き換えない。AI04のexternal-writeは現行pure Engineに実証された脆弱性ではなく、外部変更を一般化する前の設計blockerである。
 
 直近の未確定事項は、比較採用するmodelと性能/電池予算、長期記憶の保持期間、一般Tool manifestのcapability schema、遠隔device enrollmentとwriter移送の具体transport、story候補の素材/成果schema、外部Providerの照会・冪等性契約である。これらは設計/fixture作業を進めながら具体化し、未確定を実装済み・高性能達成・本番対応と表示しない。

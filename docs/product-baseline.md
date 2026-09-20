@@ -1,5 +1,7 @@
 # avocadoOS — 確定した製品ベース
 
+2026-09-19 LLM分類訂正（v1.72）: 現行の端末内Qwen / llama.rnは固定profileの非信頼plannerであり、Tool実行・再試行・成果保存・権限判定の主体ではない。WebのOpenAI接続はSkyの法務受付・特許アシスタント2 Tool内部だけ。Jev (`typesafe-ai/jev`) はSkyから明示利用するremote evaluatorとして追加設計し、local modelや汎用generatorに数えず、結果を権限・承認・成功へ昇格させない。正本は[LLM・評価モデル設計](llm-evaluation-architecture.md)と`data/llm-capabilities.json`。Jev runtime、credential、同意UI、provider受入はAI07として未完了。
+
 2026-09-17料金方針の訂正（条件確認中・未実装）: 所有者はシステムを公開し、Sky経由で利益が出た分に対する割合の成功報酬でマネタイズする意向を明示した。Walletはその支払いを円滑にする入口で、外部サービスから本人銀行口座への入金を自動的に徴収する権限ではない。開発者還元は実回収済み成功報酬の一部からとし、別途の還元負担を追加しない。率、対象利益の定義、従来の月888 cents上限との関係、回収方法は未確定。以下の月上限等は現行実装の説明であり、新料金の承認・実装済みを意味しない。正本JSONの`commercialPolicyRevision`と[Sky経済設計](sky-network-economy.md)に区別を記録する。
 
 2026-09-16詳細設計追記（v1.71）: RQ48を[AIネイティブOS詳細設計](ai-native-os-architecture.md)へ具体化する。Astraが設計、Solが[独立監査](ai-native-os-design-audit.md)を担当。モデル・記憶・仕事・外部作用・端末能力の契約と、1.0 Core／便利機能／Game・IP／収益の独立受入を定義する。現在の固定runtimeと純粋な2工程Toolの実機受入から、汎用モデル交換・共有記憶・外部作用・多端末の完成は推測しない。詳細設計の保存はruntime実装や製品公開の完了ではない。
@@ -508,7 +510,7 @@ Operator Dock、命令キュー、device channel、Android Agentのsource実装�
 
 avocadoOSの最上位の社会的目的は、利用者が自分専用のAI自動化チームを所有し、その効率を改善することで、仕事と生活を便利にし、検証可能な収益機会を増やし、利用者全体の豊かさへつなげることである。AIネイティブOSはそのための製品中核、Pixelは最初のreference hardware、Wallet、ファンド、ゲーム、将来の専用端末は実現・配布・拡張する接続層として扱う。スマートフォン市場の一般機能やカメラ品質でiPhoneと競うことを1.0の完成条件にしない。
 
-端末内LLMは通信がない間も仕事分解、Tool実行、再試行、確認待ち、成果保存を続け、接続時だけ外部案件取得、外部作用、納品、署名済み収益、Wallet照合を重複なく同期する。最初に一つのToolでこの経済loopを完走し、次に複数Toolファンドを一押しで開始・管理・改善できるようにする。月50万円規模はProvider確認済み収益と全実行費用を持つ長期の到達指標であり、未検証値、PAPER結果、単発売上、将来利回り、全利用者の収入保証として表示しない。
+通信がない間もAgent runtime / Broker / Engineは仕事分解のplan検証、有限Tool実行、再試行、確認待ち、成果保存を続ける。端末内LLMは閉じたschemaのplan候補だけを返す非信頼plannerで、Tool実行、許可発行、仕事・台帳の書込み主体ではない。接続時だけ外部案件取得、外部作用、納品、署名済み収益、Wallet照合を重複なく同期する。最初に一つのToolでこの経済loopを完走し、次に複数Toolファンドを一押しで開始・管理・改善できるようにする。月50万円規模はProvider確認済み収益と全実行費用を持つ長期の到達指標であり、未検証値、PAPER結果、単発売上、将来利回り、全利用者の収入保証として表示しない。
 
 Walletは収益・費用・receipt・払出し状態に加え、合法的な税務準備の記録、分類候補、期間集計、export、専門家確認を支援する。脱税、架空経費、法域未確認の自動申告を行わない。改善データはcategoryごとに目的、送信先、保存期間、第三者提供、削除、同意撤回を示し、仕事本文、私的会話、写真、秘密鍵、seed phrase、認証情報、正確な位置を既定収集しない。ゲームは公式に許可された接続先へ同じ権限・receipt・Wallet基盤を派生させ、1.0の中核収益loopを止める依存にしない。詳細は [製品目的から逆算した開発軸](product-north-star-20260915.md)を正本補助資料とする。
 
@@ -520,7 +522,7 @@ avocadoOSの製品中核は、高性能で交換可能なローカルLLM、offli
 
 SkyはTool・ファンド・接続先を選ぶ第一者system、ZemaはAIチームへの依頼、役割、進捗、承認、停止、結果、履歴を管理する第一者systemとし、最初の実用経路としてCoreを継続検証する。仕事や生活を便利にするsystemを優先して追加し、ゲーム、IP／動画生成、VRは利用者の関心に基づく優先的な応用開発系統として関連付ける。特定のTool、ゲーム、生成Provider、金融ProviderをOS imageへ直書きせず、署名、version、capability、本人同意、費用、停止、receiptを持つadapterとして独立更新できるようにする。
 
-Pixel 10は最初のreference hardwareであり、Googleサービス、カメラ、一般向けブラウザ、ATM、特定ゲームはCoreの起動条件にしない。1.0では所有Pixel上でOS、交換可能な端末内LLM、agent、Sky、Zema、一つの実用Toolのoffline実行・再開・安全な接続を証明する。Wallet、ファンド、ゲーム等の進捗を過大表示せず、各systemは個別gateに合格した範囲だけ利用可能とする。
+Pixel 10は最初のreference hardwareであり、Googleサービス、カメラ、一般向けブラウザ、ATM、特定ゲームはCoreの起動条件にしない。1.0の到達条件は、所有Pixel上でOS、交換可能な端末内LLM、agent、Sky、Zema、一つの実用Toolのoffline実行・再開・安全な接続を証明すること。現行は固定runtime/modelの試験署名APK実証であり、交換可能な端末内LLMやOS image搭載を達成済みと表示しない。Wallet、ファンド、ゲーム等の進捗を過大表示せず、各systemは個別gateに合格した範囲だけ利用可能とする。Jevは[LLM・評価モデル設計](llm-evaluation-architecture.md)に従うSkyの任意remote evaluatorで、local planner、Broker authority、OpenAI接続2件と区別する。
 
 ## 1.0への8原則の適用（RQ01〜RQ48を維持）
 

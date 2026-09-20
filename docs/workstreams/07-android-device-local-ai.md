@@ -35,6 +35,7 @@
 ## 関連資料
 
 - [AIネイティブOS詳細設計とapp／OS能力差](../ai-native-os-architecture.md)
+- [LLM・評価モデル設計（local planner / Sky OpenAI / Jev）](../llm-evaluation-architecture.md)
 - [Device support architecture](../device-support-architecture.md)
 - [Phone preview](../phone-preview-20260911.md)
 - [Android trial](../android-trial.md)

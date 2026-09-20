@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-17",
+  "updatedAt": "2026-09-19",
   "milestone": "AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続",
-  "nextAction": "最新依頼SKY17は、公開するSkyの利益連動成功報酬とWallet決済・開発者還元の条件確認中。率、利益定義、既存月888 cents上限との関係、銀行入金照合・回収方法を確定してから実装し、旧利用料原資の案で先行実装しない。OS系統はAstra設計とSol監査に従いAI02のモデルmanifest・仕事への版固定、AI03の限定記憶、AI04の外部作用禁止／照合、AI05の能力宣言、AI06の非金融Game／IP fixtureを独立して進める。full build入力・署名・物理全損復元の未完了gateを維持する。",
+  "nextAction": "AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。SKY17の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。",
   "tasks": [
     {
       "id": "SKY17",
@@ -55,6 +55,17 @@
       "status": "planned",
       "dependsOn": ["AI01", "AI03", "AI05"],
       "evidence": ["docs/ai-native-os-architecture.md"]
+    },
+    {
+      "id": "AI07",
+      "title": "JevをSkyの明示的remote evaluatorとして接続し、SDK/API互換・同意・rubric・receipt・privacy・料金縮退を受入",
+      "status": "in_progress",
+      "dependsOn": ["AI01", "SKY01"],
+      "evidence": [
+        "docs/llm-evaluation-architecture.md",
+        "data/llm-capabilities.json",
+        "scripts/check-llm-architecture.mjs"
+      ]
     },
     {
       "id": "SKY01",

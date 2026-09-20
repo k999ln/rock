@@ -11,6 +11,18 @@
 
 これは **設計の合格** である。交換可能runtime、限定記憶、外部作用outbox、多端末Sky、Game/IP縦断、avocadoOS imageの完成を実装済みとする判定ではない。
 
+## 2026-09-19追補 — LLM分類とJev
+
+追加監査で、端末内LLM、WebのOpenAI接続、Jev、AI SDK dependencyを一つの「LLM接続」とみなす誤読を確認した。修正後の正本は[LLM・評価モデル設計](llm-evaluation-architecture.md)と[`data/llm-capabilities.json`](../data/llm-capabilities.json)である。
+
+- 端末内Qwen / llama.rnは固定profileの非信頼planner。Broker / Engineが実行・再試行・保存を担う。
+- OpenAI接続はSkyの法務受付と特許アシスタントの2 Tool内部だけ。catalogの`ready`はcredential接続済みや本番合格ではない。
+- JevはSkyから明示利用するremote evaluatorとして設計し、local plannerや汎用generatorに数えない。結果は`advisory-only`。
+- 現行`ai@7.0.99`に`experimental_evaluate` exportはなく、Jev runtimeは未実装。公式API互換、privacy、料金、失敗縮退をAI07で受け入れる。
+- `AGENTS.md`、README、prompt playbookの削除済みbranch参照、Sky role 6→10、RockstarOS→avocadoOSのcurrent表記を同期対象とした。
+
+この追補は設計・正本訂正の合格であり、Jev provider接続、API key設定、route、UI、catalog `ready`、production利用の完了判定ではない。
+
 ## 監査対象
 
 - 要求正本: `data/product-baseline.json` 初回v1.70・最終v1.71 / RQ48、`docs/product-baseline.md`、`docs/product-north-star-20260915.md`
@@ -58,6 +70,7 @@
 - `AI04`: effect分類、external-write outbox、uncertain照合。現行pure Engineの脆弱性修正ではなく、外部作用一般化の事前条件
 - `AI05`: Sky capability交渉、単一authority device、古いcache・二重writer拒否
 - `AI06`: 非金融Game/IP fixture、owner/project分離、save復旧
+- `AI07`: Jev SDK/API互換、Skyの明示同意、allowlist rubric、Evaluation Receipt、privacy/料金/失敗縮退
 - GL066同一OS候補でのfull build、正式署名、flash、SELinux enforcing、OTA/rollback、純正復旧、物理的な鍵喪失/wipe復元
 - production WebAuthn/StrongBox/Device Owner、外部収益Provider sandbox、最初の管理されたtransfer
 
