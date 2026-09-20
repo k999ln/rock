@@ -262,9 +262,12 @@ body{overflow-x:hidden}
 .os-install-lead{max-width:540px;font-size:clamp(16px,1.65vw,22px);line-height:1.75;color:#d6e8ef;margin:0 0 40px}
 .os-install-button{display:inline-flex;align-items:center;justify-content:space-between;gap:48px;min-width:min(370px,100%);min-height:64px;padding:17px 24px;border-radius:999px;background:#e8faff;color:#102b37;text-decoration:none;font-size:17px;font-weight:700;box-shadow:0 16px 44px #0005;transition:transform .2s,background .2s}
 .os-install-button:hover,.os-install-button:focus-visible{transform:translateY(-3px);background:#fff}
+.os-install-content{width:100%}
+.os-install h2{margin:0 0 clamp(34px,5vw,68px);font-size:clamp(62px,9vw,148px);letter-spacing:-.09em;white-space:nowrap}
+.os-install-button{min-width:min(430px,100%)}
 .os-install-note{margin:22px 0 0;font-size:12px;line-height:1.7;color:#a9c0cc}
 @media(max-width:800px){.os-install{min-height:85svh;padding:110px 25px}.os-install-orbit{right:-72vw;width:150vw}}
-@media(max-width:520px){.os-install h2{font-size:clamp(50px,12vw,72px)}.os-install-lead{font-size:15px}.os-install-button{width:100%;font-size:15px;gap:16px}}
+@media(max-width:520px){.os-install h2{font-size:clamp(42px,11vw,72px)}.os-install-button{width:100%;font-size:15px;gap:16px}}
 
 /* Match the opening's black studio photography and brushed-metal palette. */
 body{background:#050506}
