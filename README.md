@@ -6,9 +6,9 @@
 
 製品ホームは、4本のキット、見どころ、タワー1本の全周回転、キット目標価格、利用場面、OS導入案内へ進む構成です。
 
-[🏠 avocadoMini製品ホーム](https://avocado-mini.kirin-999.chatgpt.site/) · [💿 OS導入ガイド](https://avocado-mini.kirin-999.chatgpt.site/guide/) · [🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🤝 クラファン企画](https://avocado-mini.kirin-999.chatgpt.site/crowdfunding/)
+[🏠 avocadoMini製品ホーム](https://avocado-mini.kirin-999.chatgpt.site/) · [💿 RockstarOS導入入口](https://avocado-mini.kirin-999.chatgpt.site/install/) · [📖 開発版ガイド](https://avocado-mini.kirin-999.chatgpt.site/guide/) · [🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🤝 クラファン企画](https://avocado-mini.kirin-999.chatgpt.site/crowdfunding/)
 
-**公開商品ページとOS操作画面は分けます。** [商品ページのプレビュー](https://avocado-mini.kirin-999.chatgpt.site/)で製品を見て、[OS導入ガイド](https://avocado-mini.kirin-999.chatgpt.site/guide/)で対応環境と配布状況を確認します。旧URLを商品サイトへ切り替えた後、OSの操作画面は管理者限定の別Siteから利用します。現時点では旧Siteに旧OS画面が一般公開されたままです。
+**公開商品ページとOS操作画面は分けます。** [商品ページ](https://avocado-mini.kirin-999.chatgpt.site/)で製品を見て、[RockstarOS導入入口](https://avocado-mini.kirin-999.chatgpt.site/install/)で現在の対応状況を確認できます。Pixel 10へ書き込めるRockstarOSイメージはまだ公開されていません。Mac仮想環境の[開発版ガイド](https://avocado-mini.kirin-999.chatgpt.site/guide/)は別です。旧URLを商品サイトへ切り替えた後、OSの操作画面は管理者限定の別Siteから利用します。現時点では旧Siteに旧OS画面が一般公開されたままです。
 
 ## 構想ギャラリー
 
@@ -222,7 +222,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-20 / 136 task中91 done・28 in progress・16 planned・1 blocked
+更新日: 2026-09-20 / 137 task中91 done・29 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -404,11 +404,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>136 taskと段階gateの詳細を開く</summary>
+<summary>137 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-20 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/136件
+最終更新: 2026-09-20 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/137件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -459,6 +459,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | WEB11 | 製品構想モデルをスクロールで一周見せ、参考価格・購入準備中・OS導入へつなぐ | 完了 | [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](docs/product-baseline.md) |
 | WEB12 | 利用者提供の伸縮式センサータワーを製品サイトとGitHubの主役にする | 完了 | [記録](public/rockstaros/avocado-mini-tower-concept.png) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](README.md) · [記録](docs/avocado-mini-hardware-design.md) |
 | WEB13 | 旧URLをavocadoMini公開商品Siteへ転用し、OS操作画面を管理者限定の別Siteへ移す | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/guide/index.html) · [記録](sites/avocado-mini/crowdfunding/index.html) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](README.md) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/main.js) · [記録](project.md) · [記録](sites/avocado-mini/rockstaros/index.html) · [記録](sites/avocado-mini/vite.config.js) |
+| WEB14 | RockstarOS導入入口を製品ページへ置き、Pixel 10向け実インストーラーを配布・安全ゲート合格後に接続する | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/install/index.html) · [記録](sites/avocado-mini/vite.config.js) · [記録](data/android-first-flash-gate.json) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

@@ -10,6 +10,8 @@
 
 2026-09-20 P0.2設計書の再照合: 利用者がPDFとWordを最新版設計書として再提示した。回転モデルの上部3眼は横一列、待機中は物理キャップで覆い、起動時に開く。下部の青いセンサー窓はP0.2に含まれない追加構想として明示する。P0.2のPoE有線給電はタワー内蔵バッテリーなし。異常時は自立状態とドック固定状態で対応が異なるため、常に自動収納すると表示しない。両添付の再配布は行わず、図面を完成実機の証拠として扱わない。
 
+2026-09-20 RockstarOS導入ボタンとScrewの範囲: 利用者はavocadoMini製品ページ最下部を「RockstarOS」と導入ボタンだけにし、Screwと同じようなWeb導入体験からRockstarOSを端末へ入れたいと指定した。現在の`k999ln/screw`はPRIVATE/PIXELのGrapheneOS導入ページとガイドへの案内だけで、インストーラーコード・RockstarOSイメージは含まない。Pixel 10／frankel／GL066向けRockstarOS factory imageは未作成で、初回flashゲートは0/4未合格。製品ボタンは公開導入入口へ接続し、公開画面では端末書込みを開始しない。対象image、署名・hash、純正復旧、Keystore喪失後の復元、実機受入が揃うまで、ワンクリック導入ができると表示しない。Screwは別リポジトリのままとし、PRIVATE/PIXELやGrapheneOSのコードをRockへ取り込んだとは扱わない。
+
 # RockstarOS — 確定した製品ベース
 
 2026-09-19 製品・OS導入ホームの利用領域: `/rockstaros`にSky、Zema／Work、Material Invention、Wallet、Market、CSV、開発者、OS導入の8領域を追加し、それぞれ現状の制限と既存画面への入口を示す。Sky開発者の入口はMaterial Invention Studioの旧配信URLではなく、同じアプリ内の`/sky/publish`とする。既存Siteの一般公開と最新版配備は未完了。

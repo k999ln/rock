@@ -780,6 +780,21 @@
       ]
     },
     {
+      "id": "WEB14",
+      "title": "RockstarOS導入入口を製品ページへ置き、Pixel 10向け実インストーラーを配布・安全ゲート合格後に接続する",
+      "status": "in_progress",
+      "dependsOn": [
+        "WEB13"
+      ],
+      "evidence": [
+        "sites/avocado-mini/index.html",
+        "sites/avocado-mini/install/index.html",
+        "sites/avocado-mini/vite.config.js",
+        "data/android-first-flash-gate.json",
+        "docs/workstreams/05-web-pwa-sites.md"
+      ]
+    },
+    {
       "id": "BIZ01",
       "title": "無料配布の対象とOS従量課金の計量単位・単価・上限を確定する",
       "status": "in_progress",
