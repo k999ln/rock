@@ -4,6 +4,8 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
+- avocadoMiniの回転区間を、前・横・後ろの画像切替から連続した3Dモデルへ変更。スクロール角度に合わせて上下の青いセンサー、三段伸縮、3本の脚、4本とEdge Hubを順に見せる。WebGLが使えない環境では旧画像へ切り替える。1280pxと390pxで各章と一周後の価格を試写し、静的build・baseline・project検査を通した。製品Site v21（source `816c09802a2088e4d29af487d6c1c3f5c3714df7`）を公開。GitHub mainは既存PRの統合待ち。
+
 ## 現在地
 
 - 回転するMotion Towerが説明の大見出しに重なる問題を修正。デスクトップは左に説明、右に黒い製品面、モバイルは上に説明、下に製品を配置し、一周の横移動と傾きを抑えた。センサー章の重複接写を取り除き、青い発光と一周後の価格は残した。デスクトップの途中角度と390px幅の後半・価格を試写で確認。製品Site v20（source `95dd1fa05b82749c295d3f71ebd9cc020bae828f`）を公開し、新しいCSSの読込みを確認。GitHub mainは未反映で、既存PRを更新する。

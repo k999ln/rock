@@ -634,6 +634,7 @@
         "sites/avocado-mini/guide/index.html",
         "sites/avocado-mini/src/main.js",
         "sites/avocado-mini/src/style.css",
+        "sites/avocado-mini/src/tower-scene.js",
         "sites/avocado-mini/dist/index.html",
         "sites/avocado-mini/public/images/avocado-mini-hero.png",
         "sites/avocado-mini/public/images/avocado-mini-detail.png",
