@@ -1,12 +1,12 @@
 # avocadoMini — 伸縮式センサータワーの製品構想
 
-**公開先の分離を準備中:** avocadoMiniの製品サイトは別ドメイン用の[`sites/avocado-mini`](sites/avocado-mini/)に作成しました。現在の`noellesugar1.chatgpt.site`はOS利用画面として管理者限定にする予定ですが、所有アカウント未接続のため公開設定は未変更です。以下の従来URLは旧配信版で、新しい製品サイトの公開URLが確定したら差し替えます。
+**製品とOSは別ドメインです。** avocadoMiniの製品サイトは[`sites/avocado-mini`](sites/avocado-mini/)から配信します。既存の`noellesugar1.chatgpt.site`はOS利用画面として管理者限定にする予定ですが、所有アカウント未接続のため公開設定は未変更です。製品サイトの公開とOS側のアクセス制限は別々に確認します。
 
 **考える時間を、つくる時間に。** **avocadoMini**の表に出す製品デザインは、銀色の細い伸縮式センサータワーです。構想画像では収納時850 mmから伸長時1,800 mm、直径160 mmのベース、長押し操作を示しています。複数のタワーを組み合わせた空間発明体験と、高性能LLM搭載を目指すRockstarOSは製品の発展構想です。**希望参考価格は41万円**。販売価格・仕様・発売日は未確定で、実機試作前です。
 
-[🏠 avocadoMini製品ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) · [💿 OS導入ガイド](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) · [🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🤝 クラファン企画](docs/avocado-mini-crowdfunding.md)
+[🏠 avocadoMini製品ホーム](https://avocado-mini.kirin-999.chatgpt.site/) · [💿 OS導入ガイド](https://avocado-mini.kirin-999.chatgpt.site/guide/) · [🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🤝 クラファン企画](https://avocado-mini.kirin-999.chatgpt.site/crowdfunding/)
 
-**公開ページとOSの利用画面は別です。** [avocadoMini製品ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros)で製品を見て、[OS導入ガイド](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide)で対応環境と配布状況を確認します。ルート`/`はSky、Zema、Walletなどを使うRockstarOSのWebホームです。未導入の訪問者を直接Webホームへ入れない公開境界は整備中で、現在の配信先にも最新版は未反映です。
+**公開ページとOSの利用画面は別です。** [avocadoMini製品ホーム](https://avocado-mini.kirin-999.chatgpt.site/)で製品を見て、[OS導入ガイド](https://avocado-mini.kirin-999.chatgpt.site/guide/)で対応環境と配布状況を確認します。RockstarOSのWebホームは別のOS Siteに残し、管理者だけが利用する設計です。現時点ではそのSiteの管理者限定設定は未反映です。
 
 ## 構想ギャラリー
 
@@ -30,7 +30,7 @@
 
 ## クラウドファンディング
 
-まず[製品サイトのクラファン企画ページ](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/crowdfunding)と[GitHubの企画原稿](docs/avocado-mini-crowdfunding.md)で、実現したい体験、資金で進める検証、現在の開発段階を見られます。製品サイトの新ページはソースに追加した段階で、既存の配信先にはまだ反映されていません。支援金を受け付ける募集ページの公開URLはまだありません。募集サービス、目標額、返礼、提供条件が決まり次第、正式な募集ページへの直接リンクを設置します。現在は募集・決済・先行予約を行っていません。
+まず[製品サイトのクラファン企画ページ](https://avocado-mini.kirin-999.chatgpt.site/crowdfunding/)と[GitHubの企画原稿](docs/avocado-mini-crowdfunding.md)で、実現したい体験、資金で進める検証、現在の開発段階を見られます。支援金を受け付ける募集ページの公開URLはまだありません。募集サービス、目標額、返礼、提供条件が決まり次第、正式な募集ページへの直接リンクを設置します。現在は募集・決済・先行予約を行っていません。
 
 ## 動くジャケット
 
@@ -96,14 +96,14 @@ avocadoMiniはRockstarOSそのものではなく、RockstarOSを搭載してMate
 
 ## アクセス先
 
-既存のWeb版は一般閲覧できることを確認しました。配信先の所有アカウントへ接続できておらず、最新版の配備は未反映です。仕事・Wallet・開発者操作の保存にはChatGPTサインインが必要です。GitHubの`main`更新はサイトへ自動反映されないため、以下の配信先は最新版の表示を保証しません。
+製品紹介は別ドメインの公開Siteで配信します。OSのWeb利用画面は管理者専用とする指定ですが、現在の旧OS Siteはまだ一般閲覧でき、アクセス設定の変更には所有アカウントへの接続が必要です。
 
 | 入口 | リンク |
 | --- | --- |
-| avocadoMini製品ホーム | [製品紹介](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) |
-| OS導入案内 | [Developer Previewガイド](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) |
-| RockstarOS Webホーム | ルート`/`。未導入者の直接アクセス制限を整備中のため、公開導線として案内しない |
-| アプリ・OS内のサービス | [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) · [Zema](https://rockstaros-kaiya.noellesugar1.chatgpt.site/chat) · [Wallet](https://rockstaros-kaiya.noellesugar1.chatgpt.site/wallet) · [Market](https://rockstaros-kaiya.noellesugar1.chatgpt.site/market) · [Material Invention Studio](https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio) |
+| avocadoMini製品ホーム | [製品紹介](https://avocado-mini.kirin-999.chatgpt.site/) |
+| OS導入案内 | [Developer Previewガイド](https://avocado-mini.kirin-999.chatgpt.site/guide/) |
+| RockstarOS Webホーム | 旧OS Siteに残る管理者用画面。現在は管理者限定設定待ち |
+| アプリ・OS内のサービス | 管理者用OS Site内で扱う。一般向けの直接リンクは掲載しない |
 
 OSの実機向け完成版やavocadoMiniの実機はまだ配布していません。上のOSガイドはDeveloper Previewの案内です。
 
