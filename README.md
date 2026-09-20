@@ -97,9 +97,13 @@ flowchart TB
 
 ### avocadoMini — 空間発明のためのハードウェア構想
 
+![avocadoMiniの設計構想。四方向のセンサーに囲まれた作業面で発明の候補が動くアニメーション](docs/assets/cover-avocado-mini.gif)
+
 四方向のセンサーと作業面を想定し、物質のデジタル模型を手で選び、組み合わせ、候補を比べる専用端末を設計しています。[外観と構成の設計図](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png)を公開しています。画像はコンセプトであり、追跡精度、表示方式、安全性、量産性を実証した実機写真ではありません。小型Bench試作から検証し、その後にFull-scaleへ進む計画です。
 
 ### RockstarOS — 製品を動かす共通の土台
+
+![RockstarOSの構成要素が中心につながり巡るアニメーション](docs/assets/cover-rockstaros.gif)
 
 LLM、Agent、仕事、Tool、権限、承認、保存、更新、復旧を一つの契約でつなぐOSです。LLMは交換可能にし、LLM自身に権限付与やWallet台帳書込みをさせません。
 
@@ -109,9 +113,13 @@ LLM、Agent、仕事、Tool、権限、承認、保存、更新、復旧を一�
 
 ### Sky — 自分に合うAI仲間を見つける場所
 
+![SkyでAIの役割やToolを探す様子を表したアニメーション](docs/assets/cover-sky.gif)
+
 仕事や創作を一緒に進めるAI Toolを見つける場所です。Toolの個性、作者、できること、料金、実行先を自然に知り、気に入ったToolをZemaへ迎え入れます。MCP接続、Connection Passport、Toolの停止・失効は体験を守る裏側でSkyに集約します。
 
 ### Zema — AIと一緒に進む場所
+
+![ZemaでAIと会話しながら進める様子を表したアニメーション](docs/assets/cover-zema.gif)
 
 やりたいことを伝え、AIの提案を見て、必要なときだけ方向を決めながら進む場所です。依頼、計画、実行、停止、再開、成果確認を一つの流れにし、AIに任せる部分と自分で決める部分を自然に分けます。
 
@@ -120,6 +128,8 @@ LLM、Agent、仕事、Tool、権限、承認、保存、更新、復旧を一�
 Walletは費用、確定収益、払出し、未確定状態を分けて表示し、安心して次の挑戦へ進めるようにします。Market / Fundは現在PAPER限定で、LIVE注文・清算・自動再投資は有効にしません。
 
 ### Material Invention Studio — 発明案を扱うアプリ
+
+![Material Invention Studioで物質の候補を組み合わせる様子を表したアニメーション](docs/assets/cover-material-studio.gif)
 
 物質のデジタル模型を接続・分離し、候補branch、制約、安全状態、simulation結果、発明過程を記録します。MR表示は物理実験を実行せず、Patent AIは特許性・発明者・出願を自動確定しません。
 
@@ -403,7 +413,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
 | WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
-| WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
+| WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

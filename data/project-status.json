@@ -657,6 +657,11 @@
       "evidence": [
         "README.md",
         "docs/assets/rockstaros-intro.gif",
+        "docs/assets/cover-avocado-mini.gif",
+        "docs/assets/cover-rockstaros.gif",
+        "docs/assets/cover-sky.gif",
+        "docs/assets/cover-zema.gif",
+        "docs/assets/cover-material-studio.gif",
         "app/rockstaros/page.tsx",
         "app/rockstaros/preview.module.css",
         "docs/product-baseline.md",

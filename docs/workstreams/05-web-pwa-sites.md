@@ -9,6 +9,7 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 - `/rockstaros`はavocadoMiniの製品構想を先に紹介し、OS Developer PreviewとSky開発者入口へ続く。Home `/` はOSの作業画面として維持する。
 - 製品紹介は利用者の「やってみたい」から入り、Sky／Zema／Studioで得られる役割と体験を明示する。料金方針は販売文句の先頭に置かない。
 - GitHub READMEの冒頭にはSky／Zema／Studioと設計中のavocadoMiniを示すアニメーションGIFを表示する。
+- 製品体系の各説明にも、avocadoMini、RockstarOS、Sky、Zema、Studioの短いループGIFを配置する。README上の表現であり、既存Siteの公開設定や配信版は変わらない。
 - 主要画面、PWA manifest、Service Worker、明示更新、security header、D1 APIを実装済み。
 - 既存Siteは現在も本人限定。利用者は同じURLでの一般公開を明示したが、対象Sites所有アカウントが現在の接続から見つからず、公開設定と最新版sourceの反映、ログイン後の実操作確認が残る。
 - 一般公開後は製品紹介と公開カタログを匿名で見せ、本人別の仕事、Wallet、開発者操作はChatGPTサインインを要する。匿名の`/api/health`でWorkerと主要D1 tableの応答を確認し、本人別APIの受入は別に行う。
