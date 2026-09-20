@@ -1,5 +1,9 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-20 — OS導入ボタンのデザインを更新
+
+製品ページ末尾のインストーラー入口を、黒いスタジオ画面に合う金属調のボタンへ変更した。青いセンサーの光、ポインター時の光沢と矢印の反応を加え、動きを減らす設定にも対応した。デスクトップと390px幅で表示し、`/install/`への遷移を確認。製品Site v25（source `bbeb40bd23b568937bdee8eb7e2152b6ab817076`）を公開画面で確認した。Pixel 10への実インストールは配布用イメージと安全ゲートが未完了のため、引き続き準備中と表示する。次はWEB14の配布物・復旧・実機受入を進める。
+
 ## 2026-09-20 — 製品ページにRockstarOS導入入口を設置
 
 利用者の指定に合わせ、製品ページの最後を「RockstarOS」と導入ボタンだけへ簡潔化し、専用の導入画面へ接続した。Screwを確認したが、実体はPRIVATE/PIXELのGrapheneOS導入ページへの案内で、再利用できるインストーラーコードやRockstarOSイメージは含まない。RockstarOSのPixel 10向けfull imageは未作成で、初回flashゲートは0/4のため、導入画面からUSB接続・初期化・書込みを実行しない。Mac仮想環境向けDeveloper Previewは別ガイドへ接続した。静的build、ページ遷移、デスクトップと390px幅の表示を確認。製品Site v24（source `7d891cdf0c4454c992ba65ccf614a5d48c4dd86b`）を公開し、公開ページのボタン遷移と準備中表示を確認した。実機ワンクリック導入は署名済み配布物と安全受入後に接続するWEB14として継続する。
@@ -862,7 +866,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB11 | 製品構想モデルをスクロールで一周見せ、参考価格・購入準備中・OS導入へつなぐ | 完了 | [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](docs/product-baseline.md) |
 | WEB12 | 利用者提供の伸縮式センサータワーを製品サイトとGitHubの主役にする | 完了 | [記録](public/rockstaros/avocado-mini-tower-concept.png) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](README.md) · [記録](docs/avocado-mini-hardware-design.md) |
 | WEB13 | 旧URLをavocadoMini公開商品Siteへ転用し、OS操作画面を管理者限定の別Siteへ移す | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/guide/index.html) · [記録](sites/avocado-mini/crowdfunding/index.html) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](README.md) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/main.js) · [記録](project.md) · [記録](sites/avocado-mini/rockstaros/index.html) · [記録](sites/avocado-mini/vite.config.js) |
-| WEB14 | RockstarOS導入入口を製品ページへ置き、Pixel 10向け実インストーラーを配布・安全ゲート合格後に接続する | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/install/index.html) · [記録](sites/avocado-mini/vite.config.js) · [記録](data/android-first-flash-gate.json) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB14 | RockstarOS導入入口を製品ページへ置き、Pixel 10向け実インストーラーを配布・安全ゲート合格後に接続する | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/install/index.html) · [記録](sites/avocado-mini/vite.config.js) · [記録](data/android-first-flash-gate.json) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

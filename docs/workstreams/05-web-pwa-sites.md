@@ -4,6 +4,8 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
+- OS導入ボタンを黒い製品画面に合わせて金属調にし、タワーの青いセンサーを模した光、光沢の移動、矢印の反応を加えた。スマートフォン390px幅とデスクトップで表示し、`/install/`への遷移を確認。製品Site v25（source `bbeb40bd23b568937bdee8eb7e2152b6ab817076`）を一般公開し、公開画面で新しいボタンを確認した。Pixel 10の実インストールは引き続き配布物と安全ゲート待ち。
+
 - 製品ページのOS区間は「RockstarOS」と導入ボタンだけへ集約し、専用の`/install/`を用意した。Screwの実体はPRIVATE/PIXELへのリンク集で、WebUSB実装やRockstarOSイメージは入っていない。Pixel 10用full image未作成、初回flashゲート0/4のため、導入ページは書込み不能を明示してfail closedとする。署名済みfactory image、端末型番・ハッシュ検証、純正復旧、バックアップ／復元、実機受入が揃ってからWebUSB導入を実装・接続する。Mac仮想環境のDeveloper Previewは別ガイドへ進める。デスクトップと390px幅でボタンと導入画面を確認し、製品Site v24（source `7d891cdf0c4454c992ba65ccf614a5d48c4dd86b`）を公開。公開画面の導線も確認した。
 
 - 利用者が再提示したMotion Tower P0.2のPDF・Wordを最新版として照合。3Dツアーの上部3眼を横一列に変更し、待機時にレンズを覆う物理キャップを起動時に開く演出へ修正した。下部センサーは追加構想と明記し、異常時の安全動作とPoE有線給電の説明を設計書に合わせた。図面は公開リポジトリへ複製しない。静的buildとデスクトップ／390px幅の表示を確認し、製品Site v23（source `89949d99fc70474ee73687c4c1618bada13aa7ae`）を公開。GitHub mainは既存PRの統合待ち。

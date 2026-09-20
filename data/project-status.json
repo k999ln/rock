@@ -788,6 +788,7 @@
       ],
       "evidence": [
         "sites/avocado-mini/index.html",
+        "sites/avocado-mini/src/style.css",
         "sites/avocado-mini/install/index.html",
         "sites/avocado-mini/vite.config.js",
         "data/android-first-flash-gate.json",
