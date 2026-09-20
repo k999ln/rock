@@ -1,4 +1,5 @@
 import './style.css';
+import { createTowerScene } from './tower-scene.js';
 
 const story = document.querySelector('.story');
 const storySticky = document.querySelector('.story-sticky');
@@ -6,6 +7,7 @@ const storyWord = document.querySelector('#story-word');
 const storyRail = [...document.querySelectorAll('.story-rail span')];
 const beats = [...document.querySelectorAll('.feature-beat')];
 const product = document.querySelector('#motion-product');
+const towerScene = product ? createTowerScene(product) : null;
 const frames = [...document.querySelectorAll('.turn-frame')];
 const sensorCloseup = document.querySelector('#sensor-closeup');
 const sensorGaze = document.querySelector('#sensor-gaze');
@@ -102,13 +104,15 @@ function updateProgress() {
   const motion = motionAt(Math.min(progress, priceStart));
   const mobile = window.innerWidth < 800;
   const yaw = reducedMotion.matches ? 0 : motion.yaw;
-  showView(yaw);
+  if (!towerScene) showView(yaw);
 
   const x = motion.x * (mobile ? 0.28 : 1);
-  const y = motion.y * (mobile ? 0.4 : 1);
-  const scale = motion.scale * (mobile ? 0.94 : 0.96);
+  const priceBlend = smooth(clamp((progress - 0.88) / 0.04, 0, 1));
+  const y = motion.y * (mobile ? 0.4 : 1) + (mobile ? priceBlend * 6 : 0);
+  const scale = motion.scale * (mobile ? 0.94 - priceBlend * 0.2 : 0.96);
   const tilt = reducedMotion.matches ? 0 : motion.tilt * (mobile ? 0.38 : 1);
   product.style.transform = `translate(-50%, -50%) translate3d(${x}vw, ${y}vh, 0) scale(${scale}) rotate(${tilt}deg)`;
+  towerScene?.update({ yaw, progress, reducedMotion: reducedMotion.matches });
 
   const cameraOn = clamp((progress - 0.07) / 0.13, 0, 1);
   const scan = clamp((progress - 0.16) / 0.18, 0, 1);
