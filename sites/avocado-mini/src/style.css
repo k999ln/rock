@@ -266,61 +266,60 @@ body{overflow-x:hidden}
 @media(max-width:800px){.os-install{min-height:85svh;padding:110px 25px}.os-install-orbit{right:-72vw;width:150vw}}
 @media(max-width:520px){.os-install h2{font-size:clamp(50px,12vw,72px)}.os-install-lead{font-size:15px}.os-install-button{width:100%;font-size:15px;gap:16px}}
 
-/* Carry the sensor tour's midnight blue and restrained cyan light through the whole site. */
-:root{--avocado-night:#071620;--avocado-blue:#142f3e;--avocado-cyan:#83ddf7}
-body{background:var(--avocado-night)}
-.global-nav{background:#050e15;color:#d6e8ee;border-bottom:1px solid #9bdfff16}
-.global-mark span{color:var(--avocado-cyan)}
-.site-header{background:#0a1a25dc;border-bottom-color:#9bdfff29}
-.site-header nav a{color:#d7e9ef}
-.header-cta,.statement-bottom a{background:#b9edfc;color:#0a2634;box-shadow:0 8px 26px #3ecfff1f}
-.header-cta:hover,.statement-bottom a:hover{background:#effcff;color:#0a2634}
-.film-hero{background:#06121b}
+/* Match the opening's black studio photography and brushed-metal palette. */
+body{background:#050506}
+.global-nav{background:#080809;color:#dedee0;border-bottom:1px solid #ffffff13}
+.global-mark span{color:#a8c8d1}
+.site-header{background:#151517e8;border-bottom-color:#ffffff20}
+.site-header nav a{color:#dedee0}
+.header-cta,.statement-bottom a{background:#f3f3f5;color:#171719;box-shadow:none}
+.header-cta:hover,.statement-bottom a:hover{background:#fff;color:#171719}
+.film-hero{background:#050506}
 .film-hero:before,.film-hero:after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none}
-.film-hero:before{background:radial-gradient(circle 9vw at 16% 29%,#73daff89,transparent 75%),radial-gradient(circle 6vw at 29% 31%,#69d4ff54,transparent 75%),radial-gradient(circle 6vw at 71% 31%,#69d4ff54,transparent 75%),radial-gradient(circle 9vw at 84% 29%,#73daff89,transparent 75%),radial-gradient(ellipse 65vw 35vh at 50% 54%,#2b92bd2d,transparent 78%);mix-blend-mode:screen}
-.film-hero:after{background:linear-gradient(to bottom,#07162048 0%,transparent 24%,transparent 60%,#06131d86 80%,#06131d 100%)}
-.hero-bottom{z-index:3}
-.hero-product-lockup span{display:block;margin-bottom:16px;color:#a8e6f7;font-size:11px;font-weight:700;letter-spacing:.24em;text-shadow:0 1px 18px #06131d}
-.film-disclaimer{z-index:3;color:#bcd3dc}
-.hero-statement{position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse 76% 95% at 82% 47%,#1a3b4d 0%,#0d2330 53%,#071620 100%)}
-.hero-statement:before{content:"";position:absolute;z-index:0;right:-13vw;top:50%;width:min(75vw,1040px);aspect-ratio:1;border:1px solid #9fe7fb25;border-radius:50%;transform:translateY(-50%);box-shadow:0 0 0 8vw #8be8ff09,0 0 0 17vw #8be8ff06,0 0 150px #8be8ff18 inset;pointer-events:none}
-.hero-statement>*{position:relative;z-index:1}
-.hero-statement .eyebrow,.design-intro .eyebrow{color:#8fdcf2}
-.hero-statement h2{max-width:1100px;text-shadow:0 6px 50px #05121a9c}
-.statement-bottom{border-top:1px solid #a0dcef45;padding-top:29px}
-.statement-bottom p{color:#d3e6ec}
-.statement-bottom span{color:#9fdaeb;letter-spacing:.12em;font-size:11px;font-weight:700}
-.highlights{background:radial-gradient(ellipse 72% 60% at 82% 65%,#193a4c 0%,#0c2230 53%,#071620 100%);color:#f4fbfe}
-.highlights-head{border-top:1px solid #a7e2f02c;padding-top:28px}
-.gallery-controls button{background:#d9f5fc1f;border:1px solid #a7e8fa55;color:#e9fbff}
-.gallery-controls button:hover{background:#7bd8f650}
-.highlight-card{background:#0c1d29;box-shadow:inset 0 0 0 1px #9bdfff33,0 25px 80px #0005}
-.highlight-card:after{background:linear-gradient(180deg,#06131bd9 0%,#0a1c2780 30%,transparent 57%,#071721b5 100%),radial-gradient(circle at 82% 42%,#38bbff2d,transparent 57%)}
-.highlight-card span{color:#9be8fa}
-.highlight-card p{color:#e0f2f6}
-.gallery-hint{color:#b1d0db}
-.design-intro{position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(circle at 50% 52%,#224a5d 0%,#102b3a 46%,#081923 86%);color:#f7fcfe}
-.design-intro:before{content:"";position:absolute;left:50%;top:52%;width:min(75vw,920px);aspect-ratio:1;border:1px solid #9eeaff30;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 9vw #8adfff0b,0 0 0 18vw #8adfff07,0 0 130px #8adfff17 inset;pointer-events:none}
+.film-hero:before{background:radial-gradient(circle 6vw at 16% 29%,#a6e8ff40,transparent 75%),radial-gradient(circle 6vw at 84% 29%,#a6e8ff40,transparent 75%);mix-blend-mode:screen}
+.film-hero:after{background:linear-gradient(to bottom,#0003 0%,transparent 30%,transparent 61%,#0505068c 84%,#050506 100%)}
+.hero-bottom,.film-disclaimer{z-index:3}
+.hero-product-lockup span{display:block;margin-bottom:16px;color:#d7d7db;font-size:11px;font-weight:700;letter-spacing:.24em}
+.film-disclaimer{color:#bdbdc2}
+.hero-statement{background:linear-gradient(145deg,#050506,#121214 73%,#080809);color:#f5f5f7}
+.hero-statement .eyebrow,.design-intro .eyebrow{color:#b8b8bd}
+.hero-statement h2{max-width:1100px}
+.statement-bottom{border-top:1px solid #ffffff36;padding-top:29px}
+.statement-bottom p{color:#bdbdc3}
+.statement-bottom span{color:#a7a7ad;letter-spacing:.12em;font-size:11px;font-weight:700}
+.highlights{background:#101012;color:#f5f5f7}
+.highlights-head{border-top:1px solid #ffffff25;padding-top:28px}
+.gallery-controls button{background:#36363b;color:#f5f5f7}
+.gallery-controls button:hover{background:#55555a}
+.highlight-card{background:#242428;box-shadow:0 28px 65px #0007}
+.highlight-card:after{background:linear-gradient(180deg,#000b 0%,#0005 29%,transparent 57%,#000a 100%)}
+.highlight-card span{color:#d1d1d5}
+.highlight-card p{color:#e8e8ea}
+.gallery-hint{color:#a3a3aa}
+.design-intro{background:linear-gradient(135deg,#171719,#070708 72%);color:#f5f5f7}
+.design-intro:before{content:"";position:absolute;left:50%;top:52%;width:min(64vw,780px);aspect-ratio:1;border:1px solid #ffffff15;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
 .design-intro>*{position:relative;z-index:1}
-.design-intro h2{text-shadow:0 10px 55px #05131f9c}
-.design-intro>p:last-child{color:#cce3eb}
-.os-install{background:radial-gradient(circle at 75% 47%,#1c4254 0%,#0d2735 42%,#061722 84%)}
-.os-install-button{background:#d9f7ff}
-footer{background:#06131c;border-top:1px solid #95dff423;color:#a9c6d1}
-.subpage{background:radial-gradient(ellipse at 76% 4%,#1a3c4d 0%,#0b2230 35%,#071620 75%);color:#f2fbfe}
-.subpage .site-header{background:#081923;color:#edfaff;border-bottom-color:#a0dff135}
-.subpage .site-header nav a{color:#d2eaf1}
-.subpage .article .eyebrow{color:#8ddff5}
-.subpage .article h1,.subpage .article h2{color:#f7fcfe}
-.subpage .lead,.subpage .article section p:not(.eyebrow),.subpage .article li{color:#c5dce5}
-.subpage .article section{border-top-color:#a9e6f13b}
-.subpage .notice{background:#173747a8;border-left-color:#70d6f4;color:#e9f9fd}
-.subpage .notice p{color:#c6e0e9}
-.subpage .article-image img{border:1px solid #a3e4f03b;box-shadow:0 24px 65px #0007}
-.subpage .article-image figcaption{color:#b2cbd5}
-.subpage .button.dark{background:#d8f6fe;color:#092a39}
-.subpage .text-link{color:#a8eafa}
-@media(max-width:800px){.film-hero:before{background:radial-gradient(circle 12vw at 16% 28%,#73daff73,transparent 76%),radial-gradient(circle 12vw at 84% 28%,#73daff73,transparent 76%),radial-gradient(ellipse 90vw 35vh at 50% 48%,#2b92bd2d,transparent 78%)}.hero-statement:before{right:-44vw;width:125vw}.design-intro:before{width:125vw}}
-@media(max-width:520px){.hero-product-lockup span{font-size:9px;letter-spacing:.18em;margin-bottom:10px}.statement-bottom{align-items:flex-start}.statement-bottom>div{gap:16px}.film-hero:after{background:linear-gradient(to bottom,#07162035,transparent 33%,#06131d 78%,#06131d 100%)}.design-intro>p:last-child{max-width:330px}.highlight-card{border-radius:22px}}
-@media(max-width:520px){.film-hero:before{background:radial-gradient(circle 12vw at 16% 35%,#73daff73,transparent 76%),radial-gradient(circle 12vw at 84% 35%,#73daff73,transparent 76%),radial-gradient(ellipse 90vw 35vh at 50% 48%,#2b92bd2d,transparent 78%)}.hero-statement h2,.design-intro h2{font-size:clamp(39px,12vw,52px);white-space:nowrap}}
-@media(max-width:520px){.highlights h2{font-size:clamp(31px,9vw,36px);white-space:nowrap}}
+.design-intro>p:last-child{color:#bdbdc3}
+.story{background:radial-gradient(ellipse at 50% 48%,#27292b,#111214 45%,#080809 88%)}
+.os-install{background:linear-gradient(140deg,#0a0a0b,#1b1c1e 62%,#080809)}
+.os-install-orbit{border-color:#ffffff16;box-shadow:0 0 0 7vw #ffffff04,0 0 0 15vw #ffffff03}
+.os-install-orbit:after{border-color:#ffffff1b;box-shadow:none}
+.os-install .eyebrow{color:#b8b8bd}
+.os-install-lead{color:#c5c5ca}
+.os-install-button{background:#f3f3f5;color:#171719}
+.os-install-note{color:#a2a2a9}
+footer{background:#080809;border-top:1px solid #ffffff20;color:#a8a8af}
+.subpage{background:linear-gradient(145deg,#151517,#070708 65%);color:#f5f5f7}
+.subpage .site-header{background:#151517;color:#f5f5f7;border-bottom-color:#ffffff24}
+.subpage .site-header nav a{color:#d5d5d9}
+.subpage .article .eyebrow{color:#bdbdc2}
+.subpage .article h1,.subpage .article h2{color:#f5f5f7}
+.subpage .lead,.subpage .article section p:not(.eyebrow),.subpage .article li{color:#c7c7cc}
+.subpage .article section{border-top-color:#ffffff27}
+.subpage .notice{background:#28292c;border-left-color:#a6e8ff;color:#f5f5f7}
+.subpage .notice p{color:#d0d0d5}
+.subpage .article-image img{border:1px solid #ffffff28;box-shadow:0 24px 65px #0007}
+.subpage .article-image figcaption{color:#b7b7bd}
+.subpage .button.dark{background:#f3f3f5;color:#171719}
+.subpage .text-link{color:#b8e5f3}
+@media(max-width:520px){.hero-product-lockup span{font-size:9px;letter-spacing:.18em;margin-bottom:10px}.statement-bottom{align-items:flex-start}.statement-bottom>div{gap:16px}.film-hero:before{background:radial-gradient(circle 9vw at 16% 35%,#a6e8ff36,transparent 76%),radial-gradient(circle 9vw at 84% 35%,#a6e8ff36,transparent 76%)}.film-hero:after{background:linear-gradient(to bottom,#0002,transparent 33%,#050506bd 78%,#050506 100%)}.hero-statement h2,.design-intro h2{font-size:clamp(39px,12vw,52px);white-space:nowrap}.highlights h2{font-size:clamp(31px,9vw,36px);white-space:nowrap}.design-intro>p:last-child{max-width:330px}.highlight-card{border-radius:22px}}
