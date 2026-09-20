@@ -630,6 +630,7 @@
         "sites/avocado-mini/index.html",
         "sites/avocado-mini/src/main.js",
         "sites/avocado-mini/src/style.css",
+        "sites/avocado-mini/dist/index.html",
         "sites/avocado-mini/public/images/avocado-mini-hero.png",
         "sites/avocado-mini/public/images/avocado-mini-detail.png",
         "sites/avocado-mini/public/images/avocado-mini-kit.png",
