@@ -8,6 +8,7 @@ const beats = [...document.querySelectorAll('.feature-beat')];
 const product = document.querySelector('#motion-product');
 const frames = [...document.querySelectorAll('.turn-frame')];
 const sensorCloseup = document.querySelector('#sensor-closeup');
+const sensorGaze = document.querySelector('#sensor-gaze');
 const angle = document.querySelector('#angle');
 const chapter = document.querySelector('#chapter');
 const progressBar = document.querySelector('#progress');
@@ -116,6 +117,18 @@ function updateProgress() {
   product.style.setProperty('--scan-opacity', reducedMotion.matches ? 0 : scanVisible.toFixed(3));
   product.style.setProperty('--scan-angle', `${mix(-80, 80, scan)}deg`);
   sensorCloseup.style.opacity = progress >= 0.09 && progress < 0.27 ? '1' : '0';
+
+  // The light follows the rendered sensor positions and only blooms while the lenses face the viewer.
+  const firstTurn = smooth(clamp((progress - 0.055) / 0.065, 0, 1)) * (1 - smooth(clamp((progress - 0.28) / 0.08, 0, 1)));
+  const frontFacing = smooth(clamp(1 - Math.abs(yaw - 26) / 78, 0, 1));
+  const returnTurn = smooth(clamp((progress - 0.77) / 0.1, 0, 1)) * (1 - smooth(clamp((progress - 0.9) / 0.01, 0, 1)));
+  const returningFront = smooth(clamp((yaw - 298) / 62, 0, 1));
+  const gaze = reducedMotion.matches ? 0 : Math.max(frontFacing * firstTurn, returningFront * returnTurn * 0.78);
+  const productBounds = product.getBoundingClientRect();
+  sensorGaze.style.setProperty('--gaze', gaze.toFixed(3));
+  sensorGaze.style.setProperty('--gaze-x', `${productBounds.left + productBounds.width * 0.5}px`);
+  sensorGaze.style.setProperty('--gaze-upper-y', `${productBounds.top + productBounds.height * 0.12}px`);
+  sensorGaze.style.setProperty('--gaze-lower-y', `${productBounds.top + productBounds.height * 0.71}px`);
 
   progressBar.style.width = `${Math.round(motion.yaw / 360 * 100)}%`;
   angle.textContent = reducedMotion.matches ? '静止表示' : `${Math.round(motion.yaw)}°`;

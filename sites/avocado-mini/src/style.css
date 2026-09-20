@@ -238,6 +238,19 @@ body{overflow-x:hidden}
 @media(max-width:800px){.motion-product{height:70svh}.sensor-closeup{display:none}.feature-beat[data-beat="sensor"] h2{font-size:clamp(40px,7vw,58px)}.sensor-capabilities{margin-top:16px;gap:8px}.sensor-capabilities>div{padding-top:7px}.sensor-capabilities>div:before{top:8px;height:27px}.sensor-capabilities strong{font-size:15px}.sensor-capabilities p{font-size:12px}}
 @media(max-width:520px){.motion-product{height:54svh}.feature-beat[data-beat="sensor"] h2{font-size:36px;margin-bottom:9px}.feature-beat[data-beat="sensor"] .feature-description{font-size:12px}.sensor-capabilities{margin-top:11px;gap:6px}.sensor-capabilities>div{padding:6px 0 0 12px}.sensor-capabilities>div:before{top:7px;width:3px;height:22px}.sensor-capabilities span{font-size:8px}.sensor-capabilities strong{font-size:13px;margin:2px 0}.sensor-capabilities p{font-size:10px;line-height:1.35}.feature-beat[data-beat="sensor"] .feature-meta{display:none}}
 
+/* Viewer-facing lenses illuminate the stage without washing out the copy. */
+.story-sticky{--gaze:0}
+.stage{z-index:2}
+.sensor-gaze{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;opacity:var(--gaze);background:radial-gradient(ellipse 85vw 58vh at var(--gaze-x,60%) var(--gaze-upper-y,25%),#e5fcff9c 0%,#9feaff79 18%,#44c4ff43 40%,transparent 75%),linear-gradient(125deg,transparent 15%,#b6ecff20 52%,transparent 82%);mix-blend-mode:screen}
+.sensor-gaze-upper,.sensor-gaze-lower{position:absolute;display:block;left:var(--gaze-x,60%);border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,#fff 0%,#e5fcffde 4%,#83ddff9c 13%,#2dbbff66 30%,#2dbbff17 55%,transparent 72%);filter:blur(5px)}
+.sensor-gaze-upper{top:var(--gaze-upper-y,25%);width:min(76vw,1050px);aspect-ratio:1}
+.sensor-gaze-lower{top:var(--gaze-lower-y,70%);width:min(42vw,560px);aspect-ratio:1;opacity:.68}
+.feature-beats{z-index:4}
+.story-rail,.story-foot{z-index:5}
+.price-panel{z-index:6}
+@media(max-width:800px){.sensor-gaze{background:radial-gradient(ellipse 120vw 55vh at var(--gaze-x,55%) var(--gaze-upper-y,40%),#dcfaff91 0%,#83dcff66 25%,transparent 75%)}.sensor-gaze-upper{width:110vw}.sensor-gaze-lower{width:75vw}}
+@media(prefers-reduced-motion:reduce){.sensor-gaze{display:none}}
+
 /* One clear OS installation destination after the product and price. */
 .os-install{position:relative;display:flex;align-items:center;min-height:100svh;overflow:hidden;padding:clamp(100px,12vw,190px) clamp(25px,10vw,170px);color:#f8fcff;background:radial-gradient(circle at 77% 48%,#16384a 0%,#0b1c28 35%,#050b12 74%);isolation:isolate}
 .os-install-orbit{position:absolute;z-index:-1;right:-18vw;top:50%;width:min(88vw,1200px);aspect-ratio:1;border:1px solid #83dffb20;border-radius:50%;transform:translateY(-50%);box-shadow:0 0 0 7vw #65cfff08,0 0 0 15vw #65cfff05,0 0 140px #38bfff15 inset}
