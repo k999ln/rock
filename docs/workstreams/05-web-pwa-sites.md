@@ -6,6 +6,8 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 
 ## 現在地
 
+- avocadoMini製品Site全体を深い青、青白いセンサー光、細い軌道線へ統一。冒頭、ハイライト、デザイン説明、一周後の価格、OS導入案内と下層ページを連続した表現にした。価格は一周後だけ表示する。モバイル390px幅の光位置と見出しを調整し、製品Site v18（source `12801994b732746f6a1eccc7b1e0e5d1296001d7`）を公開、表示を確認。GitHub mainは未反映。
+
 - avocadoMiniの全周回転で上下センサーが正面を向くと、スクロール角度とセンサー位置に連動して青白い光が画面へ広がるCG演出を追加。説明文は前面に保ち、動きを減らす設定では発光を止める。静的buildと製品ベース確認は合格。全体verifyは別作業の設計台帳Tool ID重複で停止。製品Site v15（source `ebe80ff5f039296385f92a280258e412bf9b3b11`）を公開し、デスクトップと390px幅スマートフォンで発光・消灯・価格を確認。GitHub main直接pushは自動審査で拒否され未反映。
 
 - avocadoMini製品ページは一周後の価格表示を残し、その下をRockstarOS導入の1画面に集約。Mac仮想環境向けDeveloper Previewの既存ガイドへ進み、一般向けインストーラー未公開を明示する。静的build済み。GitHub mainの`1ed0f484e804dc5e849304da87ed550c8e0812df`と製品Site version 13に反映し、公開版をデスクトップとモバイルで確認した。

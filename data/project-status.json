@@ -619,7 +619,7 @@
     },
     {
       "id": "WEB05",
-      "title": "avocadoMiniの事業紹介とセンサー演出付き製品ページを更新",
+      "title": "avocadoMiniの製品紹介全体をセンサー演出のデザインへ統一",
       "status": "done",
       "dependsOn": [
         "MAT04",
