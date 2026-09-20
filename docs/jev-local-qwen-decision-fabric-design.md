@@ -2,7 +2,7 @@
 
 版: 1.0 / 2026-09-18  
 対象: Jev / TypeSafe、Local Qwen、Cloud LLM、Codex、RAG、Market、Wallet、MCP、Sky / Zema  
-状態: **設計確定・host側Phase 0とdebug-only Pixel relay previewの限定実装**。既存のPixel 10向けLocal AI実装を土台にする。`lib/decision/`のProvider契約、Mock、Router、Harness、Policy、TypeSafeのserver側read-only adapterは固定fixtureで試験済みで、独立した`android/jev-preview`へ固定公開fixtureをMac loopback relayへ読むdebug専用clientを追加した。Android Broker／Shellへの統合、実APIキーでのPixel接続受入、Local Qwen共通Provider、RAG、Cloud fallback、物理実機受入は未完了。
+状態: **設計確定・host側Phase 0、debug-only Pixel relay preview、optional Android provider sourceの限定実装**。既存のPixel 10向けLocal AI実装を土台にする。`lib/decision/`のProvider契約、Mock、Router、Harness、Policy、TypeSafeのserver側read-only adapterは固定fixtureで試験済みで、独立した`android/jev-preview`へ固定公開fixtureをMac loopback relayへ読むdebug専用clientを追加した。さらに`android/jev-provider`へ公式TypeSafe APIのpublic-only typed adapter source、Gradle／Soong module、専用UID／SELinux network domainを追加したが、APKはmanifest-disabled、productへの搭載は既定除外である。安全なruntime API key provisioning、Android Broker／Shellへの統合、実APIキーでのPixel接続受入、Local Qwen共通Provider、RAG、Cloud fallback、物理実機受入は未完了。
 
 ## 0. この設計を一文でいうと
 
@@ -36,10 +36,10 @@ JevもQwenもCloud LLMも、送金、購入、削除、公開、merge、装置�
 | 領域          | 2026-09-18時点の事実                                                                                                                                    | 本設計で追加するもの                                           |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
 | Local AI      | `llama.rn 0.12.9`、Qwen3-0.6B Q8_0 GGUF、通信権限なしのAPK、Pixel 10 GL066で機内モード推論・再起動保持・33分22秒熱試験、plan-only JSON Schema経路を確認 | provider共通契約、用途別profile、routing、calibration、RAG連携 |
-| Android / OS  | 試験署名APKでBinder経路とBroker連携を確認。AOSP image、正式署名、SELinux最終形、OTAは未完                                                               | Decision ServiceのOS統合、model/provider世代固定、監査event    |
+| Android / OS  | 試験署名APKでBinder経路とBroker連携を確認。`android/jev-provider`へpublic-only TypeSafe adapter sourceを追加したが、APKはdisabled、初回productは除外。AOSP image、正式署名、SELinux最終形、OTAは未完 | Decision ServiceのOS統合、model/provider世代固定、監査event |
 | Platform Core | owner、capability、本人承認、work、Tool、receiptの契約と一部実装がある                                                                                  | 判断結果を権限から分離するPolicy Gate、Decision Receipt        |
 | Sky / Zema    | Tool一覧、選択、仕事、進捗、結果の経路がある                                                                                                            | Routerの説明表示、Cloud送信同意、判断根拠と検証結果の表示      |
-| Jev ecosystem | 10 repositoryをcandidate登録し、安全境界を設計。source導入・runtime接続は未実施                                                                         | TypeSafeJevProvider、OpenJev候補adapter、専用fixtureと採用試験 |
+| Jev ecosystem | 10 repositoryをcandidate登録し、安全境界を設計。host adapterとAndroid optional sourceはあるが、key provisioning・runtime接続・provider受入は未実施 | TypeSafeJevProvider、OpenJev候補adapter、専用fixtureと採用試験 |
 | Codex         | repository開発作業は可能                                                                                                                                | preflight、差分review、test、postflightを同じHarnessへ接続     |
 | RAG / Memory  | 仕事記録と限定記憶の設計がある。汎用検索indexは未実装                                                                                                   | owner別Knowledge Engine、候補検索、Jev rerank、引用検証        |
 | Market        | 型付き資産のPAPER提案・承認・receipt・positionが実装済み。LIVE無効                                                                                      | 数値計算と意味判断の分離、異常検知、説明、PAPER評価            |
@@ -368,6 +368,24 @@ confidenceは「当たっている証明」ではない。provider、model版、
 4. Tool結果とsuccess criteriaの意味的一致。
 5. Codex差分のrisk分類とreview先routing。
 
+### Android optional TypeSafe Jev provider source
+
+`android/jev-provider/`は、TypeSafeの公式HTTP APIを端末側から扱うための独立したsource moduleである。packageは`dev.rock.jev.provider`、専用UID／専用SELinux domainは`rock_jev_provider_app`、ネットワーク権限はこのmoduleだけが宣言する。Broker、Shell、Local AI、Toolのmanifestや権限は変更せず、Binder service、launcher、shared UID、Tool authorityも持たない。既存の`android/jev-preview/` loopback debug clientはこのmoduleの実装・受入へ転用しない。
+
+初期productは`ROCK_JEV_PROVIDER_MODE`未指定で`RockJevProvider`を除外する。`ROCK_JEV_PROVIDER_MODE=optional`を明示した場合だけSoong packageを含めるが、manifestのapplicationは`enabled=false`、`allowBackup=false`のままである。安全なruntime key provisioning、rotation、失効、owner同意がまだ決まっていないため、このdisabled状態を解除する設定やkey fixtureをGitへ追加しない。
+
+providerの送信契約は次に固定する。
+
+- endpointは`https://api.typesafe.ai/v1/systemone`、modelは`jev-1.13.0`へ固定する。endpointやmodelのruntime overrideは設けない。
+- `state`はpublic JSON objectだけを受け取り、secret key名／Bearer・API key等の値をstateとquestion文・criteriaから拒否する。questionsはchoice／score／noulのtyped形に限定し、plan／generateや`external-write`は送信しない。
+- TypeSafe APIへ送るbodyは`state`、`model`、`questions`だけとし、request ID、owner、費用、端末情報、Tool本文を送らない。requestは32 KiB、responseは16 KiB、questionsは8件、score levelsは10件、深さは12、latencyは30秒以内でboundedにする。
+- API keyは`ApiKeySource`から実行時に受ける設計だけを置き、source、resource、APK、log、backupへ埋め込まない。現在のAPKはkey sourceを持たず、`PROVIDER_DISABLED`へfail closedする。
+- responseは`model`、`answers`、`usage`のexact shapeとtyped probability／confidence／token boundsを検査する。結果は`answered`または`abstained`のin-memory advisoryで、`externalActionAllowed=false`かつ`authority=advisory-only`を固定する。raw response、key、request本文は保存・ログ・backupへ送らない。
+
+失敗時はdisabled、public／secret境界違反、cost gate、timeout、HTTP、response schema、サイズ超過を別reason codeで`abstained`にする。network切断やtimeoutを成功・再送へ変換しない。更新・rollbackではpackage version、manifest disabled、product modeを同じartifactで検査し、key provisioningが整うまで初回OS imageへ含めない。
+
+このsourceの直接受入は、`TypeSafeJevProviderTest`によるpayload、public-only、cost／timeout、malformed response、advisory-only検査と、`tests/android-jev-provider-boundary.test.mjs`によるmanifest、権限、Soong／product／SELinux境界検査である。Android Gradle、Soong、emulator、Pixel、TypeSafe live call、実費、継続key運用は未実行であり、sourceの存在をruntime受入へ換算しない。解除判断はOwnerとSecurityが、secret store／Keystore、rotation／失効、provider契約、domain別calibration、同一fixtureの実機試験をレビューした後に行う。
+
 ## 11. Cloud LLM
 
 Cloud LLMは「Jevより上」ではなく役割が違う。長文生成、複数資料の統合、複雑な計画、コード生成を担当する。
@@ -629,6 +647,7 @@ backupはpolicy、provider profile、仕事状態、receipt参照を含め、API
 | `lib/decision/providers/typesafe-jev.ts` | TypeSafe API adapter               | server側read-only実装・mock fetch／公開fixture host live smoke済み。Pixel／実機接続未受入 |
 | `scripts/jev-pixel-relay.mjs`            | Mac loopbackの一回限定relay             | 固定fixture・cost／timeout gate・protocol test済み。実機未実行 |
 | `android/jev-preview/`                   | Pixel向けstandalone debug-only preview app | 固定body・loopback cleartext・response検査を実装。物理端末未検証 |
+| `android/jev-provider/`                  | optional TypeSafe Jev source APK／専用network domain | public-only typed adapter、固定endpoint、bounded response、cost／timeout gate、advisory-only resultを実装。manifest disabled、product既定除外、Gradle／Soong／Android実行未検証 |
 | `lib/decision/providers/cloud.ts`        | cloud adapter                      | 未実装           |
 | `lib/decision/verifier.ts`               | independent verification           | 未実装           |
 | `tests/decision-*.test.mjs`              | safety / routing / failure fixture | 16 host fixture試験済み。domain別200件calibrationは未実施 |

@@ -61,8 +61,10 @@ neverallow rock_operator_agent { rockstar_platform_data_file rock_shell_data_fil
 
 # Local AI can propose work only through the broker. The operator agent is a separate
 # incident channel and has no Binder edge to the product data plane.
-neverallow rock_local_ai_app { rock_tool_app rock_mcp_app rock_provider_app rock_jev_provider_app rock_operator_agent }:binder call;
+neverallow rock_local_ai_app { rock_tool_app rock_mcp_app rock_provider_app rock_operator_agent }:binder call;
+neverallow rock_local_ai_app { rock_jev_provider_app }:binder call;
 neverallow rock_operator_agent { rockstar_platform_app rock_shell_app rock_local_ai_app rock_tool_app rock_mcp_app rock_provider_app }:binder call;
+neverallow rock_operator_agent { rock_jev_provider_app }:binder call;
 neverallow rock_jev_provider_app { rockstar_platform_app rock_shell_app rock_local_ai_app rock_tool_app rock_mcp_app rock_provider_app rock_operator_agent }:binder call;
 
 # External execution is broker-mediated. Raw block devices, kernel interfaces and arbitrary app data stay denied.

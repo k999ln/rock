@@ -11,7 +11,7 @@
 - GrapheneOS `2026091000` tag署名、manifest／adevtool／laguna-muzel 6.6、実機のDynamic Partition／Virtual A/B／AVB 1.4を固定済み。Google純正factory／full OTAの公式URL・掲載SHA-256・同一build・実byte hash検査、vendor全file inventory／再検証、署名policy／手順hash freezeをbuild入口へ実装し、合成fixture 9/9が合格した。Google実ファイル、実vendor生成、HSM／署名bridge、full Soong build、flash、実機bootは未実施。
 - 外部Providerは初回OS full buildから分離し、アプリ／サーバー側へ置く。実収益を表示する1.0公開前にはProvider sandboxを必須とし、未合格中はlive収益表示をしない。
 - Local Action Assistantはsource pin、base＋plan-v2 overlay hash検査、署名限定Binder API v2、JSON Schema計画専用経路、arm64 APK build、Qwen GGUFの機内モード推論、再起動復元、33分22秒の実機熱試験まで合格。最初の選択Toolとの実機接続と全23項目の非破壊再起動受入も合格した。OS image搭載、production署名、SELinux／OTA、Keystore消去後の復元は未完了。
-- Jev / Local Qwen Decision Fabricの`AI07`はhost側の型・Router・Harness・Mock・TypeSafe shadow adapterから着手中。既存のBroker／Shell／Tool契約を変更せず、独立した`dev.rock.jevpreview` debug APKに固定公開choice fixtureだけを`adb reverse`経由でMacのloopback relayへ送る一ボタンのDeveloper Preview clientを追加した。これはAndroid BinderのLocal AI接続や製品routeではなく、Pixel上の実行とTypeSafe API本接続は未受入のままである。
+- Jev / Local Qwen Decision Fabricの`AI07`はhost側の型・Router・Harness・Mock・TypeSafe shadow adapterに加え、独立した`android/jev-provider` optional source moduleを追加した。`dev.rock.jev.provider`は専用UID／`rock_jev_provider_app` domainを持ち、公式TypeSafe endpointへpublic-only typed requestをboundedに送る設計だが、manifest applicationはdisabled、product既定除外、safe runtime key provisioning未実装である。既存のBroker／Shell／Tool契約とnetwork権限は変更していない。独立した`dev.rock.jevpreview` debug APKの固定公開choice fixture→Mac loopback relay経路も保持するが、これはAndroid BinderのLocal AI接続や製品routeではなく、Pixel上の実行とTypeSafe API本接続は未受入のままである。
 - Operator Agentは試験署名Pixel 5/5に加え、本番公開trust入力をrepo外から静的RROへstageする検査を実装した。StrongBox必須、factory reset無効、P-256／origin／challenge検証と、challengeへ結び付く端末鍵aliasをAndroid 15 emulator 6/6で確認した。本番値投入、attestation検証、Device Owner実行、複数端末向けdynamic enrollmentは未完了。
 - Platform Core v1はTool／MCP／Provider共通AIDL、APK署名・UID照合、本人確認付き承認、Wallet台帳、schema v1→v2 migration、dual-wrapped backup v2、所有者phrase UI、transactional restore、新Keystore再binding、更新／rollback gate、source SELinux policyまで実装中。`dev.rock.automation`をheadless Brokerとして残し、Home／Sky／Zemaを`dev.rock.shell`へ分離するsource、Android Gradle build／lint、emulatorとPixelのBinder統合試験は完了。物理wipe復元、AOSP full build、SELinux enforcing boot、production署名は未実施。
 
@@ -93,6 +93,17 @@
    ```
 
 このrunbookのbuild、relay protocol test、APK manifest境界はCIで検査する。CIは`jev-pixel-preview-debug-<run ID>`としてdebug APKだけをartifactに保存し、既存のAndroid P1 artifactは変更しない。Pixelへのinstall、`adb reverse`、TypeSafe実接続、物理画面の結果、費用の実額、Android／OS統合の受入はまだ検証していない。
+
+## Optional Android Jev provider source（既定除外・disabled）
+
+`android/jev-provider`は、友人が後でbuildできるRockstarOS sourceとして、TypeSafe公式`POST https://api.typesafe.ai/v1/systemone`のAndroid実装境界を保存する。`state`、固定`jev-1.13.0`、typed `questions`だけを送り、request／response size、question数、score levels、latency、事前費用見積りを制限する。responseはexact schemaと確率合計を検査し、失敗は`abstained`へ落とす。結果にはTool／Broker／Shell／Local AIの権限を与えず、`externalActionAllowed=false`を固定する。
+
+安全なAPI key provisioning、Keystore／secret store、rotation／失効、owner同意をまだ受入していない。そのためmain manifestのapplicationは`enabled=false`、`allowBackup=false`、launcher・exported service・shared UIDなしで、`ROCK_JEV_PROVIDER_MODE`を指定しない限りSoongの`RockJevProvider`もproductへ入らない。`optional`指定時もdisabled状態を維持する。これはsource／契約／境界の実装であり、Gradle／Soong build、emulator、Pixel、TypeSafe live call、実費、OS image搭載の成功証拠ではない。
+
+### 直接検証
+
+- `node --test tests/android-jev-provider-boundary.test.mjs`：manifest、network permission、disabled、固定endpoint、public-only、bounded、advisory-only、Soong／product／SELinux境界。
+- `gradle -p android :jev-provider:assembleDebug :jev-provider:testDebugUnitTest :jev-provider:lintDebug --no-daemon`：Android SDK／Gradle環境で実行するprovider sourceの直接検証。現在のMacではGradle executableがないため未実行。
 
 ## 次に進める順番
 

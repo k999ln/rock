@@ -5,7 +5,7 @@ RockstarOSは、交換可能な高性能ローカルLLMとoffline agent runtime�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-20 / 126 task中86 done・23 in progress・16 planned・1 blocked
+更新日: 2026-09-21 / 126 task中86 done・23 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -192,7 +192,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-20 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 86/126件
+最終更新: 2026-09-21 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 86/126件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -204,7 +204,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI08 | Jev／TypeSafe・Local Qwen・Cloud LLMをcode主導で統合するDecision Fabric全体詳細設計と機械可読安全契約を固定 | 完了 | [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) |
-| AI07 | Jev／TypeSafe・Local Qwen・Cloud LLM・deterministic codeをDecisionProviderとRouter／Harnessへ統合 | 進行中 | [記録](docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md) · [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) · [記録](lib/decision/index.ts) · [記録](lib/decision/providers/mock.ts) · [記録](lib/decision/providers/typesafe-jev.ts) · [記録](tests/decision-provider.test.mjs) · [記録](tests/decision-integration.test.mjs) · [記録](scripts/jev-pixel-relay.mjs) · [記録](tests/jev-pixel-relay.test.mjs) · [記録](tests/android-jev-preview-boundary.test.mjs) · [記録](android/jev-preview/src/main/AndroidManifest.xml) · [記録](android/jev-preview/src/debug/AndroidManifest.xml) · [記録](android/jev-preview/src/debug/res/xml/pixel_jev_preview_network_security.xml) · [記録](android/jev-preview/src/debug/java/dev/rock/jevpreview/PixelJevPreviewDebug.java) · [記録](android/jev-preview/src/test/java/dev/rock/jevpreview/PixelJevPreviewProtocolTest.java) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](docs/jev-ecosystem-integration-design.md) · [記録](docs/ai-native-os-architecture.md) |
+| AI07 | Jev／TypeSafe・Local Qwen・Cloud LLM・deterministic codeをDecisionProviderとRouter／Harnessへ統合 | 進行中 | [記録](docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md) · [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) · [記録](lib/decision/index.ts) · [記録](lib/decision/providers/mock.ts) · [記録](lib/decision/providers/typesafe-jev.ts) · [記録](tests/decision-provider.test.mjs) · [記録](tests/decision-integration.test.mjs) · [記録](scripts/jev-pixel-relay.mjs) · [記録](tests/jev-pixel-relay.test.mjs) · [記録](tests/android-jev-preview-boundary.test.mjs) · [記録](android/jev-preview/src/main/AndroidManifest.xml) · [記録](android/jev-preview/src/debug/AndroidManifest.xml) · [記録](android/jev-preview/src/debug/res/xml/pixel_jev_preview_network_security.xml) · [記録](android/jev-preview/src/debug/java/dev/rock/jevpreview/PixelJevPreviewDebug.java) · [記録](android/jev-preview/src/test/java/dev/rock/jevpreview/PixelJevPreviewProtocolTest.java) · [記録](android/jev-provider/build.gradle) · [記録](android/jev-provider/src/main/AndroidManifest.xml) · [記録](android/jev-provider/src/aosp/AndroidManifest.xml) · [記録](android/jev-provider/src/main/java/dev/rock/jev/provider/TypeSafeJevProvider.java) · [記録](android/jev-provider/src/test/java/dev/rock/jev/provider/TypeSafeJevProviderTest.java) · [記録](android/Android.bp) · [記録](android/settings.gradle) · [記録](os/physical/rockstaros.mk) · [記録](android/sepolicy/private/rockstar_platform.te) · [記録](android/sepolicy/private/seapp_contexts) · [記録](tests/android-jev-provider-boundary.test.mjs) · [記録](.github/workflows/android.yml) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](docs/jev-ecosystem-integration-design.md) · [記録](docs/ai-native-os-architecture.md) |
 | MAT01 | RQ49 Material Invention Coreのentity・発明loop・安全境界を設計へ固定 | 完了 | [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/material-invention-core.md) |
 | MAT02 | 二物質・複数比率・工程条件のsandbox候補graphとfail-closed安全検査を実装 | 完了 | [記録](contracts/material-invention.json) · [記録](contracts/material-invention-fixture.json) · [記録](lib/material-invention.ts) · [記録](tests/material-invention.test.mjs) · [記録](docs/material-invention-core.md) · [記録](docs/validation.md) |
 | MAT03 | Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入 | 未着手 | [記録](docs/material-invention-core.md) |
@@ -342,7 +342,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: Scalewayの課金確認後、Ubuntu 24.04 / 32 dedicated vCPU / 64 GB RAM / 600 GBで固定sourceをsyncし、Operator Agentを明示除外したbringup modeでtarget-files-packageとotatools-packageをbuildする。RELEASE_FLASH gate、production signing、実機flashは未合格のまま維持する。
+次の作業: Jevは安全なruntime key provisioningが決まるまでdisabled／初回product除外を維持する。友人がAndroid SDK／Gradle環境でoptional providerのunit test・lint・Soong source buildを実行し、別途Pixel／OS full build／flashのgateは未合格のまま維持する。
 <!-- project-status:end -->
 
 </details>
