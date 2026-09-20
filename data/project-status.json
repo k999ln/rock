@@ -414,7 +414,9 @@
         "components/sky-chat-workspace.tsx",
         "components/workspace-shell.tsx",
         "app/chat/page.tsx",
-        "app/polymarket/page.tsx"
+        "app/polymarket/page.tsx",
+        "docs/workstreams/01-product-ux.md",
+        "README.md"
       ]
     },
     {

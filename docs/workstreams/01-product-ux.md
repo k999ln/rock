@@ -6,6 +6,7 @@ AIネイティブOSの上で、SkyでToolを選び、ZemaでAIチームへ依頼
 
 ## 現在地
 
+- 2026-09-20のSky/Zema Web使いやすさ改善: Skyは依頼欄を最初に置き、おすすめ5件、ready全件、導入候補22件を切り替える。検索は全Toolを対象にし、役割ボタンは最初4件と展開入口に絞る。ZemaのBot一覧は選択中を残して最初4件とし、全件展開・検索を用意した。Skyの自然文依頼は未接続Toolなら直ちに接続確認を開く。localhost:3001のSkyで5件表示、候補22件表示、候補検索、依頼から接続確認までを操作確認。Zemaは未サインイン画面を確認したが、Bot展開の実操作は未確認。`npm run verify`は自動試験349件、Fashion 19件、仕事API149項目とbuildを含めて合格。
 - 対外的にはハードウェア製品を主役にし、最初の構想をavocadoMiniとする。OS・LLM・Sky／Zemaはその中核技術として示す。avocadoMiniの実機と販売は未実施。
 - avocadoMini製品ホーム`/rockstaros`、OS導入ガイド`/rockstaros/guide`、RockstarOS Webホーム`/`の役割を分ける。製品ホームから未導入者をOSホームへ直接案内しない。Sky／ZemaなどはOS内の機能。avocadoMiniのメッセージは「考える時間を、つくる時間に」、希望参考価格は41万円。高性能LLMの製品搭載、価格確定、実機販売は未完了。
 - GitHub READMEの冒頭はavocadoMiniの外観と利用場面の構想参考画像から始める。設計画像と実機写真を区別し、製品別GIF、RockstarOSとアプリの役割、開発状況への導線を続ける。クラファンの実URLは未確認で募集済みとは表示しない。
