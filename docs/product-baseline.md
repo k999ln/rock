@@ -1,4 +1,4 @@
-2026-09-20 別ドメインと管理者限定の確定: 利用者はavocadoMini製品サイトをOSサイトとは別ドメインで一般公開し、`rockstaros-kaiya.noellesugar1.chatgpt.site`のWeb OS利用画面は管理者限定と明示した。製品専用の静的Site sourceは`sites/avocado-mini`に置き、製品、公開導入ガイド、募集前クラファン企画だけを含める。公開製品サイトからOS画面へのリンクは設けない。旧OS Siteのアクセス設定は所有アカウントへの接続待ちであり、現在の公開状態を安全と呼ばない。
+2026-09-20 別ドメインと管理者限定の確定: 利用者はavocadoMini製品サイトをOSサイトとは別ドメインで一般公開し、`rockstaros-kaiya.noellesugar1.chatgpt.site`のWeb OS利用画面は管理者限定と明示した。製品専用の静的Site sourceは`sites/avocado-mini`に置き、`https://avocado-mini.kirin-999.chatgpt.site`へ一般公開した。製品、公開導入ガイド、募集前クラファン企画だけを含める。公開製品サイトからOS画面へのリンクは設けない。旧OS Siteのアクセス設定は所有アカウントへの接続待ちであり、現在の公開状態を安全と呼ばない。
 
 2026-09-20 製品ホームとOSの分離: 利用者は`/`をRockstarOSの利用画面、`/rockstaros`をavocadoMini製品ホームとして区別し、OS未導入者が`/`へ入る状態を問題として明示した。製品ページからWebホームへの直リンクとSky開発者コード等のOS内部コンテンツを外し、OSの導入条件は`/rockstaros/guide`へ分離する。両ページは現時点で同じSiteのパスであり、公開URLの分離または導入状態に基づくアクセス制限は未完了。リンク整理だけでOSホームを保護済みとは扱わない。
 

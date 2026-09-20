@@ -338,6 +338,7 @@
     "domainSeparation": {
       "productSite": "separate_public_domain",
       "productSiteUrl": "https://avocado-mini.kirin-999.chatgpt.site",
+      "productSiteDeployment": "public_live_verified",
       "productSiteSource": "sites/avocado-mini",
       "productSiteRoutes": ["/", "/guide/", "/crowdfunding/"],
       "osSite": "rockstaros-kaiya.noellesugar1.chatgpt.site",
