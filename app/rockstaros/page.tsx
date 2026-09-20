@@ -89,6 +89,10 @@ export default function RockstarPreview() {
             RockstarOS、交換可能なLLM、SkyとZemaは、ハードウェアで使う体験の中核です。
             Pixel 10は開発用の検証端末で、自社製ハードウェア製品ではありません。
           </p>
+          <p>
+            無料で届けることを理念とし、OSは使った分に応じた料金で支える方針です。
+            無料配布の対象、利用量の測り方、単価は決定後に明示します。現在、この方式での請求は行っていません。
+          </p>
         </div>
         <div className={styles.platformAction}>
           <a className={styles.installButton} href={installUrl}>
