@@ -237,3 +237,17 @@ body{overflow-x:hidden}
 @media(max-width:1050px){.sensor-closeup{right:30px;width:230px;top:25%}.sensor-closeup>div span{font-size:7px}}
 @media(max-width:800px){.motion-product{height:70svh}.sensor-closeup{display:none}.feature-beat[data-beat="sensor"] h2{font-size:clamp(40px,7vw,58px)}.sensor-capabilities{margin-top:16px;gap:8px}.sensor-capabilities>div{padding-top:7px}.sensor-capabilities>div:before{top:8px;height:27px}.sensor-capabilities strong{font-size:15px}.sensor-capabilities p{font-size:12px}}
 @media(max-width:520px){.motion-product{height:54svh}.feature-beat[data-beat="sensor"] h2{font-size:36px;margin-bottom:9px}.feature-beat[data-beat="sensor"] .feature-description{font-size:12px}.sensor-capabilities{margin-top:11px;gap:6px}.sensor-capabilities>div{padding:6px 0 0 12px}.sensor-capabilities>div:before{top:7px;width:3px;height:22px}.sensor-capabilities span{font-size:8px}.sensor-capabilities strong{font-size:13px;margin:2px 0}.sensor-capabilities p{font-size:10px;line-height:1.35}.feature-beat[data-beat="sensor"] .feature-meta{display:none}}
+
+/* One clear OS installation destination after the product and price. */
+.os-install{position:relative;display:flex;align-items:center;min-height:100svh;overflow:hidden;padding:clamp(100px,12vw,190px) clamp(25px,10vw,170px);color:#f8fcff;background:radial-gradient(circle at 77% 48%,#16384a 0%,#0b1c28 35%,#050b12 74%);isolation:isolate}
+.os-install-orbit{position:absolute;z-index:-1;right:-18vw;top:50%;width:min(88vw,1200px);aspect-ratio:1;border:1px solid #83dffb20;border-radius:50%;transform:translateY(-50%);box-shadow:0 0 0 7vw #65cfff08,0 0 0 15vw #65cfff05,0 0 140px #38bfff15 inset}
+.os-install-orbit:after{content:"";position:absolute;inset:20%;border:1px solid #a4e8ff24;border-radius:50%;box-shadow:0 0 70px #7adfff16}
+.os-install-content{position:relative;z-index:1;max-width:720px}
+.os-install .eyebrow{color:#78d9fa;font-size:12px;letter-spacing:.28em}
+.os-install h2{font-size:clamp(58px,7.3vw,112px);line-height:1.12;letter-spacing:-.09em;margin:24px 0 30px}
+.os-install-lead{max-width:540px;font-size:clamp(16px,1.65vw,22px);line-height:1.75;color:#d6e8ef;margin:0 0 40px}
+.os-install-button{display:inline-flex;align-items:center;justify-content:space-between;gap:48px;min-width:min(370px,100%);min-height:64px;padding:17px 24px;border-radius:999px;background:#e8faff;color:#102b37;text-decoration:none;font-size:17px;font-weight:700;box-shadow:0 16px 44px #0005;transition:transform .2s,background .2s}
+.os-install-button:hover,.os-install-button:focus-visible{transform:translateY(-3px);background:#fff}
+.os-install-note{margin:22px 0 0;font-size:12px;line-height:1.7;color:#a9c0cc}
+@media(max-width:800px){.os-install{min-height:85svh;padding:110px 25px}.os-install-orbit{right:-72vw;width:150vw}}
+@media(max-width:520px){.os-install h2{font-size:clamp(50px,12vw,72px)}.os-install-lead{font-size:15px}.os-install-button{width:100%;font-size:15px;gap:16px}}
