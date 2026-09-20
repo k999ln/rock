@@ -114,8 +114,8 @@ def main():
                 'exporter_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                 'source_files_sha256': {name: hashlib.sha256((root / name).read_bytes()).hexdigest() for name in inputs},
                 'pages': {}, 'scope': 'Rendered announcement and guide only. No login, wallet API, Web app state or OS runtime. Original public OS media copied unchanged.'}
-    for route, name, title in [('/rockstaros', 'index.html', 'avocadoOS 1.0 Developer Preview'),
-                               ('/rockstaros/guide', 'guide.html', '導入・最初の成果・復旧 | avocadoOS 1.0')]:
+    for route, name, title in [('/rockstaros', 'index.html', 'RockstarOS 1.0 Developer Preview'),
+                               ('/rockstaros/guide', 'guide.html', '導入・最初の成果・復旧 | RockstarOS 1.0')]:
         with urlopen(args.origin + route, timeout=20) as response:
             assert response.status == 200
             raw = response.read()
@@ -144,7 +144,7 @@ def main():
         html = '<!doctype html>\n<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + escape(title) + '</title>' + ''.join(styles) + '</head><body>' + ''.join(page.parts) + '</body></html>\n'
         (output / name).write_text(html)
         manifest['pages'][name] = {'route': route, 'response_sha256': hashlib.sha256(raw).hexdigest(), 'export_sha256': hashlib.sha256(html.encode()).hexdigest()}
-    (output / 'README.md').write_text('# avocadoOS 1.0 — 発表・導入ページのローカル閲覧用ファイル\n\nindex.html を開くと案内、guide.html で導入・復旧手順を確認できます。Webサイトへ公開した記録ではありません。実OSや既存Webアプリ本体の代わりにはなりません。\n\nローカルHTTPで確認する場合は、このフォルダーで `python3 -m http.server 8765 --bind 127.0.0.1` を実行し、ブラウザで `http://localhost:8765/` を開きます。閲覧後はCtrl+Cで終了します。\n\n画面・動画は元のQEMU実画面をそのまま含みます。各ページに記載された受入状況、合成環境、対応・既知制限を確認してください。公開・再配布条件は別途の配布記録が正本です。\n')
+    (output / 'README.md').write_text('# RockstarOS 1.0 — 発表・導入ページのローカル閲覧用ファイル\n\nindex.html を開くと案内、guide.html で導入・復旧手順を確認できます。Webサイトへ公開した記録ではありません。実OSや既存Webアプリ本体の代わりにはなりません。\n\nローカルHTTPで確認する場合は、このフォルダーで `python3 -m http.server 8765 --bind 127.0.0.1` を実行し、ブラウザで `http://localhost:8765/` を開きます。閲覧後はCtrl+Cで終了します。\n\n画面・動画は元のQEMU実画面をそのまま含みます。各ページに記載された受入状況、合成環境、対応・既知制限を確認してください。公開・再配布条件は別途の配布記録が正本です。\n')
     manifest['files_sha256'] = {str(p.relative_to(output)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(output.rglob('*')) if p.is_file()}
     (output / 'site-export.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n')
     print(json.dumps({'status': manifest['status'], 'dirty_preview': bool(dirty), 'output': str(output), 'files': len(manifest['files_sha256']) + 1}))

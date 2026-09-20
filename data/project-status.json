@@ -1,27 +1,45 @@
 {
   "updatedAt": "2026-09-20",
-  "milestone": "AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続",
-  "nextAction": "SKY20は旧Mr. Hub 11候補とJev周辺7候補の実行器、本人接続、料金・結果照合を一件ずつ受け入れ、通るまでreadyにしない。PC内SDK Appのカード表示・接続・停止はローカルSkyで確認済み。AI07はJevのprovider sandboxで正常系・429・5xx・不正response・budget縮退を受入し、AI_GATEWAY_API_KEY、Terms/Privacy、料金上限を確認する。JevはSkyのcatalog／同意UI／closed rubric／Evaluation Receiptまで実装済みだが、本番provider接続は未完了。法務受付・特許アシスタントはSkyの別Toolとして維持し、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。",
+  "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
+  "nextAction": "Scalewayの課金確認後、Ubuntu 24.04 / 32 dedicated vCPU / 64 GB RAM / 600 GBで固定sourceをsyncし、Operator Agentを明示除外したbringup modeでtarget-files-packageとotatools-packageをbuildする。RELEASE_FLASH gate、production signing、実機flashは未合格のまま維持する。 AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。SKY19の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。",
   "tasks": [
     {
-      "id": "SKY20",
-      "title": "ローカルSkyへSDK Appの自動検出・Hub接続を追加し、旧Mr. Hub 11件とJev周辺自動化7件を候補表示",
-      "status": "in_progress",
-      "dependsOn": ["SKY15"],
-      "evidence": ["components/sky-workspace.tsx", "toolkits/sky-tool-sdk/src/index.mjs", "toolkits/sky-mcp-connector/server.mjs", "docs/sky-mr-automation-candidates.md"]
-    },
-    {
-      "id": "SKY17",
+      "id": "SKY19",
       "title": "SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装）",
       "status": "in_progress",
-      "dependsOn": ["SKY16"],
-      "evidence": ["docs/sky-network-economy.md", "docs/sky-billing.md"]
+      "dependsOn": [
+        "SKY16"
+      ],
+      "evidence": [
+        "docs/sky-network-economy.md",
+        "docs/sky-billing.md"
+      ]
+    },
+    {
+      "id": "DOC01",
+      "title": "RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化",
+      "status": "done",
+      "dependsOn": [
+        "B01",
+        "AI01",
+        "MAT07"
+      ],
+      "evidence": [
+        "docs/rockstaros-design-portal.md",
+        "docs/rockstaros-complete-design.md",
+        "docs/sky-tools-complete-design.md",
+        "data/design-document-index.json",
+        "scripts/check-design-document-index.mjs"
+      ]
     },
     {
       "id": "AI01",
       "title": "RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない）",
       "status": "done",
-      "dependsOn": ["B01", "SYS14"],
+      "dependsOn": [
+        "B01",
+        "SYS14"
+      ],
       "evidence": [
         "docs/product-baseline.md",
         "docs/ai-native-os-architecture.md",
@@ -32,57 +50,220 @@
       "id": "AI02",
       "title": "モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10"],
-      "evidence": ["docs/ai-native-os-architecture.md"]
+      "dependsOn": [
+        "AI01",
+        "OS10"
+      ],
+      "evidence": [
+        "docs/ai-native-os-architecture.md"
+      ]
     },
     {
       "id": "AI03",
       "title": "モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10"],
-      "evidence": ["docs/ai-native-os-architecture.md"]
+      "dependsOn": [
+        "AI01",
+        "OS10"
+      ],
+      "evidence": [
+        "docs/ai-native-os-architecture.md"
+      ]
     },
     {
       "id": "AI04",
       "title": "1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10"],
-      "evidence": ["docs/ai-native-os-architecture.md"]
+      "dependsOn": [
+        "AI01",
+        "OS10"
+      ],
+      "evidence": [
+        "docs/ai-native-os-architecture.md"
+      ]
     },
     {
       "id": "AI05",
       "title": "Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10"],
-      "evidence": ["docs/ai-native-os-architecture.md"]
+      "dependsOn": [
+        "AI01",
+        "OS10"
+      ],
+      "evidence": [
+        "docs/ai-native-os-architecture.md"
+      ]
     },
     {
       "id": "AI06",
       "title": "非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存）",
       "status": "planned",
-      "dependsOn": ["AI01", "AI03", "AI05"],
-      "evidence": ["docs/ai-native-os-architecture.md"]
+      "dependsOn": [
+        "AI01",
+        "AI03",
+        "AI05"
+      ],
+      "evidence": [
+        "docs/ai-native-os-architecture.md"
+      ]
+    },
+    {
+      "id": "AI08",
+      "title": "Jev／TypeSafe・Local Qwen・Cloud LLMをcode主導で統合するDecision Fabric全体詳細設計と機械可読安全契約を固定",
+      "status": "done",
+      "dependsOn": [
+        "AI01",
+        "SKY18"
+      ],
+      "evidence": [
+        "docs/jev-local-qwen-decision-fabric-design.md",
+        "contracts/decision-provider.json",
+        "data/decision-fabric-policy.json"
+      ]
     },
     {
       "id": "AI07",
-      "title": "JevをSkyの明示的remote evaluatorとして接続し、SDK/API互換・同意・rubric・receipt・privacy・料金縮退を受入",
+      "title": "JevのSky明示利用を設計し、DecisionProviderとRouter／Harnessへの統合を受け入れる",
       "status": "in_progress",
-      "dependsOn": ["AI01", "SKY01"],
+      "dependsOn": [
+        "AI02",
+        "AI08",
+        "AI01",
+        "SKY01"
+      ],
       "evidence": [
+        "docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md",
+        "docs/jev-local-qwen-decision-fabric-design.md",
+        "contracts/decision-provider.json",
+        "data/decision-fabric-policy.json",
+        "docs/jev-ecosystem-integration-design.md",
+        "docs/ai-native-os-architecture.md",
         "docs/llm-evaluation-architecture.md",
         "data/llm-capabilities.json",
-        "scripts/check-llm-architecture.mjs",
-        "lib/jev-evaluation.ts",
-        "app/api/jev-evaluation/route.ts",
-        "components/jev-evaluation-runner.tsx",
-        "tests/jev-evaluation.test.mjs"
+        "scripts/check-llm-architecture.mjs"
+      ]
+    },
+    {
+      "id": "MAT01",
+      "title": "RQ49 Material Invention Coreのentity・発明loop・安全境界を設計へ固定",
+      "status": "done",
+      "dependsOn": [
+        "AI01"
+      ],
+      "evidence": [
+        "docs/product-baseline.md",
+        "data/product-baseline.json",
+        "docs/material-invention-core.md"
+      ]
+    },
+    {
+      "id": "MAT02",
+      "title": "二物質・複数比率・工程条件のsandbox候補graphとfail-closed安全検査を実装",
+      "status": "done",
+      "dependsOn": [
+        "MAT01"
+      ],
+      "evidence": [
+        "contracts/material-invention.json",
+        "contracts/material-invention-fixture.json",
+        "lib/material-invention.ts",
+        "tests/material-invention.test.mjs",
+        "docs/material-invention-core.md",
+        "docs/validation.md"
+      ]
+    },
+    {
+      "id": "MAT03",
+      "title": "Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入",
+      "status": "planned",
+      "dependsOn": [
+        "MAT02",
+        "AI02",
+        "AI03"
+      ],
+      "evidence": [
+        "docs/material-invention-core.md"
+      ]
+    },
+    {
+      "id": "MAT04",
+      "title": "Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent AI設計を固定",
+      "status": "done",
+      "dependsOn": [
+        "MAT01",
+        "MAT02"
+      ],
+      "evidence": [
+        "docs/material-invention-xr.md",
+        "docs/avocado-mini-spatial-invention.md",
+        "docs/avocado-mini-hardware-design.md",
+        "docs/assets/rockstaros-spatial-table-v1.png",
+        "docs/assets/rockstaros-spatial-table-full-scale-v2.png",
+        "docs/assets/avocado-mini-hardware-00-overview.png",
+        "docs/assets/avocado-mini-hardware-01-sensor-pod-exploded.png",
+        "docs/assets/avocado-mini-hardware-02-chassis-exploded.png",
+        "docs/assets/avocado-mini-hardware-03-power-control-haptic.png",
+        "docs/assets/avocado-mini-hardware-00-overview-v2.png",
+        "docs/assets/avocado-mini-hardware-01-sensor-pod-exploded-v2.png",
+        "docs/assets/avocado-mini-hardware-02-chassis-exploded-v2.png",
+        "docs/assets/avocado-mini-hardware-03-power-control-haptic-v2.png",
+        "docs/assets/avocado-mini-hardware-00-overview-v3-silver-tube.png",
+        "docs/assets/avocado-mini-hardware-01-sensor-pod-v3-silver-tube.png",
+        "docs/assets/avocado-mini-hardware-02-chassis-v3-silver-tube.png",
+        "docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png",
+        "docs/assets/avocado-mini-hardware-01-sensor-pod-v4-thin-tube.png",
+        "docs/assets/avocado-mini-hardware-02-chassis-v4-thin-tube.png",
+        "data/material-invention-xr-policy.json",
+        "contracts/material-invention-xr.json",
+        "contracts/avocado-mini-spatial-interaction.json"
+      ]
+    },
+    {
+      "id": "MAT05",
+      "title": "Core graphから決定的XR sceneを生成し、四方向pose fixtureのconnect／separate／stale拒否を実装",
+      "status": "planned",
+      "dependsOn": [
+        "MAT04"
+      ],
+      "evidence": [
+        "docs/avocado-mini-spatial-invention.md"
+      ]
+    },
+    {
+      "id": "MAT06",
+      "title": "avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入",
+      "status": "planned",
+      "dependsOn": [
+        "MAT03",
+        "MAT05"
+      ],
+      "evidence": [
+        "docs/avocado-mini-spatial-invention.md"
+      ]
+    },
+    {
+      "id": "MAT07",
+      "title": "誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化",
+      "status": "done",
+      "dependsOn": [
+        "MAT04"
+      ],
+      "evidence": [
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "docs/workstreams/11-material-invention-avocado-mini.md",
+        "docs/system-composition.md",
+        "data/system-composition-audit.json",
+        "docs/ai-native-os-architecture.md",
+        "docs/rockstaros-1.0-architecture.md"
       ]
     },
     {
       "id": "SKY01",
       "title": "旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化",
       "status": "done",
-      "dependsOn": ["B01"],
+      "dependsOn": [
+        "B01"
+      ],
       "evidence": [
         "docs/sky.md",
         "components/sky-workspace.tsx",
@@ -93,7 +274,9 @@
       "id": "SKY02",
       "title": "ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装",
       "status": "done",
-      "dependsOn": ["SKY01"],
+      "dependsOn": [
+        "SKY01"
+      ],
       "evidence": [
         "app/sky/publish/page.tsx",
         "components/sky-publisher-form.tsx",
@@ -105,7 +288,9 @@
       "id": "SKY03",
       "title": "MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存",
       "status": "done",
-      "dependsOn": ["SKY01"],
+      "dependsOn": [
+        "SKY01"
+      ],
       "evidence": [
         "docs/sky-mcp-architecture.md",
         "systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md"
@@ -115,7 +300,10 @@
       "id": "SKY04",
       "title": "tob無料のConnection Passport・実行契約・ToB/ToC貢献分配を一画面で説明するSky Networkフロント",
       "status": "done",
-      "dependsOn": ["SKY02", "SKY03"],
+      "dependsOn": [
+        "SKY02",
+        "SKY03"
+      ],
       "evidence": [
         "app/sky/network/page.tsx",
         "components/sky-network.tsx",
@@ -129,7 +317,9 @@
       "id": "SKY05",
       "title": "Sky画面のsidebarを廃止し、MCP接続・管理とToB掲載をSky本体の操作面へ統合",
       "status": "done",
-      "dependsOn": ["SKY04"],
+      "dependsOn": [
+        "SKY04"
+      ],
       "evidence": [
         "components/sky-workspace.tsx",
         "components/sky-mcp-center.tsx",
@@ -144,7 +334,9 @@
       "id": "SKY06",
       "title": "Sky内MCPを実在するPC接続・既存4自動化・3ステップ導入画面へ統合",
       "status": "done",
-      "dependsOn": ["SKY05"],
+      "dependsOn": [
+        "SKY05"
+      ],
       "evidence": [
         "components/sky-mcp-center.tsx",
         "components/device-connection.tsx",
@@ -156,7 +348,9 @@
       "id": "SKY07",
       "title": "MCPごとにこのPC・Sky Cloud・提供者MCPの接続先を選び、対応先へワンタップ接続する",
       "status": "in_progress",
-      "dependsOn": ["SKY06"],
+      "dependsOn": [
+        "SKY06"
+      ],
       "evidence": [
         "components/sky-mcp-center.tsx",
         "components/sky-mcp-center.module.css",
@@ -174,7 +368,10 @@
       "id": "SKY08",
       "title": "黒基調の改善版SkyへFashion Brand Opsを統合し、スマホDialogの画面外ずれを修正",
       "status": "done",
-      "dependsOn": ["SKY05", "FB01"],
+      "dependsOn": [
+        "SKY05",
+        "FB01"
+      ],
       "evidence": [
         "app/sky/network/page.tsx",
         "components/sky-network.tsx",
@@ -195,7 +392,10 @@
       "id": "SKY09",
       "title": "Skyの商品カード1回でFashion Brand Ops MCPを初期化し、38操作と接続状態を同期",
       "status": "done",
-      "dependsOn": ["SKY08", "FB01"],
+      "dependsOn": [
+        "SKY08",
+        "FB01"
+      ],
       "evidence": [
         "components/sky-workspace.tsx",
         "app/api/sky/connections/route.ts",
@@ -206,7 +406,9 @@
       "id": "SKY10",
       "title": "Skyをアプリ選択と接続へ絞り、Chatを依頼・状況・結果の受取画面として分離",
       "status": "done",
-      "dependsOn": ["SKY08"],
+      "dependsOn": [
+        "SKY08"
+      ],
       "evidence": [
         "components/sky-workspace.tsx",
         "components/sky-chat-workspace.tsx",
@@ -219,7 +421,10 @@
       "id": "SKY11",
       "title": "MCP掲載前診断とPC接続の互換性・初回導線を改善",
       "status": "done",
-      "dependsOn": ["SKY02", "SKY10"],
+      "dependsOn": [
+        "SKY02",
+        "SKY10"
+      ],
       "evidence": [
         "lib/mcp-inspection.ts",
         "app/api/sky/mcp/inspect/route.ts",
@@ -234,7 +439,9 @@
       "id": "SKY12",
       "title": "ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化",
       "status": "done",
-      "dependsOn": ["SKY10"],
+      "dependsOn": [
+        "SKY10"
+      ],
       "evidence": [
         "components/sky-chat-workspace.tsx",
         "app/workspace.css",
@@ -245,7 +452,9 @@
       "id": "SKY13",
       "title": "GrokをモチーフにChatの表示・入力を改善し、依頼から実行・結果までを会話内へ統合",
       "status": "done",
-      "dependsOn": ["SKY12"],
+      "dependsOn": [
+        "SKY12"
+      ],
       "evidence": [
         "components/sky-chat-workspace.tsx",
         "app/workspace.css",
@@ -258,15 +467,15 @@
       "id": "SKY14",
       "title": "接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理",
       "status": "done",
-      "dependsOn": ["SKY13"],
+      "dependsOn": [
+        "SKY13"
+      ],
       "evidence": [
         "components/sky-chat-workspace.tsx",
         "components/mcp-bot-runner.tsx",
         "lib/mcp-hub.ts",
-        "lib/mcp-tool-result.ts",
         "toolkits/sky-mcp-connector/server.mjs",
         "tests/mcp-connector.test.mjs",
-        "tests/mcp-tool-result.test.mjs",
         "docs/chat-mcp-control-room-20260913.md"
       ]
     },
@@ -274,7 +483,9 @@
       "id": "SKY15",
       "title": "Sky SDKコードを既存ツールへ追加し、起動時にPackage登録・MCP公開・利用記録まで行うStudioを実装",
       "status": "done",
-      "dependsOn": ["SKY14"],
+      "dependsOn": [
+        "SKY14"
+      ],
       "evidence": [
         "components/rock-studio.tsx",
         "toolkits/sky-tool-sdk/src/index.mjs",
@@ -289,25 +500,63 @@
       "id": "SKY16",
       "title": "SkyのTool選択と自然文依頼をZemaへ一回引き継ぎ、job状態を即時同期",
       "status": "done",
-      "dependsOn": ["SKY14"],
+      "dependsOn": [
+        "SKY14"
+      ],
       "evidence": [
         "lib/sky-zema-handoff.ts",
-        "lib/zema-chat-session.ts",
         "lib/operations-client.ts",
         "components/sky-workspace.tsx",
         "components/sky-chat-workspace.tsx",
         "components/chat-live-progress.tsx",
         "tests/sky-zema-handoff.test.mjs",
-        "tests/zema-chat-session.test.mjs",
         "tests/web-route-style-contract.test.mjs",
         "docs/sky.md"
+      ]
+    },
+    {
+      "id": "SKY17",
+      "title": "Jev Ultrafastを権限制御されたbrowser agent候補としてSky catalogと全Tool設計へ追加",
+      "status": "done",
+      "dependsOn": [
+        "SKY16",
+        "DOC01"
+      ],
+      "evidence": [
+        "lib/catalog.ts",
+        "docs/jev-ultrafast-integration-design.md",
+        "docs/sky-tools-complete-design.md",
+        "data/design-document-index.json",
+        "scripts/check-design-document-index.mjs"
+      ]
+    },
+    {
+      "id": "SKY18",
+      "title": "Jev ecosystem 10 repositoryを判断・browser・PC・mobile・review・routing・PAPER市場・referenceへ分離して候補登録",
+      "status": "done",
+      "dependsOn": [
+        "SKY17",
+        "DOC01",
+        "MKT01"
+      ],
+      "evidence": [
+        "lib/catalog.ts",
+        "docs/jev-ecosystem-integration-design.md",
+        "docs/jev-ultrafast-integration-design.md",
+        "docs/sky-tools-complete-design.md",
+        "data/design-document-index.json",
+        "scripts/check-design-document-index.mjs",
+        "scripts/check-sky.mjs"
       ]
     },
     {
       "id": "WEB02",
       "title": "Developer Preview紹介をOSインストールとSky開発者コード中心の一画面へ再設計",
       "status": "done",
-      "dependsOn": ["SKY15", "RLS01"],
+      "dependsOn": [
+        "SKY15",
+        "RLS01"
+      ],
       "evidence": [
         "app/rockstaros/page.tsx",
         "app/rockstaros/preview.module.css",
@@ -318,7 +567,10 @@
       "id": "WEB03",
       "title": "Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一",
       "status": "done",
-      "dependsOn": ["WEB02", "SKY15"],
+      "dependsOn": [
+        "WEB02",
+        "SKY15"
+      ],
       "evidence": [
         "app/rockstaros/page.tsx",
         "components/rock-studio.tsx",
@@ -328,9 +580,12 @@
     },
     {
       "id": "WEB04",
-      "title": "avocadoOS全体のvisual systemを統一し、主要フロントの機能性を改善",
+      "title": "RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善",
       "status": "done",
-      "dependsOn": ["WEB03", "SKY15"],
+      "dependsOn": [
+        "WEB03",
+        "SKY15"
+      ],
       "evidence": [
         "components/home-screen.tsx",
         "components/home-screen.module.css",
@@ -344,9 +599,11 @@
     },
     {
       "id": "BRD01",
-      "title": "正式製品名をavocadoOS、内部識別子をdev.rockで固定",
+      "title": "正式製品名をRockstarOS、内部識別子をdev.rockで固定",
       "status": "done",
-      "dependsOn": ["WEB04"],
+      "dependsOn": [
+        "WEB04"
+      ],
       "evidence": [
         "data/product-baseline.json",
         "docs/product-baseline.md",
@@ -358,10 +615,183 @@
       ]
     },
     {
-      "id": "VER01",
-      "title": "avocadoOS 1.0と将来の1.5／2.0版更新規則を一元管理",
+      "id": "WEB05",
+      "title": "avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新",
       "status": "done",
-      "dependsOn": ["BRD01"],
+      "dependsOn": [
+        "MAT04",
+        "WEB02",
+        "BRD01"
+      ],
+      "evidence": [
+        "README.md",
+        "docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png",
+        "docs/assets/rockstaros-spatial-table-full-scale-v2.png",
+        "sites/avocado-mini/index.html",
+        "sites/avocado-mini/src/main.js",
+        "sites/avocado-mini/src/style.css",
+        "sites/avocado-mini/dist/index.html",
+        "sites/avocado-mini/public/images/avocado-mini-hero.png",
+        "sites/avocado-mini/public/images/avocado-mini-detail.png",
+        "sites/avocado-mini/public/images/motion-tower-front-dual-sensor-concept.png",
+        "sites/avocado-mini/public/images/motion-tower-side-dual-sensor-concept.png",
+        "sites/avocado-mini/public/images/motion-tower-rear-dual-sensor-concept.png",
+        "sites/avocado-mini/public/images/motion-tower-four-point-dual-sensor-concept.png",
+        "sites/avocado-mini/public/images/avocado-mini-kit.png",
+        "sites/avocado-mini/public/images/avocado-mini-head-p0.png",
+        "sites/avocado-mini/public/images/avocado-mini-base-p0.png",
+        "docs/workstreams/05-web-pwa-sites.md",
+        "app/rockstaros/page.tsx",
+        "app/rockstaros/preview.module.css",
+        "public/rockstaros/avocado-mini-concept.png",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "WEB06",
+      "title": "GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する",
+      "status": "in_progress",
+      "dependsOn": [
+        "WEB05"
+      ],
+      "evidence": [
+        "README.md",
+        "app/rockstaros/page.tsx",
+        "app/rockstaros/preview.module.css",
+        "app/api/health/route.ts",
+        "scripts/check-work-api.mjs",
+        "docs/workstreams/05-web-pwa-sites.md"
+      ]
+    },
+    {
+      "id": "WEB07",
+      "title": "利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂",
+      "status": "done",
+      "dependsOn": [
+        "WEB05"
+      ],
+      "evidence": [
+        "README.md",
+        "docs/assets/rockstaros-intro.gif",
+        "docs/assets/cover-avocado-mini.gif",
+        "docs/assets/cover-rockstaros.gif",
+        "docs/assets/cover-sky.gif",
+        "docs/assets/cover-zema.gif",
+        "docs/assets/cover-material-studio.gif",
+        "app/rockstaros/page.tsx",
+        "app/rockstaros/preview.module.css",
+        "docs/product-baseline.md",
+        "data/product-baseline.json"
+      ]
+    },
+    {
+      "id": "WEB09",
+      "title": "avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する",
+      "status": "in_progress",
+      "dependsOn": [
+        "WEB05",
+        "MAT06"
+      ],
+      "evidence": [
+        "README.md",
+        "docs/avocado-mini-crowdfunding.md",
+        "app/rockstaros/crowdfunding/page.tsx",
+        "docs/workstreams/05-web-pwa-sites.md"
+      ]
+    },
+    {
+      "id": "WEB10",
+      "title": "製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加",
+      "status": "done",
+      "dependsOn": [
+        "WEB05",
+        "WEB07"
+      ],
+      "evidence": [
+        "app/rockstaros/page.tsx",
+        "app/rockstaros/preview.module.css",
+        "data/product-baseline.json",
+        "scripts/check-product-baseline.mjs",
+        "docs/product-baseline.md",
+        "docs/workstreams/05-web-pwa-sites.md"
+      ]
+    },
+    {
+      "id": "WEB11",
+      "title": "製品構想モデルをスクロールで一周見せ、参考価格・購入準備中・OS導入へつなぐ",
+      "status": "done",
+      "dependsOn": [
+        "WEB05",
+        "WEB10"
+      ],
+      "evidence": [
+        "components/avocado-turntable.tsx",
+        "components/avocado-turntable.module.css",
+        "app/rockstaros/page.tsx",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "WEB12",
+      "title": "利用者提供の伸縮式センサータワーを製品サイトとGitHubの主役にする",
+      "status": "done",
+      "dependsOn": [
+        "WEB11"
+      ],
+      "evidence": [
+        "public/rockstaros/avocado-mini-tower-concept.png",
+        "components/avocado-turntable.tsx",
+        "components/avocado-turntable.module.css",
+        "app/rockstaros/page.tsx",
+        "README.md",
+        "docs/avocado-mini-hardware-design.md"
+      ]
+    },
+    {
+      "id": "WEB13",
+      "title": "旧URLをavocadoMini公開商品Siteへ転用し、OS操作画面を管理者限定の別Siteへ移す",
+      "status": "in_progress",
+      "dependsOn": [
+        "WEB12"
+      ],
+      "evidence": [
+        "sites/avocado-mini/index.html",
+        "sites/avocado-mini/guide/index.html",
+        "sites/avocado-mini/crowdfunding/index.html",
+        "app/rockstaros/page.tsx",
+        "app/rockstaros/guide/page.tsx",
+        "components/avocado-turntable.tsx",
+        "components/avocado-turntable.module.css",
+        "README.md",
+        "docs/workstreams/05-web-pwa-sites.md",
+        "sites/avocado-mini/src/style.css",
+        "sites/avocado-mini/src/main.js",
+        "project.md",
+        "sites/avocado-mini/rockstaros/index.html",
+        "sites/avocado-mini/vite.config.js"
+      ]
+    },
+    {
+      "id": "BIZ01",
+      "title": "無料配布の対象とOS従量課金の計量単位・単価・上限を確定する",
+      "status": "in_progress",
+      "dependsOn": [
+        "BRD01"
+      ],
+      "evidence": [
+        "README.md",
+        "docs/product-baseline.md",
+        "data/product-baseline.json",
+        "docs/sky-billing.md"
+      ]
+    },
+    {
+      "id": "VER01",
+      "title": "RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理",
+      "status": "done",
+      "dependsOn": [
+        "BRD01"
+      ],
       "evidence": [
         "data/product-identity.json",
         "lib/product-identity.ts",
@@ -377,7 +807,9 @@
       "id": "WLT01",
       "title": "Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装",
       "status": "done",
-      "dependsOn": ["BIL01"],
+      "dependsOn": [
+        "BIL01"
+      ],
       "evidence": [
         "docs/wallet-front-design.md",
         "components/sky-billing.tsx",
@@ -389,7 +821,9 @@
       "id": "WLT02",
       "title": "本人別の残高・売上・経費・取消履歴をD1へ保存するWallet専用APIと操作画面を実装",
       "status": "done",
-      "dependsOn": ["WLT01"],
+      "dependsOn": [
+        "WLT01"
+      ],
       "evidence": [
         "app/api/wallet/route.ts",
         "components/wallet-workspace.tsx",
@@ -401,7 +835,10 @@
       "id": "WLT03",
       "title": "Wallet／ファンド会社を交換可能な外部Providerとして受ける責任境界とadapter契約を固定",
       "status": "done",
-      "dependsOn": ["WLT02", "FND01"],
+      "dependsOn": [
+        "WLT02",
+        "FND01"
+      ],
       "evidence": [
         "docs/external-wallet-fund-provider-boundary-20260913.md",
         "docs/product-baseline.md",
@@ -415,7 +852,10 @@
       "id": "WLT04",
       "title": "Rock Settlement Walletを最初のProviderとして自社利用料のsandbox回収契約を実装",
       "status": "done",
-      "dependsOn": ["WLT03", "BIL01"],
+      "dependsOn": [
+        "WLT03",
+        "BIL01"
+      ],
       "evidence": [
         "lib/financial-provider.ts",
         "tests/financial-provider.test.mjs",
@@ -430,7 +870,10 @@
       "id": "WLT05",
       "title": "Base Mainnet USDCの所有確認付き受取先とfinalized着金照合を本番Wallet・Workerへ接続",
       "status": "done",
-      "dependsOn": ["WLT04", "BIL01"],
+      "dependsOn": [
+        "WLT04",
+        "BIL01"
+      ],
       "evidence": [
         "components/rock-settlement-wallet.tsx",
         "lib/rock-wallet.ts",
@@ -445,14 +888,21 @@
       "id": "WLT06",
       "title": "owner受取Walletを本人署名で登録し、最初の実USDC回収をEarning Receiptへ照合",
       "status": "in_progress",
-      "dependsOn": ["WLT05", "BIL02"],
-      "evidence": ["docs/rock-wallet-production-rail-20260913.md"]
+      "dependsOn": [
+        "WLT05",
+        "BIL02"
+      ],
+      "evidence": [
+        "docs/rock-wallet-production-rail-20260913.md"
+      ]
     },
     {
       "id": "MKT01",
       "title": "あらゆる型付き価値を扱うPAPER市場とexact approval・risk・receipt・position台帳を実装",
       "status": "done",
-      "dependsOn": ["WLT02"],
+      "dependsOn": [
+        "WLT02"
+      ],
       "evidence": [
         "app/market/page.tsx",
         "app/api/market/route.ts",
@@ -468,7 +918,9 @@
       "id": "MKT02",
       "title": "Web PAPER市場のapproval・reservation・receipt・position関係をD1で強制",
       "status": "done",
-      "dependsOn": ["MKT01"],
+      "dependsOn": [
+        "MKT01"
+      ],
       "evidence": [
         "drizzle/0012_marketplace_relation_guards.sql",
         "tests/everything-market.test.mjs",
@@ -481,7 +933,9 @@
       "id": "DB01",
       "title": "全データ境界・table・migration・本番readback状態を一つの監査レポートへ統合",
       "status": "done",
-      "dependsOn": ["MKT02"],
+      "dependsOn": [
+        "MKT02"
+      ],
       "evidence": [
         "scripts/database-status.mjs",
         "data/database-deployments.json",
@@ -494,7 +948,10 @@
       "id": "SPN01",
       "title": "native Walletへsimulation/PAPER限定のValue/Spend台帳・exact approval・再照合を統合",
       "status": "done",
-      "dependsOn": ["WLT02", "MKT01"],
+      "dependsOn": [
+        "WLT02",
+        "MKT01"
+      ],
       "evidence": [
         "systems/rock-star-os/src/blackberryrock/spend.py",
         "systems/rock-star-os/src/blackberryrock/wallet.py",
@@ -508,7 +965,10 @@
       "id": "FND01",
       "title": "ツールの検証済み純収益・実費・receipt・失敗から構成と観測利回りを30秒ごとに再計算",
       "status": "done",
-      "dependsOn": ["WLT02", "MKT01"],
+      "dependsOn": [
+        "WLT02",
+        "MKT01"
+      ],
       "evidence": [
         "lib/automation-fund.ts",
         "lib/automation-fund-store.ts",
@@ -520,10 +980,14 @@
     },
     {
       "id": "WEB01",
-      "title": "主要画面のstyle契約と配備asset closureを検査し、GitHubと本人限定Sitesを同一commitへ固定",
+      "title": "主要画面のstyle契約と配備asset closureを検査し、GitHubと既存Sitesを同一commitへ固定",
       "status": "blocked",
-      "reason": "GitHub mainは全体検証済み。本人限定Sitesは現在の接続アカウントでAccess Denied／project_not_foundとなり、所有workspaceの接続なしでは同一SHA配備とD1本番readbackを実行できない。",
-      "dependsOn": ["SKY14", "WLT02", "HOME01"],
+      "reason": "一般公開の意思は確認済み。既存Sitesは現在の接続アカウントでAccess Denied／project_not_foundとなり、所有workspaceの接続なしでは公開設定変更、同一SHA配備とD1本番readbackを実行できない。",
+      "dependsOn": [
+        "SKY14",
+        "WLT02",
+        "HOME01"
+      ],
       "evidence": [
         "tests/web-route-style-contract.test.mjs",
         "scripts/check-web-asset-closure.mjs",
@@ -537,7 +1001,9 @@
       "id": "HOME01",
       "title": "iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装",
       "status": "done",
-      "dependsOn": ["SKY10"],
+      "dependsOn": [
+        "SKY10"
+      ],
       "evidence": [
         "app/page.tsx",
         "app/sky/page.tsx",
@@ -553,7 +1019,9 @@
       "id": "HOME02",
       "title": "Home以外の全画面へ直接Homeへ戻る導線を常設し、共通・独自レイアウトの回帰を防止",
       "status": "done",
-      "dependsOn": ["HOME01"],
+      "dependsOn": [
+        "HOME01"
+      ],
       "evidence": [
         "components/workspace-shell.tsx",
         "components/sky-chat-workspace.tsx",
@@ -571,7 +1039,9 @@
       "id": "SYS01",
       "title": "端末診断・暗号化設定バックアップ・復元・Web更新確認を設定へ実装",
       "status": "done",
-      "dependsOn": ["HOME01"],
+      "dependsOn": [
+        "HOME01"
+      ],
       "evidence": [
         "app/settings/system/page.tsx",
         "components/system-maintenance.tsx",
@@ -585,7 +1055,9 @@
       "id": "SYS02",
       "title": "通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装",
       "status": "done",
-      "dependsOn": ["SYS01"],
+      "dependsOn": [
+        "SYS01"
+      ],
       "evidence": [
         "components/system-maintenance.tsx",
         "components/system-maintenance.module.css",
@@ -598,7 +1070,9 @@
       "id": "SYS03",
       "title": "公開方法別の最低条件を機械判定し、Web/npm SBOMと設定画面へ統合",
       "status": "done",
-      "dependsOn": ["SYS02"],
+      "dependsOn": [
+        "SYS02"
+      ],
       "evidence": [
         "data/release-readiness.json",
         "scripts/check-release-readiness.mjs",
@@ -612,7 +1086,9 @@
       "id": "SYS04",
       "title": "QEMU rc2を同一候補10要件へ固定し、rc2固有native SBOMを生成して旧inventoryの誤転用を拒否",
       "status": "done",
-      "dependsOn": ["SYS03"],
+      "dependsOn": [
+        "SYS03"
+      ],
       "evidence": [
         "data/qemu-release-audit.json",
         "data/qemu-rc2-legal-info/manifest.csv",
@@ -629,7 +1105,9 @@
       "id": "SYS05",
       "title": "候補準備・法務承認・保護署名・本人署名の64拒否境界試験を全体verifyへ統合",
       "status": "done",
-      "dependsOn": ["SYS04"],
+      "dependsOn": [
+        "SYS04"
+      ],
       "evidence": [
         "scripts/check-release-signing.mjs",
         "scripts/release_signing.py",
@@ -647,7 +1125,9 @@
       "id": "SYS06",
       "title": "Android物理端末とマイナンバー連携を独立監査し、証拠なしの互換・GMS・販売・個人番号有効化を拒否",
       "status": "done",
-      "dependsOn": ["SYS03"],
+      "dependsOn": [
+        "SYS03"
+      ],
       "evidence": [
         "data/android-physical-release-audit.json",
         "data/personal-number-release-audit.json",
@@ -663,14 +1143,16 @@
       "id": "SYS07",
       "title": "Web/PWAのHTTP防御を正本化し、Worker・static asset両経路の実responseを検査",
       "status": "done",
-      "dependsOn": ["SYS03"],
+      "dependsOn": [
+        "SYS03"
+      ],
       "evidence": [
         "data/web-security-policy.json",
         "next.config.ts",
         "public/_headers",
         "scripts/check-web-security-response.mjs",
         "tests/web-security-policy.test.mjs",
-        "docs/evidence/launch/web-security-local-20260915.json",
+        "docs/evidence/launch/web-security-local-20260917.json",
         "docs/validation.md"
       ]
     },
@@ -678,12 +1160,14 @@
       "id": "SYS08",
       "title": "PWA新版の自動即時切替を廃止し、本人確認後の適用・旧cache整理・再読込へ変更",
       "status": "done",
-      "dependsOn": ["SYS07"],
+      "dependsOn": [
+        "SYS07"
+      ],
       "evidence": [
         "public/sw.js",
         "components/system-maintenance.tsx",
         "tests/service-worker-update.test.mjs",
-        "docs/evidence/launch/web-security-local-20260915.json",
+        "docs/evidence/launch/web-security-local-20260917.json",
         "docs/validation.md"
       ]
     },
@@ -691,7 +1175,10 @@
       "id": "SYS09",
       "title": "PWAの同一性・scope・iPhone/Android向けinstall iconを固定し、実HTTP manifestを検査",
       "status": "done",
-      "dependsOn": ["SYS07", "SYS08"],
+      "dependsOn": [
+        "SYS07",
+        "SYS08"
+      ],
       "evidence": [
         "app/manifest.ts",
         "public/rock-icon-192.png",
@@ -699,7 +1186,7 @@
         "public/rock-icon-maskable.svg",
         "scripts/check-web-security-response.mjs",
         "tests/pwa-installability.test.mjs",
-        "docs/evidence/launch/web-security-local-20260915.json",
+        "docs/evidence/launch/web-security-local-20260917.json",
         "docs/validation.md"
       ]
     },
@@ -707,7 +1194,9 @@
       "id": "SYS10",
       "title": "Web第三者依存のlock hash・47要review componentのPURL一覧を公開gateへ固定",
       "status": "done",
-      "dependsOn": ["SYS03"],
+      "dependsOn": [
+        "SYS03"
+      ],
       "evidence": [
         "package-lock.json",
         "data/web-third-party-license-audit.json",
@@ -722,7 +1211,9 @@
       "id": "SYS11",
       "title": "Vite生成chunkのnpm componentをbuild時に記録しlicense監査へ照合",
       "status": "done",
-      "dependsOn": ["SYS10"],
+      "dependsOn": [
+        "SYS10"
+      ],
       "evidence": [
         "vite.config.ts",
         "scripts/web-bundle-inventory.mjs",
@@ -738,7 +1229,9 @@
       "id": "SYS12",
       "title": "運営1名で開始できる緊急保護・限定保守accessの脅威モデルと端末側制御契約を固定",
       "status": "done",
-      "dependsOn": ["SYS05"],
+      "dependsOn": [
+        "SYS05"
+      ],
       "evidence": [
         "data/device-emergency-access-policy.json",
         "docs/security-incident-response.md",
@@ -751,7 +1244,11 @@
       "id": "SYS13",
       "title": "緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験",
       "status": "in_progress",
-      "dependsOn": ["SYS12", "OS11", "RLS02"],
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02"
+      ],
       "evidence": [
         "data/device-emergency-access-policy.json",
         "docs/security-incident-response.md",
@@ -782,7 +1279,9 @@
       "id": "SYS14",
       "title": "製品目的から全層の選択・接続・実証状態を一つの構成監査へ固定",
       "status": "done",
-      "dependsOn": ["R01"],
+      "dependsOn": [
+        "R01"
+      ],
       "evidence": [
         "docs/system-composition.md",
         "data/system-composition-audit.json",
@@ -795,21 +1294,30 @@
       "title": "4参照元の採用判断と事業方針の固定",
       "status": "done",
       "dependsOn": [],
-      "evidence": ["docs/reference-repositories.md"]
+      "evidence": [
+        "docs/reference-repositories.md"
+      ]
     },
     {
       "id": "R02",
       "title": "ggをGitHub rockへ紐付け、既存変更と履歴を保全",
       "status": "done",
       "dependsOn": [],
-      "evidence": ["project.md"]
+      "evidence": [
+        "project.md"
+      ]
     },
     {
       "id": "R03",
       "title": "仕事の作成・実行・確認・再開をAPIと画面で接続",
       "status": "done",
-      "dependsOn": ["R01"],
-      "evidence": ["tests/workflow.test.mjs", "scripts/check-work-api.mjs"]
+      "dependsOn": [
+        "R01"
+      ],
+      "evidence": [
+        "tests/workflow.test.mjs",
+        "scripts/check-work-api.mjs"
+      ]
     },
     {
       "id": "R04",
@@ -826,21 +1334,33 @@
       "id": "R05",
       "title": "回帰検証・移行確認・GitHub保存",
       "status": "done",
-      "dependsOn": ["R02", "R03", "R04"],
-      "evidence": ["docs/validation.md"]
+      "dependsOn": [
+        "R02",
+        "R03",
+        "R04"
+      ],
+      "evidence": [
+        "docs/validation.md"
+      ]
     },
     {
       "id": "R06",
       "title": "ブラウザで仕事の一連の操作を確認",
       "status": "done",
-      "dependsOn": ["R05"],
-      "evidence": ["docs/validation.md"]
+      "dependsOn": [
+        "R05"
+      ],
+      "evidence": [
+        "docs/validation.md"
+      ]
     },
     {
       "id": "R07",
       "title": "本人限定のSitesへ公開・本番確認",
       "status": "done",
-      "dependsOn": ["R06"],
+      "dependsOn": [
+        "R06"
+      ],
       "evidence": [
         "docs/deployment-integration.md",
         "docs/release-followup-20260910.md",
@@ -852,7 +1372,9 @@
       "id": "R08",
       "title": "検証結果・公開停止理由と再開設計の文書化",
       "status": "done",
-      "dependsOn": ["R06"],
+      "dependsOn": [
+        "R06"
+      ],
       "evidence": [
         "project.md",
         "docs/validation.md",
@@ -863,14 +1385,21 @@
       "id": "OS01",
       "title": "既存設計の要件追跡と自動化OS開発設計",
       "status": "done",
-      "dependsOn": ["R01", "R03"],
-      "evidence": ["docs/os-development-design.md"]
+      "dependsOn": [
+        "R01",
+        "R03"
+      ],
+      "evidence": [
+        "docs/os-development-design.md"
+      ]
     },
     {
       "id": "DSP01",
       "title": "共通Core・機種別Device Support Package・4提供区分の設計と検査",
       "status": "done",
-      "dependsOn": ["OS01"],
+      "dependsOn": [
+        "OS01"
+      ],
       "evidence": [
         "docs/device-support-architecture.md",
         "data/device-support-matrix.json",
@@ -881,7 +1410,9 @@
       "id": "OS02",
       "title": "【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認",
       "status": "in_progress",
-      "dependsOn": ["OS01"],
+      "dependsOn": [
+        "OS01"
+      ],
       "evidence": [
         "docs/os-development-design.md",
         "docs/phone-preview-20260911.md",
@@ -893,28 +1424,42 @@
       "id": "OS03",
       "title": "【Android/AOSP別トラック】CuttlefishでOS起動と自律実行の最小縦断試作",
       "status": "planned",
-      "dependsOn": ["OS02"],
-      "evidence": ["docs/os-development-design.md"]
+      "dependsOn": [
+        "OS02"
+      ],
+      "evidence": [
+        "docs/os-development-design.md"
+      ]
     },
     {
       "id": "OS04",
       "title": "【Android/AOSP別トラック】Pixel実機で復旧・省電力・再起動・署名更新を検証",
       "status": "planned",
-      "dependsOn": ["OS03"],
-      "evidence": ["docs/os-development-design.md"]
+      "dependsOn": [
+        "OS03"
+      ],
+      "evidence": [
+        "docs/os-development-design.md"
+      ]
     },
     {
       "id": "OS05",
       "title": "【Android/AOSP別トラック】第三者SDK・審査・インストール・失効の閉鎖テスト",
       "status": "planned",
-      "dependsOn": ["OS04"],
-      "evidence": ["docs/os-development-design.md"]
+      "dependsOn": [
+        "OS04"
+      ],
+      "evidence": [
+        "docs/os-development-design.md"
+      ]
     },
     {
       "id": "OS06",
       "title": "OS共通実行コア・端末DB・Android統合の検証可能な試作",
       "status": "done",
-      "dependsOn": ["OS01"],
+      "dependsOn": [
+        "OS01"
+      ],
       "evidence": [
         "docs/os-prototype.md",
         "docs/validation.md",
@@ -925,7 +1470,9 @@
       "id": "OS07",
       "title": "Local Action Assistantの固定source・オフラインLLM契約・署名限定Binder client/server・APK staging gateを実装",
       "status": "done",
-      "dependsOn": ["OS01"],
+      "dependsOn": [
+        "OS01"
+      ],
       "evidence": [
         "docs/local-ai-os-integration-20260915.md",
         "contracts/local-ai-runtime.json",
@@ -937,7 +1484,9 @@
       "id": "OS08",
       "title": "Local Action AssistantのKotlin・arm64 APKをnative buildし、artifact lockとSoong OS imageへ接続",
       "status": "in_progress",
-      "dependsOn": ["OS07"],
+      "dependsOn": [
+        "OS07"
+      ],
       "evidence": [
         "docs/local-ai-os-integration-20260915.md",
         ".github/workflows/local-ai-apk.yml",
@@ -952,7 +1501,9 @@
       "id": "OS09",
       "title": "確定した対象端末でGGUF import・機内モード推論・変更確認・30分連続温度試験を完走",
       "status": "in_progress",
-      "dependsOn": ["OS08"],
+      "dependsOn": [
+        "OS08"
+      ],
       "evidence": [
         "docs/local-ai-os-integration-20260915.md",
         "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
@@ -964,7 +1515,9 @@
       "id": "OS10",
       "title": "Tool／MCP／Provider共通APIとnative Zema選択Tool経路、本人承認、Wallet台帳、暗号化backup、署名更新gateを実装",
       "status": "in_progress",
-      "dependsOn": ["OS06"],
+      "dependsOn": [
+        "OS06"
+      ],
       "evidence": [
         "docs/platform-core.md",
         "docs/os-prototype.md",
@@ -995,7 +1548,12 @@
       "id": "OS11",
       "title": "Platform CoreをAOSPでbuildしSELinux enforcing boot、production署名更新、OTA rollbackを実機検証",
       "status": "planned",
-      "dependsOn": ["OS10", "OS04", "OS08", "OS09"],
+      "dependsOn": [
+        "OS10",
+        "OS04",
+        "OS08",
+        "OS09"
+      ],
       "evidence": [
         "docs/platform-core.md",
         "docs/phone-preview-20260911.md",
@@ -1011,7 +1569,9 @@
       "id": "G01",
       "title": "GitHubリポジトリの役割・重複監査と正本境界の固定",
       "status": "done",
-      "dependsOn": ["R02"],
+      "dependsOn": [
+        "R02"
+      ],
       "evidence": [
         "docs/git-consolidation.md",
         "data/repository-map.json",
@@ -1023,14 +1583,20 @@
       "id": "G02",
       "title": "vvvvの稼働参照監査と安全なarchive判定",
       "status": "planned",
-      "dependsOn": ["G01"],
-      "evidence": ["docs/git-consolidation.md"]
+      "dependsOn": [
+        "G01"
+      ],
+      "evidence": [
+        "docs/git-consolidation.md"
+      ]
     },
     {
       "id": "G03",
       "title": "Web DBの保存境界・互換migration・重複防止checkを整理",
       "status": "done",
-      "dependsOn": ["G01"],
+      "dependsOn": [
+        "G01"
+      ],
       "evidence": [
         "docs/data-storage-boundaries.md",
         "scripts/check-web-schema.mjs",
@@ -1041,7 +1607,9 @@
       "id": "B01",
       "title": "Sky＋Walletの製品ベース・branch監査・プロンプト規約を保存",
       "status": "done",
-      "dependsOn": ["G01"],
+      "dependsOn": [
+        "G01"
+      ],
       "evidence": [
         "docs/product-baseline.md",
         "docs/product-north-star-20260915.md",
@@ -1055,7 +1623,10 @@
       "id": "B04",
       "title": "main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合",
       "status": "done",
-      "dependsOn": ["B01", "D01"],
+      "dependsOn": [
+        "B01",
+        "D01"
+      ],
       "evidence": [
         "docs/design-implementation-alignment-20260909.md",
         "docs/prompts/os-operational-base-next.md",
@@ -1066,7 +1637,9 @@
       "id": "B02",
       "title": "既存商品のSky実利用と不便の改善・実行/料金/権利の条件拡張",
       "status": "in_progress",
-      "dependsOn": ["B04"],
+      "dependsOn": [
+        "B04"
+      ],
       "evidence": [
         "docs/prompts/hub-wallet-next.md",
         "docs/pc-citations-adapter.md",
@@ -1087,7 +1660,9 @@
       "id": "B03",
       "title": "実行費用・認証済み収益を既存Walletへ接続し縦断検証",
       "status": "in_progress",
-      "dependsOn": ["B02"],
+      "dependsOn": [
+        "B02"
+      ],
       "evidence": [
         "docs/prompts/hub-wallet-next.md",
         "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
@@ -1103,7 +1678,9 @@
       "id": "B05",
       "title": "Wallet連携基礎を使ったSky縦断再試験・PC比較と未実証の端末価値を記録",
       "status": "in_progress",
-      "dependsOn": ["B02"],
+      "dependsOn": [
+        "B02"
+      ],
       "evidence": [
         "docs/prompts/hub-wallet-next.md",
         "docs/hub-wallet-pc-comparison-20260909.md",
@@ -1114,7 +1691,9 @@
       "id": "D01",
       "title": "RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存",
       "status": "done",
-      "dependsOn": ["B01"],
+      "dependsOn": [
+        "B01"
+      ],
       "evidence": [
         "docs/product-baseline.md",
         "docs/os-readiness-audit-20260909.md",
@@ -1127,7 +1706,9 @@
       "id": "V01",
       "title": "旧9abf78a候補のQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す（現rc2へ転用しない）",
       "status": "done",
-      "dependsOn": ["B04"],
+      "dependsOn": [
+        "B04"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/templates/os-acceptance-report.md",
@@ -1149,7 +1730,9 @@
       "id": "GX00",
       "title": "共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証",
       "status": "done",
-      "dependsOn": ["B04"],
+      "dependsOn": [
+        "B04"
+      ],
       "evidence": [
         "docs/design-implementation-alignment-20260909.md",
         "docs/prompts/os-operational-base-next.md",
@@ -1175,7 +1758,9 @@
       "id": "GX01",
       "title": "ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証",
       "status": "done",
-      "dependsOn": ["GX00"],
+      "dependsOn": [
+        "GX00"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-contract-implementation-plan.md",
@@ -1190,14 +1775,20 @@
       "id": "GX02",
       "title": "指定された実ゲームの正式sandbox接続と交換条件を検証",
       "status": "planned",
-      "dependsOn": ["GX01"],
-      "evidence": ["docs/prompts/os-operational-base-next.md"]
+      "dependsOn": [
+        "GX01"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
     },
     {
       "id": "DX01",
       "title": "ゲーム作者向けAPI/SDK・sandbox・複数owner/game分離と導入体験を検証",
       "status": "done",
-      "dependsOn": ["GX00"],
+      "dependsOn": [
+        "GX00"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
@@ -1210,7 +1801,9 @@
       "id": "N01",
       "title": "Linux native OS基準版の公開ソース統合・既存資産の回帰検証",
       "status": "done",
-      "dependsOn": ["G01"],
+      "dependsOn": [
+        "G01"
+      ],
       "evidence": [
         "docs/native-os-integration.md",
         "docs/native-os-validation.md"
@@ -1220,14 +1813,20 @@
       "id": "N02",
       "title": "起動応答確認と自動再読込WIPの検証・採用判断",
       "status": "in_progress",
-      "dependsOn": ["N01"],
-      "evidence": ["docs/native-os-integration.md"]
+      "dependsOn": [
+        "N01"
+      ],
+      "evidence": [
+        "docs/native-os-integration.md"
+      ]
     },
     {
       "id": "N03",
       "title": "実機候補1機種の型番/SKU・boot/BSP・更新/復旧の適合確認",
       "status": "in_progress",
-      "dependsOn": ["OS01"],
+      "dependsOn": [
+        "OS01"
+      ],
       "evidence": [
         "docs/native-os-integration.md",
         "docs/phone-preview-20260911.md",
@@ -1243,7 +1842,10 @@
       "id": "N04",
       "title": "Pixel 10受入後だけ二機種目のDevice Support Package候補を再評価",
       "status": "planned",
-      "dependsOn": ["N01", "N03"],
+      "dependsOn": [
+        "N01",
+        "N03"
+      ],
       "evidence": [
         "docs/device-support-architecture.md",
         "data/device-support-matrix.json"
@@ -1253,14 +1855,20 @@
       "id": "N05",
       "title": "実USB・外部MCP/AI・金融provider・ToB精算と運営pilot",
       "status": "planned",
-      "dependsOn": ["N01"],
-      "evidence": ["docs/native-os-integration.md"]
+      "dependsOn": [
+        "N01"
+      ],
+      "evidence": [
+        "docs/native-os-integration.md"
+      ]
     },
     {
       "id": "RLS01",
       "title": "fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証",
       "status": "done",
-      "dependsOn": ["V01"],
+      "dependsOn": [
+        "V01"
+      ],
       "evidence": [
         "docs/release-installation-plan-20260909.md",
         "docs/rockstaros-1.0-architecture.md",
@@ -1274,7 +1882,10 @@
       "id": "RLS02",
       "title": "正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証",
       "status": "in_progress",
-      "dependsOn": ["RLS01", "N03"],
+      "dependsOn": [
+        "RLS01",
+        "N03"
+      ],
       "evidence": [
         "docs/release-installation-plan-20260909.md",
         "docs/phone-preview-20260911.md",
@@ -1298,7 +1909,9 @@
       "title": "TLS／累積timeoutの原因と最終CIの照合",
       "status": "in_progress",
       "dependsOn": [],
-      "evidence": ["docs/launch-readiness-20260910.md"]
+      "evidence": [
+        "docs/launch-readiness-20260910.md"
+      ]
     },
     {
       "id": "LCH02",
@@ -1362,7 +1975,9 @@
       "title": "同一最終候補の再現配布・導入・復旧リハーサル",
       "status": "in_progress",
       "dependsOn": [],
-      "evidence": ["docs/launch-readiness-20260910.md"]
+      "evidence": [
+        "docs/launch-readiness-20260910.md"
+      ]
     },
     {
       "id": "LCH08",
@@ -1379,16 +1994,20 @@
     },
     {
       "id": "FB01",
-      "title": "Instagram運用・受注型ブランド管理をavocadoOS Hub商品とMCPへ統合",
+      "title": "Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合",
       "status": "done",
       "dependsOn": [],
-      "evidence": ["docs/fashion-brand-ops-integration.md"]
+      "evidence": [
+        "docs/fashion-brand-ops-integration.md"
+      ]
     },
     {
       "id": "FB02",
       "title": "売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成",
       "status": "done",
-      "dependsOn": ["FB01"],
+      "dependsOn": [
+        "FB01"
+      ],
       "evidence": [
         "toolkits/fashion-brand-ops/src/service.mjs",
         "toolkits/fashion-brand-ops/test/service.test.mjs"
@@ -1398,7 +2017,9 @@
       "id": "FB03",
       "title": "DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成",
       "status": "done",
-      "dependsOn": ["FB01"],
+      "dependsOn": [
+        "FB01"
+      ],
       "evidence": [
         "toolkits/fashion-brand-ops/src/service.mjs",
         "toolkits/fashion-brand-ops/test/service.test.mjs"
@@ -1408,7 +2029,9 @@
       "id": "FB04",
       "title": "入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理",
       "status": "done",
-      "dependsOn": ["FB01"],
+      "dependsOn": [
+        "FB01"
+      ],
       "evidence": [
         "toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql",
         "toolkits/fashion-brand-ops/test/service.test.mjs"
@@ -1418,7 +2041,12 @@
       "id": "FB05",
       "title": "改善版Skyの役割フィードへブランド運営役と40 MCP操作を統合",
       "status": "done",
-      "dependsOn": ["FB01", "FB02", "FB03", "FB04"],
+      "dependsOn": [
+        "FB01",
+        "FB02",
+        "FB03",
+        "FB04"
+      ],
       "evidence": [
         "components/sky-workspace.tsx",
         "lib/sky-routing.ts",
@@ -1430,7 +2058,10 @@
       "id": "FB06",
       "title": "Instagram画面の写真から未確認候補を作り、Meta確認後だけ運用対象へ進める",
       "status": "done",
-      "dependsOn": ["FB01", "FB05"],
+      "dependsOn": [
+        "FB01",
+        "FB05"
+      ],
       "evidence": [
         "docs/instagram-photo-onboarding-20260912.md",
         "toolkits/fashion-brand-ops/db/migrations/004_screenshot_account_intake.sql",
@@ -1457,14 +2088,20 @@
       "id": "BIL02",
       "title": "有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入",
       "status": "in_progress",
-      "dependsOn": ["BIL01"],
-      "evidence": ["docs/sky-billing.md"]
+      "dependsOn": [
+        "BIL01"
+      ],
+      "evidence": [
+        "docs/sky-billing.md"
+      ]
     },
     {
       "id": "BIL03",
       "title": "メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加",
       "status": "done",
-      "dependsOn": ["BIL01"],
+      "dependsOn": [
+        "BIL01"
+      ],
       "evidence": [
         "docs/mercari-revenue-loop.md",
         "lib/mercari-revenue.ts",
@@ -1504,7 +2141,9 @@
       "task": "V01",
       "title": "旧b8287bc候補のOS起動・安全基礎（現rc2の全体合格ではない）",
       "status": "done",
-      "dependsOn": ["B04-INTEGRATED"],
+      "dependsOn": [
+        "B04-INTEGRATED"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/os-base/freeze-b8287bc.json",
@@ -1518,7 +2157,9 @@
       "task": "B02",
       "title": "既存native商品1件をSkyで実処理・保存",
       "status": "done",
-      "dependsOn": ["V01-BOOT"],
+      "dependsOn": [
+        "V01-BOOT"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/os-base/business-wallet-foundation-b8287bc.json",
@@ -1530,7 +2171,9 @@
       "task": "B03",
       "title": "単一ownerの合成Wallet・商品/費用/売上状態の基礎",
       "status": "done",
-      "dependsOn": ["B02-NATIVE"],
+      "dependsOn": [
+        "B02-NATIVE"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/os-base/business-wallet-foundation-b8287bc.json",
@@ -1543,7 +2186,11 @@
       "task": "V01",
       "title": "旧9abf78a候補でD0〜D6縦断合格（現rc2へ転用しない）",
       "status": "done",
-      "dependsOn": ["V01-BOOT", "B02-NATIVE", "B03-FIXTURE"],
+      "dependsOn": [
+        "V01-BOOT",
+        "B02-NATIVE",
+        "B03-FIXTURE"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/os-acceptance-9abf78a-20260910.md",
@@ -1556,23 +2203,34 @@
       "task": "B03",
       "title": "実provider/認証済み収益（別の権限・条件が必要）",
       "status": "planned",
-      "dependsOn": ["B03-FIXTURE"],
-      "evidence": ["docs/prompts/os-operational-base-next.md"]
+      "dependsOn": [
+        "B03-FIXTURE"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
     },
     {
       "id": "B05-COMPARE",
       "task": "B05",
       "title": "Wallet基礎後のPC比較/再試験。実機価値は別判定",
       "status": "planned",
-      "dependsOn": ["B02-NATIVE", "B03-FIXTURE"],
-      "evidence": ["docs/prompts/os-operational-base-next.md"]
+      "dependsOn": [
+        "B02-NATIVE",
+        "B03-FIXTURE"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
     },
     {
       "id": "GX00-ISOLATION",
       "task": "GX00",
       "title": "ADR・複数owner分離/本人接続・互換/復旧の合成検証",
       "status": "done",
-      "dependsOn": ["B03-FIXTURE"],
+      "dependsOn": [
+        "B03-FIXTURE"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/gx00/integration.json",
@@ -1584,7 +2242,9 @@
       "task": "GX01",
       "title": "複数owner/gameの交換契約と両台帳fixture",
       "status": "done",
-      "dependsOn": ["GX00-ISOLATION"],
+      "dependsOn": [
+        "GX00-ISOLATION"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-native-ui-20260910.md",
@@ -1600,7 +2260,10 @@
       "task": "GX01",
       "title": "OS上の交換操作と台帳変更後D4/D5再検証",
       "status": "done",
-      "dependsOn": ["GX01-CONTRACT", "V01-BOOT"],
+      "dependsOn": [
+        "GX01-CONTRACT",
+        "V01-BOOT"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-native-ui-20260910.md",
@@ -1615,7 +2278,9 @@
       "task": "DX01",
       "title": "共通SDK・2作者/2game/2owner・fresh導入測定",
       "status": "done",
-      "dependsOn": ["GX01-CONTRACT"],
+      "dependsOn": [
+        "GX01-CONTRACT"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
@@ -1629,7 +2294,9 @@
       "task": "RLS01",
       "title": "旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない）",
       "status": "done",
-      "dependsOn": ["V01-ACCEPT"],
+      "dependsOn": [
+        "V01-ACCEPT"
+      ],
       "evidence": [
         "docs/release-installation-plan-20260909.md",
         "docs/evidence/rls01/final-9abf78a/summary.json",
@@ -1641,7 +2308,9 @@
       "task": "OS11",
       "title": "有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze",
       "status": "planned",
-      "dependsOn": ["PREVIEW-INSTALL"],
+      "dependsOn": [
+        "PREVIEW-INSTALL"
+      ],
       "evidence": [
         "docs/phone-preview-20260911.md",
         "docs/product-baseline.md",
@@ -1661,7 +2330,10 @@
       "task": "RLS02",
       "title": "初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走",
       "status": "planned",
-      "dependsOn": ["PREVIEW-INSTALL", "ANDROID-PREFULL"],
+      "dependsOn": [
+        "PREVIEW-INSTALL",
+        "ANDROID-PREFULL"
+      ],
       "evidence": [
         "docs/android-first-flash-gate-20260916.md",
         "data/android-first-flash-gate.json",
@@ -1774,8 +2446,17 @@
     "targetFamilyConfirmed": true,
     "targetConfirmed": true,
     "deviceReadbackConfirmed": true,
-    "buildEnvironment": "USER_HAS_NONE",
+    "buildEnvironment": "SCALEWAY_DRAFT_AWAITING_EXPLICIT_COST_CONFIRMATION",
     "cloudProvisioned": false,
+    "compileBringupGate": {
+      "implemented": true,
+      "mode": "bringup",
+      "operatorAgent": "EXPLICITLY_EXCLUDED_UNLESS_PUBLIC_CONFIG_IS_SUPPLIED",
+      "testSigningOnly": true,
+      "releaseFlashAllowed": false,
+      "releaseGateStillFailClosed": true,
+      "verification": "18 Python tests, shell syntax, OS contract check and Android architecture tests passed"
+    },
     "sourceLock": "os/physical/frankel-source-lock.json",
     "dspSourceAudit": "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json",
     "sourceTag": "2026091000",
@@ -1799,13 +2480,29 @@
         "maximum": 30
       },
       "approvedBudget": null,
-      "status": "PROPOSED_NOT_APPROVED",
-      "accountConfigured": false,
+      "status": "SCALEWAY_CONFIGURATION_READY_AWAITING_EXPLICIT_CONFIRMATION",
+      "accountConfigured": true,
       "spendIncurredByThisWork": false
     },
+    "scalewayDraft": {
+      "zone": "fr-par-1",
+      "instanceType": "COMPUTE3-X32C-64G",
+      "vcpus": 32,
+      "vcpuType": "dedicated",
+      "memoryGiB": 64,
+      "image": "Ubuntu 24.04 Noble Numbat",
+      "blockStorage5kGiB": 600,
+      "instanceHourlyEurExcludingTax": 0.9363,
+      "storageHourlyEurExcludingTax": 0.078,
+      "ipv4HourlyEurExcludingTax": 0.005,
+      "totalHourlyEurExcludingTax": 1.0193,
+      "eightHourEstimateEurExcludingTax": 8.1544,
+      "twentyFourHourEstimateEurExcludingTax": 24.4632,
+      "created": false
+    },
     "targetDiscussion": "Read-only ADB confirmed the owner-selected first physical target as Japan-market Pixel 10 / frankel / GL066 on 2026-09-16. It is locked with an alternate verified-boot root. The signed 2026091000 source tag and Dynamic Partition / Virtual A/B / AVB layout are frozen. Test-signed apps passed the 23-check pre-full-build physical suite including non-destructive reboot recovery and hardware-backed file export. Exact Google factory/full-OTA artifacts, vendor inventory, production signing, destructive wipe restore, build, unlock and flash remain unapproved or incomplete.",
-    "recommendedBuildEnvironment": "DigitalOcean CPU-Optimized Regular 48 vCPU / 96 GiB / 600 GiB / Ubuntu 24.04 x86_64; Google Cloud is the alternative for detachable persistent storage",
-    "latestRequest": "Keep the external Provider in the app/server gate, freeze the common Pixel 10 GL066 OS inputs in order, and do not start full build or flash before recovery, vendor and signing inputs pass",
+    "recommendedBuildEnvironment": "Scaleway COMPUTE3-X32C-64G / 32 dedicated vCPU / 64 GiB / 600 GiB Block Storage 5K / Ubuntu 24.04 x86_64 in fr-par-1",
+    "latestRequest": "Use the current Git main as source of truth, split COMPILE_BRINGUP from RELEASE_FLASH, and run the Pixel 10 GL066 compile-only Developer Preview full build without flashing or production signing",
     "externalProviderBoundary": {
       "includedInFirstOsFullBuild": false,
       "implementation": "APP_AND_SERVER",

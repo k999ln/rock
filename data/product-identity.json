@@ -1,12 +1,12 @@
 {
   "schema": "rockstaros-product-identity/1",
-  "displayName": "avocadoOS",
+  "displayName": "RockstarOS",
   "internalIdentifier": "dev.rock",
   "version": "1.0",
   "releaseStage": "developer_preview",
   "releaseStageLabel": "Developer Preview",
-  "releaseName": "avocadoOS 1.0",
-  "previewName": "avocadoOS 1.0 Developer Preview",
+  "releaseName": "RockstarOS 1.0",
+  "previewName": "RockstarOS 1.0 Developer Preview",
   "versioning": {
     "format": "major.minor",
     "minorExample": "1.5",

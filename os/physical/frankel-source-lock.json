@@ -108,5 +108,5 @@
     "production signing and recovery plan",
     "production Operator Agent WebAuthn trust overlay and per-device StrongBox attestation enrollment"
   ],
-  "notes": "The owner-selected physical target was read back on 2026-09-16 as Google Pixel 10 / frankel / GL066. The signed 2026091000 source tag and read-only device layout are frozen, but exact Google factory/full-OTA bytes, generated vendor inventory, production signing, Operator Agent production trust/enrollment, OS build, flash, boot and restore remain blocked. Neither GrapheneOS support nor the existing QEMU acceptance proves avocadoOS hardware support."
+  "notes": "The owner-selected physical target was read back on 2026-09-16 as Google Pixel 10 / frankel / GL066. The signed 2026091000 source tag and read-only device layout are frozen, but exact Google factory/full-OTA bytes, generated vendor inventory, production signing, Operator Agent production trust/enrollment, OS build, flash, boot and restore remain blocked. Neither GrapheneOS support nor the existing QEMU acceptance proves RockstarOS hardware support."
 }

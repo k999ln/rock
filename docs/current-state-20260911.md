@@ -2,7 +2,7 @@
 
 ## 2026-09-16 — RQ48に沿ったAIネイティブOS詳細設計
 
-製品の中心は高性能・交換可能なローカルLLMとoffline agentを持つavocadoOS。現行設計入口は[AIネイティブOS詳細設計](ai-native-os-architecture.md)、監査は[Sol設計監査](ai-native-os-design-audit.md)、次の実装は進捗JSONのAI02〜AI06。Sky／Zemaを第一者systemとし、便利機能と非金融Game／IPを同じCoreへ接続する。Game開発をFund収益の完成待ちにしない。設計担当はAstra、監査担当はSol。下記の日付付き履歴は当時の状態であり、最新正本と証拠を優先する。
+製品の中心は高性能・交換可能なローカルLLMとoffline agentを持つRockstarOS。現行設計入口は[AIネイティブOS詳細設計](ai-native-os-architecture.md)、監査は[Sol設計監査](ai-native-os-design-audit.md)、次の実装は進捗JSONのAI02〜AI06。Sky／Zemaを第一者systemとし、便利機能と非金融Game／IPを同じCoreへ接続する。Game開発をFund収益の完成待ちにしない。設計担当はAstra、監査担当はSol。下記の日付付き履歴は当時の状態であり、最新正本と証拠を優先する。
 
 ## 2026-09-16 — 復旧・vendor・署名手順のfull build入力検査を実装
 
@@ -36,7 +36,7 @@ OSを書き換えていない所有Pixel 10 GL066へ、試験専用同一署名�
 
 ## 2026-09-16 — Pixel 10 GL066の実機readback完了
 
-USB承認済みの所有端末を読取り専用ADBで確認し、最初の物理対象を日本向けGoogle Pixel 10、型番／SKU `GL066`、codename `frankel`へ確定した。現在はGrapheneOS `2026091000`／Android 17、bootloader locked、alternate verified-boot rootのyellow状態。端末serialは保存していない。Android物理端末の機種／SKU gateだけを1/6合格とし、BSP／復旧、SELinux enforcing分離、CDD／CTS／CTS Verifier／VTS、production署名、販売地域、avocadoOSのflash／bootは未合格のまま。単体APK＋GGUF実機試験は上記のとおり後続で完了した。
+USB承認済みの所有端末を読取り専用ADBで確認し、最初の物理対象を日本向けGoogle Pixel 10、型番／SKU `GL066`、codename `frankel`へ確定した。現在はGrapheneOS `2026091000`／Android 17、bootloader locked、alternate verified-boot rootのyellow状態。端末serialは保存していない。Android物理端末の機種／SKU gateだけを1/6合格とし、BSP／復旧、SELinux enforcing分離、CDD／CTS／CTS Verifier／VTS、production署名、販売地域、RockstarOSのflash／bootは未合格のまま。単体APK＋GGUF実機試験は上記のとおり後続で完了した。
 
 ## 2026-09-15 — 最初の物理対象をPixel 10へ決定
 

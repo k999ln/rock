@@ -4,7 +4,7 @@ import SkyChatWorkspace from '@/components/sky-chat-workspace';
 import ZemaHomeWorkspace from '@/components/zema-home-workspace';
 
 export const metadata: Metadata = {
-  title: 'Zema — avocadoOS',
+  title: 'Zema — RockstarOS',
 };
 
 export default async function ChatPage({

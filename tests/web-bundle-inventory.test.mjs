@@ -33,6 +33,24 @@ void test('bundle module IDs resolve to exact flat, scoped, and nested package-l
     'node_modules/plain/node_modules/nested',
   );
   assert.equal(packageLockPathForModule({ root, moduleId: '/outside/pkg.js', lock }), null);
+  assert.equal(
+    packageLockPathForModule({
+      root,
+      moduleId: '/shared/dependencies/node_modules/@scope/pkg/main.js',
+      lock,
+      nodeModulesRoot: '/shared/dependencies/node_modules',
+    }),
+    'node_modules/@scope/pkg',
+  );
+  assert.equal(
+    packageLockPathForModule({
+      root,
+      moduleId: '/outside/pkg.js',
+      lock,
+      nodeModulesRoot: '/shared/dependencies/node_modules',
+    }),
+    null,
+  );
 });
 
 void test('bundle license audit reports exact Vite components without claiming legal clearance', () => {

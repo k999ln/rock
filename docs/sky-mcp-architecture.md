@@ -78,7 +78,7 @@ RockstarOSには既存native OS向けの固定fixtureとprivate device APIに加
 - 公開HTTPS以外、IP直指定、ローカル・内部ネットワーク名、巨大応答、過剰なツール一覧を掲載診断から拒否。
 - PC接続は対応MCP版を交渉して保持し、4件の必須ツールがあれば追加ツールを許容。ツール総数の増加だけでは接続を壊さない。
 - 現在の本人限定SiteをPCパックの許可Originへ追加し、公開中のSkyからloopback接続できる配布物へ更新。
-- Web/PCで使用可能4件、OSS候補3件、native内蔵6種類・9版を実数から検査。
+- Sky catalogのready 11件、導入候補13件、native内蔵6種類・9版を実数から検査。
 - 審査済みregistryからstdio / Streamable HTTPを扱うPC内Connector。
 - MCP 2025-11-25から2024-11-05までのversion確認、initialize、initialized通知、pagination付きtools/list。
 - server identity、capabilities、tool schema digest、接続時刻を持つConnection Passport。

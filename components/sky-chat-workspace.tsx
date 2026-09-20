@@ -567,11 +567,16 @@ export default function SkyChatWorkspace() {
   function recordWorkflowStatus(status: WorkflowStatus, toolId: string) {
     setWorkflowStatus(status);
     if (status === 'ready') return;
+    const candidate = catalog.find((item) => item.id === toolId)?.status === 'candidate';
     const key = `${activeRequest?.id ?? ''}:${status}`;
     if (lastProgressRef.current === key) return;
     lastProgressRef.current = key;
-    const text = status === 'running' ? '実行を開始しました。結果を待っています。'
-      : status === 'completed' ? '実行が完了しました。結果を確認できます。'
+    const text = status === 'running' ? candidate
+      ? 'ローカル下書きを作成しています。外部サービスは実行しません。'
+      : '実行を開始しました。結果を待っています。'
+      : status === 'completed' ? candidate
+        ? 'ローカル下書きを作成しました。外部機能は未実行です。'
+        : '実行が完了しました。結果を確認できます。'
       : '実行を完了できませんでした。内容を確認してください。';
     setMessages((current) => [...current, {
       id: `progress-${crypto.randomUUID()}`, side: 'sky', text, tool: toolId,
@@ -580,10 +585,13 @@ export default function SkyChatWorkspace() {
 
   function recordOutcome(next: { ok: boolean; text: string }, toolId: string) {
     setOutcome(next);
+    if (toolId !== 'jev-evaluation')
+      setWorkflowStatus(next.ok ? 'completed' : 'failed');
+    const candidate = catalog.find((item) => item.id === toolId)?.status === 'candidate';
     setMessages((current) => [...current, {
       id: `result-${crypto.randomUUID()}`,
       side: 'sky',
-      text: next.ok ? `結果：${next.text}` : `確認が必要：${next.text}`,
+      text: next.ok ? `${candidate ? '下書き' : '結果'}：${next.text}` : `確認が必要：${next.text}`,
       tool: toolId,
     }]);
   }
@@ -860,7 +868,7 @@ export default function SkyChatWorkspace() {
         <header className="sky-chat-commandbar">
           <button type="button" className="zema-sidebar-toggle" aria-label="会話履歴を開く" onClick={() => setSidebarOpen(true)}><PanelLeft size={20} /></button>
           <div>
-            <span>avocadoOS</span>
+            <span>RockstarOS</span>
             <h1>Zema</h1>
           </div>
           <nav aria-label="Zemaナビゲーション">
@@ -1070,9 +1078,11 @@ export default function SkyChatWorkspace() {
                       {activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local'
                         ? '実行器待ち'
                         : workflowStatus === 'running'
-                        ? '処理中'
-                        : workflowStatus === 'completed'
-                          ? '結果あり'
+                          ? '処理中'
+                          : activeTool?.runner === 'jev-evaluation' && outcome?.ok
+                            ? '評価Receiptあり'
+                            : workflowStatus === 'completed'
+                              ? activeTool?.runner === 'candidate-local' ? '下書きあり' : '結果あり'
                           : workflowStatus === 'failed'
                             ? '要確認'
                             : '入力待ち'}

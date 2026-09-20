@@ -1,4 +1,5 @@
 import { env } from 'cloudflare:workers';
+import { database } from '@/lib/fund-store';
 import {
   buildPatentAiRequest,
   parsePatentAiResponse,
@@ -13,7 +14,7 @@ const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
 export async function POST(request: Request) {
   try {
-    await authorizeRemoteAiRequest(request, 'patent-research');
+    await authorizeRemoteAiRequest(request, 'patent-research', database());
     const raw = await request.text();
     if (raw.length > 12_000) throw new Error('INVALID_INPUT');
     const input = validatePatentAiInput(JSON.parse(raw));

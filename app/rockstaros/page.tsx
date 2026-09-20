@@ -1,88 +1,41 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import previewData from '../../data/rockstaros-preview.json';
+import { AvocadoTurntable } from '../../components/avocado-turntable';
 import styles from './preview.module.css';
 
-const studioUrl = 'https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio';
-const installUrl = previewData.publicDownloadUrl ?? '/rockstaros/guide#install';
-
-const developerCode = `import { createSkyToolApp } from '@rockstaros/sky-tool-sdk';
-
-const sky = createSkyToolApp({
-  skyUrl: process.env.SKY_URL,
-  developerToken: process.env.SKY_DEVELOPER_TOKEN,
-});
-
-sky.tool({
-  name: 'my_tool',
-  description: 'What your tool does',
-  handler: async (input) => runMyTool(input),
-});
-
-await sky.start({ port: 8787 });`;
-
 export const metadata: Metadata = {
-  title: 'avocadoOS — Install the future of work',
-  description: 'avocadoOSをインストールし、Skyで自動化ツールを開発する。',
+  title: 'avocadoMini — 製品紹介',
+  description:
+    'avocadoMiniは4本のMotion TowerとEdge Hubからなるキット構想。デザインを一周見て、税込41万円のキット目標価格を確認できます。RockstarOSの導入案内は別ページです。',
 };
 
-export default function RockstarPreview() {
+export default function AvocadoMiniProductHome() {
   return (
-    <main className={styles.landing}>
+    <main className={`${styles.landing} ${styles.productLanding}`}>
       <header className={styles.landingHeader}>
-        <Link href="/" className={styles.brand} aria-label="ホームへ戻る">
-          avocado<span>OS</span>
-        </Link>
-        <span className={styles.version}>1.0 / DEVELOPER PREVIEW</span>
+        <span className={styles.brand}>avocadoMini</span>
+        <nav className={styles.productNav} aria-label="製品ページ内のメニュー">
+          <a href="#design">製品を見る</a>
+          <a href="#os-install-title">OS導入</a>
+          <Link href="/rockstaros/crowdfunding">クラファン構想</Link>
+        </nav>
       </header>
 
-      <section className={styles.installHero} aria-labelledby="preview-title">
-        <div className={styles.heroGlow} aria-hidden="true" />
-        <p className={styles.kicker}>AI AUTOMATION OPERATING SYSTEM</p>
-        <h1 id="preview-title">
-          Make time.
-          <br />
-          Make anything.
-        </h1>
-        <p className={styles.heroJa}>仕事をSkyに任せて、次をつくる。</p>
-        <a className={styles.installButton} href={installUrl}>
-          <span>OSをインストール</span>
-          <span aria-hidden="true">↗</span>
-        </a>
-        <p className={styles.installNote}>
-          Apple Silicon Mac向け仮想OS · 現在は公開前のDeveloper Preview
-        </p>
-      </section>
+      <AvocadoTurntable />
 
-      <section className={styles.developer} aria-labelledby="developer-title">
-        <div className={styles.developerIntro}>
-          <p className={styles.kicker}>SKY / DEVELOPERS</p>
-          <h2 id="developer-title">Your code.<br />Now a Sky tool.</h2>
-          <p>
-            コードを貼るだけ。Sky用の定義とPackageを生成し、開発者Studioから登録できます。
-          </p>
-          <a
-            className={styles.studioLink}
-            href={studioUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Sky Studioを開く <span aria-hidden="true">↗</span>
-          </a>
+      <nav className={styles.access} aria-label="導入案内とクラファン構想への入口">
+        <h2>使い始める、その前に。</h2>
+        <p>ここはavocadoMiniの製品ホームです。RockstarOSの利用画面は導入後に使う場所として分け、現在の導入条件と配布状況はガイドで案内します。</p>
+        <div className={styles.accessCards}>
+          <Link href="/rockstaros/guide"><strong>OS導入ガイドを見る</strong><span>Developer Previewの対象環境、配布状況、導入手順へ。</span></Link>
+          <Link href="/rockstaros/crowdfunding"><strong>クラファン構想を見る</strong><span>試作と検証の計画を読む。支援募集と決済はまだ始まっていません。</span></Link>
         </div>
-
-        <div className={styles.codeWindow} aria-label="Sky Tool SDKの最小コード例">
-          <div className={styles.codeTopbar}>
-            <span>sky-tool.mjs</span>
-            <span>SDK / NODE.JS</span>
-          </div>
-          <pre><code>{developerCode}</code></pre>
-        </div>
-      </section>
+        <p className={styles.installNote}>avocadoMiniは設計段階です。実機の販売と一般向けOSインストーラーはまだ始まっていません。</p>
+      </nav>
 
       <footer className={styles.landingFooter}>
         <span>© 2026 KAIYA</span>
-        <span>avocadoOS / DEVELOPER PREVIEW</span>
+        <span>avocadoMini — 製品紹介</span>
       </footer>
     </main>
   );

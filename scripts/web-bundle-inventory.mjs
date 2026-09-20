@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, realpathSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, relative, resolve, sep } from 'node:path';
 
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
@@ -16,10 +16,14 @@ const unresolvedPackageName = (id) => {
   return segments[0]?.startsWith('@') ? segments.slice(0, 2).join('/') : segments[0];
 };
 
-export function packageLockPathForModule({ root, moduleId, lock }) {
+export function packageLockPathForModule({ root, moduleId, lock, nodeModulesRoot = resolve(root, 'node_modules') }) {
   const cleaned = cleanModuleId(moduleId);
-  const relativePath = relative(root, cleaned).split(sep).join('/');
-  if (!relativePath || relativePath.startsWith('../') || relativePath === '..') return null;
+  let relativePath = relative(root, cleaned).split(sep).join('/');
+  if (!relativePath || relativePath.startsWith('../') || relativePath === '..') {
+    const dependencyPath = relative(nodeModulesRoot, cleaned).split(sep).join('/');
+    if (!dependencyPath || dependencyPath.startsWith('../') || dependencyPath === '..') return null;
+    relativePath = `node_modules/${dependencyPath}`;
+  }
   const segments = relativePath.split('/');
   let match = null;
   for (let index = 0; index < segments.length; index += 1) {
@@ -32,8 +36,8 @@ export function packageLockPathForModule({ root, moduleId, lock }) {
   return match;
 }
 
-const componentForModule = ({ root, moduleId, lock }) => {
-  const path = packageLockPathForModule({ root, moduleId, lock });
+const componentForModule = ({ root, moduleId, lock, nodeModulesRoot }) => {
+  const path = packageLockPathForModule({ root, moduleId, lock, nodeModulesRoot });
   if (!path) return null;
   const entry = lock.packages[path];
   const name = entry.name || path.split('node_modules/').at(-1);
@@ -74,6 +78,7 @@ export function createWebBundleInventoryPlugin({
 } = {}) {
   const lockBytes = readFileSync(resolve(root, 'package-lock.json'));
   const lock = JSON.parse(lockBytes);
+  const nodeModulesRoot = realpathSync(resolve(root, 'node_modules'));
   const packageLockSha256 = sha256(lockBytes);
   const state = new Map();
   let initialized = false;
@@ -98,7 +103,7 @@ export function createWebBundleInventoryPlugin({
         if (output.type !== 'chunk') continue;
         environment.chunks.add(output.fileName);
         for (const moduleId of Object.keys(output.modules || {})) {
-          const component = componentForModule({ root, moduleId, lock });
+          const component = componentForModule({ root, moduleId, lock, nodeModulesRoot });
           if (component) {
             environment.components.set(component.purl, component);
           } else if (cleanModuleId(moduleId).includes(`${sep}node_modules${sep}`)) {

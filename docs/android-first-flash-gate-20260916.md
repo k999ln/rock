@@ -1,4 +1,4 @@
-# avocadoOS 初回flash前の固定ゲート
+# RockstarOS 初回flash前の固定ゲート
 
 対象は所有済み Google Pixel 10 / `frankel` / GL066。正本は
 `data/android-first-flash-gate.json`。4項目がすべて合格するまで、初回flash、unlock後の書込み、`flashReady=true` を禁止する。
@@ -28,7 +28,7 @@ Gitへ保存するのは公開鍵fingerprint、key set ID、保管方式、手�
 
 rollback indexは単なるversion名ではなく、端末に保存される単調増加値として管理する。最終値はtarget-filesとAVB metadataを生成した後に固定する。
 
-採番方式は、avocadoOS管理locationに署名前固定の正式release UTC Unix秒を使い、直前のproduction releaseより必ず増加させる。Google管理部分は純正値を維持する。A/B端末内のstored indexはtrial slotから進めず、新slotが`SUCCESSFUL`になった後だけ確定する。詳細は`docs/android-rollback-index-policy.md`を正本とする。
+採番方式は、RockstarOS管理locationに署名前固定の正式release UTC Unix秒を使い、直前のproduction releaseより必ず増加させる。Google管理部分は純正値を維持する。A/B端末内のstored indexはtrial slotから進めず、新slotが`SUCCESSFUL`になった後だけ確定する。詳細は`docs/android-rollback-index-policy.md`を正本とする。
 
 合格条件:
 
@@ -45,7 +45,7 @@ data救出のために古いbootloaderへ下げる運用は作らない。復旧
 
 Google利用条件を本人が確認した後、`frankel`に対応するfactory imageとfull OTAの実ファイルを取得する。URLやページ名だけでは合格にしない。
 
-選定は、avocadoOS firmware baselineのfreeze時点におけるGoogle公式最新安定版とし、factory imageとfull OTAを必ず同一buildで揃える。full OTAは非wipe復旧と両slot boot可能化、factory imageはwipeを伴う最終復旧に使う。詳細は`docs/android-google-stock-recovery.md`を正本とする。
+選定は、RockstarOS firmware baselineのfreeze時点におけるGoogle公式最新安定版とし、factory imageとfull OTAを必ず同一buildで揃える。full OTAは非wipe復旧と両slot boot可能化、factory imageはwipeを伴う最終復旧に使う。詳細は`docs/android-google-stock-recovery.md`を正本とする。
 
 合格条件:
 
@@ -68,7 +68,7 @@ Google利用条件を本人が確認した後、`frankel`に対応するfactory 
 
 方式は `avocadoos-recoverable-backup/2` に固定した。backupごとに新しい256-bit DEKでpayloadをAES-256-GCM暗号化し、同じDEKをhardware-backed Keystore鍵と、所有者だけの256-bit recovery secretの2経路でwrapする。recovery secretはchecksum付き24単語で提示し、HKDF-SHA-256、backupごとの256-bit salt、format／owner domain separationを使う。短いpasswordだけの復元、運営の万能復号鍵、server escrowは禁止する。詳細は`docs/android-backup-recovery.md`を正本とする。
 
-dual-wrapped envelope、avocadoOS専用24単語codec、4単語確認UI、Shell API v4 export／import、transactional restore、新端末Keystore再bindingは実装し、Android 15 emulatorで合格した。復元は空のowner領域だけへ行い、自動化を停止状態にし、Sky tokenをrotateし、古いactive承認を停止し、導入componentのauthorityを復元しない。生のWallet秘密鍵やseed phraseをbackupへ含めず、復元要素そのものを運営サーバーやGitへ保存しない。残る未完了はPixel全消去後の物理復元と再起動確認である。
+dual-wrapped envelope、RockstarOS専用24単語codec、4単語確認UI、Shell API v4 export／import、transactional restore、新端末Keystore再bindingは実装し、Android 15 emulatorで合格した。復元は空のowner領域だけへ行い、自動化を停止状態にし、Sky tokenをrotateし、古いactive承認を停止し、導入componentのauthorityを復元しない。生のWallet秘密鍵やseed phraseをbackupへ含めず、復元要素そのものを運営サーバーやGitへ保存しない。残る未完了はPixel全消去後の物理復元と再起動確認である。
 
 合格条件:
 

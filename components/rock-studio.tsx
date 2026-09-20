@@ -98,7 +98,7 @@ export default function RockStudio() {
       <header className="studio-chat-header">
         <div className="studio-chat-brand">
           <Link href="/" className="studio-wordmark" aria-label="ホームへ戻る">
-            avocado<span>OS</span>
+            Rockstar<span>OS</span>
           </Link>
           <span className="studio-product-name">/ STUDIO</span>
         </div>

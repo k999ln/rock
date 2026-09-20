@@ -1,4 +1,4 @@
-# avocadoOS AIネイティブOS設計—Sol独立監査
+# RockstarOS AIネイティブOS設計—Sol独立監査
 
 監査日: 2026-09-16  
 監査範囲: 初回正本 v1.70、最終作業tree v1.71、基準source `678e9c9a14e8de9cd61dfd1cad8e71e342783c4f` からの今回作業差分  
@@ -9,7 +9,7 @@
 
 設計は **条件付き合格** とする。RQ48の製品中核、SkyとZemaの責任分離、model/runtime交換、model非依存記憶、offline復旧、外部作用照合、app/OS保証差、Game/IPの独立trackは、実装可能な契約と受入に分解された。月50万円は将来の検証指標であり保証ではない。Pixel 10 GL066 / `frankel` が最初の物理対象で、GMS、カメラ、Game、実収益、FundはCore起動の必須依存ではない。
 
-これは **設計の合格** である。交換可能runtime、限定記憶、外部作用outbox、多端末Sky、Game/IP縦断、avocadoOS imageの完成を実装済みとする判定ではない。
+これは **設計の合格** である。交換可能runtime、限定記憶、外部作用outbox、多端末Sky、Game/IP縦断、RockstarOS imageの完成を実装済みとする判定ではない。
 
 ## 2026-09-19追補 — LLM分類とJev
 

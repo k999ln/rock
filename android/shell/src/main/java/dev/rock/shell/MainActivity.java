@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/** Unprivileged avocadoOS shell. Persistent work and execution remain in the Platform Broker. */
+/** Unprivileged RockstarOS shell. Persistent work and execution remain in the Platform Broker. */
 public final class MainActivity extends Activity {
     private static final String ARTICLE_TOOL = "article-preparation@1";
     private static final int CREATE_BACKUP_DOCUMENT = 201;
@@ -41,7 +41,7 @@ public final class MainActivity extends Activity {
         ScrollView scroll = new ScrollView(this); form = new LinearLayout(this); form.setOrientation(LinearLayout.VERTICAL);
         int padding = (int)(20 * getResources().getDisplayMetrics().density); form.setPadding(padding, padding, padding, padding);
         scroll.addView(form); setContentView(scroll);
-        label(form, "avocadoOS · Sky → Zema", 24);
+        label(form, "RockstarOS · Sky → Zema", 24);
         label(form, "Sky", 22);
         label(form, "Toolの選択は端末内Brokerへ保存され、アプリや端末の再起動後も同じ選択を確認できます。", 16);
         skyStatus = label(form, "Skyの選択を確認中…", 16);
@@ -187,7 +187,7 @@ public final class MainActivity extends Activity {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT)
             .addCategory(Intent.CATEGORY_OPENABLE)
             .setType("application/octet-stream")
-            .putExtra(Intent.EXTRA_TITLE, "avocadoos-backup-" + System.currentTimeMillis() + ".arb");
+            .putExtra(Intent.EXTRA_TITLE, "rockstaros-backup-" + System.currentTimeMillis() + ".arb");
         startActivityForResult(intent, CREATE_BACKUP_DOCUMENT);
     }
 

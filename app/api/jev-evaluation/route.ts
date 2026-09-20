@@ -1,5 +1,6 @@
 import { experimental_evaluate as evaluate } from 'ai';
 import { env } from 'cloudflare:workers';
+import { database } from '@/lib/fund-store';
 import {
   JEV_MODEL,
   JEV_RUBRICS,
@@ -15,7 +16,7 @@ const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
 export async function POST(request: Request) {
   try {
-    await authorizeRemoteAiRequest(request, 'jev-evaluation');
+    await authorizeRemoteAiRequest(request, 'jev-evaluation', database());
     const raw = await request.text();
     if (raw.length > 8_000) throw new Error('INVALID_INPUT');
     const input = validateJevEvaluationInput(JSON.parse(raw));

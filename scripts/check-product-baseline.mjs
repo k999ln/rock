@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 48 },
+    { length: 49 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ48の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ49の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -51,13 +51,14 @@ export function validateBaseline(
     );
   }
   requireValue(
-    data.productIdentity?.displayName === 'avocadoOS' &&
-      data.productIdentity?.releaseName === 'avocadoOS 1.0' &&
+    data.productIdentity?.displayName === 'RockstarOS' &&
+      data.productIdentity?.releaseName === 'RockstarOS 1.0' &&
       data.productIdentity?.version === '1.0' &&
       data.productIdentity?.releaseStage === 'developer_preview' &&
-      data.productIdentity?.previewName === 'avocadoOS 1.0 Developer Preview' &&
+      data.productIdentity?.previewName ===
+        'RockstarOS 1.0 Developer Preview' &&
       data.productIdentity?.internalNamespace === 'dev.rock' &&
-      data.productIdentity?.legacyDisplayName === 'RockstarOS' &&
+      data.productIdentity?.legacyDisplayName === 'avocadoOS' &&
       data.productIdentity?.legacySchemaPrefix === 'rockstaros' &&
       data.productIdentity?.internalIdentifiersRenamed === false &&
       data.productIdentity?.historicalEvidenceRewritten === false &&
@@ -68,7 +69,7 @@ export function validateBaseline(
         ?.majorUpdatesRequireMigrationAndRollbackAcceptance === true &&
       data.productIdentity?.versioning?.completionClaimFromVersionOnly ===
         false,
-    '正式名avocadoOSと内部識別子dev.rockの互換境界を維持してください',
+    '正式名RockstarOSと内部識別子dev.rockの互換境界を維持してください',
   );
   const identityPath = data.productIdentity?.authority;
   requireValue(
@@ -78,21 +79,174 @@ export function validateBaseline(
   const identity = JSON.parse(read(resolve(root, identityPath)));
   requireValue(
     identity.schema === 'rockstaros-product-identity/1' &&
-      identity.displayName === 'avocadoOS' &&
+      identity.displayName === 'RockstarOS' &&
       identity.internalIdentifier === 'dev.rock' &&
       identity.version === '1.0' &&
       identity.releaseStage === 'developer_preview' &&
-      identity.releaseName === 'avocadoOS 1.0' &&
-      identity.previewName === 'avocadoOS 1.0 Developer Preview' &&
+      identity.releaseName === 'RockstarOS 1.0' &&
+      identity.previewName === 'RockstarOS 1.0 Developer Preview' &&
       identity.versioning?.format === 'major.minor' &&
       identity.versioning?.minorExample === '1.5' &&
       identity.versioning?.majorExample === '2.0' &&
       identity.versioning?.completionClaimFromVersionOnly === false,
-    'avocadoOS 1.0と将来のminor／major更新規則を維持してください',
+    'RockstarOS 1.0と将来のminor／major更新規則を維持してください',
   );
   requireValue(
     data.auditInputs?.isLiveStatus === false,
     '監査snapshotを最新状態にしないでください',
+  );
+  const designDocumentation = data.designDocumentation;
+  requireValue(
+    designDocumentation?.portal === 'docs/rockstaros-design-portal.md' &&
+      designDocumentation?.operatingSystem ===
+        'docs/rockstaros-complete-design.md' &&
+      designDocumentation?.tools === 'docs/sky-tools-complete-design.md' &&
+      designDocumentation?.materialInvention ===
+        'docs/rockstaros-avocado-mini-complete-design.md' &&
+      designDocumentation?.index === 'data/design-document-index.json' &&
+      designDocumentation?.automatedCheck === 'npm run design:check' &&
+      designDocumentation?.coverageStatus ===
+        'current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete' &&
+      designDocumentation?.allImplementationsComplete === false &&
+      [
+        designDocumentation.portal,
+        designDocumentation.operatingSystem,
+        designDocumentation.tools,
+        designDocumentation.materialInvention,
+        designDocumentation.index,
+      ].every((path) => existsSync(resolve(root, path))),
+    'OS・全Tool・Material Inventionの設計入口と未完成境界を維持してください',
+  );
+  requireValue(
+    data.materialInvention?.requested === true &&
+      data.materialInvention?.status ===
+        'sandbox_core_implemented_physical_runtime_not_connected' &&
+      data.materialInvention?.masterDesign ===
+        'docs/rockstaros-avocado-mini-complete-design.md' &&
+      data.materialInvention?.workstream ===
+        'docs/workstreams/11-material-invention-avocado-mini.md' &&
+      data.materialInvention?.designStatus ===
+        'integrated_complete_for_implementation_not_product_completion' &&
+      data.materialInvention?.architecture ===
+        'docs/material-invention-core.md' &&
+      data.materialInvention?.contract ===
+        'contracts/material-invention.json' &&
+      data.materialInvention?.fixture ===
+        'contracts/material-invention-fixture.json' &&
+      data.materialInvention?.runtime === 'lib/material-invention.ts' &&
+      data.materialInvention?.tests === 'tests/material-invention.test.mjs' &&
+      data.materialInvention?.primaryExperience ===
+        'avocado_mini_spatial_invention' &&
+      data.materialInvention?.referenceDevice === 'avocadoMini' &&
+      data.materialInvention?.role ===
+        'use_avocado_mini_spatial_interaction_to_combine_material_digital_twins_process_conditions_simulation_and_patent_ai_into_traceable_invention_candidates' &&
+      data.materialInvention?.coreEntities?.includes(
+        'spatial_interaction_event',
+      ) &&
+      data.materialInvention?.coreEntities?.includes(
+        'invention_event_ledger',
+      ) &&
+      data.materialInvention?.coreEntities?.includes('patent_ai_packet') &&
+      data.materialInvention?.autonomousPhysicalExperimentAllowed === false &&
+      data.materialInvention
+        ?.hazardousSynthesisWithoutQualifiedReviewAllowed === false &&
+      data.materialInvention?.simulationIsExperimentalProof === false &&
+      data.materialInvention?.externalLabIsReplaceableProvider === true &&
+      [
+        data.materialInvention.architecture,
+        data.materialInvention.masterDesign,
+        data.materialInvention.workstream,
+        data.materialInvention.contract,
+        data.materialInvention.fixture,
+        data.materialInvention.runtime,
+        data.materialInvention.tests,
+      ].every((path) => existsSync(resolve(root, path))),
+    'Material Invention Coreの安全境界、契約、sandbox実装を維持してください',
+  );
+  const spatial = data.materialInvention?.spatialDevelopment;
+  requireValue(
+    spatial?.requested === true &&
+      spatial?.status === 'design_approved_runtime_not_implemented' &&
+      spatial?.productName === 'Spatial Invention Studio' &&
+      spatial?.relationshipToMaterialCore ===
+        'primary_product_experience_not_optional_extension' &&
+      spatial?.referenceDevice === 'avocadoMini' &&
+      spatial?.operatingSystem === 'RockstarOS' &&
+      spatial?.fourDirectionalSensorRig === true &&
+      spatial?.materialDigitalTwinManipulation === true &&
+      spatial?.incrementalRecalculationPlanned === true &&
+      spatial?.patentAiIntegrationPlanned === true &&
+      spatial?.physicalExecutionAllowed === false &&
+      spatial?.gestureIsPhysicalApproval === false &&
+      spatial?.automaticPatentFilingAllowed === false &&
+      [
+        spatial.architecture,
+        spatial.deviceArchitecture,
+        spatial.policy,
+        spatial.sceneContract,
+        spatial.interactionContract,
+      ].every(
+        (path) =>
+          typeof path === 'string' &&
+          !isAbsolute(path) &&
+          !relative(root, resolve(root, path)).startsWith('..') &&
+          existsSync(resolve(root, path)),
+      ),
+    'Spatial Invention StudioとavocadoMiniの安全な設計境界を維持してください',
+  );
+  const spatialPolicy = JSON.parse(read(resolve(root, spatial.policy)));
+  const spatialSceneContract = JSON.parse(
+    read(resolve(root, spatial.sceneContract)),
+  );
+  const spatialInteractionContract = JSON.parse(
+    read(resolve(root, spatial.interactionContract)),
+  );
+  requireValue(
+    spatialPolicy.schema === 'rockstaros-material-invention-xr-policy/1' &&
+      spatialPolicy.status === 'design_approved_runtime_not_implemented' &&
+      spatialPolicy.relationshipToMaterialCore ===
+        'primary_product_experience_not_optional_extension' &&
+      spatialPolicy.referenceDevice?.displayName === 'avocadoMini' &&
+      spatialPolicy.referenceDevice?.operatingSystem === 'RockstarOS' &&
+      JSON.stringify(spatialPolicy.referenceDevice?.viewpoints) ===
+        JSON.stringify(['north', 'east', 'south', 'west']) &&
+      spatialPolicy.referenceDevice?.physicalMatterManipulatedByCameras ===
+        false &&
+      spatialPolicy.safety?.physicalExecutionAllowed === false &&
+      spatialPolicy.safety?.equipmentControlAllowed === false &&
+      spatialPolicy.safety?.physicalExperimentFinalApprovalAllowed === false &&
+      spatialPolicy.safety?.gestureIsPhysicalApproval !== true &&
+      spatialPolicy.patentAi?.patentabilityDeterminationAllowed === false &&
+      spatialPolicy.patentAi?.inventorshipDeterminationAllowed === false &&
+      spatialPolicy.patentAi?.automaticFilingAllowed === false &&
+      spatialPolicy.accessibility?.twoDimensionalFallbackRequired === true,
+    'avocadoMiniの四方向sensor、XR、Patent AI安全policyを維持してください',
+  );
+  requireValue(
+    spatialSceneContract.$id ===
+      'https://rockstaros.dev/contracts/material-invention-xr-scene-v1.json' &&
+      spatialSceneContract['x-rockstaros-boundary']?.derivedViewOnly === true &&
+      spatialSceneContract['x-rockstaros-boundary']
+        ?.devicePoseIsSafetyEvidence === false &&
+      spatialSceneContract.properties?.capabilities?.properties
+        ?.physicalExecutionAllowed?.const === false &&
+      spatialSceneContract.properties?.capabilities?.properties
+        ?.equipmentControlAllowed?.const === false &&
+      spatialInteractionContract.$id ===
+        'https://rockstaros.dev/contracts/avocado-mini-spatial-interaction-v1.json' &&
+      spatialInteractionContract['x-rockstaros-boundary']?.operatingSystem ===
+        'RockstarOS' &&
+      spatialInteractionContract['x-rockstaros-boundary']?.deviceConcept ===
+        'avocadoMini' &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.fourDirectionalViewpointsRequired === true &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.gestureIsPhysicalApproval === false &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.physicalExecutionAllowed === false &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.patentabilityDeterminationAllowed === false,
+    'XR sceneとavocadoMini interaction契約の権限境界を維持してください',
   );
   const compositionDocument = data.systemComposition?.document;
   const compositionAuditPath = data.systemComposition?.audit;
@@ -767,7 +921,7 @@ export function validateBaseline(
     data.webDeliveryIntegrity?.sourceAndPrivateSiteCommitMustMatch === true &&
       data.webDeliveryIntegrity?.assetClosureCheck ===
         'npm run release:web-assets:check' &&
-      data.webDeliveryIntegrity?.publicAccessAuthorized === false,
+      data.webDeliveryIntegrity?.publicAccessAuthorized === true,
     'Web画面と配備assetを同一commitへ固定してください',
   );
   requireValue(
@@ -784,20 +938,46 @@ export function validateBaseline(
   );
   requireValue(
     data.homeExperience.returnPolicy ===
-      'every_non_home_route_has_a_direct_home_affordance',
-    'Home以外の全画面に直接Homeへ戻る契約が必要です',
+      'os_routes_return_to_os_home_public_routes_return_to_product_home',
+    'OS内の画面と公開製品ページの戻り先を分けてください',
   );
   const launchPageSource = read(resolve(root, 'app/rockstaros/page.tsx'));
+  const turntableSource = read(resolve(root, 'components/avocado-turntable.tsx'));
   requireValue(
     data.launchPage?.route === '/rockstaros' &&
-      data.launchPage?.primaryAction === 'install_os' &&
+      data.launchPage?.role === 'public_avocado_mini_product_home' &&
+      data.launchPage?.osHomeRoute === '/' &&
+      data.launchPage?.installGuideRoute === '/rockstaros/guide' &&
+      data.launchPage?.directOsHomeLink === false &&
+      data.launchPage?.serviceDetailsLocation === 'os_home_after_setup' &&
+      data.marketPositioning?.customerFacingFocus === 'hardware_products' &&
+      data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
+      data.marketPositioning?.leadHardwareForm === 'motorized_telescopic_sensor_tower_concept' &&
+      data.marketPositioning?.avocadoMiniStage ===
+        'design_only_no_physical_prototype_or_sales' &&
+      data.launchPage?.primaryAction === 'view_avocado_mini' &&
+      data.launchPage?.secondaryAction === 'developer_preview_install_guide' &&
       data.launchPage?.publicDownloadFallback === '/rockstaros/guide#install' &&
-      data.launchPage?.studioUrl ===
-        'https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio' &&
-      launchPageSource.includes('OSをインストール') &&
-      launchPageSource.includes(data.launchPage.studioUrl) &&
-      launchPageSource.includes('createSkyToolApp'),
-    'Developer Preview紹介のインストール・Sky開発者コード・Studio導線を維持してください',
+      launchPageSource.includes('製品を見る') &&
+      launchPageSource.includes('実機の販売と一般向けOSインストーラーはまだ始まっていません') &&
+      launchPageSource.includes('OS導入ガイドを見る') &&
+      launchPageSource.includes('href="/rockstaros/guide"') &&
+      !launchPageSource.includes('href="/"') &&
+      !launchPageSource.includes('createSkyToolApp') &&
+      launchPageSource.includes('<AvocadoTurntable />') &&
+      turntableSource.includes('turn * Math.PI * 2') &&
+      turntableSource.includes('className={styles.designDetails}') &&
+      turntableSource.includes('className={styles.osSection}') &&
+      turntableSource.includes('/rockstaros/avocado-mini-kit-p0.png') &&
+      data.marketPositioning?.motionTowerP0Engineering?.kitTowerCount === 4 &&
+      data.marketPositioning?.motionTowerP0Engineering?.kitEdgeHubCount === 1 &&
+      data.marketPositioning?.motionTowerP0Engineering?.freeStandingMaxHeightMm === 1200 &&
+      data.marketPositioning?.motionTowerP0Engineering?.dockedMaxHeightMm === 1800 &&
+      data.marketPositioning?.motionTowerP0Engineering?.llmCanAuthorizeMotionRecordingOrSafetyBypass === false &&
+      turntableSource.includes('¥410,000') &&
+      turntableSource.includes('購入する') &&
+      turntableSource.includes('/rockstaros/guide#install'),
+    'avocadoMini製品ホームとOSホームを分け、製品から導入ガイドへ進めてください',
   );
   const studioSource = read(resolve(root, 'components/rock-studio.tsx'));
   const homeSource = read(resolve(root, 'components/home-screen.tsx'));
@@ -810,6 +990,7 @@ export function validateBaseline(
       data.visualSystem?.surfaces?.includes('/studio') &&
       data.visualSystem?.surfaces?.includes('workspace_shell') &&
       data.visualSystem?.accent === 'acid_green' &&
+      data.visualSystem?.productHomeAppearance === 'light_scroll_product_showcase' &&
       data.visualSystem?.studioPrimarySurface === 'sdk_code_installation' &&
       !data.visualSystem?.homePrimaryApps?.includes('work') &&
       !data.visualSystem?.homePrimaryApps?.includes('csv') &&
@@ -839,11 +1020,11 @@ export function validateBaseline(
       shellSource.includes('className="rock-home-link"') &&
       shellSource.includes('aria-disabled={running || undefined}') &&
       workspaceStyles.includes(
-        'avocadoOS / Studio — shared dark launch system',
+        'RockstarOS / Studio — shared dark launch system',
       ) &&
-      workspaceStyles.includes('avocadoOS 1.0 — unified OS chrome') &&
+      workspaceStyles.includes('RockstarOS 1.0 — unified OS chrome') &&
       workspaceStyles.includes('--studio-green: #c8ff2e'),
-    'avocadoOS全体の共通visual systemとフロント機能性改善を維持してください',
+    'RockstarOS全体の共通visual systemとフロント機能性改善を維持してください',
   );
   requireValue(
     data.systemMaintenance?.route === '/settings/system' &&
@@ -1005,7 +1186,7 @@ export function validateBaseline(
     '複数MCP Connectorの配布・Sky接続とremote/OAuth未受入の境界を維持してください',
   );
   requireValue(
-    data.releaseInstallation?.releaseName === 'avocadoOS 1.0',
+    data.releaseInstallation?.releaseName === 'RockstarOS 1.0',
     '1.0の発表名が必要です',
   );
   for (const field of ['architecture', 'plan']) {
@@ -1129,6 +1310,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ48、AIネイティブOS CoreからSky・Zema・便利機能・ゲームへ接続する製品階層、正式名avocadoOS／内部識別子dev.rock、avocadoOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、avocadoOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ49、AIネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Coreへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

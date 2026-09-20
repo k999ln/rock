@@ -151,7 +151,7 @@ export function SkyBilling() {
             <span className="wallet-entry-icon">
               <WalletCards size={26} />
             </span>
-            <p>avocadoOS Wallet</p>
+            <p>RockstarOS Wallet</p>
             <h1 id="wallet-entry-title">
               自動化の売上を、
               <br />
@@ -161,6 +161,7 @@ export function SkyBilling() {
             <a
               className="wallet-entry-action"
               href="/signin-with-chatgpt?return_to=/wallet"
+              target="_top"
             >
               サインインして開く
               <ArrowRight size={18} />

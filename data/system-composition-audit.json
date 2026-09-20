@@ -1,17 +1,17 @@
 {
   "schema": "avocadoos-system-composition-audit/1",
-  "updatedAt": "2026-09-16",
+  "updatedAt": "2026-09-18",
   "releaseScope": "requiredForV1_means_os_core_1_0_not_every_application_release",
   "architectureDocument": "docs/ai-native-os-architecture.md",
   "designAuditDocument": "docs/ai-native-os-design-audit.md",
-  "objective": "交換可能な高性能ローカルLLMとoffline agent runtimeを持つAIネイティブOSを中核に、利用者が自分専用のAI自動化チームを所有し、Sky、Zema、社会に役立つ自動化、興味のあるゲーム等へ安全に接続できること",
+  "objective": "交換可能な高性能ローカルLLMとoffline agent runtimeを持つAIネイティブOSを中核に、利用者が自分専用のAI自動化チームを所有し、Sky、Zema、社会に役立つ自動化、Material Invention／avocadoMini、興味のあるゲーム等へ安全に接続できること",
   "verdict": {
     "designAligned": true,
     "bestCurrentCombinationForDeclaredV1Objective": true,
     "allComponentsImplemented": false,
     "allRequiredConnectionsVerified": false,
     "productionReady": false,
-    "summary": "AIネイティブOS Coreを製品中核にする設計選択。試験署名の固定Local AIと最初の2工程Toolは所有Pixelの非破壊再起動を含む23/23受入済み。モデル交換、共通記憶、汎用外部作用、多端末調停は新設計の実装待ちである。AOSP image、全損復元、本番Operator、実Providerは未完了。設計適合は実装完了や比較上の最適性を実証しない。"
+    "summary": "AIネイティブOS Coreを製品中核にする設計選択。Material Invention／avocadoMiniは共有用統合設計と装置非接続sandbox Coreまで完成し、XR runtime、四方向sensor実機、simulation／Patent AI Provider接続は未実装。試験署名の固定Local AIと最初の2工程Toolは所有Pixelの非破壊再起動を含む23/23受入済み。AOSP image、全損復元、本番Operator、実Providerは未完了。設計適合は製品、材料、特許、量産の完成や比較上の最適性を実証しない。"
   },
   "selectionPrinciples": [
     "AIネイティブOSを製品中核とし、OS開発の作業量ではなく、offline AI teamがSky、Zema、社会に役立つsystem、ゲーム等で生む利用者価値を優先する",
@@ -19,6 +19,7 @@
     "SkyはToolの発見と接続、Zemaは依頼・承認・進捗・結果・履歴を担当する",
     "Android UI Shell、権限を持つPlatform Broker、Local AI、Tool、Provider、Operator Agentを別UIDと別署名境界にする",
     "LLMとToolはOS imageから交換可能にし、権限・receipt・停止・復旧の契約だけをOSへ固定する",
+    "Material Invention Coreを物質・工程・安全・証拠の正本、avocadoMiniを四方向sensorとVR／AR／2Dによる標準操作面とし、物理実験と特許判断を独立gateにする",
     "Tool完了、Provider確認済み収益、Wallet反映、ファンド実績を別状態にし、推定収益を残高へ入れない",
     "運営管理画面は利用者OSへ入れず、端末側の限定Agentと外部Operator Dockを組み合わせる",
     "ゲームは関心に基づく優先的な応用系統として同じ権限・receipt・Wallet基盤へ接続し、1.0のCore実証を妨げない"
@@ -26,14 +27,14 @@
   "fixedCombination": [
     {
       "id": "identity",
-      "choice": "avocadoOS 1.x with immutable internal namespace dev.rock",
+      "choice": "RockstarOS 1.x with immutable internal namespace dev.rock",
       "fit": "ALIGNED",
       "state": "SOURCE_INTEGRATED",
       "evidence": ["data/product-identity.json", "docs/product-baseline.md"]
     },
     {
       "id": "device_architecture",
-      "choice": "shared avocadoOS Core plus per-SKU Device Support Package; Pixel 10 GL066 frankel first",
+      "choice": "shared RockstarOS Core plus per-SKU Device Support Package; Pixel 10 GL066 frankel first",
       "fit": "ALIGNED",
       "state": "TARGET_SELECTED_BUILD_NOT_RUN",
       "evidence": [
@@ -96,6 +97,20 @@
         "docs/evidence/android-zema-selected-tool-20260916.json",
         "docs/evidence/android-local-ai-plan-v2-20260916.json",
         "docs/evidence/android-pixel-10-prefull-physical-20260916.json"
+      ]
+    },
+    {
+      "id": "material_invention_avocado_mini",
+      "choice": "Material Invention Core with avocadoMini four-direction spatial interaction, incremental simulation and Patent AI provenance; 2D fallback",
+      "fit": "ALIGNED",
+      "state": "SANDBOX_CORE_IMPLEMENTED_SPATIAL_HARDWARE_AND_PROVIDER_RUNTIME_PENDING",
+      "evidence": [
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "docs/material-invention-core.md",
+        "docs/avocado-mini-spatial-invention.md",
+        "data/material-invention-xr-policy.json",
+        "lib/material-invention.ts",
+        "tests/material-invention.test.mjs"
       ]
     },
     {
@@ -257,6 +272,26 @@
       ]
     },
     {
+      "id": "material_invention",
+      "requiredForV1": false,
+      "requiredForMaterialInventionRelease": true,
+      "path": [
+        "avocadoMini four-direction sensing",
+        "spatial interaction event",
+        "Material Invention Core safety gate",
+        "incremental simulation",
+        "invention event ledger",
+        "Patent AI or external lab handoff"
+      ],
+      "state": "SANDBOX_CORE_AND_INTEGRATED_DESIGN_COMPLETE_SPATIAL_RUNTIME_PENDING",
+      "blockingGaps": [
+        "deterministic Core graph to XR scene projection and synthetic pose acceptance",
+        "four-view calibrated sensor prototype and privacy/accessibility acceptance",
+        "simulation Provider and Core-to-Patent-AI provenance bridge",
+        "qualified external lab acceptance before any physical experiment"
+      ]
+    },
+    {
       "id": "game",
       "requiredForV1": false,
       "path": [
@@ -280,10 +315,11 @@
     "QEMU remains an independent release target and is not the priority path or evidence for the selected Pixel 10 OS",
     "Android release readiness is reported as one of six required gates, not one of five",
     "RQ48 places the AI-native OS at the product core; Game/IP work does not depend on completed Fund earnings",
-    "Pixel 23/23 test-signed APK acceptance replaces obsolete physical-reboot-pending and server-only Agent labels"
+    "Pixel 23/23 test-signed APK acceptance replaces obsolete physical-reboot-pending and server-only Agent labels",
+    "Material Invention／avocadoMini is now represented by one shared master design and one workstream instead of disconnected Core, XR and device descriptions"
   ],
   "priorityOrder": [
-    "Implement Core 1.0 model profiles, minimal memory, pure-effect enforcement and local capabilities on the completed two-phase native Sky in-flight reboot recovery acceptance; keep general runtime expansion and non-financial Game/IP work independent",
+    "Implement Core 1.0 model profiles, minimal memory, pure-effect enforcement and local capabilities on the completed two-phase native Sky in-flight reboot recovery acceptance; run MAT05 synthetic scene and pose acceptance independently in parallel",
     "Run the physical Pixel Keystore-loss wipe-and-restore drill for the implemented backup v2 path before first flash",
     "Complete recovery artifact hashes, vendor inventory and production signing inputs",
     "Provision the restricted Android Operator Agent and exercise the full audited support path on Pixel 10",
@@ -296,6 +332,9 @@
     "docs/product-north-star-20260915.md",
     "docs/ai-native-os-architecture.md",
     "docs/ai-native-os-design-audit.md",
+    "docs/rockstaros-avocado-mini-complete-design.md",
+    "docs/material-invention-core.md",
+    "data/material-invention-xr-policy.json",
     "data/product-baseline.json",
     "data/project-status.json",
     "data/release-readiness.json",

@@ -1,4 +1,4 @@
-# avocadoOS 1.0 Developer Preview — 配布候補の変更点
+# RockstarOS 1.0 Developer Preview — 配布候補の変更点
 
 この文書は Mac arm64 package の共通リリースノートです。具体的な版、40 桁 source/host tools commit、image triple と factory hash、boot profile と Game authority/config hash、archive hash は隣接する `release-manifest.json` が正本です。資料の存在を受入済みや公開済みとは扱いません。
 

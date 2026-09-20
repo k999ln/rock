@@ -121,7 +121,7 @@ export default function PolymarketWorkspace() {
           </span>
           <div>
             <p>自動化ファンド / 市場分析アダプター</p>
-            <h1 id="polymarket-title">avocadoOS Markets</h1>
+            <h1 id="polymarket-title">RockstarOS Markets</h1>
           </div>
           <span className={`polymarket-state ${snapshot.ok ? 'is-live' : ''}`}>
             {loading ? '接続中' : snapshot.ok ? 'LIVE / 読取専用' : '取得停止'}
@@ -177,7 +177,7 @@ export default function PolymarketWorkspace() {
             </Link>
           </div>
           <form onSubmit={assess}>
-            <label htmlFor="markets-backtest-report">avocadoOS形式のbacktest JSON</label>
+            <label htmlFor="markets-backtest-report">RockstarOS形式のbacktest JSON</label>
             <textarea
               id="markets-backtest-report"
               value={report}
@@ -215,7 +215,7 @@ export default function PolymarketWorkspace() {
         <div className="polymarket-boundaries" aria-label="市場分析の安全境界">
           <div><Eye size={19} /><span><strong>見る</strong>公開ライブ市場だけを表示</span></div>
           <div><BarChart3 size={19} /><span><strong>分析する</strong>予測値を収益へ計上しない</span></div>
-          <div><Wallet size={19} /><span><strong>取引する</strong>avocadoOSからの自動注文・資金移動は無効</span></div>
+          <div><Wallet size={19} /><span><strong>取引する</strong>RockstarOSからの自動注文・資金移動は無効</span></div>
         </div>
 
         <div className="markets-actions">

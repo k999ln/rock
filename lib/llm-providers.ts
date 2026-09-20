@@ -228,6 +228,8 @@ export class LlmProviderError extends Error {
 
 type FetchLike = typeof fetch;
 
+const PROVIDER_TIMEOUT_MS = 20_000;
+
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === 'object' && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -319,6 +321,7 @@ export async function generateText(
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model, messages, stream: false }),
+      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
     const payload = await jsonResponse(response);
     const text =
@@ -345,6 +348,7 @@ export async function generateText(
         max_output_tokens: maxOutputTokens,
         store: false,
       }),
+      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
     return {
       provider: request.provider,
@@ -369,6 +373,7 @@ export async function generateText(
         messages: [{ role: 'user', content: request.prompt.trim() }],
         max_tokens: maxOutputTokens,
       }),
+      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
     const payload = await jsonResponse(response);
     const text = Array.isArray(payload?.content)
@@ -406,6 +411,7 @@ export async function generateText(
           ],
           generationConfig: { maxOutputTokens },
         }),
+        signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
       },
     );
     const payload = await jsonResponse(response);
@@ -439,6 +445,7 @@ export async function generateText(
       max_tokens: maxOutputTokens,
       stream: false,
     }),
+    signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
   });
   return {
     provider: request.provider,

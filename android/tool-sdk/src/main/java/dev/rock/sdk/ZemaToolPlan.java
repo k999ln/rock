@@ -17,7 +17,7 @@ public final class ZemaToolPlan {
         if (request == null || request.trim().isEmpty()
                 || request.getBytes(StandardCharsets.UTF_8).length > 8_000)
             throw new IllegalArgumentException("INVALID_ZEMA_REQUEST");
-        return "あなたはavocadoOSの計画担当です。実行、送信、保存、課金はせず、"
+        return "あなたはRockstarOSの計画担当です。実行、送信、保存、課金はせず、"
             + "利用者がSkyで選んだToolの入力JSONだけを作ってください。\n"
             + "返答は説明やMarkdown fenceを含めず、次の形のJSON object一つだけです。\n"
             + "{\"toolId\":\"article-preparation@1\",\"input\":{"

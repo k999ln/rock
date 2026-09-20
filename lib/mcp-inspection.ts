@@ -26,6 +26,10 @@ type RpcEnvelope = {
 const MAX_RESPONSE_BYTES = 256 * 1024;
 const MAX_TOOLS = 100;
 
+function numericHostname(hostname: string) {
+  return /^(?:\d+\.){0,3}\d+$/.test(hostname);
+}
+
 export class McpInspectionError extends Error {
   status: number;
 
@@ -62,7 +66,7 @@ export function remoteMcpUrl(value: unknown) {
     parsed.hash ||
     !hostname ||
     hostname.includes(':') ||
-    /^\d+(?:\.\d+){3}$/.test(hostname) ||
+    numericHostname(hostname) ||
     blockedSuffixes.some(
       (suffix) => hostname === suffix || hostname.endsWith(suffix),
     )

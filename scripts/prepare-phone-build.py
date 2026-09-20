@@ -117,12 +117,14 @@ def verify_local_ai_source(tree):
             "osBridge": config["osBridge"]}
 
 
-def source_config(lock, *, require_target_confirmation=False):
+def source_config(lock, *, require_target_confirmation=False, build_mode="inspect"):
     """Validate and return all build identity inputs from one source lock.
 
     Source preparation can inspect an unconfirmed candidate, but full builds
     must fail closed until the owner confirms the exact handset and SKU.
     """
+    if build_mode not in {"inspect", "bringup", "release"}:
+        raise ValueError("phone build mode must be inspect, bringup or release")
     if not isinstance(lock, dict):
         raise ValueError("invalid phone source lock")
     device, lunch, hook = lock.get("device"), lock.get("lunch"), lock.get("hook")
@@ -172,9 +174,15 @@ def source_config(lock, *, require_target_confirmation=False):
                                         or not isinstance(confirmed_sku, str)
                                         or confirmed_sku not in known_skus):
         raise ValueError("exact phone model/SKU must be owner-confirmed before full OS build")
-    if require_target_confirmation and lock.get("fullBuildInputGatePassed") is not True:
+    if (require_target_confirmation and build_mode == "release"
+            and lock.get("fullBuildInputGatePassed") is not True):
         raise ValueError(
             "full OS build input gate must include hashed recovery artifacts, vendor inventory and signing plan"
+        )
+    if (require_target_confirmation and build_mode == "release"
+            and first_flash_gate["passed"] is not True):
+        raise ValueError(
+            "RELEASE_FLASH gate must pass before a production release build"
         )
     return {"device": device, "lunch": lunch, "hook": hook,
             "hook_repo_path": hook.removeprefix("vendor/adevtool/"),
@@ -185,19 +193,28 @@ def source_config(lock, *, require_target_confirmation=False):
             "targetConfirmedByOwner": lock.get("targetConfirmedByOwner") is True,
             "fullBuildInputGatePassed": lock.get("fullBuildInputGatePassed") is True,
             "firstFlashGatePassed": first_flash_gate["passed"],
-            "confirmedSku": confirmed_sku if confirmed_sku in known_skus else None}
+            "confirmedSku": confirmed_sku if confirmed_sku in known_skus else None,
+            "buildMode": build_mode,
+            "compileBringupGatePassed": bool(
+                lock.get("targetConfirmedByOwner") is True
+                and isinstance(confirmed_sku, str)
+                and confirmed_sku in known_skus),
+            "releaseFlashGatePassed": bool(
+                lock.get("fullBuildInputGatePassed") is True
+                and first_flash_gate["passed"] is True)}
 
 
-def build_config(*, require_target_confirmation=True):
+def build_config(*, require_target_confirmation=True, mode="release"):
     """Load build settings without touching the OS checkout."""
     return source_config(json.loads(LOCK.read_text()),
-                         require_target_confirmation=require_target_confirmation)
+                         require_target_confirmation=require_target_confirmation,
+                         build_mode=mode)
 
 
-def verify_hook(tree):
+def verify_hook(tree, *, mode="release"):
     """Verify the lock-pinned, already-prepared hook without changing it."""
     lock = json.loads(LOCK.read_text())
-    config = source_config(lock, require_target_confirmation=True)
+    config = source_config(lock, require_target_confirmation=True, build_mode=mode)
     tree = Path(tree).resolve(strict=True)
     if ROOT != tree / lock["rockCheckoutPath"]:
         raise ValueError("Run the copy checked out at <OS tree>/external/rockstaros.")
@@ -277,9 +294,10 @@ def manifest_structure(content):
     return node(ET.fromstring(content))
 
 
-def prepare(tree, allowed_signers):
+def prepare(tree, allowed_signers, *, mode="inspect"):
     lock = json.loads(LOCK.read_text())
-    config = source_config(lock)
+    config = source_config(
+        lock, require_target_confirmation=mode != "inspect", build_mode=mode)
     tree = tree.resolve(strict=True)
     if ROOT != tree / lock["rockCheckoutPath"]:
         raise ValueError("Run the copy checked out at <OS tree>/external/rockstaros.")
@@ -354,6 +372,9 @@ def prepare(tree, allowed_signers):
             "manifestCommit": lock["manifestCommit"], "adevtoolCommit": lock["adevtoolCommit"],
             "hookSha256": hashlib.sha256(after).hexdigest(), "lunch": config["lunch"],
             "targetConfirmedByOwner": config["targetConfirmedByOwner"],
+            "buildMode": mode,
+            "compileBringupGatePassed": config["compileBringupGatePassed"],
+            "releaseFlashGatePassed": config["releaseFlashGatePassed"],
             "firstFlashGatePassed": config["firstFlashGatePassed"],
             "flashReady": False,
             "remaining": ["full repo manifest -r and source review", "local-AI OS bridge and Soong packaging",
@@ -369,15 +390,19 @@ def main():
     commands.add_parser("manifest", help="print a local Repo manifest pinned to this clean Rock commit")
     host = commands.add_parser("host", help="read-only build capacity check")
     host.add_argument("directory", type=Path)
-    commands.add_parser("build-config", help="validate owner-confirmed lock and print full-build inputs")
+    build_config_parser = commands.add_parser(
+        "build-config", help="validate owner-confirmed lock and print build inputs")
+    build_config_parser.add_argument("--mode", choices=("bringup", "release"), default="release")
     local_ai = commands.add_parser("verify-local-ai", help="verify the pinned local-AI source without building it")
     local_ai.add_argument("os_tree", type=Path)
     stage = commands.add_parser("prepare", help="add the Rock product fragment to the pinned device source")
     stage.add_argument("os_tree", type=Path)
+    stage.add_argument("--mode", choices=("bringup", "release"), default="release")
     stage.add_argument("--allowed-signers", required=True, type=Path,
                        help="GrapheneOS upstream public trust file, obtained from its official site")
     verify = commands.add_parser("verify-hook", help="verify the prepared hook immediately before a full build")
     verify.add_argument("os_tree", type=Path)
+    verify.add_argument("--mode", choices=("bringup", "release"), default="release")
     args = parser.parse_args()
     try:
         if args.command == "manifest":
@@ -386,18 +411,18 @@ def main():
         if args.command == "host":
             result = host_report(args.directory)
         elif args.command == "build-config":
-            result = build_config()
+            result = build_config(mode=args.mode)
             print("\t".join((result["device"], result["lunch"], result["hook"],
                              result["kernel_path"], ",".join(result["buildTargets"]))))
             return 0
         elif args.command == "verify-local-ai":
             result = verify_local_ai_source(args.os_tree.resolve(strict=True))
         elif args.command == "verify-hook":
-            result = verify_hook(args.os_tree)
+            result = verify_hook(args.os_tree, mode=args.mode)
             print(result["hook"].removeprefix("vendor/adevtool/") + "\t" + result["hookSha256"])
             return 0
         else:
-            result = prepare(args.os_tree, args.allowed_signers)
+            result = prepare(args.os_tree, args.allowed_signers, mode=args.mode)
         print(json.dumps(result, indent=2))
         return 2 if args.command == "host" and not result["ready"] else 0
     except (ValueError, OSError, ET.ParseError, subprocess.SubprocessError) as error:

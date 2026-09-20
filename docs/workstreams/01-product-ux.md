@@ -6,9 +6,15 @@ AIネイティブOSの上で、SkyでToolを選び、ZemaでAIチームへ依頼
 
 ## 現在地
 
-- RQ01〜RQ48を製品ベースへ固定済み。
+- 対外的にはハードウェア製品を主役にし、最初の構想をavocadoMiniとする。OS・LLM・Sky／Zemaはその中核技術として示す。avocadoMiniの実機と販売は未実施。
+- avocadoMini製品ホーム`/rockstaros`、OS導入ガイド`/rockstaros/guide`、RockstarOS Webホーム`/`の役割を分ける。製品ホームから未導入者をOSホームへ直接案内しない。Sky／ZemaなどはOS内の機能。avocadoMiniのメッセージは「考える時間を、つくる時間に」、希望参考価格は41万円。高性能LLMの製品搭載、価格確定、実機販売は未完了。
+- GitHub READMEの冒頭はavocadoMiniの外観と利用場面の構想参考画像から始める。設計画像と実機写真を区別し、製品別GIF、RockstarOSとアプリの役割、開発状況への導線を続ける。クラファンの実URLは未確認で募集済みとは表示しない。
+- 対外メッセージは利用者の目的と役に立つAIの発見を先に伝える。Skyで探し、Zemaで進め、Studioで試す体験とavocadoMini構想を示した後に、料金方針や内部技術を説明する。
+- 無料配布を理念とし、OSは従量課金を予定する。無料配布の対象と利用量の計量・単価は未確定。Skyの現行収益連動精算と混同しない。
+- RQ01〜RQ49を製品ベースへ固定済み。RQ49のMaterial Invention Coreは装置非接続sandboxを実装済み。Zema、simulation、外部ラボ、実験設備とのruntime接続は未実装。
+- RQ49 Material Invention Coreの標準製品体験としてSpatial Invention Studio、四方向sensor端末`avocadoMini`、手によるdigital twin操作、差分再計算、Patent AI provenance bridgeを設計済み。別の任意XR addonではない。XR runtime、sensor rig、実機は未実装。
 - Home、全画面からHomeへ戻る導線、Sky／Zema分離、Studio、Developer Preview紹介、共通visual systemを実装済み。
-- 全11層と6本のend-to-end flowを構成監査へ固定した。設計選択は適合、全体統合とproductionは未完了。
+- Material Invention／avocadoMiniを含む全12層と7本のend-to-end flowを構成監査へ固定した。設計選択は適合、全体統合とproductionは未完了。
 - 仕事作成、処理履歴、CSV、Wallet、設定への主要導線がある。
 - 画面の存在は、本番provider、実機OS、一般公開の完了を意味しない。
 

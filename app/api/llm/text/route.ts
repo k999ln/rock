@@ -1,4 +1,5 @@
 import { env } from 'cloudflare:workers';
+import { database } from '@/lib/fund-store';
 import {
   generateText,
   isTextModelProvider,
@@ -24,7 +25,7 @@ function isLoopbackEndpoint(value: string | undefined) {
 
 export async function POST(request: Request) {
   try {
-    await authorizeRemoteAiRequest(request, 'llm-text');
+    await authorizeRemoteAiRequest(request, 'llm-text', database());
 
     const raw = await request.text();
     if (raw.length > 28_000) throw new LlmProviderError('INVALID_INPUT', 400);

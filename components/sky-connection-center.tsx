@@ -14,7 +14,7 @@ import type { SkyProviderConnection } from '@/lib/operations';
 import styles from '@/components/sky-connection-center.module.css';
 
 function labelFor(status: SkyProviderConnection['status'] | undefined) {
-  if (status === 'ready') return '設定済み';
+  if (status === 'ready') return '設定保存済み';
   if (status === 'reauth_required') return '再接続が必要';
   return '未登録';
 }
@@ -97,7 +97,11 @@ export default function SkyConnectionCenter({
         window.localStorage.setItem('sky-provider-routing', JSON.stringify(saved.config));
         window.dispatchEvent(new Event('sky-provider-routing'));
       }
-      setMessage(status === 'ready' ? '登録しました。次回から入力を省略できます。' : '途中まで保存しました。');
+      setMessage(
+        status === 'ready'
+          ? '設定を保存しました。外部サービスのOAuth・実接続はまだ行っていません。'
+          : '途中まで保存しました。',
+      );
     } catch (cause) {
       if (cause instanceof OperationRequestError && cause.status === 401) setNeedsSignin(true);
       else setError(cause instanceof Error ? cause.message : '接続情報を保存できませんでした。');
@@ -113,7 +117,7 @@ export default function SkyConnectionCenter({
           <div className={styles.headerMark}><Link2 size={19} /></div>
           <div>
             <DialogTitle>Skyの接続管理</DialogTitle>
-            <DialogDescription>最初に登録した情報は、次回からツールで再利用します。</DialogDescription>
+            <DialogDescription>保存した表示名や接続先は次回から再利用します。OAuth・実行接続は別途必要です。</DialogDescription>
           </div>
         </header>
 
@@ -139,7 +143,7 @@ export default function SkyConnectionCenter({
           <section className={styles.form} aria-label={`${definition.name}の登録`}>
             <div className={styles.formHeading}>
               <div><p className={styles.eyebrow}>登録情報</p><h3>{definition.name}</h3></div>
-              {selectedProfile?.status === 'ready' && <span className={styles.ready}><CheckCircle2 size={15} /> 設定済み</span>}
+              {selectedProfile?.status === 'ready' && <span className={styles.ready}><CheckCircle2 size={15} /> 設定保存済み</span>}
             </div>
             <p className={styles.detail}>{definition.detail}</p>
             {loading ? <p className={styles.muted}>接続情報を確認中…</p> : definition.fields.map((field) => (
@@ -180,7 +184,7 @@ export default function SkyConnectionCenter({
             </div>
             <div className={styles.actions}>
               <button className={styles.secondary} onClick={() => void save('setup_required')} disabled={saving || loading}><Save size={16} /> あとで続ける</button>
-              <button className={styles.primary} onClick={() => void save('ready')} disabled={saving || loading}><KeyRound size={16} /> 登録して使う</button>
+              <button className={styles.primary} onClick={() => void save('ready')} disabled={saving || loading}><KeyRound size={16} /> 設定を保存</button>
             </div>
             {message && <output className={styles.message}>{message}</output>}
             {error && <p className={styles.error} role="alert">{error}</p>}

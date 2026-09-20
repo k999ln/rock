@@ -1,21 +1,232 @@
-# avocadoOS — 自動化を接続・実行・管理するOS
+# avocadoMini — 4本のMotion TowerとEdge Hubの製品構想
 
-avocadoOSは、交換可能な高性能ローカルLLMとoffline agent runtimeを中核にするAIネイティブOSを目標に開発しています。現行は固定Qwen / llama.rn profileの試験署名Pixel APK実証で、複数model交換やOS image搭載は未完了です。SkyとZemaを最初の第一者systemとし、仕事・生活を便利にする自動化、Wallet／ファンド、ゲーム、IP／動画、VRを共通Coreへ接続して発展させます。製品要望の正本は [製品ベース](docs/product-baseline.md) のRQ01〜RQ48、LLMとJevの現在地は[LLM・評価モデル設計](docs/llm-evaluation-architecture.md)と[能力表](data/llm-capabilities.json)、具体的なCore契約と実装順は[AIネイティブOS詳細設計](docs/ai-native-os-architecture.md)、独立監査は[Sol設計監査](docs/ai-native-os-design-audit.md)、全層の組合せと未接続点は[全体構成監査](docs/system-composition.md)、進捗の正本は [data/project-status.json](data/project-status.json) です。内部識別子は互換性のため`dev.rock`で固定し、既存の`rockstaros-*`形式と`/rockstaros` URLは変更しません。現在版は`avocadoOS 1.0 Developer Preview`で、版表示は[data/product-identity.json](data/product-identity.json)から一元管理します。
+**商品ページとOS操作画面は別ドメインに分けます。** `rockstaros-kaiya.noellesugar1.chatgpt.site`をavocadoMiniの一般公開商品サイトにし、`/rockstaros`からも商品を見られるようにします。OS操作画面だけを新しい別Siteへ移します。商品サイトのsourceは[`sites/avocado-mini`](sites/avocado-mini/)です。現在は[別ドメインのプレビュー](https://avocado-mini.kirin-999.chatgpt.site/)を公開済みで、旧URLは所有アカウント未接続のため旧OS画面のままです。
+
+**考える時間を、つくる時間に。** **avocadoMini**は銀色の伸縮式Motion Tower **4本**と **Edge Hub 1台**で作業空間を捉えるキット構想です。利用者提供の**Motion Tower P0.2設計書**では、収納時850 mm、自立時最大1,200 mm、ドック固定を検出した場合のみ最大1,800 mm、ベース径220 mm、展開脚の外径520 mmを設計値とします。ARは外部端末へ表示し、LLMは案内と説明だけを担当します。**41万円（税込）は4本＋Edge Hubのキット目標価格**です。1本の価格や販売価格ではありません。実機試作、量産、販売は未開始です。
+
+製品ホームは、4本のキット、見どころ、タワー1本の全周回転、キット目標価格、利用場面、OS導入案内へ進む構成です。
+
+[🏠 avocadoMini製品ホーム](https://avocado-mini.kirin-999.chatgpt.site/) · [💿 OS導入ガイド](https://avocado-mini.kirin-999.chatgpt.site/guide/) · [🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🤝 クラファン企画](https://avocado-mini.kirin-999.chatgpt.site/crowdfunding/)
+
+**公開商品ページとOS操作画面は分けます。** [商品ページのプレビュー](https://avocado-mini.kirin-999.chatgpt.site/)で製品を見て、[OS導入ガイド](https://avocado-mini.kirin-999.chatgpt.site/guide/)で対応環境と配布状況を確認します。旧URLを商品サイトへ切り替えた後、OSの操作画面は管理者限定の別Siteから利用します。現時点では旧Siteに旧OS画面が一般公開されたままです。
+
+## 構想ギャラリー
+
+![avocadoMiniのP0.2キット構想。4本の伸縮式Motion TowerとEdge Hub](sites/avocado-mini/public/images/avocado-mini-kit.png)
+
+*P0.2設計書に基づく構想レンダリング。実機写真や検証済み仕様ではありません。寸法、伸縮機構、センサー性能、安全性は試作と実測で確かめます。以前の単体タワー構想画像は旧案です。*
+
+## 手で考え、発明の候補を比べる
+
+- **選ぶ:** 物質のデジタル模型と条件を作業面で扱う。
+- **組み合わせる:** 元の候補を残しながら、新しい仮説を分岐させる。
+- **比べる:** 安全制約を確認し、simulationや実験記録の違いを見て次の一手を決める。
+
+![avocadoMiniを使って二人が発明の候補を操作する利用場面の構想参考画像](docs/assets/rockstaros-spatial-table-full-scale-v2.png)
+
+*利用場面の構想参考画像。空中表示、手の追跡、触覚、物理実験の完成を示すものではありません。最初は小型Benchと2D／AR表示から検証します。*
+
+**現在は詳細設計段階です。** 実機試作、量産、販売はまだ行っていません。[ハードウェア詳細設計](docs/avocado-mini-hardware-design.md)と[空間発明システム設計](docs/rockstaros-avocado-mini-complete-design.md)に、構成と受入条件を記録しています。
+
+**製品のねらい:** 高性能LLMを組み込むRockstarOSが、使う人の意図に合うAI Toolの発見、仕事の進行、発明候補の比較を支える。現在の実機検証は固定モデルのDeveloper Preview段階で、製品版の高性能LLM搭載は未完成です。41万円は4本のMotion TowerとEdge Hubを含むキット目標価格で、OSの従量料金や購入申込額ではありません。
+
+## クラウドファンディング
+
+まず[製品サイトのクラファン企画ページ](https://avocado-mini.kirin-999.chatgpt.site/crowdfunding/)と[GitHubの企画原稿](docs/avocado-mini-crowdfunding.md)で、実現したい体験、資金で進める検証、現在の開発段階を見られます。支援金を受け付ける募集ページの公開URLはまだありません。募集サービス、目標額、返礼、提供条件が決まり次第、正式な募集ページへの直接リンクを設置します。現在は募集・決済・先行予約を行っていません。
+
+## 動くジャケット
+
+RockstarOSは、avocadoMiniの操作、権限、保存、復旧をつなぐ技術基盤です。**Material Invention Studio**で発明の候補を試し、**Sky**で目的に合うAI Toolを探し、**Zema**で依頼から成果まで進めます。[製品別の動くジャケット](#製品体系)も下で見られます。
+
+![Skyで役割を探し、Zemaで進め、Studioで発明の候補を試すRockstarOSの紹介アニメーション。avocadoMiniは設計中。](docs/assets/rockstaros-intro.gif)
+
+**いま確認できる入口:** 製品ホームとOS導入ガイドを公開ページとして分けます。Sky、Zema、StudioはRockstarOSのWebホームにある利用画面です。現在の配信先には最新版が未配備で、未導入者のWebホームへの直接アクセス制限も未完了です。avocadoMiniの実機とスマートフォン向け完成OSはまだ提供していません。
+
+交換可能なLLMは製品を支える設計ですが、現在の実機検証は固定Qwen / llama.rn profileの試験署名Pixel APK段階です。複数モデルの交換やOS image搭載は未完了です。開発用のPixel 10は検証端末で、自社製ハードウェアとして販売する製品ではありません。[LLM・評価モデル設計](docs/llm-evaluation-architecture.md)と[能力表](data/llm-capabilities.json)に現在地を記録しています。
+
+製品と事業の関係は[製品・サービス・システム関係図](docs/rockstaros-product-system-map.md)、OSから全Toolまでの入口は[RockstarOS全設計ポータル](docs/rockstaros-design-portal.md)にまとめています。製品要望の正本は[製品ベース](docs/product-baseline.md)のRQ01〜RQ49、進捗の正本は[data/project-status.json](data/project-status.json)です。現在版は`RockstarOS 1.0 Developer Preview`です。
+
+## 製品体系
+
+### avocadoMini — 空間発明のためのハードウェア構想
+
+![avocadoMiniの設計構想。四方向のセンサーに囲まれた作業面で発明の候補が動くアニメーション](docs/assets/cover-avocado-mini.gif)
+
+表に出す外観は[4本の伸縮式Motion TowerとEdge Hub](sites/avocado-mini/public/images/avocado-mini-kit.png)です。四方向センサーと作業面による発明体験をキットとして設計しています。**キット目標価格（税込）41万円**。画像はコンセプトであり、追跡精度、表示方式、安全性、量産性を実証した実機写真ではありません。P0.2設計から試作と検証へ進み、価格と仕様を実測・原価検証後に決定します。
+
+### RockstarOS — 製品を動かす共通の土台
+
+![RockstarOSの構成要素が中心につながり巡るアニメーション](docs/assets/cover-rockstaros.gif)
+
+LLM、Agent、仕事、Tool、権限、承認、保存、更新、復旧を一つの契約でつなぐOSです。LLMは交換可能にし、LLM自身に権限付与やWallet台帳書込みをさせません。
+
+### App Home — アプリとOS内の作業画面
+
+製品・導入ホームページとは別の、WebアプリとOS内の作業画面です。Sky、Zema、Wallet、Market、Settings、Material Inventionへの入口を持ち、今日やりたいことがすぐ見つかる構成にします。App Homeは各機能の正本を持たず、Platform Coreへ安全に導きます。
+
+### Sky — 自分に合うAI仲間を見つける場所
+
+![SkyでAIの役割やToolを探す様子を表したアニメーション](docs/assets/cover-sky.gif)
+
+仕事や創作を一緒に進めるAI Toolを見つける場所です。Toolの個性、作者、できること、料金、実行先を自然に知り、気に入ったToolをZemaへ迎え入れます。MCP接続、Connection Passport、Toolの停止・失効は体験を守る裏側でSkyに集約します。
+
+### Zema — AIと一緒に進む場所
+
+![ZemaでAIと会話しながら進める様子を表したアニメーション](docs/assets/cover-zema.gif)
+
+やりたいことを伝え、AIの提案を見て、必要なときだけ方向を決めながら進む場所です。依頼、計画、実行、停止、再開、成果確認を一つの流れにし、AIに任せる部分と自分で決める部分を自然に分けます。
+
+### Wallet / Market — 挑戦を続けるための場所
+
+Walletは費用、確定収益、払出し、未確定状態を分けて表示し、安心して次の挑戦へ進めるようにします。Market / Fundは現在PAPER限定で、LIVE注文・清算・自動再投資は有効にしません。
+
+### Material Invention Studio — 発明案を扱うアプリ
+
+![Material Invention Studioで物質の候補を組み合わせる様子を表したアニメーション](docs/assets/cover-material-studio.gif)
+
+物質のデジタル模型を接続・分離し、候補branch、制約、安全状態、simulation結果、発明過程を記録します。MR表示は物理実験を実行せず、Patent AIは特許性・発明者・出願を自動確定しません。
+
+### Hardware — OSを使う端末
+
+| Hardware | 役割 | 現在地 |
+| --- | --- | --- |
+| Pixel 10 / `frankel` | RockstarOSのreference hardware。Android Broker、Shell、Local AI、backup、Toolを実機検証する | source / APK / pre-full gate。full build、flash、CTS/VTS、OTA、純正復旧は未完了 |
+| Linux / QEMU | native OS契約、更新、rollback、Wallet / Game fixtureを検証する | Developer Preview候補 |
+| avocadoMini | 四方向sensorでMR / AR / VR / 2DのMaterial Inventionを操作する専用端末 | 設計 / Bench試作前。XR runtime、実機、物理設備は未接続 |
+
+avocadoMiniはRockstarOSそのものではなく、RockstarOSを搭載してMaterial Invention Studioを操作する専用デバイスです。
+
+## アクセス先
+
+製品紹介は別ドメインの公開Siteで配信します。OSのWeb利用画面は管理者専用とする指定ですが、現在の旧OS Siteはまだ一般閲覧でき、アクセス設定の変更には所有アカウントへの接続が必要です。
+
+| 入口 | リンク |
+| --- | --- |
+| avocadoMini製品ホーム | [製品紹介](https://avocado-mini.kirin-999.chatgpt.site/) |
+| OS導入案内 | [Developer Previewガイド](https://avocado-mini.kirin-999.chatgpt.site/guide/) |
+| RockstarOS Webホーム | 旧OS Siteに残る管理者用画面。現在は管理者限定設定待ち |
+| アプリ・OS内のサービス | 管理者用OS Site内で扱う。一般向けの直接リンクは掲載しない |
+
+OSの実機向け完成版やavocadoMiniの実機はまだ配布していません。上のOSガイドはDeveloper Previewの案内です。
+
+## 会社と事業
+
+### パーパス
+
+**AIの力を、誰もが自然に使える形にする。** 人が主役のまま、仕事、創作、発明へ進める製品をつくります。
+
+### ブランドの約束
+
+**AIを使うことが、もっと自然に、もっと自分らしく、もっとかっこよくなる。**
+
+RockstarOSが届けたいのは、AIと一緒に新しいことを始めたくなる体験です。利用者が最初の一歩を軽く踏み出し、自分のやり方で使い続け、成果を次の挑戦へつなげられるブランドを目指します。設定、権限、状態、復旧の機能は、その体験を支える裏側として働きます。
+
+共鳴してほしいのは、AIを使って自分の時間を取り戻したい人、つくることを続けたい人、まだ名前のないアイデアを試したい人です。内部の権限、状態、収益、復旧の仕組みは、その体験を安心して続けるための裏側として働きます。
+
+ブランドが届いたかは、機能数ではなく、初めて触った人がすぐに一歩進めるか、もう一度使いたくなるか、自分の作品や仕事を誰かに見せたくなるかで確かめます。
+
+### 何に共鳴してもらう会社か
+
+利用者に見せる入口は、手で触れられる製品と、その製品でできることです。OS、LLM、アプリ、サービスは同じ体験を支える層として開発します。
+
+| 層 | 提供するもの | 主な利用者 |
+| --- | --- | --- |
+| Hardware | 自社製品構想のavocadoMini。Pixel 10は開発用reference端末 | 発明・研究チーム、開発者 |
+| App | Material Invention Studio、Home、Sky、Zema、Wallet、Market | 個人、クリエイター、事業者、研究者 |
+| OS・AI | RockstarOS、LLM切替、Agent、権限、保存、復旧 | 製品を使う人、開発者 |
+| Service | Tool配布、モデル更新、同期・復旧、収益照合、SDK・サポート | 利用者、Tool開発者、ToB |
+
+### 価値と収益の考え方
+
+- 無料配布とOSの従量課金を基本方針とする。無料配布の対象、OSの計量単位、単価・上限を決めるまでは具体的な無料提供範囲や請求額を表示しない。
+- 利用者の価値は、減った手間、完了した仕事、再利用できる成果、本人が選べる行動の増加で測る。
+- Toolの完了と売上を混同せず、Providerが確認した入金だけをWalletの収益にする。
+- 現行実装のSky精算は、確認済み自動化収益から直接実費を差し引いた残額に対する月最大8.88 USD。収益0なら利用料0。これは新しいOS従量課金の計算方式ではありません。ToBの登録・接続・掲載・Sky売上手数料は0円方針。
+- Sky内のToolチーム向け利益連動成功報酬、Wallet決済、開発者還元は[設計中](docs/sky-network-economy.md)です。料率と月上限は未確定で、現行の請求や自動払出しには適用していません。
+- 月50万円規模の検証済み運用収益は長期の到達仮説であり、現時点の実績や利用者への収入保証ではない。
+
+### 全体の関係
+
+```mermaid
+flowchart TB
+  USER[利用者]
+  OS[RockstarOS\nOS]
+  CORE[Platform Core / Broker\n権限・仕事・receipt・保存]
+  HOME[Home]
+  SKY[Sky\nAI仲間を見つける]
+  ZEMA[Zema\nAIと一緒に進む]
+  WALLET[Wallet\n費用・確認済み収益]
+  MODEL[LLM\n既存モデル / 自社LLM]
+  TOOLS[AI Tool / MCP / Provider]
+  MR[avocadoMini\nMR / AR / VR / 2D]
+  MATERIAL[Material Invention Core]
+  USER --> MR
+  USER --> OS
+  MR --> OS
+  OS --> HOME
+  OS --> CORE
+  HOME --> SKY & ZEMA & WALLET
+  SKY --> TOOLS
+  ZEMA --> MODEL
+  MODEL --> CORE
+  TOOLS --> CORE
+  CORE --> WALLET
+  MR --> MATERIAL
+  MATERIAL --> CORE
+```
+
+この図の詳しい境界、`Mr.` 由来Toolの取り込み、MR（Mixed Reality）経路、実行シーケンスは[関係図の正本補助設計](docs/rockstaros-product-system-map.md)を参照してください。
+
+## 現在開発・統合しているTool
+
+Skyのカタログ上のready 11件とcandidate 13件を、同じTool契約で管理しています。readyはカタログ上の実装・接続状態であり、本番Provider接続や実収益を意味しません。
+
+### Ready Tool（11件）
+
+| ID | 役割 | 実行場所 |
+| --- | --- | --- |
+| `rockstar-csv-cleanup` | CSV整形・検査・納品 | Sky Cloud / Web |
+| `rockstar-markets-analysis` | Market分析・PAPER記録 | Web / offline backtest |
+| `mercari-revenue` | メルカリ販売支援 | Web / 将来Connector |
+| `fashion-brand-ops` | Instagram運用・受注型ブランド管理 | PC MCP |
+| `coconala` | ココナラ案件チェック | Web |
+| `mr-free-article` | 記事の無料版作成 | Web |
+| `mr-citations` | 出典整理 | Web / PC |
+| `mr-delivery` | 納品記録の照合 | PC |
+| `rockstar-ledger` | サブスク顧問・台帳確認 | PC MCP |
+| `rockstar-legal-intake` | 法務受付・整理 | Web / 任意AI |
+| `rockstar-patent-assistant` | 特許資料の下書き支援 | Web / 任意AI |
+
+### 導入・研究中のTool（13件）
+
+`faster-whisper`（文字起こし）、`transformers-js`（ブラウザAI）、`playwright`（許可Web操作）、`jev-ultrafast`（選択型browser agent）、`openjev`（typed decision）、`jevlike`（判断model研究）、`jev-trader`（PAPER市場判断）、`awesome-jev-by-typesafe`（Jev reference）、`typesafe-computer-use`（Mac画面操作）、`jev-review`（code review）、`jev-router`（model routing）、`jev-browser`（browser操作）、`mobile-jev`（Android操作）です。candidate Toolは未接続・研究中を含み、LIVE実行や個人端末での無制限操作を許可しません。
+
+### RockstarOS側で開発している共通システム
+
+- **LLM Runtime / Decision Fabric**: 既存LLM、自社LLM、Local Qwen、Cloud LLMを交換可能に接続する。
+- **Agent Runtime**: planを検証し、有限step、停止、再開、retry、結果不明を管理する。
+- **Platform Core / Broker**: owner、component、capability、approval、work、receipt、保存を管理する。
+- **Sky MCP Connector**: 本人PC、Sky Cloud、Provider MCPをConnection Passportで接続する。
+- **Wallet / Settlement**: Provider receipt、実費、Sky fee、払出し指図を照合する。
+- **Material Invention Core**: 物質候補、危険情報、simulation、発明イベントを保存する。
+- **Operator / Recovery**: 緊急保護、backup、更新、rollback、復旧を安全境界内で行う。
+
+Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設計](docs/sky-tools-complete-design.md)、製品間の関係は[製品・サービス・システム関係図](docs/rockstaros-product-system-map.md)を正本として更新します。
 
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-20 / 117 task中78 done・25 in progress・13 planned・1 blocked
+更新日: 2026-09-20 / 136 task中91 done・28 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
-| 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                           |
-| --------------- | -------------------------------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------ |
-| Web / PWA       | Home、Sky、Zema、仕事、CSV、Wallet、Market、設定、Studio、D1 API                             | 実装あり・本人限定Siteの最新版同期待ち | 同一sourceの配備、認証後の実操作、一般公開gate                     |
-| Linux / QEMU    | OS起動、Platform API、専用UID、SQLite、保存、A/B更新、rollback、backup、Wallet／Game fixture | Developer Preview候補は10 gate中6合格  | 製品license、production署名、署名後の同一候補受入、公開承認        |
-| Android P1      | Broker／Shell／Tool、Local AI plan v2、native Sky永続化、emulator backup v2復元            | 試験署名Pixel非破壊23/23受入済み        | 物理wipe復元、汎用Core、OS full build                              |
-| Android物理端末 | Pixel 10 GL066固定、署名source／partition構成、初回flash方針、7項目のproduction構成           | 6必須gate中1合格                       | BSP、full build、SELinux、CTS/VTS、OTA、純正復旧                  |
-| Local AI        | 固定runtime、API v2、Qwen機内モード、2工程Tool・再起動、33分実機熱試験                    | 単体実機合格・OS image未搭載           | model交換・共通記憶、専用SELinux、production署名、同一build再受入 |
-| Wallet / 実資金 | 本人別台帳、Earning Receipt、月最大8.88 USD精算、Base USDC照合コード                         | sandbox／コード段階                    | owner署名、最初の実transfer、決済・払出しProvider受入              |
+| 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
+| --------------- | -------------------------------------------------------------------------------------------- | -------------------------------------- | ----------------------------------------------------------------- |
+| Web / PWA       | Home、Sky、Zema、仕事、CSV、Wallet、Market、設定、Studio、D1 API                             | 実装あり・既存Siteの最新版同期待ち | 同一sourceの配備、認証後の実操作、一般公開gate                    |
+| Linux / QEMU    | OS起動、Platform API、専用UID、SQLite、保存、A/B更新、rollback、backup、Wallet／Game fixture | Developer Preview候補は10 gate中6合格  | 製品license、production署名、署名後の同一候補受入、公開承認       |
+| Android P1      | Broker／Shell／Tool、Local AI plan v2、native Sky永続化、emulator backup v2復元              | 試験署名Pixel非破壊23/23受入済み       | 物理wipe復元、汎用Core、OS full build                             |
+| Android物理端末 | Pixel 10 GL066固定、署名source／partition構成、初回flash方針、7項目のproduction構成          | 6必須gate中1合格                       | BSP、full build、SELinux、CTS/VTS、OTA、純正復旧                  |
+| Local AI        | 固定runtime、API v2、Qwen機内モード、2工程Tool・再起動、33分実機熱試験                       | 単体実機合格・OS image未搭載           | model交換・共通記憶、専用SELinux、production署名、同一build再受入 |
+| Wallet / 実資金 | 本人別台帳、Earning Receipt、月最大8.88 USD精算、Base USDC照合コード                         | sandbox／コード段階                    | owner署名、最初の実transfer、決済・払出しProvider受入             |
 
 結論として、**Web/PWAとQEMUの開発版は動く範囲がありますが、スマートフォンへ書き込んで日常利用できる完成OS、本番金融、一般公開版は未完成です。** QEMU、Android emulator、物理端末、本番環境の成功は相互に代用しません。
 
@@ -23,14 +234,15 @@ avocadoOSは、交換可能な高性能ローカルLLMとoffline agent runtime�
 
 - **Home**: Sky、Zema、Wallet、Market、Settingsへの標準入口。仕事はZema、CSVはSky内のToolとして開きます。
 - **Sky**: Toolの発見、作者・版・権限・料金・実行先の確認と接続を担当し、選んだToolと依頼をZemaへ安全に引き継ぎます。
-- **Zema**: Skyで依頼するかZemaからbotへ話しかけると仕事ごとのチャットが開き、入力確認、承認、実行状況、成果物を会話で追えます。同じタブでは再読込・チャット切替後も依頼と結果を確認できます（最大10分）。PCのMCP botも成果本文または失敗を会話に表示します。長期の本人別履歴は未対応です。
+- **Zema**: 接続済みToolへの依頼、追加確認、方向修正、承認、処理状態、結果、仕事履歴を一つの会話にまとめます。
 - **MCP**: stdio／Streamable HTTPをConnection Passportで管理します。現在の標準実接続は「このPC」で、Sky Cloudとprovider MCPは準備中です。
 - **Wallet**: 仕事、費用、検証済み収益、Rock利用料、払出しを別状態とreceiptで管理します。売上0なら請求0、未達分の債務化・翌月繰越はありません。
 - **Market / Fund**: 型付き価値の市場と実績更新型ファンドはPAPER限定です。LIVE注文、清算、自動再投資は無効です。
+- **Material Invention / avocadoMini**: Material Invention Coreの標準体験。四方向sensorで手を追跡し、物質digital twinの接続・分離から候補再計算とPatent AI引継ぎを行うRockstarOS端末を設計済み。[共有用完成設計書](docs/rockstaros-avocado-mini-complete-design.md)から、利用者向け説明と役割別の作業入口へ進めます。XR runtimeと実機は未実装です。
 - **OS運用**: 診断、暗号化された端末設定backup、明示的なPWA更新、A/B更新、rollback、復旧を提供します。
-- **緊急保護**: 利用者向けOSとは別配備の`avocadoOS Operator Dock`と、launcher非表示・別UIDの`dev.rock.operator.agent`を実装しました。DockはCloudflare Access JWTと利用者確認済みWebAuthn署名を必須化し、Agentは対象端末、RP／origin、署名、期限、scope、単調増加counterを独立検証してからackします。端末requestもKeystore P-256鍵で署名し、端末監査はAndroid Keystore HMAC chainで追記します。管理serverだけでは有効命令を作れず、任意shell、私的内容、Wallet、鍵への経路はありません。source build／lint、Android 15 emulator、試験署名Pixelの命令検証5/5は合格。production credential、StrongBox attestation、Device Owner実行、本番の侵入／復旧演習は未完了です。
+- **緊急保護**: 利用者向けOSとは別配備の`RockstarOS Operator Dock`と、launcher非表示・別UIDの`dev.rock.operator.agent`を実装しました。DockはCloudflare Access JWTと利用者確認済みWebAuthn署名を必須化し、Agentは対象端末、RP／origin、署名、期限、scope、単調増加counterを独立検証してからackします。端末requestもKeystore P-256鍵で署名し、端末監査はAndroid Keystore HMAC chainで追記します。管理serverだけでは有効命令を作れず、任意shell、私的内容、Wallet、鍵への経路はありません。source build／lint、Android 15 emulator、試験署名Pixelの命令検証5/5は合格。production credential、StrongBox attestation、Device Owner実行、本番の侵入／復旧演習は未完了です。
 - **Android正式署名**: 専用オフライン署名PC、YubiHSM 2本番1台、別場所の予備1台、別端末での独立検証に固定し、鍵をAVB／OTA／system application／APEX system componentの4系統へ分離しました。長期鍵と通常application鍵24か月目安、最低1 releaseの旧新鍵移行、漏洩鍵の即時停止・再使用禁止も固定済みです。生の秘密鍵はHSM外へ出さず、端末診断プラグインを署名鍵やboot不能の復旧手段には使いません。機材調達、全署名接続、予備切替、旧新鍵移行、Pixel 10実測は未完了です。
-- **Android rollback防止**: avocadoOS管理indexは署名前に固定した正式releaseのUTC Unix秒を使い、Google管理値は変更しません。A/Bのtrial slotでは端末indexを進めず、起動成功後だけ確定します。正確なlocation/value、失敗fallback、古い署名済みimage拒否はfull buildとPixel 10実機試験待ちです。
+- **Android rollback防止**: RockstarOS管理indexは署名前に固定した正式releaseのUTC Unix秒を使い、Google管理値は変更しません。A/Bのtrial slotでは端末indexを進めず、起動成功後だけ確定します。正確なlocation/value、失敗fallback、古い署名済みimage拒否はfull buildとPixel 10実機試験待ちです。
 - **Pixel 10純正復旧**: firmware freeze時点のGoogle公式最新安定版を選び、factory imageとfull OTAを同一buildで揃えます。full OTAは非wipe復旧と両slot boot可能化、factory imageはwipeを伴う最終復旧に限定します。利用条件同意、実ファイル取得、byte数・SHA-256固定は未完了です。
 - **Business Pilot**: CSV整形、メルカリ販売支援、Fashion Brand Opsを実装しています。外部市場の取引や売上を自動で実績化しません。
 - **Android production構成**: `dev.rock.automation`をheadless Platform Brokerとして維持し、最終Home／Sky／Zemaを載せるAndroid UI入口を、通信・DB・Keystore・広い管理権限を持たない`dev.rock.shell`へ分離しました。Shell API v4はnative Sky選択をBroker SQLite schema v2へ保存し、所有者24単語backup v2のexport／transactional import／新Keystore再bindingもBrokerだけで処理します。復元後は停止、token rotate、active承認停止、component authority除外を強制します。Local AI plan-only API v2はJSON Schemaで出力を制約し、Brokerが選択Toolと実行可能入力を再検証します。emulatorではBroker 11 non-skipped／Shell 5 test、所有Pixelは実再起動を含む23項目が合格しました。物理data／Keystore全損復元、Soong image、SELinux enforcingは未完了です。[Platform Core](docs/platform-core.md)／[backup証拠](docs/evidence/android-backup-v2-emulator-20260916.json)／[物理23項目の証拠](docs/evidence/android-pixel-10-prefull-physical-20260916.json)。
@@ -112,6 +324,9 @@ npm run release:check
 
 | 内容            | 正本                                                                                                                                                              |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 全設計の入口    | [docs/rockstaros-design-portal.md](docs/rockstaros-design-portal.md) / [data/design-document-index.json](data/design-document-index.json)                         |
+| OS全体詳細      | [docs/rockstaros-complete-design.md](docs/rockstaros-complete-design.md)                                                                                          |
+| 全Tool詳細      | [docs/sky-tools-complete-design.md](docs/sky-tools-complete-design.md)                                                                                            |
 | 確定要望        | [docs/product-baseline.md](docs/product-baseline.md) / [data/product-baseline.json](data/product-baseline.json)                                                   |
 | 作業進捗        | [data/project-status.json](data/project-status.json) / [project.md](project.md)                                                                                   |
 | 現在状態        | [docs/current-state-20260911.md](docs/current-state-20260911.md)                                                                                                  |
@@ -133,7 +348,7 @@ npm run release:check
 
 現在のWeb/Skyローンチ候補、起動・設定・監視・復旧手順は[OSバックエンド・ローンチ手順](docs/backend-launch-20260912.md)を参照してください。
 
-多機種対応は、**共通avocadoOS Core＋機種／SKU別Device Support Package**で進めます。提供区分は完全なOS image、Android GSI実験版、既存OS上のclient、非対応を混同しません。最初の物理対象は所有済みPixel 10／`frankel`に決定し、Pixel 7はその受入後まで保留します。BlackBerryは機種別調査、iPhone／iPadはOS置換ではなくclientです。[多機種対応設計](docs/device-support-architecture.md)／[機械可読の対応台帳](data/device-support-matrix.json)。
+多機種対応は、**共通RockstarOS Core＋機種／SKU別Device Support Package**で進めます。提供区分は完全なOS image、Android GSI実験版、既存OS上のclient、非対応を混同しません。最初の物理対象は所有済みPixel 10／`frankel`に決定し、Pixel 7はその受入後まで保留します。BlackBerryは機種別調査、iPhone／iPadはOS置換ではなくclientです。[多機種対応設計](docs/device-support-architecture.md)／[機械可読の対応台帳](data/device-support-matrix.json)。
 
 スマホ実機版の開発を開始しました。最初の対象はPixel 10／`frankel`ですが、現在はソース統合準備で、書込み可能なOSは未生成です。所有端末のproductとOEM unlocking可否を読取り専用で確認するまでfull OS buildとflashは停止し、build入口は64 GiB RAM／400 GiB空きとlock由来sourceの再検証を要求します。[現在の開発状態](docs/current-state-20260911.md)／[ビルド環境・実装・次の手順](docs/phone-preview-20260911.md)。
 
@@ -151,7 +366,7 @@ Home以外の全画面には、現在の操作を迷子にせず直接Homeへ戻
 
 SkyのWallet画面には、検証済み自動化収益の精算状況を追加しました。独立WorkerがExecution Receipt、Provider入金参照、証拠hashを持つ署名済みEarning Receiptだけを受け、実費の後から月最大888 USD centsを回収し、残額の払出し指図を作ります。売上0時の請求、未達分の債務化・翌月繰越、カード定期請求はありません。先払いCheckout APIは停止済みです。販売・決済・払出しProviderのsandbox接続と本番条件は未完了です。[実装とProvider接続手順](docs/sky-billing.md)。
 
-[8原則に基づくavocadoOS 1.0設計](docs/rockstaros-1.0-strategy.md)を追加しました。現ベースを維持し、一つの商品で実行・成果・費用・復旧まで確認できる体験を検証します。初期対象の文章系個人事業主と既存引用整理は検証仮説。配布/実用の優先順位、試用指標、CM導線、責任分担を具体化し、未実証の需要や本番利用可能性は主張しません。
+[8原則に基づくRockstarOS 1.0設計](docs/rockstaros-1.0-strategy.md)を追加しました。現ベースを維持し、一つの商品で実行・成果・費用・復旧まで確認できる体験を検証します。初期対象の文章系個人事業主と既存引用整理は検証仮説。配布/実用の優先順位、試用指標、CM導線、責任分担を具体化し、未実証の需要や本番利用可能性は主張しません。
 
 **[設計v1.1](docs/os-sky-wallet-game-design.md)の実装は承認済みです。** [承認範囲](docs/execution-approval-20260909.md)に従い、専用branchでnativeと設計を統合しています。公開・実機・MetaMask実資金は条件付き了承を保持し、技術的な準備を検証します。達成演出は見送り、市場案は検討のみです。
 
@@ -169,9 +384,9 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 [前日の実装・検証・未達の記録](docs/implementation-checkpoint-20260909.md)を履歴として保持しています。現在のGX00は実TLSで複数owner/game分離の必須受入を通過し、GX01の署名quote・別購入承認・両台帳とnative UIを統合しました。SDK・Game profile・停止/復旧と実OSの限定受入は[最新記録](docs/release-followup-20260910.md)に保存済みで、本番ゲームや実資金には接続していません。
 
-Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の画面を「OSをインストール」導線へ簡素化しました。同じページにSky Tool SDKの最小コード例と本人限定Siteの`/studio`導線を置いています。[導入・初回実行・復旧ガイド](docs/preview-installation-ja.md)と[既知制限](docs/preview-release-notes.md)は`/rockstaros/guide`から確認できます。ダウンロード一般公開は正式署名・許諾・最終配布受入と公開承認待ちです。
+製品紹介は`/rockstaros`に集約し、avocadoMiniの構想を最初に示します。OSの詳しい導入手順は`/rockstaros/guide`へ分け、Sky Tool SDKとStudioなどのサービスはRockstarOS側に置きます。[導入・初回実行・復旧ガイド](docs/preview-installation-ja.md)と[既知制限](docs/preview-release-notes.md)から現在の制限を確認できます。ダウンロード一般公開は正式署名・許諾・最終配布受入と公開承認待ちです。
 
-正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。旧ローカル作業名は `gg`。現在はGitHub `main` と実在する対象作業branchの最新SHAを再開基準とし、削除済みの旧branchやSSD上の旧checkoutを最新と仮定しません。製品は`avocadoOS`の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
+正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。旧ローカル作業名は `gg`。現在はGitHub `main` と実在する対象作業branchの最新SHAを再開基準とし、削除済みの旧branchやSSD上の旧checkoutを最新と仮定しません。製品は`RockstarOS`の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
 
 **CMの現在状態（2026-09-11）:** 最新の回答は制作途中です。完成・選定・内容照合・掲載が残ります。9月10日の完成済みという回答は過去の[履歴](docs/release-followup-20260910.md)として保持します。「追加1〜2日」はLICENSE／Sitesの待ちを除くQEMU版仕上げの条件付き概算で、確定公開日ではありません。[完了範囲・見積もり・残件の詳細](docs/release-followup-20260910.md)。
 
@@ -183,23 +398,31 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 
 <details>
 <!-- project-details-summary:start -->
-<summary>117 taskと段階gateの詳細を開く</summary>
+<summary>136 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-20 / AIネイティブOS詳細設計・共通CoreとSky／Zema／Gameの接続 / 完了 78/117件
+最終更新: 2026-09-20 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/136件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
-| SKY20 | ローカルSkyへSDK Appの自動検出・Hub接続を追加し、旧Mr. Hub 11件とJev周辺自動化7件を候補表示 | 進行中 | [記録](components/sky-workspace.tsx) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](docs/sky-mr-automation-candidates.md) |
-| SKY17 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
+| SKY19 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
+| DOC01 | RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化 | 完了 | [記録](docs/rockstaros-design-portal.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
 | AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
-| AI07 | JevをSkyの明示的remote evaluatorとして接続し、SDK/API互換・同意・rubric・receipt・privacy・料金縮退を受入 | 進行中 | [記録](docs/llm-evaluation-architecture.md) · [記録](data/llm-capabilities.json) · [記録](scripts/check-llm-architecture.mjs) · [記録](lib/jev-evaluation.ts) · [記録](app/api/jev-evaluation/route.ts) · [記録](components/jev-evaluation-runner.tsx) · [記録](tests/jev-evaluation.test.mjs) |
+| AI08 | Jev／TypeSafe・Local Qwen・Cloud LLMをcode主導で統合するDecision Fabric全体詳細設計と機械可読安全契約を固定 | 完了 | [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) |
+| AI07 | JevのSky明示利用を設計し、DecisionProviderとRouter／Harnessへの統合を受け入れる | 進行中 | [記録](docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md) · [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) · [記録](docs/jev-ecosystem-integration-design.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/llm-evaluation-architecture.md) · [記録](data/llm-capabilities.json) · [記録](scripts/check-llm-architecture.mjs) |
+| MAT01 | RQ49 Material Invention Coreのentity・発明loop・安全境界を設計へ固定 | 完了 | [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/material-invention-core.md) |
+| MAT02 | 二物質・複数比率・工程条件のsandbox候補graphとfail-closed安全検査を実装 | 完了 | [記録](contracts/material-invention.json) · [記録](contracts/material-invention-fixture.json) · [記録](lib/material-invention.ts) · [記録](tests/material-invention.test.mjs) · [記録](docs/material-invention-core.md) · [記録](docs/validation.md) |
+| MAT03 | Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入 | 未着手 | [記録](docs/material-invention-core.md) |
+| MAT04 | Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent AI設計を固定 | 完了 | [記録](docs/material-invention-xr.md) · [記録](docs/avocado-mini-spatial-invention.md) · [記録](docs/avocado-mini-hardware-design.md) · [記録](docs/assets/rockstaros-spatial-table-v1.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](docs/assets/avocado-mini-hardware-00-overview.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-exploded.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-exploded.png) · [記録](docs/assets/avocado-mini-hardware-03-power-control-haptic.png) · [記録](docs/assets/avocado-mini-hardware-00-overview-v2.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-exploded-v2.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-exploded-v2.png) · [記録](docs/assets/avocado-mini-hardware-03-power-control-haptic-v2.png) · [記録](docs/assets/avocado-mini-hardware-00-overview-v3-silver-tube.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-v3-silver-tube.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-v3-silver-tube.png) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-v4-thin-tube.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-v4-thin-tube.png) · [記録](data/material-invention-xr-policy.json) · [記録](contracts/material-invention-xr.json) · [記録](contracts/avocado-mini-spatial-interaction.json) |
+| MAT05 | Core graphから決定的XR sceneを生成し、四方向pose fixtureのconnect／separate／stale拒否を実装 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
+| MAT06 | avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
+| MAT07 | 誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化 | 完了 | [記録](docs/rockstaros-avocado-mini-complete-design.md) · [記録](docs/workstreams/11-material-invention-avocado-mini.md) · [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/rockstaros-1.0-architecture.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -213,14 +436,25 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | SKY11 | MCP掲載前診断とPC接続の互換性・初回導線を改善 | 完了 | [記録](lib/mcp-inspection.ts) · [記録](app/api/sky/mcp/inspect/route.ts) · [記録](lib/device.ts) · [記録](components/sky-publisher-form.tsx) · [記録](components/device-connection.tsx) · [記録](tests/mcp-inspection.test.mjs) · [記録](tests/device-lifecycle.test.mjs) |
 | SKY12 | ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](docs/sky-identity-connection.md) |
 | SKY13 | GrokをモチーフにChatの表示・入力を改善し、依頼から実行・結果までを会話内へ統合 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](lib/operations.ts) · [記録](tests/operations.test.mjs) · [記録](docs/chat-usability-20260912.md) |
-| SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](lib/mcp-tool-result.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](tests/mcp-tool-result.test.mjs) · [記録](docs/chat-mcp-control-room-20260913.md) |
+| SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](docs/chat-mcp-control-room-20260913.md) |
 | SKY15 | Sky SDKコードを既存ツールへ追加し、起動時にPackage登録・MCP公開・利用記録まで行うStudioを実装 | 完了 | [記録](components/rock-studio.tsx) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](app/studio/page.tsx) · [記録](app/sky/publish/page.tsx) · [記録](tests/sky-code-intake.test.mjs) · [記録](tests/sky-studio-chat.test.mjs) · [記録](docs/sky-tool-sdk.md) |
-| SKY16 | SkyのTool選択と自然文依頼をZemaへ一回引き継ぎ、job状態を即時同期 | 完了 | [記録](lib/sky-zema-handoff.ts) · [記録](lib/zema-chat-session.ts) · [記録](lib/operations-client.ts) · [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/chat-live-progress.tsx) · [記録](tests/sky-zema-handoff.test.mjs) · [記録](tests/zema-chat-session.test.mjs) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/sky.md) |
+| SKY16 | SkyのTool選択と自然文依頼をZemaへ一回引き継ぎ、job状態を即時同期 | 完了 | [記録](lib/sky-zema-handoff.ts) · [記録](lib/operations-client.ts) · [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/chat-live-progress.tsx) · [記録](tests/sky-zema-handoff.test.mjs) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/sky.md) |
+| SKY17 | Jev Ultrafastを権限制御されたbrowser agent候補としてSky catalogと全Tool設計へ追加 | 完了 | [記録](lib/catalog.ts) · [記録](docs/jev-ultrafast-integration-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
+| SKY18 | Jev ecosystem 10 repositoryを判断・browser・PC・mobile・review・routing・PAPER市場・referenceへ分離して候補登録 | 完了 | [記録](lib/catalog.ts) · [記録](docs/jev-ecosystem-integration-design.md) · [記録](docs/jev-ultrafast-integration-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) · [記録](scripts/check-sky.mjs) |
 | WEB02 | Developer Preview紹介をOSインストールとSky開発者コード中心の一画面へ再設計 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) |
 | WEB03 | Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](components/rock-studio.tsx) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
-| WEB04 | avocadoOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
-| BRD01 | 正式製品名をavocadoOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
-| VER01 | avocadoOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
+| WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
+| BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
+| WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/dist/index.html) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](sites/avocado-mini/public/images/motion-tower-front-dual-sensor-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-side-dual-sensor-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-rear-dual-sensor-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-four-point-dual-sensor-concept.png) · [記録](sites/avocado-mini/public/images/avocado-mini-kit.png) · [記録](sites/avocado-mini/public/images/avocado-mini-head-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-base-p0.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
+| WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
+| WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB10 | 製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](docs/product-baseline.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB11 | 製品構想モデルをスクロールで一周見せ、参考価格・購入準備中・OS導入へつなぐ | 完了 | [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](docs/product-baseline.md) |
+| WEB12 | 利用者提供の伸縮式センサータワーを製品サイトとGitHubの主役にする | 完了 | [記録](public/rockstaros/avocado-mini-tower-concept.png) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](README.md) · [記録](docs/avocado-mini-hardware-design.md) |
+| WEB13 | 旧URLをavocadoMini公開商品Siteへ転用し、OS操作画面を管理者限定の別Siteへ移す | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/guide/index.html) · [記録](sites/avocado-mini/crowdfunding/index.html) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](README.md) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/main.js) · [記録](project.md) · [記録](sites/avocado-mini/rockstaros/index.html) · [記録](sites/avocado-mini/vite.config.js) |
+| BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
+| VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |
 | WLT02 | 本人別の残高・売上・経費・取消履歴をD1へ保存するWallet専用APIと操作画面を実装 | 完了 | [記録](app/api/wallet/route.ts) · [記録](components/wallet-workspace.tsx) · [記録](lib/operations.ts) · [記録](tests/wallet-backend.test.mjs) |
 | WLT03 | Wallet／ファンド会社を交換可能な外部Providerとして受ける責任境界とadapter契約を固定 | 完了 | [記録](docs/external-wallet-fund-provider-boundary-20260913.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) · [記録](docs/validation.md) |
@@ -232,7 +466,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | DB01 | 全データ境界・table・migration・本番readback状態を一つの監査レポートへ統合 | 完了 | [記録](scripts/database-status.mjs) · [記録](data/database-deployments.json) · [記録](data/database-status.json) · [記録](docs/database-status.md) · [記録](tests/database-status.test.mjs) |
 | SPN01 | native Walletへsimulation/PAPER限定のValue/Spend台帳・exact approval・再照合を統合 | 完了 | [記録](systems/rock-star-os/src/blackberryrock/spend.py) · [記録](systems/rock-star-os/src/blackberryrock/wallet.py) · [記録](systems/rock-star-os/src/blackberryrock/hub_server.py) · [記録](systems/rock-star-os/tests/test_spend_runtime.py) · [記録](systems/rock-star-os/tests/test_hub_server.py) · [記録](docs/value-spend-runtime.md) |
 | FND01 | ツールの検証済み純収益・実費・receipt・失敗から構成と観測利回りを30秒ごとに再計算 | 完了 | [記録](lib/automation-fund.ts) · [記録](lib/automation-fund-store.ts) · [記録](app/api/automation-funds/route.ts) · [記録](components/autonomous-fund-market.tsx) · [記録](tests/automation-fund.test.mjs) · [記録](docs/everything-market-and-autonomous-fund-20260913.md) |
-| WEB01 | 主要画面のstyle契約と配備asset closureを検査し、GitHubと本人限定Sitesを同一commitへ固定 | 停止中: GitHub mainは全体検証済み。本人限定Sitesは現在の接続アカウントでAccess Denied／project_not_foundとなり、所有workspaceの接続なしでは同一SHA配備とD1本番readbackを実行できない。 | [記録](tests/web-route-style-contract.test.mjs) · [記録](scripts/check-web-asset-closure.mjs) · [記録](tests/web-asset-closure.test.mjs) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) · [記録](docs/evidence/launch/sites-owner-auth-blocker-20260915.json) |
+| WEB01 | 主要画面のstyle契約と配備asset closureを検査し、GitHubと既存Sitesを同一commitへ固定 | 停止中: 一般公開の意思は確認済み。既存Sitesは現在の接続アカウントでAccess Denied／project_not_foundとなり、所有workspaceの接続なしでは公開設定変更、同一SHA配備とD1本番readbackを実行できない。 | [記録](tests/web-route-style-contract.test.mjs) · [記録](scripts/check-web-asset-closure.mjs) · [記録](tests/web-asset-closure.test.mjs) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) · [記録](docs/evidence/launch/sites-owner-auth-blocker-20260915.json) |
 | HOME01 | iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装 | 完了 | [記録](app/page.tsx) · [記録](app/sky/page.tsx) · [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](app/settings/page.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-settings.module.css) · [記録](docs/product-baseline.md) |
 | HOME02 | Home以外の全画面へ直接Homeへ戻る導線を常設し、共通・独自レイアウトの回帰を防止 | 完了 | [記録](components/workspace-shell.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-maintenance.tsx) · [記録](app/fund/page.tsx) · [記録](app/fund/legacy/page.tsx) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/product-baseline.md) |
 | SYS01 | 端末診断・暗号化設定バックアップ・復元・Web更新確認を設定へ実装 | 完了 | [記録](app/settings/system/page.tsx) · [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
@@ -241,9 +475,9 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | SYS04 | QEMU rc2を同一候補10要件へ固定し、rc2固有native SBOMを生成して旧inventoryの誤転用を拒否 | 完了 | [記録](data/qemu-release-audit.json) · [記録](data/qemu-rc2-legal-info/manifest.csv) · [記録](data/qemu-rc2-legal-info/host-manifest.csv) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/qemu-release-completion-audit-20260912.md) · [記録](components/system-maintenance.tsx) |
 | SYS05 | 候補準備・法務承認・保護署名・本人署名の64拒否境界試験を全体verifyへ統合 | 完了 | [記録](scripts/check-release-signing.mjs) · [記録](scripts/release_signing.py) · [記録](scripts/release_signing_owner.py) · [記録](scripts/prepare_release_candidate.py) · [記録](scripts/verify_owner_legal_approval.py) · [記録](tests/test_release_signing.py) · [記録](tests/test_release_signing_owner.py) · [記録](tests/test_prepare_release_candidate.py) · [記録](tests/test_owner_legal_approval.py) · [記録](docs/release-signing-operations.md) |
 | SYS06 | Android物理端末とマイナンバー連携を独立監査し、証拠なしの互換・GMS・販売・個人番号有効化を拒否 | 完了 | [記録](data/android-physical-release-audit.json) · [記録](data/personal-number-release-audit.json) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/android-and-personal-number-gates-20260913.md) · [記録](docs/release-minimum-gates.md) |
-| SYS07 | Web/PWAのHTTP防御を正本化し、Worker・static asset両経路の実responseを検査 | 完了 | [記録](data/web-security-policy.json) · [記録](next.config.ts) · [記録](public/_headers) · [記録](scripts/check-web-security-response.mjs) · [記録](tests/web-security-policy.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260915.json) · [記録](docs/validation.md) |
-| SYS08 | PWA新版の自動即時切替を廃止し、本人確認後の適用・旧cache整理・再読込へ変更 | 完了 | [記録](public/sw.js) · [記録](components/system-maintenance.tsx) · [記録](tests/service-worker-update.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260915.json) · [記録](docs/validation.md) |
-| SYS09 | PWAの同一性・scope・iPhone/Android向けinstall iconを固定し、実HTTP manifestを検査 | 完了 | [記録](app/manifest.ts) · [記録](public/rock-icon-192.png) · [記録](public/rock-icon-512.png) · [記録](public/rock-icon-maskable.svg) · [記録](scripts/check-web-security-response.mjs) · [記録](tests/pwa-installability.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260915.json) · [記録](docs/validation.md) |
+| SYS07 | Web/PWAのHTTP防御を正本化し、Worker・static asset両経路の実responseを検査 | 完了 | [記録](data/web-security-policy.json) · [記録](next.config.ts) · [記録](public/_headers) · [記録](scripts/check-web-security-response.mjs) · [記録](tests/web-security-policy.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260917.json) · [記録](docs/validation.md) |
+| SYS08 | PWA新版の自動即時切替を廃止し、本人確認後の適用・旧cache整理・再読込へ変更 | 完了 | [記録](public/sw.js) · [記録](components/system-maintenance.tsx) · [記録](tests/service-worker-update.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260917.json) · [記録](docs/validation.md) |
+| SYS09 | PWAの同一性・scope・iPhone/Android向けinstall iconを固定し、実HTTP manifestを検査 | 完了 | [記録](app/manifest.ts) · [記録](public/rock-icon-192.png) · [記録](public/rock-icon-512.png) · [記録](public/rock-icon-maskable.svg) · [記録](scripts/check-web-security-response.mjs) · [記録](tests/pwa-installability.test.mjs) · [記録](docs/evidence/launch/web-security-local-20260917.json) · [記録](docs/validation.md) |
 | SYS10 | Web第三者依存のlock hash・47要review componentのPURL一覧を公開gateへ固定 | 完了 | [記録](package-lock.json) · [記録](data/web-third-party-license-audit.json) · [記録](data/release-readiness.json) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
 | SYS11 | Vite生成chunkのnpm componentをbuild時に記録しlicense監査へ照合 | 完了 | [記録](vite.config.ts) · [記録](scripts/web-bundle-inventory.mjs) · [記録](scripts/check-web-bundle-inventory.mjs) · [記録](tests/web-bundle-inventory.test.mjs) · [記録](package.json) · [記録](data/release-readiness.json) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
 | SYS12 | 運営1名で開始できる緊急保護・限定保守accessの脅威モデルと端末側制御契約を固定 | 完了 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](docs/product-baseline.md) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) |
@@ -298,7 +532,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | LCH08 | ローカルOSバックエンドの安全終了・ヘルスチェック・再起動時のreceipt復元を検証 | 完了 | [記録](docs/backend-launch-20260912.md) · [記録](docs/evidence/launch/backend-rc3-local-20260912.json) · [記録](systems/rock-star-os/scripts/verify-backend-launch.py) · [記録](systems/rock-star-os/tests/test_hub.py) · [記録](systems/rock-star-os/tests/test_hub_server.py) |
-| FB01 | Instagram運用・受注型ブランド管理をavocadoOS Hub商品とMCPへ統合 | 完了 | [記録](docs/fashion-brand-ops-integration.md) |
+| FB01 | Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合 | 完了 | [記録](docs/fashion-brand-ops-integration.md) |
 | FB02 | 売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 | FB03 | DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 | FB04 | 入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理 | 完了 | [記録](toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
@@ -328,7 +562,7 @@ Developer Previewの紹介はローカル`/rockstaros`に集約し、最初の�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: SKY20は旧Mr. Hub 11候補とJev周辺7候補の実行器、本人接続、料金・結果照合を一件ずつ受け入れ、通るまでreadyにしない。PC内SDK Appのカード表示・接続・停止はローカルSkyで確認済み。AI07はJevのprovider sandboxで正常系・429・5xx・不正response・budget縮退を受入し、AI_GATEWAY_API_KEY、Terms/Privacy、料金上限を確認する。JevはSkyのcatalog／同意UI／closed rubric／Evaluation Receiptまで実装済みだが、本番provider接続は未完了。法務受付・特許アシスタントはSkyの別Toolとして維持し、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。
+次の作業: Scalewayの課金確認後、Ubuntu 24.04 / 32 dedicated vCPU / 64 GB RAM / 600 GBで固定sourceをsyncし、Operator Agentを明示除外したbringup modeでtarget-files-packageとotatools-packageをbuildする。RELEASE_FLASH gate、production signing、実機flashは未合格のまま維持する。 AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。SKY19の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。
 <!-- project-status:end -->
 
 </details>
@@ -357,7 +591,7 @@ R2の画面確認と修正はGitHubへ保存済みですが、**本番サイト�
 - ホームはSky。旧ファンドは `/fund` に保持し、参加・配分計画・試算条件をアカウントごとに保存。
 - 「仕事を進める」から記事販売準備・ココナラ納品準備を作成し、手順・試行履歴・最終確認をアカウント別に保存して再開。
 - 基本分配・ブースト・共同留保を、共通収益の範囲内で試算。入金・送金は未接続。
-- Sky MCP Connectorを一度起動すると、SkyのMCP画面から登録済みの自動化へワンタップ接続。現在の配布パックは基本4機能と受注型ブランド運営38機能を同じConnectorで検出します。Sky Tool SDK 0.1.2で起動したPC内AppもSkyの一覧へ現れ、カードから接続できます。旧Mr. Hub由来11件とJev周辺の自動化7件は導入候補で、実行器を接続するまで実行できません。
+- Sky MCP Connectorを一度起動すると、SkyのMCP画面から登録済みの自動化へワンタップ接続。現在の配布パックは基本4機能と受注型ブランド運営38機能を同じConnectorで検出します。
 - 自動化の追加は[`registry.json`](toolkits/sky-mcp-connector/registry.json)へstdioまたはStreamable HTTP定義を加えます。接続時にprotocol・capability・tool schemaをConnection Passport化し、実行は引数に結び付いた一回承認を必須にします。[導入・安全境界](docs/sky-mcp-connector.md)
 - Skyの「サブスク顧問」から、PC内のRockstar Ledgerへ読み取り専用で接続。通貨別の月額、更新日、支払い失敗、定期課金候補を確認し、同梱のstdio MCPでも照会できます。契約データはGitやサイトへ送らず、解約・支払い・税務申告は自動実行しません。[導入と境界](toolkits/rockstar-ledger/README.md)
 - GitHubとHugging Faceの公開メタデータを収集する管理用コマンド。
@@ -437,11 +671,11 @@ Product Hunt APIは商用利用条件の確認前のため未接続。サービ�
 
 ## 配布条件
 
-GitHubの `rock` は公開リポジトリです。avocadoOS独自コードの再利用ライセンスは未選定であり、ソースを閲覧できることとOSSとしての再利用許諾は別です。カタログで紹介するOSSは各公式ライセンスに従い、モデルの重みは個別に確認します。Mr.から取り込んだ4ファイルは `vendor/mr/LICENSE` のMIT条件で同梱しています。PCパックのavocadoOSアダプターとサンプルも同じMIT条件で配布します。認証情報や過去の案件データは含めていません。
+GitHubの `rock` は公開リポジトリです。RockstarOS独自コードの再利用ライセンスは未選定であり、ソースを閲覧できることとOSSとしての再利用許諾は別です。カタログで紹介するOSSは各公式ライセンスに従い、モデルの重みは個別に確認します。Mr.から取り込んだ4ファイルは `vendor/mr/LICENSE` のMIT条件で同梱しています。PCパックのRockstarOSアダプターとサンプルも同じMIT条件で配布します。認証情報や過去の案件データは含めていません。
 
 ## Sky商品: Instagram運用・受注型ブランド管理
 
-avocadoOS SkyのTimelineと検索欄から「Instagram運用」で見つけられる商品を追加しました。実装は[`toolkits/fashion-brand-ops`](toolkits/fashion-brand-ops)、統合境界と検証範囲は[`docs/fashion-brand-ops-integration.md`](docs/fashion-brand-ops-integration.md)です。
+RockstarOS SkyのTimelineと検索欄から「Instagram運用」で見つけられる商品を追加しました。実装は[`toolkits/fashion-brand-ops`](toolkits/fashion-brand-ops)、統合境界と検証範囲は[`docs/fashion-brand-ops-integration.md`](docs/fashion-brand-ops-integration.md)です。
 
 改善版Skyでは、上部の「ブランド運営役」または「Instagramの広告からDM受注まで進めて」のような依頼からこの商品を開けます。ダークな役割フィードで実行場所を確認し、商品画面から38 MCP操作、Campaign Autopilot、Sales Concierge、Production Cockpit、approval gateの状態へ進めます。Sky受付の範囲と未実装のMemoryは[`docs/sky-assistant-and-memory.md`](docs/sky-assistant-and-memory.md)に記録しています。
 
@@ -469,7 +703,5 @@ PCパックは `public/toolkits/mr-toolkit.zip`。元コードのハッシュが
 詳しい今回の動作と会計モデルは `docs/fund-and-mcp.md` を参照。
 
 ローカル保存領域の初期化: `npx wrangler d1 migrations apply DB --local --config wrangler.local.jsonc`。プレビューの保存には `/signin-with-chatgpt?return_to=/` から標準のローカルサインインを使います。
-
-Zemaの`/chat`は会話履歴を開閉でき、入力欄からSky Toolと文章モデルを選べます。普通の会話には文章モデルの接続が必要です。Web版の既定QwenはBinder未接続時に利用不可を表示し、外部モデルは毎回の送信許可とserver設定が必要です。
 
 </details>

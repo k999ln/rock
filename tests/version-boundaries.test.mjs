@@ -9,7 +9,7 @@ void test('every release surface matches the canonical version boundary ledger',
   const result = validateRepositoryVersionBoundaries();
   assert.deepEqual(result, {
     boundaryCount: 4,
-    productVersion: 'avocadoOS 1.0 Developer Preview',
+    productVersion: 'RockstarOS 1.0 Developer Preview',
     qemuCandidate: '1.0.0-preview.20260911-rc2',
   });
 });
@@ -21,7 +21,7 @@ void test('a future merge SHA cannot be self-recorded as repository truth', () =
         boundaries: {
           schema: 1,
           product: {
-            name: 'avocadoOS',
+            name: 'RockstarOS',
             displayVersion: '1.0 Developer Preview',
             releaseState: 'developer_preview_not_public',
           },
@@ -46,10 +46,10 @@ void test('a future merge SHA cannot be self-recorded as repository truth', () =
           },
         },
         productIdentity: {
-          displayName: 'avocadoOS',
+          displayName: 'RockstarOS',
           version: '1.0',
           releaseStageLabel: 'Developer Preview',
-          previewName: 'avocadoOS 1.0 Developer Preview',
+          previewName: 'RockstarOS 1.0 Developer Preview',
         },
         packageJson: { version: '0.1.0' },
         pyproject: 'version = "0.3.0"',
@@ -70,7 +70,7 @@ void test('a future merge SHA cannot be self-recorded as repository truth', () =
         projectStatus: {
           launchReadiness: { distributionVersion: '1.0.0-preview.20260911-rc2' },
         },
-        previewNotes: 'avocadoOS 1.0 Developer Preview',
+        previewNotes: 'RockstarOS 1.0 Developer Preview',
         guidePage: 'PRODUCT_NAME PRODUCT_VERSION PRODUCT_PREVIEW_NAME',
         androidFiles: {
           manifest: 'android:versionCode="1" android:versionName="0.1.0"',

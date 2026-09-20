@@ -1,6 +1,6 @@
-# avocadoOS — AIネイティブOSの共通設計
+# RockstarOS — AIネイティブOSの共通設計
 
-状態: RQ48を実装へ落とす到達設計。2026-09-16、基準source `678e9c9`。2026-09-19にlocal planner、Sky内OpenAI接続2件、Jev remote evaluatorの境界を追記した。**本文の新しい契約・状態名・数値目標は提案であり、現行APIや受入済み機能の宣言ではない。** 実装済みの範囲は第8節のsourceと証拠で区別する。製品目的は[north star](product-north-star-20260915.md)、LLMの現在地は[LLM・評価モデル設計](llm-evaluation-architecture.md)と[`data/llm-capabilities.json`](../data/llm-capabilities.json)、現在の判定は[全体構成](system-composition.md)、作業入口は[Android / Device / Local AI](workstreams/07-android-device-local-ai.md)。
+状態: RQ48を実装へ落とす到達設計。2026-09-19更新。**本文の新しい契約・状態名・数値目標は提案であり、現行APIや受入済み機能の宣言ではない。** 実装済みの範囲は第8節のsourceと証拠で区別する。製品目的は[north star](product-north-star-20260915.md)、LLMとJevの現在地は[LLM・評価モデル設計](llm-evaluation-architecture.md)と[`data/llm-capabilities.json`](../data/llm-capabilities.json)、現在の判定は[全体構成](system-composition.md)、作業入口は[Android / Device / Local AI](workstreams/07-android-device-local-ai.md)。RQ49の物質・配合・工程探索とavocadoMiniは、このCoreの権限、仕事、Tool、receiptを再利用する主要systemであり、全体像は[空間発明システム完成設計書](rockstaros-avocado-mini-complete-design.md)、Core詳細は[Material Invention Core設計](material-invention-core.md)を正本とする。
 
 ## 1. 固定する中核と依存方向
 
@@ -15,6 +15,7 @@
 | Tool / MCP / Provider | 個別業務・ゲーム・生成・外部照合 | 宣言された入力/出力とscopeだけ。独立署名・版・UID/隔離・quota。OS bootの必須依存にしない |
 | Sky app / OS接続層 | Tool/自動化Fund発見、導入・接続・実行端末選択 | appは複数端末の操作面、OS側はcapability検査と選択保存。appにBroker管理権限を渡さない |
 | Zema / 応用UI | 依頼、役割、進捗、承認案内、停止、成果 | 正本snapshotとeventだけを表示。Game/IP/動画/VRも同じ仕事・artifact契約を使う |
+| Material Invention / avocadoMini | 物質・工程・安全・証拠の版管理、四方向sensor操作、VR／AR／2D表示、差分再計算、Patent AI引継ぎ | 共通Coreの仕事・権限・Tool・receiptを使う。camera、gesture、simulation、Patent AIへ装置直接権限や最終判断権限を渡さない |
 | Wallet / 収益Provider | 確認済み収益・費用・資産の照合 | 完了receiptとは別のEarning Receipt。金融接続不在でもCoreと非金融Tool/Gameは動く |
 
 OSが保証する契約と更新可能な実装を分ける。Sky、Zema、LLM runtime、Tool、外部Providerのapp-only更新では原則OS imageを再buildしない。framework、SELinux、privapp/product構成、boot/vendor/AVBの変更はOS側の受入をやり直す。Operator Dockは別配備、端末Agentは既存の限定scopeに従い、agentの記憶やWalletへの裏口にしない。
@@ -34,14 +35,6 @@ model更新は `download → hash/license/互換検査 → 隔離試験 → 待�
 runtime側は別の `RuntimeManifest` にpackage/signer/版/API範囲/対応ModelProfile形式/plan schemaを宣言し、Brokerが実APK identityと照合してregistryへ登録する設計とする。現行 `contracts/local-ai-runtime.json` と `LocalAiConnection` は固定package・versionCode・API・同署名検査であり、任意runtimeへの交換を実装済みとはしない。1.0ではこの一つのadapterと互換model二構成の差替え/失敗rollback/旧job pinを最低受入とし、別runtime二実装間の差替えは拡張受入に分ける。署名境界を変えるruntime導入は通常のmodel変更で迂回できない。
 
 profile activation/rollbackのauthorityはBrokerの管理transactionだけが持つ。最小download資格のstagerが非active領域へ置き、Brokerが承認されたmanifestの署名、全hash、容量、互換性を再検査してからactive generation pointerをatomicに切り替える。runtimeの自己更新でこの経路を迂回できない。staging/検証/切替/healthのjournalを残し、起動時は最後に確定したpointerからresumeまたは検査済み旧profileへrollbackする。旧jobのpinがあるprofileは削除しない。旧profile失効時はそのjobを停止し、新profileでの明示的replanを新revisionとして扱う。
-
-### 2.1 cloud generatorとremote evaluatorをlocal modelから分ける
-
-WebのOpenAI接続はSkyの法務受付と特許出願アシスタントの2 Tool内部だけにあり、OS全体のcloud LLM層ではない。Local AIが利用できない時にOpenAIへ自動送信せず、OpenAI停止時にLocal AIへ同じ依頼を自動fallbackしない。Tool、provider、model role、実行場所、接続状態を別々に記録する。
-
-Jev (`typesafe-ai/jev`) はVercel AI Gateway経由のTypeSafe AI remote evaluatorとして扱う。端末内model profileや文章生成modelには含めず、本人がSkyから明示利用する評価Toolに限定する。typed evaluation結果は助言・品質証拠であり、Brokerの権限判定、本人承認、Tool成功、仕事完了、Earning Receiptを置き換えない。Jevの未接続や低評価で既存local-pure jobを自動失敗・再実行しない。
-
-現行 `ai@7.0.107` は `experimental_evaluate` を実行時exportし、Skyのserver-side評価routeから利用する。Cloudflare互換、privacy、timeout、費用、invalid responseのfixtureとprovider sandbox／本番受入は残りのgateであり、詳細は[LLM・評価モデル設計](llm-evaluation-architecture.md)に従う。
 
 ## 3. Agentの記憶、仕事、再起動
 
@@ -75,7 +68,7 @@ Sky appはスマホ/Web/PC等の選択・接続UI、OS側Sky serviceはBrokerに
 
 初期の実行端末は本人が一台指定する。仕事ごとに一つのauthority deviceとwriter epochを固定し、appの画面切替や通信断で別端末へ自動移送しない。将来のhandoffは旧端末を停止・fenceし、最後のstate/hashとuncertain作用を照合し、新端末のcapabilityと承認を再検査してからepochを増やす。旧端末の停止を証明できないoffline時はhandoffを止める。別端末で独立した仕事は作れるが、同じ仕事や金銭操作の二重writerは許可しない。遠隔接続、複数selection、writer移送はいずれも未実装である。
 
-| 能力・保証 | 通常のSky app / Web / 既存OS上APK | avocadoOS側で追加受入が必要な保証 |
+| 能力・保証 | 通常のSky app / Web / 既存OS上APK | RockstarOS側で追加受入が必要な保証 |
 | --- | --- | --- |
 | 選択・依頼・表示 | app権限内のUI、認証済みAPI、cache。接続先不在は操作不可 | Broker identity、永続selection、ローカル実行の権限強制 |
 | offline実行・記憶 | 導入済みadapterとapp sandboxの範囲。OSによりbackground制約あり | boot後の復旧、全体quota/熱管理、service寿命と停止の実機受入 |
@@ -94,7 +87,7 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 
 移植時は[Web workflow](../lib/workflow.ts)のrevision競合・command冪等性・sample不合格・review必須をfixtureの共通期待値にする。Androidはowner別DBとBinder境界を持つが、汎用job revision/command集合がWebと完全一致する実装はまだない。将来のschema migrationは旧データを保持し、未知版をresetせず拒否し、rollback readerの互換性を検査する。
 
-## 7. 同じCoreで二つの縦断を作る
+## 7. 同じCoreで複数の縦断を作る
 
 | 共通段階 | 便利機能: 原稿の整理・記事準備 | Game/IP: 本人所有の短編テキスト冒険を制作・試遊する案 |
 | --- | --- | --- |
@@ -110,6 +103,8 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 
 ゲーム点数・進行度はgame側の非金融data、Provider確認済み販売収益はEarning Receipt、交換可能な資産はWallet/Providerの別台帳で管理する。点数→実資金の暗黙換算や動画再生数→収益の推定記帳は禁止。交換を追加するときだけGX01のquote/予約/両台帳/照合、方向・rate・手数料・本人承認を独立受入する。Game/IPの制作と試遊はWallet/Fundの完成を待たない。
 
+Material Invention／avocadoMiniは第三の縦断である。Zemaで目標と制約を仕事にし、Skyで材料DB、simulation、Patent AI、外部ラボを選び、四方向sensorまたは2D操作からCoreへ版付き仮説を渡す。Safety Gateの後だけsimulationを実行し、人、AI、文献、予測、実測を分離したInvention Event Ledgerを成果とする。gestureは物理実験、外部共有、出願の承認にならない。詳細と役割別入口は[共有用完成設計書](rockstaros-avocado-mini-complete-design.md)に従う。
+
 ## 8. 既存実装との対応と不足
 
 | 契約 | 再利用する現物 | 現在地と次の実装 |
@@ -120,9 +115,10 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 | Sky/Zema | `android/shell-api/.../IShellApi.aidl` v4、`lib/sky-zema-handoff.ts`、`lib/workflow.ts` | native selection schema v2、Webの短命handoff/本人別jobが存在。app横断同期・一般Tool選択は未実装 |
 | 収益/Wallet | `lib/earning-bridge.ts`、`lib/earning-receipt.ts`、既存Billing Worker、PlatformStore | Rock所有fixtureでToolと署名収益の相関・冪等照合。外部sandbox/返金/chargeback/払出し未受入 |
 | Game/作者 | `systems/rock-star-os/os/wallet_backend/runtime_contracts.py`、[GX01](gx01-contract-implementation-plan.md)、[SDK契約](game-api-contract-draft.md) | Linux fixture/SDKの限定受入。正式ゲーム・Android port・本書のstory Toolは未実装 |
+| Material Invention／avocadoMini | `lib/material-invention.ts`、`contracts/material-invention*.json`、`contracts/avocado-mini-spatial-interaction.json` | 装置非接続sandbox Coreと統合設計は完成。決定的scene、合成pose、四方向sensor実機、simulation／Patent AI bridgeは未実装 |
 | backup/運用 | `RecoverableBackupManager`、`PlatformStore`、`android/operator-agent/` | backup v2と制限付きOperatorのsource/試験あり。物理wipe復元、production credential、StrongBox登録、Device Owner、最終SELinuxは未受入 |
 
-`...`は上表のJava package配下の省略表記であり、新しいファイルを示さない。[実機23項目](evidence/android-pixel-10-prefull-physical-20260916.json)は既存OS上の試験署名APK、実再起動、backup非破壊exportの証拠。avocadoOS full build、flash、production鍵、OTA/純正復旧や外部売上の合格ではない。
+`...`は上表のJava package配下の省略表記であり、新しいファイルを示さない。[実機23項目](evidence/android-pixel-10-prefull-physical-20260916.json)は既存OS上の試験署名APK、実再起動、backup非破壊exportの証拠。RockstarOS full build、flash、production鍵、OTA/純正復旧や外部売上の合格ではない。
 
 ## 9. Core 1.0と応用の独立受入
 
@@ -136,6 +132,7 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 | Sky複数端末 | capability非互換・古いcache拒否、端末選択、競合revision、再接続、二重writer拒否・移送 | 初期一台Coreを待たせずadapter/fixtureを開発。受入前は対応表示しない |
 | 便利Tool | 上の原稿縦断を同一入力/品質で比較し、確認時間と失敗復旧を測定 | 売上なしでも便益を合格にできる |
 | Game/IP | 上の制作→試遊→save復旧とowner分離を実証 | Core/APIを共有して並行開発。金融交換、動画、VRはそれぞれ別受入 |
+| Material Invention／avocadoMini | 合成graph→決定的scene→合成pose操作→安全gate→差分simulation receipt→Patent AI packetを受入。実機は四方向校正、誤操作、privacy、accessibilityを別受入 | Core/APIを共有して並行開発。simulation、実材料、外部ラボ、特許性、量産は互いを代替しない |
 | 実収益/Wallet | 外部sandboxで成果→署名receipt→Wallet、重複、返金/chargeback、結果不明、払出しを照合。LIVEは対象条件に従う | Core合格で代替不可。未合格ならlive収益表示・収益利用の公開は不可 |
 | Fund改善 | 複数Toolの役割/順序/予算/停止、反復した確認済み費用/収益、旧構成との比較 | 実績不足はPAPER。非金融の構成試験は並行可能、利回り保証なし |
 
@@ -143,6 +140,6 @@ Zemaはこのenvelopeの読取と `submit/approve/pause/resume/cancel/retry/reco
 
 段階3（JOINT/OWNER、DSP01/RLS02）は既存full build入力と[初回flash gate](android-first-flash-gate-20260916.md)を満たした同一OS候補でCore物理受入を行う。インフラ契約、鍵管理、wipe/flashは本設計更新では実行しない。段階4は応用ごとの受入を独立に進め、実収益ProviderはJOINT/OWNER、Tool/Game adapterはROCKを主担当にする。実名の運用責任者や外部契約が必要なgateは公開前に確定する。
 
-実装単位は進捗JSONの `AI01`（本設計と独立監査）、`AI02`（model/runtime互換）、`AI03`（限定記憶とprojection）、`AI04`（effect分類と不明結果照合）、`AI05`（Sky能力交渉・単一実行端末）、`AI06`（非金融Game/IP fixture）、`AI07`（Jev remote evaluatorのSDK/API互換、Sky同意、rubric、receipt）に対応する。AI02〜07は未完了で、既存OS07〜OS11/DSP01/RLS02の受入を置き換えない。AI04のexternal-writeは現行pure Engineに実証された脆弱性ではなく、外部変更を一般化する前の設計blockerである。
+実装単位は進捗JSONの `AI01`（本設計と独立監査）、`AI02`（model/runtime互換）、`AI03`（限定記憶とprojection）、`AI04`（effect分類と不明結果照合）、`AI05`（Sky能力交渉・単一実行端末）、`AI06`（非金融Game/IP fixture）に対応する。AI02〜06は計画で、既存OS07〜OS11/DSP01/RLS02の受入を置き換えない。AI04のexternal-writeは現行pure Engineに実証された脆弱性ではなく、外部変更を一般化する前の設計blockerである。
 
 直近の未確定事項は、比較採用するmodelと性能/電池予算、長期記憶の保持期間、一般Tool manifestのcapability schema、遠隔device enrollmentとwriter移送の具体transport、story候補の素材/成果schema、外部Providerの照会・冪等性契約である。これらは設計/fixture作業を進めながら具体化し、未確定を実装済み・高性能達成・本番対応と表示しない。

@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/** Signature-permission OS broker for the versioned avocadoOS Platform API. */
+/** Signature-permission OS broker for the versioned RockstarOS Platform API. */
 public final class RockPlatformService extends Service {
     static final String EXTRA_APPROVAL_ID = "approvalId";
     private final ExecutorService worker = Executors.newSingleThreadExecutor();

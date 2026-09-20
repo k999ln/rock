@@ -83,7 +83,7 @@ function fixture() {
     trust_state,channel_state,key_fingerprint,last_seen_at,created_at,updated_at,
     attestation_record_sha256
   ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(
-    deviceId,'owner-1','Pixel 10','android','Pixel 10','avocadoOS 1.0',
+    deviceId,'owner-1','Pixel 10','android','Pixel 10','RockstarOS 1.0',
     'active','verified','connected','sha256:device-key',now,now,now,'sha256:attestation',
   );
   return {

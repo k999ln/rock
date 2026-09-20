@@ -115,7 +115,7 @@ public final class RockShellService extends Service {
                     response.put("storageSyncConfirmed", result.storageSyncConfirmed);
                     return boundedJson(response);
                 } catch (Exception failure) {
-                    android.util.Log.e("avocadoOS.Backup", "Export failed: "
+                    android.util.Log.e("RockstarOS.Backup", "Export failed: "
                         + failure.getClass().getSimpleName());
                     return recoveryFailure("BACKUP_EXPORT_FAILED");
                 }
@@ -137,7 +137,7 @@ public final class RockShellService extends Service {
                 } catch (SecurityException denied) {
                     return recoveryFailure("RECOVERY_PHRASE_OR_OWNER_REJECTED");
                 } catch (Exception failure) {
-                    android.util.Log.e("avocadoOS.Backup", "Restore failed: "
+                    android.util.Log.e("RockstarOS.Backup", "Restore failed: "
                         + failure.getClass().getSimpleName());
                     return recoveryFailure("BACKUP_RESTORE_FAILED");
                 }

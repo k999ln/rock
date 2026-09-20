@@ -1,4 +1,5 @@
 'use client';
+/* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
 
 import { useEffect, useMemo, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
@@ -226,13 +227,13 @@ export default function MercariRevenueStarter() {
             <p>
               商品情報と進捗は本人別に保存されます。メルカリのパスワードやCookieは保存しません。
             </p>
-            <Link
+            <a
               className="rock-button rock-button-dark"
               href="/signin-with-chatgpt?return_to=%2Fincome%2Fmercari"
               target="_top"
             >
               サインインして使う
-            </Link>
+            </a>
           </div>
         ) : (
           <div className="mercari-grid">

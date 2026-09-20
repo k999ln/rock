@@ -118,7 +118,7 @@ export function CostCalculator() {
                 <dd>{yen(result.revenue)}</dd>
               </div>
               <div>
-                <dt>avocadoOS利用料の案</dt>
+                <dt>RockstarOS利用料の案</dt>
                 <dd>−{yen(result.fee)}</dd>
               </div>
               <div>
@@ -142,7 +142,7 @@ export function CostCalculator() {
               </p>
             </div>
             <p className="subnote">
-              収入0円ならavocadoOS利用料も0円。電気・通信などの費用は残るため、手出しが生じる場合があります。税金・機器代等は含みません。
+              収入0円ならRockstarOS利用料も0円。電気・通信などの費用は残るため、手出しが生じる場合があります。税金・機器代等は含みません。
             </p>
           </>
         ) : (

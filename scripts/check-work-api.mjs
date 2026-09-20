@@ -102,6 +102,16 @@ try {
     filter: (source) => !source.split(/[\\/]/).at(-1).startsWith('._'),
   });
   await start();
+  check(
+    (
+      await call('GET', undefined, {
+        path: '/api/health',
+        user: null,
+        status: 503,
+      })
+    ).status,
+    'unavailable',
+  );
   const database = await worker.getD1Database('DB');
   for (const file of readdirSync(join(temporary, 'migrations'))
     .filter((file) => file.endsWith('.sql'))
@@ -111,6 +121,10 @@ try {
       .filter((sql) => sql.trim()))
       await database.prepare(sql).run();
   }
+  check(
+    (await call('GET', undefined, { path: '/api/health', user: null })).status,
+    'ok',
+  );
   await call('GET', undefined, { user: null, status: 401 });
   for (let attempt = 0; attempt < 20; attempt++) {
     await call('POST', {}, { origin: 'https://not-rock.invalid', status: 403 });

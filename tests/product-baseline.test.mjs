@@ -11,22 +11,79 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ48/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ49/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ48/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ49/);
+  const missingWholeDesign = structuredClone(source);
+  missingWholeDesign.designDocumentation.tools = null;
+  assert.throws(
+    () => validateBaseline(missingWholeDesign),
+    /OS・全Tool・Material Invention/,
+  );
+  const falseImplementationCompletion = structuredClone(source);
+  falseImplementationCompletion.designDocumentation.allImplementationsComplete =
+    true;
+  assert.throws(
+    () => validateBaseline(falseImplementationCompletion),
+    /OS・全Tool・Material Invention/,
+  );
+  const unsafeMaterialExecution = structuredClone(source);
+  unsafeMaterialExecution.materialInvention.autonomousPhysicalExperimentAllowed = true;
+  assert.throws(
+    () => validateBaseline(unsafeMaterialExecution),
+    /Material Invention Core/,
+  );
+  const falseProductCompletion = structuredClone(source);
+  falseProductCompletion.materialInvention.designStatus = 'product_complete';
+  assert.throws(
+    () => validateBaseline(falseProductCompletion),
+    /Material Invention Core/,
+  );
+  const unsafeSpatialExecution = structuredClone(source);
+  unsafeSpatialExecution.materialInvention.spatialDevelopment.physicalExecutionAllowed = true;
+  assert.throws(
+    () => validateBaseline(unsafeSpatialExecution),
+    /Spatial Invention Studio/,
+  );
+  const renamedSpatialOs = structuredClone(source);
+  renamedSpatialOs.materialInvention.spatialDevelopment.operatingSystem =
+    'avocadoOS';
+  assert.throws(
+    () => validateBaseline(renamedSpatialOs),
+    /Spatial Invention Studio/,
+  );
+  const automaticPatentFiling = structuredClone(source);
+  automaticPatentFiling.materialInvention.spatialDevelopment.automaticPatentFilingAllowed = true;
+  assert.throws(
+    () => validateBaseline(automaticPatentFiling),
+    /Spatial Invention Studio/,
+  );
+  const detachedSpatialExperience = structuredClone(source);
+  detachedSpatialExperience.materialInvention.spatialDevelopment.relationshipToMaterialCore =
+    'optional_extension';
+  assert.throws(
+    () => validateBaseline(detachedSpatialExperience),
+    /Spatial Invention Studio/,
+  );
   const osLosesCoreRole = structuredClone(source);
   osLosesCoreRole.northStar.osIsProductCore = false;
   assert.throws(() => validateBaseline(osLosesCoreRole), /AIネイティブOS Core/);
   const gameBakedIntoCore = structuredClone(source);
   gameBakedIntoCore.northStar.applicationReleaseIndependence = false;
-  assert.throws(() => validateBaseline(gameBakedIntoCore), /AIネイティブOS Core/);
+  assert.throws(
+    () => validateBaseline(gameBakedIntoCore),
+    /AIネイティブOS Core/,
+  );
   const incomeGuarantee = structuredClone(source);
   incomeGuarantee.northStar.monthlyIncomeTargetNature = 'guaranteed_income';
   assert.throws(() => validateBaseline(incomeGuarantee), /AIネイティブOS Core/);
   const blanketCollection = structuredClone(source);
   blanketCollection.northStar.dataCollection.categorySpecificConsentRequired = false;
-  assert.throws(() => validateBaseline(blanketCollection), /AIネイティブOS Core/);
+  assert.throws(
+    () => validateBaseline(blanketCollection),
+    /AIネイティブOS Core/,
+  );
   const lostLocalAiBuildEvidence = structuredClone(source);
   lostLocalAiBuildEvidence.localAiRuntime.apkBuilt = false;
   assert.throws(

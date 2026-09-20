@@ -119,9 +119,9 @@ export function SkyCandidateRunner({
       });
       completed = true;
       setOutput(tracked.result.output);
-      onOutcome?.({ ok: true, text: tracked.result.output });
       setError(tracked.warning);
       await onRecord?.(tool, 'browser', 'completed', started, sampleInput, 'passed');
+      onOutcome?.({ ok: true, text: `接続前のローカル下書きです。外部サービスは実行していません。\n\n${tracked.result.output}` });
     } catch (reason) {
       if (executed && !completed)
         await onRecord?.(tool, 'browser', 'failed', started, sampleInput, 'failed').catch(() => undefined);

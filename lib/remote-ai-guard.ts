@@ -1,5 +1,6 @@
-import { database } from './fund-store.ts';
 import { requestUser } from './request-auth.ts';
+
+type Database = Pick<D1Database, 'prepare'>;
 
 const WINDOW_MS = 60_000;
 const MAX_REQUESTS_PER_WINDOW = 20;
@@ -22,6 +23,7 @@ export class RemoteAiGuardError extends Error {
 export async function authorizeRemoteAiRequest(
   request: Request,
   route: string,
+  db: Database,
 ) {
   let userId: string;
   try {
@@ -33,7 +35,6 @@ export async function authorizeRemoteAiRequest(
   }
 
   const windowStartedAt = Math.floor(Date.now() / WINDOW_MS) * WINDOW_MS;
-  const db = database();
   await db
     .prepare(
       `INSERT INTO remote_ai_rate_limits
@@ -60,4 +61,3 @@ export async function authorizeRemoteAiRequest(
     throw new RemoteAiGuardError('RATE_LIMITED', 429);
   return userId;
 }
-

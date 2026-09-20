@@ -216,7 +216,7 @@ export default function RevenueWalletWorkspace() {
               <h1 id="wallet-signin-title">収益口座を開く</h1>
               <p>収益・費用・分配は、あなたのアカウントだけに保存されます。</p>
             </div>
-            <a href="/signin-with-chatgpt?return_to=/wallet">サインイン</a>
+            <a href="/signin-with-chatgpt?return_to=/wallet" target="_top">サインイン</a>
           </section>
         ) : snapshot ? (
           <>

@@ -1,5 +1,64 @@
 # 検証記録
 
+## avocadoMini Full-scale設計・concept画像 / 2026-09-18
+
+- 利用者の「ビリヤード台規模」という明示指示を、本体約3.0 m × 1.7 m × 高さ0.9 m、有効操作領域約2.4 m × 1.2 m × 高さ1.3 mの初期budgetへ変換した。二枚のconcept画像は設計資料であり、実機、裸眼3D、触覚、追跡精度の証拠ではない。
+- `npm run baseline:check`、`npm run design:check`、`npm run system:composition:check`は合格した。`tests/material-invention.test.mjs`、`tests/product-baseline.test.mjs`、`tests/patent-assistant.test.mjs`の17 testも合格した。
+- `npm run verify`はdatabase statusの旧集計を検出したため`npm run database:status`で126 taskの現在値へ同期した。sandbox内ではMiniflare／D1のlocal runtime試験が停止したが、通常のlocal実行環境で再実行して全工程に合格した。本体321 test、Fashion Brand Ops 19 test、production build、Web bundle／asset検査、仕事API 143 assertionを含む全体verifyが完了した。
+
+## Jev／Local Qwen Decision Fabric全体詳細設計 / 2026-09-18
+
+- TypeSafe公式のIntroduction、Quick start、Primitives、Confidence、Use Case Mapを照合し、JevをChoice／Score／Noulによるatomic semantic decisionとして位置付けた。複雑判断は小問へ分け、コードで合成し、confidenceを権限にしない。
+- 既存のPixel 10 GL066上の`llama.rn 0.12.9`＋Qwen3-0.6B Q8_0実機証拠と、未実装のTypeSafe、Cloud、RAG、汎用Routerを分離した。llama.cppをMVP、ExecuTorchとMNNを同一fixtureで比較する次期候補とした。
+- DecisionProvider JSON Schemaと機械可読policyへ、providerの権限制限、秘密送信禁止、無断Cloud fallback禁止、confidence-only authorization禁止、Market PAPER、Wallet advisory、物理実行禁止、最大provider数／attemptを固定した。
+- 設計完成はruntime完成ではない。AI07はplannedのまま維持し、AI08を設計完了として分離した。
+
+## Jev ecosystem 10 repositoryの候補登録 / 2026-09-18
+
+- 利用者指定URLを重複除去し、Jev Ultrafast、OpenJev、Jevlike、Jev Trader、Awesome Jev by TypeSafe、TypeSafe Computer Use、Jev Review、Jev Router、Jev Browser、Mobile Jevの10件として整理した。各公開READMEとMIT表示を確認した。
+- decision model、browser、Mac操作、Android操作、code review、model routing、市場研究、referenceを別Tool IDと権限へ分離した。Jev TraderはPAPER限定、Mobile Jevはwipe可能な隔離端末限定、computer-useは専用accountのobserveから開始し、秘密鍵・決済・予約・投稿・merge等を自動許可しない。
+- Sky catalogは24 Tool（ready 11、candidate 13）を追跡する。10件のJev source取得、依存導入、API key、model download、実行、外部service契約は未実施であり、利用可能とは扱わない。
+
+## Jev Ultrafast候補の設計・catalog登録 / 2026-09-18
+
+- 公開repositoryのREADME、MIT license、Python／依存条件、有限operation、構造化DOM、target／鮮度／完了検証、既知の非対応範囲を確認し、Skyの`candidate`として追加した。
+- 専用Chrome profile、一仕事一tab、origin allowlist、三段階mode、秘密入力拒否、外部作用直前の別承認、結果不明時の再実行禁止、完了の独立検証、保持・削除・rollback、10項目の採用gateを詳細設計へ固定した。
+- 当時のcatalogと設計台帳はSky 15 Tool（ready 11、candidate 4）を追跡した。その後Jev ecosystem 9件を追加し、現在は24 Tool（ready 11、candidate 13）。source取得、依存導入、API接続、browser操作、runtime受入は未実施であり、利用可能とは扱わない。
+
+## RockstarOS OS／全Tool設計被覆 / 2026-09-18
+
+- 全設計ポータル、OS全体詳細、Sky／Zema／全Tool詳細を追加し、設計の11必須項目と環境別の受入境界を固定した。
+- 機械可読台帳は15 system domain、Sky catalog 24 Tool、native 6 Tool familyを追跡する。catalogのID／状態と台帳の完全一致、全参照fileの存在、全Tool IDの詳細設計記載、無条件`COMPLETE`表示の禁止を自動検査する。
+- 設計被覆は現在scopeの説明が辿れることを意味する。未実装、未選定、外部Provider未接続、実機未受入を実装完成へ変更しない。
+
+## 見て分かる空間発明設計 v2.0 / 2026-09-18
+
+- 初見の人が製品を想像できるよう、正本の入口を「デジタル発明台」という一文、四方向配置図、物質A・Bを使う8場面の利用例、画面wireframeへ変更した。
+- できる／できない、デジタル仮説・計算・実物実験の三境界、予測と実測の表示を前半へ置き、難しい用語と機械可読契約は後半へ分離した。
+- 実装は2D理解prototype、決定的Core接続、一台cameraから四方向、simulation／Patent AI、外部labの5段階に分け、各役割へ最初の成果物と合格条件を割り当てた。
+
+## avocadoMini共有用完成設計と全体構成 / 2026-09-18
+
+- [共有用完成設計書](rockstaros-avocado-mini-complete-design.md)へ、5分説明、全体構造、利用体験、四方向sensor、Core data、再計算、Patent AI、privacy、accessibility、安全境界、現在地、実装順、役割別参加入口、受入条件、用語集を統合した。[専用workstream](workstreams/11-material-invention-avocado-mini.md)からMAT05／MAT06へ直接参加できる。
+- 製品baseline v1.76は統合設計を正本として要求し、設計完成を製品完成へ変える改変を負例で拒否する。全体構成監査はMaterial Invention／avocadoMiniを含む12層・7経路を要求する。
+- sandbox Core、XR／interaction契約、設計書は存在するが、XR runtime、四方向sensor実機、simulation／Patent AI Provider、外部lab、実材料性能、特許性、量産は未完成という境界を維持する。
+
+## Spatial Invention Studio／avocadoMini設計 / 2026-09-18
+
+- 利用者の確認を反映し、avocadoMiniをMaterial Invention Coreと並ぶ別機能ではなく、その中身を人が操作する標準製品体験へ統合した。機械可読baselineとpolicyは`primary_product_experience_not_optional_extension`を要求し、任意addonへ戻す変更を拒否する。
+- RockstarOSを搭載する`avocadoMini`を、north／east／south／westの四方向sensorでhand poseを取得し、物質digital twinのconnect／separate操作から候補branchとsimulation再計算を作るreference device conceptとして設計した。OSの正式名はRockstarOSのままで、旧表示名avocadoOSへ戻していない。
+- XR scene manifestとspatial interaction eventのJSON Schema、安全・privacy・accessibilityの機械可読policyを追加した。gestureは`HYPOTHESIS_ONLY`、物理実行・装置制御・Core DB直接書込み・物理実験最終承認はfalseへ固定した。
+- 既存Sky Patent AIへ人、AI、simulation、文献、実測を分離したevent provenanceを渡すbridgeを設計した。特許性、法的発明者、権利帰属、自動出願の決定は許可しない。既存特許Toolは現在もMaterial Core未接続で、設計完成をruntime完成として扱わない。
+- 製品baseline検査は、XRからの物理実行許可、搭載OSのavocadoOS化、自動特許出願を拒否する負例を持つ。四方向rig、hand tracking、XR表示、再計算、Patent AI bridge、headset／AR実機の受入は未実施。
+
+## Material Invention sandbox Core / 2026-09-17
+
+- RQ49の最初のruntimeとして、二物質・複数比率・版付き工程を再現可能な候補graphへ変換する純粋sandboxを実装した。JSON Schema、危険物を含まない合成fixture、canonical SHA-256候補ID、provenanceを同じ契約へ固定した。
+- 新規9テストで、候補の決定性、lot／比率／工程版へのID結合、SDS不足、危険性不明、禁止物質・危険分類、単位不一致、設備・温度・圧力上限、資格者審査、未知field／重複ID／矛盾分類／工程順／比率の拒否、simulationと実験証拠の分離を確認した。製品baseline負例を合わせた対象10テスト、型検査、製品lint、format、差分検査に成功した。
+- project、repository、version、schema、database、release、baseline、system composition、Sky、Androidの既存検査、Worker 2件のdry-run、MCP package、Fashion Brand Ops 19件、本番Web build、Web bundle 118 component、asset 77参照、仕事API 143 assertionsも成功した。Fashion Brand Opsと仕事APIのlocalhost試験はsandboxの`EPERM`後に通常のローカル権限で再実行した。
+- `npm run verify`はNode test開始後、既存`tests/everything-market.test.mjs`のMiniflare handleが終了しない既知挙動で完走しなかった。新規対象テストは単独で終了コード0、後続検査は上記のとおり個別合格しており、全体verify完走とは表示しない。
+- この合格は装置非接続の候補生成と安全gateまで。実物質、化学simulation、SDS内容の真偽、署名検証、Zema接続、外部ラボ、装置操作、安全性・性能・特許性・量産性は未実証である。`physicalExecutionAllowed`は全候補でfalseのまま固定した。
+
 ## 製品目的から逆算した開発軸 / 2026-09-15
 
 - RQ47として、AI自動化チームの効率化を最上位目的にし、端末内LLM、Tool、署名済み収益、Wallet、ファンド改善、税務準備、ゲーム、専用端末の順序を機械可読baselineへ固定した。
@@ -197,6 +256,7 @@
 - The final installable app front has a direct home screen, four ready fund presets, one preparation-only preview, activity history, and settings. No fabricated balances, yields, participant totals, or paid gacha. Real tool completion and sample runs have distinct labels.
 - PWA manifest, 192px/512px icons, and service worker endpoints return 200 locally. The app shell does not cache API responses or tool input.
 - Browser screenshots/click QA were not requested and were not performed. Loopback HTTP was verified at protocol level; a browser may still require the user's initial local-network permission. WebMCP list_funds/select_fund is feature-detected; the stdio/HTTP MCP transport is the verified execution integration.
+
 # 2026-09-12 — システム診断・暗号化端末設定バックアップ
 
 - `/settings/system`をローカル実ブラウザで開き、通信、端末内保存、Web Crypto、Service Worker、RockstarOS API、PC Connectorの6項目が実測状態へ更新されることを確認した。確認時は5/6準備済みで、未接続のPC Connectorだけを注意表示した。
@@ -223,16 +283,18 @@
 - 設定の公開準備は値を同じ台帳から導出し、本人限定Web/PWA 4/5、一般Web 3/5、QEMU 6/10、Android実機1/6、iPhone/iPad client 0/1、マイナンバー1/7を表示する。Android実機はPixel 10 GL066の機種／SKU gateだけが合格で、BSP／復旧、SELinux enforcing分離、CDD／CTS／CTS Verifier／VTS、署名、販売地域は未達。本人限定Sitesは安全なaccessを維持しているが、稼働version 29のsourceが監査HEADより古いため最新版同期gateを未達にする。過去QEMU候補を現在の配布可能状態として表示しない。
 - `data/web-security-policy.json`、`next.config.ts`、static asset用`public/_headers`を同じ値へ結合し、全responseのCSP frame/object/form/base制限、COOP/CORP、no-referrer、HSTS、nosniff、DENY framing、camera/payment/USB等のbrowser capability無効化を3試験で固定した。最初の実測でWorkerが返す`/`とstatic assetの`/sw.js`にNext configのheaderが届かない差を検出し、両配信経路を分離して修正した。再build後、`npm run web:security:check -- http://127.0.0.1:8787`で`/`、`/sky`、Service Worker、manifest、3 install icon、実hash付きJSの8経路に8 universal headerと個別cache ruleが完全一致した。[ローカル実測](evidence/launch/web-security-local-20260913.json)。現在のSites v29はこのsourceより古いため、実Sites response headerの合格証拠にはせず、最新版配備後の本人認証済みreadbackを必須にした。
 - 2026-09-15のWeb画面・manifest更新後、古い実測のinput hash不一致をrelease gateが検出した。現在sourceからproduction buildを再生成し、ローカルWranglerの`/`、`/sky`、Service Worker、manifest、3 install icon、実hash付きJSの8経路で8 universal headerと個別cache ruleを再確認した。[現在sourceのローカル実測](evidence/launch/web-security-local-20260915.json)。本人限定Sitesへの配備・認証後readbackは未実施のまま分離する。
+- 2026-09-17のRockstarOS名称復元後、production buildを再生成し、同じ8経路のheader、cache rule、manifest、iconを再実測した。[名称復元後のローカル実測](evidence/launch/web-security-local-20260917.json)。これはローカル本番buildの証拠であり、本人限定Sitesへの配備・認証後readbackや一般公開の許可ではない。
 - Service Workerのinstall時`skipWaiting`を削除し、新版は利用者が「更新を適用」を押すまで待機する。適用時だけ専用messageで切替え、`controllerchange`確認後に再読込する。旧`loop-app-*`と現`rockstaros-shell-*`の古いgenerationだけを削除し、他product cacheを残す。API、sign-in/out、foreign originをcache handlerが横取りしない3試験に合格した。更新後のworker SHAを上記ローカル実測へ再結合した。
 - PWA manifestへ固定`id`、root `scope`、`lang`、`dir`、related native appを優先しない指定を追加した。192/512 PNGを実寸検査し、Safariが推奨する1024角・全面不透明のmaskable SVGを別途追加した。source 2試験に加え、production HTTP上のmanifest値、3 iconの参照とContent-Typeを上記8経路で確認した。これはWeb appの導入条件でありApp Store native client審査の合格証拠ではない。
 - ローカル待受が許可された環境で`npm run verify`を実行し、Web 202 tests、Fashion Brand Ops 15 tests、Worker/D1 API 143 assertions、型、lint、公開gate、製品baseline、MCP配布一致、Billing Worker dry-run、本番buildに合格した。`/settings/system`の実ブラウザ表示はconsole error 0、横切れなし、6対象の数値と台帳が一致した。
 - 製品ライセンスの明示選択、production鍵の作成・保管、一般公開承認、実機/SKUと外部審査は所有者または外部authorityが必要であり、今回完了扱いにしていない。
+
 # 2026-09-14 — Rock Wallet Base USDC本番受取レール
 
 - `/wallet`へ外部EIP-1193 Walletの接続、Base Mainnet切替、期限付き所有署名、受取先登録、解除、回収指図一覧、transaction hash照合を追加した。画面は秘密鍵非保管、署名が送金権限ではないこと、Rock利用料だけが対象であることを明示する。
 - Billing WorkerへD1 migration `0004_rock_settlement_wallet.sql`と5 endpointを追加し、署名済みEarning Receiptの `SKY_SERVICE_FEE` だけをidempotentな回収指図にした。Base公式USDC contract、exactなrecipient・amount、成功receipt、finalized blockが一致するまで着金済みにしない。
 - Wallet単体・Worker統合・製品baselineの8対象試験に合格した。全体 `npm run verify` は待受可能な環境で、Web 242 tests、公開署名境界64 tests、Fashion Brand Ops 16 tests、Worker/D1 API 143 assertions、型、lint、D1 migration互換、Billing Worker dry-run、本番build、74 Web asset参照missing 0に合格した。
-- `npm audit --omit=dev --json`は既知脆弱性0。viem追加後のlock監査は899 package entry、866 unique component、追加review 47件へ更新し、生成Web bundle内の追加review該当は0。法的clearanceや製品license選択の代用にはしない。
+- `npm audit --omit=dev --json`は既知脆弱性0。Three.js追加後のlock監査は907 package entry、874 unique component、追加review 47件へ更新し、生成Web bundle内の追加review該当は0。法的clearanceや製品license選択の代用にはしない。
 - remote D1 migration、Worker/Site配備、owner Walletの本人署名、最初の実transferはこの時点では未実施であり、以下の配備記録で別に判定する。
 - remote D1へ `0003_automation_funds.sql` と `0004_rock_settlement_wallet.sql` を順に適用し、Billing Workerのproduction deployに成功した。Wallet UIを含む全検証済みtreeをSites側の既存mainへ通常mergeし、競合解消後のtreeが検証済みsourceと一致することを確認した。owner限定Siteのversion 35をproductionへ配備し、公開範囲を変更していない。
 - 残る本番gateは、owner自身の外部Walletによる所有署名と最初の実USDC transferの照合。代理署名やfixtureで完了扱いにしない。

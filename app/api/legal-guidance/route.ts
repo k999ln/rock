@@ -1,4 +1,5 @@
 import { env } from 'cloudflare:workers';
+import { database } from '@/lib/fund-store';
 import {
   buildLegalAiRequest,
   parseLegalAiResponse,
@@ -13,7 +14,7 @@ const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
 export async function POST(request: Request) {
   try {
-    await authorizeRemoteAiRequest(request, 'legal-guidance');
+    await authorizeRemoteAiRequest(request, 'legal-guidance', database());
     const raw = await request.text();
     if (raw.length > 4_000) throw new Error('INVALID_INPUT');
     const input = validateLegalAiInput(JSON.parse(raw));

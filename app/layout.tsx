@@ -4,15 +4,15 @@ import './app.css';
 import './workspace.css';
 import './work/work.css';
 export const metadata: Metadata = {
-  title: 'avocadoOS',
+  title: 'RockstarOS',
   description:
-    'Sky、Zema、Wallet、Market、Fundを一つのホームから使うavocadoOS Developer Preview。',
-  applicationName: 'avocadoOS',
+    'Sky、Zema、Wallet、Market、Fundを一つのホームから使うRockstarOS Developer Preview。',
+  applicationName: 'RockstarOS',
   authors: [{ name: 'kaiya' }],
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'avocadoOS',
+    title: 'RockstarOS',
   },
   icons: { icon: '/favicon.svg', apple: '/rock-icon-192.png' },
 };
