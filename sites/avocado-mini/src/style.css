@@ -423,3 +423,82 @@ footer{background:#080809;border-top:1px solid #ffffff20;color:#a8a8af}
   .price-panel .fine{margin-top:11px;font-size:10px!important;line-height:1.5}
   .story-sticky:has(.price-panel.visible) .motion-product{opacity:1}
 }
+
+/* A small piece of the tower's blue sensor light carries into the OS action. */
+.os-install .os-install-button{
+  position:relative;
+  isolation:isolate;
+  width:min(460px,100%);
+  min-width:0;
+  min-height:88px;
+  gap:18px;
+  padding:11px 12px 11px 19px;
+  overflow:hidden;
+  border:1px solid #9ae8ff80;
+  border-radius:25px;
+  background:linear-gradient(115deg,#23353c 0%,#172126 38%,#0e1215 100%);
+  color:#f8fcff;
+  box-shadow:0 20px 55px #0009,0 0 0 1px #ffffff10 inset,0 0 34px #42c6ee21;
+  transition:transform .24s ease,border-color .24s ease,box-shadow .24s ease;
+}
+.os-install .os-install-button::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:-80% auto -80% -50%;
+  width:48%;
+  background:linear-gradient(90deg,transparent,#a8ecff18,transparent);
+  transform:skewX(-18deg);
+  transition:left .65s ease;
+}
+.os-install .os-install-button:hover,
+.os-install .os-install-button:focus-visible{
+  transform:translateY(-4px);
+  border-color:#bcefff;
+  background:linear-gradient(115deg,#23353c 0%,#172126 38%,#0e1215 100%);
+  box-shadow:0 25px 65px #000b,0 0 0 1px #ffffff16 inset,0 0 45px #42c6ee50;
+}
+.os-install .os-install-button:hover::before,
+.os-install .os-install-button:focus-visible::before{left:115%}
+.os-install .os-install-button:focus-visible{outline:2px solid #d8f7ff;outline-offset:5px}
+.os-install-button-sensor{
+  display:grid;
+  flex:none;
+  place-items:center;
+  width:50px;
+  height:50px;
+  border:1px solid #94e9ff78;
+  border-radius:50%;
+  background:radial-gradient(circle,#a9edff31 0 17%,#164e61 18% 25%,#081217 28% 58%,#40707e 61%,#0e1d22 69%);
+  box-shadow:0 0 25px #43ccf858,0 0 12px #9feaff52 inset;
+}
+.os-install-button-sensor span{width:7px;height:7px;border-radius:50%;background:#c9f6ff;box-shadow:0 0 12px 4px #70dcff}
+.os-install-button-copy{display:flex;flex:1;flex-direction:column;align-items:flex-start;gap:4px;min-width:0;line-height:1.2}
+.os-install-button-copy strong{font-size:17px;letter-spacing:.02em;white-space:nowrap}
+.os-install-button-copy small{color:#97b9c4;font-size:9px;font-weight:700;letter-spacing:.22em;white-space:nowrap}
+.os-install-button-arrow{
+  display:grid;
+  flex:none;
+  place-items:center;
+  width:51px;
+  height:51px;
+  border:1px solid #ffffff34;
+  border-radius:17px;
+  background:linear-gradient(145deg,#45535a,#243238);
+  color:#e6faff;
+  font-size:23px;
+  font-weight:400;
+  transition:transform .24s ease,background .24s ease;
+}
+.os-install-button:hover .os-install-button-arrow,
+.os-install-button:focus-visible .os-install-button-arrow{transform:translate(2px,-2px);background:linear-gradient(145deg,#6695a5,#2d5261)}
+@media(max-width:520px){
+  .os-install .os-install-button{min-height:78px;gap:12px;padding:10px 10px 10px 14px;border-radius:21px}
+  .os-install-button-sensor,.os-install-button-arrow{width:44px;height:44px}
+  .os-install-button-arrow{border-radius:14px}
+  .os-install-button-copy strong{font-size:15px}
+  .os-install-button-copy small{font-size:8px;letter-spacing:.16em}
+}
+@media(prefers-reduced-motion:reduce){
+  .os-install .os-install-button,.os-install .os-install-button::before,.os-install-button-arrow{transition:none}
+}
