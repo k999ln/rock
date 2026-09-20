@@ -23,9 +23,9 @@ sky.tool({
 await sky.start({ port: 8787 });`;
 
 export const metadata: Metadata = {
-  title: 'RockstarOS — AIを、触れられる製品へ',
+  title: 'RockstarOS — あなたの「やってみたい」を、形にする',
   description:
-    'avocadoMiniを主役に、ハードウェア製品と、その中核を担うRockstarOS・AIを開発しています。',
+    'Skyで役立つAIを見つけ、Zemaで一緒に進める。avocadoMiniは発明のアイデアを手で考えるためのハードウェア構想です。',
 };
 
 export default function RockstarPreview() {
@@ -40,13 +40,13 @@ export default function RockstarPreview() {
 
       <section className={styles.installHero} aria-labelledby="preview-title">
         <div className={styles.heroGlow} aria-hidden="true" />
-        <p className={styles.kicker}>ROCKSTAROS / HARDWARE FIRST</p>
+        <p className={styles.kicker}>ROCKSTAROS / YOUR IDEAS, IN MOTION</p>
         <h1 id="preview-title">
-          Make ideas
+          Your ideas.
           <br />
-          tangible.
+          In your hands.
         </h1>
-        <p className={styles.heroJa}>AIを、触れられる製品へ。最初の主役は、空間発明端末 avocadoMini。</p>
+        <p className={styles.heroJa}>あなたの「やってみたい」に、役立つAIと道具を。発明のアイデアを手で考えるavocadoMiniから始めます。</p>
         <a className={styles.installButton} href="#avocado-mini">
           <span>avocadoMiniを見る</span>
           <span aria-hidden="true">↗</span>
@@ -57,8 +57,13 @@ export default function RockstarPreview() {
       </section>
 
       <nav className={styles.access} aria-label="サービスとアプリへの入口">
-        <h2>RockstarOSを開く</h2>
-        <p>ホームからアプリへ進むか、使いたい画面を直接開けます。</p>
+        <h2>あなたのやりたいことから、役割を見つける。</h2>
+        <p>AIに何を任せ、どこを自分で決めるか。使い方に合わせて選べます。</p>
+        <div className={styles.accessCards}>
+          <Link href="/sky"><strong>合うAIを探す</strong><span>SkyでToolの役割を見比べる。</span></Link>
+          <Link href="/chat"><strong>一緒に進める</strong><span>Zemaで頼み、途中を確認し、結果を受け取る。</span></Link>
+          <Link href="/studio"><strong>アイデアを試す</strong><span>Studioで発明候補を組み合わせ、比べる。</span></Link>
+        </div>
         <div className={styles.accessLinks}>
           <Link href="/">ホーム</Link>
           <Link href="/sky">Sky</Link>
@@ -73,7 +78,7 @@ export default function RockstarPreview() {
         <div className={styles.productCopy}>
           <p className={styles.kicker}>01 / HARDWARE CONCEPT</p>
           <h2 id="product-title">avocadoMini</h2>
-          <p className={styles.productLead}>まだ存在しない材料を、手で考えるデジタル発明台。</p>
+          <p className={styles.productLead}>頭の中の発明を、手で選び、比べ、前に進める。</p>
           <p>
             四方向のセンサーで手の動きを捉え、物質のデジタル模型を組み合わせて候補を比べる構想です。
             Material Invention StudioとRockstarOSが、操作、記録、AIによる検討を支える設計です。
@@ -97,14 +102,11 @@ export default function RockstarPreview() {
       <section className={styles.platform} aria-labelledby="platform-title">
         <div>
           <p className={styles.kicker}>02 / TECHNOLOGY FOUNDATION</p>
-          <h2 id="platform-title">製品を動かす、OSとAI。</h2>
+          <h2 id="platform-title">あなたが選んだAIと、進めるための土台。</h2>
           <p>
-            RockstarOS、交換可能なLLM、SkyとZemaは、ハードウェアで使う体験の中核です。
+            RockstarOSは、選んだToolへの依頼、確認、成果の記録をつなぐために開発しています。
+            交換可能なLLM、SkyとZemaは、その体験を支える中核です。
             Pixel 10は開発用の検証端末で、自社製ハードウェア製品ではありません。
-          </p>
-          <p>
-            無料で届けることを理念とし、OSは使った分に応じた料金で支える方針です。
-            無料配布の対象、利用量の測り方、単価は決定後に明示します。現在、この方式での請求は行っていません。
           </p>
         </div>
         <div className={styles.platformAction}>

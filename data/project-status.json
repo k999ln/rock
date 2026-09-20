@@ -646,6 +646,21 @@
       ]
     },
     {
+      "id": "WEB07",
+      "title": "利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂",
+      "status": "done",
+      "dependsOn": [
+        "WEB05"
+      ],
+      "evidence": [
+        "README.md",
+        "app/rockstaros/page.tsx",
+        "app/rockstaros/preview.module.css",
+        "docs/product-baseline.md",
+        "data/product-baseline.json"
+      ]
+    },
+    {
       "id": "BIZ01",
       "title": "無料配布の対象とOS従量課金の計量単位・単価・上限を確定する",
       "status": "in_progress",

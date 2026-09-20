@@ -1,12 +1,12 @@
-# RockstarOS — AIを、触れられる製品へ
+# RockstarOS — あなたの「やってみたい」を、形にする
 
-RockstarOSは、**AIを使う体験をハードウェア製品として届けることを事業の中心に置く**開発を進めています。最初に見せる自社ハードウェアの構想は、物質のデジタル模型を手で扱う空間発明端末 **avocadoMini**。現在は詳細設計の段階で、実機試作・量産・販売はまだ行っていません。
+やりたいことから始めて、自分に役立つAIの役割を見つける。仕事や創作なら**Sky**でToolを選び、**Zema**で依頼して、途中の確認から成果まで一緒に進めます。新しい材料や製品のアイデアなら、**Material Invention Studio**で候補を組み合わせ、違いを比べられます。
 
-RockstarOSと交換可能なLLM、Sky・Zemaなどのアプリは、製品を動かす中核技術です。既存モデルで利用体験を検証し、将来の自社LLMは用意できた時点で追加します。開発用のPixel 10は動作検証に使うreference端末であり、自社製ハードウェアとして販売中の製品ではありません。
+その体験を手で扱える製品にする構想が、空間発明端末 **avocadoMini** です。物質のデジタル模型を手で選び、つなぎ、発明の候補を考えるために設計しています。現在は詳細設計段階で、実機試作・量産・販売はまだ行っていません。
 
-現在の実機検証は固定Qwen / llama.rn profileの試験署名Pixel APK段階です。複数モデルの交換やOS image搭載は未完了です。端末内LLM、Sky内OpenAI接続、Jevの役割と実装状態は[LLM・評価モデル設計](docs/llm-evaluation-architecture.md)と[能力表](data/llm-capabilities.json)に記録しています。
+**いま試せる入口:** 本人限定Web版の[ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/)からSky、Zema、Studioへ進めます。実際に使える機能と準備中の機能は画面で区別します。avocadoMini実機とスマートフォン向け完成OSは、まだ提供していません。
 
-**配布と料金の理念:** 無料で配布し、OSは使った分に応じて料金を受け取る方針です。無料配布の対象、利用量の測り方、単価・上限は確定前で、現時点でこの方式の請求は行っていません。既存のSkyの収益連動精算は別の実装条件として区別します。
+RockstarOSと交換可能なLLMは、その体験を支える技術基盤です。現在の実機検証は固定Qwen / llama.rn profileの試験署名Pixel APK段階で、複数モデルの交換やOS image搭載は未完了です。詳しくは[LLM・評価モデル設計](docs/llm-evaluation-architecture.md)と[能力表](data/llm-capabilities.json)に記録しています。開発用のPixel 10は検証端末で、自社製ハードウェアとして販売中の製品ではありません。
 
 製品と事業の関係は[製品・サービス・システム関係図](docs/rockstaros-product-system-map.md)にまとめています。OSから全Tool、avocadoMiniまでの設計入口は[RockstarOS全設計ポータル](docs/rockstaros-design-portal.md)です。field単位の契約は[OS全体詳細設計](docs/rockstaros-complete-design.md)、[Sky／Zema／全Tool詳細設計](docs/sky-tools-complete-design.md)、[空間発明システム設計](docs/rockstaros-avocado-mini-complete-design.md)を参照してください。製品要望の正本は[製品ベース](docs/product-baseline.md)のRQ01〜RQ49、進捗の正本は[data/project-status.json](data/project-status.json)です。現在版は`RockstarOS 1.0 Developer Preview`です。
 
@@ -170,7 +170,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-19 / 130 task中87 done・26 in progress・16 planned・1 blocked
+更新日: 2026-09-19 / 131 task中88 done・26 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -352,11 +352,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>130 taskと段階gateの詳細を開く</summary>
+<summary>131 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 87/130件
+最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 88/131件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -401,6 +401,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
 | WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介からHome・OS案内・主要アプリへ進む入口を整え、本人限定Siteの最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

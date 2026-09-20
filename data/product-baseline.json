@@ -1,5 +1,5 @@
 {
-  "version": "1.84",
+  "version": "1.85",
   "decidedAt": "2026-09-19",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -46,6 +46,14 @@
   "marketPositioning": {
     "customerFacingFocus": "hardware_products",
     "leadHardwareConcept": "avocadoMini",
+    "customerFacingPromise": "start_from_the_persons_goal_find_useful_ai_roles_and_help_turn_ideas_into_results",
+    "messageOrder": [
+      "what_the_person_wants_to_do",
+      "which_ai_or_tool_can_help",
+      "how_avocadoMini_and_rockstaros_help_them_move_forward",
+      "product_stage_and_limitations",
+      "commercial_policy_details"
+    ],
     "technologyFoundation": [
       "RockstarOS",
       "replaceable_llm",
