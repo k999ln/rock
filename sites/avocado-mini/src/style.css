@@ -384,3 +384,39 @@ footer{background:#080809;border-top:1px solid #ffffff20;color:#a8a8af}
 .motion-product.has-webgl .turn-frame,.motion-product.has-webgl .camera-sweep,.motion-product.has-webgl .camera-flare{display:none}
 .story-sticky:has(.price-panel.visible) .feature-beats{visibility:hidden}
 .price-panel:not(.visible){transition:none}
+
+/* The final frame keeps the tower visible and lets the price read as part of the studio. */
+.price-panel{left:clamp(30px,5.7vw,96px);right:auto;top:50%;width:min(550px,42vw);padding:0 18px 0 0;background:transparent;border:0;border-radius:0;box-shadow:none;color:#f5f5f7;transform:translateY(-42%) translateY(20px)}
+.price-panel.visible{transform:translateY(-42%)}
+.price-panel .eyebrow{margin:0 0 22px;color:#a8dfee;font-size:11px;letter-spacing:.24em}
+.price-panel h2{margin:0;font-size:clamp(48px,5.2vw,78px);line-height:1.05;letter-spacing:-.085em;color:#f5f5f7}
+.price-panel .price{gap:8px;margin:30px 0 27px;padding-top:21px;border-top:1px solid #ffffff3b}
+.price-panel .price span{font-size:clamp(12px,1.15vw,15px);color:#c1c2c7;letter-spacing:.01em}
+.price-panel .price strong{font-size:clamp(56px,6vw,86px);line-height:1.04;letter-spacing:-.075em;color:#f5f5f7;font-variant-numeric:tabular-nums}
+.price-panel .price small{font-size:12px;color:#9fa2aa;letter-spacing:.08em}
+.price-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px 16px}
+.price-availability{display:inline-flex;align-items:center;gap:9px;padding:11px 2px;font-size:12px;font-weight:700;letter-spacing:.04em;color:#b9bec6;white-space:nowrap}
+.price-availability:before{content:"";width:7px;height:7px;border-radius:50%;background:#82a4b1;box-shadow:0 0 13px #82a4b180}
+.price-panel .text-link{margin:0;padding:11px 19px;border:1px solid #aab2bb80;border-radius:999px;text-decoration:none;color:#f5f5f7;font-size:12px;transition:background .2s,color .2s,border-color .2s}
+.price-panel .text-link:hover{background:#f5f5f7;border-color:#f5f5f7;color:#111214}
+.price-panel .fine{max-width:390px;margin:22px 0 0;color:#92959d!important;font-size:11px!important}
+@media(max-width:800px){
+  .price-panel{left:26px;right:26px;top:112px;width:auto;max-width:none;padding:0;transform:translateY(18px)}
+  .price-panel.visible{transform:translateY(0)}
+  .price-panel h2{font-size:clamp(46px,8vw,64px)}
+  .price-panel .price strong{font-size:clamp(55px,9vw,72px)}
+}
+@media(max-width:520px){
+  .price-panel{left:22px;right:22px;top:108px}
+  .price-panel .eyebrow{margin-bottom:14px;font-size:10px}
+  .price-panel h2{font-size:43px}
+  .price-panel .price{margin:19px 0 16px;padding-top:15px}
+  .price-panel .price span{font-size:12px}
+  .price-panel .price strong{font-size:57px}
+  .price-panel .price small{font-size:10px}
+  .price-actions{gap:6px 14px}
+  .price-availability{font-size:11px}
+  .price-panel .text-link{padding:9px 13px;font-size:11px}
+  .price-panel .fine{margin-top:11px;font-size:10px!important;line-height:1.5}
+  .story-sticky:has(.price-panel.visible) .motion-product{opacity:1}
+}
