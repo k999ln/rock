@@ -735,7 +735,7 @@
     },
     {
       "id": "WEB13",
-      "title": "avocadoMini製品ホームとRockstarOS Webホームの公開境界を分ける",
+      "title": "旧URLをavocadoMini公開商品Siteへ転用し、OS操作画面を管理者限定の別Siteへ移す",
       "status": "in_progress",
       "dependsOn": [
         "WEB12"
@@ -752,7 +752,9 @@
         "docs/workstreams/05-web-pwa-sites.md",
         "sites/avocado-mini/src/style.css",
         "sites/avocado-mini/src/main.js",
-        "project.md"
+        "project.md",
+        "sites/avocado-mini/rockstaros/index.html",
+        "sites/avocado-mini/vite.config.js"
       ]
     },
     {

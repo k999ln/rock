@@ -8,6 +8,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(import.meta.dirname, 'index.html'),
+        rockstaros: resolve(import.meta.dirname, 'rockstaros/index.html'),
         guide: resolve(import.meta.dirname, 'guide/index.html'),
         crowdfunding: resolve(import.meta.dirname, 'crowdfunding/index.html'),
       },
