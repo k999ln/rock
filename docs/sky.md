@@ -34,7 +34,7 @@ Zema内で実行したjobは、受付、開始、完了、失敗をbrowser event
 
 ## 現在Skyにあるツール
 
-### Web / PCで現在使える11件
+### Web / PCで現在使える12件
 
 | ツール                            | 実行場所                                        | 現在できること                                                                           | 明示的な限界                                                                                               |
 | --------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -49,32 +49,42 @@ Zema内で実行したjobは、受付、開始、完了、失敗をbrowser event
 | 納品記録の照合                    | PC / Python                                     | 契約・成果物・制作記録・別レビューの不一致を探す                                         | 品質や秘密情報の不在を保証しない                                                                           |
 | 法務受付                          | Webブラウザ                                     | 相談内容を整理し、公式情報と無料窓口を案内                                               | 法的助言・期限・受任を保証せず、自動連絡しない                                                             |
 | 特許出願アシスタント              | Webブラウザ                                     | 発明情報から調査候補と出願書類ドラフトを作る                                             | 特許性・登録を保証せず、提出・支払を自動化しない                                                           |
+| Jev評価                           | Webブラウザ / remote evaluator                  | 本人同意を受け、閉じた評価基準による結果とEvaluation Receiptを表示する                   | 接続credentialとprovider受入は未完了。結果を権限・承認・Tool成功に昇格させない                            |
 
-この11件は `lib/catalog.ts` で `ready` とされる。ここでの`ready`はSkyの商品UIと安全な縮退経路が利用可能というcatalog状態であり、外部credential設定済み、provider接続確認済み、実機OS合格、本番合格を意味しない。法務受付と特許出願アシスタントはOpenAI未設定時に503を返し、決定論的な案内・draft部分だけを継続する。CSV仕事はSky Cloudで受付・変換・検査・私有保存を行うが、販売・決済・buyer共有は別gateである。RockstarOS Marketsは互換商品名として残る公開ライブ市場の読取専用Toolで、取得失敗時にサンプル値で補完しない。外部Polymarket botは固定commit・clean treeのoffline backtestだけを利用し、秘密鍵と注文runtimeは接続しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。
+この12件は `lib/catalog.ts` で `ready` とされる。ここでの`ready`はSkyの商品UIと安全な縮退経路が利用可能というcatalog状態であり、外部credential設定済み、provider接続確認済み、実機OS合格、本番合格を意味しない。法務受付と特許出願アシスタントはOpenAI未設定時に503を返し、決定論的な案内・draft部分だけを継続する。CSV仕事はSky Cloudで受付・変換・検査・私有保存を行うが、販売・決済・buyer共有は別gateである。RockstarOS Marketsは互換商品名として残る公開ライブ市場の読取専用Toolで、取得失敗時にサンプル値で補完しない。外部Polymarket botは固定commit・clean treeのoffline backtestだけを利用し、秘密鍵と注文runtimeは接続しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。
 
-Jevは[LLM・評価モデル設計](llm-evaluation-architecture.md)でSkyの任意remote evaluatorとして設計したが、route、同意UI、rubric、receipt、credential、provider受入が未実装のため、この11件と`ready`件数には含めない。
+Jevは[LLM・評価モデル設計](llm-evaluation-architecture.md)に従う任意remote evaluatorとして、route、同意UI、rubric、receiptまで実装した。接続credential、provider受入、本番での有効性は未完了であり、`ready`はこれらの合格を意味しない。
 
-### Skyに表示する導入候補13件
+### Skyに表示する導入候補22件
 
-| 候補                    | 目的                                         | 現在の状態                                                                          |
-| ----------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------- |
-| faster-whisper          | 音声の文字起こし                             | 候補。Skyからの自動導入・実行は未接続                                               |
-| Transformers.js         | ブラウザ内AI                                 | 候補。モデル選定・配布・実行は未接続                                                |
-| Playwright              | 許可されたWeb操作とテスト                    | 候補。第三者サイトの無人操作は未許可                                                |
-| Jev Ultrafast           | 構造化された候補から一手を選ぶブラウザ操作AI | 候補。専用profile・許可site・直前承認・独立検証を設計済み。source取得と実行は未実施 |
-| OpenJev                 | 公開modelによるlocal typed decision          | 候補。GPU／model／license／calibration未受入                                        |
-| Jevlike                 | 小型option-scoring modelの研究               | 候補。AI Lab限定。業務判断へ未接続                                                  |
-| Jev Trader              | order bookの売買判断研究                     | 候補。固定replayとPAPER限定。LIVE・秘密鍵は禁止                                     |
-| Awesome Jev by TypeSafe | Jev patternのcommunity資料集                 | reference-only。実行Toolではない                                                    |
-| TypeSafe Computer Use   | OCRとJevによるMac画面操作                    | 候補。隔離accountのobserve試験前                                                    |
-| Jev Review              | Git差分／codebase review                     | 候補。自動修正・commit・push・mergeは禁止                                           |
-| Jev Router              | Codex／Claude Codeのmodel routing            | 候補。既存session・権限・認証を維持する設計のみ                                     |
-| Jev Browser             | 既存browser toolの連続操作loop               | 候補。専用profileとowned siteの試験前                                               |
-| Mobile Jev              | Mobilerun経由のAndroid操作                   | 候補。wipe可能な隔離試験端末だけ。個人端末は禁止                                    |
+| Tool ID | 候補 | 目的 | 現在の状態 |
+| --- | --- | --- | --- |
+| `rockstar-ip-studio` | IP Studio — SNS・ゲーム運用 | 参考画像と「何をしたいか」からキャラクター・スキンを制作し、Instagram・YouTube・Roblox・GTAなどへの導線を一つの運用フローで管理します。 | このPCのIP Studio / Skyで接続状態と承認を管理。Sky実行と外部接続は検証後 |
+| `faster-whisper` | faster-whisper | 音声から、編集できるテキストへ。PCで使える文字起こしエンジン。 | PC / Python。CPUまたは対応GPU。Sky実行と外部接続は検証後 |
+| `transformers-js` | Transformers.js | ブラウザでモデルを実行。分類・要約などのワークフローの土台に。 | 対応ブラウザ / JavaScript・WebGPU等。Sky実行と外部接続は検証後 |
+| `playwright` | Playwright | 許可されたWeb操作を再現。確認作業や繰り返しのテストを効率化。 | PC / Node.js・対応ブラウザ。Sky実行と外部接続は検証後 |
+| `jev-ultrafast` | Jev Ultrafast | Web画面の操作候補を番号付きで整理し、AIが許可された一手を選ぶ高速ブラウザエージェント。 | 本人PC / Python 3.12以上・uv・Chrome remote debugging・Browser Harness・TypeSafe API・text model API。Sky実行と外部接続は検証後 |
+| `jev-trader` | Jev Trader | order bookから売買方向を選ぶJev実験を、RockstarOSのPAPER市場で検証する候補。 | 隔離PC / Bun・TypeSafe API。RockstarOSではPAPER／replay限定。Sky実行と外部接続は検証後 |
+| `typesafe-computer-use` | TypeSafe Computer Use | Mac画面を決定的に読み取り、Jevが次の操作を選ぶcomputer-use候補。 | 隔離したmacOS account / Python・uv・OCR・TypeSafe API・画面操作権限。Sky実行と外部接続は検証後 |
+| `jev-review` | Jev Review | Git差分または指定scopeのcodebaseを、段階的なJev判断でreviewする候補。 | 本人PC / Node.js 24以上・Git・TypeSafe API。dashboardはloopback限定。Sky実行と外部接続は検証後 |
+| `jev-router` | Jev Router | Codex／Claude Codeの各turnを、速いmodelまたは強いmodelへ振り分ける候補。 | 本人PC / Node.js 20.12以上・対応CLI・TypeSafe API。Sky実行と外部接続は検証後 |
+| `jev-browser` | Jev Browser | 既存browser toolの観測・操作・検証loop内で、Jevが画面要素を選ぶruntime候補。 | 本人PC / Node.js 22以上・対応browser tool・TypeSafe API。Sky実行と外部接続は検証後 |
+| `mobile-jev` | Mobile Jev | Mobilerun経由のAndroid端末で、Jevが次のmobile操作を選ぶagent候補。 | 隔離Android試験端末 / Node.js 22.16以上・pnpm 10.30.1・Mobilerun API・TypeSafe API。Sky実行と外部接続は検証後 |
+| `coconala-proposal-draft` | ココナラ提案文の下書き | 案件条件から提案文と確認リストを作る既存の端末内処理。 | 既存コード・設計あり / Sky実行器は未接続。Sky実行と外部接続は検証後 |
+| `gig-workflow` | 受託案件ワークフロー | 応募・交渉・制作・納品・売上確認の既存処理を段階ごとに支援。 | 既存コード・設計あり / Sky実行器は未接続。Sky実行と外部接続は検証後 |
+| `coconala-inbox` | ココナラの依頼・添付整理 | 本人の依頼文と添付を整理する既存処理。 | 既存コード・設計あり / Sky実行器は未接続。Sky実行と外部接続は検証後 |
+| `youtube-script-writer` | YouTube台本 | タイトル案、冒頭、台本、撮影キューを作る既存Service Cell。 | 既存コード・設計あり / Sky実行器は未接続。Sky実行と外部接続は検証後 |
+| `seo-blueprint` | SEO・記事構成 | 検索意図、キーワード、構成案を整理する既存Service Cell。 | 既存コード・設計あり / Sky実行器は未接続。Sky実行と外部接続は検証後 |
+| `landing-page-sprint` | LP・販売ページ制作 | 情報設計、コピー、画面と公開前確認を扱う既存Service Cell。 | 既存コード・設計あり / Sky実行器は未接続。Sky実行と外部接続は検証後 |
+| `sales-objection-reply-builder` | 商談返信・見積り支援 | 正式な商品条件から返信文と確認事項を作る既存Service Cell。 | 既存コード・設計あり / Sky実行器は未接続。Sky実行と外部接続は検証後 |
+| `user-interview-synthesizer` | 顧客インタビュー分析 | 発言をテーマ、根拠、仮説と次の検証に整理する既存Service Cell。 | 既存コード・設計あり / Sky実行器は未接続。Sky実行と外部接続は検証後 |
+| `calendar-coordination` | 予定・カレンダー連携 | 既存Coreの予定解釈とカレンダー連携処理。 | 既存コード・設計あり / Sky実行器は未接続。Sky実行と外部接続は検証後 |
+| `telegram-notifications` | Telegram通知・承認 | 既存Botの依頼受付、通知、進捗確認をSkyの仕事につなぐ処理。 | 既存コード・設計あり / Sky実行器は未接続。Sky実行と外部接続は検証後 |
+| `producthunt-discovery` | 外部ツール候補の発見 | Product Hunt公式API向けの候補検索処理。 | 既存コード・設計あり / Sky実行器は未接続。Sky実行と外部接続は検証後 |
 
 候補は「使えるツール数」に含めない。
 
-Jev ecosystem 10件の役割、権限、保存、停止、外部作用、受入条件は[Jev ecosystem全体詳細設計](jev-ecosystem-integration-design.md)を正本とし、Jev Ultrafast固有契約は[Jev Ultrafast統合設計](jev-ultrafast-integration-design.md)で補う。
+Jev ecosystemの役割、権限、保存、停止、外部作用、受入条件は[Jev ecosystem全体詳細設計](jev-ecosystem-integration-design.md)を正本とし、Jev Ultrafast固有契約は[Jev Ultrafast統合設計](jev-ultrafast-integration-design.md)で補う。
 
 ### native OS開発版に内蔵する6種類・9バージョン
 

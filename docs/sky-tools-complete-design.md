@@ -1,7 +1,7 @@
 # Sky／Zema／全Tool詳細設計
 
 版: 1.0 / 2026-09-18
-対象: Skyにある11件のready Tool、13件の導入候補、native開発Tool、Tool追加基盤。
+対象: Skyにある12件のready Tool、22件の導入候補、native開発Tool、Tool追加基盤。
 
 この文書は、Tool名の一覧ではなく、各Toolについて「誰が何を入力し、どこで動き、何を保存し、どこから外部作用になり、何をもって完了とするか」を同じ形で説明する。カタログの機械可読正本は`lib/catalog.ts`。この文書とカタログの欠落は`npm run design:check`で検出する。
 
@@ -85,6 +85,7 @@ catalogued → selected → connected → ready → running → review → compl
 | `mr-citations`              | 出典整理ツール                    | ready     | Web / PC               | local-pure                                |
 | `mr-delivery`               | 納品記録の照合                    | ready     | PC                     | local-pure                                |
 | `rockstar-ledger`           | サブスク顧問                      | ready     | PC MCP                 | local read-only                           |
+| `jev-evaluation`           | Jev品質評価                       | ready     | Sky Cloud / AI Gateway | 明示同意後のremote評価。結果は助言のみ     |
 | `rockstar-legal-intake`     | 法務受付                          | ready     | Web / 任意AI           | local整理＋同意後remote-read              |
 | `rockstar-patent-assistant` | 特許出願アシスタント              | ready     | Web / 任意AI           | local draft＋同意後remote-read            |
 | `faster-whisper`            | 文字起こし候補                    | candidate | PC                     | 未接続                                    |
@@ -100,6 +101,19 @@ catalogued → selected → connected → ready → running → review → compl
 | `jev-router`                | model routing候補                 | candidate | 本人PC                 | routing-only                              |
 | `jev-browser`               | 連続browser操作候補               | candidate | 本人PC                 | 未接続・未実行                            |
 | `mobile-jev`                | Android操作候補                   | candidate | 隔離試験端末           | 個人端末禁止                              |
+
+| `rockstar-ip-studio` | IP Studio — SNS・ゲーム運用 | candidate | このPCのIP Studio / Skyで接続状態と承認を管理 | Sky実行未接続 |
+| `coconala-proposal-draft` | ココナラ提案文の下書き | candidate | 既存コード・設計あり / Sky実行器は未接続 | Sky実行未接続 |
+| `gig-workflow` | 受託案件ワークフロー | candidate | 既存コード・設計あり / Sky実行器は未接続 | Sky実行未接続 |
+| `coconala-inbox` | ココナラの依頼・添付整理 | candidate | 既存コード・設計あり / Sky実行器は未接続 | Sky実行未接続 |
+| `youtube-script-writer` | YouTube台本 | candidate | 既存コード・設計あり / Sky実行器は未接続 | Sky実行未接続 |
+| `seo-blueprint` | SEO・記事構成 | candidate | 既存コード・設計あり / Sky実行器は未接続 | Sky実行未接続 |
+| `landing-page-sprint` | LP・販売ページ制作 | candidate | 既存コード・設計あり / Sky実行器は未接続 | Sky実行未接続 |
+| `sales-objection-reply-builder` | 商談返信・見積り支援 | candidate | 既存コード・設計あり / Sky実行器は未接続 | Sky実行未接続 |
+| `user-interview-synthesizer` | 顧客インタビュー分析 | candidate | 既存コード・設計あり / Sky実行器は未接続 | Sky実行未接続 |
+| `calendar-coordination` | 予定・カレンダー連携 | candidate | 既存コード・設計あり / Sky実行器は未接続 | Sky実行未接続 |
+| `telegram-notifications` | Telegram通知・承認 | candidate | 既存コード・設計あり / Sky実行器は未接続 | Sky実行未接続 |
+| `producthunt-discovery` | 外部ツール候補の発見 | candidate | 既存コード・設計あり / Sky実行器は未接続 | Sky実行未接続 |
 
 ## 5. CSV整形・検査・納品
 
@@ -256,7 +270,18 @@ catalogued → selected → connected → ready → running → review → compl
 
 正本: [Patent assistant](sky-patent-assistant-20260912.md)、`lib/patent-assistant.ts`、`lib/patent-ai.ts`。
 
-## 16. 導入候補13件
+## 15A. Jev品質評価
+
+- 目的と利用者: Skyから本人が明示的に選んだ最小出力について、根拠性・安全性・有用性を閉じた評価基準で点検し、人手レビューの目安を得る。
+- 入出力: `jev-evaluation` Tool ID、許可済みrubric、最小化したstate、request単位の同意を入力し、typed resultとEvaluation Receiptを返す。自由な命令文を評価権限へ変換しない。
+- 責任と禁止: Jevはremote evaluatorであり、Brokerの権限、本人承認、Tool成功、仕事完了、法的妥当性を決めない。Walletや外部writeの許可にも使わない。
+- 状態と失敗: 未設定・同意拒否・予算超過・provider不達・不正応答は停止し、評価済みや合格に読み替えない。再試行は同じ同意・費用条件を再確認し、結果不明時の重複課金を調べる。
+- 保存とprivacy: 仕事本文をreceiptへ保存せず、秘密値はserver環境にだけ置く。個人情報、法務相談、未公開発明、credential、顧客原稿は初期用途から除外し、providerの保持・学習利用・地域・削除経路を確認するまで広げない。
+- 更新・受入: route、同意UI、rubric、receiptとcatalogは実装済み。API key、provider条件、料金上限、sandbox／本番受入は未完了で、設定後に同意、停止、receipt、費用、復旧を実環境で検証する。
+
+正本: [LLM・評価モデル設計](llm-evaluation-architecture.md)、`data/llm-capabilities.json`、`app/api/jev-evaluation/route.ts`。
+
+## 16. 導入候補22件
 
 ### faster-whisper
 
@@ -314,6 +339,25 @@ Mobilerun経由のAndroid操作候補。Rock所有のwipe可能な試験端末�
 
 候補はready Tool数、対応機能、収益機会へ数えない。
 
+### 既存ToolとIP Studioからの追加候補
+
+| Tool ID | 用途 | 接続前の作業 |
+| --- | --- | --- |
+| `rockstar-ip-studio` | 参考画像と「何をしたいか」からキャラクター・スキンを制作し、Instagram・YouTube・Roblox・GTAなどへの導線を一つの運用フローで管理します。 | 参考画像と「何をしたいか」を入力してIPの制作依頼を作る |
+| `coconala-proposal-draft` | 案件条件から提案文と確認リストを作る既存の端末内処理。 | 既存のローカル実行器をSky SDKへ接続する |
+| `gig-workflow` | 応募・交渉・制作・納品・売上確認の既存処理を段階ごとに支援。 | 所有者設定を移し、外部操作に個別承認を付ける |
+| `coconala-inbox` | 本人の依頼文と添付を整理する既存処理。 | 本人の接続と保存範囲を確認する |
+| `youtube-script-writer` | タイトル案、冒頭、台本、撮影キューを作る既存Service Cell。 | 台本生成と品質確認の実行器を接続する |
+| `seo-blueprint` | 検索意図、キーワード、構成案を整理する既存Service Cell。 | 調査元と生成実行器を接続する |
+| `landing-page-sprint` | 情報設計、コピー、画面と公開前確認を扱う既存Service Cell。 | 制作実行器を接続し、公開は本人確認を通す |
+| `sales-objection-reply-builder` | 正式な商品条件から返信文と確認事項を作る既存Service Cell。 | 返信生成実行器を接続する |
+| `user-interview-synthesizer` | 発言をテーマ、根拠、仮説と次の検証に整理する既存Service Cell。 | 発言と分析結果を結ぶ実行器を接続する |
+| `calendar-coordination` | 既存Coreの予定解釈とカレンダー連携処理。 | 本人のアカウント接続と権限確認を行う |
+| `telegram-notifications` | 既存Botの依頼受付、通知、進捗確認をSkyの仕事につなぐ処理。 | 本人確認済みBotと送信範囲を接続する |
+| `producthunt-discovery` | Product Hunt公式API向けの候補検索処理。 | API利用条件と商用許諾を確認する |
+
+これらは候補表示のみで、Skyからの実行、外部service接続、公開、通知送信は未接続。入力schema、版、owner、許可先、実費、本人同意、保存・削除、停止と再試行をToolごとに決め、実行結果のreceiptを別に検証する。SNS投稿、販売、応募、請求、外部連絡は内容を固定した個別承認を必須とする。失敗や結果不明を成功に変えず、providerと本人の記録を照合する。採用時にこの表の候補を各Tool詳細設計へ展開し、端末・PC・Cloudでの試験、rollbackと権限失効を受け入れる。
+
 ## 17. native開発Tool
 
 Linux／QEMU imageには次の6 family・9 versionがある。
@@ -363,6 +407,6 @@ Material Invention／avocadoMiniは、Core、sensor、XR、Safety、Simulation�
 - external-write outboxとProvider照会の全Tool共通実装。
 - 多端末selectionと一つの仕事のauthority移送。
 - 本番料金、返金、dispute、receiptのProvider横断契約。
-- candidate 13件の採否と具体的Tool schema。Jev ecosystem 10件は統合schemaを設計済みだがruntime未実装。
+- candidate 22件の採否と具体的Tool schema。Jev ecosystem 10件は統合schemaを設計済みだがruntime未実装。
 
 これらを未決定のまま「全Tool platform完成」と表示しない。
