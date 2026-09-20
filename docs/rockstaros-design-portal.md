@@ -1,22 +1,27 @@
 # RockstarOS 全設計ポータル
 
-版: 1.0 / 2026-09-18
+版: 1.1 / 2026-09-19
 
 このページは、RockstarOS本体、画面、AI、Tool、Wallet、運用、avocadoMiniまで、全設計へ入る唯一の入口である。設計書が多いことを完成とは呼ばない。各systemについて、目的、利用者の操作、責任、入力、出力、状態、権限、保存、失敗、復旧、受入、現在地を説明できることを設計記載の最低条件とする。
 
-## 最初に読む5冊
+## 最初に読む6冊
 
-1. [RockstarOS全体詳細設計](rockstaros-complete-design.md) — OS全体がどう動くか。
-2. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — Toolをどう追加し、11件をどう使い、どこで止めるか。
-3. [avocadoMini空間発明システム](rockstaros-avocado-mini-complete-design.md) — 物質発明を手で扱う体験と技術。
-4. [製品ベース](product-baseline.md) — 利用者が確定したRQ01〜RQ49と、その後のTool追加判断。
-5. [Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md) — code、Jev、Local Qwen、Cloud LLM、Codex、RAG、Market、Walletを一つの安全境界へ統合する設計。
+1. [製品・サービス・システム関係図](rockstaros-product-system-map.md) — 製品、サービス、内部システム、`Mr.`、MR、収益の関係を一枚で確認する。
+2. [RockstarOS全体詳細設計](rockstaros-complete-design.md) — OS全体がどう動くか。
+3. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — Toolをどう追加し、11件をどう使い、どこで止めるか。
+4. [avocadoMini空間発明システム](rockstaros-avocado-mini-complete-design.md) — 物質発明を手で扱う体験と技術。
+5. [製品ベース](product-baseline.md) — 利用者が確定したRQ01〜RQ49と、その後のTool追加判断。
+6. [Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md) — code、Jev、Local Qwen、Cloud LLM、Codex、RAG、Market、Walletを一つの安全境界へ統合する設計。
 
 機械可読の被覆台帳は[`data/design-document-index.json`](../data/design-document-index.json)。`npm run design:check`は、利用可能・候補の全Toolが台帳と詳細設計に存在すること、正本へのlinkが存在すること、未決定を完成表示していないことを検査する。
 
 [Jev／TypeSafe + Local Qwen引き継ぎ原文](prompts/jev-typesafe-local-qwen-handoff-20260918.md)を要求の正本として保存し、その内容を[Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md)へ落とした。DecisionProvider契約と安全policyも機械可読化したが、Router／Harness、TypeSafe接続、Cloud接続、RAG runtimeが実装済みになったわけではない。
 
+製品・サービス・システムの関係、`Mr.` 由来Toolの取り込み境界、MR（Mixed Reality）とMaterial Invention Coreの接続は、[製品・サービス・システム関係図](rockstaros-product-system-map.md)を正本補助設計として参照する。ここでいう`Mr.` は外部repository由来Tool、MRはavocadoMiniのMixed Reality操作を指し、同じものではない。
+
 ## 設計の全体地図
+
+詳細な関係図は[製品・サービス・システム関係図](rockstaros-product-system-map.md)に分離している。以下は全体の責任方向だけを示す要約である。
 
 ```text
 利用者
@@ -69,7 +74,7 @@ RockstarOS Platform Core
 | Security / Operator        | [インシデント対応](security-incident-response.md)                                                                                                                  | [`data/device-emergency-access-policy.json`](../data/device-emergency-access-policy.json)                                                          |
 | Update / Backup / Recovery | [backup・復旧](android-backup-recovery.md)                                                                                                                         | 各Android release policy JSON                                                                                                                      |
 | Game / IP                  | [Game API](game-api-contract-draft.md)                                                                                                                             | GX00／GX01契約とSDK                                                                                                                                |
-| Material Invention         | [見て分かる完成設計](rockstaros-avocado-mini-complete-design.md)                                                                                                   | 3つのMaterial JSON SchemaとXR policy                                                                                                               |
+| Material Invention         | [見て分かる完成設計](rockstaros-avocado-mini-complete-design.md)・[Full-scaleハードウェア詳細設計](avocado-mini-hardware-design.md)                                  | 3つのMaterial JSON SchemaとXR policy                                                                                                               |
 | 検証・release              | [release minimum gates](release-minimum-gates.md)                                                                                                                  | [`data/release-readiness.json`](../data/release-readiness.json)                                                                                    |
 
 ## 「詳細設計済み」の意味

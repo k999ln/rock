@@ -390,7 +390,7 @@ RockstarOS
 
 四方向podの具体的なcamera方式やメーカーはまだ決めない。Full-scaleではcamera四台だけに固定せず、各podへ2〜3の光学viewpointをまとめた全体8〜12視点を初期候補とし、RGB、depth、IR等をprototypeで比較する。
 
-現在の外観とscaleの共通資料は、[初期四方向concept](assets/rockstaros-spatial-table-v1.png)と[ビリヤード台規模concept](assets/rockstaros-spatial-table-full-scale-v2.png)である。画像は完成証拠ではなく、配置、人物scale、操作範囲、下部演算rack、保守性を検討するための設計資料とする。
+現在の外観とscaleの共通資料は、[初期四方向concept](assets/rockstaros-spatial-table-v1.png)と[ビリヤード台規模concept](assets/rockstaros-spatial-table-full-scale-v2.png)である。画像は完成証拠ではなく、配置、人物scale、操作範囲、下部演算rack、保守性を検討するための設計資料とする。機構、光学、電気、演算、network、電力、熱、privacy hardware、校正、BOM、HVT受入は[Full-scaleハードウェア詳細設計](avocado-mini-hardware-design.md)を正本とする。
 
 処理の順番:
 
@@ -644,6 +644,7 @@ XR、AI、cameraが持たない権限:
 - Material Invention Core詳細: [material-invention-core.md](material-invention-core.md)
 - VR／AR共通詳細: [material-invention-xr.md](material-invention-xr.md)
 - avocadoMini端末詳細: [avocado-mini-spatial-invention.md](avocado-mini-spatial-invention.md)
+- avocadoMiniハードウェア詳細: [avocado-mini-hardware-design.md](avocado-mini-hardware-design.md)
 - 作業入口: [workstreams/11-material-invention-avocado-mini.md](workstreams/11-material-invention-avocado-mini.md)
 - Material sandbox契約: [`contracts/material-invention.json`](../contracts/material-invention.json)
 - XR scene契約: [`contracts/material-invention-xr.json`](../contracts/material-invention-xr.json)
