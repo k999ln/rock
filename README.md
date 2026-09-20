@@ -4,7 +4,7 @@
 
 [🏠 製品・導入ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) · [📱 アプリ](https://rockstaros-kaiya.noellesugar1.chatgpt.site/) · [💿 OS導入](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) · [🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🤝 クラファン企画](docs/avocado-mini-crowdfunding.md)
 
-**RockstarOSの入口は三つです。** [製品・導入ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros)で製品を知り、OSの導入方法を確認する。[Webアプリ](https://rockstaros-kaiya.noellesugar1.chatgpt.site/)で作業する。[OS本体の導入案内](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide)で対応環境と配布状況を確認する。Sky、Zema、Wallet、Material Invention StudioなどはアプリやOSの中で使うサービスです。既存の配信先は現在本人限定で、一般公開と最新版同期は未反映です。
+**RockstarOSの入口は三つです。** [製品・導入ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros)で製品を知り、OSの導入方法を確認する。[Webアプリ](https://rockstaros-kaiya.noellesugar1.chatgpt.site/)で作業する。[OS本体の導入案内](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide)で対応環境と配布状況を確認する。Sky、Zema、Wallet、Material Invention StudioなどはアプリやOSの中で使うサービスです。既存の配信先は一般閲覧できますが、最新版の配備は未反映です。
 
 ## 構想ギャラリー
 
@@ -36,7 +36,7 @@ RockstarOSは、avocadoMiniの操作、権限、保存、復旧をつなぐ技�
 
 ![Skyで役割を探し、Zemaで進め、Studioで発明の候補を試すRockstarOSの紹介アニメーション。avocadoMiniは設計中。](docs/assets/rockstaros-intro.gif)
 
-**いま試せる入口:** Web版の[アプリホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/)からSky、Zema、Studioへ進む構成です。ただし、現在の配信先は本人限定で、一般公開への変更は未反映です。avocadoMiniの実機とスマートフォン向け完成OSはまだ提供していません。
+**いま試せる入口:** Web版の[アプリホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/)からSky、Zema、Studioへ進む構成です。ただし、現在の配信先には最新版の製品ページが未配備です。avocadoMiniの実機とスマートフォン向け完成OSはまだ提供していません。
 
 交換可能なLLMは製品を支える設計ですが、現在の実機検証は固定Qwen / llama.rn profileの試験署名Pixel APK段階です。複数モデルの交換やOS image搭載は未完了です。開発用のPixel 10は検証端末で、自社製ハードウェアとして販売する製品ではありません。[LLM・評価モデル設計](docs/llm-evaluation-architecture.md)と[能力表](data/llm-capabilities.json)に現在地を記録しています。
 
@@ -94,7 +94,7 @@ avocadoMiniはRockstarOSそのものではなく、RockstarOSを搭載してMate
 
 ## アクセス先
 
-既存のWeb版は現在も本人限定です。一般公開への変更は依頼済みですが、配信先の所有アカウントへ接続できておらず未反映です。一般公開後も仕事・Wallet・開発者操作の保存にはChatGPTサインインが必要です。GitHubの`main`更新はサイトへ自動反映されないため、以下の配信先は最新版の表示を保証しません。
+既存のWeb版は一般閲覧できることを確認しました。配信先の所有アカウントへ接続できておらず、最新版の配備は未反映です。仕事・Wallet・開発者操作の保存にはChatGPTサインインが必要です。GitHubの`main`更新はサイトへ自動反映されないため、以下の配信先は最新版の表示を保証しません。
 
 | 入口 | リンク |
 | --- | --- |
@@ -212,12 +212,12 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-19 / 133 task中89 done・27 in progress・16 planned・1 blocked
+更新日: 2026-09-19 / 134 task中90 done・27 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
 | --------------- | -------------------------------------------------------------------------------------------- | -------------------------------------- | ----------------------------------------------------------------- |
-| Web / PWA       | Home、Sky、Zema、仕事、CSV、Wallet、Market、設定、Studio、D1 API                             | 実装あり・本人限定Siteの最新版同期待ち | 同一sourceの配備、認証後の実操作、一般公開gate                    |
+| Web / PWA       | Home、Sky、Zema、仕事、CSV、Wallet、Market、設定、Studio、D1 API                             | 実装あり・既存Siteの最新版同期待ち | 同一sourceの配備、認証後の実操作、一般公開gate                    |
 | Linux / QEMU    | OS起動、Platform API、専用UID、SQLite、保存、A/B更新、rollback、backup、Wallet／Game fixture | Developer Preview候補は10 gate中6合格  | 製品license、production署名、署名後の同一候補受入、公開承認       |
 | Android P1      | Broker／Shell／Tool、Local AI plan v2、native Sky永続化、emulator backup v2復元              | 試験署名Pixel非破壊23/23受入済み       | 物理wipe復元、汎用Core、OS full build                             |
 | Android物理端末 | Pixel 10 GL066固定、署名source／partition構成、初回flash方針、7項目のproduction構成          | 6必須gate中1合格                       | BSP、full build、SELinux、CTS/VTS、OTA、純正復旧                  |
@@ -394,11 +394,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>133 taskと段階gateの詳細を開く</summary>
+<summary>134 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 89/133件
+最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 90/134件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -446,6 +446,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB10 | 製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](docs/product-baseline.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB11 | 製品構想モデルをスクロールで一周見せ、参考価格・購入準備中・OS導入へつなぐ | 完了 | [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](docs/product-baseline.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

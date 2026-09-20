@@ -942,6 +942,7 @@ export function validateBaseline(
     'Home以外の全画面に直接Homeへ戻る契約が必要です',
   );
   const launchPageSource = read(resolve(root, 'app/rockstaros/page.tsx'));
+  const turntableSource = read(resolve(root, 'components/avocado-turntable.tsx'));
   requireValue(
     data.launchPage?.route === '/rockstaros' &&
       data.marketPositioning?.customerFacingFocus === 'hardware_products' &&
@@ -957,7 +958,12 @@ export function validateBaseline(
       launchPageSource.includes('実機試作・販売はまだ行っていません') &&
       launchPageSource.includes('OS Developer Preview') &&
       launchPageSource.includes(data.launchPage.studioUrl) &&
-      launchPageSource.includes('createSkyToolApp'),
+      launchPageSource.includes('createSkyToolApp') &&
+      launchPageSource.includes('<AvocadoTurntable />') &&
+      turntableSource.includes('turn * Math.PI * 2') &&
+      turntableSource.includes('¥410,000') &&
+      turntableSource.includes('購入する') &&
+      turntableSource.includes('/rockstaros/guide#install'),
     'avocadoMini中心の製品紹介、未完成表示、Developer Preview・Sky開発者導線を維持してください',
   );
   const studioSource = read(resolve(root, 'components/rock-studio.tsx'));

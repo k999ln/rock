@@ -12,7 +12,7 @@
   --muted: #9a9b98;
   --acid: #c8ff2e;
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: clip;
   background:
     radial-gradient(circle at 78% 18%, #293213 0, #12150d 15%, transparent 36%),
     #080908;

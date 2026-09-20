@@ -1,3 +1,5 @@
+2026-09-20 製品スクロール体験: `/rockstaros`の冒頭でavocadoMiniの設計構想モデルをスクロールに合わせて一周表示し、回転後に希望参考価格41万円、購入準備中のボタン、クラファン企画への入口を示す。次の画面にOS導入案内へのボタンを置く。モデルと既存画像は実機映像ではなく、販売、予約、決済、一般向けOSインストーラーは未開始。
+
 # RockstarOS — 確定した製品ベース
 
 2026-09-19 製品・OS導入ホームの利用領域: `/rockstaros`にSky、Zema／Work、Material Invention、Wallet、Market、CSV、開発者、OS導入の8領域を追加し、それぞれ現状の制限と既存画面への入口を示す。Sky開発者の入口はMaterial Invention Studioの旧配信URLではなく、同じアプリ内の`/sky/publish`とする。既存Siteの一般公開と最新版配備は未完了。

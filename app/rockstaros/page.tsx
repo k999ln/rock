@@ -1,10 +1,8 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
-import previewData from '../../data/rockstaros-preview.json';
+import { AvocadoTurntable } from '../../components/avocado-turntable';
 import styles from './preview.module.css';
 
-const installUrl = previewData.publicDownloadUrl ?? '/rockstaros/guide#install';
 const studioUrl = '/sky/publish';
 
 const experienceAreas = [
@@ -105,70 +103,18 @@ export default function RockstarPreview() {
         <span className={styles.version}>HARDWARE / SOFTWARE / AI</span>
       </header>
 
-      <section className={styles.installHero} aria-labelledby="preview-title">
-        <div className={styles.heroGlow} aria-hidden="true" />
-        <p className={styles.kicker}>ROCKSTAROS / YOUR IDEAS, IN MOTION</p>
-        <h1 id="preview-title">
-          Your ideas.
-          <br />
-          In your hands.
-        </h1>
-        <p className={styles.heroJa}>考える時間を、つくる時間に。avocadoMiniと高性能LLM搭載を目指すRockstarOSで、仕事と発明の作業をスムーズに。</p>
-        <a className={styles.installButton} href="#avocado-mini">
-          <span>avocadoMiniを見る</span>
-          <span aria-hidden="true">↗</span>
-        </a>
-        <p className={styles.installNote}>
-          現在は設計段階 · 実機試作・販売はまだ行っていません
-        </p>
-      </section>
+      <AvocadoTurntable />
 
-      <nav className={styles.access} aria-label="製品ホーム、アプリ、OS本体への入口">
-        <h2>入口は、ホームページ・アプリ・OS本体。</h2>
-        <p>このページで製品を知り、OSの導入方法を確認できます。アプリやOSの中で、Skyなどのサービスを使います。</p>
+      <nav className={styles.access} aria-label="製品、アプリ、OSへの入口">
+        <h2>製品から、その先へ。</h2>
+        <p>avocadoMiniの体験を起点に、WebアプリとRockstarOSの現在地を見られます。</p>
         <div className={styles.accessCards}>
-          <a href="#avocado-mini"><strong>ホームページ</strong><span>製品紹介とOS導入の入口。avocadoMiniとRockstarOSの現在地を見る。</span></a>
-          <Link href="/"><strong>アプリを開く</strong><span>Web版の作業画面。Sky、Zema、Studioなどをここから使う。</span></Link>
-          <Link href="/rockstaros/guide"><strong>OS本体・導入案内</strong><span>Developer Previewの対応環境、導入手順、配布状況を確認する。</span></Link>
+          <a href="#avocado-mini-title"><strong>avocadoMiniを見る</strong><span>製品構想と希望参考価格を確認する。</span></a>
+          <Link href="/"><strong>アプリを開く</strong><span>Sky、Zema、StudioなどのWeb版へ。</span></Link>
+          <Link href="/rockstaros/guide"><strong>OS Developer Preview</strong><span>対象環境、導入手順、配布の状態を確認する。</span></Link>
         </div>
-        <p>アプリ内のサービス</p>
-        <div className={styles.accessLinks}>
-          <a href="#experience-areas">できることから探す</a>
-          <Link href="/rockstaros/crowdfunding">avocadoMiniクラファン企画</Link>
-          <Link href="/sky">Sky</Link>
-          <Link href="/chat">Zema</Link>
-          <Link href="/wallet">Wallet</Link>
-          <Link href="/market">Market</Link>
-          <Link href="/studio">Material Invention Studio</Link>
-        </div>
+        <p className={styles.installNote}>現在は設計段階 · 実機試作・販売はまだ行っていません</p>
       </nav>
-
-      <section className={styles.product} id="avocado-mini" aria-labelledby="product-title">
-        <div className={styles.productCopy}>
-          <p className={styles.kicker}>01 / HARDWARE CONCEPT</p>
-          <h2 id="product-title">avocadoMini</h2>
-          <p className={styles.productLead}>考える時間を、つくる時間に。</p>
-          <p>
-            四方向のセンサーで手の動きを捉え、物質のデジタル模型を組み合わせて候補を比べる構想です。
-            高性能LLMを搭載するRockstarOSを目指し、Material Invention Studioでの操作、候補の整理、記録をスムーズにつなぎます。
-          </p>
-          <p className={styles.productPrice}><strong>41万円</strong><span>希望参考価格 · 販売価格未確定</span></p>
-          <Link href="/rockstaros/crowdfunding" className={styles.campaignReturn}>クラファン企画を見る ↗</Link>
-          <p className={styles.productStatus}>
-            設計中。実機と高性能LLMの製品搭載は未完成です。画像はコンセプトで、追跡精度・表示方式・安全性を実証した実機写真ではありません。
-          </p>
-        </div>
-        <figure className={styles.productVisual}>
-          <Image
-            src="/rockstaros/avocado-mini-concept.png"
-            alt="四方向センサーと作業面を備えたavocadoMiniの設計コンセプト図"
-            width="1680"
-            height="940"
-            loading="lazy"
-          />
-          <figcaption>avocadoMini / design concept · prototype pending</figcaption>
-        </figure>
-      </section>
 
       <section className={styles.experience} id="experience-areas" aria-labelledby="experience-title">
         <div className={styles.experienceIntro}>
@@ -185,25 +131,6 @@ export default function RockstarPreview() {
               <span className={styles.experienceAction}>{area.action} <span aria-hidden="true">↗</span></span>
             </Link>
           ))}
-        </div>
-      </section>
-
-      <section className={styles.platform} aria-labelledby="platform-title">
-        <div>
-          <p className={styles.kicker}>02 / TECHNOLOGY FOUNDATION</p>
-          <h2 id="platform-title">あなたが選んだAIと、進めるための土台。</h2>
-          <p>
-            RockstarOSは、選んだToolへの依頼、確認、成果の記録をつなぐために開発しています。
-            高性能な交換可能LLMの搭載は製品目標で、現在の実機検証は固定モデルのDeveloper Preview段階です。SkyとZemaはアプリとOS内で使うサービスです。
-            Pixel 10は開発用の検証端末で、自社製ハードウェア製品ではありません。
-          </p>
-        </div>
-        <div className={styles.platformAction}>
-          <a className={styles.installButton} href={installUrl}>
-            <span>OS Developer Preview</span>
-            <span aria-hidden="true">↗</span>
-          </a>
-          <p className={styles.installNote}>Apple Silicon Mac向け仮想OS · 公開前の導入案内</p>
         </div>
       </section>
 

@@ -703,6 +703,21 @@
       ]
     },
     {
+      "id": "WEB11",
+      "title": "製品構想モデルをスクロールで一周見せ、参考価格・購入準備中・OS導入へつなぐ",
+      "status": "done",
+      "dependsOn": [
+        "WEB05",
+        "WEB10"
+      ],
+      "evidence": [
+        "components/avocado-turntable.tsx",
+        "components/avocado-turntable.module.css",
+        "app/rockstaros/page.tsx",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
       "id": "BIZ01",
       "title": "無料配布の対象とOS従量課金の計量単位・単価・上限を確定する",
       "status": "in_progress",
