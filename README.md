@@ -2,7 +2,7 @@
 
 **考える時間を、つくる時間に。** 物質や工程のアイデアを、作業面で手を動かしながら選び、組み合わせ、比べる。**avocadoMini**は、高性能LLMを搭載するRockstarOSを目指す空間発明端末です。四方向のセンサーで操作領域を捉え、発明と日々の作業をスムーズに進める製品を構想しています。**希望参考価格は41万円**。販売価格・仕様・発売日は未確定で、実機試作前です。
 
-[🏠 製品・導入ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) · [📱 アプリ](https://rockstaros-kaiya.noellesugar1.chatgpt.site/) · [💿 OS導入](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) · [🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🔩 Screw](https://github.com/k999ln/screw) · [🤝 クラファン企画](docs/avocado-mini-crowdfunding.md)
+[🏠 製品・導入ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) · [📱 アプリ](https://rockstaros-kaiya.noellesugar1.chatgpt.site/) · [💿 OS導入](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) · [🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🤝 クラファン企画](docs/avocado-mini-crowdfunding.md)
 
 **RockstarOSの入口は三つです。** [製品・導入ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros)で製品を知り、OSの導入方法を確認する。[Webアプリ](https://rockstaros-kaiya.noellesugar1.chatgpt.site/)で作業する。[OS本体の導入案内](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide)で対応環境と配布状況を確認する。Sky、Zema、Wallet、Material Invention StudioなどはアプリやOSの中で使うサービスです。既存の配信先は現在本人限定で、一般公開と最新版同期は未反映です。
 
@@ -56,12 +56,6 @@ RockstarOSは、avocadoMiniの操作、権限、保存、復旧をつなぐ技�
 
 LLM、Agent、仕事、Tool、権限、承認、保存、更新、復旧を一つの契約でつなぐOSです。LLMは交換可能にし、LLM自身に権限付与やWallet台帳書込みをさせません。
 
-### Screw — GrapheneOS導入の入口
-
-![ScrewからNoelleのGrapheneOS導入ページへ進む様子を表すアニメーション](docs/assets/cover-screw.gif)
-
-**Screw**は、Noelleが作った[PRIVATE/PIXELのGrapheneOS導入ページ](https://privatepixel.uk/grapheneos-install)へ進むための[独立した案内リポジトリ](https://github.com/k999ln/screw)です。導入システムはNoelle側のサービスであり、RockstarOSの機能やRock製のインストーラーとして提供するものではありません。
-
 ### App Home — アプリとOS内の作業画面
 
 製品・導入ホームページとは別の、WebアプリとOS内の作業画面です。Sky、Zema、Wallet、Market、Settings、Material Inventionへの入口を持ち、今日やりたいことがすぐ見つかる構成にします。App Homeは各機能の正本を持たず、Platform Coreへ安全に導きます。
@@ -106,7 +100,6 @@ avocadoMiniはRockstarOSそのものではなく、RockstarOSを搭載してMate
 | --- | --- |
 | 製品紹介を兼ねるOS導入ホームページ | [RockstarOS / avocadoMini](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) |
 | OS本体の導入案内 | [Developer Previewガイド](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) |
-| Screw / GrapheneOS導入 | [Screwリポジトリ](https://github.com/k999ln/screw) · [Noelleの公開導入ページ](https://privatepixel.uk/grapheneos-install) |
 | Webアプリ | [アプリホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/) |
 | アプリ・OS内のサービス | [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) · [Zema](https://rockstaros-kaiya.noellesugar1.chatgpt.site/chat) · [Wallet](https://rockstaros-kaiya.noellesugar1.chatgpt.site/wallet) · [Market](https://rockstaros-kaiya.noellesugar1.chatgpt.site/market) · [Material Invention Studio](https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio) |
 
@@ -219,7 +212,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-19 / 133 task中89 done・27 in progress・16 planned・1 blocked
+更新日: 2026-09-19 / 132 task中88 done・27 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -401,11 +394,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>133 taskと段階gateの詳細を開く</summary>
+<summary>132 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 89/133件
+最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 88/132件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -451,7 +444,6 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
-| WEB08 | NoelleのGrapheneOS導入案内をScrew独立リポジトリで示し、Rockからつなぐ | 完了 | [記録](README.md) · [記録](docs/assets/cover-screw.gif) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |

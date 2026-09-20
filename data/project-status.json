@@ -671,19 +671,6 @@
       ]
     },
     {
-      "id": "WEB08",
-      "title": "NoelleのGrapheneOS導入案内をScrew独立リポジトリで示し、Rockからつなぐ",
-      "status": "done",
-      "dependsOn": [
-        "WEB05"
-      ],
-      "evidence": [
-        "README.md",
-        "docs/assets/cover-screw.gif",
-        "docs/workstreams/05-web-pwa-sites.md"
-      ]
-    },
-    {
       "id": "WEB09",
       "title": "avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する",
       "status": "in_progress",
