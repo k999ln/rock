@@ -6,6 +6,7 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 
 ## 現在地
 
+- `/rockstaros`はavocadoMiniの製品構想を先に紹介し、OS Developer PreviewとSky開発者入口へ続く。Home `/` はOSの作業画面として維持する。
 - 主要画面、PWA manifest、Service Worker、明示更新、security header、D1 APIを実装済み。
 - 本人限定Siteは存在するが、最新版sourceとの一致とログイン後の実操作確認が残る。
 - 一般公開は製品licenseと本人承認が未完了のためblocked。

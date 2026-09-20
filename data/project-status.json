@@ -615,6 +615,23 @@
       ]
     },
     {
+      "id": "WEB05",
+      "title": "avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新",
+      "status": "done",
+      "dependsOn": [
+        "MAT04",
+        "WEB02",
+        "BRD01"
+      ],
+      "evidence": [
+        "README.md",
+        "app/rockstaros/page.tsx",
+        "app/rockstaros/preview.module.css",
+        "public/rockstaros/avocado-mini-concept.png",
+        "docs/product-baseline.md"
+      ]
+    },
+    {
       "id": "VER01",
       "title": "RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理",
       "status": "done",

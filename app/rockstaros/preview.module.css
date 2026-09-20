@@ -138,6 +138,88 @@
   font-size: 0.8rem;
 }
 
+.product,
+.platform {
+  display: grid;
+  width: min(100% - 48px, 1420px);
+  margin: 0 auto;
+  padding: 120px 0;
+  border-top: 1px solid #ffffff20;
+  align-items: center;
+  gap: clamp(40px, 6vw, 100px);
+}
+
+.product {
+  grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1.25fr);
+}
+
+.productCopy h2,
+.platform h2 {
+  margin: 0 0 26px;
+  font-size: clamp(3rem, 6vw, 6.5rem);
+  font-weight: 850;
+  letter-spacing: -0.065em;
+  line-height: 0.95;
+}
+
+.productCopy > p:not(.kicker),
+.platform p:not(.kicker) {
+  max-width: 540px;
+  color: #b8bab4;
+  line-height: 1.85;
+}
+
+.productCopy .productLead {
+  color: var(--ink) !important;
+  font-size: clamp(1.2rem, 2vw, 1.65rem);
+  font-weight: 700;
+  line-height: 1.5 !important;
+}
+
+.productCopy .productStatus {
+  margin-top: 30px;
+  padding-left: 16px;
+  border-left: 2px solid var(--acid);
+  font-size: 0.88rem;
+}
+
+.productVisual {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #ffffff24;
+  border-radius: 18px;
+  background: #f4f7f8;
+}
+
+.productVisual img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.productVisual figcaption {
+  padding: 12px 18px;
+  background: #0d0f0d;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.platform {
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+}
+
+.platform h2 {
+  font-size: clamp(2.7rem, 5vw, 5.4rem);
+}
+
+.platformAction .installButton {
+  margin-top: 0;
+}
+
 .developer {
   display: grid;
   width: min(100% - 48px, 1420px);
@@ -228,6 +310,8 @@
 
 @media (max-width: 760px) {
   .landingHeader,
+  .product,
+  .platform,
   .developer,
   .landingFooter {
     width: min(100% - 36px, 1420px);
@@ -258,6 +342,13 @@
     padding: 88px 0;
     grid-template-columns: 1fr;
     gap: 48px;
+  }
+
+  .product,
+  .platform {
+    padding: 88px 0;
+    grid-template-columns: 1fr;
+    gap: 44px;
   }
 
   .codeWindow {

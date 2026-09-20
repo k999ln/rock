@@ -1,5 +1,5 @@
 {
-  "version": "1.82",
+  "version": "1.83",
   "decidedAt": "2026-09-19",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -42,6 +42,19 @@
     "representativeProductCandidate": "one existing Tool capable of completing the offline-to-signed-earning-to-Wallet acceptance loop",
     "marketValidation": "not_run",
     "runtimeChangedByThisDesign": false
+  },
+  "marketPositioning": {
+    "customerFacingFocus": "hardware_products",
+    "leadHardwareConcept": "avocadoMini",
+    "technologyFoundation": [
+      "RockstarOS",
+      "replaceable_llm",
+      "Sky",
+      "Zema"
+    ],
+    "avocadoMiniStage": "design_only_no_physical_prototype_or_sales",
+    "pixel10Role": "development_reference_device_not_own_hardware_product",
+    "taxTreatmentClaim": "none"
   },
   "systemComposition": {
     "document": "docs/system-composition.md",
@@ -284,7 +297,8 @@
   },
   "launchPage": {
     "route": "/rockstaros",
-    "primaryAction": "install_os",
+    "primaryAction": "view_avocado_mini",
+    "secondaryAction": "developer_preview_install_guide",
     "publicDownloadFallback": "/rockstaros/guide#install",
     "developerCode": "sky_tool_sdk_minimal_node_example",
     "studioUrl": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio",

@@ -1,5 +1,7 @@
 # RockstarOS — 確定した製品ベース
 
+2026-09-19 対外的な事業の見せ方（v1.83）: 利用者の明示指示により、表に出す主役をハードウェア製品、最初の製品構想をavocadoMiniとする。RockstarOS、交換可能なLLM、Sky／Zemaは製品を支える技術基盤として説明する。これは技術開発の優先順位やOS Coreの契約を変える指示ではない。avocadoMiniは設計段階であり、実機試作、量産、販売、税務上の取扱いを完了・確定したとは表示しない。`/rockstaros`は製品構想を先に示し、Developer Preview導入とSky開発者入口を後段に置く。OS Home `/` は利用者の作業画面として維持する。
+
 2026-09-18 avocadoMini Full-scale設計追記（v1.82）: 利用者の明示指示により、最終製品目標をビリヤード台規模へ具体化した。本体約3.0 m × 1.7 m × 高さ0.9 m、有効操作領域約2.4 m × 1.2 m × 高さ1.3 mを初期budgetとし、四方向podへ複数の光学viewpointをまとめる。小型Benchで誤commitと安全停止を受け入れた後にFull-scaleへ進む。二枚のconcept画像は人物scale、配置、演算rack、serviceabilityを共有する設計資料であり、実機、裸眼3D、触覚、追跡精度の完成証拠ではない。[端末設計](avocado-mini-spatial-invention.md)。
 
 2026-09-18 Decision Fabric詳細設計（v1.81）: Jev／TypeSafe、Local Qwen、Cloud LLM、Codex、RAG、Market、Wallet、MCPを、deterministic codeが制御する一つの判断基盤へ統合する[完成設計書](jev-local-qwen-decision-fabric-design.md)を追加した。TypeSafe公式のChoice／Score／Noulとconfidenceの性質を照合し、Jevは小さな意味判断、Local Qwenは秘密・offline、Cloud LLMは明示同意済みの複雑推論、Policy Engineは唯一の実行権限判定者とする。共通contractと安全policyは追加したが、DecisionProvider、Router／Harness、TypeSafe／Cloud／RAG接続は未実装である。
@@ -458,9 +460,9 @@ PCのRock Studioは、配布されたSky SDKコードを開発者自身の既存
 
 Registry APIにはSDKが生成した`sky-tool-package/1`だけを送り、handlerの入力、出力、会話、APIキー、ソース本文は送信・保存しない。危険な外部変更・金融操作は`sideEffects`と`authorize` callbackを必須にして実行ごとの確認と再試行禁止を設定する。宣言公開はSandbox検証や作者署名の代替ではなく、登録不能時に登録完了と表示しない。
 
-## RQ38 Developer Preview紹介ページをインストール中心へ簡素化する
+## RQ38 製品紹介を主役にし、Developer Preview導入を案内する
 
-`/rockstaros`は長い機能説明、動画、ゲーム紹介を並べるページではなく、RockstarOSを試したい利用者が最初の画面で「OSをインストール」へ進める簡潔な紹介ページにする。視覚は黒を基調にRockstarOSの酸味のある黄緑をアクセントとし、デスクトップとモバイルで同じ主操作を保つ。公開配布URLがない間は検証済み導入手順へ接続し、未署名候補を直接インストール可能とは表示しない。
+`/rockstaros`はハードウェア製品構想avocadoMiniを最初に見せ、その体験を支えるRockstarOSとLLMを次に説明する。デスクトップとモバイルの主操作は製品構想への導線とし、設計画像は実機写真と誤認されないよう明示する。Developer Preview導入案内は同じページに残す。公開配布URLがない間は検証済み導入手順へ接続し、未署名候補を直接インストール可能とは表示しない。OSの作業画面であるHome `/` は紹介ページへ置き換えない。
 
 同じページにSky Tool SDKの最小Node.jsコード例を置き、`https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio`へ直接進める。Studioのコード貼付・ファイル添付、コード本文非送信、宣言公開と検証済み公開の境界はRQ37を維持する。紹介ページの簡素化でHome、Sky、Wallet、設定、導入・復旧ガイドの実機能や既存routeを削除しない。
 
@@ -468,7 +470,7 @@ Registry APIにはSDKが生成した`sky-tool-package/1`だけを送り、handle
 
 `/rockstaros`と`/studio`は、黒を基調に酸味のある黄緑を主アクセントとする同一のRockstarOS visual systemを使う。ワードマーク、太い英字見出し、monospaceの補助表示、細い境界線、丸い主操作を共有する。Studioは説明を短くし、SDK導入コマンド、組込みコード、開発者キー発行を第一画面の主役にする。desktopとmobileの双方で、コードcopy、キー発行、MCP導入確認が読みやすく操作できる状態を維持する。
 
-外観統一のためにStudioのソース本文非送信、Packageだけの登録、失敗時の表示、宣言公開と検証済み公開の区別を変更しない。紹介ページのインストール導線、StudioからSkyへ直接戻る導線、Skyや導入案内への経路も保持する。
+外観統一のためにStudioのソース本文非送信、Packageだけの登録、失敗時の表示、宣言公開と検証済み公開の区別を変更しない。紹介ページのDeveloper Preview導入案内、StudioからSkyへ直接戻る導線、Skyや導入案内への経路も保持する。
 
 ## RQ40 RockstarOS全体のvisual systemとフロント機能性を改善する
 

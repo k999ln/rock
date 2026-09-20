@@ -944,14 +944,21 @@ export function validateBaseline(
   const launchPageSource = read(resolve(root, 'app/rockstaros/page.tsx'));
   requireValue(
     data.launchPage?.route === '/rockstaros' &&
-      data.launchPage?.primaryAction === 'install_os' &&
+      data.marketPositioning?.customerFacingFocus === 'hardware_products' &&
+      data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
+      data.marketPositioning?.avocadoMiniStage ===
+        'design_only_no_physical_prototype_or_sales' &&
+      data.launchPage?.primaryAction === 'view_avocado_mini' &&
+      data.launchPage?.secondaryAction === 'developer_preview_install_guide' &&
       data.launchPage?.publicDownloadFallback === '/rockstaros/guide#install' &&
       data.launchPage?.studioUrl ===
         'https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio' &&
-      launchPageSource.includes('OSをインストール') &&
+      launchPageSource.includes('avocadoMiniを見る') &&
+      launchPageSource.includes('実機試作・販売はまだ行っていません') &&
+      launchPageSource.includes('OS Developer Preview') &&
       launchPageSource.includes(data.launchPage.studioUrl) &&
       launchPageSource.includes('createSkyToolApp'),
-    'Developer Preview紹介のインストール・Sky開発者コード・Studio導線を維持してください',
+    'avocadoMini中心の製品紹介、未完成表示、Developer Preview・Sky開発者導線を維持してください',
   );
   const studioSource = read(resolve(root, 'components/rock-studio.tsx'));
   const homeSource = read(resolve(root, 'components/home-screen.tsx'));
