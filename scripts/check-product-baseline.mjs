@@ -938,13 +938,18 @@ export function validateBaseline(
   );
   requireValue(
     data.homeExperience.returnPolicy ===
-      'every_non_home_route_has_a_direct_home_affordance',
-    'Home以外の全画面に直接Homeへ戻る契約が必要です',
+      'os_routes_return_to_os_home_public_routes_return_to_product_home',
+    'OS内の画面と公開製品ページの戻り先を分けてください',
   );
   const launchPageSource = read(resolve(root, 'app/rockstaros/page.tsx'));
   const turntableSource = read(resolve(root, 'components/avocado-turntable.tsx'));
   requireValue(
     data.launchPage?.route === '/rockstaros' &&
+      data.launchPage?.role === 'public_avocado_mini_product_home' &&
+      data.launchPage?.osHomeRoute === '/' &&
+      data.launchPage?.installGuideRoute === '/rockstaros/guide' &&
+      data.launchPage?.directOsHomeLink === false &&
+      data.launchPage?.serviceDetailsLocation === 'os_home_after_setup' &&
       data.marketPositioning?.customerFacingFocus === 'hardware_products' &&
       data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
       data.marketPositioning?.leadHardwareForm === 'motorized_telescopic_sensor_tower_concept' &&
@@ -953,20 +958,21 @@ export function validateBaseline(
       data.launchPage?.primaryAction === 'view_avocado_mini' &&
       data.launchPage?.secondaryAction === 'developer_preview_install_guide' &&
       data.launchPage?.publicDownloadFallback === '/rockstaros/guide#install' &&
-      data.launchPage?.studioUrl ===
-        '/sky/publish' &&
-      launchPageSource.includes('avocadoMiniを見る') &&
-      launchPageSource.includes('実機試作・販売はまだ行っていません') &&
-      launchPageSource.includes('OS Developer Preview') &&
-      launchPageSource.includes(data.launchPage.studioUrl) &&
-      launchPageSource.includes('createSkyToolApp') &&
+      launchPageSource.includes('製品を見る') &&
+      launchPageSource.includes('実機の販売と一般向けOSインストーラーはまだ始まっていません') &&
+      launchPageSource.includes('OS導入ガイドを見る') &&
+      launchPageSource.includes('href="/rockstaros/guide"') &&
+      !launchPageSource.includes('href="/"') &&
+      !launchPageSource.includes('createSkyToolApp') &&
       launchPageSource.includes('<AvocadoTurntable />') &&
       turntableSource.includes('turn * Math.PI * 2') &&
+      turntableSource.includes('className={styles.designDetails}') &&
+      turntableSource.includes('className={styles.osSection}') &&
       turntableSource.includes('/rockstaros/avocado-mini-tower-concept.png') &&
       turntableSource.includes('¥410,000') &&
       turntableSource.includes('購入する') &&
       turntableSource.includes('/rockstaros/guide#install'),
-    'avocadoMini中心の製品紹介、未完成表示、Developer Preview・Sky開発者導線を維持してください',
+    'avocadoMini製品ホームとOSホームを分け、製品から導入ガイドへ進めてください',
   );
   const studioSource = read(resolve(root, 'components/rock-studio.tsx'));
   const homeSource = read(resolve(root, 'components/home-screen.tsx'));

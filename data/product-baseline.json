@@ -294,7 +294,7 @@
   "homeExperience": {
     "defaultRoute": "/",
     "skyRoute": "/sky",
-    "returnPolicy": "every_non_home_route_has_a_direct_home_affordance",
+    "returnPolicy": "os_routes_return_to_os_home_public_routes_return_to_product_home",
     "workspaceNavigation": "sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation",
     "smartphoneLayout": {
       "supportedCssWidthPx": [
@@ -336,11 +336,14 @@
   },
   "launchPage": {
     "route": "/rockstaros",
+    "role": "public_avocado_mini_product_home",
+    "osHomeRoute": "/",
+    "installGuideRoute": "/rockstaros/guide",
+    "directOsHomeLink": false,
+    "serviceDetailsLocation": "os_home_after_setup",
     "primaryAction": "view_avocado_mini",
     "secondaryAction": "developer_preview_install_guide",
     "publicDownloadFallback": "/rockstaros/guide#install",
-    "developerCode": "sky_tool_sdk_minimal_node_example",
-    "studioUrl": "/sky/publish",
     "visualDirection": "light_product_showcase_with_scroll_tower",
     "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable"
   },

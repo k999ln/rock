@@ -1,5 +1,9 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-20 — 製品ホームとOSホームの公開境界
+
+利用者は、ルート`/`をRockstarOSの利用画面、`/rockstaros`をavocadoMini製品ホームとして区別し、OS未導入者がルートへ直接入れる状態を問題とした。製品ホームからOS内部の8領域と開発者SDKの詳細を外し、OSホームへの直リンクを削除した。スクロール体験の後段も製品の寸法と参考画像、OS導入案内の順に独立した節へ分けた。OS導入ガイドへの入口は維持し、ガイドから製品ホームへ戻るようにした。これは文言と導線の整理であり、同一Site内のルートへの直接アクセスはまだ遮断できていない。製品ホームの別Site化、または検証可能な導入状態に基づく制限が残る。既存Siteへの配備も所有アカウント未接続のため未実施。
+
 ## 2026-09-20 — 伸縮式センサータワーを主役にした製品ページ
 
 利用者提供のFull-scale構想図を製品形状の基準にし、先に作った作業台の3D模型を三段伸縮の銀色センサータワーへ置き換えた。Appleの製品紹介ページを参考に、淡い背景、製品を大きく見せる固定画面、スクロール連動の360度回転、価格表示、次のOS導入画面、主な構想寸法、製品内ナビを整えた。提供画像をサイトとGitHubの主画像に使用する。従来の四方向センサーと作業台は複数タワーを使うシステム案として扱い、外観、寸法、販売の確定を主張しない。ローカルの実画面でタワー表示、スクロール360度、価格、OS導入、構想図を確認した。型・製品lint・Web build・bundleとasset検査を実施し、GitHub mainへ反映した後に同一commitのCIを確認する。
@@ -724,7 +728,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/135件
+最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/136件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -774,6 +778,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB10 | 製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](docs/product-baseline.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB11 | 製品構想モデルをスクロールで一周見せ、参考価格・購入準備中・OS導入へつなぐ | 完了 | [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](docs/product-baseline.md) |
 | WEB12 | 利用者提供の伸縮式センサータワーを製品サイトとGitHubの主役にする | 完了 | [記録](public/rockstaros/avocado-mini-tower-concept.png) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](README.md) · [記録](docs/avocado-mini-hardware-design.md) |
+| WEB13 | avocadoMini製品ホームとRockstarOS Webホームの公開境界を分ける | 進行中 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](README.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

@@ -901,6 +901,7 @@
 .productLanding .landingFooter { border-color: #cfdee2; }
 .productLanding .access { padding-top: 110px; padding-bottom: 110px; }
 .productLanding .access h2 { font-size: clamp(2.7rem, 5vw, 5rem); letter-spacing: -.06em; }
+.productLanding .accessCards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .productLanding .access p,
 .productLanding .experienceIntro > p:last-child,
 .productLanding .developerIntro > p:not(.kicker) { color: #5c737d; }
@@ -917,6 +918,7 @@
 @media (max-width: 760px) {
   .productLanding .landingHeader { width: 100%; padding: 0 20px; }
   .productLanding .access { padding: 85px 0; }
+  .productLanding .accessCards { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
   .productNav { gap: 12px; }

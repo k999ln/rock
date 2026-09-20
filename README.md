@@ -2,9 +2,9 @@
 
 **考える時間を、つくる時間に。** **avocadoMini**の表に出す製品デザインは、銀色の細い伸縮式センサータワーです。構想画像では収納時850 mmから伸長時1,800 mm、直径160 mmのベース、長押し操作を示しています。複数のタワーを組み合わせた空間発明体験と、高性能LLM搭載を目指すRockstarOSは製品の発展構想です。**希望参考価格は41万円**。販売価格・仕様・発売日は未確定で、実機試作前です。
 
-[🏠 製品・導入ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) · [📱 アプリ](https://rockstaros-kaiya.noellesugar1.chatgpt.site/) · [💿 OS導入](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) · [🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🤝 クラファン企画](docs/avocado-mini-crowdfunding.md)
+[🏠 avocadoMini製品ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) · [💿 OS導入ガイド](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) · [🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🤝 クラファン企画](docs/avocado-mini-crowdfunding.md)
 
-**RockstarOSの入口は三つです。** [製品・導入ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros)で製品を知り、OSの導入方法を確認する。[Webアプリ](https://rockstaros-kaiya.noellesugar1.chatgpt.site/)で作業する。[OS本体の導入案内](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide)で対応環境と配布状況を確認する。Sky、Zema、Wallet、Material Invention StudioなどはアプリやOSの中で使うサービスです。既存の配信先は一般閲覧できますが、最新版の配備は未反映です。
+**公開ページとOSの利用画面は別です。** [avocadoMini製品ホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros)で製品を見て、[OS導入ガイド](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide)で対応環境と配布状況を確認します。ルート`/`はSky、Zema、Walletなどを使うRockstarOSのWebホームです。未導入の訪問者を直接Webホームへ入れない公開境界は整備中で、現在の配信先にも最新版は未反映です。
 
 ## 構想ギャラリー
 
@@ -36,7 +36,7 @@ RockstarOSは、avocadoMiniの操作、権限、保存、復旧をつなぐ技�
 
 ![Skyで役割を探し、Zemaで進め、Studioで発明の候補を試すRockstarOSの紹介アニメーション。avocadoMiniは設計中。](docs/assets/rockstaros-intro.gif)
 
-**いま試せる入口:** Web版の[アプリホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/)からSky、Zema、Studioへ進む構成です。ただし、現在の配信先には最新版の製品ページが未配備です。avocadoMiniの実機とスマートフォン向け完成OSはまだ提供していません。
+**いま確認できる入口:** 製品ホームとOS導入ガイドを公開ページとして分けます。Sky、Zema、StudioはRockstarOSのWebホームにある利用画面です。現在の配信先には最新版が未配備で、未導入者のWebホームへの直接アクセス制限も未完了です。avocadoMiniの実機とスマートフォン向け完成OSはまだ提供していません。
 
 交換可能なLLMは製品を支える設計ですが、現在の実機検証は固定Qwen / llama.rn profileの試験署名Pixel APK段階です。複数モデルの交換やOS image搭載は未完了です。開発用のPixel 10は検証端末で、自社製ハードウェアとして販売する製品ではありません。[LLM・評価モデル設計](docs/llm-evaluation-architecture.md)と[能力表](data/llm-capabilities.json)に現在地を記録しています。
 
@@ -98,9 +98,9 @@ avocadoMiniはRockstarOSそのものではなく、RockstarOSを搭載してMate
 
 | 入口 | リンク |
 | --- | --- |
-| 製品紹介を兼ねるOS導入ホームページ | [RockstarOS / avocadoMini](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) |
-| OS本体の導入案内 | [Developer Previewガイド](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) |
-| Webアプリ | [アプリホーム](https://rockstaros-kaiya.noellesugar1.chatgpt.site/) |
+| avocadoMini製品ホーム | [製品紹介](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros) |
+| OS導入案内 | [Developer Previewガイド](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros/guide) |
+| RockstarOS Webホーム | ルート`/`。未導入者の直接アクセス制限を整備中のため、公開導線として案内しない |
 | アプリ・OS内のサービス | [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) · [Zema](https://rockstaros-kaiya.noellesugar1.chatgpt.site/chat) · [Wallet](https://rockstaros-kaiya.noellesugar1.chatgpt.site/wallet) · [Market](https://rockstaros-kaiya.noellesugar1.chatgpt.site/market) · [Material Invention Studio](https://rockstaros-kaiya.noellesugar1.chatgpt.site/studio) |
 
 OSの実機向け完成版やavocadoMiniの実機はまだ配布していません。上のOSガイドはDeveloper Previewの案内です。
@@ -212,7 +212,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-19 / 135 task中91 done・27 in progress・16 planned・1 blocked
+更新日: 2026-09-19 / 136 task中91 done・28 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -380,7 +380,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 [前日の実装・検証・未達の記録](docs/implementation-checkpoint-20260909.md)を履歴として保持しています。現在のGX00は実TLSで複数owner/game分離の必須受入を通過し、GX01の署名quote・別購入承認・両台帳とnative UIを統合しました。SDK・Game profile・停止/復旧と実OSの限定受入は[最新記録](docs/release-followup-20260910.md)に保存済みで、本番ゲームや実資金には接続していません。
 
-製品紹介はローカル`/rockstaros`に集約し、avocadoMiniの構想を最初に示します。同じページにOS Developer Previewの導入案内、Sky Tool SDKの最小コード例、本人限定Siteの`/studio`導線を置いています。[導入・初回実行・復旧ガイド](docs/preview-installation-ja.md)と[既知制限](docs/preview-release-notes.md)は`/rockstaros/guide`から確認できます。ダウンロード一般公開は正式署名・許諾・最終配布受入と公開承認待ちです。
+製品紹介は`/rockstaros`に集約し、avocadoMiniの構想を最初に示します。OSの詳しい導入手順は`/rockstaros/guide`へ分け、Sky Tool SDKとStudioなどのサービスはRockstarOS側に置きます。[導入・初回実行・復旧ガイド](docs/preview-installation-ja.md)と[既知制限](docs/preview-release-notes.md)から現在の制限を確認できます。ダウンロード一般公開は正式署名・許諾・最終配布受入と公開承認待ちです。
 
 正本リポジトリ: [k999ln/rock](https://github.com/k999ln/rock)。旧ローカル作業名は `gg`。現在はGitHub `main` と実在する対象作業branchの最新SHAを再開基準とし、削除済みの旧branchやSSD上の旧checkoutを最新と仮定しません。製品は`RockstarOS`の1つとし、非公開の`k999ln/Mr.`はTelegram・クラウド運用component、`vvvv`は旧履歴として扱います。役割と重複の整理は [Gitプロジェクト統合方針](docs/git-consolidation.md)、事業方針・設計・次の作業は [project.md](project.md)、4つの参考元の採用判断は [参照記録](docs/reference-repositories.md) にまとめます。
 
@@ -394,11 +394,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>135 taskと段階gateの詳細を開く</summary>
+<summary>136 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/135件
+最終更新: 2026-09-19 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/136件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -448,6 +448,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | WEB10 | 製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](docs/product-baseline.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB11 | 製品構想モデルをスクロールで一周見せ、参考価格・購入準備中・OS導入へつなぐ | 完了 | [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](docs/product-baseline.md) |
 | WEB12 | 利用者提供の伸縮式センサータワーを製品サイトとGitHubの主役にする | 完了 | [記録](public/rockstaros/avocado-mini-tower-concept.png) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](README.md) · [記録](docs/avocado-mini-hardware-design.md) |
+| WEB13 | avocadoMini製品ホームとRockstarOS Webホームの公開境界を分ける | 進行中 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](README.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

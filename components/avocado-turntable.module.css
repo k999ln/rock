@@ -27,10 +27,13 @@
 .pricePanel button span { font-size: 11px; margin-left: 8px; }
 .pricePanel > a { color: #176d86; }
 .pricePanel small, .osSection small { display: block; color: #667c84; font-size: 11px; line-height: 1.6; }
-.osSection { display: grid; grid-template-columns: minmax(320px, .85fr) minmax(400px, 1.15fr); gap: clamp(30px, 5vw, 100px); align-items: center; min-height: 100svh; padding: 110px clamp(24px, 6vw, 100px); background: #e8f0ed; color: #0b1a20; }
+.designDetails { display: grid; grid-template-columns: minmax(320px, .85fr) minmax(400px, 1.15fr); gap: clamp(30px, 5vw, 100px); align-items: center; min-height: 100svh; padding: 110px clamp(24px, 6vw, 100px); background: #e8f0ed; color: #0b1a20; }
+.designDetails .eyebrow { color: #207887; }
+.designDetails h2, .osSection h2 { font-size: clamp(42px, 5vw, 76px); line-height: 1.12; letter-spacing: -.06em; margin: 20px 0; }
+.designDetails > div > p:not(.eyebrow), .osSection > div > p:not(.eyebrow) { max-width: 500px; color: #43545a; font-size: 17px; line-height: 1.8; }
+.osSection { display: flex; align-items: center; justify-content: center; min-height: 75svh; padding: 100px 24px; background: #f7fafb; color: #0b1a20; text-align: center; }
+.osSection > div { display: flex; align-items: center; flex-direction: column; }
 .osSection .eyebrow { color: #207887; }
-.osSection h2 { font-size: clamp(42px, 5vw, 76px); line-height: 1.12; letter-spacing: -.06em; margin: 20px 0; }
-.osSection > div > p:not(.eyebrow) { max-width: 500px; color: #43545a; font-size: 17px; line-height: 1.8; }
 .osButton { display: inline-flex; align-items: center; justify-content: space-between; gap: 75px; margin: 32px 0 15px; padding: 19px 23px; min-width: 290px; background: #071b20; color: white; font-weight: 750; text-decoration: none; transition: background .2s, transform .2s; }
 .osButton:hover { background: #156473; transform: translateY(-3px); }
 .osSection small { color: #5b6c70; max-width: 420px; }
@@ -39,10 +42,10 @@
 .specs strong { display: block; font-size: clamp(17px, 2vw, 26px); letter-spacing: -.05em; white-space: nowrap; }
 .specs strong span { font-size: .55em; letter-spacing: 0; }
 .specs small { margin-top: 5px; font-size: 10px; }
-.osSection .controlNote { margin-top: 18px; color: #617983; font-size: 13px; }
+.designDetails .controlNote { margin-top: 18px; color: #617983; font-size: 13px; }
 .conceptImage { margin: 0; }
 .conceptImage img { display: block; width: 100%; height: auto; box-shadow: 0 32px 80px #162c3130; }
 .conceptImage figcaption { padding-top: 12px; color: #586a6d; font-size: 11px; line-height: 1.5; }
-@media (max-width: 750px) { .story { height: 330svh; } .sticky { min-height: 550px; } .heading { top: 86px; right: 20px; } .heading h1 { font-size: clamp(42px, 9vw, 56px); } .heading > p:last-child { max-width: 260px; } .viewport { inset: 18% 0 8%; } .bottomBar { grid-template-columns: auto 1fr; gap: 8px 16px; bottom: 24px; } .bottomBar p { grid-column: 1 / -1; margin: 0; } .pricePanel { width: auto; left: 20px; right: 20px; top: auto; bottom: 88px; padding: 22px; transform: translateY(18px); } .priceVisible { transform: translateY(0); } .pricePanel h2 { margin-bottom: 14px; } .price { margin-bottom: 14px; } .osSection { grid-template-columns: 1fr; padding: 85px 24px; gap: 55px; } .specs { gap: 8px; } .specs strong { font-size: 17px; } }
+@media (max-width: 750px) { .story { height: 330svh; } .sticky { min-height: 550px; } .heading { top: 86px; right: 20px; } .heading h1 { font-size: clamp(42px, 9vw, 56px); } .heading > p:last-child { max-width: 260px; } .viewport { inset: 18% 0 8%; } .bottomBar { grid-template-columns: auto 1fr; gap: 8px 16px; bottom: 24px; } .bottomBar p { grid-column: 1 / -1; margin: 0; } .pricePanel { width: auto; left: 20px; right: 20px; top: auto; bottom: 88px; padding: 22px; transform: translateY(18px); } .priceVisible { transform: translateY(0); } .pricePanel h2 { margin-bottom: 14px; } .price { margin-bottom: 14px; } .designDetails { grid-template-columns: 1fr; padding: 85px 24px; gap: 55px; } .osSection { padding: 85px 24px; } .specs { gap: 8px; } .specs strong { font-size: 17px; } }
 @media (min-width: 501px) and (max-width: 750px) { .pricePanel { width: 280px; right: auto; } }
 @media (prefers-reduced-motion: reduce) { .pricePanel, .progressTrack div, .osButton { transition: none; } }

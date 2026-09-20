@@ -211,13 +211,11 @@ export function AvocadoTurntable() {
         </div>
       </div>
     </section>
-    <section className={styles.osSection} aria-labelledby="os-install-title">
+    <section className={styles.designDetails} aria-labelledby="design-details-title">
       <div>
-        <p className={styles.eyebrow}>NEXT / ROCKSTAROS</p>
-        <h2 id="os-install-title">発明の続きを、OSで。</h2>
-        <p>高性能LLMの搭載を目指すRockstarOSで、作業をスムーズに。Skyで道具を選び、Zemaで仕事を進める。Developer Previewで、導入できる環境と現在の配布状況を確認できます。</p>
-        <Link className={styles.osButton} href="/rockstaros/guide#install">OSを入れる <span aria-hidden="true">↗</span></Link>
-        <small>現在の実機検証は固定モデルのDeveloper Previewです。正式署名済みの一般向けインストーラーは未公開です。</small>
+        <p className={styles.eyebrow}>AVOCADOMINI / DESIGN STUDY</p>
+        <h2 id="design-details-title">一本に、機能を収める。</h2>
+        <p>使うときに伸ばし、使い終えたら収める。avocadoMiniは、細い三段のセンサータワーと小さなベースを持つ製品構想です。</p>
         <div className={styles.specs} aria-label="製品構想の主な寸法">
           <p><strong>850 → 1,800 <span>mm</span></strong><small>収納時 → 伸長時</small></p>
           <p><strong>Ø160 <span>mm</span></strong><small>ベースの構想寸法</small></p>
@@ -229,6 +227,15 @@ export function AvocadoTurntable() {
         <Image src="/rockstaros/avocado-mini-tower-concept.png" alt="avocadoMiniの伸縮式センサータワー、ボタン、内部構造を示す構想参考画像" width={1672} height={941} loading="lazy" />
         <figcaption>構想参考画像。回転表示は設計イメージで、製造図や実機映像ではありません。</figcaption>
       </figure>
+    </section>
+    <section className={styles.osSection} aria-labelledby="os-install-title">
+      <div>
+        <p className={styles.eyebrow}>NEXT / ROCKSTAROS</p>
+        <h2 id="os-install-title">RockstarOSを知る。</h2>
+        <p>製品の先にあるOSの導入条件と現在の配布状況は、専用ガイドで確認できます。</p>
+        <Link className={styles.osButton} href="/rockstaros/guide#install">OSを入れる <span aria-hidden="true">↗</span></Link>
+        <small>現在はDeveloper Previewの案内です。正式署名済みの一般向けインストーラーは未公開です。</small>
+      </div>
     </section>
   </>;
 }

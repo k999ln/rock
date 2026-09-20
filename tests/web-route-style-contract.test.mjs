@@ -195,7 +195,7 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.match(activityRoute, /redirect\('\/chat\?view=work'\)/);
 });
 
-void test('every non-home route family keeps a direct home affordance', () => {
+void test('routes inside the OS keep a direct OS home affordance', () => {
   const contracts = [
     [
       'workspace shell',
@@ -228,16 +228,6 @@ void test('every non-home route family keeps a direct home affordance', () => {
       /<Link href="\/">⌂ ホーム<\/Link>/,
     ],
     [
-      'developer preview',
-      'app/rockstaros/page.tsx',
-      /<Link href="\/" className=\{styles\.brand\} aria-label="ホームへ戻る"/,
-    ],
-    [
-      'preview guide',
-      'app/rockstaros/guide/page.tsx',
-      /<Link href="\/" className=\{styles\.brand\} aria-label="ホームへ戻る"/,
-    ],
-    [
       'rock studio',
       'components/rock-studio.tsx',
       /<Link href="\/" className="studio-wordmark" aria-label="ホームへ戻る"/,
@@ -247,4 +237,12 @@ void test('every non-home route family keeps a direct home affordance', () => {
     const source = readFileSync(resolve(root, path), 'utf8');
     assert.match(source, pattern, `${name} lost its direct Home route`);
   }
+});
+
+void test('public product and install guide stay outside the OS home', () => {
+  const product = readFileSync(resolve(root, 'app/rockstaros/page.tsx'), 'utf8');
+  const guide = readFileSync(resolve(root, 'app/rockstaros/guide/page.tsx'), 'utf8');
+  assert.doesNotMatch(product, /href="\/"/);
+  assert.match(product, /href="\/rockstaros\/guide"/);
+  assert.match(guide, /<Link href="\/rockstaros" className=\{styles\.brand\} aria-label="製品ホームへ戻る"/);
 });
