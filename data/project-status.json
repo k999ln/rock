@@ -619,7 +619,7 @@
     },
     {
       "id": "WEB05",
-      "title": "avocadoMiniの製品紹介全体をセンサー演出のデザインへ統一",
+      "title": "avocadoMiniの製品紹介を黒い製品写真のデザインへ統一",
       "status": "done",
       "dependsOn": [
         "MAT04",
