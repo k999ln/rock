@@ -656,6 +656,7 @@
       ],
       "evidence": [
         "README.md",
+        "docs/assets/rockstaros-intro.gif",
         "app/rockstaros/page.tsx",
         "app/rockstaros/preview.module.css",
         "docs/product-baseline.md",

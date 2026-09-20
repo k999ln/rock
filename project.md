@@ -1,5 +1,9 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-19 — GitHub冒頭に製品紹介GIFを追加
+
+READMEのタイトル直下に、Skyで探す、Zemaで進める、Studioで試す流れを示すアニメーションGIFを追加した。avocadoMiniは設計中と明記し、実機が完成しているようには見せない。GIFは960×360、27フレーム、3.6秒でループする。`project:check`と`baseline:check`は合格。`verify`は既存のNode全体試験で出力が止まり中断したため、全体合格とは扱わない。次はGitHubの`main`へ反映し、README上の表示と同一commitのCIを確認する。
+
 ## 2026-09-19 — 既存Webサイトの一般公開とバックエンド受入を依頼
 
 利用者は既存の`rockstaros-kaiya.noellesugar1.chatgpt.site`を一般公開し、バックエンドも実際に動くよう依頼した。Sites所有アカウントへの接続を選択した。現在の接続では対象projectが`project_not_found`で、匿名HTTPは製品紹介・公開Registryとも401だった。公開設定変更、配備、D1本番readbackは未実施。コード側では公開・匿名で使える`/api/health`を追加し、Worker／D1の主要tableを照合する。システム診断は認証401だけでAPI正常と判定しない。本人別保存・Wallet・開発者操作はChatGPTサインインを維持し、各画面のサインインリンクをSitesの最上位遷移へ統一する。ローカル合成利用者のWorker／D1 API試験は149 assertionで合格済みだが、本番サイトの成功証拠ではない。共有`node_modules`の実パスをWeb bundle台帳へ正しく対応させ、build、bundle 122 component、asset 78参照（欠落0）の検査に成功した。次は所有アカウントへ接続して既存配信sourceとDB履歴を照合し、同一commit配備、公開設定変更、匿名と認証後の実応答を確認する。自作部分の製品license条件は未確定として別gateに残す。
@@ -729,7 +733,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
 | WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
-| WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
+| WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |
