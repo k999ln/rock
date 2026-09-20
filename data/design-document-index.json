@@ -171,6 +171,7 @@
     { "id": "rockstar-markets-analysis", "catalogStatus": "ready" },
     { "id": "mercari-revenue", "catalogStatus": "ready" },
     { "id": "fashion-brand-ops", "catalogStatus": "ready" },
+    { "id": "rockstar-ip-studio", "catalogStatus": "candidate" },
     { "id": "coconala", "catalogStatus": "ready" },
     { "id": "mr-free-article", "catalogStatus": "ready" },
     { "id": "mr-citations", "catalogStatus": "ready" },
