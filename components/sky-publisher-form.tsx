@@ -2,6 +2,7 @@
 
 import { useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import {
   ArrowLeft,
   CheckCircle2,
@@ -17,6 +18,7 @@ import type {
   SkyPricing,
 } from '@/lib/sky-submission';
 import type { McpInspection } from '@/lib/mcp-inspection';
+import { parseProductHuntUrl } from '@/lib/producthunt';
 
 const targets: { value: SkyExecutionTarget; label: string }[] = [
   { value: 'device_local', label: 'RockstarOS端末内' },
@@ -38,6 +40,11 @@ export default function SkyPublisherForm({
 }: {
   embedded?: boolean;
 }) {
+  const searchParams = useSearchParams();
+  const importedProductUrl = parseProductHuntUrl(
+    searchParams.get('productUrl') ?? '',
+  );
+  const fromProductHunt = searchParams.get('source') === 'producthunt' && !!importedProductUrl;
   const [connectionType, setConnectionType] = useState<SkyConnectionType>(
     'mcp_streamable_http',
   );
@@ -172,6 +179,17 @@ export default function SkyPublisherForm({
           </Link>
         )}
       </div>
+      {fromProductHunt && (
+        <div className="sky-producthunt-import sky-producthunt-import-banner">
+          <strong>Product Huntから引き継ぎ中</strong>
+          <span>
+            掲載元URLをセットしました。提供者、接続先、ライセンス、権限を確認してから申請してください。
+          </span>
+          <a href={importedProductUrl} target="_blank" rel="noreferrer">
+            Product Huntで元ページを確認
+          </a>
+        </div>
+      )}
       <div className="sky-publish-layout">
         <form className="sky-publish-form" onSubmit={submit}>
           <Link href="/studio" className="rock-button rock-button-subtle">
@@ -318,6 +336,7 @@ export default function SkyPublisherForm({
                 name="sourceUrl"
                 required={needsSource}
                 type="url"
+                defaultValue={importedProductUrl ?? undefined}
                 placeholder="https://github.com/… または package URL"
               />
               <small>

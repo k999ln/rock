@@ -236,6 +236,7 @@ export default function SkyChatWorkspace() {
   const [recentThreads, setRecentThreads] = useState<ZemaChatSession[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [historyQuery, setHistoryQuery] = useState('');
+  const [allBotsOpen, setAllBotsOpen] = useState(false);
   const [outcome, setOutcome] = useState<{ ok: boolean; text: string } | null>(null);
   const [chatLoading, setChatLoading] = useState(false);
   const [remoteConsent, setRemoteConsent] = useState(false);
@@ -497,6 +498,13 @@ export default function SkyChatWorkspace() {
     const query = historyQuery.trim().toLocaleLowerCase('ja-JP');
     return !query || `${roleFor(tool)} ${tool.name}`.toLocaleLowerCase('ja-JP').includes(query);
   });
+  const compactBotApps = visibleBotApps.slice(0, 4);
+  const selectedBotApp = visibleBotApps.find((tool) => tool.id === selectedToolId);
+  const sidebarBotApps = historyQuery.trim() || allBotsOpen
+    ? visibleBotApps
+    : selectedBotApp && !compactBotApps.some((tool) => tool.id === selectedBotApp.id)
+      ? [selectedBotApp, ...compactBotApps]
+      : compactBotApps;
   useEffect(() => {
     if (loading || workView) return;
     const frame = window.requestAnimationFrame(() => {
@@ -815,8 +823,10 @@ export default function SkyChatWorkspace() {
       }).catch((reason) => {
         if (controller.signal.aborted) return;
         const code = reason instanceof Error ? reason.message : '';
-        const detail = code === 'LOCAL_LLM_BRIDGE_REQUIRED'
-          ? 'Local Action Assistantの接続が未接続です。Ollama・LM Studio・llama.cppなどのローカルブリッジを起動して接続してください。Cloudへはフォールバックしません。'
+        const detail = textProvider === 'local-model'
+          ? code === 'LOCAL_LLM_BRIDGE_REQUIRED'
+            ? 'Local Action Assistantの接続が未接続です。Ollama・LM Studio・llama.cppなどのローカルブリッジを起動して接続してください。Cloudへはフォールバックしません。'
+            : 'Local LLMブリッジに接続できませんでした。設定したループバックURLのサーバーを起動してください。Cloudへはフォールバックしません。'
           : code === 'REMOTE_LLM_DISABLED'
             ? '外部モデルはサーバー側で無効です。Skyの接続管理とサーバー設定を確認してください。'
             : code === 'MISSING_PROVIDER_CREDENTIAL' || code === 'MISSING_PROVIDER_ENDPOINT'
@@ -891,7 +901,7 @@ export default function SkyChatWorkspace() {
           <label className="zema-history-search"><span className="sr-only">Botを検索</span><input value={historyQuery} onChange={(event) => setHistoryQuery(event.target.value)} placeholder="検索" /></label>
           <div className="zema-sidebar-section-title">BOTS</div>
           <div className="zema-bot-list">
-            {visibleBotApps.map((tool) => {
+            {sidebarBotApps.map((tool) => {
               const latest = jobs.find((job) => job.tool === tool.id);
               return (
                 <button
@@ -931,6 +941,11 @@ export default function SkyChatWorkspace() {
               </button>
             ))}
           </div>
+          {!historyQuery.trim() && visibleBotApps.length > 4 && (
+            <button type="button" className="zema-bot-show-all" aria-expanded={allBotsOpen} onClick={() => setAllBotsOpen((open) => !open)}>
+              {allBotsOpen ? 'Botを少なく表示' : `すべてのBotを見る (${visibleBotApps.length})`}
+            </button>
+          )}
           <div className="zema-sidebar-section-title">THREADS</div>
           <div className="zema-history-list">
             {visibleThreads.length === 0 ? <p className="zema-history-empty">会話はまだありません</p> : visibleThreads.map((session) => {

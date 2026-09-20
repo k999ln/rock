@@ -76,6 +76,19 @@ import { skyToolLabelFor } from '@/lib/sky-tool-labels';
 type FeedFilter = 'おすすめ' | '今使える' | '導入候補';
 
 const feedFilters: FeedFilter[] = ['おすすめ', '今使える', '導入候補'];
+const recommendedToolIds = new Set([
+  'rockstar-csv-cleanup',
+  'coconala',
+  'mr-free-article',
+  'mr-citations',
+  'fashion-brand-ops',
+]);
+const quickRoleIds = new Set([
+  'rockstar-csv-cleanup',
+  'coconala',
+  'mr-free-article',
+  'mr-citations',
+]);
 const icons: Record<string, LucideIcon> = {
   'rockstar-csv-cleanup': Table2,
   'mercari-revenue': ShoppingBag,
@@ -269,6 +282,7 @@ export default function SkyWorkspace({
   const [deviceOpen, setDeviceOpen] = useState(false);
   const [running, setRunning] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [allRolesOpen, setAllRolesOpen] = useState(false);
   const [mcpOpen, setMcpOpen] = useState(initialMcpOpen);
   const [connectionCenterOpen, setConnectionCenterOpen] = useState(false);
   const [publishOpen, setPublishOpen] = useState(initialPublishOpen);
@@ -358,8 +372,10 @@ export default function SkyWorkspace({
   }, [setNeedsSignin]);
 
   const visibleTools = catalog.filter((tool) => {
+    const searching = Boolean(query.trim());
     const matchesFilter =
-      filter === 'おすすめ' ||
+      searching ||
+      (filter === 'おすすめ' && recommendedToolIds.has(tool.id)) ||
       (filter === '今使える' && tool.status === 'ready') ||
       (filter === '導入候補' && tool.status === 'candidate');
     const provider = providerFor(tool);
@@ -497,9 +513,7 @@ export default function SkyWorkspace({
     if (role) {
       const tool = catalog.find((item) => item.id === role.toolId);
       if (tool) {
-        chooseRole(tool, request);
-        if (connectedTools.includes(tool.id) || Boolean(tool.launchPath))
-          primaryAction(tool, request);
+        openRole(tool, request);
       }
       return;
     }
@@ -518,24 +532,6 @@ export default function SkyWorkspace({
     >
       <div className="sky-feed-layout">
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
-          <SkyMcpCenter
-            open={mcpOpen}
-            connected={connected}
-            onOpenChange={setMcpOpen}
-            onOpenDevice={() => setDeviceOpen(true)}
-          />
-          <SkyActivationPanel />
-          <button
-            className="sky-connection-quick-open"
-            onClick={() => setConnectionCenterOpen(true)}
-          >
-            <Link2 size={17} />
-            <span>
-              <strong>サービス接続を登録</strong>
-              <small>Instagram、YouTube、Higgsfield、Make、ゲーム導入先を一度だけ設定</small>
-            </span>
-            <ArrowRight size={16} />
-          </button>
           <section
             className="sky-assistant"
             aria-labelledby="sky-assistant-title"
@@ -564,7 +560,7 @@ export default function SkyWorkspace({
                 </button>
               </form>
               <div className="sky-role-list" aria-label="Skyの役割">
-                {skyRoles.map((role) => {
+                {skyRoles.filter((role) => allRolesOpen || quickRoleIds.has(role.toolId)).map((role) => {
                   const tool = catalog.find((item) => item.id === role.toolId)!;
                   return (
                     <button
@@ -575,6 +571,9 @@ export default function SkyWorkspace({
                     </button>
                   );
                 })}
+                <button type="button" aria-expanded={allRolesOpen} onClick={() => setAllRolesOpen((open) => !open)}>
+                  {allRolesOpen ? '少なく表示' : '他の役割を見る'}
+                </button>
               </div>
               {routeMessage && (
                 <output className="sky-route-reply">
@@ -596,17 +595,6 @@ export default function SkyWorkspace({
                   )}
                 </output>
               )}
-            </div>
-          </section>
-
-          <section className="sky-usage-path" aria-label="Skyから使う流れ">
-            <p className="sky-usage-path-title">Skyから使う流れ</p>
-            <div className="sky-usage-path-steps">
-              <div><b>1</b><span><strong>目的を入力</strong><small>「CSVを整えて」など</small></span></div>
-              <ArrowRight size={15} aria-hidden="true" />
-              <div><b>2</b><span><strong>担当を確認</strong><small>権限・接続・料金を見る</small></span></div>
-              <ArrowRight size={15} aria-hidden="true" />
-              <div><b>3</b><span><strong>Zemaで進める</strong><small>依頼・実行・結果を管理</small></span></div>
             </div>
           </section>
 
@@ -824,11 +812,18 @@ export default function SkyWorkspace({
                     setFilter('おすすめ');
                   }}
                 >
-                  すべて表示
+                  おすすめに戻る
                 </button>
               </div>
             )}
           </div>
+          <SkyMcpCenter
+            open={mcpOpen}
+            connected={connected}
+            onOpenChange={setMcpOpen}
+            onOpenDevice={() => setDeviceOpen(true)}
+          />
+          <SkyActivationPanel />
         </section>
       </div>
 

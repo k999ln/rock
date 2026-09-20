@@ -12,6 +12,7 @@ import {
 import type { JobTool } from '@/lib/operations';
 import type { RunRecorder } from '@/lib/device';
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
+import { parseProductHuntUrl } from '@/lib/producthunt';
 
 const samples: Record<string, string> = {
   'coconala-proposal-draft':
@@ -94,7 +95,22 @@ export function SkyCandidateRunner({
   const [copied, setCopied] = useState(false);
   const [running, setRunning] = useState(false);
   const [sampleInput, setSampleInput] = useState(true);
+  const [productHuntUrl, setProductHuntUrl] = useState('');
+  const [productHuntError, setProductHuntError] = useState('');
   const { needsSignin, setNeedsSignin } = useExecutionAccess();
+
+  function openProductHuntImport() {
+    const normalized = parseProductHuntUrl(productHuntUrl);
+    if (!normalized) {
+      setProductHuntError(
+        'Product Huntの公開ページURLを入力してください（例: https://www.producthunt.com/posts/example）。',
+      );
+      return;
+    }
+    window.location.assign(
+      `/sky/publish?source=producthunt&productUrl=${encodeURIComponent(normalized)}`,
+    );
+  }
 
   async function run() {
     if (running || executionDisabled || needsSignin) return;
@@ -198,6 +214,34 @@ export function SkyCandidateRunner({
         </button>
         {error && <p className="bench-error" role="alert">{error}</p>}
       </fieldset>
+      {tool === 'producthunt-discovery' && (
+        <section className="sky-producthunt-import" aria-labelledby="sky-producthunt-import-title">
+          <div>
+            <p className="sky-tool-eyebrow">PRODUCT HUNT → SKY</p>
+            <h3 id="sky-producthunt-import-title">見つけたツールをSkyへ登録</h3>
+            <p>
+              Product Huntの公開ページURLを引き継ぎ、提供者・接続先・権限を確認する掲載申請を作ります。自動公開や勝手な接続はしません。
+            </p>
+          </div>
+          <label className="bench-field" htmlFor="sky-producthunt-url">
+            Product Hunt URL
+            <input
+              id="sky-producthunt-url"
+              type="url"
+              value={productHuntUrl}
+              onChange={(event) => {
+                setProductHuntUrl(event.target.value);
+                setProductHuntError('');
+              }}
+              placeholder="https://www.producthunt.com/posts/..."
+            />
+          </label>
+          {productHuntError && <p className="sky-form-error">{productHuntError}</p>}
+          <button type="button" className="black-button" onClick={openProductHuntImport}>
+            掲載申請を作る
+          </button>
+        </section>
+      )}
       {output && (
         <div className="bench-output" aria-live="polite">
           <div className="bench-heading">
