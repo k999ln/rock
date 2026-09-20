@@ -1,5 +1,9 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-20 — Zemaの会話欄の崩れと新規会話を修正
+
+利用者のスクリーンショットで、Bot欄を開くと会話・入力欄に旧レイアウトの左余白270pxが重複し、入力欄が約173pxへ縮む問題を確認した。重複余白を除き、Bot欄を開いた約794px幅の実ブラウザーで入力欄526px、閉じた状態で746pxを確認。未使用画面の依頼例を見やすくし、直接`/chat`を開いたときは自動担当の新規会話を表示する。候補Botが先に選ばれる挙動を解消した。「新しい会話」は同じURLでも会話と入力をリセットする。Bot選択、Bot欄の開閉、新規会話、依頼例を実ブラウザーで確認。`npm run verify`は製品試験349件、Fashion 19件、仕事API149項目とbuildを含めて合格。外部Tool実行の成功をこの画面修正の証拠には算入しない。
+
 ## 2026-09-20 — SkyとZemaの初期画面を使いやすく整理
 
 Skyの初期画面で依頼欄を先頭にし、その下におすすめ5件を表示。ready全件、導入候補22件はタブで分け、検索では全Toolを探せる。役割の近道は4件に絞り、残りは展開できる。依頼を送った時は、未接続Toolなら接続確認へすぐ進む。ZemaのBot一覧は4件と選択中のBotを基本表示とし、全件展開と検索を残した。localhost:3001のSkyで表示件数、候補検索、自然文から接続確認を操作確認。Zemaは未サインイン画面まで確認し、サインイン後のBot展開操作は次の受入に残す。`npm run verify`は製品自動試験349件、Fashion 19件、仕事API149項目、buildを含めて合格。外部Providerや候補Tool本体の成功には算入しない。
@@ -805,7 +809,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY10 | Skyをアプリ選択と接続へ絞り、Chatを依頼・状況・結果の受取画面として分離 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/workspace-shell.tsx) · [記録](app/chat/page.tsx) · [記録](app/polymarket/page.tsx) · [記録](docs/workstreams/01-product-ux.md) · [記録](README.md) |
 | SKY11 | MCP掲載前診断とPC接続の互換性・初回導線を改善 | 完了 | [記録](lib/mcp-inspection.ts) · [記録](app/api/sky/mcp/inspect/route.ts) · [記録](lib/device.ts) · [記録](components/sky-publisher-form.tsx) · [記録](components/device-connection.tsx) · [記録](tests/mcp-inspection.test.mjs) · [記録](tests/device-lifecycle.test.mjs) |
 | SKY12 | ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](docs/sky-identity-connection.md) |
-| SKY13 | GrokをモチーフにChatの表示・入力を改善し、依頼から実行・結果までを会話内へ統合 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](lib/operations.ts) · [記録](tests/operations.test.mjs) · [記録](docs/chat-usability-20260912.md) |
+| SKY13 | GrokをモチーフにChatの表示・入力を改善し、依頼から実行・結果までを会話内へ統合 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](lib/operations.ts) · [記録](tests/operations.test.mjs) · [記録](docs/chat-usability-20260912.md) · [記録](docs/workstreams/01-product-ux.md) |
 | SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](docs/chat-mcp-control-room-20260913.md) |
 | SKY15 | Sky SDKコードを既存ツールへ追加し、起動時にPackage登録・MCP公開・利用記録まで行うStudioを実装 | 完了 | [記録](components/rock-studio.tsx) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](app/studio/page.tsx) · [記録](app/sky/publish/page.tsx) · [記録](tests/sky-code-intake.test.mjs) · [記録](tests/sky-studio-chat.test.mjs) · [記録](docs/sky-tool-sdk.md) |
 | SKY16 | SkyのTool選択と自然文依頼をZemaへ一回引き継ぎ、job状態を即時同期 | 完了 | [記録](lib/sky-zema-handoff.ts) · [記録](lib/operations-client.ts) · [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/chat-live-progress.tsx) · [記録](tests/sky-zema-handoff.test.mjs) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/sky.md) |

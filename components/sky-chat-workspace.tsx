@@ -273,10 +273,7 @@ export default function SkyChatWorkspace() {
         const nextRouting = { ...providerRoutingDefaults, ...routing?.config };
         providerRoutingRef.current = nextRouting;
         setProviderRouting(nextRouting);
-        const initialTool = preferred ?? [...ids]
-          .map((id) => catalog.find((tool) => tool.id === id))
-          .find((tool) => tool)?.id ?? AUTO_MODE;
-        setSelectedToolId(initialTool);
+        setSelectedToolId(preferred ?? AUTO_MODE);
       })
       .catch((reason) => {
         if (!active) return;
@@ -498,7 +495,10 @@ export default function SkyChatWorkspace() {
     const query = historyQuery.trim().toLocaleLowerCase('ja-JP');
     return !query || `${roleFor(tool)} ${tool.name}`.toLocaleLowerCase('ja-JP').includes(query);
   });
-  const compactBotApps = visibleBotApps.slice(0, 4);
+  const compactBotApps = [
+    ...visibleBotApps.filter((tool) => tool.status === 'ready'),
+    ...visibleBotApps.filter((tool) => tool.status !== 'ready'),
+  ].slice(0, 4);
   const selectedBotApp = visibleBotApps.find((tool) => tool.id === selectedToolId);
   const sidebarBotApps = historyQuery.trim() || allBotsOpen
     ? visibleBotApps
@@ -580,23 +580,6 @@ export default function SkyChatWorkspace() {
   }, [loading, preferredTool, requestedThreadId, workView]);
 
   useEffect(() => {
-    if (loading || workView || preferredTool || requestedThreadId || messages.length > 0)
-      return;
-    const firstTool = modeApps[0];
-    if (!firstTool) return;
-    const frame = window.requestAnimationFrame(() => {
-      setSelectedToolId((current) => current === AUTO_MODE ? firstTool.id : current);
-      setMessages([{
-        id: `welcome-${firstTool.id}`,
-        side: 'sky',
-        text: `${firstTool.name}のBotです。Skyから連携された機能を担当します。依頼内容を入力すると、${textProviderDefinition.name}で確認してから実行画面へ進みます。`,
-        tool: firstTool.id,
-      }]);
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [loading, modeApps, preferredTool, requestedThreadId, workView, messages.length, textProviderDefinition.name]);
-
-  useEffect(() => {
     if (!sessionReady || !threadId || threadId !== requestedThreadId || !threadCreatedAt) return;
     try {
       const sessions = saveZemaChatSession({
@@ -664,6 +647,26 @@ export default function SkyChatWorkspace() {
     setActiveRequest(null);
     setOutcome(null);
     setWorkflowStatus('ready');
+  }
+
+  function startNewChat() {
+    chatAbortRef.current?.abort();
+    chatAbortRef.current = null;
+    setChatLoading(false);
+    setSelectedToolId(AUTO_MODE);
+    setDraft('');
+    setMessages([]);
+    setActiveRequest(null);
+    setRequestStartedAt(0);
+    setWorkflowStatus('ready');
+    setOutcome(null);
+    setError('');
+    setRemoteConsent(false);
+    setThreadId('');
+    setThreadCreatedAt(0);
+    setSessionReady(false);
+    setSidebarOpen(false);
+    lastProgressRef.current = '';
   }
 
   function changeProviderRoute(field: string, value: string) {
@@ -897,7 +900,7 @@ export default function SkyChatWorkspace() {
             <span className="zema-sidebar-brand" aria-hidden="true">Z</span>
             <button type="button" className="zema-sidebar-close" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)}><PanelLeft size={18} /></button>
           </div>
-          <Link className="zema-new-chat" href="/chat" onClick={() => setSidebarOpen(false)}><Plus size={17} /> <span>新しい会話</span></Link>
+          <Link className="zema-new-chat" href="/chat" onClick={startNewChat}><Plus size={17} /> <span>新しい会話</span></Link>
           <label className="zema-history-search"><span className="sr-only">Botを検索</span><input value={historyQuery} onChange={(event) => setHistoryQuery(event.target.value)} placeholder="検索" /></label>
           <div className="zema-sidebar-section-title">BOTS</div>
           <div className="zema-bot-list">

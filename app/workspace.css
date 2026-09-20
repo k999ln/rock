@@ -11631,12 +11631,6 @@
   color: #171c17;
   background: #f5f7f2;
 }
-.zema-grok-shell:not(.is-sidebar-collapsed) .sky-chat-commandbar,
-.zema-grok-shell:not(.is-sidebar-collapsed) .sky-chat-mode-row,
-.zema-grok-shell:not(.is-sidebar-collapsed) .sky-chat-messages,
-.zema-grok-shell:not(.is-sidebar-collapsed) .sky-chat-composer {
-  padding-left: 270px;
-}
 .zema-sidebar-top,
 .zema-sidebar-bottom,
 .zema-sidebar-section-title,
@@ -11792,12 +11786,10 @@
   background: #000;
 }
 .sky-chat-page .sky-chat-messages {
-  padding-left: 300px;
-  padding-right: clamp(24px, 9vw, 120px);
+  padding-inline: clamp(18px, 3vw, 40px);
 }
 .sky-chat-page .sky-chat-composer {
-  padding-left: 300px;
-  padding-right: clamp(24px, 9vw, 120px);
+  padding-inline: clamp(18px, 3vw, 40px);
   border-color: #2f3336;
 }
 .sky-chat-page .sky-chat-composer-box {
@@ -11872,7 +11864,7 @@
    overlaps the composer or the selected Bot conversation. */
 .sky-chat-page .zema-grok-shell {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-columns: clamp(220px, 24vw, 260px) minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
 }
@@ -11891,7 +11883,10 @@
   grid-column: 2;
   grid-row: 1;
   min-width: 0;
-  padding-left: 24px;
+  padding-inline: clamp(18px, 3vw, 40px);
+}
+.sky-chat-page .zema-grok-shell:not(.is-sidebar-collapsed) .zema-sidebar-toggle {
+  display: none;
 }
 .sky-chat-page .sky-chat-messages,
 .sky-chat-page .sky-chat-work-center {
@@ -11899,14 +11894,113 @@
   grid-row: 2;
   min-width: 0;
   min-height: 0;
-  padding-left: 24px;
+  padding-inline: clamp(18px, 3vw, 40px);
+}
+.sky-chat-page .zema-grok-shell.is-empty .sky-chat-messages {
+  justify-content: center;
+}
+.sky-chat-page .zema-empty {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  width: min(100%, 620px);
+  margin: auto;
+}
+.sky-chat-page .zema-empty-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 13px;
+  color: #c8ff2e;
+  background: #16181c;
+  font-size: 20px;
+  font-weight: 900;
+}
+.sky-chat-page .zema-empty h2 {
+  margin: 0;
+  color: #f2f2f2;
+  font-size: clamp(22px, 3vw, 30px);
+  line-height: 1.25;
+}
+.sky-chat-page .zema-empty p {
+  margin: 0;
+  color: #aeb8bf;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.sky-chat-page .zema-starters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.sky-chat-page .zema-starters button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: auto;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid #39434b;
+  border-radius: 999px;
+  color: #e7e9ea;
+  background: #16181c;
+  font-size: 13px;
+  line-height: 1.2;
+}
+.sky-chat-page .zema-starters button:hover,
+.sky-chat-page .zema-starters button:focus-visible {
+  border-color: #9bc91f;
+  background: #20291a;
 }
 .sky-chat-page .sky-chat-composer {
   grid-column: 2;
   grid-row: 3;
   min-width: 0;
-  padding-left: 24px;
+  padding-inline: clamp(18px, 3vw, 40px);
 }
+.sky-chat-page .sky-chat-composer-box {
+  grid-template-columns: minmax(0, 1fr) 42px;
+  width: 100%;
+}
+.sky-chat-page .zema-model-settings {
+  max-width: 100%;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.sky-chat-page .zema-model-settings > summary {
+  width: fit-content;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.sky-chat-page .zema-composer-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.sky-chat-page .zema-tool-picker,
+.sky-chat-page .zema-add-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  white-space: nowrap;
+}
+.sky-chat-page .zema-tool-picker select {
+  max-width: min(220px, 44vw);
+  min-width: 0;
+  color: inherit;
+  background: transparent;
+}
+.sky-chat-page .zema-composer-tip { margin-left: auto; }
+.sky-chat-page .zema-composer-count { white-space: nowrap; }
 .sky-chat-page .zema-grok-shell.is-sidebar-collapsed {
   grid-template-columns: minmax(0, 1fr);
 }

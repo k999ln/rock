@@ -462,7 +462,8 @@
         "app/workspace.css",
         "lib/operations.ts",
         "tests/operations.test.mjs",
-        "docs/chat-usability-20260912.md"
+        "docs/chat-usability-20260912.md",
+        "docs/workstreams/01-product-ux.md"
       ]
     },
     {
