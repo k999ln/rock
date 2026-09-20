@@ -1,6 +1,5 @@
 package dev.rock.jev.provider;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +42,7 @@ public final class TypeSafeJevProviderTest {
             + "\"usage\":{\"input_tokens\":12,\"output_tokens\":3}}";
     }
 
-    @Test public void sendsOfficialTypedPayloadAndReturnsAdvisoryOnly() {
+    @Test public void sendsOfficialTypedPayloadAndReturnsAdvisoryOnly() throws Exception {
         AtomicReference<String> body = new AtomicReference<>();
         TypeSafeJevProvider.AdvisoryResult result = provider(body).decide(request());
         assertEquals("answered", result.status);
@@ -87,9 +86,6 @@ public final class TypeSafeJevProviderTest {
     }
 
     @Test public void oversizedResponseAndUnknownModelAbstain() throws Exception {
-        char[] key = "test-key".toCharArray();
-        assertEquals("test-key", new String(key));
-        Arrays.fill(key, '\0');
         StringBuilder huge = new StringBuilder(TypeSafeJevProvider.MAX_RESPONSE_BYTES + 1);
         for (int i = 0; i <= TypeSafeJevProvider.MAX_RESPONSE_BYTES; i++) huge.append('x');
         TypeSafeJevProvider tooLarge = new TypeSafeJevProvider(
