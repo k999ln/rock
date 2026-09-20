@@ -21,14 +21,14 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 const priceStart = 0.91;
 const storyWords = ['FORM', 'SENSE', 'REACH', 'STABLE', 'FLOW', 'MINI'];
-const storyColors = ['#08090b', '#101821', '#182532', '#101a22', '#141f26', '#08090b'];
+const storyColors = ['#09090a', '#111214', '#0d0e10', '#111214', '#0d0e10', '#09090a'];
 const motionKeys = [
-  { at: 0, x: 19, y: 1, scale: 0.96, tilt: -4, yaw: 0 },
-  { at: 0.18, x: 8, y: 0, scale: 1.02, tilt: 3, yaw: 48 },
-  { at: 0.36, x: -20, y: 1, scale: 1.01, tilt: -5, yaw: 124 },
-  { at: 0.54, x: 20, y: 0, scale: 1.04, tilt: 5, yaw: 203 },
-  { at: 0.72, x: -19, y: 1, scale: 1.01, tilt: -4, yaw: 290 },
-  { at: priceStart, x: -22, y: 0, scale: 0.96, tilt: 0, yaw: 360 },
+  { at: 0, x: 0, y: 1, scale: 0.96, tilt: -2, yaw: 0 },
+  { at: 0.18, x: 2, y: 0, scale: 1.02, tilt: 1, yaw: 48 },
+  { at: 0.36, x: -2, y: 1, scale: 1.01, tilt: -2, yaw: 124 },
+  { at: 0.54, x: 2, y: 0, scale: 1.04, tilt: 2, yaw: 203 },
+  { at: 0.72, x: -2, y: 1, scale: 1.01, tilt: -1, yaw: 290 },
+  { at: priceStart, x: 0, y: 0, scale: 0.98, tilt: 0, yaw: 360 },
 ];
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));

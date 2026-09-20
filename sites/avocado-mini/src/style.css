@@ -323,3 +323,60 @@ footer{background:#080809;border-top:1px solid #ffffff20;color:#a8a8af}
 .subpage .button.dark{background:#f3f3f5;color:#171719}
 .subpage .text-link{color:#b8e5f3}
 @media(max-width:520px){.hero-product-lockup span{font-size:9px;letter-spacing:.18em;margin-bottom:10px}.statement-bottom{align-items:flex-start}.statement-bottom>div{gap:16px}.film-hero:before{background:radial-gradient(circle 9vw at 16% 35%,#a6e8ff36,transparent 76%),radial-gradient(circle 9vw at 84% 35%,#a6e8ff36,transparent 76%)}.film-hero:after{background:linear-gradient(to bottom,#0002,transparent 33%,#050506bd 78%,#050506 100%)}.hero-statement h2,.design-intro h2{font-size:clamp(39px,12vw,52px);white-space:nowrap}.highlights h2{font-size:clamp(31px,9vw,36px);white-space:nowrap}.design-intro>p:last-child{max-width:330px}.highlight-card{border-radius:22px}}
+
+/* Keep the turning tower in its own studio bay so chapters never cross the product. */
+.story{background:#09090a}
+.story-sticky{background:linear-gradient(90deg,#131315 0%,#101012 46%,#080809 46%,#080809 100%)}
+.story-sticky:before{display:none}
+.story-sticky:after{content:"";position:absolute;z-index:0;inset:0 0 0 46%;background:radial-gradient(ellipse 58% 65% at 50% 49%,#393b3e 0%,#1b1c1f 40%,transparent 84%);pointer-events:none}
+.story-orbit,.story-word{display:none}
+.stage{inset:0 0 0 46%;z-index:2}
+.motion-product{left:50%;top:51%;width:min(37vw,560px);height:min(79svh,820px)}
+.feature-beats{z-index:4}
+.feature-beat,.feature-beat[data-beat="telescope"],.feature-beat[data-beat="os"]{left:clamp(30px,5.7vw,96px);right:auto;top:50%;width:min(540px,37vw)}
+.feature-beat h2,.feature-beat[data-beat="sensor"] h2{font-size:clamp(42px,4.2vw,60px);line-height:1.16;letter-spacing:-.08em;color:#f5f5f7}
+.feature-beat[data-beat="intro"] h2{font-size:clamp(49px,5.1vw,72px)}
+.feature-beat .eyebrow{color:#b7b7be}
+.feature-beat .feature-description,.feature-beat[data-beat="sensor"] .feature-description{color:#c7c7cd;max-width:490px}
+.feature-meta{border-top-color:#ffffff37;color:#a9a9b0}
+.sensor-capabilities>div{border-top-color:#ffffff30}
+.sensor-capabilities span{color:#b9d8e2}
+.sensor-capabilities strong{color:#f5f5f7}
+.sensor-capabilities p{color:#bfc0c5}
+.sensor-closeup{display:none}
+.story-rail span{border-color:#bcbcc1}
+.story-rail span.is-active{background:#d6d6db}
+.story-foot #chapter,.story-foot span{color:#b8b8bd}
+.track{background:#ffffff40}
+.track>div{background:#c8c8cd}
+.price-panel{left:clamp(30px,5.7vw,96px);right:auto;top:50%;width:min(430px,37vw);background:#f6f6f7;border-color:#fff;box-shadow:0 30px 90px #0009}
+.sensor-gaze{z-index:3;opacity:calc(var(--gaze) * .72)}
+@media(max-width:800px){
+  .story-sticky{background:linear-gradient(#101012 0%,#101012 45%,#09090a 45%,#09090a 100%)}
+  .story-sticky:after{inset:45% 0 0;background:radial-gradient(ellipse 70% 70% at 50% 50%,#34363a 0%,#1a1b1e 47%,transparent 88%)}
+  .stage{inset:42% 0 7%}
+  .motion-product{left:50%;top:50%;width:min(66vw,470px);height:100%}
+  .feature-beat,.feature-beat[data-beat="telescope"],.feature-beat[data-beat="os"]{top:115px;left:26px;right:40px;width:auto;max-width:680px}
+  .feature-beat h2,.feature-beat[data-beat="sensor"] h2{font-size:clamp(34px,5vw,48px)}
+  .feature-beat[data-beat="intro"] h2{font-size:clamp(43px,6vw,56px)}
+  .price-panel{left:26px;right:26px;top:112px;width:auto;max-width:440px}
+}
+@media(max-width:520px){
+  .story-sticky{background:linear-gradient(#111113 0%,#111113 50%,#09090a 50%,#09090a 100%)}
+  .story-sticky:after{inset:50% 0 0}
+  .stage{inset:48% 0 6%}
+  .motion-product{left:50%;top:50%;width:76vw;height:100%}
+  .feature-beat,.feature-beat[data-beat="telescope"],.feature-beat[data-beat="os"]{top:112px;left:22px;right:22px;width:auto;max-width:none}
+  .feature-beat h2,.feature-beat[data-beat="sensor"] h2{font-size:clamp(32px,8vw,38px);margin-bottom:10px}
+  .feature-beat[data-beat="intro"] h2{font-size:40px}
+  .feature-beat .eyebrow{margin-bottom:10px}
+  .feature-beat .feature-description,.feature-beat[data-beat="sensor"] .feature-description{font-size:12px;line-height:1.5}
+  .feature-meta{display:none}
+  .sensor-capabilities{grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  .sensor-capabilities>div{padding:8px 0 0 10px}
+  .sensor-capabilities strong{font-size:12px}
+  .sensor-capabilities p{font-size:10px}
+  .story-rail{top:74%;right:14px}
+  .price-panel{left:22px;right:22px;top:105px;width:auto;max-width:none}
+  .story-sticky:has(.price-panel.visible) .motion-product{opacity:.46}
+}
