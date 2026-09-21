@@ -1,6 +1,54 @@
 import './style.css';
 import { createTowerScene } from './tower-scene.js';
 
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+document.documentElement.classList.add('type-motion-ready');
+
+const splitTypeSelectors = [
+  '.hero-bottom > p',
+  '.hero-statement h2',
+  '.highlight-card h3',
+  '.design-intro h2',
+  '.feature-beat h2',
+  '.feature-headline',
+  '.preorder-hero h1',
+  '.article h1',
+];
+
+for (const heading of document.querySelectorAll(splitTypeSelectors.join(','))) {
+  if (!heading.innerHTML.match(/<br\s*\/?>/i)) continue;
+  const lines = heading.innerHTML.split(/<br\s*\/?>/i);
+  heading.innerHTML = lines.map((line, index) => `<span class="type-line" style="--type-line:${index}"><span>${line}</span></span>`).join('');
+}
+
+const revealSections = document.querySelectorAll([
+  '.film-hero',
+  '.hero-statement',
+  '.highlights',
+  '.design-intro',
+  '.story',
+  '.os-install',
+  '.preorder-hero',
+  '.preorder-products',
+  '.preorder-terms',
+  '.article',
+].join(','));
+
+if (reducedMotion?.matches || !('IntersectionObserver' in window)) {
+  revealSections.forEach((section) => section.classList.add('is-type-visible'));
+} else {
+  const typeObserver = new IntersectionObserver((entries, observer) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add('is-type-visible');
+      observer.unobserve(entry.target);
+    }
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
+  revealSections.forEach((section) => typeObserver.observe(section));
+}
+
+requestAnimationFrame(() => document.body.classList.add('is-type-loaded'));
+
 const story = document.querySelector('.story');
 const storySticky = document.querySelector('.story-sticky');
 const storyWord = document.querySelector('#story-word');
@@ -19,8 +67,6 @@ const preorderLink = document.querySelector('#preorder-link');
 const gallery = document.querySelector('#highlight-gallery');
 const galleryPrev = document.querySelector('#gallery-prev');
 const galleryNext = document.querySelector('#gallery-next');
-const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
 const priceStart = 0.91;
 const storyWords = ['FORM', 'SENSE', 'REACH', 'STABLE', 'FLOW', 'MINI'];
 const storyColors = ['#09090a', '#111214', '#0d0e10', '#111214', '#0d0e10', '#09090a'];
