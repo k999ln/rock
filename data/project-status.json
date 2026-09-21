@@ -637,7 +637,7 @@
         "sites/avocado-mini/src/main.js",
         "sites/avocado-mini/src/style.css",
         "sites/avocado-mini/src/tower-scene.js",
-        "sites/avocado-mini/dist/index.html",
+        "sites/avocado-mini/dist/client/index.html",
         "sites/avocado-mini/public/images/avocado-mini-hero.png",
         "sites/avocado-mini/public/images/avocado-mini-detail.png",
         "sites/avocado-mini/public/images/motion-tower-satin-front-concept.png",
@@ -792,6 +792,21 @@
         "sites/avocado-mini/install/index.html",
         "sites/avocado-mini/vite.config.js",
         "data/android-first-flash-gate.json",
+        "docs/workstreams/05-web-pwa-sites.md"
+      ]
+    },
+    {
+      "id": "WEB15",
+      "title": "avocadoMiniの予約販売画面と決済バックエンドを用意し、販売条件確定後に全額決済を有効化する",
+      "status": "in_progress",
+      "dependsOn": [
+        "WEB13"
+      ],
+      "evidence": [
+        "sites/avocado-mini/preorder/index.html",
+        "sites/avocado-mini/worker/index.js",
+        "sites/avocado-mini/db/schema.ts",
+        "sites/avocado-mini/tests/preorder.test.mjs",
         "docs/workstreams/05-web-pwa-sites.md"
       ]
     },

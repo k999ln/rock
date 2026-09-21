@@ -49,7 +49,8 @@
     "leadHardwareForm": "motorized_telescopic_sensor_tower_concept",
     "brandLine": "考える時間を、つくる時間に。",
     "avocadoMiniDesiredReferencePriceJpy": 410000,
-    "referencePriceStatus": "aspirational_four_tower_plus_edge_hub_kit_price_including_tax_not_sale_or_preorder_price",
+    "avocadoMiniSingleTowerProposedExTaxPriceJpy": 160000,
+    "referencePriceStatus": "user_proposed_preorder_base_prices_excluding_tax_not_final_checkout_total_or_live_sale",
     "motionTowerP0Engineering": {
       "source": "User-provided RockstarOS Motion Tower P0 Engineering Package v2, revision P0.2",
       "kitTowerCount": 4,

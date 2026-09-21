@@ -4,6 +4,8 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
+- avocadoMiniの予約販売画面とStripe Checkout用Worker・D1注文台帳を実装。1本16万円、4本＋Edge Hub 41万円は利用者指定の税抜予定価格。注文時に全額を受け取る設計で、金額をサーバーで固定し、入金確定は署名済みWebhookのみで処理する。発送時期・送料・販売者名／住所／電話・キャンセル／返金条件・Stripe接続が未確定の間は決済を無効化する。Instagram `kirin.41` は問い合わせ導線であり販売者住所の代替にしない。WEB15の実売上受入はこれらの確定と最終確認画面の法務確認後。
+
 - OS導入ボタンを黒い製品画面に合わせて金属調にし、タワーの青いセンサーを模した光、光沢の移動、矢印の反応を加えた。スマートフォン390px幅とデスクトップで表示し、`/install/`への遷移を確認。製品Site v25（source `bbeb40bd23b568937bdee8eb7e2152b6ab817076`）を一般公開し、公開画面で新しいボタンを確認した。Pixel 10の実インストールは引き続き配布物と安全ゲート待ち。
 
 - 製品ページのOS区間は「RockstarOS」と導入ボタンだけへ集約し、専用の`/install/`を用意した。Screwの実体はPRIVATE/PIXELへのリンク集で、WebUSB実装やRockstarOSイメージは入っていない。Pixel 10用full image未作成、初回flashゲート0/4のため、導入ページは書込み不能を明示してfail closedとする。署名済みfactory image、端末型番・ハッシュ検証、純正復旧、バックアップ／復元、実機受入が揃ってからWebUSB導入を実装・接続する。Mac仮想環境のDeveloper Previewは別ガイドへ進める。デスクトップと390px幅でボタンと導入画面を確認し、製品Site v24（source `7d891cdf0c4454c992ba65ccf614a5d48c4dd86b`）を公開。公開画面の導線も確認した。
