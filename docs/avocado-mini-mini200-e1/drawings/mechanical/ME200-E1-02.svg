@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080">
+<style>text{font-family:Arial,"Hiragino Sans","Noto Sans CJK JP",sans-serif;fill:#193449}</style>
+<rect width="1600" height="1080" fill="white"/><rect x="22" y="22" width="1556" height="1036" fill="none" stroke="#768f9b"/>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="#388d9e"/></marker></defs>
+<text x="48" y="65" font-size="29" text-anchor="start" style="fill:#193449">ME200-E1-02  計算機・撮像・音声の分離区画</text>
+<text x="48" y="100" font-size="18" text-anchor="start" style="fill:#193449">Mini200 E1 | 1本体・計算機内蔵・音声入力 | 単位mm / 外観仮参照 / 全区画REF・実機未検証</text>
+<line x1="40" y1="124" x2="1560" y2="124" stroke="#617f8f" stroke-width="2"/>
+<line x1="40" y1="1008" x2="1560" y2="1008" stroke="#617f8f" stroke-width="2"/>
+<text x="48" y="1040" font-size="16" text-anchor="start" style="fill:#193449">2026-09-21 | 公差は設計予算。型番の配置・加工穴・取付強度・放熱・音響はHOLD。</text>
+<text x="1545" y="1040" font-size="16" text-anchor="end" style="fill:#a34e37">NOT FOR FABRICATION</text>
+<text x="357" y="188" font-size="21" text-anchor="middle" style="fill:#193449">側断面・区画投影 / 部品CADではない</text>
+<text x="90" y="223" font-size="17" text-anchor="start" style="fill:#193449">前 Y0</text>
+<text x="624" y="223" font-size="17" text-anchor="end" style="fill:#193449">後 Y178</text>
+<rect x="90" y="243" width="534" height="582" fill="#f5f7f7" stroke="#3c6074" stroke-width="2"/>
+<rect x="168" y="825" width="24" height="12" fill="#a0b0b6" stroke="#3c6074" stroke-width="2"/>
+<rect x="522" y="825" width="24" height="12" fill="#a0b0b6" stroke="#3c6074" stroke-width="2"/>
+<rect x="132" y="690" width="354" height="105" fill="#d2e5f4" stroke="#658091" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="132" y="534" width="348" height="138" fill="#f6d6b4" stroke="#658091" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="498" y="519" width="108" height="270" fill="#e8cbb9" stroke="#658091" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="114" y="321" width="138" height="192" fill="#c2ddd2" stroke="#658091" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="99" y="321" width="12" height="192" fill="#c89361" stroke="#658091" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="264" y="402" width="330" height="105" fill="#c8d2ed" stroke="#658091" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="276" y="327" width="180" height="66" fill="#e5d3bb" stroke="#658091" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="504" y="327" width="102" height="63" fill="#d4dbe1" stroke="#658091" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="120" y="253.5" width="330" height="60.0" fill="#d8e9c6" stroke="#658091" stroke-width="2" stroke-dasharray="6 4"/>
+<rect x="102" y="519" width="390" height="9" fill="#647782" stroke="#647782" stroke-width="2"/>
+<rect x="102" y="315" width="510" height="4.5" fill="#647782" stroke="#647782" stroke-width="2"/>
+<text x="309" y="748.5" font-size="18" text-anchor="middle" style="fill:#193449">1 COMPUTE</text>
+<text x="306" y="606" font-size="18" text-anchor="middle" style="fill:#193449">2 COOLING</text>
+<text x="552" y="672" font-size="18" text-anchor="middle" style="fill:#193449">3 FAN</text>
+<text x="183" y="426" font-size="18" text-anchor="middle" style="fill:#193449">4 CAMERA</text>
+<text x="429" y="462" font-size="18" text-anchor="middle" style="fill:#193449">5 VISION</text>
+<text x="366" y="369" font-size="18" text-anchor="middle" style="fill:#193449">6 DC</text>
+<text x="555" y="369" font-size="18" text-anchor="middle" style="fill:#193449">7 I/O</text>
+<text x="285" y="291" font-size="18" text-anchor="middle" style="fill:#193449">8 AUDIO</text>
+<line x1="120" y1="613" x2="505" y2="613" stroke="#388d9e" stroke-width="4" marker-end="url(#arrow)"/>
+<line x1="568" y1="732" x2="695" y2="732" stroke="#388d9e" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="362" y="893" font-size="17" text-anchor="middle" style="fill:#193449">側面2面から吸気 → 冷却区画 → 後方へ排気</text>
+<line x1="55" y1="243" x2="55" y2="837" stroke="#617f8f" stroke-width="1"/>
+<line x1="49" y1="243" x2="61" y2="243" stroke="#617f8f" stroke-width="1"/>
+<line x1="49" y1="837" x2="61" y2="837" stroke="#617f8f" stroke-width="1"/>
+<text x="44" y="540.0" font-size="17" text-anchor="middle" transform="rotate(-90 44 540.0)">H198 REF / feet4含む</text>
+<line x1="90" y1="943" x2="624" y2="943" stroke="#617f8f" stroke-width="1"/>
+<line x1="90" y1="937" x2="90" y2="949" stroke="#617f8f" stroke-width="1"/>
+<line x1="624" y1="937" x2="624" y2="949" stroke="#617f8f" stroke-width="1"/>
+<text x="357.0" y="933" font-size="17" text-anchor="middle" style="fill:#193449">D178 REF（箱内区画）</text>
+<text x="760" y="178" font-size="22" text-anchor="start" style="fill:#193449">区画寸法 W x D x H [mm] / 全て搭載予算</text>
+<text x="760" y="224" font-size="19" text-anchor="start" style="fill:#193449">1  計算機・RAM・SSD: 170 x118 x35</text>
+<text x="760" y="258" font-size="19" text-anchor="start" style="fill:#193449">2  放熱器/duct: 170 x116 x46</text>
+<text x="760" y="292" font-size="19" text-anchor="start" style="fill:#193449">3  後方fan/plenum: 170 x36 x90</text>
+<text x="760" y="326" font-size="19" text-anchor="start" style="fill:#193449">4  前3眼・支持: 180 x46 x64</text>
+<text x="760" y="360" font-size="19" text-anchor="start" style="fill:#193449">5  OAK制御板: 170 x110 x35（独立区画）</text>
+<text x="760" y="394" font-size="19" text-anchor="start" style="fill:#193449">6  DC保護: 56 x60 x22 / 7  後部I/O: 170 x34 x21</text>
+<text x="760" y="428" font-size="19" text-anchor="start" style="fill:#193449">8  音声基板: 110 x110 x20 / z174.5-194.5</text>
+<rect x="742" y="485" width="774" height="168" fill="#f2f7ee" stroke="#829d6e" stroke-width="2"/>
+<text x="766" y="522" font-size="19" text-anchor="start" style="fill:#193449">micを上へ向け、同等音道・ガスケットで各孔を分離。</text>
+<text x="766" y="556" font-size="19" text-anchor="start" style="fill:#193449">上部隔壁 z172.5-174 / 低振動保持・封止配線HOLD。</text>
+<text x="766" y="590" font-size="19" text-anchor="start" style="fill:#193449">音声部も放熱が必要。密閉して熱を閉じ込めない。</text>
+<text x="766" y="624" font-size="19" text-anchor="start" style="fill:#193449">物理muteの遮断と残音対策は回路・実機で検証。</text>
+<text x="760" y="706" font-size="20" text-anchor="start" style="fill:#193449">80W DC / η90% → 箱内発熱88.89Wの仮枠。</text>
+<text x="760" y="741" font-size="20" text-anchor="start" style="fill:#193449">吸気自由45cm² x2 / 排気67.2cm²（開口50%仮）。</text>
+<text x="760" y="776" font-size="20" text-anchor="start" style="fill:#193449">ΔT10K: 26.53m³/h / 係数2の検討点53.07m³/h。</text>
+<text x="760" y="811" font-size="20" text-anchor="start" style="fill:#193449">圧損・fan騒音・温度・音声認識は未測定。</text>
+<text x="760" y="883" font-size="19" text-anchor="start" style="fill:#a34e37">実APU基板/OAK/FFC/USB/工具/ねじfitはHOLD。</text>
+<text x="760" y="914" font-size="19" text-anchor="start" style="fill:#a34e37">薄い上部余裕・遮光の可動域・全部品公差を</text>
+<text x="760" y="945" font-size="19" text-anchor="start" style="fill:#a34e37">実CADと現物で確認してから部品図へ進む。</text>
+</svg>

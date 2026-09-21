@@ -1,5 +1,7 @@
 # avocadoMini — 四方向センサーで物質候補を操作するRockstarOS発明端末
 
+2026-09-21追補: 本書の四方向profileを保持したまま、最新のゲーム機要求は[Mini200 E1（使用時20cm・身体と日本語音声）](avocado-mini-mini200-e1/README.md)へ分離した。前面ステレオをnorth/east/south/westへ偽装せず、新しい入力profile・adapter・実機受入を必要とする。本文のFull-scale目標をE1の外形要求とは扱わない。
+
 状態: 製品・hardware・interaction設計。2026-09-18に机上検証機とビリヤード台規模のFull-scale機を分け、概念画像と寸法budgetを追加した。機構、光学、電気、演算、熱、安全、校正、BOM、実機受入は[ハードウェア詳細設計](avocado-mini-hardware-design.md)へ具体化した。`avocadoMini`はRockstarOSを搭載する空間発明端末の名称であり、OSの正式名をavocadoOSへ戻すものではない。筐体、sensor、camera、hand tracking、XR表示、simulation接続、Patent AI連携、実機prototypeは未実装・未選定。
 
 ## 製品定義

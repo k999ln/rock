@@ -1,0 +1,127 @@
+{
+  "revision": "Mini200 E1",
+  "physical_tests": 0,
+  "asr_audio_tests": 0,
+  "inputs": {
+    "status": "PROPOSED_BUDGET_NOT_MEASUREMENT",
+    "frame_rate_hz": 60,
+    "stereo_width_px": 1280,
+    "stereo_hfov_deg": 80,
+    "baseline_m": 0.12,
+    "assumed_disparity_sigma_px": 0.5,
+    "depth_test_distances_m": [
+      1,
+      2,
+      3
+    ],
+    "ram_budget_gib": {
+      "os": 4,
+      "game_cpu": 8,
+      "shared_graphics": 8,
+      "vision": 2,
+      "speech": 2,
+      "reserve": 8
+    },
+    "storage_nominal_bytes": 1000000000000,
+    "storage_budget_gib": {
+      "os_recovery": 96,
+      "models_apps": 24,
+      "creations_saves": 96,
+      "games": 512,
+      "updates": 96
+    },
+    "motion_pipeline_ms": {
+      "capture_wait": 16.666666666666668,
+      "exposure_budget": 4,
+      "vision": 12,
+      "transfer": 5,
+      "permission": 2,
+      "game_wait": 16.666666666666668,
+      "render": 16.666666666666668,
+      "display": 16.666666666666668
+    },
+    "voice_end_to_ui_ms": {
+      "endpoint": 300,
+      "queue": 50,
+      "asr": 700,
+      "parse_gate": 50,
+      "ui": 100
+    },
+    "design_targets_ms": {
+      "motion_p95": 100,
+      "voice_after_end_p95": 1200
+    },
+    "physical_tests": 0,
+    "asr_audio_tests": 0
+  },
+  "focal_length_assumption_px": 762.7222992602944,
+  "depth_sensitivity": [
+    {
+      "distance_m": 1,
+      "disparity_px": 91.52667591123533,
+      "linearized_depth_sigma_mm": 5.462888223810417
+    },
+    {
+      "distance_m": 2,
+      "disparity_px": 45.763337955617665,
+      "linearized_depth_sigma_mm": 21.851552895241667
+    },
+    {
+      "distance_m": 3,
+      "disparity_px": 30.508891970411778,
+      "linearized_depth_sigma_mm": 49.16599401429375
+    }
+  ],
+  "motion_budget_ms": 89.66666666666667,
+  "voice_budget_ms": 1200,
+  "storage_gib": 931.3225746154785,
+  "storage_unallocated_gib": 107.32257461547852,
+  "fictional_merge_cases": 1000,
+  "max_momentum_error": 7.105427357601002e-15,
+  "max_energy_accounting_error": 0.0,
+  "checks": [
+    {
+      "name": "ram_allocations_sum_32",
+      "pass": true
+    },
+    {
+      "name": "storage_allocation_positive_reserve",
+      "pass": true
+    },
+    {
+      "name": "motion_budget_below_target_not_benchmark",
+      "pass": true
+    },
+    {
+      "name": "voice_budget_within_target_not_benchmark",
+      "pass": true
+    },
+    {
+      "name": "depth_disparity_decreases_with_distance",
+      "pass": true
+    },
+    {
+      "name": "depth_sigma_grows_quadratically",
+      "pass": true
+    },
+    {
+      "name": "32_particle_all_pairs_496",
+      "pass": true
+    },
+    {
+      "name": "256_particle_all_pairs_32640",
+      "pass": true
+    },
+    {
+      "name": "fictional_merge_1000_momentum_and_energy_ledger_cases",
+      "pass": true
+    }
+  ],
+  "pass_count": 9,
+  "limits": [
+    "No CPU/GPU/ASR performance measured. Adding latency allocations does not prove a P95 target.",
+    "Stereo error assumes rectification, correct correspondence and 0.5px disparity uncertainty, not measured hand accuracy.",
+    "RAM is a logical shared-memory budget, not dedicated VRAM or a demonstrated concurrent workload.",
+    "Fictional perfectly inelastic particle merge only. No chemistry, collision engine timing or real hardware."
+  ]
+}

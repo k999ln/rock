@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1150" viewBox="0 0 1600 1150">
+<defs>
+ <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="#405267" stroke-width="1.7"/></marker>
+ <style>text{font-family:'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif;fill:#142b40} .title{font-size:32px;font-weight:700}.sub{font-size:19px}.head{font-size:23px;font-weight:700}.body{font-size:20px}.note{font-size:18px}.box{fill:#f4f8fc;stroke:#8196ab;stroke-width:2}.gate{fill:#e8f5f0;stroke:#347967;stroke-width:2}.deny{fill:#fff3e8;stroke:#ad763f;stroke-width:2}.line{fill:none;stroke:#405267;stroke-width:3;marker-end:url(#arrow)}.dash{stroke-dasharray:8 5}</style>
+</defs>
+<rect width="1600" height="1150" fill="white"/>
+<text x="55" y="55" class="title">avocadoMini E1 — 声と身体入力の許可境界</text>
+<text x="55" y="90" class="sub">設計提案 / 抽象モデルのみ　　1 人・前方の手／上半身　　実 ASR・実機性能・物理ミュートは未検証</text>
+
+<rect x="55" y="135" width="435" height="154" rx="12" class="box"/>
+<text x="78" y="173" class="head">音声入力：初期は PTT 必須</text>
+<text x="78" y="210" class="body">同意 + MIC ON + 押して話す／離す</text>
+<text x="78" y="242" class="body">pre-buffer 0 秒 / 最長 15 秒</text>
+<text x="78" y="271" class="note">起動語は将来候補・初期有効化しない</text>
+
+<rect x="565" y="135" width="485" height="154" rx="12" class="box"/>
+<text x="588" y="173" class="head">ローカル日本語 ASR 候補</text>
+<text x="588" y="210" class="body">前処理 → VAD → Whisper 多言語</text>
+<text x="588" y="242" class="body">途中文は表示だけ / 最終文を限定文法へ</text>
+<text x="588" y="271" class="note">AEC・起動語・ASR は別機能</text>
+<path d="M490 212 H555" class="line"/>
+
+<rect x="1130" y="135" width="415" height="154" rx="12" class="deny"/>
+<text x="1153" y="173" class="head">誤認識・外部文字は非信頼</text>
+<text x="1153" y="210" class="body">低信頼 → 聞き直し、実行しない</text>
+<text x="1153" y="242" class="body">LLM / 録音 / TV ≠ 本人認証</text>
+<text x="1153" y="271" class="note">音響 replay の識別は未証明</text>
+
+<rect x="565" y="355" width="485" height="200" rx="12" class="gate"/>
+<text x="588" y="393" class="head">共通の文脈・許可ゲート</text>
+<text x="588" y="430" class="body">session / nonce / mode / revision</text>
+<text x="588" y="465" class="body">mic epoch / sequence / 単調時刻</text>
+<text x="588" y="500" class="body">目的・最終確定・有効期限・一回性</text>
+<text x="588" y="533" class="note">音声最終文：終了から TTL 2 秒（提案）</text>
+<path d="M807 289 V345" class="line"/>
+
+<rect x="55" y="355" width="435" height="200" rx="12" class="deny"/>
+<text x="78" y="393" class="head">MIC OFF / 同意撤回</text>
+<text x="78" y="430" class="body">capture 停止・buffer / job 取消</text>
+<text x="78" y="465" class="body">epoch 更新 → 遅延結果を拒否</text>
+<text x="78" y="500" class="body">カメラの ON / OFF とは独立</text>
+<text x="78" y="533" class="note">給電・clock・data 遮断は別の実測</text>
+<path d="M490 455 H555" class="line dash"/>
+
+<rect x="1130" y="355" width="415" height="200" rx="12" class="gate"/>
+<text x="1153" y="393" class="head">声で扱うゲーム UI</text>
+<text x="1153" y="430" class="body">選択 / 重力 / 結合のプレビュー</text>
+<text x="1153" y="465" class="body">保存要求 → 永続化 ACK 後に完了</text>
+<text x="1153" y="500" class="body">「止めて」→ UI 一時停止</text>
+<text x="1153" y="533" class="note">声で発射しない / 物理非常停止ではない</text>
+<path d="M1050 455 H1120" class="line"/>
+
+<rect x="55" y="640" width="435" height="220" rx="12" class="box"/>
+<text x="78" y="678" class="head">身体 + ボタンによる明示操作</text>
+<text x="78" y="715" class="body">有効なカメラ追跡 + 校正 + 領域内</text>
+<text x="78" y="750" class="body">つかむ → 狙う → 明示リリース</text>
+<text x="78" y="785" class="body">身体情報 age ≤ 150 ms（提案）</text>
+<text x="78" y="820" class="body">失見・遮蔽・古い情報 → 発射保留</text>
+<text x="78" y="848" class="note">origin / 検証済フラグは本番の認証が必要</text>
+
+<rect x="565" y="640" width="485" height="220" rx="12" class="gate"/>
+<text x="588" y="678" class="head">実機由来のデジタル発射ゲート</text>
+<text x="588" y="715" class="body">PLAY + 同意 + 新しい文脈が一致</text>
+<text x="588" y="750" class="body">実機証拠 + 直前のつかみ + リリース</text>
+<text x="588" y="785" class="body">旧音声と旧身体イベントの混合を拒否</text>
+<text x="588" y="820" class="body">FAULT / PAUSE では発射しない</text>
+<text x="588" y="848" class="note">現実の粒子放射ではない / 声は証拠にならない</text>
+<path d="M490 750 H555" class="line"/>
+<path d="M807 555 V630" class="line"/>
+<text x="831" y="603" class="note">同じ現在状態</text>
+
+<rect x="1130" y="640" width="415" height="220" rx="12" class="deny"/>
+<text x="1153" y="678" class="head">生活・経済は別の承認領域</text>
+<text x="1153" y="715" class="body">家電：対象・操作・期限を個別確認</text>
+<text x="1153" y="750" class="body">支払：金額・宛先・別認証が必要</text>
+<text x="1153" y="785" class="body">声紋 ≠ 認証 / DEV_SIM ≠ 実機</text>
+<text x="1153" y="820" class="body">オフライン要求を自動実行しない</text>
+<text x="1153" y="848" class="note">本参照モデルに家電・決済 driver はない</text>
+
+<rect x="55" y="925" width="1490" height="171" rx="12" fill="#f0f3f6" stroke="#8196ab" stroke-width="2"/>
+<text x="78" y="963" class="head">性能目標と検証境界</text>
+<text x="78" y="1000" class="body">音声終了 → UI：P95 ≤ 1.2 秒　　身体 → 表示：P95 ≤ 100 ms　　ともに設計目標・未測定</text>
+<text x="78" y="1035" class="body">抽象モデル：99 項目 PASS / 実 ASR 0 / 物理試験 0。許可ロジックの試験は認識精度・遅延・物理遮断の証明ではない。</text>
+<text x="78" y="1071" class="note">E1-INT-REF1 / 2026-09-21　|　静的な許可関係図。配線図ではない。署名・鍵・デバイス本人性・同時処理は別途実装検証。</text>
+</svg>

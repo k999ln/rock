@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros-design-document-index/1",
   "version": "1.0",
-  "updatedAt": "2026-09-19",
+  "updatedAt": "2026-09-21",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/rockstaros-product-system-map.md",
@@ -153,7 +153,9 @@
         "docs/material-invention-core.md",
         "docs/material-invention-xr.md",
         "docs/avocado-mini-spatial-invention.md",
-        "docs/avocado-mini-hardware-design.md"
+        "docs/avocado-mini-hardware-design.md",
+        "docs/avocado-mini-mini200-e1/README.md",
+        "docs/avocado-mini-mini200-e1/design.md"
       ]
     },
     {
