@@ -1,5 +1,8 @@
 # Avokado Mini
 
+- Public repository: https://github.com/avokado-ink/RockstarOS
+- Authorized full source: https://github.com/k999ln/rock
+
 ![Avokado Mini in motion](rockstaros-motion.gif)
 
 ## Make space for what comes next.
@@ -66,6 +69,19 @@ RockstarOS gives Avokado Mini a clear path from an idea to a verified result.
 - Fixtures, sandboxes, previews, and production environments are never treated as interchangeable.
 - AI does not receive private keys or unrestricted authority over financial records.
 
+## Public code
+
+The public repository includes one small, runnable part of RockstarOS:
+
+- [**Control Core**](packages/control-core) -- approval gates, execution readiness, and distinct outcome receipts.
+
+```bash
+cd packages/control-core
+npm test
+```
+
+This is a deliberately narrow release. It demonstrates functioning RockstarOS behavior without publishing the complete OS, hardware implementation, local LLM design, credentials, or production integrations.
+
 ## For authorized contributors
 
 The development source of record is the private [`k999ln/rock`](https://github.com/k999ln/rock) repository. Contributors with access can move directly to the relevant system below. GitHub returns a 404 page to visitors without permission.
@@ -91,7 +107,7 @@ This repository contains the approved Avokado Mini product concept, the Rockstar
 
 ## License
 
-Reuse terms will be stated in a top-level `LICENSE` before source code is released. Third-party code, images, and fonts remain subject to their respective licenses.
+The public code can be inspected, but no reuse license has been granted yet. Third-party code, images, and fonts remain subject to their respective licenses.
 
 ---
 
