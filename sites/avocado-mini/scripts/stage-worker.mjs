@@ -1,10 +1,12 @@
-import { copyFile, mkdir, rm, writeFile } from 'node:fs/promises';
+import { copyFile, cp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 await rm(resolve(root, 'dist/server/.wrangler'), { recursive: true, force: true });
 await mkdir(resolve(root, 'dist/server'), { recursive: true });
 await mkdir(resolve(root, 'dist/.openai'), { recursive: true });
+await rm(resolve(root, 'dist/.openai/drizzle'), { recursive: true, force: true });
+await cp(resolve(root, 'drizzle'), resolve(root, 'dist/.openai/drizzle'), { recursive: true });
 await copyFile(resolve(root, 'worker/index.js'), resolve(root, 'dist/server/index.js'));
 await copyFile(resolve(root, '.openai/hosting.json'), resolve(root, 'dist/.openai/hosting.json'));
 await writeFile(resolve(root, 'dist/server/wrangler.json'), JSON.stringify({
