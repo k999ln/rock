@@ -69,18 +69,29 @@ RockstarOS gives Avokado Mini a clear path from an idea to a verified result.
 - Fixtures, sandboxes, previews, and production environments are never treated as interchangeable.
 - AI does not receive private keys or unrestricted authority over financial records.
 
-## Public code
+## Public code and installer
 
-The public repository includes one small, runnable part of RockstarOS:
+The public repository includes runnable, deliberately bounded parts of RockstarOS:
 
 - [**Control Core**](packages/control-core) -- approval gates, execution readiness, and distinct outcome receipts.
+- [**Sky + Zema Core**](packages/sky-zema-core) -- a local tool catalog, explicit Sky-to-Zema handoff, workflow state, and consent-gated anonymous tool events.
+- [**Sky + Zema Public Preview**](apps/sky-zema-preview) -- a local browser experience using the public core.
+- [**Public Preview Installer**](installer) -- a guarded local installer for macOS and Linux.
 
 ```bash
-cd packages/control-core
-npm test
+git clone https://github.com/avokado-ink/RockstarOS.git
+cd RockstarOS
+./installer/install-public-preview.sh
+~/.local/share/rockstaros-public-preview/bin/rockstaros-public-preview
 ```
 
-This is a deliberately narrow release. It demonstrates functioning RockstarOS behavior without publishing the complete OS, hardware implementation, local LLM design, credentials, or production integrations.
+Then open <http://127.0.0.1:4173>.
+
+Telemetry is off by default. Even when a receiver is configured, the user must opt in. The public client permits only package and tool identifiers, a random installation identifier, outcome, duration, and timestamp. It rejects prompts, chats, results, files, credentials, and personal information.
+
+The installer above installs the runnable public preview; it does not replace the host operating system. The native QEMU image is not public because its product-license, production-signing, signed-candidate acceptance, and public-release gates are incomplete.
+
+This release demonstrates functioning RockstarOS behavior without publishing the complete OS, hardware implementation, local LLM design, account data, credentials, or production integrations.
 
 ## For authorized contributors
 
@@ -103,7 +114,7 @@ The development source of record is the private [`k999ln/rock`](https://github.c
 
 ## Public boundary
 
-This repository contains the approved Avokado Mini product concept, the RockstarOS software overview, and public visual material. Engineering specifications, hardware implementation, local AI design, credentials, user data, internal operations, and restricted source code remain private.
+This repository contains the approved Avokado Mini product concept, the RockstarOS software overview, public visual material, Control Core, and the bounded Sky + Zema public preview. Engineering specifications, hardware implementation, local AI design, account data, credentials, production integrations, native OS images, internal operations, and the restricted source tree remain private.
 
 ## License
 
