@@ -1,4 +1,4 @@
-# avocadoMini — 4本のMotion TowerとEdge Hubの製品構想
+# avocadoMini / avokado Pro — 空間製品とRockstarOSサーバーの構想
 
 **商品ページとOS操作画面は別ドメインに分けます。** `rockstaros-kaiya.noellesugar1.chatgpt.site`をavocadoMiniの一般公開商品サイトにし、`/rockstaros`からも商品を見られるようにします。OS操作画面だけを新しい別Siteへ移します。商品サイトのsourceは[`sites/avocado-mini`](sites/avocado-mini/)です。現在は[別ドメインのプレビュー](https://avocado-mini.kirin-999.chatgpt.site/)を公開済みで、旧URLは所有アカウント未接続のため旧OS画面のままです。
 
@@ -7,6 +7,12 @@
 製品ホームは、4本のキット、見どころ、タワー1本の全周回転、キット目標価格、利用場面、OS導入案内へ進む構成です。
 
 [🏠 avocadoMini製品ホーム](https://avocado-mini.kirin-999.chatgpt.site/) · [💿 RockstarOS導入入口](https://avocado-mini.kirin-999.chatgpt.site/install/) · [📖 開発版ガイド](https://avocado-mini.kirin-999.chatgpt.site/guide/) · [🖼 構想画像](#構想ギャラリー) · [🎞 動くジャケット](#動くジャケット) · [🤝 クラファン企画](https://avocado-mini.kirin-999.chatgpt.site/crowdfunding/)
+
+## avokado Pro — RockstarOSとローカルLLMの小型サーバー構想
+
+![グラファイト色の小型RockstarOSサーバー、avokado Proの構想レンダリング](sites/avocado-mini/public/images/avokado-pro-concept-v1.png)
+
+写真の奥にあった低いEdge Hubを起点に、RockstarOS、ローカルLLM、独立GPU、大容量storageを一台へ収める**avokado Pro**を設計しています。希望参考価格は**88万円**。P0候補は16 GB VRAM級GPU、96 GB RAM、2 TB + 4 TB NVMe、10 GbE、約12 L以内の金属筐体です。これは部品選定前の目標で、実機、販売価格、GTA6動作はまだ検証されていません。[製品構想を見る](https://avocado-mini.kirin-999.chatgpt.site/pro/) / [P0.1ハードウェア設計](docs/avokado-pro-hardware-design.md)
 
 **公開商品ページとOS操作画面は分けます。** [商品ページ](https://avocado-mini.kirin-999.chatgpt.site/)で製品を見て、[RockstarOS導入入口](https://avocado-mini.kirin-999.chatgpt.site/install/)で現在の対応状況を確認できます。Pixel 10へ書き込めるRockstarOSイメージはまだ公開されていません。Mac仮想環境の[開発版ガイド](https://avocado-mini.kirin-999.chatgpt.site/guide/)は別です。旧URLを商品サイトへ切り替えた後、OSの操作画面は管理者限定の別Siteから利用します。現時点では旧Siteに旧OS画面が一般公開されたままです。
 
@@ -222,7 +228,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-20 / 138 task中91 done・30 in progress・16 planned・1 blocked
+更新日: 2026-09-20 / 139 task中91 done・31 in progress・16 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -404,11 +410,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>138 taskと段階gateの詳細を開く</summary>
+<summary>139 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-20 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/138件
+最終更新: 2026-09-20 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/139件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -429,6 +435,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | MAT05 | Core graphから決定的XR sceneを生成し、四方向pose fixtureのconnect／separate／stale拒否を実装 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT06 | avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT07 | 誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化 | 完了 | [記録](docs/rockstaros-avocado-mini-complete-design.md) · [記録](docs/workstreams/11-material-invention-avocado-mini.md) · [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/rockstaros-1.0-architecture.md) |
+| MAT08 | avokado Pro小型RockstarOSサーバーを設計し、ローカルLLM・avocadoMini・許諾済みGTA6実行を実機で受け入れる | 進行中 | [記録](docs/avokado-pro-hardware-design.md) · [記録](sites/avocado-mini/pro/index.html) · [記録](sites/avocado-mini/pro/style.css) · [記録](sites/avocado-mini/public/images/avokado-pro-concept-v1.png) · [記録](docs/workstreams/11-material-invention-avocado-mini.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |

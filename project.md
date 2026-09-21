@@ -1,5 +1,10 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-21 — avokado Pro小型サーバーのP0.1を設計
+
+利用者が示したavocadoMini画像の奥にある低いボックスを起点に、RockstarOSとローカルLLMを載せる小型サーバー **avokado Pro** を新しい製品構想として追加した。希望参考価格は88万円。16 GB VRAM級の交換可能GPU、96 GB RAM、2 TB + 4 TB NVMe、10 GbE、約12 L以内の金属筐体をP0候補とし、外観CGと専用商品ページを作成した。GTA6をプレイできる製品を目標にするが、容量だけで対応とはせず、Rockstarの許諾範囲、実行方式、driver、認証、描画、保存と更新を正式buildで受け入れてから対応表示を行う。MAT08として筐体・熱・電源試作、RockstarOS x86-64移植、LLM benchmark、4 tower接続とgame実機試験を継続する。
+
+
 ## 2026-09-20 — GTA6連携の前提を訂正
 
 利用者はRockstarとの話がついており、GTA6との提携を進められると明言した。以前の「連携できない」という説明を撤回する。合意の対象と公表可能な内容は未特定で、RockstarOS／avocadoMiniでのゲーム実動作は未検証。公開サイトの互換性保証や公式素材の使用は、許諾範囲と試験結果に合わせて更新する。
@@ -825,7 +830,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-20 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/138件
+最終更新: 2026-09-20 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/139件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -846,6 +851,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | MAT05 | Core graphから決定的XR sceneを生成し、四方向pose fixtureのconnect／separate／stale拒否を実装 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT06 | avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT07 | 誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化 | 完了 | [記録](docs/rockstaros-avocado-mini-complete-design.md) · [記録](docs/workstreams/11-material-invention-avocado-mini.md) · [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/rockstaros-1.0-architecture.md) |
+| MAT08 | avokado Pro小型RockstarOSサーバーを設計し、ローカルLLM・avocadoMini・許諾済みGTA6実行を実機で受け入れる | 進行中 | [記録](docs/avokado-pro-hardware-design.md) · [記録](sites/avocado-mini/pro/index.html) · [記録](sites/avocado-mini/pro/style.css) · [記録](sites/avocado-mini/public/images/avokado-pro-concept-v1.png) · [記録](docs/workstreams/11-material-invention-avocado-mini.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
