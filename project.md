@@ -2,7 +2,7 @@
 
 ## 2026-09-21 — avokado Pro小型サーバーのP0.1を設計
 
-利用者が示したavocadoMini画像の奥にある低いボックスを起点に、RockstarOSとローカルLLMを載せる小型サーバー **avokado Pro** を新しい製品構想として追加した。希望参考価格は88万円。16 GB VRAM級の交換可能GPU、96 GB RAM、2 TB + 4 TB NVMe、10 GbE、約12 L以内の金属筐体をP0候補とし、外観CGと専用商品ページを作成した。GTA6をプレイできる製品を目標にするが、容量だけで対応とはせず、Rockstarの許諾範囲、実行方式、driver、認証、描画、保存と更新を正式buildで受け入れてから対応表示を行う。MAT08として筐体・熱・電源試作、RockstarOS x86-64移植、LLM benchmark、4 tower接続とgame実機試験を継続する。
+利用者が示したavocadoMini画像の奥にある低いボックスを起点に、RockstarOSとローカルLLMを載せる小型サーバー **avokado Pro** を新しい製品構想として追加した。希望参考価格は88万円。16 GB VRAM級の交換可能GPU、96 GB RAM、2 TB + 4 TB NVMe、10 GbE、約12 L以内の金属筐体をP0候補とし、外観CGと専用商品ページを作成した。GTA6をプレイできる製品を目標にするが、容量だけで対応とはせず、Rockstarの許諾範囲、実行方式、driver、認証、描画、保存と更新を正式buildで受け入れてから対応表示を行う。製品Site v27（source `456bc5889199755716b93e59a778a7d984810396`）として公開し、専用ページ `/pro/` の画像、仕様、価格、導線を公開画面で確認した。MAT08として筐体・熱・電源試作、RockstarOS x86-64移植、LLM benchmark、4 tower接続とgame実機試験を継続する。
 
 
 ## 2026-09-20 — GTA6連携の前提を訂正
