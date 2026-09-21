@@ -1,5 +1,21 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-21 — ゲーム中心・生活OS・衛星通信の方針とmain統合の明示承認
+
+利用者はゲーム機を主に生活全体を豊かにするOSへ育て、衛星通信で身近な環境へ届ける方向を示し、「ちゃんと更新してmainにあげて」と依頼した。この承認はE1設計と今回追補のmain統合に限る。2026-09-09の承認履歴は改変せず、force push、Site配備、衛星打上げ、通信契約、機材購入、実資金へ拡張しない。
+
+主担当Material Invention / avocadoMiniのROCKとしてREADME、製品ベースv1.89、全体設計、E1追補、設計台帳、進捗を同期する。ゲーム内の入力・描画とローカル保存は外部回線から独立する到達設計、衛星は外付けゲートウェイから評価する通信手段、生活機器は個別同意と結果照合を持つ別adapterとした。直接衛星通信・自社衛星群は将来研究で、実装・実回線試験は0。MAT09、四方向契約、Pixel/QEMU、Web capture禁止、金融gateは維持する。
+
+前回source `8a983435d110b6bd6f87176a5b272532f84b8563`の[全体CI](https://github.com/k999ln/rock/actions/runs/35659925923)成功を確認。main `c460578`の公開用README更新は変更せず取り込んだ。今回の追加変更は別SHAとして検証し、最新CIと統合の結果は[PR #27](https://github.com/k999ln/rock/pull/27)のhead、checks、merged状態、merge commitを正本とする。以前の`verification.json`は初回保存時snapshotであり、現在のmain状態を表すものではない。
+
+今回の対象検証は関連Node 21/21、E1参照モデル140項目の再計算一致、project/database/baseline/design/system composition整合、差分の空白検査を通過した。衛星・生活機器の接続試験や実ASR・実機試験には算入しない。main統合前に今回head SHAの全体CIを確認する。
+
+## 2026-09-21 — Mini200 E1の身体・日本語音声設計をGitの正本へ保存
+
+利用者が`k999ln/rock`を正本としてREADMEへの保存を指定したため、main `83649c7256fbd5dafa664a0d2d7bfbf9651a8bfa`から分離した`codex/avocado-mini-e1-voice-design`で作業を開始した。20cmのゲーム機を新しい設計profileとしてREADMEへ追加し、本文、SVG図7枚、候補BOM、計算入力、参照モデル、結果、未記入の実機試験票を保存する。旧P0.2、四方向schema、MAT05/MAT06、Pixel/QEMU、Webのcamera/mic禁止と既存料金・資金gateは変更しない。元の利用者提供P0.2原本や重複PDF/DOCX/PNG/ZIPはGitへ追加しない。
+
+主担当はMaterial Invention / avocadoMiniの`ROCK`、資料はMAT08、後続のE1実装・実機受入はMAT09。現行Material Coreは候補graphのsandbox、faster-whisperはcandidate、既存四方向契約はE1前面ステレオへ未適合であり、製品runtimeを変更したとは表示しない。実音声・実機試験は0、外観の一致、実主基板、ピン配線、物理ミュート、OS統合は未確定。次はE1専用入力profileとadapter、実部品・音声の縦断試作を受け入れる。参照モデル140項目の再計算一致、関連20テスト、型検査、製品lintを確認した。ローカル全体verifyはNode試験が完了しないため全体PASSには算入せず、[検証記録](docs/avocado-mini-mini200-e1/verification.json)へ残す。main mergeとSite配備は未実施。MAT08の完了は資料・参照モデルの保存だけで、MAT09の製品完成を意味しない。
+
 ## 2026-09-20 — Zemaの名前表示とチャットルームを再設計し、実行を操作確認
 
 利用者が名前の重複と会話画面の見た目を指摘したため、Zema名と担当Botをヘッダーで整理し、Botの定型自己紹介・重複進捗を除去した。チャット本文と実行カードを同じ暗色に揃え、Bot選択時は新しい会話へ切り替え、依頼文をMr.系Toolの入力欄へ自動で引き継ぐ。返信IDをUUIDにして履歴復元後の重複を防ぎ、ローカル会話モデルが使えない場合もToolの実行導線を一つの返答で示す。localhost:3001では架空のココナラ案件チェック1件、出典整理2件を実行し、結果の会話表示、2通目の継続、履歴復元、390px幅を確認した。`npm run verify`は製品350件、Fashion 19件、仕事API149項目とbuildを含めて合格。モデルの橋渡し先4317番は起動していないため、自然なAI返答の成功は未確認。担当はROCK、外部サービスへの送信は行っていない。
@@ -784,7 +800,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-20 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/136件
+最終更新: 2026-09-21 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 92/138件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -805,6 +821,8 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | MAT05 | Core graphから決定的XR sceneを生成し、四方向pose fixtureのconnect／separate／stale拒否を実装 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT06 | avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT07 | 誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化 | 完了 | [記録](docs/rockstaros-avocado-mini-complete-design.md) · [記録](docs/workstreams/11-material-invention-avocado-mini.md) · [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/rockstaros-1.0-architecture.md) |
+| MAT08 | Mini200 E1のゲーム中心・生活拡張・衛星通信方針と20cm本体・音声をREADME・図・参照モデルへ保存（実機未受入） | 完了 | [記録](docs/avocado-mini-mini200-e1/README.md) · [記録](docs/avocado-mini-mini200-e1/design.md) · [記録](docs/avocado-mini-mini200-e1/engineering/verify_all.py) · [記録](docs/avocado-mini-mini200-e1/verification.json) · [記録](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
+| MAT09 | Mini200 E1専用入力profile・Core adapter・ゲーム／ASR／console OSと20cm実機を独立受入 | 未着手 | [記録](docs/avocado-mini-mini200-e1/README.md) · [記録](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |

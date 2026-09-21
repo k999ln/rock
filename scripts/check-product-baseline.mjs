@@ -952,7 +952,9 @@ export function validateBaseline(
       data.launchPage?.serviceDetailsLocation === 'os_home_after_setup' &&
       data.marketPositioning?.customerFacingFocus === 'hardware_products' &&
       data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
-      data.marketPositioning?.leadHardwareForm === 'motorized_telescopic_sensor_tower_concept' &&
+      data.marketPositioning?.leadHardwareForm === 'mini200_game_console_design' &&
+      data.marketPositioning?.previousLeadHardwareForm === 'motorized_telescopic_sensor_tower_concept' &&
+      data.marketPositioning?.legacyReferencePriceAppliesTo === 'motion_tower_p0_kit_not_mini200_e1' &&
       data.marketPositioning?.avocadoMiniStage ===
         'design_only_no_physical_prototype_or_sales' &&
       data.launchPage?.primaryAction === 'view_avocado_mini' &&
@@ -978,6 +980,23 @@ export function validateBaseline(
       turntableSource.includes('購入する') &&
       turntableSource.includes('/rockstaros/guide#install'),
     'avocadoMini製品ホームとOSホームを分け、製品から導入ガイドへ進めてください',
+  );
+  requireValue(
+    data.gameFirstLifeVision?.primaryExperience === 'game_console_then_life_enrichment' &&
+      data.gameFirstLifeVision?.localAutonomySeparateFromConnectivity === true &&
+      data.gameFirstLifeVision?.localGameLoopRequiresInternet === false &&
+      data.gameFirstLifeVision?.offlineScope === 'installed_supported_local_features_only' &&
+      data.gameFirstLifeVision?.connectivityProposal?.includes('external_satellite_gateway') &&
+      data.gameFirstLifeVision?.directSatellite === 'future_research_not_integrated' &&
+      data.gameFirstLifeVision?.ownSatelliteConstellation === 'future_research_not_authorized_for_execution' &&
+      data.gameFirstLifeVision?.connectivityGrantsExecutionAuthority === false &&
+      data.gameFirstLifeVision?.lifeDeviceActionsRequireScopedConsent === true &&
+      data.gameFirstLifeVision?.automaticReplayOfExternalActionsOnReconnect === false &&
+      data.gameFirstLifeVision?.runtimeIntegrated === false &&
+      data.gameFirstLifeVision?.satelliteFieldTests === 0 &&
+      data.gameFirstLifeVision?.lifeDeviceFieldTests === 0 &&
+      data.gameFirstLifeVision?.existingPixelAndQemuGatesPreserved === true,
+    'ゲーム中心の生活OS設計と衛星通信・自律性・権限・未受入の境界を維持してください',
   );
   const studioSource = read(resolve(root, 'components/rock-studio.tsx'));
   const homeSource = read(resolve(root, 'components/home-screen.tsx'));
