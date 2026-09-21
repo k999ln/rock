@@ -881,6 +881,65 @@
     "source-at-sha",
     "checks-at-sha"
   ],
+  "creativeEcosystemProviderArchitecture": {
+    "requestedAt": "2026-09-21",
+    "status": "approved_design_partial_adapter_scaffold_live_providers_not_accepted",
+    "fixedVendorWorkflow": false,
+    "osRebuildRequiredForProviderAddition": false,
+    "surfaces": {
+      "zema": "request_plan_progress_approval_stop_result_history",
+      "ipStudio": "ip_asset_rights_version_and_lineage_authority",
+      "sky": "capability_discovery_provider_selection_connection_and_revocation",
+      "wallet": "verified_cost_revenue_and_receipt_reconciliation"
+    },
+    "capabilities": [
+      "image.generate",
+      "video.generate",
+      "model3d.generate",
+      "voice.generate",
+      "asset.transform",
+      "game.asset.publish",
+      "game.experience.publish",
+      "social.publish",
+      "reward.grant",
+      "analytics.read"
+    ],
+    "selectionModes": [
+      "ask",
+      "preferred_with_preapproved_fallback",
+      "policy_within_cost_quality_speed_privacy_rights_and_region_constraints"
+    ],
+    "providerManifestRequires": [
+      "provider_id_and_version",
+      "capabilities_and_input_output_schemas",
+      "authentication_and_data_destinations",
+      "retention_and_deletion",
+      "commercial_rights_and_regions",
+      "cost_and_limits",
+      "timeout_cancellation_reconciliation_and_revocation"
+    ],
+    "assetRegistryRequires": [
+      "asset_id_and_source_ip",
+      "input_and_generation_digest",
+      "provider_model_and_version",
+      "output_hash_and_provenance",
+      "rights_and_cost",
+      "provider_receipt",
+      "review_publish_and_game_delivery_state"
+    ],
+    "externalWritesRequireExactApproval": true,
+    "fallbackMayChangeDestinationCostOrRightsWithoutReapproval": false,
+    "unsupportedCapabilityEmulation": false,
+    "exampleProvidersAreNonBinding": [
+      "Higgsfield",
+      "Roblox",
+      "YouTube",
+      "Instagram",
+      "GTA_FiveM"
+    ],
+    "architecture": "docs/sky-mcp-architecture.md",
+    "toolDesign": "docs/sky-tools-complete-design.md"
+  },
   "commercialPolicy": "Sky has no upfront ToC subscription charge. A trusted provider adapter may settle only externally verified automation earnings linked to an Execution Receipt. Direct operating costs are recovered first; Sky then collects at most USD 8.88 per user per UTC month from the remaining settled earnings. Zero earnings means zero fee; no debt, carry-forward or card charge. Sky charges tob no registration, connection, publication or base usage fee and takes zero Sky commission from tob tool sales. Live collection or payout requires verified sales, payment and payout providers, merchant and beneficiary details, disclosures, credentials, sandbox acceptance and owner confirmation. Rock ATM fee remains zero per RQ15; game fees are unspecified.",
   "skyNetworkEconomy": {
     "tobSkyFeeMinor": 0,

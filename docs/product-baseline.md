@@ -1,3 +1,5 @@
+2026-09-21 IP／動画／ゲーム展開の交換可能Provider方針: 利用者は、Higgsfield、Roblox、YouTube、GTA等を固定した一つの型にせず、同じ制作・配信・ゲーム導入の流れへ他の生成サービス、ゲーム、SNS、Toolを追加し、利用者が選択または条件付き自動選択できる構成を指定した。IP Studioは特定Provider名ではなく共通capabilityで仕事を要求し、Skyはversion付きmanifest、権限、送信先、費用、商用利用条件、地域、品質条件、稼働状態を比較してadapterを選ぶ。生成物は共通Asset Registryへprovenance、権利、費用、hash、版、Provider receiptとともに保存し、公開、ゲーム提出、報酬付与などのexternal-writeは対象と内容を固定した本人承認を必須とする。Providerの追加・差替えにOS imageの再buildを要求せず、未対応capabilityを別機能で偽装しない。
+
 2026-09-20 Motion Tower P0.2設計書の採用: 利用者が「RockstarOS Motion Tower P0 Engineering Package v2」を設計書として明示したため、avocadoMiniの公開商品説明では旧構想画像の寸法・単体価格・操作表現よりP0.2を優先する。1キットはMotion Tower 4本とEdge Hub 1台。税込41万円はキット目標価格であり1本の価格ではない。収納時850 mm、自立時最大1,200 mm、壁ドックまたは床ラッチ検出時のみ最大1,800 mm。ベース径220 mm、展開脚の外径520 mm、各塔3カメラ、起動時は前方180度を順次走査。ARは外部端末へ表示し、LLMは案内と説明に限り、動作・録画・安全解除を許可しない。P0.2は見積り・試作・検証を始めるための資料で、量産リリースではない。旧160 mmベース、単体塔41万円、無条件1,800 mmの表示は撤回する。利用者提供PDFは公開リポジトリへ無断複製しない。
 
 2026-09-20 別ドメインと管理者限定の確定: 利用者はavocadoMini製品サイトをOSサイトとは別ドメインで一般公開し、`rockstaros-kaiya.noellesugar1.chatgpt.site`のWeb OS利用画面は管理者限定と明示した。製品専用の静的Site sourceは`sites/avocado-mini`に置き、`https://avocado-mini.kirin-999.chatgpt.site`へ一般公開した。製品、公開導入ガイド、募集前クラファン企画だけを含める。公開製品サイトからOS画面へのリンクは設けない。旧OS Siteのアクセス設定は所有アカウントへの接続待ちであり、現在の公開状態を安全と呼ばない。
@@ -567,6 +569,12 @@ Walletは収益・費用・receipt・払出し状態に加え、合法的な税�
 RockstarOSの製品中核は、高性能で交換可能なローカルLLM、offline agent runtime、権限、記憶、仕事、停止・再開、Tool、receipt、更新、rollback、復旧を共通化したAIネイティブOSである。社会的目的はこのCoreを所有する利用者の仕事と生活を便利にし、成果と検証可能な収益機会を広げ、より豊かにすることである。「OSが製品中核であること」と「OSを作る作業自体を社会的目的にしないこと」を両立させる。
 
 SkyはTool・ファンド・接続先を選ぶ第一者system、ZemaはAIチームへの依頼、役割、進捗、承認、停止、結果、履歴を管理する第一者systemとし、最初の実用経路としてCoreを継続検証する。仕事や生活を便利にするsystemを優先して追加し、ゲーム、IP／動画生成、VRは利用者の関心に基づく優先的な応用開発系統として関連付ける。特定のTool、ゲーム、生成Provider、金融ProviderをOS imageへ直書きせず、署名、version、capability、本人同意、費用、停止、receiptを持つadapterとして独立更新できるようにする。
+
+IP／動画／ゲームの標準経路は、Zemaの依頼 → IP StudioのIP・素材・権利・版管理 → SkyのCapability Router → 交換可能な生成／配信／ゲームadapter → 共通Asset Registry → 品質・権利・費用・本人承認 → 公開／ゲーム導入 → Wallet／receipt → 反応・売上を次の依頼へ戻す循環とする。Higgsfield、Runway等の動画生成先、Roblox、GTA／FiveM、独自ゲーム等の導入先、YouTube、Instagram等の配信先はadapter例であり、製品契約の固定構成ではない。
+
+共通capabilityは少なくとも `image.generate`、`video.generate`、`model3d.generate`、`voice.generate`、`asset.transform`、`game.asset.publish`、`game.experience.publish`、`social.publish`、`reward.grant`、`analytics.read` を別権限として扱う。Providerは対応する入力・出力schema、認証、データ送信先、保持、商用権利、費用、地域、timeout、取消・結果不明時の照会をversion付きmanifestで宣言する。選択modeは毎回選択、本人が定めた優先Provider＋fallback、費用・品質・速度・privacy・権利条件内の自動選択とし、fallbackで新しい送信先や費用へ変わる場合は黙って送信しない。
+
+生成結果はProvider固有URLだけを正本にせず、Asset ID、元IP／入力素材、生成条件、Provider／model／版、出力hash、権利条件、費用、Provider receipt、公開・ゲーム導入の承認状態を保持する。複数Providerの比較、再生成、組合せは同じjob／asset lineageへ記録し、Tool成功を公開成功、ゲーム反映、売上、権利取得へ自動昇格させない。詳細な接続契約は[Sky MCP接続設計](sky-mcp-architecture.md)、Tool体験は[Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md)を正本とする。
 
 Pixel 10は最初のreference hardwareであり、Googleサービス、カメラ、一般向けブラウザ、ATM、特定ゲームはCoreの起動条件にしない。1.0の到達条件は、所有Pixel上でOS、交換可能な端末内LLM、agent、Sky、Zema、一つの実用Toolのoffline実行・再開・安全な接続を証明すること。現行は固定runtime/modelの試験署名APK実証であり、交換可能な端末内LLMやOS image搭載を達成済みと表示しない。Wallet、ファンド、ゲーム等の進捗を過大表示せず、各systemは個別gateに合格した範囲だけ利用可能とする。Jevは[LLM・評価モデル設計](llm-evaluation-architecture.md)に従うSkyの任意remote evaluatorで、local planner、Broker authority、OpenAI接続2件と区別する。
 

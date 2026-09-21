@@ -1,6 +1,6 @@
 # Sky MCP接続設計
 
-最終更新: 2026-09-12
+最終更新: 2026-09-21
 
 ## 目的
 
@@ -63,6 +63,50 @@ ToB
 - [MCP Tasks](https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/tasks)
 - [Official MCP Registry](https://modelcontextprotocol.io/registry/about)
 - [Registry publish quickstart](https://modelcontextprotocol.io/registry/quickstart)
+
+## IP／生成／ゲーム／配信を交換可能にするCapability Router
+
+Higgsfield、Roblox、YouTube、GTA等の固有名は接続例であり、IP StudioやRockstarOSの業務契約へ直書きしない。Zemaは依頼を閉じたjobへ整理し、IP StudioはIP、素材、権利、版、派生関係の正本を持つ。Skyはjobが要求するcapabilityと本人の条件に合うProvider adapterを選び、Brokerが外部送信、費用、公開、ゲーム提出、報酬付与を強制する。
+
+```text
+Zema request
+    │
+    ▼
+IP Studio job + IP / rights / version
+    │
+    ▼
+Sky Capability Router
+    ├─ image.generate  ──> Provider A / Provider B / local / manual
+    ├─ video.generate  ──> Higgsfield / other generator / local
+    ├─ game.*          ──> Roblox / GTA-FiveM / engine / custom SDK
+    ├─ social.publish  ──> YouTube / Instagram / other channel
+    └─ analytics.read  ──> accepted platform adapters
+    │
+    ▼
+Asset Registry ──> review / exact approval ──> publish or game delivery
+    │
+    └────────────────> receipt / result / revenue feedback
+```
+
+### Provider manifest
+
+各adapterは最低限、Provider IDと版、提供capability、入力／出力schema、認証方式、外部送信先、保存・削除条件、商用利用条件、対象地域、費用の計算方法と上限、timeout、取消、結果不明時の照会、失効方法を宣言する。Provider固有機能はversion付きextensionへ分離し、共通capabilityとして存在しない機能を別操作で模倣しない。
+
+### 共通jobとAsset
+
+jobはProvider名ではなく、目的、capability、入力Asset、出力要件、品質条件、予算上限、privacy、商用権利、期限、許可した送信先を固定する。結果は共通Assetとして、Asset ID、元IP、入力と生成条件のdigest、Provider／model／版、出力hash、provenance、権利、費用、Provider receipt、review状態、公開・ゲーム導入の承認状態を保持する。Provider固有URLだけを長期正本にしない。
+
+### 選択とfallback
+
+- `ask`: 利用者が候補、費用、送信先、権利条件を比較して毎回選ぶ。
+- `preferred`: 本人が定めた優先Providerを使い、失敗時は許可済みfallbackだけを試す。
+- `policy`: 費用、品質、速度、privacy、権利、地域の本人policy内で自動選択する。
+
+fallbackで送信先、外部費用、権利条件、公開範囲が変わる場合は再承認する。同じidempotency keyを別Providerへそのまま流用せず、親jobに結び付くProvider別attemptを作る。複数Providerの比較結果は一つのasset lineageへ保存する。
+
+### 拡張の完了条件
+
+新しい生成サービス、ゲーム、SNS、Toolは、OS imageやIP Studio本体を再buildせず、審査済みmanifestとadapterで追加できることを目標にする。追加完了は、capability交渉、schema検査、秘密非保存、費用表示、外部作用承認、停止、timeout後照会、receipt、Asset lineage、失効をsandboxで通した時点とする。catalog登録や接続設定画面だけを実Provider成功と表示しない。
 
 ## 現在地と未実装の境界
 

@@ -1,5 +1,9 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-21 — IP／動画／ゲーム展開を交換可能Provider構成へ固定
+
+利用者の明示指示により、Higgsfield、Roblox、YouTube、GTA等を固定した一つの型ではなく、他の生成サービス、ゲーム、SNS、Toolを追加・選択・差替えできるCapability Router方式を正式設計へ保存した。Zemaの依頼、IP StudioのIP／Asset／権利／版管理、SkyのProvider選択、共通Asset Registry、本人承認、ゲーム・SNS展開、Wallet／receipt、反応を次の制作へ戻す循環をRQ48へ具体化した。毎回選択、優先Provider＋許可済みfallback、本人policy内の自動選択を定義し、送信先・費用・権利が変わるfallbackは再承認を必須とする。`docs/sky-mcp-architecture.md`と`docs/sky-tools-complete-design.md`、機械可読製品ベースを同期した。これは設計保存と既存adapter scaffoldの整理であり、Higgsfield、Roblox、YouTube、GTAその他の実Provider接続・本番生成・公開・ゲーム反映を完了した記録ではない。
+
 ## 2026-09-20 — Zemaの名前表示とチャットルームを再設計し、実行を操作確認
 
 利用者が名前の重複と会話画面の見た目を指摘したため、Zema名と担当Botをヘッダーで整理し、Botの定型自己紹介・重複進捗を除去した。チャット本文と実行カードを同じ暗色に揃え、Bot選択時は新しい会話へ切り替え、依頼文をMr.系Toolの入力欄へ自動で引き継ぐ。返信IDをUUIDにして履歴復元後の重複を防ぎ、ローカル会話モデルが使えない場合もToolの実行導線を一つの返答で示す。localhost:3001では架空のココナラ案件チェック1件、出典整理2件を実行し、結果の会話表示、2通目の継続、履歴復元、390px幅を確認した。`npm run verify`は製品350件、Fashion 19件、仕事API149項目とbuildを含めて合格。モデルの橋渡し先4317番は起動していないため、自然なAI返答の成功は未確認。担当はROCK、外部サービスへの送信は行っていない。
