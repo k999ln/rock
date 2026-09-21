@@ -4,6 +4,8 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
+- Rocket Starの公開構想ページ`/rocket-star/`を追加。複数の衛星とロケットが軌道上で通信し、認証済み受信機能を持つavocadoMiniへつなぐ流れを、独自の軌道ビジュアルと全画面スクロールで説明する。RockstarOS更新だけでは未搭載の無線ハードを追加できないため、対応無線・認証・周波数利用・ネットワーク検証・サービス提供を利用条件として明記。資金提供は運営者、資金使途、権利、リスク、日程、取消条件、決済方法が公開されるまで受け付けない。製品Site v33（source `c1fa00ab7299d2c4174c0e55fdeee397e537f18b`）として一般公開し、デスクトップとスマートフォン幅で表示を確認した。
+
 - avocadoMini予約販売に最終確認、規約同意記録、販売条件・privacy表示、Stripe idempotent retry、通信不明・期限切れ予約の在庫復旧、試行履歴cleanup、Bearer保護の注文一覧・reconcile APIを追加。入力本文上限をheader非依存にし、D1へ規約版・同意時刻・Stripe期限・試行時刻を追加した。試験6件、静的build、閉鎖時の最終確認・法定表示・privacy画面を確認し、製品Site v32（source `169266246a80b9c461be0b613db261f6008889e0`）を一般公開した。販売者情報、送料・発送・取消条件、税込送料込総額、在庫、Stripe秘密情報、管理tokenが揃うまでfail closedを維持する。
 
 - avocadoMiniの商品映像に、行ごとのクリップ表示、強いぼかしから段階的に合焦する冒頭、本文と操作の時間差、回転ツアー章切替時の再表示を追加。章が切り替わる0.78秒だけ製品面へフォーカス移動を入れ、説明文は遅れて鮮明になる。動きを減らす設定では演出を無効化する。製品Site v31（source `22d0fa4832f80d931286186e5f05180a6b9ac2f1`）として一般公開し、静的buildとデスクトップ表示を確認した。

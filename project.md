@@ -1008,3 +1008,10 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 2026-09-20 — avocadoMini製品サイト全体のデザイン統一
 
 利用者の指示で、センサーが正面を向く場面の深い青と青白い光を、冒頭、製品ハイライト、デザイン説明、価格、OS導入案内、導入・クラファンの下層ページまで共通の表現にした。冒頭の早すぎる価格表示を取り除き、一周後だけに残した。390px幅では光の位置と見出しの折り返しを調整。製品Site v18（source `12801994b732746f6a1eccc7b1e0e5d1296001d7`）を公開し、公開画面で見出しが1行であることを確認した。GitHub mainは未反映で、既存PRへ更新する。
+# 2026-09-21 — Rocket Star orbital communication access page
+
+- Added `/rocket-star/` as a dedicated public concept page for a planned orbital communication network connecting Rocket Star spacecraft with compatible avocadoMini hardware through RockstarOS.
+- Created original orbital artwork in the avocadoMini satin-metal and cyan-sensor language, plus a full-height scroll sequence covering launch, relay, receiver hardware, and future software activation.
+- The page explains that a RockstarOS update still requires certified radio hardware, spectrum access, service availability, and network validation. It does not claim that software alone can add missing receiver hardware.
+- Funding access remains fail closed. No payment, investment, reward, ownership, return, or launch allocation is accepted until the operator identity, mission scope, use of funds, contributor rights, schedule, risks, cancellation terms, and payment handling are published.
+- Published as avocadoMini Site v33 from source `c1fa00ab7299d2c4174c0e55fdeee397e537f18b`; the public `/rocket-star/` route, artwork, navigation, scroll chapters, receiver explanation, and disabled funding state were verified on desktop and mobile layouts.

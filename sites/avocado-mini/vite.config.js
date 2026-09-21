@@ -12,6 +12,7 @@ export default defineConfig({
         guide: resolve(import.meta.dirname, 'guide/index.html'),
         install: resolve(import.meta.dirname, 'install/index.html'),
         crowdfunding: resolve(import.meta.dirname, 'crowdfunding/index.html'),
+        rocketStar: resolve(import.meta.dirname, 'rocket-star/index.html'),
         preorder: resolve(import.meta.dirname, 'preorder/index.html'),
         preorderConfirm: resolve(import.meta.dirname, 'preorder/confirm/index.html'),
         preorderComplete: resolve(import.meta.dirname, 'preorder/complete/index.html'),
