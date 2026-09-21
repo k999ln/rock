@@ -1,66 +1,81 @@
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const story = document.querySelector('.rocket-story');
-const sticky = document.querySelector('.rocket-story-sticky');
-const image = document.querySelector('.rocket-story-image');
-const word = document.querySelector('.rocket-story-word');
-const chapters = [...document.querySelectorAll('.rocket-chapter')];
-const progress = document.querySelector('#rocket-progress');
-const step = document.querySelector('#rocket-step');
-const status = document.querySelector('#rocket-status');
-const words = ['ORBIT', 'RELAY', 'RECEIVE', 'UPDATE'];
-let activeChapter = -1;
+const launch = document.querySelector('.launch-scroll');
+const sticky = document.querySelector('.launch-sticky');
+const background = document.querySelector('.launch-cinematic-bg');
+const panels = [...document.querySelectorAll('.launch-panel')];
+const rail = [...document.querySelectorAll('.launch-rail span')];
+const progressBar = document.querySelector('#launch-progress');
+const step = document.querySelector('#launch-step');
+const altitude = document.querySelector('#launch-altitude');
+const labels = [
+  ['01 / PURPOSE', 'GROUND'],
+  ['02 / SYSTEM', 'ASCENT'],
+  ['03 / FUNDING', 'ORBIT'],
+];
+let activeStage = -1;
 let frame = 0;
 
-document.documentElement.classList.add('rocket-motion-ready');
+document.documentElement.classList.add('launch-motion-ready');
 requestAnimationFrame(() => document.body.classList.add('is-ready'));
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+const smooth = (value) => value * value * (3 - 2 * value);
 
-function updateStory() {
+function updateLaunch() {
   frame = 0;
-  if (!story || !sticky) return;
-  const distance = Math.max(1, story.offsetHeight - window.innerHeight);
-  const storyProgress = clamp(-story.getBoundingClientRect().top / distance, 0, 1);
-  const chapter = Math.min(chapters.length - 1, Math.floor(storyProgress * chapters.length));
-  const chapterProgress = (storyProgress * chapters.length) % 1;
+  if (!launch || !sticky) return;
+  const distance = Math.max(1, launch.offsetHeight - window.innerHeight);
+  const progress = clamp(-launch.getBoundingClientRect().top / distance, 0, 1);
+  const stage = progress < 0.32 ? 0 : progress < 0.69 ? 1 : 2;
 
-  if (chapter !== activeChapter) {
-    activeChapter = chapter;
-    chapters.forEach((item, index) => {
-      const visible = index === chapter;
-      item.classList.toggle('is-active', visible);
-      item.setAttribute('aria-hidden', String(!visible));
+  if (stage !== activeStage) {
+    activeStage = stage;
+    panels.forEach((panel, index) => {
+      const visible = index === stage;
+      panel.classList.toggle('is-active', visible);
+      panel.setAttribute('aria-hidden', String(!visible));
     });
-    word.textContent = words[chapter];
-    step.textContent = `${String(chapter + 1).padStart(2, '0')} / 04`;
-    status.textContent = words[chapter];
+    rail.forEach((item, index) => item.classList.toggle('is-active', index === stage));
+    step.textContent = labels[stage][0];
+    altitude.textContent = labels[stage][1];
   }
 
-  const travel = reducedMotion.matches ? 0 : storyProgress;
-  sticky.style.setProperty('--rocket-progress', travel.toFixed(4));
-  sticky.style.setProperty('--chapter-progress', chapterProgress.toFixed(4));
-  image.style.transform = `scale(${1.06 + travel * 0.08}) translate3d(${travel * -2.4}%, ${travel * -1.2}%, 0)`;
-  progress.style.width = `${Math.round(storyProgress * 100)}%`;
+  const motion = reducedMotion.matches ? (stage === 0 ? 0 : stage === 1 ? 0.5 : 1) : progress;
+  const lift = smooth(clamp(motion / 0.3, 0, 1));
+  const orbitExit = smooth(clamp((motion - 0.72) / 0.28, 0, 1));
+  const rocketY = lift * 49 + orbitExit * 53;
+  const rocketScale = 1 - lift * 0.08 - orbitExit * 0.3;
+  const rocketX = 24 - smooth(clamp((motion - 0.45) / 0.42, 0, 1)) * 24;
+  const horizontalScale = window.innerWidth <= 600 ? 0.4 : 1;
+  const groundDrop = smooth(clamp(motion / 0.58, 0, 1)) * 76;
+  const smoke = clamp(Math.min((motion + 0.03) / 0.12, (0.42 - motion) / 0.14), 0, 1);
+  const flame = clamp(Math.min((motion - 0.015) / 0.07, (0.82 - motion) / 0.12), 0, 1);
+  const spaceOpacity = smooth(clamp((motion - 0.2) / 0.55, 0, 1));
+  const atmosphereOpacity = 1 - smooth(clamp((motion - 0.18) / 0.58, 0, 1));
+  const sceneOpacity = 1 - smooth(clamp((motion - 0.48) / 0.48, 0, 1)) * 0.72;
+  const wordOpacity = 1 - smooth(clamp(motion / 0.34, 0, 1));
+
+  sticky.style.setProperty('--launch-progress', motion.toFixed(4));
+  sticky.style.setProperty('--rocket-y', rocketY.toFixed(2));
+  sticky.style.setProperty('--rocket-x', `${(rocketX * horizontalScale).toFixed(2)}vw`);
+  sticky.style.setProperty('--rocket-scale', rocketScale.toFixed(3));
+  sticky.style.setProperty('--ground-drop', `${groundDrop.toFixed(2)}vh`);
+  sticky.style.setProperty('--smoke', smoke.toFixed(3));
+  sticky.style.setProperty('--flame', flame.toFixed(3));
+  sticky.style.setProperty('--space-opacity', spaceOpacity.toFixed(3));
+  sticky.style.setProperty('--atmosphere-opacity', atmosphereOpacity.toFixed(3));
+  sticky.style.setProperty('--scene-opacity', sceneOpacity.toFixed(3));
+  sticky.style.setProperty('--word-opacity', wordOpacity.toFixed(3));
+  background.style.transform = `scale(${1.03 + motion * 0.08}) translate3d(${motion * -1.5}%, ${motion * -2.4}%, 0)`;
+  progressBar.style.width = `${Math.round(progress * 100)}%`;
 }
 
-function scheduleStory() {
+function scheduleLaunch() {
   if (frame) return;
-  frame = requestAnimationFrame(updateStory);
+  frame = requestAnimationFrame(updateLaunch);
 }
 
-const revealTargets = document.querySelectorAll('.rocket-mission, .rocket-receiver, .rocket-funding');
-if (reducedMotion.matches || !('IntersectionObserver' in window)) {
-  revealTargets.forEach((target) => target.classList.add('is-visible'));
-} else {
-  const observer = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      if (entry.isIntersecting) entry.target.classList.add('is-visible');
-    }
-  }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
-  revealTargets.forEach((target) => observer.observe(target));
-}
-
-window.addEventListener('scroll', scheduleStory, { passive: true });
-window.addEventListener('resize', scheduleStory);
-reducedMotion.addEventListener('change', scheduleStory);
-updateStory();
+window.addEventListener('scroll', scheduleLaunch, { passive: true });
+window.addEventListener('resize', scheduleLaunch);
+reducedMotion.addEventListener('change', scheduleLaunch);
+updateLaunch();

@@ -4,7 +4,7 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
-- Rocket Starの公開構想ページ`/rocket-star/`を追加。複数の衛星とロケットが軌道上で通信し、認証済み受信機能を持つavocadoMiniへつなぐ流れを、独自の軌道ビジュアルと全画面スクロールで説明する。RockstarOS更新だけでは未搭載の無線ハードを追加できないため、対応無線・認証・周波数利用・ネットワーク検証・サービス提供を利用条件として明記。資金提供は運営者、資金使途、権利、リスク、日程、取消条件、決済方法が公開されるまで受け付けない。製品Site v33（source `c1fa00ab7299d2c4174c0e55fdeee397e537f18b`）として一般公開し、デスクトップとスマートフォン幅で表示を確認した。
+- Rocket Starの公開構想ページ`/rocket-star/`を、avocadoMiniと同じ黒いスタジオと金属・青いセンサー光の表現へ再設計した。複数機が地上から上がる独自の発射場ビジュアルに、前景のRocket Star、発射台、噴射、煙、地表の後退、大気圏から軌道への変化をスクロール連動で重ねる。表示内容はPurpose、What it does、Fundingの3画面だけとし、RockstarOSを含む接続条件は短い説明に集約した。資金提供と決済は条件公開まで受け付けない。製品Site v34（source `1a78977a0b9272310dfc7e2a062c2ff8bafd7b2e`）として一般公開し、デスクトップと390px幅で表示を確認した。
 
 - avocadoMini予約販売に最終確認、規約同意記録、販売条件・privacy表示、Stripe idempotent retry、通信不明・期限切れ予約の在庫復旧、試行履歴cleanup、Bearer保護の注文一覧・reconcile APIを追加。入力本文上限をheader非依存にし、D1へ規約版・同意時刻・Stripe期限・試行時刻を追加した。試験6件、静的build、閉鎖時の最終確認・法定表示・privacy画面を確認し、製品Site v32（source `169266246a80b9c461be0b613db261f6008889e0`）を一般公開した。販売者情報、送料・発送・取消条件、税込送料込総額、在庫、Stripe秘密情報、管理tokenが揃うまでfail closedを維持する。
 

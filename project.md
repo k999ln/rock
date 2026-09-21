@@ -1015,3 +1015,11 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 - The page explains that a RockstarOS update still requires certified radio hardware, spectrum access, service availability, and network validation. It does not claim that software alone can add missing receiver hardware.
 - Funding access remains fail closed. No payment, investment, reward, ownership, return, or launch allocation is accepted until the operator identity, mission scope, use of funds, contributor rights, schedule, risks, cancellation terms, and payment handling are published.
 - Published as avocadoMini Site v33 from source `c1fa00ab7299d2c4174c0e55fdeee397e537f18b`; the public `/rocket-star/` route, artwork, navigation, scroll chapters, receiver explanation, and disabled funding state were verified on desktop and mobile layouts.
+
+# 2026-09-21 — Rocket Star ground-to-orbit launch film
+
+- Rebuilt `/rocket-star/` around three messages only: Purpose, What it does, and Funding.
+- Replaced the static orbit tour with an original multi-launch ground scene and a separate foreground Rocket Star that rises from its cyan launch ring, ignites, clears the ground, crosses the atmosphere, and reaches orbit as the visitor scrolls.
+- Matched the avocadoMini visual language with black studio space, oversized white type, satin metal, cyan sensor light, soft blur transitions, a compact progress rail, and responsive mobile composition.
+- Funding stays display-only and fail closed. The call to action remains disabled and explicitly states that payments are not open.
+- Published as avocadoMini Site v34 from source `1a78977a0b9272310dfc7e2a062c2ff8bafd7b2e`; the public route and desktop/mobile layouts were verified before release.
