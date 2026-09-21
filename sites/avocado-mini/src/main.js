@@ -135,7 +135,7 @@ function updateProgress() {
   sensorGaze.style.setProperty('--gaze-lower-y', `${productBounds.top + productBounds.height * 0.71}px`);
 
   progressBar.style.width = `${Math.round(motion.yaw / 360 * 100)}%`;
-  angle.textContent = reducedMotion.matches ? '静止表示' : `${Math.round(motion.yaw)}°`;
+  angle.textContent = reducedMotion.matches ? 'STATIC VIEW' : `${Math.round(motion.yaw)}°`;
   updateStory(progress);
 }
 

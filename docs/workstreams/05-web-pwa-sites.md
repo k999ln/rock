@@ -4,6 +4,8 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
+- avocadoMini公開Siteの可視文言、aria label、画像代替文、予約画面の動的状態、予約APIの利用者向けerrorを英語へ統一。英語版の静的build、予約API試験3件、トップ・予約・導入画面の試写を通し、sourceと配布物から日本語文字を除去した。製品Site v29（source `70f544d621c514da9a867ae66747dfc2cc7561bd`）として一般公開した。
+
 - avocadoMiniの予約販売画面とStripe Checkout用Worker・D1注文台帳を実装。1本16万円、4本＋Edge Hub 41万円は利用者指定の税抜予定価格。注文時に全額を受け取る設計で、金額をサーバーで固定し、入金確定は署名済みWebhookのみで処理する。発送時期・送料・販売者名／住所／電話・キャンセル／返金条件・Stripe接続が未確定の間は決済を無効化する。Instagram `kirin.41` は問い合わせ導線であり販売者住所の代替にしない。WEB15の実売上受入はこれらの確定と最終確認画面の法務確認後。
 
 - OS導入ボタンを黒い製品画面に合わせて金属調にし、タワーの青いセンサーを模した光、光沢の移動、矢印の反応を加えた。スマートフォン390px幅とデスクトップで表示し、`/install/`への遷移を確認。製品Site v25（source `bbeb40bd23b568937bdee8eb7e2152b6ab817076`）を一般公開し、公開画面で新しいボタンを確認した。Pixel 10の実インストールは引き続き配布物と安全ゲート待ち。

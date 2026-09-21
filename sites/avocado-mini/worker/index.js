@@ -1,6 +1,6 @@
 const products = {
-  tower: { name: 'avocadoMini Motion Tower 1本', baseJpy: 160000, amountKey: 'PREORDER_TOWER_TOTAL_JPY', capacityKey: 'PREORDER_TOWER_CAPACITY' },
-  kit: { name: 'avocadoMini 4本 + Edge Hub キット', baseJpy: 410000, amountKey: 'PREORDER_KIT_TOTAL_JPY', capacityKey: 'PREORDER_KIT_CAPACITY' },
+  tower: { name: 'avocadoMini Motion Tower · Single', baseJpy: 160000, amountKey: 'PREORDER_TOWER_TOTAL_JPY', capacityKey: 'PREORDER_TOWER_CAPACITY' },
+  kit: { name: 'avocadoMini · 4 Motion Towers + Edge Hub Kit', baseJpy: 410000, amountKey: 'PREORDER_KIT_TOTAL_JPY', capacityKey: 'PREORDER_KIT_CAPACITY' },
 };
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), {
@@ -22,7 +22,7 @@ function offer(env) {
   ].every(value => typeof value === 'string' && value.trim());
   const ready = env.PREORDER_SALES_ENABLED === 'true' && hasTerms && env.PREORDER_TERMS_APPROVED === 'true'
     && env.PREORDER_TOTAL_INCLUDES_SHIPPING === 'true'
-    && !/未定|未確定|tbd/i.test(env.PREORDER_SHIPPING_DATE)
+    && !/undecided|not determined|not finalized|tbd/i.test(env.PREORDER_SHIPPING_DATE)
     && Boolean(env.DB && env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET && env.PREORDER_ABUSE_KEY)
     && Object.entries(amounts).every(([sku, amount]) => amount && amount >= products[sku].baseJpy)
     && Object.values(capacities).every(Boolean);
@@ -69,16 +69,16 @@ async function checkRateLimit(request, env) {
 }
 
 async function createCheckout(request, env) {
-  if (request.headers.get('origin') !== new URL(request.url).origin) return json({ error: '不正な送信元です。' }, 403);
-  if (!request.headers.get('content-type')?.startsWith('application/json')) return json({ error: '入力形式が正しくありません。' }, 415);
-  if (Number(request.headers.get('content-length') || 0) > 1024) return json({ error: '入力が大きすぎます。' }, 413);
+  if (request.headers.get('origin') !== new URL(request.url).origin) return json({ error: 'Invalid request origin.' }, 403);
+  if (!request.headers.get('content-type')?.startsWith('application/json')) return json({ error: 'Invalid request format.' }, 415);
+  if (Number(request.headers.get('content-length') || 0) > 1024) return json({ error: 'The request is too large.' }, 413);
   const configuration = offer(env);
-  if (!configuration.ready) return json({ error: '予約販売は準備中です。' }, 503);
+  if (!configuration.ready) return json({ error: 'Pre-orders are not open yet.' }, 503);
   let body;
-  try { body = await request.json(); } catch { return json({ error: '入力形式が正しくありません。' }, 400); }
+  try { body = await request.json(); } catch { return json({ error: 'Invalid request format.' }, 400); }
   const sku = body?.sku;
-  if (!Object.hasOwn(products, sku)) return json({ error: '商品を選び直してください。' }, 400);
-  if (!await checkRateLimit(request, env)) return json({ error: 'この接続からの予約操作が多すぎます。しばらくしてからお試しください。' }, 429);
+  if (!Object.hasOwn(products, sku)) return json({ error: 'Please select a valid product.' }, 400);
+  if (!await checkRateLimit(request, env)) return json({ error: 'Too many reservation attempts from this connection. Please try again later.' }, 429);
   const product = products[sku];
   const amount = configuration.amounts[sku];
   const orderId = crypto.randomUUID();
@@ -86,7 +86,7 @@ async function createCheckout(request, env) {
   let reserved = false;
   try {
     reserved = await reserve(env, sku, configuration.capacities[sku]);
-    if (!reserved) return json({ error: 'この商品の予約枠は満了しました。' }, 409);
+    if (!reserved) return json({ error: 'Reservations for this product are full.' }, 409);
     await env.DB.prepare('INSERT INTO preorders (id, sku, amount_jpy, terms_snapshot_json, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)')
       .bind(orderId, sku, amount, JSON.stringify({ sku, amountJpy: amount, ...configuration.terms }), 'pending_payment', now, now).run();
     const origin = new URL(request.url).origin;
@@ -126,7 +126,7 @@ async function createCheckout(request, env) {
     console.error('preorder_checkout_failed', { orderId, sku, error: String(error) });
     if (reserved) await env.DB.prepare('UPDATE preorders SET status = ?, updated_at = ? WHERE id = ? AND status = ?')
       .bind('checkout_unknown', Date.now(), orderId, 'pending_payment').run().catch(() => {});
-    return json({ error: '決済画面を開けませんでした。請求状況を確認するまで再注文しないでください。' }, 503);
+    return json({ error: 'Checkout could not be opened. Do not place another order until the payment status has been checked.' }, 503);
   }
 }
 

@@ -9,15 +9,15 @@ async function loadOffer() {
     if (!response.ok) throw new Error('offer unavailable');
     const offer = await response.json();
     if (!offer.ready) return;
-    state.textContent = '予約販売受付中';
+    state.textContent = 'Pre-orders are open';
     terms.replaceChildren();
     const details = [
-      ['販売者', offer.terms.sellerName],
-      ['所在地', offer.terms.sellerAddress],
-      ['連絡先', offer.terms.sellerPhone],
-      ['送料', offer.terms.shippingFee],
-      ['発送予定', offer.terms.shippingDate],
-      ['キャンセル・返金', offer.terms.cancellation],
+      ['Seller', offer.terms.sellerName],
+      ['Address', offer.terms.sellerAddress],
+      ['Contact', offer.terms.sellerPhone],
+      ['Shipping', offer.terms.shippingFee],
+      ['Estimated delivery', offer.terms.shippingDate],
+      ['Cancellation and refunds', offer.terms.cancellation],
     ];
     const list = document.createElement('dl');
     for (const [label, value] of details) {
@@ -30,11 +30,11 @@ async function loadOffer() {
       const product = offer.products[button.dataset.sku];
       if (!product?.totalJpy) continue;
       button.disabled = false;
-      button.firstChild.textContent = '決済画面へ進む ';
-      button.closest('.preorder-card').querySelector('.preorder-price').innerHTML = `<strong>${yen(product.totalJpy)}</strong><span>税込・送料を含む支払総額</span>`;
+      button.firstChild.textContent = 'Continue to checkout ';
+      button.closest('.preorder-card').querySelector('.preorder-price').innerHTML = `<strong>${yen(product.totalJpy)}</strong><span>Total including tax and shipping</span>`;
     }
   } catch {
-    state.textContent = '予約販売の開始準備中';
+    state.textContent = 'Preparing to open pre-orders';
   }
 }
 
@@ -42,7 +42,7 @@ for (const button of buttons) {
   button.addEventListener('click', async () => {
     if (button.disabled) return;
     button.disabled = true;
-    state.textContent = '安全な決済画面を準備しています…';
+    state.textContent = 'Preparing secure checkout…';
     try {
       const response = await fetch('/api/preorders/checkout', {
         method: 'POST',
@@ -50,7 +50,7 @@ for (const button of buttons) {
         body: JSON.stringify({ sku: button.dataset.sku }),
       });
       const result = await response.json();
-      if (!response.ok || !result.url) throw new Error(result.error || '決済画面を開けませんでした。');
+      if (!response.ok || !result.url) throw new Error(result.error || 'Checkout could not be opened.');
       window.location.assign(result.url);
     } catch (error) {
       state.textContent = error.message;
