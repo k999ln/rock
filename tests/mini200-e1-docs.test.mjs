@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateBaseline } from '../scripts/check-product-baseline.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const base = resolve(root, 'docs/avocado-mini-mini200-e1');
@@ -32,6 +33,29 @@ void test('E1 preserves the four-view contract and Web capture boundary', () => 
   assert.equal(json('data/product-baseline.json').materialInvention.spatialDevelopment.fourDirectionalSensorRig, true);
   assert.match(read('README.md'), /Mini200 E1/);
   assert.match(read('README.md'), /実音声認識・実機試験は0件/);
+});
+
+void test('game-first life design rejects satellite authority and unverified integration claims', () => {
+  const baseline = json('data/product-baseline.json');
+  const vision = baseline.gameFirstLifeVision;
+  assert.ok(existsSync(resolve(root, vision.document)));
+  assert.match(read('README.md'), /ゲームを入口に、生活全体をより豊かにする/);
+  assert.equal(baseline.marketPositioning.leadHardwareForm, 'mini200_game_console_design');
+  for (const [field, value] of [
+    ['primaryExperience', 'satellite_only'],
+    ['localGameLoopRequiresInternet', true],
+    ['connectivityGrantsExecutionAuthority', true],
+    ['lifeDeviceActionsRequireScopedConsent', false],
+    ['automaticReplayOfExternalActionsOnReconnect', true],
+    ['runtimeIntegrated', true],
+    ['satelliteFieldTests', 1],
+    ['lifeDeviceFieldTests', 1],
+    ['existingPixelAndQemuGatesPreserved', false],
+  ]) {
+    const changed = structuredClone(baseline);
+    changed.gameFirstLifeVision[field] = value;
+    assert.throws(() => validateBaseline(changed), /ゲーム中心の生活OS設計/);
+  }
 });
 
 void test('E1 authored SVGs and local Markdown destinations are present without machine paths', () => {

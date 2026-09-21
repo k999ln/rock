@@ -4,6 +4,8 @@
 
 ## 読む順番
 
+最新方針: [ゲーム中心・生活を豊かにするOSと衛星通信](game-first-life-connectivity.md)。端末内の自律性、通信経路、生活機器の権限を分け、直接衛星通信と自社衛星群は将来研究として記録しています。
+
 1. [詳細設計](design.md)：26ページ版PDFと同じ本文・図7枚。本文中の「本書」「頁」は作成時の冊子を指します。
 2. [外形図](drawings/mechanical/ME200-E1-01.svg)と[内部配置](drawings/mechanical/ME200-E1-02.svg)：198×178×198mmの区画案。加工承認図ではありません。
 3. [音声ハード設計](engineering/voice/README.md)と[身体・音声の許可設計](engineering/interaction/README.md)：PTT、日本語10コマンド、AEC制限、独立MIC OFF、取消。
@@ -30,7 +32,7 @@
 
 ## 保存と検証
 
-[今回の検証記録](verification.json)では、参照モデル140項目の再現と関連20テストを区別して記録しています。全体`npm run verify`はローカルNode試験の完了待ちで中断し、全体合格とは扱いません。
+[初回保存時の検証記録](verification.json)は`8a983435d110b6bd6f87176a5b272532f84b8563`の前回snapshotです。ローカル全体verifyは中断しましたが、同SHAの[GitHub CI](https://github.com/k999ln/rock/actions/runs/35659925923)は成功しました。今回の追加変更へ以前の合格を流用せず、最新SHAのCIとmain統合結果は[PR #27](https://github.com/k999ln/rock/pull/27)で別に確認します。設計・文書試験の合格は実機・実回線・ASRの合格ではありません。
 
 repository rootで実行します。
 

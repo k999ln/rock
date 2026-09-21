@@ -1,12 +1,26 @@
 # avocadoMini — 身体と声で遊び、つくる20cmゲーム機の設計
 
-**最新の設計方向はMini200 E1です。** 利用者の「使用時20cm」「ゲーム機から生活全体へ」「音声認識も入れる」という指示を、身体操作・仮想粒子・日本語音声を一つの本体で扱う統合基本設計へまとめました。RockstarOSがゲーム、開発・創作、作品の保存、権限と将来の生活・経済連携をつなぎます。現物から粒子を放射したり、実物の化合物を作る装置ではありません。
+**ゲームを入口に、生活全体をより豊かにするRockstarOSへ。** 最新のハード設計方向はMini200 E1です。利用者の「使用時20cm」「ゲーム機が主」「生活全体をより豊かにするOS」「音声認識も入れる」という指示を、身体操作・仮想粒子・日本語音声を一つの本体で扱う統合基本設計へまとめました。ゲームを遊ぶ・つくる体験から、創作、学習、運動、日常の手助け、本人が許可した生活機器へ段階的に広げます。現物から粒子を放射したり、実物の化合物を作る装置ではありません。
 
 [設計資料の入口](docs/avocado-mini-mini200-e1/README.md) · [詳細設計](docs/avocado-mini-mini200-e1/design.md) · [外形図](docs/avocado-mini-mini200-e1/drawings/mechanical/ME200-E1-01.svg) · [内部配置図](docs/avocado-mini-mini200-e1/drawings/mechanical/ME200-E1-02.svg) · [音声設計](docs/avocado-mini-mini200-e1/engineering/voice/README.md)
 
 ![Mini200 E1の身体・音声入力と本体内ゲーム処理の構成案。実機未検証。](docs/avocado-mini-mini200-e1/drawings/figures/E1-S01.svg)
 
 ## Mini200 E1で設計している体験
+
+### ゲームから暮らしへ、通信は選べる設計
+
+**通信がなくても身近で役立つ。つながれば、できることが広がる。** これは到達目標で、現在の実装完了を意味しません。
+
+- **端末内の自律動作**：導入済みの対応ゲーム、身体認識、日本語音声、保存・復旧を本体で処理する設計。ゲームの入力・衝突・描画を衛星やクラウドの往復待ちにしません。
+- **生活への拡張**：創作・学習・運動から、明示接続した生活機器へ。同意、対象、停止、結果確認を共通化し、音声やAIの推測だけで購入・支払い・施錠解除などを承認しません。
+- **通信の選択肢**：家庭回線、携帯回線、外付け衛星ゲートウェイを分離して扱う提案。既存の衛星通信サービスを利用する構成から評価し、直接衛星通信や自社衛星群は将来の研究構想として残します。
+
+衛星通信だけで自律性・電源・屋内受信・全地域の高速通信が成立するわけではありません。20cm本体への衛星アンテナ内蔵、Starlink対応、通信契約、衛星打上げは未確定・未実施です。[生活・自律動作・衛星通信の設計追補](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md)に接続条件、通信断、権限、受入計画を記録しています。
+
+共通Coreをゲーム専用にする変更ではありません。Pixel 10／QEMUの既存OS検証系列、Sky／Zema、Walletの安全条件を保持し、E1ゲーム機への統合を別に受け入れます。
+
+### 最初のゲーム体験
 
 「赤い粒子にして」と話す → 画面で選択を確認 → 身体で狙い、ボタンでつかむ／放すことを明示 → ゲーム内で衝突・結合 → 「作品を保存」で新しい版を保存する流れです。同じ場面のルールを編集して自作ゲームやシミュレーションへつなぎます。声を使わなくても操作できる設計です。
 
@@ -470,8 +484,8 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | MAT05 | Core graphから決定的XR sceneを生成し、四方向pose fixtureのconnect／separate／stale拒否を実装 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT06 | avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT07 | 誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化 | 完了 | [記録](docs/rockstaros-avocado-mini-complete-design.md) · [記録](docs/workstreams/11-material-invention-avocado-mini.md) · [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/rockstaros-1.0-architecture.md) |
-| MAT08 | Mini200 E1の20cmゲーム機・日本語音声をREADME・図・計算／許可モデルへ保存（実機・ASR未受入） | 完了 | [記録](docs/avocado-mini-mini200-e1/README.md) · [記録](docs/avocado-mini-mini200-e1/design.md) · [記録](docs/avocado-mini-mini200-e1/engineering/verify_all.py) · [記録](docs/avocado-mini-mini200-e1/verification.json) |
-| MAT09 | Mini200 E1専用入力profile・Core adapter・ゲーム／ASR／console OSと20cm実機を独立受入 | 未着手 | [記録](docs/avocado-mini-mini200-e1/README.md) |
+| MAT08 | Mini200 E1のゲーム中心・生活拡張・衛星通信方針と20cm本体・音声をREADME・図・参照モデルへ保存（実機未受入） | 完了 | [記録](docs/avocado-mini-mini200-e1/README.md) · [記録](docs/avocado-mini-mini200-e1/design.md) · [記録](docs/avocado-mini-mini200-e1/engineering/verify_all.py) · [記録](docs/avocado-mini-mini200-e1/verification.json) · [記録](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
+| MAT09 | Mini200 E1専用入力profile・Core adapter・ゲーム／ASR／console OSと20cm実機を独立受入 | 未着手 | [記録](docs/avocado-mini-mini200-e1/README.md) · [記録](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |

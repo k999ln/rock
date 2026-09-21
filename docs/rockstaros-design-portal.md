@@ -17,6 +17,8 @@
 
 2026-09-21追加: [avocadoMini Mini200 E1](avocado-mini-mini200-e1/README.md)は、使用時20cm・本体内ゲーム処理・日本語音声の新しい基本設計profile。本文、SVG図7枚、算術と入力許可モデルを保存した。従来の四方向研究契約、Pixel/QEMU、Web公開とは別で、実機・実ASR・OS統合は未受入。
 
+同日の最新製品方針は[ゲームを入口に生活全体を豊かにするOS](avocado-mini-mini200-e1/game-first-life-connectivity.md)。ローカル自律動作、生活機器の同意、衛星を含む通信経路と切断復旧を分離し、既存Coreへ接続する設計案として保存する。衛星網の所有や直接受信、生活機器接続は未実装・未受入。
+
 [Jev／TypeSafe + Local Qwen引き継ぎ原文](prompts/jev-typesafe-local-qwen-handoff-20260918.md)を要求の正本として保存し、その内容を[Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md)へ落とした。DecisionProvider契約と安全policyも機械可読化したが、Router／Harness、TypeSafe接続、Cloud接続、RAG runtimeが実装済みになったわけではない。
 
 製品・サービス・システムの関係、`Mr.` 由来Toolの取り込み境界、MR（Mixed Reality）とMaterial Invention Coreの接続は、[製品・サービス・システム関係図](rockstaros-product-system-map.md)を正本補助設計として参照する。ここでいう`Mr.` は外部repository由来Tool、MRはavocadoMiniのMixed Reality操作を指し、同じものではない。

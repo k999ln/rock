@@ -6,6 +6,7 @@
 
 - `MAT08`: E1本文・図7枚・算術と許可モデル・README保存。設計資料の検証であり実装完成ではない。
 - `MAT09`: E1入力profileと既存Core adapter、実ゲーム・実ASR、console OS、閉箱での光学・音響・熱・物理ミュートの独立受入。未着手。
+- 最新の[生活・自律動作・衛星通信追補](../avocado-mini-mini200-e1/game-first-life-connectivity.md)は`MAT08`の設計保存に含む。`MAT09`では通信断のゲーム継続、模擬生活機器の同意・越境拒否・結果不明を別試験し、実回線・実家電は別承認と共同受入に進める。製品の入口はゲームだが、既存Pixel/QEMUのCore gateは維持する。
 - 主担当`ROCK`は資料と参照モデル、`JOINT`は実部品と統合実測、`OWNER`は外観・費用・外部用途の確認。既存`MAT05`/`MAT06`をE1計算で完了にしない。
 
 再計算: `python3 docs/avocado-mini-mini200-e1/engineering/verify_all.py`。140項目は算術・直列モデルの集計、実ASR・実機は0。Git保存、main統合、Site配備を区別する。

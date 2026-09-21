@@ -259,14 +259,15 @@
     },
     {
       "id": "MAT08",
-      "title": "Mini200 E1の20cmゲーム機・日本語音声をREADME・図・計算／許可モデルへ保存（実機・ASR未受入）",
+      "title": "Mini200 E1のゲーム中心・生活拡張・衛星通信方針と20cm本体・音声をREADME・図・参照モデルへ保存（実機未受入）",
       "status": "done",
       "dependsOn": ["MAT07"],
       "evidence": [
         "docs/avocado-mini-mini200-e1/README.md",
         "docs/avocado-mini-mini200-e1/design.md",
         "docs/avocado-mini-mini200-e1/engineering/verify_all.py",
-        "docs/avocado-mini-mini200-e1/verification.json"
+        "docs/avocado-mini-mini200-e1/verification.json",
+        "docs/avocado-mini-mini200-e1/game-first-life-connectivity.md"
       ]
     },
     {
@@ -274,7 +275,10 @@
       "title": "Mini200 E1専用入力profile・Core adapter・ゲーム／ASR／console OSと20cm実機を独立受入",
       "status": "planned",
       "dependsOn": ["MAT08"],
-      "evidence": ["docs/avocado-mini-mini200-e1/README.md"]
+      "evidence": [
+        "docs/avocado-mini-mini200-e1/README.md",
+        "docs/avocado-mini-mini200-e1/game-first-life-connectivity.md"
+      ]
     },
     {
       "id": "SKY01",

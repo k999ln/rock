@@ -395,3 +395,5 @@ https://github.com/respeaker/reSpeaker_XVF3800_USB_4MIC_ARRAY/tree/master/xmos_f
 このディレクトリのREADMEに従ってengineering/verify_all.pyを実行する。計算は一時フォルダーへ出し、同梱結果と比較する。追加ライブラリ不要の参照モデルであり、音声modelのdownload、録音、ネット接続、実機操作を行わない。
 
 改訂時は、本文、図、入力JSON、部品候補、firmware、試験条件を同じ版で更新する。実測の記録欄は未記入のまま配布し、計算値を実測欄へ代入しない。
+
+2026-09-21追補: 最新の商品方針と通信の設計は[ゲーム中心・生活OS・衛星通信](game-first-life-connectivity.md)を併読する。本冊子の寸法・部品候補・計算値を変更する追補ではなく、衛星アンテナや生活機器を内蔵済み・接続済みとして追加しない。

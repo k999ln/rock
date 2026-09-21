@@ -1,5 +1,7 @@
 # RockstarOS 1.0 — 8原則を適用した製品・事業・開発設計
 
+2026-09-21更新: 最新の利用者指示では、商品の主な入口はavocadoMiniのゲーム機であり、生活全体を豊かにするOSへ段階拡張する。[ゲーム中心・生活・通信の設計](avocado-mini-mini200-e1/game-first-life-connectivity.md)を優先する。下記の引用整理・個人事業主という初期商品仮説は既存業務pilotの履歴で、ゲーム機より優先する確定要望ではない。共通Core、Pixel/QEMU受入、料金・実資金の既存gateは維持する。
+
 2026-09-16現行優先: [製品目的](product-north-star-20260915.md)とRQ48を優先し、[AIネイティブOS共通設計](ai-native-os-architecture.md)を実装設計の正本とする。中核は交換可能な端末内LLM＋offline agentを持つOS。Sky/Zema、便利な自動化、Game/IP/動画/VR、Wallet/Fundは同じ基盤を使う応用系統とする。収益経路は重要だが、全応用の直列依存にはしない。
 
 状態: 設計。利用者が提示した8原則と「現段階を1.0のベースにし、継続改善する」を適用する。[確定要望RQ01〜RQ49](product-baseline.md)、[system構成](rockstaros-1.0-architecture.md)、[Material Invention Core](material-invention-core.md)、[実装承認範囲](execution-approval-20260909.md)を維持する。新しい市場・価格・所有権・実資金取引を確定した文書ではない。
