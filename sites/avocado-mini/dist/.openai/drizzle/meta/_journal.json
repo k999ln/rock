@@ -8,6 +8,13 @@
       "when": 1789955713497,
       "tag": "0000_same_layla_miller",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1790025258149,
+      "tag": "0001_nifty_daredevil",
+      "breakpoints": true
     }
   ]
 }

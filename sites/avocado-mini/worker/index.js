@@ -8,6 +8,10 @@ const json = (data, status = 200) => new Response(JSON.stringify(data), {
   headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' },
 });
 
+const MAX_CHECKOUT_BODY_BYTES = 1024;
+const STALE_RESERVATION_MS = 25 * 60 * 60 * 1000;
+const ATTEMPT_RETENTION_MS = 2 * 24 * 60 * 60 * 1000;
+
 function positiveInteger(value) {
   const number = Number(value);
   return Number.isSafeInteger(number) && number > 0 ? number : null;
@@ -19,11 +23,12 @@ function offer(env) {
   const hasTerms = [
     env.PREORDER_SELLER_NAME, env.PREORDER_SELLER_ADDRESS, env.PREORDER_SELLER_PHONE,
     env.PREORDER_SHIPPING_FEE, env.PREORDER_SHIPPING_DATE, env.PREORDER_CANCELLATION_TERMS,
+    env.PREORDER_TERMS_VERSION,
   ].every(value => typeof value === 'string' && value.trim());
   const ready = env.PREORDER_SALES_ENABLED === 'true' && hasTerms && env.PREORDER_TERMS_APPROVED === 'true'
     && env.PREORDER_TOTAL_INCLUDES_SHIPPING === 'true'
     && !/undecided|not determined|not finalized|tbd/i.test(env.PREORDER_SHIPPING_DATE)
-    && Boolean(env.DB && env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET && env.PREORDER_ABUSE_KEY)
+    && Boolean(env.DB && env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET && env.PREORDER_ABUSE_KEY && env.PREORDER_ADMIN_TOKEN)
     && Object.entries(amounts).every(([sku, amount]) => amount && amount >= products[sku].baseJpy)
     && Object.values(capacities).every(Boolean);
   return {
@@ -40,6 +45,7 @@ function offer(env) {
       shippingFee: env.PREORDER_SHIPPING_FEE,
       shippingDate: env.PREORDER_SHIPPING_DATE,
       cancellation: env.PREORDER_CANCELLATION_TERMS,
+      version: env.PREORDER_TERMS_VERSION,
     } : null,
     amounts,
     capacities,
@@ -57,28 +63,55 @@ async function release(env, sku) {
   await env.DB.prepare('UPDATE preorder_stock SET reserved = reserved - 1 WHERE sku = ? AND reserved > 0').bind(sku).run();
 }
 
-async function checkRateLimit(request, env) {
+async function checkRateLimit(request, env, sku) {
   const ip = request.headers.get('cf-connecting-ip');
   if (!ip) return false;
+  const now = Date.now();
+  await env.DB.prepare('DELETE FROM preorder_attempts WHERE created_at < ?').bind(now - ATTEMPT_RETENTION_MS).run();
   const day = new Date().toISOString().slice(0, 10);
-  const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${env.PREORDER_ABUSE_KEY}:${day}:${ip}`));
+  const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${env.PREORDER_ABUSE_KEY}:${day}:${sku}:${ip}`));
   const key = [...new Uint8Array(bytes)].map(byte => byte.toString(16).padStart(2, '0')).join('');
-  const result = await env.DB.prepare('INSERT INTO preorder_attempts (key, count) VALUES (?, 1) ON CONFLICT(key) DO UPDATE SET count = count + 1 WHERE count < 3')
-    .bind(key).run();
+  const limit = positiveInteger(env.PREORDER_ATTEMPT_LIMIT) || 5;
+  const result = await env.DB.prepare('INSERT INTO preorder_attempts (key, count, created_at) VALUES (?, 1, ?) ON CONFLICT(key) DO UPDATE SET count = count + 1 WHERE count < ?')
+    .bind(key, now, limit).run();
   return result.meta?.changes === 1;
+}
+
+async function releaseStaleReservations(env, now = Date.now()) {
+  if (!env.DB) return 0;
+  const result = await env.DB.prepare("SELECT id, sku FROM preorders WHERE status IN ('pending_payment', 'checkout_unknown') AND updated_at < ? LIMIT 50")
+    .bind(now - STALE_RESERVATION_MS).all();
+  let released = 0;
+  for (const row of result.results || []) {
+    const update = await env.DB.prepare("UPDATE preorders SET status = 'expired_reconciled', updated_at = ? WHERE id = ? AND status IN ('pending_payment', 'checkout_unknown')")
+      .bind(now, row.id).run();
+    if (update.meta?.changes === 1) {
+      await release(env, row.sku);
+      released += 1;
+    }
+  }
+  return released;
 }
 
 async function createCheckout(request, env) {
   if (request.headers.get('origin') !== new URL(request.url).origin) return json({ error: 'Invalid request origin.' }, 403);
   if (!request.headers.get('content-type')?.startsWith('application/json')) return json({ error: 'Invalid request format.' }, 415);
-  if (Number(request.headers.get('content-length') || 0) > 1024) return json({ error: 'The request is too large.' }, 413);
+  if (Number(request.headers.get('content-length') || 0) > MAX_CHECKOUT_BODY_BYTES) return json({ error: 'The request is too large.' }, 413);
   const configuration = offer(env);
   if (!configuration.ready) return json({ error: 'Pre-orders are not open yet.' }, 503);
+  await releaseStaleReservations(env);
   let body;
-  try { body = await request.json(); } catch { return json({ error: 'Invalid request format.' }, 400); }
+  try {
+    const raw = await request.text();
+    if (new TextEncoder().encode(raw).byteLength > MAX_CHECKOUT_BODY_BYTES) return json({ error: 'The request is too large.' }, 413);
+    body = JSON.parse(raw);
+  } catch { return json({ error: 'Invalid request format.' }, 400); }
   const sku = body?.sku;
   if (!Object.hasOwn(products, sku)) return json({ error: 'Please select a valid product.' }, 400);
-  if (!await checkRateLimit(request, env)) return json({ error: 'Too many reservation attempts from this connection. Please try again later.' }, 429);
+  if (body?.termsAccepted !== true || body?.termsVersion !== configuration.terms.version) {
+    return json({ error: 'Review and accept the latest sales and privacy terms before continuing.' }, 409);
+  }
+  if (!await checkRateLimit(request, env, sku)) return json({ error: 'Too many reservation attempts from this connection. Please try again later.' }, 429);
   const product = products[sku];
   const amount = configuration.amounts[sku];
   const orderId = crypto.randomUUID();
@@ -87,8 +120,10 @@ async function createCheckout(request, env) {
   try {
     reserved = await reserve(env, sku, configuration.capacities[sku]);
     if (!reserved) return json({ error: 'Reservations for this product are full.' }, 409);
-    await env.DB.prepare('INSERT INTO preorders (id, sku, amount_jpy, terms_snapshot_json, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)')
-      .bind(orderId, sku, amount, JSON.stringify({ sku, amountJpy: amount, ...configuration.terms }), 'pending_payment', now, now).run();
+    const acceptedAt = now;
+    const expiresAt = Math.floor(now / 1000) + 30 * 60;
+    await env.DB.prepare('INSERT INTO preorders (id, sku, amount_jpy, terms_snapshot_json, terms_version, terms_accepted_at, stripe_expires_at, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind(orderId, sku, amount, JSON.stringify({ sku, amountJpy: amount, acceptedAt, ...configuration.terms }), configuration.terms.version, acceptedAt, expiresAt * 1000, 'pending_payment', now, now).run();
     const origin = new URL(request.url).origin;
     const form = new URLSearchParams({
       mode: 'payment',
@@ -102,20 +137,32 @@ async function createCheckout(request, env) {
       'payment_intent_data[metadata][order_id]': orderId,
       'shipping_address_collection[allowed_countries][0]': 'JP',
       'phone_number_collection[enabled]': 'true',
+      expires_at: String(expiresAt),
       success_url: `${origin}/preorder/complete/?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/preorder/`,
     });
-    const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-      method: 'POST',
-      headers: {
-        authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
-        'content-type': 'application/x-www-form-urlencoded',
-        'idempotency-key': orderId,
-      },
-      body: form,
-    });
-    const session = await stripeResponse.json();
-    if (!stripeResponse.ok || !session.id || !session.url || new URL(session.url).hostname !== 'checkout.stripe.com') {
+    let stripeResponse;
+    let session;
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      try {
+        stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
+            'content-type': 'application/x-www-form-urlencoded',
+            'idempotency-key': orderId,
+          },
+          body: form,
+        });
+        session = await stripeResponse.json();
+        if (stripeResponse.ok) break;
+        if (stripeResponse.status < 500) break;
+      } catch (error) {
+        if (attempt === 1) throw error;
+      }
+    }
+    const checkoutUrl = session?.url ? new URL(session.url) : null;
+    if (!stripeResponse?.ok || !session?.id || !checkoutUrl || checkoutUrl.protocol !== 'https:' || checkoutUrl.hostname !== 'checkout.stripe.com') {
       throw new Error('Stripe checkout session could not be created');
     }
     await env.DB.prepare('UPDATE preorders SET stripe_session_id = ?, updated_at = ? WHERE id = ?')
@@ -167,9 +214,9 @@ async function webhook(request, env) {
           .bind(object.id, object.payment_intent || null, now, now, orderId, object.amount_total).run();
       }
     } else if (event.type === 'checkout.session.expired' || event.type === 'checkout.session.async_payment_failed') {
-      const row = orderId ? await env.DB.prepare("SELECT sku FROM preorders WHERE id = ? AND status = 'pending_payment'").bind(orderId).first() : null;
+      const row = orderId ? await env.DB.prepare("SELECT sku FROM preorders WHERE id = ? AND status IN ('pending_payment', 'checkout_unknown')").bind(orderId).first() : null;
       if (row) {
-        const result = await env.DB.prepare("UPDATE preorders SET status = 'expired', updated_at = ? WHERE id = ? AND status = 'pending_payment'").bind(now, orderId).run();
+        const result = await env.DB.prepare("UPDATE preorders SET status = 'expired', updated_at = ? WHERE id = ? AND status IN ('pending_payment', 'checkout_unknown')").bind(now, orderId).run();
         if (result.meta?.changes === 1) await release(env, row.sku);
       }
     } else if (event.type === 'charge.refunded' && object.payment_intent) {
@@ -186,6 +233,25 @@ async function webhook(request, env) {
     console.error('preorder_webhook_failed', { eventId: event.id, error: String(error) });
     return json({ error: 'retry' }, 500);
   }
+}
+
+function adminAuthorized(request, env) {
+  const authorization = request.headers.get('authorization') || '';
+  const expected = `Bearer ${env.PREORDER_ADMIN_TOKEN || ''}`;
+  return expected.length > 20 && constantTimeEqual(authorization, expected);
+}
+
+async function adminOrders(request, env) {
+  if (!env.DB || !adminAuthorized(request, env)) return json({ error: 'unauthorized' }, 401);
+  const limit = Math.min(100, positiveInteger(new URL(request.url).searchParams.get('limit')) || 50);
+  const result = await env.DB.prepare('SELECT id, sku, amount_jpy, status, stripe_session_id, stripe_payment_intent_id, created_at, updated_at, paid_at, terms_version, terms_accepted_at FROM preorders ORDER BY created_at DESC LIMIT ?')
+    .bind(limit).all();
+  return json({ orders: result.results || [] });
+}
+
+async function adminReconcile(request, env) {
+  if (!env.DB || !adminAuthorized(request, env)) return json({ error: 'unauthorized' }, 401);
+  return json({ released: await releaseStaleReservations(env) });
 }
 
 async function status(request, env) {
@@ -207,6 +273,8 @@ export default {
       if (path === '/api/preorders/checkout' && request.method === 'POST') return createCheckout(request, env);
       if (path === '/api/preorders/webhook' && request.method === 'POST') return webhook(request, env);
       if (path === '/api/preorders/status' && request.method === 'GET') return status(request, env);
+      if (path === '/api/admin/preorders' && request.method === 'GET') return adminOrders(request, env);
+      if (path === '/api/admin/reconcile' && request.method === 'POST') return adminReconcile(request, env);
       if (path.startsWith('/api/')) return json({ error: 'not_found' }, 404);
       return env.ASSETS ? env.ASSETS.fetch(request) : new Response('Assets unavailable', { status: 503 });
     } catch (error) {

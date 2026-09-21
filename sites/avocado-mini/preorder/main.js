@@ -30,7 +30,7 @@ async function loadOffer() {
       const product = offer.products[button.dataset.sku];
       if (!product?.totalJpy) continue;
       button.disabled = false;
-      button.firstChild.textContent = 'Continue to checkout ';
+      button.firstChild.textContent = 'Review order details ';
       button.closest('.preorder-card').querySelector('.preorder-price').innerHTML = `<strong>${yen(product.totalJpy)}</strong><span>Total including tax and shipping</span>`;
     }
   } catch {
@@ -39,23 +39,9 @@ async function loadOffer() {
 }
 
 for (const button of buttons) {
-  button.addEventListener('click', async () => {
+  button.addEventListener('click', () => {
     if (button.disabled) return;
-    button.disabled = true;
-    state.textContent = 'Preparing secure checkout…';
-    try {
-      const response = await fetch('/api/preorders/checkout', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ sku: button.dataset.sku }),
-      });
-      const result = await response.json();
-      if (!response.ok || !result.url) throw new Error(result.error || 'Checkout could not be opened.');
-      window.location.assign(result.url);
-    } catch (error) {
-      state.textContent = error.message;
-      button.disabled = false;
-    }
+    window.location.assign(`/preorder/confirm/?sku=${encodeURIComponent(button.dataset.sku)}`);
   });
 }
 
