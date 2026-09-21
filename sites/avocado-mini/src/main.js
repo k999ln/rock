@@ -15,7 +15,7 @@ const angle = document.querySelector('#angle');
 const chapter = document.querySelector('#chapter');
 const progressBar = document.querySelector('#progress');
 const pricePanel = document.querySelector('#price-panel');
-const crowdfundingLink = document.querySelector('#crowdfunding-link');
+const preorderLink = document.querySelector('#preorder-link');
 const gallery = document.querySelector('#highlight-gallery');
 const galleryPrev = document.querySelector('#gallery-prev');
 const galleryNext = document.querySelector('#gallery-next');
@@ -95,7 +95,7 @@ function updateStory(progress) {
   chapter.textContent = priceVisible ? 'COMPLETE / 04' : active === 0 ? 'INTRO / 04' : `${String(active).padStart(2, '0')} / 04`;
   pricePanel.classList.toggle('visible', priceVisible);
   pricePanel.setAttribute('aria-hidden', String(!priceVisible));
-  crowdfundingLink.tabIndex = priceVisible ? 0 : -1;
+  preorderLink.tabIndex = priceVisible ? 0 : -1;
 }
 
 function updateProgress() {
