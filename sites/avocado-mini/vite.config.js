@@ -14,7 +14,6 @@ export default defineConfig({
         crowdfunding: resolve(import.meta.dirname, 'crowdfunding/index.html'),
         preorder: resolve(import.meta.dirname, 'preorder/index.html'),
         preorderComplete: resolve(import.meta.dirname, 'preorder/complete/index.html'),
-        pro: resolve(import.meta.dirname, 'pro/index.html'),
       },
     },
   },

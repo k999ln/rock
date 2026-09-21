@@ -258,22 +258,6 @@
       ]
     },
     {
-      "id": "MAT08",
-      "title": "avokado Pro小型RockstarOSサーバーを設計し、ローカルLLM・avocadoMini・許諾済みGTA6実行を実機で受け入れる",
-      "status": "in_progress",
-      "dependsOn": [
-        "MAT04",
-        "OS10"
-      ],
-      "evidence": [
-        "docs/avokado-pro-hardware-design.md",
-        "sites/avocado-mini/pro/index.html",
-        "sites/avocado-mini/pro/style.css",
-        "sites/avocado-mini/public/images/avokado-pro-concept-v1.png",
-        "docs/workstreams/11-material-invention-avocado-mini.md"
-      ]
-    },
-    {
       "id": "SKY01",
       "title": "旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化",
       "status": "done",

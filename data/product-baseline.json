@@ -1,5 +1,5 @@
 {
-  "version": "1.88",
+  "version": "1.87",
   "decidedAt": "2026-09-19",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -51,29 +51,6 @@
     "avocadoMiniDesiredReferencePriceJpy": 410000,
     "avocadoMiniSingleTowerProposedExTaxPriceJpy": 160000,
     "referencePriceStatus": "user_proposed_preorder_base_prices_excluding_tax_not_final_checkout_total_or_live_sale",
-    "avokadoPro": {
-      "displayName": "avokado Pro",
-      "role": "compact_rockstaros_local_llm_compute_server_and_avocadoMini_compute_core",
-      "desiredReferencePriceJpy": 880000,
-      "priceStatus": "user_requested_reference_price_tax_shipping_and_sales_terms_undecided",
-      "formSource": "small_low_box_behind_motion_towers_in_user_selected_product_image",
-      "designDocument": "docs/avokado-pro-hardware-design.md",
-      "siteRoute": "/pro/",
-      "targetConfiguration": {
-        "architecture": "x86_64_candidate",
-        "cpu": "12_to_16_core_class_candidate",
-        "gpuVramGb": 16,
-        "systemMemoryGb": 96,
-        "osSsdTb": 2,
-        "dataModelGameSsdTb": 4,
-        "network": "10GbE_plus_external_certified_edge_hub",
-        "enclosureLitersMaxTarget": 12
-      },
-      "rockstarOsStage": "hardware_port_not_started",
-      "localLlmStage": "target_only_model_runtime_quality_thermal_and_license_not_accepted",
-      "gta6Goal": "user_requested_and_user_states_rockstar_partnership_discussion_is_agreed",
-      "gta6RuntimeStatus": "not_tested_not_yet_claimed_compatible"
-    },
     "motionTowerP0Engineering": {
       "source": "User-provided RockstarOS Motion Tower P0 Engineering Package v2, revision P0.2",
       "kitTowerCount": 4,

@@ -12,8 +12,6 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 
 ## 現在地
 
-- `MAT08`: 写真の奥の低いEdge Hubを起点に、小型RockstarOSサーバー **avokado Pro** のP0.1を設計。希望参考価格88万円、16 GB VRAM級GPU、96 GB RAM、2 TB + 4 TB NVMe、10 GbE、約12 L以内を候補にした。ローカルLLM、4 tower接続、GTA6実行は実機未検証で、製品ページと構想CGまでを公開対象とする。
-
 - `MAT01`: Core entity、発明loop、安全境界の設計完了。
 - `MAT02`: 二物質・複数比率のsandbox Coreと9 testを実装済み。
 - `MAT03`: Zema、限定記憶、simulation、外部lab接続は未着手。
@@ -61,7 +59,6 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 5. `MAT06`: 一台cameraで誤操作を測り、その後four-view Bench rig、最後にビリヤード台規模Full-scale rigへ進む。
 6. 合成simulation receiptとPatent AI packet fixtureを接続する。
 7. 実Provider、実headset、実labはそれぞれ独立して受け入れる。
-8. `MAT08`: avokado Proの筐体・熱・電源試作、RockstarOS x86-64移植、local LLM benchmark、4 tower接続を受け入れる。GTA6はRockstarの許諾範囲と対象buildを固定した後に別の実機試験を通す。
 
 ## 担当を選ぶ
 
