@@ -31,6 +31,10 @@ jobs:
           actual_file="$(mktemp)"
           printf '%s\n' \
             README.md \
+            packages/control-core/README.md \
+            packages/control-core/package.json \
+            packages/control-core/src/index.js \
+            packages/control-core/test/index.test.js \
             rockstaros-hero.png \
             rockstaros-motion.gif \
             rockstaros-workflow.png \
@@ -60,6 +64,10 @@ jobs:
           set -euo pipefail
           git clone --depth 1 git@github.com:avokado-ink/RockstarOS.git public-repository
           cp public-release/rockstaros/README.md public-repository/README.md
+          install -D public-release/rockstaros/packages/control-core/README.md public-repository/packages/control-core/README.md
+          install -D public-release/rockstaros/packages/control-core/package.json public-repository/packages/control-core/package.json
+          install -D public-release/rockstaros/packages/control-core/src/index.js public-repository/packages/control-core/src/index.js
+          install -D public-release/rockstaros/packages/control-core/test/index.test.js public-repository/packages/control-core/test/index.test.js
           cp public-release/rockstaros/rockstaros-hero.png public-repository/rockstaros-hero.png
           cp public-release/rockstaros/rockstaros-motion.gif public-repository/rockstaros-motion.gif
           cp public-release/rockstaros/rockstaros-workflow.png public-repository/rockstaros-workflow.png
@@ -70,6 +78,6 @@ jobs:
           fi
           git config user.name "rockstaros-publisher[bot]"
           git config user.email "rockstaros-publisher[bot]@users.noreply.github.com"
-          git add README.md rockstaros-hero.png rockstaros-motion.gif rockstaros-workflow.png
+          git add README.md packages/control-core rockstaros-hero.png rockstaros-motion.gif rockstaros-workflow.png
           git commit -m "Sync public RockstarOS overview"
           git push origin HEAD:main
