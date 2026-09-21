@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+
+bin_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+install_root=$(CDPATH= cd -- "$bin_dir/.." && pwd)
+exec node "$install_root/apps/sky-zema-preview/server.mjs"

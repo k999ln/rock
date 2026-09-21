@@ -1,0 +1,13 @@
+{
+  "name": "@avokado-ink/rockstaros-control-core",
+  "version": "0.1.0",
+  "description": "Public reference implementation of RockstarOS approval gates and outcome receipts.",
+  "type": "module",
+  "exports": "./src/index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,3 +1,5 @@
+2026-09-21 最新方針（v1.89）: ゲーム機を主な入口とし、生活全体をより豊かにするRockstarOSへ広げる。使用時20cm・日本語音声の[Mini200 E1](avocado-mini-mini200-e1/README.md)へ、[端末内自律動作と衛星通信の設計追補](avocado-mini-mini200-e1/game-first-life-connectivity.md)を追加する。衛星は通信手段であり、権限・電源・屋内受信・実装完了を与えない。既存衛星ゲートウェイ利用は設計案、直接通信と自社衛星群は将来研究で契約・打上げ未承認。main統合は今回の明示指示により許可されたが、公開Site・実機・資金のgateは変更しない。Pixel/QEMUは独立したCore検証系列として保持する。下記P0.2は旧構成の記録で、E1へ寸法・価格・四方向受入を引き継がない。
+
 2026-09-20 GTA6連携についての訂正: 利用者は「GTA6と提携できるのは、Rockstarと話がついているから」と明言した。Rockstarとの協議・合意を前提とする。ただし、合意の対象（ゲーム動作、配信、共同告知など）と公表できる表現・時期はこの作業環境に資料がなく未特定。RockstarOS／avocadoMini上でのGTA6実動作も未検証。公開ページでは具体的な動作保証や公式ロゴ利用を、許諾範囲と試験結果が判明するまで記載しない。
 
 2026-09-20 予約販売価格の新指定: 利用者はMotion Tower 1本を16万円、4本を41万円、いずれも税別と指定した。4本キットには従来の構想どおりEdge Hub 1台を含む案とする。旧「41万円税込の目標価格」は価格表示の現行指定として撤回する。発送時期は未定、Instagram `@kirin.41` は連絡先リンクとして使用する。送料、販売者の所在地・電話番号、キャンセル・返金条件、決済事業者の本番接続は未確定であり、これらが揃うまで全額決済を開始しない。
@@ -17,6 +19,8 @@
 2026-09-20 RockstarOS導入ボタンとScrewの範囲: 利用者はavocadoMini製品ページ最下部を「RockstarOS」と導入ボタンだけにし、Screwと同じようなWeb導入体験からRockstarOSを端末へ入れたいと指定した。現在の`k999ln/screw`はPRIVATE/PIXELのGrapheneOS導入ページとガイドへの案内だけで、インストーラーコード・RockstarOSイメージは含まない。Pixel 10／frankel／GL066向けRockstarOS factory imageは未作成で、初回flashゲートは0/4未合格。製品ボタンは公開導入入口へ接続し、公開画面では端末書込みを開始しない。対象image、署名・hash、純正復旧、Keystore喪失後の復元、実機受入が揃うまで、ワンクリック導入ができると表示しない。Screwは別リポジトリのままとし、PRIVATE/PIXELやGrapheneOSのコードをRockへ取り込んだとは扱わない。
 
 # RockstarOS — 確定した製品ベース
+
+2026-09-21 Mini200 E1の資料保存（v1.88）: 利用者は使用時20cm、ゲーム機から開発・創作・研究・生活へ拡張するavocadoMiniと、日本語音声認識を含む設計を求め、正本を`k999ln/rock`と指定してREADMEへの保存を依頼した。[Mini200 E1](avocado-mini-mini200-e1/README.md)を新しいゲーム機profileの統合基本設計として記録する。これは本書冒頭の2026-09-20 P0.2より新しい設計方向であり、4本＋Hub、850〜1800mm、41万円をE1へ引き継がない。前面3窓、198×178×198mm、候補部品や性能値は設計提案で、外観の一致・実部品・実測の承認は未完了。既存四方向のMaterial入力契約は変更せず、E1は別versionの入力profileとadapterを設計・受入する。初期音声はPTTと端末内日本語認識を候補にし、独立マイク遮断、取消、既定の原音保存・送信OFFを要求する。実音声・実機試験0、OS統合未完了、製造未承認。Pixel/QEMUの優先順位・資金や生活機器の承認・公開Siteは変更しない。
 
 2026-09-19 製品・OS導入ホームの利用領域: `/rockstaros`にSky、Zema／Work、Material Invention、Wallet、Market、CSV、開発者、OS導入の8領域を追加し、それぞれ現状の制限と既存画面への入口を示す。Sky開発者の入口はMaterial Invention Studioの旧配信URLではなく、同じアプリ内の`/sky/publish`とする。既存Siteの一般公開と最新版配備は未完了。
 
@@ -579,6 +583,8 @@ SkyはTool・ファンド・接続先を選ぶ第一者system、ZemaはAIチー�
 Pixel 10は最初のreference hardwareであり、Googleサービス、カメラ、一般向けブラウザ、ATM、特定ゲームはCoreの起動条件にしない。1.0の到達条件は、所有Pixel上でOS、交換可能な端末内LLM、agent、Sky、Zema、一つの実用Toolのoffline実行・再開・安全な接続を証明すること。現行は固定runtime/modelの試験署名APK実証であり、交換可能な端末内LLMやOS image搭載を達成済みと表示しない。Wallet、ファンド、ゲーム等の進捗を過大表示せず、各systemは個別gateに合格した範囲だけ利用可能とする。Jevは[LLM・評価モデル設計](llm-evaluation-architecture.md)に従うSkyの任意remote evaluatorで、local planner、Broker authority、OpenAI接続2件と区別する。
 
 ## RQ49 物質同士を組み合わせて発明候補を作るMaterial Invention Coreを設ける
+
+2026-09-21追補: 以下の四方向・Full-scale記述は既存の研究profileとして保持する。新しい使用時20cmのゲーム機profileと音声は[Mini200 E1](avocado-mini-mini200-e1/README.md)へ分離した。四方向に満たない入力を旧契約の合格とせず、架空粒子の結合、科学的simulation、実測を別の証拠として扱う。
 
 RockstarOSは、物質、配合比、混合順序、温度、圧力、雰囲気、加工、保持時間などを型付きデータとして組み合わせ、目的特性に対する新しい材料・用途・工程の候補を作れるようにする。候補は、入力物質の由来、単位、不確かさ、根拠、生成モデル、版、作成者を保持し、単なるAI文章を実証済み発明として表示しない。
 

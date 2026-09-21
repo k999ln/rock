@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs><marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#314354"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:Arial Unicode MS,Arial,sans-serif;fill:#15202b} .wire{fill:none;stroke:#314354;stroke-width:3} .dim{fill:none;stroke:#66737d;stroke-width:2}</style>
+<text x="38" y="48" font-size="32" font-weight="bold">本体内のゲーム処理と身体 音声入力</text>
+<text x="38" y="976" font-size="19">RockstarOS avocadoMini   Mini200 E1   設計提案   実機未検証   NTS</text>
+<rect x="45" y="100" width="1070" height="755" rx="12" fill="#f8fafb" stroke="#314354" stroke-width="2"/>
+<text x="65" y="143" font-size="29" font-weight="bold">使用時20cm本体  全て実装前の接続設計</text>
+<rect x="75" y="180" width="420" height="205" rx="10" fill="#f4f7f9" stroke="#314354" stroke-width="2"/>
+<text x="93" y="217" font-size="29" font-weight="bold">前面の身体センサー</text>
+<text x="93" y="257" font-size="23">左 右 同期撮影 → 距離と動き</text>
+<text x="93" y="290" font-size="23">中央RGB → 認識と校正補助</text>
+<text x="93" y="323" font-size="23">信頼度不足なら発射しない</text>
+<rect x="75" y="455" width="420" height="250" rx="10" fill="#f4f7f9" stroke="#314354" stroke-width="2"/>
+<text x="93" y="492" font-size="29" font-weight="bold">上面の音声入力</text>
+<text x="93" y="532" font-size="23">4マイク → 音処理 → 日本語ASR</text>
+<text x="93" y="565" font-size="23">PTTから開始  起動語は評価後</text>
+<text x="93" y="598" font-size="23">物理MIC OFFを独立して設ける</text>
+<text x="93" y="631" font-size="23">声だけでは実機発射証拠にならない</text>
+<rect x="570" y="180" width="510" height="525" rx="10" fill="#f4f7f9" stroke="#314354" stroke-width="2"/>
+<text x="588" y="217" font-size="29" font-weight="bold">内蔵するゲーム計算機</text>
+<text x="588" y="257" font-size="23">x86 CPU GPU  32GB  SSD1TB 候補</text>
+<text x="588" y="290" font-size="23">RockstarOS console targetは新規統合</text>
+<text x="588" y="323" font-size="23">入力の時刻 校正 同意を照合</text>
+<text x="588" y="356" font-size="23">ゲーム 粒子 創作 保存をローカル実行</text>
+<text x="588" y="389" font-size="23">Sky Zemaは非同期  ゲームを待たせない</text>
+<text x="588" y="422" font-size="23">音声と画像の生データは既定で保存しない</text>
+<text x="588" y="455" font-size="23">TV再生PCMを音処理へ返す経路を設ける</text>
+<path d="M500,290 L560,290" stroke="#314354" stroke-width="3" fill="none" marker-end="url(#a)"/>
+<path d="M500,565 L560,565" stroke="#314354" stroke-width="3" fill="none" marker-end="url(#a)"/>
+<text x="75" y="792" font-size="23">外部Hubと4台12眼を初期必須から外す。全身360度の性能を継承したとはしない。</text>
+<rect x="1180" y="150" width="365" height="215" rx="10" fill="#f4f7f9" stroke="#314354" stroke-width="2"/>
+<text x="1198" y="187" font-size="29" font-weight="bold">テレビと操作器</text>
+<text x="1198" y="227" font-size="23">映像 音声はHDMI</text>
+<text x="1198" y="260" font-size="23">身体を使わず設定も可能</text>
+<text x="1198" y="293" font-size="23">AV delayは実測して補正</text>
+<path d="M1120,260 L1170,260" stroke="#314354" stroke-width="3" fill="none" marker-end="url(#a)"/>
+<rect x="1180" y="460" width="365" height="275" rx="10" fill="#f4f7f9" stroke="#314354" stroke-width="2"/>
+<text x="1198" y="497" font-size="29" font-weight="bold">許可した連携だけ</text>
+<text x="1198" y="537" font-size="23">クラウド研究計算</text>
+<text x="1198" y="570" font-size="23">作品の共有と配布</text>
+<text x="1198" y="603" font-size="23">登録済み生活機器</text>
+<text x="1198" y="636" font-size="23">購入は別画面で確認</text>
+<text x="1198" y="669" font-size="23">GTA VI対応は未確定</text>
+<path d="M1120,580 L1170,580" stroke="#314354" stroke-width="3" fill="none" marker-end="url(#a)"/>
+</svg>

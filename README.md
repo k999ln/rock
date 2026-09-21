@@ -1,4 +1,56 @@
-# avocadoMini — 4本のMotion TowerとEdge Hubの製品構想
+# avocadoMini — 身体と声で遊び、つくる20cmゲーム機の設計
+
+**ゲームを入口に、生活全体をより豊かにするRockstarOSへ。** 最新のハード設計方向はMini200 E1です。利用者の「使用時20cm」「ゲーム機が主」「生活全体をより豊かにするOS」「音声認識も入れる」という指示を、身体操作・仮想粒子・日本語音声を一つの本体で扱う統合基本設計へまとめました。ゲームを遊ぶ・つくる体験から、創作、学習、運動、日常の手助け、本人が許可した生活機器へ段階的に広げます。現物から粒子を放射したり、実物の化合物を作る装置ではありません。
+
+[設計資料の入口](docs/avocado-mini-mini200-e1/README.md) · [詳細設計](docs/avocado-mini-mini200-e1/design.md) · [外形図](docs/avocado-mini-mini200-e1/drawings/mechanical/ME200-E1-01.svg) · [内部配置図](docs/avocado-mini-mini200-e1/drawings/mechanical/ME200-E1-02.svg) · [音声設計](docs/avocado-mini-mini200-e1/engineering/voice/README.md)
+
+![Mini200 E1の身体・音声入力と本体内ゲーム処理の構成案。実機未検証。](docs/avocado-mini-mini200-e1/drawings/figures/E1-S01.svg)
+
+## Mini200 E1で設計している体験
+
+### ゲームから暮らしへ、通信は選べる設計
+
+**通信がなくても身近で役立つ。つながれば、できることが広がる。** これは到達目標で、現在の実装完了を意味しません。
+
+- **端末内の自律動作**：導入済みの対応ゲーム、身体認識、日本語音声、保存・復旧を本体で処理する設計。ゲームの入力・衝突・描画を衛星やクラウドの往復待ちにしません。
+- **生活への拡張**：創作・学習・運動から、明示接続した生活機器へ。同意、対象、停止、結果確認を共通化し、音声やAIの推測だけで購入・支払い・施錠解除などを承認しません。
+- **通信の選択肢**：家庭回線、携帯回線、外付け衛星ゲートウェイを分離して扱う提案。既存の衛星通信サービスを利用する構成から評価し、直接衛星通信や自社衛星群は将来の研究構想として残します。
+
+衛星通信だけで自律性・電源・屋内受信・全地域の高速通信が成立するわけではありません。20cm本体への衛星アンテナ内蔵、Starlink対応、通信契約、衛星打上げは未確定・未実施です。[生活・自律動作・衛星通信の設計追補](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md)に接続条件、通信断、権限、受入計画を記録しています。
+
+共通Coreをゲーム専用にする変更ではありません。Pixel 10／QEMUの既存OS検証系列、Sky／Zema、Walletの安全条件を保持し、E1ゲーム機への統合を別に受け入れます。
+
+### 最初のゲーム体験
+
+「赤い粒子にして」と話す → 画面で選択を確認 → 身体で狙い、ボタンでつかむ／放すことを明示 → ゲーム内で衝突・結合 → 「作品を保存」で新しい版を保存する流れです。同じ場面のルールを編集して自作ゲームやシミュレーションへつなぎます。声を使わなくても操作できる設計です。
+
+| 項目 | E1の設計案と現在地 |
+| --- | --- |
+| 使用時の大きさ | 本体は幅198×奥行178×高さ198mm、全体±1mmの寸法予算。ケーブル・外部機器は別。実部品収納と加工公差は未検証 |
+| 外観 | 前面3つの丸窓を作業参照とする。利用者の「あのデザイン」との一致は未確認で、最終意匠ではない |
+| 内蔵処理 | CPU/GPU・共有RAM 32GB級・SSD 1TBを候補化。外部Hub必須を外す案。主基板型番とRockstarOS console targetの統合は未完了 |
+| 身体入力 | 左右の同期カメラ＋中央RGBの候補。初期は前方1人・1〜2mの手と上半身。全身・背面・360度は未保証 |
+| 日本語音声 | ReSpeaker XVF3800 USB 4-Mic Array、whisper.cppと多言語Whisper base/smallを評価候補化。初期はPTT（押して話す）、ゲーム音の一時減音、限定10コマンド |
+| プライバシー | カメラとマイクの同意を分離。独立MIC OFF、旧認識結果の取消、原音の既定保存・送信OFFを要求。物理遮断回路は未確定 |
+| 外部機器 | TV・操作器・ACアダプターは外付け。本体内の画面・電池・スピーカーは初期案に含めない |
+| 生活・経済 | メモ、作品、共有、登録機器へ段階拡張。家電・公開・購入・支払いは別権限。声や身体動作を支払承認にしない |
+
+**設計と実装は別です。** 計算・直列の入力許可モデル140項目は再実行一致しましたが、実音声認識・実機試験は0件です。1000組の架空粒子計算はこの140項目中の1項目に含まれ、化学実験ではありません。認識率、60fps、冷却、物理ミュート、OS搭載、GTA VI動作を確認済みとは扱いません。部品・ピン配線・詳細公差を確定した製造承認図でもありません。
+
+既存のMaterial Inventionは四方向の入力契約です。E1は別のゲーム入力profileとadapterの設計・実装・受入が必要です。既存の`faster-whisper`候補掲載もE1の音声実装完了ではありません。[現在のコードとの接続境界](docs/avocado-mini-mini200-e1/README.md#既存rockstarosとの接続境界)を参照してください。
+
+```sh
+python3 docs/avocado-mini-mini200-e1/engineering/verify_all.py
+```
+
+Python 3.10以上・追加依存なしで計算を一時領域に再生成し、保存結果と比較します。録音、ネット接続、実機操作は行いません。Gitには本文、SVG図7枚、計算入力・参照モデル・結果を保存し、重複するPDF/DOCX/PNG/ZIPと利用者提供P0.2原本は追加していません。
+
+## 以前のMotion Tower構想と公開サイトの記録
+
+Mini200 E1は、下記P0.2の4本＋Hub、伸縮寸法、キット目標価格41万円を引き継ぎません。公開商品サイトの更新・配備は今回行っておらず、サイト側には旧構想が残ります。
+
+<details>
+<summary>P0.2の4本のタワー・ギャラリー・公開サイト情報を開く</summary>
 
 **商品ページとOS操作画面は別ドメインに分けます。** `rockstaros-kaiya.noellesugar1.chatgpt.site`をavocadoMiniの一般公開商品サイトにし、`/rockstaros`からも商品を見られるようにします。OS操作画面だけを新しい別Siteへ移します。商品サイトのsourceは[`sites/avocado-mini`](sites/avocado-mini/)です。現在は[別ドメインのプレビュー](https://avocado-mini.kirin-999.chatgpt.site/)を公開済みで、旧URLは所有アカウント未接続のため旧OS画面のままです。
 
@@ -34,6 +86,8 @@
 
 まず[製品サイトのクラファン企画ページ](https://avocado-mini.kirin-999.chatgpt.site/crowdfunding/)と[GitHubの企画原稿](docs/avocado-mini-crowdfunding.md)で、実現したい体験、資金で進める検証、現在の開発段階を見られます。支援金を受け付ける募集ページの公開URLはまだありません。募集サービス、目標額、返礼、提供条件が決まり次第、正式な募集ページへの直接リンクを設置します。現在は募集・決済・先行予約を行っていません。
 
+</details>
+
 ## 動くジャケット
 
 RockstarOSは、avocadoMiniの操作、権限、保存、復旧をつなぐ技術基盤です。**Material Invention Studio**で発明の候補を試し、**Sky**で目的に合うAI Toolを探し、**Zema**で依頼から成果まで進めます。[製品別の動くジャケット](#製品体系)も下で見られます。
@@ -48,11 +102,11 @@ RockstarOSは、avocadoMiniの操作、権限、保存、復旧をつなぐ技�
 
 ## 製品体系
 
-### avocadoMini — 空間発明のためのハードウェア構想
+### avocadoMini — Mini200 E1と以前の空間発明構想
 
 ![avocadoMiniの設計構想。四方向のセンサーに囲まれた作業面で発明の候補が動くアニメーション](docs/assets/cover-avocado-mini.gif)
 
-表に出す外観は[4本の伸縮式Motion TowerとEdge Hub](sites/avocado-mini/public/images/avocado-mini-kit.png)です。四方向センサーと作業面による発明体験をキットとして設計しています。**キット目標価格（税込）41万円**。画像はコンセプトであり、追跡精度、表示方式、安全性、量産性を実証した実機写真ではありません。P0.2設計から試作と検証へ進み、価格と仕様を実測・原価検証後に決定します。
+上のアニメーションと[4本の伸縮式Motion Tower＋Edge Hub画像](sites/avocado-mini/public/images/avocado-mini-kit.png)は以前の空間発明構想です。**41万円（税込）は旧P0.2キットの目標価格であり、Mini200 E1の価格ではありません。** 最新の20cmゲーム機と日本語音声の設計は[Mini200 E1](docs/avocado-mini-mini200-e1/README.md)を参照します。いずれも実機写真や性能・量産性の合格証拠ではありません。
 
 ### RockstarOS — 製品を動かす共通の土台
 
@@ -97,7 +151,8 @@ Walletは費用、確定収益、払出し、未確定状態を分けて表示�
 | --- | --- | --- |
 | Pixel 10 / `frankel` | RockstarOSのreference hardware。Android Broker、Shell、Local AI、backup、Toolを実機検証する | source / APK / pre-full gate。full build、flash、CTS/VTS、OTA、純正復旧は未完了 |
 | Linux / QEMU | native OS契約、更新、rollback、Wallet / Game fixtureを検証する | Developer Preview候補 |
-| avocadoMini | 四方向sensorでMR / AR / VR / 2DのMaterial Inventionを操作する専用端末 | 設計 / Bench試作前。XR runtime、実機、物理設備は未接続 |
+| avocadoMini Mini200 E1 | 身体と日本語音声で仮想粒子を操作する20cmゲーム機の設計案 | 基本設計・算術／許可モデルのみ。console OS、実ASR、実機は未受入 |
+| avocadoMini 四方向構成 | 以前のBench／Full-scale／P0.2によるMaterial Inventionの設計系列 | 四方向契約を保持。E1前面3眼との互換・実機・XRは未受入 |
 
 avocadoMiniはRockstarOSそのものではなく、RockstarOSを搭載してMaterial Invention Studioを操作する専用デバイスです。
 
@@ -222,7 +277,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-20 / 138 task中91 done・30 in progress・16 planned・1 blocked
+更新日: 2026-09-21 / 140 task中92 done・30 in progress・17 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -244,7 +299,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 - **MCP**: stdio／Streamable HTTPをConnection Passportで管理します。現在の標準実接続は「このPC」で、Sky Cloudとprovider MCPは準備中です。
 - **Wallet**: 仕事、費用、検証済み収益、Rock利用料、払出しを別状態とreceiptで管理します。売上0なら請求0、未達分の債務化・翌月繰越はありません。
 - **Market / Fund**: 型付き価値の市場と実績更新型ファンドはPAPER限定です。LIVE注文、清算、自動再投資は無効です。
-- **Material Invention / avocadoMini**: Material Invention Coreの標準体験。四方向sensorで手を追跡し、物質digital twinの接続・分離から候補再計算とPatent AI引継ぎを行うRockstarOS端末を設計済み。[共有用完成設計書](docs/rockstaros-avocado-mini-complete-design.md)から、利用者向け説明と役割別の作業入口へ進めます。XR runtimeと実機は未実装です。
+- **Material Invention / avocadoMini**: 最新の[Mini200 E1設計](docs/avocado-mini-mini200-e1/README.md)は、使用時20cmのゲーム機に身体入力と日本語音声を組み合わせる提案です。以前の四方向sensorによる物質digital twinの接続・分離、候補再計算、Patent AI引継ぎは[四方向構成の設計書](docs/rockstaros-avocado-mini-complete-design.md)に保持します。両構成の入力契約は別で、E1のOS・ASR・ゲーム統合、四方向XR runtime、実機は未受入です。
 - **OS運用**: 診断、暗号化された端末設定backup、明示的なPWA更新、A/B更新、rollback、復旧を提供します。
 - **緊急保護**: 利用者向けOSとは別配備の`RockstarOS Operator Dock`と、launcher非表示・別UIDの`dev.rock.operator.agent`を実装しました。DockはCloudflare Access JWTと利用者確認済みWebAuthn署名を必須化し、Agentは対象端末、RP／origin、署名、期限、scope、単調増加counterを独立検証してからackします。端末requestもKeystore P-256鍵で署名し、端末監査はAndroid Keystore HMAC chainで追記します。管理serverだけでは有効命令を作れず、任意shell、私的内容、Wallet、鍵への経路はありません。source build／lint、Android 15 emulator、試験署名Pixelの命令検証5/5は合格。production credential、StrongBox attestation、Device Owner実行、本番の侵入／復旧演習は未完了です。
 - **Android正式署名**: 専用オフライン署名PC、YubiHSM 2本番1台、別場所の予備1台、別端末での独立検証に固定し、鍵をAVB／OTA／system application／APEX system componentの4系統へ分離しました。長期鍵と通常application鍵24か月目安、最低1 releaseの旧新鍵移行、漏洩鍵の即時停止・再使用禁止も固定済みです。生の秘密鍵はHSM外へ出さず、端末診断プラグインを署名鍵やboot不能の復旧手段には使いません。機材調達、全署名接続、予備切替、旧新鍵移行、Pixel 10実測は未完了です。
@@ -404,11 +459,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>138 taskと段階gateの詳細を開く</summary>
+<summary>140 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-20 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/138件
+最終更新: 2026-09-21 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 92/140件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -429,6 +484,8 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | MAT05 | Core graphから決定的XR sceneを生成し、四方向pose fixtureのconnect／separate／stale拒否を実装 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT06 | avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT07 | 誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化 | 完了 | [記録](docs/rockstaros-avocado-mini-complete-design.md) · [記録](docs/workstreams/11-material-invention-avocado-mini.md) · [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/rockstaros-1.0-architecture.md) |
+| MAT08 | Mini200 E1のゲーム中心・生活拡張・衛星通信方針と20cm本体・音声をREADME・図・参照モデルへ保存（実機未受入） | 完了 | [記録](docs/avocado-mini-mini200-e1/README.md) · [記録](docs/avocado-mini-mini200-e1/design.md) · [記録](docs/avocado-mini-mini200-e1/engineering/verify_all.py) · [記録](docs/avocado-mini-mini200-e1/verification.json) · [記録](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
+| MAT09 | Mini200 E1専用入力profile・Core adapter・ゲーム／ASR／console OSと20cm実機を独立受入 | 未着手 | [記録](docs/avocado-mini-mini200-e1/README.md) · [記録](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
