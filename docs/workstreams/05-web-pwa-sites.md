@@ -4,7 +4,7 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
-- avocadoMiniの商品映像に、行ごとのクリップ表示、ぼかしからの復帰、本文と操作の時間差、回転ツアー章切替時の再表示を追加。動きを減らす設定では演出を無効化する。製品Site v30（source `7f2073c66903502fef685b8a581f501950841708`）として一般公開し、静的buildとデスクトップ表示を確認した。
+- avocadoMiniの商品映像に、行ごとのクリップ表示、強いぼかしから段階的に合焦する冒頭、本文と操作の時間差、回転ツアー章切替時の再表示を追加。章が切り替わる0.78秒だけ製品面へフォーカス移動を入れ、説明文は遅れて鮮明になる。動きを減らす設定では演出を無効化する。製品Site v31（source `22d0fa4832f80d931286186e5f05180a6b9ac2f1`）として一般公開し、静的buildとデスクトップ表示を確認した。
 
 - avocadoMini公開Siteの可視文言、aria label、画像代替文、予約画面の動的状態、予約APIの利用者向けerrorを英語へ統一。英語版の静的build、予約API試験3件、トップ・予約・導入画面の試写を通し、sourceと配布物から日本語文字を除去した。製品Site v29（source `70f544d621c514da9a867ae66747dfc2cc7561bd`）として一般公開した。
 

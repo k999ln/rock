@@ -54,6 +54,10 @@ const storySticky = document.querySelector('.story-sticky');
 const storyWord = document.querySelector('#story-word');
 const storyRail = [...document.querySelectorAll('.story-rail span')];
 const beats = [...document.querySelectorAll('.feature-beat')];
+const storyFocusWash = document.createElement('span');
+storyFocusWash.className = 'story-focus-wash';
+storyFocusWash.setAttribute('aria-hidden', 'true');
+storySticky?.append(storyFocusWash);
 const product = document.querySelector('#motion-product');
 const towerScene = product ? createTowerScene(product) : null;
 const frames = [...document.querySelectorAll('.turn-frame')];
@@ -70,6 +74,7 @@ const galleryNext = document.querySelector('#gallery-next');
 const priceStart = 0.91;
 const storyWords = ['FORM', 'SENSE', 'REACH', 'STABLE', 'FLOW', 'MINI'];
 const storyColors = ['#09090a', '#111214', '#0d0e10', '#111214', '#0d0e10', '#09090a'];
+let lastStoryChapter = -1;
 const motionKeys = [
   { at: 0, x: 0, y: 1, scale: 0.96, tilt: -2, yaw: 0 },
   { at: 0.18, x: 2, y: 0, scale: 1.02, tilt: 1, yaw: 48 },
@@ -127,6 +132,18 @@ function updateStory(progress) {
   const priceVisible = progress >= priceStart;
   const phase = clamp(progress / 0.18, 0, 4);
   const active = priceVisible ? 5 : Math.min(4, Math.round(phase));
+  if (active !== lastStoryChapter) {
+    if (lastStoryChapter >= 0 && !reducedMotion.matches) {
+      storyFocusWash.getAnimations().forEach((animation) => animation.cancel());
+      storyFocusWash.animate([
+        { opacity: 0, backdropFilter: 'blur(0px)', webkitBackdropFilter: 'blur(0px)' },
+        { opacity: 0.58, backdropFilter: 'blur(8px)', webkitBackdropFilter: 'blur(8px)', offset: 0.24 },
+        { opacity: 0.22, backdropFilter: 'blur(3px)', webkitBackdropFilter: 'blur(3px)', offset: 0.62 },
+        { opacity: 0, backdropFilter: 'blur(0px)', webkitBackdropFilter: 'blur(0px)' },
+      ], { duration: 780, easing: 'cubic-bezier(.16,1,.3,1)' });
+    }
+    lastStoryChapter = active;
+  }
   const first = Math.floor(phase);
   storySticky.style.setProperty('--story-bg', priceVisible ? storyColors[5] : mixColor(storyColors[first], storyColors[Math.min(5, first + 1)], smooth(phase - first)));
   storyWord.textContent = storyWords[active];
