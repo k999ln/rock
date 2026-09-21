@@ -1,20 +1,41 @@
-# RockstarOS
+# Avokado Mini
 
-![RockstarOS in motion](rockstaros-motion.gif)
+![Avokado Mini in motion](rockstaros-motion.gif)
 
-## Make the work move.
+## Make space for what comes next.
 
-RockstarOS is an AI-native operating system for finding the right tools, moving work forward, approving consequential actions, and keeping a trustworthy record of what happened.
+**Avokado Mini** is the flagship product experience from **Avokado, Ink**: a local-first creative environment for exploring ideas, finding the right tools, working with AI, and moving meaningful work into action.
 
-It is built around a simple belief: AI should make people more capable without making them less in control.
+RockstarOS is the operating system that makes the experience coherent, understandable, and accountable.
 
-> **Developer Preview** -- RockstarOS is under active development. It is not presented as a finished consumer release or a production financial service.
+**Powered by RockstarOS. LLM: Local.**
 
-![RockstarOS orchestration](rockstaros-hero.png)
+> **Developer Preview** -- Avokado Mini and RockstarOS are under active development. The public materials describe the product direction, not final engineering specifications or a finished consumer release.
 
-## One system. A clear path from intent to outcome.
+## One product. One creative environment.
 
-RockstarOS brings discovery, collaboration, approval, execution, and recovery into one coherent experience.
+Avokado Mini is designed around the complete journey from intent to result. It connects the tools, people, approvals, and records that move a project forward while keeping the user in control.
+
+| Layer | Public role |
+| --- | --- |
+| **Avokado Mini** | Give the whole experience a clear, human-centered home. |
+| **RockstarOS** | Coordinate tools, collaboration, decisions, and results. |
+| **Local AI** | Support the user while keeping the public description intentionally simple. |
+| **Sky Tools** | Extend the experience through understandable, permission-aware capabilities. |
+
+Internal hardware architecture and AI implementation details remain private.
+
+## Built for invention.
+
+- **See the whole project.** Bring tools, work, and decisions into one understandable environment.
+- **Move from intent to action.** Discover what can help, understand the consequences, and approve the next step.
+- **Keep people in control.** Consequential actions stay behind explicit human decisions.
+- **Work locally.** The public AI description is intentionally simple: **LLM: Local**.
+- **Recover with confidence.** Success, failure, interruption, and unknown outcomes remain distinct.
+
+## RockstarOS is the operating system inside.
+
+RockstarOS gives Avokado Mini a clear path from an idea to a verified result.
 
 | Surface | Purpose |
 | --- | --- |
@@ -25,7 +46,9 @@ RockstarOS brings discovery, collaboration, approval, execution, and recovery in
 | **Market** | Explore typed value in a paper-only environment. |
 | **Settings** | See connection health, storage, updates, diagnostics, and recovery. |
 
-## The loop
+![RockstarOS orchestration](rockstaros-hero.png)
+
+## The working loop
 
 ![Discover, collaborate, and verify](rockstaros-workflow.png)
 
@@ -36,15 +59,10 @@ RockstarOS brings discovery, collaboration, approval, execution, and recovery in
 5. **Verify** the result and preserve the receipt.
 6. **Recover** safely when work is interrupted or uncertain.
 
-## AI
-
-**LLM: Local**
-
 ## Control is part of the product.
 
 - Every tool has an explicit scope, destination, and approval boundary.
 - Actions that change external state require the appropriate human decision.
-- Success, failure, interruption, and unknown outcomes remain distinct.
 - Fixtures, sandboxes, previews, and production environments are never treated as interchangeable.
 - AI does not receive private keys or unrestricted authority over financial records.
 
@@ -69,7 +87,7 @@ The development source of record is the private [`k999ln/rock`](https://github.c
 
 ## Public boundary
 
-This repository contains only material approved for public release. Private designs, credentials, user data, internal operations, and restricted implementation details remain outside the public repository.
+This repository contains the approved Avokado Mini product concept, the RockstarOS software overview, and public visual material. Engineering specifications, hardware implementation, local AI design, credentials, user data, internal operations, and restricted source code remain private.
 
 ## License
 
@@ -77,4 +95,4 @@ Reuse terms will be stated in a top-level `LICENSE` before source code is releas
 
 ---
 
-Built by **Avokado, Ink**.
+**Avokado Mini. Powered by RockstarOS. Built by Avokado, Ink.**
