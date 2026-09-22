@@ -2,14 +2,14 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-09-21
+更新日: 2026-09-22
 
 ## 全体
 
 - データ境界: 6、table: 80
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 144 task中 94 done、31 in progress、18 planned、1 blocked
+- 作業進捗: 146 task中 95 done、31 in progress、19 planned、1 blocked
 - 現在milestone: Pixel 10 compile-only Developer Previewの初回full build準備
 
 ## 保存境界と配備状態
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Define and validate the integrated four-tower plus central Mini200 E2 Core engineering package without treating the design documents or public rendering as real-device acceptance.
+Build and validate the integrated Tower20 E3 prototype: final CAD and wiring, four-camera timing and calibration, optical coverage, tip and sliding safety, thermal and power behavior, voice and game latency, signed RockstarOS image, recovery and manufacturing acceptance.
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

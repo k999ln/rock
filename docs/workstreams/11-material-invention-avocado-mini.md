@@ -1,5 +1,13 @@
 # Material Invention / avocadoMini
 
+## Tower20 E3の最新入口
+
+2026-09-22の利用者提供資料により、現行製品は[avocadoMini Tower20 E3](../avocado-mini-tower20-e3/README.md)へ更新した。固定式200mm以下のTower20 4本と、低い別筐体Edge Hub 1台を一つの製品構成とする。P0.2の伸縮塔、E1/E2の単体筐体は設計履歴であり、現行外観ではない。
+
+- `MAT12`: E3資料の境界、現行外観、予定価格、公開Site、Git正本を同期する。資料保存と公開説明の更新であり実機完成ではない。
+- `MAT13`: E3の確定CAD、配線、4camera同期、光学、転倒・滑り、熱、電源、音響、OS image、復旧を同一試作機で受け入れる。未着手。
+- 主担当`ROCK`は正本、公開説明、software境界を維持する。`JOINT`は実部品、機構、電気、光学、音響、熱、統合実測を担当し、`OWNER`は外観、費用、販売条件、外部用途を確定する。
+
 ## Mini200 E2と4本構成の最新入口
 
 2026-09-21の利用者確認により、完成製品の外観は4本の銀色Motion Towerと低い中央ユニットを囲む現在の公開画像を正本とする。[Mini200 E2 four-tower integration baseline](../avocado-mini-mini200-e2/README.md)で、E2のOS・ローカルゲーム・PTT音声・権限・保存・候補computeを中央Coreへ適用し、E2資料の20cm角単体筐体は完成外観へ採用しない。P0.2塔の機構とE2 Coreを一つにする配線、同期、電源、冷却、音響、signed imageと実機受入は未完了。

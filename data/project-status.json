@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-21",
+  "updatedAt": "2026-09-22",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
-  "nextAction": "Define and validate the integrated four-tower plus central Mini200 E2 Core engineering package without treating the design documents or public rendering as real-device acceptance.",
+  "nextAction": "Build and validate the integrated Tower20 E3 prototype: final CAD and wiring, four-camera timing and calibration, optical coverage, tip and sliding safety, thermal and power behavior, voice and game latency, signed RockstarOS image, recovery and manufacturing acceptance.",
   "tasks": [
     {
       "id": "UXCHAR01",
@@ -336,6 +336,30 @@
       ],
       "evidence": [
         "docs/avocado-mini-mini200-e2/README.md"
+      ]
+    },
+    {
+      "id": "MAT12",
+      "title": "Tower20 E3資料を現行avocadoMini基準へ固定し、4本の固定200mm塔＋別筐体Edge HubをGit正本と公開Siteへ同期（実機未受入）",
+      "status": "done",
+      "dependsOn": [
+        "MAT10"
+      ],
+      "evidence": [
+        "docs/avocado-mini-tower20-e3/README.md",
+        "docs/product-baseline.md",
+        "sites/avocado-mini/index.html"
+      ]
+    },
+    {
+      "id": "MAT13",
+      "title": "Tower20 E3の確定CAD・配線・4camera同期・光学・転倒／滑り・熱・電源・音響・OS image・復旧を同一試作機で受入",
+      "status": "planned",
+      "dependsOn": [
+        "MAT12"
+      ],
+      "evidence": [
+        "docs/avocado-mini-tower20-e3/README.md"
       ]
     },
     {

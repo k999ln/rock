@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-09-21",
+  "updatedAt": "2026-09-22",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
@@ -9,13 +9,13 @@
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
-    "total": 144,
-    "done": 94,
+    "total": 146,
+    "done": 95,
     "in_progress": 31,
-    "planned": 18,
+    "planned": 19,
     "blocked": 1,
     "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
-    "nextAction": "Define and validate the integrated four-tower plus central Mini200 E2 Core engineering package without treating the design documents or public rendering as real-device acceptance."
+    "nextAction": "Build and validate the integrated Tower20 E3 prototype: final CAD and wiring, four-camera timing and calibration, optical coverage, tip and sliding safety, thermal and power behavior, voice and game latency, signed RockstarOS image, recovery and manufacturing acceptance."
   },
   "webSchema": {
     "tableCount": 32,

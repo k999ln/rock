@@ -16,7 +16,7 @@ async function loadDisclosure() {
       ['Address', offer.terms.sellerAddress],
       ['Phone', offer.terms.sellerPhone],
       ['Single Motion Tower total', yen(offer.products.tower.totalJpy)],
-      ['Four towers + Mini200 E2 core total', yen(offer.products.kit.totalJpy)],
+      ['Four Tower20 units + Edge Hub total', yen(offer.products.kit.totalJpy)],
       ['Shipping', offer.terms.shippingFee],
       ['Payment timing and method', 'Full payment by card at order through Stripe Checkout'],
       ['Estimated delivery', offer.terms.shippingDate],

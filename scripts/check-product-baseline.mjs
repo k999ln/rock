@@ -952,9 +952,12 @@ export function validateBaseline(
       data.launchPage?.serviceDetailsLocation === 'os_home_after_setup' &&
       data.marketPositioning?.customerFacingFocus === 'hardware_products' &&
       data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
-      data.marketPositioning?.leadHardwareForm === 'mini200_game_console_design' &&
-      data.marketPositioning?.previousLeadHardwareForm === 'motorized_telescopic_sensor_tower_concept' &&
-      data.marketPositioning?.legacyReferencePriceAppliesTo === 'motion_tower_p0_kit_not_mini200_e1' &&
+      data.marketPositioning?.leadHardwareForm ===
+        'tower20_e3_four_fixed_height_towers_and_separate_edge_hub' &&
+      data.marketPositioning?.previousLeadHardwareForm ===
+        'mini200_e2_four_tower_integration_concept' &&
+      data.marketPositioning?.legacyReferencePriceAppliesTo ===
+        'historical_motion_tower_p0_kit_only' &&
       data.marketPositioning?.avocadoMiniStage ===
         'design_only_no_physical_prototype_or_sales' &&
       data.launchPage?.primaryAction === 'view_avocado_mini' &&
@@ -976,6 +979,17 @@ export function validateBaseline(
       data.marketPositioning?.motionTowerP0Engineering?.freeStandingMaxHeightMm === 1200 &&
       data.marketPositioning?.motionTowerP0Engineering?.dockedMaxHeightMm === 1800 &&
       data.marketPositioning?.motionTowerP0Engineering?.llmCanAuthorizeMotionRecordingOrSafetyBypass === false &&
+      data.marketPositioning?.tower20E3?.document ===
+        'docs/avocado-mini-tower20-e3/README.md' &&
+      data.marketPositioning?.tower20E3?.role ===
+        'current_avocado_mini_product_baseline' &&
+      data.marketPositioning?.tower20E3?.towerCount === 4 &&
+      data.marketPositioning?.tower20E3?.edgeHubCount === 1 &&
+      data.marketPositioning?.tower20E3?.fixedHeight === true &&
+      data.marketPositioning?.tower20E3?.maximumUsageHeightMm === 200 &&
+      data.marketPositioning?.tower20E3?.activeCameraCandidatesPerTower === 1 &&
+      data.marketPositioning?.tower20E3?.physicalTests === 0 &&
+      data.marketPositioning?.tower20E3?.manufacturingReleased === false &&
       turntableSource.includes('¥410,000') &&
       turntableSource.includes('購入する') &&
       turntableSource.includes('/rockstaros/guide#install'),

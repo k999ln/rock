@@ -865,9 +865,9 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
   .launch-motion-ready .launch-page.is-ready .launch-nav,.launch-motion-ready .launch-page.is-ready .launch-panel-purpose.is-active{animation:none}
 }
 
-/* Mini200 E2 is the central compute architecture inside the owner-confirmed four-tower exterior. */
+/* Tower20 E3 separates four fixed-height input towers from one low Edge Hub. */
 .e2-core{position:relative;padding:clamp(7rem,12vw,12rem) clamp(1.4rem,7vw,7rem);overflow:hidden;background:#f1f4f5;color:#07131b}
-.e2-core:before{content:"E2";position:absolute;right:-.04em;top:.05em;color:#07131b0a;font-size:clamp(14rem,38vw,42rem);font-weight:700;line-height:.8;letter-spacing:-.1em;pointer-events:none}
+.e2-core:before{content:"E3";position:absolute;right:-.04em;top:.05em;color:#07131b0a;font-size:clamp(14rem,38vw,42rem);font-weight:700;line-height:.8;letter-spacing:-.1em;pointer-events:none}
 .e2-core-heading{position:relative;z-index:1;max-width:72rem}
 .e2-core-heading .eyebrow{color:#087c9d}
 .e2-core-heading h2{margin:0;font-size:clamp(4rem,9vw,9rem);line-height:.86;letter-spacing:-.075em}

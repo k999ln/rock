@@ -1,14 +1,14 @@
-# avocadoMini — 4本のMotion TowerとMini200 E2 Core
+# avocadoMini Tower20 E3 — 4本の200mm Towerと別筐体Edge Hub
 
-**2026-09-21 最新の外観確定:** avocadoMiniは、銀色の伸縮式Motion Tower 4本が低い中央ユニットを囲む形です。利用者が公開Siteの画像を示してこの形を正本と確認したため、Mini200 E2資料にある20cm角の単体筐体へ外観を置き換えません。Mini200 E2のOS、ローカルゲーム、PTT音声、権限、保存、候補演算・ストレージ仕様は、中央Coreへ統合する設計として採用します。現在の正本は[Mini200 E2 four-tower integration baseline](docs/avocado-mini-mini200-e2/README.md)です。
+**2026-09-22 最新設計:** avocadoMiniは、使用時高さ200mm以下の固定式Motion Tower 4本と、低い別筐体Edge Hub 1台で構成します。Tower20 E3は伸縮機構を採用せず、三段に見える境界は外観処理です。各塔は1台の単色camera候補を持つ入力機器、HubはRockstarOS、ゲーム、4入力の統合、PTT日本語音声、保存、権限、承認済みAI adapterの実行先です。現在の正本は[Tower20 E3 product baseline](docs/avocado-mini-tower20-e3/README.md)です。
 
-![4本のMotion Towerが中央のMini200 E2 Coreを囲むavocadoMiniの外観構想](sites/avocado-mini/public/images/avocado-mini-kit.png)
+![4本の短いTower20と別筐体Edge Hubで構成するavocadoMini E3外観構想](sites/avocado-mini/public/images/avocado-mini-tower20-e3-kit.png)
 
-外観は確定方向ですが、画像は構想レンダリングで実機写真ではありません。4本と中央Coreの配線、同期、電源、冷却、音響、実機遅延、量産性、RockstarOS signed imageは未受入です。41万円＋税は現行の4本＋中央ユニット構成の予定基本価格であり、送料、納期、販売条件が揃うまで決済を開始しません。
+画像は構想レンダリングで実機写真ではありません。高さ公差、転倒・滑り、光学視野、4camera同期、USB帯域、冷却、電源、音響、実機遅延、量産性、RockstarOS signed imageは未受入です。41万円＋税は現行の4本＋Edge Hub構成の予定基本価格であり、送料、納期、販売条件が揃うまで決済を開始しません。
 
-## Mini200 E1 / E2単体筐体資料の扱い
+## 旧P0.2 / Mini200 E1 / E2資料の扱い
 
-以下のE1 20cmゲーム機とE2単体筐体の記述は、OS・入力・音声・内部構成の設計資料として保持します。完成製品の外形は上記の4本＋中央ユニットを優先します。
+以下の長い伸縮式P0.2 Tower、E1 20cmゲーム機、E2単体筐体の記述は設計履歴として保持します。完成製品の現行構成はTower20 E3を優先します。
 
 **ゲームを入口に、生活全体をより豊かにするRockstarOSへ。** Mini200 E1/E2は、身体操作・仮想粒子・日本語音声・ローカルゲーム・保存と復旧を設計した内部architectureの系統です。ゲームを遊ぶ・つくる体験から、創作、学習、運動、日常の手助け、本人が許可した生活機器へ段階的に広げます。現物から粒子を放射したり、実物の化合物を作る装置ではありません。
 
@@ -289,7 +289,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-21 / 144 task中94 done・31 in progress・18 planned・1 blocked
+更新日: 2026-09-22 / 146 task中95 done・31 in progress・19 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -471,11 +471,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>144 taskと段階gateの詳細を開く</summary>
+<summary>146 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-21 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 94/144件
+最終更新: 2026-09-22 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 95/146件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -502,6 +502,8 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | MAT09 | Mini200 E1専用入力profile・Core adapter・ゲーム／ASR／console OSと20cm実機を独立受入 | 未着手 | [記録](docs/avocado-mini-mini200-e1/README.md) · [記録](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
 | MAT10 | Mini200 E2資料と利用者確定の4本＋中央Core外観をGit正本と公開製品Siteへ同期（実機未受入） | 完了 | [記録](docs/avocado-mini-mini200-e2/README.md) · [記録](docs/product-baseline.md) · [記録](sites/avocado-mini/index.html) |
 | MAT11 | 4本のMotion Towerと中央Mini200 E2 Coreの統合engineering package・prototype・実機受入 | 未着手 | [記録](docs/avocado-mini-mini200-e2/README.md) |
+| MAT12 | Tower20 E3資料を現行avocadoMini基準へ固定し、4本の固定200mm塔＋別筐体Edge HubをGit正本と公開Siteへ同期（実機未受入） | 完了 | [記録](docs/avocado-mini-tower20-e3/README.md) · [記録](docs/product-baseline.md) · [記録](sites/avocado-mini/index.html) |
+| MAT13 | Tower20 E3の確定CAD・配線・4camera同期・光学・転倒／滑り・熱・電源・音響・OS image・復旧を同一試作機で受入 | 未着手 | [記録](docs/avocado-mini-tower20-e3/README.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -643,7 +645,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: Define and validate the integrated four-tower plus central Mini200 E2 Core engineering package without treating the design documents or public rendering as real-device acceptance.
+次の作業: Build and validate the integrated Tower20 E3 prototype: final CAD and wiring, four-camera timing and calibration, optical coverage, tip and sliding safety, thermal and power behavior, voice and game latency, signed RockstarOS image, recovery and manufacturing acceptance.
 <!-- project-status:end -->
 
 </details>

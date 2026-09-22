@@ -1,6 +1,6 @@
 {
-  "version": "1.90",
-  "decidedAt": "2026-09-21",
+  "version": "1.91",
+  "decidedAt": "2026-09-22",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -70,9 +70,9 @@
   "marketPositioning": {
     "customerFacingFocus": "hardware_products",
     "leadHardwareConcept": "avocadoMini",
-    "leadHardwareForm": "mini200_game_console_design",
-    "previousLeadHardwareForm": "motorized_telescopic_sensor_tower_concept",
-    "legacyReferencePriceAppliesTo": "motion_tower_p0_kit_not_mini200_e1",
+    "leadHardwareForm": "tower20_e3_four_fixed_height_towers_and_separate_edge_hub",
+    "previousLeadHardwareForm": "mini200_e2_four_tower_integration_concept",
+    "legacyReferencePriceAppliesTo": "historical_motion_tower_p0_kit_only",
     "brandLine": "考える時間を、つくる時間に。",
     "avocadoMiniDesiredReferencePriceJpy": 410000,
     "avocadoMiniSingleTowerProposedExTaxPriceJpy": 160000,
@@ -126,8 +126,8 @@
     "avocadoMiniStage": "design_only_no_physical_prototype_or_sales",
     "pixel10Role": "development_reference_device_not_own_hardware_product",
     "taxTreatmentClaim": "none",
-    "ownerConfirmedExterior": "four_silver_motion_towers_surrounding_one_low_central_unit",
-    "ownerConfirmedExteriorEvidence": "current_avocadoMini_public_site_hero_image_confirmed_by_user_2026-09-21",
+    "ownerConfirmedExterior": "four_fixed_height_silver_tower20_units_surrounding_one_low_separate_edge_hub",
+    "ownerConfirmedExteriorEvidence": "user_provided_tower20_e3_design_package_2026-09-22",
     "mini200E2Integration": {
       "document": "docs/avocado-mini-mini200-e2/README.md",
       "role": "central_core_architecture_inside_four_tower_product",
@@ -136,7 +136,34 @@
       "hardwareCandidatesRemainUnapproved": true,
       "realDeviceTests": 0
     },
-    "currentFourTowerBasePriceJpyExTax": 410000
+    "currentFourTowerBasePriceJpyExTax": 410000,
+    "tower20E3": {
+      "document": "docs/avocado-mini-tower20-e3/README.md",
+      "source": "User-provided RockstarOS Tower20 E3 OS Design and avocadoMini Tower20 E3 Hardware Design",
+      "role": "current_avocado_mini_product_baseline",
+      "towerCount": 4,
+      "edgeHubCount": 1,
+      "fixedHeight": true,
+      "maximumUsageHeightMm": 200,
+      "proposedNominalHeightMm": 199.5,
+      "proposedArithmeticMaximumHeightMm": 199.95,
+      "bodyOuterDiameterMm": 44,
+      "baseDiameterMm": 96,
+      "footContactCircleDiameterMm": 200,
+      "activeCameraCandidatesPerTower": 1,
+      "reservedDarkWindowsPerTower": 2,
+      "edgeHubEnvelopeMm": [
+        240,
+        200,
+        70
+      ],
+      "fourTowerCenterRoiPlanningBandwidthGbps": 2.260992,
+      "serialLatencyPlanningMs": 95.7,
+      "physicalTests": 0,
+      "manufacturingReleased": false,
+      "publishedSiteUpdated": true,
+      "maturity": "E3_engineering_proposal_not_physical_or_manufacturing_acceptance"
+    }
   },
   "distributionPricingIntent": {
     "principle": "free_distribution_with_metered_os_use",
@@ -337,6 +364,20 @@
       "singleEnclosureMechanicalStudyAdoptedAsCompleteProductExterior": false,
       "centralCoreUsesE2OsArchitecture": true,
       "exactTowerCoreIntegrationResolved": false,
+      "runtimeIntegrated": false,
+      "physicalTests": 0,
+      "manufacturingReleased": false,
+      "publishedSiteUpdated": true
+    },
+    "tower20E3": {
+      "requested": true,
+      "recordedAt": "2026-09-22",
+      "status": "current_four_tower_and_separate_edge_hub_integration_design",
+      "design": "docs/avocado-mini-tower20-e3/README.md",
+      "ownerConfirmedExterior": "four_fixed_height_200mm_tower20_units_and_one_separate_low_edge_hub",
+      "telescopingMechanism": false,
+      "activeCameraCandidatesPerTower": 1,
+      "reservedWindowsPerTower": 2,
       "runtimeIntegrated": false,
       "physicalTests": 0,
       "manufacturingReleased": false,
