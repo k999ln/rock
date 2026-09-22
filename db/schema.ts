@@ -515,6 +515,34 @@ export const skyToolPackages = sqliteTable(
   ],
 );
 
+export const skyToolPackageReviews = sqliteTable(
+  'sky_tool_package_reviews',
+  {
+    id: text('id').primaryKey(),
+    packageKey: text('package_key').notNull(),
+    manifestSha256: text('manifest_sha256').notNull(),
+    reviewerId: text('reviewer_id').notNull(),
+    decision: text('decision').notNull(),
+    sourceRevision: text('source_revision'),
+    sourceSha256: text('source_sha256'),
+    checksJson: text('checks_json').notNull(),
+    evidenceJson: text('evidence_json').notNull(),
+    notes: text('notes').notNull(),
+    reviewedAt: integer('reviewed_at').notNull(),
+    expiresAt: integer('expires_at'),
+  },
+  (table) => [
+    index('idx_sky_tool_reviews_package_time').on(
+      table.packageKey,
+      table.reviewedAt,
+    ),
+    index('idx_sky_tool_reviews_decision_expiry').on(
+      table.decision,
+      table.expiresAt,
+    ),
+  ],
+);
+
 export const skyToolEvents = sqliteTable(
   'sky_tool_events',
   {

@@ -3,6 +3,7 @@ import { SkySubmissionError } from './sky-submission.ts';
 type Database = Pick<D1Database, 'prepare'>;
 
 export type SkyToolEvent = {
+  eventId: string;
   packageKey: string;
   toolName: string;
   installationId: string;
@@ -22,6 +23,7 @@ export function parseSkyToolEvent(value: unknown): SkyToolEvent {
     throw new SkySubmissionError('利用イベントの形式を確認してください。');
   const input = value as Record<string, unknown>;
   const keys = [
+    'eventId',
     'packageKey',
     'toolName',
     'installationId',
@@ -46,6 +48,12 @@ export function parseSkyToolEvent(value: unknown): SkyToolEvent {
   if (Math.abs(Date.now() - Date.parse(occurredAt)) > 7 * 24 * 60 * 60 * 1000)
     throw new SkySubmissionError('実行時刻は現在から7日以内にしてください。');
   return {
+    eventId: text(
+      input.eventId,
+      'Event ID',
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+      36,
+    ),
     packageKey: text(
       input.packageKey,
       'Package ID',
@@ -73,7 +81,7 @@ export function skyToolEventStore(db: Database) {
     async record(userId: string, event: SkyToolEvent) {
       const result = await db
         .prepare(
-          `INSERT INTO sky_tool_events
+          `INSERT OR IGNORE INTO sky_tool_events
            (id, package_key, owner_user_id, tool_name, installation_id, outcome, duration_ms, occurred_at, created_at)
            SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?
            WHERE EXISTS (
@@ -82,7 +90,7 @@ export function skyToolEventStore(db: Database) {
            )`,
         )
         .bind(
-          crypto.randomUUID(),
+          event.eventId,
           event.packageKey,
           userId,
           event.toolName,
@@ -95,8 +103,28 @@ export function skyToolEventStore(db: Database) {
           userId,
         )
         .run();
-      if (Number(result.meta.changes ?? 0) !== 1)
-        throw new SkySubmissionError('このToolの利用イベントを記録できません。', 403);
+      if (Number(result.meta.changes ?? 0) === 1)
+        return { recorded: true, replay: false };
+      const replay = await db
+        .prepare(
+          `SELECT 1 FROM sky_tool_events
+           WHERE id = ? AND package_key = ? AND owner_user_id = ?
+             AND tool_name = ? AND installation_id = ? AND outcome = ?
+             AND duration_ms = ? AND occurred_at = ?`,
+        )
+        .bind(
+          event.eventId,
+          event.packageKey,
+          userId,
+          event.toolName,
+          event.installationId,
+          event.outcome,
+          event.durationMs,
+          event.occurredAt,
+        )
+        .first();
+      if (replay) return { recorded: true, replay: true };
+      throw new SkySubmissionError('このToolの利用イベントを記録できません。', 403);
     },
 
     async summary(userId: string) {

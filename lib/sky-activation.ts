@@ -120,14 +120,19 @@ export function skyActivationStore(db: Database) {
         .prepare(
           `SELECT package_key AS packageKey, manifest, status
            FROM sky_tool_packages
-           WHERE package_key = ? AND user_id = ?`,
+           WHERE package_key = ? AND user_id = ? AND status = 'verified'
+             AND EXISTS (
+               SELECT 1 FROM sky_tool_package_reviews r
+               WHERE r.package_key = sky_tool_packages.package_key
+                 AND r.manifest_sha256 = sky_tool_packages.manifest_sha256
+                 AND r.decision = 'verified'
+                 AND (r.expires_at IS NULL OR r.expires_at > ?)
+             )`,
         )
-        .bind(input.packageKey, userId)
+        .bind(input.packageKey, userId, Date.now())
         .first<{ packageKey: string; manifest: string; status: SkyToolPackageStatus }>();
       if (!packageRow)
-        throw new SkySubmissionError('指定したTool Packageが見つかりません。', 404);
-      if (!['published_declared', 'verified'].includes(packageRow.status))
-        throw new SkySubmissionError('公開済みのTool Packageだけコードを発行できます。', 409);
+        throw new SkySubmissionError('有効な審査済みTool Packageが見つかりません。', 404);
 
       const code = randomCode();
       const id = crypto.randomUUID();
@@ -225,6 +230,22 @@ export function skyActivationStore(db: Database) {
         }>();
       if (!row) throw new SkySubmissionError('有効化コードが見つかりません。', 404);
 
+      if (row.packageStatus !== 'verified')
+        throw new SkySubmissionError('このTool Packageは現在利用できません。', 410);
+      const validReview = await db
+        .prepare(
+          `SELECT 1 FROM sky_tool_package_reviews
+           WHERE package_key = ? AND manifest_sha256 = (
+             SELECT manifest_sha256 FROM sky_tool_packages WHERE package_key = ?
+           ) AND decision = 'verified'
+             AND (expires_at IS NULL OR expires_at > ?)
+           LIMIT 1`,
+        )
+        .bind(row.packageKey, row.packageKey, Date.now())
+        .first();
+      if (!validReview)
+        throw new SkySubmissionError('このTool Packageの審査期限が切れています。', 410);
+
       const existing = await db
         .prepare(
           `SELECT id, granted_at AS grantedAt, expires_at AS expiresAt
@@ -247,8 +268,6 @@ export function skyActivationStore(db: Database) {
         };
 
       activationStatus(row);
-      if (!['published_declared', 'verified'].includes(row.packageStatus))
-        throw new SkySubmissionError('このTool Packageは現在利用できません。', 410);
 
       const grantId = crypto.randomUUID();
       const grantedAt = Date.now();
@@ -310,11 +329,18 @@ export function skyActivationStore(db: Database) {
            FROM sky_tool_grants g
            JOIN sky_tool_packages p ON p.package_key = g.package_key
            WHERE g.telegram_user_id = ? AND g.status = 'active'
-             AND p.status IN ('published_declared', 'verified')
+             AND p.status = 'verified'
              AND (g.expires_at IS NULL OR g.expires_at > ?)
+             AND EXISTS (
+               SELECT 1 FROM sky_tool_package_reviews r
+               WHERE r.package_key = p.package_key
+                 AND r.manifest_sha256 = p.manifest_sha256
+                 AND r.decision = 'verified'
+                 AND (r.expires_at IS NULL OR r.expires_at > ?)
+             )
            ORDER BY g.granted_at DESC LIMIT 100`,
         )
-        .bind(telegramUserId, now)
+        .bind(telegramUserId, now, now)
         .all<{ packageKey: string; manifest: string; grantedAt: number; expiresAt: number | null }>();
       return rows.results.map((row) => {
         const manifest = manifestFromRow(row);

@@ -8,6 +8,7 @@ import {
   isSkyActivationCode,
   skyActivationStore,
 } from '../lib/sky-activation.ts';
+import { skyToolReviewStore } from '../lib/sky-tool-review.ts';
 
 const draft = createSkyToolPackageDraft({
   sourceKind: 'github',
@@ -30,7 +31,7 @@ async function database(t) {
   );
   t.after(() => worker.dispose());
   const db = await worker.getD1Database('DB');
-  for (const file of ['0010_gray_fat_cobra.sql', '0014_sparkling_chimera.sql']) {
+  for (const file of ['0010_gray_fat_cobra.sql', '0014_sparkling_chimera.sql', '0016_red_crusher_hogan.sql']) {
     const migration = readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8');
     for (const statement of migration.split('--> statement-breakpoint').filter((value) => value.trim()))
       await db.prepare(statement).run();
@@ -38,11 +39,29 @@ async function database(t) {
   return db;
 }
 
+async function verify(db, saved) {
+  return skyToolReviewStore(db).review('reviewer-a', {
+    packageKey: saved.packageKey,
+    manifestSha256: saved.manifestSha256,
+    decision: 'verified',
+    sourceRevision: 'a'.repeat(40),
+    sourceSha256: 'b'.repeat(64),
+    checks: {
+      sourcePinned: true, rights: true, license: true, permissions: true,
+      privacy: true, pricing: true, sandbox: true, outputQuality: true,
+    },
+    evidenceUrls: ['https://example.com/reviews/telegram-tool'],
+    notes: 'Telegram配布前の固定sourceとSandbox試験を確認しました。',
+    expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+  });
+}
+
 void test('activation codes are opaque, one-use, package-bound grants', { timeout: 10_000 }, async (t) => {
   const db = await database(t);
   const packages = skyToolPackageStore(db);
   const saved = await packages.create('developer-a', draft);
   await packages.publishDeclared('developer-a', saved.packageKey, saved.manifestSha256);
+  await verify(db, saved);
   const activations = skyActivationStore(db);
   const issued = await activations.issue('developer-a', {
     packageKey: saved.packageKey,
@@ -81,6 +100,7 @@ void test('revoked and expired codes cannot be redeemed', { timeout: 10_000 }, a
   const packages = skyToolPackageStore(db);
   const saved = await packages.create('developer-a', draft);
   await packages.publishDeclared('developer-a', saved.packageKey, saved.manifestSha256);
+  await verify(db, saved);
   const activations = skyActivationStore(db);
   const revoked = await activations.issue('developer-a', {
     packageKey: saved.packageKey,
@@ -99,5 +119,61 @@ void test('revoked and expired codes cannot be redeemed', { timeout: 10_000 }, a
   await assert.rejects(
     () => activations.redeem({ code: expired.code, telegramUserId: '2', telegramChatId: '2' }),
     /期限が切れています/,
+  );
+});
+
+void test('declared but unreviewed packages cannot be distributed', { timeout: 10_000 }, async (t) => {
+  const db = await database(t);
+  const packages = skyToolPackageStore(db);
+  const saved = await packages.create('developer-a', draft);
+  await packages.publishDeclared('developer-a', saved.packageKey, saved.manifestSha256);
+  await assert.rejects(
+    () => skyActivationStore(db).issue('developer-a', {
+      packageKey: saved.packageKey,
+      label: 'must fail',
+      maxUses: 1,
+      expiresAt: null,
+    }),
+    /審査済み/,
+  );
+});
+
+void test('package revocation immediately disables existing grants', { timeout: 10_000 }, async (t) => {
+  const db = await database(t);
+  const packages = skyToolPackageStore(db);
+  const saved = await packages.create('developer-a', draft);
+  await packages.publishDeclared('developer-a', saved.packageKey, saved.manifestSha256);
+  await verify(db, saved);
+  const activations = skyActivationStore(db);
+  const issued = await activations.issue('developer-a', {
+    packageKey: saved.packageKey,
+    label: 'revocation test',
+    maxUses: 2,
+    expiresAt: null,
+  });
+  await activations.redeem({
+    code: issued.code,
+    telegramUserId: '300',
+    telegramChatId: '300',
+  });
+  await skyToolReviewStore(db).review('reviewer-a', {
+    packageKey: saved.packageKey,
+    manifestSha256: saved.manifestSha256,
+    decision: 'revoked',
+    sourceRevision: null,
+    sourceSha256: null,
+    checks: {},
+    evidenceUrls: [],
+    notes: '配布後の安全上の問題を確認したため、審査状態を失効します。',
+    expiresAt: null,
+  });
+  assert.deepEqual(await activations.listTelegramTools('300'), []);
+  await assert.rejects(
+    () => activations.redeem({
+      code: issued.code,
+      telegramUserId: '300',
+      telegramChatId: '300',
+    }),
+    /現在利用できません/,
   );
 });
