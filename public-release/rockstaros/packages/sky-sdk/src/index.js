@@ -3,6 +3,13 @@ import {
   sendAnonymousToolEvent,
 } from "../../sky-zema-core/src/index.js";
 
+export {
+  createFitnessBridge,
+  createHealthConnectAdapter,
+  createHealthKitAdapter,
+  fitnessSdkContract,
+} from "./fitness.js";
+
 const TOOL_ID = /^[a-z0-9][a-z0-9:.-]{0,119}$/;
 const VERSION = /^[0-9]+\.[0-9]+\.[0-9]+$/;
 const CAPABILITY = /^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*$/;
@@ -55,11 +62,12 @@ function result(value) {
   return Object.freeze(value);
 }
 
-export function createHttpToolEventSink({ endpoint, fetchImpl } = {}) {
+export function createHttpToolEventSink({ endpoint, token, fetchImpl } = {}) {
   return async (event) =>
     sendAnonymousToolEvent(event, {
       consent: true,
       endpoint,
+      authorization: token ? `Bearer ${token}` : "",
       fetchImpl,
     });
 }

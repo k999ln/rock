@@ -93,6 +93,7 @@ test("telemetry stays off without explicit consent", async () => {
 
 test("telemetry sends only the allowlisted event after consent", async () => {
   let body;
+  let headers;
   const result = await sendAnonymousToolEvent(
     {
       packageKey: "ink.avokado.text-tidy@1.0.0",
@@ -105,8 +106,10 @@ test("telemetry sends only the allowlisted event after consent", async () => {
     {
       consent: true,
       endpoint: "https://example.test/events",
+      authorization: "Bearer receiver_test_token_123456789",
       fetchImpl: async (_url, options) => {
         body = JSON.parse(options.body);
+        headers = options.headers;
         return { ok: true };
       },
     },
@@ -120,4 +123,5 @@ test("telemetry sends only the allowlisted event after consent", async () => {
     "packageKey",
     "toolName",
   ]);
+  assert.equal(headers.authorization, "Bearer receiver_test_token_123456789");
 });

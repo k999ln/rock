@@ -76,7 +76,8 @@ The public repository includes runnable, deliberately bounded parts of RockstarO
 - [**Control Core**](packages/control-core) -- approval gates, execution readiness, and distinct outcome receipts.
 - [**Sky + Zema Core**](packages/sky-zema-core) -- a local tool catalog, explicit Sky-to-Zema handoff, workflow state, and consent-gated anonymous tool events.
 - [**Sky SDK**](packages/sky-sdk) -- an embeddable package for registering, discovering, approving, and running Sky tools inside another application.
-- [**Fitness + Sky Example**](examples/fitness-sky) -- a working example that connects app-authorized activity data to two local Sky tools.
+- [**Fitness + Sky Example**](examples/fitness-sky) -- a working example with permission-gated HealthKit and Health Connect adapter support.
+- [**Anonymous Event Receiver**](examples/tool-event-receiver) -- a token-protected receiver that validates the six-field event and stores aggregate counts only.
 - [**Sky + Zema Public Preview**](apps/sky-zema-preview) -- a local browser experience using the public core.
 - [**Public Preview Installer**](installer) -- a guarded local installer for macOS and Linux.
 
@@ -106,7 +107,7 @@ cd RockstarOS
 
 Then open <http://127.0.0.1:4173>.
 
-Telemetry is off by default. Even when a receiver is configured, the user must opt in. The public client and SDK permit only package and tool identifiers, a random installation identifier, outcome, duration, and timestamp. They reject prompts, chats, results, files, credentials, health data, and personal information.
+Telemetry is off by default. Even when a receiver is configured, the user must opt in. The public client and SDK permit only package and tool identifiers, a random installation identifier, outcome, duration, and timestamp. They reject prompts, chats, results, files, credentials, health data, and personal information. The public receiver discards installation identifiers and individual events after validation, retaining aggregate counts only.
 
 The installer above installs the runnable public preview; it does not replace the host operating system. The native QEMU image is not public because its product-license, production-signing, signed-candidate acceptance, and public-release gates are incomplete.
 

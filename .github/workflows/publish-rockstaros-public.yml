@@ -51,13 +51,19 @@ jobs:
             packages/sky-zema-core/test/index.test.js \
             packages/sky-sdk/README.md \
             packages/sky-sdk/package.json \
+            packages/sky-sdk/src/fitness.js \
             packages/sky-sdk/src/index.js \
+            packages/sky-sdk/test/fitness.test.js \
             packages/sky-sdk/test/index.test.js \
             examples/fitness-sky/README.md \
             examples/fitness-sky/package.json \
             examples/fitness-sky/fitness-tools.mjs \
             examples/fitness-sky/fitness-tools.test.mjs \
             examples/fitness-sky/demo.mjs \
+            examples/tool-event-receiver/README.md \
+            examples/tool-event-receiver/package.json \
+            examples/tool-event-receiver/server.mjs \
+            examples/tool-event-receiver/server.test.mjs \
             rockstaros-hero.png \
             rockstaros-motion.gif \
             rockstaros-workflow.png \
@@ -107,13 +113,19 @@ jobs:
           install -D public-release/rockstaros/packages/sky-zema-core/test/index.test.js public-repository/packages/sky-zema-core/test/index.test.js
           install -D public-release/rockstaros/packages/sky-sdk/README.md public-repository/packages/sky-sdk/README.md
           install -D public-release/rockstaros/packages/sky-sdk/package.json public-repository/packages/sky-sdk/package.json
+          install -D public-release/rockstaros/packages/sky-sdk/src/fitness.js public-repository/packages/sky-sdk/src/fitness.js
           install -D public-release/rockstaros/packages/sky-sdk/src/index.js public-repository/packages/sky-sdk/src/index.js
+          install -D public-release/rockstaros/packages/sky-sdk/test/fitness.test.js public-repository/packages/sky-sdk/test/fitness.test.js
           install -D public-release/rockstaros/packages/sky-sdk/test/index.test.js public-repository/packages/sky-sdk/test/index.test.js
           install -D public-release/rockstaros/examples/fitness-sky/README.md public-repository/examples/fitness-sky/README.md
           install -D public-release/rockstaros/examples/fitness-sky/package.json public-repository/examples/fitness-sky/package.json
           install -D public-release/rockstaros/examples/fitness-sky/fitness-tools.mjs public-repository/examples/fitness-sky/fitness-tools.mjs
           install -D public-release/rockstaros/examples/fitness-sky/fitness-tools.test.mjs public-repository/examples/fitness-sky/fitness-tools.test.mjs
           install -D public-release/rockstaros/examples/fitness-sky/demo.mjs public-repository/examples/fitness-sky/demo.mjs
+          install -D public-release/rockstaros/examples/tool-event-receiver/README.md public-repository/examples/tool-event-receiver/README.md
+          install -D public-release/rockstaros/examples/tool-event-receiver/package.json public-repository/examples/tool-event-receiver/package.json
+          install -D public-release/rockstaros/examples/tool-event-receiver/server.mjs public-repository/examples/tool-event-receiver/server.mjs
+          install -D public-release/rockstaros/examples/tool-event-receiver/server.test.mjs public-repository/examples/tool-event-receiver/server.test.mjs
           cp public-release/rockstaros/rockstaros-hero.png public-repository/rockstaros-hero.png
           cp public-release/rockstaros/rockstaros-motion.gif public-repository/rockstaros-motion.gif
           cp public-release/rockstaros/rockstaros-workflow.png public-repository/rockstaros-workflow.png
@@ -124,6 +136,6 @@ jobs:
           fi
           git config user.name "rockstaros-publisher[bot]"
           git config user.email "rockstaros-publisher[bot]@users.noreply.github.com"
-          git add LICENSE README.md package.json apps/sky-zema-preview examples/fitness-sky installer packages/control-core packages/sky-zema-core packages/sky-sdk rockstaros-hero.png rockstaros-motion.gif rockstaros-workflow.png
+          git add LICENSE README.md package.json apps/sky-zema-preview examples/fitness-sky examples/tool-event-receiver installer packages/control-core packages/sky-zema-core packages/sky-sdk rockstaros-hero.png rockstaros-motion.gif rockstaros-workflow.png
           git commit -m "Sync public RockstarOS overview"
           git push origin HEAD:main

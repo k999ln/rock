@@ -6,6 +6,7 @@
   "exports": {
     ".": "./packages/sky-sdk/src/index.js",
     "./control": "./packages/control-core/src/index.js",
+    "./fitness": "./packages/sky-sdk/src/fitness.js",
     "./sky-zema": "./packages/sky-zema-core/src/index.js"
   },
   "files": [
@@ -15,7 +16,7 @@
     "packages/sky-zema-core/src"
   ],
   "scripts": {
-    "test": "npm test --prefix packages/control-core && npm test --prefix packages/sky-zema-core && npm test --prefix packages/sky-sdk && npm test --prefix examples/fitness-sky"
+    "test": "npm test --prefix packages/control-core && npm test --prefix packages/sky-zema-core && npm test --prefix packages/sky-sdk && npm test --prefix examples/fitness-sky && npm test --prefix examples/tool-event-receiver"
   },
   "engines": {
     "node": ">=20"

@@ -163,7 +163,12 @@ export function createAnonymousToolEvent(input) {
 
 export async function sendAnonymousToolEvent(
   event,
-  { consent = false, endpoint = "", fetchImpl = globalThis.fetch } = {},
+  {
+    consent = false,
+    endpoint = "",
+    authorization = "",
+    fetchImpl = globalThis.fetch,
+  } = {},
 ) {
   if (!consent) return freeze({ sent: false, reason: "consent_required" });
   if (!endpoint) return freeze({ sent: false, reason: "endpoint_not_configured" });
@@ -177,11 +182,20 @@ export async function sendAnonymousToolEvent(
   if (typeof fetchImpl !== "function") {
     throw new TypeError("fetch is unavailable");
   }
+  if (
+    typeof authorization !== "string" ||
+    authorization.length > 512 ||
+    /[\r\n]/.test(authorization)
+  ) {
+    throw new TypeError("authorization has an invalid format");
+  }
 
   const payload = createAnonymousToolEvent(event);
+  const headers = { "content-type": "application/json" };
+  if (authorization) headers.authorization = authorization;
   const response = await fetchImpl(url, {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers,
     body: JSON.stringify(payload),
   });
   if (!response.ok) throw new Error(`telemetry request failed: ${response.status}`);

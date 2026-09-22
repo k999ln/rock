@@ -42,6 +42,31 @@ The host application owns its UI, health-data permissions, validation, storage,
 and user relationship. Sky supplies tool discovery, permission classification,
 execution, outcome handling, and an optional anonymous event boundary.
 
+## Native fitness providers
+
+The SDK includes adapters for an application's existing iOS HealthKit or
+Android Health Connect bridge. Sky never asks the platform for broader access
+than steps, active minutes, and completed workouts.
+
+```js
+import {
+  createFitnessBridge,
+  createHealthKitAdapter,
+} from "@avokado-ink/rockstaros-sky-sdk/fitness";
+
+const fitness = createFitnessBridge({
+  adapter: createHealthKitAdapter(yourNativeHealthKitBridge),
+});
+
+if (await fitness.requestAccess()) {
+  const summary = await fitness.readActivitySummary({ start, end });
+}
+```
+
+The native application remains responsible for its Apple or Android
+entitlements, platform permission dialog, and on-device query implementation.
+The adapter will not read before the platform grants access.
+
 ## Permissions
 
 - `read`: runs without a state-changing approval;
@@ -52,7 +77,8 @@ execution, outcome handling, and an optional anonymous event boundary.
 
 There is no built-in destination and no hidden network request. The host must
 provide an event sink and return `true` from `telemetryConsent`. Events never
-contain tool inputs or outputs.
+contain tool inputs or outputs. The public repository includes an
+[aggregate-only receiver example](../../examples/tool-event-receiver).
 
 ## License
 
