@@ -864,3 +864,21 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
   .launch-motion-ready .launch-nav,.launch-motion-ready .launch-panel-purpose{opacity:1}
   .launch-motion-ready .launch-page.is-ready .launch-nav,.launch-motion-ready .launch-page.is-ready .launch-panel-purpose.is-active{animation:none}
 }
+
+/* Mini200 E2 is the central compute architecture inside the owner-confirmed four-tower exterior. */
+.e2-core{position:relative;padding:clamp(7rem,12vw,12rem) clamp(1.4rem,7vw,7rem);overflow:hidden;background:#f1f4f5;color:#07131b}
+.e2-core:before{content:"E2";position:absolute;right:-.04em;top:.05em;color:#07131b0a;font-size:clamp(14rem,38vw,42rem);font-weight:700;line-height:.8;letter-spacing:-.1em;pointer-events:none}
+.e2-core-heading{position:relative;z-index:1;max-width:72rem}
+.e2-core-heading .eyebrow{color:#087c9d}
+.e2-core-heading h2{margin:0;font-size:clamp(4rem,9vw,9rem);line-height:.86;letter-spacing:-.075em}
+.e2-core-heading>p:last-child{max-width:42rem;margin:2.4rem 0 0;color:#4d626f;font-size:clamp(1.05rem,1.6vw,1.45rem);line-height:1.5}
+.e2-core-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:5rem}
+.e2-core-grid article{min-height:24rem;padding:2rem;border:1px solid #1026331f;border-radius:2rem;background:#fff;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 1.2rem 3.5rem #0b273112}
+.e2-core-grid article:nth-child(1){grid-column:span 2;background:radial-gradient(circle at 72% 42%,#145673 0,#0b2634 36%,#06131b 78%);color:#fff}
+.e2-core-grid span{color:#168db1;font-size:.72rem;font-weight:700;letter-spacing:.17em}
+.e2-core-grid article:nth-child(1) span{color:#79e1ff}
+.e2-core-grid strong{font-size:clamp(2.8rem,5vw,5.5rem);line-height:.86;letter-spacing:-.07em}
+.e2-core-grid p{max-width:24rem;margin:0;color:#61727c;font-size:1rem;line-height:1.45}
+.e2-core-grid article:nth-child(1) p{color:#afc6d1}
+.e2-core-note{position:relative;z-index:1;max-width:68rem;margin:3rem 0 0;padding-top:1.5rem;border-top:1px solid #12334226;color:#566a75;font-size:.88rem;line-height:1.6}
+@media(max-width:800px){.e2-core-grid{grid-template-columns:1fr}.e2-core-grid article:nth-child(1){grid-column:auto}.e2-core-grid article{min-height:20rem}}

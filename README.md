@@ -1,6 +1,16 @@
-# avocadoMini — 身体と声で遊び、つくる20cmゲーム機の設計
+# avocadoMini — 4本のMotion TowerとMini200 E2 Core
 
-**ゲームを入口に、生活全体をより豊かにするRockstarOSへ。** 最新のハード設計方向はMini200 E1です。利用者の「使用時20cm」「ゲーム機が主」「生活全体をより豊かにするOS」「音声認識も入れる」という指示を、身体操作・仮想粒子・日本語音声を一つの本体で扱う統合基本設計へまとめました。ゲームを遊ぶ・つくる体験から、創作、学習、運動、日常の手助け、本人が許可した生活機器へ段階的に広げます。現物から粒子を放射したり、実物の化合物を作る装置ではありません。
+**2026-09-21 最新の外観確定:** avocadoMiniは、銀色の伸縮式Motion Tower 4本が低い中央ユニットを囲む形です。利用者が公開Siteの画像を示してこの形を正本と確認したため、Mini200 E2資料にある20cm角の単体筐体へ外観を置き換えません。Mini200 E2のOS、ローカルゲーム、PTT音声、権限、保存、候補演算・ストレージ仕様は、中央Coreへ統合する設計として採用します。現在の正本は[Mini200 E2 four-tower integration baseline](docs/avocado-mini-mini200-e2/README.md)です。
+
+![4本のMotion Towerが中央のMini200 E2 Coreを囲むavocadoMiniの外観構想](sites/avocado-mini/public/images/avocado-mini-kit.png)
+
+外観は確定方向ですが、画像は構想レンダリングで実機写真ではありません。4本と中央Coreの配線、同期、電源、冷却、音響、実機遅延、量産性、RockstarOS signed imageは未受入です。41万円＋税は現行の4本＋中央ユニット構成の予定基本価格であり、送料、納期、販売条件が揃うまで決済を開始しません。
+
+## Mini200 E1 / E2単体筐体資料の扱い
+
+以下のE1 20cmゲーム機とE2単体筐体の記述は、OS・入力・音声・内部構成の設計資料として保持します。完成製品の外形は上記の4本＋中央ユニットを優先します。
+
+**ゲームを入口に、生活全体をより豊かにするRockstarOSへ。** Mini200 E1/E2は、身体操作・仮想粒子・日本語音声・ローカルゲーム・保存と復旧を設計した内部architectureの系統です。ゲームを遊ぶ・つくる体験から、創作、学習、運動、日常の手助け、本人が許可した生活機器へ段階的に広げます。現物から粒子を放射したり、実物の化合物を作る装置ではありません。
 
 [設計資料の入口](docs/avocado-mini-mini200-e1/README.md) · [詳細設計](docs/avocado-mini-mini200-e1/design.md) · [外形図](docs/avocado-mini-mini200-e1/drawings/mechanical/ME200-E1-01.svg) · [内部配置図](docs/avocado-mini-mini200-e1/drawings/mechanical/ME200-E1-02.svg) · [音声設計](docs/avocado-mini-mini200-e1/engineering/voice/README.md)
 
@@ -102,11 +112,11 @@ RockstarOSは、avocadoMiniの操作、権限、保存、復旧をつなぐ技�
 
 ## 製品体系
 
-### avocadoMini — Mini200 E1と以前の空間発明構想
+### avocadoMini — 4本のMotion TowerとMini200 E2 Core
 
 ![avocadoMiniの設計構想。四方向のセンサーに囲まれた作業面で発明の候補が動くアニメーション](docs/assets/cover-avocado-mini.gif)
 
-上のアニメーションと[4本の伸縮式Motion Tower＋Edge Hub画像](sites/avocado-mini/public/images/avocado-mini-kit.png)は以前の空間発明構想です。**41万円（税込）は旧P0.2キットの目標価格であり、Mini200 E1の価格ではありません。** 最新の20cmゲーム機と日本語音声の設計は[Mini200 E1](docs/avocado-mini-mini200-e1/README.md)を参照します。いずれも実機写真や性能・量産性の合格証拠ではありません。
+上のアニメーションと[4本の伸縮式Motion Tower＋中央ユニット画像](sites/avocado-mini/public/images/avocado-mini-kit.png)が最新の外観方向です。**41万円＋税は4本＋中央ユニットの現行予定基本価格**です。Mini200 E2のOS・入力・音声・権限設計は中央Coreへ統合し、E2資料の20cm角単体筐体は完成製品の外観にしません。[統合基準](docs/avocado-mini-mini200-e2/README.md)を参照してください。画像は実機写真や性能・量産性の合格証拠ではありません。
 
 ### RockstarOS — 製品を動かす共通の土台
 
@@ -277,7 +287,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-21 / 140 task中92 done・30 in progress・17 planned・1 blocked
+更新日: 2026-09-21 / 142 task中93 done・30 in progress・18 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -459,11 +469,11 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>140 taskと段階gateの詳細を開く</summary>
+<summary>142 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-21 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 92/140件
+最終更新: 2026-09-21 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 93/142件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -486,6 +496,8 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | MAT07 | 誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化 | 完了 | [記録](docs/rockstaros-avocado-mini-complete-design.md) · [記録](docs/workstreams/11-material-invention-avocado-mini.md) · [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/rockstaros-1.0-architecture.md) |
 | MAT08 | Mini200 E1のゲーム中心・生活拡張・衛星通信方針と20cm本体・音声をREADME・図・参照モデルへ保存（実機未受入） | 完了 | [記録](docs/avocado-mini-mini200-e1/README.md) · [記録](docs/avocado-mini-mini200-e1/design.md) · [記録](docs/avocado-mini-mini200-e1/engineering/verify_all.py) · [記録](docs/avocado-mini-mini200-e1/verification.json) · [記録](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
 | MAT09 | Mini200 E1専用入力profile・Core adapter・ゲーム／ASR／console OSと20cm実機を独立受入 | 未着手 | [記録](docs/avocado-mini-mini200-e1/README.md) · [記録](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
+| MAT10 | Mini200 E2資料と利用者確定の4本＋中央Core外観をGit正本と公開製品Siteへ同期（実機未受入） | 完了 | [記録](docs/avocado-mini-mini200-e2/README.md) · [記録](docs/product-baseline.md) · [記録](sites/avocado-mini/index.html) |
+| MAT11 | 4本のMotion Towerと中央Mini200 E2 Coreの統合engineering package・prototype・実機受入 | 未着手 | [記録](docs/avocado-mini-mini200-e2/README.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -627,7 +639,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: Scalewayの課金確認後、Ubuntu 24.04 / 32 dedicated vCPU / 64 GB RAM / 600 GBで固定sourceをsyncし、Operator Agentを明示除外したbringup modeでtarget-files-packageとotatools-packageをbuildする。RELEASE_FLASH gate、production signing、実機flashは未合格のまま維持する。 AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。Sky ToolはPC/Provider実接続で成果本文・失敗・Zema通知をToolごとに受入し、candidateの下書きを本番成功へ算入しない。2026-09-20の34件再受入ではローカル/合成成果10件、実在庫確認待ちのメルカリ1件、外部AI設定・同意待ちのJev1件、候補本体未実行22件を確認した。次はメルカリを本人の実在庫で受け入れ、JevのProvider条件を整え、候補22件に個別実行器を接続して成果と失敗を受け入れる。SKY19の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。
+次の作業: Define and validate the integrated four-tower plus central Mini200 E2 Core engineering package without treating the design documents or public rendering as real-device acceptance.
 <!-- project-status:end -->
 
 </details>

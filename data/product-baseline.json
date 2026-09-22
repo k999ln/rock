@@ -1,5 +1,5 @@
 {
-  "version": "1.89",
+  "version": "1.90",
   "decidedAt": "2026-09-21",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -51,7 +51,11 @@
     "localAutonomySeparateFromConnectivity": true,
     "localGameLoopRequiresInternet": false,
     "offlineScope": "installed_supported_local_features_only",
-    "connectivityProposal": ["home_network", "cellular_gateway", "external_satellite_gateway"],
+    "connectivityProposal": [
+      "home_network",
+      "cellular_gateway",
+      "external_satellite_gateway"
+    ],
     "directSatellite": "future_research_not_integrated",
     "ownSatelliteConstellation": "future_research_not_authorized_for_execution",
     "connectivityGrantsExecutionAuthority": false,
@@ -121,7 +125,18 @@
     ],
     "avocadoMiniStage": "design_only_no_physical_prototype_or_sales",
     "pixel10Role": "development_reference_device_not_own_hardware_product",
-    "taxTreatmentClaim": "none"
+    "taxTreatmentClaim": "none",
+    "ownerConfirmedExterior": "four_silver_motion_towers_surrounding_one_low_central_unit",
+    "ownerConfirmedExteriorEvidence": "current_avocadoMini_public_site_hero_image_confirmed_by_user_2026-09-21",
+    "mini200E2Integration": {
+      "document": "docs/avocado-mini-mini200-e2/README.md",
+      "role": "central_core_architecture_inside_four_tower_product",
+      "singleEnclosure198x178x198AdoptedAsCompleteProductExterior": false,
+      "osAndPermissionArchitectureAdopted": true,
+      "hardwareCandidatesRemainUnapproved": true,
+      "realDeviceTests": 0
+    },
+    "currentFourTowerBasePriceJpyExTax": 410000
   },
   "distributionPricingIntent": {
     "principle": "free_distribution_with_metered_os_use",
@@ -312,6 +327,20 @@
       "physicalExecutionAllowed": false,
       "gestureIsPhysicalApproval": false,
       "automaticPatentFilingAllowed": false
+    },
+    "mini200E2": {
+      "requested": true,
+      "recordedAt": "2026-09-21",
+      "status": "four_tower_exterior_confirmed_e2_central_core_integration_design",
+      "design": "docs/avocado-mini-mini200-e2/README.md",
+      "ownerConfirmedExterior": "four_silver_motion_towers_surrounding_one_low_central_unit",
+      "singleEnclosureMechanicalStudyAdoptedAsCompleteProductExterior": false,
+      "centralCoreUsesE2OsArchitecture": true,
+      "exactTowerCoreIntegrationResolved": false,
+      "runtimeIntegrated": false,
+      "physicalTests": 0,
+      "manufacturingReleased": false,
+      "publishedSiteUpdated": true
     }
   },
   "alignmentAudit": "docs/design-implementation-alignment-20260909.md",
@@ -397,7 +426,11 @@
       "productSiteUrl": "https://avocado-mini.kirin-999.chatgpt.site",
       "productSiteDeployment": "public_live_verified",
       "productSiteSource": "sites/avocado-mini",
-      "productSiteRoutes": ["/", "/guide/", "/crowdfunding/"],
+      "productSiteRoutes": [
+        "/",
+        "/guide/",
+        "/crowdfunding/"
+      ],
       "osSite": "rockstaros-kaiya.noellesugar1.chatgpt.site",
       "osWebAudience": "owner_only",
       "osSiteAccessStatus": "pending_owner_account_connection"

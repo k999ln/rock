@@ -1,6 +1,6 @@
 const products = {
   tower: { name: 'avocadoMini Motion Tower · Single', baseJpy: 160000, amountKey: 'PREORDER_TOWER_TOTAL_JPY', capacityKey: 'PREORDER_TOWER_CAPACITY' },
-  kit: { name: 'avocadoMini · 4 Motion Towers + Edge Hub Kit', baseJpy: 410000, amountKey: 'PREORDER_KIT_TOTAL_JPY', capacityKey: 'PREORDER_KIT_CAPACITY' },
+  kit: { name: 'avocadoMini · 4 Motion Towers + Mini200 E2 Core', baseJpy: 410000, amountKey: 'PREORDER_KIT_TOTAL_JPY', capacityKey: 'PREORDER_KIT_CAPACITY' },
 };
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), {

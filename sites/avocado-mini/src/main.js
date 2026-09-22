@@ -27,6 +27,7 @@ const revealSections = document.querySelectorAll([
   '.highlights',
   '.design-intro',
   '.story',
+  '.e2-core',
   '.os-install',
   '.preorder-hero',
   '.preorder-products',

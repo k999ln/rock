@@ -1,5 +1,12 @@
 # Material Invention / avocadoMini
 
+## Mini200 E2と4本構成の最新入口
+
+2026-09-21の利用者確認により、完成製品の外観は4本の銀色Motion Towerと低い中央ユニットを囲む現在の公開画像を正本とする。[Mini200 E2 four-tower integration baseline](../avocado-mini-mini200-e2/README.md)で、E2のOS・ローカルゲーム・PTT音声・権限・保存・候補computeを中央Coreへ適用し、E2資料の20cm角単体筐体は完成外観へ採用しない。P0.2塔の機構とE2 Coreを一つにする配線、同期、電源、冷却、音響、signed imageと実機受入は未完了。
+
+- `MAT10`: E2資料を精査し、外観の利用者訂正を正本・公開Site・予約説明へ反映。資料保存と公開説明の更新であり実機完成ではない。
+- `MAT11`: 4塔＋中央E2 Coreの統合engineering package、prototype、実機受入。未着手。
+
 ## Mini200 E1の新しい設計入口
 
 2026-09-21の利用者要求により、使用時20cmのゲーム機から創作・研究・生活へ進む[Mini200 E1](../avocado-mini-mini200-e1/README.md)を追加した。身体入力、本体内計算、日本語ローカルASR候補、PTT、独立MIC OFF、ゲームから保存までを設計する。下記の四方向研究profileとは別で、旧schemaを緩めない。
