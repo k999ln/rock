@@ -54,7 +54,7 @@ There is no built-in destination and no hidden network request. The host must
 provide an event sink and return `true` from `telemetryConsent`. Events never
 contain tool inputs or outputs.
 
-## License status
+## License
 
-The package is installable from GitHub for evaluation. A reuse license has not
-yet been granted.
+MIT. Applications may use, modify, and redistribute the public SDK subject to
+the license terms in the repository.

@@ -30,6 +30,7 @@ jobs:
           expected_file="$(mktemp)"
           actual_file="$(mktemp)"
           printf '%s\n' \
+            LICENSE \
             README.md \
             package.json \
             apps/sky-zema-preview/package.json \
@@ -85,6 +86,7 @@ jobs:
         run: |
           set -euo pipefail
           git clone --depth 1 git@github.com:avokado-ink/RockstarOS.git public-repository
+          cp public-release/rockstaros/LICENSE public-repository/LICENSE
           cp public-release/rockstaros/README.md public-repository/README.md
           cp public-release/rockstaros/package.json public-repository/package.json
           install -D public-release/rockstaros/apps/sky-zema-preview/package.json public-repository/apps/sky-zema-preview/package.json
@@ -122,6 +124,6 @@ jobs:
           fi
           git config user.name "rockstaros-publisher[bot]"
           git config user.email "rockstaros-publisher[bot]@users.noreply.github.com"
-          git add README.md package.json apps/sky-zema-preview examples/fitness-sky installer packages/control-core packages/sky-zema-core packages/sky-sdk rockstaros-hero.png rockstaros-motion.gif rockstaros-workflow.png
+          git add LICENSE README.md package.json apps/sky-zema-preview examples/fitness-sky installer packages/control-core packages/sky-zema-core packages/sky-sdk rockstaros-hero.png rockstaros-motion.gif rockstaros-workflow.png
           git commit -m "Sync public RockstarOS overview"
           git push origin HEAD:main

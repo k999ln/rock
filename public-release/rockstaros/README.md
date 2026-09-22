@@ -137,7 +137,7 @@ This repository contains the approved Avokado Mini product concept, the Rockstar
 
 ## License
 
-The package can be installed from GitHub for evaluation, but no reuse license has been granted yet. Third-party code, images, and fonts remain subject to their respective licenses.
+The public RockstarOS code is released under the [MIT License](LICENSE), so applications may use, modify, and redistribute it under those terms. Product artwork, trademarks, third-party code, images, and fonts remain subject to their respective rights and licenses.
 
 ---
 
