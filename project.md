@@ -2,7 +2,7 @@
 
 ## 2026-09-22 — Tower20 E3を現行製品基準へ反映
 
-主担当Material Invention / avocadoMiniのROCKとして、利用者提供のTower20 E3設計資料を現行製品基準へ反映した。製品は固定式200mm以下のTower20 4本と別筐体Edge Hub 1台で、各塔1camera候補、追加窓は予約領域、伸縮機構なしとする。公開Siteはversion 37、source `93f0ec3c4ec72e26d3bdaf67e6f71659c3885ed6`を配備し、公開URLでE3表示、全周回転、青いsensor演出、desktop／mobile表示を確認した。E3のbuild、予約6 test、baseline、design、project、databaseは合格。全体`npm run verify`は既存LLM能力表と導入済みAI SDK exportの不一致で停止し、変更前`be59a23`でも同じ失敗を再現した。実機試作・camera・ASR・game・光学・同期・転倒／滑り・熱・電源・signed recovery・製造の合格とは区別する。
+主担当Material Invention / avocadoMiniのROCKとして、利用者提供のTower20 E3設計資料を現行製品基準へ反映した。製品は固定式200mm以下のTower20 4本と別筐体Edge Hub 1台で、各塔1camera候補、追加窓は予約領域、伸縮機構なしとする。公開Siteはversion 37、source `93f0ec3c4ec72e26d3bdaf67e6f71659c3885ed6`を配備し、公開URLでE3表示、全周回転、青いsensor演出、desktop／mobile表示を確認した。E3のbuild、予約6 test、baseline、design、project、databaseは合格。ローカル全体`npm run verify`は既存LLM能力表と導入済みAI SDK exportの不一致で停止し、変更前`be59a23`でも同じ失敗を再現した。新規依存関係を取得するGitHub CIを全体確認の最終ゲートとする。実機試作・camera・ASR・game・光学・同期・転倒／滑り・熱・電源・signed recovery・製造の合格とは区別する。
 
 ## 2026-09-21 — IP／動画／ゲーム展開を交換可能Provider構成へ固定
 

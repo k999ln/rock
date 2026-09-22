@@ -40,7 +40,10 @@ void test('game-first life design rejects satellite authority and unverified int
   const vision = baseline.gameFirstLifeVision;
   assert.ok(existsSync(resolve(root, vision.document)));
   assert.match(read('README.md'), /ゲームを入口に、生活全体をより豊かにする/);
-  assert.equal(baseline.marketPositioning.leadHardwareForm, 'mini200_game_console_design');
+  assert.equal(
+    baseline.marketPositioning.leadHardwareForm,
+    'tower20_e3_four_fixed_height_towers_and_separate_edge_hub',
+  );
   for (const [field, value] of [
     ['primaryExperience', 'satellite_only'],
     ['localGameLoopRequiresInternet', true],
