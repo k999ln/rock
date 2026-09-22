@@ -6,6 +6,7 @@ const requiredTables = [
   'tool_runs',
   'book_records',
   'sky_tool_packages',
+  'sky_tool_package_reviews',
   'csv_jobs',
 ];
 

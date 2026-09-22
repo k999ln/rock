@@ -372,9 +372,7 @@ export default function SkyWorkspace({
   }, [setNeedsSignin]);
 
   const visibleTools = catalog.filter((tool) => {
-    const searching = Boolean(query.trim());
     const matchesFilter =
-      searching ||
       (filter === 'おすすめ' && recommendedToolIds.has(tool.id)) ||
       (filter === '今使える' && tool.status === 'ready') ||
       (filter === '導入候補' && tool.status === 'candidate');
@@ -756,7 +754,7 @@ export default function SkyWorkspace({
                     <div className="sky-post-meta-row">
                       <div className="sky-post-author">
                         <strong>{provider.name}</strong>
-                        {tool.status === 'ready' && (
+                        {status.className === 'is-ready' && (
                           <BadgeCheck
                             className="sky-role-verified"
                             size={16}

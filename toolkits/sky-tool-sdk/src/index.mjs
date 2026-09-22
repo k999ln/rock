@@ -410,6 +410,22 @@ async function skyRequest(config, path, init) {
   return body;
 }
 
+async function reportUsageEvent(config, event) {
+  let lastError;
+  for (const delay of [0, 250, 1_000]) {
+    if (delay) await new Promise((resolve) => setTimeout(resolve, delay));
+    try {
+      return await skyRequest(config, '/api/sky/tool-events', {
+        method: 'POST',
+        body: JSON.stringify(event),
+      });
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError;
+}
+
 export function createSkyToolApp(rawConfig) {
   const config = validateConfig(rawConfig);
   const tools = new Map();
@@ -625,6 +641,7 @@ export function createSkyToolApp(rawConfig) {
             });
           } finally {
             const event = {
+              eventId: randomUUID(),
               packageKey: `${config.app.id}.${tool.name.toLowerCase().replace(/_/g, '-')}@${config.app.version}`,
               toolName: tool.name,
               installationId,
@@ -633,10 +650,7 @@ export function createSkyToolApp(rawConfig) {
               occurredAt: new Date().toISOString(),
             };
             if (config.app.publicMcpUrl)
-              void skyRequest(config, '/api/sky/tool-events', {
-                method: 'POST',
-                body: JSON.stringify(event),
-              }).catch((error) =>
+              void reportUsageEvent(config, event).catch((error) =>
                 config.logger.warn?.(`Sky usage event deferred: ${error.message}`),
               );
           }

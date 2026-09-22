@@ -30,11 +30,34 @@ jobs:
           expected_file="$(mktemp)"
           actual_file="$(mktemp)"
           printf '%s\n' \
+            LICENSE \
             README.md \
+            package.json \
+            apps/sky-zema-preview/package.json \
+            apps/sky-zema-preview/public/app.js \
+            apps/sky-zema-preview/public/index.html \
+            apps/sky-zema-preview/public/styles.css \
+            apps/sky-zema-preview/server.mjs \
+            installer/README.md \
+            installer/install-public-preview.sh \
+            installer/rockstaros-public-preview \
             packages/control-core/README.md \
             packages/control-core/package.json \
             packages/control-core/src/index.js \
             packages/control-core/test/index.test.js \
+            packages/sky-zema-core/README.md \
+            packages/sky-zema-core/package.json \
+            packages/sky-zema-core/src/index.js \
+            packages/sky-zema-core/test/index.test.js \
+            packages/sky-sdk/README.md \
+            packages/sky-sdk/package.json \
+            packages/sky-sdk/src/index.js \
+            packages/sky-sdk/test/index.test.js \
+            examples/fitness-sky/README.md \
+            examples/fitness-sky/package.json \
+            examples/fitness-sky/fitness-tools.mjs \
+            examples/fitness-sky/fitness-tools.test.mjs \
+            examples/fitness-sky/demo.mjs \
             rockstaros-hero.png \
             rockstaros-motion.gif \
             rockstaros-workflow.png \
@@ -63,11 +86,34 @@ jobs:
         run: |
           set -euo pipefail
           git clone --depth 1 git@github.com:avokado-ink/RockstarOS.git public-repository
+          cp public-release/rockstaros/LICENSE public-repository/LICENSE
           cp public-release/rockstaros/README.md public-repository/README.md
+          cp public-release/rockstaros/package.json public-repository/package.json
+          install -D public-release/rockstaros/apps/sky-zema-preview/package.json public-repository/apps/sky-zema-preview/package.json
+          install -D public-release/rockstaros/apps/sky-zema-preview/server.mjs public-repository/apps/sky-zema-preview/server.mjs
+          install -D public-release/rockstaros/apps/sky-zema-preview/public/app.js public-repository/apps/sky-zema-preview/public/app.js
+          install -D public-release/rockstaros/apps/sky-zema-preview/public/index.html public-repository/apps/sky-zema-preview/public/index.html
+          install -D public-release/rockstaros/apps/sky-zema-preview/public/styles.css public-repository/apps/sky-zema-preview/public/styles.css
+          install -D public-release/rockstaros/installer/README.md public-repository/installer/README.md
+          install -D public-release/rockstaros/installer/install-public-preview.sh public-repository/installer/install-public-preview.sh
+          install -D public-release/rockstaros/installer/rockstaros-public-preview public-repository/installer/rockstaros-public-preview
           install -D public-release/rockstaros/packages/control-core/README.md public-repository/packages/control-core/README.md
           install -D public-release/rockstaros/packages/control-core/package.json public-repository/packages/control-core/package.json
           install -D public-release/rockstaros/packages/control-core/src/index.js public-repository/packages/control-core/src/index.js
           install -D public-release/rockstaros/packages/control-core/test/index.test.js public-repository/packages/control-core/test/index.test.js
+          install -D public-release/rockstaros/packages/sky-zema-core/README.md public-repository/packages/sky-zema-core/README.md
+          install -D public-release/rockstaros/packages/sky-zema-core/package.json public-repository/packages/sky-zema-core/package.json
+          install -D public-release/rockstaros/packages/sky-zema-core/src/index.js public-repository/packages/sky-zema-core/src/index.js
+          install -D public-release/rockstaros/packages/sky-zema-core/test/index.test.js public-repository/packages/sky-zema-core/test/index.test.js
+          install -D public-release/rockstaros/packages/sky-sdk/README.md public-repository/packages/sky-sdk/README.md
+          install -D public-release/rockstaros/packages/sky-sdk/package.json public-repository/packages/sky-sdk/package.json
+          install -D public-release/rockstaros/packages/sky-sdk/src/index.js public-repository/packages/sky-sdk/src/index.js
+          install -D public-release/rockstaros/packages/sky-sdk/test/index.test.js public-repository/packages/sky-sdk/test/index.test.js
+          install -D public-release/rockstaros/examples/fitness-sky/README.md public-repository/examples/fitness-sky/README.md
+          install -D public-release/rockstaros/examples/fitness-sky/package.json public-repository/examples/fitness-sky/package.json
+          install -D public-release/rockstaros/examples/fitness-sky/fitness-tools.mjs public-repository/examples/fitness-sky/fitness-tools.mjs
+          install -D public-release/rockstaros/examples/fitness-sky/fitness-tools.test.mjs public-repository/examples/fitness-sky/fitness-tools.test.mjs
+          install -D public-release/rockstaros/examples/fitness-sky/demo.mjs public-repository/examples/fitness-sky/demo.mjs
           cp public-release/rockstaros/rockstaros-hero.png public-repository/rockstaros-hero.png
           cp public-release/rockstaros/rockstaros-motion.gif public-repository/rockstaros-motion.gif
           cp public-release/rockstaros/rockstaros-workflow.png public-repository/rockstaros-workflow.png
@@ -78,6 +124,6 @@ jobs:
           fi
           git config user.name "rockstaros-publisher[bot]"
           git config user.email "rockstaros-publisher[bot]@users.noreply.github.com"
-          git add README.md packages/control-core rockstaros-hero.png rockstaros-motion.gif rockstaros-workflow.png
+          git add LICENSE README.md package.json apps/sky-zema-preview examples/fitness-sky installer packages/control-core packages/sky-zema-core packages/sky-sdk rockstaros-hero.png rockstaros-motion.gif rockstaros-workflow.png
           git commit -m "Sync public RockstarOS overview"
           git push origin HEAD:main

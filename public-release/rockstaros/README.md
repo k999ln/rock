@@ -69,18 +69,48 @@ RockstarOS gives Avokado Mini a clear path from an idea to a verified result.
 - Fixtures, sandboxes, previews, and production environments are never treated as interchangeable.
 - AI does not receive private keys or unrestricted authority over financial records.
 
-## Public code
+## Public code and installer
 
-The public repository includes one small, runnable part of RockstarOS:
+The public repository includes runnable, deliberately bounded parts of RockstarOS:
 
 - [**Control Core**](packages/control-core) -- approval gates, execution readiness, and distinct outcome receipts.
+- [**Sky + Zema Core**](packages/sky-zema-core) -- a local tool catalog, explicit Sky-to-Zema handoff, workflow state, and consent-gated anonymous tool events.
+- [**Sky SDK**](packages/sky-sdk) -- an embeddable package for registering, discovering, approving, and running Sky tools inside another application.
+- [**Fitness + Sky Example**](examples/fitness-sky) -- a working example that connects app-authorized activity data to two local Sky tools.
+- [**Sky + Zema Public Preview**](apps/sky-zema-preview) -- a local browser experience using the public core.
+- [**Public Preview Installer**](installer) -- a guarded local installer for macOS and Linux.
+
+Install the Sky SDK directly from this GitHub repository:
 
 ```bash
-cd packages/control-core
-npm test
+npm install github:avokado-ink/RockstarOS
 ```
 
-This is a deliberately narrow release. It demonstrates functioning RockstarOS behavior without publishing the complete OS, hardware implementation, local LLM design, credentials, or production integrations.
+```js
+import { createSky } from "@avokado-ink/rockstaros-sky-sdk";
+
+const sky = createSky({ installationId: "fitness_app_4f92a18b" });
+```
+
+The host application keeps ownership of health permissions, health data,
+validation, storage, and its user interface. Sky receives only the values that
+the host explicitly passes to a registered tool. No health data is transmitted
+by the SDK.
+
+```bash
+git clone https://github.com/avokado-ink/RockstarOS.git
+cd RockstarOS
+./installer/install-public-preview.sh
+~/.local/share/rockstaros-public-preview/bin/rockstaros-public-preview
+```
+
+Then open <http://127.0.0.1:4173>.
+
+Telemetry is off by default. Even when a receiver is configured, the user must opt in. The public client and SDK permit only package and tool identifiers, a random installation identifier, outcome, duration, and timestamp. They reject prompts, chats, results, files, credentials, health data, and personal information.
+
+The installer above installs the runnable public preview; it does not replace the host operating system. The native QEMU image is not public because its product-license, production-signing, signed-candidate acceptance, and public-release gates are incomplete.
+
+This release demonstrates functioning RockstarOS behavior without publishing the complete OS, hardware implementation, local LLM design, account data, credentials, or production integrations.
 
 ## For authorized contributors
 
@@ -103,11 +133,11 @@ The development source of record is the private [`k999ln/rock`](https://github.c
 
 ## Public boundary
 
-This repository contains the approved Avokado Mini product concept, the RockstarOS software overview, and public visual material. Engineering specifications, hardware implementation, local AI design, credentials, user data, internal operations, and restricted source code remain private.
+This repository contains the approved Avokado Mini product concept, the RockstarOS software overview, public visual material, Control Core, and the bounded Sky + Zema public preview. Engineering specifications, hardware implementation, local AI design, account data, credentials, production integrations, native OS images, internal operations, and the restricted source tree remain private.
 
 ## License
 
-The public code can be inspected, but no reuse license has been granted yet. Third-party code, images, and fonts remain subject to their respective licenses.
+The public RockstarOS code is released under the [MIT License](LICENSE), so applications may use, modify, and redistribute it under those terms. Product artwork, trademarks, third-party code, images, and fonts remain subject to their respective rights and licenses.
 
 ---
 

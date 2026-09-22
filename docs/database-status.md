@@ -2,21 +2,21 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-09-20
+更新日: 2026-09-21
 
 ## 全体
 
-- データ境界: 6、table: 79
+- データ境界: 6、table: 80
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 136 task中 91 done、28 in progress、16 planned、1 blocked
+- 作業進捗: 143 task中 93 done、31 in progress、18 planned、1 blocked
 - 現在milestone: Pixel 10 compile-only Developer Previewの初回full build準備
 
 ## 保存境界と配備状態
 
 | 境界 | 責任 | table | source | 配備状態 | 本番適用済み | current readback |
 | --- | --- | ---: | --- | --- | --- | --- |
-| Web D1 | Webサービス状態 | 31 | VERIFIED | OWNER_ACCESS_BLOCKED | 未確認 | 未確認 |
+| Web D1 | Webサービス状態 | 32 | VERIFIED | OWNER_ACCESS_BLOCKED | 未確認 | 未確認 |
 | Sky Billing D1 | 収益精算・請求・受取Wallet | 13 | VERIFIED | DOCUMENTED_NOT_READ_BACK | 0004_rock_settlement_wallet.sql | 未確認 |
 | Operator Dock D1 | 運営専用の端末登録・緊急命令・監査 | 5 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
 | OS Wallet / Spend SQLite | 端末内Wallet・支出承認・PAPER position | 17 | VERIFIED | QEMU_SCOPED | 未確認 | 未確認 |
@@ -25,8 +25,8 @@
 
 ## Web D1
 
-- expected latest migration: 0015_oval_the_twelve.sql
-- migration files: 16
+- expected latest migration: 0016_red_crusher_hogan.sql
+- migration files: 17
 - accidental duplicate: 0
 - published convergence definitions: 6
 - Marketplace relation guards: 8
@@ -34,16 +34,16 @@
 | 分野 | table | 内訳 |
 | --- | ---: | --- |
 | 仕事・実行・端末・基本台帳 | 8 | book_records, devices, fund_plans, job_events, jobs, tool_controls, tool_runs, work_jobs |
-| Sky接続・Tool管理 | 9 | sky_activation_codes, sky_connections, sky_developer_tokens, sky_provider_connections, sky_remote_ai_rate_limits, sky_tool_events, sky_tool_grants, sky_tool_packages, sky_tool_submissions |
+| Sky接続・Tool管理 | 10 | sky_activation_codes, sky_connections, sky_developer_tokens, sky_provider_connections, sky_remote_ai_rate_limits, sky_tool_events, sky_tool_grants, sky_tool_package_reviews, sky_tool_packages, sky_tool_submissions |
 | Marketplace | 7 | marketplace_approvals, marketplace_assets, marketplace_events, marketplace_positions, marketplace_proposals, marketplace_receipts, marketplace_reservations |
 | CSV業務 | 4 | csv_billing_accounts, csv_job_events, csv_jobs, csv_monthly_fees |
 | 自動化ファンド・事業補助 | 3 | automation_fund_memberships, automation_funds, mercari_revenue_plans |
 
 ## 境界別の全table
 
-<details><summary>Web D1: 31 table</summary>
+<details><summary>Web D1: 32 table</summary>
 
-`automation_fund_memberships`、`automation_funds`、`book_records`、`csv_billing_accounts`、`csv_job_events`、`csv_jobs`、`csv_monthly_fees`、`devices`、`fund_plans`、`job_events`、`jobs`、`marketplace_approvals`、`marketplace_assets`、`marketplace_events`、`marketplace_positions`、`marketplace_proposals`、`marketplace_receipts`、`marketplace_reservations`、`mercari_revenue_plans`、`sky_activation_codes`、`sky_connections`、`sky_developer_tokens`、`sky_provider_connections`、`sky_remote_ai_rate_limits`、`sky_tool_events`、`sky_tool_grants`、`sky_tool_packages`、`sky_tool_submissions`、`tool_controls`、`tool_runs`、`work_jobs`
+`automation_fund_memberships`、`automation_funds`、`book_records`、`csv_billing_accounts`、`csv_job_events`、`csv_jobs`、`csv_monthly_fees`、`devices`、`fund_plans`、`job_events`、`jobs`、`marketplace_approvals`、`marketplace_assets`、`marketplace_events`、`marketplace_positions`、`marketplace_proposals`、`marketplace_receipts`、`marketplace_reservations`、`mercari_revenue_plans`、`sky_activation_codes`、`sky_connections`、`sky_developer_tokens`、`sky_provider_connections`、`sky_remote_ai_rate_limits`、`sky_tool_events`、`sky_tool_grants`、`sky_tool_package_reviews`、`sky_tool_packages`、`sky_tool_submissions`、`tool_controls`、`tool_runs`、`work_jobs`
 
 次の確認: 既存Sitesの所有workspaceへ接続し、検証済み最新mainを同じSiteへ配備。公開設定変更後に匿名health、本人別API、migration、件数、孤立関係、backup状態をreadbackする
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Scalewayの課金確認後、Ubuntu 24.04 / 32 dedicated vCPU / 64 GB RAM / 600 GBで固定sourceをsyncし、Operator Agentを明示除外したbringup modeでtarget-files-packageとotatools-packageをbuildする。RELEASE_FLASH gate、production signing、実機flashは未合格のまま維持する。 AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。Sky ToolはPC/Provider実接続で成果本文・失敗・Zema通知をToolごとに受入し、candidateの下書きを本番成功へ算入しない。2026-09-20の34件再受入ではローカル/合成成果10件、実在庫確認待ちのメルカリ1件、外部AI設定・同意待ちのJev1件、候補本体未実行22件を確認した。次はメルカリを本人の実在庫で受け入れ、JevのProvider条件を整え、候補22件に個別実行器を接続して成果と失敗を受け入れる。SKY19の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。
+Define and validate the integrated four-tower plus central Mini200 E2 Core engineering package without treating the design documents or public rendering as real-device acceptance.
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

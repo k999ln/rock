@@ -108,6 +108,10 @@ const requiredMarketplaceTriggers = [
   'marketplace_reservations_no_delete',
   'marketplace_reservations_relation_guard',
 ];
+const requiredSkyReviewTriggers = [
+  'sky_tool_package_reviews_no_delete',
+  'sky_tool_package_reviews_no_update',
+];
 const database = new DatabaseSync(':memory:');
 try {
   for (const file of sqlFiles) {
@@ -141,9 +145,16 @@ try {
   const missingTriggers = requiredMarketplaceTriggers.filter(
     (name) => !migratedTriggers.has(name),
   );
+  const missingSkyReviewTriggers = requiredSkyReviewTriggers.filter(
+    (name) => !migratedTriggers.has(name),
+  );
   if (missingTriggers.length)
     throw new Error(
       `web schema: Marketplace関係guardが不足しています: ${missingTriggers.join(', ')}`,
+    );
+  if (missingSkyReviewTriggers.length)
+    throw new Error(
+      `web schema: Sky審査台帳guardが不足しています: ${missingSkyReviewTriggers.join(', ')}`,
     );
 } finally {
   database.close();
@@ -157,10 +168,11 @@ export const webSchemaStatus = Object.freeze({
   accidentalDuplicateCount: 0,
   publishedConvergenceDeclarations: convergenceDeclarations,
   marketplaceRelationGuardCount: requiredMarketplaceTriggers.length,
+  skyReviewGuardCount: requiredSkyReviewTriggers.length,
   migrationJournalMatches: true,
 });
 
 if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url))
   console.log(
-    `web schema: ${webSchemaStatus.tableCount} tables、accidental duplicate ${webSchemaStatus.accidentalDuplicateCount}、published convergence ${webSchemaStatus.publishedConvergenceDeclarations} definitions、Marketplace relation guards ${webSchemaStatus.marketplaceRelationGuardCount}、migration/journal一致`,
+    `web schema: ${webSchemaStatus.tableCount} tables、accidental duplicate ${webSchemaStatus.accidentalDuplicateCount}、published convergence ${webSchemaStatus.publishedConvergenceDeclarations} definitions、Marketplace relation guards ${webSchemaStatus.marketplaceRelationGuardCount}、Sky review guards ${webSchemaStatus.skyReviewGuardCount}、migration/journal一致`,
   );

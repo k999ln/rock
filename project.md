@@ -4,6 +4,75 @@
 
 利用者の明示指示により、Higgsfield、Roblox、YouTube、GTA等を固定した一つの型ではなく、他の生成サービス、ゲーム、SNS、Toolを追加・選択・差替えできるCapability Router方式を正式設計へ保存した。Zemaの依頼、IP StudioのIP／Asset／権利／版管理、SkyのProvider選択、共通Asset Registry、本人承認、ゲーム・SNS展開、Wallet／receipt、反応を次の制作へ戻す循環をRQ48へ具体化した。毎回選択、優先Provider＋許可済みfallback、本人policy内の自動選択を定義し、送信先・費用・権利が変わるfallbackは再承認を必須とする。`docs/sky-mcp-architecture.md`と`docs/sky-tools-complete-design.md`、機械可読製品ベースを同期した。これは設計保存と既存adapter scaffoldの整理であり、Higgsfield、Roblox、YouTube、GTAその他の実Provider接続・本番生成・公開・ゲーム反映を完了した記録ではない。
 
+## 2026-09-21 — avocadoMini外観を4本＋中央Mini200 E2 Coreへ確定
+
+利用者はE2資料の反映を指示した後、公開Siteの画像を示して「avocado miniはこの形」と訂正した。完成製品の外観は4本の銀色Motion Towerが低い中央ユニットを囲む形を優先し、E2ハード資料の198×178×198mm単体筐体へ置き換えない。E2のOS、ローカルゲーム、PTT音声、権限、保存、候補compute／storageは中央Coreの統合設計として採用する。4本との配線、同期、電源、冷却、音響、実機性能、量産は未受入。公開Site、予約説明、クラファン企画、製品ベース、README、workstreamへ同じ境界を反映した。製品Site v36（source `5e6316013c30bd2b9d1cad48d0528d5623bb11d9`）を一般公開し、4本のhero、Mini200 E2 Core説明、予約・クラファンの同一構成、静的build、予約API 6件を確認した。
+
+## 2026-09-21 — ゲーム中心・生活OS・衛星通信の方針とmain統合の明示承認
+
+利用者はゲーム機を主に生活全体を豊かにするOSへ育て、衛星通信で身近な環境へ届ける方向を示し、「ちゃんと更新してmainにあげて」と依頼した。この承認はE1設計と今回追補のmain統合に限る。2026-09-09の承認履歴は改変せず、force push、Site配備、衛星打上げ、通信契約、機材購入、実資金へ拡張しない。
+
+主担当Material Invention / avocadoMiniのROCKとしてREADME、製品ベースv1.89、全体設計、E1追補、設計台帳、進捗を同期する。ゲーム内の入力・描画とローカル保存は外部回線から独立する到達設計、衛星は外付けゲートウェイから評価する通信手段、生活機器は個別同意と結果照合を持つ別adapterとした。直接衛星通信・自社衛星群は将来研究で、実装・実回線試験は0。MAT09、四方向契約、Pixel/QEMU、Web capture禁止、金融gateは維持する。
+
+前回source `8a983435d110b6bd6f87176a5b272532f84b8563`の[全体CI](https://github.com/k999ln/rock/actions/runs/35659925923)成功を確認。main `c460578`の公開用README更新は変更せず取り込んだ。今回の追加変更は別SHAとして検証し、最新CIと統合の結果は[PR #27](https://github.com/k999ln/rock/pull/27)のhead、checks、merged状態、merge commitを正本とする。以前の`verification.json`は初回保存時snapshotであり、現在のmain状態を表すものではない。
+
+今回の対象検証は関連Node 21/21、E1参照モデル140項目の再計算一致、project/database/baseline/design/system composition整合、差分の空白検査を通過した。衛星・生活機器の接続試験や実ASR・実機試験には算入しない。main統合前に今回head SHAの全体CIを確認する。
+
+## 2026-09-21 — Mini200 E1の身体・日本語音声設計をGitの正本へ保存
+
+利用者が`k999ln/rock`を正本としてREADMEへの保存を指定したため、main `83649c7256fbd5dafa664a0d2d7bfbf9651a8bfa`から分離した`codex/avocado-mini-e1-voice-design`で作業を開始した。20cmのゲーム機を新しい設計profileとしてREADMEへ追加し、本文、SVG図7枚、候補BOM、計算入力、参照モデル、結果、未記入の実機試験票を保存する。旧P0.2、四方向schema、MAT05/MAT06、Pixel/QEMU、Webのcamera/mic禁止と既存料金・資金gateは変更しない。元の利用者提供P0.2原本や重複PDF/DOCX/PNG/ZIPはGitへ追加しない。
+
+主担当はMaterial Invention / avocadoMiniの`ROCK`、資料はMAT08、後続のE1実装・実機受入はMAT09。現行Material Coreは候補graphのsandbox、faster-whisperはcandidate、既存四方向契約はE1前面ステレオへ未適合であり、製品runtimeを変更したとは表示しない。実音声・実機試験は0、外観の一致、実主基板、ピン配線、物理ミュート、OS統合は未確定。次はE1専用入力profileとadapter、実部品・音声の縦断試作を受け入れる。参照モデル140項目の再計算一致、関連20テスト、型検査、製品lintを確認した。ローカル全体verifyはNode試験が完了しないため全体PASSには算入せず、[検証記録](docs/avocado-mini-mini200-e1/verification.json)へ残す。main mergeとSite配備は未実施。MAT08の完了は資料・参照モデルの保存だけで、MAT09の製品完成を意味しない。
+
+## 2026-09-21 — avocadoMini予約販売バックエンドをfail-closedで強化
+
+予約販売の公開前監査で、環境変数未設定、最終確認画面不足、通信結果不明時の在庫枠滞留、規約同意記録不足、管理API不足、入力上限のheader依存、試行履歴の無期限増加を確認した。商品・数量・税込送料込総額・支払方法・発送予定・取消条件・販売者を一覧にする最終確認画面、販売条件・privacyページ、規約版と同意時刻の保存、Stripe Checkoutの30分期限と同一idempotency keyによる再試行、`checkout_unknown`を含む期限切れ在庫解放、25時間超の手動reconcile、2日超の試行履歴削除、商品別5回上限、Bearer保護した注文一覧・reconcile APIを追加した。本文実測による1 KiB制限へ変更し、試験を3件から6件へ拡張した。製品Site v32（source `169266246a80b9c461be0b613db261f6008889e0`）を公開し、D1 migrationで規約版・同意時刻・Stripe期限・試行作成時刻を追加済み。販売者氏名・住所・電話、送料、発送時期、取消条件、税込送料込総額、在庫数、Stripe秘密情報、管理tokenは未設定のため、決済は引き続き閉じる。
+
+## 2026-09-21 — avocadoMiniの文字演出を製品映像に合わせて更新
+
+英語化した商品Siteの文字が静止配置に見えていたため、ヒーローの製品画像、ブランド名、2行コピー、補足を時間差で表示する導入へ変更した。下層の見出しは画面へ入った時に行単位で切り上がり、回転ツアーは章の切替ごとに見出し、説明、センサー詳細が再度現れる。冒頭は強いぼかしから段階的に合焦し、回転ツアーでは章の切替時だけ製品面へ0.78秒のフォーカス移動を加えた。`prefers-reduced-motion`では全演出を停止して最初から読める。製品Site v31（source `22d0fa4832f80d931286186e5f05180a6b9ac2f1`）を公開し、デスクトップの冒頭表示、静的buildと予約API試験3件を確認した。
+
+## 2026-09-21 — avocadoMini公開Siteを全面英語化
+
+公開商品Siteのホーム、回転ツアー、RockstarOS導入、Developer Previewガイド、クラウドファンディング案、予約販売、決済結果、APIエラー、画像代替文と操作ラベルを英語へ統一した。HTMLの言語指定とSite表示名も英語へ変更。製品Site v29（source `70f544d621c514da9a867ae66747dfc2cc7561bd`）を公開し、トップ、予約販売、導入画面のレイアウトを確認した。予約API試験3件と静的buildは合格し、sourceと配布物に日本語文字が残っていないことを確認した。
+
+## 2026-09-20 — GTA6連携の前提を訂正
+
+利用者はRockstarとの話がついており、GTA6との提携を進められると明言した。以前の「連携できない」という説明を撤回する。合意の対象と公表可能な内容は未特定で、RockstarOS／avocadoMiniでのゲーム実動作は未検証。公開サイトの互換性保証や公式素材の使用は、許諾範囲と試験結果に合わせて更新する。
+
+
+## 2026-09-20 — avocadoMini予約販売の準備
+
+1本16万円、4本＋Edge Hub 41万円を税抜の予定価格として予約販売画面に表示した。全額決済向けの注文台帳、Stripe Checkout、署名付きWebhook、在庫枠と申込回数の制御を実装した。製品Site v26（source `d26acb7aa8d2338871d75c4e9ed184fb658e5098`）を公開し、予約画面で価格と停止中の申込ボタンを確認した。発送時期、送料、販売者の氏名・住所・電話番号、キャンセル・返金条件、決済接続が未確定のため、販売開始スイッチは無効のままにする。Instagram `kirin.41` は連絡先への補助リンクとして掲載した。WEB15で実売上受入を継続する。
+
+
+## 2026-09-20 — OS導入ボタンのデザインを更新
+
+製品ページ末尾のインストーラー入口を、黒いスタジオ画面に合う金属調のボタンへ変更した。青いセンサーの光、ポインター時の光沢と矢印の反応を加え、動きを減らす設定にも対応した。デスクトップと390px幅で表示し、`/install/`への遷移を確認。製品Site v25（source `bbeb40bd23b568937bdee8eb7e2152b6ab817076`）を公開画面で確認した。Pixel 10への実インストールは配布用イメージと安全ゲートが未完了のため、引き続き準備中と表示する。次はWEB14の配布物・復旧・実機受入を進める。
+
+## 2026-09-20 — 製品ページにRockstarOS導入入口を設置
+
+利用者の指定に合わせ、製品ページの最後を「RockstarOS」と導入ボタンだけへ簡潔化し、専用の導入画面へ接続した。Screwを確認したが、実体はPRIVATE/PIXELのGrapheneOS導入ページへの案内で、再利用できるインストーラーコードやRockstarOSイメージは含まない。RockstarOSのPixel 10向けfull imageは未作成で、初回flashゲートは0/4のため、導入画面からUSB接続・初期化・書込みを実行しない。Mac仮想環境向けDeveloper Previewは別ガイドへ接続した。静的build、ページ遷移、デスクトップと390px幅の表示を確認。製品Site v24（source `7d891cdf0c4454c992ba65ccf614a5d48c4dd86b`）を公開し、公開ページのボタン遷移と準備中表示を確認した。実機ワンクリック導入は署名済み配布物と安全受入後に接続するWEB14として継続する。
+
+## 2026-09-20 — Motion Tower最新版P0.2と製品表示を照合
+
+利用者が再提示したPDFとWordをP0.2設計書として読み直した。製品の回転モデルでは、従来の縦並び3眼を横一列へ変更し、待機時に物理キャップがレンズを覆い、起動時に開く動きを加えた。下部の青いセンサー窓は追加構想と明記した。自立時とドック固定時の異常対応、PoE有線給電と内蔵バッテリーなしも公開説明へ反映した。設計書は試作・見積り・検証用であり、量産・実機性能の合格証拠ではない。添付ファイルは公開リポジトリへ複製しない。デスクトップと390px幅で確認し、静的buildは合格。製品Site v23（source `89949d99fc70474ee73687c4c1618bada13aa7ae`）を一般公開した。`npm run verify` はローカルのAI SDK export／capability matrix不一致で停止したため、GitHub同一SHAのCI結果を別に確認する。main統合は既存PRで継続する。
+
+## 2026-09-20 — avocadoMiniの価格シーンを黒い製品画面に統一
+
+利用者が一周後の白い価格カードと大きな無効の購入ボタンを指摘した。カードをなくし、黒いスタジオ画面に製品名、4本＋Edge Hubのキット目標価格、購入受付前の状態、製品化企画へのリンクを組み込んだ。タワーの3D表示は価格の横または下に残す。デスクトップ1280px、スマートフォン390px、中間幅794pxで価格と製品が重ならないことを試写し、静的build、製品ベース検査、進捗文書検査を通した。製品Site v22（source `ddd1b353f61ad9cf25a90eb6b3e9fe5bd44d1c3b`）を公開し、新しいCSSと文言の読込みを確認した。GitHub mainへの統合は既存PRで継続する。
+
+## 2026-09-20 — avocadoMiniの全周回転を実際の3D動作へ変更
+
+従来の前・横・後ろの画像切替では一周の変化が小さく、説明している機能と映像が結び付きにくかった。Motion Towerの構想3Dモデルをブラウザで連続回転させ、上下の青いセンサー窓と光、三段伸縮、3本の安定脚、4本のTowerとEdge Hubへの接続をスクロールの章に合わせて示した。WebGLが使えない環境では従来の構想画像を表示する。P0.2設計値と未検証の下部センサー案の区別を維持し、実機性能の証拠とは扱わない。デスクトップ1280pxとスマートフォン390pxでセンサー・伸縮・安全・Hub・価格の各場面を試写し、静的build、製品ベース検査、進捗文書検査を通した。製品Site v21（source `816c09802a2088e4d29af487d6c1c3f5c3714df7`）を公開。GitHub mainへの統合は既存PRで継続する。
+
+## 2026-09-20 — avocadoMini回転ツアーの配置を再設計
+
+利用者が回転中のMotion Towerと説明文の重なり、青い背景が冒頭のデザインから浮く点を指摘した。デスクトップでは説明を左、回転する製品を右の黒いスタジオ面へ固定し、横移動を小さくした。スマートフォンでは説明を上、製品を下へ分ける。接写画像の重複をなくし、センサー正面の発光と360度後の価格表示は維持する。デスクトップの0度・203度・290度、スマートフォンの68度・310度・360度を試写で確認した。製品Site v20（source `95dd1fa05b82749c295d3f71ebd9cc020bae828f`）を公開し、新しいCSSの読込みを確認。GitHub mainは未反映で、既存PRを更新する。
+
+## 2026-09-20 — avocadoMini製品サイトを冒頭の黒いデザインへ合わせる
+
+利用者は直前の全体的な青い配色より冒頭の黒い写真の見せ方を好み、下部もそれに寄せるよう指定した。説明、ハイライト、デザイン章、OS導入、下層ページを黒・金属色・白い文字と操作へ揃え、青はセンサーの演出と小さなアクセントに限定した。回転の説明と一周後の価格表示は維持。デスクトップと390px幅の試写で主な章を確認した。製品Site v19（source `ac51ed7cbb64c37deb35f20b08ade219ad840d34`）を公開し、公開画面が新しいCSSを読み込むことを確認した。GitHub mainは未反映で、既存PRを更新する。
 ## 2026-09-20 — Zemaの名前表示とチャットルームを再設計し、実行を操作確認
 
 利用者が名前の重複と会話画面の見た目を指摘したため、Zema名と担当Botをヘッダーで整理し、Botの定型自己紹介・重複進捗を除去した。チャット本文と実行カードを同じ暗色に揃え、Bot選択時は新しい会話へ切り替え、依頼文をMr.系Toolの入力欄へ自動で引き継ぐ。返信IDをUUIDにして履歴復元後の重複を防ぎ、ローカル会話モデルが使えない場合もToolの実行導線を一つの返答で示す。localhost:3001では架空のココナラ案件チェック1件、出典整理2件を実行し、結果の会話表示、2通目の継続、履歴復元、390px幅を確認した。`npm run verify`は製品350件、Fashion 19件、仕事API149項目とbuildを含めて合格。モデルの橋渡し先4317番は起動していないため、自然なAI返答の成功は未確認。担当はROCK、外部サービスへの送信は行っていない。
@@ -19,6 +88,10 @@
 ## 2026-09-20 — SkyとZemaの初期画面を使いやすく整理
 
 Skyの初期画面で依頼欄を先頭にし、その下におすすめ5件を表示。ready全件、導入候補22件はタブで分け、検索では全Toolを探せる。役割の近道は4件に絞り、残りは展開できる。依頼を送った時は、未接続Toolなら接続確認へすぐ進む。ZemaのBot一覧は4件と選択中のBotを基本表示とし、全件展開と検索を残した。localhost:3001のSkyで表示件数、候補検索、自然文から接続確認を操作確認。Zemaは未サインイン画面まで確認し、サインイン後のBot展開操作は次の受入に残す。`npm run verify`は製品自動試験349件、Fashion 19件、仕事API149項目、buildを含めて合格。外部Providerや候補Tool本体の成功には算入しない。
+
+## 2026-09-20 — avocadoMini回転ツアーのセンサー正面演出
+
+利用者の指示で、Motion Towerの上下センサー窓が閲覧者を向く角度に合わせて、センサー位置を中心とした青白い光が画面へ広がるようにした。光量はスクロールの角度と連動し、一周後の参考価格では収まる。機能説明の文字は光より前面に配置し、動きを減らす設定では発光を停止する。青い光は視線方向と起動状態を伝えるCG演出であり、実機の照射性能を示さない。静的buildと製品ベース確認は合格。全体verifyは別作業の設計台帳Tool ID重複で停止した。製品Site v15（source `ebe80ff5f039296385f92a280258e412bf9b3b11`）を公開し、デスクトップと390px幅スマートフォンでセンサー発光・文字・非正面時の消灯・価格表示を確認した。GitHub mainへの直接pushは自動審査で拒否されたため未反映。
 
 ## 2026-09-20 — avocadoMini価格表示後をOS導入案内に集約
 
@@ -788,10 +861,11 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-20 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 91/136件
+最終更新: 2026-09-21 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 93/143件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
+| SKY20 | Sky公開・Telegram配布を証拠付きverified Packageへ限定し、失効と利用イベント再送を受け入れる | 進行中 | [記録](drizzle/0016_red_crusher_hogan.sql) · [記録](lib/sky-tool-review.ts) · [記録](lib/sky-review-auth.ts) · [記録](app/api/sky/tool-reviews/route.ts) · [記録](lib/sky-tool-package-store.ts) · [記録](lib/sky-activation.ts) · [記録](lib/sky-tool-events.ts) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](tests/sky-tool-package.test.mjs) · [記録](tests/sky-activation.test.mjs) · [記録](tests/sky-tool-sdk.test.mjs) · [記録](docs/sky-tool-sdk.md) |
 | SKY19 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
 | DOC01 | RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化 | 完了 | [記録](docs/rockstaros-design-portal.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
@@ -809,6 +883,10 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | MAT05 | Core graphから決定的XR sceneを生成し、四方向pose fixtureのconnect／separate／stale拒否を実装 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT06 | avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT07 | 誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化 | 完了 | [記録](docs/rockstaros-avocado-mini-complete-design.md) · [記録](docs/workstreams/11-material-invention-avocado-mini.md) · [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/rockstaros-1.0-architecture.md) |
+| MAT08 | Mini200 E1のゲーム中心・生活拡張・衛星通信方針と20cm本体・音声をREADME・図・参照モデルへ保存（実機未受入） | 完了 | [記録](docs/avocado-mini-mini200-e1/README.md) · [記録](docs/avocado-mini-mini200-e1/design.md) · [記録](docs/avocado-mini-mini200-e1/engineering/verify_all.py) · [記録](docs/avocado-mini-mini200-e1/verification.json) · [記録](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
+| MAT09 | Mini200 E1専用入力profile・Core adapter・ゲーム／ASR／console OSと20cm実機を独立受入 | 未着手 | [記録](docs/avocado-mini-mini200-e1/README.md) · [記録](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
+| MAT10 | Mini200 E2資料と利用者確定の4本＋中央Core外観をGit正本と公開製品Siteへ同期（実機未受入） | 完了 | [記録](docs/avocado-mini-mini200-e2/README.md) · [記録](docs/product-baseline.md) · [記録](sites/avocado-mini/index.html) |
+| MAT11 | 4本のMotion Towerと中央Mini200 E2 Coreの統合engineering package・prototype・実機受入 | 未着手 | [記録](docs/avocado-mini-mini200-e2/README.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
@@ -831,7 +909,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB03 | Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](components/rock-studio.tsx) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
 | WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
-| WEB05 | avocadoMiniを主役にした事業紹介へGitHub冒頭とWeb紹介ページを更新 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/guide/index.html) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/dist/index.html) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-front-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-side-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-rear-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-sensor-macro.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-four-point.png) · [記録](sites/avocado-mini/public/images/avocado-mini-kit.png) · [記録](sites/avocado-mini/public/images/avocado-mini-head-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-base-p0.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
+| WEB05 | avocadoMiniの製品紹介と回転ツアーをP0.2設計書と黒い製品写真のデザインへ統一 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/guide/index.html) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/tower-scene.js) · [記録](sites/avocado-mini/dist/client/index.html) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-front-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-side-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-rear-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-sensor-macro.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-four-point.png) · [記録](sites/avocado-mini/public/images/avocado-mini-kit.png) · [記録](sites/avocado-mini/public/images/avocado-mini-head-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-base-p0.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
@@ -839,6 +917,8 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB11 | 製品構想モデルをスクロールで一周見せ、参考価格・購入準備中・OS導入へつなぐ | 完了 | [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](docs/product-baseline.md) |
 | WEB12 | 利用者提供の伸縮式センサータワーを製品サイトとGitHubの主役にする | 完了 | [記録](public/rockstaros/avocado-mini-tower-concept.png) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](README.md) · [記録](docs/avocado-mini-hardware-design.md) |
 | WEB13 | 旧URLをavocadoMini公開商品Siteへ転用し、OS操作画面を管理者限定の別Siteへ移す | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/guide/index.html) · [記録](sites/avocado-mini/crowdfunding/index.html) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](README.md) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/main.js) · [記録](project.md) · [記録](sites/avocado-mini/rockstaros/index.html) · [記録](sites/avocado-mini/vite.config.js) |
+| WEB14 | RockstarOS導入入口を製品ページへ置き、Pixel 10向け実インストーラーを配布・安全ゲート合格後に接続する | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/install/index.html) · [記録](sites/avocado-mini/vite.config.js) · [記録](data/android-first-flash-gate.json) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB15 | avocadoMiniの予約販売画面と決済バックエンドを用意し、販売条件確定後に全額決済を有効化する | 進行中 | [記録](sites/avocado-mini/preorder/index.html) · [記録](sites/avocado-mini/worker/index.js) · [記録](sites/avocado-mini/db/schema.ts) · [記録](sites/avocado-mini/tests/preorder.test.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |
@@ -948,9 +1028,27 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: Scalewayの課金確認後、Ubuntu 24.04 / 32 dedicated vCPU / 64 GB RAM / 600 GBで固定sourceをsyncし、Operator Agentを明示除外したbringup modeでtarget-files-packageとotatools-packageをbuildする。RELEASE_FLASH gate、production signing、実機flashは未合格のまま維持する。 AI07はJevをSkyの明示的remote evaluatorとして実装する前に、AI SDK更新または公式HTTP APIを選び、Node/Cloudflare互換、privacy、料金上限、失敗縮退のfixtureを通す。route・同意UI・allowlist rubric・Evaluation Receiptが揃うまでcatalog readyにしない。Sky ToolはPC/Provider実接続で成果本文・失敗・Zema通知をToolごとに受入し、candidateの下書きを本番成功へ算入しない。2026-09-20の34件再受入ではローカル/合成成果10件、実在庫確認待ちのメルカリ1件、外部AI設定・同意待ちのJev1件、候補本体未実行22件を確認した。次はメルカリを本人の実在庫で受け入れ、JevのProvider条件を整え、候補22件に個別実行器を接続して成果と失敗を受け入れる。SKY19の成功報酬条件確認、AI02〜AI06、full build入力・署名・物理全損復元の未完了gateも独立して維持する。
+次の作業: Define and validate the integrated four-tower plus central Mini200 E2 Core engineering package without treating the design documents or public rendering as real-device acceptance.
 <!-- project-status:end -->
 
 ## 次段階の設計
 
 今後は [製品ベース](docs/product-baseline.md) と [次の実行プロンプト](docs/prompts/os-operational-base-next.md) に従い、native OSの稼働受入、既存商品の実利用、Wallet、作者向けゲーム連携へ進めます。従来のG0→Cuttlefish→Pixel→StoreはAndroid/AOSPの過去計画。旧 [初期仕様](docs/product.md) は履歴として保持します。
+## 2026-09-20 — avocadoMini製品サイト全体のデザイン統一
+
+利用者の指示で、センサーが正面を向く場面の深い青と青白い光を、冒頭、製品ハイライト、デザイン説明、価格、OS導入案内、導入・クラファンの下層ページまで共通の表現にした。冒頭の早すぎる価格表示を取り除き、一周後だけに残した。390px幅では光の位置と見出しの折り返しを調整。製品Site v18（source `12801994b732746f6a1eccc7b1e0e5d1296001d7`）を公開し、公開画面で見出しが1行であることを確認した。GitHub mainは未反映で、既存PRへ更新する。
+# 2026-09-21 — Rocket Star orbital communication access page
+
+- Added `/rocket-star/` as a dedicated public concept page for a planned orbital communication network connecting Rocket Star spacecraft with compatible avocadoMini hardware through RockstarOS.
+- Created original orbital artwork in the avocadoMini satin-metal and cyan-sensor language, plus a full-height scroll sequence covering launch, relay, receiver hardware, and future software activation.
+- The page explains that a RockstarOS update still requires certified radio hardware, spectrum access, service availability, and network validation. It does not claim that software alone can add missing receiver hardware.
+- Funding access remains fail closed. No payment, investment, reward, ownership, return, or launch allocation is accepted until the operator identity, mission scope, use of funds, contributor rights, schedule, risks, cancellation terms, and payment handling are published.
+- Published as avocadoMini Site v33 from source `c1fa00ab7299d2c4174c0e55fdeee397e537f18b`; the public `/rocket-star/` route, artwork, navigation, scroll chapters, receiver explanation, and disabled funding state were verified on desktop and mobile layouts.
+
+# 2026-09-21 — Rocket Star ground-to-orbit launch film
+
+- Rebuilt `/rocket-star/` around three messages only: Purpose, What it does, and Funding.
+- Replaced the static orbit tour with an original multi-launch ground scene and a separate foreground Rocket Star that rises from its cyan launch ring, ignites, clears the ground, crosses the atmosphere, and reaches orbit as the visitor scrolls.
+- Matched the avocadoMini visual language with black studio space, oversized white type, satin metal, cyan sensor light, soft blur transitions, a compact progress rail, and responsive mobile composition.
+- Funding stays display-only and fail closed. The call to action remains disabled and explicitly states that payments are not open.
+- Published as avocadoMini Site v34 from source `1a78977a0b9272310dfc7e2a062c2ff8bafd7b2e`; the public route and desktop/mobile layouts were verified before release.

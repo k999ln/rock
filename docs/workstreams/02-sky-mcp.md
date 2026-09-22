@@ -6,6 +6,7 @@
 
 ## 現在地
 
+- Sky公開RegistryとTelegram配布を、有効期限内の証拠付き`verified` Packageだけへ限定した。開発者の`published_declared`は審査待ちとして非公開にし、固定source revision／SHA-256、権利、license、権限、privacy、料金、Sandbox、出力品質、証拠URL、reviewerを追記専用台帳へ保存する。失効時は既存grantも即時に一覧・再取得から除外する。利用イベントはEvent IDで冪等化し、一時失敗を最大3回再送する。sourceの型・schema・lint・対象15試験は合格。Web D1 migration `0016`、server-side審査credential、本番readbackは未実施のため`SKY20`は進行中。
 - Product Hunt候補から公開URLをSky掲載申請へ引き継ぐ導線を追加。URLのホスト・経路・認証情報を検証し、提供者・接続先・ライセンス・権限を本人が確認する審査キューで止める。Product Hunt APIの無断収集・自動公開は行わない。
 - 候補収集は`npm run discover`でGitHubとHugging Faceの公開メタデータを取得し、`npm run discover:watch`またはGitHub Actionsの6時間間隔で再実行できる。`data/discovered.json`は同一候補を更新して最大500件まで保持し、すべて`reviewStatus: pending`・`executionEnabled: false`のままSkyの審査前データとして保存する。Product Huntは`PRODUCT_HUNT_ACCESS_TOKEN`と事業利用承認フラグの両方がある場合だけ収集し、トークンはWebアプリへ渡さない。
 - 2026-09-20の再受入: 起動済みPC ConnectorをSky画面から接続し、MCP 45機能（基本4、Fashion 41）を認識。基本MCP4機能を合成入力で実呼び出しし、全4件で非エラーの成果本文を確認。Sky→Zema→PC納品照合→`PASS`本文も完走し、サブスク顧問はPC台帳への接続と質問回答を確認。Marketはサインイン済み画面でPAPER提案・承認・実行・レシート保存まで完走。ready 12件中、ローカル/合成データで成果を確認できたのは10件。メルカリは実在庫確認を要するため実画面の作成を保留、Jevは外部AI設定と本人同意が未充足。候補22件には本体実行器がなく、下書きのみ。Sky/Zemaで候補を「接続済み」「完了」と誤読しない表示に修正し、PC接続後の納品照合カードからZemaへ直接進めるようにした。
@@ -22,7 +23,7 @@
 - Zemaの会話画面は履歴を開閉でき、自由文は文章モデルのAPIへ渡す。ローカルBinder未接続時は利用不可を明示し、外部文章モデルへの送信は依頼ごとの許可とserver側の有効化を必須にする。Tool実行の確認・承認は従来どおり維持する。
 - 現在実接続可能と扱える標準経路は「このPC」。Sky Cloudとprovider MCPは未受入。
 
-主なtask: `SKY02`〜`SKY09`, `SKY11`, `SKY14`, `SKY15`, `N05`。
+主なtask: `SKY02`〜`SKY09`, `SKY11`, `SKY14`, `SKY15`, `SKY20`, `N05`。
 
 ## 次に進める順番
 

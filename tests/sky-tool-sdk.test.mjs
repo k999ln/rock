@@ -178,12 +178,14 @@ void test('MCP calls validate arguments, run the handler and report bounded usag
   const event = calls.find(({ url }) => url.endsWith('/api/sky/tool-events'));
   assert.deepEqual(Object.keys(event.body).sort(), [
     'durationMs',
+    'eventId',
     'installationId',
     'occurredAt',
     'outcome',
     'packageKey',
     'toolName',
   ]);
+  assert.match(event.body.eventId, /^[0-9a-f-]{36}$/);
   assert.equal(event.body.installationId, 'install_test_01');
   assert.equal(event.body.outcome, 'succeeded');
 });

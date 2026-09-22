@@ -68,11 +68,11 @@ Sky Tool SDKは同じTool定義から次を生成する。
 | 状態 | 意味 | Skyから自動導入 |
 | --- | --- | --- |
 | `submitted` | 所有者領域へ保存。ID・版・SHAを固定 | 不可 |
-| `published_declared` | 開発者の宣言として公開Registryに掲載 | 不可 |
+| `published_declared` | 開発者の宣言を審査待ちとして保持。公開Registryには出さない | 不可 |
 | `verified` | Sky側のSandbox、作者、権限差分、接続、試験に合格 | 可 |
 | `rejected` / `revoked` | 検査不合格または失効 | 不可 |
 
-現在実装したのは`submitted`と`published_declared`までである。一般開発者向けの署名局、任意コードSandbox、審査操作、失効配信、公開remote MCP/OAuthの本番受入は未実装なので、宣言済みToolを検証済み・自動導入可能とは表示しない。
+公開RegistryとTelegram配布は、有効期限内の審査記録を持つ`verified`だけを返す。審査記録には固定source revision／SHA-256、権利、license、権限、privacy、料金、Sandbox、出力品質、証拠URL、reviewer、期限を保存する。`published_declared`は審査待ちであり公開しない。一般開発者向けの署名局、任意コードSandbox、公開remote MCP/OAuthの本番受入は未実装なので、審査者は外部条件を確認できないPackageを`verified`にしない。
 
 ## APIと保存データ
 
@@ -91,7 +91,7 @@ Sky Tool SDKは同じTool定義から次を生成する。
 | `GET /api/sky/telegram/tools` | 内部Bridge secret | Telegram利用者の有効化済みTool一覧 |
 | `POST /api/sky/telegram/build` | 内部Bridge secret | Telegram貼り付けコードを解析し、Manifestと一回用コードを作成（ソース本文は保存しない） |
 
-開発者キーはSHA-256だけをD1へ保存し、失効できる。利用イベントはPackage ID、Tool名、匿名Installation ID、結果区分、処理時間、実行時刻だけを受け付ける。入力、出力、会話、APIキー、Wallet残高は送信・保存しない。
+開発者キーはSHA-256だけをD1へ保存し、失効できる。利用イベントはEvent ID、Package ID、Tool名、匿名Installation ID、結果区分、処理時間、実行時刻だけを受け付ける。入力、出力、会話、APIキー、Wallet残高は送信・保存しない。Event IDは再送時も同じ値を使い、同一内容の再送を一件として扱う。SDKは一時的な送信失敗を最大3回まで再試行するが、process終了を越える永続queueではない。
 
 発行コードも平文では保存しない。使用時にコードをハッシュ照合し、`sky_tool_grants`へTelegram利用者・チャット・Packageを記録する。Grantの付与はToolの公開状態を再確認し、期限切れ・失効・使用回数超過を拒否する。Telegram BridgeはBotとSky間の共有secretで保護し、ソースコード、開発者キー、APIキーをTelegramへ渡さない。
 

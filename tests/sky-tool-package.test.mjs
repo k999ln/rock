@@ -14,6 +14,10 @@ import {
   parseSkyToolEvent,
   skyToolEventStore,
 } from '../lib/sky-tool-events.ts';
+import {
+  parseSkyToolReview,
+  skyToolReviewStore,
+} from '../lib/sky-tool-review.ts';
 
 const draft = (change = {}) =>
   createSkyToolPackageDraft({
@@ -88,7 +92,7 @@ void test('package SHA is canonical and changes with the declared version', asyn
   );
 });
 
-void test('owner registration is immutable and declared publication is visible but not installable', { timeout: 10_000 }, async (t) => {
+void test('declared publication stays private until an evidence-backed review verifies it', { timeout: 10_000 }, async (t) => {
   const worker = new Miniflare(
     convertV4MiniflareOptions({
       modules: true,
@@ -101,14 +105,13 @@ void test('owner registration is immutable and declared publication is visible b
   );
   t.after(() => worker.dispose());
   const db = await worker.getD1Database('DB');
-  const migration = readFileSync(
-    new URL('../drizzle/0010_gray_fat_cobra.sql', import.meta.url),
-    'utf8',
-  );
-  for (const statement of migration
-    .split('--> statement-breakpoint')
-    .filter((value) => value.trim()))
-    await db.prepare(statement).run();
+  for (const file of ['0010_gray_fat_cobra.sql', '0016_red_crusher_hogan.sql']) {
+    const migration = readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8');
+    for (const statement of migration
+      .split('--> statement-breakpoint')
+      .filter((value) => value.trim()))
+      await db.prepare(statement).run();
+  }
 
   const store = skyToolPackageStore(db);
   const manifest = draft();
@@ -125,6 +128,47 @@ void test('owner registration is immutable and declared publication is visible b
   );
   assert.equal(published?.status, 'published_declared');
   assert.equal(published?.installable, false);
+  assert.equal((await store.listRegistry()).length, 0);
+
+  const review = parseSkyToolReview({
+    packageKey: saved.packageKey,
+    manifestSha256: saved.manifestSha256,
+    decision: 'verified',
+    sourceRevision: 'a'.repeat(40),
+    sourceSha256: 'b'.repeat(64),
+    checks: {
+      sourcePinned: true,
+      rights: true,
+      license: true,
+      permissions: true,
+      privacy: true,
+      pricing: true,
+      sandbox: true,
+      outputQuality: true,
+    },
+    evidenceUrls: ['https://example.com/reviews/tool-1'],
+    notes: '固定sourceとSandbox結果を独立に確認しました。',
+    expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+  });
+  const reviewStore = skyToolReviewStore(db);
+  const attempts = await Promise.allSettled([
+    reviewStore.review('reviewer-a', review),
+    reviewStore.review('reviewer-b', review),
+  ]);
+  assert.equal(
+    attempts.filter(({ status }) => status === 'fulfilled').length,
+    1,
+  );
+  assert.equal(
+    attempts.filter(({ status }) => status === 'rejected').length,
+    1,
+  );
+  assert.equal((await reviewStore.list(saved.packageKey)).length, 1);
+  const success = attempts.find(({ status }) => status === 'fulfilled');
+  assert.ok(success && success.status === 'fulfilled');
+  const verified = success.value;
+  assert.equal(verified.package.status, 'verified');
+  assert.equal(verified.package.installable, true);
   assert.equal((await store.listRegistry())[0].manifest.name, manifest.name);
   assert.equal(
     await store.publishDeclared(
@@ -142,6 +186,7 @@ void test('owner registration is immutable and declared publication is visible b
   assert.equal((await tokenStore.list('developer-a'))[0].lastUsedAt > 0, true);
 
   const event = parseSkyToolEvent({
+    eventId: crypto.randomUUID(),
     packageKey: saved.packageKey,
     toolName: 'check_invoice',
     installationId: 'installation_fixture_01',
@@ -151,6 +196,7 @@ void test('owner registration is immutable and declared publication is visible b
   });
   const eventStore = skyToolEventStore(db);
   await eventStore.record('developer-a', event);
+  assert.equal((await eventStore.record('developer-a', event)).replay, true);
   const usage = await eventStore.summary('developer-a');
   assert.deepEqual(
     {
@@ -174,4 +220,27 @@ void test('owner registration is immutable and declared publication is visible b
   );
   assert.equal(await tokenStore.revoke('developer-a', issued.id), true);
   await assert.rejects(() => tokenStore.authenticate(issued.token), /UNAUTHORIZED/);
+});
+
+void test('verification requires pinned source, every check and evidence', () => {
+  const base = {
+    packageKey: 'dev.example.tool@1.0.0',
+    manifestSha256: 'a'.repeat(64),
+    decision: 'verified',
+    sourceRevision: 'b'.repeat(40),
+    sourceSha256: 'c'.repeat(64),
+    checks: {},
+    evidenceUrls: ['https://example.com/review'],
+    notes: '審査結果を確認するための十分な説明です。',
+    expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+  };
+  assert.throws(() => parseSkyToolReview(base), /全審査項目/);
+  assert.throws(
+    () => parseSkyToolReview({ ...base, sourceRevision: null }),
+    /固定source/,
+  );
+  assert.throws(
+    () => parseSkyToolReview({ ...base, evidenceUrls: [] }),
+    /全審査項目|審査証拠/,
+  );
 });

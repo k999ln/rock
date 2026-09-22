@@ -28,7 +28,7 @@ export default function SkyActivationPanel() {
         const data = (await response.json()) as { packages?: PackageItem[]; error?: string };
         if (!response.ok) throw new Error(data.error || 'Tool一覧を読み込めませんでした。');
         const available = (data.packages || []).filter((item) =>
-          item.status === 'published_declared' || item.status === 'verified',
+          item.status === 'verified',
         );
         setPackages(available);
         setPackageKey(available[0]?.packageKey || '');
@@ -80,7 +80,7 @@ export default function SkyActivationPanel() {
       </div>
       {loading ? <p className="sky-activation-muted"><LoaderCircle className="spin" size={15} /> Toolを確認中…</p> : null}
       {!loading && !packages.length ? (
-        <p className="sky-activation-muted">公開済みToolがありません。<Link href="/sky/publish">Rock Studioで先に登録・公開</Link>してください。</p>
+        <p className="sky-activation-muted">審査済みToolがありません。<Link href="/sky/publish">Rock Studioで登録</Link>した後、Sky審査を完了してください。</p>
       ) : null}
       {packages.length ? (
         <div className="sky-activation-form">

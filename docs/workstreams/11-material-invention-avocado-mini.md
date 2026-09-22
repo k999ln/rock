@@ -1,5 +1,23 @@
 # Material Invention / avocadoMini
 
+## Mini200 E2と4本構成の最新入口
+
+2026-09-21の利用者確認により、完成製品の外観は4本の銀色Motion Towerと低い中央ユニットを囲む現在の公開画像を正本とする。[Mini200 E2 four-tower integration baseline](../avocado-mini-mini200-e2/README.md)で、E2のOS・ローカルゲーム・PTT音声・権限・保存・候補computeを中央Coreへ適用し、E2資料の20cm角単体筐体は完成外観へ採用しない。P0.2塔の機構とE2 Coreを一つにする配線、同期、電源、冷却、音響、signed imageと実機受入は未完了。
+
+- `MAT10`: E2資料を精査し、外観の利用者訂正を正本・公開Site・予約説明へ反映。資料保存と公開説明の更新であり実機完成ではない。
+- `MAT11`: 4塔＋中央E2 Coreの統合engineering package、prototype、実機受入。未着手。
+
+## Mini200 E1の新しい設計入口
+
+2026-09-21の利用者要求により、使用時20cmのゲーム機から創作・研究・生活へ進む[Mini200 E1](../avocado-mini-mini200-e1/README.md)を追加した。身体入力、本体内計算、日本語ローカルASR候補、PTT、独立MIC OFF、ゲームから保存までを設計する。下記の四方向研究profileとは別で、旧schemaを緩めない。
+
+- `MAT08`: E1本文・図7枚・算術と許可モデル・README保存。設計資料の検証であり実装完成ではない。
+- `MAT09`: E1入力profileと既存Core adapter、実ゲーム・実ASR、console OS、閉箱での光学・音響・熱・物理ミュートの独立受入。未着手。
+- 最新の[生活・自律動作・衛星通信追補](../avocado-mini-mini200-e1/game-first-life-connectivity.md)は`MAT08`の設計保存に含む。`MAT09`では通信断のゲーム継続、模擬生活機器の同意・越境拒否・結果不明を別試験し、実回線・実家電は別承認と共同受入に進める。製品の入口はゲームだが、既存Pixel/QEMUのCore gateは維持する。
+- 主担当`ROCK`は資料と参照モデル、`JOINT`は実部品と統合実測、`OWNER`は外観・費用・外部用途の確認。既存`MAT05`/`MAT06`をE1計算で完了にしない。
+
+再計算: `python3 docs/avocado-mini-mini200-e1/engineering/verify_all.py`。140項目は算術・直列モデルの集計、実ASR・実機は0。Git保存、main統合、Site配備を区別する。
+
 ## 目的
 
 物質digital twinを四方向sensorと手の動きで接続・分離し、安全検査、simulation再計算、発明履歴、Patent AI支援までを一つの再現可能な仕事にする。初めて参加する人は、まず[共有用完成設計書](../rockstaros-avocado-mini-complete-design.md)を読む。
@@ -80,6 +98,8 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - emulatorやfixtureの成功を、実材料・実機・特許・量産の成功と表示しない。
 
 ## 関連資料
+
+- [Mini200 E1 — ゲーム機・身体入力・日本語音声](../avocado-mini-mini200-e1/README.md)
 
 - [共有用完成設計書](../rockstaros-avocado-mini-complete-design.md)
 - [Material Invention Core](../material-invention-core.md)
