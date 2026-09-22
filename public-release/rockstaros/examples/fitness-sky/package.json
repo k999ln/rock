@@ -1,0 +1,13 @@
+{
+  "name": "@avokado-ink/rockstaros-fitness-sky-example",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "demo": "node demo.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

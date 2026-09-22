@@ -75,8 +75,27 @@ The public repository includes runnable, deliberately bounded parts of RockstarO
 
 - [**Control Core**](packages/control-core) -- approval gates, execution readiness, and distinct outcome receipts.
 - [**Sky + Zema Core**](packages/sky-zema-core) -- a local tool catalog, explicit Sky-to-Zema handoff, workflow state, and consent-gated anonymous tool events.
+- [**Sky SDK**](packages/sky-sdk) -- an embeddable package for registering, discovering, approving, and running Sky tools inside another application.
+- [**Fitness + Sky Example**](examples/fitness-sky) -- a working example that connects app-authorized activity data to two local Sky tools.
 - [**Sky + Zema Public Preview**](apps/sky-zema-preview) -- a local browser experience using the public core.
 - [**Public Preview Installer**](installer) -- a guarded local installer for macOS and Linux.
+
+Install the Sky SDK directly from this GitHub repository:
+
+```bash
+npm install github:avokado-ink/RockstarOS
+```
+
+```js
+import { createSky } from "@avokado-ink/rockstaros-sky-sdk";
+
+const sky = createSky({ installationId: "fitness_app_4f92a18b" });
+```
+
+The host application keeps ownership of health permissions, health data,
+validation, storage, and its user interface. Sky receives only the values that
+the host explicitly passes to a registered tool. No health data is transmitted
+by the SDK.
 
 ```bash
 git clone https://github.com/avokado-ink/RockstarOS.git
@@ -87,7 +106,7 @@ cd RockstarOS
 
 Then open <http://127.0.0.1:4173>.
 
-Telemetry is off by default. Even when a receiver is configured, the user must opt in. The public client permits only package and tool identifiers, a random installation identifier, outcome, duration, and timestamp. It rejects prompts, chats, results, files, credentials, and personal information.
+Telemetry is off by default. Even when a receiver is configured, the user must opt in. The public client and SDK permit only package and tool identifiers, a random installation identifier, outcome, duration, and timestamp. They reject prompts, chats, results, files, credentials, health data, and personal information.
 
 The installer above installs the runnable public preview; it does not replace the host operating system. The native QEMU image is not public because its product-license, production-signing, signed-candidate acceptance, and public-release gates are incomplete.
 
@@ -118,7 +137,7 @@ This repository contains the approved Avokado Mini product concept, the Rockstar
 
 ## License
 
-The public code can be inspected, but no reuse license has been granted yet. Third-party code, images, and fonts remain subject to their respective licenses.
+The package can be installed from GitHub for evaluation, but no reuse license has been granted yet. Third-party code, images, and fonts remain subject to their respective licenses.
 
 ---
 
