@@ -129,6 +129,18 @@ jobs:
           cp public-release/rockstaros/rockstaros-hero.png public-repository/rockstaros-hero.png
           cp public-release/rockstaros/rockstaros-motion.gif public-repository/rockstaros-motion.gif
           cp public-release/rockstaros/rockstaros-workflow.png public-repository/rockstaros-workflow.png
+          find \
+            public-repository/apps/sky-zema-preview \
+            public-repository/examples/fitness-sky \
+            public-repository/examples/tool-event-receiver \
+            public-repository/installer \
+            public-repository/packages/control-core \
+            public-repository/packages/sky-zema-core \
+            public-repository/packages/sky-sdk \
+            -type f -exec chmod 0644 {} +
+          chmod 0755 \
+            public-repository/installer/install-public-preview.sh \
+            public-repository/installer/rockstaros-public-preview
           cd public-repository
           if git diff --quiet; then
             echo "Public repository is already up to date."
