@@ -12,29 +12,17 @@ import {
   ArrowRight,
   ArrowUpRight,
   BadgeCheck,
-  BookOpenCheck,
-  BriefcaseBusiness,
   CheckCircle2,
   EyeOff,
-  FileCheck2,
-  FilePenLine,
-  Lightbulb,
   Link2,
   LoaderCircle,
   Network,
   PackagePlus,
-  Scale,
   Search,
   Send,
   ShieldCheck,
-  Shirt,
-  Sparkles,
-  ShoppingBag,
-  Table2,
-  WalletCards,
   X,
   Zap,
-  type LucideIcon,
 } from 'lucide-react';
 import { catalog, type Automation } from '@/lib/catalog';
 import { deviceToken } from '@/lib/device';
@@ -60,6 +48,7 @@ import SkyActivationPanel from '@/components/sky-activation-panel';
 import SkyConnectionCenter from '@/components/sky-connection-center';
 import SkyPublisherForm from '@/components/sky-publisher-form';
 import WorkspaceShell from '@/components/workspace-shell';
+import ToolCharacterDetails, { ToolCharacter } from '@/components/tool-character';
 import {
   ExecutionSignin,
   useExecutionAccess,
@@ -89,19 +78,6 @@ const quickRoleIds = new Set([
   'mr-free-article',
   'mr-citations',
 ]);
-const icons: Record<string, LucideIcon> = {
-  'rockstar-csv-cleanup': Table2,
-  'mercari-revenue': ShoppingBag,
-  'fashion-brand-ops': Shirt,
-  coconala: BriefcaseBusiness,
-  'mr-free-article': FilePenLine,
-  'mr-citations': BookOpenCheck,
-  'mr-delivery': FileCheck2,
-  'rockstar-ledger': WalletCards,
-  'rockstar-legal-intake': Scale,
-  'rockstar-patent-assistant': Lightbulb,
-  'jev-evaluation': Sparkles,
-};
 const providers: Record<
   string,
   { name: string; handle: string; initial: string }
@@ -734,7 +710,6 @@ export default function SkyWorkspace({
               </article>
             ))}
             {visibleTools.map((tool, index) => {
-              const Icon = icons[tool.id] ?? Link2;
               const provider = providerFor(tool);
               const status = statusFor(tool, fashionConnected, connectedTools, connected);
               return (
@@ -743,12 +718,8 @@ export default function SkyWorkspace({
                   key={tool.id}
                   style={{ '--sky-index': index + visibleLocalServers.length } as CSSProperties}
                 >
-                  <div className="sky-timeline-node" aria-hidden="true">
-                    <span
-                      className={'sky-provider-avatar rock-icon-' + tool.color}
-                    >
-                      {provider.initial}
-                    </span>
+                  <div className="sky-timeline-node">
+                    <ToolCharacterDetails id={tool.id} name={tool.name} description={tool.description} status={`${status.label} · ${status.detail}`} result="結果はZemaの会話から確認できます。" next="詳細を閉じ、カードのボタンから接続・入力を確認してください。" />
                   </div>
                   <div className="sky-post-body">
                     <div className="sky-post-meta-row">
@@ -769,13 +740,7 @@ export default function SkyWorkspace({
                       </span>
                     </div>
                     <div className="sky-post-open">
-                      <span
-                        className={'rock-tool-icon rock-icon-' + tool.color}
-                      >
-                        <Icon size={22} strokeWidth={1.7} />
-                      </span>
                       <span>
-                        <small>{roleFor(tool)}</small>
                         <strong>{tool.name}</strong>
                       </span>
                     </div>
@@ -854,10 +819,7 @@ export default function SkyWorkspace({
                   className={'rock-tool-icon rock-icon-' + selected.color}
                   aria-hidden="true"
                 >
-                  {(() => {
-                    const Icon = icons[selected.id] ?? Link2;
-                    return <Icon size={22} strokeWidth={1.8} />;
-                  })()}
+                  <ToolCharacter id={selected.id} />
                 </span>
                 <div>
                   <p className="rock-eyebrow">{roleFor(selected)}</p>

@@ -39,6 +39,8 @@ import {
   type TextModelProviderId,
 } from '@/lib/llm-providers';
 import WorkspaceShell from '@/components/workspace-shell';
+import ToolCharacterDetails, { ToolCharacter } from '@/components/tool-character';
+import characterStyles from '@/components/tool-character.module.css';
 import { MrToolRunner } from '@/components/mr-tool-runner';
 import { SkyCandidateRunner } from '@/components/sky-candidate-runner';
 import { FashionBrandOpsRunner } from '@/components/fashion-brand-ops-runner';
@@ -893,6 +895,20 @@ export default function SkyChatWorkspace() {
     event.currentTarget.form?.requestSubmit();
   }
 
+  function characterDetails(id: string, size = 56) {
+    const tool = catalog.find((item) => item.id === id);
+    const server = connectedMcpServers.find((item) => mcpMode(item.id) === id);
+    const latest = [...jobs].filter((job) => job.tool === id).sort((a, b) => b.createdAt - a.createdAt)[0];
+    const current = activeRequest?.toolId === id;
+    const result = [...messages].reverse().find((message) => message.tool === id && message.id.startsWith('result-'));
+    return <ToolCharacterDetails id={id} size={size} name={tool?.name ?? server?.name ?? 'Zema'}
+      description={tool?.description ?? server?.description ?? '会話しながら、やりたいことを整理して接続済みの道具につなぎます。'}
+      status={current ? (workflowStatus === 'running' ? '処理中' : workflowStatus === 'completed' ? '結果があります' : workflowStatus === 'failed' ? '確認が必要です' : '入力・実行の確認待ち') : latest ? `直近の仕事：${jobMessage(latest)}` : tool?.status === 'candidate' ? '本体の接続待ち' : 'この会話ではまだ作業を始めていません'}
+      result={result?.text}
+      request={current ? activeRequest.text : undefined}
+      next={current ? (workflowStatus === 'running' ? '結果が届くまでお待ちください。' : workflowStatus === 'completed' ? '結果を確認し、続きの依頼を伝えてください。' : '会話内の処理カードで入力と実行条件を確認してください。') : '名前を選んで、チャットから依頼できます。'} />;
+  }
+
   return (
     <WorkspaceShell
       title="Zema"
@@ -911,45 +927,51 @@ export default function SkyChatWorkspace() {
           <Link className="zema-new-chat" href="/chat" onClick={startNewChat}><Plus size={17} /> <span>新しい会話</span></Link>
           <label className="zema-history-search"><span className="sr-only">Botを検索</span><input value={historyQuery} onChange={(event) => setHistoryQuery(event.target.value)} placeholder="検索" /></label>
           <div className="zema-sidebar-section-title">BOTS</div>
-          <div className="zema-bot-list">
+          <div className="zema-character-list">
             {sidebarBotApps.map((tool) => {
               const latest = jobs.find((job) => job.tool === tool.id);
               return (
+                <div className={characterStyles.row} key={`sidebar-bot-${tool.id}`}>
+                {characterDetails(tool.id)}
                 <button
                   type="button"
-                  key={`sidebar-bot-${tool.id}`}
-                  className={selectedToolId === tool.id ? 'is-current' : ''}
+                  className={characterStyles.select}
+                  aria-label={`${tool.name}と会話する`}
+                  aria-current={selectedToolId === tool.id}
                   onClick={() => {
                     chooseMode(tool.id);
                     closeSidebarOnSmallScreen();
                   }}
                 >
-                  <span className={`zema-bot-mark rock-icon-${tool.color}`}><Sparkles size={15} aria-hidden="true" /></span>
                   <span className="zema-bot-copy">
                     <strong>{tool.name}</strong>
-                    <small>{roleFor(tool)} · {botStateLabel(tool, latest)}</small>
+                    <small>{botStateLabel(tool, latest)}</small>
                   </span>
                   <i className={latest ? jobStateClass(latest) : 'is-online'} />
                 </button>
+                </div>
               );
             })}
             {connectedMcpServers.map((server) => (
+              <div className={characterStyles.row} key={`sidebar-mcp-${server.id}`}>
+              {characterDetails(mcpMode(server.id))}
               <button
                 type="button"
-                key={`sidebar-mcp-${server.id}`}
-                className={selectedToolId === mcpMode(server.id) ? 'is-current' : ''}
+                className={characterStyles.select}
+                aria-label={`${server.name}と会話する`}
+                aria-current={selectedToolId === mcpMode(server.id)}
                 onClick={() => {
                   chooseMode(mcpMode(server.id));
                   closeSidebarOnSmallScreen();
                 }}
               >
-                <span className="zema-bot-mark is-mcp"><Grid2X2 size={15} aria-hidden="true" /></span>
                 <span className="zema-bot-copy">
                   <strong>{server.name}</strong>
                   <small>{server.passport?.tools.length ?? 0}機能 · MCP</small>
                 </span>
                 <i className="is-online" />
               </button>
+              </div>
             ))}
           </div>
           {!historyQuery.trim() && visibleBotApps.length > 4 && (
@@ -970,12 +992,12 @@ export default function SkyChatWorkspace() {
         <header className="sky-chat-commandbar">
           <button type="button" className="zema-sidebar-toggle" aria-label="会話履歴を開く" onClick={() => setSidebarOpen(true)}><PanelLeft size={20} /></button>
           <div className="zema-room-heading">
-            <span className="zema-room-mark" aria-hidden="true">Z</span>
+            {characterDetails('zema', 40)}
             <div><h1>Zema</h1><span>会話</span></div>
           </div>
           {selectedTool || selectedMcpServer ? (
             <div className="zema-active-bot" title={selectedTool?.name ?? selectedMcpServer?.name}>
-              <span className="zema-active-bot-dot" aria-hidden="true" />
+              {characterDetails(selectedToolId, 40)}
               <div><small>担当Bot</small><strong>{selectedTool?.name ?? selectedMcpServer?.name}</strong></div>
             </div>
           ) : <span className="zema-auto-label">担当を自動で選択</span>}
@@ -1101,7 +1123,7 @@ export default function SkyChatWorkspace() {
               {displayMessages.length > 0 && <div className="sky-chat-day">今日</div>}
               {displayMessages.length === 0 && (
                 <section className="zema-empty" aria-labelledby="zema-empty-title">
-                  <span className="zema-empty-mark" aria-hidden="true">Z</span>
+                  <ToolCharacter id={selectedTool?.id ?? 'zema'} size={96} />
                   <h2 id="zema-empty-title">今日は何を進めますか？</h2>
                   <p>
                     {selectedTool || selectedMcpServer
@@ -1125,7 +1147,7 @@ export default function SkyChatWorkspace() {
                     className={`sky-chat-bubble is-${message.side}`}
                     key={`${message.id}-${index}`}
                   >
-                    {message.side === 'sky' && <span className="zema-message-avatar" aria-hidden="true">Z</span>}
+                    {message.side === 'sky' && characterDetails(message.tool ?? 'zema', 48)}
                     <div>
                       {message.side === 'sky' && <small>Zema</small>}
                       <p className="zema-message-text">{message.text}</p>

@@ -4,6 +4,13 @@
   "nextAction": "Define and validate the integrated four-tower plus central Mini200 E2 Core engineering package without treating the design documents or public rendering as real-device acceptance.",
   "tasks": [
     {
+      "id": "UXCHAR01",
+      "title": "Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果）",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": ["components/tool-character.tsx", "components/tool-character.module.css", "docs/workstreams/01-product-ux.md"]
+    },
+    {
       "id": "SKY20",
       "title": "Sky公開・Telegram配布を証拠付きverified Packageへ限定し、失効と利用イベント再送を受け入れる",
       "status": "in_progress",

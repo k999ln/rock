@@ -138,6 +138,8 @@ Web版では最初に「何をしてほしい？」へ入力できます。下�
 
 ### Zema — AIと一緒に進む場所
 
+Skyで選んだ丸いキャラクターはZemaの一覧・担当・発言にも同じ顔で表示します。顔を押すと、できること、現在の状態、この会話で得られた結果、次に必要な操作を確認できます。Zemaの一覧では名前から会話を切り替えます。
+
 ![ZemaでAIと会話しながら進める様子を表したアニメーション](docs/assets/cover-zema.gif)
 
 やりたいことを伝え、AIの提案を見て、必要なときだけ方向を決めながら進む場所です。依頼、計画、実行、停止、再開、成果確認を一つの流れにし、AIに任せる部分と自分で決める部分を自然に分けます。
@@ -287,7 +289,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-21 / 143 task中93 done・31 in progress・18 planned・1 blocked
+更新日: 2026-09-21 / 144 task中94 done・31 in progress・18 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -469,14 +471,15 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>143 taskと段階gateの詳細を開く</summary>
+<summary>144 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-21 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 93/143件
+最終更新: 2026-09-21 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 94/144件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
+| UXCHAR01 | Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果） | 完了 | [記録](components/tool-character.tsx) · [記録](components/tool-character.module.css) · [記録](docs/workstreams/01-product-ux.md) |
 | SKY20 | Sky公開・Telegram配布を証拠付きverified Packageへ限定し、失効と利用イベント再送を受け入れる | 進行中 | [記録](drizzle/0016_red_crusher_hogan.sql) · [記録](lib/sky-tool-review.ts) · [記録](lib/sky-review-auth.ts) · [記録](app/api/sky/tool-reviews/route.ts) · [記録](lib/sky-tool-package-store.ts) · [記録](lib/sky-activation.ts) · [記録](lib/sky-tool-events.ts) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](tests/sky-tool-package.test.mjs) · [記録](tests/sky-activation.test.mjs) · [記録](tests/sky-tool-sdk.test.mjs) · [記録](docs/sky-tool-sdk.md) |
 | SKY19 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
 | DOC01 | RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化 | 完了 | [記録](docs/rockstaros-design-portal.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
