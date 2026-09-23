@@ -1,5 +1,9 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-23 — Tower20 E3のHighlightsを専用4画像へ分離
+
+主担当Material Invention / avocadoMiniのROCKとして、公開商品ページのHighlights 4章にそれぞれ専用のE3構想画像を生成して割り当てた。sensorは中央1cameraと左右2予約窓、200mmは4本だけで囲むplay zone、footprintは96mm baseと4脚、Edge Hubは4本から別筐体へ集約する構図とし、Hero・回転tour・他のHighlight画像の使い回しを解消した。画像は設計形状を説明するCGであり、実機写真、光学性能、通信方式、camera同期、転倒／滑り合格の証拠ではない。desktop／390px mobileで4カードの文字と製品構図を確認し、静的build、予約backend 6 test、製品基準と進捗台帳が合格。公開Site v38（source `4639df183663ad45c9cc12758a10193318c44ccb`）へ配備し、GitHub mainへ同一画像・HTML・進捗記録を同期した。
+
 ## 2026-09-22 — Tower20 E3を現行製品基準へ反映
 
 主担当Material Invention / avocadoMiniのROCKとして、利用者提供のTower20 E3設計資料を現行製品基準へ反映した。製品は固定式200mm以下のTower20 4本と別筐体Edge Hub 1台で、各塔1camera候補、追加窓は予約領域、伸縮機構なしとする。公開Siteはversion 37、source `93f0ec3c4ec72e26d3bdaf67e6f71659c3885ed6`を配備し、公開URLでE3表示、全周回転、青いsensor演出、desktop／mobile表示を確認した。E3のbuild、予約6 test、baseline、design、project、databaseは合格。ローカル全体`npm run verify`は既存LLM能力表と導入済みAI SDK exportの不一致で停止し、変更前`be59a23`でも同じ失敗を再現した。新規依存関係を取得するGitHub CIを全体確認の最終ゲートとする。実機試作・camera・ASR・game・光学・同期・転倒／滑り・熱・電源・signed recovery・製造の合格とは区別する。
@@ -892,7 +896,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | MAT09 | Mini200 E1専用入力profile・Core adapter・ゲーム／ASR／console OSと20cm実機を独立受入 | 未着手 | [記録](docs/avocado-mini-mini200-e1/README.md) · [記録](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
 | MAT10 | Mini200 E2資料と利用者確定の4本＋中央Core外観をGit正本と公開製品Siteへ同期（実機未受入） | 完了 | [記録](docs/avocado-mini-mini200-e2/README.md) · [記録](docs/product-baseline.md) · [記録](sites/avocado-mini/index.html) |
 | MAT11 | 4本のMotion Towerと中央Mini200 E2 Coreの統合engineering package・prototype・実機受入 | 未着手 | [記録](docs/avocado-mini-mini200-e2/README.md) |
-| MAT12 | Tower20 E3資料を現行avocadoMini基準へ固定し、4本の固定200mm塔＋別筐体Edge HubをGit正本と公開Siteへ同期（実機未受入） | 完了 | [記録](docs/avocado-mini-tower20-e3/README.md) · [記録](docs/product-baseline.md) · [記録](sites/avocado-mini/index.html) |
+| MAT12 | Tower20 E3資料を現行avocadoMini基準へ固定し、4本の固定200mm塔＋別筐体Edge HubをGit正本と公開Siteへ同期（実機未受入） | 完了 | [記録](docs/avocado-mini-tower20-e3/README.md) · [記録](docs/product-baseline.md) · [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/public/images/tower20-e3-highlight-sensor-v2.png) · [記録](sites/avocado-mini/public/images/tower20-e3-highlight-200mm-v1.png) · [記録](sites/avocado-mini/public/images/tower20-e3-highlight-footprint-v1.png) · [記録](sites/avocado-mini/public/images/tower20-e3-highlight-edge-hub-v1.png) |
 | MAT13 | Tower20 E3の確定CAD・配線・4camera同期・光学・転倒／滑り・熱・電源・音響・OS image・復旧を同一試作機で受入 | 未着手 | [記録](docs/avocado-mini-tower20-e3/README.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
 | SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
