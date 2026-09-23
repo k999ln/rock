@@ -81,7 +81,13 @@ The public repository includes runnable, deliberately bounded parts of RockstarO
 - [**Sky + Zema Public Preview**](apps/sky-zema-preview) -- a local browser experience using the public core.
 - [**Public Preview Installer**](installer) -- a guarded local installer for macOS and Linux.
 
-Install the Sky SDK directly from this GitHub repository:
+Install the published Sky SDK from npm:
+
+```bash
+npm install @avokado-ink/rockstaros-sky-sdk
+```
+
+The public GitHub repository remains available for source inspection and direct installs:
 
 ```bash
 npm install github:avokado-ink/RockstarOS

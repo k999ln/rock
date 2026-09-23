@@ -3,7 +3,13 @@
 The Sky SDK lets another application embed the public Sky tool layer without
 copying the complete RockstarOS codebase.
 
-## Install from GitHub
+## Install from npm
+
+```bash
+npm install @avokado-ink/rockstaros-sky-sdk
+```
+
+To install directly from the public source repository instead:
 
 ```bash
 npm install github:avokado-ink/RockstarOS
