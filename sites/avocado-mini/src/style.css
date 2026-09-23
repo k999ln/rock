@@ -140,7 +140,7 @@ body{overflow-x:hidden}
 @media(max-width:520px){.global-nav{gap:17px}.global-nav a:nth-child(3),.global-nav a:nth-child(4){display:none}.site-header{height:50px}.site-header nav{gap:12px}.site-header nav a:nth-child(3),.site-header nav a:nth-child(4){display:none}.film-hero{min-height:680px}.hero-word{top:28%;font-size:65vw}.film-hero-device{inset:17% 0 27%;width:100%;height:56%;object-fit:contain;object-position:center}.hero-bottom{left:22px;right:22px;bottom:90px;align-items:start;flex-direction:column;gap:12px}.hero-bottom h1{font-size:58px}.hero-bottom p{text-align:left;font-size:18px}.film-disclaimer{left:22px;right:22px;bottom:18px;font-size:10px}.hero-statement{min-height:70svh;padding:100px 24px 80px}.hero-statement h2{font-size:18vw;margin:24px 0 55px}.statement-bottom p{font-size:16px}.statement-bottom span{font-size:12px}.highlights{padding:90px 0 70px}.highlights-head{padding:0 24px;margin-bottom:30px}.highlights h2{font-size:44px}.gallery-controls button{height:38px;width:38px}.highlight-gallery{padding:0 24px 20px;gap:14px;scroll-padding-inline:24px}.highlight-card{flex-basis:82vw;min-height:0;height:530px}.highlight-card img{object-position:center}.highlight-card>div{top:29px;left:25px;right:25px}.highlight-card h3{font-size:36px}.highlight-card p{font-size:13px}.design-intro{min-height:75svh;padding:90px 20px}.design-intro h2{font-size:16vw}.design-intro>p:last-child{font-size:16px}.macro-image{background-position:65% center}.details figure img{min-height:290px;object-fit:cover}}
 @media(prefers-reduced-motion:reduce){.highlight-card img{transition:none}}
 
-/* Choreographed 360° Motion Tower tour. Everything before #product stays as designed. */
+/* Choreographed 180° Motion Tower tour. Everything before #product stays as designed. */
 .story{height:650svh;background:#08090b}
 .story-sticky{background:radial-gradient(ellipse at 50% 48%,color-mix(in srgb,var(--story-bg,#08090b) 70%,#406174) 0%,var(--story-bg,#08090b) 70%)}
 .story-sticky:before{z-index:0;opacity:.22}
@@ -185,12 +185,12 @@ body{overflow-x:hidden}
 @media(prefers-reduced-motion:reduce){.story-rail span{transition:none}}
 
 /* Product concept imagery: front, side and rear frames share one scroll-driven stage. */
-.motion-product{position:absolute;left:50%;top:55%;width:min(48vw,600px);height:min(72svh,760px);transform:translate(-50%,-50%);transform-origin:50% 75%;will-change:transform;--camera-on:0;--scan-opacity:0;--scan-angle:-80deg}
+.motion-product{position:absolute;left:50%;top:55%;width:min(48vw,600px);height:min(72svh,760px);transform:translate(-50%,-50%);transform-origin:50% 75%;will-change:transform;--camera-on:0;--front-facing:1;--scan-opacity:0;--scan-angle:-80deg}
 .turn-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;filter:brightness(calc(.69 + var(--camera-on) * .31)) drop-shadow(0 20px 38px #000b);will-change:opacity}
 .turn-frame[data-view="front"]{opacity:1}
 .turn-frame-mirror{transform:scaleX(-1)}
 .camera-sweep{position:absolute;z-index:0;left:50%;top:9%;width:150%;height:76%;transform:translateX(-50%) rotate(var(--scan-angle));transform-origin:50% 5%;opacity:var(--scan-opacity);background:conic-gradient(from 153deg at 50% 0%,transparent 0deg,#39b9ff07 9deg,#4bc7ff35 24deg,#a5eaff75 25deg,#4bc7ff35 26deg,#39b9ff07 43deg,transparent 52deg);filter:blur(5px);mix-blend-mode:screen;pointer-events:none}
-.camera-flare{position:absolute;z-index:2;left:50%;width:160px;height:100px;transform:translate(-50%,-50%);border-radius:50%;opacity:var(--camera-on);background:radial-gradient(ellipse,#dcfaffc4 0%,#35c8ff91 12%,#0ea6ff40 36%,transparent 70%);filter:blur(6px);mix-blend-mode:screen;pointer-events:none}
+.camera-flare{position:absolute;z-index:2;left:50%;width:160px;height:100px;transform:translate(-50%,-50%);border-radius:50%;opacity:calc(var(--camera-on) * var(--front-facing));background:radial-gradient(ellipse,#dcfaffc4 0%,#35c8ff91 12%,#0ea6ff40 36%,transparent 70%);filter:blur(6px);mix-blend-mode:screen;pointer-events:none}
 .camera-flare-upper{top:10%}
 .camera-flare-lower{top:73%;width:200px;height:110px;opacity:calc(var(--camera-on) * .75)}
 .sensor-closeup{position:absolute;z-index:3;right:clamp(48px,8vw,135px);bottom:clamp(76px,11vh,130px);width:clamp(170px,19vw,285px);padding:10px 10px 14px;border:1px solid #9ce4ff39;border-radius:18px;background:#09141cdd;box-shadow:0 18px 70px #0009;backdrop-filter:blur(18px);pointer-events:none;opacity:0}
@@ -387,6 +387,11 @@ footer{background:#080809;border-top:1px solid #ffffff20;color:#a8a8af}
 .motion-product.has-webgl .turn-frame,.motion-product.has-webgl .camera-sweep,.motion-product.has-webgl .camera-flare{display:none}
 .story-sticky:has(.price-panel.visible) .feature-beats{visibility:hidden}
 .price-panel:not(.visible){transition:none}
+
+/* Use one consistent photographic turntable instead of the procedural model. */
+.story{height:520svh}
+.turn-frame{transform:translateZ(0);image-rendering:auto;filter:brightness(calc(.9 + var(--camera-on) * .1)) contrast(1.05) saturate(.92);-webkit-mask-image:radial-gradient(ellipse 76% 92% at 50% 47%,#000 0 68%,transparent 100%);mask-image:radial-gradient(ellipse 76% 92% at 50% 47%,#000 0 68%,transparent 100%);will-change:opacity}
+.motion-product:after{content:"";position:absolute;z-index:-1;left:50%;bottom:5%;width:72%;height:9%;transform:translateX(-50%);border-radius:50%;background:#000;filter:blur(26px);opacity:.7;pointer-events:none}
 
 /* The final frame keeps the tower visible and lets the price read as part of the studio. */
 .price-panel{left:clamp(30px,5.7vw,96px);right:auto;top:50%;width:min(550px,42vw);padding:0 18px 0 0;background:transparent;border:0;border-radius:0;box-shadow:none;color:#f5f5f7;transform:translateY(-42%) translateY(20px)}

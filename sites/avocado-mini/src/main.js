@@ -1,5 +1,4 @@
 import './style.css';
-import { createTowerScene } from './tower-scene.js';
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 document.documentElement.classList.add('type-motion-ready');
@@ -27,7 +26,6 @@ const revealSections = document.querySelectorAll([
   '.highlights',
   '.design-intro',
   '.story',
-  '.e2-core',
   '.os-install',
   '.preorder-hero',
   '.preorder-products',
@@ -60,7 +58,6 @@ storyFocusWash.className = 'story-focus-wash';
 storyFocusWash.setAttribute('aria-hidden', 'true');
 storySticky?.append(storyFocusWash);
 const product = document.querySelector('#motion-product');
-const towerScene = product ? createTowerScene(product) : null;
 const frames = [...document.querySelectorAll('.turn-frame')];
 const sensorCloseup = document.querySelector('#sensor-closeup');
 const sensorGaze = document.querySelector('#sensor-gaze');
@@ -78,11 +75,11 @@ const storyColors = ['#09090a', '#111214', '#0d0e10', '#111214', '#0d0e10', '#09
 let lastStoryChapter = -1;
 const motionKeys = [
   { at: 0, x: 0, y: 1, scale: 0.96, tilt: -2, yaw: 0 },
-  { at: 0.18, x: 2, y: 0, scale: 1.02, tilt: 1, yaw: 48 },
-  { at: 0.36, x: -2, y: 1, scale: 1.01, tilt: -2, yaw: 124 },
-  { at: 0.54, x: 2, y: 0, scale: 1.04, tilt: 2, yaw: 203 },
-  { at: 0.72, x: -2, y: 1, scale: 1.01, tilt: -1, yaw: 290 },
-  { at: priceStart, x: 0, y: 0, scale: 0.98, tilt: 0, yaw: 360 },
+  { at: 0.18, x: 2, y: 0, scale: 1.02, tilt: 1, yaw: 32 },
+  { at: 0.36, x: -2, y: 1, scale: 1.01, tilt: -2, yaw: 70 },
+  { at: 0.54, x: 2, y: 0, scale: 1.04, tilt: 2, yaw: 110 },
+  { at: 0.72, x: -2, y: 1, scale: 1.01, tilt: -1, yaw: 150 },
+  { at: priceStart, x: 0, y: 0, scale: 0.98, tilt: 0, yaw: 180 },
 ];
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -120,13 +117,10 @@ window.addEventListener('resize', updateGalleryControls);
 updateGalleryControls();
 
 function showView(yaw) {
-  const view = clamp(yaw, 0, 360) / 90;
-  const first = Math.min(3, Math.floor(view));
-  const blend = smooth(view - first);
-  frames.forEach((frame, index) => {
-    const next = (first + 1) % frames.length;
-    frame.style.opacity = index === first ? 1 - blend : index === next ? blend : 0;
-  });
+  const frontToSide = smooth(clamp((yaw - 30) / 30, 0, 1));
+  const sideToRear = smooth(clamp((yaw - 120) / 30, 0, 1));
+  const opacities = [1 - frontToSide, frontToSide * (1 - sideToRear), sideToRear];
+  frames.forEach((frame, index) => { frame.style.opacity = opacities[index] ?? 0; });
 }
 
 function updateStory(progress) {
@@ -168,7 +162,7 @@ function updateProgress() {
   const motion = motionAt(Math.min(progress, priceStart));
   const mobile = window.innerWidth < 800;
   const yaw = reducedMotion.matches ? 0 : motion.yaw;
-  if (!towerScene) showView(yaw);
+  showView(yaw);
 
   const x = motion.x * (mobile ? 0.28 : 1);
   const priceBlend = smooth(clamp((progress - 0.88) / 0.04, 0, 1));
@@ -176,7 +170,6 @@ function updateProgress() {
   const scale = motion.scale * (mobile ? 0.94 - priceBlend * 0.2 : 0.96);
   const tilt = reducedMotion.matches ? 0 : motion.tilt * (mobile ? 0.38 : 1);
   product.style.transform = `translate(-50%, -50%) translate3d(${x}vw, ${y}vh, 0) scale(${scale}) rotate(${tilt}deg)`;
-  towerScene?.update({ yaw, progress, reducedMotion: reducedMotion.matches });
 
   const cameraOn = clamp((progress - 0.07) / 0.13, 0, 1);
   const scan = clamp((progress - 0.16) / 0.18, 0, 1);
@@ -188,17 +181,16 @@ function updateProgress() {
 
   // The light follows the rendered sensor positions and only blooms while the lenses face the viewer.
   const firstTurn = smooth(clamp((progress - 0.055) / 0.065, 0, 1)) * (1 - smooth(clamp((progress - 0.28) / 0.08, 0, 1)));
-  const frontFacing = smooth(clamp(1 - Math.abs(yaw - 26) / 78, 0, 1));
-  const returnTurn = smooth(clamp((progress - 0.77) / 0.1, 0, 1)) * (1 - smooth(clamp((progress - 0.9) / 0.01, 0, 1)));
-  const returningFront = smooth(clamp((yaw - 298) / 62, 0, 1));
-  const gaze = reducedMotion.matches ? 0 : Math.max(frontFacing * firstTurn, returningFront * returnTurn * 0.78);
+  const frontFacing = smooth(clamp(1 - yaw / 72, 0, 1));
+  const gaze = reducedMotion.matches ? 0 : frontFacing * firstTurn;
+  product.style.setProperty('--front-facing', frontFacing.toFixed(3));
   const productBounds = product.getBoundingClientRect();
   sensorGaze.style.setProperty('--gaze', gaze.toFixed(3));
   sensorGaze.style.setProperty('--gaze-x', `${productBounds.left + productBounds.width * 0.5}px`);
   sensorGaze.style.setProperty('--gaze-upper-y', `${productBounds.top + productBounds.height * 0.12}px`);
   sensorGaze.style.setProperty('--gaze-lower-y', `${productBounds.top + productBounds.height * 0.71}px`);
 
-  progressBar.style.width = `${Math.round(motion.yaw / 360 * 100)}%`;
+  progressBar.style.width = `${Math.round(motion.yaw / 180 * 100)}%`;
   angle.textContent = reducedMotion.matches ? 'STATIC VIEW' : `${Math.round(motion.yaw)}°`;
   updateStory(progress);
 }
