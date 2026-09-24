@@ -788,7 +788,7 @@
     },
     {
       "id": "WEB06",
-      "title": "GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する",
+      "title": "GitHubと製品紹介から主要アプリへ進む入口を整え、Web内の旧P0.2画面とE3正本、既存Siteの公開版を同期する",
       "status": "in_progress",
       "dependsOn": [
         "WEB05"

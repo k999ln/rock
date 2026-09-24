@@ -69,7 +69,7 @@ requireValue(
 );
 const teamGuide = projectGuide.split('## SkyのAI自動化チーム\n')[1]?.split('## 実装・配備単位\n')[0] ?? '';
 const commonGuide = projectGuide.split('| AIチームを支える共通機能 |')[1]?.split('## SkyのAI自動化チーム\n')[0] ?? '';
-for (const name of ['CSV業務', 'メルカリ収益ループ', 'Material Invention Studio']) {
+for (const name of ['CSV業務', 'メルカリ収益ループ', 'Fashion Brand Ops', 'Material Invention Studio']) {
   requireValue(teamGuide.includes(`**${name}**`), `Skyのチーム一覧に${name}がありません`);
   requireValue(!commonGuide.includes(`**${name}**`), `${name}を共通機能へ分離しています`);
 }
@@ -77,6 +77,24 @@ requireValue(
   teamGuide.includes('操作画面とSky接続は未実装') &&
     teamGuide.includes('Sky Tool SDKの開発者向け画面'),
   'Material Inventionの接続状態または/studioの用途が不明です',
+);
+for (const path of [
+  'app/activity/',
+  'app/work/',
+  'app/settings/',
+  'app/studio/',
+  'app/sky/publish/',
+  'app/rockstaros/',
+])
+  requireValue(
+    projectGuide.includes(`(${path})`),
+    `プロジェクト別ガイドにWeb内の画面がありません: ${path}`,
+  );
+const readme = read('README.md');
+requireValue(
+  readme.includes('現行Tower20 E3の4本とEdge Hub') &&
+    readme.includes('Material Inventionの操作画面とSky接続は未実装'),
+  'READMEの現行E3またはMaterial Inventionの実装状態が不明です',
 );
 for (const { id } of catalog)
   requireValue(

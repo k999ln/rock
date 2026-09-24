@@ -59,7 +59,7 @@ Python 3.10以上・追加依存なしで計算を一時領域に再生成し、
 
 ## 以前のMotion Tower構想と公開サイトの記録
 
-Mini200 E1は、下記P0.2の4本＋Hub、伸縮寸法、キット目標価格41万円を引き継ぎません。公開商品サイトの更新・配備は今回行っておらず、サイト側には旧構想が残ります。
+Mini200 E1は、下記P0.2の4本＋Hub、伸縮寸法、当時のキット目標価格を引き継ぎません。E1資料を保存した時点では商品サイトに旧構想が残っていました。現行の製品サイトと価格方針は冒頭のTower20 E3基準を参照してください。
 
 <details>
 <summary>P0.2の4本のタワー・ギャラリー・公開サイト情報を開く</summary>
@@ -102,11 +102,11 @@ Mini200 E1は、下記P0.2の4本＋Hub、伸縮寸法、キット目標価格41
 
 ## 動くジャケット
 
-RockstarOSは、avocadoMiniの操作、権限、保存、復旧をつなぐ技術基盤です。**Material Invention Studio**で発明の候補を試し、**Sky**で目的に合うAI Toolを探し、**Zema**で依頼から成果まで進めます。[製品別の動くジャケット](#製品体系)も下で見られます。
+RockstarOSは、avocadoMiniの操作、権限、保存、復旧をつなぐ技術基盤です。**Sky**で自分のAI自動化チームの仕事とToolを選び、**Zema**で依頼から成果まで進めます。**Material Invention Studio**はそのチームで発明候補を扱う構想で、現在はCoreのsandboxまで実装されています。[製品別の動くジャケット](#製品体系)も下で見られます。
 
-![Skyで役割を探し、Zemaで進め、Studioで発明の候補を試すRockstarOSの紹介アニメーション。avocadoMiniは設計中。](docs/assets/rockstaros-intro.gif)
+![Skyで役割を探し、Zemaで進め、将来の発明チームで候補を試すRockstarOSの構想アニメーション。avocadoMiniは設計中。](docs/assets/rockstaros-intro.gif)
 
-**いま確認できる入口:** 製品ホームとOS導入ガイドを公開ページとして分けます。Sky、Zema、StudioはRockstarOSのWebホームにある利用画面です。現在の配信先には最新版が未配備で、未導入者のWebホームへの直接アクセス制限も未完了です。avocadoMiniの実機とスマートフォン向け完成OSはまだ提供していません。
+**いま確認できる入口:** 製品ホームとOS導入ガイドを公開ページとして分けます。SkyとZemaはRockstarOSのWeb利用画面、`/studio`はSky Tool SDK用の開発者画面です。Material Inventionの操作画面とSky接続は未実装です。現在の配信先には最新版が未配備で、未導入者のWebホームへの直接アクセス制限も未完了です。avocadoMiniの実機とスマートフォン向け完成OSはまだ提供していません。
 
 交換可能なLLMは製品を支える設計ですが、現在の実機検証は固定Qwen / llama.rn profileの試験署名Pixel APK段階です。複数モデルの交換やOS image搭載は未完了です。開発用のPixel 10は検証端末で、自社製ハードウェアとして販売する製品ではありません。[LLM・評価モデル設計](docs/llm-evaluation-architecture.md)と[能力表](data/llm-capabilities.json)に現在地を記録しています。
 
@@ -114,11 +114,11 @@ RockstarOSは、avocadoMiniの操作、権限、保存、復旧をつなぐ技�
 
 ## 製品体系
 
-### avocadoMini — 4本のMotion TowerとMini200 E2 Core
+### avocadoMini — 現行Tower20 E3の4本とEdge Hub
 
 ![avocadoMiniの設計構想。四方向のセンサーに囲まれた作業面で発明の候補が動くアニメーション](docs/assets/cover-avocado-mini.gif)
 
-上のアニメーションと[4本の伸縮式Motion Tower＋中央ユニット画像](sites/avocado-mini/public/images/avocado-mini-kit.png)が最新の外観方向です。**41万円＋税は4本＋中央ユニットの現行予定基本価格**です。Mini200 E2のOS・入力・音声・権限設計は中央Coreへ統合し、E2資料の20cm角単体筐体は完成製品の外観にしません。[統合基準](docs/avocado-mini-mini200-e2/README.md)を参照してください。画像は実機写真や性能・量産性の合格証拠ではありません。
+現行の外観方向は[固定式Tower20 E3の4本と別筐体Edge Hub](sites/avocado-mini/public/images/avocado-mini-tower20-e3-kit.png)です。各塔は高さ200mm以下、camera候補は1台で、追加の暗い窓は予約領域です。**41万円＋税は4本＋Edge Hubの予定基本価格**です。P0.2の伸縮塔とMini200 E1/E2の単体筐体は設計履歴として保持します。[現行E3基準](docs/avocado-mini-tower20-e3/README.md)を参照してください。構想画像は実機写真や性能・量産性の合格証拠ではありません。
 
 ### RockstarOS — 製品を動かす共通の土台
 
@@ -128,7 +128,7 @@ LLM、Agent、仕事、Tool、権限、承認、保存、更新、復旧を一�
 
 ### App Home — アプリとOS内の作業画面
 
-製品・導入ホームページとは別の、WebアプリとOS内の作業画面です。Sky、Zema、Wallet、Market、Settings、Material Inventionへの入口を持ち、今日やりたいことがすぐ見つかる構成にします。App Homeは各機能の正本を持たず、Platform Coreへ安全に導きます。
+製品・導入ホームページとは別の、WebアプリとOS内の作業画面です。Sky、Zema、Wallet、Market、Settingsへの入口を持ち、今日やりたいことがすぐ見つかる構成にします。Material InventionはSkyのチームで扱う予定ですが、操作画面への入口は未実装です。App Homeは各機能の正本を持たず、Platform Coreへ安全に導きます。
 
 ### Sky — 自分に合うAI仲間を見つける場所
 
@@ -137,6 +137,8 @@ LLM、Agent、仕事、Tool、権限、承認、保存、更新、復旧を一�
 仕事や創作を一緒に進めるAI Toolを見つける場所です。Toolの個性、作者、できること、料金、実行先を自然に知り、気に入ったToolをZemaへ迎え入れます。MCP接続、Connection Passport、Toolの停止・失効は体験を守る裏側でSkyに集約します。
 
 Web版では最初に「何をしてほしい？」へ入力できます。下にはおすすめの5件を表示し、「今使える」でreadyの全件、「導入候補」で未接続の候補を確認できます。検索は表示中のタブに関係なく全Toolを探します。MCPとサービス接続はアプリ一覧の見出しから開けます。
+
+CSV整形とメルカリ出品準備はSkyに登録済みのチーム担当です。発明候補の操作・比較はMaterial Invention Coreを使う複合機能として設計しており、Skyからの実行はまだ接続していません。
 
 ### Zema — AIと一緒に進む場所
 
@@ -153,11 +155,11 @@ Zemaを直接開くと担当を自動選択する新しい会話から始まり�
 
 Walletは費用、確定収益、払出し、未確定状態を分けて表示し、安心して次の挑戦へ進めるようにします。Market / Fundは現在PAPER限定で、LIVE注文・清算・自動再投資は有効にしません。
 
-### Material Invention Studio — 発明案を扱うアプリ
+### Material Invention Studio — Skyチームで扱う発明機能の構想
 
-![Material Invention Studioで物質の候補を組み合わせる様子を表したアニメーション](docs/assets/cover-material-studio.gif)
+![Material Invention Studioで物質の候補を組み合わせる構想を表したアニメーション](docs/assets/cover-material-studio.gif)
 
-物質のデジタル模型を接続・分離し、候補branch、制約、安全状態、simulation結果、発明過程を記録します。MR表示は物理実験を実行せず、Patent AIは特許性・発明者・出願を自動確定しません。
+物質のデジタル模型を接続・分離し、候補branch、制約、安全状態、simulation結果、発明過程を記録する設計です。現在あるのはMaterial Invention Coreのsandboxで、操作画面、Sky接続、実機MRは未実装です。MR表示は物理実験を実行せず、Patent AIは特許性・発明者・出願を自動確定しません。
 
 ### Hardware — OSを使う端末
 
@@ -165,10 +167,11 @@ Walletは費用、確定収益、払出し、未確定状態を分けて表示�
 | --- | --- | --- |
 | Pixel 10 / `frankel` | RockstarOSのreference hardware。Android Broker、Shell、Local AI、backup、Toolを実機検証する | source / APK / pre-full gate。full build、flash、CTS/VTS、OTA、純正復旧は未完了 |
 | Linux / QEMU | native OS契約、更新、rollback、Wallet / Game fixtureを検証する | Developer Preview候補 |
+| avocadoMini Tower20 E3 | 現行製品構想。固定式の4塔と別筐体Edge Hubで作業領域を扱う | 設計と公開構想画像まで。実機試作、4camera同期、OS統合、製造は未受入 |
 | avocadoMini Mini200 E1 | 身体と日本語音声で仮想粒子を操作する20cmゲーム機の設計案 | 基本設計・算術／許可モデルのみ。console OS、実ASR、実機は未受入 |
 | avocadoMini 四方向構成 | 以前のBench／Full-scale／P0.2によるMaterial Inventionの設計系列 | 四方向契約を保持。E1前面3眼との互換・実機・XRは未受入 |
 
-avocadoMiniはRockstarOSそのものではなく、RockstarOSを搭載してMaterial Invention Studioを操作する専用デバイスです。
+avocadoMiniはRockstarOSそのものではなく、将来Material Invention Studioを操作する専用デバイスとして設計中です。
 
 ## アクセス先
 
@@ -206,7 +209,7 @@ RockstarOSが届けたいのは、AIと一緒に新しいことを始めたく�
 | 層 | 提供するもの | 主な利用者 |
 | --- | --- | --- |
 | Hardware | 自社製品構想のavocadoMini。Pixel 10は開発用reference端末 | 発明・研究チーム、開発者 |
-| App | Material Invention Studio、Home、Sky、Zema、Wallet、Market | 個人、クリエイター、事業者、研究者 |
+| App | Home、SkyのAI自動化チーム、Zema、Wallet、Market。Material Inventionの操作画面は設計中 | 個人、クリエイター、事業者、研究者 |
 | OS・AI | RockstarOS、LLM切替、Agent、権限、保存、復旧 | 製品を使う人、開発者 |
 | Service | Tool配布、モデル更新、同期・復旧、収益照合、SDK・サポート | 利用者、Tool開発者、ToB |
 
@@ -230,6 +233,7 @@ flowchart TB
   SKY[Sky\nAI仲間を見つける]
   ZEMA[Zema\nAIと一緒に進む]
   WALLET[Wallet\n費用・確認済み収益]
+  MIS[Material Invention Studio\n発明チームの操作画面・設計中]
   MODEL[LLM\n既存モデル / 自社LLM]
   TOOLS[AI Tool / MCP / Provider]
   MR[avocadoMini\nMR / AR / VR / 2D]
@@ -241,11 +245,13 @@ flowchart TB
   OS --> CORE
   HOME --> SKY & ZEMA & WALLET
   SKY --> TOOLS
+  SKY -. 発明チームを編成 .-> MIS
   ZEMA --> MODEL
   MODEL --> CORE
   TOOLS --> CORE
   CORE --> WALLET
-  MR --> MATERIAL
+  MR -. 将来の操作入力 .-> MIS
+  MIS -. Sky接続・操作画面は未実装 .-> MATERIAL
   MATERIAL --> CORE
 ```
 
@@ -530,7 +536,7 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 | WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
 | WEB05 | avocadoMiniの製品紹介と回転ツアーをP0.2設計書と黒い製品写真のデザインへ統一 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/guide/index.html) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/tower-scene.js) · [記録](sites/avocado-mini/dist/client/index.html) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-front-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-side-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-rear-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-sensor-macro.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-four-point.png) · [記録](sites/avocado-mini/public/images/avocado-mini-kit.png) · [記録](sites/avocado-mini/public/images/avocado-mini-head-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-base-p0.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
-| WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、Web内の旧P0.2画面とE3正本、既存Siteの公開版を同期する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB10 | 製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](docs/product-baseline.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
