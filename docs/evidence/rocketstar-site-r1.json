@@ -3,14 +3,14 @@
   "recordedAt": "2026-09-24",
   "task": "WEB13",
   "primaryOwner": "ROCK",
-  "authorization": "User requested updating rocketstar on https://avocado-mini.kirin-999.chatgpt.site/; prior save and main integration authorization retained.",
+  "authorization": "User reported the complete product design was missing from the published product site; publish the original PDF and complete ZIP with direct links, and retain authorized GitHub/main saving.",
   "siteProjectId": "appgprj_6aaf6a375b908191b3b0c1845dc78291",
   "siteUrl": "https://avocado-mini.kirin-999.chatgpt.site/rocket-star/",
-  "previousSiteVersion": 48,
-  "siteSourceCommit": "fb580e64dfb775ef517aca7e5f1602eee587adbe",
-  "githubBaseCommit": "0325f0c5a1bbca6d549e996ee6afb431754c00b4",
+  "previousSiteVersion": 49,
+  "siteSourceCommit": "8a619bd833e5b80968efdb92c78d7fc51d4d7b6a",
+  "githubBaseCommit": "af41cfafc72f4f88ebf7736b144e4f73fa69b921",
   "copy": {
-    "trackedFiles": 125,
+    "trackedFiles": 131,
     "excluded": [
       "node_modules (installed dependency symlink)"
     ],
@@ -101,8 +101,16 @@
         "sha256": "a3048ba0326aa6dd650e83cfefa7ddc45f33667d8c7ddad5b574edb76b094fd1"
       },
       {
+        "path": "dist/client/assets/rocketStar-BT6O6MIn.css",
+        "sha256": "165a7fb1992b60ad6112b3d9dde829da290eed6372f6f4e95c898543c978af9f"
+      },
+      {
         "path": "dist/client/assets/rocketStar-CDyJqpre.js",
         "sha256": "1f3f5726e7481f123544161ec975855c289bc8c33a075553d05452a2eb1bd541"
+      },
+      {
+        "path": "dist/client/assets/rocketStar-D2PTkdHO.js",
+        "sha256": "a3048ba0326aa6dd650e83cfefa7ddc45f33667d8c7ddad5b574edb76b094fd1"
       },
       {
         "path": "dist/client/assets/rocketStar-LlQVqq2p.css",
@@ -115,6 +123,14 @@
       {
         "path": "dist/client/crowdfunding/index.html",
         "sha256": "694e70c0ccead8ef94ad69082c01a1945af032d50fe25e2e5508541a44ab111e"
+      },
+      {
+        "path": "dist/client/downloads/rocketstar-complete-design-r1.0.pdf",
+        "sha256": "c5497a5df7037ce7cdfe95d9ec93c8f976d4a7452041fdf27660c28806a36c4e"
+      },
+      {
+        "path": "dist/client/downloads/rocketstar-complete-design-r1.0.zip",
+        "sha256": "a02bed9e484d0b6c81a6dd71ed022c500762241163d50c21a75d31fc1e63f140"
       },
       {
         "path": "dist/client/favicon.svg",
@@ -262,7 +278,7 @@
       },
       {
         "path": "dist/client/rocket-star/index.html",
-        "sha256": "024f20f39a6985649a34362f0e154a473452e8c123565d95030930df1dae8c3b"
+        "sha256": "aa80d76cf8cfe45ebc29fa4a640f3c2264751338d0368b1f78950fe2f74ced14"
       },
       {
         "path": "dist/client/rockstaros/index.html",
@@ -355,6 +371,14 @@
       {
         "path": "public/avokado-brand.css",
         "sha256": "68f4581a7185210dada33a8333a4fbb68a28ad7efeedc2f43fb70c02f97dbdcc"
+      },
+      {
+        "path": "public/downloads/rocketstar-complete-design-r1.0.pdf",
+        "sha256": "c5497a5df7037ce7cdfe95d9ec93c8f976d4a7452041fdf27660c28806a36c4e"
+      },
+      {
+        "path": "public/downloads/rocketstar-complete-design-r1.0.zip",
+        "sha256": "a02bed9e484d0b6c81a6dd71ed022c500762241163d50c21a75d31fc1e63f140"
       },
       {
         "path": "public/favicon.svg",
@@ -470,11 +494,11 @@
       },
       {
         "path": "rocket-star/design.css",
-        "sha256": "171b113a4cd38068b4ae13afe870bb40c0c2c94016d7ac0bf4aa51e3c5357ff3"
+        "sha256": "f25ec99f8e2f97e2f8a9ba80ac5616569f2d50f5d1157962ffd79db8316ba796"
       },
       {
         "path": "rocket-star/index.html",
-        "sha256": "6cd1dc99e2a45d09908e66b7fc2b6efbe30f8d4d0bf762f5f80f61964c433297"
+        "sha256": "b8589f0445975c9453c5bf85a8c7041b326133a1d608741d257970ab42e7c942"
       },
       {
         "path": "rocket-star/main.js",
@@ -486,7 +510,7 @@
       },
       {
         "path": "scripts/build-rocketstar.mjs",
-        "sha256": "ea302fcf354b11def957c6eaed950e94c903ba4cedb0ff85b20fb3b1d4610429"
+        "sha256": "aba0b95147aa3dac85f78b7b19353d79a5f0b53c605acecd5c13b17d4f15c703"
       },
       {
         "path": "scripts/stage-worker.mjs",
@@ -521,85 +545,171 @@
   "scope": [
     "rocketstar R1.0 public concept, two-stage reuse, satellites, A-LINK, RockstarOS and colony operations",
     "Preserve previously published Sites branding, header and asset refinements in the GitHub canonical source",
-    "Keep avocadoMini R5 as the canonical product requirement; inherited E3 public product body is outside this rocketstar update"
+    "Keep avocadoMini R5 as the canonical product requirement; inherited E3 public product body is outside this rocketstar update",
+    "Serve the unchanged R1.0 PDF and complete appendix ZIP directly from the product site, without GitHub sign-in"
   ],
   "validation": {
-    "routeBuild": {
-      "command": "node sites/avocado-mini/scripts/build-rocketstar.mjs",
-      "result": "pass",
-      "afterBuildSavedSourceHashMatches": 125
-    },
-    "preorder": {
-      "command": "node --test sites/avocado-mini/tests/preorder.test.mjs",
-      "passed": 6,
-      "failed": 0
-    },
-    "metadataChecks": {
-      "commands": [
-        "npm run baseline:check",
-        "npm run design:check",
-        "npm run project:check",
-        "npm run database:check",
-        "git diff --check"
-      ],
-      "result": "pass"
-    },
-    "packageAssetClosure": {
-      "missing": 0,
-      "source": "Parent agent verification of the staged Sites package"
-    },
     "wholeRepository": {
       "command": "npm run verify",
       "status": "pass",
       "exitCode": 0,
-      "environment": "macOS; Node 26.0.0; local networking allowed",
-      "nodeTests": {
-        "passed": 360,
-        "failed": 0
-      },
-      "toolTests": {
-        "passed": 19,
-        "failed": 0
-      },
+      "nodeTestsPassed": 360,
+      "toolTestsPassed": 19,
       "localApiAssertions": 149,
       "webAssetReferences": 84,
       "webAssetsMissing": 0,
-      "scope": "Existing repository software, synthetic users and local Worker/D1 only; not physical or flight acceptance"
+      "environment": "macOS; Node 26.0.0; local networking allowed",
+      "scope": "Local software regression; not physical, flight or satellite-network acceptance"
     },
-    "localAccessibility": {
+    "downloads": {
+      "pdf": {
+        "publicPath": "/downloads/rocketstar-complete-design-r1.0.pdf",
+        "sha256": "c5497a5df7037ce7cdfe95d9ec93c8f976d4a7452041fdf27660c28806a36c4e",
+        "bytes": 3512971,
+        "originalByteMatch": true,
+        "sourceAndDistributionByteMatch": true,
+        "pages": 44
+      },
+      "zip": {
+        "publicPath": "/downloads/rocketstar-complete-design-r1.0.zip",
+        "sha256": "a02bed9e484d0b6c81a6dd71ed022c500762241163d50c21a75d31fc1e63f140",
+        "bytes": 4709794,
+        "originalByteMatch": true,
+        "sourceAndDistributionByteMatch": true,
+        "members": 55,
+        "crc": "pass"
+      }
+    },
+    "routeBuild": {
+      "command": "node sites/avocado-mini/scripts/build-rocketstar.mjs",
       "status": "pass",
-      "inactiveScenes": "aria-hidden=true and inert=true",
-      "inspection": "Parent agent inspected staged distribution in browser"
+      "sourceFilesByteMatchedAfterBuild": 131
+    },
+    "localHttp": {
+      "status": "pass",
+      "inspection": "Publishing agent checked the staged distribution through localhost:4179",
+      "pdf": {
+        "statusCode": 200,
+        "contentType": "application/pdf",
+        "originalByteMatch": true
+      },
+      "zip": {
+        "statusCode": 200,
+        "contentType": "application/zip",
+        "originalByteMatch": true
+      }
+    },
+    "resolvedRegression": {
+      "initialResult": "One README requirement assertion failed in tests/mini200-e1-docs.test.mjs; all other Node tests passed",
+      "source": "The unchanged upstream README at af41cfafc72f4f88ebf7736b144e4f73fa69b921 lacked the required game-first life statement",
+      "resolution": "Retained the expanded README description and restored the game-first life intent in its opening sentence; no test weakened",
+      "targetedCommand": "node --test tests/mini200-e1-docs.test.mjs",
+      "targetedPassed": 4,
+      "targetedFailed": 0
     }
   },
   "publication": {
     "status": "succeeded",
-    "siteVersion": 49,
-    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_b3c6275ea0a48191b2a44e7631ebd92a",
-    "deploymentId": "appgdep_6ab598f8e368819195623ed029652684",
-    "updatedAt": "2026-09-24T21:41:23.851032+00:00",
-    "sourceCommit": "fb580e64dfb775ef517aca7e5f1602eee587adbe",
-    "archiveSha256": "dc109d413a34c72ecc17b36e31dd1c163eb7512f3d5afe1e26ae2230996c81aa",
-    "archiveBytes": 37304320,
-    "archiveFiles": 61,
-    "publicBrowserReadback": {
-      "status": "pass",
-      "desktopViewport": "1280x720",
-      "mobileViewport": "390x844",
-      "observations": [
-        "Three scenes change with scrolling",
-        "New rocketstar title, two-stage return, A-LINK, RockstarOS/colony, 44-page/35-chapter design link, and closed funding state are present",
-        "Mobile OS scene is visible without horizontal overflow",
-        "Published CSS points to /assets/rocketStar-LlQVqq2p.css",
-        "Design link points to GitHub main design archive"
-      ],
-      "inspection": "CUA browser inspection by the publishing parent agent"
-    },
-    "anonymousHttpHashReadback": "not_verified: direct urllib request returned HTTP 403; this is not treated as asset hash equality"
+    "siteVersion": 50,
+    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_27abcdfe0fac81919184148032ddd0c1",
+    "deploymentId": "appgdep_6ab59b4d48b481918f8d662d391335fd",
+    "updatedAt": "2026-09-24T21:51:22.999615+00:00",
+    "sourceCommit": "8a619bd833e5b80968efdb92c78d7fc51d4d7b6a",
+    "archiveSha256": "a4df1f1d14fea7afd13a4670792b4aa825a0d61b6d18d2a6a80af002b3a3f36b",
+    "archiveBytes": 45629440,
+    "archiveFiles": 64
   },
   "limits": [
     "No hardware, manufacturing, flight, satellite coverage or colony-operation certification",
     "No newly enabled payment or preorder operation",
     "The separate legacy OS site access task remains incomplete; WEB13 stays in_progress"
+  ],
+  "publicationHistory": [
+    {
+      "githubCommit": "6a73d1afe2cecfe80431c676b65f035e3fe6cba0",
+      "githubPullRequest": "https://github.com/k999ln/rock/pull/31",
+      "siteSourceCommit": "fb580e64dfb775ef517aca7e5f1602eee587adbe",
+      "copySummary": {
+        "trackedFiles": 125,
+        "excluded": [
+          "node_modules (installed dependency symlink)"
+        ],
+        "sha256Matched": true
+      },
+      "validation": {
+        "routeBuild": {
+          "command": "node sites/avocado-mini/scripts/build-rocketstar.mjs",
+          "result": "pass",
+          "afterBuildSavedSourceHashMatches": 125
+        },
+        "preorder": {
+          "command": "node --test sites/avocado-mini/tests/preorder.test.mjs",
+          "passed": 6,
+          "failed": 0
+        },
+        "metadataChecks": {
+          "commands": [
+            "npm run baseline:check",
+            "npm run design:check",
+            "npm run project:check",
+            "npm run database:check",
+            "git diff --check"
+          ],
+          "result": "pass"
+        },
+        "packageAssetClosure": {
+          "missing": 0,
+          "source": "Parent agent verification of the staged Sites package"
+        },
+        "wholeRepository": {
+          "command": "npm run verify",
+          "status": "pass",
+          "exitCode": 0,
+          "environment": "macOS; Node 26.0.0; local networking allowed",
+          "nodeTests": {
+            "passed": 360,
+            "failed": 0
+          },
+          "toolTests": {
+            "passed": 19,
+            "failed": 0
+          },
+          "localApiAssertions": 149,
+          "webAssetReferences": 84,
+          "webAssetsMissing": 0,
+          "scope": "Existing repository software, synthetic users and local Worker/D1 only; not physical or flight acceptance"
+        },
+        "localAccessibility": {
+          "status": "pass",
+          "inactiveScenes": "aria-hidden=true and inert=true",
+          "inspection": "Parent agent inspected staged distribution in browser"
+        }
+      },
+      "publication": {
+        "status": "succeeded",
+        "siteVersion": 49,
+        "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_b3c6275ea0a48191b2a44e7631ebd92a",
+        "deploymentId": "appgdep_6ab598f8e368819195623ed029652684",
+        "updatedAt": "2026-09-24T21:41:23.851032+00:00",
+        "sourceCommit": "fb580e64dfb775ef517aca7e5f1602eee587adbe",
+        "archiveSha256": "dc109d413a34c72ecc17b36e31dd1c163eb7512f3d5afe1e26ae2230996c81aa",
+        "archiveBytes": 37304320,
+        "archiveFiles": 61,
+        "publicBrowserReadback": {
+          "status": "pass",
+          "desktopViewport": "1280x720",
+          "mobileViewport": "390x844",
+          "observations": [
+            "Three scenes change with scrolling",
+            "New rocketstar title, two-stage return, A-LINK, RockstarOS/colony, 44-page/35-chapter design link, and closed funding state are present",
+            "Mobile OS scene is visible without horizontal overflow",
+            "Published CSS points to /assets/rocketStar-LlQVqq2p.css",
+            "Design link points to GitHub main design archive"
+          ],
+          "inspection": "CUA browser inspection by the publishing parent agent"
+        },
+        "anonymousHttpHashReadback": "not_verified: direct urllib request returned HTTP 403; this is not treated as asset hash equality"
+      }
+    }
   ]
 }

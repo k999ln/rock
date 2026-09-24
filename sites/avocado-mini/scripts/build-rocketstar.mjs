@@ -18,6 +18,7 @@ try {
     },
   });
   await cp(output, resolve(root, 'dist/client'), { recursive: true });
+  await cp(resolve(root, 'public/downloads'), resolve(root, 'dist/client/downloads'), { recursive: true });
 } finally {
   await rm(output, { recursive: true, force: true });
 }
