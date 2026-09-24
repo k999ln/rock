@@ -8,6 +8,7 @@
 
 ゲームを入口に、生活全体をより豊かにするため、制作・学習・日常の行動をつなぐ製品構想。<br>
 小さな専用端末 **avocadoMini** と、仕事・AI・作品・権限を支える **RockstarOS** を設計しています。
+両段を回収・再使用する小型衛星輸送ロケット **rocketstar** は、別の現行設計系列です。
 
 [製品体験](#製品体験) · [機能の詳細](#機能の詳細) · [現在地](#現在地) · [設計書ライブラリ](#設計書ライブラリ)
 
@@ -17,7 +18,7 @@
 
 > **画像の扱い** — 製品ビジュアルは外観を示すコンセプト画像です。ハードウェアの実機写真や、空間表示の実証映像ではありません。上のGIFはブランドの概念を表すオリジナルアニメーションです。
 
-**設計書をすぐ開く:** [R5統合設計PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [R5全資料ZIP](docs/avocado-mini-r5/avocadoMini_R5_Integrated_Design_Package.zip) · [RockstarOS完全版PDF](docs/rockstaros-complete-design-v1.0.pdf) · [全設計書の一覧](#設計書ライブラリ)
+**設計書をすぐ開く:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [RockstarOS完全版PDF](docs/rockstaros-complete-design-v1.0.pdf) · [全設計書の一覧](#設計書ライブラリ)
 
 ## avokado が目指す事業
 
@@ -137,6 +138,7 @@ Walletは、費用の見積・予約・確定、署名されたEarning Receipt�
 | 系列 | 確認できたこと | 未完了のこと |
 | --- | --- | --- |
 | avocadoMini R5 | 統合基本設計、51ページ、設計検討図8点、計算チェック14件 | 実機0件。裸眼全空間表示、精密3D入力、最終収納・熱・電源、製造図・安全受入 |
+| rocketstar R1.0 | 現行のロケット統合設計、44ページ・35章、60要求・18全体接続 | 製造図面、実機性能、飛行認定。比較計算値を確定性能としない |
 | Web / Sky / Zema | 画面、catalog、仕事・承認・履歴、Tool基盤のsource | 配備先ごとの最新版readback、外部Provider、本番商流の受入 |
 | Pixel 10 GL066 | 既存OS上の試験署名APKでオフライン計画、限定Tool、保存・再起動などの事前試験 | RockstarOS全体のimage build、正式署名、初回flash・boot、OTA、全損復元 |
 | Linux / QEMU | 独立したDeveloper Previewの実装・受入記録 | 現行artifactのrelease gate。Pixel向け実機合格へ転用しない |
@@ -152,7 +154,7 @@ R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合�
 
 ## 設計書ライブラリ
 
-**現行の端末設計はavocadoMini R5です。** まず[51ページの統合設計PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf)を開き、詳細を検索したいときは[同じ本文のMarkdown](docs/avocado-mini-r5/package/integrated_design.md)を使ってください。以下はリポジトリに保存された製品設計の原本・図面・計算・契約・旧版への索引です。設計書の存在は、実機動作や製造承認を示しません。
+**現行の端末設計はavocadoMini R5、現行のロケット設計はrocketstar R1.0です。** それぞれの原本と付録を以下から直接開けます。設計書の存在は、実機動作、製造承認、飛行認定を示しません。
 
 ### avocadoMini R5 — 原本と検証資料
 
@@ -179,6 +181,23 @@ R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合�
 | O01 | OSサービス構成 | [PNG](docs/avocado-mini-r5/package/drawings/R5-O01-services.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-O01-services.svg) |
 | O02 | 本人承認と外部ジョブ | [PNG](docs/avocado-mini-r5/package/drawings/R5-O02-consent.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-O02-consent.svg) |
 
+### rocketstar R1.0 — 現行のロケット設計書
+
+添付された **rocketstar_Complete_Design_R1_0.pdf** と、リポジトリ保存済みの原本はSHA-256が一致します。R1.0は、無人の小型衛星輸送と**第1段・第2段の回収・同じ機体の再使用**を対象とする、44ページ・35章の現行統合設計です。機体、推進、熱防護、飛行力学、電装、衛星搭載、地上設備、整備、再使用を扱います。
+
+![rocketstar R1.0の全機配置を示す模式図。機数・寸法の確定図ではない](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_system.svg)
+
+| 読みたいもの | ファイル |
+| --- | --- |
+| 完全版を読む | [原本PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) / [検索・編集できる本文](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md) / [全付録ZIP](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0_package.zip) |
+| 概要と収録範囲 | [R1.0パッケージ案内](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/README.md) / [アーカイブ入口](docs/rocketstar-design/README.md) |
+| 要求と接続 | [60要求](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/requirements.json) / [18全体接続](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/system_interfaces.json) / [mission profile](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/mission_profile.json) |
+| 継承資料と監査 | [C3の40設計項目](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/reference_c3/design_register.md) / [衛星との13接続](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/reference_c3/payload_interfaces.md) / [質量・性能監査](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/mass_audit/mass_performance.md) |
+| 図と完全性 | [全機配置図](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_system.svg) / [機能構成図](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_functional_layout.svg) / [付録台帳](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/manifest.json) / [全ファイル台帳](docs/rocketstar-design/inventory.json) / [照合記録](docs/rocketstar-design/verification.json) |
+| 関連する通信・運用設計 | [A-LINK自動接続PDF](docs/rocketstar-design/outputs/A-LINK_Avokado_Auto_Connect_Design_v0.3.pdf) / [受信試作](docs/rocketstar-design/outputs/A-LINK_Avokado_Receiver_Prototype_v0.4/README.md) / [colony運用](docs/rocketstar-design/outputs/RockstarOS_Colony_C0_1/README.md) / [端末ボタン設計](docs/rocketstar-design/outputs/Avokado_Power_Button_Engineering_v1/README.md) |
+
+**現在地:** 統合システム設計まで。製造図面、実機性能、飛行認定は未完了です。PDF中の618.6t・819.7tは過去の比較計算値で、確定した打上げ能力や機体寸法ではありません。ロケットのR1.0と端末のR5は、別々の製品設計基準です。
+
 ### RockstarOS・サービス — 全設計領域
 
 [全設計ポータル](docs/rockstaros-design-portal.md)の17領域と[機械可読の設計書台帳](data/design-document-index.json)に登録された文書を、ここから直接開けます。OS完全版原本には旧E3の端末配置が含まれるため、**avocadoMiniの外形・台数・Hub要件はR5を優先**します。
@@ -202,7 +221,7 @@ R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合�
 | Material Invention・空間操作 | [統合完成設計](docs/rockstaros-avocado-mini-complete-design.md) / [Core](docs/material-invention-core.md) / [XR](docs/material-invention-xr.md) / [空間発明](docs/avocado-mini-spatial-invention.md) / [Full-scaleハード詳細](docs/avocado-mini-hardware-design.md) |
 | 検証・運用 | [検証方針](docs/validation.md) / [データベース状態](docs/database-status.md) / [進捗JSON](data/project-status.json) |
 
-### 旧版・別研究profileとrocketstarアーカイブ
+### 旧版・別研究profile
 
 旧版は設計の経緯を追うために残しています。R5の仕様を上書きしません。
 
@@ -212,9 +231,6 @@ R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合�
 | Mini200 E2 | [4本＋中央ユニットの統合記録](docs/avocado-mini-mini200-e2/README.md) |
 | Tower20 E3 | [4本＋別Edge Hubの設計記録](docs/avocado-mini-tower20-e3/README.md)。元PDF/DOCXはこのリポジトリに収録されておらず、ここで原本全文を読める状態ではありません |
 | 別研究profile | [四方向・Full-scaleのハード詳細](docs/avocado-mini-hardware-design.md) / [空間発明](docs/avocado-mini-spatial-invention.md) |
-| rocketstar R1.0 | [設計アーカイブ入口](docs/rocketstar-design/README.md) / [44ページのPDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) / [編集用本文](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md) / [全付録ZIP](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0_package.zip) / [付録台帳](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/manifest.json) |
-| A-LINK・colony・ボタン | [自動接続PDF](docs/rocketstar-design/outputs/A-LINK_Avokado_Auto_Connect_Design_v0.3.pdf) / [受信試作](docs/rocketstar-design/outputs/A-LINK_Avokado_Receiver_Prototype_v0.4/README.md) / [colony運用](docs/rocketstar-design/outputs/RockstarOS_Colony_C0_1/README.md) / [電源ボタン](docs/rocketstar-design/outputs/Avokado_Power_Button_Engineering_v1/README.md) |
-| 保存の完全性 | [全ファイル台帳](docs/rocketstar-design/inventory.json) / [照合記録](docs/rocketstar-design/verification.json) |
 
 ## 設計書とコードの入口
 
@@ -224,7 +240,7 @@ R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合�
 | avokadoのハードとOSを読む | [R5設計書一式](docs/avocado-mini-r5/README.md) / [検索できる本文](docs/avocado-mini-r5/package/integrated_design.md) / [図面](docs/avocado-mini-r5/package/drawings/) |
 | RockstarOSの全体を読む | [全設計ポータル](docs/rockstaros-design-portal.md) / [完全版v1.0原本PDF](docs/rockstaros-complete-design-v1.0.pdf) / [実装との対応](docs/rockstaros-complete-design.md) |
 | Toolと開発場所を探す | [Sky・Zema・全Tool詳細](docs/sky-tools-complete-design.md) / [プロジェクト別ガイド](PROJECTS.md) / [作業分野別ガイド](docs/workstreams/README.md) |
-| 構想アーカイブを読む | [rocketstar R1.0とA-LINK等](docs/rocketstar-design/README.md) / [公開HTML reader](https://avocado-mini.kirin-999.chatgpt.site/rocket-star/design/)。ロケット・衛星・コロニーの設計保存であり、avocadoMini R5の実装・飛行認定ではない |
+| 現行ロケット設計を読む | [rocketstar R1.0原本PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) / [全付録の入口](docs/rocketstar-design/README.md) / [公開HTML reader](https://avocado-mini.kirin-999.chatgpt.site/rocket-star/design/)。製造・飛行の受入は別 |
 
 | ソース | 役割 |
 | --- | --- |

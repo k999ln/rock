@@ -136,7 +136,7 @@
     },
     {
       "id": "DOC04",
-      "title": "avokado READMEをR5現行製品・事業・機能と全設計書の入口へ刷新し、図面準拠の構想画像とブランドGIFを追加",
+      "title": "avokado READMEをR5端末・rocketstar R1.0現行ロケット・事業・機能・全設計書の入口へ刷新",
       "status": "done",
       "dependsOn": [
         "MAT14"
@@ -146,7 +146,8 @@
         "docs/brand/avokado/avocado-mini-r5-concept.png",
         "docs/brand/avokado/avokado-motion.gif",
         "data/design-document-index.json",
-        "docs/avocado-mini-r5/package/package_manifest.json"
+        "docs/avocado-mini-r5/package/package_manifest.json",
+        "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf"
       ]
     },
     {
