@@ -136,7 +136,7 @@
     },
     {
       "id": "DOC04",
-      "title": "avokado READMEをR5現行製品・事業・機能の案内へ刷新し、図面準拠の構想画像とブランドGIFを追加",
+      "title": "avokado READMEをR5現行製品・事業・機能と全設計書の入口へ刷新し、図面準拠の構想画像とブランドGIFを追加",
       "status": "done",
       "dependsOn": [
         "MAT14"
@@ -144,7 +144,9 @@
       "evidence": [
         "README.md",
         "docs/brand/avokado/avocado-mini-r5-concept.png",
-        "docs/brand/avokado/avokado-motion.gif"
+        "docs/brand/avokado/avokado-motion.gif",
+        "data/design-document-index.json",
+        "docs/avocado-mini-r5/package/package_manifest.json"
       ]
     },
     {

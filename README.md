@@ -9,13 +9,15 @@
 ゲームを入口に、生活全体をより豊かにするため、制作・学習・日常の行動をつなぐ製品構想。<br>
 小さな専用端末 **avocadoMini** と、仕事・AI・作品・権限を支える **RockstarOS** を設計しています。
 
-[製品体験](#製品体験) · [機能の詳細](#機能の詳細) · [現在地](#現在地) · [設計書](#設計書とコードの入口)
+[製品体験](#製品体験) · [機能の詳細](#機能の詳細) · [現在地](#現在地) · [設計書ライブラリ](#設計書ライブラリ)
 
 </div>
 
 ![avokado の製品ビジュアル](docs/brand/avokado/avocado-mini-r5-concept.png)
 
 > **画像の扱い** — 製品ビジュアルは外観を示すコンセプト画像です。ハードウェアの実機写真や、空間表示の実証映像ではありません。上のGIFはブランドの概念を表すオリジナルアニメーションです。
+
+**設計書をすぐ開く:** [R5統合設計PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [R5全資料ZIP](docs/avocado-mini-r5/avocadoMini_R5_Integrated_Design_Package.zip) · [RockstarOS完全版PDF](docs/rockstaros-complete-design-v1.0.pdf) · [全設計書の一覧](#設計書ライブラリ)
 
 ## avokado が目指す事業
 
@@ -147,6 +149,72 @@ R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合�
 <!-- project-overview:end -->
 
 [全taskの作業進捗](project.md#全taskの作業進捗) / [Pixel事前試験](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [初回flash gate](docs/android-first-flash-gate-20260916.md) / [R5保存・検証記録](docs/avocado-mini-r5/verification.json)
+
+## 設計書ライブラリ
+
+**現行の端末設計はavocadoMini R5です。** まず[51ページの統合設計PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf)を開き、詳細を検索したいときは[同じ本文のMarkdown](docs/avocado-mini-r5/package/integrated_design.md)を使ってください。以下はリポジトリに保存された製品設計の原本・図面・計算・契約・旧版への索引です。設計書の存在は、実機動作や製造承認を示しません。
+
+### avocadoMini R5 — 原本と検証資料
+
+| 読みたいもの | ファイル |
+| --- | --- |
+| 概要と読み順 | [R5設計書の入口](docs/avocado-mini-r5/README.md) / [パッケージ案内](docs/avocado-mini-r5/package/README.md) |
+| 閲覧・編集・一括取得 | [PDF・51ページ](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) / [Word](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.docx) / [全資料ZIP](docs/avocado-mini-r5/avocadoMini_R5_Integrated_Design_Package.zip) |
+| 全文と要求・試作・受入条件 | [統合設計Markdown](docs/avocado-mini-r5/package/integrated_design.md) |
+| 比較計算 | [計算結果](docs/avocado-mini-r5/package/calculation_results.json) / [再計算プログラム](docs/avocado-mini-r5/package/verify_calculations.py) |
+| 参考資料 | [参考資料索引](docs/avocado-mini-r5/package/reference_index.json) / [生活上の要求](docs/avocado-mini-r5/package/references/01-life-needs.md) / [操作研究](docs/avocado-mini-r5/package/references/02-interaction-studies.md) / [計算・表示](docs/avocado-mini-r5/package/references/03-platform-and-display.md) |
+| 調査の経緯 | [調査報告](docs/avocado-mini-r5/research/README.md) / [調査監査](docs/avocado-mini-r5/research/RESEARCH_AUDIT.md) |
+| 原本の照合 | [パッケージSHA-256台帳](docs/avocado-mini-r5/package/package_manifest.json) / [保存・検証記録](docs/avocado-mini-r5/verification.json) |
+
+**設計検討図8点**はPNGでブラウザ表示でき、SVGで拡大できます。これらは配置・動作を説明する図で、製造CADや確定回路図ではありません。
+
+| 図番 | 内容 | 開く |
+| --- | --- | --- |
+| M01 | 全高と外形の比較包絡 | [PNG](docs/avocado-mini-r5/package/drawings/R5-M01-envelope.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-M01-envelope.svg) |
+| M02 | 端末内の機能区画 | [PNG](docs/avocado-mini-r5/package/drawings/R5-M02-functional-stack.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-M02-functional-stack.svg) |
+| V01 | カメラの視野・深度の比較 | [PNG](docs/avocado-mini-r5/package/drawings/R5-V01-camera-geometry.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-V01-camera-geometry.svg) |
+| E01 | 給電と独立停止 | [PNG](docs/avocado-mini-r5/package/drawings/R5-E01-power-safety.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-E01-power-safety.svg) |
+| S01 | 同型miniの増設と領域分担 | [PNG](docs/avocado-mini-r5/package/drawings/R5-S01-scaling.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-S01-scaling.svg) |
+| U01 | 起動、入力選択、終了 | [PNG](docs/avocado-mini-r5/package/drawings/R5-U01-startup.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-U01-startup.svg) |
+| O01 | OSサービス構成 | [PNG](docs/avocado-mini-r5/package/drawings/R5-O01-services.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-O01-services.svg) |
+| O02 | 本人承認と外部ジョブ | [PNG](docs/avocado-mini-r5/package/drawings/R5-O02-consent.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-O02-consent.svg) |
+
+### RockstarOS・サービス — 全設計領域
+
+[全設計ポータル](docs/rockstaros-design-portal.md)の17領域と[機械可読の設計書台帳](data/design-document-index.json)に登録された文書を、ここから直接開けます。OS完全版原本には旧E3の端末配置が含まれるため、**avocadoMiniの外形・台数・Hub要件はR5を優先**します。
+
+| 領域 | 設計書・契約・記録 |
+| --- | --- |
+| 製品要求・事業 | [製品ベース](docs/product-baseline.md) / [要求JSON](data/product-baseline.json) / [製品目的](docs/product-north-star-20260915.md) / [事業戦略](docs/rockstaros-1.0-strategy.md) / [製品・サービス・システム関係図](docs/rockstaros-product-system-map.md) |
+| OS完全版原本 | [PDF](docs/rockstaros-complete-design-v1.0.pdf) / [検索用テキスト](docs/rockstaros-complete-design-v1.0.txt) / [完全性記録](data/rockstaros-complete-design-v1.0.json) / [schema・DDL・付録案内](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md) / [付録の契約](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md) / [付録台帳](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/manifest.json) |
+| OSの構成と実装対応 | [全体詳細設計](docs/rockstaros-complete-design.md) / [AIネイティブ共通構成](docs/ai-native-os-architecture.md) / [1.0構成](docs/rockstaros-1.0-architecture.md) |
+| Platform Core・仕事 | [Platform Core](docs/platform-core.md) / [Platform API契約](contracts/platform-api.json) |
+| Web・PC | [Web構成](docs/architecture.md) / [バックエンド設計](docs/backend-design.md) |
+| Linux・QEMU | [native統合](docs/native-os-integration.md) / [検証](docs/native-os-validation.md) / [release監査](data/qemu-release-audit.json) |
+| Android・Pixel | [本番OS構成](docs/android-production-architecture.md) / [端末Preview](docs/phone-preview-20260911.md) / [対応端末設計](docs/device-support-architecture.md) / [release方針](data/android-release-architecture-policy.json) |
+| Local AI・記憶 | [AIネイティブ共通構成](docs/ai-native-os-architecture.md) / [Decision Fabric](docs/jev-local-qwen-decision-fabric-design.md) / [端末内AI統合](docs/local-ai-os-integration-20260915.md) / [runtime契約](contracts/local-ai-runtime.json) / [Provider契約](contracts/decision-provider.json) / [判断policy](data/decision-fabric-policy.json) |
+| Sky・Zema・Tool | [全Tool詳細設計](docs/sky-tools-complete-design.md) / [Sky](docs/sky.md) / [Tool SDK](docs/sky-tool-sdk.md) / [会話・MCP制御](docs/chat-mcp-control-room-20260913.md) / [Jev ecosystem](docs/jev-ecosystem-integration-design.md) / [Jev Ultrafast](docs/jev-ultrafast-integration-design.md) |
+| MCP・外部Provider | [MCP構成](docs/sky-mcp-architecture.md) / [MCP Connector](docs/sky-mcp-connector.md) / [外部Provider責任分界](docs/external-wallet-fund-provider-boundary-20260913.md) |
+| 保存・バックアップ・復旧 | [保存境界](docs/data-storage-boundaries.md) / [Android backup・復旧](docs/android-backup-recovery.md) / [復旧policy](data/android-backup-recovery-policy.json) |
+| Wallet・Market・Fund | [外部Provider境界](docs/external-wallet-fund-provider-boundary-20260913.md) / [Market・Fund](docs/everything-market-and-autonomous-fund-20260913.md) / [Wallet本番レール](docs/rock-wallet-production-rail-20260913.md) |
+| 安全・運営・配布 | [インシデント対応](docs/security-incident-response.md) / [配布gate](docs/release-minimum-gates.md) / [緊急操作policy](data/device-emergency-access-policy.json) / [release判定](data/release-readiness.json) |
+| Game・IP | [Game API草案](docs/game-api-contract-draft.md) / [GX01実装計画](docs/gx01-contract-implementation-plan.md) / [SDK sandbox](docs/gx01-reference-sdk-sandbox-20260910.md) |
+| Material Invention・空間操作 | [統合完成設計](docs/rockstaros-avocado-mini-complete-design.md) / [Core](docs/material-invention-core.md) / [XR](docs/material-invention-xr.md) / [空間発明](docs/avocado-mini-spatial-invention.md) / [Full-scaleハード詳細](docs/avocado-mini-hardware-design.md) |
+| 検証・運用 | [検証方針](docs/validation.md) / [データベース状態](docs/database-status.md) / [進捗JSON](data/project-status.json) |
+
+### 旧版・別研究profileとrocketstarアーカイブ
+
+旧版は設計の経緯を追うために残しています。R5の仕様を上書きしません。
+
+| 系列 | 設計資料 |
+| --- | --- |
+| Mini200 E1 | [資料入口](docs/avocado-mini-mini200-e1/README.md) / [設計本文](docs/avocado-mini-mini200-e1/design.md) / [ゲームから生活への展開](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
+| Mini200 E2 | [4本＋中央ユニットの統合記録](docs/avocado-mini-mini200-e2/README.md) |
+| Tower20 E3 | [4本＋別Edge Hubの設計記録](docs/avocado-mini-tower20-e3/README.md)。元PDF/DOCXはこのリポジトリに収録されておらず、ここで原本全文を読める状態ではありません |
+| 別研究profile | [四方向・Full-scaleのハード詳細](docs/avocado-mini-hardware-design.md) / [空間発明](docs/avocado-mini-spatial-invention.md) |
+| rocketstar R1.0 | [設計アーカイブ入口](docs/rocketstar-design/README.md) / [44ページのPDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) / [編集用本文](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md) / [全付録ZIP](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0_package.zip) / [付録台帳](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/manifest.json) |
+| A-LINK・colony・ボタン | [自動接続PDF](docs/rocketstar-design/outputs/A-LINK_Avokado_Auto_Connect_Design_v0.3.pdf) / [受信試作](docs/rocketstar-design/outputs/A-LINK_Avokado_Receiver_Prototype_v0.4/README.md) / [colony運用](docs/rocketstar-design/outputs/RockstarOS_Colony_C0_1/README.md) / [電源ボタン](docs/rocketstar-design/outputs/Avokado_Power_Button_Engineering_v1/README.md) |
+| 保存の完全性 | [全ファイル台帳](docs/rocketstar-design/inventory.json) / [照合記録](docs/rocketstar-design/verification.json) |
 
 ## 設計書とコードの入口
 
