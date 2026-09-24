@@ -1,9 +1,10 @@
 {
   "schema": "rockstaros-design-document-index/1",
   "version": "1.0",
-  "updatedAt": "2026-09-22",
+  "updatedAt": "2026-09-24",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
+    "docs/avocado-mini-r5/README.md",
     "docs/rockstaros-product-system-map.md",
     "docs/rockstaros-complete-design.md",
     "docs/sky-tools-complete-design.md",
@@ -26,6 +27,15 @@
     "open_decisions_owner_and_decision_test"
   ],
   "systemDomains": [
+    {
+      "id": "avocado_mini_r5",
+      "coverage": "BASIC_DESIGN_WITH_OPEN_ENGINEERING_DECISIONS",
+      "documents": [
+        "docs/avocado-mini-r5/README.md",
+        "docs/avocado-mini-r5/package/integrated_design.md",
+        "docs/avocado-mini-r5/verification.json"
+      ]
+    },
     {
       "id": "product_requirements",
       "coverage": "DETAILED_WITH_OPEN_DECISIONS",

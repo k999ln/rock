@@ -1,6 +1,16 @@
 # Material Invention / avocadoMini
 
-## Tower20 E3の最新入口
+## R5の現行入口
+
+2026-09-24の明示要求により、製品要求は[R5統合基本設計](../avocado-mini-r5/README.md)を優先する。使用時全高200mm以内、1本自律、同型miniの増設、別Edge Hubを必須にしない、全空間裸眼表示を目指す。外部給電は必要。表示方式・精密3D入力・収納・熱・電源・確定回路/加工図は未決を含み、実機0件・製造承認保留である。
+
+- MAT14（ROCK）：PDF/Word、図面8組、計算、研究・参考資料を欠落なくGit保存し、入口と履歴を同期する。
+- MAT15（JOINT）：単体の表示成立と安全、精密3D入力、実部品収納を先に検証し、確定CAD/回路と同一試作機の受入へ進む。
+- OWNER：製品仕様、費用、販売・外部公開条件の確定。今回の保存はハード製造、課金、公開サイト配備の実施ではない。
+
+MAT01〜MAT13の過去の証拠と実装状態は保持する。旧E3のMAT13をR5の製造指示として開始しない。以下のE3/E2/E1は履歴であり、現行の基本構成を上書きしない。
+
+## 履歴 — Tower20 E3（2026-09-22）
 
 2026-09-22の利用者提供資料により、現行製品は[avocadoMini Tower20 E3](../avocado-mini-tower20-e3/README.md)へ更新した。固定式200mm以下のTower20 4本と、低い別筐体Edge Hub 1台を一つの製品構成とする。P0.2の伸縮塔、E1/E2の単体筐体は設計履歴であり、現行外観ではない。
 
@@ -8,14 +18,14 @@
 - `MAT13`: E3の確定CAD、配線、4camera同期、光学、転倒・滑り、熱、電源、音響、OS image、復旧を同一試作機で受け入れる。未着手。
 - 主担当`ROCK`は正本、公開説明、software境界を維持する。`JOINT`は実部品、機構、電気、光学、音響、熱、統合実測を担当し、`OWNER`は外観、費用、販売条件、外部用途を確定する。
 
-## Mini200 E2と4本構成の最新入口
+## 履歴 — Mini200 E2と4本構成（2026-09-21）
 
 2026-09-21の利用者確認により、完成製品の外観は4本の銀色Motion Towerと低い中央ユニットを囲む現在の公開画像を正本とする。[Mini200 E2 four-tower integration baseline](../avocado-mini-mini200-e2/README.md)で、E2のOS・ローカルゲーム・PTT音声・権限・保存・候補computeを中央Coreへ適用し、E2資料の20cm角単体筐体は完成外観へ採用しない。P0.2塔の機構とE2 Coreを一つにする配線、同期、電源、冷却、音響、signed imageと実機受入は未完了。
 
 - `MAT10`: E2資料を精査し、外観の利用者訂正を正本・公開Site・予約説明へ反映。資料保存と公開説明の更新であり実機完成ではない。
 - `MAT11`: 4塔＋中央E2 Coreの統合engineering package、prototype、実機受入。未着手。
 
-## Mini200 E1の新しい設計入口
+## 履歴 — Mini200 E1（2026-09-21）
 
 2026-09-21の利用者要求により、使用時20cmのゲーム機から創作・研究・生活へ進む[Mini200 E1](../avocado-mini-mini200-e1/README.md)を追加した。身体入力、本体内計算、日本語ローカルASR候補、PTT、独立MIC OFF、ゲームから保存までを設計する。下記の四方向研究profileとは別で、旧schemaを緩めない。
 
@@ -28,7 +38,7 @@
 
 ## 目的
 
-物質digital twinを四方向sensorと手の動きで接続・分離し、安全検査、simulation再計算、発明履歴、Patent AI支援までを一つの再現可能な仕事にする。初めて参加する人は、まず[共有用完成設計書](../rockstaros-avocado-mini-complete-design.md)を読む。
+物質digital twinを四方向sensorと手の動きで接続・分離し、安全検査、simulation再計算、発明履歴、Patent AI支援までを一つの再現可能な仕事にする既存研究profileを保持する。初めて参加する人は[R5製品要求](../avocado-mini-r5/README.md)を読み、必要に応じて[Material Invention研究設計](../rockstaros-avocado-mini-complete-design.md)へ進む。
 
 ## 普段の言葉での全体像
 

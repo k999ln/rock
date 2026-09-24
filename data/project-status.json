@@ -1,8 +1,27 @@
 {
-  "updatedAt": "2026-09-23",
+  "updatedAt": "2026-09-24",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
-  "nextAction": "Build and validate the integrated Tower20 E3 prototype: final CAD and wiring, four-camera timing and calibration, optical coverage, tip and sliding safety, thermal and power behavior, voice and game latency, signed RockstarOS image, recovery and manufacturing acceptance.",
+  "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
   "tasks": [
+    {
+      "id": "MAT14",
+      "title": "R5統合基本設計・PDF/Word・図面8組・計算・参考資料を欠落なく保存し、現行入口と履歴を整理（製造承認保留）",
+      "status": "done",
+      "dependsOn": ["MAT12"],
+      "evidence": [
+        "docs/avocado-mini-r5/README.md",
+        "docs/avocado-mini-r5/package/package_manifest.json",
+        "docs/avocado-mini-r5/verification.json",
+        "scripts/verify-avocado-r5-package.py"
+      ]
+    },
+    {
+      "id": "MAT15",
+      "title": "R5単体の裸眼空間表示・安全・精密3D入力を成立させ、収納/熱/電源/確定回路/加工図と実機受入を閉じる",
+      "status": "planned",
+      "dependsOn": ["MAT14"],
+      "evidence": ["docs/avocado-mini-r5/package/integrated_design.md"]
+    },
     {
       "id": "UXCHAR01",
       "title": "Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果）",

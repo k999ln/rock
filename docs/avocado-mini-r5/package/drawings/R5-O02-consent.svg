@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1620" height="1000" viewBox="0 0 1620 1000"><rect width="1620" height="1000" fill="white"/>
+<rect x="45" y="120" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="255.0" y="189.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">見積</text>
+<text x="255.0" y="230.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">対象・送信情報・金額</text>
+<rect x="600" y="120" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="810.0" y="189.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">本人承認</text>
+<text x="810.0" y="230.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">期限・操作ハッシュ</text>
+<rect x="1155" y="120" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="1365.0" y="189.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">実行要求</text>
+<text x="1365.0" y="230.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">同じjob ID</text>
+<polyline points="465,210 600,210" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="600,210 590.0950818741205,214.78462087522354 590.0950818741205,205.21537912477646" fill="#333"/>
+<polyline points="1020,210 1155,210" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1155,210 1145.0950818741205,214.78462087522354 1145.0950818741205,205.21537912477646" fill="#333"/>
+<rect x="1155" y="480" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="1365.0" y="549.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">タイムアウト</text>
+<text x="1365.0" y="590.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">結果不明・状態照合</text>
+<rect x="600" y="480" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="810.0" y="549.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">成功／失敗／取消済</text>
+<text x="810.0" y="590.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">各状態を別記録</text>
+<rect x="45" y="480" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="255.0" y="549.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">保存</text>
+<text x="255.0" y="590.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">公開は別の承認</text>
+<polyline points="1365,300 1365,480" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1365,480 1360.2153791247765,470.0950818741206 1369.7846208752235,470.0950818741206" fill="#333"/>
+<polyline points="1155,570 1020,570" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1020,570 1029.9049181258795,565.2153791247765 1029.9049181258795,574.7846208752235" fill="#333"/>
+<polyline points="600,570 465,570" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="465,570 474.9049181258794,565.2153791247765 474.9049181258794,574.7846208752235" fill="#333"/>
+<text x="810" y="804.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">期限切れ・内容変更は再承認  不明な結果を別提供者へ再送しない</text>
+<text x="810" y="845.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">取消要求 ≠ 取消完了 ≠ 返金完了</text>
+<text x="810" y="945.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="27.5" fill="#111111">R5 O02  外部サービスの副作用を管理する状態図</text>
+</svg>

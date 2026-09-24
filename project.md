@@ -1,5 +1,13 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-24 — R5統合設計パッケージをGitの正本へ保存
+
+利用者の「k999ln/rockへ漏れなく更新保存」に基づき、main `0eb4fe48b1e7309e838b0441954d97e22272b4ca`から分離してMAT14を開始。前回渡したR5のPDF51ページ、Word、Markdown、図面8SVG+8PNG、計算・参考資料と元ZIPをそのまま保存し、生活研究報告と監査記録も追加する。原本の26ファイルSHAと27ファイルZIPを照合する。READMEの全task表はproject.mdへ集約し、READMEには概要と入口だけを同期する。
+
+現行製品要求は使用時200mm以内・1本自律・同型mini増設・別Hub不要。E3の4本＋別Hub必須を履歴へ移し、製品ベース、設計ポータル・台帳、workstreamを同期する。既存MAT01〜13、Pixel/QEMU、Material schema、Walletや公開サイトの実装は変更しない。全空間裸眼表示、精密3D入力、収納、熱・電源、確定回路・加工図はMAT15の未完了事項。設計資料の保存と実機・製造・Site配備の受入を区別する。
+
+検証結果は[保存・検証記録](docs/avocado-mini-r5/verification.json)に記載する。Git保存、mainへの反映、同一SHAのCIは別々に確認する。
+
 ## 2026-09-23 — Tower20 E3の回転画像を透過素材へ変更
 
 公開商品ページの180°製品turnで、元画像の黒いstudio背景が長方形に見えていた問題を解消した。正面・側面・背面の3画像を、製品形状・camera窓・base・4脚を残した透過RGBA素材へ変更し、元画像に含まれていた床、反射、spotlight haze、背景を削除した。CSSで長方形をぼかして隠すradial maskも外し、Siteの背景へ製品を直接重ねる。接地感は製品下の小さなsoft shadowだけで補う。正面0°・側面98°・背面180°を実画面で確認し、公開Site v40（source `068bdf6a489cf57e2806c45923aa5161a5e51195`）へ配備した。画像はE3設計方向を伝える構想CGであり、量産実機写真や実camera性能の証拠ではない。
@@ -876,11 +884,15 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
+## 全taskの作業進捗
+
 <!-- project-status:start -->
-最終更新: 2026-09-23 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 95/146件
+最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 96/148件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
+| MAT14 | R5統合基本設計・PDF/Word・図面8組・計算・参考資料を欠落なく保存し、現行入口と履歴を整理（製造承認保留） | 完了 | [記録](docs/avocado-mini-r5/README.md) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/avocado-mini-r5/verification.json) · [記録](scripts/verify-avocado-r5-package.py) |
+| MAT15 | R5単体の裸眼空間表示・安全・精密3D入力を成立させ、収納/熱/電源/確定回路/加工図と実機受入を閉じる | 未着手 | [記録](docs/avocado-mini-r5/package/integrated_design.md) |
 | UXCHAR01 | Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果） | 完了 | [記録](components/tool-character.tsx) · [記録](components/tool-character.module.css) · [記録](docs/workstreams/01-product-ux.md) |
 | SKY20 | Sky公開・Telegram配布を証拠付きverified Packageへ限定し、失効と利用イベント再送を受け入れる | 進行中 | [記録](drizzle/0016_red_crusher_hogan.sql) · [記録](lib/sky-tool-review.ts) · [記録](lib/sky-review-auth.ts) · [記録](app/api/sky/tool-reviews/route.ts) · [記録](lib/sky-tool-package-store.ts) · [記録](lib/sky-activation.ts) · [記録](lib/sky-tool-events.ts) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](tests/sky-tool-package.test.mjs) · [記録](tests/sky-activation.test.mjs) · [記録](tests/sky-tool-sdk.test.mjs) · [記録](docs/sky-tool-sdk.md) |
 | SKY19 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
@@ -1047,7 +1059,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: Build and validate the integrated Tower20 E3 prototype: final CAD and wiring, four-camera timing and calibration, optical coverage, tip and sliding safety, thermal and power behavior, voice and game latency, signed RockstarOS image, recovery and manufacturing acceptance.
+次の作業: avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
 <!-- project-status:end -->
 
 ## 次段階の設計

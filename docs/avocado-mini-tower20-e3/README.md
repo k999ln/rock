@@ -1,8 +1,10 @@
 # avocadoMini Tower20 E3 product baseline
 
+**Historical baseline, superseded by [R5](../avocado-mini-r5/README.md) on 2026-09-24.** The text below records the 2026-09-22 E3 proposal and then-published presentation. Four towers, a mandatory separate Hub, TV output, prices and component/performance budgets are not automatically carried into R5. R5 is an unvalidated basic design, not a released replacement product. This documentation update does not deploy the public Site.
+
 2026-09-22 / supplied E3 design package / Material Invention and avocadoMini / `ROCK`
 
-## Current product form
+## Product form recorded on 2026-09-22
 
 Tower20 E3 replaces the former E1 and E2 single-enclosure directions and the tall telescoping P0.2 tower direction as the current product design baseline.
 
@@ -39,7 +41,7 @@ Initial voice is push-to-talk Japanese recognition evaluated locally with whispe
 - Hub CAD, airflow, fan noise, production power, signed recovery, rollback and manufacturing drawings remain open.
 - GTA compatibility, Rockstar Games partnership scope, satellite reception and a general RockstarOS installer are outside the evidence supplied by E3.
 
-## Public presentation
+## Public presentation recorded on 2026-09-22
 
 The public product Site must show four short fixed-height Tower20 devices around a separate low Edge Hub. It must not show a 20 cm single-box console, a human-height telescoping tower, three active cameras per tower or a lower sensor as the current E3 product. Cyan sensor light is a visual status effect. Images remain concept renders rather than photographs of production hardware.
 
