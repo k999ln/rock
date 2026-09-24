@@ -1,0 +1,163 @@
+{
+  "schema": "rockstaros-colony-test-results/1",
+  "mode": "SIM_ONLY",
+  "hardwareConnected": false,
+  "existingOsIntegrated": false,
+  "python": "3.12.14",
+  "testsRun": 35,
+  "passed": 35,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "cases": [
+    {
+      "id": "test_contract_edges.ReceiptEdgeTests.test_non_json_receipt_leaves_result_uncertain",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_approval_requires_exact_full_command_digest",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_authenticated_invalid_telemetry_domain_rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_authenticated_wrong_domain_mode_or_source_rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_broker_clock_rollback_blocks_dispatch",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_changed_stored_body_is_not_approved_for_dispatch",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_clock_rollback_locally_curtails_and_revokes_authority",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_controller_independently_rejects_expired_direct_command",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_controller_transport_exception_persists_uncertain",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_critical_equipment_operation_cannot_be_expressed",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_exact_replay_survives_controller_reboot_without_reapplying",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_exclusive_authority_cas_and_epoch_fence",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_expired_prepared_command_cannot_be_approved",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_expired_queued_command_never_reaches_controller",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_explicit_prepare_exact_approve_dispatch_and_local_step",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_extra_envelope_fields_and_digest_mismatch_fail_closed",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_invalid_broker_initial_clock_cannot_recover_authority_implicitly",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_invalid_clock_at_new_controller_initialization_is_not_trusted",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_lease_expiry_curtails_local_flexible_load_without_broker",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_local_resource_budget_is_checked_even_for_signed_fixture",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_lost_receipt_restart_reconciles_without_resend",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_nan_bool_and_overbudget_inputs_rejected",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_nonfinite_clock_preserves_local_priority_and_latches_untrusted",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_planner_proposal_cannot_approve_or_dispatch",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_presend_durable_claim_crash_stays_unknown_with_no_resend",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_reboot_fences_old_unapplied_generation",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_receipt_insert_failure_rolls_back_desired_state_and_revision",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_restart_cancels_prepared_and_queued",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_same_id_changed_payload_conflicts_after_reboot",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_stale_telemetry_blocks_refresh_and_prepare",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_state_revision_change_rejects_old_command",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_supply_drop_curtails_then_reports_critical_deficit",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_unsigned_tampering_rejected_without_effect",
+      "status": "PASS"
+    },
+    {
+      "id": "test_core.ColonyContractTests.test_wrong_receipt_cannot_be_marked_succeeded",
+      "status": "PASS"
+    },
+    {
+      "id": "test_process.ProcessSeparationTests.test_local_ticks_continue_after_supervisor_killed",
+      "status": "PASS"
+    }
+  ],
+  "sourceSha256": {
+    "colony_core/__init__.py": "41f4c90ddd33561c16d70b64e52ba41b1caa8ad883bbc14722bff73f3a2950dc",
+    "colony_core/__main__.py": "6de7f6491255c0af031dd2a58e995d2b355c811935d1d11bbd90bd9962049658",
+    "colony_core/core.py": "db80ef9b76374b1734ea7792abf5fb0d8089c20fbc19e860f2945b8e0938bfa2",
+    "run_checks.py": "db2c41443da39d55ed466f670ce5361d4e6ea25e8af36ce094d6cd19b1e5c08d",
+    "tests/test_contract_edges.py": "e78789b6495b822272be5bb196bbfd4637a258ba43d02fcc58109fc72e2ff10d",
+    "tests/test_core.py": "14cfc7abd9799dcb5a53f08de02f3f4e76ae3224b648bfb85c6cf453022fad59",
+    "tests/test_process.py": "8e95646c8ec0adbfbc2b98d78e6508c9a5597e04a1da2408b157635effe14874"
+  }
+}

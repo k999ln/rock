@@ -1,0 +1,508 @@
+{
+  "schema": "rockstaros-colony-reuse-audit/1",
+  "audited_at": "2026-09-23",
+  "repository": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1",
+  "head": "5d5f3dc4f73ac3389c8dbc00f9ca6e8beba526e0",
+  "branch": "codex/readme-navigation",
+  "working_tree_clean": true,
+  "remote_freshness": "not_checked_no_network_per_task_scope",
+  "audit_scope": "read-only source and retained evidence audit; no original repository edits, no network, no hardware or invasive integration",
+  "new_test": {
+    "name": "public control-core pure Node tests",
+    "passed": 4,
+    "failed": 0,
+    "hardware": false,
+    "network": false
+  },
+  "capabilities": [
+    {
+      "id": "OS01",
+      "name": "Platform 登録・権限・承認",
+      "maturity": "runtime_source_inspected_and_recorded_apk_acceptance",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+          "sha256": "2a221ff3240b5ad9ce77c5bfc1ec55f57fcf9d44527cbbd711f1315d505e0511"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/contracts/platform-api.json",
+          "sha256": "8c590f30462d64cd6ba288764d90c6c4e31a98a2bfe407f5b3ce8eaaf7bcb057"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/platform-core.md",
+          "sha256": "eef6fb7dc393adc32a5798274a2904ca9524ca126f7f0492055c8fa46b164281"
+        }
+      ],
+      "actual": "PlatformStore の component 登録、UID/署名/版の境界、PROPOSED→ISSUED→CONSUMED 承認、世代変更による旧承認停止。owner/request key、payload digest、action、期限、費用上限を照合する実装。",
+      "reuse": "新規 colony component を既存 dev.rock の capability 境界へ接続。操作者の要求と装置の実行権限を分ける。",
+      "colony_gap": "現行の TOOL/MCP/PROVIDER と Android owner 権限を、そのまま設備管理の役職、二者承認、ローカル非常操作へ転用できない。専用契約と署名・時刻・現場優先権の実装が必要。",
+      "flight_or_colony_qualified": false
+    },
+    {
+      "id": "OS02",
+      "name": "Web の仕事状態・競合検査",
+      "maturity": "runtime_source_and_tests_inspected_not_rerun",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/lib/workflow.ts",
+          "sha256": "e11de6797e7175252a0c44b8d958afc65e54619888981a56d6b2fd4b411757df"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/tests/workflow.test.mjs",
+          "sha256": "25dabfc40f61d9a124cf40df62c877cfc22a87492fc0507992bca2441e2e8a96"
+        }
+      ],
+      "actual": "WorkJob は active/review/completed/cancelled。command ID 冪等性、revision 競合、工程順序、sample を工程成功に数えない処理がある。",
+      "reuse": "保守作業・点検・資材調達・検査承認のUIと仕事状態に再利用。",
+      "colony_gap": "設計書の draft/ready/waiting/failed を全て現行 Web runtime 実装済みとしない。生命維持の高速ループ、搭載機のGNC、秒以下保証はない。",
+      "flight_or_colony_qualified": false
+    },
+    {
+      "id": "OS03",
+      "name": "Android Engine・Zema・固定 Local AI plan",
+      "maturity": "runtime_source_inspected_and_recorded_physical_apk_evidence",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/core/src/main/java/dev/rock/core/Engine.java",
+          "sha256": "cafb93138b029bf7353d8f146562bcab1b16cbd8e595dccf97a29b4d5502c884"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
+          "sha256": "496b826e66e1a7258b0d92e5a19c7f7a900ae7ea3499ef52628f911d44ddc82d"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java",
+          "sha256": "ee0b76c4608abfa5ef4e9062c1d9fbb3a5ac7472d0c7f981d7fc6def9e6adfe7"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+          "sha256": "41821e6300656f73e164024b08c1950a6eac1bb5a859b98d28f3d68870db01f2"
+        }
+      ],
+      "actual": "SQLite 上の work/run/event、選択済み Tool token、固定 article-preparation@1 入力の非信頼 planner と独立検証。Pixel APK記録は2工程、実再起動、結果・履歴回復を含む。",
+      "reuse": "操作者の要求を説明可能な有限作業へ整える構造。AIは提案だけを返し、機械検証後に仕事を生成。",
+      "colony_gap": "汎用設備プランナー、最適運転、異常診断の物理妥当性は未実装・未受入。LLMを直接 actuator に接続しない。",
+      "flight_or_colony_qualified": false
+    },
+    {
+      "id": "OS04",
+      "name": "MCP Broker の永続状態・結果不明照合",
+      "maturity": "runtime_source_and_owned_fixture_tests_inspected_not_rerun",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/mcp_broker/broker.py",
+          "sha256": "c1332d6c6f8c0594dee102969f13ec2ba9be5c337541d9631a0d331a5dbf4cfa"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/tests/test_mcp_broker_core.py",
+          "sha256": "e422a7b4119eae694d0f6b67ca92bc3e4341ba656cd872033f32394d0ce28ade"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/tests/test_mcp_broker_lifecycle.py",
+          "sha256": "506a64e5783d6664d523fd9dcd8d776b5caa13a12800530496205e7b49b5fb6b"
+        }
+      ],
+      "actual": "Private SQLite、FULL同期、単一writer flock、subject/device/alias/epoch、immutable consent、容量上限。sending 再起動後は unknown、送信claim済みは execute を再送せず reconcile を使用。",
+      "reuse": "遅延・切断を伴う設備への指令意図と照合の考え方を再利用。capability の有限集合と generation fence を維持。",
+      "colony_gap": "現行は所有fixture中心。物理装置の at-most-once 作用保証、時刻同期、実無線、宇宙リンク、複数拠点 consensus は提供しない。",
+      "flight_or_colony_qualified": false
+    },
+    {
+      "id": "OS05",
+      "name": "MCP Runtime の fixture 明示",
+      "maturity": "runtime_source_inspected",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/mcp_broker/runtime.py",
+          "sha256": "ce0c55c6449deedf2f24564134b894445d61bffd5bb1888d56a1221beb25c673"
+        }
+      ],
+      "actual": "runtime metadata は simulation_only=true/provider_connected=false。再開時の authority・設定・CA hash・保存fileを確認し、履歴欠損を新規状態として自動初期化しない。",
+      "reuse": "SIM_ONLY と実機接続状態を外観上も契約上も分離する方式。保持履歴喪失時の閉鎖を新設計にも使う。",
+      "colony_gap": "本番Provider、機器認証局、コロニー内認証局、衛星間切替は未接続。",
+      "flight_or_colony_qualified": false
+    },
+    {
+      "id": "OS06",
+      "name": "SQLite データ保存境界",
+      "maturity": "runtime_source_and_design_inspected",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/data-storage-boundaries.md",
+          "sha256": "ccb66e33bd7c3e966b2c142ab2a40dce9b6eb8cdc7d5a5c4e75b83d7dd65562e"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/src/blackberryrock/storage.py",
+          "sha256": "727d47773af25eb593bad89583c92f4bca6531f49270338be0ba5acdc96a017f"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/core/src/main/resources/schema.sql",
+          "sha256": "9ddbd035294222a2de97d7bf8995010497f4e9e19408380331d6dcf1c311e496"
+        }
+      ],
+      "actual": "Web D1、Operator Dock D1、Wallet、Android Engine、Android Platform を異なる正本として分離。Store に冪等job・制限された状態遷移とSQLite WAL。",
+      "reuse": "運用指令台帳、telemetry、資材台帳、操作者私有データを別に保管し用途ごとの retention を定義。",
+      "colony_gap": "既存金融台帳を酸素・水・電力計測に流用しない。多拠点 replication、長期断線、測定時刻品質、校正情報、災害復旧は追加が必要。",
+      "flight_or_colony_qualified": false
+    },
+    {
+      "id": "OS07",
+      "name": "Backup と復元後の権限停止",
+      "maturity": "runtime_source_inspected_and_recorded_partial_physical_evidence",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/core/src/main/java/dev/rock/core/platform/EncryptedBackup.java",
+          "sha256": "dff6a63abefff40744fdba1f26cb9c4b1015f940d27ccdc7fef219cc6de795d5"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+          "sha256": "2a221ff3240b5ad9ce77c5bfc1ec55f57fcf9d44527cbbd711f1315d505e0511"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/contracts/platform-api.json",
+          "sha256": "8c590f30462d64cd6ba288764d90c6c4e31a98a2bfe407f5b3ce8eaaf7bcb057"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+          "sha256": "41821e6300656f73e164024b08c1950a6eac1bb5a859b98d28f3d68870db01f2"
+        }
+      ],
+      "actual": "AES-GCM backup、独立回復secret、空のowner対象へのtransaction復元、automation停止、Sky token rotation、旧承認停止、component authorityを復元しない。Pixelはhardware-backed exportと非破壊再起動の記録。",
+      "reuse": "復元を新たな設備操作権限として扱わず、ローカル監査を経て再有効化する。",
+      "colony_gap": "Pixel全損・Keystore喪失の実機復旧は未実施。コロニー冗長ノード、全拠点喪失、長期オフライン鍵回復、RT制御の無停止切替は未受入。",
+      "flight_or_colony_qualified": false
+    },
+    {
+      "id": "OS08",
+      "name": "Linux/QEMU A/B更新・復旧",
+      "maturity": "source_present_and_recorded_qemu_candidate_evidence",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/update/rock_update.py",
+          "sha256": "ab5722a3057d72699f135487bed26cd31a120a5e0254d6a5a497c3676275276a"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/data/qemu-release-audit.json",
+          "sha256": "1cd76ed3b6aeafd2b6f37cf80da08af42eb54e53b5a29b98489eff521203d8c2"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/rockstaros-1.0-architecture.md",
+          "sha256": "e24c09574f1e90041fb9064a4c5ceac2744b71a1a96221937962de4b6bc4b9f4"
+        }
+      ],
+      "actual": "rc2 b7d819cd候補のA/B更新、失敗rollback、backup、current-copy二重使用防止の内部証拠を記録。開発鍵、draft_not_public。",
+      "reuse": "監督端末のイメージ署名、互換schema確認、段階更新、失敗回復のパターン。",
+      "colony_gap": "正式署名、最終同一候補受入、flight computer、耐放射線メモリ、宇宙環境、停電/部分故障の生存性は未証明。現在HEADの全機能がrc2に含まれるとは言えない。",
+      "flight_or_colony_qualified": false
+    },
+    {
+      "id": "OS09",
+      "name": "Tool package・隔離Runner・Registry",
+      "maturity": "runtime_source_present_design_and_records_inspected",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/runner/README.md",
+          "sha256": "3a6629fbcca9419a7f99edc2bd588bbe5914b046ab8c9285672418665696d384"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/runner/executor.py",
+          "sha256": "77bb7211065723af2f8d6a5845871e9fea734ad1b5ef3865db95c4d5268eb655"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/registry/README.md",
+          "sha256": "3695cc9ac83e636aa9601d913ef7ccc5c19b7191caa66161e00b550066a3f733"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/registry/client.py",
+          "sha256": "6f97583e0b2234d706dfee6d2c51fb5bdae668896b426fe0a002055f3c0551a8"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/rockstaros-1.0-architecture.md",
+          "sha256": "e24c09574f1e90041fb9064a4c5ceac2744b71a1a96221937962de4b6bc4b9f4"
+        }
+      ],
+      "actual": "署名manifest、有限recipe、hash/期限/失効検査、実行隔離とresource制限のLinux系実装。接続先はfixtureの範囲を持つ。",
+      "reuse": "保守Toolと分析Toolの配布、版固定、権限差分、sandbox分離。",
+      "colony_gap": "宇宙搭載機に対するWCET・RT scheduling・認定toolchain・故障隔離保証はない。一般Toolの導入が設備制御権限を増やさない接続審査が必要。",
+      "flight_or_colony_qualified": false
+    },
+    {
+      "id": "OS10",
+      "name": "Operator Agent の限定署名命令",
+      "maturity": "source_present_and_recorded_partial_apk_evidence",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandVerifier.java",
+          "sha256": "3d4b54d79d3d1cf6a2cef128e18a82d7d0b874869c13bb4715ded2f6118a081e"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandExecutor.java",
+          "sha256": "ec863f3c941096873328be6ae053e1193f3423901c15d948465f32dd6200490c"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+          "sha256": "41821e6300656f73e164024b08c1950a6eac1bb5a859b98d28f3d68870db01f2"
+        }
+      ],
+      "actual": "署名、replay、monotonic counterのAndroid試験記録。Device Owner無しのfactory resetは拒否。",
+      "reuse": "管理命令の出所・再送・単調counterを分ける参考。",
+      "colony_gap": "これは端末管理用であり、気密扉、弁、与圧、推進制御の仕様ではない。コロニー緊急命令へそのまま転用しない。",
+      "flight_or_colony_qualified": false
+    },
+    {
+      "id": "OS11",
+      "name": "Decision Provider 契約",
+      "maturity": "schema_design_present_generic_runtime_not_proved",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/contracts/decision-provider.json",
+          "sha256": "c22c13fc7ee5528f3fc26ae0ce39ab53ffa11c5807bf8fd63ead08e1d899437d"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/rockstaros-complete-design.md",
+          "sha256": "5114f8a4ca0a7f540359b0e9ccd1ff424bc9ffe7195bffe147886c54e204c354"
+        }
+      ],
+      "actual": "requestId/ownerRef/workId/stateDigest/policyVersion、effect、offlineRequired/cloudAllowed、maxLatency/maxCost/maxAttemptsをJSON Schemaで定義。answered/abstained/blocked/failed。",
+      "reuse": "AI予測結果を制御許可と区別する共通要求・根拠ハッシュの形を維持。",
+      "colony_gap": "契約ファイルは全Provider統合やcolony判断精度の証拠ではない。実設備を動かす制御則・物理限界は別の決定的コードと試験が必要。",
+      "flight_or_colony_qualified": false
+    },
+    {
+      "id": "OS12",
+      "name": "Material Invention sandbox",
+      "maturity": "runtime_source_present_fixture_scope",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/contracts/material-invention.json",
+          "sha256": "0dee6901081924dcc4a800339acacc2c82553feb5e3f64c7d69ca914cd97ab6f"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/lib/material-invention.ts",
+          "sha256": "2fe2842a7e8e9343876cd8c33d9a03bb3d1a836e23727d7a267eb1abfc3b8c8c"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/tests/material-invention.test.mjs",
+          "sha256": "9f9e33161baf78dd44907713e4ab3688abeae3a39415206bda845ff43796ba85"
+        }
+      ],
+      "actual": "二物質候補・制約・単位・危険性チェックの装置非接続sandbox。契約は物理実験の承認・実行をしないと明示。",
+      "reuse": "コロニーの研究・資材候補・発明履歴に使う上位アプリ候補。",
+      "colony_gap": "生命維持材、構造材、燃料、食品や水の製造適合、実材料性能を証明しない。物理simulationモデルやラボ測定は別。",
+      "flight_or_colony_qualified": false
+    },
+    {
+      "id": "OS13",
+      "name": "公開 Control Core",
+      "maturity": "pure_reference_code_tested_this_audit",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/public-release/rockstaros/packages/control-core/src/index.js",
+          "sha256": "dd8eda15e08f82e2b7dd3c12253b31b89c92c93a92da1c6426057b147e59aad7"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/public-release/rockstaros/packages/control-core/test/index.test.js",
+          "sha256": "d9080baff8b7bdebcc74f6f222b3d506853ea8860b28cb6ec1ac51ed69efa522"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/public-release/rockstaros/packages/control-core/README.md",
+          "sha256": "3056584f4863cd5c65e03103ccbf40661810b24964561915e0ebec83e3a68283"
+        }
+      ],
+      "actual": "createActionRequest/approveAction/canExecute/recordOutcome。read/write/external と succeeded/failed/interrupted/unknownを区別。今回Node単体4/4合格。",
+      "reuse": "利用者へ承認と結果の違いを示す最小参照と表示用の概念。",
+      "colony_gap": "actorは文字列であり認証主体ではない。メモリ内Objectだけで、DB・暗号署名・ネットワーク・安全制御はない。READMEはreuse terms not grantedと明記。新パッケージへコピーせず契約上の考え方のみ参照。",
+      "flight_or_colony_qualified": false
+    },
+    {
+      "id": "OS14",
+      "name": "avokado Edge Hub のOS位置付け",
+      "maturity": "hardware_concept_and_os_design_not_hardware_accepted",
+      "evidence": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/README.md",
+          "sha256": "c22bc3d89a5a6ab1a6ced187bb479af351fbfc182eede0cce78dd26a6213307c"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/avocado-mini-tower20/README.md",
+          "sha256": "0305aeb7f59ef735358ce3ede0cb9c7de8d681528af8d1a37e8d048d9b4377d5"
+        }
+      ],
+      "actual": "このrepoの正本は4本の銀色200mm Motion Towerと別Edge Hub。RockstarOSが入力、AI、作品、権限、履歴を管理する製品構想。",
+      "reuse": "コロニーのローカル表示・生活UI・作業計画端末。通信断でも現地状況と未確認命令を区別する。",
+      "colony_gap": "avokado実機受入なし。現repoより新しいE3成果物が別作業にあるため、寸法・電力部品はそちらの版を別途参照。生活端末を単独の生命維持安全装置にしない。",
+      "flight_or_colony_qualified": false
+    }
+  ],
+  "missing_colony_requirements": [
+    {
+      "id": "G01",
+      "title": "故障しても生命維持を続ける層",
+      "required_work": "RockstarOS監督機、通信、AIが停止しても現地安全制御器が動き続ける。watchdog、独立電源、最低機能、手動切替と隔離を設備ごとに設計・実測。"
+    },
+    {
+      "id": "G02",
+      "title": "設備ドライバと意味",
+      "required_work": "O2/CO2、圧力、水、電力、熱、火災、気密扉の telemetry/capability を単位・測定時刻・品質・校正・許容域付きで定義。値は対象設備から決める。"
+    },
+    {
+      "id": "G03",
+      "title": "リアルタイム性能と環境",
+      "required_work": "deadline、最悪実行時間、jitter、電磁、真空/熱/振動/放射線、SEU対策は監督OSと安全制御器それぞれに要求・試験が必要。"
+    },
+    {
+      "id": "G04",
+      "title": "複数拠点と断線",
+      "required_work": "site/node identity、store-and-forward、priority/TTL/expiry、telemetry stale判定、clock品質、単一command authorityとfencingを定義。リンク復帰で期限切れ指令を実行しない。"
+    },
+    {
+      "id": "G05",
+      "title": "多人数の権限",
+      "required_work": "現在のownerモデルからcrew/operator/maintenance/medical/safetyを別に設計。緊急手動権限と事前承認された自動応答は毎回Web承認を待たない。"
+    },
+    {
+      "id": "G06",
+      "title": "資源と可用性",
+      "required_work": "総発電/蓄電/ピーク、最低換気・水・熱余裕、冗長性、故障時の負荷遮断順を実設備モデルで算定。合成simから人命維持日数を保証しない。"
+    },
+    {
+      "id": "G07",
+      "title": "搭載系と地上系の分離",
+      "required_work": "ロケット flight/GNC、衛星TT&C、コロニー環境制御、avokado住民UIの安全境界を分ける。RockstarOS共通管理を単一故障点にしない。"
+    },
+    {
+      "id": "G08",
+      "title": "署名・復旧・更新の現地運用",
+      "required_work": "offline信頼根、鍵失効・交換、rollback/data互換、更新中の現地制御維持、事故ログ保存、物理改ざんを最終機体で受入。"
+    },
+    {
+      "id": "G09",
+      "title": "受入証拠",
+      "required_work": "単体→ソフト閉ループ→controller HIL→装置試験→無人実証→有人運用の証拠を別に保存。現在の数十/数百テスト数はコロニー適合率ではない。"
+    }
+  ],
+  "proposed_interfaces": {
+    "proposed_component_id": "dev.rock.colony.supervisor",
+    "proposed_python_module": "rockstaros_colony_sim",
+    "proposed_schemas": [
+      "rockstaros-colony-command/1",
+      "rockstaros-colony-telemetry/1",
+      "rockstaros-colony-receipt/1",
+      "rockstaros-colony-policy/1"
+    ],
+    "scope": "new standalone simulation contract; not yet a native Platform API extension or merged RockstarOS component",
+    "required_command_fields": [
+      "schema",
+      "commandId",
+      "requestId",
+      "ownerRef",
+      "siteId",
+      "nodeId",
+      "workId",
+      "componentId",
+      "componentGeneration",
+      "capability",
+      "payload",
+      "payloadDigest",
+      "policyVersion",
+      "expectedRevision",
+      "issuedAt",
+      "expiresAt",
+      "mode"
+    ],
+    "required_telemetry_fields": [
+      "schema",
+      "siteId",
+      "nodeId",
+      "sensorId",
+      "sequence",
+      "observedAt",
+      "receivedAt",
+      "clockQuality",
+      "value",
+      "unit",
+      "quality",
+      "calibrationRef",
+      "simulated"
+    ],
+    "recommended_receipt_states": [
+      "prepared",
+      "blocked",
+      "queued",
+      "dispatched",
+      "acknowledged",
+      "succeeded",
+      "failed",
+      "cancelled",
+      "expired",
+      "unknown"
+    ],
+    "receipt_semantics": "accepted_locally != delivered != acknowledged != physical_effect_verified; acknowledged alone never means succeeded",
+    "safety_modes": [
+      "SIM_ONLY",
+      "READ_ONLY",
+      "COMMISSIONING",
+      "OPERATE"
+    ],
+    "initial_mode": "SIM_ONLY",
+    "initial_hardware_effect_allowed": false,
+    "native_mapping": {
+      "ownerRef": "Android Platform owner / authenticated Linux principal subject",
+      "nodeId": "device_ref with explicit site binding",
+      "componentGeneration": "PlatformStore generation / Broker connection epoch; not interchangeable without adapter",
+      "workId": "existing Work/Engine job identity",
+      "commandId": "per-intent idempotency key, same ID with changed payload is conflict",
+      "unknown": "preserve existing MCP unknown and public Control Core unknown; do not auto-convert to failed"
+    },
+    "standalone_design_tests": [
+      "duplicate same command returns retained receipt",
+      "changed payload for same command rejected",
+      "stale telemetry cannot authorize unsafe increase",
+      "expired command rejected after offline queue",
+      "AI proposal cannot bypass policy",
+      "dispatched command interrupted becomes unknown, never automatically resent",
+      "generation change fences queued old command",
+      "local controller continues when supervisor or satellite link unavailable",
+      "restore clears actuation authority until recommissioned",
+      "sim receipt never claims hardware effect"
+    ],
+    "do_not_copy": [
+      "Public Control Core has no reuse permission grant; new simulation may implement fresh code with separately documented contract",
+      "Do not change existing crypto domain or backup schema names from older AvocadoOS evidence merely to rename products"
+    ],
+    "work_adapter_mapping": [
+      {
+        "existing": "WorkJob.active",
+        "simulation_mapping": [
+          "prepared",
+          "queued",
+          "dispatched",
+          "acknowledged",
+          "unknown"
+        ],
+        "rule": "unknown は failed/completed に丸めず、仕事activeの照合待ち理由として保持する。Web現行enumへwaitingを勝手に追加しない。"
+      },
+      {
+        "existing": "WorkJob.review",
+        "simulation_mapping": [
+          "succeeded"
+        ],
+        "rule": "必要工程が simulation receipt として整合した後の成果確認。physical_effect_verified=falseの表示を維持する。"
+      },
+      {
+        "existing": "WorkJob.completed",
+        "simulation_mapping": [],
+        "rule": "レビュー完了の仕事状態。設備実作用の成功を示す状態には使わない。"
+      },
+      {
+        "existing": "WorkJob.cancelled",
+        "simulation_mapping": [
+          "cancelled"
+        ],
+        "rule": "未dispatchなら取消。既送信なら結果不明の照合を残し、仕事取消で未確認作用を消さない。"
+      }
+    ],
+    "initial_implementation_scope": "SIM_ONLY; noncritical synthetic load setting only; no arbitrary physical write or critical-equipment control; code not shared with existing MCP Broker and not merged into original repo"
+  },
+  "summary": "RockstarOS can be the colony supervisory and operator information core after substantial new engineering; no inspected artifact proves colony safety control or flight readiness."
+}

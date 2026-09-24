@@ -1,0 +1,45 @@
+{
+  "scope": "Arithmetic and spherical geometry only; no physical validation.",
+  "coverage": {
+    "earth_radius_km": 6371.0,
+    "altitude_km": 550.0,
+    "min_elevation_deg": 25,
+    "cap_angle_deg": 8.458532849111865,
+    "one_satellite_global_area_fraction": 0.0054387101675943406,
+    "two_satellites_nonoverlap_global_area_upper_bound": 0.010877420335188681,
+    "area_only_satellite_count_necessary_lower_bound": 184,
+    "inclination_53_geometric_latitude_bound_deg": 61.45853284911186,
+    "this_is_not_a_continuous_coverage_proof": true
+  },
+  "rocket_budget_sensitivity": {
+    "baseline": {
+      "launch_mass_t": 618.6,
+      "ideal_ascent_dv_m_s": 10323.645203124572,
+      "margin_against_provisional_10080_m_s": 243.6452031245717
+    },
+    "upper_dry_plus_2t": {
+      "launch_mass_t": 620.6,
+      "ideal_ascent_dv_m_s": 10053.481958448043,
+      "margin_against_provisional_10080_m_s": -26.51804155195714
+    },
+    "both_isp_minus_10s": {
+      "launch_mass_t": 618.6,
+      "ideal_ascent_dv_m_s": 10034.52776012814,
+      "margin_against_provisional_10080_m_s": -45.47223987186044
+    },
+    "return_plus_2t_ascent_minus_2t": {
+      "launch_mass_t": 618.6,
+      "ideal_ascent_dv_m_s": 10028.485763518664,
+      "margin_against_provisional_10080_m_s": -51.51423648133641
+    },
+    "return_150_and_600_m_s_required_propellant_t": 4.896384216710427,
+    "difference_from_4t_return_budget_t": 0.8963842167104268,
+    "requirements_and_mass_are_provisional": true
+  },
+  "qualification": {
+    "live_satellite_received": false,
+    "hardware_test_executed": false,
+    "both_stages_recovered": false,
+    "flight_qualified": false
+  }
+}

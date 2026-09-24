@@ -14,6 +14,12 @@
 
 **OS原本内のE3「4本＋別Hub」配置はR5へ適用しません。** 原本を改変せず保持し、R5単独mini用のDevice Profile・adapterとの統合は未完了として区別します。
 
+## rocketstar・衛星・共通運用の設計アーカイブ
+
+[rocketstar 設計書完全版 R1.0（44ページ・35章）](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) / [本文と全付録の入口](docs/rocketstar-design/README.md) / [完全版ZIP](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0_package.zip)。無人・両段再使用のロケット、衛星搭載、帰還・回収、地上設備、整備・再使用、検証計画をまとめた統合システム設計です。製造図面、実機性能、飛行認定は未完了です。
+
+今回の「漏れなく更新保存」により、A-LINK、受信試作、コロニー運用、ボタン設計、旧版、生成元、計算と検証記録も[保存台帳](docs/rocketstar-design/inventory.json)で追跡します。[OS完全版の付録一式](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md)も受領し、既存OS PDFと同一SHA-256であることを確認しました。付属schema・DDL・モデルは設計/試験資料として保存し、現行runtimeへ自動適用しません。アーカイブ内のE3・別Hub・ボタン配置前提はR5へ継承せず、製品要求は引き続き1本自律・別Hub不要です。Git保存はサイト公開、OS配布、製造・打上げの承認を意味しません。
+
 ## 何をできるようにするか
 
 | 段階 | 目指す体験 |
@@ -56,7 +62,7 @@
 R5の計算・判定チェックは14件通過、実機試験は0件です。資料保存はOS runtimeの実装やハードウェア完成を意味しません。既存のPixel、QEMU、Web、Wallet等の検証系列は独立して維持します。
 
 <!-- project-overview:start -->
-更新日: 2026-09-24 / 149 task中97 done・31 in progress・20 planned・1 blocked
+更新日: 2026-09-24 / 150 task中98 done・31 in progress・20 planned・1 blocked
 <!-- project-overview:end -->
 
 件数は製品完成率ではありません。[全task・段階別gate・次の作業](project.md#全taskの作業進捗)を参照してください。

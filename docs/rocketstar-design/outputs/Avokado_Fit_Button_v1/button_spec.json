@@ -1,0 +1,49 @@
+{
+  "id": "AVO-PWR-FIT-01",
+  "revision": "1.0",
+  "date": "2026-09-24",
+  "decision": "USER_REQUESTED_DESIGN_CHANGE",
+  "name": "avokado 洋ナシ形フィット電源ボタン",
+  "target": "avokado E3 Edge Hub power input",
+  "exactPanelAndLocation": null,
+  "referenceImage": "pear_shape_reference.png",
+  "referenceSha256": "0df4e6aff10d0f72484dd42ab67c78d1c072a4a8d5b5da1dee43ffa8db9e3ae2",
+  "shape": "User-supplied pear outline with curved stem; no leaf or bite; flat face, not rounded fruit volume",
+  "finish": "Fine brushed silver; grain direction aligned with enclosure",
+  "restingSurface": "Coplanar with surrounding housing",
+  "nominalSurfaceOffsetMm": 0,
+  "positiveProtrusionAllowed": false,
+  "motion": "Momentary physical press, inward only, returning flush",
+  "electricalBehavior": "Preserve existing E3 normally-open dry-contact momentary power input; no new touch-only architecture",
+  "mechanicalArchitecture": [
+    "Rigid flat face supported by a captive rear carrier",
+    "Stem integrated with supported face rather than cantilevered as a separate key",
+    "Guided inward actuation with return spring or selected switch return",
+    "Defined hard stop preventing load transfer beyond selected switch travel",
+    "Thin perimeter separation; dimensions after switch/material/tolerance selection"
+  ],
+  "powerRouting": "Device-local power-management input; does not require AI or satellite availability",
+  "separateFunctions": [
+    "Physical MIC OFF",
+    "Push to talk",
+    "Input stop",
+    "Flight or colony equipment commands"
+  ],
+  "openPhysicalParameters": [
+    "Panel and coordinates",
+    "Overall button dimensions",
+    "Gap/tolerance stack and coatings",
+    "Actuation force/travel and hard stop",
+    "Switch part and life",
+    "ESD, sealing and wear qualification",
+    "Press-duration behavior with selected firmware/OS"
+  ],
+  "verificationStatus": "DESIGN_CHANGE_ONLY; render is not a manufactured prototype",
+  "acceptance": [
+    "No part of the face or stem protrudes at rest across approved tolerance and operating conditions",
+    "Off-center and stem-area presses do not tilt, bind or stay engaged",
+    "Release returns reliably without sustained power assertion",
+    "Electrical input behaves as specified for selected hardware and OS",
+    "Power control remains reachable with AI and external networking unavailable"
+  ]
+}

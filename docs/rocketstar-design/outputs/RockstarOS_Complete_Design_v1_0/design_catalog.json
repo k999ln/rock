@@ -1,0 +1,287 @@
+{
+  "schema": "rockstaros.design-catalog/1",
+  "version": "1.0",
+  "date": "2026-09-24",
+  "title": "RockstarOS 設計書完全版",
+  "scope": "OS and system software architecture, contracts, operations and verification; not complete physical vehicle manufacture or flight release",
+  "names": {
+    "rocket": "rocketstar",
+    "os": "RockstarOS",
+    "satellite": "A-LINK",
+    "interface": "avokado"
+  },
+  "operationalRelease": false,
+  "profiles": [
+    {
+      "id": "GROUND-REF-v1",
+      "status": "DESIGN_SELECTED_NEW_IMAGE_NOT_BUILT",
+      "operationalRelease": false
+    },
+    {
+      "id": "EDGE-HUB-v1",
+      "status": "PORT_AND_HARDWARE_ACCEPTANCE_OPEN",
+      "operationalRelease": false
+    },
+    {
+      "id": "COLONY-OPS-v1",
+      "status": "MISSION_AND_EQUIPMENT_INPUTS_OPEN",
+      "operationalRelease": false
+    },
+    {
+      "id": "FLIGHT-EVAL-v1",
+      "status": "CFS_RTEMS_FIRST_EVALUATION_CANDIDATE",
+      "operationalRelease": false
+    },
+    {
+      "id": "SAT-EVAL-v1",
+      "status": "MANAGEMENT_PAYLOAD_BOUNDARY_SELECTED",
+      "operationalRelease": false
+    }
+  ],
+  "services": [
+    {
+      "id": "identity",
+      "name": "Identity & Authority",
+      "responsibility": "人・機器・役割・有限権限",
+      "ownedStore": "認証・鍵参照・失効台帳",
+      "allowedInterface": "Platform、Brokerの検証API",
+      "failureBehavior": "不明な資格で新規操作を許さない",
+      "implementationStatus": "DESIGN_ONLY",
+      "processCountFixed": false
+    },
+    {
+      "id": "registry",
+      "name": "Asset Registry",
+      "responsibility": "拠点・設備・構成・校正・所在",
+      "ownedStore": "asset/profileの正本",
+      "allowedInterface": "版付き登録・参照API",
+      "failureBehavior": "不明な構成は操作不可",
+      "implementationStatus": "DESIGN_ONLY",
+      "processCountFixed": false
+    },
+    {
+      "id": "telemetry",
+      "name": "Telemetry & Alarms",
+      "responsibility": "観測の品質・時刻・警報",
+      "ownedStore": "観測／警報DB",
+      "allowedInterface": "adapter入力、購読API",
+      "failureBehavior": "欠測と保存失敗を明示",
+      "implementationStatus": "DESIGN_ONLY",
+      "processCountFixed": false
+    },
+    {
+      "id": "work",
+      "name": "Work & Procedures",
+      "responsibility": "提案・工程・承認・担当",
+      "ownedStore": "仕事・手順・cargo対応",
+      "allowedInterface": "PlatformとBrokerのAPI",
+      "failureBehavior": "activeの照合待ちを維持",
+      "implementationStatus": "DESIGN_ONLY",
+      "processCountFixed": false
+    },
+    {
+      "id": "command-broker",
+      "name": "Command Broker",
+      "responsibility": "有限指令・claim・結果照合",
+      "ownedStore": "指令／承認／結果DB",
+      "allowedInterface": "認可検査、adapter、receipt",
+      "failureBehavior": "新規送信停止、UNKNOWN保存",
+      "implementationStatus": "DESIGN_ONLY",
+      "processCountFixed": false
+    },
+    {
+      "id": "scheduler",
+      "name": "Resource Scheduler",
+      "responsibility": "資源の予約と競合調整",
+      "ownedStore": "予約・優先順位・計画",
+      "allowedInterface": "観測・仕事・提案API",
+      "failureBehavior": "局所制御を待たせない",
+      "implementationStatus": "DESIGN_ONLY",
+      "processCountFixed": false
+    },
+    {
+      "id": "adapter-gateway",
+      "name": "Device Adapter",
+      "responsibility": "機種別有限操作の翻訳",
+      "ownedStore": "接続世代・転送履歴",
+      "allowedInterface": "機器allowlistとBroker",
+      "failureBehavior": "再送せず結果を照会",
+      "implementationStatus": "DESIGN_ONLY",
+      "processCountFixed": false
+    },
+    {
+      "id": "links",
+      "name": "Link Gateway",
+      "responsibility": "拠点外配送・蓄積転送",
+      "ownedStore": "期限・宛先・spool",
+      "allowedInterface": "外部通信と限定受信API",
+      "failureBehavior": "現地制御継続、期限検査",
+      "implementationStatus": "DESIGN_ONLY",
+      "processCountFixed": false
+    },
+    {
+      "id": "evidence",
+      "name": "Evidence Store",
+      "responsibility": "証拠file・hash・引渡し",
+      "ownedStore": "内容fileと受領索引",
+      "allowedInterface": "所有サービスの参照API",
+      "failureBehavior": "未完fileを公開しない",
+      "implementationStatus": "DESIGN_ONLY",
+      "processCountFixed": false
+    },
+    {
+      "id": "updater",
+      "name": "Update & Recovery",
+      "responsibility": "版・配布署名・A/B・復元",
+      "ownedStore": "release manifest・復旧記録",
+      "allowedInterface": "保守資格とPlatform",
+      "failureBehavior": "旧版保持または読取復旧",
+      "implementationStatus": "DESIGN_ONLY",
+      "processCountFixed": false
+    },
+    {
+      "id": "shell",
+      "name": "avokado / Shell",
+      "responsibility": "表示・音声・利用者操作",
+      "ownedStore": "期限付きUI状態",
+      "allowedInterface": "Platformだけへ提案",
+      "failureBehavior": "途中入力を承認にしない",
+      "implementationStatus": "DESIGN_ONLY",
+      "processCountFixed": false
+    },
+    {
+      "id": "planner",
+      "name": "Local AI Planner",
+      "responsibility": "限定情報で作業案を生成",
+      "ownedStore": "隔離された一時context",
+      "allowedInterface": "読取と提案APIのみ",
+      "failureBehavior": "停止しても定型操作可",
+      "implementationStatus": "DESIGN_ONLY",
+      "processCountFixed": false
+    },
+    {
+      "id": "health",
+      "name": "Health & Audit",
+      "responsibility": "監督サービスの状態と監査",
+      "ownedStore": "health・監査参照",
+      "allowedInterface": "readinessと観測API",
+      "failureBehavior": "局所保護の代用にしない",
+      "implementationStatus": "DESIGN_ONLY",
+      "processCountFixed": false
+    }
+  ],
+  "groundReferencePolicy": {
+    "appliesTo": [
+      "GROUND-REF-v1"
+    ],
+    "status": "DESIGN_SELECTED_NOT_IMPLEMENTED",
+    "humanSessionSeconds": 900,
+    "readCapabilitySeconds": 300,
+    "approvalSeconds": 60,
+    "approvalMaxUses": 1,
+    "deviceLeaseSeconds": 30,
+    "commandMaxSeconds": 10,
+    "deviceCertificateSeconds": 86400,
+    "renewRemainingSeconds": 28800,
+    "revocationFreshnessMaxSeconds": 300,
+    "keyOverlapMaxSeconds": 3600,
+    "maxUtcUncertaintySeconds": 2,
+    "lastTimeConfirmationMaxSeconds": 86400,
+    "spoolBytes": 2147483648,
+    "spoolMaxMessages": 20000,
+    "quarantineBytes": 67108864,
+    "quarantineMaxMessages": 1000,
+    "ledgerBytes": 4294967296,
+    "ledgerMinimumRetentionDays": 90,
+    "unresolvedAutoDelete": false,
+    "smallPayloadMaxBytes": 4096,
+    "fileChunkMaxBytes": 262144,
+    "priorities": [
+      {
+        "id": "P0",
+        "quotaMiB": 256,
+        "ttlDays": 30,
+        "schedulingShare": 0.5
+      },
+      {
+        "id": "P1",
+        "quotaMiB": 256,
+        "ttlDays": 1,
+        "schedulingShare": 0.2
+      },
+      {
+        "id": "P2",
+        "quotaMiB": 512,
+        "ttlDays": 7,
+        "schedulingShare": 0.2
+      },
+      {
+        "id": "P3",
+        "quotaMiB": 1024,
+        "ttlDays": 7,
+        "schedulingShare": 0.1
+      }
+    ],
+    "throttleP3AtFraction": 0.8,
+    "throttleP2AtFraction": 0.9
+  },
+  "openInputs": [
+    {
+      "id": "mission",
+      "value": null,
+      "responsibleDiscipline": "ミッション／居住",
+      "requiredDeliverable": "場所・人数・滞在・補給・退避と資源収支",
+      "ifUnset": "対象の実機運用を解放しない。開発参照profileは別管理。"
+    },
+    {
+      "id": "flight_target",
+      "value": null,
+      "responsibleDiscipline": "機上／基盤OS",
+      "requiredDeliverable": "CPU・基板・版・BSP・compilerとbuild受入",
+      "ifUnset": "対象の実機運用を解放しない。開発参照profileは別管理。"
+    },
+    {
+      "id": "control_timing",
+      "value": null,
+      "responsibleDiscipline": "GNC／局所制御",
+      "requiredDeliverable": "sensor/actuator・モデル・周期・誤差・HIL",
+      "ifUnset": "対象の実機運用を解放しない。開発参照profileは別管理。"
+    },
+    {
+      "id": "independence",
+      "value": null,
+      "responsibleDiscipline": "電気／信頼性",
+      "requiredDeliverable": "冗長台数・電源・バス・共通原因解析",
+      "ifUnset": "対象の実機運用を解放しない。開発参照profileは別管理。"
+    },
+    {
+      "id": "equipment_ratings",
+      "value": null,
+      "responsibleDiscipline": "電力／空気／水／熱",
+      "requiredDeliverable": "定格・故障モード・許容時間・ICD",
+      "ifUnset": "対象の実機運用を解放しない。開発参照profileは別管理。"
+    },
+    {
+      "id": "radio",
+      "value": null,
+      "responsibleDiscipline": "衛星／通信",
+      "requiredDeliverable": "RF波形・周波数・リンク予算・可視・試験",
+      "ifUnset": "対象の実機運用を解放しない。開発参照profileは別管理。"
+    },
+    {
+      "id": "production_trust",
+      "value": null,
+      "responsibleDiscipline": "セキュリティ／運用",
+      "requiredDeliverable": "鍵保管・人と装置の資格発行／失効／復旧",
+      "ifUnset": "対象の実機運用を解放しない。開発参照profileは別管理。"
+    },
+    {
+      "id": "measured_budgets",
+      "value": null,
+      "responsibleDiscipline": "性能／ソフト",
+      "requiredDeliverable": "CPU・RAM・記録・通信の測定と上限",
+      "ifUnset": "対象の実機運用を解放しない。開発参照profileは別管理。"
+    }
+  ],
+  "sourceRepoHead": "5d5f3dc4f73ac3389c8dbc00f9ca6e8beba526e0"
+}

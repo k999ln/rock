@@ -1,4 +1,4 @@
-# 2026-09-24 現行製品基準 — avocadoMini R5（統合版v1.93）
+# 2026-09-24 現行製品基準 — avocadoMini R5（統合版v1.94）
 
 利用者は、使用時全高200mm以内の銀色円筒mini、1本での自律動作、別Edge Hub不要、同型mini増設、眼鏡なしで周囲空間に粒子が舞う表示、身体・手・日本語音声、ゲームから生活支援への展開を指定し、R5設計書の作成とGitHubへの漏れない保存を依頼した。[R5統合基本設計](avocado-mini-r5/README.md)を現行製品要求の入口とする。
 
@@ -6,7 +6,9 @@ R5は51ページ・設計検討図8点・候補型番・比較計算・OS契約�
 
 E3の4本＋別Hub必須、旧価格、寸法・性能候補はR5へ自動継承しない。外部給電は必要で電池未採用。Pixel/QEMU、既存Material研究契約、権限・Walletの証拠と安全条件を維持する。Git保存と公開サイト配備は別であり、今回サイトやOS imageは変更しない。
 
-2026-09-24 最新方針（v1.92）: 利用者が[RockstarOS 設計書完全版 v1.0](rockstaros-complete-design-v1.0.pdf)を新しい設計書として指定し、正本repository `k999ln/rock`への漏れない更新保存を明示した。原本PDF、全文検索用抽出テキスト、SHA-256とページ数を固定する[完全性記録](../data/rockstaros-complete-design-v1.0.json)を保存し、設計ポータルと機械可読台帳から参照する。完全版は32章、5配備profile、13論理service、60要求、43/43の構造・DDL検査を収録する。「完全」は設計範囲であり、runtime実装、実機受入、飛行認定、量産承認ではない。PDFに埋め込み添付は0件で、本文が言及する付属schema・DDL等の個別原本は今回の提供物に含まれないため、存在を捏造せず別途受領対象とする。
+2026-09-24 設計保存追記（v1.94）: 利用者は、rocketstar完全版の作成後に正本repository `k999ln/rock`へ「漏れなく更新保存」と明示した。[rocketstar設計アーカイブ](rocketstar-design/README.md)に、44ページ・35章のR1.0、60要求、18システムinterface、継承C3資料、A-LINK、受信試作、OS完全版付録、コロニー、端末ボタン、旧版、生成元、計算・検証記録を保存する。元成果物のバイト列を保持し、全ファイルは[保存台帳](rocketstar-design/inventory.json)で追跡する。OS付録のPDFは既存原本と同一SHA-256であり、当初未受領だったschema・DDL等の付属原本を今回受領した。これは設計資料の保存であり、現行runtimeへの導入、製造・飛行承認、サイト公開ではない。アーカイブ中のE3・別Hub・ボタン前提をR5へ自動適用せず、現行の1本自律・別Hub不要要求を維持する。確定要望RQ01〜RQ49、Pixel/QEMU、Material、権限・Walletの境界は変更しない。
+
+2026-09-24 OS原本保存（v1.92）: 利用者が[RockstarOS 設計書完全版 v1.0](rockstaros-complete-design-v1.0.pdf)を新しい設計書として指定し、正本repository `k999ln/rock`への漏れない更新保存を明示した。原本PDF、全文検索用抽出テキスト、SHA-256とページ数を固定する[完全性記録](../data/rockstaros-complete-design-v1.0.json)を保存し、設計ポータルと機械可読台帳から参照する。完全版は32章、5配備profile、13論理service、60要求、43/43の構造・DDL検査を収録する。「完全」は設計範囲であり、runtime実装、実機受入、飛行認定、量産承認ではない。PDFに埋め込み添付は0件で、当初は本文が言及する付属schema・DDL等の個別原本が未受領だった。上記v1.94で付録一式を受領し、原本の完全性を保持して保存した。
 
 OS v1.0原本のE3配置（PDF p4・17・30）はR5へ適用しない。原本は保持し、R5単独mini用Device Profile・adapterとの統合は未完了として扱う。
 

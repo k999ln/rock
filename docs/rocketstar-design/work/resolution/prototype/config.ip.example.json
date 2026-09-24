@@ -1,0 +1,11 @@
+{
+  "mode": "live-ip-lab",
+  "device": "avokado-lab-01",
+  "key_file": "lab-key.bin",
+  "state_dir": "local-state",
+  "budget_epoch": "bench-session-01",
+  "routes": [
+    {"name":"wifi","allowed":false,"interface":"wlan0","endpoint":"https://YOUR-LAB-SERVICE.example","max_attempts":100},
+    {"name":"cellular","allowed":false,"interface":"wwan0","endpoint":"https://YOUR-LAB-SERVICE.example","max_attempts":100}
+  ]
+}

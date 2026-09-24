@@ -1,5 +1,5 @@
 {
-  "version": "1.93",
+  "version": "1.94",
   "decidedAt": "2026-09-24",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -227,7 +227,11 @@
     "completeDesignAuthorityDate": "2026-09-24",
     "completeDesignR5Relationship": {
       "originalBytesPreserved": true,
-      "e3PlacementInPdfPages": [4, 17, 30],
+      "e3PlacementInPdfPages": [
+        4,
+        17,
+        30
+      ],
       "e3HubRequirementAppliesToR5": false,
       "r5DeviceProfileAndAdapterIntegrated": false,
       "currentMiniRequirements": "docs/avocado-mini-r5/README.md"
@@ -244,7 +248,53 @@
     "index": "data/design-document-index.json",
     "automatedCheck": "npm run design:check",
     "coverageStatus": "current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete",
-    "allImplementationsComplete": false
+    "allImplementationsComplete": false,
+    "completeDesignSupplement": {
+      "receivedAt": "2026-09-24",
+      "status": "received_and_archived_not_runtime_imported",
+      "package": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md",
+      "manifest": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/manifest.json",
+      "fileCount": 60,
+      "manifestEntriesVerified": 59,
+      "schemaCount": 7,
+      "ddl": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/operations_store.sql",
+      "existingPdfBytesMatch": true,
+      "pdfSha256": "9f318e6c1fe04abca895c87085931b9b3f15f1a4445aa99b4231ae9a5c1c3855",
+      "runtimeImported": false
+    },
+    "rocketstarArchive": {
+      "decisionDate": "2026-09-24",
+      "userInstruction": "https://github.com/k999ln/rock.git に漏れなく更新保存",
+      "entry": "docs/rocketstar-design/README.md",
+      "inventory": "docs/rocketstar-design/inventory.json",
+      "verification": "docs/rocketstar-design/verification.json",
+      "completeDesignPdf": "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf",
+      "completeDesignMarkdown": "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md",
+      "completeDesignPackage": "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0_package.zip",
+      "scope": {
+        "chapters": 35,
+        "pages": 44,
+        "requirements": 60,
+        "systemInterfaces": 18,
+        "inheritedDesignItems": 40,
+        "inheritedPayloadInterfaces": 13
+      },
+      "preservedScope": [
+        "rocketstar current and historical design",
+        "A-LINK satellite and receiver prototype",
+        "RockstarOS complete design supplements",
+        "colony operating design and simulation",
+        "avokado fit button and power behavior models",
+        "authoring sources and calculation/verification evidence"
+      ],
+      "sourceBytesPreserved": true,
+      "archiveCodeIsRuntime": false,
+      "manufacturingReleaseApproved": false,
+      "flightReleaseApproved": false,
+      "sitePublicationPerformed": false,
+      "e3HubRequirementAppliesToR5": false,
+      "r5DeviceProfileAndAdapterIntegrated": false
+    }
   },
   "northStar": {
     "document": "docs/product-north-star-20260915.md",

@@ -1,0 +1,112 @@
+{
+  "model": "Spherical Earth, circular orbit, geometrical line of sight only",
+  "earth_radius_km": 6371.0,
+  "height_km": 550.0,
+  "minimum_elevation_deg": 25.0,
+  "inclination_deg": 87.0,
+  "earth_rotation_rad_s": 7.2921159e-05,
+  "gravitational_parameter_km3_s2": 398600.4418,
+  "mean_motion_rad_s": 0.0010965176180602308,
+  "coverage_cap_half_angle_deg": 8.458532849111865,
+  "points": 2048,
+  "point_rule": "Fibonacci sphere, z=1-2*(k+0.5)/2048; lon=pi*(3-sqrt(5))*k",
+  "time_samples": 288,
+  "time_start_s": 0,
+  "time_stop_exclusive_s": 86400,
+  "time_step_s": 300,
+  "orbit_plane_rule": "RAAN_j=pi*j/P, j=0..P-1 (0 to <180 deg)",
+  "phase_rule": "u_j,s(t)=n*t+2*pi*(s/24+j/(P*24)); s=0..23",
+  "not_a_standard_walker_claim": true,
+  "visibility_rule": "dot(ground_unit, satellite_ECEF_unit)>=cos(psi)",
+  "max_gap_note": "Consecutive unseen sample count times 300 s is a coarse sample-based index, not a measured exact gap duration; no periodic wrap of the 24 h boundary.",
+  "limitations": [
+    "Finite 2048-point grid and 300-s sampling can miss spatial and temporal gaps.",
+    "No RF link budget, buildings, terrain, interference, pointing, gateway, capacity or service model.",
+    "No perturbations, orbital errors, failures, manoeuvres, or phasing optimization.",
+    "24 h only; a successful sampled test does not establish continuous global coverage.",
+    "Numbers are preliminary for this explicit arrangement only."
+  ],
+  "results": [
+    {
+      "planes": 12,
+      "satellites_per_plane": 24,
+      "satellites": 288,
+      "mean_point_time_visibility_fraction": 0.9604593912760416,
+      "worst_point_sample_visibility_fraction": 0.8923611111111112,
+      "worst_point": {
+        "point_index": 1003,
+        "latitude_deg": 1.1471112806797805,
+        "longitude_deg": 40.28734218795036
+      },
+      "all_points_visible_at_every_sample_time": false,
+      "number_of_sample_times_all_points_visible": 0,
+      "total_sample_times": 288,
+      "minimum_visible_satellites_over_all_point_times": 0,
+      "maximum_visible_satellites_over_all_point_times": 14,
+      "minimum_instantaneous_sample_area_fraction_visible": 0.951171875,
+      "maximum_instantaneous_sample_area_fraction_visible": 0.96826171875,
+      "longest_consecutive_unseen_samples": 3,
+      "longest_unseen_sample_run_times_step_s": 900,
+      "longest_unseen_run_point": {
+        "point_index": 348,
+        "latitude_deg": 41.27455511692711,
+        "longitude_deg": -27.29811058683317
+      },
+      "elapsed_computation_s": 0.237
+    },
+    {
+      "planes": 18,
+      "satellites_per_plane": 24,
+      "satellites": 432,
+      "mean_point_time_visibility_fraction": 0.9997541639539931,
+      "worst_point_sample_visibility_fraction": 0.9930555555555556,
+      "worst_point": {
+        "point_index": 1019,
+        "latitude_deg": 0.25178890398834625,
+        "longitude_deg": 80.41156698855782
+      },
+      "all_points_visible_at_every_sample_time": false,
+      "number_of_sample_times_all_points_visible": 194,
+      "total_sample_times": 288,
+      "minimum_visible_satellites_over_all_point_times": 0,
+      "maximum_visible_satellites_over_all_point_times": 22,
+      "minimum_instantaneous_sample_area_fraction_visible": 0.998046875,
+      "maximum_instantaneous_sample_area_fraction_visible": 1.0,
+      "longest_consecutive_unseen_samples": 1,
+      "longest_unseen_sample_run_times_step_s": 300,
+      "longest_unseen_run_point": {
+        "point_index": 131,
+        "latitude_deg": 60.643005420657396,
+        "longitude_deg": 13.517090554957356
+      },
+      "elapsed_computation_s": 0.322
+    },
+    {
+      "planes": 24,
+      "satellites_per_plane": 24,
+      "satellites": 576,
+      "mean_point_time_visibility_fraction": 0.9999915228949653,
+      "worst_point_sample_visibility_fraction": 0.9965277777777778,
+      "worst_point": {
+        "point_index": 134,
+        "latitude_deg": 60.30240882987269,
+        "longitude_deg": 66.04038270507127
+      },
+      "all_points_visible_at_every_sample_time": false,
+      "number_of_sample_times_all_points_visible": 283,
+      "total_sample_times": 288,
+      "minimum_visible_satellites_over_all_point_times": 0,
+      "maximum_visible_satellites_over_all_point_times": 28,
+      "minimum_instantaneous_sample_area_fraction_visible": 0.99951171875,
+      "maximum_instantaneous_sample_area_fraction_visible": 1.0,
+      "longest_consecutive_unseen_samples": 1,
+      "longest_unseen_sample_run_times_step_s": 300,
+      "longest_unseen_run_point": {
+        "point_index": 134,
+        "latitude_deg": 60.30240882987269,
+        "longitude_deg": 66.04038270507127
+      },
+      "elapsed_computation_s": 0.258
+    }
+  ]
+}

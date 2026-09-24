@@ -1,0 +1,16 @@
+{
+  "schema": "rockstaros-colony-unit-test-result/1",
+  "scope": "SIM_ONLY: disposable SQLite stores, fake clock, direct Python fixture transport",
+  "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 17.0.0 (clang-1700.6.4.2)]",
+  "tests_run": 33,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "passed": 33,
+  "hardware_tested": false,
+  "network_tested": false,
+  "original_os_modified": false,
+  "core_sha256": "f7a4809039889e02f6a6cec1e83a9c41e1dad206bb27b4cb6762c725a136084e",
+  "test_sha256": "14cfc7abd9799dcb5a53f08de02f3f4e76ae3224b648bfb85c6cf453022fad59",
+  "failure_details": []
+}

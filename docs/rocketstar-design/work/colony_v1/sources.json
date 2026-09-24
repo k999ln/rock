@@ -1,0 +1,87 @@
+{
+  "schema": "rockstaros-colony-source-register/1",
+  "verified_on": "2026-09-23",
+  "usage": "Official primary-source architectural references. These sources do not certify or validate this project. Paraphrases are intentionally short; architecture choices are design inferences.",
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Environmental Control and Life Support Systems (ECLSS)",
+      "publisher": "NASA",
+      "url": "https://www.nasa.gov/reference/environmental-control-and-life-support-systems-eclss/",
+      "locator": "Overview; Water Recovery System; Air Revitalization System; Oxygen Generation System",
+      "verified_paraphrase": "ECLSS manages atmospheric pressure, oxygen, ventilation, fire protection, water, and waste. Water recovery, air revitalization, and oxygen generation are distinct interacting subsystems.",
+      "design_inference": "Separate habitat service domains, each with qualified local control, health reporting, maintenance, and traceable sensor quality. A single environmental sensor or display cannot substitute for these systems.",
+      "limits": "ISS hardware descriptions do not establish our habitat's sizing, atmospheric setpoints, redundancy, or crew suitability."
+    },
+    {
+      "id": "S2",
+      "title": "State-of-the-Art of Small Spacecraft Technology — 3.0 Power",
+      "publisher": "NASA",
+      "url": "https://www.nasa.gov/smallsat-institute/sst-soa/power-subsystems/",
+      "locator": "3.1 Introduction; 3.6 State-of-the-Art — Power Management and Distribution",
+      "verified_paraphrase": "Spacecraft power systems include generation, storage, and distribution. PMAD regulates and distributes electricity, incorporates fault management, and interfaces with onboard computers for monitoring.",
+      "design_inference": "Represent these functions separately in the asset and telemetry model; retain electrical protection and qualified load actions in local equipment.",
+      "limits": "This is a small-spacecraft reference; catalog voltages, products, and capacities are not habitat design values."
+    },
+    {
+      "id": "S3",
+      "title": "Integrated System for Autonomous and Adaptive Caretaking (ISAAC)",
+      "publisher": "NASA",
+      "url": "https://www.nasa.gov/integrated-system-for-autonomous-and-adaptive-caretaking-isaac/",
+      "locator": "Overview; Autonomous Logistics Management",
+      "verified_paraphrase": "ISAAC investigated autonomous spacecraft caretaking during uncrewed phases, combining robotic inspection and subsystem telemetry, inventory work, and coordinated cargo handling.",
+      "design_inference": "RockstarOS should unify equipment health, inspection evidence, inventory, and work execution locally, rather than depend on uninterrupted remote supervision.",
+      "limits": "ISAAC demonstrations are not evidence that this project's autonomy or physical equipment works."
+    },
+    {
+      "id": "S4",
+      "title": "NASA-STD-8739.8B — Software Assurance and Software Safety Standard",
+      "publisher": "NASA",
+      "url": "https://standards.nasa.gov/sites/default/files/standards/NASA/B/0/NASA-STD-87398RevB.pdf",
+      "locator": "Appendix A, A.1.1–A.1.2",
+      "verified_paraphrase": "Software hazard analysis considers common-mode failures in redundant computers and should preserve the independence of hazard inhibits and hardware redundancy.",
+      "design_inference": "Independent local protection must not share all of its failure causes with Core, UI, AI, or their network. Two computers running identical software alone do not demonstrate independence.",
+      "limits": "Using this principle is not NASA standards compliance or human-rating; project-specific hazard analysis remains required."
+    },
+    {
+      "id": "S5",
+      "title": "SWE-134 — Safety-Critical Software Design Requirements, Handbook Version D",
+      "publisher": "NASA",
+      "url": "https://swehb.nasa.gov/spaces/SWEHBVD/pages/102695493/SWE-134%2B-%2BSafety-Critical%2BSoftware%2BDesign%2BRequirements",
+      "locator": "1 Requirements, 3.7.3; 3 Guidance; 7 Software Assurance",
+      "verified_paraphrase": "The requirements address known safe initialization and transitions, command order and prerequisites, input/output integrity, fault handling, and responses within hazard-prevention deadlines.",
+      "design_inference": "Define equipment-specific restart and fault states; validate command preconditions at the equipment boundary. Do not define a universal safe state as all power off.",
+      "limits": "Our implementation has no completed safety or mission-critical qualification. Hazard-specific deadlines and acceptable states need physical-system analysis."
+    },
+    {
+      "id": "S6",
+      "title": "RFC 9171 — Bundle Protocol Version 7",
+      "publisher": "RFC Editor / IETF",
+      "url": "https://www.rfc-editor.org/rfc/rfc9171.html",
+      "locator": "4.3.1 Primary Bundle Block, Lifetime; 5.1 Generation of Administrative Records; 6.1.1 Bundle Status Reports",
+      "verified_paraphrase": "BPv7 supports store-and-forward communication with bundle lifetime processing. Status reports describe bundle progress, and their generation is disabled by default to limit excessive traffic.",
+      "design_inference": "Treat transfer status separately from application acceptance and equipment completion. Add application authorization, expiry, deduplication, state checks, and result reconciliation.",
+      "limits": "The simulator does not implement BPv7. Existing A-LINK software must not be described as a BPv7-compatible system without profile and interoperability tests."
+    },
+    {
+      "id": "S7",
+      "title": "RFC 9172 — Bundle Protocol Security",
+      "publisher": "RFC Editor / IETF",
+      "url": "https://www.rfc-editor.org/rfc/rfc9172.html",
+      "locator": "3.1 Block Definitions; Security Context and Security Policy sections",
+      "verified_paraphrase": "BPSec defines integrity and confidentiality security blocks and relies on security policy and security contexts for their application.",
+      "design_inference": "A future BPv7 profile must specify keys, policies, and contexts; transport cryptography does not replace local command authority or equipment preconditions.",
+      "limits": "This is an architectural candidate, not an implemented BPSec feature or established key infrastructure."
+    },
+    {
+      "id": "S8",
+      "title": "CCSDS 133.0-B-2 — Space Packet Protocol, Issue 2 with Editorial Change 2",
+      "publisher": "CCSDS",
+      "url": "https://ccsds.org/Pubs/133x0b2e2.pdf",
+      "locator": "Scope; Protocol Overview; Protocol Data Unit",
+      "verified_paraphrase": "Space Packet Protocol specifies services and packet procedures for transferring application data with CCSDS packet structures.",
+      "design_inference": "Use an explicitly selected spacecraft packet profile at a mission gateway while preserving separate application semantics, authority, and command-result tracking.",
+      "limits": "Packet encoding alone does not provide full mission interoperability, end-to-end delivery, equipment authorization, or BPv7 functionality."
+    }
+  ]
+}

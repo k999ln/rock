@@ -34,6 +34,8 @@
 
 ## 関連資料
 
+- [rocketstar・衛星・OS・ボタンの完全保存アーカイブ](../rocketstar-design/README.md) — DOC03。利用者の保存指示により原本・生成元・旧版・QA画像を保持し、全ファイルのhashを検査する。現行R5要件とアーカイブ内E3前提は分ける。
+
 - [Git consolidation](../git-consolidation.md)
 - [Prompt playbook](../prompt-playbook.md)
 - [Design/implementation alignment](../design-implementation-alignment-20260909.md)

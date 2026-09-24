@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="501.27559055118115" height="162" preserveAspectRatio="xMinYMin meet" viewBox="0 0 501 162" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="501.27559055118115" height="162"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-162)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="0" y="148" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,296) scale(1,-1)">物流の連鎖 / 各境界で物理的な検査と証拠が必要</text>
+			<rect x="0" y="62" width="89" height="50" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="26.499999999999996" y="91.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,182) scale(1,-1)">地上機材</text>
+			<text x="21.999999999999996" y="77.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,154) scale(1,-1)">梱包・搭載</text>
+			<path d="M 89,87 L 103,87 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="103 87, 98.49776 89.17483, 98.49776 84.82517" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="103" y="62" width="89" height="50" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="127.744384765625" y="91.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,182) scale(1,-1)">rocketstar</text>
+			<text x="129.5" y="77.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,154) scale(1,-1)">軌道投入</text>
+			<path d="M 192,87 L 206,87 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="206 87, 201.4978 89.17483, 201.4978 84.82517" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="206" y="62" width="89" height="50" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="237.0" y="91.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,182) scale(1,-1)">貨物船</text>
+			<text x="228.0" y="77.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,154) scale(1,-1)">移送・係留</text>
+			<path d="M 295,87 L 309,87 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="309 87, 304.4978 89.17483, 304.4978 84.82517" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="309" y="62" width="89" height="50" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="344.5" y="91.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,182) scale(1,-1)">拠点</text>
+			<text x="331.0" y="77.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,154) scale(1,-1)">受領・検収</text>
+			<path d="M 398,87 L 412,87 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="412 87, 407.4978 89.17483, 407.4978 84.82517" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="412" y="62" width="89" height="50" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="447.5" y="91.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,182) scale(1,-1)">設備</text>
+			<text x="434.0" y="77.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,154) scale(1,-1)">設置・試験</text>
+			<path d="M 0,38 L 501.275591,38 Z" style="stroke: rgb(5%,77%,87%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="107.23486328124997" y="18" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,36) scale(1,-1)">RockstarOS：同じcargoIdと仕事・証拠を、輸送から設備台帳まで継承</text>
+		</g>
+	</g>
+</svg>

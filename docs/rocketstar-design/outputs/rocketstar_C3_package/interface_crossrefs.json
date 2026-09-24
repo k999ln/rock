@@ -1,0 +1,639 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-09-23",
+  "release": "C1",
+  "scope": "搭載衛星・端末接口13件と地上試験6件、およびD07/D08を40項目のロケット設計成果物台帳へ対応付ける。",
+  "inputs": {
+    "register": "design_register.json",
+    "interfaces": "payload_interfaces.json",
+    "decisions": "main.md D07/D08"
+  },
+  "register_status_authority": "design_register.json。状態を本対応表へ複製せず、対応付けによって台帳状態を進めない。",
+  "limitations": [
+    "方式選定は機械・電気・熱・RFの設計完了や試験合格を意味しない。",
+    "全40項目へ無理に対応付けない。衛星・端末接口と直接関連する項目のみを収録する。",
+    "ロケット40項目台帳は衛星網・地上網・端末の全設計を網羅する台帳ではない。自前網の無線機・方式・周波数調整・認証網・サービス受入には詳細な下位設計を要する。",
+    "既存Iridium網での実証は自前A-LINK網またはrocketstarの認定証拠へ転記しない。"
+  ],
+  "counts": {
+    "register_total": 40,
+    "register_items_with_crossrefs": 23,
+    "interfaces": 13,
+    "ground_test_gates": 6,
+    "decisions": 2
+  },
+  "decision_links": [
+    {
+      "decision_id": "D07",
+      "classification": "architecture_selected",
+      "decision": "B-H1を以後の作業用配置に選定",
+      "register_ids": [
+        "RDR-007",
+        "RDR-032",
+        "RDR-033"
+      ],
+      "interface_ids": [
+        "PL-M01",
+        "PL-M02",
+        "PL-M03",
+        "PL-T01",
+        "PL-S01",
+        "PL-RF02"
+      ],
+      "limits": "面の機能配置を選定。寸法・質量・面積・電力・通信性能・製造承認は確定しない。"
+    },
+    {
+      "decision_id": "D08",
+      "classification": "architecture_selected",
+      "decision": "E3の4塔＋別Hubと9704別筐体実証を選定",
+      "register_ids": [
+        "RDR-027",
+        "RDR-033"
+      ],
+      "interface_ids": [
+        "AV-IF01",
+        "AV-IF02"
+      ],
+      "limits": "既存網での端末実証の構成を選定。自前NTN網への互換・実機性能・製造承認は確定しない。"
+    }
+  ],
+  "interface_links": [
+    {
+      "interface_id": "PL-M01",
+      "primary_register_ids": [
+        "RDR-032"
+      ],
+      "related_register_ids": [
+        "RDR-004",
+        "RDR-033"
+      ],
+      "relationship": "衛星の質量特性と上段残留部の計上境界を統合予算へ渡す。"
+    },
+    {
+      "interface_id": "PL-M02",
+      "primary_register_ids": [
+        "RDR-032",
+        "RDR-033"
+      ],
+      "related_register_ids": [
+        "RDR-007",
+        "RDR-010"
+      ],
+      "relationship": "衛星の取付・剛性・荷重を機体構造と合意する。"
+    },
+    {
+      "interface_id": "PL-M03",
+      "primary_register_ids": [
+        "RDR-032",
+        "RDR-033"
+      ],
+      "related_register_ids": [
+        "RDR-007",
+        "RDR-011"
+      ],
+      "relationship": "衛星の収納・掃引包絡を機体内部と保持扉の配置へ戻す。"
+    },
+    {
+      "interface_id": "PL-E01",
+      "primary_register_ids": [
+        "RDR-033"
+      ],
+      "related_register_ids": [
+        "RDR-024",
+        "RDR-025",
+        "RDR-030"
+      ],
+      "relationship": "衛星への給電有無・接地・切離しを機体と地上設備の電気設計へ接続する。"
+    },
+    {
+      "interface_id": "PL-E02",
+      "primary_register_ids": [
+        "RDR-033"
+      ],
+      "related_register_ids": [
+        "RDR-021",
+        "RDR-023",
+        "RDR-025",
+        "RDR-027",
+        "RDR-028"
+      ],
+      "relationship": "健全性・時刻・分離許可を電装とソフトの状態・権限設計へ接続する。"
+    },
+    {
+      "interface_id": "PL-T01",
+      "primary_register_ids": [
+        "RDR-032",
+        "RDR-033"
+      ],
+      "related_register_ids": [
+        "RDR-018",
+        "RDR-024"
+      ],
+      "relationship": "上段収納室から衛星放出までの温度・熱流・電力境界を合意する。"
+    },
+    {
+      "interface_id": "PL-ENV01",
+      "primary_register_ids": [
+        "RDR-032",
+        "RDR-033"
+      ],
+      "related_register_ids": [
+        "RDR-008",
+        "RDR-030",
+        "RDR-039"
+      ],
+      "relationship": "搭載品の環境・材料・清浄度条件を地上設備と品質管理へ伝える。"
+    },
+    {
+      "interface_id": "PL-S01",
+      "primary_register_ids": [
+        "RDR-032",
+        "RDR-033"
+      ],
+      "related_register_ids": [
+        "RDR-011",
+        "RDR-022"
+      ],
+      "relationship": "衛星分離機構・検知・再接触回避を機体保持機構と姿勢条件に整合する。"
+    },
+    {
+      "interface_id": "PL-S02",
+      "primary_register_ids": [
+        "RDR-005",
+        "RDR-011"
+      ],
+      "related_register_ids": [
+        "RDR-001",
+        "RDR-004",
+        "RDR-022",
+        "RDR-023",
+        "RDR-029",
+        "RDR-032",
+        "RDR-033"
+      ],
+      "relationship": "未分離・扉不閉鎖の残留状態を通常の帰還成功と混同せず別条件として評価する。"
+    },
+    {
+      "interface_id": "PL-RF01",
+      "primary_register_ids": [
+        "RDR-025",
+        "RDR-033"
+      ],
+      "related_register_ids": [
+        "RDR-023",
+        "RDR-027"
+      ],
+      "relationship": "搭載中の送信禁止とEMCを機体の通信・安全・権限境界へ接続する。"
+    },
+    {
+      "interface_id": "PL-RF02",
+      "primary_register_ids": [
+        "RDR-033"
+      ],
+      "related_register_ids": [
+        "RDR-002",
+        "RDR-032"
+      ],
+      "relationship": "衛星サービスの通信方式と可視条件を端末・地上網・投入条件へ接続する。"
+    },
+    {
+      "interface_id": "AV-IF01",
+      "primary_register_ids": [
+        "RDR-033"
+      ],
+      "related_register_ids": [
+        "RDR-006"
+      ],
+      "relationship": "現行E3のHub接口と追加通信機器の構成版を管理する。ロケットの電源仕様を端末へ流用しない。"
+    },
+    {
+      "interface_id": "AV-IF02",
+      "primary_register_ids": [
+        "RDR-033"
+      ],
+      "related_register_ids": [
+        "RDR-027",
+        "RDR-038"
+      ],
+      "relationship": "端末の受信・保存証拠とロケットの飛行制御権限を区別し試験記録を追跡する。"
+    }
+  ],
+  "ground_test_links": [
+    {
+      "test_gate_id": "P-G01",
+      "register_ids": [
+        "RDR-007",
+        "RDR-011",
+        "RDR-032",
+        "RDR-033",
+        "RDR-038"
+      ],
+      "interface_ids": [
+        "PL-M01",
+        "PL-M02",
+        "PL-M03",
+        "PL-S01",
+        "PL-S02"
+      ],
+      "evidence_state": "NOT_PERFORMED"
+    },
+    {
+      "test_gate_id": "P-G02",
+      "register_ids": [
+        "RDR-008",
+        "RDR-010",
+        "RDR-018",
+        "RDR-024",
+        "RDR-025",
+        "RDR-032",
+        "RDR-033",
+        "RDR-038",
+        "RDR-039"
+      ],
+      "interface_ids": [
+        "PL-M02",
+        "PL-E01",
+        "PL-T01",
+        "PL-ENV01",
+        "PL-RF01"
+      ],
+      "evidence_state": "NOT_PERFORMED"
+    },
+    {
+      "test_gate_id": "P-G03",
+      "register_ids": [
+        "RDR-011",
+        "RDR-021",
+        "RDR-023",
+        "RDR-024",
+        "RDR-025",
+        "RDR-027",
+        "RDR-028",
+        "RDR-033",
+        "RDR-038"
+      ],
+      "interface_ids": [
+        "PL-E01",
+        "PL-E02",
+        "PL-S01",
+        "PL-S02",
+        "PL-RF01"
+      ],
+      "evidence_state": "NOT_PERFORMED"
+    },
+    {
+      "test_gate_id": "P-G04",
+      "register_ids": [
+        "RDR-002",
+        "RDR-032",
+        "RDR-033",
+        "RDR-038"
+      ],
+      "interface_ids": [
+        "PL-RF02",
+        "AV-IF02"
+      ],
+      "evidence_state": "NOT_PERFORMED"
+    },
+    {
+      "test_gate_id": "P-G05",
+      "register_ids": [
+        "RDR-033",
+        "RDR-038"
+      ],
+      "interface_ids": [
+        "AV-IF01",
+        "AV-IF02"
+      ],
+      "evidence_state": "NOT_PERFORMED"
+    },
+    {
+      "test_gate_id": "P-G06",
+      "register_ids": [
+        "RDR-033",
+        "RDR-038"
+      ],
+      "interface_ids": [
+        "AV-IF01",
+        "AV-IF02"
+      ],
+      "evidence_state": "NOT_PERFORMED"
+    }
+  ],
+  "register_reverse_index": [
+    {
+      "register_id": "RDR-001",
+      "register_title": "両段回収・同一機番の再飛行要求",
+      "interface_ids": [
+        "PL-S02"
+      ],
+      "test_gate_ids": [],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-002",
+      "register_title": "基準ミッション・軌道・運用範囲",
+      "interface_ids": [
+        "PL-RF02"
+      ],
+      "test_gate_ids": [
+        "P-G04"
+      ],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-004",
+      "register_title": "質量・重心・慣性・消耗品の統合予算",
+      "interface_ids": [
+        "PL-M01",
+        "PL-S02"
+      ],
+      "test_gate_ids": [],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-005",
+      "register_title": "上昇・軌道離脱・帰還の同時成立",
+      "interface_ids": [
+        "PL-S02"
+      ],
+      "test_gate_ids": [],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-006",
+      "register_title": "図面番号・リビジョン・設計構成管理",
+      "interface_ids": [
+        "AV-IF01"
+      ],
+      "test_gate_ids": [],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-007",
+      "register_title": "機体外形・内部配置・製造図",
+      "interface_ids": [
+        "PL-M02",
+        "PL-M03"
+      ],
+      "test_gate_ids": [
+        "P-G01"
+      ],
+      "decision_ids": [
+        "D07"
+      ]
+    },
+    {
+      "register_id": "RDR-008",
+      "register_title": "材料・許容値・腐食/環境適合",
+      "interface_ids": [
+        "PL-ENV01"
+      ],
+      "test_gate_ids": [
+        "P-G02"
+      ],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-010",
+      "register_title": "全飛行荷重・強度・座屈・振動",
+      "interface_ids": [
+        "PL-M02"
+      ],
+      "test_gate_ids": [
+        "P-G02"
+      ],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-011",
+      "register_title": "段分離・保持扉・ラッチ・機構",
+      "interface_ids": [
+        "PL-M03",
+        "PL-S01",
+        "PL-S02"
+      ],
+      "test_gate_ids": [
+        "P-G01",
+        "P-G03"
+      ],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-018",
+      "register_title": "空力加熱・TPS材料・取付・機内熱",
+      "interface_ids": [
+        "PL-T01"
+      ],
+      "test_gate_ids": [
+        "P-G02"
+      ],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-021",
+      "register_title": "座標・時刻・航法誤差・センサー仕様",
+      "interface_ids": [
+        "PL-E02"
+      ],
+      "test_gate_ids": [
+        "P-G03"
+      ],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-022",
+      "register_title": "飛行制御・姿勢遷移・着陸設計",
+      "interface_ids": [
+        "PL-S01",
+        "PL-S02"
+      ],
+      "test_gate_ids": [],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-023",
+      "register_title": "独立飛行安全機能と故障評価",
+      "interface_ids": [
+        "PL-E02",
+        "PL-S02",
+        "PL-RF01"
+      ],
+      "test_gate_ids": [
+        "P-G03"
+      ],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-024",
+      "register_title": "回路図・電源配分・電子機器BOM",
+      "interface_ids": [
+        "PL-E01",
+        "PL-T01"
+      ],
+      "test_gate_ids": [
+        "P-G02",
+        "P-G03"
+      ],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-025",
+      "register_title": "ハーネス・端子・EMC・接地",
+      "interface_ids": [
+        "PL-E01",
+        "PL-E02",
+        "PL-RF01"
+      ],
+      "test_gate_ids": [
+        "P-G02",
+        "P-G03"
+      ],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-027",
+      "register_title": "飛行ソフト・端末通信の権限分離",
+      "interface_ids": [
+        "PL-E02",
+        "PL-RF01",
+        "AV-IF02"
+      ],
+      "test_gate_ids": [
+        "P-G03"
+      ],
+      "decision_ids": [
+        "D08"
+      ]
+    },
+    {
+      "register_id": "RDR-028",
+      "register_title": "飛行ソフト実装・ビルド・検証",
+      "interface_ids": [
+        "PL-E02"
+      ],
+      "test_gate_ids": [
+        "P-G03"
+      ],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-029",
+      "register_title": "回収方式と運用場所の境界",
+      "interface_ids": [
+        "PL-S02"
+      ],
+      "test_gate_ids": [],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-030",
+      "register_title": "発射・整備・充填設備の詳細設計",
+      "interface_ids": [
+        "PL-E01",
+        "PL-ENV01"
+      ],
+      "test_gate_ids": [],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-032",
+      "register_title": "衛星質量・包絡・分離条件",
+      "interface_ids": [
+        "PL-M01",
+        "PL-M02",
+        "PL-M03",
+        "PL-T01",
+        "PL-ENV01",
+        "PL-S01",
+        "PL-S02",
+        "PL-RF02"
+      ],
+      "test_gate_ids": [
+        "P-G01",
+        "P-G02",
+        "P-G04"
+      ],
+      "decision_ids": [
+        "D07"
+      ]
+    },
+    {
+      "register_id": "RDR-033",
+      "register_title": "機体・衛星・地上・端末のICD",
+      "interface_ids": [
+        "PL-M01",
+        "PL-M02",
+        "PL-M03",
+        "PL-E01",
+        "PL-E02",
+        "PL-T01",
+        "PL-ENV01",
+        "PL-S01",
+        "PL-S02",
+        "PL-RF01",
+        "PL-RF02",
+        "AV-IF01",
+        "AV-IF02"
+      ],
+      "test_gate_ids": [
+        "P-G01",
+        "P-G02",
+        "P-G03",
+        "P-G04",
+        "P-G05",
+        "P-G06"
+      ],
+      "decision_ids": [
+        "D07",
+        "D08"
+      ]
+    },
+    {
+      "register_id": "RDR-038",
+      "register_title": "検証マトリクス・試験設備・認定計画",
+      "interface_ids": [
+        "AV-IF02"
+      ],
+      "test_gate_ids": [
+        "P-G01",
+        "P-G02",
+        "P-G03",
+        "P-G04",
+        "P-G05",
+        "P-G06"
+      ],
+      "decision_ids": []
+    },
+    {
+      "register_id": "RDR-039",
+      "register_title": "部品BOM・調達・製造工程・品質記録",
+      "interface_ids": [
+        "PL-ENV01"
+      ],
+      "test_gate_ids": [
+        "P-G02"
+      ],
+      "decision_ids": []
+    }
+  ],
+  "validation": {
+    "all_register_ids_exist": true,
+    "all_interface_ids_exist": true,
+    "all_13_interfaces_mapped": true,
+    "all_6_ground_test_gates_mapped": true,
+    "manufacturing_release_asserted": false,
+    "flight_release_asserted": false
+  },
+  "naming_decision": {
+    "rocketName": "rocketstar",
+    "case": "lowercase",
+    "formerRocketName": "RETURN-1",
+    "decidedOn": "2026-09-24",
+    "decisionSource": "user",
+    "osName": "RockstarOS",
+    "satelliteName": "A-LINK",
+    "interfaceProduct": "avokado",
+    "changeScope": "naming only; engineering parameters and past evidence retained"
+  }
+}

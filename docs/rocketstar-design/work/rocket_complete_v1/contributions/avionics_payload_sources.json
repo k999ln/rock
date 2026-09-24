@@ -1,0 +1,17 @@
+{
+  "section": "avionics_payload",
+  "checked": "2026-09-24",
+  "status": "design_only_not_flight_qualified",
+  "local_baselines": [
+    {"id":"AVP-L1","title":"rocketstar C3 payload and interface baseline","paths":["outputs/rocketstar_C3_package/payload_interfaces.md","outputs/rocketstar_C3_package/payload_interfaces.json","outputs/rocketstar_C3_package/interface_crossrefs.json"],"used":["500kg級2機、550km/53度は比較仮定","上段にアダプターと扉が残る","PL-E01/E02/S01/S02/RF01/RF02の未完条件","片方/両方残留と扉不閉鎖の帰還成立は未判定","A-LINKと9704実証の区別"]},
+    {"id":"AVP-L2","title":"RockstarOS Complete Design v1.0","paths":["outputs/RockstarOS_Complete_Design_v1_0/RockstarOS_Complete_Design_v1_0.md","outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md","outputs/RockstarOS_Complete_Design_v1_0/contracts/result.schema.json","outputs/RockstarOS_Complete_Design_v1_0/sources/flight_equipment_sources.json"],"used":["地上Operations Coreと機上局所制御の分離","cFS+RTEMS第一評価候補・搭載未認定","指令UNKNOWNとWork active、receiptと物理作用の区別","公開HMAC/actorは認証ではない","共通ICD v1は機上バイナリー仕様そのものではない"]},
+    {"id":"AVP-L3","title":"Avokado Power Button Engineering v1","paths":["outputs/Avokado_Power_Button_Engineering_v1/button_behavior.json"],"used":["1回待機/復帰、2回ホーム、3秒以上10秒未満解放は正常OFF要求、10秒保持は強制OFF要求","端末内状態USER_STANDBYとHub電源制御","時間値は設計閾値で実機OFF完了時刻ではない"]}
+  ],
+  "primary_sources": [
+    {"id":"AVP-S1","title":"NASA cFS official bundle README","url":"https://github.com/nasa/cFS","verified_facts":["cFSは汎用飛行ソフトウェアアーキテクチャ","公開bundleはflight distributionではなくミッション側の検証が必要"],"design_application":"cFS+RTEMSを評価候補に留め、cFE/OSAL/PSP/app/targetを固定して検証する","limits":"機上採用版やrocketstar適合を決めた根拠ではない"},
+    {"id":"AVP-S2","title":"RTEMS User Manual 6.1 — Board Support Packages","url":"https://docs.rtems.org/docs/6.1/user/bsps/index.html","verified_facts":["BSPと対象別build/test要件を文書化"],"design_application":"CPU/基板/BSP/ドライバーの組で評価する","limits":"6.1を搭載採用版として固定せず、実CPUとcFS各版の互換確認が必要"},
+    {"id":"AVP-S3","title":"NASA GSFC-STD-7000 — General Environmental Verification Standard","url":"https://standards.nasa.gov/standard/GSFC/GSFC-STD-7000","verified_facts":["GSFCの飛行計画/プロジェクトの環境検証を扱う文書"],"design_application":"ミッション環境に応じて試験/解析条件を定める計画参考","limits":"NASA適合・本機の認定・規定環境値の自動転用を主張しない"}
+  ],
+  "new_design_decisions": ["各段・衛星・地上の責任と切断時境界", "保持、室内存在、衛星自己機能、扉位置、固定の状態を別に記録", "readbackと要求/受理/物理作用を分離", "既存ICD項目への責任と必要証拠の割当", "avokadoボタン操作を飛行コマンドにしない"],
+  "not_performed": ["ソース/OS image変更", "cFS/RTEMSビルド", "機器購入", "実配線", "実無線送信", "保持/放出/扉の作動試験", "飛行試験"]
+}
