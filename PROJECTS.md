@@ -12,6 +12,13 @@
 
 Sky、Zema、Wallet、Material Invention StudioはWebアプリとOS内で使うサービスです。各画面の名称だけで独立した配備物やGitリポジトリを増やしません。avocadoMiniの旧P0.2、Mini200 E1/E2は[現行E3設計](docs/avocado-mini-tower20-e3/README.md)と区別して設計履歴として保持します。
 
+| Web/OS内のサービス | 主なソース | 設計・担当の入口 |
+| --- | --- | --- |
+| **Sky** — Toolの発見と接続 | [`app/sky/`](app/sky/)・[`app/api/sky/`](app/api/sky/) | [全Tool詳細設計](docs/sky-tools-complete-design.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
+| **Zema** — 依頼、進捗、承認、停止、成果 | [`app/chat/`](app/chat/)・[`components/zema-home-workspace.tsx`](components/zema-home-workspace.tsx)・[`lib/zema-chat-session.ts`](lib/zema-chat-session.ts) | [Platform Core](docs/platform-core.md)・[Product / UX](docs/workstreams/01-product-ux.md) |
+| **Wallet** — 費用と確認済み収益 | [`app/wallet/`](app/wallet/)・[`lib/rock-wallet.ts`](lib/rock-wallet.ts) | [Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
+| **Material Invention Studio** — 発明候補の操作・比較 | [`app/studio/`](app/studio/)・[`lib/material-invention.ts`](lib/material-invention.ts)・[`contracts/material-invention.json`](contracts/material-invention.json) | [Material Invention Core](docs/material-invention-core.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) |
+
 ## 実装・配備単位
 
 | 単位 | 対象と境界 | ソース | 担当・検証の入口 |
@@ -21,9 +28,12 @@ Sky、Zema、Wallet、Material Invention StudioはWebアプリとOS内で使う�
 | **avocadoMini製品サイト** | 製品紹介、導入案内、販売準備の独立Site | [`sites/avocado-mini/`](sites/avocado-mini/) | [現行E3設計](docs/avocado-mini-tower20-e3/README.md)・[Material Invention / avocadoMini](docs/workstreams/11-material-invention-avocado-mini.md) |
 | **Operator Dock** | OS利用画面と分離した運営用の端末管理 | [`services/operator-dock/`](services/operator-dock/)・[`android/operator-agent/`](android/operator-agent/) | [Dock README](services/operator-dock/README.md)・[Security / Identity](docs/workstreams/04-security-identity-compliance.md) |
 | **Sky Billing** | 収益・費用の照合と請求Worker。Walletの実資金受入とは別 | [`services/sky-billing/`](services/sky-billing/) | [Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md)・[請求設計](docs/sky-billing.md) |
-| **Sky Tool SDK / MCP Connector** | Tool作者向けSDKとMCP接続 | [`toolkits/sky-tool-sdk/`](toolkits/sky-tool-sdk/)・[`toolkits/sky-mcp-connector/`](toolkits/sky-mcp-connector/) | [SDK README](toolkits/sky-tool-sdk/README.md)・[Connector README](toolkits/sky-mcp-connector/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
+| **Sky Tool SDK** | Tool作者向けのpackage、サンプル、契約 | [`toolkits/sky-tool-sdk/`](toolkits/sky-tool-sdk/) | [SDK README](toolkits/sky-tool-sdk/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
+| **Sky MCP Connector** | MCP接続先と権限を管理する独立connector | [`toolkits/sky-mcp-connector/`](toolkits/sky-mcp-connector/) | [Connector README](toolkits/sky-mcp-connector/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
 | **Fashion Brand Ops** | 受注型ブランド運営の独立MCPサービス | [`toolkits/fashion-brand-ops/`](toolkits/fashion-brand-ops/) | [README](toolkits/fashion-brand-ops/README.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
-| **その他のTool試作** | Mr.接続、PAPER市場、台帳の個別試作 | [`toolkits/mr/`](toolkits/mr/)・[`toolkits/polymarket-bot-sandbox/`](toolkits/polymarket-bot-sandbox/)・[`toolkits/rockstar-ledger/`](toolkits/rockstar-ledger/) | [Mr.取り込み](docs/mr-integration.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+| **Mr. Tool adapter** | `Mr.`の固定原本をSkyへ接続するRock側の実装 | [`toolkits/mr/`](toolkits/mr/) | [README](toolkits/mr/README.md)・[Mr.取り込み](docs/mr-integration.md) |
+| **Polymarket Bot Sandbox** | 外部市場を動かさないPAPER試作 | [`toolkits/polymarket-bot-sandbox/`](toolkits/polymarket-bot-sandbox/) | [README](toolkits/polymarket-bot-sandbox/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+| **Rockstar Ledger** | 台帳の個別Tool資料 | [`toolkits/rockstar-ledger/`](toolkits/rockstar-ledger/) | [README](toolkits/rockstar-ledger/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
 
 ## 共有領域と正本
 
