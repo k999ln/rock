@@ -14,7 +14,11 @@
 
 </div>
 
-![avokado の製品ビジュアル](docs/brand/avokado/avocado-mini-r5-concept.png)
+<p align="center">
+  <img src="docs/brand/avokado/avocado-mini-r5-concept.png" alt="avocadoMini R5の外観コンセプト。銀色の細い円筒、黒いカメラ帯、低い円形台座を持つ1本のmini" width="460">
+  <br>
+  <sub>avocadoMini R5 · 1本で基本機能を担う構成</sub>
+</p>
 
 > **画像の扱い** — 製品ビジュアルは外観を示すコンセプト画像です。ハードウェアの実機写真や、空間表示の実証映像ではありません。上のGIFはブランドの概念を表すオリジナルアニメーションです。
 
@@ -23,6 +27,8 @@
 ## avokado が目指す事業
 
 avokadoは、利用者が自分の体験やAIチームを選び、遊び、作品をつくり、必要な仕事や生活の手順を進められる製品群を目指します。**端末を売るだけ、AIの回答を見せるだけで終わらせず、選択・実行・保存・訂正・再開までを一つの体験にする**ことが事業上の狙いです。
+
+![avocadoMini R5、RockstarOS v1.0、SkyとZemaの設計上の関係](docs/brand/avokado/avokado-system-map.svg)
 
 | 対象 | 提供したい価値 | 製品・仕組み |
 | --- | --- | --- |
@@ -157,6 +163,8 @@ R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合�
 
 **現行の端末設計はavocadoMini R5、OS・システムソフト設計はRockstarOS v1.0、ロケット設計はrocketstar R1.0です。** それぞれの原本と付録を以下から直接開けます。設計書の存在は、実機動作、製造承認、飛行認定を示しません。
 
+[端末 R5](#avocadomini-r5--原本と検証資料) · [OS v1.0](#rockstaros-v10--現行のos設計書) · [ロケット R1.0](#rocketstar-r10--現行のロケット設計書) · [領域別の設計資料](#rockstarosサービス--全設計領域) · [旧版](#旧版別研究profile)
+
 ### avocadoMini R5 — 原本と検証資料
 
 | 読みたいもの | ファイル |
@@ -182,6 +190,21 @@ R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合�
 | O01 | OSサービス構成 | [PNG](docs/avocado-mini-r5/package/drawings/R5-O01-services.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-O01-services.svg) |
 | O02 | 本人承認と外部ジョブ | [PNG](docs/avocado-mini-r5/package/drawings/R5-O02-consent.png) / [SVG](docs/avocado-mini-r5/package/drawings/R5-O02-consent.svg) |
 
+### RockstarOS v1.0 — 現行のOS設計書
+
+添付された `RockstarOS_Complete_Design_v1.0.pdf` は、リポジトリ保存済みの原本とSHA-256が一致します。**41ページ・32章の現行OS設計基準**で、rocketstar、A-LINK、avokado、将来のcolonyに共通する身元・状態・仕事・証拠・版を扱います。機器固有の制御と独立保護は各機器の側に置く設計です。
+
+![RockstarOS v1.0の指令状態。Workの状態と分け、結果不明時は照合する](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/command_lifecycle.svg)
+
+| 読みたいもの | ファイル |
+| --- | --- |
+| 完全版と編集本文 | [原本PDF・41ページ](docs/rockstaros-complete-design-v1.0.pdf) / [編集可能な本文](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/RockstarOS_Complete_Design_v1_0.md) / [全文検索用テキスト](docs/rockstaros-complete-design-v1.0.txt) / [付録ZIP](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0_package.zip) |
+| 何をどこへ配備するか | [5配備profile・13論理serviceの台帳](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/design_catalog.json) / [全体配置図](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/architecture.svg) / [60要求と受入条件](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/requirements.csv) |
+| 指令・保存・接続の契約 | [7型schemaと合成例・5表DDL](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md) / [指令の状態図](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/command_lifecycle.svg) / [容量計算の仮定](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/capacity_example.json) |
+| 検証と実装への対応 | [43/43の構造・DDL検査記録](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/evidence/contract_checks.json) / [原本・付録の完全性](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/manifest.json) / [既存実装との対応](docs/rockstaros-complete-design.md) / [付録の読み方](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md) |
+
+**R5との関係:** 原本の `EDGE-HUB-v1` と全体配置図には旧avokado E3の「4本＋別Hub」が残っています。これは現行avocadoMini R5の外形・台数・Hub要件ではありません。R5の**1本で基本機能が動き、別Edge Hubを必須にしない**要求を優先し、R5用Device Profileとadapterの統合は未完了として扱います。43/43は文書・契約の検査で、新OS imageの完成、実機受入、飛行・居住設備の運用認定を示しません。
+
 ### rocketstar R1.0 — 現行のロケット設計書
 
 添付された **rocketstar_Complete_Design_R1_0.pdf** と、リポジトリ保存済みの原本はSHA-256が一致します。R1.0は、無人の小型衛星輸送と**第1段・第2段の回収・同じ機体の再使用**を対象とする、44ページ・35章の現行統合設計です。機体、推進、熱防護、飛行力学、電装、衛星搭載、地上設備、整備、再使用を扱います。
@@ -198,21 +221,6 @@ R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合�
 | 関連する通信・運用設計 | [A-LINK自動接続PDF](docs/rocketstar-design/outputs/A-LINK_Avokado_Auto_Connect_Design_v0.3.pdf) / [受信試作](docs/rocketstar-design/outputs/A-LINK_Avokado_Receiver_Prototype_v0.4/README.md) / [colony運用](docs/rocketstar-design/outputs/RockstarOS_Colony_C0_1/README.md) / [端末ボタン設計](docs/rocketstar-design/outputs/Avokado_Power_Button_Engineering_v1/README.md) |
 
 **現在地:** 統合システム設計まで。製造図面、実機性能、飛行認定は未完了です。PDF中の618.6t・819.7tは過去の比較計算値で、確定した打上げ能力や機体寸法ではありません。ロケットのR1.0と端末のR5は、別々の製品設計基準です。
-
-### RockstarOS v1.0 — 現行のOS設計書
-
-添付された `RockstarOS_Complete_Design_v1.0.pdf` は、リポジトリ保存済みの原本とSHA-256が一致します。**41ページ・32章の現行OS設計基準**で、rocketstar、A-LINK、avokado、将来のcolonyに共通する身元・状態・仕事・証拠・版を扱います。機器固有の制御と独立保護は各機器の側に置く設計です。
-
-![RockstarOS v1.0の指令状態。Workの状態と分け、結果不明時は照合する](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/command_lifecycle.svg)
-
-| 読みたいもの | ファイル |
-| --- | --- |
-| 完全版と編集本文 | [原本PDF・41ページ](docs/rockstaros-complete-design-v1.0.pdf) / [編集可能な本文](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/RockstarOS_Complete_Design_v1_0.md) / [全文検索用テキスト](docs/rockstaros-complete-design-v1.0.txt) / [付録ZIP](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0_package.zip) |
-| 何をどこへ配備するか | [5配備profile・13論理serviceの台帳](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/design_catalog.json) / [全体配置図](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/architecture.svg) / [60要求と受入条件](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/requirements.csv) |
-| 指令・保存・接続の契約 | [7型schemaと合成例・5表DDL](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md) / [指令の状態図](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/command_lifecycle.svg) / [容量計算の仮定](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/capacity_example.json) |
-| 検証と実装への対応 | [43/43の構造・DDL検査記録](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/evidence/contract_checks.json) / [原本・付録の完全性](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/manifest.json) / [既存実装との対応](docs/rockstaros-complete-design.md) / [付録の読み方](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md) |
-
-**R5との関係:** 原本の `EDGE-HUB-v1` と全体配置図には旧avokado E3の「4本＋別Hub」が残っています。これは現行avocadoMini R5の外形・台数・Hub要件ではありません。R5の**1本で基本機能が動き、別Edge Hubを必須にしない**要求を優先し、R5用Device Profileとadapterの統合は未完了として扱います。43/43は文書・契約の検査で、新OS imageの完成、実機受入、飛行・居住設備の運用認定を示しません。
 
 ### RockstarOS・サービス — 全設計領域
 
