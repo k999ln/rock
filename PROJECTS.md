@@ -9,9 +9,10 @@
 | **avocadoMini** | Tower20 E3の製品構想と専用サイト | [現行E3設計](docs/avocado-mini-tower20-e3/README.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) | [`sites/avocado-mini/`](sites/avocado-mini/)・[`docs/avocado-mini-tower20-e3/`](docs/avocado-mini-tower20-e3/) |
 | **Rocket Star** | avocadoMiniとRockstarOSへ接続する軌道通信の構想。資金受付は準備中 | [構想ページ](sites/avocado-mini/rocket-star/index.html)・[衛星通信の設計追補](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) | [`sites/avocado-mini/rocket-star/`](sites/avocado-mini/rocket-star/)・[`sites/avocado-mini/public/images/`](sites/avocado-mini/public/images/) |
 | **RockstarOS** | AIネイティブOSの共通基盤と配布候補 | [OS全体詳細設計](docs/rockstaros-complete-design.md)・[構成と現在地](docs/system-composition.md) | [`systems/rock-star-os/`](systems/rock-star-os/)・[`contracts/`](contracts/)・[`public-release/rockstaros/`](public-release/rockstaros/) |
+| **AI自動化チーム** | 作成中のToolを役割ごとに組み合わせ、利用者の仕事を進める | [Toolチーム設計](docs/sky-network-economy.md)・[役割エージェント仕様](docs/sky-role-agents-20260912.md) | [`lib/catalog.ts`](lib/catalog.ts)・[`lib/automation-fund-catalog.ts`](lib/automation-fund-catalog.ts)・[`app/sky/`](app/sky/)・[`app/work/`](app/work/) |
 | **Webアプリ** | Home、Sky、Zema、Wallet、Studioを一つのWeb/PWAとして提供 | [製品・サービス関係図](docs/rockstaros-product-system-map.md)・[Web担当作業](docs/workstreams/05-web-pwa-sites.md) | [`app/`](app/)・[`components/`](components/)・[`lib/`](lib/)・[`db/`](db/)・[`drizzle/`](drizzle/) |
 
-Rocket Starの`/rocket-star/`はavocadoMiniサイト内の専用ページであり、衛星・受信機・通信網の実装や資金受付の完了を示しません。Sky、Zema、Wallet、Material Invention StudioなどはWebアプリとOS内で使うサービスです。各画面の名称だけで独立した配備物やGitリポジトリを増やしません。avocadoMiniの旧P0.2、Mini200 E1/E2は[現行E3設計](docs/avocado-mini-tower20-e3/README.md)と区別して設計履歴として保持します。
+Rocket Starの`/rocket-star/`はavocadoMiniサイト内の専用ページであり、衛星・受信機・通信網の実装や資金受付の完了を示しません。AI自動化チームの個々のToolは別々の事業や製品ではなく、Skyで選び編成する役割です。Zemaが依頼・進捗・承認・停止・成果を管理します。Sky、Zema、Wallet、Material Invention StudioなどはWebアプリとOS内で使うサービスです。各画面の名称だけで独立した配備物やGitリポジトリを増やしません。avocadoMiniの旧P0.2、Mini200 E1/E2は[現行E3設計](docs/avocado-mini-tower20-e3/README.md)と区別して設計履歴として保持します。
 
 | Web/OS内のサービス | 主なソース | 設計・担当の入口 |
 | --- | --- | --- |
@@ -24,9 +25,11 @@ Rocket Starの`/rocket-star/`はavocadoMiniサイト内の専用ページであ�
 | **CSV業務** — データ整形の事業pilot | [`app/csv/`](app/csv/) | [Business Pilots](docs/workstreams/09-business-pilots.md)・[CSV業務](docs/csv-business-v1.ja.md) |
 | **メルカリ収益ループ** — 出品から入金確認までの事業pilot | [`app/income/mercari/`](app/income/mercari/)・[`lib/mercari-revenue.ts`](lib/mercari-revenue.ts) | [Business Pilots](docs/workstreams/09-business-pilots.md)・[メルカリ設計](docs/mercari-revenue-loop.md) |
 
-## Sky内のTool
+## AI自動化チームのTool
 
-Web/PC版Skyの登録正本は[`lib/catalog.ts`](lib/catalog.ts)です。現在はready 12件（Rock側で作成8件、`Mr.`由来4件）とcandidate 22件（Rock側の構想1件、`Mr.`由来11件、第三者候補10件）。`ready`はSky catalog上の状態であり、外部Providerや本番決済まで接続済みという意味ではありません。[全Tool詳細設計](docs/sky-tools-complete-design.md)に権限・入出力・停止条件があります。
+作成しているToolは、利用者が所有する一つのAI自動化チームの担当として整理します。Skyが目的に合わせてTool・役割・構成版を選び、Zemaが同じ仕事の実行と成果を管理します。チームの実際の構成は選択と受入状態によって変わり、一覧にある全Toolが同時に稼働するという意味ではありません。[Toolチーム設計](docs/sky-network-economy.md)と[役割エージェント仕様](docs/sky-role-agents-20260912.md)がこの関係の入口です。
+
+Web/PC版Skyの登録正本は[`lib/catalog.ts`](lib/catalog.ts)です。現在はready 12件（Rock側で作成8件、`Mr.`由来4件）とcandidate 22件（Rock側の構想1件、`Mr.`由来11件、第三者候補10件）。Rock側と`Mr.`由来のToolはチームの実装・導入対象、第三者候補は将来の接続候補です。`ready`はSky catalog上の状態であり、外部Providerや本番決済まで接続済みという意味ではありません。`candidate`を稼働中の担当として数えません。[全Tool詳細設計](docs/sky-tools-complete-design.md)に権限・入出力・停止条件があります。
 
 ### Rock側で作成・登録したTool
 
@@ -99,7 +102,24 @@ Web/PC catalogとは別に、[`systems/rock-star-os/examples/registry/`](systems
 | `org.rockstar.unique-list` | リストの重複を整理 |
 | `org.rockstar.utf8-sha256` | 入力テキストのSHA-256 |
 
+Androidの[`article-tool`](android/article-tool/)は`mr-free-article`と`mr-citations`に対応する端末側の実装です。[Android Tool SDK](android/tool-sdk/)を使い、[OS prototype受入](docs/os-prototype.md)で別途検証します。nativeの[`hello`サンプル](systems/rock-star-os/examples/tools/hello/)はTool作成例です。これらをSky catalogの新しいTool IDや6 familyへ重複して加算しません。
+
+### 網羅確認
+
+| 正本・実装 | このガイドでの扱い |
+| --- | --- |
+| [Sky catalog](lib/catalog.ts) | 登録34件すべてを上に記載。ready 12件とcandidate 22件を分離 |
+| [native registry](systems/rock-star-os/examples/registry/) | 開発用6 family・9版を上に記載。Web/PC catalogと分離 |
+| [`toolkits/`](toolkits/) | 6ディレクトリを下表で分類。Tool実装、SDK、connector、PAPER試作を区別 |
+| [Android article-tool](android/article-tool/)・[native hello](systems/rock-star-os/examples/tools/hello/) | 既存Toolの端末側実装と作成例として記載。独立したcatalog登録ではない |
+
+Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog上では`fashion-brand-ops`という一つのTool packageの内部操作です。操作数をチームの人数や独立した製品数に加算しません。
+
+新しいToolを登録したときは、このチーム一覧と[全Tool詳細設計](docs/sky-tools-complete-design.md)を同じ変更で更新します。登録数だけで実行成功やチームへの参加完了とは扱いません。
+
 ## 実装・配備単位
+
+次の表は同じチームを支えるソースや配備物の場所です。`toolkits/`の行をチームから独立した製品一覧としては扱いません。
 
 | 単位 | 対象と境界 | ソース | 担当・検証の入口 |
 | --- | --- | --- | --- |

@@ -62,6 +62,38 @@ requireValue(
   `native内蔵Toolは6種類です（実際: ${toolKinds.size}）`,
 );
 
+const projectGuide = read('PROJECTS.md');
+requireValue(
+  projectGuide.includes('AI自動化チームのTool'),
+  'プロジェクト別ガイドにToolチームの入口がありません',
+);
+for (const { id } of catalog)
+  requireValue(
+    projectGuide.includes(`\`${id}\``),
+    `プロジェクト別ガイドにSky Toolがありません: ${id}`,
+  );
+for (const id of toolKinds)
+  requireValue(
+    projectGuide.includes(`\`${id}\``),
+    `プロジェクト別ガイドにnative Toolがありません: ${id}`,
+  );
+for (const entry of readdirSync(resolve(root, 'toolkits'), {
+  withFileTypes: true,
+}).filter((entry) => entry.isDirectory()))
+  requireValue(
+    projectGuide.includes(`toolkits/${entry.name}/`),
+    `プロジェクト別ガイドにToolKitがありません: ${entry.name}`,
+  );
+for (const path of [
+  'android/article-tool/',
+  'android/tool-sdk/',
+  'systems/rock-star-os/examples/tools/hello/',
+])
+  requireValue(
+    projectGuide.includes(`(${path})`),
+    `プロジェクト別ガイドにToolの実装・作成例がありません: ${path}`,
+  );
+
 for (const path of [
   'app/layout.tsx',
   'app/manifest.ts',
