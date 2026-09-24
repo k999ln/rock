@@ -2,7 +2,7 @@
 
 [プロジェクト別ガイド](PROJECTS.md) · [作業分野別ガイド](docs/workstreams/README.md) · [全設計ポータル](docs/rockstaros-design-portal.md)
 
-ゲームを入口に、制作・学習・日常生活へ広げる製品構想です。このリポジトリには、avocadoMiniのハードウェア設計、RockstarOSの共通契約、Web・Android・Linux/QEMUの実装と検証記録を収めています。
+ゲームを入口に、生活全体をより豊かにすることを目指し、制作・学習・日常生活へ広げる製品構想です。このリポジトリには、avocadoMiniのハードウェア設計、RockstarOSの共通契約、Web・Android・Linux/QEMUの実装と検証記録を収めています。
 
 **現在の設計基準はR5（2026-09-24）です。** 使用時全高200mm以内の銀色の細いminiを、**1本で基本機能が動く構成**として設計します。別Edge Hubや外部PCを必須にせず、同型miniを追加して範囲・品質を改善することを目指します。
 
@@ -18,7 +18,7 @@
 
 ## rocketstar・衛星・共通運用の設計アーカイブ
 
-[rocketstar公開ページ](https://avocado-mini.kirin-999.chatgpt.site/rocket-star/)は、両段再使用・衛星搭載・A-LINK・RockstarOSの計画を案内します。公開版と設計原本、検証状態の対応は[Web作業記録](docs/workstreams/05-web-pwa-sites.md)を参照してください。
+[rocketstar公開ページ](https://avocado-mini.kirin-999.chatgpt.site/rocket-star/)は、両段再使用・衛星搭載・A-LINK・RockstarOSの計画を案内します。[完全版をサイトで読む（全35章）](https://avocado-mini.kirin-999.chatgpt.site/rocket-star/design/) / [PDFダウンロード](https://avocado-mini.kirin-999.chatgpt.site/downloads/rocketstar-complete-design-r1.0.pdf) / [全付録ZIP](https://avocado-mini.kirin-999.chatgpt.site/downloads/rocketstar-complete-design-r1.0.zip)をSiteから直接開けます。公開版と設計原本、検証状態の対応は[Web作業記録](docs/workstreams/05-web-pwa-sites.md)を参照してください。
 
 [rocketstar 設計書完全版 R1.0（44ページ・35章）](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) / [本文と全付録の入口](docs/rocketstar-design/README.md) / [完全版ZIP](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0_package.zip)。無人・両段再使用のロケット、衛星搭載、帰還・回収、地上設備、整備・再使用、検証計画をまとめた統合システム設計です。製造図面、実機性能、飛行認定は未完了です。
 
@@ -102,7 +102,7 @@ R5の計算・判定チェックは14件通過、実機試験は0件です。資
 
 P0.2、E1、E2、Tower20 E3は履歴です。以前の「4本＋別Hub必須」、寸法、価格、性能候補をR5へ自動継承しません。[更新前READMEの保存済み原文](https://github.com/k999ln/rock/blob/0eb4fe48b1e7309e838b0441954d97e22272b4ca/README.md)はGit履歴から参照できます。R5の価格・納期・販売開始は確定していません。
 
-**この更新はGitHubの設計資料保存です。公開商品サイト、配布OS、予約・決済環境は更新していません。** サイトには以前のE3の説明が残るため、現行の設計判断はR5を参照してください。
+**R5の資料保存は製品本体の公開反映やOS配布、予約・決済開始を意味しません。** 公開サイトのrocketstarページと完全版PDF・ZIPは別途更新しました。avocadoMini本体には以前のE3の説明が残るため、現行の設計判断はR5を参照してください。
 
 ## リポジトリ内の場所
 

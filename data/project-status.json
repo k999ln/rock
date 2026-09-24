@@ -968,7 +968,11 @@
         "sites/avocado-mini/rocket-star/main.js",
         "sites/avocado-mini/rocket-star/design.css",
         "sites/avocado-mini/scripts/build-rocketstar.mjs",
-        "docs/evidence/rocketstar-site-r1.json"
+        "docs/evidence/rocketstar-site-r1.json",
+        "sites/avocado-mini/public/downloads/rocketstar-complete-design-r1.0.pdf",
+        "sites/avocado-mini/public/downloads/rocketstar-complete-design-r1.0.zip",
+        "sites/avocado-mini/public/rocket-star/design/index.html",
+        "sites/avocado-mini/public/rocket-star/design/source.md"
       ]
     },
     {

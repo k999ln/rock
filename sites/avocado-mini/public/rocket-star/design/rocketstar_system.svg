@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="501.27559055118115" height="269" preserveAspectRatio="xMinYMin meet" viewBox="0 0 501 269" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="501.27559055118115" height="269"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-269)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="0" y="254" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,508) scale(1,-1)">搭載・制御・通信・回収の境界 / 接続方式を示す機能図</text>
+			<rect x="0" y="183" width="153" height="48" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="43.99145507812499" y="211.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,422) scale(1,-1)">rocketstar 第1段</text>
+			<text x="31.499999999999993" y="197.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,394) scale(1,-1)">自段の機上制御・帰還</text>
+			<rect x="174" y="183" width="153" height="48" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="217.991455078125" y="211.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,422) scale(1,-1)">rocketstar 第2段</text>
+			<text x="205.5" y="197.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,394) scale(1,-1)">衛星搭載・投入・帰還</text>
+			<rect x="348" y="183" width="153" height="48" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="400.995849609375" y="211.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,422) scale(1,-1)">A-LINK衛星</text>
+			<text x="384.0" y="197.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,394) scale(1,-1)">放出後は軌道で運用</text>
+			<path d="M 153,207 L 174,207 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="174 207, 169.4978 209.1748, 169.4978 204.8252" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 327,207 L 348,207 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="348 207, 343.4978 209.1748, 343.4978 204.8252" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="0" y="96" width="153" height="48" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="45.0" y="124.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,248) scale(1,-1)">海上回収・整備</text>
+			<text x="40.49999999999999" y="110.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,220) scale(1,-1)">同じ機番の再飛行</text>
+			<rect x="174" y="96" width="153" height="48" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="219.0" y="124.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,248) scale(1,-1)">陸上回収・整備</text>
+			<text x="214.5" y="110.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,220) scale(1,-1)">同じ機番の再飛行</text>
+			<rect x="348" y="96" width="153" height="48" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="379.2451171875" y="124.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,248) scale(1,-1)">地上ゲートウェイ / E3</text>
+			<text x="388.5" y="110.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,220) scale(1,-1)">利用者通信・操作</text>
+			<path d="M 76,183 L 76,144 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="76 144, 78.17483 148.5022, 73.82517 148.5022" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 250,183 L 250,144 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="250 144, 252.1748 148.5022, 247.8252 148.5022" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 424,183 L 424,144 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="424 144, 426.1748 148.5022, 421.8252 148.5022" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="0" y="15" width="501" height="49" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(80%,83%,84%); fill-rule: evenodd;"/>
+			<text x="172.99365234375" y="43.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,87) scale(1,-1)">RockstarOS / 管制・運用・構成・履歴</text>
+			<text x="111.98657226562497" y="29.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,59) scale(1,-1)">機上の局所制御と独立。avokadoの電源ボタンを飛行操作にしない。</text>
+			<path d="M 76,96 L 76,64 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="76 64, 78.17483 68.50224, 73.82517 68.50224" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 250,96 L 250,64 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="250 64, 252.1748 68.50224, 247.8252 68.50224" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 424,96 L 424,64 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="424 64, 426.1748 68.50224, 421.8252 68.50224" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+		</g>
+	</g>
+</svg>
