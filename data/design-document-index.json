@@ -1,15 +1,24 @@
 {
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.0",
-  "updatedAt": "2026-09-22",
+  "version": "1.1",
+  "updatedAt": "2026-09-24",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
+    "docs/rockstaros-complete-design-v1.0.pdf",
     "docs/rockstaros-product-system-map.md",
     "docs/rockstaros-complete-design.md",
     "docs/sky-tools-complete-design.md",
     "docs/rockstaros-avocado-mini-complete-design.md",
     "docs/jev-local-qwen-decision-fabric-design.md",
     "docs/product-baseline.md"
+  ],
+  "sourceArtifacts": [
+    {
+      "id": "rockstaros-complete-design-v1.0",
+      "pdf": "docs/rockstaros-complete-design-v1.0.pdf",
+      "searchableText": "docs/rockstaros-complete-design-v1.0.txt",
+      "integrityRecord": "data/rockstaros-complete-design-v1.0.json"
+    }
   ],
   "completionMeaning": "current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete",
   "requiredDesignFields": [
@@ -35,6 +44,9 @@
       "id": "whole_os",
       "coverage": "DETAILED_WITH_OPEN_DECISIONS",
       "documents": [
+        "docs/rockstaros-complete-design-v1.0.pdf",
+        "docs/rockstaros-complete-design-v1.0.txt",
+        "data/rockstaros-complete-design-v1.0.json",
         "docs/rockstaros-complete-design.md",
         "docs/ai-native-os-architecture.md",
         "docs/rockstaros-1.0-architecture.md"
