@@ -1,8 +1,19 @@
 {
-  "updatedAt": "2026-09-23",
+  "updatedAt": "2026-09-24",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
   "nextAction": "Build and validate the integrated Tower20 E3 prototype: final CAD and wiring, four-camera timing and calibration, optical coverage, tip and sliding safety, thermal and power behavior, voice and game latency, signed RockstarOS image, recovery and manufacturing acceptance.",
   "tasks": [
+    {
+      "id": "ORG01",
+      "title": "製品・実装単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "PROJECTS.md",
+        "README.md",
+        "docs/workstreams/README.md"
+      ]
+    },
     {
       "id": "UXCHAR01",
       "title": "Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果）",

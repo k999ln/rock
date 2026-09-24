@@ -4,6 +4,8 @@
 
 このディレクトリは、既存の設計書を移動せず、作業分野ごとの入口を提供する。確定要望の正本は [製品ベース](../product-baseline.md)、進捗の正本は [data/project-status.json](../../data/project-status.json) であり、ここでは内容を置き換えない。
 
+製品や配備単位から探す場合は[プロジェクト別ガイド](../../PROJECTS.md)を開く。
+
 ## 最初に確認するもの
 
 1. `git status --short --branch` でbranch、競合、未保存差分を確認する。
@@ -20,7 +22,7 @@
 - `blocked`: 必須の本人判断、機種、鍵、契約、provider、公開許可などが不足している。
 
 <!-- project-overview:start -->
-現在の機械可読進捗は146 task中95 done、31 in progress、19 planned、1 blocked。件数は作業量や製品完成率を表さない。
+現在の機械可読進捗は147 task中96 done、31 in progress、19 planned、1 blocked。件数は作業量や製品完成率を表さない。
 <!-- project-overview:end -->
 
 ## 作業ストリーム

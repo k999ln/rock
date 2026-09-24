@@ -1,5 +1,7 @@
 # avocadoMini Tower20 E3 — 4本の200mm Towerと別筐体Edge Hub
 
+[プロジェクト別ガイド](PROJECTS.md) · [作業分野別ガイド](docs/workstreams/README.md) · [全設計ポータル](docs/rockstaros-design-portal.md)
+
 **2026-09-22 最新設計:** avocadoMiniは、使用時高さ200mm以下の固定式Motion Tower 4本と、低い別筐体Edge Hub 1台で構成します。Tower20 E3は伸縮機構を採用せず、三段に見える境界は外観処理です。各塔は1台の単色camera候補を持つ入力機器、HubはRockstarOS、ゲーム、4入力の統合、PTT日本語音声、保存、権限、承認済みAI adapterの実行先です。現在の正本は[Tower20 E3 product baseline](docs/avocado-mini-tower20-e3/README.md)です。
 
 ![4本の短いTower20と別筐体Edge Hubで構成するavocadoMini E3外観構想](sites/avocado-mini/public/images/avocado-mini-tower20-e3-kit.png)
@@ -289,7 +291,7 @@ Toolのfield、状態、停止条件、receiptは[Sky／Zema／全Tool詳細設�
 ## 現在地
 
 <!-- project-overview:start -->
-更新日: 2026-09-23 / 146 task中95 done・31 in progress・19 planned・1 blocked
+更新日: 2026-09-24 / 147 task中96 done・31 in progress・19 planned・1 blocked
 <!-- project-overview:end -->
 
 | 対象            | 現在できていること                                                                           | 現在の判定                             | 主な残件                                                          |
@@ -471,14 +473,15 @@ Mac向けrc2の入口は[導入ガイド](docs/preview-installation-ja.md)。既
 
 <details>
 <!-- project-details-summary:start -->
-<summary>146 taskと段階gateの詳細を開く</summary>
+<summary>147 taskと段階gateの詳細を開く</summary>
 <!-- project-details-summary:end -->
 
 <!-- project-status:start -->
-最終更新: 2026-09-23 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 95/146件
+最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 96/147件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
+| ORG01 | 製品・実装単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備 | 完了 | [記録](PROJECTS.md) · [記録](README.md) · [記録](docs/workstreams/README.md) |
 | UXCHAR01 | Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果） | 完了 | [記録](components/tool-character.tsx) · [記録](components/tool-character.module.css) · [記録](docs/workstreams/01-product-ux.md) |
 | SKY20 | Sky公開・Telegram配布を証拠付きverified Packageへ限定し、失効と利用イベント再送を受け入れる | 進行中 | [記録](drizzle/0016_red_crusher_hogan.sql) · [記録](lib/sky-tool-review.ts) · [記録](lib/sky-review-auth.ts) · [記録](app/api/sky/tool-reviews/route.ts) · [記録](lib/sky-tool-package-store.ts) · [記録](lib/sky-activation.ts) · [記録](lib/sky-tool-events.ts) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](tests/sky-tool-package.test.mjs) · [記録](tests/sky-activation.test.mjs) · [記録](tests/sky-tool-sdk.test.mjs) · [記録](docs/sky-tool-sdk.md) |
 | SKY19 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |

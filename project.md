@@ -1,5 +1,9 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-24 — プロジェクト別の入口を整備
+
+主担当Git / CI / Operationsの`ROCK`として、製品・実装・配備単位の入口を[`PROJECTS.md`](PROJECTS.md)に集約した。avocadoMini、RockstarOS、Webアプリ、Linux/QEMU、Android/Pixel、独立WorkerとToolのソース、設計、担当workstreamを対応付け、READMEと作業分野別案内から辿れるようにした。Sky、Zema、Walletは共通Web/OSの内側にあること、`public-release`は配布候補、`vendor/mr`は固定原本であることを明記した。既存ソースの移動や製品状態の変更はしていない。相対リンクの存在、`git diff --check`、`npm run project:check`、`repository:check`、`baseline:check`、`design:check`を確認した。`npm run verify`は型検査と製品lintまで通過したが、Node全体試験が出力を止めたため中断し、全体PASSとは記録しない。次は本PRのレビュー後に必要なCI結果を確認する。
+
 ## 2026-09-23 — Tower20 E3の回転画像を透過素材へ変更
 
 公開商品ページの180°製品turnで、元画像の黒いstudio背景が長方形に見えていた問題を解消した。正面・側面・背面の3画像を、製品形状・camera窓・base・4脚を残した透過RGBA素材へ変更し、元画像に含まれていた床、反射、spotlight haze、背景を削除した。CSSで長方形をぼかして隠すradial maskも外し、Siteの背景へ製品を直接重ねる。接地感は製品下の小さなsoft shadowだけで補う。正面0°・側面98°・背面180°を実画面で確認し、公開Site v40（source `068bdf6a489cf57e2806c45923aa5161a5e51195`）へ配備した。画像はE3設計方向を伝える構想CGであり、量産実機写真や実camera性能の証拠ではない。
@@ -877,10 +881,11 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-23 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 95/146件
+最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 96/147件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
+| ORG01 | 製品・実装単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備 | 完了 | [記録](PROJECTS.md) · [記録](README.md) · [記録](docs/workstreams/README.md) |
 | UXCHAR01 | Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果） | 完了 | [記録](components/tool-character.tsx) · [記録](components/tool-character.module.css) · [記録](docs/workstreams/01-product-ux.md) |
 | SKY20 | Sky公開・Telegram配布を証拠付きverified Packageへ限定し、失効と利用イベント再送を受け入れる | 進行中 | [記録](drizzle/0016_red_crusher_hogan.sql) · [記録](lib/sky-tool-review.ts) · [記録](lib/sky-review-auth.ts) · [記録](app/api/sky/tool-reviews/route.ts) · [記録](lib/sky-tool-package-store.ts) · [記録](lib/sky-activation.ts) · [記録](lib/sky-tool-events.ts) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](tests/sky-tool-package.test.mjs) · [記録](tests/sky-activation.test.mjs) · [記録](tests/sky-tool-sdk.test.mjs) · [記録](docs/sky-tool-sdk.md) |
 | SKY19 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
