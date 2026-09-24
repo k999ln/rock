@@ -84,6 +84,8 @@ Jev評価はRock側のToolと外部の評価先を組み合わせる構成です
 | 第三者 | `jev-browser` — browser操作 |
 | 第三者 | `mobile-jev` — Android操作 |
 
+[全Tool詳細設計](docs/sky-tools-complete-design.md)にはOpenJev、Jevlike、Awesome Jev by TypeSafeも研究・参考対象として記載されています。現行の[`lib/catalog.ts`](lib/catalog.ts)と[設計台帳](data/design-document-index.json)には登録されていないため、上の22件やready Toolには含めません。
+
 ### Linux/QEMUに同梱した開発用Tool
 
 Web/PC catalogとは別に、[`systems/rock-star-os/examples/registry/`](systems/rock-star-os/examples/registry/)には次の6 family・9版があります。公開RFC試験鍵を使う開発用packageです。
