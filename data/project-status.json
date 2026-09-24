@@ -85,6 +85,22 @@
       ]
     },
     {
+      "id": "DOC02",
+      "title": "RockstarOS設計書完全版v1.0の原本PDF・全文抽出・完全性記録・設計索引をGit正本へ保存",
+      "status": "done",
+      "dependsOn": [
+        "DOC01"
+      ],
+      "evidence": [
+        "docs/rockstaros-complete-design-v1.0.pdf",
+        "docs/rockstaros-complete-design-v1.0.txt",
+        "data/rockstaros-complete-design-v1.0.json",
+        "docs/rockstaros-design-portal.md",
+        "data/design-document-index.json",
+        "scripts/check-design-document-index.mjs"
+      ]
+    },
+    {
       "id": "AI01",
       "title": "RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない）",
       "status": "done",

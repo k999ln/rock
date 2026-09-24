@@ -100,6 +100,19 @@ export function validateBaseline(
     designDocumentation?.portal === 'docs/rockstaros-design-portal.md' &&
       designDocumentation?.operatingSystem ===
         'docs/rockstaros-complete-design.md' &&
+      designDocumentation?.completeDesignPdf ===
+        'docs/rockstaros-complete-design-v1.0.pdf' &&
+      designDocumentation?.completeDesignSearchableText ===
+        'docs/rockstaros-complete-design-v1.0.txt' &&
+      designDocumentation?.completeDesignSourceRecord ===
+        'data/rockstaros-complete-design-v1.0.json' &&
+      designDocumentation?.completeDesignAuthorityDate === '2026-09-24' &&
+      designDocumentation?.completeDesignScope?.chapters === 32 &&
+      designDocumentation?.completeDesignScope?.deploymentProfiles === 5 &&
+      designDocumentation?.completeDesignScope?.logicalServices === 13 &&
+      designDocumentation?.completeDesignScope?.requirements === 60 &&
+      designDocumentation?.completeDesignScope?.structuralAndDdlChecks ===
+        '43/43' &&
       designDocumentation?.tools === 'docs/sky-tools-complete-design.md' &&
       designDocumentation?.materialInvention ===
         'docs/rockstaros-avocado-mini-complete-design.md' &&
@@ -111,6 +124,9 @@ export function validateBaseline(
       [
         designDocumentation.portal,
         designDocumentation.operatingSystem,
+        designDocumentation.completeDesignPdf,
+        designDocumentation.completeDesignSearchableText,
+        designDocumentation.completeDesignSourceRecord,
         designDocumentation.tools,
         designDocumentation.materialInvention,
         designDocumentation.index,

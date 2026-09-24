@@ -8,6 +8,12 @@
 
 [設計書一式](docs/avocado-mini-r5/README.md) · [PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [Word](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.docx) · [一括ZIP](docs/avocado-mini-r5/avocadoMini_R5_Integrated_Design_Package.zip) · [開発進捗](project.md)
 
+## OS全体の設計書
+
+[RockstarOS 設計書完全版 v1.0（原本PDF）](docs/rockstaros-complete-design-v1.0.pdf) / [検索用テキスト](docs/rockstaros-complete-design-v1.0.txt) / [原本の完全性記録](data/rockstaros-complete-design-v1.0.json)。32章・5配備profile・13論理service・OSR-001〜060を収録し、rocketstar、A-LINK、avokado、colonyの共通運用を扱います。記録された43/43は構造・DDLの検査で、実装・実機・飛行・量産の合格ではありません。
+
+**OS原本内のE3「4本＋別Hub」配置はR5へ適用しません。** 原本を改変せず保持し、R5単独mini用のDevice Profile・adapterとの統合は未完了として区別します。
+
 ## 何をできるようにするか
 
 | 段階 | 目指す体験 |
@@ -50,7 +56,7 @@
 R5の計算・判定チェックは14件通過、実機試験は0件です。資料保存はOS runtimeの実装やハードウェア完成を意味しません。既存のPixel、QEMU、Web、Wallet等の検証系列は独立して維持します。
 
 <!-- project-overview:start -->
-更新日: 2026-09-24 / 148 task中96 done・31 in progress・20 planned・1 blocked
+更新日: 2026-09-24 / 149 task中97 done・31 in progress・20 planned・1 blocked
 <!-- project-overview:end -->
 
 件数は製品完成率ではありません。[全task・段階別gate・次の作業](project.md#全taskの作業進捗)を参照してください。

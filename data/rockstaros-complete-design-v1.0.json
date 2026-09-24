@@ -1,0 +1,71 @@
+{
+  "schema": "rockstaros-complete-design-source/1",
+  "title": "RockstarOS 設計書完全版 v1.0",
+  "version": "1.0",
+  "authorityDate": "2026-09-24",
+  "source": {
+    "pdf": "docs/rockstaros-complete-design-v1.0.pdf",
+    "searchableText": "docs/rockstaros-complete-design-v1.0.txt",
+    "pdfSha256": "9f318e6c1fe04abca895c87085931b9b3f15f1a4445aa99b4231ae9a5c1c3855",
+    "searchableTextSha256": "124dbf729f029a8504f1344fd87c898321d50d24aef830f9b67bd3ff90969477",
+    "pdfSizeBytes": 498391,
+    "pageCount": 41,
+    "pageFormat": "A4",
+    "embeddedFileCount": 0
+  },
+  "scope": {
+    "chapterCount": 32,
+    "deploymentProfileCount": 5,
+    "logicalServiceCount": 13,
+    "requirementCount": 60,
+    "structuralAndDdlChecksPassed": 43,
+    "structuralAndDdlChecksTotal": 43
+  },
+  "deploymentProfiles": [
+    "GROUND-REF-v1",
+    "EDGE-HUB-v1",
+    "COLONY-OPS-v1",
+    "FLIGHT-EVAL-v1",
+    "SAT-EVAL-v1"
+  ],
+  "logicalServices": [
+    "Identity & Authority",
+    "Asset Registry",
+    "Telemetry & Alarms",
+    "Work & Procedures",
+    "Command Broker",
+    "Resource Scheduler",
+    "Device Adapter",
+    "Link Gateway",
+    "Evidence Store",
+    "Update & Recovery",
+    "avokado / Shell",
+    "Local AI Planner",
+    "Health & Audit"
+  ],
+  "requirements": {
+    "first": "OSR-001",
+    "last": "OSR-060",
+    "acceptanceStages": ["V0", "V1", "V2", "V3", "V4", "V5"]
+  },
+  "naming": {
+    "rocket": "rocketstar",
+    "operatingSystem": "RockstarOS",
+    "satelliteNetwork": "A-LINK",
+    "operationProduct": "avokado"
+  },
+  "implementationBoundary": {
+    "completeMeansDocumentScopeIsCovered": true,
+    "implementationComplete": false,
+    "physicalAcceptanceComplete": false,
+    "flightQualificationComplete": false,
+    "productionReleaseApproved": false
+  },
+  "sourceRepositoryAuditRecordedByDocument": {
+    "head": "5d5f3dc4f73ac3389c8dbc00f9ca6e8beba526e0",
+    "branch": "codex/readme-navigation",
+    "workingTree": "clean",
+    "latestRemoteStateVerifiedByThisImport": false
+  },
+  "authority": "The PDF is the exact user-provided source artifact. This JSON is an index and integrity record; it does not replace the PDF."
+}
