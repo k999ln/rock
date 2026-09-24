@@ -1,4 +1,4 @@
-# avocadoMini / RockstarOS
+# avocado
 
 [プロジェクト別ガイド](PROJECTS.md) · [作業分野別ガイド](docs/workstreams/README.md) · [全設計ポータル](docs/rockstaros-design-portal.md)
 
