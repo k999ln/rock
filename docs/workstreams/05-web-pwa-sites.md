@@ -4,7 +4,7 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
-- 2026-09-24追加修正: 利用者から完全版設計書が公開ページに見当たらないとの指摘を受け、R1.0原本PDF（44ページ）と全付録ZIPをSiteの`/downloads/`へ同梱。冒頭・OS画面・footerから直接開けるようにし、GitHubだけへ渡す導線を解消した。Site v50（source `8a619bd833e5b80968efdb92c78d7fc51d4d7b6a`）の配備成功を確認。原本PDF/ZIPのhash一致とZIP CRCを確認し、再生成scriptでダウンロードも配布物へ同期する。公開receiptと結果は[同じ証拠](../evidence/rocketstar-site-r1.json)に追記し、v49の履歴を保持する。R5・実機/飛行の状態は変更しない。
+- 2026-09-24追加修正: 利用者から完全版設計書が公開ページに見当たらないとの指摘を受け、R1.0原本PDF（44ページ）と全付録ZIPをSiteの`/downloads/`へ同梱。冒頭・OS画面・footerから直接開けるようにし、GitHubだけへ渡す導線を解消した。Site v50（source `8a619bd833e5b80968efdb92c78d7fc51d4d7b6a`）の配備成功を確認。 アプリ内PDF viewerで灰色表示となったため、v51（source `751fd13a9e1f8649fa58c739d4723a0f9e5ad31c`）で全35章の可読HTML reader `/rocket-star/design/` を主導線に追加し、原本PDF/ZIPはダウンロードとして保持した。原本PDF/ZIPのhash一致とZIP CRCを確認し、再生成scriptでダウンロードも配布物へ同期する。公開receiptと結果は[同じ証拠](../evidence/rocketstar-site-r1.json)に追記し、v49の履歴を保持する。R5・実機/飛行の状態は変更しない。
 
 - 2026-09-24、利用者指定の`https://avocado-mini.kirin-999.chatgpt.site/rocket-star/`をR1.0統合設計に合わせて更新した。主担当ROCK、WEB13、HostingはSites、公開とmain保存は利用者の明示指示済み。両段再使用、衛星搭載、A-LINK、RockstarOSとコロニー運用、端末ボタンの境界を伝え、設計計画を実機・飛行合格へ置き換えない。現行R5要求は維持し、今回の対象はrocketstarページ。先行公開済みのヘッダー・ブランド・画像は保持してGitHubへ保存する。Site v49（source `fb580e64dfb775ef517aca7e5f1602eee587adbe`）への配備と公開ブラウザでの新内容を確認。source、配信version、表示・回帰確認は[証拠](../evidence/rocketstar-site-r1.json)へ記録する。再生成は`node sites/avocado-mini/scripts/build-rocketstar.mjs`でこのrouteだけを対象とし、独自配布CSSの残る他ページを全体Vite buildで上書きしない。旧OS Site移行を含むWEB13全体はin_progress。
 

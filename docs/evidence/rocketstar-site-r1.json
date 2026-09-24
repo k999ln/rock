@@ -6,11 +6,11 @@
   "authorization": "User reported the complete product design was missing from the published product site; publish the original PDF and complete ZIP with direct links, and retain authorized GitHub/main saving.",
   "siteProjectId": "appgprj_6aaf6a375b908191b3b0c1845dc78291",
   "siteUrl": "https://avocado-mini.kirin-999.chatgpt.site/rocket-star/",
-  "previousSiteVersion": 49,
-  "siteSourceCommit": "8a619bd833e5b80968efdb92c78d7fc51d4d7b6a",
+  "previousSiteVersion": 50,
+  "siteSourceCommit": "751fd13a9e1f8649fa58c739d4723a0f9e5ad31c",
   "githubBaseCommit": "af41cfafc72f4f88ebf7736b144e4f73fa69b921",
   "copy": {
-    "trackedFiles": 131,
+    "trackedFiles": 145,
     "excluded": [
       "node_modules (installed dependency symlink)"
     ],
@@ -277,8 +277,36 @@
         "sha256": "613d804d71aceeb58f0000ef07fe411b0f87e6de0bbbe234c864fdb6dab9796d"
       },
       {
+        "path": "dist/client/rocket-star/design/index.html",
+        "sha256": "2024c0c0262ff812bad5f1e64c7709a1f07c21c0529ac0e24e1da80ea359b3ee"
+      },
+      {
+        "path": "dist/client/rocket-star/design/reader.css",
+        "sha256": "de318e419207a8ec6da45a60c1353309e68d27595c311dfe8b19ec15724ad8ea"
+      },
+      {
+        "path": "dist/client/rocket-star/design/reference_c3/rocketstar_C3_external_concept.png",
+        "sha256": "8f30a9c08cd24a5aacd212b3bdfcba4c2bce04b1e9224262b3db5d408b38f8f8"
+      },
+      {
+        "path": "dist/client/rocket-star/design/rocketstar_functional_layout.svg",
+        "sha256": "3730a39a870f17319bf5df73a68e88220f2404be221a5a6f03d7cce6a821c471"
+      },
+      {
+        "path": "dist/client/rocket-star/design/rocketstar_reuse_lifecycle.svg",
+        "sha256": "03a180f8e9e3af7b83aa269a716d122c56e6f55f80790f1b8015ee4b3828683b"
+      },
+      {
+        "path": "dist/client/rocket-star/design/rocketstar_system.svg",
+        "sha256": "c5213e41565e4929997e7a6255cd6658c22fd7f6cab84185c00dc2e6824d26f5"
+      },
+      {
+        "path": "dist/client/rocket-star/design/source.md",
+        "sha256": "fc958d4905614ca181b9d93fbc9f6944dcb5bfc9aebb0b5a67d55f53a45d4291"
+      },
+      {
         "path": "dist/client/rocket-star/index.html",
-        "sha256": "aa80d76cf8cfe45ebc29fa4a640f3c2264751338d0368b1f78950fe2f74ced14"
+        "sha256": "a3b5ac6c826259b7cfab1b95f6de5341e20940daa7147113034991822cc373a5"
       },
       {
         "path": "dist/client/rockstaros/index.html",
@@ -493,12 +521,40 @@
         "sha256": "c68290c05a5979398cc21a829de1eb3cb2ffe798656b36cb348a92f51ed44e5a"
       },
       {
+        "path": "public/rocket-star/design/index.html",
+        "sha256": "2024c0c0262ff812bad5f1e64c7709a1f07c21c0529ac0e24e1da80ea359b3ee"
+      },
+      {
+        "path": "public/rocket-star/design/reader.css",
+        "sha256": "de318e419207a8ec6da45a60c1353309e68d27595c311dfe8b19ec15724ad8ea"
+      },
+      {
+        "path": "public/rocket-star/design/reference_c3/rocketstar_C3_external_concept.png",
+        "sha256": "8f30a9c08cd24a5aacd212b3bdfcba4c2bce04b1e9224262b3db5d408b38f8f8"
+      },
+      {
+        "path": "public/rocket-star/design/rocketstar_functional_layout.svg",
+        "sha256": "3730a39a870f17319bf5df73a68e88220f2404be221a5a6f03d7cce6a821c471"
+      },
+      {
+        "path": "public/rocket-star/design/rocketstar_reuse_lifecycle.svg",
+        "sha256": "03a180f8e9e3af7b83aa269a716d122c56e6f55f80790f1b8015ee4b3828683b"
+      },
+      {
+        "path": "public/rocket-star/design/rocketstar_system.svg",
+        "sha256": "c5213e41565e4929997e7a6255cd6658c22fd7f6cab84185c00dc2e6824d26f5"
+      },
+      {
+        "path": "public/rocket-star/design/source.md",
+        "sha256": "fc958d4905614ca181b9d93fbc9f6944dcb5bfc9aebb0b5a67d55f53a45d4291"
+      },
+      {
         "path": "rocket-star/design.css",
         "sha256": "f25ec99f8e2f97e2f8a9ba80ac5616569f2d50f5d1157962ffd79db8316ba796"
       },
       {
         "path": "rocket-star/index.html",
-        "sha256": "b8589f0445975c9453c5bf85a8c7041b326133a1d608741d257970ab42e7c942"
+        "sha256": "cfec5c16c52a90fa18779db011e8bce7947a513929a4c07edada9310ef8610a9"
       },
       {
         "path": "rocket-star/main.js",
@@ -510,7 +566,7 @@
       },
       {
         "path": "scripts/build-rocketstar.mjs",
-        "sha256": "aba0b95147aa3dac85f78b7b19353d79a5f0b53c605acecd5c13b17d4f15c703"
+        "sha256": "2ed5f709dc1a3ab58ed00f761e8a1e298be841ecdba35d7a5e0b5757c96bef83"
       },
       {
         "path": "scripts/stage-worker.mjs",
@@ -546,7 +602,8 @@
     "rocketstar R1.0 public concept, two-stage reuse, satellites, A-LINK, RockstarOS and colony operations",
     "Preserve previously published Sites branding, header and asset refinements in the GitHub canonical source",
     "Keep avocadoMini R5 as the canonical product requirement; inherited E3 public product body is outside this rocketstar update",
-    "Serve the unchanged R1.0 PDF and complete appendix ZIP directly from the product site, without GitHub sign-in"
+    "Serve the unchanged R1.0 PDF and complete appendix ZIP directly from the product site, without GitHub sign-in",
+    "Provide the complete 35-chapter HTML reader as the primary design entry because the in-app PDF viewer displayed only grey"
   ],
   "validation": {
     "wholeRepository": {
@@ -559,7 +616,7 @@
       "webAssetReferences": 84,
       "webAssetsMissing": 0,
       "environment": "macOS; Node 26.0.0; local networking allowed",
-      "scope": "Local software regression; not physical, flight or satellite-network acceptance"
+      "scope": "Final HTML-reader-inclusive state; local software regression, not physical, flight or satellite-network acceptance"
     },
     "downloads": {
       "pdf": {
@@ -583,7 +640,7 @@
     "routeBuild": {
       "command": "node sites/avocado-mini/scripts/build-rocketstar.mjs",
       "status": "pass",
-      "sourceFilesByteMatchedAfterBuild": 131
+      "sourceFilesByteMatchedAfterBuild": 145
     },
     "localHttp": {
       "status": "pass",
@@ -606,18 +663,45 @@
       "targetedCommand": "node --test tests/mini200-e1-docs.test.mjs",
       "targetedPassed": 4,
       "targetedFailed": 0
+    },
+    "htmlReader": {
+      "publicPath": "/rocket-star/design/",
+      "chapters": 35,
+      "tocEntries": 35,
+      "bodyFigures": 4,
+      "headerLogo": 1,
+      "sourceMarkdownSha256": "fc958d4905614ca181b9d93fbc9f6944dcb5bfc9aebb0b5a67d55f53a45d4291",
+      "sourceMarkdownMatchesOriginal": [
+        "rocketstar_Complete_Design_R1_0.md"
+      ],
+      "sourceDistributionByteMatch": true,
+      "localVisualReadback": {
+        "status": "pass",
+        "viewport": "1280x720",
+        "inspection": "Publishing agent read the full-text HTML reader locally; all figures present"
+      },
+      "reasonForHtml": "The public raw PDF rendered as a grey surface in the in-app browser; file delivery and visible rendering are separate. The HTML reader is now primary, and original PDF/ZIP remain downloads."
     }
   },
   "publication": {
     "status": "succeeded",
-    "siteVersion": 50,
-    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_27abcdfe0fac81919184148032ddd0c1",
-    "deploymentId": "appgdep_6ab59b4d48b481918f8d662d391335fd",
-    "updatedAt": "2026-09-24T21:51:22.999615+00:00",
-    "sourceCommit": "8a619bd833e5b80968efdb92c78d7fc51d4d7b6a",
-    "archiveSha256": "a4df1f1d14fea7afd13a4670792b4aa825a0d61b6d18d2a6a80af002b3a3f36b",
-    "archiveBytes": 45629440,
-    "archiveFiles": 64
+    "siteVersion": 51,
+    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_e39635330f888191b81234cc0b40581e",
+    "deploymentId": "appgdep_6ab59e2631ec819193fd415be2e99cee",
+    "updatedAt": "2026-09-24T22:03:29.712327+00:00",
+    "sourceCommit": "751fd13a9e1f8649fa58c739d4723a0f9e5ad31c",
+    "archiveSha256": "9ae0ca786db77ebb07e6245f546453a6e20b9e65a16fa6ccddef660ad4bbd9bb",
+    "archiveBytes": 47554560,
+    "archiveFiles": 71,
+    "publicReaderBrowserReadback": {
+      "status": "not_verified",
+      "reason": "In-app browser navigation returned net::ERR_BLOCKED_BY_CLIENT and remained on the previous localhost page; external tool fetch was unavailable. This is not reported as a rendered public reader or as a server failure.",
+      "verifiedSeparately": [
+        "Sites deployment succeeded",
+        "Staged HTML rendered locally",
+        "Full reader/PDF/ZIP present in deployment archive"
+      ]
+    }
   },
   "limits": [
     "No hardware, manufacturing, flight, satellite coverage or colony-operation certification",
@@ -709,6 +793,99 @@
           "inspection": "CUA browser inspection by the publishing parent agent"
         },
         "anonymousHttpHashReadback": "not_verified: direct urllib request returned HTTP 403; this is not treated as asset hash equality"
+      }
+    },
+    {
+      "githubSourceCommit": "5c39fb7588d89296a62a6e63a99e30468d1f8e66",
+      "githubPullRequest": "https://github.com/k999ln/rock/pull/32",
+      "githubStatusAtReceipt": "Unmerged, superseded by HTML reader revision before merge",
+      "siteSourceCommit": "8a619bd833e5b80968efdb92c78d7fc51d4d7b6a",
+      "copySummary": {
+        "trackedFiles": 131,
+        "excluded": [
+          "node_modules (installed dependency symlink)"
+        ],
+        "sha256Matched": true
+      },
+      "validation": {
+        "wholeRepository": {
+          "command": "npm run verify",
+          "status": "pending_after_reader_update"
+        },
+        "downloads": {
+          "pdf": {
+            "publicPath": "/downloads/rocketstar-complete-design-r1.0.pdf",
+            "sha256": "c5497a5df7037ce7cdfe95d9ec93c8f976d4a7452041fdf27660c28806a36c4e",
+            "bytes": 3512971,
+            "originalByteMatch": true,
+            "sourceAndDistributionByteMatch": true,
+            "pages": 44
+          },
+          "zip": {
+            "publicPath": "/downloads/rocketstar-complete-design-r1.0.zip",
+            "sha256": "a02bed9e484d0b6c81a6dd71ed022c500762241163d50c21a75d31fc1e63f140",
+            "bytes": 4709794,
+            "originalByteMatch": true,
+            "sourceAndDistributionByteMatch": true,
+            "members": 55,
+            "crc": "pass"
+          }
+        },
+        "routeBuild": {
+          "command": "node sites/avocado-mini/scripts/build-rocketstar.mjs",
+          "status": "pending_after_reader_update"
+        },
+        "localHttp": {
+          "status": "pass",
+          "inspection": "Publishing agent checked the staged distribution through localhost:4179",
+          "pdf": {
+            "statusCode": 200,
+            "contentType": "application/pdf",
+            "originalByteMatch": true
+          },
+          "zip": {
+            "statusCode": 200,
+            "contentType": "application/zip",
+            "originalByteMatch": true
+          }
+        },
+        "resolvedRegression": {
+          "initialResult": "One README requirement assertion failed in tests/mini200-e1-docs.test.mjs; all other Node tests passed",
+          "source": "The unchanged upstream README at af41cfafc72f4f88ebf7736b144e4f73fa69b921 lacked the required game-first life statement",
+          "resolution": "Retained the expanded README description and restored the game-first life intent in its opening sentence; no test weakened",
+          "targetedCommand": "node --test tests/mini200-e1-docs.test.mjs",
+          "targetedPassed": 4,
+          "targetedFailed": 0
+        },
+        "htmlReader": {
+          "publicPath": "/rocket-star/design/",
+          "chapters": 35,
+          "tocEntries": 35,
+          "bodyFigures": 4,
+          "headerLogo": 1,
+          "sourceMarkdownSha256": "fc958d4905614ca181b9d93fbc9f6944dcb5bfc9aebb0b5a67d55f53a45d4291",
+          "sourceMarkdownMatchesOriginal": [
+            "rocketstar_Complete_Design_R1_0.md"
+          ],
+          "sourceDistributionByteMatch": true,
+          "localVisualReadback": {
+            "status": "pass",
+            "viewport": "1280x720",
+            "inspection": "Publishing agent read the full-text HTML reader locally; all figures present"
+          },
+          "reasonForHtml": "The public raw PDF rendered as a grey surface in the in-app browser; file delivery and visible rendering are separate. The HTML reader is now primary, and original PDF/ZIP remain downloads."
+        }
+      },
+      "publication": {
+        "status": "succeeded",
+        "siteVersion": 50,
+        "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_27abcdfe0fac81919184148032ddd0c1",
+        "deploymentId": "appgdep_6ab59b4d48b481918f8d662d391335fd",
+        "updatedAt": "2026-09-24T21:51:22.999615+00:00",
+        "sourceCommit": "8a619bd833e5b80968efdb92c78d7fc51d4d7b6a",
+        "archiveSha256": "a4df1f1d14fea7afd13a4670792b4aa825a0d61b6d18d2a6a80af002b3a3f36b",
+        "archiveBytes": 45629440,
+        "archiveFiles": 64
       }
     }
   ]

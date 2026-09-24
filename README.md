@@ -18,7 +18,7 @@
 
 ## rocketstar・衛星・共通運用の設計アーカイブ
 
-[rocketstar公開ページ](https://avocado-mini.kirin-999.chatgpt.site/rocket-star/)は、両段再使用・衛星搭載・A-LINK・RockstarOSの計画を案内します。[公開PDF](https://avocado-mini.kirin-999.chatgpt.site/downloads/rocketstar-complete-design-r1.0.pdf) / [全付録ZIP](https://avocado-mini.kirin-999.chatgpt.site/downloads/rocketstar-complete-design-r1.0.zip)をSiteから直接開けます。公開版と設計原本、検証状態の対応は[Web作業記録](docs/workstreams/05-web-pwa-sites.md)を参照してください。
+[rocketstar公開ページ](https://avocado-mini.kirin-999.chatgpt.site/rocket-star/)は、両段再使用・衛星搭載・A-LINK・RockstarOSの計画を案内します。[完全版をサイトで読む（全35章）](https://avocado-mini.kirin-999.chatgpt.site/rocket-star/design/) / [PDFダウンロード](https://avocado-mini.kirin-999.chatgpt.site/downloads/rocketstar-complete-design-r1.0.pdf) / [全付録ZIP](https://avocado-mini.kirin-999.chatgpt.site/downloads/rocketstar-complete-design-r1.0.zip)をSiteから直接開けます。公開版と設計原本、検証状態の対応は[Web作業記録](docs/workstreams/05-web-pwa-sites.md)を参照してください。
 
 [rocketstar 設計書完全版 R1.0（44ページ・35章）](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) / [本文と全付録の入口](docs/rocketstar-design/README.md) / [完全版ZIP](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0_package.zip)。無人・両段再使用のロケット、衛星搭載、帰還・回収、地上設備、整備・再使用、検証計画をまとめた統合システム設計です。製造図面、実機性能、飛行認定は未完了です。
 
