@@ -2,7 +2,7 @@
 
 [プロジェクト別ガイド](PROJECTS.md) · [作業分野別ガイド](docs/workstreams/README.md) · [全設計ポータル](docs/rockstaros-design-portal.md)
 
-ゲームを入口に、生活全体をより豊かにする。制作・学習・日常生活の負担を減らす。
+ゲームを入口に、制作・学習・日常生活へ広げる製品構想です。このリポジトリには、avocadoMiniのハードウェア設計、RockstarOSの共通契約、Web・Android・Linux/QEMUの実装と検証記録を収めています。
 
 **現在の設計基準はR5（2026-09-24）です。** 使用時全高200mm以内の銀色の細いminiを、**1本で基本機能が動く構成**として設計します。別Edge Hubや外部PCを必須にせず、同型miniを追加して範囲・品質を改善することを目指します。
 
@@ -22,7 +22,7 @@
 
 [rocketstar 設計書完全版 R1.0（44ページ・35章）](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) / [本文と全付録の入口](docs/rocketstar-design/README.md) / [完全版ZIP](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0_package.zip)。無人・両段再使用のロケット、衛星搭載、帰還・回収、地上設備、整備・再使用、検証計画をまとめた統合システム設計です。製造図面、実機性能、飛行認定は未完了です。
 
-今回の「漏れなく更新保存」により、A-LINK、受信試作、コロニー運用、ボタン設計、旧版、生成元、計算と検証記録も[保存台帳](docs/rocketstar-design/inventory.json)で追跡します。[OS完全版の付録一式](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md)も受領し、既存OS PDFと同一SHA-256であることを確認しました。付属schema・DDL・モデルは設計/試験資料として保存し、現行runtimeへ自動適用しません。アーカイブ内のE3・別Hub・ボタン配置前提はR5へ継承せず、製品要求は引き続き1本自律・別Hub不要です。Git保存はサイト公開、OS配布、製造・打上げの承認を意味しません。
+A-LINK、受信試作、コロニー運用、ボタン設計、旧版、生成元、計算と検証記録は[保存台帳](docs/rocketstar-design/inventory.json)で追跡します。[OS完全版の付録一式](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md)も受領し、既存OS PDFと同一SHA-256であることを確認しました。付属schema・DDL・モデルは設計/試験資料として保存し、現行runtimeへ自動適用しません。アーカイブ内のE3・別Hub・ボタン配置前提はR5へ継承せず、製品要求は引き続き1本自律・別Hub不要です。Git保存はサイト公開、OS配布、製造・打上げの承認を意味しません。
 
 ## 何をできるようにするか
 
@@ -45,6 +45,21 @@
 | 電源・通信 | 外部給電は必要。電池は未採用。通信設備は演算Hubとは別で、インターネットを基本動作の必須条件にしない |
 
 センサーの赤外光は「空間を測る光」であり、裸眼で粒子を表示する能力とは別です。TV、AR眼鏡、壁面投影、卓上の浮遊平面像を、要求された全空間表示の達成とは扱いません。
+
+## ソフトウェアの設計
+
+RockstarOSは、端末上の権限・仕事・保存・復旧を共通基盤に置き、アプリ、AI、Tool、外部Providerを契約で接続する設計です。[AIネイティブOS共通設計](docs/ai-native-os-architecture.md)に依存方向と未実装の契約を記載しています。以下は設計上の役割であり、全経路の実装・統合完了を示すものではありません。
+
+| 層 | 役割と境界 |
+| --- | --- |
+| Device Support / 入力adapter | 機種固有の起動・センサー・電源を扱う。R5 miniのDevice Profileと既存OSの接続は未完了 |
+| Platform Core / Broker | 本人・component・capability・承認を検査し、仕事、結果、履歴、保存・復旧を管理する。AIの提案だけでは実行しない |
+| Local AI / Agent | 端末内で計画候補を作り、Brokerが検査した有限の手順を進める。モデル交換、長期記憶、一般的な自律実行は設計・追加受入の対象 |
+| Sky / Zema | SkyでToolとAIチームを探して接続し、Zemaで依頼、進捗、確認、停止、成果を扱う |
+| Tool / MCP / Provider | 業務、制作、ゲーム、外部サービスを版・権限・費用・実行先ごとに接続する。外部公開や購入などは対象を特定した本人承認を要する |
+| Wallet / Asset | 署名済み収益と費用の照合、作品の出所・権利・版を扱う。Toolの完了を実収益や金融取引の成功と同一視しない |
+
+[OS全体詳細設計](docs/rockstaros-complete-design.md) / [Tool詳細設計](docs/sky-tools-complete-design.md) / [LLMとJevの現在地](docs/llm-evaluation-architecture.md) / [製品・システム関係図](docs/rockstaros-product-system-map.md)
 
 ## 設計資料を読む
 
@@ -69,6 +84,16 @@ CSV業務、メルカリ収益ループ、Fashion Brand OpsはSky catalogに登�
 
 R5の計算・判定チェックは14件通過、実機試験は0件です。資料保存はOS runtimeの実装やハードウェア完成を意味しません。既存のPixel、QEMU、Web、Wallet等の検証系列は独立して維持します。
 
+| 系列 | 現在確認できる範囲 | 残る主な受入 |
+| --- | --- | --- |
+| avocadoMini R5 | 統合基本設計、図面、計算の保存と自動チェック | 裸眼全空間表示、精密3D入力、閉箱での熱・電源・安全、同一試作機の実測。製造承認は保留 |
+| Web / Sky / Zema | アプリ、Tool catalog、仕事・承認・履歴、分離したBilling WorkerとOperator Dockのsource | 配備先ごとの最新source・認証・外部Provider・実取引の受入。Git保存だけで公開中とはしない |
+| Pixel 10 GL066 / frankel | 既存OS上の試験署名APKでoffline計画と限定Tool、保存・再起動などの23/23事前試験 | RockstarOS全体のimage build、正式署名、初回flash・boot、OTA、全損復元。初回flash gateは4項目とも未合格 |
+| Linux / QEMU | 独立したDeveloper Previewの実装・受入記録 | 現行候補と同一artifactのrelease gate。Pixelの実機合格へ転用しない |
+| Material Invention | 再現可能なsandbox Coreと統合設計 | R5入力・表示adapter、操作画面、実センサー、simulation・Patent AI接続の受入 |
+
+根拠: [全進捗](project.md)、[Pixel事前試験](docs/evidence/android-pixel-10-prefull-physical-20260916.json)、[初回flash gate](docs/android-first-flash-gate-20260916.md)、[Material Invention担当分野](docs/workstreams/11-material-invention-avocado-mini.md)。
+
 <!-- project-overview:start -->
 更新日: 2026-09-24 / 151 task中99 done・31 in progress・20 planned・1 blocked
 <!-- project-overview:end -->
@@ -79,9 +104,23 @@ P0.2、E1、E2、Tower20 E3は履歴です。以前の「4本＋別Hub必須」�
 
 **この更新はGitHubの設計資料保存です。公開商品サイト、配布OS、予約・決済環境は更新していません。** サイトには以前のE3の説明が残るため、現行の設計判断はR5を参照してください。
 
+## リポジトリ内の場所
+
+| 場所 | 主な内容 |
+| --- | --- |
+| [app/](app/)・[components/](components/)・[lib/](lib/) | Webアプリの画面、共通UI、仕事・Tool・Wallet等の処理 |
+| [services/](services/) | Sky BillingとOperator Dockの独立したWorker |
+| [systems/rock-star-os/](systems/rock-star-os/) | Linux/QEMU向けnative OSと配布・検証資産 |
+| [android/](android/)・[os/](os/) | Androidアプリ／BrokerとPixel向けOS構成 |
+| [toolkits/](toolkits/)・[contracts/](contracts/) | Tool SDK・Connector、共通interface |
+| [sites/avocado-mini/](sites/avocado-mini/) | 製品Siteのsource。Git上の更新と公開配備は別 |
+| [docs/](docs/)・[data/](data/) | 設計正本、受入証拠、製品要求と進捗 |
+
+詳しい入口とToolの配置は[プロジェクト別ガイド](PROJECTS.md)を参照してください。
+
 ## 開発を始める
 
-Node.js 22.13以上とnpmを使用します。
+Node.js 22.13以上とnpmを使用します。次はWebアプリのローカル起動手順です。Pixel、QEMU、Worker、製品Siteには別の手順と受入条件があります。
 
 ```sh
 npm ci
@@ -89,7 +128,7 @@ npx wrangler d1 migrations apply DB --local --config wrangler.local.jsonc
 npm run dev
 ```
 
-資料・進捗の変更後は以下を実行します。
+資料・進捗の変更後は以下を実行します。外部サービスの認証情報は必要な環境にだけ設定し、秘密値はGitへ保存しません。
 
 ```sh
 npm run project:update
