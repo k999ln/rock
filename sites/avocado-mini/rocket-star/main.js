@@ -3,19 +3,20 @@ const launch = document.querySelector('.launch-scroll');
 const sticky = document.querySelector('.launch-sticky');
 const background = document.querySelector('.launch-cinematic-bg');
 const panels = [...document.querySelectorAll('.launch-panel')];
-const rail = [...document.querySelectorAll('.launch-rail span')];
+const rail = [...document.querySelectorAll('.launch-rail button')];
 const progressBar = document.querySelector('#launch-progress');
 const step = document.querySelector('#launch-step');
 const altitude = document.querySelector('#launch-altitude');
 const labels = [
-  ['01 / PURPOSE', 'GROUND'],
-  ['02 / SYSTEM', 'ASCENT'],
-  ['03 / FUNDING', 'ORBIT'],
+  ['01 / RETURN', 'GROUND'],
+  ['02 / A-LINK', 'ORBIT'],
+  ['03 / ROCKSTAROS', 'BEYOND'],
 ];
 let activeStage = -1;
 let frame = 0;
 
 document.documentElement.classList.add('launch-motion-ready');
+const staticLayout = window.matchMedia('(prefers-reduced-motion: reduce), (max-height: 600px)');
 requestAnimationFrame(() => document.body.classList.add('is-ready'));
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -28,14 +29,19 @@ function updateLaunch() {
   const progress = clamp(-launch.getBoundingClientRect().top / distance, 0, 1);
   const stage = progress < 0.32 ? 0 : progress < 0.69 ? 1 : 2;
 
-  if (stage !== activeStage) {
+  if (stage !== activeStage || staticLayout.matches) {
     activeStage = stage;
     panels.forEach((panel, index) => {
-      const visible = index === stage;
+      const visible = staticLayout.matches || index === stage;
       panel.classList.toggle('is-active', visible);
       panel.setAttribute('aria-hidden', String(!visible));
+      panel.inert = !visible;
     });
-    rail.forEach((item, index) => item.classList.toggle('is-active', index === stage));
+    rail.forEach((item, index) => {
+      item.classList.toggle('is-active', index === stage);
+      if (index === stage) item.setAttribute('aria-current', 'step');
+      else item.removeAttribute('aria-current');
+    });
     step.textContent = labels[stage][0];
     altitude.textContent = labels[stage][1];
   }
@@ -76,6 +82,12 @@ function scheduleLaunch() {
 }
 
 window.addEventListener('scroll', scheduleLaunch, { passive: true });
-window.addEventListener('resize', scheduleLaunch);
-reducedMotion.addEventListener('change', scheduleLaunch);
+window.addEventListener('resize', () => { activeStage = -1; scheduleLaunch(); });
+staticLayout.addEventListener('change', () => { activeStage = -1; scheduleLaunch(); });
+rail.forEach((button, index) => button.addEventListener('click', () => {
+  const distance = Math.max(1, launch.offsetHeight - window.innerHeight);
+  const positions = [0, 0.49, 0.84];
+  window.scrollTo({ top: window.scrollY + launch.getBoundingClientRect().top + distance * positions[index], behavior: 'instant' });
+  scheduleLaunch();
+}));
 updateLaunch();

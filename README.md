@@ -18,6 +18,8 @@
 
 ## rocketstar・衛星・共通運用の設計アーカイブ
 
+[rocketstar公開ページ](https://avocado-mini.kirin-999.chatgpt.site/rocket-star/)は、両段再使用・衛星搭載・A-LINK・RockstarOSの計画を案内します。公開版と設計原本、検証状態の対応は[Web作業記録](docs/workstreams/05-web-pwa-sites.md)を参照してください。
+
 [rocketstar 設計書完全版 R1.0（44ページ・35章）](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) / [本文と全付録の入口](docs/rocketstar-design/README.md) / [完全版ZIP](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0_package.zip)。無人・両段再使用のロケット、衛星搭載、帰還・回収、地上設備、整備・再使用、検証計画をまとめた統合システム設計です。製造図面、実機性能、飛行認定は未完了です。
 
 今回の「漏れなく更新保存」により、A-LINK、受信試作、コロニー運用、ボタン設計、旧版、生成元、計算と検証記録も[保存台帳](docs/rocketstar-design/inventory.json)で追跡します。[OS完全版の付録一式](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md)も受領し、既存OS PDFと同一SHA-256であることを確認しました。付属schema・DDL・モデルは設計/試験資料として保存し、現行runtimeへ自動適用しません。アーカイブ内のE3・別Hub・ボタン配置前提はR5へ継承せず、製品要求は引き続き1本自律・別Hub不要です。Git保存はサイト公開、OS配布、製造・打上げの承認を意味しません。

@@ -4,6 +4,8 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
+- 2026-09-24、利用者指定の`https://avocado-mini.kirin-999.chatgpt.site/rocket-star/`をR1.0統合設計に合わせて更新した。主担当ROCK、WEB13、HostingはSites、公開とmain保存は利用者の明示指示済み。両段再使用、衛星搭載、A-LINK、RockstarOSとコロニー運用、端末ボタンの境界を伝え、設計計画を実機・飛行合格へ置き換えない。現行R5要求は維持し、今回の対象はrocketstarページ。先行公開済みのヘッダー・ブランド・画像は保持してGitHubへ保存する。Site v49（source `fb580e64dfb775ef517aca7e5f1602eee587adbe`）への配備と公開ブラウザでの新内容を確認。source、配信version、表示・回帰確認は[証拠](../evidence/rocketstar-site-r1.json)へ記録する。再生成は`node sites/avocado-mini/scripts/build-rocketstar.mjs`でこのrouteだけを対象とし、独自配布CSSの残る他ページを全体Vite buildで上書きしない。旧OS Site移行を含むWEB13全体はin_progress。
+
 - Rocket Starの公開構想ページ`/rocket-star/`を、avocadoMiniと同じ黒いスタジオと金属・青いセンサー光の表現へ再設計した。複数機が地上から上がる独自の発射場ビジュアルに、前景のRocket Star、発射台、噴射、煙、地表の後退、大気圏から軌道への変化をスクロール連動で重ねる。表示内容はPurpose、What it does、Fundingの3画面だけとし、RockstarOSを含む接続条件は短い説明に集約した。資金提供と決済は条件公開まで受け付けない。製品Site v34（source `1a78977a0b9272310dfc7e2a062c2ff8bafd7b2e`）として一般公開し、デスクトップと390px幅で表示を確認した。
 
 - avocadoMini予約販売に最終確認、規約同意記録、販売条件・privacy表示、Stripe idempotent retry、通信不明・期限切れ予約の在庫復旧、試行履歴cleanup、Bearer保護の注文一覧・reconcile APIを追加。入力本文上限をheader非依存にし、D1へ規約版・同意時刻・Stripe期限・試行時刻を追加した。試験6件、静的build、閉鎖時の最終確認・法定表示・privacy画面を確認し、製品Site v32（source `169266246a80b9c461be0b613db261f6008889e0`）を一般公開した。販売者情報、送料・発送・取消条件、税込送料込総額、在庫、Stripe秘密情報、管理tokenが揃うまでfail closedを維持する。

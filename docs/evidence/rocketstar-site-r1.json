@@ -1,0 +1,605 @@
+{
+  "schema": "rockstaros/rocketstar-site-release/1",
+  "recordedAt": "2026-09-24",
+  "task": "WEB13",
+  "primaryOwner": "ROCK",
+  "authorization": "User requested updating rocketstar on https://avocado-mini.kirin-999.chatgpt.site/; prior save and main integration authorization retained.",
+  "siteProjectId": "appgprj_6aaf6a375b908191b3b0c1845dc78291",
+  "siteUrl": "https://avocado-mini.kirin-999.chatgpt.site/rocket-star/",
+  "previousSiteVersion": 48,
+  "siteSourceCommit": "fb580e64dfb775ef517aca7e5f1602eee587adbe",
+  "githubBaseCommit": "0325f0c5a1bbca6d549e996ee6afb431754c00b4",
+  "copy": {
+    "trackedFiles": 125,
+    "excluded": [
+      "node_modules (installed dependency symlink)"
+    ],
+    "sha256Matched": true,
+    "files": [
+      {
+        "path": ".env.example",
+        "sha256": "cff6629ab4b967545ac055860014c0d05f1fe82266db0ca4730135157749f37b"
+      },
+      {
+        "path": ".gitignore",
+        "sha256": "b5a2524a0500a8e68b4f5549595809dea824dd67407804f9866173c699504dac"
+      },
+      {
+        "path": ".openai/hosting.json",
+        "sha256": "9667cf0cf4a7355681afef8bbc7a029ff0dfe501e8f76fc75693f0c8bda005b8"
+      },
+      {
+        "path": "crowdfunding/index.html",
+        "sha256": "5d5bfc4849a75b21751eca9a135bd4cd577f8a5ab5e82140b6e3f4483642b34f"
+      },
+      {
+        "path": "db/schema.ts",
+        "sha256": "d66babcf5faec20dec763fae356d23e647c972d80aed06b3dd5bec40d428cd5d"
+      },
+      {
+        "path": "dist/.openai/drizzle/0000_same_layla_miller.sql",
+        "sha256": "ce120dfca0d8541315ff34b6f60df2a7e5931a21af78a6a79bea72d106fa6aef"
+      },
+      {
+        "path": "dist/.openai/drizzle/0001_nifty_daredevil.sql",
+        "sha256": "8aba1eeffc474c3932f1f35e08f665cec6b0a2d71cb83594e79d9879702cfdf7"
+      },
+      {
+        "path": "dist/.openai/drizzle/meta/0000_snapshot.json",
+        "sha256": "4dd3a282c51c7bf268d051569fb2f61295428b20f88e809aa15c34749c21efbf"
+      },
+      {
+        "path": "dist/.openai/drizzle/meta/0001_snapshot.json",
+        "sha256": "57a4dc2a3d33d49981fa666a9f0ff099d036c51f4889f49428fd8f0e7b797521"
+      },
+      {
+        "path": "dist/.openai/drizzle/meta/_journal.json",
+        "sha256": "013bee0380277750425bfa84823c2b6e656391aca7ce39c855e064c699e17575"
+      },
+      {
+        "path": "dist/.openai/hosting.json",
+        "sha256": "9667cf0cf4a7355681afef8bbc7a029ff0dfe501e8f76fc75693f0c8bda005b8"
+      },
+      {
+        "path": "dist/client/THIRD_PARTY_NOTICES.txt",
+        "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc"
+      },
+      {
+        "path": "dist/client/assets/avokado-brand.css",
+        "sha256": "68f4581a7185210dada33a8333a4fbb68a28ad7efeedc2f43fb70c02f97dbdcc"
+      },
+      {
+        "path": "dist/client/assets/header-unified.css",
+        "sha256": "e747f11b52e93ac4d7378374d223bcd94d6af572ed42ba40c4a8e0a010cf50ca"
+      },
+      {
+        "path": "dist/client/assets/legal-B0Yaxjds.js",
+        "sha256": "b8b52fe77e41ddf4b0525136cfe77e46b1525d0c9620869fb8e35cde1e0dc9aa"
+      },
+      {
+        "path": "dist/client/assets/main-DukXEc0B.js",
+        "sha256": "982b76934b4dcc4adf66f4a03d93bf64189094c6e0db6ec2eb9de5a95826deba"
+      },
+      {
+        "path": "dist/client/assets/modulepreload-polyfill-P2Xu9kJm.js",
+        "sha256": "418c206484b89b68ef5f067277831e583fc9193a62aadf4de269acaaeb12a85f"
+      },
+      {
+        "path": "dist/client/assets/preorder-DWIW4jdg.js",
+        "sha256": "7ef945281042eab79f66b676c0f4638546addca93acbf9924fc7fb3554020835"
+      },
+      {
+        "path": "dist/client/assets/preorderComplete-0qOZSW_o.js",
+        "sha256": "3dcd1209257634c66d7485ae82871c025438c5cff15a9f40e6c3435ff079efd2"
+      },
+      {
+        "path": "dist/client/assets/preorderConfirm-dOyEjJ3v.js",
+        "sha256": "2631634e4ff8e39b16bfade5e73bdd4271f00cfcf6d87273b6406ddeedb32524"
+      },
+      {
+        "path": "dist/client/assets/rocketStar-BJBiM-i_.js",
+        "sha256": "a3048ba0326aa6dd650e83cfefa7ddc45f33667d8c7ddad5b574edb76b094fd1"
+      },
+      {
+        "path": "dist/client/assets/rocketStar-CDyJqpre.js",
+        "sha256": "1f3f5726e7481f123544161ec975855c289bc8c33a075553d05452a2eb1bd541"
+      },
+      {
+        "path": "dist/client/assets/rocketStar-LlQVqq2p.css",
+        "sha256": "5e19607b8667fdf05f7a905546d76118f5f22d83a58be631e87c39a64badf763"
+      },
+      {
+        "path": "dist/client/assets/style-CPVSSFRI.css",
+        "sha256": "0382dcc8dc2526b11fa80df13b99d8e517055e644da507050d13809e162a9ddf"
+      },
+      {
+        "path": "dist/client/crowdfunding/index.html",
+        "sha256": "694e70c0ccead8ef94ad69082c01a1945af032d50fe25e2e5508541a44ab111e"
+      },
+      {
+        "path": "dist/client/favicon.svg",
+        "sha256": "40dd38bb57bb8302aa228a56ae53cbe56801af7e405c88b4947c8b3e83a9f015"
+      },
+      {
+        "path": "dist/client/guide/index.html",
+        "sha256": "6141b5defaa89342cbf08e8e2f720d74b1640a643a0e1610b465fcff0049c842"
+      },
+      {
+        "path": "dist/client/images/avocado-mini-base-p0.png",
+        "sha256": "60de625ecd112ef487080b969a69ca2c28f6f099139a32981a49b6603fef820d"
+      },
+      {
+        "path": "dist/client/images/avocado-mini-detail.png",
+        "sha256": "e6dd4f21b73a5292d0bd35b1ef00d2ecd85230c6339a261327ae4e63b48196eb"
+      },
+      {
+        "path": "dist/client/images/avocado-mini-head-p0.png",
+        "sha256": "63f7dfa1e4e6509d20c7219b5eae9f4b9fa5492b87c84be4ef97aff197d59316"
+      },
+      {
+        "path": "dist/client/images/avocado-mini-hero.png",
+        "sha256": "f266a39682de0bc3ad0223c770e074f7bdce22d4e7771ac33f6dd8d2238cfc11"
+      },
+      {
+        "path": "dist/client/images/avocado-mini-kit.png",
+        "sha256": "dd0968bfa937d2a2eac16a0ffdf2d289521f3595e9644de9e2fd1b60a3850f83"
+      },
+      {
+        "path": "dist/client/images/avocado-mini-tower20-e3-kit.png",
+        "sha256": "186aa2db3cc32343a9df7e76ff5dd316bd56e89a2912dbdd1d6a2df21c67f0bd"
+      },
+      {
+        "path": "dist/client/images/avokado-metallic-mark.png",
+        "sha256": "014113778f7513ed0724c16c251f8b95f1c7192c4f0ded41993d3c16f938bb42"
+      },
+      {
+        "path": "dist/client/images/motion-tower-satin-four-point.png",
+        "sha256": "5ba90313fc40d66872120d36c0983578be3f69afc4354be8f964917d12fa15c7"
+      },
+      {
+        "path": "dist/client/images/motion-tower-satin-front-concept.png",
+        "sha256": "1d16b9a77deba3a42386c49dd4550b92989cab39e453c3a3a5bb460dbe9dc0fa"
+      },
+      {
+        "path": "dist/client/images/motion-tower-satin-rear-concept.png",
+        "sha256": "807108e163bbf8aff1f935d5cef7a7a5aed469873d0849feb2a04d34a164b3fb"
+      },
+      {
+        "path": "dist/client/images/motion-tower-satin-sensor-macro.png",
+        "sha256": "6a835c0ed4f7f4a365680b192420f32aa71d810e17cad273aa48fd965b2bb518"
+      },
+      {
+        "path": "dist/client/images/motion-tower-satin-side-concept.png",
+        "sha256": "e9d7f6d44140485f563f7c5acbb5408eb3127a48e9ae069891d24702e82ced5a"
+      },
+      {
+        "path": "dist/client/images/rocket-star-launch-field.png",
+        "sha256": "cc6313b9592dac0f918c181fddac3d7236b693c447b5dd4daa66f901a6665cfe"
+      },
+      {
+        "path": "dist/client/images/rocket-star-launch-vehicle.png",
+        "sha256": "84a8836b8ca50b7f8d6b5b8af14cd9e353ffe35f709443b3135dd907d5c4ae7e"
+      },
+      {
+        "path": "dist/client/images/rocket-star-orbit.png",
+        "sha256": "7258a7eb063d213d34b94b4b884d5ef662287e7c8ec80af031127c109972bb75"
+      },
+      {
+        "path": "dist/client/images/tower-concept.png",
+        "sha256": "08d5d1f1c3545953179576456ddb6d53a6b314ecbd1c7022a4ac50fe9d1380e2"
+      },
+      {
+        "path": "dist/client/images/tower20-e3-front-cutout-v1.png",
+        "sha256": "6e56df1532001aea9a420f9f4d11490733d380e90c9a1c686df1b5a21da02ee1"
+      },
+      {
+        "path": "dist/client/images/tower20-e3-front.png",
+        "sha256": "3ea5f44272e3c532a7322d640b14c143a5d4c6c541e5d65e0c221c5b99be0a82"
+      },
+      {
+        "path": "dist/client/images/tower20-e3-highlight-200mm-v1.png",
+        "sha256": "81dbe387194bbcb933fec7d561cc8f1a9379c3ea48150615fa5040bc129786ea"
+      },
+      {
+        "path": "dist/client/images/tower20-e3-highlight-edge-hub-v1.png",
+        "sha256": "c1ec6d8e5e5cb3966d1624da4c0d2aa6510cf93d2219f2ee9c8aa284a5e12cea"
+      },
+      {
+        "path": "dist/client/images/tower20-e3-highlight-footprint-v1.png",
+        "sha256": "389a88339c1ec29b23f0afe24aed8346190935aa4a3effef080db87e7c371f61"
+      },
+      {
+        "path": "dist/client/images/tower20-e3-highlight-sensor-v2.png",
+        "sha256": "fa2edd82c6f399bb21ee5729d116371bf04c53310cf638c6979079b0f1602405"
+      },
+      {
+        "path": "dist/client/images/tower20-e3-rear-cutout-v1.png",
+        "sha256": "f31f7b57e1f61bec05b97c0634847fa3190c455b4bce97a3085898a9da4753fa"
+      },
+      {
+        "path": "dist/client/images/tower20-e3-rear.png",
+        "sha256": "439f28638c703c4b7d891d03fb9be18c83b7b417b6cca4302219316fa87c61b2"
+      },
+      {
+        "path": "dist/client/images/tower20-e3-sensor-macro.png",
+        "sha256": "de008572491867ac00f2ec5be0b27a44f5e32f0fbd804ac8a6aa13eb6a0b8d8e"
+      },
+      {
+        "path": "dist/client/images/tower20-e3-side-cutout-v1.png",
+        "sha256": "3e9d5f2abc9a7fa3bcdc4c4b4b0693773b77436ef013e2b7e6ef3606ecae043e"
+      },
+      {
+        "path": "dist/client/images/tower20-e3-side.png",
+        "sha256": "c68290c05a5979398cc21a829de1eb3cb2ffe798656b36cb348a92f51ed44e5a"
+      },
+      {
+        "path": "dist/client/index.html",
+        "sha256": "8c12a0c241ded8dcd8b97564e087fea5f37616cf55b965b554bddfa8f9e98a0a"
+      },
+      {
+        "path": "dist/client/install/index.html",
+        "sha256": "50ca626a7e43208717ac58c05cf7ec6b5dbb86028b82bd10a4d85b2d70fd58dd"
+      },
+      {
+        "path": "dist/client/legal/index.html",
+        "sha256": "9ecccb9046c3f1400fabb736b8040015672a3783ce4ad703ed7a5562bfeeb6dd"
+      },
+      {
+        "path": "dist/client/preorder/complete/index.html",
+        "sha256": "97e7196d1ffadeda90ea4d452ab0fbbb433d74704def6b5c0bdfe48784a00f35"
+      },
+      {
+        "path": "dist/client/preorder/confirm/index.html",
+        "sha256": "3e341be6c91d9b79b6bc0ae96da87d1bd268235928aae565eb04d4b9addacf3d"
+      },
+      {
+        "path": "dist/client/preorder/index.html",
+        "sha256": "d8b8d799707950681e853f8c9a45411943fb7d2e9abca3418faa5cb0bc7cfbd5"
+      },
+      {
+        "path": "dist/client/privacy/index.html",
+        "sha256": "613d804d71aceeb58f0000ef07fe411b0f87e6de0bbbe234c864fdb6dab9796d"
+      },
+      {
+        "path": "dist/client/rocket-star/index.html",
+        "sha256": "024f20f39a6985649a34362f0e154a473452e8c123565d95030930df1dae8c3b"
+      },
+      {
+        "path": "dist/client/rockstaros/index.html",
+        "sha256": "ca8aeca062a59b890f39bf1cd4dbaff6fa29ce55a5698e36dc611d25ce9e2796"
+      },
+      {
+        "path": "dist/server/index.js",
+        "sha256": "70e581a2a9e608da2a106b1329fd064dec484c52c4d74a1a6144c877e92040f2"
+      },
+      {
+        "path": "dist/server/wrangler.json",
+        "sha256": "f06d40d714483cce9213d13b6e3ac87e6794c55dea974027c7a84ea6217da415"
+      },
+      {
+        "path": "drizzle.config.ts",
+        "sha256": "9a41cce699b66a99925d6cf0d0e8a50802a420138a71b41959bb823e0402ff86"
+      },
+      {
+        "path": "drizzle/0000_same_layla_miller.sql",
+        "sha256": "ce120dfca0d8541315ff34b6f60df2a7e5931a21af78a6a79bea72d106fa6aef"
+      },
+      {
+        "path": "drizzle/0001_nifty_daredevil.sql",
+        "sha256": "8aba1eeffc474c3932f1f35e08f665cec6b0a2d71cb83594e79d9879702cfdf7"
+      },
+      {
+        "path": "drizzle/meta/0000_snapshot.json",
+        "sha256": "4dd3a282c51c7bf268d051569fb2f61295428b20f88e809aa15c34749c21efbf"
+      },
+      {
+        "path": "drizzle/meta/0001_snapshot.json",
+        "sha256": "57a4dc2a3d33d49981fa666a9f0ff099d036c51f4889f49428fd8f0e7b797521"
+      },
+      {
+        "path": "drizzle/meta/_journal.json",
+        "sha256": "013bee0380277750425bfa84823c2b6e656391aca7ce39c855e064c699e17575"
+      },
+      {
+        "path": "guide/index.html",
+        "sha256": "db0770fc109f8d25bcf1301a26f9cc8f097f9225e16cfc24ef741018b197eb51"
+      },
+      {
+        "path": "index.html",
+        "sha256": "770312cca2c2abafa639f8188854df420f49bca17e16a6e45cf6bbc4b257b606"
+      },
+      {
+        "path": "install/index.html",
+        "sha256": "42e897d61bd83a345dd7bb7c2ea1c6821431b35523fef97b4472ba01daa70beb"
+      },
+      {
+        "path": "legal/index.html",
+        "sha256": "23a46e2152a67613fe7a85b4bd382940728a1fcdcdb6b1bc77002a4e5674c864"
+      },
+      {
+        "path": "legal/main.js",
+        "sha256": "9fb152fdc62ceb35739b2d2febdca014790a499414e03d38f5e41984cf41e08a"
+      },
+      {
+        "path": "preorder/complete/index.html",
+        "sha256": "d7cd0e05048bed91628cf7f34d5f45d8ffc16fece828bea099584bff232b48a6"
+      },
+      {
+        "path": "preorder/complete/main.js",
+        "sha256": "8aa5b4e63ddb613a1286162e43a076d4545cd845955de990bbaa58043d887bd7"
+      },
+      {
+        "path": "preorder/confirm/index.html",
+        "sha256": "a9705736a66da3b1fa6545d3105c6617bc45b958fb3f0c2978a8535ae86f1558"
+      },
+      {
+        "path": "preorder/confirm/main.js",
+        "sha256": "76c7ad45e79c67213a331df89f2d435602a83966e6f681ed23e0ac7d8232384c"
+      },
+      {
+        "path": "preorder/index.html",
+        "sha256": "383975ba19a8c226ea08e5a98235aa67cf4adcaa6c68eb15ed37eb38ca7fc5ec"
+      },
+      {
+        "path": "preorder/main.js",
+        "sha256": "875533c6b1aa28a2d765c35738bf9261fc7ce55dfe93175e89ea0e86c0b41c31"
+      },
+      {
+        "path": "privacy/index.html",
+        "sha256": "1fd7bd7d1d9d252ab46a244cd05d82c69690452cb43710a613b0145c6f45930f"
+      },
+      {
+        "path": "public/THIRD_PARTY_NOTICES.txt",
+        "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc"
+      },
+      {
+        "path": "public/avokado-brand.css",
+        "sha256": "68f4581a7185210dada33a8333a4fbb68a28ad7efeedc2f43fb70c02f97dbdcc"
+      },
+      {
+        "path": "public/favicon.svg",
+        "sha256": "40dd38bb57bb8302aa228a56ae53cbe56801af7e405c88b4947c8b3e83a9f015"
+      },
+      {
+        "path": "public/images/avocado-mini-base-p0.png",
+        "sha256": "60de625ecd112ef487080b969a69ca2c28f6f099139a32981a49b6603fef820d"
+      },
+      {
+        "path": "public/images/avocado-mini-detail.png",
+        "sha256": "e6dd4f21b73a5292d0bd35b1ef00d2ecd85230c6339a261327ae4e63b48196eb"
+      },
+      {
+        "path": "public/images/avocado-mini-head-p0.png",
+        "sha256": "63f7dfa1e4e6509d20c7219b5eae9f4b9fa5492b87c84be4ef97aff197d59316"
+      },
+      {
+        "path": "public/images/avocado-mini-hero.png",
+        "sha256": "f266a39682de0bc3ad0223c770e074f7bdce22d4e7771ac33f6dd8d2238cfc11"
+      },
+      {
+        "path": "public/images/avocado-mini-kit.png",
+        "sha256": "dd0968bfa937d2a2eac16a0ffdf2d289521f3595e9644de9e2fd1b60a3850f83"
+      },
+      {
+        "path": "public/images/avocado-mini-tower20-e3-kit.png",
+        "sha256": "186aa2db3cc32343a9df7e76ff5dd316bd56e89a2912dbdd1d6a2df21c67f0bd"
+      },
+      {
+        "path": "public/images/avokado-metallic-mark.png",
+        "sha256": "014113778f7513ed0724c16c251f8b95f1c7192c4f0ded41993d3c16f938bb42"
+      },
+      {
+        "path": "public/images/motion-tower-satin-four-point.png",
+        "sha256": "5ba90313fc40d66872120d36c0983578be3f69afc4354be8f964917d12fa15c7"
+      },
+      {
+        "path": "public/images/motion-tower-satin-front-concept.png",
+        "sha256": "1d16b9a77deba3a42386c49dd4550b92989cab39e453c3a3a5bb460dbe9dc0fa"
+      },
+      {
+        "path": "public/images/motion-tower-satin-rear-concept.png",
+        "sha256": "807108e163bbf8aff1f935d5cef7a7a5aed469873d0849feb2a04d34a164b3fb"
+      },
+      {
+        "path": "public/images/motion-tower-satin-sensor-macro.png",
+        "sha256": "6a835c0ed4f7f4a365680b192420f32aa71d810e17cad273aa48fd965b2bb518"
+      },
+      {
+        "path": "public/images/motion-tower-satin-side-concept.png",
+        "sha256": "e9d7f6d44140485f563f7c5acbb5408eb3127a48e9ae069891d24702e82ced5a"
+      },
+      {
+        "path": "public/images/rocket-star-launch-field.png",
+        "sha256": "cc6313b9592dac0f918c181fddac3d7236b693c447b5dd4daa66f901a6665cfe"
+      },
+      {
+        "path": "public/images/rocket-star-launch-vehicle.png",
+        "sha256": "84a8836b8ca50b7f8d6b5b8af14cd9e353ffe35f709443b3135dd907d5c4ae7e"
+      },
+      {
+        "path": "public/images/rocket-star-orbit.png",
+        "sha256": "7258a7eb063d213d34b94b4b884d5ef662287e7c8ec80af031127c109972bb75"
+      },
+      {
+        "path": "public/images/tower-concept.png",
+        "sha256": "08d5d1f1c3545953179576456ddb6d53a6b314ecbd1c7022a4ac50fe9d1380e2"
+      },
+      {
+        "path": "public/images/tower20-e3-front-cutout-v1.png",
+        "sha256": "6e56df1532001aea9a420f9f4d11490733d380e90c9a1c686df1b5a21da02ee1"
+      },
+      {
+        "path": "public/images/tower20-e3-front.png",
+        "sha256": "3ea5f44272e3c532a7322d640b14c143a5d4c6c541e5d65e0c221c5b99be0a82"
+      },
+      {
+        "path": "public/images/tower20-e3-highlight-200mm-v1.png",
+        "sha256": "81dbe387194bbcb933fec7d561cc8f1a9379c3ea48150615fa5040bc129786ea"
+      },
+      {
+        "path": "public/images/tower20-e3-highlight-edge-hub-v1.png",
+        "sha256": "c1ec6d8e5e5cb3966d1624da4c0d2aa6510cf93d2219f2ee9c8aa284a5e12cea"
+      },
+      {
+        "path": "public/images/tower20-e3-highlight-footprint-v1.png",
+        "sha256": "389a88339c1ec29b23f0afe24aed8346190935aa4a3effef080db87e7c371f61"
+      },
+      {
+        "path": "public/images/tower20-e3-highlight-sensor-v2.png",
+        "sha256": "fa2edd82c6f399bb21ee5729d116371bf04c53310cf638c6979079b0f1602405"
+      },
+      {
+        "path": "public/images/tower20-e3-rear-cutout-v1.png",
+        "sha256": "f31f7b57e1f61bec05b97c0634847fa3190c455b4bce97a3085898a9da4753fa"
+      },
+      {
+        "path": "public/images/tower20-e3-rear.png",
+        "sha256": "439f28638c703c4b7d891d03fb9be18c83b7b417b6cca4302219316fa87c61b2"
+      },
+      {
+        "path": "public/images/tower20-e3-sensor-macro.png",
+        "sha256": "de008572491867ac00f2ec5be0b27a44f5e32f0fbd804ac8a6aa13eb6a0b8d8e"
+      },
+      {
+        "path": "public/images/tower20-e3-side-cutout-v1.png",
+        "sha256": "3e9d5f2abc9a7fa3bcdc4c4b4b0693773b77436ef013e2b7e6ef3606ecae043e"
+      },
+      {
+        "path": "public/images/tower20-e3-side.png",
+        "sha256": "c68290c05a5979398cc21a829de1eb3cb2ffe798656b36cb348a92f51ed44e5a"
+      },
+      {
+        "path": "rocket-star/design.css",
+        "sha256": "171b113a4cd38068b4ae13afe870bb40c0c2c94016d7ac0bf4aa51e3c5357ff3"
+      },
+      {
+        "path": "rocket-star/index.html",
+        "sha256": "6cd1dc99e2a45d09908e66b7fc2b6efbe30f8d4d0bf762f5f80f61964c433297"
+      },
+      {
+        "path": "rocket-star/main.js",
+        "sha256": "57c2f168c01a81ccddbef93fdfd88d34a33212d950d446f88d7f8855e2f4cf4c"
+      },
+      {
+        "path": "rockstaros/index.html",
+        "sha256": "ca8aeca062a59b890f39bf1cd4dbaff6fa29ce55a5698e36dc611d25ce9e2796"
+      },
+      {
+        "path": "scripts/build-rocketstar.mjs",
+        "sha256": "ea302fcf354b11def957c6eaed950e94c903ba4cedb0ff85b20fb3b1d4610429"
+      },
+      {
+        "path": "scripts/stage-worker.mjs",
+        "sha256": "6321d47e58b82793291c35a67f19eb544ea635d51665179b79260d5aff6b8b9d"
+      },
+      {
+        "path": "src/main.js",
+        "sha256": "7647e5c8b32a8e4248077e996ace8e5f2c8d1eeb48d1d71686f2bbacb86ad1bc"
+      },
+      {
+        "path": "src/style.css",
+        "sha256": "7866dce4d6ea875db4fc800a319a6940711150f9e6f367f74b371a4ac0ef19c3"
+      },
+      {
+        "path": "src/tower-scene.js",
+        "sha256": "397c5c589e50f6553876986f8cfada8ef678991a423a9f1637337562cf2ce74d"
+      },
+      {
+        "path": "tests/preorder.test.mjs",
+        "sha256": "5555ad2e1ef949cd0cc6f2bedeff38c7f2da8c166b2f3b4dcafda0809ef2793e"
+      },
+      {
+        "path": "vite.config.js",
+        "sha256": "9d26799c15e89e6a76f951a539a8850dc35dea27e4b05cae261edc08797d852c"
+      },
+      {
+        "path": "worker/index.js",
+        "sha256": "70e581a2a9e608da2a106b1329fd064dec484c52c4d74a1a6144c877e92040f2"
+      }
+    ]
+  },
+  "scope": [
+    "rocketstar R1.0 public concept, two-stage reuse, satellites, A-LINK, RockstarOS and colony operations",
+    "Preserve previously published Sites branding, header and asset refinements in the GitHub canonical source",
+    "Keep avocadoMini R5 as the canonical product requirement; inherited E3 public product body is outside this rocketstar update"
+  ],
+  "validation": {
+    "routeBuild": {
+      "command": "node sites/avocado-mini/scripts/build-rocketstar.mjs",
+      "result": "pass",
+      "afterBuildSavedSourceHashMatches": 125
+    },
+    "preorder": {
+      "command": "node --test sites/avocado-mini/tests/preorder.test.mjs",
+      "passed": 6,
+      "failed": 0
+    },
+    "metadataChecks": {
+      "commands": [
+        "npm run baseline:check",
+        "npm run design:check",
+        "npm run project:check",
+        "npm run database:check",
+        "git diff --check"
+      ],
+      "result": "pass"
+    },
+    "packageAssetClosure": {
+      "missing": 0,
+      "source": "Parent agent verification of the staged Sites package"
+    },
+    "wholeRepository": {
+      "command": "npm run verify",
+      "status": "pass",
+      "exitCode": 0,
+      "environment": "macOS; Node 26.0.0; local networking allowed",
+      "nodeTests": {
+        "passed": 360,
+        "failed": 0
+      },
+      "toolTests": {
+        "passed": 19,
+        "failed": 0
+      },
+      "localApiAssertions": 149,
+      "webAssetReferences": 84,
+      "webAssetsMissing": 0,
+      "scope": "Existing repository software, synthetic users and local Worker/D1 only; not physical or flight acceptance"
+    },
+    "localAccessibility": {
+      "status": "pass",
+      "inactiveScenes": "aria-hidden=true and inert=true",
+      "inspection": "Parent agent inspected staged distribution in browser"
+    }
+  },
+  "publication": {
+    "status": "succeeded",
+    "siteVersion": 49,
+    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_b3c6275ea0a48191b2a44e7631ebd92a",
+    "deploymentId": "appgdep_6ab598f8e368819195623ed029652684",
+    "updatedAt": "2026-09-24T21:41:23.851032+00:00",
+    "sourceCommit": "fb580e64dfb775ef517aca7e5f1602eee587adbe",
+    "archiveSha256": "dc109d413a34c72ecc17b36e31dd1c163eb7512f3d5afe1e26ae2230996c81aa",
+    "archiveBytes": 37304320,
+    "archiveFiles": 61,
+    "publicBrowserReadback": {
+      "status": "pass",
+      "desktopViewport": "1280x720",
+      "mobileViewport": "390x844",
+      "observations": [
+        "Three scenes change with scrolling",
+        "New rocketstar title, two-stage return, A-LINK, RockstarOS/colony, 44-page/35-chapter design link, and closed funding state are present",
+        "Mobile OS scene is visible without horizontal overflow",
+        "Published CSS points to /assets/rocketStar-LlQVqq2p.css",
+        "Design link points to GitHub main design archive"
+      ],
+      "inspection": "CUA browser inspection by the publishing parent agent"
+    },
+    "anonymousHttpHashReadback": "not_verified: direct urllib request returned HTTP 403; this is not treated as asset hash equality"
+  },
+  "limits": [
+    "No hardware, manufacturing, flight, satellite coverage or colony-operation certification",
+    "No newly enabled payment or preorder operation",
+    "The separate legacy OS site access task remains incomplete; WEB13 stays in_progress"
+  ]
+}
