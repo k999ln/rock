@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { catalog } from '../lib/catalog.ts';
@@ -41,6 +42,59 @@ for (const document of referenced) {
     existsSync(resolve(root, document)),
     `設計書が存在しません: ${document}`,
   );
+}
+
+fail(index.sourceArtifacts?.length >= 1, '原本設計artifactの台帳が必要です');
+for (const artifact of index.sourceArtifacts) {
+  for (const path of [
+    artifact.pdf,
+    artifact.searchableText,
+    artifact.integrityRecord,
+  ]) {
+    fail(existsSync(resolve(root, path)), `設計原本の関連fileが存在しません: ${path}`);
+  }
+}
+
+const completeDesign = JSON.parse(
+  readFileSync(
+    resolve(root, 'data/rockstaros-complete-design-v1.0.json'),
+    'utf8',
+  ),
+);
+const sha256 = (path) =>
+  createHash('sha256').update(readFileSync(resolve(root, path))).digest('hex');
+fail(
+  completeDesign.schema === 'rockstaros-complete-design-source/1' &&
+    completeDesign.source?.pageCount === 41 &&
+    completeDesign.scope?.chapterCount === 32 &&
+    completeDesign.scope?.deploymentProfileCount === 5 &&
+    completeDesign.scope?.logicalServiceCount === 13 &&
+    completeDesign.scope?.requirementCount === 60 &&
+    completeDesign.scope?.structuralAndDdlChecksPassed === 43 &&
+    completeDesign.scope?.structuralAndDdlChecksTotal === 43 &&
+    completeDesign.implementationBoundary?.implementationComplete === false &&
+    completeDesign.implementationBoundary?.physicalAcceptanceComplete ===
+      false,
+  '完全版v1.0の範囲と未完了境界を保持してください',
+);
+fail(
+  sha256(completeDesign.source.pdf) === completeDesign.source.pdfSha256 &&
+    sha256(completeDesign.source.searchableText) ===
+      completeDesign.source.searchableTextSha256,
+  '完全版v1.0の原本または抽出テキストのSHA-256が一致しません',
+);
+const completeText = readFileSync(
+  resolve(root, completeDesign.source.searchableText),
+  'utf8',
+);
+for (const term of [
+  '01 この完全版の範囲と設計の読み方',
+  '13の論理サービス',
+  'GROUND-REF-v1',
+  'OSR-060',
+  '32 用語と根拠資料',
+]) {
+  fail(completeText.includes(term), `完全版v1.0の抽出テキストが不足しています: ${term}`);
 }
 
 const catalogPairs = catalog.map(({ id, status }) => `${id}:${status}`).sort();

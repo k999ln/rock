@@ -1,6 +1,6 @@
 {
-  "version": "1.91",
-  "decidedAt": "2026-09-22",
+  "version": "1.92",
+  "decidedAt": "2026-09-24",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -186,6 +186,17 @@
   "designDocumentation": {
     "portal": "docs/rockstaros-design-portal.md",
     "operatingSystem": "docs/rockstaros-complete-design.md",
+    "completeDesignPdf": "docs/rockstaros-complete-design-v1.0.pdf",
+    "completeDesignSearchableText": "docs/rockstaros-complete-design-v1.0.txt",
+    "completeDesignSourceRecord": "data/rockstaros-complete-design-v1.0.json",
+    "completeDesignAuthorityDate": "2026-09-24",
+    "completeDesignScope": {
+      "chapters": 32,
+      "deploymentProfiles": 5,
+      "logicalServices": 13,
+      "requirements": 60,
+      "structuralAndDdlChecks": "43/43"
+    },
     "tools": "docs/sky-tools-complete-design.md",
     "materialInvention": "docs/rockstaros-avocado-mini-complete-design.md",
     "index": "data/design-document-index.json",

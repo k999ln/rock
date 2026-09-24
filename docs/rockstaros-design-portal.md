@@ -1,17 +1,24 @@
 # RockstarOS 全設計ポータル
 
-版: 1.1 / 2026-09-19
+版: 1.2 / 2026-09-24
 
 このページは、RockstarOS本体、画面、AI、Tool、Wallet、運用、avocadoMiniまで、全設計へ入る唯一の入口である。設計書が多いことを完成とは呼ばない。各systemについて、目的、利用者の操作、責任、入力、出力、状態、権限、保存、失敗、復旧、受入、現在地を説明できることを設計記載の最低条件とする。
 
-## 最初に読む6冊
+## 2026-09-24 完全版 v1.0
 
-1. [製品・サービス・システム関係図](rockstaros-product-system-map.md) — 製品、サービス、内部システム、`Mr.`、MR、収益の関係を一枚で確認する。
-2. [RockstarOS全体詳細設計](rockstaros-complete-design.md) — OS全体がどう動くか。
-3. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — Toolをどう追加し、12件をどう使い、どこで止めるか。
-4. [avocadoMini空間発明システム](rockstaros-avocado-mini-complete-design.md) — 物質発明を手で扱う体験と技術。
-5. [製品ベース](product-baseline.md) — 利用者が確定したRQ01〜RQ49と、その後のTool追加判断。
-6. [Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md) — code、Jev、Local Qwen、Cloud LLM、Codex、RAG、Market、Walletを一つの安全境界へ統合する設計。
+[RockstarOS 設計書完全版 v1.0（原本PDF）](rockstaros-complete-design-v1.0.pdf)を、rocketstar、A-LINK、avokado、colonyをまたぐ最新の統合設計基準として保存した。GitHub上で全文検索できる[抽出テキスト](rockstaros-complete-design-v1.0.txt)と、原本SHA-256・ページ数・被覆件数を固定する[完全性記録](../data/rockstaros-complete-design-v1.0.json)を同じ変更で管理する。
+
+完全版は32章、5配備profile、13論理service、OSR-001〜060、43/43の構造・DDL検査を収録する。ただし「完全」は設計の記載範囲を意味し、runtime実装、実機受入、飛行認定、量産承認を意味しない。PDFに記載された旧repo SHAの読取監査も、今回のGitHub最新状態確認へ読み替えない。
+
+## 最初に読む7冊
+
+1. [RockstarOS 設計書完全版 v1.0](rockstaros-complete-design-v1.0.pdf) — rocketstar、A-LINK、avokado、colonyを含む2026-09-24統合基準。
+2. [製品・サービス・システム関係図](rockstaros-product-system-map.md) — 製品、サービス、内部システム、`Mr.`、MR、収益の関係を一枚で確認する。
+3. [RockstarOS全体詳細設計](rockstaros-complete-design.md) — repository実装と既存詳細資料への入口。
+4. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — Toolをどう追加し、12件をどう使い、どこで止めるか。
+5. [avocadoMini空間発明システム](rockstaros-avocado-mini-complete-design.md) — 物質発明を手で扱う体験と技術。
+6. [製品ベース](product-baseline.md) — 利用者が確定したRQ01〜RQ49と、その後のTool追加判断。
+7. [Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md) — code、Jev、Local Qwen、Cloud LLM、Codex、RAG、Market、Walletを一つの安全境界へ統合する設計。
 
 機械可読の被覆台帳は[`data/design-document-index.json`](../data/design-document-index.json)。`npm run design:check`は、利用可能・候補の全Toolが台帳と詳細設計に存在すること、正本へのlinkが存在すること、未決定を完成表示していないことを検査する。
 

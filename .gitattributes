@@ -1,4 +1,5 @@
 # Preserve patch context, whitespace test inputs and pinned upstream bytes.
+*.pdf binary
 systems/rock-star-os/experiments/startup-health/changes.patch -whitespace
 os/physical/local-ai-overlay.patch -whitespace
 os/physical/local-ai-plan-v2.patch -whitespace
