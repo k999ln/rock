@@ -4,6 +4,19 @@
   "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
   "tasks": [
     {
+      "id": "ORG01",
+      "title": "製品・SkyのAI自動化チーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "PROJECTS.md",
+        "README.md",
+        "docs/rockstaros-product-system-map.md",
+        "docs/workstreams/README.md",
+        "scripts/check-sky.mjs"
+      ]
+    },
+    {
       "id": "MAT14",
       "title": "R5統合基本設計・PDF/Word・図面8組・計算・参考資料を欠落なく保存し、現行入口と履歴を整理（製造承認保留）",
       "status": "done",

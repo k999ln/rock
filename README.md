@@ -1,5 +1,7 @@
 # avocadoMini / RockstarOS
 
+[プロジェクト別ガイド](PROJECTS.md) · [作業分野別ガイド](docs/workstreams/README.md) · [全設計ポータル](docs/rockstaros-design-portal.md)
+
 ゲームを入口に、生活全体をより豊かにする。制作・学習・日常生活の負担を減らす。
 
 **現在の設計基準はR5（2026-09-24）です。** 使用時全高200mm以内の銀色の細いminiを、**1本で基本機能が動く構成**として設計します。別Edge Hubや外部PCを必須にせず、同型miniを追加して範囲・品質を改善することを目指します。
@@ -57,12 +59,16 @@
 
 図面は設計検討図であり、製造CAD・確定回路図・基板製造データの代用品ではありません。R5は、最終部品、ピン配線、公差、安全審査、実機試験を完了した製造用完全版ではありません。
 
+## SkyのAI自動化チーム
+
+CSV業務、メルカリ収益ループ、Fashion Brand OpsはSky catalogに登録済みのチーム担当です。Material Invention StudioはSkyで組み合わせる発明チームの複合機能で、単体のcatalog Toolには数えません。Material Inventionの操作画面とSky接続は未実装です。全Toolと開発用package、Web画面、配備物の場所と現在地は[プロジェクト別ガイド](PROJECTS.md)にまとめています。
+
 ## 現在地と履歴
 
 R5の計算・判定チェックは14件通過、実機試験は0件です。資料保存はOS runtimeの実装やハードウェア完成を意味しません。既存のPixel、QEMU、Web、Wallet等の検証系列は独立して維持します。
 
 <!-- project-overview:start -->
-更新日: 2026-09-24 / 150 task中98 done・31 in progress・20 planned・1 blocked
+更新日: 2026-09-24 / 151 task中99 done・31 in progress・20 planned・1 blocked
 <!-- project-overview:end -->
 
 件数は製品完成率ではありません。[全task・段階別gate・次の作業](project.md#全taskの作業進捗)を参照してください。

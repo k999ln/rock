@@ -62,6 +62,72 @@ requireValue(
   `native内蔵Toolは6種類です（実際: ${toolKinds.size}）`,
 );
 
+const projectGuide = read('PROJECTS.md');
+requireValue(
+  projectGuide.includes('AI自動化チームのTool'),
+  'プロジェクト別ガイドにToolチームの入口がありません',
+);
+const teamGuide = projectGuide.split('## SkyのAI自動化チーム\n')[1]?.split('## 実装・配備単位\n')[0] ?? '';
+const commonGuide = projectGuide.split('| AIチームを支える共通機能 |')[1]?.split('## SkyのAI自動化チーム\n')[0] ?? '';
+for (const name of ['CSV業務', 'メルカリ収益ループ', 'Fashion Brand Ops', 'Material Invention Studio']) {
+  requireValue(teamGuide.includes(`**${name}**`), `Skyのチーム一覧に${name}がありません`);
+  requireValue(!commonGuide.includes(`**${name}**`), `${name}を共通機能へ分離しています`);
+}
+requireValue(
+  teamGuide.includes('操作画面とSky接続は未実装') &&
+    teamGuide.includes('Sky Tool SDKの開発者向け画面'),
+  'Material Inventionの接続状態または/studioの用途が不明です',
+);
+for (const path of [
+  'app/activity/',
+  'app/work/',
+  'app/settings/',
+  'app/studio/',
+  'app/sky/publish/',
+  'app/rockstaros/',
+])
+  requireValue(
+    projectGuide.includes(`(${path})`),
+    `プロジェクト別ガイドにWeb内の画面がありません: ${path}`,
+  );
+const readme = read('README.md');
+requireValue(
+  readme.includes('現在の設計基準はR5') &&
+    readme.includes('Material Inventionの操作画面とSky接続は未実装'),
+  'READMEの現行R5またはMaterial Inventionの実装状態が不明です',
+);
+requireValue(
+  projectGuide.includes('docs/avocado-mini-r5/') &&
+    projectGuide.includes('docs/rocketstar-design/'),
+  'プロジェクト別ガイドに現行R5またはRocket Star設計原本がありません',
+);
+for (const { id } of catalog)
+  requireValue(
+    projectGuide.includes(`\`${id}\``),
+    `プロジェクト別ガイドにSky Toolがありません: ${id}`,
+  );
+for (const id of toolKinds)
+  requireValue(
+    projectGuide.includes(`\`${id}\``),
+    `プロジェクト別ガイドにnative Toolがありません: ${id}`,
+  );
+for (const entry of readdirSync(resolve(root, 'toolkits'), {
+  withFileTypes: true,
+}).filter((entry) => entry.isDirectory()))
+  requireValue(
+    projectGuide.includes(`toolkits/${entry.name}/`),
+    `プロジェクト別ガイドにToolKitがありません: ${entry.name}`,
+  );
+for (const path of [
+  'android/article-tool/',
+  'android/tool-sdk/',
+  'systems/rock-star-os/examples/tools/hello/',
+])
+  requireValue(
+    projectGuide.includes(`(${path})`),
+    `プロジェクト別ガイドにToolの実装・作成例がありません: ${path}`,
+  );
+
 for (const path of [
   'app/layout.tsx',
   'app/manifest.ts',
