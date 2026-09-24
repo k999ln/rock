@@ -135,6 +135,19 @@
       ]
     },
     {
+      "id": "DOC04",
+      "title": "avokado READMEをR5現行製品・事業・機能の案内へ刷新し、図面準拠の構想画像とブランドGIFを追加",
+      "status": "done",
+      "dependsOn": [
+        "MAT14"
+      ],
+      "evidence": [
+        "README.md",
+        "docs/brand/avokado/avocado-mini-r5-concept.png",
+        "docs/brand/avokado/avokado-motion.gif"
+      ]
+    },
+    {
       "id": "AI01",
       "title": "RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない）",
       "status": "done",
