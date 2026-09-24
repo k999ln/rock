@@ -390,8 +390,8 @@ footer{background:#080809;border-top:1px solid #ffffff20;color:#a8a8af}
 
 /* Use one consistent photographic turntable instead of the procedural model. */
 .story{height:520svh}
-.turn-frame{transform:translateZ(0);image-rendering:auto;filter:brightness(calc(.9 + var(--camera-on) * .1)) contrast(1.05) saturate(.92);-webkit-mask-image:radial-gradient(ellipse 76% 92% at 50% 47%,#000 0 68%,transparent 100%);mask-image:radial-gradient(ellipse 76% 92% at 50% 47%,#000 0 68%,transparent 100%);will-change:opacity}
-.motion-product:after{content:"";position:absolute;z-index:-1;left:50%;bottom:5%;width:72%;height:9%;transform:translateX(-50%);border-radius:50%;background:#000;filter:blur(26px);opacity:.7;pointer-events:none}
+.turn-frame{transform:translateZ(0);image-rendering:auto;filter:brightness(calc(.9 + var(--camera-on) * .1)) contrast(1.05) saturate(.92);will-change:opacity}
+.motion-product:after{content:"";position:absolute;z-index:-1;left:50%;bottom:5%;width:42%;height:5%;transform:translateX(-50%);border-radius:50%;background:#000;filter:blur(30px);opacity:.32;pointer-events:none}
 
 /* The final frame keeps the tower visible and lets the price read as part of the studio. */
 .price-panel{left:clamp(30px,5.7vw,96px);right:auto;top:50%;width:min(550px,42vw);padding:0 18px 0 0;background:transparent;border:0;border-radius:0;box-shadow:none;color:#f5f5f7;transform:translateY(-42%) translateY(20px)}

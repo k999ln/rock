@@ -357,6 +357,9 @@
         "sites/avocado-mini/public/images/tower20-e3-highlight-200mm-v1.png",
         "sites/avocado-mini/public/images/tower20-e3-highlight-footprint-v1.png",
         "sites/avocado-mini/public/images/tower20-e3-highlight-edge-hub-v1.png",
+        "sites/avocado-mini/public/images/tower20-e3-front-cutout-v1.png",
+        "sites/avocado-mini/public/images/tower20-e3-side-cutout-v1.png",
+        "sites/avocado-mini/public/images/tower20-e3-rear-cutout-v1.png",
         "sites/avocado-mini/src/main.js",
         "sites/avocado-mini/src/style.css"
       ]
