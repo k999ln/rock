@@ -963,7 +963,12 @@
         "sites/avocado-mini/src/main.js",
         "project.md",
         "sites/avocado-mini/rockstaros/index.html",
-        "sites/avocado-mini/vite.config.js"
+        "sites/avocado-mini/vite.config.js",
+        "sites/avocado-mini/rocket-star/index.html",
+        "sites/avocado-mini/rocket-star/main.js",
+        "sites/avocado-mini/rocket-star/design.css",
+        "sites/avocado-mini/scripts/build-rocketstar.mjs",
+        "docs/evidence/rocketstar-site-r1.json"
       ]
     },
     {

@@ -1,0 +1,47 @@
+/* R1.0 product story; scoped to rocketstar to preserve the current avokado site. */
+.rocketstar-mark{width:23px;height:30px;object-fit:contain;margin-right:11px}
+.launch-panel h1,.launch-panel h2{font-size:clamp(54px,6.7vw,100px);letter-spacing:-.07em}
+.launch-panel-foundation{width:min(660px,48vw)}
+.launch-panel-foundation h2{font-size:clamp(50px,6.2vw,94px)}
+.launch-panel>p:not(.rocket-kicker):not(.launch-funding-note){font-size:clamp(15px,1.2vw,18px);line-height:1.65}
+.rocketstar-facts{display:flex;flex-wrap:wrap;gap:8px 18px;margin:26px 0 17px;color:#daedf3;font-size:11px}
+.rocketstar-facts span{padding-top:9px;border-top:1px solid #95d9ec55}
+.launch-panel .rocketstar-caption{color:#99aeb9!important;font-size:11px!important;line-height:1.6!important;margin:18px 0 0!important;max-width:470px!important}
+.rocketstar-link{display:flex;gap:0;list-style:none;margin:25px 0;padding:0;color:#bce9f6;font-size:11px}
+.rocketstar-link li{display:flex;align-items:center}
+.rocketstar-link li+li:before{content:'→';color:#699eb0;padding:0 12px}
+.rocketstar-design-link{display:inline-flex;gap:32px;align-items:center;margin-top:23px;padding:12px 0;border-bottom:1px solid #93c4d866;color:#d6f5ff;text-decoration:none;font-size:13px;pointer-events:auto}
+.rocketstar-design-link:hover{border-color:#d6f5ff;color:white}
+.rocketstar-design-link:focus-visible,.launch-rail button:focus-visible{outline:2px solid #9ceaff;outline-offset:5px}
+.rocketstar-funding{display:flex;flex-wrap:wrap;gap:5px 12px;padding-top:19px;margin-top:23px;border-top:1px solid #b4d4e02b;font-size:11px;color:#9aadb7}
+.rocketstar-funding strong{font-weight:500;color:#d7e3e9}
+.rocketstar-funding span:last-child{flex-basis:100%;font-size:10px}
+.launch-rail{gap:1px;right:12px}
+.launch-rail button{display:grid;place-items:center;width:36px;height:42px;padding:0;border:0;border-radius:4px;background:transparent;cursor:pointer}
+.launch-rail button:before{content:'';width:6px;height:6px;border:1px solid #d8f7ff77;border-radius:50%}
+.launch-rail button.is-active:before{background:#b8f3ff;box-shadow:0 0 13px #65deff;transform:scale(1.4)}
+@media(max-width:800px){.launch-panel-foundation{width:56vw}}
+@media(max-width:600px){
+  .launch-panel,.launch-panel-foundation{top:110px;left:23px;right:31px;width:auto}
+  .launch-panel h1,.launch-panel h2,.launch-panel-foundation h2{font-size:clamp(43px,12vw,64px);line-height:1.02;margin:18px 0 20px}
+  .launch-panel>p:not(.rocket-kicker):not(.launch-funding-note){font-size:13px;line-height:1.65}
+  .launch-panel .rocketstar-caption{font-size:10px!important;max-width:300px!important}
+  .rocketstar-facts{gap:9px 15px;font-size:10px;margin:22px 0 15px}
+  .rocketstar-link{font-size:10px;flex-wrap:wrap;gap:10px 0;margin:22px 0}
+  .rocketstar-link li+li:before{padding:0 8px}
+  .rocketstar-funding{margin-top:19px;padding-top:15px}
+  .launch-rail{right:0}.launch-rail button{width:26px}
+}
+/* Every chapter remains readable without motion, scripts, or a tall viewport. */
+html:not(.launch-motion-ready) .launch-scroll{height:auto}
+html:not(.launch-motion-ready) .launch-sticky{position:relative;height:auto;min-height:0}
+html:not(.launch-motion-ready) .launch-panels{position:relative;padding:100px 6vw 30px}
+html:not(.launch-motion-ready) .launch-panel{position:relative;inset:auto;opacity:1;visibility:visible;filter:none;transform:none;width:min(680px,100%);margin:40px 0 90px}
+html:not(.launch-motion-ready) :is(.launch-rail,.launch-meter,.launch-vehicle,.launch-pad,.launch-smoke,.launch-word){display:none}
+@media(prefers-reduced-motion:reduce),(max-height:600px){
+  .launch-scroll{height:auto}.launch-sticky{position:relative;height:auto;min-height:0}
+  .launch-panels{position:relative;padding:100px 6vw 30px}
+  .launch-panel,.launch-panel.is-active,.launch-motion-ready .launch-page.is-ready .launch-panel-purpose.is-active{position:relative;inset:auto;opacity:1;visibility:visible;filter:none;transform:none;animation:none;transition:none;width:min(680px,100%);margin:40px 0 90px}
+  .launch-rail,.launch-meter,.launch-vehicle,.launch-pad,.launch-smoke,.launch-word{display:none}
+  .launch-cinematic-bg{transform:none!important;opacity:.35}.launch-flame,.launch-smoke i{animation:none}
+}

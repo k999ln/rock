@@ -4,19 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#020407" />
-  <meta name="description" content="Rocket Star is a planned orbital signal system designed to connect compatible avocadoMini hardware through RockstarOS." />
-  <title>Rocket Star — From Ground to Signal</title>
+  <meta name="description" content="rocketstar: a two-stage reusable rocket design for small satellites, with A-LINK communications and RockstarOS operations." />
+  <title>rocketstar — To Orbit. Back for More.</title>
+  <link rel="icon" href="/images/avokado-metallic-mark.png" type="image/png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/src/style.css" />
+  <link rel="stylesheet" href="/rocket-star/design.css" />
+  <link rel="stylesheet" href="/assets/avokado-brand.css" />
   <script type="module" src="/rocket-star/main.js"></script>
 </head>
 <body class="rocket-page launch-page">
-  <a class="skip" href="#launch">Skip to Rocket Star</a>
-  <nav class="rocket-nav launch-nav" aria-label="Rocket Star navigation">
-    <a class="rocket-brand" href="/rocket-star/"><span class="rocket-brand-sensor" aria-hidden="true"></span>Rocket Star</a>
-    <a class="rocket-nav-back" href="/">avocadoMini <span aria-hidden="true">↗</span></a>
+  <a class="skip" href="#launch">Skip to rocketstar</a>
+  <nav class="rocket-nav launch-nav" aria-label="rocketstar navigation">
+    <a class="rocket-brand" href="/rocket-star/"><img class="rocketstar-mark" src="/images/avokado-metallic-mark.png" alt="" />rocketstar</a>
+    <a class="rocket-nav-back avokado-nav-back" href="/"><img class="avokado-brand-icon" src="/images/avokado-metallic-mark.png" alt="" aria-hidden="true" />avokado <span aria-hidden="true">↗</span></a>
   </nav>
 
   <main>
@@ -39,31 +42,36 @@
 
         <div class="launch-panels">
           <article class="launch-panel launch-panel-purpose is-active" data-stage="0" aria-hidden="false">
-            <p class="rocket-kicker">ROCKET STAR / PURPOSE</p>
-            <h1 id="launch-title">Send the signal<br>beyond the ground.</h1>
-            <p>Build an orbital communication layer for places where terrestrial networks cannot reach.</p>
+            <p class="rocket-kicker">ROCKETSTAR / REUSABLE LAUNCH</p>
+            <h1 id="launch-title">To orbit.<br>Back for more.</h1>
+            <p>A two-stage reusable rocket design for small satellites. Deliver the payload to low Earth orbit. Bring both stages home. Prepare the same vehicles to fly again.</p>
+            <div class="rocketstar-facts" aria-label="Mission design"><span>Small satellites</span><span>Both stages recovered</span><span>Uncrewed</span></div>
+            <p class="rocketstar-caption">Design R1.0 · Flight and reuse not yet demonstrated.</p>
           </article>
 
-          <article class="launch-panel launch-panel-system" data-stage="1" aria-hidden="true">
-            <p class="rocket-kicker">WHAT IT DOES</p>
-            <h2>Orbit sends it.<br>avocadoMini receives it.</h2>
-            <p>Rocket Star transmits a signal from orbit to compatible avocadoMini hardware. RockstarOS is intended to activate and manage the connection after the receiver, network, and required approvals are ready.</p>
+          <article class="launch-panel launch-panel-system" data-stage="1">
+            <p class="rocket-kicker">A-LINK / SATELLITE COMMUNICATIONS</p>
+            <h2>From orbit.<br>To avokado.</h2>
+            <p>The rocket returns. A-LINK satellites are planned to stay in orbit, relaying messages and small data between ground gateways and compatible avokado receivers.</p>
+            <ol class="rocketstar-link" aria-label="Planned communication path"><li>Ground gateway</li><li>A-LINK satellite</li><li>avokado receiver</li></ol>
+            <p class="rocketstar-caption">Reception needs coverage and a suitable antenna. Indoors may require an outdoor receiver. avocadoMini R5 integration is in development.</p>
           </article>
 
-          <article class="launch-panel launch-panel-funding" data-stage="2" aria-hidden="true">
-            <p class="rocket-kicker">ROCKET STAR / FUNDING</p>
-            <h2>Fund the first<br>flight.</h2>
-            <div class="launch-funding-status"><span aria-hidden="true"></span><div><small>ACCESS STATUS</small><strong>Funding access in preparation</strong></div></div>
-            <button type="button" disabled>Back Rocket Star <span>COMING SOON</span></button>
-            <p class="launch-funding-note">Payments are not open yet.</p>
+          <article class="launch-panel launch-panel-foundation" data-stage="2">
+            <p class="rocket-kicker">ROCKSTAROS / OPERATIONS FOUNDATION</p>
+            <h2>One foundation.<br>Beyond Earth.</h2>
+            <p>RockstarOS is designed to connect mission records, permissions, maintenance and communications — with a path toward future colony operations. Flight and critical equipment keep dedicated local controllers.</p>
+            <a class="rocketstar-design-link" href="https://github.com/k999ln/rock/tree/main/docs/rocketstar-design">Explore the design archive <span aria-hidden="true">↗</span></a>
+            <p class="rocketstar-caption">R1.0 · 44 pages · 35 chapters<br>Hardware, recovery and satellite service remain to be demonstrated.</p>
+            <div class="rocketstar-funding"><span>First-flight funding</span><strong>In preparation</strong><span>Payments are not open yet.</span></div>
           </article>
         </div>
 
-        <div class="launch-meter" aria-hidden="true"><div><span id="launch-step">01 / PURPOSE</span><strong id="launch-altitude">GROUND</strong></div><div class="launch-track"><span id="launch-progress"></span></div><span>SCROLL TO LAUNCH</span></div>
-        <div class="launch-rail" aria-hidden="true"><span class="is-active"></span><span></span><span></span></div>
+        <div class="launch-meter" aria-hidden="true"><div><span id="launch-step">01 / RETURN</span><strong id="launch-altitude">GROUND</strong></div><div class="launch-track"><span id="launch-progress"></span></div><span>SCROLL TO EXPLORE</span></div>
+        <nav class="launch-rail" aria-label="Explore rocketstar"><button type="button" class="is-active" aria-label="Reusable rocket" aria-current="step" data-scene="0"></button><button type="button" aria-label="Satellite connection" data-scene="1"></button><button type="button" aria-label="RockstarOS operations" data-scene="2"></button></nav>
       </div>
     </section>
   </main>
-  <footer class="rocket-footer"><span>© 2026 KAIYA</span><span>ROCKET STAR / LAUNCH CONCEPT</span><a href="/">avocadoMini ↗</a></footer>
+  <footer class="rocket-footer"><span>© 2026 KAIYA</span><span>ROCKETSTAR / DESIGN R1.0</span><a href="/">avokado ↗</a></footer>
 </body>
 </html>

@@ -140,6 +140,53 @@ body{overflow-x:hidden}
 @media(max-width:520px){.global-nav{gap:17px}.global-nav a:nth-child(3),.global-nav a:nth-child(4){display:none}.site-header{height:50px}.site-header nav{gap:12px}.site-header nav a:nth-child(3),.site-header nav a:nth-child(4){display:none}.film-hero{min-height:680px}.hero-word{top:28%;font-size:65vw}.film-hero-device{inset:17% 0 27%;width:100%;height:56%;object-fit:contain;object-position:center}.hero-bottom{left:22px;right:22px;bottom:90px;align-items:start;flex-direction:column;gap:12px}.hero-bottom h1{font-size:58px}.hero-bottom p{text-align:left;font-size:18px}.film-disclaimer{left:22px;right:22px;bottom:18px;font-size:10px}.hero-statement{min-height:70svh;padding:100px 24px 80px}.hero-statement h2{font-size:18vw;margin:24px 0 55px}.statement-bottom p{font-size:16px}.statement-bottom span{font-size:12px}.highlights{padding:90px 0 70px}.highlights-head{padding:0 24px;margin-bottom:30px}.highlights h2{font-size:44px}.gallery-controls button{height:38px;width:38px}.highlight-gallery{padding:0 24px 20px;gap:14px;scroll-padding-inline:24px}.highlight-card{flex-basis:82vw;min-height:0;height:530px}.highlight-card img{object-position:center}.highlight-card>div{top:29px;left:25px;right:25px}.highlight-card h3{font-size:36px}.highlight-card p{font-size:13px}.design-intro{min-height:75svh;padding:90px 20px}.design-intro h2{font-size:16vw}.design-intro>p:last-child{font-size:16px}.macro-image{background-position:65% center}.details figure img{min-height:290px;object-fit:cover}}
 @media(prefers-reduced-motion:reduce){.highlight-card img{transition:none}}
 
+/* One clear product header: brand, primary navigation and one action. */
+.product-header{
+  top:0;
+  height:72px;
+  position:fixed;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:clamp(24px,4vw,64px);
+  padding:0 clamp(22px,4vw,64px);
+  background:#0b0b0ddd;
+  border-bottom:1px solid #ffffff1f;
+  backdrop-filter:saturate(150%) blur(20px);
+  -webkit-backdrop-filter:saturate(150%) blur(20px);
+  z-index:30;
+}
+.product-header .brand{font-size:21px;letter-spacing:-.055em;color:#fff}
+.avokado-brand{display:inline-flex;align-items:center;gap:9px}
+.avokado-brand-icon{width:29px;height:29px;object-fit:contain;flex:0 0 auto;filter:drop-shadow(0 1px 8px #ffffff2e)}
+.avokado-nav-back .avokado-brand-icon{width:22px;height:22px;margin:-4px 0}
+.product-header .primary-nav{justify-self:center;display:flex;align-items:center;gap:clamp(18px,2.5vw,40px)}
+.product-header .primary-nav a{font-size:13px;font-weight:500;color:#d4d4d8;transition:color .18s ease}
+.product-header .primary-nav a:hover,.product-header .primary-nav a:focus-visible{color:#fff}
+.header-actions{display:flex;align-items:center;gap:12px}
+.product-header .header-cta{display:inline-flex;align-items:center;gap:8px;padding:11px 19px;border-radius:999px;background:#f5f5f7;color:#111114;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;transition:background .18s ease,transform .18s ease}
+.product-header .header-cta:hover,.product-header .header-cta:focus-visible{background:#fff;color:#111114;transform:translateY(-1px)}
+.mobile-menu{display:none;position:relative}
+.mobile-menu summary{list-style:none;cursor:pointer;border:1px solid #ffffff30;border-radius:999px;padding:9px 13px;color:#f5f5f7;font-size:12px;font-weight:600}
+.mobile-menu summary::-webkit-details-marker{display:none}
+.mobile-menu nav{position:absolute;top:calc(100% + 12px);right:0;min-width:190px;display:grid;gap:2px;padding:10px;border:1px solid #ffffff22;border-radius:18px;background:#111114f5;box-shadow:0 18px 60px #0009;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.mobile-menu nav a{display:block!important;padding:11px 12px;border-radius:10px;color:#ededf0;font-size:13px;text-decoration:none}
+.mobile-menu nav a:hover,.mobile-menu nav a:focus-visible{background:#ffffff12;color:#fff}
+@media(max-width:800px){
+  .product-header{height:64px;grid-template-columns:1fr auto;padding:0 18px;gap:14px}
+  .product-header .brand{font-size:19px}
+  .product-header .avokado-brand-icon{width:26px;height:26px}
+  .product-header .primary-nav{display:none}
+  .mobile-menu{display:block}
+  .product-header .header-cta{padding:9px 13px;font-size:12px}
+}
+@media(max-width:400px){
+  .product-header .brand{font-size:17px}
+  .header-actions{gap:7px}
+  .mobile-menu summary{padding:8px 10px}
+  .product-header .header-cta{padding:8px 10px}
+}
+
 /* Choreographed 180° Motion Tower tour. Everything before #product stays as designed. */
 .story{height:650svh;background:#08090b}
 .story-sticky{background:radial-gradient(ellipse at 50% 48%,color-mix(in srgb,var(--story-bg,#08090b) 70%,#406174) 0%,var(--story-bg,#08090b) 70%)}

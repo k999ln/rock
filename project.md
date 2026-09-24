@@ -1,5 +1,15 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-24 — rocketstar公開ページをR1.0へ更新
+
+主担当Web / PWA / SitesのROCK、既存WEB13。利用者が公開製品サイトのrocketstar更新を明示したため、公開v48のsourceを基準に、両段を回収・再使用する計画、衛星搭載、A-LINK、RockstarOS、コロニーへの共通運用を伝えるページへ更新した。名前は`rocketstar`に統一し、黒・金属・青い光の外観、打上げから帰還までのスクロール表示、設計値の位置付け、端末操作の説明を加える。
+
+GitHub正本へは先行公開済みのブランド・ヘッダー・画像更新も保持して取り込む。R5の1本自律・別Edge Hub不要を現行製品要求として維持し、Siteに残るE3製品本体の説明をR5へ戻す根拠にしない。OS/Toolを追加せず、実機・衛星網・飛行の受入、資金受付・決済開始は扱わない。旧OS Site分離の残作業があるためWEB13全体はin_progressを維持する。
+
+公開Site v49（source `fb580e64dfb775ef517aca7e5f1602eee587adbe`）への配備が成功し、公開ブラウザで新版の題名と両段帰還の内容を確認した。匿名HTTPクライアントの直接取得は403のため、配信assetの匿名hash一致は未確認として区別する。
+
+同一source・配信版と検証の記録は[公開更新証拠](docs/evidence/rocketstar-site-r1.json)。公開済みの他ページにsource未同期の配布CSSがあるため、`node sites/avocado-mini/scripts/build-rocketstar.mjs`でrocketstarだけを再生成する。全体Vite再生成による他ページの巻戻しを避ける。全repositoryの`npm run verify`はexit 0。Node 360件、追加Tool 19件、ローカルAPI 149項目、Web asset 84参照・欠落0を確認した。rocketstar単独buildは保存sourceと125ファイルのhash一致を保ち、予約API 6件も合格。公開ブラウザは1280×720で3sceneの内容とリンク、390×844でOS画面と横overflowなしを確認した。
+
 ## 2026-09-24 — プロジェクト別ガイドをR5とrocketstar資料に同期
 
 主担当Git / CI / OperationsのROCK、ORG01。PR #28で製品、SkyのAI自動化チーム、Web共通画面、Tool、native・Androidの開発用package、Toolkits、Workerと製品Siteを[`PROJECTS.md`](PROJECTS.md)に分類した。Sky catalog 34件、native 6 family・9版、Toolkit 6件を照合し、CSV、メルカリ、Fashion Brand OpsをSkyのチーム担当として示す。Material Invention Studioは複合機能で、Core sandboxはあるがSky接続と操作画面は未実装。`/studio`はSky Tool作者用であり発明画面ではない。
@@ -973,7 +983,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB10 | 製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](docs/product-baseline.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB11 | 製品構想モデルをスクロールで一周見せ、参考価格・購入準備中・OS導入へつなぐ | 完了 | [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](docs/product-baseline.md) |
 | WEB12 | 利用者提供の伸縮式センサータワーを製品サイトとGitHubの主役にする | 完了 | [記録](public/rockstaros/avocado-mini-tower-concept.png) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](README.md) · [記録](docs/avocado-mini-hardware-design.md) |
-| WEB13 | 旧URLをavocadoMini公開商品Siteへ転用し、OS操作画面を管理者限定の別Siteへ移す | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/guide/index.html) · [記録](sites/avocado-mini/crowdfunding/index.html) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](README.md) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/main.js) · [記録](project.md) · [記録](sites/avocado-mini/rockstaros/index.html) · [記録](sites/avocado-mini/vite.config.js) |
+| WEB13 | 旧URLをavocadoMini公開商品Siteへ転用し、OS操作画面を管理者限定の別Siteへ移す | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/guide/index.html) · [記録](sites/avocado-mini/crowdfunding/index.html) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](README.md) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/main.js) · [記録](project.md) · [記録](sites/avocado-mini/rockstaros/index.html) · [記録](sites/avocado-mini/vite.config.js) · [記録](sites/avocado-mini/rocket-star/index.html) · [記録](sites/avocado-mini/rocket-star/main.js) · [記録](sites/avocado-mini/rocket-star/design.css) · [記録](sites/avocado-mini/scripts/build-rocketstar.mjs) · [記録](docs/evidence/rocketstar-site-r1.json) |
 | WEB14 | RockstarOS導入入口を製品ページへ置き、Pixel 10向け実インストーラーを配布・安全ゲート合格後に接続する | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/install/index.html) · [記録](sites/avocado-mini/vite.config.js) · [記録](data/android-first-flash-gate.json) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB15 | avocadoMiniの予約販売画面と決済バックエンドを用意し、販売条件確定後に全額決済を有効化する | 進行中 | [記録](sites/avocado-mini/preorder/index.html) · [記録](sites/avocado-mini/worker/index.js) · [記録](sites/avocado-mini/db/schema.ts) · [記録](sites/avocado-mini/tests/preorder.test.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
