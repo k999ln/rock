@@ -67,6 +67,17 @@ requireValue(
   projectGuide.includes('AI自動化チームのTool'),
   'プロジェクト別ガイドにToolチームの入口がありません',
 );
+const teamGuide = projectGuide.split('## SkyのAI自動化チーム\n')[1]?.split('## 実装・配備単位\n')[0] ?? '';
+const commonGuide = projectGuide.split('| AIチームを支える共通機能 |')[1]?.split('## SkyのAI自動化チーム\n')[0] ?? '';
+for (const name of ['CSV業務', 'メルカリ収益ループ', 'Material Invention Studio']) {
+  requireValue(teamGuide.includes(`**${name}**`), `Skyのチーム一覧に${name}がありません`);
+  requireValue(!commonGuide.includes(`**${name}**`), `${name}を共通機能へ分離しています`);
+}
+requireValue(
+  teamGuide.includes('操作画面とSky接続は未実装') &&
+    teamGuide.includes('Sky Tool SDKの開発者向け画面'),
+  'Material Inventionの接続状態または/studioの用途が不明です',
+);
 for (const { id } of catalog)
   requireValue(
     projectGuide.includes(`\`${id}\``),

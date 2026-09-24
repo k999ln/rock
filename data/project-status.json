@@ -5,12 +5,13 @@
   "tasks": [
     {
       "id": "ORG01",
-      "title": "製品・Toolチーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備",
+      "title": "製品・SkyのAI自動化チーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備",
       "status": "done",
       "dependsOn": [],
       "evidence": [
         "PROJECTS.md",
         "README.md",
+        "docs/rockstaros-product-system-map.md",
         "docs/workstreams/README.md",
         "scripts/check-sky.mjs"
       ]

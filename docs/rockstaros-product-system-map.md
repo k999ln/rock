@@ -11,7 +11,7 @@
 | 入口 | 現在のURL・状態 | 内側にあるもの |
 | --- | --- | --- |
 | 製品・導入ホームページ | `/rockstaros`。avocadoMiniとRockstarOSの紹介、OS導入案内への導線 | 製品構想、対応環境、導入情報 |
-| Webアプリ | `/`。本人限定Siteで作業画面を提供中、一般公開と最新版同期は未反映 | App Home、Sky、Zema、Wallet、Studioなど |
+| Webアプリ | `/`。本人限定Siteで作業画面を提供中、一般公開と最新版同期は未反映 | App Home、Sky、Zema、Wallet、Sky Tool SDK用Rock Studioなど |
 | OS本体 | `/rockstaros/guide`でDeveloper Previewの導入条件を案内。完成スマートフォンOSは未配布 | App Homeと同じ役割のサービスをOS契約で接続する計画 |
 
 avocadoMiniは「考える時間を、つくる時間に」を製品メッセージとし、希望参考価格41万円のハードウェア構想。高性能LLMを搭載するRockstarOSは製品目標で、現行の実機検証は固定モデルのDeveloper Preview段階である。41万円は確定販売価格でもOS従量料金でもない。
@@ -19,7 +19,7 @@ avocadoMiniは「考える時間を、つくる時間に」を製品メッセー
 この文書を読めば、次の三つを混同しない。
 
 - RockstarOSは、AIを使うためのOSと共通基盤。
-- Sky、Zema、Wallet、Material Invention Studioは、その基盤を使う製品アプリ。
+- SkyはAI自動化チームの仕事とToolを選ぶ入口、Zemaは仕事の管理、Walletは費用と確認済み収益を扱う。CSVとメルカリはSky登録済みのチーム担当。Material Invention StudioはSkyで組み合わせる発明チームの複合機能で、単体のcatalog Toolではない。
 - avocadoMiniはMaterial Invention Studioを手で扱う専用デバイス。OSそのものではない。
 
 ## 1. 会社が提供するもの
@@ -35,8 +35,13 @@ flowchart TB
     SKY[Sky\nToolを探す・接続する]
     ZEMA[Zema\nAIへ仕事を頼む・止める・確認する]
     WALLET[Wallet\n費用と確認済み収益を見る]
-    MIS[Material Invention Studio\n発明案を操作・比較する]
     AM[avocadoMini\nMR空間発明デバイス]
+  end
+
+  subgraph SKY_TEAM[Skyで編成するAI自動化チーム]
+    CSV[CSV業務\n整形・検査・納品]
+    MERCARI[メルカリ収益ループ\n出品準備・入金確認待ち]
+    MIS[Material Invention Studio\n発明案の操作・比較を設計中]
   end
 
   subgraph SERVICES[継続提供するサービス]
@@ -62,10 +67,11 @@ flowchart TB
   U --> AM
   D --> SDK
   P --> CONNECT
-  OS --> SKY & ZEMA & WALLET & MIS
+  OS --> SKY & ZEMA & WALLET
   AM --> MIS
   MODELS --> RUNTIME
   TOOLS --> SKY
+  SKY --> CSV & MERCARI & MIS
   SYNC --> DATA
   SETTLE --> WALLET
   SDK --> TOOLS
@@ -88,12 +94,14 @@ flowchart TB
 | --- | --- | --- | --- | --- |
 | RockstarOS | Sky / Zema / Wallet | OSが共通の画面、権限、仕事、保存を提供 | [OS全体詳細設計](rockstaros-complete-design.md) | Web / APKの限定検証 |
 | Sky | Tool / MCP | Toolの発見、作者・版・権限・実行先の確認、接続 | [全Tool詳細設計](sky-tools-complete-design.md) | ready Tool 12件、provider接続は段階導入 |
+| Sky | CSV業務 / メルカリ収益ループ | `rockstar-csv-cleanup`と`mercari-revenue`をチーム担当として選び、専用画面へ進む | [全Tool詳細設計](sky-tools-complete-design.md) / [Business Pilots](workstreams/09-business-pilots.md) | catalogはready。外部市場の操作とProvider入金照合は別受入 |
+| Sky | Material Invention Studio | Core、simulation、Patent AIなどを発明チームとして組み合わせる構想。Studio自体は単体Toolに数えない | [Material Core](material-invention-core.md) / [空間発明設計](rockstaros-avocado-mini-complete-design.md) | Core sandboxのみ実装。操作画面とSky接続は未実装 |
 | Zema | Platform Core | 依頼、計画、承認、実行、停止、結果確認を一つのworkにする | [Platform Core](platform-core.md) | 共通契約と一部実装 |
 | Wallet | Settlement Worker / Provider | 完了した仕事と確定入金を分離し、Receiptで照合する | [Sky billing](sky-billing.md) | fixture / sandbox、実払出しは未接続 |
 | LLM Runtime | Agent Runtime | 選択されたLLMがplanを返し、Agentが許可済み手順だけを実行 | [AI-native OS設計](ai-native-os-architecture.md) / [Decision Fabric](jev-local-qwen-decision-fabric-design.md) | Qwen機内モードと固定runtimeを検証中 |
 | Platform Core | Local LLM / Cloud LLM / 自社LLM | モデルは交換可能。権限付与とTool実行はモデルの外に残す | [Local AI契約](../contracts/local-ai-runtime.json) | 既存モデルを先に搭載、自社LLMは追加接続 |
 | avocadoMini | Material Invention Studio | センサーと表示でdigital twinを操作する専用入力・表示機器 | [avocadoMini設計](rockstaros-avocado-mini-complete-design.md) | 設計 / Bench試作前 |
-| Material Invention Studio | Material Invention Core | 物質候補、制約、安全状態、simulation結果をCoreへ保存 | [Material Core](material-invention-core.md) | sandbox実装、物理設備は接続しない |
+| Material Invention Studio | Material Invention Core | 発明チームの将来の操作画面から物質候補、制約、安全状態、simulation結果をCoreへ渡す | [Material Core](material-invention-core.md) | Core sandbox実装、Studio操作画面と物理設備は未接続 |
 | Material Invention Core | Patent AI Bridge | 人・AI・文献・予測・実測を分けて発明資料へ整理 | [空間発明設計](rockstaros-avocado-mini-complete-design.md) | 接続設計、特許性・出願の自動判断はしない |
 
 ## 3. `Mr.` 由来Toolの位置づけ

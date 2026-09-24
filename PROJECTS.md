@@ -10,24 +10,31 @@
 | **Rocket Star** | avocadoMiniとRockstarOSへ接続する軌道通信の構想。資金受付は準備中 | [構想ページ](sites/avocado-mini/rocket-star/index.html)・[衛星通信の設計追補](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) | [`sites/avocado-mini/rocket-star/`](sites/avocado-mini/rocket-star/)・[`sites/avocado-mini/public/images/`](sites/avocado-mini/public/images/) |
 | **RockstarOS** | AIネイティブOSの共通基盤と配布候補 | [OS全体詳細設計](docs/rockstaros-complete-design.md)・[構成と現在地](docs/system-composition.md) | [`systems/rock-star-os/`](systems/rock-star-os/)・[`contracts/`](contracts/)・[`public-release/rockstaros/`](public-release/rockstaros/) |
 | **AI自動化チーム** | 作成中のToolを役割ごとに組み合わせ、利用者の仕事を進める | [Toolチーム設計](docs/sky-network-economy.md)・[役割エージェント仕様](docs/sky-role-agents-20260912.md) | [`lib/catalog.ts`](lib/catalog.ts)・[`lib/automation-fund-catalog.ts`](lib/automation-fund-catalog.ts)・[`app/sky/`](app/sky/)・[`app/work/`](app/work/) |
-| **Webアプリ** | Home、Sky、Zema、Wallet、Studioを一つのWeb/PWAとして提供 | [製品・サービス関係図](docs/rockstaros-product-system-map.md)・[Web担当作業](docs/workstreams/05-web-pwa-sites.md) | [`app/`](app/)・[`components/`](components/)・[`lib/`](lib/)・[`db/`](db/)・[`drizzle/`](drizzle/) |
+| **Webアプリ** | Home、Sky、Zema、Wallet、Sky Tool SDK用Rock Studioを一つのWeb/PWAとして提供 | [製品・サービス関係図](docs/rockstaros-product-system-map.md)・[Web担当作業](docs/workstreams/05-web-pwa-sites.md) | [`app/`](app/)・[`components/`](components/)・[`lib/`](lib/)・[`db/`](db/)・[`drizzle/`](drizzle/) |
 
-Rocket Starの`/rocket-star/`はavocadoMiniサイト内の専用ページであり、衛星・受信機・通信網の実装や資金受付の完了を示しません。AI自動化チームの個々のToolは別々の事業や製品ではなく、Skyで選び編成する役割です。Zemaが依頼・進捗・承認・停止・成果を管理します。Sky、Zema、Wallet、Material Invention StudioなどはWebアプリとOS内で使うサービスです。各画面の名称だけで独立した配備物やGitリポジトリを増やしません。avocadoMiniの旧P0.2、Mini200 E1/E2は[現行E3設計](docs/avocado-mini-tower20-e3/README.md)と区別して設計履歴として保持します。
+Rocket Starの`/rocket-star/`はavocadoMiniサイト内の専用ページであり、衛星・受信機・通信網の実装や資金受付の完了を示しません。AI自動化チームの仕事とToolはSkyの中で選び編成します。Zemaが依頼・進捗・承認・停止・成果を管理し、Walletが費用と確認済み収益を扱います。CSV、メルカリ、Material Inventionなどの仕事をWeb/OSの独立サービスとして数えません。avocadoMiniの旧P0.2、Mini200 E1/E2は[現行E3設計](docs/avocado-mini-tower20-e3/README.md)と区別して設計履歴として保持します。
 
-| Web/OS内のサービス | 主なソース | 設計・担当の入口 |
+| AIチームを支える共通機能 | 主なソース | 設計・担当の入口 |
 | --- | --- | --- |
 | **Sky** — Toolの発見と接続 | [`app/sky/`](app/sky/)・[`app/api/sky/`](app/api/sky/) | [全Tool詳細設計](docs/sky-tools-complete-design.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
 | **Zema** — 依頼、進捗、承認、停止、成果 | [`app/chat/`](app/chat/)・[`components/zema-home-workspace.tsx`](components/zema-home-workspace.tsx)・[`lib/zema-chat-session.ts`](lib/zema-chat-session.ts) | [Platform Core](docs/platform-core.md)・[Product / UX](docs/workstreams/01-product-ux.md) |
 | **Wallet** — 費用と確認済み収益 | [`app/wallet/`](app/wallet/)・[`lib/rock-wallet.ts`](lib/rock-wallet.ts) | [Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
-| **Material Invention Studio** — 発明候補の操作・比較 | [`app/studio/`](app/studio/)・[`lib/material-invention.ts`](lib/material-invention.ts)・[`contracts/material-invention.json`](contracts/material-invention.json) | [Material Invention Core](docs/material-invention-core.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) |
-| **Market / Polymarket** — 市場の検討とPAPER試験 | [`app/market/`](app/market/)・[`app/polymarket/`](app/polymarket/) | [Game / Market / Fund](docs/workstreams/08-game-market-fund.md)・[市場検討](docs/market-exploration-20260909.md) |
-| **Fund** — 検証済み実績に基づく構想と試算 | [`app/fund/`](app/fund/)・[`lib/rock-wallet.ts`](lib/rock-wallet.ts) | [Game / Market / Fund](docs/workstreams/08-game-market-fund.md)・[ファンド統合](docs/markets-fund-integration-20260913.md) |
-| **CSV業務** — データ整形の事業pilot | [`app/csv/`](app/csv/) | [Business Pilots](docs/workstreams/09-business-pilots.md)・[CSV業務](docs/csv-business-v1.ja.md) |
-| **メルカリ収益ループ** — 出品から入金確認までの事業pilot | [`app/income/mercari/`](app/income/mercari/)・[`lib/mercari-revenue.ts`](lib/mercari-revenue.ts) | [Business Pilots](docs/workstreams/09-business-pilots.md)・[メルカリ設計](docs/mercari-revenue-loop.md) |
 
-## AI自動化チームのTool
+## SkyのAI自動化チーム
 
-作成しているToolは、利用者が所有する一つのAI自動化チームの担当として整理します。Skyが目的に合わせてTool・役割・構成版を選び、Zemaが同じ仕事の実行と成果を管理します。チームの実際の構成は選択と受入状態によって変わり、一覧にある全Toolが同時に稼働するという意味ではありません。[Toolチーム設計](docs/sky-network-economy.md)と[役割エージェント仕様](docs/sky-role-agents-20260912.md)がこの関係の入口です。
+作成しているToolと、それを組み合わせる仕事は、利用者が所有する一つのAI自動化チームの中で整理します。Skyが目的に合わせてTool・役割・構成版を選び、Zemaが同じ仕事の実行と成果を管理します。チームの実際の構成は選択と受入状態によって変わり、一覧にある全Toolが同時に稼働するという意味ではありません。[Toolチーム設計](docs/sky-network-economy.md)と[役割エージェント仕様](docs/sky-role-agents-20260912.md)がこの関係の入口です。
+
+| Skyのチームが扱う仕事 | 現在のSkyとの接続 | 実装・設計の入口 |
+| --- | --- | --- |
+| **CSV業務** — データ整形の事業pilot | `rockstar-csv-cleanup`としてcatalogにready登録。Skyから専用画面へ進める | [`app/csv/`](app/csv/)・[CSV業務](docs/csv-business-v1.ja.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
+| **メルカリ収益ループ** — 出品から入金確認までの事業pilot | `mercari-revenue`としてcatalogにready登録。Skyから出品準備画面へ進める。入金の自動確認は未接続 | [`app/income/mercari/`](app/income/mercari/)・[メルカリ設計](docs/mercari-revenue-loop.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
+| **Material Invention Studio** — 発明候補の操作・比較 | Skyで組み合わせる発明チームの複合機能。単体のcatalog Toolではない。Coreのsandboxは実装済み、操作画面とSky接続は未実装 | [`lib/material-invention.ts`](lib/material-invention.ts)・[`contracts/material-invention.json`](contracts/material-invention.json)・[Material Invention Core](docs/material-invention-core.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) |
+| **Market / Polymarket** — 市場の検討とPAPER試験 | `rockstar-markets-analysis`はcatalogにready登録。Polymarketは別のPAPER試作 | [`app/market/`](app/market/)・[`app/polymarket/`](app/polymarket/)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+| **Fund** — 検証済み実績に基づく構想と試算 | Skyから選ぶファンド構想。単体のcatalog Toolではない | [`app/fund/`](app/fund/)・[ファンド統合](docs/markets-fund-integration-20260913.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+
+`/studio`は[Sky Tool SDKの開発者向け画面](app/studio/page.tsx)であり、Material Invention Studioの実装画面ではありません。
+
+### AI自動化チームのTool
 
 Web/PC版Skyの登録正本は[`lib/catalog.ts`](lib/catalog.ts)です。現在はready 12件（Rock側で作成8件、`Mr.`由来4件）とcandidate 22件（Rock側の構想1件、`Mr.`由来11件、第三者候補10件）。Rock側と`Mr.`由来のToolはチームの実装・導入対象、第三者候補は将来の接続候補です。`ready`はSky catalog上の状態であり、外部Providerや本番決済まで接続済みという意味ではありません。`candidate`を稼働中の担当として数えません。[全Tool詳細設計](docs/sky-tools-complete-design.md)に権限・入出力・停止条件があります。
 

@@ -8,6 +8,8 @@
 
 追補: 利用者の「作成中のToolは全部チーム」という訂正に合わせ、個別Toolを一つのAI自動化チームの担当として示し、Skyが選びZemaが仕事を管理する関係をプロジェクト別ガイドへ追加した。catalog 34件とnative開発用6 family・9版の掲載漏れはなく、別途Androidの`article-tool`（既存Mr. Toolの端末実装）とnativeの`hello`作成例を明記した。Fashion Brand Opsの41 MCP操作は一つのpackageの内部操作として扱い、candidateや作成例を稼働中の担当へ数えない。`npm run sky:check`へcatalog・native ID・toolkitsのガイド掲載検査を追加し、今後の登録漏れも検出する。対象検査、型検査、製品lintは通過。`npm run verify`はNode全体試験の出力停止で中断し、全体PASSとは記録しない。
 
+追補: 利用者から、CSV業務、メルカリ収益ループ、Material Invention Studioを「Web/OS内のサービス」としてSkyのチームから分離した分類への訂正があった。`PROJECTS.md`と製品関係図をSkyのチーム内の仕事として整理し直した。CSVとメルカリは既存のready catalog Toolから各専用画面へ進める。Material Inventionは複合機能で、Core sandboxはあるがSky接続と操作画面は未実装。旧ガイドの`app/studio/`は発明画面ではなくSky Tool SDK用Rock Studioだったため、誤った実装リンクを除いた。分類を戻さない検査を`sky:check`へ追加した。`sky:check`、`project:check`、`repository:check`、`design:check`、diff整合が合格。`npm run verify`は型検査と製品lintまで通過後、既存のNode全体試験が出力停止したため中断し、全体PASSとは記録しない。
+
 ## 2026-09-23 — Tower20 E3の回転画像を透過素材へ変更
 
 公開商品ページの180°製品turnで、元画像の黒いstudio背景が長方形に見えていた問題を解消した。正面・側面・背面の3画像を、製品形状・camera窓・base・4脚を残した透過RGBA素材へ変更し、元画像に含まれていた床、反射、spotlight haze、背景を削除した。CSSで長方形をぼかして隠すradial maskも外し、Siteの背景へ製品を直接重ねる。接地感は製品下の小さなsoft shadowだけで補う。正面0°・側面98°・背面180°を実画面で確認し、公開Site v40（source `068bdf6a489cf57e2806c45923aa5161a5e51195`）へ配備した。画像はE3設計方向を伝える構想CGであり、量産実機写真や実camera性能の証拠ではない。
@@ -889,7 +891,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
-| ORG01 | 製品・Toolチーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備 | 完了 | [記録](PROJECTS.md) · [記録](README.md) · [記録](docs/workstreams/README.md) · [記録](scripts/check-sky.mjs) |
+| ORG01 | 製品・SkyのAI自動化チーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備 | 完了 | [記録](PROJECTS.md) · [記録](README.md) · [記録](docs/rockstaros-product-system-map.md) · [記録](docs/workstreams/README.md) · [記録](scripts/check-sky.mjs) |
 | UXCHAR01 | Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果） | 完了 | [記録](components/tool-character.tsx) · [記録](components/tool-character.module.css) · [記録](docs/workstreams/01-product-ux.md) |
 | SKY20 | Sky公開・Telegram配布を証拠付きverified Packageへ限定し、失効と利用イベント再送を受け入れる | 進行中 | [記録](drizzle/0016_red_crusher_hogan.sql) · [記録](lib/sky-tool-review.ts) · [記録](lib/sky-review-auth.ts) · [記録](app/api/sky/tool-reviews/route.ts) · [記録](lib/sky-tool-package-store.ts) · [記録](lib/sky-activation.ts) · [記録](lib/sky-tool-events.ts) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](tests/sky-tool-package.test.mjs) · [記録](tests/sky-activation.test.mjs) · [記録](tests/sky-tool-sdk.test.mjs) · [記録](docs/sky-tool-sdk.md) |
 | SKY19 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
