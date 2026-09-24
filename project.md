@@ -1,5 +1,14 @@
 # RockstarOS — 事業・設計・進捗
 
+
+## 2026-09-24 — rocketstar完全版と設計作業一式を保存
+
+主担当Git / CI / OperationsのROCK、DOC03。利用者が `https://github.com/k999ln/rock.git` へ「漏れなく更新保存」と明示したため、最新main `261251871115c782790ec8cc752a3dd4077a2ec0`から分離した作業branchで、[設計アーカイブ](docs/rocketstar-design/README.md)へ原本と生成元を取り込んだ。ロケットR1.0は44ページ・35章、60要求・18全体接続を含む。旧版、図、計算、監査、QA画像、OSのschema/DDL等の付録、洋ナシ形ボタン設計と元画像を保持した。
+
+保存対象932ファイル・148,595,667 bytesを元ファイルとSHA-256で全件照合し、8 ZIPのCRCと現行R1.0 manifestを確認した。除外251件は機械キャッシュとインストール済QA依存だけで、全パス・理由をinventoryに記録。保存検証は `python3 scripts/verify-rocketstar-archive.py --git`。原本の古いパスや再生成時の外部依存は履歴として保持し、別環境での全再生成成功と読み替えない。
+
+現行R5の1本自律・別Hub不要は維持し、原本内E3やHub前提のボタンをR5へ自動適用しない。OS原本PDFは既存保存物と同一hashで、以前未提供だった個別付録の受領状態を更新した。runtime、公開Site、OS image、機材、実送信・打上げは本更新で変更しない。保存検証15件、製品・設計台帳・進捗の整合、`npm run verify`を完走し、[検証記録](docs/rocketstar-design/repository-validation.json)へ保存した。GitHubへの反映と同一commitのCI結果はPR/commitの状態を根拠とし、資料の保存を製造・飛行・再使用の実証へ数えない。
+
 ## 2026-09-24 — R5統合設計パッケージをGitの正本へ保存
 
 利用者の「k999ln/rockへ漏れなく更新保存」に基づき、main `0eb4fe48b1e7309e838b0441954d97e22272b4ca`から分離してMAT14を開始。前回渡したR5のPDF51ページ、Word、Markdown、図面8SVG+8PNG、計算・参考資料と元ZIPをそのまま保存し、生活研究報告と監査記録も追加する。原本の26ファイルSHAと27ファイルZIPを照合する。READMEの全task表はproject.mdへ集約し、READMEには概要と入口だけを同期する。
@@ -895,7 +904,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 97/149件
+最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 98/150件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -906,6 +915,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY19 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
 | DOC01 | RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化 | 完了 | [記録](docs/rockstaros-design-portal.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
 | DOC02 | RockstarOS設計書完全版v1.0の原本PDF・全文抽出・完全性記録・設計索引をGit正本へ保存 | 完了 | [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rockstaros-complete-design-v1.0.txt) · [記録](data/rockstaros-complete-design-v1.0.json) · [記録](docs/rockstaros-design-portal.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
+| DOC03 | rocketstar R1.0・衛星・OS付録・ボタン・生成元・旧版を原本と照合し、設計アーカイブと索引へ保存（製造/飛行未認定） | 完了 | [記録](docs/rocketstar-design/README.md) · [記録](docs/rocketstar-design/inventory.json) · [記録](docs/rocketstar-design/verification.json) · [記録](scripts/verify-rocketstar-archive.py) · [記録](data/design-document-index.json) |
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
 | AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |

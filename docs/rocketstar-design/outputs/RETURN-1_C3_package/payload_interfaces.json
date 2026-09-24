@@ -1,0 +1,486 @@
+{
+  "document_id": "RETURN-1-PAYLOAD-ICD-DRAFT",
+  "revision_date": "2026-09-23",
+  "language": "ja",
+  "release_kind": "requirements_and_working_baseline_draft",
+  "manufacturing_released": false,
+  "flight_released": false,
+  "scope": "ロケット上段と衛星の搭載条件、衛星からavokadoへの通信と端末実証の境界",
+  "source_markdown": "payload_interfaces.md",
+  "baseline": {
+    "launch_payload": {
+      "description": "通信衛星2機の要求案",
+      "count": 2,
+      "mass_total_kg": 1000,
+      "mass_each_kg": 500,
+      "evidence_kind": "proposed_mass_allocation_not_demonstrated_capacity",
+      "includes": [
+        "衛星本体",
+        "展開物",
+        "搭載推進剤",
+        "衛星側分離部",
+        "成長余裕"
+      ],
+      "excludes": [
+        "上段に残るアダプター・保持部"
+      ],
+      "satellite_dimensions_m": null,
+      "stowed_envelope_m": null,
+      "deployed_swept_envelope_m": null,
+      "mass_properties": null,
+      "separation_hardware": null,
+      "cad_release": null
+    },
+    "satellite": {
+      "layout_status": "ARCHITECTURE_SELECTED_WORKING_BASELINE",
+      "functional_surfaces": [
+        "地球向き利用者通信面",
+        "側方太陽電池",
+        "宇宙側放熱面"
+      ],
+      "steady_state_power_comparison_W": 1000,
+      "rf_output_W": null,
+      "antenna_area_m2": null,
+      "beam_count": null,
+      "frequency_band": null,
+      "network_authentication": null,
+      "continuous_global_service": false,
+      "continuous_global_service_note": "初期2機で全球常時通信は成立しない",
+      "layout_selected": "B-H1",
+      "decision_id": "D07",
+      "selection_scope": "地球側の平面通信面・側方の太陽電池・宇宙側の放熱面。寸法・質量・面積・通信性能は未確定。"
+    },
+    "orbit_reference": {
+      "height_km": 550,
+      "inclination_deg": 53,
+      "status": "ASSUMPTION_REQUIRES_LAUNCH_SITE_AND_COVERAGE_ANALYSIS",
+      "multiple_plane_deployment_included": false
+    },
+    "ground_terminal": {
+      "model": "avocadoMini Tower20 E3",
+      "source_revision_date": "2026-09-22",
+      "tower_count": 4,
+      "tower_deployed_height_requirement_mm": 200,
+      "edge_hub_separate": true,
+      "communication_control_host": "Edge Hub",
+      "satellite_modem_per_tower": false,
+      "hub_dimensions_proposal_mm": [
+        240,
+        200,
+        70
+      ],
+      "hub_dimensions_status": "PROPOSAL_NOT_MANUFACTURING_RELEASE",
+      "power_allocation": {
+        "hub_W": 100,
+        "tower_each_W": 4,
+        "total_DC_W": 116,
+        "status": "CALCULATION_ALLOCATION_NOT_MEASURED_MAXIMUM",
+        "new_communications_included": null,
+        "new_communications_note": "追加機器と給電元を決めて再集計する"
+      },
+      "all_routes_unavailable_behavior": "受信待ちを表示し接続回復後に同期する",
+      "unconditional_anywhere_reception_guaranteed": false,
+      "decision_id": "D08",
+      "configuration_status": "ARCHITECTURE_SELECTED_WORKING_BASELINE",
+      "selection_scope": "E3の4塔＋別Hubと9704別筐体による既存網実証を選定。機器の製造・実機受入は未承認。"
+    }
+  },
+  "network_boundaries": [
+    {
+      "id": "OWN-A-LINK",
+      "space_segment": "開発する自前A-LINK衛星",
+      "terminal_modem": null,
+      "gateway_and_core": "未選定・相互接続設計が必要",
+      "candidate_architecture": "透明中継、端末と地上局の同時可視を検討",
+      "inter_satellite_link_assumed": false,
+      "onboard_application_store_forward_assumed": false,
+      "status": "DEVELOPMENT_NOT_VALIDATED"
+    },
+    {
+      "id": "PROTOTYPE-IRIDIUM",
+      "space_segment": "Iridium既存網",
+      "terminal_modem": "RockBLOCK 9704",
+      "transport": "Iridium IMT",
+      "cloud_gateway": "Cloudloop",
+      "terminal_host_link": "USB serial for initial bench prototype",
+      "separate_satellite_pod": true,
+      "other_transmitter_in_pod": false,
+      "verified_object": "受信・認証・保存・ACK・再配信の端末機能",
+      "does_not_verify": [
+        "自前衛星のRF性能",
+        "自前衛星への互換接続",
+        "RETURN-1の打上げ・帰還"
+      ],
+      "status": "PROTOTYPE_PLAN_NOT_HARDWARE_TESTED"
+    },
+    {
+      "id": "TERRESTRIAL",
+      "routes": [
+        "許可済みWi-Fi",
+        "契約済み携帯"
+      ],
+      "service_reachability_required": true,
+      "automatic_route_selection": "用途・料金・認証・到達性で選ぶ"
+    }
+  ],
+  "interfaces": [
+    {
+      "id": "PL-M01",
+      "discipline": "質量特性",
+      "agreement_fields": "各衛星と機体残留部の質量、重心 3 軸、慣性テンソル、基準座標、誤差",
+      "current_baseline_and_open_items": "衛星 500 kg×2 は仮枠。重心範囲・慣性・実質量は未確定",
+      "closure_evidence": "放出前後の質量台帳、計量、重心・慣性計測",
+      "responsible_disciplines": "衛星・機体構造",
+      "named_owner": null,
+      "engineering_status": "OPEN",
+      "manufacturing_released": false,
+      "evidence_record": null
+    },
+    {
+      "id": "PL-M02",
+      "discipline": "機械結合",
+      "agreement_fields": "取付面、軸、穴・締結・公差、剛性、静荷重、結合振動、音響、衝撃",
+      "current_baseline_and_open_items": "アダプター型式・寸法・材料・締結・許容荷重は未確定",
+      "closure_evidence": "両者承認 CAD／図面、結合荷重解析、機械試験",
+      "responsible_disciplines": "構造・分離系",
+      "named_owner": null,
+      "engineering_status": "OPEN",
+      "manufacturing_released": false,
+      "evidence_record": null
+    },
+    {
+      "id": "PL-M03",
+      "discipline": "包絡と作業空間",
+      "agreement_fields": "収納体積、熱・荷重変形、可動部掃引、ケーブル・工具・吊点、2 機の順序",
+      "current_baseline_and_open_items": "収納図は概念。実寸と可展包絡は未確定",
+      "closure_evidence": "実部品 CAD、収納・扉動作・取出しの干渉検査、代表品仮組",
+      "responsible_disciplines": "機構・地上運用",
+      "named_owner": null,
+      "engineering_status": "OPEN",
+      "manufacturing_released": false,
+      "evidence_record": null
+    },
+    {
+      "id": "PL-E01",
+      "discipline": "給電・接地",
+      "agreement_fields": "地上給電、飛行中給電の有無、切離し、電圧・極性、過渡・突入、保護、接地",
+      "current_baseline_and_open_items": "上段から衛星へ給電するかも未決定。電圧・端子・電流を仮作成しない",
+      "closure_evidence": "電力系統図、全端子表、ハーネス検査、負荷・切離し試験",
+      "responsible_disciplines": "両機の電源",
+      "named_owner": null,
+      "engineering_status": "OPEN",
+      "manufacturing_released": false,
+      "evidence_record": null
+    },
+    {
+      "id": "PL-E02",
+      "discipline": "情報・許可",
+      "agreement_fields": "必要最小限の衛星健全性、時刻、分離許可・状態確認、障害時の扱い",
+      "current_baseline_and_open_items": "方式・コネクター・信号閾値・独立性は未確定",
+      "closure_evidence": "信号辞書、状態遷移、故障注入・配線切離し試験",
+      "responsible_disciplines": "電装・飛行ソフト",
+      "named_owner": null,
+      "engineering_status": "OPEN",
+      "manufacturing_released": false,
+      "evidence_record": null
+    },
+    {
+      "id": "PL-T01",
+      "discipline": "熱",
+      "agreement_fields": "地上待機から放出までの温度、熱流、ヒーター電力、接触熱抵抗、扉開放時の熱",
+      "current_baseline_and_open_items": "境界温度・許容温度・熱制御材は未確定",
+      "closure_evidence": "軌道／地上熱解析、材料情報、熱真空・熱平衡試験",
+      "responsible_disciplines": "熱・電源",
+      "named_owner": null,
+      "engineering_status": "OPEN",
+      "manufacturing_released": false,
+      "evidence_record": null
+    },
+    {
+      "id": "PL-ENV01",
+      "discipline": "環境・清浄度",
+      "agreement_fields": "湿度、清浄度、粒子、アウトガス、排気・減圧、パージの有無",
+      "current_baseline_and_open_items": "衛星光学／RF／熱面と機体の条件を合わせる。許容値は未確定",
+      "closure_evidence": "環境仕様書、材料・保管記録、ベント・汚染評価",
+      "responsible_disciplines": "品質・環境・構造",
+      "named_owner": null,
+      "engineering_status": "OPEN",
+      "manufacturing_released": false,
+      "evidence_record": null
+    },
+    {
+      "id": "PL-S01",
+      "discipline": "保持・分離",
+      "agreement_fields": "保持、解除、分離確認、分離後の姿勢、再接触回避、拘束物の帰属",
+      "current_baseline_and_open_items": "分離器・作動方式・速度・角速度・遅延・判定閾値は未確定",
+      "closure_evidence": "選定機構の仕様、衝撃測定、質量・慣性を代表する試験と分離運動解析",
+      "responsible_disciplines": "分離系・航法",
+      "named_owner": null,
+      "engineering_status": "OPEN",
+      "manufacturing_released": false,
+      "evidence_record": null
+    },
+    {
+      "id": "PL-S02",
+      "discipline": "異常時・扉閉鎖",
+      "agreement_fields": "1 機だけ分離、2 機未分離、誤状態、扉不閉鎖、展開物未固定",
+      "current_baseline_and_open_items": "衛星を残して帰還できるとは未判定。自動展開は必要条件が成立するまで禁止する設計",
+      "closure_evidence": "残留質量別の重心・軌道・帰還評価、状態遷移、故障注入",
+      "responsible_disciplines": "機体システム・運用",
+      "named_owner": null,
+      "engineering_status": "OPEN",
+      "manufacturing_released": false,
+      "evidence_record": null
+    },
+    {
+      "id": "PL-RF01",
+      "discipline": "打上げ時 RF／EMC",
+      "agreement_fields": "送信禁止状態と解除条件、機体受信機との共存、感受性、接地、試験用 RF 経路",
+      "current_baseline_and_open_items": "周波数表・許容放射・感受性・禁止解除方式は未確定",
+      "closure_evidence": "EMC 計画、伝導／放射試験、独立した禁止・状態確認の検証",
+      "responsible_disciplines": "RF・電装",
+      "named_owner": null,
+      "engineering_status": "OPEN",
+      "manufacturing_released": false,
+      "evidence_record": null
+    },
+    {
+      "id": "PL-RF02",
+      "discipline": "軌道上サービス",
+      "agreement_fields": "利用者・管制・ゲートウェイの帯域、偏波、指向、通信収支、認証、容量、可視",
+      "current_baseline_and_open_items": "B-H1 を D07 の作業用配置に選定。EIRP・G/T・ビーム数・面積・方式・免許条件は未確定",
+      "closure_evidence": "周波数調整、アンテナ測定、両方向・両リンクを含む解析、適合試験",
+      "responsible_disciplines": "衛星 RF・網",
+      "named_owner": null,
+      "engineering_status": "OPEN",
+      "manufacturing_released": false,
+      "evidence_record": null
+    },
+    {
+      "id": "AV-IF01",
+      "discipline": "E3 Hub 接続",
+      "agreement_fields": "通信部の給電、USB／有線データ、OS、音声・4 カメラとの同時動作",
+      "current_baseline_and_open_items": "機能の接続先は別 Hub。実ポート・機械取付・ドライバー・追加電力は未確定",
+      "closure_evidence": "E3 改訂 CAD・回路、ポート構成、閉箱熱・帯域・EMC 試験",
+      "responsible_disciplines": "端末ハード・OS",
+      "named_owner": null,
+      "engineering_status": "OPEN",
+      "manufacturing_released": false,
+      "evidence_record": null
+    },
+    {
+      "id": "AV-IF02",
+      "discipline": "メッセージ",
+      "agreement_fields": "宛先、認証、期限、ID、永続保存、アプリ ACK、重複抑止、圏外表示",
+      "current_baseline_and_open_items": "既存網実証と自前網は別の通信アダプター。輸送成功とアプリ保存完了を分ける",
+      "closure_evidence": "受信・保存・電源断・再配信試験、経路識別記録",
+      "responsible_disciplines": "配信サービス・端末 OS",
+      "named_owner": null,
+      "engineering_status": "OPEN",
+      "manufacturing_released": false,
+      "evidence_record": null
+    }
+  ],
+  "ground_test_gates": [
+    {
+      "id": "P-G01",
+      "subject": "収納・保持・分離",
+      "prerequisites": "承認 CAD、実機相当の扉・分離部、代表質量・重心・慣性、吊具影響の補正、計測計画",
+      "completion_evidence": "2 機と扉・配線・機体の非接触を確認。解除だけでなく再接触回避・状態確認・扉閉鎖まで検証",
+      "status": "NOT_PERFORMED",
+      "test_record": null,
+      "acceptance_limit_values": null
+    },
+    {
+      "id": "P-G02",
+      "subject": "機械・熱・電気環境",
+      "prerequisites": "結合荷重と環境仕様、試験体の対応、治具・境界条件、事前機能記録",
+      "completion_evidence": "振動・音響・分離衝撃・熱真空・EMC 等の必要な試験後に、構造と機能が承認された許容内。条件未決定では合格を出さない",
+      "status": "NOT_PERFORMED",
+      "test_record": null,
+      "acceptance_limit_values": null
+    },
+    {
+      "id": "P-G03",
+      "subject": "統合状態と故障",
+      "prerequisites": "実ハーネスまたはその忠実な模擬、電源過渡、分離信号、ソフト版、故障注入表",
+      "completion_evidence": "接続喪失、誤信号、低電圧、片方未分離でも意図しない分離・展開・送信をしない。残留状態と帰還判断を区別できる",
+      "status": "NOT_PERFORMED",
+      "test_record": null,
+      "acceptance_limit_values": null
+    },
+    {
+      "id": "P-G04",
+      "subject": "自前衛星通信",
+      "prerequisites": "実方式・帯域、端末／衛星／ゲートウェイの互換構成、伝搬・ドップラー条件、校正済み RF 接続",
+      "completion_evidence": "認証からアプリ保存まで両方向を確認。利用者リンク単独でなく中継を含む通信余裕・容量・遅延を記録。地上 RF 試験を軌道実証と呼ばない",
+      "status": "NOT_PERFORMED",
+      "test_record": null,
+      "acceptance_limit_values": null
+    },
+    {
+      "id": "P-G05",
+      "subject": "既存網端末実証",
+      "prerequisites": "9704 の版、別筐体、メーカー適合アンテナ／配線、見通し、USB 給電、契約、試験先とデータ",
+      "completion_evidence": "地上アプリ経路を切った条件で衛星受信ログと保存・アプリ ACK を対応付ける。Iridium の成功を自前網の成功に転記しない",
+      "status": "NOT_PERFORMED",
+      "test_record": null,
+      "acceptance_limit_values": null
+    },
+    {
+      "id": "P-G06",
+      "subject": "E3 同時動作・復旧",
+      "prerequisites": "Hub と 4 塔の実構成、音声・ゲーム負荷、通信給電元、USB 構成、保存媒体、費用設定",
+      "completion_evidence": "閉箱で受信中の温度・帯域・電源・音声／映像への影響を測る。電源断・ACK 消失・経路切替後の重複抑止と復旧を確認",
+      "status": "NOT_PERFORMED",
+      "test_record": null,
+      "acceptance_limit_values": null
+    }
+  ],
+  "test_evidence_classes": [
+    "DOCUMENT_REVIEW",
+    "SOFTWARE_SIMULATION",
+    "GROUND_HARDWARE",
+    "ORBITAL_DEMONSTRATION"
+  ],
+  "drawing_policy": {
+    "allowed_with_caveats": [
+      {
+        "content": "2 機の衛星搭載、保持式扉、上段に残るアダプターの機能位置",
+        "condition": "「配置概念・非縮尺・部品未選定」と注記。実機収納を証明する図にしない"
+      },
+      {
+        "content": "B-H1 の地球向き通信面、太陽電池、放熱面、機器区画",
+        "condition": "D07 で選定した面の役割を示す。厚さ、分割数、ヒンジ、駆動、固定部の形を製造仕様にしない"
+      },
+      {
+        "content": "収納時・展開時を並べた図",
+        "condition": "比較用イメージであることを明記。各中間状態の掃引包絡と干渉は別検証"
+      },
+      {
+        "content": "E3 の 4 本の銀色タワー、各使用時 200 mm、別体 Hub",
+        "condition": "E3 要求を基準にする。Hub・衛星ポッドまで 200 mm という寸法指定をしない"
+      },
+      {
+        "content": "既存網実証の衛星ポッドと Hub の有線接続",
+        "condition": "Iridium 実証系と明記。自前 A-LINK 衛星へつなぐ図として使わない"
+      }
+    ],
+    "not_fixed_without_evidence": [
+      "衛星外寸",
+      "展開径・掃引包絡",
+      "アンテナ面積",
+      "パネル分割数",
+      "衛星間隔",
+      "取付穴・板厚・公差",
+      "分離器・作動機構",
+      "実装配線・電源ピン",
+      "衛星出力・ビーム数",
+      "端末内蔵衛星アンテナ",
+      "通信速度・到達範囲・常時性"
+    ]
+  },
+  "sources": [
+    {
+      "id": "L1",
+      "kind": "local_design",
+      "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/outputs/avocadoMini_Tower20_E3_package/README.md",
+      "companion": "hardware_design.md",
+      "checked": "2026-09-23"
+    },
+    {
+      "id": "L2",
+      "kind": "local_design",
+      "path": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/outputs/A-LINK_Avokado_Receiver_Prototype_v0.4/hardware-path.md",
+      "companions": [
+        "radio-interface.md",
+        "acceptance-gaps.md"
+      ],
+      "checked": "2026-09-23"
+    },
+    {
+      "id": "L3",
+      "kind": "local_design",
+      "paths": [
+        "RETURN-1_Avokado_Link_Design_v0.1.md",
+        "A-LINK_Avokado_Auto_Connect_Design_v0.3.md"
+      ],
+      "note": "衛星候補・質量仮定を参照。端末構成はE3を優先する。",
+      "checked": "2026-09-23"
+    },
+    {
+      "id": "S1",
+      "kind": "official_vendor",
+      "title": "Ground Control 9704 Installation",
+      "url": "https://docs.groundcontrol.com/iot/rockblock-9704/installation",
+      "checked": "2026-09-23"
+    },
+    {
+      "id": "S2",
+      "kind": "official_vendor",
+      "title": "Ground Control 9704 Antenna Options",
+      "url": "https://docs.groundcontrol.com/iot/rockblock-9704/antenna",
+      "checked": "2026-09-23"
+    },
+    {
+      "id": "S3",
+      "kind": "official_standard_guidance",
+      "title": "NASA GSFC-STD-7000B GEVS",
+      "url": "https://standards.nasa.gov/node/791",
+      "checked": "2026-09-23",
+      "binding_to_this_project": false
+    },
+    {
+      "id": "S4",
+      "kind": "official_vendor",
+      "title": "Ground Control 9704 Hardware",
+      "url": "https://docs.groundcontrol.com/iot/rockblock-9704/hardware",
+      "checked": "2026-09-23"
+    },
+    {
+      "id": "C1",
+      "kind": "project_decision",
+      "path": "main.md",
+      "locators": [
+        "D07",
+        "D08"
+      ],
+      "checked": "2026-09-23",
+      "scope": "作業用構成の選定。製造寸法・性能・認定の確定ではない。"
+    }
+  ],
+  "actions_performed": {
+    "document_work": true,
+    "public_source_verification": true,
+    "equipment_purchase": false,
+    "network_contract_purchase": false,
+    "external_message_transmission": false,
+    "physical_test": false
+  },
+  "cross_reference_file": "interface_crossrefs.json",
+  "decisions": [
+    {
+      "id": "D07",
+      "classification": "architecture_selected",
+      "decision": "B-H1を以後の作業用配置に選定",
+      "engineering_limits": [
+        "寸法未確定",
+        "質量未確定",
+        "面積未確定",
+        "通信性能未確定"
+      ],
+      "manufacturing_released": false
+    },
+    {
+      "id": "D08",
+      "classification": "architecture_selected",
+      "decision": "Tower20 E3の4塔＋別Hubと9704別筐体実証を選定",
+      "engineering_limits": [
+        "E3機構・電源・ポートの追加設計が必要",
+        "9704はIridium実証用であり自前NTNの採用モデムではない",
+        "実機受入未実施"
+      ],
+      "manufacturing_released": false
+    }
+  ]
+}

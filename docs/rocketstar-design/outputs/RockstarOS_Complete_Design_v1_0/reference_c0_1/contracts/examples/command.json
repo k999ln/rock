@@ -1,0 +1,23 @@
+{
+  "schema": "rockstaros-colony-command/1",
+  "mode": "SIM_ONLY",
+  "sourceClass": "SYNTHETIC",
+  "siteId": "sim-ground-01",
+  "nodeId": "sim-utility-01",
+  "ownerRef": "sim-operator-organization",
+  "workId": "work-static-example-01",
+  "requestId": "request-static-example-01",
+  "commandId": "static-example-01",
+  "idempotencyKey": "static-example-01",
+  "holderId": "ops-A",
+  "authorityEpoch": 1,
+  "componentGeneration": "static-generation-01",
+  "expiresAt": 1010.0,
+  "expectedRevision": 0,
+  "payload": {
+    "operation": "sim.noncritical_load.set",
+    "desiredFlexibleKw": 2.0
+  },
+  "payloadDigest": "421caec0d95c0488777c0efc4f7f8a1d5e97f4dc5b08484d1129209eaa4a90a0",
+  "signature": "f34906ca60898acb64e773e2f807dae8f9cb50168d96f05e381bc441c837270f"
+}

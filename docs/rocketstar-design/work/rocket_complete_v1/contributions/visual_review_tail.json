@@ -1,0 +1,28 @@
+{
+  "artifact": "outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf",
+  "pdf_sha256": "c5497a5df7037ce7cdfe95d9ec93c8f976d4a7452041fdf27660c28806a36c4e",
+  "reviewer": "colony_reference_design",
+  "review_date": "2026-09-24",
+  "pages_reviewed": [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44],
+  "status": "PASS",
+  "findings": [],
+  "method": {
+    "contact_sheets": ["work/rocket_complete_v1/qa/contact-3.jpg", "work/rocket_complete_v1/qa/contact-4.jpg"],
+    "individual_page_images": "work/rocket_complete_v1/qa/page-25.png through page-44.png; all 20 images opened with view_image",
+    "individual_image_dimensions": {"width_px": 849, "height_px": 1200},
+    "checks": [
+      "本文・見出し・表の文字欠けとページ境界での切断",
+      "表の列・行、本文、フッターの重なり",
+      "見出しだけがページに残る孤立",
+      "密度の高い要求一覧と出典表の可読性",
+      "表が複数ページに続く箇所の列見出しの反復"
+    ]
+  },
+  "observations": [
+    "25〜44ページの全ページについて、本文と表はページ内に収まり、フッターと干渉していない。",
+    "36〜41ページの要求一覧と43〜44ページの出典表は、継続ページでも列見出しが表示され、各行を読める。",
+    "確認範囲に独立した機体図・グラフはない。表の可読性を確認した。",
+    "見出しと本文の間隔が小さいページはあるが、接触・重なり・読解を妨げる欠落は見られない。"
+  ],
+  "scope_limit": "上記SHA-256のPDF後半20ページの静的な表示確認。1〜24ページ、文章の再審査、物理設計の成立性、リンク先の到達性はこの記録の判定範囲に含めない。"
+}

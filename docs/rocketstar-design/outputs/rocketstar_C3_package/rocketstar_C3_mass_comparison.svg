@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="501.27559055118115" height="190" preserveAspectRatio="xMinYMin meet" viewBox="0 0 501 190" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="501.27559055118115" height="190"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-190)" style="clip-path: url(#clip)">
+		<g transform="">
+			<path d="M 155,29 L 155,156 Z" style="stroke: rgb(84%,88%,89%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<text x="144.990234375" y="13" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(38%,45%,49%); stroke:none;" transform="translate(0,26) scale(1,-1)">8,500</text>
+			<path d="M 235.5,29 L 235.5,156 Z" style="stroke: rgb(84%,88%,89%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<text x="225.490234375" y="13" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(38%,45%,49%); stroke:none;" transform="translate(0,26) scale(1,-1)">9,000</text>
+			<path d="M 316,29 L 316,156 Z" style="stroke: rgb(84%,88%,89%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<text x="305.990234375" y="13" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(38%,45%,49%); stroke:none;" transform="translate(0,26) scale(1,-1)">9,500</text>
+			<path d="M 396.5,29 L 396.5,156 Z" style="stroke: rgb(84%,88%,89%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<text x="384.265625" y="13" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(38%,45%,49%); stroke:none;" transform="translate(0,26) scale(1,-1)">10,000</text>
+			<path d="M 477,29 L 477,156 Z" style="stroke: rgb(84%,88%,89%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<text x="464.765625" y="13" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(38%,45%,49%); stroke:none;" transform="translate(0,26) scale(1,-1)">10,500</text>
+			<text x="125.9921875" y="138" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,276) scale(1,-1)">旧 B0</text>
+			<rect x="155" y="134" width="293.60687770305543" height="14" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<text x="454.60687770305543" y="138" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,276) scale(1,-1)">10,324</text>
+			<text x="74.41796875" y="108" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,216) scale(1,-1)">D20 / R4.9 / Isp低下</text>
+			<rect x="155" y="104" width="186.85916885786662" height="14" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(38%,45%,49%); fill-rule: evenodd;"/>
+			<text x="347.8591688578666" y="108" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,216) scale(1,-1)">9,661</text>
+			<text x="91.76171875" y="78" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,156) scale(1,-1)">D22 / R6 / 公称</text>
+			<rect x="155" y="74" width="173.2121930905987" height="14" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(38%,45%,49%); fill-rule: evenodd;"/>
+			<text x="334.2121930905987" y="78" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,156) scale(1,-1)">9,576</text>
+			<text x="81.08984375" y="48" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,96) scale(1,-1)">D24 / R8 / Isp低下</text>
+			<rect x="155" y="44" width="65.44928740330363" height="14" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(38%,45%,49%); fill-rule: evenodd;"/>
+			<text x="226.44928740330363" y="48" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,96) scale(1,-1)">8,907</text>
+			<path d="M 443.19,29 L 443.19,165 Z" style="stroke: rgb(67%,32%,22%); stroke-linecap: butt; stroke-width: 1.1; stroke-dasharray: 3, 2;"/>
+			<text x="406.289609375" y="176" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(67%,32%,22%); stroke:none;" transform="translate(0,352) scale(1,-1)">比較条件 10,290 m/s</text>
+		</g>
+	</g>
+</svg>

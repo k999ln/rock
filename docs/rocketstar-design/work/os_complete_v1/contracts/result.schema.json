@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rockstaros:icd:result:v1",
+  "title": "result / DESIGN SPECIFICATION ONLY",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "rockstaros.icd.result.v1"
+    },
+    "executionMode": {
+      "enum": [
+        "SIMULATION",
+        "HARDWARE_IN_LOOP",
+        "OPERATIONAL"
+      ]
+    },
+    "dataClass": {
+      "enum": [
+        "SYNTHETIC",
+        "MEASURED",
+        "ESTIMATED",
+        "REPLAY"
+      ]
+    },
+    "siteId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "nodeId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "messageId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "issuedAt": {
+      "type": "object",
+      "properties": {
+        "utcMs": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "monotonicMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bootId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+        },
+        "quality": {
+          "enum": [
+            "TRUSTED",
+            "DEGRADED",
+            "UNTRUSTED"
+          ]
+        },
+        "uncertaintyMs": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "utcMs",
+        "monotonicMs",
+        "bootId",
+        "quality",
+        "uncertaintyMs"
+      ],
+      "additionalProperties": false
+    },
+    "commandId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "commandDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "targetAssetId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "targetBootId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "stateRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "configurationDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "enum": [
+        "ACCEPTED",
+        "EXECUTING",
+        "SUCCEEDED",
+        "REJECTED",
+        "FAILED",
+        "UNKNOWN"
+      ]
+    },
+    "reasonCode": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "appliedScope": {
+      "enum": [
+        "NONE",
+        "SIM_SETTING",
+        "CONFIGURATION",
+        "PHYSICAL_ACTION"
+      ]
+    },
+    "observedEffect": {
+      "enum": [
+        "NOT_OBSERVED",
+        "MATCHED",
+        "MISMATCHED",
+        "UNKNOWN"
+      ]
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+      },
+      "minItems": 0,
+      "maxItems": 128,
+      "uniqueItems": true
+    },
+    "deviceProofRef": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "executionMode",
+    "dataClass",
+    "siteId",
+    "nodeId",
+    "messageId",
+    "issuedAt",
+    "commandId",
+    "commandDigest",
+    "targetAssetId",
+    "targetBootId",
+    "stateRevision",
+    "configurationDigest",
+    "status",
+    "reasonCode",
+    "appliedScope",
+    "observedEffect",
+    "evidenceRefs",
+    "deviceProofRef"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "SUCCEEDED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "evidenceRefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+            },
+            "minItems": 1,
+            "maxItems": 128,
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "SUCCEEDED"
+          },
+          "appliedScope": {
+            "const": "PHYSICAL_ACTION"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "observedEffect": {
+            "const": "MATCHED"
+          }
+        }
+      }
+    }
+  ]
+}

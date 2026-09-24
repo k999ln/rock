@@ -1,0 +1,81 @@
+{
+  "schema": "rocketstar-vehicle-reuse-source-register/1",
+  "verifiedOn": "2026-09-24",
+  "scope": "System-design references only. No physical tests, engine selection, manufacturing release, flight approval, or reusable-flight demonstration are claimed.",
+  "localBaselines": [
+    {
+      "path": "outputs/rocketstar_C3_package/rocketstar_C3_Integrated_Design_Baseline.md",
+      "used": "Architecture: uncrewed two stages, LOX/methane, retained door/interstage, windward upper-stage TPS, separate offshore/land recovery."
+    },
+    {
+      "path": "outputs/rocketstar_C3_package/payload_interfaces.md",
+      "used": "PL-M01–PL-S02 payload interfaces, retained-adapter mass allocation, residual-satellite return remains unresolved."
+    },
+    {
+      "path": "outputs/rocketstar_C3_package/design_register.md",
+      "used": "Existing open structural, propulsion, TPS, recovery, and same-serial reflight evidence."
+    }
+  ],
+  "sources": [
+    {
+      "id": "VR-S1",
+      "title": "NASA-STD-5001B with Change 3 — Structural Design and Test Factors of Safety for Spaceflight Hardware",
+      "publisher": "NASA",
+      "url": "https://standards.nasa.gov/standard/NASA/NASA-STD-5001",
+      "locator": "Document Scope; version B with Change 3, active summary",
+      "verified_summary": "The standard addresses structural design, test, and service-life factors used in spaceflight hardware development and verification.",
+      "design_application": "Define a project-approved load, strength, test, and life basis for structures, joints, tank supports, and landing-load paths.",
+      "limits": "The source does not select our materials, factors, geometry, loads, or life. Citing it does not establish compliance or structural qualification."
+    },
+    {
+      "id": "VR-S2",
+      "title": "NASA-STD-5012C — Strength and Life Assessment Requirements for Liquid-Fueled Space Propulsion System Engines",
+      "publisher": "NASA",
+      "url": "https://standards.nasa.gov/standard/NASA/NASA-STD-5012",
+      "locator": "Document Scope; version C, active summary",
+      "verified_summary": "The standard addresses engine structural strength and life, including fatigue and creep, through analyses and tests. It does not cover all system requirements for engine hot-fire testing.",
+      "design_application": "Separate engine structural/life evidence from complete propulsion-system performance and integration evidence; retain serial-number life records.",
+      "limits": "It is not an engine construction guide or proof that an engine has been selected. No operational values or test procedures were copied."
+    },
+    {
+      "id": "VR-S3",
+      "title": "Thermal Protection Materials Branch — Reusable Materials",
+      "publisher": "NASA Ames",
+      "url": "https://www.nasa.gov/general/thermal-protection-materials-branch-reusable-materials/",
+      "locator": "Reusable TPS overview and material-system examples",
+      "verified_summary": "NASA describes reusable TPS, including servicing, material combinations, attachment systems, and application-dependent capability.",
+      "design_application": "Evaluate surface material, joints, attachments, thermal gradients, repeated exposure, inspection, repair, and replacement as one subsystem.",
+      "limits": "Listed heritage materials and temperatures are not rocketstar material choices, operating limits, or evidence of upper-stage reentry capability."
+    },
+    {
+      "id": "VR-S4",
+      "title": "ECSS-E-ST-33-01C Rev.2 — Mechanisms",
+      "publisher": "European Cooperation for Space Standardization",
+      "url": "https://ecss.nl/standard/ecss-e-st-33-01c-rev-2-1-march-2019-space-engineering-mechanisms/",
+      "locator": "Scope; mechanism specification/design/analytical-verification/user-manual deliverables",
+      "verified_summary": "The standard covers spacecraft and payload mechanism definition, design, analysis, development, production, verification, and operation. Launcher applicability is left to the launcher project.",
+      "design_application": "Use mechanism specifications, design descriptions, analysis, tests, and operating constraints to structure retained-door and payload-separation interfaces.",
+      "limits": "Do not assert automatic launcher applicability, compliance, or approved separation/door design."
+    },
+    {
+      "id": "VR-S5",
+      "title": "GSFC-STD-7000B — General Environmental Verification Standard",
+      "publisher": "NASA Goddard",
+      "url": "https://standards.nasa.gov/node/791",
+      "locator": "Document Scope; active version B",
+      "verified_summary": "GEVS provides guidance for environmental verification of GSFC payloads, subsystems, and components using tests and/or analysis against expected mission environments.",
+      "design_application": "Define configuration-specific environment verification and affected-function retests after repair, component replacement, or interface change.",
+      "limits": "Guideline levels are not rocketstar qualification values and are not automatically applicable to a reusable launch vehicle or every refurbishment."
+    },
+    {
+      "id": "VR-S6",
+      "title": "Appendix D — Requirements Verification Matrix",
+      "publisher": "NASA",
+      "url": "https://www.nasa.gov/reference/appendix-d-requirements-verification-matrix/",
+      "locator": "Requirements Verification Matrix",
+      "verified_summary": "The matrix approach links uniquely identified requirements to verification methods and evidence.",
+      "design_application": "Tie configuration, interface revision, numerical acceptance criteria, test results, deviations, and release decisions to requirement IDs.",
+      "limits": "A populated matrix or a defined requirement is not evidence that testing passed or that flight approval exists."
+    }
+  ]
+}

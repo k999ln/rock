@@ -67,5 +67,30 @@
     "workingTree": "clean",
     "latestRemoteStateVerifiedByThisImport": false
   },
-  "authority": "The PDF is the exact user-provided source artifact. This JSON is an index and integrity record; it does not replace the PDF."
+  "authority": "The PDF is the exact user-provided source artifact. This JSON is an index and integrity record; it does not replace the PDF.",
+  "supplementReceipt": {
+    "receivedAt": "2026-09-24",
+    "source": "User explicitly requested complete preservation of this design workspace in k999ln/rock.",
+    "status": "received_and_archived",
+    "previousState": "PDF-only import; individual schema and DDL supplements were not yet received.",
+    "package": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md",
+    "manifest": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/manifest.json",
+    "packageFileCount": 60,
+    "manifestEntriesVerified": 59,
+    "originalPdfPreserved": true,
+    "packagePdf": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/RockstarOS_Complete_Design_v1_0.pdf",
+    "packagePdfSha256": "9f318e6c1fe04abca895c87085931b9b3f15f1a4445aa99b4231ae9a5c1c3855",
+    "packagePdfMatchesExistingOriginal": true,
+    "schemaCount": 7,
+    "contracts": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md",
+    "ddl": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/operations_store.sql",
+    "requirements": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/requirements.json",
+    "evidence": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/evidence/package_checks.json",
+    "validationSource": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/validation/verify_contracts.py",
+    "legacyReference": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/reference_c0_1/README.md",
+    "runtimeImported": false,
+    "newPhysicalAcceptancePerformed": false,
+    "r5DeviceProfileAndAdapterIntegrated": false,
+    "archiveInventory": "docs/rocketstar-design/inventory.json"
+  }
 }

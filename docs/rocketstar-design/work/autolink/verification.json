@@ -1,0 +1,30 @@
+{
+  "pages": 18,
+  "out_of_bounds_text": [],
+  "edge_range_km": 1123.277001577906,
+  "path_loss_db": 159.48033725440268,
+  "down_margin_db": 13.129962702237123,
+  "up_margin_db": 8.11966274559731,
+  "body_budget_w": 80,
+  "added_comparison_w": [
+    8,
+    18
+  ],
+  "internal_and_input_comparison_w": [
+    [
+      88,
+      97.77777777777777
+    ],
+    [
+      98,
+      108.88888888888889
+    ]
+  ],
+  "geometric_area_lower_bound": 184,
+  "coverage_missing_samples": [
+    23322,
+    145,
+    5
+  ],
+  "physical_tests_executed": false
+}

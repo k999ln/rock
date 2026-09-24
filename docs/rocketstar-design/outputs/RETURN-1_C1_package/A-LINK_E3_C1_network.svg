@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="501.27559055118115" height="267" preserveAspectRatio="xMinYMin meet" viewBox="0 0 501 267" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="501.27559055118115" height="267"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-267)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="0" y="249" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,498) scale(1,-1)">自前衛星網と、先行する端末実証は別系統</text>
+			<rect x="0" y="164" width="142" height="48" rx="4" ry="4" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.8; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="46.24560546875" y="192.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,384) scale(1,-1)">A-LINK 衛星</text>
+			<text x="34.99999999999999" y="178.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,356) scale(1,-1)">自前網・開発対象</text>
+			<rect x="180" y="164" width="141" height="48" rx="4" ry="4" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.8; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="214.5" y="192.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,384) scale(1,-1)">地上ゲートウェイ</text>
+			<text x="210.0" y="178.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,356) scale(1,-1)">配信・認証サービス</text>
+			<rect x="361" y="164" width="140" height="48" rx="4" ry="4" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.8; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="396.755615234375" y="192.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,384) scale(1,-1)">許可 Wi-Fi／携帯</text>
+			<text x="417.5" y="178.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,356) scale(1,-1)">地上網</text>
+			<path d="M 142,188 L 180,188 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="180 188, 175.4978 190.1748, 175.4978 185.8252" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polygon points="142 188, 146.5022 185.8252, 146.5022 190.1748" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 321,188 L 361,188 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="361 188, 356.4978 190.1748, 356.4978 185.8252" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polygon points="321 188, 325.5022 185.8252, 325.5022 190.1748" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="0" y="74" width="142" height="48" rx="4" ry="4" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.8; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="30.499999999999993" y="102.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,204) scale(1,-1)">自前網の端末無線機</text>
+			<text x="30.499999999999993" y="88.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,176) scale(1,-1)">周波数・波形未確定</text>
+			<path d="M 71,164 L 71,122 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="71 122, 73.17483 126.5022, 68.82517 126.5022" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polygon points="71 164, 68.82517 159.4978, 73.17483 159.4978" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="180" y="74" width="141" height="48" rx="4" ry="4" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.8; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="223.730712890625" y="102.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,204) scale(1,-1)">E3 Edge Hub</text>
+			<text x="205.5" y="88.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,176) scale(1,-1)">受信・保存・自動切替</text>
+			<path d="M 142,98 L 180,98 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="180 98, 175.4978 100.1748, 175.4978 95.82517" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polygon points="142 98, 146.5022 95.82517, 146.5022 100.1748" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 431,164 L 431,98 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="431 98, 433.1748 102.5022, 428.8252 102.5022" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 431,98 L 321,98 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="321 98, 325.5022 95.82517, 325.5022 100.1748" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<text x="210.98779296875" y="52" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,104) scale(1,-1)">4本の Motion Tower</text>
+			<path d="M 0,39 L 501.275591,39 Z" style="stroke: rgb(84%,88%,89%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="0" y="20" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,40) scale(1,-1)">別系統の実証：Hub - 別筐体9704 - Iridium - Cloudloop</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,17 @@
+{
+  "mode": "SIM_ONLY",
+  "hardwareConnected": false,
+  "supervisorTerminated": true,
+  "controllerAlive": true,
+  "beforeSampleSeq": 2,
+  "afterSampleSeq": 14,
+  "observedState": "LOCAL_HOLD",
+  "criticalServedKw": 4.0,
+  "scope": "separate host processes and SQLite files, same host and OS",
+  "doesNotProve": [
+    "physical electrical protection",
+    "hard real-time",
+    "independent power",
+    "radiation tolerance"
+  ]
+}

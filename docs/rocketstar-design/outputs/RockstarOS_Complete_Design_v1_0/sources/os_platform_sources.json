@@ -1,0 +1,481 @@
+{
+  "schema": "rockstaros-complete-design-os-platform-sources/1",
+  "authored_at": "2026-09-24",
+  "document": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/work/os_complete_v1/contributions/os_platform.md",
+  "document_sha256": "a49af9d90dbbffad0c0d2f48339218087a9e1267595ebbc55a89369e8ead1549",
+  "repository": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1",
+  "current_head": "5d5f3dc4f73ac3389c8dbc00f9ca6e8beba526e0",
+  "previous_audit_head": "5d5f3dc4f73ac3389c8dbc00f9ca6e8beba526e0",
+  "head_changed": false,
+  "working_tree_clean": true,
+  "tracked_diff_from_previous": "",
+  "remote_latest_checked": false,
+  "new_os_tests_run": false,
+  "source_repo_modified": false,
+  "primary_workstream": "Native / QEMU / Release",
+  "primary_owner": "ROCK",
+  "source_comparison": {
+    "checked_unique_files": 36,
+    "changed_files": 0,
+    "files": [
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+        "prior_sha256": "2a221ff3240b5ad9ce77c5bfc1ec55f57fcf9d44527cbbd711f1315d505e0511",
+        "current_sha256": "2a221ff3240b5ad9ce77c5bfc1ec55f57fcf9d44527cbbd711f1315d505e0511",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/contracts/platform-api.json",
+        "prior_sha256": "8c590f30462d64cd6ba288764d90c6c4e31a98a2bfe407f5b3ce8eaaf7bcb057",
+        "current_sha256": "8c590f30462d64cd6ba288764d90c6c4e31a98a2bfe407f5b3ce8eaaf7bcb057",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/platform-core.md",
+        "prior_sha256": "eef6fb7dc393adc32a5798274a2904ca9524ca126f7f0492055c8fa46b164281",
+        "current_sha256": "eef6fb7dc393adc32a5798274a2904ca9524ca126f7f0492055c8fa46b164281",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/lib/workflow.ts",
+        "prior_sha256": "e11de6797e7175252a0c44b8d958afc65e54619888981a56d6b2fd4b411757df",
+        "current_sha256": "e11de6797e7175252a0c44b8d958afc65e54619888981a56d6b2fd4b411757df",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/tests/workflow.test.mjs",
+        "prior_sha256": "25dabfc40f61d9a124cf40df62c877cfc22a87492fc0507992bca2441e2e8a96",
+        "current_sha256": "25dabfc40f61d9a124cf40df62c877cfc22a87492fc0507992bca2441e2e8a96",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/core/src/main/java/dev/rock/core/Engine.java",
+        "prior_sha256": "cafb93138b029bf7353d8f146562bcab1b16cbd8e595dccf97a29b4d5502c884",
+        "current_sha256": "cafb93138b029bf7353d8f146562bcab1b16cbd8e595dccf97a29b4d5502c884",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
+        "prior_sha256": "496b826e66e1a7258b0d92e5a19c7f7a900ae7ea3499ef52628f911d44ddc82d",
+        "current_sha256": "496b826e66e1a7258b0d92e5a19c7f7a900ae7ea3499ef52628f911d44ddc82d",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/tool-sdk/src/main/java/dev/rock/sdk/ZemaToolPlan.java",
+        "prior_sha256": "ee0b76c4608abfa5ef4e9062c1d9fbb3a5ac7472d0c7f981d7fc6def9e6adfe7",
+        "current_sha256": "ee0b76c4608abfa5ef4e9062c1d9fbb3a5ac7472d0c7f981d7fc6def9e6adfe7",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+        "prior_sha256": "41821e6300656f73e164024b08c1950a6eac1bb5a859b98d28f3d68870db01f2",
+        "current_sha256": "41821e6300656f73e164024b08c1950a6eac1bb5a859b98d28f3d68870db01f2",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/mcp_broker/broker.py",
+        "prior_sha256": "c1332d6c6f8c0594dee102969f13ec2ba9be5c337541d9631a0d331a5dbf4cfa",
+        "current_sha256": "c1332d6c6f8c0594dee102969f13ec2ba9be5c337541d9631a0d331a5dbf4cfa",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/tests/test_mcp_broker_core.py",
+        "prior_sha256": "e422a7b4119eae694d0f6b67ca92bc3e4341ba656cd872033f32394d0ce28ade",
+        "current_sha256": "e422a7b4119eae694d0f6b67ca92bc3e4341ba656cd872033f32394d0ce28ade",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/tests/test_mcp_broker_lifecycle.py",
+        "prior_sha256": "506a64e5783d6664d523fd9dcd8d776b5caa13a12800530496205e7b49b5fb6b",
+        "current_sha256": "506a64e5783d6664d523fd9dcd8d776b5caa13a12800530496205e7b49b5fb6b",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/mcp_broker/runtime.py",
+        "prior_sha256": "ce0c55c6449deedf2f24564134b894445d61bffd5bb1888d56a1221beb25c673",
+        "current_sha256": "ce0c55c6449deedf2f24564134b894445d61bffd5bb1888d56a1221beb25c673",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/data-storage-boundaries.md",
+        "prior_sha256": "ccb66e33bd7c3e966b2c142ab2a40dce9b6eb8cdc7d5a5c4e75b83d7dd65562e",
+        "current_sha256": "ccb66e33bd7c3e966b2c142ab2a40dce9b6eb8cdc7d5a5c4e75b83d7dd65562e",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/src/blackberryrock/storage.py",
+        "prior_sha256": "727d47773af25eb593bad89583c92f4bca6531f49270338be0ba5acdc96a017f",
+        "current_sha256": "727d47773af25eb593bad89583c92f4bca6531f49270338be0ba5acdc96a017f",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/core/src/main/resources/schema.sql",
+        "prior_sha256": "9ddbd035294222a2de97d7bf8995010497f4e9e19408380331d6dcf1c311e496",
+        "current_sha256": "9ddbd035294222a2de97d7bf8995010497f4e9e19408380331d6dcf1c311e496",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/core/src/main/java/dev/rock/core/platform/EncryptedBackup.java",
+        "prior_sha256": "dff6a63abefff40744fdba1f26cb9c4b1015f940d27ccdc7fef219cc6de795d5",
+        "current_sha256": "dff6a63abefff40744fdba1f26cb9c4b1015f940d27ccdc7fef219cc6de795d5",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/update/rock_update.py",
+        "prior_sha256": "ab5722a3057d72699f135487bed26cd31a120a5e0254d6a5a497c3676275276a",
+        "current_sha256": "ab5722a3057d72699f135487bed26cd31a120a5e0254d6a5a497c3676275276a",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/data/qemu-release-audit.json",
+        "prior_sha256": "1cd76ed3b6aeafd2b6f37cf80da08af42eb54e53b5a29b98489eff521203d8c2",
+        "current_sha256": "1cd76ed3b6aeafd2b6f37cf80da08af42eb54e53b5a29b98489eff521203d8c2",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/rockstaros-1.0-architecture.md",
+        "prior_sha256": "e24c09574f1e90041fb9064a4c5ceac2744b71a1a96221937962de4b6bc4b9f4",
+        "current_sha256": "e24c09574f1e90041fb9064a4c5ceac2744b71a1a96221937962de4b6bc4b9f4",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/runner/README.md",
+        "prior_sha256": "3a6629fbcca9419a7f99edc2bd588bbe5914b046ab8c9285672418665696d384",
+        "current_sha256": "3a6629fbcca9419a7f99edc2bd588bbe5914b046ab8c9285672418665696d384",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/runner/executor.py",
+        "prior_sha256": "77bb7211065723af2f8d6a5845871e9fea734ad1b5ef3865db95c4d5268eb655",
+        "current_sha256": "77bb7211065723af2f8d6a5845871e9fea734ad1b5ef3865db95c4d5268eb655",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/registry/README.md",
+        "prior_sha256": "3695cc9ac83e636aa9601d913ef7ccc5c19b7191caa66161e00b550066a3f733",
+        "current_sha256": "3695cc9ac83e636aa9601d913ef7ccc5c19b7191caa66161e00b550066a3f733",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/registry/client.py",
+        "prior_sha256": "6f97583e0b2234d706dfee6d2c51fb5bdae668896b426fe0a002055f3c0551a8",
+        "current_sha256": "6f97583e0b2234d706dfee6d2c51fb5bdae668896b426fe0a002055f3c0551a8",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandVerifier.java",
+        "prior_sha256": "3d4b54d79d3d1cf6a2cef128e18a82d7d0b874869c13bb4715ded2f6118a081e",
+        "current_sha256": "3d4b54d79d3d1cf6a2cef128e18a82d7d0b874869c13bb4715ded2f6118a081e",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandExecutor.java",
+        "prior_sha256": "ec863f3c941096873328be6ae053e1193f3423901c15d948465f32dd6200490c",
+        "current_sha256": "ec863f3c941096873328be6ae053e1193f3423901c15d948465f32dd6200490c",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/contracts/decision-provider.json",
+        "prior_sha256": "c22c13fc7ee5528f3fc26ae0ce39ab53ffa11c5807bf8fd63ead08e1d899437d",
+        "current_sha256": "c22c13fc7ee5528f3fc26ae0ce39ab53ffa11c5807bf8fd63ead08e1d899437d",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/rockstaros-complete-design.md",
+        "prior_sha256": "5114f8a4ca0a7f540359b0e9ccd1ff424bc9ffe7195bffe147886c54e204c354",
+        "current_sha256": "5114f8a4ca0a7f540359b0e9ccd1ff424bc9ffe7195bffe147886c54e204c354",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/contracts/material-invention.json",
+        "prior_sha256": "0dee6901081924dcc4a800339acacc2c82553feb5e3f64c7d69ca914cd97ab6f",
+        "current_sha256": "0dee6901081924dcc4a800339acacc2c82553feb5e3f64c7d69ca914cd97ab6f",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/lib/material-invention.ts",
+        "prior_sha256": "2fe2842a7e8e9343876cd8c33d9a03bb3d1a836e23727d7a267eb1abfc3b8c8c",
+        "current_sha256": "2fe2842a7e8e9343876cd8c33d9a03bb3d1a836e23727d7a267eb1abfc3b8c8c",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/tests/material-invention.test.mjs",
+        "prior_sha256": "9f9e33161baf78dd44907713e4ab3688abeae3a39415206bda845ff43796ba85",
+        "current_sha256": "9f9e33161baf78dd44907713e4ab3688abeae3a39415206bda845ff43796ba85",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/public-release/rockstaros/packages/control-core/src/index.js",
+        "prior_sha256": "dd8eda15e08f82e2b7dd3c12253b31b89c92c93a92da1c6426057b147e59aad7",
+        "current_sha256": "dd8eda15e08f82e2b7dd3c12253b31b89c92c93a92da1c6426057b147e59aad7",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/public-release/rockstaros/packages/control-core/test/index.test.js",
+        "prior_sha256": "d9080baff8b7bdebcc74f6f222b3d506853ea8860b28cb6ec1ac51ed69efa522",
+        "current_sha256": "d9080baff8b7bdebcc74f6f222b3d506853ea8860b28cb6ec1ac51ed69efa522",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/public-release/rockstaros/packages/control-core/README.md",
+        "prior_sha256": "3056584f4863cd5c65e03103ccbf40661810b24964561915e0ebec83e3a68283",
+        "current_sha256": "3056584f4863cd5c65e03103ccbf40661810b24964561915e0ebec83e3a68283",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/README.md",
+        "prior_sha256": "c22bc3d89a5a6ab1a6ced187bb479af351fbfc182eede0cce78dd26a6213307c",
+        "current_sha256": "c22bc3d89a5a6ab1a6ced187bb479af351fbfc182eede0cce78dd26a6213307c",
+        "unchanged": true
+      },
+      {
+        "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/avocado-mini-tower20/README.md",
+        "prior_sha256": "0305aeb7f59ef735358ce3ede0cb9c7de8d681528af8d1a37e8d048d9b4377d5",
+        "current_sha256": "0305aeb7f59ef735358ce3ede0cb9c7de8d681528af8d1a37e8d048d9b4377d5",
+        "unchanged": true
+      }
+    ]
+  },
+  "local_sources": [
+    {
+      "id": "OS-L01",
+      "kind": "local_primary_source",
+      "title": "現在の製品基準・Git監査",
+      "scope": "現行名称、製品階層、現状・未完了境界。Git HEAD/cleanを今回読取。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/AGENTS.md",
+          "relative_path": "AGENTS.md",
+          "sha256": "df392abb53409d9d8ce5ec6c87eb3ff7b8534543d2fe749d797cf5f8720426e4"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/product-baseline.md",
+          "relative_path": "docs/product-baseline.md",
+          "sha256": "d6d3125169011481c06d7e8d8cc7234adf8b5d332cc88c52b54b6fe3f844d885"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/data/product-baseline.json",
+          "relative_path": "data/product-baseline.json",
+          "sha256": "4196955083e6e264549c80759a5c35654442467ba1f238157722d0868ddf0c10"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/README.md",
+          "relative_path": "README.md",
+          "sha256": "c22bc3d89a5a6ab1a6ced187bb479af351fbfc182eede0cce78dd26a6213307c"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/project.md",
+          "relative_path": "project.md",
+          "sha256": "3e80f4fb41db868deae1256d220ddf6e0863016718965c14f5949ecbd62ff954"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/data/project-status.json",
+          "relative_path": "data/project-status.json",
+          "sha256": "fa71b8945dea2b3b4491c2e533bfd4fd793794f78e3b50edee8135c20296d701"
+        }
+      ]
+    },
+    {
+      "id": "OS-L02",
+      "kind": "local_primary_source",
+      "title": "Linux/QEMU、rootfs更新と実装限界",
+      "scope": "ARM64 QEMU/Buildroot/Linux、rootfs A/B、public fixture key、kernel更新等未実装。過去の候補証拠は今回SHAの再試験ではない。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/rockstaros-1.0-architecture.md",
+          "relative_path": "docs/rockstaros-1.0-architecture.md",
+          "sha256": "e24c09574f1e90041fb9064a4c5ceac2744b71a1a96221937962de4b6bc4b9f4"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/update/README.md",
+          "relative_path": "systems/rock-star-os/os/update/README.md",
+          "sha256": "a354b7d67dee36ae68a1c4579e90d3d901b32608ea452769bec74b7f62ca8ff1"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/update/rock_update.py",
+          "relative_path": "systems/rock-star-os/os/update/rock_update.py",
+          "sha256": "ab5722a3057d72699f135487bed26cd31a120a5e0254d6a5a497c3676275276a"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/data/qemu-release-audit.json",
+          "relative_path": "data/qemu-release-audit.json",
+          "sha256": "1cd76ed3b6aeafd2b6f37cf80da08af42eb54e53b5a29b98489eff521203d8c2"
+        }
+      ]
+    },
+    {
+      "id": "OS-L03",
+      "kind": "local_primary_source",
+      "title": "Linux Platform IPCと起動サービス",
+      "scope": "Unix socket、peer UID、版・容量・操作検査、専用UIDとdata所有境界。colonyプロセスは新規設計で未実装。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/platform/service.py",
+          "relative_path": "systems/rock-star-os/os/platform/service.py",
+          "sha256": "3fa60f3239083fe749c423ab3906c7daf1843392c68705bdf754c2796cc53e30"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform",
+          "relative_path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform",
+          "sha256": "f5964fd3c4b19550a827fe5e63232e273d1e44509cf438d8386737ffcbf5e751"
+        }
+      ]
+    },
+    {
+      "id": "OS-L04",
+      "kind": "local_primary_source",
+      "title": "Android Platformの本人・署名・承認・復旧契約",
+      "scope": "現APK signer/UIDと承認拘束、schema/backup・再起動の範囲。colony機器認証、fullOS・flash受入は未成立。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/platform-core.md",
+          "relative_path": "docs/platform-core.md",
+          "sha256": "eef6fb7dc393adc32a5798274a2904ca9524ca126f7f0492055c8fa46b164281"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/contracts/platform-api.json",
+          "relative_path": "contracts/platform-api.json",
+          "sha256": "8c590f30462d64cd6ba288764d90c6c4e31a98a2bfe407f5b3ce8eaaf7bcb057"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+          "relative_path": "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+          "sha256": "2a221ff3240b5ad9ce77c5bfc1ec55f57fcf9d44527cbbd711f1315d505e0511"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/phone-preview-20260911.md",
+          "relative_path": "docs/phone-preview-20260911.md",
+          "sha256": "d4c8b3cf8f3fe8e1eee1f74a9138e39aad8a768ca90f1462563eda2ea6e8a3b1"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+          "relative_path": "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+          "sha256": "41821e6300656f73e164024b08c1950a6eac1bb5a859b98d28f3d68870db01f2"
+        }
+      ]
+    },
+    {
+      "id": "OS-L05",
+      "kind": "local_primary_source",
+      "title": "既存MCP Brokerの結果不明・再起動契約",
+      "scope": "単一writer、epoch、consent、送信claim、照合、fixture境界。既存moduleをcolony実装へ統合してはいない。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/mcp_broker/broker.py",
+          "relative_path": "systems/rock-star-os/os/mcp_broker/broker.py",
+          "sha256": "c1332d6c6f8c0594dee102969f13ec2ba9be5c337541d9631a0d331a5dbf4cfa"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/mcp_broker/runtime.py",
+          "relative_path": "systems/rock-star-os/os/mcp_broker/runtime.py",
+          "sha256": "ce0c55c6449deedf2f24564134b894445d61bffd5bb1888d56a1221beb25c673"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/public-release/rockstaros/packages/control-core/README.md",
+          "relative_path": "public-release/rockstaros/packages/control-core/README.md",
+          "sha256": "3056584f4863cd5c65e03103ccbf40661810b24964561915e0ebec83e3a68283"
+        }
+      ]
+    },
+    {
+      "id": "OS-L06",
+      "kind": "local_primary_source",
+      "title": "Workと保存の責任境界",
+      "scope": "active/review/completed/cancelled、sample非通過、revision/idempotency。各DBを同一DB扱いしない。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/lib/workflow.ts",
+          "relative_path": "lib/workflow.ts",
+          "sha256": "e11de6797e7175252a0c44b8d958afc65e54619888981a56d6b2fd4b411757df"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/data-storage-boundaries.md",
+          "relative_path": "docs/data-storage-boundaries.md",
+          "sha256": "ccb66e33bd7c3e966b2c142ab2a40dce9b6eb8cdc7d5a5c4e75b83d7dd65562e"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/core/src/main/resources/schema.sql",
+          "relative_path": "android/core/src/main/resources/schema.sql",
+          "sha256": "9ddbd035294222a2de97d7bf8995010497f4e9e19408380331d6dcf1c311e496"
+        }
+      ]
+    },
+    {
+      "id": "OS-L07",
+      "kind": "local_primary_source",
+      "title": "担当と本線統合の受入規則",
+      "scope": "ROCK担当と既存task、過去取込証拠の範囲。古いBlackBerryや固定課金記述は現product baselineで上書き済みとして扱う。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/workstreams/README.md",
+          "relative_path": "docs/workstreams/README.md",
+          "sha256": "373f0554befe4f93136f07ad1467cd21c408a90abc37327d482283de5a6656eb"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/workstreams/00-responsibility-boundaries.md",
+          "relative_path": "docs/workstreams/00-responsibility-boundaries.md",
+          "sha256": "638e422894c6e3ebc3df967dfb7886788bc61eb2ce25f912a8c38cf23c971a67"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/workstreams/06-native-qemu-release.md",
+          "relative_path": "docs/workstreams/06-native-qemu-release.md",
+          "sha256": "6f345d464644195c4f27ff7d9edd2b4206995b7f79102f15fc0ed928ee3c726d"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/native-os-integration.md",
+          "relative_path": "docs/native-os-integration.md",
+          "sha256": "3385e241ba8ff68342c766557563dbd1e4e6cc093ceaa949d2cc559c9cb37f1e"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/native-os-validation.md",
+          "relative_path": "docs/native-os-validation.md",
+          "sha256": "e6f0596e962ef522ec929121cf2d256e34770200bc11f24687f023f6cb525e5b"
+        }
+      ]
+    }
+  ],
+  "web_sources": [
+    {
+      "id": "OS-W01",
+      "kind": "official_documentation",
+      "title": "Buildroot User Manual",
+      "url": "https://buildroot.org/downloads/manual/manual.html",
+      "checked_at": "2026-09-24",
+      "supports": "Buildroot builds configured toolchain, packages, kernel/rootfs; target profile is separate from host platform.",
+      "design_use": "Existing Linux/Buildroot reference inheritance; no new completed target image claimed."
+    },
+    {
+      "id": "OS-W02",
+      "kind": "official_documentation",
+      "title": "Linux Kernel — Seccomp BPF",
+      "url": "https://docs.kernel.org/userspace-api/seccomp_filter.html",
+      "checked_at": "2026-09-24",
+      "supports": "Seccomp filters system calls and is not a complete sandbox by itself.",
+      "design_use": "Combine dedicated UID, namespaces, no_new_privs and resource/permission policies; new deployment requires acceptance."
+    },
+    {
+      "id": "OS-W03",
+      "kind": "official_documentation",
+      "title": "Linux Kernel — Control Group v2",
+      "url": "https://docs.kernel.org/admin-guide/cgroup-v2.html",
+      "checked_at": "2026-09-24",
+      "supports": "Resource controls include memory bounds; memory.max can trigger cgroup-local OOM.",
+      "design_use": "New ground profile design selection; isolate AI/general Tool resource groups from control-record services; numeric values await measurement."
+    },
+    {
+      "id": "OS-W04",
+      "kind": "official_documentation",
+      "title": "SQLite — Write-Ahead Logging",
+      "url": "https://www.sqlite.org/wal.html",
+      "checked_at": "2026-09-24",
+      "supports": "WAL assumes same-host shared memory, does not work over network filesystem, attached databases are not globally atomic; FULL syncs WAL at transaction commit.",
+      "design_use": "New local supervisor/telemetry DB default; not a change to existing databases or proof of physical power-loss survival."
+    }
+  ],
+  "current_vs_selected": {
+    "existing": "Linux/QEMU assets, UID/IPC, Work, SQLite, MCP unknown reconciliation, rootfs A/B; historical acceptance only in documented scope",
+    "selected_this_document": "ground Linux/Buildroot inheritance, proposed colony process/store/IPC split, cgroup v2 resource groups, versioned Device Profile, staged boot/stop/update/recovery and integration sequence",
+    "not_completed": "new integrated image, E3 target port, hardware safety isolation, production keys, redundant failover, realtime, flight, life support"
+  },
+  "legacy_priority_rule": "Current product-baseline v1.90 and rockstaros-1.0 architecture override older BlackBerry-first and legacy fixed-fee statements in native history."
+}

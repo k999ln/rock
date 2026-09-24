@@ -1,0 +1,239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rockstaros:icd:cargo-manifest:v1",
+  "title": "cargo-manifest / DESIGN SPECIFICATION ONLY",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "rockstaros.icd.cargo-manifest.v1"
+    },
+    "executionMode": {
+      "enum": [
+        "SIMULATION",
+        "HARDWARE_IN_LOOP",
+        "OPERATIONAL"
+      ]
+    },
+    "dataClass": {
+      "enum": [
+        "SYNTHETIC",
+        "MEASURED",
+        "ESTIMATED",
+        "REPLAY"
+      ]
+    },
+    "siteId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "nodeId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "messageId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "issuedAt": {
+      "type": "object",
+      "properties": {
+        "utcMs": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "monotonicMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bootId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+        },
+        "quality": {
+          "enum": [
+            "TRUSTED",
+            "DEGRADED",
+            "UNTRUSTED"
+          ]
+        },
+        "uncertaintyMs": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "utcMs",
+        "monotonicMs",
+        "bootId",
+        "quality",
+        "uncertaintyMs"
+      ],
+      "additionalProperties": false
+    },
+    "cargoId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "manifestRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "workId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "locationRef": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "state": {
+      "enum": [
+        "PLANNED",
+        "PACKED",
+        "LOADED",
+        "IN_TRANSIT",
+        "RECEIVED",
+        "QUARANTINED",
+        "ACCEPTED",
+        "INSTALLED",
+        "HOLD"
+      ]
+    },
+    "massKg": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "exclusiveMinimum": 0
+    },
+    "envelopeMm": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "y": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "z": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "required": [
+            "x",
+            "y",
+            "z"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "handlingProfileRef": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "acceptanceEvidenceRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+      },
+      "minItems": 0,
+      "maxItems": 128,
+      "uniqueItems": true
+    },
+    "configurationDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "executionMode",
+    "dataClass",
+    "siteId",
+    "nodeId",
+    "messageId",
+    "issuedAt",
+    "cargoId",
+    "manifestRevision",
+    "workId",
+    "locationRef",
+    "state",
+    "massKg",
+    "envelopeMm",
+    "handlingProfileRef",
+    "acceptanceEvidenceRefs",
+    "configurationDigest"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "PACKED",
+              "LOADED",
+              "IN_TRANSIT",
+              "RECEIVED",
+              "QUARANTINED",
+              "ACCEPTED",
+              "INSTALLED"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "massKg": {
+            "type": "number"
+          },
+          "envelopeMm": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "ACCEPTED",
+              "INSTALLED"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "acceptanceEvidenceRefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+            },
+            "minItems": 1,
+            "maxItems": 128,
+            "uniqueItems": true
+          }
+        }
+      }
+    }
+  ]
+}

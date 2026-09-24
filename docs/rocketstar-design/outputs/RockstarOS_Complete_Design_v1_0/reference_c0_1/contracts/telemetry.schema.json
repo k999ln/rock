@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rockstaros:colony:sim-only:telemetry:1",
+  "title": "RockstarOS Colony telemetry fixture / 1",
+  "description": "Synthetic scalar-power telemetry only. Null sampledAt denotes no step sample and is rejected for preparing commands. Bounds describe this fixture, not physical ratings or operating limits.",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "rockstaros-colony-telemetry/1"
+    },
+    "mode": {
+      "const": "SIM_ONLY"
+    },
+    "sourceClass": {
+      "const": "SYNTHETIC"
+    },
+    "siteId": {
+      "const": "sim-ground-01"
+    },
+    "nodeId": {
+      "const": "sim-utility-01"
+    },
+    "componentGeneration": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "stateRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "sampleSeq": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "sampledAt": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000000000000
+        }
+      ]
+    },
+    "clockTrusted": {
+      "type": "boolean"
+    },
+    "authorityEpoch": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "leaseExpiresAt": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1000000000000
+    },
+    "holderId": {
+      "enum": [
+        null,
+        "ops-A",
+        "ops-B"
+      ]
+    },
+    "supplyKw": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "criticalDemandKw": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "desiredFlexibleKw": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "actualFlexibleKw": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "criticalServedKw": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "criticalDeficitKw": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "state": {
+      "enum": [
+        "NOMINAL",
+        "LOCAL_HOLD",
+        "CURTAILED",
+        "CRITICAL_DEFICIT",
+        "CLOCK_UNTRUSTED"
+      ]
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "schema",
+    "mode",
+    "sourceClass",
+    "siteId",
+    "nodeId",
+    "componentGeneration",
+    "stateRevision",
+    "sampleSeq",
+    "sampledAt",
+    "clockTrusted",
+    "authorityEpoch",
+    "leaseExpiresAt",
+    "holderId",
+    "supplyKw",
+    "criticalDemandKw",
+    "desiredFlexibleKw",
+    "actualFlexibleKw",
+    "criticalServedKw",
+    "criticalDeficitKw",
+    "state",
+    "signature"
+  ],
+  "additionalProperties": false
+}

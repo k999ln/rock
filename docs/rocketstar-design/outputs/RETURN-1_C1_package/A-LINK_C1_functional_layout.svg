@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="501.27559055118115" height="267" preserveAspectRatio="xMinYMin meet" viewBox="0 0 501 267" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="501.27559055118115" height="267"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-267)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="0" y="249" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,498) scale(1,-1)">B-H1 / 配置を選定、寸法・性能は未確定</text>
+			<rect x="20" y="130" width="110" height="63" style="stroke: rgb(9%,19%,24%); stroke-linecap: butt; stroke-width: 1; fill: rgb(14%,27%,39%); fill-rule: evenodd;"/>
+			<path d="M 38.333333,130 L 38.333333,193 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 56.666667,130 L 56.666667,193 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 75,130 L 75,193 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 93.333333,130 L 93.333333,193 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 111.666667,130 L 111.666667,193 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 20,161 L 130,161 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<rect x="371" y="130" width="110" height="63" style="stroke: rgb(9%,19%,24%); stroke-linecap: butt; stroke-width: 1; fill: rgb(14%,27%,39%); fill-rule: evenodd;"/>
+			<path d="M 389.333333,130 L 389.333333,193 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 407.666667,130 L 407.666667,193 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 426,130 L 426,193 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 444.333333,130 L 444.333333,193 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 462.666667,130 L 462.666667,193 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 371,161 L 481,161 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 130,161 L 166,161 Z" style="stroke: rgb(9%,19%,24%); stroke-linecap: butt; stroke-width: 2;"/>
+			<path d="M 335,161 L 371,161 Z" style="stroke: rgb(9%,19%,24%); stroke-linecap: butt; stroke-width: 2;"/>
+			<rect x="194" y="205" width="113" height="20" style="stroke: rgb(9%,19%,24%); stroke-linecap: butt; stroke-width: 1; fill: rgb(74%,64%,47%); fill-rule: evenodd;"/>
+			<text x="234.0" y="212" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,424) scale(1,-1)">機器区画</text>
+			<rect x="166" y="121" width="169" height="85" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="211.5" y="165" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 11px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,330) scale(1,-1)">地球側の通信面</text>
+			<text x="210.0" y="147" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(38%,45%,49%); stroke:none;" transform="translate(0,294) scale(1,-1)">面積・分割数は未確定</text>
+			<text x="57.0" y="204" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,408) scale(1,-1)">太陽電池</text>
+			<text x="408.0" y="204" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,408) scale(1,-1)">太陽電池</text>
+			<text x="349.5" y="222" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,444) scale(1,-1)">宇宙側：放熱面</text>
+			<path d="M 250,121 L 250,90 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="250 90, 252.1748 94.50224, 247.8252 94.50224" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<text x="236.5" y="72" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,144) scale(1,-1)">地球へ</text>
+			<text x="0" y="40" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,80) scale(1,-1)">収納：展開物を折り畳んで保持。衛星放出後に展開・固定。</text>
+			<text x="0" y="22" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(38%,45%,49%); stroke:none;" transform="translate(0,44) scale(1,-1)">包絡・電力・熱・指向・分離を同じ構成で成立させる。</text>
+		</g>
+	</g>
+</svg>

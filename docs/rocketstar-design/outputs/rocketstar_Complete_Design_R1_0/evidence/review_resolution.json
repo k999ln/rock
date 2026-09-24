@@ -1,0 +1,6 @@
+{
+  "R-01": "Mass comparison explicitly limited to upper-stage two-segment illustration; not both-stage return validation.",
+  "R-02": "Added dedicated aero/flight-dynamics/GNC responsibility, model, and evidence section.",
+  "R-03": "Added pre-deorbit TPS state-evaluation requirement and unknown coverage treatment.",
+  "R-04": "Added stage power/energy/internal thermal/data/RF/CPU budgets; RDR-026 linked in mass closure."
+}

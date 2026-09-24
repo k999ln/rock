@@ -7,7 +7,9 @@
       "id": "MAT14",
       "title": "R5統合基本設計・PDF/Word・図面8組・計算・参考資料を欠落なく保存し、現行入口と履歴を整理（製造承認保留）",
       "status": "done",
-      "dependsOn": ["MAT12"],
+      "dependsOn": [
+        "MAT12"
+      ],
       "evidence": [
         "docs/avocado-mini-r5/README.md",
         "docs/avocado-mini-r5/package/package_manifest.json",
@@ -19,8 +21,12 @@
       "id": "MAT15",
       "title": "R5単体の裸眼空間表示・安全・精密3D入力を成立させ、収納/熱/電源/確定回路/加工図と実機受入を閉じる",
       "status": "planned",
-      "dependsOn": ["MAT14"],
-      "evidence": ["docs/avocado-mini-r5/package/integrated_design.md"]
+      "dependsOn": [
+        "MAT14"
+      ],
+      "evidence": [
+        "docs/avocado-mini-r5/package/integrated_design.md"
+      ]
     },
     {
       "id": "UXCHAR01",
@@ -98,6 +104,21 @@
         "docs/rockstaros-design-portal.md",
         "data/design-document-index.json",
         "scripts/check-design-document-index.mjs"
+      ]
+    },
+    {
+      "id": "DOC03",
+      "title": "rocketstar R1.0・衛星・OS付録・ボタン・生成元・旧版を原本と照合し、設計アーカイブと索引へ保存（製造/飛行未認定）",
+      "status": "done",
+      "dependsOn": [
+        "DOC02"
+      ],
+      "evidence": [
+        "docs/rocketstar-design/README.md",
+        "docs/rocketstar-design/inventory.json",
+        "docs/rocketstar-design/verification.json",
+        "scripts/verify-rocketstar-archive.py",
+        "data/design-document-index.json"
       ]
     },
     {

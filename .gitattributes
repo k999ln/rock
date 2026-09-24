@@ -11,3 +11,7 @@ systems/rock-star-os/os/desktop/browser/novnc/README.md -whitespace
 
 # Keep the final cue separator in the hash-bound original ASR transcript.
 docs/evidence/launch/cm/actual-final-whisper-base.srt whitespace=-blank-at-eof
+
+# Hash-bound task originals: preserve historical whitespace without rewriting.
+docs/rocketstar-design/outputs/** -whitespace
+docs/rocketstar-design/work/** -whitespace

@@ -1,0 +1,37 @@
+test_booting_short_is_not_replayed_after_ready (test_power_button.BehaviorTests.test_booting_short_is_not_replayed_after_ready) ... ok
+test_bounce_filter_emits_one_down_and_one_up (test_power_button.BehaviorTests.test_bounce_filter_emits_one_down_and_one_up) ... ok
+test_clock_reversal_cannot_extend_or_replay_gesture (test_power_button.BehaviorTests.test_clock_reversal_cannot_extend_or_replay_gesture) ... ok
+test_confirmation_while_holding_never_reboots (test_power_button.BehaviorTests.test_confirmation_while_holding_never_reboots) ... ok
+test_double_from_standby_is_one_home_action (test_power_button.BehaviorTests.test_double_from_standby_is_one_home_action) ... ok
+test_double_goes_home_without_transient_standby (test_power_button.BehaviorTests.test_double_goes_home_without_transient_standby) ... ok
+test_duplicate_down_does_not_reset_force_timer (test_power_button.BehaviorTests.test_duplicate_down_does_not_reset_force_timer) ... ok
+test_exact_double_deadline_is_two_single_gestures (test_power_button.BehaviorTests.test_exact_double_deadline_is_two_single_gestures) ... ok
+test_force_threshold_emits_once_and_does_not_claim_off (test_power_button.BehaviorTests.test_force_threshold_emits_once_and_does_not_claim_off) ... ok
+test_fresh_hold_during_booting_can_request_force_off (test_power_button.BehaviorTests.test_fresh_hold_during_booting_can_request_force_off) ... ok
+test_hold_during_click_suppression_still_has_emergency_path (test_power_button.BehaviorTests.test_hold_during_click_suppression_still_has_emergency_path) ... ok
+test_holding_past_three_does_not_run_normal_off_before_release (test_power_button.BehaviorTests.test_holding_past_three_does_not_run_normal_off_before_release) ... ok
+test_incomplete_long_has_no_short_fallback (test_power_button.BehaviorTests.test_incomplete_long_has_no_short_fallback) ... ok
+test_invalid_very_short_second_does_not_lose_first_single (test_power_button.BehaviorTests.test_invalid_very_short_second_does_not_lose_first_single) ... ok
+test_long_release_requests_shutdown_without_cutting_power (test_power_button.BehaviorTests.test_long_release_requests_shutdown_without_cutting_power) ... ok
+test_no_external_power_means_no_boot_action (test_power_button.BehaviorTests.test_no_external_power_means_no_boot_action) ... ok
+test_off_double_is_absorbed_even_if_host_is_ready_quickly (test_power_button.BehaviorTests.test_off_double_is_absorbed_even_if_host_is_ready_quickly) ... ok
+test_off_initial_press_starts_once_and_never_forces_off (test_power_button.BehaviorTests.test_off_initial_press_starts_once_and_never_forces_off) ... ok
+test_off_is_recorded_only_on_device_confirmation (test_power_button.BehaviorTests.test_off_is_recorded_only_on_device_confirmation) ... ok
+test_power_restore_with_held_button_needs_release_then_new_press (test_power_button.BehaviorTests.test_power_restore_with_held_button_needs_release_then_new_press) ... ok
+test_second_down_freezes_single_until_its_release (test_power_button.BehaviorTests.test_second_down_freezes_single_until_its_release) ... ok
+test_second_press_becoming_long_cancels_first_single (test_power_button.BehaviorTests.test_second_press_becoming_long_cancels_first_single) ... ok
+test_shutdown_ack_then_short_does_not_restart (test_power_button.BehaviorTests.test_shutdown_ack_then_short_does_not_restart) ... ok
+test_shutdown_has_no_automatic_force_timeout (test_power_button.BehaviorTests.test_shutdown_has_no_automatic_force_timeout) ... ok
+test_single_waits_for_double_window_and_then_enters_standby (test_power_button.BehaviorTests.test_single_waits_for_double_window_and_then_enters_standby) ... ok
+test_stale_duplicate_or_wrong_session_events_are_rejected (test_power_button.BehaviorTests.test_stale_duplicate_or_wrong_session_events_are_rejected) ... ok
+test_standby_single_resumes_without_capture (test_power_button.BehaviorTests.test_standby_single_resumes_without_capture) ... ok
+test_transition_origin_long_is_not_promoted_after_host_ready (test_power_button.BehaviorTests.test_transition_origin_long_is_not_promoted_after_host_ready) ... ok
+test_transition_origin_short_is_not_promoted_after_host_ready (test_power_button.BehaviorTests.test_transition_origin_short_is_not_promoted_after_host_ready) ... ok
+test_triple_click_does_not_toggle_after_double (test_power_button.BehaviorTests.test_triple_click_does_not_toggle_after_double) ... ok
+test_unstable_signal_is_not_a_press (test_power_button.BehaviorTests.test_unstable_signal_is_not_a_press) ... ok
+test_update_blocks_normal_gestures_but_not_fresh_emergency_hold (test_power_button.BehaviorTests.test_update_blocks_normal_gestures_but_not_fresh_emergency_hold) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 0.000s
+
+OK

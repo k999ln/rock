@@ -1,0 +1,106 @@
+{
+  "kind": "document and data integrity checks; not physical qualification",
+  "checks": [
+    {
+      "name": "master has all numbered chapters",
+      "passed": true
+    },
+    {
+      "name": "all current requirements appear in PDF",
+      "passed": true
+    },
+    {
+      "name": "all current interface identifiers appear in PDF",
+      "passed": true
+    },
+    {
+      "name": "no unresolved template tokens",
+      "passed": true
+    },
+    {
+      "name": "unique current identifiers",
+      "passed": true
+    },
+    {
+      "name": "all requirement chapter or group references resolve",
+      "passed": true
+    },
+    {
+      "name": "requirement JSON and CSV every field identical",
+      "passed": true
+    },
+    {
+      "name": "all requirement RDR links valid",
+      "passed": true
+    },
+    {
+      "name": "all interface RDR links valid",
+      "passed": true
+    },
+    {
+      "name": "all inherited RDR fields referenced by current requirements",
+      "passed": true
+    },
+    {
+      "name": "requirements not physically verified",
+      "passed": true
+    },
+    {
+      "name": "interfaces values remain open",
+      "passed": true
+    },
+    {
+      "name": "C3 state distribution preserved",
+      "passed": true
+    },
+    {
+      "name": "13 inherited payload interfaces",
+      "passed": true
+    },
+    {
+      "name": "no manufacturing or flight release",
+      "passed": true
+    },
+    {
+      "name": "open mission inputs remain explicit null",
+      "passed": true
+    },
+    {
+      "name": "all primary references appear in master",
+      "passed": true
+    },
+    {
+      "name": "current master image links resolve",
+      "passed": true
+    },
+    {
+      "name": "independent numeric comparison recorded",
+      "passed": true
+    },
+    {
+      "name": "historical copies byte-identical",
+      "passed": true
+    },
+    {
+      "name": "context source copies byte-identical",
+      "passed": true
+    },
+    {
+      "name": "PDF page count matches rendering record",
+      "passed": true
+    },
+    {
+      "name": "all final pages visually reviewed",
+      "passed": true
+    }
+  ],
+  "passed": 23,
+  "failed": 0,
+  "chapters": 35,
+  "pages": 44,
+  "requirements": 60,
+  "system_interfaces": 18,
+  "inherited_design_items": 40,
+  "inherited_payload_interfaces": 13,
+  "primary_sources": 13
+}

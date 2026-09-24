@@ -1,0 +1,16 @@
+{
+  "baselines": [
+    {
+      "path": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/outputs/rocketstar_C3_Integrated_Design_Baseline.pdf",
+      "sha256": "fccac9318d8754c525b5fd20e1f2498008d8c7bdf8ae7670f0c8210111e9e7b8",
+      "includedInThisPackage": false
+    },
+    {
+      "path": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/outputs/RockstarOS_Colony_C0_1/RockstarOS_Colony_C0_1_Integrated_Design.pdf",
+      "sha256": "541fa83563c858a080e44205c98d8809590673cdb028fa99e49c4239ec08ac30",
+      "includedInThisPackage": false
+    }
+  ],
+  "rocketC3OpenDesignItems": 28,
+  "operationalRelease": false
+}

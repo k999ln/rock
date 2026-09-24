@@ -1,0 +1,69 @@
+def begin(self, port: str) -> bool:
+        """
+        Initiates the serial connection to the RockBLOCK 9704
+        :param port: address of the serial port
+        :param baud: optional baud (recommend staying with default)
+        :return: boolean indicating success
+        """
+        self.connected = _rb.begin(port)
+        return self.connected
+
+def end(self) -> bool:
+        """
+        Terminates the serial connection to the RockBLOCK 9704
+        :return: boolean indicating success
+        """
+        self.connected = not _rb.end()
+        return not self.connected
+
+def poll(self):
+        """
+        Polls for responses from the modem for asynchronous functionality
+        """
+        return _rb.poll()
+
+def receive_message_async(self, topic: int = None) -> bytes | None:
+        """
+        Check asynchronously for messages sent to the RockBLOCK 9704
+        :param topic: optional to only get messages sent to this topic
+        :return: byte string message or None
+        """
+        if topic is None:
+            return _rb.receive_message_async()
+
+def acknowledge_receive_head_async(self) -> bool:
+        """
+        Acknowledges the head of the incoming message queue
+        :return: boolean indicating success
+        """
+        return _rb.acknowledge_receive_head_async()
+
+def receive_lock_async(self):
+        """
+        Locks the incoming message queue
+        """
+        return _rb.receive_lock_async()
+
+def send_lock_async(self):
+        """
+        Locks the outgoing message queue
+        """
+        return _rb.send_lock_async()
+
+def send_message_async(self, message: bytes, topic: int = None) -> bool | None:
+        """
+        Sends a message from the RockBLOCK 9704 asynchronously
+        :param message: bytes to send
+        :param topic: optional topic to send to (defaults to raw topic)
+        :return: boolean indicating success or None
+        """
+        if topic is not None:
+            return _rb.send_message_async(topic, message)
+
+def set_mo_message_complete_callback(self, mo_message_complete = None):
+        """
+        Register the user defined mo message complete callback in the library.
+        :param mo_message_complete: Callback that runs when a message has sent,
+        provides the message id and completion status.
+        """
+        return _rb.set_mo_message_complete_callback(mo_message_complete)
