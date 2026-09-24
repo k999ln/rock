@@ -2,15 +2,16 @@
 
 このページは、`k999ln/rock`の成果物を**製品・実装単位**から探す入口です。確定要望は[製品ベース](docs/product-baseline.md)、現在のtaskと完了条件は[進捗JSON](data/project-status.json)、設計の正本は[全設計ポータル](docs/rockstaros-design-portal.md)を参照してください。ここに書くディレクトリの存在は、実機・本番・販売の受入完了を意味しません。
 
-## 利用者に見える製品
+## 製品・独立した構想
 
 | プロジェクト | 役割 | 最初に開くもの | 実装・素材の場所 |
 | --- | --- | --- | --- |
 | **avocadoMini** | Tower20 E3の製品構想と専用サイト | [現行E3設計](docs/avocado-mini-tower20-e3/README.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) | [`sites/avocado-mini/`](sites/avocado-mini/)・[`docs/avocado-mini-tower20-e3/`](docs/avocado-mini-tower20-e3/) |
+| **Rocket Star** | avocadoMiniとRockstarOSへ接続する軌道通信の構想。資金受付は準備中 | [構想ページ](sites/avocado-mini/rocket-star/index.html)・[衛星通信の設計追補](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) | [`sites/avocado-mini/rocket-star/`](sites/avocado-mini/rocket-star/)・[`sites/avocado-mini/public/images/`](sites/avocado-mini/public/images/) |
 | **RockstarOS** | AIネイティブOSの共通基盤と配布候補 | [OS全体詳細設計](docs/rockstaros-complete-design.md)・[構成と現在地](docs/system-composition.md) | [`systems/rock-star-os/`](systems/rock-star-os/)・[`contracts/`](contracts/)・[`public-release/rockstaros/`](public-release/rockstaros/) |
 | **Webアプリ** | Home、Sky、Zema、Wallet、Studioを一つのWeb/PWAとして提供 | [製品・サービス関係図](docs/rockstaros-product-system-map.md)・[Web担当作業](docs/workstreams/05-web-pwa-sites.md) | [`app/`](app/)・[`components/`](components/)・[`lib/`](lib/)・[`db/`](db/)・[`drizzle/`](drizzle/) |
 
-Sky、Zema、Wallet、Material Invention StudioはWebアプリとOS内で使うサービスです。各画面の名称だけで独立した配備物やGitリポジトリを増やしません。avocadoMiniの旧P0.2、Mini200 E1/E2は[現行E3設計](docs/avocado-mini-tower20-e3/README.md)と区別して設計履歴として保持します。
+Rocket Starの`/rocket-star/`はavocadoMiniサイト内の専用ページであり、衛星・受信機・通信網の実装や資金受付の完了を示しません。Sky、Zema、Wallet、Material Invention StudioなどはWebアプリとOS内で使うサービスです。各画面の名称だけで独立した配備物やGitリポジトリを増やしません。avocadoMiniの旧P0.2、Mini200 E1/E2は[現行E3設計](docs/avocado-mini-tower20-e3/README.md)と区別して設計履歴として保持します。
 
 | Web/OS内のサービス | 主なソース | 設計・担当の入口 |
 | --- | --- | --- |
@@ -18,6 +19,10 @@ Sky、Zema、Wallet、Material Invention StudioはWebアプリとOS内で使う�
 | **Zema** — 依頼、進捗、承認、停止、成果 | [`app/chat/`](app/chat/)・[`components/zema-home-workspace.tsx`](components/zema-home-workspace.tsx)・[`lib/zema-chat-session.ts`](lib/zema-chat-session.ts) | [Platform Core](docs/platform-core.md)・[Product / UX](docs/workstreams/01-product-ux.md) |
 | **Wallet** — 費用と確認済み収益 | [`app/wallet/`](app/wallet/)・[`lib/rock-wallet.ts`](lib/rock-wallet.ts) | [Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
 | **Material Invention Studio** — 発明候補の操作・比較 | [`app/studio/`](app/studio/)・[`lib/material-invention.ts`](lib/material-invention.ts)・[`contracts/material-invention.json`](contracts/material-invention.json) | [Material Invention Core](docs/material-invention-core.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) |
+| **Market / Polymarket** — 市場の検討とPAPER試験 | [`app/market/`](app/market/)・[`app/polymarket/`](app/polymarket/) | [Game / Market / Fund](docs/workstreams/08-game-market-fund.md)・[市場検討](docs/market-exploration-20260909.md) |
+| **Fund** — 検証済み実績に基づく構想と試算 | [`app/fund/`](app/fund/)・[`lib/rock-wallet.ts`](lib/rock-wallet.ts) | [Game / Market / Fund](docs/workstreams/08-game-market-fund.md)・[ファンド統合](docs/markets-fund-integration-20260913.md) |
+| **CSV業務** — データ整形の事業pilot | [`app/csv/`](app/csv/) | [Business Pilots](docs/workstreams/09-business-pilots.md)・[CSV業務](docs/csv-business-v1.ja.md) |
+| **メルカリ収益ループ** — 出品から入金確認までの事業pilot | [`app/income/mercari/`](app/income/mercari/)・[`lib/mercari-revenue.ts`](lib/mercari-revenue.ts) | [Business Pilots](docs/workstreams/09-business-pilots.md)・[メルカリ設計](docs/mercari-revenue-loop.md) |
 
 ## 実装・配備単位
 
@@ -31,6 +36,7 @@ Sky、Zema、Wallet、Material Invention StudioはWebアプリとOS内で使う�
 | **Sky Tool SDK** | Tool作者向けのpackage、サンプル、契約 | [`toolkits/sky-tool-sdk/`](toolkits/sky-tool-sdk/) | [SDK README](toolkits/sky-tool-sdk/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
 | **Sky MCP Connector** | MCP接続先と権限を管理する独立connector | [`toolkits/sky-mcp-connector/`](toolkits/sky-mcp-connector/) | [Connector README](toolkits/sky-mcp-connector/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
 | **Fashion Brand Ops** | 受注型ブランド運営の独立MCPサービス | [`toolkits/fashion-brand-ops/`](toolkits/fashion-brand-ops/) | [README](toolkits/fashion-brand-ops/README.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
+| **Game SDK / Sandbox** | 非金融ゲームの接続と、資産交換を分けた試験 | [`systems/rock-star-os/examples/game/`](systems/rock-star-os/examples/game/) | [Game API契約](docs/game-api-contract-draft.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **Mr. Tool adapter** | `Mr.`の固定原本をSkyへ接続するRock側の実装 | [`toolkits/mr/`](toolkits/mr/) | [README](toolkits/mr/README.md)・[Mr.取り込み](docs/mr-integration.md) |
 | **Polymarket Bot Sandbox** | 外部市場を動かさないPAPER試作 | [`toolkits/polymarket-bot-sandbox/`](toolkits/polymarket-bot-sandbox/) | [README](toolkits/polymarket-bot-sandbox/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **Rockstar Ledger** | 台帳の個別Tool資料 | [`toolkits/rockstar-ledger/`](toolkits/rockstar-ledger/) | [README](toolkits/rockstar-ledger/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |

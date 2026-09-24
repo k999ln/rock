@@ -2,7 +2,7 @@
 
 ## 2026-09-24 — プロジェクト別の入口を整備
 
-主担当Git / CI / Operationsの`ROCK`として、製品・実装・配備単位の入口を[`PROJECTS.md`](PROJECTS.md)に集約した。avocadoMini、RockstarOS、Webアプリ、Linux/QEMU、Android/Pixel、独立WorkerとToolのソース、設計、担当workstreamを対応付け、READMEと作業分野別案内から辿れるようにした。Sky、Zema、Walletは共通Web/OSの内側にあること、`public-release`は配布候補、`vendor/mr`は固定原本であることを明記した。既存ソースの移動や製品状態の変更はしていない。相対リンクの存在、`git diff --check`、`npm run project:check`、`repository:check`、`baseline:check`、`design:check`を確認した。`npm run verify`は型検査と製品lintまで通過したが、Node全体試験が出力を止めたため中断し、全体PASSとは記録しない。次は本PRのレビュー後に必要なCI結果を確認する。
+主担当Git / CI / Operationsの`ROCK`として、製品・実装・配備単位の入口を[`PROJECTS.md`](PROJECTS.md)に集約した。avocadoMini、Rocket Star構想、RockstarOS、Webアプリ内のSky／Zema／Wallet／Market／Fund／CSV、Linux/QEMU、Android/Pixel、独立WorkerとToolのソース、設計、担当workstreamを対応付け、READMEと作業分野別案内から辿れるようにした。Rocket StarはavocadoMiniサイト内の専用構想ページであり、衛星通信や資金受付の完成と区別した。`public-release`は配布候補、`vendor/mr`は固定原本であることを明記した。既存ソースの移動や製品状態の変更はしていない。相対リンクの存在、`git diff --check`、`npm run project:check`、`repository:check`、`baseline:check`、`design:check`を確認した。`npm run verify`は型検査と製品lintまで通過したが、Node全体試験が出力を止めたため中断し、全体PASSとは記録しない。次は本PRのレビュー後に必要なCI結果を確認する。
 
 ## 2026-09-23 — Tower20 E3の回転画像を透過素材へ変更
 
