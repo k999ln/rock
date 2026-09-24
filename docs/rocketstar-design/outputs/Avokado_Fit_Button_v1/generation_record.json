@@ -1,0 +1,13 @@
+{
+  "id": "AVO-PWR-FIT-01",
+  "date": "2026-09-24",
+  "tool": "built-in image_gen.imagegen",
+  "promptFile": "generation_prompt.txt",
+  "referenceImage": "pear_shape_reference.png",
+  "generatedImage": "fit_button_concept.png",
+  "referenceRole": "Shape and silver material only; domed volume replaced by coplanar face",
+  "visualReview": "Pear and stem retained; flush silver surface; close-up plus grazing angle; no full-device placement claimed",
+  "physicalValidationPerformed": false,
+  "supersedes": "Power-button shape only; addendum to E3 reference design",
+  "originalSourceDocumentsModified": false
+}

@@ -1,0 +1,49 @@
+{
+  "schema": "avocado-mini-r5-document-save/1",
+  "recordedAt": "2026-09-24",
+  "baseCommit": "0eb4fe48b1e7309e838b0441954d97e22272b4ca",
+  "concurrentMainIntegrated": "0adb6f84c25a284c650ccbec4baa511c41b0705a",
+  "scope": "R5 design package preservation and repository navigation; not hardware or runtime acceptance",
+  "authority": "User requested all R5 deliverables saved to k999ln/rock",
+  "sourcePackage": {
+    "filesIncludingManifest": 27,
+    "hashedPayloadFiles": 26,
+    "pdfPages": 51,
+    "drawingPairs": 8,
+    "referenceIndexEntries": 36,
+    "zipSha256": "cf8256ceebe40f796d2f324cfc519a291d53b81867be043e8844fb9d6bc3a1f5",
+    "originalDeliveredBytesPreserved": true,
+    "knownSecretAndPrivatePathScan": "no_findings_in_payload_text_metadata_and_links; not_an_absolute_guarantee",
+    "allPdfPagesVisuallyReviewed": true
+  },
+  "checks": {
+    "packageIntegrity": "passed_26_hashes_27_zip_members_8_drawing_pairs_36_reference_entries",
+    "calculationAndDecisionChecks": "14_passed_and_reproduced_in_repository; not_physical_acceptance",
+    "project": "passed",
+    "databaseStatus": "passed_generated_document_status_only",
+    "baseline": "passed_including_preserved_legacy_boundaries",
+    "designIndex": "passed_17_domains_34_tools_6_native_components",
+    "targetedTests": "22_passed_database_status_version_boundaries_product_baseline_project_phase_gates_E1_R5",
+    "localLinks": "1216_local_references_in_20_changed_markdown_files_exist; progress_anchor_present",
+    "diffWhitespace": "7_original_EOF_blank_lines_preserved_for_byte_identity; edited_files_passed",
+    "fullVerify": {
+      "command": "npm run verify",
+      "result": "passed_exit_0_after_concurrent_main_integration",
+      "environment": "macOS_Node_v26.0.0_local_test_network_allowed",
+      "nodeTests": "360/360",
+      "additionalTests": "19/19",
+      "localApiAssertions": 149,
+      "build": "passed_local_only_not_deployed",
+      "webAssetReferences": "84_checked_0_missing",
+      "retryNotes": "Sandbox-local D1 startup stalled; the same 18 tests passed with local networking. Legacy E1 landing/E3-current assertions were updated to archived/current scope. One intermediate MCP test run did not terminate; isolated retry and final full run passed.",
+      "githubCi": "separate_same_commit_check_not_claimed_by_this_record"
+    }
+  },
+  "manufacturingReleased": false,
+  "physicalTests": 0,
+  "runtimeChanged": false,
+  "publicSiteDeployed": false,
+  "osImagePublished": false,
+  "paymentsOrExternalServicesChanged": false,
+  "remotePublicationEvidence": "Git commit and remote ref, checked after publication; not self-certified by this file"
+}

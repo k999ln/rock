@@ -1,0 +1,68 @@
+{
+  "id": "AVO-PWR-BEHAVIOR-01",
+  "version": "1.0",
+  "date": "2026-09-24",
+  "status": "DESIGN_SELECTED_BEHAVIOR_MODEL_TESTED",
+  "appliesTo": "avokado E3 Edge Hub fit power button",
+  "hardwareQualified": false,
+  "supersedes": {
+    "source": "../Avokado_Fit_Button_v1/button_spec.json",
+    "fields": [
+      "electricalBehavior",
+      "powerRouting",
+      "openPhysicalParameters: Press-duration behavior with selected firmware/OS"
+    ],
+    "preserved": "Pear-shaped silver flush mechanical face and inward travel"
+  },
+  "powerArchitecture": "Always-on controller; ON pulse to mainboard, normal off via OS, forced off via independent main-power cutoff request. No direct raw-contact mapping to motherboard PWRBTN#.",
+  "timingsMs": {
+    "debounceStable": 30,
+    "shortPressMin": 50,
+    "shortPressMax": 500,
+    "doubleWindowExclusive": 350,
+    "normalOffLongHold": 3000,
+    "forceOffHold": 10000,
+    "extraTapQuietPeriod": 350,
+    "postPowerOnReleaseClickInhibit": 1000,
+    "osEventMaxAge": 2000,
+    "osRequestAckTarget": 1000,
+    "shutdownProgressWarning": 30000
+  },
+  "timingMeaning": "All gesture intervals use controller monotonic time after qualification. Chosen design thresholds, not measured board timing; forceOffHold is request issue time, not confirmed voltage collapse.",
+  "gestures": {
+    "single": "RUNNING->USER_STANDBY; USER_STANDBY->RUNNING with input OFF",
+    "double": "Show home, or lock screen if locked; pause local interactive input, do not toggle standby first",
+    "normalLong": "Release after >=3000ms and <10000ms: request orderly shutdown",
+    "forceLong": "At >=10000ms held from powered state: latch force-off request once without OS; no normal-off request on release"
+  },
+  "offBehavior": "A qualified press from OFF starts one boot request. Consume this press until released, including its long hold. Absorb subsequent short taps for 1000ms after release, and ignore while BOOTING.",
+  "standbyMeaning": "Product-level standby, not ACPI S3/S4/S0ix. OS, allowed background work, local network and records remain powered. Camera/mic logical input and interactive tickets stopped.",
+  "inputRestore": "Power-on, standby exit and double-click home never re-enable camera/microphone capture automatically.",
+  "states": [
+    "NO_POWER",
+    "OFF",
+    "BOOTING",
+    "RUNNING",
+    "USER_STANDBY",
+    "SHUTTING_DOWN",
+    "UPDATING"
+  ],
+  "transitionRules": {
+    "BOOTING": "Short/double/normal long ignored; a fresh new 10s hold can request forced off",
+    "SHUTTING_DOWN": "Short/double/normal long ignored; new 10s hold available; no timed automatic force-off",
+    "UPDATING": "Short/double/normal long ignored; 10s independent force-off still available",
+    "NO_POWER": "No action; restoration alone does not boot; held input needs release and a new press"
+  },
+  "confirmation": "BOOT_REQUEST and FORCE_OFF_REQUEST do not prove power state. Use qualified board/power sensing. PLED alone is insufficient.",
+  "physicalOpen": [
+    "Always-on controller and supply parts",
+    "Main power switch ratings, inrush, reverse-current blocking and discharge",
+    "Board power-state sensing",
+    "PWRBTN# interface, pulse width, startup wait and restore-AC settings",
+    "Independent status LED drivers",
+    "Timing under oscillator error/watchdog/controller reset",
+    "Mechanical switch life, force and travel"
+  ],
+  "modelScope": "Qualified-edge gesture parsing, state intent, event freshness and duplicates. No actual MCU firmware, GPIO, real OS shutdown, filesystem durability or power cutoff.",
+  "modelTestCount": 32
+}

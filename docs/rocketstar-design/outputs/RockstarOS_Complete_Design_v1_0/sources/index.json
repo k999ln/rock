@@ -1,0 +1,495 @@
+{
+  "date": "2026-09-24",
+  "sources": [
+    {
+      "id": "NS-S1",
+      "title": "IETF RFC 8446 — TLS 1.3",
+      "url": "https://www.rfc-editor.org/rfc/rfc8446",
+      "facts": [
+        "証明書による相互認証を構成できる",
+        "0-RTTは固有の再送攻撃対策を要し、アプリ再実行は別に扱う"
+      ],
+      "design_use": "地上IP経路のmTLS候補、状態変更APIの0-RTT禁止",
+      "limits": "具体PKI、証明書期間、認可、実機対応は本設計の選択"
+    },
+    {
+      "id": "NS-S2",
+      "title": "W3C Web Authentication Level 2",
+      "url": "https://www.w3.org/TR/webauthn-2/",
+      "facts": [
+        "公開鍵認証器による認証と利用者検証を扱う"
+      ],
+      "design_use": "現地の人認証候補",
+      "limits": "WebAuthn成功そのものを対象設備操作の承認としない。人台帳、認証器導入、復旧、期限は設計要素"
+    },
+    {
+      "id": "NS-S3",
+      "title": "IETF RFC 9200 — ACE-OAuth",
+      "url": "https://www.rfc-editor.org/rfc/rfc9200.html",
+      "facts": [
+        "トークンと鍵を結び付けるPoPを定義",
+        "受信資源側がscopeとaudienceを含む要求の許可を検査する"
+      ],
+      "design_use": "主体鍵、対象、操作、期限を限定するcapability候補",
+      "limits": "本書のフィールド、TTL、回数上限、leaseは地上参照ポリシー。ACE相互運用実装済みではない"
+    },
+    {
+      "id": "NS-S4",
+      "title": "IETF RFC 9019 — Firmware Update Architecture for IoT",
+      "url": "https://www.rfc-editor.org/rfc/rfc9019",
+      "facts": [
+        "更新の信頼アンカーと保護されたストアを扱う"
+      ],
+      "design_use": "OTA署名の検証器・信頼ルートを運用認証から分離する設計",
+      "limits": "鍵分離・二者確認・運用窓は本計画の選択。既存E3の署名起動合格を示さない"
+    },
+    {
+      "id": "NS-S5",
+      "title": "IETF RFC 8915 — Network Time Security",
+      "url": "https://www.rfc-editor.org/rfc/rfc8915",
+      "facts": [
+        "NTPクライアント/サーバー間の時刻同期に認証・再送検出を提供する"
+      ],
+      "design_use": "地上時刻同期候補",
+      "limits": "時刻の物理的正確さ、2秒/24時間閾値、保護RTCと起動時復旧は本書の別設計"
+    },
+    {
+      "id": "NS-S6",
+      "title": "IETF RFC 9171 — Bundle Protocol Version 7",
+      "url": "https://www.rfc-editor.org/rfc/rfc9171",
+      "facts": [
+        "断続・遅延を伴うネットワークの蓄積転送オーバーレイ",
+        "収束層と経路計算の全てをこの文書が定義するわけではない"
+      ],
+      "design_use": "外部断続配送の候補",
+      "limits": "RF性能、経路保証、設備実行確認、キューの割当は規定しない",
+      "updates": [
+        {
+          "title": "RFC 9713 — Administrative Record Types Registry",
+          "url": "https://www.rfc-editor.org/rfc/rfc9713"
+        },
+        {
+          "title": "RFC 9758 — Updates to the ipn URI Scheme",
+          "url": "https://www.rfc-editor.org/rfc/rfc9758"
+        }
+      ]
+    },
+    {
+      "id": "NS-S7",
+      "title": "IETF RFC 9172 / 9173 — BPSec and Default Security Contexts",
+      "url": "https://www.rfc-editor.org/rfc/rfc9172",
+      "related_urls": [
+        "https://www.rfc-editor.org/rfc/rfc9173"
+      ],
+      "facts": [
+        "BPSecはBIBとBCBによるブロック保護を扱う",
+        "鍵管理は別のネットワーク管理要素",
+        "既定文脈としてBIB-HMAC-SHA2とBCB-AES-GCMを定義"
+      ],
+      "design_use": "配送保護候補。共有MACと非対称の承認/結果署名を分離",
+      "limits": "鍵配布、操作認可、個人認証、実装適合は未完"
+    },
+    {
+      "id": "NS-S8",
+      "title": "IETF RFC 9052 — COSE Structures and Process",
+      "url": "https://www.rfc-editor.org/rfc/rfc9052.html",
+      "facts": [
+        "CBORで署名・MAC・暗号化の構造と処理を定義",
+        "COSE_Sign1は単一署名構造"
+      ],
+      "design_use": "保存転送するアプリ包絡の非対称署名候補",
+      "limits": "アルゴリズム組合せと信頼管理は用途プロファイルで別途固定する。SIMの独自HMACをCOSE適合としない"
+    },
+    {
+      "id": "NS-L1",
+      "title": "RockstarOS Colony C0.1 local baseline",
+      "paths": [
+        "outputs/RockstarOS_Colony_C0_1/RockstarOS_Colony_C0_1_Integrated_Design.md",
+        "outputs/RockstarOS_Colony_C0_1/contracts/README.md",
+        "outputs/RockstarOS_Colony_C0_1/runtime/colony_core/core.py",
+        "outputs/RockstarOS_Colony_C0_1/README.md"
+      ],
+      "facts": [
+        "公開HMACとactor文字列はSIM fixtureで認証ではない",
+        "APPLIEDは模擬希望値の保存で物理的完了ではない",
+        "UNCERTAINはexecuteを自動再送しない"
+      ]
+    },
+    {
+      "id": "NS-L2",
+      "title": "avocadoMini Tower20 E3 OS and hardware design",
+      "paths": [
+        "/Users/kaiya/Documents/Codex/2026-09-20/mo/outputs/avocadoMini_Tower20_E3_package/os_design.md",
+        "/Users/kaiya/Documents/Codex/2026-09-20/mo/outputs/avocadoMini_Tower20_E3_package/hardware_design.md"
+      ],
+      "facts": [
+        "4本のMotion Towerと別体Edge Hub",
+        "通信・認証・保存・音声をHubへ集約",
+        "USB serialは暗号学的機器認証ではない",
+        "原音は既定で保存/外部送信なし、MIC OFFでバッファとticketを失効",
+        "秘密値をAI contextへ渡さずTPM保護は実機適合までHOLD"
+      ]
+    },
+    {
+      "id": "NS-L3",
+      "title": "rocketstar C3 / A-LINK E3 boundary",
+      "paths": [
+        "outputs/rocketstar_C3_package/rocketstar_C3_Integrated_Design_Baseline.md"
+      ],
+      "facts": [
+        "E3へ更新し旧Mini200の電力/収納を流用しない",
+        "A-LINKとIridium/9704は別の経路",
+        "初期2機は全球常時接続を示さずRF方式と地上局は未確定",
+        "flight softwareと端末通信を分離"
+      ]
+    },
+    {
+      "id": "OS-W01",
+      "kind": "official_documentation",
+      "title": "Buildroot User Manual",
+      "url": "https://buildroot.org/downloads/manual/manual.html",
+      "checked_at": "2026-09-24",
+      "supports": "Buildroot builds configured toolchain, packages, kernel/rootfs; target profile is separate from host platform.",
+      "design_use": "Existing Linux/Buildroot reference inheritance; no new completed target image claimed."
+    },
+    {
+      "id": "OS-W02",
+      "kind": "official_documentation",
+      "title": "Linux Kernel — Seccomp BPF",
+      "url": "https://docs.kernel.org/userspace-api/seccomp_filter.html",
+      "checked_at": "2026-09-24",
+      "supports": "Seccomp filters system calls and is not a complete sandbox by itself.",
+      "design_use": "Combine dedicated UID, namespaces, no_new_privs and resource/permission policies; new deployment requires acceptance."
+    },
+    {
+      "id": "OS-W03",
+      "kind": "official_documentation",
+      "title": "Linux Kernel — Control Group v2",
+      "url": "https://docs.kernel.org/admin-guide/cgroup-v2.html",
+      "checked_at": "2026-09-24",
+      "supports": "Resource controls include memory bounds; memory.max can trigger cgroup-local OOM.",
+      "design_use": "New ground profile design selection; isolate AI/general Tool resource groups from control-record services; numeric values await measurement."
+    },
+    {
+      "id": "OS-W04",
+      "kind": "official_documentation",
+      "title": "SQLite — Write-Ahead Logging",
+      "url": "https://www.sqlite.org/wal.html",
+      "checked_at": "2026-09-24",
+      "supports": "WAL assumes same-host shared memory, does not work over network filesystem, attached databases are not globally atomic; FULL syncs WAL at transaction commit.",
+      "design_use": "New local supervisor/telemetry DB default; not a change to existing databases or proof of physical power-loss survival."
+    },
+    {
+      "id": "OS-L01",
+      "kind": "local_primary_source",
+      "title": "現在の製品基準・Git監査",
+      "scope": "現行名称、製品階層、現状・未完了境界。Git HEAD/cleanを今回読取。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/AGENTS.md",
+          "relative_path": "AGENTS.md",
+          "sha256": "df392abb53409d9d8ce5ec6c87eb3ff7b8534543d2fe749d797cf5f8720426e4"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/product-baseline.md",
+          "relative_path": "docs/product-baseline.md",
+          "sha256": "d6d3125169011481c06d7e8d8cc7234adf8b5d332cc88c52b54b6fe3f844d885"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/data/product-baseline.json",
+          "relative_path": "data/product-baseline.json",
+          "sha256": "4196955083e6e264549c80759a5c35654442467ba1f238157722d0868ddf0c10"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/README.md",
+          "relative_path": "README.md",
+          "sha256": "c22bc3d89a5a6ab1a6ced187bb479af351fbfc182eede0cce78dd26a6213307c"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/project.md",
+          "relative_path": "project.md",
+          "sha256": "3e80f4fb41db868deae1256d220ddf6e0863016718965c14f5949ecbd62ff954"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/data/project-status.json",
+          "relative_path": "data/project-status.json",
+          "sha256": "fa71b8945dea2b3b4491c2e533bfd4fd793794f78e3b50edee8135c20296d701"
+        }
+      ]
+    },
+    {
+      "id": "OS-L02",
+      "kind": "local_primary_source",
+      "title": "Linux/QEMU、rootfs更新と実装限界",
+      "scope": "ARM64 QEMU/Buildroot/Linux、rootfs A/B、public fixture key、kernel更新等未実装。過去の候補証拠は今回SHAの再試験ではない。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/rockstaros-1.0-architecture.md",
+          "relative_path": "docs/rockstaros-1.0-architecture.md",
+          "sha256": "e24c09574f1e90041fb9064a4c5ceac2744b71a1a96221937962de4b6bc4b9f4"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/update/README.md",
+          "relative_path": "systems/rock-star-os/os/update/README.md",
+          "sha256": "a354b7d67dee36ae68a1c4579e90d3d901b32608ea452769bec74b7f62ca8ff1"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/update/rock_update.py",
+          "relative_path": "systems/rock-star-os/os/update/rock_update.py",
+          "sha256": "ab5722a3057d72699f135487bed26cd31a120a5e0254d6a5a497c3676275276a"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/data/qemu-release-audit.json",
+          "relative_path": "data/qemu-release-audit.json",
+          "sha256": "1cd76ed3b6aeafd2b6f37cf80da08af42eb54e53b5a29b98489eff521203d8c2"
+        }
+      ]
+    },
+    {
+      "id": "OS-L03",
+      "kind": "local_primary_source",
+      "title": "Linux Platform IPCと起動サービス",
+      "scope": "Unix socket、peer UID、版・容量・操作検査、専用UIDとdata所有境界。colonyプロセスは新規設計で未実装。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/platform/service.py",
+          "relative_path": "systems/rock-star-os/os/platform/service.py",
+          "sha256": "3fa60f3239083fe749c423ab3906c7daf1843392c68705bdf754c2796cc53e30"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform",
+          "relative_path": "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform",
+          "sha256": "f5964fd3c4b19550a827fe5e63232e273d1e44509cf438d8386737ffcbf5e751"
+        }
+      ]
+    },
+    {
+      "id": "OS-L04",
+      "kind": "local_primary_source",
+      "title": "Android Platformの本人・署名・承認・復旧契約",
+      "scope": "現APK signer/UIDと承認拘束、schema/backup・再起動の範囲。colony機器認証、fullOS・flash受入は未成立。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/platform-core.md",
+          "relative_path": "docs/platform-core.md",
+          "sha256": "eef6fb7dc393adc32a5798274a2904ca9524ca126f7f0492055c8fa46b164281"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/contracts/platform-api.json",
+          "relative_path": "contracts/platform-api.json",
+          "sha256": "8c590f30462d64cd6ba288764d90c6c4e31a98a2bfe407f5b3ce8eaaf7bcb057"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+          "relative_path": "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+          "sha256": "2a221ff3240b5ad9ce77c5bfc1ec55f57fcf9d44527cbbd711f1315d505e0511"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/phone-preview-20260911.md",
+          "relative_path": "docs/phone-preview-20260911.md",
+          "sha256": "d4c8b3cf8f3fe8e1eee1f74a9138e39aad8a768ca90f1462563eda2ea6e8a3b1"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+          "relative_path": "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+          "sha256": "41821e6300656f73e164024b08c1950a6eac1bb5a859b98d28f3d68870db01f2"
+        }
+      ]
+    },
+    {
+      "id": "OS-L05",
+      "kind": "local_primary_source",
+      "title": "既存MCP Brokerの結果不明・再起動契約",
+      "scope": "単一writer、epoch、consent、送信claim、照合、fixture境界。既存moduleをcolony実装へ統合してはいない。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/mcp_broker/broker.py",
+          "relative_path": "systems/rock-star-os/os/mcp_broker/broker.py",
+          "sha256": "c1332d6c6f8c0594dee102969f13ec2ba9be5c337541d9631a0d331a5dbf4cfa"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/systems/rock-star-os/os/mcp_broker/runtime.py",
+          "relative_path": "systems/rock-star-os/os/mcp_broker/runtime.py",
+          "sha256": "ce0c55c6449deedf2f24564134b894445d61bffd5bb1888d56a1221beb25c673"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/public-release/rockstaros/packages/control-core/README.md",
+          "relative_path": "public-release/rockstaros/packages/control-core/README.md",
+          "sha256": "3056584f4863cd5c65e03103ccbf40661810b24964561915e0ebec83e3a68283"
+        }
+      ]
+    },
+    {
+      "id": "OS-L06",
+      "kind": "local_primary_source",
+      "title": "Workと保存の責任境界",
+      "scope": "active/review/completed/cancelled、sample非通過、revision/idempotency。各DBを同一DB扱いしない。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/lib/workflow.ts",
+          "relative_path": "lib/workflow.ts",
+          "sha256": "e11de6797e7175252a0c44b8d958afc65e54619888981a56d6b2fd4b411757df"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/data-storage-boundaries.md",
+          "relative_path": "docs/data-storage-boundaries.md",
+          "sha256": "ccb66e33bd7c3e966b2c142ab2a40dce9b6eb8cdc7d5a5c4e75b83d7dd65562e"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/android/core/src/main/resources/schema.sql",
+          "relative_path": "android/core/src/main/resources/schema.sql",
+          "sha256": "9ddbd035294222a2de97d7bf8995010497f4e9e19408380331d6dcf1c311e496"
+        }
+      ]
+    },
+    {
+      "id": "OS-L07",
+      "kind": "local_primary_source",
+      "title": "担当と本線統合の受入規則",
+      "scope": "ROCK担当と既存task、過去取込証拠の範囲。古いBlackBerryや固定課金記述は現product baselineで上書き済みとして扱う。",
+      "files": [
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/workstreams/README.md",
+          "relative_path": "docs/workstreams/README.md",
+          "sha256": "373f0554befe4f93136f07ad1467cd21c408a90abc37327d482283de5a6656eb"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/workstreams/00-responsibility-boundaries.md",
+          "relative_path": "docs/workstreams/00-responsibility-boundaries.md",
+          "sha256": "638e422894c6e3ebc3df967dfb7886788bc61eb2ce25f912a8c38cf23c971a67"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/workstreams/06-native-qemu-release.md",
+          "relative_path": "docs/workstreams/06-native-qemu-release.md",
+          "sha256": "6f345d464644195c4f27ff7d9edd2b4206995b7f79102f15fc0ed928ee3c726d"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/native-os-integration.md",
+          "relative_path": "docs/native-os-integration.md",
+          "sha256": "3385e241ba8ff68342c766557563dbd1e4e6cc093ceaa949d2cc559c9cb37f1e"
+        },
+        {
+          "path": "/Users/kaiya/Documents/Codex/2026-09-20/mo/work/rock-mini200-e1/docs/native-os-validation.md",
+          "relative_path": "docs/native-os-validation.md",
+          "sha256": "e6f0596e962ef522ec929121cf2d256e34770200bc11f24687f023f6cb525e5b"
+        }
+      ]
+    },
+    {
+      "id": "FE-S1",
+      "title": "Core Flight System — official bundle README",
+      "publisher": "NASA",
+      "url": "https://github.com/nasa/cFS",
+      "locator": "Core Flight System — BUNDLE; Build and Run; Other Build configurations",
+      "verified_summary": "cFS is a reusable flight software framework. The public bundle is a starting point, not a flight distribution; mission-specific verification is required. Development configurations include RTEMS targets.",
+      "design_application": "Select cFS plus RTEMS for ground evaluation; freeze the exact source, RTEMS, CPU/BSP, compiler, and app versions before testing.",
+      "limits": "The upstream development tree and RTEMS examples do not demonstrate compatibility or flight readiness for this project."
+    },
+    {
+      "id": "FE-S2",
+      "title": "Core Flight Executive Version 6.7, GSC-18128-1",
+      "publisher": "NASA Software Catalog",
+      "url": "https://software.nasa.gov/software/GSC-18128-1",
+      "locator": "Overview",
+      "verified_summary": "cFE provides Software Bus, time, event, executive, table, and file service APIs, supporting portable application development followed by target-platform verification.",
+      "design_application": "Allocate common infrastructure to cFE and retain mission-specific state estimation, control, and payload applications as separate responsibilities.",
+      "limits": "This catalog entry describes version 6.7. It is used to substantiate the architecture, not to freeze our deployed release or prove fault isolation."
+    },
+    {
+      "id": "FE-S3",
+      "title": "Operating System Abstraction Layer",
+      "publisher": "NASA",
+      "url": "https://github.com/nasa/osal",
+      "locator": "README: Core Flight System — Framework — Operating System Abstraction Layer",
+      "verified_summary": "OSAL provides abstraction APIs as a component of the cFS framework and is normally built and tested with cFS.",
+      "design_application": "Place supported OS service differences behind OSAL while tracking the exact OS port and configuration.",
+      "limits": "An abstraction API is not evidence of equal timing, driver behavior, memory protection, or qualification across operating systems."
+    },
+    {
+      "id": "FE-S4",
+      "title": "Platform Support Package",
+      "publisher": "NASA",
+      "url": "https://github.com/nasa/PSP",
+      "locator": "README: Core Flight System — Framework — Platform Support Package",
+      "verified_summary": "PSP provides APIs abstracting platform-specific functionality as a cFS framework component.",
+      "design_application": "Track platform-dependent startup and support separately from mission apps and the RTEMS BSP.",
+      "limits": "A PSP repository does not supply or qualify every driver, board, and environment required by this mission."
+    },
+    {
+      "id": "FE-S5",
+      "title": "RTEMS Classic API Guide 6.1 — Rate Monotonic Manager: Background",
+      "publisher": "RTEMS Project",
+      "url": "https://docs.rtems.org/docs/6.1/c-user/rate-monotonic/background.html",
+      "locator": "11.2.2 Period Statistics; 11.2.5 Schedulability Analysis",
+      "verified_summary": "RTEMS provides periodic-task statistics, including CPU time, wall time, and missed periods. The application must analyze these observations against its requirements and scheduling assumptions.",
+      "design_application": "Record task periods, deadlines, worst-case execution bounds, interference, blocking, jitter, and measured misses. Treat utilization and measured maxima as inputs rather than sufficient proof.",
+      "limits": "The 6.1 API description does not establish cFS-version compatibility or this mission’s actual task rates and timing guarantees."
+    },
+    {
+      "id": "FE-S6",
+      "title": "RTEMS User Manual 6.1 — Board Support Packages",
+      "publisher": "RTEMS Project",
+      "url": "https://docs.rtems.org/docs/6.1/user/bsps/index.html",
+      "locator": "Board Support Packages; build/test BSP links",
+      "verified_summary": "RTEMS documents board support packages for target architectures and platform-specific build and test requirements.",
+      "design_application": "Require an explicit CPU, BSP, peripheral, toolchain, and test configuration in the evaluation manifest.",
+      "limits": "A listed architecture or BSP is not evidence of our exact board compatibility, environmental fitness, or mission qualification."
+    },
+    {
+      "id": "FE-S7",
+      "title": "RTEMS Classic API Guide 6.1 — Uniprocessor Schedulers",
+      "publisher": "RTEMS Project",
+      "url": "https://docs.rtems.org/docs/6.1/c-user/scheduling-concepts/uniprocessor-schedulers.html",
+      "locator": "5.3 Uniprocessor Schedulers",
+      "verified_summary": "RTEMS offers uniprocessor scheduler configurations, including priority-based scheduling approaches.",
+      "design_application": "Start timing analysis with an explicit single-CPU fixed-priority evaluation model; reassess if hardware or scheduling changes.",
+      "limits": "This choice is an analysis baseline, not a decision about flight processor count or demonstrated deadline compliance."
+    },
+    {
+      "id": "FE-S8",
+      "title": "Health and Safety Application",
+      "publisher": "NASA",
+      "url": "https://github.com/nasa/HS",
+      "locator": "Introduction",
+      "verified_summary": "The HS application supports application and event monitoring, hardware-watchdog servicing, optional execution-counter reporting, and CPU-aliveness indication.",
+      "design_application": "Evaluate HS for software health monitoring while defining separate physical protection, fault detection dependencies, and mode-specific recovery.",
+      "limits": "Running HS on the same CPU does not by itself create independent protection or prove common-cause fault tolerance."
+    },
+    {
+      "id": "FE-S9",
+      "title": "F Prime 4.1.0 — Overview",
+      "publisher": "NASA Jet Propulsion Laboratory",
+      "url": "https://fprime.jpl.nasa.gov/v4.1.0/",
+      "locator": "What does F Prime provide",
+      "verified_summary": "F Prime is a component-based embedded and flight software framework with defined interfaces, queues, threads, modeling tools, reusable components, and tests.",
+      "design_application": "Retain F Prime as an alternative for A-LINK or instrument software if integration cost and resource evidence favor it.",
+      "limits": "Framework history and supplied components do not qualify a new deployment or remove OS, CPU, driver, and mission verification work."
+    },
+    {
+      "id": "FE-S10",
+      "title": "NASA-STD-8739.8B — Software Assurance and Software Safety Standard",
+      "publisher": "NASA",
+      "url": "https://standards.nasa.gov/sites/default/files/standards/NASA/B/0/NASA-STD-87398RevB.pdf",
+      "locator": "Appendix A, A.1.1–A.1.2",
+      "verified_summary": "Software hazard analysis considers common-mode failures in redundant computers and preservation of the independence of hazard inhibits and hardware redundancy.",
+      "design_application": "Separate independent protection from Core, AI, external links, and their shared failure causes; analyze recovery-induced hazards.",
+      "limits": "Applying this architectural principle does not assert NASA compliance, independent certification, or human-rating."
+    },
+    {
+      "id": "FE-S11",
+      "title": "SWE-134 — Safety-Critical Software Design Requirements, Version D",
+      "publisher": "NASA",
+      "url": "https://swehb.nasa.gov/spaces/SWEHBVD/pages/102695493/SWE-134%2B-%2BSafety-Critical%2BSoftware%2BDesign%2BRequirements",
+      "locator": "1 Requirements, 3.7.3",
+      "verified_summary": "The guidance addresses known-state initialization and transitions, command order, input/output integrity, prerequisites, error handling, and timely response to abnormal conditions.",
+      "design_application": "Specify equipment-local command checks, mode-dependent behavior, restart conditions, and physically justified response deadlines.",
+      "limits": "No safety setpoints, hazard deadlines, or compliance status for this project are derived merely by citing the handbook."
+    },
+    {
+      "id": "SC-W01",
+      "title": "JSON Schema Draft 2020-12",
+      "url": "https://json-schema.org/draft/2020-12",
+      "design_use": "7型の構造契約と標準validatorの方言。暗号・機器作用は保証しない"
+    }
+  ]
+}

@@ -6,13 +6,13 @@
 
 | プロジェクト | 役割 | 最初に開くもの | 実装・素材の場所 |
 | --- | --- | --- | --- |
-| **avocadoMini** | Tower20 E3の製品構想と専用サイト | [現行E3設計](docs/avocado-mini-tower20-e3/README.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) | [`sites/avocado-mini/`](sites/avocado-mini/)・[`docs/avocado-mini-tower20-e3/`](docs/avocado-mini-tower20-e3/) |
-| **Rocket Star** | avocadoMiniとRockstarOSへ接続する軌道通信の構想。資金受付は準備中 | [構想ページ](sites/avocado-mini/rocket-star/index.html)・[衛星通信の設計追補](docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) | [`sites/avocado-mini/rocket-star/`](sites/avocado-mini/rocket-star/)・[`sites/avocado-mini/public/images/`](sites/avocado-mini/public/images/) |
-| **RockstarOS** | AIネイティブOSの共通基盤と配布候補 | [OS全体詳細設計](docs/rockstaros-complete-design.md)・[構成と現在地](docs/system-composition.md) | [`systems/rock-star-os/`](systems/rock-star-os/)・[`contracts/`](contracts/)・[`public-release/rockstaros/`](public-release/rockstaros/) |
+| **avocadoMini** | 現行R5は高さ200mm以内の1本自律mini。別Edge Hubを必須にしない。製品Siteは旧E3表示が残る | [R5統合設計](docs/avocado-mini-r5/README.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) | [`docs/avocado-mini-r5/`](docs/avocado-mini-r5/)・[`sites/avocado-mini/`](sites/avocado-mini/) |
+| **Rocket Star / rocketstar** | ロケットR1.0、衛星・A-LINK・受信試作などの設計アーカイブ。Siteの構想ページと設計原本を分ける | [設計アーカイブ](docs/rocketstar-design/README.md)・[構想ページ](sites/avocado-mini/rocket-star/index.html) | [`docs/rocketstar-design/`](docs/rocketstar-design/)・[`sites/avocado-mini/rocket-star/`](sites/avocado-mini/rocket-star/) |
+| **RockstarOS** | AIネイティブOSの共通基盤と配布候補。完全版原本はR5専用Device Profileの実装済みを意味しない | [OS設計書完全版 v1.0](docs/rockstaros-complete-design-v1.0.pdf)・[OS全体詳細設計](docs/rockstaros-complete-design.md) | [`systems/rock-star-os/`](systems/rock-star-os/)・[`contracts/`](contracts/)・[`public-release/rockstaros/`](public-release/rockstaros/) |
 | **AI自動化チーム** | 作成中のToolを役割ごとに組み合わせ、利用者の仕事を進める | [Toolチーム設計](docs/sky-network-economy.md)・[役割エージェント仕様](docs/sky-role-agents-20260912.md) | [`lib/catalog.ts`](lib/catalog.ts)・[`lib/automation-fund-catalog.ts`](lib/automation-fund-catalog.ts)・[`app/sky/`](app/sky/)・[`app/work/`](app/work/) |
 | **Webアプリ** | Home、Sky、Zema、Wallet、設定、Sky Tool SDK用Rock Studioを一つのWeb/PWAとして提供 | [製品・サービス関係図](docs/rockstaros-product-system-map.md)・[Web担当作業](docs/workstreams/05-web-pwa-sites.md) | [`app/`](app/)・[`components/`](components/)・[`lib/`](lib/)・[`db/`](db/)・[`drizzle/`](drizzle/) |
 
-Rocket Starの`/rocket-star/`はavocadoMiniサイト内の専用ページであり、衛星・受信機・通信網の実装や資金受付の完了を示しません。AI自動化チームの仕事とToolはSkyの中で選び編成します。Zemaが依頼・進捗・承認・停止・成果を管理し、Walletが費用と確認済み収益を扱います。CSV、メルカリ、Material Inventionなどの仕事をWeb/OSの独立サービスとして数えません。avocadoMiniの旧P0.2、Mini200 E1/E2は[現行E3設計](docs/avocado-mini-tower20-e3/README.md)と区別して設計履歴として保持します。
+Rocket Starの`/rocket-star/`はavocadoMiniサイト内の構想ページです。[設計アーカイブ](docs/rocketstar-design/README.md)にはロケット、衛星・受信、A-LINK、OS付録と検証記録がありますが、製造・実機・飛行・資金受付の完了を示しません。avocadoMiniの[P0.2](docs/avocado-mini-hardware-design.md)、[Mini200 E1](docs/avocado-mini-mini200-e1/README.md)、[E2](docs/avocado-mini-mini200-e2/README.md)、[Tower20 E3](docs/avocado-mini-tower20-e3/README.md)は現行R5と区別した設計履歴です。AI自動化チームの仕事とToolはSkyの中で選び編成します。Zemaが依頼・進捗・承認・停止・成果を管理し、Walletが費用と確認済み収益を扱います。CSV、メルカリ、Material Inventionなどの仕事をWeb/OSの独立サービスとして数えません。
 
 | AIチームを支える共通機能 | 主なソース | 設計・担当の入口 |
 | --- | --- | --- |
@@ -135,8 +135,8 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 | --- | --- | --- | --- |
 | **Linux / QEMU Developer Preview** | native OS、Tool実行、更新・復旧。Android imageとは別系列 | [`systems/rock-star-os/`](systems/rock-star-os/) | [native README](systems/rock-star-os/README.md)・[Native / QEMU / Release](docs/workstreams/06-native-qemu-release.md) |
 | **Android / Pixel Device Preview** | AOSP、Shell、Broker、端末内AI、Pixel 10向け受入 | [`android/`](android/)・[`os/`](os/) | [Android / Device / Local AI](docs/workstreams/07-android-device-local-ai.md)・[端末preview](docs/phone-preview-20260911.md) |
-| **avocadoMini製品サイト** | 製品紹介、導入案内、販売準備の独立Site | [`sites/avocado-mini/`](sites/avocado-mini/) | [現行E3設計](docs/avocado-mini-tower20-e3/README.md)・[Material Invention / avocadoMini](docs/workstreams/11-material-invention-avocado-mini.md) |
-| **Web内の製品紹介・導入画面** | [`app/rockstaros/`](app/rockstaros/)には旧P0.2の外観・税込価格表示が残る。現行E3の紹介は上の製品サイトを正本とし、Web内画面の更新は未完了 | [`app/rockstaros/`](app/rockstaros/) | [現行E3設計](docs/avocado-mini-tower20-e3/README.md)・[Web / PWA / Sites](docs/workstreams/05-web-pwa-sites.md) |
+| **avocadoMini製品サイト** | 製品紹介・導入案内の独立Site。表示は旧E3で、現行R5の公開反映は未完了 | [`sites/avocado-mini/`](sites/avocado-mini/) | [現行R5設計](docs/avocado-mini-r5/README.md)・[Web / PWA / Sites](docs/workstreams/05-web-pwa-sites.md) |
+| **Web内の製品紹介・導入画面** | [`app/rockstaros/`](app/rockstaros/)には旧P0.2の外観・税込価格表示が残る。現行R5の画面実装・配備は未完了 | [`app/rockstaros/`](app/rockstaros/) | [現行R5設計](docs/avocado-mini-r5/README.md)・[Web / PWA / Sites](docs/workstreams/05-web-pwa-sites.md) |
 | **Operator Dock** | OS利用画面と分離した運営用の端末管理 | [`services/operator-dock/`](services/operator-dock/)・[`android/operator-agent/`](android/operator-agent/) | [Dock README](services/operator-dock/README.md)・[Security / Identity](docs/workstreams/04-security-identity-compliance.md) |
 | **Sky Billing** | 収益・費用の照合と請求Worker。Walletの実資金受入とは別 | [`services/sky-billing/`](services/sky-billing/) | [Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md)・[請求設計](docs/sky-billing.md) |
 | **Sky Tool SDK** | Tool作者向けのpackage、サンプル、契約 | [`toolkits/sky-tool-sdk/`](toolkits/sky-tool-sdk/) | [SDK README](toolkits/sky-tool-sdk/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |

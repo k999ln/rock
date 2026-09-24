@@ -31,8 +31,9 @@ void test('E1 preserves the four-view contract and Web capture boundary', () => 
   assert.match(read('public/_headers'), /camera=\(\)/);
   assert.match(read('public/_headers'), /microphone=\(\)/);
   assert.equal(json('data/product-baseline.json').materialInvention.spatialDevelopment.fourDirectionalSensorRig, true);
-  assert.match(read('README.md'), /Mini200 E1/);
-  assert.match(read('README.md'), /実音声認識・実機試験は0件/);
+  // E1 remains an archived proposal; the landing page now describes R5.
+  assert.match(read('docs/avocado-mini-mini200-e1/README.md'), /Mini200 E1/);
+  assert.match(read('docs/avocado-mini-mini200-e1/README.md'), /実音声・実機・化学実験・外部操作は0/);
 });
 
 void test('game-first life design rejects satellite authority and unverified integration claims', () => {
@@ -42,8 +43,12 @@ void test('game-first life design rejects satellite authority and unverified int
   assert.match(read('README.md'), /ゲームを入口に、生活全体をより豊かにする/);
   assert.equal(
     baseline.marketPositioning.leadHardwareForm,
-    'tower20_e3_four_fixed_height_towers_and_separate_edge_hub',
+    'r5_200mm_autonomous_peer_minis_no_required_edge_hub',
   );
+  assert.equal(baseline.marketPositioning.previousLeadHardwareForm,
+    'tower20_e3_four_fixed_height_towers_and_separate_edge_hub');
+  assert.equal(baseline.marketPositioning.tower20E3.role,
+    'historical_E3_baseline_superseded_by_R5');
   for (const [field, value] of [
     ['primaryExperience', 'satellite_only'],
     ['localGameLoopRequiresInternet', true],

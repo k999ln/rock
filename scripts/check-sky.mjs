@@ -92,9 +92,14 @@ for (const path of [
   );
 const readme = read('README.md');
 requireValue(
-  readme.includes('現行Tower20 E3の4本とEdge Hub') &&
+  readme.includes('現在の設計基準はR5') &&
     readme.includes('Material Inventionの操作画面とSky接続は未実装'),
-  'READMEの現行E3またはMaterial Inventionの実装状態が不明です',
+  'READMEの現行R5またはMaterial Inventionの実装状態が不明です',
+);
+requireValue(
+  projectGuide.includes('docs/avocado-mini-r5/') &&
+    projectGuide.includes('docs/rocketstar-design/'),
+  'プロジェクト別ガイドに現行R5またはRocket Star設計原本がありません',
 );
 for (const { id } of catalog)
   requireValue(

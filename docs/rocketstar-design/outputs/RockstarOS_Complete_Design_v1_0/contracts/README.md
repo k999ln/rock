@@ -1,0 +1,13 @@
+# RockstarOS ICD v1 — 設計契約
+
+本フォルダーは実装に渡す構造定義です。旧C0.1 runtimeへは未接続で、実機モードを有効化しません。7種のDraft 2020-12 Schemaと合成例を収録します。
+
+examplesのID、digest、proofRef、capabilityRef、approvalRefは全て例示です。digestを計算した実認証メッセージではなく、鍵や有効な承認も含みません。SIMULATIONとSYNTHETICを明示しています。
+
+型検証は署名・PoP・本人確認・内容digest・時刻の比較・現在権限・現物状態・物理作用を検証しません。各参照が保存台帳に存在すること、同じcommandに承認が結び付くこと、schemaの整数と実装の型の一致、expiry>issued、現在時刻の不確かさ、機器generation/revision、operation登録、payloadDigestは受信側が再判定します。
+
+executionModeは将来の接続契約として3分類を定義します。OPERATIONALと書くだけでは接続権や認定は得られません。全examplesは模擬です。
+
+7つのschemaは静的な設計成果物であり、動作するアダプター、プロトコルサーバー、署名処理ではありません。
+
+指令台帳はcommand_jsonに指令包絡全体を保存し、承認後は変更不可にする。DDLの索引列と包絡の一致、状態遷移、不変性は実装側で検査する。結果はnodeId・issuedAt.bootId・messageIdと実認証の一致を検査して重複排除する。装置結果未取得時のBroker照会応答はdeviceResult=nullであり、機器のresultに架空のproofを作らない。

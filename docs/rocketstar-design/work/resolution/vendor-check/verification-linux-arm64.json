@@ -1,0 +1,25 @@
+{
+  "filename": "rockblock9704-1.0.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+  "version": "1.0.1",
+  "distribution_type": "bdist_wheel",
+  "source": "https://files.pythonhosted.org/packages/e7/96/789336674443ffe7da704ee4116d47a7d0caf4b44e156abb66ac2748e7a4/rockblock9704-1.0.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+  "sha256_actual": "9498eaa1a50999c35841574440a27dfff3f28ed410c31a5f4320f5d40912490b",
+  "sha256_pypi": "9498eaa1a50999c35841574440a27dfff3f28ed410c31a5f4320f5d40912490b",
+  "hash_matches": true,
+  "required_methods": {
+    "begin": true,
+    "end": true,
+    "poll": true,
+    "receive_message_async": true,
+    "acknowledge_receive_head_async": true,
+    "receive_lock_async": true,
+    "send_lock_async": true,
+    "send_message_async": true,
+    "set_mo_message_complete_callback": true
+  },
+  "python_wrapper_identical_to_mac_wheel": true,
+  "native_extensions": [
+    "rockblock.cpython-312-aarch64-linux-gnu.so"
+  ],
+  "imported_or_executed_sdk": false
+}

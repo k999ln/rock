@@ -1,6 +1,6 @@
 {
-  "version": "1.91",
-  "decidedAt": "2026-09-22",
+  "version": "1.94",
+  "decidedAt": "2026-09-24",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -70,13 +70,23 @@
   "marketPositioning": {
     "customerFacingFocus": "hardware_products",
     "leadHardwareConcept": "avocadoMini",
-    "leadHardwareForm": "tower20_e3_four_fixed_height_towers_and_separate_edge_hub",
-    "previousLeadHardwareForm": "mini200_e2_four_tower_integration_concept",
+    "leadHardwareForm": "r5_200mm_autonomous_peer_minis_no_required_edge_hub",
+    "previousLeadHardwareForm": "tower20_e3_four_fixed_height_towers_and_separate_edge_hub",
     "legacyReferencePriceAppliesTo": "historical_motion_tower_p0_kit_only",
     "brandLine": "考える時間を、つくる時間に。",
     "avocadoMiniDesiredReferencePriceJpy": 410000,
     "avocadoMiniSingleTowerProposedExTaxPriceJpy": 160000,
-    "referencePriceStatus": "user_proposed_preorder_base_prices_excluding_tax_not_final_checkout_total_or_live_sale",
+    "referencePriceStatus": "historical_E3_user_proposed_preorder_prices_not_R5_price_or_live_sale",
+    "legacyCommercialFields": {
+      "recordedFor": "P0_E2_E3_history_and_existing_site_compatibility",
+      "appliesToCurrentR5": false,
+      "fields": [
+        "avocadoMiniDesiredReferencePriceJpy",
+        "avocadoMiniSingleTowerProposedExTaxPriceJpy",
+        "currentFourTowerBasePriceJpyExTax"
+      ],
+      "currentR5PriceAuthority": "marketPositioning.r5.priceStatus"
+    },
     "motionTowerP0Engineering": {
       "source": "User-provided RockstarOS Motion Tower P0 Engineering Package v2, revision P0.2",
       "kitTowerCount": 4,
@@ -126,11 +136,36 @@
     "avocadoMiniStage": "design_only_no_physical_prototype_or_sales",
     "pixel10Role": "development_reference_device_not_own_hardware_product",
     "taxTreatmentClaim": "none",
-    "ownerConfirmedExterior": "four_fixed_height_silver_tower20_units_surrounding_one_low_separate_edge_hub",
-    "ownerConfirmedExteriorEvidence": "user_provided_tower20_e3_design_package_2026-09-22",
+    "ownerConfirmedExterior": "slim_silver_cylinder_black_sensor_band_low_round_base_max_200mm_in_use",
+    "ownerConfirmedExteriorEvidence": "user_image_and_subsequent_single_mini_no_required_hub_requirements_R5_2026-09-24",
+    "r5": {
+      "document": "docs/avocado-mini-r5/README.md",
+      "role": "current_avocado_mini_product_baseline",
+      "maximumUsageHeightMm": 200,
+      "heightIncludesBaseFeetCap": true,
+      "minimumNodeCount": 1,
+      "sameTypePeerExpansion": true,
+      "separateEdgeHubRequired": false,
+      "externalPcRequiredForCoreFunctions": false,
+      "externalPowerRequired": true,
+      "batteryAdopted": false,
+      "displayRequirement": "naked_eye_particles_distributed_in_surrounding_real_space",
+      "displayStatus": "unavailable_research_gate_not_room_scale_validated",
+      "precision3dInputSelected": false,
+      "physicalTests": 0,
+      "calculationAndDecisionChecks": 14,
+      "manufacturingReleased": false,
+      "runtimeIntegrated": false,
+      "publishedSiteUpdated": false,
+      "priceStatus": "not_confirmed_for_R5_do_not_inherit_E3_prices",
+      "maturity": "integrated_basic_design_with_open_engineering_decisions",
+      "replacesMandatoryE3HubConfiguration": true,
+      "existingPixelQemuMaterialAndWalletEvidencePreserved": true,
+      "authority": "user_requested_complete_design_then_save_all_to_k999ln_rock_2026-09-24"
+    },
     "mini200E2Integration": {
       "document": "docs/avocado-mini-mini200-e2/README.md",
-      "role": "central_core_architecture_inside_four_tower_product",
+      "role": "historical_E2_central_core_architecture_not_current_R5_topology",
       "singleEnclosure198x178x198AdoptedAsCompleteProductExterior": false,
       "osAndPermissionArchitectureAdopted": true,
       "hardwareCandidatesRemainUnapproved": true,
@@ -140,7 +175,7 @@
     "tower20E3": {
       "document": "docs/avocado-mini-tower20-e3/README.md",
       "source": "User-provided RockstarOS Tower20 E3 OS Design and avocadoMini Tower20 E3 Hardware Design",
-      "role": "current_avocado_mini_product_baseline",
+      "role": "historical_E3_baseline_superseded_by_R5",
       "towerCount": 4,
       "edgeHubCount": 1,
       "fixedHeight": true,
@@ -186,12 +221,80 @@
   "designDocumentation": {
     "portal": "docs/rockstaros-design-portal.md",
     "operatingSystem": "docs/rockstaros-complete-design.md",
+    "completeDesignPdf": "docs/rockstaros-complete-design-v1.0.pdf",
+    "completeDesignSearchableText": "docs/rockstaros-complete-design-v1.0.txt",
+    "completeDesignSourceRecord": "data/rockstaros-complete-design-v1.0.json",
+    "completeDesignAuthorityDate": "2026-09-24",
+    "completeDesignR5Relationship": {
+      "originalBytesPreserved": true,
+      "e3PlacementInPdfPages": [
+        4,
+        17,
+        30
+      ],
+      "e3HubRequirementAppliesToR5": false,
+      "r5DeviceProfileAndAdapterIntegrated": false,
+      "currentMiniRequirements": "docs/avocado-mini-r5/README.md"
+    },
+    "completeDesignScope": {
+      "chapters": 32,
+      "deploymentProfiles": 5,
+      "logicalServices": 13,
+      "requirements": 60,
+      "structuralAndDdlChecks": "43/43"
+    },
     "tools": "docs/sky-tools-complete-design.md",
     "materialInvention": "docs/rockstaros-avocado-mini-complete-design.md",
     "index": "data/design-document-index.json",
     "automatedCheck": "npm run design:check",
     "coverageStatus": "current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete",
-    "allImplementationsComplete": false
+    "allImplementationsComplete": false,
+    "completeDesignSupplement": {
+      "receivedAt": "2026-09-24",
+      "status": "received_and_archived_not_runtime_imported",
+      "package": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md",
+      "manifest": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/manifest.json",
+      "fileCount": 60,
+      "manifestEntriesVerified": 59,
+      "schemaCount": 7,
+      "ddl": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/operations_store.sql",
+      "existingPdfBytesMatch": true,
+      "pdfSha256": "9f318e6c1fe04abca895c87085931b9b3f15f1a4445aa99b4231ae9a5c1c3855",
+      "runtimeImported": false
+    },
+    "rocketstarArchive": {
+      "decisionDate": "2026-09-24",
+      "userInstruction": "https://github.com/k999ln/rock.git に漏れなく更新保存",
+      "entry": "docs/rocketstar-design/README.md",
+      "inventory": "docs/rocketstar-design/inventory.json",
+      "verification": "docs/rocketstar-design/verification.json",
+      "completeDesignPdf": "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf",
+      "completeDesignMarkdown": "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md",
+      "completeDesignPackage": "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0_package.zip",
+      "scope": {
+        "chapters": 35,
+        "pages": 44,
+        "requirements": 60,
+        "systemInterfaces": 18,
+        "inheritedDesignItems": 40,
+        "inheritedPayloadInterfaces": 13
+      },
+      "preservedScope": [
+        "rocketstar current and historical design",
+        "A-LINK satellite and receiver prototype",
+        "RockstarOS complete design supplements",
+        "colony operating design and simulation",
+        "avokado fit button and power behavior models",
+        "authoring sources and calculation/verification evidence"
+      ],
+      "sourceBytesPreserved": true,
+      "archiveCodeIsRuntime": false,
+      "manufacturingReleaseApproved": false,
+      "flightReleaseApproved": false,
+      "sitePublicationPerformed": false,
+      "e3HubRequirementAppliesToR5": false,
+      "r5DeviceProfileAndAdapterIntegrated": false
+    }
   },
   "northStar": {
     "document": "docs/product-north-star-20260915.md",

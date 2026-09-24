@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "rockstaros.icd.command.v1",
+  "executionMode": "SIMULATION",
+  "dataClass": "SYNTHETIC",
+  "siteId": "site:fixture",
+  "nodeId": "node:fixture",
+  "messageId": "message:fixture",
+  "issuedAt": {
+    "utcMs": 1000000,
+    "monotonicMs": 1000,
+    "bootId": "boot:fixture-A",
+    "quality": "TRUSTED",
+    "uncertaintyMs": 1
+  },
+  "workId": "work:fixture",
+  "requestId": "request:fixture",
+  "commandId": "cmd:fixture",
+  "idempotencyKey": "cmd:fixture",
+  "actorRef": "person:fixture",
+  "issuingDeviceRef": "device:fixture",
+  "targetAssetId": "asset:load",
+  "targetBootId": "boot:fixture-A",
+  "capabilityRef": "capability:placeholder",
+  "authorizationReceiptRef": "approval:placeholder",
+  "authorityEpoch": 1,
+  "expiresUtcMs": 1010000,
+  "expectedRevision": 1,
+  "configurationDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "payload": {
+    "operationRef": "reference.noncritical_load.set",
+    "desiredFlexibleKw": 2.0
+  },
+  "payloadDigest": "1111111111111111111111111111111111111111111111111111111111111111",
+  "envelopeProofRef": "proof:placeholder"
+}

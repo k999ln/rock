@@ -1,0 +1,99 @@
+{
+  "result": "PASS",
+  "environment": "local HTTP sockets + SQLite, logical bearers only",
+  "hardware_or_RF_test": false,
+  "model_clock_used": true,
+  "wall_seconds": 0.015,
+  "steps": [
+    {
+      "state": "Wi-Fi模擬で接続中",
+      "route": "Wi-Fi模擬",
+      "events": [
+        {
+          "id": "notice-1",
+          "result": "stored",
+          "route": "Wi-Fi模擬"
+        }
+      ],
+      "pending_acks": 0,
+      "last_received": 1790115419.073875,
+      "step": "通常受信",
+      "elapsed_model_seconds": 0,
+      "displayed": 1
+    },
+    {
+      "state": "携帯回線模擬で接続中",
+      "route": "携帯回線模擬",
+      "events": [
+        {
+          "id": "notice-2",
+          "result": "stored",
+          "route": "携帯回線模擬"
+        }
+      ],
+      "pending_acks": 0,
+      "last_received": 1790115429.073875,
+      "step": "Wi-Fi遮断→携帯へ",
+      "elapsed_model_seconds": 10,
+      "displayed": 2
+    },
+    {
+      "state": "衛星経路模擬で接続中",
+      "route": "衛星経路模擬",
+      "events": [
+        {
+          "id": "notice-3",
+          "result": "stored",
+          "route": "衛星経路模擬"
+        }
+      ],
+      "pending_acks": 0,
+      "last_received": 1790115439.073875,
+      "step": "地上経路遮断→衛星経路の模擬へ",
+      "elapsed_model_seconds": 20,
+      "displayed": 3
+    },
+    {
+      "state": "接続待ち",
+      "route": null,
+      "events": [],
+      "pending_acks": 0,
+      "last_received": 1790115439.073875,
+      "step": "全経路遮断→保存済み3件を維持",
+      "elapsed_model_seconds": 30,
+      "displayed": 3
+    },
+    {
+      "state": "携帯回線模擬で接続中",
+      "route": "携帯回線模擬",
+      "events": [
+        {
+          "id": "notice-4",
+          "result": "stored",
+          "route": "携帯回線模擬"
+        }
+      ],
+      "pending_acks": 0,
+      "last_received": 1790115519.073875,
+      "step": "携帯復旧→未受信4件目を取得",
+      "elapsed_model_seconds": 100,
+      "displayed": 4
+    },
+    {
+      "state": "携帯回線模擬で接続中",
+      "route": "携帯回線模擬",
+      "events": [
+        {
+          "id": "notice-4",
+          "result": "duplicate",
+          "route": "携帯回線模擬"
+        }
+      ],
+      "pending_acks": 0,
+      "last_received": 1790115519.073875,
+      "step": "受信器再起動＋同じ通知の再配信",
+      "elapsed_model_seconds": 110,
+      "displayed": 4
+    }
+  ]
+}

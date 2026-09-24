@@ -1,0 +1,174 @@
+{
+  "status": "passed",
+  "scope": "arithmetic under stated assumptions only",
+  "checks": [
+    {
+      "name": "stage1 mass",
+      "value": 445,
+      "expected": 445,
+      "tolerance": 1e-06
+    },
+    {
+      "name": "stage2 mass",
+      "value": 172.6,
+      "expected": 172.6,
+      "tolerance": 1e-06
+    },
+    {
+      "name": "total mass",
+      "value": 618.6,
+      "expected": 618.6,
+      "tolerance": 1e-06
+    },
+    {
+      "name": "total charged mass",
+      "value": 559.6,
+      "expected": 559.6,
+      "tolerance": 1e-06
+    },
+    {
+      "name": "ascent dv",
+      "value": 10323.64520312457,
+      "expected": 10324,
+      "tolerance": 1
+    },
+    {
+      "name": "dry growth sensitivity",
+      "value": 10053.481958448041,
+      "expected": 10053,
+      "tolerance": 1
+    },
+    {
+      "name": "isp sensitivity",
+      "value": 10034.527760128138,
+      "expected": 10035,
+      "tolerance": 1
+    },
+    {
+      "name": "reserve sensitivity",
+      "value": 10028.485763518662,
+      "expected": 10028,
+      "tolerance": 1
+    },
+    {
+      "name": "combined sensitivity",
+      "value": 9771.7204995615,
+      "expected": 9772,
+      "tolerance": 1
+    },
+    {
+      "name": "booster return",
+      "value": 1400.9065578366374,
+      "expected": 1401,
+      "tolerance": 1
+    },
+    {
+      "name": "upper deorbit",
+      "value": 127.23517552065934,
+      "expected": 127,
+      "tolerance": 1
+    },
+    {
+      "name": "upper landing",
+      "value": 498.172764713937,
+      "expected": 498,
+      "tolerance": 1
+    },
+    {
+      "name": "larger return need",
+      "value": 4.896384216710428,
+      "expected": 4.9,
+      "tolerance": 0.01
+    },
+    {
+      "name": "satellite mass",
+      "value": 500,
+      "expected": 500,
+      "tolerance": 1e-06
+    },
+    {
+      "name": "satellite power",
+      "value": 1000,
+      "expected": 1000,
+      "tolerance": 1e-06
+    },
+    {
+      "name": "satellite eclipse kWh",
+      "value": 0.5833333333333334,
+      "expected": 0.583,
+      "tolerance": 0.001
+    },
+    {
+      "name": "orbit speed",
+      "value": 7.588998434594857,
+      "expected": 7.59,
+      "tolerance": 0.01
+    },
+    {
+      "name": "orbit period",
+      "value": 95.50211815557677,
+      "expected": 95.5,
+      "tolerance": 0.01
+    },
+    {
+      "name": "slant range",
+      "value": 1123.2770015779056,
+      "expected": 1123,
+      "tolerance": 1
+    },
+    {
+      "name": "ground radius",
+      "value": 940.5459396775842,
+      "expected": 941,
+      "tolerance": 1
+    },
+    {
+      "name": "zenith pass approximate minutes",
+      "value": 4.487821130993918,
+      "expected": 4.49,
+      "tolerance": 0.01
+    },
+    {
+      "name": "free space loss",
+      "value": 158.4705999132796,
+      "expected": 158.47,
+      "tolerance": 0.01
+    },
+    {
+      "name": "down10",
+      "value": 14.139700043360193,
+      "expected": 14.1,
+      "tolerance": 0.1
+    },
+    {
+      "name": "down100",
+      "value": 4.139700043360193,
+      "expected": 4.1,
+      "tolerance": 0.1
+    },
+    {
+      "name": "up10",
+      "value": 9.12940008672038,
+      "expected": 9.1,
+      "tolerance": 0.1
+    },
+    {
+      "name": "up100",
+      "value": -0.8705999132796194,
+      "expected": -0.9,
+      "tolerance": 0.1
+    },
+    {
+      "name": "Mini200 5W addition",
+      "value": 94.44444444444444,
+      "expected": 94.44,
+      "tolerance": 0.01
+    },
+    {
+      "name": "Mini200 15W addition",
+      "value": 105.55555555555556,
+      "expected": 105.56,
+      "tolerance": 0.01
+    }
+  ]
+}

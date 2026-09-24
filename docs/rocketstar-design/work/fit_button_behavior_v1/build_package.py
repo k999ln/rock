@@ -1,0 +1,170 @@
+from pathlib import Path
+import json,shutil,hashlib,platform,unittest,io,sys,zipfile
+R=Path(__file__).resolve().parents[2];W=R/'work/fit_button_behavior_v1';P=R/'outputs/Avokado_Power_Button_Engineering_v1';P.mkdir(exist_ok=True)
+policy={
+ 'id':'AVO-PWR-BEHAVIOR-01','version':'1.0','date':'2026-09-24','status':'DESIGN_SELECTED_BEHAVIOR_MODEL_TESTED','appliesTo':'avokado E3 Edge Hub fit power button','hardwareQualified':False,
+ 'supersedes':{'source':'../Avokado_Fit_Button_v1/button_spec.json','fields':['electricalBehavior','powerRouting','openPhysicalParameters: Press-duration behavior with selected firmware/OS'],'preserved':'Pear-shaped silver flush mechanical face and inward travel'},
+ 'powerArchitecture':'Always-on controller; ON pulse to mainboard, normal off via OS, forced off via independent main-power cutoff request. No direct raw-contact mapping to motherboard PWRBTN#.',
+ 'timingsMs':{'debounceStable':30,'shortPressMin':50,'shortPressMax':500,'doubleWindowExclusive':350,'normalOffLongHold':3000,'forceOffHold':10000,'extraTapQuietPeriod':350,'postPowerOnReleaseClickInhibit':1000,'osEventMaxAge':2000,'osRequestAckTarget':1000,'shutdownProgressWarning':30000},
+ 'timingMeaning':'All gesture intervals use controller monotonic time after qualification. Chosen design thresholds, not measured board timing; forceOffHold is request issue time, not confirmed voltage collapse.',
+ 'gestures':{'single':'RUNNING->USER_STANDBY; USER_STANDBY->RUNNING with input OFF','double':'Show home, or lock screen if locked; pause local interactive input, do not toggle standby first','normalLong':'Release after >=3000ms and <10000ms: request orderly shutdown','forceLong':'At >=10000ms held from powered state: latch force-off request once without OS; no normal-off request on release'},
+ 'offBehavior':'A qualified press from OFF starts one boot request. Consume this press until released, including its long hold. Absorb subsequent short taps for 1000ms after release, and ignore while BOOTING.',
+ 'standbyMeaning':'Product-level standby, not ACPI S3/S4/S0ix. OS, allowed background work, local network and records remain powered. Camera/mic logical input and interactive tickets stopped.',
+ 'inputRestore':'Power-on, standby exit and double-click home never re-enable camera/microphone capture automatically.',
+ 'states':['NO_POWER','OFF','BOOTING','RUNNING','USER_STANDBY','SHUTTING_DOWN','UPDATING'],
+ 'transitionRules':{'BOOTING':'Short/double/normal long ignored; a fresh new 10s hold can request forced off','SHUTTING_DOWN':'Short/double/normal long ignored; new 10s hold available; no timed automatic force-off','UPDATING':'Short/double/normal long ignored; 10s independent force-off still available','NO_POWER':'No action; restoration alone does not boot; held input needs release and a new press'},
+ 'confirmation':'BOOT_REQUEST and FORCE_OFF_REQUEST do not prove power state. Use qualified board/power sensing. PLED alone is insufficient.',
+ 'physicalOpen':['Always-on controller and supply parts','Main power switch ratings, inrush, reverse-current blocking and discharge','Board power-state sensing','PWRBTN# interface, pulse width, startup wait and restore-AC settings','Independent status LED drivers','Timing under oscillator error/watchdog/controller reset','Mechanical switch life, force and travel'],
+ 'modelScope':'Qualified-edge gesture parsing, state intent, event freshness and duplicates. No actual MCU firmware, GPIO, real OS shutdown, filesystem durability or power cutoff.',
+ 'modelTestCount':32
+}
+(P/'button_behavior.json').write_text(json.dumps(policy,ensure_ascii=False,indent=2)+'\n')
+text='''# avokado 電源ボタン 操作エンジニアリング v1.0
+
+2026-09-24 / AVO-PWR-BEHAVIOR-01 / 対象：E3 Edge Hubの洋ナシ形フィットボタン
+
+**1回で待機／復帰、2回でホーム、3秒以上押して離すと正常な電源OFF、10秒押し続けると強制OFFを要求する。** 外部電源が接続された電源OFF状態では、最初の1回で起動する。
+
+この版で操作の割当、判定時間、状態遷移、電源管理回路の役割を選定した。ソフト模型の32件を確認した段階であり、実回路とOSへの搭載試験は未実施。
+
+## 1. ユーザーから見た動作
+
+| 電源・製品状態 | 1回押す | 2回押す | 3秒以上押して離す | 10秒押し続ける |
+| --- | --- | --- | --- | --- |
+| 電源OFF・外部給電あり | 起動する | 起動は1回だけ。2回目は吸収 | 最初の押下で起動。離すまで別操作へ変えない | 同じ起動押下の保持では強制OFFにしない |
+| 使用中 | 入力と画面を待機にする | ホームへ戻る。ロック中はロック画面 | 作業と記録を保存して正常終了を要求 | OSを経由せず主電源の強制OFFを要求 |
+| 待機中 | 画面を復帰する | ホーム／ロック画面へ復帰する | 正常終了を要求 | 強制OFFを要求 |
+| 起動中 | 追加操作を実行しない | 追加操作を実行しない | 実行しない | 一度離した後の新しい長押しなら強制OFFを要求 |
+| 終了処理中 | 終了を続ける | 終了を続ける | 終了を続ける | 新しい長押しで強制OFFを要求 |
+| OS／firmware更新中 | 通常操作を抑止 | 通常操作を抑止 | 通常操作を抑止 | 独立した強制OFF経路は残す |
+| 外部給電なし | 反応しない | 反応しない | 反応しない | 反応しない |
+
+ここでの「待機」は製品内待機USER_STANDBY。OS、許可されたバックグラウンド処理、通信、状態記録は継続する。ACPIのS3/S4/S0ixへ入れる仕様ではなく、消費電力の数値は実測後に定める。
+
+待機へ入ると、ローカルの対話操作・ゲーム入力を休止し、カメラ／マイクの論理入力をOFF、未確定の入力ticketと残留bufferを失効させる。復帰・ホーム表示だけで撮影や録音を再開しない。物理MIC OFF、PTT、専用の入力停止はそれぞれの役割を保つ。
+
+2回押しは電源を切らずに操作の起点へ戻る操作。開いていた作品の復帰点を残し、送信済みの外部仕事を勝手に取消・再送しない。認証ロックも解除しない。
+
+## 2. 押し方を識別する時間
+
+数値は今回選んだ設計値であり、実部品の測定値ではない。電源管理controllerの単調時計を使い、地球・衛星・OSの壁時計に依存させない。
+
+| パラメーター | 値 | 判定 |
+| --- | --- | --- |
+| 接点の安定確認 | 30ms | 押下・解放とも同じ状態が継続したときだけedgeを認める |
+| 短押し | 50〜500ms | 安定確認後の押下edgeから解放edgeまで |
+| 2回目の待ち時間 | 350ms未満 | 1回目を離してから2回目の安定した押下まで |
+| 通常の長押し | 3,000ms以上 | この時間を越えて離すと正常OFF要求。保持中はまだ正常OFFしない |
+| 強制OFFの長押し | 10,000ms以上 | 保持したまま閾値に達した瞬間に1回だけ要求 |
+| 3回目以降の短押し | 静かな350msを待つ | ダブル後の連打を新しい待機操作へ誤変換しない |
+| 起動押下後の短押し吸収 | 解放から1,000ms | 起動直後に残った2回目で再び待機へ入らない |
+| OS向け操作eventの鮮度 | 最大2,000ms | 過去の短押し・終了要求を、復旧後にまとめて実行しない |
+
+1回押しの実行は、解放後350msを待って確定する。2回目が時間内に始まった場合は1回目を保留し、2回目の解放まで待つ。2回目も短押しならホームを1回だけ表示する。単押しの待機とダブルのホームを両方実行しない。
+
+境界ちょうど350msの2回目は、2つの単押しとして扱う。50ms未満の不成立押下はクリックに数えない。500ms超〜3秒未満で離した場合は長押し未成立として操作なしにする。2回目が長押しに変わったら、最初の単押しを取り消して長押しだけ判定する。
+
+電源OFFからの起動だけは例外で、30msの安定押下が得られた時点で起動要求を出す。ダブルの待ち時間を待たず、その同じ押下を解放まで消費する。押したまま起動が完了しても、途中から10秒長押しとして解釈し直さない。
+
+## 3. 面一ボタンの中と電源回路
+
+外観は前版の銀色・洋ナシ形・面一を継承し、押下時だけ内側に動く常開スイッチとする。外側の形状と、内部で何回押したかを判定する回路は別に設計する。
+
+```
+外部DC電源
+  ├─ 常時給電回路 → 電源管理controller → 状態表示灯
+  │                      ↑              ↓
+  │                フィットボタン   操作event → RockstarOS powerd
+  │                      │              ↓ 正常終了要求
+  │                      ├─ ON専用パルス → 主基板 PWRBTN#
+  │                      └─ 10秒保持 → 主電源遮断ラッチ
+  └─ 主電源スイッチ ← 遮断ラッチ → Hub主基板・Tower給電
+                             ↑
+                     電源状態の検知
+```
+
+**前版の「押しボタン接点を主基板の電源入力へ直接つなぐ候補」から変更する。** 今回は、物理接点を常時給電controllerが読み、PWRBTN#へは起動に必要な短いパルスだけを生成する。通常のクリック・ダブル・3秒解放は別の通信経路でOSへ通知する。
+
+直接長押しを主基板へ渡すと、主基板／firmware側のpower-button overrideが先に働く可能性がある。ASRockの参照manualはPWRBTN#入力を示すが、本製品独自のダブル・3秒・10秒動作の保証は記載していない。ACPIもpower-button overrideを別に規定しているため、OS側のソフトだけで本仕様を保証しない。根拠と範囲は付属hardware_boundary.mdとsources.jsonを参照する。
+
+起動は、主電源を有効→主基板の準備を確認→必要なONパルス→起動状態監視、の順。パルス幅、主電源を入れてからの待ち時間、AC復電時のBIOS設定は対象基板の受入で固定する。RESET#を電源OFFへ流用しない。
+
+10秒時点ではOS応答を待たず、主電源遮断ラッチへ要求する。これをPWRBTN#の長押し開始に置き換えない。主基板・Towerへの供給と、USB等の別経路からの逆給電を遮断範囲に含める。スイッチ定格、突入電流、放電、逆流防止、電源状態センサー、controllerの常時給電と表示灯の部品・配線は詳細回路として残る。
+
+10秒は要求発行の閾値。電圧が下がり、実際に電源OFFになった時刻は検知して別に記録する。PLEDが消えたことだけでOFFと確定しない。実際の遮断完了時間・消費電力・耐久・防塵防滴の性能はまだ測定していない。
+
+## 4. RockstarOSが正常OFFするとき
+
+3秒以上10秒未満で離すと、controllerはGRACEFUL_SHUTDOWN_REQUESTを発行する。OSの専用powerdが受け付け、次の順で処理する。
+
+1. 新しい対話入力と新規の外部作用を伴う仕事の受付を止める。
+2. 入力ticketを失効し、作品の復帰点、設定、未完了の仕事を保存する。
+3. 指令の送信claim・装置receipt・結果不明を記録する。返事のない操作を自動再送しない。
+4. 保存を完了させ、DBとファイルシステムの整合を保ってOSを終了する。
+5. 主基板の終了状態を確認し、必要な電源処理を完了する。実測状態が得られるまではOFF完了と表示しない。
+
+要求受理の応答は1秒以内を設計目標とする。30秒を越えても保存や終了が終わらない場合は「終了処理が続いています」と表示する。これは強制遮断の締切ではなく、時間経過だけで主電源を切らない。OSが応答しなければ正常OFFを完了したことにせず、別の10秒保持を利用できる。
+
+この電源操作はavokado本体を対象とする。端末の終了を、rocketstarの飛行系やコロニー設備の一斉停止へ変換しない。
+
+## 5. 長押しの表示と優先順位
+
+Hubの状態表示は常時給電controllerから扱えるようにし、OS停止中も押下の進行を伝えられる設計にする。既存のシアン3点の意匠を用い、点灯・点滅の時間で区別する。駆動回路は今回の追加回路に含む。
+
+- 押下から3秒：3点で進行を示す。3秒で「離すと電源OFF」に相当する保持表示へ移る。
+- 3秒以上で解放：正常OFFの進行表示。保存完了や電源検知前に消灯完了としない。
+- 7〜10秒：速い点滅と、画面が使える場合は強制OFFまでの残り時間を表示する。
+- 10秒保持：強制OFF要求を1回発行。解放時に別の正常OFFを重ねない。
+- 通常操作の抑止中：起動・終了・更新の進行状態を示し、入力を後から再生しない。
+
+正常OFF要求は解放時に発行するので、そのまま10秒まで押し続けた場合は通常終了と強制遮断を競合させない。更新中や保存中の強制OFFはデータ・更新を中断し得るため、次回起動は既存の整合確認・復旧手順へ進む。
+
+## 6. 再起動・フリーズ・誤入力への処理
+
+通常操作の受付可否は押し始めた時点で固定する。起動中・終了中・更新中から始めた押下は、解放までに使用可能になっても単押し・ダブル・正常OFFへ昇格させない。独立した10秒保持の判定は残す。
+
+controllerは接点の揺れを除去し、押下edgeを重複受信しても長押しタイマーを最初から数え直さない。ダブル後の追加タップに、再起動や工場出荷時初期化などの隠れた操作を割り当てない。
+
+外部電源の復帰だけでは自動起動しない。復帰時からボタンが押されている場合は、安定した解放を確認した後の新しい押下を待つ。controller自身が再起動したときも過去gestureとOSへのeventを破棄し、主電源の実状態を読み直す。主電源ラッチはcontroller再起動だけで意図せず反転しない構成を要求する。
+
+電源OFFを検知しても、同じ押下を新しい起動要求に転用しない。指を離した後の新しい押下だけで起動を受ける。controller停止まで含めた10秒操作の成立には、watchdog、タイマー、常時給電、ラッチの故障解析と実回路試験が必要。
+
+OSへ渡すeventはcontrollerBootId、hostSessionId、sequence、event種別、press開始tick、保持時間、発行tickを持つ。受信時に世代・重複・許可されたevent・最大2秒の鮮度を検査する。再接続後は新セッションを作り、古い操作を実行しない。単なるUSB製品名や文字列だけを機器認証の証明にしない。
+
+## 7. 検証と実装への引渡し
+
+付属模型では、単押し確定前のダブル、350ms境界、2回目からの長押し、起動押下の保持、三連打、終了中・更新中、応答なし、電源状態確認、復電時の押しっぱなし、古いevent、接点の揺れなど、32件を確認した。
+
+模型は入力eventと状態の整合確認用であり、主電源を操作しない。検証済みなのは模型の振る舞いで、実スイッチの押し心地、実時間精度、OSの保存完了、USB逆給電、強制遮断は未検証。部品選定後は、同じ状態遷移表を基板・OS・最終筐体で再試験する。
+
+実装へ渡すものは、button_behavior.json、power_button_model.py、test_power_button.py、hardware_boundary.md、sources.json、evidence/test_results.json。本版は前版AVO-PWR-FIT-01の外観を引き継ぎ、操作判定と電源回路の接続方式を上書きする補遺とする。過去の画像・OS設計PDFの試験証拠は変更しない。
+'''
+(P/'Avokado_Power_Button_Engineering_v1.md').write_text(text)
+for n in ['power_button_model.py','test_power_button.py']:
+ shutil.copy2(W/n,P/n)
+for n in ['hardware_boundary.md','sources.json']:
+ if (W/n).exists():shutil.copy2(W/n,P/n)
+(P/'README.md').write_text('''# avokado 電源ボタンの操作設計
+
+Avokado_Power_Button_Engineering_v1.mdが本文。button_behavior.jsonは時間と遷移の基準。
+
+Pythonの2ファイルは実機I/Oを持たない振る舞い模型。Python 3.10以上の独立環境で `python -m unittest -v test_power_button` をこのフォルダーから実行できる。実製品のfirmwareやOS driverとして出荷するコードではない。
+
+前版の面一ボタン形状を継承し、接点を主基板へ直接渡す候補から常時給電controllerで操作を判定する方式へ変更。3秒解放で正常OFF、10秒保持で独立電源遮断を要求する。
+''')
+# Final verification runs against the packaged behavioral model, not a live power interface.
+sys.path.insert(0,str(P));stream=io.StringIO()
+class RecordedResult(unittest.TextTestResult):
+ def __init__(self,*a,**kw):super().__init__(*a,**kw);self.case_results=[]
+ def addSuccess(self,test):super().addSuccess(test);self.case_results.append({'id':test.id(),'passed':True})
+ def addFailure(self,test,err):super().addFailure(test,err);self.case_results.append({'id':test.id(),'passed':False})
+ def addError(self,test,err):super().addError(test,err);self.case_results.append({'id':test.id(),'passed':False})
+suite=unittest.defaultTestLoader.discover(str(P),pattern='test_power_button.py')
+result=unittest.TextTestRunner(stream=stream,verbosity=2,resultclass=RecordedResult).run(suite)
+assert result.wasSuccessful() and result.testsRun==32,stream.getvalue()
+(P/'evidence').mkdir(exist_ok=True)
+report={'date':'2026-09-24','python':platform.python_version(),'scope':'Deterministic SIMULATION of proposed power-button behavior. No MCU/OS/power-switch hardware testing.','passed':result.testsRun-len(result.failures)-len(result.errors),'total':result.testsRun,'cases':result.case_results,'sourceSha256':{n:hashlib.sha256((P/n).read_bytes()).hexdigest() for n in ['power_button_model.py','test_power_button.py','button_behavior.json']}}
+(P/'evidence/test_results.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n');(P/'evidence/test_results.txt').write_text(stream.getvalue())
+# Exclude interpreter caches from deliverable.
+if (P/'__pycache__').exists():shutil.rmtree(P/'__pycache__')
+print(json.dumps({'package':str(P),'behaviorTestsPassed':report['passed'],'hardwareTested':False},ensure_ascii=False))

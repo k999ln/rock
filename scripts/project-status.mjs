@@ -95,29 +95,14 @@ const targets = [
   {
     name: 'README.md',
     transform: (source) => {
-      let result = replaceMarkedBlock(
+      // Keep the landing page concise; the full task/gate table lives in project.md.
+      return replaceMarkedBlock(
         source,
-        'project-status',
-        block,
-        'README.md',
-      );
-      result = replaceMarkedBlock(
-        result,
         'project-overview',
         [
           '<!-- project-overview:start -->',
           `更新日: ${status.updatedAt} / ${overview}`,
           '<!-- project-overview:end -->',
-        ].join('\n'),
-        'README.md',
-      );
-      return replaceMarkedBlock(
-        result,
-        'project-details-summary',
-        [
-          '<!-- project-details-summary:start -->',
-          `<summary>${status.tasks.length} taskと段階gateの詳細を開く</summary>`,
-          '<!-- project-details-summary:end -->',
         ].join('\n'),
         'README.md',
       );

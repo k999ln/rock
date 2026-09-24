@@ -1,0 +1,22 @@
+{
+  "items": 40,
+  "status_counts": {
+    "requirement_locked": 2,
+    "analysis_assumption": 4,
+    "architecture_selected": 6,
+    "open": 28
+  },
+  "states_unchanged": true,
+  "md_json_evidence_parity": true,
+  "manufacturing_release": false,
+  "flight_release": false,
+  "certified_count": 0,
+  "modified_item_ids": [
+    "RDR-007",
+    "RDR-008",
+    "RDR-011",
+    "RDR-018",
+    "RDR-038"
+  ],
+  "c1_files_edited": false
+}

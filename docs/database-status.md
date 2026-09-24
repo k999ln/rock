@@ -9,7 +9,7 @@
 - データ境界: 6、table: 80
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 147 task中 96 done、31 in progress、19 planned、1 blocked
+- 作業進捗: 151 task中 99 done、31 in progress、20 planned、1 blocked
 - 現在milestone: Pixel 10 compile-only Developer Previewの初回full build準備
 
 ## 保存境界と配備状態
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Build and validate the integrated Tower20 E3 prototype: final CAD and wiring, four-camera timing and calibration, optical coverage, tip and sliding safety, thermal and power behavior, voice and game latency, signed RockstarOS image, recovery and manufacturing acceptance.
+avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

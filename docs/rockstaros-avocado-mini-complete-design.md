@@ -1,8 +1,10 @@
 # RockstarOS × avocadoMini — 見て分かる空間発明システム設計書
 
 版: 2.0 / 2026-09-18
-状態: 実装チームが同じ製品を作るための正本
-注意: 設計が完成した段階。端末、新材料、特許、量産が完成したという意味ではない。
+状態: 既存Material Invention研究profileと共通契約の設計資料
+注意: 現行avocadoMiniの製品要求は[R5統合基本設計](avocado-mini-r5/README.md)を優先する。本書の四方向発明台、AR、Full-scale/rack構成はこの研究profile内の設計であり、R5の完成外形・全空間裸眼表示・製造承認を示さない。
+
+2026-09-24: R5は使用時200mm以内・1本自律・同型mini増設・別Edge Hub不要を目指す。表示・精密3D入力・実部品収納等は未成立/未確定。既存Coreや四方向入力schemaを変更済みとは扱わず、R5専用profileとadapterの実装・受入を別に行う。
 
 2026-09-21 Mini200 E1追補: 利用者の最新の20cmゲーム機・日本語音声・README保存要求は[Mini200 E1設計](avocado-mini-mini200-e1/README.md)へ記録した。本書の四方向発明台は既存profileとして保持する。E1のゲーム入力からMaterial Coreへ接続するadapter、実ASR、console OS、実機、物理マイクOFFの受入は未完了であり、本書の「設計完成」をE1の製造完成へ拡張しない。
 

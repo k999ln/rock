@@ -1,15 +1,37 @@
 {
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.0",
-  "updatedAt": "2026-09-22",
+  "version": "1.3",
+  "updatedAt": "2026-09-24",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
+    "docs/avocado-mini-r5/README.md",
+    "docs/rocketstar-design/README.md",
+    "docs/rockstaros-complete-design-v1.0.pdf",
     "docs/rockstaros-product-system-map.md",
     "docs/rockstaros-complete-design.md",
     "docs/sky-tools-complete-design.md",
     "docs/rockstaros-avocado-mini-complete-design.md",
     "docs/jev-local-qwen-decision-fabric-design.md",
     "docs/product-baseline.md"
+  ],
+  "sourceArtifacts": [
+    {
+      "id": "rockstaros-complete-design-v1.0",
+      "pdf": "docs/rockstaros-complete-design-v1.0.pdf",
+      "searchableText": "docs/rockstaros-complete-design-v1.0.txt",
+      "integrityRecord": "data/rockstaros-complete-design-v1.0.json",
+      "supplementPackage": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md",
+      "supplementManifest": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/manifest.json",
+      "supplementsReceived": true
+    },
+    {
+      "id": "rocketstar-complete-design-r1.0",
+      "pdf": "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf",
+      "searchableText": "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md",
+      "integrityRecord": "docs/rocketstar-design/inventory.json",
+      "packageManifest": "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/manifest.json",
+      "archiveEntry": "docs/rocketstar-design/README.md"
+    }
   ],
   "completionMeaning": "current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete",
   "requiredDesignFields": [
@@ -27,6 +49,15 @@
   ],
   "systemDomains": [
     {
+      "id": "avocado_mini_r5",
+      "coverage": "BASIC_DESIGN_WITH_OPEN_ENGINEERING_DECISIONS",
+      "documents": [
+        "docs/avocado-mini-r5/README.md",
+        "docs/avocado-mini-r5/package/integrated_design.md",
+        "docs/avocado-mini-r5/verification.json"
+      ]
+    },
+    {
       "id": "product_requirements",
       "coverage": "DETAILED_WITH_OPEN_DECISIONS",
       "documents": ["docs/product-baseline.md", "data/product-baseline.json"]
@@ -35,9 +66,15 @@
       "id": "whole_os",
       "coverage": "DETAILED_WITH_OPEN_DECISIONS",
       "documents": [
+        "docs/rockstaros-complete-design-v1.0.pdf",
+        "docs/rockstaros-complete-design-v1.0.txt",
+        "data/rockstaros-complete-design-v1.0.json",
         "docs/rockstaros-complete-design.md",
         "docs/ai-native-os-architecture.md",
-        "docs/rockstaros-1.0-architecture.md"
+        "docs/rockstaros-1.0-architecture.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/manifest.json"
       ]
     },
     {
@@ -221,5 +258,17 @@
     "unknownsMayNotBeReportedAsImplemented": true,
     "environmentSpecificAcceptanceRequired": true,
     "newSystemOrToolRequiresIndexUpdate": true
-  }
+  },
+  "archivalCollections": [
+    {
+      "id": "rocketstar-design-history-and-supplements",
+      "entry": "docs/rocketstar-design/README.md",
+      "inventory": "docs/rocketstar-design/inventory.json",
+      "verification": "docs/rocketstar-design/verification.json",
+      "outputsRoot": "docs/rocketstar-design/outputs",
+      "authoringRoot": "docs/rocketstar-design/work",
+      "runtimeImported": false,
+      "r5RequirementsChanged": false
+    }
+  ]
 }

@@ -100,6 +100,19 @@ export function validateBaseline(
     designDocumentation?.portal === 'docs/rockstaros-design-portal.md' &&
       designDocumentation?.operatingSystem ===
         'docs/rockstaros-complete-design.md' &&
+      designDocumentation?.completeDesignPdf ===
+        'docs/rockstaros-complete-design-v1.0.pdf' &&
+      designDocumentation?.completeDesignSearchableText ===
+        'docs/rockstaros-complete-design-v1.0.txt' &&
+      designDocumentation?.completeDesignSourceRecord ===
+        'data/rockstaros-complete-design-v1.0.json' &&
+      designDocumentation?.completeDesignAuthorityDate === '2026-09-24' &&
+      designDocumentation?.completeDesignScope?.chapters === 32 &&
+      designDocumentation?.completeDesignScope?.deploymentProfiles === 5 &&
+      designDocumentation?.completeDesignScope?.logicalServices === 13 &&
+      designDocumentation?.completeDesignScope?.requirements === 60 &&
+      designDocumentation?.completeDesignScope?.structuralAndDdlChecks ===
+        '43/43' &&
       designDocumentation?.tools === 'docs/sky-tools-complete-design.md' &&
       designDocumentation?.materialInvention ===
         'docs/rockstaros-avocado-mini-complete-design.md' &&
@@ -111,6 +124,9 @@ export function validateBaseline(
       [
         designDocumentation.portal,
         designDocumentation.operatingSystem,
+        designDocumentation.completeDesignPdf,
+        designDocumentation.completeDesignSearchableText,
+        designDocumentation.completeDesignSourceRecord,
         designDocumentation.tools,
         designDocumentation.materialInvention,
         designDocumentation.index,
@@ -953,9 +969,9 @@ export function validateBaseline(
       data.marketPositioning?.customerFacingFocus === 'hardware_products' &&
       data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
       data.marketPositioning?.leadHardwareForm ===
-        'tower20_e3_four_fixed_height_towers_and_separate_edge_hub' &&
+        'r5_200mm_autonomous_peer_minis_no_required_edge_hub' &&
       data.marketPositioning?.previousLeadHardwareForm ===
-        'mini200_e2_four_tower_integration_concept' &&
+        'tower20_e3_four_fixed_height_towers_and_separate_edge_hub' &&
       data.marketPositioning?.legacyReferencePriceAppliesTo ===
         'historical_motion_tower_p0_kit_only' &&
       data.marketPositioning?.avocadoMiniStage ===
@@ -982,7 +998,7 @@ export function validateBaseline(
       data.marketPositioning?.tower20E3?.document ===
         'docs/avocado-mini-tower20-e3/README.md' &&
       data.marketPositioning?.tower20E3?.role ===
-        'current_avocado_mini_product_baseline' &&
+        'historical_E3_baseline_superseded_by_R5' &&
       data.marketPositioning?.tower20E3?.towerCount === 4 &&
       data.marketPositioning?.tower20E3?.edgeHubCount === 1 &&
       data.marketPositioning?.tower20E3?.fixedHeight === true &&
@@ -994,6 +1010,27 @@ export function validateBaseline(
       turntableSource.includes('購入する') &&
       turntableSource.includes('/rockstaros/guide#install'),
     'avocadoMini製品ホームとOSホームを分け、製品から導入ガイドへ進めてください',
+  );
+  const miniR5 = data.marketPositioning?.r5;
+  requireValue(
+    miniR5?.document === 'docs/avocado-mini-r5/README.md' &&
+      miniR5?.role === 'current_avocado_mini_product_baseline' &&
+      miniR5?.maximumUsageHeightMm === 200 &&
+      miniR5?.heightIncludesBaseFeetCap === true &&
+      miniR5?.minimumNodeCount === 1 &&
+      miniR5?.sameTypePeerExpansion === true &&
+      miniR5?.separateEdgeHubRequired === false &&
+      miniR5?.externalPcRequiredForCoreFunctions === false &&
+      miniR5?.externalPowerRequired === true &&
+      miniR5?.batteryAdopted === false &&
+      miniR5?.displayRequirement === 'naked_eye_particles_distributed_in_surrounding_real_space' &&
+      miniR5?.displayStatus === 'unavailable_research_gate_not_room_scale_validated' &&
+      miniR5?.physicalTests === 0 &&
+      miniR5?.manufacturingReleased === false &&
+      miniR5?.runtimeIntegrated === false &&
+      miniR5?.publishedSiteUpdated === false &&
+      miniR5?.existingPixelQemuMaterialAndWalletEvidencePreserved === true,
+    'R5の単体自律・200mm・表示研究ゲートを維持し、資料保存を実機・公開Siteの受入へ換算しないでください',
   );
   requireValue(
     data.gameFirstLifeVision?.primaryExperience === 'game_console_then_life_enrichment' &&

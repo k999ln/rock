@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1620" height="1000" viewBox="0 0 1620 1000"><rect width="1620" height="1000" fill="white"/>
+<text x="270" y="120.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="37.5" fill="#111111">1本</text>
+<circle cx="270" cy="495" r="150" fill="#ecf0f2" stroke="#505860" stroke-width="2"/>
+<rect x="255" y="465" width="30" height="60" fill="#333" stroke="#333" stroke-width="2"/>
+<text x="270" y="789.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">自機の有効領域</text>
+<text x="270" y="830.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">値は未測定</text>
+<text x="795" y="120.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="37.5" fill="#111111">2本</text>
+<circle cx="705" cy="495" r="150" fill="#ecf0f2" stroke="#505860" stroke-width="2"/>
+<rect x="690" y="465" width="30" height="60" fill="#333" stroke="#333" stroke-width="2"/>
+<circle cx="885" cy="495" r="150" fill="#ecf0f2" stroke="#505860" stroke-width="2"/>
+<rect x="870" y="465" width="30" height="60" fill="#333" stroke="#333" stroke-width="2"/>
+<text x="795" y="789.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">重なり・境界・干渉</text>
+<text x="795" y="830.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">を校正する</text>
+<text x="1320" y="120.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="37.5" fill="#111111">4本</text>
+<circle cx="1230" cy="585" r="150" fill="#ecf0f2" stroke="#505860" stroke-width="2"/>
+<rect x="1215" y="555" width="30" height="60" fill="#333" stroke="#333" stroke-width="2"/>
+<circle cx="1410" cy="585" r="150" fill="#ecf0f2" stroke="#505860" stroke-width="2"/>
+<rect x="1395" y="555" width="30" height="60" fill="#333" stroke="#333" stroke-width="2"/>
+<circle cx="1230" cy="405" r="150" fill="#ecf0f2" stroke="#505860" stroke-width="2"/>
+<rect x="1215" y="375" width="30" height="60" fill="#333" stroke="#333" stroke-width="2"/>
+<circle cx="1410" cy="405" r="150" fill="#ecf0f2" stroke="#505860" stroke-width="2"/>
+<rect x="1395" y="375" width="30" height="60" fill="#333" stroke="#333" stroke-width="2"/>
+<text x="1320" y="789.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">範囲と品質へ</text>
+<text x="1320" y="830.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">点予算を配分</text>
+<text x="810" y="945.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="27.5" fill="#111111">R5 S01  円は領域集合の概念  実到達半径や部屋の広さを示さない</text>
+</svg>

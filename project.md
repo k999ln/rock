@@ -1,16 +1,35 @@
 # RockstarOS — 事業・設計・進捗
 
-## 2026-09-24 — プロジェクト別の入口を整備
+## 2026-09-24 — プロジェクト別ガイドをR5とrocketstar資料に同期
 
-主担当Git / CI / Operationsの`ROCK`として、製品・実装・配備単位の入口を[`PROJECTS.md`](PROJECTS.md)に集約した。avocadoMini、Rocket Star構想、RockstarOS、Webアプリ内のSky／Zema／Wallet／Market／Fund／CSV、Linux/QEMU、Android/Pixel、独立WorkerとToolのソース、設計、担当workstreamを対応付け、READMEと作業分野別案内から辿れるようにした。Rocket StarはavocadoMiniサイト内の専用構想ページであり、衛星通信や資金受付の完成と区別した。`public-release`は配布候補、`vendor/mr`は固定原本であることを明記した。既存ソースの移動や製品状態の変更はしていない。相対リンクの存在、`git diff --check`、`npm run project:check`、`repository:check`、`baseline:check`、`design:check`を確認した。`npm run verify`は型検査と製品lintまで通過したが、Node全体試験が出力を止めたため中断し、全体PASSとは記録しない。次は本PRのレビュー後に必要なCI結果を確認する。
+主担当Git / CI / OperationsのROCK、ORG01。PR #28で製品、SkyのAI自動化チーム、Web共通画面、Tool、native・Androidの開発用package、Toolkits、Workerと製品Siteを[`PROJECTS.md`](PROJECTS.md)に分類した。Sky catalog 34件、native 6 family・9版、Toolkit 6件を照合し、CSV、メルカリ、Fashion Brand OpsをSkyのチーム担当として示す。Material Invention Studioは複合機能で、Core sandboxはあるがSky接続と操作画面は未実装。`/studio`はSky Tool作者用であり発明画面ではない。
 
-追補: Sky内でRock側が作成・登録した標準Toolを一行にまとめていたため、`lib/catalog.ts`のready 12件（Rock側8、`Mr.`由来4）、candidate 22件（Rock構想1、`Mr.`由来11、第三者10）を個別に記載した。Linux/QEMU内蔵の開発用6 family・9版も別枠で示した。全Tool詳細設計にのみ載る研究・参考対象3件はcatalog登録と分けた。catalog上のready、外部Provider接続、native開発packageを混同しない。
+main統合前にR5とrocketstar完全設計アーカイブが追加されたため、ガイドはR5の1本自律・別Edge Hub不要を現行製品基準とし、Tower20 E3と旧Siteの表示を履歴に分ける。Rocket Starの構想ページとロケットR1.0／A-LINK等の設計アーカイブを別の入口として案内する。資料保存と実機・公開・飛行の受入を混同しない。進捗・README・設計の新しい正本を維持して競合を解消し、統合後の同一SHA検証を確認する。
 
-追補: 利用者の「作成中のToolは全部チーム」という訂正に合わせ、個別Toolを一つのAI自動化チームの担当として示し、Skyが選びZemaが仕事を管理する関係をプロジェクト別ガイドへ追加した。catalog 34件とnative開発用6 family・9版の掲載漏れはなく、別途Androidの`article-tool`（既存Mr. Toolの端末実装）とnativeの`hello`作成例を明記した。Fashion Brand Opsの41 MCP操作は一つのpackageの内部操作として扱い、candidateや作成例を稼働中の担当へ数えない。`npm run sky:check`へcatalog・native ID・toolkitsのガイド掲載検査を追加し、今後の登録漏れも検出する。対象検査、型検査、製品lintは通過。`npm run verify`はNode全体試験の出力停止で中断し、全体PASSとは記録しない。
 
-追補: 利用者から、CSV業務、メルカリ収益ループ、Material Invention Studioを「Web/OS内のサービス」としてSkyのチームから分離した分類への訂正があった。`PROJECTS.md`と製品関係図をSkyのチーム内の仕事として整理し直した。CSVとメルカリは既存のready catalog Toolから各専用画面へ進める。Material Inventionは複合機能で、Core sandboxはあるがSky接続と操作画面は未実装。旧ガイドの`app/studio/`は発明画面ではなくSky Tool SDK用Rock Studioだったため、誤った実装リンクを除いた。分類を戻さない検査を`sky:check`へ追加した。`sky:check`、`project:check`、`repository:check`、`design:check`、diff整合が合格。`npm run verify`は型検査と製品lintまで通過後、既存のNode全体試験が出力停止したため中断し、全体PASSとは記録しない。
+## 2026-09-24 — rocketstar完全版と設計作業一式を保存
 
-最終網羅監査: Webのトップレベル画面、Sky catalog、native registry、Android Tool、6 Toolkit、2 Worker、製品Site、共有領域を`PROJECTS.md`と照合した。Work／ActivityはZemaへの転送、`/polymarket`は`/market`への転送、`/studio`はSky Tool作者用であることを明示し、Fashion Brand OpsとWeb共通画面・共有素材の入口も追加した。READMEの現行紹介に残っていたE2／伸縮塔とMaterial Inventionの操作画面が完成しているような表現を現行E3・sandbox段階へ修正した。一方、Web内`app/rockstaros/`の製品紹介には旧P0.2の外観と税込価格が残るため、現行E3製品Siteとの差をガイドに明示し、WEB06の未完了作業として保持する。旧画面を現行E3や最新版配備済みとは扱わない。Sky catalog 34件、native 6 family、6 Toolkit、2 Worker、製品SiteとWebの各画面がガイドへ分類され、変更した3文書のローカルリンク切れは0。`sky:check`、`project:check`、`repository:check`、`baseline:check`、`design:check`、diff整合は合格。`CI=true npm run verify`は型検査と製品lintを通過後、ローカルのNode全体試験が出力停止したため中断し、全体PASSとは記録しない。次は同一SHAのGitHub Actionsで全体検証を確認する。
+主担当Git / CI / OperationsのROCK、DOC03。利用者が `https://github.com/k999ln/rock.git` へ「漏れなく更新保存」と明示したため、最新main `261251871115c782790ec8cc752a3dd4077a2ec0`から分離した作業branchで、[設計アーカイブ](docs/rocketstar-design/README.md)へ原本と生成元を取り込んだ。ロケットR1.0は44ページ・35章、60要求・18全体接続を含む。旧版、図、計算、監査、QA画像、OSのschema/DDL等の付録、洋ナシ形ボタン設計と元画像を保持した。
+
+保存対象932ファイル・148,595,667 bytesを元ファイルとSHA-256で全件照合し、8 ZIPのCRCと現行R1.0 manifestを確認した。除外251件は機械キャッシュとインストール済QA依存だけで、全パス・理由をinventoryに記録。保存検証は `python3 scripts/verify-rocketstar-archive.py --git`。原本の古いパスや再生成時の外部依存は履歴として保持し、別環境での全再生成成功と読み替えない。
+
+現行R5の1本自律・別Hub不要は維持し、原本内E3やHub前提のボタンをR5へ自動適用しない。OS原本PDFは既存保存物と同一hashで、以前未提供だった個別付録の受領状態を更新した。runtime、公開Site、OS image、機材、実送信・打上げは本更新で変更しない。保存検証15件、製品・設計台帳・進捗の整合、`npm run verify`を完走し、[検証記録](docs/rocketstar-design/repository-validation.json)へ保存した。GitHubへの反映と同一commitのCI結果はPR/commitの状態を根拠とし、資料の保存を製造・飛行・再使用の実証へ数えない。
+
+## 2026-09-24 — R5統合設計パッケージをGitの正本へ保存
+
+利用者の「k999ln/rockへ漏れなく更新保存」に基づき、main `0eb4fe48b1e7309e838b0441954d97e22272b4ca`から分離してMAT14を開始。前回渡したR5のPDF51ページ、Word、Markdown、図面8SVG+8PNG、計算・参考資料と元ZIPをそのまま保存し、生活研究報告と監査記録も追加する。原本の26ファイルSHAと27ファイルZIPを照合する。READMEの全task表はproject.mdへ集約し、READMEには概要と入口だけを同期する。
+
+現行製品要求は使用時200mm以内・1本自律・同型mini増設・別Hub不要。E3の4本＋別Hub必須を履歴へ移し、製品ベース、設計ポータル・台帳、workstreamを同期する。既存MAT01〜13、Pixel/QEMU、Material schema、Walletや公開サイトの実装は変更しない。全空間裸眼表示、精密3D入力、収納、熱・電源、確定回路・加工図はMAT15の未完了事項。設計資料の保存と実機・製造・Site配備の受入を区別する。
+
+検証結果は[保存・検証記録](docs/avocado-mini-r5/verification.json)に記載する。Git保存、mainへの反映、同一SHAのCIは別々に確認する。
+
+保存中にmainへ入った`0adb6f84c25a284c650ccbec4baa511c41b0705a`（OS完全版v1.0、DOC02）も履歴を保って統合する。原本PDF/TXT/完全性記録と検査は改変しない。OS原本内のE3配置はR5に適用せず、R5用Device Profile・adapter統合を未完了として明記する。製品ベース統合版はv1.93。原本の末尾空行7箇所はSHA一致のため保存する。
+
+統合後の`npm run verify`はローカル通信を許可したmacOS / Node 26.0.0でexit 0。Node 360/360、追加19/19、ローカルAPI 149項目、buildと84 asset参照を確認した。関連22テスト、R5原本26 hash・27 ZIP member・14計算チェックも通過。初回のローカルDB起動制限と中間runのMCP非終了は再試験で解消し、旧E1/E3入口の文書assertionは履歴/現行の区別へ更新した。これらは資料・既存ソフトウェアのローカル検証で、物理試作0件・製造保留・公開Site未変更は維持する。
+
+## 2026-09-24 — RockstarOS 設計書完全版 v1.0をGit正本へ保存
+
+利用者が新しい設計書として指定した41ページの原本PDFを、内容を省略せず保存した。GitHubで全文検索できる抽出テキストと、原本・抽出テキストのSHA-256、ページ数、章・profile・service・要求件数を固定する完全性記録を追加し、設計ポータル、製品ベース、機械可読設計台帳から参照できるようにした。PDFの埋め込み添付は0件で、本文が言及する付属schema・DDL等の個別原本は今回の提供物に含まれないため、未受領のまま明示する。43/43は構造・DDL検査であり、runtime、実機、飛行、量産の受入完了には算入しない。主担当はGit / CI / OperationsのROCK、外部依存と本人追加操作はない。
 
 ## 2026-09-23 — Tower20 E3の回転画像を透過素材へ変更
 
@@ -888,16 +907,22 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
+## 全taskの作業進捗
+
 <!-- project-status:start -->
-最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 96/147件
+最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 99/151件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
 | ORG01 | 製品・SkyのAI自動化チーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備 | 完了 | [記録](PROJECTS.md) · [記録](README.md) · [記録](docs/rockstaros-product-system-map.md) · [記録](docs/workstreams/README.md) · [記録](scripts/check-sky.mjs) |
+| MAT14 | R5統合基本設計・PDF/Word・図面8組・計算・参考資料を欠落なく保存し、現行入口と履歴を整理（製造承認保留） | 完了 | [記録](docs/avocado-mini-r5/README.md) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/avocado-mini-r5/verification.json) · [記録](scripts/verify-avocado-r5-package.py) |
+| MAT15 | R5単体の裸眼空間表示・安全・精密3D入力を成立させ、収納/熱/電源/確定回路/加工図と実機受入を閉じる | 未着手 | [記録](docs/avocado-mini-r5/package/integrated_design.md) |
 | UXCHAR01 | Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果） | 完了 | [記録](components/tool-character.tsx) · [記録](components/tool-character.module.css) · [記録](docs/workstreams/01-product-ux.md) |
 | SKY20 | Sky公開・Telegram配布を証拠付きverified Packageへ限定し、失効と利用イベント再送を受け入れる | 進行中 | [記録](drizzle/0016_red_crusher_hogan.sql) · [記録](lib/sky-tool-review.ts) · [記録](lib/sky-review-auth.ts) · [記録](app/api/sky/tool-reviews/route.ts) · [記録](lib/sky-tool-package-store.ts) · [記録](lib/sky-activation.ts) · [記録](lib/sky-tool-events.ts) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](tests/sky-tool-package.test.mjs) · [記録](tests/sky-activation.test.mjs) · [記録](tests/sky-tool-sdk.test.mjs) · [記録](docs/sky-tool-sdk.md) |
 | SKY19 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
 | DOC01 | RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化 | 完了 | [記録](docs/rockstaros-design-portal.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
+| DOC02 | RockstarOS設計書完全版v1.0の原本PDF・全文抽出・完全性記録・設計索引をGit正本へ保存 | 完了 | [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rockstaros-complete-design-v1.0.txt) · [記録](data/rockstaros-complete-design-v1.0.json) · [記録](docs/rockstaros-design-portal.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
+| DOC03 | rocketstar R1.0・衛星・OS付録・ボタン・生成元・旧版を原本と照合し、設計アーカイブと索引へ保存（製造/飛行未認定） | 完了 | [記録](docs/rocketstar-design/README.md) · [記録](docs/rocketstar-design/inventory.json) · [記録](docs/rocketstar-design/verification.json) · [記録](scripts/verify-rocketstar-archive.py) · [記録](data/design-document-index.json) |
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
 | AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
@@ -942,7 +967,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
 | WEB05 | avocadoMiniの製品紹介と回転ツアーをP0.2設計書と黒い製品写真のデザインへ統一 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/guide/index.html) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/tower-scene.js) · [記録](sites/avocado-mini/dist/client/index.html) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-front-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-side-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-rear-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-sensor-macro.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-four-point.png) · [記録](sites/avocado-mini/public/images/avocado-mini-kit.png) · [記録](sites/avocado-mini/public/images/avocado-mini-head-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-base-p0.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
-| WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、Web内の旧P0.2画面とE3正本、既存Siteの公開版を同期する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB10 | 製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](docs/product-baseline.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
@@ -1060,7 +1085,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: Build and validate the integrated Tower20 E3 prototype: final CAD and wiring, four-camera timing and calibration, optical coverage, tip and sliding safety, thermal and power behavior, voice and game latency, signed RockstarOS image, recovery and manufacturing acceptance.
+次の作業: avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
 <!-- project-status:end -->
 
 ## 次段階の設計
