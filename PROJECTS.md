@@ -24,6 +24,79 @@ Rocket Starの`/rocket-star/`はavocadoMiniサイト内の専用ページであ�
 | **CSV業務** — データ整形の事業pilot | [`app/csv/`](app/csv/) | [Business Pilots](docs/workstreams/09-business-pilots.md)・[CSV業務](docs/csv-business-v1.ja.md) |
 | **メルカリ収益ループ** — 出品から入金確認までの事業pilot | [`app/income/mercari/`](app/income/mercari/)・[`lib/mercari-revenue.ts`](lib/mercari-revenue.ts) | [Business Pilots](docs/workstreams/09-business-pilots.md)・[メルカリ設計](docs/mercari-revenue-loop.md) |
 
+## Sky内のTool
+
+Web/PC版Skyの登録正本は[`lib/catalog.ts`](lib/catalog.ts)です。現在はready 12件（Rock側で作成8件、`Mr.`由来4件）とcandidate 22件（Rock側の構想1件、`Mr.`由来11件、第三者候補10件）。`ready`はSky catalog上の状態であり、外部Providerや本番決済まで接続済みという意味ではありません。[全Tool詳細設計](docs/sky-tools-complete-design.md)に権限・入出力・停止条件があります。
+
+### Rock側で作成・登録したTool
+
+| Sky ID | Tool | catalog状態 | 主な実装・入口 |
+| --- | --- | --- | --- |
+| `rockstar-csv-cleanup` | CSV整形・検査・納品 | ready | [`app/csv/`](app/csv/)・[`lib/csv-transform.ts`](lib/csv-transform.ts) |
+| `rockstar-markets-analysis` | Market Scanner | ready | [`app/market/`](app/market/)・[`lib/markets-adapter.ts`](lib/markets-adapter.ts) |
+| `mercari-revenue` | メルカリ収益スターター | ready | [`app/income/mercari/`](app/income/mercari/)・[`lib/mercari-revenue.ts`](lib/mercari-revenue.ts) |
+| `fashion-brand-ops` | Instagram運用・受注型ブランド管理 | ready | [`toolkits/fashion-brand-ops/`](toolkits/fashion-brand-ops/) |
+| `rockstar-ledger` | サブスク顧問 | ready | [`toolkits/rockstar-ledger/`](toolkits/rockstar-ledger/) |
+| `jev-evaluation` | Jev品質評価 | ready | [`lib/jev-evaluation.ts`](lib/jev-evaluation.ts)・[`app/api/jev-evaluation/`](app/api/jev-evaluation/) |
+| `rockstar-legal-intake` | 法務受付 | ready | [`lib/legal-intake.ts`](lib/legal-intake.ts)・[`app/api/legal-guidance/`](app/api/legal-guidance/) |
+| `rockstar-patent-assistant` | 特許アシスタント | ready | [`lib/patent-assistant.ts`](lib/patent-assistant.ts)・[`app/api/patent-research/`](app/api/patent-research/) |
+| `rockstar-ip-studio` | IP Studio — SNS・ゲーム運用 | candidate | [catalog登録](lib/catalog.ts)・[設計](docs/sky-tools-complete-design.md)。Sky実行器は未接続 |
+
+Jev評価はRock側のToolと外部の評価先を組み合わせる構成です。`origin: rockstaros`はモデルそのものをRockが所有する意味ではありません。
+
+### `Mr.`から取り込んだready Tool
+
+| Sky ID | Tool | Rock内の入口 |
+| --- | --- | --- |
+| `coconala` | ココナラ案件チェック | [`vendor/mr/application_eligibility.py`](vendor/mr/application_eligibility.py)・[`toolkits/mr/`](toolkits/mr/) |
+| `mr-free-article` | 記事の無料版メーカー | [`vendor/mr/make-free-version.py`](vendor/mr/make-free-version.py)・[`toolkits/mr/`](toolkits/mr/) |
+| `mr-citations` | 出典整理ツール | [`vendor/mr/citation-strip.py`](vendor/mr/citation-strip.py)・[`toolkits/mr/`](toolkits/mr/) |
+| `mr-delivery` | 納品記録の照合 | [`vendor/mr/deliverable_verifier.py`](vendor/mr/deliverable_verifier.py)・[`toolkits/mr/`](toolkits/mr/) |
+
+`vendor/mr`は固定snapshotです。Rock側の接続・振る舞いは[`toolkits/mr/`](toolkits/mr/)と[取り込み設計](docs/mr-integration.md)で追います。
+
+### 導入候補
+
+以下は[`lib/catalog.ts`](lib/catalog.ts)に`candidate`として登録された22件です。実行可能な標準Toolや本番接続として数えません。
+
+| 由来 | Sky ID・表示名 |
+| --- | --- |
+| Rock構想 | `rockstar-ip-studio` — IP Studio — SNS・ゲーム運用 |
+| `Mr.` | `coconala-proposal-draft` — ココナラ提案文の下書き |
+| `Mr.` | `gig-workflow` — 受託案件ワークフロー |
+| `Mr.` | `coconala-inbox` — ココナラの依頼・添付整理 |
+| `Mr.` | `youtube-script-writer` — YouTube台本 |
+| `Mr.` | `seo-blueprint` — SEO・記事構成 |
+| `Mr.` | `landing-page-sprint` — LP・販売ページ制作 |
+| `Mr.` | `sales-objection-reply-builder` — 商談返信・見積り支援 |
+| `Mr.` | `user-interview-synthesizer` — 顧客インタビュー分析 |
+| `Mr.` | `calendar-coordination` — 予定・カレンダー連携 |
+| `Mr.` | `telegram-notifications` — Telegram通知・承認 |
+| `Mr.` | `producthunt-discovery` — 外部ツール候補の発見 |
+| 第三者 | `faster-whisper` — 文字起こし |
+| 第三者 | `transformers-js` — ブラウザAI |
+| 第三者 | `playwright` — 許可Web操作 |
+| 第三者 | `jev-ultrafast` — 選択型browser agent |
+| 第三者 | `jev-trader` — PAPER市場判断 |
+| 第三者 | `typesafe-computer-use` — Mac画面操作 |
+| 第三者 | `jev-review` — code review |
+| 第三者 | `jev-router` — model routing |
+| 第三者 | `jev-browser` — browser操作 |
+| 第三者 | `mobile-jev` — Android操作 |
+
+### Linux/QEMUに同梱した開発用Tool
+
+Web/PC catalogとは別に、[`systems/rock-star-os/examples/registry/`](systems/rock-star-os/examples/registry/)には次の6 family・9版があります。公開RFC試験鍵を使う開発用packageです。
+
+| package ID | 内容 |
+| --- | --- |
+| `org.example.action-checklist` | 共有用チェックリスト |
+| `org.rockstar.citation-organizer` | 引用整理 |
+| `org.rockstar.proposal-draft` | 提案下書き |
+| `org.rockstar.text-tidy` | 文章を整える |
+| `org.rockstar.unique-list` | リストの重複を整理 |
+| `org.rockstar.utf8-sha256` | 入力テキストのSHA-256 |
+
 ## 実装・配備単位
 
 | 単位 | 対象と境界 | ソース | 担当・検証の入口 |

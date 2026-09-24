@@ -4,6 +4,8 @@
 
 主担当Git / CI / Operationsの`ROCK`として、製品・実装・配備単位の入口を[`PROJECTS.md`](PROJECTS.md)に集約した。avocadoMini、Rocket Star構想、RockstarOS、Webアプリ内のSky／Zema／Wallet／Market／Fund／CSV、Linux/QEMU、Android/Pixel、独立WorkerとToolのソース、設計、担当workstreamを対応付け、READMEと作業分野別案内から辿れるようにした。Rocket StarはavocadoMiniサイト内の専用構想ページであり、衛星通信や資金受付の完成と区別した。`public-release`は配布候補、`vendor/mr`は固定原本であることを明記した。既存ソースの移動や製品状態の変更はしていない。相対リンクの存在、`git diff --check`、`npm run project:check`、`repository:check`、`baseline:check`、`design:check`を確認した。`npm run verify`は型検査と製品lintまで通過したが、Node全体試験が出力を止めたため中断し、全体PASSとは記録しない。次は本PRのレビュー後に必要なCI結果を確認する。
 
+追補: Sky内でRock側が作成・登録した標準Toolを一行にまとめていたため、`lib/catalog.ts`のready 12件（Rock側8、`Mr.`由来4）、candidate 22件（Rock構想1、`Mr.`由来11、第三者10）を個別に記載した。Linux/QEMU内蔵の開発用6 family・9版も別枠で示した。catalog上のready、外部Provider接続、native開発packageを混同しない。
+
 ## 2026-09-23 — Tower20 E3の回転画像を透過素材へ変更
 
 公開商品ページの180°製品turnで、元画像の黒いstudio背景が長方形に見えていた問題を解消した。正面・側面・背面の3画像を、製品形状・camera窓・base・4脚を残した透過RGBA素材へ変更し、元画像に含まれていた床、反射、spotlight haze、背景を削除した。CSSで長方形をぼかして隠すradial maskも外し、Siteの背景へ製品を直接重ねる。接地感は製品下の小さなsoft shadowだけで補う。正面0°・側面98°・背面180°を実画面で確認し、公開Site v40（source `068bdf6a489cf57e2806c45923aa5161a5e51195`）へ配備した。画像はE3設計方向を伝える構想CGであり、量産実機写真や実camera性能の証拠ではない。
