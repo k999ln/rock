@@ -1,5 +1,11 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-24 — 指定されたTower20 E3の公開Siteをそのまま復元
+
+利用者が再提示した画面収録と10枚のスクリーンショットを基準に、R5向けへ置き換わっていた公開ホームを、指定どおりのTower20 E3サイトへ戻した。Astroは維持し、画像の生成・描き替えは行わず、履歴に残る承認済み原本を再利用した。4本の200 mm Motion Towerと中央のEdge Hubの全景、「Intelligence, built into space.」、横送りのHighlights 4枚、「Everything, for the space.」、正面・側面・背面を使う180°スクロール、RockstarOSのOpen installer、avokadinc footerを復元した。
+
+Astro buildは11 route、Site試験12/12。ローカル実ブラウザで全景、Highlights、RockstarOS終端を照合した。GitHub `main`の製品sourceは`4e7221d`、Site sourceは`b7a3b722f04f965ea2b038ace7bee752e2945109`、公開v66、deployment `appgdep_6ab5e2a14b4c81919479f8a24538ada7`が成功した。公開URLは`https://avocado-mini.kirin-999.chatgpt.site`。画面上もconcept rendering、未実施の物理試験、未確定の製造・販売条件を明記し、予約APIの販売停止は維持する。
+
 ## 2026-09-24 — avokado miniの元画像を保護して公開Siteの問題を修正
 
 利用者の指摘に従い、製品画像を生成・描き替えた差し替え案を採用せず、提供済みの`avocado-mini-r5-black-studio.png`と既存の承認済み画像だけへ戻した。製品の形状・部品・質感は変更せず、CSSの配置、トリミング、背景の接続だけでPCとスマートフォンへ馴染ませた。画像を中央から外していた表示アニメーションを修正し、Highlights見出しが11pxへ縮むselector衝突も解消した。
@@ -1020,7 +1026,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 103/155件
+最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 104/156件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -1090,6 +1096,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB16 | 公開avocadoMini Siteを現行R5へ同期し、旧E3商品構成・価格を販売導線から撤去する | 完了 | [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/pages/preorder/index.astro) · [記録](sites/avocado-mini/worker/index.js) · [記録](sites/avocado-mini/tests/preorder.test.mjs) · [記録](sites/avocado-mini/public/downloads/avocadoMini-R5-integrated-design.pdf) · [記録](docs/evidence/avocado-mini-site-r5.json) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](project.md) |
 | WEB17 | 公開avocadoMini SiteをAstroへ移行し、承認済みデザイン・全route・Worker配布契約を維持する | 完了 | [記録](sites/avocado-mini/package.json) · [記録](sites/avocado-mini/astro.config.mjs) · [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/pages/rocket-star/index.astro) · [記録](sites/avocado-mini/src/pages/preorder/index.astro) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/worker/index.js) · [記録](sites/avocado-mini/tests/astro-build.test.mjs) · [記録](sites/avocado-mini/tests/preorder.test.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](project.md) |
 | WEB18 | 公開avocadoMini Siteの画像原本を保護し、表示・導線・アクセシビリティ・SEOの不具合を解消する | 完了 | [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/worker/index.js) · [記録](sites/avocado-mini/tests/astro-build.test.mjs) · [記録](sites/avocado-mini/tests/preorder.test.mjs) · [記録](sites/avocado-mini/public/robots.txt) · [記録](sites/avocado-mini/public/sitemap.xml) · [記録](docs/evidence/avocado-mini-site-r5.json) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](project.md) |
+| WEB19 | 利用者指定のTower20 E3公開Siteを承認済み画像・英語UI・180度演出ごとAstroで復元して本番配備する | 完了 | [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/tests/astro-build.test.mjs) · [記録](docs/evidence/avocado-mini-site-e3-restoration.json) · [記録](project.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

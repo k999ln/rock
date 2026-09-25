@@ -1086,6 +1086,22 @@
       ]
     },
     {
+      "id": "WEB19",
+      "title": "利用者指定のTower20 E3公開Siteを承認済み画像・英語UI・180度演出ごとAstroで復元して本番配備する",
+      "status": "done",
+      "dependsOn": [
+        "WEB17"
+      ],
+      "evidence": [
+        "sites/avocado-mini/src/pages/index.astro",
+        "sites/avocado-mini/src/main.js",
+        "sites/avocado-mini/src/style.css",
+        "sites/avocado-mini/tests/astro-build.test.mjs",
+        "docs/evidence/avocado-mini-site-e3-restoration.json",
+        "project.md"
+      ]
+    },
+    {
       "id": "BIZ01",
       "title": "無料配布の対象とOS従量課金の計量単位・単価・上限を確定する",
       "status": "in_progress",
