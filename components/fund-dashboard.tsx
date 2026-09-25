@@ -409,8 +409,7 @@ export function FundDashboard({
           <span className="outline-tag">すべて試算 / 入金・送金なし</span>
         </div>
         <p className="subnote">
-          運用費を先に回収し、月最大 $8.88 相当のRock
-          star利用料をファンド全体で1回だけ控除。残りを基本分配・ブースト・共同留保へ分ける案です。
+          運用費を先に考慮し、残りを基本分配・ブースト・共同留保へ分ける案です。収益料金は現在保留中のため、試算から差し引きません。
         </p>
         <div className="distribution-grid">
           <div className="panel scenario-panel">
@@ -482,7 +481,7 @@ export function FundDashboard({
                   </div>
                   <span>−</span>
                   <div>
-                    <span>RockstarOS利用料</span>
+                    <span>収益料金（保留中）</span>
                     <strong>{yen(calculation.fee)}</strong>
                   </div>
                 </div>

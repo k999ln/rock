@@ -11,7 +11,7 @@ export default function FundPage() {
           <Link href="/">⌂ ホーム</Link>
           <Link href="/sky">← Skyに戻る</Link>
         </nav>
-        <span>自律形成 · 検証済み収益のみ · 月最大$8.88</span>
+        <span>自律形成 · 収益料金は動線確定まで保留中</span>
       </div>
       <AutonomousFundMarket />
     </>

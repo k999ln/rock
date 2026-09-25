@@ -7,9 +7,14 @@ void test('fund cash is conserved through fees, member payouts and reserves',()=
     const r=distributeFund(p);
     assert.equal(r.revenue,r.recovered+r.fee+r.distributable);
     assert.equal(r.distributable,r.mine+r.others+r.reserve);
-    assert.ok(r.fee<=Math.round(p.fx*8.88));
+    assert.equal(r.fee,0);
     for(const key of ['mine','others','reserve','fee','unrecovered'])assert.ok(r[key]>=0);
   }
+});
+void test('legacy fund fixture preserves the old cap without using it by default',()=>{
+  const p={...defaultFund,revenue:130000,commonCost:0};
+  assert.equal(distributeFund(p).fee,0);
+  assert.equal(distributeFund(p,true).fee,Math.round(p.fx*8.88));
 });
 void test('boosts never become revenue, even with no income or unrecovered costs',()=>{
   for(const revenue of [0,100,10000]){

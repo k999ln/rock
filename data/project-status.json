@@ -2344,7 +2344,7 @@
     },
     {
       "id": "BIL01",
-      "title": "先払い月額を停止し、検証済み自動化収益からだけ実費後に月最大888 centsを精算",
+      "title": "旧888 cents収益精算の試験実装を保持し、現行ToC料金は動線確定まで停止",
       "status": "done",
       "dependsOn": [],
       "evidence": [
@@ -2364,7 +2364,9 @@
         "BIL01"
       ],
       "evidence": [
-        "docs/sky-billing.md"
+        "docs/sky-billing.md",
+        "docs/workstreams/03-wallet-billing-providers.md",
+        "tests/billing-worker.test.mjs"
       ]
     },
     {

@@ -6,9 +6,9 @@ export type CsvFeeDecision = {
   policyVersion: typeof CSV_FEE_POLICY_VERSION;
   monthJst: string;
   verifiedNetUsdMinor: number;
-  feeDueUsdMinor: 0 | 888;
-  status: 'waived' | 'due';
-  reason: 'below_threshold' | 'eligible';
+  feeDueUsdMinor: 0;
+  status: 'on_hold';
+  reason: 'revenue_flow_pending';
 };
 
 export function csvFeeDecision(input: {
@@ -24,13 +24,12 @@ export function csvFeeDecision(input: {
   )
     throw new Error('VERIFIED_NET');
   if (!input.providerEvidence.trim()) throw new Error('PROVIDER_EVIDENCE');
-  const eligible = input.verifiedNetUsdMinor >= CSV_MONTHLY_THRESHOLD_USD_MINOR;
   return {
     policyVersion: CSV_FEE_POLICY_VERSION,
     monthJst: input.monthJst,
     verifiedNetUsdMinor: input.verifiedNetUsdMinor,
-    feeDueUsdMinor: eligible ? 888 : 0,
-    status: eligible ? 'due' : 'waived',
-    reason: eligible ? 'eligible' : 'below_threshold',
+    feeDueUsdMinor: 0,
+    status: 'on_hold',
+    reason: 'revenue_flow_pending',
   };
 }

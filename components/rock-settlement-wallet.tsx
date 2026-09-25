@@ -2,8 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  Check,
-  Copy,
   ExternalLink,
   Link2,
   LoaderCircle,
@@ -40,7 +38,7 @@ type RockWalletSnapshot = {
   provider: {
     providerId: string;
     displayName: string;
-    mode: 'LIVE_RECEIVE';
+    mode: 'LIVE_RECEIVE' | 'ON_HOLD';
     custody: false;
     network: 'base';
     chainId: typeof BASE_MAINNET_CHAIN_ID;
@@ -182,8 +180,6 @@ export default function RockSettlementWallet() {
   const [snapshot, setSnapshot] = useState<RockWalletSnapshot | null>(null);
   const [busy, setBusy] = useState(true);
   const [message, setMessage] = useState('');
-  const [copied, setCopied] = useState(false);
-  const [hashes, setHashes] = useState<Record<string, string>>({});
   const mounted = useRef(true);
 
   const refresh = useCallback(async (signal?: AbortSignal) => {
@@ -276,41 +272,6 @@ export default function RockSettlementWallet() {
     }
   }
 
-  async function copyAddress() {
-    if (!snapshot?.account?.address) return;
-    await navigator.clipboard.writeText(snapshot.account.address);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1500);
-  }
-
-  async function reconcile(instructionId: string) {
-    const transactionHash = hashes[instructionId]?.trim();
-    if (!transactionHash) return;
-    setBusy(true);
-    setMessage('');
-    try {
-      const result = await walletApi<{ status: string }>(
-        '/v1/rock-wallet/reconcile',
-        {
-          method: 'POST',
-          body: JSON.stringify({ instructionId, transactionHash }),
-        },
-      );
-      setMessage(
-        result.status === 'collected'
-          ? 'Base上のUSDC着金を確認しました。'
-          : '取引は見つかりました。finalized後にもう一度照合してください。',
-      );
-      await refresh();
-    } catch (error) {
-      setMessage(
-        error instanceof Error ? error.message : '着金を照合できませんでした。',
-      );
-    } finally {
-      setBusy(false);
-    }
-  }
-
   async function revoke() {
     setBusy(true);
     setMessage('');
@@ -331,7 +292,9 @@ export default function RockSettlementWallet() {
 
   const active = snapshot?.account?.status === 'active' && snapshot.operator;
   const actionable =
-    snapshot?.collections.filter((item) => item.amountMinor > 0) ?? [];
+    snapshot?.collections.filter(
+      (item) => item.amountMinor > 0 && item.status === 'collected',
+    ) ?? [];
 
   return (
     <section
@@ -353,6 +316,8 @@ export default function RockSettlementWallet() {
         </span>
       </header>
 
+      <p>収益料金と回収動線は現在保留中です。新しい受取先登録・回収・着金照合は行いません。確認済みの履歴のみ表示します。</p>
+
       {active && snapshot?.account ? (
         <div className="rock-settlement-account">
           <div>
@@ -365,10 +330,6 @@ export default function RockSettlementWallet() {
             </span>
           </div>
           <div className="rock-settlement-actions">
-            <button type="button" onClick={() => void copyAddress()}>
-              {copied ? <Check size={16} /> : <Copy size={16} />}
-              {copied ? 'コピー済み' : 'アドレスをコピー'}
-            </button>
             <a
               href={`${BASE_EXPLORER_URL}/address/${snapshot.account.address}`}
               target="_blank"
@@ -388,14 +349,14 @@ export default function RockSettlementWallet() {
       ) : (
         <div className="rock-settlement-connect">
           <div>
-            <strong>BaseのUSDC受取先を登録</strong>
+            <strong>受取先登録は保留中</strong>
             <p>
-              外部Walletで所有署名を行い、Rock利用料の受取先にします。署名は送金権限ではありません。
+              料金と回収動線の確定後に、受取先登録の案内を更新します。
             </p>
           </div>
           <button
             type="button"
-            disabled={busy || snapshot?.canClaim === false}
+            disabled
             onClick={() => void connect()}
           >
             {busy ? (
@@ -415,7 +376,7 @@ export default function RockSettlementWallet() {
             <dd>{usd(snapshot.totals.collectedMinor)}</dd>
           </div>
           <div>
-            <dt>着金待ち</dt>
+            <dt>旧指図・保留中</dt>
             <dd>{usd(snapshot.totals.pendingMinor)}</dd>
           </div>
           <div>
@@ -428,7 +389,7 @@ export default function RockSettlementWallet() {
       {active && actionable.length > 0 && (
         <div className="rock-settlement-collections">
           <div className="rock-settlement-section-title">
-            <strong>回収指図</strong>
+            <strong>過去の着金履歴</strong>
             <button disabled={busy} onClick={() => void refresh()}>
               <RefreshCw size={14} /> 更新
             </button>
@@ -440,7 +401,7 @@ export default function RockSettlementWallet() {
                 <strong>{usd(item.amountMinor)} USDC</strong>
                 <small>{item.receiptId}</small>
               </div>
-              {item.status === 'collected' && item.transactionHash ? (
+              {item.transactionHash && (
                 <a
                   href={`${BASE_EXPLORER_URL}/tx/${item.transactionHash}`}
                   target="_blank"
@@ -448,30 +409,6 @@ export default function RockSettlementWallet() {
                 >
                   取引を確認 <ExternalLink size={14} />
                 </a>
-              ) : (
-                <form
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    void reconcile(item.instructionId);
-                  }}
-                >
-                  <input
-                    aria-label={`${item.receiptId}のBase取引ハッシュ`}
-                    placeholder="0x… 取引ハッシュ"
-                    value={
-                      hashes[item.instructionId] ?? item.transactionHash ?? ''
-                    }
-                    onChange={(event) =>
-                      setHashes((current) => ({
-                        ...current,
-                        [item.instructionId]: event.target.value,
-                      }))
-                    }
-                  />
-                  <button disabled={busy} type="submit">
-                    着金を照合
-                  </button>
-                </form>
               )}
             </article>
           ))}
@@ -484,7 +421,7 @@ export default function RockSettlementWallet() {
       <footer>
         <ShieldCheck size={15} />
         <span>
-          対象は検証済み収益から確定したRock利用料のみ。ユーザー資産の保管・任意送金・ファンド運用は行いません。
+          収益料金は保留中です。旧指図による新たな送金を行わないでください。
         </span>
       </footer>
     </section>

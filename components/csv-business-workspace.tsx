@@ -537,9 +537,7 @@ export default function CsvBusinessWorkspace() {
 
         <footer className={styles.footer}>
           <p>
-            月額利用料は、JST月内のProvider確認済み純入金が30
-            USD相当以上の利用者だけ8.88
-            USD。未達月は0、繰越債務なし。市場手数料・税・返金は先に差し引きます。
+            販売者向けの8.88 USD料金案は、収益動線が決まるまで保留中です。現在、新たな利用料の計上・請求は行いません。
           </p>
           <Link href="/csv/terms">取引条件・プライバシー・返金</Link>
         </footer>

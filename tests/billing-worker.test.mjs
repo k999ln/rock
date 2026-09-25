@@ -5,7 +5,9 @@ import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import { privateKeyToAccount } from 'viem/accounts';
 import { createBillingToken } from '../lib/billing-token.ts';
-import billingWorker from '../services/sky-billing/src/worker.ts';
+import billingWorker, {
+  legacyFixtureBillingWorker,
+} from '../services/sky-billing/src/worker.ts';
 
 class Statement {
   #database;
@@ -83,6 +85,90 @@ const sharedSecret = 'test-billing-shared-secret-that-is-long-enough';
 const ingestSecret = 'test-receipt-ingest-secret-that-is-long-enough';
 const payoutSecret = 'test-payout-adapter-secret-that-is-long-enough';
 
+void test('current policy rejects a signed ToC receipt without writing a fee', async () => {
+  const DB = new TestD1();
+  const env = {
+    DB,
+    BILLING_SHARED_SECRET: sharedSecret,
+    SETTLEMENT_INGEST_SECRET: ingestSecret,
+    PAYOUT_ADAPTER_SECRET: payoutSecret,
+    SKY_ORIGIN: origin,
+  };
+  try {
+    const health = await billingWorker.fetch(
+      new Request('https://settlement.example/health'),
+      env,
+    );
+    assert.equal((await health.json()).mode, 'fee_policy_on_hold');
+    const status = await billingWorker.fetch(
+      new Request('https://settlement.example/v1/status', {
+        headers: {
+          Origin: origin,
+          Authorization: `Bearer ${await createBillingToken('alice', sharedSecret)}`,
+        },
+      }),
+      env,
+    );
+    assert.equal(status.status, 200);
+    const statusBody = await status.json();
+    assert.equal(statusBody.policy.mode, 'fee_policy_on_hold');
+    assert.equal(statusBody.policy.monthlyFeeCapMinor, null);
+    assert.equal(statusBody.settlement.remainingFeeCapMinor, null);
+    const walletChallenge = await billingWorker.fetch(
+      new Request('https://settlement.example/v1/rock-wallet/challenge', {
+        method: 'POST',
+        headers: { Origin: origin },
+      }),
+      env,
+    );
+    assert.equal(walletChallenge.status, 409);
+    assert.equal(
+      (await walletChallenge.json()).code,
+      'SKY_FEE_POLICY_ON_HOLD',
+    );
+    const walletReconcile = await billingWorker.fetch(
+      new Request('https://settlement.example/v1/rock-wallet/reconcile', {
+        method: 'POST',
+        headers: { Origin: origin },
+      }),
+      env,
+    );
+    assert.equal(walletReconcile.status, 409);
+    const receipt = {
+      receiptId: 'hold_1',
+      executionReceiptId: 'exec_hold_1',
+      userId: 'alice',
+      beneficiaryRole: 'toc',
+      sourceProvider: 'stripe-connect',
+      providerReference: 'pi_hold_1',
+      payoutAccountId: 'acct_alice',
+      evidenceSha256: 'a'.repeat(64),
+      currency: 'usd',
+      grossAmountMinor: 1000,
+      operatingCostMinor: 100,
+      occurredAt: Math.floor(Date.now() / 1000),
+    };
+    const raw = JSON.stringify(receipt);
+    const blocked = await billingWorker.fetch(
+      new Request('https://settlement.example/v1/earnings', {
+        method: 'POST',
+        headers: { 'Sky-Receipt-Signature': signature(raw) },
+        body: raw,
+      }),
+      env,
+    );
+    assert.equal(blocked.status, 409);
+    assert.equal((await blocked.json()).code, 'SKY_FEE_POLICY_ON_HOLD');
+    assert.equal(
+      DB.database.prepare('SELECT COUNT(*) AS total FROM earning_receipts').get()
+        .total,
+      0,
+    );
+  } finally {
+    DB.close();
+  }
+});
+
 function signature(
   raw,
   timestamp = Math.floor(Date.now() / 1000),
@@ -93,7 +179,7 @@ function signature(
     .digest('hex')}`;
 }
 
-void test('settlement Worker applies verified earnings once and never charges upfront', async () => {
+void test('legacy settlement fixture applies verified earnings once', async () => {
   const DB = new TestD1();
   const env = {
     DB,
@@ -103,7 +189,7 @@ void test('settlement Worker applies verified earnings once and never charges up
     SKY_ORIGIN: origin,
   };
   const request = async (path, options = {}) => {
-    const response = await billingWorker.fetch(
+    const response = await legacyFixtureBillingWorker.fetch(
       new Request(`https://settlement.example${path}`, {
         method: options.method ?? 'GET',
         headers: {

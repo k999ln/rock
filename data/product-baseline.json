@@ -1159,7 +1159,7 @@
     "architecture": "docs/sky-mcp-architecture.md",
     "toolDesign": "docs/sky-tools-complete-design.md"
   },
-  "commercialPolicy": "Sky has no upfront ToC subscription charge. A trusted provider adapter may settle only externally verified automation earnings linked to an Execution Receipt. Direct operating costs are recovered first; Sky then collects at most USD 8.88 per user per UTC month from the remaining settled earnings. Zero earnings means zero fee; no debt, carry-forward or card charge. Sky charges tob no registration, connection, publication or base usage fee and takes zero Sky commission from tob tool sales. Live collection or payout requires verified sales, payment and payout providers, merchant and beneficiary details, disclosures, credentials, sandbox acceptance and owner confirmation. Rock ATM fee remains zero per RQ15; game fees are unspecified.",
+  "commercialPolicy": "The USD 8.88 ToC revenue fee proposal is on hold until the revenue flow and collection terms are decided. No new ToC fee assessment, invoice, collection or payout is authorized. The 888-cent values below are historical design and regression fixtures, not current pricing. Sky charges ToB no registration, connection, publication or base usage fee and takes zero Sky commission from ToB tool sales. Third-party costs remain separate. Rock ATM fee remains zero per RQ15; game fees are unspecified.",
   "skyNetworkEconomy": {
     "tobSkyFeeMinor": 0,
     "tobSkySalesCommissionBps": 0,
@@ -1462,13 +1462,17 @@
   },
   "commercialPolicyRevision": {
     "requestedAt": "2026-09-17",
-    "status": "terms_pending_not_implemented",
+    "updatedAt": "2026-09-24",
+    "status": "on_hold_pending_revenue_flow",
+    "tocFeeAssessmentEnabled": false,
+    "csvSellerFeeAssessmentEnabled": false,
+    "legacy888FixtureOnly": true,
     "requestedModel": "Percentage success fee on verified profit attributable to Sky automation, not a fixed usage fee; Wallet is the payment interface even when external sales are paid to the user's own bank account.",
     "developerRewardSource": "A portion of actually collected success fees; no separate developer-reward surcharge on users.",
     "successFeeBps": null,
-    "legacyMonthlyCapDecision": "pending",
+    "legacyMonthlyCapDecision": "on_hold_not_current_price",
     "profitDefinition": "pending",
     "collectionMethod": "pending",
-    "runtimePolicy": "commercialPolicy and skyNetworkEconomy below describe the existing implementation, not acceptance of the new percentage model. No live billing, automatic bank debit or developer payout is enabled by this request. Publication does not specify an open-source license."
+    "runtimePolicy": "Production Sky Billing rejects new ToC Earning Receipts with SKY_FEE_POLICY_ON_HOLD. Historical 888-cent fixtures remain only for regression. CSV fee decisions return zero due while the revenue flow is pending. No live billing, automatic bank debit or developer payout is enabled. Publication does not specify an open-source license."
   }
 }

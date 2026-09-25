@@ -7,7 +7,7 @@
 ## 現在地
 
 - 本人別の売上、経費、取消、残高、receiptをD1へ保存するWallet APIと画面がある。
-- 検証済み収益から実費を先に引き、月最大8.88 USDだけを回収する精算核を実装済み。
+- 月最大8.88 USDの旧精算核は回帰検証用の履歴として保持。現行の利用者向け料金案は収益動線が確定するまで保留し、新しいToC収益Receiptは精算Workerで拒否する。
 - Rock First-party Settlement Walletのsandbox契約を実装済み。
 - Base Mainnet USDCの受取先所有署名、公式contract、exact金額、finalized block照合コードはある。
 - Provider署名を検証し、完了済み・非サンプルのTool実行と利用者・Tool・時刻を照合してからEarning ReceiptをWalletへ一度だけ渡すbridgeは、fixture縦断試験まで合格済み。
@@ -17,11 +17,12 @@
 
 ## 次に進める順番
 
-1. 最初の販売・決済Providerを一つ選び、sandbox署名を現在のbridgeへ接続する。
-2. Provider sandbox条件で入金、返金、順序逆転、重複、結果不明を縦断する。
-3. 販売、決済、払出しProviderの責任、KYC、税、chargeback、最低払出額を確定する。
-4. 最初の本人確認済み実transferをexact receiptへ結び、照合証拠を残す。
-5. LIVE有効化は秘密鍵非保管と本人最終確認を維持して別gateで行う。
+1. 収益動線、料金の対象・計算・上限・回収方法・同意を確定し、新しい料金契約を設計する。
+2. 最初の販売・決済Providerを一つ選び、sandbox署名を現在のbridgeへ接続する。
+3. Provider sandbox条件で入金、返金、順序逆転、重複、結果不明を縦断する。
+4. 販売、決済、払出しProviderの責任、KYC、税、chargeback、最低払出額を確定する。
+5. 最初の本人確認済み実transferをexact receiptへ結び、照合証拠を残す。
+6. LIVE有効化は秘密鍵非保管と本人最終確認を維持して別gateで行う。
 
 ## 完了条件
 

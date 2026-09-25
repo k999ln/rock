@@ -203,7 +203,7 @@ export default function PolymarketWorkspace() {
                     {assessment.metrics.trades.toLocaleString()} trades / 勝率{' '}
                     {(assessment.metrics.winRate * 100).toFixed(1)}% / 合成PnL ${assessment.metrics.totalPnl.toFixed(2)}
                   </span>
-                  <small>{assessment.message} 8.88 USDの回収原資: 0 USD</small>
+                  <small>{assessment.message} 収益料金は保留中です。</small>
                 </>
               ) : (
                 <><strong>reportを受理できません</strong><span>{assessment.code}</span></>

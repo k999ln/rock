@@ -28,7 +28,7 @@ export const limits: Record<keyof EstimateInput, number> = {
   dataRate: 100000,
   apiCost: 100000000,
 };
-export function estimate(input: EstimateInput) {
+export function estimate(input: EstimateInput, legacyFixture = false) {
   for (const key of Object.keys(limits) as (keyof EstimateInput)[]) {
     if (
       typeof input[key] !== 'number' ||
@@ -40,7 +40,7 @@ export function estimate(input: EstimateInput) {
       throw new Error('入力値の範囲を確認してください。');
   }
   const revenue = Math.round(input.revenue);
-  const feeCap = Math.round(8.88 * input.fx);
+  const feeCap = legacyFixture ? Math.round(8.88 * input.fx) : 0;
   const electricity = Math.round(
     (input.watts / 1000) * input.hours * input.kwhRate,
   );
