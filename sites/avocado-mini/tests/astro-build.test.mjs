@@ -32,7 +32,19 @@ test('Astro emits every public route and the Worker deployment contract', () => 
 });
 
 test('Astro output preserves the approved product, Rocket Star, and preorder pages', () => {
-  assert.match(built('client/index.html'), /avocadoMini R5/);
+  const home = built('client/index.html');
+  assert.match(home, /avocadoMini R5/);
+  for (const image of [
+    'avocado-mini-tower20-e3-kit.png',
+    'tower20-e3-highlight-sensor-v2.png',
+    'tower20-e3-highlight-200mm-v1.png',
+    'tower20-e3-highlight-footprint-v1.png',
+    'tower20-e3-highlight-edge-hub-v1.png',
+    'tower20-e3-front-cutout-v1.png',
+    'tower20-e3-side-cutout-v1.png',
+    'tower20-e3-rear-cutout-v1.png',
+    'tower20-e3-sensor-macro.png',
+  ]) assert.match(home, new RegExp(`/images/${image.replaceAll('.', '\\.')}`));
   assert.match(built('client/rocket-star/index.html'), /Complete product design/);
   assert.match(built('client/preorder/index.html'), /予約・決済停止中/);
 });

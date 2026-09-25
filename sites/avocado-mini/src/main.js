@@ -114,8 +114,11 @@ gallery?.addEventListener('scroll', updateGalleryControls, { passive: true });
 window.addEventListener('resize', updateGalleryControls);
 updateGalleryControls();
 
-function showView() {
-  frames.forEach((frame, index) => { frame.style.opacity = index === 0 ? '1' : '0'; });
+function showView(yaw) {
+  const frontToSide = smooth(clamp((yaw - 30) / 30, 0, 1));
+  const sideToRear = smooth(clamp((yaw - 120) / 30, 0, 1));
+  const opacities = [1 - frontToSide, frontToSide * (1 - sideToRear), sideToRear];
+  frames.forEach((frame, index) => { frame.style.opacity = opacities[index] ?? 0; });
 }
 
 function updateStory(progress) {
@@ -157,7 +160,7 @@ function updateProgress() {
   const motion = motionAt(Math.min(progress, priceStart));
   const mobile = window.innerWidth < 800;
   const yaw = reducedMotion.matches ? 0 : motion.yaw;
-  showView();
+  showView(yaw);
 
   const x = motion.x * (mobile ? 0.28 : 1);
   const priceBlend = smooth(clamp((progress - 0.88) / 0.04, 0, 1));
@@ -185,8 +188,8 @@ function updateProgress() {
   sensorGaze.style.setProperty('--gaze-upper-y', `${productBounds.top + productBounds.height * 0.12}px`);
   sensorGaze.style.setProperty('--gaze-lower-y', `${productBounds.top + productBounds.height * 0.71}px`);
 
-  progressBar.style.width = `${Math.round(progress * 100)}%`;
-  angle.textContent = 'R5';
+  progressBar.style.width = `${Math.round(motion.yaw / 180 * 100)}%`;
+  angle.textContent = reducedMotion.matches ? 'STATIC VIEW' : `${Math.round(motion.yaw)}°`;
   updateStory(progress);
 }
 
