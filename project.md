@@ -21,7 +21,7 @@
 - WEB21: 製品名（PR #40）
 - BIL04: 8.88 USDの後継条件とRQ20の期待値
 - ORG02: 優先系列
-- AI09: AI系fixtureの先行可否
+- AI09: AI系fixtureの先行可否 → **2026-09-25 01:26 ETに本人決定済み**（Core offline仕事loopとGame最小loopのhost／fixture段階は、OS10完了前に先行してよい。emulator・実機・OS統合の合格には転用しない）。本PRではtaskの状態を変えず、AI09のdone化と依存注記はPR #42で行う
 
 予約・決済の有効化は判断待ちのままで、WEB15は停止中。
 
