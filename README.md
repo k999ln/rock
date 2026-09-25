@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/brand/avokado/avokado-motion.gif" alt="avokado — PLAY, MAKE, LIVE を表すオリジナルのモーショングラフィック" width="100%">
+<img src="docs/brand/avokado/avokado-motion-v2.gif" alt="avokadoの製品コンセプト。銀色の細いavocadoMini R5が1本立ち、PLAY・MAKE・LIVEの文字に控えめな線の動きが入る" width="100%">
 
 # avokado
 
@@ -10,17 +10,11 @@
 小さな専用端末 **avocadoMini R5** と、仕事・AI・作品・権限を支える現行OS設計 **RockstarOS v1.0** を設計しています。
 両段を回収・再使用する小型衛星輸送ロケット **rocketstar** は、別の現行設計系列です。
 
-[製品体験](#製品体験) · [機能の詳細](#機能の詳細) · [現在地](#現在地) · [設計書ライブラリ](#設計書ライブラリ)
+[製品体験](#製品体験) · [機能の詳細](#機能の詳細) · [現在地](#現在地) · [設計書ライブラリ](#設計書ライブラリ) · [静止画](docs/brand/avokado/avokado-r5-editorial-hero.png)
 
 </div>
 
-<p align="center">
-  <img src="docs/brand/avokado/avocado-mini-r5-concept.png" alt="avocadoMini R5の外観コンセプト。銀色の細い円筒、黒いカメラ帯、低い円形台座を持つ1本のmini" width="460">
-  <br>
-  <sub>avocadoMini R5 · 1本で基本機能を担う構成</sub>
-</p>
-
-> **画像の扱い** — 製品ビジュアルは外観を示すコンセプト画像です。ハードウェアの実機写真や、空間表示の実証映像ではありません。上のGIFはブランドの概念を表すオリジナルアニメーションです。
+> **画像の扱い** — 冒頭のR5ビジュアルは設計上の外観に基づくコンセプト画像です。GIFの線はブランド表現で、実機写真や空間表示の実証映像ではありません。
 
 **設計書をすぐ開く:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [全設計書の一覧](#設計書ライブラリ)
 
