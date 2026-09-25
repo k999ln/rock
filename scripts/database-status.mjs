@@ -148,8 +148,14 @@ export function buildDatabaseStatus() {
       label: 'Android Work Engine SQLite',
       engine: 'SQLite',
       authority: 'Android work・artifact・run・event',
-      sources: ['android/core/src/main/resources/schema.sql'],
-      tables: collectTables(['android/core/src/main/resources/schema.sql']),
+      sources: [
+        'android/core/src/main/resources/schema.sql',
+        'android/core/src/main/java/dev/rock/core/ModelProfiles.java',
+      ],
+      tables: collectTables([
+        'android/core/src/main/resources/schema.sql',
+        'android/core/src/main/java/dev/rock/core/ModelProfiles.java',
+      ]),
       expectedAppliedThrough: null,
     },
     {

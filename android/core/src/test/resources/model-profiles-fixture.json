@@ -1,0 +1,50 @@
+{
+  "schema": "rock-model-profile-fixture/1",
+  "purpose": "Host/fixture profiles for AI02 JVM tests. Hashes are SHA-256 of fixture labels, not real weights; no model is downloaded or loaded.",
+  "runtimeAdapter": {
+    "source": "contracts/local-ai-runtime.json",
+    "apiVersion": 2,
+    "formats": [
+      "GGUF"
+    ],
+    "planSchema": "article-preparation@1/input-v1"
+  },
+  "profiles": [
+    {
+      "modelId": "fixture-local-planner",
+      "version": "1.0",
+      "weightsSha256": "ead95b510bb29479912f95e4edb0afce101f57f5d7c6cad516a14cf4098a723d",
+      "tokenizerSha256": "98b893741b3c30022bb25b1a5293f0418cb110235f2b449ee36f9a0508b76336",
+      "chatTemplateSha256": "4de74c78f30565c19dc67d3f94190e85e19c1986a5998e335efeca425a2a6b44",
+      "license": "Apache-2.0",
+      "runtimeApiMin": 2,
+      "runtimeApiMax": 2,
+      "quantization": "Q8_0",
+      "format": "GGUF",
+      "contextTokens": 4096,
+      "planSchema": "article-preparation@1/input-v1",
+      "requiredRamBytes": 1073741824,
+      "requiredStorageBytes": 805306368,
+      "measuredOn": "fixture-not-measured",
+      "qualityResult": "fixture-not-evaluated"
+    },
+    {
+      "modelId": "fixture-local-planner",
+      "version": "1.1",
+      "weightsSha256": "af9b6f323160a77c9127c9524370f0a6ecf96117fbcd5f32f5507a87f117e434",
+      "tokenizerSha256": "40a114d7be417ea407c164b322265142e61701b1326a658353914da2b6aa022a",
+      "chatTemplateSha256": "9893803ac147747e2b069c6c9bff71dd58bf807587b1c0cb0e6ad82648d8de8d",
+      "license": "Apache-2.0",
+      "runtimeApiMin": 2,
+      "runtimeApiMax": 2,
+      "quantization": "Q8_0",
+      "format": "GGUF",
+      "contextTokens": 8192,
+      "planSchema": "article-preparation@1/input-v1",
+      "requiredRamBytes": 1073741824,
+      "requiredStorageBytes": 805306368,
+      "measuredOn": "fixture-not-measured",
+      "qualityResult": "fixture-not-evaluated"
+    }
+  ]
+}

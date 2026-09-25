@@ -14,6 +14,7 @@
 - Operator Agentは試験署名Pixel 5/5に加え、本番公開trust入力をrepo外から静的RROへstageする検査を実装した。StrongBox必須、factory reset無効、P-256／origin／challenge検証と、challengeへ結び付く端末鍵aliasをAndroid 15 emulator 6/6で確認した。本番値投入、attestation検証、Device Owner実行、複数端末向けdynamic enrollmentは未完了。
 - Platform Core v1はTool／MCP／Provider共通AIDL、APK署名・UID照合、本人確認付き承認、Wallet台帳、schema v1→v2 migration、dual-wrapped backup v2、所有者phrase UI、transactional restore、新Keystore再binding、更新／rollback gate、source SELinux policyまで実装中。`dev.rock.automation`をheadless Brokerとして残し、Home／Sky／Zemaを`dev.rock.shell`へ分離するsource、Android Gradle build／lint、emulatorとPixelのBinder統合試験は完了。物理wipe復元、AOSP full build、SELinux enforcing boot、production署名は未実施。
 
+- 2026-09-25、AI02のhost／fixture段階を実装した（`ModelProfile`・`ModelProfiles`、schema `model_meta` v1、Engine schema v2は変更なし）。対象は、一つのruntime adapter（Local AI API v2・GGUF・`article-preparation@1/input-v1`）上の互換な2つのfixture profileで、次をJVM試験で固定した: profile IDの不変、adapterと非互換な版・未知の版の拒否、隔離試験後だけactivate、世代pointerの切替、health失敗時は前profileへrollback、失効profileへは戻さず「model利用不可」、旧workは作成時profileに固定したまま再起動後も再開、新workは新profile、別profileでの結果報告は拒否、pin中profileのretire拒否、失効pinは停止し明示replanで新revision。`LocalAiConnection`・Shell・実weightには未接続で、emulator・実機・OS統合の証拠ではない（その段階はOS10依存のまま、AI09の本人決定）。
 主なtask: `DSP01`, `OS02`〜`OS11`, `N03`〜`N05`, `RLS02`。Local AIは`OS07`〜`OS09`、Platform Coreは`OS10`〜`OS11`で追跡する。新設計のモデル更新・記憶・外部作用・app能力は未着手の`AI02`〜`AI05`として分ける。
 
 ## 次に進める順番
@@ -50,6 +51,7 @@
 
 - `npm run device-support:check`
 - `python3 -m unittest tests/test_prepare_phone_build.py tests/test_stage_local_ai_apk.py tests/test_freeze_phone_build_inputs.py`
+- AI02 host試験: `gradle -p android :core:test`に`ModelProfilesTest`を含む。boxではGradle/Android SDKなしのため、`javac --release 11`とJUnit 4.13.2で`android/core`のmain/testを直接compile・実行して代替した
 - `gradle -p android :core:test :shell-api:assembleDebug :automation:assembleDebug :shell:assembleDebug :article-tool:assembleDebug :automation:lintDebug :shell:lintDebug :article-tool:lintDebug --no-daemon`
 - 同一debug signerのLocal AI／Broker／Tool／Shellを導入したAndroid 15 emulatorでBroker 11 non-skipped testとShell 5 testを実行し、モデルなし0件停止、schema migration、選択復元、不正token拒否、phrase確認、v2 export、新Keystore再bindingを確認する。stock Pixelはseed後に実再起動し、別processのrecover phaseでlease回収、2 Tool、結果、7履歴eventまで確認する。物理wipe復元は純正復旧artifactを揃えた別の管理試験にする。従来のplan受入は[証拠](../evidence/android-local-ai-plan-v2-20260916.json)、backup emulator受入は[証拠](../evidence/android-backup-v2-emulator-20260916.json)。
 - 対象端末のflash／boot／OTA／rollback／stock recovery受入

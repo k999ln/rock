@@ -16,12 +16,12 @@ void test('database status inventories every boundary and keeps production readb
     project.tasks.map(({ id, status }) => [id, status]),
   );
   assert.equal(report.summary.boundaryCount, 6);
-  assert.equal(report.summary.tableCount, 80);
+  assert.equal(report.summary.tableCount, 85);
   assert.equal(report.summary.sourceVerifiedCount, 6);
   assert.equal(report.summary.currentProductionReadbackCount, 0);
   assert.equal(taskStatus.SKY07, 'in_progress');
   assert.equal(taskStatus.WEB01, 'blocked');
-  assert.equal(report.projectProgress.blocked, 6);
+  assert.equal(report.projectProgress.blocked, 5);
   assert.equal(
     report.boundaries.find(({ id }) => id === 'web-d1').deployment
       .deploymentStatus,

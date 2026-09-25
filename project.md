@@ -1,5 +1,27 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-25 — AI02のhost／fixture段階: ModelProfileの登録・仕事への版固定・モデル切替（AI09の本人決定を記録）
+
+**本人決定（AI09、OWNER判断済み）:** 2026-09-25 01:26 ET、決定者は本人、根拠はチャットでの本人指示。Core offline仕事loopとGame最小loopの両方を、OS10の完了前にhost／fixture段階で先に進めてよい。ただし、emulator・実機・OS統合の合格には転用しない。AI09はdoneにした。AI02〜AI05のtask名には「host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま」と注記した。`dependsOn`のOS10は残した。AI06はGame側の作業者の担当範囲なので、本記録では変更していない。
+
+**実装（AI02、in_progress）:** `android/core`（純Java）に`ModelProfile`と`ModelProfiles`を追加した。設計書（`docs/ai-native-os-architecture.md`の2章）のとおり、Brokerが持つ管理transactionとして実装している。
+- 前提: 一つのruntime adapter（Local AI API v2、GGUF、plan schema `article-preparation@1/input-v1`）の上に、互換なfixture profileを2つ置く。
+- 旧workは作成時のprofileに固定したまま、再起動後も同じprofileで再開する。profileを切り替えた後に作った新workは新profileを使う。
+- 固定したprofile以外が報告した結果は拒否し、状態を変えない。
+- 未知の版、adapterと非互換な版（API・形式・plan schema）、同じIDで内容が違う版は拒否する。
+- 隔離試験に合格した版だけをactivateでき、切替は世代pointerで行う。health確認に失敗したら、検査済みの前profileへ戻す。失効した版へは戻さず「model利用不可」で止める。
+- 未完了のworkが固定しているprofileはretireできない。失効したprofileに固定されたworkは停止し、明示的なreplanで新revisionとして作り直す。
+- Engineの変更は、停止用の`hold`を1つ足しただけで、schema v2は変えていない。
+- これはhost／fixture段階の実装で、`LocalAiConnection`・Shell・実weightには接続していない。emulator・実機・OS統合の証拠ではない。
+- 設計書・contractは編集していない。
+
+検証: host（box）の結果は次のとおり。
+- `android/core`のJVM試験（`javac --release 11`とJUnit 4.13.2による代替実行）: 43/43。内訳は既存37件と`ModelProfilesTest` 6件。box にはGradle と Android SDK がないため`gradle :core:test`そのものは実行できず、結果はCIの android.yml で確認する。
+- `ModelProfilesTest`の変異確認: 別profileでの結果報告を受け入れるよう改変した場合と、再提出で固定profileが上書きされるよう改変した場合に、どちらも失敗することを確認した。
+- `npm run verify`（Node v22.23.3）: exit 0。root Node試験368/368（`tests/model-profile-fixture.test.mjs`でfixtureとcontractの一致を検査）、Fashion 19/19、Site 13/13、Web asset 83参照・欠落0。
+- `os:check`・`android:architecture:check`・`llm:architecture:check`・`device-support:check`: いずれも合格。
+- 期待値の変更: database inventoryにmodel_* 5 tableを加えたためtable数を80から85へ、blocked taskが1件減ったためblocked数を6から5へ更新した。
+
 ## 2026-09-25 — 公開avocadoMini／avokadoProの参考価格を正式化し、台帳をmainと公開Siteへ同期（WEB20・DOC05）
 
 **本人決定（OWNER判断済み）:** 2026-09-25 00:49 ET、決定者は本人、根拠はチャットでの本人指示（開発統括Bot経由）。公開中のavocadoMini／avokadoProの構成と参考価格を正式とし、Site source（`851bb04`）の表記と完全一致で記録した。
@@ -1063,7 +1085,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-25 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 106/163件
+最終更新: 2026-09-25 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 107/163件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -1078,10 +1100,10 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | DOC03 | rocketstar R1.0・衛星・OS付録・ボタン・生成元・旧版を原本と照合し、設計アーカイブと索引へ保存（製造/飛行未認定） | 完了 | [記録](docs/rocketstar-design/README.md) · [記録](docs/rocketstar-design/inventory.json) · [記録](docs/rocketstar-design/verification.json) · [記録](scripts/verify-rocketstar-archive.py) · [記録](data/design-document-index.json) |
 | DOC04 | avokado READMEをR5端末・RockstarOS v1.0現行OS・rocketstar R1.0現行ロケット・事業・機能・全設計書の入口へ刷新 | 完了 | [記録](README.md) · [記録](docs/brand/avokado/avokado-r5-editorial-hero.png) · [記録](docs/brand/avokado/avokado-motion-v2.gif) · [記録](docs/brand/avokado/avokado-system-map.svg) · [記録](data/design-document-index.json) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) |
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
-| AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
-| AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
-| AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
-| AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 進行中 | [記録](docs/ai-native-os-architecture.md) · [記録](android/core/src/main/java/dev/rock/core/ModelProfile.java) · [記録](android/core/src/main/java/dev/rock/core/ModelProfiles.java) · [記録](android/core/src/test/java/dev/rock/core/ModelProfilesTest.java) · [記録](android/core/src/test/resources/model-profiles-fixture.json) · [記録](tests/model-profile-fixture.test.mjs) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](project.md) |
+| AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI08 | Jev／TypeSafe・Local Qwen・Cloud LLMをcode主導で統合するDecision Fabric全体詳細設計と機械可読安全契約を固定 | 完了 | [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) |
 | AI07 | JevのSky明示利用を設計し、DecisionProviderとRouter／Harnessへの統合を受け入れる | 進行中 | [記録](docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md) · [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) · [記録](docs/jev-ecosystem-integration-design.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/llm-evaluation-architecture.md) · [記録](data/llm-capabilities.json) · [記録](scripts/check-llm-architecture.mjs) |
@@ -1140,7 +1162,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB21 | 外部製品名（PR #40のavokado mini改名案）を決め、Site・台帳・brand表記へ一括反映する | 停止中: OWNER判断待ち（2026-09-25時点、開発側で決めない）。PR #40は26ファイル競合で同一SHAのCIもない。名称が決まるまで現行表記avocadoMini／avokadoProを維持する。 | [記録](docs/product-baseline.md) · [記録](docs/evidence/ledger-sync-20260925.json) |
 | BIL04 | 保留中の8.88 USD収益料金の後継条件を決め、RQ20期待値・AGENTS.md・check-product-baseline.mjs・monthlyFeeCapMinor・entitlement記述を整合させる | 停止中: OWNER判断待ち（2026-09-25時点、開発側で決めない）。収益動線確定まで料金は保留（BIL01）。旧888 cents記述はRQ20見出し、AGENTS.md、checker、monthlyFeeCapMinor、systems/rock-star-os/os/entitlement/README.mdに残る。期待値変更は本人決定後に行う。 | [記録](data/product-baseline.json) · [記録](AGENTS.md) · [記録](scripts/check-product-baseline.mjs) · [記録](systems/rock-star-os/os/entitlement/README.md) |
 | ORG02 | 優先系列（milestone=Pixel full build準備、nextAction=MAT15、本人指示のA→B→C）を一本化し、AGENTS.md・project-status・workstreamへ反映する | 停止中: OWNER判断待ち（2026-09-25時点、開発側で決めない）。三つの記述が並存し、どれを最優先にするか本人の決定が必要。 | [記録](AGENTS.md) · [記録](docs/workstreams/README.md) · [記録](docs/evidence/ledger-sync-20260925.json) |
-| AI09 | AI02〜AI06のfixture段階をOS10・AI03・AI05の完了前に先行してよいかを決め、依存関係を更新する | 停止中: OWNER判断待ち（2026-09-25時点、開発側で決めない）。現行の依存を変えずに記録だけ行う。 | [記録](data/project-status.json) · [記録](docs/workstreams/07-android-device-local-ai.md) |
+| AI09 | 本人決定（2026-09-25 01:26 ET、チャット指示）: Core offline仕事loopとGame最小loopの両方を、OS10完了前にhost／fixture段階で先行してよい。emulator・実機・OS統合の合格には転用しない。AI02〜AI05の依存注記に反映（AI06はGame側作業の担当範囲のため本記録では変更しない） | 完了 | [記録](data/project-status.json) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](project.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

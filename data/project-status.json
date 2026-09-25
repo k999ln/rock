@@ -168,19 +168,26 @@
     },
     {
       "id": "AI02",
-      "title": "モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入",
-      "status": "planned",
+      "title": "モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま）",
+      "status": "in_progress",
       "dependsOn": [
         "AI01",
         "OS10"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md"
+        "docs/ai-native-os-architecture.md",
+        "android/core/src/main/java/dev/rock/core/ModelProfile.java",
+        "android/core/src/main/java/dev/rock/core/ModelProfiles.java",
+        "android/core/src/test/java/dev/rock/core/ModelProfilesTest.java",
+        "android/core/src/test/resources/model-profiles-fixture.json",
+        "tests/model-profile-fixture.test.mjs",
+        "docs/workstreams/07-android-device-local-ai.md",
+        "project.md"
       ]
     },
     {
       "id": "AI03",
-      "title": "モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入",
+      "title": "モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま）",
       "status": "planned",
       "dependsOn": [
         "AI01",
@@ -192,7 +199,7 @@
     },
     {
       "id": "AI04",
-      "title": "1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装",
+      "title": "1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま）",
       "status": "planned",
       "dependsOn": [
         "AI01",
@@ -204,7 +211,7 @@
     },
     {
       "id": "AI05",
-      "title": "Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入",
+      "title": "Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま）",
       "status": "planned",
       "dependsOn": [
         "AI01",
@@ -1184,13 +1191,13 @@
     },
     {
       "id": "AI09",
-      "title": "AI02〜AI06のfixture段階をOS10・AI03・AI05の完了前に先行してよいかを決め、依存関係を更新する",
-      "status": "blocked",
+      "title": "本人決定（2026-09-25 01:26 ET、チャット指示）: Core offline仕事loopとGame最小loopの両方を、OS10完了前にhost／fixture段階で先行してよい。emulator・実機・OS統合の合格には転用しない。AI02〜AI05の依存注記に反映（AI06はGame側作業の担当範囲のため本記録では変更しない）",
+      "status": "done",
       "dependsOn": [],
-      "reason": "OWNER判断待ち（2026-09-25時点、開発側で決めない）。現行の依存を変えずに記録だけ行う。",
       "evidence": [
         "data/project-status.json",
-        "docs/workstreams/07-android-device-local-ai.md"
+        "docs/workstreams/07-android-device-local-ai.md",
+        "project.md"
       ]
     },
     {
