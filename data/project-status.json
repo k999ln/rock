@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24",
+  "updatedAt": "2026-09-25",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
   "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
   "tasks": [
@@ -1021,7 +1021,9 @@
         "sites/avocado-mini/worker/index.js",
         "sites/avocado-mini/db/schema.ts",
         "sites/avocado-mini/tests/preorder.test.mjs",
-        "docs/workstreams/05-web-pwa-sites.md"
+        "docs/workstreams/05-web-pwa-sites.md",
+        "package.json",
+        "tests/verify-coverage.test.mjs"
       ]
     },
     {
@@ -1099,6 +1101,96 @@
         "sites/avocado-mini/tests/astro-build.test.mjs",
         "docs/evidence/avocado-mini-site-e3-restoration.json",
         "project.md"
+      ]
+    },
+    {
+      "id": "WEB20",
+      "title": "本人決定（2026-09-25 00:49 ET）により公開avocadoMini／avokadoProの構成と参考価格（¥160,000・¥410,000・From ¥880,000／US$5,800、税・送料別）をSite表記どおり正式として台帳へ反映し、Site表示・販売停止・実機0件・R5価格未確定を維持する",
+      "status": "done",
+      "dependsOn": [
+        "WEB19"
+      ],
+      "evidence": [
+        "data/product-baseline.json",
+        "docs/product-baseline.md",
+        "scripts/check-product-baseline.mjs",
+        "tests/avocado-r5-docs.test.mjs",
+        "docs/evidence/ledger-sync-20260925.json",
+        "data/system-composition-audit.json",
+        "docs/workstreams/05-web-pwa-sites.md",
+        "project.md"
+      ]
+    },
+    {
+      "id": "DOC05",
+      "title": "PR・task・配備記録なしでmainへ直接入った5コミット（9c1332e・8617863・4b49bf9・862ba30・851bb04）を証拠へ記録し、PR #39のSite試験verify組込みと網羅検査を取り込む",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "docs/evidence/ledger-sync-20260925.json",
+        "package.json",
+        "tests/verify-coverage.test.mjs",
+        "docs/workstreams/05-web-pwa-sites.md",
+        "project.md"
+      ]
+    },
+    {
+      "id": "MAT16",
+      "title": "R5とavocadoMini／avokadoPro製品ラインの関係（同一・後継・別系列、価格の扱い）を決め、R5要求とMAT15の範囲を見直す",
+      "status": "blocked",
+      "dependsOn": [],
+      "reason": "OWNER判断待ち（2026-09-25時点、開発側で決めない）。公開Siteと台帳はMini/Pro製品ラインを正式とした一方、R5価格は未確定・E3価格非継承のまま。/preorder/は旧¥160,000／¥410,000をR5へ引き継がないと表示している。R5との関係が決まるまでMAT15の範囲とnextActionを変更しない。",
+      "evidence": [
+        "data/product-baseline.json",
+        "docs/product-baseline.md",
+        "docs/evidence/ledger-sync-20260925.json"
+      ]
+    },
+    {
+      "id": "WEB21",
+      "title": "外部製品名（PR #40のavokado mini改名案）を決め、Site・台帳・brand表記へ一括反映する",
+      "status": "blocked",
+      "dependsOn": [],
+      "reason": "OWNER判断待ち（2026-09-25時点、開発側で決めない）。PR #40は26ファイル競合で同一SHAのCIもない。名称が決まるまで現行表記avocadoMini／avokadoProを維持する。",
+      "evidence": [
+        "docs/product-baseline.md",
+        "docs/evidence/ledger-sync-20260925.json"
+      ]
+    },
+    {
+      "id": "BIL04",
+      "title": "保留中の8.88 USD収益料金の後継条件を決め、RQ20期待値・AGENTS.md・check-product-baseline.mjs・monthlyFeeCapMinor・entitlement記述を整合させる",
+      "status": "blocked",
+      "dependsOn": [],
+      "reason": "OWNER判断待ち（2026-09-25時点、開発側で決めない）。収益動線確定まで料金は保留（BIL01）。旧888 cents記述はRQ20見出し、AGENTS.md、checker、monthlyFeeCapMinor、systems/rock-star-os/os/entitlement/README.mdに残る。期待値変更は本人決定後に行う。",
+      "evidence": [
+        "data/product-baseline.json",
+        "AGENTS.md",
+        "scripts/check-product-baseline.mjs",
+        "systems/rock-star-os/os/entitlement/README.md"
+      ]
+    },
+    {
+      "id": "ORG02",
+      "title": "優先系列（milestone=Pixel full build準備、nextAction=MAT15、本人指示のA→B→C）を一本化し、AGENTS.md・project-status・workstreamへ反映する",
+      "status": "blocked",
+      "dependsOn": [],
+      "reason": "OWNER判断待ち（2026-09-25時点、開発側で決めない）。三つの記述が並存し、どれを最優先にするか本人の決定が必要。",
+      "evidence": [
+        "AGENTS.md",
+        "docs/workstreams/README.md",
+        "docs/evidence/ledger-sync-20260925.json"
+      ]
+    },
+    {
+      "id": "AI09",
+      "title": "AI02〜AI06のfixture段階をOS10・AI03・AI05の完了前に先行してよいかを決め、依存関係を更新する",
+      "status": "blocked",
+      "dependsOn": [],
+      "reason": "OWNER判断待ち（2026-09-25時点、開発側で決めない）。現行の依存を変えずに記録だけ行う。",
+      "evidence": [
+        "data/project-status.json",
+        "docs/workstreams/07-android-device-local-ai.md"
       ]
     },
     {

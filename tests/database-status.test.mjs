@@ -21,7 +21,7 @@ void test('database status inventories every boundary and keeps production readb
   assert.equal(report.summary.currentProductionReadbackCount, 0);
   assert.equal(taskStatus.SKY07, 'in_progress');
   assert.equal(taskStatus.WEB01, 'blocked');
-  assert.equal(report.projectProgress.blocked, 1);
+  assert.equal(report.projectProgress.blocked, 6);
   assert.equal(
     report.boundaries.find(({ id }) => id === 'web-d1').deployment
       .deploymentStatus,

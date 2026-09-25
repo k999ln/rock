@@ -1,6 +1,6 @@
 {
   "schema": "avocadoos-system-composition-audit/1",
-  "updatedAt": "2026-09-18",
+  "updatedAt": "2026-09-25",
   "releaseScope": "requiredForV1_means_os_core_1_0_not_every_application_release",
   "architectureDocument": "docs/ai-native-os-architecture.md",
   "designAuditDocument": "docs/ai-native-os-design-audit.md",
@@ -316,7 +316,8 @@
     "Android release readiness is reported as one of six required gates, not one of five",
     "RQ48 places the AI-native OS at the product core; Game/IP work does not depend on completed Fund earnings",
     "Pixel 23/23 test-signed APK acceptance replaces obsolete physical-reboot-pending and server-only Agent labels",
-    "Material Invention／avocadoMini is now represented by one shared master design and one workstream instead of disconnected Core, XR and device descriptions"
+    "Material Invention／avocadoMini is now represented by one shared master design and one workstream instead of disconnected Core, XR and device descriptions",
+    "2026-09-25: the public-Site versus ledger price contradiction is resolved by owner decision (2026-09-25 00:49 ET, owner, chat instruction): the published avocadoMini/avokadoPro reference prices (¥160,000 / ¥410,000 / From ¥880,000, US$5,800, tax and shipping excluded) are official in product-baseline marketPositioning.publicProductLine; sales/checkout stay closed, R5 pricing and the R5-to-Mini/Pro relationship remain owner decisions tracked as blocked tasks MAT16, WEB21, BIL04, ORG02 and AI09 in project-status rather than here"
   ],
   "priorityOrder": [
     "Implement Core 1.0 model profiles, minimal memory, pure-effect enforcement and local capabilities on the completed two-phase native Sky in-flight reboot recovery acceptance; run MAT05 synthetic scene and pose acceptance independently in parallel",

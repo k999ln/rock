@@ -1032,6 +1032,48 @@ export function validateBaseline(
       miniR5?.existingPixelQemuMaterialAndWalletEvidencePreserved === true,
     'R5の単体自律・200mm・表示研究ゲートを維持し、公開Site更新を実機やruntime統合の受入へ換算しないでください',
   );
+  const publicLine = data.marketPositioning?.publicProductLine;
+  const publicLineProducts = Array.isArray(publicLine?.products) ? publicLine.products : [];
+  const publicLineConfigurations = publicLineProducts.flatMap((product) =>
+    Array.isArray(product?.configurations) ? product.configurations : [],
+  );
+  const publicLineSources = Array.isArray(publicLine?.siteSource) ? publicLine.siteSource : [];
+  const publicLineSourceText =
+    publicLineSources.length > 0 &&
+    publicLineSources.every(
+      (path) =>
+        typeof path === 'string' &&
+        !isAbsolute(path) &&
+        !relative(root, resolve(root, path)).startsWith('..') &&
+        existsSync(resolve(root, path)),
+    )
+      ? publicLineSources.map((path) => readFileSync(resolve(root, path), 'utf8')).join('\n')
+      : '';
+  requireValue(
+    publicLine?.decisionStatus === 'owner_confirmed' &&
+      publicLine?.decidedBy === 'owner' &&
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[-+]\d{2}:\d{2}$/.test(publicLine?.decidedAt ?? '') &&
+      /^[0-9a-f]{40}$/.test(publicLine?.siteSourceCommit ?? '') &&
+      publicLineProducts.map((product) => product?.id).join(',') === 'avocadoMini,avokadoPro' &&
+      publicLineConfigurations.length === 3 &&
+      publicLineConfigurations.every((configuration) =>
+        ['siteLabel', 'priceDisplayJpy', 'priceDisplayUsd', 'conversionDisplayJpyMode', 'priceNote'].every(
+          (field) =>
+            typeof configuration?.[field] === 'string' &&
+            publicLineSourceText.includes(configuration[field]),
+        ),
+      ) &&
+      publicLine?.taxIncluded === false &&
+      publicLine?.shippingIncluded === false &&
+      publicLine?.salesOpen === false &&
+      publicLine?.checkoutEnabled === false &&
+      publicLine?.physicalTests === 0 &&
+      publicLine?.manufacturingReleased === false &&
+      publicLine?.openOwnerDecisions?.includes('relationship_between_R5_and_the_avocadoMini_avokadoPro_line') &&
+      data.marketPositioning?.legacyCommercialFields?.appliesToCurrentR5 === false &&
+      data.marketPositioning?.r5?.priceStatus === 'not_confirmed_for_R5_do_not_inherit_E3_prices',
+    '公開製品ラインの参考価格はSite sourceの表記と一致させ、販売・決済・実機・製造・R5価格の未確定を維持してください',
+  );
   requireValue(
     data.gameFirstLifeVision?.primaryExperience === 'game_console_then_life_enrichment' &&
       data.gameFirstLifeVision?.localAutonomySeparateFromConnectivity === true &&

@@ -1,3 +1,21 @@
+## 2026-09-25 公開製品ラインと参考価格の正式化（v1.95・OWNER判断済み）
+
+決定者は本人（OWNER）、決定日時は2026-09-25 00:49 ET。根拠は、本人がチャットで出した指示（開発統括Bot経由で受領）。公開Siteで表示中のavocadoMini／avokadoProの構成と参考価格を正式とし、表記は公開SiteのSite source（`sites/avocado-mini/src/pages/`、commit `851bb04`）と完全一致させる。機械可読の正本は[`data/product-baseline.json`](../data/product-baseline.json)の`marketPositioning.publicProductLine`とする。
+
+| 製品・構成（Site表記） | 参考価格（Site表記） | USD表示（Site表記） | 注記（Site表記） |
+|---|---|---|---|
+| 1 × avocadoMini · standalone | ¥160,000 | US$1,050（Approx. US$1,050） | Reference price · tax and shipping excluded |
+| 4 × avocadoMini · avokadoPro sold separately | ¥410,000 | US$2,700（Approx. US$2,700） | Reference Mini package price · tax and shipping excluded |
+| avokadoPro · standalone Hub | From ¥880,000 | From US$5,800（Approx. US$5,800） | Reference price · tax and shipping excluded |
+
+ホームの表記は「Standalone spatial input from ¥160,000.」「Four-Mini reference package ¥410,000.」「Standalone game and services Hub from ¥880,000.」である。この決定でSiteの表示は変更しない。
+
+この決定で変えないこと: 参考価格は税・送料別で、決済金額ではない。予約・決済は開始しない（WEB15は停止のまま）。実機試験0件、製造は未承認のまま。
+
+引き続きOWNER判断待ちとして残すこと: R5とMini/Pro製品ラインの関係、R5要求とMAT15の見直し、予約・決済の有効化、製品名（PR #40 の「avokado mini」への改名）、8.88 USD収益料金の後継条件、RQ20の期待値、優先系列、AI系fixtureの先行可否。
+
+既存記述との関係: 下記の「E3の4本＋別Hub必須、旧価格…はR5へ自動継承しない」と、`marketPositioning.r5.priceStatus`（R5価格は未確定、E3価格を引き継がない）は削除せず維持する。今回正式化した¥160,000／¥410,000は、2026-09-22のE3資料にある「1本16万円＋税、4本＋Edge Hub 41万円＋税」と同じ金額だが、**avocadoMini／avokadoPro製品ラインの参考価格**として確定したものである。R5をこの製品ラインの価格・構成で扱うかどうかは判断待ちで、この決定からR5の価格を導かない。
+
 ## 2026-09-24 収益料金の保留
 
 利用者の明示指示により、8.88 USDの収益料金案は、収益を得る動線が確定するまで保留する。SkyのToC料金とCSV販売者向け料金を現行の請求条件として表示せず、新たな料金計上・請求・回収を行わない。旧888 centsの上限、計算式、試験結果は過去の設計・回帰検証の記録として保持する。対象となる利益、料率・上限、実費、返金、Provider、同意、開発者還元、回収の順序を別途決めた後に再設計・受入する。下記の古い料金判断は履歴であり、この保留方針を上書きしない。
@@ -8,7 +26,7 @@
 
 R5は51ページ・設計検討図8点・候補型番・比較計算・OS契約・組立/受入計画を含む基本設計。全空間裸眼表示、単体の精密3D入力、最終収納・熱・電源・専用NPU、確定回路・加工図は未決を含み、製造承認保留、実機試験0件。14件の自動チェックを実機合格へ換算しない。
 
-E3の4本＋別Hub必須、旧価格、寸法・性能候補はR5へ自動継承しない。外部給電は必要で電池未採用。Pixel/QEMU、既存Material研究契約、権限・Walletの証拠と安全条件を維持する。Git保存と公開サイト配備は別である。2026-09-24に公開SiteをR5へ同期し、提供済みの製品画像を変更せずに表示・導線・アクセシビリティ・SEOの不具合を修正したが、OS image、runtime統合、実機・製造・販売の受入状態は変更していない。
+E3の4本＋別Hub必須、旧価格、寸法・性能候補はR5へ自動継承しない。（2026-09-25注記: 同じ金額¥160,000／¥410,000は、本書冒頭のv1.95でavocadoMini／avokadoPro製品ラインの参考価格として正式化した。R5での扱いはOWNER判断待ちで、この一文は変更しない。）外部給電は必要で電池未採用。Pixel/QEMU、既存Material研究契約、権限・Walletの証拠と安全条件を維持する。Git保存と公開サイト配備は別である。2026-09-24に公開SiteをR5へ同期し、提供済みの製品画像を変更せずに表示・導線・アクセシビリティ・SEOの不具合を修正したが、OS image、runtime統合、実機・製造・販売の受入状態は変更していない。
 
 2026-09-24 設計保存追記（v1.94）: 利用者は、rocketstar完全版の作成後に正本repository `k999ln/rock`へ「漏れなく更新保存」と明示した。[rocketstar設計アーカイブ](rocketstar-design/README.md)に、44ページ・35章のR1.0、60要求、18システムinterface、継承C3資料、A-LINK、受信試作、OS完全版付録、コロニー、端末ボタン、旧版、生成元、計算・検証記録を保存する。元成果物のバイト列を保持し、全ファイルは[保存台帳](rocketstar-design/inventory.json)で追跡する。OS付録のPDFは既存原本と同一SHA-256であり、当初未受領だったschema・DDL等の付属原本を今回受領した。これは設計資料の保存であり、現行runtimeへの導入、製造・飛行承認、サイト公開ではない。アーカイブ中のE3・別Hub・ボタン前提をR5へ自動適用せず、現行の1本自律・別Hub不要要求を維持する。確定要望RQ01〜RQ49、Pixel/QEMU、Material、権限・Walletの境界は変更しない。
 

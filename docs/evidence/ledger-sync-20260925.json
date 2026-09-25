@@ -1,0 +1,124 @@
+{
+  "schema": "rock-ledger-sync-evidence/1",
+  "createdAt": "2026-09-25",
+  "timezone": "America/New_York",
+  "purpose": "Record observed repository/public-site facts and the owner decision used by the 2026-09-25 ledger sync. Observations are not physical, sales, or manufacturing acceptance.",
+  "ownerDecision": {
+    "id": "OWNER-2026-09-25-public-product-line",
+    "decidedBy": "owner",
+    "decidedAt": "2026-09-25T00:49:00-04:00",
+    "basis": "Owner instruction in the chat session, relayed to the repository bot.",
+    "decision": "Adopt the published avocadoMini/avokadoPro configuration and reference prices as official, wording identical to the Site source.",
+    "machineReadableRecord": "data/product-baseline.json#marketPositioning.publicProductLine",
+    "siteDisplayChanged": false,
+    "stillPendingOwnerDecisions": [
+      "relationship between R5 and the avocadoMini/avokadoPro line",
+      "R5 requirements and MAT15 scope review",
+      "reservation and checkout enablement (WEB15 stays closed)",
+      "external product name (PR #40)",
+      "successor conditions for the held 8.88 USD revenue fee",
+      "RQ20 expected values",
+      "single priority sequence",
+      "whether AI fixture stages may run before OS10/AI03/AI05"
+    ]
+  },
+  "mainCommitsWithoutPullRequest": [
+    {
+      "sha": "9c1332e4267c5030a686679953237bc504f9076b",
+      "committedAt": "2026-09-24T23:20:41-04:00",
+      "author": "kaiya.kk",
+      "subject": "Update 180-degree product pricing story",
+      "filesChanged": 26
+    },
+    {
+      "sha": "8617863f314a67d87535b05fb6baa5b55d6235db",
+      "committedAt": "2026-09-24T23:33:10-04:00",
+      "author": "kaiya.kk",
+      "subject": "Add JPY and USD price switch",
+      "filesChanged": 18
+    },
+    {
+      "sha": "4b49bf963e950cc3bf39b95106e7f66209005cf7",
+      "committedAt": "2026-09-25T00:03:02-04:00",
+      "author": "kaiya.kk",
+      "subject": "Clarify Mini expansion and avokadoPro pricing",
+      "filesChanged": 15
+    },
+    {
+      "sha": "862ba3044ca369d30fd0ef959ba215f1adf4a1a7",
+      "committedAt": "2026-09-25T00:36:18-04:00",
+      "author": "kaiya.kk",
+      "subject": "Split avocadoMini and avokadoPro product pages",
+      "filesChanged": 21
+    },
+    {
+      "sha": "851bb0478a0e52a15e9e748f6f47198277c851c5",
+      "committedAt": "2026-09-25T00:47:23-04:00",
+      "author": "kaiya.kk",
+      "subject": "Refine homepage and restore full Mini detail",
+      "filesChanged": 18
+    }
+  ],
+  "mainCommitNotes": "None of the five commits has an associated pull request, project-status task, or deployment version record in the repository. CI run 36095878039 (Rock star verification) on 851bb04 concluded success.",
+  "publicSiteObservation": {
+    "origin": "https://avocado-mini.kirin-999.chatgpt.site",
+    "firstFetchWindow": "2026-09-25 00:39-00:41 ET",
+    "refetchAt": "2026-09-25T00:49:33-04:00",
+    "method": "curl GET without authentication",
+    "servedContentMatches": "851bb04 (home contains 'Standalone spatial input from ¥160,000.')",
+    "deploymentVersionRecordedInRepository": false,
+    "pages": [
+      {
+        "path": "/",
+        "sha256": "0895ffd64238fe12bb274414a88342cdd9a7379c72eb5f6a31951a372584b6e6",
+        "contains": [
+          "¥160,000",
+          "¥410,000"
+        ],
+        "r5Mentions": 0
+      },
+      {
+        "path": "/mini/",
+        "sha256": "0d6d4a5457d381f84b01a890d2a541e176bc9b9a05bf4254f1b5fd703968572d",
+        "contains": [
+          "1 × avocadoMini · standalone",
+          "¥160,000",
+          "¥410,000",
+          "US$1,050",
+          "US$2,700",
+          "From ¥880,000",
+          "US$5,800"
+        ],
+        "r5Mentions": 0
+      },
+      {
+        "path": "/pro/",
+        "sha256": "9027799c53a8899e2df428a089cbb982b05bfa020019eac8f76d0d6fc20db8a7",
+        "contains": [
+          "avokadoPro · standalone Hub",
+          "From ¥880,000",
+          "US$5,800"
+        ],
+        "r5Mentions": 0
+      },
+      {
+        "path": "/preorder/",
+        "sha256": "ab81cfe0e9524c434b1324757998436d83c74c379ecc15fcd285efd73ba4ff22",
+        "contains": [
+          "Old E3 pricing<br>does not apply to R5.",
+          "¥160,000",
+          "¥410,000"
+        ],
+        "note": "States the earlier ¥160,000/¥410,000 plans belonged to the old design and do not carry over to R5; orders, reservations and payments stay closed. Not changed by this sync; its relation to the owner-confirmed Mini line is an open item."
+      }
+    ]
+  },
+  "correctionToEarlierAuditReport": "The initial audit report said the public-site curl ran around 00:50 ET; it actually ran around 00:39-00:41 ET. The 00:49:33 ET refetch is listed above.",
+  "notAccepted": [
+    "physical tests (0)",
+    "manufacturing release",
+    "sales/checkout enablement",
+    "R5 pricing",
+    "R5 runtime integration"
+  ]
+}
