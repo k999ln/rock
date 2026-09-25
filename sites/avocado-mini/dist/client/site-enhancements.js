@@ -66,8 +66,49 @@
     document.querySelectorAll('main > section, .article > section, .home-tile, .preorder-card').forEach((target) => target.classList.add('site-reveal', 'is-visible'));
   }
 
-  document.querySelectorAll('details.mobile-menu a').forEach((link) => {
-    link.addEventListener('click', () => link.closest('details')?.removeAttribute('open'));
+  const menus = [...document.querySelectorAll('details.site-menu')];
+  menus.forEach((menu) => {
+    menu.addEventListener('toggle', () => {
+      if (!menu.open) {
+        if (!menus.some((item) => item.open)) body.classList.remove('has-open-menu');
+        return;
+      }
+      menus.forEach((other) => { if (other !== menu) other.removeAttribute('open'); });
+      body.classList.add('has-open-menu');
+    });
+    menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => menu.removeAttribute('open')));
+  });
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('details.site-menu')) menus.forEach((menu) => menu.removeAttribute('open'));
+    if (!menus.some((menu) => menu.open)) body.classList.remove('has-open-menu');
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      menus.forEach((menu) => menu.removeAttribute('open'));
+      body.classList.remove('has-open-menu');
+    }
+  });
+
+  document.querySelectorAll('[data-carousel]').forEach((carousel) => {
+    const section = carousel.closest('section');
+    const previous = section?.querySelector('[data-carousel-prev]');
+    const next = section?.querySelector('[data-carousel-next]');
+    const cards = [...carousel.children];
+    const updateControls = () => {
+      const max = Math.max(0, carousel.scrollWidth - carousel.clientWidth - 2);
+      if (previous) previous.disabled = carousel.scrollLeft <= 2;
+      if (next) next.disabled = carousel.scrollLeft >= max;
+    };
+    const move = (direction) => {
+      const card = cards[0];
+      const gap = Number.parseFloat(getComputedStyle(carousel).columnGap || '0');
+      carousel.scrollBy({ left: direction * ((card?.getBoundingClientRect().width || carousel.clientWidth * 0.8) + gap), behavior: 'smooth' });
+    };
+    previous?.addEventListener('click', () => move(-1));
+    next?.addEventListener('click', () => move(1));
+    carousel.addEventListener('scroll', updateControls, { passive: true });
+    addEventListener('resize', updateControls, { passive: true });
+    updateControls();
   });
 
   const liveRegion = document.createElement('span');

@@ -22,10 +22,22 @@ import "../style.css";
   <a class="skip" href="#main-content">Skip to products</a>
   <header class="apple-home-nav">
     <a class="apple-home-brand" href="/" aria-label="avokado home"><img src="/images/avokado-metallic-mark.png" alt="" />avokado</a>
-    <nav aria-label="Primary navigation"><a href="/mini/">avocadoMini</a><a href="/pro/">avokadoPro</a><a href="/install/">RockstarOS</a><a href="/rocket-star/">rocketstar</a><a href="/preorder/">Sales status</a></nav>
+    <div class="header-actions">
+      <details class="site-menu">
+        <summary>Menu</summary>
+        <div class="site-menu-panel">
+          <p>EXPLORE AVOKADO</p>
+          <nav aria-label="Primary navigation">
+            <a href="/mini/"><span>01</span><strong>avocadoMini</strong><em>Spatial input · from ¥160,000</em></a>
+            <a href="/pro/"><span>02</span><strong>avokadoPro</strong><em>Games + services · from ¥880,000</em></a>
+            <a href="/install/"><span>03</span><strong>RockstarOS</strong><em>Release and installer status</em></a>
+            <a href="/rocket-star/"><span>04</span><strong>rocketstar</strong><em>Launch system design</em></a>
+          </nav>
+        </div>
+      </details>
+      <a class="header-cta" href="/preorder/">Current status <span aria-hidden="true">↗</span></a>
+    </div>
   </header>
-  <div class="apple-home-banner">avocadoMini meets avokadoPro. <a href="#together">Explore the new system <span aria-hidden="true">›</span></a></div>
-
   <main id="main-content">
     <section id="together" class="home-promo home-promo-system" aria-labelledby="system-title">
       <div class="home-promo-copy">

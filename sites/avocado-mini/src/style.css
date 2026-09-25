@@ -1646,3 +1646,52 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
   .site-progress span,.site-header,.apple-home-nav,.home-promo>img,.home-tile,.home-tile>img,.r5-product-page .film-hero-device,.r5-product-page .highlight-card,.pro-hero>img,.pro-capability-grid article,.preorder-card,.site-enhanced .site-reveal{transition:none!important;transform:none!important;filter:none!important}
   .site-enhanced .site-reveal{opacity:1}
 }
+
+/* Reference-led navigation and full-screen product storytelling. */
+.apple-home .apple-home-nav,.r5-product-page .product-header,.pro-product-page .pro-header{
+  position:fixed;top:12px;left:50%;right:auto;z-index:80;display:flex!important;align-items:center;justify-content:space-between;width:min(1180px,calc(100% - 32px));height:58px;transform:translateX(-50%)!important;padding:0 18px;border:1px solid #ffffff20;border-radius:18px;background:#121316e6;color:#f5f5f7;box-shadow:0 14px 50px #0009;backdrop-filter:saturate(150%) blur(26px);-webkit-backdrop-filter:saturate(150%) blur(26px)
+}
+.apple-home .apple-home-brand{color:#f5f5f7;font-size:17px}.apple-home .apple-home-brand img{width:25px;height:25px}
+.apple-home .header-actions,.pro-product-page .header-actions{display:flex;align-items:center;gap:10px}
+.apple-home .header-cta,.pro-product-page .header-cta,.r5-product-page .header-cta{display:inline-flex;align-items:center;gap:9px;min-height:36px;padding:9px 15px;border-radius:999px;background:#f5f5f7;color:#111214;font-size:12px;font-weight:750;text-decoration:none;white-space:nowrap}
+.apple-home .apple-home-nav>nav,.r5-product-page .product-header>.primary-nav,.pro-product-page .pro-header>.primary-nav{display:none}
+.site-menu,.mobile-menu.site-menu{display:block;position:relative}
+.site-menu summary,.mobile-menu.site-menu summary{list-style:none;cursor:pointer;min-height:36px;padding:8px 15px;border:1px solid #ffffff36;border-radius:999px;background:#0d0e10b8;color:#f5f5f7;font-size:12px;font-weight:700;transition:border-color .2s ease,background .2s ease}
+.site-menu summary::-webkit-details-marker{display:none}.site-menu summary:hover,.site-menu[open] summary{border-color:#a8ecff7d;background:#20252a}
+.site-menu-panel{position:fixed;z-index:90;top:82px;left:50%;width:min(920px,calc(100vw - 32px));max-height:calc(100svh - 102px);padding:26px;overflow:auto;transform:translateX(-50%);border:1px solid #ffffff28;border-radius:25px;background:linear-gradient(145deg,#1a1d21f2,#090a0cf5);box-shadow:0 38px 120px #000e,0 1px 0 #ffffff10 inset;backdrop-filter:saturate(145%) blur(34px);-webkit-backdrop-filter:saturate(145%) blur(34px)}
+.site-menu-panel>p{margin:0 0 16px;color:#9adff2;font-size:11px;font-weight:750;letter-spacing:.2em}
+.site-menu-panel nav,.mobile-menu .site-menu-panel nav{position:static;display:grid;gap:0;min-width:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;backdrop-filter:none}
+.site-menu-panel nav a,.mobile-menu .site-menu-panel nav a{display:grid!important;grid-template-columns:36px minmax(160px,.7fr) 1fr;align-items:center;gap:18px;padding:20px 8px;border-bottom:1px solid #ffffff1e;border-radius:0;color:#f5f5f7;text-decoration:none}
+.site-menu-panel nav a:first-child{border-top:1px solid #ffffff1e}.site-menu-panel nav a:hover,.mobile-menu .site-menu-panel nav a:hover{background:#ffffff08;color:#fff}
+.site-menu-panel nav a span{color:#79d8f0;font-size:10px;letter-spacing:.12em}.site-menu-panel nav a strong{font-size:clamp(24px,3vw,38px);letter-spacing:-.055em}.site-menu-panel nav a em{justify-self:end;color:#9ea8ae;font-size:14px;font-style:normal;text-align:right}
+.has-open-menu:after{content:"";position:fixed;z-index:70;inset:0;background:#0008;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);pointer-events:none}
+
+.apple-home{background:#050505;color:#f5f5f7}.apple-home main{background:#050505}.home-promo{height:100svh;min-height:720px;margin:0;border-bottom:1px solid #ffffff12;scroll-snap-align:start}.home-promo-copy{padding-top:clamp(115px,15vh,160px)}
+.home-promo-copy h1,.home-promo-copy h2{font-size:clamp(62px,8.7vw,132px);line-height:.88}.home-promo-copy>span{font-size:clamp(19px,2.1vw,29px)}
+.home-promo>img{height:78%;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%)}
+.home-promo-mini>img{-webkit-mask-image:radial-gradient(ellipse 55% 75% at 50% 52%,#000 0 64%,transparent 100%);mask-image:radial-gradient(ellipse 55% 75% at 50% 52%,#000 0 64%,transparent 100%)}
+.home-tile-grid{display:block;padding:0;background:#050505}.home-tile{min-height:82svh;border-radius:0;border-width:0 0 1px;scroll-snap-align:start}.home-tile>div:first-child{padding-top:clamp(90px,12vh,130px)}.home-tile h2{font-size:clamp(52px,7vw,106px)}.home-tile>img{height:76%;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 22%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 22%,#000 84%,transparent 100%)}
+.apple-home-footer{background:#050505;color:#8e9298}.apple-home-footer a{color:#c6c8cb}
+
+.pro-statement{display:flex;min-height:100svh;flex-direction:column;justify-content:center}.pro-statement h2{font-size:clamp(72px,10vw,150px)}
+.pro-highlights{min-height:100svh;padding:clamp(105px,12vw,160px) 0 80px;background:#090a0c;overflow:hidden}
+.pro-highlights-head{display:flex;align-items:end;justify-content:space-between;gap:28px;margin:0 max(24px,calc((100% - 1120px)/2)) 44px}.pro-highlights-head h2{margin:12px 0 0;font-size:clamp(62px,8vw,116px);line-height:.88;letter-spacing:-.08em}
+.pro-gallery-controls{display:flex;gap:12px}.pro-gallery-controls button{width:52px;height:52px;border:1px solid #ffffff22;border-radius:50%;background:#2a2c31;color:#fff;font-size:24px;cursor:pointer;transition:background .2s ease,opacity .2s ease,transform .2s ease}.pro-gallery-controls button:hover:not(:disabled){background:#3a4249;transform:translateY(-2px)}.pro-gallery-controls button:disabled{opacity:.25;cursor:default}
+.pro-highlight-gallery{display:flex;gap:18px;padding:0 max(24px,calc((100% - 1120px)/2)) 22px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:max(24px,calc((100% - 1120px)/2));scrollbar-width:none}.pro-highlight-gallery::-webkit-scrollbar{display:none}
+.pro-highlight-card{position:relative;flex:0 0 min(780px,72vw);height:min(650px,70svh);min-height:520px;overflow:hidden;scroll-snap-align:start;border:1px solid #ffffff18;border-radius:34px;background:#030405;box-shadow:0 28px 80px #0008}.pro-highlight-card:after{content:"";position:absolute;z-index:1;inset:0;background:linear-gradient(180deg,#030405eb 0%,#0304055c 38%,transparent 68%,#0005 100%)}
+.pro-highlight-card img{width:100%;height:100%;object-fit:cover;filter:saturate(.82) contrast(1.08);transition:transform .8s cubic-bezier(.16,1,.3,1)}.pro-highlight-card:hover img{transform:scale(1.025)}
+.pro-highlight-card>div{position:absolute;z-index:2;top:36px;left:38px;right:38px}.pro-highlight-card span{color:#b3eafa;font-size:11px;font-weight:750;letter-spacing:.2em}.pro-highlight-card h3{margin:18px 0 15px;font-size:clamp(42px,5vw,72px);line-height:.92;letter-spacing:-.07em}.pro-highlight-card p{max-width:590px;margin:0;color:#d0d5d8;font-size:16px;line-height:1.65}
+.pro-gallery-hint{margin:12px max(24px,calc((100% - 1120px)/2)) 0;color:#858c91;font-size:12px}
+.pro-pairing{min-height:100svh}.pro-price{min-height:100svh}
+.pro-os{position:relative;isolation:isolate;display:flex;min-height:100svh;align-items:center;padding:100px max(24px,calc((100% - 1120px)/2));overflow:hidden;background:radial-gradient(circle at 72% 50%,#163441,#090b0d 40%,#050506 73%)}
+.pro-os-orbit{position:absolute;z-index:-1;right:-12vw;width:min(75vw,1050px);aspect-ratio:1;border:1px solid #a5eaff35;border-radius:50%;box-shadow:0 0 100px #55dfff12,inset 0 0 100px #55dfff0c}.pro-os-orbit:before,.pro-os-orbit:after{content:"";position:absolute;border:1px solid #a5eaff25;border-radius:50%;inset:14%}.pro-os-orbit:after{inset:31%;background:radial-gradient(circle,#9deaff36,transparent 62%)}
+.pro-os-copy{width:min(720px,72vw)}.pro-os h2{margin:16px 0 22px;font-size:clamp(75px,10vw,150px);line-height:.85;letter-spacing:-.085em}.pro-os-copy>p:not(.eyebrow){max-width:590px;color:#b7c0c5;font-size:18px;line-height:1.7}
+.pro-os-copy>a{display:flex;align-items:center;justify-content:space-between;width:min(560px,100%);margin-top:36px;padding:18px 19px 18px 25px;border:1px solid #87e6ff72;border-radius:25px;background:#10232be6;color:#effcff;text-decoration:none;box-shadow:0 0 50px #5fddff16}.pro-os-copy>a span{display:flex;flex-direction:column;gap:5px}.pro-os-copy>a strong{font-size:22px}.pro-os-copy>a small{color:#a7dbe7;font-size:10px;letter-spacing:.2em}.pro-os-copy>a b{display:grid;width:62px;height:62px;place-items:center;border:1px solid #c8f5ff55;border-radius:20px;background:#ffffff15;font-size:30px}
+
+@media(max-width:760px){
+  .apple-home .apple-home-nav,.r5-product-page .product-header,.pro-product-page .pro-header{top:8px;width:calc(100% - 16px);height:54px;padding:0 12px;border-radius:15px}
+  .apple-home .header-cta,.pro-product-page .header-cta,.r5-product-page .header-cta{min-height:34px;padding:8px 11px;font-size:10px}.site-menu summary,.mobile-menu.site-menu summary{min-height:34px;padding:7px 11px;font-size:10px}
+  .site-menu-panel{top:70px;width:calc(100vw - 16px);max-height:calc(100svh - 80px);padding:19px;border-radius:20px}.site-menu-panel nav a,.mobile-menu .site-menu-panel nav a{grid-template-columns:27px 1fr;padding:17px 5px;gap:10px}.site-menu-panel nav a strong{font-size:25px}.site-menu-panel nav a em{grid-column:2;justify-self:start;text-align:left;font-size:12px}
+  .home-promo{min-height:690px}.home-promo-copy{padding-top:105px}.home-promo-copy h1,.home-promo-copy h2{font-size:clamp(52px,15vw,78px)}.home-promo>img{height:72%}.home-tile{min-height:720px}.home-tile h2{font-size:52px}
+  .pro-highlights{padding-top:100px}.pro-highlights-head{align-items:flex-end;margin-bottom:28px}.pro-highlights-head h2{font-size:56px}.pro-gallery-controls button{width:43px;height:43px;font-size:20px}.pro-highlight-card{flex-basis:86vw;height:610px;min-height:0;border-radius:25px}.pro-highlight-card>div{top:28px;left:25px;right:25px}.pro-highlight-card h3{font-size:44px}.pro-highlight-card p{font-size:14px}.pro-os-copy{width:100%}.pro-os h2{font-size:70px}.pro-os-copy>a{border-radius:20px}.pro-os-copy>a b{width:52px;height:52px;border-radius:16px}
+}

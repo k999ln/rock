@@ -87,6 +87,24 @@ test('shared visual and interaction enhancements ship on every primary experienc
   assert.match(enhancement, /prefers-reduced-motion/);
 });
 
+test('reference-led product navigation and Pro highlights remain interactive', () => {
+  const home = built('client/index.html');
+  const mini = built('client/mini/index.html');
+  const pro = built('client/pro/index.html');
+  for (const page of [home, mini, pro]) {
+    assert.match(page, /class="[^"]*site-menu/);
+    assert.match(page, />Menu</);
+    assert.match(page, /Current status/);
+  }
+  assert.match(pro, /id="pro-highlights"/);
+  assert.match(pro, /data-carousel/);
+  assert.equal((pro.match(/class="pro-highlight-card"/g) || []).length, 4);
+  assert.match(pro, /id="pro-os"/);
+  const enhancement = built('client/site-enhancements.js');
+  assert.match(enhancement, /\[data-carousel\]/);
+  assert.match(enhancement, /details\.site-menu/);
+});
+
 test('the restored Mini 180-degree story and dedicated Pro page preserve their pricing', () => {
   const mini = built('client/mini/index.html');
   const pro = built('client/pro/index.html');
