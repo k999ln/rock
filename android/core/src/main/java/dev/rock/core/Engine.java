@@ -99,6 +99,9 @@ public final class Engine {
         return selected.toolId;
     }
 
+    /** Read-only list of the pinned Tool versions of RECIPE, for the Broker capability observation. */
+    public static List<String> toolIds() { return java.util.Collections.unmodifiableList(java.util.Arrays.asList(TOOLS.clone())); }
+
     public static String digest(String value) {
         try {
             byte[] bytes = MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8));

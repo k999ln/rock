@@ -223,13 +223,19 @@
     {
       "id": "AI05",
       "title": "Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま）",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "AI01",
         "OS10"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md"
+        "docs/ai-native-os-architecture.md",
+        "docs/android-backup-recovery.md",
+        "android/core/src/main/java/dev/rock/core/SkyExecutor.java",
+        "android/core/src/test/java/dev/rock/core/SkyExecutorTest.java",
+        "tests/sky-executor.test.mjs",
+        "docs/workstreams/07-android-device-local-ai.md",
+        "project.md"
       ]
     },
     {

@@ -241,6 +241,13 @@ public final class ModelProfiles {
         });
     }
 
+    /** Plan schema of the single installed runtime adapter (read-only, for capability observation). */
+    public String runtimePlanSchema() { return runtimePlanSchema; }
+    /** The active profile only when its switch was confirmed healthy; otherwise null. */
+    public String healthyActiveProfileId() {
+        Map<String,String> p = pointer();
+        return "HEALTHY".equals(p.get("health")) ? p.get("profile_id") : null;
+    }
     public ModelProfile pinnedProfile(String workId) { return verified(pin(workId).get("profile_id")); }
     public int revision(String workId) { return Integer.parseInt(pin(workId).get("revision")); }
     public String activeProfileId() { return pointer().get("profile_id"); }

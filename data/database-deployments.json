@@ -40,7 +40,7 @@
       "productionAppliedThrough": null,
       "productionReadbackAt": null,
       "evidence": ["docs/os-prototype.md"],
-      "nextAction": "対象端末を確定後、full buildと実機保存・復旧を受入する。AI02のmodel_* table（ModelProfiles）とAI04のoutbox_* table（ExternalWriteOutbox）、AI03のmemory_* table（BoundedMemory）はhost JVM試験のみで、emulator・実機では未確認"
+      "nextAction": "対象端末を確定後、full buildと実機保存・復旧を受入する。AI02のmodel_* table（ModelProfiles）とAI04のoutbox_* table（ExternalWriteOutbox）、AI03のmemory_* table（BoundedMemory）、AI05のsky_executor系 table（SkyExecutor）はhost JVM試験のみで、emulator・実機では未確認"
     },
     "android-platform-sqlite": {
       "runtime": "Android Platform Core SQLite",
