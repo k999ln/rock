@@ -6,10 +6,10 @@
 
 ## 全体
 
-- データ境界: 6、table: 92
+- データ境界: 6、table: 97
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 163 task中 107 done、34 in progress、17 planned、5 blocked
+- 作業進捗: 163 task中 107 done、35 in progress、16 planned、5 blocked
 - 現在milestone: Pixel 10 compile-only Developer Previewの初回full build準備
 
 ## 保存境界と配備状態
@@ -20,7 +20,7 @@
 | Sky Billing D1 | 収益精算・請求・受取Wallet | 13 | VERIFIED | DOCUMENTED_NOT_READ_BACK | 0004_rock_settlement_wallet.sql | 未確認 |
 | Operator Dock D1 | 運営専用の端末登録・緊急命令・監査 | 5 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
 | OS Wallet / Spend SQLite | 端末内Wallet・支出承認・PAPER position | 17 | VERIFIED | QEMU_SCOPED | 未確認 | 未確認 |
-| Android Work Engine SQLite | Android work・artifact・run・event | 19 | VERIFIED | EMULATOR_SCOPED | 未確認 | 未確認 |
+| Android Work Engine SQLite | Android work・artifact・run・event | 24 | VERIFIED | EMULATOR_SCOPED | 未確認 | 未確認 |
 | Android Platform Core SQLite | component登録・owner承認・OS側ledger | 6 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
 
 ## Web D1
@@ -75,11 +75,11 @@
 
 </details>
 
-<details><summary>Android Work Engine SQLite: 19 table</summary>
+<details><summary>Android Work Engine SQLite: 24 table</summary>
 
-`artifacts`、`events`、`memory_items`、`memory_meta`、`memory_projections`、`memory_tombstones`、`model_journal`、`model_meta`、`model_pins`、`model_pointer`、`model_profiles`、`outbox_events`、`outbox_meta`、`outbox_operations`、`rock_meta`、`runs`、`settings`、`sky_selection`、`works`
+`artifacts`、`events`、`memory_items`、`memory_meta`、`memory_projections`、`memory_tombstones`、`model_journal`、`model_meta`、`model_pins`、`model_pointer`、`model_profiles`、`outbox_events`、`outbox_meta`、`outbox_operations`、`rock_meta`、`runs`、`settings`、`sky_capabilities`、`sky_executor`、`sky_executor_meta`、`sky_selection`、`sky_selection_v2`、`sky_work_bindings`、`works`
 
-次の確認: 対象端末を確定後、full buildと実機保存・復旧を受入する。AI02のmodel_* table（ModelProfiles）とAI04のoutbox_* table（ExternalWriteOutbox）、AI03のmemory_* table（BoundedMemory）はhost JVM試験のみで、emulator・実機では未確認
+次の確認: 対象端末を確定後、full buildと実機保存・復旧を受入する。AI02のmodel_* table（ModelProfiles）とAI04のoutbox_* table（ExternalWriteOutbox）、AI03のmemory_* table（BoundedMemory）、AI05のsky_executor系 table（SkyExecutor）はhost JVM試験のみで、emulator・実機では未確認
 
 </details>
 

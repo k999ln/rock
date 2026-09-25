@@ -1,5 +1,22 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-25 — AI05のhost／fixture段階: capability交渉・単一実行端末・永続selectionとsnapshot復旧
+
+`android/core`に`SkyExecutor`を追加した。設計書（`docs/ai-native-os-architecture.md`の5章「Sky appとOSのcapability交渉・保存」と、完了条件表の「Sky/Zema初期」行）の範囲内で、既存の`Engine`のSky selection（token）、AI02の`ModelProfiles`、AI04のeffect分類、`PlatformStore`の復元を使って実装している。`Engine`と`ModelProfiles`には読み取り専用のaccessorだけを追加した。
+- **capability**: 設計の13項目（`protocolVersion`〜`generation`）を、OS Brokerが端末の実状態（Tool版、runtimeのplan schema、有効なmodel、outboxの有無と接続、schema版、上限）から観測する。appの申告は使わない。ownerと端末に束縛し、提供内容が変わったときだけgenerationを上げる。
+- **共通部分だけ実行可能**: Brokerが持つTool要求と観測の共通部分だけを実行可能にし、表示候補もそれに限る。不明な必須capability、古い観測（期限切れ・時計の巻き戻り）、範囲の不一致（protocol・core API・storage schema）、Tool版・plan schema・effect・model・上限の欠落は、理由付きで実行不可にする。
+- **再検査**: 選択時、submit時、claim時に行う。選択後に観測のgenerationが変われば再選択を求める。claim時に満たさない仕事は、自動再試行せずreview待ちにする。
+- **単一実行端末**: ownerが1台を指定する（expected revisionで比較更新）。仕事ごとにauthority deviceとwriter epochを固定し、実行端末を変えても既存の仕事は移さない。別端末からはclaimできない。
+- **snapshot復旧**: `PlatformStore`の復元（tokenの再生成、一時停止）の後に、selection・実行端末・仕事の紐付けを戻す。旧tokenは無効になる。実行端末は本人の再確認まで使えない。selectionは新しい観測での再選択が要る。
+- **不正の拒否**: 不正なtoken、別のowner、同じkeyで異なる内容、古いrevision、Broker外で作られた仕事を拒否する。同一内容の再送は同じ仕事を返す。
+- **範囲**: host／fixture段階の実装で、Sky UI・Zema・AIDL・遠隔gateway・複数端末移送には接続していない。emulator・実機・OS統合の証拠ではない（OS10依存、AI09）。設計書とcontractは編集していない。設計にない判断はPR #46の「設計との差」に列挙した。
+
+検証: host（box）の結果は次のとおり。
+- `android/core`のJVM試験（`javac --release 11`とJUnit 4.13.2による代替実行）: 61/61。内訳は既存37件、AI02の7件、AI04の7件、AI03の5件、`SkyExecutorTest` 5件。
+- 変異確認: 期限切れの判定を外す、不明な必須capabilityを無視する、submit時のgeneration照合を外す、claim時の端末照合を外す、復元直後を使用可能にする、claim時の再評価を外す、の各改変で、対応する試験が失敗することを確認した。
+- 期待値の変更: DB inventoryにsky_executor系の5 tableを加えたため、table数を92から97へ更新した。
+- `npm run verify`とCIの結果は同じhead SHAでPR #46に記録する。
+
 ## 2026-09-25 — AI03のhost／fixture段階: モデル非依存の限定記憶・project分離・根拠・削除契約
 
 `android/core`に`BoundedMemory`を追加した。設計書（`docs/ai-native-os-architecture.md`の3章、`docs/sky-assistant-and-memory.md`のSky Memory節）の範囲内で、既存の`Database`のtransaction、`Engine`のworkと成果、AI02の`ModelProfile`を使って実装している。
@@ -1146,7 +1163,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 進行中 | [記録](docs/ai-native-os-architecture.md) · [記録](android/core/src/main/java/dev/rock/core/ModelProfile.java) · [記録](android/core/src/main/java/dev/rock/core/ModelProfiles.java) · [記録](android/core/src/test/java/dev/rock/core/ModelProfilesTest.java) · [記録](android/core/src/test/resources/model-profiles-fixture.json) · [記録](tests/model-profile-fixture.test.mjs) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](project.md) |
 | AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 進行中 | [記録](docs/ai-native-os-architecture.md) · [記録](docs/sky-assistant-and-memory.md) · [記録](android/core/src/main/java/dev/rock/core/BoundedMemory.java) · [記録](android/core/src/test/java/dev/rock/core/BoundedMemoryTest.java) · [記録](tests/bounded-memory.test.mjs) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](project.md) |
 | AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 進行中 | [記録](docs/ai-native-os-architecture.md) · [記録](android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java) · [記録](android/core/src/test/java/dev/rock/core/ExternalWriteOutboxTest.java) · [記録](tests/external-write-outbox.test.mjs) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](project.md) |
-| AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 進行中 | [記録](docs/ai-native-os-architecture.md) · [記録](docs/android-backup-recovery.md) · [記録](android/core/src/main/java/dev/rock/core/SkyExecutor.java) · [記録](android/core/src/test/java/dev/rock/core/SkyExecutorTest.java) · [記録](tests/sky-executor.test.mjs) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](project.md) |
 | AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI08 | Jev／TypeSafe・Local Qwen・Cloud LLMをcode主導で統合するDecision Fabric全体詳細設計と機械可読安全契約を固定 | 完了 | [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) |
 | AI07 | JevのSky明示利用を設計し、DecisionProviderとRouter／Harnessへの統合を受け入れる | 進行中 | [記録](docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md) · [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) · [記録](docs/jev-ecosystem-integration-design.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/llm-evaluation-architecture.md) · [記録](data/llm-capabilities.json) · [記録](scripts/check-llm-architecture.mjs) |
