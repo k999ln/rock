@@ -7,7 +7,7 @@
 - **状態の遷移**: `prepared → dispatched → confirmed | rejected | uncertain`。
 - **送信前の永続化**: owner、operation ID、payload hash、対象、費用上限、承認IDと期限、provider idempotency key、generationを保存する。
 - **operation key**: 同じIDで同じ内容なら既存の結果を返し、内容が違えば拒否する（`lib/workflow.ts`と同じ規約）。provider keyは別の操作で再利用できない。
-- **送信直前の再検査**: 権限と承認期限を確かめる。
+- **送信直前の再検査**: 権限と承認期限に加え、workがまだ動いていることを確かめる（停止・完了済みのworkでは新しい外部作用を始めない）。
 - **結果不明とcrash後**: 前のプロセスが開いたままの送信と、結果が分からない送信はuncertainにし、自動では再送しない。遅れて届いたcallbackや重複したcallbackは無視する。
 - **照会**: 内容hashと金額を照合して確定する。一致しなければuncertainのまま残す。
 - **再送**: 冪等再送が保証されたProviderだけ、不在の報告を受けた後に同じkeyで再送できる。

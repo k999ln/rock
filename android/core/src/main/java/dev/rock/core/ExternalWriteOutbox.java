@@ -137,6 +137,7 @@ public final class ExternalWriteOutbox {
             if (!"prepared".equals(row.get("state"))) throw new IllegalStateException("NOT_PREPARED");
             if (Long.parseLong(row.get("approval_expires_at")) <= nowMs) throw new SecurityException("APPROVAL_EXPIRED");
             if (authority == null || !authority.permits(operation(row), nowMs)) throw new SecurityException("REAUTHORIZATION_REQUIRED");
+            requireActiveWork(row);
             return dispatch(operationId, nowMs);
         });
     }
@@ -194,6 +195,7 @@ public final class ExternalWriteOutbox {
             if (!"1".equals(row.get("absence_reported"))) throw new IllegalStateException("RECONCILIATION_REQUIRED");
             if (Long.parseLong(row.get("approval_expires_at")) <= nowMs) throw new SecurityException("APPROVAL_EXPIRED");
             if (authority == null || !authority.permits(operation(row), nowMs)) throw new SecurityException("REAUTHORIZATION_REQUIRED");
+            requireActiveWork(row);
             db.execute("UPDATE outbox_operations SET absence_reported=0 WHERE operation_id=?", operationId);
             return dispatch(operationId, nowMs);
         });
@@ -236,6 +238,11 @@ public final class ExternalWriteOutbox {
             UUID.randomUUID().toString(), session, operationId);
         event(operationId, "dispatched", nowMs);
         return new Dispatch(row(operationId));
+    }
+    /** A stopped or finished work must not start a new external effect (stop/complete race). */
+    private void requireActiveWork(Map<String,String> row) {
+        if (db.query("SELECT 1 FROM works WHERE id=? AND state='active'", row.get("work_id")).isEmpty())
+            throw new IllegalStateException("WORK_NOT_ACTIVE");
     }
     private void markUncertain(String operationId, long nowMs) {
         db.execute("UPDATE outbox_operations SET state='uncertain',dispatch_token=NULL,dispatch_session=NULL WHERE operation_id=?", operationId);

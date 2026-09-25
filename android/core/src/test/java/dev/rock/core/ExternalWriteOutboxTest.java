@@ -79,7 +79,11 @@ public class ExternalWriteOutboxTest {
         assertEquals("prepared", outbox.state("op-1"));                                     // refused dispatch left no trace
         outbox.cancel("op-1", NOW + 2);
         assertEquals("cancelled", outbox.state("op-1"));
-        engine.cancel(work);
+        outbox.prepare(Effect.EXTERNAL_WRITE, op("op-2", "p", 1, "key-2", false), NOW);
+        engine.cancel(work);                                                // stop wins over a later dispatch
+        assertEquals("WORK_NOT_ACTIVE",
+            assertThrows(IllegalStateException.class, () -> outbox.beginDispatch("op-2", ALLOW, NOW + 3)).getMessage());
+        assertEquals("prepared", outbox.state("op-2"));
         assertEquals("WORK_NOT_ACTIVE", assertThrows(IllegalStateException.class,
             () -> outbox.prepare(Effect.EXTERNAL_WRITE, op("op-3", "p", 1, "key-3", false), NOW)).getMessage());
     }
