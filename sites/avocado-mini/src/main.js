@@ -67,6 +67,7 @@ const preorderLink = document.querySelector('#preorder-link');
 const gallery = document.querySelector('#highlight-gallery');
 const galleryPrev = document.querySelector('#gallery-prev');
 const galleryNext = document.querySelector('#gallery-next');
+const highlightTabs = [...document.querySelectorAll('[data-highlight]')];
 const priceStart = 0.91;
 const storyWords = ['R5', 'INPUT', 'SIZE', 'SCALE', 'PLAY', 'STATUS'];
 const storyColors = ['#09090a', '#111214', '#0d0e10', '#111214', '#0d0e10', '#09090a'];
@@ -102,6 +103,17 @@ function updateGalleryControls() {
   if (!gallery) return;
   galleryPrev.disabled = gallery.scrollLeft < 8;
   galleryNext.disabled = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 8;
+  const cards = [...gallery.querySelectorAll('.highlight-card')];
+  const galleryCenter = gallery.scrollLeft + gallery.clientWidth / 2;
+  const activeIndex = cards.reduce((best, card, index) => {
+    const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+    return Math.abs(cardCenter - galleryCenter) < best.distance ? { index, distance: Math.abs(cardCenter - galleryCenter) } : best;
+  }, { index: 0, distance: Infinity }).index;
+  highlightTabs.forEach((tab, index) => {
+    const active = index === activeIndex;
+    tab.classList.toggle('is-active', active);
+    tab.setAttribute('aria-selected', String(active));
+  });
 }
 
 for (const [button, direction] of [[galleryPrev, -1], [galleryNext, 1]]) {
@@ -111,6 +123,18 @@ for (const [button, direction] of [[galleryPrev, -1], [galleryNext, 1]]) {
   });
 }
 gallery?.addEventListener('scroll', updateGalleryControls, { passive: true });
+highlightTabs.forEach((tab, index) => tab.addEventListener('click', () => {
+  const card = gallery?.querySelectorAll('.highlight-card')[index];
+  highlightTabs.forEach((item, itemIndex) => {
+    const active = itemIndex === index;
+    item.classList.toggle('is-active', active);
+    item.setAttribute('aria-selected', String(active));
+  });
+  if (card && gallery) gallery.scrollTo({
+    left: Math.max(0, card.offsetLeft - (gallery.clientWidth - card.offsetWidth) / 2),
+    behavior: reducedMotion.matches ? 'instant' : 'smooth',
+  });
+}));
 window.addEventListener('resize', updateGalleryControls);
 updateGalleryControls();
 

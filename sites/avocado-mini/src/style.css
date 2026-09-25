@@ -1009,3 +1009,305 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
   .r5-product-page .film-hero:before{background:url('/images/avocado-mini-tower20-e3-kit.png') center / cover no-repeat}
   .r5-product-page .film-hero-device{inset:10% 3% 25%;width:94%;height:65%;object-fit:contain}
 }
+
+
+/* iPhone 18 Pro reference: compact floating product nav, product-first framing,
+   selectable highlights, and a clean scroll stage without decorative orbit rings. */
+.r5-product-page{
+  background:#000;
+  color:#f5f5f7;
+}
+.r5-product-page .product-header{
+  top:12px;
+  left:0;
+  right:0;
+  width:min(1120px,calc(100% - 32px));
+  height:52px;
+  margin:0 auto;
+  transform:none;
+  padding:0 18px;
+  border:1px solid #ffffff20;
+  border-radius:18px;
+  background:#171719d9;
+  box-shadow:0 12px 42px #0008;
+  backdrop-filter:saturate(160%) blur(24px);
+  -webkit-backdrop-filter:saturate(160%) blur(24px);
+}
+.r5-product-page .product-header .brand{font-size:17px}
+.r5-product-page .product-header .avokado-brand-icon{width:24px;height:24px}
+.r5-product-page .product-header .primary-nav{gap:clamp(15px,2vw,28px)}
+.r5-product-page .product-header .primary-nav a{font-size:12px}
+.r5-product-page .product-header .header-cta{
+  min-height:32px;
+  padding:7px 13px;
+  background:#f5f5f7;
+  color:#111114;
+  font-size:11px;
+}
+.r5-product-page .film-hero{
+  min-height:760px;
+  height:100svh;
+  padding-top:76px;
+  background:#000;
+}
+.r5-product-page .film-hero:before{
+  inset:9% 0 10%;
+  background:url('/images/avocado-mini-tower20-e3-kit.png') center / cover no-repeat;
+  filter:blur(44px) brightness(.3) saturate(.72);
+  opacity:.58;
+  transform:scale(1.08);
+}
+.r5-product-page .film-hero:after{
+  content:"";
+  position:absolute;
+  z-index:1;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(180deg,#000 0%,transparent 17%,transparent 66%,#000 94%);
+}
+.r5-product-page .hero-word{
+  top:21%;
+  z-index:0;
+  font-size:clamp(230px,42vw,670px);
+  line-height:.68;
+  color:transparent;
+  background:linear-gradient(180deg,#f3f4f5 0%,#6e7479 28%,#17191b 67%,#020202 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  opacity:.72;
+}
+.r5-product-page .film-hero-device{
+  z-index:1;
+  inset:7% 2% 9%;
+  width:96%;
+  height:84%;
+  object-fit:cover;
+  object-position:center 54%;
+  filter:contrast(1.05) saturate(.78);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 1%,#000 12%,#000 78%,transparent 98%);
+  mask-image:linear-gradient(to bottom,transparent 1%,#000 12%,#000 78%,transparent 98%);
+}
+.r5-product-page .hero-bottom{
+  left:50%;
+  right:auto;
+  bottom:clamp(64px,8vh,90px);
+  width:min(1120px,calc(100% - 48px));
+  transform:translateX(-50%);
+  align-items:end;
+}
+.r5-product-page .hero-bottom h1{
+  font-size:clamp(56px,8.4vw,122px);
+  line-height:.88;
+}
+.r5-product-page .hero-bottom p{
+  font-size:clamp(18px,1.8vw,26px);
+  max-width:340px;
+}
+.r5-product-page .film-disclaimer{
+  left:50%;
+  right:auto;
+  bottom:20px;
+  width:min(1120px,calc(100% - 48px));
+  transform:translateX(-50%);
+}
+.r5-product-page .hero-statement{
+  min-height:82svh;
+  padding-top:clamp(120px,13vw,190px);
+  padding-bottom:clamp(110px,12vw,180px);
+}
+.r5-product-page .hero-statement h2{
+  max-width:1100px;
+  font-size:clamp(72px,10vw,148px);
+  line-height:.95;
+}
+.r5-product-page .highlights{
+  padding:clamp(110px,11vw,170px) 0 95px;
+  background:#101010;
+}
+.r5-product-page .highlights-head{
+  width:min(1180px,100%);
+  margin:0 auto 48px;
+}
+.r5-product-page .highlight-gallery{
+  gap:20px;
+  scroll-padding-inline:max(24px,calc((100vw - 1180px)/2));
+  padding:0 max(24px,calc((100vw - 1180px)/2)) 90px;
+}
+.r5-product-page .highlight-card{
+  flex-basis:min(79vw,980px);
+  height:min(61vw,620px);
+  border-radius:32px;
+  border:1px solid #ffffff12;
+  box-shadow:0 28px 90px #0008;
+}
+.r5-product-page .highlight-card:after{
+  background:linear-gradient(180deg,#000b 0%,#0001 52%,#0008 100%);
+}
+.r5-product-page .highlight-card h3{max-width:690px}
+.r5-product-page .highlight-tabs{
+  position:relative;
+  z-index:4;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  width:max-content;
+  max-width:calc(100% - 32px);
+  margin:-64px auto 0;
+  padding:5px;
+  overflow-x:auto;
+  border:1px solid #ffffff1f;
+  border-radius:999px;
+  background:#27272ad9;
+  box-shadow:0 12px 36px #0009;
+  backdrop-filter:blur(22px) saturate(150%);
+  -webkit-backdrop-filter:blur(22px) saturate(150%);
+  scrollbar-width:none;
+}
+.r5-product-page .highlight-tabs::-webkit-scrollbar{display:none}
+.r5-product-page .highlight-tabs button{
+  min-height:36px;
+  padding:8px 15px;
+  border:0;
+  border-radius:999px;
+  background:transparent;
+  color:#b9b9bf;
+  font-size:12px;
+  font-weight:600;
+  white-space:nowrap;
+  cursor:pointer;
+  transition:background .22s ease,color .22s ease;
+}
+.r5-product-page .highlight-tabs button:hover,
+.r5-product-page .highlight-tabs button:focus-visible{color:#fff}
+.r5-product-page .highlight-tabs button.is-active{
+  background:#f5f5f7;
+  color:#171719;
+}
+.r5-product-page .gallery-hint{
+  margin:24px auto 0;
+  text-align:center;
+}
+.r5-product-page .design-intro{
+  min-height:86svh;
+  align-items:flex-start;
+  text-align:left;
+  padding:clamp(110px,13vw,190px) max(24px,calc((100vw - 1120px)/2));
+  background:#f5f5f7;
+}
+.r5-product-page .design-intro h2{
+  max-width:1050px;
+  margin:24px 0 42px;
+  font-size:clamp(72px,9.4vw,138px);
+  line-height:.94;
+  letter-spacing:-.085em;
+}
+.r5-product-page .design-intro>p:last-child{
+  max-width:720px;
+  font-size:clamp(18px,1.6vw,24px);
+}
+.r5-product-page .story{background:#000}
+.r5-product-page .story-sticky{
+  background:radial-gradient(ellipse at 58% 55%,#202428 0%,#090a0b 43%,#000 80%);
+}
+.r5-product-page .story-sticky:before{display:none}
+.r5-product-page .story-orbit{display:none}
+.r5-product-page .story-word{
+  top:54%;
+  font-size:clamp(120px,23vw,370px);
+  color:#fff;
+  opacity:.035;
+}
+.r5-product-page .story-rail{
+  right:clamp(14px,2vw,28px);
+  gap:10px;
+  padding:11px 8px;
+  border:1px solid #ffffff14;
+  border-radius:999px;
+  background:#161618aa;
+  backdrop-filter:blur(15px);
+  -webkit-backdrop-filter:blur(15px);
+}
+.r5-product-page .story-rail span{
+  width:6px;
+  height:6px;
+  border:0;
+  background:#67676c;
+  opacity:1;
+}
+.r5-product-page .story-rail span.is-active{
+  background:#f5f5f7;
+  box-shadow:none;
+}
+.r5-product-page .motion-product{
+  top:56%;
+  width:min(52vw,650px);
+  height:min(78svh,800px);
+}
+.r5-product-page .turn-frame{
+  filter:brightness(calc(.75 + var(--camera-on) * .25)) drop-shadow(0 30px 48px #000d);
+}
+.r5-product-page .story-foot{
+  left:50%;
+  right:auto;
+  width:min(1120px,calc(100% - 48px));
+  transform:translateX(-50%);
+}
+.r5-product-page :is(a,button,summary):focus-visible{
+  outline:2px solid #fff;
+  outline-offset:3px;
+}
+@media(max-width:800px){
+  .r5-product-page .product-header{
+    top:10px;
+    width:calc(100% - 20px);
+    height:50px;
+    padding:0 12px 0 14px;
+    grid-template-columns:1fr auto;
+  }
+  .r5-product-page .product-header .brand{font-size:17px}
+  .r5-product-page .product-header .avokado-brand-icon{width:23px;height:23px}
+  .r5-product-page .film-hero{min-height:700px}
+  .r5-product-page .film-hero-device{
+    inset:12% 0 23%;
+    width:100%;
+    height:65%;
+    object-fit:cover;
+    object-position:center;
+  }
+  .r5-product-page .hero-bottom{bottom:76px}
+  .r5-product-page .hero-bottom p{font-size:16px}
+  .r5-product-page .highlight-card{flex-basis:86vw}
+  .r5-product-page .design-intro{min-height:76svh}
+  .r5-product-page .motion-product{width:min(86vw,590px)}
+}
+@media(max-width:520px){
+  .r5-product-page .product-header .header-cta{padding:7px 10px}
+  .r5-product-page .hero-word{display:block;top:29%;font-size:58vw}
+  .r5-product-page .film-hero-device{
+    inset:16% -8% 27%;
+    width:116%;
+    height:57%;
+  }
+  .r5-product-page .hero-bottom{
+    width:calc(100% - 44px);
+    bottom:78px;
+    gap:9px;
+  }
+  .r5-product-page .hero-bottom h1{font-size:55px}
+  .r5-product-page .hero-bottom p{font-size:16px}
+  .r5-product-page .film-disclaimer{width:calc(100% - 44px)}
+  .r5-product-page .hero-statement h2{font-size:18vw}
+  .r5-product-page .highlights-head{margin-bottom:30px}
+  .r5-product-page .highlight-card{
+    flex-basis:86vw;
+    height:540px;
+    border-radius:26px;
+  }
+  .r5-product-page .highlight-tabs{margin-top:-62px}
+  .r5-product-page .highlight-tabs button{padding:8px 13px;font-size:11px}
+  .r5-product-page .design-intro h2{font-size:17vw}
+  .r5-product-page .story-word{font-size:48vw}
+}
+@media(prefers-reduced-motion:reduce){
+  .r5-product-page .highlight-tabs button{transition:none}
+}

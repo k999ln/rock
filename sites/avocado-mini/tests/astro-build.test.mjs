@@ -45,6 +45,8 @@ test('Astro output preserves the approved product, Rocket Star, and preorder pag
     'tower20-e3-rear-cutout-v1.png',
     'tower20-e3-sensor-macro.png',
   ]) assert.match(home, new RegExp(`/images/${image.replaceAll('.', '\\.')}`));
+  assert.match(home, /aria-label="ハイライトを選択"/);
+  assert.equal((home.match(/data-highlight=/g) || []).length, 4);
   assert.match(built('client/rocket-star/index.html'), /Complete product design/);
   assert.match(built('client/preorder/index.html'), /予約・決済停止中/);
 });
