@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#050505" />
-  <meta name="description" content="avocadoMini Tower20 E3 combines four fixed-height 200 mm Motion Towers, one separate Edge Hub, and RockstarOS for spatial play, local voice control, and creative work." />
-  <title>avocadoMini Tower20 E3 — Four 200 mm Towers and One Edge Hub</title>
+  <meta name="theme-color" content="#f2f0eb" />
+  <meta name="description" content="avocadoMini R5。使用時200mm以内を目標にした、1本で自律するRockstarOS空間コンピュータの設計構想。" />
+  <title>avocadoMini R5 — 1本で自律する空間コンピュータ</title>
   <link rel="icon" href="/images/avokado-metallic-mark.png" type="image/png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,84 +13,72 @@
   <script type="module" src="/src/main.js"></script>
 </head>
 <body>
-  <a class="skip" href="#product">Skip to product</a>
-  <header class="site-header product-header">
-    <a class="brand avokado-brand" href="/"><img class="avokado-brand-icon" src="/images/avokado-metallic-mark.png" alt="" aria-hidden="true" />avokado</a>
-    <nav class="primary-nav" aria-label="Primary navigation">
-      <a href="#highlights">Product</a>
-      <a href="#design">Design</a>
-      <a href="#product">Tower20 E3</a>
-      <a href="#os">OS Install</a>
-      <a href="/rocket-star/">rocketstar</a>
+  <a class="skip" href="#main">本文へ移動</a>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="avokado ホーム"><img src="/images/avokado-metallic-mark.png" alt="" />avokado</a>
+    <nav class="primary-nav" aria-label="メインナビゲーション">
+      <a href="#experience">体験</a><a href="#architecture">設計</a><a href="#status">開発状況</a><a href="/install/">RockstarOS</a><a href="/rocket-star/">rocketstar</a>
     </nav>
     <div class="header-actions">
-      <details class="mobile-menu">
-        <summary>Menu</summary>
-        <nav aria-label="Mobile navigation">
-          <a href="#highlights">Product</a>
-          <a href="#design">Design</a>
-          <a href="#product">Tower20 E3</a>
-          <a href="#os">OS Install</a>
-          <a href="/rocket-star/">rocketstar</a>
-        </nav>
-      </details>
-      <a class="header-cta" href="/preorder/">Pre-order <span aria-hidden="true">↗</span></a>
+      <details class="mobile-menu"><summary>Menu</summary><nav><a href="#experience">体験</a><a href="#architecture">設計</a><a href="#status">開発状況</a><a href="/install/">RockstarOS</a><a href="/rocket-star/">rocketstar</a></nav></details>
+      <a class="header-cta" href="#status">現在地を見る</a>
     </div>
   </header>
-  <main>
-    <section class="film-hero" aria-labelledby="film-title">
-      <span class="hero-word" aria-hidden="true">mini</span>
-      <img class="film-hero-device" src="/images/avocado-mini-tower20-e3-kit.png" alt="Concept rendering of four short Tower20 Motion Towers surrounding one separate low Edge Hub" fetchpriority="high" />
-      <div class="hero-bottom"><div class="hero-product-lockup"><span>AVOCADOMINI / TOWER20 E3</span><h1 id="film-title">avocadoMini</h1></div><p>Four 200 mm towers.<br>One separate Edge Hub.</p></div>
-      <p class="film-disclaimer">Tower20 E3 design direction. Concept rendering, not a photograph of production hardware.</p>
+
+  <main id="main">
+    <section class="hero section-dark" aria-labelledby="hero-title">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">AVOCADOMINI / R5 CURRENT BASELINE</p>
+        <h1 id="hero-title">1本で、<br />空間が動き出す。</h1>
+        <p class="lead">遊ぶ。つくる。学ぶ。暮らす。avocadoMini R5は、使用時200mm以内を目標にした、単体自律型の空間コンピュータ構想です。</p>
+        <div class="hero-actions"><a class="button button-light" href="#experience">構想を見る</a><a class="text-link light" href="/downloads/avocadoMini-R5-integrated-design.pdf">R5設計書 PDF ↗</a></div>
+        <p class="truth-note"><span></span>基本設計段階 / 実機試験 0件 / 製造承認 保留</p>
+      </div>
+      <figure class="hero-media reveal">
+        <img src="/images/r5/avocado-mini-r5-concept.png" alt="銀色の円筒形avocadoMini R5単体の設計構想画像" fetchpriority="high" />
+        <figcaption>R5 design concept. 実機写真ではありません。</figcaption>
+      </figure>
     </section>
-    <section class="hero-statement" aria-labelledby="statement-title"><p class="eyebrow">AVOCADOMINI / TOWER20 E3</p><h2 id="statement-title">Intelligence,<br>built into space.</h2><div class="statement-bottom"><p>Four fixed-height Motion Towers surround the play area.<br>A separate low Edge Hub runs RockstarOS, games, local voice, storage, and approved AI adapters.</p><div><span>4 × 200 MM MOTION TOWERS / 1 EDGE HUB</span><a href="#highlights">Explore the product <span aria-hidden="true">↓</span></a></div></div></section>
-    <section id="highlights" class="highlights" aria-labelledby="highlights-title"><div class="highlights-head"><h2 id="highlights-title">Highlights.</h2><div class="gallery-controls"><button id="gallery-prev" type="button" aria-label="Previous highlight">←</button><button id="gallery-next" type="button" aria-label="Next highlight">→</button></div></div><div class="highlight-gallery" id="highlight-gallery" aria-label="avocadoMini highlights">
-      <article class="highlight-card highlight-sensor"><img src="/images/tower20-e3-highlight-sensor-v2.png" alt="Three-quarter close-up of the Tower20 E3 active center camera illuminating a cyan sensing field while two reserved windows remain dark" loading="lazy" /><div><span>01 / SENSOR</span><h3>One camera<br>in each direction.</h3><p>Each E3 tower has one Basler monochrome camera candidate. Two dark exterior windows remain reserved and inactive.</p></div></article>
-      <article class="highlight-card highlight-height"><img src="/images/tower20-e3-highlight-200mm-v1.png" alt="High three-quarter view of four fixed-height Tower20 E3 units defining a compact play zone" loading="lazy" /><div><span>02 / 200 MM</span><h3>Small enough<br>to define the play zone.</h3><p>Each tower is fixed at no more than 200 mm in use. The three visible body sections are a surface treatment, not a telescoping mechanism.</p></div></article>
-      <article class="highlight-card highlight-base"><img src="/images/tower20-e3-highlight-footprint-v1.png" alt="Floor-level close-up of the Tower20 E3 low-profile circular pedestal and recessed anti-slip ring" loading="lazy" /><div><span>03 / FOOTPRINT</span><h3>One clean base.<br>A quieter silhouette.</h3><p>The wide circular pedestal hides its support and anti-slip surface below the metal edge. Cable pull, sliding, and tip resistance still require physical testing.</p></div></article>
-      <article class="highlight-card highlight-os"><img src="/images/tower20-e3-highlight-edge-hub-v1.png" alt="Separate low Edge Hub receiving four cyan data paths from four Tower20 E3 units" loading="lazy" /><div><span>04 / EDGE HUB</span><h3>Four viewpoints.<br>One local game loop.</h3><p>The separate Hub is the integration point for RockstarOS, local compute, storage, push-to-talk audio, and four USB 3 camera streams.</p></div></article>
-    </div><p class="gallery-hint">Swipe to explore <span aria-hidden="true">↔</span></p></section>
-    <section id="design" class="design-intro" aria-labelledby="design-title"><p class="eyebrow">DESIGN</p><h2 id="design-title">Everything,<br>for the space.</h2><p>Four towers surround the work area.<br>Rotate one Motion Tower from front to back.</p></section>
-    <section id="product" class="story" aria-labelledby="product-title">
-      <div class="story-sticky">
-        <span class="story-word" id="story-word" aria-hidden="true">FORM</span>
-        <div class="story-orbit" aria-hidden="true"></div>
-        <div class="story-rail" aria-hidden="true"><span class="is-active"></span><span></span><span></span><span></span><span></span><span></span></div>
-        <div class="feature-beats">
-          <article class="feature-beat is-active" data-beat="intro" aria-hidden="false"><p class="eyebrow">TOWER20 E3 / FIXED HEIGHT</p><h2 id="product-title">Motion Tower</h2><p class="feature-headline">200 mm.<br>One clear role.</p><p class="feature-description">A fixed-height aluminum tower acts as an input device. Its visible body sections keep the product rhythm without adding a motorized extension mechanism.</p><span class="feature-meta">4 TOWER20 INPUT DEVICES + 1 SEPARATE EDGE HUB / CONCEPT RENDERING</span></article>
-          <article class="feature-beat" data-beat="sensor" aria-hidden="true"><p class="eyebrow">01 / MONOCHROME GLOBAL SHUTTER</p><h2>Four directions.<br>One shared coordinate system.</h2><p class="feature-description">One camera candidate in each tower captures motion. The Hub must verify device identity, timing evidence, calibration revision, and tracking quality before an action can be committed.</p><div class="sensor-capabilities"><div><span>PRIMARY / CANDIDATE</span><strong>Basler daA1600-60um</strong><p>1600 × 1200 mono8. A 1280 × 800, 60 fps center ROI is the current planning profile, subject to real-device validation.</p></div><div><span>RESERVED / INACTIVE</span><strong>Two dark exterior windows</strong><p>They preserve the product face but do not represent two additional working cameras in E3.</p></div></div><span class="feature-meta">CYAN LIGHT IS A VISUAL STATUS EFFECT, NOT MEASURED SENSOR OUTPUT</span></article>
-          <article class="feature-beat" data-beat="telescope" aria-hidden="true"><p class="eyebrow">02 / FIXED PRODUCT ENVELOPE</p><h2>No extension.<br>No hidden scale change.</h2><p class="feature-description">The proposed assembled height is 199.50 ± 0.45 mm. The 199.95 mm arithmetic maximum leaves only 0.05 mm, so measurement method and production margin remain open.</p><span class="feature-meta">HEIGHT ≤ 200 MM / Ø44 MM BODY / NON-TELESCOPING E3</span></article>
-          <article class="feature-beat" data-beat="base" aria-hidden="true"><p class="eyebrow">03 / LOW-PROFILE PEDESTAL</p><h2>Stable below.<br>Clean from every angle.</h2><p class="feature-description">A wide circular pedestal replaces exposed outriggers with a concealed anti-slip ring. Floor friction, cable pull, and tip resistance remain physical tests before production.</p><span class="feature-meta">TIP, SLIDE, HEAT, AND CABLE-STRAIN ACCEPTANCE: NOT RUN</span></article>
-          <article class="feature-beat" data-beat="os" aria-hidden="true"><p class="eyebrow">04 / EDGE HUB + ROCKSTAROS</p><h2>Four data streams.<br>One local experience.</h2><p class="feature-description">The separate low Hub is the only game, voice, storage, and AI compute node. It combines the four camera streams, a local game loop, push-to-talk Japanese voice, saved work, and approved adapters.</p><span class="feature-meta">THE LLM CANNOT AUTHORIZE CAPTURE, PAYMENTS, PUBLISHING, OR SAFETY OVERRIDES</span></article>
-        </div>
-        <div class="stage" id="stage">
-          <div class="motion-product" id="motion-product" role="img" aria-label="Studio concept rendering of the fixed-height 200 mm Tower20 E3. Scroll to turn it 180 degrees from the camera-facing front to the rear, revealing a flush silver avocado-shaped power button, reserved dark windows, cosmetic body seams, and a low-profile circular pedestal.">
-            <span class="camera-sweep" aria-hidden="true"></span>
-            <img class="turn-frame" data-view="front" src="/images/tower20-e3-front-cutout-v1.png" alt="" fetchpriority="high" />
-            <img class="turn-frame" data-view="side" src="/images/tower20-e3-side-cutout-v1.png" alt="" />
-            <img class="turn-frame" data-view="rear" src="/images/tower20-e3-rear-cutout-v1.png" alt="" />
-            <span class="camera-flare camera-flare-upper" aria-hidden="true"></span>
-          </div>
-          <div class="sensor-closeup" id="sensor-closeup" aria-hidden="true"><img src="/images/tower20-e3-sensor-macro.png" alt="" /><div><span><i></i> PRIMARY · 1 CAMERA</span><span><i></i> RESERVED · 2 WINDOWS</span></div></div>
-        </div>
-        <div class="sensor-gaze" id="sensor-gaze" aria-hidden="true"><span class="sensor-gaze-upper"></span></div>
-        <div class="story-foot"><div><span id="chapter">INTRO / 04</span><strong id="angle">0°</strong></div><div class="track"><div id="progress"></div></div><span class="scroll-note">SCROLL TO EXPLORE</span></div>
-        <div class="price-panel" id="price-panel" aria-hidden="true"><p class="eyebrow">180° / THE COMPLETE SYSTEM</p><h2>avocadoMini</h2><div class="price"><span>4 Motion Towers + 1 central unit</span><strong>¥410,000</strong><small>Current planned base price · tax excluded</small></div><div class="price-actions"><span class="price-availability">Pre-orders coming soon</span><a class="text-link" href="/preorder/" tabindex="-1" id="preorder-link">View pre-order details <span aria-hidden="true">↗</span></a></div><p class="fine">The exterior is a confirmed product direction. Manufacturing, final specifications, shipping, and payment terms remain open.</p></div>
+
+    <section class="intro section-light reveal">
+      <p class="eyebrow">ONE OPERATING FOUNDATION</p>
+      <h2>外部Hubを<br />前提にしない。</h2>
+      <p>R5では、入力・ローカル計算・ゲーム・保存・音声・安全な停止を1本にまとめます。必要になれば、同じminiを足して空間を広げます。</p>
+      <div class="fact-row"><span>≤ 200 mm</span><span>1 UNIT AUTONOMOUS</span><span>SAME-MINI SCALE OUT</span></div>
+    </section>
+
+    <section id="experience" class="experience section-silver" aria-labelledby="experience-title">
+      <div class="section-heading reveal"><p class="eyebrow">PLAY / MAKE / LIVE</p><h2 id="experience-title">ゲームから始まる。<br />その先まで続く。</h2></div>
+      <div class="experience-grid">
+        <article class="reveal"><span>01</span><h3>PLAY</h3><p>身体の動きと空間を入力にして遊ぶ。低遅延の成立は、実機でこれから測ります。</p></article>
+        <article class="reveal"><span>02</span><h3>MAKE</h3><p>動き、音声、AIを組み合わせて作品や発明の候補を残す。外部送信は本人承認が前提です。</p></article>
+        <article class="reveal"><span>03</span><h3>LIVE</h3><p>学習や限定した生活支援へ広げる。ゲームの権限から勝手に家電や決済へ越境しません。</p></article>
       </div>
     </section>
-    <section id="os" class="os-install" aria-labelledby="os-install-title">
-      <div class="os-install-orbit" aria-hidden="true"></div>
-      <div class="os-install-content">
-        <h2 id="os-install-title">RockstarOS</h2>
-        <a class="os-install-button" href="/install/">
-          <span class="os-install-button-sensor" aria-hidden="true"><span></span></span>
-          <span class="os-install-button-copy"><strong>Open installer</strong><small>ROCKSTAROS / INSTALL</small></span>
-          <span class="os-install-button-arrow" aria-hidden="true">↗</span>
-        </a>
-      </div>
+
+    <section id="architecture" class="architecture section-dark" aria-labelledby="architecture-title">
+      <div class="architecture-copy reveal"><p class="eyebrow">R5 / SINGLE UNIT</p><h2 id="architecture-title">小さな筐体に、<br />役割を重ねる。</h2><p>円筒の中に入力、演算、電源、安全、音声、通信の区画を積み上げる設計です。外部給電は必要。表示方式・精密3D入力・熱・最終収納は未確定です。</p><a class="text-link light" href="https://github.com/k999ln/rock/tree/main/docs/avocado-mini-r5">GitHubで根拠を見る ↗</a></div>
+      <figure class="architecture-figure reveal"><img src="/images/r5/R5-M02-functional-stack.png" alt="avocadoMini R5内部機能スタックの設計図" loading="lazy" /><figcaption>R5-M02 / functional stack</figcaption></figure>
     </section>
+
+    <section class="display-goal section-light" aria-labelledby="display-title">
+      <figure class="reveal"><img src="/images/r5/R5-S01-scaling.png" alt="1台から同型miniを追加して拡張するR5構成図" loading="lazy" /></figure>
+      <div class="reveal"><p class="eyebrow">DISPLAY RESEARCH GOAL</p><h2 id="display-title">画面の中ではなく、<br />空間そのものへ。</h2><p>周囲の実空間に裸眼で粒子や像が見えることを必須の研究目標にしています。ただし方式は未確定で、実演済みではありません。現時点の画像は設計意図を伝える構想表現です。</p></div>
+    </section>
+
+    <section id="status" class="status section-dark" aria-labelledby="status-title">
+      <div class="section-heading reveal"><p class="eyebrow">DEVELOPMENT STATUS / 2026.09.24</p><h2 id="status-title">できていることと、<br />まだできていないこと。</h2></div>
+      <div class="status-grid">
+        <article class="status-card done reveal"><span>DOCUMENTED</span><h3>R5統合基本設計</h3><p>51ページの設計書、8点の設計検討図、計算、根拠資料をGitHubに保存済みです。</p></article>
+        <article class="status-card pending reveal"><span>NOT VERIFIED</span><h3>実機・表示・入力</h3><p>実機は0件。全空間表示、精密3D入力、性能、熱、光安全、製造可能性は未合格です。</p></article>
+        <article class="status-card pending reveal"><span>NOT FOR SALE</span><h3>価格・予約・発送</h3><p>R5の価格、販売条件、発売日は未確定です。旧E3の価格と予約構成はR5へ引き継ぎません。</p></article>
+      </div>
+      <div class="status-actions reveal"><a class="button button-light" href="/downloads/avocadoMini-R5-integrated-design.pdf">設計書を開く</a><a class="button button-ghost" href="/preorder/">販売状況を確認</a></div>
+    </section>
+
+    <section class="ecosystem section-light reveal" aria-labelledby="ecosystem-title"><div><p class="eyebrow">ONE OS / MORE THAN ONE PRODUCT</p><h2 id="ecosystem-title">RockstarOSと、<br />rocketstar。</h2></div><div class="ecosystem-links"><a href="/install/"><strong>RockstarOS</strong><span>配布・導入の現在地 ↗</span></a><a href="/rocket-star/"><strong>rocketstar</strong><span>再利用型ロケット設計 ↗</span></a></div></section>
   </main>
-  <footer><span>© 2026 avokadinc</span><a href="/rocket-star/">rocketstar</a><a href="/legal/">Sales disclosure</a><a href="/privacy/">Privacy</a><a href="https://github.com/k999ln/rock">Development repository ↗</a></footer>
+
+  <footer><a class="brand" href="/"><img src="/images/avokado-metallic-mark.png" alt="" />avokado</a><div><a href="/rocket-star/">rocketstar</a><a href="/legal/">販売表示</a><a href="/privacy/">プライバシー</a><a href="https://github.com/k999ln/rock">GitHub ↗</a></div><span>© 2026 avokadinc</span></footer>
 </body>
 </html>
