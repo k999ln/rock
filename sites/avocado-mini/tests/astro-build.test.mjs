@@ -75,6 +75,18 @@ test('home fragment navigation, carousel controls, and metadata remain valid', (
   assert.equal(existsSync(new URL('client/sitemap.xml', outputRoot)), true);
 });
 
+test('shared visual and interaction enhancements ship on every primary experience', () => {
+  assert.equal(existsSync(new URL('client/site-enhancements.js', outputRoot)), true);
+  for (const route of ['client/index.html', 'client/mini/index.html', 'client/pro/index.html', 'client/install/index.html', 'client/preorder/index.html', 'client/rocket-star/index.html']) {
+    assert.match(built(route), /src="\/site-enhancements\.js"/, `${route} must load the shared enhancement layer`);
+  }
+  const enhancement = built('client/site-enhancements.js');
+  assert.match(enhancement, /Page scroll progress/);
+  assert.match(enhancement, /aria-current/);
+  assert.match(enhancement, /currency-toggle-button/);
+  assert.match(enhancement, /prefers-reduced-motion/);
+});
+
 test('the restored Mini 180-degree story and dedicated Pro page preserve their pricing', () => {
   const mini = built('client/mini/index.html');
   const pro = built('client/pro/index.html');

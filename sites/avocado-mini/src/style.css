@@ -1571,3 +1571,78 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
   .r5-product-page .highlight-sensor img{transform:scale(1.22)}
   .r5-product-page .highlight-sensor:hover img{transform:scale(1.24)}
 }
+
+/* Site-wide finish pass: one glass, metal and cyan system across every route. */
+::selection{background:#86e7ff;color:#061017}
+:where(a,button,summary):focus-visible{outline:2px solid #a5edff;outline-offset:4px;border-radius:6px}
+.site-live-region{position:fixed;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.site-progress{position:fixed;z-index:100;top:0;left:0;right:0;height:2px;pointer-events:none;background:#ffffff0a}
+.site-progress span{display:block;width:calc(var(--site-scroll,0) * 100%);height:100%;background:linear-gradient(90deg,#63747c,#a9f1ff 72%,#fff);box-shadow:0 0 15px #68dfff;transition:width .1s linear}
+
+.site-header,.apple-home-nav,.rocket-nav,.launch-nav{transition:background-color .35s ease,border-color .35s ease,box-shadow .35s ease,backdrop-filter .35s ease,transform .35s ease}
+.apple-home-nav{position:sticky;top:0;border-bottom:1px solid #ffffff00}
+.apple-home-nav.is-scrolled{background:#f6f6f8d9;border-bottom-color:#1d1d1f18;box-shadow:0 12px 38px #11131a12;backdrop-filter:saturate(190%) blur(28px);-webkit-backdrop-filter:saturate(190%) blur(28px)}
+.r5-product-page .product-header.is-scrolled,.pro-product-page .pro-header.is-scrolled{background:#101114d9;border-color:#ffffff2b;box-shadow:0 16px 48px #000b,0 1px 0 #ffffff0d inset;backdrop-filter:saturate(175%) blur(32px);-webkit-backdrop-filter:saturate(175%) blur(32px)}
+.pro-product-page .pro-header{position:fixed}
+.subpage .site-header{position:sticky;top:0;z-index:50;background:#111316d9;color:#f5f7f9;border-bottom:1px solid #ffffff1d;box-shadow:0 12px 38px #0005;backdrop-filter:saturate(155%) blur(26px);-webkit-backdrop-filter:saturate(155%) blur(26px)}
+.subpage .site-header.is-scrolled{background:#0b0d0fef;border-bottom-color:#9feaff35;box-shadow:0 18px 50px #0009}
+.primary-nav a,.apple-home-nav nav a{position:relative}
+.primary-nav a:after,.apple-home-nav nav a:after{content:"";position:absolute;left:0;right:100%;bottom:-8px;height:1px;background:#9deaff;box-shadow:0 0 9px #66dcff;transition:right .24s ease}
+.primary-nav a:is(:hover,.is-current):after,.apple-home-nav nav a:is(:hover,.is-current):after{right:0}
+
+.apple-home-banner{position:relative;z-index:5;box-shadow:0 1px 0 #0000000c inset}
+.home-promo{--pointer-x:0;--pointer-y:0;background-color:#030405;box-shadow:0 1px 0 #ffffff14 inset,0 -1px 0 #000 inset}
+.home-promo:before{content:"";position:absolute;z-index:2;inset:-12%;pointer-events:none;background:radial-gradient(circle at calc(50% + var(--pointer-x) * 12%) calc(58% + var(--pointer-y) * 8%),#71dbff21 0%,transparent 33%),linear-gradient(110deg,transparent 15%,#ffffff08 46%,transparent 67%);filter:blur(20px);transition:background-position .25s ease}
+.home-promo>img{transition:filter .7s ease,transform 1.2s cubic-bezier(.16,1,.3,1);filter:saturate(.82) contrast(1.07) brightness(.96)}
+.home-promo:hover>img{filter:saturate(.9) contrast(1.08) brightness(1.02)}
+.home-promo-mini>img{filter:drop-shadow(0 28px 70px #000d) drop-shadow(0 0 45px #83ddff18)}
+.home-tile{border:1px solid #ffffff10;box-shadow:0 24px 80px #0005 inset;transition:border-color .35s ease,transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s ease}
+.home-tile:hover{border-color:#a2ecff45;box-shadow:0 24px 80px #0007 inset,0 0 45px #59d9ff12}
+.home-tile>img{transition:filter .6s ease,transform .8s cubic-bezier(.16,1,.3,1)}
+.home-tile:hover>img{filter:saturate(.86) brightness(1.04)}
+.home-tile-pair:hover>img{transform:scale(.925)}
+.home-tile a,.home-promo-copy a{transition:color .2s ease,text-shadow .2s ease}
+.home-tile a:hover,.home-promo-copy a:hover{color:#99e8ff;text-shadow:0 0 18px #64dcff55}
+
+.r5-product-page .film-hero{--pointer-x:0;--pointer-y:0}
+.r5-product-page .film-hero:after{content:"";position:absolute;z-index:2;inset:0;pointer-events:none;background:radial-gradient(circle at calc(50% + var(--pointer-x) * 10%) calc(48% + var(--pointer-y) * 8%),#8ee9ff13 0%,transparent 29%),linear-gradient(180deg,transparent 58%,#0008 100%);mix-blend-mode:screen}
+.r5-product-page .film-hero-device{transition:filter .65s ease,transform .9s cubic-bezier(.16,1,.3,1);filter:drop-shadow(0 30px 55px #0008) drop-shadow(0 0 48px #a7ecff12)}
+.r5-product-page .highlight-card{border:1px solid #ffffff16;box-shadow:0 26px 80px #0008;transition:border-color .35s ease,box-shadow .35s ease,transform .45s cubic-bezier(.16,1,.3,1)}
+.r5-product-page .highlight-card:hover{border-color:#9eeaff50;box-shadow:0 30px 90px #000b,0 0 45px #56dfff13;transform:translateY(-4px)}
+.r5-product-page .story-sticky:after{content:"";position:absolute;z-index:0;inset:-20%;pointer-events:none;background:radial-gradient(circle at 66% 50%,#62dfff0c 0%,transparent 30%);filter:blur(35px)}
+.price-panel,.pro-price-card{backdrop-filter:saturate(140%) blur(25px);-webkit-backdrop-filter:saturate(140%) blur(25px)}
+.currency-switch{box-shadow:0 1px 0 #ffffff13 inset,0 8px 25px #0003}
+.currency-toggle-button{transition:background .24s ease,color .24s ease,box-shadow .24s ease,transform .2s ease}
+.currency-toggle-button:hover{color:#e8faff}.currency-toggle-button.is-active{box-shadow:0 7px 18px #0005;transform:translateY(-1px)}
+
+.pro-hero{--pointer-x:0;--pointer-y:0}
+.pro-hero:before{content:"";position:absolute;z-index:-1;inset:-18%;pointer-events:none;background:radial-gradient(circle at calc(70% + var(--pointer-x) * 9%) calc(50% + var(--pointer-y) * 7%),#7de7ff22 0%,transparent 24%),radial-gradient(circle at 48% 95%,#83efff12 0%,transparent 28%);filter:blur(32px)}
+.pro-hero>img{transform:scale(1.015) translate(calc(var(--pointer-x) * -7px),calc(var(--pointer-y) * -5px));transition:transform 1.1s cubic-bezier(.16,1,.3,1),filter .8s ease;filter:saturate(.82) contrast(1.08) brightness(.96)}
+.pro-statement,.pro-capabilities,.pro-pairing,.pro-price{position:relative;isolation:isolate;overflow:hidden}
+.pro-statement:after,.pro-capabilities:after,.pro-price:after{content:"";position:absolute;z-index:-1;width:52vw;aspect-ratio:1;border-radius:50%;pointer-events:none;background:#72dfff09;filter:blur(90px)}
+.pro-statement:after{right:-24vw;top:-30%}.pro-capabilities:after{left:-28vw;bottom:-45%}.pro-price:after{right:-22vw;top:-45%}
+.pro-capability-grid article{position:relative;overflow:hidden;transition:background .3s ease,border-color .3s ease,transform .35s cubic-bezier(.16,1,.3,1)}
+.pro-capability-grid article:after{content:"";position:absolute;inset:auto -30% -55% 20%;height:75%;background:radial-gradient(circle,#73ddff22,transparent 65%);opacity:0;transition:opacity .3s ease}
+.pro-capability-grid article:hover{z-index:1;background:#12181c;border-color:#91e9ff45;transform:translateY(-3px)}
+.pro-capability-grid article:hover:after{opacity:1}
+.pro-pairing>img{filter:saturate(.82) contrast(1.06);-webkit-mask-image:linear-gradient(90deg,#000 72%,transparent 100%);mask-image:linear-gradient(90deg,#000 72%,transparent 100%)}
+.pro-price-card{border-color:#ffffff2c;background:linear-gradient(145deg,#1b2024dc,#0b0d0fe8);box-shadow:0 38px 110px #000a,0 1px 0 #ffffff0f inset}
+
+.preorder-hero{position:relative;isolation:isolate}.preorder-hero:after{content:"";position:absolute;z-index:-1;inset:-20%;background:radial-gradient(circle at 72% 42%,#75e3ff18 0%,transparent 25%);filter:blur(45px)}
+.preorder-card{backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:transform .42s cubic-bezier(.16,1,.3,1),border-color .3s ease,box-shadow .4s ease}
+.preorder-card:hover{transform:translateY(-5px);border-color:#94e8ff4d;box-shadow:0 34px 85px #0009,0 0 42px #6adfff11}
+.article{position:relative}.article:before{content:"";position:fixed;z-index:-1;inset:0;pointer-events:none;background:radial-gradient(circle at 78% 10%,#71defc12 0%,transparent 28%),linear-gradient(180deg,#111518 0%,#080a0c 100%)}
+.subpage:not(.preorder-page){background:#080a0c;color:#eef2f4}.subpage .article :is(.lead,section p,li){color:#aeb9bf}.subpage .article section{border-top-color:#ffffff22}.subpage .notice{background:#71dcff10;border-left-color:#6bdcf8}
+
+.site-enhanced .site-reveal{opacity:0;filter:blur(10px);transform:translateY(26px);transition:opacity .8s ease,filter .9s ease,transform 1s cubic-bezier(.16,1,.3,1)}
+.site-enhanced .site-reveal.is-visible{opacity:1;filter:blur(0);transform:none}
+@media(max-width:760px){
+  .site-progress{height:2px}
+  .home-promo:before{filter:blur(14px)}
+  .pro-pairing>img{-webkit-mask-image:linear-gradient(180deg,#000 78%,transparent 100%);mask-image:linear-gradient(180deg,#000 78%,transparent 100%)}
+  .subpage .site-header{position:sticky;height:54px}
+}
+@media(prefers-reduced-motion:reduce){
+  .site-progress span,.site-header,.apple-home-nav,.home-promo>img,.home-tile,.home-tile>img,.r5-product-page .film-hero-device,.r5-product-page .highlight-card,.pro-hero>img,.pro-capability-grid article,.preorder-card,.site-enhanced .site-reveal{transition:none!important;transform:none!important;filter:none!important}
+  .site-enhanced .site-reveal{opacity:1}
+}
