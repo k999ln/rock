@@ -71,6 +71,9 @@ const systemProduct = document.querySelector('#system-product');
 const gallery = document.querySelector('#highlight-gallery');
 const galleryPrev = document.querySelector('#gallery-prev');
 const galleryNext = document.querySelector('#gallery-next');
+const currencyButtons = [...document.querySelectorAll('.currency-toggle-button')];
+const priceValues = [...document.querySelectorAll('.price-value')];
+const priceConversions = [...document.querySelectorAll('.price-conversion')];
 const openingPriceEnd = 0.115;
 const contentStart = 0.115;
 const priceStart = 0.90;
@@ -85,6 +88,27 @@ const motionKeys = [
   { at: 0.72, x: -2, y: 1, scale: 1.01, tilt: -1, yaw: 150 },
   { at: priceStart, x: 0, y: 0, scale: 0.98, tilt: 0, yaw: 180 },
 ];
+
+function setCurrency(currency, persist = true) {
+  const selected = currency === 'usd' ? 'usd' : 'jpy';
+  const key = selected === 'usd' ? 'Usd' : 'Jpy';
+  document.documentElement.dataset.currency = selected;
+  currencyButtons.forEach((button) => {
+    const active = button.dataset.currency === selected;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  priceValues.forEach((value) => { value.textContent = value.dataset[`price${key}`]; });
+  priceConversions.forEach((value) => { value.textContent = value.dataset[`conversion${key}`]; });
+  if (persist) {
+    try { localStorage.setItem('avokado-price-currency', selected); } catch {}
+  }
+}
+
+currencyButtons.forEach((button) => button.addEventListener('click', () => setCurrency(button.dataset.currency)));
+let initialCurrency = 'jpy';
+try { initialCurrency = localStorage.getItem('avokado-price-currency') || 'jpy'; } catch {}
+setCurrency(initialCurrency, false);
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const smooth = (value) => value * value * (3 - 2 * value);

@@ -68,6 +68,9 @@ test('the 180-degree story opens and closes with the requested prices and transp
   assert.match(home, /¥160,000/);
   assert.match(home, /180° \/ FOUR-TOWER SYSTEM/);
   assert.match(home, /¥410,000/);
+  assert.match(home, /data-price-usd="US\$1,050"/);
+  assert.match(home, /data-price-usd="US\$2,700"/);
+  assert.equal((home.match(/aria-label="Display currency"/g) || []).length, 2);
   assert.match(home, /avocado-mini-tower20-e3-kit-transparent-v2\.png/);
   for (const view of ['front', 'side', 'rear']) {
     assert.match(home, new RegExp(`tower20-e3-${view}-transparent-v2\\.png`));
