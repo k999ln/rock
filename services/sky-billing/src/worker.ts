@@ -26,7 +26,7 @@ export interface Env {
   DB: D1Database;
   BILLING_SHARED_SECRET: string;
   SETTLEMENT_INGEST_SECRET: string;
-  PAYOUT_ADAPTER_SECRET: string;
+  PAYOUT_ADAPTER_SECRET?: string;
   SKY_ORIGIN: string;
   BASE_RPC_URL?: string;
 }
@@ -38,8 +38,7 @@ function configuration(env: Env) {
     sky.protocol !== 'https:' ||
     baseRpc.protocol !== 'https:' ||
     (env.BILLING_SHARED_SECRET ?? '').length < 32 ||
-    (env.SETTLEMENT_INGEST_SECRET ?? '').length < 32 ||
-    (env.PAYOUT_ADAPTER_SECRET ?? '').length < 32
+    (env.SETTLEMENT_INGEST_SECRET ?? '').length < 32
   )
     throw new Error('SETTLEMENT_CONFIGURATION_INVALID');
   return { skyOrigin: sky.origin, baseRpcUrl: baseRpc.toString() };
@@ -861,13 +860,18 @@ async function ingest(request: Request, env: Env, legacyFixture = false) {
 
 async function signedInput(request: Request, env: Env) {
   configuration(env);
+  // The payout rail is optional while no payout adapter is approved. Never
+  // accept a claim or result without its own secret.
+  const payoutSecret = env.PAYOUT_ADAPTER_SECRET;
+  if (!payoutSecret || payoutSecret.length < 32)
+    throw new Error('SETTLEMENT_CONFIGURATION_INVALID');
   const raw = await request.text();
   if (new TextEncoder().encode(raw).length > 16_384)
     throw new Error('SIGNED_INPUT_TOO_LARGE');
   await verifyReceiptSignature(
     raw,
     request.headers.get('sky-receipt-signature'),
-    env.PAYOUT_ADAPTER_SECRET,
+    payoutSecret,
   );
   const value = JSON.parse(raw) as unknown;
   if (!value || typeof value !== 'object' || Array.isArray(value))

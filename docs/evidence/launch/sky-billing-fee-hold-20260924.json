@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-24",
+  "service": "rockstar-sky-billing",
+  "url": "https://rockstar-sky-billing.mr-kirin999.workers.dev",
+  "deployedVersionId": "f770e959-e20b-4820-88bc-4aae1d0e14b4",
+  "policy": "on_hold_pending_revenue_flow",
+  "secretNamesObserved": [
+    "BILLING_SHARED_SECRET",
+    "SETTLEMENT_INGEST_SECRET"
+  ],
+  "payoutAdapterSecretPresent": false,
+  "readback": {
+    "health": {
+      "httpStatus": 200,
+      "mode": "fee_policy_on_hold",
+      "monthlyFeeCapMinor": null,
+      "legacyMonthlyFeeCapMinor": 888
+    },
+    "newRockWalletChallenge": {
+      "httpStatus": 409,
+      "code": "SKY_FEE_POLICY_ON_HOLD"
+    },
+    "payoutClaimWithoutSecret": {
+      "httpStatus": 503
+    }
+  },
+  "incident": "Initial hold deployment returned 503 on health because PAYOUT_ADAPTER_SECRET was absent. Configuration now requires that secret only on payout claim/result; those routes fail closed without it.",
+  "validation": [
+    "npm run verify passed after the payout-secret configuration repair",
+    "billing Worker regression tests passed",
+    "TypeScript typecheck passed",
+    "Wrangler billing dry-run passed"
+  ]
+}

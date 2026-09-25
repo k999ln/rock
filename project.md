@@ -6,6 +6,8 @@
 
 検証: 現行経路のToC拒否・台帳未書込み、Wallet回収操作の拒否、CSV料金0、旧契約の回帰を個別確認。ローカル通信を使う模擬サーバー試験を含む`npm run verify`はexit 0（Node 363/363、追加Tool 19/19、Web asset欠落0、仕事API 149項目）。
 
+公開Sky Billing Workerも旧`verified_earnings_only`・888 cents表示から保留版へ配備した。初回配備では、公開環境に`PAYOUT_ADAPTER_SECRET`が未登録だったため`/health`も503になった。必須設定の検査を払出しclaim/resultに限定して再配備し、`/health`は200・`fee_policy_on_hold`・現行上限null、回収Walletの新規操作は409、払出しclaimは503を確認した。公開版ID `f770e959-e20b-4820-88bc-4aae1d0e14b4`。修復版の`npm run verify`もexit 0（Node 363/363、Web asset欠落0、仕事API 149項目）。[確認記録](docs/evidence/launch/sky-billing-fee-hold-20260924.json)。
+
 
 ## 2026-09-24 — mainの進捗件数とデータベース状態を再同期
 
@@ -1134,7 +1136,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | FB05 | 改善版Skyの役割フィードへブランド運営役と40 MCP操作を統合 | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
 | FB06 | Instagram画面の写真から未確認候補を作り、Meta確認後だけ運用対象へ進める | 完了 | [記録](docs/instagram-photo-onboarding-20260912.md) · [記録](toolkits/fashion-brand-ops/db/migrations/004_screenshot_account_intake.sql) · [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) · [記録](components/fashion-brand-ops-runner.tsx) |
 | BIL01 | 旧888 cents収益精算の試験実装を保持し、現行ToC料金は動線確定まで停止 | 完了 | [記録](docs/sky-billing.md) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing.test.mjs) · [記録](tests/billing-worker.test.mjs) · [記録](services/sky-billing/migrations/0002_earnings_settlement.sql) · [記録](docs/evidence/launch/backend-owner-validation-20260912.json) |
-| BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) · [記録](docs/workstreams/03-wallet-billing-providers.md) · [記録](tests/billing-worker.test.mjs) |
+| BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) · [記録](docs/workstreams/03-wallet-billing-providers.md) · [記録](tests/billing-worker.test.mjs) · [記録](docs/evidence/launch/sky-billing-fee-hold-20260924.json) |
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |
 | CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 | [記録](data/csv-business-tasks.json) · [記録](docs/csv-business-v1.ja.md) · [記録](lib/csv-transform.ts) · [記録](lib/csv-job-store.ts) · [記録](components/csv-business-workspace.tsx) |
 
