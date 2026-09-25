@@ -22,7 +22,7 @@
 - `blocked`: 必須の本人判断、機種、鍵、契約、provider、公開許可などが不足している。
 
 <!-- project-overview:start -->
-現在の機械可読進捗は163 task中106 done、31 in progress、20 planned、6 blocked。件数は作業量や製品完成率を表さない。
+現在の機械可読進捗は164 task中106 done、32 in progress、20 planned、6 blocked。件数は作業量や製品完成率を表さない。
 <!-- project-overview:end -->
 
 ## 作業ストリーム

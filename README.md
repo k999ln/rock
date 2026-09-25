@@ -149,7 +149,7 @@ Walletは、費用の見積・予約・確定、署名されたEarning Receipt�
 R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合格**です。件数は製品の完成率ではありません。
 
 <!-- project-overview:start -->
-更新日: 2026-09-25 / 163 task中106 done・31 in progress・20 planned・6 blocked
+更新日: 2026-09-25 / 164 task中106 done・32 in progress・20 planned・6 blocked
 <!-- project-overview:end -->
 
 [全taskの作業進捗](project.md#全taskの作業進捗) / [Pixel事前試験](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [初回flash gate](docs/android-first-flash-gate-20260916.md) / [R5保存・検証記録](docs/avocado-mini-r5/verification.json)

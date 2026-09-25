@@ -228,6 +228,18 @@
       ]
     },
     {
+      "id": "GM01",
+      "title": "AI06から切り出し: R5 §03 GAME01の最小操作（選択・保持中移動・放す・衝突／結合・分離・取消・時間停止・保存再開）を決定的2D粒子sandboxとしてhost／fixtureで実装し、不正save・版違いを拒否（非金融。R5空間表示・3D入力・実機・OS統合は対象外）",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "lib/game-sandbox.ts",
+        "tests/game-sandbox.test.mjs",
+        "tests/fixtures/game-sandbox-session.json",
+        "docs/workstreams/08-game-market-fund.md"
+      ]
+    },
+    {
       "id": "AI08",
       "title": "Jev／TypeSafe・Local Qwen・Cloud LLMをcode主導で統合するDecision Fabric全体詳細設計と機械可読安全契約を固定",
       "status": "done",

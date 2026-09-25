@@ -1,5 +1,15 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-25 — Game最小loop（R5 §03 GAME01）を2D粒子sandboxとしてhost／fixtureで実装（GM01、AI06から切り出し）
+
+**本人決定:** 2026-09-25 01:26 ET、AI09として、Core offline仕事loopとGame最小loopをOS10完了前にhost／fixture段階で先行してよい（emulator・実機・OS統合の合格には転用しない）。AI09の台帳記録は別作業者（Core AI02担当）が行うため、本変更ではAI02〜AI05・AI09の台帳項目とCore側ファイルを変更していない。AI06本体（共通仕事・限定記憶・Zema進捗への接続）は依存を残したまま未着手で、そこから2D最小loopだけを`GM01`として切り出した（進行中、draft PR）。
+
+**実装:** `lib/game-sandbox.ts`は、R5統合設計§03の最小操作（選ぶ、保持中だけ動かす、放す、衝突・結合、分離、取消、時間停止、保存して再開）と§15の版固定規則（時間刻み、質量、速度、半径、反発、結合条件、刻み分割による通り抜け防止、過負荷時の停止）を、決定的な2D粒子モデルで実装する。追跡喪失は粒子を飛ばさず保持を解除して休止する。操作は`lib/workflow.ts`の入力検査（`objectInput`・`workId`・`WorkError`）と、同じ操作IDの再送は同一結果・異なる内容は409・revision不一致は409という同じ規約に従う。saveは形式名・形式版1・規則ID・規則digest・状態digest（`lib/material-invention.ts`の正規化SHA-256を再利用）を持ち、壊れたJSON、未知の項目、形式版違い（409）、規則版違い、digest不一致、範囲外の値・結合不整合を拒否する。save項目は作品名・作者・乱数種・規則・状態・取消履歴・操作記録だけで、金額・課金・交換・Wallet・GX01への接続はない。設計書（`docs/avocado-mini-r5/`一式ほか）は変更していない。
+
+**未完了（独立gate、今回の完了条件外）:** R5裸眼空間表示（OP01）、精密3D入力、安全、熱・電源・収納（MAT15）、描画UI、実センサー入力、協力・対戦の同期、「つくる」の編集、公開・共有、共通仕事・Zema進捗接続（AI06本体）、emulator・実機・OS統合。
+
+検証: host（box、Node v22.23.3）で`node --experimental-strip-types --test tests/game-sandbox.test.mjs` 9/9（決定性、等質量弾性衝突の速度交換と運動量・運動エネルギー保存、非弾性結合の運動量保存と失われたエネルギー、刻み分割と過負荷停止、選択・保持・移動・放す・取消・追跡喪失・時間停止、取消と冪等、別OSプロセス再起動を挟んだ再開が無停止実行と同じdigest、不正save・版違い拒否、金融項目なし）。新試験は`npm test`（`tests/*.test.mjs`）経由で`npm run verify`に含まれ、`npm run verify` exit 0（root Node試験375/375、Fashion 19/19、avocadoMini Site 13/13、仕事API 149項目）。verifyが書き換えた`services/sky-billing/work/sky-billing-dry-run/`は元に戻した。CIの結果はPRの同じhead SHAで別に確認する。host／fixtureの結果であり、R5・実機の合格ではない。
+
 ## 2026-09-25 — 公開avocadoMini／avokadoProの参考価格を正式化し、台帳をmainと公開Siteへ同期（WEB20・DOC05）
 
 **本人決定（OWNER判断済み）:** 2026-09-25 00:49 ET、決定者は本人、根拠はチャットでの本人指示（開発統括Bot経由）。公開中のavocadoMini／avokadoProの構成と参考価格を正式とし、Site source（`851bb04`）の表記と完全一致で記録した。
@@ -1063,7 +1073,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-25 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 106/163件
+最終更新: 2026-09-25 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 106/164件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -1083,6 +1093,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| GM01 | AI06から切り出し: R5 §03 GAME01の最小操作（選択・保持中移動・放す・衝突／結合・分離・取消・時間停止・保存再開）を決定的2D粒子sandboxとしてhost／fixtureで実装し、不正save・版違いを拒否（非金融。R5空間表示・3D入力・実機・OS統合は対象外） | 進行中 | [記録](lib/game-sandbox.ts) · [記録](tests/game-sandbox.test.mjs) · [記録](tests/fixtures/game-sandbox-session.json) · [記録](docs/workstreams/08-game-market-fund.md) |
 | AI08 | Jev／TypeSafe・Local Qwen・Cloud LLMをcode主導で統合するDecision Fabric全体詳細設計と機械可読安全契約を固定 | 完了 | [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) |
 | AI07 | JevのSky明示利用を設計し、DecisionProviderとRouter／Harnessへの統合を受け入れる | 進行中 | [記録](docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md) · [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) · [記録](docs/jev-ecosystem-integration-design.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/llm-evaluation-architecture.md) · [記録](data/llm-capabilities.json) · [記録](scripts/check-llm-architecture.mjs) |
 | MAT01 | RQ49 Material Invention Coreのentity・発明loop・安全境界を設計へ固定 | 完了 | [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/material-invention-core.md) |
