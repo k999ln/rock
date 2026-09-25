@@ -9,9 +9,9 @@
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
-    "total": 163,
+    "total": 164,
     "done": 106,
-    "in_progress": 31,
+    "in_progress": 32,
     "planned": 20,
     "blocked": 6,
     "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
