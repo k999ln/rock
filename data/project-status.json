@@ -1146,7 +1146,7 @@
       "title": "R5とavocadoMini／avokadoPro製品ラインの関係（同一・後継・別系列、価格の扱い）を決め、R5要求とMAT15の範囲を見直す",
       "status": "blocked",
       "dependsOn": [],
-      "reason": "OWNER判断待ち（2026-09-25時点、開発側で決めない）。公開Siteと台帳はMini/Pro製品ラインを正式とした一方、R5価格は未確定・E3価格非継承のまま。/preorder/は旧¥160,000／¥410,000をR5へ引き継がないと表示している。R5との関係が決まるまでMAT15の範囲とnextActionを変更しない。",
+      "reason": "OWNER判断待ち（2026-09-25時点、開発側で決めない）。公開Siteと台帳はMini/Pro製品ラインを正式とした一方、R5価格は未確定・E3価格非継承のまま。2026-09-25 00:49 ET観測時点の/preorder/は旧¥160,000／¥410,000をR5へ引き継がないと表示していた。追記（01:54 ET観測）: main `9f09b6a`（2026-09-25 01:48 ET、Site変更のみの直接コミット）でこの表記は消え、/preorder/はMini/Proの参考価格（1台「From ¥160,000」、4台「¥410,000」、Pro「From ¥880,000」）と販売前（予約・決済なし）の表示になった。公開Siteも同内容を配信（01:54 ET取得）。R5への言及はなく、R5との関係は引き続き未決定。/preorder/「From ¥160,000」と/mini/「¥160,000」の表記揺れは本人判断待ち（Site表記、開発側でSiteを変更しない）。R5との関係が決まるまでMAT15の範囲とnextActionを変更しない。",
       "evidence": [
         "data/product-baseline.json",
         "docs/product-baseline.md",

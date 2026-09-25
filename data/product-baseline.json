@@ -161,7 +161,10 @@
         "reservation_and_checkout_enablement_WEB15",
         "external_product_name_PR40_avokado_mini",
         "preorder_page_old_E3_pricing_statement_versus_this_line"
-      ]
+      ],
+      "openOwnerDecisionNotes": {
+        "preorder_page_old_E3_pricing_statement_versus_this_line": "Observed 2026-09-25 01:54 ET at main 9f09b6a (01:48 ET): the old-E3 statement is no longer shown on /preorder/, which now lists the Mini/Pro reference prices with no R5 mention. The R5 relationship stays open (MAT16). Site wording difference, /preorder/ 'From ¥160,000' versus /mini/ '¥160,000', is recorded as an open owner decision; development does not change the Site."
+      }
     },
     "motionTowerP0Engineering": {
       "source": "User-provided RockstarOS Motion Tower P0 Engineering Package v2, revision P0.2",
