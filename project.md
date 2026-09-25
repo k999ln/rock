@@ -4,7 +4,7 @@
 
 主担当Git / CI / ReleaseのROCK、既存DOC04。利用者の画像への指摘を受け、R5-M01の銀色細身円筒・黒いカメラ帯・低い円形台座を基準に、製品コンセプト画像を新しい明るいスタジオ表現へ再制作した。同じ画像を使う控えめな4秒GIFを冒頭へ配置し、旧い製品カットとの重複を解消した。構成図も同じ色調とタイポグラフィへ変更し、R5端末、RockstarOS、Sky/Zemaの設計上の関係だけを示す。実機写真、空間表示、OS統合完了を示す画像にはしない。
 
-検証: GIFの32フレーム・4秒再生、製品形状と構成図の画像確認、README参照204件の欠落0、`npm run project:update`整合、`npm run verify` exit 0（ローカルAPI 149項目、Web asset 84参照・欠落0）。次はR5の実機計測とR5用OS profileの統合が未完了。
+検証: GIFの32フレーム・4秒再生、製品形状と構成図の画像確認、README参照204件の欠落0、`npm run project:update`整合。公開SiteのR5同期を含む最新mainへ統合し、増えたtask数をデータベース状態ファイルへ再生成後、`npm run verify` exit 0（ローカルAPI 149項目、Web asset 84参照・欠落0）。次はR5の実機計測とR5用OS profileの統合が未完了。
 
 ## 2026-09-24 — 公開avocadoMini SiteをGitHub正本のR5へ同期
 
