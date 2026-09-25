@@ -4,7 +4,9 @@
 
 利用者の指摘を受け、公開Siteに残っていた旧Tower20 E3の「4本＋別Edge Hub」、1本16万円・一式41万円の表示を、現行GitHub `main`のR5要求と照合した。商品ページを使用時200mm以内・1本自律・同型mini増設・別Hub不要へ更新し、PLAY / MAKE / LIVE、単体機能スタック、全空間裸眼表示の研究目標、実機0件・製造承認保留を同じ画面で示す。R5の51ページ設計書と8図面を公開sourceへ同梱する。rocketstarとRockstarOS Developer Previewの導線は保持する。
 
-予約画面はR5の価格・発売日・販売条件が未確定であることを表示し、旧E3 SKUと価格をUIから撤去した。APIも`avocadoMini-r5`の明示baseline、R5総額、在庫、承認済み条件が揃わなければfail closedとし、古い環境変数だけでは販売を再開できない。予約API 6件、Vite本番build、ローカル実ブラウザでトップと販売停止画面を確認。主担当Web / PWA / SitesのROCK、WEB16。GitHub保存、Sites配備、公開readbackは別の証拠として完了後に追記する。
+予約画面はR5の価格・発売日・販売条件が未確定であることを表示し、旧E3 SKUと価格をUIから撤去した。APIも`avocadoMini-r5`の明示baseline、R5総額、在庫、承認済み条件が揃わなければfail closedとし、古い環境変数だけでは販売を再開できない。予約API 6件、Vite本番build、ローカル実ブラウザでトップと販売停止画面を確認。主担当Web / PWA / SitesのROCK、WEB16。
+
+GitHub `main`へ製品source commit `3eb9c66`を保存後、同内容をSite source `e08c6d77ecab8a5d46678068c7e0bf99bccd92be`として保存した。公開Site v57、deployment `appgdep_6ab5bbc0bf0881918ed5de323f5ab55e`は`status=succeeded`、公開URLは`https://avocado-mini.kirin-999.chatgpt.site`。GitHub、Site source、配布archive、公開deploymentを区別した[証拠](docs/evidence/avocado-mini-site-r5.json)を残す。R5の製造・実機・販売開始を完了扱いにはしない。
 
 ## 2026-09-24 — avokado READMEの視覚構成を整理
 
@@ -961,7 +963,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 100/153件
+最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 101/153件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -1028,7 +1030,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB13 | 旧URLをavocadoMini公開商品Siteへ転用し、OS操作画面を管理者限定の別Siteへ移す | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/guide/index.html) · [記録](sites/avocado-mini/crowdfunding/index.html) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](README.md) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/main.js) · [記録](project.md) · [記録](sites/avocado-mini/rockstaros/index.html) · [記録](sites/avocado-mini/vite.config.js) · [記録](sites/avocado-mini/rocket-star/index.html) · [記録](sites/avocado-mini/rocket-star/main.js) · [記録](sites/avocado-mini/rocket-star/design.css) · [記録](sites/avocado-mini/scripts/build-rocketstar.mjs) · [記録](docs/evidence/rocketstar-site-r1.json) · [記録](sites/avocado-mini/public/downloads/rocketstar-complete-design-r1.0.pdf) · [記録](sites/avocado-mini/public/downloads/rocketstar-complete-design-r1.0.zip) · [記録](sites/avocado-mini/public/rocket-star/design/index.html) · [記録](sites/avocado-mini/public/rocket-star/design/source.md) |
 | WEB14 | RockstarOS導入入口を製品ページへ置き、Pixel 10向け実インストーラーを配布・安全ゲート合格後に接続する | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/install/index.html) · [記録](sites/avocado-mini/vite.config.js) · [記録](data/android-first-flash-gate.json) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB15 | avocadoMiniの予約販売画面と決済バックエンドを用意し、販売条件確定後に全額決済を有効化する | 進行中 | [記録](sites/avocado-mini/preorder/index.html) · [記録](sites/avocado-mini/worker/index.js) · [記録](sites/avocado-mini/db/schema.ts) · [記録](sites/avocado-mini/tests/preorder.test.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
-| WEB16 | 公開avocadoMini Siteを現行R5へ同期し、旧E3商品構成・価格を販売導線から撤去する | 進行中 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/src/r5.css) · [記録](sites/avocado-mini/preorder/index.html) · [記録](sites/avocado-mini/worker/index.js) · [記録](sites/avocado-mini/tests/preorder.test.mjs) · [記録](sites/avocado-mini/public/downloads/avocadoMini-R5-integrated-design.pdf) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](project.md) |
+| WEB16 | 公開avocadoMini Siteを現行R5へ同期し、旧E3商品構成・価格を販売導線から撤去する | 完了 | [記録](sites/avocado-mini/index.html) · [記録](sites/avocado-mini/src/r5.css) · [記録](sites/avocado-mini/preorder/index.html) · [記録](sites/avocado-mini/worker/index.js) · [記録](sites/avocado-mini/tests/preorder.test.mjs) · [記録](sites/avocado-mini/public/downloads/avocadoMini-R5-integrated-design.pdf) · [記録](docs/evidence/avocado-mini-site-r5.json) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](project.md) |
 | BIZ01 | 無料配布の対象とOS従量課金の計量単位・単価・上限を確定する | 進行中 | [記録](README.md) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/sky-billing.md) |
 | VER01 | RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理 | 完了 | [記録](data/product-identity.json) · [記録](lib/product-identity.ts) · [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](components/workspace-shell.tsx) · [記録](components/system-settings.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/product-baseline.test.mjs) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |

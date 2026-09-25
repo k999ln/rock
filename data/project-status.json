@@ -1027,10 +1027,9 @@
     {
       "id": "WEB16",
       "title": "公開avocadoMini Siteを現行R5へ同期し、旧E3商品構成・価格を販売導線から撤去する",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [
-        "MAT14",
-        "WEB13"
+        "MAT14"
       ],
       "evidence": [
         "sites/avocado-mini/index.html",
@@ -1039,6 +1038,7 @@
         "sites/avocado-mini/worker/index.js",
         "sites/avocado-mini/tests/preorder.test.mjs",
         "sites/avocado-mini/public/downloads/avocadoMini-R5-integrated-design.pdf",
+        "docs/evidence/avocado-mini-site-r5.json",
         "docs/workstreams/05-web-pwa-sites.md",
         "project.md"
       ]

@@ -1,0 +1,37 @@
+{
+  "recordedAt": "2026-09-24T20:09:48-04:00",
+  "taskId": "WEB16",
+  "productBaseline": "avocadoMini R5",
+  "github": {
+    "repository": "https://github.com/k999ln/rock.git",
+    "branch": "main",
+    "sourceCommit": "3eb9c66",
+    "status": "PUSHED"
+  },
+  "site": {
+    "projectId": "appgprj_6aaf6a375b908191b3b0c1845dc78291",
+    "sourceCommit": "e08c6d77ecab8a5d46678068c7e0bf99bccd92be",
+    "versionNumber": 57,
+    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_1a2d586ce3d48191a222a4c1f248c442",
+    "deploymentId": "appgdep_6ab5bbc0bf0881918ed5de323f5ab55e",
+    "deploymentStatus": "succeeded",
+    "url": "https://avocado-mini.kirin-999.chatgpt.site",
+    "archiveSha256": "9347d241661d8bcc6844a946741680df8366128f46ff879d6e24acbcc520ed96",
+    "archiveFileCount": 125
+  },
+  "checks": {
+    "preorderApi": "6/6 PASS",
+    "siteBuild": "PASS",
+    "repositoryVerify": "PASS",
+    "r5PackageIntegrity": "PASS",
+    "localBrowserHome": "PASS",
+    "localBrowserSalesClosed": "PASS"
+  },
+  "truthBoundaries": {
+    "physicalHardwareTests": 0,
+    "manufacturingApproval": "HOLD",
+    "salesOpen": false,
+    "r5PriceApproved": false,
+    "legacyE3PriceApplies": false
+  }
+}

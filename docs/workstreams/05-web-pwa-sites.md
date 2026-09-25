@@ -4,7 +4,7 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
-- 2026-09-24、WEB16として公開avocadoMini商品Siteを現行R5へ同期中。GitHub正本の使用時200mm以内・1本自律・同型mini増設・別Edge Hub不要を商品ページへ反映し、旧E3の4本＋別Hub、1本16万円・一式41万円を現行販売表示から撤去した。R5の価格・発売日・販売条件は未確定として予約と決済を閉じ、旧環境変数だけで販売が再開しないR5専用gateへ変更した。51ページPDFと8図面を配布物へ含め、rocketstarとDeveloper Previewの導線は維持する。GitHub保存とSites配備・公開readbackを別々に確認する。
+- 2026-09-24、WEB16として公開avocadoMini商品Siteを現行R5へ同期。GitHub正本の使用時200mm以内・1本自律・同型mini増設・別Edge Hub不要を商品ページへ反映し、旧E3の4本＋別Hub、1本16万円・一式41万円を現行販売表示から撤去した。R5の価格・発売日・販売条件は未確定として予約と決済を閉じ、旧環境変数だけで販売が再開しないR5専用gateへ変更した。51ページPDFと8図面を配布物へ含め、rocketstarとDeveloper Previewの導線は維持する。GitHub `main` source `3eb9c66`、Site source `e08c6d77ecab8a5d46678068c7e0bf99bccd92be`、公開v57、deployment `appgdep_6ab5bbc0bf0881918ed5de323f5ab55e`の成功を別々に確認した。[配備証拠](../evidence/avocado-mini-site-r5.json)に固定する。
 
 - 2026-09-24追加修正: 利用者から完全版設計書が公開ページに見当たらないとの指摘を受け、R1.0原本PDF（44ページ）と全付録ZIPをSiteの`/downloads/`へ同梱。冒頭・OS画面・footerから直接開けるようにし、GitHubだけへ渡す導線を解消した。Site v50（source `8a619bd833e5b80968efdb92c78d7fc51d4d7b6a`）の配備成功を確認。 アプリ内PDF viewerで灰色表示となったため、v51（source `751fd13a9e1f8649fa58c739d4723a0f9e5ad31c`）で全35章の可読HTML reader `/rocket-star/design/` を主導線に追加し、原本PDF/ZIPはダウンロードとして保持した。原本PDF/ZIPのhash一致とZIP CRCを確認し、再生成scriptでダウンロードも配布物へ同期する。公開receiptと結果は[同じ証拠](../evidence/rocketstar-site-r1.json)に追記し、v49の履歴を保持する。R5・実機/飛行の状態は変更しない。
 
