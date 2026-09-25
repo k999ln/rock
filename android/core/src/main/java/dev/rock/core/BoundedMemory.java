@@ -24,7 +24,8 @@ import java.util.TreeSet;
  *   reference) is stored only when confirmed by the owner; an unconfirmed model guess is refused, so it can
  *   never become an owner fact. An artifact memory must point at an existing work artifact.
  * - Deletion, owner-wide deletion and expiry remove the content and every projection of the project;
- *   a deleted memory ID cannot be revived by a stale correction or a re-save.
+ *   a deleted memory ID cannot be revived by a stale correction or a re-save. The tombstone keeps only a
+ *   digest of the memory ID, because an ID chosen by a caller may itself describe the content.
  * - Limits: content size per memory and memories per project. Exceeding them refuses the write and never
  *   evicts existing memories. Reconstruction stays within the requested budget, which may not exceed the
  *   profile context limit; memories that do not fit are omitted whole and listed, never cut mid-item.
@@ -110,7 +111,7 @@ public final class BoundedMemory {
                 db.execute("CREATE TABLE memory_meta(version INTEGER NOT NULL CHECK(version>=1))");
                 db.execute("INSERT INTO memory_meta VALUES(?)", SCHEMA_VERSION);
                 db.execute("CREATE TABLE memory_items(owner_ref TEXT NOT NULL,project_ref TEXT NOT NULL,memory_id TEXT NOT NULL,schema_version INTEGER NOT NULL,kind TEXT NOT NULL CHECK(kind IN('PREFERENCE','PROCEDURE','REFERENCE','ARTIFACT')),content TEXT NOT NULL,content_ref TEXT NOT NULL,scopes TEXT NOT NULL,origin TEXT NOT NULL CHECK(origin IN('OWNER','TOOL','MODEL')),owner_confirmed INTEGER NOT NULL CHECK(owner_confirmed IN(0,1)),source_work_id TEXT REFERENCES works(id),source_artifact_digest TEXT,model_profile_id TEXT,created_at INTEGER NOT NULL,expires_at INTEGER NOT NULL,revision INTEGER NOT NULL CHECK(revision>=1),request_digest TEXT NOT NULL,row_digest TEXT NOT NULL,PRIMARY KEY(owner_ref,project_ref,memory_id))");
-                db.execute("CREATE TABLE memory_tombstones(owner_ref TEXT NOT NULL,project_ref TEXT NOT NULL,memory_id TEXT NOT NULL,reason TEXT NOT NULL CHECK(reason IN('deleted','owner_erased','expired')),deleted_at INTEGER NOT NULL,PRIMARY KEY(owner_ref,project_ref,memory_id))");
+                db.execute("CREATE TABLE memory_tombstones(owner_ref TEXT NOT NULL,project_ref TEXT NOT NULL,memory_id_digest TEXT NOT NULL,reason TEXT NOT NULL CHECK(reason IN('deleted','owner_erased','expired')),deleted_at INTEGER NOT NULL,PRIMARY KEY(owner_ref,project_ref,memory_id_digest))");
                 db.execute("CREATE TABLE memory_projections(owner_ref TEXT NOT NULL,project_ref TEXT NOT NULL,scope TEXT NOT NULL,profile_id TEXT NOT NULL,profile_digest TEXT NOT NULL,budget_tokens INTEGER NOT NULL,set_digest TEXT NOT NULL,context TEXT NOT NULL,context_digest TEXT NOT NULL,included TEXT NOT NULL,omitted TEXT NOT NULL,estimated_tokens INTEGER NOT NULL,PRIMARY KEY(owner_ref,project_ref,scope,profile_digest,budget_tokens))");
             }
             List<Map<String,String>> meta = db.query("SELECT version FROM memory_meta");
@@ -133,7 +134,7 @@ public final class BoundedMemory {
         String request = requestDigest(kind, content, scopeList, provenance, expiresAtMs);
         return db.transaction(() -> {
             purgeExpired(owner, project, nowMs);
-            if (!db.query("SELECT 1 FROM memory_tombstones WHERE owner_ref=? AND project_ref=? AND memory_id=?", owner, project, memoryId).isEmpty())
+            if (!db.query("SELECT 1 FROM memory_tombstones WHERE owner_ref=? AND project_ref=? AND memory_id_digest=?", owner, project, Engine.digest(memoryId)).isEmpty())
                 throw new IllegalStateException("MEMORY_DELETED");
             List<Map<String,String>> old = db.query("SELECT * FROM memory_items WHERE owner_ref=? AND project_ref=? AND memory_id=?", owner, project, memoryId);
             if (!old.isEmpty()) {
@@ -162,7 +163,7 @@ public final class BoundedMemory {
         if (expiresAtMs <= nowMs) throw new IllegalArgumentException("INVALID_EXPIRY");
         return db.transaction(() -> {
             purgeExpired(owner, project, nowMs);
-            if (!db.query("SELECT 1 FROM memory_tombstones WHERE owner_ref=? AND project_ref=? AND memory_id=?", owner, project, memoryId).isEmpty())
+            if (!db.query("SELECT 1 FROM memory_tombstones WHERE owner_ref=? AND project_ref=? AND memory_id_digest=?", owner, project, Engine.digest(memoryId)).isEmpty())
                 throw new IllegalStateException("MEMORY_DELETED");
             Item item = new Item(current(owner, project, memoryId));
             if (item.revision != expectedRevision) throw new IllegalStateException("REVISION_CONFLICT");
@@ -307,8 +308,8 @@ public final class BoundedMemory {
     }
     private void erase(String owner, String project, String memoryId, String reason, long nowMs) {
         db.execute("DELETE FROM memory_items WHERE owner_ref=? AND project_ref=? AND memory_id=?", owner, project, memoryId);
-        db.execute("INSERT OR REPLACE INTO memory_tombstones(owner_ref,project_ref,memory_id,reason,deleted_at) VALUES(?,?,?,?,?)",
-            owner, project, memoryId, reason, nowMs);
+        db.execute("INSERT OR REPLACE INTO memory_tombstones(owner_ref,project_ref,memory_id_digest,reason,deleted_at) VALUES(?,?,?,?,?)",
+            owner, project, Engine.digest(memoryId), reason, nowMs);            // the ID itself may describe the content
         invalidate(owner, project);
     }
     private void purgeExpired(String owner, String project, long nowMs) {

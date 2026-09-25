@@ -145,6 +145,8 @@ public class BoundedMemoryTest {
         assertTrue(memory.export("owner-1", "project-b", NOW + 25).isEmpty());
         assertTrue(db.query("SELECT 1 FROM memory_items").isEmpty());
         assertTrue(db.query("SELECT 1 FROM memory_projections").isEmpty());
+        assertEquals(4, db.query("SELECT 1 FROM memory_tombstones").size());
+        assertTrue(db.query("SELECT 1 FROM memory_tombstones WHERE memory_id_digest IN('drop','keep','b1','short')").isEmpty());
     }
 
     @Test public void limitsRefuseWritesWithoutEvictionAndBudgetOmitsWholeItems() {
