@@ -1,23 +1,24 @@
 {
-  "recordedAt": "2026-09-24T20:09:48-04:00",
+  "recordedAt": "2026-09-24T21:00:38-04:00",
   "taskId": "WEB16",
   "productBaseline": "avocadoMini R5",
   "github": {
     "repository": "https://github.com/k999ln/rock.git",
     "branch": "main",
-    "sourceCommit": "3eb9c66",
+    "sourceCommit": "c603119",
     "status": "PUSHED"
   },
   "site": {
     "projectId": "appgprj_6aaf6a375b908191b3b0c1845dc78291",
-    "sourceCommit": "e08c6d77ecab8a5d46678068c7e0bf99bccd92be",
-    "versionNumber": 57,
-    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_1a2d586ce3d48191a222a4c1f248c442",
-    "deploymentId": "appgdep_6ab5bbc0bf0881918ed5de323f5ab55e",
+    "sourceCommit": "addf07e31f54ea34944e1f5d66b05de7931cf1b0",
+    "versionNumber": 58,
+    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_019a0f195de88191b0fcc4b6edc5570a",
+    "deploymentId": "appgdep_6ab5c7ab2664819183b1753734f29d18",
     "deploymentStatus": "succeeded",
     "url": "https://avocado-mini.kirin-999.chatgpt.site",
-    "archiveSha256": "9347d241661d8bcc6844a946741680df8366128f46ff879d6e24acbcc520ed96",
-    "archiveFileCount": 125
+    "archiveSha256": "fe15cae4dd1ff883cec6b30a79a6cc5b40728bac2010165340e10afb062e3d75",
+    "uploadedContentHash": "sha256:7957c9e9d637ba6cea75eb41a23bac4495bb294a0ae53a4bb839b9e74ac3bd59",
+    "archiveFileCount": 129
   },
   "checks": {
     "preorderApi": "6/6 PASS",
@@ -25,13 +26,16 @@
     "repositoryVerify": "PASS",
     "r5PackageIntegrity": "PASS",
     "localBrowserHome": "PASS",
-    "localBrowserSalesClosed": "PASS"
+    "localBrowserSalesClosed": "PASS",
+    "approvedVisualBaseline": "PASS — restored black/silver v56 product-film layout",
+    "productImageBackground": "PASS — seamless black studio"
   },
   "truthBoundaries": {
     "physicalHardwareTests": 0,
     "manufacturingApproval": "HOLD",
     "salesOpen": false,
     "r5PriceApproved": false,
-    "legacyE3PriceApplies": false
+    "legacyE3PriceApplies": false,
+    "visualRedesignAuthorized": false
   }
 }

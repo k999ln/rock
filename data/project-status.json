@@ -1033,7 +1033,7 @@
       ],
       "evidence": [
         "sites/avocado-mini/index.html",
-        "sites/avocado-mini/src/r5.css",
+        "sites/avocado-mini/src/style.css",
         "sites/avocado-mini/preorder/index.html",
         "sites/avocado-mini/worker/index.js",
         "sites/avocado-mini/tests/preorder.test.mjs",
