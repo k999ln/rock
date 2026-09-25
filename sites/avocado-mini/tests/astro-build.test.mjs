@@ -37,27 +37,28 @@ test('Astro output separates the ecosystem, Mini, Pro, Rocket Star, and preorder
   const home = built('client/index.html');
   const mini = built('client/mini/index.html');
   const pro = built('client/pro/index.html');
-  assert.match(home, /AVOCADOMINI × AVOKADOPRO/);
-  assert.match(home, /Built apart\.<br\s*\/?>Better together\./);
+  assert.match(home, /AVOKADO \/ SPATIAL EXPERIENCES/);
+  assert.match(home, /Make the room part<br\s*\/?>of the experience\./);
+  assert.match(home, /id="choose-setup"/);
   assert.match(home, /href="\/mini\/"/);
   assert.match(home, /href="\/pro\/"/);
   assert.match(home, /home-promo-mini/);
   assert.match(home, /home-promo-pro/);
-  assert.match(mini, /Start with one\.<br\s*\/?>Expand the space\./);
+  assert.match(mini, /Give the space<br\s*\/?>another sense\./);
   assert.match(mini, /\/images\/avocado-mini-tower20-e3-kit\.png/);
   assert.equal((mini.match(/class="highlight-card /g) || []).length, 4);
-  assert.match(mini, /One camera<br\s*\/?>in each direction\./);
+  assert.match(mini, /The space can<br\s*\/?>respond to you\./);
   assert.match(mini, /Everything,<br\s*\/?>for the space\./);
   assert.equal((mini.match(/class="turn-frame"/g) || []).length, 3);
   assert.match(mini, /id="angle"/);
   assert.match(mini, /data-view="side"/);
   assert.match(mini, /data-view="rear"/);
-  assert.match(mini, /Open installer/);
-  assert.match(pro, /Games on its own\.<br\s*\/?>A bigger world with Mini\./);
+  assert.match(mini, /Check release status/);
+  assert.match(pro, /Bring the game closer\.<br\s*\/?>Let the room join in\./);
   assert.match(pro, /From ¥880,000/);
   assert.match(pro, /GAME \+ SERVICES HUB/);
   assert.match(built('client/rocket-star/index.html'), /Complete product design/);
-  assert.match(built('client/preorder/index.html'), /RESERVATIONS AND CHECKOUT CLOSED/);
+  assert.match(built('client/preorder/index.html'), /NOT YET FOR SALE/);
 });
 
 test('home fragment navigation, carousel controls, and metadata remain valid', () => {
@@ -94,7 +95,7 @@ test('reference-led product navigation and Pro highlights remain interactive', (
   for (const page of [home, mini, pro]) {
     assert.match(page, /class="[^"]*site-menu/);
     assert.match(page, />Menu</);
-    assert.match(page, /Current status/);
+    assert.match(page, /Price & status/);
   }
   assert.match(pro, /id="pro-highlights"/);
   assert.match(pro, /data-carousel/);
@@ -103,6 +104,27 @@ test('reference-led product navigation and Pro highlights remain interactive', (
   const enhancement = built('client/site-enhancements.js');
   assert.match(enhancement, /\[data-carousel\]/);
   assert.match(enhancement, /details\.site-menu/);
+});
+
+test('benefit-first journey ends in a truthful price and support path', () => {
+  const home = built('client/index.html');
+  const mini = built('client/mini/index.html');
+  const pro = built('client/pro/index.html');
+  const status = built('client/preorder/index.html');
+  const install = built('client/install/index.html');
+  assert.match(home, /Start with the benefit/);
+  assert.match(home, /Want to see this become real/);
+  assert.match(mini, /See the price\. Follow the build\./);
+  assert.match(pro, /See the price\. Follow the build\./);
+  assert.match(status, /One avocadoMini/);
+  assert.match(status, /Four-Mini package/);
+  assert.match(status, /avokadoPro/);
+  assert.match(status, /¥160,000/);
+  assert.match(status, /¥410,000/);
+  assert.match(status, /¥880,000/);
+  assert.doesNotMatch(status, /R5|Old E3 pricing/);
+  assert.doesNotMatch(install, /R5/);
+  assert.match(install, /PUBLIC INSTALLER NOT YET AVAILABLE/);
 });
 
 test('the restored Mini 180-degree story and dedicated Pro page preserve their pricing', () => {
