@@ -67,6 +67,7 @@ const inProgress = status.tasks.filter(
 ).length;
 const blocked = status.tasks.filter((task) => task.status === 'blocked').length;
 const overview = `${status.tasks.length} task中${done} done・${inProgress} in progress・${planned} planned${blocked ? `・${blocked} blocked` : ''}`;
+const overviewEnglish = `${status.tasks.length} tasks: ${done} done, ${inProgress} in progress, ${planned} planned${blocked ? `, ${blocked} blocked` : ''}`;
 const block = [
   '<!-- project-status:start -->',
   `最終更新: ${status.updatedAt} / ${status.milestone} / 完了 ${done}/${status.tasks.length}件`,
@@ -101,7 +102,7 @@ const targets = [
         'project-overview',
         [
           '<!-- project-overview:start -->',
-          `更新日: ${status.updatedAt} / ${overview}`,
+          `Updated: ${status.updatedAt} / ${overviewEnglish}`,
           '<!-- project-overview:end -->',
         ].join('\n'),
         'README.md',
