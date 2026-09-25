@@ -25,6 +25,12 @@ void test('AI04 outbox stays host/fixture only and keeps the no-resend rules', (
     'PROVIDER_RETRY_NOT_GUARANTEED',
     'RECONCILIATION_REQUIRED',
     'COMPENSATION_REQUIRED',
+    'OPERATION_CHANGED_DURING_AUTHORIZATION',
   ])
     assert.ok(outbox.includes(`"${rule}"`), rule);
+});
+
+void test('AI04 outbox does not run the Broker authority callback inside an outbox transaction', () => {
+  assert.equal((outbox.match(/authority\.permits\(/g) ?? []).length, 1);
+  assert.match(outbox, /authorize\(seen, authority, nowMs\);\s+\/\/ outside any outbox transaction/);
 });

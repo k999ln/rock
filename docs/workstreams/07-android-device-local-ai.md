@@ -16,6 +16,7 @@
 
 - 2026-09-25、AI02のhost／fixture段階を実装した（`ModelProfile`・`ModelProfiles`、schema `model_meta` v1、Engine schema v2は変更なし）。対象は、一つのruntime adapter（Local AI API v2・GGUF・`article-preparation@1/input-v1`）上の互換な2つのfixture profileで、次をJVM試験で固定した: profile IDの不変、adapterと非互換な版・未知の版の拒否、隔離試験後だけactivate、世代pointerの切替、health失敗時は前profileへrollback、失効profileへは戻さず「model利用不可」、旧workは作成時profileに固定したまま再起動後も再開、新workは新profile、別profileでの結果報告は拒否、pin中profileのretire拒否、失効pinは停止し明示replanで新revision。`LocalAiConnection`・Shell・実weightには未接続で、emulator・実機・OS統合の証拠ではない（その段階はOS10依存のまま、AI09の本人決定）。
 - 2026-09-25、AI04のhost／fixture段階として`ExternalWriteOutbox`（schema `outbox_meta` v1）を実装した。external-writeだけを受け付け、`prepared → dispatched → confirmed | rejected | uncertain`で状態を管理する。JVM試験で次を固定した: 送信前に設計の項目を永続化する、同じoperation IDは同内容なら同じ結果・異内容なら拒否、provider keyを別操作で再利用しない、送信直前に権限と承認期限を再検査する、結果不明と前プロセスで開いた送信はuncertainにして自動再送しない、照会で内容hashと金額を照合して確定する、冪等再送が保証されたProviderだけ不在の報告後に同じkeyで再送できる、uncertainの取消は不在の報告後だけ、確定済みは取消せず補償操作にする。Tool・Provider・Zema・AIDLには未接続で、emulator・実機・OS統合の証拠ではない（OS10依存、AI09）。
+- 2026-09-25、AI04の自己レビュー指摘を修正した。権限再検査のcallbackをoutboxのDB transaction外で呼び（`PlatformStore`と同じ方針）、callback中に操作やworkが変わった場合は送信しない（`OPERATION_CHANGED_DURING_AUTHORIZATION`／`WORK_NOT_ACTIVE`）。
 主なtask: `DSP01`, `OS02`〜`OS11`, `N03`〜`N05`, `RLS02`。Local AIは`OS07`〜`OS09`、Platform Coreは`OS10`〜`OS11`で追跡する。新設計のモデル更新・記憶・外部作用・app能力は未着手の`AI02`〜`AI05`として分ける。
 
 ## 次に進める順番

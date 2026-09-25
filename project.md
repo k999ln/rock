@@ -22,6 +22,8 @@
 - 期待値の変更: DB inventoryにoutbox_* 3 tableを加えたため、table数を85から88へ更新した。
 - CIの結果は同じhead SHAで別途確認する。
 
+**追記（自己レビュー指摘の修正、2026-09-25 01:59 ET）:** 権限の再検査（Brokerが渡すcallback）がDB transactionの中で動いていた点を、`PlatformStore`の「部品が渡すコードをtransaction内で動かさない」方針に合わせて直した。読取transaction → transaction外でcallback → 送信transactionの順にし、callbackの間に操作の状態・試行回数・不在報告・内容が変わっていれば`OPERATION_CHANGED_DURING_AUTHORIZATION`で送信しない。workが止まっていれば`WORK_NOT_ACTIVE`。JVM試験は51/51（追加1件）。callbackを再びtransaction内へ戻す改変と、変更検査を外す改変で、それぞれ追加試験が失敗することを確認した。
+
 ## 2026-09-25 — AI02のhost／fixture段階: ModelProfileの登録・仕事への版固定・モデル切替（AI09の本人決定を記録）
 
 **本人決定（AI09、OWNER判断済み）:** 2026-09-25 01:26 ET、決定者は本人、根拠はチャットでの本人指示。Core offline仕事loopとGame最小loopの両方を、OS10の完了前にhost／fixture段階で先に進めてよい。ただし、emulator・実機・OS統合の合格には転用しない。AI09はdoneにした。AI02〜AI05のtask名には「host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま」と注記した。`dependsOn`のOS10は残した。AI06はGame側の作業者の担当範囲なので、本記録では変更していない。

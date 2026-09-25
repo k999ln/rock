@@ -140,6 +140,41 @@ public class ExternalWriteOutboxTest {
         assertEquals(1, provider.count("key-1"));
     }
 
+    /** Test-only view that records whether a transaction is open when the Broker callback runs. */
+    private static final class TrackingDatabase implements Database {
+        final Database inner; int depth;
+        TrackingDatabase(Database inner) { this.inner = inner; }
+        public void execute(String sql, Object... args) { inner.execute(sql, args); }
+        public java.util.List<Map<String,String>> query(String sql, Object... args) { return inner.query(sql, args); }
+        public <T> T transaction(java.util.function.Supplier<T> body) {
+            depth++;
+            try { return inner.transaction(body); } finally { depth--; }
+        }
+        public void close() { inner.close(); }
+    }
+
+    @Test public void authorityRunsOutsideTransactionsAndChangesDuringItRefuseTheSend() {
+        TrackingDatabase tracking = new TrackingDatabase(db);
+        ExternalWriteOutbox tracked = new ExternalWriteOutbox(tracking);
+        int[] calls = {0};
+        tracked.prepare(Effect.EXTERNAL_WRITE, op("op-1", "p", 1, "key-1", true), NOW);
+        Dispatch d = tracked.beginDispatch("op-1", (o, now) -> { calls[0]++; assertEquals(0, tracking.depth); return true; }, NOW + 1);
+        assertTrue(tracked.recordUnknown(d, NOW + 2));
+        tracked.reconcile("op-1", Observation.ABSENT, null, null, 0, NOW + 3);
+        tracked.redispatch("op-1", (o, now) -> { calls[0]++; assertEquals(0, tracking.depth); return true; }, NOW + 4);
+        assertEquals(2, calls[0]);
+
+        tracked.prepare(Effect.EXTERNAL_WRITE, op("op-2", "p", 1, "key-2", false), NOW);
+        assertEquals("OPERATION_CHANGED_DURING_AUTHORIZATION", assertThrows(IllegalStateException.class,
+            () -> tracked.beginDispatch("op-2", (o, now) -> { tracked.cancel("op-2", now); return true; }, NOW + 5)).getMessage());
+        assertEquals("cancelled", tracked.state("op-2"));
+        tracked.prepare(Effect.EXTERNAL_WRITE, op("op-3", "p", 1, "key-3", false), NOW);
+        assertEquals("WORK_NOT_ACTIVE", assertThrows(IllegalStateException.class,
+            () -> tracked.beginDispatch("op-3", (o, now) -> { engine.cancel(work); return true; }, NOW + 6)).getMessage());
+        assertEquals("prepared", tracked.state("op-3"));
+        assertEquals("0", tracked.record("op-3").get("attempts"));                    // nothing was sent
+    }
+
     @Test public void rejectedResultAndTamperedRecordAreFinal() {
         outbox.prepare(Effect.EXTERNAL_WRITE, op("op-1", "p", 10, "key-1", false), NOW);
         Dispatch d = outbox.beginDispatch("op-1", ALLOW, NOW + 1);

@@ -15,7 +15,10 @@ import java.util.UUID;
  *   ID/expiry, provider idempotency key, generation) is persisted before dispatch. The same operation
  *   ID with identical content returns the existing record; different content is rejected. A provider
  *   key cannot be reused by another operation.
- * - Authority and approval expiry are re-checked immediately before dispatch.
+ * - Authority and approval expiry are re-checked immediately before dispatch. As in PlatformStore, no
+ *   Broker/component-supplied code runs inside an outbox transaction: the Authority callback runs between
+ *   a read transaction and the dispatch transaction, and the dispatch transaction refuses the send if the
+ *   operation or its work changed while the callback ran. Callers must not hold a transaction themselves.
  * - A dispatch left open by an earlier process (crash/kill) becomes uncertain and is never re-sent
  *   automatically. Late or duplicate callbacks cannot overwrite a reconciled result.
  * - Reconciliation compares content hash and amount. Only a provider that guarantees idempotent
@@ -29,7 +32,7 @@ public final class ExternalWriteOutbox {
     public enum Effect { LOCAL_PURE, REMOTE_READ, EXTERNAL_WRITE }
     public enum Observation { CONFIRMED, REJECTED, ABSENT }
 
-    /** Checked in the dispatch transaction; the Broker supplies OS permission and approval state. */
+    /** Checked outside any outbox transaction; the Broker supplies OS permission and approval state. */
     public interface Authority { boolean permits(Operation operation, long nowMs); }
 
     public static final class Operation {
@@ -131,13 +134,14 @@ public final class ExternalWriteOutbox {
 
     /** Write-ahead dispatch: the row is durable as dispatched before the transport may send anything. */
     public Dispatch beginDispatch(String operationId, Authority authority, long nowMs) {
+        Map<String,String> seen = db.transaction(() -> {
+            recoverInterrupted(nowMs);
+            return dispatchable(row(operationId), nowMs);
+        });
+        authorize(seen, authority, nowMs);                               // outside any outbox transaction
         return db.transaction(() -> {
             recoverInterrupted(nowMs);
-            Map<String,String> row = row(operationId);
-            if (!"prepared".equals(row.get("state"))) throw new IllegalStateException("NOT_PREPARED");
-            if (Long.parseLong(row.get("approval_expires_at")) <= nowMs) throw new SecurityException("APPROVAL_EXPIRED");
-            if (authority == null || !authority.permits(operation(row), nowMs)) throw new SecurityException("REAUTHORIZATION_REQUIRED");
-            requireActiveWork(row);
+            dispatchable(unchanged(seen, row(operationId)), nowMs);
             return dispatch(operationId, nowMs);
         });
     }
@@ -187,15 +191,14 @@ public final class ExternalWriteOutbox {
 
     /** Same-key resend, allowed only when the provider guarantees idempotent retry and reported the operation absent. */
     public Dispatch redispatch(String operationId, Authority authority, long nowMs) {
+        Map<String,String> seen = db.transaction(() -> {
+            recoverInterrupted(nowMs);
+            return redispatchable(row(operationId), nowMs);
+        });
+        authorize(seen, authority, nowMs);                               // outside any outbox transaction
         return db.transaction(() -> {
             recoverInterrupted(nowMs);
-            Map<String,String> row = row(operationId);
-            if (!"uncertain".equals(row.get("state"))) throw new IllegalStateException("NOT_UNCERTAIN");
-            if (!"1".equals(row.get("provider_idempotent_retry"))) throw new IllegalStateException("PROVIDER_RETRY_NOT_GUARANTEED");
-            if (!"1".equals(row.get("absence_reported"))) throw new IllegalStateException("RECONCILIATION_REQUIRED");
-            if (Long.parseLong(row.get("approval_expires_at")) <= nowMs) throw new SecurityException("APPROVAL_EXPIRED");
-            if (authority == null || !authority.permits(operation(row), nowMs)) throw new SecurityException("REAUTHORIZATION_REQUIRED");
-            requireActiveWork(row);
+            redispatchable(unchanged(seen, row(operationId)), nowMs);
             db.execute("UPDATE outbox_operations SET absence_reported=0 WHERE operation_id=?", operationId);
             return dispatch(operationId, nowMs);
         });
@@ -238,6 +241,30 @@ public final class ExternalWriteOutbox {
             UUID.randomUUID().toString(), session, operationId);
         event(operationId, "dispatched", nowMs);
         return new Dispatch(row(operationId));
+    }
+    private Map<String,String> dispatchable(Map<String,String> row, long nowMs) {
+        if (!"prepared".equals(row.get("state"))) throw new IllegalStateException("NOT_PREPARED");
+        if (Long.parseLong(row.get("approval_expires_at")) <= nowMs) throw new SecurityException("APPROVAL_EXPIRED");
+        requireActiveWork(row);
+        return row;
+    }
+    private Map<String,String> redispatchable(Map<String,String> row, long nowMs) {
+        if (!"uncertain".equals(row.get("state"))) throw new IllegalStateException("NOT_UNCERTAIN");
+        if (!"1".equals(row.get("provider_idempotent_retry"))) throw new IllegalStateException("PROVIDER_RETRY_NOT_GUARANTEED");
+        if (!"1".equals(row.get("absence_reported"))) throw new IllegalStateException("RECONCILIATION_REQUIRED");
+        if (Long.parseLong(row.get("approval_expires_at")) <= nowMs) throw new SecurityException("APPROVAL_EXPIRED");
+        requireActiveWork(row);
+        return row;
+    }
+    /** Runs the Broker callback with no outbox transaction open (PlatformStore rule). */
+    private void authorize(Map<String,String> row, Authority authority, long nowMs) {
+        if (authority == null || !authority.permits(operation(row), nowMs)) throw new SecurityException("REAUTHORIZATION_REQUIRED");
+    }
+    /** The authorization is only valid for the exact row it was given; any change in between refuses the send. */
+    private static Map<String,String> unchanged(Map<String,String> seen, Map<String,String> now) {
+        for (String column : new String[]{"request_digest", "state", "attempts", "absence_reported", "dispatch_token"})
+            if (!java.util.Objects.equals(seen.get(column), now.get(column))) throw new IllegalStateException("OPERATION_CHANGED_DURING_AUTHORIZATION");
+        return now;
     }
     /** A stopped or finished work must not start a new external effect (stop/complete race). */
     private void requireActiveWork(Map<String,String> row) {
