@@ -2,6 +2,8 @@
 
 **2026-09-24 現行判断:** 8.88 USDのToC収益料金案は、収益動線が確定するまで保留。新しいToC Earning Receiptは精算Workerが409 `SKY_FEE_POLICY_ON_HOLD`で拒否し、料金・請求・回収を新たに作らない。以下の888 cents計算式と台帳は過去の設計・回帰検証の記録であり、現行料金ではない。既存の履歴は参照可能。ToBの0料金は維持する。
 
+公開Workerでは状態確認に`BILLING_SHARED_SECRET`と`SETTLEMENT_INGEST_SECRET`を必要とする。`PAYOUT_ADAPTER_SECRET`は払出しadapter接続時だけ必要で、未登録なら払出しclaim/resultを503で拒否する。料金保留中の状態確認やToC拒否まで503にしない。[公開環境の確認記録](evidence/launch/sky-billing-fee-hold-20260924.json)。
+
 ## 旧料金案・実装履歴
 
 2026-09-19方針更新: 無料配布を理念とし、OSの利用料を従量課金とする意向が示された。以下のSky収益連動精算は現行runtimeの契約であり、OSの利用量を計測する新料金ではない。対象範囲、計量単位、単価・上限が決まるまで料金計算を変更しない。

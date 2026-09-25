@@ -100,6 +100,20 @@ void test('current policy rejects a signed ToC receipt without writing a fee', a
       env,
     );
     assert.equal((await health.json()).mode, 'fee_policy_on_hold');
+    const envWithoutPayout = { ...env, PAYOUT_ADAPTER_SECRET: undefined };
+    const healthWithoutPayout = await billingWorker.fetch(
+      new Request('https://settlement.example/health'),
+      envWithoutPayout,
+    );
+    assert.equal(healthWithoutPayout.status, 200);
+    const payoutWithoutSecret = await billingWorker.fetch(
+      new Request('https://settlement.example/v1/payouts/claim', {
+        method: 'POST',
+        body: '{}',
+      }),
+      envWithoutPayout,
+    );
+    assert.equal(payoutWithoutSecret.status, 503);
     const status = await billingWorker.fetch(
       new Request('https://settlement.example/v1/status', {
         headers: {

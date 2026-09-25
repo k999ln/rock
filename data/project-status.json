@@ -2366,7 +2366,8 @@
       "evidence": [
         "docs/sky-billing.md",
         "docs/workstreams/03-wallet-billing-providers.md",
-        "tests/billing-worker.test.mjs"
+        "tests/billing-worker.test.mjs",
+        "docs/evidence/launch/sky-billing-fee-hold-20260924.json"
       ]
     },
     {
