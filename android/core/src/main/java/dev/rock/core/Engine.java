@@ -217,6 +217,19 @@ public final class Engine {
         });
     }
 
+    /** Broker stop for a claimed run whose prerequisite (for example its pinned model) is unusable. Never auto-retried. */
+    public void hold(Ticket ticket, String reason) {
+        if (reason == null || !reason.matches("[A-Z_]{1,40}")) throw new IllegalArgumentException("INVALID_HOLD_REASON");
+        db.transaction(() -> {
+            Map<String,String> r = run(ticket.workId, ticket.step);
+            if ("running".equals(r.get("state")) && ticket.token.equals(r.get("token"))) {
+                db.execute("UPDATE runs SET state='needs_review',token=NULL,boot=NULL,deadline=NULL,error=? WHERE work_id=? AND step=?", reason, ticket.workId, ticket.step);
+                event(ticket.workId, ticket.step, "held");
+            }
+            return null;
+        });
+    }
+
     public void cancel(String workId) {
         db.transaction(() -> {
             String state = work(workId).get("state");
