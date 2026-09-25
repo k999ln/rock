@@ -92,8 +92,8 @@ for (const path of [
   );
 const readme = read('README.md');
 requireValue(
-  readme.includes('現在の設計基準はR5') &&
-    readme.includes('Material Inventionの操作画面とSky接続は未実装'),
+  readme.includes('R5 is the current design baseline') &&
+    readme.includes('The Material Invention interface and Sky connection are not implemented'),
   'READMEの現行R5またはMaterial Inventionの実装状態が不明です',
 );
 requireValue(
