@@ -1,5 +1,3 @@
-import './style.css';
-
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 document.documentElement.classList.add('type-motion-ready');
 

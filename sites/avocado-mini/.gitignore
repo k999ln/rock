@@ -1,2 +1,4 @@
 .wrangler/
 dist/server/.wrangler/
+node_modules/
+.astro/

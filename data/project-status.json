@@ -414,7 +414,7 @@
       "evidence": [
         "docs/avocado-mini-mini200-e2/README.md",
         "docs/product-baseline.md",
-        "sites/avocado-mini/index.html"
+        "sites/avocado-mini/src/pages/index.astro"
       ]
     },
     {
@@ -439,7 +439,7 @@
       "evidence": [
         "docs/avocado-mini-tower20-e3/README.md",
         "docs/product-baseline.md",
-        "sites/avocado-mini/index.html",
+        "sites/avocado-mini/src/pages/index.astro",
         "sites/avocado-mini/public/images/tower20-e3-highlight-sensor-v2.png",
         "sites/avocado-mini/public/images/tower20-e3-highlight-200mm-v1.png",
         "sites/avocado-mini/public/images/tower20-e3-highlight-footprint-v1.png",
@@ -837,8 +837,8 @@
         "README.md",
         "docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png",
         "docs/assets/rockstaros-spatial-table-full-scale-v2.png",
-        "sites/avocado-mini/index.html",
-        "sites/avocado-mini/guide/index.html",
+        "sites/avocado-mini/src/pages/index.astro",
+        "sites/avocado-mini/src/pages/guide/index.astro",
         "sites/avocado-mini/src/main.js",
         "sites/avocado-mini/src/style.css",
         "sites/avocado-mini/src/tower-scene.js",
@@ -968,9 +968,9 @@
         "WEB12"
       ],
       "evidence": [
-        "sites/avocado-mini/index.html",
-        "sites/avocado-mini/guide/index.html",
-        "sites/avocado-mini/crowdfunding/index.html",
+        "sites/avocado-mini/src/pages/index.astro",
+        "sites/avocado-mini/src/pages/guide/index.astro",
+        "sites/avocado-mini/src/pages/crowdfunding/index.astro",
         "app/rockstaros/page.tsx",
         "app/rockstaros/guide/page.tsx",
         "components/avocado-turntable.tsx",
@@ -980,9 +980,9 @@
         "sites/avocado-mini/src/style.css",
         "sites/avocado-mini/src/main.js",
         "project.md",
-        "sites/avocado-mini/rockstaros/index.html",
-        "sites/avocado-mini/vite.config.js",
-        "sites/avocado-mini/rocket-star/index.html",
+        "sites/avocado-mini/src/pages/rockstaros/index.astro",
+        "sites/avocado-mini/astro.config.mjs",
+        "sites/avocado-mini/src/pages/rocket-star/index.astro",
         "sites/avocado-mini/rocket-star/main.js",
         "sites/avocado-mini/rocket-star/design.css",
         "sites/avocado-mini/scripts/build-rocketstar.mjs",
@@ -1001,10 +1001,10 @@
         "WEB13"
       ],
       "evidence": [
-        "sites/avocado-mini/index.html",
+        "sites/avocado-mini/src/pages/index.astro",
         "sites/avocado-mini/src/style.css",
-        "sites/avocado-mini/install/index.html",
-        "sites/avocado-mini/vite.config.js",
+        "sites/avocado-mini/src/pages/install/index.astro",
+        "sites/avocado-mini/astro.config.mjs",
         "data/android-first-flash-gate.json",
         "docs/workstreams/05-web-pwa-sites.md"
       ]
@@ -1017,7 +1017,7 @@
         "WEB13"
       ],
       "evidence": [
-        "sites/avocado-mini/preorder/index.html",
+        "sites/avocado-mini/src/pages/preorder/index.astro",
         "sites/avocado-mini/worker/index.js",
         "sites/avocado-mini/db/schema.ts",
         "sites/avocado-mini/tests/preorder.test.mjs",
@@ -1032,13 +1032,34 @@
         "MAT14"
       ],
       "evidence": [
-        "sites/avocado-mini/index.html",
+        "sites/avocado-mini/src/pages/index.astro",
         "sites/avocado-mini/src/style.css",
-        "sites/avocado-mini/preorder/index.html",
+        "sites/avocado-mini/src/pages/preorder/index.astro",
         "sites/avocado-mini/worker/index.js",
         "sites/avocado-mini/tests/preorder.test.mjs",
         "sites/avocado-mini/public/downloads/avocadoMini-R5-integrated-design.pdf",
         "docs/evidence/avocado-mini-site-r5.json",
+        "docs/workstreams/05-web-pwa-sites.md",
+        "project.md"
+      ]
+    },
+    {
+      "id": "WEB17",
+      "title": "公開avocadoMini SiteをAstroへ移行し、承認済みデザイン・全route・Worker配布契約を維持する",
+      "status": "done",
+      "dependsOn": [
+        "WEB16"
+      ],
+      "evidence": [
+        "sites/avocado-mini/package.json",
+        "sites/avocado-mini/astro.config.mjs",
+        "sites/avocado-mini/src/pages/index.astro",
+        "sites/avocado-mini/src/pages/rocket-star/index.astro",
+        "sites/avocado-mini/src/pages/preorder/index.astro",
+        "sites/avocado-mini/src/main.js",
+        "sites/avocado-mini/worker/index.js",
+        "sites/avocado-mini/tests/astro-build.test.mjs",
+        "sites/avocado-mini/tests/preorder.test.mjs",
         "docs/workstreams/05-web-pwa-sites.md",
         "project.md"
       ]

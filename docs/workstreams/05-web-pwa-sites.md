@@ -4,6 +4,8 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
+- 2026-09-24、WEB17として公開avocadoMini SiteをAstro 7へ移行した。承認済みの黒いスタジオ・銀色R5・映像型スクロールとrocketstarのデザインは変えず、11 routeをAstroのfile-based pageへ移した。予約・決済WorkerとD1契約は分離したまま`dist/server`へ段階化する。Astro build、route/Worker artifact契約検査、予約API 6件、ローカル実ブラウザのトップ・Rocket Star・販売停止画面を確認した。
+
 - 2026-09-24、WEB16のR5同期で意図せず白基調へ変更した商品Siteを、利用者が承認していたv56の黒いスタジオ・銀色製品・映像型スクロールへ復元した。R5の使用時200mm以内・1本自律・同型mini増設・販売停止は維持し、旧E3の4本＋別Hubと価格は戻さない。製品形状を変えず背景だけ黒いスタジオへ馴染ませた画像をトップと販売状況へ適用。予約API 6件、Vite build、R5 package、ローカルブラウザのトップ・中段・販売停止画面を確認した。GitHub `main` `c603119`、Site source `addf07e31f54ea34944e1f5d66b05de7931cf1b0`、公開v58、deployment `appgdep_6ab5c7ab2664819183b1753734f29d18`。[配備証拠](../evidence/avocado-mini-site-r5.json)を更新した。
 
 - 2026-09-24、WEB16として公開avocadoMini商品Siteを現行R5へ同期。GitHub正本の使用時200mm以内・1本自律・同型mini増設・別Edge Hub不要を商品ページへ反映し、旧E3の4本＋別Hub、1本16万円・一式41万円を現行販売表示から撤去した。R5の価格・発売日・販売条件は未確定として予約と決済を閉じ、旧環境変数だけで販売が再開しないR5専用gateへ変更した。51ページPDFと8図面を配布物へ含め、rocketstarとDeveloper Previewの導線は維持する。GitHub `main` source `3eb9c66`、Site source `e08c6d77ecab8a5d46678068c7e0bf99bccd92be`、公開v57、deployment `appgdep_6ab5bbc0bf0881918ed5de323f5ab55e`の成功を別々に確認した。[配備証拠](../evidence/avocado-mini-site-r5.json)に固定する。

@@ -1,25 +1,17 @@
-// Rebuild this route while preserving the other published pages and shared assets.
-import { build } from 'vite';
-import { cp, mkdtemp, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+// Astro owns every public route, so rebuilding rocketstar now performs one
+// deterministic site build instead of merging a route-specific Vite bundle.
+import { spawn } from 'node:child_process';
 import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
-const output = await mkdtemp(resolve(tmpdir(), 'rocketstar-route-'));
-try {
-  await build({
-    configFile: false,
-    root,
-    publicDir: false,
-    build: {
-      outDir: output,
-      emptyOutDir: true,
-      rollupOptions: { input: { rocketStar: resolve(root, 'rocket-star/index.html') } },
-    },
+
+const result = await new Promise((resolveResult) => {
+  const child = spawn('npm', ['run', 'build:client'], {
+    cwd: root,
+    stdio: 'inherit',
   });
-  await cp(output, resolve(root, 'dist/client'), { recursive: true });
-  await cp(resolve(root, 'public/downloads'), resolve(root, 'dist/client/downloads'), { recursive: true });
-  await cp(resolve(root, 'public/rocket-star'), resolve(root, 'dist/client/rocket-star'), { recursive: true });
-} finally {
-  await rm(output, { recursive: true, force: true });
-}
+  child.once('error', () => resolveResult(1));
+  child.once('close', (code) => resolveResult(code ?? 1));
+});
+
+if (result !== 0) process.exit(result);
