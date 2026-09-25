@@ -1,6 +1,6 @@
 {
-  "version": "1.94",
-  "decidedAt": "2026-09-24",
+  "version": "1.95",
+  "decidedAt": "2026-09-25",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -85,7 +85,86 @@
         "avocadoMiniSingleTowerProposedExTaxPriceJpy",
         "currentFourTowerBasePriceJpyExTax"
       ],
-      "currentR5PriceAuthority": "marketPositioning.r5.priceStatus"
+      "currentR5PriceAuthority": "marketPositioning.r5.priceStatus",
+      "relationToPublicProductLine": "2026-09-25: the same JPY values 160000 and 410000 are now owner-confirmed reference prices of the public avocadoMini line in marketPositioning.publicProductLine. appliesToCurrentR5 stays false: whether R5 is priced by, merged into, or separate from the avocadoMini/avokadoPro line is an open owner decision."
+    },
+    "publicProductLine": {
+      "decisionStatus": "owner_confirmed",
+      "decidedBy": "owner",
+      "decidedAt": "2026-09-25T00:49:00-04:00",
+      "decisionBasis": "Owner instruction in the chat session relayed to the repository bot at 2026-09-25 00:49 ET: adopt the currently published avocadoMini/avokadoPro product configuration and reference prices as official, matching the Site source wording exactly.",
+      "siteSourceCommit": "851bb0478a0e52a15e9e748f6f47198277c851c5",
+      "siteSource": [
+        "sites/avocado-mini/src/pages/index.astro",
+        "sites/avocado-mini/src/pages/mini/index.astro",
+        "sites/avocado-mini/src/pages/pro/index.astro"
+      ],
+      "products": [
+        {
+          "id": "avocadoMini",
+          "displayName": "avocadoMini",
+          "siteRole": "Standalone spatial input",
+          "worksStandalone": true,
+          "configurations": [
+            {
+              "id": "one_mini",
+              "siteLabel": "1 × avocadoMini · standalone",
+              "referencePriceJpy": 160000,
+              "priceDisplayJpy": "¥160,000",
+              "priceDisplayUsd": "US$1,050",
+              "conversionDisplayJpyMode": "Approx. US$1,050",
+              "priceNote": "Reference price · tax and shipping excluded"
+            },
+            {
+              "id": "four_mini_package",
+              "siteLabel": "4 × avocadoMini · avokadoPro sold separately",
+              "referencePriceJpy": 410000,
+              "priceDisplayJpy": "¥410,000",
+              "priceDisplayUsd": "US$2,700",
+              "conversionDisplayJpyMode": "Approx. US$2,700",
+              "priceNote": "Reference Mini package price · tax and shipping excluded"
+            }
+          ]
+        },
+        {
+          "id": "avokadoPro",
+          "displayName": "avokadoPro",
+          "siteRole": "Standalone game and services Hub",
+          "worksStandalone": true,
+          "requiredByAvocadoMini": false,
+          "soldSeparately": true,
+          "configurations": [
+            {
+              "id": "standalone_hub",
+              "siteLabel": "avokadoPro · standalone Hub",
+              "referencePriceFromJpy": 880000,
+              "priceDisplayJpy": "From ¥880,000",
+              "priceDisplayUsd": "From US$5,800",
+              "conversionDisplayJpyMode": "Approx. US$5,800",
+              "priceNote": "Reference price · tax and shipping excluded"
+            }
+          ]
+        }
+      ],
+      "taxIncluded": false,
+      "shippingIncluded": false,
+      "priceKind": "reference_price_not_checkout_amount",
+      "salesOpen": false,
+      "checkoutEnabled": false,
+      "checkoutAuthority": "WEB15 remains closed until sales terms are final",
+      "physicalTests": 0,
+      "manufacturingReleased": false,
+      "siteDisplayChangedByThisDecision": false,
+      "openOwnerDecisions": [
+        "relationship_between_R5_and_the_avocadoMini_avokadoPro_line",
+        "R5_requirements_and_MAT15_scope_review",
+        "reservation_and_checkout_enablement_WEB15",
+        "external_product_name_PR40_avokado_mini",
+        "preorder_page_old_E3_pricing_statement_versus_this_line"
+      ],
+      "openOwnerDecisionNotes": {
+        "preorder_page_old_E3_pricing_statement_versus_this_line": "Observed 2026-09-25 01:54 ET at main 9f09b6a (01:48 ET): the old-E3 statement is no longer shown on /preorder/, which now lists the Mini/Pro reference prices with no R5 mention. The R5 relationship stays open (MAT16). Site wording difference, /preorder/ 'From ¥160,000' versus /mini/ '¥160,000', is recorded as an open owner decision; development does not change the Site."
+      }
     },
     "motionTowerP0Engineering": {
       "source": "User-provided RockstarOS Motion Tower P0 Engineering Package v2, revision P0.2",

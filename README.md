@@ -39,6 +39,7 @@ avokadoは、利用者が自分の体験やAIチームを選び、遊び、作�
 - Skyでは、開発者・事業者がToolを登録する基本利用料と、その商品売上に対するSky手数料を0とする方針です。外部決済、モデル、クラウド等の実費は分けて示します。
 - **利用者側の8.88 USD収益料金案は保留中です。** 収益を得る動線、料金の対象・計算方法・上限・回収方法・同意を決めるまで、新たな料金計上や請求を行いません。旧8.88 USDの計算値は過去の設計・検証用記録であり、現行料金ではありません。実課金・実払出しは開始していません。
 - R5の本体価格、発売日、予約条件は未確定です。旧Tower20 E3の価格をR5に引き継ぎません。
+- **公開中の製品ラインと参考価格は正式です（2026-09-25 00:49 ET、本人決定）。** avocadoMini 1台 ¥160,000（US$1,050）、avocadoMini 4台パッケージ ¥410,000（US$2,700、avokadoProは別売）、avokadoPro From ¥880,000（From US$5,800）。いずれも税・送料別の参考価格で、予約・決済は開始していません。この価格はMini/Pro製品ラインのもので、R5をこの製品ラインでどう扱うかは本人の判断待ちです（[製品ベース](docs/product-baseline.md)）。
 
 詳しくは[SkyのToolチームと経済設計](docs/sky-network-economy.md)、[Walletと外部Providerの責任分界](docs/external-wallet-fund-provider-boundary-20260913.md)を参照してください。
 
@@ -148,7 +149,7 @@ Walletは、費用の見積・予約・確定、署名されたEarning Receipt�
 R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合格**です。件数は製品の完成率ではありません。
 
 <!-- project-overview:start -->
-更新日: 2026-09-24 / 156 task中104 done・31 in progress・20 planned・1 blocked
+更新日: 2026-09-25 / 163 task中106 done・31 in progress・20 planned・6 blocked
 <!-- project-overview:end -->
 
 [全taskの作業進捗](project.md#全taskの作業進捗) / [Pixel事前試験](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [初回flash gate](docs/android-first-flash-gate-20260916.md) / [R5保存・検証記録](docs/avocado-mini-r5/verification.json)

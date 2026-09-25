@@ -49,3 +49,28 @@ void test('the concise landing page links to complete progress and explicitly wi
   assert.doesNotMatch(readme, /<!-- project-status:start -->/);
   assert.match(read('project.md'), /## 全taskの作業進捗\s+<!-- project-status:start -->/);
 });
+
+void test('owner-confirmed public product line matches Site wording and keeps sales, checkout and R5 price closed', () => {
+  const line = baseline.marketPositioning.publicProductLine;
+  assert.equal(line.decisionStatus, 'owner_confirmed');
+  assert.deepEqual(
+    line.products.flatMap((product) => product.configurations.map((c) => c.priceDisplayJpy)),
+    ['¥160,000', '¥410,000', 'From ¥880,000'],
+  );
+  for (const [mutate, label] of [
+    [(l) => { l.products[0].configurations[0].priceDisplayJpy = '¥150,000'; }, 'price text not in Site source'],
+    [(l) => { l.products[1].configurations[0].priceDisplayUsd = 'From US$5,000'; }, 'usd text not in Site source'],
+    [(l) => { l.salesOpen = true; }, 'salesOpen'],
+    [(l) => { l.checkoutEnabled = true; }, 'checkoutEnabled'],
+    [(l) => { l.taxIncluded = true; }, 'taxIncluded'],
+    [(l) => { l.physicalTests = 1; }, 'physicalTests'],
+    [(l) => { l.openOwnerDecisions = []; }, 'R5 relationship decision removed'],
+  ]) {
+    const changed = structuredClone(baseline);
+    mutate(changed.marketPositioning.publicProductLine);
+    assert.throws(() => validateBaseline(changed), /公開製品ラインの参考価格/, label);
+  }
+  const inherited = structuredClone(baseline);
+  inherited.marketPositioning.legacyCommercialFields.appliesToCurrentR5 = true;
+  assert.throws(() => validateBaseline(inherited), /公開製品ラインの参考価格|R5/);
+});

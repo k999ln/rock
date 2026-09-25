@@ -4,6 +4,7 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
+- 2026-09-25、WEB20・DOC05として台帳を公開Siteに同期した。2026-09-24 23:20〜2026-09-25 00:47 ETに、PR・task・配備記録のない5コミット（`9c1332e`・`8617863`・`4b49bf9`・`862ba30`・`851bb04`）がmainへ直接入り、WEB19のTower20 E3復元の後に円・ドル切替、avocadoMiniとavokadoProのページ分割（`/mini/`・`/pro/`）、ホームの整理が行われた。公開Site（00:49:33 ET取得）は`851bb04`の内容を配信している（配備version記録なし）。本人決定（2026-09-25 00:49 ET、チャットでの指示）により、公開中の構成と参考価格（1 × avocadoMini · standalone ¥160,000／4 × avocadoMini · avokadoPro sold separately ¥410,000／avokadoPro · standalone Hub From ¥880,000・From US$5,800、税・送料別）を正式とし、[製品ベース](../../data/product-baseline.json)の`publicProductLine`へSite表記どおり記録した。Site表示は変更していない。予約・決済はWEB15で停止したまま。WEB16で撤去した旧E3の16万円・41万円の表示は、WEB19とその後の直接コミットで、Mini製品ラインの参考価格として再び表示されている。WEB16の記録は当時の事実として残す。`/preorder/`の「Old E3 pricing does not apply to R5」はそのまま残り、R5との関係はMAT16として本人判断待ち。製品名（PR #40）はWEB21で判断待ち。PR #39のSite試験verify組込みも取り込んだ。[証拠](../evidence/ledger-sync-20260925.json)
 - 2026-09-24、利用者の画像デザインを変更しないことを優先し、生成した差し替え画像を製品Siteから撤去して、提供済みのR5黒スタジオ画像と既存の承認済み画像だけへ戻した。CSSの配置・背景接続だけを調整し、製品の形状・部品・質感は変えていない。中央寄せを上書きしていたanimation、Highlight見出しのfont selector衝突、壊れたRockstarOSアンカー、画像のない疑似回転、重複Highlight、過剰な断定、ARIA、外部font、SEO metadata、旧route redirectも修正。Astro 11 route、Site試験12/12、1280pxと390pxの実ブラウザで欠損画像・欠損fragment・横overflow 0を確認した。GitHub `main` `4dcacf2`、Site source `7388127c8174171f6a6fc3bc4ab7ad33b32d16f3`、公開v64、deployment `appgdep_6ab5db9bbfe08191b88540cf3c136002`。
 
 - 2026-09-24、公開avokado mini SiteをAstro 7.3.5のまま英語中心へ統一した。ホーム、試作計画、Developer Preview、RockstarOS配布状況、販売状況・確認・完了、販売表示、privacy、rocketstar、redirectの11 routeで`lang=en`と日本語UIなしをbuild契約化。390px幅の全routeで横overflow、runtime overlay、console errorがないことを確認し、英語注記の位置ずれと下層共通logoの未指定寸法も修正した。現行R5の1本自律・別Hub不要、実機試験0件、販売停止は変更しない。GitHub `main` `11f0919`、Site source `26e146ecb579f306992abffea7b0c83f23867cf3`、公開v63、deployment `appgdep_6ab5d3eb5b488191b985ab8f901e6576`。[配備証拠](../evidence/avocado-mini-site-r5.json)を更新した。
@@ -111,3 +112,4 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 - `npm run release:web-bundle:check`
 - `npm run release:web-assets:check`
 - `npm run test:api`
+- `npm run test:avocado-mini-site`（avocadoMini SiteのAstro配布物契約と予約・決済Worker試験。依存導入不要で`npm run verify`に含む）
