@@ -47,7 +47,8 @@ test('Astro output separates the ecosystem, Mini, Pro, Rocket Star, and preorder
   assert.match(home, /Walk or balance/);
   assert.match(home, /Raise a hand/);
   assert.match(home, /Dodge or reach/);
-  for (const image of ['usecase-care-motion-v2.jpg', 'usecase-research-development-v2.jpg', 'usecase-everyday-space-v2.jpg', 'usecase-spatial-game-v2.jpg']) assert.match(home, new RegExp(image.replace('.', '\\.')));
+  for (const image of ['usecase-care-motion-v3.jpg', 'usecase-research-development-v3.jpg', 'usecase-everyday-space-v3.jpg', 'usecase-spatial-game-v3.jpg']) assert.match(home, new RegExp(image.replace('.', '\\.')));
+  for (const step of ['Take a step', 'Mini reads movement', 'Review motion', 'Move a prototype', 'Light turns on', 'Game responds']) assert.match(home, new RegExp(step));
   assert.match(home, /href="\/mini\/"/);
   assert.match(home, /href="\/pro\/"/);
   assert.match(home, /home-promo-mini/);
