@@ -1,5 +1,11 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-24 — avokado READMEの製品画像を再制作
+
+主担当Git / CI / ReleaseのROCK、既存DOC04。利用者の画像への指摘を受け、R5-M01の銀色細身円筒・黒いカメラ帯・低い円形台座を基準に、製品コンセプト画像を新しい明るいスタジオ表現へ再制作した。同じ画像を使う控えめな4秒GIFを冒頭へ配置し、旧い製品カットとの重複を解消した。構成図も同じ色調とタイポグラフィへ変更し、R5端末、RockstarOS、Sky/Zemaの設計上の関係だけを示す。実機写真、空間表示、OS統合完了を示す画像にはしない。
+
+検証: GIFの32フレーム・4秒再生、製品形状と構成図の画像確認、README参照204件の欠落0、`npm run project:update`整合。公開SiteのR5同期を含む最新mainへ統合し、増えたtask数をデータベース状態ファイルへ再生成後、`npm run verify` exit 0（ローカルAPI 149項目、Web asset 84参照・欠落0）。次はR5の実機計測とR5用OS profileの統合が未完了。
+
 ## 2026-09-24 — 公開avocadoMini SiteをGitHub正本のR5へ同期
 
 利用者の指摘を受け、公開Siteに残っていた旧Tower20 E3の「4本＋別Edge Hub」、1本16万円・一式41万円の表示を、現行GitHub `main`のR5要求と照合した。商品ページを使用時200mm以内・1本自律・同型mini増設・別Hub不要へ更新し、PLAY / MAKE / LIVE、単体機能スタック、全空間裸眼表示の研究目標、実機0件・製造承認保留を同じ画面で示す。R5の51ページ設計書と8図面を公開sourceへ同梱する。rocketstarとRockstarOS Developer Previewの導線は保持する。
@@ -976,7 +982,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | DOC01 | RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化 | 完了 | [記録](docs/rockstaros-design-portal.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
 | DOC02 | RockstarOS設計書完全版v1.0の原本PDF・全文抽出・完全性記録・設計索引をGit正本へ保存 | 完了 | [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rockstaros-complete-design-v1.0.txt) · [記録](data/rockstaros-complete-design-v1.0.json) · [記録](docs/rockstaros-design-portal.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
 | DOC03 | rocketstar R1.0・衛星・OS付録・ボタン・生成元・旧版を原本と照合し、設計アーカイブと索引へ保存（製造/飛行未認定） | 完了 | [記録](docs/rocketstar-design/README.md) · [記録](docs/rocketstar-design/inventory.json) · [記録](docs/rocketstar-design/verification.json) · [記録](scripts/verify-rocketstar-archive.py) · [記録](data/design-document-index.json) |
-| DOC04 | avokado READMEをR5端末・RockstarOS v1.0現行OS・rocketstar R1.0現行ロケット・事業・機能・全設計書の入口へ刷新 | 完了 | [記録](README.md) · [記録](docs/brand/avokado/avocado-mini-r5-concept.png) · [記録](docs/brand/avokado/avokado-motion.gif) · [記録](docs/brand/avokado/avokado-system-map.svg) · [記録](data/design-document-index.json) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) |
+| DOC04 | avokado READMEをR5端末・RockstarOS v1.0現行OS・rocketstar R1.0現行ロケット・事業・機能・全設計書の入口へ刷新 | 完了 | [記録](README.md) · [記録](docs/brand/avokado/avokado-r5-editorial-hero.png) · [記録](docs/brand/avokado/avokado-motion-v2.gif) · [記録](docs/brand/avokado/avokado-system-map.svg) · [記録](data/design-document-index.json) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) |
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
 | AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
