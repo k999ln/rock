@@ -33,7 +33,7 @@ test('Astro emits every public route and the Worker deployment contract', () => 
 
 test('Astro output preserves the approved product, Rocket Star, and preorder pages', () => {
   const home = built('client/index.html');
-  assert.match(home, /avocadoMini R5/);
+  assert.match(home, /avokado mini R5/);
   for (const image of [
     'avocado-mini-tower20-e3-kit.png',
     'tower20-e3-highlight-sensor-v2.png',

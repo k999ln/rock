@@ -14,12 +14,19 @@
   ],
   "publicSite": {
     "projectId": "appgprj_6aaf6a375b908191b3b0c1845dc78291",
-    "sourceCommit": "326e375ee20bc2a441a59278e248567d8a2abc56",
-    "versionNumber": 62,
-    "deploymentId": "appgdep_6ab5d1b95ed48191a2931ef2eee5c583",
+    "sourceCommit": "26e146ecb579f306992abffea7b0c83f23867cf3",
+    "versionNumber": 63,
+    "deploymentId": "appgdep_6ab5d3eb5b488191b985ab8f901e6576",
     "deploymentStatus": "succeeded",
     "url": "https://avocado-mini.kirin-999.chatgpt.site",
-    "tests": "Astro 11 routes built, 9/9 tests passed"
+    "tests": "Astro 11 routes built, 9/9 tests passed",
+    "nameCorrectionDeployment": {
+      "versionNumber": 62,
+      "sourceCommit": "326e375ee20bc2a441a59278e248567d8a2abc56",
+      "deploymentId": "appgdep_6ab5d1b95ed48191a2931ef2eee5c583",
+      "status": "succeeded"
+    },
+    "currentReadback": "Version 63 retained avokado mini name; site remained publicly live."
   },
   "repositoryChecks": {
     "readmeReferences": 204,
@@ -30,8 +37,8 @@
       "width": 960,
       "height": 540
     },
-    "viteSiteBuild": "passed",
-    "npmVerify": "passed before final project note"
+    "npmVerify": "passed before final project note",
+    "astroSiteBuild": "passed with the previously approved product imagery and 9/9 tests"
   },
   "limits": [
     "R5 image is a concept rendering, not a hardware photo",

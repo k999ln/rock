@@ -29,7 +29,7 @@ WEB16のR5内容同期で商品Site全体を白基調へ変えてしまったた
 
 利用者の訂正に従い、事業ブランド「avokado」と製品「avokado mini」を区別した。READMEの見出し・本文・代替テキスト、製品サイトの表示、構成図内の表示を更新し、冒頭のR5コンセプト画像と4秒GIFも正しい製品名で再制作した。PDF・Wordなどの原本ファイル名とAPIの内部識別子は維持する。製品要求、価格・販売停止状態、実機受入状況は変更しない。主担当Web / PWA / SitesのROCK、既存DOC04・WEB16。
 
-検証: README参照204件の欠落0、GIF 24フレーム・4秒、GitHub Site sourceのVite build、`npm run verify` exit 0。公開SiteはAstroの最新source変更と統合し、R5単体画像と正しい名称を11画面へ反映。9/9テスト合格、Site version 62、deployment `appgdep_6ab5d1b95ed48191a2931ef2eee5c583` succeeded。公開URLは `https://avocado-mini.kirin-999.chatgpt.site`。名称と画像の[記録](docs/evidence/avokado-mini-name-20260924.json)。
+検証: README参照204件の欠落0、GIF 24フレーム・4秒、GitHub Astro Site sourceのbuild、`npm run verify` exit 0。公開Siteは名称を修正し、後続のSite version 63（source `26e146ecb579f306992abffea7b0c83f23867cf3`、deployment `appgdep_6ab5d3eb5b488191b985ab8f901e6576`）も公開成功を確認。GitHub側では既存の製品画像・スクロール演出を維持し、Astro 11画面のbuildと9/9テストに合格。公開URLは `https://avocado-mini.kirin-999.chatgpt.site`。名称と画像の[記録](docs/evidence/avokado-mini-name-20260924.json)。
 
 
 ## 2026-09-24 — 8.88 USDの収益料金案を保留

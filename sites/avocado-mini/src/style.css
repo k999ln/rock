@@ -1311,3 +1311,10 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
 @media(prefers-reduced-motion:reduce){
   .r5-product-page .highlight-tabs button{transition:none}
 }
+
+/* Keep the spaced product name legible across the film and story layouts. */
+.hero-product-lockup{min-width:0;flex:1}
+.hero-product-lockup h1{font-size:clamp(54px,7.2vw,112px);letter-spacing:-.055em;word-spacing:.18em;white-space:nowrap}
+.feature-beat[data-beat="intro"] h2,.price-panel h2{letter-spacing:-.055em;word-spacing:.18em;overflow-wrap:normal;white-space:nowrap}
+@media(max-width:800px){.hero-product-lockup h1{font-size:clamp(43px,7vw,68px)}}
+@media(max-width:520px){.hero-product-lockup h1{font-size:clamp(39px,9vw,52px)}.feature-beat[data-beat="intro"] h2{font-size:clamp(34px,8vw,39px)}.price-panel h2{font-size:clamp(36px,8.8vw,43px)}}
