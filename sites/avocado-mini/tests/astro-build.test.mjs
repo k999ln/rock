@@ -38,10 +38,11 @@ test('Astro output separates the ecosystem, Mini, Pro, Rocket Star, and preorder
   const mini = built('client/mini/index.html');
   const pro = built('client/pro/index.html');
   assert.match(home, /AVOCADOMINI × AVOKADOPRO/);
-  assert.match(home, /Two products\.<br\s*\/?>One bigger world\./);
+  assert.match(home, /Built apart\.<br\s*\/?>Better together\./);
   assert.match(home, /href="\/mini\/"/);
   assert.match(home, /href="\/pro\/"/);
-  assert.match(home, /When Mini meets Pro/i);
+  assert.match(home, /home-promo-mini/);
+  assert.match(home, /home-promo-pro/);
   assert.match(mini, /Start with one\.<br\s*\/?>Expand the space\./);
   assert.match(mini, /\/images\/avocado-mini-tower20-e3-kit\.png/);
   assert.equal((mini.match(/class="highlight-card /g) || []).length, 4);
@@ -65,7 +66,8 @@ test('home fragment navigation, carousel controls, and metadata remain valid', (
   for (const match of home.matchAll(/href="#([^"]+)"/g)) {
     assert.equal(ids.has(match[1]), true, `#${match[1]} must identify a section`);
   }
-  assert.equal((home.match(/class="ecosystem-product-card /g) || []).length, 2);
+  assert.equal((home.match(/class="home-promo /g) || []).length, 3);
+  assert.equal((home.match(/class="home-tile /g) || []).length, 4);
   assert.match(home, /rel="canonical" href="https:\/\/avocado-mini\.kirin-999\.chatgpt\.site\/"/);
   assert.match(home, /property="og:title"/);
   assert.doesNotMatch(home, /fonts\.googleapis\.com|fonts\.gstatic\.com/);
@@ -73,7 +75,7 @@ test('home fragment navigation, carousel controls, and metadata remain valid', (
   assert.equal(existsSync(new URL('client/sitemap.xml', outputRoot)), true);
 });
 
-test('the Mini 180-degree story contains Mini-only pricing while Pro owns its separate price', () => {
+test('the restored Mini 180-degree story and dedicated Pro page preserve their pricing', () => {
   const mini = built('client/mini/index.html');
   const pro = built('client/pro/index.html');
   assert.match(mini, /0° \/ SINGLE MINI/);
@@ -82,7 +84,7 @@ test('the Mini 180-degree story contains Mini-only pricing while Pro owns its se
   assert.match(mini, /¥410,000/);
   assert.match(mini, /data-price-usd="US\$1,050"/);
   assert.match(mini, /data-price-usd="US\$2,700"/);
-  assert.doesNotMatch(mini, /class="pro-addon"/);
+  assert.match(mini, /class="pro-addon"/);
   assert.equal((mini.match(/aria-label="Display currency"/g) || []).length, 2);
   assert.match(mini, /avocado-mini-tower20-e3-kit-transparent-v2\.png/);
   assert.match(pro, /From ¥880,000/);
