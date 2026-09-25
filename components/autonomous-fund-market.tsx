@@ -307,8 +307,8 @@ export default function AutonomousFundMarket() {
         </div>
         <div className="autofund-contract" aria-label="収益の配給ルール">
           <small>SKY REVENUE CONTRACT</small>
-          <strong>月最大 $8.88</strong>
-          <p>外部実費とSky利用料を除く残額は、すべてユーザーのものです。</p>
+          <strong>収益料金は保留中</strong>
+          <p>収益料金は保留中です。外部実費を分けて表示し、利用料は差し引きません。</p>
         </div>
       </header>
 
@@ -325,7 +325,7 @@ export default function AutonomousFundMarket() {
         <ArrowRight size={18} />
         <div>
           <CircleDollarSign size={19} />
-          <span>$8.88だけ回収</span>
+          <span>料金の回収動線は未確定</span>
         </div>
         <ArrowRight size={18} />
         <div>

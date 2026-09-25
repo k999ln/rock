@@ -827,8 +827,7 @@ export default function FundMarket() {
                 </span>
               </div>
               <p>
-                運用費と月最大 $8.88
-                相当の利用料を引いた原資から。支援によるブーストも試算できます。
+                運用費を考慮した原資から。収益料金は保留中の旧案を用いた試算で、実際の請求条件ではありません。
               </p>
               <button onClick={() => openPanel('settings')}>
                 <Zap size={14} />

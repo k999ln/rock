@@ -1168,6 +1168,14 @@ export function validateBaseline(
     'tobのSky利用料は0です',
   );
   requireValue(
+    data.commercialPolicyRevision?.status ===
+      'on_hold_pending_revenue_flow' &&
+      data.commercialPolicyRevision?.tocFeeAssessmentEnabled === false &&
+      data.commercialPolicyRevision?.csvSellerFeeAssessmentEnabled === false &&
+      data.commercialPolicyRevision?.legacy888FixtureOnly === true,
+    '8.88 USD料金案は収益動線の確定まで保留してください',
+  );
+  requireValue(
     data.skyNetworkEconomy?.tobSkySalesCommissionBps === 0,
     'tob売上のSky手数料は0%です',
   );
@@ -1175,7 +1183,7 @@ export function validateBaseline(
     data.skyNetworkEconomy?.tocMonthlyFeeCapMinor === 888 &&
       data.skyNetworkEconomy?.tocUpfrontCharge === false &&
       data.skyNetworkEconomy?.debtCarryForward === false,
-    'ToCは検証済み収益からだけ月最大888 centsを精算してください',
+    '旧ToC精算の888 cents値を回帰検証用に保持してください',
   );
   requireValue(
     data.skyMonthlyBilling?.status === 'retired' &&

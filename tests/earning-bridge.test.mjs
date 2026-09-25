@@ -9,7 +9,7 @@ import {
 } from '../lib/earning-bridge.ts';
 import { operations } from '../lib/operations.ts';
 import { createReceiptSignature } from '../lib/receipt-signature.ts';
-import billingWorker from '../services/sky-billing/src/worker.ts';
+import { legacyFixtureBillingWorker } from '../services/sky-billing/src/worker.ts';
 
 class Statement {
   #database;
@@ -133,7 +133,7 @@ async function signedRequest(value, secret = providerSecret) {
   });
 }
 
-void test('completed real Tool -> provider receipt -> Wallet is exact and idempotent', async () => {
+void test('legacy fee fixture: completed Tool -> provider receipt -> Wallet is exact and idempotent', async () => {
   const web = new TestD1(webMigrations, true);
   const billing = new TestD1(billingMigrations);
   const now = Date.now();
@@ -171,7 +171,7 @@ void test('completed real Tool -> provider receipt -> Wallet is exact and idempo
     SKY_ORIGIN: 'https://sky.example',
   };
   const send = (input, init) =>
-    billingWorker.fetch(new Request(input, init), billingEnv);
+    legacyFixtureBillingWorker.fetch(new Request(input, init), billingEnv);
 
   try {
     const first = await forwardProviderEarningReceipt(

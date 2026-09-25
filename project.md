@@ -1,5 +1,12 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-24 — 8.88 USDの収益料金案を保留
+
+利用者は収益を得る動線が確定していないため、8.88 USDの料金設定をいったん保留すると明示した。README、料金説明画面、Sky／CSVの設計資料、機械可読の製品基準を更新した。Sky Billing Workerの現行経路は新しいToC収益Receiptを台帳書込み前に拒否し、Rock回収用Walletの新規登録・着金照合も拒否する。CSV料金判定は0 USD・保留状態を返す。旧888 cents計算は過去の設計と回帰検証用に保持する。動線、対象利益、金額・上限、回収、返金、同意、還元を決めてから新契約として受入する。既存の履歴照会とToBの0料金方針は維持する。
+
+検証: 現行経路のToC拒否・台帳未書込み、Wallet回収操作の拒否、CSV料金0、旧契約の回帰を個別確認。ローカル通信を使う模擬サーバー試験を含む`npm run verify`はexit 0（Node 363/363、追加Tool 19/19、Web asset欠落0、仕事API 149項目）。
+
+
 ## 2026-09-24 — mainの進捗件数とデータベース状態を再同期
 
 avokado README画像のPR #35をmainへ統合する間に、公開SiteのR5配備記録がWEB16を完了へ更新した。mainのCIで`database:check`が101 done・31 in progressと保存済み状態ファイルの100 done・32 in progressの差を検出したため、`npm run database:status`でJSONとMarkdownを再生成した。`npm run verify`はexit 0（ローカルAPI 149項目、Web asset 84参照・欠落0）。製品画像・機能・データベースschemaは変更しない。
@@ -1126,8 +1133,8 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | FB04 | 入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理 | 完了 | [記録](toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 | FB05 | 改善版Skyの役割フィードへブランド運営役と40 MCP操作を統合 | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
 | FB06 | Instagram画面の写真から未確認候補を作り、Meta確認後だけ運用対象へ進める | 完了 | [記録](docs/instagram-photo-onboarding-20260912.md) · [記録](toolkits/fashion-brand-ops/db/migrations/004_screenshot_account_intake.sql) · [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) · [記録](components/fashion-brand-ops-runner.tsx) |
-| BIL01 | 先払い月額を停止し、検証済み自動化収益からだけ実費後に月最大888 centsを精算 | 完了 | [記録](docs/sky-billing.md) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing.test.mjs) · [記録](tests/billing-worker.test.mjs) · [記録](services/sky-billing/migrations/0002_earnings_settlement.sql) · [記録](docs/evidence/launch/backend-owner-validation-20260912.json) |
-| BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) |
+| BIL01 | 旧888 cents収益精算の試験実装を保持し、現行ToC料金は動線確定まで停止 | 完了 | [記録](docs/sky-billing.md) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing.test.mjs) · [記録](tests/billing-worker.test.mjs) · [記録](services/sky-billing/migrations/0002_earnings_settlement.sql) · [記録](docs/evidence/launch/backend-owner-validation-20260912.json) |
+| BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) · [記録](docs/workstreams/03-wallet-billing-providers.md) · [記録](tests/billing-worker.test.mjs) |
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |
 | CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 | [記録](data/csv-business-tasks.json) · [記録](docs/csv-business-v1.ja.md) · [記録](lib/csv-transform.ts) · [記録](lib/csv-job-store.ts) · [記録](components/csv-business-workspace.tsx) |
 

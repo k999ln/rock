@@ -118,7 +118,7 @@ export function CostCalculator() {
                 <dd>{yen(result.revenue)}</dd>
               </div>
               <div>
-                <dt>RockstarOS利用料の案</dt>
+                <dt>収益料金（保留中）</dt>
                 <dd>−{yen(result.fee)}</dd>
               </div>
               <div>
@@ -137,12 +137,11 @@ export function CostCalculator() {
             <div className="fee-note">
               <Zap size={18} />
               <p>
-                利用料は月$8.88相当（この条件で{yen(result.feeCap)}
-                ）が上限。収入の範囲で控除し、不足分は繰り越さない料金案です。
+                収益料金は動線が確定するまで保留中です。現在の試算では利用料を差し引きません。
               </p>
             </div>
             <p className="subnote">
-              収入0円ならRockstarOS利用料も0円。電気・通信などの費用は残るため、手出しが生じる場合があります。税金・機器代等は含みません。
+              電気・通信などの費用は残るため、収入0円でも手出しが生じる場合があります。税金・機器代等は含みません。
             </p>
           </>
         ) : (

@@ -21,9 +21,9 @@ type BillingGateway = {
 
 type SettlementSnapshot = {
   policy: {
-    mode: 'verified_earnings_only';
+    mode: 'verified_earnings_only' | 'fee_policy_on_hold';
     currency: 'usd';
-    monthlyFeeCapMinor: number;
+    monthlyFeeCapMinor: number | null;
     upfrontCharge: false;
     debtCarry: false;
     tobFeeMinor: 0;
@@ -34,7 +34,7 @@ type SettlementSnapshot = {
     operatingCostMinor: number;
     skyFeeMinor: number;
     distributableMinor: number;
-    remainingFeeCapMinor: number;
+    remainingFeeCapMinor: number | null;
     receiptCount: number;
   };
   receipts: Array<{
@@ -266,7 +266,7 @@ export function SkyBilling() {
             <dd>{amount(settlement?.operatingCostMinor)}</dd>
           </div>
           <div>
-            <dt>Sky利用料</dt>
+            <dt>過去に計上されたSky利用料</dt>
             <dd>{amount(settlement?.skyFeeMinor)}</dd>
           </div>
         </dl>
@@ -274,7 +274,7 @@ export function SkyBilling() {
         <div className="wallet-simple-policy">
           <ShieldCheck size={17} />
           <span>
-            Sky利用料は収益が出た月だけ、最大$8.88。先払いや未払い請求はありません。
+            Skyの利用者向け収益料金は保留中です。料金と回収動線が決まるまで新たに計上しません。
           </span>
         </div>
       </section>

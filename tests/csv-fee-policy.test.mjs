@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { csvFeeDecision } from '../lib/csv-fee-policy.ts';
 
-await test('CSV seller fee is exactly USD 8.88 only from USD 30 verified net revenue', () => {
+await test('CSV seller fee stays at zero while the revenue flow is pending', () => {
   assert.deepEqual(
     csvFeeDecision({
       monthJst: '2026-09',
@@ -14,8 +14,8 @@ await test('CSV seller fee is exactly USD 8.88 only from USD 30 verified net rev
       monthJst: '2026-09',
       verifiedNetUsdMinor: 2999,
       feeDueUsdMinor: 0,
-      status: 'waived',
-      reason: 'below_threshold',
+      status: 'on_hold',
+      reason: 'revenue_flow_pending',
     },
   );
   assert.equal(
@@ -24,7 +24,7 @@ await test('CSV seller fee is exactly USD 8.88 only from USD 30 verified net rev
       verifiedNetUsdMinor: 3000,
       providerEvidence: 'provider:event:2',
     }).feeDueUsdMinor,
-    888,
+    0,
   );
   assert.equal(
     csvFeeDecision({
@@ -32,7 +32,7 @@ await test('CSV seller fee is exactly USD 8.88 only from USD 30 verified net rev
       verifiedNetUsdMinor: 999999,
       providerEvidence: 'provider:event:3',
     }).feeDueUsdMinor,
-    888,
+    0,
   );
 });
 

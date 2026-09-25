@@ -189,7 +189,7 @@ export default function MercariRevenueStarter() {
         <header className="mercari-hero">
           <div>
             <p className="mercari-kicker">SKY REVENUE LOOP</p>
-            <h1>売上を作ってから、最大$8.88を精算する</h1>
+            <h1>売上の準備と確認を、一歩ずつ進める</h1>
             <p>
               手元の商品を安全に販売する準備を自動化します。売れなければSkyの回収は0。
               自己申告ではなく、公式Providerで取引完了を確認できた収益だけが精算対象です。
@@ -217,7 +217,7 @@ export default function MercariRevenueStarter() {
           </article>
           <article>
             <ShieldCheck size={19} />
-            <div><strong>$8.88精算</strong><span>Provider確認済みの実費後収益から月最大$8.88。先払い・不足分の借金なし。</span></div>
+            <div><strong>収益料金は保留中</strong><span>8.88 USDの旧案は収益動線が決まるまで適用しません。新たな料金計上・請求はありません。</span></div>
           </article>
         </section>
 
