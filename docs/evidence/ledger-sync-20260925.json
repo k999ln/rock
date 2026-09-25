@@ -121,7 +121,7 @@
           "¥160,000",
           "¥410,000"
         ],
-        "note": "States the earlier ¥160,000/¥410,000 plans belonged to the old design and do not carry over to R5; orders, reservations and payments stay closed. Not changed by this sync; its relation to the owner-confirmed Mini line is an open item."
+        "note": "States the earlier ¥160,000/¥410,000 plans belonged to the old design and do not carry over to R5; orders, reservations and payments stay closed. Not changed by this sync; its relation to the owner-confirmed Mini line is an open item. Later note: this statement is no longer shown at main 9f09b6a (2026-09-25 01:48 ET); see laterObservations."
       }
     ]
   },
@@ -132,5 +132,47 @@
     "sales/checkout enablement",
     "R5 pricing",
     "R5 runtime integration"
+  ],
+  "laterObservations": [
+    {
+      "observedAt": "2026-09-25T01:54:08-04:00",
+      "mainSha": "9f09b6a51cdb4caa64ac0d57821fa44be504c1b9",
+      "mainCommitTime": "2026-09-25T01:48:29-04:00",
+      "mainCommit": "kaiya.kk: Lead product journey with user benefits (direct commit to main, sites/ only; no change to AGENTS.md, product baseline, design documents or contracts)",
+      "commitsSince851bb04": [
+        "70d77a99abfb8a6db156754cbe7f8b1aa68965f9",
+        "f0832ad41bf91990b93242b151da967b4a2110c2",
+        "9f09b6a51cdb4caa64ac0d57821fa44be504c1b9"
+      ],
+      "publicSite": [
+        {
+          "path": "/preorder/",
+          "sha256": "3891716e01256b6523ea0e6df861890b7d675d029aaf9cae4e5dfb2ce5886aaf",
+          "contains": [
+            "NOT YET FOR SALE / NO PAYMENT OR RESERVATION",
+            "From ¥160,000",
+            "¥410,000",
+            "From ¥880,000"
+          ],
+          "absent": [
+            "Old E3 pricing<br>does not apply to R5."
+          ],
+          "r5Mentions": 0,
+          "matchesSource": "sites/avocado-mini/src/pages/preorder/index.astro at 9f09b6a (text content identical)"
+        },
+        {
+          "path": "/mini/",
+          "sha256": "ae994395925668b12295ca9a65bd314b5c7b81481ffe9157594dce097804e189",
+          "contains": [
+            "¥160,000",
+            "¥410,000",
+            "From ¥880,000",
+            "Sales remain closed"
+          ]
+        }
+      ],
+      "effectOnRecords": "The 00:49 ET /preorder/ entry above is kept as the observation of that time. The old-E3 statement it recorded is no longer shown. MAT16 stays blocked: R5 is not mentioned on /preorder/ and the R5 relationship is still an open owner decision.",
+      "pendingOwnerDecision": "Site wording: /preorder/ shows 'From ¥160,000' for one avocadoMini while /mini/ shows '¥160,000'. Recorded only; Site not changed by development."
+    }
   ]
 }
