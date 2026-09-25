@@ -4,15 +4,15 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 88,
+    "tableCount": 92,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
     "total": 163,
     "done": 107,
-    "in_progress": 33,
-    "planned": 18,
+    "in_progress": 34,
+    "planned": 17,
     "blocked": 5,
     "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
     "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。"
@@ -307,11 +307,16 @@
       "sources": [
         "android/core/src/main/resources/schema.sql",
         "android/core/src/main/java/dev/rock/core/ModelProfiles.java",
-        "android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java"
+        "android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java",
+        "android/core/src/main/java/dev/rock/core/BoundedMemory.java"
       ],
       "tables": [
         "artifacts",
         "events",
+        "memory_items",
+        "memory_meta",
+        "memory_projections",
+        "memory_tombstones",
         "model_journal",
         "model_meta",
         "model_pins",
@@ -327,7 +332,7 @@
         "works"
       ],
       "expectedAppliedThrough": null,
-      "tableCount": 15,
+      "tableCount": 19,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Android Work Engine SQLite",
@@ -337,7 +342,7 @@
         "evidence": [
           "docs/os-prototype.md"
         ],
-        "nextAction": "対象端末を確定後、full buildと実機保存・復旧を受入する。AI02のmodel_* table（ModelProfiles）とAI04のoutbox_* table（ExternalWriteOutbox）はhost JVM試験のみで、emulator・実機では未確認"
+        "nextAction": "対象端末を確定後、full buildと実機保存・復旧を受入する。AI02のmodel_* table（ModelProfiles）とAI04のoutbox_* table（ExternalWriteOutbox）、AI03のmemory_* table（BoundedMemory）はhost JVM試験のみで、emulator・実機では未確認"
       }
     },
     {

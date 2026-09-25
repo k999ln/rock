@@ -152,11 +152,13 @@ export function buildDatabaseStatus() {
         'android/core/src/main/resources/schema.sql',
         'android/core/src/main/java/dev/rock/core/ModelProfiles.java',
         'android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java',
+        'android/core/src/main/java/dev/rock/core/BoundedMemory.java',
       ],
       tables: collectTables([
         'android/core/src/main/resources/schema.sql',
         'android/core/src/main/java/dev/rock/core/ModelProfiles.java',
         'android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java',
+        'android/core/src/main/java/dev/rock/core/BoundedMemory.java',
       ]),
       expectedAppliedThrough: null,
     },

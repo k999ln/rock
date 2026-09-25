@@ -1,5 +1,22 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-25 — AI03のhost／fixture段階: モデル非依存の限定記憶・project分離・根拠・削除契約
+
+`android/core`に`BoundedMemory`を追加した。設計書（`docs/ai-native-os-architecture.md`の3章、`docs/sky-assistant-and-memory.md`のSky Memory節）の範囲内で、既存の`Database`のtransaction、`Engine`のworkと成果、AI02の`ModelProfile`を使って実装している。
+- **canonical記憶**: 設計の10項目（`schemaVersion/ownerRef/projectRef/memoryId/kind/contentRef/provenance/createdAt/expiresAt/revision`）と用途scopeを持ち、model固有のtoken列・embedding・templateを含まない。`contentRef`は内容hash。
+- **根拠（出典）**: 本人確認／Tool生成／model生成の別、出典work・成果hash、生成modelのprofileを必須にし、訂正しても出所は変えない。好み・手順・参照資料は本人確認済みのものだけ保存し、modelの推測は保存を拒否する（本人の事実へ昇格させない）。成果の記憶は実在するworkの成果を指す必要がある。
+- **project分離**: 読取・検索・再構成・exportはowner＋project（exportを除き用途scopeも）に限る。他projectの記憶は存在も分からない（`UNKNOWN_MEMORY`）。用途scopeを外せば、その役へ渡らなくなる（共有停止）。
+- **削除の契約**: 削除・owner全削除・期限切れで、本文とそのprojectの全projectionを消す。以後の再構成・検索・exportに現れず、古いrevisionの訂正や同じIDでの再保存で復活しない。
+- **上限**: 1件の本文4 KiB、project当たり200件。超える保存は拒否し、既存の記憶を黙って消さない。再構成はModelProfileのcontext上限以下の予算に収め、入りきらない記憶は項目単位で外して一覧で返す（途中で切らない）。
+- **モデル交換**: projection cacheはprofileごとに分け、別profileではcanonical記憶から作り直す。旧profileのprojectionは流用しない。cacheが壊れた・失われた場合も、DBを開き直した後にcanonical記憶から同じ文脈を再構成する。
+- **範囲**: host／fixture段階の実装で、Sky UI・Tool・Zema・AIDL・Cloud・暗号化保管庫には接続していない。emulator・実機・OS統合の証拠ではない（OS10依存、AI09）。設計書とcontractは編集していない。設計にない判断はPR #45の「設計との差」に列挙した。
+
+検証: host（box）の結果は次のとおり。
+- `android/core`のJVM試験（`javac --release 11`とJUnit 4.13.2による代替実行）: 56/56。内訳は既存37件、AI02の7件、AI04の7件、`BoundedMemoryTest` 5件。
+- 変異確認: project条件を外す、削除時のprojection失効を外す、別profileのprojectionを流用する、項目を途中で切る、未確認のmodel推測を受け入れる、の各改変で、対応する試験が失敗することを確認した。
+- 期待値の変更: DB inventoryにmemory_* 4 tableを加えたため、table数を88から92へ更新した。
+- `npm run verify`とCIの結果は同じhead SHAでPR #45に記録する。
+
 ## 2026-09-25 — AI04のhost／fixture段階: 外部作用のoperation key・結果不明の照合・crash後の復旧
 
 `android/core`に`ExternalWriteOutbox`を追加した。設計書（`docs/ai-native-os-architecture.md`の4章）の範囲内で、既存の`Engine`のworkと`Database`のtransactionを使って実装している。
@@ -1127,7 +1144,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | DOC04 | avokado READMEをR5端末・RockstarOS v1.0現行OS・rocketstar R1.0現行ロケット・事業・機能・全設計書の入口へ刷新 | 完了 | [記録](README.md) · [記録](docs/brand/avokado/avokado-r5-editorial-hero.png) · [記録](docs/brand/avokado/avokado-motion-v2.gif) · [記録](docs/brand/avokado/avokado-system-map.svg) · [記録](data/design-document-index.json) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) |
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
 | AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 進行中 | [記録](docs/ai-native-os-architecture.md) · [記録](android/core/src/main/java/dev/rock/core/ModelProfile.java) · [記録](android/core/src/main/java/dev/rock/core/ModelProfiles.java) · [記録](android/core/src/test/java/dev/rock/core/ModelProfilesTest.java) · [記録](android/core/src/test/resources/model-profiles-fixture.json) · [記録](tests/model-profile-fixture.test.mjs) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](project.md) |
-| AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 進行中 | [記録](docs/ai-native-os-architecture.md) · [記録](docs/sky-assistant-and-memory.md) · [記録](android/core/src/main/java/dev/rock/core/BoundedMemory.java) · [記録](android/core/src/test/java/dev/rock/core/BoundedMemoryTest.java) · [記録](tests/bounded-memory.test.mjs) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](project.md) |
 | AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 進行中 | [記録](docs/ai-native-os-architecture.md) · [記録](android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java) · [記録](android/core/src/test/java/dev/rock/core/ExternalWriteOutboxTest.java) · [記録](tests/external-write-outbox.test.mjs) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](project.md) |
 | AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
