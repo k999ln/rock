@@ -1,5 +1,27 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-25 — AI04のhost／fixture段階: 外部作用のoperation key・結果不明の照合・crash後の復旧
+
+`android/core`に`ExternalWriteOutbox`を追加した。設計書（`docs/ai-native-os-architecture.md`の4章）の範囲内で、既存の`Engine`のworkと`Database`のtransactionを使って実装している。
+- **外部作用の分類**: external-writeだけを受け付け、local-pureとremote-readはoutboxに入れない。
+- **状態の遷移**: `prepared → dispatched → confirmed | rejected | uncertain`。
+- **送信前の永続化**: owner、operation ID、payload hash、対象、費用上限、承認IDと期限、provider idempotency key、generationを保存する。
+- **operation key**: 同じIDで同じ内容なら既存の結果を返し、内容が違えば拒否する（`lib/workflow.ts`と同じ規約）。provider keyは別の操作で再利用できない。
+- **送信直前の再検査**: 権限と承認期限を確かめる。
+- **結果不明とcrash後**: 前のプロセスが開いたままの送信と、結果が分からない送信はuncertainにし、自動では再送しない。遅れて届いたcallbackや重複したcallbackは無視する。
+- **照会**: 内容hashと金額を照合して確定する。一致しなければuncertainのまま残す。
+- **再送**: 冪等再送が保証されたProviderだけ、不在の報告を受けた後に同じkeyで再送できる。
+- **取消**: 送信前か、uncertainで不在の報告を受けた後だけ取り消せる。確定した操作は取り消さず、補償操作を別に作る。
+- **範囲**: host／fixture段階の実装で、Tool・Provider・Zema・AIDLには接続していない。emulator・実機・OS統合の証拠ではない（OS10依存、AI09）。設計書とcontractは編集していない。
+
+検証: host（box）の結果は次のとおり。
+- `android/core`のJVM試験（`javac --release 11`とJUnit 4.13.2による代替実行）: 50/50。内訳は既存37件、AI02の7件、`ExternalWriteOutboxTest` 6件。
+- 変異確認: 再起動時の復旧を外した改変では2件が失敗し、同じIDの異なる内容を受け入れる改変では1件が失敗することを確認した。
+- `npm run verify`（Node v22.23.3）: exit 0。root Node試験は370/370。
+- `os:check`・`android:architecture:check`・`llm:architecture:check`: いずれも合格。
+- 期待値の変更: DB inventoryにoutbox_* 3 tableを加えたため、table数を85から88へ更新した。
+- CIの結果は同じhead SHAで別途確認する。
+
 ## 2026-09-25 — AI02のhost／fixture段階: ModelProfileの登録・仕事への版固定・モデル切替（AI09の本人決定を記録）
 
 **本人決定（AI09、OWNER判断済み）:** 2026-09-25 01:26 ET、決定者は本人、根拠はチャットでの本人指示。Core offline仕事loopとGame最小loopの両方を、OS10の完了前にhost／fixture段階で先に進めてよい。ただし、emulator・実機・OS統合の合格には転用しない。AI09はdoneにした。AI02〜AI05のtask名には「host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま」と注記した。`dependsOn`のOS10は残した。AI06はGame側の作業者の担当範囲なので、本記録では変更していない。
@@ -1102,7 +1124,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
 | AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 進行中 | [記録](docs/ai-native-os-architecture.md) · [記録](android/core/src/main/java/dev/rock/core/ModelProfile.java) · [記録](android/core/src/main/java/dev/rock/core/ModelProfiles.java) · [記録](android/core/src/test/java/dev/rock/core/ModelProfilesTest.java) · [記録](android/core/src/test/resources/model-profiles-fixture.json) · [記録](tests/model-profile-fixture.test.mjs) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](project.md) |
 | AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
-| AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 進行中 | [記録](docs/ai-native-os-architecture.md) · [記録](android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java) · [記録](android/core/src/test/java/dev/rock/core/ExternalWriteOutboxTest.java) · [記録](tests/external-write-outbox.test.mjs) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](project.md) |
 | AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入（AI09: host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI08 | Jev／TypeSafe・Local Qwen・Cloud LLMをcode主導で統合するDecision Fabric全体詳細設計と機械可読安全契約を固定 | 完了 | [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) |
