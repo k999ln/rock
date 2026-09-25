@@ -1021,7 +1021,9 @@
         "sites/avocado-mini/worker/index.js",
         "sites/avocado-mini/db/schema.ts",
         "sites/avocado-mini/tests/preorder.test.mjs",
-        "docs/workstreams/05-web-pwa-sites.md"
+        "docs/workstreams/05-web-pwa-sites.md",
+        "package.json",
+        "tests/verify-coverage.test.mjs"
       ]
     },
     {
