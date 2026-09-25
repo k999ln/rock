@@ -1065,6 +1065,27 @@
       ]
     },
     {
+      "id": "WEB18",
+      "title": "公開avocadoMini Siteの画像原本を保護し、表示・導線・アクセシビリティ・SEOの不具合を解消する",
+      "status": "done",
+      "dependsOn": [
+        "WEB17"
+      ],
+      "evidence": [
+        "sites/avocado-mini/src/pages/index.astro",
+        "sites/avocado-mini/src/main.js",
+        "sites/avocado-mini/src/style.css",
+        "sites/avocado-mini/worker/index.js",
+        "sites/avocado-mini/tests/astro-build.test.mjs",
+        "sites/avocado-mini/tests/preorder.test.mjs",
+        "sites/avocado-mini/public/robots.txt",
+        "sites/avocado-mini/public/sitemap.xml",
+        "docs/evidence/avocado-mini-site-r5.json",
+        "docs/workstreams/05-web-pwa-sites.md",
+        "project.md"
+      ]
+    },
+    {
       "id": "BIZ01",
       "title": "無料配布の対象とOS従量課金の計量単位・単価・上限を確定する",
       "status": "in_progress",

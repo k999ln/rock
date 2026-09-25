@@ -1028,9 +1028,9 @@ export function validateBaseline(
       miniR5?.physicalTests === 0 &&
       miniR5?.manufacturingReleased === false &&
       miniR5?.runtimeIntegrated === false &&
-      miniR5?.publishedSiteUpdated === false &&
+      miniR5?.publishedSiteUpdated === true &&
       miniR5?.existingPixelQemuMaterialAndWalletEvidencePreserved === true,
-    'R5の単体自律・200mm・表示研究ゲートを維持し、資料保存を実機・公開Siteの受入へ換算しないでください',
+    'R5の単体自律・200mm・表示研究ゲートを維持し、公開Site更新を実機やruntime統合の受入へ換算しないでください',
   );
   requireValue(
     data.gameFirstLifeVision?.primaryExperience === 'game_console_then_life_enrichment' &&

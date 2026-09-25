@@ -156,7 +156,7 @@
       "calculationAndDecisionChecks": 14,
       "manufacturingReleased": false,
       "runtimeIntegrated": false,
-      "publishedSiteUpdated": false,
+      "publishedSiteUpdated": true,
       "priceStatus": "not_confirmed_for_R5_do_not_inherit_E3_prices",
       "maturity": "integrated_basic_design_with_open_engineering_decisions",
       "replacesMandatoryE3HubConfiguration": true,

@@ -23,7 +23,7 @@ void test('R5 rejects required hubs, oversize envelopes and unverified acceptanc
     ['physicalTests', 1],
     ['manufacturingReleased', true],
     ['runtimeIntegrated', true],
-    ['publishedSiteUpdated', true],
+    ['publishedSiteUpdated', false],
     ['existingPixelQemuMaterialAndWalletEvidencePreserved', false],
   ]) {
     const changed = structuredClone(baseline);
