@@ -33,22 +33,22 @@ test('Astro emits every public route and the Worker deployment contract', () => 
 
 test('Astro output preserves the approved product, Rocket Star, and preorder pages', () => {
   const home = built('client/index.html');
-  assert.match(home, /avocadoMini R5/);
-  for (const image of [
-    'avocado-mini-tower20-e3-kit.png',
-    'tower20-e3-highlight-sensor-v2.png',
-    'tower20-e3-highlight-200mm-v1.png',
-    'tower20-e3-highlight-footprint-v1.png',
-    'tower20-e3-highlight-edge-hub-v1.png',
-    'tower20-e3-front-cutout-v1.png',
-    'tower20-e3-side-cutout-v1.png',
-    'tower20-e3-rear-cutout-v1.png',
-    'tower20-e3-sensor-macro.png',
-  ]) assert.match(home, new RegExp(`/images/${image.replaceAll('.', '\\.')}`));
-  assert.match(home, /aria-label="ハイライトを選択"/);
+  assert.match(home, /avokado mini R5/);
+  assert.match(home, /\/images\/r5\/avocado-mini-r5-black-studio\.png/);
+  assert.doesNotMatch(home, /\/images\/avocado-mini-tower20-e3-kit\.png/);
+  assert.doesNotMatch(home, /\/images\/tower20-e3-highlight-/);
+  assert.match(home, /aria-label="Choose a highlight"/);
   assert.equal((home.match(/data-highlight=/g) || []).length, 4);
   assert.match(built('client/rocket-star/index.html'), /Complete product design/);
-  assert.match(built('client/preorder/index.html'), /予約・決済停止中/);
+  assert.match(built('client/preorder/index.html'), /RESERVATIONS AND CHECKOUT CLOSED/);
+});
+
+test('all public Astro pages are English-first', () => {
+  for (const route of routes) {
+    const html = built(route);
+    assert.match(html, /<html lang="en">/, `${route} must declare English`);
+    assert.doesNotMatch(html, /[ぁ-んァ-ヶ一-龠]/, `${route} must not contain Japanese interface copy`);
+  }
 });
 
 test('built pages use bundled assets instead of retired source paths', () => {

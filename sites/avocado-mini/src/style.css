@@ -985,7 +985,7 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
 
 /* R5 content uses the approved black/silver product-film system without redesigning it. */
 .r5-product-page .film-hero:before{
-  background:url('/images/avocado-mini-tower20-e3-kit.png') center 52% / cover no-repeat;
+  background:url('/images/r5/avocado-mini-r5-black-studio.png') center 52% / cover no-repeat;
   filter:blur(32px) brightness(.42);
   opacity:.72;
 }
@@ -999,14 +999,17 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
   mask-image:radial-gradient(ellipse 72% 72% at 50% 51%,#000 0 66%,#000d 78%,transparent 100%);
 }
 .r5-product-page .highlight-card img{object-position:center}
-.r5-product-page .turn-frame{
+.r5-product-page .turn-frame[data-view="side"],
+.r5-product-page .turn-frame[data-view="rear"]{display:none}
+.r5-product-page .turn-frame[data-view="front"]{
+  opacity:1!important;
   object-fit:contain;
   -webkit-mask-image:radial-gradient(ellipse 64% 58% at 50% 52%,#000 0 67%,#000e 78%,transparent 100%);
   mask-image:radial-gradient(ellipse 64% 58% at 50% 52%,#000 0 67%,#000e 78%,transparent 100%);
 }
 .r5-product-page .sensor-closeup img{object-position:center}
 @media(max-width:800px){
-  .r5-product-page .film-hero:before{background:url('/images/avocado-mini-tower20-e3-kit.png') center / cover no-repeat}
+  .r5-product-page .film-hero:before{background:url('/images/r5/avocado-mini-r5-black-studio.png') center / cover no-repeat}
   .r5-product-page .film-hero-device{inset:10% 3% 25%;width:94%;height:65%;object-fit:contain}
 }
 
@@ -1104,11 +1107,11 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
   max-width:340px;
 }
 .r5-product-page .film-disclaimer{
-  left:50%;
-  right:auto;
+  left:max(24px,calc((100% - 1120px)/2));
+  right:max(24px,calc((100% - 1120px)/2));
   bottom:20px;
-  width:min(1120px,calc(100% - 48px));
-  transform:translateX(-50%);
+  width:auto;
+  transform:none;
 }
 .r5-product-page .hero-statement{
   min-height:82svh;
@@ -1295,7 +1298,7 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
   }
   .r5-product-page .hero-bottom h1{font-size:55px}
   .r5-product-page .hero-bottom p{font-size:16px}
-  .r5-product-page .film-disclaimer{width:calc(100% - 44px)}
+  .r5-product-page .film-disclaimer{left:22px;right:22px;width:auto}
   .r5-product-page .hero-statement h2{font-size:18vw}
   .r5-product-page .highlights-head{margin-bottom:30px}
   .r5-product-page .highlight-card{
@@ -1311,3 +1314,12 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
 @media(prefers-reduced-motion:reduce){
   .r5-product-page .highlight-tabs button{transition:none}
 }
+/* Keep the shared subpage brand mark compact at every viewport. */
+.subpage .brand{display:inline-flex;align-items:center;gap:9px}
+.subpage .brand img{width:24px;height:24px;object-fit:contain;flex:0 0 auto}
+/* Keep the spaced product name legible across the film and story layouts. */
+.hero-product-lockup{min-width:0;flex:1}
+.hero-product-lockup h1{font-size:clamp(54px,7.2vw,112px);letter-spacing:-.055em;word-spacing:.18em;white-space:nowrap}
+.feature-beat[data-beat="intro"] h2,.price-panel h2{letter-spacing:-.055em;word-spacing:.18em;overflow-wrap:normal;white-space:nowrap}
+@media(max-width:800px){.hero-product-lockup h1{font-size:clamp(43px,7vw,68px)}}
+@media(max-width:520px){.hero-product-lockup h1{font-size:clamp(39px,9vw,52px)}.feature-beat[data-beat="intro"] h2{font-size:clamp(34px,8vw,39px)}.price-panel h2{font-size:clamp(36px,8.8vw,43px)}}
