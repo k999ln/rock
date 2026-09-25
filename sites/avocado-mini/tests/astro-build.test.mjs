@@ -101,7 +101,7 @@ test('reference-led product navigation and Pro highlights remain interactive', (
   assert.match(pro, /data-carousel/);
   assert.equal((pro.match(/class="pro-highlight-card"/g) || []).length, 4);
   for (const image of [
-    'avokado-pro-play-e3-v2.png',
+    'avokado-pro-play-e3-v3.png',
     'avocado-mini-tower20-e3-kit.png',
     'tower20-e3-highlight-sensor-v2.png',
     'tower20-e3-highlight-200mm-v1.png',
