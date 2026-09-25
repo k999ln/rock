@@ -4,7 +4,7 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
-- 2026-09-24、WEB17として公開avocadoMini SiteをAstro 7へ移行した。承認済みの黒いスタジオ・銀色R5・映像型スクロールとrocketstarのデザインは変えず、11 routeをAstroのfile-based pageへ移した。予約・決済WorkerとD1契約は分離したまま`dist/server`へ段階化する。Astro build、route/Worker artifact契約検査、予約API 6件、ローカル実ブラウザのトップ・Rocket Star・販売停止画面を確認した。
+- 2026-09-24、WEB17として公開avocadoMini SiteをAstro 7へ移行した。承認済みの黒いスタジオ・銀色R5・映像型スクロールとrocketstarのデザインは変えず、11 routeをAstroのfile-based pageへ移した。予約・決済WorkerとD1契約は分離したまま`dist/server`へ段階化する。Astro build、route/Worker artifact契約検査、予約API 6件、ローカル実ブラウザのトップ・Rocket Star・販売停止画面を確認した。GitHub `main` `19ea5e9`、Site source `7594bf6904b63e51f1da0930122d819e181e5f79`、公開v59、deployment `appgdep_6ab5cb5a9a908191bced146262803a2a`。[配備証拠](../evidence/avocado-mini-site-r5.json)を更新した。
 
 - 2026-09-24、WEB16のR5同期で意図せず白基調へ変更した商品Siteを、利用者が承認していたv56の黒いスタジオ・銀色製品・映像型スクロールへ復元した。R5の使用時200mm以内・1本自律・同型mini増設・販売停止は維持し、旧E3の4本＋別Hubと価格は戻さない。製品形状を変えず背景だけ黒いスタジオへ馴染ませた画像をトップと販売状況へ適用。予約API 6件、Vite build、R5 package、ローカルブラウザのトップ・中段・販売停止画面を確認した。GitHub `main` `c603119`、Site source `addf07e31f54ea34944e1f5d66b05de7931cf1b0`、公開v58、deployment `appgdep_6ab5c7ab2664819183b1753734f29d18`。[配備証拠](../evidence/avocado-mini-site-r5.json)を更新した。
 

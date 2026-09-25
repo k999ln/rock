@@ -6,6 +6,8 @@
 
 Astro build、公開routeとWorker artifactの契約検査、予約API 6件、ローカル実ブラウザでトップ・Rocket Star・販売停止画面を確認した。販売停止、R5の実機0件、価格・発売日・販売条件未確定、製造承認保留は変更しない。主担当Web / PWA / SitesのROCK、WEB17。
 
+GitHub `main`は`19ea5e9`、Site sourceは`7594bf6904b63e51f1da0930122d819e181e5f79`、公開v59、deployment `appgdep_6ab5cb5a9a908191bced146262803a2a`が成功した。公開URLは従来どおり`https://avocado-mini.kirin-999.chatgpt.site`。rootの`npm run verify`はAstro変更より前からあるNode統合試験群が終了せず中断したため、完了とは記録しない。
+
 ## 2026-09-24 — avocadoMini公開Siteを承認済みの黒・銀デザインへ復元
 
 WEB16のR5内容同期で商品Site全体を白基調へ変えてしまったため、利用者の指摘に従い、承認済みv56の黒いスタジオ、銀色製品、映像型スクロール、ヘッダー構成へ戻した。内容はR5の使用時200mm以内・1本自律・同型mini増設・別Hub不要、実機0件、価格・発売日・販売条件未確定を維持し、旧E3の商品構成・価格は戻していない。R5製品の形状を保持したまま背景だけを黒いスタジオへ馴染ませた画像を追加し、トップと販売状況画面で同じ黒・銀の世界観へ統一した。

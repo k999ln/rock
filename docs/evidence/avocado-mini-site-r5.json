@@ -1,31 +1,34 @@
 {
-  "recordedAt": "2026-09-24T21:00:38-04:00",
-  "taskId": "WEB16",
+  "recordedAt": "2026-09-24T21:16:31-04:00",
+  "taskId": "WEB17",
   "productBaseline": "avocadoMini R5",
+  "framework": "Astro 7.3.5",
   "github": {
     "repository": "https://github.com/k999ln/rock.git",
     "branch": "main",
-    "sourceCommit": "c603119",
+    "sourceCommit": "19ea5e9",
     "status": "PUSHED"
   },
   "site": {
     "projectId": "appgprj_6aaf6a375b908191b3b0c1845dc78291",
-    "sourceCommit": "addf07e31f54ea34944e1f5d66b05de7931cf1b0",
-    "versionNumber": 58,
-    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_019a0f195de88191b0fcc4b6edc5570a",
-    "deploymentId": "appgdep_6ab5c7ab2664819183b1753734f29d18",
+    "sourceCommit": "7594bf6904b63e51f1da0930122d819e181e5f79",
+    "versionNumber": 59,
+    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_c01b30dad4248191ab87a613242b3b91",
+    "deploymentId": "appgdep_6ab5cb5a9a908191bced146262803a2a",
     "deploymentStatus": "succeeded",
     "url": "https://avocado-mini.kirin-999.chatgpt.site",
-    "archiveSha256": "fe15cae4dd1ff883cec6b30a79a6cc5b40728bac2010165340e10afb062e3d75",
-    "uploadedContentHash": "sha256:7957c9e9d637ba6cea75eb41a23bac4495bb294a0ae53a4bb839b9e74ac3bd59",
-    "archiveFileCount": 129
+    "archiveSha256": "dfc6f3a155d4e0127330c0b942d8496f223d580dfdc04e12cb2b8132dd5ab13d",
+    "uploadedContentHash": "sha256:ea6b7d8d0cb6ee11d440d7efa5dc90320a108a000b3955aab39a3893559f6baf",
+    "archiveFileCount": 73
   },
   "checks": {
-    "preorderApi": "6/6 PASS",
-    "siteBuild": "PASS",
-    "repositoryVerify": "PASS",
+    "siteTests": "9/9 PASS — 3 Astro build contract + 6 preorder API",
+    "siteBuild": "PASS — 11 Astro routes plus Worker artifact",
+    "repositoryChecks": "PASS — project, repository map, R5 package",
+    "repositoryVerify": "INCOMPLETE — existing root Node integration suite did not terminate; no Astro failure was reported",
     "r5PackageIntegrity": "PASS",
     "localBrowserHome": "PASS",
+    "localBrowserRocketStar": "PASS",
     "localBrowserSalesClosed": "PASS",
     "approvedVisualBaseline": "PASS — restored black/silver v56 product-film layout",
     "productImageBackground": "PASS — seamless black studio"
