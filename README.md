@@ -1,32 +1,34 @@
 <div align="center">
 
-<img src="docs/brand/avokado/avokado-motion-v2.gif" alt="avokadoの製品コンセプト。銀色の細いavocadoMini R5が1本立ち、PLAY・MAKE・LIVEの文字に控えめな線の動きが入る" width="100%">
+<img src="docs/brand/avokado/avokado-mini-motion-v3.gif" alt="avokadoの製品コンセプト。銀色の細いavokado mini R5が1本立ち、PLAY・MAKE・LIVEの文字に控えめな線の動きが入る" width="100%">
 
-# avokado
+# avokado mini
+
+**製品名: avokado mini** · 事業／ブランド名: avokado。設計書の原本ファイル名と内部識別子には旧表記 `avocadoMini` が残ります。
 
 ### 遊ぶことから、つくることへ。考える時間を、つくる時間に。
 
 ゲームを入口に、生活全体をより豊かにするため、制作・学習・日常の行動をつなぐ製品構想。<br>
-小さな専用端末 **avocadoMini R5** と、仕事・AI・作品・権限を支える現行OS設計 **RockstarOS v1.0** を設計しています。
+小さな専用端末 **avokado mini R5** と、仕事・AI・作品・権限を支える現行OS設計 **RockstarOS v1.0** を設計しています。
 両段を回収・再使用する小型衛星輸送ロケット **rocketstar** は、別の現行設計系列です。
 
-[製品体験](#製品体験) · [機能の詳細](#機能の詳細) · [現在地](#現在地) · [設計書ライブラリ](#設計書ライブラリ) · [静止画](docs/brand/avokado/avokado-r5-editorial-hero.png)
+[製品体験](#製品体験) · [機能の詳細](#機能の詳細) · [現在地](#現在地) · [設計書ライブラリ](#設計書ライブラリ) · [静止画](docs/brand/avokado/avokado-mini-r5-editorial-hero.png)
 
 </div>
 
 > **画像の扱い** — 冒頭のR5ビジュアルは設計上の外観に基づくコンセプト画像です。GIFの線はブランド表現で、実機写真や空間表示の実証映像ではありません。
 
-**設計書をすぐ開く:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [全設計書の一覧](#設計書ライブラリ)
+**設計書をすぐ開く:** [avokado mini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [全設計書の一覧](#設計書ライブラリ)
 
 ## avokado が目指す事業
 
 avokadoは、利用者が自分の体験やAIチームを選び、遊び、作品をつくり、必要な仕事や生活の手順を進められる製品群を目指します。**端末を売るだけ、AIの回答を見せるだけで終わらせず、選択・実行・保存・訂正・再開までを一つの体験にする**ことが事業上の狙いです。
 
-![avocadoMini R5、RockstarOS v1.0、SkyとZemaの設計上の関係](docs/brand/avokado/avokado-system-map.svg)
+![avokado mini R5、RockstarOS v1.0、SkyとZemaの設計上の関係](docs/brand/avokado/avokado-system-map.svg)
 
 | 対象 | 提供したい価値 | 製品・仕組み |
 | --- | --- | --- |
-| 遊ぶ人・家族 | 身体、手、日本語音声など自分に合う方法で遊び、途中から再開する | avocadoMiniのゲーム体験とRockstarOS |
+| 遊ぶ人・家族 | 身体、手、日本語音声など自分に合う方法で遊び、途中から再開する | avokado miniのゲーム体験とRockstarOS |
 | つくる人・学ぶ人 | ルールや作品を変え、条件・出所・版を残して比べる | ゲーム制作、学習、Material Invention、Asset Registry |
 | 仕事を進める人 | 道具を探し、AIチームへ依頼し、結果・費用・失敗を見失わない | Sky、Zema、Tool、Wallet |
 | Tool開発者・事業者 | 版、権限、実行場所、成果を明示して機能を届ける | Sky catalog、SDK、MCP／Provider接続 |
@@ -50,7 +52,7 @@ avokadoは、利用者が自分の体験やAIチームを選び、遊び、作�
 
 これは**開発する体験の順番**です。R5の実機でこの3段階が動作済みという意味ではありません。実物の粒子を放出したり、実物の化合物を作ったりする製品でもありません。
 
-### avocadoMini R5 — 現行の製品要求
+### avokado mini R5 — 現行の製品要求
 
 **現在の設計基準はR5です。** 1本で基本機能を担う構成を起点にします。
 
@@ -137,7 +139,7 @@ Walletは、費用の見積・予約・確定、署名されたEarning Receipt�
 
 | 系列 | 確認できたこと | 未完了のこと |
 | --- | --- | --- |
-| avocadoMini R5 | 統合基本設計、51ページ、設計検討図8点、計算チェック14件 | 実機0件。裸眼全空間表示、精密3D入力、最終収納・熱・電源、製造図・安全受入 |
+| avokado mini R5 | 統合基本設計、51ページ、設計検討図8点、計算チェック14件 | 実機0件。裸眼全空間表示、精密3D入力、最終収納・熱・電源、製造図・安全受入 |
 | RockstarOS v1.0 | 現行のOS・システムソフト設計、41ページ・32章、5配備profile・13論理service・60要求。付録の構造・DDL検査43/43 | 新OS image、R5用Device Profileとadapter、実機・機上・現地運用の受入。文書検査を動作試験としない |
 | rocketstar R1.0 | 現行のロケット統合設計、44ページ・35章、60要求・18全体接続 | 製造図面、実機性能、飛行認定。比較計算値を確定性能としない |
 | Web / Sky / Zema | 画面、catalog、仕事・承認・履歴、Tool基盤のsource | 配備先ごとの最新版readback、外部Provider、本番商流の受入 |
@@ -155,11 +157,11 @@ R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合�
 
 ## 設計書ライブラリ
 
-**現行の端末設計はavocadoMini R5、OS・システムソフト設計はRockstarOS v1.0、ロケット設計はrocketstar R1.0です。** それぞれの原本と付録を以下から直接開けます。設計書の存在は、実機動作、製造承認、飛行認定を示しません。
+**現行の端末設計はavokado mini R5、OS・システムソフト設計はRockstarOS v1.0、ロケット設計はrocketstar R1.0です。** それぞれの原本と付録を以下から直接開けます。設計書の存在は、実機動作、製造承認、飛行認定を示しません。
 
-[端末 R5](#avocadomini-r5--原本と検証資料) · [OS v1.0](#rockstaros-v10--現行のos設計書) · [ロケット R1.0](#rocketstar-r10--現行のロケット設計書) · [領域別の設計資料](#rockstarosサービス--全設計領域) · [旧版](#旧版別研究profile)
+[端末 R5](#avokado-mini-r5--原本と検証資料) · [OS v1.0](#rockstaros-v10--現行のos設計書) · [ロケット R1.0](#rocketstar-r10--現行のロケット設計書) · [領域別の設計資料](#rockstarosサービス--全設計領域) · [旧版](#旧版別研究profile)
 
-### avocadoMini R5 — 原本と検証資料
+### avokado mini R5 — 原本と検証資料
 
 | 読みたいもの | ファイル |
 | --- | --- |
@@ -197,7 +199,7 @@ R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合�
 | 指令・保存・接続の契約 | [7型schemaと合成例・5表DDL](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md) / [指令の状態図](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/command_lifecycle.svg) / [容量計算の仮定](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/capacity_example.json) |
 | 検証と実装への対応 | [43/43の構造・DDL検査記録](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/evidence/contract_checks.json) / [原本・付録の完全性](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/manifest.json) / [既存実装との対応](docs/rockstaros-complete-design.md) / [付録の読み方](docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md) |
 
-**R5との関係:** 原本の `EDGE-HUB-v1` と全体配置図には旧avokado E3の「4本＋別Hub」が残っています。これは現行avocadoMini R5の外形・台数・Hub要件ではありません。R5の**1本で基本機能が動き、別Edge Hubを必須にしない**要求を優先し、R5用Device Profileとadapterの統合は未完了として扱います。43/43は文書・契約の検査で、新OS imageの完成、実機受入、飛行・居住設備の運用認定を示しません。
+**R5との関係:** 原本の `EDGE-HUB-v1` と全体配置図には旧avokado E3の「4本＋別Hub」が残っています。これは現行avokado mini R5の外形・台数・Hub要件ではありません。R5の**1本で基本機能が動き、別Edge Hubを必須にしない**要求を優先し、R5用Device Profileとadapterの統合は未完了として扱います。43/43は文書・契約の検査で、新OS imageの完成、実機受入、飛行・居住設備の運用認定を示しません。
 
 ### rocketstar R1.0 — 現行のロケット設計書
 
@@ -218,7 +220,7 @@ R5は**製造承認保留**、Pixelの初回flash gateは**4項目とも未合�
 
 ### RockstarOS・サービス — 全設計領域
 
-[全設計ポータル](docs/rockstaros-design-portal.md)の17領域と[機械可読の設計書台帳](data/design-document-index.json)に登録された文書を、ここから直接開けます。OS完全版原本には旧E3の端末配置が含まれるため、**avocadoMiniの外形・台数・Hub要件はR5を優先**します。
+[全設計ポータル](docs/rockstaros-design-portal.md)の17領域と[機械可読の設計書台帳](data/design-document-index.json)に登録された文書を、ここから直接開けます。OS完全版原本には旧E3の端末配置が含まれるため、**avokado miniの外形・台数・Hub要件はR5を優先**します。
 
 | 領域 | 設計書・契約・記録 |
 | --- | --- |
@@ -292,7 +294,7 @@ avocadoMini公開SiteはAstroで生成し、予約・決済APIはCloudflare Work
     python3 scripts/verify-avocado-r5-package.py
     python3 docs/avocado-mini-r5/package/verify_calculations.py
 
-[Linux/QEMU](docs/workstreams/06-native-qemu-release.md) / [Android/Pixel](docs/workstreams/07-android-device-local-ai.md) / [avocadoMini](docs/workstreams/11-material-invention-avocado-mini.md)
+[Linux/QEMU](docs/workstreams/06-native-qemu-release.md) / [Android/Pixel](docs/workstreams/07-android-device-local-ai.md) / [avokado mini](docs/workstreams/11-material-invention-avocado-mini.md)
 
 ## 安全・権利・画像の注記
 

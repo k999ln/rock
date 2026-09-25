@@ -1,0 +1,41 @@
+{
+  "recordedAt": "2026-09-24",
+  "productDisplayName": "avokado mini",
+  "brandDisplayName": "avokado",
+  "designBaseline": "R5",
+  "scope": [
+    "README product naming and hero",
+    "GitHub product site source and build",
+    "public Astro site naming and R5 imagery"
+  ],
+  "historicalIdentifiersPreserved": [
+    "avocadoMini PDF and Word filenames",
+    "avocadoMini-r5 preorder baseline identifier"
+  ],
+  "publicSite": {
+    "projectId": "appgprj_6aaf6a375b908191b3b0c1845dc78291",
+    "sourceCommit": "326e375ee20bc2a441a59278e248567d8a2abc56",
+    "versionNumber": 62,
+    "deploymentId": "appgdep_6ab5d1b95ed48191a2931ef2eee5c583",
+    "deploymentStatus": "succeeded",
+    "url": "https://avocado-mini.kirin-999.chatgpt.site",
+    "tests": "Astro 11 routes built, 9/9 tests passed"
+  },
+  "repositoryChecks": {
+    "readmeReferences": 204,
+    "missingReadmeReferences": 0,
+    "r5Gif": {
+      "frames": 24,
+      "durationSeconds": 4,
+      "width": 960,
+      "height": 540
+    },
+    "viteSiteBuild": "passed",
+    "npmVerify": "passed before final project note"
+  },
+  "limits": [
+    "R5 image is a concept rendering, not a hardware photo",
+    "R5 hardware tests remain zero",
+    "price, sale, and manufacturing approval remain unconfirmed"
+  ]
+}

@@ -5,12 +5,12 @@
   <rect x="1" y="1" width="1198" height="348" rx="17" fill="none" stroke="#dcd8d2" stroke-width="2"/>
   <g font-family="Arial, Helvetica, sans-serif" fill="#282b2a">
     <text x="48" y="62" font-size="17" font-weight="700" letter-spacing="5">THE SYSTEM</text>
-    <text x="1152" y="61" text-anchor="end" font-size="13" letter-spacing="2" fill="#747773">AVOKADO / R5</text>
+    <text x="1152" y="61" text-anchor="end" font-size="13" letter-spacing="2" fill="#747773">AVOKADO MINI / R5</text>
     <line x1="48" y1="82" x2="1152" y2="82" stroke="#c9c9c2" stroke-width="1"/>
     <line x1="416" y1="112" x2="416" y2="265" stroke="#c9c9c2" stroke-width="1"/>
     <line x1="784" y1="112" x2="784" y2="265" stroke="#c9c9c2" stroke-width="1"/>
     <text x="48" y="143" font-size="13" font-weight="700" letter-spacing="3" fill="#587c72">01 / DEVICE</text>
-    <text x="48" y="195" font-size="36" font-weight="700">avocadoMini</text>
+    <text x="48" y="195" font-size="36" font-weight="700">avokado mini</text>
     <text x="48" y="231" font-size="18" fill="#5f6561">R5 · one mini</text>
     <text x="446" y="143" font-size="13" font-weight="700" letter-spacing="3" fill="#587c72">02 / FOUNDATION</text>
     <text x="446" y="195" font-size="36" font-weight="700">RockstarOS</text>
