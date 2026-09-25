@@ -16,7 +16,7 @@ void test('database status inventories every boundary and keeps production readb
     project.tasks.map(({ id, status }) => [id, status]),
   );
   assert.equal(report.summary.boundaryCount, 6);
-  assert.equal(report.summary.tableCount, 88);
+  assert.equal(report.summary.tableCount, 92);
   assert.equal(report.summary.sourceVerifiedCount, 6);
   assert.equal(report.summary.currentProductionReadbackCount, 0);
   assert.equal(taskStatus.SKY07, 'in_progress');
