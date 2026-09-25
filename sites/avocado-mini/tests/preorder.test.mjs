@@ -75,6 +75,12 @@ function webhookRequest(event) {
   });
 }
 
+test('legacy RockstarOS path redirects at the HTTP layer', async () => {
+  const response = await worker.fetch(new Request(`${origin}/rockstaros/`), env(database()));
+  assert.equal(response.status, 308);
+  assert.equal(response.headers.get('location'), `${origin}/`);
+});
+
 test('sales remain closed until all payment and seller terms exist', async () => {
   const db = database();
   const response = await worker.fetch(checkoutRequest(), env(db, { PREORDER_SHIPPING_DATE: '' }));

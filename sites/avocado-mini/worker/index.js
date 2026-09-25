@@ -267,6 +267,9 @@ export default {
   async fetch(request, env) {
     const path = new URL(request.url).pathname;
     try {
+      if (path === '/rockstaros' || path === '/rockstaros/') {
+        return Response.redirect(new URL('/', request.url), 308);
+      }
       if (path === '/api/preorders/offer' && request.method === 'GET') {
         const { ready, products: offeredProducts, terms } = offer(env);
         return json({ ready, products: offeredProducts, terms });

@@ -51,15 +51,10 @@ const storySticky = document.querySelector('.story-sticky');
 const storyWord = document.querySelector('#story-word');
 const storyRail = [...document.querySelectorAll('.story-rail span')];
 const beats = [...document.querySelectorAll('.feature-beat')];
-const storyFocusWash = document.createElement('span');
-storyFocusWash.className = 'story-focus-wash';
-storyFocusWash.setAttribute('aria-hidden', 'true');
-storySticky?.append(storyFocusWash);
 const product = document.querySelector('#motion-product');
-const frames = [...document.querySelectorAll('.turn-frame')];
 const sensorCloseup = document.querySelector('#sensor-closeup');
 const sensorGaze = document.querySelector('#sensor-gaze');
-const angle = document.querySelector('#angle');
+const storyStep = document.querySelector('#story-step');
 const chapter = document.querySelector('#chapter');
 const progressBar = document.querySelector('#progress');
 const pricePanel = document.querySelector('#price-panel');
@@ -71,14 +66,13 @@ const highlightTabs = [...document.querySelectorAll('[data-highlight]')];
 const priceStart = 0.91;
 const storyWords = ['R5', 'INPUT', 'SIZE', 'SCALE', 'PLAY', 'STATUS'];
 const storyColors = ['#09090a', '#111214', '#0d0e10', '#111214', '#0d0e10', '#09090a'];
-let lastStoryChapter = -1;
 const motionKeys = [
-  { at: 0, x: 0, y: 1, scale: 0.96, tilt: -2, yaw: 0 },
-  { at: 0.18, x: 2, y: 0, scale: 1.02, tilt: 1, yaw: 32 },
-  { at: 0.36, x: -2, y: 1, scale: 1.01, tilt: -2, yaw: 70 },
-  { at: 0.54, x: 2, y: 0, scale: 1.04, tilt: 2, yaw: 110 },
-  { at: 0.72, x: -2, y: 1, scale: 1.01, tilt: -1, yaw: 150 },
-  { at: priceStart, x: 0, y: 0, scale: 0.98, tilt: 0, yaw: 180 },
+  { at: 0, x: 0, y: 1, scale: 0.96, tilt: -2 },
+  { at: 0.18, x: 2, y: 0, scale: 1.02, tilt: 1 },
+  { at: 0.36, x: -2, y: 1, scale: 1.01, tilt: -2 },
+  { at: 0.54, x: 2, y: 0, scale: 1.04, tilt: 2 },
+  { at: 0.72, x: -2, y: 1, scale: 1.01, tilt: -1 },
+  { at: priceStart, x: 0, y: 0, scale: 0.98, tilt: 0 },
 ];
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -96,7 +90,7 @@ function motionAt(progress) {
   const first = motionKeys[index];
   const next = motionKeys[index + 1];
   const amount = smooth(clamp((progress - first.at) / (next.at - first.at), 0, 1));
-  return Object.fromEntries(['x', 'y', 'scale', 'tilt', 'yaw'].map((key) => [key, mix(first[key], next[key], amount)]));
+  return Object.fromEntries(['x', 'y', 'scale', 'tilt'].map((key) => [key, mix(first[key], next[key], amount)]));
 }
 
 function updateGalleryControls() {
@@ -112,7 +106,7 @@ function updateGalleryControls() {
   highlightTabs.forEach((tab, index) => {
     const active = index === activeIndex;
     tab.classList.toggle('is-active', active);
-    tab.setAttribute('aria-selected', String(active));
+    tab.setAttribute('aria-pressed', String(active));
   });
 }
 
@@ -128,39 +122,30 @@ highlightTabs.forEach((tab, index) => tab.addEventListener('click', () => {
   highlightTabs.forEach((item, itemIndex) => {
     const active = itemIndex === index;
     item.classList.toggle('is-active', active);
-    item.setAttribute('aria-selected', String(active));
+    item.setAttribute('aria-pressed', String(active));
   });
   if (card && gallery) gallery.scrollTo({
     left: Math.max(0, card.offsetLeft - (gallery.clientWidth - card.offsetWidth) / 2),
     behavior: reducedMotion.matches ? 'instant' : 'smooth',
   });
 }));
+document.querySelector('.highlight-tabs')?.addEventListener('keydown', (event) => {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+  const current = Math.max(0, highlightTabs.indexOf(document.activeElement));
+  const next = event.key === 'Home' ? 0
+    : event.key === 'End' ? highlightTabs.length - 1
+      : (current + (event.key === 'ArrowRight' ? 1 : -1) + highlightTabs.length) % highlightTabs.length;
+  highlightTabs[next]?.focus();
+  highlightTabs[next]?.click();
+});
 window.addEventListener('resize', updateGalleryControls);
 updateGalleryControls();
-
-function showView(yaw) {
-  const frontToSide = smooth(clamp((yaw - 30) / 30, 0, 1));
-  const sideToRear = smooth(clamp((yaw - 120) / 30, 0, 1));
-  const opacities = [1 - frontToSide, frontToSide * (1 - sideToRear), sideToRear];
-  frames.forEach((frame, index) => { frame.style.opacity = opacities[index] ?? 0; });
-}
 
 function updateStory(progress) {
   const priceVisible = progress >= priceStart;
   const phase = clamp(progress / 0.18, 0, 4);
   const active = priceVisible ? 5 : Math.min(4, Math.round(phase));
-  if (active !== lastStoryChapter) {
-    if (lastStoryChapter >= 0 && !reducedMotion.matches) {
-      storyFocusWash.getAnimations().forEach((animation) => animation.cancel());
-      storyFocusWash.animate([
-        { opacity: 0, backdropFilter: 'blur(0px)', webkitBackdropFilter: 'blur(0px)' },
-        { opacity: 0.58, backdropFilter: 'blur(8px)', webkitBackdropFilter: 'blur(8px)', offset: 0.24 },
-        { opacity: 0.22, backdropFilter: 'blur(3px)', webkitBackdropFilter: 'blur(3px)', offset: 0.62 },
-        { opacity: 0, backdropFilter: 'blur(0px)', webkitBackdropFilter: 'blur(0px)' },
-      ], { duration: 780, easing: 'cubic-bezier(.16,1,.3,1)' });
-    }
-    lastStoryChapter = active;
-  }
   const first = Math.floor(phase);
   storySticky.style.setProperty('--story-bg', priceVisible ? storyColors[5] : mixColor(storyColors[first], storyColors[Math.min(5, first + 1)], smooth(phase - first)));
   storyWord.textContent = storyWords[active];
@@ -173,6 +158,7 @@ function updateStory(progress) {
     beat.setAttribute('aria-hidden', String(!visible));
   });
   chapter.textContent = priceVisible ? 'STATUS / R5' : active === 0 ? 'INTRO / R5' : `${String(active).padStart(2, '0')} / R5`;
+  storyStep.textContent = `${String(active + 1).padStart(2, '0')} / 06`;
   pricePanel.classList.toggle('visible', priceVisible);
   pricePanel.setAttribute('aria-hidden', String(!priceVisible));
   preorderLink.tabIndex = priceVisible ? 0 : -1;
@@ -183,8 +169,6 @@ function updateProgress() {
   const progress = clamp(-story.getBoundingClientRect().top / distance, 0, 1);
   const motion = motionAt(Math.min(progress, priceStart));
   const mobile = window.innerWidth < 800;
-  const yaw = reducedMotion.matches ? 0 : motion.yaw;
-  showView(yaw);
 
   const x = motion.x * (mobile ? 0.28 : 1);
   const priceBlend = smooth(clamp((progress - 0.88) / 0.04, 0, 1));
@@ -203,7 +187,7 @@ function updateProgress() {
 
   // The light follows the rendered sensor positions and only blooms while the lenses face the viewer.
   const firstTurn = smooth(clamp((progress - 0.055) / 0.065, 0, 1)) * (1 - smooth(clamp((progress - 0.28) / 0.08, 0, 1)));
-  const frontFacing = smooth(clamp(1 - yaw / 72, 0, 1));
+  const frontFacing = smooth(clamp(1 - progress / 0.4, 0, 1));
   const gaze = reducedMotion.matches ? 0 : frontFacing * firstTurn;
   product.style.setProperty('--front-facing', frontFacing.toFixed(3));
   const productBounds = product.getBoundingClientRect();
@@ -212,8 +196,7 @@ function updateProgress() {
   sensorGaze.style.setProperty('--gaze-upper-y', `${productBounds.top + productBounds.height * 0.12}px`);
   sensorGaze.style.setProperty('--gaze-lower-y', `${productBounds.top + productBounds.height * 0.71}px`);
 
-  progressBar.style.width = `${Math.round(motion.yaw / 180 * 100)}%`;
-  angle.textContent = reducedMotion.matches ? 'STATIC VIEW' : `${Math.round(motion.yaw)}°`;
+  progressBar.style.width = `${Math.round(progress * 100)}%`;
   updateStory(progress);
 }
 

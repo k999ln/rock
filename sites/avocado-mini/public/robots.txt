@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://avocado-mini.kirin-999.chatgpt.site/sitemap.xml
