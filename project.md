@@ -1,5 +1,9 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-24 — mainの進捗件数とデータベース状態を再同期
+
+avokado README画像のPR #35をmainへ統合する間に、公開SiteのR5配備記録がWEB16を完了へ更新した。mainのCIで`database:check`が101 done・31 in progressと保存済み状態ファイルの100 done・32 in progressの差を検出したため、`npm run database:status`でJSONとMarkdownを再生成した。`npm run verify`はexit 0（ローカルAPI 149項目、Web asset 84参照・欠落0）。製品画像・機能・データベースschemaは変更しない。
+
 ## 2026-09-24 — avokado READMEの製品画像を再制作
 
 主担当Git / CI / ReleaseのROCK、既存DOC04。利用者の画像への指摘を受け、R5-M01の銀色細身円筒・黒いカメラ帯・低い円形台座を基準に、製品コンセプト画像を新しい明るいスタジオ表現へ再制作した。同じ画像を使う控えめな4秒GIFを冒頭へ配置し、旧い製品カットとの重複を解消した。構成図も同じ色調とタイポグラフィへ変更し、R5端末、RockstarOS、Sky/Zemaの設計上の関係だけを示す。実機写真、空間表示、OS統合完了を示す画像にはしない。
