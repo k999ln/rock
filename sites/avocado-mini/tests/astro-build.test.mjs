@@ -101,7 +101,7 @@ test('reference-led product navigation and Pro highlights remain interactive', (
   assert.match(pro, /data-carousel/);
   assert.equal((pro.match(/class="pro-highlight-card"/g) || []).length, 4);
   for (const image of [
-    'motion-tower-satin-four-point.png',
+    'avokado-pro-play-e3-v2.png',
     'avocado-mini-tower20-e3-kit.png',
     'tower20-e3-highlight-sensor-v2.png',
     'tower20-e3-highlight-200mm-v1.png',
@@ -110,6 +110,7 @@ test('reference-led product navigation and Pro highlights remain interactive', (
   }
   assert.equal((pro.match(/tower20-e3-highlight-edge-hub-v1\.png/g) || []).length, 1);
   assert.equal((pro.match(/avocado-mini-tower20-e3-kit\.png/g) || []).length, 1);
+  assert.doesNotMatch(pro, /motion-tower-satin-four-point\.png/);
   assert.match(pro, /avocado-mini-tower20-e3-kit-transparent-v2\.png/);
   assert.match(pro, /id="pro-os"/);
   const enhancement = built('client/site-enhancements.js');
