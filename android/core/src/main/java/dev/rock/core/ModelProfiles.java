@@ -168,6 +168,7 @@ public final class ModelProfiles {
             if (profileId.equals(p.get("profile_id"))) throw new IllegalStateException("MODEL_PROFILE_ACTIVE");
             if (!db.query("SELECT 1 FROM model_pins m JOIN works w ON w.id=m.work_id WHERE m.profile_id=? AND w.state IN('active','review') LIMIT 1", profileId).isEmpty())
                 throw new IllegalStateException("MODEL_PROFILE_PINNED");
+            if ("REVOKED".equals(state)) return null;            // revocation stays visible; never downgraded
             if (!"RETIRED".equals(state)) {
                 db.execute("UPDATE model_profiles SET state='RETIRED' WHERE profile_id=?", profileId);
                 if (profileId.equals(p.get("previous_id"))) db.execute("UPDATE model_pointer SET previous_id=NULL WHERE id=1");
@@ -258,7 +259,11 @@ public final class ModelProfiles {
     private boolean usable(String profileId, String pinnedDigest) {
         List<Map<String,String>> rows = db.query("SELECT state,digest FROM model_profiles WHERE profile_id=?", profileId);
         if (rows.size() != 1 || !"READY".equals(rows.get(0).get("state"))) return false;
-        return pinnedDigest.equals(rows.get(0).get("digest")) && pinnedDigest.equals(verified(profileId).digest());
+        try {
+            return pinnedDigest.equals(rows.get(0).get("digest")) && pinnedDigest.equals(verified(profileId).digest());
+        } catch (IllegalArgumentException | IllegalStateException corrupt) {
+            return false;                                     // a tampered row stops the work instead of blocking the queue
+        }
     }
     private void stop(Engine.Ticket ticket, String reason, String profileId) {
         engine.hold(ticket, reason);

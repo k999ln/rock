@@ -16,7 +16,7 @@
 - 設計書・contractは編集していない。
 
 検証: host（box）の結果は次のとおり。
-- `android/core`のJVM試験（`javac --release 11`とJUnit 4.13.2による代替実行）: 43/43。内訳は既存37件と`ModelProfilesTest` 6件。box にはGradle と Android SDK がないため`gradle :core:test`そのものは実行できず、結果はCIの android.yml で確認する。
+- `android/core`のJVM試験（`javac --release 11`とJUnit 4.13.2による代替実行）: 44/44。内訳は既存37件と`ModelProfilesTest` 7件。box にはGradle と Android SDK がないため`gradle :core:test`そのものは実行できず、結果はCIの android.yml で確認する。
 - `ModelProfilesTest`の変異確認: 別profileでの結果報告を受け入れるよう改変した場合と、再提出で固定profileが上書きされるよう改変した場合に、どちらも失敗することを確認した。
 - `npm run verify`（Node v22.23.3）: exit 0。root Node試験368/368（`tests/model-profile-fixture.test.mjs`でfixtureとcontractの一致を検査）、Fashion 19/19、Site 13/13、Web asset 83参照・欠落0。
 - `os:check`・`android:architecture:check`・`llm:architecture:check`・`device-support:check`: いずれも合格。

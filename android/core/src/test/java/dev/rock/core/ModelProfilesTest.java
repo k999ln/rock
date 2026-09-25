@@ -166,6 +166,21 @@ public class ModelProfilesTest {
         models.revoke(a.id());
         assertFalse(models.finish(t, a.id(), "passed", run(t), "boot-1", 20));
         assertEquals("needs_review", engine.runs(work).get(0).get("state"));
+        assertThrows(IllegalStateException.class, () -> models.retire(a.id()));   // stopped work is still unfinished
+    }
+
+    @Test public void tamperedPinnedProfileStopsOnlyThatWorkAndRevocationIsNotDowngraded() {
+        ready(a); switchTo(a);
+        String first = models.submit("first", "原稿1", false, true);
+        ready(b); switchTo(b);
+        String second = models.submit("second", "原稿2", false, true);
+        db.execute("UPDATE model_profiles SET quality_result='edited' WHERE profile_id=?", a.id());
+        ModelProfiles.PinnedTicket t = models.claim("boot-1", 10, true);   // first is stopped, second still runs
+        assertEquals(second, t.ticket.workId);
+        assertEquals("MODEL_PROFILE_UNAVAILABLE", engine.runs(first).get(0).get("error"));
+        models.revoke(a.id()); engine.cancel(first);
+        models.retire(a.id());
+        assertEquals("REVOKED", models.profileState(a.id()));
     }
 
     @Test public void unpinnedLegacyWorkIsStoppedInsteadOfRunningUnderTheActiveProfile() {
