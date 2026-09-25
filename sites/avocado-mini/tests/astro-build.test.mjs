@@ -34,7 +34,7 @@ test('Astro emits every public route and the Worker deployment contract', () => 
 test('Astro output preserves the approved product, Rocket Star, and preorder pages', () => {
   const home = built('client/index.html');
   assert.match(home, /avocadoMini Tower20 E3/);
-  assert.match(home, /Intelligence,<br>built into space\./);
+  assert.match(home, /Start with one\.<br>Expand the space\./);
   assert.match(home, /\/images\/avocado-mini-tower20-e3-kit\.png/);
   assert.equal((home.match(/\/images\/tower20-e3-highlight-/g) || []).length, 4);
   assert.match(home, /One camera<br>in each direction\./);
@@ -62,14 +62,18 @@ test('home fragment navigation, carousel controls, and metadata remain valid', (
   assert.equal(existsSync(new URL('client/sitemap.xml', outputRoot)), true);
 });
 
-test('the 180-degree story opens and closes with the requested prices and transparent product art', () => {
+test('the 180-degree story opens with standalone Mini pricing and closes with Mini expansion plus separate Pro pricing', () => {
   const home = built('client/index.html');
-  assert.match(home, /0° \/ SINGLE TOWER/);
+  assert.match(home, /0° \/ SINGLE MINI/);
   assert.match(home, /¥160,000/);
-  assert.match(home, /180° \/ FOUR-TOWER SYSTEM/);
+  assert.match(home, /180° \/ FOUR-MINI SYSTEM/);
   assert.match(home, /¥410,000/);
   assert.match(home, /data-price-usd="US\$1,050"/);
   assert.match(home, /data-price-usd="US\$2,700"/);
+  assert.match(home, /avokadoPro/);
+  assert.match(home, /From ¥880,000/);
+  assert.match(home, /data-price-usd="From US\$5,800"/);
+  assert.match(home, /Works on its own\. Add avocadoMini to expand spatial input, range, and play\./);
   assert.equal((home.match(/aria-label="Display currency"/g) || []).length, 2);
   assert.match(home, /avocado-mini-tower20-e3-kit-transparent-v2\.png/);
   for (const view of ['front', 'side', 'rear']) {
