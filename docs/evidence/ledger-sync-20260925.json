@@ -20,6 +20,18 @@
       "RQ20 expected values",
       "single priority sequence",
       "whether AI fixture stages may run before OS10/AI03/AI05"
+    ],
+    "stillPendingAsOf": "2026-09-25T00:49:00-04:00",
+    "laterDecisions": [
+      {
+        "item": "whether AI fixture stages may run before OS10/AI03/AI05",
+        "task": "AI09",
+        "decidedBy": "owner",
+        "decidedAt": "2026-09-25T01:26:00-04:00",
+        "basis": "Owner instruction in the chat session, relayed to the repository bot.",
+        "decision": "Host/fixture stages of the Core offline work loop and the Game minimal loop may proceed before OS10; they are not emulator, device or OS-integration acceptance.",
+        "taskStatusChangedIn": "PR #42"
+      }
     ]
   },
   "mainCommitsWithoutPullRequest": [
