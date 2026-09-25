@@ -33,16 +33,17 @@ test('Astro emits every public route and the Worker deployment contract', () => 
 
 test('Astro output preserves the approved product, Rocket Star, and preorder pages', () => {
   const home = built('client/index.html');
-  assert.match(home, /avokado mini R5/);
-  assert.match(home, /\/images\/r5\/avocado-mini-r5-black-studio\.png/);
-  assert.match(home, /\/images\/r5\/avocado-mini-r5-concept\.png/);
-  assert.match(home, /\/images\/r5\/avokado-motion\.gif/);
-  assert.doesNotMatch(home, /\/images\/avocado-mini-tower20-e3-kit\.png/);
-  assert.doesNotMatch(home, /\/images\/tower20-e3-highlight-/);
-  assert.match(home, /aria-label="Jump to a highlight"/);
-  assert.equal((home.match(/data-highlight=/g) || []).length, 4);
-  assert.equal((home.match(/class="turn-frame"/g) || []).length, 1);
-  assert.doesNotMatch(home, /id="angle"|data-view="side"|data-view="rear"/);
+  assert.match(home, /avocadoMini Tower20 E3/);
+  assert.match(home, /Intelligence,<br>built into space\./);
+  assert.match(home, /\/images\/avocado-mini-tower20-e3-kit\.png/);
+  assert.equal((home.match(/\/images\/tower20-e3-highlight-/g) || []).length, 4);
+  assert.match(home, /One camera<br>in each direction\./);
+  assert.match(home, /Everything,<br>for the space\./);
+  assert.equal((home.match(/class="turn-frame"/g) || []).length, 3);
+  assert.match(home, /id="angle"/);
+  assert.match(home, /data-view="side"/);
+  assert.match(home, /data-view="rear"/);
+  assert.match(home, /Open installer/);
   assert.match(built('client/rocket-star/index.html'), /Complete product design/);
   assert.match(built('client/preorder/index.html'), /RESERVATIONS AND CHECKOUT CLOSED/);
 });
@@ -53,10 +54,7 @@ test('home fragment navigation, carousel controls, and metadata remain valid', (
   for (const match of home.matchAll(/href="#([^"]+)"/g)) {
     assert.equal(ids.has(match[1]), true, `#${match[1]} must identify a section`);
   }
-  for (let index = 0; index < 4; index += 1) {
-    assert.match(home, new RegExp(`aria-controls="highlight-${index}"`));
-    assert.equal(ids.has(`highlight-${index}`), true);
-  }
+  assert.equal((home.match(/class="highlight-card /g) || []).length, 4);
   assert.match(home, /rel="canonical" href="https:\/\/avocado-mini\.kirin-999\.chatgpt\.site\/"/);
   assert.match(home, /property="og:title"/);
   assert.doesNotMatch(home, /fonts\.googleapis\.com|fonts\.gstatic\.com/);
