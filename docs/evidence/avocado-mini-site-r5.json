@@ -1,24 +1,24 @@
 {
-  "recordedAt": "2026-09-24T21:28:00-04:00",
+  "recordedAt": "2026-09-24T21:41:45-04:00",
   "taskId": "WEB17",
   "productBaseline": "avocadoMini R5",
   "framework": "Astro 7.3.5",
   "github": {
     "repository": "https://github.com/k999ln/rock.git",
     "branch": "main",
-    "sourceCommit": "c55a651",
+    "sourceCommit": "6622c80",
     "status": "PUSHED"
   },
   "site": {
     "projectId": "appgprj_6aaf6a375b908191b3b0c1845dc78291",
-    "sourceCommit": "d3d00a08691244313022e2a5cdcc20b5fb779377",
-    "versionNumber": 60,
-    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_9dad87e8cc4481919c3e321446d723cd",
-    "deploymentId": "appgdep_6ab5cdf2619c8191912ed31b7ba44cf2",
+    "sourceCommit": "133c6b8afc885dd4b7a025e679a5511fec0b35e0",
+    "versionNumber": 61,
+    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_8b519291b17881918c94357ddcca7c34",
+    "deploymentId": "appgdep_6ab5d14a5ca08191a153ada67bf7c7dd",
     "deploymentStatus": "succeeded",
     "url": "https://avocado-mini.kirin-999.chatgpt.site",
-    "archiveSha256": "88dd28e761705fcf7d0bad6d2f088bf18115721b26808e73530b2bd44319b86e",
-    "uploadedContentHash": "sha256:faee4cc1e64e5fb6dd4117d0da0d6232845ef51246104f30a1705f9fbb58946b",
+    "archiveSha256": "eb141ba6185fdcd60208ffa33c423a4aafae9e29465f073f38fa133ea498a4fa",
+    "uploadedContentHash": "sha256:54be111751faa4afab26293616e622d530e16f487fa56ee9048baaed8a5478bb",
     "archiveFileCount": 73
   },
   "checks": {
@@ -33,7 +33,9 @@
     "approvedVisualBaseline": "PASS — restored black/silver video-reference product-film layout",
     "productImageBackground": "PASS — seamless black studio",
     "restoredProductImagery": "PASS — hero, four highlights, front/side/rear, sensor macro",
-    "scrollTurntable": "PASS — 0°/98°/180° in local browser"
+    "scrollTurntable": "PASS — 0°/150° local browser checks; front/side/rear frames retained",
+    "appleReferenceLayout": "PASS — floating product nav, product-first hero, four selectable highlight tabs, reduced decoration",
+    "mobile390": "PASS — no horizontal overflow; menu and product hero visible"
   },
   "truthBoundaries": {
     "physicalHardwareTests": 0,
@@ -41,6 +43,7 @@
     "salesOpen": false,
     "r5PriceApproved": false,
     "legacyE3PriceApplies": false,
-    "visualRedesignAuthorized": false
+    "visualRedesignAuthorized": false,
+    "layoutReferenceAuthorized": true
   }
 }
