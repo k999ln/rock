@@ -1,24 +1,24 @@
 {
-  "recordedAt": "2026-09-24T21:16:31-04:00",
+  "recordedAt": "2026-09-24T21:28:00-04:00",
   "taskId": "WEB17",
   "productBaseline": "avocadoMini R5",
   "framework": "Astro 7.3.5",
   "github": {
     "repository": "https://github.com/k999ln/rock.git",
     "branch": "main",
-    "sourceCommit": "19ea5e9",
+    "sourceCommit": "c55a651",
     "status": "PUSHED"
   },
   "site": {
     "projectId": "appgprj_6aaf6a375b908191b3b0c1845dc78291",
-    "sourceCommit": "7594bf6904b63e51f1da0930122d819e181e5f79",
-    "versionNumber": 59,
-    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_c01b30dad4248191ab87a613242b3b91",
-    "deploymentId": "appgdep_6ab5cb5a9a908191bced146262803a2a",
+    "sourceCommit": "d3d00a08691244313022e2a5cdcc20b5fb779377",
+    "versionNumber": 60,
+    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_9dad87e8cc4481919c3e321446d723cd",
+    "deploymentId": "appgdep_6ab5cdf2619c8191912ed31b7ba44cf2",
     "deploymentStatus": "succeeded",
     "url": "https://avocado-mini.kirin-999.chatgpt.site",
-    "archiveSha256": "dfc6f3a155d4e0127330c0b942d8496f223d580dfdc04e12cb2b8132dd5ab13d",
-    "uploadedContentHash": "sha256:ea6b7d8d0cb6ee11d440d7efa5dc90320a108a000b3955aab39a3893559f6baf",
+    "archiveSha256": "88dd28e761705fcf7d0bad6d2f088bf18115721b26808e73530b2bd44319b86e",
+    "uploadedContentHash": "sha256:faee4cc1e64e5fb6dd4117d0da0d6232845ef51246104f30a1705f9fbb58946b",
     "archiveFileCount": 73
   },
   "checks": {
@@ -30,8 +30,10 @@
     "localBrowserHome": "PASS",
     "localBrowserRocketStar": "PASS",
     "localBrowserSalesClosed": "PASS",
-    "approvedVisualBaseline": "PASS — restored black/silver v56 product-film layout",
-    "productImageBackground": "PASS — seamless black studio"
+    "approvedVisualBaseline": "PASS — restored black/silver video-reference product-film layout",
+    "productImageBackground": "PASS — seamless black studio",
+    "restoredProductImagery": "PASS — hero, four highlights, front/side/rear, sensor macro",
+    "scrollTurntable": "PASS — 0°/98°/180° in local browser"
   },
   "truthBoundaries": {
     "physicalHardwareTests": 0,

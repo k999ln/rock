@@ -1,5 +1,11 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-24 — avocadoMiniの製品画像とスクロール切替を復元
+
+利用者が提示した画面収録を基準に、Astro移行時に単一の静止画へ置き換わっていたavocadoMiniの商品演出を復元した。冒頭は4本のTowerと中央の低い装置を含む集合ビジュアル、Highlightsはセンサー・200 mm・足元・Edge Hubの専用4画像、Designは正面・側面・背面が0〜180度で切り替わるスクロール表示とセンサー接写を使う。画像の存在はbuild検査へ固定し、同じ見落としが再発しないようにした。
+
+旧Tower20 E3の画像は外観・システム検討資料として明示し、現行R5の製品基準である1本自律・別Hub不要、販売停止、実機0件、製造承認保留は変更しない。Astro buildは11 route、Site試験9/9、ローカル実ブラウザで集合ビジュアル、4 Highlights、0°・98°・180°の切替を確認した。GitHub `main`は`c55a651`、Site sourceは`d3d00a08691244313022e2a5cdcc20b5fb779377`、公開v60、deployment `appgdep_6ab5cdf2619c8191912ed31b7ba44cf2`が成功した。
+
 ## 2026-09-24 — avocadoMini公開SiteをAstroへ移行
 
 利用者の指定に従い、公開avocadoMini Siteの生成基盤をViteの複数HTML入口からAstro 7へ移行した。承認済みの黒いスタジオ、銀色R5、映像型スクロール、rocketstarの構成は変更せず、トップ、製品案内、導入、予約、法務、Rocket Star、RockstarOSを含む11 routeをAstroのfile-based pageとして生成する。予約・決済WorkerとD1契約は静的画面から分離したまま、配布時に`dist/server`へ段階化する。
