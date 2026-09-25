@@ -1372,6 +1372,29 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
 .r5-product-page .story-focus-wash{display:none}
 .r5-product-page .turn-frame[data-view="front"]{-webkit-mask-image:none;mask-image:none}
 .type-motion-ready .story .feature-beat :is(.eyebrow,.feature-description,.sensor-capabilities,.feature-meta){filter:none;transition:opacity .3s ease,transform .42s cubic-bezier(.16,1,.3,1)}
+
+/* 0° price → product explanation → 180° four-tower price. */
+.opening-price-panel,.closing-price-panel{z-index:6}
+.price-panel .price em{font-style:normal;font-size:clamp(18px,1.7vw,25px);font-weight:650;letter-spacing:-.035em;color:#d9e8ed}
+.opening-price-panel:not(.visible),.closing-price-panel:not(.visible){visibility:hidden;opacity:0;pointer-events:none}
+.story-sticky:is(.is-opening-price,.is-closing-price) .feature-beats{visibility:hidden}
+.system-product{position:absolute;z-index:3;inset:4% -5% 2% 43%;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translateX(5%) scale(.94);transition:opacity .65s ease,transform .8s cubic-bezier(.16,1,.3,1),visibility .65s;pointer-events:none}
+.system-product.visible{opacity:1;visibility:visible;transform:translateX(0) scale(1)}
+.system-product img{width:100%;height:100%;object-fit:contain;object-position:center 50%;filter:drop-shadow(0 28px 34px #0008)}
+.story-sticky.is-closing-price .motion-product{opacity:0!important;transform:translate(-50%,-50%) scale(.88)!important;transition:opacity .42s ease,transform .55s ease}
+.story-sticky.is-opening-price .motion-product{opacity:.88}
+.story-sticky.is-opening-price .sensor-gaze,.story-sticky.is-closing-price .sensor-gaze{opacity:0}
+@media(max-width:800px){
+  .system-product{inset:44% -8% 5%;transform:translateY(5%) scale(.94)}
+  .system-product.visible{transform:translateY(0) scale(1)}
+  .system-product img{object-fit:contain;object-position:center 48%}
+  .price-panel .price em{font-size:18px}
+}
+@media(max-width:520px){
+  .system-product{inset:51% -20% 4%}
+  .opening-price-panel h2,.closing-price-panel h2{font-size:clamp(36px,10vw,43px)}
+  .opening-price-panel .price strong,.closing-price-panel .price strong{font-size:clamp(49px,14vw,57px)}
+}
 @media(max-width:800px){
   .r5-product-page .film-hero-device{top:13%;left:50%;width:auto;height:61%;object-fit:cover}
   .r5-product-page .story{height:460svh}

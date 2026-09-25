@@ -63,14 +63,19 @@ const sensorGaze = document.querySelector('#sensor-gaze');
 const angle = document.querySelector('#angle');
 const chapter = document.querySelector('#chapter');
 const progressBar = document.querySelector('#progress');
+const openingPricePanel = document.querySelector('#opening-price-panel');
 const pricePanel = document.querySelector('#price-panel');
+const openingPriceLink = document.querySelector('#opening-price-link');
 const preorderLink = document.querySelector('#preorder-link');
+const systemProduct = document.querySelector('#system-product');
 const gallery = document.querySelector('#highlight-gallery');
 const galleryPrev = document.querySelector('#gallery-prev');
 const galleryNext = document.querySelector('#gallery-next');
-const priceStart = 0.91;
-const storyWords = ['FORM', 'SENSE', 'SCALE', 'STABLE', 'FLOW', 'HUB'];
-const storyColors = ['#09090a', '#111214', '#0d0e10', '#111214', '#0d0e10', '#09090a'];
+const openingPriceEnd = 0.115;
+const contentStart = 0.115;
+const priceStart = 0.90;
+const storyWords = ['PRICE', 'FORM', 'SENSE', 'SCALE', 'STABLE', 'FLOW', 'PRICE'];
+const storyColors = ['#09090a', '#111214', '#0d0e10', '#111214', '#0d0e10', '#111214', '#09090a'];
 let lastStoryChapter = -1;
 const motionKeys = [
   { at: 0, x: 0, y: 1, scale: 0.96, tilt: -2, yaw: 0 },
@@ -123,9 +128,11 @@ function showView(yaw) {
 }
 
 function updateStory(progress) {
+  const openingPriceVisible = progress < openingPriceEnd;
   const priceVisible = progress >= priceStart;
-  const phase = clamp(progress / 0.18, 0, 4);
-  const active = priceVisible ? 5 : Math.min(4, Math.round(phase));
+  const contentProgress = clamp((progress - contentStart) / (priceStart - contentStart), 0, 0.9999);
+  const contentIndex = Math.min(4, Math.floor(contentProgress * 5));
+  const active = openingPriceVisible ? 0 : priceVisible ? 6 : contentIndex + 1;
   if (active !== lastStoryChapter) {
     if (lastStoryChapter >= 0 && !reducedMotion.matches) {
       storyFocusWash.getAnimations().forEach((animation) => animation.cancel());
@@ -138,21 +145,29 @@ function updateStory(progress) {
     }
     lastStoryChapter = active;
   }
-  const first = Math.floor(phase);
-  storySticky.style.setProperty('--story-bg', priceVisible ? storyColors[5] : mixColor(storyColors[first], storyColors[Math.min(5, first + 1)], smooth(phase - first)));
+  const colorPosition = openingPriceVisible ? 0 : priceVisible ? 6 : contentProgress * 5 + 1;
+  const first = Math.floor(colorPosition);
+  storySticky.style.setProperty('--story-bg', mixColor(storyColors[first], storyColors[Math.min(6, first + 1)], smooth(colorPosition - first)));
   storyWord.textContent = storyWords[active];
   storyRail.forEach((dot, index) => dot.classList.toggle('is-active', index === active));
   beats.forEach((beat, index) => {
-    const visible = !priceVisible && index === active;
+    const visible = !openingPriceVisible && !priceVisible && index === contentIndex;
     beat.style.opacity = visible ? '1' : '0';
     beat.style.transform = `translateY(${window.innerWidth < 800 ? '0' : '-50%'})`;
     beat.classList.toggle('is-active', visible);
     beat.setAttribute('aria-hidden', String(!visible));
   });
-  chapter.textContent = priceVisible ? 'COMPLETE / 04' : active === 0 ? 'INTRO / 04' : `${String(active).padStart(2, '0')} / 04`;
+  chapter.textContent = openingPriceVisible ? 'PRICE / START' : priceVisible ? 'PRICE / 180°' : contentIndex === 0 ? 'INTRO / 04' : `${String(contentIndex).padStart(2, '0')} / 04`;
+  openingPricePanel.classList.toggle('visible', openingPriceVisible);
+  openingPricePanel.setAttribute('aria-hidden', String(!openingPriceVisible));
+  openingPriceLink.tabIndex = openingPriceVisible ? 0 : -1;
   pricePanel.classList.toggle('visible', priceVisible);
   pricePanel.setAttribute('aria-hidden', String(!priceVisible));
   preorderLink.tabIndex = priceVisible ? 0 : -1;
+  storySticky.classList.toggle('is-opening-price', openingPriceVisible);
+  storySticky.classList.toggle('is-closing-price', priceVisible);
+  systemProduct.classList.toggle('visible', priceVisible);
+  systemProduct.setAttribute('aria-hidden', String(!priceVisible));
 }
 
 function updateProgress() {
@@ -164,7 +179,7 @@ function updateProgress() {
   showView(yaw);
 
   const x = motion.x * (mobile ? 0.28 : 1);
-  const priceBlend = smooth(clamp((progress - 0.88) / 0.04, 0, 1));
+  const priceBlend = smooth(clamp((progress - 0.865) / 0.045, 0, 1));
   const y = motion.y * (mobile ? 0.4 : 1) + (mobile ? priceBlend * 6 : 0);
   const scale = motion.scale * (mobile ? 0.94 - priceBlend * 0.2 : 0.96);
   const tilt = reducedMotion.matches ? 0 : motion.tilt * (mobile ? 0.38 : 1);

@@ -62,6 +62,18 @@ test('home fragment navigation, carousel controls, and metadata remain valid', (
   assert.equal(existsSync(new URL('client/sitemap.xml', outputRoot)), true);
 });
 
+test('the 180-degree story opens and closes with the requested prices and transparent product art', () => {
+  const home = built('client/index.html');
+  assert.match(home, /0° \/ SINGLE TOWER/);
+  assert.match(home, /¥160,000/);
+  assert.match(home, /180° \/ FOUR-TOWER SYSTEM/);
+  assert.match(home, /¥410,000/);
+  assert.match(home, /avocado-mini-tower20-e3-kit-transparent-v2\.png/);
+  for (const view of ['front', 'side', 'rear']) {
+    assert.match(home, new RegExp(`tower20-e3-${view}-transparent-v2\\.png`));
+  }
+});
+
 test('all public Astro pages are English-first', () => {
   for (const route of routes) {
     const html = built(route);

@@ -62,7 +62,7 @@ import "../style.css";
       <div class="story-sticky">
         <span class="story-word" id="story-word" aria-hidden="true">FORM</span>
         <div class="story-orbit" aria-hidden="true"></div>
-        <div class="story-rail" aria-hidden="true"><span class="is-active"></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="story-rail" aria-hidden="true"><span class="is-active"></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
         <div class="feature-beats">
           <article class="feature-beat is-active" data-beat="intro" aria-hidden="false"><p class="eyebrow">TOWER20 E3 / FIXED HEIGHT</p><h2 id="product-title">Motion Tower</h2><p class="feature-headline">200 mm.<br>One clear role.</p><p class="feature-description">A fixed-height aluminum tower acts as an input device. Its visible body sections keep the product rhythm without adding a motorized extension mechanism.</p><span class="feature-meta">4 TOWER20 INPUT DEVICES + 1 SEPARATE EDGE HUB / CONCEPT RENDERING</span></article>
           <article class="feature-beat" data-beat="sensor" aria-hidden="true"><p class="eyebrow">01 / MONOCHROME GLOBAL SHUTTER</p><h2>Four directions.<br>One shared coordinate system.</h2><p class="feature-description">One camera candidate in each tower captures motion. The Hub must verify device identity, timing evidence, calibration revision, and tracking quality before an action can be committed.</p><div class="sensor-capabilities"><div><span>PRIMARY / CANDIDATE</span><strong>Basler daA1600-60um</strong><p>1600 × 1200 mono8. A 1280 × 800, 60 fps center ROI is the current planning profile, subject to real-device validation.</p></div><div><span>RESERVED / INACTIVE</span><strong>Two dark exterior windows</strong><p>They preserve the product face but do not represent two additional working cameras in E3.</p></div></div><span class="feature-meta">CYAN LIGHT IS A VISUAL STATUS EFFECT, NOT MEASURED SENSOR OUTPUT</span></article>
@@ -73,16 +73,20 @@ import "../style.css";
         <div class="stage" id="stage">
           <div class="motion-product" id="motion-product" role="img" aria-label="Studio concept rendering of the fixed-height 200 mm Tower20 E3. Scroll to turn it 180 degrees from the camera-facing front to the rear, revealing a flush silver avocado-shaped power button, reserved dark windows, cosmetic body seams, and a low-profile circular pedestal.">
             <span class="camera-sweep" aria-hidden="true"></span>
-            <img class="turn-frame" data-view="front" src="/images/tower20-e3-front-cutout-v1.png" alt="" fetchpriority="high" />
-            <img class="turn-frame" data-view="side" src="/images/tower20-e3-side-cutout-v1.png" alt="" />
-            <img class="turn-frame" data-view="rear" src="/images/tower20-e3-rear-cutout-v1.png" alt="" />
+            <img class="turn-frame" data-view="front" src="/images/tower20-e3-front-transparent-v2.png" alt="" fetchpriority="high" />
+            <img class="turn-frame" data-view="side" src="/images/tower20-e3-side-transparent-v2.png" alt="" />
+            <img class="turn-frame" data-view="rear" src="/images/tower20-e3-rear-transparent-v2.png" alt="" />
             <span class="camera-flare camera-flare-upper" aria-hidden="true"></span>
+          </div>
+          <div class="system-product" id="system-product" role="img" aria-label="Four Tower20 E3 Motion Towers surrounding one separate Edge Hub.">
+            <img src="/images/avocado-mini-tower20-e3-kit-transparent-v2.png" alt="" />
           </div>
           <div class="sensor-closeup" id="sensor-closeup" aria-hidden="true"><img src="/images/tower20-e3-sensor-macro.png" alt="" /><div><span><i></i> PRIMARY · 1 CAMERA</span><span><i></i> RESERVED · 2 WINDOWS</span></div></div>
         </div>
         <div class="sensor-gaze" id="sensor-gaze" aria-hidden="true"><span class="sensor-gaze-upper"></span></div>
-        <div class="story-foot"><div><span id="chapter">INTRO / 04</span><strong id="angle">0°</strong></div><div class="track"><div id="progress"></div></div><span class="scroll-note">SCROLL TO EXPLORE</span></div>
-        <div class="price-panel" id="price-panel" aria-hidden="true"><p class="eyebrow">180° / THE COMPLETE SYSTEM</p><h2>avocadoMini</h2><div class="price"><span>4 Motion Towers + 1 central unit</span><strong>¥410,000</strong><small>Current planned base price · tax excluded</small></div><div class="price-actions"><span class="price-availability">Pre-orders coming soon</span><a class="text-link" href="/preorder/" tabindex="-1" id="preorder-link">View pre-order details <span aria-hidden="true">↗</span></a></div><p class="fine">The exterior is a confirmed product direction. Manufacturing, final specifications, shipping, and payment terms remain open.</p></div>
+        <div class="story-foot"><div><span id="chapter">PRICE / START</span><strong id="angle">0°</strong></div><div class="track"><div id="progress"></div></div><span class="scroll-note">SCROLL TO EXPLORE</span></div>
+        <div class="price-panel opening-price-panel visible" id="opening-price-panel" aria-hidden="false"><p class="eyebrow">0° / SINGLE TOWER</p><h2>One Tower.</h2><div class="price"><span>1 × Tower20 E3 Motion Tower</span><strong>¥160,000</strong><em>≈ US$1,050</em><small>Reference price · tax and shipping excluded</small></div><div class="price-actions"><span class="price-availability">Sales remain closed</span><a class="text-link" href="/preorder/" id="opening-price-link">View current status <span aria-hidden="true">↗</span></a></div><p class="fine">A planning price for the current concept. Final specifications, delivery, and payment terms remain open.</p></div>
+        <div class="price-panel closing-price-panel" id="price-panel" aria-hidden="true"><p class="eyebrow">180° / FOUR-TOWER SYSTEM</p><h2>Four Towers.</h2><div class="price"><span>4 × Tower20 E3 + 1 separate Edge Hub</span><strong>¥410,000</strong><em>≈ US$2,700</em><small>Reference package price · tax and shipping excluded</small></div><div class="price-actions"><span class="price-availability">Sales remain closed</span><a class="text-link" href="/preorder/" tabindex="-1" id="preorder-link">View current status <span aria-hidden="true">↗</span></a></div><p class="fine">The four-tower package is a concept configuration. Manufacturing, final specifications, delivery, and payment terms remain open.</p></div>
       </div>
     </section>
     <section id="os" class="os-install" aria-labelledby="os-install-title">
