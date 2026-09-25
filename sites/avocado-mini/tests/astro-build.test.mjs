@@ -9,10 +9,12 @@ const routes = [
   'client/guide/index.html',
   'client/install/index.html',
   'client/legal/index.html',
+  'client/mini/index.html',
   'client/preorder/index.html',
   'client/preorder/confirm/index.html',
   'client/preorder/complete/index.html',
   'client/privacy/index.html',
+  'client/pro/index.html',
   'client/rocket-star/index.html',
   'client/rockstaros/index.html',
 ];
@@ -31,19 +33,28 @@ test('Astro emits every public route and the Worker deployment contract', () => 
   }
 });
 
-test('Astro output preserves the approved product, Rocket Star, and preorder pages', () => {
+test('Astro output separates the ecosystem, Mini, Pro, Rocket Star, and preorder pages', () => {
   const home = built('client/index.html');
-  assert.match(home, /avocadoMini Tower20 E3/);
-  assert.match(home, /Start with one\.<br>Expand the space\./);
-  assert.match(home, /\/images\/avocado-mini-tower20-e3-kit\.png/);
-  assert.equal((home.match(/\/images\/tower20-e3-highlight-/g) || []).length, 4);
-  assert.match(home, /One camera<br>in each direction\./);
-  assert.match(home, /Everything,<br>for the space\./);
-  assert.equal((home.match(/class="turn-frame"/g) || []).length, 3);
-  assert.match(home, /id="angle"/);
-  assert.match(home, /data-view="side"/);
-  assert.match(home, /data-view="rear"/);
-  assert.match(home, /Open installer/);
+  const mini = built('client/mini/index.html');
+  const pro = built('client/pro/index.html');
+  assert.match(home, /AVOCADOMINI × AVOKADOPRO/);
+  assert.match(home, /Two products\.<br\s*\/?>One bigger world\./);
+  assert.match(home, /href="\/mini\/"/);
+  assert.match(home, /href="\/pro\/"/);
+  assert.match(home, /When Mini meets Pro/i);
+  assert.match(mini, /Start with one\.<br\s*\/?>Expand the space\./);
+  assert.match(mini, /\/images\/avocado-mini-tower20-e3-kit\.png/);
+  assert.equal((mini.match(/class="highlight-card /g) || []).length, 4);
+  assert.match(mini, /One camera<br\s*\/?>in each direction\./);
+  assert.match(mini, /Everything,<br\s*\/?>for the space\./);
+  assert.equal((mini.match(/class="turn-frame"/g) || []).length, 3);
+  assert.match(mini, /id="angle"/);
+  assert.match(mini, /data-view="side"/);
+  assert.match(mini, /data-view="rear"/);
+  assert.match(mini, /Open installer/);
+  assert.match(pro, /Games on its own\.<br\s*\/?>A bigger world with Mini\./);
+  assert.match(pro, /From ¥880,000/);
+  assert.match(pro, /GAME \+ SERVICES HUB/);
   assert.match(built('client/rocket-star/index.html'), /Complete product design/);
   assert.match(built('client/preorder/index.html'), /RESERVATIONS AND CHECKOUT CLOSED/);
 });
@@ -54,7 +65,7 @@ test('home fragment navigation, carousel controls, and metadata remain valid', (
   for (const match of home.matchAll(/href="#([^"]+)"/g)) {
     assert.equal(ids.has(match[1]), true, `#${match[1]} must identify a section`);
   }
-  assert.equal((home.match(/class="highlight-card /g) || []).length, 4);
+  assert.equal((home.match(/class="ecosystem-product-card /g) || []).length, 2);
   assert.match(home, /rel="canonical" href="https:\/\/avocado-mini\.kirin-999\.chatgpt\.site\/"/);
   assert.match(home, /property="og:title"/);
   assert.doesNotMatch(home, /fonts\.googleapis\.com|fonts\.gstatic\.com/);
@@ -62,22 +73,23 @@ test('home fragment navigation, carousel controls, and metadata remain valid', (
   assert.equal(existsSync(new URL('client/sitemap.xml', outputRoot)), true);
 });
 
-test('the 180-degree story opens with standalone Mini pricing and closes with Mini expansion plus separate Pro pricing', () => {
-  const home = built('client/index.html');
-  assert.match(home, /0° \/ SINGLE MINI/);
-  assert.match(home, /¥160,000/);
-  assert.match(home, /180° \/ FOUR-MINI SYSTEM/);
-  assert.match(home, /¥410,000/);
-  assert.match(home, /data-price-usd="US\$1,050"/);
-  assert.match(home, /data-price-usd="US\$2,700"/);
-  assert.match(home, /avokadoPro/);
-  assert.match(home, /From ¥880,000/);
-  assert.match(home, /data-price-usd="From US\$5,800"/);
-  assert.match(home, /Works on its own\. Add avocadoMini to expand spatial input, range, and play\./);
-  assert.equal((home.match(/aria-label="Display currency"/g) || []).length, 2);
-  assert.match(home, /avocado-mini-tower20-e3-kit-transparent-v2\.png/);
+test('the Mini 180-degree story contains Mini-only pricing while Pro owns its separate price', () => {
+  const mini = built('client/mini/index.html');
+  const pro = built('client/pro/index.html');
+  assert.match(mini, /0° \/ SINGLE MINI/);
+  assert.match(mini, /¥160,000/);
+  assert.match(mini, /180° \/ FOUR-MINI SYSTEM/);
+  assert.match(mini, /¥410,000/);
+  assert.match(mini, /data-price-usd="US\$1,050"/);
+  assert.match(mini, /data-price-usd="US\$2,700"/);
+  assert.doesNotMatch(mini, /class="pro-addon"/);
+  assert.equal((mini.match(/aria-label="Display currency"/g) || []).length, 2);
+  assert.match(mini, /avocado-mini-tower20-e3-kit-transparent-v2\.png/);
+  assert.match(pro, /From ¥880,000/);
+  assert.match(pro, /data-price-usd="From US\$5,800"/);
+  assert.equal((pro.match(/aria-label="Display currency"/g) || []).length, 1);
   for (const view of ['front', 'side', 'rear']) {
-    assert.match(home, new RegExp(`tower20-e3-${view}-transparent-v2\\.png`));
+    assert.match(mini, new RegExp(`tower20-e3-${view}-transparent-v2\\.png`));
   }
 });
 
