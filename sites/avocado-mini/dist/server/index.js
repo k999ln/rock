@@ -1,6 +1,5 @@
 const products = {
-  tower: { name: 'avocadoMini Tower20 E3 · Single input tower', baseJpy: 160000, amountKey: 'PREORDER_TOWER_TOTAL_JPY', capacityKey: 'PREORDER_TOWER_CAPACITY' },
-  kit: { name: 'avocadoMini Tower20 E3 · 4 towers + Edge Hub', baseJpy: 410000, amountKey: 'PREORDER_KIT_TOTAL_JPY', capacityKey: 'PREORDER_KIT_CAPACITY' },
+  r5: { name: 'avocadoMini R5', baseJpy: null, amountKey: 'PREORDER_R5_TOTAL_JPY', capacityKey: 'PREORDER_R5_CAPACITY' },
 };
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), {
@@ -18,19 +17,21 @@ function positiveInteger(value) {
 }
 
 function offer(env) {
-  const amounts = Object.fromEntries(Object.entries(products).map(([sku, product]) => [sku, positiveInteger(env[product.amountKey])]));
-  const capacities = Object.fromEntries(Object.entries(products).map(([sku, product]) => [sku, positiveInteger(env[product.capacityKey])]));
+  const amounts = { r5: positiveInteger(env.PREORDER_R5_TOTAL_JPY) };
+  const capacities = { r5: positiveInteger(env.PREORDER_R5_CAPACITY) };
   const hasTerms = [
     env.PREORDER_SELLER_NAME, env.PREORDER_SELLER_ADDRESS, env.PREORDER_SELLER_PHONE,
     env.PREORDER_SHIPPING_FEE, env.PREORDER_SHIPPING_DATE, env.PREORDER_CANCELLATION_TERMS,
     env.PREORDER_TERMS_VERSION,
   ].every(value => typeof value === 'string' && value.trim());
-  const ready = env.PREORDER_SALES_ENABLED === 'true' && hasTerms && env.PREORDER_TERMS_APPROVED === 'true'
+  // Obsolete E3 environment variables can never reopen sales. R5 requires an
+  // explicit baseline, approved terms, a final total, and current inventory.
+  const ready = env.PREORDER_PRODUCT_BASELINE === 'avocadoMini-r5'
+    && env.PREORDER_SALES_ENABLED === 'true' && hasTerms && env.PREORDER_TERMS_APPROVED === 'true'
     && env.PREORDER_TOTAL_INCLUDES_SHIPPING === 'true'
     && !/undecided|not determined|not finalized|tbd/i.test(env.PREORDER_SHIPPING_DATE)
     && Boolean(env.DB && env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET && env.PREORDER_ABUSE_KEY && env.PREORDER_ADMIN_TOKEN)
-    && Object.entries(amounts).every(([sku, amount]) => amount && amount >= products[sku].baseJpy)
-    && Object.values(capacities).every(Boolean);
+    && Boolean(amounts.r5 && capacities.r5);
   return {
     ready,
     products: Object.fromEntries(Object.entries(products).map(([sku, product]) => [sku, {
