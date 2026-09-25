@@ -1,5 +1,11 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-24 — avokado mini公開SiteをAstroの英語版へ統一
+
+利用者の指定に従い、既存のAstro 7.3.5構成と承認済みの黒・銀デザインを維持したまま、公開Siteの11 routeを英語中心へ統一した。ホーム、試作計画、RockstarOS配布・Developer Preview、販売状況・確認・完了、販売表示、privacy、rocketstar、redirectで`lang=en`を固定し、公開UI、meta、aria label、画像代替文を英語へ変更した。現行R5の1本自律・別Hub不要、実機試験0件、価格・発売日・販売条件未確定、販売停止は変更していない。
+
+Astro buildは11 route、Site試験10/10。ローカル実ブラウザで全11 routeを390px幅にし、日本語UI、横overflow、runtime overlay、console errorがすべて0件であることを確認した。確認中に見つけた英語注記の位置ずれと、下層ページのmetallic logoが原寸表示される既存不具合も修正した。GitHub `main`は`11f0919`、Site sourceは`26e146ecb579f306992abffea7b0c83f23867cf3`、公開v63、deployment `appgdep_6ab5d3eb5b488191b985ab8f901e6576`が成功した。公開URLは`https://avocado-mini.kirin-999.chatgpt.site`。
+
 ## 2026-09-24 — iPhone 18 Proページを参考に商品演出を整理
 
 利用者指定のApple iPhone 18 Proページを、画像やブランドを模倣するのではなく、余白、文字の強弱、浮いた製品ナビ、製品を主役にする画面構成、横送りハイライト、固定スクロールの参考として適用した。avokadoの名称、黒・銀の配色、利用者指定のavocadoMini画像、現行R5の内容は維持する。意味を持たない円形軌道装飾を外し、Highlightsには4項目を直接選べるタブを追加した。

@@ -1,28 +1,28 @@
 {
-  "recordedAt": "2026-09-24T21:41:45-04:00",
-  "taskId": "WEB17",
+  "recordedAt": "2026-09-24T21:55:00-04:00",
+  "taskId": "WEB18",
   "productBaseline": "avocadoMini R5",
   "framework": "Astro 7.3.5",
   "github": {
     "repository": "https://github.com/k999ln/rock.git",
     "branch": "main",
-    "sourceCommit": "6622c80",
+    "sourceCommit": "11f0919",
     "status": "PUSHED"
   },
   "site": {
     "projectId": "appgprj_6aaf6a375b908191b3b0c1845dc78291",
-    "sourceCommit": "133c6b8afc885dd4b7a025e679a5511fec0b35e0",
-    "versionNumber": 61,
-    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_8b519291b17881918c94357ddcca7c34",
-    "deploymentId": "appgdep_6ab5d14a5ca08191a153ada67bf7c7dd",
+    "sourceCommit": "26e146ecb579f306992abffea7b0c83f23867cf3",
+    "versionNumber": 63,
+    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_df34569c0318819192fbb76369e1b112",
+    "deploymentId": "appgdep_6ab5d3eb5b488191b985ab8f901e6576",
     "deploymentStatus": "succeeded",
     "url": "https://avocado-mini.kirin-999.chatgpt.site",
-    "archiveSha256": "eb141ba6185fdcd60208ffa33c423a4aafae9e29465f073f38fa133ea498a4fa",
-    "uploadedContentHash": "sha256:54be111751faa4afab26293616e622d530e16f487fa56ee9048baaed8a5478bb",
+    "archiveSha256": "e5bb2e6fc0254611aeb5dd751f786ed39b76738ae51b714b82ec39a5fc123ba5",
+    "uploadedContentHash": "sha256:e1cbd00e2049a182699600fd96725f3b2a7d99526d8145b1d1d4955d12d1dba2",
     "archiveFileCount": 73
   },
   "checks": {
-    "siteTests": "9/9 PASS — 3 Astro build contract + 6 preorder API",
+    "siteTests": "10/10 PASS — 4 Astro build/language contracts + 6 preorder API",
     "siteBuild": "PASS — 11 Astro routes plus Worker artifact",
     "repositoryChecks": "PASS — project, repository map, R5 package",
     "repositoryVerify": "INCOMPLETE — existing root Node integration suite did not terminate; no Astro failure was reported",
@@ -35,7 +35,10 @@
     "restoredProductImagery": "PASS — hero, four highlights, front/side/rear, sensor macro",
     "scrollTurntable": "PASS — 0°/150° local browser checks; front/side/rear frames retained",
     "appleReferenceLayout": "PASS — floating product nav, product-first hero, four selectable highlight tabs, reduced decoration",
-    "mobile390": "PASS — no horizontal overflow; menu and product hero visible"
+    "mobile390": "PASS — all 11 routes, no horizontal overflow",
+    "englishFirst": "PASS — all 11 Astro routes declare English and contain no Japanese interface copy",
+    "localBrowserAllRoutes": "PASS — 11/11 routes have content, no runtime overlay, no console errors",
+    "subpageBrandSizing": "PASS — shared metallic mark constrained to 24px without mobile overflow"
   },
   "truthBoundaries": {
     "physicalHardwareTests": 0,

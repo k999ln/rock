@@ -4,6 +4,8 @@
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
 
+- 2026-09-24、公開avokado mini SiteをAstro 7.3.5のまま英語中心へ統一した。ホーム、試作計画、Developer Preview、RockstarOS配布状況、販売状況・確認・完了、販売表示、privacy、rocketstar、redirectの11 routeで`lang=en`と日本語UIなしをbuild契約化。390px幅の全routeで横overflow、runtime overlay、console errorがないことを確認し、英語注記の位置ずれと下層共通logoの未指定寸法も修正した。現行R5の1本自律・別Hub不要、実機試験0件、販売停止は変更しない。GitHub `main` `11f0919`、Site source `26e146ecb579f306992abffea7b0c83f23867cf3`、公開v63、deployment `appgdep_6ab5d3eb5b488191b985ab8f901e6576`。[配備証拠](../evidence/avocado-mini-site-r5.json)を更新した。
+
 - 2026-09-24、利用者指定のApple iPhone 18 Proページをレイアウトと操作の参考にし、avocadoMiniの浮いた製品ナビ、製品主役の冒頭、4項目を直接選べるHighlightタブ、装飾を減らした固定スクロールへ整理した。avokado固有の画像・配色・名称・R5内容は維持し、円形軌道装飾を撤去。PCと390px幅で表示・操作・横overflowなしを確認した。GitHub `main` `6622c80`、Site source `133c6b8afc885dd4b7a025e679a5511fec0b35e0`、公開v61、deployment `appgdep_6ab5d14a5ca08191a153ada67bf7c7dd`。[配備証拠](../evidence/avocado-mini-site-r5.json)を更新した。
 
 - 2026-09-24、利用者の画面収録を基準に、Astro移行時に単一静止画へ置き換わっていたavocadoMiniの商品画像を復元した。冒頭の集合ビジュアル、4枚の専用Highlight、正面・側面・背面の0〜180度スクロール切替、センサー接写を再適用し、9画像のbuild契約を追加した。旧Tower20 E3画像は外観・システム検討資料と明示し、現行R5の1本自律・別Hub不要、販売停止、実機0件は維持する。GitHub `main` `c55a651`、Site source `d3d00a08691244313022e2a5cdcc20b5fb779377`、公開v60、deployment `appgdep_6ab5cdf2619c8191912ed31b7ba44cf2`。[配備証拠](../evidence/avocado-mini-site-r5.json)を更新した。
