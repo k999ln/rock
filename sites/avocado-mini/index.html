@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#f2f0eb" />
+  <meta name="theme-color" content="#050505" />
   <meta name="description" content="avocadoMini R5。使用時200mm以内を目標にした、1本で自律するRockstarOS空間コンピュータの設計構想。" />
   <title>avocadoMini R5 — 1本で自律する空間コンピュータ</title>
   <link rel="icon" href="/images/avokado-metallic-mark.png" type="image/png" />
@@ -12,73 +12,46 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script type="module" src="/src/main.js"></script>
 </head>
-<body>
-  <a class="skip" href="#main">本文へ移動</a>
-  <header class="site-header">
-    <a class="brand" href="/" aria-label="avokado ホーム"><img src="/images/avokado-metallic-mark.png" alt="" />avokado</a>
-    <nav class="primary-nav" aria-label="メインナビゲーション">
-      <a href="#experience">体験</a><a href="#architecture">設計</a><a href="#status">開発状況</a><a href="/install/">RockstarOS</a><a href="/rocket-star/">rocketstar</a>
-    </nav>
-    <div class="header-actions">
-      <details class="mobile-menu"><summary>Menu</summary><nav><a href="#experience">体験</a><a href="#architecture">設計</a><a href="#status">開発状況</a><a href="/install/">RockstarOS</a><a href="/rocket-star/">rocketstar</a></nav></details>
-      <a class="header-cta" href="#status">現在地を見る</a>
-    </div>
+<body class="r5-product-page">
+  <a class="skip" href="#product">製品へ移動</a>
+  <header class="site-header product-header">
+    <a class="brand avokado-brand" href="/"><img class="avokado-brand-icon" src="/images/avokado-metallic-mark.png" alt="" aria-hidden="true" />avokado</a>
+    <nav class="primary-nav" aria-label="メインナビゲーション"><a href="#highlights">製品</a><a href="#design">設計</a><a href="#product">R5</a><a href="#os">RockstarOS</a><a href="/rocket-star/">rocketstar</a></nav>
+    <div class="header-actions"><details class="mobile-menu"><summary>Menu</summary><nav aria-label="モバイルナビゲーション"><a href="#highlights">製品</a><a href="#design">設計</a><a href="#product">R5</a><a href="#os">RockstarOS</a><a href="/rocket-star/">rocketstar</a></nav></details><a class="header-cta" href="#status">現在地 <span aria-hidden="true">↓</span></a></div>
   </header>
-
-  <main id="main">
-    <section class="hero section-dark" aria-labelledby="hero-title">
-      <div class="hero-copy reveal">
-        <p class="eyebrow">AVOCADOMINI / R5 CURRENT BASELINE</p>
-        <h1 id="hero-title">1本で、<br />空間が動き出す。</h1>
-        <p class="lead">遊ぶ。つくる。学ぶ。暮らす。avocadoMini R5は、使用時200mm以内を目標にした、単体自律型の空間コンピュータ構想です。</p>
-        <div class="hero-actions"><a class="button button-light" href="#experience">構想を見る</a><a class="text-link light" href="/downloads/avocadoMini-R5-integrated-design.pdf">R5設計書 PDF ↗</a></div>
-        <p class="truth-note"><span></span>基本設計段階 / 実機試験 0件 / 製造承認 保留</p>
+  <main>
+    <section class="film-hero" aria-labelledby="film-title">
+      <span class="hero-word" aria-hidden="true">mini</span>
+      <img class="film-hero-device" src="/images/r5/avocado-mini-r5-black-studio.png" alt="銀色の円筒形avocadoMini R5単体の設計構想画像" fetchpriority="high" />
+      <div class="hero-bottom"><div class="hero-product-lockup"><span>AVOCADOMINI / R5</span><h1 id="film-title">avocadoMini</h1></div><p>1本で自律。<br />同じminiで拡張。</p></div>
+      <p class="film-disclaimer">R5 design concept. 実機写真ではありません。</p>
+    </section>
+    <section class="hero-statement" aria-labelledby="statement-title"><p class="eyebrow">AVOCADOMINI / R5 CURRENT BASELINE</p><h2 id="statement-title">1本で、<br />空間が動き出す。</h2><div class="statement-bottom"><p>入力・ローカル計算・ゲーム・保存・音声・安全な停止を1本に。<br />必要になれば、同じminiを追加して空間を広げます。</p><div><span>≤ 200 MM / 1 UNIT AUTONOMOUS</span><a href="#highlights">構想を見る <span aria-hidden="true">↓</span></a></div></div></section>
+    <section id="highlights" class="highlights" aria-labelledby="highlights-title"><div class="highlights-head"><h2 id="highlights-title">Highlights.</h2><div class="gallery-controls"><button id="gallery-prev" type="button" aria-label="前の項目">←</button><button id="gallery-next" type="button" aria-label="次の項目">→</button></div></div><div class="highlight-gallery" id="highlight-gallery" aria-label="avocadoMini R5 highlights">
+      <article class="highlight-card highlight-sensor"><img src="/images/r5/avocado-mini-r5-black-studio.png" alt="avocadoMini R5の黒背景スタジオ構想画像" loading="lazy" /><div><span>01 / SINGLE UNIT</span><h3>1本で、<br />自律する。</h3><p>外部Hubを必須にせず、入力・演算・電源・安全・音声・通信を1本へ重ねる設計です。</p></div></article>
+      <article class="highlight-card highlight-height"><img src="/images/r5/avocado-mini-r5-black-studio.png" alt="avocadoMini R5の200mm以内を目標にした筐体構想" loading="lazy" /><div><span>02 / ≤ 200 MM</span><h3>小さな筐体。<br />大きな検証。</h3><p>使用時200mm以内が目標です。表示・精密3D入力・熱・電源・最終収納は実機で未検証です。</p></div></article>
+      <article class="highlight-card highlight-base"><img src="/images/r5/avocado-mini-r5-black-studio.png" alt="円形台座を持つavocadoMini R5の構想画像" loading="lazy" /><div><span>03 / SAME-MINI SCALE</span><h3>同じminiを、<br />必要なだけ。</h3><p>空間を広げるときは、別Hubではなく同型miniを追加するR5基準です。</p></div></article>
+      <article class="highlight-card highlight-os"><img src="/images/r5/avocado-mini-r5-black-studio.png" alt="RockstarOSを内包するavocadoMini R5構想画像" loading="lazy" /><div><span>04 / ROCKSTAROS</span><h3>ローカルで遊ぶ。<br />権限を越えない。</h3><p>ゲーム、音声、保存、許可済みAI接続をまとめます。外部送信・決済・公開は本人承認なしに行いません。</p></div></article>
+    </div><p class="gallery-hint">横にスワイプ <span aria-hidden="true">↔</span></p></section>
+    <section id="design" class="design-intro" aria-labelledby="design-title"><p class="eyebrow">DESIGN / R5</p><h2 id="design-title">小さな筐体に、<br />役割を重ねる。</h2><p>外観は承認済みの黒・銀の世界観を維持。<br />スクロールでR5の設計基準を読み進めます。</p></section>
+    <section id="product" class="story" aria-labelledby="product-title">
+      <div class="story-sticky">
+        <span class="story-word" id="story-word" aria-hidden="true">R5</span><div class="story-orbit" aria-hidden="true"></div><div class="story-rail" aria-hidden="true"><span class="is-active"></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="feature-beats">
+          <article class="feature-beat is-active" data-beat="intro" aria-hidden="false"><p class="eyebrow">R5 / SINGLE AUTONOMOUS UNIT</p><h2 id="product-title">avocadoMini</h2><p class="feature-headline">One mini.<br />One complete system.</p><p class="feature-description">入力、演算、電源、安全、音声、通信を1本へ統合する設計基準です。旧E3の4本＋別Hub構成はR5へ引き継ぎません。</p><span class="feature-meta">CURRENT BASELINE / CONCEPT RENDERING / NOT PRODUCTION HARDWARE</span></article>
+          <article class="feature-beat" data-beat="sensor" aria-hidden="true"><p class="eyebrow">01 / PRECISION 3D INPUT</p><h2>空間を、<br />入力にする。</h2><p class="feature-description">身体や物体の動きを精密3D入力として扱う研究目標です。方式、遅延、追跡範囲、誤操作率は実機で未検証です。</p><div class="sensor-capabilities"><div><span>DESIGN GOAL</span><strong>Spatial input</strong><p>遊び・制作・学習へつながる低遅延入力を目指します。</p></div><div><span>NOT VERIFIED</span><strong>0 hardware tests</strong><p>センサー方式と性能は確定していません。</p></div></div><span class="feature-meta">CONCEPT GOAL — NOT A DEMONSTRATED SENSOR OUTPUT</span></article>
+          <article class="feature-beat" data-beat="telescope" aria-hidden="true"><p class="eyebrow">02 / PRODUCT ENVELOPE</p><h2>200 mm以内。<br />収納はこれから。</h2><p class="feature-description">使用時200mm以内を目標にしています。表示方式・演算・電源・熱・音声・通信を安全に収められるかは未合格です。</p><span class="feature-meta">TARGET ≤ 200 MM / FINAL PACKAGING NOT VERIFIED</span></article>
+          <article class="feature-beat" data-beat="base" aria-hidden="true"><p class="eyebrow">03 / SAME-MINI SCALE OUT</p><h2>足すなら、<br />同じmini。</h2><p class="feature-description">1本で成立することを先に確認し、必要に応じて同型miniを増設します。専用の別Hubを必須構成へ戻しません。</p><span class="feature-meta">ONE UNIT FIRST / MULTI-UNIT COORDINATION NOT VERIFIED</span></article>
+          <article class="feature-beat" data-beat="os" aria-hidden="true"><p class="eyebrow">04 / ROCKSTAROS</p><h2>遊ぶ。つくる。<br />権限を守る。</h2><p class="feature-description">ローカルゲーム、音声、保存、許可済みAI接続をまとめるOS基盤です。機体統合とR5実機での受入は未完了です。</p><span class="feature-meta">NO UNAPPROVED CAPTURE, PAYMENT, PUBLISHING, OR SAFETY OVERRIDE</span></article>
+        </div>
+        <div class="stage" id="stage"><div class="motion-product" id="motion-product" role="img" aria-label="avocadoMini R5の単体構想画像。スクロールでR5の設計要点を切り替えます。"><span class="camera-sweep" aria-hidden="true"></span><img class="turn-frame" data-view="front" src="/images/r5/avocado-mini-r5-black-studio.png" alt="" fetchpriority="high" /><img class="turn-frame" data-view="side" src="/images/r5/avocado-mini-r5-black-studio.png" alt="" /><img class="turn-frame" data-view="rear" src="/images/r5/avocado-mini-r5-black-studio.png" alt="" /><span class="camera-flare camera-flare-upper" aria-hidden="true"></span></div><div class="sensor-closeup" id="sensor-closeup" aria-hidden="true"><img src="/images/r5/avocado-mini-r5-black-studio.png" alt="" /><div><span><i></i> R5 · DESIGN GOAL</span><span><i></i> HARDWARE · NOT VERIFIED</span></div></div></div>
+        <div class="sensor-gaze" id="sensor-gaze" aria-hidden="true"><span class="sensor-gaze-upper"></span></div>
+        <div class="story-foot"><div><span id="chapter">INTRO / R5</span><strong id="angle">R5</strong></div><div class="track"><div id="progress"></div></div><span class="scroll-note">SCROLL TO EXPLORE</span></div>
+        <div class="price-panel" id="price-panel" aria-hidden="true"><p class="eyebrow">CURRENT STATUS / R5</p><h2>avocadoMini</h2><div class="price"><span>価格・発売日・販売条件</span><strong>未確定</strong><small>基本設計段階 · 実機試験 0件</small></div><div class="price-actions"><span class="price-availability">予約・決済は停止中</span><a class="text-link" href="/preorder/" tabindex="-1" id="preorder-link">販売状況を確認 <span aria-hidden="true">↗</span></a></div><p class="fine">旧E3の商品構成と価格はR5へ適用しません。製造承認、最終仕様、発送条件は未確定です。</p></div>
       </div>
-      <figure class="hero-media reveal">
-        <img src="/images/r5/avocado-mini-r5-concept.png" alt="銀色の円筒形avocadoMini R5単体の設計構想画像" fetchpriority="high" />
-        <figcaption>R5 design concept. 実機写真ではありません。</figcaption>
-      </figure>
     </section>
-
-    <section class="intro section-light reveal">
-      <p class="eyebrow">ONE OPERATING FOUNDATION</p>
-      <h2>外部Hubを<br />前提にしない。</h2>
-      <p>R5では、入力・ローカル計算・ゲーム・保存・音声・安全な停止を1本にまとめます。必要になれば、同じminiを足して空間を広げます。</p>
-      <div class="fact-row"><span>≤ 200 mm</span><span>1 UNIT AUTONOMOUS</span><span>SAME-MINI SCALE OUT</span></div>
-    </section>
-
-    <section id="experience" class="experience section-silver" aria-labelledby="experience-title">
-      <div class="section-heading reveal"><p class="eyebrow">PLAY / MAKE / LIVE</p><h2 id="experience-title">ゲームから始まる。<br />その先まで続く。</h2></div>
-      <div class="experience-grid">
-        <article class="reveal"><span>01</span><h3>PLAY</h3><p>身体の動きと空間を入力にして遊ぶ。低遅延の成立は、実機でこれから測ります。</p></article>
-        <article class="reveal"><span>02</span><h3>MAKE</h3><p>動き、音声、AIを組み合わせて作品や発明の候補を残す。外部送信は本人承認が前提です。</p></article>
-        <article class="reveal"><span>03</span><h3>LIVE</h3><p>学習や限定した生活支援へ広げる。ゲームの権限から勝手に家電や決済へ越境しません。</p></article>
-      </div>
-    </section>
-
-    <section id="architecture" class="architecture section-dark" aria-labelledby="architecture-title">
-      <div class="architecture-copy reveal"><p class="eyebrow">R5 / SINGLE UNIT</p><h2 id="architecture-title">小さな筐体に、<br />役割を重ねる。</h2><p>円筒の中に入力、演算、電源、安全、音声、通信の区画を積み上げる設計です。外部給電は必要。表示方式・精密3D入力・熱・最終収納は未確定です。</p><a class="text-link light" href="https://github.com/k999ln/rock/tree/main/docs/avocado-mini-r5">GitHubで根拠を見る ↗</a></div>
-      <figure class="architecture-figure reveal"><img src="/images/r5/R5-M02-functional-stack.png" alt="avocadoMini R5内部機能スタックの設計図" loading="lazy" /><figcaption>R5-M02 / functional stack</figcaption></figure>
-    </section>
-
-    <section class="display-goal section-light" aria-labelledby="display-title">
-      <figure class="reveal"><img src="/images/r5/R5-S01-scaling.png" alt="1台から同型miniを追加して拡張するR5構成図" loading="lazy" /></figure>
-      <div class="reveal"><p class="eyebrow">DISPLAY RESEARCH GOAL</p><h2 id="display-title">画面の中ではなく、<br />空間そのものへ。</h2><p>周囲の実空間に裸眼で粒子や像が見えることを必須の研究目標にしています。ただし方式は未確定で、実演済みではありません。現時点の画像は設計意図を伝える構想表現です。</p></div>
-    </section>
-
-    <section id="status" class="status section-dark" aria-labelledby="status-title">
-      <div class="section-heading reveal"><p class="eyebrow">DEVELOPMENT STATUS / 2026.09.24</p><h2 id="status-title">できていることと、<br />まだできていないこと。</h2></div>
-      <div class="status-grid">
-        <article class="status-card done reveal"><span>DOCUMENTED</span><h3>R5統合基本設計</h3><p>51ページの設計書、8点の設計検討図、計算、根拠資料をGitHubに保存済みです。</p></article>
-        <article class="status-card pending reveal"><span>NOT VERIFIED</span><h3>実機・表示・入力</h3><p>実機は0件。全空間表示、精密3D入力、性能、熱、光安全、製造可能性は未合格です。</p></article>
-        <article class="status-card pending reveal"><span>NOT FOR SALE</span><h3>価格・予約・発送</h3><p>R5の価格、販売条件、発売日は未確定です。旧E3の価格と予約構成はR5へ引き継ぎません。</p></article>
-      </div>
-      <div class="status-actions reveal"><a class="button button-light" href="/downloads/avocadoMini-R5-integrated-design.pdf">設計書を開く</a><a class="button button-ghost" href="/preorder/">販売状況を確認</a></div>
-    </section>
-
-    <section class="ecosystem section-light reveal" aria-labelledby="ecosystem-title"><div><p class="eyebrow">ONE OS / MORE THAN ONE PRODUCT</p><h2 id="ecosystem-title">RockstarOSと、<br />rocketstar。</h2></div><div class="ecosystem-links"><a href="/install/"><strong>RockstarOS</strong><span>配布・導入の現在地 ↗</span></a><a href="/rocket-star/"><strong>rocketstar</strong><span>再利用型ロケット設計 ↗</span></a></div></section>
+    <section id="status" class="os-install" aria-labelledby="os-install-title"><div class="os-install-orbit" aria-hidden="true"></div><div class="os-install-content"><h2 id="os-install-title">RockstarOS</h2><a class="os-install-button" href="/install/"><span class="os-install-button-sensor" aria-hidden="true"><span></span></span><span class="os-install-button-copy"><strong>配布状況を見る</strong><small>ROCKSTAROS / CURRENT STATUS</small></span><span class="os-install-button-arrow" aria-hidden="true">↗</span></a></div></section>
   </main>
-
-  <footer><a class="brand" href="/"><img src="/images/avokado-metallic-mark.png" alt="" />avokado</a><div><a href="/rocket-star/">rocketstar</a><a href="/legal/">販売表示</a><a href="/privacy/">プライバシー</a><a href="https://github.com/k999ln/rock">GitHub ↗</a></div><span>© 2026 avokadinc</span></footer>
+  <footer><span>© 2026 avokadinc</span><a href="/rocket-star/">rocketstar</a><a href="/legal/">販売表示</a><a href="/privacy/">プライバシー</a><a href="https://github.com/k999ln/rock">GitHub ↗</a></footer>
 </body>
 </html>

@@ -346,7 +346,7 @@ body{background:#050506}
 .highlight-card span{color:#d1d1d5}
 .highlight-card p{color:#e8e8ea}
 .gallery-hint{color:#a3a3aa}
-.design-intro{background:linear-gradient(135deg,#171719,#070708 72%);color:#f5f5f7}
+.design-intro{position:relative;overflow:hidden;background:linear-gradient(135deg,#171719,#070708 72%);color:#f5f5f7}
 .design-intro:before{content:"";position:absolute;left:50%;top:52%;width:min(64vw,780px);aspect-ratio:1;border:1px solid #ffffff15;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
 .design-intro>*{position:relative;z-index:1}
 .design-intro>p:last-child{color:#bdbdc3}
@@ -670,6 +670,54 @@ footer{background:#080809;border-top:1px solid #ffffff20;color:#a8a8af}
 @media(max-width:600px){.rocket-nav{height:56px;padding:0 18px}.rocket-brand{font-size:16px}.rocket-nav-back{padding:7px 10px;font-size:9px}.rocket-hero{min-height:700px}.rocket-hero-image{background-position:68% center}.rocket-hero:after{background:linear-gradient(90deg,#020407f6 0%,#020407d4 56%,#0204074f 100%),linear-gradient(0deg,#020407e8 0%,transparent 45%,#0204075c 100%)}.rocket-hero-copy{left:23px;right:23px;top:44%;width:auto}.rocket-hero-copy h1{font-size:clamp(82px,28vw,120px);margin-top:14px}.rocket-hero-line{font-size:25px}.rocket-hero-actions{margin-top:28px}.rocket-hero-actions a{min-width:0;flex:1;padding:12px 14px;gap:10px;font-size:10px}.rocket-concept-note{left:23px;right:23px;bottom:18px;font-size:9px}.rocket-telemetry{display:none}.rocket-mission{min-height:850px;padding:100px 23px}.rocket-mission h2{font-size:clamp(52px,15vw,73px);margin:25px 0 55px}.rocket-mission-bottom p{font-size:15px}.rocket-story{height:420svh}.rocket-story-sticky{min-height:620px}.rocket-story-image{background-position:64% center}.rocket-story-vignette{background:linear-gradient(180deg,#020407f2 0%,#020407b0 55%,#0204076b 100%)}.rocket-chapter{left:23px;right:23px;top:118px;width:auto;transform:translate3d(0,22px,0)}.rocket-chapter.is-active{transform:none}.rocket-chapter h2{font-size:clamp(48px,14vw,67px);margin:15px 0 17px}.rocket-chapter>p:not(.rocket-kicker){font-size:13px;line-height:1.65;max-width:360px}.rocket-chapter>span{margin-top:20px;font-size:8px}.rocket-story-word{font-size:48vw;bottom:19%}.rocket-story-footer{left:23px;right:23px;bottom:19px;gap:12px}.rocket-story-footer>div:first-child{min-width:84px}.rocket-story-footer>span:last-child{display:none}.rocket-receiver{padding:100px 23px 80px}.receiver-copy h2{font-size:clamp(50px,14vw,70px)}.receiver-copy dl{margin-top:38px}.receiver-copy dl div{grid-template-columns:34px 1fr}.receiver-copy dd{flex-direction:column;gap:5px}.receiver-product{min-height:570px}.receiver-product img{width:min(260px,74%)}.receiver-orbits{right:-38vw;width:125vw}.receiver-beam{right:30%;width:18vw}.rocket-funding{padding:100px 23px}.funding-heading h2{font-size:clamp(52px,15vw,72px)}.funding-panel{padding:25px 21px;border-radius:25px}.funding-panel button{min-height:68px;padding:13px 16px;font-size:14px}.rocket-footer{padding:26px 23px}}
 @media(prefers-reduced-motion:reduce){.rocket-stars,.rocket-signal-map:before,.rocket-signal-map:after,.rocket-signal-map span,.receiver-halo,.receiver-beam{animation:none}.rocket-chapter{transition:none}.rocket-motion-ready .rocket-nav,.rocket-motion-ready .rocket-hero-copy,.rocket-motion-ready .rocket-telemetry,.rocket-motion-ready .rocket-concept-note{opacity:1}.rocket-motion-ready .rocket-hero-image{filter:saturate(.9);transform:scale(1.035)}.rocket-motion-ready :is(.rocket-mission,.rocket-receiver,.rocket-funding)>:is(.rocket-kicker,h2,.rocket-mission-bottom,.receiver-copy,.receiver-product,.funding-heading,.funding-panel){transition:none;opacity:1;filter:none;transform:none}}
 
+/* Blend the photographic product plates into one continuous black studio. */
+.film-hero:before{
+  inset:-6%;
+  z-index:0;
+  background:url('/images/avocado-mini-tower20-e3-kit.png') center 50% / cover no-repeat;
+  filter:blur(28px) brightness(.55);
+  opacity:.8;
+  mix-blend-mode:normal;
+}
+.film-hero-device{
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 52%;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 14%,#000 68%,#000c 79%,transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0%,#000 14%,#000 68%,#000c 79%,transparent 100%);
+}
+.film-hero:after{
+  background:linear-gradient(to bottom,#05050699 0%,transparent 17%,transparent 58%,#05050673 77%,#050506 100%);
+}
+.story-sticky:after{background:#000}
+.turn-frame{
+  -webkit-mask-image:radial-gradient(ellipse 64% 60% at 50% 50%,#000 0 68%,#000d 79%,transparent 100%);
+  mask-image:radial-gradient(ellipse 64% 60% at 50% 50%,#000 0 68%,#000d 79%,transparent 100%);
+}
+@media(max-width:800px){
+  .film-hero:before{
+    inset:-8%;
+    z-index:0;
+    background:url('/images/avocado-mini-tower20-e3-kit.png') center 48% / cover no-repeat;
+    filter:blur(30px) brightness(.58);
+    opacity:.82;
+    mix-blend-mode:normal;
+  }
+  .film-hero-device{
+    inset:0 auto auto 0;
+    width:100%;
+    height:auto;
+    aspect-ratio:1672 / 941;
+    object-fit:cover;
+    object-position:center;
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 18%,#000 68%,#0008 84%,transparent 100%);
+    mask-image:linear-gradient(to bottom,transparent 0%,#000 18%,#000 68%,#0008 84%,transparent 100%);
+  }
+  .story-sticky:after{background:#000}
+}
+
 /* Editorial typography: each line arrives as a deliberate part of the product film. */
 :root{font-optical-sizing:auto;font-feature-settings:"kern" 1,"ss03" 1,"ss05" 1}
 h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
@@ -934,3 +982,33 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
 .e2-core-grid article:nth-child(1) p{color:#afc6d1}
 .e2-core-note{position:relative;z-index:1;max-width:68rem;margin:3rem 0 0;padding-top:1.5rem;border-top:1px solid #12334226;color:#566a75;font-size:.88rem;line-height:1.6}
 @media(max-width:800px){.e2-core-grid{grid-template-columns:1fr}.e2-core-grid article:nth-child(1){grid-column:auto}.e2-core-grid article{min-height:20rem}}
+
+/* R5 content uses the approved black/silver product-film system without redesigning it. */
+.r5-product-page .film-hero:before{
+  background:url('/images/r5/avocado-mini-r5-black-studio.png') center 52% / cover no-repeat;
+  filter:blur(32px) brightness(.42);
+  opacity:.72;
+}
+.r5-product-page .film-hero-device{
+  inset:5% 7% 8%;
+  width:86%;
+  height:87%;
+  object-fit:contain;
+  object-position:center;
+  -webkit-mask-image:radial-gradient(ellipse 72% 72% at 50% 51%,#000 0 66%,#000d 78%,transparent 100%);
+  mask-image:radial-gradient(ellipse 72% 72% at 50% 51%,#000 0 66%,#000d 78%,transparent 100%);
+}
+.r5-product-page .highlight-card img{object-position:center}
+.r5-product-page .turn-frame[data-view="side"],
+.r5-product-page .turn-frame[data-view="rear"]{display:none}
+.r5-product-page .turn-frame[data-view="front"]{
+  opacity:1!important;
+  object-fit:contain;
+  -webkit-mask-image:radial-gradient(ellipse 64% 58% at 50% 52%,#000 0 67%,#000e 78%,transparent 100%);
+  mask-image:radial-gradient(ellipse 64% 58% at 50% 52%,#000 0 67%,#000e 78%,transparent 100%);
+}
+.r5-product-page .sensor-closeup img{object-position:center}
+@media(max-width:800px){
+  .r5-product-page .film-hero:before{background:url('/images/r5/avocado-mini-r5-black-studio.png') center / cover no-repeat}
+  .r5-product-page .film-hero-device{inset:10% 3% 25%;width:94%;height:65%;object-fit:contain}
+}
