@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24",
+  "updatedAt": "2026-09-26",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
   "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
   "tasks": [
@@ -1657,7 +1657,9 @@
       "evidence": [
         "scripts/project-status.mjs",
         ".github/workflows/ci.yml",
-        "docs/native-ci-partition-fix-20260910.md"
+        "docs/native-ci-partition-fix-20260910.md",
+        "tests/avocado-r5-docs.test.mjs",
+        "tests/mini200-e1-docs.test.mjs"
       ]
     },
     {

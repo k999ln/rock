@@ -1,5 +1,11 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-26 — README英語版へのCI回帰検査を同期
+
+英語版READMEへ移行後も旧日本語文言を要求していたR5・Mini200 E1の2検査を、現行READMEの製造保留・実機試験0件・ゲームを入口にした構想・進捗リンクに合わせた。`npm run verify`はexit 0（Node 363/363、Fashion Brand Ops 19/19、Web build・仕事API合格）。製品Siteの`npm test`は16/16、`npm run build`は13ページ生成、Python unit testは118/118、OS backend restart smoke、OS契約、Game wire vectors 303 checks、稼働中のローカルWeb security response検査も合格した。
+
+これはsourceとローカルfixtureの検証である。release gateはready 0/6、Pixel初回flash gateは0/4のまま。R5実機は未接続で物理試験0件。MacはAOSP build用Linux/KVM host条件を満たさず、Java runtime不在でOS parity harnessは未実行。native Linux/QEMU、Android image、実機flash、本番Provider・配備の受入結果へ換算しない。
+
 ## 2026-09-24 — 指定されたTower20 E3の公開Siteをそのまま復元
 
 利用者が再提示した画面収録と10枚のスクリーンショットを基準に、R5向けへ置き換わっていた公開ホームを、指定どおりのTower20 E3サイトへ戻した。Astroは維持し、画像の生成・描き替えは行わず、履歴に残る承認済み原本を再利用した。4本の200 mm Motion Towerと中央のEdge Hubの全景、「Intelligence, built into space.」、横送りのHighlights 4枚、「Everything, for the space.」、正面・側面・背面を使う180°スクロール、RockstarOSのOpen installer、avokadinc footerを復元した。
@@ -1026,7 +1032,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 104/156件
+最終更新: 2026-09-26 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 104/156件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -1130,7 +1136,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
-| R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) · [記録](docs/native-ci-partition-fix-20260910.md) |
+| R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) · [記録](docs/native-ci-partition-fix-20260910.md) · [記録](tests/avocado-r5-docs.test.mjs) · [記録](tests/mini200-e1-docs.test.mjs) |
 | R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 | R06 | ブラウザで仕事の一連の操作を確認 | 完了 | [記録](docs/validation.md) |
 | R07 | 本人限定のSitesへ公開・本番確認 | 完了 | [記録](docs/deployment-integration.md) · [記録](docs/release-followup-20260910.md) · [記録](docs/owner-setup-20260911.md) · [記録](docs/evidence/launch/backend-owner-validation-20260912.json) |
