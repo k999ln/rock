@@ -45,7 +45,9 @@ void test('the concise landing page links to complete progress and explicitly wi
   assert.match(readme, /docs\/avocado-mini-r5\/README\.md/);
   assert.match(readme, /manufacturing approval is on hold/);
   assert.match(readme, /zero physical-device tests have been completed/);
-  assert.match(readme, /\[All task progress\]\(project\.md#[^)]+\)/);
+  const progressLink = readme.match(/\[All task progress\]\((project\.md#[^)]+)\)/);
+  assert.ok(progressLink);
+  assert.equal(decodeURIComponent(progressLink[1]), 'project.md#全taskの作業進捗');
   assert.doesNotMatch(readme, /<!-- project-status:start -->/);
   assert.match(read('project.md'), /## 全taskの作業進捗\s+<!-- project-status:start -->/);
 });
