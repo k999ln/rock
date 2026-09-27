@@ -2,9 +2,9 @@
 
 ## 2026-09-26 — README英語版へのCI回帰検査を同期
 
-英語版READMEへ移行後も旧日本語文言を要求していたR5・Mini200 E1の2検査を、現行READMEの製造保留・実機試験0件・ゲームを入口にした構想・進捗リンクに合わせた。`npm run verify`はexit 0（Node 363/363、Fashion Brand Ops 19/19、Web build・仕事API合格）。製品Siteの`npm test`は16/16、`npm run build`は13ページ生成、Python unit testは118/118、OS backend restart smoke、OS契約、Game wire vectors 303 checks、稼働中のローカルWeb security response検査も合格した。
+英語版READMEへ移行後も旧日本語文言を要求していたR5・Mini200 E1の2検査を、現行READMEの製造保留・実機試験0件・ゲームを入口にした構想・進捗リンクに合わせた。`npm run verify`はexit 0（Node 363/363、Fashion Brand Ops 19/19、Web build・仕事API合格）。製品Siteの`npm test`は16/16、`npm run build`は13ページ生成、Python unit testは118/118、OS backend restart smoke、OS契約、Game wire vectors 303 checks、Java↔TypeScriptのOS tool parity 36 checks、稼働中のローカルWeb security response検査も合格した。
 
-これはsourceとローカルfixtureの検証である。release gateはready 0/6、Pixel初回flash gateは0/4のまま。R5実機は未接続で物理試験0件。MacはAOSP build用Linux/KVM host条件を満たさず、Java runtime不在でOS parity harnessは未実行。native Linux/QEMU、Android image、実機flash、本番Provider・配備の受入結果へ換算しない。
+これはsourceとローカルfixtureの検証である。release gateはready 0/6、Pixel初回flash gateは0/4のまま。R5実機は未接続で物理試験0件。MacはAOSP build用Linux/KVM host条件を満たさない。native Linux/QEMU、Android image、実機flash、本番Provider・配備の受入結果へ換算しない。
 
 ## 2026-09-24 — 指定されたTower20 E3の公開Siteをそのまま復元
 
