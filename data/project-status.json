@@ -1093,6 +1093,7 @@
         "WEB17"
       ],
       "evidence": [
+        "sites/avocado-mini/docs/experience-images-v4.md",
         "sites/avocado-mini/src/pages/index.astro",
         "sites/avocado-mini/src/main.js",
         "sites/avocado-mini/src/style.css",
