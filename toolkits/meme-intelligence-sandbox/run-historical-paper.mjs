@@ -113,7 +113,7 @@ for(const e of EVENTS){
     const cs=await candles(p.pool,e); row.candles=cs.length; row.replay=replay(e,cs,bankroll);
   }catch(err){row.replay={status:'ERROR',reason:String(err?.message||err)};}
   rows.push(row);
-  process.stdout.write(`${e.symbol}: ${row.replay.status}${row.replay.pnl!=null?` pnl=${row.replay.pnl}`:''}\n`);
+  process.stdout.write(`${e.symbol}: ${row.replay.status}${row.replay.pnl!=null?` pnl=${row.replay.pnl}`:''}${row.replay.reason?` reason=${row.replay.reason}`:''}\n`);
 }
 const traded=rows.filter(x=>x.replay.status==='TRADED'),pnl=traded.reduce((a,x)=>a+x.replay.pnl,0);
 const report={schema:'rockstaros-meme-historical-paper-replay/1',generatedAt:new Date().toISOString(),mode:'PAPER_ONLY',method:{signal:'first DexScreener paid activity from historical DXT Tools records; NOT the full Jev/social engine',filter:`marketCap>=${MIN_MCAP} and liquidity>=${MIN_LIQ}`,candles:`GeckoTerminal ${AGG}-minute OHLCV; enter next candle open`,sizing:'$2 probe; +$3 at +20%; +$5 at +50%, normalized to $100 test bankroll',exit:'-35% stop; sell 50% at 2x; 30% trailing stop thereafter; 7-day max hold',costs:'1% assumed on each buy and sell',lookahead:'none in trade rules; event list is retrospectively sampled and therefore not a population-complete test'},summary:{events:rows.length,traded:traded.length,filtered:rows.filter(x=>x.replay.status==='FILTERED').length,errors:rows.filter(x=>x.replay.status==='ERROR').length,totalNormalizedPnl:+pnl.toFixed(4),normalizedStart:bankroll,normalizedEnd:+(bankroll+pnl).toFixed(4),winningTrades:traded.filter(x=>x.replay.pnl>0).length,losingTrades:traded.filter(x=>x.replay.pnl<0).length},rows};
