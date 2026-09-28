@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import { backtestConcentratedLp } from "../src/clmm-backtest.mjs";
 import {
+  derivePairOhlcv,
   normalizeOhlcvList,
   parseFeeBpsFromPoolName,
 } from "../src/historical.mjs";
@@ -56,4 +57,58 @@ test("range breach triggers rebalance cost", () => {
   });
   assert.equal(result.rebalances, 1);
   assert.ok(result.totalRebalanceCostsUsd > 0);
+});
+
+test("derives base/quote candles from synchronized USD candles", () => {
+  const pair = derivePairOhlcv(
+    [
+      { timestamp: 1, open: 200, high: 220, low: 180, close: 210, volumeUsd: 500 },
+    ],
+    [
+      { timestamp: 1, open: 2, high: 2.2, low: 1.8, close: 2.1, volumeUsd: 500 },
+    ],
+  );
+  assert.equal(pair.length, 1);
+  assert.equal(pair[0].open, 100);
+  assert.equal(pair[0].close, 100);
+  assert.equal(pair[0].quoteUsdClose, 2.1);
+  assert.ok(pair[0].high > pair[0].open);
+  assert.ok(pair[0].low < pair[0].open);
+});
+
+test("LP USD value follows quote-token USD value when pair price is flat", () => {
+  const candles = [
+    {
+      timestamp: 1,
+      open: 100,
+      high: 101,
+      low: 99,
+      close: 100,
+      volumeUsd: 0,
+      quoteUsdOpen: 1,
+      quoteUsdHigh: 1,
+      quoteUsdLow: 1,
+      quoteUsdClose: 1,
+    },
+    {
+      timestamp: 3601,
+      open: 100,
+      high: 101,
+      low: 99,
+      close: 100,
+      volumeUsd: 0,
+      quoteUsdOpen: 2,
+      quoteUsdHigh: 2,
+      quoteUsdLow: 2,
+      quoteUsdClose: 2,
+    },
+  ];
+  const result = backtestConcentratedLp(candles, {
+    startingCapitalUsd: 1_000,
+    rangeHalfWidthPct: 50,
+    feeBps: 0,
+    slippageBps: 0,
+    gasPerRebalanceUsd: 0,
+  });
+  assert.ok(result.finalEquityUsd > 1_900);
 });
