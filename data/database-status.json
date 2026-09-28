@@ -1,16 +1,16 @@
 {
   "schema": 1,
-  "updatedAt": "2026-09-24",
+  "updatedAt": "2026-09-27",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 80,
+    "tableCount": 86,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
-    "total": 156,
-    "done": 104,
+    "total": 157,
+    "done": 105,
     "in_progress": 31,
     "planned": 20,
     "blocked": 1,
@@ -18,7 +18,7 @@
     "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。"
   },
   "webSchema": {
-    "tableCount": 32,
+    "tableCount": 38,
     "tables": [
       "automation_fund_memberships",
       "automation_funds",
@@ -40,6 +40,12 @@
       "marketplace_reservations",
       "mercari_revenue_plans",
       "sky_activation_codes",
+      "sky_campus_edges",
+      "sky_campus_items",
+      "sky_campus_profiles",
+      "sky_campus_reports",
+      "sky_campus_tag_events",
+      "sky_campus_tags",
       "sky_connections",
       "sky_developer_tokens",
       "sky_provider_connections",
@@ -53,8 +59,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 17,
-    "latestMigration": "0016_red_crusher_hogan.sql",
+    "migrationCount": 18,
+    "latestMigration": "0017_campus_layer.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -81,6 +87,12 @@
         "label": "Sky接続・Tool管理",
         "tables": [
           "sky_activation_codes",
+          "sky_campus_edges",
+          "sky_campus_items",
+          "sky_campus_profiles",
+          "sky_campus_reports",
+          "sky_campus_tag_events",
+          "sky_campus_tags",
           "sky_connections",
           "sky_developer_tokens",
           "sky_provider_connections",
@@ -91,7 +103,7 @@
           "sky_tool_packages",
           "sky_tool_submissions"
         ],
-        "tableCount": 10
+        "tableCount": 16
       },
       {
         "id": "marketplace",
@@ -161,6 +173,12 @@
         "marketplace_reservations",
         "mercari_revenue_plans",
         "sky_activation_codes",
+        "sky_campus_edges",
+        "sky_campus_items",
+        "sky_campus_profiles",
+        "sky_campus_reports",
+        "sky_campus_tag_events",
+        "sky_campus_tags",
         "sky_connections",
         "sky_developer_tokens",
         "sky_provider_connections",
@@ -174,8 +192,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0016_red_crusher_hogan.sql",
-      "tableCount": 32,
+      "expectedAppliedThrough": "0017_campus_layer.sql",
+      "tableCount": 38,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",
