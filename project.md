@@ -1,3 +1,9 @@
+## 2026-09-27 — Avocado Campusを大学別の実機能として追加
+
+利用者の「大学別でavocadoがどう使えるかを実際の機能にし、ないものを全部作る」という指示に合わせ、NYU / FIT / Columbia / Fordham / John Jay向けCampusレイヤーをWeb runtimeへ追加した。People matching、Projects、Opportunities、Events、Communities、Portfolio、Resources、大学email domainによる限定的な所属表示、block/report、owner編集・archive、Campus単位の利用者データ削除、NFC/QR tag batch・mode・source別匿名analytics・停止/削除を実装した。
+
+NFC/QRはOS本体をタグへ保存せず、`/t/[tagId]` からCampus modeへ入る。analyticsはtag ID / source / timestampだけを保存し、IP、認証email、precise location、raw User-Agentを保存しない。大学公式サービス・公式求人/イベントDBとは表示せず、外部原典URLがない投稿はコミュニティ投稿として扱う。[Campus設計](docs/campus-layer.md)に機能・privacy・claim境界をまとめた。正本実装は `app/campus/`、`app/api/campus/`、`app/t/`、`lib/campus*.ts`、migration `0017_campus_layer.sql`。CAMPUS01。
+
 # RockstarOS — 事業・設計・進捗
 
 ## 2026-09-26 — avokadoホームの用途紹介を体験中心へ簡素化
