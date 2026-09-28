@@ -5,8 +5,9 @@ import {
   chooseRangeFromHistory,
   walkForwardRangeStrategy,
 } from "../src/walk-forward-core.mjs";
+import { summarizeRegime } from "../src/regime.mjs";
 
-function makeCandles(count, priceFn) {
+function makeCandles(count, priceFn, volumeUsd = 100_000) {
   return Array.from({ length: count }, (_, i) => {
     const close = priceFn(i);
     return {
@@ -15,7 +16,7 @@ function makeCandles(count, priceFn) {
       high: close * 1.01,
       low: close * 0.99,
       close,
-      volumeUsd: 100_000,
+      volumeUsd,
     };
   });
 }
@@ -55,9 +56,42 @@ test("walk-forward produces strictly later test windows", () => {
   assert.ok(Number.isFinite(result.finalEquityUsd));
 });
 
-test("boundary reposition costs are charged after first fold", () => {
-  const candles = makeCandles(120, () => 100);
-  const result = walkForwardRangeStrategy(candles, {
+test("regime summary uses only trailing candles", () => {
+  const history = makeCandles(48, (i) => 100 + i * 0.2, 200_000);
+  const regime = summarizeRegime(history, 1_000_000);
+  assert.ok(regime.trendPct > 0);
+  assert.ok(regime.volumeTvlPerDay > 0);
+  assert.ok(regime.days > 0);
+});
+
+test("cash gate can refuse a negative training regime", () => {
+  const falling = makeCandles(
+    96,
+    (i) => 100 * Math.pow(0.985, i),
+    10_000,
+  );
+  const result = walkForwardRangeStrategy(falling, {
+    candidateRangesPct: [6, 12, 30],
+    trainBars: 48,
+    testBars: 24,
+    startingCapitalUsd: 1_000,
+    feeBps: 0,
+    tvlUsd: 1_000_000,
+    slippageBps: 25,
+    gasPerRebalanceUsd: 0.35,
+    allowCash: true,
+  });
+  assert.ok(result.cashFolds >= 1);
+  assert.ok(result.folds.some((fold) => fold.action === "CASH"));
+});
+
+test("cash-to-cash folds do not pay repeated transition costs", () => {
+  const falling = makeCandles(
+    120,
+    (i) => 100 * Math.pow(0.99, i),
+    1_000,
+  );
+  const result = walkForwardRangeStrategy(falling, {
     candidateRangesPct: [12],
     trainBars: 48,
     testBars: 24,
@@ -66,8 +100,9 @@ test("boundary reposition costs are charged after first fold", () => {
     tvlUsd: 1_000_000,
     slippageBps: 25,
     gasPerRebalanceUsd: 0.35,
+    allowCash: true,
   });
-  assert.equal(result.folds[0].boundaryCostUsd, 0);
-  assert.ok(result.folds.slice(1).every((f) => f.boundaryCostUsd > 0));
-  assert.ok(result.totalBoundaryCostsUsd > 0);
+  const cashFolds = result.folds.filter((fold) => fold.action === "CASH");
+  assert.ok(cashFolds.length >= 2);
+  assert.ok(cashFolds.every((fold) => fold.boundaryCostUsd === 0));
 });
