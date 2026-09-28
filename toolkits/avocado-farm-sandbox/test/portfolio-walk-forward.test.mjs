@@ -81,3 +81,25 @@ test("portfolio stays cash when no pool passes the entry gate", () => {
   assert.ok(result.cashFolds >= 1);
   assert.ok(result.folds.every((fold) => fold.action === "CASH"));
 });
+
+test("robust selector can stay cash when training halves disagree", () => {
+  const start = 1_700_000_000;
+  const whipsaw = makePool({
+    id: "whipsaw",
+    start,
+    count: 120,
+    priceFn: (i) => (i < 24 ? 100 + i : 124 - (i - 24) * 0.7),
+    volumeUsd: 200_000,
+  });
+
+  const result = portfolioWalkForward([whipsaw], {
+    candidateRangesPct: [8, 12, 30],
+    trainBars: 48,
+    testBars: 24,
+    startingCapitalUsd: 1_000,
+    selectionMode: "robust",
+  });
+
+  assert.ok(result.folds.length >= 1);
+  assert.ok(result.cashFolds >= 1);
+});
