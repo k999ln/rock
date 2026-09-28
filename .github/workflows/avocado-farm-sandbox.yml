@@ -39,3 +39,20 @@ jobs:
           MODEL_FEE_BPS: "30"
           GECKO_PAGES: "1"
         run: npm --prefix toolkits/avocado-farm-sandbox run scan:paper
+
+  historical-backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: 30-day historical PAPER backtest
+        env:
+          BACKTEST_DAYS: "30"
+          PAPER_TICKET_USD: "1000"
+          RANGE_HALF_WIDTH_PCT: "12"
+          REBALANCE_SLIPPAGE_BPS: "25"
+          REBALANCE_GAS_USD: "0.35"
+        run: npm --prefix toolkits/avocado-farm-sandbox run backtest
