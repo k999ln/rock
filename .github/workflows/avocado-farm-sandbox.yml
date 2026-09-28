@@ -56,3 +56,20 @@ jobs:
           REBALANCE_SLIPPAGE_BPS: "25"
           REBALANCE_GAS_USD: "0.35"
         run: npm --prefix toolkits/avocado-farm-sandbox run backtest
+
+  range-sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Historical LP range sweep
+        env:
+          BACKTEST_DAYS: "30"
+          PAPER_TICKET_USD: "1000"
+          RANGE_SWEEP_PCT: "6,8,12,16,20,30,50"
+          REBALANCE_SLIPPAGE_BPS: "25"
+          REBALANCE_GAS_USD: "0.35"
+        run: npm --prefix toolkits/avocado-farm-sandbox run backtest:sweep
