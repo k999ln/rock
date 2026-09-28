@@ -407,6 +407,31 @@ export function campusStore(db: Db) {
     return { id, removed: true };
   }
 
+  async function outgoingEdges(user: string, campus: CampusId) {
+    return (
+      await statement(
+        db,
+        `SELECT id, edge_type AS edgeType, target_type AS targetType,
+          target_id AS targetId, note, status, created_at AS createdAt,
+          updated_at AS updatedAt
+         FROM sky_campus_edges
+         WHERE actor_user_id = ? AND campus_id = ?
+         ORDER BY updated_at DESC LIMIT 500`,
+        user,
+        campus,
+      ).all<{
+        id: string;
+        edgeType: string;
+        targetType: string;
+        targetId: string;
+        note: string;
+        status: string;
+        createdAt: string;
+        updatedAt: string;
+      }>()
+    ).results;
+  }
+
   async function inbox(user: string, campus: CampusId) {
     const rows = (
       await statement(
@@ -551,6 +576,36 @@ export function campusStore(db: Db) {
     }));
   }
 
+  async function setTagActive(user: string, tagId: string, active: boolean) {
+    const result = await statement(
+      db,
+      `UPDATE sky_campus_tags SET active = ?, updated_at = ?
+       WHERE tag_id = ? AND owner_user_id = ? RETURNING tag_id`,
+      Number(active),
+      now(),
+      tagId,
+      user,
+    ).all();
+    if (!result.results.length) throw new CampusError('タグが見つかりません。', 404);
+    return { tagId, active };
+  }
+
+  async function clearTagAnalytics(user: string, tagId: string) {
+    const owned = await statement(
+      db,
+      'SELECT tag_id FROM sky_campus_tags WHERE tag_id = ? AND owner_user_id = ?',
+      tagId,
+      user,
+    ).first();
+    if (!owned) throw new CampusError('タグが見つかりません。', 404);
+    const result = await statement(
+      db,
+      'DELETE FROM sky_campus_tag_events WHERE tag_id = ?',
+      tagId,
+    ).run();
+    return { tagId, deletedEvents: result.meta.changes };
+  }
+
   async function tagAnalytics(user: string, campus: CampusId) {
     return (
       await statement(
@@ -676,6 +731,89 @@ export function campusStore(db: Db) {
     return { id, status: 'open' };
   }
 
+  async function leaveCampus(user: string, campus: CampusId) {
+    const profile = await profileForUser(user, campus);
+    const ownedItems = (
+      await statement(
+        db,
+        'SELECT id FROM sky_campus_items WHERE owner_user_id = ? AND campus_id = ?',
+        user,
+        campus,
+      ).all<{ id: string }>()
+    ).results;
+    const itemIds = ownedItems.map((row) => row.id);
+    const operations: D1PreparedStatement[] = [
+      statement(
+        db,
+        `DELETE FROM sky_campus_tag_events WHERE tag_id IN (
+          SELECT tag_id FROM sky_campus_tags WHERE owner_user_id = ? AND campus_id = ?
+        )`,
+        user,
+        campus,
+      ),
+      statement(
+        db,
+        'DELETE FROM sky_campus_tags WHERE owner_user_id = ? AND campus_id = ?',
+        user,
+        campus,
+      ),
+      statement(
+        db,
+        'DELETE FROM sky_campus_edges WHERE actor_user_id = ? AND campus_id = ?',
+        user,
+        campus,
+      ),
+      statement(
+        db,
+        'DELETE FROM sky_campus_reports WHERE reporter_user_id = ? AND campus_id = ?',
+        user,
+        campus,
+      ),
+    ];
+    if (profile)
+      operations.push(
+        statement(
+          db,
+          "DELETE FROM sky_campus_edges WHERE target_type = 'profile' AND target_id = ?",
+          profile.id,
+        ),
+        statement(
+          db,
+          "DELETE FROM sky_campus_reports WHERE target_type = 'profile' AND target_id = ?",
+          profile.id,
+        ),
+      );
+    for (const id of itemIds)
+      operations.push(
+        statement(
+          db,
+          "DELETE FROM sky_campus_edges WHERE target_type = 'item' AND target_id = ?",
+          id,
+        ),
+        statement(
+          db,
+          "DELETE FROM sky_campus_reports WHERE target_type = 'item' AND target_id = ?",
+          id,
+        ),
+      );
+    operations.push(
+      statement(
+        db,
+        'DELETE FROM sky_campus_items WHERE owner_user_id = ? AND campus_id = ?',
+        user,
+        campus,
+      ),
+      statement(
+        db,
+        'DELETE FROM sky_campus_profiles WHERE user_id = ? AND campus_id = ?',
+        user,
+        campus,
+      ),
+    );
+    await db.batch(operations);
+    return { campusId: campus, deleted: true };
+  }
+
   async function bootstrap(user: string | null, campus: CampusId) {
     const [people, items] = await Promise.all([
       listProfiles(campus, user),
@@ -689,12 +827,16 @@ export function campusStore(db: Db) {
         matches: [],
         items,
         inbox: [],
+        myEdges: [],
       };
     const own = await profileForUser(user, campus);
     const profile = own
       ? { ...publicProfile(own), isPublic: Boolean(own.isPublic) }
       : null;
-    const [requests] = await Promise.all([inbox(user, campus)]);
+    const [requests, myEdges] = await Promise.all([
+      inbox(user, campus),
+      outgoingEdges(user, campus),
+    ]);
     return {
       campus: CAMPUSES[campus],
       profile,
@@ -702,6 +844,7 @@ export function campusStore(db: Db) {
       matches: own ? matchCampusProfiles(publicProfile(own), people).slice(0, 20) : [],
       items,
       inbox: requests,
+      myEdges,
     };
   }
 
@@ -717,12 +860,16 @@ export function campusStore(db: Db) {
     setEdge,
     removeEdge,
     inbox,
+    outgoingEdges,
     respondEdge,
     registerTagBatch,
+    setTagActive,
+    clearTagAnalytics,
     tagAnalytics,
     resolveTag,
     recordTagEvent,
     report,
+    leaveCampus,
     profileById,
   };
 }
