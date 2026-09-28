@@ -103,6 +103,7 @@ type Bootstrap = {
     edgeType: string;
     targetType: string;
     targetId: string;
+    targetLabel: string;
     note: string;
     status: string;
     createdAt: string;
@@ -503,6 +504,13 @@ export default function CampusWorkspace({
     );
   }
 
+  async function removeEdge(id: string) {
+    await run(
+      () => api('PATCH', { action: 'removeEdge', id }),
+      'Connection removed.',
+    );
+  }
+
   async function respondEdge(id: string, decision: 'accepted' | 'declined') {
     await run(
       () => api('POST', { action: 'respondEdge', id, decision }),
@@ -682,6 +690,7 @@ export default function CampusWorkspace({
                 onBlock={(id) => edge('block', 'profile', id)}
                 onReport={(id) => report('profile', id)}
                 onRespond={respondEdge}
+                onRemove={removeEdge}
               />
             )}
 
@@ -895,6 +904,7 @@ function People({
   onBlock,
   onReport,
   onRespond,
+  onRemove,
 }: {
   data: Bootstrap;
   query: string;
@@ -905,6 +915,7 @@ function People({
   onBlock: (id: string) => void;
   onReport: (id: string) => void;
   onRespond: (id: string, decision: 'accepted' | 'declined') => void;
+  onRemove: (id: string) => void;
 }) {
   const q = query.toLowerCase().trim();
   const people = data.people.filter((person) =>
@@ -968,6 +979,25 @@ function People({
             ))}
           </div>
         </>
+      )}
+
+      {data.myEdges.length > 0 && (
+        <details className={styles.connections}>
+          <summary>Your follows, saves, joins, blocks & requests ({data.myEdges.length})</summary>
+          <div>
+            {data.myEdges.map((connection) => (
+              <article key={connection.id}>
+                <span>
+                  <strong>{connection.targetLabel}</strong>
+                  <small>{connection.edgeType.replaceAll('_', ' ')} · {connection.status}</small>
+                </span>
+                <button disabled={saving} onClick={() => onRemove(connection.id)}>
+                  Remove
+                </button>
+              </article>
+            ))}
+          </div>
+        </details>
       )}
 
       <label className={styles.search}>
