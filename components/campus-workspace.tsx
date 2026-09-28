@@ -100,6 +100,16 @@ type Bootstrap = {
   matches: Match[];
   items: Item[];
   inbox: Inbox[];
+  myEdges: {
+    id: string;
+    edgeType: string;
+    targetType: string;
+    targetId: string;
+    note: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+  }[];
 };
 type TagAnalytics = {
   tagId: string;
@@ -199,7 +209,7 @@ function detail(item: Item, key: string) {
 }
 
 async function api(
-  method: 'POST' | 'PATCH',
+  method: 'POST' | 'PATCH' | 'DELETE',
   body: Record<string, unknown>,
 ) {
   const response = await fetch('/api/campus', {
@@ -394,6 +404,72 @@ export default function CampusWorkspace({
       'Published to Campus.',
     );
     setShowComposer(null);
+  }
+
+  async function editItem(item: Item) {
+    const title = window.prompt('Title', item.title);
+    if (title == null) return;
+    const summary = window.prompt('Description', item.summary);
+    if (summary == null) return;
+    await run(
+      () =>
+        api('PATCH', {
+          action: 'updateItem',
+          id: item.id,
+          item: {
+            campusId: item.campusId,
+            kind: item.kind,
+            title,
+            summary,
+            tags: item.tags,
+            details: item.details,
+            startsAt: item.startsAt,
+            endsAt: item.endsAt,
+            visibility: item.visibility,
+          },
+        }),
+      'Post updated.',
+    );
+  }
+
+  async function archiveItem(id: string) {
+    if (!window.confirm('Archive this Campus post?')) return;
+    await run(
+      () => api('PATCH', { action: 'archiveItem', id }),
+      'Post archived.',
+    );
+  }
+
+  async function leaveCampus() {
+    if (
+      !window.confirm(
+        'Delete your profile, posts, connections, registered tags, and tag analytics for this Campus? This cannot be undone.',
+      )
+    )
+      return;
+    await run(
+      () => api('DELETE', { action: 'leaveCampus', campusId: campus }),
+      'Campus data deleted.',
+    );
+  }
+
+  async function setTagActive(tagId: string, active: boolean) {
+    await run(
+      () => api('PATCH', { action: 'setTagActive', tagId, active }),
+      active ? 'Tag activated.' : 'Tag deactivated.',
+      false,
+    );
+    await loadAnalytics(campus);
+  }
+
+  async function clearTagAnalytics(tagId: string) {
+    if (!window.confirm('Delete all tap/scan events for this tag?')) return;
+    await run(
+      () => api('DELETE', { action: 'clearTagAnalytics', tagId }),
+      'Tag analytics cleared.',
+      false,
+    );
+    await loadAnalytics(campus);
   }
 
   async function edge(
@@ -626,6 +702,8 @@ export default function CampusWorkspace({
                 onSubmit={createItem}
                 onAction={(id) => edge('collaborator_request', 'item', id, 'I’d like to collaborate on this project.')}
                 actionLabel="Collaborate"
+                onEdit={editItem}
+                onArchive={archiveItem}
                 onReport={(id) => report('item', id)}
               />
             )}
@@ -642,6 +720,8 @@ export default function CampusWorkspace({
                 onSubmit={createItem}
                 onAction={(id) => edge('save', 'item', id)}
                 actionLabel="Save"
+                onEdit={editItem}
+                onArchive={archiveItem}
                 onReport={(id) => report('item', id)}
               />
             )}
@@ -658,6 +738,8 @@ export default function CampusWorkspace({
                 onSubmit={createItem}
                 onAction={(id) => edge('save', 'item', id)}
                 actionLabel="Save"
+                onEdit={editItem}
+                onArchive={archiveItem}
                 onReport={(id) => report('item', id)}
               />
             )}
@@ -674,6 +756,8 @@ export default function CampusWorkspace({
                 onSubmit={createItem}
                 onAction={(id) => edge('join', 'item', id)}
                 actionLabel="Join"
+                onEdit={editItem}
+                onArchive={archiveItem}
                 onReport={(id) => report('item', id)}
               />
             )}
@@ -690,6 +774,8 @@ export default function CampusWorkspace({
                 onSubmit={createItem}
                 onAction={(id) => edge('save', 'item', id)}
                 actionLabel="Save"
+                onEdit={editItem}
+                onArchive={archiveItem}
                 onReport={(id) => report('item', id)}
               />
             )}
@@ -706,6 +792,8 @@ export default function CampusWorkspace({
                 onSubmit={createItem}
                 onAction={(id) => edge('save', 'item', id)}
                 actionLabel="Save"
+                onEdit={editItem}
+                onArchive={archiveItem}
                 onReport={(id) => report('item', id)}
               />
             )}
@@ -716,6 +804,8 @@ export default function CampusWorkspace({
                 tags={tags}
                 saving={saving}
                 onSubmit={registerTags}
+                onSetActive={setTagActive}
+                onClearAnalytics={clearTagAnalytics}
               />
             )}
           </div>
@@ -728,6 +818,7 @@ export default function CampusWorkspace({
               required={!data.profile}
               onClose={() => setEditingProfile(false)}
               onSubmit={saveProfile}
+              onLeave={leaveCampus}
             />
           )}
         </>
@@ -943,6 +1034,8 @@ function ItemSection({
   onSubmit,
   onAction,
   actionLabel,
+  onEdit,
+  onArchive,
   onReport,
 }: {
   title: string;
@@ -955,6 +1048,8 @@ function ItemSection({
   onSubmit: (event: FormEvent<HTMLFormElement>, kind: CampusItemKind) => void;
   onAction: (id: string) => void;
   actionLabel: string;
+  onEdit: (item: Item) => void;
+  onArchive: (id: string) => void;
   onReport: (id: string) => void;
 }) {
   return (
@@ -999,6 +1094,12 @@ function ItemSection({
                 <button disabled={saving} onClick={() => onAction(item.id)}>
                   {actionLabel}
                 </button>
+              )}
+              {item.owned && (
+                <>
+                  <button disabled={saving} onClick={() => onEdit(item)}>Edit</button>
+                  <button className={styles.ghost} disabled={saving} onClick={() => onArchive(item.id)}>Archive</button>
+                </>
               )}
               {detail(item, 'externalUrl') && (
                 <a href={detail(item, 'externalUrl')!} target="_blank" rel="noreferrer">
@@ -1147,6 +1248,7 @@ function ProfileEditor({
   required,
   onClose,
   onSubmit,
+  onLeave,
 }: {
   profile: Profile | null;
   campus: CampusConfig;
@@ -1154,6 +1256,7 @@ function ProfileEditor({
   required: boolean;
   onClose: () => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onLeave: () => void;
 }) {
   return (
     <div className={styles.modalBackdrop}>
@@ -1216,9 +1319,16 @@ function ProfileEditor({
           />
           Let other people on this Campus discover this profile
         </label>
-        <button className={styles.primary} disabled={saving}>
-          {saving ? 'Saving…' : 'Save profile'}
-        </button>
+        <div className={styles.modalActions}>
+          <button className={styles.primary} disabled={saving}>
+            {saving ? 'Saving…' : 'Save profile'}
+          </button>
+          {profile && (
+            <button type="button" className={styles.danger} disabled={saving} onClick={onLeave}>
+              Delete my Campus data
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );
@@ -1229,11 +1339,15 @@ function Tags({
   tags,
   saving,
   onSubmit,
+  onSetActive,
+  onClearAnalytics,
 }: {
   campus: CampusConfig;
   tags: TagAnalytics[];
   saving: boolean;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onSetActive: (tagId: string, active: boolean) => void;
+  onClearAnalytics: (tagId: string) => void;
 }) {
   const total = tags.reduce((sum, tag) => sum + tag.total, 0);
   const nfc = tags.reduce((sum, tag) => sum + tag.nfc, 0);
@@ -1302,6 +1416,14 @@ function Tags({
             </dl>
             <code>{`/t/${tag.tagId}?source=nfc`}</code>
             <code>{`/t/${tag.tagId}?source=qr`}</code>
+            <div className={styles.tagActions}>
+              <button disabled={saving} onClick={() => onSetActive(tag.tagId, !tag.active)}>
+                {tag.active ? 'Deactivate' : 'Activate'}
+              </button>
+              <button disabled={saving || tag.total === 0} onClick={() => onClearAnalytics(tag.tagId)}>
+                Clear analytics
+              </button>
+            </div>
           </article>
         ))}
         {tags.length === 0 && <Empty text="No registered tags yet." />}
