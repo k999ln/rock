@@ -1,4 +1,9 @@
-import { fetchPoolMetadata, fetchPoolOhlcv } from "./historical.mjs";
+import {
+  fetchPoolMetadata,
+  fetchPoolPairOhlcv,
+  inferQuoteSymbol,
+  isUsdStableSymbol,
+} from "./historical.mjs";
 import { walkForwardRangeStrategy } from "./walk-forward-core.mjs";
 
 const DEFAULT_ORBIO_USDG =
@@ -8,11 +13,13 @@ const poolAddress = process.env.POOL_ADDRESS || DEFAULT_ORBIO_USDG;
 const days = Number(process.env.BACKTEST_DAYS || 30);
 const maxCandles = Math.max(72, Math.min(24 * days, 24 * 180));
 const metadata = await fetchPoolMetadata({ poolAddress });
-const candles = await fetchPoolOhlcv({
+const quoteSymbol = inferQuoteSymbol(metadata.name);
+const candles = await fetchPoolPairOhlcv({
   poolAddress,
   timeframe: "hour",
   aggregate: 1,
   maxCandles,
+  quoteIsUsdStable: isUsdStableSymbol(quoteSymbol),
 });
 
 const candidateRangesPct = String(
