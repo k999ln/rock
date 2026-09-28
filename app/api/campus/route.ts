@@ -4,6 +4,7 @@ import {
   CampusError,
   campusId,
   campusMode,
+  campusTagId,
   itemInput,
   profileInput,
   verifiedByCampusDomain,
@@ -219,6 +220,34 @@ export async function PATCH(request: Request) {
       return json({ item: await store.archiveItem(user, entityId(input.id)) });
     if (action === 'removeEdge')
       return json({ edge: await store.removeEdge(user, entityId(input.id)) });
+    if (action === 'setTagActive') {
+      if (typeof input.active !== 'boolean')
+        throw new CampusError('タグ状態を確認してください。');
+      return json({
+        tag: await store.setTagActive(user, campusTagId(input.tagId), input.active),
+      });
+    }
+
+    throw new CampusError('対応していない操作です。');
+  } catch (error) {
+    return fail(error);
+  }
+}
+
+
+export async function DELETE(request: Request) {
+  try {
+    const user = await requestUser(request);
+    const input = object(await body(request));
+    const action = string(input.action, '操作', 40);
+    const store = campusStore(database());
+
+    if (action === 'leaveCampus')
+      return json({ result: await store.leaveCampus(user, campusId(input.campusId)) });
+    if (action === 'clearTagAnalytics')
+      return json({
+        result: await store.clearTagAnalytics(user, campusTagId(input.tagId)),
+      });
 
     throw new CampusError('対応していない操作です。');
   } catch (error) {
