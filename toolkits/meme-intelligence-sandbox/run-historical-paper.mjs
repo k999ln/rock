@@ -108,20 +108,30 @@ function replayImproved(e,cs,bankroll){
   const post=cs.filter(x=>x.t>start);
   if(post.length<2) return {status:'NO_DATA',reason:'insufficient_post_signal_candles'};
 
-  // Do not buy the first available candle. Observe up to 90 minutes and require
-  // a clean survival + demand confirmation, then enter the NEXT candle open.
-  let signalIndex=-1;
-  const maxScan=Math.min(post.length-1,Math.ceil(90/(AGG)));
-  for(let i=0;i<maxScan;i++){
-    const bar=post[i], prev=post[i-1];
-    const hist=post.slice(Math.max(0,i-4),i).map(x=>x.v);
-    const baseVol=median(hist);
-    const body=bar.c/bar.o;
-    const wick=bar.l/bar.o;
-    const range=bar.h/bar.l;
-    const continuation=!prev||bar.c>=prev.c*1.01;
-    const volumeOk=baseVol<=0||bar.v>=baseVol*1.05;
-    if(body>=1.03&&wick>=.82&&range<=1.80&&continuation&&volumeOk){signalIndex=i;break;}
+  let signalIndex=-1,lane='SLOW';
+  const firstOpen=post[0].o;
+  // FAST lane: exceptional early expansion gets a small, next-candle probe.
+  // It still does not buy the observed breakout candle itself.
+  for(let i=0;i<Math.min(2,post.length-1);i++){
+    const seq=post.slice(0,i+1);
+    const gain=post[i].c/firstOpen;
+    const floor=Math.min(...seq.map(x=>x.l))/firstOpen;
+    if(gain>=1.55&&floor>=.65&&post[i].c>=post[i].o*1.02){
+      signalIndex=i;lane='FAST';break;
+    }
+  }
+  // SLOW lane: require a cleaner survival candle before entering.
+  if(signalIndex<0){
+    const maxScan=Math.min(post.length-1,Math.ceil(90/AGG));
+    for(let i=0;i<maxScan;i++){
+      const bar=post[i], prev=post[i-1];
+      const hist=post.slice(Math.max(0,i-4),i).map(x=>x.v);
+      const baseVol=median(hist);
+      const body=bar.c/bar.o,wick=bar.l/bar.o,range=bar.h/bar.l;
+      const continuation=!prev||bar.c>=prev.c*1.01;
+      const volumeOk=baseVol<=0||bar.v>=baseVol*1.05;
+      if(body>=1.03&&wick>=.82&&range<=1.80&&continuation&&volumeOk){signalIndex=i;lane='SLOW';break;}
+    }
   }
   if(signalIndex<0||!post[signalIndex+1]) return {status:'SKIPPED',reason:'no_clean_confirmation'};
   const entry=post[signalIndex+1];
@@ -132,32 +142,35 @@ function replayImproved(e,cs,bankroll){
   buy(bankroll*.02,entry.o,'PROBE',entry.t);
 
   const active=post.filter(x=>x.t>=entry.t);
+  const cfg=lane==='FAST'
+    ? {stop:[.75,.77,.79],confirm:1.25,scale:1.60,take:1.70,trail:.73}
+    : {stop:[.74,.76,.78],confirm:1.35,scale:1.85,take:1.85,trail:.72};
+
   for(let i=0;i<active.length;i++){
     const bar=active[i]; if(!qty)break;
     const avg=avgEffective();
-    const stageStop=stage==='PROBE'?.74:stage==='CONFIRM'?.76:.78;
+    const stageStop=stage==='PROBE'?cfg.stop[0]:stage==='CONFIRM'?cfg.stop[1]:cfg.stop[2];
     if(bar.l<=avg*stageStop){sell(qty,avg*stageStop,'STOP',bar.t);break;}
-    if(trailActive){const trail=peak*.72;if(bar.l<=trail){sell(qty,trail,'TRAIL_EXIT',bar.t);break;}}
+    if(trailActive){const trail=peak*cfg.trail;if(bar.l<=trail){sell(qty,trail,'TRAIL_EXIT',bar.t);break;}}
 
     const prev=active[i-1], hist=active.slice(Math.max(0,i-4),i).map(x=>x.v), baseVol=median(hist);
-    const demand=(!prev||bar.c>=prev.c)&& (baseVol<=0||bar.v>=baseVol*.90) && bar.c>=bar.o*.98;
+    const demand=(!prev||bar.c>=prev.c*.99)&&(baseVol<=0||bar.v>=baseVol*.85)&&bar.c>=bar.o*.97;
     const waited=bar.t-lastAdvanceT>=AGG*60;
-
-    // Price-only historical mode is intentionally capped at 6% exposure.
-    if(stage==='PROBE'&&waited&&demand&&bar.c>=entry.o*1.35){buy(bankroll*.02,bar.c,'CONFIRM',bar.t);continue;}
-    if(stage==='CONFIRM'&&waited&&demand&&bar.c>=entry.o*1.85){buy(bankroll*.02,bar.c,'SCALE',bar.t);continue;}
+    if(stage==='PROBE'&&waited&&demand&&bar.c>=entry.o*cfg.confirm){buy(bankroll*.02,bar.c,'CONFIRM',bar.t);continue;}
+    if(stage==='CONFIRM'&&waited&&demand&&bar.c>=entry.o*cfg.scale){buy(bankroll*.02,bar.c,'SCALE',bar.t);continue;}
 
     const avg2=avgEffective();
-    if(!partial&&qty&&bar.h>=avg2*1.85){
-      sell(qty*.5,avg2*1.85,'TAKE_1_85X',bar.t);
-      partial=true;peak=Math.max(bar.h,avg2*1.85);trailActive=false;continue;
+    if(!partial&&qty&&bar.h>=avg2*cfg.take){
+      sell(qty*.5,avg2*cfg.take,'TAKE_PROFIT',bar.t);
+      partial=true;peak=Math.max(bar.h,avg2*cfg.take);trailActive=false;continue;
     }
     if(partial){if(!trailActive)trailActive=true;peak=Math.max(peak,bar.h);}
   }
   if(qty){const last=active.at(-1);sell(qty,last.c,'TIME_EXIT',last.t);}
   const final=cash,pnl=final-bankroll;
-  return {status:'TRADED',entryTime:new Date(entry.t*1000).toISOString(),entryPrice:entry.o,confirmationTime:new Date(post[signalIndex].t*1000).toISOString(),final:+final.toFixed(4),pnl:+pnl.toFixed(4),returnPct:+(pnl/bankroll*100).toFixed(2),events};
+  return {status:'TRADED',lane,entryTime:new Date(entry.t*1000).toISOString(),entryPrice:entry.o,confirmationTime:new Date(post[signalIndex].t*1000).toISOString(),final:+final.toFixed(4),pnl:+pnl.toFixed(4),returnPct:+(pnl/bankroll*100).toFixed(2),events};
 }
+
 const argv=n=>{const i=process.argv.indexOf(n);return i>=0?process.argv[i+1]:undefined};
 const bankroll=Number(argv('--bankroll')||100); const out=argv('--output')||'meme-historical-paper-report.json';
 const rows=[];
@@ -174,6 +187,6 @@ for(const e of EVENTS){
 }
 const traded=rows.filter(x=>x.replay.status==='TRADED'),pnl=traded.reduce((a,x)=>a+x.replay.pnl,0);
 const legacyTraded=rows.filter(x=>x.legacy?.status==='TRADED'),legacyPnl=legacyTraded.reduce((a,x)=>a+x.legacy.pnl,0);
-const report={schema:'rockstaros-meme-historical-paper-replay/1',generatedAt:new Date().toISOString(),mode:'PAPER_ONLY',method:{signal:'first DexScreener paid activity from historical DXT Tools records; NOT the full Jev/social engine',filter:`marketCap>=${MIN_MCAP} and liquidity>=${MIN_LIQ}`,candles:`GeckoTerminal ${AGG}-minute OHLCV`,improvedEntry:'observe <=90m; require clean green survival candle, continuation and non-collapsing volume; enter NEXT candle open',improvedSizing:'2% probe +2% confirm at +35% +2% scale at +85%; never advance twice in one candle; 6% max in price-only mode',improvedExit:'stage-aware 22-26% stop; 50% at 1.85x; 28% trailing stop thereafter; 7-day max hold',costs:'1% assumed on each buy and sell',lookahead:'none in trade rules; event list is retrospectively sampled and therefore not a population-complete test'},summary:{events:rows.length,traded:traded.length,skipped:rows.filter(x=>x.replay.status==='SKIPPED').length,filtered:rows.filter(x=>x.replay.status==='FILTERED').length,errors:rows.filter(x=>x.replay.status==='ERROR').length,totalNormalizedPnl:+pnl.toFixed(4),normalizedStart:bankroll,normalizedEnd:+(bankroll+pnl).toFixed(4),winningTrades:traded.filter(x=>x.replay.pnl>0).length,losingTrades:traded.filter(x=>x.replay.pnl<0).length,legacy:{traded:legacyTraded.length,totalNormalizedPnl:+legacyPnl.toFixed(4),normalizedEnd:+(bankroll+legacyPnl).toFixed(4),winningTrades:legacyTraded.filter(x=>x.legacy.pnl>0).length,losingTrades:legacyTraded.filter(x=>x.legacy.pnl<0).length}},rows};
+const report={schema:'rockstaros-meme-historical-paper-replay/1',generatedAt:new Date().toISOString(),mode:'PAPER_ONLY',method:{signal:'first DexScreener paid activity from historical DXT Tools records; NOT the full Jev/social engine',filter:`marketCap>=${MIN_MCAP} and liquidity>=${MIN_LIQ}`,candles:`GeckoTerminal ${AGG}-minute OHLCV`,improvedEntry:'dual lane: exceptional >=55% early expansion or <=90m clean survival confirmation; always enter NEXT candle open',improvedSizing:'2% probe +2% confirm +2% scale; fast lane thresholds +25%/+60%, slow lane +35%/+85%; never advance twice in one candle; 6% max',improvedExit:'stage-aware 21-26% stop; fast 1.70x / slow 1.85x half-take; 27-28% trailing; 7-day max hold',costs:'1% assumed on each buy and sell',lookahead:'none in trade rules; event list is retrospectively sampled and therefore not a population-complete test'},summary:{events:rows.length,traded:traded.length,skipped:rows.filter(x=>x.replay.status==='SKIPPED').length,filtered:rows.filter(x=>x.replay.status==='FILTERED').length,errors:rows.filter(x=>x.replay.status==='ERROR').length,totalNormalizedPnl:+pnl.toFixed(4),normalizedStart:bankroll,normalizedEnd:+(bankroll+pnl).toFixed(4),winningTrades:traded.filter(x=>x.replay.pnl>0).length,losingTrades:traded.filter(x=>x.replay.pnl<0).length,legacy:{traded:legacyTraded.length,totalNormalizedPnl:+legacyPnl.toFixed(4),normalizedEnd:+(bankroll+legacyPnl).toFixed(4),winningTrades:legacyTraded.filter(x=>x.legacy.pnl>0).length,losingTrades:legacyTraded.filter(x=>x.legacy.pnl<0).length}},rows};
 writeFileSync(out,JSON.stringify(report,null,2)+'\n');
 process.stdout.write('RESULT '+JSON.stringify(report.summary)+'\n');
