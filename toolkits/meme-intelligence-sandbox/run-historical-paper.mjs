@@ -37,9 +37,14 @@ async function text(url){
   return await r.text();
 }
 async function json(url){
-  const r=await fetch(url,{headers:{'user-agent':'RockstarOS-MemeReplay/0.1 (+research; PAPER-only)','accept':'application/json'},signal:AbortSignal.timeout(15000)});
-  if(!r.ok) throw new Error(`${r.status} ${url}`);
-  return await r.json();
+  for(let attempt=0;attempt<3;attempt++){
+    const r=await fetch(url,{headers:{'user-agent':'RockstarOS-MemeReplay/0.1 (+research; PAPER-only)','accept':'application/json'},signal:AbortSignal.timeout(15000)});
+    if(r.ok) return await r.json();
+    if(r.status!==429||attempt===2) throw new Error(`${r.status} ${url}`);
+    const retryAfter=Math.max(8,Number(r.headers.get('retry-after')||0));
+    await sleep((retryAfter+attempt*8)*1000);
+  }
+  throw new Error(`request_failed ${url}`);
 }
 async function resolvePool(e){
   let hint=null;
@@ -63,7 +68,7 @@ async function candles(pool,e){
   const start=Math.floor(Date.parse(e.at)/1000),end=start+HOLD_SECONDS;
   const u=new URL(`https://api.geckoterminal.com/api/v2/networks/solana/pools/${pool}/ohlcv/minute`);
   u.searchParams.set('aggregate',String(AGG)); u.searchParams.set('before_timestamp',String(end));
-  u.searchParams.set('limit','1000'); u.searchParams.set('currency','usd'); u.searchParams.set('token','base');
+  u.searchParams.set('limit','1000'); u.searchParams.set('currency','usd'); u.searchParams.set('token',e.mint);
   const d=await json(u.toString());
   return (d?.data?.attributes?.ohlcv_list||[]).map(x=>({t:x[0],o:num(x[1]),h:num(x[2]),l:num(x[3]),c:num(x[4]),v:num(x[5])}))
     .filter(x=>x.t>=start&&x.t<=end&&x.o>0&&x.h>0&&x.l>0&&x.c>0).sort((a,b)=>a.t-b.t);
