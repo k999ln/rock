@@ -26,7 +26,7 @@ import {
   useEffect,
   useState,
   type CSSProperties,
-  type FormEvent,
+  type SyntheticEvent,
 } from 'react';
 import type { CampusId, CampusItemKind } from '@/lib/campus';
 import styles from './campus-workspace.module.css';
@@ -153,7 +153,7 @@ function tabForMode(mode?: string): Tab {
   return 'overview';
 }
 
-const useCases: Record<
+const campusUseCases: Record<
   CampusId,
   { title: string; body: string; tab: Tab; icon: typeof UsersRound }[]
 > = {
@@ -184,15 +184,17 @@ const useCases: Record<
   ],
 };
 
-function split(value: FormDataEntryValue | null) {
-  return String(value ?? '')
+function split(entry: FormDataEntryValue | null) {
+  const raw = typeof entry === 'string' ? entry : '';
+  return raw
     .split(',')
     .map((entry) => entry.trim())
     .filter(Boolean)
     .slice(0, 12);
 }
 function value(form: FormData, key: string) {
-  return String(form.get(key) ?? '').trim();
+  const entry = form.get(key);
+  return typeof entry === 'string' ? entry.trim() : '';
 }
 function maybeDate(form: FormData, key: string) {
   const raw = value(form, key);
@@ -286,11 +288,14 @@ export default function CampusWorkspace({
   }, []);
 
   useEffect(() => {
-    void load(campus);
+    const timer = window.setTimeout(() => void load(campus), 0);
+    return () => window.clearTimeout(timer);
   }, [campus, load]);
 
   useEffect(() => {
-    if (tab === 'tags') void loadAnalytics(campus);
+    if (tab !== 'tags') return;
+    const timer = window.setTimeout(() => void loadAnalytics(campus), 0);
+    return () => window.clearTimeout(timer);
   }, [campus, loadAnalytics, tab]);
 
   function switchCampus(next: CampusId) {
@@ -325,7 +330,7 @@ export default function CampusWorkspace({
     }
   }
 
-  async function saveProfile(event: FormEvent<HTMLFormElement>) {
+  async function saveProfile(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     await run(
@@ -358,7 +363,7 @@ export default function CampusWorkspace({
     setEditingProfile(false);
   }
 
-  async function createItem(event: FormEvent<HTMLFormElement>, kind: CampusItemKind) {
+  async function createItem(event: SyntheticEvent<HTMLFormElement>, kind: CampusItemKind) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const details: Record<string, unknown> = {
@@ -538,7 +543,7 @@ export default function CampusWorkspace({
     );
   }
 
-  async function registerTags(event: FormEvent<HTMLFormElement>) {
+  async function registerTags(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     await run(
@@ -850,7 +855,7 @@ function Overview({
       </div>
 
       <div className={styles.useCaseGrid}>
-        {useCases[data.campus.id].map(({ title, body, tab, icon: Icon }) => (
+        {campusUseCases[data.campus.id].map(({ title, body, tab, icon: Icon }) => (
           <button key={title} onClick={() => onTab(tab)}>
             <Icon size={24} />
             <strong>{title}</strong>
@@ -1070,7 +1075,7 @@ function ItemSection({
   saving: boolean;
   composer: boolean;
   onCompose: () => void;
-  onSubmit: (event: FormEvent<HTMLFormElement>, kind: CampusItemKind) => void;
+  onSubmit: (event: SyntheticEvent<HTMLFormElement>, kind: CampusItemKind) => void;
   onAction: (id: string) => void;
   actionLabel: string;
   onEdit: (item: Item) => void;
@@ -1148,7 +1153,7 @@ function ItemComposer({
 }: {
   kind: CampusItemKind;
   saving: boolean;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onSubmit: (event: SyntheticEvent<HTMLFormElement>) => void;
 }) {
   return (
     <form className={styles.composer} onSubmit={onSubmit}>
@@ -1280,7 +1285,7 @@ function ProfileEditor({
   saving: boolean;
   required: boolean;
   onClose: () => void;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onSubmit: (event: SyntheticEvent<HTMLFormElement>) => void;
   onLeave: () => void;
 }) {
   return (
@@ -1370,7 +1375,7 @@ function Tags({
   campus: CampusConfig;
   tags: TagAnalytics[];
   saving: boolean;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onSubmit: (event: SyntheticEvent<HTMLFormElement>) => void;
   onSetActive: (tagId: string, active: boolean) => void;
   onClearAnalytics: (tagId: string) => void;
 }) {
