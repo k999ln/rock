@@ -260,7 +260,11 @@
         "docs/ai-native-os-architecture.md",
         "docs/llm-evaluation-architecture.md",
         "data/llm-capabilities.json",
-        "scripts/check-llm-architecture.mjs"
+        "scripts/check-llm-architecture.mjs",
+        "docs/agent-control-plane.md",
+        "lib/agent-control-plane.ts",
+        "app/api/agent-control-plane/route.ts",
+        "tests/agent-control-plane.test.mjs"
       ]
     },
     {
