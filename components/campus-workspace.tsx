@@ -10,10 +10,8 @@ import {
   FolderKanban,
   GraduationCap,
   Handshake,
-  Home,
   Link2,
   Network,
-  QrCode,
   Radio,
   Search,
   ShieldCheck,
@@ -24,11 +22,12 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import {
-  FormEvent,
   useCallback,
   useEffect,
   useMemo,
   useState,
+  type CSSProperties,
+  type FormEvent,
 } from 'react';
 import type { CampusId, CampusItemKind } from '@/lib/campus';
 import styles from './campus-workspace.module.css';
@@ -145,6 +144,15 @@ const tabs = [
 ] as const;
 type Tab = (typeof tabs)[number][0];
 
+function tabForMode(mode?: string): Tab {
+  if (mode === 'social') return 'people';
+  if (mode === 'career') return 'opportunities';
+  if (mode === 'events') return 'events';
+  if (mode === 'research' || mode === 'justice' || mode === 'study') return 'resources';
+  if (mode === 'creative') return 'projects';
+  return 'overview';
+}
+
 const useCases: Record<
   CampusId,
   { title: string; body: string; tab: Tab; icon: typeof UsersRound }[]
@@ -235,7 +243,7 @@ export default function CampusWorkspace({
 }) {
   const [campus, setCampus] = useState<CampusId>(initialCampus);
   const [data, setData] = useState<Bootstrap | null>(null);
-  const [tab, setTab] = useState<Tab>('overview');
+  const [tab, setTab] = useState<Tab>(() => tabForMode(entryMode));
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -570,7 +578,7 @@ export default function CampusWorkspace({
   return (
     <main
       className={styles.shell}
-      style={{ '--campus-accent': data?.campus.accent ?? '#70a928' } as React.CSSProperties}
+      style={{ '--campus-accent': data?.campus.accent ?? '#70a928' } as CSSProperties}
     >
       <header className={styles.topbar}>
         <Link href="/" className={styles.brand}>
