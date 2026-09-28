@@ -132,6 +132,15 @@ const robust = portfolioWalkForward(series, {
   selectionMode: "robust",
 });
 
+const fixedStopLossPct = Number(
+  process.env.WF_POSITION_STOP_LOSS_PCT || 5,
+);
+const riskCapped = portfolioWalkForward(series, {
+  ...backtestOptions,
+  selectionMode: "robust",
+  positionStopLossPct: fixedStopLossPct,
+});
+
 console.log("\nAvocado Farm — MULTI-POOL WALK-FORWARD PAPER TEST\n");
 console.log(
   JSON.stringify(
@@ -186,6 +195,18 @@ console.log(
           cashFolds: robust.cashFolds,
           poolSelections: robust.poolSelections,
         },
+        robustRiskCapped: {
+          fixedStopLossPct,
+          startingCapitalUsd: riskCapped.startingCapitalUsd,
+          finalEquityUsd: riskCapped.finalEquityUsd,
+          pnlUsd: riskCapped.pnlUsd,
+          returnPct: riskCapped.returnPct,
+          totalBoundaryCostsUsd: riskCapped.totalBoundaryCostsUsd,
+          lpFolds: riskCapped.lpFolds,
+          cashFolds: riskCapped.cashFolds,
+          stopOuts: riskCapped.folds.filter((fold) => fold.stoppedOut).length,
+          poolSelections: riskCapped.poolSelections,
+        },
       },
     },
     null,
@@ -194,7 +215,7 @@ console.log(
 );
 
 console.table(
-  robust.folds.map((fold) => ({
+  riskCapped.folds.map((fold) => ({
     fold: fold.fold,
     decision: new Date(fold.decisionTime * 1000).toISOString().slice(5, 13),
     action: fold.action,
@@ -220,6 +241,7 @@ console.table(
       fold.positiveRangeFraction === undefined
         ? "-"
         : (fold.positiveRangeFraction * 100).toFixed(0) + "%",
+    stopped: fold.stoppedOut ? "YES" : "",
     testPnl: fold.testPnlUsd.toFixed(2),
     ending: fold.endingCapitalUsd.toFixed(2),
   })),
