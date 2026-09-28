@@ -500,6 +500,31 @@
     "legacyInternalName": "hub",
     "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
   },
+  "campus": {
+    "displayName": "Campus",
+    "route": "/campus",
+    "role": "university_context_people_projects_opportunities_events_communities_portfolio_resources_and_physical_entry",
+    "status": "web_runtime_implemented",
+    "campuses": [
+      "nyu",
+      "fit",
+      "columbia",
+      "fordham",
+      "johnjay"
+    ],
+    "affiliationVerification": "authenticated_email_domain_match_without_email_storage",
+    "publicClaimsBoundary": "community_posted_content_not_official_university_data_unless_external_source_states_otherwise",
+    "physicalEntry": "registered_nfc_or_qr_tag_to_campus_mode_with_source_analytics",
+    "analyticsPrivacy": "tag_source_and_timestamp_only_no_ip_email_precise_location_or_raw_user_agent",
+    "dataControls": [
+      "profile_visibility",
+      "block_and_report",
+      "post_archive",
+      "tag_activate_deactivate",
+      "tag_analytics_delete",
+      "campus_data_delete"
+    ]
+  },
   "baseApps": [
     {
       "id": "sky",
@@ -519,6 +544,11 @@
     {
       "id": "market",
       "role": "generic_paper_market_and_value_spend_runtime"
+    },
+    {
+      "id": "campus",
+      "route": "/campus",
+      "role": "university_context_social_and_project_network"
     }
   ],
   "homeExperience": {
@@ -608,6 +638,7 @@
     "homePrimaryApps": [
       "sky",
       "chat",
+      "campus",
       "wallet",
       "market",
       "settings"

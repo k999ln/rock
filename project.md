@@ -1,3 +1,9 @@
+## 2026-09-27 — Avocado Campusを大学別の実機能として追加
+
+利用者の「大学別でavocadoがどう使えるかを実際の機能にし、ないものを全部作る」という指示に合わせ、NYU / FIT / Columbia / Fordham / John Jay向けCampusレイヤーをWeb runtimeへ追加した。People matching、Projects、Opportunities、Events、Communities、Portfolio、Resources、大学email domainによる限定的な所属表示、block/report、owner編集・archive、Campus単位の利用者データ削除、NFC/QR tag batch・mode・source別匿名analytics・停止/削除を実装した。
+
+NFC/QRはOS本体をタグへ保存せず、`/t/[tagId]` からCampus modeへ入る。analyticsはtag ID / source / timestampだけを保存し、IP、認証email、precise location、raw User-Agentを保存しない。大学公式サービス・公式求人/イベントDBとは表示せず、外部原典URLがない投稿はコミュニティ投稿として扱う。[Campus設計](docs/campus-layer.md)に機能・privacy・claim境界をまとめた。正本実装は `app/campus/`、`app/api/campus/`、`app/t/`、`lib/campus*.ts`、migration `0017_campus_layer.sql`。CAMPUS01。
+
 # RockstarOS — 事業・設計・進捗
 
 ## 2026-09-26 — avokadoホームの用途紹介を体験中心へ簡素化
@@ -1032,7 +1038,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 104/156件
+最終更新: 2026-09-27 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 105/157件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -1192,6 +1198,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) · [記録](docs/workstreams/03-wallet-billing-providers.md) · [記録](tests/billing-worker.test.mjs) · [記録](docs/evidence/launch/sky-billing-fee-hold-20260924.json) |
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |
 | CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 | [記録](data/csv-business-tasks.json) · [記録](docs/csv-business-v1.ja.md) · [記録](lib/csv-transform.ts) · [記録](lib/csv-job-store.ts) · [記録](components/csv-business-workspace.tsx) |
+| CAMPUS01 | 大学別CampusレイヤーとしてPeople・Project・Opportunity・Event・Community・Portfolio・Resource、プロフィールマッチング、NFC/QR入口とsource別匿名集計、block/report/data削除をWeb runtimeへ実装 | 完了 | [記録](app/campus/page.tsx) · [記録](app/api/campus/route.ts) · [記録](app/t/[tagId]/route.ts) · [記録](components/campus-workspace.tsx) · [記録](components/campus-workspace.module.css) · [記録](lib/campus.ts) · [記録](lib/campus-store.ts) · [記録](db/schema.ts) · [記録](drizzle/0017_campus_layer.sql) · [記録](tests/campus.test.mjs) · [記録](docs/campus-layer.md) |
 
 段階ゲート（作業全体の完了とは別判定）
 

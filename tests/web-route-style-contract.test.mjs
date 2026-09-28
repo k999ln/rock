@@ -48,9 +48,13 @@ for (const [surface, selectors] of Object.entries(surfaces)) {
   });
 }
 
-void test('module-styled home and settings keep their stylesheet bindings', () => {
+void test('module-styled home, Campus and settings keep their stylesheet bindings', () => {
   const home = readFileSync(
     resolve(root, 'components/home-screen.tsx'),
+    'utf8',
+  );
+  const campus = readFileSync(
+    resolve(root, 'components/campus-workspace.tsx'),
     'utf8',
   );
   const settings = readFileSync(
@@ -58,6 +62,8 @@ void test('module-styled home and settings keep their stylesheet bindings', () =
     'utf8',
   );
   assert.match(home, /from '\.\/home-screen\.module\.css'/);
+  assert.match(campus, /from '\.\/campus-workspace\.module\.css'/);
+  assert.match(campus, /Avocado Campus is not an official university system/);
   assert.match(settings, /from '\.\/system-settings\.module\.css'/);
   assert.match(settings, /<WorkspaceShell title="設定" hideTopActions>/);
 });
@@ -95,7 +101,7 @@ void test('OS home keeps Work and CSV inside Sky without fake device telemetry',
     resolve(root, 'components/home-screen.module.css'),
     'utf8',
   );
-  for (const route of ['/sky', '/chat', '/wallet', '/market', '/settings']) {
+  for (const route of ['/sky', '/chat', '/campus', '/wallet', '/market', '/settings']) {
     assert.match(
       home,
       new RegExp(`href: '${route}'`),
@@ -245,4 +251,20 @@ void test('public product and install guide stay outside the OS home', () => {
   assert.doesNotMatch(product, /href="\/"/);
   assert.match(product, /href="\/rockstaros\/guide"/);
   assert.match(guide, /<Link href="\/rockstaros" className=\{styles\.brand\} aria-label="製品ホームへ戻る"/);
+});
+
+
+void test('Campus route keeps physical-entry and privacy boundaries visible in source', () => {
+  const route = readFileSync(resolve(root, 'app/t/[tagId]/route.ts'), 'utf8');
+  const api = readFileSync(resolve(root, 'app/api/campus/route.ts'), 'utf8');
+  const store = readFileSync(resolve(root, 'lib/campus-store.ts'), 'utf8');
+  const design = readFileSync(resolve(root, 'docs/campus-layer.md'), 'utf8');
+  assert.match(route, /recordTagEvent\(tagId, source\)/);
+  assert.match(route, /Response\.redirect/);
+  assert.match(api, /leaveCampus/);
+  assert.match(api, /clearTagAnalytics/);
+  assert.match(store, /source, occurred_at/);
+  assert.doesNotMatch(store, /user_agent|ip_address|latitude|longitude/i);
+  assert.match(design, /大学の公式サービスではありません/);
+  assert.match(design, /IP address、認証email、precise location、raw User-Agent/);
 });
