@@ -215,13 +215,14 @@ export function campusStore(db: Db) {
     kind?: CampusItemKind,
     viewer?: string | null,
   ) {
-    const clause = kind ? 'AND kind = ?' : '';
+    const kindClause = kind ? 'AND kind = ?' : '';
+    const visibilityClause = viewer ? '' : "AND visibility = 'public'";
     const args: (string | number | null)[] = kind ? [campus, kind] : [campus];
     const rows = (
       await statement(
         db,
         `SELECT ${itemColumns} FROM sky_campus_items
-         WHERE campus_id = ? AND status = 'active' ${clause}
+         WHERE campus_id = ? AND status = 'active' ${kindClause} ${visibilityClause}
          ORDER BY
            CASE WHEN kind = 'event' AND starts_at IS NOT NULL THEN 0 ELSE 1 END,
            starts_at ASC, updated_at DESC
