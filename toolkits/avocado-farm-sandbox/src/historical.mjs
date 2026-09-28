@@ -1,0 +1,102 @@
+const API_BASE = "https://api.geckoterminal.com/api/v2";
+
+async function getJson(url, fetchImpl = fetch) {
+  const response = await fetchImpl(url, {
+    headers: {
+      accept: "application/json",
+      "user-agent": "avocado-farm-sandbox/0.1",
+    },
+    signal: AbortSignal.timeout(20_000),
+  });
+  if (!response.ok) {
+    throw new Error(`GeckoTerminal HTTP ${response.status}: ${await response.text()}`);
+  }
+  return response.json();
+}
+
+export function parseFeeBpsFromPoolName(name, fallbackBps = 30) {
+  const matches = [...String(name ?? "").matchAll(/(\d+(?:\.\d+)?)%/g)];
+  if (!matches.length) return fallbackBps;
+  const pct = Number(matches.at(-1)[1]);
+  return Number.isFinite(pct) ? pct * 100 : fallbackBps;
+}
+
+export async function fetchPoolMetadata({
+  network = "robinhood",
+  poolAddress,
+  fetchImpl = fetch,
+} = {}) {
+  const url = `${API_BASE}/networks/${network}/pools/${poolAddress}`;
+  const payload = await getJson(url, fetchImpl);
+  const attributes = payload?.data?.attributes ?? {};
+  return {
+    address: attributes.address ?? poolAddress,
+    name: attributes.name ?? "UNKNOWN",
+    tvlUsd: Number(attributes.reserve_in_usd ?? 0),
+    spotPriceUsd: Number(attributes.base_token_price_usd ?? 0),
+    volume24hUsd: Number(attributes.volume_usd?.h24 ?? 0),
+    poolCreatedAt: attributes.pool_created_at ?? null,
+    feeBps: parseFeeBpsFromPoolName(attributes.name, 30),
+  };
+}
+
+export function normalizeOhlcvList(list) {
+  const out = [];
+  for (const row of list ?? []) {
+    if (!Array.isArray(row) || row.length < 6) continue;
+    const [timestamp, open, high, low, close, volume] = row.map(Number);
+    if (
+      !Number.isFinite(timestamp) ||
+      !Number.isFinite(open) ||
+      !Number.isFinite(high) ||
+      !Number.isFinite(low) ||
+      !Number.isFinite(close) ||
+      !Number.isFinite(volume)
+    ) continue;
+    out.push({ timestamp, open, high, low, close, volumeUsd: volume });
+  }
+  return out;
+}
+
+export async function fetchPoolOhlcv({
+  network = "robinhood",
+  poolAddress,
+  timeframe = "hour",
+  aggregate = 1,
+  maxCandles = 720,
+  beforeTimestamp = Math.floor(Date.now() / 1000),
+  fetchImpl = fetch,
+} = {}) {
+  const byTimestamp = new Map();
+  let cursor = beforeTimestamp;
+
+  while (byTimestamp.size < maxCandles) {
+    const remaining = maxCandles - byTimestamp.size;
+    const limit = Math.min(100, remaining);
+    const params = new URLSearchParams({
+      aggregate: String(aggregate),
+      before_timestamp: String(cursor),
+      limit: String(limit),
+      currency: "usd",
+      token: "base",
+      include_empty_intervals: "false",
+    });
+    const url =
+      `${API_BASE}/networks/${network}/pools/${poolAddress}/ohlcv/${timeframe}?${params}`;
+    const payload = await getJson(url, fetchImpl);
+    const batch = normalizeOhlcvList(payload?.data?.attributes?.ohlcv_list);
+    if (!batch.length) break;
+
+    for (const candle of batch) byTimestamp.set(candle.timestamp, candle);
+
+    const oldest = Math.min(...batch.map((x) => x.timestamp));
+    if (!Number.isFinite(oldest) || oldest >= cursor) break;
+    cursor = oldest - 1;
+
+    if (batch.length < limit) break;
+  }
+
+  return [...byTimestamp.values()]
+    .sort((a, b) => a.timestamp - b.timestamp)
+    .slice(-maxCandles);
+}
