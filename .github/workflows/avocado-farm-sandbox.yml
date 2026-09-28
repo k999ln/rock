@@ -1,0 +1,25 @@
+name: Avocado Farm Sandbox
+
+on:
+  push:
+    branches:
+      - feature/avocado-farm-sandbox
+    paths:
+      - "toolkits/avocado-farm-sandbox/**"
+      - ".github/workflows/avocado-farm-sandbox.yml"
+  pull_request:
+    paths:
+      - "toolkits/avocado-farm-sandbox/**"
+      - ".github/workflows/avocado-farm-sandbox.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Unit tests
+        run: npm --prefix toolkits/avocado-farm-sandbox test
