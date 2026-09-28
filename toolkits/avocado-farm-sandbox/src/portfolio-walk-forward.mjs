@@ -1,7 +1,7 @@
 import { discoverRobinhoodPools } from "./gecko.mjs";
 import {
-  fetchPoolOhlcv,
-  parseFeeBpsFromPoolName,
+  fetchPoolPairOhlcv,
+  isUsdStableSymbol,
 } from "./historical.mjs";
 import { portfolioWalkForward } from "./portfolio-walk-forward-core.mjs";
 
@@ -45,13 +45,15 @@ const skipped = [];
 for (const pool of universe) {
   if (series.length >= targetPoolCount) break;
 
-  const name = pool.token0 + " / " + pool.token1;
+  const name = pool.name ?? (pool.token0 + " / " + pool.token1);
+  const quoteIsUsdStable = isUsdStableSymbol(pool.token1);
   try {
-    const candles = await fetchPoolOhlcv({
+    const candles = await fetchPoolPairOhlcv({
       poolAddress: pool.address,
       timeframe: "hour",
       aggregate: 1,
       maxCandles,
+      quoteIsUsdStable,
     });
 
     if (candles.length < Math.ceil(trainBars * 0.8) + 2) {
@@ -62,17 +64,19 @@ for (const pool of universe) {
       continue;
     }
 
-    const feeBps = parseFeeBpsFromPoolName(name, 30);
     series.push({
       id: pool.id,
       address: pool.address,
       name,
       dexId: pool.dexId,
       tvlUsd: pool.tvlUsd,
-      feeBps,
-      feeSource: /\d+(?:\.\d+)?%/.test(name)
-        ? "pool-name"
-        : "30bps-fallback",
+      feeBps: pool.feeBps,
+      feeSource:
+        pool.feeSource === "assumption"
+          ? "30bps-fallback"
+          : pool.feeSource,
+      quoteSymbol: pool.token1,
+      quoteMode: quoteIsUsdStable ? "usd-stable" : "derived-pair",
       candles,
     });
   } catch (error) {
@@ -141,6 +145,8 @@ console.log(
         tvlUsd: pool.tvlUsd,
         feeBps: pool.feeBps,
         feeSource: pool.feeSource,
+        quoteSymbol: pool.quoteSymbol,
+        quoteMode: pool.quoteMode,
         candles: pool.candles.length,
         start: new Date(pool.candles[0].timestamp * 1000).toISOString(),
         end: new Date(pool.candles.at(-1).timestamp * 1000).toISOString(),
@@ -157,6 +163,7 @@ console.log(
         "Historical OHLCV/volume are market data, but fee capture uses current TVL because historical active-liquidity distribution is not reconstructed.",
         "The pool universe is discovered from pools that exist now, so this test still has survivorship/universe-selection bias and can miss pools that disappeared before the run.",
         "Pools without an explicit fee tier in the current display name use a 30 bps fallback fee assumption.",
+        "For non-USD quote tokens such as WETH, LP math uses base/quote prices derived from synchronized base-USD and quote-USD candles; the derived high/low is a conservative OHLC envelope.",
       ],
       comparison: {
         baseline: {
