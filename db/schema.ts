@@ -609,3 +609,138 @@ export const skyToolGrants = sqliteTable(
     index('idx_sky_grant_code').on(table.activationCodeId),
   ],
 );
+
+
+export const skyCampusProfiles = sqliteTable(
+  'sky_campus_profiles',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    campusId: text('campus_id').notNull(),
+    handle: text('handle').notNull(),
+    displayName: text('display_name').notNull(),
+    affiliation: text('affiliation').notNull(),
+    affiliationStatus: text('affiliation_status').notNull(),
+    headline: text('headline').notNull().default(''),
+    bio: text('bio').notNull().default(''),
+    skillsJson: text('skills_json').notNull().default('[]'),
+    interestsJson: text('interests_json').notNull().default('[]'),
+    lookingForJson: text('looking_for_json').notNull().default('[]'),
+    linksJson: text('links_json').notNull().default('[]'),
+    isPublic: integer('is_public').notNull().default(1),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_campus_profile_user_campus').on(table.userId, table.campusId),
+    uniqueIndex('idx_sky_campus_profile_handle').on(table.campusId, table.handle),
+    index('idx_sky_campus_profile_public').on(table.campusId, table.isPublic, table.updatedAt),
+  ],
+);
+
+export const skyCampusItems = sqliteTable(
+  'sky_campus_items',
+  {
+    id: text('id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    campusId: text('campus_id').notNull(),
+    kind: text('kind').notNull(),
+    title: text('title').notNull(),
+    summary: text('summary').notNull(),
+    tagsJson: text('tags_json').notNull().default('[]'),
+    detailsJson: text('details_json').notNull().default('{}'),
+    status: text('status').notNull().default('active'),
+    visibility: text('visibility').notNull().default('campus'),
+    startsAt: text('starts_at'),
+    endsAt: text('ends_at'),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    index('idx_sky_campus_items_feed').on(table.campusId, table.kind, table.status, table.updatedAt),
+    index('idx_sky_campus_items_owner').on(table.ownerUserId, table.updatedAt),
+  ],
+);
+
+export const skyCampusEdges = sqliteTable(
+  'sky_campus_edges',
+  {
+    id: text('id').primaryKey(),
+    actorUserId: text('actor_user_id').notNull(),
+    campusId: text('campus_id').notNull(),
+    edgeType: text('edge_type').notNull(),
+    targetType: text('target_type').notNull(),
+    targetId: text('target_id').notNull(),
+    note: text('note').notNull().default(''),
+    status: text('status').notNull(),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_campus_edge_unique').on(
+      table.actorUserId,
+      table.edgeType,
+      table.targetType,
+      table.targetId,
+    ),
+    index('idx_sky_campus_edge_target').on(table.campusId, table.targetType, table.targetId, table.status),
+  ],
+);
+
+export const skyCampusTags = sqliteTable(
+  'sky_campus_tags',
+  {
+    tagId: text('tag_id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    campusId: text('campus_id').notNull(),
+    mode: text('mode').notNull(),
+    destination: text('destination').notNull(),
+    label: text('label').notNull().default(''),
+    placement: text('placement').notNull().default(''),
+    active: integer('active').notNull().default(1),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    index('idx_sky_campus_tags_owner').on(table.ownerUserId, table.campusId, table.createdAt),
+    index('idx_sky_campus_tags_active').on(table.campusId, table.active),
+  ],
+);
+
+export const skyCampusTagEvents = sqliteTable(
+  'sky_campus_tag_events',
+  {
+    id: text('id').primaryKey(),
+    tagId: text('tag_id').notNull(),
+    source: text('source').notNull(),
+    occurredAt: text('occurred_at').notNull(),
+  },
+  (table) => [
+    index('idx_sky_campus_tag_events_tag').on(table.tagId, table.occurredAt),
+    index('idx_sky_campus_tag_events_source').on(table.source, table.occurredAt),
+  ],
+);
+
+export const skyCampusReports = sqliteTable(
+  'sky_campus_reports',
+  {
+    id: text('id').primaryKey(),
+    reporterUserId: text('reporter_user_id').notNull(),
+    campusId: text('campus_id').notNull(),
+    targetType: text('target_type').notNull(),
+    targetId: text('target_id').notNull(),
+    reason: text('reason').notNull(),
+    detail: text('detail').notNull().default(''),
+    status: text('status').notNull().default('open'),
+    createdAt: text('created_at').notNull(),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_campus_report_unique').on(
+      table.reporterUserId,
+      table.targetType,
+      table.targetId,
+    ),
+    index('idx_sky_campus_reports_target').on(table.campusId, table.targetType, table.targetId, table.status),
+  ],
+);
