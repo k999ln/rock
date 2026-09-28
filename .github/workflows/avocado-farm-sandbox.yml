@@ -121,4 +121,5 @@ jobs:
           RANGE_SWEEP_PCT: "8,12,20,30,50"
           REBALANCE_SLIPPAGE_BPS: "25"
           REBALANCE_GAS_USD: "0.35"
+          WF_POSITION_STOP_LOSS_PCT: "5"
         run: npm --prefix toolkits/avocado-farm-sandbox run backtest:portfolio
