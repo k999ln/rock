@@ -1,17 +1,46 @@
 const API_BASE = "https://api.geckoterminal.com/api/v2";
 
+let lastRequestAt = 0;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function throttle() {
+  const minIntervalMs = Number(process.env.GECKO_MIN_INTERVAL_MS || 0);
+  if (!(minIntervalMs > 0)) return;
+  const waitMs = Math.max(0, lastRequestAt + minIntervalMs - Date.now());
+  if (waitMs > 0) await sleep(waitMs);
+  lastRequestAt = Date.now();
+}
+
 async function getJson(url, fetchImpl = fetch) {
-  const response = await fetchImpl(url, {
-    headers: {
-      accept: "application/json",
-      "user-agent": "avocado-farm-sandbox/0.1",
-    },
-    signal: AbortSignal.timeout(20_000),
-  });
-  if (!response.ok) {
-    throw new Error(`GeckoTerminal HTTP ${response.status}: ${await response.text()}`);
+  const maxAttempts = Number(process.env.GECKO_MAX_ATTEMPTS || 6);
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    await throttle();
+    const response = await fetchImpl(url, {
+      headers: {
+        accept: "application/json",
+        "user-agent": "avocado-farm-sandbox/0.1",
+      },
+      signal: AbortSignal.timeout(20_000),
+    });
+
+    if (response.ok) return response.json();
+
+    const body = await response.text();
+    const retryable = response.status === 429 || response.status >= 500;
+    if (!retryable || attempt === maxAttempts) {
+      throw new Error(`GeckoTerminal HTTP ${response.status}: ${body}`);
+    }
+
+    const retryAfter = Number(response.headers?.get?.("retry-after"));
+    const backoffMs = Number.isFinite(retryAfter) && retryAfter > 0
+      ? retryAfter * 1000
+      : Math.min(30_000, 2_000 * 2 ** (attempt - 1));
+    await sleep(backoffMs);
   }
-  return response.json();
+
+  throw new Error("GeckoTerminal request exhausted retries");
 }
 
 export function parseFeeBpsFromPoolName(name, fallbackBps = 30) {
