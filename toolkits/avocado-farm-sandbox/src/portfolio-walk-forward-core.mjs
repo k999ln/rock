@@ -28,6 +28,91 @@ function riskAdjustedTrainingScore(selected, regime) {
   );
 }
 
+export function chooseRobustRangeFromHistory(
+  history,
+  {
+    candidateRangesPct,
+    model,
+    trainingCapitalUsd = 1_000,
+  } = {},
+) {
+  if (!history?.length) throw new Error("No training history");
+  if (!candidateRangesPct?.length) throw new Error("No candidate ranges");
+
+  const split = Math.floor(history.length / 2);
+  const older = history.slice(0, split);
+  const recent = history.slice(split);
+  if (older.length < 2 || recent.length < 2) {
+    throw new Error("Training history is too short for robust selection");
+  }
+
+  const ranked = candidateRangesPct
+    .map((rangeHalfWidthPct) => {
+      const common = {
+        ...model,
+        startingCapitalUsd: trainingCapitalUsd,
+        rangeHalfWidthPct,
+      };
+      const result = backtestConcentratedLp(history, common);
+      const olderResult = backtestConcentratedLp(older, common);
+      const recentResult = backtestConcentratedLp(recent, common);
+      const days = Math.max(
+        1 / 24,
+        (result.endTimestamp - result.startTimestamp) / 86_400,
+      );
+      const rebalancesPerDay = result.rebalances / days;
+      const minSegmentReturnPct = Math.min(
+        olderResult.returnPct,
+        recentResult.returnPct,
+      );
+      const avgSegmentReturnPct =
+        (olderResult.returnPct + recentResult.returnPct) / 2;
+      const robustScore =
+        minSegmentReturnPct +
+        avgSegmentReturnPct * 0.35 -
+        result.maxDrawdownPct * 0.25 -
+        rebalancesPerDay * 0.5;
+
+      return {
+        rangeHalfWidthPct,
+        result,
+        olderResult,
+        recentResult,
+        minSegmentReturnPct,
+        avgSegmentReturnPct,
+        robustScore,
+      };
+    })
+    .sort((a, b) => b.robustScore - a.robustScore);
+
+  return {
+    selected: ranked[0],
+    ranked,
+    positiveRangeFraction:
+      ranked.filter((item) => item.result.returnPct > 0).length / ranked.length,
+  };
+}
+
+function robustGate(training) {
+  const reasons = [];
+  if (training.selected.olderResult.returnPct < 0) {
+    reasons.push(
+      `Older half negative: ${training.selected.olderResult.returnPct.toFixed(2)}%`,
+    );
+  }
+  if (training.selected.recentResult.returnPct < 0) {
+    reasons.push(
+      `Recent half negative: ${training.selected.recentResult.returnPct.toFixed(2)}%`,
+    );
+  }
+  if (training.positiveRangeFraction < 0.6) {
+    reasons.push(
+      `Range robustness too low: ${(training.positiveRangeFraction * 100).toFixed(0)}%`,
+    );
+  }
+  return { ok: reasons.length === 0, reasons };
+}
+
 export function portfolioWalkForward(
   poolSeries,
   {
@@ -40,8 +125,14 @@ export function portfolioWalkForward(
     minTrainCoverage = 0.8,
     minTestCoverage = 0.75,
     entryGate = {},
+    selectionMode = "best",
   } = {},
 ) {
+  const orderedModes = new Set(["best", "robust"]);
+  if (!orderedModes.has(selectionMode)) {
+    throw new Error(`Unknown selectionMode: ${selectionMode}`);
+  }
+
   const series = (poolSeries ?? [])
     .map((pool) => ({
       ...pool,
@@ -49,7 +140,10 @@ export function portfolioWalkForward(
         (a, b) => a.timestamp - b.timestamp,
       ),
     }))
-    .filter((pool) => pool.candles.length >= Math.ceil(trainBars * minTrainCoverage));
+    .filter(
+      (pool) =>
+        pool.candles.length >= Math.ceil(trainBars * minTrainCoverage),
+    );
 
   if (!series.length) throw new Error("No eligible pool history");
 
@@ -66,7 +160,10 @@ export function portfolioWalkForward(
   const folds = [];
 
   while (decisionTime < maxTimestamp - HOUR) {
-    const testEnd = Math.min(maxTimestamp + HOUR, decisionTime + testBars * HOUR);
+    const testEnd = Math.min(
+      maxTimestamp + HOUR,
+      decisionTime + testBars * HOUR,
+    );
     const candidates = [];
 
     for (const pool of series) {
@@ -82,7 +179,10 @@ export function portfolioWalkForward(
         2,
         Math.round((testEnd - decisionTime) / HOUR),
       );
-      if (evaluation.length < Math.ceil(expectedTestBars * minTestCoverage)) {
+      if (
+        evaluation.length <
+        Math.ceil(expectedTestBars * minTestCoverage)
+      ) {
         continue;
       }
 
@@ -92,19 +192,36 @@ export function portfolioWalkForward(
         slippageBps,
         gasPerRebalanceUsd,
       };
-      const training = chooseRangeFromHistory(history, {
-        candidateRangesPct,
-        model,
-        trainingCapitalUsd: 1_000,
-      });
+      const training =
+        selectionMode === "robust"
+          ? chooseRobustRangeFromHistory(history, {
+              candidateRangesPct,
+              model,
+              trainingCapitalUsd: 1_000,
+            })
+          : chooseRangeFromHistory(history, {
+              candidateRangesPct,
+              model,
+              trainingCapitalUsd: 1_000,
+            });
       const regime = summarizeRegime(history, pool.tvlUsd);
-      const gate = evaluateEntryGate({
+      const baseGate = evaluateEntryGate({
         selected: training.selected,
         regime,
         ...entryGate,
       });
+      const stability =
+        selectionMode === "robust"
+          ? robustGate(training)
+          : { ok: true, reasons: [] };
 
-      if (!gate.enter) continue;
+      if (!baseGate.enter || !stability.ok) continue;
+
+      const score =
+        selectionMode === "robust"
+          ? training.selected.robustScore +
+            Math.min(3, regime.volumeTvlPerDay) * 0.25
+          : riskAdjustedTrainingScore(training.selected, regime);
 
       candidates.push({
         pool,
@@ -112,8 +229,12 @@ export function portfolioWalkForward(
         evaluation,
         training,
         regime,
-        gate,
-        score: riskAdjustedTrainingScore(training.selected, regime),
+        gate: {
+          enter: true,
+          reasons: [...baseGate.reasons, ...stability.reasons],
+          metrics: baseGate.metrics,
+        },
+        score,
       });
     }
 
@@ -175,8 +296,13 @@ export function portfolioWalkForward(
       selectionScore: chosen.score,
       trainingReturnPct: chosen.training.selected.result.returnPct,
       trainingDrawdownPct: chosen.training.selected.result.maxDrawdownPct,
-      trainingRebalances:
-        chosen.training.selected.result.rebalances,
+      trainingOlderReturnPct:
+        chosen.training.selected.olderResult?.returnPct ?? null,
+      trainingRecentReturnPct:
+        chosen.training.selected.recentResult?.returnPct ?? null,
+      positiveRangeFraction:
+        chosen.training.positiveRangeFraction ?? null,
+      trainingRebalances: chosen.training.selected.result.rebalances,
       regime: chosen.regime,
       boundaryCostUsd,
     });
@@ -189,6 +315,7 @@ export function portfolioWalkForward(
 
   const pnlUsd = capitalUsd - startingCapitalUsd;
   return {
+    selectionMode,
     startingCapitalUsd,
     finalEquityUsd: capitalUsd,
     pnlUsd,
