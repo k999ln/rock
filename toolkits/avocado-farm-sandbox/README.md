@@ -48,6 +48,17 @@ RH_MAINNET_RPC_URL=https://rpc.mainnet.chain.robinhood.com
 
 The live scanner labels `MODEL_FEE_BPS` as an assumption. A pool's exact fee tier and concentrated-liquidity utilization must come from the DEX adapter before real execution; a displayed APR is never treated as guaranteed return.
 
+## What is implemented now
+
+- **Pool ranking:** fee APR + reward APR - IL heuristic - slippage - gas - liquidity risk.
+- **Risk gate:** minimum TVL, token-risk ceiling, slippage ceiling, per-pool allocation, portfolio allocation, daily loss and turnover circuit breakers.
+- **Range planner:** volatility-aware concentrated-liquidity bands plus ACTIVE / NEAR_EDGE / OUT_OF_RANGE health.
+- **Paper ledger:** OPEN and REBALANCE receipts, deployed cash, turnover, and realized cost tracking.
+- **Transaction intents:** target allowlist, native-value cap, and maximum calls per batch.
+- **Preflight simulator:** only uses `eth_call`; it never broadcasts a transaction.
+- **Strategy feedback:** bounded tuning can widen/narrow ranges and reduce/increase allocation from observed results without bypassing hard risk limits.
+- **Alchemy session check:** verifies an approved Agent Wallet CLI session if one is present, without handling the wallet private key.
+
 ## Architecture
 
 ```text
