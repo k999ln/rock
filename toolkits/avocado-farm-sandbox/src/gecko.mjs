@@ -14,18 +14,22 @@ export function normalizeGeckoPool(row, { defaultFeeBps = 30 } = {}) {
   const ageMinutes = Number.isFinite(createdMs)
     ? Math.max(0, (Date.now() - createdMs) / 60_000)
     : Number.POSITIVE_INFINITY;
-  const pair = String(a.name ?? row?.id ?? "UNKNOWN/UNKNOWN")
+  const rawName = String(a.name ?? row?.id ?? "UNKNOWN/UNKNOWN");
+  const pair = rawName
     .split("/")[0]
     .trim()
     .split(/\s+/)[0];
-  const quote = String(a.name ?? "")
+  const quote = rawName
     .split("/")[1]
     ?.trim()
     .split(/\s+/)[0] ?? "UNKNOWN";
+  const feeMatch = rawName.match(/(\d+(?:\.\d+)?)%\s*$/);
+  const parsedFeeBps = feeMatch ? Number(feeMatch[1]) * 100 : null;
 
   return {
     id: row?.id ?? a.address ?? "unknown",
     address: a.address ?? String(row?.id ?? "").split("_").slice(1).join("_"),
+    name: rawName,
     dexId: r.dex?.data?.id ?? null,
     token0: pair || "UNKNOWN",
     token1: quote || "UNKNOWN",
@@ -36,8 +40,8 @@ export function normalizeGeckoPool(row, { defaultFeeBps = 30 } = {}) {
     realizedVol24hPct: Math.abs(number(a.price_change_percentage?.h24)),
     ageMinutes,
     rewardAprPct: 0,
-    feeBps: defaultFeeBps,
-    feeSource: "assumption",
+    feeBps: Number.isFinite(parsedFeeBps) ? parsedFeeBps : defaultFeeBps,
+    feeSource: Number.isFinite(parsedFeeBps) ? "pool-name" : "assumption",
     slippageBps: 25,
     tokenRisk: 0.35,
     liquidityRisk: 0.25,
