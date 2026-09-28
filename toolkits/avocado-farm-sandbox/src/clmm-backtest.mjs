@@ -1,69 +1,102 @@
 const sqrt = Math.sqrt;
 
-function makePosition(capitalUsd, price, halfWidthPct) {
-  const lower = price * (1 - halfWidthPct / 100);
-  const upper = price * (1 + halfWidthPct / 100);
+const quoteUsdAt = (candle, field = "close") => {
+  const key =
+    field === "open"
+      ? "quoteUsdOpen"
+      : field === "high"
+        ? "quoteUsdHigh"
+        : field === "low"
+          ? "quoteUsdLow"
+          : "quoteUsdClose";
+  const value = Number(candle?.[key] ?? 1);
+  return Number.isFinite(value) && value > 0 ? value : 1;
+};
+
+function makePosition(capitalUsd, pairPrice, quoteUsd, halfWidthPct) {
+  const lower = pairPrice * (1 - halfWidthPct / 100);
+  const upper = pairPrice * (1 + halfWidthPct / 100);
   const sa = sqrt(lower);
   const sb = sqrt(upper);
-  const sp = sqrt(price);
+  const sp = sqrt(pairPrice);
 
   const amount0PerL = (sb - sp) / (sp * sb);
   const amount1PerL = sp - sa;
-  const valuePerL = amount0PerL * price + amount1PerL;
-  const liquidity = capitalUsd / valuePerL;
+  const valuePerLQuote = amount0PerL * pairPrice + amount1PerL;
+  const capitalQuote = capitalUsd / quoteUsd;
+  const liquidity = capitalQuote / valuePerLQuote;
 
-  return { lower, upper, liquidity, entryPrice: price };
+  return {
+    lower,
+    upper,
+    liquidity,
+    entryPrice: pairPrice,
+    entryQuoteUsd: quoteUsd,
+  };
 }
 
-function amountsAtPrice(position, price) {
+function amountsAtPrice(position, pairPrice) {
   const sa = sqrt(position.lower);
   const sb = sqrt(position.upper);
-  const sp = sqrt(Math.max(price, Number.MIN_VALUE));
+  const sp = sqrt(Math.max(pairPrice, Number.MIN_VALUE));
   const L = position.liquidity;
 
-  if (price <= position.lower) {
+  if (pairPrice <= position.lower) {
     return {
-      amount0: L * (sb - sa) / (sa * sb),
+      amount0: (L * (sb - sa)) / (sa * sb),
       amount1: 0,
     };
   }
-  if (price >= position.upper) {
+  if (pairPrice >= position.upper) {
     return {
       amount0: 0,
       amount1: L * (sb - sa),
     };
   }
   return {
-    amount0: L * (sb - sp) / (sp * sb),
+    amount0: (L * (sb - sp)) / (sp * sb),
     amount1: L * (sp - sa),
   };
 }
 
-function positionValue(position, price) {
-  const { amount0, amount1 } = amountsAtPrice(position, price);
-  return amount0 * price + amount1;
+function positionValueQuote(position, pairPrice) {
+  const { amount0, amount1 } = amountsAtPrice(position, pairPrice);
+  return amount0 * pairPrice + amount1;
 }
 
-export function backtestConcentratedLp(candles, {
-  startingCapitalUsd = 1_000,
-  rangeHalfWidthPct = 12,
-  feeBps = 30,
-  tvlUsd = 1_000_000,
-  slippageBps = 25,
-  gasPerRebalanceUsd = 0.35,
-} = {}) {
+function positionValueUsd(position, pairPrice, quoteUsd) {
+  return positionValueQuote(position, pairPrice) * quoteUsd;
+}
+
+export function backtestConcentratedLp(
+  candles,
+  {
+    startingCapitalUsd = 1_000,
+    rangeHalfWidthPct = 12,
+    feeBps = 30,
+    tvlUsd = 1_000_000,
+    slippageBps = 25,
+    gasPerRebalanceUsd = 0.35,
+  } = {},
+) {
   if (!candles?.length) throw new Error("No historical candles");
-  const ordered = [...candles].sort((a,b)=>a.timestamp-b.timestamp);
+  const ordered = [...candles].sort((a, b) => a.timestamp - b.timestamp);
   const first = ordered[0];
   if (!(first.open > 0)) throw new Error("Invalid first price");
 
+  const firstQuoteUsd = quoteUsdAt(first, "open");
   let capital = startingCapitalUsd;
-  let position = makePosition(capital, first.open, rangeHalfWidthPct);
-  let unclaimedFees = 0;
-  let totalFees = 0;
-  let totalCosts = 0;
+  let position = makePosition(
+    capital,
+    first.open,
+    firstQuoteUsd,
+    rangeHalfWidthPct,
+  );
+  let unclaimedFeesUsd = 0;
+  let totalFeesUsd = 0;
+  let totalCostsUsd = 0;
   let rebalances = 0;
-  let peak = startingCapitalUsd;
+  let peakUsd = startingCapitalUsd;
   let maxDrawdownPct = 0;
   let inRangeCandles = 0;
 
@@ -71,44 +104,75 @@ export function backtestConcentratedLp(candles, {
 
   for (const candle of ordered) {
     const close = candle.close;
-    const currentValue = positionValue(position, close);
-    const closeInRange = close >= position.lower && close <= position.upper;
+    const quoteUsdClose = quoteUsdAt(candle, "close");
+    const currentValueUsd = positionValueUsd(
+      position,
+      close,
+      quoteUsdClose,
+    );
+    const closeInRange =
+      close >= position.lower && close <= position.upper;
+
     if (closeInRange) {
       inRangeCandles += 1;
-      const share = tvlUsd > 0 ? Math.min(1, currentValue / tvlUsd) : 0;
-      const fees = candle.volumeUsd * (feeBps / 10_000) * share;
-      unclaimedFees += fees;
-      totalFees += fees;
+      const share =
+        tvlUsd > 0 ? Math.min(1, currentValueUsd / tvlUsd) : 0;
+      const feesUsd =
+        candle.volumeUsd * (feeBps / 10_000) * share;
+      unclaimedFeesUsd += feesUsd;
+      totalFeesUsd += feesUsd;
     }
 
-    let equity = currentValue + unclaimedFees;
-    peak = Math.max(peak, equity);
-    if (peak > 0) {
-      maxDrawdownPct = Math.max(maxDrawdownPct, ((peak - equity) / peak) * 100);
+    const equityUsd = currentValueUsd + unclaimedFeesUsd;
+    peakUsd = Math.max(peakUsd, equityUsd);
+    if (peakUsd > 0) {
+      maxDrawdownPct = Math.max(
+        maxDrawdownPct,
+        ((peakUsd - equityUsd) / peakUsd) * 100,
+      );
     }
 
-    const breached = candle.low < position.lower || candle.high > position.upper;
+    const breached =
+      candle.low < position.lower || candle.high > position.upper;
     if (!breached) continue;
 
-    const gross = currentValue + unclaimedFees;
-    const cost = gross * (slippageBps / 10_000) + gasPerRebalanceUsd;
-    capital = Math.max(0, gross - cost);
-    totalCosts += cost;
-    unclaimedFees = 0;
-    position = makePosition(capital, close, rangeHalfWidthPct);
+    const grossUsd = currentValueUsd + unclaimedFeesUsd;
+    const costUsd =
+      grossUsd * (slippageBps / 10_000) + gasPerRebalanceUsd;
+    capital = Math.max(0, grossUsd - costUsd);
+    totalCostsUsd += costUsd;
+    unclaimedFeesUsd = 0;
+    position = makePosition(
+      capital,
+      close,
+      quoteUsdClose,
+      rangeHalfWidthPct,
+    );
     rebalances += 1;
   }
 
   const last = ordered.at(-1);
-  const finalLpValue = positionValue(position, last.close);
-  const finalEquityUsd = finalLpValue + unclaimedFees;
+  const lastQuoteUsd = quoteUsdAt(last, "close");
+  const finalLpValueUsd = positionValueUsd(
+    position,
+    last.close,
+    lastQuoteUsd,
+  );
+  const finalEquityUsd = finalLpValueUsd + unclaimedFeesUsd;
   const pnlUsd = finalEquityUsd - startingCapitalUsd;
   const returnPct = (pnlUsd / startingCapitalUsd) * 100;
-  const days = Math.max(1/24, (last.timestamp - first.timestamp) / 86_400);
+  const days = Math.max(
+    1 / 24,
+    (last.timestamp - first.timestamp) / 86_400,
+  );
   const simpleAnnualizedPct = returnPct * (365 / days);
+
+  const finalBaseUsd = last.close * lastQuoteUsd;
   const hodlEquityUsd =
-    initialAmounts.amount0 * last.close + initialAmounts.amount1;
-  const holdReturnPct = ((hodlEquityUsd - startingCapitalUsd) / startingCapitalUsd) * 100;
+    initialAmounts.amount0 * finalBaseUsd +
+    initialAmounts.amount1 * lastQuoteUsd;
+  const holdReturnPct =
+    ((hodlEquityUsd - startingCapitalUsd) / startingCapitalUsd) * 100;
 
   return {
     startingCapitalUsd,
@@ -119,8 +183,8 @@ export function backtestConcentratedLp(candles, {
     hodlEquityUsd,
     holdReturnPct,
     excessVsInitialHoldUsd: finalEquityUsd - hodlEquityUsd,
-    totalModeledFeesUsd: totalFees,
-    totalRebalanceCostsUsd: totalCosts,
+    totalModeledFeesUsd: totalFeesUsd,
+    totalRebalanceCostsUsd: totalCostsUsd,
     rebalances,
     maxDrawdownPct,
     inRangePct: (inRangeCandles / ordered.length) * 100,
@@ -129,6 +193,8 @@ export function backtestConcentratedLp(candles, {
     endTimestamp: last.timestamp,
     startPrice: first.open,
     endPrice: last.close,
+    startQuoteUsd: firstQuoteUsd,
+    endQuoteUsd: lastQuoteUsd,
     rangeHalfWidthPct,
     feeBps,
     tvlUsdAssumption: tvlUsd,
