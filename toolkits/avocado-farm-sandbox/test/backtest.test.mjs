@@ -112,3 +112,48 @@ test("LP USD value follows quote-token USD value when pair price is flat", () =>
   });
   assert.ok(result.finalEquityUsd > 1_900);
 });
+
+
+test("fixed stop-loss exits an adverse LP window", () => {
+  const candles = [
+    {
+      timestamp: 1,
+      open: 100,
+      high: 101,
+      low: 99,
+      close: 100,
+      volumeUsd: 0,
+    },
+    {
+      timestamp: 3601,
+      open: 100,
+      high: 101,
+      low: 55,
+      close: 60,
+      volumeUsd: 0,
+    },
+    {
+      timestamp: 7201,
+      open: 60,
+      high: 65,
+      low: 40,
+      close: 45,
+      volumeUsd: 0,
+    },
+  ];
+  const result = backtestConcentratedLp(candles, {
+    startingCapitalUsd: 1_000,
+    rangeHalfWidthPct: 50,
+    feeBps: 0,
+    tvlUsd: 1_000_000,
+    slippageBps: 25,
+    gasPerRebalanceUsd: 0.35,
+    stopLossPct: 5,
+  });
+
+  assert.equal(result.stoppedOut, true);
+  assert.equal(result.stoppedAt, 3601);
+  assert.ok(result.finalEquityUsd < 950);
+  assert.ok(result.finalEquityUsd > 945);
+  assert.ok(result.returnPct > -6);
+});
