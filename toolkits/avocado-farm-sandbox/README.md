@@ -1,23 +1,29 @@
 # Avocado Farm Sandbox
 
-A working, **paper-only** concentrated-liquidity farming engine scaffold for Robinhood Chain Testnet.
+A working **mechanism-first, paper-only** concentrated-liquidity farming engine for Robinhood Chain.
 
-This is the mechanism layer, not a dashboard. It does four things now:
+It now has two input modes:
 
-1. ranks candidate pools using fees, rewards, volatility, liquidity, slippage and gas heuristics;
-2. blocks candidates that violate explicit risk limits;
-3. chooses a volatility-aware LP range and detects near-edge / out-of-range positions;
-4. opens and rebalances positions in a local paper ledger with receipts.
+- deterministic fixtures for tests and offline development;
+- live Robinhood Chain pool discovery through GeckoTerminal's `robinhood` API network.
 
-It deliberately does **not** broadcast swaps, approvals, LP mints, burns or withdrawals.
+The execution side stays deliberately separated from discovery. The current release can rank, risk-check, choose ranges, paper-open and paper-rebalance positions, verify the Robinhood Chain Uniswap v4 deployment, and verify whether an Alchemy Agent Wallet CLI session exists. It does **not** broadcast mainnet swaps, approvals, LP mints, burns or withdrawals.
 
-## Robinhood Chain Testnet
+## What is implemented
 
-- Chain ID: `46630`
-- Public RPC: `https://rpc.testnet.chain.robinhood.com`
-- Explorer: `https://explorer.testnet.chain.robinhood.com`
+1. pool ranking using modeled fees, optional rewards, volatility, liquidity, slippage and gas heuristics;
+2. explicit risk gates and portfolio circuit breakers;
+3. volatility-aware LP ranges with ACTIVE / NEAR_EDGE / OUT_OF_RANGE states;
+4. paper ledger, turnover accounting and rebalance receipts;
+5. live Robinhood Chain pool discovery;
+6. read-only verification of the official Uniswap v4 Robinhood Chain mainnet contracts;
+7. Alchemy Agent Wallet session verification without reading a private key.
 
-Use an Alchemy endpoint by setting `RH_RPC_URL`.
+## Networks
+
+Robinhood Chain mainnet is chain `4663`. Robinhood Chain Testnet is chain `46630`.
+
+The testnet executor is not enabled yet because a DEX-specific adapter must first pin and validate the exact contracts used for liquidity management. This prevents a guessed address or configuration typo from becoming a transaction.
 
 ## Run
 
@@ -25,37 +31,57 @@ Use an Alchemy endpoint by setting `RH_RPC_URL`.
 npm --prefix toolkits/avocado-farm-sandbox test
 npm --prefix toolkits/avocado-farm-sandbox start
 npm --prefix toolkits/avocado-farm-sandbox run rpc:check
+npm --prefix toolkits/avocado-farm-sandbox run scan:live
+npm --prefix toolkits/avocado-farm-sandbox run scan:paper
+npm --prefix toolkits/avocado-farm-sandbox run uniswap:verify
 ```
+
+Optional model settings:
+
+```bash
+MODEL_FEE_BPS=30
+PAPER_CASH_USD=10000
+PAPER_TICKET_USD=1000
+GECKO_PAGES=1
+RH_MAINNET_RPC_URL=https://rpc.mainnet.chain.robinhood.com
+```
+
+The live scanner labels `MODEL_FEE_BPS` as an assumption. A pool's exact fee tier and concentrated-liquidity utilization must come from the DEX adapter before real execution; a displayed APR is never treated as guaranteed return.
 
 ## Architecture
 
 ```text
-Pool data
-   |
-   v
-Scanner / scorer
-   |
-   v
-Risk engine ---------> DENY
-   |
-   v
+Live pools / on-chain reads
+          |
+          v
+Scanner -> Normalizer
+          |
+          v
+Scorer -> Risk engine ----------> DENY
+          |
+          v
 Range planner
-   |
-   v
+          |
+          v
 Paper executor
-   |
-   v
+          |
+          v
 Receipt + ledger
+
+Alchemy Agent Wallet
+          |
+          +---- session verification now
+          |
+          +---- transaction simulation / execution only after DEX adapter gate
 ```
 
-The Alchemy Agent Wallet helper only verifies whether an approved CLI session exists. It never reads a private key, and the current executor is hard-locked to `paper`.
+## Next executor boundary
 
-## Next implementation step
-
-Add a DEX adapter behind a strict interface:
+The next module is a Uniswap-v4-specific adapter with this contract:
 
 ```text
 readPoolState()
+readPosition()
 quoteSwap()
 buildRemoveLiquidityCalls()
 buildSwapCalls()
@@ -63,4 +89,4 @@ buildAddLiquidityCalls()
 simulateCalls()
 ```
 
-The adapter should target a specific audited DEX deployment on Robinhood Chain Testnet. After simulation and tests are stable, a separate testnet executor can submit pre-approved calls through an Alchemy Agent Wallet session. Keep mainnet as a separate gated mode rather than a config typo away from the sandbox.
+Only after every address and call is verified and simulation passes should a separately approved testnet executor submit calls. Mainnet execution remains a distinct approval boundary.
