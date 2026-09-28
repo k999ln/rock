@@ -77,6 +77,7 @@ export function backtestConcentratedLp(
     tvlUsd = 1_000_000,
     slippageBps = 25,
     gasPerRebalanceUsd = 0.35,
+    stopLossPct = null,
   } = {},
 ) {
   if (!candles?.length) throw new Error("No historical candles");
@@ -99,6 +100,12 @@ export function backtestConcentratedLp(
   let peakUsd = startingCapitalUsd;
   let maxDrawdownPct = 0;
   let inRangeCandles = 0;
+  let stoppedOut = false;
+  let stoppedAt = null;
+  const stopEquityUsd =
+    Number.isFinite(stopLossPct) && stopLossPct > 0
+      ? startingCapitalUsd * (1 - stopLossPct / 100)
+      : null;
 
   const initialAmounts = amountsAtPrice(position, first.open);
 
@@ -112,6 +119,38 @@ export function backtestConcentratedLp(
     );
     const closeInRange =
       close >= position.lower && close <= position.upper;
+
+    if (stopEquityUsd !== null) {
+      const lowMarkUsd = positionValueUsd(
+        position,
+        candle.low,
+        quoteUsdAt(candle, "low"),
+      );
+      const highMarkUsd = positionValueUsd(
+        position,
+        candle.high,
+        quoteUsdAt(candle, "high"),
+      );
+      const worstMarkedEquityUsd =
+        Math.min(currentValueUsd, lowMarkUsd, highMarkUsd) +
+        unclaimedFeesUsd;
+
+      if (worstMarkedEquityUsd <= stopEquityUsd) {
+        const exitCostUsd =
+          stopEquityUsd * (slippageBps / 10_000) +
+          gasPerRebalanceUsd;
+        capital = Math.max(0, stopEquityUsd - exitCostUsd);
+        totalCostsUsd += exitCostUsd;
+        unclaimedFeesUsd = 0;
+        stoppedOut = true;
+        stoppedAt = candle.timestamp;
+        maxDrawdownPct = Math.max(
+          maxDrawdownPct,
+          ((startingCapitalUsd - capital) / startingCapitalUsd) * 100,
+        );
+        break;
+      }
+    }
 
     if (closeInRange) {
       inRangeCandles += 1;
@@ -153,12 +192,12 @@ export function backtestConcentratedLp(
 
   const last = ordered.at(-1);
   const lastQuoteUsd = quoteUsdAt(last, "close");
-  const finalLpValueUsd = positionValueUsd(
-    position,
-    last.close,
-    lastQuoteUsd,
-  );
-  const finalEquityUsd = finalLpValueUsd + unclaimedFeesUsd;
+  const finalLpValueUsd = stoppedOut
+    ? capital
+    : positionValueUsd(position, last.close, lastQuoteUsd);
+  const finalEquityUsd = stoppedOut
+    ? capital
+    : finalLpValueUsd + unclaimedFeesUsd;
   const pnlUsd = finalEquityUsd - startingCapitalUsd;
   const returnPct = (pnlUsd / startingCapitalUsd) * 100;
   const days = Math.max(
@@ -200,5 +239,8 @@ export function backtestConcentratedLp(
     tvlUsdAssumption: tvlUsd,
     slippageBps,
     gasPerRebalanceUsd,
+    stopLossPct,
+    stoppedOut,
+    stoppedAt,
   };
 }
