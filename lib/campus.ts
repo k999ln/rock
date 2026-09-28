@@ -283,7 +283,16 @@ const resourceTypes = ['case', 'paper', 'policy', 'dataset', 'reference', 'guide
 const itemStatuses = ['recruiting', 'active', 'upcoming', 'open', 'complete'] as const;
 
 function detailsFor(kind: CampusItemKind, value: unknown) {
-  const v = object(value);
+  const commonKeys = ['externalUrl', 'locationText'];
+  const allowedByKind: Record<CampusItemKind, string[]> = {
+    project: [...commonKeys, 'track', 'needs', 'status'],
+    opportunity: [...commonKeys, 'opportunityType', 'organization', 'compensation', 'deadline'],
+    event: [...commonKeys, 'organizer', 'registrationUrl'],
+    community: [...commonKeys, 'category', 'joinPolicy'],
+    portfolio: [...commonKeys, 'mediaType', 'role', 'year'],
+    resource: [...commonKeys, 'resourceType', 'citation'],
+  };
+  const v = object(value, allowedByKind[kind]);
   const common = {
     externalUrl: optionalUrl(v.externalUrl, '外部URL'),
     locationText: maybeText(v.locationText, '場所', 120),
