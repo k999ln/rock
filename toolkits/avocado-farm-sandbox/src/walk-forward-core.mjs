@@ -1,4 +1,5 @@
 import { backtestConcentratedLp } from "./clmm-backtest.mjs";
+import { evaluateEntryGate, summarizeRegime } from "./regime.mjs";
 
 const byTime = (a, b) => a.timestamp - b.timestamp;
 
@@ -8,11 +9,18 @@ function validateNumber(name, value, minExclusive = 0) {
   }
 }
 
-export function chooseRangeFromHistory(history, {
-  candidateRangesPct,
-  model,
-  trainingCapitalUsd = 1_000,
-} = {}) {
+function transitionCost(capitalUsd, slippageBps, gasUsd) {
+  return capitalUsd * (slippageBps / 10_000) + gasUsd;
+}
+
+export function chooseRangeFromHistory(
+  history,
+  {
+    candidateRangesPct,
+    model,
+    trainingCapitalUsd = 1_000,
+  } = {},
+) {
   if (!history?.length) throw new Error("No training history");
   if (!candidateRangesPct?.length) throw new Error("No candidate ranges");
 
@@ -30,17 +38,22 @@ export function chooseRangeFromHistory(history, {
   return { selected: ranked[0], ranked };
 }
 
-export function walkForwardRangeStrategy(candles, {
-  candidateRangesPct = [6, 8, 12, 16, 20, 30, 50],
-  trainBars = 48,
-  testBars = 24,
-  startingCapitalUsd = 1_000,
-  feeBps = 30,
-  tvlUsd = 1_000_000,
-  slippageBps = 25,
-  gasPerRebalanceUsd = 0.35,
-  chargeBoundaryReposition = true,
-} = {}) {
+export function walkForwardRangeStrategy(
+  candles,
+  {
+    candidateRangesPct = [6, 8, 12, 16, 20, 30, 50],
+    trainBars = 48,
+    testBars = 24,
+    startingCapitalUsd = 1_000,
+    feeBps = 30,
+    tvlUsd = 1_000_000,
+    slippageBps = 25,
+    gasPerRebalanceUsd = 0.35,
+    chargeBoundaryReposition = true,
+    allowCash = false,
+    entryGate = {},
+  } = {},
+) {
   const ordered = [...(candles ?? [])].sort(byTime);
   validateNumber("startingCapitalUsd", startingCapitalUsd);
   validateNumber("trainBars", trainBars);
@@ -58,12 +71,16 @@ export function walkForwardRangeStrategy(candles, {
 
   let capitalUsd = startingCapitalUsd;
   let totalBoundaryCostsUsd = 0;
+  let previousAction = "CASH";
   const folds = [];
   let cursor = trainBars;
 
   while (cursor < ordered.length - 1) {
     const history = ordered.slice(Math.max(0, cursor - trainBars), cursor);
-    const evaluation = ordered.slice(cursor, Math.min(cursor + testBars, ordered.length));
+    const evaluation = ordered.slice(
+      cursor,
+      Math.min(cursor + testBars, ordered.length),
+    );
     if (evaluation.length < 2) break;
 
     const training = chooseRangeFromHistory(history, {
@@ -72,20 +89,55 @@ export function walkForwardRangeStrategy(candles, {
       trainingCapitalUsd: 1_000,
     });
     const selectedRangePct = training.selected.rangeHalfWidthPct;
+    const regime = summarizeRegime(history, tvlUsd);
+    const gate = allowCash
+      ? evaluateEntryGate({
+          selected: training.selected,
+          regime,
+          ...entryGate,
+        })
+      : { enter: true, reasons: [], metrics: {} };
+    const action = gate.enter ? "LP" : "CASH";
 
     let boundaryCostUsd = 0;
-    if (chargeBoundaryReposition && folds.length > 0) {
-      boundaryCostUsd =
-        capitalUsd * (slippageBps / 10_000) + gasPerRebalanceUsd;
-      capitalUsd = Math.max(0, capitalUsd - boundaryCostUsd);
-      totalBoundaryCostsUsd += boundaryCostUsd;
+    if (chargeBoundaryReposition) {
+      const needsTransaction =
+        action === "LP" || (action === "CASH" && previousAction === "LP");
+      if (needsTransaction) {
+        boundaryCostUsd = transitionCost(
+          capitalUsd,
+          slippageBps,
+          gasPerRebalanceUsd,
+        );
+        capitalUsd = Math.max(0, capitalUsd - boundaryCostUsd);
+        totalBoundaryCostsUsd += boundaryCostUsd;
+      }
     }
 
-    const result = backtestConcentratedLp(evaluation, {
-      ...model,
-      startingCapitalUsd: capitalUsd,
-      rangeHalfWidthPct: selectedRangePct,
-    });
+    let result;
+    if (action === "LP") {
+      result = backtestConcentratedLp(evaluation, {
+        ...model,
+        startingCapitalUsd: capitalUsd,
+        rangeHalfWidthPct: selectedRangePct,
+      });
+    } else {
+      const first = evaluation[0];
+      const last = evaluation.at(-1);
+      result = {
+        startingCapitalUsd: capitalUsd,
+        finalEquityUsd: capitalUsd,
+        pnlUsd: 0,
+        returnPct: 0,
+        totalModeledFeesUsd: 0,
+        totalRebalanceCostsUsd: 0,
+        rebalances: 0,
+        maxDrawdownPct: 0,
+        startTimestamp: first.timestamp,
+        endTimestamp: last.timestamp,
+        rangeHalfWidthPct: null,
+      };
+    }
 
     folds.push({
       fold: folds.length + 1,
@@ -93,7 +145,12 @@ export function walkForwardRangeStrategy(candles, {
       trainEnd: history.at(-1).timestamp,
       testStart: evaluation[0].timestamp,
       testEnd: evaluation.at(-1).timestamp,
-      selectedRangePct,
+      action,
+      selectedRangePct: action === "LP" ? selectedRangePct : null,
+      candidateRangePct: selectedRangePct,
+      gateReasons: gate.reasons,
+      regime,
+      gateMetrics: gate.metrics ?? {},
       trainingReturnPct: training.selected.result.returnPct,
       trainingMaxDrawdownPct: training.selected.result.maxDrawdownPct,
       boundaryCostUsd,
@@ -108,6 +165,7 @@ export function walkForwardRangeStrategy(candles, {
     });
 
     capitalUsd = result.finalEquityUsd;
+    previousAction = action;
     cursor += testBars;
   }
 
@@ -132,6 +190,8 @@ export function walkForwardRangeStrategy(candles, {
     pnlUsd,
     returnPct: (pnlUsd / startingCapitalUsd) * 100,
     totalBoundaryCostsUsd,
+    cashFolds: folds.filter((fold) => fold.action === "CASH").length,
+    lpFolds: folds.filter((fold) => fold.action === "LP").length,
     folds,
     outOfSampleStart: oosCandles[0].timestamp,
     outOfSampleEnd: oosCandles.at(-1).timestamp,
