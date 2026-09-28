@@ -66,9 +66,9 @@ The following effects never auto-launch from this endpoint:
 - credential change
 - destructive operation
 - critical-risk task
-- secret-class task state
+- any non-public task state (`owner-private`, `confidential`, or `secret`)
 
-Cursor is configured to create a pull request, not merge it.
+Cursor is configured to create a pull request, not merge it. Cursor receives the full task goal and acceptance criteria, so v1 only launches remote Cloud Agents for `public` task state; non-public state is blocked for local handling rather than silently disclosed.
 
 ## Jev use
 
