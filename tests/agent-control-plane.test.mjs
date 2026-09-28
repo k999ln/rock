@@ -118,8 +118,15 @@ void test('Cursor launch creates a PR-only agent request with review subagents',
   const cursor = new CursorCloudAgentClient(
     'cursor-test-key',
     async (url, init) => {
-      capturedUrl = String(url);
-      captured = JSON.parse(String(init?.body));
+      capturedUrl =
+        typeof url === 'string'
+          ? url
+          : url instanceof URL
+            ? url.href
+            : url.url;
+      if (typeof init?.body !== 'string')
+        throw new Error('expected JSON request body');
+      captured = JSON.parse(init.body);
       return new Response(
         JSON.stringify({
           agent: {
