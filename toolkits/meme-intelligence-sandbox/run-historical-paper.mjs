@@ -42,18 +42,22 @@ async function json(url){
   return await r.json();
 }
 async function resolvePool(e){
+  let hint=null;
   try{
     const html=await text(`https://dxttools.trade/token/solana/${e.mint}`);
     const m=html.match(/https:\/\/dexscreener\.com\/solana\/([A-Za-z0-9]+)/i);
-    if(m?.[1]) return {pool:m[1],via:'dxttools'};
+    if(m?.[1]) hint=m[1];
   }catch{}
   const data=await json(`https://api.dexscreener.com/latest/dex/tokens/${e.mint}`);
   const at=Date.parse(e.at);
   const pairs=(data.pairs||[]).filter(p=>p.chainId==='solana'&&p.baseToken?.address===e.mint)
     .filter(p=>!p.pairCreatedAt||p.pairCreatedAt<=at+3600_000)
     .sort((a,b)=>(b.liquidity?.usd||0)-(a.liquidity?.usd||0));
-  if(!pairs[0]?.pairAddress) throw new Error('no_pool');
-  return {pool:pairs[0].pairAddress,via:'dexscreener'};
+  if(!pairs.length) throw new Error('no_pool');
+  const exact=hint?pairs.find(p=>String(p.pairAddress).toLowerCase()===hint.toLowerCase()):null;
+  const chosen=exact||pairs[0];
+  if(!chosen?.pairAddress) throw new Error('no_pool');
+  return {pool:chosen.pairAddress,via:exact?'dxttools+dexscreener-case':'dexscreener'};
 }
 async function candles(pool,e){
   const start=Math.floor(Date.parse(e.at)/1000),end=start+HOLD_SECONDS;
@@ -109,7 +113,7 @@ for(const e of EVENTS){
   try{
     if(e.mcap<MIN_MCAP||e.liq==null||e.liq<MIN_LIQ){row.replay=replay(e,[],bankroll);rows.push(row);continue;}
     const p=await resolvePool(e); row.pool=p.pool; row.poolSource=p.via;
-    await sleep(2300);
+    await sleep(7000);
     const cs=await candles(p.pool,e); row.candles=cs.length; row.replay=replay(e,cs,bankroll);
   }catch(err){row.replay={status:'ERROR',reason:String(err?.message||err)};}
   rows.push(row);
