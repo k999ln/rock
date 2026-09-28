@@ -17,11 +17,11 @@ export function normalizeGeckoPool(row, { defaultFeeBps = 30 } = {}) {
   const pair = String(a.name ?? row?.id ?? "UNKNOWN/UNKNOWN")
     .split("/")[0]
     .trim()
-    .split(/s+/)[0];
+    .split(/\s+/)[0];
   const quote = String(a.name ?? "")
     .split("/")[1]
     ?.trim()
-    .split(/s+/)[0] ?? "UNKNOWN";
+    .split(/\s+/)[0] ?? "UNKNOWN";
 
   return {
     id: row?.id ?? a.address ?? "unknown",
