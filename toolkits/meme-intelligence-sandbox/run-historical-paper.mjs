@@ -73,7 +73,8 @@ async function candles(pool,e){
   return (d?.data?.attributes?.ohlcv_list||[]).map(x=>({t:x[0],o:num(x[1]),h:num(x[2]),l:num(x[3]),c:num(x[4]),v:num(x[5])}))
     .filter(x=>x.t>=start&&x.t<=end&&x.o>0&&x.h>0&&x.l>0&&x.c>0).sort((a,b)=>a.t-b.t);
 }
-function replay(e,cs,bankroll){
+function median(xs){const a=xs.filter(Number.isFinite).toSorted((x,y)=>x-y);if(!a.length)return 0;const m=Math.floor(a.length/2);return a.length%2?a[m]:(a[m-1]+a[m])/2;}
+function replayLegacy(e,cs,bankroll){
   if(e.mcap<MIN_MCAP) return {status:'FILTERED',reason:'market_cap'};
   if(e.liq==null) return {status:'FILTERED',reason:'liquidity_unknown'};
   if(e.liq<MIN_LIQ) return {status:'FILTERED',reason:'liquidity'};
@@ -87,28 +88,75 @@ function replay(e,cs,bankroll){
   let avgEffective=()=>qty>0?cost/Math.max(qty,1e-30):0;
   for(const c of cs.filter(x=>x.t>=entry.t)){
     const avg=avgEffective(); if(!qty)break;
-    // Conservative intrabar ordering: protective stop before profit target.
     if(c.l<=avg*.65){sell(qty,avg*.65,'STOP',c.t);break;}
-    if(trailActive){
-      const trail=peak*.70;
-      if(c.l<=trail){sell(qty,trail,'TRAIL_EXIT',c.t);break;}
-    }
+    if(trailActive){const trail=peak*.70;if(c.l<=trail){sell(qty,trail,'TRAIL_EXIT',c.t);break;}}
     if(stage==='PROBE'&&c.c>=entry.o*1.20){buy(bankroll*.03,c.c,'CONFIRM',c.t);}
     if(stage==='CONFIRM'&&c.c>=entry.o*1.50){buy(bankroll*.05,c.c,'SCALE',c.t);}
     const avg2=avgEffective();
-    if(!partial&&qty&&c.h>=avg2*2){
-      sell(qty*.5,avg2*2,'TAKE_2X',c.t); partial=true; peak=Math.max(c.h,avg2*2);
-      // trailing starts on the next candle to avoid impossible same-candle ordering assumptions.
-      trailActive=false; continue;
-    }
-    if(partial){
-      if(!trailActive) trailActive=true;
-      peak=Math.max(peak,c.h);
-    }
+    if(!partial&&qty&&c.h>=avg2*2){sell(qty*.5,avg2*2,'TAKE_2X',c.t);partial=true;peak=Math.max(c.h,avg2*2);trailActive=false;continue;}
+    if(partial){if(!trailActive) trailActive=true;peak=Math.max(peak,c.h);}
   }
   if(qty){const last=cs.at(-1);sell(qty,last.c,'TIME_EXIT',last.t);}
   const final=cash,pnl=final-bankroll;
   return {status:'TRADED',entryTime:new Date(entry.t*1000).toISOString(),entryPrice:entry.o,final:+final.toFixed(4),pnl:+pnl.toFixed(4),returnPct:+(pnl/bankroll*100).toFixed(2),events};
+}
+function replayImproved(e,cs,bankroll){
+  if(e.mcap<MIN_MCAP) return {status:'FILTERED',reason:'market_cap'};
+  if(e.liq==null) return {status:'FILTERED',reason:'liquidity_unknown'};
+  if(e.liq<MIN_LIQ) return {status:'FILTERED',reason:'liquidity'};
+  const start=Math.floor(Date.parse(e.at)/1000);
+  const post=cs.filter(x=>x.t>start);
+  if(post.length<2) return {status:'NO_DATA',reason:'insufficient_post_signal_candles'};
+
+  // Do not buy the first available candle. Observe up to 90 minutes and require
+  // a clean survival + demand confirmation, then enter the NEXT candle open.
+  let signalIndex=-1;
+  const maxScan=Math.min(post.length-1,Math.ceil(90/(AGG)));
+  for(let i=0;i<maxScan;i++){
+    const bar=post[i], prev=post[i-1];
+    const hist=post.slice(Math.max(0,i-4),i).map(x=>x.v);
+    const baseVol=median(hist);
+    const body=bar.c/bar.o;
+    const wick=bar.l/bar.o;
+    const range=bar.h/bar.l;
+    const continuation=!prev||bar.c>=prev.c*1.01;
+    const volumeOk=baseVol<=0||bar.v>=baseVol*1.05;
+    if(body>=1.03&&wick>=.82&&range<=1.80&&continuation&&volumeOk){signalIndex=i;break;}
+  }
+  if(signalIndex<0||!post[signalIndex+1]) return {status:'SKIPPED',reason:'no_clean_confirmation'};
+  const entry=post[signalIndex+1];
+  let cash=bankroll,qty=0,cost=0,stage='FLAT',partial=false,trailActive=false,peak=entry.o,events=[],lastAdvanceT=0;
+  const buy=(usd,px,kind,t)=>{usd=Math.min(usd,cash);if(usd<=0)return;const q=usd/(px*(1+BUY_COST));cash-=usd;qty+=q;cost+=usd;stage=kind;lastAdvanceT=t;events.push({t,kind,usd:+usd.toFixed(4),px});};
+  const sell=(q,px,kind,t)=>{q=Math.min(q,qty);if(q<=0)return;cash+=q*px*(1-SELL_COST);qty-=q;events.push({t,kind,qty:q,px});if(qty<1e-14){qty=0;stage='FLAT';}};
+  const avgEffective=()=>qty>0?cost/Math.max(qty,1e-30):0;
+  buy(bankroll*.02,entry.o,'PROBE',entry.t);
+
+  const active=post.filter(x=>x.t>=entry.t);
+  for(let i=0;i<active.length;i++){
+    const bar=active[i]; if(!qty)break;
+    const avg=avgEffective();
+    const stageStop=stage==='PROBE'?.74:stage==='CONFIRM'?.76:.78;
+    if(bar.l<=avg*stageStop){sell(qty,avg*stageStop,'STOP',bar.t);break;}
+    if(trailActive){const trail=peak*.72;if(bar.l<=trail){sell(qty,trail,'TRAIL_EXIT',bar.t);break;}}
+
+    const prev=active[i-1], hist=active.slice(Math.max(0,i-4),i).map(x=>x.v), baseVol=median(hist);
+    const demand=(!prev||bar.c>=prev.c)&& (baseVol<=0||bar.v>=baseVol*.90) && bar.c>=bar.o*.98;
+    const waited=bar.t-lastAdvanceT>=AGG*60;
+
+    // Price-only historical mode is intentionally capped at 6% exposure.
+    if(stage==='PROBE'&&waited&&demand&&bar.c>=entry.o*1.35){buy(bankroll*.02,bar.c,'CONFIRM',bar.t);continue;}
+    if(stage==='CONFIRM'&&waited&&demand&&bar.c>=entry.o*1.85){buy(bankroll*.02,bar.c,'SCALE',bar.t);continue;}
+
+    const avg2=avgEffective();
+    if(!partial&&qty&&bar.h>=avg2*1.85){
+      sell(qty*.5,avg2*1.85,'TAKE_1_85X',bar.t);
+      partial=true;peak=Math.max(bar.h,avg2*1.85);trailActive=false;continue;
+    }
+    if(partial){if(!trailActive)trailActive=true;peak=Math.max(peak,bar.h);}
+  }
+  if(qty){const last=active.at(-1);sell(qty,last.c,'TIME_EXIT',last.t);}
+  const final=cash,pnl=final-bankroll;
+  return {status:'TRADED',entryTime:new Date(entry.t*1000).toISOString(),entryPrice:entry.o,confirmationTime:new Date(post[signalIndex].t*1000).toISOString(),final:+final.toFixed(4),pnl:+pnl.toFixed(4),returnPct:+(pnl/bankroll*100).toFixed(2),events};
 }
 const argv=n=>{const i=process.argv.indexOf(n);return i>=0?process.argv[i+1]:undefined};
 const bankroll=Number(argv('--bankroll')||100); const out=argv('--output')||'meme-historical-paper-report.json';
@@ -116,15 +164,16 @@ const rows=[];
 for(const e of EVENTS){
   let row={...e,source:`https://dxttools.trade/token/solana/${e.mint}`};
   try{
-    if(e.mcap<MIN_MCAP||e.liq==null||e.liq<MIN_LIQ){row.replay=replay(e,[],bankroll);rows.push(row);continue;}
+    if(e.mcap<MIN_MCAP||e.liq==null||e.liq<MIN_LIQ){row.legacy=replayLegacy(e,[],bankroll);row.replay=replayImproved(e,[],bankroll);rows.push(row);continue;}
     const p=await resolvePool(e); row.pool=p.pool; row.poolSource=p.via;
     await sleep(7000);
-    const cs=await candles(p.pool,e); row.candles=cs.length; row.replay=replay(e,cs,bankroll);
+    const cs=await candles(p.pool,e); row.candles=cs.length; row.legacy=replayLegacy(e,cs,bankroll); row.replay=replayImproved(e,cs,bankroll);
   }catch(err){row.replay={status:'ERROR',reason:String(err?.message||err)};}
   rows.push(row);
   process.stdout.write(`${e.symbol}: ${row.replay.status}${row.replay.pnl!=null?` pnl=${row.replay.pnl}`:''}${row.replay.reason?` reason=${row.replay.reason}`:''}\n`);
 }
 const traded=rows.filter(x=>x.replay.status==='TRADED'),pnl=traded.reduce((a,x)=>a+x.replay.pnl,0);
-const report={schema:'rockstaros-meme-historical-paper-replay/1',generatedAt:new Date().toISOString(),mode:'PAPER_ONLY',method:{signal:'first DexScreener paid activity from historical DXT Tools records; NOT the full Jev/social engine',filter:`marketCap>=${MIN_MCAP} and liquidity>=${MIN_LIQ}`,candles:`GeckoTerminal ${AGG}-minute OHLCV; enter next candle open`,sizing:'$2 probe; +$3 at +20%; +$5 at +50%, normalized to $100 test bankroll',exit:'-35% stop; sell 50% at 2x; 30% trailing stop thereafter; 7-day max hold',costs:'1% assumed on each buy and sell',lookahead:'none in trade rules; event list is retrospectively sampled and therefore not a population-complete test'},summary:{events:rows.length,traded:traded.length,filtered:rows.filter(x=>x.replay.status==='FILTERED').length,errors:rows.filter(x=>x.replay.status==='ERROR').length,totalNormalizedPnl:+pnl.toFixed(4),normalizedStart:bankroll,normalizedEnd:+(bankroll+pnl).toFixed(4),winningTrades:traded.filter(x=>x.replay.pnl>0).length,losingTrades:traded.filter(x=>x.replay.pnl<0).length},rows};
+const legacyTraded=rows.filter(x=>x.legacy?.status==='TRADED'),legacyPnl=legacyTraded.reduce((a,x)=>a+x.legacy.pnl,0);
+const report={schema:'rockstaros-meme-historical-paper-replay/1',generatedAt:new Date().toISOString(),mode:'PAPER_ONLY',method:{signal:'first DexScreener paid activity from historical DXT Tools records; NOT the full Jev/social engine',filter:`marketCap>=${MIN_MCAP} and liquidity>=${MIN_LIQ}`,candles:`GeckoTerminal ${AGG}-minute OHLCV`,improvedEntry:'observe <=90m; require clean green survival candle, continuation and non-collapsing volume; enter NEXT candle open',improvedSizing:'2% probe +2% confirm at +35% +2% scale at +85%; never advance twice in one candle; 6% max in price-only mode',improvedExit:'stage-aware 22-26% stop; 50% at 1.85x; 28% trailing stop thereafter; 7-day max hold',costs:'1% assumed on each buy and sell',lookahead:'none in trade rules; event list is retrospectively sampled and therefore not a population-complete test'},summary:{events:rows.length,traded:traded.length,skipped:rows.filter(x=>x.replay.status==='SKIPPED').length,filtered:rows.filter(x=>x.replay.status==='FILTERED').length,errors:rows.filter(x=>x.replay.status==='ERROR').length,totalNormalizedPnl:+pnl.toFixed(4),normalizedStart:bankroll,normalizedEnd:+(bankroll+pnl).toFixed(4),winningTrades:traded.filter(x=>x.replay.pnl>0).length,losingTrades:traded.filter(x=>x.replay.pnl<0).length,legacy:{traded:legacyTraded.length,totalNormalizedPnl:+legacyPnl.toFixed(4),normalizedEnd:+(bankroll+legacyPnl).toFixed(4),winningTrades:legacyTraded.filter(x=>x.legacy.pnl>0).length,losingTrades:legacyTraded.filter(x=>x.legacy.pnl<0).length}},rows};
 writeFileSync(out,JSON.stringify(report,null,2)+'\n');
 process.stdout.write('RESULT '+JSON.stringify(report.summary)+'\n');
