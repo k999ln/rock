@@ -52,24 +52,46 @@ function momentum(x,ss){
   const t=x?.token||{},o=x?.capital||{},v=n(t.volumeAcceleration,NaN),va=Number.isFinite(v)?v:(n(t.volume5mUsd)>0?n(t.volume1mUsd)/(n(t.volume5mUsd)/5):0),b=n(o.buyVolume1mUsd),d=n(o.sellVolume1mUsd),br=d>0?b/d:b>0?4:1;
   return{score:Math.round(s(va,1,4)*.3+s(br,1,3)*.25+s(t.holderGrowthPct,0,25)*.2+s(t.liquidityGrowthPct,0,30)*.1+ss.velocity*.15),volumeAcceleration:Math.round(va*100)/100,buySellRatio:Math.round(br*100)/100};
 }
+export function evidenceCompleteness(x){
+  const social=!!x?.social&&['mentions5m','uniqueAuthors5m','independentKolClusters'].some(k=>x.social[k]!=null);
+  const capital=!!x?.capital&&['smartWalletBuyers','verifiedWalletClusters','buyVolume1mUsd'].some(k=>x.capital[k]!=null);
+  const callers=Array.isArray(x?.callers)&&x.callers.length>0;
+  const security=!!x?.risk&&x?.token?.top10Pct!=null&&x?.token?.devPct!=null;
+  const count=[social,capital,callers,security].filter(Boolean).length;
+  return {social,capital,callers,security,count,ratio:count/4};
+}
 export function buildJevPayload(x,e){
   const t=x?.token||{};
   return{schema:'rockstaros-meme-jev-input/1',mode:'PAPER_ONLY',token:{symbol:t.symbol||null,mint:t.mint||null,marketCapUsd:n(t.marketCapUsd),liquidityUsd:n(t.liquidityUsd),holders:n(t.holders)},signals:{consensus:e.consensus,socialQuality:e.social.organic,capitalQuality:e.capital.score,callerIntegrity:e.callers.score,verifiedCallers:e.callers.verified,independentCallerClusters:e.callers.independent,narrativeSimilarity:c(n(x?.social?.narrativeSimilarity)),momentumQuality:e.momentum.score,rugRisk:e.risks.rug,promotionRisk:e.risks.promotion},allowedActions:ACTIONS,constraints:{liveExecutionEnabled:false,mayIncreaseRiskBeyondGuardrails:false}};
 }
 export function evaluateCandidate(x,opt={}){
-  const p={...POLICY,...(opt.policy||{})},hard=hardFilter(x,p),callers=callerScore(x?.callers),social=socialScore(x),capital=capitalScore(x),mom=momentum(x,social),risk=risks(x,callers),t=x?.token||{};
+  const p={...POLICY,...(opt.policy||{})},hard=hardFilter(x,p),callers=callerScore(x?.callers),social=socialScore(x),capital=capitalScore(x),mom=momentum(x,social),risk=risks(x,callers),evidence=evidenceCompleteness(x),t=x?.token||{};
   const consensus=Math.round(c(social.organic*.17+social.velocity*.12+social.kol*.10+capital.score*.20+s(t.holderGrowthPct,0,25)*.10+s(t.liquidityGrowthPct,0,30)*.08+social.narrative*.13+callers.score*.10));
   const composite=consensus*.55+mom.score*.25+capital.score*.20-risk.promotion*.10;
   let raw=!hard.pass||risk.rug>=70?'SKIP':composite>=78?'ENTER':composite>=64?'ARMED':composite>=45?'WATCH':'SKIP',guarded=raw,gr=[];
-  if(!hard.pass){guarded='SKIP';gr=hard.reasons}else if(risk.rug>p.maxRugRiskForArmed){guarded='WATCH';gr=['rug_risk_above_armed_limit']}else if(raw==='ENTER'&&risk.rug>p.maxRugRiskForEnter){guarded='ARMED';gr=['rug_risk_above_enter_limit']}else if(raw==='ENTER'&&risk.promotion>p.maxPromotionRiskForEnter){guarded='ARMED';gr=['promotion_risk_above_enter_limit']};
+  if(!hard.pass){guarded='SKIP';gr=hard.reasons}
+  else if(evidence.ratio<.5&&['ARMED','ENTER'].includes(guarded)){guarded='WATCH';gr=['insufficient_evidence_for_armed']}
+  else if(evidence.ratio<.75&&guarded==='ENTER'){guarded='ARMED';gr=['insufficient_evidence_for_enter']}
+  else if(risk.rug>p.maxRugRiskForArmed){guarded='WATCH';gr=['rug_risk_above_armed_limit']}
+  else if(raw==='ENTER'&&risk.rug>p.maxRugRiskForEnter){guarded='ARMED';gr=['rug_risk_above_enter_limit']}
+  else if(raw==='ENTER'&&risk.promotion>p.maxPromotionRiskForEnter){guarded='ARMED';gr=['promotion_risk_above_enter_limit']};
   const jev=opt.jevDecision||x?.jevDecision,final=jev?lower(guarded,jev.action):guarded,exitRisk=Math.round(c(risk.rug*.45+risk.promotion*.15+risk.sellPressure*.15+risk.liquidityDecline*.15+(100-consensus)*.10));
-  return{schema:'rockstaros-meme-intelligence-evaluation/1',mode:'PAPER_ONLY',policy:{liveExecutionEnabled:false,maxPositionPct:p.maxPositionPct},token:{symbol:t.symbol||null,mint:t.mint||null},hardFilter:hard,social,callers,capital,momentum:mom,risks:risk,consensus,rawAction:raw,guardedAction:guarded,finalAction:final,guardrailReasons:gr,exitRisk,jev:jev?{action:act(jev.action),consensusState:jev.consensusState||null}:null};
+  return{schema:'rockstaros-meme-intelligence-evaluation/1',mode:'PAPER_ONLY',policy:{liveExecutionEnabled:false,maxPositionPct:p.maxPositionPct},token:{symbol:t.symbol||null,mint:t.mint||null},hardFilter:hard,evidence,social,callers,capital,momentum:mom,risks:risk,consensus,rawAction:raw,guardedAction:guarded,finalAction:final,guardrailReasons:gr,exitRisk,jev:jev?{action:act(jev.action),consensusState:jev.consensusState||null}:null};
 }
 export function paperTransition(prev,e,_x,po={}){
   const p={...POLICY,...po},cur=prev||{stage:'FLAT',exposurePct:0},a=act(e.finalAction||e.guardedAction);
   if(cur.exposurePct>0&&e.exitRisk>=75)return{stage:'FLAT',exposurePct:0,event:'EXIT',reason:'exit_risk_threshold'};
   if(a!=='ENTER')return{stage:cur.stage,exposurePct:cur.exposurePct,event:cur.exposurePct>0?'HOLD':a,reason:a.toLowerCase()};
   let add=0,stage=cur.stage,event='HOLD';
-  if(cur.stage==='FLAT'){add=p.probePct;stage='PROBE';event='PROBE'}else if(cur.stage==='PROBE'){add=p.confirmAddPct;stage='CONFIRM';event='CONFIRM'}else if(cur.stage==='CONFIRM'){add=p.scaleAddPct;stage='SCALE';event='SCALE'}
+  if(cur.stage==='FLAT'){add=p.probePct;stage='PROBE';event='PROBE'}
+  else if(cur.stage==='PROBE'){
+    if((e.consensus??0)<65||(e.momentum?.score??0)<55||(e.capital?.score??0)<50)
+      return{stage:cur.stage,exposurePct:cur.exposurePct,event:'HOLD',reason:'confirmation_quality_not_met'};
+    add=p.confirmAddPct;stage='CONFIRM';event='CONFIRM';
+  }else if(cur.stage==='CONFIRM'){
+    if((e.consensus??0)<72||(e.momentum?.score??0)<65||(e.capital?.score??0)<60||(e.evidence?.ratio??0)<.75)
+      return{stage:cur.stage,exposurePct:cur.exposurePct,event:'HOLD',reason:'scale_quality_not_met'};
+    add=p.scaleAddPct;stage='SCALE';event='SCALE';
+  }
   return{stage,exposurePct:Math.min(p.maxPositionPct,cur.exposurePct+add),event,reason:add?'paper_stage_advanced':'paper_position_at_limit'};
 }
