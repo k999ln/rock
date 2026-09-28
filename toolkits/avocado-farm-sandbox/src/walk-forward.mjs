@@ -22,7 +22,7 @@ const candidateRangesPct = String(
   .map(Number)
   .filter((x) => Number.isFinite(x) && x > 0 && x < 100);
 
-const result = walkForwardRangeStrategy(candles, {
+const common = {
   candidateRangesPct,
   trainBars: Number(process.env.WF_TRAIN_BARS || 48),
   testBars: Number(process.env.WF_TEST_BARS || 24),
@@ -32,65 +32,91 @@ const result = walkForwardRangeStrategy(candles, {
   slippageBps: Number(process.env.REBALANCE_SLIPPAGE_BPS || 25),
   gasPerRebalanceUsd: Number(process.env.REBALANCE_GAS_USD || 0.35),
   chargeBoundaryReposition: true,
+};
+
+const alwaysEnter = walkForwardRangeStrategy(candles, {
+  ...common,
+  allowCash: false,
 });
 
-console.log("\nAvocado Farm — WALK-FORWARD PAPER TEST\n");
-console.log(JSON.stringify({
-  pool: metadata,
-  candles: candles.length,
-  dataStart: new Date(candles[0].timestamp * 1000).toISOString(),
-  dataEnd: new Date(candles.at(-1).timestamp * 1000).toISOString(),
-  methodology: {
-    trainingBars: Number(process.env.WF_TRAIN_BARS || 48),
-    nextBars: Number(process.env.WF_TEST_BARS || 24),
-    candidateRangesPct,
-    rule:
-      "At each fold, choose the range using only the immediately preceding training window, then trade only the following unseen window. Re-centering between folds is charged slippage + gas.",
+const gated = walkForwardRangeStrategy(candles, {
+  ...common,
+  allowCash: true,
+  entryGate: {
+    minTrainingReturnPct: Number(process.env.WF_MIN_TRAIN_RETURN_PCT || 0.5),
+    maxTrainingDrawdownPct: Number(process.env.WF_MAX_TRAIN_DD_PCT || 30),
+    maxTrainingRebalancesPerDay: Number(
+      process.env.WF_MAX_REBALANCES_PER_DAY || 4,
+    ),
+    minVolumeTvlPerDay: Number(process.env.WF_MIN_VOLUME_TVL_PER_DAY || 0.05),
+    maxVolToRangeRatio: Number(process.env.WF_MAX_VOL_RANGE_RATIO || 1.5),
+    maxTrendToRangeRatio: Number(process.env.WF_MAX_TREND_RANGE_RATIO || 1.75),
   },
-  caveat:
-    "OHLCV/volume are historical market data. Fee capture is modeled with current TVL and does not reconstruct historical active-liquidity distribution.",
-  summary: {
-    startingCapitalUsd: result.startingCapitalUsd,
-    finalEquityUsd: result.finalEquityUsd,
-    pnlUsd: result.pnlUsd,
-    returnPct: result.returnPct,
-    totalBoundaryCostsUsd: result.totalBoundaryCostsUsd,
-    outOfSampleCandles: result.outOfSampleCandles,
-    outOfSampleStart: new Date(result.outOfSampleStart * 1000).toISOString(),
-    outOfSampleEnd: new Date(result.outOfSampleEnd * 1000).toISOString(),
-    bestFixedHindsight: {
-      rangeHalfWidthPct: result.bestFixedHindsightBenchmark.rangeHalfWidthPct,
-      finalEquityUsd: result.bestFixedHindsightBenchmark.finalEquityUsd,
-      pnlUsd: result.bestFixedHindsightBenchmark.pnlUsd,
-      returnPct: result.bestFixedHindsightBenchmark.returnPct,
+});
+
+const slim = (result) => ({
+  startingCapitalUsd: result.startingCapitalUsd,
+  finalEquityUsd: result.finalEquityUsd,
+  pnlUsd: result.pnlUsd,
+  returnPct: result.returnPct,
+  totalBoundaryCostsUsd: result.totalBoundaryCostsUsd,
+  lpFolds: result.lpFolds,
+  cashFolds: result.cashFolds,
+});
+
+console.log("\nAvocado Farm — REGIME-GATED WALK-FORWARD PAPER TEST\n");
+console.log(
+  JSON.stringify(
+    {
+      pool: metadata,
+      candles: candles.length,
+      dataStart: new Date(candles[0].timestamp * 1000).toISOString(),
+      dataEnd: new Date(candles.at(-1).timestamp * 1000).toISOString(),
+      methodology: {
+        trainingBars: common.trainBars,
+        nextBars: common.testBars,
+        candidateRangesPct,
+        rule:
+          "Each fold uses only prior candles. The gated strategy can stay in CASH when the trailing training edge/risk/volume/volatility/trend tests fail. No future candle is used for that decision.",
+      },
+      caveat:
+        "OHLCV/volume are historical market data. Fee capture is modeled with current TVL and does not reconstruct historical active-liquidity distribution.",
+      comparison: {
+        alwaysEnter: slim(alwaysEnter),
+        regimeGated: slim(gated),
+        bestFixedHindsight: {
+          rangeHalfWidthPct:
+            gated.bestFixedHindsightBenchmark.rangeHalfWidthPct,
+          finalEquityUsd:
+            gated.bestFixedHindsightBenchmark.finalEquityUsd,
+          returnPct: gated.bestFixedHindsightBenchmark.returnPct,
+        },
+        fixed12Pct: gated.fixedDefault12Pct
+          ? {
+              finalEquityUsd: gated.fixedDefault12Pct.finalEquityUsd,
+              returnPct: gated.fixedDefault12Pct.returnPct,
+            }
+          : null,
+      },
     },
-    fixed12Pct: result.fixedDefault12Pct
-      ? {
-          finalEquityUsd: result.fixedDefault12Pct.finalEquityUsd,
-          pnlUsd: result.fixedDefault12Pct.pnlUsd,
-          returnPct: result.fixedDefault12Pct.returnPct,
-        }
-      : null,
-  },
-}, null, 2));
+    null,
+    2,
+  ),
+);
 
 console.table(
-  result.folds.map((f) => ({
+  gated.folds.map((f) => ({
     fold: f.fold,
-    train:
-      new Date(f.trainStart * 1000).toISOString().slice(5, 13) +
-      "→" +
-      new Date(f.trainEnd * 1000).toISOString().slice(5, 13),
-    test:
-      new Date(f.testStart * 1000).toISOString().slice(5, 13) +
-      "→" +
-      new Date(f.testEnd * 1000).toISOString().slice(5, 13),
-    chosen: "±" + f.selectedRangePct + "%",
+    action: f.action,
+    candidate: "±" + f.candidateRangePct + "%",
+    chosen: f.selectedRangePct ? "±" + f.selectedRangePct + "%" : "CASH",
     trainReturn: f.trainingReturnPct.toFixed(2) + "%",
+    trainDD: f.trainingMaxDrawdownPct.toFixed(2) + "%",
+    trend: f.regime.trendPct.toFixed(1) + "%",
+    dailyVol: f.regime.realizedVolDailyPct.toFixed(1) + "%",
+    volumeTVL: f.regime.volumeTvlPerDay.toFixed(2) + "x/day",
     testPnl: f.testPnlUsd.toFixed(2),
-    testReturn: f.testReturnPct.toFixed(2) + "%",
     ending: f.endingCapitalUsd.toFixed(2),
-    rebalances: f.testRebalances,
-    maxDD: f.testMaxDrawdownPct.toFixed(2) + "%",
+    reason: f.gateReasons.join(" | "),
   })),
 );
