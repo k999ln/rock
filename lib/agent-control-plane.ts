@@ -55,7 +55,7 @@ export type AgentExecutionGate = {
     | 'approval_required'
     | 'dangerous_effect_requires_owner'
     | 'critical_risk_requires_owner'
-    | 'secret_input_requires_local_handling';
+    | 'private_input_requires_local_handling';
   reason: string;
   minimumReview: AgentReviewMode;
 };
@@ -298,12 +298,12 @@ export function evaluateAgentExecutionGate(
         ? 'strict'
         : 'standard';
 
-  if (task.dataClass === 'secret')
+  if (task.dataClass !== 'public')
     return {
       launchAllowed: false,
-      code: 'secret_input_requires_local_handling',
+      code: 'private_input_requires_local_handling',
       reason:
-        'Secret-class task state must stay out of remote decision and cloud-agent execution.',
+        'Non-public task state stays out of remote decision and cloud-agent execution in v1.',
       minimumReview: 'security',
     };
 
@@ -502,23 +502,36 @@ function clampPlan(
 ): AgentDecisionPlan {
   const deterministic = deterministicPlan(task);
   const maxByRisk =
-    task.risk === 'high' ? 2 : task.risk === 'medium' ? 3 : 4;
+    task.risk === 'critical'
+      ? 0
+      : task.risk === 'high'
+        ? 2
+        : task.risk === 'medium'
+          ? 3
+          : 4;
   const reviewMode = strongerReview(gate.minimumReview, plan.reviewMode);
+  const strategy =
+    task.risk === 'critical'
+      ? 'human-review'
+      : task.risk === 'high' && plan.strategy === 'parallel-workers'
+        ? 'verify-first'
+        : plan.strategy;
+  const maxWorkers =
+    strategy === 'human-review'
+      ? 0
+      : Math.max(1, Math.min(plan.maxWorkers, maxByRisk));
+  const clamped =
+    strategy !== plan.strategy ||
+    reviewMode !== plan.reviewMode ||
+    maxWorkers !== plan.maxWorkers;
   return {
     ...plan,
     reviewMode,
-    maxWorkers:
-      plan.strategy === 'human-review'
-        ? 0
-        : Math.max(1, Math.min(plan.maxWorkers, maxByRisk)),
-    strategy:
-      task.risk === 'high' && plan.strategy === 'parallel-workers'
-        ? 'verify-first'
-        : plan.strategy,
-    reasonCode:
-      reviewMode !== plan.reviewMode || plan.maxWorkers > maxByRisk
-        ? `${plan.reasonCode}_policy_clamped`
-        : plan.reasonCode,
+    maxWorkers,
+    strategy,
+    reasonCode: clamped
+      ? `${plan.reasonCode}_policy_clamped`
+      : plan.reasonCode,
     confidence:
       plan.providerId === 'deterministic'
         ? deterministic.confidence
