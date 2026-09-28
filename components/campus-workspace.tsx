@@ -854,7 +854,7 @@ function Overview({
         </div>
       </div>
 
-      <div className={styles.useCaseGrid}>
+      <div className={styles.caseGrid}>
         {campusUseCases[data.campus.id].map(({ title, body, tab, icon: Icon }) => (
           <button key={title} onClick={() => onTab(tab)}>
             <Icon size={24} />
