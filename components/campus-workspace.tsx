@@ -552,20 +552,8 @@ export default function CampusWorkspace({
     await loadAnalytics(campus);
   }
 
-  const visibleItems = useMemo(() => {
-    if (!data) return [];
-    const q = query.trim().toLowerCase();
-    return data.items.filter((item) => {
-      if (!q) return true;
-      return [item.title, item.summary, ...item.tags]
-        .join(' ')
-        .toLowerCase()
-        .includes(q);
-    });
-  }, [data, query]);
-
   const itemsByKind = (kind: CampusItemKind) =>
-    visibleItems.filter((item) => item.kind === kind);
+    (data?.items ?? []).filter((item) => item.kind === kind);
 
   if (loading && !data)
     return (
