@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24",
+  "updatedAt": "2026-09-27",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
   "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
   "tasks": [
@@ -260,7 +260,11 @@
         "docs/ai-native-os-architecture.md",
         "docs/llm-evaluation-architecture.md",
         "data/llm-capabilities.json",
-        "scripts/check-llm-architecture.mjs"
+        "scripts/check-llm-architecture.mjs",
+        "docs/agent-control-plane.md",
+        "lib/agent-control-plane.ts",
+        "app/api/agent-control-plane/route.ts",
+        "tests/agent-control-plane.test.mjs"
       ]
     },
     {

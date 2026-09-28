@@ -2,7 +2,7 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-09-24
+更新日: 2026-09-27
 
 ## 全体
 
