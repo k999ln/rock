@@ -126,6 +126,7 @@ export function portfolioWalkForward(
     minTestCoverage = 0.75,
     entryGate = {},
     selectionMode = "best",
+    positionStopLossPct = null,
   } = {},
 ) {
   const orderedModes = new Set(["best", "robust"]);
@@ -191,6 +192,7 @@ export function portfolioWalkForward(
         tvlUsd: pool.tvlUsd,
         slippageBps,
         gasPerRebalanceUsd,
+        stopLossPct: positionStopLossPct,
       };
       const training =
         selectionMode === "robust"
@@ -274,6 +276,7 @@ export function portfolioWalkForward(
       tvlUsd: chosen.pool.tvlUsd,
       slippageBps,
       gasPerRebalanceUsd,
+      stopLossPct: positionStopLossPct,
     });
 
     folds.push({
@@ -289,6 +292,8 @@ export function portfolioWalkForward(
       testRebalanceCostsUsd: result.totalRebalanceCostsUsd,
       testRebalances: result.rebalances,
       testMaxDrawdownPct: result.maxDrawdownPct,
+      stoppedOut: result.stoppedOut,
+      stoppedAt: result.stoppedAt,
       selectedPoolId: chosen.pool.id,
       selectedPoolName: chosen.pool.name,
       selectedRangePct: rangeHalfWidthPct,
@@ -316,6 +321,7 @@ export function portfolioWalkForward(
   const pnlUsd = capitalUsd - startingCapitalUsd;
   return {
     selectionMode,
+    positionStopLossPct,
     startingCapitalUsd,
     finalEquityUsd: capitalUsd,
     pnlUsd,
