@@ -184,3 +184,12 @@ This commit does not prove:
 - that production deployment, live finance, credentials, or destructive operations are automated.
 
 Those are separate provider/owner acceptance steps.
+
+
+## Cursor repository environment
+
+The repository now includes `.cursor/environment.json`, `.cursor/Dockerfile`, and `.cursor/rules/agent-control-plane.mdc`.
+
+The environment uses Node 22, Python 3, Git, and build tools, then runs `npm ci` during the Cloud Agent Build. No secret is committed to these files. Cursor account/workspace secrets remain configured in Cursor's secret store rather than in Git.
+
+The project rule keeps Jev advisory, caps initial parallelism, requires branch/PR-only coding, and separates implementation from verification. It also maps pstack to `/poteto-mode` plus `/interrogate` when the plugin is already installed, with a repository-native fallback when it is not.
