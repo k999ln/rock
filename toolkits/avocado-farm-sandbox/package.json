@@ -15,6 +15,7 @@
     "uniswap:verify": "node src/live-scan.mjs --verify-uniswap",
     "uniswap:probe": "node src/uniswap-probe.mjs",
     "backtest": "node src/backtest.mjs",
-    "backtest:sweep": "node src/backtest-sweep.mjs"
+    "backtest:sweep": "node src/backtest-sweep.mjs",
+    "backtest:walk": "node src/walk-forward.mjs"
   }
 }
