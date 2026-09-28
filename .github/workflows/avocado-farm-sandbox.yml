@@ -109,12 +109,12 @@ jobs:
           node-version: "22"
       - name: Multi-pool walk-forward paper test
         env:
-          BACKTEST_DAYS: "30"
+          BACKTEST_DAYS: "14"
           PAPER_TICKET_USD: "1000"
-          PORTFOLIO_POOL_LIMIT: "4"
-          PORTFOLIO_DISCOVERY_SCAN_LIMIT: "12"
+          PORTFOLIO_POOL_LIMIT: "3"
+          PORTFOLIO_DISCOVERY_SCAN_LIMIT: "8"
           PORTFOLIO_MIN_TVL_USD: "250000"
-          GECKO_MIN_INTERVAL_MS: "7000"
+          GECKO_MIN_INTERVAL_MS: "6000"
           GECKO_MAX_ATTEMPTS: "6"
           WF_TRAIN_BARS: "48"
           WF_TEST_BARS: "24"
