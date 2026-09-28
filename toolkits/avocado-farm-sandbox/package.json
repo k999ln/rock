@@ -13,6 +13,7 @@
     "scan:live": "node src/live-scan.mjs",
     "scan:paper": "node src/live-scan.mjs --paper-open",
     "uniswap:verify": "node src/live-scan.mjs --verify-uniswap",
-    "uniswap:probe": "node src/uniswap-probe.mjs"
+    "uniswap:probe": "node src/uniswap-probe.mjs",
+    "backtest": "node src/backtest.mjs"
   }
 }
