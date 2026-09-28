@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24",
+  "updatedAt": "2026-09-27",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
   "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
   "tasks": [
@@ -2455,6 +2455,27 @@
         "lib/csv-transform.ts",
         "lib/csv-job-store.ts",
         "components/csv-business-workspace.tsx"
+      ]
+    },
+    {
+      "id": "CAMPUS01",
+      "title": "大学別CampusレイヤーとしてPeople・Project・Opportunity・Event・Community・Portfolio・Resource、プロフィールマッチング、NFC/QR入口とsource別匿名集計、block/report/data削除をWeb runtimeへ実装",
+      "status": "done",
+      "dependsOn": [
+        "ORG01"
+      ],
+      "evidence": [
+        "app/campus/page.tsx",
+        "app/api/campus/route.ts",
+        "app/t/[tagId]/route.ts",
+        "components/campus-workspace.tsx",
+        "components/campus-workspace.module.css",
+        "lib/campus.ts",
+        "lib/campus-store.ts",
+        "db/schema.ts",
+        "drizzle/0017_campus_layer.sql",
+        "tests/campus.test.mjs",
+        "docs/campus-layer.md"
       ]
     }
   ],
