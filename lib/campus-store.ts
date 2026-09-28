@@ -427,12 +427,17 @@ export function campusStore(db: Db) {
     return (
       await statement(
         db,
-        `SELECT id, edge_type AS edgeType, target_type AS targetType,
-          target_id AS targetId, note, status, created_at AS createdAt,
-          updated_at AS updatedAt
-         FROM sky_campus_edges
-         WHERE actor_user_id = ? AND campus_id = ?
-         ORDER BY updated_at DESC LIMIT 500`,
+        `SELECT e.id, e.edge_type AS edgeType, e.target_type AS targetType,
+          e.target_id AS targetId, e.note, e.status, e.created_at AS createdAt,
+          e.updated_at AS updatedAt,
+          COALESCE(p.display_name, i.title, e.target_id) AS targetLabel
+         FROM sky_campus_edges e
+         LEFT JOIN sky_campus_profiles p
+           ON e.target_type = 'profile' AND p.id = e.target_id
+         LEFT JOIN sky_campus_items i
+           ON e.target_type = 'item' AND i.id = e.target_id
+         WHERE e.actor_user_id = ? AND e.campus_id = ?
+         ORDER BY e.updated_at DESC LIMIT 500`,
         user,
         campus,
       ).all<{
@@ -440,6 +445,7 @@ export function campusStore(db: Db) {
         edgeType: string;
         targetType: string;
         targetId: string;
+        targetLabel: string;
         note: string;
         status: string;
         createdAt: string;
