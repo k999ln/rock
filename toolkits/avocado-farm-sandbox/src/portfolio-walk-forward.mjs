@@ -100,7 +100,7 @@ if (!series.length) {
   throw new Error("No pool had enough historical candles");
 }
 
-const result = portfolioWalkForward(series, {
+const backtestOptions = {
   candidateRangesPct,
   trainBars,
   testBars,
@@ -117,6 +117,15 @@ const result = portfolioWalkForward(series, {
     maxVolToRangeRatio: Number(process.env.WF_MAX_VOL_RANGE_RATIO || 1.5),
     maxTrendToRangeRatio: Number(process.env.WF_MAX_TREND_RANGE_RATIO || 1.75),
   },
+};
+
+const baseline = portfolioWalkForward(series, {
+  ...backtestOptions,
+  selectionMode: "best",
+});
+const robust = portfolioWalkForward(series, {
+  ...backtestOptions,
+  selectionMode: "robust",
 });
 
 console.log("\nAvocado Farm — MULTI-POOL WALK-FORWARD PAPER TEST\n");
@@ -149,15 +158,27 @@ console.log(
         "The pool universe is discovered from pools that exist now, so this test still has survivorship/universe-selection bias and can miss pools that disappeared before the run.",
         "Pools without an explicit fee tier in the current display name use a 30 bps fallback fee assumption.",
       ],
-      summary: {
-        startingCapitalUsd: result.startingCapitalUsd,
-        finalEquityUsd: result.finalEquityUsd,
-        pnlUsd: result.pnlUsd,
-        returnPct: result.returnPct,
-        totalBoundaryCostsUsd: result.totalBoundaryCostsUsd,
-        lpFolds: result.lpFolds,
-        cashFolds: result.cashFolds,
-        poolSelections: result.poolSelections,
+      comparison: {
+        baseline: {
+          startingCapitalUsd: baseline.startingCapitalUsd,
+          finalEquityUsd: baseline.finalEquityUsd,
+          pnlUsd: baseline.pnlUsd,
+          returnPct: baseline.returnPct,
+          totalBoundaryCostsUsd: baseline.totalBoundaryCostsUsd,
+          lpFolds: baseline.lpFolds,
+          cashFolds: baseline.cashFolds,
+          poolSelections: baseline.poolSelections,
+        },
+        robust: {
+          startingCapitalUsd: robust.startingCapitalUsd,
+          finalEquityUsd: robust.finalEquityUsd,
+          pnlUsd: robust.pnlUsd,
+          returnPct: robust.returnPct,
+          totalBoundaryCostsUsd: robust.totalBoundaryCostsUsd,
+          lpFolds: robust.lpFolds,
+          cashFolds: robust.cashFolds,
+          poolSelections: robust.poolSelections,
+        },
       },
     },
     null,
@@ -166,7 +187,7 @@ console.log(
 );
 
 console.table(
-  result.folds.map((fold) => ({
+  robust.folds.map((fold) => ({
     fold: fold.fold,
     decision: new Date(fold.decisionTime * 1000).toISOString().slice(5, 13),
     action: fold.action,
@@ -177,6 +198,21 @@ console.table(
       fold.trainingReturnPct === undefined
         ? "-"
         : fold.trainingReturnPct.toFixed(2) + "%",
+    older:
+      fold.trainingOlderReturnPct === null ||
+      fold.trainingOlderReturnPct === undefined
+        ? "-"
+        : fold.trainingOlderReturnPct.toFixed(2) + "%",
+    recent:
+      fold.trainingRecentReturnPct === null ||
+      fold.trainingRecentReturnPct === undefined
+        ? "-"
+        : fold.trainingRecentReturnPct.toFixed(2) + "%",
+    robustRanges:
+      fold.positiveRangeFraction === null ||
+      fold.positiveRangeFraction === undefined
+        ? "-"
+        : (fold.positiveRangeFraction * 100).toFixed(0) + "%",
     testPnl: fold.testPnlUsd.toFixed(2),
     ending: fold.endingCapitalUsd.toFixed(2),
   })),
