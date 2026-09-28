@@ -23,3 +23,20 @@ jobs:
           node-version: "22"
       - name: Unit tests
         run: npm --prefix toolkits/avocado-farm-sandbox test
+
+  paper-scan:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Live Robinhood Chain PAPER scan
+        env:
+          PAPER_CASH_USD: "10000"
+          PAPER_TICKET_USD: "1000"
+          MODEL_FEE_BPS: "30"
+          GECKO_PAGES: "1"
+        run: npm --prefix toolkits/avocado-farm-sandbox run scan:paper
