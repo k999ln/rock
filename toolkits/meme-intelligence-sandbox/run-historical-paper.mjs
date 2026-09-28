@@ -32,12 +32,12 @@ const HOLD_SECONDS=7*24*3600, AGG=15;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const num=v=>Number.isFinite(Number(v))?Number(v):null;
 async function text(url){
-  const r=await fetch(url,{headers:{'user-agent':'RockstarOS-MemeReplay/0.1 (+research; PAPER-only)'}});
+  const r=await fetch(url,{headers:{'user-agent':'RockstarOS-MemeReplay/0.1 (+research; PAPER-only)'},signal:AbortSignal.timeout(15000)});
   if(!r.ok) throw new Error(`${r.status} ${url}`);
   return await r.text();
 }
 async function json(url){
-  const r=await fetch(url,{headers:{'user-agent':'RockstarOS-MemeReplay/0.1 (+research; PAPER-only)','accept':'application/json'}});
+  const r=await fetch(url,{headers:{'user-agent':'RockstarOS-MemeReplay/0.1 (+research; PAPER-only)','accept':'application/json'},signal:AbortSignal.timeout(15000)});
   if(!r.ok) throw new Error(`${r.status} ${url}`);
   return await r.json();
 }
