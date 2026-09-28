@@ -94,6 +94,12 @@ jobs:
         run: npm --prefix toolkits/avocado-farm-sandbox run backtest:walk
 
   portfolio-walk-forward:
+    needs:
+      - test
+      - paper-scan
+      - historical-backtest
+      - range-sweep
+      - walk-forward
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -105,8 +111,11 @@ jobs:
         env:
           BACKTEST_DAYS: "30"
           PAPER_TICKET_USD: "1000"
-          PORTFOLIO_POOL_LIMIT: "6"
+          PORTFOLIO_POOL_LIMIT: "4"
+          PORTFOLIO_DISCOVERY_SCAN_LIMIT: "12"
           PORTFOLIO_MIN_TVL_USD: "250000"
+          GECKO_MIN_INTERVAL_MS: "7000"
+          GECKO_MAX_ATTEMPTS: "6"
           WF_TRAIN_BARS: "48"
           WF_TEST_BARS: "24"
           RANGE_SWEEP_PCT: "8,12,20,30,50"
