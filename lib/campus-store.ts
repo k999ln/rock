@@ -139,18 +139,34 @@ export function campusStore(db: Db) {
       ).all<ProfileRow>()
     ).results;
     if (!viewer) return rows.map(publicProfile);
-    const blocked = new Set(
-      (
-        await statement(
-          db,
-          `SELECT target_id AS id FROM sky_campus_edges
-           WHERE actor_user_id = ? AND campus_id = ? AND edge_type = 'block'
-             AND target_type = 'profile' AND status = 'accepted'`,
-          viewer,
-          campus,
-        ).all<{ id: string }>()
-      ).results.map((row) => row.id),
-    );
+    const own = await profileForUser(viewer, campus);
+    const mine = (
+      await statement(
+        db,
+        `SELECT target_id AS id FROM sky_campus_edges
+         WHERE actor_user_id = ? AND campus_id = ? AND edge_type = 'block'
+           AND target_type = 'profile' AND status = 'accepted'`,
+        viewer,
+        campus,
+      ).all<{ id: string }>()
+    ).results.map((row) => row.id);
+    const blockedMe = own
+      ? (
+          await statement(
+            db,
+            `SELECT p.id
+             FROM sky_campus_edges e
+             JOIN sky_campus_profiles p
+               ON p.user_id = e.actor_user_id AND p.campus_id = e.campus_id
+             WHERE e.campus_id = ? AND e.edge_type = 'block'
+               AND e.target_type = 'profile' AND e.target_id = ?
+               AND e.status = 'accepted'`,
+            campus,
+            own.id,
+          ).all<{ id: string }>()
+        ).results.map((row) => row.id)
+      : [];
+    const blocked = new Set([...mine, ...blockedMe]);
     return rows.filter((row) => !blocked.has(row.id)).map(publicProfile);
   }
 
