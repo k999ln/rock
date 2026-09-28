@@ -24,7 +24,6 @@ import Link from 'next/link';
 import {
   useCallback,
   useEffect,
-  useMemo,
   useState,
   type CSSProperties,
   type FormEvent,
