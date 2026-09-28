@@ -160,3 +160,57 @@ void test('prompt keeps model advice separate from execution authority', () => {
   assert.match(prompt, /control-plane decision is advisory only/i);
   assert.match(prompt, /Never deploy to production/);
 });
+
+void test('non-public tasks do not launch into Cursor Cloud Agents', async () => {
+  let called = false;
+  const cursorClient = {
+    async createAgent() {
+      called = true;
+      throw new Error('should not launch');
+    },
+  };
+  const control = new AgentControlPlane({ cursorClient });
+  const receipt = await control.launch(task({ dataClass: 'confidential' }));
+  assert.equal(called, false);
+  assert.equal(receipt.status, 'blocked');
+  assert.equal(
+    receipt.executionGate.code,
+    'private_input_requires_local_handling',
+  );
+});
+
+void test('critical risk remains human-review even when Jev suggests parallel work', async () => {
+  const jev = new JevAgentStrategyProvider('test-key', async () => ({
+    answers: {
+      strategy: {
+        type: 'choice',
+        choice: 'parallel-workers',
+        probabilities: { 'parallel-workers': 0.99 },
+      },
+      reviewMode: {
+        type: 'choice',
+        choice: 'standard',
+        probabilities: { standard: 0.99 },
+      },
+      workerCount: {
+        type: 'choice',
+        choice: '4',
+        probabilities: { '4': 0.99 },
+      },
+    },
+    usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 },
+  }));
+  const control = new AgentControlPlane({ decisionProvider: jev });
+  const receipt = await control.plan(
+    task({
+      risk: 'critical',
+      decisionConsent: {
+        approved: true,
+        approvedAt: '2026-09-27T20:00:00-04:00',
+      },
+    }),
+  );
+  assert.equal(receipt.plan.strategy, 'human-review');
+  assert.equal(receipt.plan.reviewMode, 'security');
+  assert.equal(receipt.plan.maxWorkers, 0);
+});
