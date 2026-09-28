@@ -94,6 +94,7 @@ export async function fetchPoolOhlcv({
   aggregate = 1,
   maxCandles = 720,
   beforeTimestamp = Math.floor(Date.now() / 1000),
+  token = "base",
   fetchImpl = fetch,
 } = {}) {
   const byTimestamp = new Map();
@@ -107,7 +108,7 @@ export async function fetchPoolOhlcv({
       before_timestamp: String(cursor),
       limit: String(limit),
       currency: "usd",
-      token: "base",
+      token,
       include_empty_intervals: "false",
     });
     const url =
@@ -128,4 +129,114 @@ export async function fetchPoolOhlcv({
   return [...byTimestamp.values()]
     .sort((a, b) => a.timestamp - b.timestamp)
     .slice(-maxCandles);
+}
+
+
+export function derivePairOhlcv(baseUsdCandles, quoteUsdCandles) {
+  const quoteByTimestamp = new Map(
+    (quoteUsdCandles ?? []).map((candle) => [candle.timestamp, candle]),
+  );
+  const out = [];
+
+  for (const base of baseUsdCandles ?? []) {
+    const quote = quoteByTimestamp.get(base.timestamp);
+    if (!quote) continue;
+    if (
+      !(quote.open > 0) ||
+      !(quote.high > 0) ||
+      !(quote.low > 0) ||
+      !(quote.close > 0)
+    ) {
+      continue;
+    }
+
+    out.push({
+      timestamp: base.timestamp,
+      open: base.open / quote.open,
+      high: base.high / quote.low,
+      low: base.low / quote.high,
+      close: base.close / quote.close,
+      volumeUsd: base.volumeUsd,
+      quoteUsdOpen: quote.open,
+      quoteUsdHigh: quote.high,
+      quoteUsdLow: quote.low,
+      quoteUsdClose: quote.close,
+      baseUsdOpen: base.open,
+      baseUsdHigh: base.high,
+      baseUsdLow: base.low,
+      baseUsdClose: base.close,
+    });
+  }
+
+  return out.sort((a, b) => a.timestamp - b.timestamp);
+}
+
+export function withStableUsdQuote(candles) {
+  return (candles ?? []).map((candle) => ({
+    ...candle,
+    quoteUsdOpen: 1,
+    quoteUsdHigh: 1,
+    quoteUsdLow: 1,
+    quoteUsdClose: 1,
+    baseUsdOpen: candle.open,
+    baseUsdHigh: candle.high,
+    baseUsdLow: candle.low,
+    baseUsdClose: candle.close,
+  }));
+}
+
+export async function fetchPoolPairOhlcv({
+  network = "robinhood",
+  poolAddress,
+  timeframe = "hour",
+  aggregate = 1,
+  maxCandles = 720,
+  beforeTimestamp = Math.floor(Date.now() / 1000),
+  quoteIsUsdStable = false,
+  fetchImpl = fetch,
+} = {}) {
+  const baseUsd = await fetchPoolOhlcv({
+    network,
+    poolAddress,
+    timeframe,
+    aggregate,
+    maxCandles,
+    beforeTimestamp,
+    token: "base",
+    fetchImpl,
+  });
+
+  if (quoteIsUsdStable) return withStableUsdQuote(baseUsd);
+
+  const quoteUsd = await fetchPoolOhlcv({
+    network,
+    poolAddress,
+    timeframe,
+    aggregate,
+    maxCandles,
+    beforeTimestamp,
+    token: "quote",
+    fetchImpl,
+  });
+
+  return derivePairOhlcv(baseUsd, quoteUsd);
+}
+
+export function inferQuoteSymbol(poolName) {
+  const raw = String(poolName ?? "").split("/")[1]?.trim() ?? "";
+  return raw.replace(/\s+\d+(?:\.\d+)?%\s*$/, "").trim().toUpperCase();
+}
+
+export function isUsdStableSymbol(symbol) {
+  return new Set([
+    "USDG",
+    "USDC",
+    "USDT",
+    "DAI",
+    "USDS",
+    "USD1",
+    "USDE",
+    "PYUSD",
+    "FRAX",
+  ]).has(String(symbol ?? "").toUpperCase());
 }
