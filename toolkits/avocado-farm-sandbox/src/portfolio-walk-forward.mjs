@@ -1,5 +1,8 @@
 import { discoverRobinhoodPools } from "./gecko.mjs";
-import { fetchPoolMetadata, fetchPoolOhlcv } from "./historical.mjs";
+import {
+  fetchPoolOhlcv,
+  parseFeeBpsFromPoolName,
+} from "./historical.mjs";
 import { portfolioWalkForward } from "./portfolio-walk-forward-core.mjs";
 
 const days = Number(process.env.BACKTEST_DAYS || 30);
@@ -9,7 +12,10 @@ const maxCandles = Math.max(
   trainBars + testBars * 2,
   Math.min(24 * days, 24 * 180),
 );
-const limit = Number(process.env.PORTFOLIO_POOL_LIMIT || 6);
+const targetPoolCount = Number(process.env.PORTFOLIO_POOL_LIMIT || 6);
+const discoveryScanLimit = Number(
+  process.env.PORTFOLIO_DISCOVERY_SCAN_LIMIT || 20,
+);
 const minTvlUsd = Number(process.env.PORTFOLIO_MIN_TVL_USD || 250_000);
 const candidateRangesPct = String(
   process.env.RANGE_SWEEP_PCT || "8,12,20,30,50",
@@ -21,17 +27,26 @@ const candidateRangesPct = String(
 const discovered = await discoverRobinhoodPools({
   pages: Number(process.env.GECKO_PAGES || 1),
 });
+
 const universe = discovered
   .filter((pool) => pool.tvlUsd >= minTvlUsd && pool.spotPrice > 0)
-  .sort((a, b) => b.tvlUsd - a.tvlUsd)
-  .slice(0, limit);
+  .sort((a, b) => {
+    const aQuality = Math.log10(Math.max(1, a.tvlUsd)) +
+      Math.log10(Math.max(1, a.volume24hUsd));
+    const bQuality = Math.log10(Math.max(1, b.tvlUsd)) +
+      Math.log10(Math.max(1, b.volume24hUsd));
+    return bQuality - aQuality;
+  })
+  .slice(0, discoveryScanLimit);
 
 const series = [];
 const skipped = [];
 
 for (const pool of universe) {
+  if (series.length >= targetPoolCount) break;
+
+  const name = pool.token0 + " / " + pool.token1;
   try {
-    const metadata = await fetchPoolMetadata({ poolAddress: pool.address });
     const candles = await fetchPoolOhlcv({
       poolAddress: pool.address,
       timeframe: "hour",
@@ -41,33 +56,47 @@ for (const pool of universe) {
 
     if (candles.length < Math.ceil(trainBars * 0.8) + 2) {
       skipped.push({
-        pool: metadata.name,
+        pool: name,
         reason: `only ${candles.length} candles`,
       });
       continue;
     }
 
+    const feeBps = parseFeeBpsFromPoolName(name, 30);
     series.push({
       id: pool.id,
       address: pool.address,
-      name: metadata.name,
+      name,
       dexId: pool.dexId,
-      tvlUsd: metadata.tvlUsd || pool.tvlUsd,
-      feeBps: metadata.feeBps,
-      feeSource: /\d+(?:\.\d+)?%/.test(metadata.name)
+      tvlUsd: pool.tvlUsd,
+      feeBps,
+      feeSource: /\d+(?:\.\d+)?%/.test(name)
         ? "pool-name"
         : "30bps-fallback",
       candles,
     });
   } catch (error) {
     skipped.push({
-      pool: pool.token0 + "/" + pool.token1,
+      pool: name,
       reason: String(error?.message ?? error),
     });
   }
+
+  await new Promise((resolve) => setTimeout(resolve, 125));
 }
 
 if (!series.length) {
+  console.log(
+    JSON.stringify(
+      {
+        discoveredPools: discovered.length,
+        scannedPools: universe.length,
+        skipped,
+      },
+      null,
+      2,
+    ),
+  );
   throw new Error("No pool had enough historical candles");
 }
 
@@ -95,7 +124,8 @@ console.log(
   JSON.stringify(
     {
       discoveredPools: discovered.length,
-      universe: universe.length,
+      scannedUniverse: universe.length,
+      targetPoolCount,
       testedPools: series.map((pool) => ({
         name: pool.name,
         dex: pool.dexId,
@@ -117,6 +147,7 @@ console.log(
       caveats: [
         "Historical OHLCV/volume are market data, but fee capture uses current TVL because historical active-liquidity distribution is not reconstructed.",
         "The pool universe is discovered from pools that exist now, so this test still has survivorship/universe-selection bias and can miss pools that disappeared before the run.",
+        "Pools without an explicit fee tier in the current display name use a 30 bps fallback fee assumption.",
       ],
       summary: {
         startingCapitalUsd: result.startingCapitalUsd,
