@@ -62,7 +62,7 @@ void test('module-styled home and settings keep their stylesheet bindings', () =
   assert.match(settings, /<WorkspaceShell title="設定" hideTopActions>/);
 });
 
-void test('primary apps share the RockstarOS black, paper and acid-green system', () => {
+void test('primary apps share the avokado graphite, silver and ice-blue system', () => {
   const homeStyles = readFileSync(
     resolve(root, 'components/home-screen.module.css'),
     'utf8',
@@ -80,9 +80,11 @@ void test('primary apps share the RockstarOS black, paper and acid-green system'
     'utf8',
   );
   assert.match(workspace, /RockstarOS 1\.0 — unified app surfaces/);
-  assert.match(homeStyles, /\.sky,[\s\S]*\.settings \{[\s\S]*#c8ff2e/);
-  assert.match(csvStyles, /\.primary \{[\s\S]*#c8ff2e/);
-  assert.match(settingsStyles, /\.itemIcon \{[\s\S]*#c8ff2e/);
+  assert.match(workspace, /avokado OS: the product's graphite shell/);
+  assert.match(homeStyles, /\.home \{[\s\S]*--home-accent: #bedce6/);
+  assert.match(homeStyles, /\.sky,[\s\S]*\.settings \{[\s\S]*#e1e8eb/);
+  assert.match(csvStyles, /\.primary \{[\s\S]*#172631/);
+  assert.match(settingsStyles, /\.itemIcon \{[\s\S]*#bedce6/);
   assert.doesNotMatch(sky, /showSidebar/);
 });
 
@@ -193,6 +195,20 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.match(csv, /router\.push\('\/chat\?tool=rockstar-csv-cleanup'\)/);
   assert.match(workRoute, /redirect\('\/chat\?view=work'\)/);
   assert.match(activityRoute, /redirect\('\/chat\?view=work'\)/);
+});
+
+void test('Zema keeps the composer in view and explains a selected candidate before sending', () => {
+  const chat = readFileSync(resolve(root, 'components/sky-chat-workspace.tsx'), 'utf8');
+  assert.match(workspace, /\.sky-chat-page \.sky-chat-simple \{[^}]*height: 100dvh;/);
+  assert.match(workspace, /\.sky-chat-page \.sky-chat-messages \{[^}]*min-height: 0;[^}]*flex: 1 1 auto;/);
+  assert.match(chat, /className="zema-empty-status"/);
+  assert.match(chat, /依頼を書く/);
+  assert.match(chat, /composerRef\.current\?\.focus\(\)/);
+  assert.match(chat, /専用画面を開く/);
+  assert.match(chat, /ツール本体の実行は未対応です/);
+  assert.match(chat, /const \[allBotsOpen, setAllBotsOpen\] = useState\(false\)/);
+  assert.match(chat, /ツールと会話を検索/);
+  assert.match(chat, /AVOKADO \/ ZEMA/);
 });
 
 void test('routes inside the OS keep a direct OS home affordance', () => {

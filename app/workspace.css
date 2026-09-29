@@ -15,8 +15,8 @@
   font-family: Arial, 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
   line-height: 1.65;
 }
-.rock-workspace button,
-.rock-workspace input {
+:where(.rock-workspace) button,
+:where(.rock-workspace) input {
   font: inherit;
 }
 .rock-workspace a:hover {
@@ -554,6 +554,20 @@
 .sky-publish-form {
   display: grid;
   gap: 20px;
+}
+.sky-publisher-reuse {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 13px 16px;
+  border: 1px solid #cbdcb0;
+  border-radius: 13px;
+  background: #f3f8e9;
+  color: #35472c;
+  font-size: 12px;
+  font-weight: 650;
 }
 .sky-publish-form fieldset,
 .sky-publish-review {
@@ -1580,7 +1594,7 @@
   --studio-ink: #f7f7f2;
   --studio-muted: #92958d;
   --studio-line: #ffffff20;
-  --studio-green: #c8ff2e;
+  --studio-green: #bedce6;
   width: 100%;
   min-height: 100dvh;
   padding: 0 0 28px;
@@ -1662,9 +1676,9 @@
 .studio-avatar {
   width: 38px;
   height: 38px;
-  border: 1px solid #c8ff2e44;
+  border: 1px solid #bedce644;
   border-radius: 50%;
-  background: #c8ff2e10;
+  background: #bedce610;
   color: var(--studio-green);
 }
 .studio-chat-kicker {
@@ -1715,7 +1729,7 @@
   color: var(--studio-muted);
 }
 .studio-state {
-  background: #c8ff2e18;
+  background: #bedce618;
   color: var(--studio-green);
 }
 .studio-state-package_ready {
@@ -1729,7 +1743,7 @@
 }
 .studio-result-note {
   border-left-color: var(--studio-green);
-  background: #c8ff2e0b;
+  background: #bedce60b;
   color: #c5c9bf;
 }
 .studio-findings span {
@@ -1780,7 +1794,7 @@
 .studio-composer:focus-within {
   border-color: var(--studio-green);
   box-shadow:
-    0 0 0 3px #c8ff2e12,
+    0 0 0 3px #bedce612,
     0 18px 50px #00000055;
 }
 .studio-composer textarea {
@@ -1815,8 +1829,8 @@
   color: #6f736b;
 }
 .studio-attachment {
-  border-color: #c8ff2e30;
-  background: #c8ff2e0d;
+  border-color: #bedce630;
+  background: #bedce60d;
   color: #d9ddd2;
 }
 .studio-attachment small,
@@ -3465,7 +3479,7 @@
   place-items: center;
   border-radius: 50%;
   color: #050505;
-  background: #c8ff2e;
+  background: #bedce6;
   font-size: 11px;
 }
 .sky-usage-path-steps span { min-width: 0; }
@@ -3490,8 +3504,8 @@
   margin: 0 0 20px;
   border-color: #536b23;
 }
-.sky-producthunt-import-banner strong { color: #c8ff2e; }
-.sky-producthunt-import-banner a { color: #c8ff2e; font-size: 13px; }
+.sky-producthunt-import-banner strong { color: #bedce6; }
+.sky-producthunt-import-banner a { color: #bedce6; font-size: 13px; }
 @media (max-width: 720px) {
   .sky-producthunt-import-banner { grid-template-columns: 1fr; }
 }
@@ -8546,31 +8560,6 @@
   background: #050505;
   border-color: #2f3336;
 }
-.sky-connect-title-row {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding-right: 34px;
-}
-.sky-connect-title-row .rock-tool-icon {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 auto;
-  border-radius: 50%;
-}
-.sky-connect-title-row .rock-eyebrow {
-  margin-bottom: 2px;
-  font-size: 12px;
-  letter-spacing: 0;
-  text-transform: none;
-}
-.sky-connect-title-row .rock-dialog-title {
-  font-size: 21px !important;
-}
-.sky-connect-dialog .rock-dialog-description {
-  margin-top: 3px;
-  font-size: 14px !important;
-}
 .sky-id-connection {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -8999,6 +8988,7 @@
   color: #e7e9ea;
   font-size: 13px;
   font-weight: 650;
+  text-decoration: none;
 }
 .sky-main-feed .sky-header-action:hover,
 .sky-main-feed .sky-header-action:focus-visible {
@@ -9283,9 +9273,9 @@
   background: #16181c;
 }
 .sky-chat-commandbar > nav a[aria-current='page'] {
-  border-color: #c8ff2e;
+  border-color: #bedce6;
   color: #0a0d07;
-  background: #c8ff2e;
+  background: #bedce6;
 }
 .sky-chat-work-center {
   grid-row: 2 / -1;
@@ -10045,7 +10035,7 @@
   gap: 7px;
   padding: 10px 15px;
   border-radius: 999px;
-  background: #c8ff2e;
+  background: #bedce6;
   color: #111;
   font-size: 13px;
   font-weight: 800;
@@ -10101,11 +10091,11 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: 50%;
-  color: #c8ff2e;
+  color: #bedce6;
   background: #10130f;
 }
 .sky-chat-live-progress > header > div > span.is-live {
-  box-shadow: 0 0 0 5px rgba(200, 255, 46, 0.16);
+  box-shadow: 0 0 0 5px rgba(190, 220, 230, 0.16);
   animation: sky-chat-live-pulse 1.8s ease-in-out infinite;
 }
 .sky-chat-live-progress > header small,
@@ -10305,7 +10295,7 @@
   justify-content: center;
   gap: 6px;
   padding: 8px 12px;
-  border: 1px solid rgba(200, 255, 46, 0.35);
+  border: 1px solid rgba(190, 220, 230, 0.35);
   border-radius: 999px;
   color: #dfff79;
   font-size: 12px;
@@ -10313,7 +10303,7 @@
 }
 @keyframes sky-chat-live-pulse {
   50% {
-    box-shadow: 0 0 0 9px rgba(200, 255, 46, 0.05);
+    box-shadow: 0 0 0 9px rgba(190, 220, 230, 0.05);
   }
 }
 
@@ -11132,11 +11122,11 @@
   --sidebar-border: #272b25;
   --sidebar-accent: #171b15;
   --sidebar-accent-foreground: #f7f9f2;
-  --sidebar-ring: #c8ff2e;
+  --sidebar-ring: #bedce6;
   --rock-ink: #1d211d;
   --rock-muted: #667068;
   --rock-line: #d9ded7;
-  --rock-lime: #c8ff2e;
+  --rock-lime: #bedce6;
   --rock-paper: #f1f3ee;
   min-height: 100dvh;
   background: #080a08;
@@ -11146,21 +11136,21 @@
   background:
     radial-gradient(
       circle at 28% 4%,
-      rgba(200, 255, 46, 0.11),
+      rgba(190, 220, 230, 0.11),
       transparent 22%
     ),
     #080a08 !important;
 }
 .rock-mark {
   border-radius: 50%;
-  background: #c8ff2e;
+  background: #bedce6;
   color: #0b0e08;
   box-shadow:
-    0 0 0 1px rgba(200, 255, 46, 0.18),
-    0 0 28px rgba(200, 255, 46, 0.12);
+    0 0 0 1px rgba(190, 220, 230, 0.18),
+    0 0 28px rgba(190, 220, 230, 0.12);
 }
 .rock-logo-os {
-  color: #c8ff2e;
+  color: #bedce6;
 }
 .rock-version,
 .rock-nav-label {
@@ -11176,10 +11166,10 @@
   background: #141713;
 }
 .rock-navigation a[aria-current='page'] {
-  border-color: #c8ff2e;
-  background: #c8ff2e;
+  border-color: #bedce6;
+  background: #bedce6;
   color: #0b0e08;
-  box-shadow: 0 10px 28px rgba(200, 255, 46, 0.12);
+  box-shadow: 0 10px 28px rgba(190, 220, 230, 0.12);
 }
 .rock-preview-note {
   border-color: #30362c;
@@ -11187,7 +11177,7 @@
   background: #111410;
 }
 .rock-preview-note > span {
-  color: #c8ff2e;
+  color: #bedce6;
 }
 .rock-main-column {
   background: #f1f3ee;
@@ -11216,15 +11206,15 @@
   color: #f4f6ef;
 }
 .rock-topbar .rock-button-subtle {
-  border-color: #c8ff2e;
+  border-color: #bedce6;
   color: #0a0d07;
-  background: #c8ff2e;
+  background: #bedce6;
 }
 .rock-main {
   background:
     radial-gradient(
       circle at 100% 0,
-      rgba(200, 255, 46, 0.07),
+      rgba(190, 220, 230, 0.07),
       transparent 24%
     ),
     #f1f3ee;
@@ -11232,7 +11222,7 @@
 .rock-button-dark {
   border-radius: 999px;
   color: #0a0d07;
-  background: #c8ff2e;
+  background: #bedce6;
 }
 .rock-button-dark:hover {
   background: #b9ef25;
@@ -11246,7 +11236,7 @@
   border-top-color: #272b25;
 }
 .rock-bottom-note a {
-  color: #c8ff2e;
+  color: #bedce6;
 }
 .rock-workspace[data-running='true'] a[aria-disabled='true'] {
   cursor: not-allowed;
@@ -11257,7 +11247,7 @@
 .rock-workspace input:focus-visible,
 .rock-workspace textarea:focus-visible,
 .rock-workspace [role='button']:focus-visible {
-  outline: 3px solid #c8ff2e;
+  outline: 3px solid #bedce6;
   outline-offset: 3px;
 }
 
@@ -11266,14 +11256,14 @@
   --studio-ink: #f5f7f0;
   --studio-muted: #9aa196;
   --studio-line: #2b3028;
-  --studio-green: #c8ff2e;
+  --studio-green: #bedce6;
   width: 100%;
   padding-bottom: 44px;
   color: var(--studio-ink);
   background:
     radial-gradient(
       circle at 82% 8%,
-      rgba(200, 255, 46, 0.12),
+      rgba(190, 220, 230, 0.12),
       transparent 25%
     ),
     #080a08;
@@ -11319,7 +11309,7 @@
   border-bottom-color: var(--studio-line);
   background: linear-gradient(
     145deg,
-    rgba(200, 255, 46, 0.075),
+    rgba(190, 220, 230, 0.075),
     transparent 48%
   );
 }
@@ -11440,7 +11430,7 @@
   background:
     radial-gradient(
       circle at 100% 0,
-      rgba(200, 255, 46, 0.08),
+      rgba(190, 220, 230, 0.08),
       transparent 24%
     ),
     #f1f3ee;
@@ -11492,8 +11482,8 @@
 .sky-main-feed .sky-header-action:focus-visible { color: #171c17; background: #efffc5; }
 .sky-main-feed .sky-assistant-avatar,
 .sky-main-feed .sky-provider-avatar {
-  border-color: #c8ff2e;
-  color: #c8ff2e;
+  border-color: #bedce6;
+  color: #bedce6;
   background: #10130f;
   box-shadow: none;
 }
@@ -11507,7 +11497,7 @@
 .sky-main-feed .sky-feed-post.is-connect .sky-post-primary {
   border-radius: 999px;
   color: #0a0d07;
-  background: #c8ff2e;
+  background: #bedce6;
   box-shadow: none;
 }
 .sky-main-feed .sky-assistant-composer button:not(:disabled):hover,
@@ -11552,7 +11542,7 @@
   background: #0a0c09;
 }
 .sky-chat-page .sky-chat-commandbar > div > span {
-  color: #c8ff2e;
+  color: #bedce6;
 }
 .sky-chat-page .sky-chat-commandbar h1 {
   color: #f5f7f1;
@@ -11584,7 +11574,7 @@
 .sky-chat-page .sky-chat-auto-mark,
 .sky-chat-page .sky-chat-sky-mark,
 .sky-chat-page .sky-chat-bot-mark {
-  color: #c8ff2e;
+  color: #bedce6;
   background: #10130f;
 }
 .sky-chat-page .sky-chat-bubble.is-sky,
@@ -11598,7 +11588,7 @@
 }
 .sky-chat-page .sky-chat-bubble.is-me {
   color: #0a0d07;
-  background: #c8ff2e;
+  background: #bedce6;
 }
 .sky-chat-page .sky-chat-composer-box {
   border-color: #cfd6cd;
@@ -11610,7 +11600,7 @@
 }
 .sky-chat-page .sky-chat-composer button {
   color: #0a0d07;
-  background: #c8ff2e;
+  background: #bedce6;
 }
 
 /* Zema history rail: it is a real responsive surface, not a hidden placeholder. */
@@ -11651,7 +11641,7 @@
   height: 32px;
   place-items: center;
   border-radius: 10px;
-  color: #c8ff2e;
+  color: #bedce6;
   background: #10130f;
   font-weight: 900;
 }
@@ -11726,7 +11716,7 @@
   font-weight: 700;
 }
 .zema-bot-show-all:hover { border-color: #cde58e; background: #efffc5; }
-.zema-bot-mark { flex: 0 0 26px; display: grid; width: 26px; height: 26px; place-items: center; border-radius: 8px; color: #c8ff2e; background: #10130f; font-size: 11px; font-weight: 900; }
+.zema-bot-mark { flex: 0 0 26px; display: grid; width: 26px; height: 26px; place-items: center; border-radius: 8px; color: #bedce6; background: #10130f; font-size: 11px; font-weight: 900; }
 .zema-bot-copy { min-width: 0; flex: 1; }
 .zema-bot-copy strong,
 .zema-bot-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -11763,6 +11753,7 @@
 .sky-chat-page .sky-chat-simple {
   width: 100%;
   max-width: none;
+  height: 100dvh;
   min-height: 100dvh;
   margin: 0;
   border: 0;
@@ -11798,7 +11789,7 @@
 }
 .sky-chat-page .sky-chat-composer-box textarea { color: #e7e9ea; }
 .sky-chat-page .sky-chat-composer-box textarea::placeholder { color: #71767b; }
-.sky-chat-page .sky-chat-composer button { color: #0a0d07; background: #c8ff2e; }
+.sky-chat-page .sky-chat-composer button { color: #0a0d07; background: #bedce6; }
 .sky-chat-page .sky-chat-bubble.is-sky,
 .sky-chat-page .sky-chat-workflow {
   border-color: #2f3336;
@@ -11897,6 +11888,10 @@
   min-height: 0;
   padding-inline: clamp(18px, 3vw, 40px);
 }
+.sky-chat-page .sky-chat-messages {
+  min-height: 0;
+  flex: 1 1 auto;
+}
 .sky-chat-page .zema-grok-shell.is-empty .sky-chat-messages {
   justify-content: center;
 }
@@ -11913,7 +11908,7 @@
   height: 42px;
   place-items: center;
   border-radius: 13px;
-  color: #c8ff2e;
+  color: #bedce6;
   background: #16181c;
   font-size: 20px;
   font-weight: 900;
@@ -11929,6 +11924,52 @@
   color: #aeb8bf;
   font-size: 14px;
   line-height: 1.6;
+}
+.sky-chat-page .zema-empty-next {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  margin-top: 4px;
+}
+.sky-chat-page .zema-empty-status {
+  width: fit-content;
+  padding: 5px 9px;
+  border: 1px solid #39434b;
+  border-radius: 999px;
+  color: #c7d0d0;
+  font-size: 12px;
+}
+.sky-chat-page .zema-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sky-chat-page .zema-empty-actions > button,
+.sky-chat-page .zema-empty-actions > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid #4e6534;
+  border-radius: 999px;
+  color: #bedce6;
+  background: #1b2417;
+  font-size: 13px;
+  font-weight: 700;
+}
+.sky-chat-page .zema-empty-actions > button:hover,
+.sky-chat-page .zema-empty-actions > a:hover,
+.sky-chat-page .zema-empty-actions > button:focus-visible,
+.sky-chat-page .zema-empty-actions > a:focus-visible {
+  border-color: #bedce6;
+  background: #27331f;
+}
+.sky-chat-page .zema-empty-next small {
+  color: #89969a;
+  font-size: 12px;
+  line-height: 1.5;
 }
 .sky-chat-page .zema-starters {
   display: flex;
@@ -12070,7 +12111,7 @@
   place-items: center;
   border-radius: 10px;
   color: #11150b;
-  background: #c8ff2e;
+  background: #bedce6;
   font-size: 16px;
   font-weight: 900;
 }
@@ -12080,7 +12121,7 @@
   height: 30px;
   border: 1px solid #343d32;
   border-radius: 10px;
-  color: #c8ff2e;
+  color: #bedce6;
   background: #1b2118;
 }
 .sky-chat-page .zema-bot-copy strong {
@@ -12142,8 +12183,8 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #c8ff2e;
-  box-shadow: 0 0 0 3px rgba(200, 255, 46, .11);
+  background: #bedce6;
+  box-shadow: 0 0 0 3px rgba(190, 220, 230, .11);
 }
 .sky-chat-page .zema-active-bot > div { min-width: 0; }
 .sky-chat-page .zema-active-bot small,
@@ -12175,7 +12216,7 @@
   height: 30px;
   place-items: center;
   border-radius: 10px;
-  color: #c8ff2e;
+  color: #bedce6;
   background: #1b2118;
   font-size: 14px;
   font-weight: 850;
@@ -12205,7 +12246,7 @@
   background: #171c1a;
   border-color: #30373b;
 }
-.sky-chat-page .sky-chat-workflow-orb { color: #11150b; background: #c8ff2e; }
+.sky-chat-page .sky-chat-workflow-orb { color: #11150b; background: #bedce6; }
 .sky-chat-page .sky-chat-workflow > header small { color: #aab4b3; letter-spacing: 0; font-size: 11px; }
 .sky-chat-page .sky-chat-workflow > header h2 { font-size: 15px; }
 .sky-chat-page .sky-chat-local-llm-note {
@@ -12249,8 +12290,8 @@
   color: #e7ebeb;
   background: #101416;
 }
-.sky-chat-page .sky-chat-workflow-body .mr-workbench .output-actions button { color: #c8ff2e; background: #252d24; }
-.sky-chat-page .sky-chat-workflow-body .mr-workbench .bench-run { color: #11150b; background: #c8ff2e; }
+.sky-chat-page .sky-chat-workflow-body .mr-workbench .output-actions button { color: #bedce6; background: #252d24; }
+.sky-chat-page .sky-chat-workflow-body .mr-workbench .bench-run { color: #11150b; background: #bedce6; }
 
 @media (max-width: 767px) {
   .sky-chat-page .zema-room-heading > div > span { display: none; }
@@ -12276,10 +12317,10 @@
 .wallet-signin > a,
 .wallet-save,
 .wallet-balance-actions button:first-child {
-  border-color: #c8ff2e !important;
+  border-color: #bedce6 !important;
   border-radius: 999px !important;
   color: #0a0d07 !important;
-  background: #c8ff2e !important;
+  background: #bedce6 !important;
 }
 .rock-workspace .work-job.selected,
 .rock-workspace .work-review,
@@ -12294,24 +12335,24 @@
   background: #0a0c09;
 }
 .wallet-balance small svg {
-  color: #c8ff2e;
+  color: #bedce6;
 }
 .rock-settlement-wallet {
   border-color: #292e27;
   color: #f5f7f1;
   background:
-    radial-gradient(circle at 92% 0, rgba(200, 255, 46, 0.13), transparent 34%),
+    radial-gradient(circle at 92% 0, rgba(190, 220, 230, 0.13), transparent 34%),
     #0a0c09;
   box-shadow: 0 18px 44px rgba(19, 25, 18, 0.1);
 }
 .rock-settlement-heading > span {
-  border-color: rgba(200, 255, 46, 0.32);
-  color: #c8ff2e;
-  background: rgba(200, 255, 46, 0.08);
+  border-color: rgba(190, 220, 230, 0.32);
+  color: #bedce6;
+  background: rgba(190, 220, 230, 0.08);
 }
 .rock-settlement-heading p,
 .rock-settlement-wallet > footer svg {
-  color: #c8ff2e;
+  color: #bedce6;
 }
 .rock-settlement-connect,
 .rock-settlement-account {
@@ -12321,7 +12362,7 @@
 .rock-settlement-collections form button {
   border-radius: 999px;
   color: #0a0d07;
-  background: #c8ff2e;
+  background: #bedce6;
 }
 
 /* Market drops the standalone blue brand in favor of the OS palette. */
@@ -12332,7 +12373,7 @@
 }
 .everything-market-page .market-brand > span,
 .everything-market-page .market-activity-head > b {
-  color: #c8ff2e;
+  color: #bedce6;
   background: #10130f;
 }
 .everything-market-page .market-search {
@@ -12368,11 +12409,11 @@
 .everything-market-page .market-card-art.tone-2,
 .everything-market-page .market-card-art.tone-3,
 .everything-market-page .market-card-art.tone-4 {
-  color: #c8ff2e;
+  color: #bedce6;
   background:
     radial-gradient(
       circle at 75% 20%,
-      rgba(200, 255, 46, 0.15),
+      rgba(190, 220, 230, 0.15),
       transparent 30%
     ),
     #10130f;
@@ -12382,11 +12423,11 @@
 .everything-market-page .market-proposal > button,
 .everything-market-page .market-ticket-submit {
   color: #0a0d07;
-  background: #c8ff2e;
+  background: #bedce6;
 }
 .everything-market-page .market-side-switch button.is-active {
   color: #263012;
-  box-shadow: 0 0 0 1px #c8ff2e;
+  box-shadow: 0 0 0 1px #bedce6;
 }
 
 @media (max-width: 767px) {
@@ -12602,6 +12643,543 @@
 .spin { animation: sky-activation-spin 1s linear infinite; }
 @keyframes sky-activation-spin { to { transform: rotate(360deg); } }
 @media (max-width: 840px) { .sky-activation-form { grid-template-columns: 1fr 1fr; } .sky-activation-form label:first-child { grid-column: 1 / -1; } .sky-activation-form .rock-button { justify-self: start; } }
+
+/* Sky home: one icon tap opens the same overview and next action. */
+.sky-main-feed .sky-tool-icon-button {
+  display: inline-grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 160ms ease;
+}
+.sky-main-feed .sky-tool-icon-button:hover { transform: translateY(-2px); }
+.sky-main-feed .sky-tool-icon-button:focus-visible { outline: 2px solid #77aec4; outline-offset: 4px; }
+.sky-tool-dialog .sky-tool-action-note { margin: 0; color: #aab8c1; font-size: 13px; line-height: 1.6; }
+.sky-tool-dialog .sky-tool-guidance-link { text-decoration: none; }
+@media (prefers-reduced-motion: reduce) {
+  .sky-main-feed .sky-tool-icon-button { transition: none; }
+  .sky-main-feed .sky-tool-icon-button:hover { transform: none; }
+}
+
+/* avokado OS: the product's graphite shell, silver surfaces and ice-blue action color. */
+.rock-workspace {
+  --sidebar: #0b0d12;
+  --sidebar-foreground: #f3f4f6;
+  --sidebar-border: #30343d;
+  --sidebar-accent: #20242b;
+  --sidebar-accent-foreground: #f4f7f8;
+  --sidebar-ring: #a8d5e5;
+  --rock-ink: #18232c;
+  --rock-muted: #64747f;
+  --rock-line: #d8e1e6;
+  --rock-lime: #bedce6;
+  --rock-paper: #f1f5f7;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Kaku Gothic ProN', sans-serif;
+  background: #090b10;
+}
+.rock-sidebar {
+  border-right-color: #2c3038 !important;
+  background: linear-gradient(160deg, #171b22, #090b10 55%) !important;
+}
+.rock-mark,
+.rock-navigation a[aria-current='page'] {
+  border-color: #c9d5db;
+  color: #17232b;
+  background: #dce7eb;
+  box-shadow: none;
+}
+.rock-logo-os,
+.rock-preview-note > span { color: #bedce6; }
+.rock-navigation a:hover,
+.rock-home-link:hover { border-color: #53606a; background: #252a32; }
+.rock-preview-note { border-color: #353b45; background: #171b21; }
+.rock-main-column { background: #f1f5f7; }
+.rock-topbar,
+.rock-main-column:has(.sky-main-feed) .rock-topbar {
+  border-bottom-color: #30343c;
+  color: #f4f5f7;
+  background: #0b0d11;
+}
+.rock-home-link { border-color: #414751; color: #eef1f3; background: #1b1e24; }
+.rock-breadcrumb strong { color: #f4f5f7; }
+.rock-breadcrumb,
+.rock-web-label { color: #999fa9; }
+.rock-topbar .rock-button-subtle,
+.rock-button-dark,
+.rock-main-column:has(.sky-main-feed) .rock-button-subtle {
+  border-color: #dce7eb;
+  color: #17232b;
+  background: #dce7eb;
+  box-shadow: none;
+}
+.rock-topbar .rock-button-subtle:hover,
+.rock-button-dark:hover { background: #fff; }
+.rock-main,
+.rock-main.sky-main-feed.sky-main-feed,
+.rock-main.everything-market-page.everything-market-page {
+  color: #18232c;
+  background: radial-gradient(circle at 100% 0, #dceaf04d, transparent 28%), #f1f5f7;
+}
+.rock-eyebrow { color: #547d90; }
+.rock-bottom-note { border-top-color: #30343c; color: #a7b0b8; background: #0b0d11; }
+.rock-bottom-note a { color: #bedce6; }
+.rock-workspace a:focus-visible,
+.rock-workspace button:focus-visible,
+.rock-workspace input:focus-visible,
+.rock-workspace textarea:focus-visible,
+.rock-workspace [role='button']:focus-visible { outline-color: #81bfd7; }
+
+/* Sky keeps the individual Tool identities while its surrounding interface matches avokado. */
+.sky-main-feed .sky-feed-column { border-color: #d2dce2; box-shadow: 0 18px 44px #18313d0a; }
+.sky-main-feed .sky-feed-header,
+.sky-main-feed .sky-assistant,
+.sky-main-feed .sky-feed-search,
+.sky-main-feed .sky-feed-post,
+.sky-main-feed .sky-route-reply { border-color: #dbe3e8; }
+.sky-main-feed .sky-feed-tabs > [data-slot='tabs-trigger'][data-active]::after { background: #77aec4; }
+.sky-main-feed .sky-assistant-avatar,
+.sky-main-feed .sky-provider-avatar { border-color: #b6cbd5; color: #bedce6; background: #18232c; }
+.sky-main-feed .sky-assistant-composer button,
+.sky-main-feed .sky-post-actions .sky-post-primary,
+.sky-main-feed .sky-feed-post.is-candidate .sky-post-primary,
+.sky-main-feed .sky-feed-post.is-connect .sky-post-primary {
+  border-color: #18232c;
+  color: #fff;
+  background: #18232c;
+}
+.sky-main-feed .sky-assistant-composer button:not(:disabled):hover,
+.sky-main-feed .sky-post-actions .sky-post-primary:hover,
+.sky-main-feed .sky-feed-post.is-candidate .sky-post-primary:hover,
+.sky-main-feed .sky-feed-post.is-connect .sky-post-primary:hover { color: #fff; background: #325266; }
+.sky-main-feed .sky-role-list button { border-color: #d7e1e6; color: #4c606c; background: #f4f8fa; }
+.sky-main-feed .sky-role-list button:hover,
+.sky-main-feed .sky-header-action:hover,
+.sky-main-feed .sky-header-action:focus-visible { color: #173d4f; background: #e7f1f5; }
+.sky-main-feed .sky-feed-post:hover { background: #f8fbfc; }
+.sky-main-feed .sky-feed::before { background: #d5e1e7; }
+.sky-main-feed .sky-feed::after { background: linear-gradient(180deg, transparent, #86b7ca, transparent); }
+
+/* Work, Wallet and Market share the same cool paper rather than fluorescent highlights. */
+.rock-workspace .work-create,
+.rock-workspace .work-list,
+.rock-workspace .work-detail,
+.wallet-signin,
+.wallet-totals > div,
+.wallet-record-form,
+.wallet-transactions { border-color: #d5dfe5; box-shadow: 0 14px 36px #1933420a; }
+.rock-workspace .work-primary,
+.wallet-signin > a,
+.wallet-save,
+.wallet-balance-actions button:first-child {
+  border-color: #172631 !important;
+  color: #fff !important;
+  background: #172631 !important;
+}
+.rock-workspace .work-job.selected,
+.rock-workspace .work-review,
+.rock-workspace .work-detail-heading > span { border-color: #bbd3dd; color: #285064; background: #eaf4f7; }
+.wallet-balance,
+.rock-settlement-wallet {
+  border-color: #303b44;
+  background: radial-gradient(circle at 100% 0, #7899a424, transparent 32%), #0b0d12;
+  box-shadow: 0 18px 44px #101f2a1a;
+}
+.wallet-balance small svg,
+.rock-settlement-heading p,
+.rock-settlement-wallet > footer svg { color: #b7d7e4; }
+.rock-settlement-heading > span { border-color: #8bb8c366; color: #d4ebf1; background: #bedce616; }
+.rock-settlement-connect,
+.rock-settlement-account { border-color: #39444c; }
+.rock-settlement-connect > button,
+.rock-settlement-collections form button { color: #15252f; background: #dce7eb; }
+.everything-market-page .market-top,
+.everything-market-page .market-categories { border-color: #d8e2e7; background: #fcfdfd; }
+.everything-market-page .market-brand > span,
+.everything-market-page .market-activity-head > b { color: #dce7eb; background: #17232b; }
+.everything-market-page .market-search { border-color: #d4dfe5; color: #667681; background: #f1f5f7; }
+.everything-market-page .market-categories button:hover,
+.everything-market-page .market-categories button.is-active { color: #1b4153; background: #e6f1f5; }
+.everything-market-page .market-hero { background: linear-gradient(135deg, #f9fbfc, #fff 55%, #eaf3f7); }
+.everything-market-page .market-hero > div:first-child > span,
+.everything-market-page .market-runtime-card > svg,
+.everything-market-page .market-ticket > span,
+.everything-market-page .market-ticket-steps .is-current { color: #4b8aa3; }
+.everything-market-page .market-runtime-card,
+.everything-market-page .market-card,
+.everything-market-page .market-activity,
+.everything-market-page .market-ticket { border-color: #d5dfe5; box-shadow: 0 14px 36px #1933420a; }
+.everything-market-page .market-card-art,
+.everything-market-page .market-card-art.tone-1,
+.everything-market-page .market-card-art.tone-2,
+.everything-market-page .market-card-art.tone-3,
+.everything-market-page .market-card-art.tone-4 {
+  color: #c9e0e9;
+  background: radial-gradient(circle at 75% 20%, #b7d7e42e, transparent 30%), #17232b;
+}
+.everything-market-page .market-prices button,
+.everything-market-page .market-prices button:last-child,
+.everything-market-page .market-proposal > button,
+.everything-market-page .market-ticket-submit { color: #fff; background: #172631; }
+.everything-market-page .market-side-switch button.is-active { color: #285064; box-shadow: 0 0 0 1px #91bbca; }
+
+/* Studio inherits the OS shell without competing with content and status colors. */
+.studio-chat-shell.studio-code-first { --studio-green: #bedce6; background: radial-gradient(circle at 82% 8%, #bedce61c, transparent 25%), #090b10; }
+.studio-code-first .studio-chat-logo { color: #17232b; background: #dce7eb; }
+.studio-code-first .studio-chat-brand > a { border-color: #3a444d; background: #1b2229; }
+.studio-code-first .studio-code-main,
+.studio-code-first .studio-setup-card { border-color: #303942; background: #12171b; }
+.studio-code-first .studio-code-intro { border-bottom-color: #303942; background: linear-gradient(145deg, #bedce611, transparent 48%); }
+.studio-code-first .studio-install-row > code,
+.studio-code-first .studio-token-result > code,
+.studio-code-first .studio-primary-code { border-color: #303942; color: #dce8ec; background: #0b0f13; }
+.studio-code-first .studio-install-row > button,
+.studio-code-first .studio-primary-code-head > button,
+.studio-code-first .studio-token-result > button { border-color: #3b4952; color: #e8f0f3; background: #1a2228; }
+.studio-code-first .studio-setup-icon,
+.studio-code-first .studio-key-button,
+.studio-code-first .studio-setup-card > a { color: #172631; background: #dce7eb; }
+.sky-chat-page .sky-chat-work-center { color: #18232c; background: #f1f5f7; }
+.sky-chat-page .sky-chat-work-center > header small { color: #5b899d; }
+.sky-chat-page .sky-chat-work-center > header p,
+.sky-chat-page .sky-chat-job-heading p,
+.sky-chat-page .sky-chat-work-empty { color: #667984; }
+.sky-chat-page .sky-chat-job-center { border-color: #d5dfe5; box-shadow: 0 14px 36px #1933420a; }
+.sky-chat-page .sky-chat-job-heading > span { color: #285064; background: #e8f3f7; }
+.sky-chat-page .work-title p { color: #667984; }
+.sky-chat-page .work-job { background: #f3f8fa; }
+.sky-chat-page .work-job span { color: #4b788b; }
+.sky-chat-page .work-steps li > span { color: #4b788b; background: #e9f3f7; }
+.wallet-balance-actions button:first-child { border-color: #dce7eb !important; color: #172631 !important; background: #dce7eb !important; }
+
+/* Avokado Zema: a quiet graphite workspace with silver actions and one clear start. */
+.sky-chat-page .zema-grok-shell {
+  grid-template-columns: clamp(232px, 22vw, 292px) minmax(0, 1fr);
+  background: #090a0c;
+}
+.sky-chat-page .zema-sidebar {
+  gap: 13px;
+  padding: 18px 12px;
+  border-color: #292a30;
+  background: #111215;
+}
+.sky-chat-page .zema-sidebar-top {
+  padding: 3px 7px 16px;
+  border-bottom: 1px solid #2b2c31;
+}
+.sky-chat-page .zema-sidebar-identity {
+  display: block;
+}
+.sky-chat-page .zema-sidebar-brand {
+  display: block;
+  width: auto;
+  height: auto;
+  color: #f4f4f5;
+  background: none;
+  font-size: 19px;
+  font-weight: 750;
+  letter-spacing: -.075em;
+  line-height: 1.2;
+}
+.sky-chat-page .zema-sidebar-identity strong {
+  display: block;
+  margin-top: 5px;
+  color: #b5b6bd;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .025em;
+}
+.sky-chat-page .zema-sidebar-identity strong small {
+  margin-left: 5px;
+  color: #72747d;
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: .16em;
+}
+.sky-chat-page .zema-new-chat {
+  min-height: 42px;
+  justify-content: center;
+  border-color: #f1f1f3;
+  border-radius: 999px;
+  color: #151518;
+  background: #f1f1f3;
+  font-weight: 700;
+}
+.sky-chat-page .zema-new-chat:hover,
+.sky-chat-page .zema-new-chat:focus-visible {
+  border-color: #fff;
+  background: #fff;
+}
+.sky-chat-page .zema-history-search input {
+  min-height: 38px;
+  padding-inline: 14px;
+  border-color: #2d2f35;
+  border-radius: 999px;
+  color: #f2f2f3;
+  background: #1b1c20;
+  font-size: 12px;
+}
+.sky-chat-page .zema-history-search input::placeholder { color: #888a93; }
+.sky-chat-page .zema-history-search input:focus-visible {
+  outline: 2px solid #a8d5e5;
+  outline-offset: 2px;
+}
+.sky-chat-page .zema-sidebar-section-title {
+  justify-content: space-between;
+  padding: 8px 7px 2px;
+  color: #94969e;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.sky-chat-page .zema-character-list { display: grid; gap: 2px; }
+.sky-chat-page .zema-character-list > div {
+  min-height: 52px;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+}
+.sky-chat-page .zema-character-list > div:hover,
+.sky-chat-page .zema-character-list > div:has([aria-current="true"]) {
+  border-color: #353840;
+  background: #22242a;
+}
+.sky-chat-page .zema-character-list > div > button:first-child {
+  min-width: 40px;
+  min-height: 40px;
+}
+.sky-chat-page .zema-character-list > div > button:first-child span {
+  box-shadow: none;
+  filter: saturate(.62);
+}
+.sky-chat-page .zema-character-list > div > button:last-child { padding: 3px 0; }
+.sky-chat-page .zema-bot-copy strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #e9e9ec;
+  font-size: 12px;
+  font-weight: 650;
+}
+.sky-chat-page .zema-bot-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #858891;
+  font-size: 10px;
+}
+.sky-chat-page .zema-bot-show-all {
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid #303137;
+  border-radius: 10px;
+  color: #c4c6ca;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 11px;
+}
+.sky-chat-page .zema-bot-show-all:hover { border-color: #787e86; background: #22242a; }
+.sky-chat-page .zema-history-list { min-height: 64px; }
+.sky-chat-page .zema-history-list a.is-current,
+.sky-chat-page .zema-history-list a:hover { border-color: #3c3e45; background: #24262b; }
+.sky-chat-page .zema-sidebar-bottom {
+  gap: 3px;
+  padding-top: 10px;
+  border-top: 1px solid #2b2c31;
+}
+.sky-chat-page .zema-sidebar-bottom a {
+  min-height: 34px;
+  border: 0;
+  border-radius: 9px;
+  color: #adb0b7;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 550;
+}
+.sky-chat-page .zema-sidebar-bottom a:hover,
+.sky-chat-page .zema-sidebar-bottom a:focus-visible { color: #fff; background: #24262b; }
+.sky-chat-page .sky-chat-commandbar {
+  min-height: 74px;
+  border-color: #2b2c31;
+  background: #0e0f12;
+}
+.sky-chat-page .zema-room-heading > div { display: block; }
+.sky-chat-page .zema-room-heading > div > span {
+  display: block;
+  margin-bottom: 3px;
+  color: #9bafba;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .17em;
+}
+.sky-chat-page .zema-room-heading h1 { font-size: 23px; letter-spacing: -.06em; }
+.sky-chat-page .zema-active-bot,
+.sky-chat-page .zema-auto-label {
+  border-color: #34363e;
+  border-radius: 13px;
+  color: #b5b8c0;
+  background: #1a1c21;
+}
+.sky-chat-page .zema-active-bot { max-width: min(52%, 300px); padding: 4px 11px 4px 5px; }
+.sky-chat-page .zema-active-bot > button { min-width: 40px; min-height: 40px; }
+.sky-chat-page .zema-active-bot > button span { box-shadow: none; filter: saturate(.65); }
+.sky-chat-page .zema-active-bot small { color: #9a9ca5; }
+.sky-chat-page .sky-chat-messages {
+  padding-block: 24px;
+  background: radial-gradient(ellipse at 52% 12%, #171a20 0%, #090a0c 56%);
+}
+.sky-chat-page .zema-empty {
+  gap: 0;
+  width: min(100%, 680px);
+  padding-block: 14px;
+}
+.sky-chat-page .zema-empty-kicker {
+  color: #a4cddd;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .2em;
+}
+.sky-chat-page .zema-empty h2 {
+  max-width: 650px;
+  margin-top: 17px;
+  color: #f4f4f6;
+  font-size: clamp(34px, 3.5vw, 52px);
+  font-weight: 750;
+  letter-spacing: -.075em;
+  line-height: 1.13;
+}
+.sky-chat-page .zema-empty .zema-empty-lead {
+  max-width: 590px;
+  margin-top: 18px;
+  color: #afb2bb;
+  font-size: 15px;
+  line-height: 1.75;
+}
+.sky-chat-page .zema-empty-next {
+  gap: 12px;
+  margin-top: 26px;
+  padding: 18px;
+  border: 1px solid #34363d;
+  border-radius: 21px;
+  background: linear-gradient(145deg, #202228, #15161a 72%);
+  box-shadow: 0 20px 70px #0003;
+}
+.sky-chat-page .zema-empty-tool-heading { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.sky-chat-page .zema-empty-tool-heading > button { min-width: 44px; min-height: 44px; }
+.sky-chat-page .zema-empty-tool-heading > button span { box-shadow: none; filter: saturate(.7); }
+.sky-chat-page .zema-empty-tool-heading > div { min-width: 0; }
+.sky-chat-page .zema-empty-tool-heading small {
+  display: block;
+  color: #9ca0aa;
+  font-size: 10px;
+  letter-spacing: .05em;
+}
+.sky-chat-page .zema-empty-tool-heading strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #f2f2f4;
+  font-size: 17px;
+  letter-spacing: -.03em;
+}
+.sky-chat-page .zema-empty-next p { color: #b9bcc4; font-size: 13px; line-height: 1.65; }
+.sky-chat-page .zema-empty-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: #b1b9bf;
+  font-size: 11px;
+}
+.sky-chat-page .zema-empty-status i { width: 6px; height: 6px; border-radius: 50%; background: #a8c8d6; }
+.sky-chat-page .zema-empty-actions { margin-top: 3px; }
+.sky-chat-page .zema-empty-actions > button,
+.sky-chat-page .zema-empty-actions > a {
+  min-height: 40px;
+  border-color: #555962;
+  border-radius: 999px;
+  color: #f2f3f5;
+  background: transparent;
+}
+.sky-chat-page .zema-empty-actions > button {
+  border-color: #f0f0f2;
+  color: #151518;
+  background: #f0f0f2;
+}
+.sky-chat-page .zema-empty-actions > button:hover,
+.sky-chat-page .zema-empty-actions > button:focus-visible {
+  border-color: #fff;
+  color: #151518;
+  background: #fff;
+}
+.sky-chat-page .zema-empty-actions > a:hover,
+.sky-chat-page .zema-empty-actions > a:focus-visible { border-color: #b9d8e4; background: #283239; }
+.sky-chat-page .zema-empty-next small { color: #8c919b; }
+.sky-chat-page .zema-starters { margin-top: 28px; }
+.sky-chat-page .zema-starters button { border-color: #3c3f46; background: #1b1d22; }
+.sky-chat-page .zema-starters button:hover,
+.sky-chat-page .zema-starters button:focus-visible { border-color: #a8d4e3; background: #253039; }
+.sky-chat-page .sky-chat-composer {
+  padding-block: 15px max(16px, env(safe-area-inset-bottom));
+  border-color: #2c2e34;
+  background: #0e0f12;
+}
+.sky-chat-page .sky-chat-composer-box {
+  max-width: 760px;
+  margin-inline: auto;
+  border-color: #42454d;
+  border-radius: 20px;
+  background: #202127;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.sky-chat-page .sky-chat-composer-box:focus-within {
+  border-color: #a4cbdc;
+  box-shadow: 0 0 0 3px #9ccfe021;
+}
+.sky-chat-page .sky-chat-composer-box textarea { color: #f4f4f5; }
+.sky-chat-page .sky-chat-composer-box textarea::placeholder { color: #8e929b; }
+.rock-workspace .sky-chat-page a:focus-visible,
+.rock-workspace .sky-chat-page button:focus-visible,
+.rock-workspace .sky-chat-page input:focus-visible,
+.rock-workspace .sky-chat-page select:focus-visible { outline: 2px solid #a4cbdc; outline-offset: 3px; }
+.rock-workspace .sky-chat-page .sky-chat-composer-box textarea:focus-visible { outline: none; }
+.sky-chat-page .sky-chat-composer button { color: #121317; background: #f2f2f4; }
+.sky-chat-page .sky-chat-composer button:hover:not(:disabled) { background: #fff; }
+.sky-chat-page .sky-chat-composer button:disabled { color: #71747c; background: #34363d; }
+.sky-chat-page .zema-model-settings,
+.sky-chat-page .zema-composer-toolbar { max-width: 760px; margin-inline: auto; color: #9397a0; }
+.sky-chat-page .zema-tool-picker,
+.sky-chat-page .zema-add-tool { color: #c3c7cc; }
+.sky-chat-page .zema-add-tool:hover { color: #b9e1ef; }
+.sky-chat-page .sky-chat-bubble.is-me { border: 1px solid #44474f; background: #272a30; }
+.sky-chat-page .sky-chat-workflow-orb,
+.sky-chat-page .sky-chat-workflow-body .mr-workbench .bench-run { color: #111216; background: #e9e9ed; }
+.sky-chat-page .sky-chat-workflow-body .mr-workbench .output-actions button { color: #cae7f1; background: #263038; }
+@media (max-width: 1000px) { .sky-chat-page .zema-composer-tip { display: none; } }
+@media (max-width: 767px) {
+  .sky-chat-page .zema-grok-shell { display: flex; flex-direction: column; }
+  .sky-chat-page .zema-sidebar { width: min(84vw, 300px); }
+  .sky-chat-page .sky-chat-commandbar { min-height: 66px; }
+  .sky-chat-page .zema-room-heading > div > span { display: none; }
+  .sky-chat-page .zema-active-bot { max-width: 54%; }
+  .sky-chat-page .sky-chat-messages { padding-block: 16px; }
+  .sky-chat-page .zema-empty { padding-block: 12px; }
+  .sky-chat-page .zema-empty h2 { font-size: clamp(34px, 9vw, 47px); }
+  .sky-chat-page .zema-empty .zema-empty-lead { margin-top: 13px; font-size: 14px; }
+  .sky-chat-page .zema-empty-next { margin-top: 20px; padding: 16px; }
+  .sky-chat-page .sky-chat-composer { padding-block: 11px max(12px, env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sky-chat-page .sky-chat-composer-box { transition: none; }
+}
 .sky-activation-panel {
   display: grid;
   gap: 14px;

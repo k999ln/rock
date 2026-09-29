@@ -103,7 +103,7 @@ SDK単体の`authorize`は承認UIではない。Sky Connectorから実行する
 
 ## Fundとの関係
 
-Toolは単独でもMCPとして利用できる。Fundは複数Toolを目的別に束ね、LLMが順序、停止条件、成果確認を計画する商品面である。`fund.categories`と`fund.tags`はFund候補を探す情報であり、権限を増やしたり承認を省略したりしない。有料Toolの対価はPackageの開発者受取人へ帰属し、ToBのSky登録料・基本利用料・Sky売上手数料は0の既存方針を維持する。決済・払出しProviderの本番受入までは実売上や送金を開始しない。
+Toolは単独でもMCPとして利用できる。Fundは複数Toolを目的別に束ね、LLMが順序、停止条件、成果確認を計画する商品面である。`fund.categories`と`fund.tags`はFund候補を探す情報であり、権限を増やしたり承認を省略したりしない。有料Toolの対価はPackageの開発者受取人へ帰属し、ToBのSky登録料・基本利用料は0円、売上発生時のSky手数料は10%とする。決済・払出しProviderの本番受入までは実売上や送金を開始しない。
 
 ## 完了条件
 

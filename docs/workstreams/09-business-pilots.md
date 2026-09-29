@@ -9,9 +9,10 @@
 - CSV整形は決定的変換、独立検査、私有成果物、7日保持、料金policyのP0実装中。35作業中11完了、5進行中、外部gate 19。
 - メルカリは本人操作を前提に出品準備、費用計算、承認、未照合売上の安全な保存を実装済み。
 - Fashion Brand OpsはCampaign、Sales Concierge、Production Cockpit、Instagram候補取込、MCP操作をmockで実装済み。
+- SkyのココナラToolには応募前チェックと案件管理を統合。代表受注と担当者への個別発注、事前合意済み報酬・支払期日、進行、手入力の入金・返金・支払をowner別に記録する。実取引や振込は未接続で、手入力を売上実績としない。
 - 真正な第三者有料取引、Provider入金、返金、払出し、継続利用の実績は未完了。
 
-主なtask: `CSV00`, `BIL03`, `FB01`〜`FB06`, `B02`, `B05`。
+主なtask: `CSV00`, `BIL03`, `FB01`〜`FB06`, `B02`, `B05`, `B06`。
 
 ## 次に進める順番
 
@@ -34,6 +35,7 @@
 - [CSV security](../csv-business-security.ja.md)
 - [Mercari revenue loop](../mercari-revenue-loop.md)
 - [Fashion Brand Ops](../fashion-brand-ops-integration.md)
+- [Skyのココナラ](../sky-tools-complete-design.md#9-ココナラ)
 - [CSV task manifest](../../data/csv-business-tasks.json)
 
 ## 検証

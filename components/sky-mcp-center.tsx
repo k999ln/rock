@@ -10,7 +10,7 @@ import {
   PlugZap,
   ShieldCheck,
 } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -81,6 +81,18 @@ export default function SkyMcpCenter({
   const [servers, setServers] = useState<McpConnection[]>([]);
   const [busyServer, setBusyServer] = useState('');
   const [connectionMessage, setConnectionMessage] = useState('');
+  const [serverError, setServerError] = useState('');
+  const [connectionFailed, setConnectionFailed] = useState(false);
+  const setupTab = useRef<HTMLButtonElement>(null);
+  const toolsTab = useRef<HTMLButtonElement>(null);
+
+  function moveTab(event: KeyboardEvent<HTMLButtonElement>) {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const next = event.key === 'Home' ? 'setup' : event.key === 'End' ? 'tools' : view === 'setup' ? 'tools' : 'setup';
+    setView(next);
+    (next === 'setup' ? setupTab : toolsTab).current?.focus();
+  }
 
   const toolCount = useMemo(
     () =>
@@ -103,11 +115,17 @@ export default function SkyMcpCenter({
   );
 
   const refreshServers = useCallback(async () => {
-    if (!connected) return setServers([]);
+    if (!connected) {
+      setServers([]);
+      setServerError('');
+      return;
+    }
     try {
       setServers(await listMcpConnections());
-    } catch {
+      setServerError('');
+    } catch (cause) {
       setServers([]);
+      setServerError(cause instanceof Error ? cause.message : 'MCPの一覧を取得できませんでした。');
     }
   }, [connected]);
 
@@ -116,15 +134,22 @@ export default function SkyMcpCenter({
     const refresh = () => {
       if (!connected) {
         setServers([]);
+        setServerError('');
         return;
       }
       if (document.visibilityState === 'hidden') return;
       void listMcpConnections()
         .then((next) => {
-          if (active) setServers(next);
+          if (active) {
+            setServers(next);
+            setServerError('');
+          }
         })
-        .catch(() => {
-          if (active) setServers([]);
+        .catch((cause) => {
+          if (active) {
+            setServers([]);
+            setServerError(cause instanceof Error ? cause.message : 'MCPの一覧を取得できませんでした。');
+          }
         });
     };
     refresh();
@@ -142,6 +167,7 @@ export default function SkyMcpCenter({
   async function connectServer(server: McpConnection) {
     setBusyServer(server.id);
     setConnectionMessage('');
+    setConnectionFailed(false);
     try {
       const passport = await connectMcp(server.id);
       window.dispatchEvent(new Event('sky-mcp-servers'));
@@ -150,6 +176,7 @@ export default function SkyMcpCenter({
       );
       await refreshServers();
     } catch (error) {
+      setConnectionFailed(true);
       setConnectionMessage(
         error instanceof Error ? error.message : 'MCPへ接続できませんでした。',
       );
@@ -175,7 +202,7 @@ export default function SkyMcpCenter({
             <span>{toolCount}機能</span>
           </div>
           <p>
-            {connected
+            {serverError ? 'MCPの一覧を確認できません' : connected
               ? 'このPCで自動化を実行できます'
               : '初回だけ接続アプリを起動します'}
           </p>
@@ -210,7 +237,7 @@ export default function SkyMcpCenter({
             </div>
             <div className={styles.policyBadges}>
               <span>
-                <ShieldCheck size={14} /> 入力はPC内で処理
+                <ShieldCheck size={14} /> 実行前に権限を確認
               </span>
               <span className={connected ? styles.liveOn : styles.liveOff}>
                 {connected ? 'MCP接続中' : 'MCP未接続'}
@@ -220,6 +247,8 @@ export default function SkyMcpCenter({
 
           <div className={styles.tabs} role="tablist" aria-label="MCPメニュー">
             <button
+              ref={setupTab}
+              onKeyDown={moveTab}
               id="sky-mcp-setup-tab"
               role="tab"
               aria-controls="sky-mcp-setup-panel"
@@ -230,6 +259,8 @@ export default function SkyMcpCenter({
               導入・接続
             </button>
             <button
+              ref={toolsTab}
+              onKeyDown={moveTab}
               id="sky-mcp-tools-tab"
               role="tab"
               aria-controls="sky-mcp-tools-panel"
@@ -248,6 +279,7 @@ export default function SkyMcpCenter({
               role="tabpanel"
               aria-labelledby="sky-mcp-setup-tab"
             >
+              {serverError && <p className={styles.errorMessage} role="alert">{serverError}</p>}
               <section className={styles.targetSection}>
                 <div className={styles.sectionHeading}>
                   <div>
@@ -375,7 +407,7 @@ export default function SkyMcpCenter({
                     )}
                   </div>
                   {connectionMessage && (
-                    <output className={styles.connectionMessage}>
+                    <output className={connectionFailed ? styles.errorMessage : styles.connectionMessage} role={connectionFailed ? 'alert' : 'status'}>
                       {connectionMessage}
                     </output>
                   )}
@@ -423,6 +455,7 @@ export default function SkyMcpCenter({
               role="tabpanel"
               aria-labelledby="sky-mcp-tools-tab"
             >
+              {serverError && <p className={styles.errorMessage} role="alert">{serverError}</p>}
               <div className={styles.toolList}>
                 {servers.flatMap((server) =>
                   (server.passport?.tools ?? []).map((tool) => ({
@@ -442,7 +475,7 @@ export default function SkyMcpCenter({
                     <code>{id}</code>
                   </article>
                 ))}
-                {toolCount === 0 && (
+                {toolCount === 0 && !serverError && (
                   <p className={styles.serverEmpty}>
                     MCPに接続すると、確認できた機能がここに表示されます。
                   </p>

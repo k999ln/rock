@@ -5,6 +5,91 @@
 利用者の「説明すぎる」という指摘に従い、ホームの用途紹介から3コマ・矢印・役割表・長文を撤去。研究、制作、生活、ゲームを一場面ずつ示すコンセプト画像と短い見出しに置き換え、各カードからMini／Proの商品説明へ進めるようにした。既存の製品画像、価格、単体利用の説明、決済停止条件は維持。主担当ROCK、既存WEB19の表示改善。
 
 Astro build（13 route）とSite試験16/16成功。ローカルブラウザで用途カードとリンク表示を確認。Sites公開v81、source `4060372d93fbcda2491e92deb85c80252728bf47`、deployment `appgdep_6ab879cf14ec8191860bc9c8acfb6eb0` succeeded。画像は実機・医療性能・利用可能アプリの証明ではなく、正確な光軸・寸法は未検証。[画像プロンプトと限界](sites/avocado-mini/docs/experience-images-v4.md)を保存。次は利用者による表現確認と実機検証を別々に進める。
+## 2026-09-27 — Sky Marketの購入・販売・10%配分を実装（Provider接続待ち）
+
+利用者の「決済もできるようにして」を受け、既存BIL02／Wallet・Billing分野のROCK担当として、Stripe Connect Hosted OnboardingとCheckoutを接続した。作者は`/sky/sell`で受取先登録と円の買い切り価格・販売条件を設定し、購入者はMarketから支払い画面へ進み、`/sky/purchases`で履歴・照合・接続先を確認する。審査済みかつ導入可の`external_contract` Packageが対象でLLMも含む。月額・従量・無料Packageを勝手に有料化しない。登録・接続・公開・基本利用0円と旧8.88 USD課金保留は維持する。
+
+注文の価格・作者・送金先・規約をD1へ固定し、10%はserverで計算する。Stripeの署名通知と支払い再取得で一致を確認した注文だけ利用権を返す。重複購入防止、返金・部分返金・異議申立て時の利用停止、20時間を超えた不明処理の再作成防止を実装した。購入記録は第三者MCP serverの認可そのものではなく、提供者側のアクセス制御は別統合を要する。カード・銀行・本人確認書類はSkyへ保存しない。
+
+API／SQLite回帰37件、Stripe adapter8件、Market13件、DB台帳2件の計60件が合格。typecheck、`lint:product`、build、schema・設計・進捗検査、差分空白検査も合格。開発用D1には未適用一覧が0018だけであることを確認して適用し、4表を追加した。ローカル実ブラウザでMarket→販売→購入履歴の遷移、未設定表示、390pxで横はみ出し0／main landmark各1個を確認した。途中で見つけたmainの二重化と再取得失敗時の古い購入情報残りを修正した。購入時に固定した販売・返金条件は利用権失効後も履歴から確認でき、409時も一律の価格変更表示で本来の失敗理由を隠さない。
+
+全体`npm run verify`は既存visual baselineの`acid_green`／`light_scroll_product_showcase`との不一致で停止。個別`sky:check`も既存Fashionの「プロデュース開始」という文言期待で失敗し、今回の決済試験と区別する。ローカルにStripe資格情報はなく、既存Sites projectの設定取得も`project not found`で取得できない。実Provider sandbox、live、銀行払出し、公開配備は未実施。次は正しい運営アカウントでserver秘密設定と外部到達可能な署名Webhook入口を接続し、sandboxで購入→通知→購入権→返金を受入する。BIL02はin_progressを維持する。
+
+## 2026-09-27 — Sky Marketの手数料を10%へ統一
+
+Sky Marketの自動化ToolとLLMを同じマーケット面で扱い、登録・接続・公開・基本利用は0円、検証済みTool売上のSky手数料は10%（1,000円売上ならSky 100円、提供者 900円）に統一した。表示・見積り計算・Sky Network・商品基準を共通ポリシーへ寄せた。決済・回収・払出しProvider、本人確認、返金、照合の受入が終わるまでは実課金を有効化せず、今回の10%は現行の表示・計算ポリシーとして扱う。LLMはローカル／Provider接続を含むMCPルートを表示するが、未接続を稼働済みとは扱わない。
+
+## 2026-09-27 — Sky／Zema／OS全Toolの実行基盤を共通化（進行中）
+
+利用者の「全Toolを使えるようにし、サーバーを個別に管理したくない」「ローカルLLM優先」を受け、画面の到達確認ではなく、実行器・起動・保存・結果確認までを全体の対象にする。主担当はSky / MCPのROCK、既存SKY14を継続し、SDK掲載側のSKY15と連携する。既存taskのdoneは過去の記載範囲の合格であり、今回の全Tool実行完成を意味しない。task状態と既存受入証拠は変更しない。
+
+34件のソース監査時点の最小機能は、ブラウザ決定処理6件、Web API／DB主体3件、別PCサービス必須2件、外部AI必須1件、候補22件。候補は旧Mr.の固定下書き11件、研究Toolの接続計画10件、別アプリIP Studio入口1件であり、LLM起動だけでは22件の本体adapterは実装されない。記事・出典・ココナラチェックと候補下書きにもジョブ受付DB／本人認証の依存があり、CSVはDBと非公開object storageを要する。詳細な分類と根拠はTool設計§1.3。
+
+最初の実用milestoneとして、ローカルWebのViteから同梱Connector／Fashionを自動起動・健康確認する管理runtimeを実装した。対応する正確なローカル開発originだけを許可し、任意originや任意shellは許可しない。実ブラウザのFashion「プランを作って保存」から手動サーバー起動なしでProducerを実行し、合成Tシャツの下書きをDBへ保存、`instagram.calendar.list`の再読込で一致を確認した（run_id `cc7dc198-718a-47d6-bec6-47594978f301`）。Provider4件はmock未接続、LLMは未導入であり、ページ再読込後の結果復元UIも未実装。Sky接続ボタンから共通Connectorの自動起動と基本4機能の検出も確認した。
+
+Zema納品Runnerの実在しない「右上PC接続」案内と未接続時の操作無効化を修正し、サンプル押下から自動接続→`verify_delivery`の実照合`PASS`→会話内結果表示を確認した。これは合成サンプルの検証であり、外部への納品・品質承認・実案件完了は行っていない。主な実装根拠は`scripts/sky-local-runtime.mjs`、`lib/sky-local-runtime.ts`、`components/delivery-runner.tsx`。
+
+runtime／device／MCP／Fashion関連35試験は合格し、isolated Viteの起動→両サービス自動起動→`await server.close()`後の両port停止を含む。isolated Worker／D1のAPI回帰172項目、最終build、typecheck、対象lint、package一致、差分検査も合格。一方、全体`npm test`は389件中378合格・11失敗（既存visual baseline条件、README日本語文言期待、migration-unionの期待32件と現状33件の差）で、全体`verify`も既存visual baselineで停止した。基準を変更して全体合格とはしていない。
+
+全体作業は進行中。ローカル推論runtime／モデルの新規導入は本人回答待ちで、外部AIへ自動で切り替えず、未導入を推論成功と扱わない。Ledger、IP Studio、候補22件の本体adapter、公開Webから本人PCへのrelay、native OSへの常駐搭載、外部Providerは後続の個別受入を要する。既存の認証・scope・一回承認・課金条件は維持し、この最初の実用milestoneを全34 Toolの完成や本番受入に換算しない。
+
+## 2026-09-27 — Sky全入口の操作・開閉画面を再監査
+
+利用者の「こことかみて全部確認して」に対し、Skyホーム、Market、全34 Tool詳細、機能概要、サービス接続、PC接続・MCP、掲載フォームを一つの導線として再監査した。担当はProduct / UXのROCK、既存WEB04。実際の操作で、ready Toolに不要な登録画面を挟むこと、専用アプリの起動先とホームの遷移先の不一致、候補登録エラーの非表示、提供元テキストをURLとして扱う壊れたリンク、画面ごとの端末適合表示の差、ホーム内のFashion入力欄にスタイルがないことを確認して修正した。
+
+ready Toolを専用画面へ直接開き、自然文の依頼はZemaへ引き継ぐ。ココナラも依頼文があればZemaへ保ち、依頼文なしなら案件台帳へ進む。候補の登録・外部本体接続・実行は区別し、登録失敗をその場に表示する。概要の主操作も同じ判定を使い、Marketと詳細は共通`useSkyToolContext`でホームと同じPC・Fashion・登録記録を参照する。Fashion入力・結果・MCP詳細を自己完結したCSS moduleへ移し、ブラウザ簡易版をPC専用として除外しないよう環境表示も修正した。サービス接続・MCP・掲載フォームの暗色面、余白、スクロール、入力欄を揃え、MCPタブのキーボード操作、掲載フォームの成功後reset、ヘルプアイコンを修正した。既存認証、権限、Provider接続、料金と承認の条件は変更しない。
+
+ローカル実ブラウザで、390pxの全34 Tool詳細に見出しがあり、横はみ出し0、エラーoverlayなしを確認。修正後のホーム全34アイコンで概要の開閉、画面内への収まり、横はみ出し0、初期scrollTop 0、Escapeで一覧へ戻ることを確認した。サービス接続・MCP・埋込掲載フォームは320／390／768／1280pxで画面内に収まり、内部の横はみ出しも0。長いrouting設定は見出しを固定して保存操作までスクロールでき、MCPは右矢印キーで実際のタブが切り替わる。掲載フォームの空送信は名前欄へfocusし、申請は送信していない。単独`/sky/register`も390pxでmain landmark 1個、横はみ出し0。ホームのFashionアイコン→主操作→専用画面→ローカル簡易プラン生成、出典整理の主操作→専用画面→サンプル結果成功まで確認した。法務詳細の暗色表示も目視した。全34件の到達・開閉確認を全Toolの実行成功には換算しない。
+
+主要Sky修正後の関連26試験、`sky:check`、typecheck、`lint:product`、build、差分空白検査はすべて合格。単独掲載画面は1280pxでも目視し、直近ブラウザエラー照会8件の範囲でアプリエラーなし。設計チェックと進捗同期も合格。全体`npm run verify`の最終実行は既存baselineの`acid_green`／`light_scroll_product_showcase`と現行visual systemの不一致で停止しており、全体合格ではない。掲載reset修正のD1試験も無応答で完了せず、合格には数えない。Provider資格情報入力、掲載申請送信、実MCP接続、API key発行、課金、本番配備は未実施。
+
+追加入口は`/sky/network`から修正済みMCP画面が開き、`/sky/publish`のStudioも暗色・横はみ出し0を確認。`components/rock-studio.tsx`のコピー失敗をその場に表示し、API key発行の401には`/sky/publish`へ戻るサインインリンクを追加した。公開SDKの「コピー→コピー済み」は実ブラウザで確認、追加Studio 2試験・対象lint・typecheck・差分検査は合格。実際のkey発行と401の実環境再現は行っていない。
+
+## 2026-09-27 — Skyの表示崩れを共通カードと画面境界で修正
+
+利用者のスクリーンショットで、狭いSky一覧の45px列に56pxアイコンを配置し、片側約5.5pxが本文へ重なる不具合を確認した。旧グローバルCSSのmain・footer指定も、新しい画面の配色と配置に干渉していた。SkyホームとMarketを共通`SkyToolCard`へ移し、架空の作者handleと重複する役割名を外した。検索を常時表示し、Marketの大きな紹介文を短い見出しへ置き換え、利用環境の説明は展開式へ整理。共通`tone="sky"`でホーム・Market・Tool詳細・ココナラの暗色面を固定し、詳細は実行欄を先に、手順とlicenseは展開欄へまとめる。全Tool共通の抽象的な注意書きは概要から除き、個別の接続・認証条件を残す。主担当Product / UXのROCK、既存WEB04。
+
+ローカル実ブラウザで、ホームとMarketの320／390／440／768／1280pxは横はみ出し0、アイコンと本文の間隔12／14pxを確認。Jev Routerとココナラの320／390／768／1280pxも横はみ出し0、main landmarkは各1個。ホームで全Toolを対象にJev Routerを検索し、ホームとMarketから同じ概要を開く操作、Escとfocus復帰を確認した。ココナラの入力画面はBase UI Dialogへ移し、320／390pxのfocus trap・Esc・元のボタンへの復帰を確認。保存失敗のエラーは入力画面内に表示する。出典整理Toolのサンプルを実行し、成功と結果表示まで確認した。
+
+関連17試験、typecheck、`lint:product`、`sky:check`、buildは合格。Sky検査は画面が`skyToolUiState`を使う場合に共通状態の文言を同helperから確認するよう追従した。全体`npm run verify`は既存`baseline:check`の`acid_green`／`light_scroll_product_showcase`期待値と現行avokado配色の不一致で停止。無限定の`npm run lint`にも未変更のvendor・生成物のエラーがあり、全体合格とは記録しない。次はbaselineの正本・検査を現行方針と整合して全体verifyを再実行する。Tool本体接続・決済・本番配備は行っていない。
+
+## 2026-09-27 — Sky Toolのアイコンから機能をすぐ確認
+
+利用者の「機能はアイコン押したらわかる」指示に合わせ、Sky Marketの34 catalogカードと個別Tool画面のアイコンを機能説明の入口にした。押すと説明・接続状態・利用環境・料金をその場で開き、カードの他の場所は従来どおり詳細へ進む。Jev Routerの個別画面では重複した情報欄を隠しても、未接続とPC CLI条件・公式導入先は本文に残す。候補の接続や実行は始めない。対象9試験、typecheck、lint、Sky/設計チェック、buildに合格。Chromeのローカル画面でアイコンからの開閉、詳細への遷移、Enter/Escape操作、console errorなしを確認した。IABではlocalhostが開けなかったため、Chromeで検証した。全体`npm run verify`は既存visual systemと現行avokado配色の不一致で`baseline:check`にて停止し、全体合格ではない。ワンクリック実接続は引き続き未実装。
+
+## 2026-09-27 — Sky Marketの端末適合表示とJev Router導線の是正
+
+利用者の「対応する利用環境だけ表示」「ワンクリックで接続したい」に対し、ブラウザで判定できる端末種別だけを使い、明らかに非対応のPC専用・macOS専用Toolをマーケットの初期一覧から除いた。対象外は理由を付けて再表示可能。Node・CLI・外部アカウント・本体接続の有無までは推測しない。`/sky/tools/jev-router`は実ルーティング未接続の候補で、従来の接続計画下書き欄を取り除き、公式のPC CLI導入条件へ案内する。Skyからのワンクリック実接続は未実装であり、PC側の限定adapter、TypeSafe認証の安全な扱い、外部送信同意、費用・fallback・receipt、実動作試験が残る。対象7試験、型、lint、Sky/設計チェック、buildは合格。ブラウザ目視はlocalhostアクセスがBrowser Use側で失敗し未確認。全体`npm run verify`は既存visual system期待値と現行avokado配色の不一致で`baseline:check`にて停止し、全体合格とは記録しない。
+
+## 2026-09-27 — Sky Marketの登録・料金確認の操作を短縮
+
+利用者の「決済のとこと、登録のところもっと工数減らしたい」を受け、マーケットの開発者向け入口をWebの`/sky/register`掲載申請へ直結。既存`/sky/publish`はPC向けStudio/SDK設定画面のまま分離する。申請者本人の前回の提供者名・サポートURLをワンクリックで再利用し、MCP接続確認で実際に取得したサーバー名だけをツール名の下書きへ反映する。料金方式の無料初期値と架空の無料説明を撤去し、本人選択を必須にした。審査済み外部Packageは一覧で料金方式を確認できる。購入者決済・開発者払出しは未接続のまま。対象試験4件、型、lint、build、Sky/設計チェックは合格。全体`npm run verify`は既存のvisual system期待値と現行avokado配色の不一致で`baseline:check`にて停止。決済対象・商流・Provider・返金・本人確認の決定と受入は未完了。
+
+## 2026-09-27 — SkyにAI・自動化Toolマーケットを追加
+
+利用者の「AI、自動化ツールのマーケットプレイスを作る」指示を、既存Skyの発見・接続面の強化として実装。`/sky/marketplace`で34 catalog Toolを検索・カテゴリ・状態別に探し、各Tool詳細へ進める。個別詳細を再設計し、提供元、license、実行場所、料金・実費、作業手順を利用前に確認できるようにした。外部Packageは証拠付き`verified`かつ導入可の公開Registryだけを読み、作者・版・料金・権限・実行先を表示する。候補22件は本体未接続のまま区別し、購入・自動インストール・実課金・公開配備を開始しない。主担当Sky / MCPのROCK、既存SKY02／SKY20。対象18試験、typecheck、lint、build、design/sky check、ローカルPCと390pxブラウザで検索・候補絞り込み・詳細画面・横はみ出しなしを確認。全体`npm run verify`は既存visual system期待値と現行avokado配色の不一致で`baseline:check`にて停止し、全体合格とは記録しない。残る作業は外部Packageの実接続・OAuth・審査本番readback・初見利用者の操作時間の受入。配色基準の正本と検査を整合して全体verifyを再実行する。
+
+## 2026-09-26 — Skyのココナラへ応募前チェックと案件管理を統合
+
+利用者の追補により、独立した「受託チーム」アプリと重複Sky Toolを取り除き、Skyの既存`coconala`を選ぶと`/sky/tools/coconala`へ直接入る構成にした。同じ画面で「案件管理」と既存の「応募前チェック」を切り替え、旧URLはSky画面へ転送する。代表者の受注に対し、制作担当者への委託条件・固定報酬・支払期日を発注前に記録する。案件の進行、顧客入金・返金、担当者支払を分け、3%は手数料後の見込手取りからの参考計算に留める。owner別D1保存、更新競合防止、過払防止を実装した。ローカルDBへ新table migrationを適用し、Skyのカードから案件管理へ遷移し、同じ画面の応募前チェックへ切り替わることを実ブラウザで確認した。対象22テスト、typecheck、lint、Sky・設計・DB・進捗検査、build、隔離Worker/D1 API 172 assertionsは合格。全体`npm run verify`は既存の酸味のある黄緑accentを要求するproduct baselineと現行avokado配色が不一致のため中断した。ココナラ上の契約・通知・入金照合、銀行送金、法務判断、Walletの検証済み収益登録は行わない。実案件で再委託可否と発注条件を確認し、実取引・支払を別途検証するまではB06を進行中とする。
+
+## 2026-09-26 — OS全体をavokadoの画面トーンへ揃える
+
+avokado製品Siteの黒いスタジオ、銀色の筐体、淡い青のハイライトをWeb OSのvisual基準にした。Homeの壁紙・アプリアイコン・Sky入口、共通ヘッダー、Sky、Zemaの仕事画面、Wallet、Market、設定、Studio、CSVの黄緑系を、グラファイト／冷たい白／淡い青へ変更した。個別Toolの識別色と成功・警告など意味を持つ状態表示は維持。Homeに保存された旧既定の黄緑accentは新既定色へ移行し、他の利用者設定色は残す。実行権限、Tool接続、本番配備は変更していない。主担当Product / UXのROCK、既存WEB04。782pxと390pxのローカル画面でHome、Sky、Zema仕事、Wallet、Market、設定、Studioを確認し、390pxでは全7画面の横はみ出し・error overlayが0件。画面契約15/15、typecheck、lint、design check、buildは合格。`npm run verify`は既存のREADME文言試験1件の失敗と全体Node試験の無出力停止で中断し、全体合格とは記録しない。次は初見利用者の画面遷移を観察し、製品Siteとの連続性と可読性を確認する。
+
+## 2026-09-25 — Zemaをavokadoの画面デザインへ合わせる
+
+avokado公開画面の黒・銀・淡い青、簡潔な見出しと余白を基準に、Zemaの左欄、最初の案内、入力欄、操作色を再設計した。左欄は選択中を含む少数のToolだけを初期表示し、候補22件は検索・全件展開で個別に選べる。選んだToolの説明、実際の接続状態、依頼と専用画面の入口は最初の画面で分かる。約782px、1280px、390pxのローカル実ブラウザで一覧の展開・検索、スマホ開閉、入力欄focus、横はみ出しなしを確認。対象試験17/17、typecheck、lint、buildは合格。`npm run verify`は既存README文言試験の失敗を含む全体Node試験が無出力で停止したため中断し、全体合格とは記録しない。外部Toolの本体接続や公開版配備は行っていない。主担当Product / UXのROCK、既存WEB04。次は初見利用者による依頼・結果確認・再開の操作時間を測り、会話モデル未起動やTool未接続時の復旧案内を改善する。
+
+## 2026-09-25 — Zemaチャットの最初の操作を見える位置へ
+
+選択したBotのチャットで、画面高より下に隠れていた入力欄を表示し続けるよう修正した。最初の画面にBotの説明、実際の接続状態、「依頼を書く」、専用画面がある場合の起動リンクを配置した。未接続候補は下書き・接続条件整理と本体実行を区別する。約782px幅と390px幅のローカル画面で入力欄の同時表示とfocusを確認。画面契約試験16/16、typecheck、lint、本番buildは合格。`npm run verify`は既存README文言試験1件の失敗を確認した後、全体Node試験から新規出力がなくなったため中断した。次はREADME文言試験の期待と現行R5説明を別途整合し、全体verifyを再実行する。外部IP Studioの実起動やAR表示は今回の実装・受入に含めない。主担当Product / UXのROCK、既存WEB04。
+
+## 2026-09-25 — Sky候補22件をZemaの個別Bot入口へ反映
+
+Skyの34 catalog Toolにそれぞれの役割を示すアイコンを割り当て、Zemaの候補22件を検索・選択可能にした。Zemaの依頼文を対応する候補の入力欄へ引き継ぎ、旧Mr.11件はローカル下書き、外部研究Tool10件はTool別の接続計画、IP Studioは専用アプリ入口として区別する。候補の本体・外部Provider・第三者サイトへの接続は今回の対象外で、`ready`には変更しない。
+
+ローカル開発DBのmigration後、ZemaでYouTube台本の依頼引き継ぎ・下書き表示とfaster-whisperの接続条件表示を実画面で確認した。ホームも表示確認済み。全34 Toolの固有アイコン対応を試験へ固定し、対象6試験、typecheck、lint、design、Sky check、MCP package check、本番buildは合格。`npm run verify`は今回以前のmainにもないREADME日本語文言を期待する既存のR5／Mini200文書試験2件で停止したため、全体合格とは記録しない。残り20件の個別画面での実行受入と外部本体接続は未完了。次は候補ごとにPassport・入力schema・権限・実runtime・停止・独立結果検証を接続し、サンプルではない成果で受け入れる。再検証は`npm run verify`を使用する。
 
 ## 2026-09-24 — 指定されたTower20 E3の公開Siteをそのまま復元
 
@@ -1032,14 +1117,14 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 104/156件
+最終更新: 2026-09-27 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 104/157件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
 | ORG01 | 製品・SkyのAI自動化チーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備 | 完了 | [記録](PROJECTS.md) · [記録](README.md) · [記録](docs/rockstaros-product-system-map.md) · [記録](docs/workstreams/README.md) · [記録](scripts/check-sky.mjs) |
 | MAT14 | R5統合基本設計・PDF/Word・図面8組・計算・参考資料を欠落なく保存し、現行入口と履歴を整理（製造承認保留） | 完了 | [記録](docs/avocado-mini-r5/README.md) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/avocado-mini-r5/verification.json) · [記録](scripts/verify-avocado-r5-package.py) |
 | MAT15 | R5単体の裸眼空間表示・安全・精密3D入力を成立させ、収納/熱/電源/確定回路/加工図と実機受入を閉じる | 未着手 | [記録](docs/avocado-mini-r5/package/integrated_design.md) |
-| UXCHAR01 | Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果） | 完了 | [記録](components/tool-character.tsx) · [記録](components/tool-character.module.css) · [記録](docs/workstreams/01-product-ux.md) |
+| UXCHAR01 | Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果） | 完了 | [記録](components/tool-icon.tsx) · [記録](tests/sky-tool-icons.test.mjs) · [記録](components/tool-character.tsx) · [記録](components/tool-character.module.css) · [記録](docs/workstreams/01-product-ux.md) |
 | SKY20 | Sky公開・Telegram配布を証拠付きverified Packageへ限定し、失効と利用イベント再送を受け入れる | 進行中 | [記録](drizzle/0016_red_crusher_hogan.sql) · [記録](lib/sky-tool-review.ts) · [記録](lib/sky-review-auth.ts) · [記録](app/api/sky/tool-reviews/route.ts) · [記録](lib/sky-tool-package-store.ts) · [記録](lib/sky-activation.ts) · [記録](lib/sky-tool-events.ts) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](tests/sky-tool-package.test.mjs) · [記録](tests/sky-activation.test.mjs) · [記録](tests/sky-tool-sdk.test.mjs) · [記録](docs/sky-tool-sdk.md) |
 | SKY19 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
 | DOC01 | RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化 | 完了 | [記録](docs/rockstaros-design-portal.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
@@ -1068,7 +1153,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | MAT12 | Tower20 E3資料を現行avocadoMini基準へ固定し、4本の固定200mm塔＋別筐体Edge HubをGit正本と公開Siteへ同期（実機未受入） | 完了 | [記録](docs/avocado-mini-tower20-e3/README.md) · [記録](docs/product-baseline.md) · [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/public/images/tower20-e3-highlight-sensor-v2.png) · [記録](sites/avocado-mini/public/images/tower20-e3-highlight-200mm-v1.png) · [記録](sites/avocado-mini/public/images/tower20-e3-highlight-footprint-v1.png) · [記録](sites/avocado-mini/public/images/tower20-e3-highlight-edge-hub-v1.png) · [記録](sites/avocado-mini/public/images/tower20-e3-front-cutout-v1.png) · [記録](sites/avocado-mini/public/images/tower20-e3-side-cutout-v1.png) · [記録](sites/avocado-mini/public/images/tower20-e3-rear-cutout-v1.png) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) |
 | MAT13 | Tower20 E3の確定CAD・配線・4camera同期・光学・転倒／滑り・熱・電源・音響・OS image・復旧を同一試作機で受入 | 未着手 | [記録](docs/avocado-mini-tower20-e3/README.md) |
 | SKY01 | 旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化 | 完了 | [記録](docs/sky.md) · [記録](components/sky-workspace.tsx) · [記録](scripts/check-sky.mjs) |
-| SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) |
+| SKY02 | ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装 | 完了 | [記録](app/sky/publish/page.tsx) · [記録](components/sky-publisher-form.tsx) · [記録](app/api/sky/submissions/route.ts) · [記録](tests/sky-submission.test.mjs) · [記録](app/sky/marketplace/page.tsx) · [記録](app/sky/register/page.tsx) · [記録](components/sky-marketplace.tsx) · [記録](components/sky-marketplace.module.css) · [記録](lib/sky-marketplace-policy.ts) · [記録](lib/sky-ai-marketplace.ts) · [記録](components/sky-tool-workspace.tsx) · [記録](lib/sky-tool-compatibility.ts) · [記録](app/workspace.css) · [記録](components/sky-tool-workspace.module.css) · [記録](tests/sky-marketplace.test.mjs) · [記録](tests/jev-router-availability.test.mjs) · [記録](docs/sky-network-economy.md) |
 | SKY03 | MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存 | 完了 | [記録](docs/sky-mcp-architecture.md) · [記録](systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md) |
 | SKY04 | tob無料のConnection Passport・実行契約・ToB/ToC貢献分配を一画面で説明するSky Networkフロント | 完了 | [記録](app/sky/network/page.tsx) · [記録](components/sky-network.tsx) · [記録](components/sky-network.module.css) · [記録](docs/sky-network-economy.md) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) |
 | SKY05 | Sky画面のsidebarを廃止し、MCP接続・管理とToB掲載をSky本体の操作面へ統合 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/sky-mcp-center.tsx) · [記録](components/sky-mcp-center.module.css) · [記録](components/sky-publisher-form.tsx) · [記録](components/workspace-shell.tsx) · [記録](app/sky/network/page.tsx) · [記録](app/sky/publish/page.tsx) |
@@ -1080,14 +1165,14 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY11 | MCP掲載前診断とPC接続の互換性・初回導線を改善 | 完了 | [記録](lib/mcp-inspection.ts) · [記録](app/api/sky/mcp/inspect/route.ts) · [記録](lib/device.ts) · [記録](components/sky-publisher-form.tsx) · [記録](components/device-connection.tsx) · [記録](tests/mcp-inspection.test.mjs) · [記録](tests/device-lifecycle.test.mjs) |
 | SKY12 | ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](docs/sky-identity-connection.md) |
 | SKY13 | GrokをモチーフにChatの表示・入力を改善し、依頼から実行・結果までを会話内へ統合 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](components/mr-tool-runner.tsx) · [記録](app/workspace.css) · [記録](lib/operations.ts) · [記録](tests/operations.test.mjs) · [記録](docs/chat-usability-20260912.md) · [記録](docs/workstreams/01-product-ux.md) · [記録](README.md) |
-| SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](docs/chat-mcp-control-room-20260913.md) |
+| SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](scripts/sky-local-runtime.mjs) · [記録](lib/sky-local-runtime.ts) · [記録](tests/sky-local-runtime.test.mjs) · [記録](components/delivery-runner.tsx) · [記録](docs/sky-tools-complete-design.md) · [記録](docs/workstreams/02-sky-mcp.md) · [記録](docs/chat-mcp-control-room-20260913.md) |
 | SKY15 | Sky SDKコードを既存ツールへ追加し、起動時にPackage登録・MCP公開・利用記録まで行うStudioを実装 | 完了 | [記録](components/rock-studio.tsx) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](app/studio/page.tsx) · [記録](app/sky/publish/page.tsx) · [記録](tests/sky-code-intake.test.mjs) · [記録](tests/sky-studio-chat.test.mjs) · [記録](docs/sky-tool-sdk.md) |
-| SKY16 | SkyのTool選択と自然文依頼をZemaへ一回引き継ぎ、job状態を即時同期 | 完了 | [記録](lib/sky-zema-handoff.ts) · [記録](lib/operations-client.ts) · [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/chat-live-progress.tsx) · [記録](tests/sky-zema-handoff.test.mjs) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/sky.md) |
+| SKY16 | SkyのTool選択と自然文依頼をZemaへ一回引き継ぎ、job状態を即時同期 | 完了 | [記録](components/sky-candidate-runner.tsx) · [記録](lib/sky-zema-handoff.ts) · [記録](lib/operations-client.ts) · [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/chat-live-progress.tsx) · [記録](tests/sky-zema-handoff.test.mjs) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/sky.md) |
 | SKY17 | Jev Ultrafastを権限制御されたbrowser agent候補としてSky catalogと全Tool設計へ追加 | 完了 | [記録](lib/catalog.ts) · [記録](docs/jev-ultrafast-integration-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
 | SKY18 | Jev ecosystem 10 repositoryを判断・browser・PC・mobile・review・routing・PAPER市場・referenceへ分離して候補登録 | 完了 | [記録](lib/catalog.ts) · [記録](docs/jev-ecosystem-integration-design.md) · [記録](docs/jev-ultrafast-integration-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) · [記録](scripts/check-sky.mjs) |
 | WEB02 | Developer Preview紹介をOSインストールとSky開発者コード中心の一画面へ再設計 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) |
 | WEB03 | Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](components/rock-studio.tsx) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
-| WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
+| WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/system-settings.module.css) · [記録](components/csv-business-workspace.module.css) · [記録](components/workspace-shell.tsx) · [記録](components/sky-surface.module.css) · [記録](components/sky-workspace.tsx) · [記録](components/sky-workspace.module.css) · [記録](components/sky-tool-card.tsx) · [記録](components/sky-tool-card.module.css) · [記録](components/sky-marketplace.tsx) · [記録](components/sky-marketplace.module.css) · [記録](components/sky-tool-workspace.tsx) · [記録](components/sky-tool-workspace.module.css) · [記録](components/fashion-brand-ops-runner.tsx) · [記録](components/fashion-brand-ops-runner.module.css) · [記録](components/sky-connection-center.tsx) · [記録](components/sky-connection-center.module.css) · [記録](components/sky-mcp-center.tsx) · [記録](components/sky-mcp-center.module.css) · [記録](components/sky-publisher-form.tsx) · [記録](components/sky-publisher-form.module.css) · [記録](lib/use-sky-tool-context.ts) · [記録](components/rock-studio.tsx) · [記録](components/coconala-team-workspace.tsx) · [記録](components/coconala-team-workspace.module.css) · [記録](app/workspace.css) · [記録](components/sky-chat-workspace.tsx) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/workstreams/01-product-ux.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
 | WEB05 | avocadoMiniの製品紹介と回転ツアーをP0.2設計書と黒い製品写真のデザインへ統一 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/pages/guide/index.astro) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/tower-scene.js) · [記録](sites/avocado-mini/dist/client/index.html) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-front-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-side-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-rear-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-sensor-macro.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-four-point.png) · [記録](sites/avocado-mini/public/images/avocado-mini-kit.png) · [記録](sites/avocado-mini/public/images/avocado-mini-head-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-base-p0.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
@@ -1161,6 +1246,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | B02 | 既存商品のSky実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/pc-citations-adapter.md) · [記録](docs/evidence/pc-citations/integration.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/sky-rockstar-ledger-20260912.md) · [記録](docs/sky-role-agents-20260912.md) · [記録](docs/evidence/sky-rockstar-ledger/integration.json) · [記録](tests/rockstar-ledger.test.mjs) · [記録](tests/subscription-advisor.test.mjs) · [記録](docs/sky-legal-intake-20260912.md) · [記録](tests/legal-intake.test.mjs) · [記録](docs/sky-patent-assistant-20260912.md) · [記録](tests/patent-assistant.test.mjs) |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](app/api/earnings/receipts/route.ts) · [記録](lib/earning-bridge.ts) · [記録](tests/earning-bridge.test.mjs) · [記録](docs/evidence/tool-earning-wallet-bridge-20260915.json) · [記録](docs/evidence/pixel-tool-wallet-correlation-20260916.json) |
 | B05 | Wallet連携基礎を使ったSky縦断再試験・PC比較と未実証の端末価値を記録 | 進行中 | [記録](docs/prompts/hub-wallet-next.md) · [記録](docs/hub-wallet-pc-comparison-20260909.md) · [記録](docs/evidence/hub-wallet/b05-pc-machine-20260909/report.json) |
+| B06 | ココナラ代表受注・制作担当者への個別発注と入出金を安全に管理 | 進行中 | [記録](docs/sky-tools-complete-design.md) · [記録](docs/workstreams/09-business-pilots.md) · [記録](app/sky/tools/[toolId]/page.tsx) · [記録](components/coconala-team-workspace.tsx) · [記録](app/api/coconala-team/route.ts) · [記録](lib/coconala-team.ts) · [記録](tests/coconala-team.test.mjs) · [記録](tests/coconala-sky-entry.test.mjs) |
 | D01 | RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存 | 完了 | [記録](docs/product-baseline.md) · [記録](docs/os-readiness-audit-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/validation.md) |
 | V01 | 旧9abf78a候補のQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す（現rc2へ転用しない） | 完了 | [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/templates/os-acceptance-report.md) · [記録](docs/os-operational-validation-20260909.md) · [記録](docs/evidence/os-base/startup-update-acceptance-b8287bc.json) · [記録](docs/evidence/os-base/business-backup-acceptance-b8287bc.json) · [記録](docs/evidence/os-base/registry-negative-b8287bc.json) · [記録](docs/os-acceptance-b8287bc-20260909.md) · [記録](systems/rock-star-os/os/desktop/LAUNCHER-V2.md) · [記録](docs/evidence/rls01/final-d6-ci-20260910.json) · [記録](docs/evidence/rls01/final-d6-root-audit-20260910.json) · [記録](docs/os-local-final-20260910.md) · [記録](docs/os-acceptance-9abf78a-20260910.md) · [記録](docs/os-native-repeat-20260910.md) · [記録](docs/os-final-compatibility-20260910.md) |
 | GX00 | 共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証 | 完了 | [記録](docs/design-implementation-alignment-20260909.md) · [記録](docs/prompts/os-operational-base-next.md) · [記録](docs/gx00-owner-isolation-adr.md) · [記録](docs/evidence/gx00/integration.json) · [記録](systems/rock-star-os/os/wallet_backend/FENCE.md) · [記録](docs/gx00-connection-wire-v1.md) · [記録](docs/evidence/gx00/game-protocol-review.json) · [記録](docs/game-connection-node-wire-20260909.md) · [記録](docs/gx00-connections-runtime.md) · [記録](docs/evidence/gx00/game-connections-root.json) · [記録](docs/gx00-legacy-game-basis.md) · [記録](systems/rock-star-os/os/wallet_backend/CURRENT-RESTORE.md) · [記録](docs/evidence/gx00/current-copy-foundations-root.json) · [記録](docs/gx00-current-game-restore.md) · [記録](docs/gx00-owner-connection-client.md) · [記録](docs/evidence/gx00/current-game-integration-root.json) · [記録](docs/implementation-checkpoint-20260909.md) · [記録](docs/evidence/gx00/release-required-acceptance-20260910.json) |
@@ -1189,7 +1275,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | FB05 | 改善版Skyの役割フィードへブランド運営役と40 MCP操作を統合 | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
 | FB06 | Instagram画面の写真から未確認候補を作り、Meta確認後だけ運用対象へ進める | 完了 | [記録](docs/instagram-photo-onboarding-20260912.md) · [記録](toolkits/fashion-brand-ops/db/migrations/004_screenshot_account_intake.sql) · [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) · [記録](components/fashion-brand-ops-runner.tsx) |
 | BIL01 | 旧888 cents収益精算の試験実装を保持し、現行ToC料金は動線確定まで停止 | 完了 | [記録](docs/sky-billing.md) · [記録](services/sky-billing/src/worker.ts) · [記録](tests/billing.test.mjs) · [記録](tests/billing-worker.test.mjs) · [記録](services/sky-billing/migrations/0002_earnings_settlement.sql) · [記録](docs/evidence/launch/backend-owner-validation-20260912.json) |
-| BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) · [記録](docs/workstreams/03-wallet-billing-providers.md) · [記録](tests/billing-worker.test.mjs) · [記録](docs/evidence/launch/sky-billing-fee-hold-20260924.json) |
+| BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) · [記録](docs/workstreams/03-wallet-billing-providers.md) · [記録](tests/billing-worker.test.mjs) · [記録](docs/evidence/launch/sky-billing-fee-hold-20260924.json) · [記録](lib/sky-commerce.ts) · [記録](lib/sky-commerce-store.ts) · [記録](lib/sky-stripe.ts) · [記録](components/sky-commerce.tsx) · [記録](drizzle/0018_sky_commerce.sql) · [記録](tests/sky-commerce.test.mjs) · [記録](tests/sky-stripe.test.mjs) |
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |
 | CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 | [記録](data/csv-business-tasks.json) · [記録](docs/csv-business-v1.ja.md) · [記録](lib/csv-transform.ts) · [記録](lib/csv-job-store.ts) · [記録](components/csv-business-workspace.tsx) |
 

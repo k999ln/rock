@@ -26,6 +26,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import WorkspaceShell from '@/components/workspace-shell';
 import styles from '@/components/sky-network.module.css';
+import { SKY_MARKETPLACE_COMMISSION_LABEL } from '@/lib/sky-marketplace-policy';
 
 type CheckState = 'idle' | 'checking' | 'ready';
 type Audience = 'tob' | 'toc';
@@ -115,7 +116,7 @@ export default function SkyNetwork() {
                 <Building2 size={15} /> ToB利用料 0円
               </span>
               <span>
-                <CircleDollarSign size={15} /> Sky売上手数料 0%
+                <CircleDollarSign size={15} /> Sky売上手数料 {SKY_MARKETPLACE_COMMISSION_LABEL}
               </span>
               <span className={styles.previewBadge}>
                 <Zap size={15} /> LIVE送金 OFF
@@ -233,8 +234,8 @@ export default function SkyNetwork() {
                       <strong>接続時に固定</strong>
                     </div>
                     <div>
-                      <span>Sky fee for ToB</span>
-                      <strong className={styles.zero}>0%</strong>
+                    <span>Sky fee for ToB</span>
+                    <strong>{SKY_MARKETPLACE_COMMISSION_LABEL}</strong>
                     </div>
                   </div>
                   <p className={styles.demoNotice}>
@@ -251,9 +252,9 @@ export default function SkyNetwork() {
               <span>FOR ToB</span>
             </div>
             <strong className={styles.zeroPrice}>¥0</strong>
-            <h2>企業からは、取らない。</h2>
+              <h2>売上の10%だけ。</h2>
             <p>
-              登録も、接続も、公開も、Skyの売上手数料も0円。良いツールが入るほど、Sky全体が強くなる設計です。
+              登録・接続・公開の基本利用料は0円。ツール売上の10%をSky手数料として受け取り、残りを提供者へ渡します。
             </p>
             <ul>
               <li>
@@ -263,7 +264,7 @@ export default function SkyNetwork() {
                 <Check size={15} /> 公開・更新・利用分析
               </li>
               <li>
-                <Check size={15} /> ToB商品売上のSky手数料
+                <Check size={15} /> ToB商品売上のSky手数料 10%
               </li>
             </ul>
             <div className={styles.costBoundary}>
@@ -364,7 +365,7 @@ export default function SkyNetwork() {
                   </div>
                   <div className={styles.receiptLine}>
                     <span>Sky売上手数料</span>
-                    <strong className={styles.zero}>0%</strong>
+                    <strong>{SKY_MARKETPLACE_COMMISSION_LABEL}</strong>
                   </div>
                   <div className={styles.receiptLine}>
                     <span>外部実費</span>

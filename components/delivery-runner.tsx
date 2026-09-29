@@ -11,7 +11,12 @@ import {
   processedBytes,
   OperationRequestError,
 } from '@/lib/operations-client';
-import { deviceToken, runDevice, type RunRecorder } from '@/lib/device';
+import {
+  connectDevice,
+  deviceToken,
+  runDevice,
+  type RunRecorder,
+} from '@/lib/device';
 export function DeliveryRunner({
   onRecord,
   onRunningChange,
@@ -69,6 +74,7 @@ export function DeliveryRunner({
         }
         args = { review: JSON.parse(review), files: entries };
       }
+      if (!deviceToken()) await connectDevice();
       const tracked = await executeTracked({
         tool: 'mr-delivery',
         transport: 'local-mcp',
@@ -99,7 +105,12 @@ export function DeliveryRunner({
     } catch (e) {
       if (e instanceof OperationRequestError && e.status === 401)
         setNeedsSignin(true);
-      const message = e instanceof Error ? e.message : '入力を確認してください。';
+      const message =
+        e instanceof TypeError
+          ? 'このPCの実行機能に接続できませんでした。Skyの接続設定を確認してください。'
+          : e instanceof Error
+            ? e.message
+            : '入力を確認してください。';
       setError(message);
       onOutcome?.({ ok: false, text: message });
       if (executed && !completed && onRecord)
@@ -133,7 +144,7 @@ export function DeliveryRunner({
         </p>
         {!connected && (
           <p className="notice">
-            画面右上の「PCを接続」から、このPCを接続してください。一度つなぐと、ここからワンボタンで実行できます。
+            実行ボタンからこのPCに接続します。ローカル開発版では必要な実行機能も自動で準備します。公開Web版では接続アプリの起動が必要です。
           </p>
         )}
         <label htmlFor="delivery-review" className="bench-field">
@@ -173,15 +184,15 @@ export function DeliveryRunner({
         <div className="dialog-actions">
           <button
             className="black-button"
-            disabled={!connected || busy || !review || !files.length}
+            disabled={busy || !review || !files.length}
             onClick={() => void run()}
           >
             <Play size={16} />
-            {busy ? 'PCで照合中…' : 'PCで実行する'}
+            {busy ? '接続・照合中…' : 'PCで実行する'}
           </button>
           <button
             className="secondary-button"
-            disabled={!connected || busy}
+            disabled={busy}
             onClick={() => void run(true)}
           >
             サンプルをワンボタンで試す

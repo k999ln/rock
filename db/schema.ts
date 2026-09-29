@@ -6,6 +6,71 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
+
+export const skyCommerceSellers = sqliteTable('sky_commerce_sellers', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  mode: text('mode').notNull(),
+  accountId: text('account_id'),
+  createdAt: integer('created_at').notNull(),
+}, (table) => [
+  uniqueIndex('idx_sky_commerce_seller_owner').on(table.userId, table.mode),
+  uniqueIndex('idx_sky_commerce_seller_account').on(table.accountId),
+]);
+
+export const skyCommerceOffers = sqliteTable('sky_commerce_offers', {
+  packageKey: text('package_key').notNull(),
+  sellerUserId: text('seller_user_id').notNull(),
+  mode: text('mode').notNull(),
+  manifestSha256: text('manifest_sha256').notNull(),
+  amountMinor: integer('amount_minor').notNull(),
+  currency: text('currency').notNull(),
+  revision: integer('revision').notNull(),
+  active: integer('active').notNull(),
+  termsUrl: text('terms_url').notNull(),
+  refundPolicy: text('refund_policy').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, (table) => [uniqueIndex('idx_sky_commerce_offer_package').on(table.packageKey, table.mode)]);
+
+export const skyCommerceOrders = sqliteTable('sky_commerce_orders', {
+  id: text('id').primaryKey(),
+  buyerUserId: text('buyer_user_id').notNull(),
+  sellerUserId: text('seller_user_id').notNull(),
+  mode: text('mode').notNull(),
+  packageKey: text('package_key').notNull(),
+  manifestSha256: text('manifest_sha256').notNull(),
+  name: text('name').notNull(),
+  amountMinor: integer('amount_minor').notNull(),
+  commissionMinor: integer('commission_minor').notNull(),
+  refundedMinor: integer('refunded_minor').notNull().default(0),
+  currency: text('currency').notNull(),
+  accountId: text('account_id').notNull(),
+  offerRevision: integer('offer_revision').notNull(),
+  termsUrl: text('terms_url').notNull(),
+  refundPolicy: text('refund_policy').notNull(),
+  status: text('status').notNull(),
+  activeKey: text('active_key'),
+  sessionId: text('session_id'),
+  paymentIntentId: text('payment_intent_id'),
+  checkoutUrl: text('checkout_url'),
+  receiptUrl: text('receipt_url'),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+}, (table) => [
+  uniqueIndex('idx_sky_commerce_order_active').on(table.activeKey),
+  uniqueIndex('idx_sky_commerce_order_session').on(table.sessionId),
+  uniqueIndex('idx_sky_commerce_order_payment').on(table.paymentIntentId),
+  index('idx_sky_commerce_order_buyer').on(table.buyerUserId, table.mode, table.createdAt),
+  index('idx_sky_commerce_order_seller').on(table.sellerUserId, table.mode, table.createdAt),
+]);
+
+export const skyCommerceEvents = sqliteTable('sky_commerce_events', {
+  id: text('id').primaryKey(),
+  orderId: text('order_id').notNull(),
+  status: text('status').notNull(),
+  createdAt: integer('created_at').notNull(),
+}, (table) => [index('idx_sky_commerce_event_order').on(table.orderId, table.createdAt)]);
+
 export const fundPlans = sqliteTable('fund_plans', {
   userId: text('user_id').primaryKey(),
   plan: text('plan').notNull(),
@@ -123,6 +188,20 @@ export const workJobs = sqliteTable(
   },
   (table) => [
     index('idx_work_jobs_user_updated').on(table.userId, table.updatedAt),
+  ],
+);
+
+export const coconalaTeamCases = sqliteTable(
+  'coconala_team_cases',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    payload: text('payload').notNull(),
+    revision: integer('revision').notNull().default(0),
+    updatedAt: text('updated_at').notNull(),
+  },
+  (table) => [
+    index('idx_coconala_team_user_updated').on(table.userId, table.updatedAt),
   ],
 );
 

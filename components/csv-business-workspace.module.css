@@ -2,7 +2,7 @@
   width: min(1180px, 100%);
   margin: 0 auto;
   padding: 44px 38px 70px;
-  color: #202625;
+  color: #18232c;
 }
 .hero {
   display: flex;
@@ -25,13 +25,13 @@
 }
 .eyebrow {
   font-size: 12px !important;
-  color: #657913 !important;
+  color: #547d90 !important;
   font-weight: 800;
   letter-spacing: 0.13em;
 }
 .price {
   min-width: 190px;
-  background: #0a0c09;
+  background: #0b1016;
   color: #fff;
   padding: 24px;
   border-radius: 20px;
@@ -46,7 +46,7 @@
   font-size: 13px;
 }
 .price small {
-  color: #c8ff2e;
+  color: #bedce6;
   margin-top: 8px;
 }
 .trust {
@@ -54,8 +54,8 @@
   flex-wrap: wrap;
   gap: 12px 28px;
   padding: 16px 20px;
-  background: #f4f7ed;
-  border: 1px solid #dce5c7;
+  background: #eaf3f7;
+  border: 1px solid #cddfe7;
   border-radius: 14px;
   margin-bottom: 28px;
   font-size: 13px;
@@ -87,7 +87,7 @@
   width: 31px;
   height: 31px;
   border-radius: 50%;
-  background: #c8ff2e;
+  background: #dce7eb;
   display: grid;
   place-items: center;
   font-weight: 900;
@@ -185,9 +185,9 @@
   min-height: 44px;
 }
 .primary {
-  background: #c8ff2e !important;
-  color: #0a0d07 !important;
-  border-color: #c8ff2e !important;
+  background: #172631 !important;
+  color: #fff !important;
+  border-color: #172631 !important;
 }
 .primary:disabled,
 button:disabled {
@@ -302,8 +302,8 @@ button:disabled {
   display: flex;
   gap: 6px;
   align-items: center;
-  background: #c8ff2e;
-  color: #0a0d07;
+  background: #172631;
+  color: #fff;
   padding: 10px 13px;
   border-radius: 999px;
   font-size: 13px;

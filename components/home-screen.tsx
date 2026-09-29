@@ -90,7 +90,7 @@ const defaults: Preferences = {
   wallpaper: 'aurora',
   iconSize: 'medium',
   showLabels: true,
-  accent: '#c8ff2e',
+  accent: '#bedce6',
   appOrder: appIds,
 };
 const wallpaperOptions: { id: Wallpaper; label: string }[] = [
@@ -126,7 +126,9 @@ function normalizePreferences(value: unknown): Preferences {
     accent:
       typeof candidate.accent === 'string' &&
       /^#[0-9a-f]{6}$/i.test(candidate.accent)
-        ? candidate.accent
+        ? candidate.accent.toLowerCase() === '#c8ff2e'
+          ? defaults.accent
+          : candidate.accent
         : defaults.accent,
     appOrder: order,
   };

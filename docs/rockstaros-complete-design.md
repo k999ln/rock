@@ -21,6 +21,8 @@ Skyは「誰に頼むか」を選ぶ場所、Zemaは「頼んだ仕事を最後�
 
 ## 2. 利用者の一周
 
+2026-09-27のSky Market決済追加: 有料の審査済みPackageは「購入」→Stripeの支払い画面→購入履歴で照合→接続先確認へ進む。作者は「販売する」で受取先と価格・条件を登録する。Web API／D1が注文と利用権を管理し、Stripe Connectが決済と10%のSky手数料配分を担う。カード・銀行情報はStripe画面で扱い、LLMの判断だけで支払いを成立させない。実装・失敗復旧・Provider設定は[決済設計](sky-billing.md)、画面契約は[Sky Tool詳細設計](sky-tools-complete-design.md#14-sky-marketの購入販売返金)。現在は資格情報未設定、実Provider・本番受入未完了であり、外部MCPの実行認可や銀行着金の完了とは区別する。
+
 ```text
 Home
   ↓
@@ -48,6 +50,8 @@ Zemaで依頼を書く
 ### Web／PC
 
 現在のHome、Sky、Zema、CSV、Wallet、Market、Studio、Settings、各APIを提供する。認証された利用者ごとにD1へ仕事状態や台帳を保存し、原稿・相談本文・秘密鍵は必要以上にserver保存しない。PC ToolはMCP Connectorを介して本人PCで実行する。
+
+SkyのココナラToolは応募前チェックと本人用案件台帳を一つの画面で提供する。代表者の受注と制作担当者への発注・支払を別の記録にし、固定報酬・支払期日・権利・修正範囲・顧客説明・規約確認の参照を担当開始前に保存する。見込収支と手入力の入出金を分離し、ココナラの実取引、外部送金、Walletの検証済み収益には接続しない。[Tool詳細](sky-tools-complete-design.md#9-ココナラ)。
 
 ### Linux／QEMU
 
@@ -232,6 +236,8 @@ OSのtrial slotではmark-good前にhardware rollback indexを進めない。boo
 ## 17. UIとaccessibility
 
 HomeはSky、Zema、Wallet、Market、Settingsへの入口。仕事はZemaへ集め、専用Tool画面からも同じwork／receiptへ戻る。
+
+Web Previewのvisual contractは、avokado製品Siteと同じグラファイトのshellとHome、銀色の文字・面、淡い青のfocus／選択手掛かりを基準にする。Sky、Wallet、Market、Settings、CSVなど情報量の多い画面には冷たい白い面を使い、Zema会話とStudioは暗い操作面を維持する。Homeの旧既定黄緑accentだけを新既定色へ移行し、利用者が選んだ別色は保持する。Tool固有アイコン、成功／警告／失敗の意味色はブランドaccentと分け、色だけで状態を伝えない。狭い画面でもHome導線、主要操作、実際の接続状態が見え、横方向のページはみ出しを起こさない。これらはWeb表示の設計であり、native OS・Provider接続・本番公開の完了を意味しない。
 
 全画面で表示するもの:
 

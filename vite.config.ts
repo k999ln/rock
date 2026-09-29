@@ -4,6 +4,7 @@ import vinext from 'vinext';
 import { defineConfig } from 'vite';
 import hostingConfig from './.openai/hosting.json' with { type: 'json' };
 import { createWebBundleInventoryPlugin } from './scripts/web-bundle-inventory.mjs';
+import { createSkyLocalRuntimePlugin } from './scripts/sky-local-runtime.mjs';
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   '00000000-0000-4000-8000-000000000000';
@@ -52,6 +53,7 @@ export default defineConfig(async () => {
       ? { watch: { useFsEvents: false, usePolling: true } }
       : undefined,
     plugins: [
+      createSkyLocalRuntimePlugin(),
       createWebBundleInventoryPlugin(),
       vinext(),
       sites(),

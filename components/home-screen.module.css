@@ -1,5 +1,5 @@
 .home {
-  --home-accent: #c8ff2e;
+  --home-accent: #bedce6;
   --icon-size: 72px;
   position: relative;
   min-height: 100dvh;
@@ -9,15 +9,15 @@
   background:
     radial-gradient(
       circle at 72% 10%,
-      rgba(200, 255, 46, 0.16),
+      rgba(143, 182, 201, 0.12),
       transparent 28%
     ),
     radial-gradient(
       circle at 12% 88%,
-      rgba(120, 153, 28, 0.11),
+      rgba(90, 108, 126, 0.1),
       transparent 34%
     ),
-    linear-gradient(150deg, #11140d 0%, #080a08 48%, #020302 100%);
+    linear-gradient(150deg, #14191f 0%, #090b10 48%, #030407 100%);
   transition: background 320ms ease;
 }
 
@@ -25,40 +25,40 @@
   background:
     radial-gradient(
       circle at 78% 20%,
-      rgba(200, 255, 46, 0.2),
+      rgba(135, 193, 216, 0.16),
       transparent 32%
     ),
-    linear-gradient(155deg, #182015 0%, #0a0e0a 54%, #030403 100%);
+    linear-gradient(155deg, #172935 0%, #0a1119 54%, #030508 100%);
 }
 
 .home[data-wallpaper='night'] {
   background:
     radial-gradient(
       circle at 76% 8%,
-      rgba(116, 132, 117, 0.18),
+      rgba(116, 133, 151, 0.18),
       transparent 32%
     ),
     radial-gradient(
       circle at 11% 85%,
-      rgba(200, 255, 46, 0.07),
+      rgba(174, 199, 211, 0.07),
       transparent 35%
     ),
-    linear-gradient(155deg, #090b0a 0%, #111512 55%, #050605 100%);
+    linear-gradient(155deg, #08090c 0%, #15171b 55%, #050608 100%);
 }
 
 .home[data-wallpaper='ember'] {
   background:
     radial-gradient(
       circle at 18% 17%,
-      rgba(234, 255, 175, 0.15),
+      rgba(194, 203, 214, 0.13),
       transparent 28%
     ),
     radial-gradient(
       circle at 80% 66%,
-      rgba(121, 151, 48, 0.13),
+      rgba(114, 135, 150, 0.11),
       transparent 40%
     ),
-    linear-gradient(150deg, #1d2119 0%, #0e110c 48%, #050605 100%);
+    linear-gradient(150deg, #23262b 0%, #101216 48%, #050608 100%);
 }
 
 .home[data-icon-size='small'] {
@@ -164,7 +164,7 @@
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 999px;
   color: #fff;
-  background: rgba(10, 12, 9, 0.68);
+  background: rgba(13, 16, 20, 0.72);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   backdrop-filter: blur(22px) saturate(1.2);
   -webkit-backdrop-filter: blur(22px) saturate(1.2);
@@ -181,7 +181,7 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 28px;
   color: #fff;
-  background: rgba(12, 15, 11, 0.78);
+  background: rgba(17, 20, 25, 0.84);
   box-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
   backdrop-filter: blur(30px) saturate(1.25);
   -webkit-backdrop-filter: blur(30px) saturate(1.25);
@@ -193,7 +193,7 @@
   display: grid;
   place-items: center;
   border-radius: 15px;
-  color: #101613;
+  color: #10202a;
   background: var(--home-accent);
   box-shadow: 0 9px 24px color-mix(in srgb, var(--home-accent) 36%, transparent);
 }
@@ -277,15 +277,15 @@
 .wallet,
 .market,
 .settings {
-  color: #c8ff2e;
+  color: #e1e8eb;
   background:
     radial-gradient(
       circle at 72% 18%,
-      rgba(200, 255, 46, 0.14),
+      rgba(190, 220, 230, 0.12),
       transparent 28%
     ),
-    linear-gradient(145deg, #1b2018, #080a08 70%);
-  border-color: rgba(200, 255, 46, 0.3);
+    linear-gradient(145deg, #222a31, #0c0e12 70%);
+  border-color: rgba(198, 214, 224, 0.28);
   box-shadow:
     inset 0 1px rgba(255, 255, 255, 0.08),
     0 12px 35px rgba(0, 0, 0, 0.3);
@@ -445,16 +445,16 @@
   border-color: var(--home-accent);
 }
 .wallpaperChoices [data-choice='aurora'] > span {
-  background: linear-gradient(145deg, #647d20, #080a08);
+  background: linear-gradient(145deg, #566574, #080a0d);
 }
 .wallpaperChoices [data-choice='sky'] > span {
-  background: linear-gradient(145deg, #293a1e, #060806);
+  background: linear-gradient(145deg, #284a60, #06090d);
 }
 .wallpaperChoices [data-choice='night'] > span {
-  background: linear-gradient(145deg, #262b25, #030403);
+  background: linear-gradient(145deg, #262b34, #030407);
 }
 .wallpaperChoices [data-choice='ember'] > span {
-  background: linear-gradient(145deg, #444d35, #0d100b);
+  background: linear-gradient(145deg, #464e57, #0d1014);
 }
 .editorRow {
   min-height: 63px;
@@ -486,7 +486,7 @@
   font-size: 12px;
 }
 .segmented button[aria-pressed='true'] {
-  color: #111713;
+  color: #10202a;
   background: var(--home-accent);
   font-weight: 750;
 }
@@ -551,7 +551,7 @@
 }
 .editorActions button:last-child {
   min-width: 112px;
-  color: #111713;
+  color: #10202a;
   background: var(--home-accent);
 }
 

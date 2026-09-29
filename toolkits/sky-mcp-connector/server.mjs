@@ -808,6 +808,7 @@ function send(response, status, data, origin) {
 export async function createConnector({
   registryPath = resolve(here, 'registry.json'),
   port = DEFAULT_PORT,
+  allowedOrigins = ORIGINS,
   localToolDirectory = process.env.SKY_LOCAL_TOOL_DIR ?? join(homedir(), '.sky', 'mcp-tools'),
 } = {}) {
   const specs = validateRegistry(
@@ -824,10 +825,12 @@ export async function createConnector({
   const server = createServer(async (request, response) => {
     const origin = request.headers.origin;
     const allowed =
-      ORIGINS.has(origin) && request.headers.host === `127.0.0.1:${boundPort}`;
+      allowedOrigins.has(origin) && request.headers.host === `127.0.0.1:${boundPort}`;
     if (!allowed) return send(response, 403, { error: 'Origin denied' });
     if (request.method === 'OPTIONS')
       return send(response, 204, undefined, origin);
+    if (request.method === 'GET' && request.url === '/health')
+      return send(response, 200, { service: 'rockstaros-sky-mcp' }, origin);
     try {
       if (request.method === 'POST' && request.url === '/connect') {
         if (canonical(await body(request)) !== '{}')

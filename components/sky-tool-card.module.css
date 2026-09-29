@@ -1,0 +1,39 @@
+.card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px;
+  border: 1px solid var(--sky-line, #2e3c47);
+  border-radius: 18px;
+  color: var(--sky-text, #edf3f7);
+  background: var(--sky-panel, #151d25);
+  transition: border-color 160ms ease;
+}
+.card:hover { border-color: #5b7483; }
+.header { display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 14px; }
+.icon { display: grid; width: 48px; height: 48px; padding: 0; place-items: center; border: 1px solid #46606e; border-radius: 14px; color: #c9e3ef; background: #233540; cursor: pointer; }
+.icon:hover { border-color: #a3cfe2; background: #304c5d; }
+.identity { min-width: 0; }
+.category { display: block; margin-bottom: 5px; color: #9cb7c7; font-size: 11px; line-height: 1.4; }
+.identity h3 { margin: 0; color: #edf3f7; font-size: 17px; font-weight: 650; line-height: 1.45; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.status { display: flex; align-items: flex-start; gap: 7px; color: #aabac4; font-size: 12px; line-height: 1.5; }
+.status i { width: 6px; height: 6px; flex: 0 0 auto; margin-top: 6px; border-radius: 50%; background: #8095a2; }
+.status[data-state='is-ready'] { color: #afdbc9; }
+.status[data-state='is-ready'] i { background: #88c8ab; }
+.status[data-state='is-connect'] i { background: #a9cbdc; }
+.description { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; margin: 0; color: #a0b1bc; font-size: 13px; line-height: 1.7; }
+.mismatch { margin: 0; color: #edc9a7; font-size: 12px; line-height: 1.6; }
+.footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 14px; margin-top: auto; padding: 4px 0 0; border: 0; background: transparent; }
+.card .details { min-height: 40px; padding: 0; border: 0; color: #a9c6d6; background: transparent; font: inherit; font-size: 12px; cursor: pointer; text-align: left; }
+.details:hover { color: #edf7fc; text-decoration: underline; text-underline-offset: 4px; }
+.card .action { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; gap: 8px; padding: 9px 13px; border: 1px solid #c3e1f0; border-radius: 10px; color: #11222b; background: #c3e1f0; font: inherit; font-size: 12px; font-weight: 700; line-height: 1.4; text-decoration: none; cursor: pointer; }
+.action svg { flex: 0 0 auto; }
+.card .action:hover { border-color: #e3f3fb; background: #e3f3fb; }
+.card button:focus-visible, .card a:focus-visible { outline: 2px solid #bce3fa; outline-offset: 4px; }
+@media (max-width: 480px) {
+  .card { gap: 12px; padding: 18px; }
+  .header { gap: 12px; }
+  .identity h3 { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }

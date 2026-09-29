@@ -2,9 +2,10 @@
 
 import { useEffect, type ReactNode } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Cable, House } from 'lucide-react';
+import { ArrowUpRight, Cable, CircleHelp, House } from 'lucide-react';
 import { monitorDevice } from '@/lib/device';
 import { PRODUCT_RELEASE_NAME } from '@/lib/product-identity';
+import skyStyles from '@/components/sky-surface.module.css';
 
 export default function WorkspaceShell({
   children,
@@ -13,6 +14,7 @@ export default function WorkspaceShell({
   onConnect,
   running = false,
   hideTopActions = false,
+  tone,
 }: {
   children: ReactNode;
   title: string;
@@ -20,6 +22,7 @@ export default function WorkspaceShell({
   onConnect?: () => void;
   running?: boolean;
   hideTopActions?: boolean;
+  tone?: 'sky';
 }) {
   useEffect(() => {
     void navigator.serviceWorker?.register('/sw.js').catch(() => {});
@@ -43,7 +46,7 @@ export default function WorkspaceShell({
         )
           event.preventDefault();
       }}
-      className="rock-workspace"
+      className={`rock-workspace${tone === 'sky' ? ` ${skyStyles.sky}` : ''}`}
       data-running={running ? 'true' : 'false'}
       aria-busy={running}
     >
@@ -86,9 +89,10 @@ export default function WorkspaceShell({
                 <Link
                   className="rock-button rock-button-subtle"
                   href="/rockstaros/guide"
+                  aria-label="使い方を見る"
                   aria-disabled={running || undefined}
                 >
-                  使い方を見る
+                  <CircleHelp size={17} /> 使い方を見る
                 </Link>
               )}
             </div>

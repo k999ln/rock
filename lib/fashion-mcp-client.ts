@@ -1,3 +1,5 @@
+import { ensureLocalRuntime } from '@/lib/sky-local-runtime';
+
 export const FASHION_MCP_URL = 'http://127.0.0.1:8787';
 export const FASHION_MCP_TOOL_COUNT = 41;
 
@@ -23,6 +25,44 @@ type McpResult = {
   tools?: { name?: string }[];
   structuredContent?: unknown;
   isError?: boolean;
+};
+
+export type FashionProducerInput = {
+  run_id: string;
+  worldview: string;
+  product_design: string;
+  region?: string;
+};
+
+export type FashionProducerResult = {
+  run_id: string;
+  idempotent_replay: boolean;
+  brand: { id: string; name: string };
+  product: { id: string; name: string };
+  market: {
+    primary_segment: string;
+    audience: { age_range: string; regions: string[] };
+    positioning: string;
+  };
+  content_plan: {
+    id: string;
+    strategy: { slots: { date: string; time: string; pillar: string; format: string }[] };
+  };
+  first_draft: { id: string; caption: string; status: string };
+  creative: { brief: { prompt: string } };
+  decisions_needed: { key: string; label: string; reason: string }[];
+  approval_queue: { approval_id: string; action: string; status: string }[];
+  external_effects_executed: false;
+};
+
+export type FashionReadiness = {
+  planning_ready: boolean;
+  capabilities: {
+    instagram: { ready: boolean; provider: string };
+    creative: { ready: boolean; provider: string };
+    payment: { ready: boolean; provider: string };
+    notification: { ready: boolean; provider: string };
+  };
 };
 
 let connectionGeneration = 0;
@@ -69,7 +109,13 @@ async function rpc(
     }),
     cache: 'no-store',
     signal: AbortSignal.timeout(5000),
+  }).catch(() => {
+    throw new Error('PCのブランド運営へ応答を確認できませんでした。接続を再確認してください。');
   });
+  if (response.status === 401) {
+    clearStoredConnection();
+    throw new Error('PCへの接続期限が切れました。もう一度接続してください。');
+  }
   const message = (await response.json()) as {
     error?: { message?: string };
     result?: McpResult;
@@ -93,12 +139,15 @@ export function fashionMcpConnected() {
 
 async function establishFashionMcpConnection() {
   const generation = ++connectionGeneration;
+  await ensureLocalRuntime('fashion');
   const response = await fetch(FASHION_MCP_URL + '/connect', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: '{}',
     cache: 'no-store',
     signal: AbortSignal.timeout(5000),
+  }).catch(() => {
+    throw new Error('PCのブランド運営を起動できていません。接続を再確認してください。');
   });
   const connection = (await response.json()) as {
     token?: string;
@@ -202,6 +251,33 @@ export async function callFashionMcpTool<T>(
   if (result.structuredContent === undefined)
     throw new Error('操作結果を確認できませんでした。');
   return result.structuredContent as T;
+}
+
+export async function verifyFashionProducerSaved(result: FashionProducerResult) {
+  const drafts = await callFashionMcpTool<
+    { id: string; brand_id: string; caption: string; status: string }[]
+  >('instagram.calendar.list', { brand_id: result.brand.id });
+  const saved = Array.isArray(drafts) ? drafts.find((draft) => draft.id === result.first_draft.id) : undefined;
+  if (!saved || saved.brand_id !== result.brand.id || saved.caption !== result.first_draft.caption)
+    throw new Error('保存した下書きを確認できませんでした。同じ入力で再確認してください。');
+  return saved;
+}
+
+export async function startFashionProducer(input: FashionProducerInput) {
+  const result = await callFashionMcpTool<FashionProducerResult>('fashion.producer.start', input);
+  if (!result || result.run_id !== input.run_id || result.external_effects_executed !== false ||
+      typeof result.brand?.id !== 'string' || typeof result.product?.name !== 'string' ||
+      typeof result.first_draft?.id !== 'string' || typeof result.first_draft?.caption !== 'string' ||
+      typeof result.market?.primary_segment !== 'string' || typeof result.market?.audience?.age_range !== 'string' ||
+      typeof result.market?.positioning !== 'string' || !Array.isArray(result.market?.audience?.regions) ||
+      !result.market.audience.regions.every((region) => typeof region === 'string') ||
+      typeof result.creative?.brief?.prompt !== 'string' || !Array.isArray(result.content_plan?.strategy?.slots) ||
+      !result.content_plan.strategy.slots.every((slot) => typeof slot.date === 'string' && typeof slot.time === 'string' && typeof slot.format === 'string' && typeof slot.pillar === 'string') ||
+      !Array.isArray(result.decisions_needed) || !result.decisions_needed.every((item) => typeof item.key === 'string' && typeof item.label === 'string' && typeof item.reason === 'string') ||
+      !Array.isArray(result.approval_queue))
+    throw new Error('作成結果の形式を確認できませんでした。同じ入力で再確認してください。');
+  await verifyFashionProducerSaved(result);
+  return result;
 }
 
 export async function disconnectFashionMcp() {

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { build } from 'esbuild';
+import { createRuntime } from '../toolkits/fashion-brand-ops/src/runtime.mjs';
 
 const built = await build({
   entryPoints: [
@@ -32,7 +33,17 @@ const tools = [
 ];
 let sequence = 0;
 
-async function harness(t, listedTools = tools) {
+function producerRuntime() {
+  return createRuntime({ config: {
+    dbPath: ':memory:',
+    creativeProvider: 'mock',
+    socialProvider: 'mock',
+    paymentProvider: 'mock',
+    notificationProvider: 'mock',
+  } });
+}
+
+async function harness(t, listedTools = tools, callTool) {
   const client = await import(
     'data:text/javascript;base64,' + source + '#' + sequence++
   );
@@ -69,6 +80,8 @@ async function harness(t, listedTools = tools) {
       return new Response(null, { status: 202 });
     if (body.method === 'tools/list')
       return Response.json({ result: { tools: listedTools } });
+    if (body.method === 'tools/call' && callTool)
+      return Response.json({ result: { structuredContent: await callTool(body.params.name, body.params.arguments) } });
     if (body.method === 'tools/call')
       return Response.json({
         result: {
@@ -123,4 +136,48 @@ await test('an incomplete tool catalog never becomes connected', async (t) => {
   await assert.rejects(h.client.connectFashionMcp(), /41個/);
   assert.equal(h.client.fashionMcpConnected(), false);
   assert.equal(h.storage.size, 0);
+});
+
+await test('producer client saves real local records, reads the draft back, and safely replays the same request', async (t) => {
+  const runtime = producerRuntime();
+  t.after(() => runtime.store.close());
+  const h = await harness(t, tools, runtime.callTool);
+  await h.client.connectFashionMcp();
+  const input = {
+    run_id: 'web-producer-test-1',
+    worldview: '静かな高級感と受注生産',
+    product_design: '黒いウールのワイドスラックス',
+    region: '日本',
+  };
+  const result = await h.client.startFashionProducer(input);
+  assert.equal(result.run_id, input.run_id);
+  assert.equal(result.idempotent_replay, false);
+  assert.equal(result.external_effects_executed, false);
+  assert.equal(result.content_plan.strategy.slots.length, 6);
+  assert.equal(runtime.store.get('SELECT COUNT(*) AS count FROM producer_runs').count, 1);
+  assert.equal(runtime.store.get('SELECT COUNT(*) AS count FROM campaigns').count, 1);
+  assert.equal(runtime.store.get('SELECT COUNT(*) AS count FROM effect_runs').count, 0);
+  assert.deepEqual(h.requests.filter(({ body }) => body.method === 'tools/call').map(({ body }) => body.params.name), [
+    'fashion.producer.start', 'instagram.calendar.list',
+  ]);
+  const replay = await h.client.startFashionProducer(input);
+  assert.equal(replay.idempotent_replay, true);
+  assert.equal(replay.first_draft.id, result.first_draft.id);
+  assert.equal(runtime.store.get('SELECT COUNT(*) AS count FROM campaigns').count, 1);
+  const readback = await h.client.verifyFashionProducerSaved(result);
+  assert.equal(readback.caption, result.first_draft.caption);
+});
+
+await test('producer client does not claim saved success when readback is missing', async (t) => {
+  const runtime = producerRuntime();
+  t.after(() => runtime.store.close());
+  const h = await harness(t, tools, (name, args) => name === 'instagram.calendar.list' ? [] : runtime.callTool(name, args));
+  await h.client.connectFashionMcp();
+  await assert.rejects(h.client.startFashionProducer({
+    run_id: 'web-producer-test-missing',
+    worldview: '静かな高級感と受注生産',
+    product_design: '黒いウールのワイドスラックス',
+  }), /保存した下書きを確認できません/);
+  assert.equal(runtime.store.get('SELECT COUNT(*) AS count FROM producer_runs').count, 1);
+  assert.equal(runtime.store.get('SELECT COUNT(*) AS count FROM effect_runs').count, 0);
 });

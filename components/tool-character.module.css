@@ -1,4 +1,4 @@
-.character { display: block; flex-shrink: 0; }
+.character { display: grid; place-items: center; flex-shrink: 0; border-radius: 29%; color: #fff; box-shadow: inset 0 2px 0 #ffffff45, 0 5px 16px #0002; }
 .trigger { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; transition: transform .18s ease; }
 .trigger:hover { transform: translateY(-2px) scale(1.06); }
 .trigger:focus-visible { outline: 2px solid #8acfff; outline-offset: 3px; }

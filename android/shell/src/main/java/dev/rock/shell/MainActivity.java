@@ -2,10 +2,13 @@ package dev.rock.shell;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.text.InputType;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -27,6 +30,7 @@ public final class MainActivity extends Activity {
     private static final int OPEN_BACKUP_DOCUMENT = 202;
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
     private LinearLayout form, jobs;
+    private LinearLayout advancedPanel;
     private TextView message, skyStatus, recoveryStatus, recoveryPhraseView;
     private LinearLayout recoveryChallenge;
     private EditText zemaPrompt, markdown, summary, paid, url, cutoff, price;
@@ -38,44 +42,56 @@ public final class MainActivity extends Activity {
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
-        ScrollView scroll = new ScrollView(this); form = new LinearLayout(this); form.setOrientation(LinearLayout.VERTICAL);
-        int padding = (int)(20 * getResources().getDisplayMetrics().density); form.setPadding(padding, padding, padding, padding);
+        ScrollView scroll = new ScrollView(this);
+        scroll.setBackgroundColor(Color.rgb(10, 15, 20));
+        form = new LinearLayout(this); form.setOrientation(LinearLayout.VERTICAL);
+        form.setBackgroundColor(Color.rgb(10, 15, 20));
+        int padding = (int)(24 * getResources().getDisplayMetrics().density); form.setPadding(padding, padding, padding, padding);
         scroll.addView(form); setContentView(scroll);
-        label(form, "RockstarOS · Sky → Zema", 24);
-        label(form, "Sky", 22);
-        label(form, "Toolの選択は端末内Brokerへ保存され、アプリや端末の再起動後も同じ選択を確認できます。", 16);
+
+        label(form, "avocadoOS  /  SKY", 13);
+        label(form, "仕事を頼む", 30);
+        label(form, "使うToolを選んで、依頼を書くだけ。\n端末内AIが安全に実行します。", 16);
+        label(form, "使うTool", 13);
         skyStatus = label(form, "Skyの選択を確認中…", 16);
-        button(form, "出典整理→無料記事を選択", () -> perform(connection -> {
+        button(form, "出典整理 → 無料記事 　変更", () -> perform(connection -> {
             connection.selectSkyTool(ARTICLE_TOOL); return null;
         }));
-        label(form, "Zema", 22);
-        label(form, "Zemaが端末内AIで入力を組み立て、Skyで選択済みのToolだけを実行します。外部投稿・決済はしません。", 16);
-        zemaPrompt = field("Zemaへの依頼", "", true);
-        zemaConsent = new CheckBox(this); zemaConsent.setText("依頼を端末内AIで計画し、選択済みToolの仕事として保存することを許可する"); form.addView(zemaConsent);
+        label(form, "依頼内容", 13);
+        zemaPrompt = field(form, "何をしたいですか？", "", true);
+        zemaConsent = new CheckBox(this); zemaConsent.setText("この端末内で処理することを許可"); styleCheckBox(zemaConsent); form.addView(zemaConsent);
         message = label(form, "", 16);
-        button(form, "Zemaに依頼して仕事を開始", this::submitZema);
-        button(form, "ローカルAI接続を確認", this::checkLocalAi);
-        label(form, "バックアップと全損復元", 22);
-        label(form, "仕事・進捗・設定・非secret台帳を暗号化します。24単語はWalletのシードではなく、運営にも復号できません。", 16);
-        recoveryStatus = label(form, "復元設定を確認中…", 16);
-        recoveryPhraseView = label(form, "", 16); recoveryPhraseView.setTextIsSelectable(true);
+        button(form, "このToolで実行", this::submitZema);
+        button(form, "端末内AIの接続を確認", this::checkLocalAi);
+
+        jobs = new LinearLayout(this); jobs.setOrientation(LinearLayout.VERTICAL); form.addView(jobs);
+
+        button(form, "詳細設定（開発者向け）", () -> {
+            advancedPanel.setVisibility(advancedPanel.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        });
+        advancedPanel = new LinearLayout(this); advancedPanel.setOrientation(LinearLayout.VERTICAL);
+        advancedPanel.setVisibility(View.GONE); form.addView(advancedPanel);
+        label(advancedPanel, "バックアップと復元", 22);
+        label(advancedPanel, "通常は触る必要ありません。復元用の情報は端末外へ送信しません。", 16);
+        recoveryStatus = label(advancedPanel, "復元設定を確認中…", 16);
+        recoveryPhraseView = label(advancedPanel, "", 16); recoveryPhraseView.setTextIsSelectable(true);
         recoveryChallenge = new LinearLayout(this); recoveryChallenge.setOrientation(LinearLayout.VERTICAL);
-        form.addView(recoveryChallenge);
-        button(form, "復元用24単語を新しく準備", this::beginRecoverySetup);
-        button(form, "指定された単語を確認して有効化", this::confirmRecoverySetup);
-        button(form, "暗号化バックアップを書き出す", this::chooseBackupDestination);
-        recoveryPhraseInput = field("復元時だけ24単語を入力", "", true);
-        button(form, "バックアップから復元", this::chooseBackupSource);
-        label(form, "手動入力（開発用）", 22);
-        markdown = field("原稿（Markdown）", "", true);
-        summary = field("まとめ（- で始まる3〜5項目）", "", true);
-        cutoff = field("無料範囲の文字数", "40", false);
-        price = field("完全版の表示価格（円・課金はしません）", "500", false);
-        paid = field("完全版に残る内容", "", false);
-        url = field("完全版の記事URL（https://note.com/.../n/...）", "", false);
-        consent = new CheckBox(this); consent.setText("この原稿と成果物を端末に保存し、2工程を自動で実行することを許可する"); form.addView(consent);
-        sample = new CheckBox(this); sample.setText("サンプル検証（最初の工程の結果を確認し、次へ進めない）"); form.addView(sample);
-        button(form, "仕事を保存して自動実行を予約", () -> {
+        advancedPanel.addView(recoveryChallenge);
+        button(advancedPanel, "復元用24単語を新しく準備", this::beginRecoverySetup);
+        button(advancedPanel, "指定された単語を確認して有効化", this::confirmRecoverySetup);
+        button(advancedPanel, "暗号化バックアップを書き出す", this::chooseBackupDestination);
+        recoveryPhraseInput = field(advancedPanel, "復元時だけ24単語を入力", "", true);
+        button(advancedPanel, "バックアップから復元", this::chooseBackupSource);
+        label(advancedPanel, "手動入力（開発用）", 22);
+        markdown = field(advancedPanel, "原稿（Markdown）", "", true);
+        summary = field(advancedPanel, "まとめ（- で始まる3〜5項目）", "", true);
+        cutoff = field(advancedPanel, "無料範囲の文字数", "40", false);
+        price = field(advancedPanel, "完全版の表示価格（円・課金はしません）", "500", false);
+        paid = field(advancedPanel, "完全版に残る内容", "", false);
+        url = field(advancedPanel, "完全版の記事URL（https://note.com/.../n/...）", "", false);
+        consent = new CheckBox(this); consent.setText("この原稿と成果物を端末に保存し、2工程を自動で実行することを許可する"); styleCheckBox(consent); advancedPanel.addView(consent);
+        sample = new CheckBox(this); sample.setText("サンプル検証（最初の工程の結果を確認し、次へ進めない）"); styleCheckBox(sample); advancedPanel.addView(sample);
+        button(advancedPanel, "仕事を保存して自動実行を予約", () -> {
             try {
                 JSONObject input = new JSONObject(); input.put("markdown", markdown.getText().toString()); input.put("summary", summary.getText().toString());
                 input.put("afterChars", Integer.parseInt(cutoff.getText().toString())); input.put("price", Integer.parseInt(price.getText().toString()));
@@ -84,23 +100,36 @@ public final class MainActivity extends Activity {
                 perform(connection -> connection.submit(UUID.randomUUID().toString(), payload, isSample, allowed));
             } catch (Exception error) { message.setText("入力を確認してください。文字数・価格は整数、全項目の入力が必要です。"); }
         });
-        button(form, "全停止（保存した仕事は残す）", () -> perform(connection -> { connection.setPaused(true); return null; }));
-        button(form, "自動実行を再開", () -> perform(connection -> { connection.setPaused(false); return null; }));
-        button(form, "進捗を更新", () -> perform(connection -> null));
-        jobs = new LinearLayout(this); jobs.setOrientation(LinearLayout.VERTICAL); form.addView(jobs);
+        button(advancedPanel, "全停止（保存した仕事は残す）", () -> perform(connection -> { connection.setPaused(true); return null; }));
+        button(advancedPanel, "自動実行を再開", () -> perform(connection -> { connection.setPaused(false); return null; }));
+        button(advancedPanel, "進捗を更新", () -> perform(connection -> null));
         perform(connection -> null);
     }
 
-    private EditText field(String title, String initial, boolean multi) {
-        label(form, title, 16); EditText input = new EditText(this); input.setText(initial); input.setTextSize(16);
+    private EditText field(String title, String initial, boolean multi) { return field(form, title, initial, multi); }
+    private EditText field(LinearLayout container, String title, String initial, boolean multi) {
+        label(container, title, 16); EditText input = new EditText(this); input.setText(initial); input.setTextSize(16);
+        input.setTextColor(Color.WHITE); input.setHintTextColor(Color.rgb(146, 161, 174));
+        input.setBackground(background(Color.rgb(25, 34, 43), Color.rgb(63, 80, 96), 12));
+        input.setPadding(16, 14, 16, 14);
         input.setInputType(InputType.TYPE_CLASS_TEXT | (multi ? InputType.TYPE_TEXT_FLAG_MULTI_LINE : 0));
-        input.setSingleLine(!multi); if (multi) input.setMinLines(3); form.addView(input); return input;
+        input.setSingleLine(!multi); if (multi) input.setMinLines(3); container.addView(input); return input;
     }
     private TextView label(LinearLayout container, String text, int size) {
-        TextView value = new TextView(this); value.setText(text); value.setTextSize(size); value.setPadding(0, 12, 0, 8); container.addView(value); return value;
+        TextView value = new TextView(this); value.setText(text); value.setTextSize(size);
+        value.setTextColor(size >= 22 ? Color.WHITE : Color.rgb(190, 202, 214));
+        value.setPadding(0, size >= 22 ? 20 : 12, 0, size >= 22 ? 10 : 8); container.addView(value); return value;
     }
-    private void button(LinearLayout container, String text, Runnable action) {
-        Button value = new Button(this); value.setText(text); value.setOnClickListener(view -> action.run()); container.addView(value);
+    private Button button(LinearLayout container, String text, Runnable action) {
+        Button value = new Button(this); value.setText(text); value.setTextColor(Color.WHITE); value.setTextSize(15);
+        value.setAllCaps(false); value.setPadding(18, 12, 18, 12);
+        value.setBackground(background(Color.rgb(27, 42, 54), Color.rgb(95, 151, 183), 14));
+        value.setOnClickListener(view -> action.run()); container.addView(value); return value;
+    }
+    private void styleCheckBox(CheckBox box) { box.setTextColor(Color.rgb(205, 216, 226)); box.setPadding(0, 12, 0, 12); }
+    private GradientDrawable background(int fill, int stroke, int radius) {
+        GradientDrawable drawable = new GradientDrawable(); drawable.setColor(fill); drawable.setCornerRadius(radius * getResources().getDisplayMetrics().density);
+        drawable.setStroke((int)(1 * getResources().getDisplayMetrics().density), stroke); return drawable;
     }
 
     private void perform(Action action) {
@@ -312,35 +341,50 @@ public final class MainActivity extends Activity {
     }
 
     private void render(JSONArray workItems) {
-        jobs.removeAllViews(); label(jobs, "仕事と確認待ち", 22);
-        if (workItems.length() == 0) label(jobs, "仕事はまだありません。", 16);
+        jobs.removeAllViews(); label(jobs, "最近の仕事", 22);
+        int visibleJobs = 0;
         for (int index = 0; index < workItems.length(); index++) {
             JSONObject work = workItems.optJSONObject(index);
             if (work == null) continue;
             String id = work.optString("id"), state = work.optString("state");
-            label(jobs, id.substring(0, Math.min(8, id.length())) + " · " + state + (work.optBoolean("sample") ? " · サンプル" : ""), 18);
+            // Old cancelled test runs are developer history, not user work.
+            if ("cancelled".equals(state)) continue;
+            visibleJobs++;
+            LinearLayout card = new LinearLayout(this); card.setOrientation(LinearLayout.VERTICAL);
+            card.setPadding(16, 14, 16, 14); card.setBackground(background(Color.rgb(19, 28, 36), Color.rgb(48, 66, 80), 14)); jobs.addView(card);
+            label(card, friendlyState(state), 18);
             JSONArray runs = work.optJSONArray("runs");
+            int succeeded = 0, total = runs == null ? 0 : runs.length();
             if (runs != null) for (int runIndex = 0; runIndex < runs.length(); runIndex++) {
-                JSONObject run = runs.optJSONObject(runIndex); if (run == null) continue;
-                String error = run.isNull("error") ? "" : " / " + run.optString("error");
-                label(jobs, run.optString("tool") + " : " + run.optString("state") + " / 試行 " + run.optInt("attempt") + error, 16);
+                JSONObject run = runs.optJSONObject(runIndex); if (run != null && "succeeded".equals(run.optString("state"))) succeeded++;
             }
+            if (total > 0) label(card, succeeded + " / " + total + " 工程が完了", 16);
             if (state.equals("review") || state.equals("completed")) {
-                TextView artifact = label(jobs, "", 16); artifact.setTextIsSelectable(true);
-                button(jobs, "成果物を読む（長押しでコピー）", () -> worker.execute(() -> {
+                TextView artifact = label(card, "", 16); artifact.setTextIsSelectable(true);
+                button(card, "成果物を表示", () -> worker.execute(() -> {
                     try { String output = new ShellConnection(this).result(id); runOnUiThread(() -> artifact.setText(output)); }
                     catch (Exception error) { runOnUiThread(() -> artifact.setText("成果物の整合性を確認できません。")); }
                 }));
             }
             if (state.equals("review")) {
-                EditText note = new EditText(this); note.setHint("本文・出典を読んで確認メモを入力"); jobs.addView(note);
-                button(jobs, "本人確認して完了", () -> { String value = note.getText().toString(); perform(connection -> { connection.complete(id, value); return null; }); });
+                EditText note = new EditText(this); note.setHint("確認メモ（任意）"); note.setTextColor(Color.WHITE); note.setHintTextColor(Color.rgb(146, 161, 174));
+                note.setBackground(background(Color.rgb(25, 34, 43), Color.rgb(63, 80, 96), 12)); note.setPadding(16, 14, 16, 14); card.addView(note);
+                button(card, "確認して完了", () -> { String value = note.getText().toString(); perform(connection -> { connection.complete(id, value); return null; }); });
             }
             if (state.equals("active") && !work.optBoolean("sample"))
-                button(jobs, "失敗した工程だけを再試行", () -> perform(connection -> { connection.retry(id); return null; }));
-            if (state.equals("active") || state.equals("review"))
-                button(jobs, "この仕事を中止", () -> perform(connection -> { connection.cancel(id); return null; }));
+                button(card, "失敗した工程だけを再試行", () -> perform(connection -> { connection.retry(id); return null; }));
         }
+        if (visibleJobs == 0) label(jobs, "まだ仕事はありません。ここから実行できます。", 16);
+    }
+
+    private static String friendlyState(String state) {
+        if ("review".equals(state)) return "確認待ち";
+        if ("completed".equals(state)) return "完了";
+        if ("active".equals(state)) return "実行中";
+        if ("queued".equals(state)) return "待機中";
+        if ("cancelled".equals(state)) return "中止";
+        if ("failed".equals(state)) return "失敗";
+        return "処理中";
     }
 
     @Override public void onDestroy() {

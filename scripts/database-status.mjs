@@ -47,9 +47,9 @@ function webDomains(tables) {
     { id: 'csv', label: 'CSV業務', matches: (name) => name.startsWith('csv_') },
     {
       id: 'business',
-      label: '自動化ファンド・事業補助',
+      label: '自動化ファンド・受託案件・事業補助',
       matches: (name) =>
-        name === 'mercari_revenue_plans' || name.startsWith('automation_'),
+        name === 'mercari_revenue_plans' || name === 'coconala_team_cases' || name.startsWith('automation_'),
     },
   ];
   const groups = definitions.map(({ id, label }) => ({

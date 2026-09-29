@@ -6,7 +6,7 @@
   min-height: 72px;
   padding: 12px 16px;
   border-bottom: 1px solid #2f3336;
-  background: #080a08;
+  background: #0b0f14;
 }
 
 .railIcon,
@@ -16,10 +16,10 @@
   width: 40px;
   height: 40px;
   flex: 0 0 auto;
-  border: 1px solid rgba(201, 255, 103, 0.34);
+  border: 1px solid rgba(195, 225, 240, 0.34);
   border-radius: 12px;
-  color: #c9ff67;
-  background: rgba(201, 255, 103, 0.08);
+  color: #c3e1f0;
+  background: rgba(195, 225, 240, 0.08);
 }
 
 .railCopy {
@@ -41,9 +41,9 @@
 .railCopy span,
 .tabs button span {
   padding: 2px 7px;
-  border: 1px solid #334021;
+  border: 1px solid #3b5261;
   border-radius: 999px;
-  color: #b6d77a;
+  color: #afc9d9;
   font-size: 12px;
   letter-spacing: 0.04em;
 }
@@ -73,12 +73,12 @@
 }
 
 .connectionStatus.isConnected {
-  color: #c9ff67;
+  color: #c3e1f0;
 }
 
 .connectionStatus.isConnected i {
-  background: #c9ff67;
-  box-shadow: 0 0 0 4px rgba(201, 255, 103, 0.1);
+  background: #c3e1f0;
+  box-shadow: 0 0 0 4px rgba(195, 225, 240, 0.1);
 }
 
 .manageButton,
@@ -91,8 +91,8 @@
   min-height: 40px;
   padding: 0 15px;
   border-radius: 999px;
-  color: #101308;
-  background: #c9ff67;
+  color: #10202b;
+  background: #c3e1f0;
   font-size: 14px;
   font-weight: 750;
 }
@@ -100,38 +100,47 @@
 .manageButton:hover,
 .primaryAction:hover,
 .toolFooter button:hover {
-  background: #d8ff91;
+  background: #deeff8;
 }
 
 .manageButton:focus-visible,
 .primaryAction:focus-visible,
 .toolFooter button:focus-visible,
 .tabs button:focus-visible {
-  outline: 3px solid rgba(201, 255, 103, 0.34);
+  outline: 3px solid rgba(195, 225, 240, 0.34);
   outline-offset: 2px;
 }
 
-.dialog {
+.dialog.dialog {
+  inset: 50% auto auto 50% !important;
+  translate: -50% -50% !important;
+  transform: none !important;
+  margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  color-scheme: dark;
   width: min(720px, calc(100vw - 32px)) !important;
   max-width: 720px !important;
   max-height: min(820px, calc(100dvh - 32px));
-  overflow-y: auto;
+  overflow: hidden;
   padding: 0 !important;
-  border: 1px solid #30352c !important;
+  border: 1px solid #2e3c47 !important;
   border-radius: 22px !important;
   color: #f1f4ee;
-  background: #090b09 !important;
+  background: #10171e !important;
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.68) !important;
 }
 
 .dialogHeader {
+  flex-shrink: 0;
   display: grid;
   gap: 16px;
-  padding: 24px 26px 20px;
-  border-bottom: 1px solid #282c25;
+  padding: 24px 50px 20px 26px;
+  border-bottom: 1px solid #2e3c47;
   background: radial-gradient(
     circle at 90% 0%,
-    rgba(201, 255, 103, 0.1),
+    rgba(195, 225, 240, 0.1),
     transparent 38%
   );
 }
@@ -153,7 +162,7 @@
 }
 
 .dialogTitleRow p {
-  color: #9da49a !important;
+  color: #a0b1bc !important;
   font-size: 15px !important;
   line-height: 1.55;
 }
@@ -170,9 +179,9 @@
   gap: 6px;
   min-height: 30px;
   padding: 4px 10px;
-  border: 1px solid #354024;
+  border: 1px solid #38505f;
   border-radius: 999px;
-  color: #c9ff67;
+  color: #c3e1f0;
   font-size: 13px;
 }
 
@@ -182,22 +191,23 @@
 }
 
 .policyBadges .liveOn {
-  border-color: #607c37;
-  color: #c9ff67;
-  background: rgba(201, 255, 103, 0.07);
+  border-color: #587486;
+  color: #c3e1f0;
+  background: rgba(195, 225, 240, 0.07);
 }
 
 .tabs {
+  flex-shrink: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding: 0 26px;
-  border-bottom: 1px solid #282c25;
+  border-bottom: 1px solid #2e3c47;
 }
 
 .tabs button {
   position: relative;
   min-height: 52px;
-  color: #929a90;
+  color: #a0b1bc;
   font-size: 14px;
   font-weight: 680;
 }
@@ -213,12 +223,16 @@
   left: 20%;
   height: 2px;
   border-radius: 2px 2px 0 0;
-  background: #c9ff67;
+  background: #c3e1f0;
   content: '';
 }
 
 .setupView,
 .toolsView {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  align-content: start;
   display: grid;
   gap: 20px;
   padding: 24px 26px 28px;
@@ -233,9 +247,9 @@
   display: grid;
   gap: 12px;
   padding: 16px;
-  border: 1px solid #30382a;
+  border: 1px solid #2e3c47;
   border-radius: 15px;
-  background: #0d100c;
+  background: #0e161e;
 }
 
 .serverList {
@@ -249,9 +263,9 @@
   align-items: center;
   gap: 11px;
   padding: 12px;
-  border: 1px solid #2a3026;
+  border: 1px solid #2e3c47;
   border-radius: 12px;
-  background: #11140f;
+  background: #151f29;
 }
 
 .serverIcon {
@@ -260,8 +274,8 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  color: #c9ff67;
-  background: rgba(201, 255, 103, 0.08);
+  color: #c3e1f0;
+  background: rgba(195, 225, 240, 0.08);
 }
 
 .serverList article > div {
@@ -275,14 +289,14 @@
 }
 
 .serverList strong {
-  color: #eef1eb;
+  color: #edf3f7;
   font-size: 14px;
 }
 
 .serverList p {
   margin-top: 3px;
   overflow: hidden;
-  color: #979f94;
+  color: #a0b1bc;
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -290,7 +304,7 @@
 
 .serverList small {
   margin-top: 4px;
-  color: #b6d77a;
+  color: #afc9d9;
   font-size: 11px;
 }
 
@@ -300,9 +314,9 @@
   gap: 6px;
   min-height: 34px;
   padding: 0 11px;
-  border: 1px solid #536d31;
+  border: 1px solid #587486;
   border-radius: 999px;
-  color: #d8ff91;
+  color: #deeff8;
   font-size: 12px;
 }
 
@@ -313,9 +327,9 @@
 
 .serverEmpty {
   padding: 14px;
-  border: 1px dashed #343b30;
+  border: 1px dashed #3b4b58;
   border-radius: 10px;
-  color: #929a90;
+  color: #a0b1bc;
   font-size: 12px;
   line-height: 1.6;
 }
@@ -323,10 +337,21 @@
 .connectionMessage {
   padding: 10px 12px;
   border-radius: 9px;
-  color: #dce8d3;
-  background: #182015;
+  color: #d2e4ef;
+  background: #1a2b37;
   font-size: 12px;
   line-height: 1.5;
+}
+
+.errorMessage {
+  padding: 12px;
+  border: 1px solid #714238;
+  border-radius: 10px;
+  color: #ffc1b6;
+  background: #39231f;
+  font-size: 13px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
 }
 
 .sectionHeading {
@@ -342,12 +367,12 @@
 }
 
 .sectionHeading strong {
-  color: #eef1eb;
+  color: #edf3f7;
   font-size: 16px;
 }
 
 .sectionHeading p {
-  color: #899186;
+  color: #a0b1bc;
   font-size: 13px;
   line-height: 1.5;
 }
@@ -355,9 +380,9 @@
 .sectionHeading > span {
   flex: 0 0 auto;
   padding: 4px 7px;
-  border: 1px solid #354024;
+  border: 1px solid #38505f;
   border-radius: 999px;
-  color: #b6d77a;
+  color: #afc9d9;
   font-size: 11px;
   font-weight: 750;
   letter-spacing: 0.07em;
@@ -378,20 +403,20 @@
   min-width: 0;
   min-height: 94px;
   padding: 13px;
-  border: 1px solid #30362d;
+  border: 1px solid #2e3c47;
   border-radius: 13px;
   color: #e9ede6;
-  background: #0e110e;
+  background: #141e28;
   text-align: left;
 }
 
 .targetCard:not(:disabled):hover {
-  border-color: #5e713f;
-  background: #121710;
+  border-color: #587486;
+  background: #1b2a36;
 }
 
 .targetCard:focus-visible {
-  outline: 3px solid rgba(201, 255, 103, 0.34);
+  outline: 3px solid rgba(195, 225, 240, 0.34);
   outline-offset: 2px;
 }
 
@@ -401,9 +426,9 @@
 }
 
 .targetSelected {
-  border-color: #729448;
-  background: rgba(201, 255, 103, 0.07);
-  box-shadow: inset 0 0 0 1px rgba(201, 255, 103, 0.1);
+  border-color: #7b9bb0;
+  background: rgba(195, 225, 240, 0.07);
+  box-shadow: inset 0 0 0 1px rgba(195, 225, 240, 0.1);
 }
 
 .targetIcon {
@@ -412,8 +437,8 @@
   width: 34px;
   height: 34px;
   border-radius: 9px;
-  color: #c9ff67;
-  background: rgba(201, 255, 103, 0.08);
+  color: #c3e1f0;
+  background: rgba(195, 225, 240, 0.08);
 }
 
 .targetCopy {
@@ -430,7 +455,7 @@
 }
 
 .targetCopy small {
-  color: #899186;
+  color: #a0b1bc;
   font-size: 12px;
   line-height: 1.4;
 }
@@ -446,13 +471,13 @@
 }
 
 .targetReady {
-  color: #c9ff67;
-  background: rgba(201, 255, 103, 0.09);
+  color: #c3e1f0;
+  background: rgba(195, 225, 240, 0.09);
 }
 
 .targetPending {
   color: #a0a7ad;
-  background: #191d1a;
+  background: #1e2a35;
 }
 
 .currentState {
@@ -460,9 +485,9 @@
   align-items: center;
   gap: 13px;
   padding: 16px;
-  border: 1px solid #30362d;
+  border: 1px solid #2e3c47;
   border-radius: 14px;
-  background: #0e110e;
+  background: #141e28;
 }
 
 .stateOff,
@@ -473,13 +498,13 @@
   height: 42px;
   flex: 0 0 auto;
   border-radius: 12px;
-  color: #a5ada1;
-  background: #1a1e19;
+  color: #a8bcca;
+  background: #1e2a35;
 }
 
 .stateOn {
-  color: #111409;
-  background: #c9ff67;
+  color: #10202b;
+  background: #c3e1f0;
 }
 
 .currentState > div:last-child {
@@ -488,12 +513,12 @@
 }
 
 .currentState strong {
-  color: #eef1eb;
+  color: #edf3f7;
   font-size: 16px;
 }
 
 .currentState p {
-  color: #929a90;
+  color: #a0b1bc;
   font-size: 14px;
   line-height: 1.5;
 }
@@ -513,9 +538,9 @@
   gap: 12px;
   min-width: 0;
   padding: 16px;
-  border: 1px solid #2c3229;
+  border: 1px solid #2e3c47;
   border-radius: 14px;
-  background: #0c0f0c;
+  background: #121b24;
 }
 
 .installSteps li > span {
@@ -523,9 +548,9 @@
   place-items: center;
   width: 28px;
   height: 28px;
-  border: 1px solid #52653a;
+  border: 1px solid #587486;
   border-radius: 50%;
-  color: #c9ff67;
+  color: #c3e1f0;
   font-size: 13px;
   font-weight: 800;
 }
@@ -542,7 +567,7 @@
 }
 
 .installSteps p {
-  color: #858d82;
+  color: #a0b1bc;
   font-size: 13px;
   line-height: 1.55;
 }
@@ -556,8 +581,8 @@
 .boundaryNote {
   margin: -4px 0 0;
   padding-top: 16px;
-  border-top: 1px solid #292e27;
-  color: #899186;
+  border-top: 1px solid #2e3c47;
+  color: #a0b1bc;
   font-size: 13px;
   line-height: 1.6;
 }
@@ -573,9 +598,9 @@
   align-items: center;
   gap: 12px;
   padding: 14px;
-  border: 1px solid #30362d;
+  border: 1px solid #2e3c47;
   border-radius: 13px;
-  background: #0e110e;
+  background: #141e28;
 }
 
 .toolIcon {
@@ -584,11 +609,13 @@
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  color: #c9ff67;
-  background: rgba(201, 255, 103, 0.08);
+  color: #c3e1f0;
+  background: rgba(195, 225, 240, 0.08);
 }
 
 .toolList article > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: grid;
   gap: 4px;
 }
@@ -599,15 +626,18 @@
 }
 
 .toolList p {
-  color: #899186;
+  color: #a0b1bc;
   font-size: 13px;
 }
 
 .toolList code {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   padding: 5px 7px;
   border-radius: 7px;
-  color: #aab2a6;
-  background: #171b16;
+  color: #b9cbd7;
+  background: #1d2a35;
   font-size: 12px;
 }
 
@@ -621,7 +651,7 @@
 
 .toolFooter p {
   max-width: 390px;
-  color: #899186;
+  color: #a0b1bc;
   font-size: 13px;
   line-height: 1.55;
 }
@@ -644,24 +674,9 @@
     font-size: 0;
   }
 
-  .dialog {
-    top: auto !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    max-width: none !important;
-    max-height: calc(100dvh - max(10px, env(safe-area-inset-top))) !important;
-    padding-bottom: max(4px, env(safe-area-inset-bottom)) !important;
-    transform: none !important;
-    border-right: 0 !important;
-    border-bottom: 0 !important;
-    border-left: 0 !important;
-    border-radius: 20px 20px 0 0 !important;
-  }
 
   .dialogHeader {
-    padding: 20px 18px 16px;
+    padding: 20px 46px 16px 18px;
   }
 
   .dialogTitleRow h2 {
@@ -714,3 +729,6 @@
     width: 100%;
   }
 }
+
+.dialog :global([data-slot='dialog-close']) { z-index: 2; color: #edf3f7; }
+.serverList button:focus-visible { outline: 2px solid #c3e1f0; outline-offset: 3px; }

@@ -132,6 +132,8 @@ export default function SkyConnectionCenter({
                 <button
                   key={provider.id}
                   className={`${styles.provider} ${provider.id === selected ? styles.selected : ''}`}
+                  aria-pressed={provider.id === selected}
+                  disabled={saving || loading}
                   onClick={() => choose(provider.id)}
                 >
                   <span className={styles.providerIcon}>{profile?.status === 'ready' ? <CheckCircle2 size={16} /> : <CircleDashed size={16} />}</span>

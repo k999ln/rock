@@ -1,4 +1,5 @@
 'use client';
+/* oxlint-disable next/no-html-link-for-pages -- Sites authentication is a top-level gateway route. */
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -56,20 +57,29 @@ type DeveloperTokenResponse = {
 
 export default function RockStudio() {
   const [copied, setCopied] = useState('');
+  const [copyError, setCopyError] = useState('');
   const [developerToken, setDeveloperToken] = useState('');
   const [tokenPending, setTokenPending] = useState(false);
   const [tokenError, setTokenError] = useState('');
+  const [needsSignin, setNeedsSignin] = useState(false);
 
   async function copy(name: string, value: string) {
-    await navigator.clipboard.writeText(value);
-    setCopied(name);
-    window.setTimeout(() => setCopied(''), 1600);
+    setCopied('');
+    setCopyError('');
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(name);
+      window.setTimeout(() => setCopied(''), 1600);
+    } catch {
+      setCopyError(name);
+    }
   }
 
   async function issueDeveloperToken() {
     if (tokenPending) return;
     setTokenPending(true);
     setTokenError('');
+    setNeedsSignin(false);
     try {
       const response = await fetch('/api/sky/developer-tokens', {
         method: 'POST',
@@ -77,6 +87,7 @@ export default function RockStudio() {
         body: JSON.stringify({ label: 'Rock Studio SDK' }),
       });
       const body = (await response.json().catch(() => ({}))) as DeveloperTokenResponse;
+      if (response.status === 401) setNeedsSignin(true);
       if (!response.ok || !body.token?.token)
         throw new Error(body.error || '開発者キーを発行できませんでした。');
       setDeveloperToken(body.token.token);
@@ -123,6 +134,7 @@ export default function RockStudio() {
               {copied === 'install' ? 'コピー済み' : 'コピー'}
             </button>
             <code>{installCommand}</code>
+            {copyError === 'install' && <p className="studio-chat-error" role="alert" style={{ gridColumn: '1 / -1' }}>コピーできませんでした。表示されているコードを選択してコピーしてください。</p>}
           </div>
 
           <div className="studio-primary-code">
@@ -134,6 +146,7 @@ export default function RockStudio() {
               </button>
             </div>
             <pre>{integrationCode}</pre>
+            {copyError === 'code' && <p className="studio-chat-error" role="alert">コピーできませんでした。表示されているコードを選択してコピーしてください。</p>}
           </div>
         </div>
 
@@ -151,6 +164,7 @@ export default function RockStudio() {
                   {copied === 'token' ? 'コピー済み' : '.envへコピー'}
                 </button>
                 <small>このキーはこの画面を離れると再表示できません。</small>
+                {copyError === 'token' && <p className="studio-chat-error" role="alert">コピーできませんでした。表示されている設定を選択してコピーしてください。</p>}
               </div>
             ) : (
               <button className="studio-key-button" type="button" onClick={issueDeveloperToken} disabled={tokenPending}>
@@ -158,7 +172,8 @@ export default function RockStudio() {
                 {tokenPending ? '発行中…' : '開発者キーを発行'}
               </button>
             )}
-            {tokenError && <p className="studio-chat-error">{tokenError}</p>}
+            {tokenError && <p className="studio-chat-error" role="alert">{tokenError}</p>}
+            {needsSignin && <a href="/signin-with-chatgpt?return_to=%2Fsky%2Fpublish" target="_top">サインインしてキー発行へ戻る</a>}
           </div>
 
           <div className="studio-setup-card">

@@ -151,6 +151,7 @@ requireValue(
 );
 const sky = read('docs/sky.md');
 const workspace = read('components/sky-workspace.tsx');
+const toolUiState = read('lib/sky-tool-ui.ts');
 const chat = read('components/sky-chat-workspace.tsx');
 const skyZemaHandoff = read('lib/sky-zema-handoff.ts');
 const mcpBot = read('components/mcp-bot-runner.tsx');
@@ -161,7 +162,8 @@ for (const marker of [
   'PCなしのブラウザ簡易版',
 ])
   requireValue(
-    catalogSource.includes(marker) || workspace.includes(marker),
+    catalogSource.includes(marker) || workspace.includes(marker) ||
+      (workspace.includes('skyToolUiState(') && toolUiState.includes(marker)),
     `Fashion Brand OpsのSky登録に「${marker}」がありません`,
   );
 
@@ -223,7 +225,9 @@ for (const marker of [
   requireValue(sky.includes(marker), `Skyの説明に「${marker}」がありません`);
 
 requireValue(
-  (workspace.match(/rock-tool-dialog sky-tool-dialog/g) || []).length >= 2,
+  workspace.includes('<SkyToolOverview') &&
+    (workspace.match(/className=\{styles.utilityDialog\}/g) || []).length >= 2 &&
+    read('components/sky-workspace.module.css').includes('max-height: calc(100dvh'),
   'Skyのツール・PC接続Dialogに統一外観が適用されていません',
 );
 for (const marker of [

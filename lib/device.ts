@@ -1,3 +1,5 @@
+import { ensureLocalRuntime } from './sky-local-runtime';
+
 export const DEVICE_URL = 'http://127.0.0.1:38479';
 export const DEVICE_PROTOCOLS = [
   '2025-11-25',
@@ -160,6 +162,7 @@ export function disconnectDevice() {
 }
 export async function connectDevice() {
   const generation = ++sessionGeneration;
+  await ensureLocalRuntime('connector');
   const r = await fetch(DEVICE_URL + '/connect', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

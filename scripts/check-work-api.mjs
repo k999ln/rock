@@ -241,6 +241,42 @@ try {
   check(job.status, 'completed');
   await patch(command(), { status: 409 });
   check((await call('GET', undefined, { path: '/api/fund' })).totalRuns, 0);
+  const teamPath = '/api/coconala-team';
+  await call('GET', undefined, { path: teamPath, user: null, status: 401 });
+  const teamInput = {
+    id: randomUUID(),
+    terms: {
+      title: 'API検証用の受託案件', orderReference: 'synthetic-001',
+      clientLabel: '架空の依頼者', workerName: '架空の担当者',
+      scope: '架空の原稿制作', deliveryDate: '2026-10-10',
+      deliveryPlace: '代表者へ非公開納品', inspectionDate: '2026-10-12',
+      revisionScope: '誤字1回', rights: '利用範囲を本人確認',
+      grossYen: 10000, estimatedPlatformFeePercent: 22,
+      workerFeeYen: 7566, workerPaymentDate: '2026-11-10',
+      platformRulesReference: 'synthetic-rules-check',
+      customerDisclosureReference: 'synthetic-client-message',
+      workerTermsReference: 'synthetic-worker-terms',
+    },
+  };
+  let { caseFile } = await call('POST', teamInput, { path: teamPath, status: 201 });
+  check(caseFile.status, 'draft');
+  check((await call('GET', undefined, { path: teamPath, user: bob })).cases, []);
+  const teamPatch = (action, extra = {}, options = {}) => call('PATCH', {
+    caseId: caseFile.id, revision: caseFile.revision,
+    command: { id: randomUUID(), action, ...extra },
+  }, { path: teamPath, ...options });
+  await teamPatch('assign', {}, { user: bob, status: 404 });
+  ({ caseFile } = await teamPatch('assign'));
+  check(caseFile.status, 'assigned');
+  ({ caseFile } = await teamPatch('record_worker_payment', {
+    amountYen: 3000, reference: 'synthetic-bank-001',
+  }));
+  check(caseFile.workerPayments[0].amountYen, 3000);
+  await teamPatch('record_worker_payment', {
+    amountYen: 5000, reference: 'synthetic-bank-002',
+  }, { status: 400 });
+  await call('PATCH', { caseId: caseFile.id, revision: 0,
+    command: { id: randomUUID(), action: 'assign' } }, { path: teamPath, status: 409 });
   await stop();
   await start();
   check(
@@ -248,6 +284,7 @@ try {
     job,
   );
   check((await call('GET', undefined, { user: bob })).jobs, []);
+  check((await call('GET', undefined, { path: teamPath })).cases.find((item) => item.id === caseFile.id), caseFile);
   await new Promise((resolve, reject) => {
     const child = spawn(
       process.execPath,

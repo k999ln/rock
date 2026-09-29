@@ -61,7 +61,7 @@ Jev評価はRock側のToolと外部の評価先を組み合わせる構成です
 
 | Sky ID | Tool | Rock内の入口 |
 | --- | --- | --- |
-| `coconala` | ココナラ案件チェック | [`vendor/mr/application_eligibility.py`](vendor/mr/application_eligibility.py)・[`toolkits/mr/`](toolkits/mr/) |
+| `coconala` | ココナラ（応募前チェック・代表受注の案件管理） | [`app/sky/tools/[toolId]/`](app/sky/tools/[toolId]/)・[`lib/coconala-team.ts`](lib/coconala-team.ts)・[`toolkits/mr/`](toolkits/mr/) |
 | `mr-free-article` | 記事の無料版メーカー | [`vendor/mr/make-free-version.py`](vendor/mr/make-free-version.py)・[`toolkits/mr/`](toolkits/mr/) |
 | `mr-citations` | 出典整理ツール | [`vendor/mr/citation-strip.py`](vendor/mr/citation-strip.py)・[`toolkits/mr/`](toolkits/mr/) |
 | `mr-delivery` | 納品記録の照合 | [`vendor/mr/deliverable_verifier.py`](vendor/mr/deliverable_verifier.py)・[`toolkits/mr/`](toolkits/mr/) |

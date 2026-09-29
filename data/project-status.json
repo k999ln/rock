@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24",
+  "updatedAt": "2026-09-27",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
   "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
   "tasks": [
@@ -47,6 +47,8 @@
       "status": "done",
       "dependsOn": [],
       "evidence": [
+        "components/tool-icon.tsx",
+        "tests/sky-tool-icons.test.mjs",
         "components/tool-character.tsx",
         "components/tool-character.module.css",
         "docs/workstreams/01-product-ux.md"
@@ -486,7 +488,20 @@
         "app/sky/publish/page.tsx",
         "components/sky-publisher-form.tsx",
         "app/api/sky/submissions/route.ts",
-        "tests/sky-submission.test.mjs"
+        "tests/sky-submission.test.mjs",
+        "app/sky/marketplace/page.tsx",
+        "app/sky/register/page.tsx",
+        "components/sky-marketplace.tsx",
+        "components/sky-marketplace.module.css",
+        "lib/sky-marketplace-policy.ts",
+        "lib/sky-ai-marketplace.ts",
+        "components/sky-tool-workspace.tsx",
+        "lib/sky-tool-compatibility.ts",
+        "app/workspace.css",
+        "components/sky-tool-workspace.module.css",
+        "tests/sky-marketplace.test.mjs",
+        "tests/jev-router-availability.test.mjs",
+        "docs/sky-network-economy.md"
       ]
     },
     {
@@ -686,6 +701,12 @@
         "lib/mcp-hub.ts",
         "toolkits/sky-mcp-connector/server.mjs",
         "tests/mcp-connector.test.mjs",
+        "scripts/sky-local-runtime.mjs",
+        "lib/sky-local-runtime.ts",
+        "tests/sky-local-runtime.test.mjs",
+        "components/delivery-runner.tsx",
+        "docs/sky-tools-complete-design.md",
+        "docs/workstreams/02-sky-mcp.md",
         "docs/chat-mcp-control-room-20260913.md"
       ]
     },
@@ -714,6 +735,7 @@
         "SKY14"
       ],
       "evidence": [
+        "components/sky-candidate-runner.tsx",
         "lib/sky-zema-handoff.ts",
         "lib/operations-client.ts",
         "components/sky-workspace.tsx",
@@ -799,10 +821,36 @@
       "evidence": [
         "components/home-screen.tsx",
         "components/home-screen.module.css",
+        "components/system-settings.module.css",
+        "components/csv-business-workspace.module.css",
         "components/workspace-shell.tsx",
+        "components/sky-surface.module.css",
+        "components/sky-workspace.tsx",
+        "components/sky-workspace.module.css",
+        "components/sky-tool-card.tsx",
+        "components/sky-tool-card.module.css",
+        "components/sky-marketplace.tsx",
+        "components/sky-marketplace.module.css",
+        "components/sky-tool-workspace.tsx",
+        "components/sky-tool-workspace.module.css",
+        "components/fashion-brand-ops-runner.tsx",
+        "components/fashion-brand-ops-runner.module.css",
+        "components/sky-connection-center.tsx",
+        "components/sky-connection-center.module.css",
+        "components/sky-mcp-center.tsx",
+        "components/sky-mcp-center.module.css",
+        "components/sky-publisher-form.tsx",
+        "components/sky-publisher-form.module.css",
+        "lib/use-sky-tool-context.ts",
+        "components/rock-studio.tsx",
+        "components/coconala-team-workspace.tsx",
+        "components/coconala-team-workspace.module.css",
         "app/workspace.css",
+        "components/sky-chat-workspace.tsx",
         "tsconfig.json",
         "tests/web-route-style-contract.test.mjs",
+        "docs/workstreams/01-product-ux.md",
+        "docs/rockstaros-complete-design.md",
         "docs/frontend-usability-audit-20260915.md",
         "docs/product-baseline.md"
       ]
@@ -2019,6 +2067,22 @@
       ]
     },
     {
+      "id": "B06",
+      "title": "ココナラ代表受注・制作担当者への個別発注と入出金を安全に管理",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/sky-tools-complete-design.md",
+        "docs/workstreams/09-business-pilots.md",
+        "app/sky/tools/[toolId]/page.tsx",
+        "components/coconala-team-workspace.tsx",
+        "app/api/coconala-team/route.ts",
+        "lib/coconala-team.ts",
+        "tests/coconala-team.test.mjs",
+        "tests/coconala-sky-entry.test.mjs"
+      ]
+    },
+    {
       "id": "D01",
       "title": "RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存",
       "status": "done",
@@ -2426,7 +2490,14 @@
         "docs/sky-billing.md",
         "docs/workstreams/03-wallet-billing-providers.md",
         "tests/billing-worker.test.mjs",
-        "docs/evidence/launch/sky-billing-fee-hold-20260924.json"
+        "docs/evidence/launch/sky-billing-fee-hold-20260924.json",
+        "lib/sky-commerce.ts",
+        "lib/sky-commerce-store.ts",
+        "lib/sky-stripe.ts",
+        "components/sky-commerce.tsx",
+        "drizzle/0018_sky_commerce.sql",
+        "tests/sky-commerce.test.mjs",
+        "tests/sky-stripe.test.mjs"
       ]
     },
     {

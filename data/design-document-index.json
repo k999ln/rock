@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros-design-document-index/1",
   "version": "1.3",
-  "updatedAt": "2026-09-24",
+  "updatedAt": "2026-09-27",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/avocado-mini-r5/README.md",
@@ -90,7 +90,8 @@
     {
       "id": "web_pc",
       "coverage": "DETAILED_IMPLEMENTED_PARTIAL_PRODUCTION",
-      "documents": ["docs/architecture.md", "docs/backend-design.md"]
+      "interfaceImplementation": ["components/home-screen.tsx", "components/home-screen.module.css", "components/workspace-shell.tsx", "components/sky-surface.module.css", "app/workspace.css", "components/system-settings.module.css", "components/csv-business-workspace.module.css", "components/rock-studio.tsx"],
+      "documents": ["docs/architecture.md", "docs/backend-design.md", "docs/rockstaros-complete-design.md"]
     },
     {
       "id": "linux_qemu",
@@ -126,6 +127,7 @@
     {
       "id": "sky_zema_and_tools",
       "coverage": "DETAILED_WITH_PLATFORM_GAPS",
+      "interfaceImplementation": ["components/tool-icon.tsx", "components/tool-character.tsx", "components/sky-chat-workspace.tsx", "components/sky-candidate-runner.tsx", "components/sky-workspace.tsx", "components/sky-workspace.module.css", "components/sky-tool-card.tsx", "components/sky-tool-card.module.css", "components/sky-marketplace.tsx", "components/sky-marketplace.module.css", "components/sky-tool-workspace.tsx", "components/sky-tool-workspace.module.css", "components/sky-tool-overview.tsx", "components/sky-tool-overview.module.css", "components/coconala-team-workspace.tsx", "components/coconala-team-workspace.module.css", "components/sky-surface.module.css", "components/fashion-brand-ops-runner.tsx", "components/fashion-brand-ops-runner.module.css", "components/sky-connection-center.tsx", "components/sky-connection-center.module.css", "components/sky-mcp-center.tsx", "components/sky-mcp-center.module.css", "components/sky-publisher-form.tsx", "components/sky-publisher-form.module.css", "lib/use-sky-tool-context.ts"],
       "documents": [
         "docs/sky-tools-complete-design.md",
         "docs/jev-local-qwen-decision-fabric-design.md",
@@ -139,6 +141,7 @@
     {
       "id": "mcp_and_providers",
       "coverage": "DETAILED_REAL_PROVIDER_GAPS",
+      "implementation": ["scripts/sky-local-runtime.mjs", "lib/sky-local-runtime.ts", "tests/sky-local-runtime.test.mjs", "components/delivery-runner.tsx"],
       "documents": [
         "docs/sky-mcp-connector.md",
         "docs/sky-mcp-architecture.md",
@@ -158,6 +161,8 @@
       "id": "wallet_market_and_fund",
       "coverage": "DETAILED_LIVE_PROVIDER_PENDING",
       "documents": [
+        "docs/sky-billing.md",
+        "docs/sky-tools-complete-design.md",
         "docs/external-wallet-fund-provider-boundary-20260913.md",
         "docs/everything-market-and-autonomous-fund-20260913.md",
         "docs/rock-wallet-production-rail-20260913.md"

@@ -1,28 +1,29 @@
 {
   "schema": 1,
-  "updatedAt": "2026-09-24",
+  "updatedAt": "2026-09-27",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 80,
+    "tableCount": 85,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
-    "total": 156,
+    "total": 157,
     "done": 104,
-    "in_progress": 31,
+    "in_progress": 32,
     "planned": 20,
     "blocked": 1,
     "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
     "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。"
   },
   "webSchema": {
-    "tableCount": 32,
+    "tableCount": 37,
     "tables": [
       "automation_fund_memberships",
       "automation_funds",
       "book_records",
+      "coconala_team_cases",
       "csv_billing_accounts",
       "csv_job_events",
       "csv_jobs",
@@ -40,6 +41,10 @@
       "marketplace_reservations",
       "mercari_revenue_plans",
       "sky_activation_codes",
+      "sky_commerce_events",
+      "sky_commerce_offers",
+      "sky_commerce_orders",
+      "sky_commerce_sellers",
       "sky_connections",
       "sky_developer_tokens",
       "sky_provider_connections",
@@ -53,8 +58,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 17,
-    "latestMigration": "0016_red_crusher_hogan.sql",
+    "migrationCount": 19,
+    "latestMigration": "0018_sky_commerce.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -81,6 +86,10 @@
         "label": "Sky接続・Tool管理",
         "tables": [
           "sky_activation_codes",
+          "sky_commerce_events",
+          "sky_commerce_offers",
+          "sky_commerce_orders",
+          "sky_commerce_sellers",
           "sky_connections",
           "sky_developer_tokens",
           "sky_provider_connections",
@@ -91,7 +100,7 @@
           "sky_tool_packages",
           "sky_tool_submissions"
         ],
-        "tableCount": 10
+        "tableCount": 14
       },
       {
         "id": "marketplace",
@@ -120,13 +129,14 @@
       },
       {
         "id": "business",
-        "label": "自動化ファンド・事業補助",
+        "label": "自動化ファンド・受託案件・事業補助",
         "tables": [
           "automation_fund_memberships",
           "automation_funds",
+          "coconala_team_cases",
           "mercari_revenue_plans"
         ],
-        "tableCount": 3
+        "tableCount": 4
       }
     ]
   },
@@ -144,6 +154,7 @@
         "automation_fund_memberships",
         "automation_funds",
         "book_records",
+        "coconala_team_cases",
         "csv_billing_accounts",
         "csv_job_events",
         "csv_jobs",
@@ -161,6 +172,10 @@
         "marketplace_reservations",
         "mercari_revenue_plans",
         "sky_activation_codes",
+        "sky_commerce_events",
+        "sky_commerce_offers",
+        "sky_commerce_orders",
+        "sky_commerce_sellers",
         "sky_connections",
         "sky_developer_tokens",
         "sky_provider_connections",
@@ -174,8 +189,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0016_red_crusher_hogan.sql",
-      "tableCount": 32,
+      "expectedAppliedThrough": "0018_sky_commerce.sql",
+      "tableCount": 37,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

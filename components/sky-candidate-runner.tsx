@@ -39,6 +39,66 @@ const samples: Record<string, string> = {
   'mobile-jev': '隔離Android試験端末で、観測だけの操作ジョブ条件を作る。',
 };
 
+const localDraftTools = new Set([
+  'coconala-proposal-draft', 'gig-workflow', 'coconala-inbox',
+  'youtube-script-writer', 'seo-blueprint', 'landing-page-sprint',
+  'sales-objection-reply-builder', 'user-interview-synthesizer',
+  'calendar-coordination', 'telegram-notifications', 'producthunt-discovery',
+]);
+
+const connectionChecks: Record<string, { runtime: string; firstTest: string; stop: string }> = {
+  'faster-whisper': {
+    runtime: '本人PCのPython、音声ファイルへのアクセス、選定したモデルとライセンス',
+    firstTest: '短い許可済み音声を端末内で文字起こしし、原音と誤変換を照合',
+    stop: '音声や文字起こし結果を外部へ送らない。モデル未導入なら実行しない',
+  },
+  'transformers-js': {
+    runtime: '対応ブラウザ、選定したモデルのrevision・ライセンス・ダウンロード量',
+    firstTest: '小さな公開入力で分類・要約の出力と端末負荷を確認',
+    stop: 'モデル未選定・未取得なら推論済みと表示しない',
+  },
+  playwright: {
+    runtime: '許可されたテストorigin、専用browser profile、操作schema',
+    firstTest: '所有テストサイトの読み取りだけを再現し、URLと結果を照合',
+    stop: '第三者サイトの無人操作、送信、購入、認証回避はしない',
+  },
+  'jev-ultrafast': {
+    runtime: '隔離Chrome profile、Browser Harness、許可origin、TypeSafe API',
+    firstTest: '所有ページを観測し、候補から一手を選ぶだけのdry-run',
+    stop: 'click・入力・送信は権限と直前承認が揃うまで停止',
+  },
+  'jev-trader': {
+    runtime: '固定market replay、PAPER台帳、秘密鍵なしのsandbox',
+    firstTest: '仮想注文、手数料、slippage、損失上限を同じfixtureで再現',
+    stop: 'LIVE取引、実資金、Wallet、秘密鍵には接続しない',
+  },
+  'typesafe-computer-use': {
+    runtime: '隔離macOS account、許可app、画面観測権限、緊急停止',
+    firstTest: '許可画面をobserve-onlyで読み、対象と座標を再確認',
+    stop: '普段使いaccount、決済、設定変更、無承認入力はしない',
+  },
+  'jev-review': {
+    runtime: '固定Git commit・diff範囲、秘密file除外、review provider',
+    firstTest: '小さな差分でfile・行・根拠付き指摘を確認',
+    stop: '秘密情報送信、自動修正、commit、push、mergeはしない',
+  },
+  'jev-router': {
+    runtime: '許可model ID、対応CLI、費用上限、fallback',
+    firstTest: '固定依頼でmodel選択理由と費用を比較',
+    stop: '既存session・認証・権限を変更しない',
+  },
+  'jev-browser': {
+    runtime: '所有サイト、専用browser profile、Browser Broker、TypeSafe API',
+    firstTest: 'read-only navigationの各stepを観測・照合',
+    stop: 'installer自動実行や無承認の外部作用をしない',
+  },
+  'mobile-jev': {
+    runtime: '初期化可能な試験Android端末、許可app、Mobilerun API',
+    firstTest: '試験端末で観測だけ行い、device IDと画面を照合',
+    stop: '個人端末、連絡先、写真、決済、予約確定には触れない',
+  },
+};
+
 function outputFor(tool: string, input: string) {
   const value = input.trim();
   if (!value) throw new Error('入力を1行以上入れてください。');
@@ -66,14 +126,18 @@ function outputFor(tool: string, input: string) {
       return `${header('Telegram通知・承認')}\n## 通知下書き\nSkyの仕事が完了しました。結果を確認し、必要なら次の操作を本人が承認してください。\n\n## 接続境界\nBot接続と送信先の確認が済むまで、Telegramへは送信しません。`;
     case 'producthunt-discovery':
       return `${header('外部ツール候補の発見')}\n## 調査条件\n- 分野: ローカルAI・業務自動化・クリエイター向け\n- 確認: 公式URL、ライセンス、更新日、料金、権限、導入条件\n- 判定: Sky接続候補 / 要確認 / 対象外\n\n公式API未接続のため、候補条件の作成までです。`;
-    default:
-      return `${header('Sky実行器接続確認')}\n## 接続済み経路\n- Sky共通ジョブ受付\n- 実行上限・状態・結果保存\n- 副作用なしのローカルアダプター\n\n## 次に必要な接続\n${value}\n\n外部サイト、端末、決済、送信はこの確認では実行していません。実ランタイムを接続する場合は専用の許可範囲を追加します。`;
+    default: {
+      const check = connectionChecks[tool];
+      if (!check) throw new Error('この候補には確認手順がありません。');
+      return `${header('実行器の接続条件')}\n## 必要な実行環境\n${check.runtime}\n\n## 最初の安全な試験\n${check.firstTest}\n\n## 停止条件\n${check.stop}\n\nこの結果は接続計画です。ツール本体・外部サービス・端末は実行していません。`;
+    }
   }
 }
 
 export function SkyCandidateRunner({
   tool,
   name,
+  initialInput,
   onRecord,
   onRunningChange,
   onOutcome,
@@ -82,6 +146,7 @@ export function SkyCandidateRunner({
 }: {
   tool: JobTool;
   name: string;
+  initialInput?: string;
   onRecord?: RunRecorder;
   onRunningChange?: (running: boolean) => void;
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
@@ -89,12 +154,13 @@ export function SkyCandidateRunner({
   executionDisabled?: boolean;
 }) {
   const guide = skyToolLabelFor(tool);
-  const [text, setText] = useState(samples[tool] ?? '実行器の接続条件を確認する。');
+  const isLocalDraft = localDraftTools.has(tool);
+  const [text, setText] = useState(initialInput?.trim() || samples[tool] || '実行器の接続条件を確認する。');
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
   const [running, setRunning] = useState(false);
-  const [sampleInput, setSampleInput] = useState(true);
+  const [sampleInput, setSampleInput] = useState(!initialInput?.trim());
   const [productHuntUrl, setProductHuntUrl] = useState('');
   const [productHuntError, setProductHuntError] = useState('');
   const { needsSignin, setNeedsSignin } = useExecutionAccess();
@@ -137,7 +203,7 @@ export function SkyCandidateRunner({
       setOutput(tracked.result.output);
       setError(tracked.warning);
       await onRecord?.(tool, 'browser', 'completed', started, sampleInput, 'passed');
-      onOutcome?.({ ok: true, text: `接続前のローカル下書きです。外部サービスは実行していません。\n\n${tracked.result.output}` });
+      onOutcome?.({ ok: true, text: `${isLocalDraft ? 'ローカル下書き' : '実行器の接続計画'}です。外部サービスは実行していません。\n\n${tracked.result.output}` });
     } catch (reason) {
       if (executed && !completed)
         await onRecord?.(tool, 'browser', 'failed', started, sampleInput, 'failed').catch(() => undefined);
@@ -177,7 +243,7 @@ export function SkyCandidateRunner({
       <fieldset disabled={running || executionDisabled || needsSignin}>
         <div className="bench-heading">
           <h3>{name}</h3>
-          <span className="outline-tag">ローカル確認・下書き · 外部接続なし</span>
+          <span className="outline-tag">{isLocalDraft ? 'ローカル下書き' : '接続条件の確認'} · 外部接続なし</span>
         </div>
         <div className="bench-helper">
           <span>{guide?.helper ?? '入力をSkyの共通ジョブ受付へ送り、結果と実行履歴を保存します。'}</span>
@@ -210,7 +276,7 @@ export function SkyCandidateRunner({
           />
         </label>
         <button className="black-button bench-run" disabled={running} onClick={() => void run()}>
-          <Play size={16} /> {running ? '下書き作成中…' : '接続確認の下書きを作る'}
+          <Play size={16} /> {running ? '処理中…' : isLocalDraft ? '下書きを作る' : '接続条件を整理する'}
         </button>
         {error && <p className="bench-error" role="alert">{error}</p>}
       </fieldset>
@@ -245,7 +311,7 @@ export function SkyCandidateRunner({
       {output && (
         <div className="bench-output" aria-live="polite">
           <div className="bench-heading">
-            <h3>接続確認の下書き</h3>
+            <h3>{isLocalDraft ? 'ローカル下書き' : '接続条件の確認結果'}</h3>
             <div className="output-actions">
               <button onClick={() => void copy()} aria-label="下書きをコピー">
                 {copied ? <Check size={17} /> : <Copy size={17} />}
