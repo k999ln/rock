@@ -1,0 +1,182 @@
+{
+  "schema": "amc-goal-orchestrator-audit/1",
+  "recordedAt": "2026-09-27T16:55:05Z",
+  "task": "AMC02",
+  "deliveredArtifact": {
+    "name": "amc-goal-workbench.html",
+    "bytes": 1475251,
+    "sha256": "4e2660b59b53df0bae4b898dfc67ee9387353d421662a6e77d3a1e3495782ae8",
+    "matchesCanonicalSourcesAtStandaloneRevision": true,
+    "currentCanonicalSourceMatch": false,
+    "snapshotNote": "This standalone HTML was not regenerated for the later Sky/Zema integration. Its byte count and hash describe the earlier board revision, not the current Web build.",
+    "finalTargetedTests": "98 passed after canonical board integration, including 42 CLI/mock DOM, 6 request-template and 9 effort tests",
+    "finalGeneratedChecks": "mission, project, database, baseline and git diff whitespace checks passed"
+  },
+  "scope": "Local candidate-plan compiler, offline workbench, CLI and evidence-based progress ledger, plus first-party Sky/Zema Web integration; not an AI executor",
+  "skyZemaIntegration": {
+    "date": "2026-09-27",
+    "toolId": "rockstar-amc",
+    "routes": ["/amc", "/chat?tool=rockstar-amc", "/api/amc"],
+    "repository": {"localBase": "4e74e2f5f250b87c792ced6c03c5298c882cbd70", "observedRemoteMain": "5f3a3694474180415d08cd814b6aad864694d10f", "pushed": false, "deployed": false},
+    "features": [
+      "Sky catalog, labels, connection allowlist and explicit AMC routing; 35 tools, 13 ready entries, 12 existing conversation roles plus one non-LLM AMC role",
+      "Zema embeds the native React runner; the original request reaches Goal/intent review without another request entry; AMC does not call /api/llm/text",
+      "Canonical 32-squad board is read-only and distinct from the request-scoped four-role/seven-task software preparation template",
+      "Authenticated owner-scoped D1 work_jobs save/list/get/events, idempotent writes, server timestamps, dual revisions and CAS; generic WorkJob create/update cannot bypass the AMC endpoint",
+      "Validated separate-record imports, prompt/JSON export, manual start/submit/review/block/resume/pause/accept, uncalibrated human-hour estimates",
+      "8,000-character AMC handoff/session preservation; 1.5 MB Goal, 1.9 MB complete record and 2 MB HTTP body limits",
+      "Unknown writes retain the operation ID/body for retry; dirty input requires confirmation before Zema replacement or navigation"
+    ],
+    "verification": {
+      "targeted": "31/31 unit and integration regression tests",
+      "fullVerify": "Passed before final in-app confirmation dialog refinement: Node 479/479, additional Tool 19/19, local API 284 assertions, Web assets 86 references with zero missing",
+      "finalFullVerify": "npm run verify exit 0 on the final implementation and synchronized 376-task snapshot: Node 479/479, additional Tool 19/19, local API 284 assertions, Web assets 86 references with zero missing. Log: work/amc-sky-verify-final.log outside the repository.",
+      "browser": "Codex in-app browser against loopback vinext development server, using the existing Sites local test identity and locally migrated D1; not production authentication acceptance",
+      "browserPassed": ["32-squad board renders", "standalone request/Goal/intent/save", "Sky request hands original text into Zema AMC", "Zema save produces 0/7 verified tasks, not a claimed AI run", "reload and choose saved Goal restores intent and task details", "home and Sky navigation", "in-app dirty confirmation cancellation preserves intent and next message; explicit discard advances to the next request"],
+      "browserErrors": "No console error entries observed after save/restore. One stale testing tab became unresponsive during native confirm automation; a fresh tab and the final in-app dialog were successfully verified.",
+      "localFixtures": "Two clearly labelled test Goals remain only in the ignored local development D1. Canonical project tasks and production data were not advanced by these fixtures."
+    },
+    "notClaimed": ["LLM installation or semantic planning", "AI implementation or autonomous execution", "automatic progress collection or notification delivery", "authenticated independent reviewer identity or evidence authenticity", "production deployment or cross-device readback", "all manual event forms tested in a real browser", "owner usability acceptance"]
+  },
+  "chatRevision": {
+    "date": "2026-09-27",
+    "request": "User requested a chat-format interface.",
+    "mode": "local rule-based guide; not an LLM or executor",
+    "flow": [
+      "purpose",
+      "existing squad candidates",
+      "explicit draft creation",
+      "scope and exclusions",
+      "acceptance criteria",
+      "review summary",
+      "explicit button approval",
+      "handoff and recorded progress"
+    ],
+    "storage": "Existing Goal key/schema preserved; bounded conversation stored separately and bound to Goal ID/revision. Conversation download is a reference copy, not a Goal import.",
+    "safetyChecks": [
+      "Free-text acknowledgement, start and completion messages never grant authority or mutate task execution state.",
+      "IME composition and plain Enter do not send; button or Ctrl/Cmd+Enter required.",
+      "Interrupted scope/criteria collection restores without approval; stale or malformed chat cannot replace the Goal.",
+      "Conversation conflicts preserve the other tab data; Goal concurrency protection remains authoritative.",
+      "Detailed-form edits require a new chat review before chat approval; form approval reports actual approved values into the chat.",
+      "Rendered messages escape HTML; unknown free text is a note, not a fabricated AI answer."
+    ],
+    "realBrowserRendering": "not_verified",
+    "ownerUsabilityAcceptance": "pending"
+  },
+  "uxRevision": {
+    "date": "2026-09-27",
+    "request": "User reported that functionality was useful but UX was difficult to understand.",
+    "changes": [
+      "Progressive request, plan review and progress views; reveal squads and advanced controls only when needed.",
+      "Show actual registered work before approval; missing plans cannot be approved and can be handed off for repair.",
+      "State-specific next action, filtered task list, deliverable and acceptance-first details, context-specific record fields.",
+      "Plan approval is not labelled AI activity; disconnected executor remains visible; clipboard success is not submission or execution.",
+      "Existing storage key and Goal schema preserved; restored view/parallel limit, backup controls and non-destructive new-plan entry tested."
+    ],
+    "realBrowserRendering": "not_verified",
+    "ownerUsabilityAcceptance": "pending"
+  },
+  "source": {
+    "localBaseSha": "4e74e2f5f250b87c792ced6c03c5298c882cbd70",
+    "workingTree": "dirty; prior unrelated user changes preserved",
+    "remoteFreshness": "not_confirmed_dns_resolution_failed",
+    "published": false
+  },
+  "canonical": {
+    "schema": "avokado-mission-control/3",
+    "squads": 32,
+    "records": 376,
+    "parents": 32,
+    "children": 192,
+    "standalone": 152,
+    "executionUnitsExcludingParents": 344,
+    "taskPlans": 224,
+    "newChildrenStatus": "planned; no completion evidence invented"
+  },
+  "checks": {
+    "targetedTests": {
+      "passed": 98,
+      "failed": 0,
+      "includes": [
+        "Goal engine",
+        "CLI/mock DOM interactions",
+        "request preparation template",
+        "provisional effort arithmetic",
+        "mission control",
+        "capacity arithmetic"
+      ]
+    },
+    "targetedLint": "passed",
+    "fullVerify": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "nodeTestsPassed": 461,
+      "additionalToolTestsPassed": 19,
+      "localApiAssertionsPassed": 149,
+      "webAssetReferences": 83,
+      "webAssetMissing": 0,
+      "scope": "local working tree; synthetic local users; no deployment or external AI execution",
+      "notes": "Canonical board integration verification: npm run verify exit 0 with approved local test-server permissions; generated mission/project/database files synchronized. All five added board/draft tests were included. No external AI, cloud, trading or deployment. Final evidence/log updates followed by generated-source and whitespace checks."
+    },
+    "realBrowser": "not_run",
+    "aiApiRequests": 0,
+    "serverActions": 0,
+    "hardwareActions": 0
+  },
+  "limitations": [
+    "Simple entry uses a fixed software preparation template, not arbitrary instruction decomposition by an LLM; detailed catalog routing remains keyword suggestions and registered next-task expansion.",
+    "Catalog-generated goals require coverage and acceptance review; all-squad closure includes missing detailed plans. Simple request templates auto-draft acceptance statements for explicit owner confirmation, then require concrete scope/path/test/effort review in their first three tasks.",
+    "Goal state is a separate local ledger and does not automatically update canonical AMC status.",
+    "Actors and evidence references are self-reported. No authenticated identity, cryptographic audit, evidence-content or file-existence verification.",
+    "No direct ChatGPT/Codex Goal entry, API execution, durable cloud process, or Scaleway startup.",
+    "Execution holds conservatively block even their document-preparation children. Parent dependencies are inherited without silently relaxing gates.",
+    "Physical, external, build and unclassified new leaf tasks require a future authority/resource adapter. Local concurrency settings are not hardware capacity measurements.",
+    "UI flow tested with a mock DOM; real browser rendering and external execution are not claimed."
+  ],
+  "simpleBriefRevision": {
+    "date": "2026-09-27",
+    "request": "Replace the difficult chat questionnaire with one request, then only Goal and intent confirmation; retain functionality.",
+    "flow": [
+      "one request",
+      "Goal and intent review",
+      "one explicit preparation approval",
+      "roles, tasks, provisional effort and decisions"
+    ],
+    "preparation": "Bounded software-local-prototype template: four proposed roles and seven sequential tasks. Not semantic AI decomposition; not additions to canonical 32 squads.",
+    "effort": "Uncalibrated human-effort coefficients, 9–27 hours for the fixed software template regardless of request scale. Not measured completion time, AI speed, schedule or price. Unknown work remains unestimated; parent acceptance only adds its review effort.",
+    "storage": "Same Goal schema/key; optional validated requestBrief stores request, Goal and intent. Review draft stays in memory; confirmed old/new Goals round-trip. Existing Goal retained until confirmed replacement with raw concurrency check.",
+    "safetyChecks": [
+      "No save before explicit confirmation; goal and intent are both required.",
+      "Only approve_plan is recorded after confirmation; all tasks remain pending.",
+      "Free rewording of Goal is supported; software keyword gating applies to original request only.",
+      "IME composition cannot submit unfinished request text; rendered text is escaped.",
+      "Existing catalog, chat and ledger remain under advanced disclosure.",
+      "Leaf counts exclude parent tasks; all-task completion requests overall acceptance rather than another handoff.",
+      "Unknown remaining effort is not presented as a zero estimate.",
+      "No AI requests, automatic progress collection, notification delivery, cloud start, paid action, hardware action or deployment."
+    ],
+    "realBrowserRendering": "not_verified",
+    "ownerUsabilityAcceptance": "pending"
+  },
+  "boardRevision": {
+    "date": "2026-09-27",
+    "request": "Match the supplied five-division squad/task progress screenshot in the standalone AMC workbench.",
+    "display": "Canonical 32-squad board is the default view, reusing the existing mission renderer with the current 376 records. Squad selection shows Goal/outcome/scoped stage/gaps/next tasks; task links navigate primary owners, children, parents, prerequisites and downstream work. Rules, holds, steps, deliverables, criteria and evidence remain inspectable.",
+    "separation": "Canonical embedded snapshot remains read-only and distinct from request-scoped proposed roles and Goal sessions. No task/Goal state, assignment, stage, completion or authority is changed by browsing.",
+    "storage": "Presentation selection alone uses amc-mission-selection-v1. Existing Goal/chat schemas and keys remain. Invalid/unavailable selection storage falls back safely without overwriting records on load. Tab switching preserves drafts; starting over asks before discarding an unfinished simple request/review.",
+    "verification": "42 CLI/mock DOM tests, including five board/draft regressions; 98 targeted tests and full npm run verify passed. Generated HTML has unique IDs, no unresolved markers, and matches the final renderer/canonical sources.",
+    "layout": "Five division columns on wide screens; two on narrow screens; three squad cells per division; R10 kept on one line. CSS checked statically, not rendered in a live browser.",
+    "realBrowserRendering": "not_verified",
+    "ownerUsabilityAcceptance": "pending",
+    "autonomy": "Local LLM installation, model planning, execution, automatic progress collection and notification delivery remain unconnected. No new authority inferred from the screenshot request."
+  },
+  "botInputFix": {
+    "reportedRequest": "jevで仮想通貨のbot作成して",
+    "observedFailure": "Screenshot error reproduced: software request allowlist omitted bot/BOT/ボット.",
+    "change": "NFKC normalization for matching only; accepts bot/BOT/full-width/Japanese and common software automation words while preserving original input. Rejects bottle and robot manufacture false positives.",
+    "verification": "Exact reported request reaches Goal/intent review and explicit approval, preserving old Goal before confirmation. Seven tasks remain pending; only approve_plan recorded; no fetch or provider call.",
+    "bounds": "Input gate repair only. No Jev connection, trading-bot implementation, trading, transfers, AI execution, or deployment.",
+    "realBrowser": "User-provided failure screenshot inspected; fix verified by mock DOM and pure-module tests, not a live browser run."
+  }
+}

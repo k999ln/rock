@@ -74,3 +74,44 @@ void test('handoff validates Tool ids and caps private request text', () => {
   );
   assert.equal(handoff.request.length, 2_000);
 });
+
+await test('AMC handoff preserves all 8,000 characters and refuses overflow without replacing the prior request', () => {
+  const storage = memoryStorage();
+  const request = 'AMCで部隊を分けたい。'.padEnd(8_000, '依');
+  const expected = queueSkyZemaHandoff(
+    'rockstar-amc',
+    ` ${request} `,
+    storage,
+    1_000,
+  );
+  assert.equal(expected.request, request);
+  const raw = storage.getItem(SKY_ZEMA_HANDOFF_KEY);
+  assert.throws(
+    () => queueSkyZemaHandoff('rockstar-amc', `${request}外`, storage, 1_001),
+    /8,000/,
+  );
+  assert.equal(storage.getItem(SKY_ZEMA_HANDOFF_KEY), raw);
+  assert.equal(consumeSkyZemaHandoff('mr-citations', storage, 1_001), null);
+  assert.equal(storage.getItem(SKY_ZEMA_HANDOFF_KEY), raw);
+  assert.deepEqual(
+    consumeSkyZemaHandoff('rockstar-amc', storage, 1_002),
+    expected,
+  );
+  assert.equal(consumeSkyZemaHandoff('rockstar-amc', storage, 1_003), null);
+});
+
+await test('overlong stored AMC handoffs are rejected instead of silently truncating their authority text', () => {
+  const storage = memoryStorage();
+  const valid = queueSkyZemaHandoff(
+    'rockstar-amc',
+    'AMCの進捗を管理したい',
+    storage,
+    1_000,
+  );
+  storage.setItem(
+    SKY_ZEMA_HANDOFF_KEY,
+    JSON.stringify({ ...valid, request: 'x'.repeat(8_001) }),
+  );
+  assert.equal(consumeSkyZemaHandoff('rockstar-amc', storage, 1_001), null);
+  assert.equal(storage.getItem(SKY_ZEMA_HANDOFF_KEY), null);
+});

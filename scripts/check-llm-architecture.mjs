@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { skyRoles } from '../lib/sky-routing.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -104,18 +105,25 @@ for (const marker of [
     `Jev implementation missing ${marker}`,
   );
 
-const routing = read('lib/sky-routing.ts');
-const roleCount = (
-  routing.slice(routing.indexOf('export const skyRoles')).match(/toolId:/g) ||
-  []
+const roleCount = skyRoles.length;
+const amcRoleCount = skyRoles.filter(
+  ({ toolId }) => toolId === 'rockstar-amc',
 ).length;
 requireValue(
-  roleCount === 12,
-  `Sky routing roles must be 12, found ${roleCount}`,
+  roleCount === 13 && amcRoleCount === 1 && roleCount - amcRoleCount === 12,
+  `Sky routing must retain 12 conversation roles plus one non-LLM AMC role, found ${roleCount} total / ${amcRoleCount} AMC`,
 );
 requireValue(
-  read('docs/sky-assistant-and-memory.md').includes('現在は次の12役'),
+  read('docs/sky-assistant-and-memory.md').includes(
+    '既存12会話役と、LLMを呼ばないAMC計画管理1役の計13役',
+  ),
   'Sky assistant document role count is stale',
+);
+requireValue(
+  read('components/sky-chat-workspace.tsx').includes(
+    'if (!isAmc && (conversational || toolId))',
+  ),
+  'AMC planning must not invoke the conversation LLM',
 );
 
 const architecture = read('docs/llm-evaluation-architecture.md');
@@ -128,6 +136,8 @@ for (const marker of [
   'implemented_configuration_required',
   'DecisionProvider',
   'local-action-assistant-binder-v2',
+  'rockstar-amc',
+  'LLMを呼ばない計画・手動記録Tool',
 ])
   requireValue(architecture.includes(marker), `architecture missing ${marker}`);
 
@@ -149,7 +159,10 @@ for (const marker of [
   'app/api/llm/text/route.ts',
   'tests/llm-providers.test.mjs',
 ])
-  requireValue(existsSync(resolve(root, marker)), `text model registry missing ${marker}`);
+  requireValue(
+    existsSync(resolve(root, marker)),
+    `text model registry missing ${marker}`,
+  );
 
 for (const path of ['AGENTS.md', 'README.md', 'docs/prompt-playbook.md'])
   requireValue(

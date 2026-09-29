@@ -1,7 +1,7 @@
 # Sky／Zema／全Tool詳細設計
 
-版: 1.1 / 2026-09-21
-対象: Skyにある12件のready Tool、22件の導入候補、native開発Tool、Tool追加基盤。
+版: 1.2 / 2026-09-27
+対象: Skyにある13件のready Tool、22件の導入候補、native開発Tool、Tool追加基盤。
 
 この文書は、Tool名の一覧ではなく、各Toolについて「誰が何を入力し、どこで動き、何を保存し、どこから外部作用になり、何をもって完了とするか」を同じ形で説明する。カタログの機械可読正本は`lib/catalog.ts`。この文書とカタログの欠落は`npm run design:check`で検出する。
 
@@ -47,7 +47,7 @@ catalogued → selected → connected → ready → running → review → compl
                              └──────────┴→ disabled / revoked
 ```
 
-`ready`は接続検査済みという意味で、処理成功ではない。`completed`はTool処理の完了で、販売、入金、法的有効性、特許、実世界の成果を保証しない。
+`ready`は各Toolが明示する機能範囲の利用入口で、処理成功ではない。接続を要する機能では接続検査と対象環境の受入を別途確認する。AMCのWeb readyは計画作成・本人別の手動台帳・exportまでであり、WebからのAI直接起動や実ブラウザ・本番配備の受入を意味しない。別途、明示操作のローカルCodex CLI一件実行入口がある。`completed`はTool処理の完了で、販売、入金、法的有効性、特許、実世界の成果を保証しない。AMCの保存処理成功と、依頼Goal全体の受入も区別する。
 
 ### 共通実行規則
 
@@ -76,6 +76,7 @@ catalogued → selected → connected → ready → running → review → compl
 
 | ID                          | 表示名                            | 状態      | 実行場所               | effect                                    |
 | --------------------------- | --------------------------------- | --------- | ---------------------- | ----------------------------------------- |
+| `rockstar-amc`             | AMC — Goal・部隊・進捗            | ready     | Web / 本人別D1         | 計画生成＋本人の台帳保存。WebからAI直接起動なし。ローカルCodex CLIは別入口 |
 | `rockstar-csv-cleanup`      | CSV整形・検査・納品               | ready     | Sky Cloud / Web        | local-pure相当。販売・共有は別作用        |
 | `rockstar-markets-analysis` | RockstarOS Market Scanner         | ready     | Web / offline backtest | remote-read＋PAPER記録                    |
 | `mercari-revenue`           | メルカリ収益スターター            | ready     | Web / 将来Connector    | draftはpure、出品等はexternal-write       |
@@ -101,6 +102,68 @@ catalogued → selected → connected → ready → running → review → compl
 | `jev-router`                | model routing候補                 | candidate | 本人PC                 | routing-only                              |
 | `jev-browser`               | 連続browser操作候補               | candidate | 本人PC                 | 未接続・未実行                            |
 | `mobile-jev`                | Android操作候補                   | candidate | 隔離試験端末           | 個人端末禁止                              |
+
+## 4.5 AMC — Goal・部隊・進捗
+
+### 目的・利用者・一周の体験
+
+依頼をGoalと意図へ整理し、担当、工程、成果物、合格条件、進捗を本人が一つの台帳で扱う第一者Tool。Tool IDは`rockstar-amc`、主担当はROCK / H1、継続作業はAMC02の限定Web統合である。任意の文章を理解して実行するAI、全製品の自律開発、実機制御Toolとしては扱わない。
+
+SkyのTool入口から`/amc`を開き、Zemaの依頼引渡し・埋込み画面からも同じ受付を使う。「作りたいもの→できたら完成となるGoal→守る意図」を本人が確認して、限定された準備計画を保存する。新規依頼は4役割（設計・実装・検証・統括）と7工程の共通テンプレートへ置く。これは依頼の意味理解や網羅性を実証した分解ではない。最初の3工程で対象コード・要件・不足・具体工数を再確認し、重要な未決や範囲追加は本人へ返す。
+
+準備計画は承認済みを表す`active`となるが、7工程はすべて`pending`であり、AIや作業processは動かない。本人が別環境で行った開始・成果提出・独立検収を台帳へ記録する。Zemaには「計画保存」「記録更新」というTool操作の結果を表示し、これをGoal達成や成果物完成と表示しない。
+
+既存AMCの5師団32部隊は正本snapshotの読み取り専用ボードとして保持する。新規依頼用4役割はGoal内だけの担当であり、正本の32部隊・製品task・実績を置き換えない。既存standalone HTML、CLI、JSON／指示文exportも維持し、Web保存へ勝手に移行・統合しない。
+
+### identity・責任・実行先・費用境界
+
+- 第一者組込みToolとして既存Web buildに含める。実装版はGit／build候補、計画形式は`amc-goal/1`、依頼原文は`amc-request-brief/1`で追跡する。独立したmodelや第三者packageを導入しない。
+- RockstarOSは入力検査、本人別保存、状態遷移、revision競合、証拠参照、失敗表示を担当する。利用者が依頼・Goal・意図、本人の成果、承認・検収を決める。
+- 実行先は認証済みWebと既存D1。`lib/amc-tool.ts`のAMC処理を`lib/workflow.ts`の仕事契約へ接続する。新しいWorker、DB、常駐executor、外部AI契約は追加しない。
+- Web側のmodel、LLM、remote executorは未接続。公開、外部送信、課金、契約、実機操作、秘密鍵・資産移動、実売買は準備計画の承認対象外。Tool料金・実費の新たな徴収経路は作らず、既存の料金保留を維持する。
+- 本人がGoal JSONを書き出し、ローカルで`mission:codex run --allow-codex-upload`を明示実行した場合だけ、CodexへGoalと関連repository文脈を送る。`codex exec`は一つのready taskを`workspace-write`・追加承認なしで処理し、結果が揃っても`submitted`止まり。失敗・不明・人の判断待ちは一時停止または失敗記録とし、`verify_task`・全体受入を代行しない。これはWebサーバー側のexecutorではなく、元D1記録へ自動同期しない。
+- APIの本人認証は保存ownerを分離する。Goal内のactor／reviewer名・role・証拠参照は自己申告の記録であり、別担当本人の認証、署名、成果物内容の真正性を保証するものではない。
+
+### 入出力・ID・size
+
+- 新規入力は`request`（依頼）、`goal`、`intent`。依頼・Goalは各8,000文字以内、意図は2,000文字以内。ソフトウェアのローカル試作に限る入口で、未知の要求を勝手な別Goalへ読み替えない。
+- importは最大1,500,000 byte（1.5 MB）のGoal JSON。構造・schema・親子・元条件・依存・保留・状態・提出者・成果物・履歴を`validateGoal`で検査する。読込みは登録された結果の真正性を証明せず、未検証の実機証拠を本番合格へ転用しない。
+- `/api/amc`の書込みbodyは2 MB上限。HTTP認証とOrigin検査を行い、超過入力を途中で拒否する。standaloneのimport上限とWeb APIの上限を同じと表示しない。
+- 履歴を含むWorkJob全体は1.9 MBまで。状態遷移と専用APIの両方で保存前に検査し、超過は413で拒否する。汎用`/api/work-jobs`でAMCを作成・更新せず、専用APIの認証・保存制限を迂回しない。
+- 保存レコードの仕事ID、Goal ID、Goal revision、event IDを区別する。Goal更新にはeventの`expectedRevision`と一意IDが必要で、外側の仕事レコードにもrevision比較を適用する。
+- 出力は保存済みGoal JSON、部隊・工程の状態、未検証条件、証拠への参照、AIへ手動で渡す指示文。成果物pathは予定・参照であり、保存操作だけで実ファイルを作成済みにしない。exportやコピーもAIへの送信成功ではない。
+
+### 状態・承認・失敗・再開
+
+Goalの`draft → active → paused / accepted`、taskの`pending → running → submitted → done`と`blocked / failed`は既存`applyGoalEvent`を通す。前提の独立検収、同じ出力pathの排他、同時作業設定、料金等のholdを維持する。`active`は準備計画の承認、`running`は本人が記録した開始であり、AI稼働の観測結果ではない。
+
+`done`には成果提出と実行者と異なるreviewerによる条件別証拠が必要。子の合格だけで親を完了にせず、親の元条件も検収する。全task受入後に本人が全体条件の証拠付き`accept_goal`を行って初めてGoalを受け入れる。新規のphysical／external／build／未分類leafは第一版では着手不可。holdは子へ継承し、設計準備だけ許可する細粒度adapterは未実装のため安全側に止める。
+
+- 同じevent ID・同じpayloadの再送は二重計上しない。同じIDで内容が違う場合、古いrevision、本人以外の仕事ID、不正schemaは拒否する。
+- 認証・Origin・size・競合・保存失敗を成功通知に置換しない。競合時は最新の本人レコードを読み直し、未保存操作を照合してから再入力する。
+- 通信断や結果不明時は保存済みrevisionとevent IDを再読込し、同じ操作の成否を確認する。別IDを作って無条件に再送しない。外部作用自体はこのToolから起動しない。
+- `pause`は台帳上の中断で、別のAIやPC processを停止する命令ではない。検収待ちの出力lockは維持する。失敗から再開する場合は理由・証拠を残し、前試行を消さない。
+- WebがofflineならD1の新規保存・最新取得を保証しない。未保存を明示し、手動exportと既存standaloneの利用を区別する。両者の自動同期や競合自動mergeは行わない。
+
+### 保存・privacy・保持・削除・互換・復旧
+
+明示して保存した依頼本文、Goal、意図、手動進捗、証拠参照を既存`work_jobs.payload`へ保存する。レコードは認証userで取得・更新を絞り、更新前revisionのcompare-and-swapを通す。別userのIDを知っていてもそのGoalを取得・更新できない。新しいtableやDBを増やさない。
+
+これは本人のWebアカウント領域への保存で、端末内だけの保存とは異なる。秘密・資格情報・原稿・不要な個人情報を入力しない。Web保存・画面操作だけではLLM、model provider、外部executorへ本文を送信せず、新たな本文telemetryを追加しない。ローカルCodex CLIを明示実行した場合はGoal内容と関連repository文脈がCodexへ送られる。暗号化された成果物保管や署名済み監査をこのpayload保存だけで保証しない。
+
+専用の自動削除期限、AMC削除API／完全消去、保持期間、バックアップ復元の運用受入は未確定。既存仕事レコードとして保持する現状を明示し、「7日で消える」「停止すれば削除される」と表示しない。JSON exportは本人が管理する控えで、D1のバックアップ成功の証拠ではない。削除・復元契約を採用する前にROCKが実装と復旧試験を用意し、OWNERが保持方針を決める。
+
+読込みは対応するGoal schemaだけを受け入れ、unknown field／版の扱いは既存engineのvalidatorに従う。schema・テンプレート更新で古い条件や証拠を自動変換しない。更新・rollbackはWeb build単位で行い、先に書き出したJSONとsource snapshotを残す。旧版が保存済みschemaを読めない場合は書込みを止め、対応版への復旧か明示migrationの判断を求める。
+
+### 合格条件・環境・残る判断
+
+限定Web統合の合格対象は、本人別create/list/get/event、再送・CAS競合、body上限、認証・Origin拒否、import負例、準備計画の4役割7工程・全pending、32部隊のread-only表示、GoalとTool操作成功の分離、JSON／指示文exportである。既存のengine／templateの純粋テストと、実D1／認証を伴うAPI、実ブラウザ、配備readbackを別の証拠として扱う。
+
+実ブラウザではSky→Zema→AMC→本人用開発DBへの保存→reload後の履歴選択・復元を確認した。CodexのGoal保存・結果JSON選択案内も表示を確認した。提出・別担当検収・最終受入の状態遷移は自動試験で確認し、実ブラウザの全操作受入とは分ける。ローカルCodex CLIは隔離した一作業で実際に成果物を作り`submitted`まで記録した。[試験記録](evidence/amc/codex-local-smoke.json)。本番配備、他端末復元、WebからのAI直接実行、model導入、実機成果の受入は未実施。`ready`登録や単体試験の合格からそれらを推測しない。
+
+未決は、保持・完全削除（OWNER方針＋ROCKの消去／復元試験）、認証済み別担当の検収（ROCKのrole／actor設計）、LLM・実行先接続（OWNERの対象／費用／送信同意＋個別adapter受入）、実ブラウザ／配備（同一候補の導線と本人分離のreadback）で閉じる。これらがない段階では新しいmodelやcloud環境を契約・導入せず、既存準備計画と手動台帳の範囲に留める。
+
+正本: [AMC Goal Orchestrator](amc-goal-orchestrator.md)、[AMC部隊と進捗](mission-control.md)、`scripts/amc-request-plan.mjs`、`scripts/amc-goal-engine.mjs`、`scripts/amc-codex.mjs`、`lib/amc-tool.ts`、`lib/workflow.ts`、`app/api/amc/route.ts`。
 
 ## 5. CSV整形・検査・納品
 

@@ -1,6 +1,6 @@
 # avocadoOS — LLM・評価モデル設計
 
-更新日: 2026-09-20。対象: `avocadoOS 1.0` / `dev.rock`。
+更新日: 2026-09-27。対象: `avocadoOS 1.0` / `dev.rock`。
 
 この文書は、端末内LLM、Sky内の交換可能な文章モデル接続、Jev評価モデル、Broker／Engineの責任を分ける正本である。機械可読の現在地は [`data/llm-capabilities.json`](../data/llm-capabilities.json)、共通Coreの到達設計は [AIネイティブOS共通設計](ai-native-os-architecture.md)を参照する。
 
@@ -13,12 +13,14 @@
 - Jev (`typesafe-ai/jev`) はTypeSafe AIのremote評価モデルである。端末内modelや汎用文章生成modelに数えない。
 - JevはSkyから本人が明示的に使う**任意の評価Tool**として導入する。結果は助言・品質証拠であり、Brokerの権限判定、本人承認、Tool成功、仕事完了を置き換えない。
 - Jev runtimeの状態は `implemented_configuration_required`。`ai@7.0.107` の `experimental_evaluate` をserver-side routeから呼び、Skyの同意UI、closed rubric、Evaluation Receiptまで実装した。API key、provider条件、料金上限、sandbox／本番受入は別の設定・外部gateとして残る。
+- Skyの固定振り分けは既存12会話役とAMC計画管理1役の計13役。AMC（`rockstar-amc`）はLLMを呼ばない計画・手動記録Toolであり、model providerやLLM能力の追加ではない。ZemaでAMCへの依頼を送っても会話LLMを呼ばず、本人確認後のGoal保存と手動記録だけを既存WorkJobへ接続する。
 
 ## 2. 現在の構成
 
 ```text
 Sky
   ├─ browser / PC / MCP Tool
+  ├─ AMC ─────── 計画・手動記録（LLMなし、AI実作業は未接続）
   ├─ 法務受付 ───── 端末内ガイド（標準） / OpenAI Responses API（明示許可時のみ）
   ├─ 特許アシスタント ─ 端末内ドラフト（標準） / OpenAI Responses API（明示許可時のみ）
   └─ Jev評価Tool ─── Vercel AI Gateway → TypeSafe AI Jev（実装済み・設定待ち）

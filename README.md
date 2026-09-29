@@ -7,7 +7,7 @@
 ### From playing to making. Spend less time thinking and more time creating.
 
 A product concept that begins with games and connects creation, learning, and everyday action to enrich life as a whole.<br>
-We are designing the compact dedicated **avocadoMini R5** device and **RockstarOS v1.0**, the current operating-system design that supports work, AI, creative assets, and permissions.
+We are designing the compact autonomous spatial-input, display, and game device **avocadoMini R5**, the standalone game-and-services computer **avokadoPro**, and **RockstarOS v1.0**, the common operating-system design that connects approved hardware, work, AI, creative assets, and permissions.
 The fully recoverable and reusable small-satellite launch vehicle **rocketstar** is a separate, active design program.
 
 [Product experience](#product-experience) · [Feature details](#feature-details) · [Current status](#current-status) · [Design library](#design-library) · [Still image](docs/brand/avokado/avokado-r5-editorial-hero.png)
@@ -16,7 +16,15 @@ The fully recoverable and reusable small-satellite launch vehicle **rocketstar**
 
 > **About the image** — The R5 visual above is concept art based on the intended industrial design. The animated lines are a brand treatment, not a photograph of working hardware or proof of a spatial display.
 
-**Open the design documents:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [Complete design index](#design-library)
+**Open the design documents:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [avokadoPro product definition](sites/avocado-mini/src/pages/pro/index.astro) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [Mission Control](docs/mission-control.md) · [Complete design index](#design-library)
+
+[AMC task plans](docs/mission-control.md) give each of 32 squads one explicit next task, inputs, steps, deliverables, and evidence-based acceptance criteria. Shared systems, historical profiles, and product-specific acceptance are tracked separately; task counts are not product completion percentages.
+
+[AMC Goal Orchestrator](docs/amc-goal-orchestrator.md) opens with the canonical five-division, 32-squad progress board. Selecting a squad shows its Goal, outcome, scoped stage, gaps and next tasks; task links navigate prerequisites, children and downstream owners. This is an embedded snapshot, not live AI progress. The separate request/Goal view retains request → Goal and intent confirmation, chat, evidence ledger and backups. Software requests still use four proposed roles, seven preparation steps and uncalibrated human-effort ranges, not semantic AI decomposition or measured estimates; they do not modify the canonical squads. Generate the offline screen with `npm run mission:goal -- build --out /absolute/path/new-workbench.html`. AI execution, automatic progress collection and notification delivery are not connected. Confirmation does not authorize spending, publication or hardware actions.
+
+AMC is also integrated as the first-party Sky Tool `rockstar-amc`: open `/amc` in the Web app or use its embedded card in Zema. Sign in to save and reopen your own Goals through `/api/amc`, using the existing `work_jobs` store with revision-conflict checks. Confirm the request, Goal and intent to save a four-role, seven-step software-preparation template; every task is still pending. The Web start, submission and independent-review controls record work performed elsewhere—they do not launch an AI. For an explicit one-task local Codex run, export the Goal JSON and run `npm run mission:codex -- run --goal <saved-goal.json> --allow-codex-upload` in this repository. The flag confirms that Codex receives Goal content and relevant repository context. The runner records Codex's result as submitted for independent review or pauses on uncertainty; it never marks the Goal accepted. Its output can be imported as a separate Web record, not synchronized with the original. The canonical 32-squad board is read-only and separate from your saved Goals. A successful save/update notice in Zema is not Goal completion. The local browser flow from Sky to Zema, saving/reopening a Goal and protecting unsaved input was checked; deployed acceptance and owner usability acceptance remain separate. The offline HTML remains a separate, non-synchronized option.
+
+The local request gate also accepts bot/BOT, Japanese ボット, full-width spellings, scripts and automation requests; normalization is for matching only and preserves the original request. Acceptance of a request does not connect a provider or authorize trading/transfers.
 
 ## The business avokado is building
 
@@ -112,6 +120,7 @@ RockstarOS centralizes user and component authentication, capabilities, approval
 
 | Representative Tool or team | Function | Boundary |
 | --- | --- | --- |
+| AMC — Goal and squad progress | Prepare a request/Goal/intent plan; save, reopen and manually track it in Sky/Zema | No connected LLM, autonomous implementation or notification delivery; the canonical 32 squads are reference-only |
 | CSV Operations | Clean CSV data, run an independent review, and generate delivery artifacts | Sales, customer sharing, and payment are separate |
 | Mercari Revenue Starter | Draft listings for owned items and organize costs and expected net proceeds | The owner lists, communicates, and ships; revenue is real only after provider confirmation |
 | Fashion Brand Ops | Prepare campaigns, DM and quote drafts, post-order production, and analysis | Posting, advertising, sending DMs, billing, and refunds require action-specific approval |
@@ -148,7 +157,7 @@ Wallet treats cost estimation, reservation, and finalization; signed Earning Rec
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-09-24 / 156 tasks: 104 done, 31 in progress, 20 planned, 1 blocked
+Updated: 2026-09-27 / 376 task records (32 parents, 192 children, 152 standalone; 344 execution units excluding parents): 107 done, 31 in progress, 237 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)

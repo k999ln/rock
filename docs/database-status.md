@@ -2,15 +2,15 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-09-24
+更新日: 2026-09-27
 
 ## 全体
 
 - データ境界: 6、table: 80
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 156 task中 104 done、31 in progress、20 planned、1 blocked
-- 現在milestone: Pixel 10 compile-only Developer Previewの初回full build準備
+- 作業進捗: 376 task中 107 done、31 in progress、237 planned、1 blocked
+- 現在milestone: AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口
 
 ## 保存境界と配備状態
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
+AMCのWeb計画・手動台帳からGoal JSONを保存し、明示コマンドでローカルCodexへ着手可能な一件を渡す入口を追加。隔離した試験Goalの一件が実Codexで成果物を作り、AMCでは検収待ちまで記録された。元のWeb記録へは自動同期しない。次は同一Web記録への安全な結果同期、停止・復旧と本人通知、使いやすさ確認。公開する場合はGitHub同期と同一候補の配備readbackを別に行う。自律的な連続実行・自動通知・model導入・課金・公開・実売買は未接続／未実行。正本5師団32部隊は参照専用。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

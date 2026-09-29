@@ -42,6 +42,7 @@ export const JOB_TOOLS = [...CORE_JOB_TOOLS, ...SKY_CANDIDATE_TOOLS] as const;
 export type JobTool = (typeof JOB_TOOLS)[number];
 export const SKY_CONNECTION_TOOLS = [
   ...JOB_TOOLS,
+  'rockstar-amc',
   'rockstar-csv-cleanup',
   'rockstar-markets-analysis',
   'mercari-revenue',

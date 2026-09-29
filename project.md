@@ -1,5 +1,79 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-09-27 — AMCの一作業をローカルCodexへ明示起動する入口
+
+H1 / AMC02、ROCK。本人が保存済みGoal JSONを明示的に選び、Codexへの本文送信を明示して、AMCの`readyTaskIds`から一件だけローカルCodex CLIで進める入口を追加。元Goalは上書きせず、実行前後のrevision・指示・Codexイベント・最終報告をGit管理外の`work/amc-codex-runs/`に保存する。成果物の存在を確認しても自動的な完了認定はせず、提出・別担当検収待ちに留める。Codex失敗・報告不正・人の判断待ちはGoalを停止または失敗記録とし、次の作業へ勝手に進めない。Webの元記録と自動同期しない点を画面と使い方に明示した。Webからの直接起動・継続的な自律実行・通知は別段階。
+
+証拠：`scripts/amc-codex.mjs`、`tests/amc-codex.test.mjs`、[設計](docs/amc-goal-orchestrator.md)、[ローカル実Codex試験](docs/evidence/amc/codex-local-smoke.json)。mockで一件提出、成果物不足停止、前提未達拒否、送信明示なし拒否、同じrevisionの二重実行拒否を確認。実Codexは隔離した試験用repositoryでREQ-01の一件だけを実施し、予定成果物を作成。Goalはrevision 1→3、REQ-01は`submitted`で独立検収待ち、後続は未着手。Webの元記録は変更していない。Web画面でCodex手順と結果JSONファイル選択欄も確認した。`npm run verify`は試験用Workerの残存干渉を避けるよう検証順を整理した上でexit 0（Node 482件、追加Tool 19件、ローカルAPI 284項目）。公開・課金・契約・実機・資産移動は行わない。
+
+## 2026-09-27 — AMCをSky Tool／Zemaの本人別計画台帳へ統合
+
+H1 / AMC02、ROCK。独立していたAMCの計画・進捗機能を第一者Tool `rockstar-amc`としてSkyに登録し、`/amc`とZema内の専用カードから使えるようにした。本人認証済みの`/api/amc`で既存`work_jobs`へ保存・再開し、revision比較による競合拒否と同じ操作IDの再送照合を行う。新しいWorker・DB・外部executorは追加しない。新taskは作らず既存AMC02の限定Web統合として扱い、376レコードを維持する。以前のローカル第一版の合格記録は保持し、計画・手動台帳という限定範囲でAMC02をdoneへ戻す。
+
+依頼→Goal・意図の確認→4役割7工程のソフトウェア準備テンプレート→本人保存という導線。作成後も全taskはpendingで、LLM・意味分解・実装自律実行・進捗自動取得・通知配送は未接続。手動の開始・提出・別担当検収とJSON／指示文exportを用意する。draft JSONのimportは承認ではなく、元の状態・証拠を保持する。Zemaの「計画保存」「記録更新」はTool操作の記録であり、Goal全体の完成とは区別する。正本5師団32部隊は参照用で、自動更新しない。既存standalone HTML／CLIと保存形式も維持し、WebのD1と自動同期しない。
+
+今回確認したGitHub mainは`5f3a3694474180415d08cd814b6aad864694d10f`、local基点は`4e74e2f5f250b87c792ced6c03c5298c882cbd70`と作業中変更。remoteの参照確認とローカル実装を区別し、push・公開は未実施。`npm run verify`合格（Node479、追加Tool19、API284項目）。実ブラウザで32部隊表示、Sky→Zema原文引継ぎ、Goal/意図確認、本人用の開発DB保存、reload後の履歴選択・復元を確認した。未保存入力を破棄する前の画面内確認を追加し、取消で意図と次メッセージを保持、明示確認でのみ差替えを確認。ブラウザの検収全操作・狭幅全条件・実際の別担当認証・本番配備・本人の使いやすさ受入は別。検証範囲と最終再検証は[AMC監査記録](docs/evidence/amc/goal-orchestrator-audit.json)へ残す。
+
+## 2026-09-27 — AMCのメイン画面を5師団32部隊の進捗ボードへ変更
+
+H1 / AMC02、ROCK。本人が示した既存の部隊ボードに合わせ、正本32部隊を最初の画面へ配置。部隊選択→Goal・もたらす結果・段階の対象・残課題・次作業→担当taskの手順・合格条件・成果物という導線にする。前提・後続・子・親のボタンで主担当部隊を含め移動する。既存のmission-control表示を再利用し、最新の376レコードを正本から同梱する。古い183レコードsnapshotは流用しない。件数は製品完成率へ換算せず、料金等の保留・実機受入境界を保持する。
+
+「部隊・進捗」と「依頼・Goal」を分離。4役割7工程の依頼テンプレートを既存32部隊と混同させない。ボード選択だけを専用キーに保存し、Goal・会話・承認履歴は変更しない。新規依頼、手動管理、バックアップ、既存Goal復元は維持する。未保存の依頼・Goal・意図を「新しい依頼」で消す前に確認する。今回の範囲は表示と操作であり、ローカルLLMの導入や自律実行はまだ行わない。
+
+検証完了：対象98/98（画面・CLI42件）、`npm run verify` exit 0（Node461/461、追加Tool19/19、ローカルAPI149項目、Web asset83参照・欠落0）。配布HTMLを正本から再生成し、renderer一致とhashを[検証記録](docs/evidence/amc/goal-orchestrator-audit.json)へ記録した。操作検証はmock DOMで、実ブラウザの描画・使いやすさ受入は別。GitHub最新取得はDNS解決失敗で未確認、push・公開なし。
+
+## 2026-09-27 — AMCがbotの依頼を誤拒否する問題を修正
+
+H1 / AMC02、ROCK。本人のスクリーンショットにある「jevで仮想通貨のbot作成して」を再現し、ソフトウェア判定の対応語にbotがないため受付前に拒否することを確認した。bot/BOT/全角英数字/ボット/半角カナ、プログラム・スクリプト・自動化等を受付判定へ追加。判定用だけNFKCで正規化し、元の依頼・Goalの文面は変更しない。bottleやロボット製造をbotと取り違えない負例も確認する。
+
+入力受付の修正であり、Jev接続・金融botの実装・売買・送金は実行しない。Goalと意図の確認後も全7作業はpending、記録は計画承認だけ。再現入力から確認画面・計画保存までの回帰と、既存の保存保護・未実行表示を検証した。対象93/93、全体`npm run verify` exit 0（Node456/456、追加Tool19/19、ローカルAPI149項目、Web asset83参照・欠落0）。配布HTMLを更新してrendererとの一致を確認。失敗時の本人スクリーンショットを根拠にし、修正後はmock DOMで操作検証した。実ブラウザの再操作は未実施。
+
+## 2026-09-27 — AMCを「依頼・Goal・意図」の入口へ簡素化
+
+H1 / AMC02、ROCK。会話による設定質問も難しいという指摘を受け、通常の入口を依頼1つ→Goalと意図の確認だけに変更。部隊選択、範囲・条件の手入力、JSON操作は通常導線から外す。ソフトウェアのローカル試作向けの共通テンプレートで、依頼専用の4役割・7工程・依存・合格条件・仮の工数を用意する。元の依頼、Goal、意図を保存し、詳細化・意図との一致確認を作業に含める。既存のAMC01等を新しい依頼の代わりに取り込まず、正本32部隊は変更しない。
+
+工数は文書1–3人時、コード/試験2–6人時等の未校正係数で、難易度を解釈した最終見積りではない。未算定を0へ置き換えず、親検収と子作業の工数を区別する。AI意味分解・実行・自動進捗取得・通知配送は未接続。作業が動いている演出はしない。旧チャットと全手動機能は「詳細・手動管理」に維持し、新旧Goal JSONを同じ保存キーで扱う。確認前・置換取消・保存競合で元のGoalを保護する。
+
+検証完了：対象91/91（画面・CLI36件、テンプレート5件、工数9件を含む）、`npm run verify` exit 0（Node454/454、追加Tool19/19、ローカルAPI149項目、Web asset83参照・欠落0）。初回全体検証の新規テストのawait不足を修正して再実行した。配布HTMLは最終テンプレート・正本と一致、hashを[検証記録](docs/evidence/amc/goal-orchestrator-audit.json)に残した。ソフトウェア以外の既存製品計画は詳細管理から扱う。実ブラウザ描画・本人の使いやすさ受入・自律実行の受入は別。GitHub最新取得は今回もDNS解決失敗。課金・公開・実機・外部送信は行っていない。
+
+## 2026-09-27 — AMCをチャット形式へ変更
+
+H1 / AMC02、ROCK。利用者の「chat形式で作成してみて」に従い、既存オフライン画面の入口を常設チャットへ変更する。目的→部隊候補→計画案→範囲と対象外→完成の基準→明示承認を一つずつ案内する。計画・進捗・従来の詳細操作は横の折りたたみへ残す。発言はローカルのルールベース案内で、LLM回答や外部送信ではない。
+
+自由文の「はい」「開始」「完了」を承認・実行・検収へ変換しない。チャットと詳細フォームの条件差分は再確認し、実際に承認した内容を会話へ返す。Goal JSONと既存保存キーは維持。会話は別キーで直近100発言まで保存し、Goal IDとrevisionが変わった場合は最新のGoalを基準に案内を再構成する。会話単独の控えは復元用Goalとは別。入力中の日本語変換とEnterだけでは送信せず、送信ボタンまたはCtrl/Cmd+Enterを使う。
+
+検証完了：対象68/68（画面・CLI27件）、`npm run verify` exit 0（Node431/431、追加Tool19/19、ローカルAPI149項目、Web asset83参照・欠落0）。同じ配布HTMLを再生成し、現在の正本・テンプレートとの一致とhashを確認した。実ブラウザ描画と本人の使いやすさ受入は未確認。外部AI送信・実製品task着手・課金・実機操作・公開は行っていない。[検証記録](docs/evidence/amc/goal-orchestrator-audit.json)。
+
+## 2026-09-27 — AMCの操作を段階式に整理
+
+H1 / AMC02、ROCK。利用者から「機能はいいがUXが分かりにくい」と指摘があり、既存のオフライン画面だけを改善する。初期画面は目的入力、次に担当候補と予定する仕事、次に計画確認、承認後は次の行動と進捗を表示する。32部隊、詳細設定、保存形式、内部IDは必要な時に開く。エンジンの承認・検収・保留・権限と保存形式は変えず、製品タスクや外部AIを起動しない。
+
+対象55/55合格（うち画面・CLI14件）。段階切替、状態別操作、コピーの非実行性、復元、保存競合、保存ボタン、壊れたバックアップを確認して配布画面を再生成した。`npm run verify` exit 0（Node418/418、追加Tool19/19、ローカルAPI149項目、Web asset83参照・欠落0）。最初は生成資料の更新が必要で同期し、制限内実行のローカル試験サーバー待機を停止した後、同じ検証を必要な権限で完走した。実ブラウザの描画確認は未実施で、利用者の使いやすさの受入は別途行う。AI・課金・実機・公開は未実行。詳細は[AMC検証記録](docs/evidence/amc/goal-orchestrator-audit.json)。
+
+## 2026-09-27 — AMC Goal Orchestratorのローカル第一版
+
+H1 / AMC02、ROCK。利用者の「指示を部隊ごとに分け、細分化・過程・Goal・進捗をまとめてAIの目標へ渡すツール」という指示を受け、既存AMCを拡張する。32親を192子作業へ展開し、既存183taskの状態・証拠を保持した。AMC02を含め376レコード、親32を除く344実行単位。タスク追加を実装完了や実測並列数へ換算しない。
+
+ローカルGoal compiler、単独ブラウザ画面、CLI、検収イベントと復旧用JSONを追加。入力から候補部隊を選び、登録済み計画・子作業・前提・合格条件をGoal指示へまとめる。キーワード候補と既存backlogの展開であり、任意指示のLLM分解ではない。新規要求への網羅性は承認前にレビューする。完了は別担当による各条件の証拠確認、親の独立受入、全体Goal受入を必要とする。正本AMCと実行sessionは自動同期しない。
+
+API送信・課金・Scaleway起動・実機・公開・GitHub pushは行わない。外部executor、常時運転、認証と証拠真正性は未実装。ローカル保存の空き容量は回復したが、GitHubの最新取得はDNS解決失敗のため未確認。以前確認したremote SHAを現在の確認済みとは表示しない。検証結果と残課題は[今回の記録](docs/evidence/amc/goal-orchestrator-audit.json)へ記録する。
+
+ローカル第一版の検証完了：対象46/46、`npm run verify` exit 0（Node409/409、追加Tool19/19、ローカルAPI149項目、Web asset83参照・欠落0）。AMC02はこの限定範囲でdone。型付きlintで検出したtestのawait漏れ、importの型・親子・提出者・成果物整合、同一pathのlock維持を修正した。実ブラウザ描画は未検証。UIの操作契約はmock DOMで確認し、保存JSONを実証済みの物理成果へ読み替えない。376レコードの読込・索引は中央値0.857ms、合成1,000件は3.251msだが、AI並列実行の性能ではない。
+
+## 2026-09-27 — AMCの担当と次タスクを精査
+
+H1 / ORG03。ID prefixによる自動担当推測を廃止し、183 taskに主担当を明記した。共通Game SDK、旧Mini設計、資料保存を現行製品の完成へ混入させず、主担当・参考・旧版・公開説明を区別する。25の計画taskを新設し、OSの既存7 taskと合わせて32部隊すべてに入力、3手順、成果物、3合格条件、担当の役割、未決の決め方を登録した。実担当者・期限は未割当である。
+
+部隊段階は0 要件整理、1 基本設計あり、2 試作済み、3 一部統合、4 実機受入、5 本番受入とし、対象範囲と残課題を併記する。登録で段階を上げず、Miniの1本自律とPro任意、料金実行保留、rocketstar独立飛行安全系を維持する。精査はローカル4e74e2f＋作業中変更を対象とし、remote main 5f3a369との差分は未merge、未push。
+
+担当重複、依存循環、証拠なしの合格、未検証での完了、実機証拠なしの昇格を検査し、正本から部隊一覧と会話の進捗snapshotを再生成する。`npm run verify` exit 0（Node 371/371、追加Tool 19/19、仕事API 149項目、Web asset欠落0）。AMC専用8試験には32部隊切替・前提移動・状態復元の模擬DOM検証を含む。実ブラウザの目視検査は未実施。[精査と検証の記録](docs/evidence/amc/task-precision-audit.json)。実機・外部Providerの再受入や25計画taskの成果物作成は今回の範囲外。
+
+## 2026-09-26 — avokado Mission Controlで32部隊の進捗管理を開始
+
+RockstarOS、avocadoMini、avokadoPro、rocketstarを5師団32部隊へ分け、各部隊のGoal、0〜5の合格段階、担当境界、依存、rule、成果物、証拠、合格Gate、次行動を`data/mission-control.json`へ正本化した。現行hardware製品はMini、Pro、rocketstarの3つ、RockstarOSは共有OS、PC/Web・QEMU・Pixelは開発／検証環境、P0.2・E1・E2・E3は旧Mini/Pro profileとして区別する。
+
+初期snapshotは、Task未登録7部隊、設計済み17部隊、試作済み1部隊、統合中7部隊、実機受入0、本番受入0。157 taskは重複なく一つのprimary squadへrouteされる。件数を完成率へ換算せず、必須Gateのうち最も低い段階を現在地とする。`npm run mission:check`を全体検証へ追加し、3製品、共有OS、32部隊、証拠path、依存循環、task route、案内文書の一致を検査する。次はP1でPRO01を登録し、未作成のavokadoPro v1.0統合設計とMini–Pro ICDを作る。
+
 ## 2026-09-24 — 指定されたTower20 E3の公開Siteをそのまま復元
 
 利用者が再提示した画面収録と10枚のスクリーンショットを基準に、R5向けへ置き換わっていた公開ホームを、指定どおりのTower20 E3サイトへ戻した。Astroは維持し、画像の生成・描き替えは行わず、履歴に残る承認済み原本を再利用した。4本の200 mm Motion Towerと中央のEdge Hubの全景、「Intelligence, built into space.」、横送りのHighlights 4枚、「Everything, for the space.」、正面・側面・背面を使う180°スクロール、RockstarOSのOpen installer、avokadinc footerを復元した。
@@ -1026,24 +1100,218 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-24 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 104/156件
+最終更新: 2026-09-27 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 107/376件（親32・子192・独立152。実行単位は親を除く344件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
+| AMC02 | AMC Goal Orchestratorの計画・Sky／Zema本人別Web台帳と明示起動のローカルCodex一件実行入口を整える（Web直接起動・連続自律実行は対象外） | 完了 | [記録](docs/amc-goal-orchestrator.md) · [記録](scripts/amc-goal-engine.mjs) · [記録](scripts/amc-goal.mjs) · [記録](scripts/amc-codex.mjs) · [記録](scripts/amc-request-plan.mjs) · [記録](scripts/amc-effort.mjs) · [記録](lib/amc-tool.ts) · [記録](lib/workflow.ts) · [記録](app/api/amc/route.ts) · [記録](app/amc/page.tsx) · [記録](components/amc-tool-runner.tsx) · [記録](docs/sky-tools-complete-design.md) · [記録](tests/amc-goal-engine.test.mjs) · [記録](tests/amc-goal-cli.test.mjs) · [記録](tests/amc-codex.test.mjs) · [記録](tests/amc-request-plan.test.mjs) · [記録](tests/amc-effort.test.mjs) · [記録](tests/amc-sky-integration.test.mjs) · [記録](docs/evidence/amc/goal-orchestrator-audit.json) · [記録](docs/evidence/amc/codex-local-smoke.json) |
+| LCH07-01 | 子作業（LCH07）: 再受入する配布platform・候補SHA・archive hashを固定する | 未着手 | — |
+| LCH07-02 | 子作業（LCH07）: 同一候補のlicense・NOTICE・SBOMとOWNER未決を照合する | 未着手 | — |
+| LCH07-03 | 子作業（LCH07）: 候補のproduction署名・公開trust・失効/rotation証拠を結合する | 未着手 | — |
+| LCH07-04 | 子作業（LCH07）: 署名済み同一候補をfresh環境へ導入し起動・保存を再受入する | 未着手 | — |
+| LCH07-05 | 子作業（LCH07）: 同一候補の更新・rollback・backup/restore・中断復旧を受入する | 未着手 | — |
+| LCH07-06 | 子作業（LCH07）: 配布物readbackと同一候補の全受入を監査し公開可否を分離する | 未着手 | — |
+| OS02-01 | 子作業（OS02）: Pixel 10 GL066/frankelとsource lockの対象を再照合する | 未着手 | — |
+| OS02-02 | 子作業（OS02）: source署名・vendor inventory・純正復旧artifactの入力matrixを作る | 未着手 | — |
+| OS02-03 | 子作業（OS02）: 専用x86_64 LinuxのCPU・RAM・空き容量・依存を適合判定する | 未着手 | — |
+| OS02-04 | 子作業（OS02）: build前freezeの不足入力と準備検査のfail-closedを検証する | 未着手 | — |
+| OS02-05 | 子作業（OS02）: 適合済みLinux向けcompile-only再現手順とartifact保全条件を固定する | 未着手 | — |
+| OS02-06 | 子作業（OS02）: OS02適合確認の全条件とfull build・first-flashの別gateをレビューする | 未着手 | — |
+| SKY19-01 | 子作業（SKY19）: ToC料金保留と旧888 cents契約の適用差分を整理する | 未着手 | — |
+| SKY19-02 | 子作業（SKY19）: SkyのToolチーム入口と利益発生から決済までの利用者動線を定義する | 未着手 | — |
+| SKY19-03 | 子作業（SKY19）: 対象利益・料率・上限・実費・返金・還元の決定表を作る | 未着手 | — |
+| SKY19-04 | 子作業（SKY19）: 保留中に新規料金計上・請求・回収をしない回帰試験を固定する | 未着手 | — |
+| SKY19-05 | 子作業（SKY19）: OWNERの料金判断を記録し新契約の受入条件を版固定する | 未着手 | — |
+| SKY19-06 | 子作業（SKY19）: Toolチーム入口・Wallet決済・開発者還元の設計全体をレビューする | 未着手 | — |
+| SKY07-01 | 子作業（SKY07）: MCPごとのPC・Sky Cloud・提供者接続対応表をmanifestへ結ぶ | 未着手 | — |
+| SKY07-02 | 子作業（SKY07）: 接続先選択・未対応表示・ワンタップ初期化のUI契約を検証する | 未着手 | — |
+| SKY07-03 | 子作業（SKY07）: Passport・scope・一回承認と未信頼schemaの境界を検証する | 未着手 | — |
+| SKY07-04 | 子作業（SKY07）: 代表Provider sandboxで接続から実行receipt照合まで通す | 未着手 | — |
+| SKY07-05 | 子作業（SKY07）: sandboxでtimeout・失効・再接続・同一実行の再送を受入する | 未着手 | — |
+| SKY07-06 | 子作業（SKY07）: 対応先別の証拠・未対応範囲とSKY07全体受入を公開前に確定する | 未着手 | — |
+| AI02-01 | 子作業（AI02）: ModelProfileとRuntimeManifestのidentity・hash・互換条件を固定する | 未着手 | — |
+| AI02-02 | 子作業（AI02）: hash・license・容量・互換検査で非active model stagingを保護する | 未着手 | — |
+| AI02-03 | 子作業（AI02）: 仕事へのmodel/runtime版固定と旧job再開判定を実装する | 未着手 | — |
+| AI02-04 | 子作業（AI02）: Brokerによるatomic切替・health判定・crash rollbackを実装する | 未着手 | — |
+| AI02-05 | 子作業（AI02）: 承認済み評価環境で2 model候補の交換・旧job再開・失敗復旧を実測する | 未着手 | — |
+| AI02-06 | 子作業（AI02）: 権限非昇格の回帰とAI02の全体完了条件を照合する | 未着手 | — |
+| AI04-01 | 子作業（AI04）: OS10保存契約と外部作用outboxの状態・永続fieldを対応付ける | 未着手 | — |
+| AI04-02 | 子作業（AI04）: 結果不明・重複・取消・crashの決定的fixtureを固定する | 未着手 | — |
+| AI04-03 | 子作業（AI04）: dispatch前のoutbox保存・権限再検査・operation key固定を実装する | 未着手 | — |
+| AI04-04 | 子作業（AI04）: provider照会とreceiptの署名・内容・金額・finality照合を実装する | 未着手 | — |
+| AI04-05 | 子作業（AI04）: 再起動後の承認・receipt回収と取消競合を故障注入試験する | 未着手 | — |
+| AI04-06 | 子作業（AI04）: AI01・OS10の依存とAI04全体の復旧証拠を同一版で受入する | 未着手 | — |
+| SYS13-01 | 子作業（SYS13）: 緊急accessの既存APK証拠とfull OS不足を同一候補ごとに分ける | 未着手 | — |
+| SYS13-02 | 子作業（SYS13）: hardware credential登録・失効・再登録の契約と公開設定を検査する | 未着手 | — |
+| SYS13-03 | 子作業（SYS13）: Android serviceの限定command・期限・replay拒否・監査を実装検証する | 未着手 | — |
+| SYS13-04 | 子作業（SYS13）: 候補imageのprivapp・SELinux分離と緊急復旧導線を受入表へ固定する | 未着手 | — |
+| SYS13-05 | 子作業（SYS13）: 承認済みPixel候補で不正操作・失効・隔離の侵入試験を行う | 未着手 | — |
+| SYS13-06 | 子作業（SYS13）: 同一Pixel候補で切断・再起動・失効後の復旧を検証しSYS13全条件を照合する | 未着手 | — |
+| AMC01-01 | 子作業（AMC01）: Mini単体・Pro単体・任意連携・rocketstar地上支援の入出力表を作る | 未着手 | — |
+| AMC01-02 | 子作業（AMC01）: 各Interfaceの主担当・受渡し先・安全境界を一意に割り当てる | 未着手 | — |
+| AMC01-03 | 子作業（AMC01）: 公開説明・R5・Pro定義・rocketstar保存資料の相違台帳を作る | 未着手 | — |
+| AMC01-04 | 子作業（AMC01）: 未決事項へ決定者・必要入力・影響先・次の作業を付ける | 未着手 | — |
+| AMC01-05 | 子作業（AMC01）: 責任表と未決台帳を32部隊・親子タスクへ相互リンクする | 未着手 | — |
+| AMC01-06 | 子作業（AMC01）: 関係部隊の責任表レビューを記録し残る未決を引き継ぐ | 未着手 | — |
+| RKT10-01 | 子作業（RKT10）: 要求・BOM・供給元・inspectionの識別関係を定義する | 未着手 | — |
+| RKT10-02 | 子作業（RKT10）: 不適合と構成変更の記録・影響判定を定義する | 未着手 | — |
+| RKT10-03 | 子作業（RKT10）: 設計reviewと製造引渡しの証拠Gateを分ける | 未着手 | — |
+| RKT10-04 | 子作業（RKT10）: 地上・飛行・再使用の証拠Gateを分ける | 未着手 | — |
+| RKT10-05 | 子作業（RKT10）: 証拠提出者と独立確認者の役割をGateへ割り当てる | 未着手 | — |
+| RKT10-06 | 子作業（RKT10）: 版変更時に再評価する合格範囲をmatrixへまとめる | 未着手 | — |
+| RKT09-01 | 子作業（RKT09）: 機番・構成版・部品識別の台帳schemaを定義する | 未着手 | — |
+| RKT09-02 | 子作業（RKT09）: 部品寿命・回収履歴の記録項目を定義する | 未着手 | — |
+| RKT09-03 | 子作業（RKT09）: 点検・交換・不適合の判定経路を整理する | 未着手 | — |
+| RKT09-04 | 子作業（RKT09）: 再飛行可否に必要な証拠と判定責任を整理する | 未着手 | — |
+| RKT09-05 | 子作業（RKT09）: 不足証拠・版混在を拒否するsynthetic履歴を設計する | 未着手 | — |
+| RKT09-06 | 子作業（RKT09）: synthetic判定と同一機番の実再使用証拠を分離する | 未着手 | — |
+| RKT08-01 | 子作業（RKT08）: 輸送・設置・発射準備・回収の設備要求を索引化する | 未着手 | — |
+| RKT08-02 | 子作業（RKT08）: 運用段階ごとの実行者・確認者・中止権限を定義する | 未着手 | — |
+| RKT08-03 | 子作業（RKT08）: 要求と結果の照合・go/no-go・holdの記録形式を作る | 未着手 | — |
+| RKT08-04 | 子作業（RKT08）: abort時の通知・確認・記録の机上ケースを定義する | 未着手 | — |
+| RKT08-05 | 子作業（RKT08）: 地域・施設・運用資格の未決と確認先を整理する | 未着手 | — |
+| RKT08-06 | 子作業（RKT08）: 机上rehearsalの入力と期待記録をGateへまとめる | 未着手 | — |
+| RKT07-01 | 子作業（RKT07）: R1.0の電源・記録・時刻・通信要求を対応付ける | 未着手 | — |
+| RKT07-02 | 子作業（RKT07）: A-LINK v0.4受信試作の適用範囲を切り出す | 未着手 | — |
+| RKT07-03 | 子作業（RKT07）: 現行要求と旧試作を一致・差分・未確認へ分類する | 未着手 | — |
+| RKT07-04 | 子作業（RKT07）: link別の容量・可視条件・電力・時刻の未決を整理する | 未着手 | — |
+| RKT07-05 | 子作業（RKT07）: 切断・遅延・順序・再送のlink simulatorケースを定義する | 未着手 | — |
+| RKT07-06 | 子作業（RKT07）: 受信試作・simulator・実電波・機体統合の受入を分ける | 未着手 | — |
+| RKT06-01 | 子作業（RKT06）: Payloadの包絡・質量・接続の必要入力を整理する | 未着手 | — |
+| RKT06-02 | 子作業（RKT06）: Payloadと機体のInterface責任を対応付ける | 未着手 | — |
+| RKT06-03 | 子作業（RKT06）: 保持・扉・分離要求の状態を分ける | 未着手 | — |
+| RKT06-04 | 子作業（RKT06）: 分離結果・残留・不明の状態確認を定義する | 未着手 | — |
+| RKT06-05 | 子作業（RKT06）: emulator異常入力と表示・記録の期待値を定義する | 未着手 | — |
+| RKT06-06 | 子作業（RKT06）: emulatorと実機分離の証拠を分けた受入表を作る | 未着手 | — |
+| RKT05-01 | 子作業（RKT05）: 飛行核と地上支援OSのauthority境界を図示する | 未着手 | — |
+| RKT05-02 | 子作業（RKT05）: 正常状態の入出力と独立判定役割を整理する | 未着手 | — |
+| RKT05-03 | 子作業（RKT05）: 中止・通信断・再起動の状態遷移を定義する | 未着手 | — |
+| RKT05-04 | 子作業（RKT05）: SILの入力・期待結果・trace記録形式を定義する | 未着手 | — |
+| RKT05-05 | 子作業（RKT05）: 禁止遷移と権限越境を照合するレビュー表を作る | 未着手 | — |
+| RKT05-06 | 子作業（RKT05）: SIL計画・SIL結果・HIL・実機・飛行認定を分離する | 未着手 | — |
+| RKT04-01 | 子作業（RKT04）: 飛行領域・熱・扉・構造の要求対応表を作る | 未着手 | — |
+| RKT04-02 | 子作業（RKT04）: 解析caseのMission版と構成版を揃える規則を定義する | 未着手 | — |
+| RKT04-03 | 子作業（RKT04）: 境界条件・材料・不確かさの不足入力を整理する | 未着手 | — |
+| RKT04-04 | 子作業（RKT04）: 空力・熱・構造の受渡入力と解消順を可視化する | 未着手 | — |
+| RKT04-05 | 子作業（RKT04）: 解析と独立検証を照合する記録要件を定義する | 未着手 | — |
+| RKT04-06 | 子作業（RKT04）: 解析計画と実環境受入の証拠境界をまとめる | 未着手 | — |
+| RKT03-01 | 子作業（RKT03）: 推進要求と機体側Interfaceの出典台帳を作る | 未着手 | — |
+| RKT03-02 | 子作業（RKT03）: 停止要求・状態通知の責任と確認記録を分ける | 未着手 | — |
+| RKT03-03 | 子作業（RKT03）: 方式・型式・個数・寿命の未決台帳を作る | 未着手 | — |
+| RKT03-04 | 子作業（RKT03）: 比較性能と採用値を分ける記録様式を定義する | 未着手 | — |
+| RKT03-05 | 子作業（RKT03）: 専門設計レビューへ提出する項目と責任をまとめる | 未着手 | — |
+| RKT03-06 | 子作業（RKT03）: 設計レビューから地上実証までの証拠Gateを整理する | 未着手 | — |
+| RKT02-01 | 子作業（RKT02）: 構造・tank・取付部の要求とInterfaceを索引化する | 未着手 | — |
+| RKT02-02 | 子作業（RKT02）: 材料候補と材料証拠の未決入力を整理する | 未着手 | — |
+| RKT02-03 | 子作業（RKT02）: 荷重caseの出典・構成版・不足入力を対応付ける | 未着手 | — |
+| RKT02-04 | 子作業（RKT02）: 製造方法・取付条件の未決と専門レビュー役割を整理する | 未着手 | — |
+| RKT02-05 | 子作業（RKT02）: 材料試験・解析・構造試験の証拠順を定義する | 未着手 | — |
+| RKT02-06 | 子作業（RKT02）: 製造リリースへ渡せない未確定条件を一覧化する | 未着手 | — |
+| RKT01-01 | 子作業（RKT01）: 射場・回収・投入・搭載・環境のMission入力台帳を作る | 未着手 | — |
+| RKT01-02 | 子作業（RKT01）: R1.0の60要求へ根拠と必要証拠を対応付ける | 未着手 | — |
+| RKT01-03 | 子作業（RKT01）: 18 Interfaceの入出力とR1〜R10の責任を対応付ける | 未着手 | — |
+| RKT01-04 | 子作業（RKT01）: 要求と未決事項の主担当・閉じ方をR1〜R10へ割り当てる | 未着手 | — |
+| RKT01-05 | 子作業（RKT01）: 不足Mission入力の決定順と影響先を整理する | 未着手 | — |
+| RKT01-06 | 子作業（RKT01）: W1要求整理とW2統合成立性のGateを分ける | 未着手 | — |
+| PRO07-01 | 子作業（PRO07）: 基板・冷却・storage・I/Oの筐体包絡入力を整理する | 未着手 | — |
+| PRO07-02 | 子作業（PRO07）: 動作モード別の電力予算と未選定条件を分ける | 未着手 | — |
+| PRO07-03 | 子作業（PRO07）: 最大同時負荷と通風阻害の熱評価条件を定義する | 未着手 | — |
+| PRO07-04 | 子作業（PRO07）: 電源断・中断更新・復旧失敗の受入入力を定義する | 未着手 | — |
+| PRO07-05 | 子作業（PRO07）: 署名・個体鍵・譲渡消去のOSとProの責任を分ける | 未着手 | — |
+| PRO07-06 | 子作業（PRO07）: 筐体・熱・更新復旧の計画受入と完成品受入を分離する | 未着手 | — |
+| PRO06-01 | 子作業（PRO06）: pairingと能力交渉の機器認証条件を定義する | 未着手 | — |
+| PRO06-02 | 子作業（PRO06）: Pose eventのschema版・座標・単位・時刻を共通化する | 未着手 | — |
+| PRO06-03 | 子作業（PRO06）: Poseの順序・鮮度・重複・時計ずれの判定を定義する | 未着手 | — |
+| PRO06-04 | 子作業（PRO06）: 切断・古いepoch・再接続の状態遷移を整理する | 未着手 | — |
+| PRO06-05 | 子作業（PRO06）: 未知機器と異常Poseのsynthetic fixtureを設計する | 未着手 | — |
+| PRO06-06 | 子作業（PRO06）: 1・2・4 Mini追加profileと単独動作の境界をまとめる | 未着手 | — |
+| PRO05-01 | 子作業（PRO05）: 映像・音声・controllerの用途と最小接続構成を整理する | 未着手 | — |
+| PRO05-02 | 子作業（PRO05）: 端子・規格候補とdriverの対応表を作る | 未着手 | — |
+| PRO05-03 | 子作業（PRO05）: I/Oの帯域・電力を演算基板候補の制約へ対応付ける | 未着手 | — |
+| PRO05-04 | 子作業（PRO05）: 起動前未接続と機器認識失敗の期待挙動を定義する | 未着手 | — |
+| PRO05-05 | 子作業（PRO05）: 抜去・再接続の操作継続と音映像復帰ケースを定義する | 未着手 | — |
+| PRO05-06 | 子作業（PRO05）: 最小I/O表の未決と選定前受入条件をまとめる | 未着手 | — |
+| PRO04-01 | 子作業（PRO04）: session・game・作品・秘密参照・ログの保存分類表を作る | 未着手 | — |
+| PRO04-02 | 子作業（PRO04）: 利用者分離と別owner読取拒否のfixtureを設計する | 未着手 | — |
+| PRO04-03 | 子作業（PRO04）: 容量不足・並行更新・中断時の保存契約を定義する | 未着手 | — |
+| PRO04-04 | 子作業（PRO04）: 暗号鍵の責任とcrash・鍵喪失時の復旧境界を定義する | 未着手 | — |
+| PRO04-05 | 子作業（PRO04）: backup・restoreとschema版更新のfixtureを設計する | 未着手 | — |
+| PRO04-06 | 子作業（PRO04）: export・deleteと削除後の再アクセスのfixtureを設計する | 未着手 | — |
+| PRO03-01 | 子作業（PRO03）: DX01共通契約とPro固有profileの差分を整理する | 未着手 | — |
+| PRO03-02 | 子作業（PRO03）: controllerの操作を意味操作へ対応付ける | 未着手 | — |
+| PRO03-03 | 子作業（PRO03）: 任意Mini入力を同じ意味操作へ変換する差分を定義する | 未着手 | — |
+| PRO03-04 | 子作業（PRO03）: sampleの版・導入・playの再現手順を定義する | 未着手 | — |
+| PRO03-05 | 子作業（PRO03）: 中断・保存・再開の形式と期待状態を定義する | 未着手 | — |
+| PRO03-06 | 子作業（PRO03）: 削除まで含めた非金融gameの受入ケース表を作る | 未着手 | — |
+| PRO02-01 | 子作業（PRO02）: ゲーム単独とゲーム＋音声の再現負荷を定義する | 未着手 | — |
+| PRO02-02 | 子作業（PRO02）: サービス＋保存とローカルAI併用の再現負荷を定義する | 未着手 | — |
+| PRO02-03 | 子作業（PRO02）: 解像度・FPS・p95遅延・RAM・I/Oの計測欄を統一する | 未着手 | — |
+| PRO02-04 | 子作業（PRO02）: 電力・温度・継続負荷の比較条件を定義する | 未着手 | — |
+| PRO02-05 | 子作業（PRO02）: CPU・GPU・NPU候補のdriver・OS・供給条件を比較表へ揃える | 未着手 | — |
+| PRO02-06 | 子作業（PRO02）: 同条件比較から候補を選ぶ判定手順と保留条件を作る | 未着手 | — |
+| PRO01-01 | 子作業（PRO01）: games・services・compute・storage・audioの要求候補を抽出する | 未着手 | — |
+| PRO01-02 | 子作業（PRO01）: Pro単独利用の利用者・入出力・成功条件を定義する | 未着手 | — |
+| PRO01-03 | 子作業（PRO01）: 任意Mini連携の追加機能と切断時の境界を分ける | 未着手 | — |
+| PRO01-04 | 子作業（PRO01）: Pro要求の主担当と受入方法をP2〜P7へ割り当てる | 未着手 | — |
+| PRO01-05 | 子作業（PRO01）: 性能・端子・価格・筐体の未決台帳を作る | 未着手 | — |
+| PRO01-06 | 子作業（PRO01）: v0.1要求整理からv1.0統合設計へ渡す不足をまとめる | 未着手 | — |
+| MINI07-01 | 子作業（MINI07）: 校正失敗・過熱・通信喪失・OS停止・更新停電を危険台帳へ登録する | 未着手 | — |
+| MINI07-02 | 子作業（MINI07）: 危険ごとの検出・独立停止・復帰条件を対応付ける | 未着手 | — |
+| MINI07-03 | 子作業（MINI07）: 来客の物理停止と校正失敗時の受入ケースを作る | 未着手 | — |
+| MINI07-04 | 子作業（MINI07）: 原データ保存・送信の既定OFFと許可取消を確認表へ落とす | 未着手 | — |
+| MINI07-05 | 子作業（MINI07）: M2〜M6の評価計画から安全側へ渡す条件を整理する | 未着手 | — |
+| MINI07-06 | 子作業（MINI07）: 未決をHOLDにする安全受入表とレビュー担当をまとめる | 未着手 | — |
+| MINI06-01 | 子作業（MINI06）: 部品・動作モード・起動ピークの電力予算表を作る | 未着手 | — |
+| MINI06-02 | 子作業（MINI06）: 表示方式未決の電力を独立した条件欄へ分離する | 未着手 | — |
+| MINI06-03 | 子作業（MINI06）: 周囲条件・吸気閉塞・同時負荷の熱評価条件を定義する | 未着手 | — |
+| MINI06-04 | 子作業（MINI06）: 1台時の時刻・順序・再接続の通信評価入力を定義する | 未着手 | — |
+| MINI06-05 | 子作業（MINI06）: 2台中1台喪失時の共同確定停止ケースを定義する | 未着手 | — |
+| MINI06-06 | 子作業（MINI06）: 4台の過半数・少数側停止と再接続のケースを定義する | 未着手 | — |
+| MINI05-01 | 子作業（MINI05）: 単独nodeのSensor・World・Input・Gameの責任を割り当てる | 未着手 | — |
+| MINI05-02 | 子作業（MINI05）: Display・保存・停止までの単独利用シーケンスを定義する | 未着手 | — |
+| MINI05-03 | 子作業（MINI05）: 候補基板と必要ドライバーの対応・不足を整理する | 未着手 | — |
+| MINI05-04 | 子作業（MINI05）: 再現buildと起動失敗・保存復旧の記録要件を定義する | 未着手 | — |
+| MINI05-05 | 子作業（MINI05）: OS停止と独立Safety MCU遮断の経路を分ける | 未着手 | — |
+| MINI05-06 | 子作業（MINI05）: stub・実Sensor・R5実基板を分けた最小boot受入表を作る | 未着手 | — |
+| MINI04-01 | 子作業（MINI04）: 裸眼・通常室内・周囲空間の要求を評価項目へ対応付ける | 未着手 | — |
+| MINI04-02 | 子作業（MINI04）: 表示媒体・視域・光路の方式比較欄を作る | 未着手 | — |
+| MINI04-03 | 子作業（MINI04）: 表示電力と200mm収納の必要入力を機構側へ渡す表にする | 未着手 | — |
+| MINI04-04 | 子作業（MINI04）: 有効領域・明るさ・視域の測定方法を指定する | 未着手 | — |
+| MINI04-05 | 子作業（MINI04）: 光学試験の専門レビュー・開始条件・中止条件を整理する | 未着手 | — |
+| MINI04-06 | 子作業（MINI04）: 2D fallbackと裸眼表示受入を別の証拠欄に分ける | 未着手 | — |
+| MINI03-01 | 子作業（MINI03）: 単体深度方式と候補センサーの観測範囲を比較する | 未着手 | — |
+| MINI03-02 | 子作業（MINI03）: 床置き・台上・着座の入力評価シーンを定義する | 未着手 | — |
+| MINI03-03 | 子作業（MINI03）: 遮蔽・交差・複数人の欠落ケースを定義する | 未着手 | — |
+| MINI03-04 | 子作業（MINI03）: 基準器・時刻・座標と誤差計算の記録形式を決める | 未着手 | — |
+| MINI03-05 | 子作業（MINI03）: 精度目標の未決値と決定に必要な入力を整理する | 未着手 | — |
+| MINI03-06 | 子作業（MINI03）: R5単体測定と旧pose fixtureを分離した受入表を作る | 未着手 | — |
+| MINI02-01 | 子作業（MINI02）: 候補部品の寸法・出典・未選定範囲を包絡表へ整理する | 未着手 | — |
+| MINI02-02 | 子作業（MINI02）: 脚・配線・工具空間の共通座標と干渉確認区画を定義する | 未着手 | — |
+| MINI02-03 | 子作業（MINI02）: 全使用姿勢で200mmを判定する寸法鎖と測定図を指定する | 未着手 | — |
+| MINI02-04 | 子作業（MINI02）: 重心・滑り・転倒の評価条件と判定者を整理する | 未着手 | — |
+| MINI02-05 | 子作業（MINI02）: 未選定光学方式が外径・台座へ与える制約を切り出す | 未着手 | — |
+| MINI02-06 | 子作業（MINI02）: 分解保守の確認項目と加工図へ移行できない条件をまとめる | 未着手 | — |
+| MINI01-01 | 子作業（MINI01）: R5のREQ01〜12と根拠章を要求台帳へ転記する | 未着手 | — |
+| MINI01-02 | 子作業（MINI01）: OPEN01〜08の必要入力と閉じ方を分ける | 未着手 | — |
+| MINI01-03 | 子作業（MINI01）: R5要求と受入試験IDを対応付ける | 未着手 | — |
+| MINI01-04 | 子作業（MINI01）: 要求・未決・試験の主担当をM1〜M7とOSへ割り当てる | 未着手 | — |
+| MINI01-05 | 子作業（MINI01）: 1本自律・200mm・同型増設・Pro任意の境界を照合する | 未着手 | — |
+| MINI01-06 | 子作業（MINI01）: 要求追跡の欠落とMAT15全体受入との差分をまとめる | 未着手 | — |
 | ORG01 | 製品・SkyのAI自動化チーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備 | 完了 | [記録](PROJECTS.md) · [記録](README.md) · [記録](docs/rockstaros-product-system-map.md) · [記録](docs/workstreams/README.md) · [記録](scripts/check-sky.mjs) |
+| ORG02 | avokado Mission ControlでRockstarOS・Mini・Pro・rocketstarを32部隊へ分け、Goal・進捗段階・rule・依存・証拠・次の作業を正本化 | 完了 | [記録](docs/mission-control.md) · [記録](data/mission-control.json) · [記録](scripts/check-mission-control.mjs) · [記録](PROJECTS.md) |
 | MAT14 | R5統合基本設計・PDF/Word・図面8組・計算・参考資料を欠落なく保存し、現行入口と履歴を整理（製造承認保留） | 完了 | [記録](docs/avocado-mini-r5/README.md) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/avocado-mini-r5/verification.json) · [記録](scripts/verify-avocado-r5-package.py) |
 | MAT15 | R5単体の裸眼空間表示・安全・精密3D入力を成立させ、収納/熱/電源/確定回路/加工図と実機受入を閉じる | 未着手 | [記録](docs/avocado-mini-r5/package/integrated_design.md) |
 | UXCHAR01 | Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果） | 完了 | [記録](components/tool-character.tsx) · [記録](components/tool-character.module.css) · [記録](docs/workstreams/01-product-ux.md) |
 | SKY20 | Sky公開・Telegram配布を証拠付きverified Packageへ限定し、失効と利用イベント再送を受け入れる | 進行中 | [記録](drizzle/0016_red_crusher_hogan.sql) · [記録](lib/sky-tool-review.ts) · [記録](lib/sky-review-auth.ts) · [記録](app/api/sky/tool-reviews/route.ts) · [記録](lib/sky-tool-package-store.ts) · [記録](lib/sky-activation.ts) · [記録](lib/sky-tool-events.ts) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](tests/sky-tool-package.test.mjs) · [記録](tests/sky-activation.test.mjs) · [記録](tests/sky-tool-sdk.test.mjs) · [記録](docs/sky-tool-sdk.md) |
-| SKY19 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
+| SKY19 | 親タスク: SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
 | DOC01 | RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化 | 完了 | [記録](docs/rockstaros-design-portal.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
 | DOC02 | RockstarOS設計書完全版v1.0の原本PDF・全文抽出・完全性記録・設計索引をGit正本へ保存 | 完了 | [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rockstaros-complete-design-v1.0.txt) · [記録](data/rockstaros-complete-design-v1.0.json) · [記録](docs/rockstaros-design-portal.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
 | DOC03 | rocketstar R1.0・衛星・OS付録・ボタン・生成元・旧版を原本と照合し、設計アーカイブと索引へ保存（製造/飛行未認定） | 完了 | [記録](docs/rocketstar-design/README.md) · [記録](docs/rocketstar-design/inventory.json) · [記録](docs/rocketstar-design/verification.json) · [記録](scripts/verify-rocketstar-archive.py) · [記録](data/design-document-index.json) |
 | DOC04 | avokado READMEをR5端末・RockstarOS v1.0現行OS・rocketstar R1.0現行ロケット・事業・機能・全設計書の入口へ刷新 | 完了 | [記録](README.md) · [記録](docs/brand/avokado/avokado-r5-editorial-hero.png) · [記録](docs/brand/avokado/avokado-motion-v2.gif) · [記録](docs/brand/avokado/avokado-system-map.svg) · [記録](data/design-document-index.json) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) |
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
-| AI02 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI02 | 親タスク: モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
-| AI04 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI04 | 親タスク: 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI08 | Jev／TypeSafe・Local Qwen・Cloud LLMをcode主導で統合するDecision Fabric全体詳細設計と機械可読安全契約を固定 | 完了 | [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) |
@@ -1067,7 +1335,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY04 | tob無料のConnection Passport・実行契約・ToB/ToC貢献分配を一画面で説明するSky Networkフロント | 完了 | [記録](app/sky/network/page.tsx) · [記録](components/sky-network.tsx) · [記録](components/sky-network.module.css) · [記録](docs/sky-network-economy.md) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) |
 | SKY05 | Sky画面のsidebarを廃止し、MCP接続・管理とToB掲載をSky本体の操作面へ統合 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/sky-mcp-center.tsx) · [記録](components/sky-mcp-center.module.css) · [記録](components/sky-publisher-form.tsx) · [記録](components/workspace-shell.tsx) · [記録](app/sky/network/page.tsx) · [記録](app/sky/publish/page.tsx) |
 | SKY06 | Sky内MCPを実在するPC接続・既存4自動化・3ステップ導入画面へ統合 | 完了 | [記録](components/sky-mcp-center.tsx) · [記録](components/device-connection.tsx) · [記録](tests/sky-mcp-onboarding.test.mjs) · [記録](scripts/verify-mcp-flow.mjs) |
-| SKY07 | MCPごとにこのPC・Sky Cloud・提供者MCPの接続先を選び、対応先へワンタップ接続する | 進行中 | [記録](components/sky-mcp-center.tsx) · [記録](components/sky-mcp-center.module.css) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](scripts/package-sky-mcp.py) · [記録](public/toolkits/sky-mcp-connector.zip) · [記録](docs/sky-mcp-connector.md) · [記録](tests/mcp-connector.test.mjs) · [記録](tests/sky-mcp-onboarding.test.mjs) · [記録](docs/product-baseline.md) |
+| SKY07 | 親タスク: MCPごとにこのPC・Sky Cloud・提供者MCPの接続先を選び、対応先へワンタップ接続する | 進行中 | [記録](components/sky-mcp-center.tsx) · [記録](components/sky-mcp-center.module.css) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](scripts/package-sky-mcp.py) · [記録](public/toolkits/sky-mcp-connector.zip) · [記録](docs/sky-mcp-connector.md) · [記録](tests/mcp-connector.test.mjs) · [記録](tests/sky-mcp-onboarding.test.mjs) · [記録](docs/product-baseline.md) |
 | SKY08 | 黒基調の改善版SkyへFashion Brand Opsを統合し、スマホDialogの画面外ずれを修正 | 完了 | [記録](app/sky/network/page.tsx) · [記録](components/sky-network.tsx) · [記録](components/sky-network.module.css) · [記録](docs/sky-network-economy.md) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) · [記録](components/sky-workspace.tsx) · [記録](components/fashion-brand-ops-runner.tsx) · [記録](app/workspace.css) · [記録](scripts/check-sky.mjs) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
 | SKY09 | Skyの商品カード1回でFashion Brand Ops MCPを初期化し、38操作と接続状態を同期 | 完了 | [記録](components/sky-workspace.tsx) · [記録](app/api/sky/connections/route.ts) · [記録](docs/sky-identity-connection.md) |
 | SKY10 | Skyをアプリ選択と接続へ絞り、Chatを依頼・状況・結果の受取画面として分離 | 完了 | [記録](components/sky-workspace.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/workspace-shell.tsx) · [記録](app/chat/page.tsx) · [記録](app/polymarket/page.tsx) · [記録](docs/workstreams/01-product-ux.md) · [記録](README.md) |
@@ -1125,7 +1393,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SYS10 | Web第三者依存のlock hash・47要review componentのPURL一覧を公開gateへ固定 | 完了 | [記録](package-lock.json) · [記録](data/web-third-party-license-audit.json) · [記録](data/release-readiness.json) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
 | SYS11 | Vite生成chunkのnpm componentをbuild時に記録しlicense監査へ照合 | 完了 | [記録](vite.config.ts) · [記録](scripts/web-bundle-inventory.mjs) · [記録](scripts/check-web-bundle-inventory.mjs) · [記録](tests/web-bundle-inventory.test.mjs) · [記録](package.json) · [記録](data/release-readiness.json) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
 | SYS12 | 運営1名で開始できる緊急保護・限定保守accessの脅威モデルと端末側制御契約を固定 | 完了 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](docs/product-baseline.md) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) |
-| SYS13 | 緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験 | 進行中 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](services/operator-dock/public/index.html) · [記録](services/operator-dock/src/worker.ts) · [記録](services/operator-dock/src/access-auth.ts) · [記録](services/operator-dock/src/operator-control.ts) · [記録](services/operator-dock/src/device-channel.ts) · [記録](services/operator-dock/migrations/0001_operator_device_control.sql) · [記録](services/operator-dock/migrations/0002_signed_device_channel.sql) · [記録](android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandVerifier.java) · [記録](android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorAgentJobService.java) · [記録](tests/operator-control.test.mjs) · [記録](tests/operator-device-channel.test.mjs) · [記録](tests/operator-access-auth.test.mjs) · [記録](tests/operator-dock-isolation.test.mjs) · [記録](android/operator-agent/src/androidTest/java/dev/rock/operator/agent/OperatorAgentIntegrationTest.java) · [記録](android/operator-agent/src/main/res/values/overlayable.xml) · [記録](scripts/stage-operator-agent-overlay.py) · [記録](tests/test_stage_operator_agent_overlay.py) · [記録](os/physical/operator-agent-overlay/README.md) · [記録](docs/evidence/android-operator-agent-emulator-20260916.json) · [記録](docs/evidence/android-pixel-10-prefull-physical-20260916.json) · [記録](docs/evidence/android-operator-overlay-stager-20260916.json) |
+| SYS13 | 親タスク: 緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験 | 進行中 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](services/operator-dock/public/index.html) · [記録](services/operator-dock/src/worker.ts) · [記録](services/operator-dock/src/access-auth.ts) · [記録](services/operator-dock/src/operator-control.ts) · [記録](services/operator-dock/src/device-channel.ts) · [記録](services/operator-dock/migrations/0001_operator_device_control.sql) · [記録](services/operator-dock/migrations/0002_signed_device_channel.sql) · [記録](android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandVerifier.java) · [記録](android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorAgentJobService.java) · [記録](tests/operator-control.test.mjs) · [記録](tests/operator-device-channel.test.mjs) · [記録](tests/operator-access-auth.test.mjs) · [記録](tests/operator-dock-isolation.test.mjs) · [記録](android/operator-agent/src/androidTest/java/dev/rock/operator/agent/OperatorAgentIntegrationTest.java) · [記録](android/operator-agent/src/main/res/values/overlayable.xml) · [記録](scripts/stage-operator-agent-overlay.py) · [記録](tests/test_stage_operator_agent_overlay.py) · [記録](os/physical/operator-agent-overlay/README.md) · [記録](docs/evidence/android-operator-agent-emulator-20260916.json) · [記録](docs/evidence/android-pixel-10-prefull-physical-20260916.json) · [記録](docs/evidence/android-operator-overlay-stager-20260916.json) |
 | SYS14 | 製品目的から全層の選択・接続・実証状態を一つの構成監査へ固定 | 完了 | [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](scripts/check-system-composition.mjs) · [記録](tests/system-composition.test.mjs) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
@@ -1137,7 +1405,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | R08 | 検証結果・公開停止理由と再開設計の文書化 | 完了 | [記録](project.md) · [記録](docs/validation.md) · [記録](docs/deployment-integration.md) |
 | OS01 | 既存設計の要件追跡と自動化OS開発設計 | 完了 | [記録](docs/os-development-design.md) |
 | DSP01 | 共通Core・機種別Device Support Package・4提供区分の設計と検査 | 完了 | [記録](docs/device-support-architecture.md) · [記録](data/device-support-matrix.json) · [記録](scripts/check-device-support.mjs) |
-| OS02 | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 進行中 | [記録](docs/os-development-design.md) · [記録](docs/phone-preview-20260911.md) · [記録](os/physical/frankel-source-lock.json) · [記録](docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json) |
+| OS02 | 親タスク: 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 進行中 | [記録](docs/os-development-design.md) · [記録](docs/phone-preview-20260911.md) · [記録](os/physical/frankel-source-lock.json) · [記録](docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json) |
 | OS03 | 【Android/AOSP別トラック】CuttlefishでOS起動と自律実行の最小縦断試作 | 未着手 | [記録](docs/os-development-design.md) |
 | OS04 | 【Android/AOSP別トラック】Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 | [記録](docs/os-development-design.md) |
 | OS05 | 【Android/AOSP別トラック】第三者SDK・審査・インストール・失効の閉鎖テスト | 未着手 | [記録](docs/os-development-design.md) |
@@ -1174,7 +1442,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | LCH04 | Sites履歴のコード統合・新規本人限定サイト・Sky改善 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/owner-setup-20260911.md) · [記録](docs/current-state-20260911.md) · [記録](docs/evidence/launch/sites-owner-private-20260913.json) |
 | LCH05 | 制作中CMの完成待ち・内容照合・導入案内への接続 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
 | LCH06 | PR系列・正確なmain統合tree・版表示の整合 | 進行中 | [記録](docs/launch-readiness-20260910.md) · [記録](docs/current-state-20260911.md) |
-| LCH07 | 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
+| LCH07 | 親タスク: 同一最終候補の再現配布・導入・復旧リハーサル | 進行中 | [記録](docs/launch-readiness-20260910.md) |
 | LCH08 | ローカルOSバックエンドの安全終了・ヘルスチェック・再起動時のreceipt復元を検証 | 完了 | [記録](docs/backend-launch-20260912.md) · [記録](docs/evidence/launch/backend-rc3-local-20260912.json) · [記録](systems/rock-star-os/scripts/verify-backend-launch.py) · [記録](systems/rock-star-os/tests/test_hub.py) · [記録](systems/rock-star-os/tests/test_hub_server.py) |
 | FB01 | Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合 | 完了 | [記録](docs/fashion-brand-ops-integration.md) |
 | FB02 | 売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
@@ -1186,6 +1454,32 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) · [記録](docs/workstreams/03-wallet-billing-providers.md) · [記録](tests/billing-worker.test.mjs) · [記録](docs/evidence/launch/sky-billing-fee-hold-20260924.json) |
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |
 | CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 | [記録](data/csv-business-tasks.json) · [記録](docs/csv-business-v1.ja.md) · [記録](lib/csv-transform.ts) · [記録](lib/csv-job-store.ts) · [記録](components/csv-business-workspace.tsx) |
+| AMC01 | 親タスク: 現行3製品とOSの責任表・未決事項台帳をレビューする | 未着手 | — |
+| MINI01 | 親タスク: R5要求・OPEN01〜08と部隊別試験の追跡表を作る | 未着手 | — |
+| MINI02 | 親タスク: R5の200mm収納と部品干渉を確認する機構評価計画を作る | 未着手 | — |
+| MINI03 | 親タスク: R5単体3D入力の方式比較と測定計画を作る | 未着手 | — |
+| MINI04 | 親タスク: R5裸眼表示の成立条件・方式比較・試験開始条件を整理する | 未着手 | — |
+| MINI05 | 親タスク: Mini単独boot・入力・game・保存・停止の最小実装仕様を作る | 未着手 | — |
+| MINI06 | 親タスク: R5電源・熱・1/2/4台通信の評価条件を定義する | 未着手 | — |
+| MINI07 | 親タスク: R5校正・停止・privacy・復旧の危険分析と受入表を作る | 未着手 | — |
+| PRO01 | 親タスク: Pro v0.1の製品要求と単独利用・任意Mini連携の境界を定義する | 未着手 | — |
+| PRO02 | 親タスク: Proの代表負荷・性能予算と演算基板候補の比較条件を定義する | 未着手 | — |
+| PRO03 | 親タスク: Pro非金融ゲームのsample・保存再開・入力SDKの差分仕様を作る | 未着手 | — |
+| PRO04 | 親タスク: Proの利用者別保存・容量・backup・復旧契約を定義する | 未着手 | — |
+| PRO05 | 親タスク: Proの映像・音声・controller・端子の最小I/O表を作る | 未着手 | — |
+| PRO06 | 親タスク: 任意Mini–Pro接続の認証・時刻・Pose契約v0を作る | 未着手 | — |
+| PRO07 | 親タスク: Pro筐体・熱・電源・更新復旧の制約と評価計画を作る | 未着手 | — |
+| RKT01 | 親タスク: rocketstar R1.0のMission入力・未決台帳と要求追跡を整理する | 未着手 | — |
+| RKT02 | 親タスク: 構造・tank・取付Interfaceの解析入力と検証計画を整理する | 未着手 | — |
+| RKT03 | 親タスク: 推進系の要求・機体Interface・検証段階を整理する | 未着手 | — |
+| RKT04 | 親タスク: 空力・熱・構造の結合条件と検証入力を整理する | 未着手 | — |
+| RKT05 | 親タスク: Flight SWの独立性・状態・SIL試験要件を整理する | 未着手 | — |
+| RKT06 | 親タスク: Payload・扉・分離のInterfaceと異常確認計画を整理する | 未着手 | — |
+| RKT07 | 親タスク: R1.0の電源・data・時刻とA-LINK旧試作の差分表を作る | 未着手 | — |
+| RKT08 | 親タスク: 地上設備・運用役割とgo/no-go・abortの机上確認計画を作る | 未着手 | — |
+| RKT09 | 親タスク: 帰還・回収・整備・同一機番再使用の証拠台帳を設計する | 未着手 | — |
+| RKT10 | 親タスク: 製造・品質・安全の構成管理と段階別証拠matrixを作る | 未着手 | — |
+| ORG03 | AMCの担当・旧版混入・受入条件を精査し、部隊ごとの実行可能taskと検査を同期 | 完了 | [記録](docs/mission-control.md) · [記録](data/mission-control.json) · [記録](scripts/check-mission-control.mjs) · [記録](scripts/sync-mission-control.mjs) · [記録](tests/mission-control.test.mjs) · [記録](docs/evidence/amc/task-precision-audit.json) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -1206,7 +1500,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
+次の作業: AMCのWeb計画・手動台帳からGoal JSONを保存し、明示コマンドでローカルCodexへ着手可能な一件を渡す入口を追加。隔離した試験Goalの一件が実Codexで成果物を作り、AMCでは検収待ちまで記録された。元のWeb記録へは自動同期しない。次は同一Web記録への安全な結果同期、停止・復旧と本人通知、使いやすさ確認。公開する場合はGitHub同期と同一候補の配備readbackを別に行う。自律的な連続実行・自動通知・model導入・課金・公開・実売買は未接続／未実行。正本5師団32部隊は参照専用。
 <!-- project-status:end -->
 
 ## 次段階の設計

@@ -13,10 +13,16 @@ const requireValue = (ok, message) => {
 const catalogSource = read('lib/catalog.ts');
 const operationsSource = read('lib/operations.ts');
 const readyCount = catalog.filter(({ status }) => status === 'ready').length;
-const candidateCount = catalog.filter(({ status }) => status === 'candidate').length;
+const candidateCount = catalog.filter(
+  ({ status }) => status === 'candidate',
+).length;
 requireValue(
-  readyCount === 12,
-  `Web/PC readyは12件です（実際: ${readyCount}）`,
+  readyCount === 13,
+  `Web/PC readyはAMCを含む13件です（実際: ${readyCount}）`,
+);
+requireValue(
+  catalog.length === 35,
+  `Sky catalogは35件です（実際: ${catalog.length}）`,
 );
 requireValue(
   candidateCount === 22,
@@ -24,7 +30,10 @@ requireValue(
 );
 const jobTools = new Set(JOB_TOOLS);
 for (const tool of catalog.filter(({ status }) => status === 'candidate'))
-  requireValue(jobTools.has(tool.id), `導入候補がジョブ受付にありません: ${tool.id}`);
+  requireValue(
+    jobTools.has(tool.id),
+    `導入候補がジョブ受付にありません: ${tool.id}`,
+  );
 for (const marker of [
   "id: 'rockstar-legal-intake'",
   "name: '法務受付'",
@@ -67,11 +76,28 @@ requireValue(
   projectGuide.includes('AI自動化チームのTool'),
   'プロジェクト別ガイドにToolチームの入口がありません',
 );
-const teamGuide = projectGuide.split('## SkyのAI自動化チーム\n')[1]?.split('## 実装・配備単位\n')[0] ?? '';
-const commonGuide = projectGuide.split('| AIチームを支える共通機能 |')[1]?.split('## SkyのAI自動化チーム\n')[0] ?? '';
-for (const name of ['CSV業務', 'メルカリ収益ループ', 'Fashion Brand Ops', 'Material Invention Studio']) {
-  requireValue(teamGuide.includes(`**${name}**`), `Skyのチーム一覧に${name}がありません`);
-  requireValue(!commonGuide.includes(`**${name}**`), `${name}を共通機能へ分離しています`);
+const teamGuide =
+  projectGuide
+    .split('## SkyのAI自動化チーム\n')[1]
+    ?.split('## 実装・配備単位\n')[0] ?? '';
+const commonGuide =
+  projectGuide
+    .split('| AIチームを支える共通機能 |')[1]
+    ?.split('## SkyのAI自動化チーム\n')[0] ?? '';
+for (const name of [
+  'CSV業務',
+  'メルカリ収益ループ',
+  'Fashion Brand Ops',
+  'Material Invention Studio',
+]) {
+  requireValue(
+    teamGuide.includes(`**${name}**`),
+    `Skyのチーム一覧に${name}がありません`,
+  );
+  requireValue(
+    !commonGuide.includes(`**${name}**`),
+    `${name}を共通機能へ分離しています`,
+  );
 }
 requireValue(
   teamGuide.includes('操作画面とSky接続は未実装') &&
@@ -93,7 +119,9 @@ for (const path of [
 const readme = read('README.md');
 requireValue(
   readme.includes('R5 is the current design baseline') &&
-    readme.includes('The Material Invention interface and Sky connection are not implemented'),
+    readme.includes(
+      'The Material Invention interface and Sky connection are not implemented',
+    ),
   'READMEの現行R5またはMaterial Inventionの実装状態が不明です',
 );
 requireValue(
@@ -242,7 +270,8 @@ for (const marker of [
   'aria-label="担当を選ぶ"',
   'handleComposerKeyDown',
   'messagesEndRef',
-  'maxLength={2000}',
+  'maxLength={composerLimit}',
+  'skyRequestLimit(composerToolId)',
   '<MrToolRunner',
   'sky-chat-workflow',
   'listMcpConnections',
@@ -295,6 +324,7 @@ for (const marker of [
     `ZemaのMCP bot管理に「${marker}」がありません`,
   );
 for (const tool of [
+  'rockstar-amc',
   'rockstar-csv-cleanup',
   'rockstar-markets-analysis',
   'mercari-revenue',
@@ -302,9 +332,7 @@ for (const tool of [
   'rockstar-legal-intake',
   'rockstar-patent-assistant',
   'jev-evaluation',
-  ...catalog
-    .filter(({ status }) => status === 'candidate')
-    .map(({ id }) => id),
+  ...catalog.filter(({ status }) => status === 'candidate').map(({ id }) => id),
 ])
   requireValue(
     connectionSource.includes(`'${tool}'`),

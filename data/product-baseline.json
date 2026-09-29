@@ -1,6 +1,6 @@
 {
-  "version": "1.94",
-  "decidedAt": "2026-09-24",
+  "version": "1.96",
+  "decidedAt": "2026-09-27",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -8,6 +8,48 @@
   "nextPrompt": "docs/prompts/rock-current-next-20260911.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/os-sky-wallet-game-design.md",
+  "amcGoalOrchestration": {
+    "requestedAt": "2026-09-27",
+    "authority": "docs/amc-goal-orchestrator.md",
+    "ownerSquad": "H1",
+    "implementationTask": "AMC02",
+    "requestedWorkflow": ["instruction", "squad_assignment", "problem_decomposition", "process_and_goal", "all_progress", "ai_goal_handoff", "verified_completion"],
+    "localImplementation": "candidate_backlog_compiler_progress_ledger_and_prompt_export",
+    "arbitraryInstructionAiPlanner": "not_connected",
+    "externalAiExecutor": "not_connected",
+    "persistentServerRunner": "not_implemented",
+    "authorityExpansionFromGoal": false,
+    "completionRequiresEvidence": true,
+    "note": "Goal駆動の開発管理ツールを求めた指示。既存の製品境界、料金保留、実機・外部操作の個別承認を変更しない。"
+  },
+  "hardwareProductFamily": {
+    "decidedAt": "2026-09-26",
+    "products": [
+      {
+        "id": "avocado-mini",
+        "displayName": "avocadoMini",
+        "role": "autonomous_spatial_input_display_game_and_storage_hardware",
+        "currentDesign": "docs/avocado-mini-r5/README.md"
+      },
+      {
+        "id": "avokado-pro",
+        "displayName": "avokadoPro",
+        "role": "standalone_game_services_compute_and_storage_hardware",
+        "currentDefinition": "sites/avocado-mini/src/pages/pro/index.astro",
+        "integratedDesignStatus": "not_created",
+        "missionControlSquad": "P1"
+      },
+      {
+        "id": "rocketstar",
+        "displayName": "rocketstar",
+        "role": "reusable_launch_payload_communications_and_recovery_system",
+        "currentDesign": "docs/rocketstar-design/README.md"
+      }
+    ],
+    "sharedOperatingSystem": "RockstarOS",
+    "developmentTargetsAreNotProducts": ["web_pc", "linux_qemu", "pixel_10"],
+    "historicalMiniProfilesAreNotCurrentProducts": ["p0_2", "mini200_e1", "mini200_e2", "tower20_e3"]
+  },
   "productIdentity": {
     "authority": "data/product-identity.json",
     "displayName": "RockstarOS",

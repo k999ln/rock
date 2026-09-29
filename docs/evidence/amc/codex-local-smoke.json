@@ -1,0 +1,19 @@
+{
+  "dateLocal": "2026-09-27",
+  "scope": "isolated local git repository under ignored work/amc-codex-smoke/repo; synthetic AMC Goal codex-smoke; REQ-01 only",
+  "command": "npm run mission:codex -- run --goal work/amc-codex-smoke/goal.json --repo work/amc-codex-smoke/repo --out work/amc-codex-smoke/runs --allow-codex-upload",
+  "codexThreadId": "01a0e568-02a3-76f3-85f2-d81cc97b7a28",
+  "codexRunExitCode": 0,
+  "amcGoalBefore": "active revision 1; REQ-01 pending",
+  "amcGoalAfter": "active revision 3; REQ-01 submitted; no ready task until independent review",
+  "artifact": "work/amc-codex-smoke/repo/amc-work/codex-smoke/requirements.md",
+  "artifactSha256": "88d2179d73c00d0e5ef6b39d5165c5b84bccbe428275767e4cbb2e7d9442f39e",
+  "resultGoalSha256": "e59da2864cdf6d8f4f2815048030144ceaac7cb3e5206596f465d2e2b99e555f",
+  "resultGoal": "work/amc-codex-smoke/runs/codex-smoke-REQ-01-tyUHTW/goal-r3-submitted.json",
+  "limitations": [
+    "The isolated work directory is ignored by Git; hashes identify local artifacts, not published evidence.",
+    "The Codex report is a worker claim and was not independently accepted.",
+    "The browser's original owner-scoped Goal was not modified or synchronized.",
+    "No continuous agent loop, notification delivery, deployment, hardware action, or financial operation was tested."
+  ]
+}

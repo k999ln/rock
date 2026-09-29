@@ -5,6 +5,9 @@ export const SKY_ZEMA_JOB_EVENT = 'rockstaros:sky-zema-job';
 export const SKY_ZEMA_HANDOFF_TTL_MS = 10 * 60 * 1000;
 
 const MAX_REQUEST_LENGTH = 2000;
+export function skyRequestLimit(toolId?: string) {
+  return toolId === 'rockstar-amc' ? 8000 : MAX_REQUEST_LENGTH;
+}
 const TOOL_ID = /^[a-z0-9][a-z0-9:.-]{0,119}$/;
 
 type HandoffStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
@@ -30,8 +33,9 @@ function validHandoff(value: unknown): value is SkyZemaHandoff {
     typeof handoff.toolId === 'string' &&
     TOOL_ID.test(handoff.toolId) &&
     typeof handoff.request === 'string' &&
-    handoff.request.length <= MAX_REQUEST_LENGTH &&
-    (handoff.executionProvider === undefined || handoff.executionProvider === 'local-model') &&
+    handoff.request.length <= skyRequestLimit(handoff.toolId) &&
+    (handoff.executionProvider === undefined ||
+      handoff.executionProvider === 'local-model') &&
     typeof handoff.createdAt === 'number' &&
     Number.isFinite(handoff.createdAt)
   );
@@ -45,12 +49,17 @@ export function queueSkyZemaHandoff(
 ): SkyZemaHandoff {
   if (!TOOL_ID.test(toolId))
     throw new Error('引き継ぐToolを確認してください。');
+  if (
+    toolId === 'rockstar-amc' &&
+    request.trim().length > skyRequestLimit(toolId)
+  )
+    throw new Error('AMCへの依頼は8,000文字以内にしてください。');
   const handoff: SkyZemaHandoff = {
     version: 1,
     id: crypto.randomUUID(),
     source: 'sky',
     toolId,
-    request: request.trim().slice(0, MAX_REQUEST_LENGTH),
+    request: request.trim().slice(0, skyRequestLimit(toolId)),
     executionProvider: 'local-model',
     createdAt: now,
   };

@@ -1,0 +1,183 @@
+<div id="amc-task-dashboard">
+  <h2>AMC タスク進捗</h2>
+  <div id="amc-snapshot" class="text-small text-muted"></div>
+  <div id="amc-counts" class="text-small"></div>
+  <div id="amc-selected-line" class="viz-row" aria-live="polite"></div>
+  <div id="amc-divisions" aria-label="32部隊の選択"></div>
+  <hr>
+  <section id="amc-unit" aria-label="選択部隊の責任と進捗"></section>
+  <div class="viz-controls">
+    <label class="form-label">担当タスク
+      <select id="amc-task-select" class="form-select"></select>
+    </label>
+  </div>
+  <section id="amc-task" aria-label="タスクの詳細" aria-live="polite"></section>
+  <details>
+    <summary>他部隊の参考・旧版の記録</summary>
+    <div id="amc-references"></div>
+  </details>
+</div>
+<style>
+  #amc-task-dashboard { color: var(--foreground); overflow-wrap: anywhere; }
+  #amc-task-dashboard #amc-divisions { display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: 16px; margin-top: 16px; }
+  #amc-task-dashboard .amc-cells { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  #amc-task-dashboard .amc-section { margin-top: 16px; }
+  #amc-task-dashboard .amc-facts { display: grid; grid-template-columns: minmax(90px, 1fr) minmax(0, 4fr); gap: 8px 16px; }
+  #amc-task-dashboard dt { font-weight: 500; }
+  #amc-task-dashboard dd { margin: 0; min-width: 0; }
+  #amc-task-dashboard details { margin-top: 16px; }
+  #amc-task-dashboard li + li { margin-top: 8px; }
+  @media(max-width: 420px) {
+    #amc-task-dashboard .amc-facts { grid-template-columns: 1fr; gap: 6px; }
+    #amc-task-dashboard dd { margin-bottom: 8px; }
+  }
+</style>
+<script id="amc-mission-data" type="application/json">__AMC_MISSION_JSON__</script>
+<script id="amc-project-data" type="application/json">__AMC_PROJECT_JSON__</script>
+<script>
+(() => {
+  const root = document.getElementById('amc-task-dashboard');
+  const mission = JSON.parse(document.getElementById('amc-mission-data').textContent);
+  const project = JSON.parse(document.getElementById('amc-project-data').textContent);
+  const squads = new Map(mission.squads.map(s => [s.id, s]));
+  const tasks = new Map(project.tasks.map(t => [t.id, t]));
+  const assignments = new Map(mission.taskAssignments.map(a => [a.taskId, a]));
+  const plans = new Map(mission.taskPlans.map(p => [p.taskId, p]));
+  const standalone = root.dataset?.standalone === 'true';
+  const storageKey = 'amc-mission-selection-v1';
+  const state = standalone
+    ? { selectedUnit: 'O2', selectedTask: 'AI04' }
+    : { selectedUnit: 'P4', selectedTask: 'PRO04' };
+  const childGroups = new Map();
+  for (const task of project.tasks) {
+    if (!task.parentTaskId) continue;
+    const group = childGroups.get(task.parentTaskId) ?? [];
+    group.push(task);
+    childGroups.set(task.parentTaskId, group);
+  }
+  const status = { done: '完了記録', in_progress: '進行中', planned: '未着手', blocked: '停止中' };
+  const category = { current_product: '現行製品', shared_system: '共通基盤', historical: '旧版', coordination: '統合管理', presentation: '公開説明' };
+  const relation = { historical_reference: '旧版参考', shared_reference: '共通・他部隊参考', design_archive_reference: '設計資料の保存記録' };
+  const criterionStatus = { not_verified: '未検証', passed: '合格', failed: '不合格' };
+  const el = id => root.querySelector('#' + id);
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const list = values => '<ul>' + values.map(v => '<li>' + v + '</li>').join('') + '</ul>';
+  const path = value => '<code>' + esc(value) + '</code>';
+  const facts = entries => '<dl class="amc-facts">' + entries.map(([key, value]) => '<dt>' + esc(key) + '</dt><dd>' + value + '</dd>').join('') + '</dl>';
+  const taskButton = id => '<button type="button" class="btn btn-ghost" data-task="' + esc(id) + '">' + esc(id + ' · ' + status[tasks.get(id).status]) + '</button>';
+  function applyState(saved) {
+    const content = saved?.modelContent ?? saved;
+    if (!content || !squads.has(content.selectedUnit)) return;
+    state.selectedUnit = content.selectedUnit;
+    const squad = squads.get(state.selectedUnit);
+    state.selectedTask = squad.taskIds.includes(content.selectedTask) ? content.selectedTask : squad.nextTaskIds[0];
+  }
+  function saveState() {
+    if (standalone) {
+      // Presentation-only selection; never write the Goal or project ledger.
+      try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch { /* Viewing still works without storage. */ }
+    } else if (window.openai?.setWidgetState) {
+      window.openai.setWidgetState({ modelContent: { selectedUnit: state.selectedUnit, selectedTask: state.selectedTask }, privateContent: null }).catch(() => {});
+    }
+  }
+  function selectTask(id) {
+    if (!tasks.has(id) || !assignments.has(id)) return;
+    state.selectedUnit = assignments.get(id).primarySquad;
+    state.selectedTask = id;
+    render();
+    saveState();
+  }
+  function render() {
+    const squad = squads.get(state.selectedUnit);
+    const own = squad.taskIds.map(id => tasks.get(id));
+    const current = own.filter(t => !childGroups.has(t.id) && !['historical', 'presentation'].includes(assignments.get(t.id).classification));
+    const excluded = own.filter(t => ['historical', 'presentation'].includes(assignments.get(t.id).classification));
+    el('amc-snapshot').textContent = mission.updatedAt + ' · ローカル作業版 ' + mission.audit.localBaseSha.slice(0, 7) + '＋ローカル変更 · 手動更新・自動同期なし';
+    el('amc-counts').textContent = project.tasks.length + '登録レコード ／ 親' + childGroups.size + '・子' + project.tasks.filter(t => t.parentTaskId).length + '・独立' + project.tasks.filter(t => !t.parentTaskId && !childGroups.has(t.id)).length + ' ／ 実行単位は親を除外';
+    el('amc-selected-line').textContent = squad.id + ' ' + squad.name + ' ／ 段階 ' + squad.currentStage + ' ' + mission.stagePolicy.stages[squad.currentStage].label;
+    el('amc-divisions').innerHTML = mission.divisions.map(division => '<section><h3>' + esc(division.name) + '</h3><div class="amc-cells">' +
+      mission.squads.filter(s => s.division === division.id).map(s => '<button type="button" class="btn viz-tile" aria-pressed="' + (s.id === squad.id) + '" aria-label="' + esc(s.id + ' ' + s.name + '、段階' + s.currentStage + ' ' + mission.stagePolicy.stages[s.currentStage].label) + '" data-squad="' + s.id + '">' + s.id + '</button>').join('') + '</div></section>').join('');
+    el('amc-unit').innerHTML = facts([
+      ['Goal', esc(squad.goal)],
+      ['もたらす結果', esc(squad.outcome)],
+      ['段階の対象', esc(squad.stageAssessment.scope)],
+      ['未完了', squad.stageAssessment.gaps.map(esc).join(' ／ ')],
+      ['担当の記録', current.length + '実行単位中 ' + current.filter(t => t.status === 'done').length + '件に完了記録・' + current.filter(t => t.status === 'in_progress').length + '件進行中（親・旧版・公開説明を除外／製品完成率ではない）'],
+      ['次のタスク', squad.nextTaskIds.map(taskButton).join(' ')],
+    ]) + '<details><summary>部隊のルール・受け渡し・段階の根拠</summary>' +
+      list(squad.rules.map(esc)) + facts([
+        ['受入Gate', esc(squad.acceptanceGate)],
+        ['接続先部隊', squad.dependsOnSquads.length ? squad.dependsOnSquads.map(id => esc(id + ' ' + squads.get(id).name)).join(' ／ ') : 'なし'],
+        ['依存の意味', '接続・調整先。部隊全体の完成待ちではない。着手条件は各taskの前提で判定。'],
+        ['判定方法', esc(squad.stageAssessment.reviewMethod)],
+        ['参照資料', list(squad.stageAssessment.references.map(path))],
+      ]) + '</details>';
+    el('amc-task-select').innerHTML = own.map(task => '<option value="' + esc(task.id) + '"' + (task.id === state.selectedTask ? ' selected' : '') + '>' + esc(task.id + ' · ' + status[task.status] + ' · ' + category[assignments.get(task.id).classification] + ' · ' + task.title) + '</option>').join('');
+    const task = tasks.get(state.selectedTask);
+    const plan = plans.get(task.id);
+    const children = childGroups.get(task.id) ?? [];
+    const waiting = (task.dependsOn ?? []).filter(id => tasks.get(id).status !== 'done');
+    const downstream = project.tasks.filter(t => (t.dependsOn ?? []).includes(task.id));
+    const holds = mission.executionHolds.filter(h => h.taskIds.includes(task.id) || h.taskIds.includes(task.parentTaskId));
+    el('amc-task').innerHTML = '<h3>' + esc(task.id + ' ' + task.title) + '</h3>' + facts([
+      ['状態', esc(status[task.status]) + (waiting.length ? ' ／ ' + (task.status === 'planned' ? '着手前提待ち' : '前提の完了待ち') + '：' + waiting.map(esc).join(', ') : '')],
+      ['主担当', esc(squad.id + ' · ' + category[assignments.get(task.id).classification])],
+      ['階層', task.parentTaskId ? '子作業 ／ 親：' + taskButton(task.parentTaskId) : children.length ? '親タスク ／ 子の完了だけでは親の合格を自動認定しない' : '独立タスク'],
+      ['責任・実担当', plan ? esc(plan.primaryOwner + ' / ' + plan.ownerRole + ' ／ ' + (plan.assignee ?? '実担当者は未割当')) : '既存記録のみ・個人担当は未確認'],
+      ['前提 → このtask', (task.dependsOn ?? []).length ? task.dependsOn.map(taskButton).join(' ') : '前提taskなし'],
+      ['このtask → 後続', downstream.length ? downstream.map(t => taskButton(t.id)).join(' ') : '後続taskは未登録'],
+    ]) + (children.length ? '<h3>子作業 ' + children.filter(t => t.status === 'done').length + ' / ' + children.length + ' 完了</h3>' + list(children.map(t => taskButton(t.id) + ' ' + esc(t.title))) : '') + holds.map(hold => '<div class="amc-section">' + facts([
+      ['実行保留', esc(hold.scope)],
+      ['理由', esc(hold.reason)],
+      ['解除条件', esc(hold.releaseCondition + ' / ' + hold.decisionOwner)],
+    ]) + '</div>').join('') +
+      (plan ? '<div class="amc-section">' + facts([
+        ['今回の範囲', esc(plan.scope)],
+        ['完了の意味', esc(plan.completionScope)],
+        ['PC負荷の区分', esc(({ document: '文書・設計', code_test: 'コード・小規模試験', build: 'ビルド', physical: '実機・計測', external: '外部サービス・本人判断' })[plan.workloadClass] ?? '親タスク：子作業を参照')],
+        ['実行条件', esc(plan.executionBoundary ?? '原taskの前提と承認境界を維持')],
+      ]) + '<h3>進め方</h3><ol>' + plan.steps.map(step => '<li>' + esc(step.action) + '</li>').join('') + '</ol>' +
+      '<h3>合格条件</h3>' + list(plan.acceptanceCriteria.map(c => esc(criterionStatus[c.status] + ' · ' + c.criterion) + '<details><summary>確認方法と証拠</summary>' + esc(c.verification) + (c.evidence.length ? list(c.evidence.map(path)) : '<div>合格証拠なし</div>') + '</details>')) +
+      '<details><summary>成果物・入力資料・未決の決め方</summary>' + facts([
+        ['作成する成果物', list(plan.deliverables.map(d => path(d.path) + (d.section ? ' ／ 節：' + esc(d.section) : '') + ' — ' + esc(d.description)))],
+        ['入力資料', list(plan.inputs.map(i => path(i.path) + ' — ' + esc(i.locator)))],
+        ['未決事項', esc(plan.unresolvedDecision)],
+        ['期限', '未設定・根拠のない期限は置かない'],
+      ]) + '</details></div>' : '<div class="amc-section">既存の進捗記録を保持。詳細な合格条件は未精査であり、今回の再受入ではありません。</div>') +
+      '<details><summary>このtaskに登録済みの証拠 ' + (task.evidence ?? []).length + '件</summary>' + ((task.evidence ?? []).length ? list(task.evidence.map(path)) : '未登録') + '</details>';
+    el('amc-references').innerHTML = facts([
+      ['他部隊の参考', squad.relatedTasks.length ? list(squad.relatedTasks.map(r => taskButton(r.taskId) + ' · ' + esc(relation[r.relation]) + ' / 主担当 ' + esc(assignments.get(r.taskId).primarySquad))) : 'なし'],
+      ['担当内の旧版・公開説明', excluded.length ? list(excluded.map(t => taskButton(t.id) + ' · ' + esc(category[assignments.get(t.id).classification]))) : 'なし'],
+      ['集計の扱い', '参考・旧版・公開説明は上の現行担当件数に加算しない。共通基盤の完了は各製品の受入を意味しない。'],
+    ]);
+  }
+  root.addEventListener('click', event => {
+    const unit = event.target.closest('[data-squad]');
+    if (unit) {
+      if (!squads.has(unit.dataset.squad)) return;
+      state.selectedUnit = unit.dataset.squad;
+      state.selectedTask = squads.get(state.selectedUnit).nextTaskIds[0];
+      render();
+      saveState();
+      root.querySelector('[data-squad="' + state.selectedUnit + '"]')?.focus?.();
+      return;
+    }
+    const task = event.target.closest('[data-task]');
+    if (task) selectTask(task.dataset.task);
+  });
+  el('amc-task-select').addEventListener('change', event => selectTask(event.target.value));
+  window.addEventListener('openai:set_globals', event => {
+    if (!standalone && event.detail?.globals?.widgetState) {
+      applyState(event.detail.globals.widgetState);
+      render();
+    }
+  });
+  if (standalone) {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved && saved.length < 8192) applyState(JSON.parse(saved));
+    } catch { /* Ignore unavailable or incompatible presentation state. */ }
+  } else applyState(window.openai?.widgetState);
+  render();
+})();
+</script>

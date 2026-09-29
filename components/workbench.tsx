@@ -38,6 +38,7 @@ function eventDescription(job: WorkJob, command: WorkCommand) {
   if (command.action === 'complete')
     return `本人が確認して完了: ${command.note}`;
   if (command.action === 'cancel') return '仕事を中止';
+  if (command.action === 'amc_event') return 'AMCの記録更新（実行状態はAMCで確認）';
   const title =
     job.steps.find((step) => step.id === command.stepId)?.title ?? '実行';
   const outcome = {

@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.3",
-  "updatedAt": "2026-09-24",
+  "version": "1.5",
+  "updatedAt": "2026-09-27",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/avocado-mini-r5/README.md",
@@ -12,7 +12,9 @@
     "docs/sky-tools-complete-design.md",
     "docs/rockstaros-avocado-mini-complete-design.md",
     "docs/jev-local-qwen-decision-fabric-design.md",
-    "docs/product-baseline.md"
+    "docs/product-baseline.md",
+    "docs/mission-control.md",
+    "docs/amc-goal-orchestrator.md"
   ],
   "sourceArtifacts": [
     {
@@ -48,6 +50,17 @@
     "open_decisions_owner_and_decision_test"
   ],
   "systemDomains": [
+    {
+      "id": "mission_control_and_squad_progress",
+      "coverage": "DETAILED_WEB_INTEGRATION_WITH_BROWSER_ACCEPTANCE_PENDING",
+      "documents": [
+        "docs/mission-control.md",
+        "docs/amc-goal-orchestrator.md",
+        "docs/sky-tools-complete-design.md",
+        "data/mission-control.json",
+        "data/project-status.json"
+      ]
+    },
     {
       "id": "avocado_mini_r5",
       "coverage": "BASIC_DESIGN_WITH_OPEN_ENGINEERING_DECISIONS",
@@ -133,7 +146,8 @@
         "docs/jev-ecosystem-integration-design.md",
         "docs/sky.md",
         "docs/chat-mcp-control-room-20260913.md",
-        "docs/sky-tool-sdk.md"
+        "docs/sky-tool-sdk.md",
+        "docs/amc-goal-orchestrator.md"
       ]
     },
     {
@@ -209,6 +223,37 @@
     }
   ],
   "catalogTools": [
+    {
+      "id": "rockstar-amc",
+      "catalogStatus": "ready",
+      "displayName": "AMC · Goalと部隊の進捗",
+      "designDocument": "docs/sky-tools-complete-design.md",
+      "designSection": "4.5 AMC — Goal・部隊・進捗",
+      "primaryOwner": "ROCK",
+      "ownerSquad": "H1",
+      "implementationTask": "AMC02",
+      "readyScope": [
+        "request_goal_intent_preparation_template",
+        "read_only_canonical_squad_board",
+        "owner_scoped_manual_goal_ledger",
+        "json_and_prompt_export",
+        "explicit_local_codex_single_task_runner"
+      ],
+      "implementationBoundary": {
+        "storage": "existing_work_jobs_payload_with_authenticated_user_and_revision_cas",
+        "templateRoles": 4,
+        "templateSteps": 7,
+        "createdPlanState": "active",
+        "createdTaskState": "pending",
+        "canonicalMissionDataMutable": false,
+        "aiPlannerConnected": false,
+        "remoteExecutorConnected": false,
+        "automaticModelInstallation": false,
+        "externalActionsAuthorized": false,
+        "browserAcceptance": "not_verified",
+        "productionDeploymentAccepted": false
+      }
+    },
     { "id": "rockstar-csv-cleanup", "catalogStatus": "ready" },
     { "id": "rockstar-markets-analysis", "catalogStatus": "ready" },
     { "id": "mercari-revenue", "catalogStatus": "ready" },

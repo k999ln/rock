@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { routeSkyRequest, skyRoles } from '../lib/sky-routing.ts';
 
-void test('Sky routes a plain-language request to each available role', () => {
+await test('Sky routes a plain-language request to each available role', () => {
   const cases = [
+    ['AMCで部隊とタスクの進捗を管理したい', 'rockstar-amc'],
     ['CSVの列名と重複行を整理して', 'rockstar-csv-cleanup'],
     ['メルカリで不用品を出品して収益化したい', 'mercari-revenue'],
     ['Instagramの広告からDM受注と発送まで進めて', 'fashion-brand-ops'],
@@ -23,10 +24,14 @@ void test('Sky routes a plain-language request to each available role', () => {
   }
 });
 
-void test('Sky exposes twelve roles and does not guess an unrelated request', () => {
-  assert.equal(skyRoles.length, 12);
+await test('Sky exposes thirteen distinct roles without changing existing roles or guessing unrelated requests', () => {
+  assert.equal(skyRoles.length, 13);
+  assert.equal(new Set(skyRoles.map((role) => role.toolId)).size, 13);
   assert.deepEqual(
-    skyRoles.slice(9).map((role) => role.label),
+    skyRoles
+      .filter((role) => role.toolId !== 'rockstar-amc')
+      .slice(9)
+      .map((role) => role.label),
     ['法務受付', '特許アシスタント', '品質評価役'],
   );
   assert.equal(routeSkyRequest('今日の天気を教えて'), null);

@@ -1,3 +1,13 @@
+import {
+  createAmcGoal,
+  validateAmcGoal,
+  applyAmcEvent,
+  AMC_TOOL_ID,
+  type AmcBrief,
+  type AmcEvent,
+  type AmcGoal,
+} from './amc-tool.ts';
+
 export const workflowTemplates = [
   {
     id: 'article',
@@ -52,6 +62,7 @@ export type WorkCommand =
       durationMs: number;
     }
   | { id: string; action: 'complete'; note: string }
+  | { id: string; action: 'amc_event'; event: AmcEvent }
   | { id: string; action: 'cancel' };
 export type WorkJob = {
   id: string;
@@ -69,6 +80,8 @@ export type WorkJob = {
   events: { at: string; command: WorkCommand }[];
   createdAt: string;
   updatedAt: string;
+  amcGoal?: AmcGoal;
+  amcCreationDigest?: string;
 };
 export class WorkError extends Error {
   status: number;
@@ -113,6 +126,50 @@ export function createWorkJob(
   value: unknown,
   now = new Date().toISOString(),
 ): WorkJob {
+  if (
+    value &&
+    typeof value === 'object' &&
+    'templateId' in value &&
+    value.templateId === 'amc'
+  ) {
+    const input = objectInput(value, [
+      'id',
+      'templateId',
+      'brief',
+      'importGoal',
+    ]);
+    const id = workId(input.id);
+    if (Object.hasOwn(input, 'brief') === Object.hasOwn(input, 'importGoal'))
+      throw new WorkError('依頼またはGoalファイルを一つ指定してください。');
+    let goal: AmcGoal;
+    try {
+      if (Object.hasOwn(input, 'brief')) {
+        const brief = objectInput(input.brief, ['request', 'goal', 'intent']);
+        goal = createAmcGoal(id, brief as AmcBrief, now);
+      } else goal = validateAmcGoal(input.importGoal);
+    } catch (error) {
+      throw new WorkError(
+        error instanceof Error
+          ? error.message
+          : 'Goalの形式を確認してください。',
+      );
+    }
+    return syncAmcWorkJob(
+      {
+        id,
+        title: goal.instruction.slice(0, 120),
+        templateId: 'amc',
+        revision: 0,
+        status: 'active',
+        steps: [],
+        events: [],
+        createdAt: now,
+        updatedAt: now,
+        amcGoal: goal,
+      },
+      goal,
+    );
+  }
   const input = objectInput(value, ['id', 'title', 'templateId']);
   const template = workflowTemplates.find(
     (item) => item.id === input.templateId,
@@ -141,8 +198,43 @@ export function parseWorkCommand(value: unknown): WorkCommand {
     'sample',
     'durationMs',
     'note',
+    'event',
   ]);
   const id = workId(base.id);
+  if (base.action === 'amc_event') {
+    objectInput(value, ['id', 'action', 'event']);
+    const event = objectInput(base.event, [
+      'id',
+      'type',
+      'actor',
+      'role',
+      'expectedRevision',
+      'at',
+      'taskId',
+      'reason',
+      'outcome',
+      'summary',
+      'deliverables',
+      'evidence',
+      'accepted',
+      'criterionResults',
+      'scopeConfirmed',
+      'coverageStatement',
+      'acceptanceCriteria',
+      'taskPlanReviews',
+    ]);
+    if (event.id !== undefined && event.id !== id)
+      throw new WorkError('記録IDが一致しません。');
+    if (
+      !Number.isSafeInteger(event.expectedRevision) ||
+      typeof event.type !== 'string' ||
+      typeof event.actor !== 'string' ||
+      !['owner', 'worker', 'reviewer'].includes(String(event.role))
+    )
+      throw new WorkError('AMC記録の形式を確認してください。');
+    const { at: _at, ...stable } = event;
+    return { id, action: 'amc_event', event: { ...stable, id } as AmcEvent };
+  }
   if (base.action === 'cancel') {
     objectInput(value, ['id', 'action']);
     return { id, action: 'cancel' };
@@ -202,6 +294,40 @@ export function applyWorkCommand(
       '別の操作で更新されています。一覧を再読込してください。',
       409,
     );
+  if (job.amcGoal || job.templateId === 'amc') {
+    if (!job.amcGoal || command.action !== 'amc_event')
+      throw new WorkError(
+        'AMCはGoal専用の承認・記録・停止操作を使ってください。',
+      );
+    if (command.event.expectedRevision !== job.amcGoal.revision)
+      throw new WorkError(
+        'Goalが更新されています。再読込して確認してください。',
+        409,
+      );
+    if (job.events.length >= 1000)
+      throw new WorkError(
+        '記録上限です。JSONを保存して次のGoalへ引き継いでください。',
+      );
+    let goal: AmcGoal;
+    try {
+      goal = applyAmcEvent(job.amcGoal, { ...command.event, at: now });
+    } catch (error) {
+      throw new WorkError(
+        error instanceof Error ? error.message : 'AMC記録を更新できません。',
+      );
+    }
+    return syncAmcWorkJob(
+      {
+        ...job,
+        revision: job.revision + 1,
+        updatedAt: now,
+        events: [...job.events, { at: now, command }],
+      },
+      goal,
+    );
+  }
+  if (command.action === 'amc_event')
+    throw new WorkError('AMC以外の仕事にはAMC記録を追加できません。');
   if (job.status === 'completed' || job.status === 'cancelled')
     throw new WorkError('終了した仕事には記録を追加できません。', 409);
   if (job.events.length >= 200 && command.action === 'record')
@@ -234,5 +360,31 @@ export function applyWorkCommand(
     if (!command.sample && command.outcome === 'passed') step.passed = true;
     if (next.steps.every((item) => item.passed)) next.status = 'review';
   }
+  return next;
+}
+
+function syncAmcWorkJob(job: WorkJob, goal: AmcGoal): WorkJob {
+  const next: WorkJob = {
+    ...job,
+    amcGoal: goal,
+    status:
+      goal.state === 'accepted'
+        ? 'completed'
+        : goal.state === 'active' &&
+            goal.tasks.every((task) => task.status === 'done')
+          ? 'review'
+          : 'active',
+    steps: goal.tasks
+      .filter((task) => !task.childTaskIds.length)
+      .map((task) => ({
+        id: task.id,
+        title: task.title,
+        tool: AMC_TOOL_ID,
+        runner: 'amc',
+        passed: task.status === 'done',
+      })),
+  };
+  if (new TextEncoder().encode(JSON.stringify(next)).byteLength > 1_900_000)
+    throw new WorkError('履歴を含む保存上限（1.9 MB）です。Goal JSONを保存し、別記録へ引き継いでください。', 413);
   return next;
 }

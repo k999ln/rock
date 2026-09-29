@@ -54,6 +54,23 @@ const mrHubCandidates: Automation[] = [
 }));
 export const catalog = ([
   {
+    id: 'rockstar-amc',
+    name: 'AMC · Goalと部隊の進捗',
+    category: '計画・進捗管理',
+    description: '作りたいものとGoal・意図から計画を準備し、部隊・作業・確認待ちをZemaで管理します。',
+    source: 'avocadoOS built-in',
+    launchPath: '/amc',
+    environment: 'Sky / Zema / 保存・再開にはサインイン必須',
+    cost: '計画作成ではLLMや有料の外部実行を呼びません。工数はテンプレートによる参考値です。',
+    steps: ['依頼・Goal・意図を確認する', '計画を保存し、部隊と作業順を確認する', '作業の開始・提出・検収を記録する', '人の判断が必要な項目を確認し、Goalを受け入れる'],
+    note: '利用可能なのは計画作成と手動の進捗記録です。AIによる実装・自律実行・自動通知は未接続。OS・ハードウェアの32部隊は参照用で、依頼の計画と混同しません。',
+    color: 'green',
+    license: 'avocadoOS code',
+    licenseUrl: 'https://github.com/k999ln/rock',
+    status: 'ready',
+    origin: 'rockstaros',
+  },
+  {
     id: 'rockstar-csv-cleanup',
     name: 'CSV整形・検査・納品',
     category: '販売・収益化',
