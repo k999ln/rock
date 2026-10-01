@@ -347,7 +347,19 @@
     },
     {
       "id": "coconala",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "signinRecovery": {
+        "inputPreservedInOpenDialog": true,
+        "separateTab": true,
+        "returnPath": "/sky/tools/coconala",
+        "recheckDoesNotSubmitDraft": true,
+        "requestTimeoutMs": 10000
+      },
+      "mobileResultActions": {
+        "stackHeadingBelow760px": true,
+        "wrapButtons": true,
+        "minimumButtonHeightPx": 44
+      }
     },
     {
       "id": "mr-free-article",

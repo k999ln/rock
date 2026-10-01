@@ -27,7 +27,8 @@
         "components/patent-assistant-runner.tsx",
         "tests/local-guide-history.test.mjs",
         "tests/operations.test.mjs"
-      ]
+      ],
+      "nextAction": "Sky v16公開成功（固定保存診断・計算再試行防止）。ココナラの401復帰は入力保持・別タブ認証・GET再確認へ修正、Pixelの結果操作列の細長いボタンも修正中。公開UIと合成結果の保存／再読込、D1 metadataを受け入れる。Cloud AI credential・Apple Pay実機・外部OAuth実行は未受入。"
     },
     {
       "id": "ORG01",
