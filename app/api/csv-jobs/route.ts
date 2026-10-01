@@ -1,3 +1,4 @@
+import { limitCsvRequest } from '@/lib/csv-request-limit';
 import { env } from 'cloudflare:workers';
 import { csvTrialPayments } from '@/lib/csv-trial-payment';
 import { requestUser } from '@/lib/request-auth';
@@ -29,6 +30,11 @@ export const GET = async (request: Request) => {
 export const POST = async (request: Request) => {
   try {
     const user = await requestUser(request);
+    await limitCsvRequest(
+      (env as unknown as { DB: D1Database }).DB,
+      user,
+      'quote',
+    );
     const length = Number(request.headers.get('content-length') ?? 0);
     if (length > CSV_LIMITS.bytes + 64 * 1024)
       throw new CsvJobError(413, 'TOO_LARGE', 'CSVは10MB以下にしてください。');

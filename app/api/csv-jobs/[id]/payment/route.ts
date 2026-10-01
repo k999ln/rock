@@ -1,3 +1,4 @@
+import { limitCsvRequest } from '@/lib/csv-request-limit';
 import { requestUser } from '@/lib/request-auth';
 import { env } from 'cloudflare:workers';
 import { csvApiError, acceptCsvJob } from '@/lib/csv-job-store';
@@ -8,6 +9,11 @@ export async function POST(
 ) {
   try {
     const user = await requestUser(request);
+    await limitCsvRequest(
+      (env as unknown as { DB: D1Database }).DB,
+      user,
+      'payment',
+    );
     const { id } = await context.params;
     const input = (await request.json()) as { action?: string };
     if (input.action === 'confirm')

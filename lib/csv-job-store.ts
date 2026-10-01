@@ -1,3 +1,4 @@
+import { CsvRequestLimitError } from './csv-request-limit';
 import { env } from 'cloudflare:workers';
 import { CSV_TRIAL_SAMPLE } from './csv-trial-sample';
 import { SkyPaymentError } from './sky-stripe';
@@ -508,6 +509,20 @@ export async function csvArtifact(user: string, id: string, kind: string) {
 }
 
 export function csvApiError(error: unknown) {
+  if (error instanceof CsvRequestLimitError)
+    return Response.json(
+      {
+        error: '操作が続いています。少し待って再試行してください。',
+        code: 'RATE_LIMITED',
+      },
+      {
+        status: 429,
+        headers: {
+          'Cache-Control': 'no-store',
+          'Retry-After': String(error.retryAfter),
+        },
+      },
+    );
   if (error instanceof Error && error.message === 'UNAUTHORIZED')
     return Response.json(
       {
