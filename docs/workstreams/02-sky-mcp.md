@@ -1,3 +1,7 @@
+## 2026-10-01 SKY21 / ROCK — 独立Skyのサービスローンチ
+
+[ローンチ設計](../sky-launch-design.md)と`data/sky-service-launch.json`を追加。基本利用、外部作者市場、有料販売、別client/実機対応を別々に受け入れる。service-status APIと同じ利用条件をSky home/market/detailへ反映し、標準ガイドと外部AIを分離。`/sky/help`で現在の保存場所と制限を案内する。source/fixture/publication/authenticated productionの証拠を分け、未設定の決済や未受入のMCP公開を完成扱いにしない。
+
 # Sky / MCP
 
 ## 目的

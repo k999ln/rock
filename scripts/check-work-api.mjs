@@ -198,6 +198,11 @@ try {
     filter: (source) => !source.split(/[\\/]/).at(-1).startsWith('._'),
   });
   await start();
+  const statusBeforeSchema = await call('GET', undefined, {
+    path: '/api/sky/service-status', user: null,
+  });
+  check(statusBeforeSchema.database, 'unavailable');
+  check(statusBeforeSchema.payments, 'unconfigured');
   check(
     (
       await call('GET', undefined, {
@@ -216,6 +221,14 @@ try {
       .filter((sql) => sql.trim()))
       await database.prepare(sql).run();
   }
+  const serviceStatus = await call('GET', undefined, {
+    path: '/api/sky/service-status', user: null,
+  });
+  check(serviceStatus.database, 'available');
+  check(serviceStatus.payments, 'unconfigured');
+  check(serviceStatus.legalAiConfigured, false);
+  check(serviceStatus.jevConfigured, false);
+  check(Object.keys(serviceStatus).sort(), ['version', 'database', 'csvStorageConfigured', 'legalAiConfigured', 'patentAiConfigured', 'jevConfigured', 'payments'].sort());
   const esimOrderId = randomUUID();
   await database.prepare(`INSERT INTO sky_commerce_orders
     (id,buyer_user_id,seller_user_id,mode,package_key,manifest_sha256,name,amount_minor,

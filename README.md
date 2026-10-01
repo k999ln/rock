@@ -333,3 +333,7 @@ Sky／Marketで文章ツールを選び、サインインして実行します�
 ### Sky as a standalone app
 
 Open `/sky/marketplace` to use the same marketplace outside the OS home. Sky pages provide their own install manifest, which launches the marketplace; installing the OS is not required. Sign-in and each tool’s connection requirements still apply. Public deployment and device installation acceptance remain separate from local development.
+
+## Skyサービスの利用とローンチ設計
+
+Skyの単独マーケットは `/sky/marketplace`、利用方法・保存/削除・接続状態・対応環境は `/sky/help`。OS導入は必須ではありません。外部AIや購入/販売は必要な接続設定と本人の条件が揃ってから利用できます。[サービス設計と受入](docs/sky-launch-design.md)・[段階別の受入記録](data/sky-service-launch.json)を参照してください。設定あり・コード試験・本番合格は別の状態です。

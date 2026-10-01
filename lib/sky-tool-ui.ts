@@ -1,9 +1,11 @@
 import type { Automation } from '@/lib/catalog';
+import type { SkyServiceStatus } from './sky-service-status';
 
 export type SkyToolUiContext = {
   connectedTools?: readonly string[];
   fashionConnected?: boolean;
   pcConnected?: boolean;
+  service?: SkyServiceStatus;
 };
 
 export type SkyToolUiState = {
@@ -18,6 +20,7 @@ export function skyToolUiState(
     connectedTools = [],
     fashionConnected = false,
     pcConnected = false,
+    service,
   }: SkyToolUiContext = {},
 ): SkyToolUiState {
   if (tool.id === 'jev-router')
@@ -68,15 +71,29 @@ export function skyToolUiState(
     };
   if (tool.runner === 'jev-evaluation')
     return {
-      label: '外部AI接続が必要',
-      detail: '利用同意とProvider設定後に評価',
+      label: service?.jevConfigured ? '外部AI設定済み・利用同意が必要' : '外部AI接続が必要',
+      detail: '利用同意とProvider設定後に評価。設定済みは本番動作の保証ではありません',
+      className: 'is-connect',
+    };
+  if (tool.id === 'rockstar-legal-intake' || tool.id === 'rockstar-patent-assistant') {
+    const configured = tool.id === 'rockstar-legal-intake' ? service?.legalAiConfigured : service?.patentAiConfigured;
+    return {
+      label: configured ? 'AI設定済み・利用同意が必要' : '標準ガイドのみ・AI接続待ち',
+      detail: configured ? '外部AIへの送信前に内容と利用条件を確認' : '公的案内と標準の整理機能を利用できます。外部AIは設定待ちです',
+      className: 'is-connect',
+    };
+  }
+  if (['coconala', 'mr-free-article', 'mr-citations'].includes(tool.id) && service?.database === 'unavailable')
+    return {
+      label: '実行記録サービスを確認中',
+      detail: '記録サービスの復旧後に利用できます。入力を手元に保存してください',
       className: 'is-connect',
     };
   if (tool.id === 'rockstar-csv-cleanup')
     return {
-      label: '今使える',
-      detail: 'Skyの自動化Toolとして実行',
-      className: 'is-ready',
+      label: service?.database === 'available' && service.csvStorageConfigured ? 'サインインして利用' : service ? 'ファイルサービス接続待ち' : '利用条件を確認',
+      detail: 'サインイン、実行記録、ファイル保存が必要。成果物の取得期限は7日です',
+      className: service?.database === 'available' && service.csvStorageConfigured ? 'is-ready' : 'is-connect',
     };
   return {
     label: '今使える',

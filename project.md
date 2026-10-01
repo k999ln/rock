@@ -1,3 +1,7 @@
+## 2026-10-01 — Skyサービスのローンチ設計と前提条件の表示
+
+利用者の1時間の設計・実装指示に基づき、`docs/sky-launch-design.md`を追加。独立Skyを正本に、本人確認・カタログ・実行/成果・作者公開・決済/購入権限・OS/他アプリadapter・Mini適合・保存/削除・監視/復元を設計。`data/sky-service-launch.json`は段階別の必須受入を持ち、完全ローンチ未合格を保持する。Sky専用Siteのruntime外部接続は未設定。秘密・本人情報を返さないservice-status API、外部AI未接続時のガイド表示、CSV保存前提の表示、Sky内のヘルプ/戻り導線を実装中。公開URLの存在と本番ログイン後の実行を区別する。既存製品サイト・旧OS Siteのデザインを変更しない。
+
 ## 2026-10-01 Sky単独アプリの起動設定
 
 ROCK／WEB04。利用者指定によりSkyをOS内と単独アプリの共通マーケットプレイスとする。Sky専用manifest・layoutを追加し、起動先を/sky/marketplace、scopeを/sky/に固定。既存OS manifestとデザイン、API権限、Provider gateは保持。公開サービスURLと製品サイトからの案内は承認済み、配備・実端末インストールは未実施。検証結果は追記する。

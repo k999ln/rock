@@ -174,7 +174,10 @@
         "components/sky-mcp-center.module.css",
         "components/sky-publisher-form.tsx",
         "components/sky-publisher-form.module.css",
-        "lib/use-sky-tool-context.ts"
+        "lib/use-sky-tool-context.ts",
+        "components/sky-service-help.tsx",
+        "lib/sky-service-status.ts",
+        "app/api/sky/service-status/route.ts"
       ],
       "documents": [
         "docs/sky-tools-complete-design.md",
@@ -183,7 +186,8 @@
         "docs/jev-ecosystem-integration-design.md",
         "docs/sky.md",
         "docs/chat-mcp-control-room-20260913.md",
-        "docs/sky-tool-sdk.md"
+        "docs/sky-tool-sdk.md",
+        "docs/sky-launch-design.md"
       ]
     },
     {

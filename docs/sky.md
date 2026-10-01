@@ -1,3 +1,7 @@
+## Skyサービスのローンチ設計
+
+[Skyサービス設計とローンチ受入](sky-launch-design.md)を、独立Sky・OS/他アプリ接続・作者公開・有料市場の実用化設計として追加。既存のデザインと状態機械・本人認証・課金gateを維持し、設定状態と本番合格を分離する。設定状態APIは秘密や本人情報を返さず、必要サービスの利用条件を各画面へ反映する。利用者向け入口は `/sky/help`。
+
 ## 単独アプリとOS内の共通マーケットプレイス
 
 2026-10-01の利用者指示により、SkyはOS導入を必須としない独立サービスとしても提供する。同じcatalog・Tool・本人認証・履歴・実行条件を共有し、OSからは既存のSky入口、単独Webでは `/sky/marketplace` から利用する。Sky配下のPWA manifestはSky専用identityと `/sky/marketplace` 起動、`/sky/` scopeを持つ。OS全体のmanifestは従来のまま。既存画面のデザイン、API認証、課金gate、未接続Toolの表示は維持する。installされたアプリの実端末受入と公開URLの配備は別条件で、manifest追加だけで合格とはしない。オンライン実行が前提で、オフライン実行の保証は追加しない。Miniからの利用はdevice capability契約と実機受入を別途通す。
