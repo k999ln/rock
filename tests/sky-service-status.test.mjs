@@ -43,7 +43,7 @@ void test('the public status has no credentials, origin or user identity', () =>
 
 void test('malformed status responses leave configuration unknown rather than enabling a tool', () => {
   const valid = skyServiceStatus(configured, true, origin);
-  for (const bad of [null, [], {}, { ...valid, version: 2 }, { ...valid, database: 'healthy' }, { ...valid, csvStorageConfigured: 'true' }, { ...valid, payments: 'ready' }]) assert.equal(parseSkyServiceStatus(bad), undefined);
+  for (const bad of [null, [], {}, { ...valid, version: 2 }, { ...valid, database: 'healthy' }, { ...valid, database: { toString: 'available' } }, { ...valid, payments: ['live'] }, { ...valid, csvStorageConfigured: 'true' }, { ...valid, payments: 'ready' }]) assert.equal(parseSkyServiceStatus(bad), undefined);
   assert.deepEqual(parseSkyServiceStatus({ ...valid, secret: 'discard-me' }), valid);
 });
 

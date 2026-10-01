@@ -37,8 +37,8 @@ export function skyServiceStatus(
 export function parseSkyServiceStatus(value: unknown): SkyServiceStatus | undefined {
   if (!value || typeof value !== 'object') return undefined;
   const v = value as Record<string, unknown>;
-  if (v.version !== 1 || !['available', 'unavailable'].includes(String(v.database)) ||
-    !['unconfigured', 'test', 'live'].includes(String(v.payments)) ||
+  if (v.version !== 1 || (v.database !== 'available' && v.database !== 'unavailable') ||
+    (v.payments !== 'unconfigured' && v.payments !== 'test' && v.payments !== 'live') ||
     !['csvStorageConfigured', 'legalAiConfigured', 'patentAiConfigured', 'jevConfigured'].every((key) => typeof v[key] === 'boolean')) return undefined;
   return {
     version: 1,
