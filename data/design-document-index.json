@@ -358,7 +358,8 @@
       "mobileResultActions": {
         "stackHeadingBelow760px": true,
         "wrapButtons": true,
-        "minimumButtonHeightPx": 44
+        "minimumButtonHeightPx": 44,
+        "restoredOutputDarkContrast": true
       }
     },
     {

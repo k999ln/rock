@@ -701,3 +701,9 @@
     flex: 0 1 auto;
   }
 }
+
+.checkPanel :global(.bench-output textarea) {
+  background: #162228;
+  border-color: #50616a;
+  color: #edf3f5;
+}
